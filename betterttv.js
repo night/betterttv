@@ -50,6 +50,7 @@ function clearout () {
 		"#google_ads_div_Twitch_ChanMedRectv2_ad_container",
 		"#google_ads_div_Twitch_DirectoryMedRectv2_ad_container",
 		".hide_ad",
+		".advertisement",
 		"#google_ads_div_Twitch_ClipsMedRectv2_ad_container"
 	];
 	clearlist.each(function(search) {
