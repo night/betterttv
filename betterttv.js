@@ -240,8 +240,10 @@ function newchannellayout() {
 	watermark.style.textShadow = "-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000";
 	watermark.style.textDecoration = "none";
 	logo.appendChild(watermark);
-	document.getElementById("right_col").style.bottom="35px";
-	document.getElementById("left_col").style.bottom="35px";
+	if(localStorage.getItem("hidemeebo") !== "true") {
+		document.getElementById("right_col").style.bottom="35px";
+		document.getElementById("left_col").style.bottom="35px";
+	}
 	document.getElementById("right_close").setAttribute('title','Drag to Resize Chat or Click to Open/Close');
 	document.getElementById("left_close").setAttribute('title','Click to Open/Close');
 	$j(".scroll-content-contain").css("bottom","35px");
