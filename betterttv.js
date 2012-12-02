@@ -261,7 +261,6 @@ function newchannellayout() {
 		$j("#right_close").unbind('click');
 
 		if(localStorage.getItem("chat_width")) {
-			console.log(localStorage.getItem("chat_width"));
 			var chat_width = localStorage.getItem("chat_width");
 			$j("#right_col").width(chat_width);
 			if(chat_width == 0) {
@@ -350,7 +349,6 @@ function newchannellayout() {
 			resize = event.pageX;
 			chat_width = $j("#right_col").width();
 			chat_width_startingpoint = chat_width + resize - event.pageX;
-			console.log(chat_width_startingpoint);
 			if($j("#right_col").width() === 0) {
 				var d = $j("#right_col .top").width();
 		        $j("#right_col").css({
@@ -619,7 +617,6 @@ function chat_moderator()
 	Chat.prototype.insert_chat_line2=Chat.prototype.insert_chat_line;
 	Chat.prototype.insert_chat_line=function(info)
 	{
-		console.log(info);
 		if(info.color == "blue" && localStorage.getItem("darkchat") === "true") { info.color = "#3753ff"; }
 		if(info.tagtype == "broadcaster") { info.tagname = "Host"; }
 		var x=0;
@@ -719,7 +716,6 @@ function chat_moderator()
 
 	Chatters.render2 = Chatters.render;
 	Chatters.render = function(d) {
-		//console.log(d)
 		Chatters.render2(d);
 		if(200 === d.status) {
 			CurrentViewers = [];
