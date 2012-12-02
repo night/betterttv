@@ -11,12 +11,13 @@ Contact email: nightwalker@nightdev.com
 BetterTtvEngine = function(){
 
 var bdebug = {
-				log: function(string) { if(window.console && console.log) console.log("BTTV: "+string); },
-				warn: function(string) { if(window.console && console.warn) console.warn("BTTV: "+string); },
-				error: function(string) { if(window.console && console.error) console.error("BTTV: "+string); },
-				info: function(string) { if(window.console && console.info) console.info("BTTV: "+string); }
-			 },
-	CurrentViewers = [],
+	log: function(string) { if(window.console && console.log) console.log("BTTV: "+string); },
+	warn: function(string) { if(window.console && console.warn) console.warn("BTTV: "+string); },
+	error: function(string) { if(window.console && console.error) console.error("BTTV: "+string); },
+	info: function(string) { if(window.console && console.info) console.info("BTTV: "+string); }
+}
+
+var CurrentViewers = [],
 	ReloadViewers = false;
 
 // Chat Functions
@@ -241,6 +242,8 @@ function newchannellayout() {
 	logo.appendChild(watermark);
 	document.getElementById("right_col").style.bottom="35px";
 	document.getElementById("left_col").style.bottom="35px";
+	document.getElementById("right_close").setAttribute('title','Drag to Resize Chat or Click to Open/Close');
+	document.getElementById("left_close").setAttribute('title','Click to Open/Close');
 	$j(".scroll-content-contain").css("bottom","35px");
 	$j("#small_nav .content ul #small_home a").css("background","url(http://betterttv.nightdev.com/newnavicons.png) no-repeat 0 0");
 	meebo();
@@ -256,7 +259,7 @@ function newchannellayout() {
 		$j("#right_close").unbind('click');
 
 		if(localStorage.getItem("chat_width")) {
-			console.log(localStorage.getItem("chat_width"));
+			//console.log(localStorage.getItem("chat_width"));
 			var chat_width = localStorage.getItem("chat_width");
 			$j("#right_col").width(chat_width);
 			if(chat_width == 0) {
@@ -345,7 +348,7 @@ function newchannellayout() {
 			resize = event.pageX;
 			chat_width = $j("#right_col").width();
 			chat_width_startingpoint = chat_width + resize - event.pageX;
-			console.log(chat_width_startingpoint);
+			//console.log(chat_width_startingpoint);
 			if($j("#right_col").width() === 0) {
 				var d = $j("#right_col .top").width();
 		        $j("#right_col").css({
@@ -615,7 +618,7 @@ function chat_moderator()
 	Chat.prototype.insert_chat_line=function(info)
 	{
 		//console.log(info);
-
+		if(info.color == "blue" && localStorage.getItem("darkchat") === "true") { info.color = "#3753ff"; }
 		if(info.tagtype == "broadcaster") { info.tagname = "Host"; }
 		var x=0;
 		if(info.tagtype == "mod" || info.tagtype == "broadcaster" || info.tagtype == "admin") x=1;
@@ -933,7 +936,7 @@ function bttvbox()
 {
 	settingsmenu = document.getElementById("chat_settings_dropmenu");
 	if(!settingsmenu) return;
-	if(localStorage.getItem("darkchat") == "true") {
+	if(localStorage.getItem("darkchat") === "true") {
 		$$('#chat_column').each(function(element) {
 			element.style.background = '#333';
 		});
@@ -945,7 +948,43 @@ function bttvbox()
 		$$('#chat_text_input').each(function(element) {
 			element.style.background = '#000';
 			element.style.color = '#fff';
-			element.style.border = 'solid 1px #666';
+			element.style.border = 'solid 1px #333';
+			element.style.boxShadow = 'none';
+		});
+		$$('#right_col').each(function(element) {
+			element.style.backgroundColor = '#1E1E1E';
+		});
+		$$('#right_col .content .bottom #controls').each(function(element) {
+			element.style.backgroundColor = '#1E1E1E';
+			element.style.borderTop = '1px solid rgba(0, 0, 0, 0.65)';
+			
+		});
+		$$('#player_col').each(function(element) {
+			element.style.backgroundColor = '#000000';
+		});
+		$$('.scroll-scrollbar .drag-handle').each(function(element) {
+			element.style.backgroundColor = '#ffffff';
+		});
+		$$('#player_col .content #left_close, #player_col .content #right_close').each(function(element) {
+			element.style.backgroundColor = '#CCCCCC';
+			element.style.boxShadow = 'none';
+		});
+		$$('#right_col .content').each(function(element) {
+			element.style.borderLeft = 'none';
+		});
+		$$('.playing a, #team_membership a, .more_videos a').each(function(element) {
+			element.style.color = '#777';
+		});
+		$$('#channel_panels_contain #channel_panels .panel').each(function(element) {
+			element.style.color = '#999';
+		});
+		$$('#right_col .content #chat_line_list, body, #player_col .content #broadcast_meta .info .channel, #channel_panels_contain #channel_panels .panel h3').each(function(element) {
+			element.style.color = '#fff';
+		});
+		$$('.segmented_tabs li a.selected, .segmented_tabs li a:active, .segmented_tabs li:last-child a').each(function(element) {
+			element.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
+			element.style.boxShadow = 'none';
+			element.style.boxShadow = '0 1px 0 rgba(0, 0, 0, 0.65),inset 0 1px rgba(0, 0, 0, 0.05) !important';
 		});
 		document.body.style.background = "#000";
 		$$('.noise').each(function(element) {
@@ -966,7 +1005,12 @@ function bttvbox()
 	if(localStorage.getItem("related") !== "true") { checktfrel = "false"; } else { checktfrel = "true"; }
 	if(localStorage.getItem("hidemeebo") !== "true") { checktfmeb = "false"; } else { checktfmeb = "true"; }
 	if(localStorage.getItem("darkchat") == "true") { checktfdc = "Undarken Chat"; } else { checktfdc = "Darken Chat"; }
-	bttvdiv.innerHTML = '<style type="text/css">.dropmenu_action{color:#FFFFFF !important;}</style><ul class="dropmenu_col inline_all"> \
+	if(localStorage.getItem("darkchat") === "true") {
+		var bttvdark = '#chat_line_list a{color: #777} #right_col .content #archives .video a .title {color: #777;}';
+	} else {
+		var bttvdark = '';
+	}
+	bttvdiv.innerHTML = '<style type="text/css">'+bttvdark+'.dropmenu_action{color:#FFFFFF !important;}</style><ul class="dropmenu_col inline_all"> \
 <li id="chat_section_chatroom" class="dropmenu_section"> \
 <br /> \
 &nbsp;&nbsp;&nbsp;&raquo;&nbsp;BetterTTV \
@@ -1106,13 +1150,53 @@ function bttv_action(action) {
 		$$('#chat_text_input').each(function(element) {
 			element.style.background = '#000';
 			element.style.color = '#fff';
-			element.style.border = 'solid 1px #666';
+			element.style.border = 'solid 1px #333';
+			element.style.boxShadow = 'none';
 		});
-		document.body.style.background = "#000";
+		$$('#right_col').each(function(element) {
+			element.style.backgroundColor = '#1E1E1E';
+		});
+		$$('#right_col .content .bottom #controls').each(function(element) {
+			element.style.backgroundColor = '#1E1E1E';
+			element.style.borderTop = '1px solid rgba(0, 0, 0, 0.65)';
+			
+		});
+		$$('#player_col').each(function(element) {
+			element.style.backgroundColor = '#000000';
+		});
+		$$('.scroll-scrollbar .drag-handle').each(function(element) {
+			element.style.backgroundColor = '#ffffff';
+		});
+		$$('#player_col .content #left_close, #player_col .content #right_close').each(function(element) {
+			element.style.backgroundColor = '#CCCCCC';
+			element.style.boxShadow = 'none';
+		});
+		$$('#right_col .content').each(function(element) {
+			element.style.borderLeft = 'none';
+		});
+		$$('.playing a, #team_membership a, .more_videos a').each(function(element) {
+			element.style.color = '#777';
+		});
+		$$('#channel_panels_contain #channel_panels .panel').each(function(element) {
+			element.style.color = '#999';
+		});
+		$$('#right_col .content #chat_line_list, body, #player_col .content #broadcast_meta .info .channel, #channel_panels_contain #channel_panels .panel h3').each(function(element) {
+			element.style.color = '#fff';
+		});
+		$$('.segmented_tabs li a.selected, .segmented_tabs li a:active, .segmented_tabs li:last-child a').each(function(element) {
+			element.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
+			element.style.boxShadow = 'none';
+			element.style.boxShadow = '0 1px 0 rgba(0, 0, 0, 0.65),inset 0 1px rgba(0, 0, 0, 0.05) !important';
+		});
+		document.body.style.background = "#000"; //old
+		bttvdiv = document.createElement("div");
+		bttvdiv.innerHTML = '<style type="text/css">#chat_line_list a{color: #777} #right_col .content #archives .video a .title {color: #777;}</style>';
+		document.getElementById("chat_settings_dropmenu").appendChild(bttvdiv);
 		$$('.noise').each(function(element) {
 			element.style.backgroundImage = "none";
 		});
 		document.getElementById("darkchatlink").innerHTML="Undarken Chat";
+
 	}
   }
   if(action == "blocksub") {
