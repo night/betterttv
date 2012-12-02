@@ -261,7 +261,7 @@ function newchannellayout() {
 		$j("#right_close").unbind('click');
 
 		if(localStorage.getItem("chat_width")) {
-			//console.log(localStorage.getItem("chat_width"));
+			console.log(localStorage.getItem("chat_width"));
 			var chat_width = localStorage.getItem("chat_width");
 			$j("#right_col").width(chat_width);
 			if(chat_width == 0) {
@@ -350,7 +350,7 @@ function newchannellayout() {
 			resize = event.pageX;
 			chat_width = $j("#right_col").width();
 			chat_width_startingpoint = chat_width + resize - event.pageX;
-			//console.log(chat_width_startingpoint);
+			console.log(chat_width_startingpoint);
 			if($j("#right_col").width() === 0) {
 				var d = $j("#right_col .top").width();
 		        $j("#right_col").css({
@@ -619,7 +619,7 @@ function chat_moderator()
 	Chat.prototype.insert_chat_line2=Chat.prototype.insert_chat_line;
 	Chat.prototype.insert_chat_line=function(info)
 	{
-		//console.log(info);
+		console.log(info);
 		if(info.color == "blue" && localStorage.getItem("darkchat") === "true") { info.color = "#3753ff"; }
 		if(info.tagtype == "broadcaster") { info.tagname = "Host"; }
 		var x=0;
@@ -953,8 +953,12 @@ function bttvbox()
 			element.style.border = 'solid 1px #333';
 			element.style.boxShadow = 'none';
 		});
+
 		$$('#right_col').each(function(element) {
 			element.style.backgroundColor = '#1E1E1E';
+		});
+		$$('.channel-main').each(function(element) {
+			element.style.backgroundColor = '#000';
 		});
 		$$('#right_col .content .bottom #controls').each(function(element) {
 			element.style.backgroundColor = '#1E1E1E';
@@ -1008,7 +1012,7 @@ function bttvbox()
 	if(localStorage.getItem("hidemeebo") !== "true") { checktfmeb = "false"; } else { checktfmeb = "true"; }
 	if(localStorage.getItem("darkchat") == "true") { checktfdc = "Undarken Chat"; } else { checktfdc = "Darken Chat"; }
 	if(localStorage.getItem("darkchat") === "true") {
-		var bttvdark = '#chat_line_list a{color: #777} #right_col .content #archives .video a .title {color: #777;}';
+		var bttvdark = '#chat_line_list a{color: #777} #right_col .content #archives .video a .title {color: #777;} #chat_line_list li a.timeout { padding-left: 18px; min-height: 18px; background: url("http://betterttv.nightdev.com/timeout.png") no-repeat !important;} #chat_line_list li a.ban { padding-left: 18px; min-height: 18px; background: url("http://betterttv.nightdev.com/ban.png") no-repeat !important; } #chat_line_list li a.unban { padding-left: 18px; min-height: 18px; background: url("http://betterttv.nightdev.com/unban.png") no-repeat !important; } #chat_line_list li .mod_button img {display:none;}';
 	} else {
 		var bttvdark = '';
 	}
@@ -1158,6 +1162,9 @@ function bttv_action(action) {
 		$$('#right_col').each(function(element) {
 			element.style.backgroundColor = '#1E1E1E';
 		});
+		$$('.channel-main').each(function(element) {
+			element.style.backgroundColor = '#000';
+		});
 		$$('#right_col .content .bottom #controls').each(function(element) {
 			element.style.backgroundColor = '#1E1E1E';
 			element.style.borderTop = '1px solid rgba(0, 0, 0, 0.65)';
@@ -1192,7 +1199,7 @@ function bttv_action(action) {
 		});
 		document.body.style.background = "#000"; //old
 		bttvdiv = document.createElement("div");
-		bttvdiv.innerHTML = '<style type="text/css">#chat_line_list a{color: #777} #right_col .content #archives .video a .title {color: #777;}</style>';
+		bttvdiv.innerHTML = '<style type="text/css">#chat_line_list a{color: #777} #right_col .content #archives .video a .title {color: #777;} #chat_line_list li a.timeout { padding-left: 18px; min-height: 18px; background: url("http://betterttv.nightdev.com/timeout.png") no-repeat !important;} #chat_line_list li a.ban { padding-left: 18px; min-height: 18px; background: url("http://betterttv.nightdev.com/ban.png") no-repeat !important; } #chat_line_list li a.unban { padding-left: 18px; min-height: 18px; background: url("http://betterttv.nightdev.com/unban.png") no-repeat !important; } #chat_line_list li .mod_button img {display:none;}</style>';
 		document.getElementById("chat_settings_dropmenu").appendChild(bttvdiv);
 		$$('.noise').each(function(element) {
 			element.style.backgroundImage = "none";
