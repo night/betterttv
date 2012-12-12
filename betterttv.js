@@ -10,7 +10,7 @@
 
 BetterTTVEngine = function() {
 
-	var betterttvVersion = "5.7",
+	var betterttvVersion = "5.8",
 		betterttvDebug = {
 			log: function(string) { if(window.console && console.log) console.log("BTTV: "+string); },
 			warn: function(string) { if(window.console && console.warn) console.warn("BTTV: "+string); },
@@ -135,17 +135,16 @@ BetterTTVEngine = function() {
 
 		$j("#about").css("display", "inline");
 
-		/**
-		 * Do something with this
-		 */
 		if(document.getElementById("player_column")) {
 			if(document.getElementById("dash_main")) return;
 			if(document.getElementById("team_member_list")) return;
-			var fixtabs = document.createElement("div");
-			fixtabs.innerHTML = "<style type='text/css'>#live_channel_name {color:white;} #broadcast_meta #follow_and_filters a { color:#ffffff !important; } #status:focus { color:black !important; } #gameselector_input:focus { color:black !important; } #gameselector_input { color:white; }  #broadcast_meta_edit #status { color: #ffffff; } .gameselector_result_desc { color: #ffffff !important; } .main { background: none !important; } #about a {color:white;text-decoration:underline;} ul.tabs {border-bottom:thin solid #262626;padding-top:5px;padding-left:15px;} ul.tabs li.tab a {color: white; background-color:#262626; border-top-right-radius:5px; margin-left:-10px; margin-top:3px;} ul.tabs li.selected a { border-top-left-radius:5px;border-top-right-radius:5px;margin-left:0px;background-color:#787878;color: #ffffff; margin-top:0px; }</style>";
-			document.getElementById('player_column').appendChild(fixtabs);
+			var channelCSS = document.createElement("style");
+			channelCSS.setAttribute("type","text/css");
+			channelCSS.innerHTML = "#live_channel_name {color:white;} #broadcast_meta #follow_and_filters a { color:#ffffff !important; } #status:focus { color:black !important; } #gameselector_input:focus { color:black !important; } #gameselector_input { color:white; }  #broadcast_meta_edit #status { color: #ffffff; } .gameselector_result_desc { color: #ffffff !important; } .main { background: none !important; } #about a {color:white;text-decoration:underline;} ul.tabs {border-bottom:thin solid #262626;padding-top:5px;padding-left:15px;} ul.tabs li.tab a {color: white; background-color:#262626; border-top-right-radius:5px; margin-left:-10px; margin-top:3px;} ul.tabs li.selected a { border-top-left-radius:5px;border-top-right-radius:5px;margin-left:0px;background-color:#787878;color: #ffffff; margin-top:0px; }";
+			$j('body').append(channelCSS);
 			if(document.getElementById("facebook_connect")) document.getElementById("facebook_connect").style.background = "none"; document.getElementById("facebook_connect").style.marginBottom = "5px"; document.getElementById("facebook_connect").style.padding = "0px"; document.getElementById("facebook_connect").innerHTML = "&nbsp;";
 		}
+
 		if(!document.getElementById("broadcast_meta")) return;
 		if(!document.getElementById("vod_form") && document.getElementById("channel_viewer_count") && PP['page_type'] !== "new_channel") {
 			document.getElementById("channel_viewer_count").style.background = "url(http://betterttv.nightdev.com/viewers.png) no-repeat";
@@ -172,12 +171,10 @@ BetterTTVEngine = function() {
 		$j("#directory_channels").css("width","690px");
 		$j("#gameselector_input").css("width","230px");
 
-		/**
-		 * Need to combine with other CSS for one big injection
-		 */
-		var directoryfix = document.createElement("div");
-		directoryfix.innerHTML = "<style type='text/css'>.games-grid .game .boxart { width: 136px !important; height: 190px !important; } .stream {width:150px !important;height:150px !important;} .streams .stream .thumb img.cap, .by_game .stream .thumb img.cap {width:150px !important;height:84.375px !important;} .boxart {margin-top:10px !important;height:50px !important;} .meta {height:75px !important;padding-bottom:2px;} .video_grid .video .channelname, .streams .stream .channelname {white-space:normal !important;margin-top:-2px !important;height:35px !important;}</style>";
-		document.getElementById('directory_channels').appendChild(directoryfix);
+		var directoryCSS = document.createElement("style");
+		directoryCSS.setAttribute("type","text/css");
+		directoryCSS.innerHTML = ".games-grid .game .boxart { width: 136px !important; height: 190px !important; } .stream {width:150px !important;height:150px !important;} .streams .stream .thumb img.cap, .by_game .stream .thumb img.cap {width:150px !important;height:84.375px !important;} .boxart {margin-top:10px !important;height:50px !important;} .meta {height:75px !important;padding-bottom:2px;} .video_grid .video .channelname, .streams .stream .channelname {white-space:normal !important;margin-top:-2px !important;height:35px !important;}";
+		$j('body').append(directoryCSS);
 
 	}
 
@@ -218,14 +215,11 @@ BetterTTVEngine = function() {
 
 		$j('#chat_loading_spinner').attr('src',"data:image/gif;base64,R0lGODlhFgAWAPMGANfX1wAAADc3N1tbW6Ojo39/f2tra8fHx9nZ2RsbG+np6SwsLEtLS4eHh7q6ugAAACH/C05FVFNDQVBFMi4wAwEAAAAh/hoiQ3JlYXRlZCB3aXRoIENoaW1wbHkuY29tIgAh+QQJCgAGACwAAAAAFgAWAAAEbNCESY29OEvBRdDgFXReGI7dZ2oop65YWypIjSgGbSOW/CGAIICnEAIOPdLPSDQiNykDUNgUPn1SZs6ZjE6D1eBVmaVurV1XGXwWp0vfYfv4XpqLaKg6HqbrZzs4OjZ1MBlYhiJkiYWMfy+GEQAh+QQJCgAGACwAAAAAFgAWAAAEctDIKYO9NKe9lwlCKAQZlQzo4IEiWUpnuorjC6fqR7tvjM4tgwJBJN5kuqACwGQef8kQadkEPHMsqbBqNfiwu231CtRSm+Ro7ez04sprbjobH7uR9Kn8Ds2L0XxgSkVGgXA8JV+HNoZqiBocCYuMJX4vEQAh+QQJCgAAACwAAAAAFgAWAAAEcxDISWu4uNLEOwhCKASSGA5AMqxD8pkkIBR0gaqsC4rxXN+s1otXqtlSQR2s+EPmhqGeEfjcRZk06kpJlE2dW+gIe8SFrWNv0yxES9dJ8TsLbi/VdDb3ii/H3WRadl0+eX93hX5ViCaCe2kaKR0ccpGWlREAIfkECQoAAQAsAAAAABYAFgAABHUwyEmrvTisxHlmQigw2mAOiWSsaxMwRVyQy4mqRE64sEzbqYBBt3vJZqVTcKjjHX9KXNPoS5qWRGe1FhVmqTHoVZrThq0377R35o7VZTDSnWbG2XMguYgX1799aFhrT4J7ZnldLC1yfkEXICKOGRcbHY+UlBEAIfkECQoAAQAsAAAAABYAFgAABHIwyEmrvThrOoQXTFYYpFEEQ6EWgkS8rxMUMHGmaxsQR3/INNhtxXL5frPaMGf0AZUooo7nTAqjzN3xecWpplvra/lt9rhjbFlbDaa9RfZZbFPHqXN3HQ5uQ/lmSHpkdzVoe1IiJSZ2OhsTHR8hj5SVFREAIfkECQoAAQAsAAAAABYAFgAABGowyEmrvTjrzWczIJg5REk4QWMShoQAMKAExGEfRLq2QQzPtVtOZeL5ZLQbTleUHIHK4c7pgwqZJWM1eSVmqTGrTdrsbYNjLAv846a9a3PYvYRr5+j6NPDCR9U8FyQmKHYdHiEih4uMjRQRACH5BAkKAAEALAAAAAAWABYAAARkMMhJq7046807d0QYSkhZKoFiIqhzvAchATSNIjWABC4sBznALbfrvX7BYa0Ii81yShrT96xFdbwmEhrALbNUINcrBR+rti7R7BRb1V9jOwkvy38rVmrV0nokICI/f4SFhocSEQAh+QQJCgABACwAAAAAFgAWAAAEWjDISau9OOvNu7dIGCqBIiKkeUoH4AIk8gJIOR/sHM+1cuev3av3C7SCAdnQ9sIZdUke0+U8uoQuYhN4jS592ydSmZ0CqlAyzYweS8FUyQlVOqXmn7x+z+9bIgA7");
 	
-		/**
-		 * Need to combine with other CSS for one big injection
-		 */
-		if(document.getElementById("chat_lines")) {
-			var fixchatugly = document.createElement("div");
-			fixchatugly.innerHTML = "<style type='text/css'>.dropmenu a, .ui-menu a, .ui-multiselect-menu a { color: white !important; } input.text:focus,select:focus,textarea:focus{outline:0;background-color:#fff;box-shadow:0 0 3px 1px #dad9d9;-moz-box-shadow:0 0 3px 1px #dad9d9;-webkit-box-shadow:0 0 3px 1px #dad9d9;border:1px solid #000;color:#000;} .primary_button:hover,.primary_button:focus{ background: linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -o-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -moz-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -webkit-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -ms-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%); } .primary_button { border-color: #000 !important; background: linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -o-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -moz-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -webkit-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -ms-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%); } .chat_line a {color:#005596;} #chat_line_list li .mod_button img{vertical-align:baseline;padding: 0px;margin-bottom:-5px;} .chat_line img {vertical-align: baseline !important;} .line .mod, .line .staff, .line .admin, .line .broadcaster {background-image: none !important;background-position: none !important;background-repeat: none !important;display: inline !important;height: none !important;min-width: none !important;overflow: none !important;padding: 1px 3px !important;text-indent: none !important;vertical-align: baseline !important;color: white !important;font-size: 0.8572em !important;font-weight: bold !important;} .line .bot {background-color: #666666;border-radius: 2px 2px 2px 2px;padding: 1px 3px;font-weight: bold;font-size: 0.8572em;color: white;display:inline !important;} .line .brown {background-color: #6B4226;border-radius: 2px 2px 2px 2px;padding: 1px 3px;font-weight: bold;font-size: 0.8572em;color: white;display:inline !important;} .line .orange {background-color: orange;border-radius: 2px 2px 2px 2px;padding: 1px 3px;font-weight: bold;font-size: 0.8572em;color: white;display:inline !important;} .line .lefty {background-color: red;background-image:url('http://betterttv.nightdev.com/ca.gif');padding-left:23px !important;border-radius: 2px 2px 2px 2px;padding: 1px 3px;font-weight: bold;font-size: 0.8572em;color: white;display:inline !important;} .line .staff {background-color: #06C;} .line .purple {background-color: #4F007B;border-radius: 2px 2px 2px 2px;padding: 1px 3px;font-weight: bold;font-size: 0.8572em;color: white;display:inline !important;}</style>";
-			document.getElementById('chat_lines').appendChild(fixchatugly);
-		}
+		var chatCSS = document.createElement("style");
+		chatCSS.setAttribute("type","text/css");
+		chatCSS.innerHTML = ".dropmenu a, .ui-menu a, .ui-multiselect-menu a { color: white !important; } input.text:focus,select:focus,textarea:focus{outline:0;background-color:#fff;box-shadow:0 0 3px 1px #dad9d9;-moz-box-shadow:0 0 3px 1px #dad9d9;-webkit-box-shadow:0 0 3px 1px #dad9d9;border:1px solid #000;color:#000;} .primary_button:hover,.primary_button:focus{ background: linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -o-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -moz-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -webkit-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -ms-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%); } .primary_button { border-color: #000 !important; background: linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -o-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -moz-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -webkit-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -ms-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%); } .chat_line a {color:#005596;} #chat_line_list li .mod_button img{vertical-align:baseline;padding: 0px;margin-bottom:-5px;} .chat_line img {vertical-align: baseline !important;} .line .mod, .line .staff, .line .admin, .line .broadcaster {background-image: none !important;background-position: none !important;background-repeat: none !important;display: inline !important;height: none !important;min-width: none !important;overflow: none !important;padding: 1px 3px !important;text-indent: none !important;vertical-align: baseline !important;color: white !important;font-size: 0.8572em !important;font-weight: bold !important;} .line .bot {background-color: #666666;border-radius: 2px 2px 2px 2px;padding: 1px 3px;font-weight: bold;font-size: 0.8572em;color: white;display:inline !important;} .line .brown {background-color: #6B4226;border-radius: 2px 2px 2px 2px;padding: 1px 3px;font-weight: bold;font-size: 0.8572em;color: white;display:inline !important;} .line .orange {background-color: orange;border-radius: 2px 2px 2px 2px;padding: 1px 3px;font-weight: bold;font-size: 0.8572em;color: white;display:inline !important;} .line .lefty {background-color: red;background-image:url('http://betterttv.nightdev.com/ca.gif');padding-left:23px !important;border-radius: 2px 2px 2px 2px;padding: 1px 3px;font-weight: bold;font-size: 0.8572em;color: white;display:inline !important;} .line .staff {background-color: #06C;} .line .purple {background-color: #4F007B;border-radius: 2px 2px 2px 2px;padding: 1px 3px;font-weight: bold;font-size: 0.8572em;color: white;display:inline !important;}";
+		$j('body').append(chatCSS);
+
 	}
 
 	newChannelReformat = function() {
@@ -275,6 +269,7 @@ BetterTTVEngine = function() {
 		document.getElementById("left_close").setAttribute('title','Click to Open/Close');
 		$j(".scroll-content-contain").css("bottom","35px");
 		$j("#small_nav .content ul #small_home a").css("background","url(http://betterttv.nightdev.com/newnavicons.png) no-repeat 0 0");
+		removeElement(".related");
 		meebo();
 
 		$j(document).ready(function()
@@ -463,10 +458,10 @@ BetterTTVEngine = function() {
 		logo.appendChild(watermark);
 
 		proauth = document.getElementById("pro_authenticated");
-		globalcssinject = document.createElement("style");
-		globalcssinject.setAttribute("type","text/css");
-		globalcssinject.innerHTML = '.chat_line a {color:#005596;} h2 { font-size: 16px; } #team_member_list .page_links a { color: #374a9b !important; } #team_member_list .page_links a b.left { border-left-color: #374a9b !important; } #team_member_list .page_links a b.right { border-left-color: #374a9b !important; } .member.live { background: #bdbcbc; } .member a { color: black; } .member.playing { background-color: #374a9b; border-color: #000000; } input.text:focus,select:focus,textarea:focus{outline:0;background-color:#fff;box-shadow:0 0 3px 1px #dad9d9;-moz-box-shadow:0 0 3px 1px #dad9d9;-webkit-box-shadow:0 0 3px 1px #dad9d9;border:1px solid #000;color:#000;} .primary_button:hover,.primary_button:focus{ background: linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -o-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -moz-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -webkit-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -ms-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%); } .primary_button { border-color: #000 !important; background: linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -o-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -moz-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -webkit-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -ms-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%); } #metagame a {color:white !important;} #team_membership a {color:white !important;} ul.tabs li.tab a {color:#262626;} ul.tabs li.selected a { color:#262626; } #header_banner img { width: 640px !important; height: 125px !important; } .dropmenu a, .ui-menu a, .ui-multiselect-menu a { color: white !important; } #menu_defaults .game_filter.selected a, #menu_filtered .game_filter.selected a, #menu_featured .game_filter.selected a { border: #000; background-color: #374a9b; } body {letter-spacing:0px;} a {color: black;} #growl_container {left: 0; overflow: hidden; padding-top: 0.7143em; position: fixed; top: 60px; z-index: 999999;} .notification_holder {padding: 0 0.7143em 0.7143em;} .notification {background-color: rgba(34, 34, 34, 0.85); border: 3px solid transparent; border-radius: 10px 10px 10px 10px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); color: #FFFFFF; cursor: pointer; min-height: 4.28em; padding: 0.7143em; position: relative; width: 14.29em;}.notification .close { background: none repeat scroll 0 0 #000000; border-radius: 0.75em 0.75em 0.75em 0.75em; color: #FFFFFF; display: none; height: 1.4em; padding: 0 6px; position: absolute; right: 0.3575em; top: 0.3575em;} .notification:hover {border: 3px solid #FFFFFF;} .notification a {color: #3399FF;}';
-		proauth.parentNode.insertBefore(globalcssinject, proauth);
+		var globalCSSInject = document.createElement("style");
+		globalCSSInject.setAttribute("type","text/css");
+		globalCSSInject.innerHTML = '.chat_line a {color:#005596;} h2 { font-size: 16px; } #team_member_list .page_links a { color: #374a9b !important; } #team_member_list .page_links a b.left { border-left-color: #374a9b !important; } #team_member_list .page_links a b.right { border-left-color: #374a9b !important; } .member.live { background: #bdbcbc; } .member a { color: black; } .member.playing { background-color: #374a9b; border-color: #000000; } input.text:focus,select:focus,textarea:focus{outline:0;background-color:#fff;box-shadow:0 0 3px 1px #dad9d9;-moz-box-shadow:0 0 3px 1px #dad9d9;-webkit-box-shadow:0 0 3px 1px #dad9d9;border:1px solid #000;color:#000;} .primary_button:hover,.primary_button:focus{ background: linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -o-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -moz-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -webkit-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -ms-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%); } .primary_button { border-color: #000 !important; background: linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -o-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -moz-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -webkit-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -ms-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%); } #metagame a {color:white !important;} #team_membership a {color:white !important;} ul.tabs li.tab a {color:#262626;} ul.tabs li.selected a { color:#262626; } #header_banner img { width: 640px !important; height: 125px !important; } .dropmenu a, .ui-menu a, .ui-multiselect-menu a { color: white !important; } #menu_defaults .game_filter.selected a, #menu_filtered .game_filter.selected a, #menu_featured .game_filter.selected a { border: #000; background-color: #374a9b; } body {letter-spacing:0px;} a {color: black;} #growl_container {left: 0; overflow: hidden; padding-top: 0.7143em; position: fixed; top: 60px; z-index: 999999;} .notification_holder {padding: 0 0.7143em 0.7143em;} .notification {background-color: rgba(34, 34, 34, 0.85); border: 3px solid transparent; border-radius: 10px 10px 10px 10px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); color: #FFFFFF; cursor: pointer; min-height: 4.28em; padding: 0.7143em; position: relative; width: 14.29em;}.notification .close { background: none repeat scroll 0 0 #000000; border-radius: 0.75em 0.75em 0.75em 0.75em; color: #FFFFFF; display: none; height: 1.4em; padding: 0 6px; position: absolute; right: 0.3575em; top: 0.3575em;} .notification:hover {border: 3px solid #FFFFFF;} .notification a {color: #3399FF;}';
+		$j("body").append(globalCSSInject);
 
 		$j.get('http://www.twitch.tv/inbox', function(data) {
 			PP['notifications'] = (data.split("unread").length - 2)
@@ -551,7 +546,7 @@ BetterTTVEngine = function() {
 		$j('#meebo-googlePlus-plusone-0').remove();
 		$j('.meebo-20').remove();
 		$j('.meebo-29').remove();
-		$j('.meebo-22').replaceWith('<a href="http://bugs.nightdev.com/betterttv/issues/new" style="margin-right:8px;margin-bottom:3px;" class="normal_button"><span>Report a BetterTTV Bug</span></a><a href="http://www.betterttv.com" style="margin-right:7px;margin-bottom:3px;" class="normal_button"><span>BetterTTV v'+betterttvVersion+'</span></a>');
+		$j('.meebo-22').replaceWith('<a href="http://bugs.nightdev.com/betterttv/issues/new" style="margin-right:8px;margin-bottom:3px;color:black;" class="normal_button"><span>Report a BetterTTV Bug</span></a><a href="http://www.betterttv.com" style="margin-right:7px;margin-bottom:3px;color:black;" class="normal_button"><span>BetterTTV v'+betterttvVersion+'</span></a>');
 
 	}
 
@@ -809,134 +804,223 @@ BetterTTVEngine = function() {
 	generateEmoticonCSS = function(a) {
 
 			var b = "";
-			18 < a.height && (b = "margin: -" + (a.height - 18) / 2 + "px 0px");
+			//18 < a.height && (b = "margin: -" + (a.height - 18) / 2 + "px 0px");
 			return ".emo-" + a.image_name + ' {background-image: url("' + a.url + '") !important;vertical-align: baseline !important;height: ' + a.height + "px;width: " + a.width + "px;" + b + "}"
 
 	}
 
-function bttvbox()
-{
-	settingsmenu = document.getElementById("chat_settings_dropmenu");
-	if(!settingsmenu) return;
-	if(localStorage.getItem("darkchat") === "true") {
-		$$('#chat_column').each(function(element) {
-			element.style.background = '#333';
-		});
-		$$('#chat_lines').each(function(element) {
-			element.style.background = '#333';
-			element.style.color = '#FFF';
-			element.style.border = '#fff';
-		});
-		$$('#chat_text_input').each(function(element) {
-			element.style.background = '#000';
-			element.style.color = '#fff';
-			element.style.border = 'solid 1px #333';
-			element.style.boxShadow = 'none';
-		});
+	darkenPage = function() {
 
-		$$('#right_col').each(function(element) {
-			element.style.backgroundColor = '#1E1E1E';
-		});
-		$$('.channel-main').each(function(element) {
-			element.style.backgroundColor = '#000';
-		});
-		$$('#right_col .content .bottom #controls').each(function(element) {
-			element.style.backgroundColor = '#1E1E1E';
-			element.style.borderTop = '1px solid rgba(0, 0, 0, 0.65)';
-			
-		});
-		$$('#player_col').each(function(element) {
-			element.style.backgroundColor = '#000000';
-		});
-		$$('.scroll-scrollbar .drag-handle').each(function(element) {
-			element.style.backgroundColor = '#ffffff';
-		});
-		$$('#player_col .content #left_close, #player_col .content #right_close').each(function(element) {
-			element.style.backgroundColor = '#CCCCCC';
-			element.style.boxShadow = 'none';
-		});
-		$$('#right_col .content').each(function(element) {
-			element.style.borderLeft = 'none';
-		});
-		$$('.playing a, #team_membership a, .more_videos a').each(function(element) {
-			element.style.color = '#777';
-		});
-		$$('#channel_panels_contain #channel_panels .panel').each(function(element) {
-			element.style.color = '#999';
-		});
-		$$('#right_col .content #chat_line_list, body, #player_col .content #broadcast_meta .info .channel, #channel_panels_contain #channel_panels .panel h3').each(function(element) {
-			element.style.color = '#fff';
-		});
-		$$('.segmented_tabs li a.selected, .segmented_tabs li a:active, .segmented_tabs li:last-child a').each(function(element) {
-			element.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
-			element.style.boxShadow = 'none';
-			element.style.boxShadow = '0 1px 0 rgba(0, 0, 0, 0.65),inset 0 1px rgba(0, 0, 0, 0.05) !important';
-		});
-		document.body.style.background = "#000";
-		$$('.noise').each(function(element) {
-			element.style.backgroundImage = "none";
-		});
+		var chat = document.getElementById("chat_lines");
+
+		if(!chat) return;
+
+		if(localStorage.getItem("darkchat") === "true") {
+			$$('#chat_column').each(function(element) {
+				element.style.background = '#333';
+			});
+			$$('#chat_lines').each(function(element) {
+				element.style.background = '#333';
+				element.style.color = '#FFF';
+				element.style.border = '#fff';
+			});
+			$$('#chat_text_input').each(function(element) {
+				element.style.background = '#000';
+				element.style.color = '#fff';
+				element.style.border = 'solid 1px #333';
+				element.style.boxShadow = 'none';
+			});
+			$$('#right_col .content #twitch_chat .scroll').each(function(element) {
+				element.style.background = '#333';
+			});
+			$$('#right_col').each(function(element) {
+				element.style.backgroundColor = '#1E1E1E';
+			});
+			$$('.channel-main').each(function(element) {
+				element.style.backgroundColor = '#000';
+			});
+			$$('#right_col .content .bottom #controls').each(function(element) {
+				element.style.backgroundColor = '#1E1E1E';
+				element.style.borderTop = '1px solid rgba(0, 0, 0, 0.65)';
+				
+			});
+			$$('#player_col').each(function(element) {
+				element.style.backgroundColor = '#000000';
+			});
+			$$('.scroll-scrollbar .drag-handle').each(function(element) {
+				element.style.backgroundColor = '#ffffff';
+			});
+			$$('#player_col .content #left_close, #player_col .content #right_close').each(function(element) {
+				element.style.backgroundColor = '#CCCCCC';
+				element.style.boxShadow = 'none';
+			});
+			$$('#right_col .content').each(function(element) {
+				element.style.borderLeft = 'none';
+			});
+			$$('.playing a, #team_membership a, .more_videos a').each(function(element) {
+				element.style.color = '#777';
+			});
+			$$('#channel_panels_contain #channel_panels .panel').each(function(element) {
+				element.style.color = '#999';
+			});
+			$$('#right_col .content #chat_line_list, body, #player_col .content #broadcast_meta .info .channel, #channel_panels_contain #channel_panels .panel h3').each(function(element) {
+				element.style.color = '#fff';
+			});
+			$$('.segmented_tabs li a.selected, .segmented_tabs li a:active, .segmented_tabs li:last-child a').each(function(element) {
+				element.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
+				element.style.boxShadow = 'none';
+				element.style.boxShadow = '0 1px 0 rgba(0, 0, 0, 0.65),inset 0 1px rgba(0, 0, 0, 0.05) !important';
+			});
+			document.body.style.background = "#000";
+			$$('.noise').each(function(element) {
+				element.style.backgroundImage = "none";
+			});
+
+			var darkCSS = document.createElement("style");
+			darkCSS.setAttribute("type","text/css");
+			darkCSS.innerHTML = '#chat_line_list a{color: #777} #right_col .content #archives .video a .title {color: #777;} #chat_line_list li a.timeout { padding-left: 18px; min-height: 18px; background: url("http://betterttv.nightdev.com/timeout.png") no-repeat !important;} #chat_line_list li a.ban { padding-left: 18px; min-height: 18px; background: url("http://betterttv.nightdev.com/ban.png") no-repeat !important; } #chat_line_list li a.unban { padding-left: 18px; min-height: 18px; background: url("http://betterttv.nightdev.com/unban.png") no-repeat !important; } #chat_line_list li .mod_button img {display:none;}';
+			$j('body').append(darkCSS);
+		}
+
 	}
-	$$('.dropmenu_action').each(function(element) {
+
+	createSettingsMenu = function() {
+
+		betterttvDebug.log("Creating BetterTTV Settings Menu");
+
+		var settingsMenu = document.getElementById("chat_settings_dropmenu");
+		if(!settingsMenu) return;
+
+		bttvSettings = document.createElement("div");
+		bttvSettings.setAttribute("align","left");
+		bttvSettings.setAttribute("id","bttvsettings");
+		bttvSettings.style.margin = "0px auto";
+
+		if(localStorage.getItem("narrowchat") == "yes") { narrowChat = "false"; } else { narrowChat = "true"; }
+		if(localStorage.getItem("blockads") == "true") { blockAds = "false"; } else { blockAds = "true"; }
+		if(localStorage.getItem("defaultemotes") !== "true") { defaultEmotes = "false"; } else { defaultEmotes = "true"; }
+		if(localStorage.getItem("blocksub") == "true") { blockSubscriber = "false"; } else { blockSubscriber = "true"; }
+		if(localStorage.getItem("related") !== "true") { blockRelated = "false"; } else { blockRelated = "true"; }
+		if(localStorage.getItem("hidemeebo") !== "true") { hideMeebo = "false"; } else { hideMeebo = "true"; }
+		if(localStorage.getItem("darkchat") == "true") { darken = "Undarken Chat"; } else { darken = "Darken Chat"; }
+		
+		bttvSettings.innerHTML = '<ul class="dropmenu_col inline_all"> \
+							<li id="chat_section_chatroom" class="dropmenu_section"> \
+							<br /> \
+							&nbsp;&nbsp;&nbsp;&raquo;&nbsp;BetterTTV \
+							<a class="dropmenu_action g18_gear-FFFFFF80" href="#" id="darkchatlink" onclick="betterttvAction(\'toggledark\'); return false;">' + darken + '</a> \
+							<a class="dropmenu_action g18_trash-FFFFFF80" href="#" onclick="betterttvAction(\'clear\'); return false;">Clear My Chat</a> \
+							<p onclick="betterttvAction(\'defaultemotes\');document.getElementById(\'defaultemotes\').checked=' + defaultEmotes + ';" class="dropmenu_action"> \
+							<input type="checkbox" id="defaultemotes" class="left"> Default Emoticons</p> \
+							<p onclick="betterttvAction(\'narrowchat\');document.getElementById(\'narrowchat\').checked=' + narrowChat + ';" class="dropmenu_action"> \
+							<input type="checkbox" id="narrowchat" class="left"> Narrow Chat</p> \
+							<p onclick="betterttvAction(\'blockads\');document.getElementById(\'blockads\').checked=' + blockAds + ';" class="dropmenu_action"> \
+							<input type="checkbox" id="blockads" class="left"> Block Video Ads</p> \
+							<p onclick="betterttvAction(\'blocksub\');document.getElementById(\'blocksub\').checked=' + blockSubscriber + ';" class="dropmenu_action"> \
+							<input type="checkbox" id="blocksub" class="left"> Hide Subscribe Button</p> \
+							<p onclick="betterttvAction(\'togglemeebo\');document.getElementById(\'hidemeebo\').checked=' + hideMeebo + ';" class="dropmenu_action"> \
+							<input type="checkbox" id="hidemeebo" class="left"> Hide Meebo</p> \
+							<p onclick="betterttvAction(\'related\');document.getElementById(\'related\').checked=' + blockRelated + ';" class="dropmenu_action"> \
+							<input type="checkbox" id="related" class="left"> Show Related Channels</p> \
+							</li> \
+							</ul> \
+							<center> \
+							<form action="https://www.paypal.com/cgi-bin/webscr" method="post"> \
+							<input type="hidden" name="cmd" value="_s-xclick"> \
+							<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----"> \
+							<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"> \
+							<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"> \
+							</form> \
+							</center>';
+
+		settingsMenu.appendChild(bttvSettings);
+
+		$$('.dropmenu_action').each(function(element) {
 			element.style.color = "#ffffff";
 		});
-	bttvdiv = document.createElement("div");
-	bttvdiv.setAttribute("align","left");
-	bttvdiv.setAttribute("id","bttvsettingsmenu");
-	bttvdiv.style.margin = "0px auto";
-	if(localStorage.getItem("narrowchat") == "yes") { checktf = "false"; } else { checktf = "true"; }
-	if(localStorage.getItem("blockads") == "true") { checktfad = "false"; } else { checktfad = "true"; }
-	if(localStorage.getItem("defaultemotes") !== "true") { checktfemo = "false"; } else { checktfemo = "true"; }
-	if(localStorage.getItem("blocksub") == "true") { checktfsub = "false"; } else { checktfsub = "true"; }
-	if(localStorage.getItem("related") !== "true") { checktfrel = "false"; } else { checktfrel = "true"; }
-	if(localStorage.getItem("hidemeebo") !== "true") { checktfmeb = "false"; } else { checktfmeb = "true"; }
-	if(localStorage.getItem("darkchat") == "true") { checktfdc = "Undarken Chat"; } else { checktfdc = "Darken Chat"; }
-	if(localStorage.getItem("darkchat") === "true") {
-		var bttvdark = '#chat_line_list a{color: #777} #right_col .content #archives .video a .title {color: #777;} #chat_line_list li a.timeout { padding-left: 18px; min-height: 18px; background: url("http://betterttv.nightdev.com/timeout.png") no-repeat !important;} #chat_line_list li a.ban { padding-left: 18px; min-height: 18px; background: url("http://betterttv.nightdev.com/ban.png") no-repeat !important; } #chat_line_list li a.unban { padding-left: 18px; min-height: 18px; background: url("http://betterttv.nightdev.com/unban.png") no-repeat !important; } #chat_line_list li .mod_button img {display:none;}';
-	} else {
-		var bttvdark = '';
-	}
-	bttvdiv.innerHTML = '<style type="text/css">'+bttvdark+'.dropmenu_action{color:#FFFFFF !important;}</style><ul class="dropmenu_col inline_all"> \
-<li id="chat_section_chatroom" class="dropmenu_section"> \
-<br /> \
-&nbsp;&nbsp;&nbsp;&raquo;&nbsp;BetterTTV \
-<a class="dropmenu_action g18_gear-FFFFFF80" href="#" id="darkchatlink" onclick="bttv_action(\'toggledark\'); return false;">' + checktfdc + '</a> \
-<a class="dropmenu_action g18_trash-FFFFFF80" href="#" onclick="bttv_action(\'clear\'); return false;">Clear My Chat</a> \
-<p onclick="bttv_action(\'defaultemotes\');document.getElementById(\'defaultemotes\').checked=' + checktfemo + ';" class="dropmenu_action"> \
-<input type="checkbox" id="defaultemotes" class="left"> Default Emoticons</p> \
-<p onclick="bttv_action(\'narrowchat\');document.getElementById(\'narrowchat\').checked=' + checktf + ';" class="dropmenu_action"> \
-<input type="checkbox" id="narrowchat" class="left"> Narrow Chat</p> \
-<p onclick="bttv_action(\'blockads\');document.getElementById(\'blockads\').checked=' + checktfad + ';" class="dropmenu_action"> \
-<input type="checkbox" id="blockads" class="left"> Block Video Ads</p> \
-<p onclick="bttv_action(\'blocksub\');document.getElementById(\'blocksub\').checked=' + checktfsub + ';" class="dropmenu_action"> \
-<input type="checkbox" id="blocksub" class="left"> Hide Subscribe Button</p> \
-<p onclick="bttv_action(\'togglemeebo\');document.getElementById(\'hidemeebo\').checked=' + checktfmeb + ';" class="dropmenu_action"> \
-<input type="checkbox" id="hidemeebo" class="left"> Hide Meebo</p> \
-<p onclick="bttv_action(\'related\');document.getElementById(\'related\').checked=' + checktfrel + ';" class="dropmenu_action"> \
-<input type="checkbox" id="related" class="left"> Show Related Channels</p> \
-</li> \
-</ul> \
-<center> \
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post"> \
-<input type="hidden" name="cmd" value="_s-xclick"> \
-<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----MIIHNwYJKoZIhvcNAQcEoIIHKDCCByQCAQExggEwMIIBLAIBADCBlDCBjjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAkNBMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MRQwEgYDVQQKEwtQYXlQYWwgSW5jLjETMBEGA1UECxQKbGl2ZV9jZXJ0czERMA8GA1UEAxQIbGl2ZV9hcGkxHDAaBgkqhkiG9w0BCQEWDXJlQHBheXBhbC5jb20CAQAwDQYJKoZIhvcNAQEBBQAEgYCImffrDmLGQA/JLm8Fp+ieprObxOzgzzjPzWu+XMBEVEc5Vd7Wx4IAmJoGxkVZu+D/4w0Wcf+TTsBXjMl53HMNPl0xCLY5LCYDlSPgQ3YR0dfDh/jblITPbX1E6rrnk06LumrCDmvXDtUcT2ZFSaN4mUbvsKzzWRYd9mf568IJWDELMAkGBSsOAwIaBQAwgbQGCSqGSIb3DQEHATAUBggqhkiG9w0DBwQIr8EzzyMHlJ+AgZAhxRwAktwtrb/HGsbD8puZSmbc5RAJHLS63UB8BBncKvfLiNjZVGn987WXVA5v3Fn+bJXPE7Y8QF64s/oZeQYsRFer5/VjQZXanBPRWZa75kaAtwq0xv3nQSJuZTkp8L/nJKiC0HQThvSmwgClOIFRaRlfwmyi3Eol4tJnZJ5CfAjWGydcjPMWRLt8ggvvrJCgggOHMIIDgzCCAuygAwIBAgIBADANBgkqhkiG9w0BAQUFADCBjjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAkNBMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MRQwEgYDVQQKEwtQYXlQYWwgSW5jLjETMBEGA1UECxQKbGl2ZV9jZXJ0czERMA8GA1UEAxQIbGl2ZV9hcGkxHDAaBgkqhkiG9w0BCQEWDXJlQHBheXBhbC5jb20wHhcNMDQwMjEzMTAxMzE1WhcNMzUwMjEzMTAxMzE1WjCBjjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAkNBMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MRQwEgYDVQQKEwtQYXlQYWwgSW5jLjETMBEGA1UECxQKbGl2ZV9jZXJ0czERMA8GA1UEAxQIbGl2ZV9hcGkxHDAaBgkqhkiG9w0BCQEWDXJlQHBheXBhbC5jb20wgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAMFHTt38RMxLXJyO2SmS+Ndl72T7oKJ4u4uw+6awntALWh03PewmIJuzbALScsTS4sZoS1fKciBGoh11gIfHzylvkdNe/hJl66/RGqrj5rFb08sAABNTzDTiqqNpJeBsYs/c2aiGozptX2RlnBktH+SUNpAajW724Nv2Wvhif6sFAgMBAAGjge4wgeswHQYDVR0OBBYEFJaffLvGbxe9WT9S1wob7BDWZJRrMIG7BgNVHSMEgbMwgbCAFJaffLvGbxe9WT9S1wob7BDWZJRroYGUpIGRMIGOMQswCQYDVQQGEwJVUzELMAkGA1UECBMCQ0ExFjAUBgNVBAcTDU1vdW50YWluIFZpZXcxFDASBgNVBAoTC1BheVBhbCBJbmMuMRMwEQYDVQQLFApsaXZlX2NlcnRzMREwDwYDVQQDFAhsaXZlX2FwaTEcMBoGCSqGSIb3DQEJARYNcmVAcGF5cGFsLmNvbYIBADAMBgNVHRMEBTADAQH/MA0GCSqGSIb3DQEBBQUAA4GBAIFfOlaagFrl71+jq6OKidbWFSE+Q4FqROvdgIONth+8kSK//Y/4ihuE4Ymvzn5ceE3S/iBSQQMjyvb+s2TWbQYDwcp129OPIbD9epdr4tJOUNiSojw7BHwYRiPh58S1xGlFgHFXwrEBb3dgNbMUa+u4qectsMAXpVHnD9wIyfmHMYIBmjCCAZYCAQEwgZQwgY4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJDQTEWMBQGA1UEBxMNTW91bnRhaW4gVmlldzEUMBIGA1UEChMLUGF5UGFsIEluYy4xEzARBgNVBAsUCmxpdmVfY2VydHMxETAPBgNVBAMUCGxpdmVfYXBpMRwwGgYJKoZIhvcNAQkBFg1yZUBwYXlwYWwuY29tAgEAMAkGBSsOAwIaBQCgXTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0xMjA2MDcwNzM1NDZaMCMGCSqGSIb3DQEJBDEWBBT+oQALaaHIAqab5WiPV/UeC9ALdDANBgkqhkiG9w0BAQEFAASBgLcKEVQY6/G1/6b4/jBpflrNlOdoFuDVCE1UBark+6uDKs6upFr51bC/PVIqaCcZRQVa0VpEYnDZY5HBnqOu81aQeyGIWWmlVsvU/tMuS5ONRPFhcLtRVE4s+ql58UHSKtgeJWV7n9xi5qDbr5n8mwCOgCALTP2T98jNUGhvFrmX-----END PKCS7-----"> \
-<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"> \
-<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"> \
-</form> \
-</center>';
-	settingsmenu.appendChild(bttvdiv);
-	if(localStorage.getItem("narrowchat") == "yes") document.getElementById("narrowchat").checked = true;
-	if(localStorage.getItem("blockads") == "true") document.getElementById("blockads").checked = true;
-	if(localStorage.getItem("defaultemotes") == "true") document.getElementById("defaultemotes").checked = true;
-	if(localStorage.getItem("blocksub") == "true") document.getElementById("blocksub").checked = true;
-	if(localStorage.getItem("related") == "true") document.getElementById("related").checked = true;
-	if(localStorage.getItem("hidemeebo") == "true") document.getElementById("hidemeebo").checked = true;
-}
 
-function init()
-{
-	try { if(BTTVLOADED==true) return; }
-	catch(err) { betterttvDebug.log("BTTV LOADED"); BTTVLOADED=true; }
+		if(localStorage.getItem("narrowchat") == "yes") document.getElementById("narrowchat").checked = true;
+		if(localStorage.getItem("blockads") == "true") document.getElementById("blockads").checked = true;
+		if(localStorage.getItem("defaultemotes") == "true") document.getElementById("defaultemotes").checked = true;
+		if(localStorage.getItem("blocksub") == "true") document.getElementById("blocksub").checked = true;
+		if(localStorage.getItem("related") == "true") document.getElementById("related").checked = true;
+		if(localStorage.getItem("hidemeebo") == "true") document.getElementById("hidemeebo").checked = true;
+	}
+
+	betterttvAction = function(action) {
+		if(action == "clear") {
+			$('chat_line_list').innerHTML = "";
+			CurrentChat.admin_message("You cleared your own chat (BetterTTV)");
+		}
+		if(action == "narrowchat") {
+			if(localStorage.getItem("narrowchat") == "yes") {
+				localStorage.setItem("narrowchat", "no");
+			} else {
+				localStorage.setItem("narrowchat", "yes");
+			}
+			window.location.reload();
+		}
+		if(action == "defaultemotes") {
+			if(localStorage.getItem("defaultemotes") == "true") {
+				localStorage.setItem("defaultemotes", "false");
+			} else {
+				localStorage.setItem("defaultemotes", "true");
+			}
+			window.location.reload();
+		}
+		if(action == "blockads") {
+			if(localStorage.getItem("blockads") == "true") {
+				localStorage.setItem("blockads", "false");
+			} else {
+				localStorage.setItem("blockads", "true");
+			}
+			window.location.reload();
+		}
+		if(action == "togglemeebo") {
+			if(localStorage.getItem("hidemeebo") == "true") {
+				localStorage.setItem("hidemeebo", "false");
+			} else {
+				localStorage.setItem("hidemeebo", "true");
+			}
+			window.location.reload();
+		}
+		if(action == "toggledark") {
+			if(localStorage.getItem("darkchat") == "true") {
+				localStorage.setItem("darkchat", "false");
+				window.location.reload();
+			} else {
+				localStorage.setItem("darkchat", "true");
+				darkenPage();
+				document.getElementById("darkchatlink").innerHTML="Undarken Chat";
+			}
+		}
+		if(action == "blocksub") {
+			var getsub = document.getElementById("sub-details");
+			if(localStorage.getItem("blocksub") == "true") {
+				localStorage.setItem("blocksub", "false");
+				if(getsub) { getsub.style.display='inline'; }
+			} else {
+				localStorage.setItem("blocksub", "true");
+				if(getsub) { getsub.style.display='none'; }
+			}
+		}
+		if(action == "related") {
+			if(localStorage.getItem("related") == "true") {
+				localStorage.setItem("related", "false");
+			} else {
+				localStorage.setItem("related", "true");
+			}
+			window.location.reload();
+		}
+	}
+
+	try {
+		if(BTTVLOADED==true) return;
+	} catch(err) {
+		betterttvDebug.log("BTTV LOADED");
+		BTTVLOADED=true;
+	}
+
 	if(document.URL.indexOf("meebo.html") != -1)
 	{
 		return;
@@ -949,6 +1033,7 @@ function init()
 	{
 		return;
 	}
+
 	betterttvDebug.log("BTTV v"+betterttvVersion);
 	betterttvDebug.log("CALL init "+document.URL);
 	brand();
@@ -957,146 +1042,13 @@ function init()
 	blockVideoAds();
 	chatReformat();
 	newChannelReformat();
-	setTimeout(delayed, 1000);
-	setTimeout(meeboReformat, 5000);
-}
-
-function delayed()
-{
-	betterttvDebug.log("CALL delayed");
-	setTimeout(clearAds, 5000);
 	clearAds();
-	chatFunctions();
-	bttvbox();
-	overrideEmotes();
-}
-
-init();
+	darkenPage();
+	setTimeout(clearAds, 1000);
+	setTimeout(clearAds, 5000);
+	setTimeout(chatFunctions, 1000);
+	setTimeout(createSettingsMenu, 1000);
+	setTimeout(overrideEmotes, 1000);
+	setTimeout(meeboReformat, 5000);
 
 }();
-
-function bttv_action(action) {
-  if(action == "clear") {
-	$('chat_line_list').innerHTML = "";
-	CurrentChat.admin_message("You cleared your own chat (BetterTTV)");
-  }
-  if(action == "narrowchat") {
-	if(localStorage.getItem("narrowchat") == "yes") {
-		localStorage.setItem("narrowchat", "no");
-	} else {
-		localStorage.setItem("narrowchat", "yes");
-	}
-	window.location.reload();
-  }
-  if(action == "defaultemotes") {
-	if(localStorage.getItem("defaultemotes") == "true") {
-		localStorage.setItem("defaultemotes", "false");
-	} else {
-		localStorage.setItem("defaultemotes", "true");
-	}
-	window.location.reload();
-  }
-  if(action == "blockads") {
-	if(localStorage.getItem("blockads") == "true") {
-		localStorage.setItem("blockads", "false");
-	} else {
-		localStorage.setItem("blockads", "true");
-	}
-	window.location.reload();
-  }
-  if(action == "togglemeebo") {
-	if(localStorage.getItem("hidemeebo") == "true") {
-		localStorage.setItem("hidemeebo", "false");
-	} else {
-		localStorage.setItem("hidemeebo", "true");
-	}
-	window.location.reload();
-  }
-  if(action == "toggledark") {
-	if(localStorage.getItem("darkchat") == "true") {
-		localStorage.setItem("darkchat", "false");
-		window.location.reload();
-	} else {
-		localStorage.setItem("darkchat", "true");
-		$$('#chat_column').each(function(element) {
-			element.style.background = '#333';
-		});
-		$$('#chat_lines').each(function(element) {
-			element.style.background = '#333';
-			element.style.color = '#FFF';
-			element.style.border = '#fff';
-		});
-		$$('#chat_text_input').each(function(element) {
-			element.style.background = '#000';
-			element.style.color = '#fff';
-			element.style.border = 'solid 1px #333';
-			element.style.boxShadow = 'none';
-		});
-		$$('#right_col').each(function(element) {
-			element.style.backgroundColor = '#1E1E1E';
-		});
-		$$('.channel-main').each(function(element) {
-			element.style.backgroundColor = '#000';
-		});
-		$$('#right_col .content .bottom #controls').each(function(element) {
-			element.style.backgroundColor = '#1E1E1E';
-			element.style.borderTop = '1px solid rgba(0, 0, 0, 0.65)';
-			
-		});
-		$$('#player_col').each(function(element) {
-			element.style.backgroundColor = '#000000';
-		});
-		$$('.scroll-scrollbar .drag-handle').each(function(element) {
-			element.style.backgroundColor = '#ffffff';
-		});
-		$$('#player_col .content #left_close, #player_col .content #right_close').each(function(element) {
-			element.style.backgroundColor = '#CCCCCC';
-			element.style.boxShadow = 'none';
-		});
-		$$('#right_col .content').each(function(element) {
-			element.style.borderLeft = 'none';
-		});
-		$$('.playing a, #team_membership a, .more_videos a').each(function(element) {
-			element.style.color = '#777';
-		});
-		$$('#channel_panels_contain #channel_panels .panel').each(function(element) {
-			element.style.color = '#999';
-		});
-		$$('#right_col .content #chat_line_list, body, #player_col .content #broadcast_meta .info .channel, #channel_panels_contain #channel_panels .panel h3').each(function(element) {
-			element.style.color = '#fff';
-		});
-		$$('.segmented_tabs li a.selected, .segmented_tabs li a:active, .segmented_tabs li:last-child a').each(function(element) {
-			element.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
-			element.style.boxShadow = 'none';
-			element.style.boxShadow = '0 1px 0 rgba(0, 0, 0, 0.65),inset 0 1px rgba(0, 0, 0, 0.05) !important';
-		});
-		document.body.style.background = "#000"; //old
-		bttvdiv = document.createElement("div");
-		bttvdiv.innerHTML = '<style type="text/css">#chat_line_list a{color: #777} #right_col .content #archives .video a .title {color: #777;} #chat_line_list li a.timeout { padding-left: 18px; min-height: 18px; background: url("http://betterttv.nightdev.com/timeout.png") no-repeat !important;} #chat_line_list li a.ban { padding-left: 18px; min-height: 18px; background: url("http://betterttv.nightdev.com/ban.png") no-repeat !important; } #chat_line_list li a.unban { padding-left: 18px; min-height: 18px; background: url("http://betterttv.nightdev.com/unban.png") no-repeat !important; } #chat_line_list li .mod_button img {display:none;}</style>';
-		document.getElementById("chat_settings_dropmenu").appendChild(bttvdiv);
-		$$('.noise').each(function(element) {
-			element.style.backgroundImage = "none";
-		});
-		document.getElementById("darkchatlink").innerHTML="Undarken Chat";
-
-	}
-  }
-  if(action == "blocksub") {
-	var getsub = document.getElementById("sub-details");
-	if(localStorage.getItem("blocksub") == "true") {
-		localStorage.setItem("blocksub", "false");
-		if(getsub) { getsub.style.display='inline'; }
-	} else {
-		localStorage.setItem("blocksub", "true");
-		if(getsub) { getsub.style.display='none'; }
-	}
-  }
-  if(action == "related") {
-	if(localStorage.getItem("related") == "true") {
-		localStorage.setItem("related", "false");
-	} else {
-		localStorage.setItem("related", "true");
-	}
-	window.location.reload();
-  }
-}
