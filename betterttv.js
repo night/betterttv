@@ -84,9 +84,10 @@ BetterTTVEngine = function() {
 		betterttvDebug.log("Reformatting Channel");
 
 		var player = document.getElementById("player_column"),
-			teamPage = document.getElementById("team_member_list");
+			teamPage = document.getElementById("team_member_list"),
+			dashboard = document.getElementById("dashboard_title");
 
-		if(!player || teamPage) return;
+		if(!player || teamPage || dashboard) return;
 
 		$j(".main").css({
 			background: "none",
@@ -181,6 +182,8 @@ BetterTTVEngine = function() {
 	chatReformat = function() {
 
 		betterttvDebug.log("Reformatting Chat");
+
+		if(document.getElementById("new_channel")) return;
 
 		var chat = document.getElementById("chat_lines"),
 			channelHeader = document.getElementById("header_banner");
@@ -811,9 +814,10 @@ BetterTTVEngine = function() {
 
 	darkenPage = function() {
 
-		var chat = document.getElementById("chat_lines");
+		var chat = document.getElementById("chat_lines"),
+			dashboard = document.getElementById("dashboard_title");
 
-		if(!chat) return;
+		if(!chat || dashboard) return;
 
 		if(localStorage.getItem("darkchat") === "true") {
 			$$('#chat_column').each(function(element) {
