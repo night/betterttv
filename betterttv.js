@@ -183,13 +183,14 @@ BetterTTVEngine = function() {
 
 		betterttvDebug.log("Reformatting Chat");
 
-		if(document.getElementById("new_channel")) return;
+		
 
 		var chat = document.getElementById("chat_lines"),
 			channelHeader = document.getElementById("header_banner");
 
 		if(!chat) return;
 
+		
 		if(channelHeader) {
 			channelHeader = 125;
 		} else {
@@ -201,21 +202,33 @@ BetterTTVEngine = function() {
 			lineHeight: "17.333333px",
 			width: "100%"
 		});
-		$j("#chat_lines").css({
-			fontFamily: "Helvetica, Arial, sans-serif",
-			height: channelHeader+450 + "px",
-			maxHeight: channelHeader+450 + "px",
-			overflowX: "hidden",
-			overflowY: "auto",
-			width: "100%"
-		});
-
-		if(localStorage.getItem("narrowchat") !== "yes") {
-			$j(".chat_box").css("width","97%");
+		
+		if(!document.getElementById("new_channel")) {
+			$j("#chat_lines").css({
+				fontFamily: "Helvetica, Arial, sans-serif",
+				height: channelHeader+450 + "px",
+				maxHeight: channelHeader+450 + "px",
+				overflowX: "hidden",
+				overflowY: "auto",
+				width: "100%"
+			});
 		} else {
-			$j(".chat_box").css("width","95%");
+			$j("#chat_lines").css({
+				fontFamily: "Helvetica, Arial, sans-serif",
+				overflowX: "hidden",
+				overflowY: "auto",
+				width: "100%"
+			});
 		}
 
+		if(!document.getElementById("new_channel")) {
+			if(localStorage.getItem("narrowchat") !== "yes") {
+				$j(".chat_box").css("width","97%");
+			} else {
+				$j(".chat_box").css("width","95%");
+			}
+		}
+		
 		$j('#chat_loading_spinner').attr('src',"data:image/gif;base64,R0lGODlhFgAWAPMGANfX1wAAADc3N1tbW6Ojo39/f2tra8fHx9nZ2RsbG+np6SwsLEtLS4eHh7q6ugAAACH/C05FVFNDQVBFMi4wAwEAAAAh/hoiQ3JlYXRlZCB3aXRoIENoaW1wbHkuY29tIgAh+QQJCgAGACwAAAAAFgAWAAAEbNCESY29OEvBRdDgFXReGI7dZ2oop65YWypIjSgGbSOW/CGAIICnEAIOPdLPSDQiNykDUNgUPn1SZs6ZjE6D1eBVmaVurV1XGXwWp0vfYfv4XpqLaKg6HqbrZzs4OjZ1MBlYhiJkiYWMfy+GEQAh+QQJCgAGACwAAAAAFgAWAAAEctDIKYO9NKe9lwlCKAQZlQzo4IEiWUpnuorjC6fqR7tvjM4tgwJBJN5kuqACwGQef8kQadkEPHMsqbBqNfiwu231CtRSm+Ro7ez04sprbjobH7uR9Kn8Ds2L0XxgSkVGgXA8JV+HNoZqiBocCYuMJX4vEQAh+QQJCgAAACwAAAAAFgAWAAAEcxDISWu4uNLEOwhCKASSGA5AMqxD8pkkIBR0gaqsC4rxXN+s1otXqtlSQR2s+EPmhqGeEfjcRZk06kpJlE2dW+gIe8SFrWNv0yxES9dJ8TsLbi/VdDb3ii/H3WRadl0+eX93hX5ViCaCe2kaKR0ccpGWlREAIfkECQoAAQAsAAAAABYAFgAABHUwyEmrvTisxHlmQigw2mAOiWSsaxMwRVyQy4mqRE64sEzbqYBBt3vJZqVTcKjjHX9KXNPoS5qWRGe1FhVmqTHoVZrThq0377R35o7VZTDSnWbG2XMguYgX1799aFhrT4J7ZnldLC1yfkEXICKOGRcbHY+UlBEAIfkECQoAAQAsAAAAABYAFgAABHIwyEmrvThrOoQXTFYYpFEEQ6EWgkS8rxMUMHGmaxsQR3/INNhtxXL5frPaMGf0AZUooo7nTAqjzN3xecWpplvra/lt9rhjbFlbDaa9RfZZbFPHqXN3HQ5uQ/lmSHpkdzVoe1IiJSZ2OhsTHR8hj5SVFREAIfkECQoAAQAsAAAAABYAFgAABGowyEmrvTjrzWczIJg5REk4QWMShoQAMKAExGEfRLq2QQzPtVtOZeL5ZLQbTleUHIHK4c7pgwqZJWM1eSVmqTGrTdrsbYNjLAv846a9a3PYvYRr5+j6NPDCR9U8FyQmKHYdHiEih4uMjRQRACH5BAkKAAEALAAAAAAWABYAAARkMMhJq7046807d0QYSkhZKoFiIqhzvAchATSNIjWABC4sBznALbfrvX7BYa0Ii81yShrT96xFdbwmEhrALbNUINcrBR+rti7R7BRb1V9jOwkvy38rVmrV0nokICI/f4SFhocSEQAh+QQJCgABACwAAAAAFgAWAAAEWjDISau9OOvNu7dIGCqBIiKkeUoH4AIk8gJIOR/sHM+1cuev3av3C7SCAdnQ9sIZdUke0+U8uoQuYhN4jS592ydSmZ0CqlAyzYweS8FUyQlVOqXmn7x+z+9bIgA7");
 	
 		var chatCSS = document.createElement("style");
