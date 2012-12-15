@@ -717,7 +717,7 @@ BetterTTVEngine = function() {
 			msg = replaceAll(msg, "<wbr />", "");
 			msg = this.emoticonizeOld(msg);
 			var regex = new RegExp(PP['login'], 'i');
-			if(regex.test(msg)) {
+			if(regex.test(msg) && PP['login'] !== "") {
 				msg = "<span style='color:red;font-weight:bold;word-wrap: break-word;'>"+msg+"</span>";
 			} else {
 				msg = "<span style=\"word-wrap: break-word;\">"+msg+"</span>";
