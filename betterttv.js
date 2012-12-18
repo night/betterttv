@@ -199,13 +199,9 @@ BetterTTVEngine = function() {
 			channelHeader = 0;
 		}
 
-		$j("#chat_line_list").css({
-			fontSize: "13.33333px",
-			lineHeight: "17.333333px",
-			width: "100%"
-		});
+		
 
-		if(PP['page_type'] == "channel") {
+		if(PP['page_type'] == "channel" && !document.getElementById("new_channel")) {
 			$j("#chat_lines").css({
 				fontFamily: "Helvetica, Arial, sans-serif",
 				height: channelHeader+450 + "px",
@@ -222,6 +218,22 @@ BetterTTVEngine = function() {
 			});
 		}
 		
+		if (document.getElementById("new_channel")) {
+			$j("#chat_lines").css({
+				paddingRight: "5px"
+			});
+			$j("#chat_line_list").css({
+				fontSize: "13.33333px",
+				lineHeight: "17.333333px"
+			});
+		} else {
+			$j("#chat_line_list").css({
+				fontSize: "13.33333px",
+				lineHeight: "17.333333px",
+				width: "100%"
+			});
+		}
+
 		$j('#chat_loading_spinner').attr('src',"data:image/gif;base64,R0lGODlhFgAWAPMGANfX1wAAADc3N1tbW6Ojo39/f2tra8fHx9nZ2RsbG+np6SwsLEtLS4eHh7q6ugAAACH/C05FVFNDQVBFMi4wAwEAAAAh/hoiQ3JlYXRlZCB3aXRoIENoaW1wbHkuY29tIgAh+QQJCgAGACwAAAAAFgAWAAAEbNCESY29OEvBRdDgFXReGI7dZ2oop65YWypIjSgGbSOW/CGAIICnEAIOPdLPSDQiNykDUNgUPn1SZs6ZjE6D1eBVmaVurV1XGXwWp0vfYfv4XpqLaKg6HqbrZzs4OjZ1MBlYhiJkiYWMfy+GEQAh+QQJCgAGACwAAAAAFgAWAAAEctDIKYO9NKe9lwlCKAQZlQzo4IEiWUpnuorjC6fqR7tvjM4tgwJBJN5kuqACwGQef8kQadkEPHMsqbBqNfiwu231CtRSm+Ro7ez04sprbjobH7uR9Kn8Ds2L0XxgSkVGgXA8JV+HNoZqiBocCYuMJX4vEQAh+QQJCgAAACwAAAAAFgAWAAAEcxDISWu4uNLEOwhCKASSGA5AMqxD8pkkIBR0gaqsC4rxXN+s1otXqtlSQR2s+EPmhqGeEfjcRZk06kpJlE2dW+gIe8SFrWNv0yxES9dJ8TsLbi/VdDb3ii/H3WRadl0+eX93hX5ViCaCe2kaKR0ccpGWlREAIfkECQoAAQAsAAAAABYAFgAABHUwyEmrvTisxHlmQigw2mAOiWSsaxMwRVyQy4mqRE64sEzbqYBBt3vJZqVTcKjjHX9KXNPoS5qWRGe1FhVmqTHoVZrThq0377R35o7VZTDSnWbG2XMguYgX1799aFhrT4J7ZnldLC1yfkEXICKOGRcbHY+UlBEAIfkECQoAAQAsAAAAABYAFgAABHIwyEmrvThrOoQXTFYYpFEEQ6EWgkS8rxMUMHGmaxsQR3/INNhtxXL5frPaMGf0AZUooo7nTAqjzN3xecWpplvra/lt9rhjbFlbDaa9RfZZbFPHqXN3HQ5uQ/lmSHpkdzVoe1IiJSZ2OhsTHR8hj5SVFREAIfkECQoAAQAsAAAAABYAFgAABGowyEmrvTjrzWczIJg5REk4QWMShoQAMKAExGEfRLq2QQzPtVtOZeL5ZLQbTleUHIHK4c7pgwqZJWM1eSVmqTGrTdrsbYNjLAv846a9a3PYvYRr5+j6NPDCR9U8FyQmKHYdHiEih4uMjRQRACH5BAkKAAEALAAAAAAWABYAAARkMMhJq7046807d0QYSkhZKoFiIqhzvAchATSNIjWABC4sBznALbfrvX7BYa0Ii81yShrT96xFdbwmEhrALbNUINcrBR+rti7R7BRb1V9jOwkvy38rVmrV0nokICI/f4SFhocSEQAh+QQJCgABACwAAAAAFgAWAAAEWjDISau9OOvNu7dIGCqBIiKkeUoH4AIk8gJIOR/sHM+1cuev3av3C7SCAdnQ9sIZdUke0+U8uoQuYhN4jS592ydSmZ0CqlAyzYweS8FUyQlVOqXmn7x+z+9bIgA7");
 	
 		var chatCSS = document.createElement("style");
@@ -563,13 +575,13 @@ BetterTTVEngine = function() {
 		if(videopage === true) {
 			$j.get('http://query.yahooapis.com/v1/public/yql?q=select%20status%2Cgame%20from%20json%20where%20url%3D\'https%3A%2F%2Fapi.twitch.tv%2Fkraken%2Fchannels%2F'+PP['channel']+'\'&format=json&callback=', function(data) {
 				$j(".real_title").html(data.query.results.json.status);
-				$j(".game").html(data.query.results.json.game);
+				$j(".playing .game").html(data.query.results.json.game);
 			});
 			setTimeout(function(){updateBroadcastInfo(true)}, 300000);
 		} else {
 			$j.get('http://query.yahooapis.com/v1/public/yql?q=select%20status%2Cgame%20from%20json%20where%20url%3D\'https%3A%2F%2Fapi.twitch.tv%2Fkraken%2Fchannels%2F'+PP['channel']+'\'&format=json&callback=', function(data) {
 				$j("#broadcast_title").html(data.query.results.json.status);
-				$j("#metagame").html(data.query.results.json.game);
+				//$j("#metagame").html(data.query.results.json.game);
 			});
 			setTimeout(function(){updateBroadcastInfo(false)}, 300000);
 		}
@@ -800,19 +812,22 @@ BetterTTVEngine = function() {
 
 		if(!document.getElementById("chat_lines")) return;
 
-		if(localStorage.getItem("defaultemotes") == "true") {
-			var defaultEmotes = true;
-		} else {
-			var defaultEmotes = false;
-		}
-
 		CurrentChat.emo_id = 1;
 		CurrentChat.emoticons = [];
-		$j.getJSON("http://betterttv.nightdev.com/faces.php?channel=" + CurrentChat.channel + "&oldemotes=" + defaultEmotes + "&user=" + PP['login'] + "&callback=?", function (a) {
+
+		if(localStorage.getItem("defaultemotes") == "true") {
+			$j.getJSON("http://betterttv.nightdev.com/defaultfaces.php?channel=" + CurrentChat.channel + "&oldemotes=" + defaultEmotes + "&user=" + PP['login'] + "&callback=?", function (a) {
 				CurrentChat.emoticons = CurrentChat.emoticons.concat(a);
 				for (var c, g = "", h = a.length - 1; 0 <= h; --h) c = a[h], c.image_name = CurrentChat.emo_id++, g += generateEmoticonCSS(c);
 				CurrentChat.add_css_style(g + ".emoticon { display: inline-block; }");
-		});
+			});
+		} else {
+			$j.getJSON("http://betterttv.nightdev.com/faces.php?channel=" + CurrentChat.channel + "&oldemotes=" + defaultEmotes + "&user=" + PP['login'] + "&callback=?", function (a) {
+				CurrentChat.emoticons = CurrentChat.emoticons.concat(a);
+				for (var c, g = "", h = a.length - 1; 0 <= h; --h) c = a[h], c.image_name = CurrentChat.emo_id++, g += generateEmoticonCSS(c);
+				CurrentChat.add_css_style(g + ".emoticon { display: inline-block; }");
+			});
+		}
 
 	}
 
