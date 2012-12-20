@@ -79,6 +79,17 @@ BetterTTVEngine = function() {
 
 	}
 
+	handleRedirect = function() {
+
+		if(PP['page_type'] === "channel" && !document.getElementById("new_channel")) {
+			if(localStorage.getItem("newchannelredirect") === "true") {
+				betterttvDebug.log("Redirecting Channel");
+				window.location = "http://www.twitch.tv/"+PP['channel']+"/new";
+			}
+		}
+		
+	}
+
 	channelReformat = function() {
 
 		betterttvDebug.log("Reformatting Channel");
@@ -575,6 +586,7 @@ BetterTTVEngine = function() {
 		if(videopage === true) {
 			$j.get('http://query.yahooapis.com/v1/public/yql?q=select%20status%2Cgame%20from%20json%20where%20url%3D\'https%3A%2F%2Fapi.twitch.tv%2Fkraken%2Fchannels%2F'+PP['channel']+'\'&format=json&callback=', function(data) {
 				$j(".real_title").html(data.query.results.json.status);
+				$j(".title_over").html("<h2>"+data.query.results.json.status+"</h2>");
 				$j(".playing .game").html(data.query.results.json.game);
 			});
 			setTimeout(function(){updateBroadcastInfo(true)}, 300000);
@@ -892,6 +904,9 @@ BetterTTVEngine = function() {
 			$$('.channel-main').each(function(element) {
 				element.style.backgroundColor = '#000';
 			});
+			$$('.title_over').each(function(element) {
+				element.style.backgroundColor = '#000';
+			});
 			$$('#right_col .content .bottom #controls').each(function(element) {
 				element.style.backgroundColor = '#1E1E1E';
 				element.style.borderTop = '1px solid rgba(0, 0, 0, 0.65)';
@@ -952,6 +967,7 @@ BetterTTVEngine = function() {
 		if(localStorage.getItem("narrowchat") == "yes") { narrowChat = "false"; } else { narrowChat = "true"; }
 		if(localStorage.getItem("blockads") == "true") { blockAds = "false"; } else { blockAds = "true"; }
 		if(localStorage.getItem("defaultemotes") !== "true") { defaultEmotes = "false"; } else { defaultEmotes = "true"; }
+		if(localStorage.getItem("newchannelredirect") !== "true") { redirect = "false"; } else { redirect = "true"; }
 		if(localStorage.getItem("blocksub") == "true") { blockSubscriber = "false"; } else { blockSubscriber = "true"; }
 		if(localStorage.getItem("related") !== "true") { blockRelated = "false"; } else { blockRelated = "true"; }
 		if(localStorage.getItem("hidemeebo") !== "true") { hideMeebo = "false"; } else { hideMeebo = "true"; }
@@ -975,6 +991,8 @@ BetterTTVEngine = function() {
 							<input type="checkbox" id="hidemeebo" class="left"> Hide Meebo</p> \
 							<p onclick="betterttvAction(\'related\');document.getElementById(\'related\').checked=' + blockRelated + ';" class="dropmenu_action"> \
 							<input type="checkbox" id="related" class="left"> Show Related Channels</p> \
+							<p onclick="betterttvAction(\'redirect\');document.getElementById(\'redirect\').checked=' + redirect + ';" class="dropmenu_action"> \
+							<input type="checkbox" id="redirect" class="left"> Redirect to New Layout</p> \
 							</li> \
 							</ul> \
 							<center> \
@@ -995,6 +1013,7 @@ BetterTTVEngine = function() {
 		if(localStorage.getItem("narrowchat") == "yes") document.getElementById("narrowchat").checked = true;
 		if(localStorage.getItem("blockads") == "true") document.getElementById("blockads").checked = true;
 		if(localStorage.getItem("defaultemotes") == "true") document.getElementById("defaultemotes").checked = true;
+		if(localStorage.getItem("newchannelredirect") == "true") document.getElementById("redirect").checked = true;
 		if(localStorage.getItem("blocksub") == "true") document.getElementById("blocksub").checked = true;
 		if(localStorage.getItem("related") == "true") document.getElementById("related").checked = true;
 		if(localStorage.getItem("hidemeebo") == "true") document.getElementById("hidemeebo").checked = true;
@@ -1020,6 +1039,16 @@ BetterTTVEngine = function() {
 				localStorage.setItem("defaultemotes", "true");
 			}
 			window.location.reload();
+		}
+		if(action == "redirect") {
+			if(localStorage.getItem("newchannelredirect") == "true") {
+				document.getElementById("redirect").checked = false;
+				localStorage.setItem("newchannelredirect", "false");
+			} else {
+				document.getElementById("redirect").checked = true;
+				localStorage.setItem("newchannelredirect", "true");
+				handleRedirect();
+			}
 		}
 		if(action == "blockads") {
 			if(localStorage.getItem("blockads") == "true") {
@@ -1089,6 +1118,7 @@ BetterTTVEngine = function() {
 
 	betterttvDebug.log("BTTV v"+betterttvVersion);
 	betterttvDebug.log("CALL init "+document.URL);
+	handleRedirect();
 	brand();
 	directoryReformat();
 	channelReformat();
