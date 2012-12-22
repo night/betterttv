@@ -284,6 +284,7 @@ BetterTTVEngine = function() {
 		if(localStorage.getItem("hidemeebo") !== "true") {
 			$j("#right_col").css("bottom","35px");
 			$j("#left_col").css("bottom","35px");
+			$j("#player_col .content .scroll .scroll-content-contain").css("margin-bottom","35px");
 		}
 
 		/*var channelBackground = $j('#custom_bg').attr('image');
@@ -291,7 +292,7 @@ BetterTTVEngine = function() {
 
 		document.getElementById("right_close").setAttribute('title','Drag to Resize Chat or Click to Open/Close');
 		document.getElementById("left_close").setAttribute('title','Click to Open/Close');
-		$j("#player_col .content .scroll .scroll-content-contain").css("margin-bottom","35px");
+		
 		$j("#small_nav .content ul #small_home a").css("background","url(http://betterttv.nightdev.com/newnavicons.png) no-repeat 0 0");
 		removeElement(".related");
 
