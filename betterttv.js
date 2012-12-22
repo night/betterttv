@@ -79,17 +79,6 @@ BetterTTVEngine = function() {
 
 	}
 
-	handleRedirect = function() {
-
-		if(PP['page_type'] === "channel" && !document.getElementById("new_channel")) {
-			if(localStorage.getItem("newchannelredirect") === "true") {
-				betterttvDebug.log("Redirecting Channel");
-				window.location = "http://www.twitch.tv/"+PP['channel']+"/new";
-			}
-		}
-		
-	}
-
 	channelReformat = function() {
 
 		betterttvDebug.log("Reformatting Channel");
@@ -160,7 +149,7 @@ BetterTTVEngine = function() {
 		}
 
 		if(!document.getElementById("broadcast_meta")) return;
-		if(!document.getElementById("vod_form") && document.getElementById("channel_viewer_count") && PP['page_type'] !== "new_channel") {
+		if(!document.getElementById("vod_form") && document.getElementById("channel_viewer_count") && $j(".betabar").length === 0) {
 			document.getElementById("channel_viewer_count").style.background = "url(http://betterttv.nightdev.com/viewers.png) no-repeat";
 			document.getElementById("channel_viewer_count").style.backgroundPosition = "0px -1px";
 			document.getElementById("views_count").style.background = "url(http://betterttv.nightdev.com/views.png) no-repeat";
@@ -212,7 +201,7 @@ BetterTTVEngine = function() {
 
 		
 
-		if(PP['page_type'] == "channel" && !document.getElementById("new_channel")) {
+		if(PP['page_type'] == "channel" && $j(".betabar").length === 0) {
 			$j("#chat_lines").css({
 				fontFamily: "Helvetica, Arial, sans-serif",
 				height: channelHeader+450 + "px",
@@ -229,7 +218,7 @@ BetterTTVEngine = function() {
 			});
 		}
 		
-		if (document.getElementById("new_channel")) {
+		if ($j(".betabar").length !== 0) {
 			$j("#chat_lines").css({
 				paddingRight: "5px"
 			});
@@ -258,7 +247,7 @@ BetterTTVEngine = function() {
 
 		betterttvDebug.log("Reformatting Beta Channel Page");
 
-		if(!document.getElementById("new_channel")) return;
+		if($j(".betabar").length === 0) return;
 
 		$j('.featured').remove();
 		$j.get('http://www.twitch.tv/inbox', function(data) {
@@ -297,9 +286,12 @@ BetterTTVEngine = function() {
 			$j("#left_col").css("bottom","35px");
 		}
 
+		/*var channelBackground = $j('#custom_bg').attr('image');
+		$j('#custom_bg').replaceWith('<img id="custom_bg" src="'+channelBackground+'" width="100%" />');*/
+
 		document.getElementById("right_close").setAttribute('title','Drag to Resize Chat or Click to Open/Close');
 		document.getElementById("left_close").setAttribute('title','Click to Open/Close');
-		$j(".scroll-content-contain").css("bottom","35px");
+		$j("#player_col .content .scroll .scroll-content-contain").css("margin-bottom","35px");
 		$j("#small_nav .content ul #small_home a").css("background","url(http://betterttv.nightdev.com/newnavicons.png) no-repeat 0 0");
 		removeElement(".related");
 
@@ -460,11 +452,18 @@ BetterTTVEngine = function() {
 		if(typeof PP != "undefined") {
 			if (localStorage.getItem("blockads") !== undefined) {
 				if(localStorage.getItem("blockads") == "true") {
-					PP['is_pro'] = localStorage.getItem("blockads");
-					PP.pro_account_activated = localStorage.getItem("blockads");
+					PP['is_pro'] = true;
+					PP.pro_account_activated = true;
+					if($j(".betabar").length === 0) {
+						$j("#live_site_player_flash").replaceWith('<object type="application/x-shockwave-flash" name="live_site_player_flash" data="http://www-cdn.jtvnw.net/widgets/live_site_player.swf" width="640px" height="395px" id="live_site_player_flash" style="visibility: visible;"><param name="allowNetworking" value="all"><param name="allowScriptAccess" value="always"><param name="allowFullScreen" value="true"><param name="wmode" value="transparent"><param name="flashvars" value="channel='+PP["channel"]+'&amp;hostname=www.twitch.tv"></object>');
+
+					} else {
+						$j("#live_site_player_flash").replaceWith('<object type="application/x-shockwave-flash" name="live_site_player_flash" data="http://www-cdn.jtvnw.net/widgets/live_site_player.swf" width="100%" height="100%" id="live_site_player_flash" style="visibility: visible;"><param name="allowNetworking" value="all"><param name="allowScriptAccess" value="always"><param name="allowFullScreen" value="true"><param name="wmode" value="transparent"><param name="flashvars" value="channel='+PP["channel"]+'&amp;hostname=www.twitch.tv"></object>');
+
+					}
 				}
 			} else {
-				PP['is_pro'] = "false";
+				PP['is_pro'] = false;
 			}
 		}
 
@@ -901,6 +900,9 @@ BetterTTVEngine = function() {
 			$$('#right_col').each(function(element) {
 				element.style.backgroundColor = '#1E1E1E';
 			});
+			$$('#right_col .content .top #right_nav').each(function(element) {
+				element.style.backgroundColor = '#1E1E1E';
+			});
 			$$('.channel-main').each(function(element) {
 				element.style.backgroundColor = '#000';
 			});
@@ -967,7 +969,6 @@ BetterTTVEngine = function() {
 		if(localStorage.getItem("narrowchat") == "yes") { narrowChat = "false"; } else { narrowChat = "true"; }
 		if(localStorage.getItem("blockads") == "true") { blockAds = "false"; } else { blockAds = "true"; }
 		if(localStorage.getItem("defaultemotes") !== "true") { defaultEmotes = "false"; } else { defaultEmotes = "true"; }
-		if(localStorage.getItem("newchannelredirect") !== "true") { redirect = "false"; } else { redirect = "true"; }
 		if(localStorage.getItem("blocksub") == "true") { blockSubscriber = "false"; } else { blockSubscriber = "true"; }
 		if(localStorage.getItem("related") !== "true") { blockRelated = "false"; } else { blockRelated = "true"; }
 		if(localStorage.getItem("hidemeebo") !== "true") { hideMeebo = "false"; } else { hideMeebo = "true"; }
@@ -991,8 +992,6 @@ BetterTTVEngine = function() {
 							<input type="checkbox" id="hidemeebo" class="left"> Hide Meebo</p> \
 							<p onclick="betterttvAction(\'related\');document.getElementById(\'related\').checked=' + blockRelated + ';" class="dropmenu_action"> \
 							<input type="checkbox" id="related" class="left"> Show Related Channels</p> \
-							<p onclick="betterttvAction(\'redirect\');document.getElementById(\'redirect\').checked=' + redirect + ';" class="dropmenu_action"> \
-							<input type="checkbox" id="redirect" class="left"> Redirect to New Layout</p> \
 							</li> \
 							</ul> \
 							<center> \
@@ -1013,7 +1012,6 @@ BetterTTVEngine = function() {
 		if(localStorage.getItem("narrowchat") == "yes") document.getElementById("narrowchat").checked = true;
 		if(localStorage.getItem("blockads") == "true") document.getElementById("blockads").checked = true;
 		if(localStorage.getItem("defaultemotes") == "true") document.getElementById("defaultemotes").checked = true;
-		if(localStorage.getItem("newchannelredirect") == "true") document.getElementById("redirect").checked = true;
 		if(localStorage.getItem("blocksub") == "true") document.getElementById("blocksub").checked = true;
 		if(localStorage.getItem("related") == "true") document.getElementById("related").checked = true;
 		if(localStorage.getItem("hidemeebo") == "true") document.getElementById("hidemeebo").checked = true;
@@ -1039,16 +1037,6 @@ BetterTTVEngine = function() {
 				localStorage.setItem("defaultemotes", "true");
 			}
 			window.location.reload();
-		}
-		if(action == "redirect") {
-			if(localStorage.getItem("newchannelredirect") == "true") {
-				document.getElementById("redirect").checked = false;
-				localStorage.setItem("newchannelredirect", "false");
-			} else {
-				document.getElementById("redirect").checked = true;
-				localStorage.setItem("newchannelredirect", "true");
-				handleRedirect();
-			}
 		}
 		if(action == "blockads") {
 			if(localStorage.getItem("blockads") == "true") {
@@ -1118,7 +1106,6 @@ BetterTTVEngine = function() {
 
 	betterttvDebug.log("BTTV v"+betterttvVersion);
 	betterttvDebug.log("CALL init "+document.URL);
-	handleRedirect();
 	brand();
 	directoryReformat();
 	channelReformat();
@@ -1128,6 +1115,7 @@ BetterTTVEngine = function() {
 	clearAds();
 	darkenPage();
 	setTimeout(clearAds, 1000);
+	setTimeout(blockVideoAds, 3000);
 	setTimeout(clearAds, 5000);
 	setTimeout(chatFunctions, 1000);
 	setTimeout(createSettingsMenu, 1000);
