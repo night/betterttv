@@ -741,7 +741,6 @@ BetterTTVEngine = function() {
 			if(info.nickname == "hawkeyethereaper" && x==1) { info.tagtype="broadcaster"; info.tagname = "EnVy"; info.nickname="Hawkeye"; }
 			if(info.nickname == "paterandreas" && x==1) { info.tagtype="admin"; info.tagname = "Uni-BB"; }
 			if(info.nickname == "the_chopsticks" && x==1) { info.tagtype="admin"; info.tagname = "oZn"; }
-			if(info.nickname == "namja" && x==1) { info.tagtype="admin"; info.tagname = "Pedo"; }
 			if(info.nickname == "whitesammy") { info.nickname="<span style=\"color:white;text-shadow: 0 0 2px #000;-webkit-text-shadow: 0 0 2px #000;\">" + info.nickname + "</span>"; }
 			//Xmas
 			if(info.nickname == "r3lapse" && x==1) { info.tagtype="staff"; info.tagname = "Kershaw"; }
@@ -776,13 +775,15 @@ BetterTTVEngine = function() {
 		CurrentChat.handlers.clear_chat = function(info) {
 			var nickname = CurrentChat.real_username(info.user);
 			if (info.target == "all") {
-			this.admin_message(_("Chat was cleared by a moderator (Prevented by BetterTTV)"));
+				CurrentChat.last_sender = "jtv";
+				CurrentChat.insert_with_lock("#chat_line_list",'<li class="line fromjtv"><p class="content">Chat was cleared by a moderator (Prevented by BetterTTV)</p></li>');
 			} else if (info.target == "user") {
-			var nickname = CurrentChat.real_username(info.user);
-			$$('#chat_line_list .chat_from_' + info.user.replace(/%/g, '_').replace(/[<>,]/g, '') + ' .chat_line').each(function (message) {
-				message.innerHTML = "<span style=\"color: #999\">" + message.innerHTML + "</span>";
-			});
-			CurrentChat.insert_with_lock("#chat_line_list",'<li class="line fromjtv"><p class="content"><span style="text-transform:capitalize;">'+nickname+"</span> has been timed out."+"</p></li>");
+				var nickname = CurrentChat.real_username(info.user);
+				$$('#chat_line_list .chat_from_' + info.user.replace(/%/g, '_').replace(/[<>,]/g, '') + ' .chat_line').each(function (message) {
+					message.innerHTML = "<span style=\"color: #999\">" + message.innerHTML + "</span>";
+				});
+				CurrentChat.last_sender = "jtv";
+				CurrentChat.insert_with_lock("#chat_line_list",'<li class="line fromjtv"><p class="content"><span style="text-transform:capitalize;">'+nickname+"</span> has been timed out."+"</p></li>");
 			}
 		}
 
