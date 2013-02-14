@@ -10,7 +10,7 @@
 
 BetterTTVEngine = function() {
 
-	var betterttvVersion = "5.9",
+	var betterttvVersion = "6.0",
 		betterttvDebug = {
 			log: function(string) { if(window.console && console.log) console.log("BTTV: "+string); },
 			warn: function(string) { if(window.console && console.warn) console.warn("BTTV: "+string); },
@@ -74,7 +74,7 @@ BetterTTVEngine = function() {
 			window.removeEventListener("mouseover", null, false);
 		}
 
-		if(localStorage.getItem("related") !== "true") removeElement('.sm_vids');
+		if(localStorage.getItem("featured") !== "true") removeElement('.sm_vids'); removeElement('#nav_streams'); removeElement('.featured'); removeElement('.related');
 		if(localStorage.getItem("blocksub") == "true") $j("#sub-details").css("display","none");
 		clearList.forEach(removeElement);
 
@@ -168,10 +168,34 @@ BetterTTVEngine = function() {
 
 		betterttvDebug.log("Reformatting Directory");
 
-		var directory = document.getElementById("directory_channels");
+		if(PP['page_type'] !== "directory") return;
 
-		if(!directory) return;
+		var logo = document.getElementById("logo"),
+			watermark = document.createElement("div");
 
+		watermark.style.marginTop = "-10px";
+		watermark.style.marginLeft = "38px";
+		watermark.innerHTML = "Better";
+		watermark.style.color = "#FF0000";
+		watermark.style.fontWeight = "bold";
+		watermark.style.fontSize = "20px";
+		watermark.style.textIndent = "0px";
+		watermark.style.zIndex = "9000";
+		watermark.style.opacity = "0.9";
+		watermark.style.textShadow = "-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000";
+		watermark.style.textDecoration = "none";
+		logo.appendChild(watermark);
+
+		$j("#small_nav .content ul #small_home a").css("background","url(http://betterttv.nightdev.com/newnavicons.png) no-repeat 0 0");
+
+		if(localStorage.getItem("hidemeebo") !== "true") {
+			$j("#left_col").css("bottom","35px");
+			$j("#directory-list").css("margin-bottom","50px");
+		}
+
+		meebo();
+
+/*
 		$$(".c4").each(function(e) {
 			e.style.width = '250px';
 		});
@@ -182,7 +206,27 @@ BetterTTVEngine = function() {
 		directoryCSS.setAttribute("type","text/css");
 		directoryCSS.innerHTML = ".games-grid .game .boxart { width: 136px !important; height: 190px !important; } .stream {width:150px !important;height:150px !important;} .streams .stream .thumb img.cap, .by_game .stream .thumb img.cap {width:150px !important;height:84.375px !important;} .boxart {margin-top:10px !important;height:50px !important;} .meta {height:75px !important;padding-bottom:2px;} .video_grid .video .channelname, .streams .stream .channelname {white-space:normal !important;margin-top:-2px !important;height:35px !important;}";
 		$j('body').append(directoryCSS);
+*/
+		
+		$j.get('http://www.twitch.tv/inbox', function(data) {
+			PP['notifications'] = (data.split("unread").length - 2)
+			if(PP['notifications'] == 10) PP['notifications'] = "10+"
+			if(PP['notifications'] !== 0) {
+				var messagesnum = document.createElement("a"),
+					user_display_name = document.getElementById("user_display_name");
+				messagesnum.setAttribute("id","messagescont");
+				messagesnum.setAttribute("href","/inbox");
+				messagesnum.setAttribute("style","margin-left: 10px;");
+				messagesnum.innerHTML = "<span id='messagescount' style='padding-left:28px;background-image:url(http://www-cdn.jtvnw.net/images/xarth/g/g18_mail-FFFFFF80.png);background-position: 8px -2px;background-repeat: no-repeat;color:white;'>" + PP['notifications'] + "</span>";
+				user_display_name.appendChild(messagesnum);
+			}
+			setTimeout(function(){checkMessages(true)}, 300000);
+		});
 
+		var directoryCSS = document.createElement("style");
+		directoryCSS.setAttribute("type","text/css");
+		directoryCSS.innerHTML = ".game_filter.selected a { background-color: #374a9b !important; }";
+		$j('body').append(directoryCSS);
 	}
 
 	chatReformat = function() {
@@ -240,9 +284,15 @@ BetterTTVEngine = function() {
 
 		$j('#chat_loading_spinner').attr('src',"data:image/gif;base64,R0lGODlhFgAWAPMGANfX1wAAADc3N1tbW6Ojo39/f2tra8fHx9nZ2RsbG+np6SwsLEtLS4eHh7q6ugAAACH/C05FVFNDQVBFMi4wAwEAAAAh/hoiQ3JlYXRlZCB3aXRoIENoaW1wbHkuY29tIgAh+QQJCgAGACwAAAAAFgAWAAAEbNCESY29OEvBRdDgFXReGI7dZ2oop65YWypIjSgGbSOW/CGAIICnEAIOPdLPSDQiNykDUNgUPn1SZs6ZjE6D1eBVmaVurV1XGXwWp0vfYfv4XpqLaKg6HqbrZzs4OjZ1MBlYhiJkiYWMfy+GEQAh+QQJCgAGACwAAAAAFgAWAAAEctDIKYO9NKe9lwlCKAQZlQzo4IEiWUpnuorjC6fqR7tvjM4tgwJBJN5kuqACwGQef8kQadkEPHMsqbBqNfiwu231CtRSm+Ro7ez04sprbjobH7uR9Kn8Ds2L0XxgSkVGgXA8JV+HNoZqiBocCYuMJX4vEQAh+QQJCgAAACwAAAAAFgAWAAAEcxDISWu4uNLEOwhCKASSGA5AMqxD8pkkIBR0gaqsC4rxXN+s1otXqtlSQR2s+EPmhqGeEfjcRZk06kpJlE2dW+gIe8SFrWNv0yxES9dJ8TsLbi/VdDb3ii/H3WRadl0+eX93hX5ViCaCe2kaKR0ccpGWlREAIfkECQoAAQAsAAAAABYAFgAABHUwyEmrvTisxHlmQigw2mAOiWSsaxMwRVyQy4mqRE64sEzbqYBBt3vJZqVTcKjjHX9KXNPoS5qWRGe1FhVmqTHoVZrThq0377R35o7VZTDSnWbG2XMguYgX1799aFhrT4J7ZnldLC1yfkEXICKOGRcbHY+UlBEAIfkECQoAAQAsAAAAABYAFgAABHIwyEmrvThrOoQXTFYYpFEEQ6EWgkS8rxMUMHGmaxsQR3/INNhtxXL5frPaMGf0AZUooo7nTAqjzN3xecWpplvra/lt9rhjbFlbDaa9RfZZbFPHqXN3HQ5uQ/lmSHpkdzVoe1IiJSZ2OhsTHR8hj5SVFREAIfkECQoAAQAsAAAAABYAFgAABGowyEmrvTjrzWczIJg5REk4QWMShoQAMKAExGEfRLq2QQzPtVtOZeL5ZLQbTleUHIHK4c7pgwqZJWM1eSVmqTGrTdrsbYNjLAv846a9a3PYvYRr5+j6NPDCR9U8FyQmKHYdHiEih4uMjRQRACH5BAkKAAEALAAAAAAWABYAAARkMMhJq7046807d0QYSkhZKoFiIqhzvAchATSNIjWABC4sBznALbfrvX7BYa0Ii81yShrT96xFdbwmEhrALbNUINcrBR+rti7R7BRb1V9jOwkvy38rVmrV0nokICI/f4SFhocSEQAh+QQJCgABACwAAAAAFgAWAAAEWjDISau9OOvNu7dIGCqBIiKkeUoH4AIk8gJIOR/sHM+1cuev3av3C7SCAdnQ9sIZdUke0+U8uoQuYhN4jS592ydSmZ0CqlAyzYweS8FUyQlVOqXmn7x+z+9bIgA7");
 	
+		if(localStorage.getItem("defaulttags") === "true") {
+			var originalTags = '.line .oldmod { display: inline-block;text-indent: 21px;background-image: url(../images/xarth/g/g18_sword-FFFFFF80.png);background-position: 0 center;background-repeat: no-repeat;display: inline-block;vertical-align: bottom;height: 18px;min-width: 18px;width: expression(document.body.clientWidth < $width ? "18px":"auto");padding: 0;text-indent: -9999px;border-radius: 2px;-moz-border-radius: 2px;-webkit-border-radius: 2px;background-color: #090;overflow: hidden;} .line .oldbroadcaster { display: inline-block;text-indent: 21px;background-image: url(../images/xarth/g/g18_camera-FFFFFF80.png);background-position: 0 center;background-repeat: no-repeat;display: inline-block;vertical-align: bottom;height: 18px;min-width: 18px;width: expression(document.body.clientWidth < $width ? "18px":"auto");padding: 0;text-indent: -9999px;border-radius: 2px;-moz-border-radius: 2px;-webkit-border-radius: 2px;background-color: #090;overflow: hidden;} .line .oldstaff { display: inline-block;text-indent: 21px;background-image: url(../images/xarth/g/g18_wrench-FFFFFF80.png);background-position: 0 center;background-repeat: no-repeat;display: inline-block;vertical-align: bottom;height: 18px;min-width: 18px;width: expression(document.body.clientWidth < $width ? "18px":"auto");padding: 0;text-indent: -9999px;border-radius: 2px;-moz-border-radius: 2px;-webkit-border-radius: 2px;background-color: #090;overflow: hidden;} .line .oldadmin { display: inline-block;text-indent: 21px;background-image: url(../images/xarth/g/g18_badge-FFFFFF80.png);background-position: 0 center;background-repeat: no-repeat;display: inline-block;vertical-align: bottom;height: 18px;min-width: 18px;width: expression(document.body.clientWidth < $width ? "18px":"auto");padding: 0;text-indent: -9999px;border-radius: 2px;-moz-border-radius: 2px;-webkit-border-radius: 2px;background-color: #090;overflow: hidden;}';
+		} else {
+			var originalTags = '';
+		}
+
 		var chatCSS = document.createElement("style");
 		chatCSS.setAttribute("type","text/css");
-		chatCSS.innerHTML = ".dropmenu a, .ui-menu a, .ui-multiselect-menu a { color: white !important; } input.text:focus,select:focus,textarea:focus{outline:0;background-color:#fff;box-shadow:0 0 3px 1px #dad9d9;-moz-box-shadow:0 0 3px 1px #dad9d9;-webkit-box-shadow:0 0 3px 1px #dad9d9;border:1px solid #000;color:#000;} .primary_button:hover,.primary_button:focus{ background: linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -o-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -moz-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -webkit-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -ms-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%); } .primary_button { border-color: #000 !important; background: linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -o-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -moz-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -webkit-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -ms-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%); } .chat_line a {color:#005596;} #chat_line_list li .mod_button img{vertical-align:baseline;padding: 0px;margin-bottom:-5px;} .chat_line img {vertical-align: baseline !important;} .line .mod, .line .staff, .line .admin, .line .broadcaster {background-image: none !important;background-position: none !important;background-repeat: none !important;display: inline !important;height: none !important;min-width: none !important;overflow: none !important;padding: 1px 3px !important;text-indent: none !important;vertical-align: baseline !important;color: white !important;font-size: 0.8572em !important;font-weight: bold !important;} .line .bot {background-color: #666666;border-radius: 2px 2px 2px 2px;padding: 1px 3px;font-weight: bold;font-size: 0.8572em;color: white;display:inline !important;} .line .brown {background-color: #6B4226;border-radius: 2px 2px 2px 2px;padding: 1px 3px;font-weight: bold;font-size: 0.8572em;color: white;display:inline !important;} .line .orange {background-color: orange;border-radius: 2px 2px 2px 2px;padding: 1px 3px;font-weight: bold;font-size: 0.8572em;color: white;display:inline !important;} .line .lefty {background-color: red;background-image:url('http://betterttv.nightdev.com/ca.gif');padding-left:23px !important;border-radius: 2px 2px 2px 2px;padding: 1px 3px;font-weight: bold;font-size: 0.8572em;color: white;display:inline !important;} .line .staff {background-color: #06C;} .line .purple {background-color: #4F007B;border-radius: 2px 2px 2px 2px;padding: 1px 3px;font-weight: bold;font-size: 0.8572em;color: white;display:inline !important;}";
+		chatCSS.innerHTML = ".dropmenu a, .ui-menu a, .ui-multiselect-menu a { color: white !important; } input.text:focus,select:focus,textarea:focus{outline:0;background-color:#fff;box-shadow:0 0 3px 1px #dad9d9;-moz-box-shadow:0 0 3px 1px #dad9d9;-webkit-box-shadow:0 0 3px 1px #dad9d9;border:1px solid #000;color:#000;} .primary_button:hover,.primary_button:focus{ background: linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -o-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -moz-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -webkit-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -ms-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%); } .primary_button { border-color: #000 !important; background: linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -o-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -moz-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -webkit-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -ms-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%); } .chat_line a {color:#005596;} #chat_line_list li .mod_button img{vertical-align:baseline;padding: 0px;margin-bottom:-5px;} .chat_line img {vertical-align: baseline !important;} "+originalTags+" .line .turbo { margin-top: -2px; }  .line .mod, .line .staff, .line .admin, .line .broadcaster {background-image: none !important;background-position: none !important;background-repeat: none !important;display: inline !important;height: none !important;min-width: none !important;overflow: none !important;padding: 1px 3px !important;text-indent: none !important;vertical-align: baseline !important;color: white !important;font-size: 0.8572em !important;font-weight: bold !important;} .line .bot {background-color: #666666;border-radius: 2px 2px 2px 2px;padding: 1px 3px;font-weight: bold;font-size: 0.8572em;color: white;display:inline !important;} .line .brown {background-color: #6B4226;border-radius: 2px 2px 2px 2px;padding: 1px 3px;font-weight: bold;font-size: 0.8572em;color: white;display:inline !important;} .line .orange {background-color: orange;border-radius: 2px 2px 2px 2px;padding: 1px 3px;font-weight: bold;font-size: 0.8572em;color: white;display:inline !important;} .line .lefty {background-color: red;background-image:url('http://betterttv.nightdev.com/ca.gif');padding-left:23px !important;border-radius: 2px 2px 2px 2px;padding: 1px 3px;font-weight: bold;font-size: 0.8572em;color: white;display:inline !important;} .line .staff {background-color: #06C;} .line .purple {background-color: #4F007B;border-radius: 2px 2px 2px 2px;padding: 1px 3px;font-weight: bold;font-size: 0.8572em;color: white;display:inline !important;} .emoticon {vertical-align: baseline !important;}";
 		$j('body').append(chatCSS);
 
 	}
@@ -253,7 +303,6 @@ BetterTTVEngine = function() {
 
 		if($j(".betabar").length === 0) return;
 
-		$j('.featured').remove();
 		$j.get('http://www.twitch.tv/inbox', function(data) {
 			PP['notifications'] = (data.split("unread").length - 2)
 			if(PP['notifications'] == 10) PP['notifications'] = "10+"
@@ -288,7 +337,7 @@ BetterTTVEngine = function() {
 		if(localStorage.getItem("hidemeebo") !== "true") {
 			$j("#right_col").css("bottom","35px");
 			$j("#left_col").css("bottom","35px");
-			$j("#player_col .content .scroll .scroll-content-contain").css("margin-bottom","35px");
+			$j("#main_col .content .scroll .scroll-content-contain").css("margin-bottom","35px");
 		}
 
 		$$('#right_col .content .top').each(function(element) {
@@ -302,7 +351,6 @@ BetterTTVEngine = function() {
 		document.getElementById("left_close").setAttribute('title','Click to Open/Close');
 		
 		$j("#small_nav .content ul #small_home a").css("background","url(http://betterttv.nightdev.com/newnavicons.png) no-repeat 0 0");
-		removeElement(".related");
 
 		updateBroadcastInfo(true);
 
@@ -336,18 +384,18 @@ BetterTTVEngine = function() {
 				$j(".fixed").each(function () {
 	                d += $j(this).outerWidth()
 	            });
-	            $j("#player_col").css({
+	            $j("#main_col").css({
 	                width: $j(window).width() - d + "px"
 	            });
 
-	            var h = 0.5625 * $j("#player_col").width() - 4;
-	            if(h > $j(window).height() - $j("#player_col .top").outerHeight() - 40) {
-	            	($j(".live_site_player_container").css({ height: $j(window).height() - $j("#player_col .top").outerHeight() - 40 + "px" }), $j("#player_col .scroll-content-contain").animate({ scrollTop: 90 }, 150, "swing"));
+	            var h = 0.5625 * $j("#main_col").width() - 4;
+	            if(h > $j(window).height() - $j("#main_col .top").outerHeight() - 40) {
+	            	($j(".live_site_player_container").css({ height: $j(window).height() - $j("#main_col .top").outerHeight() - 40 + "px" }), $j("#main_col .scroll-content-contain").animate({ scrollTop: 90 }, 150, "swing"));
 	            } else {
 	            	$j(".live_site_player_container").css({ height: h.toFixed(0) + "px" });
 	            } 
 
-	            $j(".scroll").customScroll("recalculate");
+	            //$j(".scroll").customScroll("recalculate");
 	            
 	            _.debounce(function () {
 	            	var d = $j("#broadcast_meta .info .title").width();
@@ -362,18 +410,18 @@ BetterTTVEngine = function() {
 				$j(".fixed").each(function () {
 	                d += $j(this).outerWidth()
 	            });
-	            $j("#player_col").css({
+	            $j("#main_col").css({
 	                width: $j(window).width() - d + "px"
 	            });
 
-	            var h = 0.5625 * $j("#player_col").width() - 4;
-	            if(h > $j(window).height() - $j("#player_col .top").outerHeight() - 40) {
-	            	($j(".live_site_player_container").css({ height: $j(window).height() - $j("#player_col .top").outerHeight() - 40 + "px" }), $j("#player_col .scroll-content-contain").animate({ scrollTop: 90 }, 150, "swing"));
+	            var h = 0.5625 * $j("#main_col").width() - 4;
+	            if(h > $j(window).height() - $j("#main_col .top").outerHeight() - 40) {
+	            	($j(".live_site_player_container").css({ height: $j(window).height() - $j("#main_col .top").outerHeight() - 40 + "px" }), $j("#main_col .scroll-content-contain").animate({ scrollTop: 90 }, 150, "swing"));
 	            } else {
 	            	$j(".live_site_player_container").css({ height: h.toFixed(0) + "px" });
 	            } 
 
-	            $j(".scroll").customScroll("recalculate");
+	            //$j(".scroll").customScroll("recalculate");
 	            
 	            _.debounce(function () {
 	            	var d = $j("#broadcast_meta .info .title").width();
@@ -465,11 +513,16 @@ BetterTTVEngine = function() {
 
 		betterttvDebug.log("Blocking Video Ads");
 
+		var dashboard = document.getElementById("dashboard_title");
+
+		if(dashboard) return;
+		/*
 		if(typeof PP != "undefined") {
 			if (localStorage.getItem("blockads") !== undefined) {
 				if(localStorage.getItem("blockads") == "true") {
 					PP['is_pro'] = true;
 					PP.pro_account_activated = true;
+					_gaq.push(['_setCustomVar', 2, "ProStatus", "pro", 1]);
 					if($j(".betabar").length === 0) {
 						$j("#live_site_player_flash").replaceWith('<object type="application/x-shockwave-flash" name="live_site_player_flash" data="http://www-cdn.jtvnw.net/widgets/live_site_player.swf" width="640px" height="395px" id="live_site_player_flash" style="visibility: visible;"><param name="allowNetworking" value="all"><param name="allowScriptAccess" value="always"><param name="allowFullScreen" value="true"><param name="wmode" value="transparent"><param name="flashvars" value="channel='+PP["channel"]+'&amp;hostname=www.twitch.tv"></object>');
 
@@ -482,6 +535,8 @@ BetterTTVEngine = function() {
 				PP['is_pro'] = false;
 			}
 		}
+		*/
+		
 
 	}
 
@@ -550,8 +605,25 @@ BetterTTVEngine = function() {
 
 		if(videopage === true) {
 			$j.get('http://www.twitch.tv/inbox', function(data) {
-				PP['notifications'] = (data.split("unread").length - 2)
-				if(PP['notifications'] == 10) PP['notifications'] = "10+"
+				var messageSender = /class="capital">(.*)<\/a>/i.exec(data);
+				var messageSenderAvatar = /http:\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/(.*)-50x50.png/i.exec(data);
+				if(messageSender && messageSenderAvatar) {
+					messageSender = messageSender[1].capitalize();
+					messageSenderAvatar = "http://static-cdn.jtvnw.net/jtv_user_pictures/"+messageSenderAvatar[1]+"-50x50.png";
+				} else {
+					messageSender = "Someone";
+					messageSenderAvatar = "";
+				}
+				if(PP['notifications'] !== (data.split("unread").length - 2) && PP['notifications'] !== "10+" && PP['notifications'] < (data.split("unread").length - 2)) {
+					$j.gritter.add({
+				        title: 'Message Received',
+				        class_name: 'gritter-light',
+				        image: messageSenderAvatar,
+				        text: messageSender+' just sent you a Twitch Message!<br /><br /><a style="color:black" href="http://www.twitch.tv/inbox">Click here to head to to your inbox</a>.',
+				    });
+				}
+				PP['notifications'] = (data.split("unread").length - 2);
+				if(PP['notifications'] == 10) PP['notifications'] = "10+";
 				if(PP['notifications'] !== 0) {
 					if(document.getElementById("messagescount")) {
 						document.getElementById("messagescount").innerHTML = PP['notifications'];
@@ -571,8 +643,25 @@ BetterTTVEngine = function() {
 			});
 		} else {
 			$j.get('http://www.twitch.tv/inbox', function(data) {
-				PP['notifications'] = (data.split("unread").length - 2)
-				if(PP['notifications'] == 10) PP['notifications'] = "10+"
+				var messageSender = /class="capital">(.*)<\/a>/i.exec(data);
+				var messageSenderAvatar = /http:\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/(.*)-50x50.png/i.exec(data);
+				if(messageSender && messageSenderAvatar) {
+					messageSender = messageSender[1].capitalize();
+					messageSenderAvatar = "http://static-cdn.jtvnw.net/jtv_user_pictures/"+messageSenderAvatar[1]+"-50x50.png";
+				} else {
+					messageSender = "Someone";
+					messageSenderAvatar = "";
+				}
+				if(PP['notifications'] !== (data.split("unread").length - 2) && PP['notifications'] !== "10+" && PP['notifications'] < (data.split("unread").length - 2)) {
+					$j.gritter.add({
+				        title: 'Message Received',
+				        class_name: 'gritter-light',
+				        image: messageSenderAvatar,
+				        text: messageSender+' just sent you a Twitch Message!<br /><br /><a style="color:black" href="http://www.twitch.tv/inbox">Click here to head to to your inbox</a>.',
+				    });
+				}
+				PP['notifications'] = (data.split("unread").length - 2);
+				if(PP['notifications'] == 10) PP['notifications'] = "10+";
 				if(PP['notifications'] !== 0) {
 					if(document.getElementById("messagescount")) {
 						document.getElementById("messagescount").innerHTML = PP['notifications'];
@@ -683,10 +772,27 @@ BetterTTVEngine = function() {
 		Chat.prototype.insert_chat_lineOld=Chat.prototype.insert_chat_line;
 		Chat.prototype.insert_chat_line=function(info)
 		{
-			if(info.color == "blue" && localStorage.getItem("darkchat") === "true") { info.color = "#3753ff"; }
+			if(info.nickname == "nightbot" && info.message == "> Running a commercial in 15 seconds." && PP['login'] == PP['channel']) {
+				$j.gritter.add({
+			        title: 'Commercial Warning',
+			        class_name: 'gritter-light',
+			        time: 10000,
+			        image: 'http://cdn.nightdev.com/img/nightboticon.png',
+			        text: 'Nightbot will be running a commercial in 15 seconds.',
+			    });
+			}
+			
 			if(info.tagtype == "broadcaster") { info.tagname = "Host"; }
+
 			var x=0;
 			if(info.tagtype == "mod" || info.tagtype == "broadcaster" || info.tagtype == "admin") x=1;
+			
+			if(localStorage.getItem("defaulttags") === "true") {
+				if(info.tagtype == "mod" || info.tagtype == "broadcaster" || info.tagtype == "admin" || info.tagtype == "staff") info.tagtype = "old"+info.tagtype;
+			}
+
+			if(info.color == "#0000FF" && localStorage.getItem("darkchat") === "true") { info.color = "#3753ff"; }
+			
 			if(info.nickname == "night" && x==1) { info.tagtype="orange"; info.tagname = "Creator"; }
 			//Bots
 			if(info.nickname == "moobot" && x==1) { info.tagtype="bot"; info.tagname = "Bot"; }
@@ -721,7 +827,9 @@ BetterTTVEngine = function() {
 			if(info.nickname == "excalibr" && x==1) { info.tagtype="staff"; info.tagname = "Boss"; }
 			if(info.nickname == "chez_plastic" && x==1) { info.tagtype="staff"; info.tagname = "Frenchy"; }
 			if(info.nickname == "frontiersman72" && x==1) { info.tagtype="admin"; info.tagname = "Uni"; }
+			if(info.nickname == "dckay14" && x==1) { info.tagtype="admin"; info.tagname = "Ginger"; }
 			if(info.nickname == "boogie_yellow" && x==1) { info.tagtype="orange"; info.tagname = "Yellow"; }
+			if(info.nickname == "harksa" && x==1) { info.tagtype="orange"; info.tagname = "Hark"; }
 			if(info.nickname == "lltherocksaysll" && x==1) { info.tagtype="broadcaster"; info.tagname = "Topswell"; }
 			if(info.nickname == "melissa_loves_everyone" && x==1) { info.tagtype="purple"; info.tagname = "Chubby"; info.nickname="Bunny"; }
 			if(info.nickname == "redvaloroso" && x==1) { info.tagtype="broadcaster"; info.tagname = "Dio"; }
@@ -730,18 +838,19 @@ BetterTTVEngine = function() {
 			if(info.nickname == "deano2518" && x==1) { info.tagtype="orange"; info.tagname = "<span style='color:black;'>WWFC</span>"; }
 			if(info.nickname == "eternal_nightmare" && x==1) { info.tagtype="broadcaster"; info.tagname = "Emo"; info.nickname = "Nickiforek"; }
 			if(info.nickname == "iivii_beauty" && x==1) { info.tagtype="purple"; info.tagname = "Crave"; }
+			if(info.nickname == "theefrenzy" && x==1) { info.tagtype="staff"; info.tagname = "Handsome"; }
 			if(info.nickname == "yorkyyork") { info.tagtype="broadcaster"; info.tagname = "<span style='color:red;'>FeaR</span>"; }
-			if(info.nickname == "sournothardcore" && x==1) { info.timestamp = info.timestamp+"</span><span class=\"tag brown\" style=\"margin-left:2px;color:#FFE600 !important;\" original-title=\"Saucy\">Saucy</span><span>"; }
+			if(info.nickname == "sournothardcore" && x==1) { info.tagname = info.tagname+"</span><span class='tag brown' style='margin-left:4px;color:#FFE600 !important;' original-title='Saucy'>Saucy</span><span>"; }
 			//People
 			if(info.nickname == "mac027" && x==1) { info.tagtype="admin"; info.tagname = "Hacks"; }
 			if(info.nickname == "socaldesigner" && x==1) { info.tagtype="broadcaster"; info.tagname = "Legend"; }
 			if(info.nickname == "perfectorzy" && x==1) { info.tagtype="mod"; info.tagname = "Jabroni Ave"; }
-			if(info.nickname == "pantallideth1" && x==1) { info.tagtype="staff"; info.tagname = "KoW"; }
+			if(info.nickname == "pantallideth1" && x==1) { info.tagtype="staff"; info.tagname = "Windmill"; }
 			if(info.nickname == "mmmjc" && x==1) { info.tagtype="admin"; info.tagname = "m&m"; }
 			if(info.nickname == "hawkeyethereaper" && x==1) { info.tagtype="broadcaster"; info.tagname = "EnVy"; info.nickname="Hawkeye"; }
 			if(info.nickname == "paterandreas" && x==1) { info.tagtype="admin"; info.tagname = "Uni-BB"; }
 			if(info.nickname == "the_chopsticks" && x==1) { info.tagtype="admin"; info.tagname = "oZn"; }
-			if(info.nickname == "whitesammy") { info.nickname="<span style=\"color:white;text-shadow: 0 0 2px #000;-webkit-text-shadow: 0 0 2px #000;\">" + info.nickname + "</span>"; }
+			if(info.nickname == "whitesammy") { info.nickname="<span style='color:white;text-shadow: 0 0 2px #000;-webkit-text-shadow: 0 0 2px #000;'>" + info.nickname + "</span>"; }
 			//Xmas
 			if(info.nickname == "r3lapse" && x==1) { info.tagtype="staff"; info.tagname = "Kershaw"; }
 			if(info.nickname == "im_tony_" && x==1) { info.tagtype="admin"; info.tagname = "oZn"; }
@@ -758,13 +867,39 @@ BetterTTVEngine = function() {
 			this.insert_chat_lineOld(info);
 		}
 
-		Chat.prototype.emoticonizeOld = Chat.prototype.emoticonize;
-		Chat.prototype.emoticonize = function(msg) {
+		Chat.prototype.emoticonizeOld = function (a, c) {
+	        var b = CurrentChat,
+	            e = CurrentChat.emoticons.length;
+	        for (i = 0; i < e; i++) {
+	            var d = CurrentChat.emoticons[i];
+	            if (1 === d.images.length && !d.images[0].emoticon_set) a = a.replace(d.regex, d.images[0].html);
+	            else if (a.match(d.regex)) {
+	                var g = null,
+	                    h = !1;
+	                d.images.forEach(function (e) {
+	                    if (-1 !== (b.user_to_emote_sets[c] || []).indexOf(e.emoticon_set)) a = a.replace(d.regex, e.html), h = !0;
+	                    e.emoticon_set || (g = e.html)
+	                });
+	                !h && g && (a = a.replace(d.regex, g))
+	            }
+	        }
+	        return a
+	    }
+
+		Chat.prototype.emoticonize = function(msg, b) {
 			msg = replaceAll(msg, "<wbr />", "");
-			msg = this.emoticonizeOld(msg);
-			var regex = new RegExp(PP['login'], 'i');
+			msg = this.emoticonizeOld(msg, b);
+			var regex = new RegExp('\\b'+PP['login']+'\\b', 'i');
 			if(regex.test(msg) && PP['login'] !== "") {
-				msg = "<span style='color:red;font-weight:bold;word-wrap: break-word;'>"+msg+"</span>";
+				msg = "<span id='bttvhighlight' style='color:white;font-weight:bold;word-wrap: break-word;'>"+msg+"</span>";
+				setTimeout(function () {
+					$$('#bttvhighlight').each(function(element) {
+						$j(element).parent().parent().css({
+													'background-color': 'rgba(255,0,0,0.5)',
+													'padding': "3px"
+												});
+					});
+        		}, 100)
 			} else {
 				msg = "<span style=\"word-wrap: break-word;\">"+msg+"</span>";
 			}
@@ -791,7 +926,6 @@ BetterTTVEngine = function() {
 		  var keyCode = e.keyCode || e.which; 
 		  if (keyCode == 9) { 
 		    e.preventDefault(); 
-		    setInterval(function(){updateViewerList()},300000);
 		    var sentence = $j('#chat_text_input').val().split(' ');
 		    var partialMatch = sentence.pop().toLowerCase();
 		    var users = CurrentViewers;
@@ -826,6 +960,7 @@ BetterTTVEngine = function() {
 		});
 
 		setTimeout(function(){updateViewerList()},5000);
+		setInterval(function(){updateViewerList()},300000);
 	}	
 
 	checkFollowing = function() {
@@ -847,7 +982,7 @@ BetterTTVEngine = function() {
 						$j.gritter.add({
 					        title: channel.channel.display_name+' is Now Streaming',
 					        image: channel.channel.logo,
-					        text: channel.channel.display_name+' started streaming '+channel.channel.game+' just now.<br /><br /><a style="color:white" href="http://www.twitch.tv/'+channel.channel.name+'">Click here to head to '+channel.channel.display_name+'\'s channel</a>.',
+					        text: channel.channel.display_name+' just started streaming '+channel.channel.game+'.<br /><br /><a style="color:white" href="http://www.twitch.tv/'+channel.channel.name+'">Click here to head to '+channel.channel.display_name+'\'s channel</a>.',
 					    });
 					}
 				}
@@ -863,20 +998,43 @@ BetterTTVEngine = function() {
 
 		if(!document.getElementById("chat_lines")) return;
 
-		CurrentChat.emo_id = 1;
 		CurrentChat.emoticons = [];
 
 		if(localStorage.getItem("defaultemotes") == "true") {
 			$j.getJSON("http://betterttv.nightdev.com/defaultfaces.php?channel=" + CurrentChat.channel + "&oldemotes=" + defaultEmotes + "&user=" + PP['login'] + "&callback=?", function (a) {
-				CurrentChat.emoticons = CurrentChat.emoticons.concat(a);
-				for (var c, g = "", h = a.length - 1; 0 <= h; --h) c = a[h], c.image_name = CurrentChat.emo_id++, g += generateEmoticonCSS(c);
-				CurrentChat.add_css_style(g + ".emoticon { display: inline-block; }");
+				var d = 0;
+                cssString = "";
+                a.emoticons.forEach(function (a) {
+                    a.regex = RegExp(a.regex, "g");
+                    a.images.forEach(function (a) {
+                        d += 1;
+                        a.html = ich["chat-emoticon"]({
+                            id: d
+                        }).prop("outerHTML");
+                        cssString += CurrentChat.generate_emoticon_css(a, d)
+                    });
+                    CurrentChat.emoticons.push(a)
+                });
+                cssString += ".emoticon { display: inline-block; }";
+                CurrentChat.add_css_style(cssString)
 			});
 		} else {
 			$j.getJSON("http://betterttv.nightdev.com/faces.php?channel=" + CurrentChat.channel + "&oldemotes=" + defaultEmotes + "&user=" + PP['login'] + "&callback=?", function (a) {
-				CurrentChat.emoticons = CurrentChat.emoticons.concat(a);
-				for (var c, g = "", h = a.length - 1; 0 <= h; --h) c = a[h], c.image_name = CurrentChat.emo_id++, g += generateEmoticonCSS(c);
-				CurrentChat.add_css_style(g + ".emoticon { display: inline-block; }");
+				var d = 0;
+                cssString = "";
+                a.emoticons.forEach(function (a) {
+                    a.regex = RegExp(a.regex, "g");
+                    a.images.forEach(function (a) {
+                        d += 1;
+                        a.html = ich["chat-emoticon"]({
+                            id: d
+                        }).prop("outerHTML");
+                        cssString += CurrentChat.generate_emoticon_css(a, d)
+                    });
+                    CurrentChat.emoticons.push(a)
+                });
+                cssString += ".emoticon { display: inline-block; }";
+                CurrentChat.add_css_style(cssString)
 			});
 		}
 
@@ -903,24 +1061,21 @@ BetterTTVEngine = function() {
 
 	}
 
-	generateEmoticonCSS = function(a) {
-
-			var b = "";
-			//18 < a.height && (b = "margin: -" + (a.height - 18) / 2 + "px 0px");
-			return ".emo-" + a.image_name + ' {background-image: url("' + a.url + '") !important;vertical-align: baseline !important;height: ' + a.height + "px;width: " + a.width + "px;" + b + "}"
-
-	}
-
 	darkenPage = function() {
 
-		var chat = document.getElementById("chat_lines"),
+		var chat = document.getElementById("twitch_chat"),
 			dashboard = document.getElementById("dashboard_title");
 
 		if(!chat || dashboard) return;
-
+		console.log("darkening chat");
 		if(localStorage.getItem("darkchat") === "true") {
 			$$('#chat_column').each(function(element) {
 				element.style.background = '#333';
+			});
+			$$('#chat_lines_list').each(function(element) {
+				element.style.background = '#333';
+				element.style.color = '#FFF';
+				element.style.border = '#fff';
 			});
 			$$('#chat_lines').each(function(element) {
 				element.style.background = '#333';
@@ -948,6 +1103,9 @@ BetterTTVEngine = function() {
 			$$('.channel-main').each(function(element) {
 				element.style.backgroundColor = '#000';
 			});
+			$$('#custom_bg').each(function(element) {
+				element.remove();
+			});
 			$$('.title_over').each(function(element) {
 				element.style.backgroundColor = '#000';
 			});
@@ -955,13 +1113,13 @@ BetterTTVEngine = function() {
 				element.style.backgroundColor = '#1E1E1E';
 				element.style.borderTop = '1px solid rgba(0, 0, 0, 0.65)';
 			});
-			$$('#player_col').each(function(element) {
+			$$('#main_col').each(function(element) {
 				element.style.backgroundColor = '#000000';
 			});
 			$$('.scroll-scrollbar .drag-handle').each(function(element) {
 				element.style.backgroundColor = '#ffffff';
 			});
-			$$('#player_col .content #left_close, #player_col .content #right_close').each(function(element) {
+			$$('#left_close, #right_close').each(function(element) {
 				element.style.backgroundColor = '#CCCCCC';
 				element.style.boxShadow = 'none';
 			});
@@ -974,7 +1132,7 @@ BetterTTVEngine = function() {
 			$$('#channel_panels_contain #channel_panels .panel').each(function(element) {
 				element.style.color = '#999';
 			});
-			$$('#right_col .content #chat_line_list, body, #player_col .content #broadcast_meta .info .channel, #channel_panels_contain #channel_panels .panel h3').each(function(element) {
+			$$('#right_col .content #chat_line_list, body, #main_col .content #broadcast_meta .info .channel, #channel_panels_contain #channel_panels .panel h3').each(function(element) {
 				element.style.color = '#fff';
 			});
 			$$('.segmented_tabs li a.selected, .segmented_tabs li a:active, .segmented_tabs li:last-child a').each(function(element) {
@@ -1010,8 +1168,9 @@ BetterTTVEngine = function() {
 		if(localStorage.getItem("narrowchat") == "yes") { narrowChat = "false"; } else { narrowChat = "true"; }
 		if(localStorage.getItem("blockads") == "true") { blockAds = "false"; } else { blockAds = "true"; }
 		if(localStorage.getItem("defaultemotes") !== "true") { defaultEmotes = "false"; } else { defaultEmotes = "true"; }
+		if(localStorage.getItem("defaulttags") !== "true") { defaultTags = "false"; } else { defaultTags = "true"; }
 		if(localStorage.getItem("blocksub") == "true") { blockSubscriber = "false"; } else { blockSubscriber = "true"; }
-		if(localStorage.getItem("related") !== "true") { blockRelated = "false"; } else { blockRelated = "true"; }
+		if(localStorage.getItem("featured") !== "true") { blockFeatured = "false"; } else { blockFeatured = "true"; }
 		if(localStorage.getItem("hidemeebo") !== "true") { hideMeebo = "false"; } else { hideMeebo = "true"; }
 		if(localStorage.getItem("darkchat") == "true") { darken = "Undarken Chat"; } else { darken = "Darken Chat"; }
 		
@@ -1023,26 +1182,21 @@ BetterTTVEngine = function() {
 							<a class="dropmenu_action g18_trash-FFFFFF80" href="#" onclick="betterttvAction(\'clear\'); return false;">Clear My Chat</a> \
 							<p onclick="betterttvAction(\'defaultemotes\');document.getElementById(\'defaultemotes\').checked=' + defaultEmotes + ';" class="dropmenu_action"> \
 							<input type="checkbox" id="defaultemotes" class="left"> Default Emoticons</p> \
+							<p onclick="betterttvAction(\'defaulttags\');document.getElementById(\'defaulttags\').checked=' + defaultTags + ';" class="dropmenu_action"> \
+							<input type="checkbox" id="defaulttags" class="left"> Default Chat Tags</p> \
 							<p onclick="betterttvAction(\'narrowchat\');document.getElementById(\'narrowchat\').checked=' + narrowChat + ';" class="dropmenu_action"> \
 							<input type="checkbox" id="narrowchat" class="left"> Narrow Chat</p> \
 							<p onclick="betterttvAction(\'blockads\');document.getElementById(\'blockads\').checked=' + blockAds + ';" class="dropmenu_action"> \
-							<input type="checkbox" id="blockads" class="left"> Block Video Ads</p> \
+							<input type="checkbox" id="blockads" class="left"> Block Video Ads (BROKEN!)</p> \
 							<p onclick="betterttvAction(\'blocksub\');document.getElementById(\'blocksub\').checked=' + blockSubscriber + ';" class="dropmenu_action"> \
 							<input type="checkbox" id="blocksub" class="left"> Hide Subscribe Button</p> \
 							<p onclick="betterttvAction(\'togglemeebo\');document.getElementById(\'hidemeebo\').checked=' + hideMeebo + ';" class="dropmenu_action"> \
 							<input type="checkbox" id="hidemeebo" class="left"> Hide Meebo</p> \
-							<p onclick="betterttvAction(\'related\');document.getElementById(\'related\').checked=' + blockRelated + ';" class="dropmenu_action"> \
-							<input type="checkbox" id="related" class="left"> Show Related Channels</p> \
+							<p onclick="betterttvAction(\'featured\');document.getElementById(\'featured\').checked=' + blockFeatured + ';" class="dropmenu_action"> \
+							<input type="checkbox" id="featured" class="left"> Show Featured Channels</p> \
 							</li> \
 							</ul> \
-							<center> \
-							<form action="https://www.paypal.com/cgi-bin/webscr" method="post"> \
-							<input type="hidden" name="cmd" value="_s-xclick"> \
-							<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----"> \
-							<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"> \
-							<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"> \
-							</form> \
-							</center>';
+							';
 
 		settingsMenu.appendChild(bttvSettings);
 
@@ -1053,8 +1207,9 @@ BetterTTVEngine = function() {
 		if(localStorage.getItem("narrowchat") == "yes") document.getElementById("narrowchat").checked = true;
 		if(localStorage.getItem("blockads") == "true") document.getElementById("blockads").checked = true;
 		if(localStorage.getItem("defaultemotes") == "true") document.getElementById("defaultemotes").checked = true;
+		if(localStorage.getItem("defaulttags") == "true") document.getElementById("defaulttags").checked = true;
 		if(localStorage.getItem("blocksub") == "true") document.getElementById("blocksub").checked = true;
-		if(localStorage.getItem("related") == "true") document.getElementById("related").checked = true;
+		if(localStorage.getItem("featured") == "true") document.getElementById("featured").checked = true;
 		if(localStorage.getItem("hidemeebo") == "true") document.getElementById("hidemeebo").checked = true;
 	}
 
@@ -1076,6 +1231,14 @@ BetterTTVEngine = function() {
 				localStorage.setItem("defaultemotes", "false");
 			} else {
 				localStorage.setItem("defaultemotes", "true");
+			}
+			window.location.reload();
+		}
+		if(action == "defaulttags") {
+			if(localStorage.getItem("defaulttags") == "true") {
+				localStorage.setItem("defaulttags", "false");
+			} else {
+				localStorage.setItem("defaulttags", "true");
 			}
 			window.location.reload();
 		}
@@ -1115,11 +1278,11 @@ BetterTTVEngine = function() {
 				if(getsub) { getsub.style.display='none'; }
 			}
 		}
-		if(action == "related") {
-			if(localStorage.getItem("related") == "true") {
-				localStorage.setItem("related", "false");
+		if(action == "featured") {
+			if(localStorage.getItem("featured") == "true") {
+				localStorage.setItem("featured", "false");
 			} else {
-				localStorage.setItem("related", "true");
+				localStorage.setItem("featured", "true");
 			}
 			window.location.reload();
 		}

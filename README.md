@@ -1,1 +1,1 @@
-# BetterTTV v5.7
+# BetterTTV v6.0
