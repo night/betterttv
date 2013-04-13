@@ -431,8 +431,6 @@ BetterTTVEngine = function() {
 	            } else {
 	            	$j(".live_site_player_container").css({ height: h.toFixed(0) + "px" });
 	            } 
-
-	            //$j(".scroll").customScroll("recalculate");
 	            
 	            _.debounce(function () {
 	            	var d = $j("#broadcast_meta .info .title").width();
@@ -457,8 +455,6 @@ BetterTTVEngine = function() {
 	            } else {
 	            	$j(".live_site_player_container").css({ height: h.toFixed(0) + "px" });
 	            } 
-
-	            //$j(".scroll").customScroll("recalculate");
 	            
 	            _.debounce(function () {
 	            	var d = $j("#broadcast_meta .info .title").width();
