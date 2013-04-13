@@ -45,25 +45,7 @@ BetterTTVEngine = function() {
 
 		betterttvDebug.log("Clearing Ads");
 
-		var clearList = [
-			".a300",
-			".advertisement",
-			".fp_ad",
-			".hide_ad",
-			"#ad",
-			"#fb_like_button",
-			"#fb_like_box",
-			"#google_ads_div_Twitch_ChanMedRectv2_ad_container",
-			"#google_ads_div_Twitch_ClipsMedRectv2_ad_container",
-			"#google_ads_div_Twitch_DirectoryMedRectv2_ad_container",
-			"#header_notification",
-			"#Twitch_FPopaBanner",
-			"#Twitch_FPMedRect",
-			"#Twitch_DiropaBanner",
-			"#eyeDiv",
-			"#Twitch_DirLeaderv2_holder"
-			],
-			frontPageAd = document.getElementById("Twitch_FPopaBanner"),
+		var frontPageAd = document.getElementById("Twitch_FPopaBanner"),
 			directoryPageAd = document.getElementById("Twitch_DiropaBanner");
 
 		if(frontPageAd || directoryPageAd || $j(".takeover").length) {
@@ -86,8 +68,6 @@ BetterTTVEngine = function() {
 		if(localStorage.getItem("blocksub") == "true") {
 			$j("#sub-details").css("display","none");
 		}
-
-		//clearList.forEach(removeElement);
 
 		$j('.advertisement, .hide_ad').hide();
       	$j('#right_col').addClass('noads');
@@ -203,15 +183,6 @@ BetterTTVEngine = function() {
 
 		$j("#small_nav .content ul #small_home a").css("background","url(http://betterttv.nightdev.com/newnavicons.png) no-repeat 0 0");
 
-		$$('.game_filters .game_filter a').each(function(element) {
-			//$j(element).removeAttr("data-href");
-			//$j(element).attr("target","_self");
-		});
-
-		$$('.game_filters .game_filter').each(function(element){
-			//$j(element).removeAttr("data-name");
-		});
-
 		if(localStorage.getItem("hidemeebo") !== "true") {
 			$j("#left_col").css("bottom","35px");
 			$j("#directory-list").css("margin-bottom","50px");
@@ -219,18 +190,6 @@ BetterTTVEngine = function() {
 
 		meebo();
 
-/*
-		$$(".c4").each(function(e) {
-			e.style.width = '250px';
-		});
-		$j("#directory_channels").css("width","690px");
-		$j("#gameselector_input").css("width","230px");
-
-		var directoryCSS = document.createElement("style");
-		directoryCSS.setAttribute("type","text/css");
-		directoryCSS.innerHTML = ".games-grid .game .boxart { width: 136px !important; height: 190px !important; } .stream {width:150px !important;height:150px !important;} .streams .stream .thumb img.cap, .by_game .stream .thumb img.cap {width:150px !important;height:84.375px !important;} .boxart {margin-top:10px !important;height:50px !important;} .meta {height:75px !important;padding-bottom:2px;} .video_grid .video .channelname, .streams .stream .channelname {white-space:normal !important;margin-top:-2px !important;height:35px !important;}";
-		$j('body').append(directoryCSS);
-*/
 		/*
 		$j.get('http://www.twitch.tv/inbox', function(data) {
 			PP['notifications'] = (data.split("unread").length - 2)
@@ -252,7 +211,6 @@ BetterTTVEngine = function() {
 		directoryCSS.innerHTML = ".game_filter.selected a { background-color: #374a9b !important; }@-webkit-keyframes flashing_game_filter_background{0%{background-color:#1e1e1e;color:#aaa;}50%{background-color:#374a9b;color:#fff;}100%{background-color:#1e1e1e;color:#aaa;}}@-webkit-keyframes flashing_game_filter_transparency{0%{opacity:0;filter:alpha(opacity=0);}50%{opacity:1;filter:alpha(opacity=100);}100%{opacity:0;filter:alpha(opacity=0);}}@-webkit-keyframes flashing_game_filter_pop{0%{font-size:50%;opacity:1;filter:alpha(opacity=100);}20%{opacity:1;filter:alpha(opacity=100);}100%{font-size:200%;opacity:0;filter:alpha(opacity=0);}}@-o-keyframes flashing_game_filter_background{0%{background-color:#1e1e1e;color:#aaa;}50%{background-color:#374a9b;color:#fff;}100%{background-color:#1e1e1e;color:#aaa;}}@-o-keyframes flashing_game_filter_transparency{0%{opacity:0;filter:alpha(opacity=0);}50%{opacity:1;filter:alpha(opacity=100);}100%{opacity:0;filter:alpha(opacity=0);}}@-o-keyframes flashing_game_filter_pop{0%{font-size:50%;opacity:1;filter:alpha(opacity=100);}20%{opacity:1;filter:alpha(opacity=100);}100%{font-size:200%;opacity:0;filter:alpha(opacity=0);}}@-moz-keyframes flashing_game_filter_background{0%{background-color:#1e1e1e;color:#aaa;}50%{background-color:#374a9b;color:#fff;}100%{background-color:#1e1e1e;color:#aaa;}}@-moz-keyframes flashing_game_filter_transparency{0%{opacity:0;filter:alpha(opacity=0);}50%{opacity:1;filter:alpha(opacity=100);}100%{opacity:0;filter:alpha(opacity=0);}}@-moz-keyframes flashing_game_filter_pop{0%{font-size:50%;opacity:1;filter:alpha(opacity=100);}20%{opacity:1;filter:alpha(opacity=100);}100%{font-size:200%;opacity:0;filter:alpha(opacity=0);}}@keyframes flashing_game_filter_background{0%{background-color:#1e1e1e;color:#aaa;}50%{background-color:#374a9b;color:#fff;}100%{background-color:#1e1e1e;color:#aaa;}}@keyframes flashing_game_filter_transparency{0%{opacity:0;filter:alpha(opacity=0);}50%{opacity:1;filter:alpha(opacity=100);}100%{opacity:0;filter:alpha(opacity=0);}}@keyframes flashing_game_filter_pop{0%{font-size:50%;opacity:1;filter:alpha(opacity=100);}20%{opacity:1;filter:alpha(opacity=100);}100%{font-size:200%;opacity:0;filter:alpha(opacity=0);}}#nav{visibility:hidden;}#nav_primary a{height:48px;line-height:48px;padding:0!important;}.filter_icon{display:block;width:50px;height:46px;float:left;}.game_filter .animatedhighlight{opacity:0;filter:alpha(opacity=0);display:none;position:absolute;margin-top:0;}.game_filter.flashing a{animation:flashing_game_filter_background 3s 0s 3;-o-animation:flashing_game_filter_background 3s 0s 3;-moz-animation:flashing_game_filter_background 3s 0s 3;-webkit-animation:flashing_game_filter_background 3s 0s 3;}.game_filter.flashing .animatedhighlight{display:block;}.game_filter.flashing .animatedhighlight.total-count{right:0;text-align:center;animation:flashing_game_filter_pop .4s 4.5s 1;-o-animation:flashing_game_filter_pop .4s 4.5s 1;-moz-animation:flashing_game_filter_pop .4s 4.5s 1;-webkit-animation:flashing_game_filter_pop .4s 4.5s 1;}.game_filter.flashing .animatedhighlight.filter_icon,.game_filter.flashing .animatedhighlight.filter_arrow{animation:flashing_game_filter_transparency 3s 0s 3;-o-animation:flashing_game_filter_transparency 3s 0s 3;-moz-animation:flashing_game_filter_transparency 3s 0s 3;-webkit-animation:flashing_game_filter_transparency 3s 0s 3;}.game_filter.selected a{background-color:#374a9b!important;}.game_filter.selected.flashing a{animation:none 0s 0s 1;-o-animation:none 0s 0s 1;-moz-animation:none 0s 0s 1;-webkit-animation:none 0s 0s 1;}.game_filter.selected.flashing .animatedhighlight.filter_icon,.game_filter.selected.flashing .animatedhighlight.filter_arrow{animation:none 0s 0s 1;-o-animation:none 0s 0s 1;-moz-animation:none 0s 0s 1;-webkit-animation:none 0s 0s 1;} #large_nav .content .bottom .loggedin #user_display_name .unread_message_count { background-color: #374a9b; }";
 		$j('body').append(directoryCSS);
 
-		//$j("#main_col.scroll").customScroll("recalculate");
 	}
 
 	chatReformat = function() {
