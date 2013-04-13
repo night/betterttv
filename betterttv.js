@@ -762,7 +762,7 @@ BetterTTVEngine = function() {
 		$j('#meebo-googlePlus-plusone-0').remove();
 		$j('.meebo-20').remove();
 		$j('.meebo-29').remove();
-		$j('.meebo-22').replaceWith('<a href="http://bugs.nightdev.com/betterttv/issues/new" style="margin-right:8px;margin-bottom:3px;color:black;" class="normal_button"><span>Report a BetterTTV Bug</span></a><a href="http://www.betterttv.com" style="margin-right:7px;margin-bottom:3px;color:black;" class="normal_button"><span>BetterTTV v'+betterttvVersion+'</span></a>');
+		$j('.meebo-22').replaceWith('<a href="http://bugs.nightdev.com/projects/betterttv/issues/new?tracker_id=1" style="margin-right:8px;margin-bottom:3px;color:black;" class="normal_button"><span>Report a BetterTTV Bug</span></a><a href="http://www.betterttv.com" style="margin-right:7px;margin-bottom:3px;color:black;" class="normal_button"><span>BetterTTV v'+betterttvVersion+'</span></a>');
 
 	}
 
