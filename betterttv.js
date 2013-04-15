@@ -10,7 +10,7 @@
 
 BetterTTVEngine = function() {
 
-	var betterttvVersion = "6.1",
+	var betterttvVersion = "6.2 Beta",
 		betterttvDebug = {
 			log: function(string) { if(window.console && console.log) console.log("BTTV: "+string); },
 			warn: function(string) { if(window.console && console.warn) console.warn("BTTV: "+string); },
@@ -1020,9 +1020,15 @@ BetterTTVEngine = function() {
 					CurrentChat.silence = false;
 					return;
 				}
-				CurrentChat.admin_message(i18n("BetterTTV: You were disconnected from chat."));
-				CurrentChat.admin_message(i18n("BetterTTV: Reconnecting.."));
-				$j.getJSON("http://23.29.121.109/api/report?type=chat&test1=true&server="+/^Connection lost to \((.*):(80|443)\)/.exec(a.message)[1]);
+				if(CurrentChat.last_sender === PP['login']) {
+					CurrentChat.admin_message(i18n("BetterTTV: You were disconnected from chat."));
+					CurrentChat.admin_message(i18n("BetterTTV: It is very likely you are globally banned from chat for 8 hours."));
+					CurrentChat.admin_message(i18n("BetterTTV: Reconnecting anyways.."));
+				} else {
+					CurrentChat.admin_message(i18n("BetterTTV: You were disconnected from chat."));
+					CurrentChat.admin_message(i18n("BetterTTV: Reconnecting.."));
+					$j.getJSON("http://23.29.121.109/api/report?type=chat&test1=true&server="+/^Connection lost to \((.*):(80|443)\)/.exec(a.message)[1]);
+				}
 			}
 		}
 
