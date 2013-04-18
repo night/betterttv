@@ -1220,12 +1220,12 @@ BetterTTVEngine = function() {
 
 				function checkChannelViewerCount() {
 					console.log("Checking for Viewer Count");
-					if($j("#channel_viewer_count").length && $j("#channel_viewer_count").is(':empty')) {
-						$j("#channel_viewer_count").css("display","none !important");
+					if($j("#main_col .content #stats_and_actions #channel_stats #channel_viewer_count").length && $j("#main_col .content #stats_and_actions #channel_stats #channel_viewer_count").is(':empty')) {
+						$j("#main_col .content #stats_and_actions #channel_stats #channel_viewer_count").css("display","none");
 						console.log("1");
 					} else {
 						console.log("2");
-						$j("#channel_viewer_count").css("display","inline-block");
+						$j("#main_col .content #stats_and_actions #channel_stats #channel_viewer_count").css("display","inline-block");
 					}
 					setTimeout(checkChannelViewerCount, 5000);
 				}
