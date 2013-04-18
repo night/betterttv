@@ -1222,6 +1222,8 @@ BetterTTVEngine = function() {
 			darkCSS.innerHTML = '';
 			$j('body').append(darkCSS);
 
+			$j("channel_viewer_count").css("display","none");
+
 			function setChannelViewerCount(e, t) {
 				if($j("channel_viewer_count").length && e !== 0 && e > 0) {
 					$j("channel_viewer_count").html(commatize(e));
@@ -1229,7 +1231,6 @@ BetterTTVEngine = function() {
 				} else {
 					$j("channel_viewer_count").css("display","none");
 				}
-				
 			}
 		}
 
