@@ -429,7 +429,7 @@ BetterTTVEngine = function() {
 			watermark.style.opacity = "0.9";
 			watermark.style.textShadow = "-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000";
 			watermark.style.textDecoration = "none";
-			$j("#header_logo").append(watermark);
+			$j("#logo").append(watermark);
 		}
 
 		var growlCSSInject = document.createElement("link");
