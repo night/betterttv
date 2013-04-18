@@ -1220,12 +1220,12 @@ BetterTTVEngine = function() {
 
 				function checkChannelViewerCount() {
 					console.log("Checking for Viewer Count");
-					if($j("#channel_viewer_count").length && $j("#channel_viewer_count_bttv").html() != "") {
+					if($j("#channel_viewer_count").length && $j("#channel_viewer_count").is(':empty')) {
+						$j("#channel_viewer_count").css("display","none !important");
 						console.log("1");
-						$j("#channel_viewer_count").css("display","inline-block");
 					} else {
 						console.log("2");
-						$j("#channel_viewer_count").css("display","none !important");
+						$j("#channel_viewer_count").css("display","inline-block");
 					}
 					setTimeout(checkChannelViewerCount, 5000);
 				}
