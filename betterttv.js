@@ -1206,30 +1206,27 @@ BetterTTVEngine = function() {
 
 	darkenPage = function() {
 
-		var chat = document.getElementById("twitch_chat"),
-			dashboard = document.getElementById("dashboard_title");
-
-		if(!chat || dashboard) return;
-
 		betterttvDebug.log("Darkening Chat");
+		
+		if(PP['page_type'] === "video" || PP['page_type'] === "channel") {
+			if(localStorage.getItem("darkchat") === "true") {
+				var darkCSS = document.createElement("link");
+				darkCSS.setAttribute("href","http://betterttv.nightdev.com/betterttv-dark.css");
+				darkCSS.setAttribute("type","text/css");
+				darkCSS.setAttribute("rel","stylesheet");
+				darkCSS.setAttribute("id","darkTwitch");
+				darkCSS.innerHTML = '';
+				$j('body').append(darkCSS);
 
-		if(localStorage.getItem("darkchat") === "true") {
-			var darkCSS = document.createElement("link");
-			darkCSS.setAttribute("href","http://betterttv.nightdev.com/betterttv-dark.css");
-			darkCSS.setAttribute("type","text/css");
-			darkCSS.setAttribute("rel","stylesheet");
-			darkCSS.setAttribute("id","darkTwitch");
-			darkCSS.innerHTML = '';
-			$j('body').append(darkCSS);
+				$j("channel_viewer_count").css("display","none !important");
 
-			$j("channel_viewer_count").css("display","none");
-
-			function setChannelViewerCount(e, t) {
-				if($j("channel_viewer_count").length && e !== 0 && e > 0) {
-					$j("channel_viewer_count").html(commatize(e));
-					$j("channel_viewer_count").show("display","inline-block");
-				} else {
-					$j("channel_viewer_count").css("display","none");
+				function setChannelViewerCount(e, t) {
+					if($j("channel_viewer_count").length && e !== 0 && e > 0) {
+						$j("channel_viewer_count").html(commatize(e));
+						$j("channel_viewer_count").show("display","inline-block");
+					} else {
+						$j("channel_viewer_count").css("display","none !important");
+					}
 				}
 			}
 		}
