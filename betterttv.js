@@ -1219,6 +1219,7 @@ BetterTTVEngine = function() {
 				$j('body').append(darkCSS);
 
 				function checkChannelViewerCount() {
+					console.log("Checking for Viewer Count");
 					if($j("#channel_viewer_count").length && $j("#channel_viewer_count_bttv").html() !== "") {
 						$j("#channel_viewer_count").show("display","inline-block");
 					} else {
@@ -1227,7 +1228,7 @@ BetterTTVEngine = function() {
 					setTimeout(checkChannelViewerCount, 5000);
 				}
 
-				setTimeout(checkChannelViewerCount, 5000);
+				checkChannelViewerCount();
 
 			}
 		}
