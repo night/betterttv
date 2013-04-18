@@ -1218,14 +1218,14 @@ BetterTTVEngine = function() {
 				darkCSS.innerHTML = '';
 				$j('body').append(darkCSS);
 
-				$j("channel_viewer_count").replaceWith('<span class="stat" id="channel_viewer_count_bttv" original-title="Watching Now" style="display:none;"></span>');
-				
+				$j("#channel_viewer_count").replaceWith('<span class="stat" id="channel_viewer_count_bttv" original-title="Watching Now" style="display:none;"></span>');
+
 				function setChannelViewerCount(e, t) {
-					if($j("channel_viewer_count_bttv").length && e !== 0 && e > 0) {
-						$j("channel_viewer_count_bttv").html(commatize(e));
-						$j("channel_viewer_count_bttv").show("display","inline-block");
+					if($j("#channel_viewer_count_bttv").length && e !== 0 && e > 0) {
+						$j("#channel_viewer_count_bttv").html(commatize(e));
+						$j("#channel_viewer_count_bttv").show("display","inline-block");
 					} else {
-						$j("channel_viewer_count_bttv").css("display","none");
+						$j("#channel_viewer_count_bttv").css("display","none");
 					}
 				}
 			}
