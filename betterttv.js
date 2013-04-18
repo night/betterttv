@@ -1220,7 +1220,7 @@ BetterTTVEngine = function() {
 
 				function checkChannelViewerCount() {
 					console.log("Checking for Viewer Count");
-					if($j("#channel_viewer_count").length && $j("#channel_viewer_count_bttv").html() !== "") {
+					if($j("#channel_viewer_count").length && $j("#channel_viewer_count_bttv").html() != "") {
 						console.log("1");
 						$j("#channel_viewer_count").css("display","inline-block");
 					} else {
