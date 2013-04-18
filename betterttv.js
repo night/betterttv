@@ -400,11 +400,9 @@ BetterTTVEngine = function() {
 
 		betterttvDebug.log("Branding Twitch with BTTV logo");
 
-		var logo = document.getElementById("header_logo");
-
 		if($j("#header_logo").length) {
 			$j("#header_logo").html("<img alt=\"TwitchTV\" src=\"http://betterttv.nightdev.com/newtwitchlogo.png\">");
-			watermark = document.createElement("div");
+			var watermark = document.createElement("div");
 			watermark.style.marginTop = "-45px";
 			watermark.style.marginLeft = "-8px";
 			watermark.innerHTML = "Better";
@@ -419,6 +417,7 @@ BetterTTVEngine = function() {
 		}
 
 		if($j("#logo").length) {
+			var watermark = document.createElement("div");
 			watermark.style.marginTop = "-10px";
 			watermark.style.marginLeft = "38px";
 			watermark.innerHTML = "Better";
