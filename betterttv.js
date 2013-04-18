@@ -1223,11 +1223,11 @@ BetterTTVEngine = function() {
 			$j('body').append(darkCSS);
 
 			function setChannelViewerCount(e, t) {
-				if($j("channel_viewer_count").length && e !== 0) {
+				if($j("channel_viewer_count").length && e !== 0 && e > 0) {
 					$j("channel_viewer_count").html(commatize(e));
-					$j("channel_viewer_count").show();
+					$j("channel_viewer_count").show("display","inline-block");
 				} else {
-					$j("channel_viewer_count").hide();
+					$j("channel_viewer_count").css("display","none");
 				}
 				
 			}
