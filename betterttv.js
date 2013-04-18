@@ -1224,8 +1224,9 @@ BetterTTVEngine = function() {
 					} else {
 						$j("#channel_viewer_count").css("display","none !important");
 					}
+					setTimeout(checkChannelViewerCount, 5000);
 				}
-				
+
 				setTimeout(checkChannelViewerCount, 5000);
 
 			}
