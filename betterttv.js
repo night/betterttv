@@ -159,57 +159,7 @@ BetterTTVEngine = function() {
 
 		if(PP['page_type'] !== "directory") return;
 
-		var logo = document.getElementById("logo"),
-			watermark = document.createElement("div");
-
-		watermark.style.marginTop = "-10px";
-		watermark.style.marginLeft = "38px";
-		watermark.innerHTML = "Better";
-		watermark.style.color = "#FF0000";
-		watermark.style.fontWeight = "bold";
-		watermark.style.fontSize = "20px";
-		watermark.style.textIndent = "0px";
-		watermark.style.zIndex = "9000";
-		watermark.style.opacity = "0.9";
-		watermark.style.textShadow = "-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000";
-		watermark.style.textDecoration = "none";
-		logo.appendChild(watermark);
-
-		var growlCSSInject = document.createElement("link");
-		growlCSSInject.setAttribute("href","http://betterttv.nightdev.com/jquery.gritter.css");
-		growlCSSInject.setAttribute("type","text/css");
-		growlCSSInject.setAttribute("rel","stylesheet");
-		$j("head").append(growlCSSInject);
-
-		$j("#small_nav .content ul #small_home a").css("background","url(http://betterttv.nightdev.com/newnavicons.png) no-repeat 0 0");
-
-		if(localStorage.getItem("hidemeebo") !== "true") {
-			$j("#left_col").css("bottom","35px");
-			$j("#directory-list").css("margin-bottom","50px");
-		}
-
-		meebo();
-
-		/*
-		$j.get('http://www.twitch.tv/inbox', function(data) {
-			PP['notifications'] = (data.split("unread").length - 2)
-			if(PP['notifications'] == 10) PP['notifications'] = "10+"
-			if(PP['notifications'] !== 0) {
-				var messagesnum = document.createElement("a"),
-					user_display_name = document.getElementById("user_display_name");
-				messagesnum.setAttribute("id","messagescont");
-				messagesnum.setAttribute("href","/inbox");
-				messagesnum.setAttribute("style","margin-left: 10px;");
-				messagesnum.innerHTML = "<span id='messagescount' style='padding-left:28px;background-image:url(http://www-cdn.jtvnw.net/images/xarth/g/g18_mail-FFFFFF80.png);background-position: 8px -2px;background-repeat: no-repeat;color:white;'>" + PP['notifications'] + "</span>";
-				user_display_name.appendChild(messagesnum);
-			}
-			setTimeout(function(){checkMessages(true)}, 300000);
-		});*/
-
-		var directoryCSS = document.createElement("style");
-		directoryCSS.setAttribute("type","text/css");
-		directoryCSS.innerHTML = ".game_filter.selected a { background-color: #374a9b !important; }@-webkit-keyframes flashing_game_filter_background{0%{background-color:#1e1e1e;color:#aaa;}50%{background-color:#374a9b;color:#fff;}100%{background-color:#1e1e1e;color:#aaa;}}@-webkit-keyframes flashing_game_filter_transparency{0%{opacity:0;filter:alpha(opacity=0);}50%{opacity:1;filter:alpha(opacity=100);}100%{opacity:0;filter:alpha(opacity=0);}}@-webkit-keyframes flashing_game_filter_pop{0%{font-size:50%;opacity:1;filter:alpha(opacity=100);}20%{opacity:1;filter:alpha(opacity=100);}100%{font-size:200%;opacity:0;filter:alpha(opacity=0);}}@-o-keyframes flashing_game_filter_background{0%{background-color:#1e1e1e;color:#aaa;}50%{background-color:#374a9b;color:#fff;}100%{background-color:#1e1e1e;color:#aaa;}}@-o-keyframes flashing_game_filter_transparency{0%{opacity:0;filter:alpha(opacity=0);}50%{opacity:1;filter:alpha(opacity=100);}100%{opacity:0;filter:alpha(opacity=0);}}@-o-keyframes flashing_game_filter_pop{0%{font-size:50%;opacity:1;filter:alpha(opacity=100);}20%{opacity:1;filter:alpha(opacity=100);}100%{font-size:200%;opacity:0;filter:alpha(opacity=0);}}@-moz-keyframes flashing_game_filter_background{0%{background-color:#1e1e1e;color:#aaa;}50%{background-color:#374a9b;color:#fff;}100%{background-color:#1e1e1e;color:#aaa;}}@-moz-keyframes flashing_game_filter_transparency{0%{opacity:0;filter:alpha(opacity=0);}50%{opacity:1;filter:alpha(opacity=100);}100%{opacity:0;filter:alpha(opacity=0);}}@-moz-keyframes flashing_game_filter_pop{0%{font-size:50%;opacity:1;filter:alpha(opacity=100);}20%{opacity:1;filter:alpha(opacity=100);}100%{font-size:200%;opacity:0;filter:alpha(opacity=0);}}@keyframes flashing_game_filter_background{0%{background-color:#1e1e1e;color:#aaa;}50%{background-color:#374a9b;color:#fff;}100%{background-color:#1e1e1e;color:#aaa;}}@keyframes flashing_game_filter_transparency{0%{opacity:0;filter:alpha(opacity=0);}50%{opacity:1;filter:alpha(opacity=100);}100%{opacity:0;filter:alpha(opacity=0);}}@keyframes flashing_game_filter_pop{0%{font-size:50%;opacity:1;filter:alpha(opacity=100);}20%{opacity:1;filter:alpha(opacity=100);}100%{font-size:200%;opacity:0;filter:alpha(opacity=0);}}#nav{visibility:hidden;}#nav_primary a{height:48px;line-height:48px;padding:0!important;}.filter_icon{display:block;width:50px;height:46px;float:left;}.game_filter .animatedhighlight{opacity:0;filter:alpha(opacity=0);display:none;position:absolute;margin-top:0;}.game_filter.flashing a{animation:flashing_game_filter_background 3s 0s 3;-o-animation:flashing_game_filter_background 3s 0s 3;-moz-animation:flashing_game_filter_background 3s 0s 3;-webkit-animation:flashing_game_filter_background 3s 0s 3;}.game_filter.flashing .animatedhighlight{display:block;}.game_filter.flashing .animatedhighlight.total-count{right:0;text-align:center;animation:flashing_game_filter_pop .4s 4.5s 1;-o-animation:flashing_game_filter_pop .4s 4.5s 1;-moz-animation:flashing_game_filter_pop .4s 4.5s 1;-webkit-animation:flashing_game_filter_pop .4s 4.5s 1;}.game_filter.flashing .animatedhighlight.filter_icon,.game_filter.flashing .animatedhighlight.filter_arrow{animation:flashing_game_filter_transparency 3s 0s 3;-o-animation:flashing_game_filter_transparency 3s 0s 3;-moz-animation:flashing_game_filter_transparency 3s 0s 3;-webkit-animation:flashing_game_filter_transparency 3s 0s 3;}.game_filter.selected a{background-color:#374a9b!important;}.game_filter.selected.flashing a{animation:none 0s 0s 1;-o-animation:none 0s 0s 1;-moz-animation:none 0s 0s 1;-webkit-animation:none 0s 0s 1;}.game_filter.selected.flashing .animatedhighlight.filter_icon,.game_filter.selected.flashing .animatedhighlight.filter_arrow{animation:none 0s 0s 1;-o-animation:none 0s 0s 1;-moz-animation:none 0s 0s 1;-webkit-animation:none 0s 0s 1;} #large_nav .content .bottom .loggedin #user_display_name .unread_message_count { background-color: #374a9b; }";
-		$j('body').append(directoryCSS);
+		// Don't need this?
 
 	}
 
@@ -217,21 +167,16 @@ BetterTTVEngine = function() {
 
 		betterttvDebug.log("Reformatting Chat");
 
-		
-
 		var chat = document.getElementById("chat_lines"),
 			channelHeader = document.getElementById("header_banner");
 
 		if(!chat) return;
 
-		
 		if(channelHeader) {
 			channelHeader = 125;
 		} else {
 			channelHeader = 0;
 		}
-
-		
 
 		if(PP['page_type'] == "channel" && $j(".betabar").length === 0) {
 			$j("#chat_lines").css({
@@ -250,7 +195,7 @@ BetterTTVEngine = function() {
 			});
 		}
 		
-		if ($j(".betabar").length !== 0) {
+		if($j(".betabar").length) {
 			$j("#chat_lines").css({
 				paddingRight: "5px"
 			});
@@ -269,16 +214,10 @@ BetterTTVEngine = function() {
 		$j('#chat_loading_spinner').attr('src',"data:image/gif;base64,R0lGODlhFgAWAPMGANfX1wAAADc3N1tbW6Ojo39/f2tra8fHx9nZ2RsbG+np6SwsLEtLS4eHh7q6ugAAACH/C05FVFNDQVBFMi4wAwEAAAAh/hoiQ3JlYXRlZCB3aXRoIENoaW1wbHkuY29tIgAh+QQJCgAGACwAAAAAFgAWAAAEbNCESY29OEvBRdDgFXReGI7dZ2oop65YWypIjSgGbSOW/CGAIICnEAIOPdLPSDQiNykDUNgUPn1SZs6ZjE6D1eBVmaVurV1XGXwWp0vfYfv4XpqLaKg6HqbrZzs4OjZ1MBlYhiJkiYWMfy+GEQAh+QQJCgAGACwAAAAAFgAWAAAEctDIKYO9NKe9lwlCKAQZlQzo4IEiWUpnuorjC6fqR7tvjM4tgwJBJN5kuqACwGQef8kQadkEPHMsqbBqNfiwu231CtRSm+Ro7ez04sprbjobH7uR9Kn8Ds2L0XxgSkVGgXA8JV+HNoZqiBocCYuMJX4vEQAh+QQJCgAAACwAAAAAFgAWAAAEcxDISWu4uNLEOwhCKASSGA5AMqxD8pkkIBR0gaqsC4rxXN+s1otXqtlSQR2s+EPmhqGeEfjcRZk06kpJlE2dW+gIe8SFrWNv0yxES9dJ8TsLbi/VdDb3ii/H3WRadl0+eX93hX5ViCaCe2kaKR0ccpGWlREAIfkECQoAAQAsAAAAABYAFgAABHUwyEmrvTisxHlmQigw2mAOiWSsaxMwRVyQy4mqRE64sEzbqYBBt3vJZqVTcKjjHX9KXNPoS5qWRGe1FhVmqTHoVZrThq0377R35o7VZTDSnWbG2XMguYgX1799aFhrT4J7ZnldLC1yfkEXICKOGRcbHY+UlBEAIfkECQoAAQAsAAAAABYAFgAABHIwyEmrvThrOoQXTFYYpFEEQ6EWgkS8rxMUMHGmaxsQR3/INNhtxXL5frPaMGf0AZUooo7nTAqjzN3xecWpplvra/lt9rhjbFlbDaa9RfZZbFPHqXN3HQ5uQ/lmSHpkdzVoe1IiJSZ2OhsTHR8hj5SVFREAIfkECQoAAQAsAAAAABYAFgAABGowyEmrvTjrzWczIJg5REk4QWMShoQAMKAExGEfRLq2QQzPtVtOZeL5ZLQbTleUHIHK4c7pgwqZJWM1eSVmqTGrTdrsbYNjLAv846a9a3PYvYRr5+j6NPDCR9U8FyQmKHYdHiEih4uMjRQRACH5BAkKAAEALAAAAAAWABYAAARkMMhJq7046807d0QYSkhZKoFiIqhzvAchATSNIjWABC4sBznALbfrvX7BYa0Ii81yShrT96xFdbwmEhrALbNUINcrBR+rti7R7BRb1V9jOwkvy38rVmrV0nokICI/f4SFhocSEQAh+QQJCgABACwAAAAAFgAWAAAEWjDISau9OOvNu7dIGCqBIiKkeUoH4AIk8gJIOR/sHM+1cuev3av3C7SCAdnQ9sIZdUke0+U8uoQuYhN4jS592ydSmZ0CqlAyzYweS8FUyQlVOqXmn7x+z+9bIgA7");
 	
 		if(localStorage.getItem("defaulttags") === "true") {
-			var originalTags = '.line .oldmod { display: inline-block;text-indent: 21px;background-image: url(../images/xarth/g/g18_sword-FFFFFF80.png);background-position: 0 center;background-repeat: no-repeat;display: inline-block;vertical-align: bottom;height: 18px;min-width: 18px;width: expression(document.body.clientWidth < $width ? "18px":"auto");padding: 0;text-indent: -9999px;border-radius: 2px;-moz-border-radius: 2px;-webkit-border-radius: 2px;background-color: #090;overflow: hidden;} .line .oldbroadcaster { display: inline-block;text-indent: 21px;background-image: url(../images/xarth/g/g18_camera-FFFFFF80.png);background-position: 0 center;background-repeat: no-repeat;display: inline-block;vertical-align: bottom;height: 18px;min-width: 18px;width: expression(document.body.clientWidth < $width ? "18px":"auto");padding: 0;text-indent: -9999px;border-radius: 2px;-moz-border-radius: 2px;-webkit-border-radius: 2px;background-color: #090;overflow: hidden;} .line .oldstaff { display: inline-block;text-indent: 21px;background-image: url(../images/xarth/g/g18_wrench-FFFFFF80.png);background-position: 0 center;background-repeat: no-repeat;display: inline-block;vertical-align: bottom;height: 18px;min-width: 18px;width: expression(document.body.clientWidth < $width ? "18px":"auto");padding: 0;text-indent: -9999px;border-radius: 2px;-moz-border-radius: 2px;-webkit-border-radius: 2px;background-color: #090;overflow: hidden;} .line .oldadmin { display: inline-block;text-indent: 21px;background-image: url(../images/xarth/g/g18_badge-FFFFFF80.png);background-position: 0 center;background-repeat: no-repeat;display: inline-block;vertical-align: bottom;height: 18px;min-width: 18px;width: expression(document.body.clientWidth < $width ? "18px":"auto");padding: 0;text-indent: -9999px;border-radius: 2px;-moz-border-radius: 2px;-webkit-border-radius: 2px;background-color: #090;overflow: hidden;}';
-		} else {
-			var originalTags = '';
+			var originalTags = '<style type="text/css">.line .oldmod { display: inline-block;text-indent: 21px;background-image: url(../images/xarth/g/g18_sword-FFFFFF80.png);background-position: 0 center;background-repeat: no-repeat;display: inline-block;vertical-align: bottom;height: 18px;min-width: 18px;width: expression(document.body.clientWidth < $width ? "18px":"auto");padding: 0;text-indent: -9999px;border-radius: 2px;-moz-border-radius: 2px;-webkit-border-radius: 2px;background-color: #090;overflow: hidden;} .line .oldbroadcaster { display: inline-block;text-indent: 21px;background-image: url(../images/xarth/g/g18_camera-FFFFFF80.png);background-position: 0 center;background-repeat: no-repeat;display: inline-block;vertical-align: bottom;height: 18px;min-width: 18px;width: expression(document.body.clientWidth < $width ? "18px":"auto");padding: 0;text-indent: -9999px;border-radius: 2px;-moz-border-radius: 2px;-webkit-border-radius: 2px;background-color: #090;overflow: hidden;} .line .oldstaff { display: inline-block;text-indent: 21px;background-image: url(../images/xarth/g/g18_wrench-FFFFFF80.png);background-position: 0 center;background-repeat: no-repeat;display: inline-block;vertical-align: bottom;height: 18px;min-width: 18px;width: expression(document.body.clientWidth < $width ? "18px":"auto");padding: 0;text-indent: -9999px;border-radius: 2px;-moz-border-radius: 2px;-webkit-border-radius: 2px;background-color: #090;overflow: hidden;} .line .oldadmin { display: inline-block;text-indent: 21px;background-image: url(../images/xarth/g/g18_badge-FFFFFF80.png);background-position: 0 center;background-repeat: no-repeat;display: inline-block;vertical-align: bottom;height: 18px;min-width: 18px;width: expression(document.body.clientWidth < $width ? "18px":"auto");padding: 0;text-indent: -9999px;border-radius: 2px;-moz-border-radius: 2px;-webkit-border-radius: 2px;background-color: #090;overflow: hidden;}</style>';
+			$j('body').append(originalTags);
 		}
-
-		var chatCSS = document.createElement("style");
-		chatCSS.setAttribute("type","text/css");
-		chatCSS.innerHTML = ".dropmenu a, .ui-menu a, .ui-multiselect-menu a { color: white !important; } input.text:focus,select:focus,textarea:focus{outline:0;background-color:#fff;box-shadow:0 0 3px 1px #dad9d9;-moz-box-shadow:0 0 3px 1px #dad9d9;-webkit-box-shadow:0 0 3px 1px #dad9d9;border:1px solid #000;color:#000;} .primary_button:hover,.primary_button:focus{ background: linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -o-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -moz-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -webkit-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -ms-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%); } .primary_button { border-color: #000 !important; background: linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -o-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -moz-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -webkit-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -ms-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%); } .chat_line a {color:#005596;} #chat_line_list li .mod_button img{vertical-align:baseline;padding: 0px;margin-bottom:-5px;} .chat_line img {vertical-align: baseline !important;} "+originalTags+" .line .turbo { margin-top: -2px; }  .line .mod, .line .staff, .line .admin, .line .broadcaster {background-image: none !important;background-position: none !important;background-repeat: none !important;display: inline !important;height: none !important;min-width: none !important;overflow: none !important;padding: 1px 3px !important;text-indent: none !important;vertical-align: baseline !important;color: white !important;font-size: 0.8572em !important;font-weight: bold !important;} .line .bot {background-color: #666666;border-radius: 2px 2px 2px 2px;padding: 1px 3px;font-weight: bold;font-size: 0.8572em;color: white;display:inline !important;} .line .brown {background-color: #6B4226;border-radius: 2px 2px 2px 2px;padding: 1px 3px;font-weight: bold;font-size: 0.8572em;color: white;display:inline !important;} .line .orange {background-color: orange;border-radius: 2px 2px 2px 2px;padding: 1px 3px;font-weight: bold;font-size: 0.8572em;color: white;display:inline !important;} .line .lefty {background-color: red;background-image:url('http://betterttv.nightdev.com/tags/ca.gif');padding-left:23px !important;border-radius: 2px 2px 2px 2px;padding: 1px 3px;font-weight: bold;font-size: 0.8572em;color: white;display:inline !important;} .line .staff {background-color: #06C;} .line .purple {background-color: #4F007B;border-radius: 2px 2px 2px 2px;padding: 1px 3px;font-weight: bold;font-size: 0.8572em;color: white;display:inline !important;} .emoticon {vertical-align: baseline !important;}";
-		$j('body').append(chatCSS);
-
+		
 	}
 
 	newChannelReformat = function() {
@@ -293,71 +232,7 @@ BetterTTVEngine = function() {
 			}
 		}
 
-		/*
-		$j.get('http://www.twitch.tv/inbox', function(data) {
-			PP['notifications'] = (data.split("unread").length - 2)
-			if(PP['notifications'] == 10) PP['notifications'] = "10+"
-			if(PP['notifications'] !== 0) {
-				var messagesnum = document.createElement("a"),
-					user_display_name = document.getElementById("user_display_name");
-				messagesnum.setAttribute("id","messagescont");
-				messagesnum.setAttribute("href","/inbox");
-				messagesnum.setAttribute("style","margin-left: 10px;");
-				messagesnum.innerHTML = "<span id='messagescount' style='padding-left:28px;background-image:url(http://www-cdn.jtvnw.net/images/xarth/g/g18_mail-FFFFFF80.png);background-position: 8px -2px;background-repeat: no-repeat;color:white;'>" + PP['notifications'] + "</span>";
-				user_display_name.appendChild(messagesnum);
-			}
-			setTimeout(function(){checkMessages(true)}, 300000);
-		});
-*/
-
-		var logo = document.getElementById("logo"),
-			watermark = document.createElement("div");
-
-		watermark.style.marginTop = "-10px";
-		watermark.style.marginLeft = "38px";
-		watermark.innerHTML = "Better";
-		watermark.style.color = "#FF0000";
-		watermark.style.fontWeight = "bold";
-		watermark.style.fontSize = "20px";
-		watermark.style.textIndent = "0px";
-		watermark.style.zIndex = "9000";
-		watermark.style.opacity = "0.9";
-		watermark.style.textShadow = "-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000";
-		watermark.style.textDecoration = "none";
-		logo.appendChild(watermark);
-
-		var growlCSSInject = document.createElement("link");
-		growlCSSInject.setAttribute("href","http://betterttv.nightdev.com/jquery.gritter.css");
-		growlCSSInject.setAttribute("type","text/css");
-		growlCSSInject.setAttribute("rel","stylesheet");
-		$j("head").append(growlCSSInject);
-
-		var directoryCSS = document.createElement("style");
-		directoryCSS.setAttribute("type","text/css");
-		directoryCSS.innerHTML = "@-webkit-keyframes flashing_game_filter_background{0%{background-color:#1e1e1e;color:#aaa;}50%{background-color:#374a9b;color:#fff;}100%{background-color:#1e1e1e;color:#aaa;}}@-webkit-keyframes flashing_game_filter_transparency{0%{opacity:0;filter:alpha(opacity=0);}50%{opacity:1;filter:alpha(opacity=100);}100%{opacity:0;filter:alpha(opacity=0);}}@-webkit-keyframes flashing_game_filter_pop{0%{font-size:50%;opacity:1;filter:alpha(opacity=100);}20%{opacity:1;filter:alpha(opacity=100);}100%{font-size:200%;opacity:0;filter:alpha(opacity=0);}}@-o-keyframes flashing_game_filter_background{0%{background-color:#1e1e1e;color:#aaa;}50%{background-color:#374a9b;color:#fff;}100%{background-color:#1e1e1e;color:#aaa;}}@-o-keyframes flashing_game_filter_transparency{0%{opacity:0;filter:alpha(opacity=0);}50%{opacity:1;filter:alpha(opacity=100);}100%{opacity:0;filter:alpha(opacity=0);}}@-o-keyframes flashing_game_filter_pop{0%{font-size:50%;opacity:1;filter:alpha(opacity=100);}20%{opacity:1;filter:alpha(opacity=100);}100%{font-size:200%;opacity:0;filter:alpha(opacity=0);}}@-moz-keyframes flashing_game_filter_background{0%{background-color:#1e1e1e;color:#aaa;}50%{background-color:#374a9b;color:#fff;}100%{background-color:#1e1e1e;color:#aaa;}}@-moz-keyframes flashing_game_filter_transparency{0%{opacity:0;filter:alpha(opacity=0);}50%{opacity:1;filter:alpha(opacity=100);}100%{opacity:0;filter:alpha(opacity=0);}}@-moz-keyframes flashing_game_filter_pop{0%{font-size:50%;opacity:1;filter:alpha(opacity=100);}20%{opacity:1;filter:alpha(opacity=100);}100%{font-size:200%;opacity:0;filter:alpha(opacity=0);}}@keyframes flashing_game_filter_background{0%{background-color:#1e1e1e;color:#aaa;}50%{background-color:#374a9b;color:#fff;}100%{background-color:#1e1e1e;color:#aaa;}}@keyframes flashing_game_filter_transparency{0%{opacity:0;filter:alpha(opacity=0);}50%{opacity:1;filter:alpha(opacity=100);}100%{opacity:0;filter:alpha(opacity=0);}}@keyframes flashing_game_filter_pop{0%{font-size:50%;opacity:1;filter:alpha(opacity=100);}20%{opacity:1;filter:alpha(opacity=100);}100%{font-size:200%;opacity:0;filter:alpha(opacity=0);}}#nav{visibility:hidden;}#nav_primary a{height:48px;line-height:48px;padding:0!important;}.filter_icon{display:block;width:50px;height:46px;float:left;}.game_filter .animatedhighlight{opacity:0;filter:alpha(opacity=0);display:none;position:absolute;margin-top:0;}.game_filter.flashing a{animation:flashing_game_filter_background 3s 0s 3;-o-animation:flashing_game_filter_background 3s 0s 3;-moz-animation:flashing_game_filter_background 3s 0s 3;-webkit-animation:flashing_game_filter_background 3s 0s 3;}.game_filter.flashing .animatedhighlight{display:block;}.game_filter.flashing .animatedhighlight.total-count{right:0;text-align:center;animation:flashing_game_filter_pop .4s 4.5s 1;-o-animation:flashing_game_filter_pop .4s 4.5s 1;-moz-animation:flashing_game_filter_pop .4s 4.5s 1;-webkit-animation:flashing_game_filter_pop .4s 4.5s 1;}.game_filter.flashing .animatedhighlight.filter_icon,.game_filter.flashing .animatedhighlight.filter_arrow{animation:flashing_game_filter_transparency 3s 0s 3;-o-animation:flashing_game_filter_transparency 3s 0s 3;-moz-animation:flashing_game_filter_transparency 3s 0s 3;-webkit-animation:flashing_game_filter_transparency 3s 0s 3;}.game_filter.selected a{background-color:#374a9b!important;}.game_filter.selected.flashing a{animation:none 0s 0s 1;-o-animation:none 0s 0s 1;-moz-animation:none 0s 0s 1;-webkit-animation:none 0s 0s 1;}.game_filter.selected.flashing .animatedhighlight.filter_icon,.game_filter.selected.flashing .animatedhighlight.filter_arrow{animation:none 0s 0s 1;-o-animation:none 0s 0s 1;-moz-animation:none 0s 0s 1;-webkit-animation:none 0s 0s 1;} #large_nav .content .bottom .loggedin #user_display_name .unread_message_count { background-color: #374a9b; } #right_col .content { width: 100%; } #right_col .resizer { width: 5px; height: 100%; position:absolute; left: -2; z-index: 9001; bottom: 0; cursor: e-resize; }";
-		$j('body').append(directoryCSS);
-
 		$j('#right_col').append("<div class='resizer' onselectstart='return false;' title='Drag to enlarge chat =D'></vid>");
-
-		if(localStorage.getItem("hidemeebo") !== "true") {
-			$j("#right_col").css("bottom","35px");
-			$j("#left_col").css("bottom","35px");
-			$j("#main_col .content .scroll .scroll-content-contain").css("margin-bottom","35px");
-		}
-
-		$$('#right_col .content .top').each(function(element) {
-			element.style.backgroundColor = '#E5E5E5';
-		});
-
-		/*var channelBackground = $j('#custom_bg').attr('image');
-		$j('#custom_bg').replaceWith('<img id="custom_bg" src="'+channelBackground+'" width="100%" />');*/
-
-		document.getElementById("right_close").setAttribute('title','Drag to Resize Chat or Click to Open/Close');
-		document.getElementById("left_close").setAttribute('title','Click to Open/Close');
-		
-		$j("#small_nav .content ul #small_home a").css("background","url(http://betterttv.nightdev.com/newnavicons.png) no-repeat 0 0");
-
-		meebo();
 
 		$j(document).ready(function()
 		{
@@ -527,27 +402,36 @@ BetterTTVEngine = function() {
 
 		var logo = document.getElementById("header_logo");
 
-		if(!logo) return;
+		if($j("#header_logo").length) {
+			$j("#header_logo").html("<img alt=\"TwitchTV\" src=\"http://betterttv.nightdev.com/newtwitchlogo.png\">");
+			watermark = document.createElement("div");
+			watermark.style.marginTop = "-45px";
+			watermark.style.marginLeft = "-8px";
+			watermark.innerHTML = "Better";
+			watermark.style.color = "#FF0000";
+			watermark.style.fontWeight = "bold";
+			watermark.style.fontSize = "15px";
+			watermark.style.zIndex = "9000";
+			watermark.style.opacity = "0.9";
+			watermark.style.textShadow = "-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000";
+			watermark.style.textDecoration = "none";
+			$j("#header_logo").append(watermark);
+		}
 
-		logo.innerHTML="<img alt=\"TwitchTV\" src=\"http://betterttv.nightdev.com/newtwitchlogo.png\"><!--div style='left:5px;top:5px;float:left;position:absolute;'><b><a style='color:black !important;' href='http://www.twitch.tv/nightwalker925'>Come support Night, the BetterTTV dev!</a></b></div-->";
-		watermark = document.createElement("div");
-		watermark.style.marginTop = "-45px";
-		watermark.style.marginLeft = "-8px";
-		watermark.innerHTML = "Better";
-		watermark.style.color = "#FF0000";
-		watermark.style.fontWeight = "bold";
-		watermark.style.fontSize = "15px";
-		watermark.style.zIndex = "9000";
-		watermark.style.opacity = "0.9";
-		watermark.style.textShadow = "-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000";
-		watermark.style.textDecoration = "none";
-		logo.appendChild(watermark);
-
-		proauth = document.getElementById("pro_authenticated");
-		var globalCSSInject = document.createElement("style");
-		globalCSSInject.setAttribute("type","text/css");
-		globalCSSInject.innerHTML = '.chat_line a {color:#005596;} h2 { font-size: 16px; } #team_member_list .page_links a { color: #374a9b !important; } #team_member_list .page_links a b.left { border-left-color: #374a9b !important; } #team_member_list .page_links a b.right { border-left-color: #374a9b !important; } .member.live { background: #bdbcbc; } .member a { color: black; } .member.playing { background-color: #374a9b; border-color: #000000; } input.text:focus,select:focus,textarea:focus{outline:0;background-color:#fff;box-shadow:0 0 3px 1px #dad9d9;-moz-box-shadow:0 0 3px 1px #dad9d9;-webkit-box-shadow:0 0 3px 1px #dad9d9;border:1px solid #000;color:#000;} .primary_button:hover,.primary_button:focus{ background: linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -o-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -moz-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -webkit-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -ms-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%); } .primary_button { border-color: #000 !important; background: linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -o-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -moz-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -webkit-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -ms-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%); } #metagame a {color:white !important;} #team_membership a {color:white !important;} ul.tabs li.tab a {color:#262626;} ul.tabs li.selected a { color:#262626; } #header_banner img { width: 640px !important; height: 125px !important; } .dropmenu a, .ui-menu a, .ui-multiselect-menu a { color: white !important; } #menu_defaults .game_filter.selected a, #menu_filtered .game_filter.selected a, #menu_featured .game_filter.selected a { border: #000; background-color: #374a9b; } body {letter-spacing:0px;} a {color: black;} #growl_container {left: 0; overflow: hidden; padding-top: 0.7143em; position: fixed; top: 60px; z-index: 999999;} .notification_holder {padding: 0 0.7143em 0.7143em;} .notification {background-color: rgba(34, 34, 34, 0.85); border: 3px solid transparent; border-radius: 10px 10px 10px 10px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); color: #FFFFFF; cursor: pointer; min-height: 4.28em; padding: 0.7143em; position: relative; width: 14.29em;}.notification .close { background: none repeat scroll 0 0 #000000; border-radius: 0.75em 0.75em 0.75em 0.75em; color: #FFFFFF; display: none; height: 1.4em; padding: 0 6px; position: absolute; right: 0.3575em; top: 0.3575em;} .notification:hover {border: 3px solid #FFFFFF;} .notification a {color: #3399FF;}';
-		$j("body").append(globalCSSInject);
+		if($j("#logo").length) {
+			watermark.style.marginTop = "-10px";
+			watermark.style.marginLeft = "38px";
+			watermark.innerHTML = "Better";
+			watermark.style.color = "#FF0000";
+			watermark.style.fontWeight = "bold";
+			watermark.style.fontSize = "20px";
+			watermark.style.textIndent = "0px";
+			watermark.style.zIndex = "9000";
+			watermark.style.opacity = "0.9";
+			watermark.style.textShadow = "-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000";
+			watermark.style.textDecoration = "none";
+			$j("#header_logo").append(watermark);
+		}
 
 		var growlCSSInject = document.createElement("link");
 		growlCSSInject.setAttribute("href","http://betterttv.nightdev.com/jquery.gritter.css");
@@ -555,28 +439,11 @@ BetterTTVEngine = function() {
 		growlCSSInject.setAttribute("rel","stylesheet");
 		$j("head").append(growlCSSInject);
 
-		/*
-		$j.get('http://www.twitch.tv/inbox', function(data) {
-			PP['notifications'] = (data.split("unread").length - 2)
-			if(PP['notifications'] == 10) PP['notifications'] = "10+"
-			if(PP['notifications'] !== 0) {
-				messagesnum = document.createElement("a");
-				header_following = document.getElementById("header_following");
-				messagesnum.setAttribute("id","messagescont");
-				messagesnum.setAttribute("href","/inbox");
-				messagesnum.setAttribute("class","normal_button");
-				messagesnum.setAttribute("style","margin-right: 10px;");
-				messagesnum.innerHTML = "<span id='messagescount' style='padding-left:28px;background-image:url(http://betterttv.nightdev.com/messages.png);background-position: 8px 4px;padding-top:-1px;background-repeat: no-repeat;color:black;'>" + PP['notifications'] + "</span>";
-				header_following.parentNode.insertBefore(messagesnum, header_following);
-			}
-			setTimeout(function(){checkMessages(false)}, 300000);
-		});
-*/
-
-		$$('.channelname').each(function(element) {
-			element.style.whiteSpace = 'normal';
-			element.style.height = '32px';
-		});
+		var globalCSSInject = document.createElement("link");
+		globalCSSInject.setAttribute("href","http://betterttv.nightdev.com/betterttv.css");
+		globalCSSInject.setAttribute("type","text/css");
+		globalCSSInject.setAttribute("rel","stylesheet");
+		$j("body").append(globalCSSInject);
 
 		meebo();
 
@@ -727,6 +594,13 @@ BetterTTVEngine = function() {
 	meebo = function() {
 
 		betterttvDebug.log("Handling the Meebo Bar");
+
+		if(localStorage.getItem("hidemeebo") !== "true") {
+			$j("#left_col").css("bottom","35px");
+			$j("#right_col").css("bottom","35px");
+			$j("#directory-list").css("margin-bottom","50px");
+			$j("#main_col .content .scroll .scroll-content-contain").css("margin-bottom","35px");
+		}
 
 		try {
 
@@ -1397,9 +1271,9 @@ BetterTTVEngine = function() {
 				element.style.borderTop = '1px solid rgba(0, 0, 0, 0.65)';
 			});
 			$$('#main_col').each(function(element) {
-				element.style.backgroundColor = '#000000';
+				element.style.background = 'url("http://betterttv.nightdev.com/bg.png") #000000 repeat';
 			});
-			$$('.scroll-scrollbar .drag-handle').each(function(element) {
+			$$('.drag-handle').each(function(element) {
 				element.style.backgroundColor = '#ffffff';
 			});
 			$$('#left_close, #right_close').each(function(element) {
