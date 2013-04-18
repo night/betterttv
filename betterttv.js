@@ -1214,94 +1214,12 @@ BetterTTVEngine = function() {
 		betterttvDebug.log("Darkening Chat");
 
 		if(localStorage.getItem("darkchat") === "true") {
-			$$('#chat_column').each(function(element) {
-				element.style.background = '#333';
-			});
-			$$('#chat_lines_list').each(function(element) {
-				element.style.background = '#333';
-				element.style.color = '#FFF';
-				element.style.border = '#fff';
-			});
-			$$('#chat_lines').each(function(element) {
-				element.style.background = '#333';
-				element.style.color = '#FFF';
-				element.style.border = '#fff';
-			});
-			$$('#chat_text_input').each(function(element) {
-				element.style.background = '#000';
-				element.style.color = '#fff';
-				element.style.border = 'solid 1px #333';
-				element.style.boxShadow = 'none';
-			});
-			$$('#right_col .content #twitch_chat .scroll').each(function(element) {
-				element.style.background = '#333';
-			});
-			$$('#right_col').each(function(element) {
-				element.style.backgroundColor = '#1E1E1E';
-			});
-			$$('#right_col .content .top #right_nav').each(function(element) {
-				element.style.backgroundColor = '#1E1E1E';
-			});
-			$$('#right_col .content .top').each(function(element) {
-				element.style.backgroundColor = '#1E1E1E';
-			});
-			$$('.channel-main').each(function(element) {
-				element.style.backgroundColor = '#000';
-			});
-			$$('#custom_bg').each(function(element) {
-				element.remove();
-			});
-			$$('.title_over').each(function(element) {
-				element.style.backgroundColor = '#000';
-			});
-			$$('.real_title').each(function(element) {
-				element.style.color = '#fff';
-			});
-			$$('#main_col .content #broadcast_meta .image').each(function(element) {
-				element.style.backgroundColor = '#222';
-			});
-			$$('.channel_name').each(function(element) {
-				element.style.color = 'rgb(119, 119, 119)';
-			});
-			$$('#right_col .content .bottom #controls').each(function(element) {
-				element.style.backgroundColor = '#1E1E1E';
-				element.style.borderTop = '1px solid rgba(0, 0, 0, 0.65)';
-			});
-			$$('#main_col').each(function(element) {
-				element.style.background = 'url("http://subtlepatterns.com/patterns/dvsup.png") #000000 repeat';
-			});
-			$$('.drag-handle').each(function(element) {
-				element.style.backgroundColor = '#ffffff';
-			});
-			$$('#left_close, #right_close').each(function(element) {
-				element.style.backgroundColor = '#CCCCCC';
-				element.style.boxShadow = 'none';
-			});
-			$$('#right_col .content').each(function(element) {
-				element.style.borderLeft = 'none';
-			});
-			$$('.playing a, #team_membership a, .more_videos a').each(function(element) {
-				element.style.color = '#777';
-			});
-			$$('#channel_panels_contain #channel_panels .panel').each(function(element) {
-				element.style.color = '#999';
-			});
-			$$('#right_col .content #chat_line_list, body, #main_col .content #broadcast_meta .info .channel, #channel_panels_contain #channel_panels .panel h3').each(function(element) {
-				element.style.color = '#fff';
-			});
-			$$('.segmented_tabs li a.selected, .segmented_tabs li a:active, .segmented_tabs li:last-child a').each(function(element) {
-				element.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
-				element.style.boxShadow = 'none';
-				element.style.boxShadow = '0 1px 0 rgba(0, 0, 0, 0.65),inset 0 1px rgba(0, 0, 0, 0.05) !important';
-			});
-			document.body.style.background = "#000";
-			$$('.noise').each(function(element) {
-				element.style.backgroundImage = "none";
-			});
-
-			var darkCSS = document.createElement("style");
+			var darkCSS = document.createElement("link");
+			darkCSS.setAttribute("href","http://betterttv.nightdev.com/betterttv-dark.css");
 			darkCSS.setAttribute("type","text/css");
-			darkCSS.innerHTML = '#chat_line_list a{color: #777} #right_col .content #archives .video a .title {color: #777;} #chat_line_list li a.timeout { padding-left: 18px; min-height: 18px; background: url("http://betterttv.nightdev.com/timeout.png") no-repeat !important;} #chat_line_list li a.ban { padding-left: 18px; min-height: 18px; background: url("http://betterttv.nightdev.com/ban.png") no-repeat !important; } #chat_line_list li a.unban { padding-left: 18px; min-height: 18px; background: url("http://betterttv.nightdev.com/unban.png") no-repeat !important; } #chat_line_list li .mod_button img {display:none;}';
+			darkCSS.setAttribute("rel","stylesheet");
+			darkCSS.setAttribute("id","darkTwitch");
+			darkCSS.innerHTML = '';
 			$j('body').append(darkCSS);
 		}
 
