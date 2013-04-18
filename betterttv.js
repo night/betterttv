@@ -1219,21 +1219,6 @@ BetterTTVEngine = function() {
 				$j('body').append(darkCSS);
 
 				$j("#main_col .content #stats_and_actions #channel_stats #channel_viewer_count").css("display","none");
-
-				/*function checkChannelViewerCount() {
-					console.log("Checking for Viewer Count");
-					if($j("#main_col .content #stats_and_actions #channel_stats #channel_viewer_count").length && $j("#main_col .content #stats_and_actions #channel_stats #channel_viewer_count").is(':empty')) {
-						
-						console.log("1");
-					} else {
-						console.log("2");
-						$j("#main_col .content #stats_and_actions #channel_stats #channel_viewer_count").css("display","inline-block");
-					}
-					setTimeout(checkChannelViewerCount, 5000);
-				}
-
-				checkChannelViewerCount();*/
-
 			}
 		}
 
