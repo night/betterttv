@@ -77,6 +77,9 @@ BetterTTVEngine = function() {
 
 	channelReformat = function() {
 
+		// Legacy Function
+		// EOL; No more updates
+
 		betterttvDebug.log("Reformatting Channel");
 
 		var player = document.getElementById("player_column"),
@@ -643,13 +646,6 @@ BetterTTVEngine = function() {
 		if(!document.getElementById("chat_lines")) return;
 
 		CurrentChat.admin_message("<center><small>BetterTTV v"+ betterttvVersion +" Loaded.</small></center>");
-
-		if(!CurrentChat.show_timestamps && CurrentChat.toggle_show_timestamps) {
-			if(typeof toggle_checkbox != "undefined") {
-				toggle_checkbox("toggle_chat_timestamps");
-			}
-			CurrentChat.toggle_show_timestamps();
-		}
 
 		Chat.prototype.insert_chat_lineOld=Chat.prototype.insert_chat_line;
 		Chat.prototype.insert_chat_line=function(info)
