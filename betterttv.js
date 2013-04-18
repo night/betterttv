@@ -1222,7 +1222,15 @@ BetterTTVEngine = function() {
 			darkCSS.innerHTML = '';
 			$j('body').append(darkCSS);
 
-			$j('#channel_viewer_count').replaceWith('<div id="channel_viewer_count_container"><span class="stat" id="channel_viewer_count" original-title="Watching Now"></span></div>')
+			function setChannelViewerCount(e, t) {
+				if($j("channel_viewer_count").length && e !== 0) {
+					$j("channel_viewer_count").html(commatize(e));
+					$j("channel_viewer_count").show();
+				} else {
+					$j("channel_viewer_count").hide();
+				}
+				
+			}
 		}
 
 	}
