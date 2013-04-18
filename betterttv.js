@@ -1221,8 +1221,10 @@ BetterTTVEngine = function() {
 				function checkChannelViewerCount() {
 					console.log("Checking for Viewer Count");
 					if($j("#channel_viewer_count").length && $j("#channel_viewer_count_bttv").html() !== "") {
-						$j("#channel_viewer_count").show("display","inline-block");
+						console.log("1");
+						$j("#channel_viewer_count").css("display","inline-block");
 					} else {
+						console.log("2");
 						$j("#channel_viewer_count").css("display","none !important");
 					}
 					setTimeout(checkChannelViewerCount, 5000);
