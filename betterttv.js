@@ -397,6 +397,10 @@ BetterTTVEngine = function() {
 			$j(window).resize(function() {
 				handleresize();
 			});
+
+			$j(window).on("fluid-resize", function () {
+				handleresize();
+			});
 		});
 
 	}
@@ -1378,8 +1382,6 @@ BetterTTVEngine = function() {
 		return;
 	}
 
-
-	
 	if(PP['channel'] === "namja") {
 		var trollNamja = document.createElement("img");
 			trollNamja.setAttribute("src","http://i.imgur.com/7TRYhEc.jpg");
