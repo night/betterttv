@@ -1221,6 +1221,8 @@ BetterTTVEngine = function() {
 			darkCSS.setAttribute("id","darkTwitch");
 			darkCSS.innerHTML = '';
 			$j('body').append(darkCSS);
+
+			$j('#channel_viewer_count').change(function(){$j(this).show()});
 		}
 
 	}
