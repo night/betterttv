@@ -1218,10 +1218,12 @@ BetterTTVEngine = function() {
 				darkCSS.innerHTML = '';
 				$j('body').append(darkCSS);
 
-				function checkChannelViewerCount() {
+				$j("#main_col .content #stats_and_actions #channel_stats #channel_viewer_count").css("display","none");
+
+				/*function checkChannelViewerCount() {
 					console.log("Checking for Viewer Count");
 					if($j("#main_col .content #stats_and_actions #channel_stats #channel_viewer_count").length && $j("#main_col .content #stats_and_actions #channel_stats #channel_viewer_count").is(':empty')) {
-						$j("#main_col .content #stats_and_actions #channel_stats #channel_viewer_count").css("display","none");
+						
 						console.log("1");
 					} else {
 						console.log("2");
@@ -1230,7 +1232,7 @@ BetterTTVEngine = function() {
 					setTimeout(checkChannelViewerCount, 5000);
 				}
 
-				checkChannelViewerCount();
+				checkChannelViewerCount();*/
 
 			}
 		}
