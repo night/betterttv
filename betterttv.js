@@ -1222,7 +1222,7 @@ BetterTTVEngine = function() {
 			darkCSS.innerHTML = '';
 			$j('body').append(darkCSS);
 
-			$j('#channel_viewer_count').change(function(){$j(this).show()});
+			$j('#channel_viewer_count').livequery(function(){$j(this).show()});
 		}
 
 	}
