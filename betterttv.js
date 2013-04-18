@@ -60,6 +60,7 @@ BetterTTVEngine = function() {
 
 		if(localStorage.getItem("featured") !== "true") {
 			removeElement('.sm_vids');
+			removeElement('#nav_games');
 			removeElement('#nav_streams');
 			removeElement('.featured');
 			removeElement('.related');
@@ -243,9 +244,6 @@ BetterTTVEngine = function() {
 			$j('#right_col .content .top').css('border-bottom', '1px solid rgba(0, 0, 0, 0.25)')
 			
 			$j("#right_close").unbind('click');
-			$j("#left_close").unbind('click');
-
-			$j("#left_close").click(handleresize);
 
 			if(localStorage.getItem("chat_width")) {
 				var chat_width = localStorage.getItem("chat_width");
