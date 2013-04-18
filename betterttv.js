@@ -237,6 +237,7 @@ BetterTTVEngine = function() {
 		}
 
 		$j('#right_col').append("<div class='resizer' onselectstart='return false;' title='Drag to enlarge chat =D'></vid>");
+		$j("#right_col:before").css("margin-left","-1");
 
 		$j(document).ready(function()
 		{
@@ -1267,7 +1268,7 @@ BetterTTVEngine = function() {
 				element.style.borderTop = '1px solid rgba(0, 0, 0, 0.65)';
 			});
 			$$('#main_col').each(function(element) {
-				element.style.background = 'url("http://betterttv.nightdev.com/bg.png") #000000 repeat';
+				element.style.background = 'url("http://subtlepatterns.com/patterns/dvsup.png") #000000 repeat';
 			});
 			$$('.drag-handle').each(function(element) {
 				element.style.backgroundColor = '#ffffff';
