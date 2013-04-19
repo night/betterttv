@@ -234,8 +234,6 @@ BetterTTVEngine = function() {
 
 		if($j(".betabar").length === 0) return;
 
-		console.log(localStorage.getItem("chatWidth"))
-
 		if(localStorage.getItem("chatWidth")) {
 			if(localStorage.getItem("chatWidth") < 0) {
 				localStorage.setItem("chatWidth", 0)
@@ -475,86 +473,7 @@ BetterTTVEngine = function() {
 	checkMessages = function(videopage) {
 
 		betterttvDebug.log("Checking for New Messages");
-/*
-		if(videopage === true) {
-			$j.get('http://www.twitch.tv/inbox', function(data) {
-				var messageSender = /class="capital">(.*)<\/a>/i.exec(data);
-				var messageSenderAvatar = /http:\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/(.*)-50x50.png/i.exec(data);
-				if(messageSender && messageSenderAvatar) {
-					messageSender = messageSender[1].capitalize();
-					messageSenderAvatar = "http://static-cdn.jtvnw.net/jtv_user_pictures/"+messageSenderAvatar[1]+"-50x50.png";
-				} else {
-					messageSender = "Someone";
-					messageSenderAvatar = "";
-				}
-				if(PP['notifications'] !== (data.split("unread").length - 2) && PP['notifications'] !== "10+" && PP['notifications'] < (data.split("unread").length - 2)) {
-					$j.gritter.add({
-				        title: 'Message Received',
-				        class_name: 'gritter-light',
-				        image: messageSenderAvatar,
-				        text: messageSender+' just sent you a Twitch Message!<br /><br /><a style="color:black" href="http://www.twitch.tv/inbox">Click here to head to to your inbox</a>.',
-				    });
-				}
-				PP['notifications'] = (data.split("unread").length - 2);
-				if(PP['notifications'] == 10) PP['notifications'] = "10+";
-				if(PP['notifications'] !== 0) {
-					if(document.getElementById("messagescount")) {
-						document.getElementById("messagescount").innerHTML = PP['notifications'];
-					} else {
-						messagesnum = document.createElement("a");
-						user_display_name = document.getElementById("user_display_name");
-						messagesnum.setAttribute("id","messagescont");
-						messagesnum.setAttribute("href","/inbox");
-						messagesnum.setAttribute("style","margin-left: 10px;");
-						messagesnum.innerHTML = "<span id='messagescount' style='padding-left:28px;background-image:url(http://www-cdn.jtvnw.net/images/xarth/g/g18_mail-FFFFFF80.png);background-position: 8px -2px;background-repeat: no-repeat;color:white;'>" + PP['notifications'] + "</span>";
-						user_display_name.appendChild(messagesnum);
-					}
-				} else {
-					if(document.getElementById("messagescont")) document.getElementById("messagescont").remove();
-				}
-				setTimeout(function(){checkMessages(true)}, 300000);
-			});
-		} else {
-			$j.get('http://www.twitch.tv/inbox', function(data) {
-				var messageSender = /class="capital">(.*)<\/a>/i.exec(data);
-				var messageSenderAvatar = /http:\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/(.*)-50x50.png/i.exec(data);
-				if(messageSender && messageSenderAvatar) {
-					messageSender = messageSender[1].capitalize();
-					messageSenderAvatar = "http://static-cdn.jtvnw.net/jtv_user_pictures/"+messageSenderAvatar[1]+"-50x50.png";
-				} else {
-					messageSender = "Someone";
-					messageSenderAvatar = "";
-				}
-				if(PP['notifications'] !== (data.split("unread").length - 2) && PP['notifications'] !== "10+" && PP['notifications'] < (data.split("unread").length - 2)) {
-					$j.gritter.add({
-				        title: 'Message Received',
-				        class_name: 'gritter-light',
-				        image: messageSenderAvatar,
-				        text: messageSender+' just sent you a Twitch Message!<br /><br /><a style="color:black" href="http://www.twitch.tv/inbox">Click here to head to to your inbox</a>.',
-				    });
-				}
-				PP['notifications'] = (data.split("unread").length - 2);
-				if(PP['notifications'] == 10) PP['notifications'] = "10+";
-				if(PP['notifications'] !== 0) {
-					if(document.getElementById("messagescount")) {
-						document.getElementById("messagescount").innerHTML = PP['notifications'];
-					} else {
-						messagesnum = document.createElement("a");
-						header_following = document.getElementById("header_following");
-						messagesnum.setAttribute("id","messagescont");
-						messagesnum.setAttribute("href","/inbox");
-						messagesnum.setAttribute("class","normal_button");
-						messagesnum.setAttribute("style","margin-right: 10px;");
-						messagesnum.innerHTML = "<span id='messagescount' style='padding-left:28px;background-image:url(http://betterttv.nightdev.com/messages.png);background-position: 8px 4px;padding-top:-1px;background-repeat: no-repeat;color:black;'>" + PP['notifications'] + "</span>";
-						header_following.parentNode.insertBefore(messagesnum, header_following);
-					}
-				} else {
-					if(document.getElementById("messagescont")) document.getElementById("messagescont").remove();
-				}
-			});
-			setTimeout(function(){checkMessages(false)}, 300000);
-		}
-		*/
+
 		if(Twitch.user.isLoggedIn() && window.FirebaseRootNamespaced) {
 			PP['notifications'] = false;
 	        window.FirebaseRootNamespaced.child("users/" + Twitch.user.userId() + "/messages").on("value", function (f, g) {
@@ -601,6 +520,7 @@ BetterTTVEngine = function() {
 				}
 	        });
 		}
+
 	}
 
 	meeboReformat = function() {
@@ -670,7 +590,6 @@ BetterTTVEngine = function() {
 		Chat.prototype.insert_chat_lineOld=Chat.prototype.insert_chat_line;
 		Chat.prototype.insert_chat_line=function(info)
 		{
-			//console.log(info)
 			if(info.nickname == "nightbot" && info.message == "> Running a commercial in 15 seconds." && PP['login'] == PP['channel']) {
 				$j.gritter.add({
 			        title: 'Commercial Warning',
@@ -858,7 +777,6 @@ BetterTTVEngine = function() {
 			CurrentChat.debug && CurrentChat.admin_message("DEBUG: " + a.message);
 			if(a.message.match(/^Connecting to (.*):(80|443)$/)) {
 				CurrentChat.currentServer = /^Connecting to (.*):(80|443)$/.exec(a.message)[1];
-				console.log("Current chat server: "+CurrentChat.currentServer)
 			}
 			if(a.message.match(/^connected$/)) {
 				CurrentChat.admin_message(i18n("Connected to the chat server."));
@@ -925,7 +843,6 @@ BetterTTVEngine = function() {
 		}
 
 		CurrentChat.handlers.clear_chat = function(info) {
-			//console.log(info)
 			var nickname = CurrentChat.real_username(info.user);
 			if (info.target == "all") {
 				CurrentChat.last_sender = "jtv";
@@ -1001,10 +918,8 @@ BetterTTVEngine = function() {
 		//Beta Channel Tracking
 		$j(window).on("firebase:follow_online", function (b, f) {
 			if(f.online === true) {
-				console.log(f.name+" is online.. Running Growl")
 				Twitch.api.get("channels/"+f.name.toLowerCase()).done(function (d) {
 					if(d.name) {
-						console.log(d)
 						$j.gritter.add({
 					        title: d.display_name+' is Now Streaming',
 					        image: d.logo,
@@ -1014,33 +929,6 @@ BetterTTVEngine = function() {
 				});
 			}
 		});
-
-		/*
-		if(typeof(liveChannels) !== 'undefined' && liveChannels.length !== 0) {
-			//console.log(liveChannels);
-			oldLiveChannels = liveChannels;
-			liveChannels = [];
-		} 
-
-		Twitch.api.get("streams/followed?limit=100&offset=0").done(function (d) {
-			if(d.streams) {
-				$j.each(d.streams,function(index, channel) {
-					liveChannels.push(channel.channel.name);
-					//console.log(liveChannels);
-					if(typeof(oldLiveChannels) !== 'undefined') {
-						if(oldLiveChannels.indexOf(channel.channel.name) === -1) {
-							$j.gritter.add({
-						        title: channel.channel.display_name+' is Now Streaming',
-						        image: channel.channel.logo,
-						        text: channel.channel.display_name+' just started streaming '+channel.channel.game+'.<br /><br /><a style="color:white" href="http://www.twitch.tv/'+channel.channel.name+'">Click here to head to '+channel.channel.display_name+'\'s channel</a>.',
-						    });
-						}
-					}
-				});
-			}
-			setTimeout(function(){checkFollowing()},120000);
-		});
-*/
 
 	}
 
@@ -1174,17 +1062,14 @@ BetterTTVEngine = function() {
 	updateViewerList = function() {
 
 		betterttvDebug.log("Updating Viewer List");
-		
-		Chatters.updateNum = 9001;
 
         $j.ajax({
-            url: "https://tmi.twitch.tv/group/user/" + PP['channel']+ "/chatters?update_num=" + Chatters.updateNum + "&callback=?",
+            url: "https://tmi.twitch.tv/group/user/" + PP['channel']+ "/chatters?update_num=" + Math.random() + "&callback=?",
             cache: !1,
             dataType: "jsonp",
             timeoutLength: 6E3
         }).done(function (d) {
         	if(d.data.chatters) {
-        		Chatters.updateNum++;
             	CurrentViewers = [];
 				["staff", "admins", "moderators", "viewers"].forEach(function (a) {
 	                d.data.chatters[a].forEach(function (a) {
