@@ -865,7 +865,7 @@ BetterTTVEngine = function() {
 
 		$j(document).keydown(function(event){
 			if(event.keyCode === 90 && event.altKey) {
-				e.preventDefault();
+				event.preventDefault();
 		  		CurrentChat.currently_scrolling = 0;
 			}
 		});
