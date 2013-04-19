@@ -475,7 +475,7 @@ BetterTTVEngine = function() {
 		betterttvDebug.log("Checking for New Messages");
 
 		if(Twitch.user.isLoggedIn() && window.FirebaseRootNamespaced) {
-			var initalLoad = true;
+			initalLoad = true;
 	        window.FirebaseRootNamespaced.child("users/" + Twitch.user.userId() + "/messages").on("value", function (f) {
 	        	var f = f.val() || {}, j = f.unreadMessagesCount;
 	            $j(".js-unread_message_count").html("<img src='http://www-cdn.jtvnw.net/images/xarth/g/g18_mail-FFFFFF80.png' /> "+j || "");
