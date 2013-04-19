@@ -689,8 +689,12 @@ BetterTTVEngine = function() {
 			var regex = new RegExp('\\b('+regexInput+')\\b', 'i');
 			if(regex.test(info.message) && PP['login'] !== "" && localStorage.getItem("darkchat") === "true") {
 				info.color = "#ffffff";
+				ich.templates["chat-line"] = ich.templates["chat-line-highlight"];
 			} else if(regex.test(info.message) && PP['login'] !== "") {
 				info.color = "#000000";
+				ich.templates["chat-line"] = ich.templates["chat-line-highlight"];
+			} else {
+				ich.templates["chat-line"] = ich.templates["chat-line-old"];
 			}
 
 			if(info.color == "#0000FF" && localStorage.getItem("darkchat") === "true") { info.color = "#3753ff"; }
@@ -798,25 +802,8 @@ BetterTTVEngine = function() {
 		Chat.prototype.emoticonize = function(msg, b) {
 			msg = replaceAll(msg, "<wbr />", "");
 			msg = this.emoticonizeOld(msg, b);
-			var regexInput = PP['login'];
 
-			if(localStorage.getItem("highlightkeywords")) {
-				var highlightKeywords = localStorage.getItem("highlightkeywords");
-				highlightKeywords = highlightKeywords.split(" ");
-				highlightKeywords.forEach(function(keyword){
-					regexInput += "|" + escapeRegExp(keyword);
-				});
-			}
-
-			var regex = new RegExp('\\b('+regexInput+')\\b', 'i');
-			if(regex.test(msg) && PP['login'] !== "") {
-				ich.templates["chat-line"] = ich.templates["chat-line-highlight"];
-				return msg;
-			} else {
-				ich.templates["chat-line"] = ich.templates["chat-line-old"];
-				return msg;
-			}
-			
+			return msg;
 		}
 
 
