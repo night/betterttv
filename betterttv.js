@@ -796,51 +796,22 @@ BetterTTVEngine = function() {
 	    }
 
 		Chat.prototype.emoticonize = function(msg, b) {
-			msg = replaceAll(msg, "<wbr />", "");
 			msg = this.emoticonizeOld(msg, b);
+			var regexInput = PP['login'];
+
 			if(localStorage.getItem("highlightkeywords")) {
-				var highlightKeywords = PP['login'] + " " + localStorage.getItem("highlightkeywords");
+				var highlightKeywords = localStorage.getItem("highlightkeywords");
 				highlightKeywords = highlightKeywords.split(" ");
-				var highlight = false;
 				highlightKeywords.forEach(function(keyword){
-					var regex = new RegExp('\\b'+keyword+'\\b', 'i');
-					if(regex.test(msg) && PP['login'] !== "") {
-						if(highlight === false) {
-							highlight = true;
-							if(localStorage.getItem("darkchat") === "true") {
-								msg = "<span id='bttvhighlight' style='color:white;font-weight:bold;word-wrap: break-word;'>"+msg+"</span>";
-							} else {
-								msg = "<span id='bttvhighlight' style='color:black;font-weight:bold;word-wrap: break-word;'>"+msg+"</span>";
-							}
-							setTimeout(function () {
-								$$('#bttvhighlight').each(function(element) {
-									$j(element).parent().parent().css({
-																'background-color': 'rgba(255,0,0,0.5)',
-																'padding': "3px"
-															});
-								});
-			        		}, 1000);
-						}
-					}
+					regexInput += "|" + escapeRegExp(keyword);
 				});
-				if(highlight === false) {
-					msg = "<span style=\"word-wrap: break-word;\">"+msg+"</span>";
-				}
-			} else if(PP['login'] !== "") {
-				var regex = new RegExp('\\b'+PP['login']+'\\b', 'i');
-				if(regex.test(msg)) {
-					msg = "<span id='bttvhighlight' style='color:white;font-weight:bold;word-wrap: break-word;'>"+msg+"</span>";
-					setTimeout(function () {
-						$$('#bttvhighlight').each(function(element) {
-							$j(element).parent().parent().css({
-														'background-color': 'rgba(255,0,0,0.5)',
-														'padding': "3px"
-													});
-						});
-	        		}, 1000);
-				} else {
-					msg = "<span style=\"word-wrap: break-word;\">"+msg+"</span>";
-				}
+			}
+
+			var regex = new RegExp('\\b('+regexInput+')\\b', 'i');
+			if(regex.test(info.message) && PP['login'] !== "") {
+				ich.templates["chat-line"] = ich.templates["chat-line-highlight"];
+			} else {
+				ich.templates["chat-line"] = ich.templates["chat-line-old"];
 			}
 
 			return msg;
@@ -849,7 +820,7 @@ BetterTTVEngine = function() {
 
 		ich.templates["chat-line-action"] = "<li class='chat_from_{{sender}} line' data-sender='{{sender}}'><p><span class='small'>{{timestamp}}&nbsp;</span>{{#showModButtons}}{{> chat-mod-buttons}}{{/showModButtons}}<span class='nick' style='color:{{color}};'>{{displayname}}</span><span class='chat_line' style='color:{{color}};'> @message</span></p></li>";
 		ich.templates["chat-line-highlight"] = "<li class='chat_from_{{sender}} line highlight' data-sender='{{sender}}'><p><span class='small'>{{timestamp}}&nbsp;</span>@tag{{#showModButtons}}{{> chat-mod-buttons}}{{/showModButtons}}<a class='nick' href='/{{sender}}' id='{{id}}' style='color:{{color}}'>{{displayname}}</a>:&nbsp;<span class='chat_line'>@message</span></p></li>";
-		console.log(ich.templates);
+		ich.templates["chat-line-old"] = ich.templates["chat-line"];
 
 		var tempBan = '<span>&nbsp;<a href="#" class="normal_button tooltip chat_menu_btn" onclick="javascript:CurrentChat.ghetto24Hour(28800);" title="Temporary 8 hour ban"><span class="glyph_only"><img src="http://betterttv.nightdev.com/8hr.png" /></span></a></span><span>&nbsp;<a href="#" class="normal_button tooltip chat_menu_btn" onclick="javascript:CurrentChat.ghetto24Hour(86400);" title="Temporary 24 hour ban"><span class="glyph_only"><img src="http://betterttv.nightdev.com/24hr.png" /></span></a></span>';
 		$j(tempBan).insertAfter("#chat_menu_timeout");
