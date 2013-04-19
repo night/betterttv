@@ -711,7 +711,7 @@ BetterTTVEngine = function() {
 				ich.templates["chat-line"] = ich.templates["chat-line-old"];
 			}
 
-			if(info.color == "#0000FF" && localStorage.getItem("darkenedMode") == "true") { info.color = "#3753ff"; }
+			if((info.color == "#0000FF" || info.color == "#191971") && localStorage.getItem("darkenedMode") == "true") { info.color = "#3753ff"; }
 
 			if(info.nickname == "night" && x==1) { info.tagtype="orange"; info.tagname = "Creator"; }
 			//Bots
@@ -940,19 +940,21 @@ BetterTTVEngine = function() {
 			}
 		}
 
-		$j('#chat_text_input').live('keyup', function(e) { 
-			var keyCode = e.keyCode || e.which; 
-			if (e.altKey && keyCode == 90) {
-			  	CurrentChat.currently_scrolling = 1;
+		$(document).keyup(function(event){
+			if(event.keyCode === 90 && event.altKey) {
+		  		CurrentChat.currently_scrolling = 1;
+			}
+		});
+
+		$(document).keydown(function(event){
+			if(event.keyCode === 90 && event.altKey) {
+				e.preventDefault();
+		  		CurrentChat.currently_scrolling = 0;
 			}
 		});
 
 		$j('#chat_text_input').live('keydown', function(e) { 
 		  var keyCode = e.keyCode || e.which; 
-		  if (e.altKey && keyCode == 90) {
-		  	e.preventDefault();
-		  	CurrentChat.currently_scrolling = 0;
-		  }
 		  if (keyCode == 9) { 
 		    e.preventDefault(); 
 		    var sentence = $j('#chat_text_input').val().split(' ');
@@ -1173,6 +1175,8 @@ BetterTTVEngine = function() {
 
 		betterttvDebug.log("Updating Viewer List");
 		
+		Chatters.updateNum = 9001;
+
         $j.ajax({
             url: "https://tmi.twitch.tv/group/user/" + PP['channel']+ "/chatters?update_num=" + Chatters.updateNum + "&callback=?",
             cache: !1,
