@@ -796,6 +796,7 @@ BetterTTVEngine = function() {
 	    }
 
 		Chat.prototype.emoticonize = function(msg, b) {
+			msg = replaceAll(msg, "<wbr />", "");
 			msg = this.emoticonizeOld(msg, b);
 			var regexInput = PP['login'];
 
@@ -808,7 +809,7 @@ BetterTTVEngine = function() {
 			}
 
 			var regex = new RegExp('\\b('+regexInput+')\\b', 'i');
-			if(regex.test(info.message) && PP['login'] !== "") {
+			if(regex.test(msg) && PP['login'] !== "") {
 				ich.templates["chat-line"] = ich.templates["chat-line-highlight"];
 			} else {
 				ich.templates["chat-line"] = ich.templates["chat-line-old"];
