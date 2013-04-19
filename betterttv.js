@@ -19,6 +19,7 @@ BetterTTVEngine = function() {
 		},
 		currentViewers = [],
 		liveChannels = [],
+		blackChat = false,
 		reloadViewers = false;
 
 	/**
@@ -233,6 +234,8 @@ BetterTTVEngine = function() {
 
 		if($j(".betabar").length === 0) return;
 
+		console.log(localStorage.getItem("chatWidth"))
+
 		if(localStorage.getItem("chatWidth")) {
 			if(localStorage.getItem("chatWidth") < 0) {
 				localStorage.setItem("chatWidth", 0)
@@ -253,7 +256,7 @@ BetterTTVEngine = function() {
 			$j("#right_close").unbind('click');
 
 			if(localStorage.getItem("chatWidth")) {
-				var chatWidth = localStorage.getItem("chaWidth");
+				var chatWidth = localStorage.getItem("chatWidth");
 				$j("#right_col").width(chatWidth);
 				$j("#right_col .content #chat").width(chatWidth);
 				$j("#right_col .content .top").width(chatWidth);
@@ -1226,6 +1229,7 @@ BetterTTVEngine = function() {
 							<br /> \
 							&nbsp;&nbsp;&nbsp;&raquo;&nbsp;BetterTTV \
 							<a class="dropmenu_action g18_gear-FFFFFF80" href="#" id="darkenTwitchLink" onclick="betterttvAction(\'toggleDarkTwitch\'); return false;">' + (localStorage.getItem("darkenedMode") == "true" ? "Undarken Chat":"Darken Chat") + '</a> \
+							<a class="dropmenu_action g18_gear-FFFFFF80" href="#" id="blackChatLink" onclick="betterttvAction(\'toggleBlackChat\'); return false;">Black Chat (Chroma Key)</a> \
 							<a class="dropmenu_action g18_gear-FFFFFF80" href="#" onclick="betterttvAction(\'setHighlightKeywords\'); return false;">Set Highlight Keywords</a> \
 							<a class="dropmenu_action g18_trash-FFFFFF80" href="#" onclick="betterttvAction(\'clearChat\'); return false;">Clear My Chat</a> \
 							<p onclick="betterttvAction(\'toggleDefaultEmotes\');" class="dropmenu_action"> \
@@ -1313,6 +1317,25 @@ BetterTTVEngine = function() {
 				localStorage.setItem("darkenedMode", true);
 				darkenPage();
 				$j("#darkenTwitchLink").html("Undarken Twitch");
+			}
+		}
+		if(action == "toggleBlackChat") {
+			if(blackChat) {
+				blackChat = false;
+				$j("#blackChat").remove();
+				darkenPage();
+				$j("#blackChatLink").html("Black Chat (Chroma Key)");
+			} else {
+				blackChat = true;
+				$j("#darkTwitch").remove();
+				var darkCSS = document.createElement("link");
+				darkCSS.setAttribute("href","http://betterttv.nightdev.com/betterttv-blackchat.css");
+				darkCSS.setAttribute("type","text/css");
+				darkCSS.setAttribute("rel","stylesheet");
+				darkCSS.setAttribute("id","blackChat");
+				darkCSS.innerHTML = '';
+				$j('body').append(darkCSS);
+				$j("#blackChatLink").html("Unblacken Chat");
 			}
 		}
 		if(action == "toggleBlockSubButton") {
