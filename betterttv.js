@@ -811,11 +811,12 @@ BetterTTVEngine = function() {
 			var regex = new RegExp('\\b('+regexInput+')\\b', 'i');
 			if(regex.test(msg) && PP['login'] !== "") {
 				ich.templates["chat-line"] = ich.templates["chat-line-highlight"];
+				return msg;
 			} else {
 				ich.templates["chat-line"] = ich.templates["chat-line-old"];
+				return msg;
 			}
-
-			return msg;
+			
 		}
 
 
