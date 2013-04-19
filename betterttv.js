@@ -475,12 +475,12 @@ BetterTTVEngine = function() {
 		betterttvDebug.log("Checking for New Messages");
 
 		if(Twitch.user.isLoggedIn() && window.FirebaseRootNamespaced) {
-			PP['notifications'] = false;
-	        window.FirebaseRootNamespaced.child("users/" + Twitch.user.userId() + "/messages").on("value", function (f, g) {
+			var initalLoad = true;
+	        window.FirebaseRootNamespaced.child("users/" + Twitch.user.userId() + "/messages").on("value", function (f) {
 	        	var f = f.val() || {}, j = f.unreadMessagesCount;
 	            $j(".js-unread_message_count").html("<img src='http://www-cdn.jtvnw.net/images/xarth/g/g18_mail-FFFFFF80.png' /> "+j || "");
 	            j ? $j(".js-unread_message_count").show() : $j(".js-unread_message_count").hide();
-	            if(PP['notifications'] && PP['notifications'] < j) {
+	            if(initialLoad !== true && PP['notifications'] < j) {
 	            	$j.get('http://www.twitch.tv/inbox', function(data) {
 						var messageSender = /class="capital">(.*)<\/a>/i.exec(data);
 						var messageSenderAvatar = /http:\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/(.*)-50x50.png/i.exec(data);
@@ -498,10 +498,9 @@ BetterTTVEngine = function() {
 					        text: messageSender+' just sent you a Twitch Message!<br /><br /><a style="color:black" href="http://www.twitch.tv/inbox">Click here to head to to your inbox</a>.',
 					    });
 					});
-	            	PP['notifications'] = j;
-	            } else {
-	            	PP['notifications'] = j;
 	            }
+	            PP['notifications'] = j;
+	            initialLoad = false;
 	            if(PP['notifications'] > 0 && document.getElementById("header_logo")) {
 					if(document.getElementById("messagescount")) {
 						document.getElementById("messagescount").innerHTML = PP['notifications'];
