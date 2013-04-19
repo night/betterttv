@@ -940,13 +940,13 @@ BetterTTVEngine = function() {
 			}
 		}
 
-		$(document).keyup(function(event){
+		$j(document).keyup(function(event){
 			if(event.keyCode === 90 && event.altKey) {
 		  		CurrentChat.currently_scrolling = 1;
 			}
 		});
 
-		$(document).keydown(function(event){
+		$j(document).keydown(function(event){
 			if(event.keyCode === 90 && event.altKey) {
 				e.preventDefault();
 		  		CurrentChat.currently_scrolling = 0;
