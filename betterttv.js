@@ -1134,7 +1134,7 @@ BetterTTVEngine = function() {
                 a.regex = RegExp(a.regex, "g");
                 a.images.forEach(function (a) {
                     d += 1;
-                    if(oldEmotes.indexOf(a.url) !== -1 && localStorage.getItem("showDefaultEmotes") !== true) {
+                    if(oldEmotes.indexOf(a.url) !== -1 && localStorage.getItem("showDefaultEmotes") !== "true") {
                     	a.url = newEmotes[oldEmotes.indexOf(a.url)];
                     	a.height = 22;
                     	a.width = 22;
