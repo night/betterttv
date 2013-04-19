@@ -929,17 +929,14 @@ BetterTTVEngine = function() {
 
 		$j('#chat_text_input').live('keyup', function(e) { 
 			var keyCode = e.keyCode || e.which; 
-			if (e.ctrlKey && e.altKey && keyCode == "z") {
-				console.log("let up")
-			  	e.preventDefault();
+			if (e.ctrlKey && e.altKey && keyCode == 90) {
 			  	CurrentChat.currently_scrolling = 1;
 			}
 		});
 
 		$j('#chat_text_input').live('keydown', function(e) { 
 		  var keyCode = e.keyCode || e.which; 
-		  if (e.ctrlKey && e.altKey && keyCode == "z") {
-		  	console.log("ctrl key")
+		  if (e.ctrlKey && e.altKey && keyCode == 90) {
 		  	CurrentChat.currently_scrolling = 0;
 		  }
 		  if (keyCode == 9) { 
