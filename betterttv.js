@@ -656,6 +656,7 @@ BetterTTVEngine = function() {
 		Chat.prototype.insert_chat_lineOld=Chat.prototype.insert_chat_line;
 		Chat.prototype.insert_chat_line=function(info)
 		{
+			console.log(info)
 			if(info.nickname == "nightbot" && info.message == "> Running a commercial in 15 seconds." && PP['login'] == PP['channel']) {
 				$j.gritter.add({
 			        title: 'Commercial Warning',
@@ -847,7 +848,7 @@ BetterTTVEngine = function() {
 
 
 		ich.templates["chat-line-action"] = "<li class='chat_from_{{sender}} line' data-sender='{{sender}}'><p><span class='small'>{{timestamp}}&nbsp;</span>{{#showModButtons}}{{> chat-mod-buttons}}{{/showModButtons}}<span class='nick' style='color:{{color}};'>{{displayname}}</span><span class='chat_line' style='color:{{color}};'> @message</span></p></li>";
-		ich.templates["chat-line-highlight"] = "<li class='chat_from_{{sender}} line' data-sender='{{sender}}'><p><span class='small'>{{timestamp}}&nbsp;</span>{{#showModButtons}}{{> chat-mod-buttons}}{{/showModButtons}}<span class='nick' style='color:{{color}};'>{{displayname}}</span><span class='chat_line' style='color:{{color}};'> @message</span></p></li>";
+		ich.templates["chat-line-highlight"] = "<li class='chat_from_{{sender}} line highlight' data-sender='{{sender}}'><p><span class='small'>{{timestamp}}&nbsp;</span>@tag{{#showModButtons}}{{> chat-mod-buttons}}{{/showModButtons}}<a class='nick' href='/{{sender}}' id='{{id}}' style='color:{{color}}'>{{displayname}}</a>:&nbsp;<span class='chat_line'>@message</span></p></li>";
 		console.log(ich.templates);
 
 		var tempBan = '<span>&nbsp;<a href="#" class="normal_button tooltip chat_menu_btn" onclick="javascript:CurrentChat.ghetto24Hour(28800);" title="Temporary 8 hour ban"><span class="glyph_only"><img src="http://betterttv.nightdev.com/8hr.png" /></span></a></span><span>&nbsp;<a href="#" class="normal_button tooltip chat_menu_btn" onclick="javascript:CurrentChat.ghetto24Hour(86400);" title="Temporary 24 hour ban"><span class="glyph_only"><img src="http://betterttv.nightdev.com/24hr.png" /></span></a></span>';
@@ -966,8 +967,9 @@ BetterTTVEngine = function() {
 			}
 		}
 
-		$j('#chat_text_input').live('keydown', function(e) { 
+		$j('#chat_text_input').live('keyup', function(e) { 
 			if (e.ctrlKey) {
+				console.log("let up")
 			  	e.preventDefault();
 			  	CurrentChat.currently_scrolling = 1;
 			}
@@ -976,6 +978,7 @@ BetterTTVEngine = function() {
 		$j('#chat_text_input').live('keydown', function(e) { 
 		  var keyCode = e.keyCode || e.which; 
 		  if (e.ctrlKey) {
+		  	console.log("ctrl key")
 		  	e.preventDefault();
 		  	CurrentChat.currently_scrolling = 0;
 		  }
