@@ -32,6 +32,10 @@ BetterTTVEngine = function() {
 	    return this.charAt(0).toUpperCase() + this.slice(1);
 	}
 
+	escapeRegExp = function(str) {
+		return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+	}
+
 	/**
 	 * Core Functions
 	 */
@@ -200,9 +204,6 @@ BetterTTVEngine = function() {
 		}
 		
 		if($j(".betabar").length) {
-			$j("#chat_lines").css({
-				paddingRight: "5px"
-			});
 			$j("#chat_line_list").css({
 				fontSize: "13.33333px",
 				lineHeight: "17.333333px"
@@ -674,24 +675,21 @@ BetterTTVEngine = function() {
 				if(info.tagtype == "mod" || info.tagtype == "broadcaster" || info.tagtype == "admin" || info.tagtype == "staff") info.tagtype = "old"+info.tagtype;
 			}
 
+			var regexInput = PP['login'];
+
 			if(localStorage.getItem("highlightkeywords")) {
-				var highlightKeywords = PP['login'] + " " + localStorage.getItem("highlightkeywords");
+				var highlightKeywords = localStorage.getItem("highlightkeywords");
 				highlightKeywords = highlightKeywords.split(" ");
 				highlightKeywords.forEach(function(keyword){
-					var regex = new RegExp('\\b'+keyword+'\\b', 'i');
-					if(regex.test(info.message) && PP['login'] !== "" && localStorage.getItem("darkchat") === "true") {
-						info.color = "#ffffff";
-					} else if(regex.test(info.message) && PP['login'] !== "") {
-						info.color = "#000000";
-					}
+					regexInput += "|" + escapeRegExp(keyword);
 				});
-			} else {
-				var regex = new RegExp('\\b'+PP['login']+'\\b', 'i');
-				if(regex.test(info.message) && PP['login'] !== "" && localStorage.getItem("darkchat") === "true") {
-					info.color = "#ffffff";
-				} else if(regex.test(info.message) && PP['login'] !== "") {
-					info.color = "#000000";
-				}
+			}
+
+			var regex = new RegExp('\\b('+regexInput+')\\b', 'i');
+			if(regex.test(info.message) && PP['login'] !== "" && localStorage.getItem("darkchat") === "true") {
+				info.color = "#ffffff";
+			} else if(regex.test(info.message) && PP['login'] !== "") {
+				info.color = "#000000";
 			}
 
 			if(info.color == "#0000FF" && localStorage.getItem("darkchat") === "true") { info.color = "#3753ff"; }
@@ -849,7 +847,8 @@ BetterTTVEngine = function() {
 
 
 		ich.templates["chat-line-action"] = "<li class='chat_from_{{sender}} line' data-sender='{{sender}}'><p><span class='small'>{{timestamp}}&nbsp;</span>{{#showModButtons}}{{> chat-mod-buttons}}{{/showModButtons}}<span class='nick' style='color:{{color}};'>{{displayname}}</span><span class='chat_line' style='color:{{color}};'> @message</span></p></li>";
-		//console.log(ich.templates);
+		ich.templates["chat-line-highlight"] = "<li class='chat_from_{{sender}} line' data-sender='{{sender}}'><p><span class='small'>{{timestamp}}&nbsp;</span>{{#showModButtons}}{{> chat-mod-buttons}}{{/showModButtons}}<span class='nick' style='color:{{color}};'>{{displayname}}</span><span class='chat_line' style='color:{{color}};'> @message</span></p></li>";
+		console.log(ich.templates);
 
 		var tempBan = '<span>&nbsp;<a href="#" class="normal_button tooltip chat_menu_btn" onclick="javascript:CurrentChat.ghetto24Hour(28800);" title="Temporary 8 hour ban"><span class="glyph_only"><img src="http://betterttv.nightdev.com/8hr.png" /></span></a></span><span>&nbsp;<a href="#" class="normal_button tooltip chat_menu_btn" onclick="javascript:CurrentChat.ghetto24Hour(86400);" title="Temporary 24 hour ban"><span class="glyph_only"><img src="http://betterttv.nightdev.com/24hr.png" /></span></a></span>';
 		$j(tempBan).insertAfter("#chat_menu_timeout");
@@ -968,7 +967,18 @@ BetterTTVEngine = function() {
 		}
 
 		$j('#chat_text_input').live('keydown', function(e) { 
+			if (e.ctrlKey) {
+			  	e.preventDefault();
+			  	CurrentChat.currently_scrolling = 1;
+			}
+		});
+
+		$j('#chat_text_input').live('keydown', function(e) { 
 		  var keyCode = e.keyCode || e.which; 
+		  if (e.ctrlKey) {
+		  	e.preventDefault();
+		  	CurrentChat.currently_scrolling = 0;
+		  }
 		  if (keyCode == 9) { 
 		    e.preventDefault(); 
 		    var sentence = $j('#chat_text_input').val().split(' ');
