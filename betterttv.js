@@ -10,7 +10,7 @@
 
 BetterTTVEngine = function() {
 
-	var betterttvVersion = "6.2 Beta",
+	var betterttvVersion = "6.2",
 		betterttvDebug = {
 			log: function(string) { if(window.console && console.log) console.log("BTTV: "+string); },
 			warn: function(string) { if(window.console && console.warn) console.warn("BTTV: "+string); },
@@ -217,11 +217,6 @@ BetterTTVEngine = function() {
 		}
 
 		$j('#chat_loading_spinner').attr('src',"data:image/gif;base64,R0lGODlhFgAWAPMGANfX1wAAADc3N1tbW6Ojo39/f2tra8fHx9nZ2RsbG+np6SwsLEtLS4eHh7q6ugAAACH/C05FVFNDQVBFMi4wAwEAAAAh/hoiQ3JlYXRlZCB3aXRoIENoaW1wbHkuY29tIgAh+QQJCgAGACwAAAAAFgAWAAAEbNCESY29OEvBRdDgFXReGI7dZ2oop65YWypIjSgGbSOW/CGAIICnEAIOPdLPSDQiNykDUNgUPn1SZs6ZjE6D1eBVmaVurV1XGXwWp0vfYfv4XpqLaKg6HqbrZzs4OjZ1MBlYhiJkiYWMfy+GEQAh+QQJCgAGACwAAAAAFgAWAAAEctDIKYO9NKe9lwlCKAQZlQzo4IEiWUpnuorjC6fqR7tvjM4tgwJBJN5kuqACwGQef8kQadkEPHMsqbBqNfiwu231CtRSm+Ro7ez04sprbjobH7uR9Kn8Ds2L0XxgSkVGgXA8JV+HNoZqiBocCYuMJX4vEQAh+QQJCgAAACwAAAAAFgAWAAAEcxDISWu4uNLEOwhCKASSGA5AMqxD8pkkIBR0gaqsC4rxXN+s1otXqtlSQR2s+EPmhqGeEfjcRZk06kpJlE2dW+gIe8SFrWNv0yxES9dJ8TsLbi/VdDb3ii/H3WRadl0+eX93hX5ViCaCe2kaKR0ccpGWlREAIfkECQoAAQAsAAAAABYAFgAABHUwyEmrvTisxHlmQigw2mAOiWSsaxMwRVyQy4mqRE64sEzbqYBBt3vJZqVTcKjjHX9KXNPoS5qWRGe1FhVmqTHoVZrThq0377R35o7VZTDSnWbG2XMguYgX1799aFhrT4J7ZnldLC1yfkEXICKOGRcbHY+UlBEAIfkECQoAAQAsAAAAABYAFgAABHIwyEmrvThrOoQXTFYYpFEEQ6EWgkS8rxMUMHGmaxsQR3/INNhtxXL5frPaMGf0AZUooo7nTAqjzN3xecWpplvra/lt9rhjbFlbDaa9RfZZbFPHqXN3HQ5uQ/lmSHpkdzVoe1IiJSZ2OhsTHR8hj5SVFREAIfkECQoAAQAsAAAAABYAFgAABGowyEmrvTjrzWczIJg5REk4QWMShoQAMKAExGEfRLq2QQzPtVtOZeL5ZLQbTleUHIHK4c7pgwqZJWM1eSVmqTGrTdrsbYNjLAv846a9a3PYvYRr5+j6NPDCR9U8FyQmKHYdHiEih4uMjRQRACH5BAkKAAEALAAAAAAWABYAAARkMMhJq7046807d0QYSkhZKoFiIqhzvAchATSNIjWABC4sBznALbfrvX7BYa0Ii81yShrT96xFdbwmEhrALbNUINcrBR+rti7R7BRb1V9jOwkvy38rVmrV0nokICI/f4SFhocSEQAh+QQJCgABACwAAAAAFgAWAAAEWjDISau9OOvNu7dIGCqBIiKkeUoH4AIk8gJIOR/sHM+1cuev3av3C7SCAdnQ9sIZdUke0+U8uoQuYhN4jS592ydSmZ0CqlAyzYweS8FUyQlVOqXmn7x+z+9bIgA7");
-	
-		if(localStorage.getItem("defaulttags") === "true") {
-			var originalTags = '<style type="text/css">.line .oldmod { display: inline-block;text-indent: 21px;background-image: url(../images/xarth/g/g18_sword-FFFFFF80.png);background-position: 0 center;background-repeat: no-repeat;display: inline-block;vertical-align: bottom;height: 18px;min-width: 18px;width: expression(document.body.clientWidth < $width ? "18px":"auto");padding: 0;text-indent: -9999px;border-radius: 2px;-moz-border-radius: 2px;-webkit-border-radius: 2px;background-color: #090;overflow: hidden;} .line .oldbroadcaster { display: inline-block;text-indent: 21px;background-image: url(../images/xarth/g/g18_camera-FFFFFF80.png);background-position: 0 center;background-repeat: no-repeat;display: inline-block;vertical-align: bottom;height: 18px;min-width: 18px;width: expression(document.body.clientWidth < $width ? "18px":"auto");padding: 0;text-indent: -9999px;border-radius: 2px;-moz-border-radius: 2px;-webkit-border-radius: 2px;background-color: #090;overflow: hidden;} .line .oldstaff { display: inline-block;text-indent: 21px;background-image: url(../images/xarth/g/g18_wrench-FFFFFF80.png);background-position: 0 center;background-repeat: no-repeat;display: inline-block;vertical-align: bottom;height: 18px;min-width: 18px;width: expression(document.body.clientWidth < $width ? "18px":"auto");padding: 0;text-indent: -9999px;border-radius: 2px;-moz-border-radius: 2px;-webkit-border-radius: 2px;background-color: #090;overflow: hidden;} .line .oldadmin { display: inline-block;text-indent: 21px;background-image: url(../images/xarth/g/g18_badge-FFFFFF80.png);background-position: 0 center;background-repeat: no-repeat;display: inline-block;vertical-align: bottom;height: 18px;min-width: 18px;width: expression(document.body.clientWidth < $width ? "18px":"auto");padding: 0;text-indent: -9999px;border-radius: 2px;-moz-border-radius: 2px;-webkit-border-radius: 2px;background-color: #090;overflow: hidden;}</style>';
-			$j('body').append(originalTags);
-		}
 		
 	}
 
