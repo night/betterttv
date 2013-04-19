@@ -656,7 +656,7 @@ BetterTTVEngine = function() {
 		Chat.prototype.insert_chat_lineOld=Chat.prototype.insert_chat_line;
 		Chat.prototype.insert_chat_line=function(info)
 		{
-			console.log(info)
+			//console.log(info)
 			if(info.nickname == "nightbot" && info.message == "> Running a commercial in 15 seconds." && PP['login'] == PP['channel']) {
 				$j.gritter.add({
 			        title: 'Commercial Warning',
@@ -912,7 +912,7 @@ BetterTTVEngine = function() {
 		}
 
 		CurrentChat.handlers.clear_chat = function(info) {
-			console.log(info)
+			//console.log(info)
 			var nickname = CurrentChat.real_username(info.user);
 			if (info.target == "all") {
 				CurrentChat.last_sender = "jtv";
@@ -928,7 +928,8 @@ BetterTTVEngine = function() {
 		}
 
 		$j('#chat_text_input').live('keyup', function(e) { 
-			if (e.ctrlKey) {
+			var keyCode = e.keyCode || e.which; 
+			if (e.ctrlKey && e.altKey && keyCode == "z") {
 				console.log("let up")
 			  	e.preventDefault();
 			  	CurrentChat.currently_scrolling = 1;
@@ -937,9 +938,8 @@ BetterTTVEngine = function() {
 
 		$j('#chat_text_input').live('keydown', function(e) { 
 		  var keyCode = e.keyCode || e.which; 
-		  if (e.ctrlKey) {
+		  if (e.ctrlKey && e.altKey && keyCode == "z") {
 		  	console.log("ctrl key")
-		  	e.preventDefault();
 		  	CurrentChat.currently_scrolling = 0;
 		  }
 		  if (keyCode == 9) { 
