@@ -1159,7 +1159,7 @@ BetterTTVEngine = function() {
 		if(action == "setHighlightKeywords") {
 			var keywords = prompt("Type some highlight keywords. Messages containing keywords will turn red to get your attention. Use spaces in the field to specify multiple keywords.",localStorage.getItem("highlightKeywords"));
 			if (keywords != null) {
-				localStorage.setItem("highlightkeywords", keywords);
+				localStorage.setItem("highlightKeywords", keywords);
 				var keywords = keywords.split(" ");
 				var keywordList = PP['login'];
 				keywords.forEach(function(keyword){ keywordList += ", " + keyword; });
