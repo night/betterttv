@@ -254,7 +254,7 @@ BetterTTVEngine = function() {
 			$j("#right_close").unbind('click');
 
 			if(localStorage.getItem("chatWidth")) {
-				var chatWidth = localStorage.getItem("chatWidth");
+				chatWidth = localStorage.getItem("chatWidth");
 				$j("#right_col").width(chatWidth);
 				$j("#right_col .content #chat").width(chatWidth);
 				$j("#right_col .content .top").width(chatWidth);
@@ -282,11 +282,16 @@ BetterTTVEngine = function() {
 		            $j("#broadcast_meta .info .title .real_title").width() > d ? $j("#broadcast_meta .info").addClass("long_title") : $j("#broadcast_meta .info").removeClass("long_title")
 		        }, 500)
 			} else {
-				var chatWidth = $j("#right_col").width();
+				chatWidth = $j("#right_col").width();
 			}
 			
 			var handleResize = function() {
 				var d = 0;
+				if($j("#right_col").width > 0 && $j("#right_col").width < chatWidth) {
+					$j("#right_col").css({
+		                width: "0px"
+		            });
+				}
 				$j(".fixed").each(function () {
 	                d += $j(this).outerWidth()
 	            });
@@ -305,8 +310,8 @@ BetterTTVEngine = function() {
 	            	var d = $j("#broadcast_meta .info .title").width();
 		            $j("#broadcast_meta .info .title .real_title").width() > d ? $j("#broadcast_meta .info").addClass("long_title") : $j("#broadcast_meta .info").removeClass("long_title")
 		        }, 500)
-
 		        localStorage.setItem("chatWidth", $j("#right_col").width());
+		        $j("body").trigger("fluid-resize")
 			}
 
 			$j(document).mouseup(function(event)
@@ -329,6 +334,7 @@ BetterTTVEngine = function() {
 				
 				resize = false;
 				chatWidth = $j("#right_col").width();
+				handleResize();
 			});
 			
 			$j("#right_close").mousedown(function(event)
@@ -408,11 +414,7 @@ BetterTTVEngine = function() {
 			});
 
 			$j(window).resize(function() {
-				handleResize();
-			});
-
-			$j(window).on("fluid-resize", function () {
-				handleResize();
+				setTimeout(handleResize, 1000);
 			});
 		});
 
