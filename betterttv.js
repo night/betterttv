@@ -69,7 +69,7 @@ BetterTTVEngine = function() {
 			window.removeEventListener("mouseover", null, false);
 		}
 
-		if(localStorage.getItem("showFeaturedChannels") !== true) {
+		if(localStorage.getItem("showFeaturedChannels") !== "true") {
 			removeElement('.sm_vids');
 			removeElement('#nav_games');
 			removeElement('#nav_streams');
@@ -415,6 +415,10 @@ BetterTTVEngine = function() {
 
 			$j(window).resize(function() {
 				setTimeout(handleResize, 1000);
+			});
+
+			$j(window).on("fluid-resize", function () {
+				//setTimeout(handleResize, 1000);
 			});
 		});
 
@@ -859,7 +863,7 @@ BetterTTVEngine = function() {
 			}
 		}
 
-		$j(document).keyup(function(event){
+		/*$j(document).keyup(function(event){
 			if(event.keyCode === 90 && event.altKey) {
 		  		CurrentChat.currently_scrolling = 1;
 			}
@@ -870,7 +874,7 @@ BetterTTVEngine = function() {
 				event.preventDefault();
 		  		CurrentChat.currently_scrolling = 0;
 			}
-		});
+		});*/
 
 		$j('#chat_text_input').live('keydown', function(e) { 
 		  var keyCode = e.keyCode || e.which; 
@@ -981,6 +985,7 @@ BetterTTVEngine = function() {
 								{ url: "http://betterttv.nightdev.com/emotes/basedgod.png", width: 33, height: 34, regex: "BasedGod" },
 								{ url: "http://betterttv.nightdev.com/emotes/fishmoley.png", width: 56, height: 34, regex: "FishMoley" },
 								{ url: "http://betterttv.nightdev.com/emotes/angry.png", width: 56, height: 34, regex: "cabbag3" },
+								{ url: "http://betterttv.nightdev.com/emotes/bacon.gif", width: 33, height: 35, regex: "BaconTime" },
 								{ url: "http://cdn.nightdev.com/img/snhappthis.gif", width: "50px;background-size:50px 50", height: 50, regex: "S0urPlz" }
 							  ];
 
