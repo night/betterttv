@@ -715,7 +715,7 @@ BetterTTVEngine = function() {
 			if(info.nickname == "ashardis" && x==1) { info.tagtype="staff"; info.tagname = "Dat Ash"; }
 			if(info.nickname == "gennousuke69" && x==1) { info.tagtype="admin"; info.tagname = "Evil"; }
 			if(info.nickname == "yorkyyork") { info.tagtype="broadcaster"; info.tagname = "<span style='color:red;'>FeaR</span>"; }
-			if(info.nickname == "zebbazombies" && x==1) { info.tagtype="mod"; info.tagname = "Hugs";
+			if(info.nickname == "zebbazombies" && x==1) { info.tagtype="mod"; info.tagname = "Hugs"; }
 			if(info.nickname == "nobama12345" && x==1) { info.tagtype="broadcaster"; info.tagname = "Señor"; }
 			if(info.nickname == "sournothardcore" && x==1) { info.tagname = info.tagname+"</span><span class='tag brown' style='margin-left:4px;color:#FFE600 !important;' original-title='Saucy'>Saucy</span><span>"; }
 			//People
