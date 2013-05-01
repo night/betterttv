@@ -1,16 +1,28 @@
 /**
- * This work is licensed under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0
- * Unported License. This work is based on BetterJTV (http://betterjtv.com), an unlicensed 
- * work. To view a copy of this license, visit 
- * http://creativecommons.org/licenses/by-nc-nd/3.0/ or send a letter to Creative Commons,
- * 444 Castro Street, Suite 900, Mountain View, California, 94041, USA.
+ * Copyright (c) 2013 NightDev
  * 
- * Contact email: nightwalker@nightdev.com
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 
 BetterTTVEngine = function() {
 
-	var betterttvVersion = "6.2",
+	var betterttvVersion = "6.2.2",
 		betterttvDebug = {
 			log: function(string) { if(window.console && console.log) console.log("BTTV: "+string); },
 			warn: function(string) { if(window.console && console.warn) console.warn("BTTV: "+string); },
@@ -33,10 +45,6 @@ BetterTTVEngine = function() {
 	    return this.charAt(0).toUpperCase() + this.slice(1);
 	}
 
-	escapeRegExp = function(str) {
-		return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-	}
-
 	/**
 	 * Core Functions
 	 */
@@ -50,6 +58,10 @@ BetterTTVEngine = function() {
 
 		$$(e).each(function(e){ e.show(); });
 
+	}
+
+	escapeRegExp = function(text) {
+		return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 	}
 
 	clearAds = function() {
@@ -168,16 +180,6 @@ BetterTTVEngine = function() {
 
 	}
 
-	directoryReformat = function() {
-
-		betterttvDebug.log("Reformatting Directory");
-
-		if(PP['page_type'] !== "directory") return;
-
-		// Don't need this?
-
-	}
-
 	chatReformat = function() {
 
 		betterttvDebug.log("Reformatting Chat");
@@ -252,6 +254,10 @@ BetterTTVEngine = function() {
 			$j('#right_col .content .top').css('border-bottom', '1px solid rgba(0, 0, 0, 0.25)')
 			
 			$j("#right_close").unbind('click');
+
+			$j("#left_close").click(function(a) {
+				$j(window).trigger('resize');
+			});
 
 			if(localStorage.getItem("chatWidth")) {
 				chatWidth = localStorage.getItem("chatWidth");
@@ -472,8 +478,10 @@ BetterTTVEngine = function() {
 		globalCSSInject.setAttribute("rel","stylesheet");
 		$j("body").append(globalCSSInject);
 
-		meebo();
-
+		if(!$j("body#chat").length) {
+			meebo();
+		}
+		
 	}
 
 	checkMessages = function(videopage) {
@@ -536,7 +544,7 @@ BetterTTVEngine = function() {
 		$j('#meebo-googlePlus-plusone-0').remove();
 		$j('.meebo-20').remove();
 		$j('.meebo-29').remove();
-		$j('.meebo-22').replaceWith('<a href="http://bugs.nightdev.com/projects/betterttv/issues/new?tracker_id=1" style="margin-right:8px;margin-bottom:3px;color:black;" class="normal_button"><span>Report a BetterTTV Bug</span></a><a href="http://www.betterttv.com" style="margin-right:7px;margin-bottom:3px;color:black;" class="normal_button"><span>BetterTTV v'+betterttvVersion+'</span></a>');
+		$j('.meebo-22').replaceWith('<a href="http://bugs.nightdev.com/projects/betterttv/issues/new?tracker_id=1" style="margin-right:5px;margin-bottom:3px;color:black;" class="normal_button"><span>Report a BetterTTV Bug</span></a><a href="http://www.betterttv.com" style="margin-right:7px;margin-bottom:3px;color:black;" class="normal_button"><span>BetterTTV v'+betterttvVersion+'</span></a>');
 
 	}
 
@@ -615,6 +623,7 @@ BetterTTVEngine = function() {
 				if(info.tagtype == "mod" || info.tagtype == "broadcaster" || info.tagtype == "admin" || info.tagtype == "staff") info.tagtype = "old"+info.tagtype;
 			}
 
+			var messageHighlighted = false;
 			var regexInput = PP['login'];
 
 			if(localStorage.getItem("highlightKeywords")) {
@@ -625,15 +634,28 @@ BetterTTVEngine = function() {
 				});
 			}
 
-			var regex = new RegExp('\\b('+regexInput+')\\b', 'i');
-			if(regex.test(info.message) && PP['login'] !== "" && localStorage.getItem("darkenedMode") == "true") {
+			var wordRegex = new RegExp('\\b('+regexInput+')\\b', 'i');
+			var symbolRegex = new RegExp('\\B('+regexInput+')\\B', 'i');
+
+			if(PP['login'] !== "" && (wordRegex.test(info.message) || symbolRegex.test(info.message))) {
+				messageHighlighted = true;
+			}
+
+			if(blackChat === true && info.color === "#000000") {
+				info.color = "#ffffff";
+			}
+
+			if(messageHighlighted === true && localStorage.getItem("darkenedMode") == "true") {
 				info.color = "#ffffff";
 				ich.templates["chat-line"] = ich.templates["chat-line-highlight"];
-			} else if(regex.test(info.message) && PP['login'] !== "") {
+				ich.templates["chat-line-action"] = ich.templates["chat-line-action-highlight"];
+			} else if(messageHighlighted === true && PP['login'] !== "") {
 				info.color = "#000000";
 				ich.templates["chat-line"] = ich.templates["chat-line-highlight"];
+				ich.templates["chat-line-action"] = ich.templates["chat-line-action-highlight"];
 			} else {
 				ich.templates["chat-line"] = ich.templates["chat-line-old"];
+				ich.templates["chat-line-action"] = ich.templates["chat-line-action-old"];
 			}
 
 			if((info.color == "#0000FF" || info.color == "#191971") && localStorage.getItem("darkenedMode") == "true") { info.color = "#3753ff"; }
@@ -677,7 +699,7 @@ BetterTTVEngine = function() {
 			if(info.nickname == "snorlaxitive" && x==1) { info.tagtype="purple"; info.tagname = "King"; }
 			if(info.nickname == "excalibr" && x==1) { info.tagtype="staff"; info.tagname = "Boss"; }
 			if(info.nickname == "chez_plastic" && x==1) { info.tagtype="staff"; info.tagname = "Frenchy"; }
-			if(info.nickname == "frontiersman72" && x==1) { info.tagtype="admin"; info.tagname = "Uni"; }
+			if(info.nickname == "frontiersman72" && x==1) { info.tagtype="admin"; info.tagname = "TMC"; }
 			if(info.nickname == "dckay14" && x==1) { info.tagtype="admin"; info.tagname = "Ginger"; }
 			if(info.nickname == "boogie_yellow" && x==1) { info.tagtype="orange"; info.tagname = "Yellow"; }
 			if(info.nickname == "harksa" && x==1) { info.tagtype="orange"; info.tagname = "Feet"; }
@@ -693,6 +715,7 @@ BetterTTVEngine = function() {
 			if(info.nickname == "ashardis" && x==1) { info.tagtype="staff"; info.tagname = "Dat Ash"; }
 			if(info.nickname == "gennousuke69" && x==1) { info.tagtype="admin"; info.tagname = "Evil"; }
 			if(info.nickname == "yorkyyork") { info.tagtype="broadcaster"; info.tagname = "<span style='color:red;'>FeaR</span>"; }
+			if(info.nickname == "zebbazombies" && x==1) { info.tagtype="mod"; info.tagname = "Hugs"; }
 			if(info.nickname == "sournothardcore" && x==1) { info.tagname = info.tagname+"</span><span class='tag brown' style='margin-left:4px;color:#FFE600 !important;' original-title='Saucy'>Saucy</span><span>"; }
 			//People
 			if(info.nickname == "mac027" && x==1) { info.tagtype="admin"; info.tagname = "Hacks"; }
@@ -719,35 +742,11 @@ BetterTTVEngine = function() {
 			this.insert_chat_lineOld(info);
 		}
 
-		Chat.prototype.emoticonizeOld = function (a, c) {
-	        var b = CurrentChat,
-	            e = CurrentChat.emoticons.length;
-	        for (i = 0; i < e; i++) {
-	            var d = CurrentChat.emoticons[i];
-	            if (1 === d.images.length && !d.images[0].emoticon_set) a = a.replace(d.regex, d.images[0].html);
-	            else if (a.match(d.regex)) {
-	                var g = null,
-	                    h = !1;
-	                d.images.forEach(function (e) {
-	                    if (-1 !== (b.user_to_emote_sets[c] || []).indexOf(e.emoticon_set)) a = a.replace(d.regex, e.html), h = !0;
-	                    e.emoticon_set || (g = e.html)
-	                });
-	                !h && g && (a = a.replace(d.regex, g))
-	            }
-	        }
-	        return a
-	    }
-
-		Chat.prototype.emoticonize = function(msg, b) {
-			msg = this.emoticonizeOld(msg, b);
-
-			return msg;
-		}
-
-
 		ich.templates["chat-line-action"] = "<li class='chat_from_{{sender}} line' data-sender='{{sender}}'><p><span class='small'>{{timestamp}}&nbsp;</span>{{#showModButtons}}{{> chat-mod-buttons}}{{/showModButtons}}<span class='nick' style='color:{{color}};'>{{displayname}}</span><span class='chat_line' style='color:{{color}};'> @message</span></p></li>";
+		ich.templates["chat-line-action-highlight"] = "<li class='chat_from_{{sender}} line' data-sender='{{sender}}'><p><span class='small'>{{timestamp}}&nbsp;</span>{{#showModButtons}}{{> chat-mod-buttons}}{{/showModButtons}}<span class='nick' style='color:{{color}};'>{{displayname}}</span><span class='chat_line' style='color:{{color}};'> @message</span></p></li>";
 		ich.templates["chat-line-highlight"] = "<li class='chat_from_{{sender}} line highlight' data-sender='{{sender}}'><p><span class='small'>{{timestamp}}&nbsp;</span>@tag{{#showModButtons}}{{> chat-mod-buttons}}{{/showModButtons}}<a class='nick' href='/{{sender}}' id='{{id}}' style='color:{{color}}'>{{displayname}}</a>:&nbsp;<span class='chat_line'>@message</span></p></li>";
 		ich.templates["chat-line-old"] = ich.templates["chat-line"];
+		ich.templates["chat-line-action-old"] = ich.templates["chat-line-action"];
 
 		var tempBan = '<span>&nbsp;<a href="#" class="normal_button tooltip chat_menu_btn" onclick="javascript:CurrentChat.ghetto24Hour(28800);" title="Temporary 8 hour ban"><span class="glyph_only"><img src="http://betterttv.nightdev.com/8hr.png" /></span></a></span><span>&nbsp;<a href="#" class="normal_button tooltip chat_menu_btn" onclick="javascript:CurrentChat.ghetto24Hour(86400);" title="Temporary 24 hour ban"><span class="glyph_only"><img src="http://betterttv.nightdev.com/24hr.png" /></span></a></span>';
 		$j(tempBan).insertAfter("#chat_menu_timeout");
@@ -888,11 +887,16 @@ BetterTTVEngine = function() {
 			  window.partialMatch = partialMatch;
 			} else if(partialMatch.search(window.partialMatch) !== 0){
 			  window.partialMatch = partialMatch;
+			} else if(window.lastMatch !== $j('#chat_text_input').val()) {
+			  window.partialMatch = partialMatch;
 			} else {
 			  if (sentence.length === 0) {
 			    userIndex = users.indexOf(partialMatch.substr(0, partialMatch.length-1));
 			  } else {
 			    userIndex = users.indexOf(partialMatch);
+			  }
+			  if (e.shiftKey) {
+			  	userIndex = userIndex-1;
 			  }
 			}
 			for (var i=userIndex; i<users.length; i++) {
@@ -903,9 +907,11 @@ BetterTTVEngine = function() {
 			    }
 			    sentence.push(user.capitalize());
 			    if (sentence.length === 1) {
-			      $j('#chat_text_input').val(sentence.join(' ') +  ":");
+			      $j('#chat_text_input').val(sentence.join(' ')+":");
+			      window.lastMatch = sentence.join(' ')+":";
 			    } else {
 			      $j('#chat_text_input').val(sentence.join(' '));
+			      window.lastMatch = sentence.join(' ');
 			    }
 			    break;
 			  }
@@ -914,7 +920,7 @@ BetterTTVEngine = function() {
 		});
 
 		setTimeout(function(){updateViewerList()},5000);
-		setInterval(function(){updateViewerList()},300000);
+		setInterval(function(){updateViewerList()},60000);
 	}	
 
 	checkFollowing = function() {
@@ -1124,6 +1130,21 @@ BetterTTVEngine = function() {
 							<li id="chat_section_chatroom" class="dropmenu_section"> \
 							<br /> \
 							&nbsp;&nbsp;&nbsp;&raquo;&nbsp;BetterTTV \
+							<form id="bttvTipJar" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank"> \
+								<input type="hidden" name="cmd" value="_xclick"> \
+								<input type="hidden" name="business" value="night@nightdev.com"> \
+								<input type="hidden" name="lc" value="US"> \
+								<input type="hidden" name="item_name" value="BetterTTV Tip Jar"> \
+								<input type="hidden" name="item_number" value="'+PP['login']+'"> \
+								<input type="hidden" name="amount" value=""> \
+								<input type="hidden" name="currency_code" value="USD"> \
+								<input type="hidden" name="button_subtype" value="services"> \
+								<input type="hidden" name="no_note" value="0"> \
+								<input type="hidden" name="cn" value="Leave a message:"> \
+								<input type="hidden" name="no_shipping" value="1"> \
+								<input type="hidden" name="bn" value="PP-BuyNowBF:btn_buynowCC_LG.gif:NonHosted"> \
+								<a href="#" class="dropmenu_action g18_popout-FFFFFF80" onclick="document.getElementById(\'bttvTipJar\').submit();">BetterTTV Tip Jar</a> \
+							</form> \
 							<a class="dropmenu_action g18_gear-FFFFFF80" href="#" id="darkenTwitchLink" onclick="betterttvAction(\'toggleDarkTwitch\'); return false;">' + (localStorage.getItem("darkenedMode") == "true" ? "Undarken Chat":"Darken Chat") + '</a> \
 							<a class="dropmenu_action g18_gear-FFFFFF80" href="#" id="blackChatLink" onclick="betterttvAction(\'toggleBlackChat\'); return false;">Black Chat (Chroma Key)</a> \
 							<a class="dropmenu_action g18_gear-FFFFFF80" href="#" onclick="betterttvAction(\'setHighlightKeywords\'); return false;">Set Highlight Keywords</a> \
@@ -1297,7 +1318,6 @@ BetterTTVEngine = function() {
 	betterttvDebug.log("CALL init "+document.URL);
 	brand();
 	clearAds();
-	directoryReformat();
 	channelReformat();
 	chatReformat();
 	newChannelReformat();
