@@ -22,7 +22,7 @@
 
 BetterTTVEngine = function() {
 
-	var betterttvVersion = "6.2.2",
+	var betterttvVersion = "6.2.3",
 		betterttvDebug = {
 			log: function(string) { if(window.console && console.log) console.log("BTTV: "+string); },
 			warn: function(string) { if(window.console && console.warn) console.warn("BTTV: "+string); },
@@ -715,7 +715,8 @@ BetterTTVEngine = function() {
 			if(info.nickname == "ashardis" && x==1) { info.tagtype="staff"; info.tagname = "Dat Ash"; }
 			if(info.nickname == "gennousuke69" && x==1) { info.tagtype="admin"; info.tagname = "Evil"; }
 			if(info.nickname == "yorkyyork") { info.tagtype="broadcaster"; info.tagname = "<span style='color:red;'>FeaR</span>"; }
-			if(info.nickname == "zebbazombies" && x==1) { info.tagtype="mod"; info.tagname = "Hugs"; }
+			if(info.nickname == "zebbazombies" && x==1) { info.tagtype="mod"; info.tagname = "Hugs";
+			if(info.nickname == "nobama12345" && x==1) { info.tagtype="broadcaster"; info.tagname = "Señor"; }
 			if(info.nickname == "sournothardcore" && x==1) { info.tagname = info.tagname+"</span><span class='tag brown' style='margin-left:4px;color:#FFE600 !important;' original-title='Saucy'>Saucy</span><span>"; }
 			//People
 			if(info.nickname == "mac027" && x==1) { info.tagtype="admin"; info.tagname = "Hacks"; }
@@ -739,12 +740,42 @@ BetterTTVEngine = function() {
 			if(info.nickname == "kerviel_" && x==1) { info.tagtype="staff"; info.tagname = "Almighty"; }
 			if(info.nickname == "ackleyman" && x==1) { info.tagtype="orange"; info.tagname = "Ack"; }
 			
-			this.insert_chat_lineOld(info);
+			//this.insert_chat_lineOld(info);
+			if (!(CurrentChat.restarting && !CurrentChat.history_ended || CurrentChat.ignored[info.sender])) if ("jtv" === info.sender) CurrentChat.last_sender = info.sender, CurrentChat.admin_message(CurrentChat.format_message(info));
+	        else if (!info.is_action && CurrentChat.last_sender && CurrentChat.last_sender === info.sender && "jtv" !== CurrentChat.last_sender) CurrentChat.insert_with_lock("#chat_line_list li:last", '<p class="chat_line" style="display:block;">&raquo; ' + CurrentChat.format_message(info) + "</p>");
+	        else {
+	            CurrentChat.last_sender = info.sender;
+	            var d = !! (PP.login === PP.channel || "true" ===
+	                PP.is_admin || "true" === PP.is_subadmin || CurrentChat.staff[PP.login] || CurrentChat.admins[PP.login] || CurrentChat.moderators[PP.login]),
+	                c = info.is_action ? "chat-line-action" : "chat-line",
+	                b = !1,
+	                f = unescape(info.nickname);
+	            0 === f.indexOf("ign-") && (b = !0, f = f.substr(4));
+	            var h = "chat-line-" + Math.round(1E9 * Math.random()),
+	                f = {
+	                    id: h,
+	                    showModButtons: d && "jtv" !== info.sender && info.sender !== PP.login,
+	                    timestamp: CurrentChat.show_timestamps || !CurrentChat.history_ended ? info.timestamp : "",
+	                    sender: info.sender,
+	                    displayname: f,
+	                    color: info.color
+	                }, g = d = "";
+	            info.tagtype && (d = '<span class="tag %tagtype" title="%tagname">%tagname</span>&nbsp;'.replace(/\%tagtype/g,
+	                info.tagtype).replace(/\%tagname/g, info.tagname));
+	            info.turbo && (d += '<span class="tag %tagtype" title="%tagname"><a href="/products/turbo?ref=chat_badge" target="_blank">%tagname</a></span> '.replace(/\%tagtype/g, "turbo").replace(/\%tagname/g, "Turbo"));
+	            info.subscriber && (g = '<span class="tag %tagtype %tagchannel" title="%tagname">' + ('<a href="/' + CurrentChat.channel + '/subscribe" target="_blank">%tagname</a>'), d += (g + "</span> ").replace(/\%tagtype/g, "subscriber").replace(/\%tagname/g, "Subscriber").replace(/\%tagchannel/g,
+	                CurrentChat.channel));
+	            b && (d += '<span class="tag %tagtype" title="%tagname">%tagname</span>&nbsp;'.replace(/\%tagtype/g, "ign").replace(/\%tagname/g, "My IGN"));
+	            c = ich[c](f)[0].outerHTML;
+	            c = c.replace(/\@tag/g, d);
+	            c = c.replace(/\@message/g, CurrentChat.format_message(info));
+	            "jtv" !== info.sender ? CurrentChat.insert_with_lock("#chat_line_list", c, info, h) : CurrentChat.insert_with_lock("#chat_line_list", c)
+	        }
 		}
 
-		ich.templates["chat-line-action"] = "<li class='chat_from_{{sender}} line' data-sender='{{sender}}'><p><span class='small'>{{timestamp}}&nbsp;</span>{{#showModButtons}}{{> chat-mod-buttons}}{{/showModButtons}}<span class='nick' style='color:{{color}};'>{{displayname}}</span><span class='chat_line' style='color:{{color}};'> @message</span></p></li>";
-		ich.templates["chat-line-action-highlight"] = "<li class='chat_from_{{sender}} line' data-sender='{{sender}}'><p><span class='small'>{{timestamp}}&nbsp;</span>{{#showModButtons}}{{> chat-mod-buttons}}{{/showModButtons}}<span class='nick' style='color:{{color}};'>{{displayname}}</span><span class='chat_line' style='color:{{color}};'> @message</span></p></li>";
-		ich.templates["chat-line-highlight"] = "<li class='chat_from_{{sender}} line highlight' data-sender='{{sender}}'><p><span class='small'>{{timestamp}}&nbsp;</span>@tag{{#showModButtons}}{{> chat-mod-buttons}}{{/showModButtons}}<a class='nick' href='/{{sender}}' id='{{id}}' style='color:{{color}}'>{{displayname}}</a>:&nbsp;<span class='chat_line'>@message</span></p></li>";
+		ich.templates["chat-line-action"] = "<li class='chat_from_{{sender}} line' data-sender='{{sender}}'><p><span class='small'>{{timestamp}}&nbsp;</span>@tag{{#showModButtons}}{{> chat-mod-buttons}}{{/showModButtons}}<a class='nick' href='/{{sender}}' id='{{id}}' style='color:{{color}};'>{{displayname}}</a><span class='chat_line' style='color:{{color}};'> @message</span></p></li>";
+		ich.templates["chat-line-action-highlight"] = "<li class='chat_from_{{sender}} line highlight' data-sender='{{sender}}'><p><span class='small'>{{timestamp}}&nbsp;</span>@tag{{#showModButtons}}{{> chat-mod-buttons}}{{/showModButtons}}<a class='nick' href='/{{sender}}' id='{{id}}' style='color:{{color}};'>{{displayname}}</a><span class='chat_line' style='color:{{color}};'> @message</span></p></li>";
+		ich.templates["chat-line-highlight"] = "<li class='chat_from_{{sender}} line highlight' data-sender='{{sender}}'><p><span class='small'>{{timestamp}}&nbsp;</span>@tag{{#showModButtons}}{{> chat-mod-buttons}}{{/showModButtons}}<a class='nick' href='/{{sender}}' id='{{id}}' style='color:{{color}};'>{{displayname}}</a>:&nbsp;<span class='chat_line'>@message</span></p></li>";
 		ich.templates["chat-line-old"] = ich.templates["chat-line"];
 		ich.templates["chat-line-action-old"] = ich.templates["chat-line-action"];
 
@@ -920,7 +951,7 @@ BetterTTVEngine = function() {
 		});
 
 		setTimeout(function(){updateViewerList()},5000);
-		setInterval(function(){updateViewerList()},60000);
+		setInterval(function(){updateViewerList()},300000);
 	}	
 
 	checkFollowing = function() {
