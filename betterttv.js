@@ -29,6 +29,7 @@ BetterTTVEngine = function() {
 			error: function(string) { if(window.console && console.error) console.error("BTTV: "+string); },
 			info: function(string) { if(window.console && console.info) console.info("BTTV: "+string); }
 		},
+		currentViewers = [];
 		liveChannels = [],
 		blackChat = false,
 		reloadViewers = false;
