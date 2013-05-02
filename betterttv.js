@@ -22,7 +22,7 @@
 
 BetterTTVEngine = function() {
 
-	var betterttvVersion = "6.2.3",
+	var betterttvVersion = "6.2.4",
 		betterttvDebug = {
 			log: function(string) { if(window.console && console.log) console.log("BTTV: "+string); },
 			warn: function(string) { if(window.console && console.warn) console.warn("BTTV: "+string); },
@@ -205,13 +205,14 @@ BetterTTVEngine = function() {
 				width: "100%"
 			});
 		} else {
+			/*
 			$j("#chat_lines").css({
 				fontFamily: "Helvetica, Arial, sans-serif",
 				overflowY: "auto",
 				overflowX: "hidden"
-			});
+			});*/
 		}
-		
+		/*
 		if($j(".betabar").length) {
 			$j("#chat_line_list").css({
 				width: $j("#chat_lines").width() + "px",
@@ -224,7 +225,7 @@ BetterTTVEngine = function() {
 				lineHeight: "17.333333px",
 				width: "100%"
 			});
-		}
+		}*/
 
 		$j('#chat_loading_spinner').attr('src',"data:image/gif;base64,R0lGODlhFgAWAPMGANfX1wAAADc3N1tbW6Ojo39/f2tra8fHx9nZ2RsbG+np6SwsLEtLS4eHh7q6ugAAACH/C05FVFNDQVBFMi4wAwEAAAAh/hoiQ3JlYXRlZCB3aXRoIENoaW1wbHkuY29tIgAh+QQJCgAGACwAAAAAFgAWAAAEbNCESY29OEvBRdDgFXReGI7dZ2oop65YWypIjSgGbSOW/CGAIICnEAIOPdLPSDQiNykDUNgUPn1SZs6ZjE6D1eBVmaVurV1XGXwWp0vfYfv4XpqLaKg6HqbrZzs4OjZ1MBlYhiJkiYWMfy+GEQAh+QQJCgAGACwAAAAAFgAWAAAEctDIKYO9NKe9lwlCKAQZlQzo4IEiWUpnuorjC6fqR7tvjM4tgwJBJN5kuqACwGQef8kQadkEPHMsqbBqNfiwu231CtRSm+Ro7ez04sprbjobH7uR9Kn8Ds2L0XxgSkVGgXA8JV+HNoZqiBocCYuMJX4vEQAh+QQJCgAAACwAAAAAFgAWAAAEcxDISWu4uNLEOwhCKASSGA5AMqxD8pkkIBR0gaqsC4rxXN+s1otXqtlSQR2s+EPmhqGeEfjcRZk06kpJlE2dW+gIe8SFrWNv0yxES9dJ8TsLbi/VdDb3ii/H3WRadl0+eX93hX5ViCaCe2kaKR0ccpGWlREAIfkECQoAAQAsAAAAABYAFgAABHUwyEmrvTisxHlmQigw2mAOiWSsaxMwRVyQy4mqRE64sEzbqYBBt3vJZqVTcKjjHX9KXNPoS5qWRGe1FhVmqTHoVZrThq0377R35o7VZTDSnWbG2XMguYgX1799aFhrT4J7ZnldLC1yfkEXICKOGRcbHY+UlBEAIfkECQoAAQAsAAAAABYAFgAABHIwyEmrvThrOoQXTFYYpFEEQ6EWgkS8rxMUMHGmaxsQR3/INNhtxXL5frPaMGf0AZUooo7nTAqjzN3xecWpplvra/lt9rhjbFlbDaa9RfZZbFPHqXN3HQ5uQ/lmSHpkdzVoe1IiJSZ2OhsTHR8hj5SVFREAIfkECQoAAQAsAAAAABYAFgAABGowyEmrvTjrzWczIJg5REk4QWMShoQAMKAExGEfRLq2QQzPtVtOZeL5ZLQbTleUHIHK4c7pgwqZJWM1eSVmqTGrTdrsbYNjLAv846a9a3PYvYRr5+j6NPDCR9U8FyQmKHYdHiEih4uMjRQRACH5BAkKAAEALAAAAAAWABYAAARkMMhJq7046807d0QYSkhZKoFiIqhzvAchATSNIjWABC4sBznALbfrvX7BYa0Ii81yShrT96xFdbwmEhrALbNUINcrBR+rti7R7BRb1V9jOwkvy38rVmrV0nokICI/f4SFhocSEQAh+QQJCgABACwAAAAAFgAWAAAEWjDISau9OOvNu7dIGCqBIiKkeUoH4AIk8gJIOR/sHM+1cuev3av3C7SCAdnQ9sIZdUke0+U8uoQuYhN4jS592ydSmZ0CqlAyzYweS8FUyQlVOqXmn7x+z+9bIgA7");
 		
@@ -235,7 +236,7 @@ BetterTTVEngine = function() {
 		betterttvDebug.log("Reformatting Beta Channel Page");
 
 		if($j(".betabar").length === 0) return;
-
+		
 		if(localStorage.getItem("chatWidth")) {
 			if(localStorage.getItem("chatWidth") < 0) {
 				localStorage.setItem("chatWidth", 0)
@@ -295,8 +296,9 @@ BetterTTVEngine = function() {
 				var d = 0;
 				if($j("#right_col").width > 0 && $j("#right_col").width < chatWidth) {
 					$j("#right_col").css({
-		                width: "0px"
+		                width: "320px"
 		            });
+		            chatWidth = 320;
 				}
 				$j(".fixed").each(function () {
 	                d += $j(this).outerWidth()
@@ -327,7 +329,8 @@ BetterTTVEngine = function() {
 					if(chatWidthStartingPoint === $j("#right_col").width())  {
 						if($j("#right_col").width() !== 0) {
 							$j("#right_col").css({
-					            width: "0px"
+					            width: "0px",
+			            		display: "none"
 					        });
 					        $j("#right_close").css({
 					            "background-position": "0 0"
@@ -352,11 +355,13 @@ BetterTTVEngine = function() {
 				if($j("#right_col").width() === 0) {
 					var d = $j("#right_col .top").width();
 			        $j("#right_col").css({
-			            width: d + "px"
+			            width: d + "px",
+			            display: "inherit"
 			        });
 			        $j("#right_close").css({
 			            "background-position": "0 -18px"
 			        });
+
 					
 			        handleResize();
 				}
@@ -371,7 +376,8 @@ BetterTTVEngine = function() {
 				if($j("#right_col").width() === 0) {
 					var d = $j("#right_col .top").width();
 			        $j("#right_col").css({
-			            width: d + "px"
+			            width: d + "px",
+			            display: "inherit"
 			        });
 			        $j("#right_close").css({
 			            "background-position": "0 -18px"
@@ -1356,6 +1362,7 @@ BetterTTVEngine = function() {
 	clearAds();
 	checkFollowing();
 	darkenPage();
+	$j(window).trigger('resize');
 	setTimeout(clearAds, 1000);
 	setTimeout(clearAds, 5000);
 	setTimeout(chatFunctions, 1000);
