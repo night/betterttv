@@ -29,7 +29,6 @@ BetterTTVEngine = function() {
 			error: function(string) { if(window.console && console.error) console.error("BTTV: "+string); },
 			info: function(string) { if(window.console && console.info) console.info("BTTV: "+string); }
 		},
-		currentViewers = [],
 		liveChannels = [],
 		blackChat = false,
 		reloadViewers = false;
@@ -598,6 +597,10 @@ BetterTTVEngine = function() {
 		Chat.prototype.insert_chat_lineOld=Chat.prototype.insert_chat_line;
 		Chat.prototype.insert_chat_line=function(info)
 		{
+			if(currentViewers && currentViewers.indexOf(info.nickname) === -1 && info.nickname !== "jtv") {
+				currentViewers.push(info.nickname);
+			}
+
 			if(info.nickname == "nightbot" && info.message == "> Running a commercial in 15 seconds." && PP['login'] == PP['channel']) {
 				$j.gritter.add({
 			        title: 'Commercial Warning',
@@ -908,7 +911,7 @@ BetterTTVEngine = function() {
 		    e.preventDefault(); 
 		    var sentence = $j('#chat_text_input').val().split(' ');
 		    var partialMatch = sentence.pop().toLowerCase();
-		    var users = CurrentViewers;
+		    var users = currentViewers;
 			var userIndex = 0;
 			if(window.partialMatch === undefined) {
 			  window.partialMatch = partialMatch;
@@ -1110,10 +1113,10 @@ BetterTTVEngine = function() {
             timeoutLength: 6E3
         }).done(function (d) {
         	if(d.data.chatters) {
-            	CurrentViewers = [];
+            	currentViewers = [];
 				["staff", "admins", "moderators", "viewers"].forEach(function (a) {
 	                d.data.chatters[a].forEach(function (a) {
-	                    CurrentViewers.push(a);
+	                    currentViewers.push(a);
 	                });
 	            });
         	}
