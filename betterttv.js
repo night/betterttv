@@ -22,7 +22,7 @@
 
 BetterTTVEngine = function() {
 
-	var betterttvVersion = "6.2.4",
+	var betterttvVersion = "6.2.5",
 		betterttvDebug = {
 			log: function(string) { if(window.console && console.log) console.log("BTTV: "+string); },
 			warn: function(string) { if(window.console && console.warn) console.warn("BTTV: "+string); },
@@ -205,27 +205,15 @@ BetterTTVEngine = function() {
 				width: "100%"
 			});
 		} else {
-			/*
 			$j("#chat_lines").css({
 				fontFamily: "Helvetica, Arial, sans-serif",
-				overflowY: "auto",
-				overflowX: "hidden"
-			});*/
+			});
 		}
-		/*
-		if($j(".betabar").length) {
-			$j("#chat_line_list").css({
-				width: $j("#chat_lines").width() + "px",
-				fontSize: "13.33333px",
-				lineHeight: "17.333333px"
-			});
-		} else {
-			$j("#chat_line_list").css({
-				fontSize: "13.33333px",
-				lineHeight: "17.333333px",
-				width: "100%"
-			});
-		}*/
+		
+		$j("#chat_line_list").css({
+			fontSize: "13.33333px",
+			lineHeight: "17.333333px",
+		});
 
 		$j('#chat_loading_spinner').attr('src',"data:image/gif;base64,R0lGODlhFgAWAPMGANfX1wAAADc3N1tbW6Ojo39/f2tra8fHx9nZ2RsbG+np6SwsLEtLS4eHh7q6ugAAACH/C05FVFNDQVBFMi4wAwEAAAAh/hoiQ3JlYXRlZCB3aXRoIENoaW1wbHkuY29tIgAh+QQJCgAGACwAAAAAFgAWAAAEbNCESY29OEvBRdDgFXReGI7dZ2oop65YWypIjSgGbSOW/CGAIICnEAIOPdLPSDQiNykDUNgUPn1SZs6ZjE6D1eBVmaVurV1XGXwWp0vfYfv4XpqLaKg6HqbrZzs4OjZ1MBlYhiJkiYWMfy+GEQAh+QQJCgAGACwAAAAAFgAWAAAEctDIKYO9NKe9lwlCKAQZlQzo4IEiWUpnuorjC6fqR7tvjM4tgwJBJN5kuqACwGQef8kQadkEPHMsqbBqNfiwu231CtRSm+Ro7ez04sprbjobH7uR9Kn8Ds2L0XxgSkVGgXA8JV+HNoZqiBocCYuMJX4vEQAh+QQJCgAAACwAAAAAFgAWAAAEcxDISWu4uNLEOwhCKASSGA5AMqxD8pkkIBR0gaqsC4rxXN+s1otXqtlSQR2s+EPmhqGeEfjcRZk06kpJlE2dW+gIe8SFrWNv0yxES9dJ8TsLbi/VdDb3ii/H3WRadl0+eX93hX5ViCaCe2kaKR0ccpGWlREAIfkECQoAAQAsAAAAABYAFgAABHUwyEmrvTisxHlmQigw2mAOiWSsaxMwRVyQy4mqRE64sEzbqYBBt3vJZqVTcKjjHX9KXNPoS5qWRGe1FhVmqTHoVZrThq0377R35o7VZTDSnWbG2XMguYgX1799aFhrT4J7ZnldLC1yfkEXICKOGRcbHY+UlBEAIfkECQoAAQAsAAAAABYAFgAABHIwyEmrvThrOoQXTFYYpFEEQ6EWgkS8rxMUMHGmaxsQR3/INNhtxXL5frPaMGf0AZUooo7nTAqjzN3xecWpplvra/lt9rhjbFlbDaa9RfZZbFPHqXN3HQ5uQ/lmSHpkdzVoe1IiJSZ2OhsTHR8hj5SVFREAIfkECQoAAQAsAAAAABYAFgAABGowyEmrvTjrzWczIJg5REk4QWMShoQAMKAExGEfRLq2QQzPtVtOZeL5ZLQbTleUHIHK4c7pgwqZJWM1eSVmqTGrTdrsbYNjLAv846a9a3PYvYRr5+j6NPDCR9U8FyQmKHYdHiEih4uMjRQRACH5BAkKAAEALAAAAAAWABYAAARkMMhJq7046807d0QYSkhZKoFiIqhzvAchATSNIjWABC4sBznALbfrvX7BYa0Ii81yShrT96xFdbwmEhrALbNUINcrBR+rti7R7BRb1V9jOwkvy38rVmrV0nokICI/f4SFhocSEQAh+QQJCgABACwAAAAAFgAWAAAEWjDISau9OOvNu7dIGCqBIiKkeUoH4AIk8gJIOR/sHM+1cuev3av3C7SCAdnQ9sIZdUke0+U8uoQuYhN4jS592ydSmZ0CqlAyzYweS8FUyQlVOqXmn7x+z+9bIgA7");
 		
@@ -259,50 +247,40 @@ BetterTTVEngine = function() {
 			$j("#left_close").click(function(a) {
 				$j(window).trigger('resize');
 			});
-
-			if(localStorage.getItem("chatWidth")) {
-				chatWidth = localStorage.getItem("chatWidth");
-				$j("#right_col").width(chatWidth);
-				$j("#right_col .content #chat").width(chatWidth);
-				$j("#right_col .content .top").width(chatWidth);
-
-				$j("#chat_line_list").width(chatWidth);
-				$j("#chat_lines").width(chatWidth);
-
-				var d = 0;
-				$j(".fixed").each(function () {
-	                d += $j(this).outerWidth()
-	            });
-	            $j("#main_col").css({
-	                width: $j(window).width() - d + "px"
-	            });
-
-	            var h = 0.5625 * $j("#main_col").width() - 4;
-	            if(h > $j(window).height() - $j("#main_col .top").outerHeight() - 40) {
-	            	($j(".live_site_player_container").css({ height: $j(window).height() - $j("#main_col .top").outerHeight() - 40 + "px" }), $j("#main_col .scroll-content-contain").animate({ scrollTop: 90 }, 150, "swing"));
-	            } else {
-	            	$j(".live_site_player_container").css({ height: h.toFixed(0) + "px" });
-	            } 
-	            
-	            _.debounce(function () {
-	            	var d = $j("#broadcast_meta .info .title").width();
-		            $j("#broadcast_meta .info .title .real_title").width() > d ? $j("#broadcast_meta .info").addClass("long_title") : $j("#broadcast_meta .info").removeClass("long_title")
-		        }, 500)
-			} else {
-				chatWidth = $j("#right_col").width();
-			}
 			
 			var handleResize = function() {
 				var d = 0;
-				if($j("#right_col").width > 0 && $j("#right_col").width < chatWidth) {
-					$j("#right_col").css({
-		                width: "320px"
-		            });
-		            chatWidth = 320;
+				if($j("#large_nav").css("display") !== "none") {
+					d += $j("#large_nav").width();
 				}
-				$j(".fixed").each(function () {
-	                d += $j(this).outerWidth()
-	            });
+				if($j("#small_nav").css("display") !== "none") {
+					d += $j("#small_nav").width();
+				}
+				if(chatWidth == 0) {
+					$j("#right_col").css({
+	            		display: "none"
+			        });
+			        $j("#right_close").css({
+			            "background-position": "0 0"
+			        });
+				}
+				if($j("#right_col").css("display") !== "none") {
+					if($j("#right_col").width() < 320) {
+						chatWidth = 320;
+						$j("#right_col").width(chatWidth);
+						$j("#right_col .content #chat").width(chatWidth);
+						$j("#right_col .content .top").width(chatWidth);
+						$j("#chat_line_list").width(chatWidth);
+						$j("#chat_lines").width(chatWidth);
+						$j("#right_col").css("display","none");
+						$j("#right_close").css({
+				            "background-position": "0 0"
+				        });
+					} else {
+						d += $j("#right_col").width();
+					}
+				}
+
 	            $j("#main_col").css({
 	                width: $j(window).width() - d + "px"
 	            });
@@ -318,87 +296,97 @@ BetterTTVEngine = function() {
 	            	var d = $j("#broadcast_meta .info .title").width();
 		            $j("#broadcast_meta .info .title .real_title").width() > d ? $j("#broadcast_meta .info").addClass("long_title") : $j("#broadcast_meta .info").removeClass("long_title")
 		        }, 500)
-		        localStorage.setItem("chatWidth", $j("#right_col").width());
+		        
 		        $j("body").trigger("fluid-resize")
+			}
+
+			if(localStorage.getItem("chatWidth")) {
+				chatWidth = localStorage.getItem("chatWidth");
+
+				if(chatWidth == 0) {
+					console.log("here")
+					$j("#right_col").css({
+	            		display: "none"
+			        });
+			        $j("#right_close").css({
+			            "background-position": "0 0"
+			        });
+				} else {
+					$j("#right_col").width(chatWidth);
+					$j("#right_col .content #chat").width(chatWidth);
+					$j("#right_col .content .top").width(chatWidth);
+
+					$j("#chat_line_list").width(chatWidth);
+					$j("#chat_lines").width(chatWidth);
+				}
+
+				handleResize();
+			} else {
+				chatWidth = $j("#right_col").width();
+				localStorage.setItem("chatWidth", $j("#right_col").width());
 			}
 
 			$j(document).mouseup(function(event)
 			{
 				if(resize == false) return;
 				if(chatWidthStartingPoint) {
-					if(chatWidthStartingPoint === $j("#right_col").width())  {
-						if($j("#right_col").width() !== 0) {
+					if(chatWidthStartingPoint === event.pageX) {
+						if($j("#right_col").css("display") !== "none") {
 							$j("#right_col").css({
-					            width: "0px",
 			            		display: "none"
 					        });
 					        $j("#right_close").css({
 					            "background-position": "0 0"
 					        });
-
-							handleResize();
+					        chatWidth = 0
 						}
+					} else {
+						chatWidth = $j("#right_col").width();
 					}
+				} else {
+					chatWidth = $j("#right_col").width();
 				}
-				
+				localStorage.setItem("chatWidth", chatWidth);
+
 				resize = false;
-				chatWidth = $j("#right_col").width();
 				handleResize();
 			});
-			
-			$j("#right_close").mousedown(function(event)
+
+			$j("#right_close, #right_col .resizer").mousedown(function(event)
 			{
 				resize = event.pageX;
-				chatWidth = $j("#right_col").width();
-				chatWidthStartingPoint = chatWidth + resize - event.pageX;
+				chatWidthStartingPoint = event.pageX;
 				$j("#chat_text_input").focus();
-				if($j("#right_col").width() === 0) {
-					var d = $j("#right_col .top").width();
+				if($j("#right_col").css("display") === "none") {
 			        $j("#right_col").css({
-			            width: d + "px",
 			            display: "inherit"
 			        });
 			        $j("#right_close").css({
 			            "background-position": "0 -18px"
 			        });
-
-					
-			        handleResize();
-				}
-			});
-
-			$j("#right_col .resizer").mousedown(function(event)
-			{
-				resize = event.pageX;
-				chatWidth = $j("#right_col").width();
-				chatWidthStartingPoint = chatWidth + resize - event.pageX;
-				$j("#chat_text_input").focus();
-				if($j("#right_col").width() === 0) {
-					var d = $j("#right_col .top").width();
-			        $j("#right_col").css({
-			            width: d + "px",
-			            display: "inherit"
-			        });
-			        $j("#right_close").css({
-			            "background-position": "0 -18px"
-			        });
-					
+					resize = false;
+					if($j("#right_col").width() < 320) {
+						$j("#right_col").width($j("#right_col .content .top").width());
+					}
+					chatWidth = $j("#right_col").width();
+					localStorage.setItem("chatWidth", chatWidth);
 			        handleResize();
 				}
 			});
 		
 			$j(document).mousemove(function(event)
 			{
+
 				if (resize)
 				{
 					$j("#chat_text_input").focus();
-					if (chatWidth + resize - event.pageX < 319)
+					if (chatWidth + resize - event.pageX < 320)
 					{
-						$j("#right_col").width(319);
-						$j("#right_col .content #chat").width(319);
-						$j("#right_col .content .top").width(319);
-						$j("#chat_line_list").width(319);
-						$j("#chat_lines").width(319);
+						$j("#right_col").width(320);
+						$j("#right_col .content #chat").width(320);
+						$j("#right_col .content .top").width(320);
+						$j("#chat_line_list").width(320);
+						$j("#chat_lines").width(320);
 
 						handleResize();
 					}
@@ -785,7 +773,9 @@ BetterTTVEngine = function() {
 		ich.templates["chat-line-old"] = ich.templates["chat-line"];
 		ich.templates["chat-line-action-old"] = ich.templates["chat-line-action"];
 
-		var tempBan = '<span>&nbsp;<a href="#" class="normal_button tooltip chat_menu_btn" onclick="javascript:CurrentChat.ghetto24Hour(28800);" title="Temporary 8 hour ban"><span class="glyph_only"><img src="http://betterttv.nightdev.com/8hr.png" /></span></a></span><span>&nbsp;<a href="#" class="normal_button tooltip chat_menu_btn" onclick="javascript:CurrentChat.ghetto24Hour(86400);" title="Temporary 24 hour ban"><span class="glyph_only"><img src="http://betterttv.nightdev.com/24hr.png" /></span></a></span>';
+		var purge = '<span><a href="#" class="normal_button tooltip chat_menu_btn" onclick="javascript:CurrentChat.ghettoTimeout(1);" title="Temporary 8 hour ban"><span class="glyph_only"><img src="http://betterttv.nightdev.com/purge.png" /></span></a>&nbsp;</span>';
+		$j(purge).insertBefore("#chat_menu_timeout");
+		var tempBan = '<span>&nbsp;<a href="#" class="normal_button tooltip chat_menu_btn" onclick="javascript:CurrentChat.ghettoTimeout(28800);" title="Temporary 8 hour ban"><span class="glyph_only"><img src="http://betterttv.nightdev.com/8hr.png" /></span></a></span><span>&nbsp;<a href="#" class="normal_button tooltip chat_menu_btn" onclick="javascript:CurrentChat.ghettoTimeout(86400);" title="Temporary 24 hour ban"><span class="glyph_only"><img src="http://betterttv.nightdev.com/24hr.png" /></span></a></span>';
 		$j(tempBan).insertAfter("#chat_menu_timeout");
 		$j("#chat_menu_tools").insertAfter("#chat_menu_op_tools");
 
@@ -794,7 +784,7 @@ BetterTTVEngine = function() {
 
 		var checkJoinFail = {};
 
-		CurrentChat.ghetto24Hour = function(time) {
+		CurrentChat.ghettoTimeout = function(time) {
 			CurrentChat.say("/timeout "+$("user_info").current_login+" "+time);
 		}
 
