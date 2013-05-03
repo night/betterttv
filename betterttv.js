@@ -22,7 +22,7 @@
 
 BetterTTVEngine = function() {
 
-	var betterttvVersion = "6.2.5",
+	var betterttvVersion = "6.2.6",
 		betterttvDebug = {
 			log: function(string) { if(window.console && console.log) console.log("BTTV: "+string); },
 			warn: function(string) { if(window.console && console.warn) console.warn("BTTV: "+string); },
@@ -247,6 +247,12 @@ BetterTTVEngine = function() {
 			$j("#left_close").click(function(a) {
 				$j(window).trigger('resize');
 			});
+
+			$j(document).keydown(function(event){
+				if(event.keyCode === 82 && event.altKey) {
+					$j(window).trigger('resize');
+				}
+			});
 			
 			var handleResize = function() {
 				var d = 0;
@@ -272,9 +278,9 @@ BetterTTVEngine = function() {
 						$j("#right_col .content .top").width(chatWidth);
 						$j("#chat_line_list").width(chatWidth);
 						$j("#chat_lines").width(chatWidth);
-						$j("#right_col").css("display","none");
+						$j("#right_col").css("display","inherit");
 						$j("#right_close").css({
-				            "background-position": "0 0"
+				            "background-position": "0 -18px"
 				        });
 					} else {
 						d += $j("#right_col").width();
@@ -777,7 +783,7 @@ BetterTTVEngine = function() {
 		ich.templates["chat-line-old"] = ich.templates["chat-line"];
 		ich.templates["chat-line-action-old"] = ich.templates["chat-line-action"];
 
-		var purge = '<span><a href="#" class="normal_button tooltip chat_menu_btn" onclick="javascript:CurrentChat.ghettoTimeout(1);" title="Temporary 8 hour ban"><span class="glyph_only"><img src="http://betterttv.nightdev.com/purge.png" /></span></a>&nbsp;</span>';
+		var purge = '<span><a href="#" class="normal_button tooltip chat_menu_btn" onclick="javascript:CurrentChat.ghettoTimeout(1);" title="Purges Users Chat - 1 Second Timeout"><span class="glyph_only"><img src="http://betterttv.nightdev.com/purge.png" /></span></a>&nbsp;</span>';
 		$j(purge).insertBefore("#chat_menu_timeout");
 		var tempBan = '<span>&nbsp;<a href="#" class="normal_button tooltip chat_menu_btn" onclick="javascript:CurrentChat.ghettoTimeout(28800);" title="Temporary 8 hour ban"><span class="glyph_only"><img src="http://betterttv.nightdev.com/8hr.png" /></span></a></span><span>&nbsp;<a href="#" class="normal_button tooltip chat_menu_btn" onclick="javascript:CurrentChat.ghettoTimeout(86400);" title="Temporary 24 hour ban"><span class="glyph_only"><img src="http://betterttv.nightdev.com/24hr.png" /></span></a></span>';
 		$j(tempBan).insertAfter("#chat_menu_timeout");
