@@ -421,6 +421,7 @@ BetterTTVEngine = function() {
 
 			$j(window).resize(function() {
 				setTimeout(handleResize, 1000);
+				clearAds();
 			});
 
 			$j(window).on("fluid-resize", function () {
