@@ -22,7 +22,7 @@
 
 BetterTTVEngine = function() {
 
-	var betterttvVersion = "6.2.6",
+	var betterttvVersion = "6.2.7",
 		betterttvDebug = {
 			log: function(string) { if(window.console && console.log) console.log("BTTV: "+string); },
 			warn: function(string) { if(window.console && console.warn) console.warn("BTTV: "+string); },
@@ -45,9 +45,6 @@ BetterTTVEngine = function() {
 	    return this.charAt(0).toUpperCase() + this.slice(1);
 	}
 
-	/**
-	 * Core Functions
-	 */
 	removeElement = function(e) {
 
 		$$(e).each(function(e){ e.hide(); });
@@ -64,6 +61,42 @@ BetterTTVEngine = function() {
 		return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 	}
 
+	calculateColorBackground = function(color) {
+		color = String(color).replace(/[^0-9a-f]/gi, '');
+		if (color.length < 6) {
+			color = color[0]+color[0]+color[1]+color[1]+color[2]+color[2];
+		}
+
+		var r = parseInt(color.substr(0,2),16);
+		var g = parseInt(color.substr(2,2),16);
+		var b = parseInt(color.substr(4,2),16);
+		var yiq = ((r*299)+(g*587)+(b*114))/1000;
+		return (yiq >= 128) ? "dark" : "light";
+	}
+
+	calculateColorReplacement = function(color, background) {
+		// Modified from http://www.sitepoint.com/javascript-generate-lighter-darker-color/
+		var rgb = "#", brightness, c, i;
+
+		color = String(color).replace(/[^0-9a-f]/gi, '');
+		if (color.length < 6) {
+			color = color[0]+color[0]+color[1]+color[1]+color[2]+color[2];
+		}
+		
+		(background === "light") ? (brightness="0.5") : (brightness="-0.5");
+
+		for (i = 0; i < 3; i++) {
+			c = parseInt(color.substr(i*2,2), 16);
+			c = Math.round(Math.min(Math.max(0, c + (c * brightness)), 255)).toString(16);
+			rgb += ("00"+c).substr(c.length);
+		}
+
+		return rgb;
+	}
+
+	/**
+	 * Core Functions
+	 */
 	clearAds = function() {
 
 		betterttvDebug.log("Clearing Ads");
@@ -93,7 +126,9 @@ BetterTTVEngine = function() {
 			$j("#sub-details").css("display","none");
 		}
 
-		$j('.advertisement, .hide_ad').hide();
+		$j('.hide_ad').hide();
+		$j('.advertisement').hide();
+		$j('.ad_contain').hide();
       	$j('#right_col').addClass('noads');
 
 	}
@@ -423,10 +458,6 @@ BetterTTVEngine = function() {
 				setTimeout(handleResize, 1000);
 				clearAds();
 			});
-
-			$j(window).on("fluid-resize", function () {
-				//setTimeout(handleResize, 1000);
-			});
 		});
 
 	}
@@ -479,6 +510,10 @@ BetterTTVEngine = function() {
 		globalCSSInject.setAttribute("rel","stylesheet");
 		$j("body").append(globalCSSInject);
 
+		if(localStorage.getItem("showPurpleButtons") !== "true") {
+			cssBlueButtons();
+		}
+
 		if(!$j("body#chat").length) {
 			meebo();
 		}
@@ -494,7 +529,7 @@ BetterTTVEngine = function() {
 			PP['notifications'] = 0;
 	        window.FirebaseRootNamespaced.child("users/" + Twitch.user.userId() + "/messages").on("value", function (f) {
 	        	var f = f.val() || {}, j = f.unreadMessagesCount;
-	            $j(".js-unread_message_count").html("<img src='http://www-cdn.jtvnw.net/images/xarth/g/g18_mail-FFFFFF80.png' /> "+j || "");
+	            $j(".js-unread_message_count").html(j || "");
 	            j ? $j(".js-unread_message_count").show() : $j(".js-unread_message_count").hide();
 	            if(PP['notificationsLoaded'] === true && PP['notifications'] < j) {
 	            	$j.get('http://www.twitch.tv/inbox', function(data) {
@@ -535,6 +570,18 @@ BetterTTVEngine = function() {
 				}
 	        });
 		}
+
+	}
+
+	cssBlueButtons = function() {
+
+		betterttvDebug.log("Turning Purple to Blue");
+
+		var globalCSSInject = document.createElement("style");
+		globalCSSInject.setAttribute("type","text/css");
+		globalCSSInject.setAttribute("id","bttvBlueButtons");
+		globalCSSInject.innerHTML = "@-webkit-keyframes flashing_game_filter_background{0%{background-color:#1e1e1e;color:#aaa;}50%{background-color:#374a9b;color:#fff;}100%{background-color:#1e1e1e;color:#aaa;}}@-webkit-keyframes flashing_game_filter_transparency{0%{opacity:0;filter:alpha(opacity=0);}50%{opacity:1;filter:alpha(opacity=100);}100%{opacity:0;filter:alpha(opacity=0);}}@-webkit-keyframes flashing_game_filter_pop{0%{font-size:50%;opacity:1;filter:alpha(opacity=100);}20%{opacity:1;filter:alpha(opacity=100);}100%{font-size:200%;opacity:0;filter:alpha(opacity=0);}}@-o-keyframes flashing_game_filter_background{0%{background-color:#1e1e1e;color:#aaa;}50%{background-color:#374a9b;color:#fff;}100%{background-color:#1e1e1e;color:#aaa;}}@-o-keyframes flashing_game_filter_transparency{0%{opacity:0;filter:alpha(opacity=0);}50%{opacity:1;filter:alpha(opacity=100);}100%{opacity:0;filter:alpha(opacity=0);}}@-o-keyframes flashing_game_filter_pop{0%{font-size:50%;opacity:1;filter:alpha(opacity=100);}20%{opacity:1;filter:alpha(opacity=100);}100%{font-size:200%;opacity:0;filter:alpha(opacity=0);}}@-moz-keyframes flashing_game_filter_background{0%{background-color:#1e1e1e;color:#aaa;}50%{background-color:#374a9b;color:#fff;}100%{background-color:#1e1e1e;color:#aaa;}}@-moz-keyframes flashing_game_filter_transparency{0%{opacity:0;filter:alpha(opacity=0);}50%{opacity:1;filter:alpha(opacity=100);}100%{opacity:0;filter:alpha(opacity=0);}}@-moz-keyframes flashing_game_filter_pop{0%{font-size:50%;opacity:1;filter:alpha(opacity=100);}20%{opacity:1;filter:alpha(opacity=100);}100%{font-size:200%;opacity:0;filter:alpha(opacity=0);}}@keyframes flashing_game_filter_background{0%{background-color:#1e1e1e;color:#aaa;}50%{background-color:#374a9b;color:#fff;}100%{background-color:#1e1e1e;color:#aaa;}}@keyframes flashing_game_filter_transparency{0%{opacity:0;filter:alpha(opacity=0);}50%{opacity:1;filter:alpha(opacity=100);}100%{opacity:0;filter:alpha(opacity=0);}}@keyframes flashing_game_filter_pop{0%{font-size:50%;opacity:1;filter:alpha(opacity=100);}20%{opacity:1;filter:alpha(opacity=100);}100%{font-size:200%;opacity:0;filter:alpha(opacity=0);}}#nav{visibility:hidden;}.filter_icon{display:block;width:50px;height:46px;float:left;}.game_filter .animatedhighlight{opacity:0;filter:alpha(opacity=0);display:none;position:absolute;margin-top:0;}.game_filter.flashing a{animation:flashing_game_filter_background 3s 0s 3;-o-animation:flashing_game_filter_background 3s 0s 3;-moz-animation:flashing_game_filter_background 3s 0s 3;-webkit-animation:flashing_game_filter_background 3s 0s 3;}.game_filter.flashing .animatedhighlight{display:block;}.game_filter.flashing .animatedhighlight.total-count{right:0;text-align:center;animation:flashing_game_filter_pop .4s 4.5s 1;-o-animation:flashing_game_filter_pop .4s 4.5s 1;-moz-animation:flashing_game_filter_pop .4s 4.5s 1;-webkit-animation:flashing_game_filter_pop .4s 4.5s 1;}.game_filter.flashing .animatedhighlight.filter_icon,.game_filter.flashing .animatedhighlight.filter_arrow{animation:flashing_game_filter_transparency 3s 0s 3;-o-animation:flashing_game_filter_transparency 3s 0s 3;-moz-animation:flashing_game_filter_transparency 3s 0s 3;-webkit-animation:flashing_game_filter_transparency 3s 0s 3;}.game_filter.selected a{background-color:#374a9b!important;}.game_filter.selected.flashing a{animation:none 0s 0s 1;-o-animation:none 0s 0s 1;-moz-animation:none 0s 0s 1;-webkit-animation:none 0s 0s 1;}.game_filter.selected.flashing .animatedhighlight.filter_icon,.game_filter.selected.flashing .animatedhighlight.filter_arrow{animation:none 0s 0s 1;-o-animation:none 0s 0s 1;-moz-animation:none 0s 0s 1;-webkit-animation:none 0s 0s 1;}#large_nav .game_filter.selected a {border: #000;background-color: #374a9b !important;}.primary_button:hover,.primary_button:focus {background: linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -o-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -moz-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -webkit-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -ms-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);}.primary_button {border-color: #000 !important;background: linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -o-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -moz-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -webkit-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -ms-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);}#team_member_list .page_links a {color: #374a9b !important;}#team_member_list .page_links a b.left {border-left-color: #374a9b !important;}#team_member_list .page_links a b.right {border-left-color: #374a9b !important;}";
+		$j("body").append(globalCSSInject);
 
 	}
 
@@ -646,6 +693,11 @@ BetterTTVEngine = function() {
 				messageHighlighted = true;
 			}
 
+			colorBackground = calculateColorBackground(info.color);
+			if((colorBackground === "light" && localStorage.getItem("darkenedMode") == "true") || (colorBackground === "dark" && localStorage.getItem("darkenedMode") !== "true")) {
+				info.color = calculateColorReplacement(info.color, colorBackground);
+			}
+
 			if(blackChat === true && info.color === "#000000") {
 				info.color = "#ffffff";
 			}
@@ -663,7 +715,8 @@ BetterTTVEngine = function() {
 				ich.templates["chat-line-action"] = ich.templates["chat-line-action-old"];
 			}
 
-			if((info.color == "#0000FF" || info.color == "#191971") && localStorage.getItem("darkenedMode") == "true") { info.color = "#3753ff"; }
+			if((info.color == "#0000ff" || info.color == "#191971") && localStorage.getItem("darkenedMode") == "true") { info.color = "#3753ff"; }
+			if((info.color == "black" || info.color == "#000000") && localStorage.getItem("darkenedMode") == "true") { info.color = "#D3D3D3" }
 
 			if(info.nickname == "night" && x==1) { info.tagtype="orange"; info.tagname = "Creator"; }
 			//Bots
@@ -900,19 +953,6 @@ BetterTTVEngine = function() {
 			}
 		}
 
-		/*$j(document).keyup(function(event){
-			if(event.keyCode === 90 && event.altKey) {
-		  		CurrentChat.currently_scrolling = 1;
-			}
-		});
-
-		$j(document).keydown(function(event){
-			if(event.keyCode === 90 && event.altKey) {
-				event.preventDefault();
-		  		CurrentChat.currently_scrolling = 0;
-			}
-		});*/
-
 		$j('#chat_text_input').live('keydown', function(e) { 
 		  var keyCode = e.keyCode || e.which; 
 		  if (keyCode == 9) { 
@@ -990,7 +1030,6 @@ BetterTTVEngine = function() {
 
 		var betterttvEmotes = [
 								{ url: "http://s3.amazonaws.com/betterjtv/smileys/trollface.png", width: 23, height: 19, regex: "(\\:trollface\\:|\\:tf\\:)" },
-								{ url: "http://s3.amazonaws.com/betterjtv/smileys/aww.png", width: 18, height: 18, regex: "D\\:" },
 								{ url: "http://betterttv.nightdev.com/emotes/mw.png", width: 20, height: 20, regex: "(\\:D|\\:d)" },
 								{ url: "http://s3.amazonaws.com/betterjtv/smileys/cry.png", width: 19, height: 19, regex: "\\:'\\(" },
 								{ url: "http://s3.amazonaws.com/betterjtv/smileys/puke.png", width: 19, height: 19, regex: "\\(puke\\)" },
@@ -1030,6 +1069,7 @@ BetterTTVEngine = function() {
 								{ url: "http://betterttv.nightdev.com/emotes/fishmoley.png", width: 56, height: 34, regex: "FishMoley" },
 								{ url: "http://betterttv.nightdev.com/emotes/angry.png", width: 56, height: 34, regex: "cabbag3" },
 								{ url: "http://betterttv.nightdev.com/emotes/bacon.gif", width: 33, height: 35, regex: "BaconTime" },
+								{ url: "http://betterttv.nightdev.com/emotes/snatchy.png", width: 33, height: 35, regex: "OhhhKee" },
 								{ url: "http://cdn.nightdev.com/img/snhappthis.gif", width: "50px;background-size:50px 50", height: 50, regex: "S0urPlz" }
 							  ];
 
@@ -1168,59 +1208,179 @@ BetterTTVEngine = function() {
 							<li id="chat_section_chatroom" class="dropmenu_section"> \
 							<br /> \
 							&nbsp;&nbsp;&nbsp;&raquo;&nbsp;BetterTTV \
-							<form id="bttvTipJar" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank"> \
-								<input type="hidden" name="cmd" value="_xclick"> \
-								<input type="hidden" name="business" value="night@nightdev.com"> \
-								<input type="hidden" name="lc" value="US"> \
-								<input type="hidden" name="item_name" value="BetterTTV Tip Jar"> \
-								<input type="hidden" name="item_number" value="'+PP['login']+'"> \
-								<input type="hidden" name="amount" value=""> \
-								<input type="hidden" name="currency_code" value="USD"> \
-								<input type="hidden" name="button_subtype" value="services"> \
-								<input type="hidden" name="no_note" value="0"> \
-								<input type="hidden" name="cn" value="Leave a message:"> \
-								<input type="hidden" name="no_shipping" value="1"> \
-								<input type="hidden" name="bn" value="PP-BuyNowBF:btn_buynowCC_LG.gif:NonHosted"> \
-								<a href="#" class="dropmenu_action g18_popout-FFFFFF80" onclick="document.getElementById(\'bttvTipJar\').submit();">BetterTTV Tip Jar</a> \
-							</form> \
-							<a class="dropmenu_action g18_gear-FFFFFF80" href="#" id="darkenTwitchLink" onclick="betterttvAction(\'toggleDarkTwitch\'); return false;">' + (localStorage.getItem("darkenedMode") == "true" ? "Undarken Twitch":"Darken Twitch") + '</a> \
+							<br /> \
 							<a class="dropmenu_action g18_gear-FFFFFF80" href="#" id="blackChatLink" onclick="betterttvAction(\'toggleBlackChat\'); return false;">Black Chat (Chroma Key)</a> \
 							<a class="dropmenu_action g18_gear-FFFFFF80" href="#" onclick="betterttvAction(\'setHighlightKeywords\'); return false;">Set Highlight Keywords</a> \
 							<a class="dropmenu_action g18_trash-FFFFFF80" href="#" onclick="betterttvAction(\'clearChat\'); return false;">Clear My Chat</a> \
-							<p onclick="betterttvAction(\'toggleDefaultEmotes\');" class="dropmenu_action"> \
-							<input type="checkbox" id="defaultEmotesCheckbox" class="left"> Default Emoticons</p> \
-							<p onclick="betterttvAction(\'toggleDefaultTags\');" class="dropmenu_action"> \
-							<input type="checkbox" id="defaultTagsCheckbox" class="left"> Default Chat Tags</p> \
-							<p onclick="betterttvAction(\'narrowchat\');" class="dropmenu_action"> \
-							<input type="checkbox" id="narrowChatCheckbox" class="left"> Narrow Chat</p> \
-							<p onclick="betterttvAction(\'toggleBlockSubButton\');" class="dropmenu_action"> \
-							<input type="checkbox" id="blockSubButtonCheckbox" class="left"> Hide Subscribe Button</p> \
-							<p onclick="betterttvAction(\'toggleMeebo\');" class="dropmenu_action"> \
-							<input type="checkbox" id="hideMeeboCheckbox" class="left"> Hide Meebo</p> \
-							<p onclick="betterttvAction(\'toggleFeaturedChannels\');" class="dropmenu_action"> \
-							<input type="checkbox" id="featuredChannelsCheckbox" class="left"> Show Featured Channels</p> \
+							<br /> \
+							<a class="dropmenu_action g18_gear-FFFFFF80" href="#" onclick="betterttvAction(\'openSettings\'); return false;">BetterTTV Settings</a> \
 							</li> \
 							</ul> \
 							';
 
 		settingsMenu.appendChild(bttvSettings);
 
+		settingsPanel = document.createElement("div");
+		settingsPanel.setAttribute("id","bttvSettingsPanel");
+		settingsPanel.style.display = "none";
+		settingsPanel.innerHTML = '<div id="header"> \
+									<span id="logo"><img height="45px" src="http://betterttv.nightdev.com/bttvlogo.png" /></span> \
+									<ul class="nav"> \
+										<li class="active"><a href="#bttvSettings">Settings</a></li> \
+										<li><a href="#bttvAbout">About</a></li> \
+									</ul><span id="close">×</span> \
+								   </div> \
+								   <div id="bttvSettings"> \
+								    <h2 class="option"> Here you can manage the various Better TwitchTV options. Click On or Off to toggle settings.</h2> \
+								    <div class="option"> \
+								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Darken Twitch</span>&nbsp;&nbsp;—&nbsp;&nbsp;A slick, grey theme which will make you love Twitch even more \
+										<div class="switch"> \
+											<input type="radio" class="switch-input switch-off" name="toggleDarkTwitch" value="false" id="darkenedModeFalse"> \
+											<label for="darkenedModeFalse" class="switch-label switch-label-off">Off</label> \
+											<input type="radio" class="switch-input" name="toggleDarkTwitch" value="true" id="darkenedModeTrue" checked> \
+											<label for="darkenedModeTrue" class="switch-label switch-label-on">On</label> \
+											<span class="switch-selection"></span> \
+										</div> \
+									</div> \
+									<div class="option"> \
+								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Default Chat Tags</span>&nbsp;&nbsp;—&nbsp;&nbsp;BetterTTV replaces the Twitch chat tags with the old JTV ones by default \
+										<div class="switch"> \
+											<input type="radio" class="switch-input switch-off" name="toggleDefaultTags" value="false" id="defaultTagsFalse"> \
+											<label for="defaultTagsFalse" class="switch-label switch-label-off">Off</label> \
+											<input type="radio" class="switch-input" name="toggleDefaultTags" value="true" id="defaultTagsTrue" checked> \
+											<label for="defaultTagsTrue" class="switch-label switch-label-on">On</label> \
+											<span class="switch-selection"></span> \
+										</div> \
+									</div> \
+									<div class="option"> \
+								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Default Emoticons</span>&nbsp;&nbsp;—&nbsp;&nbsp;BetterTTV replaces the Twitch emoticons with the old JTV monkey faces by default \
+										<div class="switch"> \
+											<input type="radio" class="switch-input switch-off" name="toggleDefaultEmotes" value="false" id="defaultEmotesFalse"> \
+											<label for="defaultEmotesFalse" class="switch-label switch-label-off">Off</label> \
+											<input type="radio" class="switch-input" name="toggleDefaultEmotes" value="true" id="defaultEmotesTrue" checked> \
+											<label for="defaultEmotesTrue" class="switch-label switch-label-on">On</label> \
+											<span class="switch-selection"></span> \
+										</div> \
+									</div> \
+									<div class="option"> \
+								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Default Purple Buttons</span>&nbsp;&nbsp;—&nbsp;&nbsp;BetterTTV replaces the Twitch buttons with blue ones by default \
+										<div class="switch"> \
+											<input type="radio" class="switch-input switch-off" name="togglePurpleButtons" value="false" id="defaultPurpleButtonsFalse"> \
+											<label for="defaultPurpleButtonsFalse" class="switch-label switch-label-off">Off</label> \
+											<input type="radio" class="switch-input" name="togglePurpleButtons" value="true" id="defaultPurpleButtonsTrue" checked> \
+											<label for="defaultPurpleButtonsTrue" class="switch-label switch-label-on">On</label> \
+											<span class="switch-selection"></span> \
+										</div> \
+									</div> \
+									<div class="option"> \
+								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Featured Channels</span>&nbsp;&nbsp;—&nbsp;&nbsp;The left sidebar is too cluttered, so BetterTTV removes featured channels by default \
+										<div class="switch"> \
+											<input type="radio" class="switch-input switch-off" name="toggleFeaturedChannels" value="false" id="featuredChannelsFalse"> \
+											<label for="featuredChannelsFalse" class="switch-label switch-label-off">Off</label> \
+											<input type="radio" class="switch-input" name="toggleFeaturedChannels" value="true" id="featuredChannelsTrue" checked> \
+											<label for="featuredChannelsTrue" class="switch-label switch-label-on">On</label> \
+											<span class="switch-selection"></span> \
+										</div> \
+									</div> \
+									<div class="option"> \
+								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Meebo</span>&nbsp;&nbsp;—&nbsp;&nbsp;A chat bar that allows you to instant message your Twitch friends \
+										<div class="switch"> \
+											<input type="radio" class="switch-input switch-off" name="toggleMeebo" value="false" id="hideMeeboFalse"> \
+											<label for="hideMeeboFalse" class="switch-label switch-label-off">Off</label> \
+											<input type="radio" class="switch-input" name="toggleMeebo" value="true" id="hideMeeboTrue" checked> \
+											<label for="hideMeeboTrue" class="switch-label switch-label-on">On</label> \
+											<span class="switch-selection"></span> \
+										</div> \
+									</div> \
+									<div class="option"> \
+								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Subscribe Button</span>&nbsp;&nbsp;—&nbsp;&nbsp;Toggle this off to hide those pesky subscribe buttons \
+										<div class="switch"> \
+											<input type="radio" class="switch-input switch-off" name="toggleBlockSubButton" value="false" id="blockSubButtonFalse"> \
+											<label for="blockSubButtonFalse" class="switch-label switch-label-off">Off</label> \
+											<input type="radio" class="switch-input" name="toggleBlockSubButton" value="true" id="blockSubButtonTrue" checked> \
+											<label for="blockSubButtonTrue" class="switch-label switch-label-on">On</label> \
+											<span class="switch-selection"></span> \
+										</div> \
+									</div> \
+									<div class="option"> \
+								    	Think something is missing here? Send in a <a href="http://bugs.nightdev.com/projects/betterttv/issues/new?tracker_id=2" target="_blank">feature request</a>! \
+									</div> \
+								   </div> \
+								   <div id="bttvAbout" style="display:none;"> \
+							   		<div class="aboutHalf"> \
+							   			<img class="bttvAboutIcon" src="http://betterttv.nightdev.com/icon.png" /> \
+							   			<h2>Better TwitchTV v'+betterttvVersion+'</h2> \
+							   			<h2>by <a href="http://www.twitch.tv/night" target="_blank">Night</a></h2> \
+							   			<br /> \
+							   			<p>BetterTTV began in 2011 shortly after the launch of Twitch. The original Twitch site at launch was almost laughable at times with multiple failures in both site design (I can never forget the font Twitch originally used) and bugs (for example, at launch chat didn\'t scroll correctly). After BetterJTV\'s massive success and lack of support at the time for Twitch, multiple friends begged me to recreate it for Twitch. Since the beginning, BetterTTV has always promoted old JTV chat features over Twitch\'s, but has expanded to offer more customization and personalization over the years. Since 2011, BetterTTV has gone through multiple revisions to establish what it is today.</p> \
+							   		</div> \
+							   		<div class="aboutHalf"> \
+							   			<h2>I\'m just gonna leave this right here..</h2><br /> \
+							   			<form id="bttvTipJar" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank"> \
+											<input type="hidden" name="cmd" value="_xclick"> \
+											<input type="hidden" name="business" value="night@nightdev.com"> \
+											<input type="hidden" name="lc" value="US"> \
+											<input type="hidden" name="item_name" value="BetterTTV Tip Jar"> \
+											<input type="hidden" name="item_number" value="'+PP['login']+'"> \
+											<input type="hidden" name="amount" value=""> \
+											<input type="hidden" name="currency_code" value="USD"> \
+											<input type="hidden" name="button_subtype" value="services"> \
+											<input type="hidden" name="no_note" value="0"> \
+											<input type="hidden" name="cn" value="Leave a message:"> \
+											<input type="hidden" name="no_shipping" value="1"> \
+											<input type="hidden" name="bn" value="PP-BuyNowBF:btn_buynowCC_LG.gif:NonHosted"> \
+											<h2><a href="#" onclick="document.getElementById(\'bttvTipJar\').submit();">BetterTTV Tip Jar</a></h2> \
+										</form><br /><br /> \
+							   			<img style="vertical-align:bottom;" src="http://static-cdn.jtvnw.net/jtv_user_pictures/panel-11785491-image-6b90c7f168932ac7-320.png" /><br /><small><small>BetterTTV is not endorsed nor affiliated with Kappa, Kappab</small></small> \
+							   		</div> \
+								   </div> \
+								   <div id="footer"> \
+									<span>BetterTTV &copy; <a href="http://www.nightdev.com" target="_blank">NightDev</a> 2013</span><span style="float:right;">For support, please <a href="http://www.nightdev.com/contact" target="_blank">click here</a>. To report a bug, <a href="http://bugs.nightdev.com/projects/betterttv/issues/new?tracker_id=1" target="_blank">click here</a>.</span> \
+								   </div>';
+		$j("body").append(settingsPanel);
+
+		$j("#bttvSettingsPanel #close").click(function(e){
+			$j("#bttvSettingsPanel").hide("slow");
+		});
+
+		$j("#bttvSettingsPanel .nav a").click(function(e){
+			e.preventDefault();
+			var tab = $j(this).attr("href");
+
+			$j("#bttvSettingsPanel .nav a").each(function() {
+				var currentTab = $j(this).attr("href");
+				$j(currentTab).hide();
+				$j(this).parent("li").removeClass("active");
+			});
+			
+			$j(tab).fadeIn();
+			$j(this).parent("li").addClass("active");
+		});
+
+		$j('.option input:radio').change(function(e){
+			betterttvAction(e.target.name);
+		});  
+
 		$$('.dropmenu_action').each(function(element) {
 			element.style.color = "#ffffff";
 		});
 
-		if(localStorage.getItem("narrowchat") == "yes") $j('#narrowChatCheckbox').prop('checked', true);
-		if(localStorage.getItem("showDefaultEmotes") == "true") $j('#defaultEmotesCheckbox').prop('checked', true);
-		if(localStorage.getItem("showDefaultTags") == "true") $j('#defaultTagsCheckbox').prop('checked', true);
-		if(localStorage.getItem("blockSubButton") == "true") $j('#blockSubButtonCheckbox').prop('checked', true);
-		if(localStorage.getItem("showFeaturedChannels") == "true") $j('#featuredChannelsCheckbox').prop('checked', true);
-		if(localStorage.getItem("hideMeebo") == "true") $j('#hideMeeboCheckbox').prop('checked', true);
+		localStorage.getItem("darkenedMode") == "true" ? $j('#darkenedModeTrue').prop('checked', true) : $j('#darkenedModeFalse').prop('checked', true)
+		localStorage.getItem("showDefaultEmotes") == "true" ? $j('#defaultEmotesTrue').prop('checked', true) : $j('#defaultEmotesFalse').prop('checked', true);
+		localStorage.getItem("showDefaultTags") == "true" ? $j('#defaultTagsTrue').prop('checked', true) : $j('#defaultTagsFalse').prop('checked', true);
+		localStorage.getItem("showPurpleButtons") == "true" ? $j('#defaultPurpleButtonsTrue').prop('checked', true) : $j('#defaultPurpleButtonsFalse').prop('checked', true);
+		localStorage.getItem("blockSubButton") == "true" ? $j('#blockSubButtonFalse').prop('checked', true) : $j('#blockSubButtonTrue').prop('checked', true);
+		localStorage.getItem("showFeaturedChannels") == "true" ? $j('#featuredChannelsTrue').prop('checked', true) : $j('#featuredChannelsFalse').prop('checked', true);
+		localStorage.getItem("hideMeebo") == "true" ? $j('#hideMeeboFalse').prop('checked', true) : $j('#hideMeeboTrue').prop('checked', true);
 	}
 
 	betterttvAction = function(action) {
 		if(action == "clearChat") {
 			$j('#chat_line_list').html("");
 			CurrentChat.admin_message("You cleared your own chat (BetterTTV)");
+		}
+		if(action == "openSettings") {
+			$j('#bttvSettingsPanel').show("slow");
 		}
 		if(action == "setHighlightKeywords") {
 			var keywords = prompt("Type some highlight keywords. Messages containing keywords will turn red to get your attention. Use spaces in the field to specify multiple keywords.",localStorage.getItem("highlightKeywords"));
@@ -1231,14 +1391,6 @@ BetterTTVEngine = function() {
 				keywords.forEach(function(keyword){ keywordList += ", " + keyword; });
 				CurrentChat.admin_message("Highlight Keywords are now set to: "+keywordList);
 			}
-		}
-		if(action == "narrowchat") {
-			if(localStorage.getItem("narrowchat") == "yes") {
-				localStorage.setItem("narrowchat", "no");
-			} else {
-				localStorage.setItem("narrowchat", "yes");
-			}
-			window.location.reload();
 		}
 		if(action == "toggleDefaultEmotes") {
 			if(localStorage.getItem("showDefaultEmotes") == "true") {
@@ -1253,6 +1405,15 @@ BetterTTVEngine = function() {
 				localStorage.setItem("showDefaultTags", false);
 			} else {
 				localStorage.setItem("showDefaultTags", true);
+			}
+		}
+		if(action == "togglePurpleButtons") {
+			if(localStorage.getItem("showPurpleButtons") == "true") {
+				localStorage.setItem("showPurpleButtons", false);
+				cssBlueButtons();
+			} else {
+				localStorage.setItem("showPurpleButtons", true);
+				$j("#bttvBlueButtons").remove();
 			}
 		}
 		if(action == "toggleMeebo") {
@@ -1339,17 +1500,6 @@ BetterTTVEngine = function() {
 	if(typeof(Array.prototype.each) === 'undefined')
 	{
 		return;
-	}
-
-	if(PP['channel'] === "namja") {
-		var trollNamja = document.createElement("img");
-			trollNamja.setAttribute("src","http://i.imgur.com/7TRYhEc.jpg");
-			trollNamja.setAttribute("style","width:100%;height:100%;float:left;position:absolute;top:0px;left:0px;display:none;z-index:9001;");
-			trollNamja.setAttribute("id","namjatroll");
-			$j("body").append(trollNamja);
-
-		setTimeout(function(){$j("#namjatroll").fadeIn('slow')}, 2000);
-		setTimeout(function(){$j("#namjatroll").fadeOut('slow')}, 7000);
 	}
 
 	betterttvDebug.log("BTTV v"+betterttvVersion);
