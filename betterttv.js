@@ -47,13 +47,13 @@ BetterTTVEngine = function() {
 
 	removeElement = function(e) {
 
-		$$(e).each(function(e){ e.hide(); });
+		jQuery(e).each(function(e){ jQuery(this).hide(); });
 
 	}
 
 	displayElement = function(e) {
 
-		$$(e).each(function(e){ e.show(); });
+		jQuery(e).each(function(e){ jQuery(this).show(); });
 
 	}
 
@@ -122,7 +122,7 @@ BetterTTVEngine = function() {
 			removeElement('.related');
 		}
 
-		if(localStorage.getItem("blockSubButton") == "true") {
+		if(localStorage.getItem("blockSubButton") === "true") {
 			$j("#sub-details").css("display","none");
 		}
 
@@ -183,7 +183,7 @@ BetterTTVEngine = function() {
 		$j(".tabs").html('<li target="about" class="tab selected"><a href="#">&nbsp;Info&nbsp;</a></li><li target="archives" class="tab"><a href="/' + PP['channel'] + '/videos">&nbsp;Videos&nbsp;</a></li>');
 		$j("#archives").html('');
 
-		if(localStorage.getItem("narrowchat") == "no") {
+		if(localStorage.getItem("narrowchat") === "no") {
 			$j(".c12").css("width","1100px");
 			$j("#chat_column").css("width", "410px");
 		} else {
@@ -230,7 +230,7 @@ BetterTTVEngine = function() {
 			channelHeader = 0;
 		}
 
-		if(PP['page_type'] == "channel" && $j(".betabar").length === 0) {
+		if(PP['page_type'] === "channel" && $j(".betabar").length === 0) {
 			$j("#chat_lines").css({
 				fontFamily: "Helvetica, Arial, sans-serif",
 				height: channelHeader+450 + "px",
@@ -297,7 +297,7 @@ BetterTTVEngine = function() {
 				if($j("#small_nav").css("display") !== "none") {
 					d += $j("#small_nav").width();
 				}
-				if(chatWidth == 0) {
+				if(chatWidth === 0) {
 					$j("#right_col").css({
 	            		display: "none"
 			        });
@@ -344,7 +344,7 @@ BetterTTVEngine = function() {
 			if(localStorage.getItem("chatWidth")) {
 				chatWidth = localStorage.getItem("chatWidth");
 
-				if(chatWidth == 0) {
+				if(chatWidth === 0) {
 					console.log("here")
 					$j("#right_col").css({
 	            		display: "none"
@@ -369,7 +369,7 @@ BetterTTVEngine = function() {
 
 			$j(document).mouseup(function(event)
 			{
-				if(resize == false) return;
+				if(resize === false) return;
 				if(chatWidthStartingPoint) {
 					if(chatWidthStartingPoint === event.pageX) {
 						if($j("#right_col").css("display") !== "none") {
@@ -584,7 +584,7 @@ BetterTTVEngine = function() {
 		var globalCSSInject = document.createElement("style");
 		globalCSSInject.setAttribute("type","text/css");
 		globalCSSInject.setAttribute("id","bttvBlueButtons");
-		globalCSSInject.innerHTML = "@-webkit-keyframes flashing_game_filter_background{0%{background-color:#1e1e1e;color:#aaa;}50%{background-color:#374a9b;color:#fff;}100%{background-color:#1e1e1e;color:#aaa;}}@-webkit-keyframes flashing_game_filter_transparency{0%{opacity:0;filter:alpha(opacity=0);}50%{opacity:1;filter:alpha(opacity=100);}100%{opacity:0;filter:alpha(opacity=0);}}@-webkit-keyframes flashing_game_filter_pop{0%{font-size:50%;opacity:1;filter:alpha(opacity=100);}20%{opacity:1;filter:alpha(opacity=100);}100%{font-size:200%;opacity:0;filter:alpha(opacity=0);}}@-o-keyframes flashing_game_filter_background{0%{background-color:#1e1e1e;color:#aaa;}50%{background-color:#374a9b;color:#fff;}100%{background-color:#1e1e1e;color:#aaa;}}@-o-keyframes flashing_game_filter_transparency{0%{opacity:0;filter:alpha(opacity=0);}50%{opacity:1;filter:alpha(opacity=100);}100%{opacity:0;filter:alpha(opacity=0);}}@-o-keyframes flashing_game_filter_pop{0%{font-size:50%;opacity:1;filter:alpha(opacity=100);}20%{opacity:1;filter:alpha(opacity=100);}100%{font-size:200%;opacity:0;filter:alpha(opacity=0);}}@-moz-keyframes flashing_game_filter_background{0%{background-color:#1e1e1e;color:#aaa;}50%{background-color:#374a9b;color:#fff;}100%{background-color:#1e1e1e;color:#aaa;}}@-moz-keyframes flashing_game_filter_transparency{0%{opacity:0;filter:alpha(opacity=0);}50%{opacity:1;filter:alpha(opacity=100);}100%{opacity:0;filter:alpha(opacity=0);}}@-moz-keyframes flashing_game_filter_pop{0%{font-size:50%;opacity:1;filter:alpha(opacity=100);}20%{opacity:1;filter:alpha(opacity=100);}100%{font-size:200%;opacity:0;filter:alpha(opacity=0);}}@keyframes flashing_game_filter_background{0%{background-color:#1e1e1e;color:#aaa;}50%{background-color:#374a9b;color:#fff;}100%{background-color:#1e1e1e;color:#aaa;}}@keyframes flashing_game_filter_transparency{0%{opacity:0;filter:alpha(opacity=0);}50%{opacity:1;filter:alpha(opacity=100);}100%{opacity:0;filter:alpha(opacity=0);}}@keyframes flashing_game_filter_pop{0%{font-size:50%;opacity:1;filter:alpha(opacity=100);}20%{opacity:1;filter:alpha(opacity=100);}100%{font-size:200%;opacity:0;filter:alpha(opacity=0);}}#nav{visibility:hidden;}.filter_icon{display:block;width:50px;height:46px;float:left;}.game_filter .animatedhighlight{opacity:0;filter:alpha(opacity=0);display:none;position:absolute;margin-top:0;}.game_filter.flashing a{animation:flashing_game_filter_background 3s 0s 3;-o-animation:flashing_game_filter_background 3s 0s 3;-moz-animation:flashing_game_filter_background 3s 0s 3;-webkit-animation:flashing_game_filter_background 3s 0s 3;}.game_filter.flashing .animatedhighlight{display:block;}.game_filter.flashing .animatedhighlight.total-count{right:0;text-align:center;animation:flashing_game_filter_pop .4s 4.5s 1;-o-animation:flashing_game_filter_pop .4s 4.5s 1;-moz-animation:flashing_game_filter_pop .4s 4.5s 1;-webkit-animation:flashing_game_filter_pop .4s 4.5s 1;}.game_filter.flashing .animatedhighlight.filter_icon,.game_filter.flashing .animatedhighlight.filter_arrow{animation:flashing_game_filter_transparency 3s 0s 3;-o-animation:flashing_game_filter_transparency 3s 0s 3;-moz-animation:flashing_game_filter_transparency 3s 0s 3;-webkit-animation:flashing_game_filter_transparency 3s 0s 3;}.game_filter.selected a{background-color:#374a9b!important;}.game_filter.selected.flashing a{animation:none 0s 0s 1;-o-animation:none 0s 0s 1;-moz-animation:none 0s 0s 1;-webkit-animation:none 0s 0s 1;}.game_filter.selected.flashing .animatedhighlight.filter_icon,.game_filter.selected.flashing .animatedhighlight.filter_arrow{animation:none 0s 0s 1;-o-animation:none 0s 0s 1;-moz-animation:none 0s 0s 1;-webkit-animation:none 0s 0s 1;}#large_nav .game_filter.selected a {border: #000;background-color: #374a9b !important;}.primary_button:hover,.primary_button:focus {background: linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -o-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -moz-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -webkit-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -ms-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);}.primary_button {border-color: #000 !important;background: linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -o-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -moz-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -webkit-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -ms-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);}#team_member_list .page_links a {color: #374a9b !important;}#team_member_list .page_links a b.left {border-left-color: #374a9b !important;}#team_member_list .page_links a b.right {border-left-color: #374a9b !important;}";
+		globalCSSInject.innerHTML = ".game_filter.selected a{background-color:#374a9b!important;}#large_nav .game_filter.selected a {border: #000;background-color: #374a9b !important;}.primary_button:hover,.primary_button:focus {background: linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -o-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -moz-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -webkit-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);background: -ms-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%);}.primary_button {border-color: #000 !important;background: linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -o-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -moz-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -webkit-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);background: -ms-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);}#team_member_list .page_links a {color: #374a9b !important;}#team_member_list .page_links a b.left {border-left-color: #374a9b !important;}#team_member_list .page_links a b.right {border-left-color: #374a9b !important;}";
 		$j("body").append(globalCSSInject);
 
 	}
@@ -698,7 +698,7 @@ BetterTTVEngine = function() {
 			}
 
 			colorBackground = calculateColorBackground(info.color);
-			if(((colorBackground === "light" && localStorage.getItem("darkenedMode") == "true") || (colorBackground === "dark" && localStorage.getItem("darkenedMode") !== "true")) && info.nickname !== PP['login']) {
+			if(((colorBackground === "light" && localStorage.getItem("darkenedMode") === "true") || (colorBackground === "dark" && localStorage.getItem("darkenedMode") !== "true")) && info.nickname !== PP['login']) {
 				info.color = calculateColorReplacement(info.color, colorBackground);
 			}
 
@@ -706,7 +706,7 @@ BetterTTVEngine = function() {
 				info.color = "#ffffff";
 			}
 
-			if(messageHighlighted === true && localStorage.getItem("darkenedMode") == "true") {
+			if(messageHighlighted === true && localStorage.getItem("darkenedMode") === "true") {
 				info.color = "#ffffff";
 				ich.templates["chat-line"] = ich.templates["chat-line-highlight"];
 				ich.templates["chat-line-action"] = ich.templates["chat-line-action-highlight"];
@@ -719,8 +719,8 @@ BetterTTVEngine = function() {
 				ich.templates["chat-line-action"] = ich.templates["chat-line-action-old"];
 			}
 
-			if((info.color == "#0000ff" || info.color == "#191971") && localStorage.getItem("darkenedMode") == "true" && info.nickname !== PP['login']) { info.color = "#3753ff"; }
-			if((info.color == "black" || info.color == "#000000") && localStorage.getItem("darkenedMode") == "true" && info.nickname !== PP['login']) { info.color = "#D3D3D3" }
+			if((info.color == "#0000ff" || info.color == "#191971") && localStorage.getItem("darkenedMode") === "true" && info.nickname !== PP['login']) { info.color = "#3753ff"; }
+			if((info.color == "black" || info.color == "#000000") && localStorage.getItem("darkenedMode") === "true" && info.nickname !== PP['login']) { info.color = "#D3D3D3" }
 
 			if(info.nickname == "night" && x==1) { info.tagtype="orange"; info.tagname = "Creator"; }
 			//Bots
@@ -944,13 +944,13 @@ BetterTTVEngine = function() {
 
 		CurrentChat.handlers.clear_chat = function(info) {
 			var nickname = CurrentChat.real_username(info.user);
-			if (info.target == "all") {
+			if (info.target === "all") {
 				CurrentChat.last_sender = "jtv";
 				CurrentChat.insert_with_lock("#chat_line_list",'<li class="line fromjtv"><p class="content">Chat was cleared by a moderator (Prevented by BetterTTV)</p></li>');
-			} else if (info.target == "user") {
+			} else if (info.target === "user") {
 				var nickname = CurrentChat.real_username(info.user);
-				$$('#chat_line_list .chat_from_' + info.user.replace(/%/g, '_').replace(/[<>,]/g, '') + ' .chat_line').each(function (message) {
-					message.innerHTML = "<span style=\"color: #999\">" + message.innerHTML + "</span>";
+				jQuery('#chat_line_list .chat_from_' + info.user.replace(/%/g, '_').replace(/[<>,]/g, '') + ' .chat_line').each(function (message) {
+					jQuery(this).html("<span style=\"color: #999\">" + message.innerHTML + "</span>");
 				});
 				CurrentChat.last_sender = "jtv";
 				CurrentChat.insert_with_lock("#chat_line_list",'<li class="line fromjtv"><p class="content"><span style="text-transform:capitalize;">'+nickname+"</span> has been timed out."+"</p></li>");
@@ -959,7 +959,7 @@ BetterTTVEngine = function() {
 
 		$j('#chat_text_input').live('keydown', function(e) { 
 		  var keyCode = e.keyCode || e.which; 
-		  if (keyCode == 9) { 
+		  if (keyCode === 9) { 
 		    e.preventDefault(); 
 		    var sentence = $j('#chat_text_input').val().split(' ');
 		    var partialMatch = sentence.pop().toLowerCase();
@@ -1185,7 +1185,8 @@ BetterTTVEngine = function() {
 		betterttvDebug.log("Darkening Chat");
 
 		if(PP['page_type'] === "video" || PP['page_type'] === "directory" || PP['page_type'] === "channel" || ($j("#twitch_chat").length)) {
-			if(localStorage.getItem("darkenedMode") == "true") {
+			if(localStorage.getItem("darkenedMode") === "true") {
+				betterttvDebug.log("darkenPage: Bitch Please, I'm set to "+localStorage.getItem("darkenedMode"));
 				var darkCSS = document.createElement("link");
 				darkCSS.setAttribute("href","http://betterttv.nightdev.com/betterttv-dark.css");
 				darkCSS.setAttribute("type","text/css");
@@ -1204,28 +1205,20 @@ BetterTTVEngine = function() {
 		betterttvDebug.log("Splitting Chat");
 
 		if($j("#twitch_chat").length && localStorage.getItem("splitChat") !== "false") {
-			if(localStorage.getItem("darkenedMode") == "true") {
-				var splitCSS = document.createElement("link");
-				splitCSS.setAttribute("href","http://betterttv.nightdev.com/betterttv-splitchat-dark.css");
-				splitCSS.setAttribute("type","text/css");
-				splitCSS.setAttribute("rel","stylesheet");
-				splitCSS.setAttribute("id","splitChat");
-				$j('body').append(splitCSS);
-			} else {
-				var splitCSS = document.createElement("link");
-				splitCSS.setAttribute("href","http://betterttv.nightdev.com/betterttv-splitchat.css");
-				splitCSS.setAttribute("type","text/css");
-				splitCSS.setAttribute("rel","stylesheet");
-				splitCSS.setAttribute("id","splitChat");
-				$j('body').append(splitCSS);
-			}
+			betterttvDebug.log("splitChat: Bitch Please, I'm set to "+localStorage.getItem("darkenedMode"));
+			var splitCSS = document.createElement("link");
+			localStorage.getItem("darkenedMode") === "true" ? splitCSS.setAttribute("href","http://betterttv.nightdev.com/betterttv-splitchat-dark.css") : splitCSS.setAttribute("href","http://betterttv.nightdev.com/betterttv-splitchat.css");
+			splitCSS.setAttribute("type","text/css");
+			splitCSS.setAttribute("rel","stylesheet");
+			splitCSS.setAttribute("id","splitChat");
+			$j('body').append(splitCSS);
 		}
 
 	}
 
 	flipDashboard = function() {
 
-		if($j("#dash_main").length && localStorage.getItem("flipDashboard") == "true") {
+		if($j("#dash_main").length && localStorage.getItem("flipDashboard") === "true") {
 
 			betterttvDebug.log("Flipping Dashboard");
 
@@ -1257,7 +1250,7 @@ BetterTTVEngine = function() {
 							&nbsp;&nbsp;&nbsp;&raquo;&nbsp;BetterTTV \
 							<br /> \
 							'+($j("body#chat").length?'<a class="dropmenu_action g18_gear-FFFFFF80" href="#" id="blackChatLink" onclick="betterttvAction(\'toggleBlackChat\'); return false;">Black Chat (Chroma Key)</a>':'')+' \
-							'+($j("#dash_main").length?'<a class="dropmenu_action g18_gear-FFFFFF80" href="#" id="flipDashboard" onclick="betterttvAction(\'flipDashboard\'); return false;">'+(localStorage.getItem("flipDashboard") == "true"?'Unflip Dashboard':'Flip Dashboard')+'</a>':'')+' \
+							'+($j("#dash_main").length?'<a class="dropmenu_action g18_gear-FFFFFF80" href="#" id="flipDashboard" onclick="betterttvAction(\'flipDashboard\'); return false;">'+(localStorage.getItem("flipDashboard") === "true"?'Unflip Dashboard':'Flip Dashboard')+'</a>':'')+' \
 							<a class="dropmenu_action g18_gear-FFFFFF80" href="#" onclick="betterttvAction(\'setHighlightKeywords\'); return false;">Set Highlight Keywords</a> \
 							<a class="dropmenu_action g18_trash-FFFFFF80" href="#" onclick="betterttvAction(\'clearChat\'); return false;">Clear My Chat</a> \
 							<br /> \
@@ -1419,30 +1412,30 @@ BetterTTVEngine = function() {
 			betterttvAction(e.target.name);
 		});  
 
-		$$('.dropmenu_action').each(function(element) {
-			element.style.color = "#ffffff";
+		jQuery('.dropmenu_action').each(function(element) {
+			jQuery(this).css("color","#ffffff");
 		});
 
-		localStorage.getItem("darkenedMode") == "true" ? $j('#darkenedModeTrue').prop('checked', true) : $j('#darkenedModeFalse').prop('checked', true)
-		localStorage.getItem("showDefaultEmotes") == "true" ? $j('#defaultEmotesTrue').prop('checked', true) : $j('#defaultEmotesFalse').prop('checked', true);
-		localStorage.getItem("showDefaultTags") == "true" ? $j('#defaultTagsTrue').prop('checked', true) : $j('#defaultTagsFalse').prop('checked', true);
-		localStorage.getItem("showPurpleButtons") == "true" ? $j('#defaultPurpleButtonsTrue').prop('checked', true) : $j('#defaultPurpleButtonsFalse').prop('checked', true);
-		localStorage.getItem("splitChat") == "false" ? $j('#splitChatFalse').prop('checked', true) : $j('#splitChatTrue').prop('checked', true);
-		localStorage.getItem("blockSubButton") == "true" ? $j('#blockSubButtonFalse').prop('checked', true) : $j('#blockSubButtonTrue').prop('checked', true);
-		localStorage.getItem("showFeaturedChannels") == "true" ? $j('#featuredChannelsTrue').prop('checked', true) : $j('#featuredChannelsFalse').prop('checked', true);
-		localStorage.getItem("hideMeebo") == "true" ? $j('#hideMeeboFalse').prop('checked', true) : $j('#hideMeeboTrue').prop('checked', true);
+		localStorage.getItem("darkenedMode") === "true" ? $j('#darkenedModeTrue').prop('checked', true) : $j('#darkenedModeFalse').prop('checked', true)
+		localStorage.getItem("showDefaultEmotes") === "true" ? $j('#defaultEmotesTrue').prop('checked', true) : $j('#defaultEmotesFalse').prop('checked', true);
+		localStorage.getItem("showDefaultTags") === "true" ? $j('#defaultTagsTrue').prop('checked', true) : $j('#defaultTagsFalse').prop('checked', true);
+		localStorage.getItem("showPurpleButtons") === "true" ? $j('#defaultPurpleButtonsTrue').prop('checked', true) : $j('#defaultPurpleButtonsFalse').prop('checked', true);
+		localStorage.getItem("splitChat") === "false" ? $j('#splitChatFalse').prop('checked', true) : $j('#splitChatTrue').prop('checked', true);
+		localStorage.getItem("blockSubButton") === "true" ? $j('#blockSubButtonFalse').prop('checked', true) : $j('#blockSubButtonTrue').prop('checked', true);
+		localStorage.getItem("showFeaturedChannels") === "true" ? $j('#featuredChannelsTrue').prop('checked', true) : $j('#featuredChannelsFalse').prop('checked', true);
+		localStorage.getItem("hideMeebo") === "true" ? $j('#hideMeeboFalse').prop('checked', true) : $j('#hideMeeboTrue').prop('checked', true);
 	}
 
 	betterttvAction = function(action) {
-		if(action == "clearChat") {
+		if(action === "clearChat") {
 			$j('#chat_line_list').html("");
 			CurrentChat.admin_message("You cleared your own chat (BetterTTV)");
 		}
-		if(action == "openSettings") {
+		if(action === "openSettings") {
 			$j('#chat_settings_dropmenu').hide();
 			$j('#bttvSettingsPanel').show("slow");
 		}
-		if(action == "setHighlightKeywords") {
+		if(action === "setHighlightKeywords") {
 			var keywords = prompt("Type some highlight keywords. Messages containing keywords will turn red to get your attention. Use spaces in the field to specify multiple keywords.",localStorage.getItem("highlightKeywords"));
 			if (keywords != null) {
 				localStorage.setItem("highlightKeywords", keywords);
@@ -1452,8 +1445,8 @@ BetterTTVEngine = function() {
 				CurrentChat.admin_message("Highlight Keywords are now set to: "+keywordList);
 			}
 		}
-		if(action == "flipDashboard") {
-			if(localStorage.getItem("flipDashboard") == "true") {
+		if(action === "flipDashboard") {
+			if(localStorage.getItem("flipDashboard") === "true") {
 				localStorage.setItem("flipDashboard", false);
 				$j("#flipDashboard").html("Flip Dashboard");
 				$j("#controls_column, #player_column").css({
@@ -1467,23 +1460,23 @@ BetterTTVEngine = function() {
 				flipDashboard();
 			}
 		}
-		if(action == "toggleDefaultEmotes") {
-			if(localStorage.getItem("showDefaultEmotes") == "true") {
+		if(action === "toggleDefaultEmotes") {
+			if(localStorage.getItem("showDefaultEmotes") === "true") {
 				localStorage.setItem("showDefaultEmotes", false);
 			} else {
 				localStorage.setItem("showDefaultEmotes", true);
 			}
 			overrideEmotes();
 		}
-		if(action == "toggleDefaultTags") {
-			if(localStorage.getItem("showDefaultTags") == "true") {
+		if(action === "toggleDefaultTags") {
+			if(localStorage.getItem("showDefaultTags") === "true") {
 				localStorage.setItem("showDefaultTags", false);
 			} else {
 				localStorage.setItem("showDefaultTags", true);
 			}
 		}
-		if(action == "togglePurpleButtons") {
-			if(localStorage.getItem("showPurpleButtons") == "true") {
+		if(action === "togglePurpleButtons") {
+			if(localStorage.getItem("showPurpleButtons") === "true") {
 				localStorage.setItem("showPurpleButtons", false);
 				cssBlueButtons();
 			} else {
@@ -1491,8 +1484,8 @@ BetterTTVEngine = function() {
 				$j("#bttvBlueButtons").remove();
 			}
 		}
-		if(action == "toggleMeebo") {
-			if(localStorage.getItem("hideMeebo") == "true") {
+		if(action === "toggleMeebo") {
+			if(localStorage.getItem("hideMeebo") === "true") {
 				localStorage.setItem("hideMeebo", false);
 				meebo();
 			} else {
@@ -1505,25 +1498,25 @@ BetterTTVEngine = function() {
 				window.Meebo = undefined;
 			}
 		}
-		if(action == "toggleDarkTwitch") {
-			if(localStorage.getItem("darkenedMode") == "true") {
+		if(action === "toggleDarkTwitch") {
+			if(localStorage.getItem("darkenedMode") === "true") {
 				localStorage.setItem("darkenedMode", false);
 				$j("#darkTwitch").remove();
-				if(localStorage.getItem("splitChat") == "true") {
+				if(localStorage.getItem("splitChat") !== "false") {
 					$j("#splitChat").remove();
 					splitChat();
 				}
 			} else {
 				localStorage.setItem("darkenedMode", true);
 				darkenPage();
-				if(localStorage.getItem("splitChat") == "true") {
+				if(localStorage.getItem("splitChat") !== "false") {
 					$j("#splitChat").remove();
 					splitChat();
 				}
 			}
 		}
-		if(action == "toggleSplitChat") {
-			if(localStorage.getItem("splitChat") == "false") {
+		if(action === "toggleSplitChat") {
+			if(localStorage.getItem("splitChat") === "false") {
 				localStorage.setItem("splitChat", true);
 				splitChat();
 			} else {
@@ -1531,7 +1524,7 @@ BetterTTVEngine = function() {
 				$j("#splitChat").remove();
 			}
 		}
-		if(action == "toggleBlackChat") {
+		if(action === "toggleBlackChat") {
 			if(blackChat) {
 				blackChat = false;
 				$j("#blackChat").remove();
@@ -1550,8 +1543,8 @@ BetterTTVEngine = function() {
 				$j("#blackChatLink").html("Unblacken Chat");
 			}
 		}
-		if(action == "toggleBlockSubButton") {
-			if(localStorage.getItem("blockSubButton") == "true") {
+		if(action === "toggleBlockSubButton") {
+			if(localStorage.getItem("blockSubButton") === "true") {
 				localStorage.setItem("blockSubButton", false);
 				$j("#sub-details").css("display", "inline");
 			} else {
@@ -1559,8 +1552,8 @@ BetterTTVEngine = function() {
 				$j("#sub-details").css("display", "none");
 			}
 		}
-		if(action == "toggleFeaturedChannels") {
-			if(localStorage.getItem("showFeaturedChannels") == "true") {
+		if(action === "toggleFeaturedChannels") {
+			if(localStorage.getItem("showFeaturedChannels") === "true") {
 				localStorage.setItem("showFeaturedChannels", false);
 				removeElement('.sm_vids');
 				removeElement('#nav_games');
@@ -1586,40 +1579,41 @@ BetterTTVEngine = function() {
 	}
 
 	if(document.URL.indexOf("meebo.html") != -1)
-	{
-		return;
-	}
-	if(typeof($) === 'undefined') 
-	{
-		return;
-	}
-	if(typeof(Array.prototype.each) === 'undefined')
-	{
+	{	
+		betterttvDebug.error("Meebo html file");
 		return;
 	}
 
-	betterttvDebug.log("BTTV v"+betterttvVersion);
-	betterttvDebug.log("CALL init "+document.URL);
-	brand();
-	clearAds();
-	channelReformat();
-	chatReformat();
-	newChannelReformat();
-	checkMessages();
-	clearAds();
-	checkFollowing();
-	darkenPage();
-	splitChat();
-	flipDashboard();
-	$j(window).trigger('resize');
-	setTimeout(clearAds, 1000);
-	setTimeout(clearAds, 5000);
-	setTimeout(chatFunctions, 1000);
-	setTimeout(createSettingsMenu, 1000);
-	setTimeout(overrideEmotes, 10000);
-	setTimeout(meeboReformat, 5000);
+	if(typeof(jQuery) === 'undefined') 
+	{
+		betterttvDebug.error("jQuery is undefined");
+		return;
+	}
 
-	(function(b){b.gritter={};b.gritter.options={position:"top-left",class_name:"",fade_in_speed:"medium",fade_out_speed:1000,time:6000};b.gritter.add=function(f){try{return a.add(f||{})}catch(d){var c="Gritter Error: "+d;(typeof(console)!="undefined"&&console.error)?console.error(c,f):alert(c)}};b.gritter.remove=function(d,c){a.removeSpecific(d,c||{})};b.gritter.removeAll=function(c){a.stop(c||{})};var a={position:"",fade_in_speed:"",fade_out_speed:"",time:"",_custom_timer:0,_item_count:0,_is_setup:0,_tpl_close:'<div class="gritter-close"></div>',_tpl_title:'<span class="gritter-title">[[title]]</span>',_tpl_item:'<div id="gritter-item-[[number]]" class="gritter-item-wrapper [[item_class]]" style="display:none"><div class="gritter-top"></div><div class="gritter-item">[[close]][[image]]<div class="[[class_name]]">[[title]]<p>[[text]]</p></div><div style="clear:both"></div></div><div class="gritter-bottom"></div></div>',_tpl_wrap:'<div id="gritter-notice-wrapper"></div>',add:function(g){if(typeof(g)=="string"){g={text:g}}if(!g.text){throw'You must supply "text" parameter.'}if(!this._is_setup){this._runSetup()}var k=g.title,n=g.text,e=g.image||"",l=g.sticky||false,m=g.class_name||b.gritter.options.class_name,j=b.gritter.options.position,d=g.time||"";this._verifyWrapper();this._item_count++;var f=this._item_count,i=this._tpl_item;b(["before_open","after_open","before_close","after_close"]).each(function(p,q){a["_"+q+"_"+f]=(b.isFunction(g[q]))?g[q]:function(){}});this._custom_timer=0;if(d){this._custom_timer=d}var c=(e!="")?'<img src="'+e+'" class="gritter-image" />':"",h=(e!="")?"gritter-with-image":"gritter-without-image";if(k){k=this._str_replace("[[title]]",k,this._tpl_title)}else{k=""}i=this._str_replace(["[[title]]","[[text]]","[[close]]","[[image]]","[[number]]","[[class_name]]","[[item_class]]"],[k,n,this._tpl_close,c,this._item_count,h,m],i);if(this["_before_open_"+f]()===false){return false}b("#gritter-notice-wrapper").addClass(j).append(i);var o=b("#gritter-item-"+this._item_count);o.fadeIn(this.fade_in_speed,function(){a["_after_open_"+f](b(this))});if(!l){this._setFadeTimer(o,f)}b(o).bind("mouseenter mouseleave",function(p){if(p.type=="mouseenter"){if(!l){a._restoreItemIfFading(b(this),f)}}else{if(!l){a._setFadeTimer(b(this),f)}}a._hoverState(b(this),p.type)});b(o).find(".gritter-close").click(function(){a.removeSpecific(f,{},null,true)});return f},_countRemoveWrapper:function(c,d,f){d.remove();this["_after_close_"+c](d,f);if(b(".gritter-item-wrapper").length==0){b("#gritter-notice-wrapper").remove()}},_fade:function(g,d,j,f){var j=j||{},i=(typeof(j.fade)!="undefined")?j.fade:true,c=j.speed||this.fade_out_speed,h=f;this["_before_close_"+d](g,h);if(f){g.unbind("mouseenter mouseleave")}if(i){g.animate({opacity:0},c,function(){g.animate({height:0},300,function(){a._countRemoveWrapper(d,g,h)})})}else{this._countRemoveWrapper(d,g)}},_hoverState:function(d,c){if(c=="mouseenter"){d.addClass("hover");d.find(".gritter-close").show()}else{d.removeClass("hover");d.find(".gritter-close").hide()}},removeSpecific:function(c,g,f,d){if(!f){var f=b("#gritter-item-"+c)}this._fade(f,c,g||{},d)},_restoreItemIfFading:function(d,c){clearTimeout(this["_int_id_"+c]);d.stop().css({opacity:"",height:""})},_runSetup:function(){for(opt in b.gritter.options){this[opt]=b.gritter.options[opt]}this._is_setup=1},_setFadeTimer:function(f,d){var c=(this._custom_timer)?this._custom_timer:this.time;this["_int_id_"+d]=setTimeout(function(){a._fade(f,d)},c)},stop:function(e){var c=(b.isFunction(e.before_close))?e.before_close:function(){};var f=(b.isFunction(e.after_close))?e.after_close:function(){};var d=b("#gritter-notice-wrapper");c(d);d.fadeOut(function(){b(this).remove();f()})},_str_replace:function(v,e,o,n){var k=0,h=0,t="",m="",g=0,q=0,l=[].concat(v),c=[].concat(e),u=o,d=c instanceof Array,p=u instanceof Array;u=[].concat(u);if(n){this.window[n]=0}for(k=0,g=u.length;k<g;k++){if(u[k]===""){continue}for(h=0,q=l.length;h<q;h++){t=u[k]+"";m=d?(c[h]!==undefined?c[h]:""):c[0];u[k]=(t).split(l[h]).join(m);if(n&&u[k]!==t){this.window[n]+=(t.length-u[k].length)/l[h].length}}}return p?u:u[0]},_verifyWrapper:function(){if(b("#gritter-notice-wrapper").length==0){b("body").append(this._tpl_wrap)}}}})(jQuery);
+	jQuery(document).ready(function() {
+		betterttvDebug.log("BTTV v"+betterttvVersion);
+		betterttvDebug.log("CALL init "+document.URL);
+		brand();
+		clearAds();
+		channelReformat();
+		chatReformat();
+		newChannelReformat();
+		checkMessages();
+		clearAds();
+		checkFollowing();
+		darkenPage();
+		splitChat();
+		flipDashboard();
+		$j(window).trigger('resize');
+		setTimeout(clearAds, 1000);
+		setTimeout(clearAds, 5000);
+		setTimeout(chatFunctions, 1000);
+		setTimeout(createSettingsMenu, 1000);
+		setTimeout(overrideEmotes, 10000);
+		setTimeout(meeboReformat, 5000);
+
+		(function(b){b.gritter={};b.gritter.options={position:"top-left",class_name:"",fade_in_speed:"medium",fade_out_speed:1000,time:6000};b.gritter.add=function(f){try{return a.add(f||{})}catch(d){var c="Gritter Error: "+d;(typeof(console)!="undefined"&&console.error)?console.error(c,f):alert(c)}};b.gritter.remove=function(d,c){a.removeSpecific(d,c||{})};b.gritter.removeAll=function(c){a.stop(c||{})};var a={position:"",fade_in_speed:"",fade_out_speed:"",time:"",_custom_timer:0,_item_count:0,_is_setup:0,_tpl_close:'<div class="gritter-close"></div>',_tpl_title:'<span class="gritter-title">[[title]]</span>',_tpl_item:'<div id="gritter-item-[[number]]" class="gritter-item-wrapper [[item_class]]" style="display:none"><div class="gritter-top"></div><div class="gritter-item">[[close]][[image]]<div class="[[class_name]]">[[title]]<p>[[text]]</p></div><div style="clear:both"></div></div><div class="gritter-bottom"></div></div>',_tpl_wrap:'<div id="gritter-notice-wrapper"></div>',add:function(g){if(typeof(g)=="string"){g={text:g}}if(!g.text){throw'You must supply "text" parameter.'}if(!this._is_setup){this._runSetup()}var k=g.title,n=g.text,e=g.image||"",l=g.sticky||false,m=g.class_name||b.gritter.options.class_name,j=b.gritter.options.position,d=g.time||"";this._verifyWrapper();this._item_count++;var f=this._item_count,i=this._tpl_item;b(["before_open","after_open","before_close","after_close"]).each(function(p,q){a["_"+q+"_"+f]=(b.isFunction(g[q]))?g[q]:function(){}});this._custom_timer=0;if(d){this._custom_timer=d}var c=(e!="")?'<img src="'+e+'" class="gritter-image" />':"",h=(e!="")?"gritter-with-image":"gritter-without-image";if(k){k=this._str_replace("[[title]]",k,this._tpl_title)}else{k=""}i=this._str_replace(["[[title]]","[[text]]","[[close]]","[[image]]","[[number]]","[[class_name]]","[[item_class]]"],[k,n,this._tpl_close,c,this._item_count,h,m],i);if(this["_before_open_"+f]()===false){return false}b("#gritter-notice-wrapper").addClass(j).append(i);var o=b("#gritter-item-"+this._item_count);o.fadeIn(this.fade_in_speed,function(){a["_after_open_"+f](b(this))});if(!l){this._setFadeTimer(o,f)}b(o).bind("mouseenter mouseleave",function(p){if(p.type=="mouseenter"){if(!l){a._restoreItemIfFading(b(this),f)}}else{if(!l){a._setFadeTimer(b(this),f)}}a._hoverState(b(this),p.type)});b(o).find(".gritter-close").click(function(){a.removeSpecific(f,{},null,true)});return f},_countRemoveWrapper:function(c,d,f){d.remove();this["_after_close_"+c](d,f);if(b(".gritter-item-wrapper").length==0){b("#gritter-notice-wrapper").remove()}},_fade:function(g,d,j,f){var j=j||{},i=(typeof(j.fade)!="undefined")?j.fade:true,c=j.speed||this.fade_out_speed,h=f;this["_before_close_"+d](g,h);if(f){g.unbind("mouseenter mouseleave")}if(i){g.animate({opacity:0},c,function(){g.animate({height:0},300,function(){a._countRemoveWrapper(d,g,h)})})}else{this._countRemoveWrapper(d,g)}},_hoverState:function(d,c){if(c=="mouseenter"){d.addClass("hover");d.find(".gritter-close").show()}else{d.removeClass("hover");d.find(".gritter-close").hide()}},removeSpecific:function(c,g,f,d){if(!f){var f=b("#gritter-item-"+c)}this._fade(f,c,g||{},d)},_restoreItemIfFading:function(d,c){clearTimeout(this["_int_id_"+c]);d.stop().css({opacity:"",height:""})},_runSetup:function(){for(opt in b.gritter.options){this[opt]=b.gritter.options[opt]}this._is_setup=1},_setFadeTimer:function(f,d){var c=(this._custom_timer)?this._custom_timer:this.time;this["_int_id_"+d]=setTimeout(function(){a._fade(f,d)},c)},stop:function(e){var c=(b.isFunction(e.before_close))?e.before_close:function(){};var f=(b.isFunction(e.after_close))?e.after_close:function(){};var d=b("#gritter-notice-wrapper");c(d);d.fadeOut(function(){b(this).remove();f()})},_str_replace:function(v,e,o,n){var k=0,h=0,t="",m="",g=0,q=0,l=[].concat(v),c=[].concat(e),u=o,d=c instanceof Array,p=u instanceof Array;u=[].concat(u);if(n){this.window[n]=0}for(k=0,g=u.length;k<g;k++){if(u[k]===""){continue}for(h=0,q=l.length;h<q;h++){t=u[k]+"";m=d?(c[h]!==undefined?c[h]:""):c[0];u[k]=(t).split(l[h]).join(m);if(n&&u[k]!==t){this.window[n]+=(t.length-u[k].length)/l[h].length}}}return p?u:u[0]},_verifyWrapper:function(){if(b("#gritter-notice-wrapper").length==0){b("body").append(this._tpl_wrap)}}}})(jQuery);
+	});
 
 	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
