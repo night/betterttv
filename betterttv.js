@@ -22,7 +22,7 @@
 
 BetterTTVEngine = function() {
 
-	var betterttvVersion = "6.2.7",
+	var betterttvVersion = "6.2.8",
 		betterttvDebug = {
 			log: function(string) { if(window.console && console.log) console.log("BTTV: "+string); },
 			warn: function(string) { if(window.console && console.warn) console.warn("BTTV: "+string); },
@@ -183,7 +183,7 @@ BetterTTVEngine = function() {
 		$j(".tabs").html('<li target="about" class="tab selected"><a href="#">&nbsp;Info&nbsp;</a></li><li target="archives" class="tab"><a href="/' + PP['channel'] + '/videos">&nbsp;Videos&nbsp;</a></li>');
 		$j("#archives").html('');
 
-		if(localStorage.getItem("narrowchat") !== "yes") {
+		if(localStorage.getItem("narrowchat") == "no") {
 			$j(".c12").css("width","1100px");
 			$j("#chat_column").css("width", "410px");
 		} else {
@@ -514,6 +514,8 @@ BetterTTVEngine = function() {
 			cssBlueButtons();
 		}
 
+		$j("#commercial_options .dropmenu_action[data-length=150]").html("2m 30s")
+
 		if(!$j("body#chat").length) {
 			meebo();
 		}
@@ -694,7 +696,7 @@ BetterTTVEngine = function() {
 			}
 
 			colorBackground = calculateColorBackground(info.color);
-			if((colorBackground === "light" && localStorage.getItem("darkenedMode") == "true") || (colorBackground === "dark" && localStorage.getItem("darkenedMode") !== "true")) {
+			if(((colorBackground === "light" && localStorage.getItem("darkenedMode") == "true") || (colorBackground === "dark" && localStorage.getItem("darkenedMode") !== "true")) && info.nickname !== PP['login']) {
 				info.color = calculateColorReplacement(info.color, colorBackground);
 			}
 
@@ -715,8 +717,8 @@ BetterTTVEngine = function() {
 				ich.templates["chat-line-action"] = ich.templates["chat-line-action-old"];
 			}
 
-			if((info.color == "#0000ff" || info.color == "#191971") && localStorage.getItem("darkenedMode") == "true") { info.color = "#3753ff"; }
-			if((info.color == "black" || info.color == "#000000") && localStorage.getItem("darkenedMode") == "true") { info.color = "#D3D3D3" }
+			if((info.color == "#0000ff" || info.color == "#191971") && localStorage.getItem("darkenedMode") == "true" && info.nickname !== PP['login']) { info.color = "#3753ff"; }
+			if((info.color == "black" || info.color == "#000000") && localStorage.getItem("darkenedMode") == "true" && info.nickname !== PP['login']) { info.color = "#D3D3D3" }
 
 			if(info.nickname == "night" && x==1) { info.tagtype="orange"; info.tagname = "Creator"; }
 			//Bots
@@ -1070,8 +1072,12 @@ BetterTTVEngine = function() {
 								{ url: "http://betterttv.nightdev.com/emotes/angry.png", width: 56, height: 34, regex: "cabbag3" },
 								{ url: "http://betterttv.nightdev.com/emotes/bacon.gif", width: 33, height: 35, regex: "BaconTime" },
 								{ url: "http://betterttv.nightdev.com/emotes/snatchy.png", width: 33, height: 35, regex: "OhhhKee" },
-								{ url: "http://cdn.nightdev.com/img/snhappthis.gif", width: "50px;background-size:50px 50", height: 50, regex: "S0urPlz" }
+								{ url: "http://betterttv.nightdev.com/emotes/stray.png", width: 33, height: 35, regex: "She\'llBeRight" }
 							  ];
+
+		if(localStorage.getItem("showDefaultEmotes") !== "true") {
+			betterttvEmotes.push({ url: "http://s3.amazonaws.com/betterjtv/smileys/aww.png", width: 19, height: 19, regex: "D\\:" });
+		}
 
 		var oldEmotes = [
 							"http://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-ebf60cd72f7aa600-24x18.png",
@@ -1176,7 +1182,7 @@ BetterTTVEngine = function() {
 
 		betterttvDebug.log("Darkening Chat");
 
-		if(PP['page_type'] === "video" || PP['page_type'] === "channel" || ($j("#twitch_chat").length && !$j("#dash_main").length)) {
+		if(PP['page_type'] === "video" || PP['page_type'] === "directory" || PP['page_type'] === "channel" || ($j("#twitch_chat").length)) {
 			if(localStorage.getItem("darkenedMode") == "true") {
 				var darkCSS = document.createElement("link");
 				darkCSS.setAttribute("href","http://betterttv.nightdev.com/betterttv-dark.css");
@@ -1209,11 +1215,11 @@ BetterTTVEngine = function() {
 							<br /> \
 							&nbsp;&nbsp;&nbsp;&raquo;&nbsp;BetterTTV \
 							<br /> \
-							<a class="dropmenu_action g18_gear-FFFFFF80" href="#" id="blackChatLink" onclick="betterttvAction(\'toggleBlackChat\'); return false;">Black Chat (Chroma Key)</a> \
+							'+($j("body#chat").length?'<a class="dropmenu_action g18_gear-FFFFFF80" href="#" id="blackChatLink" onclick="betterttvAction(\'toggleBlackChat\'); return false;">Black Chat (Chroma Key)</a>':'')+' \
 							<a class="dropmenu_action g18_gear-FFFFFF80" href="#" onclick="betterttvAction(\'setHighlightKeywords\'); return false;">Set Highlight Keywords</a> \
 							<a class="dropmenu_action g18_trash-FFFFFF80" href="#" onclick="betterttvAction(\'clearChat\'); return false;">Clear My Chat</a> \
 							<br /> \
-							<a class="dropmenu_action g18_gear-FFFFFF80" href="#" onclick="betterttvAction(\'openSettings\'); return false;">BetterTTV Settings</a> \
+							'+(!$j("body#chat").length?'<a class="dropmenu_action g18_gear-FFFFFF80" href="#" onclick="betterttvAction(\'openSettings\'); return false;">BetterTTV Settings</a>':'')+' \
 							</li> \
 							</ul> \
 							';
@@ -1419,10 +1425,16 @@ BetterTTVEngine = function() {
 		if(action == "toggleMeebo") {
 			if(localStorage.getItem("hideMeebo") == "true") {
 				localStorage.setItem("hideMeebo", false);
+				meebo();
 			} else {
 				localStorage.setItem("hideMeebo", true);
+				$j('#meebo').remove();
+				$j("#left_col").css("bottom","0px");
+				$j("#right_col").css("bottom","0px");
+				$j("#directory-list").css("margin-bottom","0px");
+				$j("#main_col .content .scroll .scroll-content-contain").css("margin-bottom","0px");
+				window.Meebo = undefined;
 			}
-			window.location.reload();
 		}
 		if(action == "toggleDarkTwitch") {
 			if(localStorage.getItem("darkenedMode") == "true") {
