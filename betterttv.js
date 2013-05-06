@@ -518,6 +518,8 @@ BetterTTVEngine = function() {
 
 		if(!$j("body#chat").length) {
 			meebo();
+		} else {
+			$j("html").css("overflow-y","hidden");
 		}
 		
 	}
@@ -1189,11 +1191,50 @@ BetterTTVEngine = function() {
 				darkCSS.setAttribute("type","text/css");
 				darkCSS.setAttribute("rel","stylesheet");
 				darkCSS.setAttribute("id","darkTwitch");
-				darkCSS.innerHTML = '';
 				$j('body').append(darkCSS);
 
 				$j("#main_col .content #stats_and_actions #channel_stats #channel_viewer_count").css("display","none");
 			}
+		}
+
+	}
+
+	splitChat = function() {
+
+		betterttvDebug.log("Splitting Chat");
+
+		if($j("#twitch_chat").length && localStorage.getItem("splitChat") !== "false") {
+			if(localStorage.getItem("darkenedMode") == "true") {
+				var splitCSS = document.createElement("link");
+				splitCSS.setAttribute("href","http://betterttv.nightdev.com/betterttv-splitchat-dark.css");
+				splitCSS.setAttribute("type","text/css");
+				splitCSS.setAttribute("rel","stylesheet");
+				splitCSS.setAttribute("id","splitChat");
+				$j('body').append(splitCSS);
+			} else {
+				var splitCSS = document.createElement("link");
+				splitCSS.setAttribute("href","http://betterttv.nightdev.com/betterttv-splitchat.css");
+				splitCSS.setAttribute("type","text/css");
+				splitCSS.setAttribute("rel","stylesheet");
+				splitCSS.setAttribute("id","splitChat");
+				$j('body').append(splitCSS);
+			}
+		}
+
+	}
+
+	flipDashboard = function() {
+
+		if($j("#dash_main").length && localStorage.getItem("flipDashboard") == "true") {
+
+			betterttvDebug.log("Flipping Dashboard");
+
+			$j("#controls_column, #player_column").css({
+				float: "right",
+				marginLeft: "500px"
+			});
+			$j("#chat").css("float","left");
+
 		}
 
 	}
@@ -1216,6 +1257,7 @@ BetterTTVEngine = function() {
 							&nbsp;&nbsp;&nbsp;&raquo;&nbsp;BetterTTV \
 							<br /> \
 							'+($j("body#chat").length?'<a class="dropmenu_action g18_gear-FFFFFF80" href="#" id="blackChatLink" onclick="betterttvAction(\'toggleBlackChat\'); return false;">Black Chat (Chroma Key)</a>':'')+' \
+							'+($j("#dash_main").length?'<a class="dropmenu_action g18_gear-FFFFFF80" href="#" id="flipDashboard" onclick="betterttvAction(\'flipDashboard\'); return false;">'+(localStorage.getItem("flipDashboard") == "true"?'Unflip Dashboard':'Flip Dashboard')+'</a>':'')+' \
 							<a class="dropmenu_action g18_gear-FFFFFF80" href="#" onclick="betterttvAction(\'setHighlightKeywords\'); return false;">Set Highlight Keywords</a> \
 							<a class="dropmenu_action g18_trash-FFFFFF80" href="#" onclick="betterttvAction(\'clearChat\'); return false;">Clear My Chat</a> \
 							<br /> \
@@ -1299,6 +1341,16 @@ BetterTTVEngine = function() {
 										</div> \
 									</div> \
 									<div class="option"> \
+								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Split Chat</span>&nbsp;&nbsp;—&nbsp;&nbsp;Easily distinguish between messages from different users in chat \
+										<div class="switch"> \
+											<input type="radio" class="switch-input switch-off" name="toggleSplitChat" value="false" id="splitChatFalse"> \
+											<label for="splitChatFalse" class="switch-label switch-label-off">Off</label> \
+											<input type="radio" class="switch-input" name="toggleSplitChat" value="true" id="splitChatTrue" checked> \
+											<label for="splitChatTrue" class="switch-label switch-label-on">On</label> \
+											<span class="switch-selection"></span> \
+										</div> \
+									</div> \
+									<div class="option"> \
 								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Subscribe Button</span>&nbsp;&nbsp;—&nbsp;&nbsp;Toggle this off to hide those pesky subscribe buttons \
 										<div class="switch"> \
 											<input type="radio" class="switch-input switch-off" name="toggleBlockSubButton" value="false" id="blockSubButtonFalse"> \
@@ -1375,6 +1427,7 @@ BetterTTVEngine = function() {
 		localStorage.getItem("showDefaultEmotes") == "true" ? $j('#defaultEmotesTrue').prop('checked', true) : $j('#defaultEmotesFalse').prop('checked', true);
 		localStorage.getItem("showDefaultTags") == "true" ? $j('#defaultTagsTrue').prop('checked', true) : $j('#defaultTagsFalse').prop('checked', true);
 		localStorage.getItem("showPurpleButtons") == "true" ? $j('#defaultPurpleButtonsTrue').prop('checked', true) : $j('#defaultPurpleButtonsFalse').prop('checked', true);
+		localStorage.getItem("splitChat") == "false" ? $j('#splitChatFalse').prop('checked', true) : $j('#splitChatTrue').prop('checked', true);
 		localStorage.getItem("blockSubButton") == "true" ? $j('#blockSubButtonFalse').prop('checked', true) : $j('#blockSubButtonTrue').prop('checked', true);
 		localStorage.getItem("showFeaturedChannels") == "true" ? $j('#featuredChannelsTrue').prop('checked', true) : $j('#featuredChannelsFalse').prop('checked', true);
 		localStorage.getItem("hideMeebo") == "true" ? $j('#hideMeeboFalse').prop('checked', true) : $j('#hideMeeboTrue').prop('checked', true);
@@ -1386,6 +1439,7 @@ BetterTTVEngine = function() {
 			CurrentChat.admin_message("You cleared your own chat (BetterTTV)");
 		}
 		if(action == "openSettings") {
+			$j('#chat_settings_dropmenu').hide();
 			$j('#bttvSettingsPanel').show("slow");
 		}
 		if(action == "setHighlightKeywords") {
@@ -1396,6 +1450,21 @@ BetterTTVEngine = function() {
 				var keywordList = PP['login'];
 				keywords.forEach(function(keyword){ keywordList += ", " + keyword; });
 				CurrentChat.admin_message("Highlight Keywords are now set to: "+keywordList);
+			}
+		}
+		if(action == "flipDashboard") {
+			if(localStorage.getItem("flipDashboard") == "true") {
+				localStorage.setItem("flipDashboard", false);
+				$j("#flipDashboard").html("Flip Dashboard");
+				$j("#controls_column, #player_column").css({
+					float: "none",
+					marginLeft: "0px"
+				});
+				$j("#chat").css("float","right");
+			} else {
+				localStorage.setItem("flipDashboard", true);
+				$j("#flipDashboard").html("Unflip Dashboard");
+				flipDashboard();
 			}
 		}
 		if(action == "toggleDefaultEmotes") {
@@ -1440,11 +1509,26 @@ BetterTTVEngine = function() {
 			if(localStorage.getItem("darkenedMode") == "true") {
 				localStorage.setItem("darkenedMode", false);
 				$j("#darkTwitch").remove();
-				$j("#darkenTwitchLink").html("Darken Twitch");
+				if(localStorage.getItem("splitChat") == "true") {
+					$j("#splitChat").remove();
+					splitChat();
+				}
 			} else {
 				localStorage.setItem("darkenedMode", true);
 				darkenPage();
-				$j("#darkenTwitchLink").html("Undarken Twitch");
+				if(localStorage.getItem("splitChat") == "true") {
+					$j("#splitChat").remove();
+					splitChat();
+				}
+			}
+		}
+		if(action == "toggleSplitChat") {
+			if(localStorage.getItem("splitChat") == "false") {
+				localStorage.setItem("splitChat", true);
+				splitChat();
+			} else {
+				localStorage.setItem("splitChat", false);
+				$j("#splitChat").remove();
 			}
 		}
 		if(action == "toggleBlackChat") {
@@ -1525,6 +1609,8 @@ BetterTTVEngine = function() {
 	clearAds();
 	checkFollowing();
 	darkenPage();
+	splitChat();
+	flipDashboard();
 	$j(window).trigger('resize');
 	setTimeout(clearAds, 1000);
 	setTimeout(clearAds, 5000);
