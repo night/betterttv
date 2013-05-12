@@ -1401,10 +1401,10 @@ BetterTTVEngine = function() {
 									<div class="option"> \
 								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Self Highlights</span>&nbsp;&nbsp;—&nbsp;&nbsp;Toggle this off to disable highlights on your own username \
 										<div class="switch"> \
-											<input type="radio" class="switch-input switch-off" name="toggleSelfHighlights" value="false" id="SelfHighlightsFalse"> \
-											<label for="SelfHighlightsFalse" class="switch-label switch-label-off">Off</label> \
-											<input type="radio" class="switch-input" name="toggleSelfHighlights" value="true" id="SelfHighlightsTrue" checked> \
-											<label for="SelfHighlightsTrue" class="switch-label switch-label-on">On</label> \
+											<input type="radio" class="switch-input switch-off" name="toggleSelfHighlights" value="false" id="selfHighlightsFalse"> \
+											<label for="selfHighlightsFalse" class="switch-label switch-label-off">Off</label> \
+											<input type="radio" class="switch-input" name="toggleSelfHighlights" value="true" id="selfHighlightsTrue" checked> \
+											<label for="selfHighlightsTrue" class="switch-label switch-label-on">On</label> \
 											<span class="switch-selection"></span> \
 										</div> \
 									</div> \
@@ -1626,7 +1626,7 @@ BetterTTVEngine = function() {
 				$j("#sub-details").css("display", "none");
 			}
 		}
-		if (action === "selfHighlights") {
+		if (action === "toggleSelfHighlights") {
 			if(localStorage.getItem("selfHighlights") === "true") {
 				localStorage.setItem("selfHighlights", false);
 			} else {
