@@ -688,8 +688,14 @@ BetterTTVEngine = function() {
 			if(localStorage.getItem("highlightKeywords")) {
 				var highlightKeywords = localStorage.getItem("highlightKeywords");
 				highlightKeywords = highlightKeywords.split(" ");
+				var pipe = '';
 				highlightKeywords.forEach(function(keyword){
-					regexInput += "|" + escapeRegExp(keyword);
+					if (regexInput == '') {
+						pipe = '';
+					} else {
+						pipe = '|';
+					}
+					regexInput += pipe + escapeRegExp(keyword);
 				});
 			}
 
@@ -1391,7 +1397,8 @@ BetterTTVEngine = function() {
 											<label for="blockSubButtonTrue" class="switch-label switch-label-on">On</label> \
 											<span class="switch-selection"></span> \
 										</div> \
-										<div class="option"> \
+									</div> \
+									<div class="option"> \
 								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Self Highlights</span>&nbsp;&nbsp;—&nbsp;&nbsp;Toggle this off to disable highlights on your own username \
 										<div class="switch"> \
 											<input type="radio" class="switch-input switch-off" name="toggleSelfHighlights" value="false" id="SelfHighlightsFalse"> \
@@ -1621,6 +1628,7 @@ BetterTTVEngine = function() {
 		}
 		if (action === "selfHighlights") {
 			if(localStorage.getItem("selfHighlights") === "true") {
+				localStorage.setItem("selfHighlights", false);
 			} else {
 				localStorage.setItem("selfHighlights", true);
 			}
