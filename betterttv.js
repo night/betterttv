@@ -1627,7 +1627,7 @@ BetterTTVEngine = function() {
 			}
 		}
 		if (action === "toggleSelfHighlights") {
-			if(localStorage.getItem("selfHighlights") === "true") {
+			if(localStorage.getItem("selfHighlights") !== "false") {
 				localStorage.setItem("selfHighlights", false);
 			} else {
 				localStorage.setItem("selfHighlights", true);
