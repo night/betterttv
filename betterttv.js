@@ -681,7 +681,7 @@ BetterTTVEngine = function() {
 
 			var messageHighlighted = false;
 			var regexInput = '';
-			if (localStorage.getItem("selfHighlights") === "true") {
+			if (localStorage.getItem("selfHighlights") !== "false") {
 				regexInput += PP['login'];
 			}
 
@@ -1477,7 +1477,7 @@ BetterTTVEngine = function() {
 		localStorage.getItem("showPurpleButtons") === "true" ? $j('#defaultPurpleButtonsTrue').prop('checked', true) : $j('#defaultPurpleButtonsFalse').prop('checked', true);
 		localStorage.getItem("splitChat") === "false" ? $j('#splitChatFalse').prop('checked', true) : $j('#splitChatTrue').prop('checked', true);
 		localStorage.getItem("blockSubButton") === "true" ? $j('#blockSubButtonFalse').prop('checked', true) : $j('#blockSubButtonTrue').prop('checked', true);
-		localStorage.getItem("selfHighlights") === "true" ? $j('#selfHighlightsFalse').prop('checked', true) : $j('#selfHighlightsTrue').prop('checked', true);
+		localStorage.getItem("selfHighlights") !== "false" ? $j('#selfHighlightsTrue').prop('checked', true) : $j('#selfHighlightsFalse').prop('checked', true);
 		localStorage.getItem("showFeaturedChannels") === "true" ? $j('#featuredChannelsTrue').prop('checked', true) : $j('#featuredChannelsFalse').prop('checked', true);
 		localStorage.getItem("hideDeletedMessages") === "true" ? $j('#hideDeletedMessagesTrue').prop('checked', true) : $j('#hideDeletedMessagesFalse').prop('checked', true);
 		localStorage.getItem("hideMeebo") === "true" ? $j('#hideMeeboFalse').prop('checked', true) : $j('#hideMeeboTrue').prop('checked', true);
@@ -1498,7 +1498,7 @@ BetterTTVEngine = function() {
 				localStorage.setItem("highlightKeywords", keywords);
 				var keywords = keywords.split(" ");
 
-				if (localStorage.getItem("selfHighlights") === "true") {
+				if (localStorage.getItem("selfHighlights") !== "false") {
 					keywords.unshift(PP['login']);
 				}
 				var keywordList = keywords.join(", ");
