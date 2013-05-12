@@ -1,16 +1,16 @@
 /**
  * Copyright (c) 2013 NightDev
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -82,7 +82,7 @@ BetterTTVEngine = function() {
 		if (color.length < 6) {
 			color = color[0]+color[0]+color[1]+color[1]+color[2]+color[2];
 		}
-		
+
 		(background === "light") ? (brightness="0.5") : (brightness="-0.5");
 
 		for (i = 0; i < 3; i++) {
@@ -179,7 +179,7 @@ BetterTTVEngine = function() {
 			height: "395px",
 			width: "640px"
 		});
-		
+
 		$j(".tabs").html('<li target="about" class="tab selected"><a href="#">&nbsp;Info&nbsp;</a></li><li target="archives" class="tab"><a href="/' + PP['channel'] + '/videos">&nbsp;Videos&nbsp;</a></li>');
 		$j("#archives").html('');
 
@@ -244,14 +244,14 @@ BetterTTVEngine = function() {
 				fontFamily: "Helvetica, Arial, sans-serif",
 			});
 		}
-		
+
 		$j("#chat_line_list").css({
 			fontSize: "13.33333px",
 			lineHeight: "17.333333px",
 		});
 
 		$j('#chat_loading_spinner').attr('src',"data:image/gif;base64,R0lGODlhFgAWAPMGANfX1wAAADc3N1tbW6Ojo39/f2tra8fHx9nZ2RsbG+np6SwsLEtLS4eHh7q6ugAAACH/C05FVFNDQVBFMi4wAwEAAAAh/hoiQ3JlYXRlZCB3aXRoIENoaW1wbHkuY29tIgAh+QQJCgAGACwAAAAAFgAWAAAEbNCESY29OEvBRdDgFXReGI7dZ2oop65YWypIjSgGbSOW/CGAIICnEAIOPdLPSDQiNykDUNgUPn1SZs6ZjE6D1eBVmaVurV1XGXwWp0vfYfv4XpqLaKg6HqbrZzs4OjZ1MBlYhiJkiYWMfy+GEQAh+QQJCgAGACwAAAAAFgAWAAAEctDIKYO9NKe9lwlCKAQZlQzo4IEiWUpnuorjC6fqR7tvjM4tgwJBJN5kuqACwGQef8kQadkEPHMsqbBqNfiwu231CtRSm+Ro7ez04sprbjobH7uR9Kn8Ds2L0XxgSkVGgXA8JV+HNoZqiBocCYuMJX4vEQAh+QQJCgAAACwAAAAAFgAWAAAEcxDISWu4uNLEOwhCKASSGA5AMqxD8pkkIBR0gaqsC4rxXN+s1otXqtlSQR2s+EPmhqGeEfjcRZk06kpJlE2dW+gIe8SFrWNv0yxES9dJ8TsLbi/VdDb3ii/H3WRadl0+eX93hX5ViCaCe2kaKR0ccpGWlREAIfkECQoAAQAsAAAAABYAFgAABHUwyEmrvTisxHlmQigw2mAOiWSsaxMwRVyQy4mqRE64sEzbqYBBt3vJZqVTcKjjHX9KXNPoS5qWRGe1FhVmqTHoVZrThq0377R35o7VZTDSnWbG2XMguYgX1799aFhrT4J7ZnldLC1yfkEXICKOGRcbHY+UlBEAIfkECQoAAQAsAAAAABYAFgAABHIwyEmrvThrOoQXTFYYpFEEQ6EWgkS8rxMUMHGmaxsQR3/INNhtxXL5frPaMGf0AZUooo7nTAqjzN3xecWpplvra/lt9rhjbFlbDaa9RfZZbFPHqXN3HQ5uQ/lmSHpkdzVoe1IiJSZ2OhsTHR8hj5SVFREAIfkECQoAAQAsAAAAABYAFgAABGowyEmrvTjrzWczIJg5REk4QWMShoQAMKAExGEfRLq2QQzPtVtOZeL5ZLQbTleUHIHK4c7pgwqZJWM1eSVmqTGrTdrsbYNjLAv846a9a3PYvYRr5+j6NPDCR9U8FyQmKHYdHiEih4uMjRQRACH5BAkKAAEALAAAAAAWABYAAARkMMhJq7046807d0QYSkhZKoFiIqhzvAchATSNIjWABC4sBznALbfrvX7BYa0Ii81yShrT96xFdbwmEhrALbNUINcrBR+rti7R7BRb1V9jOwkvy38rVmrV0nokICI/f4SFhocSEQAh+QQJCgABACwAAAAAFgAWAAAEWjDISau9OOvNu7dIGCqBIiKkeUoH4AIk8gJIOR/sHM+1cuev3av3C7SCAdnQ9sIZdUke0+U8uoQuYhN4jS592ydSmZ0CqlAyzYweS8FUyQlVOqXmn7x+z+9bIgA7");
-		
+
 	}
 
 	newChannelReformat = function() {
@@ -259,7 +259,7 @@ BetterTTVEngine = function() {
 		betterttvDebug.log("Reformatting Beta Channel Page");
 
 		if($j(".betabar").length === 0) return;
-		
+
 		if(localStorage.getItem("chatWidth")) {
 			if(localStorage.getItem("chatWidth") < 0) {
 				localStorage.setItem("chatWidth", 0)
@@ -272,11 +272,11 @@ BetterTTVEngine = function() {
 		$j(document).ready(function()
 		{
 			var resize = false;
-			
+
 			$j("#right_col .content .bottom #controls #control_buttons .primary_button").css("float","right");
 			$j("#right_nav").css({'margin-left' : 'auto','margin-right' : 'auto','width' : '300px','float' : 'none','border' : 'none'});
 			$j('#right_col .content .top').css('border-bottom', '1px solid rgba(0, 0, 0, 0.25)')
-			
+
 			$j("#right_close").unbind('click');
 
 			$j("#left_close").click(function(a) {
@@ -288,7 +288,7 @@ BetterTTVEngine = function() {
 					$j(window).trigger('resize');
 				}
 			});
-			
+
 			var handleResize = function() {
 				var d = 0;
 				if($j("#large_nav").css("display") !== "none") {
@@ -331,13 +331,13 @@ BetterTTVEngine = function() {
 	            	($j(".live_site_player_container").css({ height: $j(window).height() - $j("#main_col .top").outerHeight() - 40 + "px" }), $j("#main_col .scroll-content-contain").animate({ scrollTop: 90 }, 150, "swing"));
 	            } else {
 	            	$j(".live_site_player_container").css({ height: h.toFixed(0) + "px" });
-	            } 
-	            
+	            }
+
 	            _.debounce(function () {
 	            	var d = $j("#broadcast_meta .info .title").width();
 		            $j("#broadcast_meta .info .title .real_title").width() > d ? $j("#broadcast_meta .info").addClass("long_title") : $j("#broadcast_meta .info").removeClass("long_title")
 		        }, 500)
-		        
+
 		        $j("body").trigger("fluid-resize")
 			}
 
@@ -414,7 +414,7 @@ BetterTTVEngine = function() {
 			        handleResize();
 				}
 			});
-		
+
 			$j(document).mousemove(function(event)
 			{
 
@@ -521,7 +521,7 @@ BetterTTVEngine = function() {
 		} else {
 			$j("html").css("overflow-y","hidden");
 		}
-		
+
 	}
 
 	checkMessages = function(videopage) {
@@ -590,7 +590,7 @@ BetterTTVEngine = function() {
 	}
 
 	meeboReformat = function() {
-		
+
 		betterttvDebug.log("Reformatting the Meebo Bar");
 
 		$j('#meebo-googlePlus-plusone-0').remove();
@@ -669,24 +669,33 @@ BetterTTVEngine = function() {
 			        text: 'Nightbot will be running a commercial in 15 seconds.',
 			    });
 			}
-			
+
 			if(info.tagtype == "broadcaster") { info.tagname = "Host"; }
 
 			var x=0;
 			if(info.tagtype == "mod" || info.tagtype == "broadcaster" || info.tagtype == "admin") x=1;
-			
+
 			if(localStorage.getItem("showDefaultTags") == "true") {
 				if(info.tagtype == "mod" || info.tagtype == "broadcaster" || info.tagtype == "admin" || info.tagtype == "staff") info.tagtype = "old"+info.tagtype;
 			}
 
 			var messageHighlighted = false;
-			var regexInput = PP['login'];
+			var regexInput = '';
+			if (localStorage.getItem("selfHighlights") !== "false") {
+				regexInput += PP['login'];
+			}
 
 			if(localStorage.getItem("highlightKeywords")) {
 				var highlightKeywords = localStorage.getItem("highlightKeywords");
 				highlightKeywords = highlightKeywords.split(" ");
+				var pipe = '';
 				highlightKeywords.forEach(function(keyword){
-					regexInput += "|" + escapeRegExp(keyword);
+					if (regexInput == '') {
+						pipe = '';
+					} else {
+						pipe = '|';
+					}
+					regexInput += pipe + escapeRegExp(keyword);
 				});
 			}
 
@@ -734,7 +743,7 @@ BetterTTVEngine = function() {
 			if(info.nickname == "bullystopper" && x==1) { info.tagtype="bot"; info.tagname = "Bot"; }
 			if(info.nickname == "baconrobot" && x==1) { info.tagtype="bot"; info.tagname = "Bot"; }
 			if(info.nickname == "mtgbot" && x==1) { info.tagtype="bot"; info.tagname = "Bot"; }
-			
+
 			//Donations
 			if(info.nickname == "the_abysss") { info.tagtype="orange"; info.tagname = "god"; }
 			if(info.nickname == "gspwar") { info.tagtype="admin"; info.tagname = "EH?"; }
@@ -803,7 +812,7 @@ BetterTTVEngine = function() {
 			if(info.nickname == "thesabe" && x==1) { info.tagtype="orange"; info.tagname = "<span style='color:blue;'>Sabey</span>"; }
 			if(info.nickname == "kerviel_" && x==1) { info.tagtype="staff"; info.tagname = "Almighty"; }
 			if(info.nickname == "ackleyman" && x==1) { info.tagtype="orange"; info.tagname = "Ack"; }
-			
+
 			//this.insert_chat_lineOld(info);
 			if (!(CurrentChat.restarting && !CurrentChat.history_ended || CurrentChat.ignored[info.sender])) if ("jtv" === info.sender) CurrentChat.last_sender = info.sender, CurrentChat.admin_message(CurrentChat.format_message(info));
 	        else if (!info.is_action && !messageHighlighted && CurrentChat.last_sender && CurrentChat.last_sender === info.sender && "jtv" !== CurrentChat.last_sender) CurrentChat.insert_with_lock("#chat_line_list li:last", '<p class="chat_line" style="display:block;">&raquo; ' + CurrentChat.format_message(info) + "</p>");
@@ -924,7 +933,7 @@ BetterTTVEngine = function() {
 			} else {
 				CurrentChat.admin_message(i18n("BetterTTV: Looks like chat is broken.. I give up. :("));
 			}
-			
+
 		}
 
 		CurrentChat.handlers.connected = function() {
@@ -964,10 +973,10 @@ BetterTTVEngine = function() {
 			}
 		}
 
-		$j('#chat_text_input').live('keydown', function(e) { 
-		  var keyCode = e.keyCode || e.which; 
-		  if (keyCode === 9) { 
-		    e.preventDefault(); 
+		$j('#chat_text_input').live('keydown', function(e) {
+		  var keyCode = e.keyCode || e.which;
+		  if (keyCode === 9) {
+		    e.preventDefault();
 		    var sentence = $j('#chat_text_input').val().split(' ');
 		    var partialMatch = sentence.pop().toLowerCase();
 		    var users = currentViewers;
@@ -1005,12 +1014,12 @@ BetterTTVEngine = function() {
 			    break;
 			  }
 			}
-		  } 
+		  }
 		});
 
 		setTimeout(function(){updateViewerList()},5000);
 		setInterval(function(){updateViewerList()},300000);
-	}	
+	}
 
 	checkFollowing = function() {
 
@@ -1269,7 +1278,7 @@ BetterTTVEngine = function() {
 		bttvSettings.setAttribute("align","left");
 		bttvSettings.setAttribute("id","bttvsettings");
 		bttvSettings.style.margin = "0px auto";
-		
+
 		bttvSettings.innerHTML = '<ul class="dropmenu_col inline_all"> \
 							<li id="chat_section_chatroom" class="dropmenu_section"> \
 							<br /> \
@@ -1390,6 +1399,16 @@ BetterTTVEngine = function() {
 										</div> \
 									</div> \
 									<div class="option"> \
+								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Self Highlights</span>&nbsp;&nbsp;—&nbsp;&nbsp;Toggle this off to disable highlights on your own username \
+										<div class="switch"> \
+											<input type="radio" class="switch-input switch-off" name="toggleSelfHighlights" value="false" id="selfHighlightsFalse"> \
+											<label for="selfHighlightsFalse" class="switch-label switch-label-off">Off</label> \
+											<input type="radio" class="switch-input" name="toggleSelfHighlights" value="true" id="selfHighlightsTrue" checked> \
+											<label for="selfHighlightsTrue" class="switch-label switch-label-on">On</label> \
+											<span class="switch-selection"></span> \
+										</div> \
+									</div> \
+									<div class="option"> \
 								    	Think something is missing here? Send in a <a href="http://bugs.nightdev.com/projects/betterttv/issues/new?tracker_id=2" target="_blank">feature request</a>! \
 									</div> \
 								   </div> \
@@ -1439,14 +1458,14 @@ BetterTTVEngine = function() {
 				$j(currentTab).hide();
 				$j(this).parent("li").removeClass("active");
 			});
-			
+
 			$j(tab).fadeIn();
 			$j(this).parent("li").addClass("active");
 		});
 
 		$j('.option input:radio').change(function(e){
 			betterttvAction(e.target.name);
-		});  
+		});
 
 		jQuery('.dropmenu_action').each(function(element) {
 			jQuery(this).css("color","#ffffff");
@@ -1458,6 +1477,7 @@ BetterTTVEngine = function() {
 		localStorage.getItem("showPurpleButtons") === "true" ? $j('#defaultPurpleButtonsTrue').prop('checked', true) : $j('#defaultPurpleButtonsFalse').prop('checked', true);
 		localStorage.getItem("splitChat") === "false" ? $j('#splitChatFalse').prop('checked', true) : $j('#splitChatTrue').prop('checked', true);
 		localStorage.getItem("blockSubButton") === "true" ? $j('#blockSubButtonFalse').prop('checked', true) : $j('#blockSubButtonTrue').prop('checked', true);
+		localStorage.getItem("selfHighlights") !== "false" ? $j('#selfHighlightsTrue').prop('checked', true) : $j('#selfHighlightsFalse').prop('checked', true);
 		localStorage.getItem("showFeaturedChannels") === "true" ? $j('#featuredChannelsTrue').prop('checked', true) : $j('#featuredChannelsFalse').prop('checked', true);
 		localStorage.getItem("hideDeletedMessages") === "true" ? $j('#hideDeletedMessagesTrue').prop('checked', true) : $j('#hideDeletedMessagesFalse').prop('checked', true);
 		localStorage.getItem("hideMeebo") === "true" ? $j('#hideMeeboFalse').prop('checked', true) : $j('#hideMeeboTrue').prop('checked', true);
@@ -1477,8 +1497,12 @@ BetterTTVEngine = function() {
 			if (keywords != null) {
 				localStorage.setItem("highlightKeywords", keywords);
 				var keywords = keywords.split(" ");
-				var keywordList = PP['login'];
-				keywords.forEach(function(keyword){ keywordList += ", " + keyword; });
+
+				if (localStorage.getItem("selfHighlights") !== "false") {
+					keywords.unshift(PP['login']);
+				}
+				var keywordList = keywords.join(", ");
+
 				CurrentChat.admin_message("Highlight Keywords are now set to: "+keywordList);
 			}
 		}
@@ -1602,6 +1626,13 @@ BetterTTVEngine = function() {
 				$j("#sub-details").css("display", "none");
 			}
 		}
+		if (action === "toggleSelfHighlights") {
+			if(localStorage.getItem("selfHighlights") !== "false") {
+				localStorage.setItem("selfHighlights", false);
+			} else {
+				localStorage.setItem("selfHighlights", true);
+			}
+		}
 		if(action === "toggleFeaturedChannels") {
 			if(localStorage.getItem("showFeaturedChannels") === "true") {
 				localStorage.setItem("showFeaturedChannels", false);
@@ -1629,12 +1660,12 @@ BetterTTVEngine = function() {
 	}
 
 	if(document.URL.indexOf("meebo.html") != -1)
-	{	
+	{
 		betterttvDebug.error("Meebo html file");
 		return;
 	}
 
-	if(typeof(jQuery) === 'undefined') 
+	if(typeof(jQuery) === 'undefined')
 	{
 		betterttvDebug.error("jQuery is undefined");
 		return;
