@@ -538,10 +538,10 @@ BetterTTVEngine = function() {
 	            if(PP['notificationsLoaded'] === true && PP['notifications'] < j) {
 	            	$j.get('http://www.twitch.tv/inbox', function(data) {
 						var messageSender = /class="capital">(.*)<\/a>/i.exec(data);
-						var messageSenderAvatar = /http:\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/(.*)-50x50.png/i.exec(data);
+						var messageSenderAvatar = /class="p30" src="(.*)"/i.exec(data);
 						if(messageSender && messageSenderAvatar) {
 							messageSender = messageSender[1].capitalize();
-							messageSenderAvatar = "http://static-cdn.jtvnw.net/jtv_user_pictures/"+messageSenderAvatar[1]+"-50x50.png";
+							messageSenderAvatar = messageSenderAvatar[1];
 						} else {
 							messageSender = "Someone";
 							messageSenderAvatar = "";
@@ -699,6 +699,7 @@ BetterTTVEngine = function() {
 
 			colorBackground = calculateColorBackground(info.color);
 			if(((colorBackground === "light" && localStorage.getItem("darkenedMode") === "true") || (colorBackground === "dark" && localStorage.getItem("darkenedMode") !== "true")) && info.nickname !== PP['login']) {
+				console.log(calculateColorReplacement(info.color, colorBackground))
 				info.color = calculateColorReplacement(info.color, colorBackground);
 			}
 
@@ -742,7 +743,7 @@ BetterTTVEngine = function() {
 			if(info.nickname == "upd0g") { info.tagtype="orange"; info.tagname = "Smelly"; info.nickname="dog"; }
 			if(info.nickname == "shadogazer" && x==1) { info.tagtype="purple"; info.tagname = "Daemon"; }
 			if(info.nickname == "top_sgt" && x==1) { info.tagtype="mod"; info.tagname = "Soldier"; }
-			if(info.nickname == "jrux2011" && x==1) { info.tagtype="bot"; info.tagname = "Design"; }
+			if(info.nickname == "jruxdev" && x==1) { info.tagtype="bot"; info.tagname = "MuttonChops"; }
 			if(info.nickname == "standofft_money" && x==1) { info.tagtype="broadcaster"; info.tagname = "iBad"; }
 			if(info.nickname == "infemeth" && x==1) { info.tagtype="purple"; info.tagname = "Designer"; }
 			if(info.nickname == "totally_cereal" && x==1) { info.tagtype="staff"; info.tagname = "Fruity"; }
@@ -779,6 +780,7 @@ BetterTTVEngine = function() {
 			if(info.nickname == "yorkyyork") { info.tagtype="broadcaster"; info.tagname = "<span style='color:red;'>FeaR</span>"; }
 			if(info.nickname == "zebbazombies" && x==1) { info.tagtype="mod"; info.tagname = "Hugs"; }
 			if(info.nickname == "nobama12345" && x==1) { info.tagtype="broadcaster"; info.tagname = "Señor"; }
+			if(info.nickname == "mrimjustaminorthreat" && x==1) { info.tagtype="staff"; info.tagname = "<span style='color:pink;'>Major</span>"; }
 			if(info.nickname == "sournothardcore" && x==1) { info.tagname = info.tagname+"</span><span class='tag brown' style='margin-left:4px;color:#FFE600 !important;' original-title='Saucy'>Saucy</span><span>"; }
 			//People
 			if(info.nickname == "mac027" && x==1) { info.tagtype="admin"; info.tagname = "Hacks"; }
@@ -804,7 +806,7 @@ BetterTTVEngine = function() {
 			
 			//this.insert_chat_lineOld(info);
 			if (!(CurrentChat.restarting && !CurrentChat.history_ended || CurrentChat.ignored[info.sender])) if ("jtv" === info.sender) CurrentChat.last_sender = info.sender, CurrentChat.admin_message(CurrentChat.format_message(info));
-	        else if (!info.is_action && CurrentChat.last_sender && CurrentChat.last_sender === info.sender && "jtv" !== CurrentChat.last_sender) CurrentChat.insert_with_lock("#chat_line_list li:last", '<p class="chat_line" style="display:block;">&raquo; ' + CurrentChat.format_message(info) + "</p>");
+	        else if (!info.is_action && !messageHighlighted && CurrentChat.last_sender && CurrentChat.last_sender === info.sender && "jtv" !== CurrentChat.last_sender) CurrentChat.insert_with_lock("#chat_line_list li:last", '<p class="chat_line" style="display:block;">&raquo; ' + CurrentChat.format_message(info) + "</p>");
 	        else {
 	            CurrentChat.last_sender = info.sender;
 	            var d = !! (PP.login === PP.channel || "true" ===
@@ -825,8 +827,7 @@ BetterTTVEngine = function() {
 	            info.tagtype && (d = '<span class="tag %tagtype" title="%tagname">%tagname</span>&nbsp;'.replace(/\%tagtype/g,
 	                info.tagtype).replace(/\%tagname/g, info.tagname));
 	            info.turbo && (d += '<span class="tag %tagtype" title="%tagname"><a href="/products/turbo?ref=chat_badge" target="_blank">%tagname</a></span> '.replace(/\%tagtype/g, "turbo").replace(/\%tagname/g, "Turbo"));
-	            info.subscriber && (g = '<span class="tag %tagtype %tagchannel" title="%tagname">' + ('<a href="/' + CurrentChat.channel + '/subscribe" target="_blank">%tagname</a>'), d += (g + "</span> ").replace(/\%tagtype/g, "subscriber").replace(/\%tagname/g, "Subscriber").replace(/\%tagchannel/g,
-	                CurrentChat.channel));
+	            info.subscriber && (g = '<span class="tag %tagtype c%tagchannel" title="%tagname">' + ('<a href="/' + CurrentChat.channel + '/subscribe" target="_blank">%tagname</a>'), d += (g + "</span> ").replace(/\%tagtype/g, "subscriber").replace(/\%tagname/g, "Subscriber").replace(/\%tagchannel/g,CurrentChat.channel));
 	            b && (d += '<span class="tag %tagtype" title="%tagname">%tagname</span>&nbsp;'.replace(/\%tagtype/g, "ign").replace(/\%tagname/g, "My IGN"));
 	            c = ich[c](f)[0].outerHTML;
 	            c = c.replace(/\@tag/g, d);
@@ -949,9 +950,15 @@ BetterTTVEngine = function() {
 				CurrentChat.insert_with_lock("#chat_line_list",'<li class="line fromjtv"><p class="content">Chat was cleared by a moderator (Prevented by BetterTTV)</p></li>');
 			} else if (info.target === "user") {
 				var nickname = CurrentChat.real_username(info.user);
-				jQuery('#chat_line_list .chat_from_' + info.user.replace(/%/g, '_').replace(/[<>,]/g, '') + ' .chat_line').each(function (message) {
-					jQuery(this).html("<span style=\"color: #999\">" + message.innerHTML + "</span>");
-				});
+				if(localStorage.getItem("hideDeletedMessages") === "true") {
+					jQuery('#chat_line_list .chat_from_' + info.user.replace(/%/g, '_').replace(/[<>,]/g, '') + ' .chat_line').each(function (message) {
+						jQuery(this).html("<span style=\"color: #999\">&lt;message deleted&gt;</span>");
+					});
+				} else {
+					jQuery('#chat_line_list .chat_from_' + info.user.replace(/%/g, '_').replace(/[<>,]/g, '') + ' .chat_line').each(function (message) {
+						jQuery(this).html("<span style=\"color: #999\">" + jQuery(this).html() + "</span>");
+					});
+				}
 				CurrentChat.last_sender = "jtv";
 				CurrentChat.insert_with_lock("#chat_line_list",'<li class="line fromjtv"><p class="content"><span style="text-transform:capitalize;">'+nickname+"</span> has been timed out."+"</p></li>");
 			}
@@ -1226,8 +1233,27 @@ BetterTTVEngine = function() {
 				float: "right",
 				marginLeft: "500px"
 			});
-			$j("#chat").css("float","left");
+			$j("#chat").css({
+				float: "left",
+				left: "20px",
+				right: ""
+			});
 
+		}
+
+	}
+
+	dashboardViewers = function() {
+
+		if($j("#dash_main").length) {
+			Twitch.api.get("streams/"+PP['channel']).done(function (a) {
+				if(a.stream && a.stream.viewers) {
+					$j("#channel_viewer_count").html(a.stream.viewers);
+				} else {
+					$j("#channel_viewer_count").html("Offline");
+				}
+				setTimeout(dashboardViewers,60000);
+			});
 		}
 
 	}
@@ -1310,6 +1336,16 @@ BetterTTVEngine = function() {
 											<label for="defaultPurpleButtonsFalse" class="switch-label switch-label-off">Off</label> \
 											<input type="radio" class="switch-input" name="togglePurpleButtons" value="true" id="defaultPurpleButtonsTrue" checked> \
 											<label for="defaultPurpleButtonsTrue" class="switch-label switch-label-on">On</label> \
+											<span class="switch-selection"></span> \
+										</div> \
+									</div> \
+									<div class="option"> \
+								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Deleted Messages</span>&nbsp;&nbsp;—&nbsp;&nbsp;BetterTTV shows deleted messages by default. Set this to On to disable them. \
+										<div class="switch"> \
+											<input type="radio" class="switch-input switch-off" name="toggleHideDeletedMessages" value="false" id="hideDeletedMessagesFalse"> \
+											<label for="hideDeletedMessagesFalse" class="switch-label switch-label-off">Off</label> \
+											<input type="radio" class="switch-input" name="toggleHideDeletedMessages" value="true" id="hideDeletedMessagesTrue" checked> \
+											<label for="hideDeletedMessagesTrue" class="switch-label switch-label-on">On</label> \
 											<span class="switch-selection"></span> \
 										</div> \
 									</div> \
@@ -1423,6 +1459,7 @@ BetterTTVEngine = function() {
 		localStorage.getItem("splitChat") === "false" ? $j('#splitChatFalse').prop('checked', true) : $j('#splitChatTrue').prop('checked', true);
 		localStorage.getItem("blockSubButton") === "true" ? $j('#blockSubButtonFalse').prop('checked', true) : $j('#blockSubButtonTrue').prop('checked', true);
 		localStorage.getItem("showFeaturedChannels") === "true" ? $j('#featuredChannelsTrue').prop('checked', true) : $j('#featuredChannelsFalse').prop('checked', true);
+		localStorage.getItem("hideDeletedMessages") === "true" ? $j('#hideDeletedMessagesTrue').prop('checked', true) : $j('#hideDeletedMessagesFalse').prop('checked', true);
 		localStorage.getItem("hideMeebo") === "true" ? $j('#hideMeeboFalse').prop('checked', true) : $j('#hideMeeboTrue').prop('checked', true);
 	}
 
@@ -1453,7 +1490,11 @@ BetterTTVEngine = function() {
 					float: "none",
 					marginLeft: "0px"
 				});
-				$j("#chat").css("float","right");
+				$j("#chat").css({
+					float: "right",
+					left: "",
+					right: "20px"
+				});
 			} else {
 				localStorage.setItem("flipDashboard", true);
 				$j("#flipDashboard").html("Unflip Dashboard");
@@ -1473,6 +1514,13 @@ BetterTTVEngine = function() {
 				localStorage.setItem("showDefaultTags", false);
 			} else {
 				localStorage.setItem("showDefaultTags", true);
+			}
+		}
+		if(action === "toggleHideDeletedMessages") {
+			if(localStorage.getItem("hideDeletedMessages") === "true") {
+				localStorage.setItem("hideDeletedMessages", false);
+			} else {
+				localStorage.setItem("hideDeletedMessages", true);
 			}
 		}
 		if(action === "togglePurpleButtons") {
@@ -1529,10 +1577,12 @@ BetterTTVEngine = function() {
 				blackChat = false;
 				$j("#blackChat").remove();
 				darkenPage();
+				splitChat();
 				$j("#blackChatLink").html("Black Chat (Chroma Key)");
 			} else {
 				blackChat = true;
 				$j("#darkTwitch").remove();
+				$j("#splitChat").remove();
 				var darkCSS = document.createElement("link");
 				darkCSS.setAttribute("href","http://betterttv.nightdev.com/betterttv-blackchat.css");
 				darkCSS.setAttribute("type","text/css");
@@ -1604,6 +1654,7 @@ BetterTTVEngine = function() {
 		darkenPage();
 		splitChat();
 		flipDashboard();
+		dashboardViewers();
 		$j(window).trigger('resize');
 		setTimeout(clearAds, 1000);
 		setTimeout(clearAds, 5000);
