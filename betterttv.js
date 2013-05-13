@@ -300,7 +300,7 @@ BetterTTVEngine = function() {
 				if($j("#small_nav").css("display") !== "none") {
 					d += $j("#small_nav").width();
 				}
-				if(chatWidth === 0) {
+				if(chatWidth == 0) {
 					$j("#right_col").css({
 	            		display: "none"
 			        });
@@ -340,14 +340,22 @@ BetterTTVEngine = function() {
 	            }
 
 				var d = $j("#broadcast_meta .info .title").width();
-				$j("#broadcast_meta .info .title .real_title").width() > d ? $j("#broadcast_meta .info").addClass("long_title") : $j("#broadcast_meta .info").removeClass("long_title")
+				$j("#broadcast_meta .info .title .real_title").width() > d ? $j("#broadcast_meta .info").addClass("long_title") : $j("#broadcast_meta .info").removeClass("long_title");
+				$j("#channel_panels_contain").masonry("reload");
+			}
+
+			if(Twitch.storage.get("rightColClosed") === "true") {
+				localStorage.setItem("chatWidth", 0);
+				if($j("#right_col").width() == "0") {
+					$j("#right_col").width("320px");
+				}
+				Twitch.storage.set("rightColClosed","false");
 			}
 
 			if(localStorage.getItem("chatWidth")) {
 				chatWidth = localStorage.getItem("chatWidth");
 
-				if(chatWidth === 0) {
-					console.log("here")
+				if(chatWidth == 0) {
 					$j("#right_col").css({
 	            		display: "none"
 			        });
@@ -365,6 +373,9 @@ BetterTTVEngine = function() {
 
 				handleResize();
 			} else {
+				if($j("#right_col").width() == "0") {
+					$j("#right_col").width("320px");
+				}
 				chatWidth = $j("#right_col").width();
 				localStorage.setItem("chatWidth", $j("#right_col").width());
 			}
@@ -381,7 +392,7 @@ BetterTTVEngine = function() {
 					        $j("#right_close").css({
 					            "background-position": "0 0"
 					        });
-					        chatWidth = 0
+					        chatWidth = 0;
 						}
 					} else {
 						chatWidth = $j("#right_col").width();
@@ -706,7 +717,6 @@ BetterTTVEngine = function() {
 
 			colorBackground = calculateColorBackground(info.color);
 			if(((colorBackground === "light" && localStorage.getItem("darkenedMode") === "true") || (colorBackground === "dark" && localStorage.getItem("darkenedMode") !== "true")) && info.nickname !== PP['login']) {
-				console.log(calculateColorReplacement(info.color, colorBackground))
 				info.color = calculateColorReplacement(info.color, colorBackground);
 			}
 
