@@ -290,6 +290,9 @@ BetterTTVEngine = function() {
 			});
 
 			var handleResize = function() {
+				betterttvDebug.log("Page resized");
+				clearAds();
+
 				var d = 0;
 				if($j("#large_nav").css("display") !== "none") {
 					d += $j("#large_nav").width();
@@ -328,17 +331,13 @@ BetterTTVEngine = function() {
 
 	            var h = 0.5625 * $j("#main_col").width() - 4;
 	            if(h > $j(window).height() - $j("#main_col .top").outerHeight() - 40) {
-	            	($j(".live_site_player_container").css({ height: $j(window).height() - $j("#main_col .top").outerHeight() - 40 + "px" }), $j("#main_col .scroll-content-contain").animate({ scrollTop: 90 }, 150, "swing"));
+					($j(".live_site_player_container").css({ height: $j(window).height() - $j("#main_col .top").outerHeight() - 40 + "px" }), $j("#main_col .tse-scroll-content").animate({ scrollTop: $j('.live_site_player_container').position().top }, 150, "swing"));
 	            } else {
 	            	$j(".live_site_player_container").css({ height: h.toFixed(0) + "px" });
 	            }
 
-	            _.debounce(function () {
-	            	var d = $j("#broadcast_meta .info .title").width();
-		            $j("#broadcast_meta .info .title .real_title").width() > d ? $j("#broadcast_meta .info").addClass("long_title") : $j("#broadcast_meta .info").removeClass("long_title")
-		        }, 500)
-
-		        $j("body").trigger("fluid-resize")
+				var d = $j("#broadcast_meta .info .title").width();
+				$j("#broadcast_meta .info .title .real_title").width() > d ? $j("#broadcast_meta .info").addClass("long_title") : $j("#broadcast_meta .info").removeClass("long_title")
 			}
 
 			if(localStorage.getItem("chatWidth")) {
@@ -454,9 +453,10 @@ BetterTTVEngine = function() {
 				}
 			});
 
-			$j(window).resize(function() {
-				setTimeout(handleResize, 1000);
-				clearAds();
+			var resizeTimeout = null;
+			$j("body").off("fluid-resize").on("fluid-resize", function () {
+				if (resizeTimeout) window.clearTimeout(resizeTimeout);
+				resizeTimeout = window.setTimeout(handleResize, 500);
 			});
 		});
 
