@@ -22,7 +22,7 @@
 
 BetterTTVEngine = function() {
 
-	var betterttvVersion = "6.2.8",
+	var betterttvVersion = "6.2.9",
 		betterttvDebug = {
 			log: function(string) { if(window.console && console.log) console.log("BTTV: "+string); },
 			warn: function(string) { if(window.console && console.warn) console.warn("BTTV: "+string); },
@@ -320,6 +320,8 @@ BetterTTVEngine = function() {
 						$j("#right_close").css({
 				            "background-position": "0 -18px"
 				        });
+				        handleResize();
+				        return;
 					} else {
 						d += $j("#right_col").width();
 					}
@@ -330,8 +332,9 @@ BetterTTVEngine = function() {
 	            });
 
 	            var h = 0.5625 * $j("#main_col").width() - 4;
-	            if(h > $j(window).height() - $j("#main_col .top").outerHeight() - 40) {
-					($j(".live_site_player_container").css({ height: $j(window).height() - $j("#main_col .top").outerHeight() - 40 + "px" }), $j("#main_col .tse-scroll-content").animate({ scrollTop: $j('.live_site_player_container').position().top }, 150, "swing"));
+	            (localStorage.getItem("hideMeebo") !== "true") ? videoMargin = 65 : videoMargin = 40
+	            if(h > $j(window).height() - $j("#main_col .top").outerHeight() - videoMargin) {
+	            	($j(".live_site_player_container").css({ height: $j(window).height() - $j("#main_col .top").outerHeight() - videoMargin + "px" }), $j("#main_col .tse-scroll-content").animate({ scrollTop: $j('.live_site_player_container').position().top }, 150, "swing"));
 	            } else {
 	            	$j(".live_site_player_container").css({ height: h.toFixed(0) + "px" });
 	            }
@@ -417,11 +420,10 @@ BetterTTVEngine = function() {
 			$j(document).mousemove(function(event)
 			{
 
-				if (resize)
+				if(resize)
 				{
 					$j("#chat_text_input").focus();
-					if (chatWidth + resize - event.pageX < 320)
-					{
+					if(chatWidth + resize - event.pageX < 320) {
 						$j("#right_col").width(320);
 						$j("#right_col .content #chat").width(320);
 						$j("#right_col .content .top").width(320);
@@ -429,9 +431,7 @@ BetterTTVEngine = function() {
 						$j("#chat_lines").width(320);
 
 						handleResize();
-					}
-					else if (chatWidth + resize - event.pageX > 541)
-					{
+					} else if(chatWidth + resize - event.pageX > 541) {
 						$j("#right_col").width(541);
 						$j("#right_col .content #chat").width(541);
 						$j("#right_col .content .top").width(541);
@@ -439,9 +439,7 @@ BetterTTVEngine = function() {
 						$j("#chat_lines").width(541);
 
 						handleResize();
-					}
-					else
-					{
+					} else {
 						$j("#right_col").width(chatWidth + resize - event.pageX);
 						$j("#right_col .content #chat").width(chatWidth + resize - event.pageX);
 						$j("#right_col .content .top").width(chatWidth + resize - event.pageX);
@@ -455,7 +453,7 @@ BetterTTVEngine = function() {
 
 			var resizeTimeout = null;
 			$j("body").off("fluid-resize").on("fluid-resize", function () {
-				if (resizeTimeout) window.clearTimeout(resizeTimeout);
+				if(resizeTimeout) window.clearTimeout(resizeTimeout);
 				resizeTimeout = window.setTimeout(handleResize, 500);
 			});
 		});
@@ -788,7 +786,7 @@ BetterTTVEngine = function() {
 			if(info.nickname == "gennousuke69" && x==1) { info.tagtype="admin"; info.tagname = "Evil"; }
 			if(info.nickname == "yorkyyork") { info.tagtype="broadcaster"; info.tagname = "<span style='color:red;'>FeaR</span>"; }
 			if(info.nickname == "zebbazombies" && x==1) { info.tagtype="mod"; info.tagname = "Hugs"; }
-			if(info.nickname == "nobama12345" && x==1) { info.tagtype="broadcaster"; info.tagname = "Señor"; }
+			if(info.nickname == "nobama12345" && x==1) { info.tagtype="broadcaster"; info.tagname = "SeÃ±or"; }
 			if(info.nickname == "mrimjustaminorthreat" && x==1) { info.tagtype="staff"; info.tagname = "<span style='color:pink;'>Major</span>"; }
 			if(info.nickname == "sournothardcore" && x==1) { info.tagname = info.tagname+"</span><span class='tag brown' style='margin-left:4px;color:#FFE600 !important;' original-title='Saucy'>Saucy</span><span>"; }
 			//People
@@ -1304,12 +1302,12 @@ BetterTTVEngine = function() {
 									<ul class="nav"> \
 										<li class="active"><a href="#bttvSettings">Settings</a></li> \
 										<li><a href="#bttvAbout">About</a></li> \
-									</ul><span id="close">×</span> \
+									</ul><span id="close">&times;</span> \
 								   </div> \
-								   <div id="bttvSettings"> \
+								   <div id="bttvSettings" style="overflow-y:auto;"> \
 								    <h2 class="option"> Here you can manage the various Better TwitchTV options. Click On or Off to toggle settings.</h2> \
 								    <div class="option"> \
-								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Darken Twitch</span>&nbsp;&nbsp;—&nbsp;&nbsp;A slick, grey theme which will make you love Twitch even more \
+								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Darken Twitch</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;A slick, grey theme which will make you love Twitch even more \
 										<div class="switch"> \
 											<input type="radio" class="switch-input switch-off" name="toggleDarkTwitch" value="false" id="darkenedModeFalse"> \
 											<label for="darkenedModeFalse" class="switch-label switch-label-off">Off</label> \
@@ -1319,7 +1317,7 @@ BetterTTVEngine = function() {
 										</div> \
 									</div> \
 									<div class="option"> \
-								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Default Chat Tags</span>&nbsp;&nbsp;—&nbsp;&nbsp;BetterTTV replaces the Twitch chat tags with the old JTV ones by default \
+								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Default Chat Tags</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;BetterTTV replaces the Twitch chat tags with the old JTV ones by default \
 										<div class="switch"> \
 											<input type="radio" class="switch-input switch-off" name="toggleDefaultTags" value="false" id="defaultTagsFalse"> \
 											<label for="defaultTagsFalse" class="switch-label switch-label-off">Off</label> \
@@ -1329,7 +1327,7 @@ BetterTTVEngine = function() {
 										</div> \
 									</div> \
 									<div class="option"> \
-								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Default Emoticons</span>&nbsp;&nbsp;—&nbsp;&nbsp;BetterTTV replaces the Twitch emoticons with the old JTV monkey faces by default \
+								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Default Emoticons</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;BetterTTV replaces the Twitch emoticons with the old JTV monkey faces by default \
 										<div class="switch"> \
 											<input type="radio" class="switch-input switch-off" name="toggleDefaultEmotes" value="false" id="defaultEmotesFalse"> \
 											<label for="defaultEmotesFalse" class="switch-label switch-label-off">Off</label> \
@@ -1339,7 +1337,7 @@ BetterTTVEngine = function() {
 										</div> \
 									</div> \
 									<div class="option"> \
-								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Default Purple Buttons</span>&nbsp;&nbsp;—&nbsp;&nbsp;BetterTTV replaces the Twitch buttons with blue ones by default \
+								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Default Purple Buttons</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;BetterTTV replaces the Twitch buttons with blue ones by default \
 										<div class="switch"> \
 											<input type="radio" class="switch-input switch-off" name="togglePurpleButtons" value="false" id="defaultPurpleButtonsFalse"> \
 											<label for="defaultPurpleButtonsFalse" class="switch-label switch-label-off">Off</label> \
@@ -1349,7 +1347,7 @@ BetterTTVEngine = function() {
 										</div> \
 									</div> \
 									<div class="option"> \
-								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Deleted Messages</span>&nbsp;&nbsp;—&nbsp;&nbsp;BetterTTV shows deleted messages by default. Set this to On to disable them. \
+								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Deleted Messages</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;BetterTTV shows deleted messages by default. Set this to On to disable them. \
 										<div class="switch"> \
 											<input type="radio" class="switch-input switch-off" name="toggleHideDeletedMessages" value="false" id="hideDeletedMessagesFalse"> \
 											<label for="hideDeletedMessagesFalse" class="switch-label switch-label-off">Off</label> \
@@ -1359,7 +1357,7 @@ BetterTTVEngine = function() {
 										</div> \
 									</div> \
 									<div class="option"> \
-								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Featured Channels</span>&nbsp;&nbsp;—&nbsp;&nbsp;The left sidebar is too cluttered, so BetterTTV removes featured channels by default \
+								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Featured Channels</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;The left sidebar is too cluttered, so BetterTTV removes featured channels by default \
 										<div class="switch"> \
 											<input type="radio" class="switch-input switch-off" name="toggleFeaturedChannels" value="false" id="featuredChannelsFalse"> \
 											<label for="featuredChannelsFalse" class="switch-label switch-label-off">Off</label> \
@@ -1369,7 +1367,7 @@ BetterTTVEngine = function() {
 										</div> \
 									</div> \
 									<div class="option"> \
-								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Meebo</span>&nbsp;&nbsp;—&nbsp;&nbsp;A chat bar that allows you to instant message your Twitch friends \
+								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Meebo</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;A chat bar that allows you to instant message your Twitch friends \
 										<div class="switch"> \
 											<input type="radio" class="switch-input switch-off" name="toggleMeebo" value="false" id="hideMeeboFalse"> \
 											<label for="hideMeeboFalse" class="switch-label switch-label-off">Off</label> \
@@ -1379,7 +1377,7 @@ BetterTTVEngine = function() {
 										</div> \
 									</div> \
 									<div class="option"> \
-								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Split Chat</span>&nbsp;&nbsp;—&nbsp;&nbsp;Easily distinguish between messages from different users in chat \
+								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Split Chat</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Easily distinguish between messages from different users in chat \
 										<div class="switch"> \
 											<input type="radio" class="switch-input switch-off" name="toggleSplitChat" value="false" id="splitChatFalse"> \
 											<label for="splitChatFalse" class="switch-label switch-label-off">Off</label> \
@@ -1389,7 +1387,7 @@ BetterTTVEngine = function() {
 										</div> \
 									</div> \
 									<div class="option"> \
-								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Subscribe Button</span>&nbsp;&nbsp;—&nbsp;&nbsp;Toggle this off to hide those pesky subscribe buttons \
+								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Subscribe Button</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Toggle this off to hide those pesky subscribe buttons \
 										<div class="switch"> \
 											<input type="radio" class="switch-input switch-off" name="toggleBlockSubButton" value="false" id="blockSubButtonFalse"> \
 											<label for="blockSubButtonFalse" class="switch-label switch-label-off">Off</label> \
@@ -1399,7 +1397,7 @@ BetterTTVEngine = function() {
 										</div> \
 									</div> \
 									<div class="option"> \
-								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Self Highlights</span>&nbsp;&nbsp;—&nbsp;&nbsp;Toggle this off to disable highlights on your own username \
+								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Self Highlights</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Toggle this off to disable highlights on your own username \
 										<div class="switch"> \
 											<input type="radio" class="switch-input switch-off" name="toggleSelfHighlights" value="false" id="selfHighlightsFalse"> \
 											<label for="selfHighlightsFalse" class="switch-label switch-label-off">Off</label> \
