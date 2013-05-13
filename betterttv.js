@@ -1304,7 +1304,7 @@ BetterTTVEngine = function() {
 										<li><a href="#bttvAbout">About</a></li> \
 									</ul><span id="close">&times;</span> \
 								   </div> \
-								   <div id="bttvSettings" style="overflow-y:auto;"> \
+								   <div id="bttvSettings" style="overflow-y:auto;height:425px;"> \
 								    <h2 class="option"> Here you can manage the various Better TwitchTV options. Click On or Off to toggle settings.</h2> \
 								    <div class="option"> \
 								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Darken Twitch</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;A slick, grey theme which will make you love Twitch even more \
