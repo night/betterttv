@@ -8,8 +8,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
+ * The above copyright notice, any copyright notices herein, and this permission
+ * notice shall be included in all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -744,7 +744,7 @@ BetterTTVEngine = function() {
 				ich.templates["chat-line-action"] = ich.templates["chat-line-action-old"];
 			}
 
-			if((info.color == "#0000ff" || info.color == "#191971") && localStorage.getItem("darkenedMode") === "true" && info.nickname !== PP['login']) { info.color = "#3753ff"; }
+			if((info.color == "#0000ff" || info.color == "#191971" || info.color == "#2626aa") && localStorage.getItem("darkenedMode") === "true" && info.nickname !== PP['login']) { info.color = "#3753ff"; }
 			if((info.color == "black" || info.color == "#000000") && localStorage.getItem("darkenedMode") === "true" && info.nickname !== PP['login']) { info.color = "#D3D3D3" }
 
 			if(info.nickname == "night" && x==1) { info.tagtype="orange"; info.tagname = "Creator"; }
@@ -1436,7 +1436,7 @@ BetterTTVEngine = function() {
 							   		<div class="aboutHalf"> \
 							   			<img class="bttvAboutIcon" src="http://betterttv.nightdev.com/icon.png" /> \
 							   			<h2>Better TwitchTV v'+betterttvVersion+'</h2> \
-							   			<h2>by <a href="http://www.twitch.tv/night" target="_blank">Night</a></h2> \
+							   			<h2>from your friends at <a href="http://www.nightdev.com" target="_blank">NightDev</a></h2> \
 							   			<br /> \
 							   			<p>BetterTTV began in 2011 shortly after the launch of Twitch. The original Twitch site at launch was almost laughable at times with multiple failures in both site design (I can never forget the font Twitch originally used) and bugs (for example, at launch chat didn\'t scroll correctly). After BetterJTV\'s massive success and lack of support at the time for Twitch, multiple friends begged me to recreate it for Twitch. Since the beginning, BetterTTV has always promoted old JTV chat features over Twitch\'s, but has expanded to offer more customization and personalization over the years. Since 2011, BetterTTV has gone through multiple revisions to establish what it is today.</p> \
 							   		</div> \
