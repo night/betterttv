@@ -334,8 +334,8 @@ BetterTTVEngine = function() {
 	            });
 
 	            var h = 0.5625 * $j("#main_col").width() - 4;
-	            (localStorage.getItem("hideMeebo") !== "true") ? videoMargin = 45 : videoMargin = 0
-	            if(h > $j(window).height() - $j("#main_col .top").outerHeight() - $j("#stats_and_actions").outerHeight() - videoMargin) {
+	            (localStorage.getItem("hideMeebo") !== "true") ? videoMargin = 47 : videoMargin = 0
+	            if(h > $j(window).height() - $j("#main_col .top").outerHeight() - $j("#stats_and_actions").outerHeight() - videoMargin - 30) {
 	            	$j(".live_site_player_container").css({ height: $j(window).height() - $j("#main_col .top").outerHeight() - $j("#stats_and_actions").outerHeight() - videoMargin + "px" });
 	            	$j("#main_col .tse-scroll-content").animate({ scrollTop: $j('.live_site_player_container').position().top-10 }, 150, "swing");
 	            } else {
