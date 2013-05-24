@@ -22,7 +22,7 @@
 
 BetterTTVEngine = function() {
 
-	var betterttvVersion = "6.3.1",
+	var betterttvVersion = "6.3.2",
 		betterttvDebug = {
 			log: function(string) { if(window.console && console.log) console.log("BTTV: "+string); },
 			warn: function(string) { if(window.console && console.warn) console.warn("BTTV: "+string); },
@@ -123,15 +123,15 @@ BetterTTVEngine = function() {
 		}
 
 		removeElement('#nav_other');
+		removeElement('.hide_ad');
+		removeElement('.fp_ad');
+		removeElement('.advertisement');
+		removeElement('.ad_contain');
+		$j('#right_col').addClass('noads');
 
 		if(localStorage.getItem("blockSubButton") === "true") {
 			$j("#sub-details").css("display","none");
 		}
-
-		$j('.hide_ad').hide();
-		$j('.advertisement').hide();
-		$j('.ad_contain').hide();
-      	$j('#right_col').addClass('noads');
 
 	}
 
@@ -1109,10 +1109,10 @@ BetterTTVEngine = function() {
 								{ url: "http://cdn.betterttv.net/emotes/jamontoast.png", width: 33, height: 30, regex: "ToasTy" },
 								{ url: "http://cdn.betterttv.net/emotes/basedgod.png", width: 33, height: 34, regex: "BasedGod" },
 								{ url: "http://cdn.betterttv.net/emotes/fishmoley.png", width: 56, height: 34, regex: "FishMoley" },
-								{ url: "http://cdn.betterttv.net/emotes/angry.png", width: 56, height: 34, regex: "cabbag3" },
+								{ url: "http://cdn.betterttv.net/emotes/angry.png", width: 27, height: 35, regex: "cabbag3" },
 								{ url: "http://cdn.betterttv.net/emotes/bacon.gif", width: 33, height: 35, regex: "BaconTime" },
-								{ url: "http://cdn.betterttv.net/emotes/snatchy.png", width: 33, height: 35, regex: "OhhhKee" },
-								{ url: "http://cdn.betterttv.net/emotes/stray.png", width: 33, height: 35, regex: "She\'llBeRight" },
+								{ url: "http://cdn.betterttv.net/emotes/snatchy.png", width: 21, height: 35, regex: "OhhhKee" },
+								{ url: "http://cdn.betterttv.net/emotes/stray.png", width: 45, height: 35, regex: "She\'llBeRight" },
 								{ url: "http://cdn.betterttv.net/emotes/bacondance.gif", width: 72, height: 35, regex: "AwwwYeah" }
 							  ];
 
