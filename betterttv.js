@@ -1155,7 +1155,7 @@ BetterTTVEngine = function() {
 
 		CurrentChat.emoticons = [];
 
-		Twitch.api.get("chat/emoticons?on_site=1").done(function (a) {
+		Twitch.api.get("chat/emoticons").done(function (a) {
 			var d = 0;
             cssString = "";
             a.emoticons.forEach(function (a) {
@@ -1510,7 +1510,7 @@ BetterTTVEngine = function() {
 
 	betterttvAction = function(action) {
 		if(action === "clearChat") {
-			$j('#chat_line_list').html("");
+			removeElement(".line");
 			CurrentChat.admin_message("You cleared your own chat (BetterTTV)");
 		}
 		if(action === "openSettings") {
