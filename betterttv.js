@@ -22,7 +22,7 @@
 
 BetterTTVEngine = function() {
 
-	var betterttvVersion = "6.3.3",
+	var betterttvVersion = "6.3.4",
 		betterttvDebug = {
 			log: function(string) { if(window.console && console.log) console.log("BTTV: "+string); },
 			warn: function(string) { if(window.console && console.warn) console.warn("BTTV: "+string); },
@@ -333,16 +333,28 @@ BetterTTVEngine = function() {
 	                width: $j(window).width() - d + "px"
 	            });
 
-	            var h = 0.5625 * $j("#main_col").width() - 4;
-	            (localStorage.getItem("showMeebo") === "true") ? videoMargin = 47 : videoMargin = 0
-	            if(h > $j(window).height() - $j("#main_col .top").outerHeight() - $j("#stats_and_actions").outerHeight() - videoMargin - 30) {
-	            	$j(".live_site_player_container").css({ height: $j(window).height() - $j("#main_col .top").outerHeight() - $j("#stats_and_actions").outerHeight() - videoMargin + "px" });
-	            	$j("#main_col .tse-scroll-content").animate({ scrollTop: $j('.live_site_player_container').position().top-10 }, 150, "swing");
-	            } else {
-	            	$j(".live_site_player_container").css({ height: h.toFixed(0) + "px" });
-	            	$j("#main_col .tse-scroll-content").animate({ scrollTop: 0 }, 150, "swing");
+	            if($j(".live_site_player_container").length) {
+	            	var h = 0.5625 * $j("#main_col").width() - 4;
+		            (localStorage.getItem("showMeebo") === "true") ? videoMargin = 47 : videoMargin = 0
+		            if(h > $j(window).height() - $j("#broadcast_meta").outerHeight(true) - $j("#stats_and_actions").outerHeight() - videoMargin - 10) {
+		            	$j(".live_site_player_container").css({ height: $j(window).height() - $j("#stats_and_actions").outerHeight() - videoMargin - 10 + "px" });
+		            	$j("#main_col .tse-scroll-content").animate({ scrollTop: $j('.live_site_player_container').position().top-10 }, 150, "swing");
+		            } else {
+		            	$j(".live_site_player_container").css({ height: h.toFixed(0) + "px" });
+		            	$j("#main_col .tse-scroll-content").animate({ scrollTop: 0 }, 150, "swing");
+		            }
+	            } else if($j(".archive_site_player_container").length) {
+	            	var h = 0.5625 * $j("#main_col").width() - 4;
+		            (localStorage.getItem("showMeebo") === "true") ? videoMargin = 47 : videoMargin = 0
+		            if(h > $j(window).height() - $j("#broadcast_meta").outerHeight(true) - $j(".archive_info").outerHeight(true) - $j("#stats_and_actions").outerHeight() - videoMargin - 10) {
+		            	$j(".archive_site_player_container").css({ height: $j(window).height() - $j(".archive_info").outerHeight(true) - $j("#stats_and_actions").outerHeight() - videoMargin - 10 + "px" });
+		            	$j("#main_col .tse-scroll-content").animate({ scrollTop: $j('.archive_site_player_container').position().top-10 }, 150, "swing");
+		            } else {
+		            	$j(".archive_site_player_container").css({ height: h.toFixed(0) + "px" });
+		            	$j("#main_col .tse-scroll-content").animate({ scrollTop: 0 }, 150, "swing");
+		            }
 	            }
-
+	            
 				var d = $j("#broadcast_meta .info .title").width();
 				$j("#broadcast_meta .info .title .real_title").width() > d ? $j("#broadcast_meta .info").addClass("long_title") : $j("#broadcast_meta .info").removeClass("long_title");
 				$j("#channel_panels_contain").masonry("reload");
@@ -910,6 +922,11 @@ BetterTTVEngine = function() {
 			if(a.message.match(/^connected$/)) {
 				CurrentChat.admin_message(i18n("Connected to the chat server."));
 			}
+			if(a.message === "Received irc message IRCMessage from 'null' to 'null', with command 'PING' and message 'null'") {
+				var time = new Date().getTime() / 1000;
+				CurrentChat.lastPing = time;
+				CurrentChat.monitorPings = true;
+			}
 			if(a.message.match(/^Connection lost/)) {
 				if(CurrentChat.silence && CurrentChat.silence === true) {
 					CurrentChat.silence = false;
@@ -926,6 +943,19 @@ BetterTTVEngine = function() {
 				}
 			}
 		}
+
+		setInterval(function(){
+			if(CurrentChat.monitorPings) {
+				var time = new Date().getTime() / 1000,
+					timeDifference = time-CurrentChat.lastPing;
+				if(timeDifference >= 300) {
+					CurrentChat.monitorPings = false;
+					CurrentChat.admin_message(i18n("BetterTTV: I suspect your chat froze.."));
+					CurrentChat.admin_message(i18n("BetterTTV: Reconnecting.."));
+					CurrentChat.reconnect();
+				}
+			}
+		}, 5000)
 
 		CurrentChat.rejoinChat = function() {
 
@@ -1233,7 +1263,7 @@ BetterTTVEngine = function() {
 				g.css({ "background-image": 'url("' + h + '")' }).attr("width", 200).attr("height", 200);
 				d = c.createLinearGradient(0, 0, 0, 200);
 				if(localStorage.getItem("darkenedMode") === "true") {
-					d.addColorStop(0, "rgba(20,20,20,0.65)");
+					d.addColorStop(0, "rgba(20,20,20,0.4)");
 					d.addColorStop(1, "rgba(20,20,20,1)");
 				} else {
 					d.addColorStop(0, "rgba(245,245,245,0.65)");
@@ -1250,7 +1280,7 @@ BetterTTVEngine = function() {
 					g.attr("width", a).attr("height", d);
 					c.drawImage(i, 0, 0);
 					if(localStorage.getItem("darkenedMode") === "true") {
-						d > a ? (h = c.createLinearGradient(0, 0, 0, a), h.addColorStop(0, "rgba(20,20,20,0.65)"), h.addColorStop(1, "rgba(20,20,20,1)"), c.fillStyle = h, c.fillRect(0, 0, a, a), c.fillStyle = "rgb(20,20,20)", c.fillRect(0, a, a, d - a)) : (h = c.createLinearGradient(0, 0, 0, d), h.addColorStop(0, "rgba(20,20,20,0.65)"), h.addColorStop(1, "rgba(20,20,20,1)"), c.fillStyle = h, c.fillRect(0, 0, a, d))
+						d > a ? (h = c.createLinearGradient(0, 0, 0, a), h.addColorStop(0, "rgba(20,20,20,0.4)"), h.addColorStop(1, "rgba(20,20,20,1)"), c.fillStyle = h, c.fillRect(0, 0, a, a), c.fillStyle = "rgb(20,20,20)", c.fillRect(0, a, a, d - a)) : (h = c.createLinearGradient(0, 0, 0, d), h.addColorStop(0, "rgba(20,20,20,0.4)"), h.addColorStop(1, "rgba(20,20,20,1)"), c.fillStyle = h, c.fillRect(0, 0, a, d))
 					} else {
 						d > a ? (h = c.createLinearGradient(0, 0, 0, a), h.addColorStop(0, "rgba(245,245,245,0.65)"), h.addColorStop(1, "rgba(245,245,245,1)"), c.fillStyle = h, c.fillRect(0, 0, a, a), c.fillStyle = "rgb(245,245,245)", c.fillRect(0, a, a, d - a)) : (h = c.createLinearGradient(0, 0, 0, d), h.addColorStop(0, "rgba(245,245,245,0.65)"), h.addColorStop(1, "rgba(245,245,245,1)"), c.fillStyle = h, c.fillRect(0, 0, a, d))
 					}
