@@ -22,7 +22,7 @@
 
 BetterTTVEngine = function() {
 
-	var betterttvVersion = "6.3.2",
+	var betterttvVersion = "6.3.3",
 		betterttvDebug = {
 			log: function(string) { if(window.console && console.log) console.log("BTTV: "+string); },
 			warn: function(string) { if(window.console && console.warn) console.warn("BTTV: "+string); },
@@ -716,8 +716,9 @@ BetterTTVEngine = function() {
 
 			var wordRegex = new RegExp('\\b('+regexInput+')\\b', 'i');
 			var symbolRegex = new RegExp('\\B('+regexInput+')\\B', 'i');
+			var nickRegex = new RegExp('^('+regexInput+')$', 'i');
 			if(regexInput !== "") {
-				if(PP['login'] !== "" && (wordRegex.test(info.message) || symbolRegex.test(info.message))) {
+				if(PP['login'] !== "" && (wordRegex.test(info.message) || symbolRegex.test(info.message) || nickRegex.test(info.nickname)) && PP['login'] !== info.nickname) {
 					messageHighlighted = true;
 				}
 			}
@@ -1219,6 +1220,46 @@ BetterTTVEngine = function() {
 
 	}
 
+	handleBackground = function() {
+		var g = $j("#custom_bg"),
+		d = g[0];
+		if(d && d.getContext) {
+			var c = d.getContext("2d"),
+			h = $j("#custom_bg").attr("image");
+			if (!h || h.blank()) {
+				$j(d).css("background-image", "");
+				c.clearRect(0, 0, d.width, d.height);
+			} else if(g.css({ width: "100%", "background-position": "center top" }), g.hasClass("tiled")) {
+				g.css({ "background-image": 'url("' + h + '")' }).attr("width", 200).attr("height", 200);
+				d = c.createLinearGradient(0, 0, 0, 200);
+				if(localStorage.getItem("darkenedMode") === "true") {
+					d.addColorStop(0, "rgba(20,20,20,0.65)");
+					d.addColorStop(1, "rgba(20,20,20,1)");
+				} else {
+					d.addColorStop(0, "rgba(245,245,245,0.65)");
+					d.addColorStop(1, "rgba(245,245,245,1)");
+				}
+				c.fillStyle = d;
+				c.fillRect(0, 0, 200, 200);
+			} else {
+				var i = document.createElement("IMG");
+				i.onload = function() {
+					var a = this.width,
+					d = this.height,
+					h;
+					g.attr("width", a).attr("height", d);
+					c.drawImage(i, 0, 0);
+					if(localStorage.getItem("darkenedMode") === "true") {
+						d > a ? (h = c.createLinearGradient(0, 0, 0, a), h.addColorStop(0, "rgba(20,20,20,0.65)"), h.addColorStop(1, "rgba(20,20,20,1)"), c.fillStyle = h, c.fillRect(0, 0, a, a), c.fillStyle = "rgb(20,20,20)", c.fillRect(0, a, a, d - a)) : (h = c.createLinearGradient(0, 0, 0, d), h.addColorStop(0, "rgba(20,20,20,0.65)"), h.addColorStop(1, "rgba(20,20,20,1)"), c.fillStyle = h, c.fillRect(0, 0, a, d))
+					} else {
+						d > a ? (h = c.createLinearGradient(0, 0, 0, a), h.addColorStop(0, "rgba(245,245,245,0.65)"), h.addColorStop(1, "rgba(245,245,245,1)"), c.fillStyle = h, c.fillRect(0, 0, a, a), c.fillStyle = "rgb(245,245,245)", c.fillRect(0, a, a, d - a)) : (h = c.createLinearGradient(0, 0, 0, d), h.addColorStop(0, "rgba(245,245,245,0.65)"), h.addColorStop(1, "rgba(245,245,245,1)"), c.fillStyle = h, c.fillRect(0, 0, a, d))
+					}
+				};
+				i.src = h;
+			}
+		}
+	};
+
 	darkenPage = function() {
 
 		betterttvDebug.log("Darkening Chat");
@@ -1234,6 +1275,7 @@ BetterTTVEngine = function() {
 				$j('body').append(darkCSS);
 
 				$j("#main_col .content #stats_and_actions #channel_stats #channel_viewer_count").css("display","none");
+				handleBackground();
 			}
 		}
 
@@ -1599,6 +1641,7 @@ BetterTTVEngine = function() {
 			if(localStorage.getItem("darkenedMode") === "true") {
 				localStorage.setItem("darkenedMode", false);
 				$j("#darkTwitch").remove();
+				handleBackground();
 				if(localStorage.getItem("splitChat") !== "false") {
 					$j("#splitChat").remove();
 					splitChat();
