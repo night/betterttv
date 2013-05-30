@@ -22,7 +22,7 @@
 
 BetterTTVEngine = function() {
 
-	var betterttvVersion = "6.3.4",
+	var betterttvVersion = "6.3.5",
 		betterttvDebug = {
 			log: function(string) { if(window.console && console.log) console.log("BTTV: "+string); },
 			warn: function(string) { if(window.console && console.warn) console.warn("BTTV: "+string); },
@@ -140,13 +140,13 @@ BetterTTVEngine = function() {
 		// Legacy Function
 		// EOL; No more updates
 
-		betterttvDebug.log("Reformatting Channel");
-
 		var player = document.getElementById("player_column"),
 			teamPage = document.getElementById("team_member_list"),
 			dashboard = document.getElementById("dashboard_title");
 
 		if(!player || teamPage || dashboard) return;
+
+		betterttvDebug.log("Reformatting Channel");
 
 		$j(".main").css({
 			background: "none",
@@ -219,12 +219,12 @@ BetterTTVEngine = function() {
 
 	chatReformat = function() {
 
-		betterttvDebug.log("Reformatting Chat");
-
 		var chat = document.getElementById("chat_lines"),
 			channelHeader = document.getElementById("header_banner");
 
 		if(!chat) return;
+
+		betterttvDebug.log("Reformatting Chat");
 
 		if(channelHeader) {
 			channelHeader = 125;
@@ -257,10 +257,10 @@ BetterTTVEngine = function() {
 	}
 
 	newChannelReformat = function() {
-
-		betterttvDebug.log("Reformatting Beta Channel Page");
 		
 		if($j(".betabar").length === 0) return;
+
+		betterttvDebug.log("Reformatting Beta Channel Page");
 
 		if(localStorage.getItem("chatWidth")) {
 			if(localStorage.getItem("chatWidth") < 0) {
@@ -335,9 +335,10 @@ BetterTTVEngine = function() {
 
 	            if($j(".live_site_player_container").length) {
 	            	var h = 0.5625 * $j("#main_col").width() - 4;
-		            (localStorage.getItem("showMeebo") === "true") ? videoMargin = 47 : videoMargin = 0
-		            if(h > $j(window).height() - $j("#broadcast_meta").outerHeight(true) - $j("#stats_and_actions").outerHeight() - videoMargin - 10) {
-		            	$j(".live_site_player_container").css({ height: $j(window).height() - $j("#stats_and_actions").outerHeight() - videoMargin - 10 + "px" });
+		            (localStorage.getItem("showMeebo") === "true") ? videoMargin = 47 : videoMargin = 0;
+		            var calcH = $j(window).height() - $j("#broadcast_meta").outerHeight(true) - $j("#stats_and_actions").outerHeight()+45 - videoMargin - 10;
+		            if(h > calcH) {
+		            	$j(".live_site_player_container").css({ height: $j(window).height() - $j("#stats_and_actions").outerHeight()+45 - videoMargin - 10 + "px" });
 		            	$j("#main_col .tse-scroll-content").animate({ scrollTop: $j('.live_site_player_container').position().top-10 }, 150, "swing");
 		            } else {
 		            	$j(".live_site_player_container").css({ height: h.toFixed(0) + "px" });
@@ -345,9 +346,10 @@ BetterTTVEngine = function() {
 		            }
 	            } else if($j(".archive_site_player_container").length) {
 	            	var h = 0.5625 * $j("#main_col").width() - 4;
-		            (localStorage.getItem("showMeebo") === "true") ? videoMargin = 47 : videoMargin = 0
-		            if(h > $j(window).height() - $j("#broadcast_meta").outerHeight(true) - $j(".archive_info").outerHeight(true) - $j("#stats_and_actions").outerHeight() - videoMargin - 10) {
-		            	$j(".archive_site_player_container").css({ height: $j(window).height() - $j(".archive_info").outerHeight(true) - $j("#stats_and_actions").outerHeight() - videoMargin - 10 + "px" });
+		            (localStorage.getItem("showMeebo") === "true") ? videoMargin = 47 : videoMargin = 0;
+		            var calcH = $j(window).height() - $j("#broadcast_meta").outerHeight(true) - $j(".archive_info").outerHeight(true) - $j("#stats_and_actions").outerHeight()+45 - videoMargin - 10;
+		            if(h > calcH) {
+		            	$j(".archive_site_player_container").css({ height: $j(window).height() - $j(".archive_info").outerHeight(true) - $j("#stats_and_actions").outerHeight()+45 - videoMargin - 10 + "px" });
 		            	$j("#main_col .tse-scroll-content").animate({ scrollTop: $j('.archive_site_player_container').position().top-10 }, 150, "swing");
 		            } else {
 		            	$j(".archive_site_player_container").css({ height: h.toFixed(0) + "px" });
@@ -554,7 +556,7 @@ BetterTTVEngine = function() {
 
 	checkMessages = function(videopage) {
 
-		betterttvDebug.log("Checking for New Messages");
+		betterttvDebug.log("Check for New Messages");
 
 		if(Twitch.user.isLoggedIn() && window.FirebaseRootNamespaced) {
 			PP['notificationsLoaded'] = false;
@@ -619,24 +621,28 @@ BetterTTVEngine = function() {
 
 	meeboReformat = function() {
 
-		betterttvDebug.log("Reformatting the Meebo Bar");
+		if(localStorage.getItem("showMeebo") === "true") {
 
-		$j('#meebo-googlePlus-plusone-0').remove();
-		$j('.meebo-20').remove();
-		$j('.meebo-29').remove();
-		$j('.meebo-22').replaceWith('<a href="http://bugs.nightdev.com/projects/betterttv/issues/new?tracker_id=1" style="margin-right:5px;margin-bottom:3px;color:black;" class="normal_button"><span>Report a BetterTTV Bug</span></a><a href="http://www.betterttv.com" style="margin-right:7px;margin-bottom:3px;color:black;" class="normal_button"><span>BetterTTV v'+betterttvVersion+'</span></a>');
+			betterttvDebug.log("Reformatting the Meebo Bar");
+
+			$j('#meebo-googlePlus-plusone-0').remove();
+			$j('.meebo-20').remove();
+			$j('.meebo-29').remove();
+			$j('.meebo-22').replaceWith('<a href="http://bugs.nightdev.com/projects/betterttv/issues/new?tracker_id=1" style="margin-right:5px;margin-bottom:3px;color:black;" class="normal_button"><span>Report a BetterTTV Bug</span></a><a href="http://www.betterttv.com" style="margin-right:7px;margin-bottom:3px;color:black;" class="normal_button"><span>BetterTTV v'+betterttvVersion+'</span></a>');
+		
+		}
 
 	}
 
 	meebo = function() {
 
-		betterttvDebug.log("Handling the Meebo Bar");
-
 		if(localStorage.getItem("showMeebo") === "true") {
+			betterttvDebug.log("Handling the Meebo Bar");
 			$j("#left_col").css("bottom","35px");
 			$j("#right_col").css("bottom","35px");
 			$j("#directory-list").css("margin-bottom","50px");
 			$j("#main_col .content .scroll .scroll-content-contain").css("margin-bottom","35px");
+			setTimeout(meeboReformat, 4000);
 		}
 
 		try {
@@ -675,9 +681,9 @@ BetterTTVEngine = function() {
 
 	chatFunctions = function() {
 
-		betterttvDebug.log("Modifying Chat Functionality");
-
 		if(!document.getElementById("chat_lines")) return;
+
+		betterttvDebug.log("Modifying Chat Functionality");
 
 		CurrentChat.admin_message("<center><small>BetterTTV v"+ betterttvVersion +" Loaded.</small></center>");
 
@@ -687,6 +693,9 @@ BetterTTVEngine = function() {
 			if(currentViewers && currentViewers.indexOf(info.nickname) === -1 && info.nickname !== "jtv") {
 				currentViewers.push(info.nickname);
 			}
+
+			var time = new Date().getTime() / 1000;
+				CurrentChat.lastActivity = time;
 
 			if(info.nickname == "nightbot" && info.message == "> Running a commercial in 15 seconds." && PP['login'] == PP['channel']) {
 				$j.gritter.add({
@@ -845,6 +854,10 @@ BetterTTVEngine = function() {
 			if(info.nickname == "ackleyman" && x==1) { info.tagtype="orange"; info.tagname = "Ack"; }
 
 			//this.insert_chat_lineOld(info);
+			if(info.message.substr(0,3).trim() === "/me") {
+				info.message = info.message.substr(4);
+			}
+
 			if (!(CurrentChat.restarting && !CurrentChat.history_ended || CurrentChat.ignored[info.sender])) if ("jtv" === info.sender) CurrentChat.last_sender = info.sender, CurrentChat.admin_message(CurrentChat.format_message(info));
 	        else if (!info.is_action && !messageHighlighted && CurrentChat.last_sender && CurrentChat.last_sender === info.sender && "jtv" !== CurrentChat.last_sender) CurrentChat.insert_with_lock("#chat_line_list li:last", '<p class="chat_line" style="display:block;">&raquo; ' + CurrentChat.format_message(info) + "</p>");
 	        else {
@@ -894,7 +907,7 @@ BetterTTVEngine = function() {
 		var checkJoinFail = {};
 
 		CurrentChat.ghettoTimeout = function(time) {
-			CurrentChat.say("/timeout "+$("user_info").current_login+" "+time);
+			CurrentChat.say("/timeout "+$j("#user_info .nick").html()+" "+time);
 		}
 
 		CurrentChat.handlers.user_names_end = function() {
@@ -924,8 +937,8 @@ BetterTTVEngine = function() {
 			}
 			if(a.message === "Received irc message IRCMessage from 'null' to 'null', with command 'PING' and message 'null'") {
 				var time = new Date().getTime() / 1000;
-				CurrentChat.lastPing = time;
-				CurrentChat.monitorPings = true;
+				CurrentChat.lastActivity = time;
+				CurrentChat.monitorActivity = true;
 			}
 			if(a.message.match(/^Connection lost/)) {
 				if(CurrentChat.silence && CurrentChat.silence === true) {
@@ -945,11 +958,11 @@ BetterTTVEngine = function() {
 		}
 
 		setInterval(function(){
-			if(CurrentChat.monitorPings) {
+			if(CurrentChat.monitorActivity) {
 				var time = new Date().getTime() / 1000,
-					timeDifference = time-CurrentChat.lastPing;
-				if(timeDifference >= 300) {
-					CurrentChat.monitorPings = false;
+					timeDifference = time-CurrentChat.lastActivity;
+				if(timeDifference >= 360) {
+					CurrentChat.monitorActivity = false;
 					CurrentChat.admin_message(i18n("BetterTTV: I suspect your chat froze.."));
 					CurrentChat.admin_message(i18n("BetterTTV: Reconnecting.."));
 					CurrentChat.reconnect();
@@ -1076,7 +1089,7 @@ BetterTTVEngine = function() {
 
 	checkFollowing = function() {
 
-		betterttvDebug.log("Checking Following List");
+		betterttvDebug.log("Check Following List");
 
 		//Beta Channel Tracking
 		$j(window).on("firebase:follow_online", function (b, f) {
@@ -1097,9 +1110,9 @@ BetterTTVEngine = function() {
 
 	overrideEmotes = function() {
 
-		betterttvDebug.log("Overriding Twitch Emoticons");
-
 		if(!document.getElementById("chat_lines")) return;
+
+		betterttvDebug.log("Overriding Twitch Emoticons");
 
 		var betterttvEmotes = [
 								{ url: "http://s3.amazonaws.com/betterjtv/smileys/trollface.png", width: 23, height: 19, regex: "(\\:trollface\\:|\\:tf\\:)" },
@@ -1292,11 +1305,12 @@ BetterTTVEngine = function() {
 
 	darkenPage = function() {
 
-		betterttvDebug.log("Darkening Chat");
-
 		if(PP['page_type'] === "video" || PP['page_type'] === "directory" || PP['page_type'] === "channel" || ($j("#twitch_chat").length)) {
+
 			if(localStorage.getItem("darkenedMode") === "true") {
-				betterttvDebug.log("darkenPage: Bitch Please, I'm set to "+localStorage.getItem("darkenedMode"));
+
+				betterttvDebug.log("Darkening Page");
+
 				var darkCSS = document.createElement("link");
 				darkCSS.setAttribute("href","http://cdn.betterttv.net/betterttv-dark.css");
 				darkCSS.setAttribute("type","text/css");
@@ -1305,18 +1319,19 @@ BetterTTVEngine = function() {
 				$j('body').append(darkCSS);
 
 				$j("#main_col .content #stats_and_actions #channel_stats #channel_viewer_count").css("display","none");
-				handleBackground();
+				setTimeout(handleBackground, 1000);
 			}
+
 		}
 
 	}
 
 	splitChat = function() {
 
-		betterttvDebug.log("Splitting Chat");
-
 		if($j("#twitch_chat").length && localStorage.getItem("splitChat") !== "false") {
-			betterttvDebug.log("splitChat: Bitch Please, I'm set to "+localStorage.getItem("darkenedMode"));
+
+			betterttvDebug.log("Splitting Chat");
+
 			var splitCSS = document.createElement("link");
 			localStorage.getItem("darkenedMode") === "true" ? splitCSS.setAttribute("href","http://cdn.betterttv.net/betterttv-splitchat-dark.css") : splitCSS.setAttribute("href","http://cdn.betterttv.net/betterttv-splitchat.css");
 			splitCSS.setAttribute("type","text/css");
@@ -1349,9 +1364,10 @@ BetterTTVEngine = function() {
 
 	dashboardViewers = function() {
 
-		betterttvDebug.log("Updating Dashboard Viewers");
-
 		if($j("#dash_main").length) {
+
+			betterttvDebug.log("Updating Dashboard Viewers");
+
 			Twitch.api.get("streams/"+PP['channel']).done(function (a) {
 				if(a.stream && a.stream.viewers) {
 					$j("#channel_viewer_count").html(a.stream.viewers);
@@ -1364,12 +1380,34 @@ BetterTTVEngine = function() {
 
 	}
 
-	createSettingsMenu = function() {
+	giveawayCompatibility = function() {
 
-		betterttvDebug.log("Creating BetterTTV Settings Menu");
+		if($j("#dash_main").length) {
+
+			betterttvDebug.log("Giveaway Plugin Dashboard Compatibility");
+
+			$j(".tga_button").click(function() {
+				if(localStorage.getItem("flipDashboard") === "true") {
+					$j("#chat").width("330px");
+					$j(".tga_modal").css("right","20px");
+				} else {
+					$j("#chat").width("330px");
+					$j(".tga_modal").css("right","inherit");
+				}
+			});
+			$j("button[data-action=\"close\"]").click(function() {
+				$j("#chat").width("500px");
+			});
+		}
+
+	}
+
+	createSettingsMenu = function() {
 
 		var settingsMenu = document.getElementById("chat_settings_dropmenu");
 		if(!settingsMenu) return;
+
+		betterttvDebug.log("Creating BetterTTV Settings Menu");
 
 		bttvSettings = document.createElement("div");
 		bttvSettings.setAttribute("align","left");
@@ -1783,6 +1821,7 @@ BetterTTVEngine = function() {
 		darkenPage();
 		splitChat();
 		flipDashboard();
+		giveawayCompatibility();
 		dashboardViewers();
 		$j(window).trigger('resize');
 		setTimeout(clearAds, 1000);
@@ -1790,7 +1829,6 @@ BetterTTVEngine = function() {
 		setTimeout(chatFunctions, 1000);
 		setTimeout(createSettingsMenu, 1000);
 		setTimeout(overrideEmotes, 10000);
-		setTimeout(meeboReformat, 5000);
 
 		(function(b){b.gritter={};b.gritter.options={position:"top-left",class_name:"",fade_in_speed:"medium",fade_out_speed:1000,time:6000};b.gritter.add=function(f){try{return a.add(f||{})}catch(d){var c="Gritter Error: "+d;(typeof(console)!="undefined"&&console.error)?console.error(c,f):alert(c)}};b.gritter.remove=function(d,c){a.removeSpecific(d,c||{})};b.gritter.removeAll=function(c){a.stop(c||{})};var a={position:"",fade_in_speed:"",fade_out_speed:"",time:"",_custom_timer:0,_item_count:0,_is_setup:0,_tpl_close:'<div class="gritter-close"></div>',_tpl_title:'<span class="gritter-title">[[title]]</span>',_tpl_item:'<div id="gritter-item-[[number]]" class="gritter-item-wrapper [[item_class]]" style="display:none"><div class="gritter-top"></div><div class="gritter-item">[[close]][[image]]<div class="[[class_name]]">[[title]]<p>[[text]]</p></div><div style="clear:both"></div></div><div class="gritter-bottom"></div></div>',_tpl_wrap:'<div id="gritter-notice-wrapper"></div>',add:function(g){if(typeof(g)=="string"){g={text:g}}if(!g.text){throw'You must supply "text" parameter.'}if(!this._is_setup){this._runSetup()}var k=g.title,n=g.text,e=g.image||"",l=g.sticky||false,m=g.class_name||b.gritter.options.class_name,j=b.gritter.options.position,d=g.time||"";this._verifyWrapper();this._item_count++;var f=this._item_count,i=this._tpl_item;b(["before_open","after_open","before_close","after_close"]).each(function(p,q){a["_"+q+"_"+f]=(b.isFunction(g[q]))?g[q]:function(){}});this._custom_timer=0;if(d){this._custom_timer=d}var c=(e!="")?'<img src="'+e+'" class="gritter-image" />':"",h=(e!="")?"gritter-with-image":"gritter-without-image";if(k){k=this._str_replace("[[title]]",k,this._tpl_title)}else{k=""}i=this._str_replace(["[[title]]","[[text]]","[[close]]","[[image]]","[[number]]","[[class_name]]","[[item_class]]"],[k,n,this._tpl_close,c,this._item_count,h,m],i);if(this["_before_open_"+f]()===false){return false}b("#gritter-notice-wrapper").addClass(j).append(i);var o=b("#gritter-item-"+this._item_count);o.fadeIn(this.fade_in_speed,function(){a["_after_open_"+f](b(this))});if(!l){this._setFadeTimer(o,f)}b(o).bind("mouseenter mouseleave",function(p){if(p.type=="mouseenter"){if(!l){a._restoreItemIfFading(b(this),f)}}else{if(!l){a._setFadeTimer(b(this),f)}}a._hoverState(b(this),p.type)});b(o).find(".gritter-close").click(function(){a.removeSpecific(f,{},null,true)});return f},_countRemoveWrapper:function(c,d,f){d.remove();this["_after_close_"+c](d,f);if(b(".gritter-item-wrapper").length==0){b("#gritter-notice-wrapper").remove()}},_fade:function(g,d,j,f){var j=j||{},i=(typeof(j.fade)!="undefined")?j.fade:true,c=j.speed||this.fade_out_speed,h=f;this["_before_close_"+d](g,h);if(f){g.unbind("mouseenter mouseleave")}if(i){g.animate({opacity:0},c,function(){g.animate({height:0},300,function(){a._countRemoveWrapper(d,g,h)})})}else{this._countRemoveWrapper(d,g)}},_hoverState:function(d,c){if(c=="mouseenter"){d.addClass("hover");d.find(".gritter-close").show()}else{d.removeClass("hover");d.find(".gritter-close").hide()}},removeSpecific:function(c,g,f,d){if(!f){var f=b("#gritter-item-"+c)}this._fade(f,c,g||{},d)},_restoreItemIfFading:function(d,c){clearTimeout(this["_int_id_"+c]);d.stop().css({opacity:"",height:""})},_runSetup:function(){for(opt in b.gritter.options){this[opt]=b.gritter.options[opt]}this._is_setup=1},_setFadeTimer:function(f,d){var c=(this._custom_timer)?this._custom_timer:this.time;this["_int_id_"+d]=setTimeout(function(){a._fade(f,d)},c)},stop:function(e){var c=(b.isFunction(e.before_close))?e.before_close:function(){};var f=(b.isFunction(e.after_close))?e.after_close:function(){};var d=b("#gritter-notice-wrapper");c(d);d.fadeOut(function(){b(this).remove();f()})},_str_replace:function(v,e,o,n){var k=0,h=0,t="",m="",g=0,q=0,l=[].concat(v),c=[].concat(e),u=o,d=c instanceof Array,p=u instanceof Array;u=[].concat(u);if(n){this.window[n]=0}for(k=0,g=u.length;k<g;k++){if(u[k]===""){continue}for(h=0,q=l.length;h<q;h++){t=u[k]+"";m=d?(c[h]!==undefined?c[h]:""):c[0];u[k]=(t).split(l[h]).join(m);if(n&&u[k]!==t){this.window[n]+=(t.length-u[k].length)/l[h].length}}}return p?u:u[0]},_verifyWrapper:function(){if(b("#gritter-notice-wrapper").length==0){b("body").append(this._tpl_wrap)}}}})(jQuery);
 	});
