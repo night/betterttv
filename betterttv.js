@@ -619,6 +619,10 @@ BetterTTVEngine = function() {
 
 		CurrentChat.admin_message("<center><small>BetterTTV v"+ betterttvVersion +" Loaded.</small></center>");
 
+		if(localStorage.getItem("scrollbackAmount")) {
+			CurrentChat.line_buffer = parseInt(localStorage.getItem("scrollbackAmount"));
+		}
+
 		Chat.prototype.insert_chat_lineOld=Chat.prototype.insert_chat_line;
 		Chat.prototype.insert_chat_line=function(info)
 		{
@@ -1047,7 +1051,11 @@ BetterTTVEngine = function() {
 				CurrentChat.line_buffer = 9001;
 			} else if(CurrentChat.currently_scrolling !== 1) {
 				CurrentChat.currently_scrolling = 1;
-				CurrentChat.line_buffer = 150;
+				if(localStorage.getItem("scrollbackAmount")) {
+					CurrentChat.line_buffer = parseInt(localStorage.getItem("scrollbackAmount"));
+				} else {
+					CurrentChat.line_buffer = 150;
+				}
 			}
 		});
 		
@@ -1392,6 +1400,7 @@ BetterTTVEngine = function() {
 							'+(bttvJquery("body#chat").length?'<a class="dropmenu_action g18_gear-FFFFFF80" href="#" id="blackChatLink" onclick="betterttvAction(\'toggleBlackChat\'); return false;">Black Chat (Chroma Key)</a>':'')+' \
 							'+(bttvJquery("#dash_main").length?'<a class="dropmenu_action g18_gear-FFFFFF80" href="#" id="flipDashboard" onclick="betterttvAction(\'flipDashboard\'); return false;">'+(localStorage.getItem("flipDashboard") === "true"?'Unflip Dashboard':'Flip Dashboard')+'</a>':'')+' \
 							<a class="dropmenu_action g18_gear-FFFFFF80" href="#" onclick="betterttvAction(\'setHighlightKeywords\'); return false;">Set Highlight Keywords</a> \
+							<a class="dropmenu_action g18_gear-FFFFFF80" href="#" onclick="betterttvAction(\'setScrollbackAmount\'); return false;">Set Scrollback Amount</a> \
 							<a class="dropmenu_action g18_trash-FFFFFF80" href="#" onclick="betterttvAction(\'clearChat\'); return false;">Clear My Chat</a> \
 							<br /> \
 							'+(!bttvJquery("body#chat").length?'<a class="dropmenu_action g18_gear-FFFFFF80" href="#" onclick="betterttvAction(\'openSettings\'); return false;">BetterTTV Settings</a>':'')+' \
@@ -1598,6 +1607,16 @@ BetterTTVEngine = function() {
 				var keywordList = keywords.join(", ");
 
 				CurrentChat.admin_message("Highlight Keywords are now set to: "+keywordList);
+			}
+		}
+		if(action === "setScrollbackAmount") {
+			var lines = prompt("What is the maximum amount of lines that you want your chat to show? Twitch default is 150. Leave the field blank to disable.",localStorage.getItem("scrollbackAmount"));
+			if (lines != null && isNaN(lines) !== true && lines > 0) {
+				localStorage.setItem("scrollbackAmount", lines);
+				CurrentChat.admin_message("Chat scrollback is now set to: "+lines);
+				CurrentChat.line_buffer = parseInt(lines);
+			} else {
+				CurrentChat.admin_message("Invalid scrollback amount given. Value not saved.");
 			}
 		}
 		if(action === "flipDashboard") {
