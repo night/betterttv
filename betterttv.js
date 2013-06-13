@@ -720,7 +720,7 @@ BetterTTVEngine = function() {
 			//Donations
 			if(info.nickname == "the_abysss") { info.tagtype="orange"; info.tagname = "god"; }
 			if(info.nickname == "gspwar") { info.tagtype="admin"; info.tagname = "EH?"; }
-			if(info.nickname == "xnightmare__") { info.tagtype="broadcaster"; info.tagname = "FaZe"; info.nickname="Nightmare"; }
+			if(info.nickname == "xnightmare__") { info.tagtype="broadcaster"; info.tagname = "MLG"; info.nickname="Nightmare"; }
 			if(info.nickname == "striker035" && x==1) { info.tagtype="admin"; info.tagname = "MotherLover"; }
 			if(info.nickname == "upd0g") { info.tagtype="orange"; info.tagname = "Smelly"; info.nickname="dog"; }
 			if(info.nickname == "shadogazer" && x==1) { info.tagtype="purple"; info.tagname = "Daemon"; }
@@ -761,7 +761,7 @@ BetterTTVEngine = function() {
 			if(info.nickname == "gennousuke69" && x==1) { info.tagtype="admin"; info.tagname = "Evil"; }
 			if(info.nickname == "yorkyyork") { info.tagtype="broadcaster"; info.tagname = "<span style='color:red;'>FeaR</span>"; }
 			if(info.nickname == "zebbazombies" && x==1) { info.tagtype="mod"; info.tagname = "Hugs"; }
-			if(info.nickname == "uleet" && x==1) { info.nickname = "Taco"; }
+			if(info.nickname == "uleet" && x==1) { info.tagname = "Taco"; info.tagtype="mod"; }
 			if(info.nickname == "nobama12345" && x==1) { info.tagtype="broadcaster"; info.tagname = "Señor"; }
 			if(info.nickname == "mrimjustaminorthreat" && x==1) { info.tagtype="staff"; info.tagname = "<span style='color:pink;'>Major</span>"; info.nickname = "mrimjustamajorthreat" }
 			if(info.nickname == "sournothardcore" && x==1) { info.tagname = info.tagname+"</span><span class='tag brown' style='margin-left:4px;color:#FFE600 !important;' original-title='Saucy'>Saucy</span><span>"; }
@@ -1130,16 +1130,20 @@ BetterTTVEngine = function() {
 								{ url: "http://cdn.betterttv.net/emotes/basedgod.png", width: 33, height: 34, regex: "BasedGod" },
 								{ url: "http://cdn.betterttv.net/emotes/fishmoley.png", width: 56, height: 34, regex: "FishMoley" },
 								{ url: "http://cdn.betterttv.net/emotes/angry.png", width: 27, height: 35, regex: "cabbag3" },
-								{ url: "http://cdn.betterttv.net/emotes/bacon.gif", width: 33, height: 35, regex: "BaconTime" },
 								{ url: "http://cdn.betterttv.net/emotes/snatchy.png", width: 21, height: 35, regex: "OhhhKee" },
 								{ url: "http://cdn.betterttv.net/emotes/sourpls.gif", width: 40, height: 40, regex: "SourPls" },
 								{ url: "http://cdn.betterttv.net/emotes/stray.png", width: 45, height: 35, regex: "She\'llBeRight" },
-								{ url: "http://cdn.betterttv.net/emotes/bacondance.gif", width: 72, height: 35, regex: "AwwwYeah" },
-								{ url: "http://cdn.betterttv.net/emotes/taxi.png", width: 87, height: 30, regex: "TaxiBro" }
+								{ url: "http://cdn.betterttv.net/emotes/taxi.png", width: 87, height: 30, regex: "TaxiBro" },
+								{ url: "http://cdn.betterttv.net/emotes/creepo.png", width: 87, height: 30, regex: "CreepyCanadian" }
 							  ];
 
 		if(localStorage.getItem("showDefaultEmotes") !== "true") {
 			betterttvEmotes.push({ url: "http://cdn.betterttv.net/emotes/aww.png", width: 19, height: 19, regex: "D\\:" });
+		}
+
+		if(PP['channel'] === "bacon_donut") {
+			betterttvEmotes.push({ url: "http://cdn.betterttv.net/emotes/bacondance.gif", width: 72, height: 35, regex: "AwwwYeah" });
+			betterttvEmotes.push({ url: "http://cdn.betterttv.net/emotes/bacon.gif", width: 33, height: 35, regex: "BaconTime" });
 		}
 
 		var oldEmotes = [
@@ -1283,7 +1287,7 @@ BetterTTVEngine = function() {
 
 	darkenPage = function() {
 
-		if(bttvJquery("body[data-page=\"directory#directory\"]").length || bttvJquery("body[data-page=\"chapter#show\"]").length || bttvJquery("body[data-page=\"archive#show\"]").length || PP['page_type'] === "channel" || (bttvJquery("#twitch_chat").length)) {
+		if(bttvJquery("body[data-page=\"ember#ember\"]").length || bttvJquery("body[data-page=\"chapter#show\"]").length || bttvJquery("body[data-page=\"archive#show\"]").length || PP['page_type'] === "channel" || (bttvJquery("#twitch_chat").length)) {
 
 			if(localStorage.getItem("darkenedMode") === "true") {
 
