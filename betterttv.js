@@ -1134,7 +1134,7 @@ BetterTTVEngine = function() {
 								{ url: "http://cdn.betterttv.net/emotes/sourpls.gif", width: 40, height: 40, regex: "SourPls" },
 								{ url: "http://cdn.betterttv.net/emotes/stray.png", width: 45, height: 35, regex: "She\'llBeRight" },
 								{ url: "http://cdn.betterttv.net/emotes/taxi.png", width: 87, height: 30, regex: "TaxiBro" },
-								{ url: "http://cdn.betterttv.net/emotes/creepo.png", width: 87, height: 30, regex: "CreepyCanadian" }
+								{ url: "http://cdn.betterttv.net/emotes/creepo.png", width: 21, height: 30, regex: "CreepyCanadian" }
 							  ];
 
 		if(localStorage.getItem("showDefaultEmotes") !== "true") {
