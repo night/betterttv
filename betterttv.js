@@ -577,7 +577,7 @@ BetterTTVEngine = function() {
 			bttvJquery("body").append(chatJSInject);
 
 			bttvJquery("#right_col .content .bottom").css("height","135px");
-			bttvJquery(".js-chat-scroll").css("bottom","135px");
+			bttvJquery("#twitch_chat .js-chat-scroll").css("bottom","135px");
 
 		}
 
