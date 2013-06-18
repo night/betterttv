@@ -22,7 +22,7 @@
 
 BetterTTVEngine = function() {
 
-	var betterttvVersion = "6.3.5",
+	var betterttvVersion = "6.3.6",
 		betterttvDebug = {
 			log: function(string) { if(window.console && console.log) console.log("BTTV: "+string); },
 			warn: function(string) { if(window.console && console.warn) console.warn("BTTV: "+string); },
@@ -543,6 +543,43 @@ BetterTTVEngine = function() {
 		bttvJquery("#commercial_options .dropmenu_action[data-length=150]").html("2m 30s")
 
 		bttvJquery("body#chat").css("overflow-y","hidden");
+
+		betaChat();
+
+	}
+
+	betaChat = function() {
+
+		if(localStorage.getItem("bttvChat") === "true") {
+
+			betterttvDebug.log("Running Beta Chat");
+
+			var chatCSSInject = document.createElement("link");
+			chatCSSInject.setAttribute("href","http://chat.betterttv.net/client/external.php?type=css");
+			chatCSSInject.setAttribute("type","text/css");
+			chatCSSInject.setAttribute("id","arrowchat_css");
+			chatCSSInject.setAttribute("rel","stylesheet");
+			bttvJquery("head").append(chatCSSInject);
+
+			var chatJSInject = document.createElement("script");
+			chatJSInject.setAttribute("src","http://chat.betterttv.net/client/includes/js/jquery.js");
+			chatJSInject.setAttribute("type","text/javascript");
+			bttvJquery("body").prepend(chatJSInject);
+
+			chatJSInject = document.createElement("script");
+			chatJSInject.setAttribute("src","http://chat.betterttv.net/client/external.php?type=djs");
+			chatJSInject.setAttribute("type","text/javascript");
+			bttvJquery("body").append(chatJSInject);
+
+			chatJSInject = document.createElement("script");
+			chatJSInject.setAttribute("src","http://chat.betterttv.net/client/external.php?type=js");
+			chatJSInject.setAttribute("type","text/javascript");
+			bttvJquery("body").append(chatJSInject);
+
+			bttvJquery("#right_col .content .bottom").css("height","135px");
+			bttvJquery(".js-chat-scroll").css("bottom","135px");
+
+		}
 
 	}
 
@@ -1141,7 +1178,7 @@ BetterTTVEngine = function() {
 			betterttvEmotes.push({ url: "http://cdn.betterttv.net/emotes/aww.png", width: 19, height: 19, regex: "D\\:" });
 		}
 
-		if(PP['channel'] === "bacon_donut") {
+		if(PP['channel'] === "bacon_donut" || PP['channel'] === "straymav") {
 			betterttvEmotes.push({ url: "http://cdn.betterttv.net/emotes/bacondance.gif", width: 72, height: 35, regex: "AwwwYeah" });
 			betterttvEmotes.push({ url: "http://cdn.betterttv.net/emotes/bacon.gif", width: 33, height: 35, regex: "BaconTime" });
 		}
@@ -1427,6 +1464,16 @@ BetterTTVEngine = function() {
 								   <div id="bttvSettings" style="overflow-y:auto;height:425px;"> \
 								    <h2 class="option"> Here you can manage the various Better TwitchTV options. Click On or Off to toggle settings.</h2> \
 								    <div class="option"> \
+								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Better TTV Chat</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;A tiny chat bar for personal messaging friends (BETA) \
+										<div class="switch"> \
+											<input type="radio" class="switch-input switch-off" name="toggleBTTVChat" value="false" id="showBTTVChatFalse"> \
+											<label for="showBTTVChatFalse" class="switch-label switch-label-off">Off</label> \
+											<input type="radio" class="switch-input" name="toggleBTTVChat" value="true" id="showBTTVChatTrue" checked> \
+											<label for="showBTTVChatTrue" class="switch-label switch-label-on">On</label> \
+											<span class="switch-selection"></span> \
+										</div> \
+									</div> \
+								    <div class="option"> \
 								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Darken Twitch</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;A slick, grey theme which will make you love Twitch even more \
 										<div class="switch"> \
 											<input type="radio" class="switch-input switch-off" name="toggleDarkTwitch" value="false" id="darkenedModeFalse"> \
@@ -1588,6 +1635,7 @@ BetterTTVEngine = function() {
 		localStorage.getItem("selfHighlights") !== "false" ? bttvJquery('#selfHighlightsTrue').prop('checked', true) : bttvJquery('#selfHighlightsFalse').prop('checked', true);
 		localStorage.getItem("showFeaturedChannels") === "true" ? bttvJquery('#featuredChannelsTrue').prop('checked', true) : bttvJquery('#featuredChannelsFalse').prop('checked', true);
 		localStorage.getItem("showDeletedMessages") === "true" ? bttvJquery('#showDeletedMessagesTrue').prop('checked', true) : bttvJquery('#showDeletedMessagesFalse').prop('checked', true);
+		localStorage.getItem("bttvChat") === "true" ? bttvJquery('#showBTTVChatTrue').prop('checked', true) : bttvJquery('#showBTTVChatFalse').prop('checked', true);
 	}
 
 	betterttvAction = function(action) {
@@ -1640,6 +1688,15 @@ BetterTTVEngine = function() {
 				localStorage.setItem("flipDashboard", true);
 				bttvJquery("#flipDashboard").html("Unflip Dashboard");
 				flipDashboard();
+			}
+		}
+		if(action === "toggleBTTVChat") {
+			if(localStorage.getItem("bttvChat") === "true") {
+				localStorage.setItem("bttvChat", false);
+				window.location.reload();
+			} else {
+				localStorage.setItem("bttvChat", true);
+				betaChat();
 			}
 		}
 		if(action === "toggleDefaultEmotes") {
