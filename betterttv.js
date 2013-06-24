@@ -21,7 +21,7 @@
  */
 BetterTTVEngine = function () {
 
-    var betterttvVersion = "6.3.7",
+    var betterttvVersion = "6.3.8",
         betterttvDebug = {
             log: function (string) {
                 if (window.console && console.log) console.log("BTTV: " + string);
@@ -728,8 +728,17 @@ BetterTTVEngine = function () {
                 if (info.tagtype == "mod" || info.tagtype == "broadcaster" || info.tagtype == "admin" || info.tagtype == "staff") info.tagtype = "old" + info.tagtype;
             }
 
-            var messageHighlighted = false;
-            var highlightKeywords = [];
+            var messageHighlighted = false,
+                highlightKeywords = [],
+                blacklistKeywords = [];
+
+            if (localStorage.getItem("blacklistKeywords")) {
+                var keywords = localStorage.getItem("blacklistKeywords");
+                keywords = keywords.split(" ");
+                keywords.forEach(function (keyword) {
+                    blacklistKeywords.push(keyword);
+                });
+            }
 
             if (localStorage.getItem("highlightKeywords")) {
                 var extraKeywords = localStorage.getItem("highlightKeywords");
@@ -741,6 +750,14 @@ BetterTTVEngine = function () {
             if (localStorage.getItem("selfHighlights") !== "false") {
                 highlightKeywords.push(PP['login']);
             }
+
+            blacklistKeywords.forEach(function (keyword) {
+                keyword = escapeRegExp(keyword);
+                var blacklistRegex = new RegExp(keyword, 'i');
+                if (blacklistRegex.test(info.message) && PP['login'] !== info.nickname) {
+                    info.message = "<message filtered>";
+                }
+            });
             highlightKeywords.forEach(function (keyword) {
                 keyword = escapeRegExp(keyword);
                 var wordRegex = new RegExp('\\b' + keyword + '\\b', 'i');
@@ -848,7 +865,8 @@ BetterTTVEngine = function () {
             if(info.nickname == "paterandreas" && x==1) { info.tagtype="admin"; info.tagname = "Uni-BB"; }
             if(info.nickname == "the_chopsticks" && x==1) { info.tagtype="admin"; info.tagname = "oZn"; }
             if(info.nickname == "whitesammy") { info.color = "white;text-shadow: 0 0 2px #000"; }
-            if(info.nickname == "bacon_donut") { info.tagtype="bacon"; info.tagname = "&nbsp;"; info.nickname = "Donut" }
+            if(info.nickname == "bacon_donut") { info.tagtype="bacon"; info.tagname = "&#8203;"; info.nickname = "Donut"; }
+            if(info.nickname == "gr8tacotaste") { info.tagtype="taco"; info.tagname = "&#8203;"; }
             //Xmas
             if(info.nickname == "r3lapse" && x==1) { info.tagtype="staff"; info.tagname = "Kershaw"; }
             if(info.nickname == "im_tony_" && x==1) { info.tagtype="admin"; info.tagname = "oZn"; }
@@ -1507,20 +1525,21 @@ BetterTTVEngine = function () {
         bttvSettings.style.margin = "0px auto";
 
         bttvSettings.innerHTML = '<ul class="dropmenu_col inline_all"> \
-							<li id="chat_section_chatroom" class="dropmenu_section"> \
-							<br /> \
-							&nbsp;&nbsp;&nbsp;&raquo;&nbsp;BetterTTV \
-							<br /> \
-							' + (bttvJquery("body#chat").length ? '<a class="dropmenu_action g18_gear-FFFFFF80" href="#" id="blackChatLink" onclick="betterttvAction(\'toggleBlackChat\'); return false;">Black Chat (Chroma Key)</a>' : '') + ' \
-							' + (bttvJquery("#dash_main").length ? '<a class="dropmenu_action g18_gear-FFFFFF80" href="#" id="flipDashboard" onclick="betterttvAction(\'flipDashboard\'); return false;">' + (localStorage.getItem("flipDashboard") === "true" ? 'Unflip Dashboard' : 'Flip Dashboard') + '</a>' : '') + ' \
-							<a class="dropmenu_action g18_gear-FFFFFF80" href="#" onclick="betterttvAction(\'setHighlightKeywords\'); return false;">Set Highlight Keywords</a> \
-							<a class="dropmenu_action g18_gear-FFFFFF80" href="#" onclick="betterttvAction(\'setScrollbackAmount\'); return false;">Set Scrollback Amount</a> \
-							<a class="dropmenu_action g18_trash-FFFFFF80" href="#" onclick="betterttvAction(\'clearChat\'); return false;">Clear My Chat</a> \
-							<br /> \
-							' + (!bttvJquery("body#chat").length ? '<a class="dropmenu_action g18_gear-FFFFFF80" href="#" onclick="betterttvAction(\'openSettings\'); return false;">BetterTTV Settings</a>' : '') + ' \
-							</li> \
-							</ul> \
-							';
+                            <li id="chat_section_chatroom" class="dropmenu_section"> \
+                            <br /> \
+                            &nbsp;&nbsp;&nbsp;&raquo;&nbsp;BetterTTV \
+                            <br /> \
+                            ' + (bttvJquery("body#chat").length ? '<a class="dropmenu_action g18_gear-FFFFFF80" href="#" id="blackChatLink" onclick="betterttvAction(\'toggleBlackChat\'); return false;">Black Chat (Chroma Key)</a>' : '') + ' \
+                            ' + (bttvJquery("#dash_main").length ? '<a class="dropmenu_action g18_gear-FFFFFF80" href="#" id="flipDashboard" onclick="betterttvAction(\'flipDashboard\'); return false;">' + (localStorage.getItem("flipDashboard") === "true" ? 'Unflip Dashboard' : 'Flip Dashboard') + '</a>' : '') + ' \
+                            <a class="dropmenu_action g18_gear-FFFFFF80" href="#" onclick="betterttvAction(\'setBlacklistKeywords\'); return false;">Set Blacklist Keywords</a> \
+                            <a class="dropmenu_action g18_gear-FFFFFF80" href="#" onclick="betterttvAction(\'setHighlightKeywords\'); return false;">Set Highlight Keywords</a> \
+                            <a class="dropmenu_action g18_gear-FFFFFF80" href="#" onclick="betterttvAction(\'setScrollbackAmount\'); return false;">Set Scrollback Amount</a> \
+                            <a class="dropmenu_action g18_trash-FFFFFF80" href="#" onclick="betterttvAction(\'clearChat\'); return false;">Clear My Chat</a> \
+                            <br /> \
+                            ' + (!bttvJquery("body#chat").length ? '<a class="dropmenu_action g18_gear-FFFFFF80" href="#" onclick="betterttvAction(\'openSettings\'); return false;">BetterTTV Settings</a>' : '') + ' \
+                            </li> \
+                            </ul> \
+                            ';
 
         settingsMenu.appendChild(bttvSettings);
 
@@ -1528,136 +1547,136 @@ BetterTTVEngine = function () {
         settingsPanel.setAttribute("id", "bttvSettingsPanel");
         settingsPanel.style.display = "none";
         settingsPanel.innerHTML = '<div id="header"> \
-									<span id="logo"><img height="45px" src="http://cdn.betterttv.net/bttvlogo.png" /></span> \
-									<ul class="nav"> \
-										<li class="active"><a href="#bttvSettings">Settings</a></li> \
-										<li><a href="#bttvAbout">About</a></li> \
-									</ul><span id="close">&times;</span> \
-								   </div> \
-								   <div id="bttvSettings" style="overflow-y:auto;height:425px;"> \
-								    <h2 class="option"> Here you can manage the various Better TwitchTV options. Click On or Off to toggle settings.</h2> \
-								    <div class="option"> \
-								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Better TTV Chat</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;A tiny chat bar for personal messaging friends (BETA) \
-										<div class="switch"> \
-											<input type="radio" class="switch-input switch-off" name="toggleBTTVChat" value="false" id="showBTTVChatFalse"> \
-											<label for="showBTTVChatFalse" class="switch-label switch-label-off">Off</label> \
-											<input type="radio" class="switch-input" name="toggleBTTVChat" value="true" id="showBTTVChatTrue" checked> \
-											<label for="showBTTVChatTrue" class="switch-label switch-label-on">On</label> \
-											<span class="switch-selection"></span> \
-										</div> \
-									</div> \
-								    <div class="option"> \
-								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Darken Twitch</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;A slick, grey theme which will make you love Twitch even more \
-										<div class="switch"> \
-											<input type="radio" class="switch-input switch-off" name="toggleDarkTwitch" value="false" id="darkenedModeFalse"> \
-											<label for="darkenedModeFalse" class="switch-label switch-label-off">Off</label> \
-											<input type="radio" class="switch-input" name="toggleDarkTwitch" value="true" id="darkenedModeTrue" checked> \
-											<label for="darkenedModeTrue" class="switch-label switch-label-on">On</label> \
-											<span class="switch-selection"></span> \
-										</div> \
-									</div> \
-									<div class="option"> \
-								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Default Chat Tags</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;BetterTTV replaces the Twitch chat tags with the old JTV ones by default \
-										<div class="switch"> \
-											<input type="radio" class="switch-input switch-off" name="toggleDefaultTags" value="false" id="defaultTagsFalse"> \
-											<label for="defaultTagsFalse" class="switch-label switch-label-off">Off</label> \
-											<input type="radio" class="switch-input" name="toggleDefaultTags" value="true" id="defaultTagsTrue" checked> \
-											<label for="defaultTagsTrue" class="switch-label switch-label-on">On</label> \
-											<span class="switch-selection"></span> \
-										</div> \
-									</div> \
-									<div class="option"> \
-								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Default Emoticons</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;BetterTTV replaces the Twitch emoticons with the old JTV monkey faces by default \
-										<div class="switch"> \
-											<input type="radio" class="switch-input switch-off" name="toggleDefaultEmotes" value="false" id="defaultEmotesFalse"> \
-											<label for="defaultEmotesFalse" class="switch-label switch-label-off">Off</label> \
-											<input type="radio" class="switch-input" name="toggleDefaultEmotes" value="true" id="defaultEmotesTrue" checked> \
-											<label for="defaultEmotesTrue" class="switch-label switch-label-on">On</label> \
-											<span class="switch-selection"></span> \
-										</div> \
-									</div> \
-									<div class="option"> \
-								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Default Purple Buttons</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;BetterTTV replaces the Twitch buttons with blue ones by default \
-										<div class="switch"> \
-											<input type="radio" class="switch-input switch-off" name="togglePurpleButtons" value="false" id="defaultPurpleButtonsFalse"> \
-											<label for="defaultPurpleButtonsFalse" class="switch-label switch-label-off">Off</label> \
-											<input type="radio" class="switch-input" name="togglePurpleButtons" value="true" id="defaultPurpleButtonsTrue" checked> \
-											<label for="defaultPurpleButtonsTrue" class="switch-label switch-label-on">On</label> \
-											<span class="switch-selection"></span> \
-										</div> \
-									</div> \
-									<div class="option"> \
-								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Deleted Messages</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;BetterTTV hides deleted messages by default. Set this to On to show them. \
-										<div class="switch"> \
-											<input type="radio" class="switch-input switch-off" name="toggleDeletedMessages" value="false" id="showDeletedMessagesFalse"> \
-											<label for="showDeletedMessagesFalse" class="switch-label switch-label-off">Off</label> \
-											<input type="radio" class="switch-input" name="toggleDeletedMessages" value="true" id="showDeletedMessagesTrue" checked> \
-											<label for="showDeletedMessagesTrue" class="switch-label switch-label-on">On</label> \
-											<span class="switch-selection"></span> \
-										</div> \
-									</div> \
-									<div class="option"> \
-								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Featured Channels</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;The left sidebar is too cluttered, so BetterTTV removes featured channels by default \
-										<div class="switch"> \
-											<input type="radio" class="switch-input switch-off" name="toggleFeaturedChannels" value="false" id="featuredChannelsFalse"> \
-											<label for="featuredChannelsFalse" class="switch-label switch-label-off">Off</label> \
-											<input type="radio" class="switch-input" name="toggleFeaturedChannels" value="true" id="featuredChannelsTrue" checked> \
-											<label for="featuredChannelsTrue" class="switch-label switch-label-on">On</label> \
-											<span class="switch-selection"></span> \
-										</div> \
-									</div> \
-									<div class="option"> \
-								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Split Chat</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Easily distinguish between messages from different users in chat \
-										<div class="switch"> \
-											<input type="radio" class="switch-input switch-off" name="toggleSplitChat" value="false" id="splitChatFalse"> \
-											<label for="splitChatFalse" class="switch-label switch-label-off">Off</label> \
-											<input type="radio" class="switch-input" name="toggleSplitChat" value="true" id="splitChatTrue" checked> \
-											<label for="splitChatTrue" class="switch-label switch-label-on">On</label> \
-											<span class="switch-selection"></span> \
-										</div> \
-									</div> \
-									<div class="option"> \
-								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Subscribe Button</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Toggle this off to hide those pesky subscribe buttons \
-										<div class="switch"> \
-											<input type="radio" class="switch-input switch-off" name="toggleBlockSubButton" value="false" id="blockSubButtonFalse"> \
-											<label for="blockSubButtonFalse" class="switch-label switch-label-off">Off</label> \
-											<input type="radio" class="switch-input" name="toggleBlockSubButton" value="true" id="blockSubButtonTrue" checked> \
-											<label for="blockSubButtonTrue" class="switch-label switch-label-on">On</label> \
-											<span class="switch-selection"></span> \
-										</div> \
-									</div> \
-									<div class="option"> \
-								    	<span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Self Highlights</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Toggle this off to disable highlights on your own username \
-										<div class="switch"> \
-											<input type="radio" class="switch-input switch-off" name="toggleSelfHighlights" value="false" id="selfHighlightsFalse"> \
-											<label for="selfHighlightsFalse" class="switch-label switch-label-off">Off</label> \
-											<input type="radio" class="switch-input" name="toggleSelfHighlights" value="true" id="selfHighlightsTrue" checked> \
-											<label for="selfHighlightsTrue" class="switch-label switch-label-on">On</label> \
-											<span class="switch-selection"></span> \
-										</div> \
-									</div> \
-									<div class="option"> \
-								    	Think something is missing here? Send in a <a href="http://bugs.nightdev.com/projects/betterttv/issues/new?tracker_id=2" target="_blank">feature request</a>! \
-									</div> \
-								   </div> \
-								   <div id="bttvAbout" style="display:none;"> \
-							   		<div class="aboutHalf"> \
-							   			<img class="bttvAboutIcon" src="http://cdn.betterttv.net/icon.png" /> \
-							   			<h2>Better TTV v' + betterttvVersion + '</h2> \
-							   			<h2>from your friends at <a href="http://www.nightdev.com" target="_blank">NightDev</a></h2> \
-							   			<br /> \
-							   			<p>BetterTTV began in 2011 shortly after the launch of Twitch. The original Twitch site at launch was almost laughable at times with multiple failures in both site design (I can never forget the font Twitch originally used) and bugs (for example, at launch chat didn\'t scroll correctly). After BetterJTV\'s massive success and lack of support at the time for Twitch, multiple friends begged me to recreate it for Twitch. Since the beginning, BetterTTV has always promoted old JTV chat features over Twitch\'s, but has expanded to offer more customization and personalization over the years. Since 2011, BetterTTV has gone through multiple revisions to establish what it is today.</p> \
-							   		</div> \
-							   		<div class="aboutHalf"> \
-							   			<h2>Think this addon is awesome?<br />Wanna help pay the bills?</h2><br /> \
-										<h2><a href="http://streamdonations.net/c/night">Donate to the Better TTV Troll Fund</a></h2> \
-										<br /> \
-							   			<img style="vertical-align:bottom;" src="http://static-cdn.jtvnw.net/jtv_user_pictures/panel-11785491-image-6b90c7f168932ac7-320.png" /><br /><small><small>BetterTTV is not endorsed nor affiliated with Kappa, Kappab</small></small> \
-							   		</div> \
-								   </div> \
-								   <div id="footer"> \
-									<span>BetterTTV &copy; <a href="http://www.nightdev.com" target="_blank">NightDev</a> 2013</span><span style="float:right;">For support, please <a href="http://www.nightdev.com/contact" target="_blank">click here</a>. To report a bug, <a href="http://bugs.nightdev.com/projects/betterttv/issues/new?tracker_id=1" target="_blank">click here</a>.</span> \
-								   </div>';
+                                    <span id="logo"><img height="45px" src="http://cdn.betterttv.net/bttvlogo.png" /></span> \
+                                    <ul class="nav"> \
+                                        <li class="active"><a href="#bttvSettings">Settings</a></li> \
+                                        <li><a href="#bttvAbout">About</a></li> \
+                                    </ul><span id="close">&times;</span> \
+                                   </div> \
+                                   <div id="bttvSettings" style="overflow-y:auto;height:425px;"> \
+                                    <h2 class="option"> Here you can manage the various Better TwitchTV options. Click On or Off to toggle settings.</h2> \
+                                    <div class="option"> \
+                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Better TTV Chat</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;A tiny chat bar for personal messaging friends (BETA) \
+                                        <div class="switch"> \
+                                            <input type="radio" class="switch-input switch-off" name="toggleBTTVChat" value="false" id="showBTTVChatFalse"> \
+                                            <label for="showBTTVChatFalse" class="switch-label switch-label-off">Off</label> \
+                                            <input type="radio" class="switch-input" name="toggleBTTVChat" value="true" id="showBTTVChatTrue" checked> \
+                                            <label for="showBTTVChatTrue" class="switch-label switch-label-on">On</label> \
+                                            <span class="switch-selection"></span> \
+                                        </div> \
+                                    </div> \
+                                    <div class="option"> \
+                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Darken Twitch</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;A slick, grey theme which will make you love Twitch even more \
+                                        <div class="switch"> \
+                                            <input type="radio" class="switch-input switch-off" name="toggleDarkTwitch" value="false" id="darkenedModeFalse"> \
+                                            <label for="darkenedModeFalse" class="switch-label switch-label-off">Off</label> \
+                                            <input type="radio" class="switch-input" name="toggleDarkTwitch" value="true" id="darkenedModeTrue" checked> \
+                                            <label for="darkenedModeTrue" class="switch-label switch-label-on">On</label> \
+                                            <span class="switch-selection"></span> \
+                                        </div> \
+                                    </div> \
+                                    <div class="option"> \
+                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Default Chat Tags</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;BetterTTV replaces the Twitch chat tags with the old JTV ones by default \
+                                        <div class="switch"> \
+                                            <input type="radio" class="switch-input switch-off" name="toggleDefaultTags" value="false" id="defaultTagsFalse"> \
+                                            <label for="defaultTagsFalse" class="switch-label switch-label-off">Off</label> \
+                                            <input type="radio" class="switch-input" name="toggleDefaultTags" value="true" id="defaultTagsTrue" checked> \
+                                            <label for="defaultTagsTrue" class="switch-label switch-label-on">On</label> \
+                                            <span class="switch-selection"></span> \
+                                        </div> \
+                                    </div> \
+                                    <div class="option"> \
+                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Default Emoticons</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;BetterTTV replaces the Twitch emoticons with the old JTV monkey faces by default \
+                                        <div class="switch"> \
+                                            <input type="radio" class="switch-input switch-off" name="toggleDefaultEmotes" value="false" id="defaultEmotesFalse"> \
+                                            <label for="defaultEmotesFalse" class="switch-label switch-label-off">Off</label> \
+                                            <input type="radio" class="switch-input" name="toggleDefaultEmotes" value="true" id="defaultEmotesTrue" checked> \
+                                            <label for="defaultEmotesTrue" class="switch-label switch-label-on">On</label> \
+                                            <span class="switch-selection"></span> \
+                                        </div> \
+                                    </div> \
+                                    <div class="option"> \
+                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Default Purple Buttons</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;BetterTTV replaces the Twitch buttons with blue ones by default \
+                                        <div class="switch"> \
+                                            <input type="radio" class="switch-input switch-off" name="togglePurpleButtons" value="false" id="defaultPurpleButtonsFalse"> \
+                                            <label for="defaultPurpleButtonsFalse" class="switch-label switch-label-off">Off</label> \
+                                            <input type="radio" class="switch-input" name="togglePurpleButtons" value="true" id="defaultPurpleButtonsTrue" checked> \
+                                            <label for="defaultPurpleButtonsTrue" class="switch-label switch-label-on">On</label> \
+                                            <span class="switch-selection"></span> \
+                                        </div> \
+                                    </div> \
+                                    <div class="option"> \
+                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Deleted Messages</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;BetterTTV hides deleted messages by default. Set this to On to show them. \
+                                        <div class="switch"> \
+                                            <input type="radio" class="switch-input switch-off" name="toggleDeletedMessages" value="false" id="showDeletedMessagesFalse"> \
+                                            <label for="showDeletedMessagesFalse" class="switch-label switch-label-off">Off</label> \
+                                            <input type="radio" class="switch-input" name="toggleDeletedMessages" value="true" id="showDeletedMessagesTrue" checked> \
+                                            <label for="showDeletedMessagesTrue" class="switch-label switch-label-on">On</label> \
+                                            <span class="switch-selection"></span> \
+                                        </div> \
+                                    </div> \
+                                    <div class="option"> \
+                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Featured Channels</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;The left sidebar is too cluttered, so BetterTTV removes featured channels by default \
+                                        <div class="switch"> \
+                                            <input type="radio" class="switch-input switch-off" name="toggleFeaturedChannels" value="false" id="featuredChannelsFalse"> \
+                                            <label for="featuredChannelsFalse" class="switch-label switch-label-off">Off</label> \
+                                            <input type="radio" class="switch-input" name="toggleFeaturedChannels" value="true" id="featuredChannelsTrue" checked> \
+                                            <label for="featuredChannelsTrue" class="switch-label switch-label-on">On</label> \
+                                            <span class="switch-selection"></span> \
+                                        </div> \
+                                    </div> \
+                                    <div class="option"> \
+                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Split Chat</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Easily distinguish between messages from different users in chat \
+                                        <div class="switch"> \
+                                            <input type="radio" class="switch-input switch-off" name="toggleSplitChat" value="false" id="splitChatFalse"> \
+                                            <label for="splitChatFalse" class="switch-label switch-label-off">Off</label> \
+                                            <input type="radio" class="switch-input" name="toggleSplitChat" value="true" id="splitChatTrue" checked> \
+                                            <label for="splitChatTrue" class="switch-label switch-label-on">On</label> \
+                                            <span class="switch-selection"></span> \
+                                        </div> \
+                                    </div> \
+                                    <div class="option"> \
+                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Subscribe Button</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Toggle this off to hide those pesky subscribe buttons \
+                                        <div class="switch"> \
+                                            <input type="radio" class="switch-input switch-off" name="toggleBlockSubButton" value="false" id="blockSubButtonFalse"> \
+                                            <label for="blockSubButtonFalse" class="switch-label switch-label-off">Off</label> \
+                                            <input type="radio" class="switch-input" name="toggleBlockSubButton" value="true" id="blockSubButtonTrue" checked> \
+                                            <label for="blockSubButtonTrue" class="switch-label switch-label-on">On</label> \
+                                            <span class="switch-selection"></span> \
+                                        </div> \
+                                    </div> \
+                                    <div class="option"> \
+                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Self Highlights</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Toggle this off to disable highlights on your own username \
+                                        <div class="switch"> \
+                                            <input type="radio" class="switch-input switch-off" name="toggleSelfHighlights" value="false" id="selfHighlightsFalse"> \
+                                            <label for="selfHighlightsFalse" class="switch-label switch-label-off">Off</label> \
+                                            <input type="radio" class="switch-input" name="toggleSelfHighlights" value="true" id="selfHighlightsTrue" checked> \
+                                            <label for="selfHighlightsTrue" class="switch-label switch-label-on">On</label> \
+                                            <span class="switch-selection"></span> \
+                                        </div> \
+                                    </div> \
+                                    <div class="option"> \
+                                        Think something is missing here? Send in a <a href="http://bugs.nightdev.com/projects/betterttv/issues/new?tracker_id=2" target="_blank">feature request</a>! \
+                                    </div> \
+                                   </div> \
+                                   <div id="bttvAbout" style="display:none;"> \
+                                    <div class="aboutHalf"> \
+                                        <img class="bttvAboutIcon" src="http://cdn.betterttv.net/icon.png" /> \
+                                        <h2>Better TTV v' + betterttvVersion + '</h2> \
+                                        <h2>from your friends at <a href="http://www.nightdev.com" target="_blank">NightDev</a></h2> \
+                                        <br /> \
+                                        <p>BetterTTV began in 2011 shortly after the launch of Twitch. The original Twitch site at launch was almost laughable at times with multiple failures in both site design (I can never forget the font Twitch originally used) and bugs (for example, at launch chat didn\'t scroll correctly). After BetterJTV\'s massive success and lack of support at the time for Twitch, multiple friends begged me to recreate it for Twitch. Since the beginning, BetterTTV has always promoted old JTV chat features over Twitch\'s, but has expanded to offer more customization and personalization over the years. Since 2011, BetterTTV has gone through multiple revisions to establish what it is today.</p> \
+                                    </div> \
+                                    <div class="aboutHalf"> \
+                                        <h2>Think this addon is awesome?<br />Wanna help pay the bills?</h2><br /> \
+                                        <h2><a href="http://streamdonations.net/c/night">Donate to the Better TTV Troll Fund</a></h2> \
+                                        <br /> \
+                                        <img style="vertical-align:bottom;" src="http://static-cdn.jtvnw.net/jtv_user_pictures/panel-11785491-image-6b90c7f168932ac7-320.png" /><br /><small><small>BetterTTV is not endorsed nor affiliated with Kappa, Kappab</small></small> \
+                                    </div> \
+                                   </div> \
+                                   <div id="footer"> \
+                                    <span>BetterTTV &copy; <a href="http://www.nightdev.com" target="_blank">NightDev</a> 2013</span><span style="float:right;">For support, please <a href="http://www.nightdev.com/contact" target="_blank">click here</a>. To report a bug, <a href="http://bugs.nightdev.com/projects/betterttv/issues/new?tracker_id=1" target="_blank">click here</a>.</span> \
+                                   </div>';
         bttvJquery("body").append(settingsPanel);
 
         bttvJquery("#bttvSettingsPanel #close").click(function () {
@@ -1719,6 +1738,15 @@ BetterTTVEngine = function () {
                 var keywordList = keywords.join(", ");
 
                 CurrentChat.admin_message("Highlight Keywords are now set to: " + keywordList);
+            }
+        }
+        if (action === "setBlacklistKeywords") {
+            var keywords = prompt("Type some blacklist keywords. Messages containing keywords will be filtered from your chat. Use spaces in the field to specify multiple keywords.", localStorage.getItem("blacklistKeywords"));
+            if (keywords != null) {
+                localStorage.setItem("blacklistKeywords", keywords);
+                var keywords = keywords.split(" ");
+                var keywordList = keywords.join(", ");
+                CurrentChat.admin_message("Blacklist Keywords are now set to: " + keywordList);
             }
         }
         if (action === "setScrollbackAmount") {
