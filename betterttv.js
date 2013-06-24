@@ -37,9 +37,7 @@ BetterTTVEngine = function () {
             }
         },
         currentViewers = [],
-        liveChannels = [],
-        blackChat = false,
-        reloadViewers = false;
+        blackChat = false;
 
     /**
      * Helper Functions
@@ -586,6 +584,26 @@ BetterTTVEngine = function () {
 
             betterttvDebug.log("Running Beta Chat");
 
+            bttvJquery.getJSON("http://chat.betterttv.net/login.php?onsite=true&user="+PP['login']+"&callback=?", function(d) {
+
+                if(d.status === true) {
+                    console.log("Logged into BTTV Chat");
+                } else {
+                    console.log("Not logged into BTTV Chat");
+                }
+
+                chatJSInject = document.createElement("script");
+                chatJSInject.setAttribute("src", "http://chat.betterttv.net/client/external.php?type=djs");
+                chatJSInject.setAttribute("type", "text/javascript");
+                bttvJquery("body").append(chatJSInject);
+
+                chatJSInject = document.createElement("script");
+                chatJSInject.setAttribute("src", "http://chat.betterttv.net/client/external.php?type=js");
+                chatJSInject.setAttribute("type", "text/javascript");
+                bttvJquery("body").append(chatJSInject);
+
+            });
+
             var chatCSSInject = document.createElement("link");
             chatCSSInject.setAttribute("href", "http://chat.betterttv.net/client/external.php?type=css");
             chatCSSInject.setAttribute("type", "text/css");
@@ -597,16 +615,6 @@ BetterTTVEngine = function () {
             chatJSInject.setAttribute("src", "http://chat.betterttv.net/client/includes/js/jquery.js");
             chatJSInject.setAttribute("type", "text/javascript");
             bttvJquery("body").prepend(chatJSInject);
-
-            chatJSInject = document.createElement("script");
-            chatJSInject.setAttribute("src", "http://chat.betterttv.net/client/external.php?type=djs");
-            chatJSInject.setAttribute("type", "text/javascript");
-            bttvJquery("body").append(chatJSInject);
-
-            chatJSInject = document.createElement("script");
-            chatJSInject.setAttribute("src", "http://chat.betterttv.net/client/external.php?type=js");
-            chatJSInject.setAttribute("type", "text/javascript");
-            bttvJquery("body").append(chatJSInject);
 
             bttvJquery("#right_col .content .bottom").css("height", "135px");
             bttvJquery("#twitch_chat .js-chat-scroll").css("bottom", "135px");
@@ -694,7 +702,7 @@ BetterTTVEngine = function () {
 
         Chat.prototype.insert_chat_lineOld = Chat.prototype.insert_chat_line;
         Chat.prototype.insert_chat_line = function (info) {
-            if (currentViewers && currentViewers.indexOf(info.nickname) === -1 && info.nickname !== "jtv") {
+            if (currentViewers.indexOf(info.nickname) === -1 && info.nickname !== "jtv") {
                 currentViewers.push(info.nickname);
             }
 
@@ -773,7 +781,7 @@ BetterTTVEngine = function () {
                 info.color = calculateColorReplacement(info.color, colorBackground);
             }
 
-            if (blackChat === true && info.color === "#000000") {
+            if (blackChat && info.color === "#000000") {
                 info.color = "#ffffff";
             }
 
@@ -1237,6 +1245,8 @@ BetterTTVEngine = function () {
                                 { url: "http://cdn.betterttv.net/emotes/sourpls.gif", width: 40, height: 40, regex: "SourPls" },
                                 { url: "http://cdn.betterttv.net/emotes/stray.png", width: 45, height: 35, regex: "She\'llBeRight" },
                                 { url: "http://cdn.betterttv.net/emotes/taxi.png", width: 87, height: 30, regex: "TaxiBro" },
+                                { url: "http://cdn.betterttv.net/emotes/epic.png", width: 25, height: 27, regex: "\\[e\\]" },
+                                { url: "http://cdn.betterttv.net/emotes/cookiethump.png", width: 29, height: 25, regex: "CookieThump" },
                                 { url: "http://cdn.betterttv.net/emotes/creepo.png", width: 21, height: 30, regex: "CreepyCanadian" }
                               ];
 
