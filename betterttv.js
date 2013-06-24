@@ -1,4 +1,4 @@
-/**
+/** @license
  * Copyright (c) 2013 NightDev
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,7 +22,7 @@
 
 BetterTTVEngine = function() {
 
-	var betterttvVersion = "6.3.6",
+	var betterttvVersion = "6.3.7",
 		betterttvDebug = {
 			log: function(string) { if(window.console && console.log) console.log("BTTV: "+string); },
 			warn: function(string) { if(window.console && console.warn) console.warn("BTTV: "+string); },
@@ -47,13 +47,13 @@ BetterTTVEngine = function() {
 
 	removeElement = function(e) {
 
-		bttvJquery(e).each(function(e){ bttvJquery(this).hide(); });
+		bttvJquery(e).each(function(){ bttvJquery(this).hide(); });
 
 	}
 
 	displayElement = function(e) {
 
-		bttvJquery(e).each(function(e){ bttvJquery(this).show(); });
+		bttvJquery(e).each(function(){ bttvJquery(this).show(); });
 
 	}
 
@@ -276,7 +276,7 @@ BetterTTVEngine = function() {
 
 			bttvJquery("#right_close").unbind('click');
 
-			bttvJquery("#left_close").click(function(a) {
+			bttvJquery("#left_close").click(function() {
 				bttvJquery(window).trigger('resize');
 			});
 
@@ -583,7 +583,7 @@ BetterTTVEngine = function() {
 
 	}
 
-	checkMessages = function(videopage) {
+	checkMessages = function() {
 
 		betterttvDebug.log("Check for New Messages");
 
@@ -937,17 +937,18 @@ BetterTTVEngine = function() {
 					return;
 				}
 				if(CurrentChat.last_sender === PP['login']) {
-					if(CurrentChat.globalBanAttempt) {
+					if(CurrentChat.globalBanAttempt && CurrentChat.globalBanAttempt === 3) {
 						CurrentChat.admin_message(i18n("BetterTTV: You were disconnected from chat."));
-						CurrentChat.admin_message(i18n("BetterTTV: It is very likely you are globally banned from chat for 8 hours."));
+						CurrentChat.admin_message(i18n("BetterTTV: You may be globally banned from chat for 8 hours (if you sent 20 lines in 30 seconds)."));
 						CurrentChat.admin_message(i18n("BetterTTV: Reconnecting anyways.."));
 					} else {
-						CurrentChat.globalBanAttempt = true;
+						if(!CurrentChat.globalBanAttempt) CurrentChat.globalBanAttempt = 0;
+						CurrentChat.globalBanAttempt++;
 					}
 				} else {
 					CurrentChat.admin_message(i18n("BetterTTV: You were disconnected from chat."));
 					CurrentChat.admin_message(i18n("BetterTTV: Reconnecting.."));
-					bttvJquery.getJSON("http://23.29.121.109/api/report?type=chat&test1=true&server="+/^Connection lost to \((.*):(80|443)\)/.exec(a.message)[1]);
+					bttvJquery.getJSON("http://twitchstatus.com/api/report?type=chat&test1=true&server="+/^Connection lost to \((.*):(80|443)\)/.exec(a.message)[1]);
 				}
 			}
 		}
@@ -986,7 +987,7 @@ BetterTTVEngine = function() {
 					}
 				},10000);
 				CurrentChat.TMIFailedToJoinTries++;
-				bttvJquery.getJSON("http://23.29.121.109/api/report?type=chat&test2=true&server="+CurrentChat.currentServer);
+				bttvJquery.getJSON("http://twitchstatus.com/api/report?type=chat&test2=true&server="+CurrentChat.currentServer);
 			} else {
 				CurrentChat.admin_message(i18n("BetterTTV: Looks like chat is broken.. I give up. :("));
 			}
@@ -1570,28 +1571,15 @@ BetterTTVEngine = function() {
 								   <div id="bttvAbout" style="display:none;"> \
 							   		<div class="aboutHalf"> \
 							   			<img class="bttvAboutIcon" src="http://cdn.betterttv.net/icon.png" /> \
-							   			<h2>Better TwitchTV v'+betterttvVersion+'</h2> \
+							   			<h2>Better TTV v'+betterttvVersion+'</h2> \
 							   			<h2>from your friends at <a href="http://www.nightdev.com" target="_blank">NightDev</a></h2> \
 							   			<br /> \
 							   			<p>BetterTTV began in 2011 shortly after the launch of Twitch. The original Twitch site at launch was almost laughable at times with multiple failures in both site design (I can never forget the font Twitch originally used) and bugs (for example, at launch chat didn\'t scroll correctly). After BetterJTV\'s massive success and lack of support at the time for Twitch, multiple friends begged me to recreate it for Twitch. Since the beginning, BetterTTV has always promoted old JTV chat features over Twitch\'s, but has expanded to offer more customization and personalization over the years. Since 2011, BetterTTV has gone through multiple revisions to establish what it is today.</p> \
 							   		</div> \
 							   		<div class="aboutHalf"> \
-							   			<h2>I\'m just gonna leave this right here..</h2><br /> \
-							   			<form id="bttvTipJar" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank"> \
-											<input type="hidden" name="cmd" value="_xclick"> \
-											<input type="hidden" name="business" value="night@nightdev.com"> \
-											<input type="hidden" name="lc" value="US"> \
-											<input type="hidden" name="item_name" value="BetterTTV Tip Jar"> \
-											<input type="hidden" name="item_number" value="'+PP['login']+'"> \
-											<input type="hidden" name="amount" value=""> \
-											<input type="hidden" name="currency_code" value="USD"> \
-											<input type="hidden" name="button_subtype" value="services"> \
-											<input type="hidden" name="no_note" value="0"> \
-											<input type="hidden" name="cn" value="Leave a message:"> \
-											<input type="hidden" name="no_shipping" value="1"> \
-											<input type="hidden" name="bn" value="PP-BuyNowBF:btn_buynowCC_LG.gif:NonHosted"> \
-											<h2><a href="#" onclick="document.getElementById(\'bttvTipJar\').submit();">BetterTTV Tip Jar</a></h2> \
-										</form><br /><br /> \
+							   			<h2>Think this addon is awesome?<br />Wanna help pay the bills?</h2><br /> \
+										<h2><a href="http://streamdonations.net/c/night">Donate to the Better TTV Troll Fund</a></h2> \
+										<br /> \
 							   			<img style="vertical-align:bottom;" src="http://static-cdn.jtvnw.net/jtv_user_pictures/panel-11785491-image-6b90c7f168932ac7-320.png" /><br /><small><small>BetterTTV is not endorsed nor affiliated with Kappa, Kappab</small></small> \
 							   		</div> \
 								   </div> \
@@ -1600,7 +1588,7 @@ BetterTTVEngine = function() {
 								   </div>';
 		bttvJquery("body").append(settingsPanel);
 
-		bttvJquery("#bttvSettingsPanel #close").click(function(e){
+		bttvJquery("#bttvSettingsPanel #close").click(function(){
 			bttvJquery("#bttvSettingsPanel").hide("slow");
 		});
 
@@ -1622,7 +1610,7 @@ BetterTTVEngine = function() {
 			betterttvAction(e.target.name);
 		});
 
-		bttvJquery('.dropmenu_action').each(function(element) {
+		bttvJquery('.dropmenu_action').each(function() {
 			bttvJquery(this).css("color","#ffffff");
 		});
 
@@ -1663,7 +1651,11 @@ BetterTTVEngine = function() {
 		}
 		if(action === "setScrollbackAmount") {
 			var lines = prompt("What is the maximum amount of lines that you want your chat to show? Twitch default is 150. Leave the field blank to disable.",localStorage.getItem("scrollbackAmount"));
-			if (lines != null && isNaN(lines) !== true && lines > 0) {
+			if(lines != null && lines === "") {
+				localStorage.setItem("scrollbackAmount", 150);
+				CurrentChat.admin_message("Chat scrollback is now set to: default (150)");
+				CurrentChat.line_buffer = 150;
+			} else if(lines != null && isNaN(lines) !== true && lines > 0) {
 				localStorage.setItem("scrollbackAmount", lines);
 				CurrentChat.admin_message("Chat scrollback is now set to: "+lines);
 				CurrentChat.line_buffer = parseInt(lines);
@@ -1867,7 +1859,7 @@ BetterTTVEngine = function() {
 	}
 
 	try {
-		if(BTTVLOADED==true) return;
+		if(BTTVLOADED === true) return;
 	} catch(err) {
 		betterttvDebug.log("BTTV LOADED "+document.URL);
 		BTTVLOADED=true;
