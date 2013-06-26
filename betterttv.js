@@ -324,8 +324,8 @@ BetterTTVEngine = function () {
                     });
                 }
                 if (bttvJquery("#right_col").css("display") !== "none") {
-                    if (bttvJquery("#right_col").width() < 320) {
-                        chatWidth = 320;
+                    if (bttvJquery("#right_col").width() < 340) {
+                        chatWidth = 340;
                         bttvJquery("#right_col").width(chatWidth);
                         bttvJquery("#right_col .content #chat").width(chatWidth);
                         bttvJquery("#right_col .content .top").width(chatWidth);
@@ -394,7 +394,7 @@ BetterTTVEngine = function () {
             if (Twitch.storage.get("rightColClosed") === "true") {
                 localStorage.setItem("chatWidth", 0);
                 if (bttvJquery("#right_col").width() == "0") {
-                    bttvJquery("#right_col").width("320px");
+                    bttvJquery("#right_col").width("340px");
                 }
                 Twitch.storage.set("rightColClosed", "false");
             }
@@ -421,7 +421,7 @@ BetterTTVEngine = function () {
                 handleResize();
             } else {
                 if (bttvJquery("#right_col").width() == "0") {
-                    bttvJquery("#right_col").width("320px");
+                    bttvJquery("#right_col").width("340px");
                 }
                 chatWidth = bttvJquery("#right_col").width();
                 localStorage.setItem("chatWidth", bttvJquery("#right_col").width());
@@ -464,7 +464,7 @@ BetterTTVEngine = function () {
                         "background-position": "0 -18px"
                     });
                     resize = false;
-                    if (bttvJquery("#right_col").width() < 320) {
+                    if (bttvJquery("#right_col").width() < 340) {
                         bttvJquery("#right_col").width(bttvJquery("#right_col .content .top").width());
                     }
                     chatWidth = bttvJquery("#right_col").width();
@@ -477,12 +477,12 @@ BetterTTVEngine = function () {
 
                 if (resize) {
                     bttvJquery("#chat_text_input").focus();
-                    if (chatWidth + resize - event.pageX < 320) {
-                        bttvJquery("#right_col").width(320);
-                        bttvJquery("#right_col .content #chat").width(320);
-                        bttvJquery("#right_col .content .top").width(320);
-                        bttvJquery("#chat_line_list").width(320);
-                        bttvJquery("#chat_lines").width(320);
+                    if (chatWidth + resize - event.pageX < 340) {
+                        bttvJquery("#right_col").width(340);
+                        bttvJquery("#right_col .content #chat").width(340);
+                        bttvJquery("#right_col .content .top").width(340);
+                        bttvJquery("#chat_line_list").width(340);
+                        bttvJquery("#chat_lines").width(340);
 
                         handleResize();
                     } else if (chatWidth + resize - event.pageX > 541) {
