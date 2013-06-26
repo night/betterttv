@@ -21,7 +21,7 @@
  */
 BetterTTVEngine = function () {
 
-    var betterttvVersion = "6.3.8",
+    var betterttvVersion = "6.3.9",
         betterttvDebug = {
             log: function (string) {
                 if (window.console && console.log) console.log("BTTV: " + string);
@@ -580,6 +580,8 @@ BetterTTVEngine = function () {
 
     betaChat = function () {
 
+        if(typeof PP == "undefined") return;
+
         if (localStorage.getItem("bttvChat") === "true") {
 
             betterttvDebug.log("Running Beta Chat");
@@ -973,7 +975,7 @@ BetterTTVEngine = function () {
             clearTimeout(checkJoinFail);
             CurrentChat.TMIFailedToJoin = false;
             CurrentChat.retries = 10;
-            CurrentChat.admin_message(i18n("Welcome to the " + PP['channel'].capitalize() + "'s chat room!"));
+            CurrentChat.admin_message(i18n("Welcome to " + PP['channel'].capitalize() + "'s chat room!"));
             $("chat_text_input").disabled = !1;
             CurrentChat.currently_scrolling = !0;
             CurrentChat.scroll_chat();
@@ -990,6 +992,7 @@ BetterTTVEngine = function () {
             CurrentChat.debug && CurrentChat.admin_message("DEBUG: " + a.message);
             if (a.message.match(/^Connecting to (.*):(80|443)$/)) {
                 CurrentChat.currentServer = /^Connecting to (.*):(80|443)$/.exec(a.message)[1];
+                console.log(CurrentChat.currentServer)
             }
             if (a.message.match(/^connected$/)) {
                 CurrentChat.admin_message(i18n("Connected to the chat server."));
@@ -998,7 +1001,6 @@ BetterTTVEngine = function () {
                 var time = new Date().getTime() / 1000;
                 CurrentChat.lastActivity = time;
                 CurrentChat.monitorActivity = true;
-                CurrentChat.globalBanAttempt = false;
             }
             if (a.message.match(/^Connection lost/)) {
                 if (CurrentChat.silence && CurrentChat.silence === true) {
@@ -1006,11 +1008,14 @@ BetterTTVEngine = function () {
                     return;
                 }
                 if (CurrentChat.last_sender === PP['login']) {
-                    if (CurrentChat.globalBanAttempt && CurrentChat.globalBanAttempt === 3) {
+                    if (CurrentChat.globalBanAttempt && CurrentChat.globalBanAttempt >= 1) {
                         CurrentChat.admin_message(i18n("BetterTTV: You were disconnected from chat."));
                         CurrentChat.admin_message(i18n("BetterTTV: You may be globally banned from chat for 8 hours (if you sent 20 lines in 30 seconds)."));
+                        CurrentChat.admin_message(i18n("BetterTTV: You can still see chat, but talking will disconnect you."));
                         CurrentChat.admin_message(i18n("BetterTTV: Reconnecting anyways.."));
                     } else {
+                        CurrentChat.admin_message(i18n("BetterTTV: You were disconnected from chat."));
+                        CurrentChat.admin_message(i18n("BetterTTV: Reconnecting.."));
                         if (!CurrentChat.globalBanAttempt) CurrentChat.globalBanAttempt = 0;
                         CurrentChat.globalBanAttempt++;
                     }
@@ -1235,7 +1240,6 @@ BetterTTVEngine = function () {
                                 { url: "http://cdn.betterttv.net/emotes/panda.png", width: 36, height: 40, regex: "SexPanda" },
                                 { url: "http://cdn.betterttv.net/emotes/mandm.png", width: 54, height: 45, regex: "M&Mjc" },
                                 { url: "http://cdn.betterttv.net/emotes/jokko.png", width: 23, height: 35, regex: "SwedSwag" },
-                                { url: "http://cdn.betterttv.net/emotes/adz.png", width: 21, height: 34, regex: "adZ" },
                                 { url: "http://cdn.betterttv.net/emotes/pokerface.png", width: 23, height: 35, regex: "PokerFace" },
                                 { url: "http://cdn.betterttv.net/emotes/jamontoast.png", width: 33, height: 30, regex: "ToasTy" },
                                 { url: "http://cdn.betterttv.net/emotes/basedgod.png", width: 33, height: 34, regex: "BasedGod" },
@@ -1247,6 +1251,7 @@ BetterTTVEngine = function () {
                                 { url: "http://cdn.betterttv.net/emotes/taxi.png", width: 87, height: 30, regex: "TaxiBro" },
                                 { url: "http://cdn.betterttv.net/emotes/epic.png", width: 25, height: 27, regex: "\\[e\\]" },
                                 { url: "http://cdn.betterttv.net/emotes/cookiethump.png", width: 29, height: 25, regex: "CookieThump" },
+                                { url: "http://cdn.betterttv.net/emotes/ohmygoodness.png", width: 20, height: 30, regex: "OhMyGoodness" },
                                 { url: "http://cdn.betterttv.net/emotes/creepo.png", width: 21, height: 30, regex: "CreepyCanadian" }
                               ];
 
