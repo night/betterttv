@@ -21,7 +21,7 @@
  */
 BetterTTVEngine = function () {
 
-    var bttvVersion = "6.4.0",
+    var bttvVersion = "6.4.1",
         bttvDebug = {
             log: function (string) {
                 if (window.console && console.log) console.log("BTTV: " + string);
@@ -38,6 +38,7 @@ BetterTTVEngine = function () {
         },
         bttvSettings = {},
         currentViewers = [],
+        liveChannels = [],
         blackChat = false;
 
     /**
@@ -138,6 +139,7 @@ BetterTTVEngine = function () {
         removeElement('.fp_ad');
         removeElement('.advertisement');
         removeElement('.ad_contain');
+        removeElement('li[data-name="kabam"]');
         bttvJquery('#right_col').addClass('noads');
 
         if (bttvSettings["blockSubButton"] === true) {
@@ -581,6 +583,8 @@ BetterTTVEngine = function () {
 
         if (bttvSettings["bttvChat"] === true) {
 
+            if(bttvJquery("body#chat").length) return;
+
             bttvDebug.log("Running Beta Chat");
 
             bttvJquery.getJSON("http://chat.betterttv.net/login.php?onsite=true&user="+PP['login']+"&callback=?", function(d) {
@@ -740,6 +744,10 @@ BetterTTVEngine = function () {
                 info.tagname = "Host";
             }
 
+            if (CurrentChat.trackTimeouts && CurrentChat.trackTimeouts[info.nickname]) {
+                delete CurrentChat.trackTimeouts[info.nickname];
+            }
+
             var x = 0;
             if (info.tagtype == "mod" || info.tagtype == "broadcaster" || info.tagtype == "admin") x = 1;
 
@@ -812,7 +820,7 @@ BetterTTVEngine = function () {
             if((info.color == "#0000ff" || info.color == "#191971" || info.color == "#2626aa") && bttvSettings["darkenedMode"] === true && info.nickname !== PP['login']) { info.color = "#3753ff"; }
             if((info.color == "black" || info.color == "#000000") && bttvSettings["darkenedMode"] === true && info.nickname !== PP['login']) { info.color = "#D3D3D3" }
 
-            if(info.nickname == "night" && x==1) { info.tagtype="orange"; info.tagname = "Creator"; }
+            if(info.nickname == "night" && x==1) { info.tagtype="orange"; info.tagname = "Creator"; info.color = "#000;text-shadow: 0 0 10px #FFD700" }
             //Bots
             if(info.nickname == "moobot" && x==1) { info.tagtype="bot"; info.tagname = "Bot"; }
             if(info.nickname == "nightbot" && x==1) { info.tagtype="bot"; info.tagname = "Bot"; }
@@ -886,6 +894,7 @@ BetterTTVEngine = function () {
             if(info.nickname == "whitesammy") { info.color = "white;text-shadow: 0 0 2px #000"; }
             if(info.nickname == "bacon_donut") { info.tagtype="bacon"; info.tagname = "&#8203;"; info.nickname = "Donut"; }
             if(info.nickname == "gr8tacotaste") { info.tagtype="taco"; info.tagname = "&#8203;"; }
+            if(info.nickname == "wsos") { info.tagtype="purple"; info.tagname = "Drippin' Dat"; }
             //Xmas
             if(info.nickname == "r3lapse" && x==1) { info.tagtype="staff"; info.tagname = "Kershaw"; }
             if(info.nickname == "im_tony_" && x==1) { info.tagtype="admin"; info.tagname = "oZn"; }
@@ -912,7 +921,7 @@ BetterTTVEngine = function () {
             }
 
             if (!(CurrentChat.restarting && !CurrentChat.history_ended || CurrentChat.ignored[info.sender]))
-                if ("jtv" === info.sender) CurrentChat.last_sender = info.sender, CurrentChat.admin_message(CurrentChat.format_message(info));
+                if ("jtv" === info.sender || "twitchnotify" === info.sender) CurrentChat.last_sender = info.sender, CurrentChat.admin_message(CurrentChat.format_message(info));
                 else if (!info.is_action && !messageHighlighted && CurrentChat.last_sender && CurrentChat.last_sender === info.sender && "jtv" !== CurrentChat.last_sender) CurrentChat.insert_with_lock("#chat_line_list li:last", '<p class="chat_line" style="display:block;">&raquo; ' + CurrentChat.format_message(info) + "</p>");
             else {
                 CurrentChat.last_sender = info.sender;
@@ -976,14 +985,12 @@ BetterTTVEngine = function () {
         CurrentChat.TMIFailedToJoin = true;
         CurrentChat.TMIFailedToJoinTries = 1;
 
-        var checkJoinFail = {};
-
         CurrentChat.ghettoTimeout = function (time) {
             CurrentChat.say("/timeout " + bttvJquery("#user_info .nick").html() + " " + time);
         }
 
         CurrentChat.handlers.user_names_end = function () {
-            clearTimeout(checkJoinFail);
+            clearTimeout(CurrentChat.checkJoinFail);
             CurrentChat.TMIFailedToJoin = false;
             CurrentChat.retries = 10;
             CurrentChat.admin_message(i18n("Welcome to " + PP['channel'].capitalize() + "'s chat room!"));
@@ -1024,16 +1031,22 @@ BetterTTVEngine = function () {
                         CurrentChat.admin_message(i18n("BetterTTV: You may be globally banned from chat for 8 hours (if you sent 20 lines in 30 seconds)."));
                         CurrentChat.admin_message(i18n("BetterTTV: You can still see chat, but talking will disconnect you."));
                         CurrentChat.admin_message(i18n("BetterTTV: Reconnecting anyways.."));
+                        CurrentChat.TMIFailedToJoin = true;
+                        CurrentChat.TMIFailedToJoinTries = 1;
                     } else {
                         CurrentChat.admin_message(i18n("BetterTTV: You were disconnected from chat."));
                         CurrentChat.admin_message(i18n("BetterTTV: Reconnecting.."));
+                        CurrentChat.TMIFailedToJoin = true;
+                        CurrentChat.TMIFailedToJoinTries = 1;
                         if (!CurrentChat.globalBanAttempt) CurrentChat.globalBanAttempt = 0;
                         CurrentChat.globalBanAttempt++;
                     }
                 } else {
                     CurrentChat.admin_message(i18n("BetterTTV: You were disconnected from chat."));
                     CurrentChat.admin_message(i18n("BetterTTV: Reconnecting.."));
-                    bttvJquery.getJSON("http://twitchstatus.com/api/report?type=chat&test1=true&server=" + /^Connection lost to \((.*):(80|443)\)/.exec(a.message)[1]);
+                    CurrentChat.TMIFailedToJoin = true;
+                    CurrentChat.TMIFailedToJoinTries = 1;
+                    bttvJquery.getJSON("http://twitchstatus.com/api/report?type=chat&kind=disconnect&server=" + /^Connection lost to \((.*):(80|443)\)/.exec(a.message)[1]);
                 }
             }
         }
@@ -1046,6 +1059,8 @@ BetterTTVEngine = function () {
                     CurrentChat.monitorActivity = false;
                     CurrentChat.admin_message(i18n("BetterTTV: I suspect your chat froze.."));
                     CurrentChat.admin_message(i18n("BetterTTV: Reconnecting.."));
+                    CurrentChat.TMIFailedToJoin = true;
+                    CurrentChat.TMIFailedToJoinTries = 1;
                     CurrentChat.reconnect();
                 }
             }
@@ -1065,14 +1080,14 @@ BetterTTVEngine = function () {
             if (CurrentChat.TMIFailedToJoinTries <= 10) {
                 CurrentChat.admin_message(i18n("BetterTTV: Attempting to join again.. [" + CurrentChat.TMIFailedToJoinTries + "/10]"));
                 CurrentChat.ircSystem.join("#" + PP["channel"]);
-                checkJoinFail = setTimeout(function () {
+                CurrentChat.checkJoinFail = setTimeout(function () {
                     if (CurrentChat.TMIFailedToJoin === true) {
                         CurrentChat.admin_message(i18n("BetterTTV: Unable to join the chat room.."));
                         CurrentChat.rejoinChat();
                     }
                 }, 10000);
                 CurrentChat.TMIFailedToJoinTries++;
-                bttvJquery.getJSON("http://twitchstatus.com/api/report?type=chat&test2=true&server=" + CurrentChat.currentServer);
+                bttvJquery.getJSON("http://twitchstatus.com/api/report?type=chat&kind=join&server=" + CurrentChat.currentServer);
             } else {
                 CurrentChat.admin_message(i18n("BetterTTV: Looks like chat is broken.. I give up. :("));
             }
@@ -1080,7 +1095,7 @@ BetterTTVEngine = function () {
         }
 
         CurrentChat.handlers.connected = function () {
-            checkJoinFail = setTimeout(function () {
+            CurrentChat.checkJoinFail = setTimeout(function () {
                 if (CurrentChat.TMIFailedToJoin === true) {
                     CurrentChat.admin_message(i18n("BetterTTV: Unable to join the chat room.."));
                     CurrentChat.rejoinChat();
@@ -1116,19 +1131,18 @@ BetterTTVEngine = function () {
                         bttvJquery(this).html("<span style=\"color: #999\">" + bttvJquery(this).html() + "</span>");
                     });
                 }
-                var currentTime = new Date().getTime();
-                if(CurrentChat.trackTimeouts[nickname] && (currentTime-CurrentChat.trackTimeouts[nickname].lastClear) <= 30000) {
+                if(CurrentChat.trackTimeouts[nickname]) {
                     CurrentChat.trackTimeouts[nickname].count++;
-                    bttvJquery('#times_from_' + info.user.replace(/%/g, '_').replace(/[<>,]/g, '')).each(function () {
+                    bttvJquery('#times_from_' + info.user.replace(/%/g, '_').replace(/[<>,]/g, '') + "_" + CurrentChat.trackTimeouts[nickname].timesID).each(function () {
                         bttvJquery(this).html("(" + CurrentChat.trackTimeouts[nickname].count + " times)");
                     });
                 } else {
                     CurrentChat.trackTimeouts[nickname] = {
                         count: 1,
-                        lastClear: currentTime
+                        timesID: Math.floor(Math.random()*100001)
                     }
                     CurrentChat.last_sender = "jtv";
-                    CurrentChat.insert_with_lock("#chat_line_list", '<li class="line fromjtv"><p class="content"><span style="text-transform:capitalize;">' + nickname + '</span> has been timed out. <span id="times_from_' + info.user.replace(/%/g, '_').replace(/[<>,]/g, '') + '"></span></p></li>');
+                    CurrentChat.insert_with_lock("#chat_line_list", '<li class="line fromjtv"><p class="content"><span style="text-transform:capitalize;">' + nickname + '</span> has been timed out. <span id="times_from_' + info.user.replace(/%/g, '_').replace(/[<>,]/g, '') + "_" + CurrentChat.trackTimeouts[nickname].timesID + '"></span></p></li>');
                 }
             }
         }
@@ -1207,8 +1221,7 @@ BetterTTVEngine = function () {
 
         bttvDebug.log("Check Following List");
 
-        //Beta Channel Tracking
-        bttvJquery(window).on("firebase:follow_online", function (b, f) {
+        /*bttvJquery(window).on("firebase:follow_online", function (b, f) {
             if (f.online === true) {
                 Twitch.api.get("channels/" + f.name.toLowerCase()).done(function (d) {
                     if (d.name) {
@@ -1220,6 +1233,40 @@ BetterTTVEngine = function () {
                     }
                 });
             }
+        });*/
+
+        Twitch.api.get("streams/followed?limit=250").done(function (d) {
+            if (d.streams && d.streams.length > 0) {
+                if (liveChannels.length === 0) {
+                    liveChannels.push("loaded");
+                    d.streams.forEach(function(stream) {
+                        var channel = stream.channel;
+                        if (liveChannels.indexOf(channel.name) === -1) {
+                            liveChannels.push(channel.name);
+                        }
+                    });
+                } else {
+                    var channels = [];
+                    d.streams.forEach(function(stream) {
+                        var channel = stream.channel;
+                        channels.push(channel.name);
+                        if (liveChannels.indexOf(channel.name) === -1) {
+                            bttvDebug.log(channel.name+" is now streaming");
+                            if (channel.game == null) channel.game = "on Twitch";
+                            bttvJquery.gritter.add({
+                                title: channel.display_name + ' is Now Streaming',
+                                image: channel.logo,
+                                text: channel.display_name + ' just started streaming ' + channel.game + '.<br /><br /><a style="color:white" href="http://www.twitch.tv/' + channel.name + '">Click here to head to ' + channel.display_name + '\'s channel</a>.',
+                            });
+                        }
+                    });
+                    liveChannels = channels;
+                }
+                
+                bttvJquery("a[href=\"/directory/following\"] .js-total").html(d.streams.length);
+                bttvJquery("a[href=\"/directory/following\"] .js-total").css("display","inline");
+            }
+            setTimeout(checkFollowing, 60000)
         });
 
     }
@@ -1402,10 +1449,41 @@ BetterTTVEngine = function () {
                     d.data.chatters[a].forEach(function (a) {
                         currentViewers.push(a);
                     });
+                    if(a === "moderators") {
+                        d.data.chatters[a].forEach(function (a) {
+                            if(!CurrentChat.moderators[a]) {
+                                var action = {
+                                    sender: "jtv",
+                                    target: a
+                                }
+                                fakeCurrentChat("user_oped", action);
+                                console.log("Added "+a+" as a mod");
+                            }
+                        });
+                        for (mod in CurrentChat.moderators) {
+                            if(CurrentChat.moderators.hasOwnProperty(mod)) {
+                                if(d.data.chatters[a].indexOf(mod) === -1) {
+                                   var action = {
+                                        sender: "jtv",
+                                        target: mod
+                                    }
+                                    fakeCurrentChat("user_deoped", action);
+                                    console.log("Removed "+mod+" as a mod"); 
+                                }
+                            }
+                        }
+                    }
                 });
+            } else {
+                updateViewerList();
             }
         });
 
+    }
+
+    fakeCurrentChat = function (func, action) {
+        var n = CurrentChat.handlers[func];
+        n && n.call(CurrentChat, action);
     }
 
     handleBackground = function () {
@@ -1719,7 +1797,7 @@ BetterTTVEngine = function () {
                                     </div> \
                                     <div class="aboutHalf"> \
                                         <h2>Think this addon is awesome?<br />Wanna help pay the bills?</h2><br /> \
-                                        <h2><a href="http://streamdonations.net/c/night">Donate to the Better TTV Troll Fund</a></h2> \
+                                        <h2><a href="http://streamdonations.net/c/night">Contribute to the Better TTV Troll Fund</a></h2> \
                                         <br /> \
                                         <img style="vertical-align:bottom;" src="http://static-cdn.jtvnw.net/jtv_user_pictures/panel-11785491-image-6b90c7f168932ac7-320.png" /><br /><small><small>BetterTTV is not endorsed nor affiliated with Kappa, Kappab</small></small> \
                                     </div> \
@@ -2039,7 +2117,6 @@ BetterTTVEngine = function () {
                            ]
         settingsList.forEach(function(setting) {
             bttvSettings[setting] = parseSetting(localStorage.getItem(setting));
-            console.log(setting + " = " + parseSetting(localStorage.getItem(setting)))
         });
     }
 
