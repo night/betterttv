@@ -21,7 +21,7 @@
  */
 BetterTTVEngine = function () {
 
-    var bttvVersion = "6.4.1",
+    var bttvVersion = "6.4.2",
         bttvDebug = {
             log: function (string) {
                 if (window.console && console.log) console.log("BTTV: " + string);
@@ -717,7 +717,7 @@ BetterTTVEngine = function () {
 
         Chat.prototype.insert_chat_lineOld = Chat.prototype.insert_chat_line;
         Chat.prototype.insert_chat_line = function (info) {
-            if (currentViewers.indexOf(info.nickname) === -1 && info.nickname !== "jtv") {
+            if (currentViewers.indexOf(info.nickname) === -1 && info.nickname !== "jtv" && info.nickname !== "twitchnotify") {
                 currentViewers.push(info.nickname);
             }
 
@@ -761,18 +761,40 @@ BetterTTVEngine = function () {
 
             if (bttvSettings["blacklistKeywords"]) {
                 var keywords = bttvSettings["blacklistKeywords"];
-                keywords = keywords.split(" ");
-                keywords.forEach(function (keyword) {
-                    blacklistKeywords.push(keyword);
-                });
+                var phraseRegex = /\{(.*)\}/g;
+                var testCases =  keywords.match(phraseRegex);
+                if(testCases) {
+                    for (i=0;i<testCases.length;i++) {
+                        var testCase = testCases[i];
+                        keywords = keywords.replace(testCase, "").replace(/\s\s+/g, ' ').trim();
+                        blacklistKeywords.push(testCase.replace(/(^\{|\}$)/g, ''));
+                    }
+                }
+                if(keywords !== "") {
+                    keywords = keywords.split(" ");
+                    keywords.forEach(function (keyword) {
+                        blacklistKeywords.push(keyword);
+                    });
+                }
             }
 
             if (bttvSettings["highlightKeywords"]) {
                 var extraKeywords = bttvSettings["highlightKeywords"];
-                extraKeywords = extraKeywords.split(" ");
-                extraKeywords.forEach(function (keyword) {
-                    highlightKeywords.push(keyword);
-                });
+                var phraseRegex = /\{(.*)\}/g;
+                var testCases =  extraKeywords.match(phraseRegex);
+                if(testCases) {
+                    for (i=0;i<testCases.length;i++) {
+                        var testCase = testCases[i];
+                        extraKeywords = extraKeywords.replace(testCase, "").replace(/\s\s+/g, ' ').trim();
+                        highlightKeywords.push(testCase.replace(/(^\{|\}$)/g, ''));
+                    }
+                }
+                if(extraKeywords !== "") {
+                    extraKeywords = extraKeywords.split(" ");
+                    extraKeywords.forEach(function (keyword) {
+                        highlightKeywords.push(keyword);
+                    });
+                }
             }
             if (bttvSettings["selfHighlights"] !== false) {
                 highlightKeywords.push(PP['login']);
@@ -787,13 +809,15 @@ BetterTTVEngine = function () {
             });
             highlightKeywords.forEach(function (keyword) {
                 keyword = escapeRegExp(keyword);
-                var wordRegex = new RegExp('\\b' + keyword + '\\b', 'i');
-                var symbolRegex = new RegExp('\\B' + keyword + '\\B', 'i');
+                var wordRegex = new RegExp('(\\s|^)' + keyword + '(\\s|$)', 'i');
                 var nickRegex = new RegExp('^' + keyword + '$', 'i');
-                if (PP['login'] !== "" && (wordRegex.test(info.message) || symbolRegex.test(info.message) || nickRegex.test(info.nickname)) && PP['login'] !== info.nickname) {
+                if (PP['login'] !== "" && (((wordRegex.test(info.message) || nickRegex.test(info.nickname)) && PP['login'] !== info.nickname) || (PP['login'] === info.nickname && bttvSettings["highlightKeywords"].indexOf(PP['login']) !== -1))) {
                     messageHighlighted = true;
                 }
             });
+
+            if(info.color === "black") info.color === "#000000";
+            if(info.color === "MidnightBlue") info.color === "#191971";
 
             colorBackground = calculateColorBackground(info.color);
             if (((colorBackground === "light" && bttvSettings["darkenedMode"] === true) || (colorBackground === "dark" && bttvSettings["darkenedMode"] !== true)) && info.nickname !== PP['login']) {
@@ -824,7 +848,6 @@ BetterTTVEngine = function () {
             //Bots
             if(info.nickname == "moobot" && x==1) { info.tagtype="bot"; info.tagname = "Bot"; }
             if(info.nickname == "nightbot" && x==1) { info.tagtype="bot"; info.tagname = "Bot"; }
-            if(info.nickname == "nokzbot" && x==1) { info.tagtype="bot"; info.tagname = "Bot"; }
             if(info.nickname == "sourbot" && x==1) { info.tagtype="bot"; info.tagname = "Bot"; }
             if(info.nickname == "probot" && x==1) { info.tagtype="bot"; info.tagname = "Bot"; }
             if(info.nickname == "saucebot" && x==1) { info.tagtype="bot"; info.tagname = "Bot"; }
@@ -921,7 +944,8 @@ BetterTTVEngine = function () {
             }
 
             if (!(CurrentChat.restarting && !CurrentChat.history_ended || CurrentChat.ignored[info.sender]))
-                if ("jtv" === info.sender || "twitchnotify" === info.sender) CurrentChat.last_sender = info.sender, CurrentChat.admin_message(CurrentChat.format_message(info));
+                if ("jtv" === info.sender) CurrentChat.last_sender = info.sender, CurrentChat.admin_message(CurrentChat.format_message(info));
+                else if ("twitchnotify" === info.sender) CurrentChat.last_sender = info.sender, CurrentChat.notify_message("subscriber", CurrentChat.format_message(info));
                 else if (!info.is_action && !messageHighlighted && CurrentChat.last_sender && CurrentChat.last_sender === info.sender && "jtv" !== CurrentChat.last_sender) CurrentChat.insert_with_lock("#chat_line_list li:last", '<p class="chat_line" style="display:block;">&raquo; ' + CurrentChat.format_message(info) + "</p>");
             else {
                 CurrentChat.last_sender = info.sender;
@@ -984,6 +1008,28 @@ BetterTTVEngine = function () {
 
         CurrentChat.TMIFailedToJoin = true;
         CurrentChat.TMIFailedToJoinTries = 1;
+
+        CurrentChat.notify_message = function (type, message) {
+            if (type === "subscriber") {
+                var subIcon = '<span class="tag subscriber c'+CurrentChat.channel+'" title="Subscriber"><a href="/'+CurrentChat.channel+'/subscribe" target="_blank">Subscriber</a></span>&nbsp;&nbsp;';
+                var msg = '<li class="line"><p>'+subIcon+'<span class="chat_line fromtwitchnotify">' + message + "</span></p></li>";
+            } else {
+                var msg = '<li class="line"><p><span class="chat_line fromtwitchnotify">' + message + "</span></p></li>";
+            }
+            this.last_sender = "twitchnotify", this.insert_with_lock("#chat_line_list", msg)
+        }
+
+        CurrentChat.chat_say_old = CurrentChat.chat_say;
+        CurrentChat.chat_say = function (message) {
+            var n = message || bttvJquery("#chat_text_input")[0],
+            r = n.value;
+            if(!CurrentChat.sentHistory) CurrentChat.sentHistory = [];
+            if(CurrentChat.sentHistory.indexOf(r) !== -1) {
+                CurrentChat.sentHistory.splice(CurrentChat.sentHistory.indexOf(r), 1);
+            }
+            CurrentChat.sentHistory.unshift(r);
+            CurrentChat.chat_say_old.call(CurrentChat, message);
+        }
 
         CurrentChat.ghettoTimeout = function (time) {
             CurrentChat.say("/timeout " + bttvJquery("#user_info .nick").html() + " " + time);
@@ -1189,6 +1235,28 @@ BetterTTVEngine = function () {
                     }
                 }
             }
+            if(CurrentChat.sentHistory) {
+                chatField = bttvJquery("#chat_text_input")[0].value;
+                historyIndex = CurrentChat.sentHistory.indexOf(chatField);
+                if (keyCode === 38) {
+                    if(historyIndex >= 0) {
+                        if(CurrentChat.sentHistory[historyIndex+1]) {
+                            bttvJquery("#chat_text_input")[0].value = CurrentChat.sentHistory[historyIndex+1];
+                        }
+                    } else {
+                        bttvJquery("#chat_text_input")[0].value = CurrentChat.sentHistory[0];
+                    }
+                }
+                if (keyCode === 40) {
+                    if(historyIndex >= 0) {
+                        if(CurrentChat.sentHistory[historyIndex-1]) {
+                            bttvJquery("#chat_text_input")[0].value = CurrentChat.sentHistory[historyIndex-1];
+                        } else {
+                            bttvJquery("#chat_text_input")[0].value = "";
+                        }
+                    }
+                }
+            }
         });
 
         bttvJquery("#chat_lines").scroll(function () {
@@ -1320,11 +1388,12 @@ BetterTTVEngine = function () {
                                 { url: "http://cdn.betterttv.net/emotes/sourpls.gif", width: 40, height: 40, regex: "SourPls" },
                                 { url: "http://cdn.betterttv.net/emotes/stray.png", width: 45, height: 35, regex: "She\'llBeRight" },
                                 { url: "http://cdn.betterttv.net/emotes/taxi.png", width: 87, height: 30, regex: "TaxiBro" },
-                                { url: "http://cdn.betterttv.net/emotes/epic.png", width: 25, height: 27, regex: "\\[e\\]" },
                                 { url: "http://cdn.betterttv.net/emotes/cookiethump.png", width: 29, height: 25, regex: "CookieThump" },
                                 { url: "http://cdn.betterttv.net/emotes/ohmygoodness.png", width: 20, height: 30, regex: "OhMyGoodness" },
                                 { url: "http://cdn.betterttv.net/emotes/jesssaiyan.png", width: 20, height: 30, regex: "JessSaiyan" },
-                                { url: "http://cdn.betterttv.net/emotes/creepo.png", width: 21, height: 30, regex: "CreepyCanadian" }
+                                { url: "http://cdn.betterttv.net/emotes/creepo.png", width: 21, height: 30, regex: "CreepyCanadian" },
+                                { url: "http://cdn.betterttv.net/emotes/yetiz.png", width: 60, height: 30, regex: "YetiZ" },
+                                { url: "http://cdn.betterttv.net/emotes/urn.png", width: 19, height: 30, regex: "UrnCrown" }
                               ];
 
         if (bttvSettings["showDefaultEmotes"] !== true) {
@@ -1449,6 +1518,35 @@ BetterTTVEngine = function () {
                     d.data.chatters[a].forEach(function (a) {
                         currentViewers.push(a);
                     });
+                    if(a === "staff" || a === "admins") {
+                        d.data.chatters[a].forEach(function (a) {
+                            d.data.chatters["moderators"].push(a);
+                        });
+                    }
+                    if(a === "staff") {
+                        d.data.chatters[a].forEach(function (a) {
+                            if(!CurrentChat.staff[a]) {
+                                var action = {
+                                    kind: "staff",
+                                    user: a
+                                }
+                                fakeCurrentChat("special_user", action);
+                                console.log("Added "+a+" as staff");
+                            }
+                        });
+                    }
+                    if(a === "admins") {
+                        d.data.chatters[a].forEach(function (a) {
+                            if(!CurrentChat.admins[a]) {
+                                var action = {
+                                    kind: "admin",
+                                    user: a
+                                }
+                                fakeCurrentChat("special_user", action);
+                                console.log("Added "+a+" as admin");
+                            }
+                        });
+                    }
                     if(a === "moderators") {
                         d.data.chatters[a].forEach(function (a) {
                             if(!CurrentChat.moderators[a]) {
@@ -1803,7 +1901,7 @@ BetterTTVEngine = function () {
                                     </div> \
                                    </div> \
                                    <div id="footer"> \
-                                    <span>BetterTTV &copy; <a href="http://www.nightdev.com" target="_blank">NightDev</a> 2013</span><span style="float:right;">For support, please <a href="http://www.nightdev.com/contact" target="_blank">click here</a>. To report a bug, <a href="http://bugs.nightdev.com/projects/betterttv/issues/new?tracker_id=1" target="_blank">click here</a>.</span> \
+                                    <span>BetterTTV &copy; <a href="http://www.nightdev.com" target="_blank">NightDev</a> 2013</span><span style="float:right;"><a href="http://www.nightdev.com/contact" target="_blank">Get Support</a> | <a href="http://bugs.nightdev.com/projects/betterttv/issues/new?tracker_id=1" target="_blank">Report a Bug</a> | <a href="http://streamdonations.net/c/night" target="_blank">Support the Developer</a></span> \
                                    </div>';
         bttvJquery("body").append(settingsPanel);
 
@@ -1864,12 +1962,25 @@ BetterTTVEngine = function () {
         if (action === "setHighlightKeywords") {
             var keywords = prompt("Type some highlight keywords. Messages containing keywords will turn red to get your attention. Use spaces in the field to specify multiple keywords.", bttvSettings["highlightKeywords"]);
             if (keywords != null) {
+                keywords = keywords.trim().replace(/\s\s+/g, ' ');
                 bttvChangeSetting("highlightKeywords", keywords);
-                var keywords = keywords.split(" ");
+                var phraseRegex = /\{(.*)\}/g;
+                var testCases =  keywords.match(phraseRegex);
+                var phraseKeywords = [];
+                if(testCases) {
+                    for (i=0;i<testCases.length;i++) {
+                        var testCase = testCases[i];
+                        keywords = keywords.replace(testCase, "").replace(/\s\s+/g, ' ').trim();
+                        phraseKeywords.push('"'+testCase.replace(/(^\{|\}$)/g, '')+'"');
+                    }
+                }
+
+                keywords === "" ? keywords = phraseKeywords : keywords = keywords.split(" ").concat(phraseKeywords);
 
                 if (bttvSettings["selfHighlights"] !== false) {
                     keywords.unshift(PP['login']);
                 }
+                
                 var keywordList = keywords.join(", ");
 
                 CurrentChat.admin_message("Highlight Keywords are now set to: " + keywordList);
@@ -1878,8 +1989,19 @@ BetterTTVEngine = function () {
         if (action === "setBlacklistKeywords") {
             var keywords = prompt("Type some blacklist keywords. Messages containing keywords will be filtered from your chat. Use spaces in the field to specify multiple keywords.", bttvSettings["blacklistKeywords"]);
             if (keywords != null) {
+                keywords = keywords.trim().replace(/\s\s+/g, ' ');
                 bttvChangeSetting("blacklistKeywords", keywords);
-                var keywords = keywords.split(" ");
+                var phraseRegex = /\{(.*)\}/g;
+                var testCases =  keywords.match(phraseRegex);
+                var phraseKeywords = [];
+                if(testCases) {
+                    for (i=0;i<testCases.length;i++) {
+                        var testCase = testCases[i];
+                        keywords = keywords.replace(testCase, "").replace(/\s\s+/g, ' ').trim();
+                        phraseKeywords.push('"'+testCase.replace(/(^\{|\}$)/g, '')+'"');
+                    }
+                }
+                keywords === "" ? keywords = phraseKeywords : keywords = keywords.split(" ").concat(phraseKeywords);
                 var keywordList = keywords.join(", ");
                 CurrentChat.admin_message("Blacklist Keywords are now set to: " + keywordList);
             }
