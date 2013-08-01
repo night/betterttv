@@ -811,7 +811,7 @@ BetterTTVEngine = function () {
                 keyword = escapeRegExp(keyword);
                 var wordRegex = new RegExp('(\\s|^)' + keyword + '(\\s|$)', 'i');
                 var nickRegex = new RegExp('^' + keyword + '$', 'i');
-                if (PP['login'] !== "" && (((wordRegex.test(info.message) || nickRegex.test(info.nickname)) && PP['login'] !== info.nickname) || (PP['login'] === info.nickname && bttvSettings["highlightKeywords"].indexOf(PP['login']) !== -1))) {
+                if (PP['login'] !== "" && (((wordRegex.test(info.message) || nickRegex.test(info.nickname)) && PP['login'] !== info.nickname) || (PP['login'] === info.nickname && bttvSettings["highlightKeywords"] && bttvSettings["highlightKeywords"].indexOf(PP['login']) !== -1))) {
                     messageHighlighted = true;
                 }
             });
