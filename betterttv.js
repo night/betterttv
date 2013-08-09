@@ -21,7 +21,7 @@
  */
 BetterTTVEngine = function () {
 
-    var bttvVersion = "6.4.3",
+    var bttvVersion = "6.4.4",
         bttvDebug = {
             log: function (string) {
                 if (window.console && console.log) console.log("BTTV: " + string);
@@ -37,6 +37,7 @@ BetterTTVEngine = function () {
             }
         },
         bttvSettings = {},
+        //bttvLookupServer = false,
         currentViewers = [],
         liveChannels = [],
         blackChat = false;
@@ -96,7 +97,7 @@ BetterTTVEngine = function () {
 
         for (i = 0; i < 3; i++) {
             c = parseInt(color.substr(i * 2, 2), 16);
-            if(c === 0) c = 10;
+            if(c < 10) c = 10;
             c = Math.round(Math.min(Math.max(0, c + (c * brightness)), 255)).toString(16);
             rgb += ("00" + c).substr(c.length);
         }
@@ -147,10 +148,12 @@ BetterTTVEngine = function () {
         removeElement('.advertisement');
         removeElement('.ad_contain');
         removeElement('li[data-name="kabam"]');
-        bttvJquery('#right_col').addClass('noads');
+        bttvJquery('#right_col').addClass('noads').css('top','0px');
+        bttvJquery("#sub-link").hide();
+        bttvJquery("#twitch_chat .js-chat-scroll").css("bottom", bttvJquery("#twitch_chat #speak").height());
 
         if (bttvSettings["blockSubButton"] === true) {
-            bttvJquery("#sub-details").css("display", "none");
+            bttvJquery("#sub-details").css("display", "none");   
         }
 
     }
@@ -919,7 +922,6 @@ BetterTTVEngine = function () {
             if(info.nickname == "bacon_donut") { info.tagtype="bacon"; info.tagname = "&#8203;"; info.nickname = "Donut"; }
             if(info.nickname == "gr8tacotaste") { info.tagtype="taco"; info.tagname = "&#8203;"; }
             if(info.nickname == "wsos") { info.tagtype="purple"; info.tagname = "Drippin' Dat"; }
-            if(info.nickname == "tehmorag" && x==1) { info.nickname="tehMorag"; info.color = info.color+";text-transform: none"; }
             //Xmas
             if(info.nickname == "r3lapse" && x==1) { info.tagtype="staff"; info.tagname = "Kershaw"; }
             if(info.nickname == "im_tony_" && x==1) { info.tagtype="admin"; info.tagname = "oZn"; }
@@ -931,6 +933,10 @@ BetterTTVEngine = function () {
             if(info.nickname == "thesabe" && x==1) { info.tagtype="orange"; info.tagname = "<span style='color:blue;'>Sabey</span>"; }
             if(info.nickname == "kerviel_" && x==1) { info.tagtype="staff"; info.tagname = "Almighty"; }
             if(info.nickname == "ackleyman" && x==1) { info.tagtype="orange"; info.tagname = "Ack"; }
+
+            if(info.nickname === info.sender) {
+                info.nickname = CurrentChat.lookupDisplayName(info.nickname);
+            }
 
             //this.insert_chat_lineOld(info);
             if (info.message.substr(0, 3).trim() === "/me") {
@@ -1030,10 +1036,42 @@ BetterTTVEngine = function () {
                 CurrentChat.sentHistory.splice(CurrentChat.sentHistory.indexOf(r), 1);
             }
             CurrentChat.sentHistory.unshift(r);
+            ga('send', 'event', 'Chat', 'Send Message');
             CurrentChat.chat_say_old.call(CurrentChat, message);
         }
 
+        CurrentChat.lookupDisplayName = function (user) {
+            if(user === null || user === "") return;
+            if(!CurrentChat.displayNames) CurrentChat.displayNames = {};
+            if(!CurrentChat.lookingUpUsers) CurrentChat.lookingUpUsers = 0;
+            if(CurrentChat.displayNames[user]) {
+                return CurrentChat.displayNames[user];
+            } else if(user !== "jtv" && user !== "twitchnotify") {
+                if(CurrentChat.lookingUpUsers < 3) {
+                    CurrentChat.lookingUpUsers++;
+                    ga('send', 'event', 'Chat', 'Lookup Display Name');
+                    Twitch.api.get("users/" + user).done(function (d) {
+                        if(d.display_name && d.name) {
+                            CurrentChat.displayNames[d.name] = d.display_name;
+                            bttvJquery('#chat_line_list .chat_from_' + d.name.replace(/%/g, '_').replace(/[<>,]/g, '') + ' .nick').each(function () {
+                                bttvJquery(this).html(d.display_name);
+                            });                            
+                        }
+                        CurrentChat.lookingUpUsers--;
+                    });
+                    return user.capitalize();
+                } else {
+                    return user.capitalize();
+                }
+            } else {
+                return user;
+            }
+        }
+        CurrentChat.lookupDisplayName(Twitch.user.login());
+        CurrentChat.lookupDisplayName(CurrentChat.channel);
+
         CurrentChat.ghettoTimeout = function (time) {
+            ga('send', 'event', 'Chat', 'Send Timeout: ' + time);
             CurrentChat.say("/timeout " + bttvJquery("#user_info .nick").html() + " " + time);
         }
 
@@ -1041,7 +1079,7 @@ BetterTTVEngine = function () {
             clearTimeout(CurrentChat.checkJoinFail);
             CurrentChat.TMIFailedToJoin = false;
             CurrentChat.retries = 10;
-            CurrentChat.admin_message(i18n("Welcome to " + CurrentChat.channel.capitalize() + "'s chat room!"));
+            CurrentChat.admin_message(i18n("Welcome to " + CurrentChat.lookupDisplayName(CurrentChat.channel) + "'s chat room!"));
             $("chat_text_input").disabled = !1;
             CurrentChat.currently_scrolling = !0;
             CurrentChat.scroll_chat();
@@ -1165,31 +1203,38 @@ BetterTTVEngine = function () {
                 CurrentChat.insert_with_lock("#chat_line_list", '<li class="line fromjtv"><p class="content">Chat was cleared by a moderator (Prevented by BetterTTV)</p></li>');
             } else if (info.target === "user") {
                 var nickname = CurrentChat.real_username(info.user);
-                if (bttvSettings["showDeletedMessages"] !== true) {
-                    bttvJquery('#chat_line_list .chat_from_' + info.user.replace(/%/g, '_').replace(/[<>,]/g, '') + ' .chat_line').each(function () {
-                        bttvJquery(this).html("<span style=\"color: #999\">&lt;message deleted&gt;</span>");
+                if (bttvSettings["hideDeletedMessages"] === true) {
+                    bttvJquery('#chat_line_list .chat_from_' + info.user.replace(/%/g, '_').replace(/[<>,]/g, '')).each(function () {
+                        bttvJquery(this).remove();
                     });
                 } else {
-                    bttvJquery('#chat_line_list .chat_from_' + info.user.replace(/%/g, '_').replace(/[<>,]/g, '') + ' .chat_line').each(function () {
-                        bttvJquery("a", this).each(function () {
-                            var rawLink = "<span style=\"text-decoration: line-through;\">" + bttvJquery(this).attr("href") + "</span>";
-                            bttvJquery(this).replaceWith(rawLink);
+                    if (bttvSettings["showDeletedMessages"] !== true) {
+                        bttvJquery('#chat_line_list .chat_from_' + info.user.replace(/%/g, '_').replace(/[<>,]/g, '') + ' .chat_line').each(function () {
+                            bttvJquery(this).parent().html("<span style=\"color: #999\">&lt;message deleted&gt;</span>");
                         });
-                        bttvJquery(this).html("<span style=\"color: #999\">" + bttvJquery(this).html() + "</span>");
-                    });
-                }
-                if(CurrentChat.trackTimeouts[nickname]) {
-                    CurrentChat.trackTimeouts[nickname].count++;
-                    bttvJquery('#times_from_' + info.user.replace(/%/g, '_').replace(/[<>,]/g, '') + "_" + CurrentChat.trackTimeouts[nickname].timesID).each(function () {
-                        bttvJquery(this).html("(" + CurrentChat.trackTimeouts[nickname].count + " times)");
-                    });
-                } else {
-                    CurrentChat.trackTimeouts[nickname] = {
-                        count: 1,
-                        timesID: Math.floor(Math.random()*100001)
+                    } else {
+                        bttvJquery('#chat_line_list .chat_from_' + info.user.replace(/%/g, '_').replace(/[<>,]/g, '') + ' .chat_line').each(function () {
+                            bttvJquery("a", this).each(function () {
+                                var rawLink = "<span style=\"text-decoration: line-through;\">" + bttvJquery(this).attr("href") + "</span>";
+                                bttvJquery(this).replaceWith(rawLink);
+                            });
+                            bttvJquery(this).html("<span style=\"color: #999\">" + bttvJquery(this).html() + "</span>");
+                        });
                     }
-                    CurrentChat.last_sender = "jtv";
-                    CurrentChat.insert_with_lock("#chat_line_list", '<li class="line fromjtv"><p class="content"><span style="text-transform:capitalize;">' + nickname + '</span> has been timed out. <span id="times_from_' + info.user.replace(/%/g, '_').replace(/[<>,]/g, '') + "_" + CurrentChat.trackTimeouts[nickname].timesID + '"></span></p></li>');
+                    if(CurrentChat.trackTimeouts[nickname]) {
+                        CurrentChat.trackTimeouts[nickname].count++;
+                        bttvJquery('#times_from_' + info.user.replace(/%/g, '_').replace(/[<>,]/g, '') + "_" + CurrentChat.trackTimeouts[nickname].timesID).each(function () {
+                            bttvJquery(this).html("(" + CurrentChat.trackTimeouts[nickname].count + " times)");
+                        });
+                    } else {
+                        CurrentChat.trackTimeouts[nickname] = {
+                            count: 1,
+                            timesID: Math.floor(Math.random()*100001)
+                        }
+                        var displayName = CurrentChat.lookupDisplayName(nickname);
+                        CurrentChat.last_sender = "jtv";
+                        CurrentChat.insert_with_lock("#chat_line_list", '<li class="line fromjtv"><p class="content">' + displayName + ' has been timed out. <span id="times_from_' + info.user.replace(/%/g, '_').replace(/[<>,]/g, '') + "_" + CurrentChat.trackTimeouts[nickname].timesID + '"></span></p></li>');
+                    }
                 }
             }
         }
@@ -1224,7 +1269,11 @@ BetterTTVEngine = function () {
                         if (user === partialMatch || user === partialMatch.substr(0, partialMatch.length - 1)) {
                             continue;
                         }
-                        sentence.push(user.capitalize());
+                        if(CurrentChat.displayNames && CurrentChat.displayNames[user]) {
+                            sentence.push(CurrentChat.displayNames[user]);
+                        } else {
+                            sentence.push(user.capitalize());
+                        }
                         if (sentence.length === 1) {
                             bttvJquery('#chat_text_input').val(sentence.join(' ') + ":");
                             window.lastMatch = sentence.join(' ') + ":";
@@ -1312,9 +1361,9 @@ BetterTTVEngine = function () {
             }
         });
 
-        /*
-        Twitch.api.get("streams/followed?limit=250").done(function (d) {
+        /*Twitch.api.get("streams/followed?limit=250").done(function (d) {
             if (d.streams && d.streams.length > 0) {
+                ga('send', 'event', 'Channels', 'Check Following');
                 if (liveChannels.length === 0) {
                     liveChannels.push("loaded");
                     d.streams.forEach(function(stream) {
@@ -1345,8 +1394,7 @@ BetterTTVEngine = function () {
                 bttvJquery("a[href=\"/directory/following\"] .js-total").css("display","inline");
             }
             setTimeout(checkFollowing, 60000)
-        });
-        */
+        });*/
 
     }
 
@@ -1404,7 +1452,11 @@ BetterTTVEngine = function () {
                                 { url: "http://cdn.betterttv.net/emotes/jesssaiyan.png", width: 20, height: 30, regex: "JessSaiyan" },
                                 { url: "http://cdn.betterttv.net/emotes/creepo.png", width: 21, height: 30, regex: "CreepyCanadian" },
                                 { url: "http://cdn.betterttv.net/emotes/yetiz.png", width: 60, height: 30, regex: "YetiZ" },
-                                { url: "http://cdn.betterttv.net/emotes/urn.png", width: 19, height: 30, regex: "UrnCrown" }
+                                { url: "http://cdn.betterttv.net/emotes/urn.png", width: 19, height: 30, regex: "UrnCrown" },
+                                { url: "http://cdn.betterttv.net/emotes/teh.png", width: 32, height: 20, regex: "TEH" },
+                                { url: "http://cdn.betterttv.net/emotes/cobalt.png", width: 46, height: 30, regex: "BroBalt" },
+                                { url: "http://cdn.betterttv.net/emotes/roll.png", width: 131, height: 28, regex: "RollIt!" }
+                                
                               ];
 
         if (bttvSettings["showDefaultEmotes"] !== true) {
@@ -1485,25 +1537,27 @@ BetterTTVEngine = function () {
                 });
                 CurrentChat.emoticons.push(a);
             });
-            betterttvEmotes.forEach(function (b) {
-                var a = {};
-                a.regex = RegExp(b.regex, "g");
-                a.images = [];
-                a.images.push({
-                    emoticon_set: null,
-                    width: b.width,
-                    height: b.height,
-                    url: b.url
+            if (bttvSettings["bttvEmotes"] !== false) {
+                betterttvEmotes.forEach(function (b) {
+                    var a = {};
+                    a.regex = RegExp(b.regex, "g");
+                    a.images = [];
+                    a.images.push({
+                        emoticon_set: null,
+                        width: b.width,
+                        height: b.height,
+                        url: b.url
+                    });
+                    a.images.forEach(function (a) {
+                        d += 1;
+                        a.html = ich["chat-emoticon"]({
+                            id: d
+                        }).prop("outerHTML");
+                        cssString += CurrentChat.generate_emoticon_css(a, d);
+                    });
+                    CurrentChat.emoticons.push(a);
                 });
-                a.images.forEach(function (a) {
-                    d += 1;
-                    a.html = ich["chat-emoticon"]({
-                        id: d
-                    }).prop("outerHTML");
-                    cssString += CurrentChat.generate_emoticon_css(a, d);
-                });
-                CurrentChat.emoticons.push(a);
-            });
+            }
             cssString += ".emoticon { display: inline-block; }";
             var emoteCSS = document.createElement("style");
             emoteCSS.setAttribute("type", "text/css");
@@ -1523,11 +1577,21 @@ BetterTTVEngine = function () {
             dataType: "jsonp",
             timeoutLength: 6E3
         }).done(function (d) {
+            ga('send', 'event', 'Chat', 'Update Chatters');
             if (d.data.chatters) {
                 currentViewers = [];
                 ["staff", "admins", "moderators", "viewers"].forEach(function (a) {
                     d.data.chatters[a].forEach(function (a) {
                         currentViewers.push(a);
+                        /*if(!CurrentChat.displayNames) CurrentChat.displayNames = {};
+                        if(!CurrentChat.displayNames[a]) {
+                            Twitch.api.get("users/" + a).done(function (d) {
+                                if(d.display_name) {
+                                    console.log(a+" = "+d.display_name);
+                                    CurrentChat.displayNames[a] = d.display_name;
+                                }
+                            });
+                        }*/
                     });
                     if(a === "staff" || a === "admins") {
                         d.data.chatters[a].forEach(function (a) {
@@ -1793,6 +1857,16 @@ BetterTTVEngine = function () {
                                         </div> \
                                     </div> \
                                     <div class="option"> \
+                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Better TTV Emotes</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Some people don\'t like the extra emoticons :\'( \
+                                        <div class="switch"> \
+                                            <input type="radio" class="switch-input switch-off" name="toggleBTTVEmotes" value="false" id="showBTTVEmotesFalse"> \
+                                            <label for="showBTTVEmotesFalse" class="switch-label switch-label-off">Off</label> \
+                                            <input type="radio" class="switch-input" name="toggleBTTVEmotes" value="true" id="showBTTVEmotesTrue" checked> \
+                                            <label for="showBTTVEmotesTrue" class="switch-label switch-label-on">On</label> \
+                                            <span class="switch-selection"></span> \
+                                        </div> \
+                                    </div> \
+                                    <div class="option"> \
                                         <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Darken Twitch</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;A slick, grey theme which will make you love Twitch even more \
                                         <div class="switch"> \
                                             <input type="radio" class="switch-input switch-off" name="toggleDarkTwitch" value="false" id="darkenedModeFalse"> \
@@ -1843,7 +1917,7 @@ BetterTTVEngine = function () {
                                         </div> \
                                     </div> \
                                     <div class="option"> \
-                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Deleted Messages</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;BetterTTV hides deleted messages by default. Set this to On to show them. \
+                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Deleted Messages</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Twitch replaces removed messages with <message deleted>. Turn this On to prevent it. \
                                         <div class="switch"> \
                                             <input type="radio" class="switch-input switch-off" name="toggleDeletedMessages" value="false" id="showDeletedMessagesFalse"> \
                                             <label for="showDeletedMessagesFalse" class="switch-label switch-label-off">Off</label> \
@@ -1859,6 +1933,16 @@ BetterTTVEngine = function () {
                                             <label for="featuredChannelsFalse" class="switch-label switch-label-off">Off</label> \
                                             <input type="radio" class="switch-input" name="toggleFeaturedChannels" value="true" id="featuredChannelsTrue" checked> \
                                             <label for="featuredChannelsTrue" class="switch-label switch-label-on">On</label> \
+                                            <span class="switch-selection"></span> \
+                                        </div> \
+                                    </div> \
+                                    <div class="option"> \
+                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Hide Deleted Messages</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Make those spammers disappear completely! \
+                                        <div class="switch"> \
+                                            <input type="radio" class="switch-input switch-off" name="toggleHideDeletedMessages" value="false" id="hideDeletedMessagesFalse"> \
+                                            <label for="hideDeletedMessagesFalse" class="switch-label switch-label-off">Off</label> \
+                                            <input type="radio" class="switch-input" name="toggleHideDeletedMessages" value="true" id="hideDeletedMessagesTrue" checked> \
+                                            <label for="hideDeletedMessagesTrue" class="switch-label switch-label-on">On</label> \
                                             <span class="switch-selection"></span> \
                                         </div> \
                                     </div> \
@@ -1959,9 +2043,12 @@ BetterTTVEngine = function () {
         bttvSettings["showFeaturedChannels"] === true ? bttvJquery('#featuredChannelsTrue').prop('checked', true) : bttvJquery('#featuredChannelsFalse').prop('checked', true);
         bttvSettings["showDeletedMessages"] === true ? bttvJquery('#showDeletedMessagesTrue').prop('checked', true) : bttvJquery('#showDeletedMessagesFalse').prop('checked', true);
         bttvSettings["bttvChat"] === true ? bttvJquery('#showBTTVChatTrue').prop('checked', true) : bttvJquery('#showBTTVChatFalse').prop('checked', true);
+        bttvSettings["bttvEmotes"] === false ? bttvJquery('#showBTTVEmotesFalse').prop('checked', true) : bttvJquery('#showBTTVEmotesTrue').prop('checked', true);
+        bttvSettings["hideDeletedMessages"] === true ? bttvJquery('#hideDeletedMessagesTrue').prop('checked', true) : bttvJquery('#hideDeletedMessagesFalse').prop('checked', true);
     }
 
     betterttvAction = function (action) {
+        ga('send', 'event', 'BTTV', 'Action: '+action);
         if (action === "clearChat") {
             removeElement(".line");
             CurrentChat.admin_message("You cleared your own chat (BetterTTV)");
@@ -2071,6 +2158,15 @@ BetterTTVEngine = function () {
                 betaChat();
             }
         }
+        if (action === "toggleBTTVEmotes") {
+            if (bttvSettings["bttvEmotes"] === false) {
+                bttvChangeSetting("bttvEmotes", true);
+                overrideEmotes();
+            } else {
+                bttvChangeSetting("bttvEmotes", false);
+                overrideEmotes();
+            }
+        }
         if (action === "toggleDefaultEmotes") {
             if (bttvSettings["showDefaultEmotes"] === true) {
                 bttvChangeSetting("showDefaultEmotes", false);
@@ -2098,6 +2194,13 @@ BetterTTVEngine = function () {
                 bttvChangeSetting("showDirectoryLiveTab", false);
             } else {
                 bttvChangeSetting("showDirectoryLiveTab", true);
+            }
+        }
+        if (action === "toggleHideDeletedMessages") {
+            if (bttvSettings["hideDeletedMessages"] === true) {
+                bttvChangeSetting("hideDeletedMessages", false);
+            } else {
+                bttvChangeSetting("hideDeletedMessages", true);
             }
         }
         if (action === "toggleTimestamps") {
@@ -2247,6 +2350,7 @@ BetterTTVEngine = function () {
                                 "chatWidth",
                                 "darkenedMode",
                                 "flipDashboard",
+                                "hideDeletedMessages",
                                 "highlightKeywords",
                                 "scrollbackAmount",
                                 "selfHighlights",
@@ -2266,12 +2370,53 @@ BetterTTVEngine = function () {
     }
 
     bttvChangeSetting = function(setting, value) {
+        ga('send', 'event', 'BTTV', 'Change Setting: '+setting+'='+value);
         bttvSettings[setting] = value;
         localStorage.setItem(setting, value);
     }
 
+    /*bttvHandleLookupServer = function() {
+        var socketJSInject = document.createElement("script");
+            socketJSInject.setAttribute("src", "http://209.141.39.172:2888/socket.io/socket.io.js");
+            socketJSInject.setAttribute("type", "text/javascript");
+        
+        bttvJquery("head").append(socketJSInject);
+        bttvJquery(document).ready(function () {
+            setTimeout(function() {
+                try {
+                    var socket = io.connect('http://209.141.39.172:2888/');
+                    socket.on("ready", function() {
+                        bttvLookupServer = socket;
+                    });
+                    socket.on("userinfo", function(data) {
+                        if(data.status === "fresh") {
+                            CurrentChat.displayNames[data.user] = data.info.displayName;
+                            bttvJquery('#chat_line_list .chat_from_' + data.user.replace(/%/g, '_').replace(/[<>,]/g, '') + ' .nick').each(function () {
+                                bttvJquery(this).html(data.info.displayName);
+                            });
+                        } else {
+                            Twitch.api.get("users/" + data.user).done(function (d) {
+                                if(d.display_name) {
+                                    CurrentChat.displayNames[data.user] = d.display_name;
+                                    bttvJquery('#chat_line_list .chat_from_' + data.user.replace(/%/g, '_').replace(/[<>,]/g, '') + ' .nick').each(function () {
+                                        bttvJquery(this).html(d.display_name);
+                                    });
+                                    socket.emit("update_user", { user: data.user, displayName: d.display_name });
+                                    ga('send', 'event', 'Chat', 'Lookup Display Name');
+                                }
+                            });
+                        }
+                    });
+                } catch(e) {
+                    bttvDebug.log(e);
+                }
+            }, 5000);
+        });
+    }*/
+
     main = function () {
         loadSettings();
+        //bttvHandleLookupServer();
         bttvJquery(document).ready(function () {
             bttvDebug.log("BTTV v" + bttvVersion);
             bttvDebug.log("CALL init " + document.URL);
