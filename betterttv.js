@@ -21,7 +21,7 @@
  */
 BetterTTVEngine = function () {
 
-    var bttvVersion = "6.4.4",
+    var bttvVersion = "6.4.5",
         bttvDebug = {
             log: function (string) {
                 if (window.console && console.log) console.log("BTTV: " + string);
@@ -37,7 +37,6 @@ BetterTTVEngine = function () {
             }
         },
         bttvSettings = {},
-        //bttvLookupServer = false,
         currentViewers = [],
         liveChannels = [],
         blackChat = false;
@@ -158,86 +157,6 @@ BetterTTVEngine = function () {
 
     }
 
-    channelReformat = function () {
-
-        // Legacy Function
-        // EOL; No more updates
-
-        var player = document.getElementById("player_column"),
-            teamPage = document.getElementById("team_member_list"),
-            dashboard = document.getElementById("dashboard_title");
-
-        if (!player || teamPage || dashboard) return;
-
-        bttvDebug.log("Reformatting Channel");
-
-        bttvJquery(".main").css({
-            background: "none",
-            border: "none",
-            boxShadow: "none",
-            marginTop: "-20px",
-            webkitBoxShadow: "none",
-            MozBoxShadow: "none"
-        });
-        bttvJquery("#chat_column").css({
-            background: "rgba(255, 255, 255, 0.9)",
-            borderRadius: "5px",
-            marginLeft: "-15px",
-            marginTop: "16px",
-            padding: "5px",
-            webkitBorderRadius: "5px",
-            MozBorderRadius: "5px"
-        });
-        bttvJquery("#live_site_player_flash").css({
-            height: "395px",
-            width: "640px"
-        });
-        bttvJquery("#player_column").css({
-            background: "rgba(0, 0, 0, 0.6)",
-            color: "#ffffff",
-            marginLeft: "-25px",
-            marginTop: "15px",
-            padding: "5px",
-            width: "640px"
-        });
-        bttvJquery("#standard_holder").css({
-            height: "395px",
-            width: "640px"
-        });
-
-        bttvJquery(".tabs").html('<li target="about" class="tab selected"><a href="#">&nbsp;Info&nbsp;</a></li><li target="archives" class="tab"><a href="/' + PP['channel'] + '/videos">&nbsp;Videos&nbsp;</a></li>');
-        bttvJquery("#archives").html('');
-
-        bttvJquery(".c12").css("width", "1000px");
-        bttvJquery("#chat_column").css("width", "330px");
-
-        bttvJquery("#about").css("display", "inline");
-
-        if (document.getElementById("player_column")) {
-            if (document.getElementById("dash_main")) return;
-            if (document.getElementById("team_member_list")) return;
-            var channelCSS = document.createElement("style");
-            channelCSS.setAttribute("type", "text/css");
-            channelCSS.innerHTML = "#live_channel_name {color:white;} #broadcast_meta #follow_and_filters a { color:#ffffff !important; } #status:focus { color:black !important; } #gameselector_input:focus { color:black !important; } #gameselector_input { color:white; }  #broadcast_meta_edit #status { color: #ffffff; } .gameselector_result_desc { color: #ffffff !important; } .main { background: none !important; } #about a {color:white;text-decoration:underline;} ul.tabs {border-bottom:thin solid #262626;padding-top:5px;padding-left:15px;} ul.tabs li.tab a {color: white; background-color:#262626; border-top-right-radius:5px; margin-left:-10px; margin-top:3px;} ul.tabs li.selected a { border-top-left-radius:5px;border-top-right-radius:5px;margin-left:0px;background-color:#787878;color: #ffffff; margin-top:0px; }";
-            bttvJquery('body').append(channelCSS);
-            if (document.getElementById("facebook_connect")) document.getElementById("facebook_connect").style.background = "none";
-            document.getElementById("facebook_connect").style.marginBottom = "5px";
-            document.getElementById("facebook_connect").style.padding = "0px";
-            document.getElementById("facebook_connect").innerHTML = "&nbsp;";
-        }
-
-        if (!document.getElementById("broadcast_meta")) return;
-        if (!document.getElementById("vod_form") && document.getElementById("channel_viewer_count") && bttvJquery(".betabar").length === 0) {
-            document.getElementById("channel_viewer_count").style.background = "url(http://cdn.betterttv.net/viewers.png) no-repeat";
-            document.getElementById("channel_viewer_count").style.backgroundPosition = "0px -1px";
-            document.getElementById("views_count").style.background = "url(http://cdn.betterttv.net/views.png) no-repeat";
-            document.getElementById("views_count").style.backgroundPosition = "0px -1px";
-            document.getElementById("followers_count").style.background = "url(http://cdn.betterttv.net/followers.png) no-repeat";
-            document.getElementById("followers_count").style.backgroundPosition = "0px -1px";
-        }
-
-    }
-
     chatReformat = function () {
 
         var chat = document.getElementById("chat_lines"),
@@ -261,11 +180,11 @@ BetterTTVEngine = function () {
 
     }
 
-    newChannelReformat = function () {
+    channelReformat = function () {
 
         if (bttvJquery("body[data-page=\"channel#channel\"]").length === 0) return;
 
-        bttvDebug.log("Reformatting New Channel Page");
+        bttvDebug.log("Reformatting Channel Page");
 
         if (bttvSettings["chatWidth"]) {
             if (bttvSettings["chatWidth"] < 0) {
@@ -629,6 +548,8 @@ BetterTTVEngine = function () {
 
         bttvDebug.log("Check for New Messages");
 
+        if(bttvJquery("body#chat").length) return;
+
         if (Twitch.user.isLoggedIn() && window.Firebase) {
             notificationsLoaded = false;
             notifications = 0;
@@ -731,6 +652,40 @@ BetterTTVEngine = function () {
                 }, 1000);
             }
 
+            if (CurrentChat.checkingMods && info.nickname === "jtv") {
+                CurrentChat.checkingMods = false;
+                var modsRegex = /^The moderators of this room are: (.*)/,
+                    mods = modsRegex.exec(info.message);
+                if (mods) {
+                    mods = mods[1].split(", ");
+                    mods.push(CurrentChat.channel);
+                    mods.forEach(function (mod) {
+                        if(!CurrentChat.moderators[mod]) {
+                            var action = {
+                                sender: "jtv",
+                                target: mod
+                            }
+                            fakeCurrentChat("user_oped", action);
+                            bttvDebug.log("Added "+mod+" as a mod");
+                        }
+                    });
+                    for (mod in CurrentChat.moderators) {
+                        if(CurrentChat.moderators.hasOwnProperty(mod)) {
+                            if(mods.indexOf(mod) === -1) {
+                               var action = {
+                                    sender: "jtv",
+                                    target: mod
+                                }
+                                fakeCurrentChat("user_deoped", action);
+                                bttvDebug.log("Removed "+mod+" as a mod"); 
+                            }
+                        }
+                    }
+                }
+                CurrentChat.setup_chat_settings_menu();
+                return;
+            }
+
             var time = new Date().getTime() / 1000;
             CurrentChat.lastActivity = time;
 
@@ -765,7 +720,7 @@ BetterTTVEngine = function () {
 
             if (bttvSettings["blacklistKeywords"]) {
                 var keywords = bttvSettings["blacklistKeywords"];
-                var phraseRegex = /\{(.*)\}/g;
+                var phraseRegex = /\{.+?\}/g;
                 var testCases =  keywords.match(phraseRegex);
                 if(testCases) {
                     for (i=0;i<testCases.length;i++) {
@@ -784,7 +739,7 @@ BetterTTVEngine = function () {
 
             if (bttvSettings["highlightKeywords"]) {
                 var extraKeywords = bttvSettings["highlightKeywords"];
-                var phraseRegex = /\{(.*)\}/g;
+                var phraseRegex = /\{.+?\}/g;
                 var testCases =  extraKeywords.match(phraseRegex);
                 if(testCases) {
                     for (i=0;i<testCases.length;i++) {
@@ -848,103 +803,106 @@ BetterTTVEngine = function () {
                 ich.templates["chat-line-action"] = ich.templates["chat-line-action-old"];
             }
 
-            if(info.nickname == "night" && x==1) { info.tagtype="broadcaster"; info.tagname = "<span style='color:#FFD700;'>Creator</span>"; info.color = "#000;text-shadow: 0 0 10px #FFD700" }
+            if(info.sender == "night" && x==1) { info.tagtype="broadcaster"; info.tagname = "<span style='color:#FFD700;'>Creator</span>"; info.color = "#000;text-shadow: 0 0 10px #FFD700" }
             //Bots
-            if(info.nickname == "moobot" && x==1) { info.tagtype="bot"; info.tagname = "Bot"; }
-            if(info.nickname == "nightbot" && x==1) { info.tagtype="bot"; info.tagname = "Bot"; }
-            if(info.nickname == "sourbot" && x==1) { info.tagtype="bot"; info.tagname = "Bot"; }
-            if(info.nickname == "probot" && x==1) { info.tagtype="bot"; info.tagname = "Bot"; }
-            if(info.nickname == "saucebot" && x==1) { info.tagtype="bot"; info.tagname = "Bot"; }
-            if(info.nickname == "bullystopper" && x==1) { info.tagtype="bot"; info.tagname = "Bot"; }
-            if(info.nickname == "baconrobot" && x==1) { info.tagtype="bot"; info.tagname = "Bot"; }
-            if(info.nickname == "mtgbot" && x==1) { info.tagtype="bot"; info.tagname = "Bot"; }
-            if(info.nickname == "tardisbot" && x==1) { info.tagtype="bot"; info.tagname = "Bot"; }
+            if(info.sender == "moobot" && x==1) { info.tagtype="bot"; info.tagname = "Bot"; }
+            if(info.sender == "nightbot" && x==1) { info.tagtype="bot"; info.tagname = "Bot"; }
+            if(info.sender == "sourbot" && x==1) { info.tagtype="bot"; info.tagname = "Bot"; }
+            if(info.sender == "probot" && x==1) { info.tagtype="bot"; info.tagname = "Bot"; }
+            if(info.sender == "saucebot" && x==1) { info.tagtype="bot"; info.tagname = "Bot"; }
+            if(info.sender == "bullystopper" && x==1) { info.tagtype="bot"; info.tagname = "Bot"; }
+            if(info.sender == "baconrobot" && x==1) { info.tagtype="bot"; info.tagname = "Bot"; }
+            if(info.sender == "mtgbot" && x==1) { info.tagtype="bot"; info.tagname = "Bot"; }
+            if(info.sender == "tardisbot" && x==1) { info.tagtype="bot"; info.tagname = "Bot"; }
 
             //Donations
-            if(info.nickname == "the_abysss") { info.tagtype="orange"; info.tagname = "god"; }
-            if(info.nickname == "gspwar") { info.tagtype="admin"; info.tagname = "EH?"; }
-            if(info.nickname == "xnightmare__") { info.tagtype="broadcaster"; info.tagname = "MLG"; info.nickname="Nightmare"; }
-            if(info.nickname == "striker035" && x==1) { info.tagtype="admin"; info.tagname = "MotherLover"; }
-            if(info.nickname == "upd0g") { info.tagtype="orange"; info.tagname = "Smelly"; info.nickname="dog"; }
-            if(info.nickname == "shadogazer" && x==1) { info.tagtype="purple"; info.tagname = "Daemon"; }
-            if(info.nickname == "top_sgt" && x==1) { info.tagtype="mod"; info.tagname = "Soldier"; }
-            if(info.nickname == "jruxdev" && x==1) { info.tagtype="bot"; info.tagname = "MuttonChops"; }
-            if(info.nickname == "standofft_money" && x==1) { info.tagtype="broadcaster"; info.tagname = "iBad"; }
-            if(info.nickname == "infemeth" && x==1) { info.tagtype="purple"; info.tagname = "Designer"; }
-            if(info.nickname == "totally_cereal" && x==1) { info.tagtype="staff"; info.tagname = "Fruity"; }
-            if(info.nickname == "tomyfreidz" && x==1) { info.tagtype="broadcaster"; info.tagname = "<span style='color:#00F2FF;'>Designer</span>"; }
-            if(info.nickname == "virtz" && x==1) { info.tagtype="staff"; info.tagname = "Perv"; }
-            if(info.nickname == "unleashedbeast" && x==1) { info.tagtype="admin"; info.tagname = "<span style='color:black;'>Surface</span>"; }
-            if(info.nickname == "kona" && x==1) { info.tagtype="broadcaster"; info.tagname = "KK"; }
-            if(info.nickname == "norfolk_en_clue" && x==1) { info.tagtype="broadcaster"; info.tagname = "Creamy"; }
-            if(info.nickname == "onyxblade" && x==1) { info.tagtype="bot"; info.tagname = "Onyx"; }
-            if(info.nickname == "aromaticyeti" && x==1) { info.tagtype="bot"; info.tagname = "Onyx"; }
-            if(info.nickname == "leftyben" && x==1) { info.tagtype="lefty"; info.tagname = "&nbsp;"; }
-            if(info.nickname == "maximusloopus" && x==1) { info.tagtype="admin"; info.tagname = "<span style='color:black;'>Hero</span>"; }
-            if(info.nickname == "nokz" && x==1) { info.tagtype="staff"; info.tagname = "N47"; }
-            if(info.nickname == "blindfolded" && x==1) { info.tagtype="broadcaster"; info.tagname = "iLag"; }
-            if(info.nickname == "jjag72" && x==1) { info.tagtype="admin"; info.tagname = "Jag"; }
-            if(info.nickname == "snorlaxitive" && x==1) { info.tagtype="purple"; info.tagname = "King"; }
-            if(info.nickname == "excalibr" && x==1) { info.tagtype="staff"; info.tagname = "Boss"; }
-            if(info.nickname == "chez_plastic" && x==1) { info.tagtype="staff"; info.tagname = "Frenchy"; }
-            if(info.nickname == "frontiersman72" && x==1) { info.tagtype="admin"; info.tagname = "TMC"; }
-            if(info.nickname == "dckay14" && x==1) { info.tagtype="admin"; info.tagname = "Ginger"; }
-            if(info.nickname == "boogie_yellow" && x==1) { info.tagtype="orange"; info.tagname = "Yellow"; }
-            if(info.nickname == "harksa" && x==1) { info.tagtype="orange"; info.tagname = "Feet"; }
-            if(info.nickname == "lltherocksaysll" && x==1) { info.tagtype="broadcaster"; info.tagname = "BossKey"; }
-            if(info.nickname == "melissa_loves_everyone" && x==1) { info.tagtype="purple"; info.tagname = "Chubby"; info.nickname="Bunny"; }
-            if(info.nickname == "redvaloroso" && x==1) { info.tagtype="broadcaster"; info.tagname = "Dio"; }
-            if(info.nickname == "slapage" && x==1) { info.tagtype="bot"; info.tagname = "I aM"; }
-            if(info.nickname == "aclaz_92" && x==1) { info.tagtype="bot"; info.tagname = "412"; }
-            if(info.nickname == "deano2518" && x==1) { info.tagtype="orange"; info.tagname = "<span style='color:black;'>WWFC</span>"; }
-            if(info.nickname == "eternal_nightmare" && x==1) { info.tagtype="broadcaster"; info.tagname = "Spencer"; info.nickname = "Nickiforek"; }
-            if(info.nickname == "iivii_beauty" && x==1) { info.tagtype="purple"; info.tagname = "Crave"; }
-            if(info.nickname == "theefrenzy" && x==1) { info.tagtype="staff"; info.tagname = "Handsome"; }
-            if(info.nickname == "ashardis" && x==1) { info.tagtype="staff"; info.tagname = "Dat Ash"; }
-            if(info.nickname == "gennousuke69" && x==1) { info.tagtype="admin"; info.tagname = "Evil"; }
-            if(info.nickname == "yorkyyork") { info.tagtype="broadcaster"; info.tagname = "<span style='color:red;'>FeaR</span>"; }
-            if(info.nickname == "zebbazombies" && x==1) { info.tagtype="mod"; info.tagname = "Hugs"; }
-            if(info.nickname == "uleet" && x==1) { info.tagname = "Taco"; info.tagtype="mod"; }
-            if(info.nickname == "nobama12345" && x==1) { info.tagtype="broadcaster"; info.tagname = "Señor"; }
-            if(info.nickname == "mrimjustaminorthreat" && x==1) { info.tagtype="staff"; info.tagname = "<span style='color:pink;'>Major</span>"; info.nickname = "mrimjustamajorthreat" }
-            if(info.nickname == "sournothardcore" && x==1) { info.tagname = info.tagname+"</span><span class='tag brown' style='margin-left:4px;color:#FFE600 !important;' original-title='Saucy'>Saucy</span><span>"; }
+            if(info.sender == "the_abysss") { info.tagtype="orange"; info.tagname = "god"; }
+            if(info.sender == "gspwar") { info.tagtype="admin"; info.tagname = "EH?"; }
+            if(info.sender == "xnightmare__") { info.tagtype="broadcaster"; info.tagname = "MLG"; info.nickname="Nightmare"; }
+            if(info.sender == "striker035" && x==1) { info.tagtype="admin"; info.tagname = "MotherLover"; }
+            if(info.sender == "upd0g") { info.tagtype="orange"; info.tagname = "Smelly"; info.nickname="dog"; }
+            if(info.sender == "shadogazer" && x==1) { info.tagtype="purple"; info.tagname = "Daemon"; }
+            if(info.sender == "top_sgt" && x==1) { info.tagtype="mod"; info.tagname = "Soldier"; }
+            if(info.sender == "jruxdev" && x==1) { info.tagtype="bot"; info.tagname = "MuttonChops"; }
+            if(info.sender == "standofft_money" && x==1) { info.tagtype="broadcaster"; info.tagname = "iBad"; }
+            if(info.sender == "infemeth" && x==1) { info.tagtype="purple"; info.tagname = "Designer"; }
+            if(info.sender == "totally_cereal" && x==1) { info.tagtype="staff"; info.tagname = "Fruity"; }
+            if(info.sender == "tomyfreidz" && x==1) { info.tagtype="broadcaster"; info.tagname = "<span style='color:#00F2FF;'>Designer</span>"; }
+            if(info.sender == "virtz" && x==1) { info.tagtype="staff"; info.tagname = "Perv"; }
+            if(info.sender == "unleashedbeast" && x==1) { info.tagtype="admin"; info.tagname = "<span style='color:black;'>Surface</span>"; }
+            if(info.sender == "kona" && x==1) { info.tagtype="broadcaster"; info.tagname = "KK"; }
+            if(info.sender == "norfolk_en_clue" && x==1) { info.tagtype="broadcaster"; info.tagname = "Creamy"; }
+            if(info.sender == "onyxblade" && x==1) { info.tagtype="bot"; info.tagname = "Onyx"; }
+            if(info.sender == "aromaticyeti" && x==1) { info.tagtype="bot"; info.tagname = "Onyx"; }
+            if(info.sender == "leftyben" && x==1) { info.tagtype="lefty"; info.tagname = "&nbsp;"; }
+            if(info.sender == "maximusloopus" && x==1) { info.tagtype="admin"; info.tagname = "<span style='color:black;'>Hero</span>"; }
+            if(info.sender == "nokz" && x==1) { info.tagtype="staff"; info.tagname = "N47"; }
+            if(info.sender == "blindfolded" && x==1) { info.tagtype="broadcaster"; info.tagname = "iLag"; }
+            if(info.sender == "jjag72" && x==1) { info.tagtype="admin"; info.tagname = "Jag"; }
+            if(info.sender == "snorlaxitive" && x==1) { info.tagtype="purple"; info.tagname = "King"; }
+            if(info.sender == "excalibr" && x==1) { info.tagtype="staff"; info.tagname = "Boss"; }
+            if(info.sender == "chez_plastic" && x==1) { info.tagtype="staff"; info.tagname = "Frenchy"; }
+            if(info.sender == "frontiersman72" && x==1) { info.tagtype="admin"; info.tagname = "TMC"; }
+            if(info.sender == "dckay14" && x==1) { info.tagtype="admin"; info.tagname = "Ginger"; }
+            if(info.sender == "boogie_yellow" && x==1) { info.tagtype="orange"; info.tagname = "Yellow"; }
+            if(info.sender == "harksa" && x==1) { info.tagtype="orange"; info.tagname = "Feet"; }
+            if(info.sender == "lltherocksaysll" && x==1) { info.tagtype="broadcaster"; info.tagname = "BossKey"; }
+            if(info.sender == "melissa_loves_everyone" && x==1) { info.tagtype="purple"; info.tagname = "Chubby"; info.nickname="Bunny"; }
+            if(info.sender == "redvaloroso" && x==1) { info.tagtype="broadcaster"; info.tagname = "Dio"; }
+            if(info.sender == "slapage" && x==1) { info.tagtype="bot"; info.tagname = "I aM"; }
+            if(info.sender == "aclaz_92" && x==1) { info.tagtype="bot"; info.tagname = "412"; }
+            if(info.sender == "deano2518" && x==1) { info.tagtype="orange"; info.tagname = "<span style='color:black;'>WWFC</span>"; }
+            if(info.sender == "eternal_nightmare" && x==1) { info.tagtype="broadcaster"; info.tagname = "Spencer"; info.nickname = "Nickiforek"; }
+            if(info.sender == "iivii_beauty" && x==1) { info.tagtype="purple"; info.tagname = "Crave"; }
+            if(info.sender == "theefrenzy" && x==1) { info.tagtype="staff"; info.tagname = "Handsome"; }
+            if(info.sender == "ashardis" && x==1) { info.tagtype="staff"; info.tagname = "Dat Ash"; }
+            if(info.sender == "gennousuke69" && x==1) { info.tagtype="admin"; info.tagname = "Evil"; }
+            if(info.sender == "yorkyyork") { info.tagtype="broadcaster"; info.tagname = "<span style='color:red;'>FeaR</span>"; }
+            if(info.sender == "zebbazombies" && x==1) { info.tagtype="mod"; info.tagname = "Hugs"; }
+            if(info.sender == "uleet" && x==1) { info.tagname = "Taco"; info.tagtype="mod"; }
+            if(info.sender == "nobama12345" && x==1) { info.tagtype="broadcaster"; info.tagname = "Señor"; }
+            if(info.sender == "mrimjustaminorthreat" && x==1) { info.tagtype="staff"; info.tagname = "<span style='color:pink;'>Major</span>"; info.nickname = "mrimjustamajorthreat" }
+            if(info.sender == "sournothardcore" && x==1) { info.tagname = info.tagname+"</span><span class='tag brown' style='margin-left:4px;color:#FFE600 !important;' original-title='Saucy'>Saucy</span><span>"; info.color = info.color+";text-shadow: 0 0 10px #FFD700"; }
+            if(info.sender == "sour" && x==1) { info.tagname = info.tagname+"</span><span class='tag purple' style='margin-left:4px;' original-title='Saucy'>Saucy</span><span>"; info.color = info.color+";text-shadow: 0 0 10px #FFD700"; }
             //People
-            if(info.nickname == "mac027" && x==1) { info.tagtype="admin"; info.tagname = "Hacks"; }
-            if(info.nickname == "vaughnwhiskey" && x==1) { info.tagtype="admin"; info.tagname = "Bacon"; }
-            if(info.nickname == "socaldesigner" && x==1) { info.tagtype="broadcaster"; info.tagname = "Legend"; }
-            if(info.nickname == "perfectorzy" && x==1) { info.tagtype="mod"; info.tagname = "Jabroni Ave"; }
-            if(info.nickname == "pantallideth1" && x==1) { info.tagtype="staff"; info.tagname = "Windmill"; }
-            if(info.nickname == "mmmjc" && x==1) { info.tagtype="admin"; info.tagname = "m&m"; }
-            if(info.nickname == "hawkeyye" && x==1) { info.tagtype="broadcaster"; info.tagname = "EnVy"; info.nickname="Hawkeye"; }
-            if(info.nickname == "paterandreas" && x==1) { info.tagtype="admin"; info.tagname = "Uni-BB"; }
-            if(info.nickname == "the_chopsticks" && x==1) { info.tagtype="admin"; info.tagname = "oZn"; }
-            if(info.nickname == "whitesammy") { info.color = "white;text-shadow: 0 0 2px #000"; }
-            if(info.nickname == "bacon_donut") { info.tagtype="bacon"; info.tagname = "&#8203;"; info.nickname = "Donut"; }
-            if(info.nickname == "gr8tacotaste") { info.tagtype="taco"; info.tagname = "&#8203;"; }
-            if(info.nickname == "wsos") { info.tagtype="purple"; info.tagname = "Drippin' Dat"; }
+            if(info.sender == "mac027" && x==1) { info.tagtype="admin"; info.tagname = "Hacks"; }
+            if(info.sender == "vaughnwhiskey" && x==1) { info.tagtype="admin"; info.tagname = "Bacon"; }
+            if(info.sender == "socaldesigner" && x==1) { info.tagtype="broadcaster"; info.tagname = "Legend"; }
+            if(info.sender == "perfectorzy" && x==1) { info.tagtype="mod"; info.tagname = "Jabroni Ave"; }
+            if(info.sender == "pantallideth1" && x==1) { info.tagtype="staff"; info.tagname = "Windmill"; }
+            if(info.sender == "mmmjc" && x==1) { info.tagtype="admin"; info.tagname = "m&m"; }
+            if(info.sender == "hawkeyye" && x==1) { info.tagtype="broadcaster"; info.tagname = "EnVy"; info.nickname="Hawkeye"; }
+            if(info.sender == "paterandreas" && x==1) { info.tagtype="admin"; info.tagname = "Uni-BB"; }
+            if(info.sender == "the_chopsticks" && x==1) { info.tagtype="admin"; info.tagname = "oZn"; }
+            if(info.sender == "whitesammy") { info.color = "white;text-shadow: 0 0 2px #000"; }
+            if(info.sender == "bacon_donut") { info.tagtype="bacon"; info.tagname = "&#8203;"; info.nickname = "Donut"; }
+            if(info.sender == "gr8tacotaste") { info.tagtype="taco"; info.tagname = "&#8203;"; }
+            if(info.sender == "wsos") { info.tagtype="purple"; info.tagname = "Drippin' Dat"; }
             //Xmas
-            if(info.nickname == "r3lapse" && x==1) { info.tagtype="staff"; info.tagname = "Kershaw"; }
-            if(info.nickname == "im_tony_" && x==1) { info.tagtype="admin"; info.tagname = "oZn"; }
-            if(info.nickname == "tips_" && x==1) { info.tagtype="staff"; info.tagname = "241"; }
-            if(info.nickname == "papa_dot" && x==1) { info.tagtype="mod"; info.tagname = "v8"; }
-            if(info.nickname == "beccamay" && x==1) { info.tagtype="orange"; info.tagname = "British"; }
-            if(info.nickname == "1danny1032" && x==1) { info.tagtype="admin"; info.tagname = "1Bar"; }
-            if(info.nickname == "cvagts" && x==1) { info.tagtype="staff"; info.tagname = "SRL"; }
-            if(info.nickname == "thesabe" && x==1) { info.tagtype="orange"; info.tagname = "<span style='color:blue;'>Sabey</span>"; }
-            if(info.nickname == "kerviel_" && x==1) { info.tagtype="staff"; info.tagname = "Almighty"; }
-            if(info.nickname == "ackleyman" && x==1) { info.tagtype="orange"; info.tagname = "Ack"; }
+            if(info.sender == "r3lapse" && x==1) { info.tagtype="staff"; info.tagname = "Kershaw"; }
+            if(info.sender == "im_tony_" && x==1) { info.tagtype="admin"; info.tagname = "oZn"; }
+            if(info.sender == "tips_" && x==1) { info.tagtype="staff"; info.tagname = "241"; }
+            if(info.sender == "papa_dot" && x==1) { info.tagtype="mod"; info.tagname = "v8"; }
+            if(info.sender == "beccamay" && x==1) { info.tagtype="orange"; info.tagname = "British"; }
+            if(info.sender == "1danny1032" && x==1) { info.tagtype="admin"; info.tagname = "1Bar"; }
+            if(info.sender == "cvagts" && x==1) { info.tagtype="staff"; info.tagname = "SRL"; }
+            if(info.sender == "thesabe" && x==1) { info.tagtype="orange"; info.tagname = "<span style='color:blue;'>Sabey</span>"; }
+            if(info.sender == "kerviel_" && x==1) { info.tagtype="staff"; info.tagname = "Almighty"; }
+            if(info.sender == "ackleyman" && x==1) { info.tagtype="orange"; info.tagname = "Ack"; }
 
             if(info.nickname === info.sender) {
-                info.nickname = CurrentChat.lookupDisplayName(info.nickname);
+                info.nickname = CurrentChat.lookupDisplayName(info.sender);
+            } else {
+                CurrentChat.lookupDisplayName(info.sender);
             }
-
+            
             //this.insert_chat_lineOld(info);
             if (info.message.substr(0, 3).trim() === "/me") {
                 info.message = info.message.substr(4);
             }
 
             function kappaBoom(info) {
-                if (info.nickname === "night" || info.nickname === "sour") {
+                if (info.sender === "night" || info.sender === "sour") {
                     return '<img src="http://cdn.betterttv.net/emotes/kappaboom.gif" style="vertical-align:baseline;" />';
                 } else {
                     return 'Nucleappa';
@@ -1016,13 +974,15 @@ BetterTTVEngine = function () {
 
         CurrentChat.TMIFailedToJoin = true;
         CurrentChat.TMIFailedToJoinTries = 1;
+        CurrentChat.checkModsViaCommand = true;
 
         CurrentChat.notify_message = function (type, message) {
             if (type === "subscriber") {
                 var subIcon = '<span class="tag subscriber c'+CurrentChat.channel+'" title="Subscriber"><a href="/'+CurrentChat.channel+'/subscribe" target="_blank">Subscriber</a></span>&nbsp;&nbsp;';
                 var msg = '<li class="line"><p>'+subIcon+'<span class="chat_line fromtwitchnotify">' + message + "</span></p></li>";
             } else {
-                var msg = '<li class="line"><p><span class="chat_line fromtwitchnotify">' + message + "</span></p></li>";
+                var icon = '<span class="tag '+type+'">'+type.capitalize()+'</span>&nbsp;&nbsp;';
+                var msg = '<li class="line"><p>'+icon+'<span class="chat_line fromtwitchnotify">' + message + "</span></p></li>";
             }
             this.last_sender = "twitchnotify", this.insert_with_lock("#chat_line_list", msg)
         }
@@ -1080,10 +1040,28 @@ BetterTTVEngine = function () {
             CurrentChat.TMIFailedToJoin = false;
             CurrentChat.retries = 10;
             CurrentChat.admin_message(i18n("Welcome to " + CurrentChat.lookupDisplayName(CurrentChat.channel) + "'s chat room!"));
-            $("chat_text_input").disabled = !1;
-            CurrentChat.currently_scrolling = !0;
-            CurrentChat.scroll_chat();
-            CurrentChat.rooms();
+            bttvJquery("#chat_loading_spinner").hide();
+            CurrentChat.specialUserAlert = false;
+            setTimeout(function(){ CurrentChat.specialUserAlert = true }, 20000);
+            if(CurrentChat.checkModsViaCommand === true) {
+                if(Twitch.user.login()) {
+                    CurrentChat.checkingMods = true;
+                    CurrentChat.last_sender = Twitch.user.login();
+                    CurrentChat.say("/mods");
+                }
+            }
+        }
+
+        CurrentChat.handlers.emote_sets = function (d) {
+            var emoteSets = JSON.parse(d.sets),
+                user = d.user;
+
+            if(!CurrentChat.user_to_emote_sets[user]) CurrentChat.user_to_emote_sets[user] = [];
+            emoteSets.forEach(function (set) {
+                if(CurrentChat.user_to_emote_sets[user].indexOf(set) === -1) {
+                    CurrentChat.user_to_emote_sets[user].push(set);
+                }
+            });
         }
 
         CurrentChat.handlers.error = function () {
@@ -1105,12 +1083,30 @@ BetterTTVEngine = function () {
                 CurrentChat.lastActivity = time;
                 CurrentChat.monitorActivity = true;
             }
+            if (bttvSettings["adminStaffAlert"] === true) {
+                var isUserAdminOrStaff = /Received irc message IRCMessage from 'jtv' to '[a-z0-9_]+', with command 'PRIVMSG' and message 'SPECIALUSER ([a-z0-9_]+) (admin|staff)'/.exec(a.message);
+                if (isUserAdminOrStaff) {
+                    if(CurrentChat.specialUserAlert) {
+                        var user = CurrentChat.lookupDisplayName(isUserAdminOrStaff[1]),
+                            type = isUserAdminOrStaff[2],
+                            msg = user+" just joined! Watch out foo!";
+                        if (bttvSettings["showDefaultTags"] === true) type = "old"+type;
+                        CurrentChat.last_sender = "twitchnotify";
+                        CurrentChat.notify_message(type, msg);
+                    }
+                }
+            }
             if (a.message.match(/^Connection lost/)) {
                 if (CurrentChat.silence && CurrentChat.silence === true) {
                     CurrentChat.silence = false;
                     return;
                 }
                 if (CurrentChat.last_sender === Twitch.user.login()) {
+                    if (CurrentChat.checkingMods === true) {
+                        CurrentChat.checkModsViaCommand = false;
+                        CurrentChat.checkingMods = false;
+                        CurrentChat.admin_message(i18n("BetterTTV: You may possibly be global banned from chat."));
+                    }
                     if (CurrentChat.globalBanAttempt && CurrentChat.globalBanAttempt >= 1) {
                         CurrentChat.admin_message(i18n("BetterTTV: You were disconnected from chat."));
                         CurrentChat.admin_message(i18n("BetterTTV: You may be globally banned from chat for 8 hours (if you sent 20 lines in 30 seconds)."));
@@ -1186,6 +1182,7 @@ BetterTTVEngine = function () {
                     CurrentChat.rejoinChat();
                 }
             }, 10000);
+
             CurrentChat.admin_message(i18n("Joining the chat room.."));
             CurrentChat.join_on_connect && CurrentChat.join(CurrentChat.join_on_connect);
             CurrentChat.join_on_connect = null;
@@ -1202,6 +1199,7 @@ BetterTTVEngine = function () {
                 CurrentChat.last_sender = "jtv";
                 CurrentChat.insert_with_lock("#chat_line_list", '<li class="line fromjtv"><p class="content">Chat was cleared by a moderator (Prevented by BetterTTV)</p></li>');
             } else if (info.target === "user") {
+                if (bttvJquery('#chat_line_list .chat_from_' + info.user.replace(/%/g, '_').replace(/[<>,]/g, '')).length === 0) return; 
                 var nickname = CurrentChat.real_username(info.user);
                 if (bttvSettings["hideDeletedMessages"] === true) {
                     bttvJquery('#chat_line_list .chat_from_' + info.user.replace(/%/g, '_').replace(/[<>,]/g, '')).each(function () {
@@ -1210,7 +1208,7 @@ BetterTTVEngine = function () {
                 } else {
                     if (bttvSettings["showDeletedMessages"] !== true) {
                         bttvJquery('#chat_line_list .chat_from_' + info.user.replace(/%/g, '_').replace(/[<>,]/g, '') + ' .chat_line').each(function () {
-                            bttvJquery(this).parent().html("<span style=\"color: #999\">&lt;message deleted&gt;</span>");
+                            bttvJquery(this).html("<span style=\"color: #999\">&lt;message deleted&gt;</span>");
                         });
                     } else {
                         bttvJquery('#chat_line_list .chat_from_' + info.user.replace(/%/g, '_').replace(/[<>,]/g, '') + ' .chat_line').each(function () {
@@ -1237,6 +1235,41 @@ BetterTTVEngine = function () {
                     }
                 }
             }
+        }
+
+        CurrentChat.Chatters.forceLoadViewers = false;
+        CurrentChat.Chatters.oldRender = CurrentChat.Chatters.render;
+        CurrentChat.Chatters.render = function(t) {
+            var n = this;
+            if (t.status !== 200) return;
+            n.initialRender && (n.element.find(".js-chat-scroll").TrackpadScrollEmulator({ wrapContent: !1, scrollbarHideStrategy: "rightAndBottom"}), n.initialRender = !1);
+            ["staff", "admins", "moderators", "viewers"].forEach(function(e) {
+                var r = n.element.find(".js-" + e),
+                    i = r.find(".js-viewer-list");
+                i.empty();
+                var s = "";
+                if(e === "viewers" && CurrentChat.Chatters.forceLoadViewers === false && t.data.chatter_count > 5000) {
+                    s = '<li class="viewer">>_></li>';
+                    s += '<li class="viewer">There\'s '+t.data.chatter_count+' chatters..</li>';
+                    s += '<li class="viewer">Why are you even here?</li>';
+                    s += '<li class="viewer">&nbsp;</li>';
+                    s += '<li class="viewer">You <strong>really</strong> want to lag?</li>';
+                    s += '<a href="#" style="cursor:pointer;" onclick="CurrentChat.Chatters.forceLoadViewers=true;return false;">Click here to load viewers</a>';
+                } else {
+                    t.data.chatters[e].forEach(function(e) {
+                        var user = '<li class="viewer"><a href="/' + e + '">' + e + '</a></li>';
+                        s += user;
+                    });
+                }
+                i.append(s), i.children().length ? r.show() : r.hide()
+            });
+            n.element.on("click", ".viewer", function(t) {
+                t.preventDefault();
+                var n = bttvJquery(this).text(),
+                    i = CurrentChat.format_chat_info({ sender: n });
+                CurrentChat.setup_chat_popup(i);
+                bttvJquery("#chat_viewers_dropmenu").fadeTo(0, .7);
+            });
         }
 
         bttvJquery('#chat_text_input').live('keydown', function (e) {
@@ -1334,10 +1367,10 @@ BetterTTVEngine = function () {
         });
 
         setTimeout(function () {
-            updateViewerList()
+            updateViewerList(false)
         }, 5000);
         setInterval(function () {
-            updateViewerList()
+            updateViewerList(true)
         }, 300000);
     }
 
@@ -1345,7 +1378,9 @@ BetterTTVEngine = function () {
 
         bttvDebug.log("Check Following List");
 
-        bttvJquery(window).on("firebase:follow_online", function (b, f) {
+        if(bttvJquery("body#chat").length || !Twitch.user.login()) return;
+
+        /*bttvJquery(window).on("firebase:follow_online", function (b, f) {
             console.log(b)
             console.log(f)
             if (f.online === true) {
@@ -1359,9 +1394,9 @@ BetterTTVEngine = function () {
                     }
                 });
             }
-        });
+        });*/
 
-        /*Twitch.api.get("streams/followed?limit=250").done(function (d) {
+        Twitch.api.get("streams/followed?limit=250").done(function (d) {
             if (d.streams && d.streams.length > 0) {
                 ga('send', 'event', 'Channels', 'Check Following');
                 if (liveChannels.length === 0) {
@@ -1394,7 +1429,7 @@ BetterTTVEngine = function () {
                 bttvJquery("a[href=\"/directory/following\"] .js-total").css("display","inline");
             }
             setTimeout(checkFollowing, 60000)
-        });*/
+        });
 
     }
 
@@ -1455,7 +1490,7 @@ BetterTTVEngine = function () {
                                 { url: "http://cdn.betterttv.net/emotes/urn.png", width: 19, height: 30, regex: "UrnCrown" },
                                 { url: "http://cdn.betterttv.net/emotes/teh.png", width: 32, height: 20, regex: "TEH" },
                                 { url: "http://cdn.betterttv.net/emotes/cobalt.png", width: 46, height: 30, regex: "BroBalt" },
-                                { url: "http://cdn.betterttv.net/emotes/roll.png", width: 131, height: 28, regex: "RollIt!" }
+                                { url: "http://cdn.betterttv.net/emotes/roll.png", width: 94, height: 20, regex: "RollIt!" }
                                 
                               ];
 
@@ -1480,6 +1515,16 @@ BetterTTVEngine = function () {
                 width: 33,
                 height: 35,
                 regex: "BaconTime"
+            });
+        }
+
+        if (CurrentChat.channel === "night") {
+            betterttvEmotes.push({
+                url: "http://cdn.betterttv.net/emotes/blackappa.png",
+                width: 25,
+                height: 28,
+                regex: "Blackappa",
+                emote_set: "night"
             });
         }
 
@@ -1542,8 +1587,11 @@ BetterTTVEngine = function () {
                     var a = {};
                     a.regex = RegExp(b.regex, "g");
                     a.images = [];
+                    if(b.emote_set == undefined) {
+                        b.emote_set = null;
+                    }
                     a.images.push({
-                        emoticon_set: null,
+                        emoticon_set: b.emote_set,
                         width: b.width,
                         height: b.height,
                         url: b.url
@@ -1567,7 +1615,7 @@ BetterTTVEngine = function () {
 
     }
 
-    updateViewerList = function () {
+    updateViewerList = function (modsList) {
 
         bttvDebug.log("Updating Viewer List");
 
@@ -1622,7 +1670,7 @@ BetterTTVEngine = function () {
                             }
                         });
                     }
-                    if(a === "moderators") {
+                    /*if(a === "moderators") {
                         d.data.chatters[a].forEach(function (a) {
                             if(!CurrentChat.moderators[a]) {
                                 var action = {
@@ -1645,13 +1693,17 @@ BetterTTVEngine = function () {
                                 }
                             }
                         }
-                    }
+                    }*/
                 });
-            } else {
-                updateViewerList();
             }
         });
-
+        if(modsList && CurrentChat.TMIFailedToJoin === false && CurrentChat.checkModsViaCommand === true) {
+            if(Twitch.user.login()) {
+                CurrentChat.checkingMods = true;
+                CurrentChat.last_sender = Twitch.user.login();
+                CurrentChat.say("/mods");
+            }
+        }
     }
 
     fakeCurrentChat = function (func, action) {
@@ -1763,6 +1815,23 @@ BetterTTVEngine = function () {
 
     }
 
+    formatDashboard = function () {
+
+        if (bttvJquery("#dash_main").length) {
+
+            bttvDebug.log("Formatting Dashboard");
+
+            bttvJquery('<div style="position:relative;" id="bttvDashboard"></div>').appendTo('#dash_main');
+            bttvJquery("#dash_main #controls_column").appendTo("#bttvDashboard");
+            bttvJquery("#dash_main #player_column").appendTo("#bttvDashboard");
+            bttvJquery("#dash_main #chat").appendTo("#bttvDashboard");
+            setTimeout(function(){ CurrentChat.clearHandlers(); }, 2000);
+            setTimeout(function(){ CurrentChat.setupHandlers(); }, 4000);
+
+        }
+
+    }
+
     dashboardViewers = function () {
 
         if (bttvJquery("#dash_main").length) {
@@ -1846,6 +1915,16 @@ BetterTTVEngine = function () {
                                    </div> \
                                    <div id="bttvSettings" style="overflow-y:auto;height:425px;"> \
                                     <h2 class="option"> Here you can manage the various Better TwitchTV options. Click On or Off to toggle settings.</h2> \
+                                    <div class="option bttvHiddenSetting" style="display:none;"> \
+                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Admin/Staff Alert</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Get alerted in chat when admins or staff join \
+                                        <div class="switch"> \
+                                            <input type="radio" class="switch-input switch-off" name="toggleAdminStaffAlert" value="false" id="adminStaffAlertFalse"> \
+                                            <label for="adminStaffAlertFalse" class="switch-label switch-label-off">Off</label> \
+                                            <input type="radio" class="switch-input" name="toggleAdminStaffAlert" value="true" id="adminStaffAlertTrue" checked> \
+                                            <label for="adminStaffAlertTrue" class="switch-label switch-label-on">On</label> \
+                                            <span class="switch-selection"></span> \
+                                        </div> \
+                                    </div> \
                                     <div class="option"> \
                                         <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Better TTV Chat</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;A tiny chat bar for personal messaging friends (BETA) \
                                         <div class="switch"> \
@@ -1917,16 +1996,6 @@ BetterTTVEngine = function () {
                                         </div> \
                                     </div> \
                                     <div class="option"> \
-                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Deleted Messages</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Twitch replaces removed messages with <message deleted>. Turn this On to prevent it. \
-                                        <div class="switch"> \
-                                            <input type="radio" class="switch-input switch-off" name="toggleDeletedMessages" value="false" id="showDeletedMessagesFalse"> \
-                                            <label for="showDeletedMessagesFalse" class="switch-label switch-label-off">Off</label> \
-                                            <input type="radio" class="switch-input" name="toggleDeletedMessages" value="true" id="showDeletedMessagesTrue" checked> \
-                                            <label for="showDeletedMessagesTrue" class="switch-label switch-label-on">On</label> \
-                                            <span class="switch-selection"></span> \
-                                        </div> \
-                                    </div> \
-                                    <div class="option"> \
                                         <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Featured Channels</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;The left sidebar is too cluttered, so BetterTTV removes featured channels by default \
                                         <div class="switch"> \
                                             <input type="radio" class="switch-input switch-off" name="toggleFeaturedChannels" value="false" id="featuredChannelsFalse"> \
@@ -1937,12 +2006,22 @@ BetterTTVEngine = function () {
                                         </div> \
                                     </div> \
                                     <div class="option"> \
-                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Hide Deleted Messages</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Make those spammers disappear completely! \
+                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Remove Deleted Messages</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Make those spammers disappear completely! \
                                         <div class="switch"> \
                                             <input type="radio" class="switch-input switch-off" name="toggleHideDeletedMessages" value="false" id="hideDeletedMessagesFalse"> \
                                             <label for="hideDeletedMessagesFalse" class="switch-label switch-label-off">Off</label> \
                                             <input type="radio" class="switch-input" name="toggleHideDeletedMessages" value="true" id="hideDeletedMessagesTrue" checked> \
                                             <label for="hideDeletedMessagesTrue" class="switch-label switch-label-on">On</label> \
+                                            <span class="switch-selection"></span> \
+                                        </div> \
+                                    </div> \
+                                    <div class="option"> \
+                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Show Deleted Messages</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Turn this on to change &lt;message deleted&gt; back to users\' messages. \
+                                        <div class="switch"> \
+                                            <input type="radio" class="switch-input switch-off" name="toggleDeletedMessages" value="false" id="showDeletedMessagesFalse"> \
+                                            <label for="showDeletedMessagesFalse" class="switch-label switch-label-off">Off</label> \
+                                            <input type="radio" class="switch-input" name="toggleDeletedMessages" value="true" id="showDeletedMessagesTrue" checked> \
+                                            <label for="showDeletedMessagesTrue" class="switch-label switch-label-on">On</label> \
                                             <span class="switch-selection"></span> \
                                         </div> \
                                     </div> \
@@ -2026,6 +2105,12 @@ BetterTTVEngine = function () {
             bttvJquery(this).css("color", "#ffffff");
         });
 
+        bttvJquery(window).konami({callback:function(){
+            bttvJquery("#bttvSettingsPanel .bttvHiddenSetting").each(function () {
+                bttvJquery(this).show();
+            });
+        }});
+
         bttvJquery('#chat_timestamps').attr("onclick", 'toggle_checkbox("toggle_chat_timestamps");betterttvAction("toggleTimestamps");');
         bttvJquery('#mod_icons').parent().attr("onclick", 'toggle_checkbox("mod_icons");betterttvAction("toggleModIcons");');
         bttvJquery('#mod_icons').attr("id", "mod_icons_bttv");
@@ -2045,6 +2130,7 @@ BetterTTVEngine = function () {
         bttvSettings["bttvChat"] === true ? bttvJquery('#showBTTVChatTrue').prop('checked', true) : bttvJquery('#showBTTVChatFalse').prop('checked', true);
         bttvSettings["bttvEmotes"] === false ? bttvJquery('#showBTTVEmotesFalse').prop('checked', true) : bttvJquery('#showBTTVEmotesTrue').prop('checked', true);
         bttvSettings["hideDeletedMessages"] === true ? bttvJquery('#hideDeletedMessagesTrue').prop('checked', true) : bttvJquery('#hideDeletedMessagesFalse').prop('checked', true);
+        bttvSettings["adminStaffAlert"] === true ? bttvJquery('#adminStaffAlertTrue').prop('checked', true) : bttvJquery('#adminStaffAlertFalse').prop('checked', true);
     }
 
     betterttvAction = function (action) {
@@ -2062,7 +2148,7 @@ BetterTTVEngine = function () {
             if (keywords != null) {
                 keywords = keywords.trim().replace(/\s\s+/g, ' ');
                 bttvChangeSetting("highlightKeywords", keywords);
-                var phraseRegex = /\{(.*)\}/g;
+                var phraseRegex = /\{.+?\}/g;
                 var testCases =  keywords.match(phraseRegex);
                 var phraseKeywords = [];
                 if(testCases) {
@@ -2097,7 +2183,7 @@ BetterTTVEngine = function () {
             if (keywords != null) {
                 keywords = keywords.trim().replace(/\s\s+/g, ' ');
                 bttvChangeSetting("blacklistKeywords", keywords);
-                var phraseRegex = /\{(.*)\}/g;
+                var phraseRegex = /\{.+?\}/g;
                 var testCases =  keywords.match(phraseRegex);
                 var phraseKeywords = [];
                 if(testCases) {
@@ -2147,6 +2233,13 @@ BetterTTVEngine = function () {
                 bttvChangeSetting("flipDashboard", true);
                 bttvJquery("#flipDashboard").html("Unflip Dashboard");
                 flipDashboard();
+            }
+        }
+        if (action === "toggleAdminStaffAlert") {
+            if (bttvSettings["adminStaffAlert"] === true) {
+                bttvChangeSetting("adminStaffAlert", false);
+            } else {
+                bttvChangeSetting("adminStaffAlert", true);
             }
         }
         if (action === "toggleBTTVChat") {
@@ -2311,11 +2404,6 @@ BetterTTVEngine = function () {
         }
     }
 
-    if (document.URL.indexOf("receiver.html") !== -1 || document.URL.indexOf("cbs_ad_local.html") !== -1) {
-        bttvDebug.log("HTML file called by Twitch.");
-        return;
-    }
-
     checkJquery = function () {
         if (typeof ($j) === 'undefined') {
             bttvDebug.log("jQuery is undefined.");
@@ -2344,6 +2432,7 @@ BetterTTVEngine = function () {
             }
         }
         var settingsList = [
+                                "adminStaffAlert",
                                 "blacklistKeywords",
                                 "blockSubButton",
                                 "bttvChat",
@@ -2375,48 +2464,9 @@ BetterTTVEngine = function () {
         localStorage.setItem(setting, value);
     }
 
-    /*bttvHandleLookupServer = function() {
-        var socketJSInject = document.createElement("script");
-            socketJSInject.setAttribute("src", "http://209.141.39.172:2888/socket.io/socket.io.js");
-            socketJSInject.setAttribute("type", "text/javascript");
-        
-        bttvJquery("head").append(socketJSInject);
-        bttvJquery(document).ready(function () {
-            setTimeout(function() {
-                try {
-                    var socket = io.connect('http://209.141.39.172:2888/');
-                    socket.on("ready", function() {
-                        bttvLookupServer = socket;
-                    });
-                    socket.on("userinfo", function(data) {
-                        if(data.status === "fresh") {
-                            CurrentChat.displayNames[data.user] = data.info.displayName;
-                            bttvJquery('#chat_line_list .chat_from_' + data.user.replace(/%/g, '_').replace(/[<>,]/g, '') + ' .nick').each(function () {
-                                bttvJquery(this).html(data.info.displayName);
-                            });
-                        } else {
-                            Twitch.api.get("users/" + data.user).done(function (d) {
-                                if(d.display_name) {
-                                    CurrentChat.displayNames[data.user] = d.display_name;
-                                    bttvJquery('#chat_line_list .chat_from_' + data.user.replace(/%/g, '_').replace(/[<>,]/g, '') + ' .nick').each(function () {
-                                        bttvJquery(this).html(d.display_name);
-                                    });
-                                    socket.emit("update_user", { user: data.user, displayName: d.display_name });
-                                    ga('send', 'event', 'Chat', 'Lookup Display Name');
-                                }
-                            });
-                        }
-                    });
-                } catch(e) {
-                    bttvDebug.log(e);
-                }
-            }, 5000);
-        });
-    }*/
-
     main = function () {
         loadSettings();
-        //bttvHandleLookupServer();
+        
         bttvJquery(document).ready(function () {
             bttvDebug.log("BTTV v" + bttvVersion);
             bttvDebug.log("CALL init " + document.URL);
@@ -2424,16 +2474,17 @@ BetterTTVEngine = function () {
             clearAds();
             channelReformat();
             chatReformat();
-            newChannelReformat();
             checkMessages();
             clearAds();
             checkFollowing();
             darkenPage();
             splitChat();
+            formatDashboard();
             flipDashboard();
             giveawayCompatibility();
             dashboardViewers();
             directoryLiveTab();
+
             bttvJquery(window).trigger('resize');
             setTimeout(clearAds, 1000);
             setTimeout(clearAds, 5000);
@@ -2443,16 +2494,28 @@ BetterTTVEngine = function () {
             setTimeout(createSettingsMenu, 1000);
             setTimeout(overrideEmotes, 10000);
 
-            (function(b){b.gritter={};b.gritter.options={position:"top-left",class_name:"",fade_in_speed:"medium",fade_out_speed:1000,time:6000};b.gritter.add=function(f){try{return a.add(f||{})}catch(d){var c="Gritter Error: "+d;(typeof(console)!="undefined"&&console.error)?console.error(c,f):alert(c)}};b.gritter.remove=function(d,c){a.removeSpecific(d,c||{})};b.gritter.removeAll=function(c){a.stop(c||{})};var a={position:"",fade_in_speed:"",fade_out_speed:"",time:"",_custom_timer:0,_item_count:0,_is_setup:0,_tpl_close:'<div class="gritter-close"></div>',_tpl_title:'<span class="gritter-title">[[title]]</span>',_tpl_item:'<div id="gritter-item-[[number]]" class="gritter-item-wrapper [[item_class]]" style="display:none"><div class="gritter-top"></div><div class="gritter-item">[[close]][[image]]<div class="[[class_name]]">[[title]]<p>[[text]]</p></div><div style="clear:both"></div></div><div class="gritter-bottom"></div></div>',_tpl_wrap:'<div id="gritter-notice-wrapper"></div>',add:function(g){if(typeof(g)=="string"){g={text:g}}if(!g.text){throw'You must supply "text" parameter.'}if(!this._is_setup){this._runSetup()}var k=g.title,n=g.text,e=g.image||"",l=g.sticky||false,m=g.class_name||b.gritter.options.class_name,j=b.gritter.options.position,d=g.time||"";this._verifyWrapper();this._item_count++;var f=this._item_count,i=this._tpl_item;b(["before_open","after_open","before_close","after_close"]).each(function(p,q){a["_"+q+"_"+f]=(b.isFunction(g[q]))?g[q]:function(){}});this._custom_timer=0;if(d){this._custom_timer=d}var c=(e!="")?'<img src="'+e+'" class="gritter-image" />':"",h=(e!="")?"gritter-with-image":"gritter-without-image";if(k){k=this._str_replace("[[title]]",k,this._tpl_title)}else{k=""}i=this._str_replace(["[[title]]","[[text]]","[[close]]","[[image]]","[[number]]","[[class_name]]","[[item_class]]"],[k,n,this._tpl_close,c,this._item_count,h,m],i);if(this["_before_open_"+f]()===false){return false}b("#gritter-notice-wrapper").addClass(j).append(i);var o=b("#gritter-item-"+this._item_count);o.fadeIn(this.fade_in_speed,function(){a["_after_open_"+f](b(this))});if(!l){this._setFadeTimer(o,f)}b(o).bind("mouseenter mouseleave",function(p){if(p.type=="mouseenter"){if(!l){a._restoreItemIfFading(b(this),f)}}else{if(!l){a._setFadeTimer(b(this),f)}}a._hoverState(b(this),p.type)});b(o).find(".gritter-close").click(function(){a.removeSpecific(f,{},null,true)});return f},_countRemoveWrapper:function(c,d,f){d.remove();this["_after_close_"+c](d,f);if(b(".gritter-item-wrapper").length==0){b("#gritter-notice-wrapper").remove()}},_fade:function(g,d,j,f){var j=j||{},i=(typeof(j.fade)!="undefined")?j.fade:true,c=j.speed||this.fade_out_speed,h=f;this["_before_close_"+d](g,h);if(f){g.unbind("mouseenter mouseleave")}if(i){g.animate({opacity:0},c,function(){g.animate({height:0},300,function(){a._countRemoveWrapper(d,g,h)})})}else{this._countRemoveWrapper(d,g)}},_hoverState:function(d,c){if(c=="mouseenter"){d.addClass("hover");d.find(".gritter-close").show()}else{d.removeClass("hover");d.find(".gritter-close").hide()}},removeSpecific:function(c,g,f,d){if(!f){var f=b("#gritter-item-"+c)}this._fade(f,c,g||{},d)},_restoreItemIfFading:function(d,c){clearTimeout(this["_int_id_"+c]);d.stop().css({opacity:"",height:""})},_runSetup:function(){for(opt in b.gritter.options){this[opt]=b.gritter.options[opt]}this._is_setup=1},_setFadeTimer:function(f,d){var c=(this._custom_timer)?this._custom_timer:this.time;this["_int_id_"+d]=setTimeout(function(){a._fade(f,d)},c)},stop:function(e){var c=(b.isFunction(e.before_close))?e.before_close:function(){};var f=(b.isFunction(e.after_close))?e.after_close:function(){};var d=b("#gritter-notice-wrapper");c(d);d.fadeOut(function(){b(this).remove();f()})},_str_replace:function(v,e,o,n){var k=0,h=0,t="",m="",g=0,q=0,l=[].concat(v),c=[].concat(e),u=o,d=c instanceof Array,p=u instanceof Array;u=[].concat(u);if(n){this.window[n]=0}for(k=0,g=u.length;k<g;k++){if(u[k]===""){continue}for(h=0,q=l.length;h<q;h++){t=u[k]+"";m=d?(c[h]!==undefined?c[h]:""):c[0];u[k]=(t).split(l[h]).join(m);if(n&&u[k]!==t){this.window[n]+=(t.length-u[k].length)/l[h].length}}}return p?u:u[0]},_verifyWrapper:function(){if(b("#gritter-notice-wrapper").length==0){b("body").append(this._tpl_wrap)}}}})(jQuery);
-
+            (function(b){b.gritter={};b.gritter.options={position:"top-left",class_name:"",fade_in_speed:"medium",fade_out_speed:1000,time:6000};b.gritter.add=function(f){try{return a.add(f||{})}catch(d){var c="Gritter Error: "+d;(typeof(console)!="undefined"&&console.error)?console.error(c,f):alert(c)}};b.gritter.remove=function(d,c){a.removeSpecific(d,c||{})};b.gritter.removeAll=function(c){a.stop(c||{})};var a={position:"",fade_in_speed:"",fade_out_speed:"",time:"",_custom_timer:0,_item_count:0,_is_setup:0,_tpl_close:'<div class="gritter-close"></div>',_tpl_title:'<span class="gritter-title">[[title]]</span>',_tpl_item:'<div id="gritter-item-[[number]]" class="gritter-item-wrapper [[item_class]]" style="display:none"><div class="gritter-top"></div><div class="gritter-item">[[close]][[image]]<div class="[[class_name]]">[[title]]<p>[[text]]</p></div><div style="clear:both"></div></div><div class="gritter-bottom"></div></div>',_tpl_wrap:'<div id="gritter-notice-wrapper"></div>',add:function(g){if(typeof(g)=="string"){g={text:g}}if(!g.text){throw'You must supply "text" parameter.'}if(!this._is_setup){this._runSetup()}var k=g.title,n=g.text,e=g.image||"",l=g.sticky||false,m=g.class_name||b.gritter.options.class_name,j=b.gritter.options.position,d=g.time||"";this._verifyWrapper();this._item_count++;var f=this._item_count,i=this._tpl_item;b(["before_open","after_open","before_close","after_close"]).each(function(p,q){a["_"+q+"_"+f]=(b.isFunction(g[q]))?g[q]:function(){}});this._custom_timer=0;if(d){this._custom_timer=d}var c=(e!="")?'<img src="'+e+'" class="gritter-image" />':"",h=(e!="")?"gritter-with-image":"gritter-without-image";if(k){k=this._str_replace("[[title]]",k,this._tpl_title)}else{k=""}i=this._str_replace(["[[title]]","[[text]]","[[close]]","[[image]]","[[number]]","[[class_name]]","[[item_class]]"],[k,n,this._tpl_close,c,this._item_count,h,m],i);if(this["_before_open_"+f]()===false){return false}b("#gritter-notice-wrapper").addClass(j).append(i);var o=b("#gritter-item-"+this._item_count);o.fadeIn(this.fade_in_speed,function(){a["_after_open_"+f](b(this))});if(!l){this._setFadeTimer(o,f)}b(o).bind("mouseenter mouseleave",function(p){if(p.type=="mouseenter"){if(!l){a._restoreItemIfFading(b(this),f)}}else{if(!l){a._setFadeTimer(b(this),f)}}a._hoverState(b(this),p.type)});b(o).find(".gritter-close").click(function(){a.removeSpecific(f,{},null,true)});return f},_countRemoveWrapper:function(c,d,f){d.remove();this["_after_close_"+c](d,f);if(b(".gritter-item-wrapper").length==0){b("#gritter-notice-wrapper").remove()}},_fade:function(g,d,j,f){var j=j||{},i=(typeof(j.fade)!="undefined")?j.fade:true,c=j.speed||this.fade_out_speed,h=f;this["_before_close_"+d](g,h);if(f){g.unbind("mouseenter mouseleave")}if(i){g.animate({opacity:0},c,function(){g.animate({height:0},300,function(){a._countRemoveWrapper(d,g,h)})})}else{this._countRemoveWrapper(d,g)}},_hoverState:function(d,c){if(c=="mouseenter"){d.addClass("hover");d.find(".gritter-close").show()}else{d.removeClass("hover");d.find(".gritter-close").hide()}},removeSpecific:function(c,g,f,d){if(!f){var f=b("#gritter-item-"+c)}this._fade(f,c,g||{},d)},_restoreItemIfFading:function(d,c){clearTimeout(this["_int_id_"+c]);d.stop().css({opacity:"",height:""})},_runSetup:function(){for(opt in b.gritter.options){this[opt]=b.gritter.options[opt]}this._is_setup=1},_setFadeTimer:function(f,d){var c=(this._custom_timer)?this._custom_timer:this.time;this["_int_id_"+d]=setTimeout(function(){a._fade(f,d)},c)},stop:function(e){var c=(b.isFunction(e.before_close))?e.before_close:function(){};var f=(b.isFunction(e.after_close))?e.after_close:function(){};var d=b("#gritter-notice-wrapper");c(d);d.fadeOut(function(){b(this).remove();f()})},_str_replace:function(v,e,o,n){var k=0,h=0,t="",m="",g=0,q=0,l=[].concat(v),c=[].concat(e),u=o,d=c instanceof Array,p=u instanceof Array;u=[].concat(u);if(n){this.window[n]=0}for(k=0,g=u.length;k<g;k++){if(u[k]===""){continue}for(h=0,q=l.length;h<q;h++){t=u[k]+"";m=d?(c[h]!==undefined?c[h]:""):c[0];u[k]=(t).split(l[h]).join(m);if(n&&u[k]!==t){this.window[n]+=(t.length-u[k].length)/l[h].length}}}return p?u:u[0]},_verifyWrapper:function(){if(b("#gritter-notice-wrapper").length==0){b("body").append(this._tpl_wrap)}}}})(bttvJquery);
+            
             (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
             m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
             })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
+            (function(e){e.fn.konami=function(t){var n=[];var r={left:37,up:38,right:39,down:40,a:65,b:66};var i=e.extend({code:["up","up","down","down","left","right","left","right","b","a"],callback:function(){}},t);var s=i.code;var o=[];bttvJquery.each(s,function(e,t){if(s[e]!==undefined&&r[s[e]]!==undefined){o.push(r[s[e]])}else if(s[e]!==undefined&&typeof s[e]=="number"){o.push(s[e])}});bttvJquery(document).keyup(function(e){var t=e.keyCode?e.keyCode:e.charCode;n.push(t);if(n.toString().indexOf(o)>=0){n=[];i.callback(bttvJquery(this))}})}})(bttvJquery);
+
             ga('create', 'UA-39733925-4', 'betterttv.net');
             ga('send', 'pageview');
         });
+    }
+
+    if (document.URL.indexOf("receiver.html") !== -1 || document.URL.indexOf("cbs_ad_local.html") !== -1) {
+        bttvDebug.log("HTML file called by Twitch.");
+        return;
+    }
+
+    if(location.pathname.match(/^\/(.*)\/popout/)) {
+        bttvDebug.log("Popout player detected.");
+        return;
     }
 
     try {
