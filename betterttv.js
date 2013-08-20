@@ -22,6 +22,7 @@
 BetterTTVEngine = function () {
 
     var bttvVersion = "6.4.5",
+        bttvRelease = 2,
         bttvDebug = {
             log: function (string) {
                 if (window.console && console.log) console.log("BTTV: " + string);
@@ -44,7 +45,7 @@ BetterTTVEngine = function () {
     /**
      * Helper Functions
      */
-     
+
     String.prototype.capitalize = function () {
         return this.charAt(0).toUpperCase() + this.slice(1);
     }
@@ -1701,7 +1702,6 @@ BetterTTVEngine = function () {
         if(modsList && CurrentChat.TMIFailedToJoin === false && CurrentChat.checkModsViaCommand === true) {
             if(Twitch.user.login()) {
                 CurrentChat.checkingMods = true;
-                CurrentChat.last_sender = Twitch.user.login();
                 CurrentChat.say("/mods");
             }
         }
