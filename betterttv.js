@@ -22,7 +22,7 @@
 BetterTTVEngine = function () {
 
     var bttvVersion = "6.4.5",
-        bttvRelease = 2,
+        bttvRelease = 3,
         bttvDebug = {
             log: function (string) {
                 if (window.console && console.log) console.log("BTTV: " + string);
@@ -45,7 +45,6 @@ BetterTTVEngine = function () {
     /**
      * Helper Functions
      */
-
     String.prototype.capitalize = function () {
         return this.charAt(0).toUpperCase() + this.slice(1);
     }
@@ -685,6 +684,7 @@ BetterTTVEngine = function () {
                     }
                 }
                 CurrentChat.setup_chat_settings_menu();
+                CurrentChat.last_sender = "jtv";
                 return;
             }
 
