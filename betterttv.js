@@ -21,8 +21,8 @@
  */
 BetterTTVEngine = function () {
 
-    var bttvVersion = "6.4.5",
-        bttvRelease = 3,
+    var bttvVersion = "6.4.6",
+        bttvRelease = 1,
         bttvDebug = {
             log: function (string) {
                 if (window.console && console.log) console.log("BTTV: " + string);
@@ -1009,7 +1009,7 @@ BetterTTVEngine = function () {
             if(CurrentChat.displayNames[user]) {
                 return CurrentChat.displayNames[user];
             } else if(user !== "jtv" && user !== "twitchnotify") {
-                if(CurrentChat.lookingUpUsers < 3) {
+                if(CurrentChat.lookingUpUsers < 2) {
                     CurrentChat.lookingUpUsers++;
                     ga('send', 'event', 'Chat', 'Lookup Display Name');
                     Twitch.api.get("users/" + user).done(function (d) {
@@ -1042,7 +1042,7 @@ BetterTTVEngine = function () {
             CurrentChat.TMIFailedToJoin = false;
             CurrentChat.retries = 10;
             CurrentChat.admin_message(i18n("Welcome to " + CurrentChat.lookupDisplayName(CurrentChat.channel) + "'s chat room!"));
-            bttvJquery("#chat_loading_spinner").hide();
+            bttvJquery("#chat_loading_spinner")[0].style.display = "none";
             CurrentChat.specialUserAlert = false;
             setTimeout(function(){ CurrentChat.specialUserAlert = true }, 20000);
             if(CurrentChat.checkModsViaCommand === true) {
@@ -1490,10 +1490,11 @@ BetterTTVEngine = function () {
                                 { url: "http://cdn.betterttv.net/emotes/creepo.png", width: 21, height: 30, regex: "CreepyCanadian" },
                                 { url: "http://cdn.betterttv.net/emotes/yetiz.png", width: 60, height: 30, regex: "YetiZ" },
                                 { url: "http://cdn.betterttv.net/emotes/urn.png", width: 19, height: 30, regex: "UrnCrown" },
-                                { url: "http://cdn.betterttv.net/emotes/teh.png", width: 32, height: 20, regex: "TEH" },
+                                { url: "http://cdn.betterttv.net/emotes/teh.png", width: 32, height: 20, regex: "tEh" },
                                 { url: "http://cdn.betterttv.net/emotes/cobalt.png", width: 46, height: 30, regex: "BroBalt" },
-                                { url: "http://cdn.betterttv.net/emotes/roll.png", width: 94, height: 20, regex: "RollIt!" }
-                                
+                                { url: "http://cdn.betterttv.net/emotes/roll.png", width: 94, height: 20, regex: "RollIt!" },
+                                { url: "http://cdn.betterttv.net/emotes/mmmbutter.png", width: 25, height: 23, regex: "ButterSauce" },
+                                { url: "http://cdn.betterttv.net/emotes/baconeffect.png", width: 23, height: 28, regex: "BaconEffect" },
                               ];
 
         if (bttvSettings["showDefaultEmotes"] !== true) {
@@ -1517,16 +1518,6 @@ BetterTTVEngine = function () {
                 width: 33,
                 height: 35,
                 regex: "BaconTime"
-            });
-        }
-
-        if (CurrentChat.channel === "night") {
-            betterttvEmotes.push({
-                url: "http://cdn.betterttv.net/emotes/blackappa.png",
-                width: 25,
-                height: 28,
-                regex: "Blackappa",
-                emote_set: "night"
             });
         }
 
@@ -1621,84 +1612,90 @@ BetterTTVEngine = function () {
 
         bttvDebug.log("Updating Viewer List");
 
-        bttvJquery.ajax({
-            url: "https://tmi.twitch.tv/group/user/" + CurrentChat.channel + "/chatters?update_num=" + Math.random() + "&callback=?",
-            cache: !1,
-            dataType: "jsonp",
-            timeoutLength: 6E3
-        }).done(function (d) {
-            ga('send', 'event', 'Chat', 'Update Chatters');
-            if (d.data.chatters) {
-                currentViewers = [];
-                ["staff", "admins", "moderators", "viewers"].forEach(function (a) {
-                    d.data.chatters[a].forEach(function (a) {
-                        currentViewers.push(a);
-                        /*if(!CurrentChat.displayNames) CurrentChat.displayNames = {};
-                        if(!CurrentChat.displayNames[a]) {
-                            Twitch.api.get("users/" + a).done(function (d) {
-                                if(d.display_name) {
-                                    console.log(a+" = "+d.display_name);
-                                    CurrentChat.displayNames[a] = d.display_name;
+        grabChatters = function() {
+            if(CurrentChat.Chatters.bttvUpdating !== true) return;
+            bttvJquery.ajax({
+                url: "https://tmi.twitch.tv/group/user/" + CurrentChat.channel + "/chatters?update_num=" + CurrentChat.Chatters.bttvUpdateNum + "&callback=?",
+                cache: !1,
+                dataType: "jsonp",
+                timeoutLength: 6E3
+            }).done(function (d) {
+                CurrentChat.Chatters.bttvUpdating = false;
+                ga('send', 'event', 'Chat', 'Update Chatters');
+                if (d.data.chatters) {
+                    currentViewers = [];
+                    ["staff", "admins", "moderators", "viewers"].forEach(function (a) {
+                        d.data.chatters[a].forEach(function (a) {
+                            currentViewers.push(a);
+                        });
+                        if(a === "staff" || a === "admins") {
+                            d.data.chatters[a].forEach(function (a) {
+                                d.data.chatters["moderators"].push(a);
+                            });
+                        }
+                        if(a === "staff") {
+                            d.data.chatters[a].forEach(function (a) {
+                                if(!CurrentChat.staff[a]) {
+                                    var action = {
+                                        kind: "staff",
+                                        user: a
+                                    }
+                                    fakeCurrentChat("special_user", action);
+                                    bttvDebug.log("Added "+a+" as staff");
                                 }
                             });
+                        }
+                        if(a === "admins") {
+                            d.data.chatters[a].forEach(function (a) {
+                                if(!CurrentChat.admins[a]) {
+                                    var action = {
+                                        kind: "admin",
+                                        user: a
+                                    }
+                                    fakeCurrentChat("special_user", action);
+                                    bttvDebug.log("Added "+a+" as admin");
+                                }
+                            });
+                        }
+                        /*if(a === "moderators") {
+                            d.data.chatters[a].forEach(function (a) {
+                                if(!CurrentChat.moderators[a]) {
+                                    var action = {
+                                        sender: "jtv",
+                                        target: a
+                                    }
+                                    fakeCurrentChat("user_oped", action);
+                                    bttvDebug.log("Added "+a+" as a mod");
+                                }
+                            });
+                            for (mod in CurrentChat.moderators) {
+                                if(CurrentChat.moderators.hasOwnProperty(mod)) {
+                                    if(d.data.chatters[a].indexOf(mod) === -1) {
+                                       var action = {
+                                            sender: "jtv",
+                                            target: mod
+                                        }
+                                        fakeCurrentChat("user_deoped", action);
+                                        bttvDebug.log("Removed "+mod+" as a mod"); 
+                                    }
+                                }
+                            }
                         }*/
                     });
-                    if(a === "staff" || a === "admins") {
-                        d.data.chatters[a].forEach(function (a) {
-                            d.data.chatters["moderators"].push(a);
-                        });
-                    }
-                    if(a === "staff") {
-                        d.data.chatters[a].forEach(function (a) {
-                            if(!CurrentChat.staff[a]) {
-                                var action = {
-                                    kind: "staff",
-                                    user: a
-                                }
-                                fakeCurrentChat("special_user", action);
-                                bttvDebug.log("Added "+a+" as staff");
-                            }
-                        });
-                    }
-                    if(a === "admins") {
-                        d.data.chatters[a].forEach(function (a) {
-                            if(!CurrentChat.admins[a]) {
-                                var action = {
-                                    kind: "admin",
-                                    user: a
-                                }
-                                fakeCurrentChat("special_user", action);
-                                bttvDebug.log("Added "+a+" as admin");
-                            }
-                        });
-                    }
-                    /*if(a === "moderators") {
-                        d.data.chatters[a].forEach(function (a) {
-                            if(!CurrentChat.moderators[a]) {
-                                var action = {
-                                    sender: "jtv",
-                                    target: a
-                                }
-                                fakeCurrentChat("user_oped", action);
-                                bttvDebug.log("Added "+a+" as a mod");
-                            }
-                        });
-                        for (mod in CurrentChat.moderators) {
-                            if(CurrentChat.moderators.hasOwnProperty(mod)) {
-                                if(d.data.chatters[a].indexOf(mod) === -1) {
-                                   var action = {
-                                        sender: "jtv",
-                                        target: mod
-                                    }
-                                    fakeCurrentChat("user_deoped", action);
-                                    bttvDebug.log("Removed "+mod+" as a mod"); 
-                                }
-                            }
-                        }
-                    }*/
-                });
-            }
-        });
+                }
+            }).always(function () {
+                if(CurrentChat.Chatters.bttvUpdateNum < CurrentChat.Chatters.MAX_INTERVAL) {
+                    CurrentChat.Chatters.bttvUpdateNum++;
+                    var waitTime = Math.floor(CurrentChat.Chatters.UPDATE_TIMEOUT * Math.pow(1 + CurrentChat.Chatters.GROWTH_RATE, CurrentChat.Chatters.bttvUpdateNum));
+                    if(CurrentChat.Chatters.bttvTimeout) clearTimeout(CurrentChat.Chatters.bttvTimeout);
+                    CurrentChat.Chatters.bttvTimeout = setTimeout(grabChatters, waitTime);
+                }
+            });
+        }
+
+        CurrentChat.Chatters.bttvUpdating = true;
+        CurrentChat.Chatters.bttvUpdateNum = 0;
+        grabChatters();
         if(modsList && CurrentChat.TMIFailedToJoin === false && CurrentChat.checkModsViaCommand === true) {
             if(Twitch.user.login()) {
                 CurrentChat.checkingMods = true;
