@@ -22,7 +22,7 @@
 BetterTTVEngine = function () {
 
     var bttvVersion = "6.4.6",
-        bttvRelease = 1,
+        bttvRelease = 2,
         bttvDebug = {
             log: function (string) {
                 if (window.console && console.log) console.log("BTTV: " + string);
@@ -1205,8 +1205,18 @@ BetterTTVEngine = function () {
                 var nickname = CurrentChat.real_username(info.user);
                 if (bttvSettings["hideDeletedMessages"] === true) {
                     bttvJquery('#chat_line_list .chat_from_' + info.user.replace(/%/g, '_').replace(/[<>,]/g, '')).each(function () {
-                        bttvJquery(this).remove();
+                        bttvJquery(this).hide();
                     });
+                    setTimeout(function() {
+                        bttvJquery('#chat_line_list .bot').each(function () {
+                            bttvJquery(this).parent().parent().find("span.chat_line:contains('"+info.user.replace(/%/g, '_').replace(/[<>,]/g, '')+"')").each(function () {
+                                bttvJquery(this).parent().parent().hide();
+                            });
+                            bttvJquery(this).parent().parent().find("p.chat_line:contains('"+info.user.replace(/%/g, '_').replace(/[<>,]/g, '')+"')").each(function () {
+                                bttvJquery(this).parent().hide();
+                            });
+                        });
+                    }, 3000);
                 } else {
                     if (bttvSettings["showDeletedMessages"] !== true) {
                         bttvJquery('#chat_line_list .chat_from_' + info.user.replace(/%/g, '_').replace(/[<>,]/g, '') + ' .chat_line').each(function () {
@@ -1217,6 +1227,9 @@ BetterTTVEngine = function () {
                             bttvJquery("a", this).each(function () {
                                 var rawLink = "<span style=\"text-decoration: line-through;\">" + bttvJquery(this).attr("href") + "</span>";
                                 bttvJquery(this).replaceWith(rawLink);
+                            });
+                            bttvJquery(".emoticon", this).each(function () {
+                                bttvJquery(this).css("opacity","0.1");
                             });
                             bttvJquery(this).html("<span style=\"color: #999\">" + bttvJquery(this).html() + "</span>");
                         });
