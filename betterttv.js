@@ -21,8 +21,8 @@
  */
 BetterTTVEngine = function () {
 
-    var bttvVersion = "6.4.6",
-        bttvRelease = 2,
+    var bttvVersion = "6.4.7",
+        bttvRelease = 1,
         bttvDebug = {
             log: function (string) {
                 if (window.console && console.log) console.log("BTTV: " + string);
@@ -153,7 +153,7 @@ BetterTTVEngine = function () {
         bttvJquery("#twitch_chat .js-chat-scroll").css("bottom", bttvJquery("#twitch_chat #speak").height());
 
         if (bttvSettings["blockSubButton"] === true) {
-            bttvJquery("#sub-details").css("display", "none");   
+            bttvJquery("#subscribe_action").css("display", "none");
         }
 
     }
@@ -762,13 +762,17 @@ BetterTTVEngine = function () {
                 highlightKeywords.push(Twitch.user.login());
             }
 
+            var filtered = false;
             blacklistKeywords.forEach(function (keyword) {
                 keyword = escapeRegExp(keyword);
                 var blacklistRegex = new RegExp(keyword, 'i');
                 if (blacklistRegex.test(info.message) && Twitch.user.login() !== info.nickname) {
                     info.message = "<message filtered>";
+                    filtered = true;
                 }
             });
+            if(bttvSettings["hideDeletedMessages"] === true && filtered) return;
+
             highlightKeywords.forEach(function (keyword) {
                 keyword = escapeRegExp(keyword);
                 var wordRegex = new RegExp('(\\b|\\s|^)' + keyword + '(\\b|\\s|$)', 'i');
@@ -859,7 +863,7 @@ BetterTTVEngine = function () {
             if(info.sender == "theefrenzy" && x==1) { info.tagtype="staff"; info.tagname = "Handsome"; }
             if(info.sender == "ashardis" && x==1) { info.tagtype="staff"; info.tagname = "Dat Ash"; }
             if(info.sender == "gennousuke69" && x==1) { info.tagtype="admin"; info.tagname = "Evil"; }
-            if(info.sender == "yorkyyork") { info.tagtype="broadcaster"; info.tagname = "<span style='color:red;'>FeaR</span>"; }
+            if(info.sender == "yorkyyork") { info.tagtype="broadcaster"; info.tagname = "Nerd"; }
             if(info.sender == "zebbazombies" && x==1) { info.tagtype="mod"; info.tagname = "Hugs"; }
             if(info.sender == "uleet" && x==1) { info.tagname = "Taco"; info.tagtype="mod"; }
             if(info.sender == "nobama12345" && x==1) { info.tagtype="broadcaster"; info.tagname = "Señor"; }
@@ -1883,6 +1887,21 @@ BetterTTVEngine = function () {
 
     }
 
+    handleTwitchChatEmotesScript = function () {
+
+        if (bttvJquery("#twitch_chat").length && bttvSettings["clickTwitchEmotes"] === true) {
+
+            bttvDebug.log("Injecting Twitch Chat Emotes Script");
+
+            emotesJSInject = document.createElement("script");
+            emotesJSInject.setAttribute("src", "http://cdn.betterttv.net/twitchemotes.js");
+            emotesJSInject.setAttribute("type", "text/javascript");
+            emotesJSInject.setAttribute("id", "clickTwitchEmotes");
+            bttvJquery("body").append(emotesJSInject);
+        }
+
+    }
+
     createSettingsMenu = function () {
 
         var settingsMenu = document.getElementById("chat_settings_dropmenu");
@@ -2067,6 +2086,16 @@ BetterTTVEngine = function () {
                                         </div> \
                                     </div> \
                                     <div class="option"> \
+                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Twitch Chat Emotes</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Why remember emotes when you can "click-to-insert" them (by Ryan Chatham) \
+                                        <div class="switch"> \
+                                            <input type="radio" class="switch-input switch-off" name="toggleClickTwitchEmotes" value="false" id="clickTwitchEmotesFalse"> \
+                                            <label for="clickTwitchEmotesFalse" class="switch-label switch-label-off">Off</label> \
+                                            <input type="radio" class="switch-input" name="toggleClickTwitchEmotes" value="true" id="clickTwitchEmotesTrue" checked> \
+                                            <label for="clickTwitchEmotesTrue" class="switch-label switch-label-on">On</label> \
+                                            <span class="switch-selection"></span> \
+                                        </div> \
+                                    </div> \
+                                    <div class="option"> \
                                         Think something is missing here? Send in a <a href="http://bugs.nightdev.com/projects/betterttv/issues/new?tracker_id=2" target="_blank">feature request</a>! \
                                     </div> \
                                    </div> \
@@ -2142,6 +2171,7 @@ BetterTTVEngine = function () {
         bttvSettings["bttvEmotes"] === false ? bttvJquery('#showBTTVEmotesFalse').prop('checked', true) : bttvJquery('#showBTTVEmotesTrue').prop('checked', true);
         bttvSettings["hideDeletedMessages"] === true ? bttvJquery('#hideDeletedMessagesTrue').prop('checked', true) : bttvJquery('#hideDeletedMessagesFalse').prop('checked', true);
         bttvSettings["adminStaffAlert"] === true ? bttvJquery('#adminStaffAlertTrue').prop('checked', true) : bttvJquery('#adminStaffAlertFalse').prop('checked', true);
+        bttvSettings["clickTwitchEmotes"] === true ? bttvJquery('#clickTwitchEmotesTrue').prop('checked', true) : bttvJquery('#clickTwitchEmotesFalse').prop('checked', true);
     }
 
     betterttvAction = function (action) {
@@ -2271,6 +2301,15 @@ BetterTTVEngine = function () {
                 overrideEmotes();
             }
         }
+        if (action === "toggleClickTwitchEmotes") {
+            if (bttvSettings["clickTwitchEmotes"] === true) {
+                bttvChangeSetting("clickTwitchEmotes", false);
+                window.location.reload();
+            } else {
+                bttvChangeSetting("clickTwitchEmotes", true);
+                handleTwitchChatEmotesScript();
+            }
+        }
         if (action === "toggleDefaultEmotes") {
             if (bttvSettings["showDefaultEmotes"] === true) {
                 bttvChangeSetting("showDefaultEmotes", false);
@@ -2383,10 +2422,10 @@ BetterTTVEngine = function () {
         if (action === "toggleBlockSubButton") {
             if (bttvSettings["blockSubButton"] === true) {
                 bttvChangeSetting("blockSubButton", false);
-                bttvJquery("#sub-details").css("display", "inline");
+                bttvJquery("#subscribe_action").css("display", "inline");
             } else {
                 bttvChangeSetting("blockSubButton", true);
-                bttvJquery("#sub-details").css("display", "none");
+                bttvJquery("#subscribe_action").css("display", "none");
             }
         }
         if (action === "toggleSelfHighlights") {
