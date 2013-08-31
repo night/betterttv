@@ -22,7 +22,7 @@
 BetterTTVEngine = function () {
 
     var bttvVersion = "6.4.7",
-        bttvRelease = 1,
+        bttvRelease = 2,
         bttvDebug = {
             log: function (string) {
                 if (window.console && console.log) console.log("BTTV: " + string);
@@ -653,7 +653,7 @@ BetterTTVEngine = function () {
                 }, 1000);
             }
 
-            if (CurrentChat.checkingMods && info.nickname === "jtv") {
+            if (CurrentChat.checkMods && info.nickname === "jtv") {
                 CurrentChat.checkingMods = false;
                 var modsRegex = /^The moderators of this room are: (.*)/,
                     mods = modsRegex.exec(info.message);
@@ -686,6 +686,12 @@ BetterTTVEngine = function () {
                 CurrentChat.setup_chat_settings_menu();
                 CurrentChat.last_sender = "jtv";
                 return;
+            } else if(info.nickname === "jtv") {
+                var modsRegex = /^The moderators of this room are: (.*)/,
+                    mods = modsRegex.exec(info.message);
+                if (mods) {
+                    CurrentChat.checkMods = true;
+                }
             }
 
             var time = new Date().getTime() / 1000;
@@ -767,7 +773,7 @@ BetterTTVEngine = function () {
                 keyword = escapeRegExp(keyword);
                 var blacklistRegex = new RegExp(keyword, 'i');
                 if (blacklistRegex.test(info.message) && Twitch.user.login() !== info.nickname) {
-                    info.message = "<message filtered>";
+                    info.message = "&lt;message filtered&gt;";
                     filtered = true;
                 }
             });
@@ -914,7 +920,7 @@ BetterTTVEngine = function () {
                     return 'Nucleappa';
                 }
             }
-            
+
             if (!(CurrentChat.restarting && !CurrentChat.history_ended || CurrentChat.ignored[info.sender]))
                 if ("jtv" === info.sender) CurrentChat.last_sender = info.sender, CurrentChat.admin_message(CurrentChat.format_message(info));
                 else if ("twitchnotify" === info.sender) CurrentChat.last_sender = info.sender, CurrentChat.notify_message("subscriber", CurrentChat.format_message(info));
@@ -1001,6 +1007,7 @@ BetterTTVEngine = function () {
             if(CurrentChat.sentHistory.indexOf(r) !== -1) {
                 CurrentChat.sentHistory.splice(CurrentChat.sentHistory.indexOf(r), 1);
             }
+            if(r.trim() === "/mods" || r.trim() === ".mods") CurrentChat.checkMods = false;
             CurrentChat.sentHistory.unshift(r);
             ga('send', 'event', 'Chat', 'Send Message');
             CurrentChat.chat_say_old.call(CurrentChat, message);
@@ -1052,6 +1059,7 @@ BetterTTVEngine = function () {
             if(CurrentChat.checkModsViaCommand === true) {
                 if(Twitch.user.login()) {
                     CurrentChat.checkingMods = true;
+                    CurrentChat.checkMods = true;
                     CurrentChat.last_sender = Twitch.user.login();
                     CurrentChat.say("/mods");
                 }
@@ -1512,6 +1520,7 @@ BetterTTVEngine = function () {
                                 { url: "http://cdn.betterttv.net/emotes/roll.png", width: 94, height: 20, regex: "RollIt!" },
                                 { url: "http://cdn.betterttv.net/emotes/mmmbutter.png", width: 25, height: 23, regex: "ButterSauce" },
                                 { url: "http://cdn.betterttv.net/emotes/baconeffect.png", width: 23, height: 28, regex: "BaconEffect" },
+                                { url: "http://cdn.betterttv.net/emotes/yolk.png", width: 28, height: 25, regex: "WhatAYolk" }
                               ];
 
         if (bttvSettings["showDefaultEmotes"] !== true) {
@@ -1716,6 +1725,7 @@ BetterTTVEngine = function () {
         if(modsList && CurrentChat.TMIFailedToJoin === false && CurrentChat.checkModsViaCommand === true) {
             if(Twitch.user.login()) {
                 CurrentChat.checkingMods = true;
+                CurrentChat.checkMods = true;
                 CurrentChat.say("/mods");
             }
         }
@@ -2487,6 +2497,7 @@ BetterTTVEngine = function () {
                                 "blockSubButton",
                                 "bttvChat",
                                 "chatWidth",
+                                "clickTwitchEmotes",
                                 "darkenedMode",
                                 "flipDashboard",
                                 "hideDeletedMessages",
@@ -2527,6 +2538,7 @@ BetterTTVEngine = function () {
             checkMessages();
             clearAds();
             checkFollowing();
+            handleTwitchChatEmotesScript();
             darkenPage();
             splitChat();
             formatDashboard();
