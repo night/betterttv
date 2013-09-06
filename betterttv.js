@@ -21,8 +21,8 @@
  */
 BetterTTVEngine = function () {
 
-    var bttvVersion = "6.4.7",
-        bttvRelease = 2,
+    var bttvVersion = "6.4.8",
+        bttvRelease = 1,
         bttvDebug = {
             log: function (string) {
                 if (window.console && console.log) console.log("BTTV: " + string);
@@ -189,7 +189,7 @@ BetterTTVEngine = function () {
 
         if (bttvSettings["chatWidth"]) {
             if (bttvSettings["chatWidth"] < 0) {
-                bttvChangeSetting("chatWidth", 0)
+                bttvChangeSetting("chatWidth", 0);
             }
         }
 
@@ -316,7 +316,7 @@ BetterTTVEngine = function () {
                 Twitch.storage.set("rightColClosed", "false");
             }
 
-            if (bttvSettings["chatWidth"]) {
+            if (bttvSettings["chatWidth"] !== null) {
                 chatWidth = bttvSettings["chatWidth"];
 
                 if (chatWidth == 0) {
@@ -654,11 +654,11 @@ BetterTTVEngine = function () {
             }
 
             if (CurrentChat.checkMods && info.nickname === "jtv") {
-                CurrentChat.checkingMods = false;
-                var modsRegex = /^The moderators of this room are: (.*)/,
+                var modsRegex = /^The moderators of this room are:(.*)/,
                     mods = modsRegex.exec(info.message);
                 if (mods) {
-                    mods = mods[1].split(", ");
+                    CurrentChat.checkingMods = false;
+                    mods = mods[1].trim().split(", ");
                     mods.push(CurrentChat.channel);
                     mods.forEach(function (mod) {
                         if(!CurrentChat.moderators[mod]) {
@@ -682,13 +682,13 @@ BetterTTVEngine = function () {
                             }
                         }
                     }
+                    CurrentChat.setup_chat_settings_menu();
+                    CurrentChat.last_sender = "jtv";
+                    return;
                 }
-                CurrentChat.setup_chat_settings_menu();
-                CurrentChat.last_sender = "jtv";
-                return;
             } else if(info.nickname === "jtv") {
-                var modsRegex = /^The moderators of this room are: (.*)/,
-                    mods = modsRegex.exec(info.message);
+                var modsRegex = /^The moderators of this room are:/,
+                    mods = info.message.match(modsRegex);
                 if (mods) {
                     CurrentChat.checkMods = true;
                 }
@@ -1009,7 +1009,6 @@ BetterTTVEngine = function () {
             }
             if(r.trim() === "/mods" || r.trim() === ".mods") CurrentChat.checkMods = false;
             CurrentChat.sentHistory.unshift(r);
-            ga('send', 'event', 'Chat', 'Send Message');
             CurrentChat.chat_say_old.call(CurrentChat, message);
         }
 
@@ -1032,10 +1031,8 @@ BetterTTVEngine = function () {
                         }
                         CurrentChat.lookingUpUsers--;
                     });
-                    return user.capitalize();
-                } else {
-                    return user.capitalize();
                 }
+                return user.capitalize();
             } else {
                 return user;
             }
@@ -1520,7 +1517,8 @@ BetterTTVEngine = function () {
                                 { url: "http://cdn.betterttv.net/emotes/roll.png", width: 94, height: 20, regex: "RollIt!" },
                                 { url: "http://cdn.betterttv.net/emotes/mmmbutter.png", width: 25, height: 23, regex: "ButterSauce" },
                                 { url: "http://cdn.betterttv.net/emotes/baconeffect.png", width: 23, height: 28, regex: "BaconEffect" },
-                                { url: "http://cdn.betterttv.net/emotes/yolk.png", width: 28, height: 25, regex: "WhatAYolk" }
+                                { url: "http://cdn.betterttv.net/emotes/yolk.png", width: 28, height: 25, regex: "WhatAYolk" },
+                                { url: "http://cdn.betterttv.net/emotes/grip.png", width: 31, height: 30, regex: "CiGrip" }
                               ];
 
         if (bttvSettings["showDefaultEmotes"] !== true) {
@@ -1846,6 +1844,8 @@ BetterTTVEngine = function () {
 
             bttvDebug.log("Formatting Dashboard");
 
+            CurrentChat.disconnect();
+            removeElement(".line");
             bttvJquery('<div style="position:relative;" id="bttvDashboard"></div>').appendTo('#dash_main');
             bttvJquery("#dash_main #controls_column").appendTo("#bttvDashboard");
             bttvJquery("#dash_main #player_column").appendTo("#bttvDashboard");
@@ -1951,6 +1951,7 @@ BetterTTVEngine = function () {
                                     <ul class="nav"> \
                                         <li class="active"><a href="#bttvSettings">Settings</a></li> \
                                         <li><a href="#bttvAbout">About</a></li> \
+                                        <li><a href="#bttvPrivacy">Privacy Policy</a></li> \
                                     </ul><span id="close">&times;</span> \
                                    </div> \
                                    <div id="bttvSettings" style="overflow-y:auto;height:425px;"> \
@@ -2123,6 +2124,9 @@ BetterTTVEngine = function () {
                                         <br /> \
                                         <img style="vertical-align:bottom;" src="http://static-cdn.jtvnw.net/jtv_user_pictures/panel-11785491-image-6b90c7f168932ac7-320.png" /><br /><small><small>BetterTTV is not endorsed nor affiliated with Kappa, Kappab</small></small> \
                                     </div> \
+                                   </div> \
+                                   <div id="bttvPrivacy" style="display:none;"> \
+                                    <iframe src="http://cdn.betterttv.net/privacy.html" width="100%" height="425" style="border:none;background-color:transparent;"></iframe> \
                                    </div> \
                                    <div id="footer"> \
                                     <span>BetterTTV &copy; <a href="http://www.nightdev.com" target="_blank">NightDev</a> 2013</span><span style="float:right;"><a href="http://www.nightdev.com/contact" target="_blank">Get Support</a> | <a href="http://bugs.nightdev.com/projects/betterttv/issues/new?tracker_id=1" target="_blank">Report a Bug</a> | <a href="http://streamdonations.net/c/night" target="_blank">Support the Developer</a></span> \
@@ -2496,6 +2500,7 @@ BetterTTVEngine = function () {
                                 "blacklistKeywords",
                                 "blockSubButton",
                                 "bttvChat",
+                                "bttvEmotes",
                                 "chatWidth",
                                 "clickTwitchEmotes",
                                 "darkenedMode",
@@ -2541,8 +2546,8 @@ BetterTTVEngine = function () {
             handleTwitchChatEmotesScript();
             darkenPage();
             splitChat();
-            formatDashboard();
             flipDashboard();
+            formatDashboard();
             giveawayCompatibility();
             dashboardViewers();
             directoryLiveTab();
