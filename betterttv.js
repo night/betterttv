@@ -2713,14 +2713,6 @@
         }
     }
 
-    var handleLookupServer = function() {
-        if(typeof CurrentChat == "undefined" || !CurrentChat.channel) return;
-        var socketJSInject = document.createElement("script");
-        socketJSInject.setAttribute("src", "http://cdn.betterttv.net/socket.io.js");
-        socketJSInject.setAttribute("type", "text/javascript");
-        $("head").append(socketJSInject);
-    }
-
     var checkJquery = function () {
         if (typeof ($j) === 'undefined') {
             debug.log("jQuery is undefined.");
@@ -2740,7 +2732,6 @@
             debug.log("BTTV v" + bttv.info.version + 'R' + bttv.info.release);
             debug.log("CALL init " + document.URL);
 
-            handleLookupServer();
             brand();
             clearClutter();
             channelReformat();
