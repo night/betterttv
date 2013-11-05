@@ -3,13 +3,15 @@
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * in the Software without limitation of the rights to use, copy, modify, merge,
+ * and/or publish copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
  *
  * The above copyright notice, any copyright notices herein, and this permission
- * notice shall be included in all copies or substantial portions of the Software.
+ * notice shall be included in all copies or substantial portions of the Software,
+ * the Software, or portions of the Software, may not be sold for profit, and the
+ * Software may not be distributed nor sub-licensed without explicit permission
+ * from the copyright owner.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -18,6 +20,18 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ *
+ * Should any questions arise concerning your usage of this Software, or to
+ * request permission to distribute this Software, please contact the copyright
+ * holder at http://nightdev.com/contact
+ *
+ * ---------------------------------
+ *
+ *  Unofficial TLDR:
+ *  Free to modify for personal use
+ *  Need permission to distribute the code
+ *  Can't sell addon or features of the addon
+ *  
  */
 /** @license
  * Gritter for jQuery
@@ -80,6 +94,7 @@
                 "clickTwitchEmotes",
                 "darkenedMode",
                 "dblclickTranslation",
+                "desktopNotifications",
                 "flipDashboard",
                 "hideDeletedMessages",
                 "highlightKeywords",
@@ -96,18 +111,94 @@
                 "splitChat"
             ];
             settingsList.forEach(function(setting) {
-                vars.settings[setting] = parseSetting(localStorage.getItem(setting));
+                vars.settings[setting] = parseSetting(bttv.storage.get(setting));
             });
+            bttv.storage.putArray("bttvReadNotifications", []);
         },
         save: function(setting, value) {
+            ga('send', 'event', 'BTTV', 'Change Setting: '+setting+'='+value);
             vars.settings[setting] = value;
-            localStorage.setItem(setting, value);
+            bttv.storage.put(setting, value);
+        }
+    },
+    bttv.storage = {
+        exists: function(item) {
+            return (bttv.storage.get(item) ? true : false);
+        },
+        get: function(item) {
+            return localStorage.getItem(item);
+        },
+        getArray: function(item) {
+            if(!bttv.storage.exists(item)) bttv.storage.putArray(item, []);
+            return JSON.parse(bttv.storage.get(item));
+        },
+        put: function(item, value) {
+            localStorage.setItem(item, value);
+        },
+        pushArray: function(item, value) {
+            if(!bttv.storage.exists(item)) bttv.storage.putArray(item, []);
+            var i = bttv.storage.getArray(item);
+            i.push(value);
+            bttv.storage.putArray(item, i);
+        },
+        putArray: function(item, value) {
+            bttv.storage.put(item, JSON.stringify(value));
+        },
+        spliceArray: function(item, value) {
+            if(!bttv.storage.exists(item)) bttv.storage.putArray(item, []);
+            var i = bttv.storage.getArray(item);
+            if(i.indexOf(value) !== -1) i.splice(i.indexOf(value), 1);
+            bttv.storage.putArray(item, i);
         }
     },
     bttv.info = {
-        version: "6.5.3",
-        release: 3
+        version: "6.5.5",
+        release: 1
     };
+    bttv.socketServer = false;
+
+    bttv.notify = function(message, title, url, image, tag) {
+        var title = title || "Notice",
+            url = url || "",
+            image = image || "http://cdn.betterttv.net/icon.png",
+            message = message || "",
+            tag = tag || "bttv_"+message,
+            tag = "bttv_"+tag.toLowerCase().replace(/[^\w_]/g, '');
+
+        var desktopNotify = function(message, title, url, image, tag) {
+            if(bttv.storage.getArray("bttvReadNotifications").indexOf(tag) === -1) {
+                var notification = new window.Notification(title, {
+                    icon: image,
+                    body: message,
+                    tag: tag
+                });
+                notification.onshow = function() {
+                    setTimeout(function() {
+                        notification.close();
+                    }, 10000)
+                }
+                if(url !== "") {
+                    notification.onclick = function() {
+                        window.open(url);
+                        notification.close();
+                    }
+                }
+                bttv.storage.pushArray("bttvReadNotifications", tag);
+                setTimeout(function() { bttv.storage.spliceArray("bttvReadNotifications", tag); }, 60000);
+            }
+        }
+
+        if(bttv.settings.get("desktopNotifications") === true && ((window.Notification && Notification.permission === 'granted') || (window.webkitNotifications && webkitNotifications.checkPermission() === 0))) {
+            desktopNotify(message, title, url, image, tag);
+        } else {
+            message = message.replace(/\n/g, "<br /><br />").replace(/Click here(.*)./, '<a style="color:white" target="_blank" href="'+url+'">Click here$1.</a>');
+            $.gritter.add({
+                title: title,
+                image: image,
+                text: message,
+            });
+        }
+    }
 
     // Helper Functions
     var removeElement = function (e) {
@@ -213,14 +304,12 @@
         debug.log("Clearing Clutter");
 
         // Sidebar is so cluttered
+        removeElement('li[data-name="kabam"]');
+        removeElement('#nav_advertisement');
         if (bttv.settings.get("showFeaturedChannels") !== true) {
-            removeElement('.sm_vids');
             removeElement('#nav_games');
             removeElement('#nav_streams');
             removeElement('#nav_related_streams');
-            removeElement('.featured');
-            removeElement('.related');
-            removeElement('li[data-name="kabam"]');
         }
     }
 
@@ -518,7 +607,7 @@
 
         // Import Global BTTV CSS Changes
         var globalCSSInject = document.createElement("link");
-        globalCSSInject.setAttribute("href", "http://cdn.betterttv.net/betterttv.css");
+        globalCSSInject.setAttribute("href", "http://cdn.betterttv.net/betterttv-6.5.css");
         globalCSSInject.setAttribute("type", "text/css");
         globalCSSInject.setAttribute("rel", "stylesheet");
         $("body").append(globalCSSInject);
@@ -612,21 +701,20 @@
                     j ? $(".js-unread_message_count").show() : $(".js-unread_message_count").hide();
                     if (notificationsLoaded === true && notifications < j) {
                         $.get('http://www.twitch.tv/inbox', function (data) {
-                            var messageSender = /class="capital">(.*)<\/a>/i.exec(data);
-                            var messageSenderAvatar = /class="p30" src="(.*)"/i.exec(data);
-                            if (messageSender && messageSenderAvatar) {
-                                messageSender = messageSender[1].capitalize();
-                                messageSenderAvatar = messageSenderAvatar[1];
+                            var $message = $(data).find("#message-list .unread:first");
+                                
+                            if ($message) {
+                                var $senderData = $message.children("div.from_to_user"),
+                                    $messageData = $message.children("div.message_data"),
+                                    url = "http://www.twitch.tv"+$messageData.children(".message_subject").attr("href"),
+                                    avatar = $senderData.children(".prof").children("img").attr("src"),
+                                    sender = $senderData.children(".capital").html().capitalize();
                             } else {
-                                messageSender = "Someone";
-                                messageSenderAvatar = "";
+                                var url = "http://www.twitch.tv/inbox",
+                                    avatar = "http://www-cdn.jtvnw.net/images/xarth/404_user_50x50.png",
+                                    sender = "Someone";
                             }
-                            $.gritter.add({
-                                title: 'Message Received',
-                                class_name: 'gritter-light',
-                                image: messageSenderAvatar,
-                                text: messageSender + ' just sent you a Message!<br /><br /><a style="color:black" href="http://www.twitch.tv/inbox">Click here to head to to your inbox</a>.',
-                            });
+                            bttv.notify(sender+' just sent you a Message!\nClick here to view it.', 'Twitch Message Received', url, avatar, 'new_message_'+sender);
                         });
                     }
                     notifications = j;
@@ -683,7 +771,75 @@
 
         if(typeof CurrentChat == "undefined" || !CurrentChat.channel) return;
 
-        CurrentChat.admin_message("<center><small>BetterTTV v" + bttv.info.version + " Loaded.</small></center>");
+        var connectToChat = function(reconnect) {
+            if(bttv.socketServer && !CurrentChat.devchat && !CurrentChat.eventchat) {
+                bttv.socketServer.emit("chat servers").once("chat servers", function(data) {
+                    bttv.TwitchStatus = {};
+                    bttv.TwitchChatServers = [];
+                    bttv.TwitchChatPorts = [];
+                    data.servers.forEach(function(server) {
+                        if(CurrentChat.cantConnectTo6667 >= 2 && server.port === 6667) return;
+                        bttv.TwitchStatus[server.ip+":"+server.port] = server.lag;
+                        bttv.TwitchChatServers.push(server.ip);
+                        bttv.TwitchChatPorts.push(server.port);
+                    });
+                    if(CurrentChat.flash_loaded) {
+                        CurrentChat.disconnect();
+                        if(!reconnect) {
+                            removeElement(".line");
+                            CurrentChat.admin_message("<center><small>BetterTTV v" + bttv.info.version + " Loaded.</small></center>");
+                        }
+                        CurrentChat.get_servers = function () {
+                            return [bttv.TwitchChatServers[0]];
+                        }
+                        CurrentChat.get_ports = function () {
+                            return [bttv.TwitchChatPorts[0]];
+                        }
+                        var a = CurrentChat.ircSystem.cloneNode(!0);
+                        CurrentChat.ircSystem.parentNode.replaceChild(a, CurrentChat.ircSystem);
+                        CurrentChat.ircSystem = a;
+                        CurrentChat.me.is_loaded = !1;
+                        CurrentChat.connect(CurrentChat.room);
+                    } else {
+                        CurrentChat.get_servers = function () {
+                            return [bttv.TwitchChatServers[0]];
+                        }
+                        CurrentChat.get_ports = function () {
+                            return [bttv.TwitchChatPorts[0]];
+                        }
+                        CurrentChat.admin_message("<center><small>BetterTTV v" + bttv.info.version + " Loaded.</small></center>");
+                    }
+                });
+            } else {
+                if(!reconnect) {
+                    CurrentChat.admin_message("<center><small>BetterTTV v" + bttv.info.version + " Loaded.</small></center>");
+                }
+            }
+            if(CurrentChat.devchat || CurrentChat.eventchat) {
+                CurrentChat.admin_message("BetterTTV: You are connecting to an event chat server.");
+            }
+        }
+        connectToChat(false);
+
+        //CurrentChat.admin_message("<center><small>BetterTTV v" + bttv.info.version + " Loaded.</small></center>");
+
+        CurrentChat.activePage = true;
+        $(window).on("blur focus", function(e) {
+            var prevType = $(this).data("prevType");
+
+            if (prevType != e.type) {   //  reduce double fire issues
+                switch (e.type) {
+                    case "blur":
+                        CurrentChat.activePage = false;
+                        break;
+                    case "focus":
+                        CurrentChat.activePage = true;
+                        break;
+                }
+            }
+
+            $(this).data("prevType", e.type);
+        })
 
         if (bttv.settings.get("scrollbackAmount")) {
             CurrentChat.line_buffer = bttv.settings.get("scrollbackAmount");
@@ -746,16 +902,6 @@
 
             var time = new Date().getTime() / 1000;
             CurrentChat.lastActivity = time;
-
-            if (info.nickname == "nightbot" && info.message == "> Running a commercial in 15 seconds." && Twitch.user.login() === CurrentChat.channel) {
-                $.gritter.add({
-                    title: 'Commercial Warning',
-                    class_name: 'gritter-light',
-                    time: 10000,
-                    image: 'http://cdn.nightdev.com/img/nightboticon.png',
-                    text: 'Nightbot will be running a commercial in 15 seconds.',
-                });
-            }
 
             if (info.tagtype == "broadcaster") {
                 info.tagname = "Host";
@@ -831,6 +977,9 @@
                 var nickRegex = new RegExp('^' + keyword + '$', 'i');
                 if (Twitch.user.login() !== "" && (((wordRegex.test(info.message) || nickRegex.test(info.nickname)) && Twitch.user.login() !== info.nickname) || (Twitch.user.login() === info.nickname && bttv.settings.get("highlightKeywords") && bttv.settings.get("highlightKeywords").indexOf(Twitch.user.login()) !== -1))) {
                     messageHighlighted = true;
+                    if(bttv.settings.get("desktopNotifications") === true && CurrentChat.activePage === false) {
+                        bttv.notify("You were mentioned in "+CurrentChat.lookupDisplayName(CurrentChat.channel)+"'s channel.");
+                    }
                 }
             });
 
@@ -957,12 +1106,14 @@
             $(this).click(function() {
                 var time = $(this).data("time"),
                     user = $("#user_info .nick").html().toLowerCase();
+                ga('send', 'event', 'Chat', 'Send Timeout: ' + time);
                 CurrentChat.say("/timeout " + user + " " + time);
             });
         });
 
         $(".bttvPermit").click(function () {
             var user = $("#user_info .nick").html().toLowerCase();
+            ga('send', 'event', 'Chat', 'Send Permit');
             CurrentChat.say("!permit " + user);
         });
 
@@ -1047,6 +1198,11 @@
             if(r.trim() === "/mods" || r.trim() === ".mods") CurrentChat.checkMods = false;
             if(r.trim() === "/massunban" || r.trim() === ".massunban") {
                 CurrentChat.massUnban();
+                $("#chat_text_input").val("");
+                return;
+            }
+            if(bttv.socketServer && (r.trim() === "/invite friends" || r.trim() === ".invite friends")) {
+                bttv.socketServer.emit("invite friends", { channel: CurrentChat.channel, token: CurrentChat.userData.chat_oauth_token });
                 $("#chat_text_input").val("");
                 return;
             }
@@ -1136,19 +1292,25 @@
             if(!CurrentChat.displayNames) CurrentChat.displayNames = {};
             if(!CurrentChat.lookingUpUsers) CurrentChat.lookingUpUsers = 0;
             if(CurrentChat.displayNames[user]) {
+                if(bttv.socketServer) bttv.socketServer.emit('lookup', { user: user });
                 return CurrentChat.displayNames[user];
             } else if(user !== "jtv" && user !== "twitchnotify") {
-                if(CurrentChat.lookingUpUsers < 2) {
-                    CurrentChat.lookingUpUsers++;
-                    Twitch.api.get("users/" + user).done(function (d) {
-                        if(d.display_name && d.name) {
-                            CurrentChat.displayNames[d.name] = d.display_name;
-                            $('#chat_line_list .chat_from_' + d.name.replace(/%/g, '_').replace(/[<>,]/g, '') + ' .nick').each(function () {
-                                $(this).html(d.display_name);
-                            });
-                        }
-                        CurrentChat.lookingUpUsers--;
-                    });
+                if(bttv.socketServer) {
+                    bttv.socketServer.emit('lookup', { user: user });
+                } else {
+                    if(CurrentChat.lookingUpUsers < 2) {
+                        CurrentChat.lookingUpUsers++;
+                        ga('send', 'event', 'Chat', 'Lookup Display Name');
+                        Twitch.api.get("users/" + user).done(function (d) {
+                            if(d.display_name && d.name) {
+                                CurrentChat.displayNames[d.name] = d.display_name;
+                                $('#chat_line_list .chat_from_' + d.name.replace(/%/g, '_').replace(/[<>,]/g, '') + ' .nick').each(function () {
+                                    $(this).html(d.display_name);
+                                });                            
+                            }
+                            CurrentChat.lookingUpUsers--;
+                        });
+                    }
                 }
                 return user.capitalize();
             } else {
@@ -1173,6 +1335,9 @@
                     CurrentChat.last_sender = Twitch.user.login();
                     CurrentChat.say("/mods");
                 }
+            }
+            if(CurrentChat.get_ports()[0] === 6667) {
+                CurrentChat.cantConnectTo6667 = 0;
             }
         }
 
@@ -1208,7 +1373,16 @@
             CurrentChat.debug && CurrentChat.admin_message("DEBUG: " + a.message);
             if (a.message.match(/^Connecting to (.*):(80|443|6667)$/)) {
                 CurrentChat.currentServer = /^Connecting to ((.*):(80|443|6667))$/.exec(a.message)[1];
-                CurrentChat.admin_message(i18n("BetterTTV: Connecting to "+CurrentChat.currentServer));
+                if(bttv.TwitchStatus && CurrentChat.currentServer && CurrentChat.currentServer in bttv.TwitchStatus && bttv.TwitchStatus[CurrentChat.currentServer] <= 1000) {
+                    var lag = " (Lag: "+bttv.TwitchStatus[CurrentChat.currentServer]+"ms)";
+                    CurrentChat.admin_message(i18n("BetterTTV: Connecting to "+CurrentChat.currentServer+lag));
+                } else if(bttv.TwitchStatus && CurrentChat.currentServer && !CurrentChat.devchat && !CurrentChat.eventchat && ((bttv.TwitchChatServers.length > 0 && bttv.TwitchStatus[bttv.TwitchChatServers[0]] < bttv.TwitchStatus[CurrentChat.currentServer]) || (bttv.TwitchChatServers.length > 0 && !bttv.TwitchStatus[CurrentChat.currentServer]))) {
+                    CurrentChat.admin_message(i18n("BetterTTV: You were going to connect to "+CurrentChat.currentServer+", but I noticed it is lagging. Finding another server.."));
+                    connectToChat(true);
+                } else {
+                    CurrentChat.admin_message(i18n("BetterTTV: Connecting to "+CurrentChat.currentServer));
+                }
+                if(CurrentChat.currentServer) debug.log("Chat connecting to "+CurrentChat.currentServer);
             }
             if (a.message.match(/^connected$/)) {
                 CurrentChat.admin_message(i18n("Connected to the chat server."));
@@ -1235,6 +1409,13 @@
                 if (CurrentChat.silence && CurrentChat.silence === true) {
                     CurrentChat.silence = false;
                     return;
+                }
+                if(CurrentChat.get_ports()[0] === 6667) {
+                    if(!CurrentChat.cantConnectTo6667) CurrentChat.cantConnectTo6667 = 0;
+                    CurrentChat.cantConnectTo6667++;
+                    if(CurrentChat.cantConnectTo6667 === 2) {
+                        connectToChat(true);
+                    }
                 }
                 if (CurrentChat.last_sender === Twitch.user.login()) {
                     if (CurrentChat.checkingMods === true) {
@@ -1456,8 +1637,8 @@
                             sentence.push(user.capitalize());
                         }
                         if (sentence.length === 1) {
-                            $('#chat_text_input').val(sentence.join(' ') + ":");
-                            window.lastMatch = sentence.join(' ') + ":";
+                            $('#chat_text_input').val(sentence.join(' ') + ", ");
+                            window.lastMatch = sentence.join(' ') + ", ";
                         } else {
                             $('#chat_text_input').val(sentence.join(' '));
                             window.lastMatch = sentence.join(' ');
@@ -1544,41 +1725,63 @@
             }
         });*/
 
-        Twitch.api.get("streams/followed?limit=250").done(function (d) {
-            if (d.streams && d.streams.length > 0) {
-                if (vars.liveChannels.length === 0) {
-                    vars.liveChannels.push("loaded");
-                    d.streams.forEach(function(stream) {
-                        var channel = stream.channel;
-                        if (vars.liveChannels.indexOf(channel.name) === -1) {
-                            vars.liveChannels.push(channel.name);
-                        }
-                    });
-                } else {
-                    var channels = [];
-                    d.streams.forEach(function(stream) {
-                        var channel = stream.channel;
-                        channels.push(channel.name);
-                        if (vars.liveChannels.indexOf(channel.name) === -1) {
-                            debug.log(channel.name+" is now streaming");
-                            if (channel.game == null) channel.game = "on Twitch";
-                            $.gritter.add({
-                                title: channel.display_name + ' is Now Streaming',
-                                image: channel.logo,
-                                text: channel.display_name + ' just started streaming ' + channel.game + '.<br /><br /><a style="color:white" href="http://www.twitch.tv/' + channel.name + '">Click here to head to ' + channel.display_name + '\'s channel</a>.',
-                            });
-                        }
-                    });
-                    vars.liveChannels = channels;
-                }
+        var fetchFollowing = function(callback, followingList, followingNames, offset) {
+            var followingList = followingList || [],
+                followingNames = followingNames || [],
+                offset = offset || 0;
 
-                if(!$("#nav_personal li[data-name=\"following\"] a[href=\"/directory/following\"] .js-total").length) {
-                    $("#nav_personal li[data-name=\"following\"] a[href=\"/directory/following\"]").append('<span class="total_count js-total" style="display: none;"></span>');
+            Twitch.api.get("streams/followed?limit=100&offset="+offset).done(function (d) {
+                ga('send', 'event', 'Channels', 'Check Following - Offset: '+offset);
+                if (d.streams && d.streams.length > 0) {
+                    d.streams.forEach(function(stream) {
+                        if(followingNames.indexOf(stream.channel.name) === -1) {
+                            followingNames.push(stream.channel.name);
+                            followingList.push(stream);
+                        }
+                    });
+                    if(d.streams.length === 100) {
+                        fetchFollowing(function(followingList) {
+                            callback(followingList);
+                        }, followingList, followingNames, offset+100);
+                    } else {
+                        callback(followingList);
+                    }
+                } else {
+                    callback(followingList);
                 }
-                $("#nav_personal li[data-name=\"following\"] a[href=\"/directory/following\"] .js-total").html(d.streams.length);
-                $("#nav_personal li[data-name=\"following\"] a[href=\"/directory/following\"] .js-total").css("display","inline");
+            });
+        }
+
+        fetchFollowing(function(streams) {
+            if (vars.liveChannels.length === 0) {
+                vars.liveChannels.push("loaded");
+                streams.forEach(function(stream) {
+                    var channel = stream.channel;
+                    if (vars.liveChannels.indexOf(channel.name) === -1) {
+                        vars.liveChannels.push(channel.name);
+                    }
+                });
+            } else {
+                var channels = [];
+                streams.forEach(function(stream) {
+                    var channel = stream.channel;
+                    channels.push(channel.name);
+                    if (vars.liveChannels.indexOf(channel.name) === -1) {
+                        debug.log(channel.name+" is now streaming");
+                        if (channel.game == null) channel.game = "on Twitch";
+                        bttv.notify(channel.display_name + ' just started streaming ' + channel.game + '.\nClick here to head to ' + channel.display_name + '\'s channel.', channel.display_name + ' is Now Streaming', 'http://www.twitch.tv/' + channel.name, channel.logo, 'channel_live_'+channel.name);
+                    }
+                });
+                vars.liveChannels = channels;
             }
-            setTimeout(checkFollowing, 60000)
+
+            if(!$("#nav_personal li[data-name=\"following\"] a[href=\"/directory/following\"] .js-total").length) {
+                $("#nav_personal li[data-name=\"following\"] a[href=\"/directory/following\"]").append('<span class="total_count js-total" style="display: none;"></span>');
+            }
+            $("#nav_personal li[data-name=\"following\"] a[href=\"/directory/following\"] .js-total").html(streams.length);
+            $("#nav_personal li[data-name=\"following\"] a[href=\"/directory/following\"] .js-total").css("display","inline");
+
+            setTimeout(checkFollowing, 60000);
         });
 
     }
@@ -1594,6 +1797,7 @@
                 $(".js-title").html(d.status);
                 $(".js-game").html(d.game).attr("href",Twitch.uri.game(d.game));
             }
+            ga('send', 'event', 'Channels', 'Check Broadcast Info');
             setTimeout(checkBroadcastInfo, 60000);
         });
 
@@ -1695,7 +1899,15 @@
                     var a = {};
                     a.text = b.regex.replace(/\\/g,"").replace(/\((.*)\|(.*)\)/,"$1");
                     b.regex.match(/^\w+$/) ? a.regex = new RegExp("\\b" + b.regex + "\\b", "g") : a.regex = new RegExp(b.regex, "g");
+                    a.channel = b.channel || "BetterTTV Emotes";
+                    a.badge = "http://cdn.betterttv.net/tags/kappa.png";
                     a.images = [];
+                    a.images.push({
+                        emoticon_set: null,
+                        width: b.width,
+                        height: b.height,
+                        url: b.url
+                    });
                     a.images.forEach(function (c) {
                         d += 1;
                         c.html = ich["chat-emoticon"]({
@@ -1738,6 +1950,7 @@
                 timeoutLength: 6E3
             }).done(function (d) {
                 CurrentChat.Chatters.bttvUpdating = false;
+                ga('send', 'event', 'Chat', 'Update Chatters');
                 if (d.data.chatters) {
                     vars.currentViewers = [];
                     ["staff", "admins", "moderators", "viewers"].forEach(function (a) {
@@ -1880,7 +2093,7 @@
                 debug.log("Darkening Page");
 
                 var darkCSS = document.createElement("link");
-                darkCSS.setAttribute("href", "http://cdn.betterttv.net/betterttv-dark.css");
+                darkCSS.setAttribute("href", "http://cdn.betterttv.net/betterttv-6.5-dark.css");
                 darkCSS.setAttribute("type", "text/css");
                 darkCSS.setAttribute("rel", "stylesheet");
                 darkCSS.setAttribute("id", "darkTwitch");
@@ -1901,7 +2114,7 @@
             debug.log("Splitting Chat");
 
             var splitCSS = document.createElement("link");
-            bttv.settings.get("darkenedMode") === true ? splitCSS.setAttribute("href", "http://cdn.betterttv.net/betterttv-splitchat-dark.css") : splitCSS.setAttribute("href", "http://cdn.betterttv.net/betterttv-splitchat.css");
+            bttv.settings.get("darkenedMode") === true ? splitCSS.setAttribute("href", "http://cdn.betterttv.net/betterttv-6.5-splitchat-dark.css") : splitCSS.setAttribute("href", "http://cdn.betterttv.net/betterttv-6.5-splitchat.css");
             splitCSS.setAttribute("type", "text/css");
             splitCSS.setAttribute("rel", "stylesheet");
             splitCSS.setAttribute("id", "splitChat");
@@ -2008,7 +2221,7 @@
             debug.log("Injecting Twitch Chat Emotes Script");
 
             var emotesJSInject = document.createElement("script");
-            emotesJSInject.setAttribute("src", "http://cdn.betterttv.net/twitchemotes.js");
+            emotesJSInject.setAttribute("src", "http://cdn.betterttv.net/twitchemotes-6.5.js");
             emotesJSInject.setAttribute("type", "text/javascript");
             emotesJSInject.setAttribute("id", "clickTwitchEmotes");
             $("body").append(emotesJSInject);
@@ -2059,181 +2272,193 @@
                                         <li><a href="#bttvPrivacy">Privacy Policy</a></li> \
                                     </ul><span id="close">&times;</span> \
                                    </div> \
-                                   <div id="bttvSettings" style="overflow-y:auto;height:425px;"> \
-                                    <h2 class="option"> Here you can manage the various BetterTTV options. Click On or Off to toggle settings.</h2> \
-                                    <div class="option bttvHiddenSetting" style="display:none;"> \
-                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Admin/Staff Alert</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Get alerted in chat when admins or staff join \
-                                        <div class="switch"> \
-                                            <input type="radio" class="switch-input switch-off" name="toggleAdminStaffAlert" value="false" id="adminStaffAlertFalse"> \
-                                            <label for="adminStaffAlertFalse" class="switch-label switch-label-off">Off</label> \
-                                            <input type="radio" class="switch-input" name="toggleAdminStaffAlert" value="true" id="adminStaffAlertTrue" checked> \
-                                            <label for="adminStaffAlertTrue" class="switch-label switch-label-on">On</label> \
-                                            <span class="switch-selection"></span> \
+                                   <div id="bttvSettings" class="scroll scroll-dark" style="height:425px;"> \
+                                      <div class="tse-content"> \
+                                        <h2 class="option"> Here you can manage the various BetterTTV options. Click On or Off to toggle settings.</h2> \
+                                        <div class="option bttvHiddenSetting" style="display:none;"> \
+                                            <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Admin/Staff Alert</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Get alerted in chat when admins or staff join \
+                                            <div class="switch"> \
+                                                <input type="radio" class="switch-input switch-off" name="toggleAdminStaffAlert" value="false" id="adminStaffAlertFalse"> \
+                                                <label for="adminStaffAlertFalse" class="switch-label switch-label-off">Off</label> \
+                                                <input type="radio" class="switch-input" name="toggleAdminStaffAlert" value="true" id="adminStaffAlertTrue" checked> \
+                                                <label for="adminStaffAlertTrue" class="switch-label switch-label-on">On</label> \
+                                                <span class="switch-selection"></span> \
+                                            </div> \
                                         </div> \
-                                    </div> \
-                                    <div class="option"> \
-                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Anti-Prefix Completion</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Allows you to use sub emotes (greater than 4 characters) without prefixes (BETA) \
-                                        <div class="switch"> \
-                                            <input type="radio" class="switch-input switch-off" name="toggleAntiPrefix" value="false" id="antiPrefixFalse"> \
-                                            <label for="antiPrefixFalse" class="switch-label switch-label-off">Off</label> \
-                                            <input type="radio" class="switch-input" name="toggleAntiPrefix" value="true" id="antiPrefixTrue" checked> \
-                                            <label for="antiPrefixTrue" class="switch-label switch-label-on">On</label> \
-                                            <span class="switch-selection"></span> \
+                                        <div class="option"> \
+                                            <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Anti-Prefix Completion</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Allows you to use sub emotes (greater than 4 characters) without prefixes (BETA) \
+                                            <div class="switch"> \
+                                                <input type="radio" class="switch-input switch-off" name="toggleAntiPrefix" value="false" id="antiPrefixFalse"> \
+                                                <label for="antiPrefixFalse" class="switch-label switch-label-off">Off</label> \
+                                                <input type="radio" class="switch-input" name="toggleAntiPrefix" value="true" id="antiPrefixTrue" checked> \
+                                                <label for="antiPrefixTrue" class="switch-label switch-label-on">On</label> \
+                                                <span class="switch-selection"></span> \
+                                            </div> \
                                         </div> \
-                                    </div> \
-                                    <div class="option"> \
-                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">BetterTTV Chat</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;A tiny chat bar for personal messaging friends (BETA) \
-                                        <div class="switch"> \
-                                            <input type="radio" class="switch-input switch-off" name="toggleBTTVChat" value="false" id="showBTTVChatFalse"> \
-                                            <label for="showBTTVChatFalse" class="switch-label switch-label-off">Off</label> \
-                                            <input type="radio" class="switch-input" name="toggleBTTVChat" value="true" id="showBTTVChatTrue" checked> \
-                                            <label for="showBTTVChatTrue" class="switch-label switch-label-on">On</label> \
-                                            <span class="switch-selection"></span> \
+                                        <div class="option"> \
+                                            <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">BetterTTV Chat</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;A tiny chat bar for personal messaging friends (BETA) \
+                                            <div class="switch"> \
+                                                <input type="radio" class="switch-input switch-off" name="toggleBTTVChat" value="false" id="showBTTVChatFalse"> \
+                                                <label for="showBTTVChatFalse" class="switch-label switch-label-off">Off</label> \
+                                                <input type="radio" class="switch-input" name="toggleBTTVChat" value="true" id="showBTTVChatTrue" checked> \
+                                                <label for="showBTTVChatTrue" class="switch-label switch-label-on">On</label> \
+                                                <span class="switch-selection"></span> \
+                                            </div> \
                                         </div> \
-                                    </div> \
-                                    <div class="option"> \
-                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">BetterTTV Emotes</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Some people don\'t like the extra emoticons :\'( \
-                                        <div class="switch"> \
-                                            <input type="radio" class="switch-input switch-off" name="toggleBTTVEmotes" value="false" id="showBTTVEmotesFalse"> \
-                                            <label for="showBTTVEmotesFalse" class="switch-label switch-label-off">Off</label> \
-                                            <input type="radio" class="switch-input" name="toggleBTTVEmotes" value="true" id="showBTTVEmotesTrue" checked> \
-                                            <label for="showBTTVEmotesTrue" class="switch-label switch-label-on">On</label> \
-                                            <span class="switch-selection"></span> \
+                                        <div class="option"> \
+                                            <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">BetterTTV Emotes</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Some people don\'t like the extra emoticons :\'( \
+                                            <div class="switch"> \
+                                                <input type="radio" class="switch-input switch-off" name="toggleBTTVEmotes" value="false" id="showBTTVEmotesFalse"> \
+                                                <label for="showBTTVEmotesFalse" class="switch-label switch-label-off">Off</label> \
+                                                <input type="radio" class="switch-input" name="toggleBTTVEmotes" value="true" id="showBTTVEmotesTrue" checked> \
+                                                <label for="showBTTVEmotesTrue" class="switch-label switch-label-on">On</label> \
+                                                <span class="switch-selection"></span> \
+                                            </div> \
                                         </div> \
-                                    </div> \
-                                    <div class="option"> \
-                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">DarkenTTV</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;A slick, grey theme which will make you love the site even more \
-                                        <div class="switch"> \
-                                            <input type="radio" class="switch-input switch-off" name="toggleDarkTwitch" value="false" id="darkenedModeFalse"> \
-                                            <label for="darkenedModeFalse" class="switch-label switch-label-off">Off</label> \
-                                            <input type="radio" class="switch-input" name="toggleDarkTwitch" value="true" id="darkenedModeTrue" checked> \
-                                            <label for="darkenedModeTrue" class="switch-label switch-label-on">On</label> \
-                                            <span class="switch-selection"></span> \
+                                        <div class="option"> \
+                                            <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">DarkenTTV</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;A slick, grey theme which will make you love the site even more \
+                                            <div class="switch"> \
+                                                <input type="radio" class="switch-input switch-off" name="toggleDarkTwitch" value="false" id="darkenedModeFalse"> \
+                                                <label for="darkenedModeFalse" class="switch-label switch-label-off">Off</label> \
+                                                <input type="radio" class="switch-input" name="toggleDarkTwitch" value="true" id="darkenedModeTrue" checked> \
+                                                <label for="darkenedModeTrue" class="switch-label switch-label-on">On</label> \
+                                                <span class="switch-selection"></span> \
+                                            </div> \
                                         </div> \
-                                    </div> \
-                                    <div class="option"> \
-                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Default Emoticons</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;BetterTTV replaces the robot emoticons with the old JTV monkey faces by default \
-                                        <div class="switch"> \
-                                            <input type="radio" class="switch-input switch-off" name="toggleDefaultEmotes" value="false" id="defaultEmotesFalse"> \
-                                            <label for="defaultEmotesFalse" class="switch-label switch-label-off">Off</label> \
-                                            <input type="radio" class="switch-input" name="toggleDefaultEmotes" value="true" id="defaultEmotesTrue" checked> \
-                                            <label for="defaultEmotesTrue" class="switch-label switch-label-on">On</label> \
-                                            <span class="switch-selection"></span> \
+                                        <div class="option"> \
+                                            <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Default Emoticons</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;BetterTTV replaces the robot emoticons with the old JTV monkey faces by default \
+                                            <div class="switch"> \
+                                                <input type="radio" class="switch-input switch-off" name="toggleDefaultEmotes" value="false" id="defaultEmotesFalse"> \
+                                                <label for="defaultEmotesFalse" class="switch-label switch-label-off">Off</label> \
+                                                <input type="radio" class="switch-input" name="toggleDefaultEmotes" value="true" id="defaultEmotesTrue" checked> \
+                                                <label for="defaultEmotesTrue" class="switch-label switch-label-on">On</label> \
+                                                <span class="switch-selection"></span> \
+                                            </div> \
                                         </div> \
-                                    </div> \
-                                    <div class="option"> \
-                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Default Purple Buttons</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;BetterTTV replaces the primary buttons with blue ones by default \
-                                        <div class="switch"> \
-                                            <input type="radio" class="switch-input switch-off" name="togglePurpleButtons" value="false" id="defaultPurpleButtonsFalse"> \
-                                            <label for="defaultPurpleButtonsFalse" class="switch-label switch-label-off">Off</label> \
-                                            <input type="radio" class="switch-input" name="togglePurpleButtons" value="true" id="defaultPurpleButtonsTrue" checked> \
-                                            <label for="defaultPurpleButtonsTrue" class="switch-label switch-label-on">On</label> \
-                                            <span class="switch-selection"></span> \
+                                        <div class="option"> \
+                                            <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Default Purple Buttons</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;BetterTTV replaces the primary buttons with blue ones by default \
+                                            <div class="switch"> \
+                                                <input type="radio" class="switch-input switch-off" name="togglePurpleButtons" value="false" id="defaultPurpleButtonsFalse"> \
+                                                <label for="defaultPurpleButtonsFalse" class="switch-label switch-label-off">Off</label> \
+                                                <input type="radio" class="switch-input" name="togglePurpleButtons" value="true" id="defaultPurpleButtonsTrue" checked> \
+                                                <label for="defaultPurpleButtonsTrue" class="switch-label switch-label-on">On</label> \
+                                                <span class="switch-selection"></span> \
+                                            </div> \
                                         </div> \
-                                    </div> \
-                                    <div class="option"> \
-                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Default to Live Channels</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;BetterTTV can click on "Live Channels" for you in the Directory when enabled \
-                                        <div class="switch"> \
-                                            <input type="radio" class="switch-input switch-off" name="toggleDirectoryLiveTab" value="false" id="directoryLiveTabFalse" checked> \
-                                            <label for="directoryLiveTabFalse" class="switch-label switch-label-off">Off</label> \
-                                            <input type="radio" class="switch-input" name="toggleDirectoryLiveTab" value="true" id="directoryLiveTabTrue"> \
-                                            <label for="directoryLiveTabTrue" class="switch-label switch-label-on">On</label> \
-                                            <span class="switch-selection"></span> \
+                                        <div class="option"> \
+                                            <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Default to Live Channels</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;BetterTTV can click on "Live Channels" for you in the Directory when enabled \
+                                            <div class="switch"> \
+                                                <input type="radio" class="switch-input switch-off" name="toggleDirectoryLiveTab" value="false" id="directoryLiveTabFalse" checked> \
+                                                <label for="directoryLiveTabFalse" class="switch-label switch-label-off">Off</label> \
+                                                <input type="radio" class="switch-input" name="toggleDirectoryLiveTab" value="true" id="directoryLiveTabTrue"> \
+                                                <label for="directoryLiveTabTrue" class="switch-label switch-label-on">On</label> \
+                                                <span class="switch-selection"></span> \
+                                            </div> \
                                         </div> \
-                                    </div> \
-                                    <div class="option"> \
-                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Double-Click Translation</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Double-clicking on chat lines translates them with Google Translate \
-                                        <div class="switch"> \
-                                            <input type="radio" class="switch-input switch-off" name="toggleTranslation" value="false" id="dblclickTranslationFalse" checked> \
-                                            <label for="dblclickTranslationFalse" class="switch-label switch-label-off">Off</label> \
-                                            <input type="radio" class="switch-input" name="toggleTranslation" value="true" id="dblclickTranslationTrue"> \
-                                            <label for="dblclickTranslationTrue" class="switch-label switch-label-on">On</label> \
-                                            <span class="switch-selection"></span> \
+                                        <div class="option"> \
+                                            <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Desktop Notifications</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;BetterTTV can send you desktop notifications when you are tabbed out of Twitch \
+                                            <div class="switch"> \
+                                                <input type="radio" class="switch-input switch-off" name="toggleDesktopNotifications" value="false" id="desktopNotificationsFalse" checked> \
+                                                <label for="desktopNotificationsFalse" class="switch-label switch-label-off">Off</label> \
+                                                <input type="radio" class="switch-input" name="toggleDesktopNotifications" value="true" id="desktopNotificationsTrue"> \
+                                                <label for="desktopNotificationsTrue" class="switch-label switch-label-on">On</label> \
+                                                <span class="switch-selection"></span> \
+                                            </div> \
                                         </div> \
-                                    </div> \
-                                    <div class="option"> \
-                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Featured Channels</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;The left sidebar is too cluttered, so BetterTTV removes featured channels by default \
-                                        <div class="switch"> \
-                                            <input type="radio" class="switch-input switch-off" name="toggleFeaturedChannels" value="false" id="featuredChannelsFalse"> \
-                                            <label for="featuredChannelsFalse" class="switch-label switch-label-off">Off</label> \
-                                            <input type="radio" class="switch-input" name="toggleFeaturedChannels" value="true" id="featuredChannelsTrue" checked> \
-                                            <label for="featuredChannelsTrue" class="switch-label switch-label-on">On</label> \
-                                            <span class="switch-selection"></span> \
+                                        <div class="option"> \
+                                            <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Double-Click Translation</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Double-clicking on chat lines translates them with Google Translate \
+                                            <div class="switch"> \
+                                                <input type="radio" class="switch-input switch-off" name="toggleTranslation" value="false" id="dblclickTranslationFalse" checked> \
+                                                <label for="dblclickTranslationFalse" class="switch-label switch-label-off">Off</label> \
+                                                <input type="radio" class="switch-input" name="toggleTranslation" value="true" id="dblclickTranslationTrue"> \
+                                                <label for="dblclickTranslationTrue" class="switch-label switch-label-on">On</label> \
+                                                <span class="switch-selection"></span> \
+                                            </div> \
                                         </div> \
-                                    </div> \
-                                    <div class="option"> \
-                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">HLS Transcoding</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Enables switching resolutions for non-partners (if they appear on mobile devices) (BETA) \
-                                        <div class="switch"> \
-                                            <input type="radio" class="switch-input switch-off" name="toggleBTTVHLS" value="false" id="showBTTVHLSFalse"> \
-                                            <label for="showBTTVHLSFalse" class="switch-label switch-label-off">Off</label> \
-                                            <input type="radio" class="switch-input" name="toggleBTTVHLS" value="true" id="showBTTVHLSTrue" checked> \
-                                            <label for="showBTTVHLSTrue" class="switch-label switch-label-on">On</label> \
-                                            <span class="switch-selection"></span> \
+                                        <div class="option"> \
+                                            <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Featured Channels</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;The left sidebar is too cluttered, so BetterTTV removes featured channels by default \
+                                            <div class="switch"> \
+                                                <input type="radio" class="switch-input switch-off" name="toggleFeaturedChannels" value="false" id="featuredChannelsFalse"> \
+                                                <label for="featuredChannelsFalse" class="switch-label switch-label-off">Off</label> \
+                                                <input type="radio" class="switch-input" name="toggleFeaturedChannels" value="true" id="featuredChannelsTrue" checked> \
+                                                <label for="featuredChannelsTrue" class="switch-label switch-label-on">On</label> \
+                                                <span class="switch-selection"></span> \
+                                            </div> \
                                         </div> \
-                                    </div> \
-                                    <div class="option"> \
-                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">JTV Chat Tags</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;BetterTTV can replace the chat tags with the ones from JTV \
-                                        <div class="switch"> \
-                                            <input type="radio" class="switch-input switch-off" name="toggleDefaultTags" value="false" id="defaultTagsFalse"> \
-                                            <label for="defaultTagsFalse" class="switch-label switch-label-off">Off</label> \
-                                            <input type="radio" class="switch-input" name="toggleDefaultTags" value="true" id="defaultTagsTrue" checked> \
-                                            <label for="defaultTagsTrue" class="switch-label switch-label-on">On</label> \
-                                            <span class="switch-selection"></span> \
+                                        <div class="option"> \
+                                            <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">HLS Transcoding</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Enables switching resolutions for non-partners (if they appear on mobile devices) (BETA) \
+                                            <div class="switch"> \
+                                                <input type="radio" class="switch-input switch-off" name="toggleBTTVHLS" value="false" id="showBTTVHLSFalse"> \
+                                                <label for="showBTTVHLSFalse" class="switch-label switch-label-off">Off</label> \
+                                                <input type="radio" class="switch-input" name="toggleBTTVHLS" value="true" id="showBTTVHLSTrue" checked> \
+                                                <label for="showBTTVHLSTrue" class="switch-label switch-label-on">On</label> \
+                                                <span class="switch-selection"></span> \
+                                            </div> \
                                         </div> \
-                                    </div> \
-                                    <div class="option"> \
-                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Remove Deleted Messages</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Make those spammers disappear completely! \
-                                        <div class="switch"> \
-                                            <input type="radio" class="switch-input switch-off" name="toggleHideDeletedMessages" value="false" id="hideDeletedMessagesFalse"> \
-                                            <label for="hideDeletedMessagesFalse" class="switch-label switch-label-off">Off</label> \
-                                            <input type="radio" class="switch-input" name="toggleHideDeletedMessages" value="true" id="hideDeletedMessagesTrue" checked> \
-                                            <label for="hideDeletedMessagesTrue" class="switch-label switch-label-on">On</label> \
-                                            <span class="switch-selection"></span> \
+                                        <div class="option"> \
+                                            <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">JTV Chat Tags</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;BetterTTV can replace the chat tags with the ones from JTV \
+                                            <div class="switch"> \
+                                                <input type="radio" class="switch-input switch-off" name="toggleDefaultTags" value="false" id="defaultTagsFalse"> \
+                                                <label for="defaultTagsFalse" class="switch-label switch-label-off">Off</label> \
+                                                <input type="radio" class="switch-input" name="toggleDefaultTags" value="true" id="defaultTagsTrue" checked> \
+                                                <label for="defaultTagsTrue" class="switch-label switch-label-on">On</label> \
+                                                <span class="switch-selection"></span> \
+                                            </div> \
                                         </div> \
-                                    </div> \
-                                    <div class="option"> \
-                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Show Deleted Messages</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Turn this on to change &lt;message deleted&gt; back to users\' messages. \
-                                        <div class="switch"> \
-                                            <input type="radio" class="switch-input switch-off" name="toggleDeletedMessages" value="false" id="showDeletedMessagesFalse"> \
-                                            <label for="showDeletedMessagesFalse" class="switch-label switch-label-off">Off</label> \
-                                            <input type="radio" class="switch-input" name="toggleDeletedMessages" value="true" id="showDeletedMessagesTrue" checked> \
-                                            <label for="showDeletedMessagesTrue" class="switch-label switch-label-on">On</label> \
-                                            <span class="switch-selection"></span> \
+                                        <div class="option"> \
+                                            <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Remove Deleted Messages</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Make those spammers disappear completely! \
+                                            <div class="switch"> \
+                                                <input type="radio" class="switch-input switch-off" name="toggleHideDeletedMessages" value="false" id="hideDeletedMessagesFalse"> \
+                                                <label for="hideDeletedMessagesFalse" class="switch-label switch-label-off">Off</label> \
+                                                <input type="radio" class="switch-input" name="toggleHideDeletedMessages" value="true" id="hideDeletedMessagesTrue" checked> \
+                                                <label for="hideDeletedMessagesTrue" class="switch-label switch-label-on">On</label> \
+                                                <span class="switch-selection"></span> \
+                                            </div> \
                                         </div> \
-                                    </div> \
-                                    <div class="option"> \
-                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Split Chat</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Easily distinguish between messages from different users in chat \
-                                        <div class="switch"> \
-                                            <input type="radio" class="switch-input switch-off" name="toggleSplitChat" value="false" id="splitChatFalse"> \
-                                            <label for="splitChatFalse" class="switch-label switch-label-off">Off</label> \
-                                            <input type="radio" class="switch-input" name="toggleSplitChat" value="true" id="splitChatTrue" checked> \
-                                            <label for="splitChatTrue" class="switch-label switch-label-on">On</label> \
-                                            <span class="switch-selection"></span> \
+                                        <div class="option"> \
+                                            <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Show Deleted Messages</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Turn this on to change &lt;message deleted&gt; back to users\' messages. \
+                                            <div class="switch"> \
+                                                <input type="radio" class="switch-input switch-off" name="toggleDeletedMessages" value="false" id="showDeletedMessagesFalse"> \
+                                                <label for="showDeletedMessagesFalse" class="switch-label switch-label-off">Off</label> \
+                                                <input type="radio" class="switch-input" name="toggleDeletedMessages" value="true" id="showDeletedMessagesTrue" checked> \
+                                                <label for="showDeletedMessagesTrue" class="switch-label switch-label-on">On</label> \
+                                                <span class="switch-selection"></span> \
+                                            </div> \
                                         </div> \
-                                    </div> \
-                                    <div class="option"> \
-                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Self Highlights</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Toggle this off to disable highlights on your own username \
-                                        <div class="switch"> \
-                                            <input type="radio" class="switch-input switch-off" name="toggleSelfHighlights" value="false" id="selfHighlightsFalse"> \
-                                            <label for="selfHighlightsFalse" class="switch-label switch-label-off">Off</label> \
-                                            <input type="radio" class="switch-input" name="toggleSelfHighlights" value="true" id="selfHighlightsTrue" checked> \
-                                            <label for="selfHighlightsTrue" class="switch-label switch-label-on">On</label> \
-                                            <span class="switch-selection"></span> \
+                                        <div class="option"> \
+                                            <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Split Chat</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Easily distinguish between messages from different users in chat \
+                                            <div class="switch"> \
+                                                <input type="radio" class="switch-input switch-off" name="toggleSplitChat" value="false" id="splitChatFalse"> \
+                                                <label for="splitChatFalse" class="switch-label switch-label-off">Off</label> \
+                                                <input type="radio" class="switch-input" name="toggleSplitChat" value="true" id="splitChatTrue" checked> \
+                                                <label for="splitChatTrue" class="switch-label switch-label-on">On</label> \
+                                                <span class="switch-selection"></span> \
+                                            </div> \
                                         </div> \
-                                    </div> \
-                                    <div class="option"> \
-                                        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Twitch Chat Emotes</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Why remember emotes when you can "click-to-insert" them (by Ryan Chatham) \
-                                        <div class="switch"> \
-                                            <input type="radio" class="switch-input switch-off" name="toggleClickTwitchEmotes" value="false" id="clickTwitchEmotesFalse"> \
-                                            <label for="clickTwitchEmotesFalse" class="switch-label switch-label-off">Off</label> \
-                                            <input type="radio" class="switch-input" name="toggleClickTwitchEmotes" value="true" id="clickTwitchEmotesTrue" checked> \
-                                            <label for="clickTwitchEmotesTrue" class="switch-label switch-label-on">On</label> \
-                                            <span class="switch-selection"></span> \
+                                        <div class="option"> \
+                                            <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Self Highlights</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Toggle this off to disable highlights on your own username \
+                                            <div class="switch"> \
+                                                <input type="radio" class="switch-input switch-off" name="toggleSelfHighlights" value="false" id="selfHighlightsFalse"> \
+                                                <label for="selfHighlightsFalse" class="switch-label switch-label-off">Off</label> \
+                                                <input type="radio" class="switch-input" name="toggleSelfHighlights" value="true" id="selfHighlightsTrue" checked> \
+                                                <label for="selfHighlightsTrue" class="switch-label switch-label-on">On</label> \
+                                                <span class="switch-selection"></span> \
+                                            </div> \
                                         </div> \
-                                    </div> \
-                                    <div class="option"> \
-                                        Think something is missing here? Send in a <a href="http://bugs.nightdev.com/projects/betterttv/issues/new?tracker_id=2" target="_blank">feature request</a>! \
-                                    </div> \
+                                        <div class="option"> \
+                                            <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">Twitch Chat Emotes</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;Why remember emotes when you can "click-to-insert" them (by Ryan Chatham) \
+                                            <div class="switch"> \
+                                                <input type="radio" class="switch-input switch-off" name="toggleClickTwitchEmotes" value="false" id="clickTwitchEmotesFalse"> \
+                                                <label for="clickTwitchEmotesFalse" class="switch-label switch-label-off">Off</label> \
+                                                <input type="radio" class="switch-input" name="toggleClickTwitchEmotes" value="true" id="clickTwitchEmotesTrue" checked> \
+                                                <label for="clickTwitchEmotesTrue" class="switch-label switch-label-on">On</label> \
+                                                <span class="switch-selection"></span> \
+                                            </div> \
+                                        </div> \
+                                        <div class="option"> \
+                                            Think something is missing here? Send in a <a href="http://bugs.nightdev.com/projects/betterttv/issues/new?tracker_id=2" target="_blank">feature request</a>! \
+                                        </div> \
+                                      </div> \
                                    </div> \
                                    <div id="bttvAbout" style="display:none;"> \
                                     <div class="aboutHalf"> \
@@ -2252,16 +2477,32 @@
                                         <br /> \
                                     </div> \
                                    </div> \
-                                   <div id="bttvPrivacy" style="display:none;"> \
-                                    <iframe src="http://cdn.betterttv.net/privacy.html" width="100%" height="425" style="border:none;background-color:transparent;"></iframe> \
+                                   <div id="bttvPrivacy" class="scroll scroll-dark" style="display:none;height:425px;"> \
+                                    <div class="tse-content"></div> \
                                    </div> \
-                                   <div id="bttvChangelog" style="display:none;"> \
-                                    <iframe src="http://cdn.betterttv.net/changelog.html?'+ bttv.info.version + 'R' + bttv.info.release + '" width="100%" height="425" style="border:none;background-color:transparent;"></iframe> \
+                                   <div id="bttvChangelog" class="scroll scroll-dark" style="display:none;height:425px;"> \
+                                    <div class="tse-content"></div> \
                                    </div> \
                                    <div id="footer"> \
                                     <span>BetterTTV &copy; <a href="http://www.nightdev.com" target="_blank">NightDev</a> 2013</span><span style="float:right;"><a href="http://www.nightdev.com/contact" target="_blank">Get Support</a> | <a href="http://bugs.nightdev.com/projects/betterttv/issues/new?tracker_id=1" target="_blank">Report a Bug</a> | <a href="http://streamdonations.net/c/night" target="_blank">Support the Developer</a></span> \
                                    </div>';
         $("body").append(settingsPanel);
+
+        $.get('http://cdn.betterttv.net/privacy.html', function (data) {
+            if(data) {
+                $('#bttvPrivacy .tse-content').html(data);
+            }
+        });
+
+        $.get('http://cdn.betterttv.net/changelog.html?'+ bttv.info.version + 'R' + bttv.info.release, function (data) {
+            if(data) {
+                $('#bttvChangelog .tse-content').html(data);
+            }
+        });
+
+        $('#bttvSettingsPanel .scroll').TrackpadScrollEmulator({
+            scrollbarHideStrategy: 'rightAndBottom'
+        });
 
         $("#bttvSettingsPanel #close").click(function () {
             $("#bttvSettingsPanel").hide("slow");
@@ -2318,10 +2559,12 @@
         bttv.settings.get("antiPrefix") === true ? $('#antiPrefixTrue').prop('checked', true) : $('#antiPrefixFalse').prop('checked', true);
         bttv.settings.get("bttvHLS") === true ? $('#showBTTVHLSTrue').prop('checked', true) : $('#showBTTVHLSFalse').prop('checked', true);
         bttv.settings.get("dblclickTranslation") !== false ? $('#dblclickTranslationTrue').prop('checked', true) : $('#dblclickTranslationFalse').prop('checked', true);
+        bttv.settings.get("desktopNotifications") === true ? $('#desktopNotificationsTrue').prop('checked', true) : $('#desktopNotificationsFalse').prop('checked', true);
         
     }
 
     bttv.action = function (action) {
+        ga('send', 'event', 'BTTV', 'Action: '+action);
         if (action === "clearChat") {
             removeElement(".line");
             CurrentChat.admin_message("You cleared your own chat (BetterTTV)");
@@ -2498,6 +2741,41 @@
                 bttv.settings.save("showDeletedMessages", true);
             }
         }
+        if (action === "toggleDesktopNotifications") {
+            if (bttv.settings.get("desktopNotifications") === true) {
+                bttv.settings.save("desktopNotifications", false);
+                bttv.notify("Desktop notifications are now disabled.");
+            } else {
+                if(window.Notification) {
+                    if (Notification.permission === 'default' || (window.webkitNotifications && webkitNotifications.checkPermission() === 1)) {
+                        Notification.requestPermission(function () {
+                            if (Notification.permission === 'granted' || (window.webkitNotifications && webkitNotifications.checkPermission() === 0)) {
+                                bttv.settings.save("desktopNotifications", true);
+                                bttv.notify("Desktop notifications are now enabled.");
+                            } else {
+                                bttv.notify("You denied BetterTTV permission to send you notifications.");
+                            }
+                        });
+                    } else if (Notification.permission === 'granted' || (window.webkitNotifications && webkitNotifications.checkPermission() === 0)) {
+                        bttv.settings.save("desktopNotifications", true);
+                        bttv.notify("Desktop notifications are now enabled.");
+                    } else if (Notification.permission === 'denied' || (window.webkitNotifications && webkitNotifications.checkPermission() === 2)) {
+                        Notification.requestPermission(function () {
+                            if (Notification.permission === 'granted' || (window.webkitNotifications && webkitNotifications.checkPermission() === 0)) {
+                                bttv.settings.save("desktopNotifications", true);
+                                bttv.notify("Desktop notifications are now enabled.");
+                            } else {
+                                bttv.notify("You denied BetterTTV permission to send you notifications.");
+                            }
+                        });
+                    } else {
+                        bttv.notify("Your browser is not capable of desktop notifications.");
+                    }
+                } else {
+                    bttv.notify("Your browser is not capable of desktop notifications.");
+                }
+            }
+        }
         if (action === "toggleDirectoryLiveTab") {
             if (bttv.settings.get("showDirectoryLiveTab") === true) {
                 bttv.settings.save("showDirectoryLiveTab", false);
@@ -2588,7 +2866,7 @@
                 $("#darkTwitch").remove();
                 $("#splitChat").remove();
                 var darkCSS = document.createElement("link");
-                darkCSS.setAttribute("href", "http://cdn.betterttv.net/betterttv-blackchat.css");
+                darkCSS.setAttribute("href", "http://cdn.betterttv.net/betterttv-6.5-blackchat.css");
                 darkCSS.setAttribute("type", "text/css");
                 darkCSS.setAttribute("rel", "stylesheet");
                 darkCSS.setAttribute("id", "blackChat");
@@ -2607,18 +2885,14 @@
         if (action === "toggleFeaturedChannels") {
             if (bttv.settings.get("showFeaturedChannels") === true) {
                 bttv.settings.save("showFeaturedChannels", false);
-                removeElement('.sm_vids');
                 removeElement('#nav_games');
                 removeElement('#nav_streams');
-                removeElement('.featured');
-                removeElement('.related');
+                removeElement('#nav_related_streams');
             } else {
                 bttv.settings.save("showFeaturedChannels", true);
-                displayElement('.sm_vids');
                 displayElement('#nav_games');
                 displayElement('#nav_streams');
-                displayElement('.featured');
-                displayElement('.related');
+                displayElement('#nav_related_streams');
             }
         }
     }
@@ -2713,6 +2987,13 @@
         }
     }
 
+    var handleLookupServer = function() {
+        var socketJSInject = document.createElement("script");
+        socketJSInject.setAttribute("src", "http://cdn.betterttv.net/socket.io.js");
+        socketJSInject.setAttribute("type", "text/javascript");
+        $("head").append(socketJSInject);
+    }
+
     var checkJquery = function () {
         if (typeof ($j) === 'undefined') {
             debug.log("jQuery is undefined.");
@@ -2732,6 +3013,7 @@
             debug.log("BTTV v" + bttv.info.version + 'R' + bttv.info.release);
             debug.log("CALL init " + document.URL);
 
+            handleLookupServer();
             brand();
             clearClutter();
             channelReformat();
@@ -2753,8 +3035,16 @@
             setTimeout(directoryLiveTab, 5000);
 
             (function(b){b.gritter={};b.gritter.options={position:"top-left",class_name:"",fade_in_speed:"medium",fade_out_speed:1000,time:6000};b.gritter.add=function(f){try{return a.add(f||{})}catch(d){var c="Gritter Error: "+d;(typeof(console)!="undefined"&&console.error)?console.error(c,f):alert(c)}};b.gritter.remove=function(d,c){a.removeSpecific(d,c||{})};b.gritter.removeAll=function(c){a.stop(c||{})};var a={position:"",fade_in_speed:"",fade_out_speed:"",time:"",_custom_timer:0,_item_count:0,_is_setup:0,_tpl_close:'<div class="gritter-close"></div>',_tpl_title:'<span class="gritter-title">[[title]]</span>',_tpl_item:'<div id="gritter-item-[[number]]" class="gritter-item-wrapper [[item_class]]" style="display:none"><div class="gritter-top"></div><div class="gritter-item">[[close]][[image]]<div class="[[class_name]]">[[title]]<p>[[text]]</p></div><div style="clear:both"></div></div><div class="gritter-bottom"></div></div>',_tpl_wrap:'<div id="gritter-notice-wrapper"></div>',add:function(g){if(typeof(g)=="string"){g={text:g}}if(!g.text){throw'You must supply "text" parameter.'}if(!this._is_setup){this._runSetup()}var k=g.title,n=g.text,e=g.image||"",l=g.sticky||false,m=g.class_name||b.gritter.options.class_name,j=b.gritter.options.position,d=g.time||"";this._verifyWrapper();this._item_count++;var f=this._item_count,i=this._tpl_item;b(["before_open","after_open","before_close","after_close"]).each(function(p,q){a["_"+q+"_"+f]=(b.isFunction(g[q]))?g[q]:function(){}});this._custom_timer=0;if(d){this._custom_timer=d}var c=(e!="")?'<img src="'+e+'" class="gritter-image" />':"",h=(e!="")?"gritter-with-image":"gritter-without-image";if(k){k=this._str_replace("[[title]]",k,this._tpl_title)}else{k=""}i=this._str_replace(["[[title]]","[[text]]","[[close]]","[[image]]","[[number]]","[[class_name]]","[[item_class]]"],[k,n,this._tpl_close,c,this._item_count,h,m],i);if(this["_before_open_"+f]()===false){return false}b("#gritter-notice-wrapper").addClass(j).append(i);var o=b("#gritter-item-"+this._item_count);o.fadeIn(this.fade_in_speed,function(){a["_after_open_"+f](b(this))});if(!l){this._setFadeTimer(o,f)}b(o).bind("mouseenter mouseleave",function(p){if(p.type=="mouseenter"){if(!l){a._restoreItemIfFading(b(this),f)}}else{if(!l){a._setFadeTimer(b(this),f)}}a._hoverState(b(this),p.type)});b(o).find(".gritter-close").click(function(){a.removeSpecific(f,{},null,true)});return f},_countRemoveWrapper:function(c,d,f){d.remove();this["_after_close_"+c](d,f);if(b(".gritter-item-wrapper").length==0){b("#gritter-notice-wrapper").remove()}},_fade:function(g,d,j,f){var j=j||{},i=(typeof(j.fade)!="undefined")?j.fade:true,c=j.speed||this.fade_out_speed,h=f;this["_before_close_"+d](g,h);if(f){g.unbind("mouseenter mouseleave")}if(i){g.animate({opacity:0},c,function(){g.animate({height:0},300,function(){a._countRemoveWrapper(d,g,h)})})}else{this._countRemoveWrapper(d,g)}},_hoverState:function(d,c){if(c=="mouseenter"){d.addClass("hover");d.find(".gritter-close").show()}else{d.removeClass("hover");d.find(".gritter-close").hide()}},removeSpecific:function(c,g,f,d){if(!f){var f=b("#gritter-item-"+c)}this._fade(f,c,g||{},d)},_restoreItemIfFading:function(d,c){clearTimeout(this["_int_id_"+c]);d.stop().css({opacity:"",height:""})},_runSetup:function(){for(opt in b.gritter.options){this[opt]=b.gritter.options[opt]}this._is_setup=1},_setFadeTimer:function(f,d){var c=(this._custom_timer)?this._custom_timer:this.time;this["_int_id_"+d]=setTimeout(function(){a._fade(f,d)},c)},stop:function(e){var c=(b.isFunction(e.before_close))?e.before_close:function(){};var f=(b.isFunction(e.after_close))?e.after_close:function(){};var d=b("#gritter-notice-wrapper");c(d);d.fadeOut(function(){b(this).remove();f()})},_str_replace:function(v,e,o,n){var k=0,h=0,t="",m="",g=0,q=0,l=[].concat(v),c=[].concat(e),u=o,d=c instanceof Array,p=u instanceof Array;u=[].concat(u);if(n){this.window[n]=0}for(k=0,g=u.length;k<g;k++){if(u[k]===""){continue}for(h=0,q=l.length;h<q;h++){t=u[k]+"";m=d?(c[h]!==undefined?c[h]:""):c[0];u[k]=(t).split(l[h]).join(m);if(n&&u[k]!==t){this.window[n]+=(t.length-u[k].length)/l[h].length}}}return p?u:u[0]},_verifyWrapper:function(){if(b("#gritter-notice-wrapper").length==0){b("body").append(this._tpl_wrap)}}}})($);
+            
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
             (function(e){e.fn.konami=function(t){var n=[];var r={left:37,up:38,right:39,down:40,a:65,b:66};var i=e.extend({code:["up","up","down","down","left","right","left","right","b","a"],callback:function(){}},t);var s=i.code;var o=[];$.each(s,function(e){if(s[e]!==undefined&&r[s[e]]!==undefined){o.push(r[s[e]])}else if(s[e]!==undefined&&typeof s[e]=="number"){o.push(s[e])}});$(document).keyup(function(e){var t=e.keyCode?e.keyCode:e.charCode;n.push(t);if(n.toString().indexOf(o)>=0){n=[];i.callback($(this))}})}})($);
+
+            ga('create', 'UA-39733925-4', 'betterttv.net');
+            ga('send', 'pageview');
         });
     }
 
