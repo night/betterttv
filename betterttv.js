@@ -153,14 +153,14 @@
     },
     bttv.info = {
         version: "6.5.5",
-        release: 1
+        release: 2
     };
     bttv.socketServer = false;
 
     bttv.notify = function(message, title, url, image, tag) {
         var title = title || "Notice",
             url = url || "",
-            image = image || "http://cdn.betterttv.net/icon.png",
+            image = image || "//cdn.betterttv.net/style/logos/bttv_logo.png",
             message = message || "",
             tag = tag || "bttv_"+message,
             tag = "bttv_"+tag.toLowerCase().replace(/[^\w_]/g, '');
@@ -566,7 +566,7 @@
 
         // Old Site Header Logo Branding
         if ($("#header_logo").length) {
-            $("#header_logo").html("<img alt=\"TwitchTV\" src=\"http://cdn.betterttv.net/newtwitchlogo.png\">");
+            $("#header_logo").html("<img alt=\"TwitchTV\" src=\"//cdn.betterttv.net/style/logos/black_twitch_logo.png\">");
             var watermark = document.createElement("div");
             watermark.style.marginTop = "-45px";
             watermark.style.marginLeft = "-8px";
@@ -607,7 +607,7 @@
 
         // Import Global BTTV CSS Changes
         var globalCSSInject = document.createElement("link");
-        globalCSSInject.setAttribute("href", "http://cdn.betterttv.net/betterttv-6.5.css");
+        globalCSSInject.setAttribute("href", "//cdn.betterttv.net/style/stylesheets/betterttv.css");
         globalCSSInject.setAttribute("type", "text/css");
         globalCSSInject.setAttribute("rel", "stylesheet");
         $("body").append(globalCSSInject);
@@ -632,7 +632,7 @@
 
             debug.log("Running Beta Chat");
 
-            $.getJSON("http://chat.betterttv.net/login.php?onsite=true&user="+Twitch.user.login()+"&callback=?", function(d) {
+            $.getJSON("//chat.betterttv.net/login.php?onsite=true&user="+Twitch.user.login()+"&callback=?", function(d) {
 
                 if(d.status === true) {
                     debug.log("Logged into BTTV Chat");
@@ -641,13 +641,13 @@
                 }
 
                 var chatDJSInject = document.createElement("script");
-                chatDJSInject.setAttribute("src", "http://chat.betterttv.net/client/external.php?type=djs");
+                chatDJSInject.setAttribute("src", "//chat.betterttv.net/client/external.php?type=djs");
                 chatDJSInject.setAttribute("type", "text/javascript");
                 $("body").append(chatDJSInject);
 
                 setTimeout(function() {
                     var chatJSInject = document.createElement("script");
-                    chatJSInject.setAttribute("src", "http://chat.betterttv.net/client/external.php?type=js");
+                    chatJSInject.setAttribute("src", "//chat.betterttv.net/client/external.php?type=js");
                     chatJSInject.setAttribute("type", "text/javascript");
                     $("body").append(chatJSInject);
                 }, 5000);
@@ -655,7 +655,7 @@
             });
 
             var chatCSSInject = document.createElement("link");
-            chatCSSInject.setAttribute("href", "http://chat.betterttv.net/client/external.php?type=css");
+            chatCSSInject.setAttribute("href", "//chat.betterttv.net/client/external.php?type=css");
             chatCSSInject.setAttribute("type", "text/css");
             chatCSSInject.setAttribute("id", "arrowchat_css");
             chatCSSInject.setAttribute("rel", "stylesheet");
@@ -711,7 +711,7 @@
                                     sender = $senderData.children(".capital").html().capitalize();
                             } else {
                                 var url = "http://www.twitch.tv/inbox",
-                                    avatar = "http://www-cdn.jtvnw.net/images/xarth/404_user_50x50.png",
+                                    avatar = "//www-cdn.jtvnw.net/images/xarth/404_user_50x50.png",
                                     sender = "Someone";
                             }
                             bttv.notify(sender+' just sent you a Message!\nClick here to view it.', 'Twitch Message Received', url, avatar, 'new_message_'+sender);
@@ -729,7 +729,7 @@
                             messagesnum.setAttribute("href", "/inbox");
                             messagesnum.setAttribute("class", "normal_button");
                             messagesnum.setAttribute("style", "margin-right: 10px;");
-                            messagesnum.innerHTML = "<span id='messagescount' style='padding-left:28px;background-image:url(http://cdn.betterttv.net/messages.png);background-position: 8px 4px;padding-top:-1px;background-repeat: no-repeat;color:black;'>" + notifications + "</span>";
+                            messagesnum.innerHTML = "<span id='messagescount' style='padding-left:28px;background-image:url(//cdn.betterttv.net/style/icons/messages.png);background-position: 8px 4px;padding-top:-1px;background-repeat: no-repeat;color:black;'>" + notifications + "</span>";
                             header_following.parentNode.insertBefore(messagesnum, header_following);
                         }
                     } else {
@@ -1094,11 +1094,11 @@
         ich.templates["chat-line-old"] = ich.templates["chat-line"];
         ich.templates["chat-line-action-old"] = ich.templates["chat-line-action"];
 
-        var purge = '<span><a href="#" class="normal_button tooltip chat_menu_btn bttvTimeout" data-time="1" title="Purges Users Chat - 1 Second Timeout"><span class="glyph_only"><img src="http://cdn.betterttv.net/purge.png" /></span></a>&nbsp;</span>';
+        var purge = '<span><a href="#" class="normal_button tooltip chat_menu_btn bttvTimeout" data-time="1" title="Purges Users Chat - 1 Second Timeout"><span class="glyph_only"><img src="//cdn.betterttv.net/style/icons/purge.png" /></span></a>&nbsp;</span>';
         $(purge).insertBefore("#chat_menu_timeout");
-        var permit = '<span><a href="#" class="normal_button tooltip chat_menu_btn bttvPermit" title="!permit a user to post a link - Functions with bots like Moobot or Nightbot"><span class="glyph_only"><img src="http://cdn.betterttv.net/permit.png" /></span></a>&nbsp;</span>';
+        var permit = '<span><a href="#" class="normal_button tooltip chat_menu_btn bttvPermit" title="!permit a user to post a link - Functions with bots like Moobot or Nightbot"><span class="glyph_only"><img src="//cdn.betterttv.net/style/icons/permit.png" /></span></a>&nbsp;</span>';
         $(permit).insertBefore(".bttvTimeout");
-        var tempBan = '<span>&nbsp;<a href="#" class="normal_button tooltip chat_menu_btn bttvTimeout" data-time="28800" title="Temporary 8 hour ban"><span class="glyph_only"><img src="http://cdn.betterttv.net/8hr.png" /></span></a></span><span>&nbsp;<a href="#" class="normal_button tooltip chat_menu_btn bttvTimeout" data-time="86400" title="Temporary 24 hour ban"><span class="glyph_only"><img src="http://cdn.betterttv.net/24hr.png" /></span></a></span>';
+        var tempBan = '<span>&nbsp;<a href="#" class="normal_button tooltip chat_menu_btn bttvTimeout" data-time="28800" title="Temporary 8 hour ban"><span class="glyph_only"><img src="//cdn.betterttv.net/style/icons/8hr.png" /></span></a></span><span>&nbsp;<a href="#" class="normal_button tooltip chat_menu_btn bttvTimeout" data-time="86400" title="Temporary 24 hour ban"><span class="glyph_only"><img src="//cdn.betterttv.net/style/icons/24hr.png" /></span></a></span>';
         $(tempBan).insertAfter("#chat_menu_timeout");
         $("#chat_menu_tools").insertAfter("#chat_menu_op_tools");
 
@@ -1133,7 +1133,7 @@
         CurrentChat.translate = function(element, sender, text) {
             var language = window.location.host.split('.')[0].replace(/^(www|beta)$/,"en"),
                 query = 'http://translate.google.com/translate_a/t?client=bttv&sl=auto&tl='+language+'&ie=UTF-8&oe=UTF-8&q='+text,
-                translate = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20json%20where%20url%3D\""+encodeURIComponent(query)+"\"&format=json&diagnostics=false&callback=?";
+                translate = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20json%20where%20url%3D\""+encodeURIComponent(query)+"\"&format=json&diagnostics=false&callback=?";
 
             $.ajax({
                 url: translate,
@@ -1605,7 +1605,7 @@
             var keyCode = e.keyCode || e.which;
             if (keyCode === 9) {
                 e.preventDefault();
-                var sentence = $('#chat_text_input').val().split(' ');
+                var sentence = $('#chat_text_input').val().trim().split(' ');
                 var partialMatch = sentence.pop().toLowerCase();
                 var users = vars.currentViewers;
                 var userIndex = 0;
@@ -1621,7 +1621,7 @@
                     } else {
                         userIndex = users.indexOf(partialMatch);
                     }
-                    if (e.shiftKey) {
+                    if (e.shiftKey && userIndex > 0) {
                         userIndex = userIndex - 1;
                     }
                 }
@@ -1639,9 +1639,11 @@
                         if (sentence.length === 1) {
                             $('#chat_text_input').val(sentence.join(' ') + ", ");
                             window.lastMatch = sentence.join(' ') + ", ";
+                            window.lastIndex = i;
                         } else {
                             $('#chat_text_input').val(sentence.join(' '));
                             window.lastMatch = sentence.join(' ');
+                            window.lastIndex = i;
                         }
                         break;
                     }
@@ -1769,7 +1771,7 @@
                     if (vars.liveChannels.indexOf(channel.name) === -1) {
                         debug.log(channel.name+" is now streaming");
                         if (channel.game == null) channel.game = "on Twitch";
-                        bttv.notify(channel.display_name + ' just started streaming ' + channel.game + '.\nClick here to head to ' + channel.display_name + '\'s channel.', channel.display_name + ' is Now Streaming', 'http://www.twitch.tv/' + channel.name, channel.logo, 'channel_live_'+channel.name);
+                        bttv.notify(channel.display_name + ' just started streaming ' + channel.game + '.\nClick here to head to ' + channel.display_name + '\'s channel.', channel.display_name + ' is Now Streaming', channel.url, channel.logo, 'channel_live_'+channel.name);
                     }
                 });
                 vars.liveChannels = channels;
@@ -1814,47 +1816,42 @@
         var betterttvEmotes = [];
 
         var oldEmotes = [
-            "http://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-ebf60cd72f7aa600-24x18.png",
-            "http://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-d570c4b3b8d8fc4d-24x18.png",
-            "http://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-ae4e17f5b9624e2f-24x18.png",
-            "http://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-b9cbb6884788aa62-24x18.png",
-            "http://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-2cde79cfe74c6169-24x18.png",
-            "http://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-577ade91d46d7edc-24x18.png",
-            "http://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-374120835234cb29-24x18.png",
-            "http://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-cfaf6eac72fe4de6-24x18.png",
-            "http://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-e838e5e34d9f240c-24x18.png",
-            "http://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-3407bf911ad2fd4a-24x18.png",
-            "http://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-0536d670860bf733-24x18.png",
-            "http://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-8e128fa8dc1de29c-24x18.png",
-            "http://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-d31223e81104544a-24x18.png",
-            "http://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-9f2ac5d4b53913d7-24x18.png"
+            "https://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-ebf60cd72f7aa600-24x18.png",
+            "https://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-d570c4b3b8d8fc4d-24x18.png",
+            "https://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-ae4e17f5b9624e2f-24x18.png",
+            "https://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-b9cbb6884788aa62-24x18.png",
+            "https://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-2cde79cfe74c6169-24x18.png",
+            "https://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-577ade91d46d7edc-24x18.png",
+            "https://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-374120835234cb29-24x18.png",
+            "https://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-cfaf6eac72fe4de6-24x18.png",
+            "https://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-e838e5e34d9f240c-24x18.png",
+            "https://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-3407bf911ad2fd4a-24x18.png",
+            "https://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-0536d670860bf733-24x18.png",
+            "https://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-8e128fa8dc1de29c-24x18.png",
+            "https://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-d31223e81104544a-24x18.png",
+            "https://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-9f2ac5d4b53913d7-24x18.png"
         ];
         var newEmotes = [
-            "http://cdn.betterttv.net/emotes/jtv/happy.gif",
-            "http://cdn.betterttv.net/emotes/jtv/sad.gif",
-            "http://cdn.betterttv.net/emotes/jtv/surprised.gif",
-            "http://cdn.betterttv.net/emotes/jtv/bored.gif",
-            "http://cdn.betterttv.net/emotes/jtv/cool.gif",
-            "http://cdn.betterttv.net/emotes/jtv/horny.gif",
-            "http://cdn.betterttv.net/emotes/jtv/skeptical.gif",
-            "http://cdn.betterttv.net/emotes/jtv/wink.gif",
-            "http://cdn.betterttv.net/emotes/jtv/raspberry.gif",
-            "http://cdn.betterttv.net/emotes/jtv/winkberry.gif",
-            "http://cdn.betterttv.net/emotes/jtv/pirate.gif",
-            "http://cdn.betterttv.net/emotes/jtv/drunk.gif",
-            "http://cdn.betterttv.net/emotes/jtv/angry.gif",
-            "http://cdn.betterttv.net/emotes/mw.png"
+            "//cdn.betterttv.net/emotes/jtv/happy.gif",
+            "//cdn.betterttv.net/emotes/jtv/sad.gif",
+            "//cdn.betterttv.net/emotes/jtv/surprised.gif",
+            "//cdn.betterttv.net/emotes/jtv/bored.gif",
+            "//cdn.betterttv.net/emotes/jtv/cool.gif",
+            "//cdn.betterttv.net/emotes/jtv/horny.gif",
+            "//cdn.betterttv.net/emotes/jtv/skeptical.gif",
+            "//cdn.betterttv.net/emotes/jtv/wink.gif",
+            "//cdn.betterttv.net/emotes/jtv/raspberry.gif",
+            "//cdn.betterttv.net/emotes/jtv/winkberry.gif",
+            "//cdn.betterttv.net/emotes/jtv/pirate.gif",
+            "//cdn.betterttv.net/emotes/jtv/drunk.gif",
+            "//cdn.betterttv.net/emotes/jtv/angry.gif",
+            "//cdn.betterttv.net/emotes/mw.png"
         ];
 
-        CurrentChat.emoticons = [];
-        if(CurrentChat.emoticon_sets) {
-            CurrentChat.default_emoticons = [];
-            CurrentChat.emoticon_sets = {};
-        }
         CurrentChat.autoCompleteEmotes = {};
 
         Twitch.api.get("chat/emoticons").done(function (a) {
-            var d = 0;
+            var d = CurrentChat.emoticons.length-1;
             var cssString = "";
             if(Twitch.user.isLoggedIn() && CurrentChat.user_to_emote_sets[Twitch.user.login()]) {
                 var autoComplete = true;
@@ -1862,15 +1859,35 @@
             } else {
                 var autoComplete = false;
             }
+            CurrentChat.emoticons.forEach(function (emote) {
+                if(emote.images) {
+                    emote.images.forEach(function (image) {
+                        if(oldEmotes.indexOf(image.url) !== -1 && bttv.settings.get("showDefaultEmotes") !== true) {
+                            image.url = newEmotes[oldEmotes.indexOf(image.url)];
+                            image.height = 22;
+                            image.width = 22;
+                            var imageCssElement = /\<span class\=\"emo-(.*) emoticon\"\>\<\/span\>/.exec(image.html);
+                            if(imageCssElement) {
+                                var cssEmote = imageCssElement[1];
+                                cssString += CurrentChat.generate_emoticon_css(image, cssEmote);
+                            }
+                        }
+                    });
+                }
+            });
+            CurrentChat.default_emoticons.forEach(function (emote) {
+                if(emote.image) {
+                    var image = emote.image;
+                    if(oldEmotes.indexOf(image.url) !== -1 && bttv.settings.get("showDefaultEmotes") !== true) {
+                        image.url = newEmotes[oldEmotes.indexOf(image.url)];
+                        image.height = 22;
+                        image.width = 22;
+                    }
+                }
+            })
             a.emoticons.forEach(function (a) {
                 a.regex.match(/^\w+$/) ? a.regex = new RegExp("\\b" + a.regex + "\\b", "g") : a.regex = new RegExp(a.regex, "g");
                 a.images.forEach(function (b) {
-                    d += 1;
-                    if (oldEmotes.indexOf(b.url) !== -1 && bttv.settings.get("showDefaultEmotes") !== true) {
-                        b.url = newEmotes[oldEmotes.indexOf(b.url)];
-                        b.height = 22;
-                        b.width = 22;
-                    }
                     if(autoComplete === true && CurrentChat.user_to_emote_sets[user].indexOf(b.emoticon_set) !== -1) {
                         var prefixRegex = /^\/\\b([a-z]+)([0-9A-Z][0-9A-Za-z]+)\\b\/g$/,
                             rawCommand = prefixRegex.exec(a.regex);
@@ -1880,19 +1897,7 @@
                             }
                         }
                     }
-                    b.html = ich["chat-emoticon"]({
-                        id: d
-                    }).prop("outerHTML");
-                    cssString += CurrentChat.generate_emoticon_css(b, d);
-                    var imageObject = {
-                        image: b,
-                        regex: a.regex
-                    }
-                    if(CurrentChat.emoticon_sets) {
-                        b.emoticon_set ? (CurrentChat.emoticon_sets[b.emoticon_set] === undefined && (CurrentChat.emoticon_sets[b.emoticon_set] = []), CurrentChat.emoticon_sets[b.emoticon_set].push(imageObject)) : CurrentChat.default_emoticons.push(imageObject);
-                    }
                 });
-                CurrentChat.emoticons.push(a);
             });
             if (bttv.settings.get("bttvEmotes") !== false) {
                 betterttvEmotes.forEach(function (b) {
@@ -1900,7 +1905,7 @@
                     a.text = b.regex.replace(/\\/g,"").replace(/\((.*)\|(.*)\)/,"$1");
                     b.regex.match(/^\w+$/) ? a.regex = new RegExp("\\b" + b.regex + "\\b", "g") : a.regex = new RegExp(b.regex, "g");
                     a.channel = b.channel || "BetterTTV Emotes";
-                    a.badge = "http://cdn.betterttv.net/tags/kappa.png";
+                    a.badge = "//cdn.betterttv.net/tags/kappa.png";
                     a.images = [];
                     a.images.push({
                         emoticon_set: null,
@@ -2093,7 +2098,7 @@
                 debug.log("Darkening Page");
 
                 var darkCSS = document.createElement("link");
-                darkCSS.setAttribute("href", "http://cdn.betterttv.net/betterttv-6.5-dark.css");
+                darkCSS.setAttribute("href", "//cdn.betterttv.net/style/stylesheets/betterttv-dark.css");
                 darkCSS.setAttribute("type", "text/css");
                 darkCSS.setAttribute("rel", "stylesheet");
                 darkCSS.setAttribute("id", "darkTwitch");
@@ -2114,7 +2119,7 @@
             debug.log("Splitting Chat");
 
             var splitCSS = document.createElement("link");
-            bttv.settings.get("darkenedMode") === true ? splitCSS.setAttribute("href", "http://cdn.betterttv.net/betterttv-6.5-splitchat-dark.css") : splitCSS.setAttribute("href", "http://cdn.betterttv.net/betterttv-6.5-splitchat.css");
+            bttv.settings.get("darkenedMode") === true ? splitCSS.setAttribute("href", "//cdn.betterttv.net/style/stylesheets/betterttv-split-chat-dark.css") : splitCSS.setAttribute("href", "//cdn.betterttv.net/style/stylesheets/betterttv-split-chat.css");
             splitCSS.setAttribute("type", "text/css");
             splitCSS.setAttribute("rel", "stylesheet");
             splitCSS.setAttribute("id", "splitChat");
@@ -2221,7 +2226,7 @@
             debug.log("Injecting Twitch Chat Emotes Script");
 
             var emotesJSInject = document.createElement("script");
-            emotesJSInject.setAttribute("src", "http://cdn.betterttv.net/twitchemotes-6.5.js");
+            emotesJSInject.setAttribute("src", "//cdn.betterttv.net/js/twitchemotes.js");
             emotesJSInject.setAttribute("type", "text/javascript");
             emotesJSInject.setAttribute("id", "clickTwitchEmotes");
             $("body").append(emotesJSInject);
@@ -2264,7 +2269,7 @@
         settingsPanel.setAttribute("id", "bttvSettingsPanel");
         settingsPanel.style.display = "none";
         settingsPanel.innerHTML = '<div id="header"> \
-                                    <span id="logo"><img height="45px" src="http://cdn.betterttv.net/bttvlogo.png" /></span> \
+                                    <span id="logo"><img height="45px" src="//cdn.betterttv.net/style/logos/settings_logo.png" /></span> \
                                     <ul class="nav"> \
                                         <li><a href="#bttvAbout">About</a></li> \
                                         <li class="active"><a href="#bttvSettings">Settings</a></li> \
@@ -2462,7 +2467,7 @@
                                    </div> \
                                    <div id="bttvAbout" style="display:none;"> \
                                     <div class="aboutHalf"> \
-                                        <img class="bttvAboutIcon" src="http://cdn.betterttv.net/icon.png" /> \
+                                        <img class="bttvAboutIcon" src="//cdn.betterttv.net/style/logos/bttv_logo.png" /> \
                                         <h1>BetterTTV v'+ bttv.info.version + 'R' + bttv.info.release + '</h1> \
                                         <h2>from your friends at <a href="http://www.nightdev.com" target="_blank">NightDev</a></h2> \
                                         <br /> \
@@ -2488,13 +2493,13 @@
                                    </div>';
         $("body").append(settingsPanel);
 
-        $.get('http://cdn.betterttv.net/privacy.html', function (data) {
+        $.get('//cdn.betterttv.net/privacy.html', function (data) {
             if(data) {
                 $('#bttvPrivacy .tse-content').html(data);
             }
         });
 
-        $.get('http://cdn.betterttv.net/changelog.html?'+ bttv.info.version + 'R' + bttv.info.release, function (data) {
+        $.get('//cdn.betterttv.net/changelog.html?'+ bttv.info.version + 'R' + bttv.info.release, function (data) {
             if(data) {
                 $('#bttvChangelog .tse-content').html(data);
             }
@@ -2866,7 +2871,7 @@
                 $("#darkTwitch").remove();
                 $("#splitChat").remove();
                 var darkCSS = document.createElement("link");
-                darkCSS.setAttribute("href", "http://cdn.betterttv.net/betterttv-6.5-blackchat.css");
+                darkCSS.setAttribute("href", "//cdn.betterttv.net/style/stylesheets/betterttv-blackchat.css");
                 darkCSS.setAttribute("type", "text/css");
                 darkCSS.setAttribute("rel", "stylesheet");
                 darkCSS.setAttribute("id", "blackChat");
@@ -2956,13 +2961,13 @@
 
                                 if(!vars.HLSPlayerLoaded) {
                                     var playerCSS = document.createElement("link");
-                                    playerCSS.setAttribute("href", "http://cdn.betterttv.net/player/css/hPlayer.css");
+                                    playerCSS.setAttribute("href", "//cdn.betterttv.net/player/css/hPlayer.css");
                                     playerCSS.setAttribute("type", "text/css");
                                     playerCSS.setAttribute("rel", "stylesheet");
                                     $("body").append(playerCSS);
 
                                     var playerJS = document.createElement("script");
-                                    playerJS.setAttribute("src", "http://cdn.betterttv.net/player/js/hPlayer.js");
+                                    playerJS.setAttribute("src", "//cdn.betterttv.net/player/js/hPlayer.js");
                                     playerJS.setAttribute("type", "text/javascript");
                                     $("body").append(playerJS);
 
@@ -2989,7 +2994,7 @@
 
     var handleLookupServer = function() {
         var socketJSInject = document.createElement("script");
-        socketJSInject.setAttribute("src", "http://cdn.betterttv.net/socket.io.js");
+        socketJSInject.setAttribute("src", "//cdn.betterttv.net/js/socket.io.js");
         socketJSInject.setAttribute("type", "text/javascript");
         $("head").append(socketJSInject);
     }
