@@ -1,5 +1,5 @@
 /** @license
- * Copyright (c) 2013 NightDev
+ * Copyright (c) 2014 NightDev
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,7 @@
  * Gritter for jQuery
  * http://www.boedesign.com/
  *
- * Copyright (c) 2012 Jordan Boesch
+ * Copyright (c) 2014 Jordan Boesch
  * Dual licensed under the MIT and GPL licenses.
  */
 
@@ -797,15 +797,26 @@
                       <button class="button-simple primary mod-card-follow">Follow</button> \
                       <button class="button-simple dark mod-card-channel">Channel</button> \
                       <button class="button-simple dark mod-card-message">Message</button> \
+                      '+((Twitch.user.isLoggedIn() && bttv.chat.helpers.isModerator(Twitch.user.login()) && (!bttv.chat.helpers.isModerator(user.name) || Twitch.user.login() === bttv.getChannel()))?' \
                       <br /> \
                       <span class="mod-controls"> \
-                        <button class="timeout button-simple light"> \
-                          <img src="/images/xarth/g/g18_timeout-00000080.png"> \
+                        <button class="timeout button-simple light" style="width:44px;" data-time="1" title="Clear this user\'s chat"> \
+                          Purge \
                         </button> \
-                        <button class="ban button-simple light"> \
-                          <img src="/images/xarth/g/g18_ban-00000080.png"> \
+                        <button class="timeout button-simple light" data-time="600" title="Temporary 10 minute ban"> \
+                          <img src="/images/xarth/g/g18_timeout-00000080.png" /> \
+                        </button> \
+                        <button class="timeout button-simple light" style="width:30px;" data-time="28800" title="Temporary 8 hour ban"> \
+                          8hr \
+                        </button> \
+                        <button class="timeout button-simple light" style="width:38px;" data-time="86400" title="Temporary 24 hour ban"> \
+                          24hr \
+                        </button> \
+                        <button class="ban button-simple light" title="Permanent Ban"> \
+                          <img src="/images/xarth/g/g18_ban-00000080.png" /> \
                         </button> \
                       </span> \
+                      ':'')+' \
                     </div> \
                 </div>';
             },
@@ -882,13 +893,13 @@
             loadChatSettings();
 
             // Hover over icons
-            $("body").off('mouseover', '.chat-line .badges .badge, .chat-line .mod-icons a').on('mouseover', '.chat-line .badges .badge, .chat-line .mod-icons a', function() {
+            $("body").off('mouseover', '.chat-line .badges .badge, .chat-line .mod-icons a, .bttv-mod-card .mod-controls button').on('mouseover', '.chat-line .badges .badge, .chat-line .mod-icons a, .bttv-mod-card .mod-controls button', function() {
                 $(this).tipsy({
                     trigger: 'manual',
                     gravity: "sw"
                 });
                 $(this).tipsy("show");
-            }).off('mouseout', '.chat-line .badges .badge, .chat-line .mod-icons a').on('mouseout', '.chat-line .badges .badge, .chat-line .mod-icons a', function() {
+            }).off('mouseout', '.chat-line .badges .badge, .chat-line .mod-icons a, .bttv-mod-card .mod-controls button').on('mouseout', '.chat-line .badges .badge, .chat-line .mod-icons a, .bttv-mod-card .mod-controls button', function() {
                 $(this).tipsy("hide");
                 $('div.tipsy.tipsy-sw').remove();
             })
@@ -1218,11 +1229,12 @@
                 tmi = tmi.tmiRoom;
                 return tmi ? tmi.banUser(user) : null;
             },
-            timeout: function(user) {
+            timeout: function(user, time) {
+                time = time || 600;
                 if(!user || user === "") return false;
                 var tmi = bttv.chat.tmi() || {};
                 tmi = tmi.tmiRoom;
-                return tmi ? tmi.timeoutUser(user) : null;
+                return tmi ? tmi.timeoutUser(user+' '+time) : null;
             },
             unban: function(user) {
                 if(!user || user === "") return false;
@@ -1276,7 +1288,7 @@
                         $modCard.remove();
                     });
                     $modCard.find('.timeout').click(function() {
-                        bttv.chat.helpers.timeout(user.name);
+                        bttv.chat.helpers.timeout(user.name, $(this).data('time'));
                         $modCard.remove();
                     });
                     $modCard.find('.ban').click(function() {
@@ -1687,7 +1699,7 @@
                     messageHighlighted,
                     data.style === 'action' ? true : false,
                     data.style === 'admin' ? true : false,
-                    Twitch.user.isLoggedIn() ? bttv.chat.helpers.isModerator(Twitch.user.login()) : false,
+                    Twitch.user.isLoggedIn() ? (bttv.chat.helpers.isModerator(Twitch.user.login()) && (!bttv.chat.helpers.isModerator(data.sender) || Twitch.user.login() === bttv.getChannel())) : false,
                     {
                         message: data.message,
                         time: data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
