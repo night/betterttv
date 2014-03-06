@@ -377,6 +377,10 @@ body {
 .ember-chat .chat-buttons-container .chat-option-buttons button.viewers {
 	background-position: 5px -39px !important;
 }
+/* Mod Icons */
+.ember-chat .mod-icons {
+	display: none;
+}
 
 /*Viewer List */
 /*
