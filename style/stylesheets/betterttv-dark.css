@@ -760,4 +760,21 @@ body {
 	color: rgb(200,200,200);
 }
 
+/*~~~~~~Ember Dark Viewer List ~~~~~~~~~*/
+.ember-chat .chat-menu .chat-menu-header {
+	background: rgb(50,50,50);
+	color:  rgb(200,200,200);
+}
 
+.ember-chat .chat-menu .chat-menu-content  {
+	background: rgb(35,35,35);
+	color: #fff;
+}
+
+.ember-chat .chat-settings .chat-menu a  {
+	color: #fff;
+}
+
+.g18_gear-00000080, .g18_close-00000080, .g18_trash-00000080, a.small.js-turbo-more-colors {
+ 	-webkit-filter: invert(100%);  
+}
