@@ -735,3 +735,27 @@ body {
 	border-top: 1px solid rgba(0, 0, 0, 0.8);
 	white-space: nowrap;
 }
+
+
+/*~~~~~~Ember Dark Viewer List ~~~~~~~~~*/
+.ember-chat .chat-menu .chat-top-header {
+	background: rgb(40,40,40); 
+}
+
+.ember-chat .chat-menu .chat-top-header .chat-menu-button-container{
+	background: rgb(60,60,60);
+}
+
+.ember-chat .ember-list-view, .ember-chat .ember-list-container{
+	background: rgb(50,50,50);
+	color: #000;
+}
+
+.ember-chat .ember-list-item-view a {
+	color: #fff;
+}
+
+.ember-chat .ember-list-item-view .chat-menu-header {
+	background: rgb(30,30,30);
+	color: rgb(200,200,200);
+}
