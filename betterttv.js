@@ -67,7 +67,7 @@
 
     bttv.info = {
         version: "6.7-BETA",
-        release: 10,
+        release: 11,
         versionString: function() {
             return bttv.info.version + 'R' + bttv.info.release;
         }
@@ -732,7 +732,7 @@
 
     bttv.chat = {
         templates: {
-            badge: function(type, name, description) { return '<div class="ember-view '+type+' '+((bttv.settings.get('bttvAlphaTags') && ['admin','staff','broadcaster','mod','turbo','ign'].indexOf(type) !== -1)?'alpha'+(!bttv.settings.get("darkenedMode")?' invert':''):'')+' badge" title="'+description+'">'+name+'</div> '; },
+            badge: function(type, name, description) { return '<div class="ember-view '+type+' '+((bttv.settings.get('bttvAlphaTags') && ['admin','staff','broadcaster','moderator','turbo','ign'].indexOf(type) !== -1)?'alpha'+(!bttv.settings.get("darkenedMode")?' invert':''):'')+' badge" title="'+description+'">'+name+'</div> '; },
             badges: function(badges) {
                 var resp = '<span class="badges">';
                 badges.forEach(function(data) {
@@ -1116,7 +1116,7 @@
                 });
             },
             notifyMessage: function (type, message) {
-                var tagType = (bttv.settings.get("showJTVTags") === true && ["mod","broadcaster","admin","staff","bot"].indexOf(type) !== -1) ? 'old'+type : type;
+                var tagType = (bttv.settings.get("showJTVTags") === true && ["moderator","broadcaster","admin","staff","bot"].indexOf(type) !== -1) ? 'old'+type : type;
                 bttv.chat.handlers.privmsg({
                     from: 'twitchnotify',
                     date: new Date(),
@@ -1531,7 +1531,7 @@
                 if(bots.indexOf(data.from) !== -1 && bttv.chat.helpers.isModerator(data.from)) { data.bttvTagType="bot"; data.bttvTagName = "Bot"; }
 
                 if (bttv.settings.get("showJTVTags") === true) {
-                    if (data.bttvTagType == "mod" || data.bttvTagType == "broadcaster" || data.bttvTagType == "admin" || data.bttvTagType == "staff" || data.bttvTagType === "bot") data.bttvTagType = 'old'+data.bttvTagType;
+                    if (data.bttvTagType == "moderator" || data.bttvTagType == "broadcaster" || data.bttvTagType == "admin" || data.bttvTagType == "staff" || data.bttvTagType === "bot") data.bttvTagType = 'old'+data.bttvTagType;
                 }
 
                 data.color = bttv.chat.helpers.getColor(data.from);
@@ -1592,9 +1592,9 @@
                     "iivii_beauty": { mod: true, tagType: "purple", tagName: "Crave" },
                     "theefrenzy": { mod: true, tagType: "staff", tagName: "Handsome" },
                     "gennousuke69": { mod: true, tagType: "admin", tagName: "Evil" },
-                    "zebbazombies": { mod: true, tagType: "mod", tagName: "Hugs" },
+                    "zebbazombies": { mod: true, tagType: "moderator", tagName: "Hugs" },
                     "nobama12345": { mod: true, tagType: "broadcaster", tagName: "Señor" },
-                    "uleet": { mod: true, tagType: "mod", tagName: "Taco" },
+                    "uleet": { mod: true, tagType: "moderator", tagName: "Taco" },
                     "mrimjustaminorthreat": { mod: true, tagType: "staff", tagName: "<span style='color:pink;'>Major</span>", nickname: "mrimjustamajorthreat" },
                     "sournothardcore": { mod: true, tagType: "brown", tagName: "<span style='color:#FFE600 !important;'>Saucy</span>", color: data.color+";text-shadow: 0 0 10px #FFD700" },
                     //People
@@ -1602,7 +1602,7 @@
                     "mac027": { mod: true, tagType: "admin", tagName: "Hacks" },
                     "vaughnwhiskey": { mod: true, tagType: "admin", tagName: "Bacon" },
                     "socaldesigner": { mod: true, tagType: "broadcaster", tagName: "Legend" },
-                    "perfectorzy": { mod: true, tagType: "mod", tagName: "Jabroni Ave" },
+                    "perfectorzy": { mod: true, tagType: "moderator", tagName: "Jabroni Ave" },
                     "pantallideth1": { mod: true, tagType: "staff", tagName: "Windmill" },
                     "mmmjc": { mod: true, tagType: "admin", tagName: "m&m" },
                     "hawkeyye": { mod: true, tagType: "broadcaster", tagName: "EnVy", nickname: "Hawkeye" },
@@ -1616,7 +1616,7 @@
                     "r3lapse": { mod: true, tagType: "staff", tagName: "Kershaw" },
                     "im_tony_": { mod: true, tagType: "admin", tagName: "oZn" },
                     "tips_": { mod: true, tagType: "staff", tagName: "241" },
-                    "papa_dot": { mod: true, tagType: "mod", tagName: "v8" },
+                    "papa_dot": { mod: true, tagType: "moderator", tagName: "v8" },
                     "1danny1032": { mod: true, tagType: "admin", tagName: "1Bar" },
                     "cvagts": { mod: true, tagType: "staff", tagName: "SRL" },
                     "thesabe": { mod: true, tagType: "orange", tagName: "<span style='color:blue;'>Sabey</span>" },
@@ -1626,7 +1626,7 @@
 
                 if(legacyTags[data.from] && ((legacyTags[data.from].mod === true && bttv.chat.helpers.isModerator(data.from)) || legacyTags[data.from].mod === false)) {
                     var userData = legacyTags[data.from];
-                    if(userData.tagType) data.bttvTagType = (["mod","broadcaster","admin","staff","bot"].indexOf(userData.tagType) !== -1) ? 'old'+userData.tagType : userData.tagType;
+                    if(userData.tagType) data.bttvTagType = (["moderator","broadcaster","admin","staff","bot"].indexOf(userData.tagType) !== -1) ? 'old'+userData.tagType : userData.tagType;
                     if(userData.tagName) data.bttvTagName = userData.tagName;
                     if(userData.color && data.style !== 'action') data.color = userData.color;
                     if(userData.nickname) data.bttvDisplayName = userData.nickname;
@@ -1638,7 +1638,7 @@
                 if(badges && badges.length > 0) {
                     if(data.bttvTagType && data.bttvTagName) {
                         bttvBadges.push({
-                            type: data.bttvTagType.replace(/^mod$/,'moderator'),
+                            type: data.bttvTagType,
                             name: data.bttvTagName,
                             description: data.bttvTagDesc?data.bttvTagDesc:data.bttvTagName
                         });
@@ -1663,7 +1663,7 @@
                         });
                     } else if(badges.indexOf('mod') !== -1 && !data.bttvTagType) {
                         bttvBadges.push({
-                            type: (bttv.settings.get("showJTVTags") === true?'oldmod':'moderator'),
+                            type: (bttv.settings.get("showJTVTags") === true?'oldmoderator':'moderator'),
                             name: (bttv.settings.get("showJTVTags") === true?'Mod':''),
                             description: 'Channel Moderator'
                         });

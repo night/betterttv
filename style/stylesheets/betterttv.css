@@ -156,7 +156,7 @@ input.text:focus,select:focus,textarea:focus {
     overflow: hidden;
 }
 
-.line .oldmod, .line .oldstaff, .line .oldadmin, .line .oldbroadcaster, .line .oldbot, .ember-chat .badges .oldmod, .ember-chat .badges .oldstaff, .ember-chat .badges .oldadmin, .ember-chat .badges .oldbroadcaster, .ember-chat .badges .oldbot {
+.line .oldmod, .line .oldstaff, .line .oldadmin, .line .oldbroadcaster, .line .oldbot, .ember-chat .badges .oldmoderator, .ember-chat .badges .oldstaff, .ember-chat .badges .oldadmin, .ember-chat .badges .oldbroadcaster, .ember-chat .badges .oldbot {
     padding: 2px 3px;
     text-indent: none;
     color: white;
@@ -170,7 +170,7 @@ input.text:focus,select:focus,textarea:focus {
     background-color: #666666;
 }
 
-.line .oldmod, .ember-chat .badges .oldmod {
+.line .oldmod, .ember-chat .badges .oldmoderator {
     background-color: #009900;
 }
 
