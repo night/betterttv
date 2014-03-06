@@ -824,17 +824,18 @@
                         Followers: '+user.followers+'&nbsp;&nbsp;&nbsp;Views: '+user.views+' \
                       </span> \
                       <br /> \*/
-            message: function(sender, message, userSets) {
+            message: function(sender, message, userSets, colored) {
+                colored = colored || false;
                 var templates = bttv.chat.templates;
                 var formattedMessage = sender !== 'jtv' ? templates.escape(message) : message;
                 formattedMessage = templates.emoticonize(formattedMessage, userSets);
                 formattedMessage = sender !== 'jtv' ? templates.linkify(formattedMessage) : formattedMessage;
-                formattedMessage = '<span class="message" data-raw="'+encodeURIComponent(message.replace(/%/g,""))+'">'+formattedMessage+'</span>';
+                formattedMessage = '<span class="message" '+(colored?'style="color: '+colored+'" ':'')+'data-raw="'+encodeURIComponent(message.replace(/%/g,""))+'">'+formattedMessage+'</span>';
                 return formattedMessage;
             },
             privmsg: function(highlight, action, server, isMod, data) {
                 var templates = bttv.chat.templates;
-                return '<div class="ember-view chat-line'+(highlight?' highlight':'')+(action?' action':'')+(server?' admin':'')+'" data-sender="'+data.sender+'">'+templates.timestamp(data.time)+' '+(isMod?templates.modicons():'')+' '+templates.badges(data.badges)+templates.from(data.nickname, data.color)+templates.message(data.sender, data.message, data.emoteSets)+'</div>';
+                return '<div class="ember-view chat-line'+(highlight?' highlight':'')+(action?' action':'')+(server?' admin':'')+'" data-sender="'+data.sender+'">'+templates.timestamp(data.time)+' '+(isMod?templates.modicons():'')+' '+templates.badges(data.badges)+templates.from(data.nickname, data.color)+templates.message(data.sender, data.message, data.emoteSets, action?data.color:false)+'</div>';
             }
         },
         tmi: function() { return (bttv.getChatController()) ? bttv.getChatController().currentRoom : false; },
@@ -1121,7 +1122,7 @@
                     date: new Date(),
                     badges: [{
                                 type: tagType,
-                                name: (bttv.settings.get("showJTVTags")?tagType.capitalize():''),
+                                name: ((bttv.settings.get("showJTVTags") && type !== "subscriber" && type !== "turbo")?tagType.capitalize():''),
                                 description: tagType.capitalize()
                     }],
                     message: message,
