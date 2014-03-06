@@ -1,4 +1,4 @@
-body, .real_title, #right_col .content #chat_line_list, #main_col .content #broadcast_meta .info .channel, #channel_panels_contain #channel_panels .panel h3 {
+body .popout_chat, .real_title, #right_col .content #chat_line_list, #main_col .content #broadcast_meta .info .channel, #channel_panels_contain #channel_panels .panel h3 {
 	color: #fff;
 }
 
@@ -67,7 +67,7 @@ body {
 	box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset;
 }
 
-.drag-handle {
+.popout_chat .drag-handle {
 	background-color: #fff !important;
 }
 
