@@ -322,3 +322,71 @@ body {
 	height: 18px;
 	background: url(../icons/chat_settings.png) no-repeat center !important;
 }
+
+/* ~~~~~~~~~~~~~Ember Chat~~~~~~~~~~~~~~~~ */
+
+/* Chat Background */
+.ember-chat .chat-messages {
+	background-color: #000;
+}
+
+/* Chat Lines */
+.ember-chat .chat-messages .chat-line {
+	background-color: #000 !important;
+	color: #fff;
+	font-size: 18px !important;
+	font-weight: bold;
+	text-shadow: 1px 1px 5px rgba(255, 255, 255, 0.4);
+}
+
+.ember-chat .ember-view .chat_lines .admin {
+	font-size: 18px !important;
+	font-weight: bold;
+	text-shadow: 1px 1px 5px rgba(255, 255, 255, 0.4);
+}
+
+/* Message Box */
+.ember-chat .chat-interface{
+	background-color: #000;
+	border-top: 1px solid #000;
+}
+.ember-chat .chat-interface textarea {
+	background-color: rgb(20, 20, 20);
+	color: #D3D3D3;
+	border-color: black;
+}
+
+/*Buttons*/
+.ember-chat .chat-buttons-container .chat-option-buttons button {
+	background: rgb(30,30,30);
+	background-image: url(../icons/button_glyphs_new.png) !important;
+	border: none !important;
+	box-shadow: -6px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset !important;
+	border-top: 1px solid rgba(0,0,0,0.2) !important;
+	border-left: 1px solid rgba(0,0,0,0.3) !important;
+	border-right: 1px solid rgba(0,0,0,0.3) !important;
+	border-bottom: 1px solid rgba(0,0,0,0.35) !important;
+	height: 28px !important;
+	width: 28px !important;
+}
+
+.ember-chat .chat-buttons-container .chat-option-buttons button.settings {
+	background-position: 6px 6px !important;
+}
+
+.ember-chat .chat-buttons-container .chat-option-buttons button.viewers {
+	background-position: 5px -39px !important;
+}
+
+/*Viewer List */
+/*
+ WIP IGNORE 
+.ember-chat .chat-menu .chat-top-header {
+	background: rgb(40,40,40); 
+}
+
+.ember-chat .chat-menu .chat-top-header .chat-menu-button-container{
+	background: rgb(60, 60, 60);
+}
+*/
+
