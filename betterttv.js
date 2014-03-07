@@ -1292,22 +1292,27 @@
                     $modCard.find('.permit').click(function() {
                         bttv.chat.helpers.sendMessage('!permit '+user.name);
                         $modCard.remove();
+                        $('div.tipsy.tipsy-sw').remove();
                     });
                     $modCard.find('.timeout').click(function() {
                         bttv.chat.helpers.timeout(user.name, $(this).data('time'));
                         $modCard.remove();
+                        $('div.tipsy.tipsy-sw').remove();
                     });
                     $modCard.find('.ban').click(function() {
                         bttv.chat.helpers.ban(user.name);
                         $modCard.remove();
+                        $('div.tipsy.tipsy-sw').remove();
                     });
                     $modCard.find('.mod-card-channel').click(function() {
                         window.open(Twitch.url.channel(user.name),'_blank');
                         $modCard.remove();
+                        $('div.tipsy.tipsy-sw').remove();
                     });
                     $modCard.find('.mod-card-message').click(function() {
                         window.open(Twitch.url.compose(user.name),'_blank');
                         $modCard.remove();
+                        $('div.tipsy.tipsy-sw').remove();
                     });
                     $modCard.drags();
 
