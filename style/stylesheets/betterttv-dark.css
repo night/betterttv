@@ -751,6 +751,11 @@ body {
 	color: #000;
 }
 
+.ember-chat .chat-menu  {
+	background: rgb(30,30,30);
+	color: #fff;
+}
+
 .ember-chat .ember-list-item-view a {
 	color: #fff;
 }
@@ -775,8 +780,21 @@ body {
 	color: #fff;
 }
 
-.g18_gear-00000080, .g18_close-00000080, .g18_popout-00000080, .g18_trash-00000080, a.small.js-turbo-more-colors {
- 	-webkit-filter: invert(100%);
- 	filter: invert(100%);
- 	filter:progid:DXImageTransform.Microsoft.BasicImage(invert='1');
+a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00000080, a.small.js-turbo-more-colors {
+ 	color: #fff;
+}
+.g18_gear-00000080{
+	background-image: url(//www-cdn.jtvnw.net/images/xarth/g/g18_gear-FFFFFF80.png);
+}
+.g18_close-00000080 {
+	background-image: url(//www-cdn.jtvnw.net/images/xarth/g/g18_close-FFFFFF80.png); 
+}
+.g18_popout-00000080 {
+	background-image: url(//www-cdn.jtvnw.net/images/xarth/g/g18_popout-FFFFFF80.png);
+}
+.g18_trash-00000080 {
+	background-image: url(//www-cdn.jtvnw.net/images/xarth/g/g18_trash-FFFFFF80.png);
+}
+.button-simple.dark {
+	background: rgb(60,60,60);
 }
