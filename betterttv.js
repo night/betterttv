@@ -800,6 +800,9 @@
                       '+((Twitch.user.isLoggedIn() && bttv.chat.helpers.isModerator(Twitch.user.login()) && (!bttv.chat.helpers.isModerator(user.name) || Twitch.user.login() === bttv.getChannel()))?' \
                       <br /> \
                       <span class="mod-controls"> \
+                        <button class="permit button-simple light" style="width:48px;" title="!permit this user"> \
+                          Permit \
+                        </button> \
                         <button class="timeout button-simple light" style="width:44px;" data-time="1" title="Clear this user\'s chat"> \
                           Purge \
                         </button> \
@@ -1284,6 +1287,10 @@
                     var $modCard = $('.ember-chat .moderation-card[data-user="'+user.name+'"]');
 
                     $modCard.find('.close-button').click(function() {
+                        $modCard.remove();
+                    });
+                    $modCard.find('.permit').click(function() {
+                        bttv.chat.helpers.sendMessage('!permit '+user.name);
                         $modCard.remove();
                     });
                     $modCard.find('.timeout').click(function() {
