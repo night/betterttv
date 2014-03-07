@@ -778,5 +778,5 @@ body {
 .g18_gear-00000080, .g18_close-00000080, .g18_popout-00000080, .g18_trash-00000080, a.small.js-turbo-more-colors {
  	-webkit-filter: invert(100%);
  	filter: invert(100%);
- 	filter:progid:DXImageTransform.Microsoft.BasicImage(invert='0');
+ 	filter:progid:DXImageTransform.Microsoft.BasicImage(invert='1');
 }
