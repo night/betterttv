@@ -927,3 +927,6 @@ body#chat #speak {
     background: #c4c3c3;
     color: #262626;
 }
+button img {
+    vertical-align: baseline;
+}

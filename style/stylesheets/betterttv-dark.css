@@ -850,4 +850,5 @@ button img {
     -o-filter: invert(90%);
     -ms-filter: invert(90%);
     -moz-filter: invert(90%);
+    vertical-align: baseline;
 }
