@@ -798,3 +798,27 @@ a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00
 .button-simple.dark {
 	background: rgb(60,60,60);
 }
+
+/*~~~~~~Ember Dark Chat Hidden/Popped Out ~~~~~~~~~*/
+.ember-chat .chat-hidden-overlay {
+	background-color: #282828 !important;
+}
+
+/*~~~~~~Ember Dark Panel Editor ~~~~~~~~~*/
+.js-new_panel_form {
+	border: rgb(20,20,20);
+	background: #282828 !important;
+}
+
+.js-new_panel_form .image_sizes {
+	color: #aaa;
+}
+
+.js-new_panel_form label{
+	color: #ccc;
+}
+
+/*~~~~~~Ember Dark Moderation Cards ~~~~~~~~~*/
+.ember-chat .moderation-card .interface{
+	background: #282828;
+}
