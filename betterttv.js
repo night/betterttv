@@ -67,7 +67,7 @@
 
     bttv.info = {
         version: "6.7-BETA",
-        release: 11,
+        release: 12,
         versionString: function() {
             return bttv.info.version + 'R' + bttv.info.release;
         }
@@ -1062,8 +1062,6 @@
 
             $('.ember-chat .chat-messages .chat-line').remove();
             chat.helpers.serverMessage('<center><small>BetterTTV v' + bttv.info.version + ' Loaded.</small></center>');
-            chat.helpers.serverMessage('<div style="text-align:right;">"Twitch, why do you wanna kill me?!" <img src="http://cdn.betterttv.net/emotes/batkappa.png" style="margin: -10px 0px;-moz-transform: scaleX(-1);-o-transform: scaleX(-1);-webkit-transform: scaleX(-1);transform: scaleX(-1);filter: FlipH;-ms-filter: \'FlipH\';"/></div>');
-            chat.helpers.serverMessage('<img src="http://cdn.betterttv.net/emotes/soserious.png" style="margin: -10px 0px;" /> "<a href="http://www.youtube.com/watch?v=w2yv8aT0UFc" target="_blank">Ummmm</a>.. At least you got BetterTTV mostly working."');
             chat.helpers.serverMessage('Welcome to '+chat.helpers.lookupDisplayName(bttv.getChannel())+'\'s chat room!');
 
             // Poll mods list in case +o fails.
@@ -1547,7 +1545,7 @@
                     }
                 }
 
-                if (bttv.glow && bttv.glow[data.sender] && data.style !== 'action') {
+                if (bttv.glow && bttv.glow[data.from] && data.style !== 'action') {
                     var rgbColor = (data.color === "#ffffff" ? getRgb("#000000") : getRgb(data.color));
                     if(bttv.settings.get("darkenedMode") === true) data.color = data.color+"; text-shadow: 0 0 20px rgba("+rgbColor.r+","+rgbColor.g+","+rgbColor.b+",0.8)";
                 }
@@ -4711,7 +4709,7 @@
                                     <input type="file" id="bttvImportInput" style="height: 25px;width: 250px;"> \
                                    </div> \
                                    <div id="footer"> \
-                                    <span>BetterTTV &copy; <a href="http://www.nightdev.com" target="_blank">NightDev</a> 2013</span><span style="float:right;"><a href="http://www.nightdev.com/contact" target="_blank">Get Support</a> | <a href="http://bugs.nightdev.com/projects/betterttv/issues/new?tracker_id=1" target="_blank">Report a Bug</a> | <a href="http://streamdonations.net/c/night" target="_blank">Support the Developer</a></span> \
+                                    <span>BetterTTV &copy; <a href="http://www.nightdev.com" target="_blank">NightDev</a> 2014</span><span style="float:right;"><a href="http://www.nightdev.com/contact" target="_blank">Get Support</a> | <a href="http://bugs.nightdev.com/projects/betterttv/issues/new?tracker_id=1" target="_blank">Report a Bug</a> | <a href="http://streamdonations.net/c/night" target="_blank">Support the Developer</a></span> \
                                    </div>';
         $("body").append(settingsPanel);
 
