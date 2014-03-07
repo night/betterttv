@@ -833,3 +833,17 @@ a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00
 .ember-chat .moderation-card .interface{
 	background: #282828;	
 }
+
+.button-simple.light {
+	color: #FFF;
+	background: rgb(60,60,60);
+}
+
+button img {
+	filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'invert\'><feColorMatrix in='SourceGraphic' type='matrix' values='-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0'/></filter></svg>#invert");
+    filter: invert(90%);
+    -webkit-filter: invert(90%);
+    -o-filter: invert(90%);
+    -ms-filter: invert(90%);
+    -moz-filter: invert(90%);
+}

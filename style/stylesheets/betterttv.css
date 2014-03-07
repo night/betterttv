@@ -920,3 +920,10 @@ body#chat #speak {
     padding-left: 5px;
     padding-right: 5px;
 }
+
+/* Mod Card */
+
+.button-simple.dark{
+    background: #c4c3c3;
+    color: #262626;
+}
