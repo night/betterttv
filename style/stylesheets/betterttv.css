@@ -927,9 +927,7 @@ body#chat #speak {
     background: #c4c3c3;
     color: #262626;
 }
-.button-simple.light{
-    vertical-align: baseline;
-}
-button img {
-    vertical-align: baseline;
+
+.ember-chat .moderation-card .mod-controls button {
+    vertical-align: top;
 }
