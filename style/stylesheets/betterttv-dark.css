@@ -834,16 +834,16 @@ a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00
 	background: #282828;	
 }
 
-.button-simple.light {
+.ember-chat .moderation-card .button-simple.light {
 	color: #FFF;
 	background: rgb(60,60,60);
 }
-.button-simple.dark{
+.ember-chat .moderation-card .button-simple.dark{
 	background: rgb(60,60,60);
     color: #FFF;
 }
 
-button img {
+.ember-chat .moderation-card button img {
 	filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'invert\'><feColorMatrix in='SourceGraphic' type='matrix' values='-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0'/></filter></svg>#invert");
     filter: invert(90%);
     -webkit-filter: invert(90%);
