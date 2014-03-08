@@ -851,3 +851,13 @@ a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00
     -ms-filter: invert(90%);
     -moz-filter: invert(90%);
 }
+
+/*~~Dark Directory Logged Out Following Column~~~*/
+
+.following-col .no-login-contain li {
+	background: #000;
+}
+
+.following-col .no-login-contain h3 {
+	color: #FFF;
+}
