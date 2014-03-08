@@ -852,6 +852,10 @@ a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00
     -moz-filter: invert(90%);
 }
 
+.ember-chat .moderation-card img.channel_logo {
+	border: 3px solid #282828;
+}
+
 /*~~Dark Directory Logged Out Following Column~~~*/
 
 .following-col .no-login-contain li {
