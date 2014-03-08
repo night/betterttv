@@ -837,6 +837,7 @@ a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00
 .button-simple.light {
 	color: #FFF;
 	background: rgb(60,60,60);
+	vertical-align: baseline;
 }
 .button-simple.dark{
 	background: rgb(60,60,60);
