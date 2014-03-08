@@ -67,7 +67,7 @@
 
     bttv.info = {
         version: "6.7-BETA",
-        release: 12,
+        release: 13,
         versionString: function() {
             return bttv.info.version + 'R' + bttv.info.release;
         }
@@ -2659,7 +2659,7 @@
                     //Donations
                     "gspwar": { mod: false, tagType: "admin", tagName: "EH?" },
                     "nightmare": { mod: false, tagType: "broadcaster", tagName: "MLG" },
-                    "sour": { mod: false, tagType: "brown", tagName: "<span style='color:#FFE600;'>Saucy</span>", color: data.color+";text-shadow: 0 0 10px #FFD700" },
+                    "sour": { mod: false, tagType: "brown", tagName: "<span style='color:#FFE600;'>Saucy</span>", color: info.color+";text-shadow: 0 0 10px #FFD700" },
                     "yorkyyork": { mod: false, tagType: "broadcaster", tagName: "Nerd" },
                     "striker035": { mod: true, tagType: "admin", tagName: "MotherLover" },
                     "dogs": { mod: true, tagType: "orange", tagName: "Smelly", nickname: "Dog" },
@@ -2694,7 +2694,7 @@
                     "nobama12345": { mod: true, tagType: "broadcaster", tagName: "Señor" },
                     "uleet": { mod: true, tagType: "moderator", tagName: "Taco" },
                     "mrimjustaminorthreat": { mod: true, tagType: "staff", tagName: "<span style='color:pink;'>Major</span>", nickname: "mrimjustamajorthreat" },
-                    "sournothardcore": { mod: true, tagType: "brown", tagName: "<span style='color:#FFE600 !important;'>Saucy</span>", color: data.color+";text-shadow: 0 0 10px #FFD700" },
+                    "sournothardcore": { mod: true, tagType: "brown", tagName: "<span style='color:#FFE600 !important;'>Saucy</span>", color: info.color+";text-shadow: 0 0 10px #FFD700" },
                     //People
                     "whitesammy": { mod: false, color: "white;text-shadow: 0 0 2px #000" },
                     "mac027": { mod: true, tagType: "admin", tagName: "Hacks" },
