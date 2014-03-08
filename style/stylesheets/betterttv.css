@@ -923,7 +923,7 @@ body#chat #speak {
 
 /* Mod Card */
 
-.button-simple.dark{
+.ember-chat .moderation-card .button-simple.dark{
     background: #c4c3c3;
     color: #262626;
 }
