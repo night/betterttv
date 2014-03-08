@@ -4141,7 +4141,7 @@
                             }
 
                             if(bttv.socketServer && bttv.TwitchEmoteSets && !bttv.TwitchEmoteSets[emote.emoticon_set]) {
-                                if($('.emoticon-selector .emoticon-img[original-title="'+emote.regex+'"]').length) {
+                                if($('.emoticon-grid .emoticon[original-title="'+emote.regex+'"]').length) {
                                     bttv.socketServer.emit('give_tip', { channel: bttv.getChannel(), user: (Twitch.user.isLoggedIn() ? Twitch.user.login() : 'guest') });
                                 }
                             } 
