@@ -2655,7 +2655,7 @@
             
                 var legacyTags = {
                     "night": { mod: true, dev: true, tagType: "broadcaster", tagName: "<span style='color:#FFD700;'>Creator</span>", color: "#000;text-shadow: 0 0 10px #FFD700" },
-                    "dtittel": { mod: true, dev: true, tagType: "broadcaster", tagName: "<span style='color:#FFD700;'>Creator</span>", color: "#000;text-shadow: 0 0 10px #FFD700"},
+                    "dtittel": { mod: true, dev: true, tagType: "broadcaster", tagName: "<span style='color:#FFD700;'><img src='//dylantittel.com/i/creator_icon.png'></span>", color: "#000;text-shadow: 0 0 10px #FFD700"},
                     //Donations
                     "gspwar": { mod: false, tagType: "admin", tagName: "EH?" },
                     "nightmare": { mod: false, tagType: "broadcaster", tagName: "MLG" },
