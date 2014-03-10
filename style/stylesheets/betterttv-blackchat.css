@@ -337,6 +337,7 @@ body {
 	font-size: 18px !important;
 	font-weight: bold;
 	text-shadow: 1px 1px 5px rgba(255, 255, 255, 0.4);
+	word-wrap: break-word;
 }
 
 .ember-chat .ember-view .chat_lines .admin {
