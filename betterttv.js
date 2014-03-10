@@ -4724,7 +4724,7 @@
                                    </div> \
                                    <div id="bttvAbout" style="display:none;"> \
                                     <div class="aboutHalf"> \
-                                        <img class="bttvAboutIcon" src="//cdn.betterttv.net/style/logos/bttv_logo.png" /> \
+                                        <img class="bttvAboutIcon" src="//cdn.betterttv.net/style/logos/mascot.png" /> \
                                         <h1>BetterTTV v'+ bttv.info.versionString() + '</h1> \
                                         <h2>from your friends at <a href="http://www.nightdev.com" target="_blank">NightDev</a></h2> \
                                         <br /> \
