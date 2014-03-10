@@ -2186,18 +2186,15 @@
         // Old Site Header Logo Branding
         if ($("#header_logo").length) {
             $("#header_logo").html("<img alt=\"TwitchTV\" src=\"//cdn.betterttv.net/style/logos/black_twitch_logo.png\">");
-            var watermark = document.createElement("div");
-            watermark.style.marginTop = "-45px";
-            watermark.style.marginLeft = "-8px";
-            watermark.innerHTML = "Better";
-            watermark.style.color = "#FF0000";
-            watermark.style.fontWeight = "bold";
-            watermark.style.fontSize = "15px";
-            watermark.style.zIndex = "9000";
-            watermark.style.opacity = "0.9";
-            watermark.style.textShadow = "-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000";
-            watermark.style.textDecoration = "none";
-            $("#header_logo").append(watermark);
+            var $watermark = $('<img />');
+            $watermark.attr('src', '//cdn.betterttv.net/style/logos/logo_icon.png');
+            $watermark.css({
+                'z-index': 9000,
+                'margin-left': 68,
+                'margin-top': 9,
+                'float': 'left'
+            });
+            $("#header_logo").append($watermark);
         }
 
         // New Site Logo Branding
