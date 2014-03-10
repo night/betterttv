@@ -2190,9 +2190,10 @@
             $watermark.attr('src', '//cdn.betterttv.net/style/logos/logo_icon.png');
             $watermark.css({
                 'z-index': 9000,
-                'margin-left': 68,
-                'margin-top': 9,
-                'float': 'left'
+                'margin-left': 22,
+                'margin-top': -45,
+                'float': 'left',
+                'height': 18
             });
             $("#header_logo").append($watermark);
         }
