@@ -553,14 +553,14 @@
                 }
             });
             
-            var plea = ' \
+            /*var plea = ' \
                 <div class="option"> \
                     <img src="http://cdn.betterttv.net/emotes/batkappa.png" style="margin: -5px 0px;"/> "I\'ve been spending <b>days</b> fixing BetterTTV. Maybe people will <a href="https://streamdonations.net/c/night" target="_blank">contribute</a> for the trouble." \
                 </div> \
-            ';
+            ';*/
 
             $('#bttvSettings .options-list').append(featureRequests);
-            $('#bttvSettings .options-list h2.option').before(plea);
+            //$('#bttvSettings .options-list h2.option').before(plea);
 
             $('.option input:radio').change(function (e) {
                 bttv.settings.save(e.target.name, parseSetting(e.target.value));
@@ -1488,14 +1488,14 @@
 
                 if(bttv.chat.store.chatters.indexOf(data.from) === -1) bttv.chat.store.chatters.push(data.from);
 
-                if (bttv.chat.store.trackTimeouts[data.from]) delete bttv.chat.store.trackTimeouts[data.from];
+                if(bttv.chat.store.trackTimeouts[data.from]) delete bttv.chat.store.trackTimeouts[data.from];
                 
                 var messageHighlighted = false,
                     highlightKeywords = [],
                     highlightUsers = [],
                     blacklistKeywords = [];
 
-                if (bttv.settings.get("blacklistKeywords")) {
+                if(bttv.settings.get("blacklistKeywords")) {
                     var keywords = bttv.settings.get("blacklistKeywords");
                     var phraseRegex = /\{.+?\}/g;
                     var testCases =  keywords.match(phraseRegex);
@@ -1524,7 +1524,7 @@
                     if(filtered) return;
                 }
 
-                if (bttv.settings.get("highlightKeywords")) {
+                if(bttv.settings.get("highlightKeywords")) {
                     var extraKeywords = bttv.settings.get("highlightKeywords");
                     var phraseRegex = /\{.+?\}/g;
                     var testCases =  extraKeywords.match(phraseRegex);
@@ -2202,19 +2202,14 @@
 
         // New Site Logo Branding
         if ($("#large_nav #logo").length) {
-            var watermark = document.createElement("div");
-            watermark.style.marginTop = "-10px";
-            watermark.style.marginLeft = "38px";
-            watermark.innerHTML = "Better";
-            watermark.style.color = "#FF0000";
-            watermark.style.fontWeight = "bold";
-            watermark.style.fontSize = "20px";
-            watermark.style.textIndent = "0px";
-            watermark.style.zIndex = "9000";
-            watermark.style.opacity = "0.9";
-            watermark.style.textShadow = "-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000";
-            watermark.style.textDecoration = "none";
-            $("#large_nav #logo").append(watermark);
+            var $watermark = $('<img />');
+            $watermark.attr('src', '//cdn.betterttv.net/style/logos/logo_icon.png');
+            $watermark.css({
+                'z-index': 9000,
+                'margin-top': -10,
+                'marg-left': 38
+            });
+            $("#large_nav #logo").append($watermark);
         }
 
         // Adds BTTV Settings Icon to Left Sidebar
@@ -2235,7 +2230,7 @@
         if (bttv.settings.get("showChatIndentation") !== false) {
             $addCSS = $('<style></style>');
             $addCSS.attr('id', 'bttvChatIndentation');
-            $addCSS.html('#chat_line_list .line p { padding-left: 16px;text-indent: -16px; }');
+            $addCSS.html('#chat_line_list .line p { padding-left: 16px;text-indent: -16px; } .ember-chat .chat-line { padding-left: 20px !important; text-indent: -10px; }');
             $('body').append($addCSS);
         }
 
@@ -3764,7 +3759,9 @@
                                 { url: "//cdn.betterttv.net/emotes/suchcrream.png", width: 32, height: 32, regex: "SuchFraud" },
                                 { url: "//cdn.betterttv.net/emotes/vaughnrage.png", width: 32, height: 32, regex: "CandianRage" },
                                 { url: "//cdn.betterttv.net/emotes/parappakappa.png", width: 28, height: 28, regex: "KaRappa" },
-                                { url: "//cdn.betterttv.net/emotes/helix.png", width: 28, height: 28, regex: "HailHelix" }
+                                { url: "//cdn.betterttv.net/emotes/helix.png", width: 28, height: 28, regex: "HailHelix" },
+                                { url: "//cdn.betterttv.net/emotes/juliacs.png", width: 28, height: 28, regex: "JuliAwesome" },
+                                { url: "//cdn.betterttv.net/emotes/bttvnice.png", width: 42, height: 28, regex: "bttvNice" }
                               ];
 
         if (bttv.settings.get("showDefaultEmotes") !== true) {
