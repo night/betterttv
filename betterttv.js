@@ -795,12 +795,11 @@
                     </div> \
                     <div class="interface"> \
                       <button class="button-simple primary mod-card-follow">Follow</button> \
-                      <button class="button-simple dark mod-card-channel">Channel</button> \
-                      <button class="button-simple dark mod-card-message">Message</button> \
-                      <br /> \
-                      <button class="button-simple primary mod-card-ignore">Ignore</button> \
+                      <button class="button-simple dark mod-card-channel"><img src="/images/xarth/g/g18_eye-00000080.png" /></button> \
+                      <button class="button-simple dark mod-card-message"><img src="/images/xarth/g/g18_mail-00000080.png" /></button> \
+                      <button class="button-simple dark mod-card-ignore">Ignore</button> \
                       '+((Twitch.user.isLoggedIn() && bttv.chat.helpers.isOwner(Twitch.user.login()))?' \
-                      <button class="button-simple primary mod-card-mod">Mod</button> \
+                      <button class="button-simple dark mod-card-mod">Mod</button> \
                       ':'')+((Twitch.user.isLoggedIn() && bttv.chat.helpers.isModerator(Twitch.user.login()) && (!bttv.chat.helpers.isModerator(user.name) || Twitch.user.login() === bttv.getChannel()))?' \
                       <br /> \
                       <span class="mod-controls"> \
