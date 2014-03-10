@@ -871,3 +871,9 @@ a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00
 .archives-contain {
 	background: rgb(30, 30, 30) !important ;
 }
+
+/*~~~Dark Ember Chat Subscription Emotes Popup~~~*/
+.ember-chat .chat-interface .emoticon-selector .subscribe-message {
+	border-top: rgb(50,50,50);
+	background: rgb(50,50,50);
+}

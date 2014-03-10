@@ -100,8 +100,13 @@ a {
 }
 
 #small_nav .content ul #small_home a {
-    background: url(../icons/nav_icons.png) no-repeat 0 0;
+    background: url(../icons/BetterLogo_Grey.png) no-repeat 0 0;
 }
+
+#small_nav .content ul #small_home a:hover {
+    background: url(../icons/BetterLogo_Red.png) no-repeat 0 0;
+}
+
 
 #small_nav #small_home:hover .filter_icon {
     background-position: 0px -0px !important;
