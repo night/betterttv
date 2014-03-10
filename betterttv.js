@@ -795,8 +795,8 @@
                     </div> \
                     <div class="interface"> \
                       <button class="button-simple primary mod-card-follow">Follow</button> \
-                      <button class="button-simple dark mod-card-channel"><img src="/images/xarth/g/g18_eye-00000080.png" /></button> \
-                      <button class="button-simple dark mod-card-message"><img src="/images/xarth/g/g18_mail-00000080.png" /></button> \
+                      <button class="button-simple dark mod-card-profile" style="height: 30px;vertical-align: top;"><img src="/images/xarth/g/g18_person-00000080.png" /></button> \
+                      <button class="button-simple dark mod-card-message" style="height: 30px;vertical-align: top;"><img src="/images/xarth/g/g18_mail-00000080.png" /></button> \
                       <button class="button-simple dark mod-card-ignore">Ignore</button> \
                       '+((Twitch.user.isLoggedIn() && bttv.chat.helpers.isOwner(Twitch.user.login()))?' \
                       <button class="button-simple dark mod-card-mod">Mod</button> \
@@ -1308,8 +1308,8 @@
                         $modCard.remove();
                         $('div.tipsy.tipsy-sw').remove();
                     });
-                    $modCard.find('.mod-card-channel').click(function() {
-                        window.open(Twitch.url.channel(user.name),'_blank');
+                    $modCard.find('.mod-card-profile').click(function() {
+                        window.open(Twitch.url.profile(user.name),'_blank');
                     });
                     $modCard.find('.mod-card-message').click(function() {
                         window.open(Twitch.url.compose(user.name),'_blank');
