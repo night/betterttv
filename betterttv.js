@@ -2229,7 +2229,7 @@
         if (bttv.settings.get("showChatIndentation") !== false) {
             $addCSS = $('<style></style>');
             $addCSS.attr('id', 'bttvChatIndentation');
-            $addCSS.html('#chat_line_list .line p { padding-left: 16px;text-indent: -16px; } .ember-chat .chat-line { padding-left: 20px !important; text-indent: -10px; }');
+            $addCSS.html('#chat_line_list .line p { padding-left: 16px;text-indent: -16px; }');
             $('body').append($addCSS);
         }
 
