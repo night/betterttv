@@ -3915,6 +3915,9 @@
         if(window.CurrentChat) {
             CurrentChat.autoCompleteEmotes = {};
 
+            var _d = -1;
+            var d = function() { return 'bttv-'+(d++); };
+
             Twitch.api.get("chat/emoticons").done(function (a) {
                 if(!override && (CurrentChat.emoticons.length < a.emoticons.length)) {
                     debug.log("Woah! Your emotes didn't load yet.");
@@ -3924,16 +3927,6 @@
                     return;
                 }
                 vars.emotesLoaded = true;
-                var emotesLength = CurrentChat.emoticons.length-1;
-                var lastEmoteObject = CurrentChat.emoticons[emotesLength];
-                if(!lastEmoteObject || !lastEmoteObject.images) return;
-                var lastEmoteLastImage = lastEmoteObject.images[lastEmoteObject.images.length-1];
-                var imageCssElement = /<span class="emo-([0-9]+) emoticon"><\/span>/.exec(lastEmoteLastImage.html);
-                if(imageCssElement) {
-                    var d = parseInt(imageCssElement[1]);
-                } else {
-                    var d = CurrentChat.emoticons.length-1;
-                }
                 var cssString = "";
                 if(Twitch.user.isLoggedIn() && CurrentChat.user_to_emote_sets[Twitch.user.login()]) {
                     var autoComplete = true;
@@ -3985,11 +3978,11 @@
                             a.hidden = true;
                         }
                         a.images.forEach(function (c) {
-                            d += 1;
+                            var id = d();
                             c.html = ich["chat-emoticon"]({
-                                id: d
+                                id: id
                             }).prop("outerHTML");
-                            cssString += CurrentChat.generate_emoticon_css(c, d);
+                            cssString += CurrentChat.generate_emoticon_css(c, id);
                             var imageObject = {
                                 image: c,
                                 regex: a.regex,
@@ -4119,6 +4112,9 @@
             var emoticonSets = emoteController ? emoteController.get('emoticonSets') : {};
             var emoticons = emoteController ? emoteController.get('emoticons') : [];
 
+            var _d = -1;
+            var d = function() { return 'bttv-'+(d++); };
+
             Twitch.api.get("chat/emoticons").done(function (a) {
                 if(!override && (emoticons.length < a.emoticons.length)) {
                     debug.log("Woah! Your emotes didn't load yet.");
@@ -4128,11 +4124,6 @@
                     return;
                 }
                 vars.emotesLoaded = true;
-                var emotesLength = emoticons.length-1;
-                var lastEmoteObject = emoticons[emotesLength];
-                if(!lastEmoteObject || !lastEmoteObject.images) return;
-                var lastEmoteLastImage = lastEmoteObject.images[lastEmoteObject.images.length-1];
-                var d = lastEmoteLastImage.id || emoticons.length-1;
                 var cssString = "";
                 if(Twitch.user.isLoggedIn() && bttv.chat.helpers.getEmotes(Twitch.user.login())) {
                     var user = Twitch.user.login();
@@ -4194,10 +4185,10 @@
                             a.hidden = true;
                         }
                         a.images.forEach(function (c) {
-                            d += 1;
-                            cssString += bttv.chat.templates.emoticonCss(c, d);
+                            var id = d();
+                            cssString += bttv.chat.templates.emoticonCss(c, id);
                             var imageObject = {
-                                cls: "emo-"+d,
+                                cls: "emo-"+id,
                                 isEmoticon: true,
                                 regex: a.regex,
                             }
