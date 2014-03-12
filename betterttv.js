@@ -841,7 +841,7 @@
             }
         },
         tmi: function() { return (bttv.getChatController()) ? bttv.getChatController().currentRoom : false; },
-        emoticons: function() { return (window.Ember && window.App) ? App.__container__.lookup("controller:emoticons").emoticonSets || {} : {}; },
+        emoticons: function() { return (window.Ember && window.App) ? App.__container__.lookup("controller:emoticons").get("emoticonSets") || {} : {}; },
         takeover: function() {
             var chat = bttv.chat,
                 tmi = chat.tmi();
@@ -4115,10 +4115,12 @@
             });
         } else {
             // New Chat
-            var emoteController = (window.Ember && window.App) ? (App.__container__.lookup("controller:emoticons") || { emoticons:[], emoticonSets: [] }) : { emoticons:[], emoticonSets: [] };
+            var emoteController = (window.Ember && window.App) ? (App.__container__.lookup("controller:emoticons") || false) : false;
+            var emoticonSets = emoteController ? emoteController.get('emoticonSets') : {};
+            var emoticons = emoteController ? emoteController.get('emoticons') : [];
 
             Twitch.api.get("chat/emoticons").done(function (a) {
-                if(!override && (emoteController.emoticons.length < a.emoticons.length)) {
+                if(!override && (emoticons.length < a.emoticons.length)) {
                     debug.log("Woah! Your emotes didn't load yet.");
                     setTimeout(function() {
                         overrideEmotes(true);
@@ -4126,11 +4128,11 @@
                     return;
                 }
                 vars.emotesLoaded = true;
-                var emotesLength = emoteController.emoticons.length-1;
-                var lastEmoteObject = emoteController.emoticons[emotesLength];
+                var emotesLength = emoticons.length-1;
+                var lastEmoteObject = emoticons[emotesLength];
                 if(!lastEmoteObject || !lastEmoteObject.images) return;
                 var lastEmoteLastImage = lastEmoteObject.images[lastEmoteObject.images.length-1];
-                var d = lastEmoteLastImage.id || CurrentChat.emoticons.length-1;
+                var d = lastEmoteLastImage.id || emoticons.length-1;
                 var cssString = "";
                 if(Twitch.user.isLoggedIn() && bttv.chat.helpers.getEmotes(Twitch.user.login())) {
                     var user = Twitch.user.login();
@@ -4139,7 +4141,7 @@
                     var user = false;
                 }
                 var moragEmote = false;
-                emoteController.emoticons.forEach(function (emote) {
+                emoticons.forEach(function (emote) {
                     if(emote.images) {
                         emote.images.forEach(function (image) {
                             if(!image.url) return;
@@ -4199,11 +4201,11 @@
                                 isEmoticon: true,
                                 regex: a.regex,
                             }
-                            if(emoteController.emoticonSets) {
-                                c.emoticon_set ? (emoteController.emoticonSets[c.emoticon_set] === undefined && (emoteController.emoticonSets[c.emoticon_set] = []), emoteController.emoticonSets[c.emoticon_set].push(imageObject)) : emoteController.emoticonSets['default'].push(imageObject);
+                            if(emoticonSets) {
+                                c.emoticon_set ? (emoticonSets[c.emoticon_set] === undefined && (emoticonSets[c.emoticon_set] = []), emoticonSets[c.emoticon_set].push(imageObject)) : emoticonSets['default'].push(imageObject);
                             }
                         });
-                        emoteController.emoticons.push(a);
+                        emoticons.push(a);
                     });
                 }
                 $("body").on('mouseover', '.chat-line span.emoticon', function() {
