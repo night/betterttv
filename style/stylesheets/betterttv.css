@@ -653,7 +653,6 @@ input.text:focus,select:focus,textarea:focus {
     float: right;
     right: 20px;
     position: absolute;
-    top: 0px;
     background-color: #f1f1f1;
     border-radius: 4px;
     margin-left: 0px !important;

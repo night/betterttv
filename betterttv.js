@@ -431,7 +431,7 @@
                                 float: "none",
                                 marginLeft: "0px"
                             });
-                            $("#chat").css({
+                            $("#chat,iframe").css({
                                 float: "right",
                                 left: "",
                                 right: "20px"
@@ -4401,7 +4401,7 @@
                 float: "right",
                 marginLeft: "500px"
             });
-            $("#chat").css({
+            $("#chat,iframe").css({
                 float: "left",
                 left: "20px",
                 right: ""
@@ -4431,6 +4431,10 @@
                     $('#dash_nav').outerHeight(true)+
                     $('#stream-config-status').outerHeight(true)
                 ).css("border","none");
+                if($("#dash_main iframe").length) {
+                    $("#dash_main iframe")[0].style.height = "514px";
+                    $("#dash_main iframe")[0].src = "/"+Twitch.user.login()+"/chat?bttvDashboard=true";
+                }
 
                 // Small Dashboard Fixes
                 $("#commercial_options .dropmenu_action[data-length=150]").text("2m 30s");
@@ -4588,7 +4592,7 @@
             var settings = '<div class="chat-menu-header">BetterTTV</div> \
             <div class="chat-menu-content"> \
                 ' + ($("body[data-page=\"ember#chat\"]").length ? '<p><a href="#" class="g18_gear-00000080 blackChatLink">Black Chat (Chroma Key)</a></p>' : '') + ' \
-                ' + ($("#dash_main").length ? '<p><a href="#" class="g18_gear-00000080 flipDashboard">' + (bttv.settings.get("flipDashboard") === true ? 'Unflip Dashboard' : 'Flip Dashboard') + '</a></p>' : '') + ' \
+                ' + (($("#dash_main").length || /\?bttvDashboard=true/.test(window.location)) ? '<p><a href="#" class="g18_gear-00000080 flipDashboard">' + (bttv.settings.get("flipDashboard") === true ? 'Unflip Dashboard' : 'Flip Dashboard') + '</a></p>' : '') + ' \
                 <p><a href="#" class="g18_gear-00000080 setBlacklistKeywords">Set Blacklist Keywords</a></p> \
                 <p><a href="#" class="g18_gear-00000080 setHighlightKeywords">Set Highlight Keywords</a></p> \
                 <p><a href="#" class="g18_gear-00000080 setScrollbackAmount">Set Scrollback Amount</a></p> \
