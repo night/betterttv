@@ -886,7 +886,7 @@
                     delete tmi.tmiSession._rooms[channel]._events['clearchat'];
                 }
             }
-            tmi.tmiRoom.on('message', chat.handlers.privmsg);
+            tmi.tmiRoom.on('message', function(data) { chat.store.__messageQueue.push(data); });
             tmi.tmiRoom.on('clearchat', chat.handlers.clearChat);
 
             // Load BTTV emotes if not loaded
@@ -1068,8 +1068,11 @@
             chat.helpers.serverMessage('Welcome to '+chat.helpers.lookupDisplayName(bttv.getChannel())+'\'s chat room!');
 
             // Poll mods list in case +o fails.
-            bttv.chat.store.checkMods = true;
+            chat.store.checkMods = true;
             chat.helpers.sendMessage('/mods');
+
+            // When messages come in too fast, things get laggy
+            if(!chat.store.__messageTimer) chat.store.__messageTimer = setInterval(chat.handlers.shiftQueue, 100);
         },
         helpers: {
             lookupDisplayName: function(user) {
@@ -1283,6 +1286,11 @@
             }
         },
         handlers: {
+            shiftQueue: function() {
+                if(bttv.chat.store.__messageQueue.length === 0) return;
+                var msg = bttv.chat.store.__messageQueue.shift();
+                bttv.chat.handlers.privmsg(msg);
+            },
             moderationCard: function(user, $event) {
                 var makeCard = function(user) {
                     var template = bttv.chat.templates.moderationCard(user, $event.offset().top, $event.offset().left);
@@ -1770,6 +1778,8 @@
             }
         },
         store: {
+            __messageTimer: false,
+            __messageQueue: [],
             __usersBeingLookedUp: 0,
             __subscriptions: {},
             displayNames: {},
