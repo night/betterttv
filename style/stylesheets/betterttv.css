@@ -647,6 +647,19 @@ input.text:focus,select:focus,textarea:focus {
     z-index: 9001;
 }
 
+#dash_main iframe {
+    border: none;
+    width: 525px;
+    float: right;
+    right: 20px;
+    position: absolute;
+    top: 0px;
+    background-color: #f1f1f1;
+    border-radius: 4px;
+    margin-left: 0px !important;
+    z-index: 9001;
+}
+
 #dash_main .grid, .flex_grid {
     float: none;
 }
