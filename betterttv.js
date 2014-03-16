@@ -1686,26 +1686,25 @@
 
                 var badges = bttv.chat.helpers.getBadges(data.from);
                 var bttvBadges = [];
+                if(data.bttvTagType && data.bttvTagName) {
+                    bttvBadges.push({
+                        type: data.bttvTagType,
+                        name: data.bttvTagName,
+                        description: data.bttvTagDesc?data.bttvTagDesc:data.bttvTagName
+                    });
+                }
                 if(badges && badges.length > 0) {
                     if(badges.indexOf('staff') !== -1) {
-                        bttvBadges.push({
+                        bttvBadges.unshift({
                             type: (bttv.settings.get("showJTVTags") === true?'old':'')+'staff',
                             name: (bttv.settings.get("showJTVTags") === true?'Staff':''),
                             description: 'Twitch Staff'
                         });
                     } else if(badges.indexOf('admin') !== -1) {
-                        bttvBadges.push({
+                        bttvBadges.unshift({
                             type: (bttv.settings.get("showJTVTags") === true?'old':'')+'admin',
                             name: (bttv.settings.get("showJTVTags") === true?'Admin':''),
                             description: 'Twitch Admin'
-                        });
-                    }
-                    
-                    if(data.bttvTagType && data.bttvTagName) {
-                        bttvBadges.push({
-                            type: data.bttvTagType,
-                            name: data.bttvTagName,
-                            description: data.bttvTagDesc?data.bttvTagDesc:data.bttvTagName
                         });
                     }
 
