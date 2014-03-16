@@ -188,7 +188,7 @@ input.text:focus,select:focus,textarea:focus {
 
 .line .bttvDeveloper, .ember-chat .badges .bttvDeveloper {
     background: url(../../tags/developer.png) no-repeat;
-    padding-left: 23px !important;
+    padding-left: 12px !important;
     border-radius: 2px 2px 2px 2px;
     padding: 2px 3px;
     font-weight: bold;
@@ -199,7 +199,7 @@ input.text:focus,select:focus,textarea:focus {
 
 .line .bttvSupporter, .ember-chat .badges .bttvSupporter {
     background: url(../../tags/supporter.png) no-repeat;
-    padding-left: 23px !important;
+    padding-left: 12px !important;
     border-radius: 2px 2px 2px 2px;
     padding: 2px 3px;
     font-weight: bold;

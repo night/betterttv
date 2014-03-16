@@ -1687,13 +1687,6 @@
                 var badges = bttv.chat.helpers.getBadges(data.from);
                 var bttvBadges = [];
                 if(badges && badges.length > 0) {
-                    if(data.bttvTagType && data.bttvTagName) {
-                        bttvBadges.push({
-                            type: data.bttvTagType,
-                            name: data.bttvTagName,
-                            description: data.bttvTagDesc?data.bttvTagDesc:data.bttvTagName
-                        });
-                    }
                     if(badges.indexOf('staff') !== -1) {
                         bttvBadges.push({
                             type: (bttv.settings.get("showJTVTags") === true?'old':'')+'staff',
@@ -1706,7 +1699,17 @@
                             name: (bttv.settings.get("showJTVTags") === true?'Admin':''),
                             description: 'Twitch Admin'
                         });
-                    } else if(badges.indexOf('owner') !== -1 && !data.bttvTagType) {
+                    }
+                    
+                    if(data.bttvTagType && data.bttvTagName) {
+                        bttvBadges.push({
+                            type: data.bttvTagType,
+                            name: data.bttvTagName,
+                            description: data.bttvTagDesc?data.bttvTagDesc:data.bttvTagName
+                        });
+                    }
+
+                    if(badges.indexOf('owner') !== -1 && !data.bttvTagType) {
                         bttvBadges.push({
                             type: (bttv.settings.get("showJTVTags") === true?'old':'')+'broadcaster',
                             name: (bttv.settings.get("showJTVTags") === true?'Host':''),
