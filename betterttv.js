@@ -4579,31 +4579,30 @@
 
     var loadChatSettings = function() {
 
-        if(!$('.ember-chat .chat-settings').length || $('.ember-chat .chat-settings .bttvSettings').length) return;
+        if(!$('.ember-chat .chat-settings').length || $('.ember-chat .chat-settings .bttvChatSettings').length) return;
 
         debug.log("Loading BetterTTV Chat Settings");
 
         $('.ember-chat .chat-settings .clear-chat').remove();
 
-        if(!$('.bttvChatSettings').length) {
-            var settings = '<div class="chat-menu-header">BetterTTV</div> \
-            <div class="chat-menu-content"> \
-                ' + ($("body[data-page=\"ember#chat\"]").length ? '<p><a href="#" class="g18_gear-00000080 blackChatLink">Black Chat (Chroma Key)</a></p>' : '') + ' \
-                ' + (($("#dash_main").length || /\/dashboard/.test(document.referrer)) ? '<p><a href="#" class="g18_gear-00000080 flipDashboard">' + (bttv.settings.get("flipDashboard") === true ? 'Unflip Dashboard' : 'Flip Dashboard') + '</a></p>' : '') + ' \
-                <p><a href="#" class="g18_gear-00000080 setBlacklistKeywords">Set Blacklist Keywords</a></p> \
-                <p><a href="#" class="g18_gear-00000080 setHighlightKeywords">Set Highlight Keywords</a></p> \
-                <p><a href="#" class="g18_gear-00000080 setScrollbackAmount">Set Scrollback Amount</a></p> \
-                <p><a href="#" class="g18_trash-00000080 clearChat">Clear My Chat</a></p> \
-                <p><a href="#" class="button-simple dark openSettings" style="display: block;margin-top: 8px;text-align: center;">BetterTTV Settings</a></p> \
-            </div>';
+        debug.log(/\/dashboard/.test(document.referrer))
+        var settings = '<div class="chat-menu-header">BetterTTV</div> \
+        <div class="chat-menu-content"> \
+            ' + ($("body[data-page=\"ember#chat\"]").length ? '<p><a href="#" class="g18_gear-00000080 blackChatLink">Black Chat (Chroma Key)</a></p>' : '') + ' \
+            ' + (($("#dash_main").length || /\/dashboard/.test(document.referrer)) ? '<p><a href="#" class="g18_gear-00000080 flipDashboard">' + (bttv.settings.get("flipDashboard") === true ? 'Unflip Dashboard' : 'Flip Dashboard') + '</a></p>' : '') + ' \
+            <p><a href="#" class="g18_gear-00000080 setBlacklistKeywords">Set Blacklist Keywords</a></p> \
+            <p><a href="#" class="g18_gear-00000080 setHighlightKeywords">Set Highlight Keywords</a></p> \
+            <p><a href="#" class="g18_gear-00000080 setScrollbackAmount">Set Scrollback Amount</a></p> \
+            <p><a href="#" class="g18_trash-00000080 clearChat">Clear My Chat</a></p> \
+            <p><a href="#" class="button-simple dark openSettings" style="display: block;margin-top: 8px;text-align: center;">BetterTTV Settings</a></p> \
+        </div>';
 
-            var $settings = $('<div></div>');
+        var $settings = $('<div></div>');
 
-            $settings.attr('class', 'bttvChatSettings');
-            $settings.html(settings);
+        $settings.attr('class', 'bttvChatSettings');
+        $settings.html(settings);
 
-            $('.ember-chat .chat-interface .chat-settings').append($settings);
-        }
+        $('.ember-chat .chat-interface .chat-settings').append($settings);
 
         if($('body[data-page="ember#chat"]').length) {
             $('.openSettings').click(function(e) {
