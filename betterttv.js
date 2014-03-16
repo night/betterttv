@@ -599,7 +599,7 @@
                 window.opener.postMessage('bttv_setting '+setting+' '+value, 'http://'+window.location.host);
             } else {
                 if(window.ga) ga('send', 'event', 'BTTV', 'Change Setting: '+setting+'='+value);
-                if(/\?bttvDashboard=true/.test(window.location)) window.opener.postMessage('bttv_setting '+setting+' '+value, 'http://'+window.location.host);
+                if(/\?bttvDashboard=true/.test(window.location)) window.parent.postMessage('bttv_setting '+setting+' '+value, 'http://'+window.location.host);
                 vars.settings[setting].value = value;
                 bttv.storage.put(setting, value);
                 if(vars.settings[setting].toggle) vars.settings[setting].toggle(value);
