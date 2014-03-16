@@ -4431,10 +4431,7 @@
                     $('#dash_nav').outerHeight(true)+
                     $('#stream-config-status').outerHeight(true)
                 ).css("border","none");
-                if($("#dash_main iframe").length) {
-                    $("#dash_main iframe")[0].style.height = "514px";
-                    $("#dash_main iframe")[0].src = "/"+Twitch.user.login()+"/chat?bttvDashboard=true";
-                }
+                if($("#dash_main iframe").length) $("#dash_main iframe")[0].style.height = "514px";
 
                 // Small Dashboard Fixes
                 $("#commercial_options .dropmenu_action[data-length=150]").text("2m 30s");
@@ -4588,11 +4585,11 @@
 
         $('.ember-chat .chat-settings .clear-chat').remove();
 
-        if(!$('#bttvChatSettings').length) {
+        if(!$('.bttvChatSettings').length) {
             var settings = '<div class="chat-menu-header">BetterTTV</div> \
             <div class="chat-menu-content"> \
                 ' + ($("body[data-page=\"ember#chat\"]").length ? '<p><a href="#" class="g18_gear-00000080 blackChatLink">Black Chat (Chroma Key)</a></p>' : '') + ' \
-                ' + (($("#dash_main").length || /\?bttvDashboard=true/.test(window.location)) ? '<p><a href="#" class="g18_gear-00000080 flipDashboard">' + (bttv.settings.get("flipDashboard") === true ? 'Unflip Dashboard' : 'Flip Dashboard') + '</a></p>' : '') + ' \
+                ' + (($("#dash_main").length || /\/dashboard/.test(document.referrer)) ? '<p><a href="#" class="g18_gear-00000080 flipDashboard">' + (bttv.settings.get("flipDashboard") === true ? 'Unflip Dashboard' : 'Flip Dashboard') + '</a></p>' : '') + ' \
                 <p><a href="#" class="g18_gear-00000080 setBlacklistKeywords">Set Blacklist Keywords</a></p> \
                 <p><a href="#" class="g18_gear-00000080 setHighlightKeywords">Set Highlight Keywords</a></p> \
                 <p><a href="#" class="g18_gear-00000080 setScrollbackAmount">Set Scrollback Amount</a></p> \
