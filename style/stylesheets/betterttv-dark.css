@@ -856,7 +856,7 @@ a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00
 	border: 3px solid #282828;
 }
 
-/*~~Dark Directory Logged Out Following Column~~~*/
+/*~~Dark Directory Following Column~~~*/
 
 .following-col .no-login-contain li {
 	background: #000;
@@ -864,6 +864,14 @@ a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00
 
 .following-col .no-login-contain h3 {
 	color: #FFF;
+}
+
+.following-col .following-hint .bubble:before {
+	border: 10px solid #000;
+}
+
+.following-col .following-hint .bubble {
+	background: #000;
 }
 
 /*~~~~~~~~~~~~~Dark Videos Column~~~~~~~~~~~~~~~~*/
