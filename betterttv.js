@@ -4417,7 +4417,28 @@
 
             debug.log("Formatting Dashboard");
 
-            if(!window.CurrentChat) return;
+            if(!window.CurrentChat) {
+
+                // Move Page Elements to Sub-DIV & Account for Changes
+                $('<div style="position:relative;" id="bttvDashboard"></div>').appendTo('#dash_main');
+                $("#dash_main #controls_column").appendTo("#bttvDashboard");
+                $("#dash_main #player_column").appendTo("#bttvDashboard");
+                $("#dash_main iframe").css("top",
+                    (bttv.settings.get('darkenedMode') ? 11 : 0)+
+                    (($('.js-broadcaster-message').css('display') !== 'none') ? $('.js-broadcaster-message').outerHeight(true) : 0)+
+                    $('#dashboard_title').outerHeight(true)+
+                    $('#setup_link').outerHeight(true)+
+                    $('#dash_nav').outerHeight(true)+
+                    $('#stream-config-status').outerHeight(true)
+                ).css("border","none");
+
+                // Small Dashboard Fixes
+                $("#commercial_options .dropmenu_action[data-length=150]").text("2m 30s");
+                $("#controls_column #form_submit button").attr("class", "primary_button");
+
+                return;
+
+            }
 
             // Move Page Elements to Sub-DIV & Account for Changes
             $('<div style="position:relative;" id="bttvDashboard"></div>').appendTo('#dash_main');
