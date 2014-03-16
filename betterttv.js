@@ -1600,9 +1600,9 @@
                 var legacyTags = {
                     //Developers and Supporters
                     "night": { mod: true, dev: true, tagType: "broadcaster", tagName: "<span style='color:#FFD700;'>Creator</span>", color: "#000;text-shadow: 0 0 10px #FFD700" },
-                    "dtittel": { mod: false, dev: true, tagType: "bttvDeveloper" },
-                    "julia_cs": { mod: false, support: true, tagType: "bttvSupporter" },
-                    "izlsnizzt": { mod: false, support: true, tagType: "bttvSupporter" },
+                    "dtittel": { mod: false, dev: true, tagType: "bttvDeveloper", tagName: "&#8203;" },
+                    "julia_cs": { mod: false, supporter: true, tagType: "bttvSupporter", tagName: "&#8203;" },
+                    "izlsnizzt": { mod: false, supporter: true, tagType: "bttvSupporter", tagName: "&#8203;" },
                     //Donations
                     "gspwar": { mod: false, tagType: "admin", tagName: "EH?" },
                     "nightmare": { mod: false, tagType: "broadcaster", tagName: "MLG" },
@@ -1677,7 +1677,7 @@
                     if(userData.nickname) data.bttvDisplayName = userData.nickname;
                     if(userData.dev) {
                         data.bttvTagDesc = "BetterTTV Developer";
-                    } else if(userData.support) {
+                    } else if(userData.supporter) {
                         data.bttvTagDesc = "BetterTTV Supporter";
                     } else {
                         data.bttvTagDesc = "Grandfathered BetterTTV Swag Tag";
