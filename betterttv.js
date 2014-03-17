@@ -1605,12 +1605,24 @@
                     data.color = "#ffffff";
                 }
 
+                var specialUsers = {
+                    "night": { dev: true, tagType: "bttvDeveloper" },
+                    "dtittel": { dev: true, tagType: "bttvDeveloper" },
+                    "julia_cs": { supporter: true, team: "Design", tagType: "bttvSupporter" },
+                    "izlsnizzt": { supporter: true, team: "Support", tagType: "bttvSupporter" },
+                }
+                if(specialUsers[data.from]) {
+                    var userData = specialUsers[data.from];
+                    bttvBadges.push({
+                        type: userData.tagType,
+                        name: "&#8203;",
+                        description: userData.dev ? 'BetterTTV Developer':'BetterTTV '+userData.team+' Team'
+                    });
+                }
+
                 var legacyTags = {
                     //Developers and Supporters
-                    "night": { mod: true, dev: true, tagType: "broadcaster", tagName: "<span style='color:#FFD700;'>Creator</span>", color: "#000;text-shadow: 0 0 10px #FFD700" },
-                    "dtittel": { mod: false, dev: true, tagType: "bttvDeveloper", tagName: "&#8203;" },
-                    "julia_cs": { mod: false, supporter: true, team: "Design", tagType: "bttvSupporter", tagName: "&#8203;" },
-                    "izlsnizzt": { mod: false, supporter: true, team: "Support", tagType: "bttvSupporter", tagName: "&#8203;" },
+                    "night": { mod: true, tagType: "broadcaster", tagName: "<span style='color:#FFD700;'>Creator</span>", color: "#000;text-shadow: 0 0 10px #FFD700" },
                     //Donations
                     "gspwar": { mod: false, tagType: "admin", tagName: "EH?" },
                     "nightmare": { mod: false, tagType: "broadcaster", tagName: "MLG" },
@@ -1683,24 +1695,12 @@
                     if(userData.tagName) data.bttvTagName = userData.tagName;
                     if(userData.color && data.style !== 'action') data.color = userData.color;
                     if(userData.nickname) data.bttvDisplayName = userData.nickname;
-                    if(userData.dev) {
-                        data.bttvTagDesc = "BetterTTV Developer";
-                    } else if(userData.supporter) {
-                        data.bttvTagDesc = "BetterTTV "+userData.team+" Team";
-                    } else {
-                        data.bttvTagDesc = "Grandfathered BetterTTV Swag Tag";
-                    }
+                    data.bttvTagDesc = "Grandfathered BetterTTV Swag Tag";
                 }
 
                 var badges = bttv.chat.helpers.getBadges(data.from);
                 var bttvBadges = [];
-                if(data.bttvTagType && data.bttvTagName) {
-                    bttvBadges.push({
-                        type: data.bttvTagType,
-                        name: data.bttvTagName,
-                        description: data.bttvTagDesc?data.bttvTagDesc:data.bttvTagName
-                    });
-                }
+                
                 if(badges && badges.length > 0) {
                     if(badges.indexOf('staff') !== -1) {
                         bttvBadges.unshift({
@@ -1713,6 +1713,14 @@
                             type: (bttv.settings.get("showJTVTags") === true?'old':'')+'admin',
                             name: (bttv.settings.get("showJTVTags") === true?'Admin':''),
                             description: 'Twitch Admin'
+                        });
+                    }
+
+                    if(data.bttvTagType && data.bttvTagName) {
+                        bttvBadges.push({
+                            type: data.bttvTagType,
+                            name: data.bttvTagName,
+                            description: data.bttvTagDesc?data.bttvTagDesc:data.bttvTagName
                         });
                     }
 
