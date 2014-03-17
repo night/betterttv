@@ -1451,14 +1451,15 @@
                                 debug.log("Added "+mod+" as a mod");
                             }
                         });
-                        for (mod in modList) {
+                        // Admins and staff get demodded, but this may cause issues?
+                        /*for (mod in modList) {
                             if(modList.hasOwnProperty(mod)) {
                                 if(mods.indexOf(mod) === -1 && !bttv.chat.helpers.isAdmin[mod] && !bttv.chat.helpers.isStaff[mod]) {
                                     bttv.chat.helpers.removeMod(mod)
                                     debug.log("Removed "+mod+" as a mod"); 
                                 }
                             }
-                        }
+                        }*/
                         return;
                     }
                 }/* else if(info.sender === "jtv") {
@@ -1716,17 +1717,7 @@
                             name: (bttv.settings.get("showJTVTags") === true?'Admin':''),
                             description: 'Twitch Admin'
                         });
-                    }
-
-                    if(data.bttvTagType && data.bttvTagName) {
-                        bttvBadges.unshift({
-                            type: data.bttvTagType,
-                            name: data.bttvTagName,
-                            description: data.bttvTagDesc?data.bttvTagDesc:data.bttvTagName
-                        });
-                    }
-
-                    if(badges.indexOf('owner') !== -1 && !data.bttvTagType) {
+                    } else if(badges.indexOf('owner') !== -1 && !data.bttvTagType) {
                         bttvBadges.push({
                             type: (bttv.settings.get("showJTVTags") === true?'old':'')+'broadcaster',
                             name: (bttv.settings.get("showJTVTags") === true?'Host':''),
@@ -1737,6 +1728,14 @@
                             type: (bttv.settings.get("showJTVTags") === true?'oldmoderator':'moderator'),
                             name: (bttv.settings.get("showJTVTags") === true?'Mod':''),
                             description: 'Channel Moderator'
+                        });
+                    }
+
+                    if(data.bttvTagType && data.bttvTagName) {
+                        bttvBadges.unshift({
+                            type: data.bttvTagType,
+                            name: data.bttvTagName,
+                            description: data.bttvTagDesc?data.bttvTagDesc:data.bttvTagName
                         });
                     }
 
