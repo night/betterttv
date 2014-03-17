@@ -67,7 +67,7 @@
 
     bttv.info = {
         version: "6.7-BETA",
-        release: 15,
+        release: 16,
         versionString: function() {
             return bttv.info.version + 'R' + bttv.info.release;
         }
@@ -886,7 +886,8 @@
                     delete tmi.tmiSession._rooms[channel]._events['clearchat'];
                 }
             }
-            tmi.tmiRoom.on('message', function(data) { chat.store.__messageQueue.push(data); });
+            //tmi.tmiRoom.on('message', function(data) { chat.store.__messageQueue.push(data); });
+            tmi.tmiRoom.on('message', chat.handlers.privmsg);
             tmi.tmiRoom.on('clearchat', chat.handlers.clearChat);
 
             // Load BTTV emotes if not loaded
@@ -1072,7 +1073,7 @@
             chat.helpers.sendMessage('/mods');
 
             // When messages come in too fast, things get laggy
-            if(!chat.store.__messageTimer) chat.store.__messageTimer = setInterval(chat.handlers.shiftQueue, 100);
+            //if(!chat.store.__messageTimer) chat.store.__messageTimer = setInterval(chat.handlers.shiftQueue, 100);
         },
         helpers: {
             lookupDisplayName: function(user) {
