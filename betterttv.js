@@ -1718,7 +1718,7 @@
                     }
 
                     if(data.bttvTagType && data.bttvTagName) {
-                        bttvBadges.push({
+                        bttvBadges.unshift({
                             type: data.bttvTagType,
                             name: data.bttvTagName,
                             description: data.bttvTagDesc?data.bttvTagDesc:data.bttvTagName
