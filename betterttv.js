@@ -1611,14 +1611,6 @@
                     "julia_cs": { supporter: true, team: "Design", tagType: "bttvSupporter" },
                     "izlsnizzt": { supporter: true, team: "Support", tagType: "bttvSupporter" },
                 }
-                if(specialUsers[data.from]) {
-                    var userData = specialUsers[data.from];
-                    bttvBadges.push({
-                        type: userData.tagType,
-                        name: "&#8203;",
-                        description: userData.dev ? 'BetterTTV Developer':'BetterTTV '+userData.team+' Team'
-                    });
-                }
 
                 var legacyTags = {
                     //Developers and Supporters
@@ -1700,6 +1692,15 @@
 
                 var badges = bttv.chat.helpers.getBadges(data.from);
                 var bttvBadges = [];
+
+                if(specialUsers[data.from]) {
+                    var userData = specialUsers[data.from];
+                    bttvBadges.push({
+                        type: userData.tagType,
+                        name: "&#8203;",
+                        description: userData.dev ? 'BetterTTV Developer':'BetterTTV '+userData.team+' Team'
+                    });
+                }
                 
                 if(badges && badges.length > 0) {
                     if(badges.indexOf('staff') !== -1) {
