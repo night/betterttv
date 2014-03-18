@@ -896,3 +896,78 @@ a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00
 	border-top: rgb(50,50,50);
 	background: rgb(50,50,50);
 }
+
+/*~~~~~~~~~Dark Twitch Settings~~~~~~~~~~~~~~~~~~*/
+#settings {
+	background: rgb(20, 20, 20) !important;
+}
+#settings div.directory_header h2 {
+	color: #D3D3D3;
+}
+.directory_header .nav li a.active {
+	color: #eee;
+	border-bottom: 3px solid #555;
+}
+.directory_header .nav li a {
+	color: #999;
+}
+#main_col div.tse-scrollbar {
+	background: #fff;
+}
+.directory_header .nav {
+	border-bottom: 1px solid #555;
+}
+.cl-container .section-header {
+	background: #212121;
+	border-bottom: 1px solid #343434
+}
+.cl-container .section-header .header-content .title {
+	color: #BBB;
+}
+.cl-container .section-header .header-content .desc {
+	color: #777;
+}
+.cl-container .cl-section .cl-subheader {
+	border-bottom: 1px solid #343434;
+	background: #171717;
+}
+.cl-container .cl-section .cl-subheader p {
+	color: #5F5F5F;
+}
+.cl-container fieldset {
+	border-bottom: 1px solid #252525;
+}
+#settings_contain, #settings div.boolean label.boolean {
+	color: #999;
+}
+ul.manage_simple span.obj:hover {
+	border-color: #333;
+}
+ul.manage_simple span.obj {
+	background: #0F0F0F;
+}
+.cl-container fieldset .label-wrapper label {
+	color: #BBB;
+}
+#user_edit_form fieldset div table tbody tr.sortable_user.selector td:nth-child(2) a {
+	color: white;
+}
+fieldset.clearfix {
+	background: #0E0E0E;
+}
+table.simple_table {
+	border: 1px solid #333;
+	background: #0E0E0E;
+}
+#settings_buttons {
+	padding: 14px 20px;
+	background: #1B1B1B;
+}
+#settings div.upload .missing_image{
+	filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter …lues='-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0'/></filter></svg>#invert");
+	filter: invert(90%);
+	-webkit-filter: invert(90%);
+	-o-filter: invert(90%);
+	-ms-filter: invert(90%);
+	-moz-filter: invert(90%);
+}
