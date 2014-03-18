@@ -4382,7 +4382,7 @@
 
         var pageKind = $('body').data('page').split('#')[0],
             pageType = $('body').data('page').split('#')[1] || "none",
-            allowedPages = ['ember', 'message', 'dashboards', 'chat', 'chapter', 'archive', 'channel'];
+            allowedPages = ['ember', 'message', 'dashboards', 'chat', 'chapter', 'archive', 'channel', 'settings'];
 
         if(allowedPages.indexOf(pageKind) !== -1) {
 
