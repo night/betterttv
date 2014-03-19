@@ -1611,7 +1611,7 @@
                     "night": { dev: true, tagType: "bttvDeveloper" },
                     "dtittel": { dev: true, tagType: "bttvDeveloper" },
                     "julia_cs": { supporter: true, team: "Design", tagType: "bttvSupporter" },
-                    "izlsnizzt": { supporter: true, team: "Support", tagType: "bttvSupporter" },
+                    "izl": { supporter: true, team: "Support", tagType: "bttvSupporter" },
                 }
 
                 var legacyTags = {
@@ -4382,7 +4382,7 @@
 
         var pageKind = $('body').data('page').split('#')[0],
             pageType = $('body').data('page').split('#')[1] || "none",
-            allowedPages = ['ember', 'message', 'dashboards', 'chat', 'chapter', 'archive', 'channel', 'settings'];
+            allowedPages = ['ember', 'message', 'dashboards', 'chat', 'chapter', 'archive', 'channel', 'user'];
 
         if(allowedPages.indexOf(pageKind) !== -1) {
 
