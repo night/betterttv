@@ -906,20 +906,20 @@ a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00
 }
 .directory_header .nav li a.active {
 	color: #eee;
-	border-bottom: 3px solid #555;
+	border-color: #555;
 }
 .directory_header .nav li a {
 	color: #999;
 }
 #main_col div.tse-scrollbar {
-	background: #fff;
+	background: none;
 }
 .directory_header .nav {
-	border-bottom: 1px solid #555;
+	border-color: #555;
 }
 .cl-container .section-header {
 	background: #212121;
-	border-bottom: 1px solid #343434
+	border-color: #343434
 }
 .cl-container .section-header .header-content .title {
 	color: #BBB;
@@ -928,14 +928,14 @@ a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00
 	color: #777;
 }
 .cl-container .cl-section .cl-subheader {
-	border-bottom: 1px solid #343434;
+	border-color: #343434;
 	background: #171717;
 }
 .cl-container .cl-section .cl-subheader p {
 	color: #5F5F5F;
 }
 .cl-container fieldset {
-	border-bottom: 1px solid #252525;
+	border-color: #252525;
 }
 #settings_contain, #settings div.boolean label.boolean {
 	color: #999;
@@ -956,7 +956,7 @@ fieldset.clearfix {
 	background: #0E0E0E;
 }
 table.simple_table {
-	border: 1px solid #333;
+	border-color: #333;
 	background: #0E0E0E;
 }
 #settings_buttons {
@@ -970,4 +970,47 @@ table.simple_table {
 	-o-filter: invert(90%);
 	-ms-filter: invert(90%);
 	-moz-filter: invert(90%);
+}
+.cl-container .cl-section {
+	background: #131313;
+}
+#turbo_cancel_opts a {
+	color:white;
+}
+#turbo_chat_color, #turbo_emote_set {
+	border-color: #333;
+	background: #1F1F1F;
+}
+#emoticons h4, #turbo_chat_color h4{
+	color:DDD;
+}
+#example .line {
+	background: #000;
+}
+#user_edit_form a, #settings_contain a, #authorized a, #developer a{
+	color:white;
+}
+.multi_select li.hdr {
+	border-color: #333;
+}
+#settings #followers_content .hdr {
+	background: #171717;
+}
+.connect_items {
+	border-color: 343434;
+}
+.connect_items .connect_item{
+	background: #212121;
+}
+.section ul li, .section .sub {
+	border-color: #333;
+}
+.app_title {
+	color: #ccc;
+}
+#user_edit_form div.connect_items, #authorized {
+	background-color:#0E0E0E;
+}
+table.simple_table td {
+	border-color: transparent transparent #333;
 }
