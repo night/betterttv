@@ -955,7 +955,7 @@ ul.manage_simple span.obj {
 fieldset.clearfix {
 	background: #0E0E0E;
 }
-table.simple_table {
+table.simple_table th {
 	border-color: #333;
 	background: #0E0E0E;
 }
