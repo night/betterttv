@@ -1008,7 +1008,7 @@ table.simple_table th {
 .app_title {
 	color: #ccc;
 }
-#user_edit_form div.connect_items, #authorized {
+#user_edit_form div.connect_items, div.container {
 	background-color:#0E0E0E;
 }
 table.simple_table td {
