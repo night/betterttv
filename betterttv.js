@@ -873,9 +873,6 @@
                 bttv.storage.putObject('chatSettings', settings);
             }
 
-            // Ember repaints the page, screws up the BTTV resizer
-            $(window).trigger('resize');
-
             bttv.chat.store.isLoaded = true;
 
             // Take over listeners
@@ -1074,6 +1071,25 @@
 
             // When messages come in too fast, things get laggy
             //if(!chat.store.__messageTimer) chat.store.__messageTimer = setInterval(chat.handlers.shiftQueue, 100);
+
+            // Active Tab monitoring - Useful for knowing if a user is "watching" chat
+            CurrentChat.activePage = true;
+            $(window).off("blur focus").on("blur focus", function(e) {
+                var prevType = $(this).data("prevType");
+
+                if (prevType != e.type) {   //  reduce double fire issues
+                    switch (e.type) {
+                        case "blur":
+                            chat.store.activeView = false;
+                            break;
+                        case "focus":
+                            chat.store.activeView = true;
+                            break;
+                    }
+                }
+
+                $(this).data("prevType", e.type);
+            });
         },
         helpers: {
             lookupDisplayName: function(user) {
@@ -1562,9 +1578,9 @@
                         var wordRegex = new RegExp('(\\s|^)' + keyword + '([!.,:\';?/]|\\s|$)', 'i');
                         if (Twitch.user.isLoggedIn() && Twitch.user.login() !== data.from && wordRegex.test(data.message)) {
                             messageHighlighted = true;
-                            /*if(bttv.settings.get("desktopNotifications") === true && CurrentChat.activePage === false) {
-                                bttv.notify("You were mentioned in "+CurrentChat.lookupDisplayName(CurrentChat.channel)+"'s channel.");
-                            }*/
+                            if(bttv.settings.get("desktopNotifications") === true && bttv.chat.store.activeView === false) {
+                                bttv.notify("You were mentioned in "+bttv.chat.helpers.lookupDisplayName(bttv.getChannel())+"'s channel.");
+                            }
                         }
                     });
 
@@ -1791,6 +1807,7 @@
             __messageQueue: [],
             __usersBeingLookedUp: 0,
             __subscriptions: {},
+            activeView: true,
             displayNames: {},
             trackTimeouts: {},
             chatters: [],
@@ -2132,16 +2149,10 @@
                 }
             });
 
-            var resizeTimeout = false;
             $(window).off("fluid-resize");
             $(window).off("resize").resize(function () {
                 debug.log("Debug: Resize Called");
-                if(resizeTimeout) return;
                 setTimeout(handleResize, 1000);
-                resizeTimeout = setTimeout(function() {
-                    resizeTimeout = false;
-                }, 3000);
-
             });
         }
 
@@ -2513,7 +2524,7 @@
             }
 
             $(this).data("prevType", e.type);
-        })
+        });
 
         if (bttv.settings.get("scrollbackAmount")) {
             CurrentChat.line_buffer = bttv.settings.get("scrollbackAmount");
@@ -5006,12 +5017,9 @@
                 },
                 after: function(name, ts, payload) {
                     renderingCounter--;
+                    
                     if(!payload.template) return;
                     //debug.log(payload.template);
-
-                    $("#main_col").css({
-                        width: "auto"
-                    });
                     
                     switch(payload.template) {
                         case 'shared/right_column':
@@ -5024,20 +5032,6 @@
                                     if(bttv.socketServer) {
                                         bttv.socketServer.emit("join channel", { channel: ((bttv.getChannel()) ? bttv.getChannel() : null) })
                                     }
-                                }
-                            });
-                            break;
-                        case 'chat/viewers':
-                            waitForLoad(function(ready) {
-                                if(ready) {
-                                    $(window).trigger('resize');
-                                }
-                            });
-                            break;
-                        case 'chat/emoticonSelector':
-                            waitForLoad(function(ready) {
-                                if(ready) {
-                                    $(window).trigger('resize');
                                 }
                             });
                             break;
