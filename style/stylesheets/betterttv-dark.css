@@ -1014,3 +1014,22 @@ table.simple_table th {
 table.simple_table td {
 	border-color: transparent transparent #333;
 }
+
+/*~~~~~~~Dark Dashboard Subscription Page Fix~~~~~~~~*/
+.new-dashboard .subscription-dash .subscription-feature-list .list-head .list-header th {
+	color: #5F5F5F;
+	border-color: #252525;
+	background: #171717;
+}
+
+.new-dashboard .subscription-dash .subscription-feature-list .list-body .list-item:hover {
+	background: #1A1A1A;
+}
+
+.cl-container .cl-button-container {
+	background: #1B1B1B;
+}
+
+.cl-container .section-header .header-back {
+	border-color: #343434;
+}
