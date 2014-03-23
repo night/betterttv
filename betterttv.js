@@ -1772,25 +1772,16 @@
 
                 var badges = bttv.chat.helpers.getBadges(data.from);
                 var bttvBadges = [];
-
-                if(specialUsers[data.from]) {
-                    var userData = specialUsers[data.from];
-                    bttvBadges.push({
-                        type: userData.tagType,
-                        name: "&#8203;",
-                        description: userData.dev ? 'BetterTTV Developer':'BetterTTV '+userData.team+' Team'
-                    });
-                }
                 
                 if(badges && badges.length > 0) {
                     if(badges.indexOf('staff') !== -1) {
-                        bttvBadges.unshift({
+                        bttvBadges.push({
                             type: (bttv.settings.get("showJTVTags") === true?'old':'')+'staff',
                             name: (bttv.settings.get("showJTVTags") === true?'Staff':''),
                             description: 'Twitch Staff'
                         });
                     } else if(badges.indexOf('admin') !== -1) {
-                        bttvBadges.unshift({
+                        bttvBadges.push({
                             type: (bttv.settings.get("showJTVTags") === true?'old':'')+'admin',
                             name: (bttv.settings.get("showJTVTags") === true?'Admin':''),
                             description: 'Twitch Admin'
@@ -1832,6 +1823,15 @@
                             description: 'Channel Subscriber'
                         });
                     }
+                }
+
+                if(specialUsers[data.from]) {
+                    var userData = specialUsers[data.from];
+                    bttvBadges.push({
+                        type: userData.tagType,
+                        name: "&#8203;",
+                        description: userData.dev ? 'BetterTTV Developer':'BetterTTV '+userData.team+' Team'
+                    });
                 }
 
                 data.emoteSets = bttv.chat.helpers.getEmotes(data.from) || [];
