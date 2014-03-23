@@ -3990,14 +3990,16 @@
             emoticon_set: 1925
         });
 
-        betterttvEmotes.push({
-            url: "//cdn.betterttv.net/emotes/duckbutt.png",
-            width: 28,
-            height: 28,
-            regex: "DuckButt",
-            channel: "Ducksauce",
-            emoticon_set: 94
-        });
+        if(bttv.getChannel() === "ducksauce" ) {
+            betterttvEmotes.push({
+                url: "//cdn.betterttv.net/emotes/duckbutt.png",
+                width: 28,
+                height: 28,
+                regex: "DuckButt",
+                channel: "Ducksauce",
+                emoticon_set: 94
+            });
+        }
 
         if(window.App && App.Channel && App.Channel.findOne(BetterTTV.getChannel()) && App.Channel.findOne(BetterTTV.getChannel()).get('game') === "Minecraft") {
             betterttvEmotes.push({
