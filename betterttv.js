@@ -2493,7 +2493,7 @@
         
         debug.log("Modifying Chat Functionality");
 
-        if(!window.CurrentChat && bttv.getChatController()) {
+        if(!window.CurrentChat && bttv.getChatController() && bttv.getChannel()) {
             bttv.chat.takeover();
             return;
         }
