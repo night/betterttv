@@ -287,13 +287,25 @@
                     default: true,
                     storageKey: 'dblclickTranslation',
                     toggle: function(value) {
-                        if(value === true) {
-                            $(document).on('dblclick', '.chat_line', function() {
-                                CurrentChat.translate(this, $(this).closest("li").data("sender"), $(this).data("raw"));
-                                $(this).text("Translating..");
-                            });
+                        if(window.CurrentChat) {
+                            if(value === true) {
+                                $(document).on('dblclick', '.chat_line', function() {
+                                    CurrentChat.translate(this, $(this).closest("li").data("sender"), $(this).data("raw"));
+                                    $(this).text("Translating..");
+                                });
+                            } else {
+                                $(document).unbind("dblclick");
+                            }
                         } else {
-                            $(document).unbind("dblclick");
+                            if(value === true) {
+                                $('body').on('dblclick', '.chat-line', function() {
+                                    chat.helpers.translate($(this).find('.message'), $(this).data("sender"), $(this).find('.message').data("raw"));
+                                    $(this).find('.message').text("Translating..");
+                                    $('div.tipsy.tipsy-sw').remove();
+                                });
+                            } else {
+                                $('body').unbind("dblclick");
+                            }
                         }
                     }
                 },
