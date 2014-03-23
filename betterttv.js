@@ -3955,10 +3955,10 @@
         });
 
         betterttvEmotes.push({
-            url: "//cdn.betterttv.net/emotes/banned.png",
+            url: "//cdn.betterttv.net/emotes/nightbanned.png",
             width: 53,
             height: 35,
-            regex: "BanPls",
+            regex: "BanAplis",
             channel: "Night",
             emoticon_set: "night"
         });
