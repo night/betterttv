@@ -1069,6 +1069,18 @@
             chat.store.checkMods = true;
             chat.helpers.sendMessage('/mods');
 
+            // Check if you're admin or staff in case +o fails.
+            Twitch.user(function(data){
+                if(data.is_admin || data.is_staff) {
+                    var modList = chat.helpers.listMods();
+
+                    if(!modList[data.login]) {
+                        chat.helpers.addMod(data.login);
+                        debug.log("Added "+data.login+" as a mod");
+                    }
+                }
+            });
+
             // When messages come in too fast, things get laggy
             //if(!chat.store.__messageTimer) chat.store.__messageTimer = setInterval(chat.handlers.shiftQueue, 100);
 
@@ -1462,7 +1474,7 @@
 
                         mods.forEach(function (mod) {
                             if(!modList[mod]) {
-                                bttv.chat.helpers.addMod(mod)
+                                bttv.chat.helpers.addMod(mod);
                                 debug.log("Added "+mod+" as a mod");
                             }
                         });
