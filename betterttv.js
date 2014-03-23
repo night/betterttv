@@ -3956,14 +3956,16 @@
             emoticon_set: "night"
         });
 
-        betterttvEmotes.push({
-            url: "//cdn.betterttv.net/emotes/nightbanned.gif",
-            width: 71,
-            height: 30,
-            regex: "BanAplis",
-            channel: "Night",
-            emoticon_set: "night"
-        });
+        if(bttv.getChannel() === "night") {
+            betterttvEmotes.push({
+                url: "//cdn.betterttv.net/emotes/nightbanned.gif",
+                width: 71,
+                height: 30,
+                regex: "BanAplis",
+                channel: "Night",
+                emoticon_set: "night"
+            });
+        }
 
         betterttvEmotes.push({
             url: "//cdn.betterttv.net/emotes/blamen7.png",
@@ -3983,16 +3985,18 @@
             emoticon_set: 1925
         });
 
-        betterttvEmotes.push({
-            url: "//cdn.betterttv.net/emotes/banned.gif",
-            width: 53,
-            height: 35,
-            regex: "BanPls",
-            channel: "Blindfolded",
-            emoticon_set: 1925
-        });
+        if(window.App && App.Channel && App.Channel.findOne(BetterTTV.getChannel()) && (App.Channel.findOne(BetterTTV.getChannel()).get('game') === "Battlefield 4" || App.Channel.findOne(BetterTTV.getChannel()).get('game') === "Battlefield 3")) {
+            betterttvEmotes.push({
+                url: "//cdn.betterttv.net/emotes/banned.gif",
+                width: 53,
+                height: 35,
+                regex: "BanPls",
+                channel: "Blindfolded",
+                emoticon_set: 1925
+            });
+        }
 
-        if(bttv.getChannel() === "ducksauce" ) {
+        if(bttv.getChannel() === "ducksauce") {
             betterttvEmotes.push({
                 url: "//cdn.betterttv.net/emotes/duckbutt.png",
                 width: 28,
