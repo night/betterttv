@@ -1429,7 +1429,10 @@
                     } else {
                         if (bttv.settings.get("showDeletedMessages") !== true) {
                             $('.chat-line[data-sender="' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '"] .message').each(function () {
-                                $(this).html("<span style=\"color: #999\">&lt;message deleted&gt;</span>");
+                                $(this).html("<span style=\"color: #999\">&lt;message deleted&gt;</span>").off('click').on('click', function() {
+                                    var emoteSets = bttv.chat.helpers.getEmotes(user) || [];
+                                    $(this).replaceWith(bttv.chat.templates.message(user, decodeURIComponent($(this).data('raw')), emoteSets));
+                                });
                             });
                         } else {
                             $('.chat-line[data-sender="' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '"] .message').each(function () {
