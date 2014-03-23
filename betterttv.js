@@ -5072,7 +5072,7 @@
                     //debug.log(payload.template);
 
                     if(App.__container__.lookup("controller:application").get("currentRouteName") !== "channel.index") {
-                        $('#main_col').css('width', '100%');
+                        $('#main_col').css('width', 'auto');
                     }
                     
                     switch(payload.template) {
