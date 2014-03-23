@@ -5070,6 +5070,10 @@
                     
                     if(!payload.template) return;
                     //debug.log(payload.template);
+
+                    if(App.__container__.lookup("controller:application").get("currentRouteName") !== "channel.index") {
+                        $('#main_col').css('width', '100%');
+                    }
                     
                     switch(payload.template) {
                         case 'shared/right_column':
