@@ -396,10 +396,18 @@
                         }
                         keywords === "" ? keywords = phraseKeywords : keywords = keywords.split(" ").concat(phraseKeywords);
                         var keywordList = keywords.join(", ");
-                        if(keywordList === "") {
-                            CurrentChat.admin_message("Blacklist Keywords list is empty");
+                        if(window.CurrentChat) {
+                            if(keywordList === "") {
+                                CurrentChat.admin_message("Blacklist Keywords list is empty");
+                            } else {
+                                CurrentChat.admin_message("Blacklist Keywords are now set to: " + keywordList);
+                            }
                         } else {
-                            CurrentChat.admin_message("Blacklist Keywords are now set to: " + keywordList);
+                            if(keywordList === "") {
+                                bttv.chat.helpers.serverMessage("Blacklist Keywords list is empty");
+                            } else {
+                                bttv.chat.helpers.serverMessage("Blacklist Keywords are now set to: " + keywordList);
+                            }
                         }
                     }
                 },
@@ -407,10 +415,18 @@
                     default: true,
                     storageKey: 'chatLineHistory',
                     toggle: function(value) {
-                        if(value === true) {
-                            CurrentChat.admin_message("Chat line history enabled.");
+                        if(window.CurrentChat) {
+                            if(value === true) {
+                                CurrentChat.admin_message("Chat line history enabled.");
+                            } else {
+                                CurrentChat.admin_message("Chat line history disabled.");
+                            }
                         } else {
-                            CurrentChat.admin_message("Chat line history disabled.");
+                            if(value === true) {
+                                bttv.chat.helpers.serverMessage("Chat line history enabled.");
+                            } else {
+                                bttv.chat.helpers.serverMessage("Chat line history disabled.");
+                            }
                         }
                     }
                 },
@@ -464,10 +480,18 @@
                         }
                         
                         var keywordList = keywords.join(", ");
-                        if(keywordList === "") {
-                            CurrentChat.admin_message("Highlight Keywords list is empty");
+                        if(window.CurrentChat) {
+                            if(keywordList === "") {
+                                CurrentChat.admin_message("Highlight Keywords list is empty");
+                            } else {
+                                CurrentChat.admin_message("Highlight Keywords are now set to: " + keywordList);
+                            }
                         } else {
-                            CurrentChat.admin_message("Highlight Keywords are now set to: " + keywordList);
+                            if(keywordList === "") {
+                                bttv.chat.helpers.serverMessage("Highlight Keywords list is empty");
+                            } else {
+                                bttv.chat.helpers.serverMessage("Highlight Keywords are now set to: " + keywordList);
+                            }
                         }
                     }
                 },
@@ -475,12 +499,20 @@
                     default: 150,
                     storageKey: 'scrollbackAmount',
                     toggle: function(lines) {
-                        if(lines === '') {
-                            CurrentChat.admin_message("Chat scrollback is now set to: default (150)");
-                            CurrentChat.line_buffer = 150;
+                        if(window.CurrentChat) {
+                            if(lines === 150) {
+                                CurrentChat.admin_message("Chat scrollback is now set to: default (150)");
+                                CurrentChat.line_buffer = 150;
+                            } else {
+                                CurrentChat.admin_message("Chat scrollback is now set to: " + lines);
+                                CurrentChat.line_buffer = parseInt(lines);
+                            }
                         } else {
-                            CurrentChat.admin_message("Chat scrollback is now set to: " + lines);
-                            CurrentChat.line_buffer = parseInt(lines);
+                            if(lines === 150) {
+                                bttv.chat.helpers.serverMessage("Chat scrollback is now set to: default (150)");
+                            } else {
+                                bttv.chat.helpers.serverMessage("Chat scrollback is now set to: " + lines);
+                            }
                         }
                     }
                 },
@@ -848,6 +880,11 @@
                 tmi = chat.tmi();
 
             if(bttv.chat.store.isLoaded) return;
+
+            // I need to fix all these users' vars
+            if(bttv.settings.get("scrollbackAmount") === "") {
+                bttv.settings.save("scrollbackAmount", 150);
+            }
 
             if(bttv.getChannel()) chat.helpers.lookupDisplayName(bttv.getChannel());
             if(Twitch.user.isLoggedIn()) chat.helpers.lookupDisplayName(Twitch.user.login());
@@ -1252,8 +1289,7 @@
             scrollChat: function() {
                 if($('.ember-chat .chat-interface .more-messages-indicator').length) return;
                 $('.ember-chat .chat-messages .tse-scroll-content')[0].scrollTop=$('.ember-chat .chat-messages .tse-scroll-content')[0].scrollHeight;
-                var tmi = bttv.chat.tmi(),
-                    linesToDelete = $('.chat-line').length - tmi.messageBufferSize;
+                var linesToDelete = $('.chat-line').length - bttv.settings.get("scrollbackAmount");
 
                 if(linesToDelete > 0) {
                     for(var i=0; i<linesToDelete; i++) {
@@ -4734,11 +4770,11 @@
             e.preventDefault();
             var lines = prompt("What is the maximum amount of lines that you want your chat to show? Twitch default is 150. Leave the field blank to disable.", bttv.settings.get("scrollbackAmount"));
             if (lines != null && lines === "") {
-                bttv.settings.save("scrollbackAmount", '');
+                bttv.settings.save("scrollbackAmount", 150);
             } else if (lines != null && isNaN(lines) !== true && lines > 0) {
-                bttv.settings.save("scrollbackAmount", lines);
+                bttv.settings.save("scrollbackAmount", parseInt(lines));
             } else {
-                bttv.settings.save("scrollbackAmount", '');
+                bttv.settings.save("scrollbackAmount", 150);
             }
         });
     }
@@ -4952,11 +4988,11 @@
             e.preventDefault();
             var lines = prompt("What is the maximum amount of lines that you want your chat to show? Twitch default is 150. Leave the field blank to disable.", bttv.settings.get("scrollbackAmount"));
             if (lines != null && lines === "") {
-                bttv.settings.save("scrollbackAmount", '');
+                bttv.settings.save("scrollbackAmount", 150);
             } else if (lines != null && isNaN(lines) !== true && lines > 0) {
-                bttv.settings.save("scrollbackAmount", lines);
+                bttv.settings.save("scrollbackAmount", parseInt(lines));
             } else {
-                bttv.settings.save("scrollbackAmount", '');
+                bttv.settings.save("scrollbackAmount", 150);
             }
         });
 
