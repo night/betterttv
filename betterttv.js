@@ -1073,7 +1073,6 @@
             //if(!chat.store.__messageTimer) chat.store.__messageTimer = setInterval(chat.handlers.shiftQueue, 100);
 
             // Active Tab monitoring - Useful for knowing if a user is "watching" chat
-            CurrentChat.activePage = true;
             $(window).off("blur focus").on("blur focus", function(e) {
                 var prevType = $(this).data("prevType");
 
