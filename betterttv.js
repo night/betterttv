@@ -3955,7 +3955,7 @@
         });
 
         betterttvEmotes.push({
-            url: "//cdn.betterttv.net/emotes/nightbanned.png",
+            url: "//cdn.betterttv.net/emotes/nightbanned.gif",
             width: 53,
             height: 35,
             regex: "BanAplis",
