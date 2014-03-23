@@ -3955,6 +3955,15 @@
         });
 
         betterttvEmotes.push({
+            url: "//cdn.betterttv.net/emotes/banned.png",
+            width: 53,
+            height: 35,
+            regex: "BanPls",
+            channel: "Night",
+            emoticon_set: "night"
+        });
+
+        betterttvEmotes.push({
             url: "//cdn.betterttv.net/emotes/blamen7.png",
             width: 24,
             height: 32,
@@ -3970,6 +3979,24 @@
             regex: "BlindPls",
             channel: "Blindfolded",
             emoticon_set: 1925
+        });
+
+        betterttvEmotes.push({
+            url: "//cdn.betterttv.net/emotes/banned.gif",
+            width: 53,
+            height: 35,
+            regex: "BanPls",
+            channel: "Blindfolded",
+            emoticon_set: 1925
+        });
+
+        betterttvEmotes.push({
+            url: "//cdn.betterttv.net/emotes/duckbutt.png",
+            width: 28,
+            height: 28,
+            regex: "DuckButt",
+            channel: "Ducksauce",
+            emoticon_set: 94
         });
 
         if(window.App && App.Channel && App.Channel.findOne(BetterTTV.getChannel()) && App.Channel.findOne(BetterTTV.getChannel()).get('game') === "Minecraft") {
