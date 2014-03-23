@@ -898,8 +898,10 @@
                 bttv.settings.save("scrollbackAmount", 150);
             }
 
-            if(bttv.getChannel()) chat.helpers.lookupDisplayName(bttv.getChannel());
-            if(Twitch.user.isLoggedIn()) chat.helpers.lookupDisplayName(Twitch.user.login());
+            if(bttv.socketServer) {
+                if(bttv.getChannel()) chat.helpers.lookupDisplayName(bttv.getChannel());
+                if(Twitch.user.isLoggedIn()) chat.helpers.lookupDisplayName(Twitch.user.login());
+            }
 
             if(tmi.get('isLoading')) {
                 debug.log('chat is still loading');
@@ -3956,8 +3958,8 @@
 
         betterttvEmotes.push({
             url: "//cdn.betterttv.net/emotes/nightbanned.gif",
-            width: 53,
-            height: 35,
+            width: 71,
+            height: 30,
             regex: "BanAplis",
             channel: "Night",
             emoticon_set: "night"
