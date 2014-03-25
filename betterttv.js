@@ -828,7 +828,7 @@
                 return message;
             },
             moderationCard: function(user, top, left) {
-                return '<div data-user="'+user.name+'" class="bttv-mod-card ember-view moderation-card ui-draggable" style="top: '+top+'px;left: '+left+'px;"><div class="close-button"></div> \
+                return '<div data-user="'+user.name+'" class="bttv-mod-card ember-view moderation-card" style="top: '+top+'px;left: '+left+'px;"><div class="close-button"></div> \
                     <div style="background-color: '+(user.profile_banner_background_color?user.profile_banner_background_color:'#000')+'" class="card-header"> \
                       <img src="'+(user.logo?user.logo:'https://www-cdn.jtvnw.net/images/xarth/404_user_300x300.png')+'" class="channel_logo"> \
                       <div class="drag-handle"></div> \
