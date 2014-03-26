@@ -874,11 +874,13 @@
             message: function(sender, message, userSets, colored) {
                 colored = colored || false;
                 var templates = bttv.chat.templates;
-                var formattedMessage = sender !== 'jtv' ? templates.escape(message) : message;
-                formattedMessage = templates.emoticonize(formattedMessage, userSets);
-                formattedMessage = sender !== 'jtv' ? templates.linkify(formattedMessage) : formattedMessage;
-                formattedMessage = '<span class="message" '+(colored?'style="color: '+colored+'" ':'')+'data-raw="'+encodeURIComponent(message.replace(/%/g,""))+'">'+formattedMessage+'</span>';
-                return formattedMessage;
+                var rawMessage = encodeURIComponent(message.replace(/%/g,""));
+                if(sender !== 'jtv') {
+                    message = templates.escape(message);
+                    message = templates.emoticonize(message, userSets);
+                    message = templates.linkify(message);
+                }
+                return '<span class="message" '+(colored?'style="color: '+colored+'" ':'')+'data-raw="'+rawMessage+'">'+message+'</span>';
             },
             privmsg: function(highlight, action, server, isMod, data) {
                 var templates = bttv.chat.templates;
