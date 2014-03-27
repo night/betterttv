@@ -704,6 +704,8 @@
             return CurrentChat.channel;
         } else if(bttv.getChatController() && bttv.getChatController().currentRoom) {
             return bttv.getChatController().currentRoom.id;
+        } else if(window.PP && PP.channel) {
+            return PP.channel;
         }
     }
 
