@@ -1309,7 +1309,7 @@
                 $('.ember-chat .chat-messages .tse-scroll-content')[0].scrollTop=$('.ember-chat .chat-messages .tse-scroll-content')[0].scrollHeight;
                 var linesToDelete = $('.chat-line').length - bttv.settings.get("scrollbackAmount");
 
-                if(linesToDelete > 0) {
+                if($('.chat-line').length && linesToDelete > 0) {
                     for(var i=0; i<linesToDelete; i++) {
                         $('.chat-line')[0].remove();
                     }
@@ -4576,7 +4576,7 @@
                 ).css("border","none");
                 if($("#dash_main iframe").length) {
                     $("#dash_main iframe")[0].style.height = "514px";
-                    $("#dash_main iframe")[0].src = "/"+Twitch.user.login()+"/chat?bttvDashboard=true";
+                    $("#dash_main iframe")[0].src = "/"+bttv.getChannel()+"/chat?bttvDashboard=true";
                 }
 
                 // Small Dashboard Fixes
