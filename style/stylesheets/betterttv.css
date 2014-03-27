@@ -315,6 +315,10 @@ input.text:focus,select:focus,textarea:focus {
     background-color: rgba(255, 0, 0, 0.5) !important;
 }
 
+.chat-messages .chat-line.highlight .from {
+    color: #000 !important;
+}
+
 #right_col #chat_line_list .highlight {
     margin-left: -10px;
     padding-left: 5px;

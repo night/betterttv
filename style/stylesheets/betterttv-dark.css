@@ -489,6 +489,10 @@ body {
 	background-color: rgba(255, 0, 0, 0.5) !important;
 }
 
+.chat-messages .chat-line.highlight .from {
+	color: #fff !important;
+}
+
 #main_col ul.nav.js-nav a.active {
 	color: #D3D3D3 !important;
 	border-color: #D3D3D3 !important;
