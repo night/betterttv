@@ -310,7 +310,7 @@ input.text:focus,select:focus,textarea:focus {
 }
 
 #chat_line_list .highlight, .chat-messages .chat-line.highlight {
-    color: #000;
+    color: #000 !important;
     padding-top: 5px;
     background-color: rgba(255, 0, 0, 0.5) !important;
 }

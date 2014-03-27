@@ -485,7 +485,7 @@ body {
 }
 
 #chat_line_list .highlight, .chat-messages .chat-line.highlight {
-	color: #fff;
+	color: #fff !important;
 	background-color: rgba(255, 0, 0, 0.5) !important;
 }
 
