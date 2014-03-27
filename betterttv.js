@@ -4612,9 +4612,7 @@
 
             debug.log("Updating Dashboard Channel Info");
 
-            if(!window.CurrentChat || !CurrentChat.channel) return;
-
-            Twitch.api.get("streams/" + CurrentChat.channel).done(function (a) {
+            Twitch.api.get("streams/" + bttv.getChannel()).done(function (a) {
                 if (a.stream) {
                     $("#channel_viewer_count").text(Twitch.display.commatize(a.stream.viewers));
                     if(a.stream.channel.views) $("#views_count").html(Twitch.display.commatize(a.stream.channel.views));
@@ -4622,7 +4620,7 @@
                     $("#channel_viewer_count").text("Offline");
                 }
             });
-            Twitch.api.get("channels/" + CurrentChat.channel + "/follows?limit=1").done(function (a) {
+            Twitch.api.get("channels/" + bttv.getChannel() + "/follows?limit=1").done(function (a) {
                 if (a["_total"]) {
                     $("#followers_count").text(Twitch.display.commatize(a["_total"]));
                 }
@@ -4659,7 +4657,7 @@
                                 $subsContainer.text(Twitch.display.commatize(activeSubs));
                                 $("#chatters_count").after($subsContainer);
 
-                                Twitch.api.get("chat/" + CurrentChat.channel + "/badges").done(function (a) {
+                                Twitch.api.get("chat/" + bttv.getChannel() + "/badges").done(function (a) {
                                     if (a.subscriber) {
                                         $("#channel_subs_count").css("background", "url("+a.subscriber.image+") no-repeat left center");
                                         $("#channel_subs_count").css("background-size", "14px 14px");
