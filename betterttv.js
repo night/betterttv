@@ -892,9 +892,9 @@
                 }
             }
             //tmi.tmiRoom.on('message', function(data) { chat.store.__messageQueue.push(data); });
-            tmi.tmiRoom.on('message', function() {
+            tmi.tmiRoom.on('message', function(data) {
                 try {
-                    chat.handlers.privmsg.call(this);
+                    chat.handlers.privmsg.call(this, data);
                 } catch(e) {
                     console.log(e);
                     var error = {
