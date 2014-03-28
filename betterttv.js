@@ -61,7 +61,7 @@
         userData: {
             isLoggedIn: Twitch.user.isLoggedIn(),
             login: Twitch.user.login()
-        }
+        },
         settings: {},
         chatters: [],
         currentViewers: [],
