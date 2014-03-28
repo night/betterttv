@@ -58,6 +58,10 @@
         }
     },
     vars = {
+        userData: {
+            isLoggedIn: Twitch.user.isLoggedIn(),
+            login: Twitch.user.login()
+        }
         settings: {},
         chatters: [],
         currentViewers: [],
@@ -441,7 +445,7 @@
                     }
                 },
                 {
-                    default: (Twitch.user.isLoggedIn() ? Twitch.user.login() : ''),
+                    default: (vars.userData.isLoggedIn ? vars.userData.login : ''),
                     storageKey: 'highlightKeywords',
                     toggle: function(keywords) {
                         var phraseRegex = /\{.+?\}/g;
@@ -798,9 +802,9 @@
                       <button class="button-simple dark mod-card-profile" style="height: 30px;vertical-align: top;"><img src="/images/xarth/g/g18_person-00000080.png" style="margin-top: 6px;" /></button> \
                       <button class="button-simple dark mod-card-message" style="height: 30px;vertical-align: top;"><img src="/images/xarth/g/g18_mail-00000080.png" style="margin-top: 6px;" /></button> \
                       <button class="button-simple dark mod-card-ignore">Ignore</button> \
-                      '+((Twitch.user.isLoggedIn() && bttv.chat.helpers.isOwner(Twitch.user.login()))?' \
+                      '+((vars.userData.isLoggedIn && bttv.chat.helpers.isOwner(vars.userData.login))?' \
                       <button class="button-simple dark mod-card-mod">Mod</button> \
-                      ':'')+((Twitch.user.isLoggedIn() && bttv.chat.helpers.isModerator(Twitch.user.login()) && (!bttv.chat.helpers.isModerator(user.name) || Twitch.user.login() === bttv.getChannel()))?' \
+                      ':'')+((vars.userData.isLoggedIn && bttv.chat.helpers.isModerator(vars.userData.login) && (!bttv.chat.helpers.isModerator(user.name) || vars.userData.login === bttv.getChannel()))?' \
                       <br /> \
                       <span class="mod-controls"> \
                         <button class="permit button-simple light" style="width:48px;" title="!permit this user"> \
@@ -857,7 +861,7 @@
 
             if(bttv.socketServer) {
                 if(bttv.getChannel()) chat.helpers.lookupDisplayName(bttv.getChannel());
-                if(Twitch.user.isLoggedIn()) chat.helpers.lookupDisplayName(Twitch.user.login());
+                if(vars.userData.isLoggedIn) chat.helpers.lookupDisplayName(vars.userData.login);
             }
 
             if(tmi.get('isLoading')) {
@@ -1370,7 +1374,7 @@
                 return tmi ? tmi.unbanUser(user) : null;
             },
             massUnban: function() {
-                if(Twitch.user.isLoggedIn() && Twitch.user.login() === bttv.getChannel()) {
+                if(vars.userData.isLoggedIn && vars.userData.login === bttv.getChannel()) {
                     var bannedUsers = [];
                     bttv.chat.helpers.serverMessage("Fetching banned users...");
                     $.ajax({url: "/settings/channel", cache: !1, timeoutLength: 6E3, dataType: 'html'}).done(function (chatInfo) {
@@ -1649,7 +1653,7 @@
                         messageHighlighted,
                         data.style === 'action' ? true : false,
                         data.style === 'admin' ? true : false,
-                        Twitch.user.isLoggedIn() ? bttv.chat.helpers.isModerator(Twitch.user.login()) : false,
+                        vars.userData.isLoggedIn ? bttv.chat.helpers.isModerator(vars.userData.login) : false,
                         {
                             message: data.message,
                             time: data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
@@ -1703,7 +1707,7 @@
                     blacklistKeywords.forEach(function (keyword) {
                         keyword = escapeRegExp(keyword).replace(/\*/g, "[^ ]*");
                         var blacklistRegex = new RegExp(keyword, 'i');
-                        if (blacklistRegex.test(data.message) && Twitch.user.login() !== data.from) {
+                        if (blacklistRegex.test(data.message) && vars.userData.login !== data.from) {
                             filtered = true;
                         }
                     });
@@ -1735,7 +1739,7 @@
                     highlightKeywords.forEach(function (keyword) {
                         keyword = escapeRegExp(keyword).replace(/\*/g, "[^ ]*");
                         var wordRegex = new RegExp('(\\s|^)' + keyword + '([!.,:\';?/]|\\s|$)', 'i');
-                        if (Twitch.user.isLoggedIn() && Twitch.user.login() !== data.from && wordRegex.test(data.message)) {
+                        if (vars.userData.isLoggedIn && vars.userData.login !== data.from && wordRegex.test(data.message)) {
                             messageHighlighted = true;
                             if(bttv.settings.get("desktopNotifications") === true && bttv.chat.store.activeView === false) {
                                 bttv.notify("You were mentioned in "+bttv.chat.helpers.lookupDisplayName(bttv.getChannel())+"'s channel.");
@@ -1945,7 +1949,7 @@
                     messageHighlighted,
                     data.style === 'action' ? true : false,
                     data.style === 'admin' ? true : false,
-                    Twitch.user.isLoggedIn() ? (bttv.chat.helpers.isModerator(Twitch.user.login()) && (!bttv.chat.helpers.isModerator(data.sender) || Twitch.user.login() === bttv.getChannel())) : false,
+                    vars.userData.isLoggedIn ? (bttv.chat.helpers.isModerator(vars.userData.login) && (!bttv.chat.helpers.isModerator(data.sender) || vars.userData.login === bttv.getChannel())) : false,
                     {
                         message: data.message,
                         time: data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
@@ -2448,7 +2452,7 @@
     }
 
     var betaChat = function () {
-        if (bttv.settings.get("bttvChat") === true && Twitch.user.isLoggedIn()) {
+        if (bttv.settings.get("bttvChat") === true && vars.userData.isLoggedIn) {
 
             if($("body#chat").length || $('body[data-page="ember#chat"]').length) return;
 
@@ -2456,7 +2460,7 @@
 
             if(!vars.betaChatLoaded) {
                 vars.betaChatLoaded = true;
-                $.getJSON("//chat.betterttv.net/login.php?onsite=true&user="+Twitch.user.login()+"&callback=?", function(d) {
+                $.getJSON("//chat.betterttv.net/login.php?onsite=true&user="+vars.userData.login+"&callback=?", function(d) {
 
                     if(d.status === true) {
                         debug.log("Logged into BTTV Chat");
@@ -2498,7 +2502,7 @@
 
         if($("body#chat").length) return;
 
-        if (Twitch.user.isLoggedIn() && window.Firebase) {
+        if (vars.userData.isLoggedIn && window.Firebase) {
             var newMessages = function(id, namespaced) {
                 var notificationsLoaded = false;
                 var notifications = 0;
@@ -2656,7 +2660,7 @@
 
         debug.log("Check Following List");
 
-        if($("body#chat").length || !Twitch.user.login()) return;
+        if($("body#chat").length || !vars.userData.isLoggedIn) return;
 
         var fetchFollowing = function(callback, followingList, followingNames, offset) {
             var followingList = followingList || [],
@@ -3008,9 +3012,9 @@
             }
             vars.emotesLoaded = true;
             var cssString = "";
-            if(Twitch.user.isLoggedIn() && bttv.chat.helpers.getEmotes(Twitch.user.login())) {
-                var user = Twitch.user.login();
-                var userEmoteSets = bttv.chat.helpers.getEmotes(Twitch.user.login());
+            if(vars.userData.isLoggedIn && bttv.chat.helpers.getEmotes(vars.userData.login)) {
+                var user = vars.userData.login;
+                var userEmoteSets = bttv.chat.helpers.getEmotes(vars.userData.login);
             } else {
                 var user = false;
             }
@@ -3044,7 +3048,7 @@
 
                         if(bttv.socketServer && bttv.TwitchEmoteSets && !bttv.TwitchEmoteSets[emote.emoticon_set]) {
                             if($('.emoticon-grid .emoticon[original-title="'+emote.regex+'"]').length) {
-                                bttv.socketServer.emit('give_tip', { channel: bttv.getChannel(), user: (Twitch.user.isLoggedIn() ? Twitch.user.login() : 'guest') });
+                                bttv.socketServer.emit('give_tip', { channel: bttv.getChannel(), user: (vars.userData.isLoggedIn ? vars.userData.login : 'guest') });
                             }
                         } 
                     });
