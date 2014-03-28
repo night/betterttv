@@ -1340,8 +1340,6 @@
                 return specials;
             },
             scrollChat: function() {
-                if(bttv.chat.store.__isScrolling) return;
-                bttv.chat.store.__isScrolling = true;
                 if($('.ember-chat .chat-interface .more-messages-indicator').length || !$('.ember-chat .chat-messages .chat-line').length) return;
                 $('.ember-chat .chat-messages .tse-scroll-content')[0].scrollTop = $('.ember-chat .chat-messages .tse-scroll-content')[0].scrollHeight;
                 var linesToDelete = $('.ember-chat .chat-messages .chat-line').length - bttv.settings.get("scrollbackAmount");
@@ -1351,10 +1349,6 @@
                         $('.ember-chat .chat-messages .chat-line')[0].remove();
                     }
                 }
-
-                setTimeout(function() {
-                    bttv.chat.store.__isScrolling = false;
-                }, 1000);
             },
             ban: function(user) {
                 if(!user || user === "") return false;
