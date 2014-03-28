@@ -2660,7 +2660,7 @@
 
         debug.log("Check Following List");
 
-        if($("body#chat").length || !vars.userData.isLoggedIn) return;
+        if($("body#chat").length || $('body[data-page="ember#chat"]').length || !vars.userData.isLoggedIn) return;
 
         var fetchFollowing = function(callback, followingList, followingNames, offset) {
             var followingList = followingList || [],
