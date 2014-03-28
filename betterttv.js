@@ -1634,7 +1634,7 @@
                         {
                             message: data.message,
                             time: data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
-                            nickname: data.from,
+                            nickname: data.from || 'jtv',
                             sender: data.from,
                             badges: data.badges || (data.from==='twitchnotify'?[{
                                 type: 'subscriber',
