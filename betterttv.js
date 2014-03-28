@@ -1161,7 +1161,7 @@
             });
 
             // When messages come in too fast, things get laggy
-            if(!chat.store.__messageTimer) chat.store.__messageTimer = setInterval(chat.handlers.shiftQueue, 500);
+            if(!chat.store.__messageTimer) chat.store.__messageTimer = setInterval(chat.handlers.shiftQueue, 250);
 
             // Active Tab monitoring - Useful for knowing if a user is "watching" chat
             $(window).off("blur focus").on("blur focus", function(e) {
