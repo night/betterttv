@@ -732,7 +732,7 @@
 
     bttv.chat = {
         templates: {
-            badge: function(type, name, description) { return '<div class="ember-view '+type+' '+((bttv.settings.get('bttvAlphaTags') && ['admin','staff','broadcaster','moderator','turbo','ign'].indexOf(type) !== -1)?'alpha'+(!bttv.settings.get("darkenedMode")?' invert':''):'')+' badge" title="'+description+'">'+name+'</div> '; },
+            badge: function(type, name, description) { return '<div class="ember-view '+type+''+((bttv.settings.get('bttvAlphaTags') && ['admin','staff','broadcaster','moderator','turbo','ign'].indexOf(type) !== -1)?' alpha'+(!bttv.settings.get("darkenedMode")?' invert':''):'')+' badge" title="'+description+'">'+name+'</div> '; },
             badges: function(badges) {
                 var resp = '<span class="badges">';
                 badges.forEach(function(data) {
@@ -892,9 +892,21 @@
                 }
             }
             //tmi.tmiRoom.on('message', function(data) { chat.store.__messageQueue.push(data); });
-            tmi.tmiRoom.on('message', chat.handlers.privmsg);
+            tmi.tmiRoom.on('message', function() {
+                try {
+                    chat.handlers.privmsg.call(this);
+                } catch(e) {
+                    console.log(e);
+                    var error = {
+                        stack: e.stack,
+                        message: e.message
+                    }
+                    $.get('//nightdev.com/betterttv/errors/?obj='+encodeURIComponent(JSON.stringify(error)));
+                    //CurrentChat.admin_message('BetterTTV encountered an error reading chat. You can try refreshing to fix the problem. The developer has been sent a log of this action.');
+                }
+            });
             tmi.tmiRoom.on('clearchat', chat.handlers.clearChat);
-            tmi.tmiRoom.on('labelschanged', chat.handlers.labelsChanged);
+            //tmi.tmiRoom.on('labelschanged', chat.handlers.labelsChanged);
 
             // Load BTTV emotes if not loaded
             overrideEmotes();
@@ -915,7 +927,7 @@
                 $('div.tipsy.tipsy-sw').remove();
             })
 
-            // Make Timeout/Ban/Unban buttons work
+            // Make Timeout/Ban/Unban buttons work and Turbo/Subscriber clickable
             $("body").off("click", ".chat-line .mod-icons .timeout").on("click", ".chat-line .mod-icons .timeout", function() {
                 bttv.chat.helpers.timeout($(this).parents(".chat-line").data("sender"));
                 $(this).parent().children('.ban').hide();
@@ -928,6 +940,12 @@
                 bttv.chat.helpers.unban($(this).parents(".chat-line").data("sender"));
                 $(this).parent().children('.ban').show();
                 $(this).parent().children('.unban').hide();
+            }).off("click", ".chat-line .badges .turbo, .chat-line .badges .subscriber").on("click", ".chat-line .badges .turbo, .chat-line .badges .subscriber", function() {
+                if($(this).hasClass('turbo')) {
+                    window.open('/products/turbo?ref=chat_badge','_blank');
+                } else if($(this).hasClass('subscriber')) {
+                    window.open(Twitch.url.subscribe(bttv.getChannel(),'in_chat_subscriber_link'),'_blank');
+                }
             });
 
             // Make names clickable
@@ -985,7 +1003,7 @@
                         e.preventDefault();
                         var sentence = $chatInput.val().trim().split(' ');
                         var partialMatch = sentence.pop().toLowerCase();
-                        var users = bttv.chat.store.chatters;
+                        var users = Object.keys(bttv.chat.store.chatters);
                         var userIndex = 0;
                         if (lastPartialMatch === null) {
                             lastPartialMatch = partialMatch;
@@ -1322,13 +1340,13 @@
                 return specials;
             },
             scrollChat: function() {
-                if($('.ember-chat .chat-interface .more-messages-indicator').length) return;
-                $('.ember-chat .chat-messages .tse-scroll-content')[0].scrollTop=$('.ember-chat .chat-messages .tse-scroll-content')[0].scrollHeight;
-                var linesToDelete = $('.chat-line').length - bttv.settings.get("scrollbackAmount");
+                if($('.ember-chat .chat-interface .more-messages-indicator').length || !$('.ember-chat .chat-messages .chat-line').length) return;
+                $('.ember-chat .chat-messages .tse-scroll-content')[0].scrollTop = $('.ember-chat .chat-messages .tse-scroll-content')[0].scrollHeight;
+                var linesToDelete = $('.ember-chat .chat-messages .chat-line').length - bttv.settings.get("scrollbackAmount");
 
-                if($('.chat-line').length && linesToDelete > 0) {
+                if(linesToDelete > 0) {
                     for(var i=0; i<linesToDelete; i++) {
-                        $('.chat-line')[0].remove();
+                        $('.ember-chat .chat-messages .chat-line')[0].remove();
                     }
                 }
             },
@@ -1651,7 +1669,7 @@
                     return;
                 }
 
-                if(bttv.chat.store.chatters.indexOf(data.from) === -1) bttv.chat.store.chatters.push(data.from);
+                if(!bttv.chat.store.chatters[data.from]) bttv.chat.store.chatters[data.from] = true;
 
                 if(vars.localSubsOnly && !bttv.chat.helpers.isModerator(data.from) && !bttv.chat.helpers.isSubscriber(data.from)) return;
 
@@ -1945,13 +1963,14 @@
         store: {
             __messageTimer: false,
             __messageQueue: [],
+            __messageCount: 0,
             __usersBeingLookedUp: 0,
             __subscriptions: {},
             __unbannedUsers: [],
             activeView: true,
             displayNames: {},
             trackTimeouts: {},
-            chatters: [],
+            chatters: {},
             chatHistory: [],
             autoCompleteEmotes: {}
         }
