@@ -2084,7 +2084,7 @@
         return this.charAt(0).toUpperCase() + this.slice(1);
     }
 
-    var clearClutter = function () {
+    var clearClutter = function () {
         debug.log("Clearing Clutter");
 
         // Sidebar is so cluttered
