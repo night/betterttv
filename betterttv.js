@@ -70,8 +70,8 @@
     };
 
     bttv.info = {
-        version: "6.7-BETA",
-        release: 17,
+        version: "6.7",
+        release: 1,
         versionString: function() {
             return bttv.info.version + 'R' + bttv.info.release;
         }
