@@ -1374,7 +1374,7 @@
                                     var startTime = 0;
                                     bannedUsers.forEach(function(user) {
                                         setTimeout(function() {
-                                            bttv.chat.helpers.ban(user);
+                                            bttv.chat.helpers.unban(user);
                                             bttv.chat.store.__unbannedUsers.push(user);
                                         }, startTime += 2100);
                                     });
