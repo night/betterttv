@@ -1084,38 +1084,40 @@
                     }
 
                     // Chat commands
-                    var sentence = $chatInput.val().trim().split(' ');
-                    var command = sentence[0];
-                    var tmi = bttv.chat.tmi();
+                    if(keyCode === 13) {
+                        var sentence = $chatInput.val().trim().split(' ');
+                        var command = sentence[0];
+                        var tmi = bttv.chat.tmi();
 
-                    if (command === "/b") {
-                        bttv.chat.helpers.ban(sentence[1]);
-                    } else if (command === "/t") {
-                        var time = 600;
-                        if(!isNaN(sentence[2])) time = sentence[2];
-                        bttv.chat.helpers.timeout(sentence[1], time);
-                    } else if (command === "/massunban" || ((command === "/unban" || command === "/u") && sentence[1] === "all")) {
-                        bttv.chat.helpers.massUnban();
-                    } else if (command === "/u") {
-                        bttv.chat.helpers.unban(sentence[1]);
-                    } else if (command === "/sub") {
-                        tmi.tmiRoom.startSubscribersMode();
-                    } else if (command === "/suboff") {
-                        tmi.tmiRoom.stopSubscribersMode();
-                    } else if (command === "/localsub") {
-                        bttv.chat.helpers.serverMessage("Local subscribers-only mode enabled.");
-                        vars.localSubsOnly = true;
-                    } else if (command === "/localsuboff") {
-                        bttv.chat.helpers.serverMessage("Local subscribers-only mode disabled.");
-                        vars.localSubsOnly = false;
-                    } else if (command === "/linehistory") {
-                        if(sentence[1] === "off") {
-                            bttv.settings.save('chatLineHistory', false);
-                        } else {
-                            bttv.settings.save('chatLineHistory', true);
+                        if (command === "/b") {
+                            bttv.chat.helpers.ban(sentence[1]);
+                        } else if (command === "/t") {
+                            var time = 600;
+                            if(!isNaN(sentence[2])) time = sentence[2];
+                            bttv.chat.helpers.timeout(sentence[1], time);
+                        } else if (command === "/massunban" || ((command === "/unban" || command === "/u") && sentence[1] === "all")) {
+                            bttv.chat.helpers.massUnban();
+                        } else if (command === "/u") {
+                            bttv.chat.helpers.unban(sentence[1]);
+                        } else if (command === "/sub") {
+                            tmi.tmiRoom.startSubscribersMode();
+                        } else if (command === "/suboff") {
+                            tmi.tmiRoom.stopSubscribersMode();
+                        } else if (command === "/localsub") {
+                            bttv.chat.helpers.serverMessage("Local subscribers-only mode enabled.");
+                            vars.localSubsOnly = true;
+                        } else if (command === "/localsuboff") {
+                            bttv.chat.helpers.serverMessage("Local subscribers-only mode disabled.");
+                            vars.localSubsOnly = false;
+                        } else if (command === "/linehistory") {
+                            if(sentence[1] === "off") {
+                                bttv.settings.save('chatLineHistory', false);
+                            } else {
+                                bttv.settings.save('chatLineHistory', true);
+                            }
+                        } else if(bttv.socketServer && command === "/invite" && sentence[1] === "friends") {
+                            //bttv.socketServer.emit("invite friends", { channel: CurrentChat.channel, token: CurrentChat.userData.chat_oauth_token });
                         }
-                    } else if(bttv.socketServer && command === "/invite" && sentence[1] === "friends") {
-                        //bttv.socketServer.emit("invite friends", { channel: CurrentChat.channel, token: CurrentChat.userData.chat_oauth_token });
                     }
                 });
             }
@@ -2577,9 +2579,7 @@
         return;
 
         // TODO: Report Chat Errors to DB
-        // TODO: Chat commands
         // TODO: Report Chat DCs/Failed Joins to TwitchStatus
-        // TODO: Admin/Staff Alert
 
         /*
         CurrentChat.chat_say = function() {
