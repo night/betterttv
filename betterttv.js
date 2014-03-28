@@ -894,6 +894,7 @@
             //tmi.tmiRoom.on('message', function(data) { chat.store.__messageQueue.push(data); });
             tmi.tmiRoom.on('message', chat.handlers.privmsg);
             tmi.tmiRoom.on('clearchat', chat.handlers.clearChat);
+            tmi.tmiRoom.on('labelschanged', chat.handlers.labelsChanged);
 
             // Load BTTV emotes if not loaded
             overrideEmotes();
@@ -968,7 +969,7 @@
                 });
             }
 
-            // Message input features (tab completion, message history, anti-prefix completion)
+            // Message input features (tab completion, message history, anti-prefix completion, extra commands)
             if(!vars.loadedTabCompletion) {
                 vars.loadedTabCompletion = true;
                 var lastPartialMatch = null;
@@ -1081,6 +1082,41 @@
                             }
                         }
                     }
+
+                    // Chat commands
+                    var sentence = $chatInput.val().trim().split(' ');
+                    var command = sentence[0];
+                    var tmi = bttv.chat.tmi();
+
+                    if (command === "/b") {
+                        bttv.chat.helpers.ban(sentence[1]);
+                    } else if (command === "/t") {
+                        var time = 600;
+                        if(!isNaN(sentence[2])) time = sentence[2];
+                        bttv.chat.helpers.timeout(sentence[1], time);
+                    } else if (command === "/massunban" || ((command === "/unban" || command === "/u") && sentence[1] === "all")) {
+                        bttv.chat.helpers.massUnban();
+                    } else if (command === "/u") {
+                        bttv.chat.helpers.unban(sentence[1]);
+                    } else if (command === "/sub") {
+                        tmi.tmiRoom.startSubscribersMode();
+                    } else if (command === "/suboff") {
+                        tmi.tmiRoom.stopSubscribersMode();
+                    } else if (command === "/localsub") {
+                        bttv.chat.helpers.serverMessage("Local subscribers-only mode enabled.");
+                        vars.localSubsOnly = true;
+                    } else if (command === "/localsuboff") {
+                        bttv.chat.helpers.serverMessage("Local subscribers-only mode disabled.");
+                        vars.localSubsOnly = false;
+                    } else if (command === "/linehistory") {
+                        if(sentence[1] === "off") {
+                            bttv.settings.save('chatLineHistory', false);
+                        } else {
+                            bttv.settings.save('chatLineHistory', true);
+                        }
+                    } else if(bttv.socketServer && command === "/invite" && sentence[1] === "friends") {
+                        //bttv.socketServer.emit("invite friends", { channel: CurrentChat.channel, token: CurrentChat.userData.chat_oauth_token });
+                    }
                 });
             }
 
@@ -1123,6 +1159,17 @@
                 }
 
                 $(this).data("prevType", e.type);
+            });
+
+            // Keycode to quickly timeout users
+            $(window).off("keydown").on("keydown", function(e) {
+                var keyCode = e.keyCode || e.which;
+
+                if(keyCode === 27 && $('.bttv-mod-card').length) {
+                    var user = $('.bttv-mod-card').data('user');
+                    bttv.chat.helpers.timeout(user);
+                    $('.bttv-mod-card').remove();
+                }
             });
         },
         helpers: {
@@ -1177,7 +1224,7 @@
                     date: new Date(),
                     badges: [{
                                 type: tagType,
-                                name: ((bttv.settings.get("showJTVTags") && type !== "subscriber" && type !== "turbo")?tagType.capitalize():''),
+                                name: ((bttv.settings.get("showJTVTags") && type !== "subscriber" && type !== "turbo")?type.capitalize():''),
                                 description: tagType.capitalize()
                     }],
                     message: message,
@@ -1301,6 +1348,48 @@
                 var tmi = bttv.chat.tmi() || {};
                 tmi = tmi.tmiRoom;
                 return tmi ? tmi.unbanUser(user) : null;
+            },
+            massUnban: function() {
+                if(Twitch.user.isLoggedIn() && Twitch.user.login() === bttv.getChannel()) {
+                    var bannedUsers = [];
+                    bttv.chat.helpers.serverMessage("Fetching banned users...");
+                    $.ajax({url: "/settings/channel", cache: !1, timeoutLength: 6E3, dataType: 'html'}).done(function (chatInfo) {
+                        if(chatInfo) {
+                            $(chatInfo).find("#banned_chatter_list .ban .obj").each(function() {
+                                var user = $(this).text().trim();
+                                if(bttv.chat.store.__unbannedUsers.indexOf(user) === -1 && bannedUsers.indexOf(user) === -1) bannedUsers.push(user);
+                            });
+                            if(bannedUsers.length > 0) {
+                                bttv.chat.helpers.serverMessage("Fetched "+bannedUsers.length+" banned users.");
+                                if(bannedUsers.length > 10) {
+                                    bttv.chat.helpers.serverMessage("Starting purge process in 5 seconds. Get ready for a spam fest!");
+                                } else {
+                                    bttv.chat.helpers.serverMessage("Starting purge process in 5 seconds.");
+                                }
+                                bttv.chat.helpers.serverMessage("By my calculations, this block of users will take "+((bannedUsers.length*2.1)/60).toFixed(2)+" minutes to unban.");
+                                if(bannedUsers.length > 70) bttv.chat.helpers.serverMessage("Twitch only provides up to 100 users at a time (some repeat), but this script will cycle through all of the blocks of users.");
+                                setTimeout(function() {
+                                    var startTime = 0;
+                                    bannedUsers.forEach(function(user) {
+                                        setTimeout(function() {
+                                            bttv.chat.helpers.ban(user);
+                                            bttv.chat.store.__unbannedUsers.push(user);
+                                        }, startTime += 2100);
+                                    });
+                                    setTimeout(function() {
+                                        bttv.chat.helpers.serverMessage("This block of users has been purged. Checking for more..");
+                                        bttv.chat.helpers.massUnban();
+                                    }, startTime += 2100);
+                                }, 5000);
+                            } else {
+                                bttv.chat.helpers.serverMessage("You have no banned users.");
+                                bttv.chat.store.__unbannedUsers = [];
+                            }
+                        }
+                    });
+                } else {
+                    bttv.chat.helpers.serverMessage("You're not the channel owner.");
+                }
             },
             translate: function(element, sender, text) {
                 var language = window.location.host.split('.')[0].replace(/^(www|beta)$/,"en"),
@@ -1427,6 +1516,17 @@
                     makeCard({ name: user, display_name: user.capitalize() });
                 });
             },
+            labelsChanged: function(user) {
+                if (bttv.settings.get("bttvAdminStaffAlert") === true) {
+                    var specials = bttv.chat.helpers.getSpecials(user);
+
+                    if(specials.indexOf('admin') !== -1) {
+                        bttv.chat.helpers.notifyMessage('admin', user+" just joined! Watch out foo!");
+                    } else if(specials.indexOf('staff') !== -1) {
+                        bttv.chat.helpers.notifyMessage('staff', user+" just joined! Watch out foo!");
+                    }
+                }
+            },
             clearChat: function(user) {
                 var chat = bttv.chat;
                 var trackTimeouts = chat.store.trackTimeouts;
@@ -1435,8 +1535,8 @@
                 if(!user) {
                     helpers.serverMessage("Chat was cleared by a moderator (Prevented by BetterTTV)");
                 } else {
-                    if ($('.chat-line[data-sender="' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '"]').length === 0) return; 
-                    if (bttv.settings.get("hideDeletedMessages") === true) {
+                    if($('.chat-line[data-sender="' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '"]').length === 0) return; 
+                    if(bttv.settings.get("hideDeletedMessages") === true) {
                         $('.chat-line[data-sender="' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '"]').each(function () {
                             $(this).hide();
                             $('div.tipsy.tipsy-sw').remove();
@@ -1449,7 +1549,7 @@
                             });
                         }, 3000);
                     } else {
-                        if (bttv.settings.get("showDeletedMessages") !== true) {
+                        if(bttv.settings.get("showDeletedMessages") !== true) {
                             $('.chat-line[data-sender="' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '"] .message').each(function () {
                                 $(this).html("<span style=\"color: #999\">&lt;message deleted&gt;</span>").off('click').on('click', function() {
                                     var emoteSets = bttv.chat.helpers.getEmotes(user) || [];
@@ -1550,6 +1650,8 @@
                 }
 
                 if(bttv.chat.store.chatters.indexOf(data.from) === -1) bttv.chat.store.chatters.push(data.from);
+
+                if(vars.localSubsOnly && !bttv.chat.helpers.isModerator(data.from) && !bttv.chat.helpers.isSubscriber(data.from)) return;
 
                 if(bttv.chat.store.trackTimeouts[data.from]) delete bttv.chat.store.trackTimeouts[data.from];
                 
@@ -1843,6 +1945,7 @@
             __messageQueue: [],
             __usersBeingLookedUp: 0,
             __subscriptions: {},
+            __unbannedUsers: [],
             activeView: true,
             displayNames: {},
             trackTimeouts: {},
@@ -2478,90 +2581,7 @@
         // TODO: Report Chat DCs/Failed Joins to TwitchStatus
         // TODO: Admin/Staff Alert
 
-        if(!vars.CurrentChat.chat_say) vars.CurrentChat.chat_say = CurrentChat.chat_say;
-        vars.chat_say = function () {
-            var r = $("#chat_text_input").val();
-            if(!r || r === '') return;
-            if(bttv.settings.get("antiPrefix") === true && CurrentChat.autoCompleteEmotes) {
-                var existingEmotes = [];
-                CurrentChat.default_emoticons.forEach(function(emote) {
-                    existingEmotes.push(""+emote.regex);
-                });
-                for(var emote in CurrentChat.autoCompleteEmotes) {
-                    if(CurrentChat.autoCompleteEmotes.hasOwnProperty(emote) && existingEmotes.indexOf("/\\b"+emote+"\\b/g") === -1) {
-                        var emoteRegex = new RegExp("\\b"+emote+"\\b","g");
-                        r = r.replace(emoteRegex, CurrentChat.autoCompleteEmotes[emote]);
-                    }
-                }
-            }
-
-            ['tehBUFR', 'SourPls', 'PunchStick'].forEach(function(emote) {
-                if(r.indexOf(emote) !== -1) {
-                    var clean = r.split(emote);
-                    for (var i = 0; i < clean.length; i++) {
-                        if(i === 0) {
-                            clean[0] += emote;
-                        } else {
-                            clean[i] = ' '+clean[i].trim();
-                        }
-                    }
-                    r = clean.join('');
-                }
-            });
-            
-            $("#chat_text_input").val(r);
-            if(!CurrentChat.sentHistory) CurrentChat.sentHistory = [];
-            if(CurrentChat.sentHistory.indexOf(r) !== -1) {
-                CurrentChat.sentHistory.splice(CurrentChat.sentHistory.indexOf(r), 1);
-            }
-
-            CurrentChat.sentHistory.unshift(r);
-
-            var command = r.trim().split(' ')[0];
-            if(command === "/mods" || command === ".mods") CurrentChat.checkMods = false;
-            if(command === "/massunban" || command === ".massunban" || r.trim() === "/unban all" || r.trim() === ".unban all") {
-                CurrentChat.massUnban();
-                $("#chat_text_input").val("");
-                return;
-            }
-            if(command === "/b") $("#chat_text_input").val($("#chat_text_input").val().replace(/^\/b/, '/ban'));
-            if(command === "/t") $("#chat_text_input").val($("#chat_text_input").val().replace(/^\/t/, '/timeout'));
-            if(command === "/u") $("#chat_text_input").val($("#chat_text_input").val().replace(/^\/u/, '/unban'));
-            if(command === "/sub") $("#chat_text_input").val($("#chat_text_input").val().replace(/^\/sub/, '/subscribers'));
-            if(command === "/suboff") $("#chat_text_input").val($("#chat_text_input").val().replace(/^\/suboff/, '/subscribersoff'));
-
-            if(command === "/localsub") {
-                CurrentChat.admin_message("Local subscribers-only mode enabled.");
-                vars.localSubsOnly = true;
-                $("#chat_text_input").val("");
-                return;
-            }
-            if(command === "/localsuboff") {
-                CurrentChat.admin_message("Local subscribers-only mode disabled.");
-                vars.localSubsOnly = false;
-                $("#chat_text_input").val("");
-                return;
-            }
-
-            if(command === "/linehistory") {
-                if(r.trim().split(' ')[1] === "off") {
-                    bttv.settings.save('chatLineHistory', false);
-                } else {
-                    bttv.settings.save('chatLineHistory', true);
-                }
-                $("#chat_text_input").val("");
-                return;
-            }
-
-            if(bttv.socketServer && (r.trim() === "/invite friends" || r.trim() === ".invite friends")) {
-                bttv.socketServer.emit("invite friends", { channel: CurrentChat.channel, token: CurrentChat.userData.chat_oauth_token });
-                $("#chat_text_input").val("");
-                return;
-            }
-            
-            vars.CurrentChat.chat_say.call(CurrentChat);
-        }
-
+        /*
         CurrentChat.chat_say = function() {
             try {
                 vars.chat_say();
@@ -2608,67 +2628,6 @@
                 }
             }
         }
-
-        var unbannedUsers = [];
-        CurrentChat.massUnban = function() {
-            if(Twitch.user.login() && Twitch.user.login() == CurrentChat.channel) {
-                var bannedUsers = [];
-                CurrentChat.admin_message("Fetching banned users...");
-                $.ajax({url: "/settings/channel", cache: !1, timeoutLength: 6E3, dataType: 'html'}).done(function (chatInfo) {
-                    if(chatInfo) {
-                        $(chatInfo).find("#banned_chatter_list .ban .obj").each(function() {
-                            var user = $(this).text().trim();
-                            if(unbannedUsers.indexOf(user) === -1 && bannedUsers.indexOf(user) === -1) bannedUsers.push(user);
-                        });
-                        if(bannedUsers.length > 0) {
-                            CurrentChat.admin_message("Fetched "+bannedUsers.length+" banned users.");
-                            if(bannedUsers.length > 10) {
-                                CurrentChat.admin_message("Starting purge process in 5 seconds. Get ready for a spam fest!");
-                            } else {
-                                CurrentChat.admin_message("Starting purge process in 5 seconds.");
-                            }
-                            CurrentChat.admin_message("By my calculations, this block of users will take "+((bannedUsers.length*2.1)/60).toFixed(2)+" minutes to unban.");
-                            if(bannedUsers.length > 70) CurrentChat.admin_message("Twitch only provides up to 80 users at a time, but this script will cycle through all of the blocks of users.");
-                            setTimeout(function() {
-                                if(!window.CurrentChat) return;
-                                if(Twitch.user.login() in CurrentChat.moderators) delete CurrentChat.moderators[Twitch.user.login()];
-                                bannedUsers.forEach(function(user) {
-                                    CurrentChat.say("/unban "+user);
-                                    unbannedUsers.push(user);
-                                });
-                                CurrentChat.moderators[Twitch.user.login()] = true;
-                                var currentTime = Date.now(),
-                                    spamDifference = 2100-(currentTime-CurrentChat.lastSpokenTime);
-                                setTimeout(function() {
-                                    if(!window.CurrentChat) return;
-                                    CurrentChat.admin_message("This block of users has been purged. Checking for more..");
-                                    CurrentChat.massUnban();
-                                }, spamDifference);
-                            }, 5000);
-                        } else {
-                            CurrentChat.admin_message("You have no banned users.");
-                            unbannedUsers = [];
-                        }
-                    }
-                });
-            } else {
-                CurrentChat.admin_message("You're not the channel owner.");
-            }
-        }
-
-        /*
-            if (bttv.settings.get("bttvAdminStaffAlert") === true) {
-                var isUserAdminOrStaff = /Received irc message IRCMessage from 'jtv' to '[a-z0-9_]+', with command 'PRIVMSG' and message 'SPECIALUSER ([a-z0-9_]+) (admin|staff)'/.exec(a.message);
-                if (isUserAdminOrStaff) {
-                    if(CurrentChat.specialUserAlert) {
-                        var user = CurrentChat.lookupDisplayName(isUserAdminOrStaff[1]),
-                            type = isUserAdminOrStaff[2],
-                            msg = user+" just joined! Watch out foo!";
-                        CurrentChat.last_sender = "twitchnotify";
-                        CurrentChat.notify_message(type, msg);
-                    }
-                }
-            }
         */
 
         // $.getJSON("http://twitchstatus.com/api/report?type=chat&kind=disconnect&server=" + /^Connection lost to \(((.*):(80|443|6667))\)/.exec(a.message)[1]);
