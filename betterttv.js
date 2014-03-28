@@ -891,7 +891,7 @@
                     delete tmi.tmiSession._rooms[channel]._events['clearchat'];
                 }
             }
-            //tmi.tmiRoom.on('message', function(data) { chat.store.__messageQueue.push(data); });
+
             tmi.tmiRoom.on('message', function(data) {
                 try {
                     chat.handlers.privmsg.call(this, data);
@@ -1161,7 +1161,7 @@
             });
 
             // When messages come in too fast, things get laggy
-            //if(!chat.store.__messageTimer) chat.store.__messageTimer = setInterval(chat.handlers.shiftQueue, 100);
+            if(!chat.store.__messageTimer) chat.store.__messageTimer = setInterval(chat.handlers.shiftQueue, 500);
 
             // Active Tab monitoring - Useful for knowing if a user is "watching" chat
             $(window).off("blur focus").on("blur focus", function(e) {
@@ -1453,8 +1453,9 @@
         handlers: {
             shiftQueue: function() {
                 if(bttv.chat.store.__messageQueue.length === 0) return;
-                var msg = bttv.chat.store.__messageQueue.shift();
-                bttv.chat.handlers.privmsg(msg);
+                $('.ember-chat .chat-messages .tse-content').append(bttv.chat.store.__messageQueue.join(""));
+                bttv.chat.store.__messageQueue = [];
+                bttv.chat.helpers.scrollChat();
             },
             moderationCard: function(user, $event) {
                 var makeCard = function(user) {
@@ -1962,12 +1963,10 @@
                     }
                 );
 
-                $('.ember-chat .chat-messages .tse-content').append(message);
-                bttv.chat.helpers.scrollChat();
+                bttv.chat.store.__messageQueue.push(message);
             }
         },
         store: {
-            __isScrolling: false,
             __messageTimer: false,
             __messageQueue: [],
             __usersBeingLookedUp: 0,
