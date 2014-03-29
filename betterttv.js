@@ -768,6 +768,9 @@
             },
             emoticonize: function(message, userSets) {
                 var emotes = bttv.chat.emoticons();
+
+                if(!emotes || !emotes['default']) return message;
+
                 if(userSets.length > 0) {
                     userSets.forEach(function(set) {
                         if(emotes[set] === undefined) return;
@@ -778,12 +781,13 @@
                         });
                     });
                 }
-                
+
                 emotes['default'].forEach(function(emote) {
                     if(message.match(emote.regex)) {
                         message = message.replace(emote.regex, bttv.chat.templates.emoticon(-1, emote.cls, emote.regex));
                     }
                 });
+                
                 return message;
             },
             moderationCard: function(user, top, left) {
