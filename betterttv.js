@@ -1356,7 +1356,7 @@
 
                 if(linesToDelete > 0) {
                     for(var i=0; i<linesToDelete; i++) {
-                        $('.ember-chat .chat-messages .chat-line')[0].remove();
+                        $('.ember-chat .chat-messages .chat-line').eq(0).remove();
                     }
                 }
             },
