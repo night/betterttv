@@ -787,7 +787,7 @@
                         message = message.replace(emote.regex, bttv.chat.templates.emoticon(-1, emote.cls, emote.regex));
                     }
                 });
-                
+
                 return message;
             },
             moderationCard: function(user, top, left) {
@@ -889,7 +889,7 @@
                 bttv.storage.putObject('chatSettings', settings);
             }
 
-            bttv.chat.store.isLoaded = true;
+            chat.store.isLoaded = true;
 
             // Take over listeners
             debug.log('Loading chat listeners');
@@ -904,13 +904,15 @@
                 try {
                     chat.handlers.privmsg.call(this, data);
                 } catch(e) {
+                    if(chat.store.__reportedErrors.indexOf(e.message) !== -1) return;
+                    chat.store.__reportedErrors.push(e.message);
                     console.log(e);
                     var error = {
                         stack: e.stack,
                         message: e.message
-                    }
+                    };
                     $.get('//nightdev.com/betterttv/errors/?obj='+encodeURIComponent(JSON.stringify(error)));
-                    //CurrentChat.admin_message('BetterTTV encountered an error reading chat. You can try refreshing to fix the problem. The developer has been sent a log of this action.');
+                    bttv.chat.helpers.serverMessage('BetterTTV encountered an error reading chat. The developer has been sent a log of this action. Please try clearing your cookies and cache.');
                 }
             });
             tmi.tmiRoom.on('clearchat', chat.handlers.clearChat);
@@ -1972,6 +1974,7 @@
             __messageTimer: false,
             __messageQueue: [],
             __usersBeingLookedUp: 0,
+            __reportedErrors: [],
             __subscriptions: {},
             __unbannedUsers: [],
             activeView: true,
