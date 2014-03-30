@@ -416,6 +416,12 @@
                     storageKey: 'showJTVTags'
                 },
                 {
+                    name: 'Mod Card Keybinds',
+                    description: 'Enable KeyBindings when you click on a username : P(urge), T(imeout), B(an)',
+                    default: false,
+                    storageKey: 'modcardsKeybinds'
+                },
+                {
                     name: 'Purple Buttons',
                     description: 'BetterTTV replaces Twitch\'s purple with blue by default',
                     default: false,
@@ -1296,13 +1302,24 @@
             $(window).off("keydown").on("keydown", function(e) {
                 var keyCode = e.keyCode || e.which;
 
-                if($('.bttv-mod-card').length) {
+                if($('.bttv-mod-card').length && bttv.settings.get("modcardsKeybinds") === true) {
                     var user = $('.bttv-mod-card').data('user');
                     switch (keyCode) {
                         case keyCodes.Esc:
+                            $('.bttv-mod-card').remove();
+                            break;
+                        case keyCodes.t:
                             bttv.chat.helpers.timeout(user);
                             $('.bttv-mod-card').remove();
-                        break;
+                            break;
+                        case keyCodes.p:
+                            bttv.chat.helpers.timeout(user, 1);
+                            $('.bttv-mod-card').remove();
+                            break;
+                        case keyCodes.b:
+                            bttv.chat.helpers.ban(user);
+                            $('.bttv-mod-card').remove();
+                            break;
                     }
                 }
             });
