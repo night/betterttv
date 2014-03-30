@@ -912,7 +912,7 @@
                       <button class="button-simple primary mod-card-follow">Follow</button>\
                       <button class="button-simple dark mod-card-profile" style="height: 30px;vertical-align: top;"><img src="/images/xarth/g/g18_person-00000080.png" style="margin-top: 6px;" /></button> \
                       <button class="button-simple dark mod-card-message" style="height: 30px;vertical-align: top;"><img src="/images/xarth/g/g18_mail-00000080.png" style="margin-top: 6px;" /></button> \
-                      '+(vars.userData.login != user.name?'<button class="button-simple dark mod-card-ignore">Ignore</button> ':'')+'\
+                      <button class="button-simple dark mod-card-ignore">Ignore</button> \
                       '+((vars.userData.isLoggedIn && bttv.chat.helpers.isOwner(vars.userData.login))?' \
                       <button class="button-simple dark mod-card-mod">Mod</button> \
                       ':'')+((vars.userData.isLoggedIn && bttv.chat.helpers.isModerator(vars.userData.login) && (!bttv.chat.helpers.isModerator(user.name) || vars.userData.login === bttv.getChannel()))?' \
