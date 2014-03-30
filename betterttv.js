@@ -42,6 +42,97 @@
  */
 
 (function(bttv) {
+    var keyCodes = {
+        'Backspace': 8,
+        'Tab': 9,
+        'Enter': 13,
+        'Shift': 16,
+        'Ctrl': 17,
+        'Alt': 18,
+        'Pause': 19,
+        'Capslock': 20,
+        'Esc': 27,
+        'Space': 32,
+        'Pageup': 33,
+        'Pagedown': 34,
+        'End': 35,
+        'Home': 36,
+        'LeftArrow': 37,
+        'UpArrow': 38,
+        'RightArrow': 39,
+        'DownArrow': 40,
+        'Insert': 45,
+        'Delete': 46,
+        '0': 48,
+        '1': 49,
+        '2': 50,
+        '3': 51,
+        '4': 52,
+        '5': 53,
+        '6': 54,
+        '7': 55,
+        '8': 56,
+        '9': 57,
+        'a': 65,
+        'b': 66,
+        'c': 67,
+        'd': 68,
+        'e': 69,
+        'f': 70,
+        'g': 71,
+        'h': 72,
+        'i': 73,
+        'j': 74,
+        'k': 75,
+        'l': 76,
+        'm': 77,
+        'n': 78,
+        'o': 79,
+        'p': 80,
+        'q': 81,
+        'r': 82,
+        's': 83,
+        't': 84,
+        'u': 85,
+        'v': 86,
+        'w': 87,
+        'x': 88,
+        'y': 89,
+        'z': 90,
+        '0numpad': 96,
+        '1numpad': 97,
+        '2numpad': 98,
+        '3numpad': 99,
+        '4numpad': 100,
+        '5numpad': 101,
+        '6numpad': 102,
+        '7numpad': 103,
+        '8numpad': 104,
+        '9numpad': 105,
+        'Multiply': 106,
+        'Plus': 107,
+        'Minut': 109,
+        'Dot': 110,
+        'Slash1': 111,
+        'F1': 112,
+        'F2': 113,
+        'F3': 114,
+        'F4': 115,
+        'F5': 116,
+        'F6': 117,
+        'F7': 118,
+        'F8': 119,
+        'F9': 120,
+        'F10': 121,
+        'F11': 122,
+        'F12': 123,
+        'Equal': 187,
+        'Comma': 188,
+        'Slash': 191,
+        'Backslash': 220
+    }
+
+
     // Declare public and private variables
     var debug = {
         log: function (string) {
@@ -324,6 +415,12 @@
                     description: 'BetterTTV can replace the chat tags with the ones from JTV',
                     default: false,
                     storageKey: 'showJTVTags'
+                },
+                {
+                    name: 'Mod Card Keybinds',
+                    description: 'Enable KeyBindings when you click on a username : P(urge), T(imeout), B(an)',
+                    default: false,
+                    storageKey: 'modcardsKeybinds'
                 },
                 {
                     name: 'Purple Buttons',
@@ -812,8 +909,8 @@
                       <div class="channel_background_cover"></div> \
                       '+(user.profile_banner?'<img class="channel_background" src="'+user.profile_banner+'">':'')+' \
                     </div> \
-                    <div class="interface"> \
-                      <button class="button-simple primary mod-card-follow">Follow</button> \
+                    '+(user.name != vars.userData.login?'<div class="interface"> \
+                      <button class="button-simple primary mod-card-follow">Follow</button>\
                       <button class="button-simple dark mod-card-profile" style="height: 30px;vertical-align: top;"><img src="/images/xarth/g/g18_person-00000080.png" style="margin-top: 6px;" /></button> \
                       <button class="button-simple dark mod-card-message" style="height: 30px;vertical-align: top;"><img src="/images/xarth/g/g18_mail-00000080.png" style="margin-top: 6px;" /></button> \
                       <button class="button-simple dark mod-card-ignore">Ignore</button> \
@@ -842,7 +939,7 @@
                         </button> \
                       </span> \
                       ':'')+' \
-                    </div> \
+                    </div>':'')+'\
                 </div>';
             },
             message: function(sender, message, userSets, colored) {
@@ -1020,7 +1117,7 @@
                     var $chatInput = $('.ember-chat .chat-interface textarea');
 
                     // Tab completion
-                    if (keyCode === 9) {
+                    if (keyCode === keyCodes.Tab) {
                         e.preventDefault();
                         var sentence = $chatInput.val().trim().split(' ');
                         var partialMatch = sentence.pop().toLowerCase();
@@ -1069,7 +1166,7 @@
 
                     // Anti-Prefix Completion
                     if(bttv.settings.get("antiPrefix") === true) {
-                        if (keyCode === 32 || keyCode === 13) {
+                        if (keyCode === keyCodes.Space || keyCode === keyCodes.Enter) {
                             if(!chat.store.__emoteRegexes) {
                                 chat.store.__emoteRegexes = [];
                                 if(chat.emoticons()['default']) {
@@ -1089,14 +1186,14 @@
 
                     // Chat history
                     if(bttv.settings.get('chatLineHistory') === true) {
-                        if (keyCode === 13) {
+                        if (keyCode === keyCodes.Enter) {
                             if(chat.store.chatHistory.indexOf($chatInput.val()) !== -1) {
                                 chat.store.chatHistory.splice(chat.store.chatHistory.indexOf($chatInput.val()), 1);
                             }
                             chat.store.chatHistory.unshift($chatInput.val());
                         }
                         var historyIndex = chat.store.chatHistory.indexOf($chatInput.val());
-                        if (keyCode === 38) {
+                        if (keyCode === keyCodes.UpArrow) {
                             if(historyIndex >= 0) {
                                 if(chat.store.chatHistory[historyIndex+1]) {
                                     $chatInput.val(chat.store.chatHistory[historyIndex+1]);
@@ -1111,7 +1208,7 @@
                                 
                             }
                         }
-                        if (keyCode === 40) {
+                        if (keyCode === keyCodes.DownArrow) {
                             if(historyIndex >= 0) {
                                 if(chat.store.chatHistory[historyIndex-1]) {
                                     $chatInput.val(chat.store.chatHistory[historyIndex-1]);
@@ -1123,7 +1220,7 @@
                     }
 
                     // Chat commands
-                    if(keyCode === 13) {
+                    if(keyCode === keyCodes.Enter) {
                         var sentence = $chatInput.val().trim().split(' ');
                         var command = sentence[0];
                         var tmi = bttv.chat.tmi();
@@ -1206,10 +1303,25 @@
             $(window).off("keydown").on("keydown", function(e) {
                 var keyCode = e.keyCode || e.which;
 
-                if(keyCode === 27 && $('.bttv-mod-card').length) {
+                if($('.bttv-mod-card').length && bttv.settings.get("modcardsKeybinds") === true) {
                     var user = $('.bttv-mod-card').data('user');
-                    bttv.chat.helpers.timeout(user);
-                    $('.bttv-mod-card').remove();
+                    switch (keyCode) {
+                        case keyCodes.Esc:
+                            $('.bttv-mod-card').remove();
+                            break;
+                        case keyCodes.t:
+                            bttv.chat.helpers.timeout(user);
+                            $('.bttv-mod-card').remove();
+                            break;
+                        case keyCodes.p:
+                            bttv.chat.helpers.timeout(user, 1);
+                            $('.bttv-mod-card').remove();
+                            break;
+                        case keyCodes.b:
+                            bttv.chat.helpers.ban(user);
+                            $('.bttv-mod-card').remove();
+                            break;
+                    }
                 }
             });
         },
@@ -2152,7 +2264,7 @@
             var resize = false;
 
             $(document).keydown(function (event) {
-                if (event.keyCode === 82 && event.altKey) {
+                if (event.keyCode === keyCodes.r && event.altKey) {
                     $(window).trigger('resize');
                 }
             });
