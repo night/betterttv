@@ -132,7 +132,6 @@
         'Backslash': 220
     }
 
-
     // Declare public and private variables
     var debug = {
         log: function (string) {
@@ -256,13 +255,13 @@
                     description: 'Get alerted in chat when admins or staff join',
                     default: false,
                     hidden: true,
-                    storageKey: 'bttvAdminStaffAlert'
+                    storageKey: 'adminStaffAlert'
                 },
                 {
                     name: 'Alpha Chat Tags',
                     description: 'Removes the background from chat tags',
                     default: false,
-                    storageKey: 'bttvAlphaTags'
+                    storageKey: 'alphaTags'
                 },
                 {
                     name: 'Anti-Prefix Completion',
@@ -418,7 +417,7 @@
                 },
                 {
                     name: 'Mod Card Keybinds',
-                    description: 'Enable KeyBindings when you click on a username : P(urge), T(imeout), B(an)',
+                    description: 'Enable keybinds when you click on a username: P(urge), T(imeout), B(an)',
                     default: false,
                     storageKey: 'modcardsKeybinds'
                 },
@@ -594,34 +593,6 @@
                             bttv.chat.helpers.serverMessage("Chat scrollback is now set to: " + lines);
                         }
                     }
-                },
-                {
-                    default: true,
-                    load: function() {
-                        if(bttv.settings.get("showModIcons")) $('#toggle_mod_icons_bttv').prop('checked', true);
-                    },
-                    storageKey: 'showModIcons',
-                    toggle: function(value) {
-                        if(value === true) {
-                            $('#toggle_mod_icons_bttv').prop('checked', true);
-                        } else {
-                            $('#toggle_mod_icons_bttv').prop('checked', false);
-                        }
-                    }
-                },
-                {
-                    default: true,
-                    load: function() {
-                        if(bttv.settings.get("showTimestamps")) $('#toggle_timestamps_bttv').prop('checked', true);
-                    },
-                    storageKey: 'showTimestamps',
-                    toggle: function(value) {
-                        if(value === true) {
-                            $('#toggle_timestamps_bttv').prop('checked', true);
-                        } else {
-                            $('#toggle_timestamps_bttv').prop('checked', false);
-                        }
-                    }
                 }
             ];
 
@@ -646,7 +617,7 @@
 
             settingsList.forEach(function(setting) {
                 vars.settings[setting.storageKey] = setting;
-                vars.settings[setting.storageKey].value = (parseSetting(bttv.storage.get(setting.storageKey)) == null) ? setting.default : parseSetting(bttv.storage.get(setting.storageKey));
+                vars.settings[setting.storageKey].value = (parseSetting(bttv.storage.get(bttv.settings.prefix+setting.storageKey)) == null) ? setting.default : parseSetting(bttv.storage.get(bttv.settings.prefix+setting.storageKey));
 
                 if(setting.name) {
                     var settingHTML = settingTemplate.replace(/\%(name|description|storageKey)\%/g, function(match, value) { return setting[value]; });
@@ -705,6 +676,7 @@
             var settingsUrl = 'http://'+window.location.host+'/settings?bttvSettings=true';
             window.open(settingsUrl, 'BetterTTV Settings', 'width=800,height=500,top=500,left=800,scrollbars=no,location=no,directories=no,status=no,menubar=no,toolbar=no,resizable=no');
         },
+        prefix: "bttv_",
         save: function(setting, value) {
             if(/\?bttvSettings=true/.test(window.location)) {
                 window.opener.postMessage('bttv_setting '+setting+' '+value, 'http://'+window.location.host);
@@ -712,7 +684,7 @@
                 if(window.ga) ga('send', 'event', 'BTTV', 'Change Setting: '+setting+'='+value);
                 if(/\?bttvDashboard=true/.test(window.location)) window.parent.postMessage('bttv_setting '+setting+' '+value, 'http://'+window.location.host);
                 vars.settings[setting].value = value;
-                bttv.storage.put(setting, value);
+                bttv.storage.put(bttv.settings.prefix+setting, value);
                 if(vars.settings[setting].toggle) vars.settings[setting].toggle(value);
             }
         }
@@ -844,7 +816,7 @@
 
     bttv.chat = {
         templates: {
-            badge: function(type, name, description) { return '<div class="ember-view '+type+''+((bttv.settings.get('bttvAlphaTags') && ['admin','staff','broadcaster','moderator','turbo','ign'].indexOf(type) !== -1)?' alpha'+(!bttv.settings.get("darkenedMode")?' invert':''):'')+' badge" title="'+description+'">'+name+'</div> '; },
+            badge: function(type, name, description) { return '<div class="ember-view '+type+''+((bttv.settings.get('alphaTags') && ['admin','staff','broadcaster','moderator','turbo','ign'].indexOf(type) !== -1)?' alpha'+(!bttv.settings.get("darkenedMode")?' invert':''):'')+' badge" title="'+description+'">'+name+'</div> '; },
             badges: function(badges) {
                 var resp = '<span class="badges">';
                 badges.forEach(function(data) {
@@ -1671,7 +1643,7 @@
                 });
             },
             labelsChanged: function(user) {
-                if (bttv.settings.get("bttvAdminStaffAlert") === true) {
+                if (bttv.settings.get("adminStaffAlert") === true) {
                     var specials = bttv.chat.helpers.getSpecials(user);
 
                     if(specials.indexOf('admin') !== -1) {
