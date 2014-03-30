@@ -52,6 +52,7 @@
         'Pause': 19,
         'Capslock': 20,
         'Esc': 27,
+        'Space': 32,
         'Pageup': 33,
         'Pagedown': 34,
         'End': 35,
@@ -126,7 +127,7 @@
         'F11': 122,
         'F12': 123,
         'Equal': 187,
-        'Coma': 188,
+        'Comma': 188,
         'Slash': 191,
         'Backslash': 220
     }
@@ -1116,7 +1117,7 @@
                     var $chatInput = $('.ember-chat .chat-interface textarea');
 
                     // Tab completion
-                    if (keyCode === 9) {
+                    if (keyCode === keyCodes.Tab) {
                         e.preventDefault();
                         var sentence = $chatInput.val().trim().split(' ');
                         var partialMatch = sentence.pop().toLowerCase();
@@ -1165,7 +1166,7 @@
 
                     // Anti-Prefix Completion
                     if(bttv.settings.get("antiPrefix") === true) {
-                        if (keyCode === 32 || keyCode === 13) {
+                        if (keyCode === keyCodes.Space || keyCode === keyCodes.Enter) {
                             if(!chat.store.__emoteRegexes) {
                                 chat.store.__emoteRegexes = [];
                                 if(chat.emoticons()['default']) {
@@ -1185,14 +1186,14 @@
 
                     // Chat history
                     if(bttv.settings.get('chatLineHistory') === true) {
-                        if (keyCode === 13) {
+                        if (keyCode === keyCodes.Enter) {
                             if(chat.store.chatHistory.indexOf($chatInput.val()) !== -1) {
                                 chat.store.chatHistory.splice(chat.store.chatHistory.indexOf($chatInput.val()), 1);
                             }
                             chat.store.chatHistory.unshift($chatInput.val());
                         }
                         var historyIndex = chat.store.chatHistory.indexOf($chatInput.val());
-                        if (keyCode === 38) {
+                        if (keyCode === keyCodes.UpArrow) {
                             if(historyIndex >= 0) {
                                 if(chat.store.chatHistory[historyIndex+1]) {
                                     $chatInput.val(chat.store.chatHistory[historyIndex+1]);
@@ -1207,7 +1208,7 @@
                                 
                             }
                         }
-                        if (keyCode === 40) {
+                        if (keyCode === keyCodes.DownArrow) {
                             if(historyIndex >= 0) {
                                 if(chat.store.chatHistory[historyIndex-1]) {
                                     $chatInput.val(chat.store.chatHistory[historyIndex-1]);
@@ -1219,7 +1220,7 @@
                     }
 
                     // Chat commands
-                    if(keyCode === 13) {
+                    if(keyCode === keyCodes.Enter) {
                         var sentence = $chatInput.val().trim().split(' ');
                         var command = sentence[0];
                         var tmi = bttv.chat.tmi();
@@ -2263,7 +2264,7 @@
             var resize = false;
 
             $(document).keydown(function (event) {
-                if (event.keyCode === 82 && event.altKey) {
+                if (event.keyCode === keyCodes.r && event.altKey) {
                     $(window).trigger('resize');
                 }
             });
