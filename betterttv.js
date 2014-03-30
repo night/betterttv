@@ -1736,7 +1736,6 @@
                     blacklistUsernames = keywords.trim().toLowerCase().replace(/\s\s+/g, " ").split(" ");
                     for (var i=0;i<blacklistUsernames.length;i++) {
                         if (data.from === blacklistUsernames[i]) {
-                            filtered = true;
                             return;
                         }
                     }
