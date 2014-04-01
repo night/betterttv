@@ -1293,6 +1293,10 @@
                             bttv.chat.helpers.ban(user);
                             $('.bttv-mod-card').remove();
                             break;
+                        case keyCodes.i:
+                            bttv.chat.helpers.sendMessage("/ignore "+user);
+                            $('.bttv-mod-card').remove();
+                            break;
                     }
                 }
             });
