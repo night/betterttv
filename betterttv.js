@@ -1047,9 +1047,12 @@
 
                     // Give some tips to Twitch Emotes
                     if(tmi.product && tmi.product.emoticons) {
-                        if(tmi.product.emoticons.length) {
-                            if(!bttv.TwitchEmoteSets[tmi.product.emoticons[0].emoticon_set]) {
+                        for(var i=0; i<tmi.product.emoticons.length; i++) {
+                            var emote = tmi.product.emoticons[i];
+
+                            if(emote.state && emote.state === "active" && !bttv.TwitchEmoteSets[emote.emoticon_set]) {
                                 bttv.socketServer.emit('give_tip', { channel: bttv.getChannel(), user: (vars.userData.isLoggedIn ? vars.userData.login : 'guest') });
+                                break;
                             }
                         }
                     }
