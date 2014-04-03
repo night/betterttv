@@ -2864,13 +2864,11 @@
 
     }
 
-    var overrideEmotes = function (override) {
+    var overrideEmotes = function () {
 
         if (vars.emotesLoaded) return;
 
         debug.log("Overriding Twitch Emoticons");
-
-        var override = override || false;
 
         var betterttvEmotes = [
                                 { url: "//cdn.betterttv.net/emotes/trollface.png", width: 23, height: 19, regex: "(\\:trollface\\:|\\:tf\\:)" },
