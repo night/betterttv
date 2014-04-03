@@ -154,8 +154,7 @@
         },
         settings: {},
         liveChannels: [],
-        blackChat: false,
-        unknownEmotes: []
+        blackChat: false
     };
 
     bttv.info = {
@@ -1271,13 +1270,12 @@
             });
 
             // Give some tips to Twitch Emotes
-            var channelTicket = App.Ticket.find("user", { channel: bttv.getChannel() });
-            if(channelTicket.content && channelTicket.content.length) {
-                channelTicket.content[0].product.emoticons.forEach(function(emote) {
-                    if(bttv.socketServer && bttv.TwitchEmoteSets && vars.unknownEmotes.indexOf(emote.regex) !== -1) {
+            if(tmi.product && tmi.product.emoticons) {
+                if(tmi.product.emoticons.length) {
+                    if(bttv.socketServer && bttv.TwitchEmoteSets && !bttv.TwitchEmoteSets[tmi.product.emoticons[0].emoticon_set]) {
                         bttv.socketServer.emit('give_tip', { channel: bttv.getChannel(), user: (vars.userData.isLoggedIn ? vars.userData.login : 'guest') });
                     }
-                });
+                }
             }
 
             // Keycode to quickly timeout users
@@ -3160,10 +3158,6 @@
                     if(emote.regex === "tehBUFR") {
                         moragEmote = image.id;
                     }
-
-                    if(bttv.socketServer && bttv.TwitchEmoteSets && !bttv.TwitchEmoteSets[emote.emoticon_set]) {
-                        if(vars.unknownEmotes.indexOf(emote.regex) === -1) vars.unknownEmotes.push(emote.regex);
-                    } 
                 });
             }
         });
