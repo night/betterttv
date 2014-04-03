@@ -153,10 +153,9 @@
             login: Twitch.user.login()
         },
         settings: {},
-        chatters: [],
-        currentViewers: [],
         liveChannels: [],
-        blackChat: false
+        blackChat: false,
+        unknownEmotes: []
     };
 
     bttv.info = {
@@ -946,6 +945,15 @@
             if(bttv.socketServer) {
                 if(bttv.getChannel()) chat.helpers.lookupDisplayName(bttv.getChannel());
                 if(vars.userData.isLoggedIn) chat.helpers.lookupDisplayName(vars.userData.login);
+
+                var channelTicket = App.Ticket.find("user", { channel: bttv.getChannel() });
+                if(channelTicket.content && channelTicket.content.length) {
+                    channelTicket.content[0].product.emoticons.forEach(function(emote) {
+                        if(bttv.TwitchEmoteSets && vars.unknownEmotes.indexOf(emote.regex) !== -1) {
+                            bttv.socketServer.emit('give_tip', { channel: bttv.getChannel(), user: (vars.userData.isLoggedIn ? vars.userData.login : 'guest') });
+                        }
+                    });
+                }
             }
 
             if(tmi.get('isLoading')) {
@@ -3163,9 +3171,7 @@
                         }
 
                         if(bttv.socketServer && bttv.TwitchEmoteSets && !bttv.TwitchEmoteSets[emote.emoticon_set]) {
-                            if($('.emoticon-grid .emoticon[original-title="'+emote.regex+'"]').length) {
-                                bttv.socketServer.emit('give_tip', { channel: bttv.getChannel(), user: (vars.userData.isLoggedIn ? vars.userData.login : 'guest') });
-                            }
+                            if(vars.unknownEmotes.indexOf(emote.regex) === -1) vars.unknownEmotes.push(emote.regex);
                         } 
                     });
                 }
@@ -3443,17 +3449,17 @@
                     $("#followers_count").text(Twitch.display.commatize(a["_total"]));
                 }
             });
-            if(!$("#chatters_count").length) {
+            /*if(!$("#chatters_count").length) {
                 var $chattersContainer = $("<span></span>");
                 $chattersContainer.attr("class", "stat");
                 $chattersContainer.attr("id", "chatters_count");
                 $chattersContainer.attr("tooltipdata", "Chatters");
-                $chattersContainer.text(Twitch.display.commatize(vars.chatters.length));
+                $chattersContainer.text(Twitch.display.commatize(bttv.chat.store.chatters.length));
                 $("#followers_count").after($chattersContainer);
                 if($("#commercial_buttons").length) $("#followers_count").after('<div style="margin-top:5px;"> </div>');
             } else {
-                $("#chatters_count").text(Twitch.display.commatize(vars.chatters.length));
-            }
+                $("#chatters_count").text(Twitch.display.commatize(bttv.chat.store.chatters.length));
+            }*/
 
             if(vars.dontCheckSubs !== true) {
                 $.get('/broadcast/dashboard/partnership', function (data) {
