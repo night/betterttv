@@ -479,17 +479,6 @@
                         }
                     }
                 },
-                {
-                    default: '',
-                    storageKey: 'blacklistUsernames',
-                    toggle: function(usernames) {
-                        if (usernames.trim() === "") {
-                            bttv.chat.helpers.serverMessage("Blacklist Usernames list is empty");
-                        } else {
-                            bttv.chat.helpers.serverMessage("Blacklist Usernames are now set to: " + usernames);
-                        }
-                    }
-                },
                 {   
                     default: '',
                     storageKey: 'blacklistKeywords',
@@ -504,7 +493,15 @@
                                 phraseKeywords.push('"'+testCase.replace(/(^\{|\}$)/g, '').trim()+'"');
                             }
                         }
+
                         keywords === "" ? keywords = phraseKeywords : keywords = keywords.split(" ").concat(phraseKeywords);
+                        
+                        for(var i=0; i<keywords.length; i++) {
+                            if(/^\([a-z0-9_\-\*]+\)$/i.test(keywords[i])) {
+                                keywords[i] = keywords[i].replace(/(\(|\))/g, '');
+                            }
+                        }
+
                         var keywordList = keywords.join(", ");
                         if(keywordList === "") {
                             bttv.chat.helpers.serverMessage("Blacklist Keywords list is empty");
@@ -1796,7 +1793,7 @@
                     highlightKeywords = [],
                     highlightUsers = [],
                     blacklistKeywords = [],
-                    blacklistUsernames = [];
+                    blacklistUsers = [];
 
                 if(bttv.settings.get("blacklistKeywords")) {
                     var keywords = bttv.settings.get("blacklistKeywords");
@@ -1812,7 +1809,11 @@
                     if(keywords !== "") {
                         keywords = keywords.split(" ");
                         keywords.forEach(function (keyword) {
-                            blacklistKeywords.push(keyword);
+                            if(/^\([a-z0-9_\-\*]+\)$/i.test(keyword)) {
+                                blacklistUsers.push(keyword.replace(/(\(|\))/g, ''));
+                            } else {
+                                blacklistKeywords.push(keyword);
+                            }
                         });
                     }
 
@@ -1824,16 +1825,16 @@
                             filtered = true;
                         }
                     });
-                    if(filtered) return;
-                }
 
-                if(keywords = bttv.settings.get("blacklistUsernames")) {
-                    blacklistUsernames = keywords.trim().toLowerCase().replace(/\s\s+/g, " ").split(" ");
-                    for (var i=0;i<blacklistUsernames.length;i++) {
-                        if (data.from === blacklistUsernames[i]) {
-                            return;
+                    blacklistUsers.forEach(function (user) {
+                        user = escapeRegExp(user).replace(/\*/g, "[^ ]*");
+                        var nickRegex = new RegExp('^' + user + '$', 'i');
+                        if (nickRegex.test(data.from)) {
+                            filtered = true;
                         }
-                    }
+                    });
+
+                    if(filtered) return;
                 }
 
                 if(bttv.settings.get("highlightKeywords")) {
@@ -3539,7 +3540,6 @@
             ' + ($("body[data-page=\"ember#chat\"]").length ? '<p><a href="#" class="g18_gear-00000080 blackChatLink">Black Chat (Chroma Key)</a></p>' : '') + ' \
             ' + (($("#dash_main").length || /\?bttvDashboard=true/.test(window.location)) ? '<p><a href="#" class="g18_gear-00000080 flipDashboard">' + (bttv.settings.get("flipDashboard") === true ? 'Unflip Dashboard' : 'Flip Dashboard') + '</a></p>' : '') + ' \
             <p><a href="#" class="g18_gear-00000080 setBlacklistKeywords">Set Blacklist Keywords</a></p> \
-            <p><a href="#" class="g18_gear-00000080 setBlacklistUsernames">Set Blacklist Usernames</a></p> \
             <p><a href="#" class="g18_gear-00000080 setHighlightKeywords">Set Highlight Keywords</a></p> \
             <p><a href="#" class="g18_gear-00000080 setScrollbackAmount">Set Scrollback Amount</a></p> \
             <p><a href="#" class="g18_trash-00000080 clearChat">Clear My Chat</a></p> \
@@ -3609,15 +3609,6 @@
             if (keywords != null) {
                 keywords = keywords.trim().replace(/\s\s+/g, ' ');
                 bttv.settings.save("blacklistKeywords", keywords);
-            }
-        });
-
-        $('.setBlacklistUsernames').click(function(e) {
-            e.preventDefault();
-            var keywords = prompt("Type some blacklist usernames. Messages by these usernames will be filtered from your chat. Use spaces in the field to specify multiple keywords.", bttv.settings.get("blacklistUsernames"));
-            if (keywords != null) {
-                keywords = keywords.trim().replace(/\s\s+/g, ' ');
-                bttv.settings.save("blacklistUsernames", keywords);
             }
         });
 
