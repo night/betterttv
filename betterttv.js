@@ -1039,7 +1039,7 @@
             // Make names clickable
             $("body").off("click", ".chat-line .from").on("click", ".chat-line .from", function() {
                 bttv.chat.handlers.moderationCard($(this).parent().data('sender'), $(this));
-            })
+            });
 
             // Load emote sets
             if(bttv.socketServer) {
@@ -1047,6 +1047,15 @@
                 bttv.socketServer.on("twitch emotes", function(result) {
                     bttv.socketServer.off("twitch emotes");
                     bttv.TwitchEmoteSets = result.sets;
+
+                    // Give some tips to Twitch Emotes
+                    if(tmi.product && tmi.product.emoticons) {
+                        if(tmi.product.emoticons.length) {
+                            if(!bttv.TwitchEmoteSets[tmi.product.emoticons[0].emoticon_set]) {
+                                bttv.socketServer.emit('give_tip', { channel: bttv.getChannel(), user: (vars.userData.isLoggedIn ? vars.userData.login : 'guest') });
+                            }
+                        }
+                    }
                 });
 
                 // TODO: Implement auto server selection, anon chat, etc.
@@ -1268,15 +1277,6 @@
 
                 $(this).data("prevType", e.type);
             });
-
-            // Give some tips to Twitch Emotes
-            if(tmi.product && tmi.product.emoticons) {
-                if(tmi.product.emoticons.length) {
-                    if(bttv.socketServer && bttv.TwitchEmoteSets && !bttv.TwitchEmoteSets[tmi.product.emoticons[0].emoticon_set]) {
-                        bttv.socketServer.emit('give_tip', { channel: bttv.getChannel(), user: (vars.userData.isLoggedIn ? vars.userData.login : 'guest') });
-                    }
-                }
-            }
 
             // Keycode to quickly timeout users
             $(window).off("keydown").on("keydown", function(e) {
