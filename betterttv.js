@@ -945,15 +945,6 @@
             if(bttv.socketServer) {
                 if(bttv.getChannel()) chat.helpers.lookupDisplayName(bttv.getChannel());
                 if(vars.userData.isLoggedIn) chat.helpers.lookupDisplayName(vars.userData.login);
-
-                var channelTicket = App.Ticket.find("user", { channel: bttv.getChannel() });
-                if(channelTicket.content && channelTicket.content.length) {
-                    channelTicket.content[0].product.emoticons.forEach(function(emote) {
-                        if(bttv.TwitchEmoteSets && vars.unknownEmotes.indexOf(emote.regex) !== -1) {
-                            bttv.socketServer.emit('give_tip', { channel: bttv.getChannel(), user: (vars.userData.isLoggedIn ? vars.userData.login : 'guest') });
-                        }
-                    });
-                }
             }
 
             if(tmi.get('isLoading')) {
@@ -1278,6 +1269,16 @@
 
                 $(this).data("prevType", e.type);
             });
+
+            // Give some tips to Twitch Emotes
+            var channelTicket = App.Ticket.find("user", { channel: bttv.getChannel() });
+            if(channelTicket.content && channelTicket.content.length) {
+                channelTicket.content[0].product.emoticons.forEach(function(emote) {
+                    if(bttv.socketServer && bttv.TwitchEmoteSets && vars.unknownEmotes.indexOf(emote.regex) !== -1) {
+                        bttv.socketServer.emit('give_tip', { channel: bttv.getChannel(), user: (vars.userData.isLoggedIn ? vars.userData.login : 'guest') });
+                    }
+                });
+            }
 
             // Keycode to quickly timeout users
             $(window).off("keydown").on("keydown", function(e) {
@@ -3126,138 +3127,128 @@
         var _id = 0;
         var getId = function() { return 'bttv-'+(_id++); };
 
-        Twitch.api.get("chat/emoticons").done(function (a) {
-            if(!override && (emoticons.length < a.emoticons.length)) {
-                debug.log("Woah! Your emotes didn't load yet.");
-                setTimeout(function() {
-                    overrideEmotes(true);
-                }, 15000);
-                return;
-            }
-            vars.emotesLoaded = true;
-            var cssString = "";
-            if(vars.userData.isLoggedIn && bttv.chat.helpers.getEmotes(vars.userData.login)) {
-                var user = vars.userData.login;
-                var userEmoteSets = bttv.chat.helpers.getEmotes(vars.userData.login);
-            } else {
-                var user = false;
-            }
-            var moragEmote = false;
-            emoticons.forEach(function (emote) {
-                if(emote.images) {
-                    emote.images.forEach(function (image) {
-                        if(!image.url) return;
-                        if(oldEmotes.indexOf(image.url.replace("http://","https://")) !== -1 && bttv.settings.get("showDefaultEmotes") !== true) {
-                            image.url = newEmotes[oldEmotes.indexOf(image.url.replace("http://","https://"))];
-                            image.height = 22;
-                            image.width = 22;
-                            cssString += bttv.chat.templates.emoticonCss(image, image.id);
-                        }
+        vars.emotesLoaded = true;
+        var cssString = "";
+        if(vars.userData.isLoggedIn && bttv.chat.helpers.getEmotes(vars.userData.login)) {
+            var user = vars.userData.login;
+            var userEmoteSets = bttv.chat.helpers.getEmotes(vars.userData.login);
+        } else {
+            var user = false;
+        }
+        var moragEmote = false;
+        emoticons.forEach(function (emote) {
+            if(emote.images) {
+                emote.images.forEach(function (image) {
+                    if(!image.url) return;
+                    if(oldEmotes.indexOf(image.url.replace("http://","https://")) !== -1 && bttv.settings.get("showDefaultEmotes") !== true) {
+                        image.url = newEmotes[oldEmotes.indexOf(image.url.replace("http://","https://"))];
+                        image.height = 22;
+                        image.width = 22;
+                        cssString += bttv.chat.templates.emoticonCss(image, image.id);
+                    }
 
-                        if(user && userEmoteSets.indexOf(image.emoticon_set) !== -1) {
-                            var prefixRegex = /^([a-z]+)([0-9A-Z][0-9A-Za-z]+)$/,
-                                rawCommand = prefixRegex.exec(emote.regex);
+                    if(user && userEmoteSets.indexOf(image.emoticon_set) !== -1) {
+                        var prefixRegex = /^([a-z]+)([0-9A-Z][0-9A-Za-z]+)$/,
+                            rawCommand = prefixRegex.exec(emote.regex);
 
-                            if(rawCommand) {
-                                if(/^[a-zA-Z0-9]{5,}$/.test(rawCommand[2])) {
-                                    bttv.chat.store.autoCompleteEmotes[rawCommand[2]] = rawCommand[1]+rawCommand[2];
-                                }
+                        if(rawCommand) {
+                            if(/^[a-zA-Z0-9]{5,}$/.test(rawCommand[2])) {
+                                bttv.chat.store.autoCompleteEmotes[rawCommand[2]] = rawCommand[1]+rawCommand[2];
                             }
                         }
-
-                        /* For tehMorag, because I can */
-                        if(emote.regex === "tehBUFR") {
-                            moragEmote = image.id;
-                        }
-
-                        if(bttv.socketServer && bttv.TwitchEmoteSets && !bttv.TwitchEmoteSets[emote.emoticon_set]) {
-                            if(vars.unknownEmotes.indexOf(emote.regex) === -1) vars.unknownEmotes.push(emote.regex);
-                        } 
-                    });
-                }
-            });
-            if (bttv.settings.get("bttvEmotes") !== false) {
-                betterttvEmotes.forEach(function (b) {
-                    var a = {};
-                    a.text = b.regex.replace(/\\/g,"").replace(/\((.*)\|(.*)\)/,"$1");
-                    b.regex.match(/^\w+$/) ? a.regex = new RegExp("\\b" + b.regex + "\\b", "g") : a.regex = new RegExp(b.regex, "g");
-                    a.channel = b.channel || "BetterTTV Emotes";
-                    a.badge = "//cdn.betterttv.net/tags/kappa.png";
-                    a.images = [];
-                    a.images.push({
-                        emoticon_set: b.emoticon_set || null,
-                        width: b.width,
-                        height: b.height,
-                        url: b.url
-                    });
-                    if(a.text === "SourPls") {
-                        a.hidden = true;
                     }
-                    a.images.forEach(function (c) {
-                        var id = getId();
-                        cssString += bttv.chat.templates.emoticonCss(c, id);
-                        var imageObject = {
-                            cls: "emo-"+id,
-                            isEmoticon: true,
-                            regex: a.regex,
-                        }
-                        if(emoticonSets) {
-                            c.emoticon_set ? (emoticonSets[c.emoticon_set] === undefined && (emoticonSets[c.emoticon_set] = []), emoticonSets[c.emoticon_set].push(imageObject)) : emoticonSets['default'].push(imageObject);
-                        }
-                    });
-                    emoticons.push(a);
+
+                    /* For tehMorag, because I can */
+                    if(emote.regex === "tehBUFR") {
+                        moragEmote = image.id;
+                    }
+
+                    if(bttv.socketServer && bttv.TwitchEmoteSets && !bttv.TwitchEmoteSets[emote.emoticon_set]) {
+                        if(vars.unknownEmotes.indexOf(emote.regex) === -1) vars.unknownEmotes.push(emote.regex);
+                    } 
                 });
             }
-            $("body").on('mouseover', '.chat-line span.emoticon', function() {
-                vars.hoveringEmote = $(this);
-                $(this).tipsy({
-                    trigger: 'manual',
-                    gravity: "sw",
-                    live: false,
-                    html: true,
-                    fallback: function() {
-                        var $emote = vars.hoveringEmote;
-                        if($emote && $emote.data('regex')) {
-                            var raw = decodeURIComponent($emote.data('regex').split(' ').join(''));
-                            if($emote.data('channel')) {
-                                return "Emote: "+raw+"<br />Channel: "+$emote.data('channel');
-                            } else {
-                                return raw;
-                            }
-                        } else {
-                            return "Kappab"
-                        }
-                    }
-                });
-                $(this).tipsy("show");
-                if($(this).data('channel')) {
-                    $(this).css('cursor','pointer');
-                }
-            }).on('mouseout', '.chat-line span.emoticon', function() {
-                $(this).tipsy("hide");
-                if($(this).data('channel')) {
-                    $(this).css('cursor','normal');
-                }
-                $('div.tipsy.tipsy-sw').remove();
-            }).on('click', '.chat-line span.emoticon', function() {
-                if($(this).data('channel')) {
-                    window.open('http://www.twitch.tv/'+$(this).data('channel'),'_blank');
-                }
-            });
-            
-            $('#bttvEmotes').remove();
-            cssString += ".emoticon { display: inline-block; }";
-            if(moragEmote !== false) {
-                var spinner = "emo-"+moragEmote;
-                cssString += '@keyframes "spinner"{from{-webkit-transform:rotate(0);-moz-transform:rotate(0);-o-transform:rotate(0);-ms-transform:rotate(0);transform:rotate(0)}to{-webkit-transform:rotate(360deg);-moz-transform:rotate(360deg);-o-transform:rotate(360deg);-ms-transform:rotate(360deg);transform:rotate(360deg)}}@-moz-keyframes spinner{from{-moz-transform:rotate(0);transform:rotate(0)}to{-moz-transform:rotate(360deg);transform:rotate(360deg)}}@-webkit-keyframes "spinner"{from{-webkit-transform:rotate(0);transform:rotate(0)}to{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@-ms-keyframes "spinner"{from{-ms-transform:rotate(0);transform:rotate(0)}to{-ms-transform:rotate(360deg);transform:rotate(360deg)}}@-o-keyframes "spinner"{from{-o-transform:rotate(0);transform:rotate(0)}to{-o-transform:rotate(360deg);transform:rotate(360deg)}}.spinner{-webkit-animation:spinner 1.5s linear infinite;-moz-animation:spinner 1.5s linear infinite;-ms-animation:spinner 1.5s linear infinite;-o-animation:spinner 1.5s linear infinite;animation:spinner 1.5s linear infinite}'.replace(/spinner/g, spinner);
-            }
-            var emoteCSS = document.createElement("style");
-            emoteCSS.setAttribute("type", "text/css");
-            emoteCSS.setAttribute("id", "bttvEmotes");
-            emoteCSS.innerHTML = cssString;
-            $('body').append(emoteCSS);
         });
-
+        if (bttv.settings.get("bttvEmotes") !== false) {
+            betterttvEmotes.forEach(function (b) {
+                var a = {};
+                a.text = b.regex.replace(/\\/g,"").replace(/\((.*)\|(.*)\)/,"$1");
+                b.regex.match(/^\w+$/) ? a.regex = new RegExp("\\b" + b.regex + "\\b", "g") : a.regex = new RegExp(b.regex, "g");
+                a.channel = b.channel || "BetterTTV Emotes";
+                a.badge = "//cdn.betterttv.net/tags/kappa.png";
+                a.images = [];
+                a.images.push({
+                    emoticon_set: b.emoticon_set || null,
+                    width: b.width,
+                    height: b.height,
+                    url: b.url
+                });
+                if(a.text === "SourPls") {
+                    a.hidden = true;
+                }
+                a.images.forEach(function (c) {
+                    var id = getId();
+                    cssString += bttv.chat.templates.emoticonCss(c, id);
+                    var imageObject = {
+                        cls: "emo-"+id,
+                        isEmoticon: true,
+                        regex: a.regex,
+                    }
+                    if(emoticonSets) {
+                        c.emoticon_set ? (emoticonSets[c.emoticon_set] === undefined && (emoticonSets[c.emoticon_set] = []), emoticonSets[c.emoticon_set].push(imageObject)) : emoticonSets['default'].push(imageObject);
+                    }
+                });
+                emoticons.push(a);
+            });
+        }
+        $("body").on('mouseover', '.chat-line span.emoticon', function() {
+            vars.hoveringEmote = $(this);
+            $(this).tipsy({
+                trigger: 'manual',
+                gravity: "sw",
+                live: false,
+                html: true,
+                fallback: function() {
+                    var $emote = vars.hoveringEmote;
+                    if($emote && $emote.data('regex')) {
+                        var raw = decodeURIComponent($emote.data('regex').split(' ').join(''));
+                        if($emote.data('channel')) {
+                            return "Emote: "+raw+"<br />Channel: "+$emote.data('channel');
+                        } else {
+                            return raw;
+                        }
+                    } else {
+                        return "Kappab"
+                    }
+                }
+            });
+            $(this).tipsy("show");
+            if($(this).data('channel')) {
+                $(this).css('cursor','pointer');
+            }
+        }).on('mouseout', '.chat-line span.emoticon', function() {
+            $(this).tipsy("hide");
+            if($(this).data('channel')) {
+                $(this).css('cursor','normal');
+            }
+            $('div.tipsy.tipsy-sw').remove();
+        }).on('click', '.chat-line span.emoticon', function() {
+            if($(this).data('channel')) {
+                window.open('http://www.twitch.tv/'+$(this).data('channel'),'_blank');
+            }
+        });
+        
+        $('#bttvEmotes').remove();
+        cssString += ".emoticon { display: inline-block; }";
+        if(moragEmote !== false) {
+            var spinner = "emo-"+moragEmote;
+            cssString += '@keyframes "spinner"{from{-webkit-transform:rotate(0);-moz-transform:rotate(0);-o-transform:rotate(0);-ms-transform:rotate(0);transform:rotate(0)}to{-webkit-transform:rotate(360deg);-moz-transform:rotate(360deg);-o-transform:rotate(360deg);-ms-transform:rotate(360deg);transform:rotate(360deg)}}@-moz-keyframes spinner{from{-moz-transform:rotate(0);transform:rotate(0)}to{-moz-transform:rotate(360deg);transform:rotate(360deg)}}@-webkit-keyframes "spinner"{from{-webkit-transform:rotate(0);transform:rotate(0)}to{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@-ms-keyframes "spinner"{from{-ms-transform:rotate(0);transform:rotate(0)}to{-ms-transform:rotate(360deg);transform:rotate(360deg)}}@-o-keyframes "spinner"{from{-o-transform:rotate(0);transform:rotate(0)}to{-o-transform:rotate(360deg);transform:rotate(360deg)}}.spinner{-webkit-animation:spinner 1.5s linear infinite;-moz-animation:spinner 1.5s linear infinite;-ms-animation:spinner 1.5s linear infinite;-o-animation:spinner 1.5s linear infinite;animation:spinner 1.5s linear infinite}'.replace(/spinner/g, spinner);
+        }
+        var emoteCSS = document.createElement("style");
+        emoteCSS.setAttribute("type", "text/css");
+        emoteCSS.setAttribute("id", "bttvEmotes");
+        emoteCSS.innerHTML = cssString;
+        $('body').append(emoteCSS);
     }
 
     var handleBackground = function (tiled) {
