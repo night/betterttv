@@ -149,8 +149,8 @@
     },
     vars = {
         userData: {
-            isLoggedIn: Twitch.user.isLoggedIn(),
-            login: Twitch.user.login()
+            isLoggedIn: window.Twitch ? Twitch.user.isLoggedIn() : false,
+            login: window.Twitch ? Twitch.user.login() : ''
         },
         settings: {},
         liveChannels: [],
@@ -4002,6 +4002,8 @@
             $(window).trigger('resize');
             setTimeout(function() {
                 channelReformat();
+                vars.userData.isLoggedIn = Twitch.user.isLoggedIn();
+                vars.userData.login = Twitch.user.login();
                 $(window).trigger('resize');
             }, 3000);
             setTimeout(chatFunctions, 3000);
