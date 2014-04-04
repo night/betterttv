@@ -2137,7 +2137,7 @@
                         if(bttv.chat.store.__rooms[name].messages.length > bttv.settings.get("scrollbackAmount")) bttv.chat.store.__rooms[name].messages.shift();
                         bttv.chat.store.__rooms[name].messages.push(message);
                     },
-                    chatHandler: function(data) { bttv.chat.store.__rooms[name].queueMessage(data); }
+                    chatHandler: function(data) { bttv.chat.handlers.onPrivmsg(name, data); }
                 }
             },
             currentRoom: '',
