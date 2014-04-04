@@ -1724,10 +1724,8 @@
                 }
             },
             onPrivmsg: function(channel, data) {
-                if(!bttv.chat.store.getRoom(channel).active()) {
-                    bttv.chat.store.getRoom(channel).queueMessage(data);
-                    return;
-                }
+                bttv.chat.store.getRoom(channel).queueMessage(data);
+                if(!bttv.chat.store.getRoom(channel).active()) return;
                 try {
                     bttv.chat.handlers.privmsg(channel, data);
                 } catch(e) {
