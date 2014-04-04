@@ -761,16 +761,25 @@ body {
 	margin-left: 3px !important;
 }
 
+.ember-chat .chat-menu-button-container {
+	background: rgb(50,50,50);
+	border-color: #000;
+}
+
+.ember-chat .chat-menu-button-container:hover {
+	background: rgb(60,60,60);
+}
+
 /*~~~~~~Ember Dark Viewer List ~~~~~~~~~*/
 .ember-chat .chat-menu .chat-top-header {
 	background: rgb(50,50,50); 
 }
 
-.ember-chat .chat-menu .chat-top-header .chat-menu-button-container{
-	background: rgb(50,50,50);
+.ember-chat .ember-list-item-view {
+	border-color: #000;
 }
 
-.ember-chat .ember-list-view, .ember-chat .ember-list-container{
+.ember-chat .ember-list-view, .ember-chat .ember-list-container {
 	background: rgb(30,30,30);
 	color: #000;
 }
@@ -812,6 +821,10 @@ body {
 
 .ember-chat .chat-settings .chat-menu a  {
 	color: #fff;
+}
+
+.ember-chat .chat-menu .chat-menu-header {
+	border-color: #000;
 }
 
 a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00000080, a.small.js-turbo-more-colors {
