@@ -1063,9 +1063,9 @@ table.simple_table td {
 	background-color: #1B1B1B;
 }
 .ember-chat .chat-menu .list-header {
-	color: #646464;
+	color: #f1f1f1;
 	border-color: #202020;
-	background: #050505;
+	background: rgb(20,20,20);
 }
 .ember-chat .chat-menu-button-container.right{
 	border-left: 1px solid #4D4D4D;
@@ -1087,4 +1087,7 @@ div.chat-room-list.chat-menu div.js-rooms.scroll.chat-rooms div.tse-scroll-conte
 	background-color: rgb(20, 20, 20) !important;
 	color: #D3D3D3;
 	border-color: black;
+}
+.ember-chat .chat-room-list .room {
+	border-color: #202020;
 }
