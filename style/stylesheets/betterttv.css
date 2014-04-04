@@ -69,7 +69,7 @@ a {
 
 .ember-chat .chat-messages {
     top: 0px;
-    bottom: 110px;
+    /*bottom: 110px;     Commented out to fix message cutoff issue*/
 }
 
 /* New Channel Page */

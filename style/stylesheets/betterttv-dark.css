@@ -769,6 +769,13 @@ body {
 	color: rgb(200,200,200);
 }
 
+.ember-chat .chat-menu-button-container span.popout-button {
+	background: url("//www-cdn.jtvnw.net/images/xarth/g/g18_popout-FFFFFF80.png") no-repeat;
+}
+.ember-chat .chat-menu-button-container span.close-button {
+	background: url(//www-cdn.jtvnw.net/images/xarth/g/g18_close-FFFFFF80.png) no-repeat;
+}
+
 /*~~~~~~Ember Dark Settings Menu ~~~~~~~~~*/
 .ember-chat .chat-menu .chat-menu-header {
 	background: rgb(50,50,50);
@@ -1036,4 +1043,43 @@ table.simple_table td {
 
 .cl-container .section-header .header-back {
 	border-color: #343434;
+}
+
+/* ~~~~~~~~~~~~Dark Group Chat~~~~~~~~~~~~~~~~~~~~~ */
+.ember-chat .chat-header {
+	background-color: #101010;
+	border-color: #474747;
+}
+
+.ember-chat .chat-menu-button-container {
+	filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter …lues='-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0'/></filter></svg>#invert");
+	filter: invert(90%);
+	-webkit-filter: invert(90%);
+	-o-filter: invert(90%);
+	-ms-filter: invert(90%);
+	-moz-filter: invert(90%);
+}
+.ember-chat .chat-header.all-rooms-header {
+	background-color: #1B1B1B;
+}
+.ember-chat .chat-menu .list-header {
+	color: #646464;
+	border-color: #202020;
+	background: #050505;
+}
+.ember-chat .chat-menu-button-container.right{
+	border-left: 1px solid #4D4D4D;
+}
+div.chat-room-list.chat-menu div.js-rooms.scroll.chat-rooms div.tse-scroll-content {
+	background:rgb(30,30,30);
+}
+.ember-chat .top-dropdown{
+	background: #0C0C0C;
+	border-color: #474747;
+}
+.ember-chat .chat-room-list.masked .mask {
+	background: #353535;
+}
+.ember-chat .chat-menu .chat-top-header{
+	color: #9C9C9C !important;
 }
