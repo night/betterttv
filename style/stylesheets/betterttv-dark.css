@@ -1098,3 +1098,11 @@ div.chat-room-list.chat-menu div.js-rooms.scroll.chat-rooms div.tse-scroll-conte
 .ember-chat .chat-menu-button-container.left {
 	border-color: #4D4D4D;
 }
+.ember-chat .chat-menu-button-container.right{
+	filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter …lues='-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0'/></filter></svg>#invert");
+	filter: invert(90%);
+	-webkit-filter: invert(90%);
+	-o-filter: invert(90%);
+	-ms-filter: invert(90%);
+	-moz-filter: invert(90%);
+}
