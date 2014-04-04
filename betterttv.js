@@ -933,11 +933,6 @@
 
             if(bttv.chat.store.isLoaded) return;
 
-            // I need to fix all these users' vars
-            if(typeof bttv.settings.get("scrollbackAmount") == 'string') {
-                bttv.settings.save("scrollbackAmount", 150);
-            }
-
             if(bttv.socketServer) {
                 if(bttv.getChannel()) chat.helpers.lookupDisplayName(bttv.getChannel());
                 if(vars.userData.isLoggedIn) chat.helpers.lookupDisplayName(vars.userData.login);
@@ -975,23 +970,23 @@
                 }
             }
 
-            tmi.tmiRoom.on('message', function(data) {
-                try {
-                    chat.handlers.privmsg.call(this, data);
-                } catch(e) {
-                    if(chat.store.__reportedErrors.indexOf(e.message) !== -1) return;
-                    chat.store.__reportedErrors.push(e.message);
-                    console.log(e);
-                    var error = {
-                        stack: e.stack,
-                        message: e.message
-                    };
-                    $.get('//nightdev.com/betterttv/errors/?obj='+encodeURIComponent(JSON.stringify(error)));
-                    bttv.chat.helpers.serverMessage('BetterTTV encountered an error reading chat. The developer has been sent a log of this action. Please try clearing your cookies and cache.');
-                }
-            });
+            // Handle Channel Chat
+            bttv.chat.store.newRoom(bttv.getChannel());
+            tmi.tmiRoom.on('message', bttv.chat.store.getRoom(bttv.getChannel()).chatHandler);
             tmi.tmiRoom.on('clearchat', chat.handlers.clearChat);
+            tmi.set('name', chat.helpers.lookupDisplayName(bttv.getChannel()));
+            bttv.chat.store.currentRoom = bttv.getChannel();
             //tmi.tmiRoom.on('labelschanged', chat.handlers.labelsChanged);
+
+            // Handle Group Chats
+            var privateRooms = bttv.getChatController() ? bttv.getChatController().get('connectedPrivateGroupRooms') : false;
+            if(privateRooms && privateRooms.length > 0) {
+                privateRooms.forEach(function(room) {
+                    bttv.chat.store.newRoom(room.get('id'));
+                    room.tmiRoom.on('message', bttv.chat.store.getRoom(room.get('id')).chatHandler);
+                    room.tmiRoom.on('clearchat', chat.handlers.clearChat);
+                });
+            }
 
             // Load BTTV emotes if not loaded
             overrideEmotes();
@@ -1346,7 +1341,7 @@
                 }
             },
             serverMessage: function(message) {
-                bttv.chat.handlers.privmsg({
+                bttv.chat.handlers.privmsg(bttv.chat.store.currentRoom, {
                     from: 'jtv',
                     date: new Date(),
                     message: message,
@@ -1562,9 +1557,16 @@
         },
         handlers: {
             shiftQueue: function() {
-                if(bttv.chat.store.__messageQueue.length === 0) return;
-                $('.ember-chat .chat-messages .tse-content').append(bttv.chat.store.__messageQueue.join(""));
-                bttv.chat.store.__messageQueue = [];
+                if(bttv.chat.tmi() && bttv.chat.tmi().get('id') !== bttv.chat.store.currentRoom) {
+                    $('.ember-chat .chat-messages .tse-content .chat-line').remove();
+                    bttv.chat.store.currentRoom = bttv.chat.tmi().get('id');
+                    $('.ember-chat .chat-messages .tse-content').append(bttv.chat.store.getRoom(bttv.chat.tmi().get('id')).messages.join(""));
+                    bttv.chat.helpers.serverMessage('You switched to: '+bttv.chat.tmi().get('name'));
+                } else {
+                    if(bttv.chat.store.__messageQueue.length === 0) return;
+                    $('.ember-chat .chat-messages .tse-content').append(bttv.chat.store.__messageQueue.join(""));
+                    bttv.chat.store.__messageQueue = [];
+                }
                 bttv.chat.helpers.scrollChat();
             },
             moderationCard: function(user, $event) {
@@ -1721,7 +1723,22 @@
                     }
                 }
             },
-            privmsg: function(data) {
+            onPrivmsg: function(channel, data) {
+                try {
+                    bttv.chat.handlers.privmsg(channel, data);
+                } catch(e) {
+                    if(bttv.chat.store.__reportedErrors.indexOf(e.message) !== -1) return;
+                    bttv.chat.store.__reportedErrors.push(e.message);
+                    console.log(e);
+                    var error = {
+                        stack: e.stack,
+                        message: e.message
+                    };
+                    $.get('//nightdev.com/betterttv/errors/?obj='+encodeURIComponent(JSON.stringify(error)));
+                    bttv.chat.helpers.serverMessage('BetterTTV encountered an error reading chat. The developer has been sent a log of this action. Please try clearing your cookies and cache.');
+                }
+            },
+            privmsg: function(channel, data) {
                 if(data.style && (data.style !== 'admin' && data.style !== 'action' && data.style !== 'notification')) return;
 
                 if (bttv.chat.store.checkMods && data.style === "admin") {
@@ -2087,16 +2104,38 @@
                     }
                 );
 
-                bttv.chat.store.__messageQueue.push(message);
+                if(bttv.chat.store.getRoom(channel).active()) {
+                    bttv.chat.store.__messageQueue.push(message);
+                }
+
+                bttv.chat.store.getRoom(channel).queueMessage(message);
             }
         },
         store: {
+            __rooms: {},
             __messageTimer: false,
             __messageQueue: [],
             __usersBeingLookedUp: 0,
             __reportedErrors: [],
             __subscriptions: {},
             __unbannedUsers: [],
+            getRoom: function(name) {
+                if(!bttv.chat.store.__rooms[name]) bttv.chat.store.newRoom(name, false);
+                return bttv.chat.store.__rooms[name];
+            },
+            newRoom: function(name, active) {
+                bttv.chat.store.__rooms[name] = {
+                    name: name,
+                    active: function() { return (bttv.getChatController() && bttv.getChatController().currentRoom.get('id') === name) ? true : false; },
+                    messages: [],
+                    queueMessage: function(message) {
+                        if(bttv.chat.store.__rooms[name].messages.length > bttv.settings.get("scrollbackAmount")) bttv.chat.store.__rooms[name].messages.shift();
+                        bttv.chat.store.__rooms[name].messages.push(message);
+                    },
+                    chatHandler: function(data) { bttv.chat.handlers.onPrivmsg(name, data); }
+                }
+            },
+            currentRoom: '',
             activeView: true,
             displayNames: {},
             trackTimeouts: {},
