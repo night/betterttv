@@ -159,7 +159,7 @@
 
     bttv.info = {
         version: "6.7",
-        release: 3,
+        release: 4,
         versionString: function() {
             return bttv.info.version + 'R' + bttv.info.release;
         }
@@ -1563,9 +1563,8 @@
                     $('.ember-chat .chat-messages .tse-content .chat-line').remove();
                     bttv.chat.store.currentRoom = id;
                     bttv.chat.store.__messageQueue = [];
-                    console.log(bttv.chat.tmi());
                     bttv.chat.store.getRoom(id).playQueue();
-                    setTimeout(function() { bttv.chat.helpers.serverMessage('You switched to: '+bttv.chat.tmi().get('name')); }, 1000);
+                    bttv.chat.helpers.serverMessage('You switched to: '+bttv.chat.tmi().get('name'));
                 } else {
                     if(bttv.chat.store.__messageQueue.length === 0) return;
                     $('.ember-chat .chat-messages .tse-content').append(bttv.chat.store.__messageQueue.join(""));
