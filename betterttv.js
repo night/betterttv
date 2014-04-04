@@ -149,19 +149,17 @@
     },
     vars = {
         userData: {
-            isLoggedIn: Twitch.user.isLoggedIn(),
-            login: Twitch.user.login()
+            isLoggedIn: window.Twitch ? Twitch.user.isLoggedIn() : false,
+            login: window.Twitch ? Twitch.user.login() : ''
         },
         settings: {},
-        chatters: [],
-        currentViewers: [],
         liveChannels: [],
         blackChat: false
     };
 
     bttv.info = {
         version: "6.7",
-        release: 1,
+        release: 2,
         versionString: function() {
             return bttv.info.version + 'R' + bttv.info.release;
         }
@@ -481,17 +479,6 @@
                         }
                     }
                 },
-                {
-                    default: '',
-                    storageKey: 'blacklistUsernames',
-                    toggle: function(usernames) {
-                        if (usernames.trim() === "") {
-                            bttv.chat.helpers.serverMessage("Blacklist Usernames list is empty");
-                        } else {
-                            bttv.chat.helpers.serverMessage("Blacklist Usernames are now set to: " + usernames);
-                        }
-                    }
-                },
                 {   
                     default: '',
                     storageKey: 'blacklistKeywords',
@@ -506,7 +493,15 @@
                                 phraseKeywords.push('"'+testCase.replace(/(^\{|\}$)/g, '').trim()+'"');
                             }
                         }
+
                         keywords === "" ? keywords = phraseKeywords : keywords = keywords.split(" ").concat(phraseKeywords);
+                        
+                        for(var i=0; i<keywords.length; i++) {
+                            if(/^\([a-z0-9_\-\*]+\)$/i.test(keywords[i])) {
+                                keywords[i] = keywords[i].replace(/(\(|\))/g, '');
+                            }
+                        }
+
                         var keywordList = keywords.join(", ");
                         if(keywordList === "") {
                             bttv.chat.helpers.serverMessage("Blacklist Keywords list is empty");
@@ -1041,7 +1036,7 @@
             // Make names clickable
             $("body").off("click", ".chat-line .from").on("click", ".chat-line .from", function() {
                 bttv.chat.handlers.moderationCard($(this).parent().data('sender'), $(this));
-            })
+            });
 
             // Load emote sets
             if(bttv.socketServer) {
@@ -1049,6 +1044,18 @@
                 bttv.socketServer.on("twitch emotes", function(result) {
                     bttv.socketServer.off("twitch emotes");
                     bttv.TwitchEmoteSets = result.sets;
+
+                    // Give some tips to Twitch Emotes
+                    if(tmi.product && tmi.product.emoticons) {
+                        for(var i=0; i<tmi.product.emoticons.length; i++) {
+                            var emote = tmi.product.emoticons[i];
+
+                            if(emote.state && emote.state === "active" && !bttv.TwitchEmoteSets[emote.emoticon_set]) {
+                                bttv.socketServer.emit('give_tip', { channel: bttv.getChannel(), user: (vars.userData.isLoggedIn ? vars.userData.login : 'guest') });
+                                break;
+                            }
+                        }
+                    }
                 });
 
                 // TODO: Implement auto server selection, anon chat, etc.
@@ -1291,6 +1298,10 @@
                             break;
                         case keyCodes.b:
                             bttv.chat.helpers.ban(user);
+                            $('.bttv-mod-card').remove();
+                            break;
+                        case keyCodes.i:
+                            bttv.chat.helpers.sendMessage("/ignore "+user);
                             $('.bttv-mod-card').remove();
                             break;
                     }
@@ -1785,7 +1796,7 @@
                     highlightKeywords = [],
                     highlightUsers = [],
                     blacklistKeywords = [],
-                    blacklistUsernames = [];
+                    blacklistUsers = [];
 
                 if(bttv.settings.get("blacklistKeywords")) {
                     var keywords = bttv.settings.get("blacklistKeywords");
@@ -1801,7 +1812,11 @@
                     if(keywords !== "") {
                         keywords = keywords.split(" ");
                         keywords.forEach(function (keyword) {
-                            blacklistKeywords.push(keyword);
+                            if(/^\([a-z0-9_\-\*]+\)$/i.test(keyword)) {
+                                blacklistUsers.push(keyword.replace(/(\(|\))/g, ''));
+                            } else {
+                                blacklistKeywords.push(keyword);
+                            }
                         });
                     }
 
@@ -1813,16 +1828,16 @@
                             filtered = true;
                         }
                     });
-                    if(filtered) return;
-                }
 
-                if(keywords = bttv.settings.get("blacklistUsernames")) {
-                    blacklistUsernames = keywords.trim().toLowerCase().replace(/\s\s+/g, " ").split(" ");
-                    for (var i=0;i<blacklistUsernames.length;i++) {
-                        if (data.from === blacklistUsernames[i]) {
-                            return;
+                    blacklistUsers.forEach(function (user) {
+                        user = escapeRegExp(user).replace(/\*/g, "[^ ]*");
+                        var nickRegex = new RegExp('^' + user + '$', 'i');
+                        if (nickRegex.test(data.from)) {
+                            filtered = true;
                         }
-                    }
+                    });
+
+                    if(filtered) return;
                 }
 
                 if(bttv.settings.get("highlightKeywords")) {
@@ -2851,13 +2866,11 @@
 
     }
 
-    var overrideEmotes = function (override) {
+    var overrideEmotes = function () {
 
         if (vars.emotesLoaded) return;
 
         debug.log("Overriding Twitch Emoticons");
-
-        var override = override || false;
 
         var betterttvEmotes = [
                                 { url: "//cdn.betterttv.net/emotes/trollface.png", width: 23, height: 19, regex: "(\\:trollface\\:|\\:tf\\:)" },
@@ -3114,140 +3127,124 @@
         var _id = 0;
         var getId = function() { return 'bttv-'+(_id++); };
 
-        Twitch.api.get("chat/emoticons").done(function (a) {
-            if(!override && (emoticons.length < a.emoticons.length)) {
-                debug.log("Woah! Your emotes didn't load yet.");
-                setTimeout(function() {
-                    overrideEmotes(true);
-                }, 15000);
-                return;
-            }
-            vars.emotesLoaded = true;
-            var cssString = "";
-            if(vars.userData.isLoggedIn && bttv.chat.helpers.getEmotes(vars.userData.login)) {
-                var user = vars.userData.login;
-                var userEmoteSets = bttv.chat.helpers.getEmotes(vars.userData.login);
-            } else {
-                var user = false;
-            }
-            var moragEmote = false;
-            emoticons.forEach(function (emote) {
-                if(emote.images) {
-                    emote.images.forEach(function (image) {
-                        if(!image.url) return;
-                        if(oldEmotes.indexOf(image.url.replace("http://","https://")) !== -1 && bttv.settings.get("showDefaultEmotes") !== true) {
-                            image.url = newEmotes[oldEmotes.indexOf(image.url.replace("http://","https://"))];
-                            image.height = 22;
-                            image.width = 22;
-                            cssString += bttv.chat.templates.emoticonCss(image, image.id);
-                        }
-
-                        if(user && userEmoteSets.indexOf(image.emoticon_set) !== -1) {
-                            var prefixRegex = /^([a-z]+)([0-9A-Z][0-9A-Za-z]+)$/,
-                                rawCommand = prefixRegex.exec(emote.regex);
-
-                            if(rawCommand) {
-                                if(/^[a-zA-Z0-9]{5,}$/.test(rawCommand[2])) {
-                                    bttv.chat.store.autoCompleteEmotes[rawCommand[2]] = rawCommand[1]+rawCommand[2];
-                                }
-                            }
-                        }
-
-                        /* For tehMorag, because I can */
-                        if(emote.regex === "tehBUFR") {
-                            moragEmote = image.id;
-                        }
-
-                        if(bttv.socketServer && bttv.TwitchEmoteSets && !bttv.TwitchEmoteSets[emote.emoticon_set]) {
-                            if($('.emoticon-grid .emoticon[original-title="'+emote.regex+'"]').length) {
-                                bttv.socketServer.emit('give_tip', { channel: bttv.getChannel(), user: (vars.userData.isLoggedIn ? vars.userData.login : 'guest') });
-                            }
-                        } 
-                    });
-                }
-            });
-            if (bttv.settings.get("bttvEmotes") !== false) {
-                betterttvEmotes.forEach(function (b) {
-                    var a = {};
-                    a.text = b.regex.replace(/\\/g,"").replace(/\((.*)\|(.*)\)/,"$1");
-                    b.regex.match(/^\w+$/) ? a.regex = new RegExp("\\b" + b.regex + "\\b", "g") : a.regex = new RegExp(b.regex, "g");
-                    a.channel = b.channel || "BetterTTV Emotes";
-                    a.badge = "//cdn.betterttv.net/tags/kappa.png";
-                    a.images = [];
-                    a.images.push({
-                        emoticon_set: b.emoticon_set || null,
-                        width: b.width,
-                        height: b.height,
-                        url: b.url
-                    });
-                    if(a.text === "SourPls") {
-                        a.hidden = true;
+        vars.emotesLoaded = true;
+        var cssString = "";
+        if(vars.userData.isLoggedIn && bttv.chat.helpers.getEmotes(vars.userData.login)) {
+            var user = vars.userData.login;
+            var userEmoteSets = bttv.chat.helpers.getEmotes(vars.userData.login);
+        } else {
+            var user = false;
+        }
+        var moragEmote = false;
+        emoticons.forEach(function (emote) {
+            if(emote.images) {
+                emote.images.forEach(function (image) {
+                    if(!image.url) return;
+                    if(oldEmotes.indexOf(image.url.replace("http://","https://")) !== -1 && bttv.settings.get("showDefaultEmotes") !== true) {
+                        image.url = newEmotes[oldEmotes.indexOf(image.url.replace("http://","https://"))];
+                        image.height = 22;
+                        image.width = 22;
+                        cssString += bttv.chat.templates.emoticonCss(image, image.id);
                     }
-                    a.images.forEach(function (c) {
-                        var id = getId();
-                        cssString += bttv.chat.templates.emoticonCss(c, id);
-                        var imageObject = {
-                            cls: "emo-"+id,
-                            isEmoticon: true,
-                            regex: a.regex,
-                        }
-                        if(emoticonSets) {
-                            c.emoticon_set ? (emoticonSets[c.emoticon_set] === undefined && (emoticonSets[c.emoticon_set] = []), emoticonSets[c.emoticon_set].push(imageObject)) : emoticonSets['default'].push(imageObject);
-                        }
-                    });
-                    emoticons.push(a);
-                });
-            }
-            $("body").on('mouseover', '.chat-line span.emoticon', function() {
-                vars.hoveringEmote = $(this);
-                $(this).tipsy({
-                    trigger: 'manual',
-                    gravity: "sw",
-                    live: false,
-                    html: true,
-                    fallback: function() {
-                        var $emote = vars.hoveringEmote;
-                        if($emote && $emote.data('regex')) {
-                            var raw = decodeURIComponent($emote.data('regex').split(' ').join(''));
-                            if($emote.data('channel')) {
-                                return "Emote: "+raw+"<br />Channel: "+$emote.data('channel');
-                            } else {
-                                return raw;
+
+                    if(user && userEmoteSets.indexOf(image.emoticon_set) !== -1) {
+                        var prefixRegex = /^([a-z]+)([0-9A-Z][0-9A-Za-z]+)$/,
+                            rawCommand = prefixRegex.exec(emote.regex);
+
+                        if(rawCommand) {
+                            if(/^[a-zA-Z0-9]{5,}$/.test(rawCommand[2])) {
+                                bttv.chat.store.autoCompleteEmotes[rawCommand[2]] = rawCommand[1]+rawCommand[2];
                             }
-                        } else {
-                            return "Kappab"
                         }
                     }
+
+                    /* For tehMorag, because I can */
+                    if(emote.regex === "tehBUFR") {
+                        moragEmote = image.id;
+                    }
                 });
-                $(this).tipsy("show");
-                if($(this).data('channel')) {
-                    $(this).css('cursor','pointer');
-                }
-            }).on('mouseout', '.chat-line span.emoticon', function() {
-                $(this).tipsy("hide");
-                if($(this).data('channel')) {
-                    $(this).css('cursor','normal');
-                }
-                $('div.tipsy.tipsy-sw').remove();
-            }).on('click', '.chat-line span.emoticon', function() {
-                if($(this).data('channel')) {
-                    window.open('http://www.twitch.tv/'+$(this).data('channel'),'_blank');
-                }
-            });
-            
-            $('#bttvEmotes').remove();
-            cssString += ".emoticon { display: inline-block; }";
-            if(moragEmote !== false) {
-                var spinner = "emo-"+moragEmote;
-                cssString += '@keyframes "spinner"{from{-webkit-transform:rotate(0);-moz-transform:rotate(0);-o-transform:rotate(0);-ms-transform:rotate(0);transform:rotate(0)}to{-webkit-transform:rotate(360deg);-moz-transform:rotate(360deg);-o-transform:rotate(360deg);-ms-transform:rotate(360deg);transform:rotate(360deg)}}@-moz-keyframes spinner{from{-moz-transform:rotate(0);transform:rotate(0)}to{-moz-transform:rotate(360deg);transform:rotate(360deg)}}@-webkit-keyframes "spinner"{from{-webkit-transform:rotate(0);transform:rotate(0)}to{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@-ms-keyframes "spinner"{from{-ms-transform:rotate(0);transform:rotate(0)}to{-ms-transform:rotate(360deg);transform:rotate(360deg)}}@-o-keyframes "spinner"{from{-o-transform:rotate(0);transform:rotate(0)}to{-o-transform:rotate(360deg);transform:rotate(360deg)}}.spinner{-webkit-animation:spinner 1.5s linear infinite;-moz-animation:spinner 1.5s linear infinite;-ms-animation:spinner 1.5s linear infinite;-o-animation:spinner 1.5s linear infinite;animation:spinner 1.5s linear infinite}'.replace(/spinner/g, spinner);
             }
-            var emoteCSS = document.createElement("style");
-            emoteCSS.setAttribute("type", "text/css");
-            emoteCSS.setAttribute("id", "bttvEmotes");
-            emoteCSS.innerHTML = cssString;
-            $('body').append(emoteCSS);
         });
-
+        if (bttv.settings.get("bttvEmotes") !== false) {
+            betterttvEmotes.forEach(function (b) {
+                var a = {};
+                a.text = b.regex.replace(/\\/g,"").replace(/\((.*)\|(.*)\)/,"$1");
+                b.regex.match(/^\w+$/) ? a.regex = new RegExp("\\b" + b.regex + "\\b", "g") : a.regex = new RegExp(b.regex, "g");
+                a.channel = b.channel || "BetterTTV Emotes";
+                a.badge = "//cdn.betterttv.net/tags/kappa.png";
+                a.images = [];
+                a.images.push({
+                    emoticon_set: b.emoticon_set || null,
+                    width: b.width,
+                    height: b.height,
+                    url: b.url
+                });
+                if(a.text === "SourPls") {
+                    a.hidden = true;
+                }
+                a.images.forEach(function (c) {
+                    var id = getId();
+                    cssString += bttv.chat.templates.emoticonCss(c, id);
+                    var imageObject = {
+                        cls: "emo-"+id,
+                        isEmoticon: true,
+                        regex: a.regex,
+                    }
+                    if(emoticonSets) {
+                        c.emoticon_set ? (emoticonSets[c.emoticon_set] === undefined && (emoticonSets[c.emoticon_set] = []), emoticonSets[c.emoticon_set].push(imageObject)) : emoticonSets['default'].push(imageObject);
+                    }
+                });
+                emoticons.push(a);
+            });
+        }
+        $("body").on('mouseover', '.chat-line span.emoticon', function() {
+            vars.hoveringEmote = $(this);
+            $(this).tipsy({
+                trigger: 'manual',
+                gravity: "sw",
+                live: false,
+                html: true,
+                fallback: function() {
+                    var $emote = vars.hoveringEmote;
+                    if($emote && $emote.data('regex')) {
+                        var raw = decodeURIComponent($emote.data('regex').split(' ').join(''));
+                        if($emote.data('channel')) {
+                            return "Emote: "+raw+"<br />Channel: "+$emote.data('channel');
+                        } else {
+                            return raw;
+                        }
+                    } else {
+                        return "Kappab"
+                    }
+                }
+            });
+            $(this).tipsy("show");
+            if($(this).data('channel')) {
+                $(this).css('cursor','pointer');
+            }
+        }).on('mouseout', '.chat-line span.emoticon', function() {
+            $(this).tipsy("hide");
+            if($(this).data('channel')) {
+                $(this).css('cursor','normal');
+            }
+            $('div.tipsy.tipsy-sw').remove();
+        }).on('click', '.chat-line span.emoticon', function() {
+            if($(this).data('channel')) {
+                window.open('http://www.twitch.tv/'+$(this).data('channel'),'_blank');
+            }
+        });
+        
+        $('#bttvEmotes').remove();
+        cssString += ".emoticon { display: inline-block; }";
+        if(moragEmote !== false) {
+            var spinner = "emo-"+moragEmote;
+            cssString += '@keyframes "spinner"{from{-webkit-transform:rotate(0);-moz-transform:rotate(0);-o-transform:rotate(0);-ms-transform:rotate(0);transform:rotate(0)}to{-webkit-transform:rotate(360deg);-moz-transform:rotate(360deg);-o-transform:rotate(360deg);-ms-transform:rotate(360deg);transform:rotate(360deg)}}@-moz-keyframes spinner{from{-moz-transform:rotate(0);transform:rotate(0)}to{-moz-transform:rotate(360deg);transform:rotate(360deg)}}@-webkit-keyframes "spinner"{from{-webkit-transform:rotate(0);transform:rotate(0)}to{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@-ms-keyframes "spinner"{from{-ms-transform:rotate(0);transform:rotate(0)}to{-ms-transform:rotate(360deg);transform:rotate(360deg)}}@-o-keyframes "spinner"{from{-o-transform:rotate(0);transform:rotate(0)}to{-o-transform:rotate(360deg);transform:rotate(360deg)}}.spinner{-webkit-animation:spinner 1.5s linear infinite;-moz-animation:spinner 1.5s linear infinite;-ms-animation:spinner 1.5s linear infinite;-o-animation:spinner 1.5s linear infinite;animation:spinner 1.5s linear infinite}'.replace(/spinner/g, spinner);
+        }
+        var emoteCSS = document.createElement("style");
+        emoteCSS.setAttribute("type", "text/css");
+        emoteCSS.setAttribute("id", "bttvEmotes");
+        emoteCSS.innerHTML = cssString;
+        $('body').append(emoteCSS);
     }
 
     var handleBackground = function (tiled) {
@@ -3439,17 +3436,17 @@
                     $("#followers_count").text(Twitch.display.commatize(a["_total"]));
                 }
             });
-            if(!$("#chatters_count").length) {
+            /*if(!$("#chatters_count").length) {
                 var $chattersContainer = $("<span></span>");
                 $chattersContainer.attr("class", "stat");
                 $chattersContainer.attr("id", "chatters_count");
                 $chattersContainer.attr("tooltipdata", "Chatters");
-                $chattersContainer.text(Twitch.display.commatize(vars.chatters.length));
+                $chattersContainer.text(Twitch.display.commatize(bttv.chat.store.chatters.length));
                 $("#followers_count").after($chattersContainer);
                 if($("#commercial_buttons").length) $("#followers_count").after('<div style="margin-top:5px;"> </div>');
             } else {
-                $("#chatters_count").text(Twitch.display.commatize(vars.chatters.length));
-            }
+                $("#chatters_count").text(Twitch.display.commatize(bttv.chat.store.chatters.length));
+            }*/
 
             if(vars.dontCheckSubs !== true) {
                 $.get('/broadcast/dashboard/partnership', function (data) {
@@ -3546,7 +3543,6 @@
             ' + ($("body[data-page=\"ember#chat\"]").length ? '<p><a href="#" class="g18_gear-00000080 blackChatLink">Black Chat (Chroma Key)</a></p>' : '') + ' \
             ' + (($("#dash_main").length || /\?bttvDashboard=true/.test(window.location)) ? '<p><a href="#" class="g18_gear-00000080 flipDashboard">' + (bttv.settings.get("flipDashboard") === true ? 'Unflip Dashboard' : 'Flip Dashboard') + '</a></p>' : '') + ' \
             <p><a href="#" class="g18_gear-00000080 setBlacklistKeywords">Set Blacklist Keywords</a></p> \
-            <p><a href="#" class="g18_gear-00000080 setBlacklistUsernames">Set Blacklist Usernames</a></p> \
             <p><a href="#" class="g18_gear-00000080 setHighlightKeywords">Set Highlight Keywords</a></p> \
             <p><a href="#" class="g18_gear-00000080 setScrollbackAmount">Set Scrollback Amount</a></p> \
             <p><a href="#" class="g18_trash-00000080 clearChat">Clear My Chat</a></p> \
@@ -3616,15 +3612,6 @@
             if (keywords != null) {
                 keywords = keywords.trim().replace(/\s\s+/g, ' ');
                 bttv.settings.save("blacklistKeywords", keywords);
-            }
-        });
-
-        $('.setBlacklistUsernames').click(function(e) {
-            e.preventDefault();
-            var keywords = prompt("Type some blacklist usernames. Messages by these usernames will be filtered from your chat. Use spaces in the field to specify multiple keywords.", bttv.settings.get("blacklistUsernames"));
-            if (keywords != null) {
-                keywords = keywords.trim().replace(/\s\s+/g, ' ');
-                bttv.settings.save("blacklistUsernames", keywords);
             }
         });
 
@@ -4018,6 +4005,8 @@
             $(window).trigger('resize');
             setTimeout(function() {
                 channelReformat();
+                vars.userData.isLoggedIn = Twitch.user.isLoggedIn();
+                vars.userData.login = Twitch.user.login();
                 $(window).trigger('resize');
             }, 3000);
             setTimeout(chatFunctions, 3000);
