@@ -740,6 +740,26 @@ body {
 	white-space: nowrap;
 }
 
+.ember-chat .chat-interface .textarea-contain {
+	top: 10px;
+	left: 10px;
+	right: 10px;
+}
+
+.ember-chat .chat-interface .chat-buttons-container {
+	top: 80px;
+	left: 10px;
+	right: 10px;
+	bottom: auto;
+}
+
+.ember-chat .chat-interface .chat-buttons-container .chat-option-buttons button:first-child {
+	margin-right: 3px;
+}
+
+#chat_emote_dropmenu_button.newlayout {
+	margin-left: 3px !important;
+}
 
 /*~~~~~~Ember Dark Viewer List ~~~~~~~~~*/
 .ember-chat .chat-menu .chat-top-header {
@@ -757,7 +777,6 @@ body {
 
 .ember-chat .chat-menu  {
 	background: rgb(30,30,30);
-	color: #fff;
 }
 
 .ember-chat .ember-list-item-view a {
@@ -1051,10 +1070,10 @@ table.simple_table td {
 
 /* ~~~~~~~~~~~~Dark Group Chat~~~~~~~~~~~~~~~~~~~~~ */
 .ember-chat .chat-header {
-	background-color: #101010;
-	border-color: #474747;
+	background-color: #282828;
+	border-top: 1px solid #000;
+	border-bottom: 1px solid #000;
 }
-
 .ember-chat div.chat-room-list.chat-menu .chat-menu-button-container, .ember-chat .chat-menu-button-container span.back {
 	filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter …lues='-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0'/></filter></svg>#invert");
 	filter: invert(90%);
@@ -1067,24 +1086,24 @@ table.simple_table td {
 	background-color: #1B1B1B;
 }
 .ember-chat .chat-menu .list-header {
-	color: rgb(200,200,200);
+	color: #000;
 	border-color: #c1c1c1;
 	background: rgb(50,50,50);
 }
-.ember-chat .chat-menu-button-container.right{
+.ember-chat .chat-menu-button-container.right {
 	border-left: 1px solid #4D4D4D;
 }
 div.chat-room-list.chat-menu div.js-rooms.scroll.chat-rooms div.tse-scroll-content {
 	background:rgb(30,30,30);
 }
-.ember-chat .top-dropdown{
+.ember-chat .top-dropdown {
 	background: #0C0C0C;
 	border-color: #474747;
 }
 .ember-chat .chat-room-list.masked .mask {
 	background: #353535;
 }
-.ember-chat .chat-menu .chat-top-header{
+.ember-chat .chat-menu .chat-top-header {
 	color: #9C9C9C !important;
 }
 .ember-chat .top-dropdown .input-contain input.text-input {
@@ -1098,11 +1117,12 @@ div.chat-room-list.chat-menu div.js-rooms.scroll.chat-rooms div.tse-scroll-conte
 .ember-chat .chat-menu-button-container.left {
 	border-color: #4D4D4D;
 }
-.ember-chat .chat-menu-button-container.right{
-	filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter …lues='-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0'/></filter></svg>#invert");
-	filter: invert(90%);
-	-webkit-filter: invert(90%);
-	-o-filter: invert(90%);
-	-ms-filter: invert(90%);
-	-moz-filter: invert(90%);
+.ember-chat .chat-menu-button-container.right {
+	border-color: #000;
+}
+.ember-chat a {
+	color: #D3D3D3;
+}
+.ember-chat p.room-title:hover {
+	color: #fff;
 }
