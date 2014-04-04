@@ -1051,7 +1051,7 @@ table.simple_table td {
 	border-color: #474747;
 }
 
-.ember-chat div.chat-room-list.chat-menu .chat-menu-button-container {
+.ember-chat div.chat-room-list.chat-menu .chat-menu-button-container, .ember-chat .chat-menu-button-container span.back {
 	filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter …lues='-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0'/></filter></svg>#invert");
 	filter: invert(90%);
 	-webkit-filter: invert(90%);
