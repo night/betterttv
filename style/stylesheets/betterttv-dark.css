@@ -761,7 +761,7 @@ body {
 	margin-left: 3px !important;
 }
 
-.ember-chat .chat-menu-button-container.left, .ember-chat .chat-menu-button-container.left {
+.ember-chat .chat-menu-button-container.left, .ember-chat .chat-menu-button-container.right {
 	background: rgb(50,50,50);
 	border-color: #000;
 }
@@ -1095,15 +1095,12 @@ table.simple_table td {
 	border-color: #000;
 	background: rgb(50,50,50);
 }
-.ember-chat .chat-menu-button-container.right {
-	border-left: 1px solid #4D4D4D;
-}
 div.chat-room-list.chat-menu div.js-rooms.scroll.chat-rooms div.tse-scroll-content {
 	background:rgb(30,30,30);
 }
 .ember-chat .top-dropdown {
-	background: #0C0C0C;
-	border-color: #474747;
+	background: #282828;
+	border-color: #000;
 }
 .ember-chat .chat-room-list.masked .mask {
 	background: #353535;
@@ -1120,7 +1117,8 @@ div.chat-room-list.chat-menu div.js-rooms.scroll.chat-rooms div.tse-scroll-conte
 	border-color: #202020;
 }
 .ember-chat a {
-	color: #D3D3D3;
+	color: #fff;
+	font-weight: bold;
 }
 .ember-chat .chat-room-list .room:hover p.room-title {
 	color: #fff;
