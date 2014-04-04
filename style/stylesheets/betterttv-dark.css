@@ -776,6 +776,10 @@ body {
 	background: url(//www-cdn.jtvnw.net/images/xarth/g/g18_close-FFFFFF80.png) no-repeat;
 }
 
+.ember-chat .chat-menu .chat-top-header p {
+	color: white;
+}
+
 /*~~~~~~Ember Dark Settings Menu ~~~~~~~~~*/
 .ember-chat .chat-menu .chat-menu-header {
 	background: rgb(50,50,50);
@@ -1063,9 +1067,9 @@ table.simple_table td {
 	background-color: #1B1B1B;
 }
 .ember-chat .chat-menu .list-header {
-	color: #f1f1f1;
-	border-color: #202020;
-	background: rgb(20,20,20);
+	color: rgb(200,200,200);
+	border-color: #c1c1c1;
+	background: rgb(50,50,50);
 }
 .ember-chat .chat-menu-button-container.right{
 	border-left: 1px solid #4D4D4D;
@@ -1090,4 +1094,7 @@ div.chat-room-list.chat-menu div.js-rooms.scroll.chat-rooms div.tse-scroll-conte
 }
 .ember-chat .chat-room-list .room {
 	border-color: #202020;
+}
+.ember-chat .chat-menu-button-container.left {
+	border-color: #4D4D4D;
 }
