@@ -969,3 +969,29 @@ body#chat #speak {
 .ember-chat .moderation-card .mod-controls button {
     vertical-align: top;
 }
+
+/* Fix z-index issues with group chat header + settings */
+.ember-chat .chat-settings {
+    z-index: 4;
+}
+.ember-chat .chat-header {
+    z-index: 3;
+}
+
+/* Group Chat changed textarea */
+.ember-chat .chat-interface .textarea-contain {
+    top: 10px;
+    left: 10px;
+    right: 10px;
+}
+
+.ember-chat .chat-interface .chat-buttons-container {
+    top: 80px;
+    left: 10px;
+    right: 10px;
+    bottom: auto;
+}
+
+.ember-chat .chat-interface .chat-buttons-container .chat-option-buttons button:first-child {
+    margin-right: 3px;
+}
