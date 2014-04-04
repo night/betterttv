@@ -1116,7 +1116,7 @@ div.chat-room-list.chat-menu div.js-rooms.scroll.chat-rooms div.tse-scroll-conte
 .ember-chat .chat-room-list .room {
 	border-color: #202020;
 }
-.ember-chat a {
+.ember-chat .no-content a {
 	color: #fff;
 	font-weight: bold;
 }
