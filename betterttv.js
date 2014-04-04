@@ -159,7 +159,7 @@
 
     bttv.info = {
         version: "6.7",
-        release: 2,
+        release: 3,
         versionString: function() {
             return bttv.info.version + 'R' + bttv.info.release;
         }
