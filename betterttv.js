@@ -2139,7 +2139,7 @@
                         bttv.chat.store.__rooms[name].messages.push(message);
                     },
                     chatHandler: function(data) {
-                        bttv.chat.store.getRoom(channel).queueMessage(data);
+                        bttv.chat.store.getRoom(name).queueMessage(data);
                         if(bttv.chat.store.getRoom(name).active()) bttv.chat.handlers.onPrivmsg(name, data);
                     }
                 }
