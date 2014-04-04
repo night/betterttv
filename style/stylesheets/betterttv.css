@@ -995,3 +995,7 @@ body#chat #speak {
 .ember-chat .chat-interface .chat-buttons-container .chat-option-buttons button:first-child {
     margin-right: 3px;
 }
+
+#chat_emote_dropmenu_button.newlayout {
+    margin-left: 3px !important;
+}

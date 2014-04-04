@@ -2671,7 +2671,7 @@
             }
 
             if(!bttv.getChannel()) return;
-            $('body').append("<style>.ember-chat .chat-interface .textarea-contain { bottom: 70px; } .ember-chat .chat-interface .chat-buttons-container { top: 80px; } .ember-chat .chat-interface { height: 140px; } .ember-chat .chat-messages { bottom: 140px; } .ember-chat .chat-settings { bottom: 68px; } .ember-chat .emoticon-selector { bottom: 135px !important; }</style>");
+            $('body').append("<style>.ember-chat .chat-interface .textarea-contain { bottom: 70px !important; } .ember-chat .chat-interface .chat-buttons-container { top: 75px !important; } .ember-chat .chat-interface { height: 140px; } .ember-chat .chat-messages { bottom: 140px; } .ember-chat .chat-settings { bottom: 68px; } .ember-chat .emoticon-selector { bottom: 135px !important; }</style>");
         }
     }
 
