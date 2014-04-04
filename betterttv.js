@@ -1557,11 +1557,13 @@
         },
         handlers: {
             shiftQueue: function() {
-                if(bttv.chat.tmi() && bttv.chat.tmi().get('id') !== bttv.chat.store.currentRoom) {
+                if(!bttv.chat.tmi() || !bttv.chat.tmi().get('id')) return;
+                var id = bttv.chat.tmi().get('id');
+                if(id !== bttv.chat.store.currentRoom) {
                     $('.ember-chat .chat-messages .tse-content .chat-line').remove();
-                    bttv.chat.store.currentRoom = bttv.chat.tmi().get('id');
-                    bttv.chat.store.getRoom(bttv.chat.tmi().get('id')).playQueue();
-                    bttv.chat.helpers.serverMessage('You switched to: '+bttv.chat.tmi().get('name'));
+                    bttv.chat.store.currentRoom = id;
+                    setTimeout(function() { bttv.chat.store.getRoom(id).playQueue(); }, 10);
+                    setTimeout(function() { bttv.chat.helpers.serverMessage('You switched to: '+bttv.chat.tmi().get('name')); }, 25);
                 } else {
                     if(bttv.chat.store.__messageQueue.length === 0) return;
                     $('.ember-chat .chat-messages .tse-content').append(bttv.chat.store.__messageQueue.join(""));
@@ -1724,7 +1726,7 @@
                 }
             },
             onPrivmsg: function(channel, data) {
-                if(!bttv.chat.store.getRoom(channel).active()) {
+                if(!bttv.chat.store.getRoom(channel).active() && data.from && data.from !== 'jtv') {
                     bttv.chat.store.getRoom(channel).queueMessage(data);
                     return;
                 }
