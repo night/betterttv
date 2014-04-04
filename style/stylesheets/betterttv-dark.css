@@ -1010,7 +1010,7 @@ table.simple_table th {
 	padding: 14px 20px;
 	background: #1B1B1B;
 }
-#settings div.upload .missing_image{
+#settings div.upload .missing_image {
 	filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter …lues='-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0'/></filter></svg>#invert");
 	filter: invert(90%);
 	-webkit-filter: invert(90%);
@@ -1087,20 +1087,12 @@ table.simple_table td {
 	border-top: 1px solid #000;
 	border-bottom: 1px solid #000;
 }
-.ember-chat div.chat-room-list.chat-menu .chat-menu-button-container, .ember-chat .chat-menu-button-container span.back {
-	filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter …lues='-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0'/></filter></svg>#invert");
-	filter: invert(90%);
-	-webkit-filter: invert(90%);
-	-o-filter: invert(90%);
-	-ms-filter: invert(90%);
-	-moz-filter: invert(90%);
-}
 .ember-chat .chat-header.all-rooms-header {
 	background-color: #1B1B1B;
 }
 .ember-chat .chat-menu .list-header {
-	color: #000;
-	border-color: #c1c1c1;
+	color: #D3D3D3;
+	border-color: #000;
 	background: rgb(50,50,50);
 }
 .ember-chat .chat-menu-button-container.right {
