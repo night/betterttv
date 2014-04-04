@@ -1563,8 +1563,9 @@
                     $('.ember-chat .chat-messages .tse-content .chat-line').remove();
                     bttv.chat.store.currentRoom = id;
                     bttv.chat.store.__messageQueue = [];
-                    setTimeout(function() { bttv.chat.store.getRoom(id).playQueue(); }, 1000);
-                    setTimeout(function() { bttv.chat.helpers.serverMessage('You switched to: '+bttv.chat.tmi().get('name')); }, 2000);
+                    console.log(bttv.chat.tmi());
+                    bttv.chat.store.getRoom(id).playQueue();
+                    setTimeout(function() { bttv.chat.helpers.serverMessage('You switched to: '+bttv.chat.tmi().get('name')); }, 1000);
                 } else {
                     if(bttv.chat.store.__messageQueue.length === 0) return;
                     $('.ember-chat .chat-messages .tse-content').append(bttv.chat.store.__messageQueue.join(""));
@@ -2142,7 +2143,7 @@
                         bttv.chat.store.__rooms[name].messages.push(message);
                     },
                     chatHandler: function(data) {
-                        bttv.chat.store.getRoom(name).queueMessage(data);
+                        if(data.from && data.from !== 'jtv') bttv.chat.store.getRoom(name).queueMessage(data);
                         if(bttv.chat.store.getRoom(name).active()) bttv.chat.handlers.onPrivmsg(name, data);
                     }
                 }
