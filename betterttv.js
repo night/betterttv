@@ -1724,8 +1724,10 @@
                 }
             },
             onPrivmsg: function(channel, data) {
-                bttv.chat.store.getRoom(channel).queueMessage(data);
-                if(!bttv.chat.store.getRoom(channel).active()) return;
+                if(!bttv.chat.store.getRoom(channel).active()) {
+                    bttv.chat.store.getRoom(channel).queueMessage(data);
+                    return;
+                }
                 try {
                     bttv.chat.handlers.privmsg(channel, data);
                 } catch(e) {
@@ -2127,15 +2129,19 @@
                     active: function() { return (bttv.getChatController() && bttv.getChatController().currentRoom.get('id') === name) ? true : false; },
                     messages: [],
                     playQueue: function() {
-                        bttv.chat.store.__rooms[name].messages.forEach(function(message) {
+                        for(var i=0; i<bttv.chat.store.__rooms[name].messages.length; i++) {
+                            var message = bttv.chat.store.__rooms[name].messages[i];
                             bttv.chat.handlers.onPrivmsg(name, message);
-                        });
+                        }
                     },
                     queueMessage: function(message) {
                         if(bttv.chat.store.__rooms[name].messages.length > bttv.settings.get("scrollbackAmount")) bttv.chat.store.__rooms[name].messages.shift();
                         bttv.chat.store.__rooms[name].messages.push(message);
                     },
-                    chatHandler: function(data) { bttv.chat.handlers.onPrivmsg(name, data); }
+                    chatHandler: function(data) {
+                        bttv.chat.store.getRoom(channel).queueMessage(data);
+                        if(bttv.chat.store.getRoom(channel).active()) bttv.chat.handlers.onPrivmsg(name, data);
+                    }
                 }
             },
             currentRoom: '',
