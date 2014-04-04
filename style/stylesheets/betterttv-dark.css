@@ -1086,6 +1086,7 @@ table.simple_table td {
 	background-color: rgb(50,50,50);
 	border-top: 1px solid #000;
 	border-bottom: 1px solid #000;
+	z-index: 2;
 }
 .ember-chat .chat-header.all-rooms-header {
 	background-color: rgb(50,50,50);
@@ -1130,7 +1131,4 @@ div.chat-room-list.chat-menu div.js-rooms.scroll.chat-rooms div.tse-scroll-conte
 	-o-filter: invert(90%);
 	-ms-filter: invert(90%);
 	-moz-filter: invert(90%);
-}
-.ember-chat .chat-header {
-	z-index: 1;
 }
