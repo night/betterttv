@@ -1083,20 +1083,20 @@ table.simple_table td {
 
 /* ~~~~~~~~~~~~Dark Group Chat~~~~~~~~~~~~~~~~~~~~~ */
 .ember-chat .chat-header {
-	background-color: #282828;
+	background-color: rgb(50,50,50);
 	border-top: 1px solid #000;
 	border-bottom: 1px solid #000;
 }
 .ember-chat .chat-header.all-rooms-header {
-	background-color: #1B1B1B;
+	background-color: rgb(50,50,50);
 }
 .ember-chat .chat-menu .list-header {
 	color: #D3D3D3;
 	border-color: #000;
-	background: rgb(50,50,50);
+	background: #282828;
 }
 div.chat-room-list.chat-menu div.js-rooms.scroll.chat-rooms div.tse-scroll-content {
-	background:rgb(30,30,30);
+	background: rgb(30,30,30);
 }
 .ember-chat .top-dropdown {
 	background: #282828;
