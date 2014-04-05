@@ -2124,8 +2124,8 @@
             __unbannedUsers: [],
             getRoom: function(name) {
                 if(!bttv.chat.store.__rooms[name]) {
-                    delete bttv.chat.tmi().tmiSession._rooms[channel]._events['message'];
-                    delete bttv.chat.tmi().tmiSession._rooms[channel]._events['clearchat'];
+                    delete bttv.chat.tmi().tmiSession._rooms[name]._events['message'];
+                    delete bttv.chat.tmi().tmiSession._rooms[name]._events['clearchat'];
                     bttv.chat.store.newRoom(name);
                     bttv.chat.tmi().tmiRoom.on('message', bttv.chat.store.getRoom(name).chatHandler);
                     bttv.chat.tmi().tmiRoom.on('clearchat', bttv.chat.handlers.clearChat);
