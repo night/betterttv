@@ -2124,11 +2124,11 @@
             __unbannedUsers: [],
             getRoom: function(name) {
                 if(!bttv.chat.store.__rooms[name]) {
-                    delete tmi.tmiSession._rooms[channel]._events['message'];
-                    delete tmi.tmiSession._rooms[channel]._events['clearchat'];
+                    delete bttv.chat.tmi().tmiSession._rooms[channel]._events['message'];
+                    delete bttv.chat.tmi().tmiSession._rooms[channel]._events['clearchat'];
                     bttv.chat.store.newRoom(name);
-                    tmi.tmiRoom.on('message', bttv.chat.store.getRoom(name).chatHandler);
-                    tmi.tmiRoom.on('clearchat', chat.handlers.clearChat);
+                    bttv.chat.tmi().tmiRoom.on('message', bttv.chat.store.getRoom(name).chatHandler);
+                    bttv.chat.tmi().tmiRoom.on('clearchat', bttv.chat.handlers.clearChat);
                 }
                 return bttv.chat.store.__rooms[name];
             },
