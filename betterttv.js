@@ -2123,10 +2123,16 @@
             __subscriptions: {},
             __unbannedUsers: [],
             getRoom: function(name) {
-                if(!bttv.chat.store.__rooms[name]) bttv.chat.store.newRoom(name, false);
+                if(!bttv.chat.store.__rooms[name]) {
+                    delete tmi.tmiSession._rooms[channel]._events['message'];
+                    delete tmi.tmiSession._rooms[channel]._events['clearchat'];
+                    bttv.chat.store.newRoom(name);
+                    tmi.tmiRoom.on('message', bttv.chat.store.getRoom(name).chatHandler);
+                    tmi.tmiRoom.on('clearchat', chat.handlers.clearChat);
+                }
                 return bttv.chat.store.__rooms[name];
             },
-            newRoom: function(name, active) {
+            newRoom: function(name) {
                 bttv.chat.store.__rooms[name] = {
                     name: name,
                     active: function() { return (bttv.getChatController() && bttv.getChatController().currentRoom.get('id') === name) ? true : false; },
