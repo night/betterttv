@@ -23,6 +23,8 @@ gulp.task('templates', function () {
 });
 
 gulp.task('scripts', ['templates'], function () {
+	// if we want .coffee, we can compile them to build/*.js
+	//  and include them here
 	gulp.src(['src/*.js', 'build/templates/*.js'])
 		.pipe(wrap({pathModifier: commonjsPath}))
 		.pipe(concat('betterttv.js'))
