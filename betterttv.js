@@ -1556,6 +1556,21 @@
             }
         },
         handlers: {
+            countUnreadMessages: function() {
+                var controller = bttv.getChatController(),
+                    channels = bttv.chat.store.getRooms(),
+                    unreadChannels = 0;
+
+                channels.forEach(function(channel) {
+                    var channel = bttv.chat.store.getRoom(channel);
+                    if(channel.unread > 0) {
+                        unreadChannels++;
+                    }
+                    channel.emberRoom.set('unreadCount', channel.unread);
+                });
+
+                controller.set('notificationsCount', unreadChannels);
+            },
             shiftQueue: function() {
                 if(!bttv.chat.tmi() || !bttv.chat.tmi().get('id')) return;
                 var id = bttv.chat.tmi().get('id');
@@ -2122,6 +2137,9 @@
             __reportedErrors: [],
             __subscriptions: {},
             __unbannedUsers: [],
+            getRooms: function() {
+                return Object.keys(bttv.chat.store.__rooms);
+            },
             getRoom: function(name) {
                 if(!bttv.chat.store.__rooms[name]) {
                     delete bttv.chat.tmi().tmiRoom._events['message'];
@@ -2133,11 +2151,28 @@
                 return bttv.chat.store.__rooms[name];
             },
             newRoom: function(name) {
+                var emberRoom = null;
+                var groupRooms = bttv.getChatController().get('connectedPrivateGroupRooms');
+                var channelRoom = bttv.getChatController().get('currentChannelRoom');
+                if(channelRoom.get('id') === name) {
+                    emberRoom = channelRoom;
+                } else {
+                    for(var i=0; i<groupRooms.length; i++) {
+                        if(groupRooms[i].get('id') === name) {
+                            emberRoom = groupRooms[i];
+                            break;
+                        }
+                    }
+                }
                 bttv.chat.store.__rooms[name] = {
                     name: name,
+                    unread: 0,
+                    emberRoom: emberRoom,
                     active: function() { return (bttv.getChatController() && bttv.getChatController().currentRoom.get('id') === name) ? true : false; },
                     messages: [],
                     playQueue: function() {
+                        bttv.chat.store.__rooms[name].unread = 0;
+                        bttv.chat.handlers.countUnreadMessages();
                         for(var i=0; i<bttv.chat.store.__rooms[name].messages.length; i++) {
                             var message = bttv.chat.store.__rooms[name].messages[i];
                             bttv.chat.handlers.onPrivmsg(name, message);
@@ -2149,7 +2184,12 @@
                     },
                     chatHandler: function(data) {
                         if(data.from && data.from !== 'jtv') bttv.chat.store.getRoom(name).queueMessage(data);
-                        if(bttv.chat.store.getRoom(name).active()) bttv.chat.handlers.onPrivmsg(name, data);
+                        if(bttv.chat.store.getRoom(name).active()) {
+                            bttv.chat.handlers.onPrivmsg(name, data);
+                        } else {
+                            bttv.chat.store.__rooms[name].unread++;
+                            bttv.chat.handlers.countUnreadMessages();
+                        }
                     }
                 }
             },
