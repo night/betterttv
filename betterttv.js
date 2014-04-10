@@ -1030,7 +1030,7 @@
 
             // Make names clickable
             $("body").off("click", ".chat-line .from").on("click", ".chat-line .from", function() {
-                bttv.chat.handlers.moderationCard($(this).parent().data('sender'), $(this));
+                bttv.chat.handlers.moderationCard($(this).parent().data('sender')+"", $(this));
             });
 
             // Load emote sets
