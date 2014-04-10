@@ -770,10 +770,6 @@ body {
 	background: rgb(60,60,60);
 }
 
-.ember-chat .chat-settings {
-	z-index: 4;
-}
-
 /*~~~~~~Ember Dark Viewer List ~~~~~~~~~*/
 .ember-chat .chat-menu .chat-top-header {
 	background: rgb(50,50,50); 
@@ -1090,7 +1086,6 @@ table.simple_table td {
 	background-color: rgb(50,50,50);
 	border-top: 1px solid #000;
 	border-bottom: 1px solid #000;
-	z-index: 3;
 }
 .ember-chat .chat-header.all-rooms-header {
 	background-color: rgb(50,50,50);

@@ -970,14 +970,6 @@ body#chat #speak {
     vertical-align: top;
 }
 
-/* Fix z-index issues with group chat header + settings */
-.ember-chat .chat-settings {
-    z-index: 4;
-}
-.ember-chat .chat-header {
-    z-index: 3;
-}
-
 /* Group Chat changed textarea */
 .ember-chat .chat-interface .textarea-contain {
     top: 10px;
