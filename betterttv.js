@@ -444,7 +444,7 @@ vars = {
 bttv.info = {
     version: "6.7",
     release: 4,
-    versionString: function() {
+    versionString: function() { 
         return bttv.info.version + 'R' + bttv.info.release;
     }
 }
@@ -4500,14 +4500,6 @@ module.exports = [
         }
     }
 ];
-});
-require.register("templates/hey", function(exports, require, module){
-    function template(locals) {
-var buf = [];
-var jade_mixins = {};
-
-buf.push("<div id=\"hey\">Hello you ! ^^</div>");;return buf.join("");
-};module.exports=template;
 });
 require.register("templates/settings", function(exports, require, module){
     function template(locals) {

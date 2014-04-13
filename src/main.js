@@ -28,7 +28,7 @@ vars = {
 bttv.info = {
     version: "6.7",
     release: 4,
-    versionString: function() {
+    versionString: function() { 
         return bttv.info.version + 'R' + bttv.info.release;
     }
 }
