@@ -27,7 +27,7 @@ vars = {
 
 bttv.info = {
     version: "6.7",
-    release: 4,
+    release: 5,
     versionString: function() { 
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -547,7 +547,7 @@ bttv.chat = {
 
         // Make names clickable
         $("body").off("click", ".chat-line .from").on("click", ".chat-line .from", function() {
-            bttv.chat.handlers.moderationCard($(this).parent().data('sender'), $(this));
+            bttv.chat.handlers.moderationCard($(this).parent().data('sender')+"", $(this));
         });
 
         // Load emote sets
@@ -3039,17 +3039,19 @@ var dashboardChannelInfo = function () {
                 $("#followers_count").text(Twitch.display.commatize(a["_total"]));
             }
         });
-        /*if(!$("#chatters_count").length) {
+        if(!$("#chatters_count").length) {
             var $chattersContainer = $("<span></span>");
             $chattersContainer.attr("class", "stat");
             $chattersContainer.attr("id", "chatters_count");
             $chattersContainer.attr("tooltipdata", "Chatters");
-            $chattersContainer.text(Twitch.display.commatize(bttv.chat.store.chatters.length));
+            $chattersContainer.text('0');
             $("#followers_count").after($chattersContainer);
             if($("#commercial_buttons").length) $("#followers_count").after('<div style="margin-top:5px;"> </div>');
-        } else {
-            $("#chatters_count").text(Twitch.display.commatize(bttv.chat.store.chatters.length));
-        }*/
+        }
+
+        $.getJSON('http://tmi.twitch.tv/group/user/' + bttv.getChannel() + '/chatters?callback=?', function(data) {
+            if(data.data && data.data.chatter_count) $("#chatters_count").text(Twitch.display.commatize(data.data.chatter_count));
+        });
 
         if(vars.dontCheckSubs !== true) {
             $.get('/broadcast/dashboard/partnership', function (data) {
