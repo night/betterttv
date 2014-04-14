@@ -3544,7 +3544,7 @@
             }
 
             $.getJSON('http://tmi.twitch.tv/group/user/' + bttv.getChannel() + '/chatters?callback=?', function(data) {
-                if(data.chatter_count) $("#chatters_count").text(Twitch.display.commatize(data.chatter_count));
+                if(data.data && data.data.chatter_count) $("#chatters_count").text(Twitch.display.commatize(data.data.chatter_count));
             });
 
             if(vars.dontCheckSubs !== true) {
