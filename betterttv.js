@@ -3543,7 +3543,7 @@
                 if($("#commercial_buttons").length) $("#followers_count").after('<div style="margin-top:5px;"> </div>');
             }
 
-            $.get('http://tmi.twitch.tv/group/user/' + bttv.getChannel() + '/chatters?callback=?', function(data) {
+            $.getJSON('http://tmi.twitch.tv/group/user/' + bttv.getChannel() + '/chatters?callback=?', function(data) {
                 if(data.chatter_count) $("#chatters_count").text(Twitch.display.commatize(data.chatter_count));
             });
 
