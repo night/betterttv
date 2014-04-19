@@ -16,7 +16,7 @@ var jadeDefinition =
 
 gulp.task('templates', function () {
 	return gulp.src(['src/templates/*.jade'])
-		.pipe(jade({client: true}))
+		.pipe(jade({client: true, globals: ['$', 'window', 'bttv', 'Twitch']}))
 		.pipe(rename({suffix: '-template'})) // avoid filename clashes
 		.pipe(footer(';module.exports=template;'))
 		.pipe(gulp.dest('build/templates/'))
@@ -25,7 +25,7 @@ gulp.task('templates', function () {
 gulp.task('scripts', ['templates'], function () {
 	// if we want .coffee, we can compile them to build/*.js
 	//  and include them here
-	gulp.src(['src/*.js', 'build/templates/*.js'])
+	gulp.src(['src/**/*.js', 'build/templates/*.js'])
 		.pipe(wrap({pathModifier: commonjsPath}))
 		.pipe(concat('betterttv.js'))
 		.pipe(header('(function (bttv) { \n'))

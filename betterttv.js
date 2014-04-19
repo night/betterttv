@@ -300,6 +300,22 @@ exports.rethrow = function rethrow(err, filename, lineno, str){
 },{}]},{},[1])
 (1)
 });(function (bttv) { 
+require.register("debug", function(exports, require, module){
+    module.exports = {
+    log: function (string) {
+        if (window.console && console.log) console.log("BTTV: " + string);
+    },
+    warn: function (string) {
+        if (window.console && console.warn) console.warn("BTTV: " + string);
+    },
+    error: function (string) {
+        if (window.console && console.error) console.error("BTTV: " + string);
+    },
+    info: function (string) {
+        if (window.console && console.info) console.info("BTTV: " + string);
+    }
+};
+});
 require.register("element", function(exports, require, module){
     exports.remove = function (e) {
     // Removes all of an element
@@ -409,29 +425,8 @@ require.register("main", function(exports, require, module){
     var keyCodes = require('keycodes');
 
 // Declare public and private variables
-var debug = {
-    log: function (string) {
-        if (window.console && console.log) console.log("BTTV: " + string);
-    },
-    warn: function (string) {
-        if (window.console && console.warn) console.warn("BTTV: " + string);
-    },
-    error: function (string) {
-        if (window.console && console.error) console.error("BTTV: " + string);
-    },
-    info: function (string) {
-        if (window.console && console.info) console.info("BTTV: " + string);
-    }
-},
-vars = {
-    userData: {
-        isLoggedIn: window.Twitch ? Twitch.user.isLoggedIn() : false,
-        login: window.Twitch ? Twitch.user.login() : ''
-    },
-    settings: {},
-    liveChannels: [],
-    blackChat: false
-};
+var debug = require('debug'),
+vars = require('vars');
 
 bttv.info = {
     version: "6.7",
@@ -527,7 +522,7 @@ bttv.settings = {
         }
         var settingsList = require('settings-list');
 
-        var settingTemplate = require('templates/settings');
+        var settingTemplate = require('templates/setting-switch');
 
         var featureRequests = ' \
             <div class="option"> \
@@ -2589,7 +2584,7 @@ var brand = function () {
     betaChat();
 }
 
-var betaChat = function () {
+var betaChat = bttv.betaChat = function () {
     if (bttv.settings.get("bttvChat") === true && vars.userData.isLoggedIn) {
 
         if($("body#chat").length || $('body[data-page="ember#chat"]').length) return;
@@ -3202,7 +3197,7 @@ var overrideEmotes = function () {
                     regex: a.regex,
                 }
                 if(emoticonSets) {
-                    c.emoticon_set ? (emoticonSets[c.emoticon_set] === undefined && (emoticonSets[c.emoticon_set] = []), emoticonSets[c.emoticon_set].push(imageObject)) : emoticonSets['default'].push(imageObject);
+                    c.emoticon_set ? (emoticonSets[c.emoticon_set] === undefined && (emoticonSets[c.emoticon_set] = [], emoticonSets[c.emoticon_set].push(imageObject))) : emoticonSets['default'].push(imageObject);
                 }
             });
             emoticons.push(a);
@@ -3258,309 +3253,567 @@ var overrideEmotes = function () {
     $('body').append(emoteCSS);
 }
 
-var handleBackground = function (tiled) {
-    var tiled = tiled || false;
-    if($("#custom-bg").length === 0 && $("#custom_bg").length === 0) return;
+var handleBackground = require('features/handle-background'),
+    darkenPage = require('features/darken-page'),
+    splitChat = require('features/split-chat'),
+    flipDashboard = require('features/flip-dashboard'),
+    formatDashboard = require('features/format-dashboard'),
+    dashboardChannelInfo = require('features/dashboard-channelinfo'),
+    giveawayCompatibility = require('features/giveaway-compatibility'),
+    handleTwitchChatEmotesScript = require('features/handle-twitchchat-emotes'),
+    loadChatSettings = require('features/chat-load-settings'),
+    createSettingsMenu = require('features/create-settings-menu');
 
-    var canvasID = ($("#custom-bg").length) ? 'custom-bg' : 'custom_bg';
+var handleLookupServer = function() {
+    var socketJSInject = document.createElement("script");
+    socketJSInject.setAttribute("src", "//cdn.betterttv.net/js/sock.js?"+bttv.info.versionString());
+    socketJSInject.setAttribute("type", "text/javascript");
+    $("head").append(socketJSInject);
+}
 
-    if(tiled) {
-        $("#"+canvasID).addClass('tiled');
+var checkJquery = function (times) {
+    times = times || 0;
+    if(times > 9) return;
+    if(typeof ($j) === 'undefined') {
+        debug.log("jQuery is undefined.");
+        setTimeout(function() { checkJquery(times+1); }, 1000);
+        return;
     } else {
-        if($("#"+canvasID).attr("image")) {
-            var img = new Image();
-            img.onload = function() {
-                if(img.naturalWidth < $('#main_col').width()) {
-                    setTimeout(function(){
-                        handleBackground(true);
-                    }, 2000);
-                }
-            }
-            img.src = $("#"+canvasID).attr("image");
-        }
+        var $ = $j;
+        bttv.jQuery = $;
+        main();
     }
+}
 
-    var g = $("#"+canvasID),
-        d = g[0];
-    if (d && d.getContext) {
-        var c = d.getContext("2d"),
-            h = $("#"+canvasID).attr("image");
-        if (!h) {
-            $(d).css("background-image", "");
-            c.clearRect(0, 0, d.width, d.height);
-        } else if (g.css({
-            width: "100%",
-            "background-position": "center top"
-        }), g.hasClass("tiled")) {
-            g.css({
-                "background-image": 'url("' + h + '")'
-            }).attr("width", 200).attr("height", 200);
-            d = c.createLinearGradient(0, 0, 0, 200);
-            if (bttv.settings.get("darkenedMode") === true) {
-                d.addColorStop(0, "rgba(20,20,20,0.4)");
-                d.addColorStop(1, "rgba(20,20,20,1)");
-            } else {
-                d.addColorStop(0, "rgba(245,245,245,0.65)");
-                d.addColorStop(1, "rgba(245,245,245,1)");
+var main = function () {
+
+    if(window.Ember) {
+        var renderingCounter = 0;
+
+        var waitForLoad = function(callback, count) {
+            var count = count || 0;
+            if(count > 5) {
+                callback(false);
             }
-            c.fillStyle = d;
-            c.fillRect(0, 0, 200, 200);
-        } else {
-            var i = document.createElement("IMG");
-            i.onload = function () {
-                var a = this.width,
-                    d = this.height,
-                    h;
-                g.attr("width", a).attr("height", d);
-                c.drawImage(i, 0, 0);
-                if (bttv.settings.get("darkenedMode") === true) {
-                    d > a ? (h = c.createLinearGradient(0, 0, 0, a), h.addColorStop(0, "rgba(20,20,20,0.4)"), h.addColorStop(1, "rgba(20,20,20,1)"), c.fillStyle = h, c.fillRect(0, 0, a, a), c.fillStyle = "rgb(20,20,20)", c.fillRect(0, a, a, d - a)) : (h = c.createLinearGradient(0, 0, 0, d), h.addColorStop(0, "rgba(20,20,20,0.4)"), h.addColorStop(1, "rgba(20,20,20,1)"), c.fillStyle = h, c.fillRect(0, 0, a, d))
+            setTimeout(function() {
+                if(renderingCounter === 0) {
+                    callback(true);
                 } else {
-                    d > a ? (h = c.createLinearGradient(0, 0, 0, a), h.addColorStop(0, "rgba(245,245,245,0.65)"), h.addColorStop(1, "rgba(245,245,245,1)"), c.fillStyle = h, c.fillRect(0, 0, a, a), c.fillStyle = "rgb(245,245,245)", c.fillRect(0, a, a, d - a)) : (h = c.createLinearGradient(0, 0, 0, d), h.addColorStop(0, "rgba(245,245,245,0.65)"), h.addColorStop(1, "rgba(245,245,245,1)"), c.fillStyle = h, c.fillRect(0, 0, a, d))
+                    waitForLoad(callback, ++count);
                 }
-            };
-            i.src = h;
-        }
-    }
-};
-
-var darkenPage = function () {
-
-    var $body = $('body');
-
-    /* Twitch broke BGs */
-    setTimeout(handleBackground, 1000);
-
-    if(bttv.settings.get("darkenedMode") !== true || !$body.attr('data-page')) return;
-
-    debug.log("Darkening Page");
-
-    var pageKind = $('body').data('page').split('#')[0],
-        pageType = $('body').data('page').split('#')[1] || "none",
-        allowedPages = ['ember', 'message', 'dashboards', 'chat', 'chapter', 'archive', 'channel', 'user'];
-
-    if(allowedPages.indexOf(pageKind) !== -1) {
-
-        if(pageKind === "dashboards" && pageType !== "show") return;
-
-        var darkCSS = document.createElement("link");
-        darkCSS.setAttribute("href", "//cdn.betterttv.net/style/stylesheets/betterttv-dark.css?"+bttv.info.versionString());
-        darkCSS.setAttribute("type", "text/css");
-        darkCSS.setAttribute("rel", "stylesheet");
-        darkCSS.setAttribute("id", "darkTwitch");
-        $('body').append(darkCSS);
-
-        $("#main_col .content #stats_and_actions #channel_stats #channel_viewer_count").css("display", "none");
-        //setTimeout(handleBackground, 1000);
-
-        // Messages Delete Icon Fix
-        $('#main_col .messages img[src="http://www-cdn.jtvnw.net/images/xarth/g/g18_trash-00000080.png"]').attr("src", "//cdn.betterttv.net/style/icons/delete.png");
-        $('#main_col .messages img[src="http://www-cdn.jtvnw.net/images/xarth/g/g16_trash-00000020.png"]').attr("src", "//cdn.betterttv.net/style/icons/delete.png").attr("width","16").attr("height","16");
-    }
-
-}
-
-var splitChat = function () {
-
-    if (bttv.settings.get("splitChat") !== false) {
-
-        debug.log("Splitting Chat");
-
-        var splitCSS = document.createElement("link");
-        bttv.settings.get("darkenedMode") === true ? splitCSS.setAttribute("href", "//cdn.betterttv.net/style/stylesheets/betterttv-split-chat-dark.css") : splitCSS.setAttribute("href", "//cdn.betterttv.net/style/stylesheets/betterttv-split-chat.css");
-        splitCSS.setAttribute("type", "text/css");
-        splitCSS.setAttribute("rel", "stylesheet");
-        splitCSS.setAttribute("id", "splitChat");
-        $('body').append(splitCSS);
-    }
-
-}
-
-var flipDashboard = function () {
-
-    if ($("#dash_main").length && bttv.settings.get("flipDashboard") === true) {
-
-        debug.log("Flipping Dashboard");
-
-        // We want to move the chat to the left, and the dashboard controls to the right.
-        $("#controls_column, #player_column").css({
-            float: "right",
-            marginLeft: "500px"
-        });
-        $("#chat,iframe").css({
-            float: "left",
-            left: "20px",
-            right: ""
-        });
-
-    }
-
-}
-
-var formatDashboard = function () {
-
-    if ($("#dash_main").length) {
-
-        debug.log("Formatting Dashboard");
-
-        // Move Page Elements to Sub-DIV & Account for Changes
-        $('<div style="position:relative;" id="bttvDashboard"></div>').appendTo('#dash_main');
-        $("#dash_main #controls_column").appendTo("#bttvDashboard");
-        $("#dash_main #player_column").appendTo("#bttvDashboard");
-        $("#dash_main iframe").css("top",
-            (bttv.settings.get('darkenedMode') ? 11 : 0)+
-            (($('.js-broadcaster-message').css('display') !== 'none') ? $('.js-broadcaster-message').outerHeight(true) : 0)+
-            $('#dashboard_title').outerHeight(true)+
-            $('#setup_link').outerHeight(true)+
-            $('#dash_nav').outerHeight(true)+
-            $('#stream-config-status').outerHeight(true)
-        ).css("border","none");
-        if($("#dash_main iframe").length) {
-            $("#dash_main iframe")[0].style.height = "514px";
-            $("#dash_main iframe")[0].src = "/"+bttv.getChannel()+"/chat?bttvDashboard=true";
+            }, 1000);
         }
 
-        // Small Dashboard Fixes
-        $("#commercial_options .dropmenu_action[data-length=150]").text("2m 30s");
-        $("#controls_column #form_submit button").attr("class", "primary_button");
+        Ember.subscribe('render', {
+            before: function() {
+                renderingCounter++;
+            },
+            after: function(name, ts, payload) {
+                renderingCounter--;
+                
+                if(!payload.template) return;
+                //debug.log(payload.template);
 
-    }
-
-}
-
-var dashboardChannelInfo = function () {
-
-    if ($("#dash_main").length) {
-
-        debug.log("Updating Dashboard Channel Info");
-
-        Twitch.api.get("streams/" + bttv.getChannel()).done(function (a) {
-            if (a.stream) {
-                $("#channel_viewer_count").text(Twitch.display.commatize(a.stream.viewers));
-                if(a.stream.channel.views) $("#views_count").html(Twitch.display.commatize(a.stream.channel.views));
-            } else {
-                $("#channel_viewer_count").text("Offline");
-            }
-        });
-        Twitch.api.get("channels/" + bttv.getChannel() + "/follows?limit=1").done(function (a) {
-            if (a["_total"]) {
-                $("#followers_count").text(Twitch.display.commatize(a["_total"]));
-            }
-        });
-        if(!$("#chatters_count").length) {
-            var $chattersContainer = $("<span></span>");
-            $chattersContainer.attr("class", "stat");
-            $chattersContainer.attr("id", "chatters_count");
-            $chattersContainer.attr("tooltipdata", "Chatters");
-            $chattersContainer.text('0');
-            $("#followers_count").after($chattersContainer);
-            if($("#commercial_buttons").length) $("#followers_count").after('<div style="margin-top:5px;"> </div>');
-        }
-
-        $.getJSON('http://tmi.twitch.tv/group/user/' + bttv.getChannel() + '/chatters?callback=?', function(data) {
-            if(data.data && data.data.chatter_count) $("#chatters_count").text(Twitch.display.commatize(data.data.chatter_count));
-        });
-
-        if(vars.dontCheckSubs !== true) {
-            $.get('/broadcast/dashboard/partnership', function (data) {
-                var $subsContainer = $(data).find("div.main div.wrapper"),
-                    subsRegex = /Your channel currently has ([0-9,]+) paying subscribers and ([0-9,]+) total active subscribers/;
-                    
-                if ($subsContainer) {
-                    var containerText = $subsContainer.text();
-
-                    if(containerText.match(subsRegex)) {
-                        var subAmounts = subsRegex.exec(containerText),
-                            activeSubs = subAmounts[2];
-
-                        if(!$("#channel_subs_count").length) {
-                            var $subsContainer = $("<span></span>");
-                            $subsContainer.attr("class", "stat");
-                            $subsContainer.attr("id", "channel_subs_count");
-                            $subsContainer.attr("tooltipdata", "Active Subscribers");
-                            $subsContainer.text(Twitch.display.commatize(activeSubs));
-                            $("#chatters_count").after($subsContainer);
-
-                            Twitch.api.get("chat/" + bttv.getChannel() + "/badges").done(function (a) {
-                                if (a.subscriber) {
-                                    $("#channel_subs_count").css("background", "url("+a.subscriber.image+") no-repeat left center");
-                                    $("#channel_subs_count").css("background-size", "14px 14px");
+                if(App.__container__.lookup("controller:application").get("currentRouteName") !== "channel.index") {
+                    $('#main_col').css('width', 'auto');
+                }
+                
+                switch(payload.template) {
+                    case 'shared/right_column':
+                        waitForLoad(function(ready) {
+                            if(ready) {
+                                bttv.chat.store.isLoaded = false;
+                                betaChat();
+                                chatFunctions();
+                                if(bttv.socketServer) {
+                                    bttv.socketServer.emit("join channel", { channel: ((bttv.getChannel()) ? bttv.getChannel() : null) })
                                 }
-                            });
-                        } else {
-                            $("#channel_subs_count").text(Twitch.display.commatize(activeSubs));
-                        }
+                            }
+                        });
+                        break;
+                    case 'channel/index':
+                        waitForLoad(function(ready) {
+                            if(ready) {
+                                handleBackground();
+                                clearClutter();
+                                channelReformat();
+                                $(window).trigger('resize');
+                            }
+                        });
+                        break;
+                    case 'channel/profile':
+                        waitForLoad(function(ready) {
+                            if(ready) {
+                                vars.emotesLoaded = false;
+                                betaChat();
+                                chatFunctions();
+                                channelReformat();
+                                $(window).trigger('resize');
+                            }
+                        });
+                        break;
+                    case 'directory/following':
+                        waitForLoad(function(ready) {
+                            if(ready) {
+                                directoryFunctions();
+                            }
+                        });
+                        break;
+                }
+            }
+        });
+    }
+
+    handleLookupServer();
+
+    $(document).ready(function () {
+        createSettingsMenu();
+        bttv.settings.load();
+
+        debug.log("BTTV v" + bttv.info.versionString());
+        debug.log("CALL init " + document.URL);
+
+        brand();
+        clearClutter();
+        channelReformat();
+        checkMessages();
+        checkFollowing();
+        checkBroadcastInfo();
+        darkenPage();
+        splitChat();
+        flipDashboard();
+        formatDashboard();
+        giveawayCompatibility();
+        dashboardChannelInfo();
+        directoryFunctions();
+
+        $(window).trigger('resize');
+        setTimeout(function() {
+            channelReformat();
+            vars.userData.isLoggedIn = Twitch.user.isLoggedIn();
+            vars.userData.login = Twitch.user.login();
+            $(window).trigger('resize');
+        }, 3000);
+        setTimeout(chatFunctions, 3000);
+        setTimeout(directoryFunctions, 3000);
+        
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-39733925-4', 'betterttv.net');
+        ga('send', 'pageview');
+
+        (function(b){b.gritter={};b.gritter.options={position:"top-left",class_name:"",fade_in_speed:"medium",fade_out_speed:1000,time:6000};b.gritter.add=function(f){try{return a.add(f||{})}catch(d){var c="Gritter Error: "+d;(typeof(console)!="undefined"&&console.error)?console.error(c,f):alert(c)}};b.gritter.remove=function(d,c){a.removeSpecific(d,c||{})};b.gritter.removeAll=function(c){a.stop(c||{})};var a={position:"",fade_in_speed:"",fade_out_speed:"",time:"",_custom_timer:0,_item_count:0,_is_setup:0,_tpl_close:'<div class="gritter-close"></div>',_tpl_title:'<span class="gritter-title">[[title]]</span>',_tpl_item:'<div id="gritter-item-[[number]]" class="gritter-item-wrapper [[item_class]]" style="display:none"><div class="gritter-top"></div><div class="gritter-item">[[close]][[image]]<div class="[[class_name]]">[[title]]<p>[[text]]</p></div><div style="clear:both"></div></div><div class="gritter-bottom"></div></div>',_tpl_wrap:'<div id="gritter-notice-wrapper"></div>',add:function(g){if(typeof(g)=="string"){g={text:g}}if(!g.text){throw'You must supply "text" parameter.'}if(!this._is_setup){this._runSetup()}var k=g.title,n=g.text,e=g.image||"",l=g.sticky||false,m=g.class_name||b.gritter.options.class_name,j=b.gritter.options.position,d=g.time||"";this._verifyWrapper();this._item_count++;var f=this._item_count,i=this._tpl_item;b(["before_open","after_open","before_close","after_close"]).each(function(p,q){a["_"+q+"_"+f]=(b.isFunction(g[q]))?g[q]:function(){}});this._custom_timer=0;if(d){this._custom_timer=d}var c=(e!="")?'<img src="'+e+'" class="gritter-image" />':"",h=(e!="")?"gritter-with-image":"gritter-without-image";if(k){k=this._str_replace("[[title]]",k,this._tpl_title)}else{k=""}i=this._str_replace(["[[title]]","[[text]]","[[close]]","[[image]]","[[number]]","[[class_name]]","[[item_class]]"],[k,n,this._tpl_close,c,this._item_count,h,m],i);if(this["_before_open_"+f]()===false){return false}b("#gritter-notice-wrapper").addClass(j).append(i);var o=b("#gritter-item-"+this._item_count);o.fadeIn(this.fade_in_speed,function(){a["_after_open_"+f](b(this))});if(!l){this._setFadeTimer(o,f)}b(o).bind("mouseenter mouseleave",function(p){if(p.type=="mouseenter"){if(!l){a._restoreItemIfFading(b(this),f)}}else{if(!l){a._setFadeTimer(b(this),f)}}a._hoverState(b(this),p.type)});b(o).find(".gritter-close").click(function(){a.removeSpecific(f,{},null,true)});return f},_countRemoveWrapper:function(c,d,f){d.remove();this["_after_close_"+c](d,f);if(b(".gritter-item-wrapper").length==0){b("#gritter-notice-wrapper").remove()}},_fade:function(g,d,j,f){var j=j||{},i=(typeof(j.fade)!="undefined")?j.fade:true,c=j.speed||this.fade_out_speed,h=f;this["_before_close_"+d](g,h);if(f){g.unbind("mouseenter mouseleave")}if(i){g.animate({opacity:0},c,function(){g.animate({height:0},300,function(){a._countRemoveWrapper(d,g,h)})})}else{this._countRemoveWrapper(d,g)}},_hoverState:function(d,c){if(c=="mouseenter"){d.addClass("hover");d.find(".gritter-close").show()}else{d.removeClass("hover");d.find(".gritter-close").hide()}},removeSpecific:function(c,g,f,d){if(!f){var f=b("#gritter-item-"+c)}this._fade(f,c,g||{},d)},_restoreItemIfFading:function(d,c){clearTimeout(this["_int_id_"+c]);d.stop().css({opacity:"",height:""})},_runSetup:function(){for(opt in b.gritter.options){this[opt]=b.gritter.options[opt]}this._is_setup=1},_setFadeTimer:function(f,d){var c=(this._custom_timer)?this._custom_timer:this.time;this["_int_id_"+d]=setTimeout(function(){a._fade(f,d)},c)},stop:function(e){var c=(b.isFunction(e.before_close))?e.before_close:function(){};var f=(b.isFunction(e.after_close))?e.after_close:function(){};var d=b("#gritter-notice-wrapper");c(d);d.fadeOut(function(){b(this).remove();f()})},_str_replace:function(v,e,o,n){var k=0,h=0,t="",m="",g=0,q=0,l=[].concat(v),c=[].concat(e),u=o,d=c instanceof Array,p=u instanceof Array;u=[].concat(u);if(n){this.window[n]=0}for(k=0,g=u.length;k<g;k++){if(u[k]===""){continue}for(h=0,q=l.length;h<q;h++){t=u[k]+"";m=d?(c[h]!==undefined?c[h]:""):c[0];u[k]=(t).split(l[h]).join(m);if(n&&u[k]!==t){this.window[n]+=(t.length-u[k].length)/l[h].length}}}return p?u:u[0]},_verifyWrapper:function(){if(b("#gritter-notice-wrapper").length==0){b("body").append(this._tpl_wrap)}}}})($);
+        bttv.saveAs=bttv.saveAs||typeof navigator!=="undefined"&&navigator.msSaveOrOpenBlob&&navigator.msSaveOrOpenBlob.bind(navigator)||function(e){"use strict";var t=e.document,n=function(){return e.URL||e.webkitURL||e},r=e.URL||e.webkitURL||e,i=t.createElementNS("http://www.w3.org/1999/xhtml","a"),s=!e.externalHost&&"download"in i,o=function(n){var r=t.createEvent("MouseEvents");r.initMouseEvent("click",true,false,e,0,0,0,0,0,false,false,false,false,0,null);n.dispatchEvent(r)},u=e.webkitRequestFileSystem,a=e.requestFileSystem||u||e.mozRequestFileSystem,f=function(t){(e.setImmediate||e.setTimeout)(function(){throw t},0)},l="application/octet-stream",c=0,h=[],p=function(){var e=h.length;while(e--){var t=h[e];if(typeof t==="string"){r.revokeObjectURL(t)}else{t.remove()}}h.length=0},d=function(e,t,n){t=[].concat(t);var r=t.length;while(r--){var i=e["on"+t[r]];if(typeof i==="function"){try{i.call(e,n||e)}catch(s){f(s)}}}},v=function(r,o){var f=this,p=r.type,v=false,m,g,y=function(){var e=n().createObjectURL(r);h.push(e);return e},b=function(){d(f,"writestart progress write writeend".split(" "))},w=function(){if(v||!m){m=y(r)}if(g){g.location.href=m}else{window.open(m,"_blank")}f.readyState=f.DONE;b()},E=function(e){return function(){if(f.readyState!==f.DONE){return e.apply(this,arguments)}}},S={create:true,exclusive:false},x;f.readyState=f.INIT;if(!o){o="download"}if(s){m=y(r);t=e.document;i=t.createElementNS("http://www.w3.org/1999/xhtml","a");i.href=m;i.download=o;var T=t.createEvent("MouseEvents");T.initMouseEvent("click",true,false,e,0,0,0,0,0,false,false,false,false,0,null);i.dispatchEvent(T);f.readyState=f.DONE;b();return}if(e.chrome&&p&&p!==l){x=r.slice||r.webkitSlice;r=x.call(r,0,r.size,l);v=true}if(u&&o!=="download"){o+=".download"}if(p===l||u){g=e}if(!a){w();return}c+=r.size;a(e.TEMPORARY,c,E(function(e){e.root.getDirectory("saved",S,E(function(e){var t=function(){e.getFile(o,S,E(function(e){e.createWriter(E(function(t){t.onwriteend=function(t){g.location.href=e.toURL();h.push(e);f.readyState=f.DONE;d(f,"writeend",t)};t.onerror=function(){var e=t.error;if(e.code!==e.ABORT_ERR){w()}};"writestart progress write abort".split(" ").forEach(function(e){t["on"+e]=f["on"+e]});t.write(r);f.abort=function(){t.abort();f.readyState=f.DONE};f.readyState=f.WRITING}),w)}),w)};e.getFile(o,{create:false},E(function(e){e.remove();t()}),E(function(e){if(e.code===e.NOT_FOUND_ERR){t()}else{w()}}))}),w)}),w)},m=v.prototype,g=function(e,t){return new v(e,t)};m.abort=function(){var e=this;e.readyState=e.DONE;d(e,"abort")};m.readyState=m.INIT=0;m.WRITING=1;m.DONE=2;m.error=m.onwritestart=m.onprogress=m.onwrite=m.onabort=m.onerror=m.onwriteend=null;e.addEventListener("unload",p,false);return g}(typeof self!=="undefined"&&self||typeof window!=="undefined"&&window||this.content);if(typeof module!=="undefined")module.exports=bttv.saveAs;
+        (function(e){e.fn.drags=function(t){t=e.extend({handle:"",cursor:"move",el:""},t);if(t.handle===""){var n=this}else{var n=this.find(t.handle)}return n.css("cursor",t.cursor).on("mousedown",function(n){if(t.handle===""){var r=e(this).addClass("bttv-draggable")}else{if(t.el===""){var r=e(this).addClass("active-handle").parent().addClass("bttv-draggable")}else{e(this).addClass("active-handle");var r=e(t.el).addClass("bttv-draggable")}}var i=r.css("z-index"),s=r.outerHeight(),o=r.outerWidth(),u=r.offset().top+s-n.pageY,a=r.offset().left+o-n.pageX;r.css("z-index",1e3).parents().on("mousemove",function(t){e(".bttv-draggable").offset({top:t.pageY+u-s,left:t.pageX+a-o}).on("mouseup",function(){e(this).removeClass("bttv-draggable").css("z-index",i)})});n.preventDefault()}).on("mouseup",function(){if(t.handle===""){e(this).removeClass("bttv-draggable")}else{e(this).removeClass("active-handle");e(t.el).removeClass("bttv-draggable")}})}})(jQuery);            (function(e){e.fn.konami=function(t){var n=[];var r={left:37,up:38,right:39,down:40,a:65,b:66};var i=e.extend({code:["up","up","down","down","left","right","left","right","b","a"],callback:function(){}},t);var s=i.code;var o=[];$.each(s,function(e){if(s[e]!==undefined&&r[s[e]]!==undefined){o.push(r[s[e]])}else if(s[e]!==undefined&&typeof s[e]=="number"){o.push(s[e])}});$(document).keyup(function(e){var t=e.keyCode?e.keyCode:e.charCode;n.push(t);if(n.toString().indexOf(o)>=0){n=[];i.callback($(this))}})}})($);
+        $(window).konami({callback:function(){
+            $("#bttvSettingsPanel .konami").each(function(){$(this).show()});
+        }});
+    });
+}
+
+if (document.URL.indexOf("receiver.html") !== -1 || document.URL.indexOf("cbs_ad_local.html") !== -1) {
+    debug.log("HTML file called by Twitch.");
+    return;
+}
+
+if(location.pathname.match(/^\/(.*)\/popout/)) {
+    debug.log("Popout player detected.");
+    return;
+}
+
+if (window.BTTVLOADED === true) return;
+debug.log("BTTV LOADED " + document.URL);
+BTTVLOADED = true;
+checkJquery();
+
+});
+require.register("settings-list", function(exports, require, module){
+    /** BTTV :
+ * cssBlueButtons
+ * handleTwitchChatEmotesScript
+ */
+
+var chat = bttv.chat, vars = bttv.vars;
+var splitChat = require('features/split-chat'),
+    darkenPage = require('features/darken-page'),
+    handleBackground = require('features/handle-background'),
+    flipDashboard = require('features/flip-dashboard');
+var displayElement = require('element').display,
+    removeElement = require('element').remove;
+
+module.exports = [
+    {
+        name: 'Admin/Staff Alert',
+        description: 'Get alerted in chat when admins or staff join',
+        default: false,
+        hidden: true,
+        storageKey: 'adminStaffAlert'
+    },
+    {
+        name: 'Alpha Chat Tags',
+        description: 'Removes the background from chat tags',
+        default: false,
+        storageKey: 'alphaTags'
+    },
+    {
+        name: 'Anti-Prefix Completion',
+        description: 'Allows you to use sub emotes (greater than 4 characters) without prefixes (BETA)',
+        default: false,
+        storageKey: 'antiPrefix'
+    },
+    {
+        name: 'BetterTTV Chat',
+        description: 'A tiny chat bar for personal messaging friends (BETA)',
+        default: false,
+        storageKey: 'bttvChat',
+        toggle: function(value) {
+            if(value === true) {
+                bttv.betaChat();
+            } else {
+                window.location.reload();
+            }
+        }
+    },
+    {
+        name: 'BetterTTV Emotes',
+        description: 'BetterTTV adds extra cool emotes for you to use',
+        default: true,
+        storageKey: 'bttvEmotes',
+        toggle: function() {
+            window.location.reload();
+        }
+    },
+    {
+        name: 'Chat Indentation',
+        description: 'Indent long chat lines to make them easier to read',
+        default: true,
+        storageKey: 'showChatIndentation',
+        toggle: function(value) {
+            if(value === true) {
+                $addCSS = $('<style></style>');
+                $addCSS.attr('id', 'bttvChatIndentation');
+                $addCSS.html('#chat_line_list .line p { padding-left: 16px;text-indent: -16px; }');
+                $('body').append($addCSS);
+            } else {
+                $('#bttvChatIndentation').remove();
+            }
+        }
+    },
+    {
+        name: 'DarkenTTV',
+        description: 'A sleek, grey theme which will make you love the site even more',
+        default: false,
+        storageKey: 'darkenedMode',
+        toggle: function(value) {
+            if(value === true) {
+                darkenPage();
+                if (bttv.settings.get("splitChat") !== false) {
+                    $("#splitChat").remove();
+                    splitChat();
+                }
+            } else {
+                $("#darkTwitch").remove();
+                handleBackground();
+                if (bttv.settings.get("splitChat") !== false) {
+                    $("#splitChat").remove();
+                    splitChat();
+                }
+            }
+        }
+    },
+    {
+        name: 'Default to Live Channels',
+        description: 'BetterTTV can click on "Live Channels" for you in the Directory when enabled',
+        default: false,
+        storageKey: 'showDirectoryLiveTab'
+    },
+    {
+        name: 'Desktop Notifications',
+        description: 'BetterTTV can send you desktop notifications when you are tabbed out of Twitch',
+        default: false,
+        storageKey: 'desktopNotifications',
+        toggle: function(value) {
+            if(value === true) {
+                if(window.Notification) {
+                    if (Notification.permission === 'default' || (window.webkitNotifications && webkitNotifications.checkPermission() === 1)) {
+                        Notification.requestPermission(function () {
+                            if (Notification.permission === 'granted' || (window.webkitNotifications && webkitNotifications.checkPermission() === 0)) {
+                                bttv.settings.save("desktopNotifications", true);
+                                bttv.notify("Desktop notifications are now enabled.");
+                            } else {
+                                bttv.notify("You denied BetterTTV permission to send you notifications.");
+                            }
+                        });
+                    } else if (Notification.permission === 'granted' || (window.webkitNotifications && webkitNotifications.checkPermission() === 0)) {
+                        bttv.settings.save("desktopNotifications", true);
+                        bttv.notify("Desktop notifications are now enabled.");
+                    } else if (Notification.permission === 'denied' || (window.webkitNotifications && webkitNotifications.checkPermission() === 2)) {
+                        Notification.requestPermission(function () {
+                            if (Notification.permission === 'granted' || (window.webkitNotifications && webkitNotifications.checkPermission() === 0)) {
+                                bttv.settings.save("desktopNotifications", true);
+                                bttv.notify("Desktop notifications are now enabled.");
+                            } else {
+                                bttv.notify("You denied BetterTTV permission to send you notifications.");
+                            }
+                        });
                     } else {
-                        vars.dontCheckSubs = true;
-                        debug.log("Dashboard Info -> Channel doesn't have subscribers.");
+                        bttv.notify("Your browser is not capable of desktop notifications.");
                     }
                 } else {
-                    debug.warn("Dashboard Info -> Error loading partnership page.");
+                    bttv.notify("Your browser is not capable of desktop notifications.");
                 }
-            });
-        }
-
-        setTimeout(dashboardChannelInfo, 60000);
-    }
-
-}
-
-var giveawayCompatibility = function () {
-
-    if ($("#dash_main").length) {
-
-        debug.log("Giveaway Plugin Dashboard Compatibility");
-
-        $(".tga_modal").appendTo("#bttvDashboard");
-        $(".tga_button").click(function () {
-            if (bttv.settings.get("flipDashboard") === true) {
-                $("#chat").width("330px");
-                $(".tga_modal").css("right", "0px");
             } else {
-                $("#chat").width("330px");
-                $(".tga_modal").css("right", "inherit");
+                bttv.notify("Desktop notifications are now disabled.");
             }
-        });
-        $("button[data-action=\"close\"]").click(function () {
-            $("#chat").width("500px");
-        });
+        }
+    },
+    {
+        name: 'Double-Click Translation',
+        description: 'Double-clicking on chat lines translates them with Google Translate',
+        default: true,
+        storageKey: 'dblclickTranslation',
+        toggle: function(value) {
+            if(value === true) {
+                $('body').on('dblclick', '.chat-line', function() {
+                    chat.helpers.translate($(this).find('.message'), $(this).data("sender"), $(this).find('.message').data("raw"));
+                    $(this).find('.message').text("Translating..");
+                    $('div.tipsy.tipsy-sw').remove();
+                });
+            } else {
+                $('body').unbind("dblclick");
+            }
+        }
+    },
+    {
+        name: 'Featured Channels',
+        description: 'The left sidebar is too cluttered, so BetterTTV removes featured channels by default',
+        default: false,
+        storageKey: 'showFeaturedChannels',
+        toggle: function(value) {
+            if(value === true) {
+                displayElement('#nav_games');
+                displayElement('#nav_streams');
+                displayElement('#nav_related_streams');
+            } else {
+                removeElement('#nav_games');
+                removeElement('#nav_streams');
+                removeElement('#nav_related_streams');
+            }
+        }
+    },
+    {
+        name: 'JTV Chat Tags',
+        description: 'BetterTTV can replace the chat tags with the ones from JTV',
+        default: false,
+        storageKey: 'showJTVTags'
+    },
+    {
+        name: 'Mod Card Keybinds',
+        description: 'Enable keybinds when you click on a username: P(urge), T(imeout), B(an)',
+        default: false,
+        storageKey: 'modcardsKeybinds'
+    },
+    {
+        name: 'Purple Buttons',
+        description: 'BetterTTV replaces Twitch\'s purple with blue by default',
+        default: false,
+        storageKey: 'showPurpleButtons',
+        toggle: function(value) {
+            if(value === true) {
+                $("#bttvBlueButtons").remove();
+            } else {
+                bttv.cssBlueButtons();
+            }
+        }
+    },
+    {
+        name: 'Remove Deleted Messages',
+        description: 'Completely removes timed out messages from view',
+        default: false,
+        storageKey: 'hideDeletedMessages'
+    },
+    {
+        name: 'Robot Emoticons',
+        description: 'BetterTTV replaces the robot emoticons with the old JTV monkey faces by default',
+        default: false,
+        storageKey: 'showDefaultEmotes',
+        toggle: function() {
+            window.location.reload();
+        }
+    },
+    {
+        name: 'Show Deleted Messages',
+        description: 'Turn this on to change &lt;message deleted&gt; back to users\' messages.',
+        default: false,
+        storageKey: 'showDeletedMessages'
+    },
+    {
+        name: 'Split Chat',
+        description: 'Easily distinguish between messages from different users in chat',
+        default: true,
+        storageKey: 'splitChat',
+        toggle: function(value) {
+            if(value === true) {
+                splitChat();
+            } else {
+                $("#splitChat").remove();
+            }
+        }
+    },
+    {
+        name: 'Twitch Chat Emotes',
+        description: 'Why remember emotes when you can "click-to-insert" them (by Ryan Chatham)',
+        default: false,
+        storageKey: 'clickTwitchEmotes',
+        toggle: function(value) {
+            if(value === true) {
+                bttv.handleTwitchChatEmotesScript();
+            } else {
+                window.location.reload();
+            }
+        }
+    },
+    {   
+        default: '',
+        storageKey: 'blacklistKeywords',
+        toggle: function(keywords) {
+            var phraseRegex = /\{.+?\}/g;
+            var testCases =  keywords.match(phraseRegex);
+            var phraseKeywords = [];
+            if(testCases) {
+                for (i=0;i<testCases.length;i++) {
+                    var testCase = testCases[i];
+                    keywords = keywords.replace(testCase, "").replace(/\s\s+/g, ' ').trim();
+                    phraseKeywords.push('"'+testCase.replace(/(^\{|\}$)/g, '').trim()+'"');
+                }
+            }
+
+            keywords === "" ? keywords = phraseKeywords : keywords = keywords.split(" ").concat(phraseKeywords);
+            
+            for(var i=0; i<keywords.length; i++) {
+                if(/^\([a-z0-9_\-\*]+\)$/i.test(keywords[i])) {
+                    keywords[i] = keywords[i].replace(/(\(|\))/g, '');
+                }
+            }
+
+            var keywordList = keywords.join(", ");
+            if(keywordList === "") {
+                chat.helpers.serverMessage("Blacklist Keywords list is empty");
+            } else {
+                chat.helpers.serverMessage("Blacklist Keywords are now set to: " + keywordList);
+            }
+        }
+    },
+    {
+        default: true,
+        storageKey: 'chatLineHistory',
+        toggle: function(value) {
+            if(value === true) {
+                chat.helpers.serverMessage("Chat line history enabled.");
+            } else {
+                chat.helpers.serverMessage("Chat line history disabled.");
+            }
+        }
+    },
+    {
+        default: 340,
+        storageKey: 'chatWidth'
+    },
+    {
+        default: false,
+        storageKey: 'flipDashboard',
+        toggle: function(value) {
+            if(value === true) {
+                $("#flipDashboard").text("Unflip Dashboard");
+                bttv.flipDashboard();
+            } else {
+                $("#flipDashboard").text("Flip Dashboard");
+                $("#controls_column, #player_column").css({
+                    float: "none",
+                    marginLeft: "0px"
+                });
+                $("#chat,iframe").css({
+                    float: "right",
+                    left: "",
+                    right: "20px"
+                });
+            }
+        }
+    },
+    {
+        default: (vars.userData.isLoggedIn ? vars.userData.login : ''),
+        storageKey: 'highlightKeywords',
+        toggle: function(keywords) {
+            var phraseRegex = /\{.+?\}/g;
+            var testCases =  keywords.match(phraseRegex);
+            var phraseKeywords = [];
+
+            if(testCases) {
+                for (i=0;i<testCases.length;i++) {
+                    var testCase = testCases[i];
+                    keywords = keywords.replace(testCase, "").replace(/\s\s+/g, ' ').trim();
+                    phraseKeywords.push('"'+testCase.replace(/(^\{|\}$)/g, '').trim()+'"');
+                }
+            }
+
+            keywords === "" ? keywords = phraseKeywords : keywords = keywords.split(" ").concat(phraseKeywords);
+
+            for(var i=0; i<keywords.length; i++) {
+                if(/^\([a-z0-9_\-\*]+\)$/i.test(keywords[i])) {
+                    keywords[i] = keywords[i].replace(/(\(|\))/g, '');
+                }
+            }
+            
+            var keywordList = keywords.join(", ");
+            if(keywordList === "") {
+                chat.helpers.serverMessage("Highlight Keywords list is empty");
+            } else {
+                chat.helpers.serverMessage("Highlight Keywords are now set to: " + keywordList);
+            }
+        }
+    },
+    {
+        default: 150,
+        storageKey: 'scrollbackAmount',
+        toggle: function(lines) {
+            if(lines === 150) {
+                chat.helpers.serverMessage("Chat scrollback is now set to: default (150)");
+            } else {
+                chat.helpers.serverMessage("Chat scrollback is now set to: " + lines);
+            }
+        }
     }
+];
+});
+require.register("vars", function(exports, require, module){
+    module.exports = {
+    userData: {
+        isLoggedIn: window.Twitch ? Twitch.user.isLoggedIn() : false,
+        login: window.Twitch ? Twitch.user.login() : ''
+    },
+    settings: {},
+    liveChannels: [],
+    blackChat: false
+};
+});
+require.register("features/chat-load-settings", function(exports, require, module){
+    var debug = require('debug'),
+    vars = require('vars');
+var darkenPage = require('features/darken-page'),
+    splitChat = require('features/split-chat');
+var removeElement = require('element').remove;
 
-}
-
-var handleTwitchChatEmotesScript = function () {
-
-    if (($("#twitch_chat").length || $(".ember-chat").length) && bttv.settings.get("clickTwitchEmotes") === true) {
-
-        debug.log("Injecting Twitch Chat Emotes Script");
-
-        var emotesJSInject = document.createElement("script");
-        emotesJSInject.setAttribute("src", "//cdn.betterttv.net/js/twitchemotes.js?"+bttv.info.versionString());
-        emotesJSInject.setAttribute("type", "text/javascript");
-        emotesJSInject.setAttribute("id", "clickTwitchEmotes");
-        $("body").append(emotesJSInject);
-    }
-
-}
-
-var loadChatSettings = function() {
-
+module.exports = function() {
     if(!$('.ember-chat .chat-settings').length || $('.ember-chat .chat-settings .bttvChatSettings').length) return;
 
     debug.log("Loading BetterTTV Chat Settings");
 
     $('.ember-chat .chat-settings .clear-chat').remove();
 
-    var settings = '<div class="chat-menu-header">BetterTTV</div> \
-    <div class="chat-menu-content"> \
-        ' + ($("body[data-page=\"ember#chat\"]").length ? '<p><a href="#" class="g18_gear-00000080 blackChatLink">Black Chat (Chroma Key)</a></p>' : '') + ' \
-        ' + (($("#dash_main").length || /\?bttvDashboard=true/.test(window.location)) ? '<p><a href="#" class="g18_gear-00000080 flipDashboard">' + (bttv.settings.get("flipDashboard") === true ? 'Unflip Dashboard' : 'Flip Dashboard') + '</a></p>' : '') + ' \
-        <p><a href="#" class="g18_gear-00000080 setBlacklistKeywords">Set Blacklist Keywords</a></p> \
-        <p><a href="#" class="g18_gear-00000080 setHighlightKeywords">Set Highlight Keywords</a></p> \
-        <p><a href="#" class="g18_gear-00000080 setScrollbackAmount">Set Scrollback Amount</a></p> \
-        <p><a href="#" class="g18_trash-00000080 clearChat">Clear My Chat</a></p> \
-        <p><a href="#" class="button-simple dark openSettings" style="display: block;margin-top: 8px;text-align: center;">BetterTTV Settings</a></p> \
-    </div>';
+    var settings = require('templates/chat-settings')();
 
     var $settings = $('<div></div>');
 
@@ -3648,10 +3901,16 @@ var loadChatSettings = function() {
             bttv.settings.save("scrollbackAmount", 150);
         }
     });
-}
+};
+});
+require.register("features/create-settings-menu", function(exports, require, module){
+    var debug = require('debug'),
+    vars = require('vars');
+var darkenPage = require('./darken-page'),
+    splitChat = require('./split-chat');
+var removeElement = require('element').remove;
 
-var createSettingsMenu = function () {
-
+module.exports = function () {
     debug.log("Creating BetterTTV Settings Menu");
 
     var settingsMenu = document.getElementById("chat_settings_dropmenu");
@@ -3890,535 +4149,329 @@ var createSettingsMenu = function () {
     $('.dropmenu_action').each(function () {
         $(this).css("color", "#ffffff");
     });
-}
+};
+});
+require.register("features/darken-page", function(exports, require, module){
+    var debug = require('debug'),
+    handleBackground = require('./handle-background');
 
-var handleLookupServer = function() {
-    var socketJSInject = document.createElement("script");
-    socketJSInject.setAttribute("src", "//cdn.betterttv.net/js/sock.js?"+bttv.info.versionString());
-    socketJSInject.setAttribute("type", "text/javascript");
-    $("head").append(socketJSInject);
-}
+module.exports = function () {
+    var $body = $('body');
 
-var checkJquery = function (times) {
-    times = times || 0;
-    if(times > 9) return;
-    if(typeof ($j) === 'undefined') {
-        debug.log("jQuery is undefined.");
-        setTimeout(function() { checkJquery(times+1); }, 1000);
-        return;
-    } else {
-        var $ = $j;
-        bttv.jQuery = $;
-        main();
+    /* Twitch broke BGs */
+    setTimeout(handleBackground, 1000);
+
+    if(bttv.settings.get("darkenedMode") !== true || !$body.attr('data-page')) return;
+
+    debug.log("Darkening Page");
+
+    var pageKind = $('body').data('page').split('#')[0],
+        pageType = $('body').data('page').split('#')[1] || "none",
+        allowedPages = ['ember', 'message', 'dashboards', 'chat', 'chapter', 'archive', 'channel', 'user'];
+
+    if(allowedPages.indexOf(pageKind) !== -1) {
+
+        if(pageKind === "dashboards" && pageType !== "show") return;
+
+        var darkCSS = document.createElement("link");
+        darkCSS.setAttribute("href", "//cdn.betterttv.net/style/stylesheets/betterttv-dark.css?"+bttv.info.versionString());
+        darkCSS.setAttribute("type", "text/css");
+        darkCSS.setAttribute("rel", "stylesheet");
+        darkCSS.setAttribute("id", "darkTwitch");
+        $('body').append(darkCSS);
+
+        $("#main_col .content #stats_and_actions #channel_stats #channel_viewer_count").css("display", "none");
+        //setTimeout(handleBackground, 1000);
+
+        // Messages Delete Icon Fix
+        $('#main_col .messages img[src="http://www-cdn.jtvnw.net/images/xarth/g/g18_trash-00000080.png"]').attr("src", "//cdn.betterttv.net/style/icons/delete.png");
+        $('#main_col .messages img[src="http://www-cdn.jtvnw.net/images/xarth/g/g16_trash-00000020.png"]').attr("src", "//cdn.betterttv.net/style/icons/delete.png").attr("width","16").attr("height","16");
     }
+
 }
+});
+require.register("features/dashboard-channelinfo", function(exports, require, module){
+    var debug = require('debug'),
+    vars = require('vars');
 
-var main = function () {
+module.exports = function dashboardChannelInfo() {
+    if ($("#dash_main").length) {
+        debug.log("Updating Dashboard Channel Info");
 
-    if(window.Ember) {
-        var renderingCounter = 0;
-
-        var waitForLoad = function(callback, count) {
-            var count = count || 0;
-            if(count > 5) {
-                callback(false);
-            }
-            setTimeout(function() {
-                if(renderingCounter === 0) {
-                    callback(true);
-                } else {
-                    waitForLoad(callback, ++count);
-                }
-            }, 1000);
-        }
-
-        Ember.subscribe('render', {
-            before: function() {
-                renderingCounter++;
-            },
-            after: function(name, ts, payload) {
-                renderingCounter--;
-                
-                if(!payload.template) return;
-                //debug.log(payload.template);
-
-                if(App.__container__.lookup("controller:application").get("currentRouteName") !== "channel.index") {
-                    $('#main_col').css('width', 'auto');
-                }
-                
-                switch(payload.template) {
-                    case 'shared/right_column':
-                        waitForLoad(function(ready) {
-                            if(ready) {
-                                bttv.chat.store.isLoaded = false;
-                                betaChat();
-                                chatFunctions();
-                                if(bttv.socketServer) {
-                                    bttv.socketServer.emit("join channel", { channel: ((bttv.getChannel()) ? bttv.getChannel() : null) })
-                                }
-                            }
-                        });
-                        break;
-                    case 'channel/index':
-                        waitForLoad(function(ready) {
-                            if(ready) {
-                                handleBackground();
-                                clearClutter();
-                                channelReformat();
-                                $(window).trigger('resize');
-                            }
-                        });
-                        break;
-                    case 'channel/profile':
-                        waitForLoad(function(ready) {
-                            if(ready) {
-                                vars.emotesLoaded = false;
-                                betaChat();
-                                chatFunctions();
-                                channelReformat();
-                                $(window).trigger('resize');
-                            }
-                        });
-                        break;
-                    case 'directory/following':
-                        waitForLoad(function(ready) {
-                            if(ready) {
-                                directoryFunctions();
-                            }
-                        });
-                        break;
-                }
+        Twitch.api.get("streams/" + bttv.getChannel()).done(function (a) {
+            if (a.stream) {
+                $("#channel_viewer_count").text(Twitch.display.commatize(a.stream.viewers));
+                if(a.stream.channel.views) $("#views_count").html(Twitch.display.commatize(a.stream.channel.views));
+            } else {
+                $("#channel_viewer_count").text("Offline");
             }
         });
-    }
-
-    handleLookupServer();
-
-    $(document).ready(function () {
-        createSettingsMenu();
-        bttv.settings.load();
-
-        debug.log("BTTV v" + bttv.info.versionString());
-        debug.log("CALL init " + document.URL);
-
-        brand();
-        clearClutter();
-        channelReformat();
-        checkMessages();
-        checkFollowing();
-        checkBroadcastInfo();
-        darkenPage();
-        splitChat();
-        flipDashboard();
-        formatDashboard();
-        giveawayCompatibility();
-        dashboardChannelInfo();
-        directoryFunctions();
-
-        $(window).trigger('resize');
-        setTimeout(function() {
-            channelReformat();
-            vars.userData.isLoggedIn = Twitch.user.isLoggedIn();
-            vars.userData.login = Twitch.user.login();
-            $(window).trigger('resize');
-        }, 3000);
-        setTimeout(chatFunctions, 3000);
-        setTimeout(directoryFunctions, 3000);
-        
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-        ga('create', 'UA-39733925-4', 'betterttv.net');
-        ga('send', 'pageview');
-
-        (function(b){b.gritter={};b.gritter.options={position:"top-left",class_name:"",fade_in_speed:"medium",fade_out_speed:1000,time:6000};b.gritter.add=function(f){try{return a.add(f||{})}catch(d){var c="Gritter Error: "+d;(typeof(console)!="undefined"&&console.error)?console.error(c,f):alert(c)}};b.gritter.remove=function(d,c){a.removeSpecific(d,c||{})};b.gritter.removeAll=function(c){a.stop(c||{})};var a={position:"",fade_in_speed:"",fade_out_speed:"",time:"",_custom_timer:0,_item_count:0,_is_setup:0,_tpl_close:'<div class="gritter-close"></div>',_tpl_title:'<span class="gritter-title">[[title]]</span>',_tpl_item:'<div id="gritter-item-[[number]]" class="gritter-item-wrapper [[item_class]]" style="display:none"><div class="gritter-top"></div><div class="gritter-item">[[close]][[image]]<div class="[[class_name]]">[[title]]<p>[[text]]</p></div><div style="clear:both"></div></div><div class="gritter-bottom"></div></div>',_tpl_wrap:'<div id="gritter-notice-wrapper"></div>',add:function(g){if(typeof(g)=="string"){g={text:g}}if(!g.text){throw'You must supply "text" parameter.'}if(!this._is_setup){this._runSetup()}var k=g.title,n=g.text,e=g.image||"",l=g.sticky||false,m=g.class_name||b.gritter.options.class_name,j=b.gritter.options.position,d=g.time||"";this._verifyWrapper();this._item_count++;var f=this._item_count,i=this._tpl_item;b(["before_open","after_open","before_close","after_close"]).each(function(p,q){a["_"+q+"_"+f]=(b.isFunction(g[q]))?g[q]:function(){}});this._custom_timer=0;if(d){this._custom_timer=d}var c=(e!="")?'<img src="'+e+'" class="gritter-image" />':"",h=(e!="")?"gritter-with-image":"gritter-without-image";if(k){k=this._str_replace("[[title]]",k,this._tpl_title)}else{k=""}i=this._str_replace(["[[title]]","[[text]]","[[close]]","[[image]]","[[number]]","[[class_name]]","[[item_class]]"],[k,n,this._tpl_close,c,this._item_count,h,m],i);if(this["_before_open_"+f]()===false){return false}b("#gritter-notice-wrapper").addClass(j).append(i);var o=b("#gritter-item-"+this._item_count);o.fadeIn(this.fade_in_speed,function(){a["_after_open_"+f](b(this))});if(!l){this._setFadeTimer(o,f)}b(o).bind("mouseenter mouseleave",function(p){if(p.type=="mouseenter"){if(!l){a._restoreItemIfFading(b(this),f)}}else{if(!l){a._setFadeTimer(b(this),f)}}a._hoverState(b(this),p.type)});b(o).find(".gritter-close").click(function(){a.removeSpecific(f,{},null,true)});return f},_countRemoveWrapper:function(c,d,f){d.remove();this["_after_close_"+c](d,f);if(b(".gritter-item-wrapper").length==0){b("#gritter-notice-wrapper").remove()}},_fade:function(g,d,j,f){var j=j||{},i=(typeof(j.fade)!="undefined")?j.fade:true,c=j.speed||this.fade_out_speed,h=f;this["_before_close_"+d](g,h);if(f){g.unbind("mouseenter mouseleave")}if(i){g.animate({opacity:0},c,function(){g.animate({height:0},300,function(){a._countRemoveWrapper(d,g,h)})})}else{this._countRemoveWrapper(d,g)}},_hoverState:function(d,c){if(c=="mouseenter"){d.addClass("hover");d.find(".gritter-close").show()}else{d.removeClass("hover");d.find(".gritter-close").hide()}},removeSpecific:function(c,g,f,d){if(!f){var f=b("#gritter-item-"+c)}this._fade(f,c,g||{},d)},_restoreItemIfFading:function(d,c){clearTimeout(this["_int_id_"+c]);d.stop().css({opacity:"",height:""})},_runSetup:function(){for(opt in b.gritter.options){this[opt]=b.gritter.options[opt]}this._is_setup=1},_setFadeTimer:function(f,d){var c=(this._custom_timer)?this._custom_timer:this.time;this["_int_id_"+d]=setTimeout(function(){a._fade(f,d)},c)},stop:function(e){var c=(b.isFunction(e.before_close))?e.before_close:function(){};var f=(b.isFunction(e.after_close))?e.after_close:function(){};var d=b("#gritter-notice-wrapper");c(d);d.fadeOut(function(){b(this).remove();f()})},_str_replace:function(v,e,o,n){var k=0,h=0,t="",m="",g=0,q=0,l=[].concat(v),c=[].concat(e),u=o,d=c instanceof Array,p=u instanceof Array;u=[].concat(u);if(n){this.window[n]=0}for(k=0,g=u.length;k<g;k++){if(u[k]===""){continue}for(h=0,q=l.length;h<q;h++){t=u[k]+"";m=d?(c[h]!==undefined?c[h]:""):c[0];u[k]=(t).split(l[h]).join(m);if(n&&u[k]!==t){this.window[n]+=(t.length-u[k].length)/l[h].length}}}return p?u:u[0]},_verifyWrapper:function(){if(b("#gritter-notice-wrapper").length==0){b("body").append(this._tpl_wrap)}}}})($);
-        bttv.saveAs=bttv.saveAs||typeof navigator!=="undefined"&&navigator.msSaveOrOpenBlob&&navigator.msSaveOrOpenBlob.bind(navigator)||function(e){"use strict";var t=e.document,n=function(){return e.URL||e.webkitURL||e},r=e.URL||e.webkitURL||e,i=t.createElementNS("http://www.w3.org/1999/xhtml","a"),s=!e.externalHost&&"download"in i,o=function(n){var r=t.createEvent("MouseEvents");r.initMouseEvent("click",true,false,e,0,0,0,0,0,false,false,false,false,0,null);n.dispatchEvent(r)},u=e.webkitRequestFileSystem,a=e.requestFileSystem||u||e.mozRequestFileSystem,f=function(t){(e.setImmediate||e.setTimeout)(function(){throw t},0)},l="application/octet-stream",c=0,h=[],p=function(){var e=h.length;while(e--){var t=h[e];if(typeof t==="string"){r.revokeObjectURL(t)}else{t.remove()}}h.length=0},d=function(e,t,n){t=[].concat(t);var r=t.length;while(r--){var i=e["on"+t[r]];if(typeof i==="function"){try{i.call(e,n||e)}catch(s){f(s)}}}},v=function(r,o){var f=this,p=r.type,v=false,m,g,y=function(){var e=n().createObjectURL(r);h.push(e);return e},b=function(){d(f,"writestart progress write writeend".split(" "))},w=function(){if(v||!m){m=y(r)}if(g){g.location.href=m}else{window.open(m,"_blank")}f.readyState=f.DONE;b()},E=function(e){return function(){if(f.readyState!==f.DONE){return e.apply(this,arguments)}}},S={create:true,exclusive:false},x;f.readyState=f.INIT;if(!o){o="download"}if(s){m=y(r);t=e.document;i=t.createElementNS("http://www.w3.org/1999/xhtml","a");i.href=m;i.download=o;var T=t.createEvent("MouseEvents");T.initMouseEvent("click",true,false,e,0,0,0,0,0,false,false,false,false,0,null);i.dispatchEvent(T);f.readyState=f.DONE;b();return}if(e.chrome&&p&&p!==l){x=r.slice||r.webkitSlice;r=x.call(r,0,r.size,l);v=true}if(u&&o!=="download"){o+=".download"}if(p===l||u){g=e}if(!a){w();return}c+=r.size;a(e.TEMPORARY,c,E(function(e){e.root.getDirectory("saved",S,E(function(e){var t=function(){e.getFile(o,S,E(function(e){e.createWriter(E(function(t){t.onwriteend=function(t){g.location.href=e.toURL();h.push(e);f.readyState=f.DONE;d(f,"writeend",t)};t.onerror=function(){var e=t.error;if(e.code!==e.ABORT_ERR){w()}};"writestart progress write abort".split(" ").forEach(function(e){t["on"+e]=f["on"+e]});t.write(r);f.abort=function(){t.abort();f.readyState=f.DONE};f.readyState=f.WRITING}),w)}),w)};e.getFile(o,{create:false},E(function(e){e.remove();t()}),E(function(e){if(e.code===e.NOT_FOUND_ERR){t()}else{w()}}))}),w)}),w)},m=v.prototype,g=function(e,t){return new v(e,t)};m.abort=function(){var e=this;e.readyState=e.DONE;d(e,"abort")};m.readyState=m.INIT=0;m.WRITING=1;m.DONE=2;m.error=m.onwritestart=m.onprogress=m.onwrite=m.onabort=m.onerror=m.onwriteend=null;e.addEventListener("unload",p,false);return g}(typeof self!=="undefined"&&self||typeof window!=="undefined"&&window||this.content);if(typeof module!=="undefined")module.exports=bttv.saveAs;
-        (function(e){e.fn.drags=function(t){t=e.extend({handle:"",cursor:"move",el:""},t);if(t.handle===""){var n=this}else{var n=this.find(t.handle)}return n.css("cursor",t.cursor).on("mousedown",function(n){if(t.handle===""){var r=e(this).addClass("bttv-draggable")}else{if(t.el===""){var r=e(this).addClass("active-handle").parent().addClass("bttv-draggable")}else{e(this).addClass("active-handle");var r=e(t.el).addClass("bttv-draggable")}}var i=r.css("z-index"),s=r.outerHeight(),o=r.outerWidth(),u=r.offset().top+s-n.pageY,a=r.offset().left+o-n.pageX;r.css("z-index",1e3).parents().on("mousemove",function(t){e(".bttv-draggable").offset({top:t.pageY+u-s,left:t.pageX+a-o}).on("mouseup",function(){e(this).removeClass("bttv-draggable").css("z-index",i)})});n.preventDefault()}).on("mouseup",function(){if(t.handle===""){e(this).removeClass("bttv-draggable")}else{e(this).removeClass("active-handle");e(t.el).removeClass("bttv-draggable")}})}})(jQuery);            (function(e){e.fn.konami=function(t){var n=[];var r={left:37,up:38,right:39,down:40,a:65,b:66};var i=e.extend({code:["up","up","down","down","left","right","left","right","b","a"],callback:function(){}},t);var s=i.code;var o=[];$.each(s,function(e){if(s[e]!==undefined&&r[s[e]]!==undefined){o.push(r[s[e]])}else if(s[e]!==undefined&&typeof s[e]=="number"){o.push(s[e])}});$(document).keyup(function(e){var t=e.keyCode?e.keyCode:e.charCode;n.push(t);if(n.toString().indexOf(o)>=0){n=[];i.callback($(this))}})}})($);
-        $(window).konami({callback:function(){
-            $("#bttvSettingsPanel .konami").each(function(){$(this).show()});
-        }});
-    });
-}
-
-if (document.URL.indexOf("receiver.html") !== -1 || document.URL.indexOf("cbs_ad_local.html") !== -1) {
-    debug.log("HTML file called by Twitch.");
-    return;
-}
-
-if(location.pathname.match(/^\/(.*)\/popout/)) {
-    debug.log("Popout player detected.");
-    return;
-}
-
-if (window.BTTVLOADED === true) return;
-debug.log("BTTV LOADED " + document.URL);
-BTTVLOADED = true;
-checkJquery();
-
-});
-require.register("settings-list", function(exports, require, module){
-    /** BTTV :
- * betaChat
- * darkenPage
- * splitChat
- * handleBackground
- * cssBlueButtons
- * flipDashboard
- * handleTwitchChatEmotesScript
- * --
- * displayElement
- * removeElement
- */
-
-var chat = bttv.chat, vars = bttv.vars;
-var displayElement = require('element').display,
-    removeElement = require('element').remove;
-
-module.exports = [
-    {
-        name: 'Admin/Staff Alert',
-        description: 'Get alerted in chat when admins or staff join',
-        default: false,
-        hidden: true,
-        storageKey: 'adminStaffAlert'
-    },
-    {
-        name: 'Alpha Chat Tags',
-        description: 'Removes the background from chat tags',
-        default: false,
-        storageKey: 'alphaTags'
-    },
-    {
-        name: 'Anti-Prefix Completion',
-        description: 'Allows you to use sub emotes (greater than 4 characters) without prefixes (BETA)',
-        default: false,
-        storageKey: 'antiPrefix'
-    },
-    {
-        name: 'BetterTTV Chat',
-        description: 'A tiny chat bar for personal messaging friends (BETA)',
-        default: false,
-        storageKey: 'bttvChat',
-        toggle: function(value) {
-            if(value === true) {
-                bttv.betaChat();
-            } else {
-                window.location.reload();
+        Twitch.api.get("channels/" + bttv.getChannel() + "/follows?limit=1").done(function (a) {
+            if (a["_total"]) {
+                $("#followers_count").text(Twitch.display.commatize(a["_total"]));
             }
+        });
+        if(!$("#chatters_count").length) {
+            var $chattersContainer = $("<span></span>");
+            $chattersContainer.attr("class", "stat");
+            $chattersContainer.attr("id", "chatters_count");
+            $chattersContainer.attr("tooltipdata", "Chatters");
+            $chattersContainer.text('0');
+            $("#followers_count").after($chattersContainer);
+            if($("#commercial_buttons").length) $("#followers_count").after('<div style="margin-top:5px;"> </div>');
         }
-    },
-    {
-        name: 'BetterTTV Emotes',
-        description: 'BetterTTV adds extra cool emotes for you to use',
-        default: true,
-        storageKey: 'bttvEmotes',
-        toggle: function() {
-            window.location.reload();
-        }
-    },
-    {
-        name: 'Chat Indentation',
-        description: 'Indent long chat lines to make them easier to read',
-        default: true,
-        storageKey: 'showChatIndentation',
-        toggle: function(value) {
-            if(value === true) {
-                $addCSS = $('<style></style>');
-                $addCSS.attr('id', 'bttvChatIndentation');
-                $addCSS.html('#chat_line_list .line p { padding-left: 16px;text-indent: -16px; }');
-                $('body').append($addCSS);
-            } else {
-                $('#bttvChatIndentation').remove();
-            }
-        }
-    },
-    {
-        name: 'DarkenTTV',
-        description: 'A sleek, grey theme which will make you love the site even more',
-        default: false,
-        storageKey: 'darkenedMode',
-        toggle: function(value) {
-            if(value === true) {
-                bttv.darkenPage();
-                if (bttv.settings.get("splitChat") !== false) {
-                    $("#splitChat").remove();
-                    bttv.splitChat();
-                }
-            } else {
-                $("#darkTwitch").remove();
-                bttv.handleBackground();
-                if (bttv.settings.get("splitChat") !== false) {
-                    $("#splitChat").remove();
-                    bttv.splitChat();
-                }
-            }
-        }
-    },
-    {
-        name: 'Default to Live Channels',
-        description: 'BetterTTV can click on "Live Channels" for you in the Directory when enabled',
-        default: false,
-        storageKey: 'showDirectoryLiveTab'
-    },
-    {
-        name: 'Desktop Notifications',
-        description: 'BetterTTV can send you desktop notifications when you are tabbed out of Twitch',
-        default: false,
-        storageKey: 'desktopNotifications',
-        toggle: function(value) {
-            if(value === true) {
-                if(window.Notification) {
-                    if (Notification.permission === 'default' || (window.webkitNotifications && webkitNotifications.checkPermission() === 1)) {
-                        Notification.requestPermission(function () {
-                            if (Notification.permission === 'granted' || (window.webkitNotifications && webkitNotifications.checkPermission() === 0)) {
-                                bttv.settings.save("desktopNotifications", true);
-                                bttv.notify("Desktop notifications are now enabled.");
-                            } else {
-                                bttv.notify("You denied BetterTTV permission to send you notifications.");
-                            }
-                        });
-                    } else if (Notification.permission === 'granted' || (window.webkitNotifications && webkitNotifications.checkPermission() === 0)) {
-                        bttv.settings.save("desktopNotifications", true);
-                        bttv.notify("Desktop notifications are now enabled.");
-                    } else if (Notification.permission === 'denied' || (window.webkitNotifications && webkitNotifications.checkPermission() === 2)) {
-                        Notification.requestPermission(function () {
-                            if (Notification.permission === 'granted' || (window.webkitNotifications && webkitNotifications.checkPermission() === 0)) {
-                                bttv.settings.save("desktopNotifications", true);
-                                bttv.notify("Desktop notifications are now enabled.");
-                            } else {
-                                bttv.notify("You denied BetterTTV permission to send you notifications.");
-                            }
-                        });
+
+        $.getJSON('http://tmi.twitch.tv/group/user/' + bttv.getChannel() + '/chatters?callback=?', function(data) {
+            if(data.data && data.data.chatter_count) $("#chatters_count").text(Twitch.display.commatize(data.data.chatter_count));
+        });
+
+        if(vars.dontCheckSubs !== true) {
+            $.get('/broadcast/dashboard/partnership', function (data) {
+                var $subsContainer = $(data).find("div.main div.wrapper"),
+                    subsRegex = /Your channel currently has ([0-9,]+) paying subscribers and ([0-9,]+) total active subscribers/;
+                    
+                if ($subsContainer) {
+                    var containerText = $subsContainer.text();
+
+                    if(containerText.match(subsRegex)) {
+                        var subAmounts = subsRegex.exec(containerText),
+                            activeSubs = subAmounts[2];
+
+                        if(!$("#channel_subs_count").length) {
+                            var $subsContainer = $("<span></span>");
+                            $subsContainer.attr("class", "stat");
+                            $subsContainer.attr("id", "channel_subs_count");
+                            $subsContainer.attr("tooltipdata", "Active Subscribers");
+                            $subsContainer.text(Twitch.display.commatize(activeSubs));
+                            $("#chatters_count").after($subsContainer);
+
+                            Twitch.api.get("chat/" + bttv.getChannel() + "/badges").done(function (a) {
+                                if (a.subscriber) {
+                                    $("#channel_subs_count").css("background", "url("+a.subscriber.image+") no-repeat left center");
+                                    $("#channel_subs_count").css("background-size", "14px 14px");
+                                }
+                            });
+                        } else {
+                            $("#channel_subs_count").text(Twitch.display.commatize(activeSubs));
+                        }
                     } else {
-                        bttv.notify("Your browser is not capable of desktop notifications.");
+                        vars.dontCheckSubs = true;
+                        debug.log("Dashboard Info -> Channel doesn't have subscribers.");
                     }
                 } else {
-                    bttv.notify("Your browser is not capable of desktop notifications.");
+                    debug.warn("Dashboard Info -> Error loading partnership page.");
                 }
+            });
+        }
+
+        setTimeout(dashboardChannelInfo, 60000);
+    }
+};
+});
+require.register("features/flip-dashboard", function(exports, require, module){
+    var debug = require('debug');
+
+module.exports = function () {
+    if ($("#dash_main").length && bttv.settings.get("flipDashboard") === true) {
+        debug.log("Flipping Dashboard");
+
+        // We want to move the chat to the left, and the dashboard controls to the right.
+        $("#controls_column, #player_column").css({
+            float: "right",
+            marginLeft: "500px"
+        });
+        $("#chat, iframe").css({
+            float: "left",
+            left: "20px",
+            right: ""
+        });
+    }
+}
+});
+require.register("features/format-dashboard", function(exports, require, module){
+    var debug = require('debug');
+
+module.exports = function () {
+    if ($("#dash_main").length) {
+        debug.log("Formatting Dashboard");
+
+        // Move Page Elements to Sub-DIV & Account for Changes
+        $('<div style="position:relative;" id="bttvDashboard"></div>').appendTo('#dash_main');
+        $("#dash_main #controls_column").appendTo("#bttvDashboard");
+        $("#dash_main #player_column").appendTo("#bttvDashboard");
+        $("#dash_main iframe").css("top",
+            (bttv.settings.get('darkenedMode') ? 11 : 0)+
+            (($('.js-broadcaster-message').css('display') !== 'none') ? $('.js-broadcaster-message').outerHeight(true) : 0)+
+            $('#dashboard_title').outerHeight(true)+
+            $('#setup_link').outerHeight(true)+
+            $('#dash_nav').outerHeight(true)+
+            $('#stream-config-status').outerHeight(true)
+        ).css("border","none");
+        if($("#dash_main iframe").length) {
+            $("#dash_main iframe")[0].style.height = "514px";
+            $("#dash_main iframe")[0].src = "/"+bttv.getChannel()+"/chat?bttvDashboard=true";
+        }
+
+        // Small Dashboard Fixes
+        $("#commercial_options .dropmenu_action[data-length=150]").text("2m 30s");
+        $("#controls_column #form_submit button").attr("class", "primary_button");
+    }
+}
+});
+require.register("features/giveaway-compatibility", function(exports, require, module){
+    var debug = require('debug');
+
+module.exports = function () {
+    if ($("#dash_main").length) {
+        debug.log("Giveaway Plugin Dashboard Compatibility");
+
+        $(".tga_modal").appendTo("#bttvDashboard");
+        $(".tga_button").click(function () {
+            if (bttv.settings.get("flipDashboard") === true) {
+                $("#chat").width("330px");
+                $(".tga_modal").css("right", "0px");
             } else {
-                bttv.notify("Desktop notifications are now disabled.");
+                $("#chat").width("330px");
+                $(".tga_modal").css("right", "inherit");
             }
-        }
-    },
-    {
-        name: 'Double-Click Translation',
-        description: 'Double-clicking on chat lines translates them with Google Translate',
-        default: true,
-        storageKey: 'dblclickTranslation',
-        toggle: function(value) {
-            if(value === true) {
-                $('body').on('dblclick', '.chat-line', function() {
-                    chat.helpers.translate($(this).find('.message'), $(this).data("sender"), $(this).find('.message').data("raw"));
-                    $(this).find('.message').text("Translating..");
-                    $('div.tipsy.tipsy-sw').remove();
-                });
-            } else {
-                $('body').unbind("dblclick");
-            }
-        }
-    },
-    {
-        name: 'Featured Channels',
-        description: 'The left sidebar is too cluttered, so BetterTTV removes featured channels by default',
-        default: false,
-        storageKey: 'showFeaturedChannels',
-        toggle: function(value) {
-            if(value === true) {
-                displayElement('#nav_games');
-                displayElement('#nav_streams');
-                displayElement('#nav_related_streams');
-            } else {
-                removeElement('#nav_games');
-                removeElement('#nav_streams');
-                removeElement('#nav_related_streams');
-            }
-        }
-    },
-    {
-        name: 'JTV Chat Tags',
-        description: 'BetterTTV can replace the chat tags with the ones from JTV',
-        default: false,
-        storageKey: 'showJTVTags'
-    },
-    {
-        name: 'Mod Card Keybinds',
-        description: 'Enable keybinds when you click on a username: P(urge), T(imeout), B(an)',
-        default: false,
-        storageKey: 'modcardsKeybinds'
-    },
-    {
-        name: 'Purple Buttons',
-        description: 'BetterTTV replaces Twitch\'s purple with blue by default',
-        default: false,
-        storageKey: 'showPurpleButtons',
-        toggle: function(value) {
-            if(value === true) {
-                $("#bttvBlueButtons").remove();
-            } else {
-                bttv.cssBlueButtons();
-            }
-        }
-    },
-    {
-        name: 'Remove Deleted Messages',
-        description: 'Completely removes timed out messages from view',
-        default: false,
-        storageKey: 'hideDeletedMessages'
-    },
-    {
-        name: 'Robot Emoticons',
-        description: 'BetterTTV replaces the robot emoticons with the old JTV monkey faces by default',
-        default: false,
-        storageKey: 'showDefaultEmotes',
-        toggle: function() {
-            window.location.reload();
-        }
-    },
-    {
-        name: 'Show Deleted Messages',
-        description: 'Turn this on to change &lt;message deleted&gt; back to users\' messages.',
-        default: false,
-        storageKey: 'showDeletedMessages'
-    },
-    {
-        name: 'Split Chat',
-        description: 'Easily distinguish between messages from different users in chat',
-        default: true,
-        storageKey: 'splitChat',
-        toggle: function(value) {
-            if(value === true) {
-                bttv.splitChat();
-            } else {
-                $("#splitChat").remove();
-            }
-        }
-    },
-    {
-        name: 'Twitch Chat Emotes',
-        description: 'Why remember emotes when you can "click-to-insert" them (by Ryan Chatham)',
-        default: false,
-        storageKey: 'clickTwitchEmotes',
-        toggle: function(value) {
-            if(value === true) {
-                bttv.handleTwitchChatEmotesScript();
-            } else {
-                window.location.reload();
-            }
-        }
-    },
-    {   
-        default: '',
-        storageKey: 'blacklistKeywords',
-        toggle: function(keywords) {
-            var phraseRegex = /\{.+?\}/g;
-            var testCases =  keywords.match(phraseRegex);
-            var phraseKeywords = [];
-            if(testCases) {
-                for (i=0;i<testCases.length;i++) {
-                    var testCase = testCases[i];
-                    keywords = keywords.replace(testCase, "").replace(/\s\s+/g, ' ').trim();
-                    phraseKeywords.push('"'+testCase.replace(/(^\{|\}$)/g, '').trim()+'"');
+        });
+        $("button[data-action=\"close\"]").click(function () {
+            $("#chat").width("500px");
+        });
+    }
+};
+});
+require.register("features/handle-background", function(exports, require, module){
+    module.exports = function handleBackground(tiled) {
+    var tiled = tiled || false;
+    if($("#custom-bg").length === 0 && $("#custom_bg").length === 0) return;
+
+    var canvasID = ($("#custom-bg").length) ? 'custom-bg' : 'custom_bg';
+
+    if(tiled) {
+        $("#"+canvasID).addClass('tiled');
+    } else {
+        if($("#"+canvasID).attr("image")) {
+            var img = new Image();
+            img.onload = function() {
+                if(img.naturalWidth < $('#main_col').width()) {
+                    setTimeout(function(){
+                        handleBackground(true);
+                    }, 2000);
                 }
             }
-
-            keywords === "" ? keywords = phraseKeywords : keywords = keywords.split(" ").concat(phraseKeywords);
-            
-            for(var i=0; i<keywords.length; i++) {
-                if(/^\([a-z0-9_\-\*]+\)$/i.test(keywords[i])) {
-                    keywords[i] = keywords[i].replace(/(\(|\))/g, '');
-                }
-            }
-
-            var keywordList = keywords.join(", ");
-            if(keywordList === "") {
-                chat.helpers.serverMessage("Blacklist Keywords list is empty");
-            } else {
-                chat.helpers.serverMessage("Blacklist Keywords are now set to: " + keywordList);
-            }
-        }
-    },
-    {
-        default: true,
-        storageKey: 'chatLineHistory',
-        toggle: function(value) {
-            if(value === true) {
-                chat.helpers.serverMessage("Chat line history enabled.");
-            } else {
-                chat.helpers.serverMessage("Chat line history disabled.");
-            }
-        }
-    },
-    {
-        default: 340,
-        storageKey: 'chatWidth'
-    },
-    {
-        default: false,
-        storageKey: 'flipDashboard',
-        toggle: function(value) {
-            if(value === true) {
-                $("#flipDashboard").text("Unflip Dashboard");
-                bttv.flipDashboard();
-            } else {
-                $("#flipDashboard").text("Flip Dashboard");
-                $("#controls_column, #player_column").css({
-                    float: "none",
-                    marginLeft: "0px"
-                });
-                $("#chat,iframe").css({
-                    float: "right",
-                    left: "",
-                    right: "20px"
-                });
-            }
-        }
-    },
-    {
-        default: (vars.userData.isLoggedIn ? vars.userData.login : ''),
-        storageKey: 'highlightKeywords',
-        toggle: function(keywords) {
-            var phraseRegex = /\{.+?\}/g;
-            var testCases =  keywords.match(phraseRegex);
-            var phraseKeywords = [];
-
-            if(testCases) {
-                for (i=0;i<testCases.length;i++) {
-                    var testCase = testCases[i];
-                    keywords = keywords.replace(testCase, "").replace(/\s\s+/g, ' ').trim();
-                    phraseKeywords.push('"'+testCase.replace(/(^\{|\}$)/g, '').trim()+'"');
-                }
-            }
-
-            keywords === "" ? keywords = phraseKeywords : keywords = keywords.split(" ").concat(phraseKeywords);
-
-            for(var i=0; i<keywords.length; i++) {
-                if(/^\([a-z0-9_\-\*]+\)$/i.test(keywords[i])) {
-                    keywords[i] = keywords[i].replace(/(\(|\))/g, '');
-                }
-            }
-            
-            var keywordList = keywords.join(", ");
-            if(keywordList === "") {
-                chat.helpers.serverMessage("Highlight Keywords list is empty");
-            } else {
-                chat.helpers.serverMessage("Highlight Keywords are now set to: " + keywordList);
-            }
-        }
-    },
-    {
-        default: 150,
-        storageKey: 'scrollbackAmount',
-        toggle: function(lines) {
-            if(lines === 150) {
-                chat.helpers.serverMessage("Chat scrollback is now set to: default (150)");
-            } else {
-                chat.helpers.serverMessage("Chat scrollback is now set to: " + lines);
-            }
+            img.src = $("#"+canvasID).attr("image");
         }
     }
-];
+
+    var g = $("#"+canvasID),
+        d = g[0];
+    if (d && d.getContext) {
+        var c = d.getContext("2d"),
+            h = $("#"+canvasID).attr("image");
+        if (!h) {
+            $(d).css("background-image", "");
+            c.clearRect(0, 0, d.width, d.height);
+        } else if (g.css({
+            width: "100%",
+            "background-position": "center top"
+        }), g.hasClass("tiled")) {
+            g.css({
+                "background-image": 'url("' + h + '")'
+            }).attr("width", 200).attr("height", 200);
+            d = c.createLinearGradient(0, 0, 0, 200);
+            if (bttv.settings.get("darkenedMode") === true) {
+                d.addColorStop(0, "rgba(20,20,20,0.4)");
+                d.addColorStop(1, "rgba(20,20,20,1)");
+            } else {
+                d.addColorStop(0, "rgba(245,245,245,0.65)");
+                d.addColorStop(1, "rgba(245,245,245,1)");
+            }
+            c.fillStyle = d;
+            c.fillRect(0, 0, 200, 200);
+        } else {
+            var i = document.createElement("IMG");
+            i.onload = function () {
+                var a = this.width,
+                    d = this.height,
+                    h;
+                g.attr("width", a).attr("height", d);
+                c.drawImage(i, 0, 0);
+                if (bttv.settings.get("darkenedMode") === true) {
+                    d > a ? (h = c.createLinearGradient(0, 0, 0, a), h.addColorStop(0, "rgba(20,20,20,0.4)"), h.addColorStop(1, "rgba(20,20,20,1)"), c.fillStyle = h, c.fillRect(0, 0, a, a), c.fillStyle = "rgb(20,20,20)", c.fillRect(0, a, a, d - a)) : (h = c.createLinearGradient(0, 0, 0, d), h.addColorStop(0, "rgba(20,20,20,0.4)"), h.addColorStop(1, "rgba(20,20,20,1)"), c.fillStyle = h, c.fillRect(0, 0, a, d))
+                } else {
+                    d > a ? (h = c.createLinearGradient(0, 0, 0, a), h.addColorStop(0, "rgba(245,245,245,0.65)"), h.addColorStop(1, "rgba(245,245,245,1)"), c.fillStyle = h, c.fillRect(0, 0, a, a), c.fillStyle = "rgb(245,245,245)", c.fillRect(0, a, a, d - a)) : (h = c.createLinearGradient(0, 0, 0, d), h.addColorStop(0, "rgba(245,245,245,0.65)"), h.addColorStop(1, "rgba(245,245,245,1)"), c.fillStyle = h, c.fillRect(0, 0, a, d))
+                }
+            };
+            i.src = h;
+        }
+    }
+}
+});
+require.register("features/handle-twitchchat-emotes", function(exports, require, module){
+    var debug = require('debug');
+
+module.exports = function () {
+    if (($("#twitch_chat").length || $(".ember-chat").length) && bttv.settings.get("clickTwitchEmotes") === true) {
+        debug.log("Injecting Twitch Chat Emotes Script");
+
+        var emotesJSInject = document.createElement("script");
+        emotesJSInject.setAttribute("src", "//cdn.betterttv.net/js/twitchemotes.js?"+bttv.info.versionString());
+        emotesJSInject.setAttribute("type", "text/javascript");
+        emotesJSInject.setAttribute("id", "clickTwitchEmotes");
+        $("body").append(emotesJSInject);
+    }
+}
+});
+require.register("features/split-chat", function(exports, require, module){
+    var debug = require('debug');
+
+module.exports = function () {
+    if (bttv.settings.get("splitChat") !== false) {
+        debug.log("Splitting Chat");
+
+        var splitCSS = document.createElement("link");
+        bttv.settings.get("darkenedMode") === true ? splitCSS.setAttribute("href", "//cdn.betterttv.net/style/stylesheets/betterttv-split-chat-dark.css") : splitCSS.setAttribute("href", "//cdn.betterttv.net/style/stylesheets/betterttv-split-chat.css");
+        splitCSS.setAttribute("type", "text/css");
+        splitCSS.setAttribute("rel", "stylesheet");
+        splitCSS.setAttribute("id", "splitChat");
+        $('body').append(splitCSS);
+    }
+}
+});
+require.register("templates/chat-settings", function(exports, require, module){
+    function template(locals) {
+var buf = [];
+var jade_mixins = {};
+
+buf.push("<div class=\"chat-menu-header\">BetterTTV</div><div class=\"chat-menu-content\">");
+if ( $("body[data-page=\"ember#chat\"]").length)
+{
+buf.push("<p><a href=\"#\" class=\"g18_gear-00000080 blackChatLink\">Black Chat (Chroma Key)</a></p>");
+}
+if ( $("#dash_main").length || /\?bttvDashboard=true/.test(window.location))
+{
+buf.push("<p><a href=\"#\" class=\"g18_gear-00000080 flipDashboard\">");
+if ( bttv.settings.get("flipDashboard"))
+{
+buf.push("Unflip Dashboard");
+}
+else
+{
+buf.push("Flip Dashboard");
+}
+buf.push("</a></p>");
+}
+buf.push("<p><a href=\"#\" class=\"g18_gear-00000080 setBlacklistKeywords\">Set Blacklist Keywords</a></p><p><a href=\"#\" class=\"g18_gear-00000080 setBlacklistUsernames\">Set Blacklist Usernames</a></p><p><a href=\"#\" class=\"g18_gear-00000080 setHighlightKeywords\">Set Highlight Keywords</a></p><p><a href=\"#\" class=\"g18_gear-00000080 setScrollbackAmount\">Set Scrollback Amount</a></p><p><a href=\"#\" class=\"g18_trash-00000080 clearChat\">Clear My Chat</a></p><p><a href=\"#\" style=\"display: block;margin-top: 8px;text-align: center;\" class=\"button-simple dark openSettings\">BetterTTV Settings</a></p></div>");;return buf.join("");
+};module.exports=template;
+});
+require.register("templates/setting-switch", function(exports, require, module){
+    function template(locals) {
+var buf = [];
+var jade_mixins = {};
+var locals_ = (locals || {}),storageKey = locals_.storageKey,name = locals_.name,description = locals_.description;
+buf.push("<div" + (jade.cls(['option',"bttvOption-" + (storageKey) + ""], [null,true])) + "><span style=\"font-weight:bold;font-size:14px;color:#D3D3D3;\">" + (jade.escape(null == (jade.interp = name) ? "" : jade.interp)) + "</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;" + (jade.escape(null == (jade.interp = description) ? "" : jade.interp)) + "<div class=\"switch\"><input type=\"radio\"" + (jade.attr("name", storageKey, true, false)) + " value=\"false\"" + (jade.attr("id", "" + (storageKey) + "False", true, false)) + " class=\"switch-input switch-off\"/><label" + (jade.attr("for", "" + (storageKey) + "False", true, false)) + " class=\"switch-label switch-label-off\">Off</label><input type=\"radio\"" + (jade.attr("name", storageKey, true, false)) + " value=\"true\"" + (jade.attr("id", "" + (storageKey) + "True", true, false)) + " class=\"switch-input\"/><label" + (jade.attr("for", "" + (storageKey) + "True", true, false)) + " class=\"switch-label switch-label-on\">On</label><span class=\"switch-selection\"></span></div></div>");;return buf.join("");
+};module.exports=template;
 });
 require.register("templates/settings", function(exports, require, module){
     function template(locals) {

@@ -1,17 +1,13 @@
 /** BTTV :
- * betaChat
- * darkenPage
- * splitChat
- * handleBackground
  * cssBlueButtons
- * flipDashboard
  * handleTwitchChatEmotesScript
- * --
- * displayElement
- * removeElement
  */
 
 var chat = bttv.chat, vars = bttv.vars;
+var splitChat = require('features/split-chat'),
+    darkenPage = require('features/darken-page'),
+    handleBackground = require('features/handle-background'),
+    flipDashboard = require('features/flip-dashboard');
 var displayElement = require('element').display,
     removeElement = require('element').remove;
 
@@ -80,17 +76,17 @@ module.exports = [
         storageKey: 'darkenedMode',
         toggle: function(value) {
             if(value === true) {
-                bttv.darkenPage();
+                darkenPage();
                 if (bttv.settings.get("splitChat") !== false) {
                     $("#splitChat").remove();
-                    bttv.splitChat();
+                    splitChat();
                 }
             } else {
                 $("#darkTwitch").remove();
-                bttv.handleBackground();
+                handleBackground();
                 if (bttv.settings.get("splitChat") !== false) {
                     $("#splitChat").remove();
-                    bttv.splitChat();
+                    splitChat();
                 }
             }
         }
@@ -228,7 +224,7 @@ module.exports = [
         storageKey: 'splitChat',
         toggle: function(value) {
             if(value === true) {
-                bttv.splitChat();
+                splitChat();
             } else {
                 $("#splitChat").remove();
             }
