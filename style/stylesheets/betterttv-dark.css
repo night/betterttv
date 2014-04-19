@@ -133,6 +133,10 @@ body {
 	border-top: 1px solid rgba(0, 0, 0, 0.65)
 }
 
+.ember-chat .chat-interface {
+	height: 134px;
+}
+
 .channel-main, .title_over, #channel .player-column #broadcast-meta .info .title .over {
 	background: #000;
 }
@@ -376,6 +380,10 @@ body {
 
 .segmented_tabs {
 	border-top: 0px !important;
+}
+
+.segmented_tabs li {
+	height: 30px;
 }
 
 .segmented_tabs li a {

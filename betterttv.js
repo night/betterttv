@@ -159,7 +159,7 @@
 
     bttv.info = {
         version: "6.7",
-        release: 5,
+        release: 7,
         versionString: function() {
             return bttv.info.version + 'R' + bttv.info.release;
         }
@@ -3736,36 +3736,9 @@
         });
     }
 
-    var createSettingsMenu = function () {
+    var createSettings = function () {
 
-        debug.log("Creating BetterTTV Settings Menu");
-
-        var settingsMenu = document.getElementById("chat_settings_dropmenu");
-        if (settingsMenu) {
-            var bttvChatSettings = document.createElement("div");
-            bttvChatSettings.setAttribute("align", "left");
-            bttvChatSettings.setAttribute("id", "bttvsettings");
-            bttvChatSettings.style.margin = "0px auto";
-
-            bttvChatSettings.innerHTML = '<ul class="dropmenu_col inline_all"> \
-                                <li id="chat_section_chatroom" class="dropmenu_section"> \
-                                <br /> \
-                                &nbsp;&nbsp;&nbsp;&raquo;&nbsp;BetterTTV \
-                                <br /> \
-                                ' + ($("body#chat").length ? '<a class="dropmenu_action g18_gear-FFFFFF80" href="#" id="blackChatLink">Black Chat (Chroma Key)</a>' : '') + ' \
-                                ' + ($("#dash_main").length ? '<a class="dropmenu_action g18_gear-FFFFFF80" href="#" id="flipDashboard">' + (bttv.settings.get("flipDashboard") === true ? 'Unflip Dashboard' : 'Flip Dashboard') + '</a>' : '') + ' \
-                                <a class="dropmenu_action g18_gear-FFFFFF80" href="#" id="setBlacklistKeywords">Set Blacklist Keywords</a> \
-                                <a class="dropmenu_action g18_gear-FFFFFF80" href="#" id="setHighlightKeywords">Set Highlight Keywords</a> \
-                                <a class="dropmenu_action g18_gear-FFFFFF80" href="#" id="setScrollbackAmount">Set Scrollback Amount</a> \
-                                <a class="dropmenu_action g18_trash-FFFFFF80" href="#" id="clearChat">Clear My Chat</a> \
-                                <br /> \
-                                <a class="dropmenu_action g18_gear-FFFFFF80" href="#" id="openSettings">BetterTTV Settings</a> \
-                                </li> \
-                                </ul> \
-                                ';
-
-            settingsMenu.appendChild(bttvChatSettings);
-        }
+        debug.log("Creating BetterTTV Settings");
 
         var settingsPanel = document.createElement("div");
         settingsPanel.setAttribute("id", "bttvSettingsPanel");
@@ -3831,19 +3804,6 @@
             $('#site_footer').remove();
         }
 
-        if($('body#chat').length) {
-            $('#openSettings').click(function(e) {
-                e.preventDefault();
-                bttv.settings.popup();
-            });
-        } else {
-            $('#openSettings').click(function(e) {
-                e.preventDefault();
-                $('#chat_settings_dropmenu').hide();
-                $('#bttvSettingsPanel').show("slow");
-            });
-        }
-
         $.get('//cdn.betterttv.net/privacy.html', function (data) {
             if(data) {
                 $('#bttvPrivacy .tse-content').html(data);
@@ -3884,97 +3844,6 @@
 
             $(tab).fadeIn();
             $(this).parent("li").addClass("active");
-        });
-
-        $('#blackChatLink').click(function(e) {
-            e.preventDefault();
-            if (vars.blackChat) {
-                vars.blackChat = false;
-                $("#blackChat").remove();
-                darkenPage();
-                splitChat();
-                $("#blackChatLink").text("Black Chat (Chroma Key)");
-            } else {
-                vars.blackChat = true;
-                $("#darkTwitch").remove();
-                $("#splitChat").remove();
-                var darkCSS = document.createElement("link");
-                darkCSS.setAttribute("href", "//cdn.betterttv.net/style/stylesheets/betterttv-blackchat.css");
-                darkCSS.setAttribute("type", "text/css");
-                darkCSS.setAttribute("rel", "stylesheet");
-                darkCSS.setAttribute("id", "blackChat");
-                darkCSS.innerHTML = '';
-                $('body').append(darkCSS);
-                $("#blackChatLink").text("Unblacken Chat");
-            }
-        });
-
-        $('#clearChat').click(function(e) {
-            e.preventDefault();
-            removeElement(".line");
-        });
-
-        $('#flipDashboard').click(function(e) {
-            e.preventDefault();
-            if (bttv.settings.get("flipDashboard") === true) {
-                bttv.settings.save("flipDashboard", false);
-            } else {
-                bttv.settings.save("flipDashboard", true);
-            }
-        });
-
-        $('#setBlacklistKeywords').click(function(e) {
-            e.preventDefault();
-            var keywords = prompt("Type some blacklist keywords. Messages containing keywords will be filtered from your chat. Use spaces in the field to specify multiple keywords. Place {} around a set of words to form a phrase. Wildcards are supported.", bttv.settings.get("blacklistKeywords"));
-            if (keywords != null) {
-                keywords = keywords.trim().replace(/\s\s+/g, ' ');
-                bttv.settings.save("blacklistKeywords", keywords);
-            }
-        });
-
-        $('#setHighlightKeywords').click(function(e) {
-            e.preventDefault();
-            var keywords = prompt("Type some highlight keywords. Messages containing keywords will turn red to get your attention. Use spaces in the field to specify multiple keywords. Place {} around a set of words to form a phrase, and () around a word to specify a username. Wildcards are supported.", bttv.settings.get("highlightKeywords"));
-            if (keywords != null) {
-                keywords = keywords.trim().replace(/\s\s+/g, ' ');
-                bttv.settings.save("highlightKeywords", keywords);
-            }
-        });
-
-        $('#setScrollbackAmount').click(function(e) {
-            e.preventDefault();
-            var lines = prompt("What is the maximum amount of lines that you want your chat to show? Twitch default is 150. Leave the field blank to disable.", bttv.settings.get("scrollbackAmount"));
-            if (lines != null && lines === "") {
-                bttv.settings.save("scrollbackAmount", 150);
-            } else if (lines != null && isNaN(lines) !== true && lines > 0) {
-                bttv.settings.save("scrollbackAmount", parseInt(lines));
-            } else {
-                bttv.settings.save("scrollbackAmount", 150);
-            }
-        });
-
-        var toggleTimestamps = '<p class="dropmenu_action" id="chat_timestamps_bttv"><input class="left" id="toggle_timestamps_bttv" type="checkbox">Time Stamps</p>';
-        var toggleModIcons = '<p class="dropmenu_action" id="chat_mod_icons_bttv"><input class="left" id="toggle_mod_icons_bttv" type="checkbox">Mod Icons</p>';
-
-        $('#chat_timestamps').replaceWith(toggleTimestamps);
-        $('#chat_timestamps_bttv').click(function() {
-            if (bttv.settings.get("showTimestamps") === true) {
-                bttv.settings.save("showTimestamps", false);
-            } else {
-                bttv.settings.save("showTimestamps", true);
-            }
-        });
-        $('#mod_icons').parent().replaceWith(toggleModIcons);
-        $('#chat_mod_icons_bttv').click(function() {
-            if (bttv.settings.get("showModIcons") === true) {
-                bttv.settings.save("showModIcons", false);
-            } else {
-                bttv.settings.save("showModIcons", true);
-            }
-        });
-
-        $('.dropmenu_action').each(function () {
-            $(this).css("color", "#ffffff");
         });
     }
 
@@ -4081,7 +3950,7 @@
         handleLookupServer();
 
         $(document).ready(function () {
-            createSettingsMenu();
+            createSettings();
             bttv.settings.load();
 
             debug.log("BTTV v" + bttv.info.versionString());
