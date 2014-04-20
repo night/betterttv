@@ -4,7 +4,8 @@
  */
 
 var chat = bttv.chat, vars = bttv.vars;
-var splitChat = require('features/split-chat'),
+var betaChat = require('features/beta-chat'),
+    splitChat = require('features/split-chat'),
     darkenPage = require('features/darken-page'),
     handleBackground = require('features/handle-background'),
     flipDashboard = require('features/flip-dashboard');
@@ -38,7 +39,7 @@ module.exports = [
         storageKey: 'bttvChat',
         toggle: function(value) {
             if(value === true) {
-                bttv.betaChat();
+                betaChat();
             } else {
                 window.location.reload();
             }

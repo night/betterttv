@@ -1,0 +1,32 @@
+- var vars = require('vars')
+
+div.bttv-mod-card.ember-view.moderation-card(data-user=user.name style="top: #{top}px;left: #{left}px;")
+  .close-button
+  .card-header(style="background-color: #{user.profile_banner_background_color?user.profile_banner_background_color:'#000'}")
+    img.channel_logo(src=user.logo?user.logo:'https://www-cdn.jtvnw.net/images/xarth/404_user_300x300.png')
+    .drag-handle
+    h3.name: a(href=Twitch.url.profile(user.name) target="_blank")= user.display_name
+    .channel_background_cover
+    if user.profile_banner
+      img.channel_background(src=user.profile_banner)
+  if user.name != vars.userData.login
+    .interface
+      button.button-simple.primary.mod-card-follow Follow
+      button.button-simple.dark.mod-card-profile(style="height: 30px;vertical-align: top;")
+        img(src="/images/xarth/g/g18_person-00000080.png" style="margin-top: 6px;")
+      button.button-simple.dark.mod-card-message(style="height: 30px;vertical-align: top;")
+        img(src="/images/xarth/g/g18_mail-00000080.png" style="margin-top: 6px;")
+      button.button-simple.dark.mod-card-ignore Ignore
+      if vars.userData.isLoggedIn && bttv.chat.helpers.isOwner(vars.userData.login)
+        button.button-simple.dark.mod-card-mod) Mod
+      if vars.userData.isLoggedIn && bttv.chat.helpers.isModerator(vars.userData.login) && (!bttv.chat.helpers.isModerator(user.name) || vars.userData.login === bttv.getChannel())
+        br
+        span.mod-controls
+          button.permit.button-simple.light(style="width:48px;" title="!permit this user") Permit
+          button.timeout.button-simple.light(style="width:44px;" data-time="1" title="Clear this user's chat") Purge
+          button.timeout.button-simple.light(data-time="600" title="Temporary 10 minute ban")
+            img(src="/images/xarth/g/g18_timeout-00000080.png")
+          button.timeout.button-simple.light(style="width:30px;" data-time="28800" title="Temporary 8 hour ban") Swag 8hr
+          button.timeout.button-simple.light(style="width:38px;" data-time="86400" title="Temporary 24 hour ban") 24hr
+          button.ban.button-simple.light(title="Permanent Ban")
+            img(src="/images/xarth/g/g18_ban-00000080.png")
