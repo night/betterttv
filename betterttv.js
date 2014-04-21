@@ -1540,90 +1540,11 @@ bttv.chat = {
             bttv.chat.helpers.scrollChat();
         },
         moderationCard: function(user, $event) {
-            var makeCard = function(user) {
-                //@TODO move to features/
-                var template = bttv.chat.templates.moderationCard(user, $event.offset().top, $event.offset().left);
-                $('.ember-chat .moderation-card').remove();
-                $('.ember-chat').append(template);
-
-                var $modCard = $('.ember-chat .moderation-card[data-user="'+user.name+'"]');
-
-                $modCard.find('.close-button').click(function() {
-                    $modCard.remove();
-                });
-                $modCard.find('.permit').click(function() {
-                    bttv.chat.helpers.sendMessage('!permit '+user.name);
-                    $modCard.remove();
-                    $('div.tipsy.tipsy-sw').remove();
-                });
-                $modCard.find('.timeout').click(function() {
-                    bttv.chat.helpers.timeout(user.name, $(this).data('time'));
-                    $modCard.remove();
-                    $('div.tipsy.tipsy-sw').remove();
-                });
-                $modCard.find('.ban').click(function() {
-                    bttv.chat.helpers.ban(user.name);
-                    $modCard.remove();
-                    $('div.tipsy.tipsy-sw').remove();
-                });
-                $modCard.find('.mod-card-profile').click(function() {
-                    window.open(Twitch.url.profile(user.name),'_blank');
-                });
-                $modCard.find('.mod-card-message').click(function() {
-                    window.open(Twitch.url.compose(user.name),'_blank');
-                });
-
-                if(bttv.chat.helpers.isIgnored(user.name)) $modCard.find('.mod-card-ignore').text('Unignore');
-                $modCard.find('.mod-card-ignore').click(function() {
-                    if($modCard.find('.mod-card-ignore').text() === 'Unignore') {
-                        bttv.chat.helpers.sendMessage('/unignore '+user.name);
-                        $modCard.find('.mod-card-ignore').text('Ignore');
-                    } else {
-                        bttv.chat.helpers.sendMessage('/ignore '+user.name);
-                        $modCard.find('.mod-card-ignore').text('Unignore');
-                    }
-                });
-
-                if(bttv.chat.helpers.isModerator(user.name)) $modCard.find('.mod-card-mod').text('Demod');
-                $modCard.find('.mod-card-mod').click(function() {
-                    if($modCard.find('.mod-card-mod').text() === 'Demod') {
-                        bttv.chat.helpers.sendMessage('/unmod '+user.name);
-                        $modCard.find('.mod-card-mod').text('Mod');
-                    } else {
-                        bttv.chat.helpers.sendMessage('/mod '+user.name);
-                        $modCard.find('.mod-card-mod').text('Demod');
-                    }
-                });
-
-                Twitch.api.get('users/:login/follows/channels/'+user.name).done(function() {
-                    $modCard.find('.mod-card-follow').text('Unfollow');
-                }).fail(function() {
-                    $modCard.find('.mod-card-follow').text('Follow');
-                });
-                $modCard.find('.mod-card-follow').text('Unfollow').click(function() {
-                    if($modCard.find('.mod-card-follow').text() === 'Unfollow') {
-                        Twitch.api.del("users/:login/follows/channels/"+user.name).done(function() {
-                            bttv.chat.helpers.serverMessage('User was unfollowed successfully.');
-                        }).fail(function() {
-                            bttv.chat.helpers.serverMessage('There was an error following this user.');
-                        });
-                        $modCard.find('.mod-card-follow').text('Follow');
-                    } else {
-                        Twitch.api.put("users/:login/follows/channels/"+user.name).done(function() {
-                            bttv.chat.helpers.serverMessage('User was followed successfully.');
-                        }).fail(function() {
-                            bttv.chat.helpers.serverMessage('There was an error following this user.');
-                        });
-                        $modCard.find('.mod-card-follow').text('Unfollow');
-                    }
-                });
-
-                $modCard.drags({ handle: ".drag-handle", el: $modCard });
-            }
+            var makeCard = require('features/make-card');
             Twitch.api.get('/api/channels/'+user.toLowerCase()+'/ember').done(function(user) {
-                makeCard(user);
+                makeCard(user, $event);
             }).fail(function() {
-                makeCard({ name: user, display_name: user.capitalize() });
+                makeCard({ name: user, display_name: user.capitalize() }, $event);
             });
         },
         labelsChanged: function(user) {
@@ -2181,376 +2102,10 @@ String.prototype.capitalize = function () {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }
 
-var clearClutter = function () {
-    debug.log("Clearing Clutter");
-
-    // Sidebar is so cluttered
-    removeElement('li[data-name="kabam"]');
-    removeElement('#nav_advertisement');
-    if (bttv.settings.get("showFeaturedChannels") !== true) {
-        removeElement('#nav_games');
-        removeElement('#nav_streams');
-        removeElement('#nav_related_streams');
-    }
-}
-
-var channelReformat = function () {
-    if ($('body.ember-application').length === 0 || $('.ember-chat').length === 0 || $("#right_col").length === 0) return;
-
-    debug.log("Reformatting Channel Page");
-
-    if($('.broadcast-meta .title .real').length) {
-        var linkifyTitle = function() {
-            var linkifiedTitle = bttv.chat.templates.linkify($('.broadcast-meta .title .real').text());
-
-            $('.broadcast-meta .title span').each(function() {
-                $(this).html(linkifiedTitle);
-            });
-        }
-        linkifyTitle();
-        setInterval(function() {
-            if(!vars.channelTitle) vars.channelTitle = "";
-            if($('.broadcast-meta .title .real').html() !== vars.channelTitle) {
-                vars.channelTitle = $('.broadcast-meta .title .real').html();
-                linkifyTitle();
-            }
-        }, 1000);
-    }
-
-    if(!vars.loadedChannelResize) {
-        vars.loadedChannelResize = true;
-
-        var resize = false;
-
-        $(document).keydown(function (event) {
-            if (event.keyCode === keyCodes.r && event.altKey) {
-                $(window).trigger('resize');
-            }
-        });
-
-        var resizeTimer = false;
-
-        var handleResize = function () {
-            debug.log("Page resized");
-
-            if($('body.ember-application').length === 0 || $('.ember-chat').length === 0) return;
-
-            var d = 0;
-            if ($("#large_nav").css("display") !== "none") {
-                d += $("#large_nav").width();
-            }
-            if ($("#small_nav").css("display") !== "none") {
-                d += $("#small_nav").width();
-            }
-            if (vars.chatWidth == 0) {
-                $("#right_col").css({
-                    display: "none"
-                });
-                $("#right_close span").css({
-                    "background-position": "0 0"
-                });
-            }
-            if ($("#right_col").css("display") !== "none") {
-                if ($("#right_col").width() < 340) {
-                    vars.chatWidth = 340;
-                    $("#right_col").width(vars.chatWidth);
-                    $("#right_col #chat").width(vars.chatWidth);
-                    $("#right_col .top").width(vars.chatWidth);
-                    $("#right_col").css("display", "inherit");
-                    $("#right_close span").css({
-                        "background-position": "0 -18px"
-                    });
-                    handleResize();
-                    return;
-                } else {
-                    d += $("#right_col").width();
-                }
-            }
-
-            $("#main_col").css({
-                width: $(window).width() - d + "px"
-            });
-
-            if($("#broadcast_meta").length) {
-                if ($(".live_site_player_container").length) {
-                    var h = 0.5625 * $("#main_col").width() - 4;
-                    var calcH = $(window).height() - $("#broadcast_meta").outerHeight(true) - $("#stats_and_actions").outerHeight();
-                    if (h > calcH) {
-                        $(".live_site_player_container").css({
-                            height: $(window).height() - $("#stats_and_actions").outerHeight() + "px"
-                        });
-                        $("#main_col .tse-scroll-content").animate({
-                            scrollTop: $('.live_site_player_container').position().top - 10
-                        }, 150, "swing");
-                    } else {
-                        $(".live_site_player_container").css({
-                            height: h.toFixed(0) + "px"
-                        });
-                        $("#main_col .tse-scroll-content").animate({
-                            scrollTop: 0
-                        }, 150, "swing");
-                    }
-                } else if ($(".archive_site_player_container").length) {
-                    var h = 0.5625 * $("#main_col").width() - 4;
-                    var calcH = $(window).height() - $("#broadcast_meta").outerHeight(true) - $(".archive_info").outerHeight(true) - $("#stats_and_actions").outerHeight();
-                    if (h > calcH) {
-                        $(".archive_site_player_container").css({
-                            height: $(window).height() - $(".archive_info").outerHeight(true) - $("#stats_and_actions").outerHeight() + "px"
-                        });
-                        $("#main_col .tse-scroll-content").animate({
-                            scrollTop: $('.archive_site_player_container').position().top - 10
-                        }, 150, "swing");
-                    } else {
-                        $(".archive_site_player_container").css({
-                            height: h.toFixed(0) + "px"
-                        });
-                        $("#main_col .tse-scroll-content").animate({
-                            scrollTop: 0
-                        }, 150, "swing");
-                    }
-                }
-
-                var d = $("#broadcast_meta .info .title").width();
-                $("#broadcast_meta .info .title .real_title").width() > d ? $("#broadcast_meta .info").addClass("long_title") : $("#broadcast_meta .info").removeClass("long_title");
-                $("#channel_panels_contain").masonry("reload");
-            } else {
-                var h = 0.5625 * $("#main_col").width() - 4;
-                var calcH = $(window).height() - $("#broadcast-meta").outerHeight(true) - $(".stats-and-actions").outerHeight();
-                if (h > calcH) {
-                    $("#player, .dynamic-player object, .dynamic-player video").attr('style', 'height: '+ ($(window).height() - $(".stats-and-actions").outerHeight()) + 'px !important; width: 100% !important');
-                    setTimeout(function() {
-                        $("#main_col .tse-scroll-content").animate({
-                            scrollTop: $("#broadcast-meta").outerHeight(true) - 10
-                        }, 150, "swing");
-                    }, 1000);
-                } else {
-                    $("#player, .dynamic-player object, .dynamic-player video").attr('style', 'height: '+ h.toFixed(0) + 'px !important; width: 100% !important');
-                    resizeTimer = setTimeout(function() {
-                        $("#main_col .tse-scroll-content").animate({
-                            scrollTop: 0
-                        }, 150, "swing");
-                        resizeTimer = false;
-                    }, 1000);
-                }
-
-                var d = $("#broadcast-meta .info .title").width();
-                $("#broadcast-meta .info .title .real_title").width() > d ? $("#broadcast-meta .info").addClass("long_title") : $("#broadcast-meta .info").removeClass("long_title");
-                $("#channel_panels_contain").masonry("reload");
-            }
-        }
-
-        $(document).mouseup(function (event) {
-            if (resize === false) return;
-            if (chatWidthStartingPoint) {
-                if (chatWidthStartingPoint === event.pageX) {
-                    if ($("#right_col").css("display") !== "none") {
-                        $("#right_col").css({
-                            display: "none"
-                        });
-                        $("#right_close span").css({
-                            "background-position": "0 0"
-                        });
-                        vars.chatWidth = 0;
-                    }
-                } else {
-                    vars.chatWidth = $("#right_col").width();
-                }
-            } else {
-                vars.chatWidth = $("#right_col").width();
-            }
-            bttv.settings.save("chatWidth", vars.chatWidth);
-
-            resize = false;
-            handleResize();
-        });
-
-        $(document).on('mousedown', '#right_close, #right_col .resizer', function(event) {
-            event.preventDefault();
-            resize = event.pageX;
-            chatWidthStartingPoint = event.pageX;
-            $("#chat_text_input").focus();
-            if ($("#right_col").css("display") === "none") {
-                $("#right_col").css({
-                    display: "inherit"
-                });
-                $("#right_close span").css({
-                    "background-position": "0 -18px"
-                });
-                resize = false;
-                if ($("#right_col").width() < 340) {
-                    $("#right_col").width($("#right_col .top").width());
-                }
-                vars.chatWidth = $("#right_col").width();
-                bttv.settings.save("chatWidth", vars.chatWidth);
-                handleResize();
-            }
-        });
-
-        $(document).mousemove(function (event) {
-            if (resize) {
-                $("#chat_text_input").focus();
-                if (vars.chatWidth + resize - event.pageX < 340) {
-                    $("#right_col").width(340);
-                    $("#right_col #chat").width(340);
-                    $("#right_col .top").width(340);
-
-                    handleResize();
-                } else if (vars.chatWidth + resize - event.pageX > 541) {
-                    $("#right_col").width(541);
-                    $("#right_col #chat").width(541);
-                    $("#right_col .top").width(541);
-
-                    handleResize();
-                } else {
-                    $("#right_col").width(vars.chatWidth + resize - event.pageX);
-                    $("#right_col #chat").width(vars.chatWidth + resize - event.pageX);
-                    $("#right_col .top").width(vars.chatWidth + resize - event.pageX);
-
-                    handleResize();
-                }
-            }
-        });
-
-        $(window).off("fluid-resize");
-        $(window).off("resize").resize(function () {
-            debug.log("Debug: Resize Called");
-            setTimeout(handleResize, 1000);
-        });
-    }
-
-    if (bttv.settings.get["chatWidth"] && bttv.settings.get["chatWidth"] < 0) {
-        bttv.settings.save("chatWidth", 0);
-    }
-
-    var layout = bttv.storage.getObject('TwitchCache:Layout');
-
-    if(layout.resource && layout.resource.isRightColumnClosedByUserAction === true) {
-        bttv.settings.save("chatWidth", 0);
-        if ($("#right_col").width() == "0") {
-            $("#right_col").width("340px");
-        }
-        layout.resource.isRightColumnClosedByUserAction = false;
-
-        bttv.storage.putObject('TwitchCache:Layout', layout);
-    }
-
-    if($('#right_col .resizer').length === 0) $('#right_col').append("<div class='resizer' onselectstart='return false;' title='Drag to enlarge chat =D'></div>");
-    $("#right_col:before").css("margin-left", "-1");
-
-    $("#right_col .bottom #controls #control_buttons .primary_button").css({
-        float: 'right',
-        marginRight: '-1px' 
-    });
-    $("#right_nav").css({
-        'margin-left': 'auto',
-        'margin-right': 'auto',
-        'width': '321px',
-        'float': 'none',
-        'border': 'none'
-    });
-    $('#right_col .top').css('border-bottom', '1px solid rgba(0, 0, 0, 0.25)')
-
-    $("#right_close").unbind('click');
-    $("#right_close").removeAttr('data-ember-action');
-
-    $("#left_close").off('click').click(function () {
-        $(window).trigger('resize');
-    });
-
-    if (bttv.settings.get("chatWidth") !== null) {
-        vars.chatWidth = bttv.settings.get("chatWidth");
-
-        if (vars.chatWidth == 0) {
-            $("#right_col").css({
-                display: "none"
-            });
-            $("#right_close span").css({
-                "background-position": "0 0"
-            });
-        } else {
-            $("#right_col").width(vars.chatWidth);
-            $("#right_col #chat").width(vars.chatWidth);
-            $("#right_col .top").width(vars.chatWidth);
-        }
-
-        $(window).trigger('resize');
-    } else {
-        if ($("#right_col").width() == "0") {
-            $("#right_col").width("340px");
-
-        }
-        vars.chatWidth = $("#right_col").width();
-        bttv.settings.save("chatWidth", $("#right_col").width());
-    }
-}
-
-var brand = function () {
-    debug.log("Branding Site with Better & Importing Styles");
-
-    // Old Site Header Logo Branding
-    if ($("#header_logo").length) {
-        $("#header_logo").html("<img alt=\"TwitchTV\" src=\"//cdn.betterttv.net/style/logos/black_twitch_logo.png\">");
-        var $watermark = $('<img />');
-        $watermark.attr('src', '//cdn.betterttv.net/style/logos/logo_icon.png');
-        $watermark.css({
-            'z-index': 9000,
-            'margin-left': 22,
-            'margin-top': -45,
-            'float': 'left',
-            'height': 18
-        });
-        $("#header_logo").append($watermark);
-    }
-
-    // New Site Logo Branding
-    if ($("#large_nav #logo").length) {
-        var $watermark = $('<img />');
-        $watermark.attr('src', '//cdn.betterttv.net/style/logos/logo_icon.png');
-        $watermark.css({
-            'z-index': 9000,
-            'margin-left': 68,
-            'margin-top': 9,
-            'float': 'left'
-        });
-        $("#large_nav #logo").append($watermark);
-    }
-
-    // Adds BTTV Settings Icon to Left Sidebar
-    $(".column .content #you").append('<a class="bttvSettingsIcon" href="#"></a>');
-    $(".bttvSettingsIcon").click(function(e){
-        e.preventDefault();
-        $('#chat_settings_dropmenu').hide();
-        $('#bttvSettingsPanel').show("slow");
-    })
-
-    // Import Global BTTV CSS Changes
-    var globalCSSInject = document.createElement("link");
-    globalCSSInject.setAttribute("href", "//cdn.betterttv.net/style/stylesheets/betterttv.css?"+bttv.info.versionString());
-    globalCSSInject.setAttribute("type", "text/css");
-    globalCSSInject.setAttribute("rel", "stylesheet");
-    $("body").append(globalCSSInject);
-
-    if (bttv.settings.get("showChatIndentation") !== false) {
-        $addCSS = $('<style></style>');
-        $addCSS.attr('id', 'bttvChatIndentation');
-        $addCSS.html('#chat_line_list .line p { padding-left: 16px;text-indent: -16px; }');
-        $('body').append($addCSS);
-    }
-
-    // Import Blue Button CSS
-    if (bttv.settings.get("showPurpleButtons") !== true) {
-        cssBlueButtons();
-    }
-
-    // Small Popout/Embed Chat Fixes
-    $("body#chat").css("overflow-y", "hidden");
-    $('#chat_loading_spinner').attr('src', "data:image/gif;base64,R0lGODlhFgAWAPMGANfX1wAAADc3N1tbW6Ojo39/f2tra8fHx9nZ2RsbG+np6SwsLEtLS4eHh7q6ugAAACH/C05FVFNDQVBFMi4wAwEAAAAh/hoiQ3JlYXRlZCB3aXRoIENoaW1wbHkuY29tIgAh+QQJCgAGACwAAAAAFgAWAAAEbNCESY29OEvBRdDgFXReGI7dZ2oop65YWypIjSgGbSOW/CGAIICnEAIOPdLPSDQiNykDUNgUPn1SZs6ZjE6D1eBVmaVurV1XGXwWp0vfYfv4XpqLaKg6HqbrZzs4OjZ1MBlYhiJkiYWMfy+GEQAh+QQJCgAGACwAAAAAFgAWAAAEctDIKYO9NKe9lwlCKAQZlQzo4IEiWUpnuorjC6fqR7tvjM4tgwJBJN5kuqACwGQef8kQadkEPHMsqbBqNfiwu231CtRSm+Ro7ez04sprbjobH7uR9Kn8Ds2L0XxgSkVGgXA8JV+HNoZqiBocCYuMJX4vEQAh+QQJCgAAACwAAAAAFgAWAAAEcxDISWu4uNLEOwhCKASSGA5AMqxD8pkkIBR0gaqsC4rxXN+s1otXqtlSQR2s+EPmhqGeEfjcRZk06kpJlE2dW+gIe8SFrWNv0yxES9dJ8TsLbi/VdDb3ii/H3WRadl0+eX93hX5ViCaCe2kaKR0ccpGWlREAIfkECQoAAQAsAAAAABYAFgAABHUwyEmrvTisxHlmQigw2mAOiWSsaxMwRVyQy4mqRE64sEzbqYBBt3vJZqVTcKjjHX9KXNPoS5qWRGe1FhVmqTHoVZrThq0377R35o7VZTDSnWbG2XMguYgX1799aFhrT4J7ZnldLC1yfkEXICKOGRcbHY+UlBEAIfkECQoAAQAsAAAAABYAFgAABHIwyEmrvThrOoQXTFYYpFEEQ6EWgkS8rxMUMHGmaxsQR3/INNhtxXL5frPaMGf0AZUooo7nTAqjzN3xecWpplvra/lt9rhjbFlbDaa9RfZZbFPHqXN3HQ5uQ/lmSHpkdzVoe1IiJSZ2OhsTHR8hj5SVFREAIfkECQoAAQAsAAAAABYAFgAABGowyEmrvTjrzWczIJg5REk4QWMShoQAMKAExGEfRLq2QQzPtVtOZeL5ZLQbTleUHIHK4c7pgwqZJWM1eSVmqTGrTdrsbYNjLAv846a9a3PYvYRr5+j6NPDCR9U8FyQmKHYdHiEih4uMjRQRACH5BAkKAAEALAAAAAAWABYAAARkMMhJq7046807d0QYSkhZKoFiIqhzvAchATSNIjWABC4sBznALbfrvX7BYa0Ii81yShrT96xFdbwmEhrALbNUINcrBR+rti7R7BRb1V9jOwkvy38rVmrV0nokICI/f4SFhocSEQAh+QQJCgABACwAAAAAFgAWAAAEWjDISau9OOvNu7dIGCqBIiKkeUoH4AIk8gJIOR/sHM+1cuev3av3C7SCAdnQ9sIZdUke0+U8uoQuYhN4jS592ydSmZ0CqlAyzYweS8FUyQlVOqXmn7x+z+9bIgA7");
-
-    // Run Beta Chat After BTTV CSS
-    betaChat();
-}
-
-var betaChat = require('features/beta-chat'),
+var clearClutter = require('features/clear-clutter'),
+    channelReformat = require('features/channel-reformat'),
+    brand = require('features/brand'),
+    betaChat = require('features/beta-chat'),
     checkMessages = require('features/check-messages'),
     cssBlueButtons = require('features/css-blue-buttons')
     directoryFunctions = require('features/directory-functions'),
@@ -3220,6 +2775,77 @@ module.exports = function () {
     }
 }
 });
+require.register("features/brand", function(exports, require, module){
+    var debug = require('debug');
+var cssBlueButtons = require('./css-blue-buttons'),
+    betaChat = require('./beta-chat');
+
+module.exports = function () {
+    debug.log("Branding Site with Better & Importing Styles");
+
+    // Old Site Header Logo Branding
+    if ($("#header_logo").length) {
+        $("#header_logo").html("<img alt=\"TwitchTV\" src=\"//cdn.betterttv.net/style/logos/black_twitch_logo.png\">");
+        var $watermark = $('<img />');
+        $watermark.attr('src', '//cdn.betterttv.net/style/logos/logo_icon.png');
+        $watermark.css({
+            'z-index': 9000,
+            'margin-left': 22,
+            'margin-top': -45,
+            'float': 'left',
+            'height': 18
+        });
+        $("#header_logo").append($watermark);
+    }
+
+    // New Site Logo Branding
+    if ($("#large_nav #logo").length) {
+        var $watermark = $('<img />');
+        $watermark.attr('src', '//cdn.betterttv.net/style/logos/logo_icon.png');
+        $watermark.css({
+            'z-index': 9000,
+            'margin-left': 68,
+            'margin-top': 9,
+            'float': 'left'
+        });
+        $("#large_nav #logo").append($watermark);
+    }
+
+    // Adds BTTV Settings Icon to Left Sidebar
+    $(".column .content #you").append('<a class="bttvSettingsIcon" href="#"></a>');
+    $(".bttvSettingsIcon").click(function(e){
+        e.preventDefault();
+        $('#chat_settings_dropmenu').hide();
+        $('#bttvSettingsPanel').show("slow");
+    })
+
+    // Import Global BTTV CSS Changes
+    var globalCSSInject = document.createElement("link");
+    globalCSSInject.setAttribute("href", "//cdn.betterttv.net/style/stylesheets/betterttv.css?"+bttv.info.versionString());
+    globalCSSInject.setAttribute("type", "text/css");
+    globalCSSInject.setAttribute("rel", "stylesheet");
+    $("body").append(globalCSSInject);
+
+    if (bttv.settings.get("showChatIndentation") !== false) {
+        $addCSS = $('<style></style>');
+        $addCSS.attr('id', 'bttvChatIndentation');
+        $addCSS.html('#chat_line_list .line p { padding-left: 16px;text-indent: -16px; }');
+        $('body').append($addCSS);
+    }
+
+    // Import Blue Button CSS
+    if (bttv.settings.get("showPurpleButtons") !== true) {
+        cssBlueButtons();
+    }
+
+    // Small Popout/Embed Chat Fixes
+    $("body#chat").css("overflow-y", "hidden");
+    $('#chat_loading_spinner').attr('src', "data:image/gif;base64,R0lGODlhFgAWAPMGANfX1wAAADc3N1tbW6Ojo39/f2tra8fHx9nZ2RsbG+np6SwsLEtLS4eHh7q6ugAAACH/C05FVFNDQVBFMi4wAwEAAAAh/hoiQ3JlYXRlZCB3aXRoIENoaW1wbHkuY29tIgAh+QQJCgAGACwAAAAAFgAWAAAEbNCESY29OEvBRdDgFXReGI7dZ2oop65YWypIjSgGbSOW/CGAIICnEAIOPdLPSDQiNykDUNgUPn1SZs6ZjE6D1eBVmaVurV1XGXwWp0vfYfv4XpqLaKg6HqbrZzs4OjZ1MBlYhiJkiYWMfy+GEQAh+QQJCgAGACwAAAAAFgAWAAAEctDIKYO9NKe9lwlCKAQZlQzo4IEiWUpnuorjC6fqR7tvjM4tgwJBJN5kuqACwGQef8kQadkEPHMsqbBqNfiwu231CtRSm+Ro7ez04sprbjobH7uR9Kn8Ds2L0XxgSkVGgXA8JV+HNoZqiBocCYuMJX4vEQAh+QQJCgAAACwAAAAAFgAWAAAEcxDISWu4uNLEOwhCKASSGA5AMqxD8pkkIBR0gaqsC4rxXN+s1otXqtlSQR2s+EPmhqGeEfjcRZk06kpJlE2dW+gIe8SFrWNv0yxES9dJ8TsLbi/VdDb3ii/H3WRadl0+eX93hX5ViCaCe2kaKR0ccpGWlREAIfkECQoAAQAsAAAAABYAFgAABHUwyEmrvTisxHlmQigw2mAOiWSsaxMwRVyQy4mqRE64sEzbqYBBt3vJZqVTcKjjHX9KXNPoS5qWRGe1FhVmqTHoVZrThq0377R35o7VZTDSnWbG2XMguYgX1799aFhrT4J7ZnldLC1yfkEXICKOGRcbHY+UlBEAIfkECQoAAQAsAAAAABYAFgAABHIwyEmrvThrOoQXTFYYpFEEQ6EWgkS8rxMUMHGmaxsQR3/INNhtxXL5frPaMGf0AZUooo7nTAqjzN3xecWpplvra/lt9rhjbFlbDaa9RfZZbFPHqXN3HQ5uQ/lmSHpkdzVoe1IiJSZ2OhsTHR8hj5SVFREAIfkECQoAAQAsAAAAABYAFgAABGowyEmrvTjrzWczIJg5REk4QWMShoQAMKAExGEfRLq2QQzPtVtOZeL5ZLQbTleUHIHK4c7pgwqZJWM1eSVmqTGrTdrsbYNjLAv846a9a3PYvYRr5+j6NPDCR9U8FyQmKHYdHiEih4uMjRQRACH5BAkKAAEALAAAAAAWABYAAARkMMhJq7046807d0QYSkhZKoFiIqhzvAchATSNIjWABC4sBznALbfrvX7BYa0Ii81yShrT96xFdbwmEhrALbNUINcrBR+rti7R7BRb1V9jOwkvy38rVmrV0nokICI/f4SFhocSEQAh+QQJCgABACwAAAAAFgAWAAAEWjDISau9OOvNu7dIGCqBIiKkeUoH4AIk8gJIOR/sHM+1cuev3av3C7SCAdnQ9sIZdUke0+U8uoQuYhN4jS592ydSmZ0CqlAyzYweS8FUyQlVOqXmn7x+z+9bIgA7");
+
+    // Run Beta Chat After BTTV CSS
+    betaChat();
+};
+});
 require.register("features/chat-load-settings", function(exports, require, module){
     var debug = require('debug'),
     vars = require('vars');
@@ -3470,6 +3096,23 @@ module.exports = function () {
                 newMessages(d.id, e.namespaced);
             });
         });
+    }
+}
+});
+require.register("features/clear-clutter", function(exports, require, module){
+    var debug = require('debug'),
+	removeElement = require('element').remove;
+
+module.exports = function () {
+    debug.log("Clearing Clutter");
+
+    // Sidebar is so cluttered
+    removeElement('li[data-name="kabam"]');
+    removeElement('#nav_advertisement');
+    if (bttv.settings.get("showFeaturedChannels") !== true) {
+        removeElement('#nav_games');
+        removeElement('#nav_streams');
+        removeElement('#nav_related_streams');
     }
 }
 });
@@ -3850,6 +3493,87 @@ module.exports = function () {
         emotesJSInject.setAttribute("id", "clickTwitchEmotes");
         $("body").append(emotesJSInject);
     }
+}
+});
+require.register("features/make-card", function(exports, require, module){
+    module.exports = function(user, $event) {
+    var template = bttv.chat.templates.moderationCard(user, $event.offset().top, $event.offset().left);
+    $('.ember-chat .moderation-card').remove();
+    $('.ember-chat').append(template);
+
+    var $modCard = $('.ember-chat .moderation-card[data-user="'+user.name+'"]');
+
+    $modCard.find('.close-button').click(function() {
+        $modCard.remove();
+    });
+    $modCard.find('.permit').click(function() {
+        bttv.chat.helpers.sendMessage('!permit '+user.name);
+        $modCard.remove();
+        $('div.tipsy.tipsy-sw').remove();
+    });
+    $modCard.find('.timeout').click(function() {
+        bttv.chat.helpers.timeout(user.name, $(this).data('time'));
+        $modCard.remove();
+        $('div.tipsy.tipsy-sw').remove();
+    });
+    $modCard.find('.ban').click(function() {
+        bttv.chat.helpers.ban(user.name);
+        $modCard.remove();
+        $('div.tipsy.tipsy-sw').remove();
+    });
+    $modCard.find('.mod-card-profile').click(function() {
+        window.open(Twitch.url.profile(user.name),'_blank');
+    });
+    $modCard.find('.mod-card-message').click(function() {
+        window.open(Twitch.url.compose(user.name),'_blank');
+    });
+
+    if(bttv.chat.helpers.isIgnored(user.name)) $modCard.find('.mod-card-ignore').text('Unignore');
+    $modCard.find('.mod-card-ignore').click(function() {
+        if($modCard.find('.mod-card-ignore').text() === 'Unignore') {
+            bttv.chat.helpers.sendMessage('/unignore '+user.name);
+            $modCard.find('.mod-card-ignore').text('Ignore');
+        } else {
+            bttv.chat.helpers.sendMessage('/ignore '+user.name);
+            $modCard.find('.mod-card-ignore').text('Unignore');
+        }
+    });
+
+    if(bttv.chat.helpers.isModerator(user.name)) $modCard.find('.mod-card-mod').text('Demod');
+    $modCard.find('.mod-card-mod').click(function() {
+        if($modCard.find('.mod-card-mod').text() === 'Demod') {
+            bttv.chat.helpers.sendMessage('/unmod '+user.name);
+            $modCard.find('.mod-card-mod').text('Mod');
+        } else {
+            bttv.chat.helpers.sendMessage('/mod '+user.name);
+            $modCard.find('.mod-card-mod').text('Demod');
+        }
+    });
+
+    Twitch.api.get('users/:login/follows/channels/'+user.name).done(function() {
+        $modCard.find('.mod-card-follow').text('Unfollow');
+    }).fail(function() {
+        $modCard.find('.mod-card-follow').text('Follow');
+    });
+    $modCard.find('.mod-card-follow').text('Unfollow').click(function() {
+        if($modCard.find('.mod-card-follow').text() === 'Unfollow') {
+            Twitch.api.del("users/:login/follows/channels/"+user.name).done(function() {
+                bttv.chat.helpers.serverMessage('User was unfollowed successfully.');
+            }).fail(function() {
+                bttv.chat.helpers.serverMessage('There was an error following this user.');
+            });
+            $modCard.find('.mod-card-follow').text('Follow');
+        } else {
+            Twitch.api.put("users/:login/follows/channels/"+user.name).done(function() {
+                bttv.chat.helpers.serverMessage('User was followed successfully.');
+            }).fail(function() {
+                bttv.chat.helpers.serverMessage('There was an error following this user.');
+            });
+            $modCard.find('.mod-card-follow').text('Unfollow');
+        }
+    });
+
+    $modCard.drags({ handle: ".drag-handle", el: $modCard });
 }
 });
 require.register("features/override-emotes", function(exports, require, module){
@@ -4253,6 +3977,314 @@ module.exports = function () {
     }
 }
 });
+require.register("features/channel-reformat/handle-resize", function(exports, require, module){
+    var debug = require('debug'),
+    vars = require('vars');
+
+var handleResize = module.exports = function () {
+    debug.log("Page resized");
+
+    if($('body.ember-application').length === 0 || $('.ember-chat').length === 0) return;
+
+    var d = 0;
+    if ($("#large_nav").css("display") !== "none") {
+        d += $("#large_nav").width();
+    }
+    if ($("#small_nav").css("display") !== "none") {
+        d += $("#small_nav").width();
+    }
+    if (vars.chatWidth == 0) {
+        $("#right_col").css({
+            display: "none"
+        });
+        $("#right_close span").css({
+            "background-position": "0 0"
+        });
+    }
+    if ($("#right_col").css("display") !== "none") {
+        if ($("#right_col").width() < 340) {
+            vars.chatWidth = 340;
+            $("#right_col").width(vars.chatWidth);
+            $("#right_col #chat").width(vars.chatWidth);
+            $("#right_col .top").width(vars.chatWidth);
+            $("#right_col").css("display", "inherit");
+            $("#right_close span").css({
+                "background-position": "0 -18px"
+            });
+            handleResize();
+            return;
+        } else {
+            d += $("#right_col").width();
+        }
+    }
+
+    $("#main_col").css({
+        width: $(window).width() - d + "px"
+    });
+
+    if($("#broadcast_meta").length) {
+        if ($(".live_site_player_container").length) {
+            var h = 0.5625 * $("#main_col").width() - 4;
+            var calcH = $(window).height() - $("#broadcast_meta").outerHeight(true) - $("#stats_and_actions").outerHeight();
+            if (h > calcH) {
+                $(".live_site_player_container").css({
+                    height: $(window).height() - $("#stats_and_actions").outerHeight() + "px"
+                });
+                $("#main_col .tse-scroll-content").animate({
+                    scrollTop: $('.live_site_player_container').position().top - 10
+                }, 150, "swing");
+            } else {
+                $(".live_site_player_container").css({
+                    height: h.toFixed(0) + "px"
+                });
+                $("#main_col .tse-scroll-content").animate({
+                    scrollTop: 0
+                }, 150, "swing");
+            }
+        } else if ($(".archive_site_player_container").length) {
+            var h = 0.5625 * $("#main_col").width() - 4;
+            var calcH = $(window).height() - $("#broadcast_meta").outerHeight(true) - $(".archive_info").outerHeight(true) - $("#stats_and_actions").outerHeight();
+            if (h > calcH) {
+                $(".archive_site_player_container").css({
+                    height: $(window).height() - $(".archive_info").outerHeight(true) - $("#stats_and_actions").outerHeight() + "px"
+                });
+                $("#main_col .tse-scroll-content").animate({
+                    scrollTop: $('.archive_site_player_container').position().top - 10
+                }, 150, "swing");
+            } else {
+                $(".archive_site_player_container").css({
+                    height: h.toFixed(0) + "px"
+                });
+                $("#main_col .tse-scroll-content").animate({
+                    scrollTop: 0
+                }, 150, "swing");
+            }
+        }
+
+        var d = $("#broadcast_meta .info .title").width();
+        $("#broadcast_meta .info .title .real_title").width() > d ? $("#broadcast_meta .info").addClass("long_title") : $("#broadcast_meta .info").removeClass("long_title");
+        $("#channel_panels_contain").masonry("reload");
+    } else {
+        var h = 0.5625 * $("#main_col").width() - 4;
+        var calcH = $(window).height() - $("#broadcast-meta").outerHeight(true) - $(".stats-and-actions").outerHeight();
+        if (h > calcH) {
+            $("#player, .dynamic-player object, .dynamic-player video").attr('style', 'height: '+ ($(window).height() - $(".stats-and-actions").outerHeight()) + 'px !important; width: 100% !important');
+            setTimeout(function() {
+                $("#main_col .tse-scroll-content").animate({
+                    scrollTop: $("#broadcast-meta").outerHeight(true) - 10
+                }, 150, "swing");
+            }, 1000);
+        } else {
+            $("#player, .dynamic-player object, .dynamic-player video").attr('style', 'height: '+ h.toFixed(0) + 'px !important; width: 100% !important');
+            resizeTimer = setTimeout(function() {
+                $("#main_col .tse-scroll-content").animate({
+                    scrollTop: 0
+                }, 150, "swing");
+                resizeTimer = false;
+            }, 1000);
+        }
+
+        var d = $("#broadcast-meta .info .title").width();
+        $("#broadcast-meta .info .title .real_title").width() > d ? $("#broadcast-meta .info").addClass("long_title") : $("#broadcast-meta .info").removeClass("long_title");
+        $("#channel_panels_contain").masonry("reload");
+    }
+};
+});
+require.register("features/channel-reformat/index", function(exports, require, module){
+    var debug = require('debug'),
+    keyCodes = require('keycodes'),
+    vars = require('vars');
+var linkifyTitle = require('./linkify-title'),
+    handleResize = require('./handle-resize');
+
+module.exports = function () {
+    if ($('body.ember-application').length === 0 || $('.ember-chat').length === 0 || $("#right_col").length === 0) return;
+
+    debug.log("Reformatting Channel Page");
+
+    linkifyTitle();
+
+    if(!vars.loadedChannelResize) {
+        vars.loadedChannelResize = true;
+
+        var resize = false;
+
+        $(document).keydown(function (event) {
+            if (event.keyCode === keyCodes.r && event.altKey) {
+                $(window).trigger('resize');
+            }
+        });
+
+        var resizeTimer = false;
+        $(document).mouseup(function (event) {
+            if (resize === false) return;
+            if (chatWidthStartingPoint) {
+                if (chatWidthStartingPoint === event.pageX) {
+                    if ($("#right_col").css("display") !== "none") {
+                        $("#right_col").css({
+                            display: "none"
+                        });
+                        $("#right_close span").css({
+                            "background-position": "0 0"
+                        });
+                        vars.chatWidth = 0;
+                    }
+                } else {
+                    vars.chatWidth = $("#right_col").width();
+                }
+            } else {
+                vars.chatWidth = $("#right_col").width();
+            }
+            bttv.settings.save("chatWidth", vars.chatWidth);
+
+            resize = false;
+            handleResize();
+        });
+
+        $(document).on('mousedown', '#right_close, #right_col .resizer', function(event) {
+            event.preventDefault();
+            resize = event.pageX;
+            chatWidthStartingPoint = event.pageX;
+            $("#chat_text_input").focus();
+            if ($("#right_col").css("display") === "none") {
+                $("#right_col").css({
+                    display: "inherit"
+                });
+                $("#right_close span").css({
+                    "background-position": "0 -18px"
+                });
+                resize = false;
+                if ($("#right_col").width() < 340) {
+                    $("#right_col").width($("#right_col .top").width());
+                }
+                vars.chatWidth = $("#right_col").width();
+                bttv.settings.save("chatWidth", vars.chatWidth);
+                handleResize();
+            }
+        });
+
+        $(document).mousemove(function (event) {
+            if (resize) {
+                $("#chat_text_input").focus();
+                if (vars.chatWidth + resize - event.pageX < 340) {
+                    $("#right_col").width(340);
+                    $("#right_col #chat").width(340);
+                    $("#right_col .top").width(340);
+
+                    handleResize();
+                } else if (vars.chatWidth + resize - event.pageX > 541) {
+                    $("#right_col").width(541);
+                    $("#right_col #chat").width(541);
+                    $("#right_col .top").width(541);
+
+                    handleResize();
+                } else {
+                    $("#right_col").width(vars.chatWidth + resize - event.pageX);
+                    $("#right_col #chat").width(vars.chatWidth + resize - event.pageX);
+                    $("#right_col .top").width(vars.chatWidth + resize - event.pageX);
+
+                    handleResize();
+                }
+            }
+        });
+
+        $(window).off("fluid-resize");
+        $(window).off("resize").resize(function () {
+            debug.log("Debug: Resize Called");
+            setTimeout(handleResize, 1000);
+        });
+    }
+
+    if (bttv.settings.get["chatWidth"] && bttv.settings.get["chatWidth"] < 0) {
+        bttv.settings.save("chatWidth", 0);
+    }
+
+    var layout = bttv.storage.getObject('TwitchCache:Layout');
+
+    if(layout.resource && layout.resource.isRightColumnClosedByUserAction === true) {
+        bttv.settings.save("chatWidth", 0);
+        if ($("#right_col").width() == "0") {
+            $("#right_col").width("340px");
+        }
+        layout.resource.isRightColumnClosedByUserAction = false;
+
+        bttv.storage.putObject('TwitchCache:Layout', layout);
+    }
+
+    if($('#right_col .resizer').length === 0) $('#right_col').append("<div class='resizer' onselectstart='return false;' title='Drag to enlarge chat =D'></div>");
+    $("#right_col:before").css("margin-left", "-1");
+
+    $("#right_col .bottom #controls #control_buttons .primary_button").css({
+        float: 'right',
+        marginRight: '-1px' 
+    });
+    $("#right_nav").css({
+        'margin-left': 'auto',
+        'margin-right': 'auto',
+        'width': '321px',
+        'float': 'none',
+        'border': 'none'
+    });
+    $('#right_col .top').css('border-bottom', '1px solid rgba(0, 0, 0, 0.25)')
+
+    $("#right_close").unbind('click');
+    $("#right_close").removeAttr('data-ember-action');
+
+    $("#left_close").off('click').click(function () {
+        $(window).trigger('resize');
+    });
+
+    if (bttv.settings.get("chatWidth") !== null) {
+        vars.chatWidth = bttv.settings.get("chatWidth");
+
+        if (vars.chatWidth == 0) {
+            $("#right_col").css({
+                display: "none"
+            });
+            $("#right_close span").css({
+                "background-position": "0 0"
+            });
+        } else {
+            $("#right_col").width(vars.chatWidth);
+            $("#right_col #chat").width(vars.chatWidth);
+            $("#right_col .top").width(vars.chatWidth);
+        }
+
+        $(window).trigger('resize');
+    } else {
+        if ($("#right_col").width() == "0") {
+            $("#right_col").width("340px");
+
+        }
+        vars.chatWidth = $("#right_col").width();
+        bttv.settings.save("chatWidth", $("#right_col").width());
+    }
+}
+});
+require.register("features/channel-reformat/linkify-title", function(exports, require, module){
+    var debug = require('debug'),
+    vars = require('vars');
+
+module.exports = function () {
+    if($('.broadcast-meta .title .real').length) {
+        var linkifyTitle = function() {
+            var linkifiedTitle = bttv.chat.templates.linkify($('.broadcast-meta .title .real').text());
+
+            $('.broadcast-meta .title span').each(function() {
+                $(this).html(linkifiedTitle);
+            });
+        }
+        linkifyTitle();
+        setInterval(function() {
+            if(!vars.channelTitle) vars.channelTitle = "";
+            if($('.broadcast-meta .title .real').html() !== vars.channelTitle) {
+                vars.channelTitle = $('.broadcast-meta .title .real').html();
+                linkifyTitle();
+            }
+        }, 1000);
+    }
+}
+});
 require.register("templates/chat-settings", function(exports, require, module){
     function template(locals) {
 var buf = [];
@@ -4296,7 +4328,7 @@ if ( user.name != vars.userData.login)
 buf.push("<div class=\"interface\"><button class=\"button-simple primary mod-card-follow\">Follow</button><button style=\"height: 30px;vertical-align: top;\" class=\"button-simple dark mod-card-profile\"><img src=\"/images/xarth/g/g18_person-00000080.png\" style=\"margin-top: 6px;\"/></button><button style=\"height: 30px;vertical-align: top;\" class=\"button-simple dark mod-card-message\"><img src=\"/images/xarth/g/g18_mail-00000080.png\" style=\"margin-top: 6px;\"/></button><button class=\"button-simple dark mod-card-ignore\">Ignore</button>");
 if ( vars.userData.isLoggedIn && bttv.chat.helpers.isOwner(vars.userData.login))
 {
-buf.push("<button class=\"button-simple dark mod-card-mod\">) Mod</button>");
+buf.push("<button class=\"button-simple dark mod-card-mod\">Mod</button>");
 }
 if ( vars.userData.isLoggedIn && bttv.chat.helpers.isModerator(vars.userData.login) && (!bttv.chat.helpers.isModerator(user.name) || vars.userData.login === bttv.getChannel()))
 {

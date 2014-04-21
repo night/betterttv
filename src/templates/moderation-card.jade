@@ -18,7 +18,7 @@ div.bttv-mod-card.ember-view.moderation-card(data-user=user.name style="top: #{t
         img(src="/images/xarth/g/g18_mail-00000080.png" style="margin-top: 6px;")
       button.button-simple.dark.mod-card-ignore Ignore
       if vars.userData.isLoggedIn && bttv.chat.helpers.isOwner(vars.userData.login)
-        button.button-simple.dark.mod-card-mod) Mod
+        button.button-simple.dark.mod-card-mod Mod
       if vars.userData.isLoggedIn && bttv.chat.helpers.isModerator(vars.userData.login) && (!bttv.chat.helpers.isModerator(user.name) || vars.userData.login === bttv.getChannel())
         br
         span.mod-controls
