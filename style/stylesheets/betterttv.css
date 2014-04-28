@@ -991,3 +991,11 @@ body#chat #speak {
 #chat_emote_dropmenu_button.newlayout {
     margin-left: 3px !important;
 }
+
+/* Canvas Channel Backgrounds */
+#channel #custom-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
