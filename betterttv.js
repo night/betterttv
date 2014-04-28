@@ -3346,9 +3346,31 @@
 
     var handleBackground = function (tiled) {
         var tiled = tiled || false;
-        if($("#custom-bg").length === 0 && $("#custom_bg").length === 0) return;
 
-        var canvasID = ($("#custom-bg").length) ? 'custom-bg' : 'custom_bg';
+        var canvasID = 'custom-bg';
+
+        if($("#"+canvasID).length === 0) {
+            var $bg = $('<canvas />');
+                $bg.attr('id', canvasID);
+            $('#channel').prepend($bg);
+        }
+
+        App.Panel.find("user", { user: bttv.getChannel() } ).get('content').forEach(function(panel) {
+            var url = panel.get('data').link;
+            if(url && url.indexOf('#BTTV#') !== -1) {
+                var options = {};
+                var queryString = url.split('#BTTV#')[1];
+                var list = queryString.split('=');
+
+                for(var i=0; i<list.length; i+=2) {
+                    options[list[i]] = list[i+1];
+                }
+
+                if(options['bg']) {
+                    $("#"+canvasID).attr('image', options['bg']);
+                }
+            }
+        });
 
         if(tiled) {
             $("#"+canvasID).addClass('tiled');
