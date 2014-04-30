@@ -1,5 +1,6 @@
 body, .real_title, #right_col .content #chat_line_list, .ember-chat, .ember-chat .message, .ember-chat .from, .ember-chat, .ember-chat .colon, #right_col #chat_line_list, #main_col .content #broadcast_meta .info .channel, #channel .player-column #broadcast-meta .info .title, #channel_panels_contain #channel_panels .panel h3, #channel_panels_contain #channel_panels .panel h1, #channel_panels_contain #channel_panels .panel h2, h3, h2 {
 	color: #D3D3D3;
+	z-index: inherit;
 }
 
 body {
