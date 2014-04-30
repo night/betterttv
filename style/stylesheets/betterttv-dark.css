@@ -1,6 +1,6 @@
 body, .real_title, #right_col .content #chat_line_list, .ember-chat, .ember-chat .message, .ember-chat .from, .ember-chat, .ember-chat .colon, #right_col #chat_line_list, #main_col .content #broadcast_meta .info .channel, #channel .player-column #broadcast-meta .info .title, #channel_panels_contain #channel_panels .panel h3, #channel_panels_contain #channel_panels .panel h1, #channel_panels_contain #channel_panels .panel h2, h3, h2 {
 	color: #D3D3D3;
-	z-index: inherit;
+	z-index: inherit !important;
 }
 
 body {
@@ -128,6 +128,7 @@ body {
 #right_col, #right_col .content .top #right_nav, #right_col .content .top, #right_col .content .bottom #controls,
 .rightcol-content, #right_col .top #right_nav, #right_col .top, #right_col .bottom #controls, .ember-chat .chat-interface {
 	background-color: #282828 !important;
+	z-index: inherit;
 }
 
 #right_col .content .bottom #controls, #right_col .bottom #controls, .ember-chat .chat-interface {
@@ -135,7 +136,7 @@ body {
 }
 
 .ember-chat .chat-interface {
-	height: 134px;
+	height: 134px !important;
 }
 
 .channel-main, .title_over, #channel .player-column #broadcast-meta .info .title .over {
