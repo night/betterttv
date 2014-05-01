@@ -1497,7 +1497,7 @@
                                 } else {
                                     bttv.chat.helpers.serverMessage("Starting purge process in 5 seconds.");
                                 }
-                                bttv.chat.helpers.serverMessage("By my calculations, this block of users will take "+((bannedUsers.length*2.1)/60).toFixed(2)+" minutes to unban.");
+                                bttv.chat.helpers.serverMessage("By my calculations, this block of users will take "+(bannedUsers.length*.333).toFixed(1)+" seconds to unban.");
                                 if(bannedUsers.length > 70) bttv.chat.helpers.serverMessage("Twitch only provides up to 100 users at a time (some repeat), but this script will cycle through all of the blocks of users.");
                                 setTimeout(function() {
                                     var startTime = 0;
@@ -1505,12 +1505,12 @@
                                         setTimeout(function() {
                                             bttv.chat.helpers.unban(user);
                                             bttv.chat.store.__unbannedUsers.push(user);
-                                        }, startTime += 2100);
+                                        }, startTime += 333);
                                     });
                                     setTimeout(function() {
                                         bttv.chat.helpers.serverMessage("This block of users has been purged. Checking for more..");
                                         bttv.chat.helpers.massUnban();
-                                    }, startTime += 2100);
+                                    }, startTime += 333);
                                 }, 5000);
                             } else {
                                 bttv.chat.helpers.serverMessage("You have no banned users.");
@@ -2717,7 +2717,7 @@
             }
 
             if(!bttv.getChannel()) return;
-            $('body').append("<style>.ember-chat .chat-interface .textarea-contain { bottom: 70px !important; } .ember-chat .chat-interface .chat-buttons-container { top: 75px !important; } .ember-chat .chat-interface { height: 140px; } .ember-chat .chat-messages { bottom: 140px; } .ember-chat .chat-settings { bottom: 68px; } .ember-chat .emoticon-selector { bottom: 135px !important; }</style>");
+            $('body').append("<style>.ember-chat .chat-interface .textarea-contain { bottom: 70px !important; } .ember-chat .chat-interface .chat-buttons-container { top: 75px !important; } .ember-chat .chat-interface { height: 140px; } .ember-chat .chat-messages { bottom: 134px; } .ember-chat .chat-settings { bottom: 68px; } .ember-chat .emoticon-selector { bottom: 135px !important; }</style>");
         }
     }
 
@@ -3346,9 +3346,31 @@
 
     var handleBackground = function (tiled) {
         var tiled = tiled || false;
-        if($("#custom-bg").length === 0 && $("#custom_bg").length === 0) return;
 
-        var canvasID = ($("#custom-bg").length) ? 'custom-bg' : 'custom_bg';
+        var canvasID = 'custom-bg';
+
+        if($("#"+canvasID).length === 0) {
+            var $bg = $('<canvas />');
+                $bg.attr('id', canvasID);
+            $('#channel').prepend($bg);
+        }
+
+        App.Panel.find("user", { user: bttv.getChannel() } ).get('content').forEach(function(panel) {
+            var url = panel.get('data').link;
+            if(url && url.indexOf('#BTTV#') !== -1) {
+                var options = {};
+                var queryString = url.split('#BTTV#')[1];
+                var list = queryString.split('=');
+
+                for(var i=0; i<list.length; i+=2) {
+                    options[list[i]] = list[i+1];
+                }
+
+                if(options['bg']) {
+                    $("#"+canvasID).attr('image', options['bg']);
+                }
+            }
+        });
 
         if(tiled) {
             $("#"+canvasID).addClass('tiled');
