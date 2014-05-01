@@ -953,7 +953,7 @@ bttv.chat = {
                             } else {
                                 bttv.chat.helpers.serverMessage("Starting purge process in 5 seconds.");
                             }
-                            bttv.chat.helpers.serverMessage("By my calculations, this block of users will take "+((bannedUsers.length*2.1)/60).toFixed(2)+" minutes to unban.");
+                            bttv.chat.helpers.serverMessage("By my calculations, this block of users will take "+(bannedUsers.length*.333).toFixed(1)+" minutes to unban.");
                             if(bannedUsers.length > 70) bttv.chat.helpers.serverMessage("Twitch only provides up to 100 users at a time (some repeat), but this script will cycle through all of the blocks of users.");
                             setTimeout(function() {
                                 var startTime = 0;
@@ -961,12 +961,12 @@ bttv.chat = {
                                     setTimeout(function() {
                                         bttv.chat.helpers.unban(user);
                                         bttv.chat.store.__unbannedUsers.push(user);
-                                    }, startTime += 2100);
+                                    }, startTime += 333);
                                 });
                                 setTimeout(function() {
                                     bttv.chat.helpers.serverMessage("This block of users has been purged. Checking for more..");
                                     bttv.chat.helpers.massUnban();
-                                }, startTime += 2100);
+                                }, startTime += 333);
                             }, 5000);
                         } else {
                             bttv.chat.helpers.serverMessage("You have no banned users.");
