@@ -42,8 +42,11 @@ gulp.task('watch', ['default'], function () {
 gulp.task('default', ['scripts']);
 
 function commonjsPath(path) {
-    // lowercase so that on windows, C:/ is c:/
-    return path.replace(/.*\/src/, '').replace(/.*\/build/, '') // remove directory from path
+    return path.toLowerCase() // lowercase so that on windows, C:/ is c:/
+               .replace(__dirname.toLowerCase(), '') // remove __dirname *before* normalizing
+               .replace(/\\/g, '/') // normalize path for windows/unix
                .replace(/(\-template)?\.js$/, '') // drop extension and remove -template suffix
-               .replace(/^\//, ''); // drop leading / if it exists
+               .replace(/.*\/src/, '').replace(/.*\/build/, '') // remove directory from path
+               .replace(/^\//, '') // drop leading / if it exists
+               ;
 }
