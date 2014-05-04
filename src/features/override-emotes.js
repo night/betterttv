@@ -326,7 +326,12 @@ module.exports = function () {
                     regex: a.regex,
                 }
                 if(emoticonSets) {
-                    c.emoticon_set ? (emoticonSets[c.emoticon_set] === undefined && (emoticonSets[c.emoticon_set] = [], emoticonSets[c.emoticon_set].push(imageObject))) : emoticonSets['default'].push(imageObject);
+                    if(c.emoticon_set) {
+                      if(!emoticonSets[c.emoticon_set]) emoticonSets[c.emoticon_set] = [];
+                      emoticonSets[c.emoticon_set].push(imageObject);
+                    } else {
+                      emoticonSets['default'].push(imageObject);
+                    }
                 }
             });
             emoticons.push(a);
