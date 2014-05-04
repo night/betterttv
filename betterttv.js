@@ -1,83 +1,108 @@
-(function(/*! Brunch !*/) {
-  ;
+(function() {
 
-  var globals = typeof window !== 'undefined' ? window : global;
+  'use strict';
+
+  var globals = typeof window === 'undefined' ? global : window;
   if (typeof globals.require === 'function') return;
 
-  var modules = {};
-  var cache = {};
+  var _definedModules = {};
+  var _aliases = {};
 
-  var has = function(object, name) {
-    return ({}).hasOwnProperty.call(object, name);
+  var Module = {
+    _load: function(request, parent) {
+      var name = Module._resolveFilename(request, parent);
+      var definition = _definedModules[name];
+      if (!definition) throw new Error('Cannot find module "' + name + '" from '+ '"' + parent + '"');
+
+      if (Module._cache[name]) return Module._cache[name].exports;
+
+      var localRequire = createLocalRequire(name);
+      var module = {id: name, exports: {}};
+      Module._cache[name] = module;
+      definition.call(module.exports, module.exports, localRequire, module);
+      return module.exports;
+    },
+    _cache: {},
+    // TODO: Implement this to behave more like the Node environment
+    _resolveFilename: function(request, parent) {
+      var path = unalias(request, parent);
+      if (_definedModules.hasOwnProperty(path)) return path;
+      path = expand(path, './index');
+      if (_definedModules.hasOwnProperty(path)) return path;
+      return request;
+    }
   };
 
-  var expand = function(root, name) {
-    var results = [], parts, part;
-    if (/^\.\.?(\/|$)/.test(name)) {
-      parts = [root, name].join('/').split('/');
-    } else {
-      parts = name.split('/');
-    }
-    for (var i = 0, length = parts.length; i < length; i++) {
-      part = parts[i];
-      if (part === '..') {
-        results.pop();
-      } else if (part !== '.' && part !== '') {
-        results.push(part);
+  var require = function(name, loaderPath) {
+    if (loaderPath == null) loaderPath = '/';
+    return Module._load(name, loaderPath);
+  };
+
+  var unalias = function(alias, loaderPath) {
+    var start = 0;
+    if (loaderPath) {
+      if (loaderPath.indexOf('components/' === 0)) {
+        start = 'components/'.length;
+      }
+      if (loaderPath.indexOf('/', start) > 0) {
+        loaderPath = loaderPath.substring(start, loaderPath.indexOf('/', start));
       }
     }
-    return results.join('/');
+    var result = _aliases[alias + '/index.js'] || _aliases[loaderPath + '/deps/' + alias + '/index.js'];
+    if (result) {
+      return 'components/' + result.substring(0, result.length - '.js'.length);
+    }
+    return alias;
+  };
+
+  var expand = (function() {
+    var reg = /^\.\.?(\/|$)/;
+    return function(root, name) {
+      var results = [], parts, part;
+      parts = (reg.test(name) ? root + '/' + name : name).split('/');
+      for (var i = 0, length = parts.length; i < length; i++) {
+        part = parts[i];
+        if (part === '..') {
+          results.pop();
+        } else if (part !== '.' && part !== '') {
+          results.push(part);
+        }
+      }
+      return results.join('/');
+    };
+  })();
+
+  var createLocalRequire = function(path) {
+    return function(name) {
+      var absolute = expand(dirname(path), name);
+      return globals.require(absolute, path);
+    };
   };
 
   var dirname = function(path) {
     return path.split('/').slice(0, -1).join('/');
   };
 
-  var localRequire = function(path) {
-    return function(name) {
-      var dir = dirname(path);
-      var absolute = expand(dir, name);
-      return globals.require(absolute, path);
-    };
+  require.alias = function(from, to) {
+    _aliases[to] = from;
   };
 
-  var initModule = function(name, definition) {
-    var module = {id: name, exports: {}};
-    cache[name] = module;
-    definition(module.exports, localRequire(name), module);
-    return module.exports;
-  };
-
-  var require = function(name, loaderPath) {
-    var path = expand(name, '.');
-    if (loaderPath == null) loaderPath = '/';
-
-    if (has(cache, path)) return cache[path].exports;
-    if (has(modules, path)) return initModule(path, modules[path]);
-
-    var dirIndex = expand(path, './index');
-    if (has(cache, dirIndex)) return cache[dirIndex].exports;
-    if (has(modules, dirIndex)) return initModule(dirIndex, modules[dirIndex]);
-
-    throw new Error('Cannot find module "' + name + '" from '+ '"' + loaderPath + '"');
-  };
-
-  var define = function(bundle, fn) {
+  require.register = require.define = function(bundle, fn) {
     if (typeof bundle === 'object') {
       for (var key in bundle) {
-        if (has(bundle, key)) {
-          modules[key] = bundle[key];
+        if (bundle.hasOwnProperty(key)) {
+          _definedModules[key] = bundle[key];
         }
       }
     } else {
-      modules[bundle] = fn;
+      _definedModules[bundle] = fn;
     }
   };
 
-  var list = function() {
+  require.list = function() {
     var result = [];
-    for (var item in modules) {
-      if (has(modules, item)) {
+    for (var item in _definedModules) {
+      if (_definedModules.hasOwnProperty(item)) {
         result.push(item);
       }
     }
@@ -85,13 +110,13 @@
   };
 
   globals.require = require;
-  globals.require.define = define;
-  globals.require.register = define;
-  globals.require.list = list;
-  globals.require.brunch = true;
-})();
-!function(e){if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.jade=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-;
+
+  require.define('module', function(exports, require, module) {
+    module.exports = Module;
+  });
+
+})();!function(e){if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.jade=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
+'use strict';
 
 /**
  * Merge two attribute objects giving precedence
@@ -270,7 +295,7 @@ exports.rethrow = function rethrow(err, filename, lineno, str){
     throw err;
   }
   try {
-    str =  str || require('fs').readFileSync(filename, 'utf8')
+    str =  str || _dereq_('fs').readFileSync(filename, 'utf8')
   } catch (ex) {
     rethrow(err, null, lineno)
   }
@@ -295,13 +320,13 @@ exports.rethrow = function rethrow(err, filename, lineno, str){
   throw err;
 };
 
-},{"fs":2}],2:[function(require,module,exports){
+},{"fs":2}],2:[function(_dereq_,module,exports){
 
 },{}]},{},[1])
 (1)
 });(function (bttv) { 
 require.register("debug", function(exports, require, module){
-    module.exports = {
+  module.exports = {
     log: function (string) {
         if (window.console && console.log) console.log("BTTV: " + string);
     },
@@ -315,9 +340,11 @@ require.register("debug", function(exports, require, module){
         if (window.console && console.info) console.info("BTTV: " + string);
     }
 };
+  
 });
+
 require.register("element", function(exports, require, module){
-    exports.remove = function (e) {
+  exports.remove = function (e) {
     // Removes all of an element
     $(e).each(function () {
         $(this).hide();
@@ -329,9 +356,11 @@ exports.display = function (e) {
         $(this).show();
     });
 };
+  
 });
+
 require.register("keycodes", function(exports, require, module){
-    module.exports = {
+  module.exports = {
     'Backspace': 8,
     'Tab': 9,
     'Enter': 13,
@@ -420,9 +449,11 @@ require.register("keycodes", function(exports, require, module){
     'Slash': 191,
     'Backslash': 220
 }
+  
 });
+
 require.register("legacy-tags", function(exports, require, module){
-    module.exports = function (data) {
+  module.exports = function (data) {
     return {
         //Developers and Supporters
         "night": { mod: true, tagType: "broadcaster", tagName: "<span style='color:#FFD700;'>Creator</span>", color: "#000;text-shadow: 0 0 10px #FFD700" },
@@ -492,9 +523,11 @@ require.register("legacy-tags", function(exports, require, module){
         "ackleyman": { mod: true, tagType: "orange", tagName: "Ack" }
     };
 };
+  
 });
+
 require.register("main", function(exports, require, module){
-    var keyCodes = require('keycodes');
+  var keyCodes = require('keycodes');
 
 // Declare public and private variables
 var debug = require('debug'),
@@ -502,7 +535,7 @@ vars = require('vars');
 
 bttv.info = {
     version: "6.7",
-    release: 7,
+    release: 8,
     versionString: function() { 
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -2354,9 +2387,11 @@ debug.log("BTTV LOADED " + document.URL);
 BTTVLOADED = true;
 checkJquery();
 
+  
 });
+
 require.register("settings-list", function(exports, require, module){
-    /** BTTV :
+  /** BTTV :
  * cssBlueButtons
  * handleTwitchChatEmotesScript
  */
@@ -2713,9 +2748,11 @@ module.exports = [
         }
     }
 ];
+  
 });
+
 require.register("vars", function(exports, require, module){
-    module.exports = {
+  module.exports = {
     userData: {
         isLoggedIn: window.Twitch ? Twitch.user.isLoggedIn() : false,
         login: window.Twitch ? Twitch.user.login() : ''
@@ -2724,9 +2761,11 @@ require.register("vars", function(exports, require, module){
     liveChannels: [],
     blackChat: false
 };
+  
 });
+
 require.register("features/beta-chat", function(exports, require, module){
-    var debug = require('debug'),
+  var debug = require('debug'),
     vars = require('vars');
 
 module.exports = function () {
@@ -2774,9 +2813,11 @@ module.exports = function () {
         $('body').append("<style>.ember-chat .chat-interface .textarea-contain { bottom: 70px !important; } .ember-chat .chat-interface .chat-buttons-container { top: 75px !important; } .ember-chat .chat-interface { height: 140px; } .ember-chat .chat-messages { bottom: 134px; } .ember-chat .chat-settings { bottom: 68px; } .ember-chat .emoticon-selector { bottom: 135px !important; }</style>");
     }
 }
+  
 });
+
 require.register("features/brand", function(exports, require, module){
-    var debug = require('debug');
+  var debug = require('debug');
 var cssBlueButtons = require('./css-blue-buttons'),
     betaChat = require('./beta-chat');
 
@@ -2845,9 +2886,11 @@ module.exports = function () {
     // Run Beta Chat After BTTV CSS
     betaChat();
 };
+  
 });
+
 require.register("features/chat-load-settings", function(exports, require, module){
-    var debug = require('debug'),
+  var debug = require('debug'),
     vars = require('vars');
 var darkenPage = require('features/darken-page'),
     splitChat = require('features/split-chat');
@@ -2949,9 +2992,11 @@ module.exports = function() {
         }
     });
 };
+  
 });
+
 require.register("features/check-broadcast-info", function(exports, require, module){
-    var debug = require('debug');
+  var debug = require('debug');
 
 var checkBroadcastInfo = module.exports = function () {
     var channel = bttv.getChannel();
@@ -2967,9 +3012,11 @@ var checkBroadcastInfo = module.exports = function () {
         setTimeout(checkBroadcastInfo, 60000);
     });
 }
+  
 });
+
 require.register("features/check-following", function(exports, require, module){
-    var debug = require('debug'),
+  var debug = require('debug'),
     vars = require('vars');
 
 var checkFollowing = module.exports = function () {
@@ -3035,9 +3082,11 @@ var checkFollowing = module.exports = function () {
         setTimeout(checkFollowing, 60000);
     });
 }
+  
 });
+
 require.register("features/check-messages", function(exports, require, module){
-    var debug = require('debug'),
+  var debug = require('debug'),
     vars = require('vars');
 
 module.exports = function () {
@@ -3098,9 +3147,11 @@ module.exports = function () {
         });
     }
 }
+  
 });
+
 require.register("features/clear-clutter", function(exports, require, module){
-    var debug = require('debug'),
+  var debug = require('debug'),
 	removeElement = require('element').remove;
 
 module.exports = function () {
@@ -3115,9 +3166,11 @@ module.exports = function () {
         removeElement('#nav_related_streams');
     }
 }
+  
 });
+
 require.register("features/create-settings", function(exports, require, module){
-    var debug = require('debug'),
+  var debug = require('debug'),
     vars = require('vars');
 var darkenPage = require('./darken-page'),
     splitChat = require('./split-chat'),
@@ -3185,9 +3238,11 @@ module.exports = function () {
         $(this).parent("li").addClass("active");
     });
 };
+  
 });
+
 require.register("features/css-blue-buttons", function(exports, require, module){
-    var debug = require('debug');
+  var debug = require('debug');
 
 module.exports = function () {
     debug.log("Turning Purple to Blue");
@@ -3198,9 +3253,11 @@ module.exports = function () {
     globalCSSInject.innerHTML = "#large_nav .game_filter.selected a { border-left: 4px solid #374a9b !important; } button.primary, .button-simple.primary, .primary_button:hover, .primary_button:focus, #subscribe_action .subscribe-text:hover, #subscribe_action .subscribe-text:focus { background: linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; background: -o-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; background: -moz-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; background: -webkit-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; background: -ms-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; } button.primary, .primary_button, #subscribe_action .subscribe-text {border-color: #000 !important;background: linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%) !important; background: -o-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%) !important; background: -moz-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%) !important; background: -webkit-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%) !important; background: -ms-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%) !important; }#team_member_list .page_links a, .page_links span.next_page b, .page_links a.next_page b, #main_col .messages div.preview.unread {border-left-color: #374a9b !important;}#team_member_list .page_links a b.left {border-left-color: #374a9b !important;}#team_member_list .page_links a b.right, .page_links span.previous_page b, .page_links a.previous_page b {border-right-color: #374a9b !important;}";
     $("body").append(globalCSSInject);
 }
+  
 });
+
 require.register("features/darken-page", function(exports, require, module){
-    var debug = require('debug'),
+  var debug = require('debug'),
     handleBackground = require('./handle-background');
 
 module.exports = function () {
@@ -3237,9 +3294,11 @@ module.exports = function () {
     }
 
 }
+  
 });
+
 require.register("features/dashboard-channelinfo", function(exports, require, module){
-    var debug = require('debug'),
+  var debug = require('debug'),
     vars = require('vars');
 
 module.exports = function dashboardChannelInfo() {
@@ -3315,9 +3374,11 @@ module.exports = function dashboardChannelInfo() {
         setTimeout(dashboardChannelInfo, 60000);
     }
 };
+  
 });
+
 require.register("features/directory-functions", function(exports, require, module){
-    var debug = require('debug'),
+  var debug = require('debug'),
     vars = require('vars');
 
 module.exports = function () {
@@ -3339,9 +3400,11 @@ module.exports = function () {
         }
     });
 }
+  
 });
+
 require.register("features/flip-dashboard", function(exports, require, module){
-    var debug = require('debug');
+  var debug = require('debug');
 
 module.exports = function () {
     if ($("#dash_main").length && bttv.settings.get("flipDashboard") === true) {
@@ -3359,9 +3422,11 @@ module.exports = function () {
         });
     }
 }
+  
 });
+
 require.register("features/format-dashboard", function(exports, require, module){
-    var debug = require('debug');
+  var debug = require('debug');
 
 module.exports = function () {
     if ($("#dash_main").length) {
@@ -3389,9 +3454,11 @@ module.exports = function () {
         $("#controls_column #form_submit button").attr("class", "primary_button");
     }
 }
+  
 });
+
 require.register("features/giveaway-compatibility", function(exports, require, module){
-    var debug = require('debug');
+  var debug = require('debug');
 
 module.exports = function () {
     if ($("#dash_main").length) {
@@ -3412,9 +3479,11 @@ module.exports = function () {
         });
     }
 };
+  
 });
+
 require.register("features/handle-background", function(exports, require, module){
-    module.exports = function handleBackground(tiled) {
+  module.exports = function handleBackground(tiled) {
     var tiled = tiled || false;
     
     var canvasID = 'custom-bg';
@@ -3501,9 +3570,11 @@ require.register("features/handle-background", function(exports, require, module
         }
     }
 }
+  
 });
+
 require.register("features/handle-twitchchat-emotes", function(exports, require, module){
-    var debug = require('debug');
+  var debug = require('debug');
 
 module.exports = function () {
     if (($("#twitch_chat").length || $(".ember-chat").length) && bttv.settings.get("clickTwitchEmotes") === true) {
@@ -3516,9 +3587,11 @@ module.exports = function () {
         $("body").append(emotesJSInject);
     }
 }
+  
 });
+
 require.register("features/make-card", function(exports, require, module){
-    module.exports = function(user, $event) {
+  module.exports = function(user, $event) {
     var template = bttv.chat.templates.moderationCard(user, $event.offset().top, $event.offset().left);
     $('.ember-chat .moderation-card').remove();
     $('.ember-chat').append(template);
@@ -3597,9 +3670,11 @@ require.register("features/make-card", function(exports, require, module){
 
     $modCard.drags({ handle: ".drag-handle", el: $modCard });
 }
+  
 });
+
 require.register("features/override-emotes", function(exports, require, module){
-    var debug = require('debug'),
+  var debug = require('debug'),
     vars = require('vars');
 
 module.exports = function () {
@@ -3982,9 +4057,11 @@ module.exports = function () {
     emoteCSS.innerHTML = cssString;
     $('body').append(emoteCSS);
 };
+  
 });
+
 require.register("features/split-chat", function(exports, require, module){
-    var debug = require('debug');
+  var debug = require('debug');
 
 module.exports = function () {
     if (bttv.settings.get("splitChat") !== false) {
@@ -3998,9 +4075,11 @@ module.exports = function () {
         $('body').append(splitCSS);
     }
 }
+  
 });
+
 require.register("features/channel-reformat/handle-resize", function(exports, require, module){
-    var debug = require('debug'),
+  var debug = require('debug'),
     vars = require('vars');
 
 var handleResize = module.exports = function () {
@@ -4087,17 +4166,22 @@ var handleResize = module.exports = function () {
         $("#broadcast_meta .info .title .real_title").width() > d ? $("#broadcast_meta .info").addClass("long_title") : $("#broadcast_meta .info").removeClass("long_title");
         $("#channel_panels_contain").masonry("reload");
     } else {
+        if(!$('#bttvPlayerStyle').length) {
+            $('<style></style>').attr('id', 'bttvPlayerStyle').appendTo('body');
+        }
         var h = 0.5625 * $("#main_col").width() - 4;
         var calcH = $(window).height() - $("#broadcast-meta").outerHeight(true) - $(".stats-and-actions").outerHeight();
         if (h > calcH) {
-            $("#player, .dynamic-player object, .dynamic-player video").attr('style', 'height: '+ ($(window).height() - $(".stats-and-actions").outerHeight()) + 'px !important; width: 100% !important');
+            $('#bttvPlayerStyle').html('#player, .dynamic-player, .dynamic-player object, .dynamic-player video { width: 100% !important; height: '+ ($(window).height() - $(".stats-and-actions").outerHeight()) + 'px !important; }');
+
             setTimeout(function() {
                 $("#main_col .tse-scroll-content").animate({
                     scrollTop: $("#broadcast-meta").outerHeight(true) - 10
                 }, 150, "swing");
             }, 1000);
         } else {
-            $("#player, .dynamic-player object, .dynamic-player video").attr('style', 'height: '+ h.toFixed(0) + 'px !important; width: 100% !important');
+            $('#bttvPlayerStyle').html('#player, .dynamic-player, .dynamic-player object, .dynamic-player video { width: 100% !important; height: '+ h.toFixed(0) + 'px !important; }');
+
             resizeTimer = setTimeout(function() {
                 $("#main_col .tse-scroll-content").animate({
                     scrollTop: 0
@@ -4111,9 +4195,11 @@ var handleResize = module.exports = function () {
         $("#channel_panels_contain").masonry("reload");
     }
 };
+  
 });
+
 require.register("features/channel-reformat/index", function(exports, require, module){
-    var debug = require('debug'),
+  var debug = require('debug'),
     keyCodes = require('keycodes'),
     vars = require('vars');
 var linkifyTitle = require('./linkify-title'),
@@ -4282,9 +4368,11 @@ module.exports = function () {
         bttv.settings.save("chatWidth", $("#right_col").width());
     }
 }
+  
 });
+
 require.register("features/channel-reformat/linkify-title", function(exports, require, module){
-    var debug = require('debug'),
+  var debug = require('debug'),
     vars = require('vars');
 
 module.exports = function () {
@@ -4306,12 +4394,15 @@ module.exports = function () {
         }, 1000);
     }
 }
+  
 });
+
 require.register("templates/chat-settings", function(exports, require, module){
-    function template(locals) {
+  function template(locals) {
 var buf = [];
 var jade_mixins = {};
-
+var jade_interp;
+;var locals_for_with = (locals || {});(function ($, window, bttv) {
 buf.push("<div class=\"chat-menu-header\">BetterTTV</div><div class=\"chat-menu-content\">");
 if ( $("body[data-page=\"ember#chat\"]").length)
 {
@@ -4330,16 +4421,19 @@ buf.push("Flip Dashboard");
 }
 buf.push("</a></p>");
 }
-buf.push("<p><a href=\"#\" class=\"g18_gear-00000080 setBlacklistKeywords\">Set Blacklist Keywords</a></p><p><a href=\"#\" class=\"g18_gear-00000080 setBlacklistUsernames\">Set Blacklist Usernames</a></p><p><a href=\"#\" class=\"g18_gear-00000080 setHighlightKeywords\">Set Highlight Keywords</a></p><p><a href=\"#\" class=\"g18_gear-00000080 setScrollbackAmount\">Set Scrollback Amount</a></p><p><a href=\"#\" class=\"g18_trash-00000080 clearChat\">Clear My Chat</a></p><p><a href=\"#\" style=\"display: block;margin-top: 8px;text-align: center;\" class=\"button-simple dark openSettings\">BetterTTV Settings</a></p></div>");;return buf.join("");
+buf.push("<p><a href=\"#\" class=\"g18_gear-00000080 setBlacklistKeywords\">Set Blacklist Keywords</a></p><p><a href=\"#\" class=\"g18_gear-00000080 setBlacklistUsernames\">Set Blacklist Usernames</a></p><p><a href=\"#\" class=\"g18_gear-00000080 setHighlightKeywords\">Set Highlight Keywords</a></p><p><a href=\"#\" class=\"g18_gear-00000080 setScrollbackAmount\">Set Scrollback Amount</a></p><p><a href=\"#\" class=\"g18_trash-00000080 clearChat\">Clear My Chat</a></p><p><a href=\"#\" style=\"display: block;margin-top: 8px;text-align: center;\" class=\"button-simple dark openSettings\">BetterTTV Settings</a></p></div>");}("$" in locals_for_with?locals_for_with.$:typeof $!=="undefined"?$:undefined,"window" in locals_for_with?locals_for_with.window:typeof window!=="undefined"?window:undefined,"bttv" in locals_for_with?locals_for_with.bttv:typeof bttv!=="undefined"?bttv:undefined));;return buf.join("");
 };module.exports=template;
+  
 });
+
 require.register("templates/moderation-card", function(exports, require, module){
-    function template(locals) {
+  function template(locals) {
 var buf = [];
 var jade_mixins = {};
-var locals_ = (locals || {}),user = locals_.user,top = locals_.top,left = locals_.left;
+var jade_interp;
+;var locals_for_with = (locals || {});(function (require, user, top, left, Twitch, bttv) {
 var vars = require('vars')
-buf.push("<div" + (jade.attr("data-user", user.name, true, false)) + (jade.attr("style", "top: " + (top) + "px;left: " + (left) + "px;", true, false)) + " class=\"bttv-mod-card ember-view moderation-card\"><div class=\"close-button\"></div><div" + (jade.attr("style", "background-color: " + (user.profile_banner_background_color?user.profile_banner_background_color:'#000') + "", true, false)) + " class=\"card-header\"><img" + (jade.attr("src", user.logo?user.logo:'https://www-cdn.jtvnw.net/images/xarth/404_user_300x300.png', true, false)) + " class=\"channel_logo\"/><div class=\"drag-handle\"></div><h3 class=\"name\"><a" + (jade.attr("href", Twitch.url.profile(user.name), true, false)) + " target=\"_blank\">" + (jade.escape(null == (jade.interp = user.display_name) ? "" : jade.interp)) + "</a></h3><div class=\"channel_background_cover\"></div>");
+buf.push("<div" + (jade.attr("data-user", user.name, true, false)) + (jade.attr("style", "top: " + (top) + "px;left: " + (left) + "px;", true, false)) + " class=\"bttv-mod-card ember-view moderation-card\"><div class=\"close-button\"></div><div" + (jade.attr("style", "background-color: " + (user.profile_banner_background_color?user.profile_banner_background_color:'#000') + "", true, false)) + " class=\"card-header\"><img" + (jade.attr("src", user.logo?user.logo:'https://www-cdn.jtvnw.net/images/xarth/404_user_300x300.png', true, false)) + " class=\"channel_logo\"/><div class=\"drag-handle\"></div><h3 class=\"name\"><a" + (jade.attr("href", Twitch.url.profile(user.name), true, false)) + " target=\"_blank\">" + (jade.escape(null == (jade_interp = user.display_name) ? "" : jade_interp)) + "</a></h3><div class=\"channel_background_cover\"></div>");
 if ( user.profile_banner)
 {
 buf.push("<img" + (jade.attr("src", user.profile_banner, true, false)) + " class=\"channel_background\"/>");
@@ -4358,32 +4452,32 @@ buf.push("<br/><span class=\"mod-controls\"><button style=\"width:48px;\" title=
 }
 buf.push("</div>");
 }
-buf.push("</div>");;return buf.join("");
+buf.push("</div>");}("require" in locals_for_with?locals_for_with.require:typeof require!=="undefined"?require:undefined,"user" in locals_for_with?locals_for_with.user:typeof user!=="undefined"?user:undefined,"top" in locals_for_with?locals_for_with.top:typeof top!=="undefined"?top:undefined,"left" in locals_for_with?locals_for_with.left:typeof left!=="undefined"?left:undefined,"Twitch" in locals_for_with?locals_for_with.Twitch:typeof Twitch!=="undefined"?Twitch:undefined,"bttv" in locals_for_with?locals_for_with.bttv:typeof bttv!=="undefined"?bttv:undefined));;return buf.join("");
 };module.exports=template;
+  
 });
-require.register("templates/setting-switch", function(exports, require, module){
-    function template(locals) {
-var buf = [];
-var jade_mixins = {};
-var locals_ = (locals || {}),storageKey = locals_.storageKey,name = locals_.name,description = locals_.description;
-buf.push("<div" + (jade.cls(['option',"bttvOption-" + (storageKey) + ""], [null,true])) + "><span style=\"font-weight:bold;font-size:14px;color:#D3D3D3;\">" + (jade.escape(null == (jade.interp = name) ? "" : jade.interp)) + "</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;" + (jade.escape(null == (jade.interp = description) ? "" : jade.interp)) + "<div class=\"switch\"><input type=\"radio\"" + (jade.attr("name", storageKey, true, false)) + " value=\"false\"" + (jade.attr("id", "" + (storageKey) + "False", true, false)) + " class=\"switch-input switch-off\"/><label" + (jade.attr("for", "" + (storageKey) + "False", true, false)) + " class=\"switch-label switch-label-off\">Off</label><input type=\"radio\"" + (jade.attr("name", storageKey, true, false)) + " value=\"true\"" + (jade.attr("id", "" + (storageKey) + "True", true, false)) + " class=\"switch-input\"/><label" + (jade.attr("for", "" + (storageKey) + "True", true, false)) + " class=\"switch-label switch-label-on\">On</label><span class=\"switch-selection\"></span></div></div>");;return buf.join("");
-};module.exports=template;
-});
-require.register("templates/settings-panel", function(exports, require, module){
-    function template(locals) {
-var buf = [];
-var jade_mixins = {};
 
-buf.push("<div id=\"header\"><span id=\"logo\"><img height=\"45px\" src=\"//cdn.betterttv.net/style/logos/settings_logo.png\"/></span><ul class=\"nav\"><li><a href=\"#bttvAbout\">About</a></li><li class=\"active\"><a href=\"#bttvSettings\">Settings</a></li><li><a href=\"#bttvChangelog\">Changelog</a></li><li><a href=\"#bttvPrivacy\">Privacy Policy</a></li><li><a href=\"#bttvBackup\">Backup/Import</a></li></ul><span id=\"close\">&times;</span></div><div id=\"bttvSettings\" style=\"height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content options-list\"><h2 class=\"option\">Here you can manage the various BetterTTV options. Click On or Off to toggle settings.</h2></div></div><div id=\"bttvAbout\" style=\"display:none;\"><div class=\"aboutHalf\"><img src=\"//cdn.betterttv.net/style/logos/mascot.png\" class=\"bttvAboutIcon\"/><h1>BetterTTV v " + (jade.escape((jade.interp = bttv.info.versionString()) == null ? '' : jade.interp)) + "</h1><h2>from your friends at <a href=\"http://www.nightdev.com\" target=\"_blank\">NightDev</a></h2><br/></div><div class=\"aboutHalf\"><h1 style=\"margin-top: 100px;\">Think this addon is awesome?</h1><br/><br/><h2><a target=\"_blank\" href=\"https://chrome.google.com/webstore/detail/ajopnjidmegmdimjlfnijceegpefgped\">Drop a Review on the Chrome Webstore</a></h2><br/><h2>or maybe</h2><br/><h2><a target=\"_blank\" href=\"http://streamdonations.net/c/night\">Support the Developer</a></h2><br/></div></div><div id=\"bttvPrivacy\" style=\"display:none;height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content\"></div></div><div id=\"bttvChangelog\" style=\"display:none;height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content\"></div></div><div id=\"bttvBackup\" style=\"display:none;height:425px;padding:25px;\"><h1 style=\"padding-bottom:15px;\">Backup Settings</h1><button id=\"bttvBackupButton\" class=\"primary_button\"><Download></Download></button><h1 style=\"padding-top:25px;padding-bottom:15px;\">Import Settings</h1><input id=\"bttvImportInput\" type=\"file\" style=\"height: 25px;width: 250px;\"/></div><div id=\"footer\"><span>BetterTTV &copy; <a href=\"http://www.nightdev.com\" target=\"_blank\">NightDev</a> 2014</span><span style=\"float:right;\"><a href=\"http://www.nightdev.com/contact\" target=\"_blank\">Get Support</a> | <a href=\"http://bugs.nightdev.com/projects/betterttv/issues/new?tracker_id=1\" target=\"_blank\">Report a Bug</a> | <a href=\"http://streamdonations.net/c/night\" target=\"_blank\">Support the Developer</a></span></div>");;return buf.join("");
-};module.exports=template;
-});
-require.register("templates/settings", function(exports, require, module){
-    function template(locals) {
+require.register("templates/setting-switch", function(exports, require, module){
+  function template(locals) {
 var buf = [];
 var jade_mixins = {};
-var locals_ = (locals || {}),storageKey = locals_.storageKey,name = locals_.name,description = locals_.description;
-buf.push("<div" + (jade.cls(['option',"bttvOption-" + (storageKey) + ""], [null,true])) + "><span style=\"font-weight:bold;font-size:14px;color:#D3D3D3;\">" + (jade.escape(null == (jade.interp = name) ? "" : jade.interp)) + "</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;" + (jade.escape(null == (jade.interp = description) ? "" : jade.interp)) + "<div class=\"switch\"><input type=\"radio\"" + (jade.attr("name", storageKey, true, false)) + " value=\"false\"" + (jade.attr("id", "" + (storageKey) + "False", true, false)) + " class=\"switch-input switch-off\"/><label" + (jade.attr("for", "" + (storageKey) + "False", true, false)) + " class=\"switch-label switch-label-off\">Off</label><input type=\"radio\"" + (jade.attr("name", storageKey, true, false)) + " value=\"true\"" + (jade.attr("id", "" + (storageKey) + "True", true, false)) + " class=\"switch-input\"/><label" + (jade.attr("for", "" + (storageKey) + "True", true, false)) + " class=\"switch-label switch-label-on\">On</label><span class=\"switch-selection\"></span></div></div>");;return buf.join("");
+var jade_interp;
+;var locals_for_with = (locals || {});(function (storageKey, name, description) {
+buf.push("<div" + (jade.cls(['option',"bttvOption-" + (storageKey) + ""], [null,true])) + "><span style=\"font-weight:bold;font-size:14px;color:#D3D3D3;\">" + (jade.escape(null == (jade_interp = name) ? "" : jade_interp)) + "</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;" + (jade.escape(null == (jade_interp = description) ? "" : jade_interp)) + "<div class=\"switch\"><input type=\"radio\"" + (jade.attr("name", storageKey, true, false)) + " value=\"false\"" + (jade.attr("id", "" + (storageKey) + "False", true, false)) + " class=\"switch-input switch-off\"/><label" + (jade.attr("for", "" + (storageKey) + "False", true, false)) + " class=\"switch-label switch-label-off\">Off</label><input type=\"radio\"" + (jade.attr("name", storageKey, true, false)) + " value=\"true\"" + (jade.attr("id", "" + (storageKey) + "True", true, false)) + " class=\"switch-input\"/><label" + (jade.attr("for", "" + (storageKey) + "True", true, false)) + " class=\"switch-label switch-label-on\">On</label><span class=\"switch-selection\"></span></div></div>");}("storageKey" in locals_for_with?locals_for_with.storageKey:typeof storageKey!=="undefined"?storageKey:undefined,"name" in locals_for_with?locals_for_with.name:typeof name!=="undefined"?name:undefined,"description" in locals_for_with?locals_for_with.description:typeof description!=="undefined"?description:undefined));;return buf.join("");
 };module.exports=template;
+  
 });
+
+require.register("templates/settings-panel", function(exports, require, module){
+  function template(locals) {
+var buf = [];
+var jade_mixins = {};
+var jade_interp;
+;var locals_for_with = (locals || {});(function (bttv) {
+buf.push("<div id=\"header\"><span id=\"logo\"><img height=\"45px\" src=\"//cdn.betterttv.net/style/logos/settings_logo.png\"/></span><ul class=\"nav\"><li><a href=\"#bttvAbout\">About</a></li><li class=\"active\"><a href=\"#bttvSettings\">Settings</a></li><li><a href=\"#bttvChangelog\">Changelog</a></li><li><a href=\"#bttvPrivacy\">Privacy Policy</a></li><li><a href=\"#bttvBackup\">Backup/Import</a></li></ul><span id=\"close\">&times;</span></div><div id=\"bttvSettings\" style=\"height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content options-list\"><h2 class=\"option\">Here you can manage the various BetterTTV options. Click On or Off to toggle settings.</h2></div></div><div id=\"bttvAbout\" style=\"display:none;\"><div class=\"aboutHalf\"><img src=\"//cdn.betterttv.net/style/logos/mascot.png\" class=\"bttvAboutIcon\"/><h1>BetterTTV v " + (jade.escape((jade_interp = bttv.info.versionString()) == null ? '' : jade_interp)) + "</h1><h2>from your friends at <a href=\"http://www.nightdev.com\" target=\"_blank\">NightDev</a></h2><br/></div><div class=\"aboutHalf\"><h1 style=\"margin-top: 100px;\">Think this addon is awesome?</h1><br/><br/><h2><a target=\"_blank\" href=\"https://chrome.google.com/webstore/detail/ajopnjidmegmdimjlfnijceegpefgped\">Drop a Review on the Chrome Webstore</a></h2><br/><h2>or maybe</h2><br/><h2><a target=\"_blank\" href=\"http://streamdonations.net/c/night\">Support the Developer</a></h2><br/></div></div><div id=\"bttvPrivacy\" style=\"display:none;height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content\"></div></div><div id=\"bttvChangelog\" style=\"display:none;height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content\"></div></div><div id=\"bttvBackup\" style=\"display:none;height:425px;padding:25px;\"><h1 style=\"padding-bottom:15px;\">Backup Settings</h1><button id=\"bttvBackupButton\" class=\"primary_button\"><Download></Download></button><h1 style=\"padding-top:25px;padding-bottom:15px;\">Import Settings</h1><input id=\"bttvImportInput\" type=\"file\" style=\"height: 25px;width: 250px;\"/></div><div id=\"footer\"><span>BetterTTV &copy; <a href=\"http://www.nightdev.com\" target=\"_blank\">NightDev</a> 2014</span><span style=\"float:right;\"><a href=\"http://www.nightdev.com/contact\" target=\"_blank\">Get Support</a> | <a href=\"http://bugs.nightdev.com/projects/betterttv/issues/new?tracker_id=1\" target=\"_blank\">Report a Bug</a> | <a href=\"http://streamdonations.net/c/night\" target=\"_blank\">Support the Developer</a></span></div>");}("bttv" in locals_for_with?locals_for_with.bttv:typeof bttv!=="undefined"?bttv:undefined));;return buf.join("");
+};module.exports=template;
+  
+});
+
 require('main'); 
 }(window.BetterTTV = window.BetterTTV || {}));

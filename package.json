@@ -1,6 +1,6 @@
 {
   "name": "BetterTTV",
-  "version": "0.0.0",
+  "version": "6.7",
   "description": "BetterTTV",
   "main": "betterttv.js",
   "devDependencies": {
@@ -10,16 +10,16 @@
     "gulp-header": "~1.0.2",
     "gulp-jade": "~0.5.0",
     "gulp-rename": "~1.2.0",
-    "gulp-commonjs-wrap": "0.0.4",
+    "gulp-wrap-commonjs": "0.1.11",
     "gulp-changed": "~0.3.0",
-    "commonjs-require-definition": "~0.1.2"
+    "commonjs-require": "~1.4.5"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "https://bitbucket.org/Nightwalker/betterttv.git"
+    "url": "https://github.com/night/BetterTTV.git"
   },
   "author": "Night",
   "license": "ISC"
