@@ -17,6 +17,7 @@ gulp.task('templates', function () {
 
 var commonJsRequireDefinition = fs.readFileSync('node_modules/commonjs-require/commonjs-require.js').toString();
 var jadeDefinition = fs.readFileSync('node_modules/gulp-jade/node_modules/jade/runtime.js').toString();
+var license = fs.readFileSync('license.txt').toString();
 
 gulp.task('scripts', ['templates'], function () {
     // if we want .coffee, we can compile them to build/*.js
@@ -27,6 +28,7 @@ gulp.task('scripts', ['templates'], function () {
         .pipe(header('(function (bttv) { \n'))
         .pipe(header(jadeDefinition))
         .pipe(header(commonJsRequireDefinition))
+        .pipe(header(license+'\n'))
         .pipe(footer("\n\
 require('main'); \n\
 }(window.BetterTTV = window.BetterTTV || {}));"))

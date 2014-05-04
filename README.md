@@ -54,7 +54,7 @@ BetterTTV
 >
 >   Unofficial TLDR:
 >
->   Free to modify for personal use>
+>   Free to modify for personal use
 >
 >   Need permission to distribute the code
 >
