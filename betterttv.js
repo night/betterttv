@@ -2664,7 +2664,7 @@ module.exports = [
     },
     {
         name: 'Show Deleted Messages',
-        description: 'Turn this on to change &lt;message deleted&gt; back to users\' messages.',
+        description: 'Turn this on to change <message deleted> back to users\' messages.',
         default: false,
         storageKey: 'showDeletedMessages'
     },
