@@ -3221,6 +3221,7 @@ module.exports = function () {
         removeElement('#nav_games');
         removeElement('#nav_streams');
         removeElement('#nav_related_streams');
+        $('body').append('<style>#nav_games, #nav_streams, #nav_related_streams { display: none; }</style>');
     }
 }
   
