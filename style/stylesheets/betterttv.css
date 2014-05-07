@@ -89,9 +89,9 @@ a {
     width: 5px;
     height: 100%;
     position: absolute;
-    left: -2;
+    left: -5px;
     z-index: 9001;
-    bottom: 0;
+    bottom: 0px;
     cursor: e-resize;
 }
 
