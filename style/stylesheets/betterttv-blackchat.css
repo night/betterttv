@@ -393,13 +393,7 @@ body {
 }
 
 /* Removing Header */
-.chat-header.main-header{
-	display: none;
-}
-.top-notification.room-invitation {
-	display: none;
-}
-.chat-header.all-rooms-header {
+.chat-header.main-header, .top-notification.room-invitation, .chat-header.all-rooms-header{
 	display: none;
 }
 .ember-chat .chat-room-list {
