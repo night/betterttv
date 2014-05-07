@@ -394,7 +394,7 @@ body {
 }
 
 /* Highlight Fix */
-.chat-line span::selection, .chat-line span::-moz-selection {
+.chat-line span::selection, .chat-line span::-moz-selection, .chat-line span::-webkit-selection {
 	background: #ffb7b7;
 }
 
