@@ -394,60 +394,23 @@ body {
 }
 
 /* Highlight Fix */
-.ember-view.chat-line::selection {
-	background: #ffb7b7;
-}
-.ember-view.chat-line::-moz-selection {
+.chat-line span::selection, .chat-line span::-moz-selection {
 	background: #ffb7b7;
 }
 
-/* ~~~~~~~~~~~~Dark Group Chat~~~~~~~~~~~~~~~~~~~~~ */
-.ember-chat .chat-header {
-	background-color: rgb(50,50,50);
-	border-top: 1px solid #000;
-	border-bottom: 1px solid #000;
+/* Removing Header */
+.chat-header.main-header{
+	display: none;
 }
-.ember-chat .chat-header.all-rooms-header {
-	background-color: rgb(50,50,50);
+.top-notification.room-invitation {
+	display: none;
 }
-.ember-chat .chat-menu .list-header {
-	color: #D3D3D3;
-	border-color: #000;
-	background: #282828;
+.chat-header.all-rooms-header {
+	display: none;
 }
-div.chat-room-list.chat-menu div.js-rooms.scroll.chat-rooms div.tse-scroll-content {
-	background: rgb(30,30,30);
+.ember-chat .chat-room-list {
+	padding-top: 0px;
 }
-.ember-chat .top-dropdown {
-	background: #282828;
-	border-color: #000;
-}
-.ember-chat .chat-room-list.masked .mask {
-	background: #353535;
-}
-.ember-chat .chat-menu .chat-top-header {
-	color: #9C9C9C !important;
-}
-.ember-chat .top-dropdown .input-contain input.text-input {
-	background-color: rgb(20, 20, 20) !important;
-	color: #D3D3D3;
-	border-color: black;
-}
-.ember-chat .chat-room-list .room {
-	border-color: #202020;
-}
-.ember-chat .no-content a {
-	color: #fff;
-	font-weight: bold;
-}
-.ember-chat .chat-room-list .room:hover p.room-title {
-	color: #fff;
-}
-.ember-chat .chat-menu-button-container span.back, .ember-chat .chat-menu-button-container span.create, .ember-chat .chat-menu-button-container span.invite {
-	filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'invert\'><feColorMatrix in='SourceGraphic' type='matrix' values='-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0'/></filter></svg>#invert");
-	filter: invert(90%);
-	-webkit-filter: invert(90%);
-	-o-filter: invert(90%);
-	-ms-filter: invert(90%);
-	-moz-filter: invert(90%);
+.ember-chat .chat-room {
+	top: 0px;
 }
