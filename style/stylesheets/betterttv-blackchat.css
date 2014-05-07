@@ -332,7 +332,6 @@ body {
 
 /* Chat Lines */
 .ember-chat .chat-messages .chat-line {
-	background-color: #000 !important;
 	color: #fff;
 	font-size: 18px !important;
 	font-weight: bold;
