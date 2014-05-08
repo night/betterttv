@@ -244,6 +244,35 @@ module.exports = [
             }
         }
     },
+
+    {
+        name: 'Hide Private Chat System',
+        description: 'Hides the system used for private chats',
+        default: false,
+        storageKey: 'PrivateChatRemoval',
+        toggle: function(value) {
+            var $ = document;
+            var cssId = 'removePC'; 
+            if(value === true) {
+                if (!$.getElementById(cssId))
+                {
+                    var head  = $.getElementsByTagName('head')[0];
+                    var link  = $.createElement('link');
+                    link.id   = cssId;
+                    link.rel  = 'stylesheet';
+                    link.type = 'text/css';
+                    link.href = '../../style/stylesheet/betterttv-hide-group-chat.css';
+                    head.appendChild(link);
+                }
+            } else {
+                 if ($.getElementById(cssId))
+                {
+                    document.getElementById("cssId").remove();
+                }
+            }
+        }
+    },
+
     {   
         default: '',
         storageKey: 'blacklistKeywords',
