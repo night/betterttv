@@ -247,7 +247,7 @@ module.exports = [
 
     {
         name: 'Hide Private Chat System',
-        description: 'Hides the system used for private chats',
+        description: 'Hides the top banner used for private chats',
         default: false,
         storageKey: 'PrivateChatRemoval',
         toggle: function(value) {
@@ -261,13 +261,13 @@ module.exports = [
                     link.id   = cssId;
                     link.rel  = 'stylesheet';
                     link.type = 'text/css';
-                    link.href = '../../style/stylesheet/betterttv-hide-group-chat.css';
+                    link.href = "//cdn.betterttv.net/style/stylesheets/betterttv-HidePrivChat.css?"+bttv.info.versionString();
                     head.appendChild(link);
                 }
             } else {
                  if ($.getElementById(cssId))
                 {
-                    document.getElementById("cssId").remove();
+                    $.getElementById(cssId).remove();
                 }
             }
         }
