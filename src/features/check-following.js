@@ -2,9 +2,9 @@ var debug = require('debug'),
     vars = require('vars');
 
 var checkFollowing = module.exports = function () {
-    debug.log("Check Following List");
-
     if($("body#chat").length || $('body[data-page="ember#chat"]').length || !vars.userData.isLoggedIn) return;
+
+    debug.log("Check Following List");
 
     var fetchFollowing = function(callback, followingList, followingNames, offset) {
         var followingList = followingList || [],

@@ -1625,7 +1625,8 @@ var clearClutter = require('features/clear-clutter'),
     giveawayCompatibility = require('features/giveaway-compatibility'),
     handleTwitchChatEmotesScript = require('features/handle-twitchchat-emotes'),
     loadChatSettings = require('features/chat-load-settings'),
-    createSettings = require('features/create-settings');
+    createSettings = require('features/create-settings'),
+    blacklistChannels = require('features/blacklist-channels');
 
 var chatFunctions = function () {
     
@@ -1815,6 +1816,7 @@ var main = function () {
         giveawayCompatibility();
         dashboardChannelInfo();
         directoryFunctions();
+        blacklistChannels();
 
         $(window).trigger('resize');
         setTimeout(function() {
