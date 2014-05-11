@@ -1,0 +1,9 @@
+.chat-header.main-header, .top-notification.room-invitation, .chat-header.all-rooms-header{
+	display: none;
+}
+.ember-chat .chat-room-list {
+	padding-top: 0px;
+}
+.ember-chat .chat-room {
+	top: 0px;
+}

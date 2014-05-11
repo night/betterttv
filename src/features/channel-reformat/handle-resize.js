@@ -92,21 +92,14 @@ var handleResize = module.exports = function () {
         var calcH = $(window).height() - $("#broadcast-meta").outerHeight(true) - $(".stats-and-actions").outerHeight();
         if (h > calcH) {
             $('#bttvPlayerStyle').html('#player, .dynamic-player, .dynamic-player object, .dynamic-player video { width: 100% !important; height: '+ ($(window).height() - $(".stats-and-actions").outerHeight()) + 'px !important; }');
-
-            setTimeout(function() {
-                $("#main_col .tse-scroll-content").animate({
-                    scrollTop: $("#broadcast-meta").outerHeight(true) - 10
-                }, 150, "swing");
-            }, 1000);
+            $("#main_col .tse-scroll-content").animate({
+                scrollTop: $("#broadcast-meta").outerHeight(true) - 10
+            }, 150, "swing");
         } else {
             $('#bttvPlayerStyle').html('#player, .dynamic-player, .dynamic-player object, .dynamic-player video { width: 100% !important; height: '+ h.toFixed(0) + 'px !important; }');
-
-            resizeTimer = setTimeout(function() {
-                $("#main_col .tse-scroll-content").animate({
-                    scrollTop: 0
-                }, 150, "swing");
-                resizeTimer = false;
-            }, 1000);
+            $("#main_col .tse-scroll-content").animate({
+                scrollTop: 0
+            }, 150, "swing");
         }
 
         var d = $("#broadcast-meta .info .title").width();

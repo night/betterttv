@@ -22,7 +22,6 @@ module.exports = function () {
             }
         });
 
-        var resizeTimer = false;
         $(document).mouseup(function (event) {
             if (resize === false) return;
             if (chatWidthStartingPoint) {

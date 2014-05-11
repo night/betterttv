@@ -332,7 +332,6 @@ body {
 
 /* Chat Lines */
 .ember-chat .chat-messages .chat-line {
-	background-color: #000 !important;
 	color: #fff;
 	font-size: 18px !important;
 	font-weight: bold;
@@ -383,15 +382,23 @@ body {
 	display: none;
 }
 
-/*Viewer List */
-/*
- WIP IGNORE 
-.ember-chat .chat-menu .chat-top-header {
-	background: rgb(40,40,40); 
+/* White Bar Fix */
+.ember-chat .chat-messages {
+	bottom: 131px;
 }
 
-.ember-chat .chat-menu .chat-top-header .chat-menu-button-container{
-	background: rgb(60, 60, 60);
+/* Text Area Fix */
+.ember-chat .chat-interface .textarea-contain textarea {
+	border: 1px solid #333;
 }
-*/
 
+/* Removing Header */
+.chat-header.main-header, .top-notification.room-invitation, .chat-header.all-rooms-header{
+	display: none;
+}
+.ember-chat .chat-room-list {
+	padding-top: 0px;
+}
+.ember-chat .chat-room {
+	top: 0px;
+}

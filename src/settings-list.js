@@ -214,7 +214,7 @@ module.exports = [
     },
     {
         name: 'Show Deleted Messages',
-        description: 'Turn this on to change &lt;message deleted&gt; back to users\' messages.',
+        description: 'Turn this on to change <message deleted> back to users\' messages.',
         default: false,
         storageKey: 'showDeletedMessages'
     },
@@ -244,6 +244,35 @@ module.exports = [
             }
         }
     },
+
+    {
+        name: 'Hide Private Chat System',
+        description: 'Hides the top banner used for private chats',
+        default: false,
+        storageKey: 'PrivateChatRemoval',
+        toggle: function(value) {
+            var $ = document;
+            var cssId = 'removePC'; 
+            if(value === true) {
+                if (!$.getElementById(cssId))
+                {
+                    var head  = $.getElementsByTagName('head')[0];
+                    var link  = $.createElement('link');
+                    link.id   = cssId;
+                    link.rel  = 'stylesheet';
+                    link.type = 'text/css';
+                    link.href = "//cdn.betterttv.net/style/stylesheets/betterttv-HidePrivChat.css?"+bttv.info.versionString();
+                    head.appendChild(link);
+                }
+            } else {
+                 if ($.getElementById(cssId))
+                {
+                    $.getElementById(cssId).remove();
+                }
+            }
+        }
+    },
+
     {   
         default: '',
         storageKey: 'blacklistKeywords',
