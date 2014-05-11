@@ -1141,3 +1141,10 @@ div.chat-room-list.chat-menu div.js-rooms.scroll.chat-rooms div.tse-scroll-conte
 	-ms-filter: invert(90%);
 	-moz-filter: invert(90%);
 }
+
+.no-login-contain li {
+	background: #000;
+}
+.no-login-contain h3 {
+	color: #DDD;
+}
