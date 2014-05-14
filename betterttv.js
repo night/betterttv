@@ -2458,7 +2458,8 @@ var betaChat = require('features/beta-chat'),
     splitChat = require('features/split-chat'),
     darkenPage = require('features/darken-page'),
     handleBackground = require('features/handle-background'),
-    flipDashboard = require('features/flip-dashboard');
+    flipDashboard = require('features/flip-dashboard'),
+    CSS = require('features/cssLoader');
 var displayElement = require('element').display,
     removeElement = require('element').remove;
 
@@ -2704,20 +2705,11 @@ module.exports = [
             var $ = document;
             var cssId = 'removePC'; 
             if(value === true) {
-                if (!$.getElementById(cssId))
-                {
-                    var head  = $.getElementsByTagName('head')[0];
-                    var link  = $.createElement('link');
-                    link.id   = cssId;
-                    link.rel  = 'stylesheet';
-                    link.type = 'text/css';
-                    link.href = "//cdn.betterttv.net/style/stylesheets/betterttv-HidePrivChat.css?"+bttv.info.versionString();
-                    head.appendChild(link);
-                }
+                    CSS.Loader("HidePrivChat.css", cssID);
             } else {
                  if ($.getElementById(cssId))
                 {
-                    $.getElementById(cssId).remove();
+                    $('#'+cssId).remove();
                 }
             }
         }
@@ -3340,6 +3332,19 @@ module.exports = function () {
     globalCSSInject.innerHTML = "#large_nav .game_filter.selected a { border-left: 4px solid #374a9b !important; } button.primary, .button-simple.primary, .primary_button:hover, .primary_button:focus, #subscribe_action .subscribe-text:hover, #subscribe_action .subscribe-text:focus { background: linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; background: -o-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; background: -moz-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; background: -webkit-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; background: -ms-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; } button.primary, .primary_button, #subscribe_action .subscribe-text {border-color: #000 !important;background: linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%) !important; background: -o-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%) !important; background: -moz-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%) !important; background: -webkit-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%) !important; background: -ms-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%) !important; }#team_member_list .page_links a, .page_links span.next_page b, .page_links a.next_page b, #main_col .messages div.preview.unread {border-left-color: #374a9b !important;}#team_member_list .page_links a b.left {border-left-color: #374a9b !important;}#team_member_list .page_links a b.right, .page_links span.previous_page b, .page_links a.previous_page b {border-right-color: #374a9b !important;}";
     $("body").append(globalCSSInject);
 }
+  
+});
+
+require.register("features/cssloader", function(exports, require, module){
+  var debug = require('debug');
+
+var Loader = function(cssFileName, functionID){
+	if(!document.getElementById(functionID))
+	{
+		$('head').append('<link rel="stylesheet" href="//cdn.betterttv.net/style/stylesheets/'+cssFileName+'?'+bttv.info.versionString()+'type="text/css" id="'+functionID+'" />')
+	}
+}
+exports.Loader = Loader;
   
 });
 

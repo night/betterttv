@@ -8,7 +8,8 @@ var betaChat = require('features/beta-chat'),
     splitChat = require('features/split-chat'),
     darkenPage = require('features/darken-page'),
     handleBackground = require('features/handle-background'),
-    flipDashboard = require('features/flip-dashboard');
+    flipDashboard = require('features/flip-dashboard'),
+    CSS = require('features/cssLoader');
 var displayElement = require('element').display,
     removeElement = require('element').remove;
 
@@ -254,20 +255,11 @@ module.exports = [
             var $ = document;
             var cssId = 'removePC'; 
             if(value === true) {
-                if (!$.getElementById(cssId))
-                {
-                    var head  = $.getElementsByTagName('head')[0];
-                    var link  = $.createElement('link');
-                    link.id   = cssId;
-                    link.rel  = 'stylesheet';
-                    link.type = 'text/css';
-                    link.href = "//cdn.betterttv.net/style/stylesheets/betterttv-HidePrivChat.css?"+bttv.info.versionString();
-                    head.appendChild(link);
-                }
+                    CSS.Loader("HidePrivChat.css", cssID);
             } else {
                  if ($.getElementById(cssId))
                 {
-                    $.getElementById(cssId).remove();
+                    $('#'+cssId).remove();
                 }
             }
         }
