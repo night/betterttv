@@ -2459,7 +2459,7 @@ var betaChat = require('features/beta-chat'),
     darkenPage = require('features/darken-page'),
     handleBackground = require('features/handle-background'),
     flipDashboard = require('features/flip-dashboard'),
-    cssLoader = require('features/cssLoader');
+    cssLoader = require('features/css-loader');
 var displayElement = require('element').display,
     removeElement = require('element').remove;
 
@@ -3334,15 +3334,16 @@ module.exports = function () {
   
 });
 
-require.register("features/cssloader", function(exports, require, module){
+require.register("features/css-loader", function(exports, require, module){
   var debug = require('debug');
 
-exports.module = function(cssFileName, functionID){
+function cssLoader(cssFileName, functionID){
 	if(!document.getElementById(functionID))
 	{
 		$('head').append('<link rel="stylesheet" href="//cdn.betterttv.net/style/stylesheets/'+cssFileName+'?'+bttv.info.versionString()+'type="text/css" id="'+functionID+'" />')
 	}
 }
+module.exports.cssLoader = cssLoader;
   
 });
 

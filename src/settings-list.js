@@ -9,7 +9,7 @@ var betaChat = require('features/beta-chat'),
     darkenPage = require('features/darken-page'),
     handleBackground = require('features/handle-background'),
     flipDashboard = require('features/flip-dashboard'),
-    cssLoader = require('features/cssLoader');
+    cssLoader = require('features/css-loader');
 var displayElement = require('element').display,
     removeElement = require('element').remove;
 
