@@ -254,7 +254,7 @@ module.exports = [
         toggle: function(value) {
             var cssId = 'removePC'; 
             if(value === true) {
-                    cssLoader("HidePrivChat.css", cssID);
+                    cssLoader("HidePrivChat.css", cssId);
             } else {
                  if ($.getElementById(cssId))
                 {
