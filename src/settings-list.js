@@ -256,10 +256,8 @@ module.exports = [
             if(value === true) {
                     loader.css("betterttv-HidePrivChat.css", cssId);
             } else {
-                 if (document.getElementById(cssId))
-                {
-                    $('#'+cssId).remove();
-                }
+            		loader.unload(cssID);
+       				
             }
         }
     },
