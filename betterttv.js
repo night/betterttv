@@ -2706,7 +2706,7 @@ module.exports = [
             if(value === true) {
                     cssLoader("HidePrivChat.css", cssId);
             } else {
-                 if ($.getElementById(cssId))
+                 if (document.getElementById(cssId))
                 {
                     $('#'+cssId).remove();
                 }
