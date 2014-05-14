@@ -254,7 +254,7 @@ module.exports = [
         toggle: function(value) {
             var cssId = 'removePC'; 
             if(value === true) {
-                    loader.css("HidePrivChat.css", cssId);
+                    loader.css("betterttv-HidePrivChat.css", cssId);
             } else {
                  if (document.getElementById(cssId))
                 {
