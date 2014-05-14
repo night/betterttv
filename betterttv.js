@@ -2459,7 +2459,7 @@ var betaChat = require('features/beta-chat'),
     darkenPage = require('features/darken-page'),
     handleBackground = require('features/handle-background'),
     flipDashboard = require('features/flip-dashboard'),
-    CSS = require('features/cssLoader');
+    cssLoader = require('features/cssLoader');
 var displayElement = require('element').display,
     removeElement = require('element').remove;
 
@@ -2702,10 +2702,9 @@ module.exports = [
         default: false,
         storageKey: 'PrivateChatRemoval',
         toggle: function(value) {
-            var $ = document;
             var cssId = 'removePC'; 
             if(value === true) {
-                    CSS.Loader("HidePrivChat.css", cssID);
+                    cssLoader("HidePrivChat.css", cssID);
             } else {
                  if ($.getElementById(cssId))
                 {
@@ -3338,13 +3337,12 @@ module.exports = function () {
 require.register("features/cssloader", function(exports, require, module){
   var debug = require('debug');
 
-var Loader = function(cssFileName, functionID){
+exports.module = function(cssFileName, functionID){
 	if(!document.getElementById(functionID))
 	{
 		$('head').append('<link rel="stylesheet" href="//cdn.betterttv.net/style/stylesheets/'+cssFileName+'?'+bttv.info.versionString()+'type="text/css" id="'+functionID+'" />')
 	}
 }
-exports.Loader = Loader;
   
 });
 
