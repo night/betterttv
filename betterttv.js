@@ -3334,7 +3334,7 @@ module.exports = function () {
 require.register("features/css-loader", function(exports, require, module){
   var debug = require('debug');
 function css(cssFileName, functionID, settingstate){
-    if(bttv.settings.get("settingstate") == true){
+    if(bttv.settings.get(settingstate) == true){
         $('body').append('<link rel="stylesheet" href="//cdn.betterttv.net/style/stylesheets/'+cssFileName+'?'+bttv.info.versionString()+'" type="text/css" id="'+functionID+'" />');
     }
 }
