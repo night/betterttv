@@ -4,7 +4,7 @@ function load(cssFileName, key){
         $('body').append('<link rel="stylesheet" href="//cdn.betterttv.net/style/stylesheets/'+cssFileName+'?'+bttv.info.versionString()+'" type="text/css" id="'+key+'" />');
     }
 }
-function unload(functionID){
+function unload(key){
     if (document.getElementById(key))
     {
         $('#'+key).remove();
