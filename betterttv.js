@@ -2212,6 +2212,7 @@ var clearClutter = require('features/clear-clutter'),
     handleTwitchChatEmotesScript = require('features/handle-twitchchat-emotes'),
     loadChatSettings = require('features/chat-load-settings'),
     createSettings = require('features/create-settings');
+    loader = require('features/css-loader');
 
 var chatFunctions = function () {
     
@@ -2401,6 +2402,7 @@ var main = function () {
         giveawayCompatibility();
         dashboardChannelInfo();
         directoryFunctions();
+        loader.css("betterttv-HidePrivChat.css", "removePC");
 
         $(window).trigger('resize');
         setTimeout(function() {
@@ -2695,7 +2697,6 @@ module.exports = [
             }
         }
     },
-
     {
         name: 'Hide Private Chat System',
         description: 'Hides the top banner used for private chats',
@@ -2704,14 +2705,12 @@ module.exports = [
         toggle: function(value) {
             var cssId = 'removePC'; 
             if(value === true) {
-                    loader.css("betterttv-HidePrivChat.css", cssId);
+                loader.css("betterttv-HidePrivChat.css", cssId);
             } else {
-            		loader.unload(cssID);
-       				
+                loader.unload(cssID);	
             }
         }
     },
-
     {   
         default: '',
         storageKey: 'blacklistKeywords',
@@ -3334,18 +3333,17 @@ module.exports = function () {
 
 require.register("features/css-loader", function(exports, require, module){
   var debug = require('debug');
-
 function css(cssFileName, functionID){
-		$('body').append('<link rel="stylesheet" href="//cdn.betterttv.net/style/stylesheets/'+cssFileName+'?'+bttv.info.versionString()+'" type="text/css" id="'+functionID+'" />');
+    if(bttv.settings.get("PrivateChatRemoval") == true){
+        $('body').append('<link rel="stylesheet" href="//cdn.betterttv.net/style/stylesheets/'+cssFileName+'?'+bttv.info.versionString()+'" type="text/css" id="'+functionID+'" />');
+    }
 }
-
 function unload(functionID){
-	if (document.getElementById(functionID))
+    if (document.getElementById(functionID))
     {
         $('#'+functionID).remove();
     }
 }
-
 module.exports.css = css;
 module.exports.unload = unload; 
   

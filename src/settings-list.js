@@ -245,7 +245,6 @@ module.exports = [
             }
         }
     },
-
     {
         name: 'Hide Private Chat System',
         description: 'Hides the top banner used for private chats',
@@ -254,14 +253,12 @@ module.exports = [
         toggle: function(value) {
             var cssId = 'removePC'; 
             if(value === true) {
-                    loader.css("betterttv-HidePrivChat.css", cssId);
+                loader.css("betterttv-HidePrivChat.css", cssId);
             } else {
-            		loader.unload(cssID);
-       				
+                loader.unload(cssID);	
             }
         }
     },
-
     {   
         default: '',
         storageKey: 'blacklistKeywords',
