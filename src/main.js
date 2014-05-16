@@ -1626,7 +1626,7 @@ var clearClutter = require('features/clear-clutter'),
     handleTwitchChatEmotesScript = require('features/handle-twitchchat-emotes'),
     loadChatSettings = require('features/chat-load-settings'),
     createSettings = require('features/create-settings');
-    loader = require('features/css-loader');
+    cssLoader = require('features/css-loader');
 
 var chatFunctions = function () {
     
@@ -1816,7 +1816,7 @@ var main = function () {
         giveawayCompatibility();
         dashboardChannelInfo();
         directoryFunctions();
-        loader.css("betterttv-HidePrivChat.css", "removePC", 'PrivateChatRemoval');
+        cssLoader.load("betterttv-HidePrivChat.css", "removePC", 'PrivateChatRemoval');
 
         $(window).trigger('resize');
         setTimeout(function() {

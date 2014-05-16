@@ -9,7 +9,7 @@ var betaChat = require('features/beta-chat'),
     darkenPage = require('features/darken-page'),
     handleBackground = require('features/handle-background'),
     flipDashboard = require('features/flip-dashboard'),
-    loader = require('features/css-loader');
+    cssLoader = require('features/css-loader');
 var displayElement = require('element').display,
     removeElement = require('element').remove;
 
@@ -251,11 +251,10 @@ module.exports = [
         default: false,
         storageKey: 'PrivateChatRemoval',
         toggle: function(value) {
-            var cssId = 'removePC'; 
             if(value === true) {
-                loader.css("betterttv-HidePrivChat.css", cssId, 'PrivateChatRemoval');
+                cssLoader.load("betterttv-HidePrivChat.css", "PrivateChatRemoval");
             } else {
-                loader.unload(cssId);	
+                cssLoader.unload("PrivateChatRemoval");	
             }
         }
     },

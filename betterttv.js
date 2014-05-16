@@ -2212,7 +2212,7 @@ var clearClutter = require('features/clear-clutter'),
     handleTwitchChatEmotesScript = require('features/handle-twitchchat-emotes'),
     loadChatSettings = require('features/chat-load-settings'),
     createSettings = require('features/create-settings');
-    loader = require('features/css-loader');
+    cssLoader = require('features/css-loader');
 
 var chatFunctions = function () {
     
@@ -2402,7 +2402,7 @@ var main = function () {
         giveawayCompatibility();
         dashboardChannelInfo();
         directoryFunctions();
-        loader.css("betterttv-HidePrivChat.css", "removePC", 'PrivateChatRemoval');
+        cssLoader.load("betterttv-HidePrivChat.css", "removePC", 'PrivateChatRemoval');
 
         $(window).trigger('resize');
         setTimeout(function() {
@@ -2461,7 +2461,7 @@ var betaChat = require('features/beta-chat'),
     darkenPage = require('features/darken-page'),
     handleBackground = require('features/handle-background'),
     flipDashboard = require('features/flip-dashboard'),
-    loader = require('features/css-loader');
+    cssLoader = require('features/css-loader');
 var displayElement = require('element').display,
     removeElement = require('element').remove;
 
@@ -2703,11 +2703,10 @@ module.exports = [
         default: false,
         storageKey: 'PrivateChatRemoval',
         toggle: function(value) {
-            var cssId = 'removePC'; 
             if(value === true) {
-                loader.css("betterttv-HidePrivChat.css", cssId, 'PrivateChatRemoval');
+                cssLoader.load("betterttv-HidePrivChat.css", "PrivateChatRemoval");
             } else {
-                loader.unload(cssId);	
+                cssLoader.unload("PrivateChatRemoval");	
             }
         }
     },
@@ -3333,18 +3332,18 @@ module.exports = function () {
 
 require.register("features/css-loader", function(exports, require, module){
   var debug = require('debug');
-function css(cssFileName, functionID, settingstate){
-    if(bttv.settings.get(settingstate) == true){
-        $('body').append('<link rel="stylesheet" href="//cdn.betterttv.net/style/stylesheets/'+cssFileName+'?'+bttv.info.versionString()+'" type="text/css" id="'+functionID+'" />');
+function load(cssFileName, key){
+    if(bttv.settings.get(key) == true){
+        $('body').append('<link rel="stylesheet" href="//cdn.betterttv.net/style/stylesheets/'+cssFileName+'?'+bttv.info.versionString()+'" type="text/css" id="'+key+'" />');
     }
 }
 function unload(functionID){
-    if (document.getElementById(functionID))
+    if (document.getElementById(key))
     {
-        $('#'+functionID).remove();
+        $('#'+key).remove();
     }
 }
-module.exports.css = css;
+module.exports.load = load;
 module.exports.unload = unload; 
   
 });
