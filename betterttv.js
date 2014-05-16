@@ -2402,7 +2402,7 @@ var main = function () {
         giveawayCompatibility();
         dashboardChannelInfo();
         directoryFunctions();
-        loader.css("betterttv-HidePrivChat.css", "removePC");
+        loader.css("betterttv-HidePrivChat.css", "removePC", 'PrivateChatRemoval');
 
         $(window).trigger('resize');
         setTimeout(function() {
@@ -2705,7 +2705,7 @@ module.exports = [
         toggle: function(value) {
             var cssId = 'removePC'; 
             if(value === true) {
-                loader.css("betterttv-HidePrivChat.css", cssId);
+                loader.css("betterttv-HidePrivChat.css", cssId, 'PrivateChatRemoval');
             } else {
                 loader.unload(cssID);	
             }
@@ -3333,8 +3333,8 @@ module.exports = function () {
 
 require.register("features/css-loader", function(exports, require, module){
   var debug = require('debug');
-function css(cssFileName, functionID){
-    if(bttv.settings.get("PrivateChatRemoval") == true){
+function css(cssFileName, functionID, settingstate){
+    if(bttv.settings.get("settingstate") == true){
         $('body').append('<link rel="stylesheet" href="//cdn.betterttv.net/style/stylesheets/'+cssFileName+'?'+bttv.info.versionString()+'" type="text/css" id="'+functionID+'" />');
     }
 }

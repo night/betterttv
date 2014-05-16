@@ -1816,7 +1816,7 @@ var main = function () {
         giveawayCompatibility();
         dashboardChannelInfo();
         directoryFunctions();
-        loader.css("betterttv-HidePrivChat.css", "removePC");
+        loader.css("betterttv-HidePrivChat.css", "removePC", 'PrivateChatRemoval');
 
         $(window).trigger('resize');
         setTimeout(function() {
