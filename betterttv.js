@@ -2211,7 +2211,8 @@ var clearClutter = require('features/clear-clutter'),
     giveawayCompatibility = require('features/giveaway-compatibility'),
     handleTwitchChatEmotesScript = require('features/handle-twitchchat-emotes'),
     loadChatSettings = require('features/chat-load-settings'),
-    createSettings = require('features/create-settings');
+    createSettings = require('features/create-settings'),
+    blacklistChannels = require('features/blacklist-channels'),
     cssLoader = require('features/css-loader');
 
 var chatFunctions = function () {
@@ -2402,6 +2403,7 @@ var main = function () {
         giveawayCompatibility();
         dashboardChannelInfo();
         directoryFunctions();
+        blacklistChannels();
         cssLoader.load("betterttv-HidePrivChat.css", "removePC", 'PrivateChatRemoval');
 
         $(window).trigger('resize');
@@ -2889,6 +2891,17 @@ module.exports = function () {
   
 });
 
+require.register("features/blacklist-channels", function(exports, require, module){
+  var debug = require('debug');
+
+module.exports = function () {
+    if($("body#chat").length || $('body[data-page="ember#chat"]').length) return;
+
+    debug.log("Hide blacklisted channels");
+}
+  
+});
+
 require.register("features/brand", function(exports, require, module){
   var debug = require('debug');
 var cssBlueButtons = require('./css-blue-buttons'),
@@ -3093,9 +3106,9 @@ require.register("features/check-following", function(exports, require, module){
     vars = require('vars');
 
 var checkFollowing = module.exports = function () {
-    debug.log("Check Following List");
-
     if($("body#chat").length || $('body[data-page="ember#chat"]').length || !vars.userData.isLoggedIn) return;
+
+    debug.log("Check Following List");
 
     var fetchFollowing = function(callback, followingList, followingNames, offset) {
         var followingList = followingList || [],
