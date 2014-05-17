@@ -2211,13 +2211,9 @@ var clearClutter = require('features/clear-clutter'),
     giveawayCompatibility = require('features/giveaway-compatibility'),
     handleTwitchChatEmotesScript = require('features/handle-twitchchat-emotes'),
     loadChatSettings = require('features/chat-load-settings'),
-<<<<<<< HEAD
     createSettings = require('features/create-settings'),
-    blacklistChannels = require('features/blacklist-channels');
-=======
-    createSettings = require('features/create-settings');
+    blacklistChannels = require('features/blacklist-channels'),
     cssLoader = require('features/css-loader');
->>>>>>> origin/master
 
 var chatFunctions = function () {
     
@@ -2407,11 +2403,8 @@ var main = function () {
         giveawayCompatibility();
         dashboardChannelInfo();
         directoryFunctions();
-<<<<<<< HEAD
         blacklistChannels();
-=======
         cssLoader.load("betterttv-HidePrivChat.css", "removePC", 'PrivateChatRemoval');
->>>>>>> origin/master
 
         $(window).trigger('resize');
         setTimeout(function() {
