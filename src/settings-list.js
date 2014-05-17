@@ -8,7 +8,8 @@ var betaChat = require('features/beta-chat'),
     splitChat = require('features/split-chat'),
     darkenPage = require('features/darken-page'),
     handleBackground = require('features/handle-background'),
-    flipDashboard = require('features/flip-dashboard');
+    flipDashboard = require('features/flip-dashboard'),
+    cssLoader = require('features/css-loader');
 var displayElement = require('element').display,
     removeElement = require('element').remove;
 
@@ -244,35 +245,19 @@ module.exports = [
             }
         }
     },
-
     {
         name: 'Hide Private Chat System',
         description: 'Hides the top banner used for private chats',
         default: false,
         storageKey: 'PrivateChatRemoval',
         toggle: function(value) {
-            var $ = document;
-            var cssId = 'removePC'; 
             if(value === true) {
-                if (!$.getElementById(cssId))
-                {
-                    var head  = $.getElementsByTagName('head')[0];
-                    var link  = $.createElement('link');
-                    link.id   = cssId;
-                    link.rel  = 'stylesheet';
-                    link.type = 'text/css';
-                    link.href = "//cdn.betterttv.net/style/stylesheets/betterttv-HidePrivChat.css?"+bttv.info.versionString();
-                    head.appendChild(link);
-                }
+                cssLoader.load("betterttv-HidePrivChat.css", "PrivateChatRemoval");
             } else {
-                 if ($.getElementById(cssId))
-                {
-                    $.getElementById(cssId).remove();
-                }
+                cssLoader.unload("PrivateChatRemoval");	
             }
         }
     },
-
     {   
         default: '',
         storageKey: 'blacklistKeywords',

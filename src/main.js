@@ -1626,7 +1626,8 @@ var clearClutter = require('features/clear-clutter'),
     handleTwitchChatEmotesScript = require('features/handle-twitchchat-emotes'),
     loadChatSettings = require('features/chat-load-settings'),
     createSettings = require('features/create-settings'),
-    blacklistChannels = require('features/blacklist-channels');
+    blacklistChannels = require('features/blacklist-channels'),
+    cssLoader = require('features/css-loader');
 
 var chatFunctions = function () {
     
@@ -1817,6 +1818,7 @@ var main = function () {
         dashboardChannelInfo();
         directoryFunctions();
         blacklistChannels();
+        cssLoader.load("betterttv-HidePrivChat.css", "removePC", 'PrivateChatRemoval');
 
         $(window).trigger('resize');
         setTimeout(function() {

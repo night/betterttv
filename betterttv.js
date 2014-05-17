@@ -382,7 +382,7 @@ exports.rethrow = function rethrow(err, filename, lineno, str){
 },{}]},{},[1])
 (1)
 });(function (bttv) { 
-require.register("C:\wamp\www\BetterTTV\src\debug", function(exports, require, module){
+require.register("debug", function(exports, require, module){
   module.exports = {
     log: function (string) {
         if (window.console && console.log) console.log("BTTV: " + string);
@@ -400,7 +400,7 @@ require.register("C:\wamp\www\BetterTTV\src\debug", function(exports, require, m
   
 });
 
-require.register("C:\wamp\www\BetterTTV\src\element", function(exports, require, module){
+require.register("element", function(exports, require, module){
   exports.remove = function (e) {
     // Removes all of an element
     $(e).each(function () {
@@ -416,7 +416,7 @@ exports.display = function (e) {
   
 });
 
-require.register("C:\wamp\www\BetterTTV\src\keycodes", function(exports, require, module){
+require.register("keycodes", function(exports, require, module){
   module.exports = {
     'Backspace': 8,
     'Tab': 9,
@@ -509,7 +509,7 @@ require.register("C:\wamp\www\BetterTTV\src\keycodes", function(exports, require
   
 });
 
-require.register("C:\wamp\www\BetterTTV\src\legacy-tags", function(exports, require, module){
+require.register("legacy-tags", function(exports, require, module){
   module.exports = function (data) {
     return {
         //Developers and Supporters
@@ -583,7 +583,7 @@ require.register("C:\wamp\www\BetterTTV\src\legacy-tags", function(exports, requ
   
 });
 
-require.register("C:\wamp\www\BetterTTV\src\main", function(exports, require, module){
+require.register("main", function(exports, require, module){
   var keyCodes = require('keycodes');
 
 // Declare public and private variables
@@ -2211,8 +2211,13 @@ var clearClutter = require('features/clear-clutter'),
     giveawayCompatibility = require('features/giveaway-compatibility'),
     handleTwitchChatEmotesScript = require('features/handle-twitchchat-emotes'),
     loadChatSettings = require('features/chat-load-settings'),
+<<<<<<< HEAD
     createSettings = require('features/create-settings'),
     blacklistChannels = require('features/blacklist-channels');
+=======
+    createSettings = require('features/create-settings');
+    cssLoader = require('features/css-loader');
+>>>>>>> origin/master
 
 var chatFunctions = function () {
     
@@ -2402,7 +2407,11 @@ var main = function () {
         giveawayCompatibility();
         dashboardChannelInfo();
         directoryFunctions();
+<<<<<<< HEAD
         blacklistChannels();
+=======
+        cssLoader.load("betterttv-HidePrivChat.css", "removePC", 'PrivateChatRemoval');
+>>>>>>> origin/master
 
         $(window).trigger('resize');
         setTimeout(function() {
@@ -2449,7 +2458,7 @@ checkJquery();
   
 });
 
-require.register("C:\wamp\www\BetterTTV\src\settings-list", function(exports, require, module){
+require.register("settings-list", function(exports, require, module){
   /** BTTV :
  * cssBlueButtons
  * handleTwitchChatEmotesScript
@@ -2460,7 +2469,8 @@ var betaChat = require('features/beta-chat'),
     splitChat = require('features/split-chat'),
     darkenPage = require('features/darken-page'),
     handleBackground = require('features/handle-background'),
-    flipDashboard = require('features/flip-dashboard');
+    flipDashboard = require('features/flip-dashboard'),
+    cssLoader = require('features/css-loader');
 var displayElement = require('element').display,
     removeElement = require('element').remove;
 
@@ -2696,35 +2706,19 @@ module.exports = [
             }
         }
     },
-
     {
         name: 'Hide Private Chat System',
         description: 'Hides the top banner used for private chats',
         default: false,
         storageKey: 'PrivateChatRemoval',
         toggle: function(value) {
-            var $ = document;
-            var cssId = 'removePC'; 
             if(value === true) {
-                if (!$.getElementById(cssId))
-                {
-                    var head  = $.getElementsByTagName('head')[0];
-                    var link  = $.createElement('link');
-                    link.id   = cssId;
-                    link.rel  = 'stylesheet';
-                    link.type = 'text/css';
-                    link.href = "//cdn.betterttv.net/style/stylesheets/betterttv-HidePrivChat.css?"+bttv.info.versionString();
-                    head.appendChild(link);
-                }
+                cssLoader.load("betterttv-HidePrivChat.css", "PrivateChatRemoval");
             } else {
-                 if ($.getElementById(cssId))
-                {
-                    $.getElementById(cssId).remove();
-                }
+                cssLoader.unload("PrivateChatRemoval");	
             }
         }
     },
-
     {   
         default: '',
         storageKey: 'blacklistKeywords',
@@ -2839,7 +2833,7 @@ module.exports = [
   
 });
 
-require.register("C:\wamp\www\BetterTTV\src\vars", function(exports, require, module){
+require.register("vars", function(exports, require, module){
   module.exports = {
     userData: {
         isLoggedIn: window.Twitch ? Twitch.user.isLoggedIn() : false,
@@ -2852,7 +2846,7 @@ require.register("C:\wamp\www\BetterTTV\src\vars", function(exports, require, mo
   
 });
 
-require.register("C:\wamp\www\BetterTTV\src\features\beta-chat", function(exports, require, module){
+require.register("features/beta-chat", function(exports, require, module){
   var debug = require('debug'),
     vars = require('vars');
 
@@ -2904,7 +2898,7 @@ module.exports = function () {
   
 });
 
-require.register("C:\wamp\www\BetterTTV\src\features\blacklist-channels", function(exports, require, module){
+require.register("features/blacklist-channels", function(exports, require, module){
   var debug = require('debug');
 
 module.exports = function () {
@@ -2915,7 +2909,7 @@ module.exports = function () {
   
 });
 
-require.register("C:\wamp\www\BetterTTV\src\features\brand", function(exports, require, module){
+require.register("features/brand", function(exports, require, module){
   var debug = require('debug');
 var cssBlueButtons = require('./css-blue-buttons'),
     betaChat = require('./beta-chat');
@@ -2988,7 +2982,7 @@ module.exports = function () {
   
 });
 
-require.register("C:\wamp\www\BetterTTV\src\features\chat-load-settings", function(exports, require, module){
+require.register("features/chat-load-settings", function(exports, require, module){
   var debug = require('debug'),
     vars = require('vars');
 var darkenPage = require('features/darken-page'),
@@ -3094,7 +3088,7 @@ module.exports = function() {
   
 });
 
-require.register("C:\wamp\www\BetterTTV\src\features\check-broadcast-info", function(exports, require, module){
+require.register("features/check-broadcast-info", function(exports, require, module){
   var debug = require('debug');
 
 var checkBroadcastInfo = module.exports = function () {
@@ -3114,7 +3108,7 @@ var checkBroadcastInfo = module.exports = function () {
   
 });
 
-require.register("C:\wamp\www\BetterTTV\src\features\check-following", function(exports, require, module){
+require.register("features/check-following", function(exports, require, module){
   var debug = require('debug'),
     vars = require('vars');
 
@@ -3184,7 +3178,7 @@ var checkFollowing = module.exports = function () {
   
 });
 
-require.register("C:\wamp\www\BetterTTV\src\features\check-messages", function(exports, require, module){
+require.register("features/check-messages", function(exports, require, module){
   var debug = require('debug'),
     vars = require('vars');
 
@@ -3249,7 +3243,7 @@ module.exports = function () {
   
 });
 
-require.register("C:\wamp\www\BetterTTV\src\features\clear-clutter", function(exports, require, module){
+require.register("features/clear-clutter", function(exports, require, module){
   var debug = require('debug'),
 	removeElement = require('element').remove;
 
@@ -3269,7 +3263,7 @@ module.exports = function () {
   
 });
 
-require.register("C:\wamp\www\BetterTTV\src\features\create-settings", function(exports, require, module){
+require.register("features/create-settings", function(exports, require, module){
   var debug = require('debug'),
     vars = require('vars');
 var darkenPage = require('./darken-page'),
@@ -3341,7 +3335,7 @@ module.exports = function () {
   
 });
 
-require.register("C:\wamp\www\BetterTTV\src\features\css-blue-buttons", function(exports, require, module){
+require.register("features/css-blue-buttons", function(exports, require, module){
   var debug = require('debug');
 
 module.exports = function () {
@@ -3356,7 +3350,25 @@ module.exports = function () {
   
 });
 
-require.register("C:\wamp\www\BetterTTV\src\features\darken-page", function(exports, require, module){
+require.register("features/css-loader", function(exports, require, module){
+  var debug = require('debug');
+function load(cssFileName, key){
+    if(bttv.settings.get(key) == true){
+        $('body').append('<link rel="stylesheet" href="//cdn.betterttv.net/style/stylesheets/'+cssFileName+'?'+bttv.info.versionString()+'" type="text/css" id="'+key+'" />');
+    }
+}
+function unload(key){
+    if (document.getElementById(key))
+    {
+        $('#'+key).remove();
+    }
+}
+module.exports.load = load;
+module.exports.unload = unload; 
+  
+});
+
+require.register("features/darken-page", function(exports, require, module){
   var debug = require('debug'),
     handleBackground = require('./handle-background');
 
@@ -3397,7 +3409,7 @@ module.exports = function () {
   
 });
 
-require.register("C:\wamp\www\BetterTTV\src\features\dashboard-channelinfo", function(exports, require, module){
+require.register("features/dashboard-channelinfo", function(exports, require, module){
   var debug = require('debug'),
     vars = require('vars');
 
@@ -3477,7 +3489,7 @@ module.exports = function dashboardChannelInfo() {
   
 });
 
-require.register("C:\wamp\www\BetterTTV\src\features\directory-functions", function(exports, require, module){
+require.register("features/directory-functions", function(exports, require, module){
   var debug = require('debug'),
     vars = require('vars');
 
@@ -3503,7 +3515,7 @@ module.exports = function () {
   
 });
 
-require.register("C:\wamp\www\BetterTTV\src\features\flip-dashboard", function(exports, require, module){
+require.register("features/flip-dashboard", function(exports, require, module){
   var debug = require('debug');
 
 module.exports = function () {
@@ -3525,7 +3537,7 @@ module.exports = function () {
   
 });
 
-require.register("C:\wamp\www\BetterTTV\src\features\format-dashboard", function(exports, require, module){
+require.register("features/format-dashboard", function(exports, require, module){
   var debug = require('debug');
 
 module.exports = function () {
@@ -3557,7 +3569,7 @@ module.exports = function () {
   
 });
 
-require.register("C:\wamp\www\BetterTTV\src\features\giveaway-compatibility", function(exports, require, module){
+require.register("features/giveaway-compatibility", function(exports, require, module){
   var debug = require('debug');
 
 module.exports = function () {
@@ -3582,7 +3594,7 @@ module.exports = function () {
   
 });
 
-require.register("C:\wamp\www\BetterTTV\src\features\handle-background", function(exports, require, module){
+require.register("features/handle-background", function(exports, require, module){
   module.exports = function handleBackground(tiled) {
     var tiled = tiled || false;
     
@@ -3673,7 +3685,7 @@ require.register("C:\wamp\www\BetterTTV\src\features\handle-background", functio
   
 });
 
-require.register("C:\wamp\www\BetterTTV\src\features\handle-twitchchat-emotes", function(exports, require, module){
+require.register("features/handle-twitchchat-emotes", function(exports, require, module){
   var debug = require('debug');
 
 module.exports = function () {
@@ -3690,7 +3702,7 @@ module.exports = function () {
   
 });
 
-require.register("C:\wamp\www\BetterTTV\src\features\make-card", function(exports, require, module){
+require.register("features/make-card", function(exports, require, module){
   module.exports = function(user, $event) {
     var template = bttv.chat.templates.moderationCard(user, $event.offset().top, $event.offset().left);
     $('.ember-chat .moderation-card').remove();
@@ -3773,7 +3785,7 @@ require.register("C:\wamp\www\BetterTTV\src\features\make-card", function(export
   
 });
 
-require.register("C:\wamp\www\BetterTTV\src\features\override-emotes", function(exports, require, module){
+require.register("features/override-emotes", function(exports, require, module){
   var debug = require('debug'),
     vars = require('vars');
 
@@ -4165,7 +4177,7 @@ module.exports = function () {
   
 });
 
-require.register("C:\wamp\www\BetterTTV\src\features\split-chat", function(exports, require, module){
+require.register("features/split-chat", function(exports, require, module){
   var debug = require('debug');
 
 module.exports = function () {
@@ -4183,7 +4195,7 @@ module.exports = function () {
   
 });
 
-require.register("C:\wamp\www\BetterTTV\src\features\channel-reformat\handle-resize", function(exports, require, module){
+require.register("features/channel-reformat/handle-resize", function(exports, require, module){
   var debug = require('debug'),
     vars = require('vars');
 
@@ -4296,7 +4308,7 @@ var handleResize = module.exports = function () {
   
 });
 
-require.register("C:\wamp\www\BetterTTV\src\features\channel-reformat\index", function(exports, require, module){
+require.register("features/channel-reformat/index", function(exports, require, module){
   var debug = require('debug'),
     keyCodes = require('keycodes'),
     vars = require('vars');
@@ -4468,7 +4480,7 @@ module.exports = function () {
   
 });
 
-require.register("C:\wamp\www\BetterTTV\src\features\channel-reformat\linkify-title", function(exports, require, module){
+require.register("features/channel-reformat/linkify-title", function(exports, require, module){
   var debug = require('debug'),
     vars = require('vars');
 
@@ -4494,7 +4506,7 @@ module.exports = function () {
   
 });
 
-require.register("C:\wamp\www\BetterTTV\build\templates\chat-settings", function(exports, require, module){
+require.register("templates/chat-settings", function(exports, require, module){
   function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -4523,7 +4535,7 @@ buf.push("<p><a href=\"#\" class=\"g18_gear-00000080 setBlacklistKeywords\">Set 
   
 });
 
-require.register("C:\wamp\www\BetterTTV\build\templates\moderation-card", function(exports, require, module){
+require.register("templates/moderation-card", function(exports, require, module){
   function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -4554,7 +4566,7 @@ buf.push("</div>");}("require" in locals_for_with?locals_for_with.require:typeof
   
 });
 
-require.register("C:\wamp\www\BetterTTV\build\templates\setting-switch", function(exports, require, module){
+require.register("templates/setting-switch", function(exports, require, module){
   function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -4565,7 +4577,7 @@ buf.push("<div" + (jade.cls(['option',"bttvOption-" + (storageKey) + ""], [null,
   
 });
 
-require.register("C:\wamp\www\BetterTTV\build\templates\settings-panel", function(exports, require, module){
+require.register("templates/settings-panel", function(exports, require, module){
   function template(locals) {
 var buf = [];
 var jade_mixins = {};
