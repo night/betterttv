@@ -1332,6 +1332,7 @@ bttv.chat = {
             var specialUsers = {
                 "night": { dev: true, tagType: "bttvDeveloper" },
                 "dtittel": { dev: true, tagType: "bttvDeveloper" },
+                "vendethiel": { dev: true, tagType: "bttvDeveloper" },
                 "julia_cs": { supporter: true, team: "Design", tagType: "bttvSupporter" },
                 "izl": { supporter: true, team: "Support", tagType: "bttvSupporter" },
             }
