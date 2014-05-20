@@ -1086,12 +1086,12 @@ table.simple_table td {
 	background: #141414;
 }
 
-.cl-container .section-header .header-content.indented {
-	border-left: 1px solid #343434;
+.cl-container .cl-section a{
+	color: #999;
 }
 
-a {
-color: #999;
+.cl-container .section-header .header-content.indented {
+	border-left: 1px solid #343434;
 }
 
 .new-dashboard .subscription-dash .subscription-feature-list .list-body .list-item:hover {
