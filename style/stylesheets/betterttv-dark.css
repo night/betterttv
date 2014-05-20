@@ -977,6 +977,9 @@ a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00
 .directory_header .nav {
 	border-color: #555;
 }
+#user_edit_form div.connect_items, div.container {
+	background-color: #212121;
+}
 .cl-container .section-header {
 	background: #212121;
 	border-color: #343434
@@ -1004,17 +1007,26 @@ ul.manage_simple span.obj:hover {
 	border-color: #333;
 }
 ul.manage_simple span.obj {
-	background: #0F0F0F;
+	background: #404040;
 }
 .cl-container fieldset .label-wrapper label {
 	color: #BBB;
 }
+.cl-subsection .team h5 {
+	margin-bottom: 5px;
+}
 #user_edit_form fieldset div table tbody tr.sortable_user.selector td:nth-child(2) a {
 	color: white;
 }
-fieldset.clearfix {
-	background: #0E0E0E;
+.cl-subsection .team table td, .cl-subsection .team table th  {
+	padding-left: 5px;
+	padding-top: 5px;
+	padding-right: 5px;
 }
+fieldset.clearfix {
+	background: #212121;
+}
+
 table.simple_table th {
 	border-color: #333;
 	background: #0E0E0E;
@@ -1030,6 +1042,20 @@ table.simple_table th {
 	-o-filter: invert(90%);
 	-ms-filter: invert(90%);
 	-moz-filter: invert(90%);
+}
+#turbo_action {
+	border: 1px solid #343434;
+	background: #212121;
+	color: #d3d3d3;
+	box-shadow: 0 1px 0 #343434,inset 0 2px 1px rgba(0,0,0,0.05);
+	-moz-box-shadow: 0 1px 0 #343434,inset 0 2px 1px rgba(0,0,0,0.05);
+	-webkit-box-shadow: -2 1px 0 #343434,inset 0 2px 1px rgba(0,0,0,0.05);
+}
+.features_list {
+	color: #d3d3d3;
+}
+.features_list li p {
+color: #979797;
 }
 .cl-container .cl-section {
 	background: #131313;
@@ -1047,8 +1073,8 @@ table.simple_table th {
 #example .line {
 	background: #000;
 }
-#user_edit_form a, #settings_contain a, #authorized a, #developer a{
-	color:white;
+#user_edit_form a, #settings_contain a, #authorized a, #developer a {
+	color: #ccc;
 }
 .multi_select li.hdr {
 	border-color: #333;
@@ -1059,17 +1085,15 @@ table.simple_table th {
 .connect_items {
 	border-color: 343434;
 }
-.connect_items .connect_item{
-	background: #212121;
+.connect_items .connect_item {
+	background: #404040;
+	color: #cdcdcd;
 }
 .section ul li, .section .sub {
 	border-color: #333;
 }
 .app_title {
 	color: #ccc;
-}
-#user_edit_form div.connect_items, div.container {
-	background-color:#0E0E0E;
 }
 table.simple_table td {
 	border-color: transparent transparent #333;
