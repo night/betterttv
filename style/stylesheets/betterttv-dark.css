@@ -1032,7 +1032,7 @@ table.simple_table th {
 	-moz-filter: invert(90%);
 }
 .cl-container .cl-section {
-	background: #131313;
+	background: #141414;
 }
 #turbo_cancel_opts a {
 	color:white;
@@ -1084,6 +1084,10 @@ table.simple_table td {
 
 .new-dashboard .subscription-dash .subscription-feature-list .list-body .list-item:hover {
 	background: #1A1A1A;
+}
+
+.new-dashboard .subscription-dash .subscription-feature-list .list-head a {
+	color: #999;
 }
 
 .cl-container .cl-button-container {
