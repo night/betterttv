@@ -1098,6 +1098,18 @@ table.simple_table td {
 	background: #1A1A1A;
 }
 
+#ticket-pitch-fieldset.clearfix {
+	background: #212121;
+}
+
+#current-emoticon-fieldset.clearfix {
+	background: #212121;
+}
+
+.current-emoticon.sub-section.clearfix {
+	background: #212121;
+}
+
 .cl-container .cl-button-container {
 	background: #1B1B1B;
 }
@@ -1140,10 +1152,14 @@ table.simple_table td {
 	background: #1B1B1B;
 }
 
+#ticket-name-fieldset.clearfix {
+	background: #212121;
+}
+
 .cl-container fieldset .cl-input-container input.string, .cl-container fieldset .cl-input-container input.text, .cl-container fieldset .cl-input-container textarea.string, .cl-container fieldset .cl-input-container textarea.text {
 	border: 1px solid #2c2c2c;
-	color: #999;
-	background: #282828;
+	color: #d3d3d3;
+	background: #404040;
 }
 
 .new-dashboard .subscription-dash .video-quality-list li.selectable {
