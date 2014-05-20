@@ -468,7 +468,7 @@ body {
 	background-position: 0 0;
 }
 
-.panel.masonry-brick{
+.panel.masonry-brick {
 	background-color: rgb(30, 30, 30) !important;
 	color: rgb(154, 154, 154) !important;
 	box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 2px 0px inset, rgba(255, 255, 255, 0.01) 0px 0px 0px 1px, rgba(255, 255, 255, 0.01) 0px 1px 0px 0px !important;
@@ -481,11 +481,11 @@ body {
 	margin-bottom: 30px !important;
 }
 
-.panel.masonry-brick h3.title{
+.panel.masonry-brick h3.title {
 	color: rgb(154, 154, 154) !important;
 }
 
-.panel.masonry-brick a.link{
+.panel.masonry-brick a.link {
 	margin-bottom: 5px !important;
 }
 
@@ -843,7 +843,7 @@ body {
 a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00000080, a.small.js-turbo-more-colors {
  	color: #fff;
 }
-.g18_gear-00000080{
+.g18_gear-00000080 {
 	background-image: url(//www-cdn.jtvnw.net/images/xarth/g/g18_gear-FFFFFF80.png);
 }
 .g18_close-00000080 {
@@ -874,7 +874,7 @@ a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00
 	color: #aaa;
 }
 
-.js-new_panel_form label{
+.js-new_panel_form label {
 	color: #ccc;
 }
 
@@ -890,7 +890,7 @@ a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00
 
 
 /*~~~~~~Ember Dark Moderation Cards ~~~~~~~~~*/
-.ember-chat .moderation-card .interface{
+.ember-chat .moderation-card .interface {
 	background: #282828;	
 }
 
@@ -898,7 +898,7 @@ a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00
 	color: #FFF;
 	background: rgb(60,60,60);
 }
-.ember-chat .moderation-card .button-simple.dark{
+.ember-chat .moderation-card .button-simple.dark {
 	background: rgb(60,60,60);
     color: #FFF;
 }
@@ -1018,7 +1018,7 @@ ul.manage_simple span.obj {
 #user_edit_form fieldset div table tbody tr.sortable_user.selector td:nth-child(2) a {
 	color: white;
 }
-.cl-subsection .team table td, .cl-subsection .team table th  {
+.cl-subsection .team table td, .cl-subsection .team table th {
 	padding-left: 5px;
 	padding-top: 5px;
 	padding-right: 5px;
@@ -1055,20 +1055,20 @@ table.simple_table th {
 	color: #d3d3d3;
 }
 .features_list li p {
-color: #979797;
+	color: #979797;
 }
 .cl-container .cl-section {
 	background: #131313;
 }
 #turbo_cancel_opts a {
-	color:white;
+	color: white;
 }
 #turbo_chat_color, #turbo_emote_set {
 	border-color: #333;
 	background: #1F1F1F;
 }
-#emoticons h4, #turbo_chat_color h4{
-	color:DDD;
+#emoticons h4, #turbo_chat_color h4 {
+	color: #DDD;
 }
 #example .line {
 	background: #000;
@@ -1110,7 +1110,7 @@ table.simple_table td {
 	background: #141414;
 }
 
-.cl-container .cl-section a{
+.cl-container .cl-section a {
 	color: #999;
 }
 
