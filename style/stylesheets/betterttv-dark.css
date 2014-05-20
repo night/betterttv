@@ -468,7 +468,7 @@ body {
 	background-position: 0 0;
 }
 
-.panel.masonry-brick {
+.panel.masonry-brick{
 	background-color: rgb(30, 30, 30) !important;
 	color: rgb(154, 154, 154) !important;
 	box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 2px 0px inset, rgba(255, 255, 255, 0.01) 0px 0px 0px 1px, rgba(255, 255, 255, 0.01) 0px 1px 0px 0px !important;
@@ -481,11 +481,11 @@ body {
 	margin-bottom: 30px !important;
 }
 
-.panel.masonry-brick h3.title {
+.panel.masonry-brick h3.title{
 	color: rgb(154, 154, 154) !important;
 }
 
-.panel.masonry-brick a.link {
+.panel.masonry-brick a.link{
 	margin-bottom: 5px !important;
 }
 
@@ -843,7 +843,7 @@ body {
 a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00000080, a.small.js-turbo-more-colors {
  	color: #fff;
 }
-.g18_gear-00000080 {
+.g18_gear-00000080{
 	background-image: url(//www-cdn.jtvnw.net/images/xarth/g/g18_gear-FFFFFF80.png);
 }
 .g18_close-00000080 {
@@ -874,7 +874,7 @@ a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00
 	color: #aaa;
 }
 
-.js-new_panel_form label {
+.js-new_panel_form label{
 	color: #ccc;
 }
 
@@ -890,7 +890,7 @@ a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00
 
 
 /*~~~~~~Ember Dark Moderation Cards ~~~~~~~~~*/
-.ember-chat .moderation-card .interface {
+.ember-chat .moderation-card .interface{
 	background: #282828;	
 }
 
@@ -898,7 +898,7 @@ a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00
 	color: #FFF;
 	background: rgb(60,60,60);
 }
-.ember-chat .moderation-card .button-simple.dark {
+.ember-chat .moderation-card .button-simple.dark{
 	background: rgb(60,60,60);
     color: #FFF;
 }
@@ -977,6 +977,9 @@ a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00
 .directory_header .nav {
 	border-color: #555;
 }
+#user_edit_form div.connect_items, div.container {
+	background-color: #212121;
+}
 .cl-container .section-header {
 	background: #212121;
 	border-color: #343434
@@ -1004,17 +1007,26 @@ ul.manage_simple span.obj:hover {
 	border-color: #333;
 }
 ul.manage_simple span.obj {
-	background: #0F0F0F;
+	background: #404040;
 }
 .cl-container fieldset .label-wrapper label {
 	color: #BBB;
 }
+.cl-subsection .team h5 {
+	margin-bottom: 5px;
+}
 #user_edit_form fieldset div table tbody tr.sortable_user.selector td:nth-child(2) a {
 	color: white;
 }
-fieldset.clearfix {
-	background: #0E0E0E;
+.cl-subsection .team table td, .cl-subsection .team table th  {
+	padding-left: 5px;
+	padding-top: 5px;
+	padding-right: 5px;
 }
+fieldset.clearfix {
+	background: #212121;
+}
+
 table.simple_table th {
 	border-color: #333;
 	background: #0E0E0E;
@@ -1031,6 +1043,20 @@ table.simple_table th {
 	-ms-filter: invert(90%);
 	-moz-filter: invert(90%);
 }
+#turbo_action {
+	border: 1px solid #343434;
+	background: #212121;
+	color: #d3d3d3;
+	box-shadow: 0 1px 0 #343434,inset 0 2px 1px rgba(0,0,0,0.05);
+	-moz-box-shadow: 0 1px 0 #343434,inset 0 2px 1px rgba(0,0,0,0.05);
+	-webkit-box-shadow: -2 1px 0 #343434,inset 0 2px 1px rgba(0,0,0,0.05);
+}
+.features_list {
+	color: #d3d3d3;
+}
+.features_list li p {
+color: #979797;
+}
 .cl-container .cl-section {
 	background: #131313;
 }
@@ -1041,14 +1067,14 @@ table.simple_table th {
 	border-color: #333;
 	background: #1F1F1F;
 }
-#emoticons h4, #turbo_chat_color h4 {
+#emoticons h4, #turbo_chat_color h4{
 	color:DDD;
 }
 #example .line {
 	background: #000;
 }
 #user_edit_form a, #settings_contain a, #authorized a, #developer a {
-	color: white;
+	color: #ccc;
 }
 .multi_select li.hdr {
 	border-color: #333;
@@ -1060,16 +1086,14 @@ table.simple_table th {
 	border-color: 343434;
 }
 .connect_items .connect_item {
-	background: #212121;
+	background: #404040;
+	color: #cdcdcd;
 }
 .section ul li, .section .sub {
 	border-color: #333;
 }
 .app_title {
 	color: #ccc;
-}
-#user_edit_form div.connect_items, div.container {
-	background-color:#0E0E0E;
 }
 table.simple_table td {
 	border-color: transparent transparent #333;
@@ -1086,7 +1110,7 @@ table.simple_table td {
 	background: #141414;
 }
 
-.cl-container .cl-section a {
+.cl-container .cl-section a{
 	color: #999;
 }
 
@@ -1096,6 +1120,18 @@ table.simple_table td {
 
 .new-dashboard .subscription-dash .subscription-feature-list .list-body .list-item:hover {
 	background: #1A1A1A;
+}
+
+#ticket-pitch-fieldset.clearfix {
+	background: #212121;
+}
+
+#current-emoticon-fieldset.clearfix {
+	background: #212121;
+}
+
+.current-emoticon.sub-section.clearfix {
+	background: #212121;
 }
 
 .cl-container .cl-button-container {
@@ -1140,10 +1176,14 @@ table.simple_table td {
 	background: #1B1B1B;
 }
 
+#ticket-name-fieldset.clearfix {
+	background: #212121;
+}
+
 .cl-container fieldset .cl-input-container input.string, .cl-container fieldset .cl-input-container input.text, .cl-container fieldset .cl-input-container textarea.string, .cl-container fieldset .cl-input-container textarea.text {
 	border: 1px solid #2c2c2c;
-	color: #999;
-	background: #282828;
+	color: #d3d3d3;
+	background: #404040;
 }
 
 .new-dashboard .subscription-dash .video-quality-list li.selectable {
