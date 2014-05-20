@@ -862,8 +862,6 @@ input, textarea, select {
             box-shadow: 0px 1px 1px rgba(0,0,0,0.25);
 }
 
-.hover .gritter-item {}
-
 .gritter-item p {
     padding:0;
     margin:0;
@@ -961,7 +959,7 @@ body#chat #speak {
 
 /* Mod Card */
 
-.ember-chat .moderation-card .button-simple.dark{
+.ember-chat .moderation-card .button-simple.dark {
     background: #c4c3c3;
     color: #262626;
 }

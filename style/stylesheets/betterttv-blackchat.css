@@ -134,7 +134,7 @@ body {
 
 .content .bottom #controls #control_buttons #chat_viewers_dropmenu_button span, 
 .content .bottom #controls #control_buttons #chat_settings_dropmenu_button span,
-.content #stats_and_actions #channel_actions #button_options span{
+.content #stats_and_actions #channel_actions #button_options span {
 	background-image: url(../icons/button_glyphs.png) !important;
 }
 
@@ -218,7 +218,7 @@ body {
 	background-position: 0 0;
 }
 
-.panel.masonry-brick{
+.panel.masonry-brick {
 	background-color: rgb(30, 30, 30) !important;
 	color: rgb(154, 154, 154) !important;
 	box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 2px 0px inset, rgba(255, 255, 255, 0.01) 0px 0px 0px 1px, rgba(255, 255, 255, 0.01) 0px 1px 0px 0px !important;
@@ -231,11 +231,11 @@ body {
 	margin-bottom: 30px !important;
 }
 
-.panel.masonry-brick h3.title{
+.panel.masonry-brick h3.title {
 	color: rgb(154, 154, 154) !important;
 }
 
-.panel.masonry-brick a.link{
+.panel.masonry-brick a.link {
 	margin-bottom: 5px !important;
 }
 
@@ -346,7 +346,7 @@ body {
 }
 
 /* Message Box */
-.ember-chat .chat-interface{
+.ember-chat .chat-interface {
 	background-color: #000;
 	border-top: 1px solid #000;
 }
@@ -393,7 +393,7 @@ body {
 }
 
 /* Removing Header */
-.chat-header.main-header, .top-notification.room-invitation, .chat-header.all-rooms-header{
+.chat-header.main-header, .top-notification.room-invitation, .chat-header.all-rooms-header {
 	display: none;
 }
 .ember-chat .chat-room-list {
