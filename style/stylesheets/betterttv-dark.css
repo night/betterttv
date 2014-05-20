@@ -1041,14 +1041,14 @@ table.simple_table th {
 	border-color: #333;
 	background: #1F1F1F;
 }
-#emoticons h4, #turbo_chat_color h4{
+#emoticons h4, #turbo_chat_color h4 {
 	color:DDD;
 }
 #example .line {
 	background: #000;
 }
-#user_edit_form a, #settings_contain a, #authorized a, #developer a{
-	color:white;
+#user_edit_form a, #settings_contain a, #authorized a, #developer a {
+	color: white;
 }
 .multi_select li.hdr {
 	border-color: #333;
@@ -1059,7 +1059,7 @@ table.simple_table th {
 .connect_items {
 	border-color: 343434;
 }
-.connect_items .connect_item{
+.connect_items .connect_item {
 	background: #212121;
 }
 .section ul li, .section .sub {
@@ -1086,7 +1086,7 @@ table.simple_table td {
 	background: #141414;
 }
 
-.cl-container .cl-section a{
+.cl-container .cl-section a {
 	color: #999;
 }
 
@@ -1123,10 +1123,6 @@ table.simple_table td {
 	color: #999;
 }
 
-fieldset.clearfix {
-	background: #141414;
-}
-
 .new-dashboard .dashboard-section .label-wrapper label {
 	color: #bbb;
 }
@@ -1151,8 +1147,8 @@ fieldset.clearfix {
 }
 
 .new-dashboard .subscription-dash .video-quality-list li.selectable {
-background: #1b1b1b;
-border-right: 1px solid #343434;
+	background: #1b1b1b;
+	border-right: 1px solid #343434;
 }
 
 /* ~~~~~~~~~~~~Dark Group Chat~~~~~~~~~~~~~~~~~~~~~ */
