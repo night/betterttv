@@ -1032,7 +1032,7 @@ table.simple_table th {
 	-moz-filter: invert(90%);
 }
 .cl-container .cl-section {
-	background: #141414;
+	background: #131313;
 }
 #turbo_cancel_opts a {
 	color:white;
@@ -1078,16 +1078,24 @@ table.simple_table td {
 /*~~~~~~~Dark Dashboard Subscription Page Fix~~~~~~~~*/
 .new-dashboard .subscription-dash .subscription-feature-list .list-head .list-header th {
 	color: #5F5F5F;
-	border-color: #252525;
+	border-color: #212121;
 	background: #171717;
+}
+
+.cl-container .cl-section {
+	background: #141414;
+}
+
+.cl-container .section-header .header-content.indented {
+	border-left: 1px solid #343434;
+}
+
+a {
+color: #999;
 }
 
 .new-dashboard .subscription-dash .subscription-feature-list .list-body .list-item:hover {
 	background: #1A1A1A;
-}
-
-.new-dashboard .subscription-dash .subscription-feature-list .list-head a {
-	color: #999;
 }
 
 .cl-container .cl-button-container {
@@ -1096,6 +1104,55 @@ table.simple_table td {
 
 .cl-container .section-header .header-back {
 	border-color: #343434;
+}
+
+.new-dashboard .subscription-dash .video-quality-list li.selectable {
+	background: #1b1b1b;
+	border-right: 1px solid #343434;
+}
+
+.new-dashboard .subscription-dash .video-quality-list li .quality-setting {
+	background: #141414;
+}
+
+.new-dashboard .subscription-dash .video-quality-list li.non-selectables .option {
+	border-right: 1px solid #343434;
+}
+
+.new-dashboard .subscription-dash .video-quality-list li.non-selectables .quality-name {
+	color: #999;
+}
+
+fieldset.clearfix {
+	background: #141414;
+}
+
+.new-dashboard .dashboard-section .label-wrapper label {
+	color: #bbb;
+}
+
+.new-dashboard .subscription-dash .video-quality-list li .quality-setting {
+	background: #141414;
+}
+
+.new-dashboard .subscription-dash .video-quality-list li.non-selectables .option {
+	background: #1b1b1b;
+	border-right: 1px solid #343434;
+}
+
+.new-dashboard .dashboard-section .submit-button-fieldset {
+	background: #1B1B1B;
+}
+
+.cl-container fieldset .cl-input-container input.string, .cl-container fieldset .cl-input-container input.text, .cl-container fieldset .cl-input-container textarea.string, .cl-container fieldset .cl-input-container textarea.text {
+	border: 1px solid #2c2c2c;
+	color: #999;
+	background: #282828;
+}
+
+.new-dashboard .subscription-dash .video-quality-list li.selectable {
+background: #1b1b1b;
+border-right: 1px solid #343434;
 }
 
 /* ~~~~~~~~~~~~Dark Group Chat~~~~~~~~~~~~~~~~~~~~~ */
