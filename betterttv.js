@@ -2626,6 +2626,22 @@ module.exports = [
         }
     },
     {
+        name: 'Hide Group Chat',
+        description: 'Hides the group chat bar above chat',
+        default: false,
+        storageKey: 'groupChatRemoval',
+        toggle: function(value) {
+            if(value === true) {
+                cssLoader.load("hide-group-chat", "groupChatRemoval");
+            } else {
+                cssLoader.unload("groupChatRemoval");   
+            }
+        },
+        load: function() {
+            cssLoader.load("hide-group-chat", "groupChatRemoval");
+        }
+    },
+    {
         name: 'JTV Chat Tags',
         description: 'BetterTTV can replace the chat tags with the ones from JTV',
         default: false,
@@ -2695,22 +2711,6 @@ module.exports = [
             } else {
                 window.location.reload();
             }
-        }
-    },
-    {
-        name: 'Hide Group Chat',
-        description: 'Hides the group chat bar above chat',
-        default: false,
-        storageKey: 'groupChatRemoval',
-        toggle: function(value) {
-            if(value === true) {
-                cssLoader.load("hide-group-chat", "groupChatRemoval");
-            } else {
-                cssLoader.unload("groupChatRemoval");	
-            }
-        },
-        load: function() {
-            cssLoader.load("hide-group-chat", "groupChatRemoval");
         }
     },
     {   
