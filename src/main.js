@@ -6,7 +6,7 @@ vars = require('vars');
 
 bttv.info = {
     version: "6.7",
-    release: 9,
+    release: 10,
     versionString: function() { 
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -1817,7 +1817,6 @@ var main = function () {
         giveawayCompatibility();
         dashboardChannelInfo();
         directoryFunctions();
-        cssLoader.load("betterttv-HidePrivChat.css", "removePC", 'PrivateChatRemoval');
 
         $(window).trigger('resize');
         setTimeout(function() {

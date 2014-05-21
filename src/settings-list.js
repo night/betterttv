@@ -246,16 +246,19 @@ module.exports = [
         }
     },
     {
-        name: 'Hide Private Chat System',
-        description: 'Hides the top banner used for private chats',
+        name: 'Hide Group Chat',
+        description: 'Hides the group chat bar above chat',
         default: false,
-        storageKey: 'PrivateChatRemoval',
+        storageKey: 'groupChatRemoval',
         toggle: function(value) {
             if(value === true) {
-                cssLoader.load("betterttv-HidePrivChat.css", "PrivateChatRemoval");
+                cssLoader.load("hide-group-chat", "groupChatRemoval");
             } else {
-                cssLoader.unload("PrivateChatRemoval");	
+                cssLoader.unload("groupChatRemoval");	
             }
+        },
+        load: function() {
+            cssLoader.load("hide-group-chat", "groupChatRemoval");
         }
     },
     {   

@@ -592,7 +592,7 @@ vars = require('vars');
 
 bttv.info = {
     version: "6.7",
-    release: 9,
+    release: 10,
     versionString: function() { 
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -2403,7 +2403,6 @@ var main = function () {
         giveawayCompatibility();
         dashboardChannelInfo();
         directoryFunctions();
-        cssLoader.load("betterttv-HidePrivChat.css", "removePC", 'PrivateChatRemoval');
 
         $(window).trigger('resize');
         setTimeout(function() {
@@ -2699,16 +2698,19 @@ module.exports = [
         }
     },
     {
-        name: 'Hide Private Chat System',
-        description: 'Hides the top banner used for private chats',
+        name: 'Hide Group Chat',
+        description: 'Hides the group chat bar above chat',
         default: false,
-        storageKey: 'PrivateChatRemoval',
+        storageKey: 'groupChatRemoval',
         toggle: function(value) {
             if(value === true) {
-                cssLoader.load("betterttv-HidePrivChat.css", "PrivateChatRemoval");
+                cssLoader.load("hide-group-chat", "groupChatRemoval");
             } else {
-                cssLoader.unload("PrivateChatRemoval");	
+                cssLoader.unload("groupChatRemoval");	
             }
+        },
+        load: function() {
+            cssLoader.load("hide-group-chat", "groupChatRemoval");
         }
     },
     {   
@@ -3333,17 +3335,21 @@ module.exports = function () {
 
 require.register("features/css-loader", function(exports, require, module){
   var debug = require('debug');
-function load(cssFileName, key){
-    if(bttv.settings.get(key) == true){
-        $('body').append('<link rel="stylesheet" href="//cdn.betterttv.net/style/stylesheets/'+cssFileName+'?'+bttv.info.versionString()+'" type="text/css" id="'+key+'" />');
-    }
+
+function load(file, key){
+    if(!bttv.settings.get(key)) return;
+    
+    var css = document.createElement("link");
+    css.setAttribute("href", "//cdn.betterttv.net/style/stylesheets/betterttv-"+file+".css?"+bttv.info.versionString());
+    css.setAttribute("type", "text/css");
+    css.setAttribute("rel", "stylesheet");
+    css.setAttribute("id", key);
+    $('body').append(css);
 }
 function unload(key){
-    if (document.getElementById(key))
-    {
-        $('#'+key).remove();
-    }
+    $('#'+key).remove();
 }
+
 module.exports.load = load;
 module.exports.unload = unload; 
   
