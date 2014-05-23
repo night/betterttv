@@ -197,6 +197,11 @@ body {
     opacity: .5;
 }
 
+.ember-chat .chat-messages .chat-line {
+	line-height: 21px;
+	color: #323232;
+	margin-top: 0px;
+}
 #left_close span, #right_close span {
 	border: 1px solid;
 	border-color: rgba(0, 0, 0, 0.4) rgba(0, 0, 0, 0.5) rgba(0, 0, 0, 0.55);
