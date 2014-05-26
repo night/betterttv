@@ -1046,7 +1046,7 @@ bttv.chat = {
             $(this).tipsy("show");
         }).off('mouseout', '.chat-line .badges .badge, .chat-line .mod-icons a, .bttv-mod-card .mod-controls button').on('mouseout', '.chat-line .badges .badge, .chat-line .mod-icons a, .bttv-mod-card .mod-controls button', function() {
             $(this).tipsy("hide");
-            $('div.tipsy.tipsy-sw').remove();
+            $('div.tipsy').remove();
         })
 
         // Make Timeout/Ban/Unban buttons work and Turbo/Subscriber clickable
@@ -1117,7 +1117,7 @@ bttv.chat = {
             $('body').on('dblclick', '.chat-line', function() {
                 chat.helpers.translate($(this).find('.message'), $(this).data("sender"), $(this).find('.message').data("raw"));
                 $(this).find('.message').text("Translating..");
-                $('div.tipsy.tipsy-sw').remove();
+                $('div.tipsy').remove();
             });
         }
 
@@ -1660,7 +1660,7 @@ bttv.chat = {
                 if(bttv.settings.get("hideDeletedMessages") === true) {
                     $('.chat-line[data-sender="' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '"]').each(function () {
                         $(this).hide();
-                        $('div.tipsy.tipsy-sw').remove();
+                        $('div.tipsy').remove();
                     });
                     setTimeout(function() {
                         $('.chat-line .mod-icons .bot, .chat-line .mod-icons .oldbot').each(function () {
@@ -2601,7 +2601,7 @@ module.exports = [
                 $('body').on('dblclick', '.chat-line', function() {
                     chat.helpers.translate($(this).find('.message'), $(this).data("sender"), $(this).find('.message').data("raw"));
                     $(this).find('.message').text("Translating..");
-                    $('div.tipsy.tipsy-sw').remove();
+                    $('div.tipsy').remove();
                 });
             } else {
                 $('body').unbind("dblclick");
@@ -3703,17 +3703,17 @@ require.register("features/make-card", function(exports, require, module){
     $modCard.find('.permit').click(function() {
         bttv.chat.helpers.sendMessage('!permit '+user.name);
         $modCard.remove();
-        $('div.tipsy.tipsy-sw').remove();
+        $('div.tipsy').remove();
     });
     $modCard.find('.timeout').click(function() {
         bttv.chat.helpers.timeout(user.name, $(this).data('time'));
         $modCard.remove();
-        $('div.tipsy.tipsy-sw').remove();
+        $('div.tipsy').remove();
     });
     $modCard.find('.ban').click(function() {
         bttv.chat.helpers.ban(user.name);
         $modCard.remove();
-        $('div.tipsy.tipsy-sw').remove();
+        $('div.tipsy').remove();
     });
     $modCard.find('.mod-card-profile').click(function() {
         window.open(Twitch.url.profile(user.name),'_blank');
@@ -4116,7 +4116,7 @@ module.exports = function () {
         vars.hoveringEmote = $(this);
         $(this).tipsy({
             trigger: 'manual',
-            gravity: "sw",
+            gravity: "se",
             live: false,
             html: true,
             fallback: function() {
@@ -4142,7 +4142,7 @@ module.exports = function () {
         if($(this).data('channel')) {
             $(this).css('cursor','normal');
         }
-        $('div.tipsy.tipsy-sw').remove();
+        $('div.tipsy').remove();
     }).on('click', '.chat-line span.emoticon', function() {
         if($(this).data('channel')) {
             window.open('http://www.twitch.tv/'+$(this).data('channel'),'_blank');
