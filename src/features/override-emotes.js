@@ -341,7 +341,7 @@ module.exports = function () {
         vars.hoveringEmote = $(this);
         $(this).tipsy({
             trigger: 'manual',
-            gravity: "sw",
+            gravity: "se",
             live: false,
             html: true,
             fallback: function() {
@@ -367,7 +367,7 @@ module.exports = function () {
         if($(this).data('channel')) {
             $(this).css('cursor','normal');
         }
-        $('div.tipsy.tipsy-sw').remove();
+        $('div.tipsy').remove();
     }).on('click', '.chat-line span.emoticon', function() {
         if($(this).data('channel')) {
             window.open('http://www.twitch.tv/'+$(this).data('channel'),'_blank');

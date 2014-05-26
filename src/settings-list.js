@@ -149,7 +149,7 @@ module.exports = [
                 $('body').on('dblclick', '.chat-line', function() {
                     chat.helpers.translate($(this).find('.message'), $(this).data("sender"), $(this).find('.message').data("raw"));
                     $(this).find('.message').text("Translating..");
-                    $('div.tipsy.tipsy-sw').remove();
+                    $('div.tipsy').remove();
                 });
             } else {
                 $('body').unbind("dblclick");

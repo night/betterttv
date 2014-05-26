@@ -460,7 +460,7 @@ bttv.chat = {
             $(this).tipsy("show");
         }).off('mouseout', '.chat-line .badges .badge, .chat-line .mod-icons a, .bttv-mod-card .mod-controls button').on('mouseout', '.chat-line .badges .badge, .chat-line .mod-icons a, .bttv-mod-card .mod-controls button', function() {
             $(this).tipsy("hide");
-            $('div.tipsy.tipsy-sw').remove();
+            $('div.tipsy').remove();
         })
 
         // Make Timeout/Ban/Unban buttons work and Turbo/Subscriber clickable
@@ -531,7 +531,7 @@ bttv.chat = {
             $('body').on('dblclick', '.chat-line', function() {
                 chat.helpers.translate($(this).find('.message'), $(this).data("sender"), $(this).find('.message').data("raw"));
                 $(this).find('.message').text("Translating..");
-                $('div.tipsy.tipsy-sw').remove();
+                $('div.tipsy').remove();
             });
         }
 
@@ -1074,7 +1074,7 @@ bttv.chat = {
                 if(bttv.settings.get("hideDeletedMessages") === true) {
                     $('.chat-line[data-sender="' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '"]').each(function () {
                         $(this).hide();
-                        $('div.tipsy.tipsy-sw').remove();
+                        $('div.tipsy').remove();
                     });
                     setTimeout(function() {
                         $('.chat-line .mod-icons .bot, .chat-line .mod-icons .oldbot').each(function () {

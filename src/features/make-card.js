@@ -11,17 +11,17 @@ module.exports = function(user, $event) {
     $modCard.find('.permit').click(function() {
         bttv.chat.helpers.sendMessage('!permit '+user.name);
         $modCard.remove();
-        $('div.tipsy.tipsy-sw').remove();
+        $('div.tipsy').remove();
     });
     $modCard.find('.timeout').click(function() {
         bttv.chat.helpers.timeout(user.name, $(this).data('time'));
         $modCard.remove();
-        $('div.tipsy.tipsy-sw').remove();
+        $('div.tipsy').remove();
     });
     $modCard.find('.ban').click(function() {
         bttv.chat.helpers.ban(user.name);
         $modCard.remove();
-        $('div.tipsy.tipsy-sw').remove();
+        $('div.tipsy').remove();
     });
     $modCard.find('.mod-card-profile').click(function() {
         window.open(Twitch.url.profile(user.name),'_blank');

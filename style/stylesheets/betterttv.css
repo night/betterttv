@@ -970,6 +970,10 @@ body#chat #speak {
     vertical-align: top;
 }
 
+.tipsy {
+    z-index: 9000000001 !important;
+}
+
 /* Group Chat changed textarea */
 .ember-chat .chat-interface .textarea-contain {
     top: 10px;
