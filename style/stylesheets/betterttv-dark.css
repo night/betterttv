@@ -197,6 +197,11 @@ body {
     opacity: .5;
 }
 
+.ember-chat .chat-messages .chat-line {
+	line-height: 21px;
+	color: #323232;
+	margin-top: 0px;
+}
 #left_close span, #right_close span {
 	border: 1px solid;
 	border-color: rgba(0, 0, 0, 0.4) rgba(0, 0, 0, 0.5) rgba(0, 0, 0, 0.55);
@@ -267,6 +272,16 @@ body {
 
 #chat_line_list li .mod_button img {
 	display: none;
+}
+
+#new-user-prompt {
+	background: rgba(50,50,50,.7);
+}
+#new-user-prompt .message .title {
+	color: #d3d3d3;
+}
+#new-user-prompt .message p {
+color: #999;
 }
 
 /* Taken from http://userstyles.org/styles/82967/twitch-dark-view */
