@@ -812,6 +812,17 @@ input, textarea, select {
 #bttvTranscodes {
     margin-bottom: 20px;
 }
+/* Settings */
+
+.cl-subsection .team h5 {
+	margin-bottom: 5px;
+}
+
+.cl-subsection .team table td, .cl-subsection .team table th {
+	padding-left: 5px;
+	padding-top: 5px;
+	padding-right: 5px;
+}
 
 /* Gritter */
 
