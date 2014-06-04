@@ -6,7 +6,6 @@ body, .real_title, #right_col .content #chat_line_list, .ember-chat, .ember-chat
 	z-index: inherit !important;
 }
 
-
 #chat_column, #chat_redisplay_holder {
 	padding-bottom: 10px !important;
 	padding-top: 10px !important;
@@ -199,6 +198,7 @@ body, .real_title, #right_col .content #chat_line_list, .ember-chat, .ember-chat
 	color: #323232;
 	margin-top: 0px;
 }
+
 #left_close span, #right_close span {
 	border: 1px solid;
 	border-color: rgba(0, 0, 0, 0.4) rgba(0, 0, 0, 0.5) rgba(0, 0, 0, 0.55);
@@ -319,8 +319,8 @@ input#user_login.text.input.js-unique-login {
 p#tos_signup.small.sub a {
 	color: #d3d3d3;
 }
-/* Login Page */
 
+/* Login Page */
 .main, .fullwidth_main {
 	margin: 40px auto 20px;
 	padding: 20px 0;

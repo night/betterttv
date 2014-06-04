@@ -69,7 +69,8 @@ module.exports = function () {
         { url: "//cdn.betterttv.net/emotes/parappakappa.png", width: 28, height: 28, regex: "KaRappa" },
         { url: "//cdn.betterttv.net/emotes/helix.png", width: 28, height: 28, regex: "HailHelix" },
         { url: "//cdn.betterttv.net/emotes/juliacs.png", width: 28, height: 28, regex: "JuliAwesome" },
-        { url: "//cdn.betterttv.net/emotes/bttvnice.png", width: 42, height: 28, regex: "bttvNice" }
+        { url: "//cdn.betterttv.net/emotes/bttvnice.png", width: 42, height: 28, regex: "bttvNice" },
+        { url: "//cdn.betterttv.net/emotes/vislad.png", width: 27, height: 28, regex: "VisLaud" }
       ];
 
     if (bttv.settings.get("showDefaultEmotes") !== true) {
