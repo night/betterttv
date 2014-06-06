@@ -322,7 +322,7 @@ p#tos_signup.small.sub a {
 
 /* Profile Page */
 
-.modal-form {
+.twitch_subwindow_container .modal-form {
 	background: #242424;
 }
 
@@ -331,18 +331,26 @@ p#tos_signup.small.sub a {
 	border: 5px solid #999;
 }
 
-.modal-form .header {
+.twitch_subwindow_container .modal-form .header {
 	color: #999;
 	border-bottom: 1px solid #2d2d2d;
 	background: #242424;
 }
 
-.modal-form .buttons {
+.twitch_subwindow_container .modal-form .buttons {
 	border-top: 1px solid #2d2d2d;
 	background: #242424;
 }
 
-#ember1438 input.text, input.string, select, textarea {
+.item input.text, .item input.string, select, .item textarea {
+	color: #ddd;
+	box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	-moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	-webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	background: #3b3b3b;
+}
+
+.item input.text, .item input.string, select, .item textarea {
 	color: #ddd;
 	box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
 	-moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
@@ -981,7 +989,7 @@ a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00
     -moz-filter: invert(90%);
 }
 
-span.glyph_only {
+.normal_button span.glyph_only {
 	border: rgb(20,20,20);
 	filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter …lues='-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0'/></filter></svg>#invert");
 	filter: invert(90%);
