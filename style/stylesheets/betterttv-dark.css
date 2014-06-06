@@ -319,6 +319,37 @@ input#user_login.text.input.js-unique-login {
 p#tos_signup.small.sub a {
 	color: #d3d3d3;
 }
+
+/* Profile Page */
+
+.modal-form {
+	background: #242424;
+}
+
+.change-banner .banner-preview {
+	color: #aaa;
+	border: 5px solid #999;
+}
+
+.modal-form .header {
+	color: #999;
+	border-bottom: 1px solid #2d2d2d;
+	background: #242424;
+}
+
+.modal-form .buttons {
+	border-top: 1px solid #2d2d2d;
+	background: #242424;
+}
+
+#ember1438 input.text, input.string, select, textarea {
+	color: #ddd;
+	box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	-moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	-webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	background: #3b3b3b;
+}
+
 /* Login Page */
 
 .main, .fullwidth_main {
