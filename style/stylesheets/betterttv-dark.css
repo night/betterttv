@@ -350,7 +350,7 @@ p#tos_signup.small.sub a {
 	background: #3b3b3b;
 }
 
-.item input.text, .item input.string, select, .item textarea {
+.item input.text, .item input.string, .item select, .item textarea {
 	color: #ddd;
 	box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
 	-moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
@@ -384,13 +384,13 @@ p#tos_signup.small.sub a {
 	background: #3b3b3b;
 }
 
-#description input.text, #description input.string, #description select, #description textarea {
-color: #d3d3d3;
-border: 0px solid rgba(0,0,0,0.35);
-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
--moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
--webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-background: #3b3b3b;
+.field.textarea {
+	color: #999;
+	border: 0px solid rgba(0,0,0,0.35);
+	box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	-moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	-webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	background: #3b3b3b;
 }
 
 /* Login Page */
