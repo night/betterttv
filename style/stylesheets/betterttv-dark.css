@@ -6,9 +6,6 @@ body, .real_title, #right_col .content #chat_line_list, .ember-chat, .ember-chat
 	z-index: inherit !important;
 }
 
-body {
-	background-color: #000 !important;
-}
 
 #chat_column, #chat_redisplay_holder {
 	padding-bottom: 10px !important;
@@ -197,6 +194,11 @@ body {
     opacity: .5;
 }
 
+.ember-chat .chat-messages .chat-line {
+	line-height: 21px;
+	color: #323232;
+	margin-top: 0px;
+}
 #left_close span, #right_close span {
 	border: 1px solid;
 	border-color: rgba(0, 0, 0, 0.4) rgba(0, 0, 0, 0.5) rgba(0, 0, 0, 0.55);
@@ -213,11 +215,6 @@ body {
 .segmented_tabs li a.selected, .segmented_tabs li a:active, .segmented_tabs li:last-child a {
 	background-color: rgba(255, 255, 255, 0.7);
 	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.65),inset 0 1px rgba(0, 0, 0, 0.05);
-}
-
-.noise {
-	background-image: none;
-	background-color: #000;
 }
 
 #main_col, #dash_main {
@@ -267,6 +264,145 @@ body {
 
 #chat_line_list li .mod_button img {
 	display: none;
+}
+
+#new-user-prompt {
+	background: rgba(50,50,50,.7);
+}
+
+#new-user-prompt .message .title {
+	color: #d3d3d3;
+}
+
+#new-user-prompt .message p {
+	color: #999;
+}
+
+.subwindow, .twitch_subwindow {
+	color: #000;
+	background-color: #242424;
+}
+
+ul.tabs li.selected a {
+	color: #d3d3d3;
+}
+
+ul.tabs li.tab a {
+	color: #d3d3d3;
+}
+
+#login_div label {
+	color: #d3d3d3;
+}
+
+a#trouble_link.small {
+	color: #999;
+}
+
+.facebook_connect_contain .sub {
+	color: #999;
+}
+
+.field.text.med-long {
+	color: #666;
+	background: #3b3b3b;
+}
+
+input#user_login.text.input.js-unique-login {
+	color: #666;
+	background: #3b3b3b;
+	box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	-moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	-webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+}
+
+p#tos_signup.small.sub a {
+	color: #d3d3d3;
+}
+
+/* Profile Page */
+
+.twitch_subwindow_container .modal-form {
+	background: #242424;
+}
+
+.change-banner .banner-preview {
+	color: #aaa;
+	border: 5px solid #999;
+}
+
+.twitch_subwindow_container .modal-form .header {
+	color: #999;
+	border-bottom: 1px solid #2d2d2d;
+	background: #242424;
+}
+
+.twitch_subwindow_container .modal-form .buttons {
+	border-top: 1px solid #2d2d2d;
+	background: #242424;
+}
+
+.item input.text, .item input.string, select, .item textarea {
+	color: #ddd;
+	box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	-moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	-webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	background: #3b3b3b;
+}
+
+.item input.text, .item input.string, .item select, .item textarea {
+	color: #ddd;
+	box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	-moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	-webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	background: #3b3b3b;
+}
+
+.twitch_subwindow {
+	color: #999;
+	background-color: #242424;
+}
+
+.twitch_subwindow a {
+	color: #d3d3d3;
+}
+
+#field.reason {
+	color: #999;
+}
+
+.reason label {
+	color: #d3d3d3;
+}
+
+.reason input.text, .reason input.string, .reason select, .reason textarea {
+	color: #d3d3d3;
+	border: 0px solid rgba(0,0,0,0.35);
+	box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	-moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	-webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	background: #3b3b3b;
+}
+
+.field.textarea {
+	color: #999;
+	border: 0px solid rgba(0,0,0,0.35);
+	box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	-moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	-webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	background: #3b3b3b;
+}
+
+/* Login Page */
+
+.main, .fullwidth_main {
+	margin: 40px auto 20px;
+	padding: 20px 0;
+	background: transparent url(/images/xarth/px/transparent_pxl_white-90.png);
+	background: #242424;
+	box-shadow: 0 0 5px rgba(0,0,0,0.35);
+	-moz-box-shadow: 0 0 5px rgba(0,0,0,0.35);
+	-webkit-box-shadow: 0 0 5px rgba(0,0,0,0.35);
 }
 
 /* Taken from http://userstyles.org/styles/82967/twitch-dark-view */
@@ -888,6 +1024,15 @@ a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00
     -moz-filter: invert(90%);
 }
 
+.normal_button span.glyph_only {
+	border: rgb(20,20,20);
+	filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter …lues='-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0'/></filter></svg>#invert");
+	filter: invert(90%);
+	-webkit-filter: invert(90%);
+	-o-filter: invert(90%);
+	-ms-filter: invert(90%);
+	-moz-filter: invert(90%);
+}
 
 /*~~~~~~Ember Dark Moderation Cards ~~~~~~~~~*/
 .ember-chat .moderation-card .interface {
