@@ -1099,6 +1099,142 @@ table.simple_table td {
 	border-color: transparent transparent #333;
 }
 
+/*~~~~~~~Caster's Page~~~~~~~~*/
+
+#new-user-prompt {
+	background: rgba(35,35,35,.7);
+	color: #999;
+}
+
+#new-user-prompt .message .title {
+	color: #d3d3d3;
+}
+
+/*~~~~~~~Popups~~~~~~~~*/
+
+.channel_new .twitch_subwindow_container #login_subwindow.twitch_subwindow {
+	color: #000;
+	background-color: #1e1e1e;
+}
+
+.channel_new .twitch_subwindow_container #login_subwindow.twitch_subwindow .facebook_connect_contain .sub {
+	color: #999;
+}
+
+.channel_new .twitch_subwindow_container #login_subwindow.twitch_subwindow #login_tab.tab.selected a {
+	color: #d1d1d1;
+	border-bottom: 3px solid rgba(209,209,209,.5);
+}
+
+.channel_new .twitch_subwindow_container #login_subwindow.twitch_subwindow #login_tab.tab a {
+	color: #d1d1d1;
+}
+
+.channel_new .twitch_subwindow_container #login_subwindow.twitch_subwindow #signup_tab.tab.selected a {
+	color: #d1d1d1;
+	border-bottom: 3px solid rgba(209,209,209,.5);
+}
+
+.channel_new .twitch_subwindow_container #login_subwindow.twitch_subwindow #signup_tab.tab a {
+	color: #d1d1d1;
+}
+
+#login_subwindow.twitch_subwindow #login_div .field.text {
+	color: #d4d4d4;
+	border: 1px solid rgba(0,0,0,0.35);
+	box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	-moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	-webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	background: #3b3b3b;
+}
+
+#login_subwindow #signup_form #user_login {
+	color: #d4d4d4;
+	border: 1px solid rgba(0,0,0,0.35);
+	box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	-moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	-webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	background: #3b3b3b;
+}
+
+#login_subwindow #signup_form #user_password {
+	color: #d4d4d4;
+	border: 1px solid rgba(0,0,0,0.35);
+	box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	-moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	-webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	background: #3b3b3b;
+}
+
+#login_subwindow #signup_form #user_email {
+	color: #d4d4d4;
+	border: 1px solid rgba(0,0,0,0.35);
+	box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	-moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	-webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	background: #3b3b3b;
+}
+
+.channel_new .twitch_subwindow_container .twitch_subwindow .modal-form {
+	background: #1e1e1e;
+}
+
+.channel_new .twitch_subwindow_container .twitch_subwindow .modal-form .buttons {
+	border-top: 1px solid #666;
+	background: #1e1e1e;
+}
+
+.channel_new .twitch_subwindow_container .twitch_subwindow .modal-form .header {
+	color: #d3d3d3;
+	border-bottom: 1px solid #666;
+	background: #1e1e1e;
+}
+
+.channel_new .twitch_subwindow_container .twitch_subwindow .modal-form.change-bio .item textarea {
+	color: #d3d3d3;
+	border: 1px solid rgba(0,0,0,0.35);
+	box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	-moz-box-shadow: inset 0 1px 1px rgba(0,0,0,0.1),inset 0 0 1px rgba(0,0,0,0.05),0 1px 0 rgba(255,255,255,0.65);
+	-webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	background: #3b3b3b;
+}
+
+.channel_new .twitch_subwindow_container .twitch_subwindow {
+	color: #999;
+	background-color: #1e1e1e;
+}
+
+.channel_new .twitch_subwindow_container .twitch_subwindow .clear {
+	color: #999;
+}
+
+.channel_new .twitch_subwindow_container .twitch_subwindow #report_form label {
+	color: #d1d1d1;
+	margin-bottom: 10px;
+}
+
+.channel_new .twitch_subwindow_container .twitch_subwindow #report_form a {
+	color: #d1d1d1;
+}
+
+.channel_new .twitch_subwindow_container .twitch_subwindow #report_form #reason.field {
+	color: #d4d4d4;
+	border: 1px solid rgba(0,0,0,0.35);
+	box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	-moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	-webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	background: #3b3b3b;
+}
+
+.channel_new .twitch_subwindow_container .twitch_subwindow #report_form #description.field.textarea {
+	color: #d4d4d4;
+	border: 1px solid rgba(0,0,0,0.35);
+	box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	-moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	-webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+	background: #3b3b3b;
+}
+
 /*~~~~~~~Dark Dashboard Subscription Page Fix~~~~~~~~*/
 .new-dashboard .subscription-dash .subscription-feature-list .list-head .list-header th {
 	color: #5F5F5F;
