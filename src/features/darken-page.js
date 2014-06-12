@@ -17,7 +17,7 @@ module.exports = function () {
 
     if(allowedPages.indexOf(pageKind) !== -1) {
 
-        if(pageKind === "dashboards" && pageType !== "show" && pageType !== "legal") return;
+        if(pageKind === "dashboards" && pageType !== "show" && pageType === "legal") return;
 
         var darkCSS = document.createElement("link");
         darkCSS.setAttribute("href", "//cdn.betterttv.net/style/stylesheets/betterttv-dark.css?"+bttv.info.versionString());
