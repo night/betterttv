@@ -1537,34 +1537,94 @@ var removeElement = require('element').remove,
     },
     calculateColorReplacement = function (color, background) {
         // Modified from http://www.sitepoint.com/javascript-generate-lighter-darker-color/
-        var inputColor = color,
-            rgb = "#",
-            brightness, c, i;
+        // Modified further to use HSL as an intermediate format, to avoid hue-shifting
+        // of colors with exactly one component equal to 00 and exactly one equal to FF
+        'use strict';
+        var rgb, hsl, light = (background === 'light'), factor = (light ? 0.2 : -0.5), r, g, b, l;
 
         color = String(color).replace(/[^0-9a-f]/gi, '');
         if (color.length < 6) {
             color = color[0] + color[0] + color[1] + color[1] + color[2] + color[2];
         }
 
-        (background === "light") ? (brightness = "0.2") : (brightness = "-0.5");
+        r = parseInt(color.substr(0, 2), 16);
+        g = parseInt(color.substr(2, 2), 16);
+        b = parseInt(color.substr(4, 2), 16);
+        hsl = rgbToHsl(r, g, b);
 
-        for (i = 0; i < 3; i++) {
-            c = parseInt(color.substr(i * 2, 2), 16);
-            if(c < 10) c = 10;
-            c = Math.round(Math.min(Math.max(0, c + (c * brightness)), 255)).toString(16);
-            rgb += ("00" + c).substr(c.length);
-        }
+        // more thoroughly lightens dark colors, with no problems at black
+        l = (light ? 1 - (1 - factor) * (1 - hsl[2]) : (1 + factor) * hsl[2]);
 
-        if(inputColor === rgb) {
-            debug.log("Color did not change: "+inputColor);
-            if(background === "light") {
-                return "#ffffff";
-            } else {
-                return "#000000";
-            }
+        rgb = hslToRgb(hsl[0], hsl[1], l);
+
+        return '#' + rgb[0].toString(16) + rgb[1].toString(16) + rgb[2].toString(16);
+    },
+    /**
+     * Converts an RGB color value to HSL. Conversion formula
+     * adapted from https://en.wikipedia.org/wiki/HSL_color_space.
+     * Assumes r, g, and b are contained in the set [0, 255] and
+     * returns h, s, and l in the set [0, 1].
+     *
+     * @param   Number  r       The red color value
+     * @param   Number  g       The green color value
+     * @param   Number  b       The blue color value
+     * @return  Array           The HSL representation
+     */
+    rgbToHsl = function (r, g, b) {
+        // Convert RGB to HSL, not ideal but it's faster than HCL
+        // based on http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
+        'use strict';
+        r /= 255, g /= 255, b /= 255;
+        var max = Math.max(r, g, b), min = Math.min(r, g, b),
+            h, s, l = (max + min) / 2, d = max - min;
+
+        if (d === 0) {
+            h = s = d; // achromatic
         } else {
-            return rgb;
+            s = l > 0.5 ? d / (2 - 2 * l) : d / (2 * l);
+            switch (max) {
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                case b: h = (r - g) / d + 4; break;
+            }
+            h /= 6;
         }
+        return [h, s, l];
+    },
+    /**
+     * Converts an HSL color value to RGB. Conversion formula
+     * adapted from https://en.wikipedia.org/wiki/HSL_color_space.
+     * Assumes h, s, and l are contained in the set [0, 1] and
+     * returns r, g, and b in the set of integers [0, 255].
+     *
+     * @param   Number  h       The hue
+     * @param   Number  s       The saturation
+     * @param   Number  l       The lightness
+     * @return  Array           The RGB representation
+     */
+    hslToRgb = function (h, s, l) {
+        // Convert HSL to RGB, again based on http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
+        'use strict';
+        var r, g, b, hueToRgb, q, p;
+
+        if (s === 0) {
+            r = g = b = l; // achromatic
+        } else {
+            hueToRgb = function (p, q, t) {
+                if(t < 0) t += 1;
+                if(t > 1) t -= 1;
+                if(t < 1 / 6) return p + (q - p) * 6 * t;
+                if(t < 1 / 2) return q;
+                if(t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+                return p;
+            };
+            q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            p = 2 * l - q;
+            r = Math.round(255 * hueToRgb(p, q, h + 1 / 3));
+            g = Math.round(255 * hueToRgb(p, q, h));
+            b = Math.round(255 * hueToRgb(p, q, h - 1 / 3));
+        }
+        return [r, g, b];
     },
     getRgb = function(color) {
         // Convert HEX to RGB
