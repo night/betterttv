@@ -13,10 +13,11 @@
     "gulp-rename": "~1.2.0",
     "gulp-wrap-commonjs": "0.1.11",
     "gulp-changed": "~0.3.0",
-    "commonjs-require": "~1.4.5"
+    "commonjs-require": "~1.4.5",
+    "request": "2.36.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test/server.js"
   },
   "repository": {
     "type": "git",
