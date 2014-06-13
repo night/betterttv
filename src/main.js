@@ -1540,8 +1540,7 @@ var removeElement = require('element').remove,
         // Modified further to use HSL as an intermediate format, to avoid hue-shifting
         // of colors with exactly one component equal to 00 and exactly one equal to FF
         'use strict';
-        var inputColor = color, rgb, hsl, light = (background === 'light'),
-            factor = (light ? 0.2 : -0.5), c, i, r, g, b, l;
+        var rgb, hsl, light = (background === 'light'), factor = (light ? 0.2 : -0.5), r, g, b, l;
 
         color = String(color).replace(/[^0-9a-f]/gi, '');
         if (color.length < 6) {
