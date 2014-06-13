@@ -1541,9 +1541,7 @@ var removeElement = require('element').remove,
         // of colors with exactly one component equal to 00 and exactly one equal to FF
         'use strict';
         var inputColor = color, rgb, hsl, light = (background === 'light'),
-            lim = 0.36, c, i, r, g, b, l;
-
-        lim = light ? lim : 1 - lim;
+            factor = (light ? 0.2 : -0.5), c, i, r, g, b, l;
 
         color = String(color).replace(/[^0-9a-f]/gi, '');
         if (color.length < 6) {
@@ -1554,13 +1552,9 @@ var removeElement = require('element').remove,
         g = parseInt(color.substr(2, 2), 16);
         b = parseInt(color.substr(4, 2), 16);
         hsl = rgbToHsl(r, g, b);
-        l = hsl[2];
 
-        if (light) {
-            l = (l > lim) ? lim : l;
-        } else {
-            l = (l < lim) ? lim : l;
-        }
+        // more thoroughly lightens dark colors, with no problems at black
+        l = (light ? 1 - (1 - factor) * (1 - hsl[2]) : (1 + factor) * hsl[2]);
 
         rgb = hslToRgb(hsl[0], hsl[1], l);
 
