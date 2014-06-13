@@ -593,7 +593,7 @@ vars = require('vars');
 bttv.info = {
     version: "6.7",
     release: 11,
-    versionString: function() { 
+    versionString: function() {
         return bttv.info.version + 'R' + bttv.info.release;
     }
 }
@@ -711,7 +711,7 @@ bttv.settings = {
                 setting.load();
             }
         });
-        
+
         /*var plea = ' \
             <div class="option"> \
                 <img src="http://cdn.betterttv.net/emotes/batkappa.png" style="margin: -5px 0px;"/> "I\'ve been spending <b>days</b> fixing BetterTTV. Maybe people will <a href="https://streamdonations.net/c/night" target="_blank">contribute</a> for the trouble." \
@@ -1221,7 +1221,7 @@ bttv.chat = {
                             } else {
                                 $chatInput.val(chat.store.chatHistory[0]);
                             }
-                            
+
                         }
                     }
                     if (keyCode === keyCodes.DownArrow) {
@@ -1656,7 +1656,7 @@ bttv.chat = {
             if(!user) {
                 helpers.serverMessage("Chat was cleared by a moderator (Prevented by BetterTTV)");
             } else {
-                if($('.chat-line[data-sender="' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '"]').length === 0) return; 
+                if($('.chat-line[data-sender="' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '"]').length === 0) return;
                 if(bttv.settings.get("hideDeletedMessages") === true) {
                     $('.chat-line[data-sender="' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '"]').each(function () {
                         $(this).hide();
@@ -1748,7 +1748,7 @@ bttv.chat = {
                         if(modList.hasOwnProperty(mod)) {
                             if(mods.indexOf(mod) === -1 && !bttv.chat.helpers.isAdmin[mod] && !bttv.chat.helpers.isStaff[mod]) {
                                 bttv.chat.helpers.removeMod(mod)
-                                debug.log("Removed "+mod+" as a mod"); 
+                                debug.log("Removed "+mod+" as a mod");
                             }
                         }
                     }*/
@@ -1794,7 +1794,7 @@ bttv.chat = {
             if(vars.localSubsOnly && !bttv.chat.helpers.isModerator(data.from) && !bttv.chat.helpers.isSubscriber(data.from)) return;
 
             if(bttv.chat.store.trackTimeouts[data.from]) delete bttv.chat.store.trackTimeouts[data.from];
-            
+
             var messageHighlighted = false,
                 highlightKeywords = [],
                 highlightUsers = [],
@@ -1937,7 +1937,7 @@ bttv.chat = {
 
             var badges = bttv.chat.helpers.getBadges(data.from);
             var bttvBadges = [];
-            
+
             if(badges && badges.length > 0) {
                 if(badges.indexOf('staff') !== -1) {
                     bttvBadges.push({
@@ -1980,7 +1980,7 @@ bttv.chat = {
                         description: 'Twitch Turbo'
                     });
                 }
-                
+
                 if(badges.indexOf('subscriber') !== -1) {
                     bttvBadges.push({
                         type: 'subscriber',
@@ -2123,34 +2123,100 @@ var removeElement = require('element').remove,
     },
     calculateColorReplacement = function (color, background) {
         // Modified from http://www.sitepoint.com/javascript-generate-lighter-darker-color/
-        var inputColor = color,
-            rgb = "#",
-            brightness, c, i;
+        // Modified further to use HSL as an intermediate format, to avoid hue-shifting
+        // toward primaries when darkening and toward secondaries when lightening
+        var rgb, hsl, light = (background === 'light'), factor = (light ? 0.1 : -0.1), r, g, b, l;
 
         color = String(color).replace(/[^0-9a-f]/gi, '');
         if (color.length < 6) {
             color = color[0] + color[0] + color[1] + color[1] + color[2] + color[2];
         }
 
-        (background === "light") ? (brightness = "0.2") : (brightness = "-0.5");
+        r = parseInt(color.substr(0, 2), 16);
+        g = parseInt(color.substr(2, 2), 16);
+        b = parseInt(color.substr(4, 2), 16);
+        hsl = rgbToHsl(r, g, b);
 
-        for (i = 0; i < 3; i++) {
-            c = parseInt(color.substr(i * 2, 2), 16);
-            if(c < 10) c = 10;
-            c = Math.round(Math.min(Math.max(0, c + (c * brightness)), 255)).toString(16);
-            rgb += ("00" + c).substr(c.length);
-        }
+        // more thoroughly lightens dark colors, with no problems at black
+        l = (light ? 1 - (1 - factor) * (1 - hsl[2]) : (1 + factor) * hsl[2]);
+        l = Math.min(Math.max(0, l), 1);
 
-        if(inputColor === rgb) {
-            debug.log("Color did not change: "+inputColor);
-            if(background === "light") {
-                return "#ffffff";
-            } else {
-                return "#000000";
-            }
+        rgb = hslToRgb(hsl[0], hsl[1], l);
+        r = rgb[0].toString(16);
+        g = rgb[1].toString(16);
+        b = rgb[2].toString(16);
+
+        // note to self: .toString(16) does NOT zero-pad
+        return '#' + ('00' + r).substr(r.length) +
+                     ('00' + g).substr(g.length) +
+                     ('00' + b).substr(b.length);
+    },
+    /**
+     * Converts an RGB color value to HSL. Conversion formula
+     * adapted from https://en.wikipedia.org/wiki/HSL_color_space
+     * Assumes r, g, and b are contained in the set [0, 255] and
+     * returns h, s, and l in the set [0, 1].
+     *
+     * @param   Number  r       The red color value
+     * @param   Number  g       The green color value
+     * @param   Number  b       The blue color value
+     * @return  Array           The HSL representation
+     */
+    rgbToHsl = function (r, g, b) {
+        // Convert RGB to HSL, not ideal but it's faster than HCL or full YIQ conversion
+        // based on http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
+        r /= 255, g /= 255, b /= 255;
+        var max = Math.max(r, g, b), min = Math.min(r, g, b), h, s,
+            l = Math.min(Math.max(0, (max + min) / 2), 1),
+            d = Math.min(Math.max(0, max - min), 1);
+
+        if (d === 0) {
+            h = s = d; // achromatic
         } else {
-            return rgb;
+            s = l > 0.5 ? d / (2 * (1 - l)) : d / (2 * l);
+            s = Math.min(Math.max(0, s), 1);
+            switch (max) {
+                case r: h = Math.min(Math.max(0, (g - b) / d + (g < b ? 6 : 0)), 6); break;
+                case g: h = Math.min(Math.max(0, (b - r) / d + 2), 6); break;
+                case b: h = Math.min(Math.max(0, (r - g) / d + 4), 6); break;
+            }
+            h /= 6;
         }
+        return [h, s, l];
+    },
+    /**
+     * Converts an HSL color value to RGB. Conversion formula
+     * adapted from https://en.wikipedia.org/wiki/HSL_color_space
+     * Assumes h, s, and l are contained in the set [0, 1] and
+     * returns r, g, and b in the set of integers [0, 255].
+     *
+     * @param   Number  h       The hue
+     * @param   Number  s       The saturation
+     * @param   Number  l       The lightness
+     * @return  Array           The RGB representation
+     */
+    hslToRgb = function (h, s, l) {
+        // Convert HSL to RGB, again based on http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
+        var r, g, b, hueToRgb, q, p;
+
+        if (s === 0) {
+            r = g = b = Math.round(Math.min(Math.max(0, 255 * l), 255)); // achromatic
+        } else {
+            hueToRgb = function (p, q, t) {
+                if(t < 0) t += 1;
+                if(t > 1) t -= 1;
+                if(t < 1 / 6) return p + (q - p) * 6 * t;
+                if(t < 1 / 2) return q;
+                if(t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+                return p;
+            };
+            q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            p = 2 * l - q;
+            r = Math.round(Math.min(Math.max(0, 255 * hueToRgb(p, q, h + 1 / 3)), 255));
+            g = Math.round(Math.min(Math.max(0, 255 * hueToRgb(p, q, h)), 255));
+            b = Math.round(Math.min(Math.max(0, 255 * hueToRgb(p, q, h - 1 / 3)), 255));
+        }
+        return [r, g, b];
     },
     getRgb = function(color) {
         // Convert HEX to RGB
@@ -2217,7 +2283,7 @@ var clearClutter = require('features/clear-clutter'),
     cssLoader = require('features/css-loader');
 
 var chatFunctions = function () {
-    
+
     debug.log("Modifying Chat Functionality");
 
     if(bttv.getChatController() && bttv.getChannel()) {
@@ -2328,14 +2394,14 @@ var main = function () {
             },
             after: function(name, ts, payload) {
                 renderingCounter--;
-                
+
                 if(!payload.template) return;
                 //debug.log(payload.template);
 
                 if(App.__container__.lookup("controller:application").get("currentRouteName") !== "channel.index") {
                     $('#main_col').css('width', 'auto');
                 }
-                
+
                 switch(payload.template) {
                     case 'shared/right_column':
                         waitForLoad(function(ready) {
@@ -2414,7 +2480,7 @@ var main = function () {
         }, 3000);
         setTimeout(chatFunctions, 3000);
         setTimeout(directoryFunctions, 3000);
-        
+
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
         m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
