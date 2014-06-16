@@ -1335,6 +1335,7 @@ bttv.chat = {
                 "vendethiel": { dev: true, tagType: "bttvDeveloper" },
                 "matthewjk": { dev: true, tagType: "bttvDeveloper" },
                 "julia_cs": { supporter: true, team: "Design", tagType: "bttvSupporter" },
+                "vaughnwhiskey": { supporter: true, team: "Support", tagType: "bttvSupporter" },
                 "izl": { supporter: true, team: "Support", tagType: "bttvSupporter" },
             }
 
