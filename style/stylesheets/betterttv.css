@@ -1003,3 +1003,23 @@ body#chat #speak {
     left: 0;
     z-index: -1;
 }
+
+/* Redesign Hot-Fixes */
+#chat_emote_dropmenu_button.newlayout {
+	background-repeat: no-repeat;
+}
+
+.ember-chat .chat-buttons-container .chat-option-buttons button {
+	background: rgb(30,30,30);
+	/* background-image: url(../icons/button_glyphs_new.png)!important; */
+	border: none!important;
+	height: 28px!important;
+	width: 28px!important;
+}
+.ember-chat .chat-menu .chat-top-header{
+	border-bottom: 0px solid;
+	margin: 0 20px;
+}
+#small_nav .content ul li .home_icon svg path{
+	display: none;
+}

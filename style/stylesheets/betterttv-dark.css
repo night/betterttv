@@ -836,10 +836,6 @@ body {
 	color: #fff;
 }
 
-.ember-chat .chat-menu .chat-menu-header {
-	border-color: #000;
-}
-
 a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00000080, a.small.js-turbo-more-colors {
  	color: #fff;
 }
@@ -1384,3 +1380,40 @@ div.chat-room-list.chat-menu div.js-rooms.scroll.chat-rooms div.tse-scroll-conte
 .no-login-contain h3 {
 	color: #DDD;
 }
+
+/* Hot Fixes for Redesign */
+ul.tabs li.selected a {
+	color: white;
+	border-bottom-color: white;
+}
+.archives-contain .more-archives {
+	width: 92%;
+}
+ul.tabs li>a:hover {
+	color: white;
+}
+
+.ember-chat .chat-menu .chat-menu-header {
+	border: 0px;
+}
+.ember-chat .chat-settings .clear-chat a {
+	text-align: center;
+}
+.button-simple {
+	padding: 5px;
+}
+.ember-chat .chat-interface {
+	left: 0px;
+	right: 0px;
+}
+
+.ember-chat .chat-menu-button-container span.close-button{
+	fill: rgba(255,255,255,.35);
+}
+div#actions {
+	background: rgb(30,30,30)
+}
+#channel .player-column #broadcast-meta .info .edit-link{
+	background-repeat: no-repeat;
+}
+
