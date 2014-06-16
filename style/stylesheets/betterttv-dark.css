@@ -110,6 +110,8 @@ body {
 
 #dash_main #stats .stat#followers_count {
 	background: url(../icons/followers.png) no-repeat left center !important;
+	padding-right: 5px;
+	padding-left: 18px;
 }
 
 #dash_main #stats .stat#channel_subs_count {
@@ -118,6 +120,21 @@ body {
 
 #dash_main #stats .stat#chatters_count {
 	background: url(../icons/chatters_light.png) no-repeat left center;
+	padding-left: 17px;
+	margin: 0 -6px;
+}
+
+#dash_main #custom_filter #gameselector_input {
+	width: 200px;
+	margin: 0;
+}
+
+#dash_main #commercial_options.dropmenu.menu-like .dropmenu_action {
+	color: #d3d3d3;
+}
+
+#dash_main #commercial_options.dropmenu.menu-like {
+	background: #3d3d3d;
 }
 
 #chat_text_input, #chat_text_login, .ember-chat .chat-interface textarea {
@@ -226,7 +243,7 @@ body {
 
 #dash_main {
 	padding-top: 10px;
-	margin-top: -10px;
+	margin-top: 53px;
 	padding-bottom: 20px;
 }
 
@@ -345,6 +362,9 @@ body {
 	border-right: 1px solid rgba(0,0,0,0.3) !important;
 	border-bottom: 1px solid rgba(0,0,0,0.35) !important;
 	height: 28px;
+	width: 16px;
+	padding-left: 5px;
+	padding-right: 15px;
 }
 
 #dash_main #intervals {
