@@ -1030,4 +1030,5 @@ body#chat #speak {
 	background: none
 	box-shadow: none;
 	-webkit-box-shadow: none;
+	background-color:none;
 }
