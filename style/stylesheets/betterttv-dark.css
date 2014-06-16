@@ -1441,7 +1441,7 @@ div#actions {
 	color: white;
 }
 
-.button.glyph:hover path, .button.glyph-only:hover path, #channel .player-column .stats-and-actions .channel-actions .button:hover, .ember-chat .chat-menu-button-container:hover svg path, {
+.button.glyph:hover path, .button.glyph-only:hover path, #channel .player-column .stats-and-actions .channel-actions .button:hover, .ember-chat .chat-menu-button-container:hover svg path {
 	fill: #fff;
 	color:#fff;
 }

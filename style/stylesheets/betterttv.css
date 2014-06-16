@@ -1018,7 +1018,7 @@ body#chat #speak {
 }
 .ember-chat .chat-menu .chat-top-header{
 	border-bottom: 0px solid;
-	margin: 0 20px;
+	margin: 0px;
 }
 #small_nav .content ul li .home_icon svg path{
 	display: none;
@@ -1031,4 +1031,29 @@ body#chat #speak {
 	box-shadow: none;
 	-webkit-box-shadow: none;
 	background-color:none;
+}
+#channel .player-column .stats-and-actions .channel-stats {
+    font-size: 12px;
+}
+.ember-chat .chat-header{
+    right: 0px;
+    left: 0px;
+    width: 100%;
+}
+
+.ember-chat .chat-menu .list-header {
+    margin: 0px;
+    padding-top: 0px;
+    padding: 15px;
+}
+
+.ember-chat .top-notification {
+    left: 0px;
+    right: 0px;
+}
+.ember-chat .chat-menu-button-container.right {
+    right:0px;
+}
+.ember-chat .chat-menu-button-container.left {
+left: 0px;
 }
