@@ -307,14 +307,14 @@ body {
 }
 
 .ember-chat .chat-buttons-container .chat-option-buttons button {
-	background: rgb(30, 30, 30);
+/*	background: rgb(30, 30, 30);*/
 	background-image: url(../icons/button_glyphs_new.png) !important;
 	border: none !important;
-	box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset !important;
+/*	box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset !important;
 	border-top: 1px solid rgba(0,0,0,0.2) !important;
 	border-left: 1px solid rgba(0,0,0,0.3) !important;
 	border-right: 1px solid rgba(0,0,0,0.3) !important;
-	border-bottom: 1px solid rgba(0,0,0,0.35) !important;
+	border-bottom: 1px solid rgba(0,0,0,0.35) !important;*/
 	height: 28px !important;
 	width: 28px !important;
 }
@@ -823,7 +823,6 @@ body {
 
 /*~~~~~~Ember Dark Settings Menu ~~~~~~~~~*/
 .ember-chat .chat-menu .chat-menu-header {
-	background: rgb(50,50,50);
 	color:  rgb(200,200,200);
 }
 
@@ -1407,13 +1406,27 @@ ul.tabs li>a:hover {
 	right: 0px;
 }
 
-.ember-chat .chat-menu-button-container span.close-button{
+#channel .player-column .stats-and-actions .channel-stats .stat svg path{
 	fill: rgba(255,255,255,.35);
+}
+
+#channel .player-column .stats-and-actions .channel-stats .stat {
+	color: #aaa;
 }
 div#actions {
 	background: rgb(30,30,30)
 }
+
 #channel .player-column #broadcast-meta .info .edit-link{
 	background-repeat: no-repeat;
 }
+.chat-menu.dropmenu a {
+	color: white;
+}
 
+.button.glyph:hover path, .button.glyph-only:hover path, .button:hover {
+	fill: #fff;
+}
+.button.drop:after {
+	border: 5px solid rgba(2555,255,255,255.35);
+}

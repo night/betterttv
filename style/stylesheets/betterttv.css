@@ -55,7 +55,7 @@ ul.tabs li.selected a {
 }
 
 .dropmenu a, .ui-menu a, .ui-multiselect-menu a {
-    color: white !important;
+    color: white;
 }
 
 a {
@@ -109,7 +109,7 @@ a {
 
 /* Chat CSS */
 .dropmenu a, .ui-menu a, .ui-multiselect-menu a {
-    color: white !important;
+    color: white;
 }
 
 input.text:focus,select:focus,textarea:focus {
@@ -1010,7 +1010,7 @@ body#chat #speak {
 }
 
 .ember-chat .chat-buttons-container .chat-option-buttons button {
-	background: rgb(30,30,30);
+	/*background: rgb(30,30,30);*/
 	/* background-image: url(../icons/button_glyphs_new.png)!important; */
 	border: none!important;
 	height: 28px!important;
@@ -1022,4 +1022,7 @@ body#chat #speak {
 }
 #small_nav .content ul li .home_icon svg path{
 	display: none;
+}
+.chat-menu.dropmenu a {
+	color: black;
 }
