@@ -810,13 +810,6 @@ body {
 	color: rgb(200,200,200);
 }
 
-.ember-chat .chat-menu-button-container span.popout-button {
-	background: url("//www-cdn.jtvnw.net/images/xarth/g/g18_popout-FFFFFF80.png") no-repeat;
-}
-.ember-chat .chat-menu-button-container span.close-button {
-	background: url(//www-cdn.jtvnw.net/images/xarth/g/g18_close-FFFFFF80.png) no-repeat;
-}
-
 .ember-chat .chat-menu .chat-top-header p {
 	color: white;
 }
@@ -1424,7 +1417,7 @@ div#actions {
 	color: white;
 }
 
-.button.glyph:hover path, .button.glyph-only:hover path, #channel .player-column .stats-and-actions .channel-actions .button:hover {
+.button.glyph:hover path, .button.glyph-only:hover path, #channel .player-column .stats-and-actions .channel-actions .button:hover, .ember-chat .chat-menu-button-container:hover svg path, {
 	fill: #fff;
 	color:#fff;
 }
@@ -1434,3 +1427,14 @@ div#actions {
 	border-right-color: transparent;
 	border-bottom-color: transparent;
 }
+
+.ember-chat .chat-menu .chat-top-header {
+	border-bottom: 0px solid;
+	margin: 0 11px;
+} 
+
+.ember-chat .chat-menu-button-container:hover svg path {
+	fill: #fff;
+}
+
+
