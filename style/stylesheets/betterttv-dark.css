@@ -1452,10 +1452,17 @@ div#actions {
 }
 
 .archives-contain .more-archives {
-	margin: 0;
+	margin: 0 !important;
 	width: 100%;
 }
 
-.button#header_browse {
+div#header_actions span, div#header_actions a{
 	color: black;
+}
+
+.archives-contain .videos { 
+	padding:0;
+}
+.archives-contain .list-video {
+	padding: 10px 10px;
 }
