@@ -12,10 +12,11 @@ module.exports = function () {
         $watermark.attr('src', '//cdn.betterttv.net/style/logos/logo_icon.png');
         $watermark.css({
             'z-index': 9000,
-            'margin-left': 22,
-            'margin-top': -45,
+            'margin-left': '-82px',
+            'margin-top': '-10px',
             'float': 'left',
-            'height': 18
+            'height': 18,
+            'position': 'absolute'
         });
         $("#header_logo").append($watermark);
     }
