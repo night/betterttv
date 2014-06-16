@@ -1390,9 +1390,7 @@ ul.tabs li.selected a {
 	color: white;
 	border-bottom-color: white;
 }
-.archives-contain .more-archives {
-	width: 92%;
-}
+
 ul.tabs li>a:hover {
 	color: white;
 }
@@ -1447,13 +1445,13 @@ div#actions {
 
 .ember-chat .chat-menu .chat-top-header {
 	border-bottom: 0px solid;
-	margin: 0 11px;
 } 
 
 .ember-chat .chat-menu-button-container:hover svg path {
 	fill: #fff;
 }
 
-
-
-
+.archives-contain .more-archives {
+	margin: 0;
+	width: 100%;
+}
