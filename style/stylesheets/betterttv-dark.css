@@ -124,16 +124,16 @@ body {
 	margin: 0 -6px;
 }
 
-#custom_filter #gameselector_input {
+#dash_main #custom_filter #gameselector_input {
 	width: 200px;
 	margin: 0;
 }
 
-#commercial_options.dropmenu.menu-like .dropmenu_action {
+#dash_main #commercial_options.dropmenu.menu-like .dropmenu_action {
 	color: #d3d3d3;
 }
 
-#commercial_options.dropmenu.menu-like {
+#dash_main #commercial_options.dropmenu.menu-like {
 	background: #3d3d3d;
 }
 
