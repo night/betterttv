@@ -156,13 +156,13 @@ body {
 	margin: 0;
 }
 
-#play_switch.dropmenu.menu-like {
+#dash_main #play_switch.dropmenu.menu-like {
 	color: #3b3b3b;
 	border: 1px solid rgba(0,0,0,0.2);
 	background: #3b3b3b;
 }
 
-#play_switch.dropmenu.menu-like .dropmenu_action {
+#dash_main #play_switch.dropmenu.menu-like .dropmenu_action {
 	display: block;
 	padding: 5px 20px;
 	background-position: 20px center;
@@ -170,13 +170,13 @@ body {
 	color: #d3d3d3;
 }
 
-#commercial_options.dropmenu.menu-like {
+#dash_main #commercial_options.dropmenu.menu-like {
 	color: #3b3b3b;
 	border: 1px solid rgba(0,0,0,0.2);
 	background: #3b3b3b;
 }
 
-#commercial_options.dropmenu.menu-like .dropmenu_action {
+#dash_main #commercial_options.dropmenu.menu-like .dropmenu_action {
 	display: block;
 	padding: 5px 20px;
 	background-position: 20px center;
@@ -184,13 +184,13 @@ body {
 	color: #d3d3d3;
 }
 
-#gameselector_results.dropmenu.menu-like {
+#dash_main #gameselector_results.dropmenu.menu-like {
 	color: #3b3b3b;
 	border: 1px solid rgba(0,0,0,0.2);
 	background: #3b3b3b;
 }
 
-#gameselector_results.dropmenu.menu-like .dropmenu_action {
+#dash_main #gameselector_results.dropmenu.menu-like .dropmenu_action {
 	display: block;
 	padding: 5px 20px;
 	background-position: 20px center;
