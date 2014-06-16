@@ -1377,14 +1377,6 @@ div.chat-room-list.chat-menu div.js-rooms.scroll.chat-rooms div.tse-scroll-conte
 .ember-chat .chat-room-list .room:hover p.room-title {
 	color: #fff;
 }
-.ember-chat .chat-menu-button-container span.back, .ember-chat .chat-menu-button-container span.create, .ember-chat .chat-menu-button-container span.invite {
-	filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'invert\'><feColorMatrix in='SourceGraphic' type='matrix' values='-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0'/></filter></svg>#invert");
-	filter: invert(90%);
-	-webkit-filter: invert(90%);
-	-o-filter: invert(90%);
-	-ms-filter: invert(90%);
-	-moz-filter: invert(90%);
-}
 
 .no-login-contain li {
 	background: #000;
@@ -1445,6 +1437,7 @@ div#actions {
 	fill: #fff;
 	color:#fff;
 }
+
 .button.drop:after {
 	border-color: rgba(2555,255,255,255.35);
 	border-left-color: transparent;
@@ -1460,5 +1453,7 @@ div#actions {
 .ember-chat .chat-menu-button-container:hover svg path {
 	fill: #fff;
 }
+
+
 
 
