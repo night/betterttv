@@ -26,9 +26,11 @@ module.exports = function () {
         $watermark.attr('src', '//cdn.betterttv.net/style/logos/logo_icon.png');
         $watermark.css({
             'z-index': 9000,
-            'margin-left': 68,
-            'margin-top': 9,
-            'float': 'left'
+            'margin-left': '-76px',
+            'margin-top': '-16px',
+            'float': 'left',
+            'position': 'absolute'
+
         });
         $("#large_nav #logo").append($watermark);
     }
