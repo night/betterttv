@@ -1455,3 +1455,7 @@ div#actions {
 	margin: 0;
 	width: 100%;
 }
+
+.button#header_browse {
+	color: black;
+}
