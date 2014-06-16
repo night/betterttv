@@ -1010,8 +1010,6 @@ body#chat #speak {
 }
 
 .ember-chat .chat-buttons-container .chat-option-buttons button {
-	/*background: rgb(30,30,30);*/
-	/* background-image: url(../icons/button_glyphs_new.png)!important; */
 	border: none!important;
 	height: 28px!important;
 	width: 28px!important;
@@ -1059,4 +1057,20 @@ left: 0px;
 }
 .ember-chat .chat-messages .chat-line.admin {
     margin: 0;
+}
+
+.archives-contain .more-archives {
+    margin: 0 !important;
+    width: 100%;
+}
+
+div#header_actions span, div#header_actions a{
+    color: black;
+}
+
+.archives-contain .videos { 
+    padding:0;
+}
+.archives-contain .list-video {
+    padding: 10px 10px;
 }
