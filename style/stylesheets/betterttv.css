@@ -961,6 +961,21 @@ body#chat #speak {
 
 /* Mod Card */
 
+.ember-chat .moderation-card .button-simple {
+    cursor: pointer;
+    line-height: 30px;
+    padding: 0 10px;
+    font-size: 12px;
+    color: #262626;
+    background: #c4c3c3;
+    border: 0;
+    margin: 2px 0px;
+}
+
+.ember-chat .moderation-card .interface {
+    display: inline-block;
+}
+
 .ember-chat .moderation-card .button-simple.dark {
     background: #c4c3c3;
     color: #262626;
@@ -972,6 +987,7 @@ body#chat #speak {
 
 .tipsy {
     z-index: 9000000001 !important;
+    white-space: nowrap;
 }
 
 /* Group Chat changed textarea */
