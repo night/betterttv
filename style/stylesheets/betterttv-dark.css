@@ -1389,6 +1389,8 @@ ul.tabs li>a:hover {
 	border: 0px;
 	margin: 0px;
 	padding-left: 18px;
+	background: rgb(40,40,40);
+
 }
 .ember-chat .chat-settings .clear-chat a {
 	text-align: center;
