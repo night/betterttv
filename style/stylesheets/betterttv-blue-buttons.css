@@ -1,14 +1,14 @@
 #large_nav .game_filter.selected a { 
 	border-left: 4px solid #374a9b !important; 
 } 
-button.primary, .button-simple.primary, .primary_button:hover, .primary_button:focus, #subscribe_action .subscribe-text:hover, #subscribe_action .subscribe-text:focus, .button.primary:hover { 
+.button.primary, .button-simple.primary, .primary_button:hover, a.js-follow.follow.button.primary.action:hover, #subscribe_action .subscribe-text:focus, .button.primary:hover { 
 	background: linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; 
 	background: -o-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; 
 	background: -moz-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; 
 	background: -webkit-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; 
 	background: -ms-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; 
 } 
-button.primary, .primary_button, #subscribe_action .subscribe-text, #channel .player-column .stats-and-actions .channel-actions .button, .onoff:before {
+.button.primary, .primary_button, #subscribe_action .subscribe-text, a.js-follow.follow.button.primary.action, .onoff:before {
 	border-color: #000 !important;
 	background: linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%) !important; 
 	background: -o-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%) !important; 
@@ -28,9 +28,9 @@ button.primary, .primary_button, #subscribe_action .subscribe-text, #channel .pl
 #is-subscribed svg path {
 	fill: #2A4687;
 } 
-#main_col .stats-and-actions #is-subscribed, ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .ember-chat .chat-room-list .room p.room-title  {
+#main_col .stats-and-actions #is-subscribed, ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .ember-chat .chat-room-list .room p.room-title, .button.unfollow, .button.unfollow:hover  {
 	color: #2A4687;
 }
-.ember-chat .chat-menu-button-container svg path {
+.ember-chat .chat-menu-button-container svg path, .button.unfollow .svg-check path, .button.unfollow .svg-x path {
 	fill: #2A4687;
 }
