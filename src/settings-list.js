@@ -202,16 +202,19 @@ module.exports = [
         storageKey: 'modcardsKeybinds'
     },
     {
-        name: 'Purple Buttons',
+        name: 'Blue Buttons',
         description: 'BetterTTV replaces Twitch\'s purple with blue by default',
-        default: false,
-        storageKey: 'showPurpleButtons',
+        default: true,
+        storageKey: 'showBlueButtons',
         toggle: function(value) {
             if(value === true) {
-                $("#bttvBlueButtons").remove();
+                cssLoader.load("blue-buttons", "showBlueButtons");
             } else {
-                bttv.cssBlueButtons();
+                cssLoader.unload("showBlueButtons");   
             }
+        },
+        load: function() {
+            cssLoader.load("blue-buttons", "showBlueButtons");
         }
     },
     {
