@@ -591,9 +591,15 @@ var debug = require('debug'),
 vars = require('vars');
 
 bttv.info = {
+<<<<<<< HEAD
     version: "6.7",
     release: 11,
     versionString: function() {
+=======
+    version: "6.8BETA",
+    release: 1,
+    versionString: function() { 
+>>>>>>> upstream/master
         return bttv.info.version + 'R' + bttv.info.release;
     }
 }
@@ -1921,6 +1927,7 @@ bttv.chat = {
                 "vendethiel": { dev: true, tagType: "bttvDeveloper" },
                 "matthewjk": { dev: true, tagType: "bttvDeveloper" },
                 "julia_cs": { supporter: true, team: "Design", tagType: "bttvSupporter" },
+                "vaughnwhiskey": { supporter: true, team: "Support", tagType: "bttvSupporter" },
                 "izl": { supporter: true, team: "Support", tagType: "bttvSupporter" },
             }
 
@@ -2265,7 +2272,7 @@ var clearClutter = require('features/clear-clutter'),
     brand = require('features/brand'),
     betaChat = require('features/beta-chat'),
     checkMessages = require('features/check-messages'),
-    cssBlueButtons = require('features/css-blue-buttons')
+    //  cssBlueButtons = require('features/css-blue-buttons')
     directoryFunctions = require('features/directory-functions'),
     checkFollowing = require('features/check-following'),
     checkBroadcastInfo = require('features/check-broadcast-info'),
@@ -2693,6 +2700,22 @@ module.exports = [
         }
     },
     {
+        name: 'Hide Chat Navigation',
+        description: 'Hides the chat - video navigation bar above chat',
+        default: false,
+        storageKey: 'chatNavRemoval',
+        toggle: function(value) {
+            if(value === true) {
+                cssLoader.load("hide-chat-nav", "chatNavRemoval");
+            } else {
+                cssLoader.unload("chatNavRemoval");   
+            }
+        },
+        load: function() {
+            cssLoader.load("hide-chat-nav", "chatNavRemoval");
+        }
+    },
+    {
         name: 'Hide Group Chat',
         description: 'Hides the group chat bar above chat',
         default: false,
@@ -2721,16 +2744,19 @@ module.exports = [
         storageKey: 'modcardsKeybinds'
     },
     {
-        name: 'Purple Buttons',
+        name: 'Blue Buttons',
         description: 'BetterTTV replaces Twitch\'s purple with blue by default',
-        default: false,
-        storageKey: 'showPurpleButtons',
+        default: true,
+        storageKey: 'showBlueButtons',
         toggle: function(value) {
             if(value === true) {
-                $("#bttvBlueButtons").remove();
+                cssLoader.load("blue-buttons", "showBlueButtons");
             } else {
-                bttv.cssBlueButtons();
+                cssLoader.unload("showBlueButtons");   
             }
+        },
+        load: function() {
+            cssLoader.load("blue-buttons", "showBlueButtons");
         }
     },
     {
@@ -2961,8 +2987,7 @@ module.exports = function () {
 
 require.register("features/brand", function(exports, require, module){
   var debug = require('debug');
-var cssBlueButtons = require('./css-blue-buttons'),
-    betaChat = require('./beta-chat');
+var betaChat = require('./beta-chat');
 
 module.exports = function () {
     debug.log("Branding Site with Better & Importing Styles");
@@ -2974,10 +2999,11 @@ module.exports = function () {
         $watermark.attr('src', '//cdn.betterttv.net/style/logos/logo_icon.png');
         $watermark.css({
             'z-index': 9000,
-            'margin-left': 22,
-            'margin-top': -45,
+            'margin-left': '-82px',
+            'margin-top': '-10px',
             'float': 'left',
-            'height': 18
+            'height': 18,
+            'position': 'absolute'
         });
         $("#header_logo").append($watermark);
     }
@@ -2988,9 +3014,11 @@ module.exports = function () {
         $watermark.attr('src', '//cdn.betterttv.net/style/logos/logo_icon.png');
         $watermark.css({
             'z-index': 9000,
-            'margin-left': 68,
-            'margin-top': 9,
-            'float': 'left'
+            'margin-left': '-76px',
+            'margin-top': '-16px',
+            'float': 'left',
+            'position': 'absolute'
+
         });
         $("#large_nav #logo").append($watermark);
     }
@@ -3015,11 +3043,6 @@ module.exports = function () {
         $addCSS.attr('id', 'bttvChatIndentation');
         $addCSS.html('#chat_line_list .line p { padding-left: 16px;text-indent: -16px; }');
         $('body').append($addCSS);
-    }
-
-    // Import Blue Button CSS
-    if (bttv.settings.get("showPurpleButtons") !== true) {
-        cssBlueButtons();
     }
 
     // Small Popout/Embed Chat Fixes
@@ -3394,7 +3417,7 @@ module.exports = function () {
     var globalCSSInject = document.createElement("style");
     globalCSSInject.setAttribute("type", "text/css");
     globalCSSInject.setAttribute("id", "bttvBlueButtons");
-    globalCSSInject.innerHTML = "#large_nav .game_filter.selected a { border-left: 4px solid #374a9b !important; } button.primary, .button-simple.primary, .primary_button:hover, .primary_button:focus, #subscribe_action .subscribe-text:hover, #subscribe_action .subscribe-text:focus { background: linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; background: -o-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; background: -moz-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; background: -webkit-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; background: -ms-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; } button.primary, .primary_button, #subscribe_action .subscribe-text {border-color: #000 !important;background: linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%) !important; background: -o-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%) !important; background: -moz-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%) !important; background: -webkit-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%) !important; background: -ms-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%) !important; }#team_member_list .page_links a, .page_links span.next_page b, .page_links a.next_page b, #main_col .messages div.preview.unread {border-left-color: #374a9b !important;}#team_member_list .page_links a b.left {border-left-color: #374a9b !important;}#team_member_list .page_links a b.right, .page_links span.previous_page b, .page_links a.previous_page b {border-right-color: #374a9b !important;}";
+    globalCSSInject.innerHTML = "#large_nav .game_filter.selected a { border-left: 4px solid #374a9b !important; } button.primary, .button-simple.primary, .primary_button:hover, .primary_button:focus, #subscribe_action .subscribe-text:hover, #subscribe_action .subscribe-text:focus { background: linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; background: -o-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; background: -moz-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; background: -webkit-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; background: -ms-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; } button.primary, .primary_button, #subscribe_action .subscribe-text {border-color: #000 !important;background: linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%) !important; background: -o-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%) !important; background: -moz-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%) !important; background: -webkit-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%) !important; background: -ms-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%) !important; }#team_member_list .page_links a, .page_links span.next_page b, .page_links a.next_page b, #main_col .messages div.preview.unread {border-left-color: #374a9b !important;}#team_member_list .page_links a b.left {border-left-color: #374a9b !important;}#team_member_list .page_links a b.right, .page_links span.previous_page b, .page_links a.previous_page b {border-right-color: #374a9b !important;} #is-subscribed svg path {fill: #2A4687;} #main_col .stats-and-actions #is-subscribed {color: #2A4687;}";
     $("body").append(globalCSSInject);
 }
   
@@ -4596,7 +4619,7 @@ var jade_mixins = {};
 var jade_interp;
 ;var locals_for_with = (locals || {});(function (require, user, top, left, Twitch, bttv) {
 var vars = require('vars')
-buf.push("<div" + (jade.attr("data-user", user.name, true, false)) + (jade.attr("style", "top: " + (top) + "px;left: " + (left) + "px;", true, false)) + " class=\"bttv-mod-card ember-view moderation-card\"><div class=\"close-button\"></div><div" + (jade.attr("style", "background-color: " + (user.profile_banner_background_color?user.profile_banner_background_color:'#000') + "", true, false)) + " class=\"card-header\"><img" + (jade.attr("src", user.logo?user.logo:'https://www-cdn.jtvnw.net/images/xarth/404_user_300x300.png', true, false)) + " class=\"channel_logo\"/><div class=\"drag-handle\"></div><h3 class=\"name\"><a" + (jade.attr("href", Twitch.url.profile(user.name), true, false)) + " target=\"_blank\">" + (jade.escape(null == (jade_interp = user.display_name) ? "" : jade_interp)) + "</a></h3><div class=\"channel_background_cover\"></div>");
+buf.push("<div" + (jade.attr("data-user", user.name, true, false)) + (jade.attr("style", "top: " + (top) + "px;left: " + (left) + "px;", true, false)) + " class=\"bttv-mod-card ember-view moderation-card\"><div class=\"close-button\"><svg height=\"16px\" version=\"1.1\" viewbox=\"0 0 16 16\" width=\"16px\" x=\"0px\" y=\"0px\" class=\"svg-close\"><path clip-rule=\"evenodd\" d=\"M13.657,3.757L9.414,8l4.243,4.242l-1.415,1.415L8,9.414l-4.243,4.243l-1.414-1.415L6.586,8L2.343,3.757l1.414-1.414L8,6.586l4.242-4.243L13.657,3.757z\" fill-rule=\"evenodd\"></path></svg></div><div" + (jade.attr("style", "background-color: " + (user.profile_banner_background_color?user.profile_banner_background_color:'#000') + "", true, false)) + " class=\"card-header\"><img" + (jade.attr("src", user.logo?user.logo:'https://www-cdn.jtvnw.net/images/xarth/404_user_300x300.png', true, false)) + " class=\"channel_logo\"/><div class=\"drag-handle\"></div><h3 class=\"name\"><a" + (jade.attr("href", Twitch.url.profile(user.name), true, false)) + " target=\"_blank\">" + (jade.escape(null == (jade_interp = user.display_name) ? "" : jade_interp)) + "</a></h3><div class=\"channel_background_cover\"></div>");
 if ( user.profile_banner)
 {
 buf.push("<img" + (jade.attr("src", user.profile_banner, true, false)) + " class=\"channel_background\"/>");
@@ -4611,7 +4634,7 @@ buf.push("<button class=\"button-simple dark mod-card-mod\">Mod</button>");
 }
 if ( vars.userData.isLoggedIn && bttv.chat.helpers.isModerator(vars.userData.login) && (!bttv.chat.helpers.isModerator(user.name) || vars.userData.login === bttv.getChannel()))
 {
-buf.push("<br/><span class=\"mod-controls\"><button style=\"width:48px;\" title=\"!permit this user\" class=\"permit button-simple light\">Permit</button><button style=\"width:44px;\" data-time=\"1\" title=\"Clear this user's chat\" class=\"timeout button-simple light\">Purge</button><button data-time=\"600\" title=\"Temporary 10 minute ban\" class=\"timeout button-simple light\"><img src=\"/images/xarth/g/g18_timeout-00000080.png\"/></button><button style=\"width:30px;\" data-time=\"28800\" title=\"Temporary 8 hour ban\" class=\"timeout button-simple light\">8hr</button><button style=\"width:38px;\" data-time=\"86400\" title=\"Temporary 24 hour ban\" class=\"timeout button-simple light\">24hr</button><button title=\"Permanent Ban\" class=\"ban button-simple light\"><img src=\"/images/xarth/g/g18_ban-00000080.png\"/></button></span>");
+buf.push("<span class=\"mod-controls\"><button style=\"width:48px;\" title=\"!permit this user\" class=\"permit button-simple light\">Permit</button></span><br/><span class=\"mod-controls\"><button style=\"width:44px;\" data-time=\"1\" title=\"Clear this user's chat\" class=\"timeout button-simple light\">Purge</button><button data-time=\"600\" title=\"Temporary 10 minute ban\" class=\"timeout button-simple light\"><img src=\"/images/xarth/g/g18_timeout-00000080.png\"/></button><button style=\"width:30px;\" data-time=\"3600\" title=\"Temporary 1 hour ban\" class=\"timeout button-simple light\">1hr</button><button style=\"width:30px;\" data-time=\"28800\" title=\"Temporary 8 hour ban\" class=\"timeout button-simple light\">8hr</button><button style=\"width:38px;\" data-time=\"86400\" title=\"Temporary 24 hour ban\" class=\"timeout button-simple light\">24hr</button><button title=\"Permanent Ban\" class=\"ban button-simple light\"><img src=\"/images/xarth/g/g18_ban-00000080.png\"/></button></span>");
 }
 buf.push("</div>");
 }

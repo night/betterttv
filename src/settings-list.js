@@ -174,6 +174,22 @@ module.exports = [
         }
     },
     {
+        name: 'Hide Chat Navigation',
+        description: 'Hides the chat - video navigation bar above chat',
+        default: false,
+        storageKey: 'chatNavRemoval',
+        toggle: function(value) {
+            if(value === true) {
+                cssLoader.load("hide-chat-nav", "chatNavRemoval");
+            } else {
+                cssLoader.unload("chatNavRemoval");   
+            }
+        },
+        load: function() {
+            cssLoader.load("hide-chat-nav", "chatNavRemoval");
+        }
+    },
+    {
         name: 'Hide Group Chat',
         description: 'Hides the group chat bar above chat',
         default: false,
@@ -202,16 +218,19 @@ module.exports = [
         storageKey: 'modcardsKeybinds'
     },
     {
-        name: 'Purple Buttons',
+        name: 'Blue Buttons',
         description: 'BetterTTV replaces Twitch\'s purple with blue by default',
-        default: false,
-        storageKey: 'showPurpleButtons',
+        default: true,
+        storageKey: 'showBlueButtons',
         toggle: function(value) {
             if(value === true) {
-                $("#bttvBlueButtons").remove();
+                cssLoader.load("blue-buttons", "showBlueButtons");
             } else {
-                bttv.cssBlueButtons();
+                cssLoader.unload("showBlueButtons");   
             }
+        },
+        load: function() {
+            cssLoader.load("blue-buttons", "showBlueButtons");
         }
     },
     {

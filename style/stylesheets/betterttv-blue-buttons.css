@@ -1,0 +1,50 @@
+#large_nav .game_filter.selected a { 
+	border-left: 4px solid #374a9b !important; 
+} 
+.button.primary, .button-simple.primary, .primary_button:hover, a.js-follow.follow.button.primary.action:hover, #subscribe_action .subscribe-text:focus, .button.primary:hover { 
+	background: linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; 
+	background: -o-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; 
+	background: -moz-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; 
+	background: -webkit-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; 
+	background: -ms-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; 
+} 
+.button.primary, .primary_button, a.js-follow.follow.button.primary.action {
+	border-color: #000 !important;
+	background: linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%) !important; 
+	background: -o-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%) !important; 
+	background: -moz-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%) !important; 
+	background: -webkit-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%) !important; 
+	background: -ms-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%) !important; 
+}
+.onoff:before, .onoff.on:after {
+	border-color: #000;
+	background: linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%); 
+	background: -o-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%); 
+	background: -moz-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%); 
+	background: -webkit-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%); 
+	background: -ms-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);
+}
+#subscribe_action .subscribe-text{
+	background: none;
+}
+#team_member_list .page_links a, .page_links span.next_page b, .page_links a.next_page b, #main_col .messages div.preview.unread {
+	border-left-color: #374a9b !important;
+}
+#team_member_list .page_links a b.left {
+	border-left-color: #374a9b !important;
+}
+#team_member_list .page_links a b.right, .page_links span.previous_page b, .page_links a.previous_page b {
+	border-right-color: #374a9b !important;
+} 
+#main_col .stats-and-actions #is-subscribed, .ember-chat .chat-room-list .room p.room-title, .button.unfollow, .button.unfollow:hover {
+	color: #2A4687 !important;
+}
+.ember-chat .chat-menu-button-container svg path, .button.unfollow .svg-check path, .button.unfollow .svg-x path, #is-subscribed svg path {
+	fill: #2A4687 !important;
+}
+.dropmenu.menu-like .dropmenu_action:hover {
+	background-color: #2A4687 !important;
+}
+ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .dropmenu.menu-like .dropmenu_action  {
+	color: #2A4687;
+}

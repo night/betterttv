@@ -5,9 +5,15 @@ var debug = require('debug'),
 vars = require('vars');
 
 bttv.info = {
+<<<<<<< HEAD
     version: "6.7",
     release: 11,
     versionString: function() {
+=======
+    version: "6.8BETA",
+    release: 1,
+    versionString: function() { 
+>>>>>>> upstream/master
         return bttv.info.version + 'R' + bttv.info.release;
     }
 }
@@ -1335,6 +1341,7 @@ bttv.chat = {
                 "vendethiel": { dev: true, tagType: "bttvDeveloper" },
                 "matthewjk": { dev: true, tagType: "bttvDeveloper" },
                 "julia_cs": { supporter: true, team: "Design", tagType: "bttvSupporter" },
+                "vaughnwhiskey": { supporter: true, team: "Support", tagType: "bttvSupporter" },
                 "izl": { supporter: true, team: "Support", tagType: "bttvSupporter" },
             }
 
@@ -1679,7 +1686,7 @@ var clearClutter = require('features/clear-clutter'),
     brand = require('features/brand'),
     betaChat = require('features/beta-chat'),
     checkMessages = require('features/check-messages'),
-    cssBlueButtons = require('features/css-blue-buttons')
+    //  cssBlueButtons = require('features/css-blue-buttons')
     directoryFunctions = require('features/directory-functions'),
     checkFollowing = require('features/check-following'),
     checkBroadcastInfo = require('features/check-broadcast-info'),

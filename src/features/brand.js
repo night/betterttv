@@ -1,6 +1,5 @@
 var debug = require('debug');
-var cssBlueButtons = require('./css-blue-buttons'),
-    betaChat = require('./beta-chat');
+var betaChat = require('./beta-chat');
 
 module.exports = function () {
     debug.log("Branding Site with Better & Importing Styles");
@@ -12,10 +11,11 @@ module.exports = function () {
         $watermark.attr('src', '//cdn.betterttv.net/style/logos/logo_icon.png');
         $watermark.css({
             'z-index': 9000,
-            'margin-left': 22,
-            'margin-top': -45,
+            'margin-left': '-82px',
+            'margin-top': '-10px',
             'float': 'left',
-            'height': 18
+            'height': 18,
+            'position': 'absolute'
         });
         $("#header_logo").append($watermark);
     }
@@ -26,9 +26,11 @@ module.exports = function () {
         $watermark.attr('src', '//cdn.betterttv.net/style/logos/logo_icon.png');
         $watermark.css({
             'z-index': 9000,
-            'margin-left': 68,
-            'margin-top': 9,
-            'float': 'left'
+            'margin-left': '-76px',
+            'margin-top': '-16px',
+            'float': 'left',
+            'position': 'absolute'
+
         });
         $("#large_nav #logo").append($watermark);
     }
@@ -53,11 +55,6 @@ module.exports = function () {
         $addCSS.attr('id', 'bttvChatIndentation');
         $addCSS.html('#chat_line_list .line p { padding-left: 16px;text-indent: -16px; }');
         $('body').append($addCSS);
-    }
-
-    // Import Blue Button CSS
-    if (bttv.settings.get("showPurpleButtons") !== true) {
-        cssBlueButtons();
     }
 
     // Small Popout/Embed Chat Fixes

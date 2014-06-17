@@ -43,6 +43,33 @@ body {
 	border: 1px solid #000;
 }
 
+
+#mantle_skin #container #dash_main.wrapper #vod_form #toggle_play_switch.first.button.drop { 
+	display: inline-block;
+	position: relative;
+	cursor: pointer;
+	line-height: 30px;
+	height: 30px;
+	font-size: 14px;
+	font-family: inherit;
+	padding-left: 5px;
+	padding-right: 15px;
+	color: #6441a5;
+	border: 0;
+	background: -moz-linear-gradient(top, #f5f5f5, #ddd);
+	background: -o-linear-gradient(top, #f5f5f5, #ddd);
+	background: linear-gradient(top, #f5f5f5, #ddd);
+	border-top: 1px solid rgba(0,0,0,0.2);
+	border-left: 1px solid rgba(0,0,0,0.3);
+	border-right: 1px solid rgba(0,0,0,0.3);
+	border-bottom: 1px solid rgba(0,0,0,0.35);
+	box-shadow: inset 0 1px 0 #1b1b1b,0 1px 0 rgba(0,0,0,0.07);
+	-moz-box-shadow: inset 0 1px 0 #fff,0 1px 0 rgba(0,0,0,0.07);
+	-moz-text-shadow: 0 1px 0 rgba(255,255,255,0.75);
+	-webkit-text-shadow: 0 1px 0 rgba(255,255,255,0.75);
+	color: #d3d3d3;
+}
+
 #dash_main #vod_form, #dash_main #delay_controls, #dash_main #stream-config-status .status-header {
 	background-color: #282828 !important;
 	border-color: #000 !important;
@@ -110,6 +137,8 @@ body {
 
 #dash_main #stats .stat#followers_count {
 	background: url(../icons/followers.png) no-repeat left center !important;
+	padding-right: 5px;
+	padding-left: 18px;
 }
 
 #dash_main #stats .stat#channel_subs_count {
@@ -118,6 +147,76 @@ body {
 
 #dash_main #stats .stat#chatters_count {
 	background: url(../icons/chatters_light.png) no-repeat left center;
+	padding-left: 17px;
+	margin: 0 -6px;
+}
+
+#dash_main #custom_filter #gameselector_input {
+	width: 200px;
+	margin: 0;
+}
+
+#dash_main #play_switch.dropmenu.menu-like {
+	color: #3b3b3b;
+	border: 1px solid rgba(0,0,0,0.2);
+	background: #3b3b3b;
+}
+
+#dash_main #play_switch.dropmenu.menu-like .dropmenu_action {
+	display: block;
+	padding: 5px 20px;
+	background-position: 20px center;
+	cursor: pointer;
+	color: #d3d3d3;
+}
+
+#dash_main #commercial_options.dropmenu.menu-like {
+	color: #3b3b3b;
+	border: 1px solid rgba(0,0,0,0.2);
+	background: #3b3b3b;
+}
+
+#dash_main #commercial_options.dropmenu.menu-like .dropmenu_action {
+	display: block;
+	padding: 5px 20px;
+	background-position: 20px center;
+	cursor: pointer;
+	color: #d3d3d3;
+}
+
+#dash_main #gameselector_results.dropmenu.menu-like {
+	color: #3b3b3b;
+	border: 1px solid rgba(0,0,0,0.2);
+	background: #3b3b3b;
+}
+
+#dash_main #gameselector_results.dropmenu.menu-like .dropmenu_action {
+	display: block;
+	padding: 5px 20px;
+	background-position: 20px center;
+	cursor: pointer;
+	color: #d3d3d3;
+}
+
+
+#dash_main #commercial_options.dropmenu.menu-like .dropmenu_action {
+	color: #d3d3d3;
+}
+
+#dash_main #commercial_options.dropmenu.menu-like {
+	background: #3d3d3d;
+}
+
+#ui-id-1.ui-autocomplete.ui-front.ui-menu.ui-widget.ui-widget-content.ui-corner-all {
+	color: #3b3b3b;
+	border: 1px solid rgba(0,0,0,0.2);
+	background: #3b3b3b;
+}
+
+#ui-id-1.ui-autocomplete.ui-front.ui-menu.ui-widget.ui-widget-content.ui-corner-all .game.ui-menu-item a {
+	display: block;
+	background-position: 20px center;
+	color: #d3d3d3 !important;
 }
 
 #chat_text_input, #chat_text_login, .ember-chat .chat-interface textarea {
@@ -226,7 +325,7 @@ body {
 
 #dash_main {
 	padding-top: 10px;
-	margin-top: -10px;
+	margin-top: 53px;
 	padding-bottom: 20px;
 }
 
@@ -269,6 +368,43 @@ body {
 	display: none;
 }
 
+/* Button backgrounds */
+.stats-and-actions .channel-actions .button {
+	margin: 0px;
+	padding-left: 10px;
+	padding-right: 10px;
+
+    background-color: rgb(30, 30, 30);
+    box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset;
+    border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.35);
+    color: rgb(170, 170, 170);
+    text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px;
+    border: 1px solid;
+    padding-right: 10px;
+    border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.35);
+    border-radius: 2px;
+}
+
+.stats-and-actions .channel-actions .button.drop {
+    padding-right: 0px;
+    width: 60px;
+}
+
+.stats-and-actions .channel-actions .button.glyph-only {
+	padding-right: 0px;
+    width: 34px;
+}
+
+.stats-and-actions .channel-actions .button.drop:after {
+    border-top-color: #777;
+    margin-right: 5px;
+}
+
+/* share popup background */
+.stats-and-actions .channel-actions .share {
+    background-color: rgb(30,30,30);
+}
+
 /* Taken from http://userstyles.org/styles/82967/twitch-dark-view */
 #channel_stats, .channel-stats {
 	background-color: rgb(30, 30, 30);
@@ -307,14 +443,14 @@ body {
 }
 
 .ember-chat .chat-buttons-container .chat-option-buttons button {
-	background: rgb(30, 30, 30);
+/*	background: rgb(30, 30, 30);*/
 	background-image: url(../icons/button_glyphs_new.png) !important;
 	border: none !important;
-	box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset !important;
+/*	box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset !important;
 	border-top: 1px solid rgba(0,0,0,0.2) !important;
 	border-left: 1px solid rgba(0,0,0,0.3) !important;
 	border-right: 1px solid rgba(0,0,0,0.3) !important;
-	border-bottom: 1px solid rgba(0,0,0,0.35) !important;
+	border-bottom: 1px solid rgba(0,0,0,0.35) !important;*/
 	height: 28px !important;
 	width: 28px !important;
 }
@@ -345,6 +481,9 @@ body {
 	border-right: 1px solid rgba(0,0,0,0.3) !important;
 	border-bottom: 1px solid rgba(0,0,0,0.35) !important;
 	height: 28px;
+	width: 16px;
+	padding-left: 5px;
+	padding-right: 15px;
 }
 
 #dash_main #intervals {
@@ -810,20 +949,12 @@ body {
 	color: rgb(200,200,200);
 }
 
-.ember-chat .chat-menu-button-container span.popout-button {
-	background: url("//www-cdn.jtvnw.net/images/xarth/g/g18_popout-FFFFFF80.png") no-repeat;
-}
-.ember-chat .chat-menu-button-container span.close-button {
-	background: url(//www-cdn.jtvnw.net/images/xarth/g/g18_close-FFFFFF80.png) no-repeat;
-}
-
 .ember-chat .chat-menu .chat-top-header p {
 	color: white;
 }
 
 /*~~~~~~Ember Dark Settings Menu ~~~~~~~~~*/
 .ember-chat .chat-menu .chat-menu-header {
-	background: rgb(50,50,50);
 	color:  rgb(200,200,200);
 }
 
@@ -834,10 +965,6 @@ body {
 
 .ember-chat .chat-settings .chat-menu a  {
 	color: #fff;
-}
-
-.ember-chat .chat-menu .chat-menu-header {
-	border-color: #000;
 }
 
 a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00000080, a.small.js-turbo-more-colors {
@@ -1369,18 +1496,109 @@ div.chat-room-list.chat-menu div.js-rooms.scroll.chat-rooms div.tse-scroll-conte
 .ember-chat .chat-room-list .room:hover p.room-title {
 	color: #fff;
 }
-.ember-chat .chat-menu-button-container span.back, .ember-chat .chat-menu-button-container span.create, .ember-chat .chat-menu-button-container span.invite {
-	filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'invert\'><feColorMatrix in='SourceGraphic' type='matrix' values='-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0'/></filter></svg>#invert");
-	filter: invert(90%);
-	-webkit-filter: invert(90%);
-	-o-filter: invert(90%);
-	-ms-filter: invert(90%);
-	-moz-filter: invert(90%);
-}
 
 .no-login-contain li {
 	background: #000;
 }
 .no-login-contain h3 {
 	color: #DDD;
+}
+
+/* Hot Fixes for Redesign */
+ul.tabs li.selected a {
+	color: white;
+	border-bottom-color: white;
+}
+
+ul.tabs li>a:hover {
+	color: white;
+}
+
+.ember-chat .chat-menu .chat-menu-header {
+	border: 0px;
+	margin: 0px;
+	padding-left: 18px;
+	background: rgb(40,40,40);
+
+}
+.ember-chat .chat-settings .clear-chat a {
+	text-align: center;
+}
+.button-simple {
+	padding: 5px;
+}
+.ember-chat .chat-interface {
+	left: 0px;
+	right: 0px;
+}
+
+#channel .player-column .stats-and-actions .channel-stats .stat svg path{
+	fill: rgba(255,255,255,.35);
+}
+
+#channel .player-column .stats-and-actions .channel-stats .stat {
+	color: #aaa;
+}
+div#actions {
+	background: rgb(30,30,30)
+}
+
+#channel .player-column #broadcast-meta .info .edit-link{
+	background-repeat: no-repeat;
+}
+.chat-menu.dropmenu a {
+	color: white;
+}
+
+.button.glyph:hover path, .button.glyph-only:hover path, #channel .player-column .stats-and-actions .channel-actions .button:hover, .ember-chat .chat-menu-button-container:hover svg path {
+	fill: #fff;
+	color:#fff;
+}
+
+.button.drop:after {
+	border-color: rgba(2555,255,255,255.35);
+	border-left-color: transparent;
+	border-right-color: transparent;
+	border-bottom-color: transparent;
+}
+
+.ember-chat .chat-menu .chat-top-header {
+	border-bottom: 0px solid;
+} 
+
+.ember-chat .chat-menu-button-container:hover svg path {
+	fill: #fff;
+}
+
+.archives-contain .more-archives {
+	margin: 0 !important;
+	width: 100%;
+}
+
+div#header_actions span, div#header_actions a{
+	color: black;
+}
+
+.archives-contain .videos { 
+	padding:0;
+}
+.archives-contain .list-video {
+	padding: 10px 10px;
+}
+span#is-subscribed {
+	margin: 0px;
+	padding-left: 10px;
+	padding-right: 10px;
+	background-color: rgb(30, 30, 30);
+	box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset;
+	border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.35);
+	color: rgb(170, 170, 170);
+	text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px;
+	border: 1px solid;
+	padding-right: 10px;
+	border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.35);
+	border-radius: 2px;
+}
+.button.glyph svg path, .button.glyph-only svg path {
+	fill: rgb(170, 170, 170);
 }

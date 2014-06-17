@@ -60,3 +60,54 @@ BetterTTV
 >
 >   Can't sell addon or features of the addon
 >
+
+Building BetterTTV
+===
+
+Getting the essentials
+---
+1. Install nodejs.
+2. Run ```npm install``` within the BetterTTV directory.
+
+Gulp
+---
+We use gulp to concatenate all of the files and templates into one. You can either make gulp watch for changes or run it manually.
+
+From the BetterTTV directory, run
+```
+gulp
+```
+or
+```
+gulp watch
+```
+
+Testing
+----
+
+We include a test module that creates a server to imitate the CDN.
+
+To use it, we must first modify the hosts file on your computer.
+
+**on *nix:**
+```
+echo "127.0.0.1 cdn.betterttv.net" | sudo tee -a /etc/hosts
+```
+
+**on Windows:**
+
+add ```127.0.0.1 cdn.betterttv.net``` to ```%SystemRoot%\system32\drivers\etc\hosts```
+
+Now just run the following command from the BetterTTV directory.
+
+**on *nix:**
+```
+sudo npm test
+```
+
+**on Windows you need an elevated command prompt:**
+```
+npm test
+```
+
+A webserver will start and you can visit Twitch in your browser and browse normally. Files not included in the repo are pulled from the actual server, so everything works.
