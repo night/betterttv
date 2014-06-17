@@ -333,11 +333,6 @@ input.text:focus,select:focus,textarea:focus {
     background-image: url(//www-cdn.jtvnw.net/images/xarth/following_button_x.png);
 }
 
-#main_col .stats-and-actions #is-subscribed {
-    color: #2A4687;
-    background: url(../icons/sub_star.png) no-repeat left;
-}
-
 .more-archives.bottom:hover {
     color: #222 !important;
 }
