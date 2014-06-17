@@ -1,9 +1,0 @@
-div.ember-view.ember-chat.roomMode {
-	top:-50px;
-}
-.ember-chat .chat-interface {
-	bottom: -50px;
-}
-.ember-chat .chat-messages {
-bottom: 84px;
-}
