@@ -36,7 +36,7 @@
 #team_member_list .page_links a b.right, .page_links span.previous_page b, .page_links a.previous_page b {
 	border-right-color: #374a9b !important;
 } 
-#main_col .stats-and-actions #is-subscribed, .ember-chat .chat-room-list .room p.room-title, .button.unfollow, .button.unfollow:hover, .dropmenu.menu-like .dropmenu_action  {
+#main_col .stats-and-actions #is-subscribed, .ember-chat .chat-room-list .room p.room-title, .button.unfollow, .button.unfollow:hover {
 	color: #2A4687 !important;
 }
 .ember-chat .chat-menu-button-container svg path, .button.unfollow .svg-check path, .button.unfollow .svg-x path, #is-subscribed svg path {
@@ -45,6 +45,6 @@
 .dropmenu.menu-like .dropmenu_action:hover {
 	background-color: #2A4687 !important;
 }
-ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a {
+ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .dropmenu.menu-like .dropmenu_action  {
 	color: #2A4687;
 }

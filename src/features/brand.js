@@ -1,6 +1,5 @@
 var debug = require('debug');
-var cssBlueButtons = require('./css-blue-buttons'),
-    betaChat = require('./beta-chat');
+var betaChat = require('./beta-chat');
 
 module.exports = function () {
     debug.log("Branding Site with Better & Importing Styles");
@@ -56,11 +55,6 @@ module.exports = function () {
         $addCSS.attr('id', 'bttvChatIndentation');
         $addCSS.html('#chat_line_list .line p { padding-left: 16px;text-indent: -16px; }');
         $('body').append($addCSS);
-    }
-
-    // Import Blue Button CSS
-    if (bttv.settings.get("showPurpleButtons") !== true) {
-        cssBlueButtons();
     }
 
     // Small Popout/Embed Chat Fixes
