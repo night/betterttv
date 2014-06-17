@@ -286,6 +286,43 @@ body {
 	display: none;
 }
 
+/* Button backgrounds */
+.stats-and-actions .channel-actions .button {
+	margin: 0px;
+	padding-left: 10px;
+	padding-right: 10px;
+
+    background-color: rgb(30, 30, 30);
+    box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset;
+    border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.35);
+    color: rgb(170, 170, 170);
+    text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px;
+    border: 1px solid;
+    padding-right: 10px;
+    border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.35);
+    border-radius: 2px;
+}
+
+.stats-and-actions .channel-actions .button.drop {
+    padding-right: 0px;
+    width: 60px;
+}
+
+.stats-and-actions .channel-actions .button.glyph-only {
+	padding-right: 0px;
+    width: 34px;
+}
+
+.stats-and-actions .channel-actions .button.drop:after {
+    border-top-color: #777;
+    margin-right: 5px;
+}
+
+/* share popup background */
+.stats-and-actions .channel-actions .share {
+    background-color: rgb(30,30,30);
+}
+
 /* Taken from http://userstyles.org/styles/82967/twitch-dark-view */
 #channel_stats, .channel-stats {
 	background-color: rgb(30, 30, 30);

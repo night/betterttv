@@ -976,6 +976,10 @@ body#chat #speak {
     margin: 2px 0px;
 }
 
+.ember-chat .moderation-card .mod-controls button img {
+    margin: 6px 0px;
+}
+
 .ember-chat .moderation-card .interface {
     display: inline-block;
     width: 100%;
