@@ -1041,7 +1041,7 @@ body#chat #speak {
 	color: black;
 }
 .normal_button.active, .normal_button {
-	background: none
+	background: none;
 	box-shadow: none;
 	-webkit-box-shadow: none;
 	background-color:none;
