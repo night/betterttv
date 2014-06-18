@@ -1800,6 +1800,7 @@ var main = function () {
     handleLookupServer();
 
     $(document).ready(function () {
+        createSettings();
 
         debug.log("BTTV v" + bttv.info.versionString());
         debug.log("CALL init " + document.URL);
@@ -1811,7 +1812,6 @@ var main = function () {
         splitChat();
         flipDashboard();
         formatDashboard();
-        createSettings();
         bttv.settings.load();
         checkMessages();
         checkFollowing();
