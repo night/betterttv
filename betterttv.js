@@ -2386,22 +2386,22 @@ var main = function () {
     handleLookupServer();
 
     $(document).ready(function () {
-        createSettings();
-        bttv.settings.load();
 
         debug.log("BTTV v" + bttv.info.versionString());
         debug.log("CALL init " + document.URL);
 
-        brand();
         clearClutter();
         channelReformat();
-        checkMessages();
-        checkFollowing();
-        checkBroadcastInfo();
+        brand();
         darkenPage();
         splitChat();
         flipDashboard();
         formatDashboard();
+        createSettings();
+        bttv.settings.load();
+        checkMessages();
+        checkFollowing();
+        checkBroadcastInfo();
         giveawayCompatibility();
         dashboardChannelInfo();
         directoryFunctions();
