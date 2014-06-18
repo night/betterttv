@@ -2394,6 +2394,7 @@ var main = function () {
 
         clearClutter();
         channelReformat();
+        checkBroadcastInfo();
         brand();
         darkenPage();
         splitChat();
@@ -2401,7 +2402,6 @@ var main = function () {
         formatDashboard();
         checkMessages();
         checkFollowing();
-        checkBroadcastInfo();
         giveawayCompatibility();
         dashboardChannelInfo();
         directoryFunctions();
