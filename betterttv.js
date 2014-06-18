@@ -2387,6 +2387,7 @@ var main = function () {
 
     $(document).ready(function () {
         createSettings();
+        bttv.settings.load();
 
         debug.log("BTTV v" + bttv.info.versionString());
         debug.log("CALL init " + document.URL);
@@ -2398,7 +2399,6 @@ var main = function () {
         splitChat();
         flipDashboard();
         formatDashboard();
-        bttv.settings.load();
         checkMessages();
         checkFollowing();
         checkBroadcastInfo();
