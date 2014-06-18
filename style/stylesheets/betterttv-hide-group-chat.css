@@ -2,11 +2,11 @@
 	display: none;
 }
 .ember-chat .chat-room-list {
-	padding-top: 0px;
+	padding-top: 0px !important;
 }
 .ember-chat .chat-room {
-	top: 0px;
+	top: 0px !important;
 }
 .ember-chat .chat-rooms{
-    top: 0px;
+    top: 0px !important;
 }
