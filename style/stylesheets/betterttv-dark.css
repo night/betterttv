@@ -43,22 +43,19 @@ body {
 	border: 1px solid #000;
 }
 
-
-#mantle_skin #container #dash_main.wrapper #vod_form #toggle_play_switch.first.button.drop { 
+#dash_main .button.drop, .ember-application .button.drop { 
 	display: inline-block;
 	position: relative;
 	cursor: pointer;
 	line-height: 30px;
 	height: 30px;
-	font-size: 14px;
+	font-size: 12px;
 	font-family: inherit;
-	padding-left: 5px;
-	padding-right: 15px;
+	padding-left: 8px;
+	padding-right: 20px;
 	color: #6441a5;
 	border: 0;
-	background: -moz-linear-gradient(top, #f5f5f5, #ddd);
-	background: -o-linear-gradient(top, #f5f5f5, #ddd);
-	background: linear-gradient(top, #f5f5f5, #ddd);
+	background-color: rgb(30, 30, 30);
 	border-top: 1px solid rgba(0,0,0,0.2);
 	border-left: 1px solid rgba(0,0,0,0.3);
 	border-right: 1px solid rgba(0,0,0,0.3);
@@ -70,9 +67,26 @@ body {
 	color: #d3d3d3;
 }
 
+#dash_main .button.drop:after, .ember-application .button.drop:after {
+	border-color: rgba(2555,255,255,255.35);
+	border-left-color: transparent;
+	border-right-color: transparent;
+	border-bottom-color: transparent;
+	margin-right: 5px;
+}
+
 #dash_main #vod_form, #dash_main #delay_controls, #dash_main #stream-config-status .status-header {
 	background-color: #282828 !important;
 	border-color: #000 !important;
+}
+
+#dash_main #commercial_buttons {
+	float: none;
+	border: 1px solid rgba(0,0,0,0.2);
+	border-top: none;
+	height: 30px;
+	line-height: 30px;
+	background: rgba(0,0,0,0.05);
 }
 
 #dash_main .ui-slider-horizontal {
@@ -80,7 +94,7 @@ body {
 	box-shadow: none !important;
 }
 
-#dash_main #stats, #dash_main #stream-config-status .error-message {
+#dash_main #stats, #dash_main #commercial_buttons, #dash_main #stream-config-status .error-message {
 	background-color: rgb(30, 30, 30) !important;
 	border-color: #000 !important;
 }
@@ -147,8 +161,6 @@ body {
 
 #dash_main #stats .stat#chatters_count {
 	background: url(../icons/chatters_light.png) no-repeat left center;
-	padding-left: 17px;
-	margin: 0 -6px;
 }
 
 #dash_main #custom_filter #gameselector_input {
@@ -197,7 +209,6 @@ body {
 	cursor: pointer;
 	color: #d3d3d3;
 }
-
 
 #dash_main #commercial_options.dropmenu.menu-like .dropmenu_action {
 	color: #d3d3d3;
@@ -294,15 +305,59 @@ body {
     -moz-opacity: .50;
     -khtml-opacity: .50;
     opacity: .5;
-}
-
-#left_close span, #right_close span {
 	border: 1px solid;
 	border-color: rgba(0, 0, 0, 0.4) rgba(0, 0, 0, 0.5) rgba(0, 0, 0, 0.55);
 	background-image: url(../icons/arrow_collapse.png) !important;
 	box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 0px 1px;
 	background-color: rgb(50, 50, 50);
 	box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset;
+}
+
+#left_close:before, #right_close:before {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 0;
+	height: 0;
+	margin-top: -5px;
+	margin-left: -8px;
+	border: 5px solid #fff;
+	border-left-color: transparent;
+	border-top-color: transparent;
+	border-bottom-color: transparent;
+}
+
+#right_close:before {
+	margin-left: -2px;
+	border: 5px solid #fff;
+	border-right-color: transparent;
+	border-top-color: transparent;
+	border-bottom-color: transparent;
+}
+
+#right_close.closed:before {
+	margin-left: -8px;
+	border: 5px solid #fff;
+	border-left-color: transparent;
+	border-top-color: transparent;
+	border-bottom-color: transparent;
+}
+
+#left_close:before {
+	margin-left: -8px;
+	border: 5px solid #fff;
+	border-left-color: transparent;
+	border-top-color: transparent;
+	border-bottom-color: transparent;
+}
+
+#left_col.closed #left_close:before {
+	margin-left: -2px;
+	border: 5px solid #fff;
+	border-right-color: transparent;
+	border-top-color: transparent;
+	border-bottom-color: transparent;
 }
 
 .tse-scrollbar .drag-handle {
@@ -1568,13 +1623,6 @@ div#actions {
 	color:#fff;
 }
 
-.button.drop:after {
-	border-color: rgba(2555,255,255,255.35);
-	border-left-color: transparent;
-	border-right-color: transparent;
-	border-bottom-color: transparent;
-}
-
 .ember-chat .chat-menu .chat-top-header {
 	border-bottom: 0px solid;
 } 
@@ -1598,6 +1646,7 @@ div#header_actions span, div#header_actions a{
 .archives-contain S.list-video {
 	padding: 10px 10px;
 }
+
 span#is-subscribed {
 	margin: 0px;
 	padding-left: 10px;
@@ -1611,14 +1660,29 @@ span#is-subscribed {
 	padding-right: 10px;
 	border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.35);
 	border-radius: 2px;
+	font-size: 12px;
 }
+
+#channel .player-column .stats-and-actions .channel-actions .button.primary span {
+	color: #fff;
+}
+
 .button.glyph svg path, .button.glyph-only svg path {
 	fill: rgb(170, 170, 170);
+}
+
+.ember-chat .chat-menu-button-container svg path {
+	fill: #D3D3D3 !important;
+}
+
+.ember-chat .chat-interface .emoticon-selector .subscribe-message {
+	padding: 5px;
+	margin: 0px;
 }
 
 #main_col .stats-and-actions #is-subscribed, .ember-chat .chat-room-list .room p.room-title, .button.unfollow, .button.unfollow:hover {
 	color: #D3D3D3 !important;
 }
-ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .dropmenu.menu-like .dropmenu_action  {
+ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .ember-application .dropmenu.menu-like .dropmenu_action  {
 	color: #D3D3D3;
 }

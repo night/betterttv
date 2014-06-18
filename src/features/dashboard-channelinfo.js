@@ -19,13 +19,12 @@ module.exports = function dashboardChannelInfo() {
             }
         });
         if(!$("#chatters_count").length) {
-            var $chattersContainer = $("<span></span>");
+            var $chattersContainer = $("<div></div>");
             $chattersContainer.attr("class", "stat");
             $chattersContainer.attr("id", "chatters_count");
             $chattersContainer.attr("tooltipdata", "Chatters");
             $chattersContainer.text('0');
             $("#followers_count").after($chattersContainer);
-            if($("#commercial_buttons").length) $("#followers_count").after('<div style="margin-top:5px;"> </div>');
         }
 
         $.getJSON('http://tmi.twitch.tv/group/user/' + bttv.getChannel() + '/chatters?callback=?', function(data) {
@@ -36,7 +35,7 @@ module.exports = function dashboardChannelInfo() {
             $.get('/broadcast/dashboard/partnership', function (data) {
                 var $subsContainer = $(data).find("div.main div.wrapper"),
                     subsRegex = /Your channel currently has ([0-9,]+) paying subscribers and ([0-9,]+) total active subscribers/;
-                    
+                    Your channel currently has 42 paying subscribers and 45 total active subscribers
                 if ($subsContainer) {
                     var containerText = $subsContainer.text();
 
@@ -45,7 +44,7 @@ module.exports = function dashboardChannelInfo() {
                             activeSubs = subAmounts[2];
 
                         if(!$("#channel_subs_count").length) {
-                            var $subsContainer = $("<span></span>");
+                            var $subsContainer = $("<div></div>");
                             $subsContainer.attr("class", "stat");
                             $subsContainer.attr("id", "channel_subs_count");
                             $subsContainer.attr("tooltipdata", "Active Subscribers");

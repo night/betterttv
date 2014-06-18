@@ -6,6 +6,10 @@ body.channel_new {
     overflow-y: hidden;
 }
 
+.button {
+    font-size: 12px;
+}
+
 .member.live {
     background: #bdbcbc;
 }
@@ -684,9 +688,14 @@ input.text:focus,select:focus,textarea:focus {
     float: none;
 }
 
-#dash_main #vod_form, #dash_main #stats {
+#dash_main #vod_form, #dash_main #stats, #dash_main #commercial_buttons {
     width: 380px;
     padding: 10px;
+}
+
+#dash_main #hide_preview {
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 #dash_main #vod_form {
@@ -694,7 +703,7 @@ input.text:focus,select:focus,textarea:focus {
     border-top-right-radius: 4px;
 }
 
-#dash_main #stats {
+#dash_main #commercial_buttons {
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
 }
@@ -719,7 +728,6 @@ input.text:focus,select:focus,textarea:focus {
 }
 
 #dash_main #stats .stat#channel_subs_count {
-    padding-left: 18px;
     background: url(//www-cdn.jtvnw.net/images/xarth/g/g18_star-00000080.png) no-repeat left center;
 }
 
@@ -1030,33 +1038,61 @@ body#chat #speak {
 }
 
 .ember-chat .chat-buttons-container .chat-option-buttons button {
-	border: none!important;
-	height: 28px!important;
-	width: 28px!important;
+	border: none !important;
+	height: 28px !important;
+	width: 28px !important;
 }
-.ember-chat .chat-menu .chat-top-header{
+
+.ember-chat .chat-menu .chat-top-header {
 	border-bottom: 0px solid;
 	margin: 0px;
 }
-#small_nav .content ul li .home_icon svg path{
+
+#small_nav .content ul li .home_icon svg path {
 	display: none;
 }
+
 .chat-menu.dropmenu a {
 	color: black;
 }
+
 .normal_button.active, .normal_button {
 	background: none;
 	box-shadow: none;
 	-webkit-box-shadow: none;
-	background-color:none;
+	background-color: none;
 }
+
 #channel .player-column .stats-and-actions .channel-stats {
     font-size: 12px;
 }
-.ember-chat .chat-header{
+
+.ember-chat .chat-menu .chat-top-header p {
+    line-height: 40px;
+}
+
+.ember-chat .chat-settings {
+    padding: 0px;
+}
+
+.ember-chat .chat-header {
     right: 0px;
     left: 0px;
     width: 100%;
+    line-height: 40px;
+    height: 40px;
+}
+
+.ember-chat .chat-menu-button-container {
+    height: 40px;
+}
+
+.ember-chat .chat-menu-button-container span {
+    padding: 13px 11px;
+}
+
+.ember-chat .chat-room, .ember-chat .chat-rooms {
+    top: 40px;
 }
 
 .ember-chat .chat-menu .list-header {

@@ -316,7 +316,7 @@ module.exports = [
         toggle: function(value) {
             if(value === true) {
                 $("#flipDashboard").text("Unflip Dashboard");
-                bttv.flipDashboard();
+                flipDashboard();
             } else {
                 $("#flipDashboard").text("Flip Dashboard");
                 $("#controls_column, #player_column").css({
