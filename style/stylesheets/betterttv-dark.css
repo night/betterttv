@@ -151,7 +151,6 @@ body {
 
 #dash_main #stats .stat#followers_count {
 	background: url(../icons/followers.png) no-repeat left center !important;
-	padding-right: 5px;
 	padding-left: 18px;
 }
 

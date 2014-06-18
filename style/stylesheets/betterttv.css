@@ -728,17 +728,13 @@ input.text:focus,select:focus,textarea:focus {
 }
 
 #dash_main #stats .stat#channel_subs_count {
+    padding-left: 18px;
     background: url(//www-cdn.jtvnw.net/images/xarth/g/g18_star-00000080.png) no-repeat left center;
 }
 
 #dash_main #stats .stat#chatters_count {
     padding-left: 18px;
-    margin: 0 6px;
     background: url(../icons/chatters_dark.png) no-repeat left center;
-}
-
-#dash_main #stats .stat#followers_count {
-    margin-right: 6px;
 }
 
 .normal_button, .large_normal_button, .dropdown, .dropdown_static, .dropdown_glyph, .primary_button, button.primary, #left_close, #right_close {
