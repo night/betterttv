@@ -1574,7 +1574,7 @@ div.chat-room-list.chat-menu div.js-rooms.scroll.chat-rooms div.tse-scroll-conte
 /* Hot Fixes for Redesign */
 ul.tabs li.selected a {
 	color: white;
-	border-bottom-color: white;
+	border-bottom-color: white !important;
 }
 
 ul.tabs li>a:hover {
