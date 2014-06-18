@@ -24,7 +24,7 @@
 	background: -webkit-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%); 
 	background: -ms-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);
 }
-#subscribe_action .subscribe-text{
+#subscribe_action .subscribe-text {
 	background: none;
 }
 #team_member_list .page_links a, .page_links span.next_page b, .page_links a.next_page b, #main_col .messages div.preview.unread {

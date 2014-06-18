@@ -2770,7 +2770,7 @@ module.exports = [
         toggle: function(value) {
             if(value === true) {
                 $("#flipDashboard").text("Unflip Dashboard");
-                bttv.flipDashboard();
+                flipDashboard();
             } else {
                 $("#flipDashboard").text("Flip Dashboard");
                 $("#controls_column, #player_column").css({
@@ -3420,13 +3420,12 @@ module.exports = function dashboardChannelInfo() {
             }
         });
         if(!$("#chatters_count").length) {
-            var $chattersContainer = $("<span></span>");
+            var $chattersContainer = $("<div></div>");
             $chattersContainer.attr("class", "stat");
             $chattersContainer.attr("id", "chatters_count");
             $chattersContainer.attr("tooltipdata", "Chatters");
             $chattersContainer.text('0');
             $("#followers_count").after($chattersContainer);
-            if($("#commercial_buttons").length) $("#followers_count").after('<div style="margin-top:5px;"> </div>');
         }
 
         $.getJSON('http://tmi.twitch.tv/group/user/' + bttv.getChannel() + '/chatters?callback=?', function(data) {
@@ -3446,7 +3445,7 @@ module.exports = function dashboardChannelInfo() {
                             activeSubs = subAmounts[2];
 
                         if(!$("#channel_subs_count").length) {
-                            var $subsContainer = $("<span></span>");
+                            var $subsContainer = $("<div></div>");
                             $subsContainer.attr("class", "stat");
                             $subsContainer.attr("id", "channel_subs_count");
                             $subsContainer.attr("tooltipdata", "Active Subscribers");
