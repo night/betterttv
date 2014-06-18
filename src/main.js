@@ -1707,7 +1707,7 @@ var handleLookupServer = function() {
 var checkJquery = function (times) {
     times = times || 0;
     if(times > 9) return;
-    if(typeof ($j) === 'undefined') {
+    if(typeof (window.jQuery) === 'undefined') {
         debug.log("jQuery is undefined.");
         setTimeout(function() { checkJquery(times+1); }, 1000);
         return;
