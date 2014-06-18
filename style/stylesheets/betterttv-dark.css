@@ -431,7 +431,8 @@ body {
 	margin-right: 10px !important;
 }
 
-.stats-and-actions .channel-actions .button, .chat-option-buttons .button, #channel_actions .button {
+.stats-and-actions .channel-actions .button,
+.chat-option-buttons .button, #channel_actions .button {
 	margin: 0px;
 	margin-right: 8px;
 	padding: 0px 10px;
@@ -442,14 +443,17 @@ body {
     color: rgb(170, 170, 170);
     text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px;
     border: 1px solid;
-    padding-right: 10px;
     border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.35);
     border-radius: 2px;
 }
 
+.stats-and-actions .channel-actions .primary, #channel_actions .primary {
+	background-color: #6441a5;
+}
+
 .stats-and-actions .channel-actions .button.drop, #channel_actions .button.drop {
     padding-right: 0px;
-    width: 60px;
+    width: 55px;
 }
 
 .stats-and-actions .channel-actions .button.drop:after, #channel_actions .button.drop:after {
@@ -459,7 +463,7 @@ body {
 
 .stats-and-actions .channel-actions .button.glyph-only.drop, #channel_actions .button.glyph-only.drop {
 	padding-right: 0px;
-    width: 40px;
+    width: 38px;
 }
 
 .ember-chat .chat-interface .chat-buttons-container .chat-option-buttons .button:first-child {
@@ -512,14 +516,13 @@ body {
 .ember-chat .chat-buttons-container .chat-option-buttons button {
 /*	background: rgb(30, 30, 30);*/
 	background-image: url(../icons/button_glyphs_new.png) !important;
-	border: none !important;
 /*	box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset !important;
 	border-top: 1px solid rgba(0,0,0,0.2) !important;
 	border-left: 1px solid rgba(0,0,0,0.3) !important;
 	border-right: 1px solid rgba(0,0,0,0.3) !important;
 	border-bottom: 1px solid rgba(0,0,0,0.35) !important;*/
-	height: 28px !important;
-	width: 28px !important;
+	height: 32px !important;
+	width: 38px !important;
 }
 
 .ember-chat .chat-buttons-container .chat-option-buttons button.settings {
@@ -977,7 +980,7 @@ body {
 }
 
 #chat_emote_dropmenu_button.newlayout {
-	margin-left: 3px !important;
+	margin-left: 0px !important;
 }
 
 .ember-chat .chat-menu-button-container.left, .ember-chat .chat-menu-button-container.right {
