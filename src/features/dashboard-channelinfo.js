@@ -33,9 +33,9 @@ module.exports = function dashboardChannelInfo() {
 
         if(vars.dontCheckSubs !== true) {
             $.get('/broadcast/dashboard/partnership', function (data) {
-                var $subsContainer = $(data).find("div.main div.wrapper"),
+                var $subsContainer = $(data).find("div.wrapper"),
                     subsRegex = /Your channel currently has ([0-9,]+) paying subscribers and ([0-9,]+) total active subscribers/;
-                    Your channel currently has 42 paying subscribers and 45 total active subscribers
+
                 if ($subsContainer) {
                     var containerText = $subsContainer.text();
 
