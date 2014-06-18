@@ -11,7 +11,7 @@ bttv.info = {
     versionString: function() {
 =======
     version: "6.8BETA",
-    release: 1,
+    release: 2,
     versionString: function() { 
 >>>>>>> upstream/master
         return bttv.info.version + 'R' + bttv.info.release;

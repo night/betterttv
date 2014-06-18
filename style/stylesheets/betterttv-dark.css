@@ -369,10 +369,18 @@ body {
 }
 
 /* Button backgrounds */
-.stats-and-actions .channel-actions .button {
+.stats-and-actions .channel-actions .actions {
+	margin-right: 0px !important;
+}
+
+#channel .player-column .stats-and-actions .channel-actions .button, #is-subscribed, #channel_actions .button {
+	margin-right: 10px !important;
+}
+
+.stats-and-actions .channel-actions .button, .chat-option-buttons .button, #channel_actions .button {
 	margin: 0px;
-	padding-left: 10px;
-	padding-right: 10px;
+	margin-right: 8px;
+	padding: 0px 10px;
 
     background-color: rgb(30, 30, 30);
     box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset;
@@ -385,23 +393,28 @@ body {
     border-radius: 2px;
 }
 
-.stats-and-actions .channel-actions .button.drop {
+.stats-and-actions .channel-actions .button.drop, #channel_actions .button.drop {
     padding-right: 0px;
     width: 60px;
 }
 
-.stats-and-actions .channel-actions .button.glyph-only {
-	padding-right: 0px;
-    width: 34px;
-}
-
-.stats-and-actions .channel-actions .button.drop:after {
+.stats-and-actions .channel-actions .button.drop:after, #channel_actions .button.drop:after {
     border-top-color: #777;
     margin-right: 5px;
 }
 
+.stats-and-actions .channel-actions .button.glyph-only.drop, #channel_actions .button.glyph-only.drop {
+	padding-right: 0px;
+    width: 40px;
+}
+
+.ember-chat .chat-interface .chat-buttons-container .chat-option-buttons .button:first-child {
+	padding: 0px 10px;
+	margin-left: 1px;
+}
+
 /* share popup background */
-.stats-and-actions .channel-actions .share {
+.stats-and-actions .channel-actions .share, #channel_actions .share {
     background-color: rgb(30,30,30);
 }
 
@@ -1582,7 +1595,7 @@ div#header_actions span, div#header_actions a{
 .archives-contain .videos { 
 	padding:0;
 }
-.archives-contain .list-video {
+.archives-contain S.list-video {
 	padding: 10px 10px;
 }
 span#is-subscribed {
@@ -1601,4 +1614,11 @@ span#is-subscribed {
 }
 .button.glyph svg path, .button.glyph-only svg path {
 	fill: rgb(170, 170, 170);
+}
+
+#main_col .stats-and-actions #is-subscribed, .ember-chat .chat-room-list .room p.room-title, .button.unfollow, .button.unfollow:hover {
+	color: #D3D3D3 !important;
+}
+ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .dropmenu.menu-like .dropmenu_action  {
+	color: #D3D3D3;
 }

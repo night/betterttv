@@ -597,7 +597,7 @@ bttv.info = {
     versionString: function() {
 =======
     version: "6.8BETA",
-    release: 1,
+    release: 2,
     versionString: function() { 
 >>>>>>> upstream/master
         return bttv.info.version + 'R' + bttv.info.release;
@@ -2697,22 +2697,6 @@ module.exports = [
                 removeElement('#nav_streams');
                 removeElement('#nav_related_streams');
             }
-        }
-    },
-    {
-        name: 'Hide Chat Navigation',
-        description: 'Hides the chat - video navigation bar above chat',
-        default: false,
-        storageKey: 'chatNavRemoval',
-        toggle: function(value) {
-            if(value === true) {
-                cssLoader.load("hide-chat-nav", "chatNavRemoval");
-            } else {
-                cssLoader.unload("chatNavRemoval");   
-            }
-        },
-        load: function() {
-            cssLoader.load("hide-chat-nav", "chatNavRemoval");
         }
     },
     {
