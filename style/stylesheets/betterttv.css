@@ -1097,3 +1097,9 @@ div#header_actions span, div#header_actions a{
 span.mod-controls {
     display: inline-block;
 }
+#main_col .stats-and-actions #is-subscribed, .ember-chat .chat-room-list .room p.room-title, .button.unfollow, .button.unfollow:hover {
+    color: #000 !important;
+}
+ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .dropmenu.menu-like .dropmenu_action  {
+    color: #000;
+}

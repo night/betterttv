@@ -1595,7 +1595,7 @@ div#header_actions span, div#header_actions a{
 .archives-contain .videos { 
 	padding:0;
 }
-.archives-contain .list-video {
+.archives-contain S.list-video {
 	padding: 10px 10px;
 }
 span#is-subscribed {
@@ -1614,4 +1614,11 @@ span#is-subscribed {
 }
 .button.glyph svg path, .button.glyph-only svg path {
 	fill: rgb(170, 170, 170);
+}
+
+#main_col .stats-and-actions #is-subscribed, .ember-chat .chat-room-list .room p.room-title, .button.unfollow, .button.unfollow:hover {
+	color: #D3D3D3 !important;
+}
+ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .dropmenu.menu-like .dropmenu_action  {
+	color: #D3D3D3;
 }
