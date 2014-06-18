@@ -2298,7 +2298,7 @@ var checkJquery = function (times) {
         setTimeout(function() { checkJquery(times+1); }, 1000);
         return;
     } else {
-        var $ = $j;
+        var $ = window.jQuery;
         bttv.jQuery = $;
         main();
     }
