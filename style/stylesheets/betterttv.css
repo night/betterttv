@@ -1094,3 +1094,6 @@ div#header_actions span, div#header_actions a{
 .archives-contain .list-video {
     padding: 10px 10px;
 }
+span.mod-controls {
+    display: inline-block;
+}
