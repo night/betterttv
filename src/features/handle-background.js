@@ -9,6 +9,7 @@ module.exports = function handleBackground(tiled) {
         $('#channel').prepend($bg);
     }
 
+    if(!window.App) return;
     App.Panel.find("user", { user: bttv.getChannel() } ).get('content').forEach(function(panel) {
         var url = panel.get('data').link;
         if(url && url.indexOf('#BTTV#') !== -1) {

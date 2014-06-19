@@ -2433,13 +2433,18 @@ var main = function () {
     });
 }
 
-if (document.URL.indexOf("receiver.html") !== -1 || document.URL.indexOf("cbs_ad_local.html") !== -1) {
+if(document.URL.indexOf("receiver.html") !== -1 || document.URL.indexOf("cbs_ad_local.html") !== -1) {
     debug.log("HTML file called by Twitch.");
     return;
 }
 
 if(location.pathname.match(/^\/(.*)\/popout/)) {
     debug.log("Popout player detected.");
+    return;
+}
+
+if(!window.Twitch) {
+    debug.log("window.Twitch not detected.");
     return;
 }
 
@@ -3181,13 +3186,13 @@ module.exports = function () {
                 $(".js-unread_message_count").text(j || "");
                 j ? $(".js-unread_message_count").show() : $(".js-unread_message_count").hide();
                 if (notificationsLoaded === true && notifications < j) {
-                    $.get('/inbox', function (data) {
+                    $.get('/messages/inbox', function (data) {
                         var $message = $(data).find("#message-list .unread:first");
                             
                         if ($message) {
                             var $senderData = $message.children("div.from_to_user"),
                                 $messageData = $message.children("div.message_data"),
-                                url = "http://www.twitch.tv"+$messageData.children(".message_subject").attr("href"),
+                                url = location.protocol+'//'+location.host+$messageData.children(".message_subject").attr("href"),
                                 avatar = $senderData.children(".prof").children("img").attr("src"),
                                 sender = $senderData.children(".capital").text().capitalize();
                         } else {
@@ -3224,6 +3229,33 @@ module.exports = function () {
             });
         });
     }
+
+    // Twitch doesn't tell us when messages from /messages/other show up.
+    var seenMessages = [];
+    var recentMessageTimes = ['less than a minute ago', '1 minute ago'];
+    var checkOther = function() {
+        $.get('/messages/other', function (data) {
+            var $messages = $(data).find("#message-list .unread");
+
+            $messages.each(function() {
+                var $message = $(this),
+                    $senderData = $message.children("div.from_to_user"),
+                    $messageData = $message.children("div.message_data"),
+                    url = location.protocol+'//'+location.host+$message.data('url'),
+                    messageId = $message.data('url').match(/\/message\/show\/([a-z0-9]+)/)[1];
+                    avatar = $senderData.children(".prof").children("img").attr("src"),
+                    sender = $senderData.children(".capital").text().trim().capitalize(),
+                    time = $messageData.children(".time_ago").text().trim();
+
+                if(seenMessages.indexOf(url) !== -1 || recentMessageTimes.indexOf(time) === -1) return;
+                seenMessages.push(url);
+                bttv.notify(sender+' just sent you a Message!\nClick here to view it.', 'Twitch Message Received', url, avatar, 'new_message_'+messageId);
+            });
+        });
+    }
+
+    setInterval(checkOther, 30000);
+    checkOther();
 }
   
 });
@@ -3594,6 +3626,7 @@ require.register("features/handle-background", function(exports, require, module
         $('#channel').prepend($bg);
     }
 
+    if(!window.App) return;
     App.Panel.find("user", { user: bttv.getChannel() } ).get('content').forEach(function(panel) {
         var url = panel.get('data').link;
         if(url && url.indexOf('#BTTV#') !== -1) {

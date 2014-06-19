@@ -1847,13 +1847,18 @@ var main = function () {
     });
 }
 
-if (document.URL.indexOf("receiver.html") !== -1 || document.URL.indexOf("cbs_ad_local.html") !== -1) {
+if(document.URL.indexOf("receiver.html") !== -1 || document.URL.indexOf("cbs_ad_local.html") !== -1) {
     debug.log("HTML file called by Twitch.");
     return;
 }
 
 if(location.pathname.match(/^\/(.*)\/popout/)) {
     debug.log("Popout player detected.");
+    return;
+}
+
+if(!window.Twitch) {
+    debug.log("window.Twitch not detected.");
     return;
 }
 
