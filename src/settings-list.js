@@ -56,6 +56,22 @@ module.exports = [
         }
     },
     {
+        name: 'Blue Buttons',
+        description: 'BetterTTV replaces Twitch\'s purple with blue by default',
+        default: true,
+        storageKey: 'showBlueButtons',
+        toggle: function(value) {
+            if(value === true) {
+                cssLoader.load("blue-buttons", "showBlueButtons");
+            } else {
+                cssLoader.unload("showBlueButtons");   
+            }
+        },
+        load: function() {
+            cssLoader.load("blue-buttons", "showBlueButtons");
+        }
+    },
+    {
         name: 'Chat Indentation',
         description: 'Indent long chat lines to make them easier to read',
         default: true,
@@ -202,19 +218,12 @@ module.exports = [
         storageKey: 'modcardsKeybinds'
     },
     {
-        name: 'Blue Buttons',
-        description: 'BetterTTV replaces Twitch\'s purple with blue by default',
-        default: true,
-        storageKey: 'showBlueButtons',
-        toggle: function(value) {
-            if(value === true) {
-                cssLoader.load("blue-buttons", "showBlueButtons");
-            } else {
-                cssLoader.unload("showBlueButtons");   
-            }
-        },
-        load: function() {
-            cssLoader.load("blue-buttons", "showBlueButtons");
+        name: 'Other Messages Alert',
+        description: 'BetterTTV can alert you when you receive a message to your "Other" messages folder',
+        default: false,
+        storageKey: 'alertOtherMessages',
+        toggle: function() {
+            window.location.reload();
         }
     },
     {

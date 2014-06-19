@@ -2515,6 +2515,22 @@ module.exports = [
         }
     },
     {
+        name: 'Blue Buttons',
+        description: 'BetterTTV replaces Twitch\'s purple with blue by default',
+        default: true,
+        storageKey: 'showBlueButtons',
+        toggle: function(value) {
+            if(value === true) {
+                cssLoader.load("blue-buttons", "showBlueButtons");
+            } else {
+                cssLoader.unload("showBlueButtons");   
+            }
+        },
+        load: function() {
+            cssLoader.load("blue-buttons", "showBlueButtons");
+        }
+    },
+    {
         name: 'Chat Indentation',
         description: 'Indent long chat lines to make them easier to read',
         default: true,
@@ -2661,19 +2677,12 @@ module.exports = [
         storageKey: 'modcardsKeybinds'
     },
     {
-        name: 'Blue Buttons',
-        description: 'BetterTTV replaces Twitch\'s purple with blue by default',
-        default: true,
-        storageKey: 'showBlueButtons',
-        toggle: function(value) {
-            if(value === true) {
-                cssLoader.load("blue-buttons", "showBlueButtons");
-            } else {
-                cssLoader.unload("showBlueButtons");   
-            }
-        },
-        load: function() {
-            cssLoader.load("blue-buttons", "showBlueButtons");
+        name: 'Other Messages Alert',
+        description: 'BetterTTV can alert you when you receive a message to your "Other" messages folder',
+        default: false,
+        storageKey: 'alertOtherMessages',
+        toggle: function() {
+            window.location.reload();
         }
     },
     {
@@ -3231,8 +3240,10 @@ module.exports = function () {
     }
 
     // Twitch doesn't tell us when messages from /messages/other show up.
+    if(bttv.settings.get('alertOtherMessages') === false) return;
     var seenMessages = [];
     var recentMessageTimes = ['less than a minute ago', '1 minute ago'];
+
     var checkOther = function() {
         $.get('/messages/other', function (data) {
             var $messages = $(data).find("#message-list .unread");
@@ -3242,7 +3253,7 @@ module.exports = function () {
                     $senderData = $message.children("div.from_to_user"),
                     $messageData = $message.children("div.message_data"),
                     url = location.protocol+'//'+location.host+$message.data('url'),
-                    messageId = $message.data('url').match(/\/message\/show\/([a-z0-9]+)/)[1];
+                    messageId = $message.data('url').match(/\/message\/show\/([a-z0-9]+)/)[1],
                     avatar = $senderData.children(".prof").children("img").attr("src"),
                     sender = $senderData.children(".capital").text().trim().capitalize(),
                     time = $messageData.children(".time_ago").text().trim();
