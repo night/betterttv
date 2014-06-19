@@ -86,13 +86,15 @@ module.exports = function () {
             url: "//cdn.betterttv.net/emotes/bacondance.gif",
             width: 72,
             height: 35,
-            regex: "AwwwYeah"
+            regex: "AwwwYeah",
+            channel: "Bacon_Donut"
         });
         betterttvEmotes.push({
             url: "//cdn.betterttv.net/emotes/bacon.gif",
             width: 33,
             height: 35,
-            regex: "BaconTime"
+            regex: "BaconTime",
+            channel: "Bacon_Donut"
         });
     }
 
@@ -216,7 +218,7 @@ module.exports = function () {
             width: 30,
             height: 30,
             regex: "PunchStick",
-            channel: "bacon_donut",
+            channel: "Bacon_Donut",
             emoticon_set: 172
         });
     }
