@@ -743,7 +743,7 @@ input.text:focus,select:focus,textarea:focus {
 }
 
 .ember-chat .chat-interface .chat-buttons-container .send-chat-button {
-    width: 200px;
+    width: 100px;
     float: right;
     left: auto;
     right: 0px;
@@ -1034,9 +1034,8 @@ body#chat #speak {
 }
 
 .ember-chat .chat-buttons-container .chat-option-buttons button {
-	border: none !important;
-	height: 28px !important;
-	width: 28px !important;
+	height: 32px !important;
+    width: 38px !important;
 }
 
 .ember-chat .chat-menu .chat-top-header {
