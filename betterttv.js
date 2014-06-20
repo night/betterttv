@@ -1608,9 +1608,12 @@ bttv.chat = {
                 if(channel.unread > 0) {
                     unreadChannels++;
                 }
-                channel.emberRoom.set('unreadCount', channel.unread);
+                try {
+                    channel.emberRoom.set('unreadCount', channel.unread);
+                } catch(e) {
+                    debug.log('Error setting unread count! Ember controller for channel must be removed.');
+                }
             });
-
             controller.set('notificationsCount', unreadChannels);
         },
         shiftQueue: function() {
@@ -1710,6 +1713,7 @@ bttv.chat = {
                 bttv.chat.store.getRoom(channel).queueMessage(data);
                 return;
             }
+            if(!bttv.chat.tmi() || !bttv.chat.tmi().tmiRoom) return;
             try {
                 bttv.chat.handlers.privmsg(channel, data);
             } catch(e) {
