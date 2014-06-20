@@ -1456,11 +1456,13 @@ bttv.chat = {
         },
         getRoom: function(name) {
             if(!bttv.chat.store.__rooms[name]) {
-                delete bttv.chat.tmi().tmiRoom._events['message'];
-                delete bttv.chat.tmi().tmiRoom._events['clearchat'];
                 bttv.chat.store.newRoom(name);
-                bttv.chat.tmi().tmiRoom.on('message', bttv.chat.store.getRoom(name).chatHandler);
-                bttv.chat.tmi().tmiRoom.on('clearchat', bttv.chat.handlers.clearChat);
+                if(bttv.chat.tmi().tmiRoom) {
+                    delete bttv.chat.tmi().tmiRoom._events['message'];
+                    delete bttv.chat.tmi().tmiRoom._events['clearchat'];
+                    bttv.chat.tmi().tmiRoom.on('message', bttv.chat.store.getRoom(name).chatHandler);
+                    bttv.chat.tmi().tmiRoom.on('clearchat', bttv.chat.handlers.clearChat);
+                }
             }
             return bttv.chat.store.__rooms[name];
         },
