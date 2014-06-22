@@ -15,7 +15,7 @@ var checkFollowing = module.exports = function () {
             if (d.streams && d.streams.length > 0) {
                 d.streams.forEach(function(stream) {
                     // Temporary fix for bad streams being included in the list
-                    if(!stream.viewers) {
+                    if(stream.viewers === null) {
                         var error = {
                             date: new Date(),
                             type: 'viewers null',
