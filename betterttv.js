@@ -3130,6 +3130,17 @@ var checkFollowing = module.exports = function () {
         Twitch.api.get("streams/followed?limit=100&offset="+offset).done(function (d) {
             if (d.streams && d.streams.length > 0) {
                 d.streams.forEach(function(stream) {
+                    // Temporary fix for bad streams being included in the list
+                    if(!stream.viewers) {
+                        var error = {
+                            date: new Date(),
+                            type: 'viewers null',
+                            stream: stream
+                        }
+                        $.get('//nightdev.com/betterttv/errors/?obj='+encodeURIComponent(JSON.stringify(error)));
+                        return;
+                    }
+
                     if(followingNames.indexOf(stream.channel.name) === -1) {
                         followingNames.push(stream.channel.name);
                         followingList.push(stream);
