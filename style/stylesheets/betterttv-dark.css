@@ -377,12 +377,6 @@ body {
 	background: rgb(20, 20, 20) !important;
 }
 
-#dash_main {
-	padding-top: 10px;
-	margin-top: 53px;
-	padding-bottom: 20px;
-}
-
 #container {
 	background: none !important;
 	border: none;
@@ -471,9 +465,36 @@ body {
 	margin-left: 1px;
 }
 
-/* share popup background */
+/* Share button popup background */
 .stats-and-actions .channel-actions .share, #channel_actions .share {
     background-color: rgb(30,30,30);
+}
+
+/* Subscriptions Page Dropmenu Fix */
+.profile-actions .dropmenu {
+	background-color: rgb(30,30,30);
+	color: #fff;
+}
+.profile-actions .dropmenu a {
+	color: #aaa;
+}
+
+/* playing/not playing menu */
+.modal-form .dropmenu {
+	background-color: rgb(30,30,30);
+	color: #fff;
+}
+.modal-form .dropmenu a {
+	color: #aaa;
+}
+
+/* darken jquery ui */
+.ui-menu {
+	background: rgb(35,35,35);
+	color: #fff;
+}
+.ui-menu-item {
+	color: #fff;
 }
 
 /* Taken from http://userstyles.org/styles/82967/twitch-dark-view */
