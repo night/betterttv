@@ -1,8 +1,10 @@
-.option(class="bttvOption-#{storageKey}")
+.option(class="bttvOption-#{storageKey}" style="height: 145px; clear: both")
     span(style="font-weight:bold;font-size:14px;color:#D3D3D3;")= name
     | &nbsp;&nbsp;&mdash;&nbsp;&nbsp;
     = description
-    select(class="bttvOption-list-#{setting.name)")
-        input(class="setting-list-add" data-setting=name)
-        - for value in bttv.settings.get(storageKey)
-            option value
+    br
+    div
+        select(id="bttvOption-list-#{storageKey}" style="float: left; width: 250px; height: 115px" multiple)
+            - for value in bttv.settings.get(storageKey)
+                option= value
+        input(class="setting-list-add" data-setting=storageKey style="float: right" placeholder="Add a value")

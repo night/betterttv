@@ -622,6 +622,25 @@ bttv.settings = {
     get: function(setting) {
         return (vars.settings[setting]) ? vars.settings[setting].value : null;
     },
+    popup: function() {
+        var settingsUrl = 'http://'+window.location.host+'/settings?bttvSettings=true';
+        window.open(settingsUrl, 'BetterTTV Settings', 'width=800,height=500,top=500,left=800,scrollbars=no,location=no,directories=no,status=no,menubar=no,toolbar=no,resizable=no');
+    },
+    prefix: "bttv_",
+    save: function(setting, value) {
+        if (typeof value == 'object')
+            value = JSON.stringify(value);
+
+        if(/\?bttvSettings=true/.test(window.location)) {
+            window.opener.postMessage('bttv_setting '+setting+' '+value, 'http://'+window.location.host);
+        } else {
+            if(window.ga) ga('send', 'event', 'BTTV', 'Change Setting: '+setting+'='+value);
+            if(/\?bttvDashboard=true/.test(window.location)) window.parent.postMessage('bttv_setting '+setting+' '+value, 'http://'+window.location.host);
+            vars.settings[setting].value = value;
+            bttv.storage.put(bttv.settings.prefix+setting, value);
+            if(vars.settings[setting].toggle) vars.settings[setting].toggle(value);
+        }
+    },
     import: function(input) {
         var getDataUrlFromUpload = function(input, callback) {
             var reader = new FileReader();
@@ -668,8 +687,14 @@ bttv.settings = {
     },
     load: function () {
         var parseSetting = function(value, isList) {
-            if (isList)
-                return JSON.parse(value);
+            if (isList) {
+                try {
+                    return JSON.parse(value);
+                } catch (e) {
+                    debug.log(e.toString() + " -- in " + value)
+                    return [];
+                }
+            }
 
             if(value == null) {
                 return null;
@@ -692,7 +717,7 @@ bttv.settings = {
         var settingMultiTemplate = require('templates/setting-multi');
 
         var optionsList = $('#bttvSettings .options-list');
-        var optionsMultiList = $('#bttvSettings .options-multi-list');
+        var optionsMultiList = $('#bttvSettingsMulti .options-multi-list');
 
         var featureRequests = ' \
             <div class="option"> \
@@ -740,6 +765,27 @@ bttv.settings = {
             bttv.settings.save(e.target.name, parseSetting(e.target.value));
         });
 
+        // hook event for add
+        $('.setting-list-add').keydown(function (e) {
+            var keyCode = e.keyCode || e.which;
+            var $e = $(e.target)
+
+            if (keyCode != keyCodes.Enter) {
+                return;
+            }
+
+            var storageKey = $e.data('setting');
+            var values = bttv.settings.get(storageKey) || [];
+            var value = $e.val();
+            values.push(value); // push ...
+            $e.val(''); // ... and reset
+            bttv.settings.save(storageKey, values);
+            $('#bttvOption-list-'+storageKey).append(
+                $('<option>').html(value)
+            );
+            return false; // prevent `enter`
+        })
+
         var notifications = bttv.storage.getObject("bttvNotifications");
         for(var notification in notifications) {
             if(notifications.hasOwnProperty(notification)) {
@@ -763,24 +809,6 @@ bttv.settings = {
             }
         }
         window.addEventListener("message", receiveMessage, false);
-    },
-    popup: function() {
-        var settingsUrl = 'http://'+window.location.host+'/settings?bttvSettings=true';
-        window.open(settingsUrl, 'BetterTTV Settings', 'width=800,height=500,top=500,left=800,scrollbars=no,location=no,directories=no,status=no,menubar=no,toolbar=no,resizable=no');
-    },
-    prefix: "bttv_",
-    save: function(setting, value) {
-        if (typeof setting == 'object')
-            setting = JSON.stringify(setting);
-        if(/\?bttvSettings=true/.test(window.location)) {
-            window.opener.postMessage('bttv_setting '+setting+' '+value, 'http://'+window.location.host);
-        } else {
-            if(window.ga) ga('send', 'event', 'BTTV', 'Change Setting: '+setting+'='+value);
-            if(/\?bttvDashboard=true/.test(window.location)) window.parent.postMessage('bttv_setting '+setting+' '+value, 'http://'+window.location.host);
-            vars.settings[setting].value = value;
-            bttv.storage.put(bttv.settings.prefix+setting, value);
-            if(vars.settings[setting].toggle) vars.settings[setting].toggle(value);
-        }
     }
 }
 
@@ -2752,7 +2780,7 @@ module.exports = [
         storageKey: 'blacklistKeywords',
         list: true,
         toggle: function(keywords) {
-            var keywordList = keywords.join(", ");
+            var keywordList = JSON.parse(keywords).join(", ");
             if(keywordList === "") {
                 chat.helpers.serverMessage("Blacklist Keywords list is empty");
             } else {
@@ -2803,7 +2831,7 @@ module.exports = [
         default: (vars.userData.isLoggedIn ? vars.userData.login : ''),
         storageKey: 'highlightKeywords',
         toggle: function(keywords) {
-            var keywordList = keywords.join(", ");
+            var keywordList = JSON.parse(keywords).join(", ");
             if(keywordList === "") {
                 chat.helpers.serverMessage("Highlight Keywords list is empty");
             } else {
@@ -2886,27 +2914,6 @@ module.exports = function () {
 
         if(!bttv.getChannel()) return;
         $('body').append("<style>.ember-chat .chat-interface .textarea-contain { bottom: 70px !important; } .ember-chat .chat-interface .chat-buttons-container { top: 75px !important; } .ember-chat .chat-interface { height: 140px; } .ember-chat .chat-messages { bottom: 134px; } .ember-chat .chat-settings { bottom: 68px; } .ember-chat .emoticon-selector { bottom: 135px !important; }</style>");
-    }
-}
-  
-});
-
-require.register("features/blacklist-channels", function(exports, require, module){
-  var debug = require('debug');
-
-module.exports = function () {
-    if($("body#chat").length || $('body[data-page="ember#chat"]').length) return;
-
-    debug.log("Hide blacklisted channels");
-
-    var channelTest = /^[a-z0-9_-]$/i;
-    var blacklistChannels = bttv.settings.get("blacklistChannels").split(" "); // such reloading wow
-    for (var i = 0; i < blacklistChannels.length; i++) {
-    	var channel = blacklistChannels[i];
-    	if (!channelTest.test(channel)) // invalid ignore
-    		return;
-    	console.log(
-    		$('.stream.item > div > a[href="/' + channel.toLowerCase() +'"]').remove());
     }
 }
   
@@ -4634,7 +4641,7 @@ var buf = [];
 var jade_mixins = {};
 var jade_interp;
 ;var locals_for_with = (locals || {});(function (storageKey, name, description, bttv) {
-buf.push("<div" + (jade.cls(['option',"bttvOption-" + (storageKey) + ""], [null,true])) + "><span style=\"font-weight:bold;font-size:14px;color:#D3D3D3;\">" + (jade.escape(null == (jade_interp = name) ? "" : jade_interp)) + "</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;" + (jade.escape(null == (jade_interp = description) ? "" : jade_interp)) + "<select class=\"bttvOption-list-#{setting.name)\"><input" + (jade.attr("data-setting", name, true, false)) + " class=\"setting-list-add\"/>");
+buf.push("<div style=\"height: 145px; clear: both\"" + (jade.cls(['option',"bttvOption-" + (storageKey) + ""], [null,true])) + "><span style=\"font-weight:bold;font-size:14px;color:#D3D3D3;\">" + (jade.escape(null == (jade_interp = name) ? "" : jade_interp)) + "</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;" + (jade.escape(null == (jade_interp = description) ? "" : jade_interp)) + "<br/><div><select" + (jade.attr("id", "bttvOption-list-" + (storageKey) + "", true, false)) + " style=\"float: left; width: 250px; height: 115px\" multiple=\"multiple\">");
 // iterate bttv.settings.get(storageKey)
 ;(function(){
   var $$obj = bttv.settings.get(storageKey);
@@ -4643,7 +4650,7 @@ buf.push("<div" + (jade.cls(['option',"bttvOption-" + (storageKey) + ""], [null,
     for (var $index = 0, $$l = $$obj.length; $index < $$l; $index++) {
       var value = $$obj[$index];
 
-buf.push("<option>value</option>");
+buf.push("<option>" + (jade.escape(null == (jade_interp = value) ? "" : jade_interp)) + "</option>");
     }
 
   } else {
@@ -4651,13 +4658,13 @@ buf.push("<option>value</option>");
     for (var $index in $$obj) {
       $$l++;      var value = $$obj[$index];
 
-buf.push("<option>value</option>");
+buf.push("<option>" + (jade.escape(null == (jade_interp = value) ? "" : jade_interp)) + "</option>");
     }
 
   }
 }).call(this);
 
-buf.push("</select></div>");}("storageKey" in locals_for_with?locals_for_with.storageKey:typeof storageKey!=="undefined"?storageKey:undefined,"name" in locals_for_with?locals_for_with.name:typeof name!=="undefined"?name:undefined,"description" in locals_for_with?locals_for_with.description:typeof description!=="undefined"?description:undefined,"bttv" in locals_for_with?locals_for_with.bttv:typeof bttv!=="undefined"?bttv:undefined));;return buf.join("");
+buf.push("</select><input" + (jade.attr("data-setting", storageKey, true, false)) + " style=\"float: right\" placeholder=\"Add a value\" class=\"setting-list-add\"/></div></div>");}("storageKey" in locals_for_with?locals_for_with.storageKey:typeof storageKey!=="undefined"?storageKey:undefined,"name" in locals_for_with?locals_for_with.name:typeof name!=="undefined"?name:undefined,"description" in locals_for_with?locals_for_with.description:typeof description!=="undefined"?description:undefined,"bttv" in locals_for_with?locals_for_with.bttv:typeof bttv!=="undefined"?bttv:undefined));;return buf.join("");
 };module.exports=template;
   
 });
@@ -4679,7 +4686,7 @@ var buf = [];
 var jade_mixins = {};
 var jade_interp;
 ;var locals_for_with = (locals || {});(function (bttv) {
-buf.push("<div id=\"header\"><span id=\"logo\"><img height=\"45px\" src=\"//cdn.betterttv.net/style/logos/settings_logo.png\"/></span><ul class=\"nav\"><li><a href=\"#bttvAbout\">About</a></li><li class=\"active\"><a href=\"#bttvSettings\">Settings</a></li><li><a href=\"#bttvSettingLists\">Settings Lists</a></li><li><a href=\"#bttvChangelog\">Changelog</a></li><li><a href=\"#bttvPrivacy\">Privacy Policy</a></li><li><a href=\"#bttvBackup\">Backup/Import</a></li></ul><span id=\"close\">&times;</span></div><div id=\"bttvSettings\" style=\"height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content options-list\"><h2 class=\"option\">Here you can manage the various BetterTTV options. Click On or Off to toggle settings.</h2></div></div><div id=\"bttvSettings\" style=\"height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content options-multi-list\"></div></div><div id=\"bttvAbout\" style=\"display:none;\"><div class=\"aboutHalf\"><img src=\"//cdn.betterttv.net/style/logos/mascot.png\" class=\"bttvAboutIcon\"/><h1>BetterTTV v " + (jade.escape((jade_interp = bttv.info.versionString()) == null ? '' : jade_interp)) + "</h1><h2>from your friends at <a href=\"http://www.nightdev.com\" target=\"_blank\">NightDev</a></h2><br/></div><div class=\"aboutHalf\"><h1 style=\"margin-top: 100px;\">Think this addon is awesome?</h1><br/><br/><h2><a target=\"_blank\" href=\"https://chrome.google.com/webstore/detail/ajopnjidmegmdimjlfnijceegpefgped\">Drop a Review on the Chrome Webstore</a></h2><br/><h2>or maybe</h2><br/><h2><a target=\"_blank\" href=\"http://streamdonations.net/c/night\">Support the Developer</a></h2><br/></div></div><div id=\"bttvPrivacy\" style=\"display:none;height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content\"></div></div><div id=\"bttvChangelog\" style=\"display:none;height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content\"></div></div><div id=\"bttvBackup\" style=\"display:none;height:425px;padding:25px;\"><h1 style=\"padding-bottom:15px;\">Backup Settings</h1><button id=\"bttvBackupButton\" class=\"primary_button\"><span>Download</span></button><h1 style=\"padding-top:25px;padding-bottom:15px;\">Import Settings</h1><input id=\"bttvImportInput\" type=\"file\" style=\"height: 25px;width: 250px;\"/></div><div id=\"footer\"><span>BetterTTV &copy; <a href=\"http://www.nightdev.com\" target=\"_blank\">NightDev</a> 2014</span><span style=\"float:right;\"><a href=\"http://www.nightdev.com/contact\" target=\"_blank\">Get Support</a> | <a href=\"http://bugs.nightdev.com/projects/betterttv/issues/new?tracker_id=1\" target=\"_blank\">Report a Bug</a> | <a href=\"http://streamdonations.net/c/night\" target=\"_blank\">Support the Developer</a></span></div>");}("bttv" in locals_for_with?locals_for_with.bttv:typeof bttv!=="undefined"?bttv:undefined));;return buf.join("");
+buf.push("<div id=\"header\"><span id=\"logo\"><img height=\"45px\" src=\"//cdn.betterttv.net/style/logos/settings_logo.png\"/></span><ul class=\"nav\"><li><a href=\"#bttvAbout\">About</a></li><li class=\"active\"><a href=\"#bttvSettings\">Settings</a></li><li><a href=\"#bttvSettingsMulti\">Settings Lists</a></li><li><a href=\"#bttvChangelog\">Changelog</a></li><li><a href=\"#bttvPrivacy\">Privacy Policy</a></li><li><a href=\"#bttvBackup\">Backup/Import</a></li></ul><span id=\"close\">&times;</span></div><div id=\"bttvSettings\" style=\"height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content options-list\"><h2 class=\"option\">Here you can manage the various BetterTTV options. Click On or Off to toggle settings.</h2></div></div><div id=\"bttvSettingsMulti\" style=\"display:none;height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content options-multi-list\"></div></div><div id=\"bttvAbout\" style=\"display:none;\"><div class=\"aboutHalf\"><img src=\"//cdn.betterttv.net/style/logos/mascot.png\" class=\"bttvAboutIcon\"/><h1>BetterTTV v " + (jade.escape((jade_interp = bttv.info.versionString()) == null ? '' : jade_interp)) + "</h1><h2>from your friends at <a href=\"http://www.nightdev.com\" target=\"_blank\">NightDev</a></h2><br/></div><div class=\"aboutHalf\"><h1 style=\"margin-top: 100px;\">Think this addon is awesome?</h1><br/><br/><h2><a target=\"_blank\" href=\"https://chrome.google.com/webstore/detail/ajopnjidmegmdimjlfnijceegpefgped\">Drop a Review on the Chrome Webstore</a></h2><br/><h2>or maybe</h2><br/><h2><a target=\"_blank\" href=\"http://streamdonations.net/c/night\">Support the Developer</a></h2><br/></div></div><div id=\"bttvPrivacy\" style=\"display:none;height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content\"></div></div><div id=\"bttvChangelog\" style=\"display:none;height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content\"></div></div><div id=\"bttvBackup\" style=\"display:none;height:425px;padding:25px;\"><h1 style=\"padding-bottom:15px;\">Backup Settings</h1><button id=\"bttvBackupButton\" class=\"primary_button\"><span>Download</span></button><h1 style=\"padding-top:25px;padding-bottom:15px;\">Import Settings</h1><input id=\"bttvImportInput\" type=\"file\" style=\"height: 25px;width: 250px;\"/></div><div id=\"footer\"><span>BetterTTV &copy; <a href=\"http://www.nightdev.com\" target=\"_blank\">NightDev</a> 2014</span><span style=\"float:right;\"><a href=\"http://www.nightdev.com/contact\" target=\"_blank\">Get Support</a> | <a href=\"http://bugs.nightdev.com/projects/betterttv/issues/new?tracker_id=1\" target=\"_blank\">Report a Bug</a> | <a href=\"http://streamdonations.net/c/night\" target=\"_blank\">Support the Developer</a></span></div>");}("bttv" in locals_for_with?locals_for_with.bttv:typeof bttv!=="undefined"?bttv:undefined));;return buf.join("");
 };module.exports=template;
   
 });

@@ -280,7 +280,7 @@ module.exports = [
         storageKey: 'blacklistKeywords',
         list: true,
         toggle: function(keywords) {
-            var keywordList = keywords.join(", ");
+            var keywordList = JSON.parse(keywords).join(", ");
             if(keywordList === "") {
                 chat.helpers.serverMessage("Blacklist Keywords list is empty");
             } else {
@@ -331,7 +331,7 @@ module.exports = [
         default: (vars.userData.isLoggedIn ? vars.userData.login : ''),
         storageKey: 'highlightKeywords',
         toggle: function(keywords) {
-            var keywordList = keywords.join(", ");
+            var keywordList = JSON.parse(keywords).join(", ");
             if(keywordList === "") {
                 chat.helpers.serverMessage("Highlight Keywords list is empty");
             } else {

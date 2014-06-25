@@ -36,6 +36,25 @@ bttv.settings = {
     get: function(setting) {
         return (vars.settings[setting]) ? vars.settings[setting].value : null;
     },
+    popup: function() {
+        var settingsUrl = 'http://'+window.location.host+'/settings?bttvSettings=true';
+        window.open(settingsUrl, 'BetterTTV Settings', 'width=800,height=500,top=500,left=800,scrollbars=no,location=no,directories=no,status=no,menubar=no,toolbar=no,resizable=no');
+    },
+    prefix: "bttv_",
+    save: function(setting, value) {
+        if (typeof value == 'object')
+            value = JSON.stringify(value);
+
+        if(/\?bttvSettings=true/.test(window.location)) {
+            window.opener.postMessage('bttv_setting '+setting+' '+value, 'http://'+window.location.host);
+        } else {
+            if(window.ga) ga('send', 'event', 'BTTV', 'Change Setting: '+setting+'='+value);
+            if(/\?bttvDashboard=true/.test(window.location)) window.parent.postMessage('bttv_setting '+setting+' '+value, 'http://'+window.location.host);
+            vars.settings[setting].value = value;
+            bttv.storage.put(bttv.settings.prefix+setting, value);
+            if(vars.settings[setting].toggle) vars.settings[setting].toggle(value);
+        }
+    },
     import: function(input) {
         var getDataUrlFromUpload = function(input, callback) {
             var reader = new FileReader();
@@ -82,8 +101,14 @@ bttv.settings = {
     },
     load: function () {
         var parseSetting = function(value, isList) {
-            if (isList)
-                return JSON.parse(value);
+            if (isList) {
+                try {
+                    return JSON.parse(value);
+                } catch (e) {
+                    debug.log(e.toString() + " -- in " + value)
+                    return [];
+                }
+            }
 
             if(value == null) {
                 return null;
@@ -106,7 +131,7 @@ bttv.settings = {
         var settingMultiTemplate = require('templates/setting-multi');
 
         var optionsList = $('#bttvSettings .options-list');
-        var optionsMultiList = $('#bttvSettings .options-multi-list');
+        var optionsMultiList = $('#bttvSettingsMulti .options-multi-list');
 
         var featureRequests = ' \
             <div class="option"> \
@@ -154,6 +179,27 @@ bttv.settings = {
             bttv.settings.save(e.target.name, parseSetting(e.target.value));
         });
 
+        // hook event for add
+        $('.setting-list-add').keydown(function (e) {
+            var keyCode = e.keyCode || e.which;
+            var $e = $(e.target)
+
+            if (keyCode != keyCodes.Enter) {
+                return;
+            }
+
+            var storageKey = $e.data('setting');
+            var values = bttv.settings.get(storageKey) || [];
+            var value = $e.val();
+            values.push(value); // push ...
+            $e.val(''); // ... and reset
+            bttv.settings.save(storageKey, values);
+            $('#bttvOption-list-'+storageKey).append(
+                $('<option>').html(value)
+            );
+            return false; // prevent `enter`
+        })
+
         var notifications = bttv.storage.getObject("bttvNotifications");
         for(var notification in notifications) {
             if(notifications.hasOwnProperty(notification)) {
@@ -177,24 +223,6 @@ bttv.settings = {
             }
         }
         window.addEventListener("message", receiveMessage, false);
-    },
-    popup: function() {
-        var settingsUrl = 'http://'+window.location.host+'/settings?bttvSettings=true';
-        window.open(settingsUrl, 'BetterTTV Settings', 'width=800,height=500,top=500,left=800,scrollbars=no,location=no,directories=no,status=no,menubar=no,toolbar=no,resizable=no');
-    },
-    prefix: "bttv_",
-    save: function(setting, value) {
-        if (typeof setting == 'object')
-            setting = JSON.stringify(setting);
-        if(/\?bttvSettings=true/.test(window.location)) {
-            window.opener.postMessage('bttv_setting '+setting+' '+value, 'http://'+window.location.host);
-        } else {
-            if(window.ga) ga('send', 'event', 'BTTV', 'Change Setting: '+setting+'='+value);
-            if(/\?bttvDashboard=true/.test(window.location)) window.parent.postMessage('bttv_setting '+setting+' '+value, 'http://'+window.location.host);
-            vars.settings[setting].value = value;
-            bttv.storage.put(bttv.settings.prefix+setting, value);
-            if(vars.settings[setting].toggle) vars.settings[setting].toggle(value);
-        }
     }
 }
 
