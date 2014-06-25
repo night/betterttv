@@ -608,14 +608,10 @@ input.text:focus,select:focus,textarea:focus {
   -o-transition: 0.15s ease-out;
   transition: 0.15s ease-out;
 }
-.switch-input:checked + .switch-label-on ~ .switch-selection {
-  left: 60px;
-  /* Note: left: 50% doesn't transition in WebKit */
-}
-.switch-input:checked + .switch-label-off ~ .switch-selection {
-  background: #111;
-  box-shadow: none;
-}
+
+/* CloudFlare chokes on this */
+/* so we preminify */
+.switch-input:checked+.switch-label-on~.switch-selection{left:60px;}.switch-input:checked+.switch-label-off~.switch-selection{background:#111;box-shadow:none;}
 
 .switch-selection {
   display: block;
@@ -1049,32 +1045,32 @@ body#chat #speak {
 
 /* Redesign Hot-Fixes */
 #chat_emote_dropmenu_button.newlayout {
-	background-repeat: no-repeat;
+    background-repeat: no-repeat;
 }
 
 .ember-chat .chat-buttons-container .chat-option-buttons button {
-	height: 32px !important;
+    height: 32px !important;
     width: 38px !important;
 }
 
 .ember-chat .chat-menu .chat-top-header {
-	border-bottom: 0px solid;
-	margin: 0px;
+    border-bottom: 0px solid;
+    margin: 0px;
 }
 
 #small_nav .content ul li .home_icon svg path {
-	display: none;
+    display: none;
 }
 
 .chat-menu.dropmenu a {
-	color: black;
+    color: black;
 }
 
 .normal_button.active, .normal_button {
-	background: none;
-	box-shadow: none;
-	-webkit-box-shadow: none;
-	background-color: none;
+    background: none;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    background-color: none;
 }
 
 #channel .player-column .stats-and-actions .channel-stats {
