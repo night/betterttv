@@ -5,8 +5,8 @@ var debug = require('debug'),
 vars = require('vars');
 
 bttv.info = {
-    version: "6.8BETA",
-    release: 3,
+    version: "6.8",
+    release: 1,
     versionString: function() { 
         return bttv.info.version + 'R' + bttv.info.release;
     }

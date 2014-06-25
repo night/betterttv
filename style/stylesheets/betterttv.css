@@ -672,6 +672,15 @@ input.text:focus,select:focus,textarea:focus {
     z-index: 9001;
 }
 
+#dash_main #commercial_buttons {
+    float: none;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-top: none;
+    height: 30px;
+    line-height: 30px;
+    background: rgba(0,0,0,0.05);
+}
+
 #dash_main iframe {
     border: none;
     width: 525px;
@@ -743,9 +752,13 @@ input.text:focus,select:focus,textarea:focus {
     padding-bottom: 20px;
 }
 
-.normal_button, .large_normal_button, .dropdown, .dropdown_static, .dropdown_glyph, .primary_button, button.primary, #left_close, #right_close {
+.normal_button, .large_normal_button, .dropdown, .dropdown_static, .dropdown_glyph, .primary_button, button.primary, #left_close, #right_close, #commercial_buttons .button {
     border-radius: 2px !important;
     font-weight: bold;
+}
+
+.primary_button, .primary.button {
+    border: solid 1px black;
 }
 
 .ember-chat .chat-interface .chat-buttons-container .send-chat-button {
@@ -1106,14 +1119,31 @@ body#chat #speak {
     left: 0px;
     right: 0px;
 }
+
 .ember-chat .chat-menu-button-container.right {
     right:0px;
 }
+
 .ember-chat .chat-menu-button-container.left {
-left: 0px;
+    left: 0px;
 }
+
 .ember-chat .chat-messages .chat-line.admin {
     margin: 0;
+}
+
+.ember-chat .top-dropdown {
+    margin: 0px -20px;
+    margin-top: -10px;
+}
+
+.ember-chat .top-dropdown .input-contain {
+    left: 10px;
+    right: 10px;
+}
+
+.ember-chat .top-dropdown .button {
+    right: 10px;
 }
 
 .archives-contain .more-archives {
