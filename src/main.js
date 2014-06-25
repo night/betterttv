@@ -42,16 +42,14 @@ bttv.settings = {
     },
     prefix: "bttv_",
     save: function(setting, value) {
-        if (typeof value == 'object')
-            value = JSON.stringify(value);
-
         if(/\?bttvSettings=true/.test(window.location)) {
             window.opener.postMessage('bttv_setting '+setting+' '+value, 'http://'+window.location.host);
         } else {
             if(window.ga) ga('send', 'event', 'BTTV', 'Change Setting: '+setting+'='+value);
             if(/\?bttvDashboard=true/.test(window.location)) window.parent.postMessage('bttv_setting '+setting+' '+value, 'http://'+window.location.host);
             vars.settings[setting].value = value;
-            bttv.storage.put(bttv.settings.prefix+setting, value);
+            bttv.storage.put(bttv.settings.prefix+setting,
+                typeof value == 'object' ? JSON.stringify(object) : '');
             if(vars.settings[setting].toggle) vars.settings[setting].toggle(value);
         }
     },
