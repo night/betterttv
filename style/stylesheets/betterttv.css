@@ -150,7 +150,7 @@ input.text:focus,select:focus,textarea:focus {
     vertical-align: bottom;
     height: 18px;
     min-width: 18px;
-    width: expression(document.body.clientWidth < $width ? "18px":"auto");
+    width: 18px;
     padding: 0;
     margin-bottom: 1px;
     text-indent: -9999px;
@@ -824,7 +824,7 @@ input, textarea, select {
     margin-top: inherit;
 }
 
-#chat_line_list li .nick, , .ember-chat .chat-messages .from {
+#chat_line_list li .nick, .ember-chat .chat-messages .from {
     text-transform: none !important;
     word-break: break-all;
 }
