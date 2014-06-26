@@ -975,6 +975,10 @@ body#chat #speak {
 
 /* Mod Card */
 
+.ember-chat .moderation-card {
+    line-height: 0px;
+}
+
 .ember-chat .moderation-card h3.name {
     font-size: 18px;
 }
@@ -988,10 +992,19 @@ body#chat #speak {
     background: #c4c3c3;
     border: 0;
     margin: 2px 0px;
+    height: 30px;
 }
 
-.ember-chat .moderation-card .mod-controls button img {
+.ember-chat .moderation-card button img {
     margin: 6px 0px;
+}
+
+.ember-chat .moderation-card button svg {
+    margin: 8px 0px;
+}
+
+.ember-chat .moderation-card button svg path {
+    fill: #333;
 }
 
 .ember-chat .moderation-card .interface {
