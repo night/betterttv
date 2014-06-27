@@ -1129,12 +1129,12 @@ a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00
 }
 
 .ember-chat .moderation-card .button-simple.light {
-	color: #FFF;
+	color: #ccc;
 	background: rgb(60,60,60);
 }
 .ember-chat .moderation-card .button-simple.dark {
 	background: rgb(60,60,60);
-    color: #FFF;
+    color: #ccc;
 }
 
 .ember-chat .moderation-card button img {
