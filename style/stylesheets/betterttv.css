@@ -638,6 +638,10 @@ input.text:focus,select:focus,textarea:focus {
   color: #D3D3D3;
 }
 
+#dash_main.fullwidth_main .wrapper {
+    padding: 0px 20px;
+}
+
 #dash_main #chat #chat_lines {
     height: 500px;
 }

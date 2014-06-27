@@ -33,7 +33,7 @@ body {
 	background-color: #282828 !important;
 }
 
-#dash_main #dashboard_title, #dash_main #stream-config-status {
+#dash_main #dashboard_title, #dash_main #stream-config-status, #dash_main #controls_column .section_header {
 	color: #D3D3D3;
 }
 

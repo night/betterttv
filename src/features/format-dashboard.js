@@ -5,7 +5,7 @@ module.exports = function () {
         debug.log("Formatting Dashboard");
 
         // Move Page Elements to Sub-DIV & Account for Changes
-        $('<div style="position:relative;" id="bttvDashboard"></div>').appendTo('#dash_main');
+        $('<div style="position:relative;" id="bttvDashboard"></div>').appendTo('#dash_main .wrapper');
         $("#dash_main #controls_column").appendTo("#bttvDashboard");
         $("#dash_main #player_column").appendTo("#bttvDashboard");
         $("#dash_main iframe").css("top",
