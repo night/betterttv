@@ -1038,16 +1038,28 @@ bttv.chat = {
         loadChatSettings();
 
         // Hover over icons
-        $("body").off('mouseover', '.chat-line .badges .badge, .chat-line .mod-icons a, .bttv-mod-card .mod-controls button').on('mouseover', '.chat-line .badges .badge, .chat-line .mod-icons a, .bttv-mod-card .mod-controls button', function() {
+        $("body").off('mouseover', '.chat-line .badges .badge, .chat-line .mod-icons a').on('mouseover', '.chat-line .badges .badge, .chat-line .mod-icons a', function() {
             $(this).tipsy({
                 trigger: 'manual',
                 gravity: "sw"
             });
             $(this).tipsy("show");
-        }).off('mouseout', '.chat-line .badges .badge, .chat-line .mod-icons a, .bttv-mod-card .mod-controls button').on('mouseout', '.chat-line .badges .badge, .chat-line .mod-icons a, .bttv-mod-card .mod-controls button', function() {
+        }).off('mouseout', '.chat-line .badges .badge, .chat-line .mod-icons a').on('mouseout', '.chat-line .badges .badge, .chat-line .mod-icons a', function() {
             $(this).tipsy("hide");
             $('div.tipsy').remove();
-        })
+        });
+
+        // hover over mod card icons
+        $("body").off('mouseover', '.bttv-mod-card button').on('mouseover', '.bttv-mod-card button', function() {
+            $(this).tipsy({
+                trigger: 'manual',
+                gravity: "s"
+            });
+            $(this).tipsy("show");
+        }).off('mouseout', '.bttv-mod-card button').on('mouseout', '.bttv-mod-card button', function() {
+            $(this).tipsy("hide");
+            $('div.tipsy').remove();
+        });
 
         // Make Timeout/Ban/Unban buttons work and Turbo/Subscriber clickable
         $("body").off("click", ".chat-line .mod-icons .timeout").on("click", ".chat-line .mod-icons .timeout", function() {
@@ -3753,7 +3765,7 @@ module.exports = function () {
 
 require.register("features/make-card", function(exports, require, module){
   module.exports = function(user, $event) {
-    var template = bttv.chat.templates.moderationCard(user, $event.offset().top, $event.offset().left);
+    var template = bttv.chat.templates.moderationCard(user, $event.offset().top, $('#right_col').offset().left);
     $('.ember-chat .moderation-card').remove();
     $('.ember-chat').append(template);
 
@@ -3784,25 +3796,35 @@ require.register("features/make-card", function(exports, require, module){
         window.open(Twitch.url.compose(user.name),'_blank');
     });
 
-    if(bttv.chat.helpers.isIgnored(user.name)) $modCard.find('.mod-card-ignore').text('Unignore');
+    if(bttv.chat.helpers.isIgnored(user.name)) {
+        $modCard.find('.mod-card-ignore .svg-ignore').hide();
+        $modCard.find('.mod-card-ignore .svg-unignore').show();
+    }
     $modCard.find('.mod-card-ignore').click(function() {
-        if($modCard.find('.mod-card-ignore').text() === 'Unignore') {
+        if ($modCard.find('.mod-card-ignore .svg-unignore').is(':visible')) {
             bttv.chat.helpers.sendMessage('/unignore '+user.name);
-            $modCard.find('.mod-card-ignore').text('Ignore');
+            $modCard.find('.mod-card-ignore .svg-ignore').show();
+            $modCard.find('.mod-card-ignore .svg-unignore').hide();
         } else {
             bttv.chat.helpers.sendMessage('/ignore '+user.name);
-            $modCard.find('.mod-card-ignore').text('Unignore');
+            $modCard.find('.mod-card-ignore .svg-ignore').hide();
+            $modCard.find('.mod-card-ignore .svg-unignore').show();
         }
     });
 
-    if(bttv.chat.helpers.isModerator(user.name)) $modCard.find('.mod-card-mod').text('Demod');
+    if(bttv.chat.helpers.isModerator(user.name)) {
+        $modCard.find('.mod-card-mod .svg-add-mod').hide();
+        $modCard.find('.mod-card-mod .svg-remove-mod').show();
+    }
     $modCard.find('.mod-card-mod').click(function() {
-        if($modCard.find('.mod-card-mod').text() === 'Demod') {
+        if ($modCard.find('.mod-card-mod .svg-remove-mod').is(':visible')) {
             bttv.chat.helpers.sendMessage('/unmod '+user.name);
-            $modCard.find('.mod-card-mod').text('Mod');
+            $modCard.find('.mod-card-mod .svg-add-mod').show();
+            $modCard.find('.mod-card-mod .svg-remove-mod').hide();
         } else {
             bttv.chat.helpers.sendMessage('/mod '+user.name);
-            $modCard.find('.mod-card-mod').text('Demod');
+            $modCard.find('.mod-card-mod .svg-add-mod').hide();
+            $modCard.find('.mod-card-mod .svg-remove-mod').show();
         }
     });
 
@@ -3812,7 +3834,7 @@ require.register("features/make-card", function(exports, require, module){
         $modCard.find('.mod-card-follow').text('Follow');
     });
     $modCard.find('.mod-card-follow').text('Unfollow').click(function() {
-        if($modCard.find('.mod-card-follow').text() === 'Unfollow') {
+        if ($modCard.find('.mod-card-follow').text() === 'Unfollow') {
             Twitch.api.del("users/:login/follows/channels/"+user.name).done(function() {
                 bttv.chat.helpers.serverMessage('User was unfollowed successfully.');
             }).fail(function() {
@@ -4601,14 +4623,14 @@ buf.push("<img" + (jade.attr("src", user.profile_banner, true, false)) + " class
 buf.push("</div>");
 if ( user.name != vars.userData.login)
 {
-buf.push("<div class=\"interface\"><button class=\"button-simple primary mod-card-follow\">Follow</button><button style=\"height: 30px;vertical-align: top;\" class=\"button-simple dark mod-card-profile\"><img src=\"/images/xarth/g/g18_person-00000080.png\" style=\"margin-top: 6px;\"/></button><button style=\"height: 30px;vertical-align: top;\" class=\"button-simple dark mod-card-message\"><img src=\"/images/xarth/g/g18_mail-00000080.png\" style=\"margin-top: 6px;\"/></button><button class=\"button-simple dark mod-card-ignore\">Ignore</button>");
+buf.push("<div class=\"interface\"><button class=\"button-simple primary mod-card-follow\">Follow</button><button style=\"height: 30px;vertical-align: top;\" title=\"View user's profile\" class=\"button-simple dark mod-card-profile\"><img src=\"/images/xarth/g/g18_person-00000080.png\" style=\"margin-top: 6px;\"/></button><button style=\"height: 30px;vertical-align: top;\" title=\"Send user a message\" class=\"button-simple dark mod-card-message\"><img src=\"/images/xarth/g/g18_mail-00000080.png\" style=\"margin-top: 6px;\"/></button><button title=\"Add/Remove user from ignores\" class=\"button-simple dark mod-card-ignore\"><svg height=\"16px\" width=\"16px\" version=\"1.1\" viewBox=\"0 0 16 16\" x=\"0px\" y=\"0px\" class=\"svg-ignore\"><path clip-rule=\"evenodd\" fill-rule=\"evenodd\" d=\"M13,11.341V16l-3.722-3.102C8.863,12.959,8.438,13,8,13c-3.866,0-7-2.462-7-5.5C1,4.462,4.134,2,8,2s7,2.462,7,5.5C15,8.996,14.234,10.35,13,11.341z M11,7H5v1h6V7z\"></path></svg><svg style=\"display: none;\" height=\"16px\" width=\"16px\" version=\"1.1\" viewBox=\"0 0 16 16\" x=\"0px\" y=\"0px\" class=\"svg-unignore\"><path clip-rule=\"evenodd\" fill-rule=\"evenodd\" d=\"M13,11.341V16l-3.722-3.102C8.863,12.959,8.438,13,8,13c-3.866,0-7-2.462-7-5.5C1,4.462,4.134,2,8,2s7,2.462,7,5.5C15,8.996,14.234,10.35,13,11.341z\"></path></svg></button>");
 if ( vars.userData.isLoggedIn && bttv.chat.helpers.isOwner(vars.userData.login))
 {
-buf.push("<button class=\"button-simple dark mod-card-mod\">Mod</button>");
+buf.push("<button title=\"Add/Remove this user as a moderator\" class=\"button-simple dark mod-card-mod\"><svg height=\"16px\" width=\"16px\" version=\"1.1\" viewBox=\"0 0 16 16\" x=\"0px\" y=\"0px\" class=\"svg-add-mod\"><path clip-rule=\"evenodd\" fill-rule=\"evenodd\" d=\"M15,7L1,16l4.666-7H1l14-9l-4.667,7H15z\"></path></svg><svg style=\"display: none;\" height=\"16px\" width=\"16px\" version=\"1.1\" viewBox=\"0 0 16 16\" x=\"0px\" y=\"0px\" class=\"svg-remove-mod\"><path clip-rule=\"evenodd\" fill-rule=\"evenodd\" d=\"M 1.7692223,7.3226542 14.725057,7.3226542 14.725057,8.199533 1.7692223,8.199533 z M 15,0 5.4375,6.15625 10.90625,6.15625 15,0 z M 5.375,9.40625 1,16 11.25,9.40625 5.375,9.40625 z\"></path></svg></button>");
 }
 if ( vars.userData.isLoggedIn && bttv.chat.helpers.isModerator(vars.userData.login) && (!bttv.chat.helpers.isModerator(user.name) || vars.userData.login === bttv.getChannel()))
 {
-buf.push("<span class=\"mod-controls\"><button style=\"width:48px;\" title=\"!permit this user\" class=\"permit button-simple light\">Permit</button></span><br/><span class=\"mod-controls\"><button style=\"width:44px;\" data-time=\"1\" title=\"Clear this user's chat\" class=\"timeout button-simple light\">Purge</button><button data-time=\"600\" title=\"Temporary 10 minute ban\" class=\"timeout button-simple light\"><img src=\"/images/xarth/g/g18_timeout-00000080.png\"/></button><button style=\"width:30px;\" data-time=\"3600\" title=\"Temporary 1 hour ban\" class=\"timeout button-simple light\">1hr</button><button style=\"width:30px;\" data-time=\"28800\" title=\"Temporary 8 hour ban\" class=\"timeout button-simple light\">8hr</button><button style=\"width:38px;\" data-time=\"86400\" title=\"Temporary 24 hour ban\" class=\"timeout button-simple light\">24hr</button><button title=\"Permanent Ban\" class=\"ban button-simple light\"><img src=\"/images/xarth/g/g18_ban-00000080.png\"/></button></span>");
+buf.push("<span class=\"mod-controls\"><button title=\"!permit this user\" class=\"permit button-simple light\"><svg height=\"16px\" width=\"16px\" version=\"1.1\" viewBox=\"0 0 16 16\" x=\"0px\" y=\"0px\" class=\"svg-permit\"><path clip-rule=\"evenodd\" fill-rule=\"evenodd\" d=\"M 13.71875,3.75 A 0.750075,0.750075 0 0 0 13.28125,4 L 5.71875,11.90625 3.59375,9.71875 A 0.750075,0.750075 0 1 0 2.53125,10.75 L 5.21875,13.53125 A 0.750075,0.750075 0 0 0 6.28125,13.5 L 14.34375,5.03125 A 0.750075,0.750075 0 0 0 13.71875,3.75 z M 4.15625,5.15625 C 2.1392444,5.1709094 0.53125,6.2956115 0.53125,7.6875 0.53125,8.1957367 0.75176764,8.6679042 1.125,9.0625 A 1.60016,1.60016 0 0 1 2.15625,8.25 C 2.0893446,8.0866555 2.0625,7.9078494 2.0625,7.71875 2.0625,6.9200694 2.7013192,6.25 3.5,6.25 L 7.15625,6.25 C 7.1438569,5.1585201 6.6779611,5.1379224 4.15625,5.15625 z M 9.625,5.15625 C 8.4334232,5.1999706 8.165545,5.4313901 8.15625,6.25 L 9.96875,6.25 11.03125,5.15625 C 10.471525,5.1447549 9.9897684,5.1428661 9.625,5.15625 z M 14.28125,6.40625 13.3125,7.40625 C 13.336036,7.5094042 13.34375,7.6089314 13.34375,7.71875 13.34375,8.5174307 12.67368,9.125 11.875,9.125 L 11.65625,9.125 10.65625,10.1875 C 10.841425,10.189327 10.941084,10.186143 11.15625,10.1875 13.17327,10.200222 14.78125,9.0793881 14.78125,7.6875 14.78125,7.2160918 14.606145,6.7775069 14.28125,6.40625 z M 4.40625,7.1875 C 4.0977434,7.1875 3.84375,7.4414933 3.84375,7.75 3.84375,8.0585065 4.0977434,8.3125 4.40625,8.3125 L 8,8.3125 9.0625,7.1875 4.40625,7.1875 z M 4.125,9.125 5.15625,10.1875 C 5.5748133,10.180859 5.9978157,10.155426 6.25,10.125 L 7.15625,9.1875 C 7.1572971,9.1653754 7.1553832,9.1481254 7.15625,9.125 L 4.125,9.125 z\"></path></svg></button></span><br/><span class=\"mod-controls\"><button style=\"width:44px;\" data-time=\"1\" title=\"Clear this user's chat\" class=\"timeout button-simple light\">Purge</button><button data-time=\"600\" title=\"Temporary 10 minute ban\" class=\"timeout button-simple light\"><img src=\"/images/xarth/g/g18_timeout-00000080.png\"/></button><button style=\"width:30px;\" data-time=\"3600\" title=\"Temporary 1 hour ban\" class=\"timeout button-simple light\">1hr</button><button style=\"width:30px;\" data-time=\"28800\" title=\"Temporary 8 hour ban\" class=\"timeout button-simple light\">8hr</button><button style=\"width:38px;\" data-time=\"86400\" title=\"Temporary 24 hour ban\" class=\"timeout button-simple light\">24hr</button><button title=\"Permanent Ban\" class=\"ban button-simple light\"><img src=\"/images/xarth/g/g18_ban-00000080.png\"/></button></span>");
 }
 buf.push("</div>");
 }
