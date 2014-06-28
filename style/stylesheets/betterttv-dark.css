@@ -1489,6 +1489,12 @@ table.simple_table td {
     border-right-color: rgb(35,35,35);
 }
 
+/* darken noty popups */
+.noty_message {
+	background-color: rgb(35,35,35);
+    color: #d3d3d3;
+}
+
 /*~~~~~~~Dark Dashboard Subscription Page Fix~~~~~~~~*/
 .new-dashboard .subscription-dash .subscription-feature-list .list-head .list-header th {
 	color: #5F5F5F;
