@@ -5,8 +5,8 @@ var debug = require('debug'),
 vars = require('vars');
 
 bttv.info = {
-    version: "6.8BETA",
-    release: 3,
+    version: "6.8",
+    release: 2,
     versionString: function() { 
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -452,16 +452,28 @@ bttv.chat = {
         loadChatSettings();
 
         // Hover over icons
-        $("body").off('mouseover', '.chat-line .badges .badge, .chat-line .mod-icons a, .bttv-mod-card .mod-controls button').on('mouseover', '.chat-line .badges .badge, .chat-line .mod-icons a, .bttv-mod-card .mod-controls button', function() {
+        $("body").off('mouseover', '.chat-line .badges .badge, .chat-line .mod-icons a').on('mouseover', '.chat-line .badges .badge, .chat-line .mod-icons a', function() {
             $(this).tipsy({
                 trigger: 'manual',
                 gravity: "sw"
             });
             $(this).tipsy("show");
-        }).off('mouseout', '.chat-line .badges .badge, .chat-line .mod-icons a, .bttv-mod-card .mod-controls button').on('mouseout', '.chat-line .badges .badge, .chat-line .mod-icons a, .bttv-mod-card .mod-controls button', function() {
+        }).off('mouseout', '.chat-line .badges .badge, .chat-line .mod-icons a').on('mouseout', '.chat-line .badges .badge, .chat-line .mod-icons a', function() {
             $(this).tipsy("hide");
             $('div.tipsy').remove();
-        })
+        });
+
+        // hover over mod card icons
+        $("body").off('mouseover', '.bttv-mod-card button').on('mouseover', '.bttv-mod-card button', function() {
+            $(this).tipsy({
+                trigger: 'manual',
+                gravity: "s"
+            });
+            $(this).tipsy("show");
+        }).off('mouseout', '.bttv-mod-card button').on('mouseout', '.bttv-mod-card button', function() {
+            $(this).tipsy("hide");
+            $('div.tipsy').remove();
+        });
 
         // Make Timeout/Ban/Unban buttons work and Turbo/Subscriber clickable
         $("body").off("click", ".chat-line .mod-icons .timeout").on("click", ".chat-line .mod-icons .timeout", function() {

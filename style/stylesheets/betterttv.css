@@ -150,7 +150,7 @@ input.text:focus,select:focus,textarea:focus {
     vertical-align: bottom;
     height: 18px;
     min-width: 18px;
-    width: expression(document.body.clientWidth < $width ? "18px":"auto");
+    width: 18px;
     padding: 0;
     margin-bottom: 1px;
     text-indent: -9999px;
@@ -608,14 +608,10 @@ input.text:focus,select:focus,textarea:focus {
   -o-transition: 0.15s ease-out;
   transition: 0.15s ease-out;
 }
-.switch-input:checked + .switch-label-on ~ .switch-selection {
-  left: 60px;
-  /* Note: left: 50% doesn't transition in WebKit */
-}
-.switch-input:checked + .switch-label-off ~ .switch-selection {
-  background: #111;
-  box-shadow: none;
-}
+
+/* CloudFlare chokes on this */
+/* so we preminify */
+.switch-input:checked+.switch-label-on~.switch-selection{left:60px;}.switch-input:checked+.switch-label-off~.switch-selection{background:#111;box-shadow:none;}
 
 .switch-selection {
   display: block;
@@ -640,6 +636,10 @@ input.text:focus,select:focus,textarea:focus {
 }
 .switch-off {
   color: #D3D3D3;
+}
+
+#dash_main.fullwidth_main .wrapper {
+    padding: 0px 20px;
 }
 
 #dash_main #chat #chat_lines {
@@ -670,6 +670,15 @@ input.text:focus,select:focus,textarea:focus {
     border: 1px solid #ccc;
     margin-left: 0px !important;
     z-index: 9001;
+}
+
+#dash_main #commercial_buttons {
+    float: none;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-top: none;
+    height: 30px;
+    line-height: 30px;
+    background: rgba(0,0,0,0.05);
 }
 
 #dash_main iframe {
@@ -743,9 +752,13 @@ input.text:focus,select:focus,textarea:focus {
     padding-bottom: 20px;
 }
 
-.normal_button, .large_normal_button, .dropdown, .dropdown_static, .dropdown_glyph, .primary_button, button.primary, #left_close, #right_close {
+.normal_button, .large_normal_button, .dropdown, .dropdown_static, .dropdown_glyph, .primary_button, button.primary, #left_close, #right_close, #commercial_buttons .button {
     border-radius: 2px !important;
     font-weight: bold;
+}
+
+.primary_button, .primary.button {
+    border: solid 1px black;
 }
 
 .ember-chat .chat-interface .chat-buttons-container .send-chat-button {
@@ -811,7 +824,7 @@ input, textarea, select {
     margin-top: inherit;
 }
 
-#chat_line_list li .nick, , .ember-chat .chat-messages .from {
+#chat_line_list li .nick, .ember-chat .chat-messages .from {
     text-transform: none !important;
     word-break: break-all;
 }
@@ -966,6 +979,10 @@ body#chat #speak {
 
 /* Mod Card */
 
+.ember-chat .moderation-card {
+    line-height: 0px;
+}
+
 .ember-chat .moderation-card h3.name {
     font-size: 18px;
 }
@@ -979,10 +996,19 @@ body#chat #speak {
     background: #c4c3c3;
     border: 0;
     margin: 2px 0px;
+    height: 30px;
 }
 
-.ember-chat .moderation-card .mod-controls button img {
+.ember-chat .moderation-card button img {
     margin: 6px 0px;
+}
+
+.ember-chat .moderation-card button svg {
+    margin: 8px 0px;
+}
+
+.ember-chat .moderation-card button svg path {
+    fill: #333;
 }
 
 .ember-chat .moderation-card .interface {
@@ -1036,32 +1062,32 @@ body#chat #speak {
 
 /* Redesign Hot-Fixes */
 #chat_emote_dropmenu_button.newlayout {
-	background-repeat: no-repeat;
+    background-repeat: no-repeat;
 }
 
 .ember-chat .chat-buttons-container .chat-option-buttons button {
-	height: 32px !important;
+    height: 32px !important;
     width: 38px !important;
 }
 
 .ember-chat .chat-menu .chat-top-header {
-	border-bottom: 0px solid;
-	margin: 0px;
+    border-bottom: 0px solid;
+    margin: 0px;
 }
 
 #small_nav .content ul li .home_icon svg path {
-	display: none;
+    display: none;
 }
 
 .chat-menu.dropmenu a {
-	color: black;
+    color: black;
 }
 
 .normal_button.active, .normal_button {
-	background: none;
-	box-shadow: none;
-	-webkit-box-shadow: none;
-	background-color: none;
+    background: none;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    background-color: none;
 }
 
 #channel .player-column .stats-and-actions .channel-stats {
@@ -1106,14 +1132,31 @@ body#chat #speak {
     left: 0px;
     right: 0px;
 }
+
 .ember-chat .chat-menu-button-container.right {
     right:0px;
 }
+
 .ember-chat .chat-menu-button-container.left {
-left: 0px;
+    left: 0px;
 }
+
 .ember-chat .chat-messages .chat-line.admin {
     margin: 0;
+}
+
+.ember-chat .top-dropdown {
+    margin: 0px -20px;
+    margin-top: -10px;
+}
+
+.ember-chat .top-dropdown .input-contain {
+    left: 10px;
+    right: 10px;
+}
+
+.ember-chat .top-dropdown .button {
+    right: 10px;
 }
 
 .archives-contain .more-archives {

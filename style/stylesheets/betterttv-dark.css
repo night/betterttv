@@ -33,7 +33,7 @@ body {
 	background-color: #282828 !important;
 }
 
-#dash_main #dashboard_title, #dash_main #stream-config-status {
+#dash_main #dashboard_title, #dash_main #stream-config-status, #dash_main #controls_column .section_header {
 	color: #D3D3D3;
 }
 
@@ -108,7 +108,7 @@ body {
 	color: #D3D3D3;
 }
 
-#dash_main #vod_status, #dash_main #gameselector_input {
+#dash_main #vod_status, #dash_main #gameselector_input, .ember-application #gameselector_input {
 	background-color: rgb(20, 20, 20) !important;
 	color: #D3D3D3;
 	border: solid 1px #333;
@@ -167,13 +167,13 @@ body {
 	margin: 0;
 }
 
-#dash_main #play_switch.dropmenu.menu-like {
+#play_switch.dropmenu {
 	color: #3b3b3b;
 	border: 1px solid rgba(0,0,0,0.2);
 	background: #3b3b3b;
 }
 
-#dash_main #play_switch.dropmenu.menu-like .dropmenu_action {
+#play_switch.dropmenu .dropmenu_action {
 	display: block;
 	padding: 5px 20px;
 	background-position: 20px center;
@@ -181,13 +181,13 @@ body {
 	color: #d3d3d3;
 }
 
-#dash_main #commercial_options.dropmenu.menu-like {
+#commercial_options.dropmenu {
 	color: #3b3b3b;
 	border: 1px solid rgba(0,0,0,0.2);
 	background: #3b3b3b;
 }
 
-#dash_main #commercial_options.dropmenu.menu-like .dropmenu_action {
+#commercial_options.dropmenu .dropmenu_action {
 	display: block;
 	padding: 5px 20px;
 	background-position: 20px center;
@@ -195,13 +195,13 @@ body {
 	color: #d3d3d3;
 }
 
-#dash_main #gameselector_results.dropmenu.menu-like {
+#gameselector_results.dropmenu {
 	color: #3b3b3b;
 	border: 1px solid rgba(0,0,0,0.2);
 	background: #3b3b3b;
 }
 
-#dash_main #gameselector_results.dropmenu.menu-like .dropmenu_action {
+#gameselector_results.dropmenu .dropmenu_action {
 	display: block;
 	padding: 5px 20px;
 	background-position: 20px center;
@@ -209,11 +209,11 @@ body {
 	color: #d3d3d3;
 }
 
-#dash_main #commercial_options.dropmenu.menu-like .dropmenu_action {
+#commercial_options.dropmenu .dropmenu_action {
 	color: #d3d3d3;
 }
 
-#dash_main #commercial_options.dropmenu.menu-like {
+#commercial_options.dropmenu {
 	background: #3d3d3d;
 }
 
@@ -470,31 +470,33 @@ body {
     background-color: rgb(30,30,30);
 }
 
-/* Subscriptions Page Dropmenu Fix */
-.profile-actions .dropmenu {
+/* Ember Pages Dropmenu Fix */
+.ember-application .dropmenu {
 	background-color: rgb(30,30,30);
-	color: #fff;
+	color: #d3d3d3;
 }
-.profile-actions .dropmenu a {
-	color: #aaa;
+.ember-application .dropmenu a, .items-grid .section_header #filter-contain .dropmenu .dropmenu_action.active, .items-grid .section_header #filter-contain .ui-menu .dropmenu_action.active, .items-grid .section_header #filter-contain .ui-multiselect-menu .dropmenu_action.active {
+	color: #8c8c8c;
+}
+.items-grid .section_header #filter-contain .dropmenu .dropmenu_action, .items-grid .section_header #filter-contain .ui-menu .dropmenu_action, .items-grid .section_header #filter-contain .ui-multiselect-menu .dropmenu_action {
+	color: #d3d3d3;
 }
 
-/* playing/not playing menu */
-.modal-form .dropmenu {
-	background-color: rgb(30,30,30);
-	color: #fff;
+/* Ember Directory Videos Sort */
+.videos-grid .button-group li a.active {
+	color: #8c8c8c;
 }
-.modal-form .dropmenu a {
-	color: #aaa;
+.videos-grid .button-group li a {
+	color: #d3d3d3;
 }
 
 /* darken jquery ui */
 .ui-menu {
 	background: rgb(35,35,35);
-	color: #fff;
+	color: #d3d3d3;
 }
 .ui-menu-item {
-	color: #fff;
+	color: #d3d3d3;
 }
 
 /* Taken from http://userstyles.org/styles/82967/twitch-dark-view */
@@ -949,8 +951,21 @@ body {
 	border-left: 3px solid #6441a5;
 }
 
-#main_col .messages .message .msg_main strong a, #main_col .messages .page_links a, #main_col #messages_column #message-list .preview .from_to_user a.capital, #main_col #messages_column #message-list .preview .message_data a.message_subject {
+#main_col .messages .message .msg_main strong a, #main_col .messages .button, #main_col .messages .page_links a, #main_col #messages_column #message-list .preview .from_to_user a.capital, #main_col #messages_column #message-list .preview .message_data a.message_subject {
 	color: #D3D3D3;
+}
+
+#main_col .messages #message_actions .message_actions_block .label {
+	color: #8c8c8c;
+}
+
+#main_col .messages .message_action.delete {
+	filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'invert\'><feColorMatrix in='SourceGraphic' type='matrix' values='-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0'/></filter></svg>#invert");
+    filter: invert(100%);
+    -webkit-filter: invert(100%);
+    -o-filter: invert(100%);
+    -ms-filter: invert(100%);
+    -moz-filter: invert(100%);
 }
 
 #main_col #messages_column #message-list .preview .from_to_user a.prof {
@@ -1114,12 +1129,12 @@ a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00
 }
 
 .ember-chat .moderation-card .button-simple.light {
-	color: #FFF;
+	color: #ccc;
 	background: rgb(60,60,60);
 }
 .ember-chat .moderation-card .button-simple.dark {
 	background: rgb(60,60,60);
-    color: #FFF;
+    color: #ccc;
 }
 
 .ember-chat .moderation-card button img {
@@ -1129,6 +1144,10 @@ a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00
     -o-filter: invert(90%);
     -ms-filter: invert(90%);
     -moz-filter: invert(90%);
+}
+
+.ember-chat .moderation-card button svg path {
+    fill: #ccc;
 }
 
 .ember-chat .moderation-card img.channel_logo {
@@ -1454,6 +1473,28 @@ table.simple_table td {
 	background: #3b3b3b;
 }
 
+.modal-form .buttons .button {
+	color: #d3d3d3;
+}
+
+/* darken link list popup */
+#flyout .content {
+    background-color: rgb(35,35,35);
+    color: #d3d3d3;
+}
+#flyout .content a {
+    color: #d3d3d3;
+}
+#flyout .point:before {
+    border-right-color: rgb(35,35,35);
+}
+
+/* darken noty popups */
+.noty_message {
+	background-color: rgb(35,35,35);
+    color: #d3d3d3;
+}
+
 /*~~~~~~~Dark Dashboard Subscription Page Fix~~~~~~~~*/
 .new-dashboard .subscription-dash .subscription-feature-list .list-head .list-header th {
 	color: #5F5F5F;
@@ -1707,6 +1748,6 @@ span#is-subscribed {
 #main_col .stats-and-actions #is-subscribed, .ember-chat .chat-room-list .room p.room-title, .button.unfollow, .button.unfollow:hover {
 	color: #D3D3D3 !important;
 }
-ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .ember-application .dropmenu.menu-like .dropmenu_action  {
+ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .ember-application .dropmenu .dropmenu_action  {
 	color: #D3D3D3;
 }
