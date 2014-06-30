@@ -21,6 +21,9 @@ http.createServer(function(req, res) {
       return;
     }
 
+    res.writeHead(200, {
+      'Access-Control-Allow-Origin': '*'
+    });
     fs.createReadStream(file).pipe(res);
   });
 }).listen(80);
