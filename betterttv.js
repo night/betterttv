@@ -3765,7 +3765,7 @@ module.exports = function () {
 
 require.register("features/make-card", function(exports, require, module){
   module.exports = function(user, $event) {
-    var template = bttv.chat.templates.moderationCard(user, $event.offset().top, $('#right_col').offset().left);
+    var template = bttv.chat.templates.moderationCard(user, $event.offset().top, $('.chat-line:last').offset().left);
     $('.ember-chat .moderation-card').remove();
     $('.ember-chat').append(template);
 
