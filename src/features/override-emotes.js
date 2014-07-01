@@ -104,9 +104,9 @@ module.exports = function () {
                 if(a.text === "SourPls") {
                     a.hidden = true;
                 }
-                if(b.restrictions) {
-                    if(b.restrictions.channels && b.restrictions.channels.indexOf(BetterTTV.getChannel()) === -1) return;
-                    if(b.restrictions.games && b.restrictions.games.indexOf(App.Channel.findOne(BetterTTV.getChannel()).get('game')) === -1) return;
+                if(b.restriction) {
+                    if(b.restriction.channels && b.restriction.channels.indexOf(BetterTTV.getChannel()) === -1) return;
+                    if(b.restriction.games && b.restriction.games.indexOf(App.Channel.findOne(BetterTTV.getChannel()).get('game')) === -1) return;
                 }
                 a.images.forEach(function (c) {
                     var id = getId();
