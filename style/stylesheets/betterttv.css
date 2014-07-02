@@ -58,10 +58,6 @@ ul.tabs li.selected a {
     height: 125px !important;
 }
 
-.dropmenu a, .ui-menu a, .ui-multiselect-menu a {
-    color: white;
-}
-
 a {
     color: black;
 }
@@ -112,10 +108,6 @@ a {
 }
 
 /* Chat CSS */
-.dropmenu a, .ui-menu a, .ui-multiselect-menu a {
-    color: white;
-}
-
 input.text:focus,select:focus,textarea:focus {
     outline: 0;
     background-color: #fff;
