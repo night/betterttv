@@ -316,14 +316,7 @@ bttv.chat = {
             resp += '</span>';
             return resp;
         },
-        from: function(name, color) {
-            var nick = bttv.storage.getObject("nicknames")[name.toLowerCase()];
-            var namePart = nick || name;
-            if (bttv.settings.get("showRealName") && nick) {
-                namePart += ' <small>[' + name + ']</small>'
-            }
-            return '<span '+(color?'style="color: '+color+';" ':'')+'class="from">'+namePart+'</span><span class="colon">:</span>'+(name!=='jtv'?'&nbsp;<wbr></wbr>':'');
-        },
+        from: function(name, color) { return '<span '+(color?'style="color: '+color+';" ':'')+'class="from">'+(bttv.storage.getObject("nicknames")[name.toLowerCase()] || name)+'</span><span class="colon">:</span>'+(name!=='jtv'?'&nbsp;<wbr></wbr>':''); },
         timestamp: function(time) { return '<span class="timestamp"><small>'+time+'</small></span>'; },
         modicons: function() { return '<span class="mod-icons"><a class="timeout" title="Timeout">Timeout</a><a class="ban" title="Ban">Ban</a><a class="unban" title="Unban" style="display: none;">Unban</a></span>'; },
         escape: function(message) { return message.replace(/</g,'&lt;').replace(/>/g, '&gt;'); },
