@@ -32,7 +32,7 @@ module.exports = function(user, $event) {
     $modCard.find('.mod-card-edit').click(function() {
         var nickname = prompt("Enter the new nickname for "+user.name);
         bttv.storage.pushObject("nicknames", user.name.toLowerCase(), nickname);
-        $modCard.find('h3.name').text(nickname);
+        $modCard.find('h3.name a').text(nickname);
     });
 
     if(bttv.chat.helpers.isIgnored(user.name)) {
