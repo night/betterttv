@@ -319,7 +319,7 @@ bttv.chat = {
         from: function(name, color) {
             var nick = bttv.storage.getObject("nicknames")[name.toLowerCase()];
             var namePart = nick || name;
-            if (nick) {
+            if (bttv.settings.get("showRealName") && nick) {
                 namePart += ' <small>[' + name + ']</small>'
             }
             return '<span '+(color?'style="color: '+color+';" ':'')+'class="from">'+namePart+'</span><span class="colon">:</span>'+(name!=='jtv'?'&nbsp;<wbr></wbr>':'');

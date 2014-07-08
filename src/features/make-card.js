@@ -30,7 +30,7 @@ module.exports = function(user, $event) {
         window.open(Twitch.url.compose(user.name),'_blank');
     });
     $modCard.find('.mod-card-edit').click(function() {
-        var nickname = prompt("Enter the new nickname for "+user.name);
+        var nickname = prompt("Enter the new nickname for "+user.display_name);
         if (nickname) {
             bttv.storage.pushObject("nicknames", user.name.toLowerCase(), nickname);
             $modCard.find('h3.name a').text(nickname);
