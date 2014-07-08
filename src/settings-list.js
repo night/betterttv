@@ -248,6 +248,12 @@ module.exports = [
         storageKey: 'showDeletedMessages'
     },
     {
+        name: 'Show Real Names',
+        description: 'Show the real usernames of users next to their nickname in chat',
+        default: false,
+        storageKey: 'showRealName'
+    },
+    {
         name: 'Split Chat',
         description: 'Easily distinguish between messages from different users in chat',
         default: true,
