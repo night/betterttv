@@ -776,6 +776,17 @@ body {
 	border-radius: 2px !important;
 }
 
+/* darken bookmark page */
+#main_col .bookmark-meta {
+	background-color: rgb(30, 30, 30);
+	color: #d3d3d3;
+}
+
+#main_col .bookmark-meta a, #main_col .bookmark-meta .bookmark-title {
+	color: #d3d3d3;
+}
+
+
 .ember-application h3.title, .ember-application h2.title {
 	color: #ccc !important;
 }

@@ -13,7 +13,7 @@ module.exports = function () {
 
     var pageKind = $('body').data('page').split('#')[0],
         pageType = $('body').data('page').split('#')[1] || "none",
-        allowedPages = ['ember', 'message', 'dashboards', 'chat', 'chapter', 'archive', 'channel', 'user'];
+        allowedPages = ['ember', 'message', 'dashboards', 'chat', 'chapter', 'archive', 'channel', 'user', 'bookmark'];
 
     if(allowedPages.indexOf(pageKind) !== -1) {
 
