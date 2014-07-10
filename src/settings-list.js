@@ -273,29 +273,13 @@ module.exports = [
             }
         }
     },
-    {   
+    {
+        name: 'Blacklist Keywords',
+        description: 'List of keywords you want to blacklist',
         default: '',
         storageKey: 'blacklistKeywords',
+        list: true,
         toggle: function(keywords) {
-            var phraseRegex = /\{.+?\}/g;
-            var testCases =  keywords.match(phraseRegex);
-            var phraseKeywords = [];
-            if(testCases) {
-                for (i=0;i<testCases.length;i++) {
-                    var testCase = testCases[i];
-                    keywords = keywords.replace(testCase, "").replace(/\s\s+/g, ' ').trim();
-                    phraseKeywords.push('"'+testCase.replace(/(^\{|\}$)/g, '').trim()+'"');
-                }
-            }
-
-            keywords === "" ? keywords = phraseKeywords : keywords = keywords.split(" ").concat(phraseKeywords);
-            
-            for(var i=0; i<keywords.length; i++) {
-                if(/^\([a-z0-9_\-\*]+\)$/i.test(keywords[i])) {
-                    keywords[i] = keywords[i].replace(/(\(|\))/g, '');
-                }
-            }
-
             var keywordList = keywords.join(", ");
             if(keywordList === "") {
                 chat.helpers.serverMessage("Blacklist Keywords list is empty");
@@ -341,29 +325,12 @@ module.exports = [
         }
     },
     {
+        name: "Highlight Keywords",
+        description: "List of keywords that will make your chat highlight on a particular message",
+        list: true,
         default: (vars.userData.isLoggedIn ? vars.userData.login : ''),
         storageKey: 'highlightKeywords',
         toggle: function(keywords) {
-            var phraseRegex = /\{.+?\}/g;
-            var testCases =  keywords.match(phraseRegex);
-            var phraseKeywords = [];
-
-            if(testCases) {
-                for (i=0;i<testCases.length;i++) {
-                    var testCase = testCases[i];
-                    keywords = keywords.replace(testCase, "").replace(/\s\s+/g, ' ').trim();
-                    phraseKeywords.push('"'+testCase.replace(/(^\{|\}$)/g, '').trim()+'"');
-                }
-            }
-
-            keywords === "" ? keywords = phraseKeywords : keywords = keywords.split(" ").concat(phraseKeywords);
-
-            for(var i=0; i<keywords.length; i++) {
-                if(/^\([a-z0-9_\-\*]+\)$/i.test(keywords[i])) {
-                    keywords[i] = keywords[i].replace(/(\(|\))/g, '');
-                }
-            }
-            
             var keywordList = keywords.join(", ");
             if(keywordList === "") {
                 chat.helpers.serverMessage("Highlight Keywords list is empty");

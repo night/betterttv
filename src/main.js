@@ -34,7 +34,7 @@ bttv.settings = {
         bttv.saveAs(download, "bttv_settings.backup");
     },
     get: function(setting) {
-        return ((vars.settings[setting]) ? vars.settings[setting].value : null);
+        return (vars.settings[setting]) ? vars.settings[setting].value : null;
     },
     import: function(input) {
         var getDataUrlFromUpload = function(input, callback) {
@@ -81,7 +81,10 @@ bttv.settings = {
         });
     },
     load: function () {
-        var parseSetting = function(value) {
+        var parseSetting = function(value, isList) {
+            if (isList)
+                return JSON.parse(value);
+
             if(value == null) {
                 return null;
             } else if(value === "true") {
@@ -96,9 +99,14 @@ bttv.settings = {
                 return value;
             }
         }
+
         var settingsList = require('settings-list');
 
-        var settingTemplate = require('templates/setting-switch');
+        var settingSwitchTemplate = require('templates/setting-switch');
+        var settingMultiTemplate = require('templates/setting-multi');
+
+        var optionsList = $('#bttvSettings .options-list');
+        var optionsMultiList = $('#bttvSettings .options-multi-list');
 
         var featureRequests = ' \
             <div class="option"> \
@@ -108,12 +116,20 @@ bttv.settings = {
 
         settingsList.forEach(function(setting) {
             vars.settings[setting.storageKey] = setting;
-            vars.settings[setting.storageKey].value = (parseSetting(bttv.storage.get(bttv.settings.prefix+setting.storageKey)) == null) ? setting.default : parseSetting(bttv.storage.get(bttv.settings.prefix+setting.storageKey));
+            vars.settings[setting.storageKey].value =
+                (parseSetting(bttv.storage.get(bttv.settings.prefix+setting.storageKey)) == null)
+                ? setting.default
+                : parseSetting(bttv.storage.get(bttv.settings.prefix+setting.storageKey), setting.list);
 
             if(setting.name) {
-                var settingHTML = settingTemplate(setting);
-                $('#bttvSettings .options-list').append(settingHTML);
-                bttv.settings.get(setting.storageKey) === true ? $('#'+setting.storageKey+'True').prop('checked', true) : $('#'+setting.storageKey+'False').prop('checked', true);
+                if (setting.list) {
+                    var settingHTML = settingMultiTemplate(setting);
+                    optionsMultiList.append(settingHTML);
+                } else {
+                    var settingHTML = settingSwitchTemplate(setting);
+                    optionsList.append(settingHTML);
+                    bttv.settings.get(setting.storageKey) === true ? $('#'+setting.storageKey+'True').prop('checked', true) : $('#'+setting.storageKey+'False').prop('checked', true);
+                }
             }
 
             if(setting.hidden) {
@@ -125,7 +141,6 @@ bttv.settings = {
                 setting.load();
             }
         });
-        
         /*var plea = ' \
             <div class="option"> \
                 <img src="http://cdn.betterttv.net/emotes/batkappa.png" style="margin: -5px 0px;"/> "I\'ve been spending <b>days</b> fixing BetterTTV. Maybe people will <a href="https://streamdonations.net/c/night" target="_blank">contribute</a> for the trouble." \
@@ -169,6 +184,8 @@ bttv.settings = {
     },
     prefix: "bttv_",
     save: function(setting, value) {
+        if (typeof setting == 'object')
+            setting = JSON.stringify(setting);
         if(/\?bttvSettings=true/.test(window.location)) {
             window.opener.postMessage('bttv_setting '+setting+' '+value, 'http://'+window.location.host);
         } else {
@@ -1233,17 +1250,7 @@ bttv.chat = {
 
             if(bttv.settings.get("blacklistKeywords")) {
                 var keywords = bttv.settings.get("blacklistKeywords");
-                var phraseRegex = /\{.+?\}/g;
-                var testCases =  keywords.match(phraseRegex);
-                if(testCases) {
-                    for (var i=0;i<testCases.length;i++) {
-                        var testCase = testCases[i];
-                        keywords = keywords.replace(testCase, "").replace(/\s\s+/g, ' ').trim();
-                        blacklistKeywords.push(testCase.replace(/(^\{|\}$)/g, '').trim());
-                    }
-                }
-                if(keywords !== "") {
-                    keywords = keywords.split(" ");
+                if(keywords.length) {
                     keywords.forEach(function (keyword) {
                         if(/^\([a-z0-9_\-\*]+\)$/i.test(keyword)) {
                             blacklistUsers.push(keyword.replace(/(\(|\))/g, ''));
