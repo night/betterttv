@@ -1458,9 +1458,8 @@ bttv.chat = {
 
             bttv.chat.store.__messageQueue.push(message);
 
-            if (messageHighlighted && bttv.settings.get("highlightFeedback") === true) {
-                var ts_tink = new Audio("//cdn.betterttv.net/style/sounds/ts-tink.ogg"); // not sure how this should be done, loads sound every time it plays...
-                ts_tink.play();
+            if (messageHighlighted) {
+                highlightFeedback();
             }
         }
     },
@@ -1649,6 +1648,7 @@ var clearClutter = require('features/clear-clutter'),
     formatDashboard = require('features/format-dashboard'),
     dashboardChannelInfo = require('features/dashboard-channelinfo'),
     giveawayCompatibility = require('features/giveaway-compatibility'),
+    highlightFeedback = require('features/highlight-feedback'),
     handleTwitchChatEmotesScript = require('features/handle-twitchchat-emotes'),
     loadChatSettings = require('features/chat-load-settings'),
     createSettings = require('features/create-settings');

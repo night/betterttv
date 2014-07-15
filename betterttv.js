@@ -2044,9 +2044,8 @@ bttv.chat = {
 
             bttv.chat.store.__messageQueue.push(message);
 
-            if (messageHighlighted && bttv.settings.get("highlightFeedback") === true) {
-                var ts_tink = new Audio("//cdn.betterttv.net/style/sounds/ts-tink.ogg"); // not sure how this should be done, loads sound every time it plays...
-                ts_tink.play();
+            if (messageHighlighted) {
+                highlightFeedback();
             }
         }
     },
@@ -2235,6 +2234,7 @@ var clearClutter = require('features/clear-clutter'),
     formatDashboard = require('features/format-dashboard'),
     dashboardChannelInfo = require('features/dashboard-channelinfo'),
     giveawayCompatibility = require('features/giveaway-compatibility'),
+    highlightFeedback = require('features/highlight-feedback'),
     handleTwitchChatEmotesScript = require('features/handle-twitchchat-emotes'),
     loadChatSettings = require('features/chat-load-settings'),
     createSettings = require('features/create-settings');
@@ -3771,6 +3771,27 @@ module.exports = function () {
         $("body").append(emotesJSInject);
     }
 }
+  
+});
+
+require.register("features/highlight-feedback", function(exports, require, module){
+  var debug = require('debug');
+
+var ts_tink;
+
+module.exports = function () {
+    if (bttv.settings.get('highlightFeedback') === true) {
+        if (!ts_tink) {
+            debug.log('loading audio feedback sound');
+
+            ts_tink = new Audio('//cdn.betterttv.net/style/sounds/ts-tink.ogg'); // btw ogg does not work in ie
+        }
+
+        ts_tink.load(); // needed to play sound more then once
+        ts_tink.play();
+    };
+};
+
   
 });
 
