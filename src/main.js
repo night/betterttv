@@ -1457,6 +1457,11 @@ bttv.chat = {
             );
 
             bttv.chat.store.__messageQueue.push(message);
+
+            if (messageHighlighted && bttv.settings.get("highlightFeedback") === true) {
+                var ts_tink = new Audio("//cdn.betterttv.net/style/sounds/ts-tink.ogg"); // not sure how this should be done, loads sound every time it plays...
+                ts_tink.play();
+            }
         }
     },
     store: {

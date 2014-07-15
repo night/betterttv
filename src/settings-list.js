@@ -261,6 +261,12 @@ module.exports = [
         }
     },
     {
+        name: 'Audio feedback for highlights',
+        description: 'Get audio feedback when any message is highlighted (BETA)',
+        default: false,
+        storageKey: 'highlightFeedback'
+    },
+    {
         name: 'Twitch Chat Emotes',
         description: 'Why remember emotes when you can "click-to-insert" them (by Ryan Chatham)',
         default: false,
