@@ -1457,6 +1457,10 @@ bttv.chat = {
             );
 
             bttv.chat.store.__messageQueue.push(message);
+
+            if (messageHighlighted) {
+                highlightFeedback();
+            }
         }
     },
     store: {
@@ -1644,6 +1648,7 @@ var clearClutter = require('features/clear-clutter'),
     formatDashboard = require('features/format-dashboard'),
     dashboardChannelInfo = require('features/dashboard-channelinfo'),
     giveawayCompatibility = require('features/giveaway-compatibility'),
+    highlightFeedback = require('features/highlight-feedback'),
     handleTwitchChatEmotesScript = require('features/handle-twitchchat-emotes'),
     loadChatSettings = require('features/chat-load-settings'),
     createSettings = require('features/create-settings');

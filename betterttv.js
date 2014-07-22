@@ -2043,6 +2043,10 @@ bttv.chat = {
             );
 
             bttv.chat.store.__messageQueue.push(message);
+
+            if (messageHighlighted) {
+                highlightFeedback();
+            }
         }
     },
     store: {
@@ -2230,6 +2234,7 @@ var clearClutter = require('features/clear-clutter'),
     formatDashboard = require('features/format-dashboard'),
     dashboardChannelInfo = require('features/dashboard-channelinfo'),
     giveawayCompatibility = require('features/giveaway-compatibility'),
+    highlightFeedback = require('features/highlight-feedback'),
     handleTwitchChatEmotesScript = require('features/handle-twitchchat-emotes'),
     loadChatSettings = require('features/chat-load-settings'),
     createSettings = require('features/create-settings');
@@ -2736,6 +2741,12 @@ module.exports = [
                 $("#splitChat").remove();
             }
         }
+    },
+    {
+        name: 'Audio feedback for highlights',
+        description: 'Get audio feedback when any message is highlighted (BETA)',
+        default: false,
+        storageKey: 'highlightFeedback'
     },
     {
         name: 'Twitch Chat Emotes',
@@ -3760,6 +3771,27 @@ module.exports = function () {
         $("body").append(emotesJSInject);
     }
 }
+  
+});
+
+require.register("features/highlight-feedback", function(exports, require, module){
+  var debug = require('debug');
+
+var ts_tink;
+
+module.exports = function () {
+    if (bttv.settings.get('highlightFeedback') === true) {
+        if (!ts_tink) {
+            debug.log('loading audio feedback sound');
+
+            ts_tink = new Audio('//cdn.betterttv.net/style/sounds/ts-tink.ogg'); // btw ogg does not work in ie
+        }
+
+        ts_tink.load(); // needed to play sound more then once
+        ts_tink.play();
+    };
+};
+
   
 });
 
