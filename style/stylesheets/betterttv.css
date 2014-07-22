@@ -1175,3 +1175,6 @@ span.mod-controls {
 ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .dropmenu.menu-like .dropmenu_action  {
     color: #000;
 }
+div.part.description a {
+    text-decoration: underline;
+}
