@@ -384,17 +384,8 @@ exports.rethrow = function rethrow(err, filename, lineno, str){
 });(function (bttv) { 
 require.register("debug", function(exports, require, module){
   module.exports = {
-    log: function (string) {
-        if (window.console && console.log) console.log("BTTV: " + string);
-    },
-    warn: function (string) {
-        if (window.console && console.warn) console.warn("BTTV: " + string);
-    },
-    error: function (string) {
-        if (window.console && console.error) console.error("BTTV: " + string);
-    },
-    info: function (string) {
-        if (window.console && console.info) console.info("BTTV: " + string);
+    log: function(string) {
+        if(window.console && console.log && bttv.settings.get('consoleLog') === true) console.log("BTTV: " + string);
     }
 };
   
@@ -902,7 +893,7 @@ bttv.chat = {
             resp += '</span>';
             return resp;
         },
-        from: function(name, color) { return '<span '+(color?'style="color: '+color+';" ':'')+'class="from">'+name+'</span><span class="colon">:</span>'+(name!=='jtv'?'&nbsp;<wbr></wbr>':''); },
+        from: function(name, color) { return '<span '+(color?'style="color: '+color+';" ':'')+'class="from">'+(bttv.storage.getObject("nicknames")[name.toLowerCase()] || name)+'</span><span class="colon">:</span>'+(name!=='jtv'?'&nbsp;<wbr></wbr>':''); },
         timestamp: function(time) { return '<span class="timestamp"><small>'+time+'</small></span>'; },
         modicons: function() { return '<span class="mod-icons"><a class="timeout" title="Timeout">Timeout</a><a class="ban" title="Ban">Ban</a><a class="unban" title="Unban" style="display: none;">Unban</a></span>'; },
         escape: function(message) { return message.replace(/</g,'&lt;').replace(/>/g, '&gt;'); },
@@ -2554,22 +2545,6 @@ module.exports = [
         }
     },
     {
-        name: 'Chat Indentation',
-        description: 'Indent long chat lines to make them easier to read',
-        default: true,
-        storageKey: 'showChatIndentation',
-        toggle: function(value) {
-            if(value === true) {
-                $addCSS = $('<style></style>');
-                $addCSS.attr('id', 'bttvChatIndentation');
-                $addCSS.html('#chat_line_list .line p { padding-left: 16px;text-indent: -16px; }');
-                $('body').append($addCSS);
-            } else {
-                $('#bttvChatIndentation').remove();
-            }
-        }
-    },
-    {
         name: 'DarkenTTV',
         description: 'A sleek, grey theme which will make you love the site even more',
         default: false,
@@ -2709,6 +2684,12 @@ module.exports = [
         }
     },
     {
+        name: 'Play Sound on Highlight',
+        description: 'Get audio feedback when any message is highlighted (BETA)',
+        default: false,
+        storageKey: 'highlightFeedback'
+    },
+    {
         name: 'Remove Deleted Messages',
         description: 'Completely removes timed out messages from view',
         default: false,
@@ -2741,12 +2722,6 @@ module.exports = [
                 $("#splitChat").remove();
             }
         }
-    },
-    {
-        name: 'Audio feedback for highlights',
-        description: 'Get audio feedback when any message is highlighted (BETA)',
-        default: false,
-        storageKey: 'highlightFeedback'
     },
     {
         name: 'Twitch Chat Emotes',
@@ -2806,6 +2781,10 @@ module.exports = [
     {
         default: 340,
         storageKey: 'chatWidth'
+    },
+    {
+        default: false,
+        storageKey: 'consoleLog'
     },
     {
         default: false,
@@ -3827,6 +3806,13 @@ require.register("features/make-card", function(exports, require, module){
     $modCard.find('.mod-card-message').click(function() {
         window.open(Twitch.url.compose(user.name),'_blank');
     });
+    $modCard.find('.mod-card-edit').click(function() {
+        var nickname = prompt("Enter the new nickname for "+user.display_name);
+        if (nickname) {
+            bttv.storage.pushObject("nicknames", user.name.toLowerCase(), nickname);
+            $modCard.find('h3.name a').text(nickname);
+        }
+    });
 
     if(bttv.chat.helpers.isIgnored(user.name)) {
         $modCard.find('.mod-card-ignore .svg-ignore').hide();
@@ -4443,7 +4429,12 @@ var jade_mixins = {};
 var jade_interp;
 ;var locals_for_with = (locals || {});(function (require, user, top, left, Twitch, bttv) {
 var vars = require('vars')
-buf.push("<div" + (jade.attr("data-user", user.name, true, false)) + (jade.attr("style", "top: " + (top) + "px;left: " + (left) + "px;", true, false)) + " class=\"bttv-mod-card ember-view moderation-card\"><div class=\"close-button\"><svg height=\"16px\" version=\"1.1\" viewbox=\"0 0 16 16\" width=\"16px\" x=\"0px\" y=\"0px\" class=\"svg-close\"><path clip-rule=\"evenodd\" d=\"M13.657,3.757L9.414,8l4.243,4.242l-1.415,1.415L8,9.414l-4.243,4.243l-1.414-1.415L6.586,8L2.343,3.757l1.414-1.414L8,6.586l4.242-4.243L13.657,3.757z\" fill-rule=\"evenodd\"></path></svg></div><div" + (jade.attr("style", "background-color: " + (user.profile_banner_background_color?user.profile_banner_background_color:'#000') + "", true, false)) + " class=\"card-header\"><img" + (jade.attr("src", user.logo?user.logo:'https://www-cdn.jtvnw.net/images/xarth/404_user_300x300.png', true, false)) + " class=\"channel_logo\"/><div class=\"drag-handle\"></div><h3 class=\"name\"><a" + (jade.attr("href", Twitch.url.profile(user.name), true, false)) + " target=\"_blank\">" + (jade.escape(null == (jade_interp = user.display_name) ? "" : jade_interp)) + "</a></h3><div class=\"channel_background_cover\"></div>");
+buf.push("<div" + (jade.attr("data-user", user.name, true, false)) + (jade.attr("style", "top: " + (top) + "px;left: " + (left) + "px;", true, false)) + " class=\"bttv-mod-card ember-view moderation-card\"><div class=\"close-button\"><svg height=\"16px\" version=\"1.1\" viewbox=\"0 0 16 16\" width=\"16px\" x=\"0px\" y=\"0px\" class=\"svg-close\"><path clip-rule=\"evenodd\" d=\"M13.657,3.757L9.414,8l4.243,4.242l-1.415,1.415L8,9.414l-4.243,4.243l-1.414-1.415L6.586,8L2.343,3.757l1.414-1.414L8,6.586l4.242-4.243L13.657,3.757z\" fill-rule=\"evenodd\"></path></svg></div><div" + (jade.attr("style", "background-color: " + (user.profile_banner_background_color?user.profile_banner_background_color:'#000') + "", true, false)) + " class=\"card-header\"><img" + (jade.attr("src", user.logo?user.logo:'https://www-cdn.jtvnw.net/images/xarth/404_user_300x300.png', true, false)) + " class=\"channel_logo\"/><div class=\"drag-handle\"></div><h3 class=\"name\"><a" + (jade.attr("href", Twitch.url.profile(user.name), true, false)) + " target=\"_blank\">" + (jade.escape(null == (jade_interp = bttv.storage.getObject("nicknames")[user.name.toLowerCase()] || user.display_name) ? "" : jade_interp)) + "</a><svg height=\"16px\" width=\"16px\" version=\"1.1\" viewBox=\"0 0 16 16\" x=\"0px\" y=\"0px\" class=\"svg-edit mod-card-edit\"><path clip-rule=\"evenodd\" fill-rule=\"evenodd\" d=\"M6.414,12.414L3.586,9.586l8-8l2.828,2.828L6.414,12.414z M4.829,14H2l0,0v-2.828l0.586-0.586l2.828,2.828L4.829,14z\"></path></svg></h3>");
+if ( bttv.storage.getObject("nicknames")[user.name.toLowerCase()])
+{
+buf.push("<h4 class=\"real-name\">" + (jade.escape(null == (jade_interp = user.display_name) ? "" : jade_interp)) + "</h4>");
+}
+buf.push("<div class=\"channel_background_cover\"></div>");
 if ( user.profile_banner)
 {
 buf.push("<img" + (jade.attr("src", user.profile_banner, true, false)) + " class=\"channel_background\"/>");

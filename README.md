@@ -111,3 +111,12 @@ npm test
 ```
 
 A webserver will start and you can visit Twitch in your browser and browse normally. Files not included in the repo are pulled from the actual server, so everything works.
+
+**Debug Messages:**
+
+In order to receive debug messages inside the browser's console log, you must toggle the consoleLog localStorage setting.
+
+Type this in the JavaScript console to enable console logging:
+```
+BetterTTV.settings.save('consoleLog', true);
+```
