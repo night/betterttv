@@ -979,6 +979,20 @@ body#chat #speak {
     font-size: 18px;
 }
 
+.ember-chat .moderation-card .svg-edit {
+    fill: #FFF;
+    cursor: pointer;
+}
+
+.ember-chat .moderation-card h4.real-name {
+    font-size: 11px;
+    color: #AAA;
+    margin-top: -2px;
+    margin-left: 60px;
+    position: relative;
+    z-index: 4;
+}
+
 .ember-chat .moderation-card .button-simple {
     cursor: pointer;
     line-height: 30px;
