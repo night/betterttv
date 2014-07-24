@@ -1679,10 +1679,6 @@ ul.tabs li>a:hover {
 	right: 0px;
 }
 
-#channel .player-column .stats-and-actions .channel-stats .stat svg path{
-	fill: rgba(255,255,255,.35);
-}
-
 #channel .player-column .stats-and-actions .channel-stats .stat {
 	color: #aaa;
 }
