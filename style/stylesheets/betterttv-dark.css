@@ -1762,3 +1762,7 @@ span#is-subscribed {
 ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .ember-application .dropmenu .dropmenu_action  {
 	color: #D3D3D3;
 }
+
+.ember-chat .moderation-card .button-simple {
+	color: #ccc;
+}
