@@ -1033,7 +1033,7 @@ body#chat #speak {
 
 .tipsy {
     z-index: 9000000001 !important;
-    white-space: nowrap;
+    /*white-space: nowrap;*/
 }
 
 /* Group Chat changed textarea */
