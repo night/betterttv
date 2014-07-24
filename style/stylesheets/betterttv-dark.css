@@ -1777,9 +1777,15 @@ ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .ember-application
 
 .close-hostmode a:before, .close-hostmode a:after {
 	border: 5px solid rgba(255, 255, 255, 0.2);
+	border-top-color: transparent;
+	border-left-color: transparent;
+	border-right-color: transparent;
 }
 .close-hostmode a.show-hostmode:before, .close-hostmode a.show-hostmode:after {
 	border: 5px solid rgba(255, 255, 255, 0.2);
+	border-bottom-color: transparent;
+	border-left-color: transparent;
+	border-right-color: transparent;
 }
 .hostmode-title-container .hostmode-title .host-profile-image svg path {
 	fill: #fff;
