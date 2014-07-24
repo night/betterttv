@@ -426,7 +426,7 @@ body {
 }
 
 .stats-and-actions .channel-actions .button,
-.chat-option-buttons .button, #channel_actions .button, #main_col .stats-and-actions #is-subscribed, .ember-chat .chat-room-list .room p.room-title, .button.unfollow, .button.unfollow:hover {
+.chat-option-buttons .button, #channel_actions .button, #main_col .stats-and-actions #is-subscribed, .ember-chat .chat-room-list .room p.room-title, .button.unfollow, .button.unfollow:hover, a.button.float-right {
 	margin: 0px;
 	margin-right: 8px;
 	padding: 0px 10px;
@@ -1789,4 +1789,7 @@ ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .ember-application
 }
 .hostmode-title-container .hostmode-title .host-profile-image svg path {
 	fill: #fff;
+}
+a.button.float-right:hover {
+color: white;
 }
