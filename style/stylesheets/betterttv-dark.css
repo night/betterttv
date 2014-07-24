@@ -1762,3 +1762,14 @@ span#is-subscribed {
 ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .ember-application .dropmenu .dropmenu_action  {
 	color: #D3D3D3;
 }
+
+/* Fixes for hostmode */
+div.player-column.target-frame.js-target-frame.js-active.active, .hostmode-title-container, .close-hostmode {
+	background: #141414;
+}
+div.hostmode-title p.float-left {
+	color: #666;
+}
+div.hostmode-title a {
+	color: #999;
+}
