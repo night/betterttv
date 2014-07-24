@@ -1347,7 +1347,7 @@ table.simple_table th {
 table.simple_table td {
 	border-color: transparent transparent #333;
 }
-.connect-item-info {
+.connect-items .connect-item .connect-item-info {
 	background: #343434;
 }
 
