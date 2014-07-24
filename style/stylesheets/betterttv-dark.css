@@ -1332,7 +1332,7 @@ table.simple_table th {
 	background: #171717;
 }
 .connect_items {
-	border-color: 343434;
+	border-color: #343434;
 }
 .connect_items .connect_item {
 	background: #404040;
@@ -1346,6 +1346,9 @@ table.simple_table th {
 }
 table.simple_table td {
 	border-color: transparent transparent #333;
+}
+.connect-item-info {
+	background: #343434;
 }
 
 /*~~~~~~~Caster's Page~~~~~~~~*/
