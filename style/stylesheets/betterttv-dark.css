@@ -426,7 +426,14 @@ body {
 }
 
 .stats-and-actions .channel-actions .button,
-.chat-option-buttons .button, #channel_actions .button, #main_col .stats-and-actions #is-subscribed, .ember-chat .chat-room-list .room p.room-title, .button.unfollow, .button.unfollow:hover, a.button.float-right {
+.chat-option-buttons .button,
+.stats-and-actions .channel-actions .subscribe-button,
+#channel_actions .button,
+#main_col .stats-and-actions #is-subscribed,
+.ember-chat .chat-room-list .room p.room-title,
+.button.unfollow,
+.button.unfollow:hover,
+a.button.float-right {
 	margin: 0px;
 	margin-right: 8px;
 	padding: 0px 10px;
