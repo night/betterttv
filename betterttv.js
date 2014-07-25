@@ -583,7 +583,7 @@ vars = require('vars');
 
 bttv.info = {
     version: "6.8",
-    release: 3,
+    release: 4,
     versionString: function() { 
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -1879,6 +1879,7 @@ bttv.chat = {
                         messageHighlighted = true;
                         if(bttv.settings.get("desktopNotifications") === true && bttv.chat.store.activeView === false) {
                             bttv.notify("You were mentioned in "+bttv.chat.helpers.lookupDisplayName(bttv.getChannel())+"'s channel.");
+                            highlightFeedback();
                         }
                     }
                 });
@@ -2034,10 +2035,6 @@ bttv.chat = {
             );
 
             bttv.chat.store.__messageQueue.push(message);
-
-            if (messageHighlighted) {
-                highlightFeedback();
-            }
         }
     },
     store: {
@@ -4243,15 +4240,22 @@ var handleResize = module.exports = function () {
         var calcH = $(window).height() - $("#broadcast-meta").outerHeight(true) - $(".stats-and-actions").outerHeight();
         if (h > calcH) {
             $('#bttvPlayerStyle').html('#player, .dynamic-player, .dynamic-player object, .dynamic-player video { width: 100% !important; height: '+ ($(window).height() - $(".stats-and-actions").outerHeight()) + 'px !important; }');
-            $("#main_col .tse-scroll-content").animate({
-                scrollTop: $("#broadcast-meta").outerHeight(true) - 10
-            }, 150, "swing");
+            
+            if(!$('#hostmode').length) {
+                $("#main_col .tse-scroll-content").animate({
+                    scrollTop: $("#broadcast-meta").outerHeight(true) - 10
+                }, 150, "swing");
+            }
         } else {
             $('#bttvPlayerStyle').html('#player, .dynamic-player, .dynamic-player object, .dynamic-player video { width: 100% !important; height: '+ h.toFixed(0) + 'px !important; }');
-            $("#main_col .tse-scroll-content").animate({
-                scrollTop: 0
-            }, 150, "swing");
+            
+            if(!$('#hostmode').length) {
+                $("#main_col .tse-scroll-content").animate({
+                    scrollTop: 0
+                }, 150, "swing");
+            }
         }
+        $('#bttvPlayerStyle').append('#hostmode .target-player, #hostmode .target-player object, #hostmode .target-player video { width: 100% !important; }');
 
         var d = $("#broadcast-meta .info .title").width();
         $("#broadcast-meta .info .title .real_title").width() > d ? $("#broadcast-meta .info").addClass("long_title") : $("#broadcast-meta .info").removeClass("long_title");

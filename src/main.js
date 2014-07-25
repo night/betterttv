@@ -6,7 +6,7 @@ vars = require('vars');
 
 bttv.info = {
     version: "6.8",
-    release: 3,
+    release: 4,
     versionString: function() { 
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -1302,6 +1302,7 @@ bttv.chat = {
                         messageHighlighted = true;
                         if(bttv.settings.get("desktopNotifications") === true && bttv.chat.store.activeView === false) {
                             bttv.notify("You were mentioned in "+bttv.chat.helpers.lookupDisplayName(bttv.getChannel())+"'s channel.");
+                            highlightFeedback();
                         }
                     }
                 });
@@ -1457,10 +1458,6 @@ bttv.chat = {
             );
 
             bttv.chat.store.__messageQueue.push(message);
-
-            if (messageHighlighted) {
-                highlightFeedback();
-            }
         }
     },
     store: {

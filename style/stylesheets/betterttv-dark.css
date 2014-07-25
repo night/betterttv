@@ -10,6 +10,10 @@ body {
 	background-color: #000 !important;
 }
 
+.channel-stats #views-count.stat svg path, .channel-stats #followers-count.stat svg path, #channel_stats #views_count.stat svg path, #channel_stats #followers_count.stat svg path {
+	fill: rgba(255,255,255,0.35) !important;
+}
+
 #chat_column, #chat_redisplay_holder {
 	padding-bottom: 10px !important;
 	padding-top: 10px !important;
@@ -450,6 +454,7 @@ a.button.float-right {
 
 .stats-and-actions .channel-actions .primary, #channel_actions .primary {
 	background-color: #6441a5;
+	color: #d3d3d3;
 }
 
 .stats-and-actions .channel-actions .button.drop, #channel_actions .button.drop {
@@ -1762,7 +1767,7 @@ span#is-subscribed {
 	margin: 0px;
 }
 
-#main_col .stats-and-actions #is-subscribed, .ember-chat .chat-room-list .room p.room-title, .button.unfollow, .button.unfollow:hover {
+#main_col .stats-and-actions #is-subscribed, #main_col .content #stats_and_actions #channel_stats .stat, .ember-chat .chat-room-list .room p.room-title, .button.unfollow, .button.unfollow:hover {
 	color: #D3D3D3 !important;
 }
 ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .ember-application .dropmenu .dropmenu_action  {

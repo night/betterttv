@@ -1096,7 +1096,7 @@ body#chat #speak {
     background-color: none;
 }
 
-#channel .player-column .stats-and-actions .channel-stats {
+#channel .player-column .stats-and-actions .channel-stats, #main_col .content #stats_and_actions #channel_stats, .channel-stats .stat {
     font-size: 12px;
 }
 
