@@ -1762,10 +1762,6 @@ ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .ember-application
 	color: #D3D3D3;
 }
 
-.ember-chat .moderation-card .button-simple {
-	color: #ccc;
-}
-
 /* Hosting */
 .target-frame, .hostmode-title-container, .close-hostmode {
 	background: rgb(20,20,20)!important;

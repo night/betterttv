@@ -42,3 +42,8 @@
 .dropmenu.menu-like .dropmenu_action:hover, .hostmode-title-container .hostmode-title .what {
 	background-color: #2A4687 !important;
 }
+
+/* mod card follow button text fix */
+.ember-chat .moderation-card .interface .mod-card-follow {
+	color: #ccc;
+}
