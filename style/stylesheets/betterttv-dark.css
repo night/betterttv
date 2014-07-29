@@ -1369,6 +1369,15 @@ table.simple_table td {
 	background: #343434;
 }
 
+/* darken text on connections page */
+#user_edit_form .connect_items .connect-item-desc {
+	color: #333;
+}
+
+#user_edit_form .form_microcopy {
+	background: #212121;
+}
+
 /*~~~~~~~Caster's Page~~~~~~~~*/
 
 #new-user-prompt {
