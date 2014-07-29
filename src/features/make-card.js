@@ -30,10 +30,15 @@ module.exports = function(user, $event) {
         window.open(Twitch.url.compose(user.name),'_blank');
     });
     $modCard.find('.mod-card-edit').click(function() {
-        var nickname = prompt("Enter the new nickname for "+user.display_name);
+        var nickname = prompt("Enter the new nickname for "+user.display_name + '. (Leave blank to reset...)');
         if (nickname) {
             bttv.storage.pushObject("nicknames", user.name.toLowerCase(), nickname);
             $modCard.find('h3.name a').text(nickname);
+            $('.chat-line[data-sender="'+user.name.toLowerCase()+'"] .from').text(nickname);
+        } else if (nickname == '') {
+            bttv.storage.spliceObject("nicknames", user.name.toLowerCase());
+            $modCard.find('h3.name a').text(user.display_name);
+            $('.chat-line[data-sender="'+user.name.toLowerCase()+'"] .from').text(user.display_name);
         }
     });
 
