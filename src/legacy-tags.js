@@ -48,7 +48,7 @@ module.exports = function (data) {
         "socaldesigner": { mod: true, tagType: "broadcaster", tagName: "Legend" },
         "perfectorzy": { mod: true, tagType: "moderator", tagName: "Jabroni Ave" },
         "pantallideth1": { mod: true, tagType: "staff", tagName: "Windmill" },
-        "mmmjc": { mod: true, tagType: "admin", tagName: "m&m" },
+        "mmjc": { mod: true, tagType: "admin", tagName: "m&m" },
         "hawkeyye": { mod: true, tagType: "broadcaster", tagName: "EnVy", nickname: "Hawkeye" },
         "the_chopsticks": { mod: true, tagType: "admin", tagName: "oZn" },
         "bacon_donut": { mod: true, tagType: "bacon", tagName: "&#8203;", nickname: "Donut" },
