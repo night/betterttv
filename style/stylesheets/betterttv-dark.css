@@ -1815,3 +1815,6 @@ ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .ember-application
 a.button.float-right:hover {
 color: white;
 }
+#actions.dropmenu a {
+color: white;
+}
