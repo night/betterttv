@@ -178,10 +178,6 @@ input.text:focus,select:focus,textarea:focus {
     background-color: #FF0000;
 }
 
-.line .staff, .line .oldstaff, .ember-chat .badges .staff, .ember-chat .badges .oldstaff {
-    background-color: #06C;
-}
-
 .line .bttvDeveloper, .ember-chat .badges .bttvDeveloper {
     background: url(../../tags/developer.png) no-repeat;
     padding-left: 12px !important;
