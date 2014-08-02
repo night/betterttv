@@ -551,7 +551,7 @@ require.register("legacy-tags", function(exports, require, module){
         "socaldesigner": { mod: true, tagType: "broadcaster", tagName: "Legend" },
         "perfectorzy": { mod: true, tagType: "moderator", tagName: "Jabroni Ave" },
         "pantallideth1": { mod: true, tagType: "staff", tagName: "Windmill" },
-        "mmmjc": { mod: true, tagType: "admin", tagName: "m&m" },
+        "mmjc": { mod: true, tagType: "admin", tagName: "m&m" },
         "hawkeyye": { mod: true, tagType: "broadcaster", tagName: "EnVy", nickname: "Hawkeye" },
         "the_chopsticks": { mod: true, tagType: "admin", tagName: "oZn" },
         "bacon_donut": { mod: true, tagType: "bacon", tagName: "&#8203;", nickname: "Donut" },
@@ -583,7 +583,7 @@ vars = require('vars');
 
 bttv.info = {
     version: "6.8",
-    release: 4,
+    release: 5,
     versionString: function() { 
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -1027,6 +1027,14 @@ bttv.chat = {
 
         // Load Chat Settings
         loadChatSettings();
+
+        $('.ember-text-area').off();
+        $('.ember-text-area').on('keyup', function(e) {
+            if(e.which === keyCodes.Enter) {
+                bttv.chat.helpers.sendMessage($('.ember-text-area').val());
+                $('.ember-text-area').val('');
+            }
+        });
 
         // Hover over icons
         $("body").off('mouseover', '.chat-line .badges .badge, .chat-line .mod-icons a').on('mouseover', '.chat-line .badges .badge, .chat-line .mod-icons a', function() {

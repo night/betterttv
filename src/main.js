@@ -6,7 +6,7 @@ vars = require('vars');
 
 bttv.info = {
     version: "6.8",
-    release: 4,
+    release: 5,
     versionString: function() { 
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -450,6 +450,14 @@ bttv.chat = {
 
         // Load Chat Settings
         loadChatSettings();
+
+        $('.ember-text-area').off();
+        $('.ember-text-area').on('keyup', function(e) {
+            if(e.which === keyCodes.Enter) {
+                bttv.chat.helpers.sendMessage($('.ember-text-area').val());
+                $('.ember-text-area').val('');
+            }
+        });
 
         // Hover over icons
         $("body").off('mouseover', '.chat-line .badges .badge, .chat-line .mod-icons a').on('mouseover', '.chat-line .badges .badge, .chat-line .mod-icons a', function() {
