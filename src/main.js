@@ -452,7 +452,7 @@ bttv.chat = {
         loadChatSettings();
 
         $('.ember-text-area').off();
-        $('.ember-text-area').on('keyup', function(e) {
+        $('.ember-text-area').on('keydown', function(e) {
             if(e.which === keyCodes.Enter) {
                 var val = $('.ember-text-area').val().trim();
                 if(e.shiftKey || !val.length) return;

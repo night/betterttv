@@ -1029,10 +1029,13 @@ bttv.chat = {
         loadChatSettings();
 
         $('.ember-text-area').off();
-        $('.ember-text-area').on('keyup', function(e) {
+        $('.ember-text-area').on('keydown', function(e) {
             if(e.which === keyCodes.Enter) {
-                bttv.chat.helpers.sendMessage($('.ember-text-area').val());
+                var val = $('.ember-text-area').val().trim();
+                if(e.shiftKey || !val.length) return;
+
                 $('.ember-text-area').val('');
+                bttv.chat.helpers.sendMessage(val);
             }
         });
 
@@ -3879,22 +3882,17 @@ require.register("features/make-card", function(exports, require, module){
     });
     $modCard.find('.mod-card-edit').click(function() {
         var nickname = prompt("Enter the new nickname for "+user.display_name + '. (Leave blank to reset...)');
-        if (nickname) {
-            var $nameUpdate = $('.chat-line[data-sender="'+user.name.toLowerCase()+'"] .from');
-            var old_name = $nameUpdate.last().text();
-            $nameUpdate.text(nickname);
+        if(nickname.length) {
+            nickname = nickname.trim();
+            if(!nickname.length) return;
 
-            // check that name is not invisible, before saveing name to storage
-            if ($nameUpdate.last().width() != 0) {
-                bttv.storage.pushObject("nicknames", user.name.toLowerCase(), nickname);
-                $modCard.find('h3.name a').text(nickname);
-            } else {
-                $nameUpdate.text(old_name);
-            }
-        } else if (nickname == '') {
-            bttv.storage.spliceObject("nicknames", user.name.toLowerCase());
+            bttv.storage.pushObject("nicknames", user.name, nickname);
+            $modCard.find('h3.name a').text(nickname);
+            $('.chat-line[data-sender="'+user.name+'"] .from').text(nickname);
+        } else {
+            bttv.storage.spliceObject("nicknames", user.name);
             $modCard.find('h3.name a').text(user.display_name);
-            $('.chat-line[data-sender="'+user.name.toLowerCase()+'"] .from').text(user.display_name);
+            $('.chat-line[data-sender="'+user.name+'"] .from').text(user.display_name);
         }
     });
 
