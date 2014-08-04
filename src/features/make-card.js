@@ -31,19 +31,12 @@ module.exports = function(user, $event) {
     });
     $modCard.find('.mod-card-edit').click(function() {
         var nickname = prompt("Enter the new nickname for "+user.display_name + '. (Leave blank to reset...)');
-        if (nickname) {
-            var $nameUpdate = $('.chat-line[data-sender="'+user.name.toLowerCase()+'"] .from');
-            var old_name = $nameUpdate.last().text();
-            $nameUpdate.text(nickname);
-
-            // check that name is not invisible, before saveing name to storage
-            if ($nameUpdate.last().width() != 0) {
-                bttv.storage.pushObject("nicknames", user.name.toLowerCase(), nickname);
-                $modCard.find('h3.name a').text(nickname);
-            } else {
-                $nameUpdate.text(old_name);
-            }
-        } else if (nickname == '') {
+        if(nickname.length) {
+            if(!nickname.trim().length) return;
+            
+            bttv.storage.pushObject("nicknames", user.name.toLowerCase(), nickname);
+            $modCard.find('h3.name a').text(nickname);
+        } else {
             bttv.storage.spliceObject("nicknames", user.name.toLowerCase());
             $modCard.find('h3.name a').text(user.display_name);
             $('.chat-line[data-sender="'+user.name.toLowerCase()+'"] .from').text(user.display_name);
