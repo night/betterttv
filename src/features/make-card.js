@@ -35,13 +35,13 @@ module.exports = function(user, $event) {
             nickname = nickname.trim();
             if(!nickname.length) return;
 
-            bttv.storage.pushObject("nicknames", user.name.toLowerCase(), nickname);
+            bttv.storage.pushObject("nicknames", user.name, nickname);
             $modCard.find('h3.name a').text(nickname);
-            $('.chat-line[data-sender="'+user.name.toLowerCase()+'"] .from').text(nickname);
+            $('.chat-line[data-sender="'+user.name+'"] .from').text(nickname);
         } else {
-            bttv.storage.spliceObject("nicknames", user.name.toLowerCase());
+            bttv.storage.spliceObject("nicknames", user.name);
             $modCard.find('h3.name a').text(user.display_name);
-            $('.chat-line[data-sender="'+user.name.toLowerCase()+'"] .from').text(user.display_name);
+            $('.chat-line[data-sender="'+user.name+'"] .from').text(user.display_name);
         }
     });
 
