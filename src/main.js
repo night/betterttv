@@ -454,8 +454,11 @@ bttv.chat = {
         $('.ember-text-area').off();
         $('.ember-text-area').on('keyup', function(e) {
             if(e.which === keyCodes.Enter) {
-                bttv.chat.helpers.sendMessage($('.ember-text-area').val());
+                var val = $('.ember-text-area').val().trim();
+                if(e.shiftKey || !val.length) return;
+
                 $('.ember-text-area').val('');
+                bttv.chat.helpers.sendMessage(val);
             }
         });
 
