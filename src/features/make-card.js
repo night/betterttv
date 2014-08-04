@@ -32,10 +32,12 @@ module.exports = function(user, $event) {
     $modCard.find('.mod-card-edit').click(function() {
         var nickname = prompt("Enter the new nickname for "+user.display_name + '. (Leave blank to reset...)');
         if(nickname.length) {
-            if(!nickname.trim().length) return;
-            
+            nickname = nickname.trim();
+            if(!nickname.length) return;
+
             bttv.storage.pushObject("nicknames", user.name.toLowerCase(), nickname);
             $modCard.find('h3.name a').text(nickname);
+            $('.chat-line[data-sender="'+user.name.toLowerCase()+'"] .from').text(nickname);
         } else {
             bttv.storage.spliceObject("nicknames", user.name.toLowerCase());
             $modCard.find('h3.name a').text(user.display_name);
