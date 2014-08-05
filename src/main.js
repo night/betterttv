@@ -451,17 +451,6 @@ bttv.chat = {
         // Load Chat Settings
         loadChatSettings();
 
-        $('.ember-text-area').off();
-        $('.ember-text-area').on('keydown', function(e) {
-            if(e.which === keyCodes.Enter) {
-                var val = $('.ember-text-area').val().trim();
-                if(e.shiftKey || !val.length) return;
-
-                $('.ember-text-area').val('');
-                bttv.chat.helpers.sendMessage(val);
-            }
-        });
-
         // Hover over icons
         $("body").off('mouseover', '.chat-line .badges .badge, .chat-line .mod-icons a').on('mouseover', '.chat-line .badges .badge, .chat-line .mod-icons a', function() {
             $(this).tipsy({
@@ -558,158 +547,169 @@ bttv.chat = {
             });
         }
 
+        // Disable Twitch's chat sender
+        $('.ember-text-area').off();
+
         // Message input features (tab completion, message history, anti-prefix completion, extra commands)
-        if(!vars.loadedTabCompletion) {
-            vars.loadedTabCompletion = true;
-            var lastPartialMatch = null;
-            var lastMatch = null;
-            var lastIndex = null
+        var lastPartialMatch = null;
+        var lastMatch = null;
+        var lastIndex = null
 
-            $('.ember-chat .chat-interface textarea').live('keydown', function (e) {
-                var keyCode = e.keyCode || e.which;
-                var $chatInput = $('.ember-chat .chat-interface textarea');
+        $('.ember-chat .chat-interface textarea').on('keydown', function (e) {
+            var keyCode = e.keyCode || e.which;
+            var $chatInput = $('.ember-chat .chat-interface textarea');
 
-                // Tab completion
-                if (keyCode === keyCodes.Tab) {
-                    e.preventDefault();
-                    var sentence = $chatInput.val().trim().split(' ');
-                    var partialMatch = sentence.pop().toLowerCase();
-                    var users = Object.keys(bttv.chat.store.chatters);
-                    var userIndex = 0;
-                    if (lastPartialMatch === null) {
-                        lastPartialMatch = partialMatch;
-                    } else if (partialMatch.search(lastPartialMatch) !== 0) {
-                        lastPartialMatch = partialMatch;
-                    } else if (lastMatch !== $chatInput.val()) {
-                        lastPartialMatch = partialMatch;
+            // Tab completion
+            if (keyCode === keyCodes.Tab) {
+                e.preventDefault();
+                var sentence = $chatInput.val().trim().split(' ');
+                var partialMatch = sentence.pop().toLowerCase();
+                var users = Object.keys(bttv.chat.store.chatters);
+                var userIndex = 0;
+                if (lastPartialMatch === null) {
+                    lastPartialMatch = partialMatch;
+                } else if (partialMatch.search(lastPartialMatch) !== 0) {
+                    lastPartialMatch = partialMatch;
+                } else if (lastMatch !== $chatInput.val()) {
+                    lastPartialMatch = partialMatch;
+                } else {
+                    if (sentence.length === 0) {
+                        userIndex = users.indexOf(partialMatch.substr(0, partialMatch.length - 1));
                     } else {
-                        if (sentence.length === 0) {
-                            userIndex = users.indexOf(partialMatch.substr(0, partialMatch.length - 1));
+                        userIndex = users.indexOf(partialMatch);
+                    }
+                    if (e.shiftKey && userIndex > 0) {
+                        userIndex = userIndex - 1;
+                    }
+                }
+                for (var i = userIndex; i < users.length; i++) {
+                    var user = users[i] || '';
+                    if (lastPartialMatch.length > 0 && user.search(lastPartialMatch, "i") === 0) {
+                        if (user === partialMatch || user === partialMatch.substr(0, partialMatch.length - 1)) {
+                            continue;
+                        }
+                        if(bttv.chat.store.displayNames && bttv.chat.store.displayNames[user]) {
+                            sentence.push(bttv.chat.store.displayNames[user].displayName);
                         } else {
-                            userIndex = users.indexOf(partialMatch);
+                            sentence.push(user.capitalize());
                         }
-                        if (e.shiftKey && userIndex > 0) {
-                            userIndex = userIndex - 1;
-                        }
-                    }
-                    for (var i = userIndex; i < users.length; i++) {
-                        var user = users[i] || '';
-                        if (lastPartialMatch.length > 0 && user.search(lastPartialMatch, "i") === 0) {
-                            if (user === partialMatch || user === partialMatch.substr(0, partialMatch.length - 1)) {
-                                continue;
-                            }
-                            if(bttv.chat.store.displayNames && bttv.chat.store.displayNames[user]) {
-                                sentence.push(bttv.chat.store.displayNames[user].displayName);
-                            } else {
-                                sentence.push(user.capitalize());
-                            }
-                            if (sentence.length === 1) {
-                                $chatInput.val(sentence.join(' ') + ", ");
-                                lastMatch = sentence.join(' ') + ", ";
-                                lastIndex = i;
-                            } else {
-                                $chatInput.val(sentence.join(' '));
-                                lastMatch = sentence.join(' ');
-                                lastIndex = i;
-                            }
-                            break;
-                        }
-                    }
-                }
-
-                // Anti-Prefix Completion
-                if(bttv.settings.get("antiPrefix") === true) {
-                    if (keyCode === keyCodes.Space || keyCode === keyCodes.Enter) {
-                        if(!chat.store.__emoteRegexes) {
-                            chat.store.__emoteRegexes = [];
-                            if(chat.emoticons()['default']) {
-                                chat.emoticons()['default'].forEach(function(emote) {
-                                    chat.store.__emoteRegexes.push(""+emote.regex);
-                                });
-                            }
-                        }
-                        for(var emote in chat.store.autoCompleteEmotes) {
-                            if(chat.store.autoCompleteEmotes.hasOwnProperty(emote) && chat.store.__emoteRegexes.indexOf("/\\b"+emote+"\\b/g") === -1) {
-                                var emoteRegex = new RegExp("\\b"+emote+"\\b","g");
-                                $chatInput.val($chatInput.val().replace(emoteRegex, chat.store.autoCompleteEmotes[emote]));
-                            }
-                        }
-                    }
-                }
-
-                // Chat history
-                if(bttv.settings.get('chatLineHistory') === true) {
-                    if (keyCode === keyCodes.Enter) {
-                        if(chat.store.chatHistory.indexOf($chatInput.val()) !== -1) {
-                            chat.store.chatHistory.splice(chat.store.chatHistory.indexOf($chatInput.val()), 1);
-                        }
-                        chat.store.chatHistory.unshift($chatInput.val());
-                    }
-                    var historyIndex = chat.store.chatHistory.indexOf($chatInput.val());
-                    if (keyCode === keyCodes.UpArrow) {
-                        if(historyIndex >= 0) {
-                            if(chat.store.chatHistory[historyIndex+1]) {
-                                $chatInput.val(chat.store.chatHistory[historyIndex+1]);
-                            }
+                        if (sentence.length === 1) {
+                            $chatInput.val(sentence.join(' ') + ", ");
+                            lastMatch = sentence.join(' ') + ", ";
+                            lastIndex = i;
                         } else {
-                            if($chatInput.val() !== "") {
-                                chat.store.chatHistory.unshift($chatInput.val());
-                                $chatInput.val(chat.store.chatHistory[1]);
-                            } else {
-                                $chatInput.val(chat.store.chatHistory[0]);
-                            }
+                            $chatInput.val(sentence.join(' '));
+                            lastMatch = sentence.join(' ');
+                            lastIndex = i;
+                        }
+                        break;
+                    }
+                }
+            }
 
+            // Anti-Prefix Completion
+            if(bttv.settings.get("antiPrefix") === true) {
+                if (keyCode === keyCodes.Space || keyCode === keyCodes.Enter) {
+                    if(!chat.store.__emoteRegexes) {
+                        chat.store.__emoteRegexes = [];
+                        if(chat.emoticons()['default']) {
+                            chat.emoticons()['default'].forEach(function(emote) {
+                                chat.store.__emoteRegexes.push(""+emote.regex);
+                            });
                         }
                     }
-                    if (keyCode === keyCodes.DownArrow) {
-                        if(historyIndex >= 0) {
-                            if(chat.store.chatHistory[historyIndex-1]) {
-                                $chatInput.val(chat.store.chatHistory[historyIndex-1]);
-                            } else {
-                                $chatInput.val('');
-                            }
+                    for(var emote in chat.store.autoCompleteEmotes) {
+                        if(chat.store.autoCompleteEmotes.hasOwnProperty(emote) && chat.store.__emoteRegexes.indexOf("/\\b"+emote+"\\b/g") === -1) {
+                            var emoteRegex = new RegExp("\\b"+emote+"\\b","g");
+                            $chatInput.val($chatInput.val().replace(emoteRegex, chat.store.autoCompleteEmotes[emote]));
                         }
                     }
                 }
+            }
 
-                // Chat commands
-                if(keyCode === keyCodes.Enter) {
-                    var sentence = $chatInput.val().trim().split(' ');
-                    var command = sentence[0];
-                    var tmi = bttv.chat.tmi();
-
-                    if (command === "/b") {
-                        bttv.chat.helpers.ban(sentence[1]);
-                    } else if (command === "/t") {
-                        var time = 600;
-                        if(!isNaN(sentence[2])) time = sentence[2];
-                        bttv.chat.helpers.timeout(sentence[1], time);
-                    } else if (command === "/massunban" || ((command === "/unban" || command === "/u") && sentence[1] === "all")) {
-                        bttv.chat.helpers.massUnban();
-                    } else if (command === "/u") {
-                        bttv.chat.helpers.unban(sentence[1]);
-                    } else if (command === "/sub") {
-                        tmi.tmiRoom.startSubscribersMode();
-                    } else if (command === "/suboff") {
-                        tmi.tmiRoom.stopSubscribersMode();
-                    } else if (command === "/localsub") {
-                        bttv.chat.helpers.serverMessage("Local subscribers-only mode enabled.");
-                        vars.localSubsOnly = true;
-                    } else if (command === "/localsuboff") {
-                        bttv.chat.helpers.serverMessage("Local subscribers-only mode disabled.");
-                        vars.localSubsOnly = false;
-                    } else if (command === "/linehistory") {
-                        if(sentence[1] === "off") {
-                            bttv.settings.save('chatLineHistory', false);
+            // Chat history
+            if(bttv.settings.get('chatLineHistory') === true) {
+                if (keyCode === keyCodes.Enter) {
+                    if(chat.store.chatHistory.indexOf($chatInput.val()) !== -1) {
+                        chat.store.chatHistory.splice(chat.store.chatHistory.indexOf($chatInput.val()), 1);
+                    }
+                    chat.store.chatHistory.unshift($chatInput.val());
+                }
+                var historyIndex = chat.store.chatHistory.indexOf($chatInput.val());
+                if (keyCode === keyCodes.UpArrow) {
+                    if(historyIndex >= 0) {
+                        if(chat.store.chatHistory[historyIndex+1]) {
+                            $chatInput.val(chat.store.chatHistory[historyIndex+1]);
+                        }
+                    } else {
+                        if($chatInput.val() !== "") {
+                            chat.store.chatHistory.unshift($chatInput.val());
+                            $chatInput.val(chat.store.chatHistory[1]);
                         } else {
-                            bttv.settings.save('chatLineHistory', true);
+                            $chatInput.val(chat.store.chatHistory[0]);
                         }
-                    } else if(bttv.socketServer && command === "/invite" && sentence[1] === "friends") {
-                        //bttv.socketServer.emit("invite friends", { channel: CurrentChat.channel, token: CurrentChat.userData.chat_oauth_token });
+
                     }
                 }
-            });
-        }
+                if (keyCode === keyCodes.DownArrow) {
+                    if(historyIndex >= 0) {
+                        if(chat.store.chatHistory[historyIndex-1]) {
+                            $chatInput.val(chat.store.chatHistory[historyIndex-1]);
+                        } else {
+                            $chatInput.val('');
+                        }
+                    }
+                }
+            }
+
+            // Chat commands
+            if(keyCode === keyCodes.Enter) {
+                var sentence = $chatInput.val().trim().split(' ');
+                var command = sentence[0];
+                var tmi = bttv.chat.tmi();
+
+                if (command === "/b") {
+                    bttv.chat.helpers.ban(sentence[1]);
+                } else if (command === "/t") {
+                    var time = 600;
+                    if(!isNaN(sentence[2])) time = sentence[2];
+                    bttv.chat.helpers.timeout(sentence[1], time);
+                } else if (command === "/massunban" || ((command === "/unban" || command === "/u") && sentence[1] === "all")) {
+                    bttv.chat.helpers.massUnban();
+                } else if (command === "/u") {
+                    bttv.chat.helpers.unban(sentence[1]);
+                } else if (command === "/sub") {
+                    tmi.tmiRoom.startSubscribersMode();
+                } else if (command === "/suboff") {
+                    tmi.tmiRoom.stopSubscribersMode();
+                } else if (command === "/localsub") {
+                    bttv.chat.helpers.serverMessage("Local subscribers-only mode enabled.");
+                    vars.localSubsOnly = true;
+                } else if (command === "/localsuboff") {
+                    bttv.chat.helpers.serverMessage("Local subscribers-only mode disabled.");
+                    vars.localSubsOnly = false;
+                } else if (command === "/linehistory") {
+                    if(sentence[1] === "off") {
+                        bttv.settings.save('chatLineHistory', false);
+                    } else {
+                        bttv.settings.save('chatLineHistory', true);
+                    }
+                } else if(bttv.socketServer && command === "/invite" && sentence[1] === "friends") {
+                    //bttv.socketServer.emit("invite friends", { channel: CurrentChat.channel, token: CurrentChat.userData.chat_oauth_token });
+                }
+            }
+        });
+
+        // Implement our own text sender
+        $('.ember-text-area').on('keydown', function(e) {
+            if(e.which === keyCodes.Enter) {
+                var val = $('.ember-text-area').val().trim();
+                if(e.shiftKey || !val.length) return;
+
+                bttv.chat.helpers.sendMessage(val);
+                $('.ember-text-area').val('');
+            }
+        });
 
         $('.ember-chat .chat-messages .chat-line').remove();
         chat.helpers.serverMessage('<center><small>BetterTTV v' + bttv.info.version + ' Loaded.</small></center>');
