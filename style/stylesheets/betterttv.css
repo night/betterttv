@@ -1188,3 +1188,19 @@ ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .dropmenu.menu-lik
 div.part.description a {
     text-decoration: underline;
 }
+div#you {
+	position: relative;
+	min-height: 34px;
+}
+div#you span.username {
+	background-color: #1F1F1F;
+	max-width: 120px;
+	position: absolute;
+	z-index: 9999;
+	overflow: hidden;
+	white-space: nowrap;
+}
+div#you span.username:hover {
+	max-width: 100%;
+	padding-right: 5px;
+}
