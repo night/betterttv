@@ -1188,11 +1188,11 @@ ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .dropmenu.menu-lik
 div.part.description a {
     text-decoration: underline;
 }
-div#nav div#nav_personal div#you {
+.app-main .isLoggedIn .nav_section div#you {
 	position: relative;
 	min-height: 34px;
 }
-div#nav div#nav_personal div#you span.username {
+.app-main .isLoggedIn .nav_section div#you span.username {
 	background-color: #1F1F1F;
 	max-width: 120px;
 	position: absolute;
@@ -1200,7 +1200,7 @@ div#nav div#nav_personal div#you span.username {
 	overflow: hidden;
 	white-space: nowrap;
 }
-div#nav div#nav_personal div#you span.username:hover {
+.app-main .isLoggedIn .nav_section div#you span.username:hover {
 	max-width: 100%;
 	padding-right: 5px;
 }
