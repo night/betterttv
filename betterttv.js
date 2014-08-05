@@ -1287,6 +1287,13 @@ bttv.chat = {
                 $('.ember-text-area').val('');
             }
         });
+        $('.ember-text-area').on('keyup', function(e) {
+            if(e.which === keyCodes.Enter) {
+                if(e.shiftKey) return;
+
+                $('.ember-text-area').val('');
+            }
+        });
 
         $('.ember-chat .chat-messages .chat-line').remove();
         chat.helpers.serverMessage('<center><small>BetterTTV v' + bttv.info.version + ' Loaded.</small></center>');
