@@ -6,7 +6,7 @@ vars = require('vars');
 
 bttv.info = {
     version: "6.8",
-    release: 2,
+    release: 5,
     versionString: function() { 
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -125,7 +125,7 @@ bttv.settings = {
                 setting.load();
             }
         });
-        
+
         /*var plea = ' \
             <div class="option"> \
                 <img src="http://cdn.betterttv.net/emotes/batkappa.png" style="margin: -5px 0px;"/> "I\'ve been spending <b>days</b> fixing BetterTTV. Maybe people will <a href="https://streamdonations.net/c/night" target="_blank">contribute</a> for the trouble." \
@@ -316,7 +316,7 @@ bttv.chat = {
             resp += '</span>';
             return resp;
         },
-        from: function(name, color) { return '<span '+(color?'style="color: '+color+';" ':'')+'class="from">'+name+'</span><span class="colon">:</span>'+(name!=='jtv'?'&nbsp;<wbr></wbr>':''); },
+        from: function(name, color) { return '<span '+(color?'style="color: '+color+';" ':'')+'class="from">'+(bttv.storage.getObject("nicknames")[name.toLowerCase()] || name)+'</span><span class="colon">:</span>'+(name!=='jtv'?'&nbsp;<wbr></wbr>':''); },
         timestamp: function(time) { return '<span class="timestamp"><small>'+time+'</small></span>'; },
         modicons: function() { return '<span class="mod-icons"><a class="timeout" title="Timeout">Timeout</a><a class="ban" title="Ban">Ban</a><a class="unban" title="Unban" style="display: none;">Unban</a></span>'; },
         escape: function(message) { return message.replace(/</g,'&lt;').replace(/>/g, '&gt;'); },
@@ -547,158 +547,176 @@ bttv.chat = {
             });
         }
 
+        // Disable Twitch's chat sender
+        $('.ember-text-area').off();
+
         // Message input features (tab completion, message history, anti-prefix completion, extra commands)
-        if(!vars.loadedTabCompletion) {
-            vars.loadedTabCompletion = true;
-            var lastPartialMatch = null;
-            var lastMatch = null;
-            var lastIndex = null
+        var lastPartialMatch = null;
+        var lastMatch = null;
+        var lastIndex = null
 
-            $('.ember-chat .chat-interface textarea').live('keydown', function (e) {
-                var keyCode = e.keyCode || e.which;
-                var $chatInput = $('.ember-chat .chat-interface textarea');
+        $('.ember-chat .chat-interface textarea').on('keydown', function (e) {
+            var keyCode = e.keyCode || e.which;
+            var $chatInput = $('.ember-chat .chat-interface textarea');
 
-                // Tab completion
-                if (keyCode === keyCodes.Tab) {
-                    e.preventDefault();
-                    var sentence = $chatInput.val().trim().split(' ');
-                    var partialMatch = sentence.pop().toLowerCase();
-                    var users = Object.keys(bttv.chat.store.chatters);
-                    var userIndex = 0;
-                    if (lastPartialMatch === null) {
-                        lastPartialMatch = partialMatch;
-                    } else if (partialMatch.search(lastPartialMatch) !== 0) {
-                        lastPartialMatch = partialMatch;
-                    } else if (lastMatch !== $chatInput.val()) {
-                        lastPartialMatch = partialMatch;
+            // Tab completion
+            if (keyCode === keyCodes.Tab) {
+                e.preventDefault();
+                var sentence = $chatInput.val().trim().split(' ');
+                var partialMatch = sentence.pop().toLowerCase();
+                var users = Object.keys(bttv.chat.store.chatters);
+                var userIndex = 0;
+                if (lastPartialMatch === null) {
+                    lastPartialMatch = partialMatch;
+                } else if (partialMatch.search(lastPartialMatch) !== 0) {
+                    lastPartialMatch = partialMatch;
+                } else if (lastMatch !== $chatInput.val()) {
+                    lastPartialMatch = partialMatch;
+                } else {
+                    if (sentence.length === 0) {
+                        userIndex = users.indexOf(partialMatch.substr(0, partialMatch.length - 1));
                     } else {
-                        if (sentence.length === 0) {
-                            userIndex = users.indexOf(partialMatch.substr(0, partialMatch.length - 1));
+                        userIndex = users.indexOf(partialMatch);
+                    }
+                    if (e.shiftKey && userIndex > 0) {
+                        userIndex = userIndex - 1;
+                    }
+                }
+                for (var i = userIndex; i < users.length; i++) {
+                    var user = users[i] || '';
+                    if (lastPartialMatch.length > 0 && user.search(lastPartialMatch, "i") === 0) {
+                        if (user === partialMatch || user === partialMatch.substr(0, partialMatch.length - 1)) {
+                            continue;
+                        }
+                        if(bttv.chat.store.displayNames && bttv.chat.store.displayNames[user]) {
+                            sentence.push(bttv.chat.store.displayNames[user].displayName);
                         } else {
-                            userIndex = users.indexOf(partialMatch);
+                            sentence.push(user.capitalize());
                         }
-                        if (e.shiftKey && userIndex > 0) {
-                            userIndex = userIndex - 1;
-                        }
-                    }
-                    for (var i = userIndex; i < users.length; i++) {
-                        var user = users[i] || '';
-                        if (lastPartialMatch.length > 0 && user.search(lastPartialMatch, "i") === 0) {
-                            if (user === partialMatch || user === partialMatch.substr(0, partialMatch.length - 1)) {
-                                continue;
-                            }
-                            if(bttv.chat.store.displayNames && bttv.chat.store.displayNames[user]) {
-                                sentence.push(bttv.chat.store.displayNames[user].displayName);
-                            } else {
-                                sentence.push(user.capitalize());
-                            }
-                            if (sentence.length === 1) {
-                                $chatInput.val(sentence.join(' ') + ", ");
-                                lastMatch = sentence.join(' ') + ", ";
-                                lastIndex = i;
-                            } else {
-                                $chatInput.val(sentence.join(' '));
-                                lastMatch = sentence.join(' ');
-                                lastIndex = i;
-                            }
-                            break;
-                        }
-                    }
-                }
-
-                // Anti-Prefix Completion
-                if(bttv.settings.get("antiPrefix") === true) {
-                    if (keyCode === keyCodes.Space || keyCode === keyCodes.Enter) {
-                        if(!chat.store.__emoteRegexes) {
-                            chat.store.__emoteRegexes = [];
-                            if(chat.emoticons()['default']) {
-                                chat.emoticons()['default'].forEach(function(emote) {
-                                    chat.store.__emoteRegexes.push(""+emote.regex);
-                                });
-                            }
-                        }
-                        for(var emote in chat.store.autoCompleteEmotes) {
-                            if(chat.store.autoCompleteEmotes.hasOwnProperty(emote) && chat.store.__emoteRegexes.indexOf("/\\b"+emote+"\\b/g") === -1) {
-                                var emoteRegex = new RegExp("\\b"+emote+"\\b","g");
-                                $chatInput.val($chatInput.val().replace(emoteRegex, chat.store.autoCompleteEmotes[emote]));
-                            }
-                        }
-                    }
-                }
-
-                // Chat history
-                if(bttv.settings.get('chatLineHistory') === true) {
-                    if (keyCode === keyCodes.Enter) {
-                        if(chat.store.chatHistory.indexOf($chatInput.val()) !== -1) {
-                            chat.store.chatHistory.splice(chat.store.chatHistory.indexOf($chatInput.val()), 1);
-                        }
-                        chat.store.chatHistory.unshift($chatInput.val());
-                    }
-                    var historyIndex = chat.store.chatHistory.indexOf($chatInput.val());
-                    if (keyCode === keyCodes.UpArrow) {
-                        if(historyIndex >= 0) {
-                            if(chat.store.chatHistory[historyIndex+1]) {
-                                $chatInput.val(chat.store.chatHistory[historyIndex+1]);
-                            }
+                        if (sentence.length === 1) {
+                            $chatInput.val(sentence.join(' ') + ", ");
+                            lastMatch = sentence.join(' ') + ", ";
+                            lastIndex = i;
                         } else {
-                            if($chatInput.val() !== "") {
-                                chat.store.chatHistory.unshift($chatInput.val());
-                                $chatInput.val(chat.store.chatHistory[1]);
-                            } else {
-                                $chatInput.val(chat.store.chatHistory[0]);
-                            }
-                            
+                            $chatInput.val(sentence.join(' '));
+                            lastMatch = sentence.join(' ');
+                            lastIndex = i;
+                        }
+                        break;
+                    }
+                }
+            }
+
+            // Anti-Prefix Completion
+            if(bttv.settings.get("antiPrefix") === true) {
+                if (keyCode === keyCodes.Space || keyCode === keyCodes.Enter) {
+                    if(!chat.store.__emoteRegexes) {
+                        chat.store.__emoteRegexes = [];
+                        if(chat.emoticons()['default']) {
+                            chat.emoticons()['default'].forEach(function(emote) {
+                                chat.store.__emoteRegexes.push(""+emote.regex);
+                            });
                         }
                     }
-                    if (keyCode === keyCodes.DownArrow) {
-                        if(historyIndex >= 0) {
-                            if(chat.store.chatHistory[historyIndex-1]) {
-                                $chatInput.val(chat.store.chatHistory[historyIndex-1]);
-                            } else {
-                                $chatInput.val('');
-                            }
+                    for(var emote in chat.store.autoCompleteEmotes) {
+                        if(chat.store.autoCompleteEmotes.hasOwnProperty(emote) && chat.store.__emoteRegexes.indexOf("/\\b"+emote+"\\b/g") === -1) {
+                            var emoteRegex = new RegExp("\\b"+emote+"\\b","g");
+                            $chatInput.val($chatInput.val().replace(emoteRegex, chat.store.autoCompleteEmotes[emote]));
                         }
                     }
                 }
+            }
 
-                // Chat commands
-                if(keyCode === keyCodes.Enter) {
-                    var sentence = $chatInput.val().trim().split(' ');
-                    var command = sentence[0];
-                    var tmi = bttv.chat.tmi();
-
-                    if (command === "/b") {
-                        bttv.chat.helpers.ban(sentence[1]);
-                    } else if (command === "/t") {
-                        var time = 600;
-                        if(!isNaN(sentence[2])) time = sentence[2];
-                        bttv.chat.helpers.timeout(sentence[1], time);
-                    } else if (command === "/massunban" || ((command === "/unban" || command === "/u") && sentence[1] === "all")) {
-                        bttv.chat.helpers.massUnban();
-                    } else if (command === "/u") {
-                        bttv.chat.helpers.unban(sentence[1]);
-                    } else if (command === "/sub") {
-                        tmi.tmiRoom.startSubscribersMode();
-                    } else if (command === "/suboff") {
-                        tmi.tmiRoom.stopSubscribersMode();
-                    } else if (command === "/localsub") {
-                        bttv.chat.helpers.serverMessage("Local subscribers-only mode enabled.");
-                        vars.localSubsOnly = true;
-                    } else if (command === "/localsuboff") {
-                        bttv.chat.helpers.serverMessage("Local subscribers-only mode disabled.");
-                        vars.localSubsOnly = false;
-                    } else if (command === "/linehistory") {
-                        if(sentence[1] === "off") {
-                            bttv.settings.save('chatLineHistory', false);
+            // Chat history
+            if(bttv.settings.get('chatLineHistory') === true) {
+                if (keyCode === keyCodes.Enter) {
+                    if(chat.store.chatHistory.indexOf($chatInput.val()) !== -1) {
+                        chat.store.chatHistory.splice(chat.store.chatHistory.indexOf($chatInput.val()), 1);
+                    }
+                    chat.store.chatHistory.unshift($chatInput.val());
+                }
+                var historyIndex = chat.store.chatHistory.indexOf($chatInput.val());
+                if (keyCode === keyCodes.UpArrow) {
+                    if(historyIndex >= 0) {
+                        if(chat.store.chatHistory[historyIndex+1]) {
+                            $chatInput.val(chat.store.chatHistory[historyIndex+1]);
+                        }
+                    } else {
+                        if($chatInput.val() !== "") {
+                            chat.store.chatHistory.unshift($chatInput.val());
+                            $chatInput.val(chat.store.chatHistory[1]);
                         } else {
-                            bttv.settings.save('chatLineHistory', true);
+                            $chatInput.val(chat.store.chatHistory[0]);
                         }
-                    } else if(bttv.socketServer && command === "/invite" && sentence[1] === "friends") {
-                        //bttv.socketServer.emit("invite friends", { channel: CurrentChat.channel, token: CurrentChat.userData.chat_oauth_token });
+
                     }
                 }
-            });
-        }
+                if (keyCode === keyCodes.DownArrow) {
+                    if(historyIndex >= 0) {
+                        if(chat.store.chatHistory[historyIndex-1]) {
+                            $chatInput.val(chat.store.chatHistory[historyIndex-1]);
+                        } else {
+                            $chatInput.val('');
+                        }
+                    }
+                }
+            }
+
+            // Chat commands
+            if(keyCode === keyCodes.Enter) {
+                var sentence = $chatInput.val().trim().split(' ');
+                var command = sentence[0];
+                var tmi = bttv.chat.tmi();
+
+                if (command === "/b") {
+                    bttv.chat.helpers.ban(sentence[1]);
+                } else if (command === "/t") {
+                    var time = 600;
+                    if(!isNaN(sentence[2])) time = sentence[2];
+                    bttv.chat.helpers.timeout(sentence[1], time);
+                } else if (command === "/massunban" || ((command === "/unban" || command === "/u") && sentence[1] === "all")) {
+                    bttv.chat.helpers.massUnban();
+                } else if (command === "/u") {
+                    bttv.chat.helpers.unban(sentence[1]);
+                } else if (command === "/sub") {
+                    tmi.tmiRoom.startSubscribersMode();
+                } else if (command === "/suboff") {
+                    tmi.tmiRoom.stopSubscribersMode();
+                } else if (command === "/localsub") {
+                    bttv.chat.helpers.serverMessage("Local subscribers-only mode enabled.");
+                    vars.localSubsOnly = true;
+                } else if (command === "/localsuboff") {
+                    bttv.chat.helpers.serverMessage("Local subscribers-only mode disabled.");
+                    vars.localSubsOnly = false;
+                } else if (command === "/linehistory") {
+                    if(sentence[1] === "off") {
+                        bttv.settings.save('chatLineHistory', false);
+                    } else {
+                        bttv.settings.save('chatLineHistory', true);
+                    }
+                } else if(bttv.socketServer && command === "/invite" && sentence[1] === "friends") {
+                    //bttv.socketServer.emit("invite friends", { channel: CurrentChat.channel, token: CurrentChat.userData.chat_oauth_token });
+                }
+            }
+        });
+
+        // Implement our own text sender
+        $('.ember-text-area').on('keydown', function(e) {
+            if(e.which === keyCodes.Enter) {
+                var val = $('.ember-text-area').val().trim();
+                if(e.shiftKey || !val.length) return;
+
+                bttv.chat.helpers.sendMessage(val);
+                $('.ember-text-area').val('');
+            }
+        });
+        $('.ember-text-area').on('keyup', function(e) {
+            if(e.which === keyCodes.Enter) {
+                if(e.shiftKey) return;
+
+                $('.ember-text-area').val('');
+            }
+        });
 
         $('.ember-chat .chat-messages .chat-line').remove();
         chat.helpers.serverMessage('<center><small>BetterTTV v' + bttv.info.version + ' Loaded.</small></center>');
@@ -1085,7 +1103,7 @@ bttv.chat = {
             if(!user) {
                 helpers.serverMessage("Chat was cleared by a moderator (Prevented by BetterTTV)");
             } else {
-                if($('.chat-line[data-sender="' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '"]').length === 0) return; 
+                if($('.chat-line[data-sender="' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '"]').length === 0) return;
                 if(bttv.settings.get("hideDeletedMessages") === true) {
                     $('.chat-line[data-sender="' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '"]').each(function () {
                         $(this).hide();
@@ -1178,7 +1196,7 @@ bttv.chat = {
                         if(modList.hasOwnProperty(mod)) {
                             if(mods.indexOf(mod) === -1 && !bttv.chat.helpers.isAdmin[mod] && !bttv.chat.helpers.isStaff[mod]) {
                                 bttv.chat.helpers.removeMod(mod)
-                                debug.log("Removed "+mod+" as a mod"); 
+                                debug.log("Removed "+mod+" as a mod");
                             }
                         }
                     }*/
@@ -1224,7 +1242,7 @@ bttv.chat = {
             if(vars.localSubsOnly && !bttv.chat.helpers.isModerator(data.from) && !bttv.chat.helpers.isSubscriber(data.from)) return;
 
             if(bttv.chat.store.trackTimeouts[data.from]) delete bttv.chat.store.trackTimeouts[data.from];
-            
+
             var messageHighlighted = false,
                 highlightKeywords = [],
                 highlightUsers = [],
@@ -1302,6 +1320,7 @@ bttv.chat = {
                         messageHighlighted = true;
                         if(bttv.settings.get("desktopNotifications") === true && bttv.chat.store.activeView === false) {
                             bttv.notify("You were mentioned in "+bttv.chat.helpers.lookupDisplayName(bttv.getChannel())+"'s channel.");
+                            highlightFeedback();
                         }
                     }
                 });
@@ -1369,7 +1388,7 @@ bttv.chat = {
 
             var badges = bttv.chat.helpers.getBadges(data.from);
             var bttvBadges = [];
-            
+
             if(badges && badges.length > 0) {
                 if(badges.indexOf('staff') !== -1) {
                     bttvBadges.push({
@@ -1412,7 +1431,7 @@ bttv.chat = {
                         description: 'Twitch Turbo'
                     });
                 }
-                
+
                 if(badges.indexOf('subscriber') !== -1) {
                     bttvBadges.push({
                         type: 'subscriber',
@@ -1557,34 +1576,100 @@ var removeElement = require('element').remove,
     },
     calculateColorReplacement = function (color, background) {
         // Modified from http://www.sitepoint.com/javascript-generate-lighter-darker-color/
-        var inputColor = color,
-            rgb = "#",
-            brightness, c, i;
+        // Modified further to use HSL as an intermediate format, to avoid hue-shifting
+        // toward primaries when darkening and toward secondaries when lightening
+        var rgb, hsl, light = (background === 'light'), factor = (light ? 0.1 : -0.1), r, g, b, l;
 
         color = String(color).replace(/[^0-9a-f]/gi, '');
         if (color.length < 6) {
             color = color[0] + color[0] + color[1] + color[1] + color[2] + color[2];
         }
 
-        (background === "light") ? (brightness = "0.2") : (brightness = "-0.5");
+        r = parseInt(color.substr(0, 2), 16);
+        g = parseInt(color.substr(2, 2), 16);
+        b = parseInt(color.substr(4, 2), 16);
+        hsl = rgbToHsl(r, g, b);
 
-        for (i = 0; i < 3; i++) {
-            c = parseInt(color.substr(i * 2, 2), 16);
-            if(c < 10) c = 10;
-            c = Math.round(Math.min(Math.max(0, c + (c * brightness)), 255)).toString(16);
-            rgb += ("00" + c).substr(c.length);
-        }
+        // more thoroughly lightens dark colors, with no problems at black
+        l = (light ? 1 - (1 - factor) * (1 - hsl[2]) : (1 + factor) * hsl[2]);
+        l = Math.min(Math.max(0, l), 1);
 
-        if(inputColor === rgb) {
-            debug.log("Color did not change: "+inputColor);
-            if(background === "light") {
-                return "#ffffff";
-            } else {
-                return "#000000";
-            }
+        rgb = hslToRgb(hsl[0], hsl[1], l);
+        r = rgb[0].toString(16);
+        g = rgb[1].toString(16);
+        b = rgb[2].toString(16);
+
+        // note to self: .toString(16) does NOT zero-pad
+        return '#' + ('00' + r).substr(r.length) +
+                     ('00' + g).substr(g.length) +
+                     ('00' + b).substr(b.length);
+    },
+    /**
+     * Converts an RGB color value to HSL. Conversion formula
+     * adapted from https://en.wikipedia.org/wiki/HSL_color_space
+     * Assumes r, g, and b are contained in the set [0, 255] and
+     * returns h, s, and l in the set [0, 1].
+     *
+     * @param   Number  r       The red color value
+     * @param   Number  g       The green color value
+     * @param   Number  b       The blue color value
+     * @return  Array           The HSL representation
+     */
+    rgbToHsl = function (r, g, b) {
+        // Convert RGB to HSL, not ideal but it's faster than HCL or full YIQ conversion
+        // based on http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
+        r /= 255, g /= 255, b /= 255;
+        var max = Math.max(r, g, b), min = Math.min(r, g, b), h, s,
+            l = Math.min(Math.max(0, (max + min) / 2), 1),
+            d = Math.min(Math.max(0, max - min), 1);
+
+        if (d === 0) {
+            h = s = d; // achromatic
         } else {
-            return rgb;
+            s = l > 0.5 ? d / (2 * (1 - l)) : d / (2 * l);
+            s = Math.min(Math.max(0, s), 1);
+            switch (max) {
+                case r: h = Math.min(Math.max(0, (g - b) / d + (g < b ? 6 : 0)), 6); break;
+                case g: h = Math.min(Math.max(0, (b - r) / d + 2), 6); break;
+                case b: h = Math.min(Math.max(0, (r - g) / d + 4), 6); break;
+            }
+            h /= 6;
         }
+        return [h, s, l];
+    },
+    /**
+     * Converts an HSL color value to RGB. Conversion formula
+     * adapted from https://en.wikipedia.org/wiki/HSL_color_space
+     * Assumes h, s, and l are contained in the set [0, 1] and
+     * returns r, g, and b in the set of integers [0, 255].
+     *
+     * @param   Number  h       The hue
+     * @param   Number  s       The saturation
+     * @param   Number  l       The lightness
+     * @return  Array           The RGB representation
+     */
+    hslToRgb = function (h, s, l) {
+        // Convert HSL to RGB, again based on http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
+        var r, g, b, hueToRgb, q, p;
+
+        if (s === 0) {
+            r = g = b = Math.round(Math.min(Math.max(0, 255 * l), 255)); // achromatic
+        } else {
+            hueToRgb = function (p, q, t) {
+                if(t < 0) t += 1;
+                if(t > 1) t -= 1;
+                if(t < 1 / 6) return p + (q - p) * 6 * t;
+                if(t < 1 / 2) return q;
+                if(t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+                return p;
+            };
+            q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            p = 2 * l - q;
+            r = Math.round(Math.min(Math.max(0, 255 * hueToRgb(p, q, h + 1 / 3)), 255));
+            g = Math.round(Math.min(Math.max(0, 255 * hueToRgb(p, q, h)), 255));
+            b = Math.round(Math.min(Math.max(0, 255 * hueToRgb(p, q, h - 1 / 3)), 255));
+        }
+        return [r, g, b];
     },
     getRgb = function(color) {
         // Convert HEX to RGB
@@ -1645,13 +1730,14 @@ var clearClutter = require('features/clear-clutter'),
     formatDashboard = require('features/format-dashboard'),
     dashboardChannelInfo = require('features/dashboard-channelinfo'),
     giveawayCompatibility = require('features/giveaway-compatibility'),
+    highlightFeedback = require('features/highlight-feedback'),
     handleTwitchChatEmotesScript = require('features/handle-twitchchat-emotes'),
     loadChatSettings = require('features/chat-load-settings'),
     createSettings = require('features/create-settings');
     cssLoader = require('features/css-loader');
 
 var chatFunctions = function () {
-    
+
     debug.log("Modifying Chat Functionality");
 
     if(bttv.getChatController() && bttv.getChannel()) {
@@ -1762,14 +1848,14 @@ var main = function () {
             },
             after: function(name, ts, payload) {
                 renderingCounter--;
-                
+
                 if(!payload.template) return;
                 //debug.log(payload.template);
 
                 if(App.__container__.lookup("controller:application").get("currentRouteName") !== "channel.index") {
                     $('#main_col').css('width', 'auto');
                 }
-                
+
                 switch(payload.template) {
                     case 'shared/right_column':
                         waitForLoad(function(ready) {
@@ -1848,7 +1934,7 @@ var main = function () {
         }, 3000);
         setTimeout(chatFunctions, 3000);
         setTimeout(directoryFunctions, 3000);
-        
+
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
         m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)

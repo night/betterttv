@@ -58,10 +58,6 @@ ul.tabs li.selected a {
     height: 125px !important;
 }
 
-.dropmenu a, .ui-menu a, .ui-multiselect-menu a {
-    color: white;
-}
-
 a {
     color: black;
 }
@@ -112,10 +108,6 @@ a {
 }
 
 /* Chat CSS */
-.dropmenu a, .ui-menu a, .ui-multiselect-menu a {
-    color: white;
-}
-
 input.text:focus,select:focus,textarea:focus {
     outline: 0;
     background-color: #fff;
@@ -184,10 +176,6 @@ input.text:focus,select:focus,textarea:focus {
 
 .line .oldadmin, .ember-chat .badges .oldadmin {
     background-color: #FF0000;
-}
-
-.line .staff, .line .oldstaff, .ember-chat .badges .staff, .ember-chat .badges .oldstaff {
-    background-color: #06C;
 }
 
 .line .bttvDeveloper, .ember-chat .badges .bttvDeveloper {
@@ -987,6 +975,20 @@ body#chat #speak {
     font-size: 18px;
 }
 
+.ember-chat .moderation-card .svg-edit {
+    fill: #FFF;
+    cursor: pointer;
+}
+
+.ember-chat .moderation-card h4.real-name {
+    font-size: 11px;
+    color: #AAA;
+    margin-top: -2px;
+    margin-left: 60px;
+    position: relative;
+    z-index: 4;
+}
+
 .ember-chat .moderation-card .button-simple {
     cursor: pointer;
     line-height: 30px;
@@ -1027,7 +1029,7 @@ body#chat #speak {
 
 .tipsy {
     z-index: 9000000001 !important;
-    white-space: nowrap;
+    /*white-space: nowrap;*/
 }
 
 /* Group Chat changed textarea */
@@ -1090,7 +1092,7 @@ body#chat #speak {
     background-color: none;
 }
 
-#channel .player-column .stats-and-actions .channel-stats {
+#channel .player-column .stats-and-actions .channel-stats, #main_col .content #stats_and_actions #channel_stats, .channel-stats .stat {
     font-size: 12px;
 }
 
@@ -1182,4 +1184,23 @@ span.mod-controls {
 }
 ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .dropmenu.menu-like .dropmenu_action  {
     color: #000;
+}
+div.part.description a {
+    text-decoration: underline;
+}
+div#you {
+	position: relative;
+	min-height: 34px;
+}
+div#you span.username {
+	background-color: #1F1F1F;
+	max-width: 120px;
+	position: absolute;
+	z-index: 9999;
+	overflow: hidden;
+	white-space: nowrap;
+}
+div#you span.username:hover {
+	max-width: 100%;
+	padding-right: 5px;
 }

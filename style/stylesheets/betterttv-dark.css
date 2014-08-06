@@ -1,4 +1,4 @@
-body, .real_title, #right_col .content #chat_line_list, .ember-chat, .ember-chat .message, .ember-chat .from, .ember-chat, .ember-chat .colon, #right_col #chat_line_list, #main_col .content #broadcast_meta .info .channel, #channel .player-column #broadcast-meta .info .title, #channel_panels_contain #channel_panels .panel h3, #channel_panels_contain #channel_panels .panel h1, #channel_panels_contain #channel_panels .panel h2, h3, h2 {
+body, .real_title, #right_col .content #chat_line_list, .ember-chat, .ember-chat .message, .ember-chat .from, .ember-chat, .ember-chat .colon, #right_col #chat_line_list, #main_col .content #broadcast_meta .info .channel, #channel .player-column #broadcast-meta .info .title, #channel_panels_contain #channel_panels .panel h3, #channel_panels_contain #channel_panels .panel h1, #channel_panels_contain #channel_panels .panel h2, h3, h2, .tse-content a {
 	color: #D3D3D3;
 }
 
@@ -8,6 +8,10 @@ body, .real_title, #right_col .content #chat_line_list, .ember-chat, .ember-chat
 
 body {
 	background-color: #000 !important;
+}
+
+.channel-stats #views-count.stat svg path, .channel-stats #followers-count.stat svg path, #channel_stats #views_count.stat svg path, #channel_stats #followers_count.stat svg path {
+	fill: rgba(255,255,255,0.35) !important;
 }
 
 #chat_column, #chat_redisplay_holder {
@@ -68,7 +72,7 @@ body {
 }
 
 #dash_main .button.drop:after, .ember-application .button.drop:after {
-	border-color: rgba(2555,255,255,255.35);
+	border-color: rgba(255,255,255,0.35);
 	border-left-color: transparent;
 	border-right-color: transparent;
 	border-bottom-color: transparent;
@@ -263,9 +267,12 @@ body {
 	background-color: #222;
 }
 
+/* centered the border >:( */
 #main_col .content #broadcast_meta .profile-photo, #main_col #broadcast-meta .profile-photo {
 	background-color: #222;
 	border: 4px solid #222;
+	margin-left: -4px;
+	margin-top: -4px;
 }
 
 #main_col .content #broadcast_meta, #main_col #broadcast-meta, #main_col .archive_info {
@@ -425,8 +432,9 @@ body {
 	margin-right: 10px !important;
 }
 
-.stats-and-actions .channel-actions .button,
-.chat-option-buttons .button, #channel_actions .button {
+#channel .channel-actions .button,
+.chat-option-buttons .button,
+.profile-info .buttons .button {
 	margin: 0px;
 	margin-right: 8px;
 	padding: 0px 10px;
@@ -441,21 +449,30 @@ body {
     border-radius: 2px;
 }
 
-.stats-and-actions .channel-actions .primary, #channel_actions .primary {
+#channel .channel-actions .primary,
+#channel_actions .primary,
+.profile-info .buttons .primary {
 	background-color: #6441a5;
+	color: #d3d3d3;
 }
 
-.stats-and-actions .channel-actions .button.drop, #channel_actions .button.drop {
+#channel .channel-actions .button.drop,
+#channel_actions .button.drop,
+.profile-info .buttons .button.drop {
     padding-right: 0px;
     width: 55px;
 }
 
-.stats-and-actions .channel-actions .button.drop:after, #channel_actions .button.drop:after {
+#channel .channel-actions .button.drop:after,
+#channel_actions .button.drop:after
+.profile-info .buttons .button.drop:after {
     border-top-color: #777;
     margin-right: 5px;
 }
 
-.stats-and-actions .channel-actions .button.glyph-only.drop, #channel_actions .button.glyph-only.drop {
+#channel .channel-actions .button.glyph-only.drop,
+#channel_actions .button.glyph-only.drop,
+.profile-info .buttons .button.glyph-only.drop {
 	padding-right: 0px;
     width: 38px;
 }
@@ -776,6 +793,17 @@ body {
 	border-radius: 2px !important;
 }
 
+/* darken bookmark page */
+#main_col .bookmark-meta {
+	background-color: rgb(30, 30, 30);
+	color: #d3d3d3;
+}
+
+#main_col .bookmark-meta a, #main_col .bookmark-meta .bookmark-title {
+	color: #d3d3d3;
+}
+
+
 .ember-application h3.title, .ember-application h2.title {
 	color: #ccc !important;
 }
@@ -882,12 +910,13 @@ body {
 	text-decoration: underline;
 }
 
-.banner-contain #change_profile_banner .add_image, .banner-contain .profile-info .profile-bio a {
-	color: #fff;
+/* twitch uses padding as a border, so i just change bg color */
+.channel-link .profile-photo, .profile-link .profile-photo {
+	background-color: #222;
 }
 
-.channel-link .profile-photo, .profile-link .profile-photo {
-	border: 4px solid #444;
+.banner-contain #change_profile_banner .add_image, .banner-contain .profile-info .profile-bio a {
+	color: #fff;
 }
 
 .streams .stream .thumb .boxart, .videos .video .thumb .boxart {
@@ -1321,7 +1350,7 @@ table.simple_table th {
 	background: #171717;
 }
 .connect_items {
-	border-color: 343434;
+	border-color: #343434;
 }
 .connect_items .connect_item {
 	background: #404040;
@@ -1335,6 +1364,18 @@ table.simple_table th {
 }
 table.simple_table td {
 	border-color: transparent transparent #333;
+}
+.connect-items .connect-item .connect-item-info {
+	background: #343434;
+}
+
+/* darken text on connections page */
+#user_edit_form .connect_items .connect-item-desc {
+	color: #333;
+}
+
+#user_edit_form .form_microcopy {
+	background: #212121;
 }
 
 /*~~~~~~~Caster's Page~~~~~~~~*/
@@ -1665,10 +1706,6 @@ ul.tabs li>a:hover {
 	right: 0px;
 }
 
-#channel .player-column .stats-and-actions .channel-stats .stat svg path{
-	fill: rgba(255,255,255,.35);
-}
-
 #channel .player-column .stats-and-actions .channel-stats .stat {
 	color: #aaa;
 }
@@ -1745,9 +1782,39 @@ span#is-subscribed {
 	margin: 0px;
 }
 
-#main_col .stats-and-actions #is-subscribed, .ember-chat .chat-room-list .room p.room-title, .button.unfollow, .button.unfollow:hover {
+#main_col .stats-and-actions #is-subscribed, #main_col .content #stats_and_actions #channel_stats .stat, .ember-chat .chat-room-list .room p.room-title, .button.unfollow, .button.unfollow:hover {
 	color: #D3D3D3 !important;
 }
 ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .ember-application .dropmenu .dropmenu_action  {
 	color: #D3D3D3;
+}
+
+/* Hosting */
+.target-frame, .hostmode-title-container, .close-hostmode {
+	background: rgb(20,20,20)!important;
+}
+.hostmode-title-container .hostmode-title a, #hostmode .target-meta .target-user-and-game a {
+	color: #999;
+}
+
+.close-hostmode a:before, .close-hostmode a:after {
+	border: 5px solid rgba(255, 255, 255, 0.2);
+	border-top-color: transparent;
+	border-left-color: transparent;
+	border-right-color: transparent;
+}
+.close-hostmode a.show-hostmode:before, .close-hostmode a.show-hostmode:after {
+	border: 5px solid rgba(255, 255, 255, 0.2);
+	border-bottom-color: transparent;
+	border-left-color: transparent;
+	border-right-color: transparent;
+}
+.hostmode-title-container .hostmode-title .host-profile-image svg path {
+	fill: #fff;
+}
+a.button.float-right:hover {
+color: white;
+}
+#actions.dropmenu a {
+color: white;
 }

@@ -39,6 +39,14 @@
 .ember-chat .chat-menu-button-container svg path, .button.unfollow .svg-check path, .button.unfollow .svg-x path, #is-subscribed svg path {
 	fill: #2A4687 !important;
 }
-.dropmenu.menu-like .dropmenu_action:hover {
+.dropmenu.menu-like .dropmenu_action:hover, .hostmode-title-container .hostmode-title .what {
 	background-color: #2A4687 !important;
+}
+
+.line .staff, .line .oldstaff, .ember-chat .badges .staff, .ember-chat .badges .oldstaff {
+    background-color: #06C;
+}
+/* mod card follow button text fix */
+.ember-chat .moderation-card .interface .mod-card-follow {
+	color: #ccc;
 }

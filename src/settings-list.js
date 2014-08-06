@@ -72,22 +72,6 @@ module.exports = [
         }
     },
     {
-        name: 'Chat Indentation',
-        description: 'Indent long chat lines to make them easier to read',
-        default: true,
-        storageKey: 'showChatIndentation',
-        toggle: function(value) {
-            if(value === true) {
-                $addCSS = $('<style></style>');
-                $addCSS.attr('id', 'bttvChatIndentation');
-                $addCSS.html('#chat_line_list .line p { padding-left: 16px;text-indent: -16px; }');
-                $('body').append($addCSS);
-            } else {
-                $('#bttvChatIndentation').remove();
-            }
-        }
-    },
-    {
         name: 'DarkenTTV',
         description: 'A sleek, grey theme which will make you love the site even more',
         default: false,
@@ -227,6 +211,12 @@ module.exports = [
         }
     },
     {
+        name: 'Play Sound on Highlight',
+        description: 'Get audio feedback when any message is highlighted (BETA)',
+        default: false,
+        storageKey: 'highlightFeedback'
+    },
+    {
         name: 'Remove Deleted Messages',
         description: 'Completely removes timed out messages from view',
         default: false,
@@ -318,6 +308,10 @@ module.exports = [
     {
         default: 340,
         storageKey: 'chatWidth'
+    },
+    {
+        default: false,
+        storageKey: 'consoleLog'
     },
     {
         default: false,

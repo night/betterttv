@@ -1,5 +1,5 @@
 module.exports = function(user, $event) {
-    var template = bttv.chat.templates.moderationCard(user, $event.offset().top, $('#right_col').offset().left);
+    var template = bttv.chat.templates.moderationCard(user, $event.offset().top, $('.chat-line:last').offset().left);
     $('.ember-chat .moderation-card').remove();
     $('.ember-chat').append(template);
 
@@ -28,6 +28,21 @@ module.exports = function(user, $event) {
     });
     $modCard.find('.mod-card-message').click(function() {
         window.open(Twitch.url.compose(user.name),'_blank');
+    });
+    $modCard.find('.mod-card-edit').click(function() {
+        var nickname = prompt("Enter the new nickname for "+user.display_name + '. (Leave blank to reset...)');
+        if(nickname.length) {
+            nickname = nickname.trim();
+            if(!nickname.length) return;
+
+            bttv.storage.pushObject("nicknames", user.name, nickname);
+            $modCard.find('h3.name a').text(nickname);
+            $('.chat-line[data-sender="'+user.name+'"] .from').text(nickname);
+        } else {
+            bttv.storage.spliceObject("nicknames", user.name);
+            $modCard.find('h3.name a').text(user.display_name);
+            $('.chat-line[data-sender="'+user.name+'"] .from').text(user.display_name);
+        }
     });
 
     if(bttv.chat.helpers.isIgnored(user.name)) {
