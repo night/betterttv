@@ -1785,6 +1785,7 @@ span#is-subscribed {
 #main_col .stats-and-actions #is-subscribed, #main_col .content #stats_and_actions #channel_stats .stat, .ember-chat .chat-room-list .room p.room-title, .button.unfollow, .button.unfollow:hover {
 	color: #D3D3D3 !important;
 }
+
 ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .ember-application .dropmenu .dropmenu_action  {
 	color: #D3D3D3;
 }
@@ -1793,6 +1794,7 @@ ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .ember-application
 .target-frame, .hostmode-title-container, .close-hostmode {
 	background: rgb(20,20,20)!important;
 }
+
 .hostmode-title-container .hostmode-title a, #hostmode .target-meta .target-user-and-game a {
 	color: #999;
 }
@@ -1803,18 +1805,27 @@ ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .ember-application
 	border-left-color: transparent;
 	border-right-color: transparent;
 }
+
 .close-hostmode a.show-hostmode:before, .close-hostmode a.show-hostmode:after {
 	border: 5px solid rgba(255, 255, 255, 0.2);
 	border-bottom-color: transparent;
 	border-left-color: transparent;
 	border-right-color: transparent;
 }
+
 .hostmode-title-container .hostmode-title .host-profile-image svg path {
 	fill: #fff;
 }
+
 a.button.float-right:hover {
 color: white;
 }
+
 #actions.dropmenu a {
 color: white;
+}
+
+/* Video Manager */
+.channel_new .app-main #directory-list #video-manager .videos-grid .video.item .meta {
+	background: #1f1f1f;
 }
