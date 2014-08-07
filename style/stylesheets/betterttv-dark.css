@@ -459,8 +459,7 @@ body {
 #channel .channel-actions .button.drop,
 #channel_actions .button.drop,
 .profile-info .buttons .button.drop {
-    padding-right: 0px;
-    width: 55px;
+    padding-right: 20px;
 }
 
 #channel .channel-actions .button.drop:after,
