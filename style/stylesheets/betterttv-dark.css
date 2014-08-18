@@ -434,7 +434,8 @@ body {
 
 #channel .channel-actions .button,
 .chat-option-buttons .button,
-.profile-info .buttons .button {
+.profile-info .buttons .button,
+#channel_actions .button {
 	margin: 0px;
 	margin-right: 8px;
 	padding: 0px 10px;
@@ -463,7 +464,7 @@ body {
 }
 
 #channel .channel-actions .button.drop:after,
-#channel_actions .button.drop:after
+#channel_actions .button.drop:after,
 .profile-info .buttons .button.drop:after {
     border-top-color: #777;
     margin-right: 5px;
@@ -482,19 +483,25 @@ body {
 }
 
 /* Share button popup background */
-.stats-and-actions .channel-actions .share, #channel_actions .share {
+.stats-and-actions .channel-actions .share {
     background-color: rgb(30,30,30);
 }
 
 /* Ember Pages Dropmenu Fix */
-.ember-application .dropmenu {
+.ember-application .dropmenu,
+#main_col #share.dropmenu {
 	background-color: rgb(30,30,30);
 	color: #d3d3d3;
 }
-.ember-application .dropmenu a, .items-grid .section_header #filter-contain .dropmenu .dropmenu_action.active, .items-grid .section_header #filter-contain .ui-menu .dropmenu_action.active, .items-grid .section_header #filter-contain .ui-multiselect-menu .dropmenu_action.active {
+.ember-application .dropmenu a,
+.items-grid .section_header #filter-contain .dropmenu .dropmenu_action.active,
+.items-grid .section_header #filter-contain .ui-menu .dropmenu_action.active,
+.items-grid .section_header #filter-contain .ui-multiselect-menu .dropmenu_action.active {
 	color: #8c8c8c;
 }
-.items-grid .section_header #filter-contain .dropmenu .dropmenu_action, .items-grid .section_header #filter-contain .ui-menu .dropmenu_action, .items-grid .section_header #filter-contain .ui-multiselect-menu .dropmenu_action {
+.items-grid .section_header #filter-contain .dropmenu .dropmenu_action,
+.items-grid .section_header #filter-contain .ui-menu .dropmenu_action,
+.items-grid .section_header #filter-contain .ui-multiselect-menu .dropmenu_action {
 	color: #d3d3d3;
 }
 
