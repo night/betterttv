@@ -1104,6 +1104,15 @@ body#chat #speak {
     padding: 0px;
 }
 
+.ember-chat .chat-interface {
+    left: 0px;
+    right: 0px;
+}
+
+.ember-chat .chat-interface .chat-buttons-container .chat-option-buttons {
+    margin-left: 8px;
+}
+
 .ember-chat .chat-header {
     right: 0px;
     left: 0px;

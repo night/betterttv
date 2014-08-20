@@ -482,6 +482,10 @@ body {
 	margin-left: 1px;
 }
 
+.ember-chat .chat-interface .chat-buttons-container .chat-option-buttons {
+    margin-left: 0px;
+}
+
 /* Share button popup background */
 .stats-and-actions .channel-actions .share {
     background-color: rgb(30,30,30);
@@ -1706,10 +1710,6 @@ ul.tabs li>a:hover {
 }
 .button-simple {
 	padding: 5px;
-}
-.ember-chat .chat-interface {
-	left: 0px;
-	right: 0px;
 }
 
 #channel .player-column .stats-and-actions .channel-stats .stat {
