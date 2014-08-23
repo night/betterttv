@@ -3656,9 +3656,10 @@ module.exports = function () {
         // We want to move the chat to the left, and the dashboard controls to the right.
         $("#controls_column, #player_column").css({
             float: "right",
-            marginLeft: "500px"
+            marginLeft: "520px",
+            marginRight: "0px"
         });
-        $("#chat, iframe").css({
+        $("#dash_main .dash-items-contain").css({
             float: "left",
             left: "20px",
             right: ""
