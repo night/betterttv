@@ -669,7 +669,9 @@ input.text:focus,select:focus,textarea:focus {
     background: rgba(0,0,0,0.05);
 }
 
-#dash_main iframe {
+/* Dashboard hotfix */
+
+#dash_main .dash-items-contain {
     border: none;
     width: 525px;
     float: right;
@@ -680,6 +682,39 @@ input.text:focus,select:focus,textarea:focus {
     margin-left: 0px !important;
     z-index: 9001;
 }
+
+#dash_main .dash-items-contain iframe {
+    border: none;
+    width: 525px;
+    float: right;
+    background-color: #f1f1f1;
+    border-radius: 4px;
+}
+
+#dash_main .dash-items-contain {
+    background: transparent;
+}
+
+#dash_main .dash-items-contain .dash-chat-column {
+    border: none;
+    width: 525px;
+}
+
+#dash_main #controls_column {
+    width: 400px;
+}
+
+#dash_main .dash-broadcast-contain {
+    padding: 0px;
+    background: transparent;
+    border: none; 
+}
+
+#dash_main #vod_form {
+    width: 400px;
+}
+
+/* end dashboard hotfix */
 
 #dash_main .grid, .flex_grid {
     float: none;
