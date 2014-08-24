@@ -72,11 +72,10 @@ body {
 
 #dash_main #commercial_buttons {
 	float: none;
-	border: 1px solid rgba(0,0,0,0.2);
 	border-top: none;
+	padding-top: 0px;
 	height: 30px;
 	line-height: 30px;
-	background: rgba(0,0,0,0.05);
 }
 
 #dash_main .ui-slider-horizontal {
@@ -141,9 +140,15 @@ body {
 	background: url(../icons/chatters_light.png) no-repeat left center;
 }
 
+.dash-hostmode-contain {
+	padding: 0 20px;
+	margin-bottom: 20px;
+	margin-top: 20px;
+}
 
-
-
+#dash_main #stats #channel_subs_count {
+	padding-left: 20px;
+}
 
 #play_switch.dropmenu {
 	color: #3b3b3b;

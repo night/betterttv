@@ -673,7 +673,23 @@ input.text:focus,select:focus,textarea:focus {
     background: url(../icons/chatters_dark.png) no-repeat left center;
 }
 
+.dash-hostmode-contain {
+    padding: 0 20px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
 
+#dash_main #stats #channel_subs_count {
+    padding-left: 20px;
+}
+
+#dash_main #commercial_buttons {
+    float: none;
+    border-top: none;
+    padding-top: 0px;
+    height: 30px;
+    line-height: 30px;
+}
 
 
 .normal_button, .large_normal_button, .dropdown, .dropdown_static, .dropdown_glyph, .primary_button, button.primary, #left_close, #right_close, #commercial_buttons .button {
