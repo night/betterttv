@@ -33,55 +33,41 @@ body {
 	color: #D3D3D3;
 }
 
-#dash_main #chat_lines_list, #dash_main #chat_lines {
-	background-color: #282828 !important;
-}
+/* dashboard */
 
-#dash_main #dashboard_title, #dash_main #stream-config-status, #dash_main #controls_column .section_header {
+#dash_main #dashboard_title,
+#dash_main #stream-config-status,
+#dash_main #controls_column .section_header {
 	color: #D3D3D3;
 }
 
-#dash_main #chat {
-	background-color: #282828 !important;
-	color: #D3D3D3;
-	border: 1px solid #000;
+#dash_main .dash-broadcast-contain,
+#dash_main .dash-hostmode-contain {
+	background-color: #282828;
+	border-color: #000;
 }
 
-#dash_main .button.drop, .ember-application .button.drop { 
-	display: inline-block;
-	position: relative;
-	cursor: pointer;
-	line-height: 30px;
-	height: 30px;
-	font-size: 12px;
-	font-family: inherit;
-	padding-left: 8px;
-	padding-right: 20px;
-	color: #6441a5;
-	border: 0;
-	background-color: rgb(30, 30, 30);
-	border-top: 1px solid rgba(0,0,0,0.2);
-	border-left: 1px solid rgba(0,0,0,0.3);
-	border-right: 1px solid rgba(0,0,0,0.3);
-	border-bottom: 1px solid rgba(0,0,0,0.35);
-	box-shadow: inset 0 1px 0 #1b1b1b,0 1px 0 rgba(0,0,0,0.07);
-	-moz-box-shadow: inset 0 1px 0 #fff,0 1px 0 rgba(0,0,0,0.07);
-	-moz-text-shadow: 0 1px 0 rgba(255,255,255,0.75);
-	-webkit-text-shadow: 0 1px 0 rgba(255,255,255,0.75);
-	color: #d3d3d3;
-}
-
-#dash_main .button.drop:after, .ember-application .button.drop:after {
+#dash_main .button.drop:after,
+#dash_main .dash-hostmode-status a:before,
+#dash_main .dash-hostmode-status a:after {
 	border-color: rgba(255,255,255,0.35);
 	border-left-color: transparent;
 	border-right-color: transparent;
 	border-bottom-color: transparent;
-	margin-right: 5px;
 }
 
-#dash_main #vod_form, #dash_main #delay_controls, #dash_main #stream-config-status .status-header {
-	background-color: #282828 !important;
-	border-color: #000 !important;
+#dash_main #hide_preview {
+	background: transparent !important;
+	border: none !important;
+	box-shadow: none !important;
+	text-decoration: underline;
+}
+
+#dash_main #vod_form,
+#dash_main #delay_controls,
+#dash_main #stream-config-status .status-header {
+	background-color: #282828;
+	border-color: #000;
 }
 
 #dash_main #commercial_buttons {
@@ -94,33 +80,24 @@ body {
 }
 
 #dash_main .ui-slider-horizontal {
-	background: rgb(20, 20, 20) !important;
-	box-shadow: none !important;
+	background: rgb(20, 20, 20);
+	box-shadow: none;
 }
 
-#dash_main #stats, #dash_main #commercial_buttons, #dash_main #stream-config-status .error-message {
-	background-color: rgb(30, 30, 30) !important;
-	border-color: #000 !important;
-}
-
-#dash_main #stream-config-status .error-message a {
+#dash_main #stream-config-status .error-message a,
+#dash_main .dash-items-contain a,
+#dash_main #toggle_play_switch {
 	text-decoration: underline;
 	color: #D3D3D3;
 }
 
-#dash_main .section_header {
-	color: #D3D3D3;
-}
-
-#dash_main #vod_status, #dash_main #gameselector_input, .ember-application #gameselector_input {
+#dash_main #vod_status,
+#dash_main #gameselector_input,
+.ember-application #gameselector_input {
 	background-color: rgb(20, 20, 20) !important;
 	color: #D3D3D3;
 	border: solid 1px #333;
 	box-shadow: none;
-}
-
-#dash_main #speak {
-	padding-top: 5px;
 }
 
 #dash_main #setup_link a {
@@ -149,27 +126,24 @@ body {
 	color: #999;
 }
 
-#dash_main #stats .stat#views_count {
-	background: url(../icons/views.png) no-repeat left center !important;
+#dash_main .dash-chat-column {
+	border-top: none;
 }
 
-#dash_main #stats .stat#followers_count {
-	background: url(../icons/followers.png) no-repeat left center !important;
-	padding-left: 18px;
-}
 
-#dash_main #stats .stat#channel_subs_count {
-	background: url(../icons/star.png) no-repeat left center;
+#dash_main #stats .stat#views_count svg path,
+#dash_main #stats .stat#followers_count svg path,
+#dash_main #stats .stat#channel_subs_count svg path {
+	fill: #cacaca;
 }
 
 #dash_main #stats .stat#chatters_count {
 	background: url(../icons/chatters_light.png) no-repeat left center;
 }
 
-#dash_main #custom_filter #gameselector_input {
-	width: 200px;
-	margin: 0;
-}
+
+
+
 
 #play_switch.dropmenu {
 	color: #3b3b3b;

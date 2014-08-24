@@ -5,15 +5,13 @@ module.exports = function () {
         debug.log("Flipping Dashboard");
 
         // We want to move the chat to the left, and the dashboard controls to the right.
-        $("#controls_column, #player_column").css({
-            float: "right",
-            marginLeft: "520px",
-            marginRight: "0px"
-        });
-        $("#dash_main .dash-items-contain").css({
+        $("#dash_main .dash-chat-column").css({
             float: "left",
-            left: "20px",
-            right: ""
+            right: "initial"
+        });
+        $("#dash_main #controls_column").css({
+            float: "right",
+            left: "20px"
         });
     }
 }

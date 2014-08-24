@@ -7,28 +7,29 @@ module.exports = function dashboardChannelInfo() {
 
         Twitch.api.get("streams/" + bttv.getChannel()).done(function (a) {
             if (a.stream) {
-                $("#channel_viewer_count").text(Twitch.display.commatize(a.stream.viewers));
+                $("#channel_viewer_count span").text(Twitch.display.commatize(a.stream.viewers));
                 if(a.stream.channel.views) $("#views_count").html(Twitch.display.commatize(a.stream.channel.views));
             } else {
-                $("#channel_viewer_count").text("Offline");
+                $("#channel_viewer_count span").text("Offline");
             }
         });
         Twitch.api.get("channels/" + bttv.getChannel() + "/follows?limit=1").done(function (a) {
             if (a["_total"]) {
-                $("#followers_count").text(Twitch.display.commatize(a["_total"]));
+                $("#followers_count span").text(Twitch.display.commatize(a["_total"]));
             }
         });
         if(!$("#chatters_count").length) {
             var $chattersContainer = $("<div></div>");
             $chattersContainer.attr("class", "stat");
             $chattersContainer.attr("id", "chatters_count");
-            $chattersContainer.attr("tooltipdata", "Chatters");
-            $chattersContainer.text('0');
+            $chattersContainer.html('<span>0</span>');
             $("#followers_count").after($chattersContainer);
+            
+            $("#chatters_count span").attr("tooltipdata", "Chatters");
         }
 
         $.getJSON('http://tmi.twitch.tv/group/user/' + bttv.getChannel() + '/chatters?callback=?', function(data) {
-            if(data.data && data.data.chatter_count) $("#chatters_count").text(Twitch.display.commatize(data.data.chatter_count));
+            if(data.data && data.data.chatter_count) $("#chatters_count span").text(Twitch.display.commatize(data.data.chatter_count));
         });
 
         if(vars.dontCheckSubs !== true) {
