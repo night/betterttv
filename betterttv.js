@@ -583,7 +583,7 @@ vars = require('vars');
 
 bttv.info = {
     version: "6.8",
-    release: 6,
+    release: 7,
     versionString: function() { 
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -3593,14 +3593,14 @@ module.exports = function dashboardChannelInfo() {
                         var subAmounts = subsRegex.exec(containerText),
                             activeSubs = subAmounts[2];
 
-                        if(!$("#channel_subs_count").length) {
+                        if(!$("#subs_count").length) {
                             var $subsContainer = $("<div/>");
                             var $subs = $("<span/>");
 
                             $subsContainer.attr("class", "stat");
                             $subsContainer.attr("id", "subs_count");
 
-                            $subs.text(Twitch.display.commatize(activeSubs));
+                            $subs.text("0");
                             $subs.attr("tooltipdata", "Active Subscribers");
 
                             $subsContainer.append($subs);
@@ -3611,9 +3611,9 @@ module.exports = function dashboardChannelInfo() {
                                     $("#subs_count").css("background-image", "url("+a.subscriber.image+")");
                                 }
                             });
-                        } else {
-                            $("#subs_count span").text(Twitch.display.commatize(activeSubs));
                         }
+
+                        $("#subs_count span").text(Twitch.display.commatize(activeSubs));
                     } else {
                         vars.dontCheckSubs = true;
                         debug.log("Dashboard Info -> Channel doesn't have subscribers.");
