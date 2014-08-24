@@ -3564,13 +3564,17 @@ module.exports = function dashboardChannelInfo() {
             }
         });
         if(!$("#chatters_count").length) {
-            var $chattersContainer = $("<div></div>");
+            var $chattersContainer = $("<div/>");
+            var $chatters = $("<span/>");
+
             $chattersContainer.attr("class", "stat");
             $chattersContainer.attr("id", "chatters_count");
-            $chattersContainer.html('<span>0</span>');
+
+            $chatters.text("0");
+            $chatters.attr("tooltipdata", "Chatters");
+
+            $chattersContainer.append($chatters);
             $("#followers_count").after($chattersContainer);
-            
-            $("#chatters_count span").attr("tooltipdata", "Chatters");
         }
 
         $.getJSON('http://tmi.twitch.tv/group/user/' + bttv.getChannel() + '/chatters?callback=?', function(data) {
@@ -3590,21 +3594,25 @@ module.exports = function dashboardChannelInfo() {
                             activeSubs = subAmounts[2];
 
                         if(!$("#channel_subs_count").length) {
-                            var $subsContainer = $("<div></div>");
+                            var $subsContainer = $("<div/>");
+                            var $subs = $("<span/>");
+
                             $subsContainer.attr("class", "stat");
-                            $subsContainer.attr("id", "channel_subs_count");
-                            $subsContainer.attr("tooltipdata", "Active Subscribers");
-                            $subsContainer.text(Twitch.display.commatize(activeSubs));
+                            $subsContainer.attr("id", "subs_count");
+
+                            $subs.text(Twitch.display.commatize(activeSubs));
+                            $subs.attr("tooltipdata", "Active Subscribers");
+
+                            $subsContainer.append($subs);
                             $("#chatters_count").after($subsContainer);
 
-                            Twitch.api.get("chat/" + bttv.getChannel() + "/badges").done(function (a) {
-                                if (a.subscriber) {
-                                    $("#channel_subs_count").css("background", "url("+a.subscriber.image+") no-repeat left center");
-                                    $("#channel_subs_count").css("background-size", "14px 14px");
+                            Twitch.api.get("chat/" + bttv.getChannel() + "/badges").done(function(a) {
+                                if(a.subscriber) {
+                                    $("#subs_count").css("background-image", "url("+a.subscriber.image+")");
                                 }
                             });
                         } else {
-                            $("#channel_subs_count").text(Twitch.display.commatize(activeSubs));
+                            $("#subs_count span").text(Twitch.display.commatize(activeSubs));
                         }
                     } else {
                         vars.dontCheckSubs = true;
@@ -3681,22 +3689,13 @@ module.exports = function () {
         $("#dash_main #controls_column .dash-hostmode-contain").appendTo("#dash_main #controls_column");
         $("#dash_main #controls_column .dash-player-contain").appendTo("#dash_main #controls_column");
 
-        // Move Page Elements to Sub-DIV & Account for Changes
-        // $('<div style="position:relative;" id="bttvDashboard"></div>').appendTo('#dash_main .wrapper');
-        // $("#dash_main #controls_column").appendTo("#bttvDashboard");
-        // $("#dash_main #player_column").appendTo("#bttvDashboard");
-        // $("#dash_main iframe").css("top",
-        //     (bttv.settings.get('darkenedMode') ? 11 : 0)+
-        //     (($('.js-broadcaster-message').css('display') !== 'none') ? $('.js-broadcaster-message').outerHeight(true) : 0)+
-        //     $('#dashboard_title').outerHeight(true)+
-        //     $('#setup_link').outerHeight(true)+
-        //     $('#dash_nav').outerHeight(true)+
-        //     $('#stream-config-status').outerHeight(true)
-        // ).css("border","none");
-        // if($("#dash_main iframe").length) {
-        //     $("#dash_main iframe")[0].style.height = "514px";
-        //     $("#dash_main iframe")[0].src = "/"+bttv.getChannel()+"/chat?bttvDashboard=true";
-        // }
+        // In order to properly style chat within iframe, we pass messages between frames. This enabled that.
+        if($("#dash_main iframe").length) {
+            $("#dash_main iframe")[0].src = $("#dash_main iframe")[0].src+"?bttvDashboard=true";
+        }
+
+        // We move the commercial button inside the box with other dash control.
+        $("#dash_main #commercial_buttons").appendTo("#dash_main .dash-broadcast-contain");
 
         // Small Dashboard Fixes
         $("#commercial_options .dropmenu_action[data-length=150]").text("2m 30s");

@@ -661,10 +661,8 @@ input.text:focus,select:focus,textarea:focus {
     -webkit-box-shadow: none;
 }
 
-
 #dash_main #stats .stat#views_count svg path,
-#dash_main #stats .stat#followers_count svg path,
-#dash_main #stats .stat#channel_subs_count svg path {
+#dash_main #stats .stat#followers_count svg path {
     fill: #2a2a2a;
 }
 
@@ -673,8 +671,17 @@ input.text:focus,select:focus,textarea:focus {
     background: url(../icons/chatters_dark.png) no-repeat left center;
 }
 
+#dash_main #stats .stat#subs_count {
+    padding-left: 20px;
+    background-size: 14px 14px;
+    background: url(../icons/star.png) no-repeat left center;
+}
 
-
+#dash_main #commercial_buttons {
+    float: none;
+    border-top: 1px solid rgba(0,0,0,0.2);
+    height: 50px;
+}
 
 .normal_button, .large_normal_button, .dropdown, .dropdown_static, .dropdown_glyph, .primary_button, button.primary, #left_close, #right_close, #commercial_buttons .button {
     border-radius: 2px !important;

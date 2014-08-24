@@ -67,16 +67,6 @@ body {
 #dash_main #delay_controls,
 #dash_main #stream-config-status .status-header {
 	background-color: #282828;
-	border-color: #000;
-}
-
-#dash_main #commercial_buttons {
-	float: none;
-	border: 1px solid rgba(0,0,0,0.2);
-	border-top: none;
-	height: 30px;
-	line-height: 30px;
-	background: rgba(0,0,0,0.05);
 }
 
 #dash_main .ui-slider-horizontal {
@@ -87,7 +77,6 @@ body {
 #dash_main #stream-config-status .error-message a,
 #dash_main .dash-items-contain a,
 #dash_main #toggle_play_switch {
-	text-decoration: underline;
 	color: #D3D3D3;
 }
 
@@ -132,18 +121,13 @@ body {
 
 
 #dash_main #stats .stat#views_count svg path,
-#dash_main #stats .stat#followers_count svg path,
-#dash_main #stats .stat#channel_subs_count svg path {
+#dash_main #stats .stat#followers_count svg path {
 	fill: #cacaca;
 }
 
 #dash_main #stats .stat#chatters_count {
 	background: url(../icons/chatters_light.png) no-repeat left center;
 }
-
-
-
-
 
 #play_switch.dropmenu {
 	color: #3b3b3b;

@@ -19,13 +19,17 @@ module.exports = function dashboardChannelInfo() {
             }
         });
         if(!$("#chatters_count").length) {
-            var $chattersContainer = $("<div></div>");
+            var $chattersContainer = $("<div/>");
+            var $chatters = $("<span/>");
+
             $chattersContainer.attr("class", "stat");
             $chattersContainer.attr("id", "chatters_count");
-            $chattersContainer.html('<span>0</span>');
+
+            $chatters.text("0");
+            $chatters.attr("tooltipdata", "Chatters");
+
+            $chattersContainer.append($chatters);
             $("#followers_count").after($chattersContainer);
-            
-            $("#chatters_count span").attr("tooltipdata", "Chatters");
         }
 
         $.getJSON('http://tmi.twitch.tv/group/user/' + bttv.getChannel() + '/chatters?callback=?', function(data) {
@@ -45,21 +49,25 @@ module.exports = function dashboardChannelInfo() {
                             activeSubs = subAmounts[2];
 
                         if(!$("#channel_subs_count").length) {
-                            var $subsContainer = $("<div></div>");
+                            var $subsContainer = $("<div/>");
+                            var $subs = $("<span/>");
+
                             $subsContainer.attr("class", "stat");
-                            $subsContainer.attr("id", "channel_subs_count");
-                            $subsContainer.attr("tooltipdata", "Active Subscribers");
-                            $subsContainer.text(Twitch.display.commatize(activeSubs));
+                            $subsContainer.attr("id", "subs_count");
+
+                            $subs.text(Twitch.display.commatize(activeSubs));
+                            $subs.attr("tooltipdata", "Active Subscribers");
+
+                            $subsContainer.append($subs);
                             $("#chatters_count").after($subsContainer);
 
-                            Twitch.api.get("chat/" + bttv.getChannel() + "/badges").done(function (a) {
-                                if (a.subscriber) {
-                                    $("#channel_subs_count").css("background", "url("+a.subscriber.image+") no-repeat left center");
-                                    $("#channel_subs_count").css("background-size", "14px 14px");
+                            Twitch.api.get("chat/" + bttv.getChannel() + "/badges").done(function(a) {
+                                if(a.subscriber) {
+                                    $("#subs_count").css("background-image", "url("+a.subscriber.image+")");
                                 }
                             });
                         } else {
-                            $("#channel_subs_count").text(Twitch.display.commatize(activeSubs));
+                            $("#subs_count span").text(Twitch.display.commatize(activeSubs));
                         }
                     } else {
                         vars.dontCheckSubs = true;
