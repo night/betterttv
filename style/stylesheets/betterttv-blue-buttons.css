@@ -2,27 +2,27 @@
 	border-left: 4px solid #374a9b !important; 
 } 
 .button.primary, .button-simple.primary, .primary_button:hover, a.js-follow.follow.button.primary.action:hover, #subscribe_action .subscribe-text:focus, .button.primary:hover { 
-	background: linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; 
-	background: -o-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; 
-	background: -moz-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; 
-	background: -webkit-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; 
-	background: -ms-linear-gradient(bottom, rgb(42,70,135) 31%, rgb(86,147,232) 80%) !important; 
+	background: linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
+	background: -o-linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
+	background: -moz-linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
+	background: -webkit-linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
+	background: -ms-linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
 } 
 .button.primary, .primary_button, a.js-follow.follow.button.primary.action {
 	border-color: #000 !important;
-	background: linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%) !important; 
-	background: -o-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%) !important; 
-	background: -moz-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%) !important; 
-	background: -webkit-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%) !important; 
-	background: -ms-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%) !important; 
+	background: linear-gradient(bottom, rgb(47,88,185) 31%, rgb(50,108,211) 80%) !important; 
+	background: -o-linear-gradient(bottom, rgb(47,88,185) 31%, rgb(50,108,211) 80%) !important; 
+	background: -moz-linear-gradient(bottom, rgb(47,88,185) 31%, rgb(50,108,211) 80%) !important; 
+	background: -webkit-linear-gradient(bottom, rgb(47,88,185) 31%, rgb(50,108,211) 80%) !important; 
+	background: -ms-linear-gradient(bottom, rgb(47,88,185) 31%, rgb(50,108,211) 80%) !important; 
 }
 .onoff:before, .onoff.on:after {
 	border-color: #000;
-	background: linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%); 
-	background: -o-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%); 
-	background: -moz-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%); 
-	background: -webkit-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%); 
-	background: -ms-linear-gradient(bottom, rgb(41,59,148) 31%, rgb(54,127,235) 80%);
+	background: linear-gradient(bottom, rgb(47,88,185) 31%, rgb(50,108,211) 80%); 
+	background: -o-linear-gradient(bottom, rgb(47,88,185) 31%, rgb(50,108,211) 80%); 
+	background: -moz-linear-gradient(bottom, rgb(47,88,185) 31%, rgb(50,108,211) 80%); 
+	background: -webkit-linear-gradient(bottom, rgb(47,88,185) 31%, rgb(50,108,211) 80%); 
+	background: -ms-linear-gradient(bottom, rgb(47,88,185) 31%, rgb(50,108,211) 80%);
 }
 #subscribe_action .subscribe-text {
 	background: none;
