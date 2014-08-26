@@ -1162,3 +1162,18 @@ div.part.description a {
     width: 93px;
 }
 
+/* TwitchCast button (sits atop Twitch player)*/
+#twitchcast_button {
+    background: url(../icons/chromecast.png) no-repeat 0px 0px;
+    background-size: 48px 18px;
+    height: 18px;
+    width: 23px;
+    position: absolute;
+    left: 160px;
+    bottom: 5px;
+}
+
+#twitchcast_button:hover {
+    background: url(../icons/chromecast.png) no-repeat -24px 0px;
+    background-size: 48px 18px;
+}

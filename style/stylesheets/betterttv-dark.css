@@ -474,6 +474,9 @@ body {
 .videos-grid .button-group li a {
 	color: #d3d3d3;
 }
+.streams-grid .sort-contain .sort-options {
+	background-color: rgb(30,30,30);
+}
 
 /* darken jquery ui */
 .ui-menu {

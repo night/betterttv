@@ -2,7 +2,8 @@ var debug = require('debug'),
     keyCodes = require('keycodes'),
     vars = require('vars');
 var linkifyTitle = require('./linkify-title'),
-    handleResize = require('./handle-resize');
+    handleResize = require('./handle-resize'),
+    twitchcast = require('./twitchcast');
 
 module.exports = function () {
     if ($('body.ember-application').length === 0 || $('.ember-chat').length === 0 || $("#right_col").length === 0) return;
@@ -10,6 +11,7 @@ module.exports = function () {
     debug.log("Reformatting Channel Page");
 
     linkifyTitle();
+    twitchcast();
 
     if(!vars.loadedChannelResize) {
         vars.loadedChannelResize = true;

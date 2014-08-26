@@ -6,7 +6,7 @@ vars = require('vars');
 
 bttv.info = {
     version: "6.8",
-    release: 7,
+    release: 8,
     versionString: function() { 
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -150,7 +150,7 @@ bttv.settings = {
         }
 
         var receiveMessage = function(e) {
-            if(e.origin !== 'http://'+window.location.host) return;
+            if(e.origin !== window.location.protocol+'//'+window.location.host) return;
             if(e.data) {
                 var data = e.data.split(' ');
                 if(data[0] === "bttv_setting") {
@@ -164,16 +164,16 @@ bttv.settings = {
         window.addEventListener("message", receiveMessage, false);
     },
     popup: function() {
-        var settingsUrl = 'http://'+window.location.host+'/settings?bttvSettings=true';
+        var settingsUrl = window.location.protocol+'//'+window.location.host+'/settings?bttvSettings=true';
         window.open(settingsUrl, 'BetterTTV Settings', 'width=800,height=500,top=500,left=800,scrollbars=no,location=no,directories=no,status=no,menubar=no,toolbar=no,resizable=no');
     },
     prefix: "bttv_",
     save: function(setting, value) {
         if(/\?bttvSettings=true/.test(window.location)) {
-            window.opener.postMessage('bttv_setting '+setting+' '+value, 'http://'+window.location.host);
+            window.opener.postMessage('bttv_setting '+setting+' '+value, window.location.protocol+'//'+window.location.host);
         } else {
             if(window.ga) ga('send', 'event', 'BTTV', 'Change Setting: '+setting+'='+value);
-            if(/\?bttvDashboard=true/.test(window.location)) window.parent.postMessage('bttv_setting '+setting+' '+value, 'http://'+window.location.host);
+            if(/\?bttvDashboard=true/.test(window.location)) window.parent.postMessage('bttv_setting '+setting+' '+value, window.location.protocol+'//'+window.location.host);
             vars.settings[setting].value = value;
             bttv.storage.put(bttv.settings.prefix+setting, value);
             if(vars.settings[setting].toggle) vars.settings[setting].toggle(value);
@@ -548,7 +548,7 @@ bttv.chat = {
         }
 
         // Disable Twitch's chat sender
-        $('.ember-text-area').off();
+        $('.chat-interface .ember-text-area').off();
 
         // Message input features (tab completion, message history, anti-prefix completion, extra commands)
         var lastPartialMatch = null;
@@ -701,16 +701,23 @@ bttv.chat = {
         });
 
         // Implement our own text sender
-        $('.ember-text-area').on('keydown', function(e) {
+        $('.chat-interface .ember-text-area').on('keydown', function(e) {
             if(e.which === keyCodes.Enter) {
                 var val = $('.ember-text-area').val().trim();
                 if(e.shiftKey || !val.length) return;
+
+                // Easter Egg Kappa
+                var words = val.toLowerCase().split(' ');
+                if(words.indexOf('twitch') > -1 && words.indexOf('amazon') > -1 && words.indexOf('google') > -1) {
+                    bttv.chat.helpers.serverMessage('<img src="https://cdn.betterttv.net/special/twitchtrollsgoogle.gif"/>');
+                    bttv.chat.helpers.serverMessage('<img src="https://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-ddc6e3a8732cb50f-25x28.png"/>')
+                }
 
                 bttv.chat.helpers.sendMessage(val);
                 $('.ember-text-area').val('');
             }
         });
-        $('.ember-text-area').on('keyup', function(e) {
+        $('.chat-interface .ember-text-area').on('keyup', function(e) {
             if(e.which === keyCodes.Enter) {
                 if(e.shiftKey) return;
 
@@ -1315,7 +1322,7 @@ bttv.chat = {
 
                 highlightKeywords.forEach(function (keyword) {
                     keyword = escapeRegExp(keyword).replace(/\*/g, "[^ ]*");
-                    var wordRegex = new RegExp('(\\s|^)' + keyword + '([!.,:\';?/]|\\s|$)', 'i');
+                    var wordRegex = new RegExp('(\\s|^|@)' + keyword + '([!.,:\';?/]|\\s|$)', 'i');
                     if (vars.userData.isLoggedIn && vars.userData.login !== data.from && wordRegex.test(data.message)) {
                         messageHighlighted = true;
                         if(bttv.settings.get("desktopNotifications") === true && bttv.chat.store.activeView === false) {

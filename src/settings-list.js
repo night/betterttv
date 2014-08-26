@@ -5,6 +5,7 @@
 
 var chat = bttv.chat, vars = bttv.vars;
 var betaChat = require('features/beta-chat'),
+    channelReformat = require('features/channel-reformat'),
     splitChat = require('features/split-chat'),
     darkenPage = require('features/darken-page'),
     handleBackground = require('features/handle-background'),
@@ -248,6 +249,15 @@ module.exports = [
             } else {
                 $("#splitChat").remove();
             }
+        }
+    },
+    {
+        name: 'TwitchCast',
+        description: 'Watch a Twitch stream via Chromecast (Google Chrome only)',
+        default: false,
+        storageKey: 'twitchCast',
+        toggle: function(value) {
+            channelReformat();
         }
     },
     {

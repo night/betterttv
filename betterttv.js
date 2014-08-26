@@ -583,7 +583,7 @@ vars = require('vars');
 
 bttv.info = {
     version: "6.8",
-    release: 7,
+    release: 8,
     versionString: function() { 
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -727,7 +727,7 @@ bttv.settings = {
         }
 
         var receiveMessage = function(e) {
-            if(e.origin !== 'http://'+window.location.host) return;
+            if(e.origin !== window.location.protocol+'//'+window.location.host) return;
             if(e.data) {
                 var data = e.data.split(' ');
                 if(data[0] === "bttv_setting") {
@@ -741,16 +741,16 @@ bttv.settings = {
         window.addEventListener("message", receiveMessage, false);
     },
     popup: function() {
-        var settingsUrl = 'http://'+window.location.host+'/settings?bttvSettings=true';
+        var settingsUrl = window.location.protocol+'//'+window.location.host+'/settings?bttvSettings=true';
         window.open(settingsUrl, 'BetterTTV Settings', 'width=800,height=500,top=500,left=800,scrollbars=no,location=no,directories=no,status=no,menubar=no,toolbar=no,resizable=no');
     },
     prefix: "bttv_",
     save: function(setting, value) {
         if(/\?bttvSettings=true/.test(window.location)) {
-            window.opener.postMessage('bttv_setting '+setting+' '+value, 'http://'+window.location.host);
+            window.opener.postMessage('bttv_setting '+setting+' '+value, window.location.protocol+'//'+window.location.host);
         } else {
             if(window.ga) ga('send', 'event', 'BTTV', 'Change Setting: '+setting+'='+value);
-            if(/\?bttvDashboard=true/.test(window.location)) window.parent.postMessage('bttv_setting '+setting+' '+value, 'http://'+window.location.host);
+            if(/\?bttvDashboard=true/.test(window.location)) window.parent.postMessage('bttv_setting '+setting+' '+value, window.location.protocol+'//'+window.location.host);
             vars.settings[setting].value = value;
             bttv.storage.put(bttv.settings.prefix+setting, value);
             if(vars.settings[setting].toggle) vars.settings[setting].toggle(value);
@@ -1125,7 +1125,7 @@ bttv.chat = {
         }
 
         // Disable Twitch's chat sender
-        $('.ember-text-area').off();
+        $('.chat-interface .ember-text-area').off();
 
         // Message input features (tab completion, message history, anti-prefix completion, extra commands)
         var lastPartialMatch = null;
@@ -1278,16 +1278,23 @@ bttv.chat = {
         });
 
         // Implement our own text sender
-        $('.ember-text-area').on('keydown', function(e) {
+        $('.chat-interface .ember-text-area').on('keydown', function(e) {
             if(e.which === keyCodes.Enter) {
                 var val = $('.ember-text-area').val().trim();
                 if(e.shiftKey || !val.length) return;
+
+                // Easter Egg Kappa
+                var words = val.toLowerCase().split(' ');
+                if(words.indexOf('twitch') > -1 && words.indexOf('amazon') > -1 && words.indexOf('google') > -1) {
+                    bttv.chat.helpers.serverMessage('<img src="https://cdn.betterttv.net/special/twitchtrollsgoogle.gif"/>');
+                    bttv.chat.helpers.serverMessage('<img src="https://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-ddc6e3a8732cb50f-25x28.png"/>')
+                }
 
                 bttv.chat.helpers.sendMessage(val);
                 $('.ember-text-area').val('');
             }
         });
-        $('.ember-text-area').on('keyup', function(e) {
+        $('.chat-interface .ember-text-area').on('keyup', function(e) {
             if(e.which === keyCodes.Enter) {
                 if(e.shiftKey) return;
 
@@ -1892,7 +1899,7 @@ bttv.chat = {
 
                 highlightKeywords.forEach(function (keyword) {
                     keyword = escapeRegExp(keyword).replace(/\*/g, "[^ ]*");
-                    var wordRegex = new RegExp('(\\s|^)' + keyword + '([!.,:\';?/]|\\s|$)', 'i');
+                    var wordRegex = new RegExp('(\\s|^|@)' + keyword + '([!.,:\';?/]|\\s|$)', 'i');
                     if (vars.userData.isLoggedIn && vars.userData.login !== data.from && wordRegex.test(data.message)) {
                         messageHighlighted = true;
                         if(bttv.settings.get("desktopNotifications") === true && bttv.chat.store.activeView === false) {
@@ -2560,6 +2567,7 @@ require.register("settings-list", function(exports, require, module){
 
 var chat = bttv.chat, vars = bttv.vars;
 var betaChat = require('features/beta-chat'),
+    channelReformat = require('features/channel-reformat'),
     splitChat = require('features/split-chat'),
     darkenPage = require('features/darken-page'),
     handleBackground = require('features/handle-background'),
@@ -2803,6 +2811,15 @@ module.exports = [
             } else {
                 $("#splitChat").remove();
             }
+        }
+    },
+    {
+        name: 'TwitchCast',
+        description: 'Watch a Twitch stream via Chromecast (Google Chrome only)',
+        default: false,
+        storageKey: 'twitchCast',
+        toggle: function(value) {
+            channelReformat();
         }
     },
     {
@@ -3180,16 +3197,22 @@ module.exports = function() {
 require.register("features/check-broadcast-info", function(exports, require, module){
   var debug = require('debug');
 
-var checkBroadcastInfo = module.exports = function () {
+var checkBroadcastInfo = module.exports = function() {
     var channel = bttv.getChannel();
 
-    if(!channel) return;
+    if(!channel) return setTimeout(checkBroadcastInfo, 60000);
 
     debug.log("Check Channel Title/Game");
 
-    Twitch.api.get("channels/"+channel).done(function (d) {
-        if (d.game && d.status) {
-            $("#channel #broadcast-meta .js-game").text(d.game).attr("href",Twitch.uri.game(d.game));
+    Twitch.api.get("channels/"+channel).done(function(d) {
+        if(d.game) {
+        	if($('#broadcast-meta .channel .playing').length) {
+        		$('#broadcast-meta .channel a:eq(1)').text(d.game).attr("href",Twitch.uri.game(d.game));
+        	}
+        }
+        if(d.status) {
+        	$('#broadcast-meta .title .real').text(d.status);
+        	$('#broadcast-meta .title .over').text(d.status);
         }
         setTimeout(checkBroadcastInfo, 60000);
     });
@@ -4222,77 +4245,27 @@ var handleResize = module.exports = function () {
         width: $(window).width() - d + "px"
     });
 
-    if($("#broadcast_meta").length) {
-        if ($(".live_site_player_container").length) {
-            var h = 0.5625 * $("#main_col").width() - 4;
-            var calcH = $(window).height() - $("#broadcast_meta").outerHeight(true) - $("#stats_and_actions").outerHeight();
-            if (h > calcH) {
-                $(".live_site_player_container").css({
-                    height: $(window).height() - $("#stats_and_actions").outerHeight() + "px"
-                });
-                $("#main_col .tse-scroll-content").animate({
-                    scrollTop: $('.live_site_player_container').position().top - 10
-                }, 150, "swing");
-            } else {
-                $(".live_site_player_container").css({
-                    height: h.toFixed(0) + "px"
-                });
-                $("#main_col .tse-scroll-content").animate({
-                    scrollTop: 0
-                }, 150, "swing");
-            }
-        } else if ($(".archive_site_player_container").length) {
-            var h = 0.5625 * $("#main_col").width() - 4;
-            var calcH = $(window).height() - $("#broadcast_meta").outerHeight(true) - $(".archive_info").outerHeight(true) - $("#stats_and_actions").outerHeight();
-            if (h > calcH) {
-                $(".archive_site_player_container").css({
-                    height: $(window).height() - $(".archive_info").outerHeight(true) - $("#stats_and_actions").outerHeight() + "px"
-                });
-                $("#main_col .tse-scroll-content").animate({
-                    scrollTop: $('.archive_site_player_container').position().top - 10
-                }, 150, "swing");
-            } else {
-                $(".archive_site_player_container").css({
-                    height: h.toFixed(0) + "px"
-                });
-                $("#main_col .tse-scroll-content").animate({
-                    scrollTop: 0
-                }, 150, "swing");
-            }
-        }
-
-        var d = $("#broadcast_meta .info .title").width();
-        $("#broadcast_meta .info .title .real_title").width() > d ? $("#broadcast_meta .info").addClass("long_title") : $("#broadcast_meta .info").removeClass("long_title");
-        $("#channel_panels_contain").masonry("reload");
-    } else {
-        if(!$('#bttvPlayerStyle').length) {
-            $('<style></style>').attr('id', 'bttvPlayerStyle').appendTo('body');
-        }
-        var h = 0.5625 * $("#main_col").width() - 4;
-        var calcH = $(window).height() - $("#broadcast-meta").outerHeight(true) - $(".stats-and-actions").outerHeight();
-        if (h > calcH) {
-            $('#bttvPlayerStyle').html('#player, .dynamic-player, .dynamic-player object, .dynamic-player video { width: 100% !important; height: '+ ($(window).height() - $(".stats-and-actions").outerHeight()) + 'px !important; }');
-            
-            if(!$('#hostmode').length) {
-                $("#main_col .tse-scroll-content").animate({
-                    scrollTop: $("#broadcast-meta").outerHeight(true) - 10
-                }, 150, "swing");
-            }
-        } else {
-            $('#bttvPlayerStyle').html('#player, .dynamic-player, .dynamic-player object, .dynamic-player video { width: 100% !important; height: '+ h.toFixed(0) + 'px !important; }');
-            
-            if(!$('#hostmode').length) {
-                $("#main_col .tse-scroll-content").animate({
-                    scrollTop: 0
-                }, 150, "swing");
-            }
-        }
-        $('#bttvPlayerStyle').append('#hostmode .target-player, #hostmode .target-player object, #hostmode .target-player video { width: 100% !important; }');
-
-        var d = $("#broadcast-meta .info .title").width();
-        $("#broadcast-meta .info .title .real_title").width() > d ? $("#broadcast-meta .info").addClass("long_title") : $("#broadcast-meta .info").removeClass("long_title");
-        $("#channel_panels_contain").masonry("reload");
+    if(!$('#bttvPlayerStyle').length) {
+        $('<style></style>').attr('id', 'bttvPlayerStyle').appendTo('body');
     }
+    var h = 0.5625 * $("#main_col").width() - 4;
+    var calcH = $(window).height() - $("#broadcast-meta").outerHeight(true) - $(".stats-and-actions").outerHeight();
+    if (h > calcH) {
+        $('#bttvPlayerStyle').html('#player, .dynamic-player, .dynamic-player object, .dynamic-player video { width: 100% !important; height: '+ ($(window).height() - $(".stats-and-actions").outerHeight()) + 'px !important; }');
+        
+        if(!$('#hostmode').length && $("#main_col .tse-scroll-content").scrollTop() === 0) {
+            $("#main_col .tse-scroll-content").animate({
+                scrollTop: $("#broadcast-meta").outerHeight(true) - 10
+            }, 150, "swing");
+        }
+    } else {
+        $('#bttvPlayerStyle').html('#player, .dynamic-player, .dynamic-player object, .dynamic-player video { width: 100% !important; height: '+ h.toFixed(0) + 'px !important; }');
+    }
+    $('#bttvPlayerStyle').append('#hostmode .target-player, #hostmode .target-player object, #hostmode .target-player video { width: 100% !important; }');
+
+    var d = $("#broadcast-meta .info .title").width();
+    $("#broadcast-meta .info .title .real_title").width() > d ? $("#broadcast-meta .info").addClass("long_title") : $("#broadcast-meta .info").removeClass("long_title");
+    $("#channel_panels_contain").masonry("reload");
 };
   
 });
@@ -4302,7 +4275,8 @@ require.register("features/channel-reformat/index", function(exports, require, m
     keyCodes = require('keycodes'),
     vars = require('vars');
 var linkifyTitle = require('./linkify-title'),
-    handleResize = require('./handle-resize');
+    handleResize = require('./handle-resize'),
+    twitchcast = require('./twitchcast');
 
 module.exports = function () {
     if ($('body.ember-application').length === 0 || $('.ember-chat').length === 0 || $("#right_col").length === 0) return;
@@ -4310,6 +4284,7 @@ module.exports = function () {
     debug.log("Reformatting Channel Page");
 
     linkifyTitle();
+    twitchcast();
 
     if(!vars.loadedChannelResize) {
         vars.loadedChannelResize = true;
@@ -4474,22 +4449,88 @@ require.register("features/channel-reformat/linkify-title", function(exports, re
     vars = require('vars');
 
 module.exports = function () {
-    if($('.broadcast-meta .title .real').length) {
-        var linkifyTitle = function() {
-            var linkifiedTitle = bttv.chat.templates.linkify($('.broadcast-meta .title .real').text());
+    if($('#broadcast-meta .title .real').length) {
+        if(vars.linkifyTimer) clearInterval(vars.linkifyTimer);
 
-            $('.broadcast-meta .title span').each(function() {
+        var linkifyTitle = function() {
+            var linkifiedTitle = bttv.chat.templates.linkify($('#broadcast-meta .title .real').text());
+
+            $('#broadcast-meta .title span').each(function() {
                 $(this).html(linkifiedTitle);
             });
         }
+
         linkifyTitle();
-        setInterval(function() {
+
+        vars.linkifyTimer = setInterval(function() {
             if(!vars.channelTitle) vars.channelTitle = "";
-            if($('.broadcast-meta .title .real').html() !== vars.channelTitle) {
-                vars.channelTitle = $('.broadcast-meta .title .real').html();
+            if($('#broadcast-meta .title .real').html() !== vars.channelTitle) {
+                vars.channelTitle = $('#broadcast-meta .title .real').html();
                 linkifyTitle();
             }
         }, 1000);
+    }
+}
+  
+});
+
+require.register("features/channel-reformat/twitchcast", function(exports, require, module){
+  module.exports = function() {
+    var template = '<iframe id="twitchcast" src="https://nightdev.com/twitchcast/?ontwitch={{hostname}}&channel={{channel}}" width="100%" height="100%" style="position: absolute;top: 0px;left: 0px;border: none;"></iframe>';
+
+    var openTwitchCast = function() {
+        // For some reason Twitch's built-in Twitch.player.ready *doesn't work* with their new player.
+        if($('#player object').length) {
+            try {
+                $('#player object')[0].pauseVideo();
+            } catch(e) {
+                // Twitch's player doesn't support pauseVideo anymore.
+            }
+        }
+
+        $('#player').append(template.replace('{{hostname}}', encodeURIComponent(window.location.protocol+'//'+window.location.host)).replace('{{channel}}', bttv.getChannel()));
+
+        var close = function() {
+            $('#twitchcast').remove();
+            window.removeEventListener("message", close, false);
+        }
+        window.addEventListener("message", close, false);
+    }
+    
+    var placeButton = function() {
+        if($('#twitchcast_button').length) return;
+
+        var $button = $('<div/>');
+        $button.attr('id', 'twitchcast_button');
+        $button.click(openTwitchCast);
+        $('#player').append($button);
+    }
+
+    var castAvailable = function(callback) {
+        if(!window.chrome) return callback(true);
+
+        if(window.chrome.cast && window.chrome.cast.isAvailable) {
+            return callback(false);
+        }
+        
+        setTimeout(function() {
+            castAvailable(callback);
+        }, 1000);
+    }
+
+    if(bttv.settings.get('twitchCast')) {
+        if(!$('#chromecast_sender').length) {
+            var $senderjs = $('<script/>');
+            $senderjs.attr('id', 'chromecast_sender');
+            $senderjs.attr('src', 'https://www.gstatic.com/cv/js/sender/v1/cast_sender.js');
+            $('head').append($senderjs);
+        }
+        castAvailable(function(error) {
+            if(!error) placeButton();
+        });
+    } else {
+        $('#chromecast_sender').remove();
+        $('#twitchcast_button').remove();
     }
 }
   
