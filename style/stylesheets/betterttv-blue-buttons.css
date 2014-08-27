@@ -53,3 +53,21 @@
 .ember-chat .moderation-card .interface .mod-card-follow {
 	color: #ccc;
 }
+.ui-menu-item a:hover {
+	background-color: #06C;
+}
+.filter-list .filter-item:hover span {
+	background: rgba(0,102,204,0.5);
+}
+.filter-list .filter-item span {
+	background: rgba(0,102,204,0.65);
+}
+.filter-nav, .filter-nav:hover {
+	background: #0073e6;
+}
+a.button.js-show-stream-key {
+	color: black;
+}
+.sort-contain .sort-options li a:hover {
+	background-color: #06c;
+}

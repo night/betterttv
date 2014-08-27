@@ -1796,3 +1796,22 @@ color: white;
 .channel_new .app-main #directory-list #video-manager .videos-grid .video.item .meta {
 	background: #1f1f1f;
 }
+
+.search_input, #sidebar_query_small {
+	color: white;
+}
+.button.js-remove-image {
+	color: white;
+}
+.following-col .col-header .search-contain .search .search-button svg path {
+	fill: rgba(255,255,255,0.25);
+}
+.following-col .col-header .search-contain .search .search-button:hover svg path {
+	fill: rgba(255,255,255,0.5);
+}
+span.subscribe-text {
+	color: white;
+}
+.button.subscribe-button .subscribe-price {
+	color: rgb(170,170,170)!important;
+}
