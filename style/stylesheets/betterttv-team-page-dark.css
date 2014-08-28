@@ -1,0 +1,176 @@
+body{
+	color: #9A9A9A;
+	background-image: none;
+	background-color: #141414;
+}
+
+a{
+	color:white;
+}
+
+div #header_actions a{
+	color: white;
+}
+
+li.tab a{
+	color: #9A9A9A;
+}
+
+li.selected.tab a{
+	color: white;
+	text-decoration: underline;
+}
+
+#site_header{
+	color: white;
+	border-bottom: 1px solid black;
+	background-color: #1E1E1E;
+}
+
+#site_header a span{
+	color: white;
+}
+
+#mantle_skin{
+	background-image: none;
+	background-color: #141414;
+}
+
+div.wrapper.c12.clearfix{
+	background-color: #141414;
+}
+
+div.main.discovery.team{
+	background-color: #141414;
+}
+
+#team_logo{
+	border: 1px solid black;
+	background-color: #1E1E1E;
+	margin: 20px 0px 0px 0px;
+	overflow:hidden;
+}
+
+#team_logo h1{
+	text-align: center;
+	margin: 0px;
+}
+
+#banner_header{
+	margin: -20px 0px 0px 0px;
+	overflow:hidden;
+}
+
+#followteambtn{
+	width: 278px;
+	border: 1px solid black;
+	margin:20px 0px 0px 0px;
+	text-align:center;
+}
+
+#team_member_list{
+	border: 1px solid black;
+	background-color: #2E2F2F;
+	overflow:auto;
+}
+
+#standard_holder{
+	border: 1px solid black;
+	background-color: #1E1E1E;
+}
+
+#live_player{
+	margin: 20px 0px 0px 0px;
+}
+
+#stats_and_description{
+	border: 1px solid black;
+	background-color: #1E1E1E;
+	margin: 20px 0px 0px 0px;
+}
+
+#team_info_tabs{
+	border: 1px solid black;
+	background-color: #1E1E1E;
+	border-bottom: 0px solid #1E1E1E;
+	padding: 10px;
+	margin: 20px 0px 0px 0px;
+}
+
+#team_info_tabs a{
+	color:white;
+}
+
+#about{
+	border: 1px solid black;
+	border-top: 0px solid #1E1E1E;
+	background-color: #1E1E1E;
+	margin: -1px 0px 0px 0px !important;
+	padding: 10px !important;
+}
+
+#videos{
+	border: 1px solid black;
+	background-color: #1E1E1E;
+}
+
+#team_chat{
+	width: 343px;
+	float:left;
+	border: 1px solid black;
+	background-color: #1E1E1E;
+	margin: 20px 0px 0px 20px;
+}
+
+#site_footer{
+	margin: 0px 0px 0px 343px;
+}
+
+#share{
+	border: 1px solid black;
+	background-color: #141414;
+	color: #9A9A9A;
+}
+
+#channel_url{
+	border: 1px solid black;
+	background-color: #1E1E1E;
+	color: #9A9A9A;
+}
+
+#live_embed{
+	border: 1px solid black;
+	background-color: #1E1E1E;
+	color: #9A9A9A;
+}
+
+.member{
+	background-color: #1E1E1E;
+	color: #9A9A9A;
+}
+
+.member.live{
+	background-color: #6441a5;
+	color: white;
+}
+
+.member.js-playing{
+	background-color: #B9A3E3;
+	border:0px solid black;
+}
+
+.channel_count.small{
+	color:white;
+}
+
+.member:hover{
+	background-color:black;
+}
+
+.member.live:hover{
+	background-color:black;
+}
+
+.member.js-playing:hover{
+	background-color:black;
+}

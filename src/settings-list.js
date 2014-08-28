@@ -92,6 +92,12 @@ module.exports = [
                     splitChat();
                 }
             }
+            //chat on team page is iframe embed, so reload parent if it's a team page
+            if(typeof parent.$("body").attr("data-page") !== "undefined" && parent.$("body").attr("data-page") == "teams#show"){
+                parent.location.reload();
+                var bwin = window.open("", "BetterTTV Settings", "", true);
+                bwin.close();
+            }
         }
     },
     {
@@ -384,6 +390,20 @@ module.exports = [
                 chat.helpers.serverMessage("Chat scrollback is now set to: default (150)");
             } else {
                 chat.helpers.serverMessage("Chat scrollback is now set to: " + lines);
+            }
+        }
+    },
+    {
+        default: true,
+        storageKey: 'formatTeamPage',
+        name: 'Better Team Pages',
+        description: 'Formats the team pages on Twitch to make them more functional',
+        toggle: function(value) {
+            //chat on team page is iframe embed, so reload parent if it's a team page
+            if(typeof parent.$("body").attr("data-page") !== "undefined" && parent.$("body").attr("data-page") == "teams#show"){
+                parent.location.reload();
+                var bwin = window.open("", "BetterTTV Settings", "", true);
+                bwin.close();
             }
         }
     }

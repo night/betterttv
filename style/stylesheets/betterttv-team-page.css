@@ -1,0 +1,165 @@
+body{
+	color: #9A9A9A;
+	background-image: none;
+	background-color: white;
+}
+
+a{
+	color: black;
+}
+
+h1{
+	text-align: center;
+	margin: 0px;
+}
+
+li.tab a{
+	color: red;
+}
+
+li.selected.tab a{
+	color: red;
+	text-decoration: underline;
+}
+
+div.main.discovery.team{
+	background-color: rgba(0,0,0,0.0);
+}
+
+#site_header{
+	background-color: #F2F2F2;
+	border-bottom: 1px solid #DEDEDE;
+}
+
+#mantle_skin{
+	background-color: white;
+}
+
+div.wrapper.c12.clearfix{
+	background-color: white;
+}
+
+#standard_holder{
+	border: 1px solid #DEDEDE;
+}
+
+#live_player{
+	margin: 20px 0px 0px 0px;
+}
+
+#team_logo{
+	background-color: #F2F2F2;
+	border: 1px solid #DEDEDE;
+	margin: 20px 0px 0px 0px;
+	overflow:hidden;
+}
+
+#followteambtn{
+	width: 278px;
+	border: 1px solid #DEDEDE;
+	margin:20px 0px 0px 0px;
+	text-align:center;
+}
+
+#team_member_list{
+	overflow: auto;
+	border: 1px solid #DEDEDE;
+	background-color: #F2F2F2;
+}
+
+#team_info_tabs{
+	margin: 20px 0px 0px 0px;
+	border-bottom: 0px;
+}
+
+#about{
+	margin:0px !important;
+	padding: 20px 20px 20px 20px !important;
+	background-color: #F2F2F2;
+	border: 1px solid #DEDEDE;
+}
+
+#stats_and_description{
+	background-color: #F2F2F2;
+}
+
+#videos{
+	background-color: #F2F2F2;
+	border: 1px solid #DEDEDE;
+	padding: 20px 0px 20px 20px;
+}
+
+#team_chat{
+	width: 343px;
+	float:left;
+	border: 1px solid #DEDEDE;
+	background-color: #F2F2F2;
+	margin: 20px 0px 0px 20px;
+}
+
+#site_footer{
+	color: black;
+	border: 1px solid #DEDEDE;
+	margin: 20px 0px 0px 343px;
+}
+
+#site_footer a{
+	color: black;
+}
+
+#copyright_and_footer_links{
+	background-color:#F2F2F2;
+	border: 1px solid #DEDEDE;
+	padding:20px;
+}
+
+.svg-glitch{
+	color:red;
+	background-color:#B9A3E3;
+	margin:21px 20px 0px 20px;
+	border-top:5px solid #B9A3E3;
+	border-right:3px solid #B9A3E3;
+	border-bottom:4px solid #B9A3E3;
+	border-left:5px solid #B9A3E3;
+}
+
+#languages{
+	margin:20px 20px 0px 0px;
+}
+
+.member{
+	background-color: #F2F2F2;
+	color: #9A9A9A;
+}
+
+.member:hover{
+	background-color: white;
+	color: black;
+	text-decoration:underline;
+}
+
+.member.live{
+	background-color: #B9A3E3;
+	color: white;
+}
+
+.member.live:hover{
+	background-color: white;
+	color: black;
+	text-decoration:underline;
+}
+
+.member.js-playing{
+	background-color: #6441A5;
+	border:0px solid black;
+}
+
+.member.js-playing:hover{
+	background-color: white;
+	color: black;
+	text-decoration:underline;
+}
+
+.stat{
+	color:black;
+}

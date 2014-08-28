@@ -1742,6 +1742,7 @@ var clearClutter = require('./features/clear-clutter'),
     highlightFeedback = require('./features/highlight-feedback'),
     handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes'),
     loadChatSettings = require('./features/chat-load-settings'),
+    formatTeamPage = require('./features/team-format-page'),
     createSettings = require('./features/create-settings');
     cssLoader = require('./features/css-loader');
 
@@ -1933,6 +1934,7 @@ var main = function () {
         giveawayCompatibility();
         dashboardChannelInfo();
         directoryFunctions();
+        formatTeamPage();
 
         $(window).trigger('resize');
         setTimeout(function() {
