@@ -1,4 +1,4 @@
-var debug = require('debug');
+var debug = require('../debug');
 
 function load(file, key){
     if(!bttv.settings.get(key)) return;

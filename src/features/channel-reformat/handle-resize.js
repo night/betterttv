@@ -1,5 +1,5 @@
-var debug = require('debug'),
-    vars = require('vars');
+var debug = require('../../debug'),
+    vars = require('../../vars');
 
 var handleResize = module.exports = function () {
     debug.log("Page resized");

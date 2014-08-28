@@ -1,4 +1,4 @@
-var debug = require('debug');
+var debug = require('../debug');
 
 module.exports = function () {
     if (($("#twitch_chat").length || $(".ember-chat").length) && bttv.settings.get("clickTwitchEmotes") === true) {

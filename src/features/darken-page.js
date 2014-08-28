@@ -1,4 +1,4 @@
-var debug = require('debug'),
+var debug = require('../debug'),
     handleBackground = require('./handle-background');
 
 module.exports = function () {

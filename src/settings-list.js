@@ -4,15 +4,15 @@
  */
 
 var chat = bttv.chat, vars = bttv.vars;
-var betaChat = require('features/beta-chat'),
-    channelReformat = require('features/channel-reformat'),
-    splitChat = require('features/split-chat'),
-    darkenPage = require('features/darken-page'),
-    handleBackground = require('features/handle-background'),
-    flipDashboard = require('features/flip-dashboard'),
-    cssLoader = require('features/css-loader');
-var displayElement = require('element').display,
-    removeElement = require('element').remove;
+var betaChat = require('./features/beta-chat'),
+    channelReformat = require('./features/channel-reformat'),
+    splitChat = require('./features/split-chat'),
+    darkenPage = require('./features/darken-page'),
+    handleBackground = require('./features/handle-background'),
+    flipDashboard = require('./features/flip-dashboard'),
+    cssLoader = require('./features/css-loader');
+var displayElement = require('./element').display,
+    removeElement = require('./element').remove;
 
 module.exports = [
     {

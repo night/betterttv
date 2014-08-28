@@ -1,4 +1,4 @@
-var debug = require('debug');
+var debug = require('../debug');
 
 module.exports = function () {
     if ($("#dash_main").length && bttv.settings.get("flipDashboard") === true) {

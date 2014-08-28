@@ -1,5 +1,5 @@
-var debug = require('debug'),
-    vars = require('vars');
+var debug = require('../debug'),
+    vars = require('../vars');
 
 module.exports = function () {
     if (bttv.settings.get("bttvChat") === true && vars.userData.isLoggedIn) {

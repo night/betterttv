@@ -1,4 +1,4 @@
-var debug = require('debug');
+var debug = require('../debug');
 
 module.exports = function () {
     debug.log("Turning Purple to Blue");

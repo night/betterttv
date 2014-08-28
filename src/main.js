@@ -1,8 +1,8 @@
-var keyCodes = require('keycodes');
+var keyCodes = require('./keycodes');
 
 // Declare public and private variables
-var debug = require('debug'),
-vars = require('vars');
+var debug = require('./debug'),
+vars = require('./vars');
 
 bttv.info = {
     version: "6.8",
@@ -96,9 +96,9 @@ bttv.settings = {
                 return value;
             }
         }
-        var settingsList = require('settings-list');
+        var settingsList = require('./settings-list');
 
-        var settingTemplate = require('templates/setting-switch');
+        var settingTemplate = require('./templates/setting-switch');
 
         var featureRequests = ' \
             <div class="option"> \
@@ -362,7 +362,7 @@ bttv.chat = {
             return message;
         },
         moderationCard: function(user, top, left) {
-            var moderationCardTemplate = require('templates/moderation-card');
+            var moderationCardTemplate = require('./templates/moderation-card');
             return moderationCardTemplate({user: user, top: top, left: left});
         },
         message: function(sender, message, userSets, colored) {
@@ -1084,7 +1084,7 @@ bttv.chat = {
             bttv.chat.helpers.scrollChat();
         },
         moderationCard: function(user, $event) {
-            var makeCard = require('features/make-card');
+            var makeCard = require('./features/make-card');
             Twitch.api.get('/api/channels/'+user.toLowerCase()+'/ember').done(function(user) {
                 makeCard(user, $event);
             }).fail(function() {
@@ -1382,7 +1382,7 @@ bttv.chat = {
                 "izl": { supporter: true, team: "Support", tagType: "bttvSupporter" },
             }
 
-            var legacyTags = require('legacy-tags')(data);
+            var legacyTags = require('./legacy-tags')(data);
 
             if(legacyTags[data.from] && ((legacyTags[data.from].mod === true && bttv.chat.helpers.isModerator(data.from)) || legacyTags[data.from].mod === false)) {
                 var userData = legacyTags[data.from];
@@ -1563,7 +1563,7 @@ bttv.chat = {
 }
 
 // Helper Functions
-var removeElement = require('element').remove,
+var removeElement = require('./element').remove,
     escapeRegExp = function (text) {
         // Escapes an input to make it usable for regexes
         return text.replace(/[-[\]{}()+?.,\\^$|#\s]/g, "\\$&");
@@ -1720,28 +1720,27 @@ String.prototype.capitalize = function () {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }
 
-var clearClutter = require('features/clear-clutter'),
-    channelReformat = require('features/channel-reformat'),
-    brand = require('features/brand'),
-    betaChat = require('features/beta-chat'),
-    checkMessages = require('features/check-messages'),
-    //  cssBlueButtons = require('features/css-blue-buttons')
-    directoryFunctions = require('features/directory-functions'),
-    checkFollowing = require('features/check-following'),
-    checkBroadcastInfo = require('features/check-broadcast-info'),
-    overrideEmotes = require('features/override-emotes'),
-    handleBackground = require('features/handle-background'),
-    darkenPage = require('features/darken-page'),
-    splitChat = require('features/split-chat'),
-    flipDashboard = require('features/flip-dashboard'),
-    formatDashboard = require('features/format-dashboard'),
-    dashboardChannelInfo = require('features/dashboard-channelinfo'),
-    giveawayCompatibility = require('features/giveaway-compatibility'),
-    highlightFeedback = require('features/highlight-feedback'),
-    handleTwitchChatEmotesScript = require('features/handle-twitchchat-emotes'),
-    loadChatSettings = require('features/chat-load-settings'),
-    createSettings = require('features/create-settings');
-    cssLoader = require('features/css-loader');
+var clearClutter = require('./features/clear-clutter'),
+    channelReformat = require('./features/channel-reformat'),
+    brand = require('./features/brand'),
+    betaChat = require('./features/beta-chat'),
+    checkMessages = require('./features/check-messages'),
+    directoryFunctions = require('./features/directory-functions'),
+    checkFollowing = require('./features/check-following'),
+    checkBroadcastInfo = require('./features/check-broadcast-info'),
+    overrideEmotes = require('./features/override-emotes'),
+    handleBackground = require('./features/handle-background'),
+    darkenPage = require('./features/darken-page'),
+    splitChat = require('./features/split-chat'),
+    flipDashboard = require('./features/flip-dashboard'),
+    formatDashboard = require('./features/format-dashboard'),
+    dashboardChannelInfo = require('./features/dashboard-channelinfo'),
+    giveawayCompatibility = require('./features/giveaway-compatibility'),
+    highlightFeedback = require('./features/highlight-feedback'),
+    handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes'),
+    loadChatSettings = require('./features/chat-load-settings'),
+    createSettings = require('./features/create-settings');
+    cssLoader = require('./features/css-loader');
 
 var chatFunctions = function () {
 

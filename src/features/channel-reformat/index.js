@@ -1,6 +1,6 @@
-var debug = require('debug'),
-    keyCodes = require('keycodes'),
-    vars = require('vars');
+var debug = require('../../debug'),
+    keyCodes = require('../../keycodes'),
+    vars = require('../../vars');
 var linkifyTitle = require('./linkify-title'),
     handleResize = require('./handle-resize'),
     twitchcast = require('./twitchcast');

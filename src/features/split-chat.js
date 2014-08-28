@@ -1,4 +1,4 @@
-var debug = require('debug');
+var debug = require('../debug');
 
 module.exports = function () {
     if (bttv.settings.get("splitChat") !== false) {

@@ -1,4 +1,4 @@
-var debug = require('debug');
+var debug = require('../debug');
 
 var checkBroadcastInfo = module.exports = function() {
     var channel = bttv.getChannel();
