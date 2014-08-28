@@ -71,3 +71,6 @@ a.button.js-show-stream-key {
 .sort-contain .sort-options li a:hover {
 	background-color: #06c;
 }
+.ember-chat .moderation-card button.button {
+	color:#ccc;
+}
