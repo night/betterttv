@@ -41,14 +41,6 @@
  * Dual licensed under the MIT and GPL licenses.
  */
 /** @license
- * CommonJS Require
- * https://github.com/efacilitation/commonjs-require
- *
- * Copyright (c) 2014 efa GmbH (http://efa-gmbh.com/)
- * Copyright (c) 2013-2014 Paul Miller (http://paulmillr.com/)
- * Licensed under the MIT license.
- */
-/** @license
  * Jade
  * https://github.com/visionmedia/jade
  *
@@ -680,6 +672,9 @@ bttv.chat = {
             if(vars.userData.isLoggedIn) chat.helpers.lookupDisplayName(vars.userData.login);
         }
 
+        // Hides Group List if coming from directory
+        bttv.getChatController().set("showList", false);
+
         if(tmi.get('isLoading')) {
             debug.log('chat is still loading');
             setTimeout(function() {
@@ -721,7 +716,7 @@ bttv.chat = {
         //tmi.tmiRoom.on('labelschanged', chat.handlers.labelsChanged);
 
         // Handle Group Chats
-        var privateRooms = bttv.getChatController() ? bttv.getChatController().get('connectedPrivateGroupRooms') : false;
+        var privateRooms = bttv.getChatController().get('connectedPrivateGroupRooms');
         if(privateRooms && privateRooms.length > 0) {
             privateRooms.forEach(function(room) {
                 bttv.chat.store.newRoom(room.get('id'));

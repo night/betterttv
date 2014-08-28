@@ -394,6 +394,9 @@ bttv.chat = {
             if(vars.userData.isLoggedIn) chat.helpers.lookupDisplayName(vars.userData.login);
         }
 
+        // Hides Group List if coming from directory
+        bttv.getChatController().set("showList", false);
+
         if(tmi.get('isLoading')) {
             debug.log('chat is still loading');
             setTimeout(function() {
@@ -435,7 +438,7 @@ bttv.chat = {
         //tmi.tmiRoom.on('labelschanged', chat.handlers.labelsChanged);
 
         // Handle Group Chats
-        var privateRooms = bttv.getChatController() ? bttv.getChatController().get('connectedPrivateGroupRooms') : false;
+        var privateRooms = bttv.getChatController().get('connectedPrivateGroupRooms');
         if(privateRooms && privateRooms.length > 0) {
             privateRooms.forEach(function(room) {
                 bttv.chat.store.newRoom(room.get('id'));
