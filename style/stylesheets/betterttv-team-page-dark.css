@@ -1,176 +1,256 @@
 body{
-	color: #9A9A9A;
-	background-image: none;
-	background-color: #141414;
+    color: #9A9A9A;
+    background-image: none;
+    background-color: #141414;
+    //background-color: red;
 }
 
 a{
-	color:white;
+    color:white;
 }
 
 div #header_actions a{
-	color: white;
+    color: white;
 }
 
 li.tab a{
-	color: #9A9A9A;
+    color: #9A9A9A;
 }
 
 li.selected.tab a{
-	color: white;
-	text-decoration: underline;
+    color: white;
+    text-decoration: underline;
 }
 
 #site_header{
-	color: white;
-	border-bottom: 1px solid black;
-	background-color: #1E1E1E;
+    color: white;
+    border-bottom: 1px solid black;
+    background-color: #1E1E1E;
 }
 
 #site_header a span{
-	color: white;
+    color: white;
 }
 
 #mantle_skin{
-	background-image: none;
-	background-color: #141414;
+    background-image: none;
+    background-color: #141414;
 }
 
 div.wrapper.c12.clearfix{
-	background-color: #141414;
+    background-color: #141414;
+    margin: auto auto;
+    padding: 0px;
 }
 
 div.main.discovery.team{
-	background-color: #141414;
+    background-color: #141414;
+    margin: auto auto;
+    padding: 0px;
 }
 
 #team_logo{
-	border: 1px solid black;
-	background-color: #1E1E1E;
-	margin: 20px 0px 0px 0px;
-	overflow:hidden;
+    border: 1px solid black;
+    background-color: #1E1E1E;
+    margin: 20px 0px 0px 0px;
+    overflow:hidden;
 }
 
 #team_logo h1{
-	text-align: center;
-	margin: 0px;
+    text-align: center;
+    margin: 0px;
 }
 
-#banner_header{
-	margin: -20px 0px 0px 0px;
-	overflow:hidden;
-}
-
-#followteambtn{
-	width: 278px;
-	border: 1px solid black;
-	margin:20px 0px 0px 0px;
-	text-align:center;
+#followTeamBtn{
+    width: 278px;
+    border: 1px solid black;
+    margin:20px 0px 0px 0px;
+    text-align:center;
 }
 
 #team_member_list{
-	border: 1px solid black;
-	background-color: #2E2F2F;
-	overflow:auto;
+    border: 1px solid black;
+    background-color: #2E2F2F;
+    overflow:auto;
+}
+
+#player_column{
+    margin:0px;
+}
+
+#banner_header{
+    width:100%;
+    margin: 0px 0px 40px 0px;
+    overflow:hidden;
+}
+
+#banner_header img{
+    width:620px;
+    height:121px;
+    display:block;
+    margin: 0px auto 0px auto;
 }
 
 #standard_holder{
-	border: 1px solid black;
-	background-color: #1E1E1E;
+    border: 1px solid black;
+    background-color: #1E1E1E;
 }
 
 #live_player{
-	margin: 20px 0px 0px 0px;
+    margin: 20px 0px 0px 0px;
 }
 
 #stats_and_description{
-	border: 1px solid black;
-	background-color: #1E1E1E;
-	margin: 20px 0px 0px 0px;
+    border: 1px solid black;
+    background-color: #1E1E1E;
+    margin: 20px 0px 0px 0px;
+    position: relative;
 }
 
 #team_info_tabs{
-	border: 1px solid black;
-	background-color: #1E1E1E;
-	border-bottom: 0px solid #1E1E1E;
-	padding: 10px;
-	margin: 20px 0px 0px 0px;
+    border: 1px solid black;
+    background-color: #1E1E1E;
+    border-bottom: 0px solid #1E1E1E;
+    padding: 10px;
+    margin: 20px 0px 0px 0px;
 }
 
 #team_info_tabs a{
-	color:white;
+    color:white;
 }
 
 #about{
-	border: 1px solid black;
-	border-top: 0px solid #1E1E1E;
-	background-color: #1E1E1E;
-	margin: -1px 0px 0px 0px !important;
-	padding: 10px !important;
+    border: 1px solid black;
+    border-top: 0px solid #1E1E1E;
+    background-color: #1E1E1E;
+    margin: -1px 0px 0px 0px !important;
+    padding: 10px !important;
 }
 
 #videos{
-	border: 1px solid black;
-	background-color: #1E1E1E;
+    border: 1px solid black;
+    background-color: #1E1E1E;
 }
 
 #team_chat{
-	width: 343px;
-	float:left;
-	border: 1px solid black;
-	background-color: #1E1E1E;
-	margin: 20px 0px 0px 20px;
+    width: 343px;
+    float:left;
+    border: 1px solid black;
+    background-color: #1E1E1E;
+    margin: 20px 0px 0px 20px;
 }
 
 #site_footer{
-	margin: 0px 0px 0px 343px;
+    margin: 0px 0px 0px 343px;
 }
 
 #share{
-	border: 1px solid black;
-	background-color: #141414;
-	color: #9A9A9A;
+    border: 1px solid black;
+    background-color: #141414;
+    color: #9A9A9A;
 }
 
 #channel_url{
-	border: 1px solid black;
-	background-color: #1E1E1E;
-	color: #9A9A9A;
+    border: 1px solid black;
+    background-color: #1E1E1E;
+    color: #9A9A9A;
 }
 
 #live_embed{
-	border: 1px solid black;
-	background-color: #1E1E1E;
-	color: #9A9A9A;
+    border: 1px solid black;
+    background-color: #1E1E1E;
+    color: #9A9A9A;
 }
 
 .member{
-	background-color: #1E1E1E;
-	color: #9A9A9A;
+    background-color: #1E1E1E;
+    color: #9A9A9A;
+    cursor:pointer;
 }
 
 .member.live{
-	background-color: #6441a5;
-	color: white;
+    background-color: #6441a5;
+    color: white;
 }
 
 .member.js-playing{
-	background-color: #B9A3E3;
-	border:0px solid black;
+    background-color: #B9A3E3;
+    border:0px solid black;
 }
 
 .channel_count.small{
-	color:white;
+    color:white;
 }
 
 .member:hover{
-	background-color:black;
+    background-color:black;
 }
 
 .member.live:hover{
-	background-color:black;
+    background-color:black;
 }
 
 .member.js-playing:hover{
-	background-color:black;
+    background-color:black;
+}
+
+.ttImg{
+    width:300px;
+    height:188px;
+}
+
+.channel_count.small{
+    margin:30px 5px 0px 0px;
+}
+
+.viewers_icon{
+    margin:30px 5px 0px 0px;
+}
+
+.chanBtnChanInfoHolder{
+    width:100%;
+}
+
+.chanBtnChanImg{
+    margin:10px;
+    border:1px solid black;
+}
+
+.member_name{
+    margin:0px 0px 0px 5px;
+    line-height:72px;
+    font-size:14px;
+}
+
+.ttvFlashPlayer{
+    width:100%;
+    height:100%;
+}
+
+#chatEmbed{
+    width:100%;
+    height:100%;
+    scrolling:no;
+}
+
+#facebook_like_iframe{
+    width:85px;
+    height:21px;
+    border:none;
+    overflow:hidden;
+    position:relative;
+}
+
+#channel_viewer_count.stat{
+    margin:0px 0px 0px -4px !important;
+}
+
+#views_count{
+    margin:0px 0px 0px 10px;
+}
+
+#channel_actions{
+    position:absolute;
+    top:15px;
+    right:15px;
 }

@@ -3743,439 +3743,444 @@ module.exports = function () {
 }
 },{"../debug":1}],29:[function(require,module,exports){
 var debug = require("../debug"),
-vars = require("../vars"),
-loadTeam = require("./team-load-team");
+    vars = require("../vars"),
+    loadTeam = require("./team-load-team");
 
 module.exports = function () {
 
-	if(bttv.settings.get("formatTeamPage") !== true || $("body").attr("data-page") != "teams#show") return;
-	debug.log("Formatting team page");
+    if(bttv.settings.get("formatTeamPage") !== true || $("body").attr("data-page") != "teams#show") return;
+    
+    debug.log("Formatting team page");
 
-	//add jquery ui for custom tooltips on live channel buttons (adds stream preview images)
-	var jquicss = $("<link>", {"href":"//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/dark-hive/jquery-ui.min.css", "type":"text/css", "rel":"stylesheet"});
-	var jquijs  = $("<script>", {"src":"//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js", "type":"text/javascript"});
-	
-	//add the bttv css
-	var teamCSS = $("<link>", {"href":"//cdn.betterttv.net/style/stylesheets/betterttv-team-page.css?"+bttv.info.versionString(), "id":"betterTwitchTeams", "rel":"stylesheet", "type":"text/css"});
-	if(bttv.settings.get("darkenedMode") === true){
-		teamCSS = $("<link>", {"href":"//cdn.betterttv.net/style/stylesheets/betterttv-team-page-dark.css?"+bttv.info.versionString(), "id":"betterTwitchTeams", "rel":"stylesheet", "type":"text/css"});
-	}
-	$('body').append(jquicss, jquijs, teamCSS);
+    //add the CSS and JS
+    var jquiCSS = $("<link>", {"href":"//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/dark-hive/jquery-ui.min.css", "type":"text/css", "rel":"stylesheet"}),
+        jquiJS  = $("<script>", {"src":"//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js", "type":"text/javascript"}),
+        teamCSS = $("<link>", {"href":"//cdn.betterttv.net/style/stylesheets/betterttv-team-page.css?"+bttv.info.versionString(), "id":"betterTwitchTeams", "rel":"stylesheet", "type":"text/css"});
+    
+    if(bttv.settings.get("darkenedMode") === true) {
+        teamCSS = $("<link>", {"href":"//cdn.betterttv.net/style/stylesheets/betterttv-team-page-dark.css?"+bttv.info.versionString(), "id":"betterTwitchTeams", "rel":"stylesheet", "type":"text/css"});
+    }
+    
+    $('body').append(jquiCSS, jquiJS, teamCSS);
 
-	//remove "Members" text below team logo
-	$("h2").remove();
+    //remove "Members" text below team logo
+    $("h2").remove();
 
-	//move team banner into info section and center
-	var imgw = $("#banner_header").find("img").width();
-	var dif = ($("#banner_header").width() - imgw) / 2;
-	$("#about").prepend($("#banner_header").css({"margin":"0px 0px 0px "+dif+"px"}));
+    //move team banner into info section
+    $("#about").prepend($("#banner_header"));
 
-	//make the div relative (but don't move it) so we can position buttons within absolutely
-	$("#stats_and_description").css("position", "relative");
+    //add follow team button
+    var followTeamButton = $("<a>", {"id":"followTeamBtn", "data-ember-action":"135", "class":"js-follow follow button primary action"});
+    followTeamButton.text("Follow The Whole Team");
+    
+    followTeamButton.click(function(e) {
+        followTeam();
+    });
+    
+    $("#team_logo").after(followTeamButton);
 
-	//add follow team button
-	var ft = $("<a>", {"id":"followteambtn", "data-ember-action":"135", "class":"js-follow follow button primary action"});
-	ft.text("Follow The Whole Team");
-	ft.click(function(e){
-		followteam();
-	});
-	$("#team_logo").after(ft);
+    //add chat holder
+    var newDiv = $("<div>", {"id":"team_chat"});
+    $(".wrapper.c12.clearfix").append(newDiv);
 
-	//add chat holder
-	var ch = $(window).height() - 100;
-	var nd = $("<div>", {"id":"team_chat", "style":"width:343px; height:"+ch+"px; float:left; margin:20px 0px 0px 20px;"});
-	$(".wrapper.c12.clearfix").append(nd);
+    //for w/e reason i can't open the share menu from the share btn onclick, i have to hook the doc click
+    $(document).click(function(e) {
+    
+        if(e.target.id =="sharebtn") {
+            var o = $(e.target).offset(),
+                offsetLeft = o.left + 1,
+                offsetTop = o.top + 42;
+            $("#share").css({"top":offsetTop+"px", "left":offsetLeft+"px"}).toggle("blind");
+        }
+    });
 
-	//for w/e reason i can't open the share menu from the share btn onclick, i have to hook the doc click
-	$(document).click(function(e){
-		if(e.target.id =="sharebtn"){
-			var o = $(e.target).offset();
-			//above
-			//var aleft = o.left - 288;
-			//var atop = o.top - 235;
+    //dynamic element sizing
+    $(window).resize(function() {
+        var vpWidth = $(window).width(),
+            vpHeight = $(window).height(),
+            paddedWidth = vpWidth - 40;
+        
+        if(paddedWidth < 985) {
+            paddedWidth = 985;
+        }
 
-			//below
-			var aleft = o.left + 1;
-			var atop = o.top + 42;
+        //left col + right col + margins = 685
+        var playerWidth = paddedWidth - 685,
+            arMultiplier = (playerWidth - 2) / 16,
+            playerHeight = (9 * arMultiplier) + 32;
 
-			$("#share").css({"top":atop+"px", "left":aleft+"px"}).toggle("blind");
-		}
-	});
+        $("div.main.discovery.team").css("width", vpWidth+"px");
+        $("div.wrapper.c12.clearfix").css("width", paddedWidth+"px");
+        $("#player_column").css("width", playerWidth+"px");
+        $("#site_footer").css("width", playerWidth+"px");
+        $("#standard_holder").css({"width":(playerWidth - 2)+"px", "height":playerHeight+"px"});
 
-	//dynamic element sizing
-	$(window).resize(function(){
-		var w = $(window).width();
-		var h = $(window).height();
+        if($("#team_chat").length) {
+            var chatHeight = $("#live_player").height() - 2;
+            $("#team_chat").css("height", chatHeight+"px");
+        }
 
-		var iw = w - 40;
-		//set min inner width
-		if(iw < 985){
-			iw = 985;
-		}
-		var pw = iw - 685; //left col + right col + margins = 685
+        var teamListHeight = ( ($("#live_player").height() - $("#team_logo").height()) - 76 );
+        $("#team_member_list").css({"height":teamListHeight+"px"});
+    });
 
-		$("div.main.discovery.team").css({"width":w+"px", "border":"0px solid red", "margin":"auto auto", "padding":"0px 0px 0px 0px"});
-		$("div.wrapper.c12.clearfix").css({"width":iw+"px", "border":"0px dashed red", "margin":"auto auto", "padding":"0px 0px 0px 0px"});
+    //clear all the twitch timers for updating member list, updating selected chan info, etc
+    var maxId = setTimeout(function() {}, 0);
+    
+    for(var i=0; i < maxId; i+=1) { 
+            clearTimeout(i);
+    }
 
-		$("#player_column").css({"width":pw+"px", "border":"0px dashed black", "margin":"0px 0px 0px 0px"});
-		$("#site_footer").css({"width":pw+"px", "border":"0px dashed black", "margin":"0px 0px 0px 340px"});
+    var followList = "none",
+        uName = cookie.get("login");
+        
+    vars.teamCurrentChannel = ($(".js-playing").attr("id")).replace("channel_", "");
+    vars.teamFirstLoad = 1;
+    setTimeout(loadTeam, 1000);
+    
+    var followTeam = function() {
+    
+        if(typeof uName === "undefined") {
+            alert("You need to log in first!");
+        } else {
+            followList = [];
+            
+            vars.jsnTeam.forEach(function(a) {
+                followList.push(a.channel.name);
+            });
+            
+            throttledFollow();
+        }
+    }
+    
+    var throttledFollow = function() {
+    
+        if(followList.length > 0) {
+            var targetChan = followList[0];
+            $("#followTeamBtn").css({"background-color":"#B9A3E3"});
+            $("#followTeamBtn").text("Following "+targetChan+" ...");
 
-		var ar = (pw - 2) / 16; //-2 so when the border is added it fits inside player_column
-		var ph = (ar * 9) + 32;
-		$("#standard_holder").css({"width":(pw - 2)+"px", "height":ph+"px"});
+            Twitch.api.put("/kraken/users/"+uName+"/follows/channels/"+targetChan)
+            .done(function(d) {
+                debug.log("follow success for:"+targetChan);
+                
+                $("#followTeamBtn").css({"background-color":"green"});
+                $("#followTeamBtn").text("Followed "+targetChan);
+                
+                if(targetChan == vars.jsnTeam[vars.jsnTeam.length - 1].channel.name) {
+                    setTimeout(followListComplete, 1000);
+                }
+                
+                followList.splice(0, 1);
+                setTimeout(throttledFollow, 200);
+            })
+            .fail(function(a, b, c) {
+                debug.log("follow failed for:"+targetChan);
+                
+                if(typeof a.responseJSON.message !== "undefined") {
+                    debug.log("follow for "+targetChan+" failed:"+a.responseJSON.message);
+                    $("#followTeamBtn").text(a.responseJSON.message).css({"background-color":"red"});
+                } else {
+                    debug.log("follow failed for "+targetChan+" - "+c);
+                    $("#followTeamBtn").text("Follow Failed For "+targetChan+" - "+b).css({"background-color":"red"});
+                }
+                
+                followList.splice(0, 1);
+                setTimeout(throttledFollow, 5000);
+            });
+        }
+    }
 
-		var imgw = $("#banner_header").find("img").width();
-		var dif = ($("#banner_header").width() - imgw) / 2;
-		$("#banner_header").find("img").css({"margin":"0px 0px 40px "+dif+"px"});
-
-		if($("#team_chat").length){
-			var ch = ( $("#live_player").height() - 2);
-			$("#team_chat").css("height", ch+"px");
-		}
-
-		var tmh = ( ($("#live_player").height() - $("#team_logo").height()) - 76 );
-		$("#team_member_list").css({"height":tmh+"px"});
-	});
-
-	//clear all the twitch timers for loading member list, selected chan info, etc
-	var maxId = setTimeout(function(){}, 0);
-	for(var i=0; i < maxId; i+=1) { 
-    		clearTimeout(i);
-	}
-
-	//get the currently selected channel at page load
-	var chan = $(".js-playing").attr("id");
-	chan = chan.replace("channel_", "");
-	vars.teamCurrentChannel = chan;
-	vars.teamFirstLoad = 0;
-	setTimeout(loadTeam, 500);
-
-	var followlist = "none";
-	var uname = cookie.get("login");
-	function followteam(){
-		if(typeof uname === "undefined"){
-			alert("You need to log in first!");
-		}else{
-			followlist = new Array();
-			vars.jsnTeam.forEach(function(a){
-				followlist.push(a.channel.name);
-			});
-			throttledfollow();
-		}
-	}
-	
-	function throttledfollow(){
-		if(followlist.length > 0){
-			var tchan = followlist[0];
-			$("#followteambtn").css({"background-color":"#B9A3E3"});
-			$("#followteambtn").text("Following "+tchan+" ...");
-
-			Twitch.api.put("/kraken/users/"+uname+"/follows/channels/"+tchan)
-			.done(function(d){
-				debug.log("follow success for:"+tchan);
-				$("#followteambtn").css({"background-color":"green"});
-				$("#followteambtn").text("Followed "+tchan);
-				if(tchan == vars.jsnTeam[vars.jsnTeam.length - 1].channel.name){
-					setTimeout(followlistcomplete, 1000);
-				}
-				followlist.splice(0, 1);
-				setTimeout(throttledfollow, 200);
-			})
-			.fail(function(a, b, c){
-				debug.log("follow failed for:"+tchan);
-				if(a.responseJSON && a.responseJSON.message){
-					debug.log("follow for "+tchan+" failed:"+a.responseJSON.message);
-					$("#followteambtn").text(a.responseJSON.message).css({"background-color":"red"});
-				}else{
-					debug.log("follow failed for "+tchan+" - "+c);
-					$("#followteambtn").text("Follow Failed For "+tchan+" - "+b).css({"background-color":"red"});
-				}
-				followlist.splice(0, 1);
-				setTimeout(throttledfollow, 5000);
-			});
-		}
-	}
-
-	function followlistcomplete(){
-		$("#followteambtn").delay(3000).text("Follow Team Complete");
-		debug.log("########## Follow Team Function Complete ##########");
-	}
+    var followListComplete = function() {
+        $("#followTeamBtn").delay(3000).text("Follow Team Complete");
+        debug.log("########## Follow Team Function Complete ##########");
+    }
 }
 },{"../debug":1,"../vars":39,"./team-load-team":31}],30:[function(require,module,exports){
 var debug = require('../debug'),
-vars = require("../vars");
+    vars = require("../vars");
 
-module.exports = function (chan) {
-	debug.log("Loading channel "+chan);
-	vars.teamCurrentChannel = chan;
+module.exports = function(chan) {
+    debug.log("Loading channel "+chan);
+    vars.teamCurrentChannel = chan;
 
-	$("div.member.js-playing").removeClass("js-playing");
-	$("#channel_"+chan).addClass("js-playing");
+    $("div.member.js-playing").removeClass("js-playing");
+    $("#channel_"+chan).addClass("js-playing");
 
-	//load video
-	$("#standard_holder").empty();
-	var player = $("<object>", {"type":"application/x-shockwave-flash", "id":chan+"_video_embed", "style":"width:100%; height:100%;", "wmode":"transparent"});
-	player.attr("data", "http://www.twitch.tv/widgets/live_embed_player.swf?channel="+chan);
-	var p1 = $("<param>", {"name":"allowFullScreen", "value":"true"});
-	var p2 = $("<param>", {"name":"allowScriptAccess", "value":"always"});
-	var p3 = $("<param>", {"name":"flashvars", "value":"channel="+chan+"&auto_play=true&start_volume=100"});
-	player.append(p1, p2, p3);
-	$("#standard_holder").append(player);
+    //load video
+    $("#standard_holder").empty();
+    var p1 = $("<param>", {"name":"allowFullScreen", "value":"true"}),
+        p2 = $("<param>", {"name":"allowScriptAccess", "value":"always"}),
+        p3 = $("<param>", {"name":"flashvars", "value":"channel="+chan+"&auto_play=true&start_volume=100"}),
+        player = $("<object>", {"type":"application/x-shockwave-flash", "id":chan+"_video_embed", "class":"ttvFlashPlayer", "wmode":"transparent"});
+    player.attr("data", "http://www.twitch.tv/widgets/live_embed_player.swf?channel="+chan);
+    player.append(p1, p2, p3);
+    $("#standard_holder").append(player);
 
-	//load chat
-	$("#team_chat").empty();
-	var a = $("<iframe>", {"id":"chatframe", "frameborder":"0", "scrolling":"no", "height":"100%", "width":"100%", "src":"http://twitch.tv/chat/embed?channel="+chan});
-	$("#team_chat").append(a);
+    //load chat
+    $("#team_chat").empty();
+    var chatEmbed = $("<iframe>", {"id":"chatEmbed", "src":"http://twitch.tv/chat/embed?channel="+chan, "frameborder":"0"});
+    $("#team_chat").append(chatEmbed);
 
-	//check if chan has subs
-	Twitch.api.get("/api/channels/"+chan+"/product")
-	.done(function(d){
-		debug.log(chan+" has subs:"+d.price);
-		addstoof(d.price);
-		checkissubbed();
-	})
-	.fail(function(d){
-		debug.log(chan+" subs check failed");
-		if(d.status == 404){
-			debug.log(chan+" not in sub program");
-		}
-		addstoof(0);
-	});
+    //check if chan has subs
+    Twitch.api.get("/api/channels/"+chan+"/product")
+    .done(function(d) {
+        debug.log(chan+" has subs:"+d.price);
+        addStoof(d.price);
+        checkIsSubbed();
+    })
+    .fail(function(d) {
+        debug.log(chan+" subs check failed");
+        
+        if(d.status == 404) {
+            debug.log(chan+" not in sub program");
+        }
+        
+        addStoof(0);
+    });
 
-	//check to see if user subbed to chan
-	function checkissubbed(){
-		//debug.log("checking if subbed to chanel");
-		var uname = cookie.get("login");
+    var uName = cookie.get("login");
 
-		if(typeof uname !== "undefined"){
-			Twitch.api.get("/api/users/"+uname+"/tickets?channel="+chan)
-			.done(function(d){
-				if((d.tickets).length != 0){
-					debug.log(uname+" is subbed to "+chan+" len:"+(d.tickets).length);
-					$("#subscribe_action").hide();
-					//$("#is-subscribed").show();
-				
-				}else{
-					debug.log(uname+" is not subbed to "+chan);
-				}
-			})
-			.fail(function(d){
-				debug.log("check if "+uname+" is subbed to "+chan+" failed");
-			});
-		}else{
-			//debug.log("user not logged in for is subbed check");
-		}
-	}
+    var checkIsSubbed = function() {
+        //debug.log("checking if subbed to chanel");
 
-	//update all the channel info below the player (stats, description, title, share menu, follow/sub buttons, etc)
-	function addstoof(val){
-		var jsnTeam = vars.jsnTeam;
-		for(var i=0; i<jsnTeam.length; i++){
-			if(jsnTeam[i].channel.name == chan){
+        if(typeof uName !== "undefined") {
 
-				$("#channel_url").val("http://www.twitch.tv/"+chan);
-				$("#live_embed").val('<object type="application/x-shockwave-flash" height="378" width="620" id="live_embed_player_flash" data="http://www.twitch.tv/widgets/live_embed_player.swf?channel='+chan+'" bgcolor="#000000"><param name="allowFullScreen" value="true" /><param name="allowScriptAccess" value="always" /><param name="allowNetworking" value="all" /><param name="movie" value="http://www.twitch.tv/widgets/live_embed_player.swf" /><param name="flashvars" value="hostname=www.twitch.tv&channel='+chan+'&auto_play=true&start_volume=25" /></object>');
+            Twitch.api.get("/api/users/"+uName+"/tickets?channel="+chan)
+            .done(function(d) {
+            
+                if((d.tickets).length != 0) {
+                    debug.log(uName+" is subbed to "+chan+" len:"+(d.tickets).length);
+                    $("#subscribe_action").hide();
+                } else {
+                    debug.log(uName+" is not subbed to "+chan);
+                }
 
-				$("#facebook_like_button").empty();
-				var fi = $("<iframe>", {"id":"facebook_like_iframe", "frameborder":"0", "allowtransparency":"true", "src":"http://www.facebook.com/plugins/like.php?href=http://www.twitch.tv/"+chan+"&layout=button_count&show-faces=false&share=false&action=like&width=85&height=21&colorscheme=light", "style":"border:none; overflow:hidden; width:85px; height:21px; position:relative;"});
-				$("#facebook_like_button").append(fi);
+            })
+            .fail(function(d) {
+                debug.log("check if "+uName+" is subbed to "+chan+" failed");
+            });
 
-				$("#twitter_share_button").empty();
-				var ta = $("<a>", {"class":"twitter-share-button", "href":"https://twitter.com/share", "data-url":"http://www.twitch.tv/"+chan, "data-text":jsnTeam[i].channel.display_name+" is playing "+jsnTeam[i].channel.meta_game+" at:"});
-				ta.text("Tweet");
-				var ts = $("<script>", {"src":"http://platform.twitter.com/widgets.js", "type":"text/javascript"});
-				$("#twitter_share_button").append(ta, ts);
+        } else {
+            //debug.log("user not logged in for isSubbed check");
+        }
+    }
 
-				var s1 = $("<strong>");
-				var s1a = $("<a>", {"id":"live_channel_name", "href":"/"+chan});
-				s1a.text(jsnTeam[i].channel.display_name);
-				s1.append(s1a);
+    //update all the channel info below the player (stats, description, title, share menu, follow/sub buttons, etc)
+    var addStoof = function(val) {
+        var jsnTeam = vars.jsnTeam;
+        
+        for(var i=0; i<jsnTeam.length; i++) {
+        
+            if(jsnTeam[i].channel.name == chan) {
+                $("#channel_url").val("http://www.twitch.tv/"+chan);
+                $("#live_embed").val('<object type="application/x-shockwave-flash" height="378" width="620" id="live_embed_player_flash" data="http://www.twitch.tv/widgets/live_embed_player.swf?channel='+chan+'" bgcolor="#000000"><param name="allowFullScreen" value="true" /><param name="allowScriptAccess" value="always" /><param name="allowNetworking" value="all" /><param name="movie" value="http://www.twitch.tv/widgets/live_embed_player.swf" /><param name="flashvars" value="hostname=www.twitch.tv&channel='+chan+'&auto_play=true&start_volume=25" /></object>');
 
-				var s2 = $("<span>", {"id":"channel_viewer_count", "class":"stat", "style":"margin:0px 0px 0px -3px;"});
-				s2.text(jsnTeam[i].channel.current_viewers);
+                $("#facebook_like_button").empty();
+                var faceBookFrame = $("<iframe>", {"id":"facebook_like_iframe", "frameborder":"0", "allowtransparency":"true", "src":"http://www.facebook.com/plugins/like.php?href=http://www.twitch.tv/"+chan+"&layout=button_count&show-faces=false&share=false&action=like&width=85&height=21&colorscheme=light"});
+                $("#facebook_like_button").append(faceBookFrame);
 
-				var s3 = $("<span>", {"id":"views_count", "class":"stat", "style":"margin:0px 0px 0px 5px;"});
-				s3.text(jsnTeam[i].channel.total_views+" ");
+                $("#twitter_share_button").empty();
+                var tweetBtn = $("<a>", {"class":"twitter-share-button", "href":"https://twitter.com/share", "data-url":"http://www.twitch.tv/"+chan, "data-text":jsnTeam[i].channel.display_name+" is playing "+jsnTeam[i].channel.meta_game+" at:"}),
+                    tweetJS = $("<script>", {"src":"http://platform.twitter.com/widgets.js", "type":"text/javascript"});
+                tweetBtn.text("Tweet");
+                $("#twitter_share_button").append(tweetBtn, tweetJS);
 
-				var s4 = $("<span>", {"id":"followers_count", "class":"stat"});
-				s4.text(jsnTeam[i].channel.followers_count);
+                var chanLinkSpan = $("<strong>"),
+                    chanLink = $("<a>", {"id":"live_channel_name", "href":"/"+chan});
+                chanLink.text(jsnTeam[i].channel.display_name);
+                chanLinkSpan.append(chanLink);
 
-				var d = $("<div>", {"id":"description"});
-				d.html("<b>Channel Description:</b><br>"+jsnTeam[i].channel.description+"<br><br><b>Broadcast Title:</b><br>"+jsnTeam[i].channel.title);
+                var viewerCount = $("<span>", {"id":"channel_viewer_count", "class":"stat"});
+                viewerCount.text(jsnTeam[i].channel.current_viewers);
 
-				$("#stats_and_description").empty();
-				var ca	  = $("<div>", {"id":"channel_actions", "style":"position:absolute; top:15px; right:15px;"});
-				var fa = $("<a>", {"id":"followbtn", "data-ember-action":"135", "class":"js-follow follow button primary action"});
-				fa.text(" Follow ");
-				fa.click(function(e){
-					followcurrentchannel();
-				});
-				ca.append(fa);
+                var viewsCount = $("<span>", {"id":"views_count", "class":"stat"});
+                viewsCount.text(jsnTeam[i].channel.total_views+" ");
 
-				var sha   = $("<div>", {"id":"sharebtn", "class":"button action primary"});
-				sha.text("Share");
-				/* dunno why but this will not show the share menu
-				sha.click(function(e){
-					debug.log("share button click");
-					var o = $(e.target).offset();
-					var aleft = o.left + 1;
-					var atop = o.top + 42;
-					$("#share").css({"top":atop+"px", "left":aleft+"px"}).toggle("blind");
-					
-				});
-				*/
+                var followersCount = $("<span>", {"id":"followers_count", "class":"stat"});
+                followersCount.text(jsnTeam[i].channel.followers_count);
 
-				if(val != 0){
-					var caa   = $("<a>", {"id":"subscribe_action", "class":"action button js-sub-button primary subscribe-button", "href":"/"+chan+"/subscribe?ref=below_video_subscribe_button", "target":"_blank"});
-					var caas1 = $("<span>", {"class":"subscribe-text"});
-					caas1.text("Subscribe");
-					var caas2 = $("<span>", {"class":"subscribe-price"});
-					caas2.text(val);
-					caa.append(caas1, caas2);
-					//var isub = $("<span>", {"id":"is-subscribed", "class":"subscribed", "style":"display:none"});
-					//var isvg = $("<svg>", {"class":"svg-star", "height":"100%", "version":"1.1", "viewBox":"0 0 16 16", "width":"100%", "x":"0px", "y":"0px"});
-					//var ipth = $("<path>", {"clip-rule":"evenodd", "d":"M15,6l-4.041,2.694L13,14l-5-3.333L3,14l2.041-5.306L1,6h5.077L8,1l1.924,5H15z", "fill-rule":"evenodd"});
-					//isvg.append(ipth);
-					//isub.append(isvg);
-					ca.append(caa, sha);
-				}else{
-					ca.append(sha);
-				}
+                var descHolder = $("<div>", {"id":"description"});
+                descHolder.html("<b>Channel Description:</b><br>"+jsnTeam[i].channel.description+"<br><br><b>Broadcast Title:</b><br>"+jsnTeam[i].channel.title);
 
-				$("#stats_and_description").append(s1, " playing ", jsnTeam[i].channel.meta_game, "<br>", s2, s3, s4, ca, d);
-				$(window).resize();
-				break;
-			}
-		}
-		//check if user is following chan
-		var uname = cookie.get("login");
-		if(typeof uname !== "undefined"){
-			Twitch.api.get("/kraken/users/"+uname+"/follows/channels/"+chan)
-			.done(function(d){
-				debug.log(uname+" is following "+chan);
-				$("#followbtn").hide();
-			})
-			.fail(function(d){
-				debug.log("is following checked failed");
-				if(d.status == 404){
-					debug.log(uname+" is not following "+chan);
-				}
-			});
-		}else{
-			//debug.log("user not logged in to check if following");
-		}
-	}
+                $("#stats_and_description").empty();
+                var chanActions = $("<div>", {"id":"channel_actions"}),
+                    followBtn = $("<a>", {"id":"followbtn", "data-ember-action":"135", "class":"js-follow follow button primary action"});
+                followBtn.text(" Follow ");
+                
+                followBtn.click(function(e) {
+                    followcurrentchannel();
+                });
+                
+                chanActions.append(followBtn);
 
-	function followcurrentchannel(){
-		var uname = cookie.get("login");
-		if(typeof uname !== "undefined"){
-			Twitch.api.put("/kraken/users/"+uname+"/follows/channels/"+chan)
-			.done(function(d){
-				debug.log(uname+" is now following "+chan);
-				$("#followbtn").hide();
-			})
-			.fail(function(d){
-				debug.log(uname+" follow "+chan+" failed");
-			});
-		}else{
-			alert("You need to log in first!");
-		}
-	}
+                var shareBtn   = $("<div>", {"id":"sharebtn", "class":"button action primary"});
+                shareBtn.text("Share");
+                
+                /* dunno why but this will not show the share menu
+                shareBtn.click(function(e) {
+                    debug.log("share button click");
+                    var o = $(e.target).offset();
+                    var aLeft = o.left + 1;
+                    var aTop = o.top + 42;
+                    $("#share").css({"top":aTop+"px", "left":aLeft+"px"}).toggle("blind");
+                    
+                });
+                */
+
+                if(val != 0) {
+                    var subBtn = $("<a>", {"id":"subscribe_action", "class":"action button js-sub-button primary subscribe-button", "href":"/"+chan+"/subscribe?ref=below_video_subscribe_button", "target":"_blank"}),
+                        subTxt = $("<span>", {"class":"subscribe-text"}),
+                        subPrice = $("<span>", {"class":"subscribe-price"});
+                    subTxt.text("Subscribe");
+                    subPrice.text(val);
+
+                    subBtn.append(subTxt, subPrice);
+                    chanActions.append(subBtn, shareBtn);
+                } else {
+                    chanActions.append(shareBtn);
+                }
+
+                $("#stats_and_description").append(chanLinkSpan, " playing ", jsnTeam[i].channel.meta_game, "<br>", viewerCount, viewsCount, followersCount, chanActions, descHolder);
+                $(window).resize();
+                break;
+            }
+        }
+        
+        //check if user is following chan
+        if(typeof uName !== "undefined") {
+        
+            Twitch.api.get("/kraken/users/"+uName+"/follows/channels/"+chan)
+            .done(function(d) {
+                debug.log(uName+" is following "+chan);
+                $("#followbtn").hide();
+            })
+            .fail(function(d) {
+                debug.log("is following checked failed");
+                
+                if(d.status == 404) {
+                    debug.log(uName+" is not following "+chan);
+                }
+
+            });
+            
+        } else {
+            //debug.log("user not logged in to check if following");
+        }
+    }
+
+    var followcurrentchannel = function() {
+        
+        if(typeof uName !== "undefined") {
+        
+            Twitch.api.put("/kraken/users/"+uName+"/follows/channels/"+chan)
+            .done(function(d){
+                debug.log(uName+" is now following "+chan);
+                $("#followbtn").hide();
+            })
+            .fail(function(d){
+                debug.log(uName+" follow "+chan+" failed");
+            });
+            
+        } else {
+            alert("You need to log in first!");
+        }
+    }
 }
 },{"../debug":1,"../vars":39}],31:[function(require,module,exports){
 var debug = require('../debug'),
-vars = require('../vars'),
-loadchannel = require('./team-load-channel');
+    vars = require('../vars'),
+    loadChannel = require('./team-load-channel');
 
-module.exports = function loadTeam(){
-	debug.log("Loading team data");
+var loadTeam = module.exports = function() {
+    debug.log("Loading team data");
 
-	var TheTeam = (window.location.pathname).replace("/team/", "");
-	Twitch.api.get("/api/team/"+TheTeam+"/all_channels.json")
-	.done(function(d){
-		//debug.log("team loaded successfully");
-		vars.jsnTeam = d.channels;
-		createbuttons();
-		setTimeout(loadTeam, 60000);
-		if(vars.teamFirstLoad == 0){
-			//need to update chan info and load chat on page load
-			loadchannel(vars.teamCurrentChannel);
-			vars.teamFirstLoad = 1;
-		}
-		
-	})
-	.fail(function(data){
-		debug.log("team load failed");
-		setTimeout(loadTeam, 10000);
-	});
+    var theTeam = (window.location.pathname).replace("/team/", "");
 
-	function createbuttons(){
-		//debug.log("creating buttons");
-		$("#team_member_list").empty();
-		vars.jsnTeam.forEach(function(a){
-			var cname	= a.channel.name;
-			var dname	= a.channel.display_name;
-			var image	= a.channel.image.size50; //600,300,150,70,50,28
-			var title	= a.channel.title;
-			var game	= a.channel.meta_game;
-			var status	= a.channel.status; //live or offline
-			var desc	= a.channel.description;
-			var followers	= a.channel.followers_count;
-			var views	= a.channel.total_views;
-			var viewers	= a.channel.current_viewers;
+    Twitch.api.get("/api/team/"+theTeam+"/all_channels.json")
+    .done(function(d) {
+        //debug.log("team loaded successfully");
+        vars.jsnTeam = d.channels;
+        createButtons();
+        setTimeout(loadTeam, 60000);
+        
+        if(vars.teamFirstLoad == 1) {
+            loadChannel(vars.teamCurrentChannel);
+            vars.teamFirstLoad = 0;
+        }
+    })
+    .fail(function(data) {
+        debug.log("team load failed");
+        setTimeout(loadTeam, 10000);
+    });
 
-			var d = $("<div>", {"id":"channel_"+cname, "class":"member", "style":"cursor:pointer", "title":dname+" is offline"});
-			d.click(function(e){
-				loadchannel(cname);	
-			});
-			if(status == "live"){
-				d.addClass("live");
+    var createButtons = function() {
+        //debug.log("creating buttons");
+        $("#team_member_list").empty();
 
-				var time = new Date().getTime();
-				var ttimgurl = "http://static-cdn.jtvnw.net/previews-ttv/live_user_"+cname.toLowerCase()+"-320x200.jpg?"+time;
-				d.attr("title", dname+" playing "+game+"<br><img src='"+ttimgurl+"' style='width:300px; height:188px;'></img>");
-				d.tooltip({
-					show:{
-						effect: "fold",
-						duration: 350,
-						delay: 500
-					},
-					hide:{
-						effect: "fold",
-						duration: 350,
-						delay: 500
-					},
-		
-					position:{
-						my:"left top",
-						at:"right top"
-						//collision: "flipfit"
-					},
-					content: function(){return $(this).attr("title");}
-				});
-			}
-			if(vars.teamCurrentChannel == cname){
-				d.addClass("js-playing");
-			}
+        vars.jsnTeam.forEach(function(a) {
+            var chanName = (a.channel.name).toLowerCase(),
+                dispName = a.channel.display_name,
+                chanImgUrl = a.channel.image.size50,
+                chanGame = a.channel.meta_game,
+                chanStatus = a.channel.status,
+                chanViewers = a.channel.current_viewers,
+                newDiv = $("<div>", {"id":"channel_"+chanName, "class":"member", "title":dispName+" is offline"});
+            
+            newDiv.click(function(e) {
+                loadChannel(chanName); 
+            });
+            
+            if(chanStatus == "live") {
+                newDiv.addClass("live");
 
-			var s = $("<span>", {"class":"channel_count small", "style":"margin:30px 5px 0px 0px;"});
-			s.text(viewers);
-			var si = $("<img>", {"src":"http://www-cdn.jtvnw.net/images/xarth/g/g16_live_viewers.png", "class":"viewers_icon", "style":"margin:30px 5px 0px 0px;"});
+                var ttTime = new Date().getTime(),
+                    ttImgUrl = "http://static-cdn.jtvnw.net/previews-ttv/live_user_"+chanName+"-320x200.jpg?"+ttTime;
+                newDiv.attr("title", dispName+" playing "+chanGame+"<br><img src='"+ttImgUrl+"' class='ttImg' />");
+                
+                newDiv.tooltip({
+                    show:{
+                        effect: "fold",
+                        duration: 350,
+                        delay: 500
+                    },
+                    hide:{
+                        effect: "fold",
+                        duration: 350,
+                        delay: 500
+                    },
+                    position:{
+                        my:"left top",
+                        at:"right top"
+                        //collision: "flipfit"
+                    },
+                    content: function() { return $(this).attr("title"); }
+                });
+            }
+            
+            if(vars.teamCurrentChannel == chanName) {
+                newDiv.addClass("js-playing");
+            }
 
-			var s2 = $("<div>", {"width":"100%"});
-			var i = $("<img>", {"src":image, "style":"margin:10px; border:1px solid black;"});
-			var s3 = $("<span>", {"class":"member_name", "style":"margin:0px 0px 0px 5px; line-height:72px; font-size:14px;"});
-			s3.text(dname);
-			s2.append(i, s3);
+            var countSpan = $("<span>", {"class":"channel_count small"}),
+                countImg = $("<img>", {"src":"http://www-cdn.jtvnw.net/images/xarth/g/g16_live_viewers.png", "class":"viewers_icon"}),
+                chanInfoHolder = $("<div>", {"class":"chanBtnChanInfoHolder"}),
+                chanImg = $("<img>", {"src":chanImgUrl, "class":"chanBtnChanImg"}),
+                chanNameSpan = $("<span>", {"class":"member_name"});
+            
+            countSpan.text(chanViewers);
+            chanNameSpan.text(dispName);
+            chanInfoHolder.append(chanImg, chanNameSpan);
 
-			if(status == "live"){
-				d.append(s, si, s2);
-			}else{
-				d.append(s2);
-			}
-			$("#team_member_list").append(d);
-		});
-	}
+            if(chanStatus == "live") {
+                newDiv.append(countSpan, countImg, chanInfoHolder);
+            } else {
+                newDiv.append(chanInfoHolder);
+            }
+            
+            $("#team_member_list").append(newDiv);
+        });
+    }
 }
 },{"../debug":1,"../vars":39,"./team-load-channel":30}],32:[function(require,module,exports){
 module.exports = {
@@ -4433,11 +4438,12 @@ module.exports = [
                     splitChat();
                 }
             }
-            //chat on team page is iframe embed, so reload parent if it's a team page
-            if(typeof parent.$("body").attr("data-page") !== "undefined" && parent.$("body").attr("data-page") == "teams#show"){
+
+            //chat on team page is iframe embed
+            if(typeof parent.$("body").attr("data-page") !== "undefined" && parent.$("body").attr("data-page") == "teams#show") {
                 parent.location.reload();
-                var bwin = window.open("", "BetterTTV Settings", "", true);
-                bwin.close();
+                var bttvSetWin = window.open("", "BetterTTV Settings", "", true);
+                bttvSetWin.close();
             }
         }
     },
@@ -4740,11 +4746,11 @@ module.exports = [
         name: 'Better Team Pages',
         description: 'Formats the team pages on Twitch to make them more functional',
         toggle: function(value) {
-            //chat on team page is iframe embed, so reload parent if it's a team page
-            if(typeof parent.$("body").attr("data-page") !== "undefined" && parent.$("body").attr("data-page") == "teams#show"){
+            //chat on team page is iframe embed
+            if(typeof parent.$("body").attr("data-page") !== "undefined" && parent.$("body").attr("data-page") == "teams#show") {
                 parent.location.reload();
-                var bwin = window.open("", "BetterTTV Settings", "", true);
-                bwin.close();
+                var bttvSetWin = window.open("", "BetterTTV Settings", "", true);
+                bttvSetWin.close();
             }
         }
     }

@@ -92,11 +92,12 @@ module.exports = [
                     splitChat();
                 }
             }
-            //chat on team page is iframe embed, so reload parent if it's a team page
-            if(typeof parent.$("body").attr("data-page") !== "undefined" && parent.$("body").attr("data-page") == "teams#show"){
+
+            //chat on team page is iframe embed
+            if(typeof parent.$("body").attr("data-page") !== "undefined" && parent.$("body").attr("data-page") == "teams#show") {
                 parent.location.reload();
-                var bwin = window.open("", "BetterTTV Settings", "", true);
-                bwin.close();
+                var bttvSetWin = window.open("", "BetterTTV Settings", "", true);
+                bttvSetWin.close();
             }
         }
     },
@@ -399,11 +400,11 @@ module.exports = [
         name: 'Better Team Pages',
         description: 'Formats the team pages on Twitch to make them more functional',
         toggle: function(value) {
-            //chat on team page is iframe embed, so reload parent if it's a team page
-            if(typeof parent.$("body").attr("data-page") !== "undefined" && parent.$("body").attr("data-page") == "teams#show"){
+            //chat on team page is iframe embed
+            if(typeof parent.$("body").attr("data-page") !== "undefined" && parent.$("body").attr("data-page") == "teams#show") {
                 parent.location.reload();
-                var bwin = window.open("", "BetterTTV Settings", "", true);
-                bwin.close();
+                var bttvSetWin = window.open("", "BetterTTV Settings", "", true);
+                bttvSetWin.close();
             }
         }
     }
