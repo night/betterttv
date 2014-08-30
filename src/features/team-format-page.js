@@ -5,7 +5,6 @@ var debug = require("../debug"),
 module.exports = function () {
 
     if(bttv.settings.get("formatTeamPage") !== true || $("body").attr("data-page") != "teams#show") return;
-    
     debug.log("Formatting team page");
 
     //add the CSS and JS
@@ -16,7 +15,6 @@ module.exports = function () {
     if(bttv.settings.get("darkenedMode") === true) {
         teamCSS = $("<link>", {"href":"//cdn.betterttv.net/style/stylesheets/betterttv-team-page-dark.css?"+bttv.info.versionString(), "id":"betterTwitchTeams", "rel":"stylesheet", "type":"text/css"});
     }
-    
     $('body').append(jquiCSS, jquiJS, teamCSS);
 
     //remove "Members" text below team logo
@@ -28,11 +26,9 @@ module.exports = function () {
     //add follow team button
     var followTeamButton = $("<a>", {"id":"followTeamBtn", "data-ember-action":"135", "class":"js-follow follow button primary action"});
     followTeamButton.text("Follow The Whole Team");
-    
     followTeamButton.click(function(e) {
         followTeam();
     });
-    
     $("#team_logo").after(followTeamButton);
 
     //add chat holder
@@ -41,7 +37,6 @@ module.exports = function () {
 
     //for w/e reason i can't open the share menu from the share btn onclick, i have to hook the doc click
     $(document).click(function(e) {
-    
         if(e.target.id =="sharebtn") {
             var o = $(e.target).offset(),
                 offsetLeft = o.left + 1,
@@ -55,7 +50,7 @@ module.exports = function () {
         var vpWidth = $(window).width(),
             vpHeight = $(window).height(),
             paddedWidth = vpWidth - 40;
-        
+
         if(paddedWidth < 985) {
             paddedWidth = 985;
         }
@@ -82,7 +77,6 @@ module.exports = function () {
 
     //clear all the twitch timers for updating member list, updating selected chan info, etc
     var maxId = setTimeout(function() {}, 0);
-    
     for(var i=0; i < maxId; i+=1) { 
             clearTimeout(i);
     }
@@ -95,7 +89,6 @@ module.exports = function () {
     setTimeout(loadTeam, 1000);
     
     var followTeam = function() {
-    
         if(typeof uName === "undefined") {
             alert("You need to log in first!");
         } else {
@@ -104,13 +97,11 @@ module.exports = function () {
             vars.jsnTeam.forEach(function(a) {
                 followList.push(a.channel.name);
             });
-            
             throttledFollow();
         }
     }
     
     var throttledFollow = function() {
-    
         if(followList.length > 0) {
             var targetChan = followList[0];
             $("#followTeamBtn").css({"background-color":"#B9A3E3"});
@@ -119,14 +110,12 @@ module.exports = function () {
             Twitch.api.put("/kraken/users/"+uName+"/follows/channels/"+targetChan)
             .done(function(d) {
                 debug.log("follow success for:"+targetChan);
-                
                 $("#followTeamBtn").css({"background-color":"green"});
                 $("#followTeamBtn").text("Followed "+targetChan);
                 
                 if(targetChan == vars.jsnTeam[vars.jsnTeam.length - 1].channel.name) {
                     setTimeout(followListComplete, 1000);
                 }
-                
                 followList.splice(0, 1);
                 setTimeout(throttledFollow, 200);
             })
@@ -140,7 +129,6 @@ module.exports = function () {
                     debug.log("follow failed for "+targetChan+" - "+c);
                     $("#followTeamBtn").text("Follow Failed For "+targetChan+" - "+b).css({"background-color":"red"});
                 }
-                
                 followList.splice(0, 1);
                 setTimeout(throttledFollow, 5000);
             });

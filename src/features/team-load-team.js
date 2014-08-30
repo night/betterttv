@@ -4,7 +4,6 @@ var debug = require('../debug'),
 
 var loadTeam = module.exports = function() {
     debug.log("Loading team data");
-
     var theTeam = (window.location.pathname).replace("/team/", "");
 
     Twitch.api.get("/api/team/"+theTeam+"/all_channels.json")

@@ -3749,7 +3749,6 @@ var debug = require("../debug"),
 module.exports = function () {
 
     if(bttv.settings.get("formatTeamPage") !== true || $("body").attr("data-page") != "teams#show") return;
-    
     debug.log("Formatting team page");
 
     //add the CSS and JS
@@ -3760,7 +3759,6 @@ module.exports = function () {
     if(bttv.settings.get("darkenedMode") === true) {
         teamCSS = $("<link>", {"href":"//cdn.betterttv.net/style/stylesheets/betterttv-team-page-dark.css?"+bttv.info.versionString(), "id":"betterTwitchTeams", "rel":"stylesheet", "type":"text/css"});
     }
-    
     $('body').append(jquiCSS, jquiJS, teamCSS);
 
     //remove "Members" text below team logo
@@ -3772,11 +3770,9 @@ module.exports = function () {
     //add follow team button
     var followTeamButton = $("<a>", {"id":"followTeamBtn", "data-ember-action":"135", "class":"js-follow follow button primary action"});
     followTeamButton.text("Follow The Whole Team");
-    
     followTeamButton.click(function(e) {
         followTeam();
     });
-    
     $("#team_logo").after(followTeamButton);
 
     //add chat holder
@@ -3785,7 +3781,6 @@ module.exports = function () {
 
     //for w/e reason i can't open the share menu from the share btn onclick, i have to hook the doc click
     $(document).click(function(e) {
-    
         if(e.target.id =="sharebtn") {
             var o = $(e.target).offset(),
                 offsetLeft = o.left + 1,
@@ -3799,7 +3794,7 @@ module.exports = function () {
         var vpWidth = $(window).width(),
             vpHeight = $(window).height(),
             paddedWidth = vpWidth - 40;
-        
+
         if(paddedWidth < 985) {
             paddedWidth = 985;
         }
@@ -3826,7 +3821,6 @@ module.exports = function () {
 
     //clear all the twitch timers for updating member list, updating selected chan info, etc
     var maxId = setTimeout(function() {}, 0);
-    
     for(var i=0; i < maxId; i+=1) { 
             clearTimeout(i);
     }
@@ -3839,7 +3833,6 @@ module.exports = function () {
     setTimeout(loadTeam, 1000);
     
     var followTeam = function() {
-    
         if(typeof uName === "undefined") {
             alert("You need to log in first!");
         } else {
@@ -3848,13 +3841,11 @@ module.exports = function () {
             vars.jsnTeam.forEach(function(a) {
                 followList.push(a.channel.name);
             });
-            
             throttledFollow();
         }
     }
     
     var throttledFollow = function() {
-    
         if(followList.length > 0) {
             var targetChan = followList[0];
             $("#followTeamBtn").css({"background-color":"#B9A3E3"});
@@ -3863,14 +3854,12 @@ module.exports = function () {
             Twitch.api.put("/kraken/users/"+uName+"/follows/channels/"+targetChan)
             .done(function(d) {
                 debug.log("follow success for:"+targetChan);
-                
                 $("#followTeamBtn").css({"background-color":"green"});
                 $("#followTeamBtn").text("Followed "+targetChan);
                 
                 if(targetChan == vars.jsnTeam[vars.jsnTeam.length - 1].channel.name) {
                     setTimeout(followListComplete, 1000);
                 }
-                
                 followList.splice(0, 1);
                 setTimeout(throttledFollow, 200);
             })
@@ -3884,7 +3873,6 @@ module.exports = function () {
                     debug.log("follow failed for "+targetChan+" - "+c);
                     $("#followTeamBtn").text("Follow Failed For "+targetChan+" - "+b).css({"background-color":"red"});
                 }
-                
                 followList.splice(0, 1);
                 setTimeout(throttledFollow, 5000);
             });
@@ -3935,7 +3923,6 @@ module.exports = function(chan) {
         if(d.status == 404) {
             debug.log(chan+" not in sub program");
         }
-        
         addStoof(0);
     });
 
@@ -3943,24 +3930,19 @@ module.exports = function(chan) {
 
     var checkIsSubbed = function() {
         //debug.log("checking if subbed to chanel");
-
         if(typeof uName !== "undefined") {
-
             Twitch.api.get("/api/users/"+uName+"/tickets?channel="+chan)
             .done(function(d) {
-            
                 if((d.tickets).length != 0) {
                     debug.log(uName+" is subbed to "+chan+" len:"+(d.tickets).length);
                     $("#subscribe_action").hide();
                 } else {
                     debug.log(uName+" is not subbed to "+chan);
                 }
-
             })
             .fail(function(d) {
                 debug.log("check if "+uName+" is subbed to "+chan+" failed");
             });
-
         } else {
             //debug.log("user not logged in for isSubbed check");
         }
@@ -3971,7 +3953,6 @@ module.exports = function(chan) {
         var jsnTeam = vars.jsnTeam;
         
         for(var i=0; i<jsnTeam.length; i++) {
-        
             if(jsnTeam[i].channel.name == chan) {
                 $("#channel_url").val("http://www.twitch.tv/"+chan);
                 $("#live_embed").val('<object type="application/x-shockwave-flash" height="378" width="620" id="live_embed_player_flash" data="http://www.twitch.tv/widgets/live_embed_player.swf?channel='+chan+'" bgcolor="#000000"><param name="allowFullScreen" value="true" /><param name="allowScriptAccess" value="always" /><param name="allowNetworking" value="all" /><param name="movie" value="http://www.twitch.tv/widgets/live_embed_player.swf" /><param name="flashvars" value="hostname=www.twitch.tv&channel='+chan+'&auto_play=true&start_volume=25" /></object>');
@@ -4011,12 +3992,10 @@ module.exports = function(chan) {
                 followBtn.click(function(e) {
                     followcurrentchannel();
                 });
-                
                 chanActions.append(followBtn);
 
                 var shareBtn   = $("<div>", {"id":"sharebtn", "class":"button action primary"});
                 shareBtn.text("Share");
-                
                 /* dunno why but this will not show the share menu
                 shareBtn.click(function(e) {
                     debug.log("share button click");
@@ -4032,9 +4011,10 @@ module.exports = function(chan) {
                     var subBtn = $("<a>", {"id":"subscribe_action", "class":"action button js-sub-button primary subscribe-button", "href":"/"+chan+"/subscribe?ref=below_video_subscribe_button", "target":"_blank"}),
                         subTxt = $("<span>", {"class":"subscribe-text"}),
                         subPrice = $("<span>", {"class":"subscribe-price"});
+                        
                     subTxt.text("Subscribe");
                     subPrice.text(val);
-
+                    
                     subBtn.append(subTxt, subPrice);
                     chanActions.append(subBtn, shareBtn);
                 } else {
@@ -4049,7 +4029,6 @@ module.exports = function(chan) {
         
         //check if user is following chan
         if(typeof uName !== "undefined") {
-        
             Twitch.api.get("/kraken/users/"+uName+"/follows/channels/"+chan)
             .done(function(d) {
                 debug.log(uName+" is following "+chan);
@@ -4061,18 +4040,14 @@ module.exports = function(chan) {
                 if(d.status == 404) {
                     debug.log(uName+" is not following "+chan);
                 }
-
             });
-            
         } else {
             //debug.log("user not logged in to check if following");
         }
     }
 
     var followcurrentchannel = function() {
-        
         if(typeof uName !== "undefined") {
-        
             Twitch.api.put("/kraken/users/"+uName+"/follows/channels/"+chan)
             .done(function(d){
                 debug.log(uName+" is now following "+chan);
@@ -4081,7 +4056,6 @@ module.exports = function(chan) {
             .fail(function(d){
                 debug.log(uName+" follow "+chan+" failed");
             });
-            
         } else {
             alert("You need to log in first!");
         }
@@ -4094,7 +4068,6 @@ var debug = require('../debug'),
 
 var loadTeam = module.exports = function() {
     debug.log("Loading team data");
-
     var theTeam = (window.location.pathname).replace("/team/", "");
 
     Twitch.api.get("/api/team/"+theTeam+"/all_channels.json")

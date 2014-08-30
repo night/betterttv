@@ -36,7 +36,6 @@ module.exports = function(chan) {
         if(d.status == 404) {
             debug.log(chan+" not in sub program");
         }
-        
         addStoof(0);
     });
 
@@ -44,24 +43,19 @@ module.exports = function(chan) {
 
     var checkIsSubbed = function() {
         //debug.log("checking if subbed to chanel");
-
         if(typeof uName !== "undefined") {
-
             Twitch.api.get("/api/users/"+uName+"/tickets?channel="+chan)
             .done(function(d) {
-            
                 if((d.tickets).length != 0) {
                     debug.log(uName+" is subbed to "+chan+" len:"+(d.tickets).length);
                     $("#subscribe_action").hide();
                 } else {
                     debug.log(uName+" is not subbed to "+chan);
                 }
-
             })
             .fail(function(d) {
                 debug.log("check if "+uName+" is subbed to "+chan+" failed");
             });
-
         } else {
             //debug.log("user not logged in for isSubbed check");
         }
@@ -72,7 +66,6 @@ module.exports = function(chan) {
         var jsnTeam = vars.jsnTeam;
         
         for(var i=0; i<jsnTeam.length; i++) {
-        
             if(jsnTeam[i].channel.name == chan) {
                 $("#channel_url").val("http://www.twitch.tv/"+chan);
                 $("#live_embed").val('<object type="application/x-shockwave-flash" height="378" width="620" id="live_embed_player_flash" data="http://www.twitch.tv/widgets/live_embed_player.swf?channel='+chan+'" bgcolor="#000000"><param name="allowFullScreen" value="true" /><param name="allowScriptAccess" value="always" /><param name="allowNetworking" value="all" /><param name="movie" value="http://www.twitch.tv/widgets/live_embed_player.swf" /><param name="flashvars" value="hostname=www.twitch.tv&channel='+chan+'&auto_play=true&start_volume=25" /></object>');
@@ -112,12 +105,10 @@ module.exports = function(chan) {
                 followBtn.click(function(e) {
                     followcurrentchannel();
                 });
-                
                 chanActions.append(followBtn);
 
                 var shareBtn   = $("<div>", {"id":"sharebtn", "class":"button action primary"});
                 shareBtn.text("Share");
-                
                 /* dunno why but this will not show the share menu
                 shareBtn.click(function(e) {
                     debug.log("share button click");
@@ -133,9 +124,10 @@ module.exports = function(chan) {
                     var subBtn = $("<a>", {"id":"subscribe_action", "class":"action button js-sub-button primary subscribe-button", "href":"/"+chan+"/subscribe?ref=below_video_subscribe_button", "target":"_blank"}),
                         subTxt = $("<span>", {"class":"subscribe-text"}),
                         subPrice = $("<span>", {"class":"subscribe-price"});
+                        
                     subTxt.text("Subscribe");
                     subPrice.text(val);
-
+                    
                     subBtn.append(subTxt, subPrice);
                     chanActions.append(subBtn, shareBtn);
                 } else {
@@ -150,7 +142,6 @@ module.exports = function(chan) {
         
         //check if user is following chan
         if(typeof uName !== "undefined") {
-        
             Twitch.api.get("/kraken/users/"+uName+"/follows/channels/"+chan)
             .done(function(d) {
                 debug.log(uName+" is following "+chan);
@@ -162,18 +153,14 @@ module.exports = function(chan) {
                 if(d.status == 404) {
                     debug.log(uName+" is not following "+chan);
                 }
-
             });
-            
         } else {
             //debug.log("user not logged in to check if following");
         }
     }
 
     var followcurrentchannel = function() {
-        
         if(typeof uName !== "undefined") {
-        
             Twitch.api.put("/kraken/users/"+uName+"/follows/channels/"+chan)
             .done(function(d){
                 debug.log(uName+" is now following "+chan);
@@ -182,7 +169,6 @@ module.exports = function(chan) {
             .fail(function(d){
                 debug.log(uName+" follow "+chan+" failed");
             });
-            
         } else {
             alert("You need to log in first!");
         }
