@@ -1297,7 +1297,7 @@ bttv.chat = {
             }
         },
         translate: function(element, sender, text) {
-            var language = window.location.host.split('.')[0].replace(/^(www|beta)$/,"en"),
+            var language = (window.cookie && window.cookie.get('language')) ? window.cookie.get('language') : 'en',
                 query = 'http://translate.google.com/translate_a/t?client=bttv&sl=auto&tl='+language+'&ie=UTF-8&oe=UTF-8&q='+text,
                 translate = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20json%20where%20url%3D\""+encodeURIComponent(query)+"\"&format=json&diagnostics=false&callback=?";
 
@@ -2274,11 +2274,11 @@ module.exports = function () {
 
         if(!vars.betaChatLoaded) {
             vars.betaChatLoaded = true;
-            $.getJSON("//chat.betterttv.net/login.php?onsite=true&user="+vars.userData.login+"&callback=?", function(d) {
-
+            $.getJSON("//chat.betterttv.net/login.php?onsite=true&verify=true&callback=?", function(d) {
                 if(d.status === true) {
                     debug.log("Logged into BTTV Chat");
                 } else {
+                    $.getJSON("//chat.betterttv.net/login.php?onsite=true&user="+vars.userData.login+"&callback=?");
                     debug.log("Not logged into BTTV Chat");
                 }
 
@@ -2293,7 +2293,6 @@ module.exports = function () {
                     chatJSInject.setAttribute("type", "text/javascript");
                     $("body").append(chatJSInject);
                 }, 5000);
-
             });
 
             var chatCSSInject = document.createElement("link");

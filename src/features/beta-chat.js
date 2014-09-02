@@ -10,11 +10,11 @@ module.exports = function () {
 
         if(!vars.betaChatLoaded) {
             vars.betaChatLoaded = true;
-            $.getJSON("//chat.betterttv.net/login.php?onsite=true&user="+vars.userData.login+"&callback=?", function(d) {
-
+            $.getJSON("//chat.betterttv.net/login.php?onsite=true&verify=true&callback=?", function(d) {
                 if(d.status === true) {
                     debug.log("Logged into BTTV Chat");
                 } else {
+                    $.getJSON("//chat.betterttv.net/login.php?onsite=true&user="+vars.userData.login+"&callback=?");
                     debug.log("Not logged into BTTV Chat");
                 }
 
@@ -29,7 +29,6 @@ module.exports = function () {
                     chatJSInject.setAttribute("type", "text/javascript");
                     $("body").append(chatJSInject);
                 }, 5000);
-
             });
 
             var chatCSSInject = document.createElement("link");
