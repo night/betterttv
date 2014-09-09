@@ -209,10 +209,6 @@ body {
 	border-top: 1px solid rgba(0, 0, 0, 0.65)
 }
 
-.ember-chat .chat-interface {
-	height: 134px !important;
-}
-
 .channel-main, .title_over, #channel .player-column #broadcast-meta .info .title .over {
 	background: #000;
 }

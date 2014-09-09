@@ -1056,6 +1056,10 @@ body#chat #speak {
     margin-left: 8px;
 }
 
+.ember-chat .chat-interface {
+    height: 134px !important;
+}
+
 .ember-chat .chat-header {
     right: 0px;
     left: 0px;
