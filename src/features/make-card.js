@@ -50,7 +50,7 @@ module.exports = function(user, $event) {
         $modCard.find('.mod-card-ignore .svg-unignore').show();
     }
     $modCard.find('.mod-card-ignore').click(function() {
-        if ($modCard.find('.mod-card-ignore .svg-unignore').is(':visible')) {
+        if($modCard.find('.mod-card-ignore .svg-unignore').css('display') !== 'none') {
             bttv.chat.helpers.sendMessage('/unignore '+user.name);
             $modCard.find('.mod-card-ignore .svg-ignore').show();
             $modCard.find('.mod-card-ignore .svg-unignore').hide();
@@ -66,7 +66,7 @@ module.exports = function(user, $event) {
         $modCard.find('.mod-card-mod .svg-remove-mod').show();
     }
     $modCard.find('.mod-card-mod').click(function() {
-        if ($modCard.find('.mod-card-mod .svg-remove-mod').is(':visible')) {
+        if($modCard.find('.mod-card-ignore .svg-remove-mod').css('display') !== 'none') {
             bttv.chat.helpers.sendMessage('/unmod '+user.name);
             $modCard.find('.mod-card-mod .svg-add-mod').show();
             $modCard.find('.mod-card-mod .svg-remove-mod').hide();
