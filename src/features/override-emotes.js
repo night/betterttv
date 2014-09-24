@@ -105,8 +105,11 @@ module.exports = function () {
                     a.hidden = true;
                 }
                 if(b.restriction) {
-                    if(b.restriction.channels && b.restriction.channels.indexOf(BetterTTV.getChannel()) === -1) return;
-                    if(b.restriction.games && b.restriction.games.indexOf(App.Channel.findOne(BetterTTV.getChannel()).get('game')) === -1) return;
+                    if(b.restriction.channels && b.restriction.channels.indexOf(bttv.getChannel()) === -1) return;
+                    if(b.restriction.games && b.restriction.games.indexOf(App.Channel.findOne(bttv.getChannel()).get('game')) === -1) return;
+                }
+                if(b.channel === "Night" && user && userEmoteSets.indexOf('night') !== -1) {
+                    a.hidden = false;
                 }
                 a.images.forEach(function (c) {
                     var id = getId();
