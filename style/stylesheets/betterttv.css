@@ -790,6 +790,8 @@ input, textarea, select {
     word-break: break-word;
     padding-top: 5px;
     margin-top: inherit;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 #chat_line_list li .nick, .ember-chat .chat-messages .from {
@@ -1047,6 +1049,10 @@ body#chat #speak {
     background-repeat: no-repeat;
 }
 
+.ember-chat .chat-messages .tse-scroll-content {
+    padding: 0px;
+}
+
 .ember-chat .chat-buttons-container .chat-option-buttons button {
     height: 32px !important;
     width: 38px !important;
@@ -1078,6 +1084,16 @@ body#chat #speak {
 
 .ember-chat .chat-menu .chat-top-header p {
     line-height: 40px;
+}
+
+.ember-chat .chat-messages .chat-lines {
+    display: none;
+}
+
+.ember-chat .chat-messages .chat-line.admin {
+    padding: 0px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .ember-chat .chatters-view {
