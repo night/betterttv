@@ -1002,6 +1002,10 @@ body {
 	bottom: auto;
 }
 
+.ember-chat .chat-interface .textarea-contain {
+	width: auto;
+}
+
 .ember-chat .chat-interface .chat-buttons-container .chat-option-buttons button:first-child {
 	margin-right: 3px;
 }
