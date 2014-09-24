@@ -162,6 +162,16 @@ input.text:focus,select:focus,textarea:focus {
     display: inline !important;
 }
 
+.ember-chat .badges {
+    display: inline-block;
+    padding-right: 5px;
+}
+
+.ember-chat .badges .badge {
+    float: none !important;
+    margin: 0px;
+}
+
 .line .oldbot, .ember-chat .badges .oldbot {
     background-color: #666666;
 }
@@ -702,6 +712,10 @@ input.text:focus,select:focus,textarea:focus {
     position: auto;
 }
 
+.chat-container, .ember-chat-container {
+    background: none;
+}
+
 #site_header .normal_button, #site_header .large_normal_button, #site_header .dropdown, #site_header .dropdown_static, #site_header .dropdown_glyph {
     color: black;
 }
@@ -747,6 +761,19 @@ input, textarea, select {
 
 .fromtwitchnotify {
     opacity: 0.5;
+}
+
+.ember-chat .chat-messages {
+    left: 0px;
+    right: 0px;
+}
+
+.ember-chat .mod-icons, .ember-chat .chat-messages .timestamp {
+    margin-right: 0px;
+}
+
+.ember-chat {
+    margin: 0px;
 }
 
 #chat_line_list .line p .chat_line, .ember-chat .chat-messages .chat-line {
@@ -1050,14 +1077,12 @@ body#chat #speak {
 .ember-chat .chat-interface {
     left: 0px;
     right: 0px;
+    padding: 0px;
+    height: 134px !important;
 }
 
 .ember-chat .chat-interface .chat-buttons-container .chat-option-buttons {
     margin-left: 8px;
-}
-
-.ember-chat .chat-interface {
-    height: 134px !important;
 }
 
 .ember-chat .chat-header {
@@ -1066,6 +1091,15 @@ body#chat #speak {
     width: 100%;
     line-height: 40px;
     height: 40px;
+    padding: 0px;
+}
+
+.ember-chat .chat-header .button.left {
+    left: 10px;
+}
+
+.ember-chat .chat-header .button.right {
+    right: 10px;
 }
 
 .ember-chat .chat-menu-button-container {
