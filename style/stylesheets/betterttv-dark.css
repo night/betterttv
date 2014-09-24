@@ -710,10 +710,6 @@ body {
     color: #fff !important;
 }
 
-.js-chat-scroll {
-    border-top: 1px solid rgba(0, 0, 0, 0.65);
-}
-
 #chat_line_list .highlight, .chat-messages .chat-line.highlight {
     color: #fff !important;
     background-color: rgba(255, 0, 0, 0.5) !important;
@@ -1001,10 +997,6 @@ body {
 }
 .ember-chat .chat-interface .textarea-contain svg.svg-gear:hover path {
     fill: #777;
-}
-
-.chat-container .chat-room .loading-mask {
-    background: rgba(20,20,20,0.5);
 }
 
 .ember-chat .chat-interface .chat-buttons-container {

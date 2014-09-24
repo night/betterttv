@@ -2304,7 +2304,7 @@ module.exports = function () {
         }
 
         if(!bttv.getChannel()) return;
-        $('body').append("<style>.ember-chat .chat-interface .textarea-contain { bottom: 70px !important; } .ember-chat .chat-interface .chat-buttons-container { top: 75px !important; } .ember-chat .chat-interface { height: 140px; } .ember-chat .chat-messages { bottom: 134px; } .ember-chat .chat-settings { bottom: 68px; } .ember-chat .emoticon-selector { bottom: 135px !important; }</style>");
+        $('body').append("<style>.ember-chat .chat-interface { height: 140px !important; } .ember-chat .chat-messages { bottom: 140px; } .ember-chat .chat-settings { bottom: 80px; } .ember-chat .emoticon-selector { bottom: 142px !important; }</style>");
     }
 }
 },{"../debug":1,"../vars":36}],5:[function(require,module,exports){
@@ -4296,7 +4296,7 @@ var buf = [];
 var jade_mixins = {};
 var jade_interp;
 ;var locals_for_with = (locals || {});(function ($, window, bttv) {
-buf.push("<div class=\"chat-menu-header\">BetterTTV</div><div class=\"chat-menu-content\">");
+buf.push("<div class=\"list-header\">BetterTTV</div><div class=\"chat-menu-content\">");
 if ( $("body[data-page=\"ember#chat\"]").length)
 {
 buf.push("<p><a href=\"#\" class=\"g18_gear-00000080 blackChatLink\">Black Chat (Chroma Key)</a></p>");

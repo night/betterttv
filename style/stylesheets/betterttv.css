@@ -69,7 +69,12 @@ a {
 
 .ember-chat .chat-messages {
     top: 0px;
-    bottom: 134px;
+    bottom: 115px;
+    margin-left: 1px;
+}
+
+.loading-mask {
+    background: none;
 }
 
 /* New Channel Page */
@@ -164,12 +169,15 @@ input.text:focus,select:focus,textarea:focus {
 
 .ember-chat .badges {
     display: inline-block;
-    margin-right: 5px;
 }
 
 .ember-chat .badges .badge {
     float: none !important;
     margin: 0px;
+}
+
+.ember-chat .badges .badge:last-child {
+    margin-right: 5px;
 }
 
 .line .oldbot, .ember-chat .badges .oldbot {
@@ -1072,6 +1080,17 @@ body#chat #speak {
     line-height: 40px;
 }
 
+.ember-chat .chatters-view {
+    left: 0px;
+    right: 0px;
+    padding: 0px;
+    background: none;
+}
+
+.ember-chat .ember-list-item-view {
+    left: 15px;
+}
+
 .ember-chat .chat-settings {
     padding: 0px;
 }
@@ -1080,7 +1099,7 @@ body#chat #speak {
     left: 0px;
     right: 0px;
     padding: 0px;
-    height: 134px !important;
+    height: 115px !important;
 }
 
 .ember-chat .chat-interface .chat-buttons-container .chat-option-buttons {
