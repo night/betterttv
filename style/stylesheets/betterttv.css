@@ -710,6 +710,8 @@ input.text:focus,select:focus,textarea:focus {
     display: inline;
     top: 0px;
     position: auto;
+    color: #fff !important;
+    margin-right: 0px;
 }
 
 .chat-container, .ember-chat-container {
