@@ -1084,7 +1084,7 @@ body#chat #speak {
     left: 0px;
     right: 0px;
     padding: 0px;
-    background: none;
+    border: none;
 }
 
 .ember-chat .ember-list-item-view {

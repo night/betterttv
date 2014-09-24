@@ -1058,6 +1058,10 @@ body {
     color: white;
 }
 
+.ember-chat .chatters-view {
+    background: rgb(30,30,30);
+}
+
 /*~~~~~~Ember Dark Settings Menu ~~~~~~~~~*/
 .ember-chat .chat-menu .chat-menu-header {
     color:  rgb(200,200,200);
