@@ -718,10 +718,6 @@ input.text:focus,select:focus,textarea:focus {
     background: none;
 }
 
-.ember-chat .chat-interface .textarea-contain {
-    width: auto;
-}
-
 #site_header .normal_button, #site_header .large_normal_button, #site_header .dropdown, #site_header .dropdown_static, #site_header .dropdown_glyph {
     color: black;
 }
@@ -1010,6 +1006,7 @@ body#chat #speak {
 
 /* Group Chat changed textarea */
 .ember-chat .chat-interface .textarea-contain {
+    width: auto;
     top: 10px;
     margin-right: 10px;
     margin-left: 10px;
