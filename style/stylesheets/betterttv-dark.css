@@ -452,6 +452,12 @@ body {
     margin-left: 0px;
 }
 
+.chat-buttons-container #emote-menu-button {
+    width: 38px;
+    height: 32px;
+    margin: 0px;
+}
+
 /* Share button popup background */
 .stats-and-actions .channel-actions .share {
     background-color: rgb(30,30,30);
