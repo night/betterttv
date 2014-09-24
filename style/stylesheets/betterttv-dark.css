@@ -995,12 +995,6 @@ body {
 	white-space: nowrap;
 }
 
-.ember-chat .chat-interface .textarea-contain {
-	top: 10px;
-	left: 10px;
-	right: 10px;
-}
-
 .ember-chat .chat-interface .chat-buttons-container {
 	top: 85px;
 	left: 10px;
