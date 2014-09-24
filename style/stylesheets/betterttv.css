@@ -1136,11 +1136,6 @@ body#chat #speak {
     margin: 0;
 }
 
-.ember-chat .top-dropdown {
-    margin: 0px -20px;
-    margin-top: -10px;
-}
-
 .ember-chat .top-dropdown .input-contain {
     left: 10px;
     right: 10px;

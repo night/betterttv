@@ -1474,7 +1474,7 @@ bttv.chat = {
                 messageHighlighted,
                 data.style === 'action' ? true : false,
                 data.style === 'admin' ? true : false,
-                vars.userData.isLoggedIn ? (bttv.chat.helpers.isModerator(vars.userData.login) && (!bttv.chat.helpers.isModerator(data.sender) || vars.userData.login === channel)) : false,
+                vars.userData.isLoggedIn ? (bttv.chat.helpers.isModerator(vars.userData.login) && (!bttv.chat.helpers.isModerator(data.sender) || (vars.userData.login === channel && vars.userData.login !== data.sender))) : false,
                 {
                     message: data.message,
                     time: data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
