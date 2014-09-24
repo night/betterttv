@@ -46,6 +46,10 @@
 	background-color: #2A4687 !important;
 }
 
+.ember-chat .chat-menu .chat-rooms .room:hover {
+	background-color: #2A4687;
+}
+
 .line .staff, .line .oldstaff, .ember-chat .badges .staff, .ember-chat .badges .oldstaff {
     background-color: #06C;
 }
