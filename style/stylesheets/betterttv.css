@@ -1010,10 +1010,9 @@ body#chat #speak {
 }
 
 .ember-chat .chat-interface .chat-buttons-container {
-    top: 85px;
-    left: 10px;
-    right: 10px;
-    bottom: auto;
+    width: auto;
+    margin: 0px 10px;
+    padding-top: 10px;
 }
 
 .ember-chat .chat-interface .chat-buttons-container .chat-option-buttons button:first-child {
