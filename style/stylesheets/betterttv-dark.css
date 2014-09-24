@@ -995,6 +995,18 @@ body {
     white-space: nowrap;
 }
 
+/* make emote icon light */
+.ember-chat .chat-interface .textarea-contain svg.svg-gear path {
+    fill: #888;
+}
+.ember-chat .chat-interface .textarea-contain svg.svg-gear:hover path {
+    fill: #777;
+}
+
+.chat-container .chat-room .loading-mask {
+    background: rgba(20,20,20,0.5);
+}
+
 .ember-chat .chat-interface .chat-buttons-container {
     top: 85px;
     left: 10px;
