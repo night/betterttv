@@ -387,7 +387,7 @@ body {
 }
 
 #channel .channel-actions .button,
-.chat-option-buttons .button,
+.chat-buttons-container .button,
 .profile-info .buttons .button,
 #channel_actions .button {
 	margin: 0px;
@@ -429,11 +429,6 @@ body {
 .profile-info .buttons .button.glyph-only.drop {
 	padding-right: 0px;
     width: 38px;
-}
-
-.ember-chat .chat-interface .chat-buttons-container .chat-option-buttons .button:first-child {
-	padding: 0px 10px;
-	margin-left: 1px;
 }
 
 .ember-chat .chat-interface .chat-buttons-container .chat-option-buttons {
