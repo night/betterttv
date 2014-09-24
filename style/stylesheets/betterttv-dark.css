@@ -431,6 +431,11 @@ body {
     width: 38px;
 }
 
+.ember-chat .chat-interface .chat-buttons-container .button:first-child {
+	padding: 0px 10px;
+	margin-left: 1px;
+}
+
 .ember-chat .chat-interface .chat-buttons-container .chat-option-buttons {
     margin-left: 0px;
 }
