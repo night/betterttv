@@ -718,6 +718,10 @@ input.text:focus,select:focus,textarea:focus {
     background: none;
 }
 
+.ember-chat .chat-interface .textarea-contain {
+    width: auto;
+}
+
 #site_header .normal_button, #site_header .large_normal_button, #site_header .dropdown, #site_header .dropdown_static, #site_header .dropdown_glyph {
     color: black;
 }
@@ -1175,20 +1179,20 @@ div.part.description a {
     text-decoration: underline;
 }
 .app-main .isLoggedIn .nav_section div#you {
-	position: relative;
-	min-height: 34px;
+    position: relative;
+    min-height: 34px;
 }
 .app-main .isLoggedIn .nav_section div#you span.username {
-	background-color: #1F1F1F;
-	max-width: 120px;
-	position: absolute;
-	z-index: 9999;
-	overflow: hidden;
-	white-space: nowrap;
+    background-color: #1F1F1F;
+    max-width: 120px;
+    position: absolute;
+    z-index: 9999;
+    overflow: hidden;
+    white-space: nowrap;
 }
 .app-main .isLoggedIn .nav_section div#you span.username:hover {
-	max-width: 100%;
-	padding-right: 5px;
+    max-width: 100%;
+    padding-right: 5px;
 }
 
 /* realign login/out button */
