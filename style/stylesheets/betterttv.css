@@ -722,10 +722,6 @@ input.text:focus,select:focus,textarea:focus {
     margin-right: 0px;
 }
 
-.chat-container, .ember-chat-container {
-    background: none;
-}
-
 #site_header .normal_button, #site_header .large_normal_button, #site_header .dropdown, #site_header .dropdown_static, #site_header .dropdown_glyph {
     color: black;
 }
@@ -1246,4 +1242,8 @@ div.part.description a {
 #twitchcast_button:hover {
     background: url(../icons/chromecast.png) no-repeat -24px 0px;
     background-size: 48px 18px;
+}
+
+.dash-chat-column {
+	background: rgba(0,0,0,0.05);
 }
