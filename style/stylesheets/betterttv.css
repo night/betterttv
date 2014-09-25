@@ -70,7 +70,6 @@ a {
 .ember-chat .chat-messages {
     top: 0px;
     bottom: 115px;
-    margin-left: 1px;
 }
 
 .loading-mask {
