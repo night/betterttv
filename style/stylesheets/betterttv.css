@@ -1253,5 +1253,5 @@ body.channel_new.columns.ember-application {
 }
 
 .ember-view.ember-chat.roomMode {
-	background: #f2f2f2;
+	background: #f2f2f2 !important;
 }
