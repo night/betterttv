@@ -1247,3 +1247,7 @@ div.part.description a {
 .dash-chat-column {
 	background: rgba(0,0,0,0.05);
 }
+
+body.channel_new.columns.ember-application {
+	background: rgba(0,0,0,0.05);
+}
