@@ -14,10 +14,6 @@ body.channel_new {
     background: #bdbcbc;
 }
 
-.member a {
-    color: black;
-}
-
 .member.playing {
     background-color: #374a9b;
     border-color: #000000;
@@ -56,10 +52,6 @@ ul.tabs li.selected a {
 #header_banner img {
     width: 640px !important;
     height: 125px !important;
-}
-
-a {
-    color: black;
 }
 
 .dropmenu.menu-like p.dropmenu_action .left, .menu-like.ui-menu p.dropmenu_action .left, .menu-like.ui-multiselect-menu p.dropmenu_action .left, .dropmenu.menu-like .compl_actn .left, .menu-like.ui-menu .compl_actn .left, .menu-like.ui-multiselect-menu .compl_actn .left, .ui-menu p.dropmenu_action .left, .ui-menu.ui-multiselect-menu p.dropmenu_action .left, .ui-menu .compl_actn .left, .ui-menu.ui-multiselect-menu .compl_actn .left {
@@ -721,10 +713,6 @@ input.text:focus,select:focus,textarea:focus {
     margin-right: 0px;
 }
 
-#site_header .normal_button, #site_header .large_normal_button, #site_header .dropdown, #site_header .dropdown_static, #site_header .dropdown_glyph {
-    color: black;
-}
-
 input, textarea, select {
     border-radius: 2px;
 }
@@ -1062,10 +1050,6 @@ body#chat #speak {
     display: none;
 }
 
-.chat-menu.dropmenu a {
-    color: black;
-}
-
 .normal_button.active, .normal_button {
     background: none;
     box-shadow: none;
@@ -1183,10 +1167,6 @@ body#chat #speak {
     width: 100%;
 }
 
-div#header_actions span, div#header_actions a{
-    color: black;
-}
-
 .archives-contain .videos { 
     padding:0;
 }
@@ -1195,12 +1175,6 @@ div#header_actions span, div#header_actions a{
 }
 span.mod-controls {
     display: inline-block;
-}
-#main_col .stats-and-actions #is-subscribed, .ember-chat .chat-room-list .room p.room-title, .button.unfollow, .button.unfollow:hover {
-    color: #000 !important;
-}
-ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .dropmenu.menu-like .dropmenu_action  {
-    color: #000;
 }
 div.part.description a {
     text-decoration: underline;
