@@ -2,10 +2,10 @@ var debug = require('../debug'),
     vars = require('../vars');
 
 module.exports = function () {
-    if(bttv.settings.get("showDirectoryLiveTab") === true && $('h2.title:contains("Channels You Follow")').length && $('a.active:contains("Overview")').length) {
+    if(bttv.settings.get("showDirectoryLiveTab") === true && $('h2.title:contains("Following")').length && $('a.active:contains("Overview")').length) {
         debug.log("Changing Directory View");
 
-        $('a:contains("Live Channels")').click();
+        $('a:contains("Channels")').click();
     }
 
     if(vars.watchScroll) return;
