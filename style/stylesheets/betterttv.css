@@ -1065,10 +1065,6 @@ body#chat #speak {
     line-height: 40px;
 }
 
-.ember-chat .chat-messages .chat-lines {
-    display: none;
-}
-
 .ember-chat .chat-messages .chat-line.admin {
     padding: 0px;
     padding-left: 10px;

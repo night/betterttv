@@ -6,7 +6,7 @@ vars = require('./vars');
 
 bttv.info = {
     version: "6.8",
-    release: 11,
+    release: 12,
     versionString: function() { 
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -1081,7 +1081,7 @@ bttv.chat = {
                 bttv.chat.helpers.serverMessage('You switched to: '+bttv.chat.tmi().get('name'));
             } else {
                 if(bttv.chat.store.__messageQueue.length === 0) return;
-                $('.ember-chat .chat-messages .tse-content').append(bttv.chat.store.__messageQueue.join(""));
+                $('.ember-chat .chat-messages .tse-content .chat-lines').append(bttv.chat.store.__messageQueue.join(""));
                 bttv.chat.store.__messageQueue = [];
             }
             bttv.chat.helpers.scrollChat();
@@ -1242,7 +1242,7 @@ bttv.chat = {
                     }
                 );
 
-                $('.ember-chat .chat-messages .tse-content').append(message);
+                $('.ember-chat .chat-messages .tse-content .chat-lines').append(message);
                 bttv.chat.helpers.scrollChat();
                 return;
             }
