@@ -96,7 +96,7 @@ module.exports = [
     },
     {
         name: 'Default to Live Channels',
-        description: 'BetterTTV can click on "Live Channels" for you in the Directory when enabled',
+        description: 'BetterTTV can click on "Channels" for you in the Following Overview automatically',
         default: false,
         storageKey: 'showDirectoryLiveTab'
     },
