@@ -430,6 +430,8 @@ bttv.settings = {
         var receiveMessage = function(e) {
             if(e.origin !== window.location.protocol+'//'+window.location.host) return;
             if(e.data) {
+                if(typeof e.data !== 'string') return;
+                
                 var data = e.data.split(' ');
                 if(data[0] === "bttv_setting") {
                     var key = data[1],
