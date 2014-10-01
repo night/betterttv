@@ -2255,9 +2255,17 @@ if(!window.Twitch) {
     return;
 }
 
-if(!window.LocalStorage) {
-    debug.log("window.LocalStorage not detected.");
+if(!window.localStorage) {
+    debug.log("window.localStorage not detected.");
     return;
+} else {
+    try {
+        window.localStorage.setItem('bttv_test', 'it works!');
+        window.localStorage.removeItem('bttv_test');
+    } catch(e) {
+        debug.log("window.localStorage detected, but unable to save.");
+        return;
+    }
 }
 
 if(window.BTTVLOADED === true) return;
