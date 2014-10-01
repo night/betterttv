@@ -284,7 +284,7 @@ vars = require('./vars');
 
 bttv.info = {
     version: "6.8",
-    release: 12,
+    release: 13,
     versionString: function() { 
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -2259,13 +2259,17 @@ if(!window.localStorage) {
     debug.log("window.localStorage not detected.");
     return;
 } else {
+    var works = false;
+
     try {
         window.localStorage.setItem('bttv_test', 'it works!');
         window.localStorage.removeItem('bttv_test');
+        works = true;
     } catch(e) {
         debug.log("window.localStorage detected, but unable to save.");
-        return;
     }
+
+    if(!works) return;
 }
 
 if(window.BTTVLOADED === true) return;
