@@ -431,7 +431,7 @@ bttv.settings = {
             if(e.origin !== window.location.protocol+'//'+window.location.host) return;
             if(e.data) {
                 if(typeof e.data !== 'string') return;
-                
+
                 var data = e.data.split(' ');
                 if(data[0] === "bttv_setting") {
                     var key = data[1],
@@ -2098,7 +2098,7 @@ var handleLookupServer = function() {
     $("head").append(socketJSInject);
 }
 
-var checkJquery = function (times) {
+var checkJquery = function(times) {
     times = times || 0;
     if(times > 9) return;
     if(typeof (window.jQuery) === 'undefined') {
@@ -2113,7 +2113,6 @@ var checkJquery = function (times) {
 }
 
 var main = function () {
-
     if(window.Ember) {
         var renderingCounter = 0;
 
@@ -2256,11 +2255,15 @@ if(!window.Twitch) {
     return;
 }
 
-if (window.BTTVLOADED === true) return;
+if(!window.LocalStorage) {
+    debug.log("window.LocalStorage not detected.");
+    return;
+}
+
+if(window.BTTVLOADED === true) return;
 debug.log("BTTV LOADED " + document.URL);
 BTTVLOADED = true;
 checkJquery();
-
 },{"./debug":1,"./element":2,"./features/beta-chat":4,"./features/brand":5,"./features/channel-reformat":7,"./features/chat-load-settings":10,"./features/check-broadcast-info":11,"./features/check-following":12,"./features/check-messages":13,"./features/clear-clutter":14,"./features/create-settings":15,"./features/css-loader":16,"./features/darken-page":17,"./features/dashboard-channelinfo":18,"./features/directory-functions":19,"./features/flip-dashboard":20,"./features/format-dashboard":21,"./features/giveaway-compatibility":22,"./features/handle-background":23,"./features/handle-twitchchat-emotes":24,"./features/highlight-feedback":25,"./features/make-card":26,"./features/override-emotes":27,"./features/split-chat":28,"./keycodes":29,"./legacy-tags":30,"./settings-list":31,"./templates/moderation-card":33,"./templates/setting-switch":34,"./vars":36}],4:[function(require,module,exports){
 var debug = require('../debug'),
     vars = require('../vars');

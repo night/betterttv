@@ -153,7 +153,7 @@ bttv.settings = {
             if(e.origin !== window.location.protocol+'//'+window.location.host) return;
             if(e.data) {
                 if(typeof e.data !== 'string') return;
-                
+
                 var data = e.data.split(' ');
                 if(data[0] === "bttv_setting") {
                     var key = data[1],
@@ -1820,7 +1820,7 @@ var handleLookupServer = function() {
     $("head").append(socketJSInject);
 }
 
-var checkJquery = function (times) {
+var checkJquery = function(times) {
     times = times || 0;
     if(times > 9) return;
     if(typeof (window.jQuery) === 'undefined') {
@@ -1835,7 +1835,6 @@ var checkJquery = function (times) {
 }
 
 var main = function () {
-
     if(window.Ember) {
         var renderingCounter = 0;
 
@@ -1978,7 +1977,12 @@ if(!window.Twitch) {
     return;
 }
 
-if (window.BTTVLOADED === true) return;
+if(!window.LocalStorage) {
+    debug.log("window.LocalStorage not detected.");
+    return;
+}
+
+if(window.BTTVLOADED === true) return;
 debug.log("BTTV LOADED " + document.URL);
 BTTVLOADED = true;
 checkJquery();
