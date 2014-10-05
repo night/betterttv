@@ -1009,6 +1009,7 @@ bttv.chat = {
         });
 
         $('.ember-chat .chat-messages .chat-line').remove();
+        if(bttv.socketServer) bttv.socketServer.emit('chat history');
         chat.helpers.serverMessage('<center><small>BetterTTV v' + bttv.info.version + ' Loaded.</small></center>');
         chat.helpers.serverMessage('Welcome to '+chat.helpers.lookupDisplayName(bttv.getChannel())+'\'s chat room!');
 
