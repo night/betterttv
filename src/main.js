@@ -959,6 +959,74 @@ bttv.chat = {
                 }
             }
         },
+        calculateColor: function(color) {
+            var colorRegex = /^#[0-9a-f]+$/i;
+            if(colorRegex.test(color)) {
+                while (((calculateColorBackground(color) === "light" && bttv.settings.get("darkenedMode") === true) || (calculateColorBackground(color) === "dark" && bttv.settings.get("darkenedMode") !== true))) {
+                    color = calculateColorReplacement(color, calculateColorBackground(color));
+                }
+            }
+
+            return color;
+        },
+        assignBadges: function(badges, data) {
+            data = data || {};
+            var bttvBadges = [];
+
+            if(badges && badges.length > 0) {
+                if(badges.indexOf('staff') !== -1) {
+                    bttvBadges.push({
+                        type: (bttv.settings.get("showJTVTags") === true?'old':'')+'staff',
+                        name: (bttv.settings.get("showJTVTags") === true?'Staff':''),
+                        description: 'Twitch Staff'
+                    });
+                } else if(badges.indexOf('admin') !== -1) {
+                    bttvBadges.push({
+                        type: (bttv.settings.get("showJTVTags") === true?'old':'')+'admin',
+                        name: (bttv.settings.get("showJTVTags") === true?'Admin':''),
+                        description: 'Twitch Admin'
+                    });
+                } else if(badges.indexOf('owner') !== -1 && !data.bttvTagType) {
+                    bttvBadges.push({
+                        type: (bttv.settings.get("showJTVTags") === true?'old':'')+'broadcaster',
+                        name: (bttv.settings.get("showJTVTags") === true?'Host':''),
+                        description: 'Channel Broadcaster'
+                    });
+                } else if(badges.indexOf('mod') !== -1 && !data.bttvTagType) {
+                    bttvBadges.push({
+                        type: (bttv.settings.get("showJTVTags") === true?'oldmoderator':'moderator'),
+                        name: (bttv.settings.get("showJTVTags") === true?'Mod':''),
+                        description: 'Channel Moderator'
+                    });
+                }
+
+                if(data.bttvTagType && data.bttvTagName) {
+                    bttvBadges.unshift({
+                        type: data.bttvTagType,
+                        name: data.bttvTagName,
+                        description: data.bttvTagDesc?data.bttvTagDesc:data.bttvTagName
+                    });
+                }
+
+                if(badges.indexOf('turbo') !== -1) {
+                    bttvBadges.push({
+                        type: 'turbo',
+                        name: '',
+                        description: 'Twitch Turbo'
+                    });
+                }
+
+                if(badges.indexOf('subscriber') !== -1) {
+                    bttvBadges.push({
+                        type: 'subscriber',
+                        name: '',
+                        description: 'Channel Subscriber'
+                    });
+                }
+            }
+
+            return bttvBadges;
+        },
         ban: function(user) {
             if(!user || user === "") return false;
             var tmi = bttv.chat.tmi() || {};
@@ -1360,12 +1428,7 @@ bttv.chat = {
             if(data.color === "MidnightBlue") data.color = "#191971";
             if(data.color === "DarkRed") data.color = "#8B0000";
 
-            var colorRegex = /^#[0-9a-f]+$/i;
-            if(colorRegex.test(data.color)) {
-                while (((calculateColorBackground(data.color) === "light" && bttv.settings.get("darkenedMode") === true) || (calculateColorBackground(data.color) === "dark" && bttv.settings.get("darkenedMode") !== true))) {
-                    data.color = calculateColorReplacement(data.color, calculateColorBackground(data.color));
-                }
-            }
+            data.color = bttv.chat.helpers.calculateColor(data.color);
 
             if (bttv.glow && bttv.glow[data.from] && data.style !== 'action') {
                 var rgbColor = (data.color === "#ffffff" ? getRgb("#000000") : getRgb(data.color));
@@ -1399,59 +1462,7 @@ bttv.chat = {
             }
 
             var badges = bttv.chat.helpers.getBadges(data.from);
-            var bttvBadges = [];
-
-            if(badges && badges.length > 0) {
-                if(badges.indexOf('staff') !== -1) {
-                    bttvBadges.push({
-                        type: (bttv.settings.get("showJTVTags") === true?'old':'')+'staff',
-                        name: (bttv.settings.get("showJTVTags") === true?'Staff':''),
-                        description: 'Twitch Staff'
-                    });
-                } else if(badges.indexOf('admin') !== -1) {
-                    bttvBadges.push({
-                        type: (bttv.settings.get("showJTVTags") === true?'old':'')+'admin',
-                        name: (bttv.settings.get("showJTVTags") === true?'Admin':''),
-                        description: 'Twitch Admin'
-                    });
-                } else if(badges.indexOf('owner') !== -1 && !data.bttvTagType) {
-                    bttvBadges.push({
-                        type: (bttv.settings.get("showJTVTags") === true?'old':'')+'broadcaster',
-                        name: (bttv.settings.get("showJTVTags") === true?'Host':''),
-                        description: 'Channel Broadcaster'
-                    });
-                } else if(badges.indexOf('mod') !== -1 && !data.bttvTagType) {
-                    bttvBadges.push({
-                        type: (bttv.settings.get("showJTVTags") === true?'oldmoderator':'moderator'),
-                        name: (bttv.settings.get("showJTVTags") === true?'Mod':''),
-                        description: 'Channel Moderator'
-                    });
-                }
-
-                if(data.bttvTagType && data.bttvTagName) {
-                    bttvBadges.unshift({
-                        type: data.bttvTagType,
-                        name: data.bttvTagName,
-                        description: data.bttvTagDesc?data.bttvTagDesc:data.bttvTagName
-                    });
-                }
-
-                if(badges.indexOf('turbo') !== -1) {
-                    bttvBadges.push({
-                        type: 'turbo',
-                        name: '',
-                        description: 'Twitch Turbo'
-                    });
-                }
-
-                if(badges.indexOf('subscriber') !== -1) {
-                    bttvBadges.push({
-                        type: 'subscriber',
-                        name: '',
-                        description: 'Channel Subscriber'
-                    });
-                }
-            }
+            var bttvBadges = bttv.chat.helpers.assignBadges(badges, data);
 
             if(specialUsers[data.from]) {
                 var userData = specialUsers[data.from];
