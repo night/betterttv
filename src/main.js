@@ -1417,9 +1417,9 @@ bttv.chat = {
 
             if (bttv.settings.get("embededPolling")) {
                 if (bttv.chat.helpers.isOwner(data.from)) {
-                    var strawpollRegex = new RegExp('^(http:\/\/strawpoll\.me\/)([0-9]+[0-9]$)');
-                    if (strawpollRegex.test(data.message)) {
-                        embededPolling(data.message);
+                    var strawpollMatch = /http:\/\/strawpoll\.me\/([0-9]+)/g.exec(data.message)
+                    if (strawpollMatch.length == 2) {
+                        embededPolling(strawpollMatch[1]);
                     }
                 }
             }
