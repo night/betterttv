@@ -1415,6 +1415,15 @@ bttv.chat = {
                 });
             }
 
+            if (bttv.settings.get("embededPolling")) {
+                if (bttv.chat.helpers.isOwner(data.from)) {
+                    var strawpollRegex = new RegExp('^(http:\/\/strawpoll\.me\/)([0-9]+[0-9]$)');
+                    if (strawpollRegex.test(data.message)) {
+                        embededPolling(data.message);
+                    }
+                }
+            }
+
             //Bots
             var bots = ["nightbot","moobot","sourbot","xanbot","manabot","mtgbot","ackbot","baconrobot","tardisbot","deejbot","valuebot","stahpbot"];
             if(bots.indexOf(data.from) !== -1 && bttv.chat.helpers.isModerator(data.from)) { data.bttvTagType="bot"; data.bttvTagName = "Bot"; }
@@ -1754,6 +1763,7 @@ var clearClutter = require('./features/clear-clutter'),
     dashboardChannelInfo = require('./features/dashboard-channelinfo'),
     giveawayCompatibility = require('./features/giveaway-compatibility'),
     highlightFeedback = require('./features/highlight-feedback'),
+    embededPolling = require('./features/embeded-polling'),
     handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes'),
     loadChatSettings = require('./features/chat-load-settings'),
     createSettings = require('./features/create-settings');

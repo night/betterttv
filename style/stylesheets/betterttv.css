@@ -1224,3 +1224,67 @@ body.channel_new.columns.ember-application {
 .ember-view.ember-chat.roomMode {
 	background: #f2f2f2 !important;
 }
+
+
+/* embedded poll feature */
+#bttv-poll-contain {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 100%;
+    height: 50px;
+
+    background: #222;
+    color: #e3e3e3;
+    box-shadow: 0px 8px 8px -5px #000;
+
+    overflow: hidden;
+    display: none;
+}
+
+#bttv-poll-contain .bttv-poll-title {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+
+    height: 50px;
+    line-height: 50px;
+    padding: 0px 24px;
+
+    font-size: 16px;
+
+    cursor: pointer;
+}
+
+#bttv-poll-contain .bttv-poll-close {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 16px;
+    height: 16px;
+    padding: 17px;
+
+    background: rgba(0,0,0,0.4);
+
+    cursor: pointer;
+
+    z-index: 999999;
+}
+
+#bttv-poll-contain .bttv-poll-close svg path {
+    fill: #fff;
+}
+
+#bttv-poll-contain .bttv-poll-frame {
+    position: absolute;
+    top: 50px;
+    left: 0px;
+
+    width: 100%;
+    height: 400px;
+
+    border: none;
+
+    display: none;
+}

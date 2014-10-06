@@ -158,6 +158,12 @@ module.exports = [
         }
     },
     {
+        name: 'Embedded Polling',
+        description: 'See polls posted by the broadcaster embedded right into chat',
+        default: true,
+        storageKey: 'embededPolling'
+    },
+    {
         name: 'Featured Channels',
         description: 'The left sidebar is too cluttered, so BetterTTV removes featured channels by default',
         default: false,
