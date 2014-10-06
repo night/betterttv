@@ -1693,11 +1693,11 @@ bttv.chat = {
                 });
             }
 
-            if (bttv.settings.get("embededPolling")) {
+            if (bttv.settings.get('embeddedPolling')) {
                 if (bttv.chat.helpers.isOwner(data.from)) {
-                    var strawpollMatch = /http:\/\/strawpoll\.me\/([0-9]+)/g.exec(data.message)
+                    var strawpollMatch = /http:\/\/strawpoll\.me\/([0-9]+)/g.exec(data.message);
                     if (strawpollMatch.length == 2) {
-                        embededPolling(strawpollMatch[1]);
+                        embeddedPolling(strawpollMatch[1]);
                     }
                 }
             }
@@ -2041,7 +2041,7 @@ var clearClutter = require('./features/clear-clutter'),
     dashboardChannelInfo = require('./features/dashboard-channelinfo'),
     giveawayCompatibility = require('./features/giveaway-compatibility'),
     highlightFeedback = require('./features/highlight-feedback'),
-    embededPolling = require('./features/embeded-polling'),
+    embeddedPolling = require('./features/embedded-polling'),
     handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes'),
     loadChatSettings = require('./features/chat-load-settings'),
     createSettings = require('./features/create-settings');
@@ -2298,7 +2298,7 @@ if(window.BTTVLOADED === true) return;
 debug.log("BTTV LOADED " + document.URL);
 BTTVLOADED = true;
 checkJquery();
-},{"./debug":1,"./element":2,"./features/beta-chat":4,"./features/brand":5,"./features/channel-reformat":7,"./features/chat-load-settings":10,"./features/check-broadcast-info":11,"./features/check-following":12,"./features/check-messages":13,"./features/clear-clutter":14,"./features/create-settings":15,"./features/css-loader":16,"./features/darken-page":17,"./features/dashboard-channelinfo":18,"./features/directory-functions":19,"./features/embeded-polling":20,"./features/flip-dashboard":21,"./features/format-dashboard":22,"./features/giveaway-compatibility":23,"./features/handle-background":24,"./features/handle-twitchchat-emotes":25,"./features/highlight-feedback":26,"./features/make-card":27,"./features/override-emotes":28,"./features/split-chat":29,"./keycodes":30,"./legacy-tags":31,"./settings-list":32,"./templates/moderation-card":34,"./templates/setting-switch":35,"./vars":37}],4:[function(require,module,exports){
+},{"./debug":1,"./element":2,"./features/beta-chat":4,"./features/brand":5,"./features/channel-reformat":7,"./features/chat-load-settings":10,"./features/check-broadcast-info":11,"./features/check-following":12,"./features/check-messages":13,"./features/clear-clutter":14,"./features/create-settings":15,"./features/css-loader":16,"./features/darken-page":17,"./features/dashboard-channelinfo":18,"./features/directory-functions":19,"./features/embedded-polling":20,"./features/flip-dashboard":21,"./features/format-dashboard":22,"./features/giveaway-compatibility":23,"./features/handle-background":24,"./features/handle-twitchchat-emotes":25,"./features/highlight-feedback":26,"./features/make-card":27,"./features/override-emotes":28,"./features/split-chat":29,"./keycodes":30,"./legacy-tags":31,"./settings-list":32,"./templates/moderation-card":34,"./templates/setting-switch":35,"./vars":37}],4:[function(require,module,exports){
 var debug = require('../debug'),
     vars = require('../vars');
 
@@ -3289,7 +3289,7 @@ var debug = require('../debug');
 var frameTimeout = null;
 
 module.exports = function (pollID) {
-    if (!bttv.settings.get('embededPolling')) return;
+    if (!bttv.settings.get('embeddedPolling')) return;
     
     if ($('#bttv-poll-contain').length && $('#bttv-poll-contain .bttv-poll-frame').is(':visible')) return;
 
@@ -4159,7 +4159,7 @@ module.exports = [
         name: 'Embedded Polling',
         description: 'See polls posted by the broadcaster embedded right into chat',
         default: true,
-        storageKey: 'embededPolling'
+        storageKey: 'embeddedPolling'
     },
     {
         name: 'Featured Channels',

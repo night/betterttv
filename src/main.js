@@ -1415,11 +1415,11 @@ bttv.chat = {
                 });
             }
 
-            if (bttv.settings.get("embededPolling")) {
+            if (bttv.settings.get('embeddedPolling')) {
                 if (bttv.chat.helpers.isOwner(data.from)) {
-                    var strawpollMatch = /http:\/\/strawpoll\.me\/([0-9]+)/g.exec(data.message)
+                    var strawpollMatch = /http:\/\/strawpoll\.me\/([0-9]+)/g.exec(data.message);
                     if (strawpollMatch.length == 2) {
-                        embededPolling(strawpollMatch[1]);
+                        embeddedPolling(strawpollMatch[1]);
                     }
                 }
             }
@@ -1763,7 +1763,7 @@ var clearClutter = require('./features/clear-clutter'),
     dashboardChannelInfo = require('./features/dashboard-channelinfo'),
     giveawayCompatibility = require('./features/giveaway-compatibility'),
     highlightFeedback = require('./features/highlight-feedback'),
-    embededPolling = require('./features/embeded-polling'),
+    embeddedPolling = require('./features/embedded-polling'),
     handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes'),
     loadChatSettings = require('./features/chat-load-settings'),
     createSettings = require('./features/create-settings');

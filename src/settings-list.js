@@ -161,7 +161,7 @@ module.exports = [
         name: 'Embedded Polling',
         description: 'See polls posted by the broadcaster embedded right into chat',
         default: true,
-        storageKey: 'embededPolling'
+        storageKey: 'embeddedPolling'
     },
     {
         name: 'Featured Channels',

@@ -3,7 +3,7 @@ var debug = require('../debug');
 var frameTimeout = null;
 
 module.exports = function (pollID) {
-    if (!bttv.settings.get('embededPolling')) return;
+    if (!bttv.settings.get('embeddedPolling')) return;
     
     if ($('#bttv-poll-contain').length && $('#bttv-poll-contain .bttv-poll-frame').is(':visible')) return;
 
