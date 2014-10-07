@@ -1415,11 +1415,11 @@ bttv.chat = {
                 });
             }
 
-            if (bttv.settings.get('embeddedPolling')) {
-                if (bttv.chat.helpers.isOwner(data.from)) {
-                    var strawpollMatch = /http:\/\/strawpoll\.me\/([0-9]+)/g.exec(data.message);
-                    if (strawpollMatch.length == 2) {
-                        embeddedPolling(strawpollMatch[1]);
+            if(bttv.settings.get('embeddedPolling')) {
+                if(bttv.chat.helpers.isOwner(data.from)) {
+                    var strawpoll = /http:\/\/strawpoll\.me\/([0-9]+)/g.exec(data.message);
+                    if(strawpoll) {
+                        embeddedPolling(strawpoll[1]);
                     }
                 }
             }
