@@ -284,7 +284,7 @@ vars = require('./vars');
 
 bttv.info = {
     version: "6.8",
-    release: 14,
+    release: 15,
     versionString: function() { 
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -2298,7 +2298,7 @@ if(window.BTTVLOADED === true) return;
 debug.log("BTTV LOADED " + document.URL);
 BTTVLOADED = true;
 checkJquery();
-},{"./debug":1,"./element":2,"./features/beta-chat":4,"./features/brand":5,"./features/channel-reformat":7,"./features/chat-load-settings":10,"./features/check-broadcast-info":11,"./features/check-following":12,"./features/check-messages":13,"./features/clear-clutter":14,"./features/create-settings":15,"./features/css-loader":16,"./features/darken-page":17,"./features/dashboard-channelinfo":18,"./features/directory-functions":19,"./features/embedded-polling":20,"./features/flip-dashboard":21,"./features/format-dashboard":22,"./features/giveaway-compatibility":23,"./features/handle-background":24,"./features/handle-twitchchat-emotes":25,"./features/highlight-feedback":26,"./features/make-card":27,"./features/override-emotes":28,"./features/split-chat":29,"./keycodes":30,"./legacy-tags":31,"./settings-list":32,"./templates/moderation-card":34,"./templates/setting-switch":35,"./vars":37}],4:[function(require,module,exports){
+},{"./debug":1,"./element":2,"./features/beta-chat":4,"./features/brand":5,"./features/channel-reformat":7,"./features/chat-load-settings":10,"./features/check-broadcast-info":11,"./features/check-following":12,"./features/check-messages":13,"./features/clear-clutter":14,"./features/create-settings":15,"./features/css-loader":16,"./features/darken-page":17,"./features/dashboard-channelinfo":18,"./features/directory-functions":19,"./features/embedded-polling":20,"./features/flip-dashboard":21,"./features/format-dashboard":22,"./features/giveaway-compatibility":23,"./features/handle-background":24,"./features/handle-twitchchat-emotes":25,"./features/highlight-feedback":26,"./features/make-card":27,"./features/override-emotes":28,"./features/split-chat":29,"./keycodes":30,"./legacy-tags":31,"./settings-list":32,"./templates/moderation-card":35,"./templates/setting-switch":36,"./vars":38}],4:[function(require,module,exports){
 var debug = require('../debug'),
     vars = require('../vars');
 
@@ -2346,7 +2346,7 @@ module.exports = function () {
         $('body').append("<style>.ember-chat .chat-interface { height: 140px !important; } .ember-chat .chat-messages { bottom: 140px; } .ember-chat .chat-settings { bottom: 80px; } .ember-chat .emoticon-selector { bottom: 142px !important; }</style>");
     }
 }
-},{"../debug":1,"../vars":37}],5:[function(require,module,exports){
+},{"../debug":1,"../vars":38}],5:[function(require,module,exports){
 var debug = require('../debug');
 var betaChat = require('./beta-chat');
 
@@ -2480,7 +2480,7 @@ var handleResize = module.exports = function () {
     $("#broadcast-meta .info .title .real_title").width() > d ? $("#broadcast-meta .info").addClass("long_title") : $("#broadcast-meta .info").removeClass("long_title");
     $("#channel_panels_contain").masonry("reload");
 };
-},{"../../debug":1,"../../vars":37}],7:[function(require,module,exports){
+},{"../../debug":1,"../../vars":38}],7:[function(require,module,exports){
 var debug = require('../../debug'),
     keyCodes = require('../../keycodes'),
     vars = require('../../vars');
@@ -2651,7 +2651,7 @@ module.exports = function () {
         bttv.settings.save("chatWidth", $("#right_col").width());
     }
 }
-},{"../../debug":1,"../../keycodes":30,"../../vars":37,"./handle-resize":6,"./linkify-title":8,"./twitchcast":9}],8:[function(require,module,exports){
+},{"../../debug":1,"../../keycodes":30,"../../vars":38,"./handle-resize":6,"./linkify-title":8,"./twitchcast":9}],8:[function(require,module,exports){
 var debug = require('../../debug'),
     vars = require('../../vars');
 
@@ -2681,7 +2681,7 @@ module.exports = function () {
         }, 1000);
     }
 }
-},{"../../debug":1,"../../vars":37}],9:[function(require,module,exports){
+},{"../../debug":1,"../../vars":38}],9:[function(require,module,exports){
 module.exports = function() {
     var template = '<iframe id="twitchcast" src="https://nightdev.com/twitchcast/?ontwitch={{hostname}}&channel={{channel}}" width="100%" height="100%" style="position: absolute;top: 0px;left: 0px;border: none;"></iframe>';
 
@@ -2843,7 +2843,7 @@ module.exports = function() {
         }
     });
 };
-},{"../debug":1,"../element":2,"../templates/chat-settings":33,"../vars":37,"./darken-page":17,"./split-chat":29}],11:[function(require,module,exports){
+},{"../debug":1,"../element":2,"../templates/chat-settings":33,"../vars":38,"./darken-page":17,"./split-chat":29}],11:[function(require,module,exports){
 var debug = require('../debug');
 
 var checkBroadcastInfo = module.exports = function() {
@@ -2944,7 +2944,7 @@ var checkFollowing = module.exports = function () {
         setTimeout(checkFollowing, 60000);
     });
 }
-},{"../debug":1,"../vars":37}],13:[function(require,module,exports){
+},{"../debug":1,"../vars":38}],13:[function(require,module,exports){
 var debug = require('../debug'),
     vars = require('../vars');
 
@@ -3035,7 +3035,7 @@ module.exports = function () {
     setInterval(checkOther, 30000);
     checkOther();
 }
-},{"../debug":1,"../vars":37}],14:[function(require,module,exports){
+},{"../debug":1,"../vars":38}],14:[function(require,module,exports){
 var debug = require('../debug'),
 	removeElement = require('../element').remove;
 
@@ -3121,7 +3121,7 @@ module.exports = function () {
         $(this).parent("li").addClass("active");
     });
 };
-},{"../debug":1,"../element":2,"../templates/settings-panel":36,"../vars":37,"./darken-page":17,"./split-chat":29}],16:[function(require,module,exports){
+},{"../debug":1,"../element":2,"../templates/settings-panel":37,"../vars":38,"./darken-page":17,"./split-chat":29}],16:[function(require,module,exports){
 var debug = require('../debug');
 
 function load(file, key){
@@ -3263,7 +3263,7 @@ module.exports = function dashboardChannelInfo() {
         setTimeout(dashboardChannelInfo, 60000);
     }
 };
-},{"../debug":1,"../vars":37}],19:[function(require,module,exports){
+},{"../debug":1,"../vars":38}],19:[function(require,module,exports){
 var debug = require('../debug'),
     vars = require('../vars');
 
@@ -3286,69 +3286,55 @@ module.exports = function () {
         }
     });
 }
-},{"../debug":1,"../vars":37}],20:[function(require,module,exports){
+},{"../debug":1,"../vars":38}],20:[function(require,module,exports){
 var debug = require('../debug');
+var pollTemplate = require('../templates/embedded-poll');
 
-// do not include global variables...
-// if you need something like this, require and utilize vars.js
 var frameTimeout = null;
 
-module.exports = function (pollID) {
+module.exports = function (pollId) {
     if(!bttv.settings.get('embeddedPolling')) return;
 
-    // I suggest moving to 
-    //  var $poll = $('#bttv-poll-contain');
-    // and calling all sub elements by $poll.children()
-    // and using simple names like 'frame' and 'title', not 'bttv-poll-title'
+    var $poll = $('#bttv-poll-contain');
     
-    if($('#bttv-poll-contain').length && $('#bttv-poll-contain .bttv-poll-frame').is(':visible')) return;
+    // If poll exists and there's an iframe open, don't do anything.
+    if($poll.length && $poll.children('.frame').is(':visible')) return;
 
-    if($('#bttv-poll-contain').length) {
-        $('#bttv-poll-contain').remove();
-    }
+    // Otherwise, if the poll exists delete the poll
+    if($poll.length) $poll.remove();
 
-    // Move to Jade Template!
-    var frameTemplate = '<div id="bttv-poll-contain">';
-    frameTemplate += '<div class="bttv-poll-title">New poll available! <span style="text-decoration: underline;">Vote now!</span></div>';
-    frameTemplate += '<div class="bttv-poll-close"><svg height="16px" version="1.1" viewBox="0 0 16 16" width="16px" x="0px" y="0px" class="svg-close"><path clip-rule="evenodd" d="M13.657,3.757L9.414,8l4.243,4.242l-1.415,1.415L8,9.414l-4.243,4.243l-1.414-1.415L6.586,8L2.343,3.757l1.414-1.414L8,6.586l4.242-4.243L13.657,3.757z" fill-rule="evenodd"></path></svg></div>'
-    frameTemplate += '<iframe class="bttv-poll-frame" src="http://strawpoll.me/embed_2/'+pollID+'"></iframe>';
-    frameTemplate += '</div>';
+    // Push new poll to DOM
+    $('.ember-chat .chat-room').append(pollTemplate({ pollId: pollId }));
 
-    $('.ember-chat .chat-room').append(frameTemplate);
+    // Reset $poll to newly created poll
+    $poll = $('#bttv-poll-contain');
     
+    // If timeout exists already, clear it
     if(frameTimeout !== null) {
         clearTimeout(frameTimeout);
-        frameTimeout = null;
     }
     
+    // After 30 seconds, remove poll if user doesn't open it
     frameTimeout = setTimeout(function() {
-        $('#bttv-poll-contain').remove();
-    }, 60 * 1000);
+        if($poll && !$poll.children('.frame').is(':visible')) $poll.remove();
+    }, 30000);
 
-    $('#bttv-poll-contain .bttv-poll-close').on('click', function() {
-        $('#bttv-poll-contain').remove();
-
-        if(frameTimeout !== null) {
-            clearTimeout(frameTimeout);
-            frameTimeout = null;
-        }
+    // User manually closes the poll
+    $poll.children('.close').on('click', function() {
+        $poll.remove();
     });
 
-    $('#bttv-poll-contain .bttv-poll-title').on('click', function() {
-        $('#bttv-poll-contain .bttv-poll-frame').show();
-        $('#bttv-poll-contain .bttv-poll-title').text('Thanks!');
-        $('#bttv-poll-contain').css('height', '450px');
-
-        if(frameTimeout !== null) {
-            clearTimeout(frameTimeout);
-            frameTimeout = null;
-        }
+    // User opens the poll
+    $poll.children('.title').on('click', function() {
+        $poll.children('.frame').show();
+        $poll.children('.title').text('Thanks!');
+        $poll.css('height', '450px');
     });
 
-    $("#bttv-poll-contain").slideDown(200);
+    $poll.slideDown(200);
 }
 
-},{"../debug":1}],21:[function(require,module,exports){
+},{"../debug":1,"../templates/embedded-poll":34}],21:[function(require,module,exports){
 var debug = require('../debug');
 
 module.exports = function () {
@@ -3833,7 +3819,7 @@ module.exports = function () {
         generate([]);
     });
 };
-},{"../debug":1,"../vars":37}],29:[function(require,module,exports){
+},{"../debug":1,"../vars":38}],29:[function(require,module,exports){
 var debug = require('../debug');
 
 module.exports = function () {
@@ -4437,6 +4423,14 @@ function template(locals) {
 var buf = [];
 var jade_mixins = {};
 var jade_interp;
+;var locals_for_with = (locals || {});(function (pollId) {
+buf.push("<div id=\"bttv-poll-contain\"><div class=\"title\">New poll available! <span style=\"text-decoration: underline;\">Vote now!</span></div><div class=\"close\"><svg height=\"16px\" version=\"1.1\" viewbox=\"0 0 16 16\" width=\"16px\" x=\"0px\" y=\"0px\" class=\"svg-close\"><path clip-rule=\"evenodd\" d=\"M13.657,3.757L9.414,8l4.243,4.242l-1.415,1.415L8,9.414l-4.243,4.243l-1.414-1.415L6.586,8L2.343,3.757l1.414-1.414L8,6.586l4.242-4.243L13.657,3.757z\" fill-rule=\"evenodd\"></path></svg></div><iframe" + (jade.attr("src", 'http://strawpoll.me/embed_2/' + (pollId) + '', true, false)) + " class=\"frame\"></iframe></div>");}.call(this,"pollId" in locals_for_with?locals_for_with.pollId:typeof pollId!=="undefined"?pollId:undefined));;return buf.join("");
+};module.exports=template;
+},{}],35:[function(require,module,exports){
+function template(locals) {
+var buf = [];
+var jade_mixins = {};
+var jade_interp;
 ;var locals_for_with = (locals || {});(function (require, user, top, left, Twitch, bttv) {
 var vars = require('../vars')
 buf.push("<div" + (jade.attr("data-user", user.name, true, false)) + (jade.attr("style", "top: " + (top) + "px;left: " + (left) + "px;", true, false)) + " class=\"bttv-mod-card ember-view moderation-card\"><div class=\"close-button\"><svg height=\"16px\" version=\"1.1\" viewbox=\"0 0 16 16\" width=\"16px\" x=\"0px\" y=\"0px\" class=\"svg-close\"><path clip-rule=\"evenodd\" d=\"M13.657,3.757L9.414,8l4.243,4.242l-1.415,1.415L8,9.414l-4.243,4.243l-1.414-1.415L6.586,8L2.343,3.757l1.414-1.414L8,6.586l4.242-4.243L13.657,3.757z\" fill-rule=\"evenodd\"></path></svg></div><div" + (jade.attr("style", "background-color: " + (user.profile_banner_background_color?user.profile_banner_background_color:'#000') + "", true, false)) + " class=\"card-header\"><img" + (jade.attr("src", user.logo?user.logo:'https://www-cdn.jtvnw.net/images/xarth/404_user_300x300.png', true, false)) + " class=\"channel_logo\"/><div class=\"drag-handle\"></div><h3 class=\"name\"><a" + (jade.attr("href", Twitch.url.profile(user.name), true, false)) + " target=\"_blank\">" + (jade.escape(null == (jade_interp = bttv.storage.getObject("nicknames")[user.name.toLowerCase()] || user.display_name) ? "" : jade_interp)) + "</a><svg style=\"margin-left: 5px;\" height=\"10px\" width=\"10px\" version=\"1.1\" viewBox=\"0 0 16 16\" x=\"0px\" y=\"0px\" class=\"svg-edit mod-card-edit\"><path clip-rule=\"evenodd\" fill-rule=\"evenodd\" d=\"M6.414,12.414L3.586,9.586l8-8l2.828,2.828L6.414,12.414z M4.829,14H2l0,0v-2.828l0.586-0.586l2.828,2.828L4.829,14z\"></path></svg></h3>");
@@ -4465,7 +4459,7 @@ buf.push("</div>");
 }
 buf.push("</div>");}.call(this,"require" in locals_for_with?locals_for_with.require:typeof require!=="undefined"?require:undefined,"user" in locals_for_with?locals_for_with.user:typeof user!=="undefined"?user:undefined,"top" in locals_for_with?locals_for_with.top:typeof top!=="undefined"?top:undefined,"left" in locals_for_with?locals_for_with.left:typeof left!=="undefined"?left:undefined,"Twitch" in locals_for_with?locals_for_with.Twitch:typeof Twitch!=="undefined"?Twitch:undefined,"bttv" in locals_for_with?locals_for_with.bttv:typeof bttv!=="undefined"?bttv:undefined));;return buf.join("");
 };module.exports=template;
-},{"../vars":37}],35:[function(require,module,exports){
+},{"../vars":38}],36:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -4473,7 +4467,7 @@ var jade_interp;
 ;var locals_for_with = (locals || {});(function (storageKey, name, description) {
 buf.push("<div" + (jade.cls(['option',"bttvOption-" + (storageKey) + ""], [null,true])) + "><span style=\"font-weight:bold;font-size:14px;color:#D3D3D3;\">" + (jade.escape(null == (jade_interp = name) ? "" : jade_interp)) + "</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;" + (jade.escape(null == (jade_interp = description) ? "" : jade_interp)) + "<div class=\"switch\"><input type=\"radio\"" + (jade.attr("name", storageKey, true, false)) + " value=\"false\"" + (jade.attr("id", "" + (storageKey) + "False", true, false)) + " class=\"switch-input switch-off\"/><label" + (jade.attr("for", "" + (storageKey) + "False", true, false)) + " class=\"switch-label switch-label-off\">Off</label><input type=\"radio\"" + (jade.attr("name", storageKey, true, false)) + " value=\"true\"" + (jade.attr("id", "" + (storageKey) + "True", true, false)) + " class=\"switch-input\"/><label" + (jade.attr("for", "" + (storageKey) + "True", true, false)) + " class=\"switch-label switch-label-on\">On</label><span class=\"switch-selection\"></span></div></div>");}.call(this,"storageKey" in locals_for_with?locals_for_with.storageKey:typeof storageKey!=="undefined"?storageKey:undefined,"name" in locals_for_with?locals_for_with.name:typeof name!=="undefined"?name:undefined,"description" in locals_for_with?locals_for_with.description:typeof description!=="undefined"?description:undefined));;return buf.join("");
 };module.exports=template;
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -4481,7 +4475,7 @@ var jade_interp;
 ;var locals_for_with = (locals || {});(function (bttv) {
 buf.push("<div id=\"header\"><span id=\"logo\"><img height=\"45px\" src=\"//cdn.betterttv.net/style/logos/settings_logo.png\"/></span><ul class=\"nav\"><li><a href=\"#bttvAbout\">About</a></li><li class=\"active\"><a href=\"#bttvSettings\">Settings</a></li><li><a href=\"#bttvChangelog\">Changelog</a></li><li><a href=\"#bttvPrivacy\">Privacy Policy</a></li><li><a href=\"#bttvBackup\">Backup/Import</a></li></ul><span id=\"close\">&times;</span></div><div id=\"bttvSettings\" style=\"height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content options-list\"><h2 class=\"option\">Here you can manage the various BetterTTV options. Click On or Off to toggle settings.</h2></div></div><div id=\"bttvAbout\" style=\"display:none;\"><div class=\"aboutHalf\"><img src=\"//cdn.betterttv.net/style/logos/mascot.png\" class=\"bttvAboutIcon\"/><h1>BetterTTV v " + (jade.escape((jade_interp = bttv.info.versionString()) == null ? '' : jade_interp)) + "</h1><h2>from your friends at <a href=\"http://www.nightdev.com\" target=\"_blank\">NightDev</a></h2><br/></div><div class=\"aboutHalf\"><h1 style=\"margin-top: 100px;\">Think this addon is awesome?</h1><br/><br/><h2><a target=\"_blank\" href=\"https://chrome.google.com/webstore/detail/ajopnjidmegmdimjlfnijceegpefgped\">Drop a Review on the Chrome Webstore</a></h2><br/><h2>or maybe</h2><br/><h2><a target=\"_blank\" href=\"http://streamdonations.net/c/night\">Support the Developer</a></h2><br/></div></div><div id=\"bttvPrivacy\" style=\"display:none;height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content\"></div></div><div id=\"bttvChangelog\" style=\"display:none;height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content\"></div></div><div id=\"bttvBackup\" style=\"display:none;height:425px;padding:25px;\"><h1 style=\"padding-bottom:15px;\">Backup Settings</h1><button id=\"bttvBackupButton\" class=\"primary_button\"><span>Download</span></button><h1 style=\"padding-top:25px;padding-bottom:15px;\">Import Settings</h1><input id=\"bttvImportInput\" type=\"file\" style=\"height: 25px;width: 250px;\"/></div><div id=\"footer\"><span>BetterTTV &copy; <a href=\"http://www.nightdev.com\" target=\"_blank\">NightDev</a> 2014</span><span style=\"float:right;\"><a href=\"http://www.nightdev.com/contact\" target=\"_blank\">Get Support</a> | <a href=\"http://bugs.nightdev.com/projects/betterttv/issues/new?tracker_id=1\" target=\"_blank\">Report a Bug</a> | <a href=\"http://streamdonations.net/c/night\" target=\"_blank\">Support the Developer</a></span></div>");}.call(this,"bttv" in locals_for_with?locals_for_with.bttv:typeof bttv!=="undefined"?bttv:undefined));;return buf.join("");
 };module.exports=template;
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 module.exports = {
     userData: {
         isLoggedIn: window.Twitch ? Twitch.user.isLoggedIn() : false,

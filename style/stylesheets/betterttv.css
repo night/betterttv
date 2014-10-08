@@ -1242,7 +1242,7 @@ body.channel_new.columns.ember-application {
     display: none;
 }
 
-#bttv-poll-contain .bttv-poll-title {
+#bttv-poll-contain .title {
     position: absolute;
     top: 0px;
     left: 0px;
@@ -1257,7 +1257,7 @@ body.channel_new.columns.ember-application {
     cursor: pointer;
 }
 
-#bttv-poll-contain .bttv-poll-close {
+#bttv-poll-contain .close {
     position: absolute;
     top: 0px;
     right: 0px;
@@ -1272,11 +1272,11 @@ body.channel_new.columns.ember-application {
     z-index: 999999;
 }
 
-#bttv-poll-contain .bttv-poll-close svg path {
+#bttv-poll-contain .close svg path {
     fill: #fff;
 }
 
-#bttv-poll-contain .bttv-poll-frame {
+#bttv-poll-contain .frame {
     position: absolute;
     top: 50px;
     left: 0px;
