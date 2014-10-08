@@ -5,8 +5,11 @@ module.exports = function () {
     if($('#broadcast-meta .title .real').length) {
         if(vars.linkifyTimer) clearInterval(vars.linkifyTimer);
 
+        var $title = $('#broadcast-meta .title .real');
+
         var linkifyTitle = function() {
-            var linkifiedTitle = bttv.chat.templates.linkify($('#broadcast-meta .title .real').text());
+            var originalTitle = $title.text().replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            var linkifiedTitle = bttv.chat.templates.linkify(originalTitle);
 
             $('#broadcast-meta .title span').each(function() {
                 $(this).html(linkifiedTitle);
@@ -17,8 +20,8 @@ module.exports = function () {
 
         vars.linkifyTimer = setInterval(function() {
             if(!vars.channelTitle) vars.channelTitle = "";
-            if($('#broadcast-meta .title .real').html() !== vars.channelTitle) {
-                vars.channelTitle = $('#broadcast-meta .title .real').html();
+            if($title.html() !== vars.channelTitle) {
+                vars.channelTitle = $title.html();
                 linkifyTitle();
             }
         }, 1000);

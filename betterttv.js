@@ -1427,7 +1427,7 @@ bttv.chat = {
                 bttv.chat.store.currentRoom = id;
                 bttv.chat.store.__messageQueue = [];
                 bttv.chat.store.getRoom(id).playQueue();
-                bttv.chat.helpers.serverMessage('You switched to: '+bttv.chat.tmi().get('name'));
+                bttv.chat.helpers.serverMessage('You switched to: '+bttv.chat.tmi().get('name').replace(/</g,"&lt;").replace(/>/g,"&gt;"));
             } else {
                 if(bttv.chat.store.__messageQueue.length === 0) return;
                 $('.ember-chat .chat-messages .tse-content .chat-lines').append(bttv.chat.store.__messageQueue.join(""));
@@ -2659,8 +2659,11 @@ module.exports = function () {
     if($('#broadcast-meta .title .real').length) {
         if(vars.linkifyTimer) clearInterval(vars.linkifyTimer);
 
+        var $title = $('#broadcast-meta .title .real');
+
         var linkifyTitle = function() {
-            var linkifiedTitle = bttv.chat.templates.linkify($('#broadcast-meta .title .real').text());
+            var originalTitle = $title.text().replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            var linkifiedTitle = bttv.chat.templates.linkify(originalTitle);
 
             $('#broadcast-meta .title span').each(function() {
                 $(this).html(linkifiedTitle);
@@ -2671,8 +2674,8 @@ module.exports = function () {
 
         vars.linkifyTimer = setInterval(function() {
             if(!vars.channelTitle) vars.channelTitle = "";
-            if($('#broadcast-meta .title .real').html() !== vars.channelTitle) {
-                vars.channelTitle = $('#broadcast-meta .title .real').html();
+            if($title.html() !== vars.channelTitle) {
+                vars.channelTitle = $title.html();
                 linkifyTitle();
             }
         }, 1000);
@@ -3186,7 +3189,7 @@ module.exports = function dashboardChannelInfo() {
         Twitch.api.get("streams/" + bttv.getChannel()).done(function (a) {
             if (a.stream) {
                 $("#channel_viewer_count span").text(Twitch.display.commatize(a.stream.viewers));
-                if(a.stream.channel.views) $("#views_count").html(Twitch.display.commatize(a.stream.channel.views));
+                if(a.stream.channel.views) $("#views_count").text(Twitch.display.commatize(a.stream.channel.views));
             } else {
                 $("#channel_viewer_count span").text("Offline");
             }
@@ -3426,13 +3429,16 @@ module.exports = function handleBackground(tiled) {
     if(!window.App) return;
     App.Panel.find("user", { user: bttv.getChannel() } ).get('content').forEach(function(panel) {
         var url = panel.get('data').link;
+        var safeRegex = /^https?:\/\/cdn.betterttv.net\//;
         if(url && url.indexOf('#BTTV#') !== -1) {
             var options = {};
             var queryString = url.split('#BTTV#')[1];
             var list = queryString.split('=');
 
             for(var i=0; i<list.length; i+=2) {
-                options[list[i]] = list[i+1];
+                if(list[i+1] && safeRegex.test(list[i+1])) {
+                    options[list[i]] = list[i+1];
+                }
             }
 
             if(options['bg']) {

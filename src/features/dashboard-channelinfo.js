@@ -8,7 +8,7 @@ module.exports = function dashboardChannelInfo() {
         Twitch.api.get("streams/" + bttv.getChannel()).done(function (a) {
             if (a.stream) {
                 $("#channel_viewer_count span").text(Twitch.display.commatize(a.stream.viewers));
-                if(a.stream.channel.views) $("#views_count").html(Twitch.display.commatize(a.stream.channel.views));
+                if(a.stream.channel.views) $("#views_count").text(Twitch.display.commatize(a.stream.channel.views));
             } else {
                 $("#channel_viewer_count span").text("Offline");
             }

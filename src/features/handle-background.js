@@ -12,13 +12,16 @@ module.exports = function handleBackground(tiled) {
     if(!window.App) return;
     App.Panel.find("user", { user: bttv.getChannel() } ).get('content').forEach(function(panel) {
         var url = panel.get('data').link;
+        var safeRegex = /^https?:\/\/cdn.betterttv.net\//;
         if(url && url.indexOf('#BTTV#') !== -1) {
             var options = {};
             var queryString = url.split('#BTTV#')[1];
             var list = queryString.split('=');
 
             for(var i=0; i<list.length; i+=2) {
-                options[list[i]] = list[i+1];
+                if(list[i+1] && safeRegex.test(list[i+1])) {
+                    options[list[i]] = list[i+1];
+                }
             }
 
             if(options['bg']) {

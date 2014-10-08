@@ -1149,7 +1149,7 @@ bttv.chat = {
                 bttv.chat.store.currentRoom = id;
                 bttv.chat.store.__messageQueue = [];
                 bttv.chat.store.getRoom(id).playQueue();
-                bttv.chat.helpers.serverMessage('You switched to: '+bttv.chat.tmi().get('name'));
+                bttv.chat.helpers.serverMessage('You switched to: '+bttv.chat.tmi().get('name').replace(/</g,"&lt;").replace(/>/g,"&gt;"));
             } else {
                 if(bttv.chat.store.__messageQueue.length === 0) return;
                 $('.ember-chat .chat-messages .tse-content .chat-lines').append(bttv.chat.store.__messageQueue.join(""));
