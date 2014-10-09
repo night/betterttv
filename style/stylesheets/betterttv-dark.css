@@ -10,7 +10,11 @@ body {
     background-color: #000 !important;
 }
 
-.channel-stats #views-count.stat svg path, .channel-stats #followers-count.stat svg path, #channel_stats #views_count.stat svg path, #channel_stats #followers_count.stat svg path {
+.channel-stats #views-count.stat svg path,
+.channel-stats #followers-count.stat svg path,
+#channel_stats #views_count.stat svg path,
+#channel_stats #followers_count.stat svg path,
+.channel-stats .stat svg path {
     fill: rgba(255,255,255,0.35) !important;
 }
 
