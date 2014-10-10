@@ -14,7 +14,8 @@ body {
 .channel-stats #followers-count.stat svg path,
 #channel_stats #views_count.stat svg path,
 #channel_stats #followers_count.stat svg path,
-.channel-stats .stat svg path {
+.channel-stats .stat svg.svg-views path,
+.channel-stats .stat svg.svg-followers path {
     fill: rgba(255,255,255,0.35) !important;
 }
 
