@@ -66,7 +66,7 @@ module.exports = function(user, $event) {
         $modCard.find('.mod-card-mod .svg-remove-mod').show();
     }
     $modCard.find('.mod-card-mod').click(function() {
-        if($modCard.find('.mod-card-ignore .svg-remove-mod').css('display') !== 'none') {
+        if($modCard.find('.mod-card-mod .svg-remove-mod').css('display') !== 'none') {
             bttv.chat.helpers.sendMessage('/unmod '+user.name);
             $modCard.find('.mod-card-mod .svg-add-mod').show();
             $modCard.find('.mod-card-mod .svg-remove-mod').hide();
