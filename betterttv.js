@@ -1516,6 +1516,7 @@ bttv.chat = {
                 bttv.chat.store.getRoom(channel).queueMessage(data);
                 return;
             }
+            if(!data.message.length) return;
             if(!bttv.chat.tmi() || !bttv.chat.tmi().tmiRoom) return;
             try {
                 bttv.chat.handlers.privmsg(channel, data);
