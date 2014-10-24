@@ -284,7 +284,7 @@ vars = require('./vars');
 
 bttv.info = {
     version: "6.8",
-    release: 16,
+    release: 17,
     versionString: function() { 
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -2462,19 +2462,32 @@ var handleResize = module.exports = function () {
     if(!$('#bttvPlayerStyle').length) {
         $('<style></style>').attr('id', 'bttvPlayerStyle').appendTo('body');
     }
-    var h = 0.5625 * $("#main_col").width() - 4;
-    var calcH = $(window).height() - $("#broadcast-meta").outerHeight(true) - $(".stats-and-actions").outerHeight();
-    if (h > calcH) {
-        $('#bttvPlayerStyle').html('#player, .dynamic-player, .dynamic-player object, .dynamic-player video, #hostmode .target-player object { width: 100% !important; height: '+ ($(window).height() - $(".stats-and-actions").outerHeight()) + 'px !important; }');
 
-        if(!$('#hostmode').length && $("#main_col .tse-scroll-content").scrollTop() === 0) {
-            $("#main_col .tse-scroll-content").animate({
-                scrollTop: $("#broadcast-meta").outerHeight(true) - 10
-            }, 150, "swing");
+    if($('#hostmode').length) {
+        var h = 0.5625 * $("#main_col").width() - 4;
+        var calcH = $(window).height() - $(".hostmode-title-container").outerHeight(true) - $(".target-meta").outerHeight(true) - $(".close-hostmode").outerHeight(true);
+        if (h > calcH) {
+            $('#bttvPlayerStyle').html('#player, .dynamic-player, .dynamic-player object, .dynamic-player video, #hostmode .target-player object { width: 100% !important; height: '+ ($(window).height() - $(".hostmode-title-container").outerHeight(true) - $(".target-meta").outerHeight(true) - $(".close-hostmode").outerHeight(true)) + 'px !important; }');
+        } else {
+            $('#bttvPlayerStyle').html('#player, .dynamic-player, .dynamic-player object, .dynamic-player video, #hostmode .target-player object { width: 100% !important; height: '+ h.toFixed(0) + 'px !important; }');
         }
+        $('.target-frame').css('height',$(window).height());
     } else {
-        $('#bttvPlayerStyle').html('#player, .dynamic-player, .dynamic-player object, .dynamic-player video, #hostmode .target-player object { width: 100% !important; height: '+ h.toFixed(0) + 'px !important; }');
+        var h = 0.5625 * $("#main_col").width() - 4;
+        var calcH = $(window).height() - $("#broadcast-meta").outerHeight(true) - $(".stats-and-actions").outerHeight();
+        if (h > calcH) {
+            $('#bttvPlayerStyle').html('#player, .dynamic-player, .dynamic-player object, .dynamic-player video { width: 100% !important; height: '+ ($(window).height() - $(".stats-and-actions").outerHeight()) + 'px !important; }');
+
+            if($("#main_col .tse-scroll-content").scrollTop() === 0) {
+                $("#main_col .tse-scroll-content").animate({
+                    scrollTop: $("#broadcast-meta").outerHeight(true) - 10
+                }, 150, "swing");
+            }
+        } else {
+            $('#bttvPlayerStyle').html('#player, .dynamic-player, .dynamic-player object, .dynamic-player video { width: 100% !important; height: '+ h.toFixed(0) + 'px !important; }');
+        }
     }
+
     $('#bttvPlayerStyle').append('#hostmode .target-player, #hostmode .target-player object, #hostmode .target-player video { width: 100% !important; }');
 
     var d = $("#broadcast-meta .info .title").width();
