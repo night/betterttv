@@ -457,7 +457,6 @@ bttv.chat = {
 
         // Load BTTV emotes if not loaded
         overrideEmotes();
-        handleTwitchChatEmotesScript();
 
         // Load Chat Settings
         loadChatSettings();
@@ -1963,6 +1962,7 @@ var main = function () {
         giveawayCompatibility();
         dashboardChannelInfo();
         directoryFunctions();
+        handleTwitchChatEmotesScript();
 
         $(window).trigger('resize');
         setTimeout(function() {
