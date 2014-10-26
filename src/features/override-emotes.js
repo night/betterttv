@@ -141,7 +141,7 @@ module.exports = function () {
                 fallback: function() {
                     var $emote = vars.hoveringEmote;
                     if($emote && $emote.data('regex')) {
-                        var raw = decodeURIComponent($emote.data('regex').split(' ').join(''));
+                        var raw = decodeURIComponent($emote.data('regex'));
                         if($emote.data('channel')) {
                             return "Emote: "+raw+"<br />Channel: "+$emote.data('channel');
                         } else {

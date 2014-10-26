@@ -318,7 +318,7 @@ bttv.chat = {
             resp += '</span>';
             return resp;
         },
-        from: function(name, color) { return '<span '+(color?'style="color: '+color+';" ':'')+'class="from">'+(bttv.storage.getObject("nicknames")[name.toLowerCase()] || name)+'</span><span class="colon">:</span>'+(name!=='jtv'?'&nbsp;<wbr></wbr>':''); },
+        from: function(name, color) { return '<span '+(color?'style="color: '+color+';" ':'')+'class="from">'+bttv.chat.templates.escape(bttv.storage.getObject("nicknames")[name.toLowerCase()] || name)+'</span><span class="colon">:</span>'+(name!=='jtv'?'&nbsp;<wbr></wbr>':''); },
         timestamp: function(time) { return '<span class="timestamp"><small>'+time+'</small></span>'; },
         modicons: function() { return '<span class="mod-icons"><a class="timeout" title="Timeout">Timeout</a><a class="ban" title="Ban">Ban</a><a class="unban" title="Unban" style="display: none;">Unban</a></span>'; },
         escape: function(message) { return message.replace(/</g,'&lt;').replace(/>/g, '&gt;'); },
@@ -332,7 +332,7 @@ bttv.chat = {
             });
         },
         emoticon: function(setId, setClass, regex) {
-            return '<span class="emoticon '+setClass+'"'+((bttv.TwitchEmoteSets && bttv.TwitchEmoteSets[setId]) ? ' data-channel="'+bttv.TwitchEmoteSets[setId]+'"' : '')+' data-regex="'+encodeURIComponent(getEmoteFromRegEx(regex)).split('').join(' ')+'"></span>';
+            return '<span class="emoticon '+setClass+'"'+((bttv.TwitchEmoteSets && bttv.TwitchEmoteSets[setId]) ? ' data-channel="'+bttv.TwitchEmoteSets[setId]+'"' : '')+' data-regex="'+encodeURIComponent(getEmoteFromRegEx(regex))+'"></span>';
         },
         emoticonCss: function (image, id){
             var css = "";
@@ -370,11 +370,17 @@ bttv.chat = {
         message: function(sender, message, userSets, colored) {
             colored = colored || false;
             var templates = bttv.chat.templates;
-            var rawMessage = encodeURIComponent(message.replace(/%/g,""));
+            var rawMessage = encodeURIComponent(message);
             if(sender !== 'jtv') {
-                message = templates.escape(message);
-                message = templates.emoticonize(message, userSets);
-                message = templates.linkify(message);
+                var tokenizedString = message.split(' ');
+
+                for(var i=0; i<tokenizedString.length; i++) {
+                    tokenizedString[i] = templates.escape(tokenizedString[i]);
+                    tokenizedString[i] = templates.emoticonize(tokenizedString[i], userSets);
+                    tokenizedString[i] = templates.linkify(tokenizedString[i]);
+                }
+
+                message = tokenizedString.join(' ');
             }
             return '<span class="message" '+(colored?'style="color: '+colored+'" ':'')+'data-raw="'+rawMessage+'">'+message+'</span>';
         },
