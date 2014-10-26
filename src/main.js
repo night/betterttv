@@ -348,7 +348,7 @@ bttv.chat = {
                 for(var i=0; i<userSets.length; i++) {
                     var set = userSets[i];
 
-                    if(emotes[set] === undefined) return message;
+                    if(emotes[set] === undefined) continue;
 
                     for(var j=0; j<emotes[set].length; j++) {
                         var emote = emotes[set][j];
