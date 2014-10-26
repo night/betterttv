@@ -345,21 +345,28 @@ bttv.chat = {
             if(!emotes || !emotes['default']) return message;
 
             if(userSets.length > 0) {
-                userSets.forEach(function(set) {
-                    if(emotes[set] === undefined) return;
-                    emotes[set].forEach(function(emote) {
+                for(var i=0; i<userSets.length; i++) {
+                    var set = userSets[i];
+
+                    if(emotes[set] === undefined) return message;
+
+                    for(var j=0; j<emotes[set].length; j++) {
+                        var emote = emotes[set][j];
+
                         if(message.match(emote.regex)) {
-                            message = message.replace(emote.regex, bttv.chat.templates.emoticon(set, emote.cls, emote.regex));
+                            return message.replace(emote.regex, bttv.chat.templates.emoticon(set, emote.cls, emote.regex));
                         }
-                    });
-                });
+                    }
+                }
             }
 
-            emotes['default'].forEach(function(emote) {
+            for(var i=0; i<emotes['default'].length; i++) {
+                var emote = emotes['default'][i];
+
                 if(message.match(emote.regex)) {
-                    message = message.replace(emote.regex, bttv.chat.templates.emoticon(-1, emote.cls, emote.regex));
+                    return message.replace(emote.regex, bttv.chat.templates.emoticon(-1, emote.cls, emote.regex));
                 }
-            });
+            }
 
             return message;
         },
