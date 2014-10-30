@@ -338,15 +338,7 @@ module.exports = [
                 flipDashboard();
             } else {
                 $("#flipDashboard").text("Flip Dashboard");
-                $("#controls_column, #player_column").css({
-                    float: "none",
-                    marginLeft: "0px"
-                });
-                $("#chat,iframe").css({
-                    float: "right",
-                    left: "",
-                    right: "20px"
-                });
+                flipDashboard();
             }
         }
     },
