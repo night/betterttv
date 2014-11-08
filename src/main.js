@@ -6,7 +6,7 @@ vars = require('./vars');
 
 bttv.info = {
     version: "6.8",
-    release: 19,
+    release: 20,
     versionString: function() { 
         return bttv.info.version + 'R' + bttv.info.release;
     }

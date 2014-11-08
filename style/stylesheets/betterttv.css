@@ -650,15 +650,15 @@ input.text:focus,select:focus,textarea:focus {
 }
 
 #dash_main #custom_filter #gameselector_input {
-    width: 200px;
+    width: 185px;
+}
+
+#dash_main #broadcaster_language_switch {
+    width: 130px;
 }
 
 #dash_main .dash-broadcast-contain {
-    margin-bottom: 20px;
-}
-
-#dash_main .dash-broadcast-contain {
-    margin-bottom: 20px;
+    padding-bottom: 10px;
 }
 
 #dash_main .dash-player-contain {
@@ -1214,15 +1214,15 @@ div.part.description a {
 }
 
 .dash-chat-column {
-	background: rgba(0,0,0,0.05);
+    background: rgba(0,0,0,0.05);
 }
 
 body.channel_new.columns.ember-application {
-	background: rgba(0,0,0,0.05);
+    background: rgba(0,0,0,0.05);
 }
 
 .ember-view.ember-chat.roomMode {
-	background: #f2f2f2 !important;
+    background: #f2f2f2 !important;
 }
 
 

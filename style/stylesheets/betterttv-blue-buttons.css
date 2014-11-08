@@ -11,7 +11,7 @@
     background: -webkit-linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
     background: -ms-linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
 } 
-.button.primary, .primary_button, a.js-follow.follow.button.primary.action {
+.button.primary, .primary_button, a.js-follow.follow.button.primary.action, #dash_main #commercial_buttons #intervals {
     border-color: #000 !important;
     background: linear-gradient(bottom, rgb(47,88,185) 31%, rgb(50,108,211) 80%) !important; 
     background: -o-linear-gradient(bottom, rgb(47,88,185) 31%, rgb(50,108,211) 80%) !important; 

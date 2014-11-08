@@ -284,7 +284,7 @@ vars = require('./vars');
 
 bttv.info = {
     version: "6.8",
-    release: 19,
+    release: 20,
     versionString: function() { 
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -3215,10 +3215,11 @@ module.exports = function dashboardChannelInfo() {
 
         Twitch.api.get("streams/" + bttv.getChannel()).done(function (a) {
             if (a.stream) {
-                $("#channel_viewer_count span").text(Twitch.display.commatize(a.stream.viewers));
-                if(a.stream.channel.views) $("#views_count").text(Twitch.display.commatize(a.stream.channel.views));
+                $("#channel_viewer_count").text(Twitch.display.commatize(a.stream.viewers));
+                if(a.stream.channel.views) $("#views_count span").text(Twitch.display.commatize(a.stream.channel.views));
+                if(a.stream.channel.followers) $("#followers_count span").text(Twitch.display.commatize(a.stream.channel.followers));
             } else {
-                $("#channel_viewer_count span").text("Offline");
+                $("#channel_viewer_count").text("Offline");
             }
         });
         Twitch.api.get("channels/" + bttv.getChannel() + "/follows?limit=1").done(function (a) {

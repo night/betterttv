@@ -72,6 +72,35 @@ body {
 #dash_main #delay_controls,
 #dash_main #stream-config-status .status-header {
     background-color: #282828;
+    padding: 10px;
+    border-top: none;
+    margin-top: 0px;
+}
+
+#dash_main #delay_controls .section_header {
+    border-top: 1px solid rgba(0,0,0,0.2);
+}
+
+#dash_main #delay_controls {
+    padding-bottom: 20px;
+}
+
+#dash_main #broadcaster_language_menu {
+    background: #282828;
+}
+
+#dash_main #broadcaster_language_menu .dropmenu_action {
+    color: #d3d3d3 !important;
+}
+
+#dash_main #stats {
+    background-color: #282828;
+    margin: 20px 0px;
+    padding: 10px;
+}
+
+#dash_main #commercial_buttons {
+    margin: 10px;
 }
 
 #dash_main .ui-slider-horizontal {
@@ -121,7 +150,7 @@ body {
 }
 
 #dash_main .dash-chat-column {
-    border-top: none;
+    border: none;
 }
 
 
