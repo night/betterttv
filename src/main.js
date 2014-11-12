@@ -564,17 +564,20 @@ bttv.chat = {
             });
         }
 
-        // Disable Twitch's chat sender
-        $('.chat-interface .ember-text-area').off();
+        
 
         // Message input features (tab completion, message history, anti-prefix completion, extra commands)
         var lastPartialMatch = null;
         var lastMatch = null;
         var lastIndex = null
 
-        $('.ember-chat .chat-interface textarea').on('keydown', function (e) {
+        var $chatInput = $('.ember-chat .chat-interface textarea');
+
+        // Disable Twitch's chat sender
+        $chatInput.off();
+
+        $chatInput.on('keydown', function (e) {
             var keyCode = e.keyCode || e.which;
-            var $chatInput = $('.ember-chat .chat-interface textarea');
 
             // Tab completion
             if (keyCode === keyCodes.Tab) {
@@ -718,9 +721,9 @@ bttv.chat = {
         });
 
         // Implement our own text sender
-        $('.chat-interface .ember-text-area').on('keydown', function(e) {
+        $chatInput.on('keydown', function(e) {
             if(e.which === keyCodes.Enter) {
-                var val = $('.ember-text-area').val().trim();
+                var val = $chatInput.val().trim();
                 if(e.shiftKey || !val.length) return;
 
                 // Easter Egg Kappa
@@ -731,14 +734,14 @@ bttv.chat = {
                 }
 
                 bttv.chat.helpers.sendMessage(val);
-                $('.ember-text-area').val('');
+                $chatInput.val('');
             }
         });
-        $('.chat-interface .ember-text-area').on('keyup', function(e) {
+        $chatInput.on('keyup', function(e) {
             if(e.which === keyCodes.Enter) {
                 if(e.shiftKey) return;
 
-                $('.ember-text-area').val('');
+                $chatInput.val('');
             }
         });
 
