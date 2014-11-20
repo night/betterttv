@@ -6,7 +6,7 @@ vars = require('./vars');
 
 bttv.info = {
     version: "6.8",
-    release: 21,
+    release: 20,
     versionString: function() { 
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -883,18 +883,18 @@ bttv.chat = {
         },
         listMods: function() {
             var tmi = bttv.chat.tmi();
-            if(tmi) return tmi.tmiRoom._roomUserLabels._sets;
+            if(tmi) return tmi.tmiRoom._roomUserModes._sets;
             return {};
         },
         addMod: function(user) {
             if(!user || user === "") return false;
             var tmi = bttv.chat.tmi();
-            if(tmi) tmi.tmiRoom._roomUserLabels.add(user, 'mod');
+            if(tmi) tmi.tmiRoom._roomUserModes.add(user, 'mod');
         },
         removeMod: function(user) {
             if(!user || user === "") return false;
             var tmi = bttv.chat.tmi();
-            if(tmi) tmi.tmiRoom._roomUserLabels.remove(user, 'mod');
+            if(tmi) tmi.tmiRoom._roomUserModes.remove(user, 'mod');
         },
         isIgnored: function(user) {
             if(!user || user === "") return false;
