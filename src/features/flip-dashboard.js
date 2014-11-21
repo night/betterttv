@@ -1,18 +1,28 @@
-var debug = require('debug');
+var debug = require('../debug');
 
 module.exports = function () {
-    if ($("#dash_main").length && bttv.settings.get("flipDashboard") === true) {
+    if(!$("#dash_main").length) return;
+
+    if(bttv.settings.get("flipDashboard") === true) {
         debug.log("Flipping Dashboard");
 
         // We want to move the chat to the left, and the dashboard controls to the right.
-        $("#controls_column, #player_column").css({
-            float: "right",
-            marginLeft: "500px"
-        });
-        $("#chat, iframe").css({
+        $("#dash_main .dash-chat-column").css({
             float: "left",
-            left: "20px",
-            right: ""
+            right: "initial"
+        });
+        $("#dash_main #controls_column").css({
+            float: "right",
+            left: "20px"
+        });
+    } else {
+        $("#dash_main .dash-chat-column").css({
+            float: "none",
+            right: "0px"
+        });
+        $("#dash_main #controls_column").css({
+            float: "left",
+            left: "0px"
         });
     }
 }

@@ -1,5 +1,5 @@
-var debug = require('debug'),
-    vars = require('vars');
+var debug = require('../debug'),
+    vars = require('../vars');
 
 module.exports = function () {
     if (bttv.settings.get("bttvChat") === true && vars.userData.isLoggedIn) {
@@ -10,11 +10,11 @@ module.exports = function () {
 
         if(!vars.betaChatLoaded) {
             vars.betaChatLoaded = true;
-            $.getJSON("//chat.betterttv.net/login.php?onsite=true&user="+vars.userData.login+"&callback=?", function(d) {
-
+            $.getJSON("//chat.betterttv.net/login.php?onsite=true&verify=true&callback=?", function(d) {
                 if(d.status === true) {
                     debug.log("Logged into BTTV Chat");
                 } else {
+                    $.getJSON("//chat.betterttv.net/login.php?onsite=true&user="+vars.userData.login+"&callback=?");
                     debug.log("Not logged into BTTV Chat");
                 }
 
@@ -29,7 +29,6 @@ module.exports = function () {
                     chatJSInject.setAttribute("type", "text/javascript");
                     $("body").append(chatJSInject);
                 }, 5000);
-
             });
 
             var chatCSSInject = document.createElement("link");
@@ -43,6 +42,6 @@ module.exports = function () {
         }
 
         if(!bttv.getChannel()) return;
-        $('body').append("<style>.ember-chat .chat-interface .textarea-contain { bottom: 70px !important; } .ember-chat .chat-interface .chat-buttons-container { top: 75px !important; } .ember-chat .chat-interface { height: 140px; } .ember-chat .chat-messages { bottom: 134px; } .ember-chat .chat-settings { bottom: 68px; } .ember-chat .emoticon-selector { bottom: 135px !important; }</style>");
+        $('body').append("<style>.ember-chat .chat-interface { height: 140px !important; } .ember-chat .chat-messages { bottom: 140px; } .ember-chat .chat-settings { bottom: 80px; } .ember-chat .emoticon-selector { bottom: 142px !important; }</style>");
     }
 }

@@ -1,5 +1,5 @@
-var debug = require('debug'),
-    vars = require('vars');
+var debug = require('../debug'),
+    vars = require('../vars');
 
 module.exports = function dashboardChannelInfo() {
     if ($("#dash_main").length) {
@@ -8,27 +8,33 @@ module.exports = function dashboardChannelInfo() {
         Twitch.api.get("streams/" + bttv.getChannel()).done(function (a) {
             if (a.stream) {
                 $("#channel_viewer_count").text(Twitch.display.commatize(a.stream.viewers));
-                if(a.stream.channel.views) $("#views_count").html(Twitch.display.commatize(a.stream.channel.views));
+                if(a.stream.channel.views) $("#views_count span").text(Twitch.display.commatize(a.stream.channel.views));
+                if(a.stream.channel.followers) $("#followers_count span").text(Twitch.display.commatize(a.stream.channel.followers));
             } else {
                 $("#channel_viewer_count").text("Offline");
             }
         });
         Twitch.api.get("channels/" + bttv.getChannel() + "/follows?limit=1").done(function (a) {
             if (a["_total"]) {
-                $("#followers_count").text(Twitch.display.commatize(a["_total"]));
+                $("#followers_count span").text(Twitch.display.commatize(a["_total"]));
             }
         });
         if(!$("#chatters_count").length) {
-            var $chattersContainer = $("<div></div>");
+            var $chattersContainer = $("<div/>");
+            var $chatters = $("<span/>");
+
             $chattersContainer.attr("class", "stat");
             $chattersContainer.attr("id", "chatters_count");
-            $chattersContainer.attr("tooltipdata", "Chatters");
-            $chattersContainer.text('0');
+
+            $chatters.text("0");
+            $chatters.attr("tooltipdata", "Chatters");
+
+            $chattersContainer.append($chatters);
             $("#followers_count").after($chattersContainer);
         }
 
         $.getJSON('http://tmi.twitch.tv/group/user/' + bttv.getChannel() + '/chatters?callback=?', function(data) {
-            if(data.data && data.data.chatter_count) $("#chatters_count").text(Twitch.display.commatize(data.data.chatter_count));
+            if(data.data && data.data.chatter_count) $("#chatters_count span").text(Twitch.display.commatize(data.data.chatter_count));
         });
 
         if(vars.dontCheckSubs !== true) {
@@ -43,23 +49,27 @@ module.exports = function dashboardChannelInfo() {
                         var subAmounts = subsRegex.exec(containerText),
                             activeSubs = subAmounts[2];
 
-                        if(!$("#channel_subs_count").length) {
-                            var $subsContainer = $("<div></div>");
+                        if(!$("#subs_count").length) {
+                            var $subsContainer = $("<div/>");
+                            var $subs = $("<span/>");
+
                             $subsContainer.attr("class", "stat");
-                            $subsContainer.attr("id", "channel_subs_count");
-                            $subsContainer.attr("tooltipdata", "Active Subscribers");
-                            $subsContainer.text(Twitch.display.commatize(activeSubs));
+                            $subsContainer.attr("id", "subs_count");
+
+                            $subs.text("0");
+                            $subs.attr("tooltipdata", "Active Subscribers");
+
+                            $subsContainer.append($subs);
                             $("#chatters_count").after($subsContainer);
 
-                            Twitch.api.get("chat/" + bttv.getChannel() + "/badges").done(function (a) {
-                                if (a.subscriber) {
-                                    $("#channel_subs_count").css("background", "url("+a.subscriber.image+") no-repeat left center");
-                                    $("#channel_subs_count").css("background-size", "14px 14px");
+                            Twitch.api.get("chat/" + bttv.getChannel() + "/badges").done(function(a) {
+                                if(a.subscriber) {
+                                    $("#subs_count").css("background-image", "url("+a.subscriber.image+")");
                                 }
                             });
-                        } else {
-                            $("#channel_subs_count").text(Twitch.display.commatize(activeSubs));
                         }
+
+                        $("#subs_count span").text(Twitch.display.commatize(activeSubs));
                     } else {
                         vars.dontCheckSubs = true;
                         debug.log("Dashboard Info -> Channel doesn't have subscribers.");

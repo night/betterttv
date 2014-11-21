@@ -14,10 +14,6 @@ body.channel_new {
     background: #bdbcbc;
 }
 
-.member a {
-    color: black;
-}
-
 .member.playing {
     background-color: #374a9b;
     border-color: #000000;
@@ -58,10 +54,6 @@ ul.tabs li.selected a {
     height: 125px !important;
 }
 
-a {
-    color: black;
-}
-
 .dropmenu.menu-like p.dropmenu_action .left, .menu-like.ui-menu p.dropmenu_action .left, .menu-like.ui-multiselect-menu p.dropmenu_action .left, .dropmenu.menu-like .compl_actn .left, .menu-like.ui-menu .compl_actn .left, .menu-like.ui-multiselect-menu .compl_actn .left, .ui-menu p.dropmenu_action .left, .ui-menu.ui-multiselect-menu p.dropmenu_action .left, .ui-menu .compl_actn .left, .ui-menu.ui-multiselect-menu .compl_actn .left {
     width: auto;
     height: auto;
@@ -69,7 +61,11 @@ a {
 
 .ember-chat .chat-messages {
     top: 0px;
-    bottom: 134px;
+    bottom: 115px;
+}
+
+.loading-mask {
+    background: none;
 }
 
 /* New Channel Page */
@@ -160,6 +156,19 @@ input.text:focus,select:focus,textarea:focus {
     font-weight: bold;
     border-radius: 2px;
     display: inline !important;
+}
+
+.ember-chat .badges {
+    display: inline-block;
+}
+
+.ember-chat .badges .badge {
+    float: none !important;
+    margin: 0px;
+}
+
+.ember-chat .badges .badge:last-child {
+    margin-right: 5px;
 }
 
 .line .oldbot, .ember-chat .badges .oldbot {
@@ -626,118 +635,61 @@ input.text:focus,select:focus,textarea:focus {
   color: #D3D3D3;
 }
 
-#dash_main.fullwidth_main .wrapper {
-    padding: 0px 20px;
+/* dashboard */
+
+#dash_main .dash-items-contain #controls_column {
+    width: 420px;
 }
 
-#dash_main #chat #chat_lines {
-    height: 500px;
-}
-
-#dash_main #delay_controls {
-    width: 380px;
-    background-color: #f1f1f1;
-    border: 1px solid #ccc;
-}
-
-#dash_main .ui-slider-horizontal {
-    background: none !important;
-    margin-left: 10px;
-    margin-right: 10px;
-}
-
-#dash_main #chat {
+#dash_main .dash-items-contain .dash-chat-column {
     width: 500px;
-    float: right;
-    right: 20px;
-    position: absolute;
-    top: 0px;
-    background-color: #f1f1f1;
-    padding: 10px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    margin-left: 0px !important;
-    z-index: 9001;
-}
-
-#dash_main #commercial_buttons {
-    float: none;
-    border: 1px solid rgba(0,0,0,0.2);
-    border-top: none;
-    height: 30px;
-    line-height: 30px;
-    background: rgba(0,0,0,0.05);
-}
-
-#dash_main iframe {
-    border: none;
-    width: 525px;
-    float: right;
-    right: 20px;
-    position: absolute;
-    background-color: #f1f1f1;
-    border-radius: 4px;
-    margin-left: 0px !important;
-    z-index: 9001;
-}
-
-#dash_main .grid, .flex_grid {
-    float: none;
-}
-
-#dash_main #vod_form, #dash_main #stats, #dash_main #commercial_buttons {
-    width: 380px;
-    padding: 10px;
-}
-
-#dash_main #hide_preview {
-    padding-left: 5px;
-    padding-right: 5px;
-}
-
-#dash_main #vod_form {
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
-}
-
-#dash_main #commercial_buttons {
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
-}
-
-#dash_main #player_column {
-    height: 260px;
-    width: 400px;
-    border-radius: 5px;
-}
-
-#dash_main #player_overlay {
-    border-radius: 5px;
 }
 
 #dash_main #video_player {
-    height: 260px !important;
-    width: 400px;
+    height: 272px;
 }
 
-#dash_main #video_player.hidden {
-    display: none !important;
+#dash_main #custom_filter #gameselector_input {
+    width: 185px;
 }
 
-#dash_main #stats .stat#channel_subs_count {
-    padding-left: 18px;
-    background: url(//www-cdn.jtvnw.net/images/xarth/g/g18_star-00000080.png) no-repeat left center;
+#dash_main #broadcaster_language_switch {
+    width: 130px;
+}
+
+#dash_main .dash-broadcast-contain {
+    padding-bottom: 10px;
+}
+
+#dash_main .dash-player-contain {
+    margin-bottom: 0px;
+}
+#dash_main .dash-items-contain .primary_button {
+    box-shadow: none;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+}
+
+#dash_main #stats .stat#views_count svg path,
+#dash_main #stats .stat#followers_count svg path {
+    fill: #2a2a2a;
 }
 
 #dash_main #stats .stat#chatters_count {
-    padding-left: 18px;
+    padding-left: 20px;
     background: url(../icons/chatters_dark.png) no-repeat left center;
 }
 
-#dash_main {
-    padding-top: 10px;
-    margin-top: 53px;
-    padding-bottom: 20px;
+#dash_main #stats .stat#subs_count {
+    padding-left: 20px;
+    background-size: 14px 14px;
+    background: url(../icons/star.png) no-repeat left center;
+}
+
+#dash_main #commercial_buttons {
+    float: none;
+    border-top: 1px solid rgba(0,0,0,0.2);
+    height: 50px;
 }
 
 .normal_button, .large_normal_button, .dropdown, .dropdown_static, .dropdown_glyph, .primary_button, button.primary, #left_close, #right_close, #commercial_buttons .button {
@@ -757,10 +709,8 @@ input.text:focus,select:focus,textarea:focus {
     display: inline;
     top: 0px;
     position: auto;
-}
-
-#site_header .normal_button, #site_header .large_normal_button, #site_header .dropdown, #site_header .dropdown_static, #site_header .dropdown_glyph {
-    color: black;
+    color: #fff !important;
+    margin-right: 0px;
 }
 
 input, textarea, select {
@@ -806,10 +756,25 @@ input, textarea, select {
     opacity: 0.5;
 }
 
+.ember-chat .chat-messages {
+    left: 0px;
+    right: 0px;
+}
+
+.ember-chat .mod-icons, .ember-chat .chat-messages .timestamp {
+    margin-right: 0px;
+}
+
+.ember-chat {
+    margin: 0px;
+}
+
 #chat_line_list .line p .chat_line, .ember-chat .chat-messages .chat-line {
     word-break: break-word;
     padding-top: 5px;
     margin-top: inherit;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 #chat_line_list li .nick, .ember-chat .chat-messages .from {
@@ -1034,16 +999,16 @@ body#chat #speak {
 
 /* Group Chat changed textarea */
 .ember-chat .chat-interface .textarea-contain {
+    width: auto;
     top: 10px;
-    left: 10px;
-    right: 10px;
+    margin-right: 10px;
+    margin-left: 10px;
 }
 
 .ember-chat .chat-interface .chat-buttons-container {
-    top: 85px;
-    left: 10px;
-    right: 10px;
-    bottom: auto;
+    width: auto;
+    margin: 0px 10px;
+    padding-top: 10px;
 }
 
 .ember-chat .chat-interface .chat-buttons-container .chat-option-buttons button:first-child {
@@ -1067,6 +1032,10 @@ body#chat #speak {
     background-repeat: no-repeat;
 }
 
+.ember-chat .chat-messages .tse-scroll-content {
+    padding: 0px;
+}
+
 .ember-chat .chat-buttons-container .chat-option-buttons button {
     height: 32px !important;
     width: 38px !important;
@@ -1079,10 +1048,6 @@ body#chat #speak {
 
 #small_nav .content ul li .home_icon svg path {
     display: none;
-}
-
-.chat-menu.dropmenu a {
-    color: black;
 }
 
 .normal_button.active, .normal_button {
@@ -1100,8 +1065,36 @@ body#chat #speak {
     line-height: 40px;
 }
 
+.ember-chat .chat-messages .chat-line.admin {
+    padding: 0px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.ember-chat .chatters-view {
+    left: 0px;
+    right: 0px;
+    padding: 0px;
+    border: none;
+}
+
+.ember-chat .ember-list-item-view {
+    left: 15px;
+}
+
 .ember-chat .chat-settings {
     padding: 0px;
+}
+
+.ember-chat .chat-interface {
+    left: 0px;
+    right: 0px;
+    padding: 0px;
+    height: 115px !important;
+}
+
+.ember-chat .chat-interface .chat-buttons-container .chat-option-buttons {
+    margin-left: 8px;
 }
 
 .ember-chat .chat-header {
@@ -1110,6 +1103,15 @@ body#chat #speak {
     width: 100%;
     line-height: 40px;
     height: 40px;
+    padding: 0px;
+}
+
+.ember-chat .chat-header .button.left {
+    left: 10px;
+}
+
+.ember-chat .chat-header .button.right {
+    right: 10px;
 }
 
 .ember-chat .chat-menu-button-container {
@@ -1147,11 +1149,6 @@ body#chat #speak {
     margin: 0;
 }
 
-.ember-chat .top-dropdown {
-    margin: 0px -20px;
-    margin-top: -10px;
-}
-
 .ember-chat .top-dropdown .input-contain {
     left: 10px;
     right: 10px;
@@ -1166,10 +1163,6 @@ body#chat #speak {
     width: 100%;
 }
 
-div#header_actions span, div#header_actions a{
-    color: black;
-}
-
 .archives-contain .videos { 
     padding:0;
 }
@@ -1179,12 +1172,119 @@ div#header_actions span, div#header_actions a{
 span.mod-controls {
     display: inline-block;
 }
-#main_col .stats-and-actions #is-subscribed, .ember-chat .chat-room-list .room p.room-title, .button.unfollow, .button.unfollow:hover {
-    color: #000 !important;
-}
-ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .dropmenu.menu-like .dropmenu_action  {
-    color: #000;
-}
 div.part.description a {
     text-decoration: underline;
+}
+.app-main .isLoggedIn .nav_section div#you {
+    position: relative;
+    min-height: 34px;
+}
+.app-main .isLoggedIn .nav_section div#you span.username {
+    background-color: #1F1F1F;
+    max-width: 120px;
+    position: absolute;
+    z-index: 9999;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.app-main .isLoggedIn .nav_section div#you span.username:hover {
+    max-width: 100%;
+    padding-right: 5px;
+}
+
+/* realign login/out button */
+#large_nav .content .bottom .loggedout .buttons a {
+    width: 93px;
+}
+
+/* TwitchCast button (sits atop Twitch player)*/
+#twitchcast_button {
+    background: url(../icons/chromecast.png) no-repeat 0px 0px;
+    background-size: 48px 18px;
+    height: 18px;
+    width: 23px;
+    position: absolute;
+    left: 160px;
+    bottom: 5px;
+}
+
+#twitchcast_button:hover {
+    background: url(../icons/chromecast.png) no-repeat -24px 0px;
+    background-size: 48px 18px;
+}
+
+.dash-chat-column {
+    background: rgba(0,0,0,0.05);
+}
+
+body.channel_new.columns.ember-application {
+    background: rgba(0,0,0,0.05);
+}
+
+.ember-view.ember-chat.roomMode {
+    background: #f2f2f2 !important;
+}
+
+
+/* embedded poll feature */
+#bttv-poll-contain {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 100%;
+    height: 50px;
+
+    background: #222;
+    color: #e3e3e3;
+    box-shadow: 0px 8px 8px -5px #000;
+
+    overflow: hidden;
+    display: none;
+}
+
+#bttv-poll-contain .title {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+
+    height: 50px;
+    line-height: 50px;
+    padding: 0px 24px;
+
+    font-size: 16px;
+
+    cursor: pointer;
+}
+
+#bttv-poll-contain .close {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 16px;
+    height: 16px;
+    padding: 17px;
+
+    background: rgba(0,0,0,0.4);
+
+    cursor: pointer;
+
+    z-index: 999999;
+}
+
+#bttv-poll-contain .close svg path {
+    fill: #fff;
+}
+
+#bttv-poll-contain .frame {
+    position: absolute;
+    top: 50px;
+    left: 0px;
+
+    width: 100%;
+    height: 400px;
+
+    border: none;
+
+    display: none;
 }

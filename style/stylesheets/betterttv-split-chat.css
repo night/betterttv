@@ -24,6 +24,10 @@
     padding-right: 0px !important;
 }
 
+.ember-chat .chat-messages .tse-scroll-content, .ember-chat .chat-messages .chat-lines {
+    padding: 0px;
+}
+
 #chat_line_list, .ember-chat .chat-messages .chat-line {
     padding-left: 10px !important;
     padding-right: 10px !important;

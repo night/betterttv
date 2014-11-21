@@ -1,5 +1,5 @@
-var debug = require('debug'),
-    vars = require('vars');
+var debug = require('../debug'),
+    vars = require('../vars');
 
 module.exports = function () {
     if (vars.emotesLoaded) return;
@@ -105,8 +105,11 @@ module.exports = function () {
                     a.hidden = true;
                 }
                 if(b.restriction) {
-                    if(b.restriction.channels && b.restriction.channels.indexOf(BetterTTV.getChannel()) === -1) return;
-                    if(b.restriction.games && b.restriction.games.indexOf(App.Channel.findOne(BetterTTV.getChannel()).get('game')) === -1) return;
+                    if(b.restriction.channels && b.restriction.channels.indexOf(bttv.getChannel()) === -1) return;
+                    if(b.restriction.games && b.restriction.games.indexOf(App.Channel.findOne(bttv.getChannel()).get('game')) === -1) return;
+                }
+                if(b.channel === "Night" && user && userEmoteSets.indexOf('night') !== -1) {
+                    a.hidden = false;
                 }
                 a.images.forEach(function (c) {
                     var id = getId();
@@ -138,7 +141,7 @@ module.exports = function () {
                 fallback: function() {
                     var $emote = vars.hoveringEmote;
                     if($emote && $emote.data('regex')) {
-                        var raw = decodeURIComponent($emote.data('regex').split(' ').join(''));
+                        var raw = decodeURIComponent($emote.data('regex'));
                         if($emote.data('channel')) {
                             return "Emote: "+raw+"<br />Channel: "+$emote.data('channel');
                         } else {

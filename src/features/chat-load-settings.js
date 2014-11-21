@@ -1,8 +1,8 @@
-var debug = require('debug'),
-    vars = require('vars');
-var darkenPage = require('features/darken-page'),
-    splitChat = require('features/split-chat');
-var removeElement = require('element').remove;
+var debug = require('../debug'),
+    vars = require('../vars');
+var darkenPage = require('./darken-page'),
+    splitChat = require('./split-chat');
+var removeElement = require('../element').remove;
 
 module.exports = function() {
     if(!$('.ember-chat .chat-settings').length || $('.ember-chat .chat-settings .bttvChatSettings').length) return;
@@ -11,7 +11,7 @@ module.exports = function() {
 
     $('.ember-chat .chat-settings .clear-chat').remove();
 
-    var settings = require('templates/chat-settings')();
+    var settings = require('../templates/chat-settings')();
 
     var $settings = $('<div></div>');
 

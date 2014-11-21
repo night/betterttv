@@ -41,14 +41,6 @@
  * Dual licensed under the MIT and GPL licenses.
  */
 /** @license
- * CommonJS Require
- * https://github.com/efacilitation/commonjs-require
- *
- * Copyright (c) 2014 efa GmbH (http://efa-gmbh.com/)
- * Copyright (c) 2013-2014 Paul Miller (http://paulmillr.com/)
- * Licensed under the MIT license.
- */
-/** @license
  * Jade
  * https://github.com/visionmedia/jade
  *

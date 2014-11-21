@@ -4,14 +4,15 @@
  */
 
 var chat = bttv.chat, vars = bttv.vars;
-var betaChat = require('features/beta-chat'),
-    splitChat = require('features/split-chat'),
-    darkenPage = require('features/darken-page'),
-    handleBackground = require('features/handle-background'),
-    flipDashboard = require('features/flip-dashboard'),
-    cssLoader = require('features/css-loader');
-var displayElement = require('element').display,
-    removeElement = require('element').remove;
+var betaChat = require('./features/beta-chat'),
+    channelReformat = require('./features/channel-reformat'),
+    splitChat = require('./features/split-chat'),
+    darkenPage = require('./features/darken-page'),
+    handleBackground = require('./features/handle-background'),
+    flipDashboard = require('./features/flip-dashboard'),
+    cssLoader = require('./features/css-loader');
+var displayElement = require('./element').display,
+    removeElement = require('./element').remove;
 
 module.exports = [
     {
@@ -95,7 +96,7 @@ module.exports = [
     },
     {
         name: 'Default to Live Channels',
-        description: 'BetterTTV can click on "Live Channels" for you in the Directory when enabled',
+        description: 'BetterTTV can click on "Channels" for you in the Following Overview automatically',
         default: false,
         storageKey: 'showDirectoryLiveTab'
     },
@@ -155,6 +156,12 @@ module.exports = [
                 $('body').unbind("dblclick");
             }
         }
+    },
+    {
+        name: 'Embedded Polling',
+        description: 'See polls posted by the broadcaster embedded right into chat',
+        default: true,
+        storageKey: 'embeddedPolling'
     },
     {
         name: 'Featured Channels',
@@ -251,6 +258,15 @@ module.exports = [
         }
     },
     {
+        name: 'TwitchCast',
+        description: 'Watch a Twitch stream via Chromecast (Google Chrome only)',
+        default: false,
+        storageKey: 'twitchCast',
+        toggle: function(value) {
+            channelReformat();
+        }
+    },
+    {
         name: 'Twitch Chat Emotes',
         description: 'Why remember emotes when you can "click-to-insert" them (by Ryan Chatham)',
         default: false,
@@ -322,15 +338,7 @@ module.exports = [
                 flipDashboard();
             } else {
                 $("#flipDashboard").text("Flip Dashboard");
-                $("#controls_column, #player_column").css({
-                    float: "none",
-                    marginLeft: "0px"
-                });
-                $("#chat,iframe").css({
-                    float: "right",
-                    left: "",
-                    right: "20px"
-                });
+                flipDashboard();
             }
         }
     },

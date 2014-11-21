@@ -1,5 +1,5 @@
-var debug = require('debug'),
-    vars = require('vars');
+var debug = require('../debug'),
+    vars = require('../vars');
 
 var checkFollowing = module.exports = function () {
     debug.log("Check Following List");

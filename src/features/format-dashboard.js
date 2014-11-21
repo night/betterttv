@@ -1,25 +1,20 @@
-var debug = require('debug');
+var debug = require('../debug');
 
 module.exports = function () {
     if ($("#dash_main").length) {
         debug.log("Formatting Dashboard");
 
-        // Move Page Elements to Sub-DIV & Account for Changes
-        $('<div style="position:relative;" id="bttvDashboard"></div>').appendTo('#dash_main .wrapper');
-        $("#dash_main #controls_column").appendTo("#bttvDashboard");
-        $("#dash_main #player_column").appendTo("#bttvDashboard");
-        $("#dash_main iframe").css("top",
-            (bttv.settings.get('darkenedMode') ? 11 : 0)+
-            (($('.js-broadcaster-message').css('display') !== 'none') ? $('.js-broadcaster-message').outerHeight(true) : 0)+
-            $('#dashboard_title').outerHeight(true)+
-            $('#setup_link').outerHeight(true)+
-            $('#dash_nav').outerHeight(true)+
-            $('#stream-config-status').outerHeight(true)
-        ).css("border","none");
+        // reorder left column
+        $("#dash_main #controls_column .dash-hostmode-contain").appendTo("#dash_main #controls_column");
+        $("#dash_main #controls_column .dash-player-contain").appendTo("#dash_main #controls_column");
+
+        // In order to properly style chat within iframe, we pass messages between frames. This enabled that.
         if($("#dash_main iframe").length) {
-            $("#dash_main iframe")[0].style.height = "514px";
-            $("#dash_main iframe")[0].src = "/"+bttv.getChannel()+"/chat?bttvDashboard=true";
+            $("#dash_main iframe")[0].src = $("#dash_main iframe")[0].src+"?bttvDashboard=true";
         }
+
+        // We move the commercial button inside the box with other dash control.
+        $("#dash_main #commercial_buttons").appendTo("#dash_main .dash-broadcast-contain");
 
         // Small Dashboard Fixes
         $("#commercial_options .dropmenu_action[data-length=150]").text("2m 30s");
