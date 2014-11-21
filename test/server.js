@@ -10,7 +10,7 @@ http.createServer(function(req, res) {
 
   fs.exists(file, function(exists) {
     if(!exists) {
-      request.get('http://dev.betterttv.net/'+uri).pipe(res);
+      request.get({"rejectUnauthorized": false, url: 'http://dev.betterttv.net/'+uri}).pipe(res);
       return;
     }
 
