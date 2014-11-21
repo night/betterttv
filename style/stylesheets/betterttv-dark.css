@@ -14,8 +14,8 @@ body {
 .channel-stats #followers-count.stat svg path,
 #channel_stats #views_count.stat svg path,
 #channel_stats #followers_count.stat svg path,
-.channel-stats .stat svg.svg-views path,
-.channel-stats .stat svg.svg-followers path {
+.channel-stats .stat svg.svg-glyph_views path,
+.channel-stats .stat svg.svg-glyph_followers path {
     fill: rgba(255,255,255,0.35) !important;
 }
 
@@ -1045,10 +1045,10 @@ body {
 }
 
 /* make emote icon light */
-.ember-chat .chat-interface .textarea-contain svg.svg-gear path {
+.ember-chat .chat-interface .textarea-contain svg.svg-emoticons path {
     fill: #888;
 }
-.ember-chat .chat-interface .textarea-contain svg.svg-gear:hover path {
+.ember-chat .chat-interface .textarea-contain svg.svg-emoticons:hover path {
     fill: #777;
 }
 
