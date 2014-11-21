@@ -6,7 +6,7 @@ module.exports = function () {
 
     if($("body#chat").length) return;
 
-    /*if (vars.userData.isLoggedIn && window.Firebase) {
+    if (vars.userData.isLoggedIn && window.Firebase) {
         var newMessages = function(id, namespaced) {
             var notificationsLoaded = false;
             var notifications = 0;
@@ -57,66 +57,13 @@ module.exports = function () {
                 newMessages(d.id, e.namespaced);
             });
         });
-    }*/
-
-    var seenMessages = [];
-    var recentMessageTimes = ['less than a minute ago', '1 minute ago'];
-
-    // Twitch's message counter is broken!
-    var checkMessages = function() {
-        $.get('/messages/inbox', function (data) {
-            var $messages = $(data).find("#message-list .unread");
-
-            $messages.each(function() {
-                var $message = $(this),
-                    $senderData = $message.children("div.from_to_user"),
-                    $messageData = $message.children("div.message_data"),
-                    url = location.protocol+'//'+location.host+$message.data('url'),
-                    messageId = $message.data('url').match(/\/message\/show\/([a-z0-9]+)/)[1],
-                    avatar = $senderData.children(".prof").children("img").attr("src"),
-                    sender = $senderData.children(".capital").text().trim().capitalize(),
-                    time = $messageData.children(".time_ago").text().trim();
-
-                if(seenMessages.indexOf(url) !== -1 || recentMessageTimes.indexOf(time) === -1) return;
-                seenMessages.push(url);
-
-                if(!sender) return;
-                bttv.notify(sender+' just sent you a Message!\nClick here to view it.', 'Twitch Message Received', url, avatar, 'new_message_'+messageId);
-            });
-
-            var total = $messages.length;
-            if(total >= 10) total = total+'+';
-
-            // New site sidebar
-            var $messageCount = $('#large_messages .total_count');
-            $messageCount.removeClass('js-unread_message_count').text(total);
-            total > 0 ? $messageCount.show() : $messageCount.hide();
-
-            // Old site header
-            if (total > 0 && document.getElementById("header_logo")) {
-                if (document.getElementById("messagescount")) {
-                    document.getElementById("messagescount").innerHTML = total;
-                } else {
-                    var messagesnum = document.createElement("a");
-                    var header_following = document.getElementById("header_following");
-                    messagesnum.setAttribute("id", "messagescont");
-                    messagesnum.setAttribute("href", "/inbox");
-                    messagesnum.setAttribute("class", "normal_button");
-                    messagesnum.setAttribute("style", "margin-right: 10px;");
-                    messagesnum.innerHTML = "<span id='messagescount' style='padding-left:28px;background-image:url(//cdn.betterttv.net/style/icons/messages.png);background-position: 8px 4px;padding-top:-1px;background-repeat: no-repeat;color:black;'>" + total + "</span>";
-                    header_following.parentNode.insertBefore(messagesnum, header_following);
-                }
-            } else {
-                if (document.getElementById("messagescont")) document.getElementById("messagescont").remove();
-            }
-        });
     }
-
-    setInterval(checkMessages, 30000);
-    checkMessages();
 
     // Twitch doesn't tell us when messages from /messages/other show up.
     if(bttv.settings.get('alertOtherMessages') === false) return;
+    var seenMessages = [];
+    var recentMessageTimes = ['less than a minute ago', '1 minute ago'];
+
     var checkOther = function() {
         $.get('/messages/other', function (data) {
             var $messages = $(data).find("#message-list .unread");
