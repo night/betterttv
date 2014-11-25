@@ -1288,3 +1288,8 @@ body.channel_new.columns.ember-application {
 
     display: none;
 }
+
+/* Fix the information under the video on the right */
+#channel .channel-stats {
+    white-space: nowrap;
+}
