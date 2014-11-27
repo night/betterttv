@@ -19,7 +19,7 @@ module.exports = function (data) {
         "maximusloopus": { mod: true, tagType: "admin", tagName: "<span style='color:black;'>Hero</span>" },
         "nokz": { mod: true, tagType: "staff", tagName: "N47" },
         "blindfolded": { mod: true, tagType: "broadcaster", tagName: "iLag" },
-        "jjag72": { mod: true, tagType: "admin", tagName: "Jag" },
+        "jagrawr": { mod: true, tagType: "admin", tagName: "Jag" },
         "snorlaxitive": { mod: true, tagType: "purple", tagName: "King" },
         "excalibur": { mod: true, tagType: "staff", tagName: "Boss" },
         "chez_plastic": { mod: true, tagType: "staff", tagName: "Frenchy" },
