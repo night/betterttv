@@ -708,6 +708,18 @@ bttv.chat = {
                 } else if (command === "/localsuboff") {
                     bttv.chat.helpers.serverMessage("Local subscribers-only mode disabled.");
                     vars.localSubsOnly = false;
+                } else if (command === "/viewers") {
+                    Twitch.api.get('streams/' + bttv.getChannel()).done(function(stream) {
+                        bttv.chat.helpers.serverMessage("Current Viewers: " + (stream.stream.viewers + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,')));
+                    }).fail(function() {
+                        bttv.chat.helpers.serverMessage("Could not fetch viewer count.");
+                    });
+                } else if (command === "/followers") {
+                    Twitch.api.get('channels/' + bttv.getChannel() + "/follows").done(function(channel) {
+                        bttv.chat.helpers.serverMessage("Current Followers: " + (channel._total + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,'));
+                    }).fail(function() {
+                        bttv.chat.helpers.serverMessage("Could not fetch follower count.");
+                    });
                 } else if (command === "/linehistory") {
                     if(sentence[1] === "off") {
                         bttv.settings.save('chatLineHistory', false);
