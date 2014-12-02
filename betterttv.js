@@ -986,6 +986,18 @@ bttv.chat = {
                 } else if (command === "/localsuboff") {
                     bttv.chat.helpers.serverMessage("Local subscribers-only mode disabled.");
                     vars.localSubsOnly = false;
+                } else if (command === "/viewers") {
+                    Twitch.api.get('streams/' + bttv.getChannel()).done(function(stream) {
+                        bttv.chat.helpers.serverMessage("Current Viewers: " + Twitch.display.commatize(stream.stream.viewers));
+                    }).fail(function() {
+                        bttv.chat.helpers.serverMessage("Could not fetch viewer count.");
+                    });
+                } else if (command === "/followers") {
+                    Twitch.api.get('channels/' + bttv.getChannel() + '/follows').done(function(channel) {
+                        bttv.chat.helpers.serverMessage("Current Followers: " + Twitch.display.commatize(channel._total));
+                    }).fail(function() {
+                        bttv.chat.helpers.serverMessage("Could not fetch follower count.");
+                    });
                 } else if (command === "/linehistory") {
                     if(sentence[1] === "off") {
                         bttv.settings.save('chatLineHistory', false);
@@ -2315,6 +2327,7 @@ if(window.BTTVLOADED === true) return;
 debug.log("BTTV LOADED " + document.URL);
 BTTVLOADED = true;
 checkJquery();
+
 },{"./debug":1,"./element":2,"./features/beta-chat":4,"./features/brand":5,"./features/channel-reformat":7,"./features/chat-load-settings":10,"./features/check-broadcast-info":11,"./features/check-following":12,"./features/check-messages":13,"./features/clear-clutter":14,"./features/create-settings":15,"./features/css-loader":16,"./features/darken-page":17,"./features/dashboard-channelinfo":18,"./features/directory-functions":19,"./features/embedded-polling":20,"./features/flip-dashboard":21,"./features/format-dashboard":22,"./features/giveaway-compatibility":23,"./features/handle-background":24,"./features/handle-twitchchat-emotes":25,"./features/highlight-feedback":26,"./features/make-card":27,"./features/override-emotes":28,"./features/split-chat":29,"./keycodes":30,"./legacy-tags":31,"./settings-list":32,"./templates/moderation-card":35,"./templates/setting-switch":36,"./vars":38}],4:[function(require,module,exports){
 var debug = require('../debug'),
     vars = require('../vars');
