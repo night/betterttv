@@ -1180,7 +1180,7 @@ div.part.description a {
     min-height: 34px;
 }
 .app-main .isLoggedIn .nav_section div#you span.username {
-    background-color: #1F1F1F;
+    background-color: #19191f;
     max-width: 120px;
     position: absolute;
     z-index: 9999;
