@@ -102,7 +102,7 @@ bttv.settings = {
 
         var featureRequests = ' \
             <div class="option"> \
-                Think something is missing here? Send in a <a href="http://bugs.nightdev.com/projects/betterttv/issues/new?tracker_id=2" target="_blank">feature request</a>! \
+                Think something is missing here? Send in a <a href="https://github.com/night/BetterTTV/issues/new?labels=enhancement" target="_blank">feature request</a>! \
             </div> \
         ';
 
