@@ -549,8 +549,27 @@ body {
     border-radius: 2px;
 }
 
-.dropdown_glyph, .dropdown_static, #subscribe_action .subscribe-price, #channel_following.normal_button, .channel_following.normal_button, .channel-following.normal_button {
+.dropdown_glyph, .dropdown_static, #subscribe_action .subscribe-price, #channel_following.normal_button, .follow-button .notify, .channel-following.normal_button {
     background: rgb(30, 30, 30) url(../icons/dropdown_arrow.png) no-repeat right center !important;
+    box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset !important;
+    color: rgb(170, 170, 170) !important;
+    text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px !important;
+}
+
+.follow-button.following .follow {
+    
+}
+
+.follow-button.following .notify:before {
+    border: 5px solid;
+    border-top-color: #777;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+    border-right-color: transparent;
+}
+
+.follow-button.following .notify {
+    background: rgb(30, 30, 30) !important;
     box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset !important;
     color: rgb(170, 170, 170) !important;
     text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px !important;
