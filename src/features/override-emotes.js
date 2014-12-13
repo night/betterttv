@@ -106,7 +106,7 @@ module.exports = function () {
                 }
                 if(b.restriction) {
                     if(b.restriction.channels && b.restriction.channels.indexOf(bttv.getChannel()) === -1) return;
-                    if(b.restriction.games && b.restriction.games.indexOf(App.Channel.findOne(bttv.getChannel()).get('game')) === -1) return;
+                    if(b.restriction.games && b.restriction.games.indexOf(bttv.chat.tmi().channel.game) === -1) return;
                 }
                 if(b.channel === "Night" && user && userEmoteSets.indexOf('night') !== -1) {
                     a.hidden = false;
