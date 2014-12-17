@@ -2519,6 +2519,19 @@ var handleResize = module.exports = function () {
 
     $('#bttvPlayerStyle').append('#hostmode .target-player, #hostmode .target-player object, #hostmode .target-player video { width: 100% !important; }');
 
+    if ($('.app-main.theatre').length) {
+        var right_col_width = $("#right_col").width();
+        if ($("#right_col").css("display") == "none") {
+            right_col_width = 0;
+        }
+        $("#main_col").css({
+            width: $(window).width() - right_col_width + "px !important",
+            height: $(window).height() + "px !important",
+            marginRight: right_col_width + 'px'
+        });
+        $('#bttvPlayerStyle').html('#player, .dynamic-player, .dynamic-player object, .dynamic-player video, #hostmode .target-player object { width: ' + ($(window).width() - right_col_width) + 'px !important; height: ' + $(window).height() + 'px !important; }');
+    }
+
     var d = $("#broadcast-meta .info .title").width();
     $("#broadcast-meta .info .title .real_title").width() > d ? $("#broadcast-meta .info").addClass("long_title") : $("#broadcast-meta .info").removeClass("long_title");
     $("#channel_panels_contain").masonry("reload");
