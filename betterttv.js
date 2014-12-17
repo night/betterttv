@@ -2499,7 +2499,7 @@ var handleResize = module.exports = function () {
         $('.target-frame').css('height',$(window).height());
     }
 
-    $("#channel_panels_contain").masonry("reload");
+    $("#channel_panels").masonry("reload");
 };
 },{"../../debug":1,"../../vars":38}],7:[function(require,module,exports){
 var debug = require('../../debug'),

@@ -53,5 +53,5 @@ var handleResize = module.exports = function () {
         $('.target-frame').css('height',$(window).height());
     }
 
-    $("#channel_panels_contain").masonry("reload");
+    $("#channel_panels").masonry("reload");
 };
