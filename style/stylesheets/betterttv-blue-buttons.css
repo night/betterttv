@@ -4,14 +4,24 @@
 #small_nav .game_filter.selected a {
     border-left: 3px solid #374a9b !important;
 }
-.button.primary, .button-simple.primary, .primary_button:hover, a.js-follow.follow.button.primary.action:hover, #subscribe_action .subscribe-text:focus, .button.primary:hover { 
+.button.primary,
+.button-simple.primary,
+.primary_button:hover,
+a.js-follow.follow.button.primary.action:hover,
+#subscribe_action .subscribe-text:focus,
+.button.primary:hover,
+#channel .stats-and-actions .follow-button .follow:hover { 
     background: linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
     background: -o-linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
     background: -moz-linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
     background: -webkit-linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
     background: -ms-linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
 } 
-.button.primary, .primary_button, a.js-follow.follow.button.primary.action, #dash_main #commercial_buttons #intervals {
+.button.primary,
+.primary_button,
+a.js-follow.follow.button.primary.action,
+#dash_main #commercial_buttons #intervals,
+#channel .stats-and-actions .follow-button .follow {
     border-color: #000 !important;
     background: linear-gradient(bottom, rgb(47,88,185) 31%, rgb(50,108,211) 80%) !important; 
     background: -o-linear-gradient(bottom, rgb(47,88,185) 31%, rgb(50,108,211) 80%) !important; 

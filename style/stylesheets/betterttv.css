@@ -1278,7 +1278,7 @@ body.channel_new.columns.ember-application {
     height: 16px;
     padding: 17px;
 
-    background: rgba(0,0,0,0.4);
+    background: #800;
 
     cursor: pointer;
 
@@ -1300,6 +1300,13 @@ body.channel_new.columns.ember-application {
     border: none;
 
     display: none;
+}
+
+/* theatre mode */
+#channel .player-column .exit-theatre > a {
+    color: #000;
+    background: #fff;
+    opacity: 0.6;
 }
 
 /* Fix the information under the video on the right */

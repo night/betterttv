@@ -240,7 +240,7 @@ body {
 }
 
 #right_col .content .bottom #controls, #right_col .bottom #controls, .ember-chat .chat-interface {
-    border-top: 1px solid rgba(0, 0, 0, 0.65)
+    border-top: 1px solid rgba(0, 0, 0, 0.65);
 }
 
 .channel-main, .title_over, #channel .player-column #broadcast-meta .info .title .over {
@@ -428,7 +428,9 @@ body {
     margin-right: 0px !important;
 }
 
-#channel .player-column .stats-and-actions .channel-actions .button, #is-subscribed, #channel_actions .button {
+#channel .player-column .stats-and-actions .channel-actions .action,
+#is-subscribed,
+#channel_actions .action {
     margin-right: 10px !important;
 }
 
@@ -436,8 +438,6 @@ body {
 .chat-buttons-container .button,
 .profile-info .buttons .button,
 #channel_actions .button {
-    margin: 0px;
-    margin-right: 8px;
     padding: 0px 10px;
 
     background-color: rgb(30, 30, 30);
@@ -448,6 +448,10 @@ body {
     border: 1px solid;
     border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.35);
     border-radius: 2px;
+}
+
+.chat-buttons-container .button {
+    margin-right: 10px;
 }
 
 #channel .channel-actions .primary,
@@ -471,11 +475,10 @@ body {
     margin-right: 5px;
 }
 
-#channel .channel-actions .button.glyph-only.drop,
-#channel_actions .button.glyph-only.drop,
-.profile-info .buttons .button.glyph-only.drop {
-    padding-right: 0px;
-    width: 38px;
+#channel .channel-actions .button.drop,
+#channel_actions .button.drop,
+.profile-info .buttons .button.drop {
+    padding-right: 20px !important;
 }
 
 .ember-chat .chat-interface .chat-buttons-container .button:first-child {
@@ -1761,9 +1764,12 @@ div#actions {
     color: white;
 }
 
-.button.glyph:hover path, .button.glyph-only:hover path, #channel .player-column .stats-and-actions .channel-actions .button:hover, .ember-chat .chat-menu-button-container:hover svg path {
+.button.glyph:hover path,
+.button.glyph-only:hover path,
+#channel .player-column .stats-and-actions .channel-actions .button:hover,
+.ember-chat .chat-menu-button-container:hover svg path {
     fill: #fff;
-    color:#fff;
+    color: #fff;
 }
 
 .ember-chat .chat-menu .chat-top-header {
@@ -1811,7 +1817,7 @@ span#is-subscribed {
 }
 
 .button.glyph svg path, .button.glyph-only svg path {
-    fill: rgb(170, 170, 170);
+    fill: rgb(170, 170, 170) !important;
 }
 
 .ember-chat .chat-menu-button-container svg path {
@@ -1888,4 +1894,11 @@ span.subscribe-text {
 }
 .button.subscribe-button .subscribe-price {
     color: rgb(170,170,170)!important;
+}
+
+/* theatre mode */
+#channel .player-column .exit-theatre > a {
+    color: #fff;
+    background: rgb(50, 50, 50);
+    opacity: 0.8;
 }
