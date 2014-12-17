@@ -2191,7 +2191,7 @@ var main = function () {
                 //debug.log(payload.template);
 
                 if(App.__container__.lookup("controller:application").get("currentRouteName") !== "channel.index") {
-                    $('#main_col').css('width', 'auto');
+                    $('#main_col').css('margin-right', 'inherit');
                 }
 
                 switch(payload.template) {
