@@ -1526,9 +1526,34 @@ table.simple_table td {
     background: #3b3b3b;
 }
 
+.ember-view .twitch_subwindow_container {
+    background-color: rgba(10,10,10,0.7);
+}
+
 .channel_new .twitch_subwindow_container .twitch_subwindow {
     color: #999;
+}
+
+.channel_new .twitch_subwindow_container .twitch_subwindow .text-content {
     background-color: #1e1e1e;
+}
+
+.channel_new .twitch_subwindow_container .twitch_subwindow .content-header,
+.channel_new .twitch_subwindow_container .twitch_subwindow .buttons {
+    border-color: #555;
+}
+
+.channel_new .twitch_subwindow_container .twitch_subwindow .buttons a {
+    color: #999;
+}
+
+.channel_new .twitch_subwindow_container .twitch_subwindow .ember-text-field {
+    color: #d4d4d4;
+    border: 1px solid rgba(0,0,0,0.35);
+    box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+    -moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+    -webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+    background: #3b3b3b;
 }
 
 .channel_new .twitch_subwindow_container .twitch_subwindow .clear {
