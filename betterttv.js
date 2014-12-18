@@ -404,14 +404,7 @@ bttv.settings = {
             }
         });
 
-        /*var plea = ' \
-            <div class="option"> \
-                <img src="http://cdn.betterttv.net/emotes/batkappa.png" style="margin: -5px 0px;"/> "I\'ve been spending <b>days</b> fixing BetterTTV. Maybe people will <a href="https://streamdonations.net/c/night" target="_blank">contribute</a> for the trouble." \
-            </div> \
-        ';*/
-
         $('#bttvSettings .options-list').append(featureRequests);
-        //$('#bttvSettings .options-list h2.option').before(plea);
 
         $('.option input:radio').change(function (e) {
             bttv.settings.save(e.target.name, parseSetting(e.target.value));
@@ -587,7 +580,7 @@ bttv.notify = function(message, title, url, image, tag, permanent) {
 
 bttv.chat = {
     templates: {
-        badge: function(type, name, description) { return '<div class="'+type+''+((bttv.settings.get('alphaTags') && ['admin','staff','broadcaster','moderator','turbo','ign'].indexOf(type) !== -1)?' alpha'+(!bttv.settings.get("darkenedMode")?' invert':''):'')+' badge" title="'+description+'">'+name+'</div> '; },
+        badge: function(type, name, description) { return '<div class="'+type+''+((bttv.settings.get('alphaTags') && ['admin','global-moderator','staff','broadcaster','moderator','turbo','ign'].indexOf(type) !== -1)?' alpha'+(!bttv.settings.get("darkenedMode")?' invert':''):'')+' badge" title="'+description+'">'+name+'</div> '; },
         badges: function(badges) {
             var resp = '<span class="badges">';
             badges.forEach(function(data) {
@@ -1153,7 +1146,7 @@ bttv.chat = {
             });
         },
         notifyMessage: function (type, message) {
-            var tagType = (bttv.settings.get("showJTVTags") === true && ["moderator","broadcaster","admin","staff","bot"].indexOf(type) !== -1) ? 'old'+type : type;
+            var tagType = (bttv.settings.get("showJTVTags") === true && ["moderator","broadcaster","admin","global-moderator","staff","bot"].indexOf(type) !== -1) ? 'old'+type : type;
             bttv.chat.handlers.onPrivmsg(bttv.chat.store.currentRoom, {
                 from: 'twitchnotify',
                 date: new Date(),
@@ -1200,6 +1193,11 @@ bttv.chat = {
             if(!user || user === "") return false;
             var tmi = bttv.chat.tmi();
             return (tmi && tmi.tmiRoom.getLabels(user).indexOf('admin') !== -1) ? true : false;
+        },
+        isGlobalMod: function(user) {
+            if(!user || user === "") return false;
+            var tmi = bttv.chat.tmi();
+            return (tmi && tmi.tmiRoom.getLabels(user).indexOf('global_mod') !== -1) ? true : false;
         },
         isStaff: function(user) {
             if(!user || user === "") return false;
@@ -1291,6 +1289,12 @@ bttv.chat = {
                         type: (bttv.settings.get("showJTVTags") === true?'old':'')+'admin',
                         name: (bttv.settings.get("showJTVTags") === true?'Admin':''),
                         description: 'Twitch Admin'
+                    });
+                } else if(badges.indexOf('global_mod') !== -1) {
+                    bttvBadges.push({
+                        type: (bttv.settings.get("showJTVTags") === true?'old':'')+'global-moderator',
+                        name: (bttv.settings.get("showJTVTags") === true?'GMod':''),
+                        description: 'Twitch Global Moderator'
                     });
                 } else if(badges.indexOf('owner') !== -1 && !data.bttvTagType) {
                     bttvBadges.push({
@@ -1735,7 +1739,7 @@ bttv.chat = {
             if(bots.indexOf(data.from) !== -1 && bttv.chat.helpers.isModerator(data.from)) { data.bttvTagType="bot"; data.bttvTagName = "Bot"; }
 
             if (bttv.settings.get("showJTVTags") === true) {
-                if (data.bttvTagType == "moderator" || data.bttvTagType == "broadcaster" || data.bttvTagType == "admin" || data.bttvTagType == "staff" || data.bttvTagType === "bot") data.bttvTagType = 'old'+data.bttvTagType;
+                if (data.bttvTagType == "moderator" || data.bttvTagType == "broadcaster" || data.bttvTagType == "admin" || data.bttvTagType == "global_mod" || data.bttvTagType == "staff" || data.bttvTagType === "bot") data.bttvTagType = 'old'+data.bttvTagType;
             }
 
             data.color = bttv.chat.helpers.getColor(data.from);
@@ -1770,7 +1774,7 @@ bttv.chat = {
 
             if(legacyTags[data.from] && ((legacyTags[data.from].mod === true && bttv.chat.helpers.isModerator(data.from)) || legacyTags[data.from].mod === false)) {
                 var userData = legacyTags[data.from];
-                if(userData.tagType) data.bttvTagType = (["moderator","broadcaster","admin","staff","bot"].indexOf(userData.tagType) !== -1) ? 'old'+userData.tagType : userData.tagType;
+                if(userData.tagType) data.bttvTagType = (["moderator","broadcaster","admin","global_mod","staff","bot"].indexOf(userData.tagType) !== -1) ? 'old'+userData.tagType : userData.tagType;
                 if(userData.tagName) data.bttvTagName = userData.tagName;
                 if(userData.color && data.style !== 'action') data.color = userData.color;
                 if(userData.nickname) data.bttvDisplayName = userData.nickname;
@@ -2327,7 +2331,6 @@ if(window.BTTVLOADED === true) return;
 debug.log("BTTV LOADED " + document.URL);
 BTTVLOADED = true;
 checkJquery();
-
 },{"./debug":1,"./element":2,"./features/beta-chat":4,"./features/brand":5,"./features/channel-reformat":7,"./features/chat-load-settings":10,"./features/check-broadcast-info":11,"./features/check-following":12,"./features/check-messages":13,"./features/clear-clutter":14,"./features/create-settings":15,"./features/css-loader":16,"./features/darken-page":17,"./features/dashboard-channelinfo":18,"./features/directory-functions":19,"./features/embedded-polling":20,"./features/flip-dashboard":21,"./features/format-dashboard":22,"./features/giveaway-compatibility":23,"./features/handle-background":24,"./features/handle-twitchchat-emotes":25,"./features/highlight-feedback":26,"./features/make-card":27,"./features/override-emotes":28,"./features/split-chat":29,"./keycodes":30,"./legacy-tags":31,"./settings-list":32,"./templates/moderation-card":35,"./templates/setting-switch":36,"./vars":38}],4:[function(require,module,exports){
 var debug = require('../debug'),
     vars = require('../vars');
@@ -4086,7 +4089,7 @@ module.exports = [
     {
         name: 'Blue Buttons',
         description: 'BetterTTV replaces Twitch\'s purple with blue by default',
-        default: true,
+        default: false,
         storageKey: 'showBlueButtons',
         toggle: function(value) {
             if(value === true) {
@@ -4468,7 +4471,7 @@ buf.push("</div>");
 if ( user.name != vars.userData.login)
 {
 buf.push("<div class=\"interface\"><button class=\"button-simple primary mod-card-follow\">Follow</button><button style=\"height: 30px;vertical-align: top;\" title=\"View user's profile\" class=\"button-simple dark mod-card-profile\"><img src=\"https://www-cdn.jtvnw.net/images/xarth/g/g18_person-00000080.png\" style=\"margin-top: 6px;\"/></button><button style=\"height: 30px;vertical-align: top;\" title=\"Send user a message\" class=\"button-simple dark mod-card-message\"><img src=\"https://www-cdn.jtvnw.net/images/xarth/g/g18_mail-00000080.png\" style=\"margin-top: 6px;\"/></button><button title=\"Add/Remove user from ignores\" class=\"button-simple dark mod-card-ignore\"><svg height=\"16px\" width=\"16px\" version=\"1.1\" viewBox=\"0 0 16 16\" x=\"0px\" y=\"0px\" class=\"svg-ignore\"><path clip-rule=\"evenodd\" fill-rule=\"evenodd\" d=\"M13,11.341V16l-3.722-3.102C8.863,12.959,8.438,13,8,13c-3.866,0-7-2.462-7-5.5C1,4.462,4.134,2,8,2s7,2.462,7,5.5C15,8.996,14.234,10.35,13,11.341z M11,7H5v1h6V7z\"></path></svg><svg style=\"display: none;\" height=\"16px\" width=\"16px\" version=\"1.1\" viewBox=\"0 0 16 16\" x=\"0px\" y=\"0px\" class=\"svg-unignore\"><path clip-rule=\"evenodd\" fill-rule=\"evenodd\" d=\"M13,11.341V16l-3.722-3.102C8.863,12.959,8.438,13,8,13c-3.866,0-7-2.462-7-5.5C1,4.462,4.134,2,8,2s7,2.462,7,5.5C15,8.996,14.234,10.35,13,11.341z\"></path></svg></button>");
-if ( vars.userData.isLoggedIn && bttv.chat.helpers.isOwner(vars.userData.login))
+if ( vars.userData.isLoggedIn && (bttv.chat.helpers.isOwner(vars.userData.login) || bttv.chat.helpers.isStaff(vars.userData.login) || bttv.chat.helpers.isAdmin(vars.userData.login)))
 {
 buf.push("<button title=\"Add/Remove this user as a moderator\" class=\"button-simple dark mod-card-mod\"><svg height=\"16px\" width=\"16px\" version=\"1.1\" viewBox=\"0 0 16 16\" x=\"0px\" y=\"0px\" class=\"svg-add-mod\"><path clip-rule=\"evenodd\" fill-rule=\"evenodd\" d=\"M15,7L1,16l4.666-7H1l14-9l-4.667,7H15z\"></path></svg><svg style=\"display: none;\" height=\"16px\" width=\"16px\" version=\"1.1\" viewBox=\"0 0 16 16\" x=\"0px\" y=\"0px\" class=\"svg-remove-mod\"><path clip-rule=\"evenodd\" fill-rule=\"evenodd\" d=\"M 1.7692223,7.3226542 14.725057,7.3226542 14.725057,8.199533 1.7692223,8.199533 z M 15,0 5.4375,6.15625 10.90625,6.15625 15,0 z M 5.375,9.40625 1,16 11.25,9.40625 5.375,9.40625 z\"></path></svg></button>");
 }

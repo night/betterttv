@@ -148,7 +148,7 @@ input.text:focus,select:focus,textarea:focus {
     overflow: hidden;
 }
 
-.line .oldmod, .line .oldstaff, .line .oldadmin, .line .oldbroadcaster, .line .oldbot, .ember-chat .badges .oldmoderator, .ember-chat .badges .oldstaff, .ember-chat .badges .oldadmin, .ember-chat .badges .oldbroadcaster, .ember-chat .badges .oldbot {
+.ember-chat .badges .oldmoderator, .ember-chat .badges .oldstaff, .ember-chat .badges .oldadmin, .ember-chat .badges .oldbroadcaster, .ember-chat .badges .oldbot, .ember-chat .badges .oldglobal-moderator {
     padding: 2px 3px;
     text-indent: none;
     color: white;
@@ -171,20 +171,28 @@ input.text:focus,select:focus,textarea:focus {
     margin-right: 5px;
 }
 
-.line .oldbot, .ember-chat .badges .oldbot {
+.badges .oldbot {
     background-color: #666666;
 }
 
-.line .oldmod, .ember-chat .badges .oldmoderator {
+.badges .oldmoderator {
     background-color: #009900;
 }
 
-.line .oldbroadcaster, .ember-chat .badges .oldbroadcaster {
+.badges .oldbroadcaster {
     background-color: #000000;
 }
 
-.line .oldadmin, .ember-chat .badges .oldadmin {
+.badges .oldadmin {
     background-color: #FF0000;
+}
+
+.badges .oldstaff {
+    background-color: #6441a5;
+}
+
+.badges .oldglobal-moderator {
+    background-color: #0c6f20;
 }
 
 .line .bttvDeveloper, .ember-chat .badges .bttvDeveloper {

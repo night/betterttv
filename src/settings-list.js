@@ -59,7 +59,7 @@ module.exports = [
     {
         name: 'Blue Buttons',
         description: 'BetterTTV replaces Twitch\'s purple with blue by default',
-        default: true,
+        default: false,
         storageKey: 'showBlueButtons',
         toggle: function(value) {
             if(value === true) {

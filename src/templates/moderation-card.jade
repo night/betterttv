@@ -28,7 +28,7 @@ div.bttv-mod-card.ember-view.moderation-card(data-user=user.name style="top: #{t
           path(clip-rule='evenodd', fill-rule='evenodd', d='M13,11.341V16l-3.722-3.102C8.863,12.959,8.438,13,8,13c-3.866,0-7-2.462-7-5.5C1,4.462,4.134,2,8,2s7,2.462,7,5.5C15,8.996,14.234,10.35,13,11.341z M11,7H5v1h6V7z')
         svg.svg-unignore(style='display: none;', height='16px', width='16px', version='1.1', viewBox='0 0 16 16', x='0px', y='0px')
           path(clip-rule='evenodd', fill-rule='evenodd', d='M13,11.341V16l-3.722-3.102C8.863,12.959,8.438,13,8,13c-3.866,0-7-2.462-7-5.5C1,4.462,4.134,2,8,2s7,2.462,7,5.5C15,8.996,14.234,10.35,13,11.341z')
-      if vars.userData.isLoggedIn && bttv.chat.helpers.isOwner(vars.userData.login)
+      if vars.userData.isLoggedIn && (bttv.chat.helpers.isOwner(vars.userData.login) || bttv.chat.helpers.isStaff(vars.userData.login) || bttv.chat.helpers.isAdmin(vars.userData.login))
         button.button-simple.dark.mod-card-mod(title="Add/Remove this user as a moderator")
           svg.svg-add-mod(height='16px', width='16px', version='1.1', viewBox='0 0 16 16', x='0px', y='0px')
             path(clip-rule='evenodd', fill-rule='evenodd', d='M15,7L1,16l4.666-7H1l14-9l-4.667,7H15z')
