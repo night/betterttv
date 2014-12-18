@@ -1526,7 +1526,7 @@ table.simple_table td {
     background: #3b3b3b;
 }
 
-.ember-view .twitch_subwindow_container {
+.channel_new .twitch_subwindow_container {
     background-color: rgba(10,10,10,0.7);
 }
 
