@@ -92,6 +92,26 @@ module.exports = [
                     splitChat();
                 }
             }
+        },
+        load: function() {
+            var currentDarkStatus = false;
+
+            if(!window.App) return;
+            window.App.LayoutController.reopen({
+                bttvIsTheatreModeChanged: function() {
+                    var v = this.get('isTheatreMode');
+                    
+                    if(v === true) {
+                        currentDarkStatus = bttv.settings.get("darkenedMode");
+                        if(!currentDarkStatus) bttv.settings.save("darkenedMode", true);
+                    } else {
+                        if(currentDarkStatus === false) bttv.settings.save("darkenedMode", false);
+                    }
+                }.observes('isTheatreMode')
+            });
+
+            // Initializes the observer. I do *not* understand why .on('init') doesn't work
+            App.__container__.lookup('controller:Layout').get('bttvIsTheatreModeChanged');
         }
     },
     {
