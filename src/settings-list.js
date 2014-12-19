@@ -96,7 +96,7 @@ module.exports = [
         load: function() {
             var currentDarkStatus = false;
 
-            if(!window.App) return;
+            if(!window.App || !window.App.LayoutController) return;
             window.App.LayoutController.reopen({
                 bttvIsTheatreModeChanged: function() {
                     var v = this.get('isTheatreMode');
