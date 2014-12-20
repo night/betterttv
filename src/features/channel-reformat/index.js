@@ -6,7 +6,7 @@ var linkifyTitle = require('./linkify-title'),
     twitchcast = require('./twitchcast');
 
 module.exports = function () {
-    if($('body.ember-application').length === 0 || $('.ember-chat').length === 0 || $("#right_col").length === 0) return;
+    if($('#main_col #channel').length === 0 || $("#right_col").length === 0) return;
 
     debug.log("Reformatting Channel Page");
 
@@ -32,9 +32,7 @@ module.exports = function () {
                         $("#right_col").css({
                             display: "none"
                         });
-                        $("#right_close span").css({
-                            "background-position": "0 0"
-                        });
+                        $("#right_close").removeClass('open').addClass('closed');
                         vars.chatWidth = 0;
                     }
                 } else {
@@ -58,9 +56,7 @@ module.exports = function () {
                 $("#right_col").css({
                     display: "inherit"
                 });
-                $("#right_close span").css({
-                    "background-position": "0 -18px"
-                });
+                $("#right_close").removeClass('closed').addClass('open');
                 resize = false;
                 if ($("#right_col").width() < 340) {
                     $("#right_col").width($("#right_col .top").width());
@@ -144,9 +140,7 @@ module.exports = function () {
             $("#right_col").css({
                 display: "none"
             });
-            $("#right_close span").css({
-                "background-position": "0 0"
-            });
+            $("#right_close").removeClass('open').addClass('closed');
         } else {
             $("#right_col").width(vars.chatWidth);
             $("#right_col #chat").width(vars.chatWidth);

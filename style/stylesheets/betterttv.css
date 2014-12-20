@@ -1229,6 +1229,10 @@ div.part.description a {
     bottom: 5px;
 }
 
+.theatre #twitchcast_button {
+    display: none !important;
+}
+
 #twitchcast_button:hover {
     background: url(../icons/chromecast.png) no-repeat -24px 0px;
     background-size: 48px 18px;
@@ -1246,6 +1250,14 @@ body.channel_new.columns.ember-application {
     background: #f2f2f2 !important;
 }
 
+/* Remove Twitch's Dark Mode toggle */
+.ember-chat .toggle-darkmode {
+    display: none !important;
+}
+
+.theatre .toggleDarkenTTV {
+    display: none !important;
+}
 
 /* embedded poll feature */
 #bttv-poll-contain {
@@ -1320,4 +1332,16 @@ body.channel_new.columns.ember-application {
 /* Fix the information under the video on the right */
 #channel .channel-stats {
     white-space: nowrap;
+}
+
+/* Panel images are 300px instead of 320px
+    -> Twitch confirmed bug on their end, but no fix?
+*/
+.panels .panel .part img {
+    width: 320px !important;
+}
+
+/* white font on dark bg is killer on the eyes */
+.following-games-onboarding strong {
+    color: #8c8c9c;
 }

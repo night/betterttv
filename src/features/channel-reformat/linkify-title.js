@@ -2,7 +2,7 @@ var debug = require('../../debug'),
     vars = require('../../vars');
 
 module.exports = function () {
-    if($('#broadcast-meta .title .real').length) {
+    if($('#broadcast-meta .title .real').length && !$('.archive_info').length) {
         if(vars.linkifyTimer) clearInterval(vars.linkifyTimer);
 
         var $title = $('#broadcast-meta .title .real');

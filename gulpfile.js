@@ -8,7 +8,7 @@ var fs = require('fs'),
     concat = require('gulp-concat');
 
 gulp.task('templates', function() {
-    return gulp.src(['build/templates/*.jade'])
+    return gulp.src(['src/templates/*.jade'])
                .pipe(jade({client: true, globals: ['$', 'window', 'bttv', 'Twitch']}))
                .pipe(footer(';module.exports=template;'))
                .pipe(gulp.dest('build/templates/'));

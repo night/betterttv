@@ -61,6 +61,17 @@ module.exports = function() {
         removeElement(".chat-line");
     });
 
+    $('.toggleDarkenTTV').change(function(e) {
+        e.preventDefault();
+        if (bttv.settings.get("darkenedMode") === true) {
+            bttv.settings.save("darkenedMode", false);
+            $(this).prop('checked', false);
+        } else {
+            bttv.settings.save("darkenedMode", true);
+            $(this).prop('checked', true);
+        }
+    });
+
     $('.flipDashboard').click(function(e) {
         e.preventDefault();
         if (bttv.settings.get("flipDashboard") === true) {

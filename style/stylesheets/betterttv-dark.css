@@ -2,6 +2,14 @@ body, .real_title, #right_col .content #chat_line_list, .ember-chat, .ember-chat
     color: #D3D3D3;
 }
 
+#mantle_skin .login_form {
+    color: #000;
+}
+
+.ember-application .items-grid .meta .title {
+    color: #D3D3D3;
+}
+
 #right_col {
     z-index: inherit !important;
 }
@@ -121,6 +129,11 @@ body {
     color: #D3D3D3;
     border: solid 1px #333;
     box-shadow: none;
+}
+
+#dash_main #setup_link {
+    background-color: #282828;
+    color: #919191;
 }
 
 #dash_main #setup_link a {
@@ -286,6 +299,15 @@ body {
     color: #999;
 }
 
+/* Twitch overrides the link color in their theater mode, so this overrides theirs */
+.app-main.theatre .chat-container .chat-line a, .app-main.theatre .ember-chat-container.chat-container .chat-line a {
+    color: #999;
+}
+
+.app-main.theatre .chat-container .chatters-view a, .app-main.theatre .ember-chat-container.chat-container .chatters-view a {
+    color: #fff;
+}
+
 #left_col {
     background-color: #222;
 }
@@ -381,11 +403,11 @@ body {
     border-left: 1px solid #000000;
 }
 
-#channel .player-column #broadcast-meta .info .edit-link {
-    background-image: url(//www-cdn.jtvnw.net/images/xarth/g/g18_pencil-FFFFFF80.png);
+#channel .player-column #broadcast-meta .info .edit-link svg.svg-edit path {
+    fill: #888;
 }
 
-#channel .player-column #broadcast-meta .info .edit-link a {
+#channel .player-column #broadcast-meta .info .edit-link span {
     color: #d2d2d2;
 }
 
@@ -1292,6 +1314,9 @@ a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00
 .directory_header .nav {
     border-color: #555;
 }
+#directory-list .button.drop:after, #directory-list .follow-button .drop.follow:after {
+    border-top-color: rgba(255,255,255,0.35);
+}
 #user_edit_form div.connect_items, div.container {
     background-color: #212121;
 }
@@ -1439,34 +1464,46 @@ table.simple_table td {
 
 /*~~~~~~~Popups~~~~~~~~*/
 
-.channel_new .twitch_subwindow_container #login_subwindow.twitch_subwindow {
-    color: #000;
+.channel_new .twitch_subwindow_container {
+    color: #fff;
     background-color: #1e1e1e;
 }
 
-.channel_new .twitch_subwindow_container #login_subwindow.twitch_subwindow .facebook_connect_contain .sub {
+.channel_new .twitch_subwindow_container a {
+    color: #d3d3d3;
+}
+
+.channel_new .twitch_subwindow_container .twitch_subwindow .buttons a.primary span {
+    color: #fff;
+}
+
+.channel_new .twitch_subwindow_container ul.tabs li.tab a {
+    color: #d3d3d3;
+}
+
+.channel_new .twitch_subwindow_container .facebook_connect_contain .sub {
     color: #999;
 }
 
-.channel_new .twitch_subwindow_container #login_subwindow.twitch_subwindow #login_tab.tab.selected a {
+.channel_new .twitch_subwindow_container #login_tab.tab.selected a {
     color: #d1d1d1;
     border-bottom: 3px solid rgba(209,209,209,.5);
 }
 
-.channel_new .twitch_subwindow_container #login_subwindow.twitch_subwindow #login_tab.tab a {
+.channel_new .twitch_subwindow_container #login_tab.tab a {
     color: #d1d1d1;
 }
 
-.channel_new .twitch_subwindow_container #login_subwindow.twitch_subwindow #signup_tab.tab.selected a {
+.channel_new .twitch_subwindow_container #signup_tab.tab.selected a {
     color: #d1d1d1;
     border-bottom: 3px solid rgba(209,209,209,.5);
 }
 
-.channel_new .twitch_subwindow_container #login_subwindow.twitch_subwindow #signup_tab.tab a {
+.channel_new .twitch_subwindow_container #signup_tab.tab a {
     color: #d1d1d1;
 }
 
-#login_subwindow.twitch_subwindow #login_div .field.text {
+.channel_new .twitch_subwindow_container .twitch_subwindow .field.text {
     color: #d4d4d4;
     border: 1px solid rgba(0,0,0,0.35);
     box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
@@ -1475,7 +1512,7 @@ table.simple_table td {
     background: #3b3b3b;
 }
 
-#login_subwindow #signup_form #user_login {
+.channel_new .twitch_subwindow_container #signup_form #user_login {
     color: #d4d4d4;
     border: 1px solid rgba(0,0,0,0.35);
     box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
@@ -1484,7 +1521,7 @@ table.simple_table td {
     background: #3b3b3b;
 }
 
-#login_subwindow #signup_form #user_password {
+.channel_new .twitch_subwindow_container #signup_form #user_password {
     color: #d4d4d4;
     border: 1px solid rgba(0,0,0,0.35);
     box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
@@ -1493,7 +1530,7 @@ table.simple_table td {
     background: #3b3b3b;
 }
 
-#login_subwindow #signup_form #user_email {
+.channel_new .twitch_subwindow_container #signup_form #user_email {
     color: #d4d4d4;
     border: 1px solid rgba(0,0,0,0.35);
     box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
@@ -1752,12 +1789,12 @@ div.chat-room-list.chat-menu div.js-rooms.scroll.chat-rooms div.tse-scroll-conte
 }
 
 /* Hot Fixes for Redesign */
-ul.tabs li.selected a {
+.ember-application ul.tabs li.selected a {
     color: white;
     border-bottom-color: white !important;
 }
 
-ul.tabs li>a:hover {
+.ember-application ul.tabs li>a:hover {
     color: white;
 }
 
@@ -1782,9 +1819,6 @@ div#actions {
     background: rgb(30,30,30)
 }
 
-#channel .player-column #broadcast-meta .info .edit-link{
-    background-repeat: no-repeat;
-}
 .chat-menu.dropmenu a {
     color: white;
 }

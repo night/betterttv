@@ -2,9 +2,9 @@ var debug = require('../../debug'),
     vars = require('../../vars');
 
 var handleResize = module.exports = function () {
-    debug.log("Page resized");
+    if($('#main_col #channel').length === 0 || $("#right_col").length === 0) return;
 
-    if($('body.ember-application').length === 0 || $('.ember-chat').length === 0) return;
+    debug.log("Page resized");
 
     if(vars.chatWidth == 0) {
         $("#right_col").css({

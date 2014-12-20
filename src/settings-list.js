@@ -99,11 +99,14 @@ module.exports = [
             if(!window.App || !window.App.LayoutController) return;
             window.App.LayoutController.reopen({
                 bttvIsTheatreModeChanged: function() {
-                    var v = this.get('isTheatreMode');
-                    
-                    if(v === true) {
+                    if(this.get('isTheatreMode') === true) {
                         currentDarkStatus = bttv.settings.get("darkenedMode");
-                        if(!currentDarkStatus) bttv.settings.save("darkenedMode", true);
+                        if(currentDarkStatus === false) {
+                            bttv.settings.save("darkenedMode", true);
+
+                            // Toggles setting back without removing the darkened css
+                            bttv.storage.put('bttv_darkenedMode', false);
+                        }
                     } else {
                         if(currentDarkStatus === false) bttv.settings.save("darkenedMode", false);
                     }

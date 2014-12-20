@@ -10,7 +10,9 @@
 a.js-follow.follow.button.primary.action:hover,
 #subscribe_action .subscribe-text:focus,
 .button.primary:hover,
-#channel .stats-and-actions .follow-button .follow:hover { 
+#channel .stats-and-actions .follow-button .follow:hover,
+.directory_header .follow-button .follow:hover,
+.profile-info .follow-button .follow:hover { 
     background: linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
     background: -o-linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
     background: -moz-linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
@@ -21,7 +23,9 @@ a.js-follow.follow.button.primary.action:hover,
 .primary_button,
 a.js-follow.follow.button.primary.action,
 #dash_main #commercial_buttons #intervals,
-#channel .stats-and-actions .follow-button .follow {
+#channel .stats-and-actions .follow-button .follow,
+.directory_header .follow-button .follow,
+.profile-info .follow-button .follow { 
     border-color: #000 !important;
     background: linear-gradient(bottom, rgb(47,88,185) 31%, rgb(50,108,211) 80%) !important; 
     background: -o-linear-gradient(bottom, rgb(47,88,185) 31%, rgb(50,108,211) 80%) !important; 
@@ -106,8 +110,12 @@ a {
     color: black;
 }
 
-div#header_actions span, div#header_actions a{
+div#header_actions span, div#header_actions a {
     color: black;
+}
+
+div#header_actions a.primary span {
+    color: white !important;
 }
 
 #main_col .stats-and-actions #is-subscribed, .button.unfollow, .button.unfollow:hover {
@@ -115,4 +123,24 @@ div#header_actions span, div#header_actions a{
 }
 ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .ember-chat .chat-room-list .room p.room-title, .dropmenu.menu-like .dropmenu_action  {
     color: #000;
+}
+.button.glyph svg path, .follow-button .glyph.follow svg path, .button.glyph-only svg path, .follow-button .glyph-only.follow svg path {
+    fill: #144CA5;
+}
+.button, #channel .player-column #broadcast-meta .info .edit-link span {
+    color: #144CA5;
+}
+.banner-contain .profile-info .profile-bio a, .banner-contain #change_profile_banner .add_image {
+    color:#6E99DD
+}
+.twitch_subwindow_container {
+    background-color: rgba(23, 23, 23, 0.9);
+}
+.banner-contain .channel-link .live-status.live {
+    background: #305DD0;
+}
+.banner-contain .channel-link .live-status.live:before, .banner-contain .channel-link .live-status.live:after {
+    box-shadow: 0 0 3px 1px #8EA1D2,inset 0 0 3px 1px #8EA1D2;
+    -moz-box-shadow: 0 0 3px 1px #8EA1D2,inset 0 0 3px 1px #8EA1D2;
+    -webkit-box-shadow: 0 0 3px 1px #8EA1D2,inset 0 0 3px 1px #8EA1D2;
 }

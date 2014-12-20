@@ -284,7 +284,7 @@ vars = require('./vars');
 
 bttv.info = {
     version: "6.8",
-    release: 24,
+    release: 25,
     versionString: function() { 
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -702,6 +702,12 @@ bttv.chat = {
             settings.showTimestamps = true;
             $('.ember-chat .chat-messages').removeClass('hideTimestamps');
             bttv.storage.putObject('chatSettings', settings);
+        }
+        if(settings.darkMode === true) {
+            settings.darkMode = false;
+            $('.chat-container').removeClass('dark');
+            bttv.storage.putObject('chatSettings', settings);
+            bttv.settings.save('darkenedMode', true);
         }
 
         chat.store.isLoaded = true;
@@ -2451,9 +2457,9 @@ var debug = require('../../debug'),
     vars = require('../../vars');
 
 var handleResize = module.exports = function () {
-    debug.log("Page resized");
+    if($('#main_col #channel').length === 0 || $("#right_col").length === 0) return;
 
-    if($('body.ember-application').length === 0 || $('.ember-chat').length === 0) return;
+    debug.log("Page resized");
 
     if(vars.chatWidth == 0) {
         $("#right_col").css({
@@ -2513,7 +2519,7 @@ var linkifyTitle = require('./linkify-title'),
     twitchcast = require('./twitchcast');
 
 module.exports = function () {
-    if($('body.ember-application').length === 0 || $('.ember-chat').length === 0 || $("#right_col").length === 0) return;
+    if($('#main_col #channel').length === 0 || $("#right_col").length === 0) return;
 
     debug.log("Reformatting Channel Page");
 
@@ -2539,9 +2545,7 @@ module.exports = function () {
                         $("#right_col").css({
                             display: "none"
                         });
-                        $("#right_close span").css({
-                            "background-position": "0 0"
-                        });
+                        $("#right_close").removeClass('open').addClass('closed');
                         vars.chatWidth = 0;
                     }
                 } else {
@@ -2565,9 +2569,7 @@ module.exports = function () {
                 $("#right_col").css({
                     display: "inherit"
                 });
-                $("#right_close span").css({
-                    "background-position": "0 -18px"
-                });
+                $("#right_close").removeClass('closed').addClass('open');
                 resize = false;
                 if ($("#right_col").width() < 340) {
                     $("#right_col").width($("#right_col .top").width());
@@ -2651,9 +2653,7 @@ module.exports = function () {
             $("#right_col").css({
                 display: "none"
             });
-            $("#right_close span").css({
-                "background-position": "0 0"
-            });
+            $("#right_close").removeClass('open').addClass('closed');
         } else {
             $("#right_col").width(vars.chatWidth);
             $("#right_col #chat").width(vars.chatWidth);
@@ -2676,7 +2676,7 @@ var debug = require('../../debug'),
     vars = require('../../vars');
 
 module.exports = function () {
-    if($('#broadcast-meta .title .real').length) {
+    if($('#broadcast-meta .title .real').length && !$('.archive_info').length) {
         if(vars.linkifyTimer) clearInterval(vars.linkifyTimer);
 
         var $title = $('#broadcast-meta .title .real');
@@ -2703,6 +2703,8 @@ module.exports = function () {
 }
 },{"../../debug":1,"../../vars":38}],9:[function(require,module,exports){
 module.exports = function() {
+    if($('.archive_info').length) return;
+    
     var template = '<iframe id="twitchcast" src="https://nightdev.com/twitchcast/?ontwitch={{hostname}}&channel={{channel}}" width="100%" height="100%" style="position: absolute;top: 0px;left: 0px;border: none;"></iframe>';
 
     var openTwitchCast = function() {
@@ -2822,6 +2824,17 @@ module.exports = function() {
     $('.clearChat').click(function(e) {
         e.preventDefault();
         removeElement(".chat-line");
+    });
+
+    $('.toggleDarkenTTV').change(function(e) {
+        e.preventDefault();
+        if (bttv.settings.get("darkenedMode") === true) {
+            bttv.settings.save("darkenedMode", false);
+            $(this).prop('checked', false);
+        } else {
+            bttv.settings.save("darkenedMode", true);
+            $(this).prop('checked', true);
+        }
     });
 
     $('.flipDashboard').click(function(e) {
@@ -4129,11 +4142,14 @@ module.exports = [
             if(!window.App || !window.App.LayoutController) return;
             window.App.LayoutController.reopen({
                 bttvIsTheatreModeChanged: function() {
-                    var v = this.get('isTheatreMode');
-                    
-                    if(v === true) {
+                    if(this.get('isTheatreMode') === true) {
                         currentDarkStatus = bttv.settings.get("darkenedMode");
-                        if(!currentDarkStatus) bttv.settings.save("darkenedMode", true);
+                        if(currentDarkStatus === false) {
+                            bttv.settings.save("darkenedMode", true);
+
+                            // Toggles setting back without removing the darkened css
+                            bttv.storage.put('bttv_darkenedMode', false);
+                        }
                     } else {
                         if(currentDarkStatus === false) bttv.settings.save("darkenedMode", false);
                     }
@@ -4460,7 +4476,7 @@ buf.push("Flip Dashboard");
 }
 buf.push("</a></p>");
 }
-buf.push("<p><a href=\"#\" class=\"g18_gear-00000080 setBlacklistKeywords\">Set Blacklist Keywords</a></p><p><a href=\"#\" class=\"g18_gear-00000080 setHighlightKeywords\">Set Highlight Keywords</a></p><p><a href=\"#\" class=\"g18_gear-00000080 setScrollbackAmount\">Set Scrollback Amount</a></p><p><a href=\"#\" class=\"g18_trash-00000080 clearChat\">Clear My Chat</a></p><p><a href=\"#\" style=\"display: block;margin-top: 8px;text-align: center;\" class=\"button-simple dark openSettings\">BetterTTV Settings</a></p></div>");}.call(this,"$" in locals_for_with?locals_for_with.$:typeof $!=="undefined"?$:undefined,"window" in locals_for_with?locals_for_with.window:typeof window!=="undefined"?window:undefined,"bttv" in locals_for_with?locals_for_with.bttv:typeof bttv!=="undefined"?bttv:undefined));;return buf.join("");
+buf.push("<p><input type=\"checkbox\"" + (jade.attr("checked", bttv.settings.get("darkenedMode"), true, false)) + " class=\"toggleDarkenTTV\"/>Dark Mode</p><p><a href=\"#\" class=\"g18_gear-00000080 setBlacklistKeywords\">Set Blacklist Keywords</a></p><p><a href=\"#\" class=\"g18_gear-00000080 setHighlightKeywords\">Set Highlight Keywords</a></p><p><a href=\"#\" class=\"g18_gear-00000080 setScrollbackAmount\">Set Scrollback Amount</a></p><p><a href=\"#\" class=\"g18_trash-00000080 clearChat\">Clear My Chat</a></p><p><a href=\"#\" style=\"display: block;margin-top: 8px;text-align: center;\" class=\"button-simple dark openSettings\">BetterTTV Settings</a></p></div>");}.call(this,"$" in locals_for_with?locals_for_with.$:typeof $!=="undefined"?$:undefined,"window" in locals_for_with?locals_for_with.window:typeof window!=="undefined"?window:undefined,"bttv" in locals_for_with?locals_for_with.bttv:typeof bttv!=="undefined"?bttv:undefined));;return buf.join("");
 };module.exports=template;
 },{}],34:[function(require,module,exports){
 function template(locals) {

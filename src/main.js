@@ -6,7 +6,7 @@ vars = require('./vars');
 
 bttv.info = {
     version: "6.8",
-    release: 24,
+    release: 25,
     versionString: function() { 
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -424,6 +424,12 @@ bttv.chat = {
             settings.showTimestamps = true;
             $('.ember-chat .chat-messages').removeClass('hideTimestamps');
             bttv.storage.putObject('chatSettings', settings);
+        }
+        if(settings.darkMode === true) {
+            settings.darkMode = false;
+            $('.chat-container').removeClass('dark');
+            bttv.storage.putObject('chatSettings', settings);
+            bttv.settings.save('darkenedMode', true);
         }
 
         chat.store.isLoaded = true;
