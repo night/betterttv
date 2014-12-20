@@ -1229,7 +1229,7 @@ div.part.description a {
     bottom: 5px;
 }
 
-.theatre #twitchcast_button {
+.theatre #twitchcast_button:parent {
     display: none !important;
 }
 

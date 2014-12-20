@@ -1946,6 +1946,9 @@ var main = function () {
                                 clearClutter();
                                 channelReformat();
                                 $(window).trigger('resize');
+                                setTimeout(function() {
+                                    $(window).trigger('resize');
+                                }, 3000);
                             }
                         });
                         break;
