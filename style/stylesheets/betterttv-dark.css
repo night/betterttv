@@ -226,6 +226,19 @@ body {
     background: #3d3d3d;
 }
 
+/* dashboard bookmarks darken */
+
+.new-dashboard #bookmark-manager .item .content .meta {
+    background: #282828;
+}
+.new-dashboard #bookmark-manager .item .content .meta .actions {
+    border-top: 1px solid rgba(255,255,255,0.25);
+}
+
+.new-dashboard #bookmark-manager .item .content .cap {
+    background: #343434;
+}
+
 #ui-id-1.ui-autocomplete.ui-front.ui-menu.ui-widget.ui-widget-content.ui-corner-all {
     color: #3b3b3b;
     border: 1px solid rgba(0,0,0,0.2);
@@ -521,6 +534,15 @@ body {
 /* Share button popup background */
 .stats-and-actions .channel-actions .share {
     background-color: rgb(30,30,30);
+}
+
+.stats-and-actions .channel-actions .share input.text {
+    color: #d4d4d4;
+    border: 1px solid rgba(0,0,0,0.35);
+    box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+    -moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+    -webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+    background: #3b3b3b;
 }
 
 /* Ember Pages Dropmenu Fix */
@@ -1503,34 +1525,15 @@ table.simple_table td {
     color: #d1d1d1;
 }
 
-.channel_new .twitch_subwindow_container .twitch_subwindow .field.text {
-    color: #d4d4d4;
-    border: 1px solid rgba(0,0,0,0.35);
-    box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-    -moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-    -webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-    background: #3b3b3b;
-}
-
-.channel_new .twitch_subwindow_container #signup_form #user_login {
-    color: #d4d4d4;
-    border: 1px solid rgba(0,0,0,0.35);
-    box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-    -moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-    -webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-    background: #3b3b3b;
-}
-
-.channel_new .twitch_subwindow_container #signup_form #user_password {
-    color: #d4d4d4;
-    border: 1px solid rgba(0,0,0,0.35);
-    box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-    -moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-    -webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-    background: #3b3b3b;
-}
-
-.channel_new .twitch_subwindow_container #signup_form #user_email {
+.channel_new .twitch_subwindow_container .twitch_subwindow .field.text,
+.channel_new .twitch_subwindow_container #signup_form #user_login,
+.channel_new .twitch_subwindow_container #signup_form #user_password,
+.channel_new .twitch_subwindow_container #signup_form #user_email,
+.channel_new .twitch_subwindow_container .twitch_subwindow .ember-text-field,
+.channel_new .twitch_subwindow_container .twitch_subwindow #report_form #reason.field,
+.channel_new .twitch_subwindow_container .twitch_subwindow #report_form #description.field.textarea,
+.channel_new .twitch_subwindow_container .twitch_subwindow .dropdown,
+.channel_new .twitch_subwindow_container .twitch_subwindow .item select {
     color: #d4d4d4;
     border: 1px solid rgba(0,0,0,0.35);
     box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
@@ -1554,7 +1557,7 @@ table.simple_table td {
     background: #1e1e1e;
 }
 
-.channel_new .twitch_subwindow_container .twitch_subwindow .modal-form.change-bio .item textarea {
+.channel_new .twitch_subwindow_container .twitch_subwindow .modal-form.change-bio .item textarea { /* is -moz- different for a reason? */
     color: #d3d3d3;
     border: 1px solid rgba(0,0,0,0.35);
     box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
@@ -1584,15 +1587,6 @@ table.simple_table td {
     color: #999;
 }
 
-.channel_new .twitch_subwindow_container .twitch_subwindow .ember-text-field {
-    color: #d4d4d4;
-    border: 1px solid rgba(0,0,0,0.35);
-    box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-    -moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-    -webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-    background: #3b3b3b;
-}
-
 .channel_new .twitch_subwindow_container .twitch_subwindow .clear {
     color: #999;
 }
@@ -1604,24 +1598,6 @@ table.simple_table td {
 
 .channel_new .twitch_subwindow_container .twitch_subwindow #report_form a {
     color: #d1d1d1;
-}
-
-.channel_new .twitch_subwindow_container .twitch_subwindow #report_form #reason.field {
-    color: #d4d4d4;
-    border: 1px solid rgba(0,0,0,0.35);
-    box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-    -moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-    -webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-    background: #3b3b3b;
-}
-
-.channel_new .twitch_subwindow_container .twitch_subwindow #report_form #description.field.textarea {
-    color: #d4d4d4;
-    border: 1px solid rgba(0,0,0,0.35);
-    box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-    -moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-    -webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-    background: #3b3b3b;
 }
 
 .modal-form .buttons .button {
