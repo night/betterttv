@@ -124,7 +124,7 @@ body {
 
 #dash_main #vod_status,
 #dash_main #gameselector_input,
-.ember-application #gameselector_input {
+#dash_main .ember-application #gameselector_input {
     background-color: rgb(20, 20, 20) !important;
     color: #D3D3D3;
     border: solid 1px #333;
