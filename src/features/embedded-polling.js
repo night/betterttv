@@ -2,12 +2,16 @@ var debug = require('../debug');
 var pollTemplate = require('../templates/embedded-poll');
 
 var frameTimeout = null;
+var lastPollId = null;
 
 module.exports = function (pollId) {
     if(!bttv.settings.get('embeddedPolling')) return;
 
     var $poll = $('#bttv-poll-contain');
     
+    // Dont replace the poll with the same one
+    if($poll.length && pollId == lastPollId) return;
+
     // If poll exists and there's an iframe open, don't do anything.
     if($poll.length && $poll.children('.frame').is(':visible')) return;
 
@@ -43,4 +47,6 @@ module.exports = function (pollId) {
     });
 
     $poll.slideDown(200);
+    
+    lastPollId = pollId;
 }
