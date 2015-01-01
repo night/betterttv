@@ -1946,3 +1946,11 @@ span.subscribe-text {
 .stats-and-actions .channel-actions .theatre-button .whatisthis:before {
     border-top-color: rgb(30,30,30);
 }
+
+/* random "whatisthis" darkening */
+.app-main .directory_header .whatisthis {
+    background-color: rgb(30,30,30);
+}
+.app-main .directory_header .whatisthis:before {
+    border-bottom-color: rgb(30,30,30);
+}
