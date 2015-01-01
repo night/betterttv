@@ -284,7 +284,7 @@ vars = require('./vars');
 
 bttv.info = {
     version: "6.8",
-    release: 25,
+    release: 26,
     versionString: function() { 
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -3867,7 +3867,7 @@ module.exports = function () {
         $('body').append(emoteCSS);
     };
 
-    $.getJSON('https://cdn.betterttv.net/emotes/emotes.json').done(function(emotes) {
+    $.getJSON('https://cdn.betterttv.net/emotes/emotes.json?'+bttv.info.versionString()).done(function(emotes) {
         generate(emotes);
     }).fail(function() {
         generate([]);
