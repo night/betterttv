@@ -1111,10 +1111,10 @@ body {
 }
 
 /* make emote icon light */
-.ember-chat .chat-interface .textarea-contain svg.svg-emoticons path {
+.ember-chat .chat-interface .textarea-contain .emoticon-selector-toggle .svg-emoticons path {
     fill: #888;
 }
-.ember-chat .chat-interface .textarea-contain svg.svg-emoticons:hover path {
+.ember-chat .chat-interface .textarea-contain .emoticon-selector-toggle:hover .svg-emoticons path {
     fill: #777;
 }
 
