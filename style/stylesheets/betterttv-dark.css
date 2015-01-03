@@ -1181,6 +1181,14 @@ body {
     background: rgb(30,30,30);
 }
 
+.ember-chat .chatters-view .chat-header {
+    color: #D3D3D3;
+}
+
+.ember-chat .chatters-view.viewer-list-popped-out .chat-header {
+    border-top: none;
+}
+
 /*~~~~~~Ember Dark Settings Menu ~~~~~~~~~*/
 .ember-chat .chat-menu .chat-menu-header {
     color:  rgb(200,200,200);

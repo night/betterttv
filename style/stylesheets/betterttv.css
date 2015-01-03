@@ -1100,6 +1100,10 @@ body#chat #speak {
     border: none;
 }
 
+.ember-chat .chatters-view.viewer-list-popped-out .chatters-container .chatters {
+    margin: 0px;
+}
+
 .ember-chat .ember-list-item-view {
     left: 15px;
 }
