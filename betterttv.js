@@ -3494,8 +3494,8 @@ module.exports = function handleBackground(tiled) {
         $('#channel').prepend($bg);
     }
 
-    if(!window.App || !window.App.Panel) return;
-    window.App.Panel.find("user", { user: bttv.getChannel() } ).get('content').forEach(function(panel) {
+    if(!window.App || !App.__container__.lookup('controller:Channel') || !App.__container__.lookup('controller:Channel').get('content.panels')) return;
+    App.__container__.lookup('controller:Channel').get('content.panels.content').forEach(function(panel) {
         var url = panel.get('data').link;
         var safeRegex = /^https?:\/\/cdn.betterttv.net\//;
         if(url && url.indexOf('#BTTV#') !== -1) {
@@ -4176,8 +4176,8 @@ module.exports = [
         load: function() {
             var currentDarkStatus = false;
 
-            if(!window.App || !App.__container__.lookup('controller:Layout')) return;
-            App.__container__.lookup('controller:Layout').reopen({
+            if(!window.App || !App.__container__.resolve('controller:Layout')) return;
+            App.__container__.resolve('controller:Layout').reopen({
                 bttvIsTheatreModeChanged: function() {
                     if(this.get('isTheatreMode') === true) {
                         currentDarkStatus = bttv.settings.get("darkenedMode");
