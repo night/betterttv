@@ -312,7 +312,7 @@ vars = require('./vars');
 
 bttv.info = {
     version: "6.8",
-    release: 26,
+    release: 27,
     versionString: function() { 
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -1487,7 +1487,7 @@ bttv.chat = {
         shiftQueue: function() {
             if(!bttv.chat.tmi() || !bttv.chat.tmi().get('id')) return;
             var id = bttv.chat.tmi().get('id');
-            if(id !== bttv.chat.store.currentRoom) {
+            if(id !== bttv.chat.store.currentRoom && bttv.chat.tmi().get('name')) {
                 $('.ember-chat .chat-messages .tse-content .chat-line').remove();
                 bttv.chat.store.currentRoom = id;
                 bttv.chat.store.__messageQueue = [];
@@ -1600,7 +1600,7 @@ bttv.chat = {
         privmsg: function(channel, data) {
             if(data.style && (data.style !== 'admin' && data.style !== 'action' && data.style !== 'notification')) return;
 
-            if (bttv.chat.store.checkMods && data.style === "admin") {
+            if(bttv.chat.store.checkMods && data.style === "admin") {
                 var modsRegex = /^The moderators of this room are:(.*)/,
                     mods = modsRegex.exec(data.message);
                 if (mods) {
@@ -1897,7 +1897,7 @@ bttv.chat = {
                 name: name,
                 unread: 0,
                 emberRoom: emberRoom,
-                active: function() { return (bttv.getChatController() && bttv.getChatController().currentRoom.get('id') === name) ? true : false; },
+                active: function() { return (bttv.getChatController() && bttv.getChatController().currentRoom && bttv.getChatController().currentRoom.get('id') === name) ? true : false; },
                 messages: [],
                 playQueue: function() {
                     bttv.chat.store.__rooms[name].unread = 0;
@@ -2233,7 +2233,7 @@ var main = function () {
                 }
 
                 switch(payload.template) {
-                    case 'shared/right_column':
+                    case 'shared/right-column':
                         waitForLoad(function(ready) {
                             if(ready) {
                                 bttv.chat.store.isLoaded = false;
