@@ -4176,25 +4176,20 @@ module.exports = [
         load: function() {
             var currentDarkStatus = false;
 
-            if(!window.App || !App.__container__.resolve('controller:Layout')) return;
-            App.__container__.resolve('controller:Layout').reopen({
-                bttvIsTheatreModeChanged: function() {
-                    if(this.get('isTheatreMode') === true) {
-                        currentDarkStatus = bttv.settings.get("darkenedMode");
-                        if(currentDarkStatus === false) {
-                            bttv.settings.save("darkenedMode", true);
+            if(!window.App || !App.__container__.lookup('controller:Layout')) return;
+            App.__container__.lookup('controller:Layout').addObserver('isTheatreMode', function() {
+                if(this.get('isTheatreMode') === true) {
+                    currentDarkStatus = bttv.settings.get("darkenedMode");
+                    if(currentDarkStatus === false) {
+                        bttv.settings.save("darkenedMode", true);
 
-                            // Toggles setting back without removing the darkened css
-                            bttv.storage.put('bttv_darkenedMode', false);
-                        }
-                    } else {
-                        if(currentDarkStatus === false) bttv.settings.save("darkenedMode", false);
+                        // Toggles setting back without removing the darkened css
+                        bttv.storage.put('bttv_darkenedMode', false);
                     }
-                }.observes('isTheatreMode')
+                } else {
+                    if(currentDarkStatus === false) bttv.settings.save("darkenedMode", false);
+                }
             });
-
-            // Initializes the observer. I do *not* understand why .on('init') doesn't work
-            App.__container__.lookup('controller:Layout').get('bttvIsTheatreModeChanged');
         }
     },
     {
