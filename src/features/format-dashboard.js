@@ -8,11 +8,6 @@ module.exports = function () {
         $("#dash_main #controls_column .dash-hostmode-contain").appendTo("#dash_main #controls_column");
         $("#dash_main #controls_column .dash-player-contain").appendTo("#dash_main #controls_column");
 
-        // In order to properly style chat within iframe, we pass messages between frames. This enabled that.
-        if($("#dash_main iframe").length) {
-            $("#dash_main iframe")[0].src = $("#dash_main iframe")[0].src+"?bttvDashboard=true";
-        }
-
         // We move the commercial button inside the box with other dash control.
         $("#dash_main #commercial_buttons").appendTo("#dash_main .dash-broadcast-contain");
 

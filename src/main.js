@@ -168,7 +168,7 @@ bttv.settings = {
             window.opener.postMessage('bttv_setting '+setting+' '+value, window.location.protocol+'//'+window.location.host);
         } else {
             if(window.ga) ga('send', 'event', 'BTTV', 'Change Setting: '+setting+'='+value);
-            if(/\?bttvDashboard=true/.test(window.location)) window.parent.postMessage('bttv_setting '+setting+' '+value, window.location.protocol+'//'+window.location.host);
+            if(window !== window.top) window.parent.postMessage('bttv_setting '+setting+' '+value, window.location.protocol+'//'+window.location.host);
             vars.settings[setting].value = value;
             bttv.storage.put(bttv.settings.prefix+setting, value);
             if(vars.settings[setting].toggle) vars.settings[setting].toggle(value);
@@ -1197,6 +1197,11 @@ bttv.chat = {
         moderationCard: function(user, $event) {
             var makeCard = require('./features/make-card');
             Twitch.api.get('/api/channels/'+user.toLowerCase()+'/ember').done(function(user) {
+                if(!user.name) {
+                    makeCard({ name: user, display_name: user.capitalize() }, $event);
+                    return;
+                }
+                
                 makeCard(user, $event);
             }).fail(function() {
                 makeCard({ name: user, display_name: user.capitalize() }, $event);
