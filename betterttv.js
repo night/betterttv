@@ -3718,6 +3718,8 @@ var debug = require('../debug'),
 module.exports = function () {
     if (vars.emotesLoaded) return;
 
+    return;
+
     debug.log("Overriding Twitch Emoticons");
 
     var generate = function(bttvEmotes) {
