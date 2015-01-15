@@ -132,7 +132,7 @@ module.exports = function () {
             });
         }*/
 
-        $("body").on('mouseover', '.chat-line span.emoticon', function() {
+        $("body").on('mouseover', '.chat-line .emoticon', function() {
             vars.hoveringEmote = $(this);
             $(this).tipsy({
                 trigger: 'manual',
@@ -162,7 +162,7 @@ module.exports = function () {
             } else if($emote.data('channel')) {
                 $(this).css('cursor','pointer');
             }
-        }).on('mouseout', '.chat-line span.emoticon', function() {
+        }).on('mouseout', '.chat-line .emoticon', function() {
             $(this).tipsy("hide");
             var $emote = $(this);
             if(bttv.TwitchEmoteIDToChannel && $emote.data('id') && bttv.TwitchEmoteIDToChannel[$emote.data('id')]) {
@@ -171,7 +171,7 @@ module.exports = function () {
                 $(this).css('cursor','normal');
             }
             $('div.tipsy').remove();
-        }).on('click', '.chat-line span.emoticon', function() {
+        }).on('click', '.chat-line .emoticon', function() {
             var $emote = $(this);
             if(bttv.TwitchEmoteIDToChannel && $emote.data('id') && bttv.TwitchEmoteIDToChannel[$emote.data('id')]) {
                 window.open('http://www.twitch.tv/'+bttv.TwitchEmoteIDToChannel[$emote.data('id')],'_blank');
