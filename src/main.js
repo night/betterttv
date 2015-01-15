@@ -328,7 +328,7 @@ bttv.chat = {
             return '<span class="emoticon '+setClass+'"'+((bttv.TwitchEmoteSets && bttv.TwitchEmoteSets[setId]) ? ' data-channel="'+bttv.TwitchEmoteSets[setId]+'"' : '')+' data-regex="'+encodeURIComponent(getEmoteFromRegEx(regex))+'"></span>';
         },
         emoticon: function(id, name) {
-            return '<img class="emoticon" src="//static-cdn.jtvnw.net/emoticons/v1/' + id + '/1.0" srcset="//static-cdn.jtvnw.net/emoticons/v1/' + id + '/2.0 2x" data-id="' + id + '" data-regex="' + encodeURIComponent(name) + '" />';
+            return '<img class="emoticon ttv-emo-' + id + '" src="//static-cdn.jtvnw.net/emoticons/v1/' + id + '/1.0" srcset="//static-cdn.jtvnw.net/emoticons/v1/' + id + '/2.0 2x" data-id="' + id + '" data-regex="' + encodeURIComponent(name) + '" />';
         },
         emoticonCss: function(image, id) {
             var css = "";
@@ -538,6 +538,7 @@ bttv.chat = {
             bttv.socketServer.emit("twitch emotes");
             bttv.socketServer.on("twitch emotes", function(result) {
                 bttv.socketServer.off("twitch emotes");
+                bttv.TwitchEmoteIDToChannel = result.ids;
                 bttv.TwitchEmoteSets = result.sets;
 
                 // Give some tips to Twitch Emotes
@@ -552,21 +553,6 @@ bttv.chat = {
                     }
                 }
             });
-
-            // TODO: Implement auto server selection, anon chat, etc.
-            bttv.socketServer.emit("chat servers");
-            bttv.socketServer.on("chat servers", function(data) {
-                bttv.socketServer.off("chat servers");
-                bttv.TwitchStatus = {};
-                bttv.TwitchChatServers = [];
-                bttv.TwitchChatPorts = [];
-
-                data.servers.forEach(function(server) {
-                    bttv.TwitchStatus[server.ip+":"+server.port] = server.lag;
-                    bttv.TwitchChatServers.push(server.ip);
-                    bttv.TwitchChatPorts.push(server.port);
-                });
-            });
         }
 
         // Make chat translatable
@@ -578,8 +564,6 @@ bttv.chat = {
                 $('div.tipsy').remove();
             });
         }
-
-        
 
         // Message input features (tab completion, message history, anti-prefix completion, extra commands)
         var lastPartialMatch = null;
@@ -1365,8 +1349,7 @@ bttv.chat = {
                             name: '',
                             description: 'Channel Subscriber'
                         }]:[]),
-                        color: '#555',
-                        emoteSets: []
+                        color: '#555'
                     }
                 );
 

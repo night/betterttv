@@ -2,14 +2,12 @@ var debug = require('../debug'),
     vars = require('../vars');
 
 module.exports = function () {
-    if (vars.emotesLoaded) return;
-
-    return;
+    if(vars.emotesLoaded) return;
 
     debug.log("Overriding Twitch Emoticons");
 
     var generate = function(bttvEmotes) {
-        var twitchDefaultEmotes = [
+        /*var twitchDefaultEmotes = [
             "https://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-ebf60cd72f7aa600-24x18.png",
             "https://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-d570c4b3b8d8fc4d-24x18.png",
             "https://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-ae4e17f5b9624e2f-24x18.png",
@@ -81,7 +79,6 @@ module.exports = function () {
                         }
                     }
 
-                    /* For tehMorag, because I can */
                     if(emote.regex === "tehBUFR") {
                         moragEmote = image.id;
                     }
@@ -132,7 +129,8 @@ module.exports = function () {
                 });
                 emoticons.push(a);
             });
-        }
+        }*/
+
         $("body").on('mouseover', '.chat-line span.emoticon', function() {
             vars.hoveringEmote = $(this);
             $(this).tipsy({
@@ -144,7 +142,9 @@ module.exports = function () {
                     var $emote = vars.hoveringEmote;
                     if($emote && $emote.data('regex')) {
                         var raw = decodeURIComponent($emote.data('regex'));
-                        if($emote.data('channel')) {
+                        if(bttv.TwitchEmoteIDToChannel && $emote.data('id') && bttv.TwitchEmoteIDToChannel[$emote.data('id')]) {
+                            return "Emote: "+raw+"<br />Channel: "+bttv.TwitchEmoteIDToChannel[$emote.data('id')];
+                        } else if($emote.data('channel')) {
                             return "Emote: "+raw+"<br />Channel: "+$emote.data('channel');
                         } else {
                             return raw;
@@ -155,27 +155,36 @@ module.exports = function () {
                 }
             });
             $(this).tipsy("show");
-            if($(this).data('channel')) {
+            var $emote = $(this);
+            if(bttv.TwitchEmoteIDToChannel && $emote.data('id') && bttv.TwitchEmoteIDToChannel[$emote.data('id')]) {
+                $(this).css('cursor','pointer');
+            } else if($emote.data('channel')) {
                 $(this).css('cursor','pointer');
             }
         }).on('mouseout', '.chat-line span.emoticon', function() {
             $(this).tipsy("hide");
-            if($(this).data('channel')) {
+            var $emote = $(this);
+            if(bttv.TwitchEmoteIDToChannel && $emote.data('id') && bttv.TwitchEmoteIDToChannel[$emote.data('id')]) {
+                $(this).css('cursor','normal');
+            } else if($emote.data('channel')) {
                 $(this).css('cursor','normal');
             }
             $('div.tipsy').remove();
         }).on('click', '.chat-line span.emoticon', function() {
-            if($(this).data('channel')) {
+            var $emote = $(this);
+            if(bttv.TwitchEmoteIDToChannel && $emote.data('id') && bttv.TwitchEmoteIDToChannel[$emote.data('id')]) {
+                window.open('http://www.twitch.tv/'+bttv.TwitchEmoteIDToChannel[$emote.data('id')],'_blank');
+            } else if($emote.data('channel')) {
                 window.open('http://www.twitch.tv/'+$(this).data('channel'),'_blank');
             }
         });
         
         $('#bttvEmotes').remove();
         cssString += ".emoticon { display: inline-block; }";
-        if(moragEmote !== false) {
+        /*if(moragEmote !== false) {
             var spinner = "emo-"+moragEmote;
             cssString += '@keyframes "spinner"{from{-webkit-transform:rotate(0);-moz-transform:rotate(0);-o-transform:rotate(0);-ms-transform:rotate(0);transform:rotate(0)}to{-webkit-transform:rotate(360deg);-moz-transform:rotate(360deg);-o-transform:rotate(360deg);-ms-transform:rotate(360deg);transform:rotate(360deg)}}@-moz-keyframes spinner{from{-moz-transform:rotate(0);transform:rotate(0)}to{-moz-transform:rotate(360deg);transform:rotate(360deg)}}@-webkit-keyframes "spinner"{from{-webkit-transform:rotate(0);transform:rotate(0)}to{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@-ms-keyframes "spinner"{from{-ms-transform:rotate(0);transform:rotate(0)}to{-ms-transform:rotate(360deg);transform:rotate(360deg)}}@-o-keyframes "spinner"{from{-o-transform:rotate(0);transform:rotate(0)}to{-o-transform:rotate(360deg);transform:rotate(360deg)}}.spinner{-webkit-animation:spinner 1.5s linear infinite;-moz-animation:spinner 1.5s linear infinite;-ms-animation:spinner 1.5s linear infinite;-o-animation:spinner 1.5s linear infinite;animation:spinner 1.5s linear infinite}'.replace(/spinner/g, spinner);
-        }
+        }*/
         var emoteCSS = document.createElement("style");
         emoteCSS.setAttribute("type", "text/css");
         emoteCSS.setAttribute("id", "bttvEmotes");
