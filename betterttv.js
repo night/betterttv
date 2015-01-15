@@ -3717,6 +3717,9 @@ module.exports = function () {
     debug.log("Overriding Twitch Emoticons");
 
     var generate = function(bttvEmotes) {
+        vars.emotesLoaded = true;
+        var cssString = "";
+
         /*var twitchDefaultEmotes = [
             "https://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-ebf60cd72f7aa600-24x18.png",
             "https://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-d570c4b3b8d8fc4d-24x18.png",
@@ -3758,8 +3761,6 @@ module.exports = function () {
         var _id = 0;
         var getId = function() { return 'bttv-'+(_id++); };
 
-        vars.emotesLoaded = true;
-        var cssString = "";
         if(vars.userData.isLoggedIn && bttv.chat.helpers.getEmotes(vars.userData.login)) {
             var user = vars.userData.login;
             var userEmoteSets = bttv.chat.helpers.getEmotes(vars.userData.login);
