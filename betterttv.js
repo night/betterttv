@@ -630,73 +630,89 @@ bttv.chat = {
                 return '<a href="' + link + '" target="_blank">' + e + '</a>';
             });
         },
-        emoticon: function(setId, setClass, regex) {
+        emoticonBTTV: function(setId, setClass, regex) {
             return '<span class="emoticon '+setClass+'"'+((bttv.TwitchEmoteSets && bttv.TwitchEmoteSets[setId]) ? ' data-channel="'+bttv.TwitchEmoteSets[setId]+'"' : '')+' data-regex="'+encodeURIComponent(getEmoteFromRegEx(regex))+'"></span>';
         },
-        emoticonCss: function (image, id){
+        emoticon: function(id, name) {
+            return '<img class="emoticon" src="//static-cdn.jtvnw.net/emoticons/v1/' + id + '/1.0" srcset="//static-cdn.jtvnw.net/emoticons/v1/' + id + '/2.0 2x" data-id="' + id + '" data-regex="' + encodeURIComponent(name) + '" />';
+        },
+        emoticonCss: function(image, id) {
             var css = "";
             if(image.height > 18) css = "margin: -" + (image.height-18)/2 + "px 0px";
             return ".emo-"+id+" {"+'background-image: url("'+image.url+'");'+"height: "+image.height+"px;"+"width: "+image.width+"px;"+css+"}";
         },
-        emoticonize: function(message, userSets) {
-            var emotes = bttv.chat.emoticons();
+        emoticonize: function(message, emotes) {
+            if(!emotes) return [message];
 
-            if(!emotes || !emotes['default']) return message;
+            var tokenizedMessage = [];
 
-            if(userSets.length > 0) {
-                for(var i=0; i<userSets.length; i++) {
-                    var set = userSets[i];
+            var emotesList = Object.keys(emotes);
 
-                    if(emotes[set] === undefined) continue;
+            var replacements = [];
 
-                    for(var j=0; j<emotes[set].length; j++) {
-                        var emote = emotes[set][j];
+            emotesList.forEach(function(id) {
+                var emote = emotes[id];
 
-                        if(message.match(emote.regex)) {
-                            return message.replace(emote.regex, bttv.chat.templates.emoticon(set, emote.cls, emote.regex));
-                        }
-                    }
+                for(var i=emote.length-1; i>=0; i--) {
+                    replacements.push({ id: id, first: emote[i][0], last: emote[i][1] });
                 }
-            }
+            });
 
-            for(var i=0; i<emotes['default'].length; i++) {
-                var emote = emotes['default'][i];
+            replacements.sort(function(a, b) {
+                return b.first - a.first;
+            });
 
-                if(message.match(emote.regex)) {
-                    return message.replace(emote.regex, bttv.chat.templates.emoticon(-1, emote.cls, emote.regex));
-                }
-            }
+            replacements.forEach(function(replacement) {
+                // The emote command
+                var name = message.slice(replacement.first, replacement.last+1);
 
-            return message;
+                // Unshift the end of the message (that doesn't contain the emote)
+                tokenizedMessage.unshift(message.substr(replacement.last+1));
+
+                // Unshift the emote HTML (but not as a string to allow us to process links and escape html still)
+                tokenizedMessage.unshift([ bttv.chat.templates.emoticon(replacement.id, name) ]);
+
+                // Splice the unparsed piece of the message
+                message = message.slice(0, replacement.first);
+            });
+
+            // Unshift the remaining part of the message (that contains no emotes)
+            tokenizedMessage.unshift(message);
+
+            return tokenizedMessage;
         },
         moderationCard: function(user, top, left) {
             var moderationCardTemplate = require('./templates/moderation-card');
             return moderationCardTemplate({user: user, top: top, left: left});
         },
-        message: function(sender, message, userSets, colored) {
+        message: function(sender, message, emotes, colored) {
             colored = colored || false;
             var templates = bttv.chat.templates;
             var rawMessage = encodeURIComponent(message);
-            if(sender !== 'jtv') {
-                var tokenizedString = message.split(' ');
 
-                for(var i=0; i<tokenizedString.length; i++) {
-                    tokenizedString[i] = templates.escape(tokenizedString[i]);
-                    tokenizedString[i] = templates.emoticonize(tokenizedString[i], userSets);
-                    tokenizedString[i] = templates.linkify(tokenizedString[i]);
+            if(sender !== 'jtv') {
+                var tokenizedMessage = templates.emoticonize(message, emotes);
+
+                for(var i=0; i<tokenizedMessage.length; i++) {
+                    if(typeof tokenizedMessage[i] === 'string') {
+                        tokenizedMessage[i] = templates.escape(tokenizedMessage[i]);
+                        tokenizedMessage[i] = templates.linkify(tokenizedMessage[i]);
+                    } else {
+                        tokenizedMessage[i] = tokenizedMessage[i][0];
+                    }
                 }
 
-                message = tokenizedString.join(' ');
+                message = tokenizedMessage.join(' ');
             }
+
             return '<span class="message" '+(colored?'style="color: '+colored+'" ':'')+'data-raw="'+rawMessage+'">'+message+'</span>';
         },
         privmsg: function(highlight, action, server, isMod, data) {
             var templates = bttv.chat.templates;
-            return '<div class="chat-line'+(highlight?' highlight':'')+(action?' action':'')+(server?' admin':'')+'" data-sender="'+data.sender+'">'+templates.timestamp(data.time)+' '+(isMod?templates.modicons():'')+' '+templates.badges(data.badges)+templates.from(data.nickname, data.color)+templates.message(data.sender, data.message, data.emoteSets, action?data.color:false)+'</div>';
+            return '<div class="chat-line'+(highlight?' highlight':'')+(action?' action':'')+(server?' admin':'')+'" data-sender="'+data.sender+'">'+templates.timestamp(data.time)+' '+(isMod?templates.modicons():'')+' '+templates.badges(data.badges)+templates.from(data.nickname, data.color)+templates.message(data.sender, data.message, data.emotes, action?data.color:false)+'</div>';
         }
     },
     tmi: function() { return (bttv.getChatController()) ? bttv.getChatController().currentRoom : false; },
-    emoticons: function() { return (window.Ember && window.App) ? App.__container__.lookup("controller:emoticons").get("emoticonSets") || {} : {}; },
     takeover: function() {
         var chat = bttv.chat,
             tmi = chat.tmi();
@@ -933,7 +949,7 @@ bttv.chat = {
             }
 
             // Anti-Prefix Completion
-            if(bttv.settings.get("antiPrefix") === true) {
+            /*if(bttv.settings.get("antiPrefix") === true) {
                 if (keyCode === keyCodes.Space || keyCode === keyCodes.Enter) {
                     if(!chat.store.__emoteRegexes) {
                         chat.store.__emoteRegexes = [];
@@ -950,7 +966,7 @@ bttv.chat = {
                         }
                     }
                 }
-            }
+            }*/
 
             // Chat history
             if(bttv.settings.get('chatLineHistory') === true) {
@@ -1047,7 +1063,6 @@ bttv.chat = {
                 var words = val.toLowerCase().split(' ');
                 if(words.indexOf('twitch') > -1 && words.indexOf('amazon') > -1 && words.indexOf('google') > -1) {
                     bttv.chat.helpers.serverMessage('<img src="https://cdn.betterttv.net/special/twitchtrollsgoogle.gif"/>');
-                    bttv.chat.helpers.serverMessage('<img src="https://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-ddc6e3a8732cb50f-25x28.png"/>')
                 }
 
                 bttv.chat.helpers.sendMessage(val);
@@ -1455,8 +1470,8 @@ bttv.chat = {
                         } else {
                             var translation = sentences.trans;
                         }
-                        var emoteSets = bttv.chat.helpers.getEmotes(sender) || [];
-                        $(element).replaceWith(bttv.chat.templates.message(sender, translation, emoteSets));
+
+                        $(element).replaceWith(bttv.chat.templates.message(sender, translation));
                     }
                 },
                 error: function() {
@@ -1549,8 +1564,7 @@ bttv.chat = {
                     if(bttv.settings.get("showDeletedMessages") !== true) {
                         $('.chat-line[data-sender="' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '"] .message').each(function () {
                             $(this).html("<span style=\"color: #999\">&lt;message deleted&gt;</span>").off('click').on('click', function() {
-                                var emoteSets = bttv.chat.helpers.getEmotes(user) || [];
-                                $(this).replaceWith(bttv.chat.templates.message(user, decodeURIComponent($(this).data('raw')), emoteSets));
+                                $(this).replaceWith(bttv.chat.templates.message(user, decodeURIComponent($(this).data('raw'))));
                             });
                         });
                     } else {
@@ -1832,7 +1846,6 @@ bttv.chat = {
                 });
             }
 
-            data.emoteSets = bttv.chat.helpers.getEmotes(data.from) || [];
             data.sender = data.from;
 
             if(data.bttvDisplayName) {
@@ -1854,7 +1867,7 @@ bttv.chat = {
                     sender: data.sender,
                     badges: bttvBadges,
                     color: data.color,
-                    emoteSets: data.emoteSets
+                    emotes: data.tags.emotes
                 }
             );
 
