@@ -29,12 +29,6 @@ module.exports = [
         storageKey: 'alphaTags'
     },
     {
-        name: 'Anti-Prefix Completion',
-        description: 'Allows you to use sub emotes (greater than 4 characters) without prefixes (BETA)',
-        default: false,
-        storageKey: 'antiPrefix'
-    },
-    {
         name: 'BetterTTV Chat',
         description: 'A tiny chat bar for personal messaging friends (BETA)',
         default: false,

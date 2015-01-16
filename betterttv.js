@@ -312,7 +312,7 @@ vars = require('./vars');
 
 bttv.info = {
     version: "6.8",
-    release: 28,
+    release: 29,
     versionString: function() { 
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -630,16 +630,41 @@ bttv.chat = {
                 return '<a href="' + link + '" target="_blank">' + e + '</a>';
             });
         },
-        emoticonBTTV: function(setId, setClass, regex) {
-            return '<span class="emoticon '+setClass+'"'+((bttv.TwitchEmoteSets && bttv.TwitchEmoteSets[setId]) ? ' data-channel="'+bttv.TwitchEmoteSets[setId]+'"' : '')+' data-regex="'+encodeURIComponent(getEmoteFromRegEx(regex))+'"></span>';
+        emoticonBTTV: function(emote) {
+            var channel = emote.channel ? 'data-channel="' + emote.channel + '" ' : '';
+            return '<img class="emoticon bttv-emo-' + emote.id + '" src="' + emote.url + '" ' + channel + 'data-regex="' + encodeURIComponent(emote.regex) + '" />';
         },
         emoticon: function(id, name) {
-            return '<img class="emoticon ttv-emo-' + id + '" src="//static-cdn.jtvnw.net/emoticons/v1/' + id + '/1.0" srcset="//static-cdn.jtvnw.net/emoticons/v1/' + id + '/2.0 2x" data-id="' + id + '" data-regex="' + encodeURIComponent(name) + '" />';
+            if(id < 15 && bttv.settings.get("showDefaultEmotes") !== true) {
+                return '<img class="emoticon ttv-emo-' + id + '" src="' + bttv.chat.templates.jtvEmoticonize(id) + '" data-id="' + id + '" data-regex="' + encodeURIComponent(name) + '" />';
+            } else {
+                return '<img class="emoticon ttv-emo-' + id + '" src="//static-cdn.jtvnw.net/emoticons/v1/' + id + '/1.0" srcset="//static-cdn.jtvnw.net/emoticons/v1/' + id + '/2.0 2x" data-id="' + id + '" data-regex="' + encodeURIComponent(name) + '" />';
+            }
         },
         emoticonCss: function(image, id) {
             var css = "";
             if(image.height > 18) css = "margin: -" + (image.height-18)/2 + "px 0px";
             return ".emo-"+id+" {"+'background-image: url("'+image.url+'");'+"height: "+image.height+"px;"+"width: "+image.width+"px;"+css+"}";
+        },
+        jtvEmoticonize: function(id) {
+            var jtvEmotes = [
+                "//cdn.betterttv.net/emotes/jtv/happy.gif",
+                "//cdn.betterttv.net/emotes/jtv/sad.gif",
+                "//cdn.betterttv.net/emotes/jtv/surprised.gif",
+                "//cdn.betterttv.net/emotes/jtv/angry.gif",
+                "//cdn.betterttv.net/emotes/jtv/bored.gif",
+                "//cdn.betterttv.net/emotes/jtv/drunk.gif",
+                "//cdn.betterttv.net/emotes/jtv/cool.gif",
+                "//cdn.betterttv.net/emotes/jtv/surprised.gif",
+                "//cdn.betterttv.net/emotes/jtv/horny.gif",
+                "//cdn.betterttv.net/emotes/jtv/skeptical.gif",
+                "//cdn.betterttv.net/emotes/jtv/wink.gif",
+                "//cdn.betterttv.net/emotes/jtv/raspberry.gif",
+                "//cdn.betterttv.net/emotes/jtv/winkberry.gif",
+                "//cdn.betterttv.net/emotes/jtv/pirate.gif"
+            ];
+
+            return jtvEmotes[id-1];
         },
         emoticonize: function(message, emotes) {
             if(!emotes) return [message];
@@ -681,6 +706,38 @@ bttv.chat = {
 
             return tokenizedMessage;
         },
+        bttvEmoticonize: function(sender, message, emote) {
+            if(emote.restriction) {
+                if(emote.restriction.channels && emote.restriction.channels.indexOf(bttv.getChannel()) === -1) return message;
+                if(emote.restriction.games && emote.restriction.games.indexOf(bttv.chat.tmi().channel.game) === -1) return message;
+            }
+
+            var emoteSets = bttv.chat.helpers.getEmotes(sender);
+            if(emote.emoticon_set && emoteSets.indexOf(emote.emoticon_set) === -1) return message;
+
+            return message.replace(emote.regex, bttv.chat.templates.emoticonBTTV(emote));
+        },
+        bttvMessageTokenize: function(sender, message) {
+            var tokenizedString = message.split(' ');
+
+            for(var i=0; i<tokenizedString.length; i++) {
+                var piece = tokenizedString[i];
+
+                var test = piece.replace(/(^[~!@#$%\^&\*\(\)]+|[~!@#$%\^&\*\(\)]+$)/g, '');
+                var emote = bttv.chat.store.bttvEmotes[test];
+
+                if(emote) {
+                    piece = bttv.chat.templates.bttvEmoticonize(sender, piece, emote);
+                } else {
+                    piece = bttv.chat.templates.escape(piece);
+                    piece = bttv.chat.templates.linkify(piece);
+                }
+
+                tokenizedString[i] = piece;
+            }
+
+            return tokenizedString.join(' ');
+        },
         moderationCard: function(user, top, left) {
             var moderationCardTemplate = require('./templates/moderation-card');
             return moderationCardTemplate({user: user, top: top, left: left});
@@ -695,8 +752,7 @@ bttv.chat = {
 
                 for(var i=0; i<tokenizedMessage.length; i++) {
                     if(typeof tokenizedMessage[i] === 'string') {
-                        tokenizedMessage[i] = templates.escape(tokenizedMessage[i]);
-                        tokenizedMessage[i] = templates.linkify(tokenizedMessage[i]);
+                        tokenizedMessage[i] = templates.bttvMessageTokenize(sender, tokenizedMessage[i]);
                     } else {
                         tokenizedMessage[i] = tokenizedMessage[i][0];
                     }
@@ -839,26 +895,16 @@ bttv.chat = {
             bttv.chat.handlers.moderationCard($(this).parent().data('sender')+"", $(this));
         });
 
-        // Load emote sets
-        if(bttv.socketServer) {
-            bttv.socketServer.emit("twitch emotes");
-            bttv.socketServer.on("twitch emotes", function(result) {
-                bttv.socketServer.off("twitch emotes");
-                bttv.TwitchEmoteIDToChannel = result.ids;
-                bttv.TwitchEmoteSets = result.sets;
+        // Give some tips to Twitch Emotes
+        if(bttv.TwitchEmoteSets && tmi.product && tmi.product.emoticons) {
+            for(var i=0; i<tmi.product.emoticons.length; i++) {
+                var emote = tmi.product.emoticons[i];
 
-                // Give some tips to Twitch Emotes
-                if(tmi.product && tmi.product.emoticons) {
-                    for(var i=0; i<tmi.product.emoticons.length; i++) {
-                        var emote = tmi.product.emoticons[i];
-
-                        if(emote.state && emote.state === "active" && !bttv.TwitchEmoteSets[emote.emoticon_set]) {
-                            bttv.socketServer.emit('give_tip', { channel: bttv.getChannel(), user: (vars.userData.isLoggedIn ? vars.userData.login : 'guest') });
-                            break;
-                        }
-                    }
+                if(emote.state && emote.state === "active" && !bttv.TwitchEmoteSets[emote.emoticon_set]) {
+                    bttv.socketServer.emit('give_tip', { channel: bttv.getChannel(), user: (vars.userData.isLoggedIn ? vars.userData.login : 'guest') });
+                    break;
                 }
-            });
+            }
         }
 
         // Make chat translatable
@@ -871,7 +917,7 @@ bttv.chat = {
             });
         }
 
-        // Message input features (tab completion, message history, anti-prefix completion, extra commands)
+        // Message input features (tab completion, message history, extra commands)
         var lastPartialMatch = null;
         var lastMatch = null;
         var lastIndex = null
@@ -931,26 +977,6 @@ bttv.chat = {
                     }
                 }
             }
-
-            // Anti-Prefix Completion
-            /*if(bttv.settings.get("antiPrefix") === true) {
-                if (keyCode === keyCodes.Space || keyCode === keyCodes.Enter) {
-                    if(!chat.store.__emoteRegexes) {
-                        chat.store.__emoteRegexes = [];
-                        if(chat.emoticons()['default']) {
-                            chat.emoticons()['default'].forEach(function(emote) {
-                                chat.store.__emoteRegexes.push(""+emote.regex);
-                            });
-                        }
-                    }
-                    for(var emote in chat.store.autoCompleteEmotes) {
-                        if(chat.store.autoCompleteEmotes.hasOwnProperty(emote) && chat.store.__emoteRegexes.indexOf("/\\b"+emote+"\\b/g") === -1) {
-                            var emoteRegex = new RegExp("\\b"+emote+"\\b","g");
-                            $chatInput.val($chatInput.val().replace(emoteRegex, chat.store.autoCompleteEmotes[emote]));
-                        }
-                    }
-                }
-            }*/
 
             // Chat history
             if(bttv.settings.get('chatLineHistory') === true) {
@@ -1269,7 +1295,7 @@ bttv.chat = {
             if(!user || user === "") return false;
             var tmi = bttv.chat.tmi();
             var emotes = [];
-            if(tmi && tmi.tmiRoom.getEmotes(user)) emotes = tmi.tmiRoom.getEmotes(user);
+            if(tmi && tmi.tmiRoom.getEmotes && tmi.tmiRoom.getEmotes(user)) emotes = tmi.tmiRoom.getEmotes(user);
             if(bttv.chat.store.__subscriptions[user]) {
                 bttv.chat.store.__subscriptions[user].forEach(function(channel) {
                     emotes.push(channel);
@@ -1929,6 +1955,7 @@ bttv.chat = {
         trackTimeouts: {},
         chatters: {},
         chatHistory: [],
+        bttvEmotes: {},
         autoCompleteEmotes: {}
     }
 }
@@ -3718,7 +3745,11 @@ module.exports = function () {
 
     var generate = function(bttvEmotes) {
         vars.emotesLoaded = true;
-        var cssString = "";
+
+        bttvEmotes.forEach(function(emote, count) {
+            emote.id = count;
+            bttv.chat.store.bttvEmotes[emote.regex] = emote;
+        });
 
         /*var twitchDefaultEmotes = [
             "https://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-ebf60cd72f7aa600-24x18.png",
@@ -3889,22 +3920,18 @@ module.exports = function () {
                 window.open('http://www.twitch.tv/'+$(this).data('channel'),'_blank');
             }
         });
-        
-        $('#bttvEmotes').remove();
-        cssString += ".emoticon { display: inline-block; }";
-        /*if(moragEmote !== false) {
-            var spinner = "emo-"+moragEmote;
-            cssString += '@keyframes "spinner"{from{-webkit-transform:rotate(0);-moz-transform:rotate(0);-o-transform:rotate(0);-ms-transform:rotate(0);transform:rotate(0)}to{-webkit-transform:rotate(360deg);-moz-transform:rotate(360deg);-o-transform:rotate(360deg);-ms-transform:rotate(360deg);transform:rotate(360deg)}}@-moz-keyframes spinner{from{-moz-transform:rotate(0);transform:rotate(0)}to{-moz-transform:rotate(360deg);transform:rotate(360deg)}}@-webkit-keyframes "spinner"{from{-webkit-transform:rotate(0);transform:rotate(0)}to{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@-ms-keyframes "spinner"{from{-ms-transform:rotate(0);transform:rotate(0)}to{-ms-transform:rotate(360deg);transform:rotate(360deg)}}@-o-keyframes "spinner"{from{-o-transform:rotate(0);transform:rotate(0)}to{-o-transform:rotate(360deg);transform:rotate(360deg)}}.spinner{-webkit-animation:spinner 1.5s linear infinite;-moz-animation:spinner 1.5s linear infinite;-ms-animation:spinner 1.5s linear infinite;-o-animation:spinner 1.5s linear infinite;animation:spinner 1.5s linear infinite}'.replace(/spinner/g, spinner);
-        }*/
-        var emoteCSS = document.createElement("style");
-        emoteCSS.setAttribute("type", "text/css");
-        emoteCSS.setAttribute("id", "bttvEmotes");
-        emoteCSS.innerHTML = cssString;
-        $('body').append(emoteCSS);
     };
 
-    $.getJSON('https://cdn.betterttv.net/emotes/emotes.json?'+bttv.info.versionString()).done(function(emotes) {
-        generate(emotes);
+    $.getJSON('https://api.betterttv.net/emotes/ids').done(function(data) {
+        bttv.TwitchEmoteIDToChannel = data.ids;
+    });
+
+    $.getJSON('https://api.betterttv.net/emotes/sets').done(function(data) {
+        bttv.TwitchEmoteSets = data.sets;
+    });
+
+    $.getJSON('https://api.betterttv.net/emotes').done(function(data) {
+        generate(data.emotes);
     }).fail(function() {
         generate([]);
     });
@@ -4115,12 +4142,6 @@ module.exports = [
         description: 'Removes the background from chat tags',
         default: false,
         storageKey: 'alphaTags'
-    },
-    {
-        name: 'Anti-Prefix Completion',
-        description: 'Allows you to use sub emotes (greater than 4 characters) without prefixes (BETA)',
-        default: false,
-        storageKey: 'antiPrefix'
     },
     {
         name: 'BetterTTV Chat',

@@ -1350,3 +1350,83 @@ body.channel_new.columns.ember-application {
 .following-games-onboarding strong {
     color: #8c8c9c;
 }
+
+/* Emoticons */
+.emoticon {
+    display: inline-block;
+}
+
+/* tehMorag's emote */
+@keyframes "ttv-emo-6633" {
+    from {
+        -webkit-transform: rotate(0);
+        -moz-transform: rotate(0);
+        -o-transform: rotate(0);
+        -ms-transform: rotate(0);
+        transform: rotate(0);
+    }
+
+    to {
+        -webkit-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        transform: rotate(360deg);
+    };
+}
+
+@-moz-keyframes "ttv-emo-6633" {
+    from {
+        -moz-transform: rotate(0);
+        transform: rotate(0);
+    }
+
+    to {
+        -moz-transform: rotate(360deg);
+        transform: rotate(360deg);
+    };
+}
+
+@-webkit-keyframes "ttv-emo-6633" {
+    from {
+        -webkit-transform: rotate(0);
+        transform: rotate(0);
+    }
+
+    to {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    };
+}
+
+@-ms-keyframes "ttv-emo-6633" {
+    from {
+        -ms-transform: rotate(0);
+        transform: rotate(0);
+    }
+
+    to {
+        -ms-transform: rotate(360deg);
+        transform: rotate(360deg);
+    };
+}
+
+@-o-keyframes "ttv-emo-6633" {
+    from {
+        -o-transform: rotate(0);
+        transform: rotate(0);
+    }
+
+    to {
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    };
+}
+
+.ttv-emo-6633 {
+    -webkit-animation: ttv-emo-6633 1.5s linear infinite;
+    -moz-animation: ttv-emo-6633 1.5s linear infinite;
+    -ms-animation: ttv-emo-6633 1.5s linear infinite;
+    -o-animation: ttv-emo-6633 1.5s linear infinite;
+    animation: ttv-emo-6633 1.5s linear infinite;
+}

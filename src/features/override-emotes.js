@@ -8,7 +8,11 @@ module.exports = function () {
 
     var generate = function(bttvEmotes) {
         vars.emotesLoaded = true;
-        var cssString = "";
+
+        bttvEmotes.forEach(function(emote, count) {
+            emote.id = count;
+            bttv.chat.store.bttvEmotes[emote.regex] = emote;
+        });
 
         /*var twitchDefaultEmotes = [
             "https://static-cdn.jtvnw.net/jtv_user_pictures/chansub-global-emoticon-ebf60cd72f7aa600-24x18.png",
@@ -179,22 +183,18 @@ module.exports = function () {
                 window.open('http://www.twitch.tv/'+$(this).data('channel'),'_blank');
             }
         });
-        
-        $('#bttvEmotes').remove();
-        cssString += ".emoticon { display: inline-block; }";
-        /*if(moragEmote !== false) {
-            var spinner = "emo-"+moragEmote;
-            cssString += '@keyframes "spinner"{from{-webkit-transform:rotate(0);-moz-transform:rotate(0);-o-transform:rotate(0);-ms-transform:rotate(0);transform:rotate(0)}to{-webkit-transform:rotate(360deg);-moz-transform:rotate(360deg);-o-transform:rotate(360deg);-ms-transform:rotate(360deg);transform:rotate(360deg)}}@-moz-keyframes spinner{from{-moz-transform:rotate(0);transform:rotate(0)}to{-moz-transform:rotate(360deg);transform:rotate(360deg)}}@-webkit-keyframes "spinner"{from{-webkit-transform:rotate(0);transform:rotate(0)}to{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@-ms-keyframes "spinner"{from{-ms-transform:rotate(0);transform:rotate(0)}to{-ms-transform:rotate(360deg);transform:rotate(360deg)}}@-o-keyframes "spinner"{from{-o-transform:rotate(0);transform:rotate(0)}to{-o-transform:rotate(360deg);transform:rotate(360deg)}}.spinner{-webkit-animation:spinner 1.5s linear infinite;-moz-animation:spinner 1.5s linear infinite;-ms-animation:spinner 1.5s linear infinite;-o-animation:spinner 1.5s linear infinite;animation:spinner 1.5s linear infinite}'.replace(/spinner/g, spinner);
-        }*/
-        var emoteCSS = document.createElement("style");
-        emoteCSS.setAttribute("type", "text/css");
-        emoteCSS.setAttribute("id", "bttvEmotes");
-        emoteCSS.innerHTML = cssString;
-        $('body').append(emoteCSS);
     };
 
-    $.getJSON('https://cdn.betterttv.net/emotes/emotes.json?'+bttv.info.versionString()).done(function(emotes) {
-        generate(emotes);
+    $.getJSON('https://api.betterttv.net/emotes/ids').done(function(data) {
+        bttv.TwitchEmoteIDToChannel = data.ids;
+    });
+
+    $.getJSON('https://api.betterttv.net/emotes/sets').done(function(data) {
+        bttv.TwitchEmoteSets = data.sets;
+    });
+
+    $.getJSON('https://api.betterttv.net/emotes').done(function(data) {
+        generate(data.emotes);
     }).fail(function() {
         generate([]);
     });
