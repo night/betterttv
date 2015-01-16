@@ -4524,7 +4524,7 @@ if ( $("body[data-page=\"ember#chat\"]").length)
 {
 buf.push("<p><a href=\"#\" class=\"g18_gear-00000080 blackChatLink\">Black Chat (Chroma Key)</a></p>");
 }
-if ( $("#dash_main").length || /\?bttvDashboard=true/.test(window.location))
+if ( $("#dash_main").length || window !== window.top)
 {
 buf.push("<p><a href=\"#\" class=\"g18_gear-00000080 flipDashboard\">");
 if ( bttv.settings.get("flipDashboard"))
