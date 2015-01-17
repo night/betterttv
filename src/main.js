@@ -344,7 +344,7 @@ bttv.chat = {
             var jtvEmotes = [
                 "//cdn.betterttv.net/emotes/jtv/happy.gif",
                 "//cdn.betterttv.net/emotes/jtv/sad.gif",
-                "//cdn.betterttv.net/emotes/jtv/surprised.gif",
+                "//cdn.betterttv.net/emotes/mw.png",
                 "//cdn.betterttv.net/emotes/jtv/angry.gif",
                 "//cdn.betterttv.net/emotes/jtv/bored.gif",
                 "//cdn.betterttv.net/emotes/jtv/drunk.gif",
