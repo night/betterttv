@@ -726,7 +726,7 @@ bttv.chat = {
                 var test = piece.replace(/(^[~!@#$%\^&\*\(\)]+|[~!@#$%\^&\*\(\)]+$)/g, '');
                 var emote = bttv.chat.store.bttvEmotes[test] || bttv.chat.store.bttvEmotes[piece];
 
-                if(emote) {
+                if(emote && bttv.settings.get("bttvEmotes") === true) {
                     piece = bttv.chat.templates.bttvEmoticonize(sender, piece, emote);
                 } else {
                     piece = bttv.chat.templates.escape(piece);
