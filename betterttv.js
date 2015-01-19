@@ -3635,9 +3635,20 @@ module.exports = function () {
         emotesJSInject.setAttribute("id", "clickTwitchEmotes");
         $("body").append(emotesJSInject);
 
-        if(window.emoteMenu) {
-        	window.emoteMenu.registerEmoteGetter('BetterTTV', bttv.chat.emotes);
-        }
+        var counter = 0;
+        var getterInterval = setInterval(function() {
+            counter++;
+
+            if(counter > 29) {
+                clearInterval(getterInterval);
+                return;
+            }
+
+            if(window.emoteMenu) {
+                window.emoteMenu.registerEmoteGetter('BetterTTV', bttv.chat.emotes);
+                clearInterval(getterInterval);
+            }
+        }, 1000);
     }
 }
 },{"../debug":1}],26:[function(require,module,exports){
