@@ -9,5 +9,9 @@ module.exports = function () {
         emotesJSInject.setAttribute("type", "text/javascript");
         emotesJSInject.setAttribute("id", "clickTwitchEmotes");
         $("body").append(emotesJSInject);
+
+        if(window.emoteMenu) {
+        	window.emoteMenu.registerEmoteGetter('BetterTTV', bttv.chat.emotes);
+        }
     }
 }

@@ -6,7 +6,7 @@ vars = require('./vars');
 
 bttv.info = {
     version: "6.8",
-    release: 29,
+    release: 30,
     versionString: function() { 
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -852,6 +852,31 @@ bttv.chat = {
                 }
             }
         });
+    },
+    emotes: function() {
+        var emotes = bttv.chat.store.bttvEmotes;
+        var usableEmotes = [];
+
+        if(vars.userData.isLoggedIn && bttv.chat.helpers.getEmotes(vars.userData.login)) {
+            var emoteSets = bttv.chat.helpers.getEmotes(vars.userData.login);
+        }
+
+        Object.keys(emotes).forEach(function(key) {
+            var emote = emotes[key];
+
+            if(emote.restriction) {
+                if(emote.restriction.channels && emote.restriction.channels.indexOf(bttv.getChannel()) === -1) return;
+                if(emote.restriction.games && emote.restriction.games.indexOf(bttv.chat.tmi().channel.game) === -1) return;
+            }
+
+            if(emote.emoticon_set && emoteSets.indexOf(emote.emoticon_set) === -1) return;
+
+            emote.text = emote.regex;
+
+            usableEmotes.push(emote);
+        });
+
+        return usableEmotes;
     },
     helpers: {
         lookupDisplayName: function(user) {
