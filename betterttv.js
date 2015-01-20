@@ -596,7 +596,7 @@ bttv.notify = function(message, title, url, image, tag, permanent) {
         }
         desktopNotify(message, title, url, image, tag, permanent);
     } else {
-        message = message.replace(/\n/g, "<br /><br />").replace(/Click here(.*)./, '<a style="color: white;" target="_blank" href="'+url+'">Click here$1.</a>');
+        message = message.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, "<br /><br />").replace(/Click here(.*)./, '<a style="color: white;" target="_blank" href="'+url+'">Click here$1.</a>');
         $.gritter.add({
             title: title,
             image: image,
