@@ -1109,7 +1109,8 @@ bttv.chat = {
         });
 
         // When messages come in too fast, things get laggy
-        if(!chat.store.__messageTimer) chat.store.__messageTimer = setInterval(chat.handlers.shiftQueue, 250);
+        if(!chat.store.__messageTimer) chat.store.__messageTimer = setInterval(chat.handlers.shiftQueue, 500);
+        if(!chat.store.__lookupUsernameTimer) chat.store.__lookupUsernameTimer = setInterval(function() { chat.store.__usersBeingLookedUp = 0; }, 1000);
 
         // Active Tab monitoring - Useful for knowing if a user is "watching" chat
         $(window).off("blur focus").on("blur focus", function(e) {
@@ -1160,6 +1161,10 @@ bttv.chat = {
         });
     },
     emotes: function() {
+        if(bttv.settings.get("bttvEmotes") === false) {
+            return [];
+        }
+
         var emotes = bttv.chat.store.bttvEmotes;
         var usableEmotes = [];
 
@@ -1197,22 +1202,21 @@ bttv.chat = {
                     }
                     return store.displayNames[user].displayName;
                 } else if(user !== "jtv" && user !== "twitchnotify") {
-                    if(socketServer) {
+                    if(socketServer && store.__usersBeingLookedUp < 3) {
                         socketServer.emit('lookup', { user: user });
-                    } else {
-                        if(store.__usersBeingLookedUp < 2) {
-                            store.__usersBeingLookedUp++;
-                            Twitch.api.get("users/" + user).done(function (d) {
-                                if(d.display_name && d.name) {
-                                    store.displayNames[d.name] = {
-                                        displayName: d.display_name,
-                                        date: Date.now()
-                                    };
-                                }
-                                store.__usersBeingLookedUp--;
-                            });
-                        }
+                    } else if(store.__usersBeingLookedUp < 2) {
+                        Twitch.api.get("users/" + user).done(function (d) {
+                            if(d.display_name && d.name) {
+                                store.displayNames[d.name] = {
+                                    displayName: d.display_name,
+                                    date: Date.now()
+                                };
+                            }
+                        });
                     }
+
+                    store.__usersBeingLookedUp++;
+
                     return user.capitalize();
                 } else {
                     return user;
@@ -1337,15 +1341,29 @@ bttv.chat = {
             return specials;
         },
         scrollChat: function() {
-            if($('.ember-chat .chat-interface .more-messages-indicator').length || !$('.ember-chat .chat-messages .chat-line').length) return;
-            $('.ember-chat .chat-messages .tse-scroll-content')[0].scrollTop = $('.ember-chat .chat-messages .tse-scroll-content')[0].scrollHeight;
-            var linesToDelete = $('.ember-chat .chat-messages .chat-line').length - bttv.settings.get("scrollbackAmount");
+            var $chat = $('.ember-chat');
 
-            if(linesToDelete > 0) {
-                for(var i=0; i<linesToDelete; i++) {
-                    $('.ember-chat .chat-messages .chat-line').eq(0).remove();
-                }
-            }
+            var chatPaused = $chat.find('.chat-interface').children('span').children('.more-messages-indicator').length;
+
+            if(chatPaused || !$chat.length) return;
+
+            var $chatMessages = $chat.find('.chat-messages');
+            var $chatScroller = $chatMessages.children('.tse-scroll-content');
+            var $chatLines = $chatScroller.children('.tse-content').children('.chat-lines').children('div.chat-line');
+
+            setTimeout(function() {
+                if(!$chatScroller.length) return;
+
+                $chatScroller[0].scrollTop = $chatScroller[0].scrollHeight;
+            });
+            
+            var linesToDelete = $chatLines.length - bttv.settings.get("scrollbackAmount");
+
+            if(linesToDelete <= 0) return;
+
+            $chatLines.slice(0, linesToDelete).each(function() {
+                $(this).remove();
+            });
         },
         calculateColor: function(color) {
             var colorRegex = /^#[0-9a-f]+$/i;
