@@ -8,7 +8,7 @@ module.exports = function (data) {
         "sour": { mod: false, tagType: "brown", tagName: "<span style='color:#FFE600;'>Saucy</span>", color: data.color+";text-shadow: 0 0 10px #FFD700" },
         "yorkyyork": { mod: false, tagType: "broadcaster", tagName: "Nerd" },
         "striker035": { mod: true, tagType: "admin", tagName: "MotherLover" },
-        "dogs": { mod: true, tagType: "orange", tagName: "Smelly", nickname: "Dog" },
+        "dog": { mod: true, tagType: "bot", tagName: "Smelly" },
         "jruxdev": { mod: true, tagType: "bot", tagName: "MuttonChops" },
         "totally_cereal": { mod: true, tagType: "staff", tagName: "Fruity" },
         "virtz": { mod: true, tagType: "staff", tagName: "Perv" },
