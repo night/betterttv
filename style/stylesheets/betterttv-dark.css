@@ -1962,3 +1962,6 @@ span.subscribe-text {
 .app-main .directory_header .whatisthis:before {
     border-bottom-color: rgb(30,30,30);
 }
+.whatisthis .actions a {
+    color: #999;
+}
