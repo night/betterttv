@@ -1430,3 +1430,9 @@ body.channel_new.columns.ember-application {
     -o-animation: ttv-emo-6633 1.5s linear infinite;
     animation: ttv-emo-6633 1.5s linear infinite;
 }
+
+/* Notification Container above chat */
+.ember-chat .notification-container {
+    left: 0px;
+    right: 0px;
+}
