@@ -1,4 +1,5 @@
 var keyCodes = require('./keycodes');
+var punycode = require('punycode');
 
 // Declare public and private variables
 var debug = require('./debug'),
@@ -381,12 +382,17 @@ bttv.chat = {
                 return b.first - a.first;
             });
 
+            // Tokenizes each character into an array
+            // punycode deals with unicode symbols on surrogate pairs
+            // punycode is used in the replacements loop below as well
+            message = punycode.ucs2.decode(message);
+
             replacements.forEach(function(replacement) {
                 // The emote command
-                var name = message.slice(replacement.first, replacement.last+1);
+                var name = punycode.ucs2.encode(message.slice(replacement.first, replacement.last+1));
 
                 // Unshift the end of the message (that doesn't contain the emote)
-                tokenizedMessage.unshift(message.substr(replacement.last+1));
+                tokenizedMessage.unshift(punycode.ucs2.encode(message.slice(replacement.last+1)));
 
                 // Unshift the emote HTML (but not as a string to allow us to process links and escape html still)
                 tokenizedMessage.unshift([ bttv.chat.templates.emoticon(replacement.id, name) ]);
@@ -396,7 +402,7 @@ bttv.chat = {
             });
 
             // Unshift the remaining part of the message (that contains no emotes)
-            tokenizedMessage.unshift(message);
+            tokenizedMessage.unshift(punycode.ucs2.encode(message));
 
             return tokenizedMessage;
         },
