@@ -399,12 +399,12 @@ module.exports = [
     },
     {
         default: ", ",
-        storageKey: 'AutocompletePostfix',
+        storageKey: 'tabCompletePostfix',
         toggle: function(postFix){
             if(postFix.length === 0) {
-                chat.helpes.serverMessage("")
+                chat.helpers.serverMessage("Tab completion only")
             } else {
-                chat.helpes.serverMessage("The name will be followed by " + postfix + "when autocompleting")
+                chat.helpers.serverMessage("The name will be followed by \"" + postFix + "\" when tab completing")
             }
         }
     }

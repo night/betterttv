@@ -111,11 +111,11 @@ module.exports = function() {
         }
     });
 
-    $('.setAutocompletePostfix').click(function(e) {
+    $('.setTabCompletePostfix').click(function(e) {
       e.preventDefault();
-      var postfix = prompt("What characters would you like to write after autocompleting a name? default \", \". E.g. \"Night, \"", bttv.settings.get("AutocompletePostfix"));
+      var postfix = prompt("What characters would you like to write after autocompleting a name? default \", \". E.g. \"Night, \"", bttv.settings.get("tabCompletePostfix"));
       if (postfix != null) {
-        bttv.settings.save("AutocompletePostfix", postfix)
+        bttv.settings.save("tabCompletePostfix", postfix)
       }
     });
 };
