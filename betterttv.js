@@ -971,8 +971,8 @@ bttv.chat = {
                             sentence.push(user.capitalize());
                         }
                         if (sentence.length === 1) {
-                            $chatInput.val(sentence.join(' ') + ", ");
-                            lastMatch = sentence.join(' ') + ", ";
+                            $chatInput.val(sentence.join(' ') + bttv.settings.get("tabCompletePostfix"));
+                            lastMatch = sentence.join(' ') + bttv.settings.get("tabCompletePostfix");
                             lastIndex = i;
                         } else {
                             $chatInput.val(sentence.join(' '));
@@ -2983,6 +2983,14 @@ module.exports = function() {
             bttv.settings.save("scrollbackAmount", 150);
         }
     });
+
+    $('.setTabCompletePostfix').click(function(e) {
+      e.preventDefault();
+      var postfix = prompt("What characters would you like to write after autocompleting a name? default \", \". E.g. \"Night, \"", bttv.settings.get("tabCompletePostfix"));
+      if (postfix != null) {
+        bttv.settings.save("tabCompletePostfix", postfix)
+      }
+    });
 };
 },{"../debug":1,"../element":2,"../templates/chat-settings":33,"../vars":38,"./darken-page":17,"./split-chat":29}],11:[function(require,module,exports){
 var debug = require('../debug');
@@ -4453,6 +4461,17 @@ module.exports = [
                 chat.helpers.serverMessage("Chat scrollback is now set to: " + lines);
             }
         }
+    },
+    {
+        default: ", ",
+        storageKey: 'tabCompletePostfix',
+        toggle: function(postFix){
+            if(postFix.length === 0) {
+                chat.helpers.serverMessage("Tab completion only")
+            } else {
+                chat.helpers.serverMessage("The name will be followed by \"" + postFix + "\" when tab completing")
+            }
+        }
     }
 ];
 },{"./element":2,"./features/beta-chat":4,"./features/channel-reformat":7,"./features/css-loader":16,"./features/darken-page":17,"./features/flip-dashboard":21,"./features/handle-background":24,"./features/split-chat":29}],33:[function(require,module,exports){
@@ -4479,7 +4498,7 @@ buf.push("Flip Dashboard");
 }
 buf.push("</a></p>");
 }
-buf.push("<p><input type=\"checkbox\"" + (jade.attr("checked", bttv.settings.get("darkenedMode"), true, false)) + " class=\"toggleDarkenTTV\"/>Dark Mode</p><p><a href=\"#\" class=\"g18_gear-00000080 setBlacklistKeywords\">Set Blacklist Keywords</a></p><p><a href=\"#\" class=\"g18_gear-00000080 setHighlightKeywords\">Set Highlight Keywords</a></p><p><a href=\"#\" class=\"g18_gear-00000080 setScrollbackAmount\">Set Scrollback Amount</a></p><p><a href=\"#\" class=\"g18_trash-00000080 clearChat\">Clear My Chat</a></p><p><a href=\"#\" style=\"display: block;margin-top: 8px;text-align: center;\" class=\"button-simple dark openSettings\">BetterTTV Settings</a></p></div>");}.call(this,"$" in locals_for_with?locals_for_with.$:typeof $!=="undefined"?$:undefined,"window" in locals_for_with?locals_for_with.window:typeof window!=="undefined"?window:undefined,"bttv" in locals_for_with?locals_for_with.bttv:typeof bttv!=="undefined"?bttv:undefined));;return buf.join("");
+buf.push("<p><input type=\"checkbox\"" + (jade.attr("checked", bttv.settings.get("darkenedMode"), true, false)) + " class=\"toggleDarkenTTV\"/>Dark Mode</p><p><a href=\"#\" class=\"g18_gear-00000080 setBlacklistKeywords\">Set Blacklist Keywords</a></p><p><a href=\"#\" class=\"g18_gear-00000080 setHighlightKeywords\">Set Highlight Keywords</a></p><p><a href=\"#\" class=\"g18_gear-00000080 setScrollbackAmount\">Set Scrollback Amount</a></p><p><a href=\"#\" class=\"g18_gear-00000080 setTabCompletePostfix\">Set Tab Complete Postfix</a></p><p><a href=\"#\" class=\"g18_trash-00000080 clearChat\">Clear My Chat</a></p><p><a href=\"#\" style=\"display: block;margin-top: 8px;text-align: center;\" class=\"button-simple dark openSettings\">BetterTTV Settings</a></p></div>");}.call(this,"$" in locals_for_with?locals_for_with.$:typeof $!=="undefined"?$:undefined,"window" in locals_for_with?locals_for_with.window:typeof window!=="undefined"?window:undefined,"bttv" in locals_for_with?locals_for_with.bttv:typeof bttv!=="undefined"?bttv:undefined));;return buf.join("");
 };module.exports=template;
 },{}],34:[function(require,module,exports){
 function template(locals) {

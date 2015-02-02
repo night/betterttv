@@ -110,4 +110,12 @@ module.exports = function() {
             bttv.settings.save("scrollbackAmount", 150);
         }
     });
+
+    $('.setTabCompletePostfix').click(function(e) {
+      e.preventDefault();
+      var postfix = prompt("What characters would you like to write after autocompleting a name? default \", \". E.g. \"Night, \"", bttv.settings.get("tabCompletePostfix"));
+      if (postfix != null) {
+        bttv.settings.save("tabCompletePostfix", postfix)
+      }
+    });
 };

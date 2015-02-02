@@ -665,8 +665,8 @@ bttv.chat = {
                             sentence.push(user.capitalize());
                         }
                         if (sentence.length === 1) {
-                            $chatInput.val(sentence.join(' ') + ", ");
-                            lastMatch = sentence.join(' ') + ", ";
+                            $chatInput.val(sentence.join(' ') + bttv.settings.get("tabCompletePostfix"));
+                            lastMatch = sentence.join(' ') + bttv.settings.get("tabCompletePostfix");
                             lastIndex = i;
                         } else {
                             $chatInput.val(sentence.join(' '));

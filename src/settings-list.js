@@ -396,5 +396,16 @@ module.exports = [
                 chat.helpers.serverMessage("Chat scrollback is now set to: " + lines);
             }
         }
+    },
+    {
+        default: ", ",
+        storageKey: 'tabCompletePostfix',
+        toggle: function(postFix){
+            if(postFix.length === 0) {
+                chat.helpers.serverMessage("Tab completion only")
+            } else {
+                chat.helpers.serverMessage("The name will be followed by \"" + postFix + "\" when tab completing")
+            }
+        }
     }
 ];
