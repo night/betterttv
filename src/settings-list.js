@@ -396,5 +396,16 @@ module.exports = [
                 chat.helpers.serverMessage("Chat scrollback is now set to: " + lines);
             }
         }
+    },
+    {
+        default: ", ",
+        storageKey: 'AutocompletePostfix',
+        toggle: function(postFix){
+            if(postFix.length === 0) {
+                chat.helpes.serverMessage("")
+            } else {
+                chat.helpes.serverMessage("The name will be followed by " + postfix + "when autocompleting")
+            }
+        }
     }
 ];
