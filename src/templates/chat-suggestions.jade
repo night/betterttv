@@ -1,0 +1,6 @@
+div.suggestions
+  each suggestion, i in suggestions
+    - var highlighted = (i === 0) ? ["highlighted"] : []
+    div(class=highlighted)
+      div.suggestion
+        span= suggestion

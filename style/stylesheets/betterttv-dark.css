@@ -1872,6 +1872,10 @@ span#is-subscribed {
     margin: 0px;
 }
 
+.ember-chat .chat-interface .suggestions {
+    background-color: #323232; 
+}
+
 #main_col .stats-and-actions #is-subscribed, #main_col .content #stats_and_actions #channel_stats .stat, .ember-chat .chat-room-list .room p.room-title, .button.unfollow, .button.unfollow:hover {
     color: #D3D3D3 !important;
 }

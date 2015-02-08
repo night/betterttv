@@ -75,7 +75,7 @@ a.js-follow.follow.button.primary.action,
 .ember-chat .moderation-card .interface .mod-card-follow {
     color: #ccc;
 }
-.ui-menu-item a:hover {
+.ui-menu-item a:hover, .ember-chat .chat-interface .suggestions .highlighted {
     background-color: #06C;
 }
 .filter-list .filter-item:hover span {
