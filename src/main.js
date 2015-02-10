@@ -629,10 +629,10 @@ bttv.chat = {
         $chatInput.off();
         $chatSend.off();
 
-        // Message input features (tab completion, message history, extra commands)
-        $chatInput.on('keyup', bttv.chat.helpers.message);
+        // Message input features (tab completion, message history)
+        $chatInput.on('keyup', bttv.chat.helpers.tabCompletion);
 
-        // Implement our own text sender
+        // Implement our own text senders (+ commands & legacy tab completion)
         $chatInput.on('keydown', function(e) {
             if(e.which === keyCodes.Enter) {
                 var val = $chatInput.val().trim();
@@ -670,9 +670,11 @@ bttv.chat = {
             }
 
             if(e.which === keyCodes.Tab) {
-                bttv.chat.helpers.message(e);
+                bttv.chat.helpers.legacyTabCompletion(e);
                 e.preventDefault();
             }
+
+            bttv.chat.helpers.chatLineHistory(e);
         });
         $chatSend.on('click', function() {
             var val = $chatInput.val().trim();
@@ -841,7 +843,69 @@ bttv.chat = {
                 return user.capitalize();
             }
         },
-        message: function (e) {
+        legacyTabCompletion: function(e) {
+            var keyCode = e.keyCode || e.which;
+            var $chatInterface = $('.ember-chat .chat-interface');
+            var $chatInput = $chatInterface.find('textarea');
+            var chat = bttv.chat;
+
+            if(keyCode === keyCodes.Tab) {
+                var sugStore = chat.store.suggestions;
+                var sentence = $chatInput.val().trim().split(' ');
+
+                var currentMatch = sentence.pop().toLowerCase().replace(/,$/, '');
+                var currentIndex = sugStore.matchList.indexOf(currentMatch);
+
+                var user;
+
+                if(currentMatch === sugStore.lastMatch && currentIndex > -1) {
+                    var nextIndex;
+                    var prevIndex;
+
+                    if(currentIndex+1 < sugStore.matchList.length) {
+                        nextIndex = currentIndex+1;
+                    } else {
+                        nextIndex = sugStore.matchList.length-1;
+                    }
+
+                    if(currentIndex-1 >= 0) {
+                        prevIndex = currentIndex-1;
+                    } else {
+                        prevIndex = 0;
+                    }
+
+                    user = e.shiftKey ? sugStore.matchList[prevIndex] : sugStore.matchList[nextIndex];
+                } else {
+                    var search = currentMatch;
+                    var users = Object.keys(chat.store.chatters);
+
+                    if(!search.length) return;
+
+                    users = users.filter(function(user) {
+                        return (user.search(search, "i") === 0);
+                    });
+
+                    if(!users.length) return;
+
+                    sugStore.matchList = users;
+
+                    user = users[0];
+                }
+
+                sugStore.lastMatch = user;
+
+                user = bttv.chat.helpers.lookupDisplayName(user);
+
+                sentence.push(user);
+
+                if(sentence.length === 1) {
+                    $chatInput.val(sentence.join(' ') + ", ");
+                } else {
+                    $chatInput.val(sentence.join(' '));
+                }
+            }
+        },
+        tabCompletion: function(e) {
             var keyCode = e.keyCode || e.which;
             var $chatInterface = $('.ember-chat .chat-interface');
             var $chatInput = $chatInterface.find('textarea');
@@ -869,84 +933,35 @@ bttv.chat = {
             } else if($suggestions.length) {
                 $suggestions.remove();
             }
+        },
+        chatLineHistory: function(e) {
+            if(bttv.settings.get('chatLineHistory') === false) return;
 
-            // Tab completion
-            if(keyCode === keyCodes.Tab) {
-                var sugStore = chat.store.suggestions;
+            var keyCode = e.keyCode || e.which;
+            var $chatInterface = $('.ember-chat .chat-interface');
+            var $chatInput = $chatInterface.find('textarea');
+            var chat = bttv.chat;
 
-                var lastPartialMatch = sugStore.lastPartialMatch;
-                var lastIndex = sugStore.lastIndex;
-                var lastMatch = sugStore.lastMatch;
-
-                sentence = $chatInput.val().trim().split(' ');
-                var partialMatch = sentence.pop().toLowerCase();
-                var users = Object.keys(chat.store.chatters);
-                var userIndex = 0;
-                if (lastPartialMatch === null) {
-                    lastPartialMatch = partialMatch;
-                } else if (partialMatch.search(lastPartialMatch) !== 0) {
-                    lastPartialMatch = partialMatch;
-                } else if (lastMatch !== $chatInput.val()) {
-                    lastPartialMatch = partialMatch;
+            var historyIndex = chat.store.chatHistory.indexOf($chatInput.val().trim());
+            if(keyCode === keyCodes.UpArrow) {
+                if(historyIndex >= 0) {
+                    if(chat.store.chatHistory[historyIndex+1]) {
+                        $chatInput.val(chat.store.chatHistory[historyIndex+1]);
+                    }
                 } else {
-                    if (sentence.length === 0) {
-                        userIndex = users.indexOf(partialMatch.substr(0, partialMatch.length - 1));
+                    if($chatInput.val().trim().length) {
+                        chat.store.chatHistory.unshift($chatInput.val().trim());
+                        $chatInput.val(chat.store.chatHistory[1]);
                     } else {
-                        userIndex = users.indexOf(partialMatch);
-                    }
-                    if (e.shiftKey && userIndex > 0) {
-                        userIndex = userIndex - 1;
+                        $chatInput.val(chat.store.chatHistory[0]);
                     }
                 }
-                for (var i = userIndex; i < users.length; i++) {
-                    var user = users[i] || '';
-                    if (lastPartialMatch.length > 0 && user.search(lastPartialMatch, "i") === 0) {
-                        if (user === partialMatch || user === partialMatch.substr(0, partialMatch.length - 1)) {
-                            continue;
-                        }
-                        if(chat.store.displayNames && chat.store.displayNames[user]) {
-                            sentence.push(chat.store.displayNames[user].displayName);
-                        } else {
-                            sentence.push(user.capitalize());
-                        }
-                        if (sentence.length === 1) {
-                            $chatInput.val(sentence.join(' ') + ", ");
-                            lastMatch = sentence.join(' ') + ", ";
-                            lastIndex = i;
-                        } else {
-                            $chatInput.val(sentence.join(' '));
-                            lastMatch = sentence.join(' ');
-                            lastIndex = i;
-                        }
-                        break;
-                    }
-                }
-            }
-
-            // Chat history
-            if(bttv.settings.get('chatLineHistory') === true) {
-                var historyIndex = chat.store.chatHistory.indexOf($chatInput.val().trim());
-                if(keyCode === keyCodes.UpArrow) {
-                    if(historyIndex >= 0) {
-                        if(chat.store.chatHistory[historyIndex+1]) {
-                            $chatInput.val(chat.store.chatHistory[historyIndex+1]);
-                        }
+            } else if(keyCode === keyCodes.DownArrow) {
+                if(historyIndex >= 0) {
+                    if(chat.store.chatHistory[historyIndex-1]) {
+                        $chatInput.val(chat.store.chatHistory[historyIndex-1]);
                     } else {
-                        if($chatInput.val().trim().length) {
-                            chat.store.chatHistory.unshift($chatInput.val().trim());
-                            $chatInput.val(chat.store.chatHistory[1]);
-                        } else {
-                            $chatInput.val(chat.store.chatHistory[0]);
-                        }
-                    }
-                }
-                if(keyCode === keyCodes.DownArrow) {
-                    if(historyIndex >= 0) {
-                        if(chat.store.chatHistory[historyIndex-1]) {
-                            $chatInput.val(chat.store.chatHistory[historyIndex-1]);
-                        } else {
-                            $chatInput.val('');
-                        }
+                        $chatInput.val('');
                     }
                 }
             }
@@ -1801,9 +1816,8 @@ bttv.chat = {
         trackTimeouts: {},
         chatters: {},
         suggestions: {
-            lastPartialMatch: null,
-            lastMatch: null,
-            lastIndex: null
+            matchList: [],
+            lastMatch: '',
         },
         chatHistory: [],
         bttvEmotes: {},
