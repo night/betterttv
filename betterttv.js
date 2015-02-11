@@ -1219,8 +1219,7 @@ bttv.chat = {
             var chat = bttv.chat;
 
             if(keyCode === keyCodes.Tab && $suggestions.length) {
-                var $highlighted;
-                $highlighted = $suggestions.find('.highlighted');
+                var $highlighted = $suggestions.find('.highlighted');
                 if ($highlighted.next().length) {
                     $highlighted.removeAttr('class');
                     $highlighted.next().attr('class','highlighted');
