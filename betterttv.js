@@ -948,7 +948,7 @@ bttv.chat = {
 
                 var $suggestions = $chatInterface.find('.suggestions');
                 if($suggestions.length) {
-                    $suggestions.find('.highlighted').find('.suggestion').eq(0).click();
+                    $suggestions.find('.suggestion').eq(0).click();
                     return e.preventDefault();
                 }
 
@@ -1219,14 +1219,7 @@ bttv.chat = {
             var chat = bttv.chat;
 
             if(keyCode === keyCodes.Tab && $suggestions.length) {
-                var $highlighted = $suggestions.find('.highlighted');
-                if ($highlighted.next().length) {
-                    $highlighted.removeAttr('class');
-                    $highlighted.next().attr('class','highlighted');
-                } else {
-                    $highlighted.removeAttr('class');
-                    $suggestions.find('.suggestion').parent().eq(0).attr('class','highlighted');
-                }
+                $suggestions.find('.suggestion').eq(0).click();
                 return;
             }
 
@@ -1300,7 +1293,8 @@ bttv.chat = {
 
                 $suggestions.remove();
             }).on('mouseover', function() {
-                $suggestions.find('.highlighted').removeClass('highlighted');
+                var $firstElement = $suggestions.find('.suggestion').eq(0);
+                $firstElement.parent().removeClass('highlighted');
 
                 $(this).parent().addClass('highlighted');
             }).on('mouseout', function() {
