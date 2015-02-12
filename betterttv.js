@@ -1128,15 +1128,6 @@ bttv.chat = {
                 } else if(user !== "jtv" && user !== "twitchnotify") {
                     if(socketServer && store.__usersBeingLookedUp < 3) {
                         socketServer.emit('lookup', { user: user });
-                    } else if(store.__usersBeingLookedUp < 2) {
-                        Twitch.api.get("users/" + user).done(function (d) {
-                            if(d.display_name && d.name) {
-                                store.displayNames[d.name] = {
-                                    displayName: d.display_name,
-                                    date: Date.now()
-                                };
-                            }
-                        });
                     }
 
                     store.__usersBeingLookedUp++;
