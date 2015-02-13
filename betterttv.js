@@ -748,9 +748,9 @@ bttv.chat = {
             var moderationCardTemplate = require('./templates/moderation-card');
             return moderationCardTemplate({user: user, top: top, left: left});
         },
-        suggestions: function(suggestions) {
+        suggestions: function(suggestions, index) {
             var suggestionsTemplate = require('./templates/chat-suggestions');
-            return suggestionsTemplate({suggestions: suggestions});
+            return suggestionsTemplate({suggestions: suggestions, index: index});
         },
         message: function(sender, message, emotes, colored) {
             colored = colored || false;
@@ -936,19 +936,18 @@ bttv.chat = {
         $chatSend.off();
 
         // Message input features (tab completion, message history)
-        $chatInput.on('keyup', bttv.chat.helpers.tabCompletion);
+        $chatInput.on('keyup', function(e) {
+            // '@' completion is captured only on keyup
+            if(e.which === keyCodes.Tab || e.shiftKey) return;
+
+            bttv.chat.helpers.tabCompletion(e);
+        });
 
         // Implement our own text senders (+ commands & legacy tab completion)
         $chatInput.on('keydown', function(e) {
             if(e.which === keyCodes.Enter) {
                 var val = $chatInput.val().trim();
                 if(e.shiftKey || !val.length) {
-                    return e.preventDefault();
-                }
-
-                var $suggestions = $chatInterface.find('.suggestions');
-                if($suggestions.length) {
-                    $suggestions.find('.suggestion').eq(0).click();
                     return e.preventDefault();
                 }
 
@@ -975,8 +974,14 @@ bttv.chat = {
                 return e.preventDefault();
             }
 
+            var $suggestions = $chatInterface.find('.suggestions');
+            if($suggestions.length) {
+                $suggestions.remove();
+            }
+
+            // Actual tabs must be captured on keydown
             if(e.which === keyCodes.Tab) {
-                bttv.chat.helpers.legacyTabCompletion(e);
+                bttv.chat.helpers.tabCompletion(e);
                 e.preventDefault();
             }
 
@@ -1140,17 +1145,20 @@ bttv.chat = {
                 return user.capitalize();
             }
         },
-        legacyTabCompletion: function(e) {
+        tabCompletion: function(e) {
             var keyCode = e.keyCode || e.which;
             var $chatInterface = $('.ember-chat .chat-interface');
             var $chatInput = $chatInterface.find('textarea');
+            var $suggestions = $chatInterface.find('.suggestions');
             var chat = bttv.chat;
 
-            if(keyCode === keyCodes.Tab) {
-                var sugStore = chat.store.suggestions;
-                var sentence = $chatInput.val().trim().split(' ');
+            var sentence = $chatInput.val().trim().split(' ');
+            var lastWord = sentence.pop().toLowerCase();
 
-                var currentMatch = sentence.pop().toLowerCase().replace(/,$/, '');
+            if(keyCode === keyCodes.Tab || lastWord.charAt(0) === '@') {
+                var sugStore = chat.store.suggestions;
+
+                var currentMatch = lastWord.replace(/(^@|,$)/g, '');
                 var currentIndex = sugStore.matchList.indexOf(currentMatch);
 
                 var user;
@@ -1171,27 +1179,59 @@ bttv.chat = {
                         prevIndex = 0;
                     }
 
-                    user = e.shiftKey ? sugStore.matchList[prevIndex] : sugStore.matchList[nextIndex];
+                    var index = e.shiftKey ? prevIndex : nextIndex;
+
+                    user = sugStore.matchList[index];
+
+                    if(sugStore.matchList.length < 6) {
+                        bttv.chat.helpers.suggestions(sugStore.matchList, index);
+                    } else {
+                        var slice;
+
+                        if(index-2 < 0) {
+                            slice = 0;
+                        } else if(index+2 > sugStore.matchList.length-1) {
+                            slice = sugStore.matchList.length-5;
+                            index = (index === sugStore.matchList.length-1) ? 4 : 3;
+                        } else {
+                            slice = index-2;
+                            index = 2;
+                        }
+
+                        bttv.chat.helpers.suggestions(sugStore.matchList.slice(slice,slice+5), index);
+                    }
                 } else {
                     var search = currentMatch;
                     var users = Object.keys(chat.store.chatters);
 
                     if(!search.length) return;
 
-                    users = users.filter(function(user) {
-                        return (user.search(search, "i") === 0);
-                    });
+                    users = users.sort();
+
+                    if(currentMatch.length) {
+                        users = users.filter(function(user) {
+                            return (user.search(search, "i") === 0);
+                        });
+                    }
 
                     if(!users.length) return;
 
                     sugStore.matchList = users;
 
+                    bttv.chat.helpers.suggestions(users.slice(0,5), 0);
+
                     user = users[0];
                 }
+
+                if(keyCode !== keyCodes.Tab) return;
 
                 sugStore.lastMatch = user;
 
                 user = bttv.chat.helpers.lookupDisplayName(user);
+
+                if(lastWord.charAt(0) === '@') {
+                    user = '@'+user;
+                }
 
                 sentence.push(user);
 
@@ -1200,35 +1240,6 @@ bttv.chat = {
                 } else {
                     $chatInput.val(sentence.join(' '));
                 }
-            }
-        },
-        tabCompletion: function(e) {
-            var keyCode = e.keyCode || e.which;
-            var $chatInterface = $('.ember-chat .chat-interface');
-            var $chatInput = $chatInterface.find('textarea');
-            var $suggestions = $chatInterface.find('.suggestions');
-            var chat = bttv.chat;
-
-            if(keyCode === keyCodes.Tab && $suggestions.length) {
-                $suggestions.find('.suggestion').eq(0).click();
-                return;
-            }
-
-            var sentence = $chatInput.val().split(' ');
-            var lastWord = sentence.pop().toLowerCase();
-            if(lastWord.charAt(0) === '@') {
-                var search = lastWord.substr(1);
-                var users = Object.keys(chat.store.chatters);
-                if(search.length) {
-                    users = users.filter(function(user) {
-                        return (user.search(search, "i") === 0);
-                    });
-                } else {
-                    users = users.sort();
-                }
-                bttv.chat.helpers.suggestions(users.slice(0,5));
-            } else if($suggestions.length) {
-                $suggestions.remove();
             }
         },
         chatLineHistory: function(e) {
@@ -1263,13 +1274,13 @@ bttv.chat = {
                 }
             }
         },
-        suggestions: function(words) {
+        suggestions: function(words, index) {
             var $chatInterface = $('.ember-chat .chat-interface');
             var $chatInput = $chatInterface.find('textarea');
             var $suggestions = $chatInterface.find('.suggestions');
             if($suggestions.length) $suggestions.remove();
 
-            var $suggestions = $chatInterface.find('.textarea-contain').append(bttv.chat.templates.suggestions(words)).find('.suggestions');
+            var $suggestions = $chatInterface.find('.textarea-contain').append(bttv.chat.templates.suggestions(words, index)).find('.suggestions');
             $suggestions.find('.suggestion').on('click', function() {
                 var user = $(this).text();
                 var sentence = $chatInput.val().trim().split(' ');
@@ -4596,7 +4607,7 @@ function template(locals) {
 var buf = [];
 var jade_mixins = {};
 var jade_interp;
-;var locals_for_with = (locals || {});(function (suggestions) {
+;var locals_for_with = (locals || {});(function (suggestions, index) {
 buf.push("<div class=\"suggestions\">");
 // iterate suggestions
 ;(function(){
@@ -4606,7 +4617,7 @@ buf.push("<div class=\"suggestions\">");
     for (var i = 0, $$l = $$obj.length; i < $$l; i++) {
       var suggestion = $$obj[i];
 
-var highlighted = (i === 0) ? ["highlighted"] : []
+var highlighted = (i === index) ? ["highlighted"] : []
 buf.push("<div" + (jade.cls([highlighted], [true])) + "><div class=\"suggestion\"><span>" + (jade.escape(null == (jade_interp = suggestion) ? "" : jade_interp)) + "</span></div></div>");
     }
 
@@ -4615,14 +4626,14 @@ buf.push("<div" + (jade.cls([highlighted], [true])) + "><div class=\"suggestion\
     for (var i in $$obj) {
       $$l++;      var suggestion = $$obj[i];
 
-var highlighted = (i === 0) ? ["highlighted"] : []
+var highlighted = (i === index) ? ["highlighted"] : []
 buf.push("<div" + (jade.cls([highlighted], [true])) + "><div class=\"suggestion\"><span>" + (jade.escape(null == (jade_interp = suggestion) ? "" : jade_interp)) + "</span></div></div>");
     }
 
   }
 }).call(this);
 
-buf.push("</div>");}.call(this,"suggestions" in locals_for_with?locals_for_with.suggestions:typeof suggestions!=="undefined"?suggestions:undefined));;return buf.join("");
+buf.push("</div>");}.call(this,"suggestions" in locals_for_with?locals_for_with.suggestions:typeof suggestions!=="undefined"?suggestions:undefined,"index" in locals_for_with?locals_for_with.index:typeof index!=="undefined"?index:undefined));;return buf.join("");
 };module.exports=template;
 },{}],35:[function(require,module,exports){
 function template(locals) {
