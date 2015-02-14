@@ -226,6 +226,11 @@ body {
     background: #3d3d3d;
 }
 
+.new-dashboard .subscription-dash .affiliate-options .teespring-items .teespring-item {
+	background: #282828;
+	border: 1px solid #3b3b3b;
+}
+
 /* dashboard bookmarks darken */
 
 .new-dashboard #bookmark-manager .item .content .meta {
