@@ -1149,7 +1149,6 @@ bttv.chat = {
             var keyCode = e.keyCode || e.which;
             var $chatInterface = $('.ember-chat .chat-interface');
             var $chatInput = $chatInterface.find('textarea');
-            var $suggestions = $chatInterface.find('.suggestions');
             var chat = bttv.chat;
 
             var sentence = $chatInput.val().trim().split(' ');
@@ -1280,6 +1279,7 @@ bttv.chat = {
         suggestions: function(words, index) {
             var $chatInterface = $('.ember-chat .chat-interface');
             var $chatInput = $chatInterface.find('textarea');
+            var $suggestions = $chatInterface.find('.suggestions');
             if($suggestions.length) $suggestions.remove();
 
             var $suggestions = $chatInterface.find('.textarea-contain').append(bttv.chat.templates.suggestions(words, index)).find('.suggestions');
