@@ -1280,7 +1280,6 @@ bttv.chat = {
         suggestions: function(words, index) {
             var $chatInterface = $('.ember-chat .chat-interface');
             var $chatInput = $chatInterface.find('textarea');
-            var $suggestions = $chatInterface.find('.suggestions');
             if($suggestions.length) $suggestions.remove();
 
             var $suggestions = $chatInterface.find('.textarea-contain').append(bttv.chat.templates.suggestions(words, index)).find('.suggestions');
