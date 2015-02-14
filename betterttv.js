@@ -1204,11 +1204,9 @@ bttv.chat = {
                     var search = currentMatch;
                     var users = Object.keys(chat.store.chatters);
 
-                    if(!search.length) return;
-
                     users = users.sort();
 
-                    if(currentMatch.length) {
+                    if(currentMatch.length && search.length) {
                         users = users.filter(function(user) {
                             return (user.search(search, "i") === 0);
                         });
@@ -1222,6 +1220,11 @@ bttv.chat = {
 
                     user = users[0];
                 }
+
+                var $suggestions = $chatInterface.find('.suggestions');
+                setTimeout(function(){
+                    $suggestions.remove();
+                }, 10000);
 
                 if(keyCode !== keyCodes.Tab) return;
 
