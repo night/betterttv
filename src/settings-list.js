@@ -59,7 +59,7 @@ module.exports = [
             if(value === true) {
                 cssLoader.load("blue-buttons", "showBlueButtons");
             } else {
-                cssLoader.unload("showBlueButtons");   
+                cssLoader.unload("showBlueButtons");
             }
         },
         load: function() {
@@ -201,7 +201,7 @@ module.exports = [
             if(value === true) {
                 cssLoader.load("hide-group-chat", "groupChatRemoval");
             } else {
-                cssLoader.unload("groupChatRemoval");   
+                cssLoader.unload("groupChatRemoval");
             }
         },
         load: function() {
@@ -240,6 +240,22 @@ module.exports = [
         description: 'Completely removes timed out messages from view',
         default: false,
         storageKey: 'hideDeletedMessages'
+    },
+    {
+        name: 'Remove Subscriber Button',
+        description: 'Remove the subscriber button when watching a stream',
+        default: false,
+        storageKey: 'subscriberButtonRemove',
+        toggle: function(value) {
+            if(value === true) {
+                cssLoader.load("hide-subscriber-button", "subscriberButtonRemove");
+            } else {
+                cssLoader.unload("subscriberButtonRemove");
+            }
+        },
+        load: function() {
+            cssLoader.load("hide-subscriber-button", "subscriberButtonRemove");
+        }
     },
     {
         name: 'Robot Emoticons',
@@ -291,7 +307,7 @@ module.exports = [
             }
         }
     },
-    {   
+    {
         default: '',
         storageKey: 'blacklistKeywords',
         toggle: function(keywords) {
@@ -307,7 +323,7 @@ module.exports = [
             }
 
             keywords === "" ? keywords = phraseKeywords : keywords = keywords.split(" ").concat(phraseKeywords);
-            
+
             for(var i=0; i<keywords.length; i++) {
                 if(/^\([a-z0-9_\-\*]+\)$/i.test(keywords[i])) {
                     keywords[i] = keywords[i].replace(/(\(|\))/g, '');
@@ -377,7 +393,7 @@ module.exports = [
                     keywords[i] = keywords[i].replace(/(\(|\))/g, '');
                 }
             }
-            
+
             var keywordList = keywords.join(", ");
             if(keywordList === "") {
                 chat.helpers.serverMessage("Highlight Keywords list is empty");

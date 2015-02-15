@@ -31,7 +31,7 @@
  *  Free to modify for personal use
  *  Need permission to distribute the code
  *  Can't sell addon or features of the addon
- *  
+ *
  */
 /** @license
  * Gritter for jQuery
@@ -314,7 +314,7 @@ vars = require('./vars');
 bttv.info = {
     version: "6.8",
     release: 30,
-    versionString: function() { 
+    versionString: function() {
         return bttv.info.version + 'R' + bttv.info.release;
     }
 };
@@ -1439,7 +1439,7 @@ bttv.chat = {
 
                 $chatScroller[0].scrollTop = $chatScroller[0].scrollHeight;
             });
-            
+
             var linesToDelete = $chatLines.length - bttv.settings.get("scrollbackAmount");
 
             if(linesToDelete <= 0) return;
@@ -1703,7 +1703,7 @@ bttv.chat = {
                     makeCard({ name: user, display_name: user.capitalize() }, $event);
                     return;
                 }
-                
+
                 makeCard(user, $event);
             }).fail(function() {
                 makeCard({ name: user, display_name: user.capitalize() }, $event);
@@ -2862,7 +2862,7 @@ module.exports = function () {
 
     $("#right_col .bottom #controls #control_buttons .primary_button").css({
         float: 'right',
-        marginRight: '-1px' 
+        marginRight: '-1px'
     });
     $("#right_nav").css({
         'margin-left': 'auto',
@@ -2938,7 +2938,7 @@ module.exports = function () {
 },{"../../debug":1,"../../vars":39}],9:[function(require,module,exports){
 module.exports = function() {
     if($('.archive_info').length) return;
-    
+
     var template = '<iframe id="twitchcast" src="https://nightdev.com/twitchcast/?ontwitch={{hostname}}&channel={{channel}}" width="100%" height="100%" style="position: absolute;top: 0px;left: 0px;border: none;"></iframe>';
 
     var openTwitchCast = function() {
@@ -2959,7 +2959,7 @@ module.exports = function() {
         }
         window.addEventListener("message", close, false);
     }
-    
+
     var placeButton = function() {
         if($('#twitchcast_button').length) return;
 
@@ -2975,7 +2975,7 @@ module.exports = function() {
         if(window.chrome.cast && window.chrome.cast.isAvailable) {
             return callback(false);
         }
-        
+
         setTimeout(function() {
             castAvailable(callback);
         }, 1000);
@@ -3231,7 +3231,7 @@ module.exports = function () {
                 if (notificationsLoaded === true && notifications < j) {
                     $.get('/messages/inbox', function (data) {
                         var $message = $(data).find("#message-list .unread:first");
-                            
+
                         if ($message) {
                             var $senderData = $message.children("div.from_to_user"),
                                 $messageData = $message.children("div.message_data"),
@@ -3393,7 +3393,7 @@ var debug = require('../debug');
 
 function load(file, key){
     if(!bttv.settings.get(key)) return;
-    
+
     var css = document.createElement("link");
     css.setAttribute("href", "//cdn.betterttv.net/style/stylesheets/betterttv-"+file+".css?"+bttv.info.versionString());
     css.setAttribute("type", "text/css");
@@ -3406,7 +3406,7 @@ function unload(key){
 }
 
 module.exports.load = load;
-module.exports.unload = unload; 
+module.exports.unload = unload;
 },{"../debug":1}],17:[function(require,module,exports){
 var debug = require('../debug'),
     handleBackground = require('./handle-background');
@@ -3565,7 +3565,7 @@ module.exports = function (pollId) {
     if(!bttv.settings.get('embeddedPolling')) return;
 
     var $poll = $('#bttv-poll-contain');
-    
+
     // Dont replace the poll with the same one
     if($poll.length && pollId == lastPollId) return;
 
@@ -3580,12 +3580,12 @@ module.exports = function (pollId) {
 
     // Reset $poll to newly created poll
     $poll = $('#bttv-poll-contain');
-    
+
     // If timeout exists already, clear it
     if(frameTimeout !== null) {
         clearTimeout(frameTimeout);
     }
-    
+
     // After 30 seconds, remove poll if user doesn't open it
     frameTimeout = setTimeout(function() {
         if($poll && !$poll.children('.frame').is(':visible')) $poll.remove();
@@ -3604,7 +3604,7 @@ module.exports = function (pollId) {
     });
 
     $poll.slideDown(200);
-    
+
     lastPollId = pollId;
 }
 
@@ -3683,7 +3683,7 @@ module.exports = function () {
 },{"../debug":1}],24:[function(require,module,exports){
 module.exports = function handleBackground(tiled) {
     var tiled = tiled || false;
-    
+
     var canvasID = 'custom-bg';
 
     if($("#"+canvasID).length === 0) {
@@ -4239,7 +4239,7 @@ module.exports = [
             if(value === true) {
                 cssLoader.load("blue-buttons", "showBlueButtons");
             } else {
-                cssLoader.unload("showBlueButtons");   
+                cssLoader.unload("showBlueButtons");
             }
         },
         load: function() {
@@ -4381,7 +4381,7 @@ module.exports = [
             if(value === true) {
                 cssLoader.load("hide-group-chat", "groupChatRemoval");
             } else {
-                cssLoader.unload("groupChatRemoval");   
+                cssLoader.unload("groupChatRemoval");
             }
         },
         load: function() {
@@ -4420,6 +4420,22 @@ module.exports = [
         description: 'Completely removes timed out messages from view',
         default: false,
         storageKey: 'hideDeletedMessages'
+    },
+    {
+        name: 'Remove Subscriber Button',
+        description: 'Remove the subscriber button when watching a stream',
+        default: false,
+        storageKey: 'subscriberButtonRemove',
+        toggle: function(value) {
+            if(value === true) {
+                cssLoader.load("hide-subscriber-button", "subscriberButtonRemove");
+            } else {
+                cssLoader.unload("subscriberButtonRemove");
+            }
+        },
+        load: function() {
+            cssLoader.load("hide-subscriber-button", "subscriberButtonRemove");
+        }
     },
     {
         name: 'Robot Emoticons',
@@ -4471,7 +4487,7 @@ module.exports = [
             }
         }
     },
-    {   
+    {
         default: '',
         storageKey: 'blacklistKeywords',
         toggle: function(keywords) {
@@ -4487,7 +4503,7 @@ module.exports = [
             }
 
             keywords === "" ? keywords = phraseKeywords : keywords = keywords.split(" ").concat(phraseKeywords);
-            
+
             for(var i=0; i<keywords.length; i++) {
                 if(/^\([a-z0-9_\-\*]+\)$/i.test(keywords[i])) {
                     keywords[i] = keywords[i].replace(/(\(|\))/g, '');
@@ -4557,7 +4573,7 @@ module.exports = [
                     keywords[i] = keywords[i].replace(/(\(|\))/g, '');
                 }
             }
-            
+
             var keywordList = keywords.join(", ");
             if(keywordList === "") {
                 chat.helpers.serverMessage("Highlight Keywords list is empty");
