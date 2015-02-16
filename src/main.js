@@ -1027,7 +1027,13 @@ bttv.chat = {
         sendMessage: function(message) {
             if(!message || message === "") return;
             var tmi = bttv.chat.tmi();
-            if(tmi) tmi.tmiRoom.sendMessage(message);
+            if(tmi) {
+                tmi.tmiRoom.sendMessage(message);
+
+                // Fixes issue when using Twitch's sub emote selector
+                tmi.set('messageToSend', '');
+                tmi.set('savedInput', '');
+            }
         },
         listMods: function() {
             var tmi = bttv.chat.tmi();
