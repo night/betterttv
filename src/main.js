@@ -1660,7 +1660,7 @@ bttv.chat = {
 
             if(bttv.settings.get('embeddedPolling')) {
                 if(bttv.chat.helpers.isOwner(data.from)) {
-                    var strawpoll = /http:\/\/strawpoll\.me\/([0-9]+)/g.exec(data.message);
+                    var strawpoll = /strawpoll\.me\/([0-9]+)/g.exec(data.message);
                     if(strawpoll) {
                         embeddedPolling(strawpoll[1]);
                     }
