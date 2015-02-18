@@ -645,6 +645,12 @@ bttv.chat = {
                     return e.preventDefault();
                 }
 
+                var $suggestions = $chatInterface.find('.suggestions');
+                if ($suggestions.length){
+                    $suggestions.find('.highlighted').children().click();
+                    return e.preventDefault();
+                }
+
                 if(val.charAt(0) === '/') {
                     bttv.chat.handlers.commands(val);
                 }
@@ -980,9 +986,12 @@ bttv.chat = {
             $suggestions.find('.suggestion').on('click', function() {
                 var user = $(this).text();
                 var sentence = $chatInput.val().trim().split(' ');
-                sentence.pop();
+                var lastWord = sentence.pop();
+                if (lastWord.charAt(0) === '@') {
                 sentence.push("@" + bttv.chat.helpers.lookupDisplayName(user));
-
+                } else {
+                    sentence.push(bttv.chat.helpers.lookupDisplayName(user));
+                }
                 if(sentence.length === 1) {
                     $chatInput.val(sentence.join(' ') + ", ");
                 } else {
