@@ -632,7 +632,7 @@ bttv.chat = {
         // Message input features (tab completion, message history)
         $chatInput.on('keyup', function(e) {
             // '@' completion is captured only on keyup
-            if(e.which === keyCodes.Tab || e.shiftKey) return;
+            if(e.which === keyCodes.Tab || e.which === keyCodes.Shift) return;
 
             bttv.chat.helpers.tabCompletion(e);
         });
@@ -675,7 +675,7 @@ bttv.chat = {
             }
 
             var $suggestions = $chatInterface.find('.suggestions');
-            if($suggestions.length) {
+            if($suggestions.length && e.which !== keyCodes.Shift) {
                 $suggestions.remove();
             }
 
@@ -854,7 +854,7 @@ bttv.chat = {
             var sentence = $chatInput.val().trim().split(' ');
             var lastWord = sentence.pop().toLowerCase();
 
-            if(keyCode === keyCodes.Tab || lastWord.charAt(0) === '@') {
+            if(keyCode === keyCodes.Tab || lastWord.charAt(0) === '@' && keyCode !== keyCodes.Enter) {
                 var sugStore = chat.store.suggestions;
 
                 var currentMatch = lastWord.replace(/(^@|,$)/g, '');
