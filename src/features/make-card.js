@@ -101,4 +101,9 @@ module.exports = function(user, $event) {
     });
 
     $modCard.drags({ handle: ".drag-handle", el: $modCard });
+
+    $('.chat-line[data-sender="' + user.name + '"]').addClass('bttv-user-locate');
+    $modCard.on('remove', function() {
+        $('.chat-line[data-sender="' + user.name + '"]').removeClass('bttv-user-locate');
+    });
 }

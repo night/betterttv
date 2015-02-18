@@ -1975,7 +1975,7 @@ bttv.chat = {
 
             if(bttv.settings.get('embeddedPolling')) {
                 if(bttv.chat.helpers.isOwner(data.from)) {
-                    var strawpoll = /http:\/\/strawpoll\.me\/([0-9]+)/g.exec(data.message);
+                    var strawpoll = /strawpoll\.me\/([0-9]+)/g.exec(data.message);
                     if(strawpoll) {
                         embeddedPolling(strawpoll[1]);
                     }
@@ -3938,7 +3938,13 @@ module.exports = function(user, $event) {
     });
 
     $modCard.drags({ handle: ".drag-handle", el: $modCard });
+
+    $('.chat-line[data-sender="' + user.name + '"]').addClass('bttv-user-locate');
+    $modCard.on('remove', function() {
+        $('.chat-line[data-sender="' + user.name + '"]').removeClass('bttv-user-locate');
+    });
 }
+
 },{}],28:[function(require,module,exports){
 var debug = require('../debug'),
     vars = require('../vars');

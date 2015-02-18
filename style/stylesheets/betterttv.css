@@ -1436,3 +1436,10 @@ body.channel_new.columns.ember-application {
     left: 0px;
     right: 0px;
 }
+
+/* mod card user locater */
+.chat-line.bttv-user-locate .from,
+.chat-line.bttv-user-locate .colon {
+    box-shadow: 0px 2px 0px 0px #f00;
+}
+
