@@ -2013,6 +2013,7 @@ var clearClutter = require('./features/clear-clutter'),
     embeddedPolling = require('./features/embedded-polling'),
     handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes'),
     loadChatSettings = require('./features/chat-load-settings'),
+    emoticonTextInClipboard = require('./features/emoticon-text-in-clipboard'),
     createSettings = require('./features/create-settings');
     cssLoader = require('./features/css-loader');
 
@@ -2207,6 +2208,7 @@ var main = function () {
         dashboardChannelInfo();
         directoryFunctions();
         handleTwitchChatEmotesScript();
+        emoticonTextInClipboard();
 
         $(window).trigger('resize');
         setTimeout(function() {
