@@ -231,6 +231,20 @@ body {
 	border: 1px solid #3b3b3b;
 }
 
+#channel .teespring-panel {
+    border: 1px solid #4e4e4e;
+    background-color: #1e1e1e;
+    margin-right: -2px;
+    margin-bottom: 5px;
+}
+
+.teespring-panel .teespring-panel-progress {
+    width: 97%;
+    background: #4e4e4e;
+    height: 12px;
+    margin-bottom: 6px;
+}
+
 /* dashboard bookmarks darken */
 
 .new-dashboard #bookmark-manager .item .content .meta {
