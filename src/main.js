@@ -712,22 +712,6 @@ bttv.chat = {
         chat.helpers.serverMessage('<center><small>BetterTTV v' + bttv.info.version + ' Loaded.</small></center>');
         chat.helpers.serverMessage('Welcome to '+chat.helpers.lookupDisplayName(bttv.getChannel())+'\'s chat room!');
 
-        // Poll mods list in case +o fails.
-        chat.store.checkMods = true;
-        chat.helpers.sendMessage('/mods');
-
-        // Check if you're admin or staff in case +o fails.
-        Twitch.user(function(data){
-            if(data.is_admin || data.is_staff) {
-                var modList = chat.helpers.listMods();
-
-                if(!modList[data.login]) {
-                    chat.helpers.addMod(data.login);
-                    debug.log("Added "+data.login+" as a mod");
-                }
-            }
-        });
-
         // Reset chatters list
         chat.store.chatters = {};
         chat.store.chatters[bttv.getChannel()] = true;
@@ -1508,41 +1492,6 @@ bttv.chat = {
         },
         privmsg: function(channel, data) {
             if(data.style && (data.style !== 'admin' && data.style !== 'action' && data.style !== 'notification')) return;
-
-            if(bttv.chat.store.checkMods && data.style === "admin") {
-                var modsRegex = /^The moderators of this room are:(.*)/,
-                    mods = modsRegex.exec(data.message);
-                if (mods) {
-                    bttv.chat.store.checkMods = false;
-                    mods = mods[1].trim().split(", ");
-                    mods.push(channel);
-
-                    var modList = bttv.chat.helpers.listMods();
-
-                    mods.forEach(function (mod) {
-                        if(!modList[mod]) {
-                            bttv.chat.helpers.addMod(mod);
-                            debug.log("Added "+mod+" as a mod");
-                        }
-                    });
-                    // Admins and staff get demodded, but this may cause issues?
-                    /*for (mod in modList) {
-                        if(modList.hasOwnProperty(mod)) {
-                            if(mods.indexOf(mod) === -1 && !bttv.chat.helpers.isAdmin[mod] && !bttv.chat.helpers.isStaff[mod]) {
-                                bttv.chat.helpers.removeMod(mod)
-                                debug.log("Removed "+mod+" as a mod");
-                            }
-                        }
-                    }*/
-                    return;
-                }
-            }/* else if(info.sender === "jtv") {
-                var modsRegex = /^The moderators of this room are:/,
-                    mods = info.message.match(modsRegex);
-                if (mods) {
-                    bttv.chat.store.checkMods = true;
-                }
-            }*/
 
             if(data.style === 'admin' || data.style === 'notification') {
                 data.style = 'admin';
