@@ -1930,6 +1930,22 @@ bttv.chat = {
                     }
                 }
             }
+			
+			if (bttv.settings.get('hideASCII') === true)
+			{
+				var asciicharacters = 0
+				for (var i=0; i < data.message.length; i++)
+				{
+					if (data.message.charCodeAt(i) > 127)
+					{
+						asciicharacters++;
+					}
+				}
+				if (asciicharacters >= (data.message.length / 50))
+				{
+					return false;
+				}
+			}
 
             //Bots
             var bots = ["nightbot","moobot","sourbot","xanbot","manabot","mtgbot","ackbot","baconrobot","tardisbot","deejbot","valuebot","stahpbot"];
@@ -4596,7 +4612,13 @@ module.exports = [
                 chat.helpers.serverMessage("Chat scrollback is now set to: " + lines);
             }
         }
-    }
+    },
+	{
+		name: 'Hide ASCII emoticons',
+		description: 'Hide ASCII emoticons if the message contains 50% ASCII',
+		default: false,
+		storageKey: 'hideASCII'
+	}
 ];
 },{"./element":2,"./features/beta-chat":4,"./features/channel-reformat":7,"./features/css-loader":16,"./features/darken-page":17,"./features/flip-dashboard":22,"./features/handle-background":25,"./features/split-chat":30}],34:[function(require,module,exports){
 function template(locals) {
