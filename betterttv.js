@@ -309,15 +309,18 @@ var punycode = require('punycode');
 
 // Declare public and private variables
 var debug = require('./debug'),
-vars = require('./vars');
+    vars = require('./vars'),
+    TwitchAPI = require('./twitch-api');
 
 bttv.info = {
     version: "6.8",
-    release: 30,
+    release: 31,
     versionString: function() { 
         return bttv.info.version + 'R' + bttv.info.release;
     }
 };
+
+bttv.TwitchAPI = TwitchAPI;
 
 bttv.vars = vars;
 
@@ -1642,13 +1645,13 @@ bttv.chat = {
                 bttv.chat.helpers.serverMessage("Local subscribers-only mode disabled.");
                 vars.localSubsOnly = false;
             } else if (command === "/viewers") {
-                Twitch.api.get('streams/' + bttv.getChannel()).done(function(stream) {
+                bttv.TwitchAPI.get('streams/' + bttv.getChannel()).done(function(stream) {
                     bttv.chat.helpers.serverMessage("Current Viewers: " + Twitch.display.commatize(stream.stream.viewers));
                 }).fail(function() {
                     bttv.chat.helpers.serverMessage("Could not fetch viewer count.");
                 });
             } else if (command === "/followers") {
-                Twitch.api.get('channels/' + bttv.getChannel() + '/follows').done(function(channel) {
+                bttv.TwitchAPI.get('channels/' + bttv.getChannel() + '/follows').done(function(channel) {
                     bttv.chat.helpers.serverMessage("Current Followers: " + Twitch.display.commatize(channel._total));
                 }).fail(function() {
                     bttv.chat.helpers.serverMessage("Could not fetch follower count.");
@@ -1697,7 +1700,7 @@ bttv.chat = {
         },
         moderationCard: function(user, $event) {
             var makeCard = require('./features/make-card');
-            Twitch.api.get('/api/channels/'+user.toLowerCase()+'/ember').done(function(user) {
+            bttv.TwitchAPI.get('/api/channels/'+user.toLowerCase()+'/ember').done(function(user) {
                 if(!user.name) {
                     makeCard({ name: user, display_name: user.capitalize() }, $event);
                     return;
@@ -2537,7 +2540,7 @@ if(window.BTTVLOADED === true) return;
 debug.log("BTTV LOADED " + document.URL);
 BTTVLOADED = true;
 checkJquery();
-},{"./debug":1,"./element":2,"./features/beta-chat":4,"./features/brand":5,"./features/channel-reformat":7,"./features/chat-load-settings":10,"./features/check-broadcast-info":11,"./features/check-following":12,"./features/check-messages":13,"./features/clear-clutter":14,"./features/create-settings":15,"./features/css-loader":16,"./features/darken-page":17,"./features/dashboard-channelinfo":18,"./features/directory-functions":19,"./features/embedded-polling":20,"./features/emoticon-text-in-clipboard":21,"./features/flip-dashboard":22,"./features/format-dashboard":23,"./features/giveaway-compatibility":24,"./features/handle-background":25,"./features/handle-twitchchat-emotes":26,"./features/highlight-feedback":27,"./features/make-card":28,"./features/override-emotes":29,"./features/split-chat":30,"./keycodes":31,"./legacy-tags":32,"./settings-list":33,"./templates/chat-suggestions":35,"./templates/moderation-card":37,"./templates/setting-switch":38,"./vars":40,"punycode":41}],4:[function(require,module,exports){
+},{"./debug":1,"./element":2,"./features/beta-chat":4,"./features/brand":5,"./features/channel-reformat":7,"./features/chat-load-settings":10,"./features/check-broadcast-info":11,"./features/check-following":12,"./features/check-messages":13,"./features/clear-clutter":14,"./features/create-settings":15,"./features/css-loader":16,"./features/darken-page":17,"./features/dashboard-channelinfo":18,"./features/directory-functions":19,"./features/embedded-polling":20,"./features/emoticon-text-in-clipboard":21,"./features/flip-dashboard":22,"./features/format-dashboard":23,"./features/giveaway-compatibility":24,"./features/handle-background":25,"./features/handle-twitchchat-emotes":26,"./features/highlight-feedback":27,"./features/make-card":28,"./features/override-emotes":29,"./features/split-chat":30,"./keycodes":31,"./legacy-tags":32,"./settings-list":33,"./templates/chat-suggestions":35,"./templates/moderation-card":37,"./templates/setting-switch":38,"./twitch-api":40,"./vars":41,"punycode":42}],4:[function(require,module,exports){
 var debug = require('../debug'),
     vars = require('../vars');
 
@@ -2585,7 +2588,7 @@ module.exports = function () {
         $('body').append("<style>.ember-chat .chat-interface { height: 140px !important; } .ember-chat .chat-messages { bottom: 140px; } .ember-chat .chat-settings { bottom: 80px; } .ember-chat .emoticon-selector { bottom: 142px !important; }</style>");
     }
 }
-},{"../debug":1,"../vars":40}],5:[function(require,module,exports){
+},{"../debug":1,"../vars":41}],5:[function(require,module,exports){
 var debug = require('../debug');
 var betaChat = require('./beta-chat');
 
@@ -2710,7 +2713,7 @@ var handleResize = module.exports = function () {
 
     $("#channel_panels").masonry("reload");
 };
-},{"../../debug":1,"../../vars":40}],7:[function(require,module,exports){
+},{"../../debug":1,"../../vars":41}],7:[function(require,module,exports){
 var debug = require('../../debug'),
     keyCodes = require('../../keycodes'),
     vars = require('../../vars');
@@ -2871,7 +2874,7 @@ module.exports = function () {
         bttv.settings.save("chatWidth", $("#right_col").width());
     }
 }
-},{"../../debug":1,"../../keycodes":31,"../../vars":40,"./handle-resize":6,"./linkify-title":8,"./twitchcast":9}],8:[function(require,module,exports){
+},{"../../debug":1,"../../keycodes":31,"../../vars":41,"./handle-resize":6,"./linkify-title":8,"./twitchcast":9}],8:[function(require,module,exports){
 var debug = require('../../debug'),
     vars = require('../../vars');
 
@@ -2901,7 +2904,7 @@ module.exports = function () {
         }, 1000);
     }
 }
-},{"../../debug":1,"../../vars":40}],9:[function(require,module,exports){
+},{"../../debug":1,"../../vars":41}],9:[function(require,module,exports){
 module.exports = function() {
     if($('.archive_info').length) return;
     
@@ -3076,7 +3079,7 @@ module.exports = function() {
         }
     });
 };
-},{"../debug":1,"../element":2,"../templates/chat-settings":34,"../vars":40,"./darken-page":17,"./split-chat":30}],11:[function(require,module,exports){
+},{"../debug":1,"../element":2,"../templates/chat-settings":34,"../vars":41,"./darken-page":17,"./split-chat":30}],11:[function(require,module,exports){
 var debug = require('../debug');
 
 var checkBroadcastInfo = module.exports = function() {
@@ -3086,7 +3089,7 @@ var checkBroadcastInfo = module.exports = function() {
 
     debug.log("Check Channel Title/Game");
 
-    Twitch.api.get("channels/"+channel).done(function(d) {
+    bttv.TwitchAPI.get("channels/"+channel).done(function(d) {
         if(d.game) {
         	if($('#broadcast-meta .channel .playing').length) {
         		$('#broadcast-meta .channel a:eq(1)').text(d.game).attr("href",Twitch.uri.game(d.game));
@@ -3113,20 +3116,9 @@ var checkFollowing = module.exports = function () {
             followingNames = followingNames || [],
             offset = offset || 0;
 
-        Twitch.api.get("streams/followed?limit=100&offset="+offset).done(function (d) {
+        bttv.TwitchAPI.get("streams/followed?limit=100&offset="+offset).done(function (d) {
             if (d.streams && d.streams.length > 0) {
                 d.streams.forEach(function(stream) {
-                    // Temporary fix for bad streams being included in the list
-                    if(stream.viewers === null) {
-                        var error = {
-                            date: new Date(),
-                            type: 'viewers null',
-                            stream: stream
-                        }
-                        $.get('//nightdev.com/betterttv/errors/?obj='+encodeURIComponent(JSON.stringify(error)));
-                        return;
-                    }
-
                     if(followingNames.indexOf(stream.channel.name) === -1) {
                         followingNames.push(stream.channel.name);
                         followingList.push(stream);
@@ -3177,7 +3169,7 @@ var checkFollowing = module.exports = function () {
         setTimeout(checkFollowing, 60000);
     });
 }
-},{"../debug":1,"../vars":40}],13:[function(require,module,exports){
+},{"../debug":1,"../vars":41}],13:[function(require,module,exports){
 var debug = require('../debug'),
     vars = require('../vars');
 
@@ -3268,7 +3260,7 @@ module.exports = function () {
     setInterval(checkOther, 30000);
     checkOther();
 }
-},{"../debug":1,"../vars":40}],14:[function(require,module,exports){
+},{"../debug":1,"../vars":41}],14:[function(require,module,exports){
 var debug = require('../debug'),
 	removeElement = require('../element').remove;
 
@@ -3354,7 +3346,7 @@ module.exports = function () {
         $(this).parent("li").addClass("active");
     });
 };
-},{"../debug":1,"../element":2,"../templates/settings-panel":39,"../vars":40,"./darken-page":17,"./split-chat":30}],16:[function(require,module,exports){
+},{"../debug":1,"../element":2,"../templates/settings-panel":39,"../vars":41,"./darken-page":17,"./split-chat":30}],16:[function(require,module,exports){
 var debug = require('../debug');
 
 function load(file, key){
@@ -3419,7 +3411,7 @@ module.exports = function dashboardChannelInfo() {
     if ($("#dash_main").length) {
         debug.log("Updating Dashboard Channel Info");
 
-        Twitch.api.get("streams/" + bttv.getChannel()).done(function (a) {
+        bttv.TwitchAPI.get("streams/" + bttv.getChannel()).done(function (a) {
             if (a.stream) {
                 $("#channel_viewer_count").text(Twitch.display.commatize(a.stream.viewers));
                 if(a.stream.channel.views) $("#views_count span").text(Twitch.display.commatize(a.stream.channel.views));
@@ -3428,7 +3420,7 @@ module.exports = function dashboardChannelInfo() {
                 $("#channel_viewer_count").text("Offline");
             }
         });
-        Twitch.api.get("channels/" + bttv.getChannel() + "/follows?limit=1").done(function (a) {
+        bttv.TwitchAPI.get("channels/" + bttv.getChannel() + "/follows?limit=1").done(function (a) {
             if (a["_total"]) {
                 $("#followers_count span").text(Twitch.display.commatize(a["_total"]));
             }
@@ -3476,7 +3468,7 @@ module.exports = function dashboardChannelInfo() {
                             $subsContainer.append($subs);
                             $("#chatters_count").after($subsContainer);
 
-                            Twitch.api.get("chat/" + bttv.getChannel() + "/badges").done(function(a) {
+                            bttv.TwitchAPI.get("chat/" + bttv.getChannel() + "/badges").done(function(a) {
                                 if(a.subscriber) {
                                     $("#subs_count").css("background-image", "url("+a.subscriber.image+")");
                                 }
@@ -3497,7 +3489,7 @@ module.exports = function dashboardChannelInfo() {
         setTimeout(dashboardChannelInfo, 60000);
     }
 };
-},{"../debug":1,"../vars":40}],19:[function(require,module,exports){
+},{"../debug":1,"../vars":41}],19:[function(require,module,exports){
 var debug = require('../debug'),
     vars = require('../vars');
 
@@ -3520,7 +3512,7 @@ module.exports = function () {
         }
     });
 }
-},{"../debug":1,"../vars":40}],20:[function(require,module,exports){
+},{"../debug":1,"../vars":41}],20:[function(require,module,exports){
 var debug = require('../debug');
 var pollTemplate = require('../templates/embedded-poll');
 
@@ -3913,21 +3905,21 @@ module.exports = function(user, $event) {
         }
     });
 
-    Twitch.api.get('users/:login/follows/channels/'+user.name).done(function() {
+    bttv.TwitchAPI.get('users/:login/follows/channels/'+user.name).done(function() {
         $modCard.find('.mod-card-follow').text('Unfollow');
     }).fail(function() {
         $modCard.find('.mod-card-follow').text('Follow');
     });
     $modCard.find('.mod-card-follow').text('Unfollow').click(function() {
         if ($modCard.find('.mod-card-follow').text() === 'Unfollow') {
-            Twitch.api.del("users/:login/follows/channels/"+user.name).done(function() {
+            bttv.TwitchAPI.del("users/:login/follows/channels/"+user.name).done(function() {
                 bttv.chat.helpers.serverMessage('User was unfollowed successfully.');
             }).fail(function() {
                 bttv.chat.helpers.serverMessage('There was an error following this user.');
             });
             $modCard.find('.mod-card-follow').text('Follow');
         } else {
-            Twitch.api.put("users/:login/follows/channels/"+user.name).done(function() {
+            bttv.TwitchAPI.put("users/:login/follows/channels/"+user.name).done(function() {
                 bttv.chat.helpers.serverMessage('User was followed successfully.');
             }).fail(function() {
                 bttv.chat.helpers.serverMessage('There was an error following this user.');
@@ -4024,7 +4016,7 @@ module.exports = function () {
         generate([]);
     });
 };
-},{"../debug":1,"../vars":40}],30:[function(require,module,exports){
+},{"../debug":1,"../vars":41}],30:[function(require,module,exports){
 var debug = require('../debug');
 
 module.exports = function () {
@@ -4698,7 +4690,7 @@ buf.push("</div>");
 }
 buf.push("</div>");}.call(this,"require" in locals_for_with?locals_for_with.require:typeof require!=="undefined"?require:undefined,"user" in locals_for_with?locals_for_with.user:typeof user!=="undefined"?user:undefined,"top" in locals_for_with?locals_for_with.top:typeof top!=="undefined"?top:undefined,"left" in locals_for_with?locals_for_with.left:typeof left!=="undefined"?left:undefined,"Twitch" in locals_for_with?locals_for_with.Twitch:typeof Twitch!=="undefined"?Twitch:undefined,"bttv" in locals_for_with?locals_for_with.bttv:typeof bttv!=="undefined"?bttv:undefined));;return buf.join("");
 };module.exports=template;
-},{"../vars":40}],38:[function(require,module,exports){
+},{"../vars":41}],38:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -4716,6 +4708,51 @@ buf.push("<div id=\"header\"><span id=\"logo\"><img height=\"45px\" src=\"//cdn.
 };module.exports=template;
 },{}],40:[function(require,module,exports){
 module.exports = {
+    _ref: null,
+    _headers: function(e, t) {
+        e.setRequestHeader("Client-ID", "6x8avioex0zt85ht6py4sq55z6avsea");
+
+        bttv.TwitchAPI._ref.call(Twitch.api, e, t);
+    },
+    _call: function(method, url, data) {
+        // Replace Twitch's beforeSend with ours (to add Client ID)
+        var rep = this._takeover();
+
+        var callTwitchAPI = window.Twitch.api[method].call(this, url, data);
+
+        // Replace Twitch's beforeSend back with theirs
+        this._untakeover();
+
+        return callTwitchAPI;
+    },
+    _takeover: function() {
+        if(!window.Twitch.api._beforeSend) return;
+
+        this._ref = window.Twitch.api._beforeSend;
+
+        window.Twitch.api._beforeSend = this._headers;
+    },
+    _untakeover: function() {
+        if(!this._ref) return;
+
+        window.Twitch.api._beforeSend = this._ref;
+        this._ref = null;
+    },
+    get: function(url) {
+        return this._call('get', url);
+    },
+    post: function(url, data) {
+        return this._call('post', url, data);
+    },
+    put: function(url, data) {
+        return this._call('put', url, data);
+    },
+    del: function(url) {
+        return this._call('del', url);
+    }
+};
+},{}],41:[function(require,module,exports){
+module.exports = {
     userData: {
         isLoggedIn: window.Twitch ? Twitch.user.isLoggedIn() : false,
         login: window.Twitch ? Twitch.user.login() : ''
@@ -4724,7 +4761,7 @@ module.exports = {
     liveChannels: [],
     blackChat: false
 };
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 (function (global){
 /*! http://mths.be/punycode v1.2.4 by @mathias */
 ;(function(root) {

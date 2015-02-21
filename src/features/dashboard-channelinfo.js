@@ -5,7 +5,7 @@ module.exports = function dashboardChannelInfo() {
     if ($("#dash_main").length) {
         debug.log("Updating Dashboard Channel Info");
 
-        Twitch.api.get("streams/" + bttv.getChannel()).done(function (a) {
+        bttv.TwitchAPI.get("streams/" + bttv.getChannel()).done(function (a) {
             if (a.stream) {
                 $("#channel_viewer_count").text(Twitch.display.commatize(a.stream.viewers));
                 if(a.stream.channel.views) $("#views_count span").text(Twitch.display.commatize(a.stream.channel.views));
@@ -14,7 +14,7 @@ module.exports = function dashboardChannelInfo() {
                 $("#channel_viewer_count").text("Offline");
             }
         });
-        Twitch.api.get("channels/" + bttv.getChannel() + "/follows?limit=1").done(function (a) {
+        bttv.TwitchAPI.get("channels/" + bttv.getChannel() + "/follows?limit=1").done(function (a) {
             if (a["_total"]) {
                 $("#followers_count span").text(Twitch.display.commatize(a["_total"]));
             }
@@ -62,7 +62,7 @@ module.exports = function dashboardChannelInfo() {
                             $subsContainer.append($subs);
                             $("#chatters_count").after($subsContainer);
 
-                            Twitch.api.get("chat/" + bttv.getChannel() + "/badges").done(function(a) {
+                            bttv.TwitchAPI.get("chat/" + bttv.getChannel() + "/badges").done(function(a) {
                                 if(a.subscriber) {
                                     $("#subs_count").css("background-image", "url("+a.subscriber.image+")");
                                 }

@@ -3,15 +3,18 @@ var punycode = require('punycode');
 
 // Declare public and private variables
 var debug = require('./debug'),
-vars = require('./vars');
+    vars = require('./vars'),
+    TwitchAPI = require('./twitch-api');
 
 bttv.info = {
     version: "6.8",
-    release: 30,
+    release: 31,
     versionString: function() { 
         return bttv.info.version + 'R' + bttv.info.release;
     }
 };
+
+bttv.TwitchAPI = TwitchAPI;
 
 bttv.vars = vars;
 
@@ -1336,13 +1339,13 @@ bttv.chat = {
                 bttv.chat.helpers.serverMessage("Local subscribers-only mode disabled.");
                 vars.localSubsOnly = false;
             } else if (command === "/viewers") {
-                Twitch.api.get('streams/' + bttv.getChannel()).done(function(stream) {
+                bttv.TwitchAPI.get('streams/' + bttv.getChannel()).done(function(stream) {
                     bttv.chat.helpers.serverMessage("Current Viewers: " + Twitch.display.commatize(stream.stream.viewers));
                 }).fail(function() {
                     bttv.chat.helpers.serverMessage("Could not fetch viewer count.");
                 });
             } else if (command === "/followers") {
-                Twitch.api.get('channels/' + bttv.getChannel() + '/follows').done(function(channel) {
+                bttv.TwitchAPI.get('channels/' + bttv.getChannel() + '/follows').done(function(channel) {
                     bttv.chat.helpers.serverMessage("Current Followers: " + Twitch.display.commatize(channel._total));
                 }).fail(function() {
                     bttv.chat.helpers.serverMessage("Could not fetch follower count.");
@@ -1391,7 +1394,7 @@ bttv.chat = {
         },
         moderationCard: function(user, $event) {
             var makeCard = require('./features/make-card');
-            Twitch.api.get('/api/channels/'+user.toLowerCase()+'/ember').done(function(user) {
+            bttv.TwitchAPI.get('/api/channels/'+user.toLowerCase()+'/ember').done(function(user) {
                 if(!user.name) {
                     makeCard({ name: user, display_name: user.capitalize() }, $event);
                     return;
