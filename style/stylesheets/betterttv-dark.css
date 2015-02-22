@@ -238,6 +238,12 @@ body {
     margin-bottom: 5px;
 }
 
+#channel_panels .teespring-panel {
+    border: 1px solid #4e4e4e;
+    background-color: #1e1e1e;
+    margin-bottom: 5px;
+}
+
 .teespring-panel .teespring-panel-progress {
     width: 97%;
     background: #4e4e4e;
