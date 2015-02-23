@@ -238,11 +238,20 @@ body {
     margin-bottom: 5px;
 }
 
+#channel_panels .teespring-panel {
+    border: 1px solid #4e4e4e;
+    background-color: #1e1e1e;
+    margin-bottom: 5px;
+}
+
 .teespring-panel .teespring-panel-progress {
     width: 97%;
     background: #4e4e4e;
     height: 12px;
     margin-bottom: 6px;
+}
+.teespring-panel .progress-bar {
+    max-width: 320px;
 }
 
 /* dashboard bookmarks darken */
@@ -623,7 +632,7 @@ body {
 }
 
 .follow-button.following .follow {
-    
+
 }
 
 .follow-button.following .notify:before {
@@ -648,10 +657,10 @@ body {
     text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px !important;
 }
 
-.content .bottom #controls #control_buttons #chat_viewers_dropmenu_button span, 
+.content .bottom #controls #control_buttons #chat_viewers_dropmenu_button span,
 .content .bottom #controls #control_buttons #chat_settings_dropmenu_button span,
 .content #stats_and_actions #channel_actions #button_options span,
-#right_col .bottom #controls #control_buttons #chat_viewers_dropmenu_button span, 
+#right_col .bottom #controls #control_buttons #chat_viewers_dropmenu_button span,
 #right_col .bottom #controls #control_buttons #chat_settings_dropmenu_button span,
 .stats-and-actions .channel-actions .channel-options-button span,
 .profile-actions .channel-options-button span {
@@ -686,7 +695,7 @@ body {
     text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px !important;
 }
 
-#dash_main #chat_viewers_dropmenu_button, 
+#dash_main #chat_viewers_dropmenu_button,
 #dash_main #chat_settings_dropmenu_button,
 #dash_main #intervals {
     background: rgb(30, 30, 30);
@@ -962,7 +971,7 @@ body {
     text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px !important;
 }
 
-.popout_chat #chat_viewers_dropmenu_button, 
+.popout_chat #chat_viewers_dropmenu_button,
 .popout_chat #chat_settings_dropmenu_button,
 .popout_chat #intervals {
     background: rgb(30, 30, 30);
@@ -1167,7 +1176,7 @@ body {
 
 /*~~~~~~Ember Dark Viewer List ~~~~~~~~~*/
 .ember-chat .chat-menu .chat-top-header {
-    background: rgb(50,50,50); 
+    background: rgb(50,50,50);
 }
 
 .ember-chat .ember-list-item-view {
@@ -1229,7 +1238,7 @@ a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00
     background-image: url(//www-cdn.jtvnw.net/images/xarth/g/g18_gear-FFFFFF80.png);
 }
 .g18_close-00000080 {
-    background-image: url(//www-cdn.jtvnw.net/images/xarth/g/g18_close-FFFFFF80.png); 
+    background-image: url(//www-cdn.jtvnw.net/images/xarth/g/g18_close-FFFFFF80.png);
 }
 .g18_popout-00000080 {
     background-image: url(//www-cdn.jtvnw.net/images/xarth/g/g18_popout-FFFFFF80.png);
@@ -1273,7 +1282,7 @@ a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00
 
 /*~~~~~~Ember Dark Moderation Cards ~~~~~~~~~*/
 .ember-chat .moderation-card .interface {
-    background: #282828;    
+    background: #282828;
 }
 
 .ember-chat .moderation-card .button-simple.light {
@@ -1836,7 +1845,7 @@ div#actions {
 
 .ember-chat .chat-menu .chat-top-header {
     border-bottom: 0px solid;
-} 
+}
 
 .ember-chat .chat-menu-button-container:hover svg path {
     fill: #fff;
@@ -1851,7 +1860,7 @@ div#header_actions span, div#header_actions a{
     color: black;
 }
 
-.archives-contain .videos { 
+.archives-contain .videos {
     padding:0;
 }
 .archives-contain S.list-video {
@@ -1892,7 +1901,7 @@ span#is-subscribed {
 }
 
 .ember-chat .chat-interface .suggestions {
-    background-color: #323232; 
+    background-color: #323232;
 }
 
 #main_col .stats-and-actions #is-subscribed, #main_col .content #stats_and_actions #channel_stats .stat, .ember-chat .chat-room-list .room p.room-title, .button.unfollow, .button.unfollow:hover {
