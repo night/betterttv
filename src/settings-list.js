@@ -270,6 +270,12 @@ module.exports = [
         }
     },
     {
+        name: 'Tab completion tooltip',
+        description: 'Shows a tooltip with suggested names when using tab completion',
+        default: true,
+        storageKey: 'tabCompletionTooltip'
+    },
+    {
         name: 'TwitchCast',
         description: 'Watch a Twitch stream via Chromecast (Google Chrome only)',
         default: false,

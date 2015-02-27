@@ -446,8 +446,10 @@ bttv.chat = {
             return moderationCardTemplate({user: user, top: top, left: left});
         },
         suggestions: function(suggestions, index) {
-            var suggestionsTemplate = require('./templates/chat-suggestions');
-            return suggestionsTemplate({suggestions: suggestions, index: index});
+            if (bttv.settings.get('tabCompletionTooltip') === true){
+                var suggestionsTemplate = require('./templates/chat-suggestions');
+                return suggestionsTemplate({suggestions: suggestions, index: index});
+            }
         },
         message: function(sender, message, emotes, colored) {
             colored = colored || false;

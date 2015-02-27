@@ -752,8 +752,10 @@ bttv.chat = {
             return moderationCardTemplate({user: user, top: top, left: left});
         },
         suggestions: function(suggestions, index) {
-            var suggestionsTemplate = require('./templates/chat-suggestions');
-            return suggestionsTemplate({suggestions: suggestions, index: index});
+            if (bttv.settings.get('tabCompletionTooltip') === true){
+                var suggestionsTemplate = require('./templates/chat-suggestions');
+                return suggestionsTemplate({suggestions: suggestions, index: index});
+            }
         },
         message: function(sender, message, emotes, colored) {
             colored = colored || false;
@@ -4460,6 +4462,12 @@ module.exports = [
                 $("#splitChat").remove();
             }
         }
+    },
+    {
+        name: 'Tab completion tooltip',
+        description: 'Shows a tooltip with suggested names when using tab completion',
+        default: true,
+        storageKey: 'tabCompletionTooltip'
     },
     {
         name: 'TwitchCast',
