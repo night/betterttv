@@ -1339,13 +1339,6 @@ body.channel_new.columns.ember-application {
     white-space: nowrap;
 }
 
-/* Panel images are 300px instead of 320px
-    -> Twitch confirmed bug on their end, but no fix?
-*/
-.panels .panel .part img {
-    width: 320px !important;
-}
-
 /* white font on dark bg is killer on the eyes */
 .following-games-onboarding strong {
     color: #8c8c9c;
