@@ -11,8 +11,8 @@ var betaChat = require('./features/beta-chat'),
     handleBackground = require('./features/handle-background'),
     flipDashboard = require('./features/flip-dashboard'),
     cssLoader = require('./features/css-loader');
-var displayElement = require('./element').display,
-    removeElement = require('./element').remove;
+var displayElement = require('./helpers/element').display,
+    removeElement = require('./helpers/element').remove;
 
 module.exports = [
     {

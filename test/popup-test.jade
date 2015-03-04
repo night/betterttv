@@ -1,0 +1,24 @@
+link(href="popup-style.css", rel="stylesheet")
+.highlighter-container
+	| The following table contains keywords which act in the #[br]
+	| same manner as the #[b Highlights] tab of global preferences.
+	br
+	table
+		thead
+			tr
+				td Keyword
+				td Entry Type
+				td Channel
+		tbody
+			- list = ['a', 'b', 'c', 'd']
+			- classes = ['row1', 'row2']
+			each val, index in list
+				tr(class=classes[index % 2])
+					td= val
+					td idk.
+					td idk.
+	.controls
+		button +
+		button(disabled) -
+
+		button(disabled).edit Edit

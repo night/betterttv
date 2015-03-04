@@ -1,4 +1,4 @@
-var debug = require('../debug');
+var debug = require('../helpers/debug');
 
 module.exports = function () {
     if(!$("#dash_main").length) return;

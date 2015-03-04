@@ -1,0 +1,21 @@
+.highlighter-container {
+  background-color: #808080;
+  width: 400px;
+}
+.highlighter-container table {
+  margin: 5%;
+  width: 90%;
+  background-color: #fff;
+}
+.highlighter-container table thead {
+  a: 1;
+}
+.highlighter-container table .row1 {
+  background-color: #b3b3b3;
+}
+.highlighter-container .controls button[disabled] {
+  color: #808080;
+}
+.highlighter-container .controls .edit {
+  float: right;
+}

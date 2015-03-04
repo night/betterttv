@@ -1,4 +1,4 @@
-var debug = require('../../debug'),
+var debug = require('../../helpers/debug'),
     keyCodes = require('../../keycodes'),
     vars = require('../../vars');
 var handleResize = require('./handle-resize'),

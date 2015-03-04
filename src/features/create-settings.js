@@ -1,9 +1,9 @@
-var debug = require('../debug'),
-    vars = require('../vars');
+var debug = require('../helpers/debug'),
+    vars = require('../vars'),
+    removeElement = require('../helpers/element').remove;
 var darkenPage = require('./darken-page'),
     splitChat = require('./split-chat'),
     settingsPanelTemplate = require('../templates/settings-panel');
-var removeElement = require('../element').remove;
 
 module.exports = function () {
     var settingsPanel = document.createElement("div");
