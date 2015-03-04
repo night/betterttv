@@ -5,6 +5,7 @@ var store = require('./store'),
     helpers = require('./helpers')
     templates = require('./templates'),
     rooms = require('./rooms');
+var embeddedPolling = require('../features/embedded-polling');
 
 // Helper Functions
 var getEmoteFromRegEx = require('../helpers/regex').getEmoteFromRegEx;
@@ -236,10 +237,7 @@ var privmsg = exports.privmsg = function (channel, data) {
         if(blacklistFilter(data)) return;
     }
 
-    var messageHighlighted = false;
-    if(bttv.settings.get("highlightKeywords")) {
-        messageHighlighted = highlighting(data);
-    }
+    var messageHighlighted = bttv.settings.get("highlightKeywords") && highlighting(data);
 
     if(bttv.settings.get('embeddedPolling')) {
         if(helpers.isOwner(data.from)) {

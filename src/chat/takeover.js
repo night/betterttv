@@ -7,7 +7,6 @@ var store = require('./store'),
     rooms = require('./rooms');
 var overrideEmotes = require('../features/override-emotes'),
     loadChatSettings = require('../features/chat-load-settings'),
-    embeddedPolling = require('../features/embedded-polling'),
     cssLoader = require('../features/css-loader');
 
 var takeover = module.exports = function() {

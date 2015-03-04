@@ -354,6 +354,7 @@ var store = require('./store'),
     helpers = require('./helpers')
     templates = require('./templates'),
     rooms = require('./rooms');
+var embeddedPolling = require('../features/embedded-polling');
 
 // Helper Functions
 var getEmoteFromRegEx = require('../helpers/regex').getEmoteFromRegEx;
@@ -585,10 +586,7 @@ var privmsg = exports.privmsg = function (channel, data) {
         if(blacklistFilter(data)) return;
     }
 
-    var messageHighlighted = false;
-    if(bttv.settings.get("highlightKeywords")) {
-        messageHighlighted = highlighting(data);
-    }
+    var messageHighlighted = bttv.settings.get("highlightKeywords") && highlighting(data);
 
     if(bttv.settings.get('embeddedPolling')) {
         if(helpers.isOwner(data.from)) {
@@ -686,7 +684,7 @@ var privmsg = exports.privmsg = function (channel, data) {
     store.__messageQueue.push(message);
 }
 
-},{"../bots":1,"../features/keywords-lists":36,"../features/make-card":37,"../helpers/colors":40,"../helpers/debug":41,"../helpers/regex":43,"../legacy-tags":45,"../vars":54,"./helpers":5,"./rooms":6,"./store":7,"./templates":9,"./tmi":10}],5:[function(require,module,exports){
+},{"../bots":1,"../features/embedded-polling":28,"../features/keywords-lists":36,"../features/make-card":37,"../helpers/colors":40,"../helpers/debug":41,"../helpers/regex":43,"../legacy-tags":45,"../vars":54,"./helpers":5,"./rooms":6,"./store":7,"./templates":9,"./tmi":10}],5:[function(require,module,exports){
 var vars = require('../vars'),
     keyCodes = require('../keycodes');
 var tmi = require('./tmi'),
@@ -1281,7 +1279,6 @@ var store = require('./store'),
     rooms = require('./rooms');
 var overrideEmotes = require('../features/override-emotes'),
     loadChatSettings = require('../features/chat-load-settings'),
-    embeddedPolling = require('../features/embedded-polling'),
     cssLoader = require('../features/css-loader');
 
 var takeover = module.exports = function() {
@@ -1578,7 +1575,7 @@ var takeover = module.exports = function() {
         }
     });
 }
-},{"../features/chat-load-settings":18,"../features/css-loader":24,"../features/embedded-polling":28,"../features/override-emotes":38,"../helpers/debug":41,"../keycodes":44,"../vars":54,"./handlers":4,"./helpers":5,"./rooms":6,"./store":7,"./tmi":10}],9:[function(require,module,exports){
+},{"../features/chat-load-settings":18,"../features/css-loader":24,"../features/override-emotes":38,"../helpers/debug":41,"../keycodes":44,"../vars":54,"./handlers":4,"./helpers":5,"./rooms":6,"./store":7,"./tmi":10}],9:[function(require,module,exports){
 var tmi = require('./tmi'),
     store = require('./store');
 
