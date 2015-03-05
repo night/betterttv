@@ -2,6 +2,10 @@ var debug = require('../../debug'),
     vars = require('../../vars');
 
 module.exports = function () {
+
+    // Slight bug found. Breaking until time to fix.
+    return;
+
     if($('#broadcast-meta .title .real').length && !$('.archive_info').length) {
         if(vars.linkifyTimer) clearInterval(vars.linkifyTimer);
 
