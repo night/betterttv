@@ -551,11 +551,19 @@ bttv.chat = {
         // Load BTTV emotes if not loaded
         overrideEmotes();
 
+        var bttvEmoteKeys = Object.keys(chat.store.bttvEmotes);
+        for(var i=bttvEmoteKeys.length-1; i>=0; i--) {
+            var emote = bttvEmoteKeys[i];
+            if(chat.store.bttvEmotes[emote].id.toString().charAt(0) !== 'c') continue;
+
+            delete chat.store.bttvEmotes[emote];
+        }
+
         $.getJSON("https://api.betterttv.net/2/channels/"+bttv.getChannel()).done(function(data) {
             var template = "//cdn.betterttv.net/emote/{{id}}/1x";
 
             data.emotes.forEach(function(emote, count) {
-                bttv.chat.store.bttvEmotes[emote.code] = {
+                chat.store.bttvEmotes[emote.code] = {
                     id: 'c'+count,
                     url: template.replace('{{id}}', emote.id),
                     regex: emote.code,
