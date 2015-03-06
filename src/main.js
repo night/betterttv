@@ -551,6 +551,19 @@ bttv.chat = {
         // Load BTTV emotes if not loaded
         overrideEmotes();
 
+        $.getJSON("https://api.betterttv.net/2/channels/"+bttv.getChannel()).done(function(data) {
+            var template = "//cdn.betterttv.net/emote/{{id}}/1x";
+
+            data.emotes.forEach(function(emote, count) {
+                bttv.chat.store.bttvEmotes[emote.code] = {
+                    id: 'c'+count,
+                    url: template.replace('{{id}}', emote.id),
+                    regex: emote.code,
+                    channel: emote.channel
+                };
+            });
+        });
+
         // Load Chat Settings
         loadChatSettings();
 
