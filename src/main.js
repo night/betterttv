@@ -706,7 +706,7 @@ bttv.chat = {
             }
 
             // Actual tabs must be captured on keydown
-            if(e.which === keyCodes.Tab) {
+            if(e.which === keyCodes.Tab && !e.ctrlKey) {
                 bttv.chat.helpers.tabCompletion(e);
                 e.preventDefault();
             }
