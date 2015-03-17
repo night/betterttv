@@ -207,6 +207,10 @@ input.text:focus,select:focus,textarea:focus {
     display: inline !important;
 }
 
+.ember-chat .chat-line.highlight .badges .bttvDeveloper {
+    filter: brightness(1.35);
+}
+
 .line .bttvSupporter, .ember-chat .badges .bttvSupporter {
     background: url(../../tags/supporter.png) no-repeat;
     padding-left: 12px !important;
