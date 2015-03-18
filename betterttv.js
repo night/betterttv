@@ -1112,10 +1112,10 @@ bttv.chat = {
             var emote = emotes[key];
 
             if(emote.restrictions) {
-                if(emote.restrictions.channels.length && emote.restrictions.channels.indexOf(bttv.getChannel()) === -1) return message;
-                if(emote.restrictions.games.length && bttv.chat.tmi().channel && emote.restrictions.games.indexOf(bttv.chat.tmi().channel.game) === -1) return message;
+                if(emote.restrictions.channels.length && emote.restrictions.channels.indexOf(bttv.getChannel()) === -1) return;
+                if(emote.restrictions.games.length && bttv.chat.tmi().channel && emote.restrictions.games.indexOf(bttv.chat.tmi().channel.game) === -1) return;
 
-                if(emote.restrictions.emoticonSet && emoteSets.indexOf(emote.restrictions.emoticonSet) === -1) return message;
+                if(emote.restrictions.emoticonSet && emoteSets.indexOf(emote.restrictions.emoticonSet) === -1) return;
             }
 
             emote.text = emote.code;
