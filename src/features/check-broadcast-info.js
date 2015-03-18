@@ -9,14 +9,26 @@ var checkBroadcastInfo = module.exports = function() {
 
     bttv.TwitchAPI.get("channels/"+channel).done(function(d) {
         if(d.game) {
-        	if($('#broadcast-meta .channel .playing').length) {
-        		$('#broadcast-meta .channel a:eq(1)').text(d.game).attr("href",Twitch.uri.game(d.game));
-        	}
+            var $channel = $('#broadcast-meta .channel');
+            
+            if($channel.find('.playing').length) {
+                $channel.find('a:eq(1)').text(d.game).attr("href", Twitch.uri.game(d.game));
+            }
         }
         if(d.status) {
-        	$('#broadcast-meta .title .real').text(d.status);
-        	$('#broadcast-meta .title .over').text(d.status);
+            var $title = $('#broadcast-meta .title');
+
+            if($title.data('status') !== d.status) {
+                $title.data('status', d.status);
+
+                d.status = d.status.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                d.status = bttv.chat.templates.linkify(d.status);
+
+                $title.find('.real').html(d.status);
+                $title.find('.over').html(d.status);
+            }
         }
+
         setTimeout(checkBroadcastInfo, 60000);
     });
 }

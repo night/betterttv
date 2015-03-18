@@ -6,12 +6,14 @@ module.exports = function () {
 
     debug.log("Overriding Twitch Emoticons");
 
-    var generate = function(bttvEmotes) {
+    var generate = function(data) {
         vars.emotesLoaded = true;
 
-        bttvEmotes.forEach(function(emote, count) {
-            emote.id = count;
-            bttv.chat.store.bttvEmotes[emote.regex] = emote;
+        data.emotes.forEach(function(emote, count) {
+            emote.urlTemplate = data.urlTemplate.replace('{{id}}', emote.id);
+            emote.url = emote.urlTemplate.replace('{{image}}', '1x');
+            
+            bttv.chat.store.bttvEmotes[emote.code] = emote;
         });
 
         $("body").on('mouseover', '.chat-line .emoticon', function() {
@@ -27,6 +29,8 @@ module.exports = function () {
                         var raw = decodeURIComponent($emote.data('regex'));
                         if(bttv.TwitchEmoteIDToChannel && $emote.data('id') && bttv.TwitchEmoteIDToChannel[$emote.data('id')]) {
                             return "Emote: "+raw+"<br />Channel: "+bttv.TwitchEmoteIDToChannel[$emote.data('id')];
+                        } else if($emote.data('channel') && $emote.data('channel') === 'BetterTTV Emotes') {
+                            return "Emote: "+raw+"<br />BetterTTV Emoticon";
                         } else if($emote.data('channel')) {
                             return "Emote: "+raw+"<br />Channel: "+$emote.data('channel');
                         } else {
@@ -55,6 +59,8 @@ module.exports = function () {
             $('div.tipsy').remove();
         }).on('click', '.chat-line .emoticon', function() {
             var $emote = $(this);
+            if($emote.data('channel') && $emote.data('channel') === 'BetterTTV Emotes') return;
+            
             if(bttv.TwitchEmoteIDToChannel && $emote.data('id') && bttv.TwitchEmoteIDToChannel[$emote.data('id')]) {
                 window.open('http://www.twitch.tv/'+bttv.TwitchEmoteIDToChannel[$emote.data('id')],'_blank');
             } else if($emote.data('channel')) {
@@ -63,17 +69,15 @@ module.exports = function () {
         });
     };
 
-    $.getJSON('https://api.betterttv.net/emotes/ids').done(function(data) {
+    $.getJSON('https://api.betterttv.net/2/emotes/ids').done(function(data) {
         bttv.TwitchEmoteIDToChannel = data.ids;
     });
 
-    $.getJSON('https://api.betterttv.net/emotes/sets').done(function(data) {
+    $.getJSON('https://api.betterttv.net/2/emotes/sets').done(function(data) {
         bttv.TwitchEmoteSets = data.sets;
     });
 
-    $.getJSON('https://api.betterttv.net/emotes').done(function(data) {
-        generate(data.emotes);
-    }).fail(function() {
-        generate([]);
+    $.getJSON('https://api.betterttv.net/2/emotes').done(function(data) {
+        generate(data);
     });
 };

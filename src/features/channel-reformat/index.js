@@ -1,8 +1,7 @@
 var debug = require('../../debug'),
     keyCodes = require('../../keycodes'),
     vars = require('../../vars');
-var linkifyTitle = require('./linkify-title'),
-    handleResize = require('./handle-resize'),
+var handleResize = require('./handle-resize'),
     twitchcast = require('./twitchcast');
 
 module.exports = function () {
@@ -10,7 +9,6 @@ module.exports = function () {
 
     debug.log("Reformatting Channel Page");
 
-    linkifyTitle();
     twitchcast();
 
     if(!vars.loadedChannelResize) {

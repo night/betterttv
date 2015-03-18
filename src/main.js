@@ -8,7 +8,7 @@ var debug = require('./debug'),
 
 bttv.info = {
     version: "6.8",
-    release: 32,
+    release: 33,
     versionString: function() { 
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -330,7 +330,7 @@ bttv.chat = {
         },
         emoticonBTTV: function(emote) {
             var channel = emote.channel ? 'data-channel="' + emote.channel + '" ' : '';
-            return '<img class="emoticon bttv-emo-' + emote.id + '" src="' + emote.url + '" ' + channel + 'data-regex="' + encodeURIComponent(emote.regex) + '" />';
+            return '<img class="emoticon bttv-emo-' + emote.id + '" src="' + emote.urlTemplate.replace('{{image}}','1x') + '" srcset="' + emote.urlTemplate.replace('{{image}}','2x') + ' 2x" ' + channel + 'data-regex="' + encodeURIComponent(emote.code) + '" />';
         },
         emoticon: function(id, name) {
             if(id < 15 && bttv.settings.get("showDefaultEmotes") !== true) {
@@ -410,15 +410,13 @@ bttv.chat = {
             return tokenizedMessage;
         },
         bttvEmoticonize: function(sender, message, emote) {
-            if(emote.restriction) {
-                if(emote.restriction.channels && emote.restriction.channels.indexOf(bttv.getChannel()) === -1) return message;
-                if(emote.restriction.games && emote.restriction.games.indexOf(bttv.chat.tmi().channel.game) === -1) return message;
-            }
+            if(emote.restrictions.channels.length && emote.restrictions.channels.indexOf(bttv.getChannel()) === -1) return message;
+            if(emote.restrictions.games.length && bttv.chat.tmi().channel && emote.restrictions.games.indexOf(bttv.chat.tmi().channel.game) === -1) return message;
 
             var emoteSets = bttv.chat.helpers.getEmotes(sender);
-            if(emote.emoticon_set && emoteSets.indexOf(emote.emoticon_set) === -1) return message;
+            if(emote.restrictions.emoticonSet && emoteSets.indexOf(emote.restrictions.emoticonSet) === -1) return message;
 
-            return message.replace(emote.regex, bttv.chat.templates.emoticonBTTV(emote));
+            return message.replace(emote.code, bttv.chat.templates.emoticonBTTV(emote));
         },
         bttvMessageTokenize: function(sender, message) {
             var tokenizedString = message.split(' ');
@@ -554,21 +552,17 @@ bttv.chat = {
         var bttvEmoteKeys = Object.keys(chat.store.bttvEmotes);
         for(var i=bttvEmoteKeys.length-1; i>=0; i--) {
             var emote = bttvEmoteKeys[i];
-            if(chat.store.bttvEmotes[emote].id.toString().charAt(0) !== 'c') continue;
+            if(!chat.store.bttvEmotes[emote].channelEmote) continue;
 
             delete chat.store.bttvEmotes[emote];
         }
 
         $.getJSON("https://api.betterttv.net/2/channels/"+bttv.getChannel()).done(function(data) {
-            var template = "//cdn.betterttv.net/emote/{{id}}/1x";
-
-            data.emotes.forEach(function(emote, count) {
-                chat.store.bttvEmotes[emote.code] = {
-                    id: 'c'+count,
-                    url: template.replace('{{id}}', emote.id),
-                    regex: emote.code,
-                    channel: emote.channel
-                };
+            data.emotes.forEach(function(emote) {
+                emote.channelEmote = true;
+                emote.urlTemplate = data.urlTemplate.replace('{{id}}', emote.id);
+                emote.url = emote.urlTemplate.replace('{{image}}', '1x');
+                chat.store.bttvEmotes[emote.code] = emote;
             });
         });
 
@@ -809,14 +803,12 @@ bttv.chat = {
         Object.keys(emotes).forEach(function(key) {
             var emote = emotes[key];
 
-            if(emote.restriction) {
-                if(emote.restriction.channels && emote.restriction.channels.indexOf(bttv.getChannel()) === -1) return;
-                if(emote.restriction.games && emote.restriction.games.indexOf(bttv.chat.tmi().channel.game) === -1) return;
-            }
+            if(emote.restrictions.channels.length && emote.restrictions.channels.indexOf(bttv.getChannel()) === -1) return;
+            if(emote.restrictions.games.length && bttv.chat.tmi().channel && emote.restrictions.games.indexOf(bttv.chat.tmi().channel.game) === -1) return;
 
-            if(emote.emoticon_set && emoteSets.indexOf(emote.emoticon_set) === -1) return;
+            if(emote.restrictions.emoticonSet && emoteSets.indexOf(emote.restrictions.emoticonSet) === -1) return;
 
-            emote.text = emote.regex;
+            emote.text = emote.code;
 
             if(!emote.channel) {
                 emote.channel = "BetterTTV Emotes"
@@ -1047,6 +1039,16 @@ bttv.chat = {
             if(!message || message === "") return;
             var tmi = bttv.chat.tmi();
             if(tmi) {
+                if(!vars.userData.isLoggedIn) {
+                    try {
+                        window.Ember.$.login();
+                    } catch(e) {
+                        bttv.chat.helpers.serverMessage('You must be logged into Twitch to send messages.');
+                    }
+                    
+                    return;
+                }
+
                 tmi.tmiRoom.sendMessage(message);
 
                 // Fixes issue when using Twitch's sub emote selector
@@ -1500,8 +1502,11 @@ bttv.chat = {
                 bttv.chat.store.getRoom(channel).queueMessage(data);
                 return;
             }
+            
             if(!data.message.length) return;
+
             if(!bttv.chat.tmi() || !bttv.chat.tmi().tmiRoom) return;
+
             try {
                 bttv.chat.handlers.privmsg(channel, data);
             } catch(e) {
@@ -1685,6 +1690,7 @@ bttv.chat = {
                 "julia_cs": { supporter: true, team: "Design", tagType: "bttvSupporter" },
                 "vaughnwhiskey": { supporter: true, team: "Support", tagType: "bttvSupporter" },
                 "izl": { supporter: true, team: "Support", tagType: "bttvSupporter" },
+                "jacksack": { supporter: true, team: "Design", tagType: "bttvSupporter" }
             }
 
             var legacyTags = require('./legacy-tags')(data);
@@ -1706,7 +1712,7 @@ bttv.chat = {
                 bttvBadges.push({
                     type: userData.tagType,
                     name: "&#8203;",
-                    description: userData.dev ? 'BetterTTV Developer':'BetterTTV '+userData.team+' Team'
+                    description: userData.dev ? 'NightDev Developer':'NightDev '+userData.team+' Team'
                 });
             }
 
