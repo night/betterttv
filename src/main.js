@@ -410,11 +410,13 @@ bttv.chat = {
             return tokenizedMessage;
         },
         bttvEmoticonize: function(sender, message, emote) {
-            if(emote.restrictions.channels.length && emote.restrictions.channels.indexOf(bttv.getChannel()) === -1) return message;
-            if(emote.restrictions.games.length && bttv.chat.tmi().channel && emote.restrictions.games.indexOf(bttv.chat.tmi().channel.game) === -1) return message;
+            if(emote.restrictions) {
+                if(emote.restrictions.channels.length && emote.restrictions.channels.indexOf(bttv.getChannel()) === -1) return message;
+                if(emote.restrictions.games.length && bttv.chat.tmi().channel && emote.restrictions.games.indexOf(bttv.chat.tmi().channel.game) === -1) return message;
 
-            var emoteSets = bttv.chat.helpers.getEmotes(sender);
-            if(emote.restrictions.emoticonSet && emoteSets.indexOf(emote.restrictions.emoticonSet) === -1) return message;
+                var emoteSets = bttv.chat.helpers.getEmotes(sender);
+                if(emote.restrictions.emoticonSet && emoteSets.indexOf(emote.restrictions.emoticonSet) === -1) return message;
+            }
 
             return message.replace(emote.code, bttv.chat.templates.emoticonBTTV(emote));
         },
@@ -803,10 +805,12 @@ bttv.chat = {
         Object.keys(emotes).forEach(function(key) {
             var emote = emotes[key];
 
-            if(emote.restrictions.channels.length && emote.restrictions.channels.indexOf(bttv.getChannel()) === -1) return;
-            if(emote.restrictions.games.length && bttv.chat.tmi().channel && emote.restrictions.games.indexOf(bttv.chat.tmi().channel.game) === -1) return;
+            if(emote.restrictions) {
+                if(emote.restrictions.channels.length && emote.restrictions.channels.indexOf(bttv.getChannel()) === -1) return message;
+                if(emote.restrictions.games.length && bttv.chat.tmi().channel && emote.restrictions.games.indexOf(bttv.chat.tmi().channel.game) === -1) return message;
 
-            if(emote.restrictions.emoticonSet && emoteSets.indexOf(emote.restrictions.emoticonSet) === -1) return;
+                if(emote.restrictions.emoticonSet && emoteSets.indexOf(emote.restrictions.emoticonSet) === -1) return message;
+            }
 
             emote.text = emote.code;
 
