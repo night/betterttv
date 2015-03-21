@@ -115,11 +115,13 @@ var emoticonize = exports.emoticonize = function(message, emotes) {
     return tokenizedMessage;
 };
 var bttvEmoticonize = exports.bttvEmoticonize = function(sender, message, emote) {
-    if(emote.restrictions.channels.length && emote.restrictions.channels.indexOf(bttv.getChannel()) === -1) return message;
-    if(emote.restrictions.games.length && tmi().channel && emote.restrictions.games.indexOf(tmi().channel.game) === -1) return message;
+    if(emote.restrictions) {
+        if(emote.restrictions.channels.length && emote.restrictions.channels.indexOf(bttv.getChannel()) === -1) return message;
+        if(emote.restrictions.games.length && tmi().channel && emote.restrictions.games.indexOf(tmi().channel.game) === -1) return message;
 
-    var emoteSets = require('./helpers').getEmotes(sender);
-    if(emote.restrictions.emoticonSet && emoteSets.indexOf(emote.restrictions.emoticonSet) === -1) return message;
+        var emoteSets = require('./helpers').getEmotes(sender);
+        if(emote.restrictions.emoticonSet && emoteSets.indexOf(emote.restrictions.emoticonSet) === -1) return message;
+    }
 
     return message.replace(emote.code, emoticonBTTV(emote));
 };

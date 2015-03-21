@@ -81,6 +81,21 @@ var takeover = module.exports = function() {
     // Load BTTV emotes if not loaded
     overrideEmotes();
 
+    var bttvEmoteKeys = Object.keys(store.bttvEmotes);
+    for(var i=bttvEmoteKeys.length-1; i>=0; i--) {
+        var emote = bttvEmoteKeys[i];
+        if(store.bttvEmotes[emote].id.toString().charAt(0) !== 'c') continue;
+        delete store.bttvEmotes[emote];
+    }
+    $.getJSON("https://api.betterttv.net/2/channels/"+bttv.getChannel()).done(function(data) {
+        data.emotes.forEach(function(emote) {
+            emote.channelEmote = true;
+            emote.urlTemplate = data.urlTemplate.replace('{{id}}', emote.id);
+            emote.url = emote.urlTemplate.replace('{{image}}', '1x');
+            store.bttvEmotes[emote.code] = emote;
+        });
+    });
+
     // Load Chat Settings
     loadChatSettings();
 
@@ -215,7 +230,7 @@ var takeover = module.exports = function() {
         }
 
         // Actual tabs must be captured on keydown
-        if(e.which === keyCodes.Tab) {
+        if(e.which === keyCodes.Tab && !e.ctrlKey) {
             helpers.tabCompletion(e);
             e.preventDefault();
         }

@@ -10,18 +10,18 @@ module.exports = function() {
     var usableEmotes = [];
 
     if(vars.userData.isLoggedIn && bttv.chat.helpers.getEmotes(vars.userData.login)) {
-        var emoteSets = bttv.chat.helpers.getEmotes(vars.userData.login);
+        var emoteSets = helpers.getEmotes(vars.userData.login);
     }
 
     Object.keys(emotes).forEach(function(key) {
         var emote = emotes[key];
 
-        if(emote.restriction) {
-            if(emote.restriction.channels && emote.restriction.channels.indexOf(bttv.getChannel()) === -1) return;
-            if(emote.restriction.games && emote.restriction.games.indexOf(tmi().channel.game) === -1) return;
+        if(emote.restrictions) {
+            if(emote.restrictions.channels.length && emote.restrictions.channels.indexOf(bttv.getChannel()) === -1) return;
+            if(emote.restrictions.games.length && tmi().channel && emote.restrictions.games.indexOf(tmi().channel.game) === -1) return;
+     
+            if(emote.emoticonSet && emoteSets.indexOf(emote.emoticonSet) === -1) return;
         }
-
-        if(emote.emoticon_set && emoteSets.indexOf(emote.emoticon_set) === -1) return;
 
         emote.text = emote.regex;
 

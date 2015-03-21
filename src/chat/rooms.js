@@ -1,4 +1,5 @@
-var store = require('./store');
+var tmi = require('./tmi'),
+    store = require('./store');
 
 var getRooms = exports.getRooms = function() {
     return Object.keys(store.__rooms);

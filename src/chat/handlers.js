@@ -282,6 +282,7 @@ var privmsg = exports.privmsg = function (channel, data) {
         "julia_cs": { supporter: true, team: "Design", tagType: "bttvSupporter" },
         "vaughnwhiskey": { supporter: true, team: "Support", tagType: "bttvSupporter" },
         "izl": { supporter: true, team: "Support", tagType: "bttvSupporter" },
+        "jacksack": { supporter: true, team: "Design", tagType: "bttvSupporter" }
     }
 
     var legacyTags = require('../legacy-tags')(data);
@@ -303,7 +304,7 @@ var privmsg = exports.privmsg = function (channel, data) {
         bttvBadges.push({
             type: userData.tagType,
             name: "&#8203;",
-            description: userData.dev ? 'BetterTTV Developer':'BetterTTV '+userData.team+' Team'
+            description: userData.dev ? 'NightDev Developer':'NightDev '+userData.team+' Team'
         });
     }
 

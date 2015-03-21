@@ -224,6 +224,16 @@ var notifyMessage = exports.notifyMessage = function (type, message) {
 var sendMessage = exports.sendMessage = function(message) {
     if(!message || message === "") return;
     if(tmi()) {
+        if(!vars.userData.isLoggedIn) {
+            try {
+                window.Ember.$.login();
+            } catch(e) {
+                serverMessage('You must be logged into Twitch to send messages.');
+            }
+
+            return;
+        }
+
         tmi().tmiRoom.sendMessage(message);
 
         // Fixes issue when using Twitch's sub emote selector
