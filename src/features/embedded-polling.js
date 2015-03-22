@@ -1,4 +1,4 @@
-var debug = require('../debug');
+var debug = require('../helpers/debug');
 var pollTemplate = require('../templates/embedded-poll');
 
 var frameTimeout = null;

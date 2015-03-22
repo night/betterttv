@@ -1,4 +1,4 @@
-var debug = require('../debug');
+var debug = require('../helpers/debug');
 var betaChat = require('./beta-chat');
 
 module.exports = function () {
