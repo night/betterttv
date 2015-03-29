@@ -51,6 +51,12 @@ module.exports = [
         }
     },
     {
+        name: 'Chat Image Preview',
+        description: 'Preview chat images on mouse over',
+        default: true,
+        storageKey: 'chatImagePreview'
+    },
+    {
         name: 'Blue Buttons',
         description: 'BetterTTV replaces Twitch\'s purple with blue by default',
         default: false,
@@ -59,7 +65,7 @@ module.exports = [
             if(value === true) {
                 cssLoader.load("blue-buttons", "showBlueButtons");
             } else {
-                cssLoader.unload("showBlueButtons");   
+                cssLoader.unload("showBlueButtons");
             }
         },
         load: function() {
@@ -201,7 +207,7 @@ module.exports = [
             if(value === true) {
                 cssLoader.load("hide-group-chat", "groupChatRemoval");
             } else {
-                cssLoader.unload("groupChatRemoval");   
+                cssLoader.unload("groupChatRemoval");
             }
         },
         load: function() {
@@ -297,7 +303,7 @@ module.exports = [
             }
         }
     },
-    {   
+    {
         default: '',
         storageKey: 'blacklistKeywords',
         toggle: function(keywords) {
@@ -313,7 +319,7 @@ module.exports = [
             }
 
             keywords === "" ? keywords = phraseKeywords : keywords = keywords.split(" ").concat(phraseKeywords);
-            
+
             for(var i=0; i<keywords.length; i++) {
                 if(/^\([a-z0-9_\-\*]+\)$/i.test(keywords[i])) {
                     keywords[i] = keywords[i].replace(/(\(|\))/g, '');
@@ -383,7 +389,7 @@ module.exports = [
                     keywords[i] = keywords[i].replace(/(\(|\))/g, '');
                 }
             }
-            
+
             var keywordList = keywords.join(", ");
             if(keywordList === "") {
                 chat.helpers.serverMessage("Highlight Keywords list is empty");

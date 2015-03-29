@@ -9,7 +9,7 @@ var debug = require('./helpers/debug'),
 bttv.info = {
     version: "6.8",
     release: 33,
-    versionString: function() { 
+    versionString: function() {
         return bttv.info.version + 'R' + bttv.info.release;
     }
 };
@@ -328,6 +328,7 @@ var clearClutter = require('./features/clear-clutter'),
     handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes'),
     emoticonTextInClipboard = require('./features/emoticon-text-in-clipboard'),
     createSettings = require('./features/create-settings');
+    enableImagePreview = require('./features/image-preview').enablePreview;
 
 var chatFunctions = function () {
 
@@ -521,6 +522,9 @@ var main = function () {
         directoryFunctions();
         handleTwitchChatEmotesScript();
         emoticonTextInClipboard();
+        if (bttv.settings.get('chatImagePreview') === true) {
+            enableImagePreview();
+        }
 
         $(window).trigger('resize');
         setTimeout(function() {
