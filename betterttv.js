@@ -311,7 +311,8 @@ exports.store = require('./chat/store');
 },{"./chat/emotes":3,"./chat/handlers":4,"./chat/helpers":5,"./chat/store":7,"./chat/takeover":8,"./chat/templates":9,"./chat/tmi":10}],3:[function(require,module,exports){
 var tmi = require('./tmi'),
     store = require('./store'),
-    helpers = require('./helpers');
+    helpers = require('./helpers'),
+    vars = bttv.vars;
 
 module.exports = function() {
     if(bttv.settings.get("bttvEmotes") === false) {

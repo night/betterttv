@@ -1,6 +1,7 @@
 var tmi = require('./tmi'),
     store = require('./store'),
-    helpers = require('./helpers');
+    helpers = require('./helpers'),
+    vars = bttv.vars;
 
 module.exports = function() {
     if(bttv.settings.get("bttvEmotes") === false) {
