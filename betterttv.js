@@ -406,6 +406,28 @@ var commands = exports.commands = function (input) {
         } else {
             bttv.settings.save('chatLineHistory', true);
         }
+    } else if (command === "/uptime") {
+        bttv.TwitchAPI.get('streams/' + bttv.getChannel()).done(function (stream) {
+            if (stream.stream !== null) {
+                var started = new Date(stream.stream.created_at),
+                    now = new Date(),
+                    timeDiff = Math.abs(now.getTime() - (started.getTime() - 1000 * 60 * started.getTimezoneOffset())),
+                    days = Math.floor(timeDiff / (1000 * 3600 * 24)),
+                    hours = Math.floor(timeDiff / (1000 * 3600)) - (days * 24),
+                    minutes = Math.floor(timeDiff / (1000 * 60)) - ((days * 24) + (hours * 60)),
+                    seconds = Math.floor(timeDiff / 1000) - ((days * 24 * 60 * 60) + (hours * 60 * 60) + (minutes * 60));
+                helpers.serverMessage("Stream uptime: " +
+                    (days > 0 ? days + " days " : "") +
+                    (hours > 0 ? hours + " hours " : "") +
+                    (minutes > 0 ? minutes + " minutes " : "") +
+                    (seconds > 0 ? seconds + " seconds " : "")
+                );
+            } else {
+                helpers.serverMessage("Stream offline");
+            }
+        }).fail(function () {
+            helpers.serverMessage("Could not fetch start time.");
+        });
     }
 };
 var countUnreadMessages = exports.countUnreadMessages = function () {
@@ -452,7 +474,7 @@ var moderationCard = exports.moderationCard = function (user, $event) {
             makeCard({ name: user, display_name: user.capitalize() }, $event);
             return;
         }
-        
+
         makeCard(user, $event);
     }).fail(function() {
         makeCard({ name: user, display_name: user.capitalize() }, $event);
@@ -579,7 +601,7 @@ var privmsg = exports.privmsg = function (channel, data) {
 
     if(store.trackTimeouts[data.from]) delete store.trackTimeouts[data.from];
 
-    
+
     var blacklistFilter = require('../features/keywords-lists').blacklistFilter,
         highlighting = require('../features/keywords-lists').highlighting;
 
