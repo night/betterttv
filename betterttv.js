@@ -3685,8 +3685,8 @@ var debug = require('../helpers/debug');
 
 var enablePreview = exports.enablePreview = function() {
     /* CONFIG */
-    xOffset = -250;
-    yOffset = 0;
+    var xOffset = -250,
+        yOffset = 0;
 
     /* END CONFIG */
     $(document).on({
