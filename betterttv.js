@@ -578,7 +578,7 @@ var privmsg = exports.privmsg = function (channel, data) {
             vars.userData.isLoggedIn ? helpers.isModerator(vars.userData.login) : false,
             {
                 message: data.message,
-                time: data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
+                time: data.date == null ? '' : data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
                 nickname: data.from || 'jtv',
                 sender: data.from,
                 badges: data.badges || (data.from==='twitchnotify'?[{
@@ -908,11 +908,12 @@ var suggestions = exports.suggestions = function(words, index) {
         $(this).remove();
     });
 };
-var serverMessage = exports.serverMessage = function(message) {
-    var handlers = require('./handlers');
+var serverMessage = exports.serverMessage = function(message, timestampOverride) {
+    var handlers = require('./handlers'),
+        disableTimestamp = timestampOverride === true ? true : false;
     handlers.onPrivmsg(store.currentRoom, {
         from: 'jtv',
-        date: new Date(),
+        date:  disableTimestamp ? null : new Date(),
         message: message,
         style: 'admin'
     });
@@ -1041,7 +1042,7 @@ var scrollChat = exports.scrollChat = function() {
 
         $chatScroller[0].scrollTop = $chatScroller[0].scrollHeight;
     });
-    
+
     var linesToDelete = $chatLines.length - bttv.settings.get("scrollbackAmount");
 
     if(linesToDelete <= 0) return;
@@ -1212,6 +1213,7 @@ var translate = exports.translate = function(element, sender, text) {
         }
     });
 }
+
 },{"../helpers/colors":39,"../helpers/element":41,"../helpers/regex":42,"../keycodes":43,"../vars":53,"./handlers":4,"./store":7,"./templates":9,"./tmi":10}],6:[function(require,module,exports){
 var tmi = require('./tmi'),
     store = require('./store');
@@ -1566,7 +1568,7 @@ var takeover = module.exports = function() {
 
     $('.ember-chat .chat-messages .chat-line').remove();
     if(bttv.socketServer) bttv.socketServer.emit('chat history');
-    helpers.serverMessage('<center><small>BetterTTV v' + bttv.info.version + ' Loaded.</small></center>');
+    helpers.serverMessage('<center><small>BetterTTV v' + bttv.info.version + ' Loaded.</small></center>', true);
     helpers.serverMessage('Welcome to '+helpers.lookupDisplayName(bttv.getChannel())+'\'s chat room!');
 
     // Reset chatters list
@@ -1625,6 +1627,7 @@ var takeover = module.exports = function() {
         }
     });
 }
+
 },{"../features/chat-load-settings":17,"../features/css-loader":23,"../features/override-emotes":37,"../helpers/debug":40,"../keycodes":43,"../vars":53,"./handlers":4,"./helpers":5,"./rooms":6,"./store":7,"./tmi":10}],9:[function(require,module,exports){
 var tmi = require('./tmi'),
     store = require('./store');

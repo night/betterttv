@@ -197,11 +197,12 @@ var suggestions = exports.suggestions = function(words, index) {
         $(this).remove();
     });
 };
-var serverMessage = exports.serverMessage = function(message) {
-    var handlers = require('./handlers');
+var serverMessage = exports.serverMessage = function(message, timestampOverride) {
+    var handlers = require('./handlers'),
+        disableTimestamp = timestampOverride === true ? true : false;
     handlers.onPrivmsg(store.currentRoom, {
         from: 'jtv',
-        date: new Date(),
+        date:  disableTimestamp ? null : new Date(),
         message: message,
         style: 'admin'
     });
@@ -330,7 +331,7 @@ var scrollChat = exports.scrollChat = function() {
 
         $chatScroller[0].scrollTop = $chatScroller[0].scrollHeight;
     });
-    
+
     var linesToDelete = $chatLines.length - bttv.settings.get("scrollbackAmount");
 
     if(linesToDelete <= 0) return;
