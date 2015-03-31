@@ -52,19 +52,6 @@ module.exports = [
         }
     },
     {
-        name: 'Chat Image Preview',
-        description: 'Preview chat images on mouse over',
-        default: true,
-        storageKey: 'chatImagePreview',
-        toggle: function (value) {
-            if (value === true) {
-                imagePreview.enablePreview();
-            } else {
-                imagePreview.disablePreview();
-            }
-        }
-    },
-    {
         name: 'Blue Buttons',
         description: 'BetterTTV replaces Twitch\'s purple with blue by default',
         default: false,
@@ -78,6 +65,19 @@ module.exports = [
         },
         load: function() {
             cssLoader.load("blue-buttons", "showBlueButtons");
+        }
+    },
+    {
+        name: 'Chat Image Preview',
+        description: 'Preview chat images on mouse over',
+        default: true,
+        storageKey: 'chatImagePreview',
+        toggle: function (value) {
+            if (value === true) {
+                imagePreview.enablePreview();
+            } else {
+                imagePreview.disablePreview();
+            }
         }
     },
     {
