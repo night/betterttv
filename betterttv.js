@@ -1195,7 +1195,7 @@ var translate = exports.translate = function(element, sender, text) {
 
 // Add mouseover image preview to image links
 module.exports = function(imgUrl) {
-    return '<a href="' + imgUrl + '" class="preview" target="_blank">' + imgUrl + '</a>';
+    return '<a href="' + imgUrl + '" class="chat-preview" target="_blank">' + imgUrl + '</a>';
 };
 
 },{}],7:[function(require,module,exports){
@@ -2798,8 +2798,7 @@ var debug = require('../helpers/debug'),
     vars = require('../vars'),
     removeElement = require('../helpers/element').remove;
 var darkenPage = require('./darken-page'),
-    splitChat = require('./split-chat'),
-    imagePreview = require('./image-preview');
+    splitChat = require('./split-chat');
 
 module.exports = function() {
     if(!$('.ember-chat .chat-settings').length || $('.ember-chat .chat-settings .bttvChatSettings').length) return;
@@ -2869,19 +2868,6 @@ module.exports = function() {
         }
     });
 
-    $('.toggleChatImagePreview').change(function(e) {
-        e.preventDefault();
-        if (bttv.settings.get("chatImagePreview") === true) {
-            bttv.settings.save("chatImagePreview", false);
-            imagePreview.disablePreview();
-            $(this).prop('checked', false);
-        } else {
-            bttv.settings.save("chatImagePreview", true);
-            imagePreview.enablePreview();
-            $(this).prop('checked', true);
-        }
-    });
-
     $('.flipDashboard').click(function(e) {
         e.preventDefault();
         if (bttv.settings.get("flipDashboard") === true) {
@@ -2922,7 +2908,7 @@ module.exports = function() {
     });
 };
 
-},{"../helpers/debug":42,"../helpers/element":43,"../templates/chat-settings":48,"../vars":55,"./darken-page":25,"./image-preview":36,"./split-chat":40}],19:[function(require,module,exports){
+},{"../helpers/debug":42,"../helpers/element":43,"../templates/chat-settings":48,"../vars":55,"./darken-page":25,"./split-chat":40}],19:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 var checkBroadcastInfo = module.exports = function() {
@@ -3691,25 +3677,25 @@ var enablePreview = exports.enablePreview = function() {
     /* END CONFIG */
     $(document).on({
         mouseenter: function (e) {
-            $("body").append("<p id='preview'><img height=\"200px\" src='"+ this.href +"' alt='Image preview' /></p>");
-            $("#preview")
+            $("body").append("<p id='chat_preview'><img width=\"250px\" src='"+ this.href +"' alt='Image preview' /></p>");
+            $("#chat_preview")
                 .css("top",(e.pageY - yOffset) + "px")
                 .css("left", (e.pageX - xOffset) + "px")
                 .css("position", "absolute")
                 .css("z-index", '100')
                 .fadeIn("fast");
         }, mouseleave: function (e) {
-            $("#preview").remove();
+            $("#chat_preview").remove();
         }, mousemove: function (e) {
-            $("#preview")
+            $("#chat_preview")
             .css("top",(e.pageY - yOffset) + "px")
             .css("left",(e.pageX + xOffset) + "px");
         }
-    }, 'a.preview');
+    }, 'a.chat-preview');
 };
 
 var disablePreview = exports.disablePreview = function() {
-    $(document).off('mouseenter mouseleave mousemove', 'a.preview');
+    $(document).off('mouseenter mouseleave mousemove', 'a.chat-preview');
 };
 
 },{"../helpers/debug":42}],37:[function(require,module,exports){
@@ -4376,7 +4362,8 @@ var betaChat = require('./features/beta-chat'),
     flipDashboard = require('./features/flip-dashboard'),
     cssLoader = require('./features/css-loader');
 var displayElement = require('./helpers/element').display,
-    removeElement = require('./helpers/element').remove;
+    removeElement = require('./helpers/element').remove,
+    imagePreview = require('./features/image-preview');
 
 module.exports = [
     {
@@ -4418,7 +4405,14 @@ module.exports = [
         name: 'Chat Image Preview',
         description: 'Preview chat images on mouse over',
         default: true,
-        storageKey: 'chatImagePreview'
+        storageKey: 'chatImagePreview',
+        toggle: function (value) {
+            if (value === true) {
+                imagePreview.enablePreview();
+            } else {
+                imagePreview.disablePreview();
+            }
+        }
     },
     {
         name: 'Blue Buttons',
@@ -4775,7 +4769,7 @@ module.exports = [
     }
 ];
 
-},{"./features/beta-chat":13,"./features/channel-reformat":16,"./features/css-loader":24,"./features/darken-page":25,"./features/flip-dashboard":30,"./features/handle-background":33,"./features/split-chat":40,"./helpers/element":43}],48:[function(require,module,exports){
+},{"./features/beta-chat":13,"./features/channel-reformat":16,"./features/css-loader":24,"./features/darken-page":25,"./features/flip-dashboard":30,"./features/handle-background":33,"./features/image-preview":36,"./features/split-chat":40,"./helpers/element":43}],48:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -4799,7 +4793,7 @@ buf.push("Flip Dashboard");
 }
 buf.push("</a></p>");
 }
-buf.push("<p><input type=\"checkbox\"" + (jade.attr("checked", bttv.settings.get("darkenedMode"), true, false)) + " class=\"toggleDarkenTTV\"/>Dark Mode</p><p><input type=\"checkbox\"" + (jade.attr("checked", bttv.settings.get("chatImagePreview"), true, false)) + " class=\"toggleChatImagePreview\"/>Chat Image Preview</p><p><a href=\"#\" class=\"g18_gear-00000080 setBlacklistKeywords\">Set Blacklist Keywords</a></p><p><a href=\"#\" class=\"g18_gear-00000080 setHighlightKeywords\">Set Highlight Keywords</a></p><p><a href=\"#\" class=\"g18_gear-00000080 setScrollbackAmount\">Set Scrollback Amount</a></p><p><a href=\"#\" class=\"g18_trash-00000080 clearChat\">Clear My Chat</a></p><p><a href=\"#\" style=\"display: block;margin-top: 8px;text-align: center;\" class=\"button-simple dark openSettings\">BetterTTV Settings</a></p></div>");}.call(this,"$" in locals_for_with?locals_for_with.$:typeof $!=="undefined"?$:undefined,"window" in locals_for_with?locals_for_with.window:typeof window!=="undefined"?window:undefined,"bttv" in locals_for_with?locals_for_with.bttv:typeof bttv!=="undefined"?bttv:undefined));;return buf.join("");
+buf.push("<p><input type=\"checkbox\"" + (jade.attr("checked", bttv.settings.get("darkenedMode"), true, false)) + " class=\"toggleDarkenTTV\"/>Dark Mode</p><p><a href=\"#\" class=\"g18_gear-00000080 setBlacklistKeywords\">Set Blacklist Keywords</a></p><p><a href=\"#\" class=\"g18_gear-00000080 setHighlightKeywords\">Set Highlight Keywords</a></p><p><a href=\"#\" class=\"g18_gear-00000080 setScrollbackAmount\">Set Scrollback Amount</a></p><p><a href=\"#\" class=\"g18_trash-00000080 clearChat\">Clear My Chat</a></p><p><a href=\"#\" style=\"display: block;margin-top: 8px;text-align: center;\" class=\"button-simple dark openSettings\">BetterTTV Settings</a></p></div>");}.call(this,"$" in locals_for_with?locals_for_with.$:typeof $!=="undefined"?$:undefined,"window" in locals_for_with?locals_for_with.window:typeof window!=="undefined"?window:undefined,"bttv" in locals_for_with?locals_for_with.bttv:typeof bttv!=="undefined"?bttv:undefined));;return buf.join("");
 };module.exports=template;
 },{}],49:[function(require,module,exports){
 function template(locals) {

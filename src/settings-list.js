@@ -12,7 +12,8 @@ var betaChat = require('./features/beta-chat'),
     flipDashboard = require('./features/flip-dashboard'),
     cssLoader = require('./features/css-loader');
 var displayElement = require('./helpers/element').display,
-    removeElement = require('./helpers/element').remove;
+    removeElement = require('./helpers/element').remove,
+    imagePreview = require('./features/image-preview');
 
 module.exports = [
     {
@@ -54,7 +55,14 @@ module.exports = [
         name: 'Chat Image Preview',
         description: 'Preview chat images on mouse over',
         default: true,
-        storageKey: 'chatImagePreview'
+        storageKey: 'chatImagePreview',
+        toggle: function (value) {
+            if (value === true) {
+                imagePreview.enablePreview();
+            } else {
+                imagePreview.disablePreview();
+            }
+        }
     },
     {
         name: 'Blue Buttons',
