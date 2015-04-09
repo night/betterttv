@@ -9,7 +9,7 @@ var debug = require('./helpers/debug'),
 bttv.info = {
     version: "6.8",
     release: 33,
-    versionString: function() { 
+    versionString: function() {
         return bttv.info.version + 'R' + bttv.info.release;
     }
 };
@@ -327,7 +327,8 @@ var clearClutter = require('./features/clear-clutter'),
     giveawayCompatibility = require('./features/giveaway-compatibility'),
     handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes'),
     emoticonTextInClipboard = require('./features/emoticon-text-in-clipboard'),
-    createSettings = require('./features/create-settings');
+    createSettings = require('./features/create-settings'),
+    enableTheatreMode = require('./features/auto-theatre-mode');
 
 var chatFunctions = function () {
 
@@ -446,8 +447,9 @@ var main = function () {
 
                 if(App.__container__.lookup("controller:application").get("currentRouteName") !== "channel.index") {
                     $('#main_col').removeAttr('style');
+                } else if (App.__container__.lookup("controller:channel").get("theatreMode") === false && bttv.settings.get('autoTheatreMode') === true) {
+                    enableTheatreMode();
                 }
-
                 switch(payload.template) {
                     case 'shared/right-column':
                         waitForLoad(function(ready) {
@@ -521,6 +523,9 @@ var main = function () {
         directoryFunctions();
         handleTwitchChatEmotesScript();
         emoticonTextInClipboard();
+        if (bttv.settings.get('autoTheatreMode') === true) {
+            enableTheatreMode();
+        }
 
         $(window).trigger('resize');
         setTimeout(function() {

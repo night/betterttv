@@ -10,7 +10,8 @@ var betaChat = require('./features/beta-chat'),
     darkenPage = require('./features/darken-page'),
     handleBackground = require('./features/handle-background'),
     flipDashboard = require('./features/flip-dashboard'),
-    cssLoader = require('./features/css-loader');
+    cssLoader = require('./features/css-loader'),
+    theatreMode = require('./features/auto-theatre-mode');
 var displayElement = require('./helpers/element').display,
     removeElement = require('./helpers/element').remove;
 
@@ -27,6 +28,12 @@ module.exports = [
         description: 'Removes the background from chat tags',
         default: false,
         storageKey: 'alphaTags'
+    },
+    {
+        name: 'Automatic Theatre Mode',
+        description: 'Automatically enables theatre mode',
+        default: false,
+        storageKey: 'autoTheatreMode'
     },
     {
         name: 'BetterTTV Chat',
@@ -59,7 +66,7 @@ module.exports = [
             if(value === true) {
                 cssLoader.load("blue-buttons", "showBlueButtons");
             } else {
-                cssLoader.unload("showBlueButtons");   
+                cssLoader.unload("showBlueButtons");
             }
         },
         load: function() {
@@ -201,7 +208,7 @@ module.exports = [
             if(value === true) {
                 cssLoader.load("hide-group-chat", "groupChatRemoval");
             } else {
-                cssLoader.unload("groupChatRemoval");   
+                cssLoader.unload("groupChatRemoval");
             }
         },
         load: function() {
@@ -297,7 +304,7 @@ module.exports = [
             }
         }
     },
-    {   
+    {
         default: '',
         storageKey: 'blacklistKeywords',
         toggle: function(keywords) {
@@ -313,7 +320,7 @@ module.exports = [
             }
 
             keywords === "" ? keywords = phraseKeywords : keywords = keywords.split(" ").concat(phraseKeywords);
-            
+
             for(var i=0; i<keywords.length; i++) {
                 if(/^\([a-z0-9_\-\*]+\)$/i.test(keywords[i])) {
                     keywords[i] = keywords[i].replace(/(\(|\))/g, '');
@@ -383,7 +390,7 @@ module.exports = [
                     keywords[i] = keywords[i].replace(/(\(|\))/g, '');
                 }
             }
-            
+
             var keywordList = keywords.join(", ");
             if(keywordList === "") {
                 chat.helpers.serverMessage("Highlight Keywords list is empty");
