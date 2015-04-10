@@ -10,7 +10,8 @@ var betaChat = require('./features/beta-chat'),
     darkenPage = require('./features/darken-page'),
     handleBackground = require('./features/handle-background'),
     flipDashboard = require('./features/flip-dashboard'),
-    cssLoader = require('./features/css-loader');
+    cssLoader = require('./features/css-loader'),
+    theatreMode = require('./features/auto-theatre-mode');
 var displayElement = require('./helpers/element').display,
     removeElement = require('./helpers/element').remove;
 
@@ -27,6 +28,12 @@ module.exports = [
         description: 'Removes the background from chat tags',
         default: false,
         storageKey: 'alphaTags'
+    },
+    {
+        name: 'Automatic Theatre Mode',
+        description: 'Automatically enables theatre mode',
+        default: false,
+        storageKey: 'autoTheatreMode'
     },
     {
         name: 'BetterTTV Chat',
