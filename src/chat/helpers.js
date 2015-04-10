@@ -197,12 +197,11 @@ var suggestions = exports.suggestions = function(words, index) {
         $(this).remove();
     });
 };
-var serverMessage = exports.serverMessage = function(message, timestampOverride) {
-    var handlers = require('./handlers'),
-        disableTimestamp = timestampOverride === true ? true : false;
+var serverMessage = exports.serverMessage = function(message, displayTimestamp) {
+    var handlers = require('./handlers');
     handlers.onPrivmsg(store.currentRoom, {
         from: 'jtv',
-        date:  disableTimestamp ? null : new Date(),
+        date:  displayTimestamp ? new Date() : null,
         message: message,
         style: 'admin'
     });

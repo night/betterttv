@@ -383,22 +383,22 @@ var commands = exports.commands = function (input) {
     } else if (command === "/suboff") {
         tmi().tmiRoom.stopSubscribersMode();
     } else if (command === "/localsub") {
-        helpers.serverMessage("Local subscribers-only mode enabled.");
+        helpers.serverMessage("Local subscribers-only mode enabled.", true);
         vars.localSubsOnly = true;
     } else if (command === "/localsuboff") {
-        helpers.serverMessage("Local subscribers-only mode disabled.");
+        helpers.serverMessage("Local subscribers-only mode disabled.", true);
         vars.localSubsOnly = false;
     } else if (command === "/viewers") {
         bttv.TwitchAPI.get('streams/' + bttv.getChannel()).done(function(stream) {
-            helpers.serverMessage("Current Viewers: " + Twitch.display.commatize(stream.stream.viewers));
+            helpers.serverMessage("Current Viewers: " + Twitch.display.commatize(stream.stream.viewers), true);
         }).fail(function() {
-            helpers.serverMessage("Could not fetch viewer count.");
+            helpers.serverMessage("Could not fetch viewer count.", true);
         });
     } else if (command === "/followers") {
         bttv.TwitchAPI.get('channels/' + bttv.getChannel() + '/follows').done(function(channel) {
-            helpers.serverMessage("Current Followers: " + Twitch.display.commatize(channel._total));
+            helpers.serverMessage("Current Followers: " + Twitch.display.commatize(channel._total), true);
         }).fail(function() {
-            helpers.serverMessage("Could not fetch follower count.");
+            helpers.serverMessage("Could not fetch follower count.", true);
         });
     } else if (command === "/linehistory") {
         if(sentence[1] === "off") {
@@ -420,13 +420,14 @@ var commands = exports.commands = function (input) {
                     (days > 0 ? days + " days " : "") +
                     (hours > 0 ? hours + " hours " : "") +
                     (minutes > 0 ? minutes + " minutes " : "") +
-                    (seconds > 0 ? seconds + " seconds " : "")
+                    (seconds > 0 ? seconds + " seconds " : ""),
+                    true
                 );
             } else {
-                helpers.serverMessage("Stream offline");
+                helpers.serverMessage("Stream offline", true);
             }
         }).fail(function () {
-            helpers.serverMessage("Could not fetch start time.");
+            helpers.serverMessage("Could not fetch start time.", true);
         });
     }
 };
@@ -459,7 +460,7 @@ var shiftQueue = exports.shiftQueue = function () {
         store.currentRoom = id;
         store.__messageQueue = [];
         rooms.getRoom(id).playQueue();
-        helpers.serverMessage('You switched to: '+tmi().get('name').replace(/</g,"&lt;").replace(/>/g,"&gt;"));
+        helpers.serverMessage('You switched to: '+tmi().get('name').replace(/</g,"&lt;").replace(/>/g,"&gt;"), true);
     } else {
         if(store.__messageQueue.length === 0) return;
         $('.ember-chat .chat-messages .tse-content .chat-lines').append(store.__messageQueue.join(""));
@@ -495,7 +496,7 @@ var clearChat = exports.clearChat = function (user) {
     var trackTimeouts = store.trackTimeouts;
 
     if(!user) {
-        helpers.serverMessage("Chat was cleared by a moderator (Prevented by BetterTTV)");
+        helpers.serverMessage("Chat was cleared by a moderator (Prevented by BetterTTV)", true);
     } else {
         if($('.chat-line[data-sender="' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '"]').length === 0) return;
         if(bttv.settings.get("hideDeletedMessages") === true) {
@@ -540,7 +541,7 @@ var clearChat = exports.clearChat = function (user) {
                     timesID: Math.floor(Math.random()*100001)
                 }
                 var displayName = helpers.lookupDisplayName(user);
-                helpers.serverMessage(displayName + ' has been timed out. <span id="times_from_' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + "_" + trackTimeouts[user].timesID + '"></span>');
+                helpers.serverMessage(displayName + ' has been timed out. <span id="times_from_' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + "_" + trackTimeouts[user].timesID + '"></span>', true);
             }
         }
     }
@@ -908,12 +909,11 @@ var suggestions = exports.suggestions = function(words, index) {
         $(this).remove();
     });
 };
-var serverMessage = exports.serverMessage = function(message, timestampOverride) {
-    var handlers = require('./handlers'),
-        disableTimestamp = timestampOverride === true ? true : false;
+var serverMessage = exports.serverMessage = function(message, displayTimestamp) {
+    var handlers = require('./handlers');
     handlers.onPrivmsg(store.currentRoom, {
         from: 'jtv',
-        date:  disableTimestamp ? null : new Date(),
+        date:  displayTimestamp ? new Date() : null,
         message: message,
         style: 'admin'
     });
@@ -1568,8 +1568,8 @@ var takeover = module.exports = function() {
 
     $('.ember-chat .chat-messages .chat-line').remove();
     if(bttv.socketServer) bttv.socketServer.emit('chat history');
-    helpers.serverMessage('<center><small>BetterTTV v' + bttv.info.version + ' Loaded.</small></center>', true);
-    helpers.serverMessage('Welcome to '+helpers.lookupDisplayName(bttv.getChannel())+'\'s chat room!');
+    helpers.serverMessage('<center><small>BetterTTV v' + bttv.info.version + ' Loaded.</small></center>');
+    helpers.serverMessage('Welcome to '+helpers.lookupDisplayName(bttv.getChannel())+'\'s chat room!', true);
 
     // Reset chatters list
     store.chatters = {};
@@ -3864,16 +3864,16 @@ module.exports = function(user, $event) {
     $modCard.find('.mod-card-follow').text('Unfollow').click(function() {
         if ($modCard.find('.mod-card-follow').text() === 'Unfollow') {
             bttv.TwitchAPI.del("users/:login/follows/channels/"+user.name).done(function() {
-                bttv.chat.helpers.serverMessage('User was unfollowed successfully.');
+                bttv.chat.helpers.serverMessage('User was unfollowed successfully.', true);
             }).fail(function() {
-                bttv.chat.helpers.serverMessage('There was an error following this user.');
+                bttv.chat.helpers.serverMessage('There was an error following this user.', true);
             });
             $modCard.find('.mod-card-follow').text('Follow');
         } else {
             bttv.TwitchAPI.put("users/:login/follows/channels/"+user.name).done(function() {
-                bttv.chat.helpers.serverMessage('User was followed successfully.');
+                bttv.chat.helpers.serverMessage('User was followed successfully.', true);
             }).fail(function() {
-                bttv.chat.helpers.serverMessage('There was an error following this user.');
+                bttv.chat.helpers.serverMessage('There was an error following this user.', true);
             });
             $modCard.find('.mod-card-follow').text('Unfollow');
         }
@@ -4385,7 +4385,7 @@ module.exports = [
             if(value === true) {
                 cssLoader.load("blue-buttons", "showBlueButtons");
             } else {
-                cssLoader.unload("showBlueButtons");   
+                cssLoader.unload("showBlueButtons");
             }
         },
         load: function() {
@@ -4527,7 +4527,7 @@ module.exports = [
             if(value === true) {
                 cssLoader.load("hide-group-chat", "groupChatRemoval");
             } else {
-                cssLoader.unload("groupChatRemoval");   
+                cssLoader.unload("groupChatRemoval");
             }
         },
         load: function() {
@@ -4623,7 +4623,7 @@ module.exports = [
             }
         }
     },
-    {   
+    {
         default: '',
         storageKey: 'blacklistKeywords',
         toggle: function(keywords) {
@@ -4639,7 +4639,7 @@ module.exports = [
             }
 
             keywords === "" ? keywords = phraseKeywords : keywords = keywords.split(" ").concat(phraseKeywords);
-            
+
             for(var i=0; i<keywords.length; i++) {
                 if(/^\([a-z0-9_\-\*]+\)$/i.test(keywords[i])) {
                     keywords[i] = keywords[i].replace(/(\(|\))/g, '');
@@ -4648,9 +4648,9 @@ module.exports = [
 
             var keywordList = keywords.join(", ");
             if(keywordList === "") {
-                chat.helpers.serverMessage("Blacklist Keywords list is empty");
+                chat.helpers.serverMessage("Blacklist Keywords list is empty", true);
             } else {
-                chat.helpers.serverMessage("Blacklist Keywords are now set to: " + keywordList);
+                chat.helpers.serverMessage("Blacklist Keywords are now set to: " + keywordList, true);
             }
         }
     },
@@ -4659,9 +4659,9 @@ module.exports = [
         storageKey: 'chatLineHistory',
         toggle: function(value) {
             if(value === true) {
-                chat.helpers.serverMessage("Chat line history enabled.");
+                chat.helpers.serverMessage("Chat line history enabled.", true);
             } else {
-                chat.helpers.serverMessage("Chat line history disabled.");
+                chat.helpers.serverMessage("Chat line history disabled.", true);
             }
         }
     },
@@ -4709,12 +4709,12 @@ module.exports = [
                     keywords[i] = keywords[i].replace(/(\(|\))/g, '');
                 }
             }
-            
+
             var keywordList = keywords.join(", ");
             if(keywordList === "") {
-                chat.helpers.serverMessage("Highlight Keywords list is empty");
+                chat.helpers.serverMessage("Highlight Keywords list is empty", true);
             } else {
-                chat.helpers.serverMessage("Highlight Keywords are now set to: " + keywordList);
+                chat.helpers.serverMessage("Highlight Keywords are now set to: " + keywordList, true);
             }
         }
     },
@@ -4723,13 +4723,14 @@ module.exports = [
         storageKey: 'scrollbackAmount',
         toggle: function(lines) {
             if(lines === 150) {
-                chat.helpers.serverMessage("Chat scrollback is now set to: default (150)");
+                chat.helpers.serverMessage("Chat scrollback is now set to: default (150)", true);
             } else {
-                chat.helpers.serverMessage("Chat scrollback is now set to: " + lines);
+                chat.helpers.serverMessage("Chat scrollback is now set to: " + lines, true);
             }
         }
     }
 ];
+
 },{"./features/beta-chat":12,"./features/channel-reformat":15,"./features/css-loader":23,"./features/darken-page":24,"./features/flip-dashboard":29,"./features/handle-background":32,"./features/split-chat":38,"./helpers/element":41}],46:[function(require,module,exports){
 function template(locals) {
 var buf = [];

@@ -259,8 +259,8 @@ var takeover = module.exports = function() {
 
     $('.ember-chat .chat-messages .chat-line').remove();
     if(bttv.socketServer) bttv.socketServer.emit('chat history');
-    helpers.serverMessage('<center><small>BetterTTV v' + bttv.info.version + ' Loaded.</small></center>', true);
-    helpers.serverMessage('Welcome to '+helpers.lookupDisplayName(bttv.getChannel())+'\'s chat room!');
+    helpers.serverMessage('<center><small>BetterTTV v' + bttv.info.version + ' Loaded.</small></center>');
+    helpers.serverMessage('Welcome to '+helpers.lookupDisplayName(bttv.getChannel())+'\'s chat room!', true);
 
     // Reset chatters list
     store.chatters = {};
