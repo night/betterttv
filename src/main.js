@@ -329,6 +329,7 @@ var clearClutter = require('./features/clear-clutter'),
     emoticonTextInClipboard = require('./features/emoticon-text-in-clipboard'),
     createSettings = require('./features/create-settings');
     enableImagePreview = require('./features/image-preview').enablePreview;
+    enableTheatreMode = require('./features/auto-theatre-mode');
 
 var chatFunctions = function () {
 
@@ -447,8 +448,9 @@ var main = function () {
 
                 if(App.__container__.lookup("controller:application").get("currentRouteName") !== "channel.index") {
                     $('#main_col').removeAttr('style');
+                } else if (App.__container__.lookup("controller:channel").get("theatreMode") === false && bttv.settings.get('autoTheatreMode') === true) {
+                    enableTheatreMode();
                 }
-
                 switch(payload.template) {
                     case 'shared/right-column':
                         waitForLoad(function(ready) {
@@ -524,6 +526,9 @@ var main = function () {
         emoticonTextInClipboard();
         if (bttv.settings.get('chatImagePreview') === true) {
             enableImagePreview();
+        }
+        if (bttv.settings.get('autoTheatreMode') === true) {
+            enableTheatreMode();
         }
 
         $(window).trigger('resize');

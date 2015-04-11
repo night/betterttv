@@ -141,9 +141,15 @@ var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message
         }
 
         var test = piece.replace(/(^[~!@#$%\^&\*\(\)]+|[~!@#$%\^&\*\(\)]+$)/g, '');
-        var emote = store.bttvEmotes[test] || store.bttvEmotes[piece];
+        var emote = null;
 
-        if(emote && bttv.settings.get("bttvEmotes") === true) {
+        if(store.bttvEmotes.hasOwnProperty(piece)) {
+            emote = store.bttvEmotes[piece];
+        } else if(store.bttvEmotes.hasOwnProperty(test)) {
+            emote = store.bttvEmotes[test];
+        }
+
+        if(emote && emote.urlTemplate && bttv.settings.get("bttvEmotes") === true) {
             piece = bttvEmoticonize(sender, piece, emote);
         } else {
             piece = escape(piece);

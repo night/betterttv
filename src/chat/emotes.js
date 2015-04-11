@@ -1,6 +1,7 @@
 var tmi = require('./tmi'),
     store = require('./store'),
-    helpers = require('./helpers');
+    helpers = require('./helpers'),
+    vars = bttv.vars;
 
 module.exports = function() {
     if(bttv.settings.get("bttvEmotes") === false) {
@@ -23,7 +24,7 @@ module.exports = function() {
             if(emote.emoticonSet && emoteSets.indexOf(emote.emoticonSet) === -1) return;
         }
 
-        emote.text = emote.regex;
+        emote.text = emote.code;
 
         if(!emote.channel) {
             emote.channel = "BetterTTV Emotes"
