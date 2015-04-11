@@ -327,7 +327,8 @@ var clearClutter = require('./features/clear-clutter'),
     giveawayCompatibility = require('./features/giveaway-compatibility'),
     handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes'),
     emoticonTextInClipboard = require('./features/emoticon-text-in-clipboard'),
-    createSettings = require('./features/create-settings'),
+    createSettings = require('./features/create-settings');
+    enableImagePreview = require('./features/image-preview').enablePreview;
     enableTheatreMode = require('./features/auto-theatre-mode');
 
 var chatFunctions = function () {
@@ -523,6 +524,9 @@ var main = function () {
         directoryFunctions();
         handleTwitchChatEmotesScript();
         emoticonTextInClipboard();
+        if (bttv.settings.get('chatImagePreview') === true) {
+            enableImagePreview();
+        }
         if (bttv.settings.get('autoTheatreMode') === true) {
             enableTheatreMode();
         }

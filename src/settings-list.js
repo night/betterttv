@@ -13,7 +13,8 @@ var betaChat = require('./features/beta-chat'),
     cssLoader = require('./features/css-loader'),
     theatreMode = require('./features/auto-theatre-mode');
 var displayElement = require('./helpers/element').display,
-    removeElement = require('./helpers/element').remove;
+    removeElement = require('./helpers/element').remove,
+    imagePreview = require('./features/image-preview');
 
 module.exports = [
     {
@@ -71,6 +72,19 @@ module.exports = [
         },
         load: function() {
             cssLoader.load("blue-buttons", "showBlueButtons");
+        }
+    },
+    {
+        name: 'Chat Image Preview',
+        description: 'Preview chat images on mouse over',
+        default: true,
+        storageKey: 'chatImagePreview',
+        toggle: function (value) {
+            if (value === true) {
+                imagePreview.enablePreview();
+            } else {
+                imagePreview.disablePreview();
+            }
         }
     },
     {
