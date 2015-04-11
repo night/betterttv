@@ -329,9 +329,9 @@ module.exports = [
 
             var keywordList = keywords.join(", ");
             if(keywordList === "") {
-                chat.helpers.serverMessage("Blacklist Keywords list is empty");
+                chat.helpers.serverMessage("Blacklist Keywords list is empty", true);
             } else {
-                chat.helpers.serverMessage("Blacklist Keywords are now set to: " + keywordList);
+                chat.helpers.serverMessage("Blacklist Keywords are now set to: " + keywordList, true);
             }
         }
     },
@@ -340,9 +340,9 @@ module.exports = [
         storageKey: 'chatLineHistory',
         toggle: function(value) {
             if(value === true) {
-                chat.helpers.serverMessage("Chat line history enabled.");
+                chat.helpers.serverMessage("Chat line history enabled.", true);
             } else {
-                chat.helpers.serverMessage("Chat line history disabled.");
+                chat.helpers.serverMessage("Chat line history disabled.", true);
             }
         }
     },
@@ -393,9 +393,9 @@ module.exports = [
 
             var keywordList = keywords.join(", ");
             if(keywordList === "") {
-                chat.helpers.serverMessage("Highlight Keywords list is empty");
+                chat.helpers.serverMessage("Highlight Keywords list is empty", true);
             } else {
-                chat.helpers.serverMessage("Highlight Keywords are now set to: " + keywordList);
+                chat.helpers.serverMessage("Highlight Keywords are now set to: " + keywordList, true);
             }
         }
     },
@@ -404,9 +404,9 @@ module.exports = [
         storageKey: 'scrollbackAmount',
         toggle: function(lines) {
             if(lines === 150) {
-                chat.helpers.serverMessage("Chat scrollback is now set to: default (150)");
+                chat.helpers.serverMessage("Chat scrollback is now set to: default (150)", true);
             } else {
-                chat.helpers.serverMessage("Chat scrollback is now set to: " + lines);
+                chat.helpers.serverMessage("Chat scrollback is now set to: " + lines, true);
             }
         }
     }

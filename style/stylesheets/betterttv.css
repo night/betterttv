@@ -864,7 +864,7 @@ input, textarea, select {
     height:12px;
     background: url(../icons/close_button_white.png);
     opacity: .6;
-  
+
 }
 
 .gritter-title {
@@ -1097,6 +1097,14 @@ body#chat #speak {
     padding-right: 10px;
 }
 
+.ember-chat .chat-messages .chat-line.admin .timestamp {
+    display: inline;
+}
+
+.ember-chat .chat-messages.hideTimestamps .chat-line.admin .timestamp {
+    display: none;
+}
+
 .ember-chat .chatters-view {
     left: 0px;
     right: 0px;
@@ -1193,7 +1201,7 @@ body#chat #speak {
     width: 100%;
 }
 
-.archives-contain .videos { 
+.archives-contain .videos {
     padding:0;
 }
 .archives-contain .list-video {

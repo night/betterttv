@@ -33,22 +33,22 @@ var commands = exports.commands = function (input) {
     } else if (command === "/suboff") {
         tmi().tmiRoom.stopSubscribersMode();
     } else if (command === "/localsub") {
-        helpers.serverMessage("Local subscribers-only mode enabled.");
+        helpers.serverMessage("Local subscribers-only mode enabled.", true);
         vars.localSubsOnly = true;
     } else if (command === "/localsuboff") {
-        helpers.serverMessage("Local subscribers-only mode disabled.");
+        helpers.serverMessage("Local subscribers-only mode disabled.", true);
         vars.localSubsOnly = false;
     } else if (command === "/viewers") {
         bttv.TwitchAPI.get('streams/' + bttv.getChannel()).done(function(stream) {
-            helpers.serverMessage("Current Viewers: " + Twitch.display.commatize(stream.stream.viewers));
+            helpers.serverMessage("Current Viewers: " + Twitch.display.commatize(stream.stream.viewers), true);
         }).fail(function() {
-            helpers.serverMessage("Could not fetch viewer count.");
+            helpers.serverMessage("Could not fetch viewer count.", true);
         });
     } else if (command === "/followers") {
         bttv.TwitchAPI.get('channels/' + bttv.getChannel() + '/follows').done(function(channel) {
-            helpers.serverMessage("Current Followers: " + Twitch.display.commatize(channel._total));
+            helpers.serverMessage("Current Followers: " + Twitch.display.commatize(channel._total), true);
         }).fail(function() {
-            helpers.serverMessage("Could not fetch follower count.");
+            helpers.serverMessage("Could not fetch follower count.", true);
         });
     } else if (command === "/linehistory") {
         if(sentence[1] === "off") {
@@ -70,15 +70,19 @@ var commands = exports.commands = function (input) {
                     (days > 0 ? days + " days " : "") +
                     (hours > 0 ? hours + " hours " : "") +
                     (minutes > 0 ? minutes + " minutes " : "") +
-                    (seconds > 0 ? seconds + " seconds " : "")
+                    (seconds > 0 ? seconds + " seconds " : ""),
+                    true
                 );
             } else {
-                helpers.serverMessage("Stream offline");
+                helpers.serverMessage("Stream offline", true);
             }
         }).fail(function () {
-            helpers.serverMessage("Could not fetch start time.");
+            helpers.serverMessage("Could not fetch start time.", true);
         });
+    } else {
+        return false;
     }
+    return true;
 };
 var countUnreadMessages = exports.countUnreadMessages = function () {
     var rooms = require('./rooms'),
@@ -109,7 +113,7 @@ var shiftQueue = exports.shiftQueue = function () {
         store.currentRoom = id;
         store.__messageQueue = [];
         rooms.getRoom(id).playQueue();
-        helpers.serverMessage('You switched to: '+tmi().get('name').replace(/</g,"&lt;").replace(/>/g,"&gt;"));
+        helpers.serverMessage('You switched to: '+tmi().get('name').replace(/</g,"&lt;").replace(/>/g,"&gt;"), true);
     } else {
         if(store.__messageQueue.length === 0) return;
         $('.ember-chat .chat-messages .tse-content .chat-lines').append(store.__messageQueue.join(""));
@@ -145,7 +149,7 @@ var clearChat = exports.clearChat = function (user) {
     var trackTimeouts = store.trackTimeouts;
 
     if(!user) {
-        helpers.serverMessage("Chat was cleared by a moderator (Prevented by BetterTTV)");
+        helpers.serverMessage("Chat was cleared by a moderator (Prevented by BetterTTV)", true);
     } else {
         if($('.chat-line[data-sender="' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '"]').length === 0) return;
         if(bttv.settings.get("hideDeletedMessages") === true) {
@@ -190,7 +194,7 @@ var clearChat = exports.clearChat = function (user) {
                     timesID: Math.floor(Math.random()*100001)
                 }
                 var displayName = helpers.lookupDisplayName(user);
-                helpers.serverMessage(displayName + ' has been timed out. <span id="times_from_' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + "_" + trackTimeouts[user].timesID + '"></span>');
+                helpers.serverMessage(displayName + ' has been timed out. <span id="times_from_' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + "_" + trackTimeouts[user].timesID + '"></span>', true);
             }
         }
     }
@@ -228,7 +232,7 @@ var privmsg = exports.privmsg = function (channel, data) {
             vars.userData.isLoggedIn ? helpers.isModerator(vars.userData.login) : false,
             {
                 message: data.message,
-                time: data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
+                time: data.date == null ? '' : data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
                 nickname: data.from || 'jtv',
                 sender: data.from,
                 badges: data.badges || (data.from==='twitchnotify'?[{
