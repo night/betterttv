@@ -429,7 +429,10 @@ var commands = exports.commands = function (input) {
         }).fail(function () {
             helpers.serverMessage("Could not fetch start time.", true);
         });
+    } else {
+        return false;
     }
+    return true;
 };
 var countUnreadMessages = exports.countUnreadMessages = function () {
     var rooms = require('./rooms'),
@@ -1499,7 +1502,8 @@ var takeover = module.exports = function() {
     // Implement our own text senders (+ commands & legacy tab completion)
     $chatInput.on('keydown', function(e) {
         if(e.which === keyCodes.Enter) {
-            var val = $chatInput.val().trim();
+            var val = $chatInput.val().trim(),
+                bttvCommand = false;
             if(e.shiftKey || !val.length) {
                 return e.preventDefault();
             }
@@ -1511,7 +1515,7 @@ var takeover = module.exports = function() {
             }
 
             if(val.charAt(0) === '/') {
-                handlers.commands(val);
+                bttvCommand = handlers.commands(val);
             }
 
             // Easter Egg Kappa
@@ -1520,7 +1524,9 @@ var takeover = module.exports = function() {
                 helpers.serverMessage('<img src="https://cdn.betterttv.net/special/twitchtrollsgoogle.gif"/>');
             }
 
-            helpers.sendMessage(val);
+            if(!bttvCommand) {
+                helpers.sendMessage(val);
+            }
 
             if(bttv.settings.get('chatLineHistory') === true) {
                 if(store.chatHistory.indexOf(val) !== -1) {
@@ -1547,14 +1553,17 @@ var takeover = module.exports = function() {
         helpers.chatLineHistory($chatInput, e);
     });
     $chatSend.on('click', function() {
-        var val = $chatInput.val().trim();
+        var val = $chatInput.val().trim(),
+            bttvCommand = false;
         if(!val.length) return;
 
         if(val.charAt(0) === '/') {
-            handlers.commands(val);
+            bttvCommand = handlers.commands(val);
         }
 
-        helpers.sendMessage(val);
+        if(!bttvCommand) {
+            helpers.sendMessage(val);
+        }
 
         if(bttv.settings.get('chatLineHistory') === true) {
             if(store.chatHistory.indexOf(val) !== -1) {

@@ -79,7 +79,10 @@ var commands = exports.commands = function (input) {
         }).fail(function () {
             helpers.serverMessage("Could not fetch start time.", true);
         });
+    } else {
+        return false;
     }
+    return true;
 };
 var countUnreadMessages = exports.countUnreadMessages = function () {
     var rooms = require('./rooms'),
