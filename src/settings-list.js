@@ -291,7 +291,7 @@ module.exports = [
         }
     },
     {
-        name: 'Tab completion tooltip',
+        name: 'Tab Completion Tooltip',
         description: 'Shows a tooltip with suggested names when using tab completion',
         default: true,
         storageKey: 'tabCompletionTooltip'

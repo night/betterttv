@@ -3482,11 +3482,8 @@ module.exports = function() {
 
         // Iterator to replace an element matching an emoticon image with its text.
         var replaceEmoticon = function(i, el) {
-            var alphaNum = /^[a-z0-9]+$/i;
-            var regex = $(el).data('regex');
-            if (alphaNum.test(regex)) {
-                $(el).after(regex).remove();
-            }
+            var regex = decodeURIComponent($(el).data('regex'));
+            $(el).after(regex).remove();
         };
 
         var selection = $(window.getSelection().getRangeAt(0).cloneContents());
@@ -3498,7 +3495,9 @@ module.exports = function() {
             // create the emoticon if possible.
             selection.children().filter(emoticonSelector).each(replaceEmoticon);
             selection.children().find(emoticonSelector).each(replaceEmoticon);
-            e.clipboardData.setData('text/plain', selection.text());
+            // Get replaced selection text, and cleanup extra spacing
+            selection = selection.text().replace(/\s+/g, ' ').trim();
+            e.clipboardData.setData('text/plain', selection);
             // We want our data, not data from any selection, to be written to the clipboard
             e.preventDefault();
         }
@@ -4688,7 +4687,7 @@ module.exports = [
         }
     },
     {
-        name: 'Tab completion tooltip',
+        name: 'Tab Completion Tooltip',
         description: 'Shows a tooltip with suggested names when using tab completion',
         default: true,
         storageKey: 'tabCompletionTooltip'
