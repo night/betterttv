@@ -578,7 +578,7 @@ var privmsg = exports.privmsg = function (channel, data) {
     if(data.style === 'admin' || data.style === 'notification') {
         data.style = 'admin';
         var message = templates.privmsg(
-            messageHighlighted,
+            false,
             data.style === 'action' ? true : false,
             data.style === 'admin' ? true : false,
             vars.userData.isLoggedIn ? helpers.isModerator(vars.userData.login) : false,
@@ -3780,7 +3780,7 @@ exports.blacklistFilter = function (data) {
     }
 
     for (var i = 0; i < blacklistKeywords.length; i++) {
-        keyword = escapeRegExp(blacklistKeywords[i]).replace(/\*/g, "[^ ]*");
+        var keyword = escapeRegExp(blacklistKeywords[i]).replace(/\*/g, "[^ ]*");
         var blacklistRegex = new RegExp(keyword, 'i');
         if (blacklistRegex.test(data.message) && vars.userData.login !== data.from) {
             return true;
@@ -3788,7 +3788,7 @@ exports.blacklistFilter = function (data) {
     }
 
     for (var i = 0; i < blacklistUsers.length; i++) {
-        user = escapeRegExp(blacklistUsers[i]).replace(/\*/g, "[^ ]*");
+        var user = escapeRegExp(blacklistUsers[i]).replace(/\*/g, "[^ ]*");
         var nickRegex = new RegExp('^' + user + '$', 'i');
         if (nickRegex.test(data.from)) {
             return true;
@@ -3800,11 +3800,6 @@ exports.blacklistFilter = function (data) {
 
 exports.highlighting = function (data) {
     var highlightFeedback = require('../features/highlight-feedback');
-
-    if (!vars.userData.isLoggedIn || vars.userData.login === data.from) {
-        // never highlight our own messages
-        return false;
-    }
 
     var highlightKeywords = [];
     var highlightUsers = [];
@@ -3833,7 +3828,7 @@ exports.highlighting = function (data) {
     for (var i = 0; i < highlightKeywords.length; i++) {
         var hlKeyword = escapeRegExp(highlightKeywords[i]).replace(/\*/g, "[^ ]*");
         var wordRegex = new RegExp('(\\s|^|@)' + hlKeyword + '([!.,:\';?/]|\\s|$)', 'i');
-        if (wordRegex.test(data.message)) {
+        if (vars.userData.isLoggedIn && vars.userData.login !== data.from && wordRegex.test(data.message)) {
             if(bttv.settings.get("desktopNotifications") === true && bttv.chat.store.activeView === false) {
                 bttv.notify("You were mentioned in "+bttv.chat.helpers.lookupDisplayName(bttv.getChannel())+"'s channel.");
                 highlightFeedback();

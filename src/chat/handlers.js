@@ -226,7 +226,7 @@ var privmsg = exports.privmsg = function (channel, data) {
     if(data.style === 'admin' || data.style === 'notification') {
         data.style = 'admin';
         var message = templates.privmsg(
-            messageHighlighted,
+            false,
             data.style === 'action' ? true : false,
             data.style === 'admin' ? true : false,
             vars.userData.isLoggedIn ? helpers.isModerator(vars.userData.login) : false,
