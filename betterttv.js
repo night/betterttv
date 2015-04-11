@@ -3671,13 +3671,13 @@ var debug = require('../helpers/debug');
 
 var enablePreview = exports.enablePreview = function() {
     /* CONFIG */
-    var xOffset = -250,
+    var xOffset = -255,
         yOffset = 0;
 
     /* END CONFIG */
     $(document).on({
         mouseenter: function (e) {
-            $("body").append("<p id='chat_preview'><img width=\"250px\" src='"+ this.href +"' alt='Image preview' /></p>");
+            $("body").append('<iframe id="chat_preview" marginwidth="0" marginheight="0" hspace="0" vspace="0" frameborder="0" width="250px" scrolling="no" src="//api.betterttv.net/2/image_embed/'+ encodeURIComponent(this.href) +'"></iframe>');
             $("#chat_preview")
                 .css("top",(e.pageY - yOffset) + "px")
                 .css("left", (e.pageX - xOffset) + "px")
