@@ -1,5 +1,5 @@
-var debug = require('../debug'),
-	removeElement = require('../element').remove;
+var debug = require('../helpers/debug'),
+	removeElement = require('../helpers/element').remove;
 
 module.exports = function () {
     debug.log("Clearing Clutter");

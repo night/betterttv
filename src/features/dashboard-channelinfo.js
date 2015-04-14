@@ -1,4 +1,4 @@
-var debug = require('../debug'),
+var debug = require('../helpers/debug'),
     vars = require('../vars');
 
 module.exports = function dashboardChannelInfo() {

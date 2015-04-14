@@ -10,9 +10,11 @@ var betaChat = require('./features/beta-chat'),
     darkenPage = require('./features/darken-page'),
     handleBackground = require('./features/handle-background'),
     flipDashboard = require('./features/flip-dashboard'),
-    cssLoader = require('./features/css-loader');
-var displayElement = require('./element').display,
-    removeElement = require('./element').remove;
+    cssLoader = require('./features/css-loader'),
+    theatreMode = require('./features/auto-theatre-mode');
+var displayElement = require('./helpers/element').display,
+    removeElement = require('./helpers/element').remove,
+    imagePreview = require('./features/image-preview');
 
 module.exports = [
     {
@@ -27,6 +29,12 @@ module.exports = [
         description: 'Removes the background from chat tags',
         default: false,
         storageKey: 'alphaTags'
+    },
+    {
+        name: 'Automatic Theatre Mode',
+        description: 'Automatically enables theatre mode',
+        default: false,
+        storageKey: 'autoTheatreMode'
     },
     {
         name: 'BetterTTV Chat',
@@ -59,11 +67,24 @@ module.exports = [
             if(value === true) {
                 cssLoader.load("blue-buttons", "showBlueButtons");
             } else {
-                cssLoader.unload("showBlueButtons");   
+                cssLoader.unload("showBlueButtons");
             }
         },
         load: function() {
             cssLoader.load("blue-buttons", "showBlueButtons");
+        }
+    },
+    {
+        name: 'Chat Image Preview',
+        description: 'Preview chat images on mouse over',
+        default: true,
+        storageKey: 'chatImagePreview',
+        toggle: function (value) {
+            if (value === true) {
+                imagePreview.enablePreview();
+            } else {
+                imagePreview.disablePreview();
+            }
         }
     },
     {
@@ -152,7 +173,7 @@ module.exports = [
             }
         }
     },
-    {
+    /*{
         name: 'Double-Click Translation',
         description: 'Double-clicking on chat lines translates them with Google Translate',
         default: true,
@@ -168,7 +189,7 @@ module.exports = [
                 $('body').unbind("dblclick");
             }
         }
-    },
+    },*/
     {
         name: 'Embedded Polling',
         description: 'See polls posted by the broadcaster embedded right into chat',
@@ -201,7 +222,7 @@ module.exports = [
             if(value === true) {
                 cssLoader.load("hide-group-chat", "groupChatRemoval");
             } else {
-                cssLoader.unload("groupChatRemoval");   
+                cssLoader.unload("groupChatRemoval");
             }
         },
         load: function() {
@@ -270,7 +291,7 @@ module.exports = [
         }
     },
     {
-        name: 'Tab completion tooltip',
+        name: 'Tab Completion Tooltip',
         description: 'Shows a tooltip with suggested names when using tab completion',
         default: true,
         storageKey: 'tabCompletionTooltip'
@@ -297,7 +318,7 @@ module.exports = [
             }
         }
     },
-    {   
+    {
         default: '',
         storageKey: 'blacklistKeywords',
         toggle: function(keywords) {
@@ -313,7 +334,7 @@ module.exports = [
             }
 
             keywords === "" ? keywords = phraseKeywords : keywords = keywords.split(" ").concat(phraseKeywords);
-            
+
             for(var i=0; i<keywords.length; i++) {
                 if(/^\([a-z0-9_\-\*]+\)$/i.test(keywords[i])) {
                     keywords[i] = keywords[i].replace(/(\(|\))/g, '');
@@ -322,9 +343,9 @@ module.exports = [
 
             var keywordList = keywords.join(", ");
             if(keywordList === "") {
-                chat.helpers.serverMessage("Blacklist Keywords list is empty");
+                chat.helpers.serverMessage("Blacklist Keywords list is empty", true);
             } else {
-                chat.helpers.serverMessage("Blacklist Keywords are now set to: " + keywordList);
+                chat.helpers.serverMessage("Blacklist Keywords are now set to: " + keywordList, true);
             }
         }
     },
@@ -333,9 +354,9 @@ module.exports = [
         storageKey: 'chatLineHistory',
         toggle: function(value) {
             if(value === true) {
-                chat.helpers.serverMessage("Chat line history enabled.");
+                chat.helpers.serverMessage("Chat line history enabled.", true);
             } else {
-                chat.helpers.serverMessage("Chat line history disabled.");
+                chat.helpers.serverMessage("Chat line history disabled.", true);
             }
         }
     },
@@ -383,12 +404,12 @@ module.exports = [
                     keywords[i] = keywords[i].replace(/(\(|\))/g, '');
                 }
             }
-            
+
             var keywordList = keywords.join(", ");
             if(keywordList === "") {
-                chat.helpers.serverMessage("Highlight Keywords list is empty");
+                chat.helpers.serverMessage("Highlight Keywords list is empty", true);
             } else {
-                chat.helpers.serverMessage("Highlight Keywords are now set to: " + keywordList);
+                chat.helpers.serverMessage("Highlight Keywords are now set to: " + keywordList, true);
             }
         }
     },
@@ -397,9 +418,9 @@ module.exports = [
         storageKey: 'scrollbackAmount',
         toggle: function(lines) {
             if(lines === 150) {
-                chat.helpers.serverMessage("Chat scrollback is now set to: default (150)");
+                chat.helpers.serverMessage("Chat scrollback is now set to: default (150)", true);
             } else {
-                chat.helpers.serverMessage("Chat scrollback is now set to: " + lines);
+                chat.helpers.serverMessage("Chat scrollback is now set to: " + lines, true);
             }
         }
     }
