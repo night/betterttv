@@ -1186,7 +1186,7 @@ var massUnban = exports.massUnban = function() {
         }
     });
 };
-var translate = exports.translate = function(element, sender, text) {
+/*var translate = exports.translate = function(element, sender, text) {
     var language = (window.cookie && window.cookie.get('language')) ? window.cookie.get('language') : 'en',
         query = 'http://translate.google.com/translate_a/t?client=bttv&sl=auto&tl='+language+'&ie=UTF-8&oe=UTF-8&q='+text,
         translate = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20json%20where%20url%3D\""+encodeURIComponent(query)+"\"&format=json&diagnostics=false&callback=?";
@@ -1217,7 +1217,7 @@ var translate = exports.translate = function(element, sender, text) {
             $(element).text("Translation Error: Server Error");
         }
     });
-}
+}*/
 
 },{"../helpers/colors":42,"../helpers/element":44,"../helpers/regex":45,"../keycodes":46,"../vars":56,"./handlers":4,"./store":8,"./templates":10,"./tmi":11}],6:[function(require,module,exports){
 
@@ -1483,14 +1483,14 @@ var takeover = module.exports = function() {
     }
 
     // Make chat translatable
-    if (!vars.loadedDoubleClickTranslation && bttv.settings.get("dblclickTranslation") !== false) {
+    /*if (!vars.loadedDoubleClickTranslation && bttv.settings.get("dblclickTranslation") !== false) {
         vars.loadedDoubleClickTranslation = true;
         $('body').on('dblclick', '.chat-line', function() {
             helpers.translate($(this).find('.message'), $(this).data("sender"), $(this).find('.message').data("raw"));
             $(this).find('.message').text("Translating..");
             $('div.tipsy').remove();
         });
-    }
+    }*/
 
     var $chatInterface = $('.ember-chat .chat-interface');
     var $chatInput = $chatInterface.find('textarea');
@@ -4569,7 +4569,7 @@ module.exports = [
             }
         }
     },
-    {
+    /*{
         name: 'Double-Click Translation',
         description: 'Double-clicking on chat lines translates them with Google Translate',
         default: true,
@@ -4585,7 +4585,7 @@ module.exports = [
                 $('body').unbind("dblclick");
             }
         }
-    },
+    },*/
     {
         name: 'Embedded Polling',
         description: 'See polls posted by the broadcaster embedded right into chat',

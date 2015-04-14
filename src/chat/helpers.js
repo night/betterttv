@@ -469,7 +469,7 @@ var massUnban = exports.massUnban = function() {
         }
     });
 };
-var translate = exports.translate = function(element, sender, text) {
+/*var translate = exports.translate = function(element, sender, text) {
     var language = (window.cookie && window.cookie.get('language')) ? window.cookie.get('language') : 'en',
         query = 'http://translate.google.com/translate_a/t?client=bttv&sl=auto&tl='+language+'&ie=UTF-8&oe=UTF-8&q='+text,
         translate = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20json%20where%20url%3D\""+encodeURIComponent(query)+"\"&format=json&diagnostics=false&callback=?";
@@ -500,4 +500,4 @@ var translate = exports.translate = function(element, sender, text) {
             $(element).text("Translation Error: Server Error");
         }
     });
-}
+}*/
