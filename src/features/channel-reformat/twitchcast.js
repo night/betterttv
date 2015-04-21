@@ -1,4 +1,6 @@
 module.exports = function() {
+    if($('.archive_info').length) return;
+    
     var template = '<iframe id="twitchcast" src="https://nightdev.com/twitchcast/?ontwitch={{hostname}}&channel={{channel}}" width="100%" height="100%" style="position: absolute;top: 0px;left: 0px;border: none;"></iframe>';
 
     var openTwitchCast = function() {

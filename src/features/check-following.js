@@ -1,4 +1,4 @@
-var debug = require('../debug'),
+var debug = require('../helpers/debug'),
     vars = require('../vars');
 
 var checkFollowing = module.exports = function () {
@@ -11,20 +11,9 @@ var checkFollowing = module.exports = function () {
             followingNames = followingNames || [],
             offset = offset || 0;
 
-        Twitch.api.get("streams/followed?limit=100&offset="+offset).done(function (d) {
+        bttv.TwitchAPI.get("streams/followed?limit=100&offset="+offset).done(function (d) {
             if (d.streams && d.streams.length > 0) {
                 d.streams.forEach(function(stream) {
-                    // Temporary fix for bad streams being included in the list
-                    if(stream.viewers === null) {
-                        var error = {
-                            date: new Date(),
-                            type: 'viewers null',
-                            stream: stream
-                        }
-                        $.get('//nightdev.com/betterttv/errors/?obj='+encodeURIComponent(JSON.stringify(error)));
-                        return;
-                    }
-
                     if(followingNames.indexOf(stream.channel.name) === -1) {
                         followingNames.push(stream.channel.name);
                         followingList.push(stream);

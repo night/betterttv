@@ -1,7 +1,7 @@
-var debug = require('../debug');
+var debug = require('../helpers/debug');
 
 module.exports = function () {
-    if (($("#twitch_chat").length || $(".ember-chat").length) && bttv.settings.get("clickTwitchEmotes") === true) {
+    if(bttv.settings.get("clickTwitchEmotes") === true) {
         debug.log("Injecting Twitch Chat Emotes Script");
 
         var emotesJSInject = document.createElement("script");
@@ -9,5 +9,20 @@ module.exports = function () {
         emotesJSInject.setAttribute("type", "text/javascript");
         emotesJSInject.setAttribute("id", "clickTwitchEmotes");
         $("body").append(emotesJSInject);
+
+        var counter = 0;
+        var getterInterval = setInterval(function() {
+            counter++;
+
+            if(counter > 29) {
+                clearInterval(getterInterval);
+                return;
+            }
+
+            if(window.emoteMenu) {
+                window.emoteMenu.registerEmoteGetter('BetterTTV', bttv.chat.emotes);
+                clearInterval(getterInterval);
+            }
+        }, 1000);
     }
 }

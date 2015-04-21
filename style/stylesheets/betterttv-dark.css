@@ -1,36 +1,49 @@
-body, .real_title, #right_col .content #chat_line_list, .ember-chat, .ember-chat .message, .ember-chat .from, .ember-chat, .ember-chat .colon, #right_col #chat_line_list, #main_col .content #broadcast_meta .info .channel, #channel .player-column #broadcast-meta .info .title, #channel_panels_contain #channel_panels .panel h3, #channel_panels_contain #channel_panels .panel h1, #channel_panels_contain #channel_panels .panel h2, h3, h2, .tse-content a {
-	color: #D3D3D3;
+body, code, samp, kbd, .real_title, #right_col .content #chat_line_list, .ember-chat, .ember-chat .message, .ember-chat .from, .ember-chat, .ember-chat .colon, #right_col #chat_line_list, #main_col .content #broadcast_meta .info .channel, #channel .player-column #broadcast-meta .info .title, #channel_panels_contain #channel_panels .panel h3, #channel_panels_contain #channel_panels .panel h1, #channel_panels_contain #channel_panels .panel h2, h3, h2, .tse-content a {
+    color: #D3D3D3;
+}
+
+#mantle_skin .login_form {
+    color: #000;
+}
+
+.ember-application .items-grid .meta .title {
+    color: #D3D3D3;
 }
 
 #right_col {
-	z-index: inherit !important;
+    z-index: inherit !important;
 }
 
 body {
-	background-color: #000 !important;
+    background-color: #000 !important;
 }
 
-.channel-stats #views-count.stat svg path, .channel-stats #followers-count.stat svg path, #channel_stats #views_count.stat svg path, #channel_stats #followers_count.stat svg path {
-	fill: rgba(255,255,255,0.35) !important;
+.channel-stats #views-count.stat svg path,
+.channel-stats #followers-count.stat svg path,
+#channel_stats #views_count.stat svg path,
+#channel_stats #followers_count.stat svg path,
+.channel-stats .stat svg.svg-glyph_views path,
+.channel-stats .stat svg.svg-glyph_followers path {
+    fill: rgba(255,255,255,0.35) !important;
 }
 
 #chat_column, #chat_redisplay_holder {
-	padding-bottom: 10px !important;
-	padding-top: 10px !important;
-	background: rgb(30, 30, 30) !important;
+    padding-bottom: 10px !important;
+    padding-top: 10px !important;
+    background: rgb(30, 30, 30) !important;
 }
 
 .ember-chat .chat-messages {
-	background: rgb(30, 30, 30) !important;
+    background: rgb(30, 30, 30) !important;
 }
 
 .ember-chat .chat-settings {
-	color: #282828;
+    color: #282828;
 }
 
 #chat_lines_list, #chat_lines, .ember-chat {
-	background-color: rgb(30, 30, 30) !important;
-	color: #D3D3D3;
+    background-color: rgb(30, 30, 30) !important;
+    color: #D3D3D3;
 }
 
 /* dashboard */
@@ -38,230 +51,310 @@ body {
 #dash_main #dashboard_title,
 #dash_main #stream-config-status,
 #dash_main #controls_column .section_header {
-	color: #D3D3D3;
+    color: #D3D3D3;
 }
 
 #dash_main .dash-broadcast-contain,
 #dash_main .dash-hostmode-contain {
-	background-color: #282828;
-	border-color: #000;
+    background-color: #282828;
+    border-color: #000;
 }
 
 #dash_main .button.drop:after,
 #dash_main .dash-hostmode-status a:before,
 #dash_main .dash-hostmode-status a:after {
-	border-color: rgba(255,255,255,0.35);
-	border-left-color: transparent;
-	border-right-color: transparent;
-	border-bottom-color: transparent;
+    border-color: rgba(255,255,255,0.35);
+    border-left-color: transparent;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
 }
 
 #dash_main #hide_preview {
-	background: transparent !important;
-	border: none !important;
-	box-shadow: none !important;
-	text-decoration: underline;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    text-decoration: underline;
 }
 
 #dash_main #vod_form,
 #dash_main #delay_controls,
 #dash_main #stream-config-status .status-header {
-	background-color: #282828;
+    background-color: #282828;
+    padding: 10px;
+    border-top: none;
+    margin-top: 0px;
+}
+
+#dash_main #delay_controls .section_header {
+    border-top: 1px solid rgba(0,0,0,0.2);
+}
+
+#dash_main #delay_controls {
+    padding-bottom: 20px;
+}
+
+#dash_main #broadcaster_language_menu {
+    background: #282828;
+}
+
+#dash_main #broadcaster_language_menu .dropmenu_action {
+    color: #d3d3d3 !important;
+}
+
+#dash_main #stats {
+    background-color: #282828;
+    margin: 20px 0px;
+    padding: 10px;
+}
+
+#dash_main #commercial_buttons {
+    margin: 10px;
 }
 
 #dash_main .ui-slider-horizontal {
-	background: rgb(20, 20, 20);
-	box-shadow: none;
+    background: rgb(20, 20, 20);
+    box-shadow: none;
 }
 
 #dash_main #stream-config-status .error-message a,
 #dash_main .dash-items-contain a,
 #dash_main #toggle_play_switch {
-	color: #D3D3D3;
+    color: #D3D3D3;
 }
 
 #dash_main #vod_status,
 #dash_main #gameselector_input,
-.ember-application #gameselector_input {
-	background-color: rgb(20, 20, 20) !important;
-	color: #D3D3D3;
-	border: solid 1px #333;
-	box-shadow: none;
+#dash_main .ember-application #gameselector_input {
+    background-color: rgb(20, 20, 20) !important;
+    color: #D3D3D3;
+    border: solid 1px #333;
+    box-shadow: none;
+}
+
+#dash_main #setup_link {
+    background-color: #282828;
+    color: #919191;
 }
 
 #dash_main #setup_link a {
-	color: #D3D3D3;
+    color: #D3D3D3;
 }
 
 #dash_main .new {
-	color: #000 !important;
+    color: #000 !important;
 }
 
 #dash_main .new a {
-	color: #000 !important;
-	text-decoration: underline;
+    color: #000 !important;
+    text-decoration: underline;
 }
 
 #dash_main ul.tabs, ul.tabs_fake {
-	border-bottom: 1px solid rgba(255,255,255,0.25);
+    border-bottom: 1px solid rgba(255,255,255,0.25);
 }
 
 #dash_main ul.tabs_fake li.selected a {
-	color: #D3D3D3;
-	border-bottom: 3px solid rgba(255,255,255,0.25);
+    color: #D3D3D3;
+    border-bottom: 3px solid rgba(255,255,255,0.25);
 }
 
 #dash_main ul.tabs_fake li a {
-	color: #999;
+    color: #999;
 }
 
 #dash_main .dash-chat-column {
-	border-top: none;
+    border: none;
 }
 
 
 #dash_main #stats .stat#views_count svg path,
 #dash_main #stats .stat#followers_count svg path {
-	fill: #cacaca;
+    fill: #cacaca;
 }
 
 #dash_main #stats .stat#chatters_count {
-	background: url(../icons/chatters_light.png) no-repeat left center;
+    background: url(../icons/chatters_light.png) no-repeat left center;
 }
 
 #play_switch.dropmenu {
-	color: #3b3b3b;
-	border: 1px solid rgba(0,0,0,0.2);
-	background: #3b3b3b;
+    color: #3b3b3b;
+    border: 1px solid rgba(0,0,0,0.2);
+    background: #3b3b3b;
 }
 
 #play_switch.dropmenu .dropmenu_action {
-	display: block;
-	padding: 5px 20px;
-	background-position: 20px center;
-	cursor: pointer;
-	color: #d3d3d3;
+    display: block;
+    padding: 5px 20px;
+    background-position: 20px center;
+    cursor: pointer;
+    color: #d3d3d3;
 }
 
 #commercial_options.dropmenu {
-	color: #3b3b3b;
-	border: 1px solid rgba(0,0,0,0.2);
-	background: #3b3b3b;
+    color: #3b3b3b;
+    border: 1px solid rgba(0,0,0,0.2);
+    background: #3b3b3b;
 }
 
 #commercial_options.dropmenu .dropmenu_action {
-	display: block;
-	padding: 5px 20px;
-	background-position: 20px center;
-	cursor: pointer;
-	color: #d3d3d3;
+    display: block;
+    padding: 5px 20px;
+    background-position: 20px center;
+    cursor: pointer;
+    color: #d3d3d3;
 }
 
 #gameselector_results.dropmenu {
-	color: #3b3b3b;
-	border: 1px solid rgba(0,0,0,0.2);
-	background: #3b3b3b;
+    color: #3b3b3b;
+    border: 1px solid rgba(0,0,0,0.2);
+    background: #3b3b3b;
 }
 
 #gameselector_results.dropmenu .dropmenu_action {
-	display: block;
-	padding: 5px 20px;
-	background-position: 20px center;
-	cursor: pointer;
-	color: #d3d3d3;
+    display: block;
+    padding: 5px 20px;
+    background-position: 20px center;
+    cursor: pointer;
+    color: #d3d3d3;
 }
 
 #commercial_options.dropmenu .dropmenu_action {
-	color: #d3d3d3;
+    color: #d3d3d3;
 }
 
 #commercial_options.dropmenu {
-	background: #3d3d3d;
+    background: #3d3d3d;
+}
+
+.new-dashboard .subscription-dash .affiliate-options .teespring-items .teespring-item {
+	background: #282828;
+	border: 1px solid #3b3b3b;
+}
+
+#channel .teespring-panel {
+    border: 1px solid #4e4e4e;
+    background-color: #1e1e1e;
+    margin-right: -2px;
+    margin-bottom: 5px;
+}
+
+#channel_panels .teespring-panel {
+    border: 1px solid #4e4e4e;
+    background-color: #1e1e1e;
+    margin-bottom: 5px;
+}
+
+.teespring-panel .teespring-panel-progress {
+    width: 97%;
+    background: #4e4e4e;
+    height: 12px;
+    margin-bottom: 6px;
+}
+.teespring-panel .progress-bar {
+    max-width: 320px;
+}
+
+/* dashboard bookmarks darken */
+
+.new-dashboard #bookmark-manager .item .content .meta {
+    background: #282828;
+}
+.new-dashboard #bookmark-manager .item .content .meta .actions {
+    border-top: 1px solid rgba(255,255,255,0.25);
+}
+
+.new-dashboard #bookmark-manager .item .content .cap {
+    background: #343434;
 }
 
 #ui-id-1.ui-autocomplete.ui-front.ui-menu.ui-widget.ui-widget-content.ui-corner-all {
-	color: #3b3b3b;
-	border: 1px solid rgba(0,0,0,0.2);
-	background: #3b3b3b;
+    color: #3b3b3b;
+    border: 1px solid rgba(0,0,0,0.2);
+    background: #3b3b3b;
 }
 
 #ui-id-1.ui-autocomplete.ui-front.ui-menu.ui-widget.ui-widget-content.ui-corner-all .game.ui-menu-item a {
-	display: block;
-	background-position: 20px center;
-	color: #d3d3d3 !important;
+    display: block;
+    background-position: 20px center;
+    color: #d3d3d3 !important;
 }
 
 #chat_text_input, #chat_text_login, .ember-chat .chat-interface textarea {
-	background-color: rgb(20, 20, 20) !important;
-	color: #D3D3D3;
-	border: solid 1px #333 !important;
-	/*box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset;*/
-	box-shadow: none;
+    background-color: rgb(20, 20, 20) !important;
+    color: #D3D3D3;
+    border: solid 1px #333 !important;
+    /*box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset;*/
+    box-shadow: none;
 }
 
 #right_col, #right_col .content .top #right_nav, #right_col .content .top, #right_col .content .bottom #controls,
 .rightcol-content, #right_col .top #right_nav, #right_col .top, #right_col .bottom #controls, .ember-chat .chat-interface {
-	background-color: #282828 !important;
-	z-index: inherit;
+    background-color: #282828 !important;
+    z-index: inherit;
 }
 
 #right_col .content .bottom #controls, #right_col .bottom #controls, .ember-chat .chat-interface {
-	border-top: 1px solid rgba(0, 0, 0, 0.65)
-}
-
-.ember-chat .chat-interface {
-	height: 134px !important;
+    border-top: 1px solid rgba(0, 0, 0, 0.65);
 }
 
 .channel-main, .title_over, #channel .player-column #broadcast-meta .info .title .over {
-	background: #000;
+    background: #000;
 }
 
 #channel .player-column #broadcast-meta .info .title .over {
-	color: #fff;
+    color: #fff;
 }
 
 #main_col .content #broadcast_meta .image, #main_col #broadcast-meta .image {
-	background-color: #222;
+    background-color: #222;
 }
 
 /* centered the border >:( */
 #main_col .content #broadcast_meta .profile-photo, #main_col #broadcast-meta .profile-photo {
-	background-color: #222;
-	border: 4px solid #222;
-	margin-left: -4px;
-	margin-top: -4px;
+    background-color: #222;
+    border: 4px solid #222;
+    margin-left: -4px;
+    margin-top: -4px;
 }
 
 #main_col .content #broadcast_meta, #main_col #broadcast-meta, #main_col .archive_info {
-	background-color: rgba(20,20,20,0.7);
+    background-color: rgba(20,20,20,0.7);
 }
 
 #main_col .content .archive_info, #main_col .archive_date {
-	box-shadow: none;
-	-moz-box-shadow: none;
-	-webkit-box-shadow: none;
-	padding: 10px;
+    box-shadow: none;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    padding: 10px;
 }
 
 #main_col .content .archive_info p, #main_col .content .archive_info time {
-	color: #D3D3D3 !important;
+    color: #D3D3D3 !important;
 }
 
 .playing a, #team_membership a, .more_videos a, #chat_line_list a, .ember-chat .chat-line a, #right_col .content #archives .video a .title, #right_col .list-video a, #broadcast_meta .js-title a, .broadcast-meta .js-title a, .channel_name, #channel .player-column #broadcast-meta .info a {
-	color: #999;
+    color: #999;
 }
 
 #channel_panels_contain #channel_panels .panel {
-	color: #999;
+    color: #999;
+}
+
+/* Twitch overrides the link color in their theater mode, so this overrides theirs */
+.app-main.theatre .chat-container .chat-line a, .app-main.theatre .ember-chat-container.chat-container .chat-line a {
+    color: #999;
+}
+
+.app-main.theatre .chat-container .chatters-view a, .app-main.theatre .ember-chat-container.chat-container .chatters-view a {
+    color: #fff;
 }
 
 #left_col {
-	background-color: #222;
+    background-color: #222;
 }
 
 .ember-view .app-main {
-	background-color: rgb(20,20,20);
+    background-color: rgb(20,20,20);
 }
 
 #left_close, #right_close {
@@ -269,134 +362,146 @@ body {
     -moz-opacity: .50;
     -khtml-opacity: .50;
     opacity: .5;
-	border: 1px solid;
-	border-color: rgba(0, 0, 0, 0.4) rgba(0, 0, 0, 0.5) rgba(0, 0, 0, 0.55);
-	background-image: url(../icons/arrow_collapse.png) !important;
-	box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 0px 1px;
-	background-color: rgb(50, 50, 50);
-	box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset;
+    border: 1px solid;
+    border-color: rgba(0, 0, 0, 0.4) rgba(0, 0, 0, 0.5) rgba(0, 0, 0, 0.55);
+    background-image: url(../icons/arrow_collapse.png) !important;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 0px 1px;
+    background-color: rgb(50, 50, 50);
+    box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset;
 }
 
 #left_close:before, #right_close:before {
-	content: "";
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	width: 0;
-	height: 0;
-	margin-top: -5px;
-	margin-left: -8px;
-	border: 5px solid #fff;
-	border-left-color: transparent;
-	border-top-color: transparent;
-	border-bottom-color: transparent;
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    margin-top: -5px;
+    margin-left: -8px;
+    border: 5px solid #fff;
+    border-left-color: transparent;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
 }
 
 #right_close:before {
-	margin-left: -2px;
-	border: 5px solid #fff;
-	border-right-color: transparent;
-	border-top-color: transparent;
-	border-bottom-color: transparent;
+    margin-left: -2px;
+    border: 5px solid #fff;
+    border-right-color: transparent;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
 }
 
 #right_close.closed:before {
-	margin-left: -8px;
-	border: 5px solid #fff;
-	border-left-color: transparent;
-	border-top-color: transparent;
-	border-bottom-color: transparent;
+    margin-left: -8px;
+    border: 5px solid #fff;
+    border-left-color: transparent;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
 }
 
 #left_close:before {
-	margin-left: -8px;
-	border: 5px solid #fff;
-	border-left-color: transparent;
-	border-top-color: transparent;
-	border-bottom-color: transparent;
+    margin-left: -8px;
+    border: 5px solid #fff;
+    border-left-color: transparent;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
 }
 
 #left_col.closed #left_close:before {
-	margin-left: -2px;
-	border: 5px solid #fff;
-	border-right-color: transparent;
-	border-top-color: transparent;
-	border-bottom-color: transparent;
+    margin-left: -2px;
+    border: 5px solid #fff;
+    border-right-color: transparent;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
 }
 
 .tse-scrollbar .drag-handle {
-	background-color: #fff !important;
+    background-color: #fff !important;
 }
 
 .segmented_tabs li a.selected, .segmented_tabs li a:active, .segmented_tabs li:last-child a {
-	background-color: rgba(255, 255, 255, 0.7);
-	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.65),inset 0 1px rgba(0, 0, 0, 0.05);
+    background-color: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.65),inset 0 1px rgba(0, 0, 0, 0.05);
 }
 
 .noise {
-	background-image: none;
-	background-color: #000;
+    background-image: none;
+    background-color: #000;
 }
 
 #main_col, #dash_main {
-	background: rgb(20, 20, 20) !important;
+    background: rgb(20, 20, 20) !important;
 }
 
 #container {
-	background: none !important;
-	border: none;
+    background: none !important;
+    border: none;
 }
 
 #right_col .content {
-	border-left: 1px solid #000000;
+    border-left: 1px solid #000000;
 }
 
-#channel .player-column #broadcast-meta .info .edit-link {
-	background-image: url(//www-cdn.jtvnw.net/images/xarth/g/g18_pencil-FFFFFF80.png);
+#channel .player-column #broadcast-meta .info .edit-link svg.svg-edit path {
+    fill: #888;
 }
 
-#channel .player-column #broadcast-meta .info .edit-link a {
-	color: #d2d2d2;
+#channel .player-column #broadcast-meta .info .edit-link span {
+    color: #d2d2d2;
 }
 
 #chat_line_list li a.timeout, .mod-icons .timeout {
-	padding-left: 18px;
-	min-height: 18px;
-	background: url(../icons/timeout.png) no-repeat !important;
+    padding-left: 18px;
+    min-height: 18px;
+    filter: invert(-100%);
+    -webkit-filter: invert(-100%);
+    -o-filter: invert(-100%);
+    -ms-filter: invert(-100%);
+    -moz-filter: invert(-100%);
 }
 
 #chat_line_list li a.ban, .mod-icons .ban {
-	padding-left: 18px;
-	min-height: 18px;
-	background: url(../icons/ban.png) no-repeat !important;
+    padding-left: 18px;
+    min-height: 18px;
+    filter: invert(-100%);
+    -webkit-filter: invert(-100%);
+    -o-filter: invert(-100%);
+    -ms-filter: invert(-100%);
+    -moz-filter: invert(-100%);
 }
 
 #chat_line_list li a.unban, .mod-icons .unban {
-	padding-left: 18px;
-	min-height: 18px;
-	background: url(../icons/unban.png) no-repeat !important;
+    padding-left: 18px;
+    min-height: 18px;
+    filter: invert(-100%);
+    -webkit-filter: invert(-100%);
+    -o-filter: invert(-100%);
+    -ms-filter: invert(-100%);
+    -moz-filter: invert(-100%);
 }
 
 #chat_line_list li .mod_button img {
-	display: none;
+    display: none;
 }
 
 /* Button backgrounds */
 .stats-and-actions .channel-actions .actions {
-	margin-right: 0px !important;
+    margin-right: 0px !important;
 }
 
-#channel .player-column .stats-and-actions .channel-actions .button, #is-subscribed, #channel_actions .button {
-	margin-right: 10px !important;
+#channel .player-column .stats-and-actions .channel-actions .action,
+#is-subscribed,
+#channel_actions .action {
+    margin-right: 10px !important;
 }
 
 #channel .channel-actions .button,
-.chat-option-buttons .button,
+.chat-buttons-container .button,
 .profile-info .buttons .button,
 #channel_actions .button {
-	margin: 0px;
-	margin-right: 8px;
-	padding: 0px 10px;
+    padding: 0px 10px;
 
     background-color: rgb(30, 30, 30);
     box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset;
@@ -408,11 +513,16 @@ body {
     border-radius: 2px;
 }
 
+.chat-buttons-container .button {
+    margin-right: 10px;
+}
+
 #channel .channel-actions .primary,
 #channel_actions .primary,
-.profile-info .buttons .primary {
-	background-color: #6441a5;
-	color: #d3d3d3;
+.profile-info .buttons .primary,
+.chat-buttons-container .button.primary {
+    background-color: #6441a5;
+    color: #d3d3d3;
 }
 
 #channel .channel-actions .button.drop,
@@ -428,20 +538,25 @@ body {
     margin-right: 5px;
 }
 
-#channel .channel-actions .button.glyph-only.drop,
-#channel_actions .button.glyph-only.drop,
-.profile-info .buttons .button.glyph-only.drop {
-	padding-right: 0px;
-    width: 38px;
+#channel .channel-actions .button.drop,
+#channel_actions .button.drop,
+.profile-info .buttons .button.drop {
+    padding-right: 20px !important;
 }
 
-.ember-chat .chat-interface .chat-buttons-container .chat-option-buttons .button:first-child {
-	padding: 0px 10px;
-	margin-left: 1px;
+.ember-chat .chat-interface .chat-buttons-container .button:first-child {
+    padding: 0px 10px;
+    margin-left: 1px;
 }
 
 .ember-chat .chat-interface .chat-buttons-container .chat-option-buttons {
     margin-left: 0px;
+}
+
+.chat-buttons-container #emote-menu-button {
+    width: 38px;
+    height: 32px;
+    margin: 0px;
 }
 
 /* Share button popup background */
@@ -449,518 +564,542 @@ body {
     background-color: rgb(30,30,30);
 }
 
+.stats-and-actions .channel-actions .share input.text {
+    color: #d4d4d4;
+    border: 1px solid rgba(0,0,0,0.35);
+    box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+    -moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+    -webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+    background: #3b3b3b;
+}
+
 /* Ember Pages Dropmenu Fix */
 .ember-application .dropmenu,
 #main_col #share.dropmenu {
-	background-color: rgb(30,30,30);
-	color: #d3d3d3;
+    background-color: rgb(30,30,30);
+    color: #d3d3d3;
 }
 .ember-application .dropmenu a,
 .items-grid .section_header #filter-contain .dropmenu .dropmenu_action.active,
 .items-grid .section_header #filter-contain .ui-menu .dropmenu_action.active,
 .items-grid .section_header #filter-contain .ui-multiselect-menu .dropmenu_action.active {
-	color: #8c8c8c;
+    color: #8c8c8c;
 }
 .items-grid .section_header #filter-contain .dropmenu .dropmenu_action,
 .items-grid .section_header #filter-contain .ui-menu .dropmenu_action,
 .items-grid .section_header #filter-contain .ui-multiselect-menu .dropmenu_action {
-	color: #d3d3d3;
+    color: #d3d3d3;
 }
 
 /* Ember Directory Videos Sort */
 .videos-grid .button-group li a.active {
-	color: #8c8c8c;
+    color: #8c8c8c;
 }
 .videos-grid .button-group li a {
-	color: #d3d3d3;
+    color: #d3d3d3;
 }
 .streams-grid .sort-contain .sort-options {
-	background-color: rgb(30,30,30);
+    background-color: rgb(30,30,30);
 }
 
 /* darken jquery ui */
 .ui-menu {
-	background: rgb(35,35,35);
-	color: #d3d3d3;
+    background: rgb(35,35,35);
+    color: #d3d3d3;
 }
 .ui-menu-item {
-	color: #d3d3d3;
+    color: #d3d3d3;
 }
 
 /* Taken from http://userstyles.org/styles/82967/twitch-dark-view */
 #channel_stats, .channel-stats {
-	background-color: rgb(30, 30, 30);
-	box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset;
-	border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.35);
-	color: rgb(170, 170, 170);
-	text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px;
-	border: 1px solid;
-	padding-right: 10px;
-	border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.35);
-	border-radius: 2px;
+    background-color: rgb(30, 30, 30);
+    box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset;
+    border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.35);
+    color: rgb(170, 170, 170);
+    text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px;
+    border: 1px solid;
+    padding-right: 10px;
+    border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.35);
+    border-radius: 2px;
 }
 
-.dropdown_glyph, .dropdown_static, #subscribe_action .subscribe-price, #channel_following.normal_button, .channel_following.normal_button, .channel-following.normal_button {
-	background: rgb(30, 30, 30) url(../icons/dropdown_arrow.png) no-repeat right center !important;
-	box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset !important;
-	color: rgb(170, 170, 170) !important;
-	text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px !important;
+.dropdown_glyph, .dropdown_static, #subscribe_action .subscribe-price, #channel_following.normal_button, .follow-button .notify, .channel-following.normal_button {
+    background: rgb(30, 30, 30) url(../icons/dropdown_arrow.png) no-repeat right center !important;
+    box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset !important;
+    color: rgb(170, 170, 170) !important;
+    text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px !important;
+}
+
+.follow-button.following .follow {
+
+}
+
+.follow-button.following .notify:before {
+    border: 5px solid;
+    border-top-color: #777;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+    border-right-color: transparent;
+}
+
+.follow-button.following .notify {
+    background: rgb(30, 30, 30) !important;
+    box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset !important;
+    color: rgb(170, 170, 170) !important;
+    text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px !important;
 }
 
 #form_submit .normal_button, #hide_preview, .js-bookmark {
-	background: rgb(30, 30, 30) !important;
-	box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset !important;
-	color: rgb(170, 170, 170) !important;
-	text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px !important;
+    background: rgb(30, 30, 30) !important;
+    box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset !important;
+    color: rgb(170, 170, 170) !important;
+    text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px !important;
 }
 
-.content .bottom #controls #control_buttons #chat_viewers_dropmenu_button span, 
+.content .bottom #controls #control_buttons #chat_viewers_dropmenu_button span,
 .content .bottom #controls #control_buttons #chat_settings_dropmenu_button span,
 .content #stats_and_actions #channel_actions #button_options span,
-#right_col .bottom #controls #control_buttons #chat_viewers_dropmenu_button span, 
+#right_col .bottom #controls #control_buttons #chat_viewers_dropmenu_button span,
 #right_col .bottom #controls #control_buttons #chat_settings_dropmenu_button span,
 .stats-and-actions .channel-actions .channel-options-button span,
 .profile-actions .channel-options-button span {
-	background-image: url(../icons/button_glyphs.png) !important;
+    background-image: url(../icons/button_glyphs.png) !important;
 }
 
 .ember-chat .chat-buttons-container .chat-option-buttons button {
-/*	background: rgb(30, 30, 30);*/
-	background-image: url(../icons/button_glyphs_new.png) !important;
-/*	box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset !important;
-	border-top: 1px solid rgba(0,0,0,0.2) !important;
-	border-left: 1px solid rgba(0,0,0,0.3) !important;
-	border-right: 1px solid rgba(0,0,0,0.3) !important;
-	border-bottom: 1px solid rgba(0,0,0,0.35) !important;*/
-	height: 32px !important;
-	width: 38px !important;
-	margin-left: 0px !important;
+/*  background: rgb(30, 30, 30);*/
+    background-image: url(../icons/button_glyphs_new.png) !important;
+/*  box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset !important;
+    border-top: 1px solid rgba(0,0,0,0.2) !important;
+    border-left: 1px solid rgba(0,0,0,0.3) !important;
+    border-right: 1px solid rgba(0,0,0,0.3) !important;
+    border-bottom: 1px solid rgba(0,0,0,0.35) !important;*/
+    height: 32px !important;
+    width: 38px !important;
+    margin-left: 0px !important;
 }
 
 .ember-chat .chat-buttons-container .chat-option-buttons button.settings {
-	background-position: 6px 6px !important;
+    background-position: 6px 6px !important;
 }
 
 .ember-chat .chat-buttons-container .chat-option-buttons button.viewers {
-	background-position: 5px -39px !important;
+    background-position: 5px -39px !important;
 }
 
 #dash_main .dropdown {
-	background: rgb(30, 30, 30) url(../icons/dropdown_arrow.png) no-repeat right center !important;
-	box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset !important;
-	color: rgb(170, 170, 170) !important;
-	text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px !important;
+    background: rgb(30, 30, 30) url(../icons/dropdown_arrow.png) no-repeat right center !important;
+    box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset !important;
+    color: rgb(170, 170, 170) !important;
+    text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px !important;
 }
 
-#dash_main #chat_viewers_dropmenu_button, 
+#dash_main #chat_viewers_dropmenu_button,
 #dash_main #chat_settings_dropmenu_button,
 #dash_main #intervals {
-	background: rgb(30, 30, 30);
-	border: none !important;
-	box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset !important;
-	border-top: 1px solid rgba(0,0,0,0.2) !important;
-	border-left: 1px solid rgba(0,0,0,0.3) !important;
-	border-right: 1px solid rgba(0,0,0,0.3) !important;
-	border-bottom: 1px solid rgba(0,0,0,0.35) !important;
-	height: 28px;
-	width: 16px;
-	padding-left: 5px;
-	padding-right: 15px;
+    background: rgb(30, 30, 30);
+    border: none !important;
+    box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset !important;
+    border-top: 1px solid rgba(0,0,0,0.2) !important;
+    border-left: 1px solid rgba(0,0,0,0.3) !important;
+    border-right: 1px solid rgba(0,0,0,0.3) !important;
+    border-bottom: 1px solid rgba(0,0,0,0.35) !important;
+    height: 28px;
+    width: 16px;
+    padding-left: 5px;
+    padding-right: 15px;
 }
 
 #dash_main #intervals {
-	vertical-align: bottom;
+    vertical-align: bottom;
 }
 
 #dash_main #chat_viewers_dropmenu_button .glyph_only {
-	height: 18px;
-	background: url(../icons/viewer_list.png) no-repeat center !important;
+    height: 18px;
+    background: url(../icons/viewer_list.png) no-repeat center !important;
 }
 
 #dash_main #chat_viewers_dropmenu_button img {
-	display: none;
+    display: none;
 }
 
 #dash_main #chat_settings_dropmenu_button .glyph_only {
-	height: 18px;
-	background: url(../icons/chat_settings.png) no-repeat center !important;
+    height: 18px;
+    background: url(../icons/chat_settings.png) no-repeat center !important;
 }
 
 #dash_main #chat_settings_dropmenu_button img {
-	display: none;
+    display: none;
 }
 
 #dash_main #intervals .glyph_only {
-	height: 18px;
-	background: url(../icons/chat_settings.png) no-repeat center !important;
+    height: 18px;
+    background: url(../icons/chat_settings.png) no-repeat center !important;
 }
 
 #dash_main #intervals img {
-	display: none;
+    display: none;
 }
 
 #right_col .content .top, #right_col .top {
-	border-bottom: none !important;
-	border-bottom-color: none !important;
+    border-bottom: none !important;
+    border-bottom-color: none !important;
 }
 
 .segmented_tabs {
-	border-top: 0px !important;
+    border-top: 0px !important;
 }
 
 .segmented_tabs li {
-	height: 30px;
+    height: 30px;
 }
 
 .segmented_tabs li a {
-	background: transparent !important;
-	box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 0px 1px !important;
-	text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px !important;
+    background: transparent !important;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 0px 1px !important;
+    text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px !important;
 }
 
 .segmented_tabs li a.selected, .segmented_tabs li a.tab {
-	box-shadow: none !important;
+    box-shadow: none !important;
 }
 
 .segmented_tabs li, .directory_header_contain .directory_header #custom_filter input {
-	background-color: rgb(30, 30, 30) !important;
-	box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset!important;
+    background-color: rgb(30, 30, 30) !important;
+    box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset!important;
 }
 
 .segmented_tabs {
-	border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.35) !important;
-	color: rgb(170, 170, 170) !important;
-	text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px !important;
-	border: none;
-	background-image: none !important;
-	width: 321px;
+    border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.35) !important;
+    color: rgb(170, 170, 170) !important;
+    text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px !important;
+    border: none;
+    background-image: none !important;
+    width: 321px;
 }
 
 .segmented_tabs li a {
-	box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset !important;
-	border: 1px solid #000 !important;
+    box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset !important;
+    border: 1px solid #000 !important;
 }
 
 .more_archives.bottom:hover, .archives-contain .more-archives:hover {
-	color: #999 !important;
-	background-color: rgb(35, 35, 35) !important;
+    color: #999 !important;
+    background-color: rgb(35, 35, 35) !important;
 }
 
 .more_archives.bottom, .archives-contain .more-archives {
-	color: #999 !important;
-	text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px !important;
-	border-top: 1px solid #000 !important;
-	box-shadow: rgba(255, 255, 255, 0.04) 0px 1px 0px 0px inset !important;
-	background-color: #282828 !important
+    color: #999 !important;
+    text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px !important;
+    border-top: 1px solid #000 !important;
+    box-shadow: rgba(255, 255, 255, 0.04) 0px 1px 0px 0px inset !important;
+    background-color: #282828 !important
 }
 
 .archives-contain .list-video .meta .info p.broadcaster {
-	color: #D3D3D3;
+    color: #D3D3D3;
 }
 
 #archives.stretch.scroll, .js-archive-videos {
-	background-color: rgb(30, 30, 30) !important;
-	color: rgb(238, 238, 238) !important;
-	box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.1) inset !important;
+    background-color: rgb(30, 30, 30) !important;
+    color: rgb(238, 238, 238) !important;
+    box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.1) inset !important;
 }
 
 .content #archives .video a, .archives-contain .list-video {
-	border-top-color: #000 !important;
-	border-bottom-color: #000 !important;
+    border-top-color: #000 !important;
+    border-bottom-color: #000 !important;
 }
 
 .content #archives .video a .title, .archives-contain .list-video .title {
-	color: rgb(170, 170, 170) !important;
+    color: rgb(170, 170, 170) !important;
 }
 
 .content #archives .video a:hover .title, .archives-contain .list-video:hover .title {
-	color: rgb(238, 238, 238) !important;
+    color: rgb(238, 238, 238) !important;
 }
 
 .content #archives .video a:hover, .archives-contain .list-video:hover {
-	background-color: rgb(35, 35, 35) !important;
+    background-color: rgb(35, 35, 35) !important;
 }
 
 .video_meta .broadcaster {
-	color: #fff;
+    color: #fff;
 }
 
 #main_col .stats-and-actions .channel-stats .channel_viewer_count_bttv {
-	background-position: 0 0;
+    background-position: 0 0;
 }
 
 .panel.masonry-brick {
-	background-color: rgb(30, 30, 30) !important;
-	color: rgb(154, 154, 154) !important;
-	box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 2px 0px inset, rgba(255, 255, 255, 0.01) 0px 0px 0px 1px, rgba(255, 255, 255, 0.01) 0px 1px 0px 0px !important;
-	border-radius: 0px !important;
-	text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px !important;
-	border: 1px solid #000 !important;
-	padding-left: 5px !important;
-	padding-right: 5px !important;
-	padding-top: 5px !important;
-	margin-bottom: 30px !important;
+    background-color: rgb(30, 30, 30) !important;
+    color: rgb(154, 154, 154) !important;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 2px 0px inset, rgba(255, 255, 255, 0.01) 0px 0px 0px 1px, rgba(255, 255, 255, 0.01) 0px 1px 0px 0px !important;
+    border-radius: 0px !important;
+    text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px !important;
+    border: 1px solid #000 !important;
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+    padding-top: 5px !important;
+    margin-bottom: 30px !important;
 }
 
 .panel.masonry-brick h3.title {
-	color: rgb(154, 154, 154) !important;
+    color: rgb(154, 154, 154) !important;
 }
 
 .panel.masonry-brick a.link {
-	margin-bottom: 5px !important;
+    margin-bottom: 5px !important;
 }
 
 .masonry a {
-	color: #fff !important;
-}
-
-.js-chat-scroll {
-	border-top: 1px solid rgba(0, 0, 0, 0.65);
+    color: #fff !important;
 }
 
 #chat_line_list .highlight, .chat-messages .chat-line.highlight {
-	color: #fff !important;
-	background-color: rgba(255, 0, 0, 0.5) !important;
+    color: #fff !important;
+    background-color: rgba(255, 0, 0, 0.5) !important;
 }
 
 .chat-messages .chat-line.highlight .from {
-	color: #fff !important;
+    color: #fff !important;
 }
 
 #main_col ul.nav.js-nav a.active {
-	color: #D3D3D3 !important;
-	border-color: #D3D3D3 !important;
+    color: #D3D3D3 !important;
+    border-color: #D3D3D3 !important;
 }
 
 #main_col ul.nav.js-nav a.active:hover {
-	color: #ccc !important;
-	text-decoration: underline !important;
+    color: #ccc !important;
+    text-decoration: underline !important;
 }
 
 #main_col ul.nav.js-nav a:hover {
-	color: #eee !important;
+    color: #eee !important;
 }
 
 #main_col ul.nav.js-nav a {
-	text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px !important;
+    text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px !important;
 }
 
 #main_col ul.nav.js-nav {
-	padding-bottom: 2px !important;
-	border-color: #292929 !important;
-	box-shadow: 0px -1px 0px rgba(0, 0, 0, 0.3) inset!important;
+    padding-bottom: 2px !important;
+    border-color: #292929 !important;
+    box-shadow: 0px -1px 0px rgba(0, 0, 0, 0.3) inset!important;
 }
 
 #main_col .normal_button {
-	background-color: rgb(30, 30, 30) !important;
-	box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset!important;
-	border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.35)!important;
-	color: rgb(170, 170, 170) !important;
-	text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px !important;
-	border:1px solid !important;
-	border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.35)!important;
-	background-image: none!important;
-	text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px !important;
-	border-radius: 2px !important;
+    background-color: rgb(30, 30, 30) !important;
+    box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset!important;
+    border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.35)!important;
+    color: rgb(170, 170, 170) !important;
+    text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px !important;
+    border:1px solid !important;
+    border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.35)!important;
+    background-image: none!important;
+    text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px !important;
+    border-radius: 2px !important;
 }
 
 /* darken bookmark page */
 #main_col .bookmark-meta {
-	background-color: rgb(30, 30, 30);
-	color: #d3d3d3;
+    background-color: rgb(30, 30, 30);
+    color: #d3d3d3;
 }
 
 #main_col .bookmark-meta a, #main_col .bookmark-meta .bookmark-title {
-	color: #d3d3d3;
+    color: #d3d3d3;
 }
 
 
 .ember-application h3.title, .ember-application h2.title {
-	color: #ccc !important;
+    color: #ccc !important;
 }
 
 .ember-application .directory_header #custom_filter input {
-	background-color: rgb(30, 30, 30) !important;
-	box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset!important;
-	border-radius: 0px !important;
-	color: #d3d3d3;
+    background-color: rgb(30, 30, 30) !important;
+    box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset!important;
+    border-radius: 0px !important;
+    color: #d3d3d3;
 }
 
 .ember-application .directory_header_contain {
-	border-bottom: 1px solid #000 !important;
-	background: none repeat scroll 0% 0% rgba(35, 35, 35, 0.93) !important;
+    border-bottom: 1px solid #000 !important;
+    background: none repeat scroll 0% 0% rgba(35, 35, 35, 0.93) !important;
 }
 
 .ember-application .js-games.games.items .game.item h5.title, .list-games .game .meta .title, .ember-application .stream.item .channelname, .ember-application .stream.item p.title a, .ember-application .video.item p.title a, .ember-application .video.item, .ember-application p.info a, .info .channel a.channelname {
-	color: #D3D3D3 !important;
-	text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px !important;
+    color: #D3D3D3 !important;
+    text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px !important;
 }
 
 .ember-application .viewall a {
-	background: rgb(40, 40, 40);
+    background: rgb(40, 40, 40);
 }
 
 .ember-application .viewall a .text span:first-child {
-	color: #D3D3D3 !important;
+    color: #D3D3D3 !important;
 }
 
 .ember-view .following-col div.title, .ember-view .following-col div.name a.js-search-name {
-	color: #D3D3D3 !important;
+    color: #D3D3D3 !important;
 }
 
 .following-col .col-header {
-	border-color: #D3D3D3 !important;
+    border-color: #D3D3D3 !important;
 }
 
 .following-col .following-list .load-more span {
-	background: #333333;
+    background: #333333;
 }
 
 .following-col .following-list .load-more:hover {
-	color: #d3d3d3;
+    color: #d3d3d3;
 }
 
 .tickets .ticket .benefits {
-	background: #222 !important;
-	border: none !important;
+    background: #222 !important;
+    border: none !important;
 }
 
 .popout_chat .dropdown {
-	background: rgb(30, 30, 30) url(../icons/dropdown_arrow.png) no-repeat right center !important;
-	box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset !important;
-	color: rgb(170, 170, 170) !important;
-	text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px !important;
+    background: rgb(30, 30, 30) url(../icons/dropdown_arrow.png) no-repeat right center !important;
+    box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset !important;
+    color: rgb(170, 170, 170) !important;
+    text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px !important;
 }
 
-.popout_chat #chat_viewers_dropmenu_button, 
+.popout_chat #chat_viewers_dropmenu_button,
 .popout_chat #chat_settings_dropmenu_button,
 .popout_chat #intervals {
-	background: rgb(30, 30, 30);
-	border: none !important;
-	box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset !important;
-	border-top: 1px solid rgba(0,0,0,0.2) !important;
-	border-left: 1px solid rgba(0,0,0,0.3) !important;
-	border-right: 1px solid rgba(0,0,0,0.3) !important;
-	border-bottom: 1px solid rgba(0,0,0,0.35) !important;
-	height: 28px;
+    background: rgb(30, 30, 30);
+    border: none !important;
+    box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset !important;
+    border-top: 1px solid rgba(0,0,0,0.2) !important;
+    border-left: 1px solid rgba(0,0,0,0.3) !important;
+    border-right: 1px solid rgba(0,0,0,0.3) !important;
+    border-bottom: 1px solid rgba(0,0,0,0.35) !important;
+    height: 28px;
 }
 
 .popout_chat #intervals {
-	vertical-align: bottom;
+    vertical-align: bottom;
 }
 
 .popout_chat #chat_viewers_dropmenu_button .glyph_only {
-	height: 18px;
-	background: url(../icons/viewer_list.png) no-repeat center !important;
+    height: 18px;
+    background: url(../icons/viewer_list.png) no-repeat center !important;
 }
 
 .popout_chat #chat_viewers_dropmenu_button img {
-	display: none;
+    display: none;
 }
 
 .popout_chat #chat_settings_dropmenu_button .glyph_only {
-	height: 18px;
-	background: url(../icons/chat_settings.png) no-repeat center !important;
+    height: 18px;
+    background: url(../icons/chat_settings.png) no-repeat center !important;
 }
 
 .popout_chat #chat_settings_dropmenu_button img {
-	display: none;
+    display: none;
 }
 
 .popout_chat #intervals .glyph_only {
-	height: 18px;
-	background: url(../icons/chat_settings.png) no-repeat center !important;
+    height: 18px;
+    background: url(../icons/chat_settings.png) no-repeat center !important;
 }
 
 .panel-formatting .panel {
-	color: #999;
+    color: #999;
 }
 
 .panel-formatting .panel a {
-	color: #fff !important;
-	text-decoration: underline;
+    color: #fff !important;
+    text-decoration: underline;
 }
 
 /* twitch uses padding as a border, so i just change bg color */
 .channel-link .profile-photo, .profile-link .profile-photo {
-	background-color: #222;
+    background-color: #222;
 }
 
 .banner-contain #change_profile_banner .add_image, .banner-contain .profile-info .profile-bio a {
-	color: #fff;
+    color: #fff;
 }
 
 .streams .stream .thumb .boxart, .videos .video .thumb .boxart {
-	border: 4px solid #999;
+    border: 4px solid #999;
 }
 
 #bttvTranscodes {
-	color: #999;
+    color: #999;
 }
 
 #bttvTranscodes a {
-	color: #fff;
+    color: #fff;
 }
 
 #controls #control_buttons .emoticon-selector-container .emoticon-selector.not-subscribed #non-subscriber-message {
-	color: #D3D3D3;
+    color: #D3D3D3;
 }
 
 #controls #control_buttons .emoticon-selector-container .emoticon-selector .emoticon-selector-inner, #controls #control_buttons .emoticon-selector-container .emoticon-selector .emoticon-selector-inner {
-	background: rgb(20, 20, 20) !important;
-	box-shadow: none;
-	-moz-box-shadow: none;
-	-webkit-box-shadow: none;
+    background: rgb(20, 20, 20) !important;
+    box-shadow: none;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
 }
 
 /* New Messages Page */
 #main_col .messages #message_actions, #main_col .messages #reply_form, #main_col .messages #reply_message_form, #main_col .messages #send_message_form #top_buttons, #main_col .messages #send_message_form #bottom_buttons, #main_col .messages #reply_form #top_buttons, #main_col .messages #reply_form #top_buttons {
-	background: #282828 !important;
-	border-color: #000 !important;
-	box-shadow: 0 -1px 0 #000;
-	-moz-box-shadow: 0 -1px 0 #000;
-	-webkit-box-shadow: 0 -1px 0 #000;
+    background: #282828 !important;
+    border-color: #000 !important;
+    box-shadow: 0 -1px 0 #000;
+    -moz-box-shadow: 0 -1px 0 #000;
+    -webkit-box-shadow: 0 -1px 0 #000;
 }
 
 #main_col .messages #compose_message_form #bottom_buttons, #main_col .messages #reply_form #bottom_buttons {
-	box-shadow: 0 -1px 0 #000;
-	-moz-box-shadow: 0 -1px 0 #000;
-	-webkit-box-shadow: 0 -1px 0 #000;
+    box-shadow: 0 -1px 0 #000;
+    -moz-box-shadow: 0 -1px 0 #000;
+    -webkit-box-shadow: 0 -1px 0 #000;
 }
 
 #main_col .messages #reply_form textarea#message_body, #main_col .messages textarea#message_body, #main_col .messages input {
-	background-color: rgb(20, 20, 20) !important;
-	color: #D3D3D3;
-	border: solid 1px #333;
-	box-shadow: none;
+    background-color: rgb(20, 20, 20) !important;
+    color: #D3D3D3;
+    border: solid 1px #333;
+    box-shadow: none;
 }
 
 #main_col .messages .message_action.block {
-	padding: 2px 4px 2px 18px;
-	background: url(../icons/ban.png) no-repeat;
-	color: #D3D3D3;
+    padding: 2px 4px 2px 18px;
+    background: url(../icons/ban.png) no-repeat;
+    color: #D3D3D3;
 }
 
 #main_col .messages div.preview {
-	background-color: rgb(30, 30, 30);
-	border-bottom-color: #000;
-	border-left: 3px solid #000;
+    background-color: rgb(30, 30, 30);
+    border-bottom-color: #000;
+    border-left: 3px solid #000;
 }
 
 #main_col .messages div.preview.unread {
-	border-left: 3px solid #6441a5;
+    border-left: 3px solid #6441a5;
 }
 
 #main_col .messages .message .msg_main strong a, #main_col .messages .button, #main_col .messages .page_links a, #main_col #messages_column #message-list .preview .from_to_user a.capital, #main_col #messages_column #message-list .preview .message_data a.message_subject {
-	color: #D3D3D3;
+    color: #D3D3D3;
 }
 
 #main_col .messages #message_actions .message_actions_block .label {
-	color: #8c8c8c;
+    color: #8c8c8c;
 }
 
 #main_col .messages .message_action.delete {
-	filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'invert\'><feColorMatrix in='SourceGraphic' type='matrix' values='-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0'/></filter></svg>#invert");
+    filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'invert\'><feColorMatrix in='SourceGraphic' type='matrix' values='-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0'/></filter></svg>#invert");
     filter: invert(100%);
     -webkit-filter: invert(100%);
     -o-filter: invert(100%);
@@ -969,152 +1108,170 @@ body {
 }
 
 #main_col #messages_column #message-list .preview .from_to_user a.prof {
-	background-color: #000;
-	box-shadow: 0 1px 0 #000;
-	-moz-box-shadow: 0 1px 0 #000;
-	-webkit-box-shadow: 0 1px 0 #000;
-	border: 1px solid #333;
+    background-color: #000;
+    box-shadow: 0 1px 0 #000;
+    -moz-box-shadow: 0 1px 0 #000;
+    -webkit-box-shadow: 0 1px 0 #000;
+    border: 1px solid #333;
 }
 
 #main_col .messages #messages_column, #main_col .messages #send_message_form, #main_col .messages #reply_form {
-	background-color: rgb(30, 30, 30);
-	border-color: #000;
+    background-color: rgb(30, 30, 30);
+    border-color: #000;
 }
 
 #main_col .messages .message {
-	border-color: #000;
+    border-color: #000;
 }
 
 #bttvChatPaused {
-	position: absolute;
-	float: left;
-	z-index: 1;
-	color: red;
-	background-color: #282828;
-	right: 0px;
-	padding: 2px 5px;
-	border-left: 1px solid rgba(0, 0, 0, 0.8);
-	border-bottom: 1px solid rgba(0, 0, 0, 0.8);
-	border-top: 1px solid rgba(0, 0, 0, 0.8);
-	white-space: nowrap;
+    position: absolute;
+    float: left;
+    z-index: 1;
+    color: red;
+    background-color: #282828;
+    right: 0px;
+    padding: 2px 5px;
+    border-left: 1px solid rgba(0, 0, 0, 0.8);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.8);
+    border-top: 1px solid rgba(0, 0, 0, 0.8);
+    white-space: nowrap;
 }
 
-.ember-chat .chat-interface .textarea-contain {
-	top: 10px;
-	left: 10px;
-	right: 10px;
+/* make emote icon light */
+.ember-chat .chat-interface .textarea-contain .emoticon-selector-toggle .svg-emoticons path {
+    fill: #888;
+}
+.ember-chat .chat-interface .textarea-contain .emoticon-selector-toggle:hover .svg-emoticons path {
+    fill: #777;
 }
 
 .ember-chat .chat-interface .chat-buttons-container {
-	top: 85px;
-	left: 10px;
-	right: 10px;
-	bottom: auto;
+    top: 85px;
+    left: 10px;
+    right: 10px;
+    bottom: auto;
+}
+
+.ember-chat .chat-interface .textarea-contain {
+    width: auto;
 }
 
 .ember-chat .chat-interface .chat-buttons-container .chat-option-buttons button:first-child {
-	margin-right: 3px;
+    margin-right: 3px;
 }
 
 #chat_emote_dropmenu_button.newlayout {
-	margin-left: 3px !important;
+    margin-left: 3px !important;
 }
 
 .ember-chat .chat-menu-button-container.left, .ember-chat .chat-menu-button-container.right {
-	background: rgb(50,50,50);
-	border-color: #000;
+    background: rgb(50,50,50);
+    border-color: #000;
 }
 
 .ember-chat .chat-menu-button-container:hover {
-	background: rgb(60,60,60);
+    background: rgb(60,60,60);
 }
 
 /*~~~~~~Ember Dark Viewer List ~~~~~~~~~*/
 .ember-chat .chat-menu .chat-top-header {
-	background: rgb(50,50,50); 
+    background: rgb(50,50,50);
 }
 
 .ember-chat .ember-list-item-view {
-	border-color: #000;
+    border-color: #000;
 }
 
 .ember-chat .ember-list-view, .ember-chat .ember-list-container {
-	background: rgb(30,30,30);
-	color: #000;
+    background: rgb(30,30,30);
+    color: #000;
 }
 
 .ember-chat .chat-menu  {
-	background: rgb(30,30,30);
+    background: rgb(30,30,30);
 }
 
 .ember-chat .ember-list-item-view a {
-	color: #fff;
+    color: #fff;
 }
 
 .ember-chat .ember-list-item-view .chat-menu-header {
-	background: rgb(40,40,40);
-	color: rgb(200,200,200);
+    background: rgb(40,40,40);
+    color: rgb(200,200,200);
 }
 
 .ember-chat .chat-menu .chat-top-header p {
-	color: white;
+    color: white;
+}
+
+.ember-chat .chatters-view {
+    background: rgb(30,30,30);
+}
+
+.ember-chat .chatters-view .chat-header {
+    color: #D3D3D3;
+}
+
+.ember-chat .chatters-view.viewer-list-popped-out .chat-header {
+    border-top: none;
 }
 
 /*~~~~~~Ember Dark Settings Menu ~~~~~~~~~*/
 .ember-chat .chat-menu .chat-menu-header {
-	color:  rgb(200,200,200);
+    color:  rgb(200,200,200);
 }
 
 .ember-chat .chat-menu .chat-menu-content  {
-	background: rgb(35,35,35);
-	color: #fff;
+    background: rgb(35,35,35);
+    color: #fff;
 }
 
 .ember-chat .chat-settings .chat-menu a  {
-	color: #fff;
+    color: #fff;
 }
 
 a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00000080, a.small.js-turbo-more-colors {
- 	color: #fff;
+    color: #fff;
 }
 .g18_gear-00000080 {
-	background-image: url(//www-cdn.jtvnw.net/images/xarth/g/g18_gear-FFFFFF80.png);
+    background-image: url(//www-cdn.jtvnw.net/images/xarth/g/g18_gear-FFFFFF80.png);
 }
 .g18_close-00000080 {
-	background-image: url(//www-cdn.jtvnw.net/images/xarth/g/g18_close-FFFFFF80.png); 
+    background-image: url(//www-cdn.jtvnw.net/images/xarth/g/g18_close-FFFFFF80.png);
 }
 .g18_popout-00000080 {
-	background-image: url(//www-cdn.jtvnw.net/images/xarth/g/g18_popout-FFFFFF80.png);
+    background-image: url(//www-cdn.jtvnw.net/images/xarth/g/g18_popout-FFFFFF80.png);
 }
 .g18_trash-00000080 {
-	background-image: url(//www-cdn.jtvnw.net/images/xarth/g/g18_trash-FFFFFF80.png);
+    background-image: url(//www-cdn.jtvnw.net/images/xarth/g/g18_trash-FFFFFF80.png);
 }
 .button-simple.dark {
-	background: rgb(60,60,60);
+    background: rgb(60,60,60);
 }
 
 /*~~~~~~Ember Dark Chat Hidden/Popped Out ~~~~~~~~~*/
 .ember-chat .chat-hidden-overlay {
-	background-color: #282828 !important;
+    background-color: #282828 !important;
 }
 
 /*~~~~~~Ember Dark Panel Editor ~~~~~~~~~*/
 .js-new_panel_form {
-	border: rgb(20,20,20);
-	background: #282828 !important;
+    border: rgb(20,20,20);
+    background: #282828 !important;
 }
 
 .js-new_panel_form .image_sizes {
-	color: #aaa;
+    color: #aaa;
 }
 
 .js-new_panel_form label {
-	color: #ccc;
+    color: #ccc;
 }
 
 .js-new_panel_btn {
-	border: rgb(20,20,20);
-	filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'invert\'><feColorMatrix in='SourceGraphic' type='matrix' values='-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0'/></filter></svg>#invert");
+    border: rgb(20,20,20);
+    filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'invert\'><feColorMatrix in='SourceGraphic' type='matrix' values='-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0'/></filter></svg>#invert");
     filter: invert(90%);
     -webkit-filter: invert(90%);
     -o-filter: invert(90%);
@@ -1125,20 +1282,24 @@ a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00
 
 /*~~~~~~Ember Dark Moderation Cards ~~~~~~~~~*/
 .ember-chat .moderation-card .interface {
-	background: #282828;	
+    background: #282828;
+}
+
+.ember-chat .moderation-card .button {
+    color: #ccc;
 }
 
 .ember-chat .moderation-card .button-simple.light {
-	color: #ccc;
-	background: rgb(60,60,60);
+    color: #ccc;
+    background: rgb(60,60,60);
 }
 .ember-chat .moderation-card .button-simple.dark {
-	background: rgb(60,60,60);
+    background: rgb(60,60,60);
     color: #ccc;
 }
 
 .ember-chat .moderation-card button img {
-	filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'invert\'><feColorMatrix in='SourceGraphic' type='matrix' values='-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0'/></filter></svg>#invert");
+    filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'invert\'><feColorMatrix in='SourceGraphic' type='matrix' values='-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0'/></filter></svg>#invert");
     filter: invert(90%);
     -webkit-filter: invert(90%);
     -o-filter: invert(90%);
@@ -1151,342 +1312,336 @@ a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00
 }
 
 .ember-chat .moderation-card img.channel_logo {
-	border: 3px solid #282828;
+    border: 3px solid #282828;
 }
 
 /*~~Dark Directory Following Column~~~*/
 
 .following-col .no-login-contain li {
-	background: #000;
+    background: #000;
 }
 
 .following-col .no-login-contain h3 {
-	color: #FFF;
+    color: #FFF;
 }
 
 .following-col .following-hint .bubble:before {
-	content: "";
-	display: block;
-	width: 0;
-	height: 0;
-	border: 10px solid #000;
-	border-left: 10px solid transparent;
-	border-right: 10px solid transparent;
-	border-bottom: 10px solid transparent;
-	position: absolute;
-	bottom: -20px;
-	left: 50%;
-	margin-left: -10px;
+    content: "";
+    display: block;
+    width: 0;
+    height: 0;
+    border: 10px solid #000;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    margin-left: -10px;
 }
 
 .following-col .following-hint .bubble {
-	background: #000;
+    background: #000;
 }
 
 /*~~~~~~~~~~~~~Dark Videos Column~~~~~~~~~~~~~~~~*/
 
 .archives-contain {
-	background: rgb(30, 30, 30) !important ;
+    background: rgb(30, 30, 30) !important ;
 }
 
 /*~~~Dark Ember Chat Subscription Emotes Popup~~~*/
 .ember-chat .chat-interface .emoticon-selector .subscribe-message {
-	border-top: rgb(50,50,50);
-	background: rgb(50,50,50);
+    border-top: rgb(50,50,50);
+    background: rgb(50,50,50);
 }
 
 /*~~~~~~~~~Dark Twitch Settings~~~~~~~~~~~~~~~~~~*/
 #settings {
-	background: rgb(20, 20, 20) !important;
+    background: rgb(20, 20, 20) !important;
 }
 #settings div.directory_header h2 {
-	color: #D3D3D3;
+    color: #D3D3D3;
 }
 .directory_header .nav li a.active {
-	color: #eee;
-	border-color: #555;
+    color: #eee;
+    border-color: #555;
 }
 .directory_header .nav li a {
-	color: #999;
+    color: #999;
 }
 #main_col div.tse-scrollbar {
-	background: none;
+    background: none;
 }
 .directory_header .nav {
-	border-color: #555;
+    border-color: #555;
+}
+#directory-list .button.drop:after, #directory-list .follow-button .drop.follow:after {
+    border-top-color: rgba(255,255,255,0.35);
 }
 #user_edit_form div.connect_items, div.container {
-	background-color: #212121;
+    background-color: #212121;
 }
 .cl-container .section-header {
-	background: #191919;
-	border-color: #343434;
+    background: #191919;
+    border-color: #343434;
 }
 .cl-container .section-header .header-content .title {
-	color: #BBB;
+    color: #BBB;
 }
 .cl-container .section-header .header-content .desc {
-	color: #777;
+    color: #777;
 }
 .cl-container .cl-section .cl-subheader {
-	border-color: #343434;
-	background: #171717;
+    border-color: #343434;
+    background: #171717;
 }
 .cl-container .cl-section .cl-subheader p {
-	color: #5F5F5F;
+    color: #5F5F5F;
 }
 .cl-container fieldset {
-	border-color: #252525;
+    border-color: #252525;
 }
 #settings_contain, #settings div.boolean label.boolean {
-	color: #999;
+    color: #999;
 }
 ul.manage_simple span.obj:hover {
-	border-color: #333;
+    border-color: #333;
 }
 ul.manage_simple span.obj {
-	background: #404040;
+    background: #404040;
 }
 .cl-container fieldset .label-wrapper label {
-	color: #BBB;
+    color: #BBB;
 }
 .cl-subsection .team h5 {
-	margin-bottom: 5px;
+    margin-bottom: 5px;
 }
 #user_edit_form fieldset div table tbody tr.sortable_user.selector td:nth-child(2) a {
-	color: white;
+    color: white;
 }
 .cl-subsection .team table td, .cl-subsection .team table th {
-	padding-left: 5px;
-	padding-top: 5px;
-	padding-right: 5px;
+    padding-left: 5px;
+    padding-top: 5px;
+    padding-right: 5px;
 }
 fieldset.clearfix {
-	background: #212121;
+    background: #212121;
 }
 
 table.simple_table th {
-	border-color: #333;
-	background: #0E0E0E;
+    border-color: #333;
+    background: #0E0E0E;
 }
 #settings_buttons {
-	padding: 14px 20px;
-	background: #1B1B1B;
+    padding: 14px 20px;
+    background: #1B1B1B;
 }
 #settings div.upload .missing_image {
-	filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'invert\'><feColorMatrix in='SourceGraphic' type='matrix' values='-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0'/></filter></svg>#invert");
-	filter: invert(90%);
-	-webkit-filter: invert(90%);
-	-o-filter: invert(90%);
-	-ms-filter: invert(90%);
-	-moz-filter: invert(90%);
+    filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'invert\'><feColorMatrix in='SourceGraphic' type='matrix' values='-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0'/></filter></svg>#invert");
+    filter: invert(90%);
+    -webkit-filter: invert(90%);
+    -o-filter: invert(90%);
+    -ms-filter: invert(90%);
+    -moz-filter: invert(90%);
 }
 #turbo_action {
-	border: 1px solid #343434;
-	background: #212121;
-	color: #d3d3d3;
-	box-shadow: 0 1px 0 #343434,inset 0 2px 1px rgba(0,0,0,0.05);
-	-moz-box-shadow: 0 1px 0 #343434,inset 0 2px 1px rgba(0,0,0,0.05);
-	-webkit-box-shadow: -2 1px 0 #343434,inset 0 2px 1px rgba(0,0,0,0.05);
+    border: 1px solid #343434;
+    background: #212121;
+    color: #d3d3d3;
+    box-shadow: 0 1px 0 #343434,inset 0 2px 1px rgba(0,0,0,0.05);
+    -moz-box-shadow: 0 1px 0 #343434,inset 0 2px 1px rgba(0,0,0,0.05);
+    -webkit-box-shadow: -2 1px 0 #343434,inset 0 2px 1px rgba(0,0,0,0.05);
 }
 .features_list {
-	color: #d3d3d3;
+    color: #d3d3d3;
 }
 .features_list li p {
-	color: #979797;
+    color: #979797;
 }
 .cl-container .cl-section {
-	background: #131313;
+    background: #131313;
 }
 #turbo_cancel_opts a {
-	color: white;
+    color: white;
 }
 #turbo_chat_color, #turbo_emote_set {
-	border-color: #333;
-	background: #1F1F1F;
+    border-color: #333;
+    background: #1F1F1F;
 }
 #emoticons h4, #turbo_chat_color h4 {
-	color: #DDD;
+    color: #DDD;
 }
 #example .line {
-	background: #000;
+    background: #000;
 }
 #user_edit_form a, #settings_contain a, #authorized a, #developer a {
-	color: #ccc;
+    color: #ccc;
 }
 .multi_select li.hdr {
-	border-color: #333;
+    border-color: #333;
 }
 #settings #followers_content .hdr {
-	background: #171717;
+    background: #171717;
 }
 .connect_items {
-	border-color: #343434;
+    border-color: #343434;
 }
 .connect_items .connect_item {
-	background: #404040;
-	color: #cdcdcd;
+    background: #404040;
+    color: #cdcdcd;
 }
 .section ul li, .section .sub {
-	border-color: #333;
+    border-color: #333;
 }
 .app_title {
-	color: #ccc;
+    color: #ccc;
 }
 table.simple_table td {
-	border-color: transparent transparent #333;
+    border-color: transparent transparent #333;
 }
 .connect-items .connect-item .connect-item-info {
-	background: #343434;
+    background: #343434;
 }
 
 /* darken text on connections page */
 #user_edit_form .connect_items .connect-item-desc {
-	color: #333;
+    color: #333;
 }
 
 #user_edit_form .form_microcopy {
-	background: #212121;
+    background: #212121;
 }
 
 /*~~~~~~~Caster's Page~~~~~~~~*/
 
 #new-user-prompt {
-	background: rgba(35,35,35,.7);
-	color: #999;
+    background: rgba(35,35,35,.7);
+    color: #999;
 }
 
 #new-user-prompt .message .title {
-	color: #d3d3d3;
+    color: #d3d3d3;
 }
 
 /*~~~~~~~Popups~~~~~~~~*/
 
-.channel_new .twitch_subwindow_container #login_subwindow.twitch_subwindow {
-	color: #000;
-	background-color: #1e1e1e;
+.channel_new .twitch_subwindow_container {
+    color: #fff;
+    background-color: #1e1e1e;
 }
 
-.channel_new .twitch_subwindow_container #login_subwindow.twitch_subwindow .facebook_connect_contain .sub {
-	color: #999;
+.channel_new .twitch_subwindow_container a {
+    color: #d3d3d3;
 }
 
-.channel_new .twitch_subwindow_container #login_subwindow.twitch_subwindow #login_tab.tab.selected a {
-	color: #d1d1d1;
-	border-bottom: 3px solid rgba(209,209,209,.5);
+.channel_new .twitch_subwindow_container .twitch_subwindow .buttons a.primary span {
+    color: #fff;
 }
 
-.channel_new .twitch_subwindow_container #login_subwindow.twitch_subwindow #login_tab.tab a {
-	color: #d1d1d1;
+.channel_new .twitch_subwindow_container ul.tabs li.tab a {
+    color: #d3d3d3;
 }
 
-.channel_new .twitch_subwindow_container #login_subwindow.twitch_subwindow #signup_tab.tab.selected a {
-	color: #d1d1d1;
-	border-bottom: 3px solid rgba(209,209,209,.5);
+.channel_new .twitch_subwindow_container .facebook_connect_contain .sub {
+    color: #999;
 }
 
-.channel_new .twitch_subwindow_container #login_subwindow.twitch_subwindow #signup_tab.tab a {
-	color: #d1d1d1;
+.channel_new .twitch_subwindow_container #login_tab.tab.selected a {
+    color: #d1d1d1;
+    border-bottom: 3px solid rgba(209,209,209,.5);
 }
 
-#login_subwindow.twitch_subwindow #login_div .field.text {
-	color: #d4d4d4;
-	border: 1px solid rgba(0,0,0,0.35);
-	box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-	-moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-	-webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-	background: #3b3b3b;
+.channel_new .twitch_subwindow_container #login_tab.tab a {
+    color: #d1d1d1;
 }
 
-#login_subwindow #signup_form #user_login {
-	color: #d4d4d4;
-	border: 1px solid rgba(0,0,0,0.35);
-	box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-	-moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-	-webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-	background: #3b3b3b;
+.channel_new .twitch_subwindow_container #signup_tab.tab.selected a {
+    color: #d1d1d1;
+    border-bottom: 3px solid rgba(209,209,209,.5);
 }
 
-#login_subwindow #signup_form #user_password {
-	color: #d4d4d4;
-	border: 1px solid rgba(0,0,0,0.35);
-	box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-	-moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-	-webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-	background: #3b3b3b;
+.channel_new .twitch_subwindow_container #signup_tab.tab a {
+    color: #d1d1d1;
 }
 
-#login_subwindow #signup_form #user_email {
-	color: #d4d4d4;
-	border: 1px solid rgba(0,0,0,0.35);
-	box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-	-moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-	-webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-	background: #3b3b3b;
+.channel_new .twitch_subwindow_container .twitch_subwindow .field.text,
+.channel_new .twitch_subwindow_container #signup_form #user_login,
+.channel_new .twitch_subwindow_container #signup_form #user_password,
+.channel_new .twitch_subwindow_container #signup_form #user_email,
+.channel_new .twitch_subwindow_container .twitch_subwindow .ember-text-field,
+.channel_new .twitch_subwindow_container .twitch_subwindow #report_form #reason.field,
+.channel_new .twitch_subwindow_container .twitch_subwindow #report_form #description.field.textarea,
+.channel_new .twitch_subwindow_container .twitch_subwindow .dropdown,
+.channel_new .twitch_subwindow_container .twitch_subwindow .item select {
+    color: #d4d4d4;
+    border: 1px solid rgba(0,0,0,0.35);
+    box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+    -moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+    -webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+    background: #3b3b3b;
 }
 
 .channel_new .twitch_subwindow_container .twitch_subwindow .modal-form {
-	background: #1e1e1e;
+    background: #1e1e1e;
 }
 
 .channel_new .twitch_subwindow_container .twitch_subwindow .modal-form .buttons {
-	border-top: 1px solid #666;
-	background: #1e1e1e;
+    border-top: 1px solid #666;
+    background: #1e1e1e;
 }
 
 .channel_new .twitch_subwindow_container .twitch_subwindow .modal-form .header {
-	color: #d3d3d3;
-	border-bottom: 1px solid #666;
-	background: #1e1e1e;
+    color: #d3d3d3;
+    border-bottom: 1px solid #666;
+    background: #1e1e1e;
 }
 
-.channel_new .twitch_subwindow_container .twitch_subwindow .modal-form.change-bio .item textarea {
-	color: #d3d3d3;
-	border: 1px solid rgba(0,0,0,0.35);
-	box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-	-moz-box-shadow: inset 0 1px 1px rgba(0,0,0,0.1),inset 0 0 1px rgba(0,0,0,0.05),0 1px 0 rgba(255,255,255,0.65);
-	-webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-	background: #3b3b3b;
+.channel_new .twitch_subwindow_container .twitch_subwindow .modal-form.change-bio .item textarea { /* is -moz- different for a reason? */
+    color: #d3d3d3;
+    border: 1px solid rgba(0,0,0,0.35);
+    box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+    -moz-box-shadow: inset 0 1px 1px rgba(0,0,0,0.1),inset 0 0 1px rgba(0,0,0,0.05),0 1px 0 rgba(255,255,255,0.65);
+    -webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+    background: #3b3b3b;
+}
+
+.channel_new .twitch_subwindow_container {
+    background-color: rgba(10,10,10,0.7);
 }
 
 .channel_new .twitch_subwindow_container .twitch_subwindow {
-	color: #999;
-	background-color: #1e1e1e;
+    color: #999;
+}
+
+.channel_new .twitch_subwindow_container .twitch_subwindow .text-content {
+    background-color: #1e1e1e;
+}
+
+.channel_new .twitch_subwindow_container .twitch_subwindow .content-header,
+.channel_new .twitch_subwindow_container .twitch_subwindow .buttons {
+    border-color: #555;
+}
+
+.channel_new .twitch_subwindow_container .twitch_subwindow .buttons a {
+    color: #999;
 }
 
 .channel_new .twitch_subwindow_container .twitch_subwindow .clear {
-	color: #999;
+    color: #999;
 }
 
 .channel_new .twitch_subwindow_container .twitch_subwindow #report_form label {
-	color: #d1d1d1;
-	margin-bottom: 10px;
+    color: #d1d1d1;
+    margin-bottom: 10px;
 }
 
 .channel_new .twitch_subwindow_container .twitch_subwindow #report_form a {
-	color: #d1d1d1;
-}
-
-.channel_new .twitch_subwindow_container .twitch_subwindow #report_form #reason.field {
-	color: #d4d4d4;
-	border: 1px solid rgba(0,0,0,0.35);
-	box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-	-moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-	-webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-	background: #3b3b3b;
-}
-
-.channel_new .twitch_subwindow_container .twitch_subwindow #report_form #description.field.textarea {
-	color: #d4d4d4;
-	border: 1px solid rgba(0,0,0,0.35);
-	box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-	-moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-	-webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
-	background: #3b3b3b;
+    color: #d1d1d1;
 }
 
 .modal-form .buttons .button {
-	color: #d3d3d3;
+    color: #d3d3d3;
 }
 
 /* darken link list popup */
@@ -1503,285 +1658,289 @@ table.simple_table td {
 
 /* darken noty popups */
 .noty_message {
-	background-color: rgb(35,35,35);
+    background-color: rgb(35,35,35);
     color: #d3d3d3;
 }
 
 /*~~~~~~~Dark Dashboard Subscription Page Fix~~~~~~~~*/
 .new-dashboard .subscription-dash .subscription-feature-list .list-head .list-header th {
-	color: #5F5F5F;
-	border-color: #212121;
-	background: #171717;
+    color: #5F5F5F;
+    border-color: #212121;
+    background: #171717;
 }
 
 .cl-container .cl-section {
-	background: #141414;
+    background: #141414;
 }
 
 .cl-container .cl-section a {
-	color: #999;
+    color: #999;
 }
 
 .cl-container .section-header .header-content.indented {
-	border-left: 1px solid #343434;
+    border-left: 1px solid #343434;
 }
 
 .new-dashboard .subscription-dash .subscription-feature-list .list-body .list-item:hover {
-	background: #1A1A1A;
+    background: #1A1A1A;
 }
 
 #ticket-pitch-fieldset.clearfix {
-	background: #212121;
+    background: #212121;
 }
 
 #current-emoticon-fieldset.clearfix {
-	background: #212121;
+    background: #212121;
 }
 
 .current-emoticon.sub-section.clearfix {
-	background: #212121;
+    background: #212121;
 }
 
 .cl-container .cl-button-container {
-	background: #1B1B1B;
+    background: #1B1B1B;
 }
 
 .cl-container .section-header .header-back {
-	border-color: #343434;
+    border-color: #343434;
 }
 
 .new-dashboard .subscription-dash .video-quality-list li.selectable {
-	background: #1b1b1b;
-	border-right: 1px solid #343434;
+    background: #1b1b1b;
+    border-right: 1px solid #343434;
 }
 
 .new-dashboard .subscription-dash .video-quality-list li .quality-setting {
-	background: #141414;
+    background: #141414;
 }
 
 .new-dashboard .subscription-dash .video-quality-list li.non-selectables .option {
-	border-right: 1px solid #343434;
+    border-right: 1px solid #343434;
 }
 
 .new-dashboard .subscription-dash .video-quality-list li.non-selectables .quality-name {
-	color: #999;
+    color: #999;
 }
 
 .new-dashboard .dashboard-section .label-wrapper label {
-	color: #bbb;
+    color: #bbb;
 }
 
 .new-dashboard .subscription-dash .video-quality-list li .quality-setting {
-	background: #141414;
+    background: #141414;
 }
 
 .new-dashboard .subscription-dash .video-quality-list li.non-selectables .option {
-	background: #1b1b1b;
-	border-right: 1px solid #343434;
+    background: #1b1b1b;
+    border-right: 1px solid #343434;
 }
 
 .new-dashboard .dashboard-section .submit-button-fieldset {
-	background: #1B1B1B;
+    background: #1B1B1B;
 }
 
 #ticket-name-fieldset.clearfix {
-	background: #212121;
+    background: #212121;
 }
 
 .cl-container fieldset .cl-input-container input.string, .cl-container fieldset .cl-input-container input.text, .cl-container fieldset .cl-input-container textarea.string, .cl-container fieldset .cl-input-container textarea.text {
-	border: 1px solid #2c2c2c;
-	color: #d3d3d3;
-	background: #404040;
+    border: 1px solid #2c2c2c;
+    color: #d3d3d3;
+    background: #404040;
 }
 
 .new-dashboard .subscription-dash .video-quality-list li.selectable {
-	background: #1b1b1b;
-	border-right: 1px solid #343434;
+    background: #1b1b1b;
+    border-right: 1px solid #343434;
 }
 
 /* ~~~~~~~~~~~~Dark Group Chat~~~~~~~~~~~~~~~~~~~~~ */
 .ember-chat .chat-header {
-	background-color: rgb(50,50,50);
-	border-top: 1px solid #000;
-	border-bottom: 1px solid #000;
+    background-color: rgb(50,50,50);
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #000;
 }
 .ember-chat .chat-header.all-rooms-header {
-	background-color: rgb(50,50,50);
+    background-color: rgb(50,50,50);
 }
 .ember-chat .chat-menu .list-header {
-	color: #D3D3D3;
-	border-color: #000;
-	background: #282828;
+    color: #D3D3D3;
+    border-color: #000;
+    background: #282828;
 }
 div.chat-room-list.chat-menu div.js-rooms.scroll.chat-rooms div.tse-scroll-content {
-	background: rgb(30,30,30);
+    background: rgb(30,30,30);
 }
 .ember-chat .top-dropdown {
-	background: #282828;
-	border-color: #000;
+    background: #282828;
+    border-color: #000;
 }
 .ember-chat .chat-room-list.masked .mask {
-	background: #353535;
+    background: #353535;
 }
 .ember-chat .chat-menu .chat-top-header {
-	color: #9C9C9C !important;
+    color: #9C9C9C !important;
 }
 .ember-chat .top-dropdown .input-contain input.text-input {
-	background-color: rgb(20, 20, 20) !important;
-	color: #D3D3D3;
-	border-color: black;
+    background-color: rgb(20, 20, 20) !important;
+    color: #D3D3D3;
+    border-color: black;
 }
 .ember-chat .chat-room-list .room {
-	border-color: #202020;
+    border-color: #202020;
 }
 .ember-chat .no-content a {
-	color: #fff;
-	font-weight: bold;
+    color: #fff;
+    font-weight: bold;
 }
 .ember-chat .chat-room-list .room:hover p.room-title {
-	color: #fff;
+    color: #fff;
 }
 
 .no-login-contain li {
-	background: #000;
+    background: #000;
 }
 .no-login-contain h3 {
-	color: #DDD;
+    color: #DDD;
 }
 
 /* Hot Fixes for Redesign */
-ul.tabs li.selected a {
-	color: white;
-	border-bottom-color: white !important;
+.ember-application ul.tabs li.selected a {
+    color: white;
+    border-bottom-color: white !important;
 }
 
-ul.tabs li>a:hover {
-	color: white;
+.ember-application ul.tabs li>a:hover {
+    color: white;
 }
 
 .ember-chat .chat-menu .chat-menu-header {
-	border: 0px;
-	margin: 0px;
-	padding-left: 18px;
-	background: rgb(40,40,40);
+    border: 0px;
+    margin: 0px;
+    padding-left: 18px;
+    background: rgb(40,40,40);
 
 }
 .ember-chat .chat-settings .clear-chat a {
-	text-align: center;
+    text-align: center;
 }
 .button-simple {
-	padding: 5px;
+    padding: 5px;
 }
 
 #channel .player-column .stats-and-actions .channel-stats .stat {
-	color: #aaa;
+    color: #aaa;
 }
 div#actions {
-	background: rgb(30,30,30)
+    background: rgb(30,30,30)
 }
 
-#channel .player-column #broadcast-meta .info .edit-link{
-	background-repeat: no-repeat;
-}
 .chat-menu.dropmenu a {
-	color: white;
+    color: white;
 }
 
-.button.glyph:hover path, .button.glyph-only:hover path, #channel .player-column .stats-and-actions .channel-actions .button:hover, .ember-chat .chat-menu-button-container:hover svg path {
-	fill: #fff;
-	color:#fff;
+.button.glyph:hover path,
+.button.glyph-only:hover path,
+#channel .player-column .stats-and-actions .channel-actions .button:hover,
+.ember-chat .chat-menu-button-container:hover svg path {
+    fill: #fff;
+    color: #fff;
 }
 
 .ember-chat .chat-menu .chat-top-header {
-	border-bottom: 0px solid;
-} 
+    border-bottom: 0px solid;
+}
 
 .ember-chat .chat-menu-button-container:hover svg path {
-	fill: #fff;
+    fill: #fff;
 }
 
 .archives-contain .more-archives {
-	margin: 0 !important;
-	width: 100%;
+    margin: 0 !important;
+    width: 100%;
 }
 
 div#header_actions span, div#header_actions a{
-	color: black;
+    color: black;
 }
 
-.archives-contain .videos { 
-	padding:0;
+.archives-contain .videos {
+    padding:0;
 }
 .archives-contain S.list-video {
-	padding: 10px 10px;
+    padding: 10px 10px;
 }
 
 span#is-subscribed {
-	margin: 0px;
-	padding-left: 10px;
-	padding-right: 10px;
-	background-color: rgb(30, 30, 30);
-	box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset;
-	border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.35);
-	color: rgb(170, 170, 170);
-	text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px;
-	border: 1px solid;
-	padding-right: 10px;
-	border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.35);
-	border-radius: 2px;
-	font-size: 12px;
+    margin: 0px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: rgb(30, 30, 30);
+    box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset;
+    border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.35);
+    color: rgb(170, 170, 170);
+    text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px;
+    border: 1px solid;
+    padding-right: 10px;
+    border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.35);
+    border-radius: 2px;
+    font-size: 12px;
 }
 
 #channel .player-column .stats-and-actions .channel-actions .button.primary span {
-	color: #fff;
+    color: #fff;
 }
 
 .button.glyph svg path, .button.glyph-only svg path {
-	fill: rgb(170, 170, 170);
+    fill: rgb(170, 170, 170) !important;
 }
 
 .ember-chat .chat-menu-button-container svg path {
-	fill: #D3D3D3 !important;
+    fill: #D3D3D3 !important;
 }
 
 .ember-chat .chat-interface .emoticon-selector .subscribe-message {
-	padding: 5px;
-	margin: 0px;
+    padding: 5px;
+    margin: 0px;
+}
+
+.ember-chat .chat-interface .suggestions {
+    background-color: #323232;
 }
 
 #main_col .stats-and-actions #is-subscribed, #main_col .content #stats_and_actions #channel_stats .stat, .ember-chat .chat-room-list .room p.room-title, .button.unfollow, .button.unfollow:hover {
-	color: #D3D3D3 !important;
+    color: #D3D3D3 !important;
 }
 
 ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .ember-application .dropmenu .dropmenu_action  {
-	color: #D3D3D3;
+    color: #D3D3D3;
 }
 
 /* Hosting */
 .target-frame, .hostmode-title-container, .close-hostmode {
-	background: rgb(20,20,20)!important;
+    background: rgb(20,20,20)!important;
 }
 
 .hostmode-title-container .hostmode-title a, #hostmode .target-meta .target-user-and-game a {
-	color: #999;
+    color: #999;
 }
 
 .close-hostmode a:before, .close-hostmode a:after {
-	border: 5px solid rgba(255, 255, 255, 0.2);
-	border-top-color: transparent;
-	border-left-color: transparent;
-	border-right-color: transparent;
+    border: 5px solid rgba(255, 255, 255, 0.2);
+    border-top-color: transparent;
+    border-left-color: transparent;
+    border-right-color: transparent;
 }
 
 .close-hostmode a.show-hostmode:before, .close-hostmode a.show-hostmode:after {
-	border: 5px solid rgba(255, 255, 255, 0.2);
-	border-bottom-color: transparent;
-	border-left-color: transparent;
-	border-right-color: transparent;
+    border: 5px solid rgba(255, 255, 255, 0.2);
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+    border-right-color: transparent;
 }
 
 .hostmode-title-container .hostmode-title .host-profile-image svg path {
-	fill: #fff;
+    fill: #fff;
 }
 
 a.button.float-right:hover {
@@ -1794,24 +1953,51 @@ color: white;
 
 /* Video Manager */
 .channel_new .app-main #directory-list #video-manager .videos-grid .video.item .meta {
-	background: #1f1f1f;
+    background: #1f1f1f;
 }
 
 .search_input, #sidebar_query_small {
-	color: white;
+    color: white;
 }
 .button.js-remove-image {
-	color: white;
+    color: white;
 }
 .following-col .col-header .search-contain .search .search-button svg path {
-	fill: rgba(255,255,255,0.25);
+    fill: rgba(255,255,255,0.25);
 }
 .following-col .col-header .search-contain .search .search-button:hover svg path {
-	fill: rgba(255,255,255,0.5);
+    fill: rgba(255,255,255,0.5);
 }
 span.subscribe-text {
-	color: white;
+    color: white;
 }
 .button.subscribe-button .subscribe-price {
-	color: rgb(170,170,170)!important;
+    color: rgb(170,170,170)!important;
+}
+
+/* theatre mode */
+#channel .player-column .exit-theatre > a {
+    color: #fff;
+    background: rgb(50, 50, 50);
+    opacity: 0.8;
+}
+
+/* theatre mode popup messages */
+.stats-and-actions .channel-actions .theatre-button .whatisthis,
+#player .theatreCloseNotice {
+    background-color: rgb(30,30,30);
+}
+.stats-and-actions .channel-actions .theatre-button .whatisthis:before {
+    border-top-color: rgb(30,30,30);
+}
+
+/* random "whatisthis" darkening */
+.app-main .directory_header .whatisthis {
+    background-color: rgb(30,30,30);
+}
+.app-main .directory_header .whatisthis:before {
+    border-bottom-color: rgb(30,30,30);
+}
+.whatisthis .actions a {
+    color: #999;
 }

@@ -1,9 +1,9 @@
-var debug = require('../debug'),
-    vars = require('../vars');
+var debug = require('../helpers/debug'),
+    vars = require('../vars'),
+    removeElement = require('../helpers/element').remove;
 var darkenPage = require('./darken-page'),
     splitChat = require('./split-chat'),
     settingsPanelTemplate = require('../templates/settings-panel');
-var removeElement = require('../element').remove;
 
 module.exports = function () {
     var settingsPanel = document.createElement("div");
@@ -13,15 +13,13 @@ module.exports = function () {
     $("body").append(settingsPanel);
 
     if(/\?bttvSettings=true/.test(window.location)) {
-        $('#bttvSettingsPanel').show();
-        $('#body').css({
-            overflow: 'hidden !important',
-            height: '100% !important',
-            width: '100% !important'
-        });
-        $('#mantle_skin').remove();
-        $('#site_header').remove();
-        $('#site_footer').remove();
+        $('#left_col').remove();
+        $('#main_col').remove();
+        setTimeout(function() {
+            $('#bttvSettingsPanel').hide(function() {
+                $('#bttvSettingsPanel').show();
+            });
+        }, 1000);
     }
 
     $.get('//cdn.betterttv.net/privacy.html', function (data) {

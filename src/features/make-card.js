@@ -50,7 +50,7 @@ module.exports = function(user, $event) {
         $modCard.find('.mod-card-ignore .svg-unignore').show();
     }
     $modCard.find('.mod-card-ignore').click(function() {
-        if ($modCard.find('.mod-card-ignore .svg-unignore').is(':visible')) {
+        if($modCard.find('.mod-card-ignore .svg-unignore').css('display') !== 'none') {
             bttv.chat.helpers.sendMessage('/unignore '+user.name);
             $modCard.find('.mod-card-ignore .svg-ignore').show();
             $modCard.find('.mod-card-ignore .svg-unignore').hide();
@@ -66,7 +66,7 @@ module.exports = function(user, $event) {
         $modCard.find('.mod-card-mod .svg-remove-mod').show();
     }
     $modCard.find('.mod-card-mod').click(function() {
-        if ($modCard.find('.mod-card-mod .svg-remove-mod').is(':visible')) {
+        if($modCard.find('.mod-card-mod .svg-remove-mod').css('display') !== 'none') {
             bttv.chat.helpers.sendMessage('/unmod '+user.name);
             $modCard.find('.mod-card-mod .svg-add-mod').show();
             $modCard.find('.mod-card-mod .svg-remove-mod').hide();
@@ -77,28 +77,33 @@ module.exports = function(user, $event) {
         }
     });
 
-    Twitch.api.get('users/:login/follows/channels/'+user.name).done(function() {
+    bttv.TwitchAPI.get('users/:login/follows/channels/'+user.name).done(function() {
         $modCard.find('.mod-card-follow').text('Unfollow');
     }).fail(function() {
         $modCard.find('.mod-card-follow').text('Follow');
     });
     $modCard.find('.mod-card-follow').text('Unfollow').click(function() {
         if ($modCard.find('.mod-card-follow').text() === 'Unfollow') {
-            Twitch.api.del("users/:login/follows/channels/"+user.name).done(function() {
-                bttv.chat.helpers.serverMessage('User was unfollowed successfully.');
+            bttv.TwitchAPI.del("users/:login/follows/channels/"+user.name).done(function() {
+                bttv.chat.helpers.serverMessage('User was unfollowed successfully.', true);
             }).fail(function() {
-                bttv.chat.helpers.serverMessage('There was an error following this user.');
+                bttv.chat.helpers.serverMessage('There was an error following this user.', true);
             });
             $modCard.find('.mod-card-follow').text('Follow');
         } else {
-            Twitch.api.put("users/:login/follows/channels/"+user.name).done(function() {
-                bttv.chat.helpers.serverMessage('User was followed successfully.');
+            bttv.TwitchAPI.put("users/:login/follows/channels/"+user.name).done(function() {
+                bttv.chat.helpers.serverMessage('User was followed successfully.', true);
             }).fail(function() {
-                bttv.chat.helpers.serverMessage('There was an error following this user.');
+                bttv.chat.helpers.serverMessage('There was an error following this user.', true);
             });
             $modCard.find('.mod-card-follow').text('Unfollow');
         }
     });
 
     $modCard.drags({ handle: ".drag-handle", el: $modCard });
+
+    $('.chat-line[data-sender="' + user.name + '"]').addClass('bttv-user-locate');
+    $modCard.on('remove', function() {
+        $('.chat-line[data-sender="' + user.name + '"]').removeClass('bttv-user-locate');
+    });
 }

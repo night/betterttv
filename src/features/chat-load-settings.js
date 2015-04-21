@@ -1,8 +1,8 @@
-var debug = require('../debug'),
-    vars = require('../vars');
+var debug = require('../helpers/debug'),
+    vars = require('../vars'),
+    removeElement = require('../helpers/element').remove;
 var darkenPage = require('./darken-page'),
     splitChat = require('./split-chat');
-var removeElement = require('../element').remove;
 
 module.exports = function() {
     if(!$('.ember-chat .chat-settings').length || $('.ember-chat .chat-settings .bttvChatSettings').length) return;
@@ -59,6 +59,17 @@ module.exports = function() {
     $('.clearChat').click(function(e) {
         e.preventDefault();
         removeElement(".chat-line");
+    });
+
+    $('.toggleDarkenTTV').change(function(e) {
+        e.preventDefault();
+        if (bttv.settings.get("darkenedMode") === true) {
+            bttv.settings.save("darkenedMode", false);
+            $(this).prop('checked', false);
+        } else {
+            bttv.settings.save("darkenedMode", true);
+            $(this).prop('checked', true);
+        }
     });
 
     $('.flipDashboard').click(function(e) {

@@ -1,11 +1,11 @@
-var debug = require('../debug'),
-	removeElement = require('../element').remove;
+var debug = require('../helpers/debug'),
+	removeElement = require('../helpers/element').remove;
 
 module.exports = function () {
     debug.log("Clearing Clutter");
 
     // Sidebar is so cluttered
-    removeElement('li[data-name="kabam"]');
+    $('li[data-name="kabam"]').attr('style', 'display: none !important');
     removeElement('#nav_advertisement');
     if (bttv.settings.get("showFeaturedChannels") !== true) {
         removeElement('#nav_games');

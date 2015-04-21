@@ -1,16 +1,14 @@
-var debug = require('../../debug'),
+var debug = require('../../helpers/debug'),
     keyCodes = require('../../keycodes'),
     vars = require('../../vars');
-var linkifyTitle = require('./linkify-title'),
-    handleResize = require('./handle-resize'),
+var handleResize = require('./handle-resize'),
     twitchcast = require('./twitchcast');
 
 module.exports = function () {
-    if ($('body.ember-application').length === 0 || $('.ember-chat').length === 0 || $("#right_col").length === 0) return;
+    if($('#main_col #channel').length === 0 || $("#right_col").length === 0) return;
 
     debug.log("Reformatting Channel Page");
 
-    linkifyTitle();
     twitchcast();
 
     if(!vars.loadedChannelResize) {
@@ -19,22 +17,20 @@ module.exports = function () {
         var resize = false;
 
         $(document).keydown(function (event) {
-            if (event.keyCode === keyCodes.r && event.altKey) {
+            if(event.keyCode === keyCodes.r && event.altKey) {
                 $(window).trigger('resize');
             }
         });
 
         $(document).mouseup(function (event) {
-            if (resize === false) return;
-            if (chatWidthStartingPoint) {
+            if(resize === false) return;
+            if(chatWidthStartingPoint) {
                 if (chatWidthStartingPoint === event.pageX) {
                     if ($("#right_col").css("display") !== "none") {
                         $("#right_col").css({
                             display: "none"
                         });
-                        $("#right_close span").css({
-                            "background-position": "0 0"
-                        });
+                        $("#right_close").removeClass('open').addClass('closed');
                         vars.chatWidth = 0;
                     }
                 } else {
@@ -53,14 +49,12 @@ module.exports = function () {
             event.preventDefault();
             resize = event.pageX;
             chatWidthStartingPoint = event.pageX;
-            $("#chat_text_input").focus();
-            if ($("#right_col").css("display") === "none") {
+
+            if($("#right_col").css("display") === "none") {
                 $("#right_col").css({
                     display: "inherit"
                 });
-                $("#right_close span").css({
-                    "background-position": "0 -18px"
-                });
+                $("#right_close").removeClass('closed').addClass('open');
                 resize = false;
                 if ($("#right_col").width() < 340) {
                     $("#right_col").width($("#right_col .top").width());
@@ -72,27 +66,22 @@ module.exports = function () {
         });
 
         $(document).mousemove(function (event) {
-            if (resize) {
-                $("#chat_text_input").focus();
+            if(resize) {
                 if (vars.chatWidth + resize - event.pageX < 340) {
                     $("#right_col").width(340);
                     $("#right_col #chat").width(340);
                     $("#right_col .top").width(340);
-
-                    handleResize();
                 } else if (vars.chatWidth + resize - event.pageX > 541) {
                     $("#right_col").width(541);
                     $("#right_col #chat").width(541);
                     $("#right_col .top").width(541);
-
-                    handleResize();
                 } else {
                     $("#right_col").width(vars.chatWidth + resize - event.pageX);
                     $("#right_col #chat").width(vars.chatWidth + resize - event.pageX);
                     $("#right_col .top").width(vars.chatWidth + resize - event.pageX);
-
-                    handleResize();
                 }
+
+                handleResize();
             }
         });
 
@@ -103,7 +92,7 @@ module.exports = function () {
         });
     }
 
-    if (bttv.settings.get["chatWidth"] && bttv.settings.get["chatWidth"] < 0) {
+    if(bttv.settings.get["chatWidth"] && bttv.settings.get["chatWidth"] < 0) {
         bttv.settings.save("chatWidth", 0);
     }
 
@@ -142,16 +131,14 @@ module.exports = function () {
         $(window).trigger('resize');
     });
 
-    if (bttv.settings.get("chatWidth") !== null) {
+    if(bttv.settings.get("chatWidth") !== null) {
         vars.chatWidth = bttv.settings.get("chatWidth");
 
-        if (vars.chatWidth == 0) {
+        if(vars.chatWidth == 0) {
             $("#right_col").css({
                 display: "none"
             });
-            $("#right_close span").css({
-                "background-position": "0 0"
-            });
+            $("#right_close").removeClass('open').addClass('closed');
         } else {
             $("#right_col").width(vars.chatWidth);
             $("#right_col #chat").width(vars.chatWidth);
@@ -160,10 +147,11 @@ module.exports = function () {
 
         $(window).trigger('resize');
     } else {
-        if ($("#right_col").width() == "0") {
+        if($("#right_col").width() == "0") {
             $("#right_col").width("340px");
 
         }
+
         vars.chatWidth = $("#right_col").width();
         bttv.settings.save("chatWidth", $("#right_col").width());
     }
