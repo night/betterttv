@@ -5,10 +5,10 @@ var debug = require('../debug'),
 var loadTeam = module.exports = function() {
     debug.log("Loading team data");
     var theTeam = (window.location.pathname).replace("/team/", "");
+    theTeam = theTeam.replace("/event/", "");
 
     Twitch.api.get("/api/team/"+theTeam+"/all_channels.json")
     .done(function(d) {
-        //debug.log("team loaded successfully");
         vars.jsnTeam = d.channels;
         createButtons();
         setTimeout(loadTeam, 60000);
@@ -24,7 +24,6 @@ var loadTeam = module.exports = function() {
     });
 
     var createButtons = function() {
-        //debug.log("creating buttons");
         $("#team_member_list").empty();
 
         vars.jsnTeam.forEach(function(a) {
@@ -61,7 +60,6 @@ var loadTeam = module.exports = function() {
                     position:{
                         my:"left top",
                         at:"right top"
-                        //collision: "flipfit"
                     },
                     content: function() { return $(this).attr("title"); }
                 });

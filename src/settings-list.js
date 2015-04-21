@@ -107,6 +107,13 @@ module.exports = [
                     splitChat();
                 }
             }
+            
+            //chat on team page is iframe embed
+            if(typeof parent.$("body").attr("data-page") !== "undefined" && parent.$("body").attr("data-page") == "teams#show") {
+                parent.location.reload();
+                var bttvSetWin = window.open("", "BetterTTV Settings", "", true);
+                bttvSetWin.close();
+            }
         },
         load: function() {
             var currentDarkStatus = false;

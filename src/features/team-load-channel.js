@@ -8,7 +8,6 @@ module.exports = function(chan) {
     $("div.member.js-playing").removeClass("js-playing");
     $("#channel_"+chan).addClass("js-playing");
 
-    //load video
     $("#standard_holder").empty();
     var p1 = $("<param>", {"name":"allowFullScreen", "value":"true"}),
         p2 = $("<param>", {"name":"allowScriptAccess", "value":"always"}),
@@ -18,12 +17,10 @@ module.exports = function(chan) {
     player.append(p1, p2, p3);
     $("#standard_holder").append(player);
 
-    //load chat
     $("#team_chat").empty();
     var chatEmbed = $("<iframe>", {"id":"chatEmbed", "src":"http://twitch.tv/chat/embed?channel="+chan, "frameborder":"0"});
     $("#team_chat").append(chatEmbed);
 
-    //check if chan has subs
     Twitch.api.get("/api/channels/"+chan+"/product")
     .done(function(d) {
         debug.log(chan+" has subs:"+d.price);
@@ -42,7 +39,6 @@ module.exports = function(chan) {
     var uName = cookie.get("login");
 
     var checkIsSubbed = function() {
-        //debug.log("checking if subbed to chanel");
         if(typeof uName !== "undefined") {
             Twitch.api.get("/api/users/"+uName+"/tickets?channel="+chan)
             .done(function(d) {
@@ -56,12 +52,9 @@ module.exports = function(chan) {
             .fail(function(d) {
                 debug.log("check if "+uName+" is subbed to "+chan+" failed");
             });
-        } else {
-            //debug.log("user not logged in for isSubbed check");
         }
     }
 
-    //update all the channel info below the player (stats, description, title, share menu, follow/sub buttons, etc)
     var addStoof = function(val) {
         var jsnTeam = vars.jsnTeam;
         
@@ -109,16 +102,6 @@ module.exports = function(chan) {
 
                 var shareBtn   = $("<div>", {"id":"sharebtn", "class":"button action primary"});
                 shareBtn.text("Share");
-                /* dunno why but this will not show the share menu
-                shareBtn.click(function(e) {
-                    debug.log("share button click");
-                    var o = $(e.target).offset();
-                    var aLeft = o.left + 1;
-                    var aTop = o.top + 42;
-                    $("#share").css({"top":aTop+"px", "left":aLeft+"px"}).toggle("blind");
-                    
-                });
-                */
 
                 if(val != 0) {
                     var subBtn = $("<a>", {"id":"subscribe_action", "class":"action button js-sub-button primary subscribe-button", "href":"/"+chan+"/subscribe?ref=below_video_subscribe_button", "target":"_blank"}),
@@ -140,7 +123,6 @@ module.exports = function(chan) {
             }
         }
         
-        //check if user is following chan
         if(typeof uName !== "undefined") {
             Twitch.api.get("/kraken/users/"+uName+"/follows/channels/"+chan)
             .done(function(d) {
@@ -154,8 +136,6 @@ module.exports = function(chan) {
                     debug.log(uName+" is not following "+chan);
                 }
             });
-        } else {
-            //debug.log("user not logged in to check if following");
         }
     }
 

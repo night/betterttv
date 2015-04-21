@@ -330,6 +330,7 @@ var clearClutter = require('./features/clear-clutter'),
     createSettings = require('./features/create-settings');
     enableImagePreview = require('./features/image-preview').enablePreview;
     enableTheatreMode = require('./features/auto-theatre-mode');
+    formatTeamPage = require('./features/team-format-page');
 
 var chatFunctions = function () {
 
@@ -524,6 +525,7 @@ var main = function () {
         directoryFunctions();
         handleTwitchChatEmotesScript();
         emoticonTextInClipboard();
+        formatTeamPage();
         if (bttv.settings.get('chatImagePreview') === true) {
             enableImagePreview();
         }

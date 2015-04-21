@@ -7,7 +7,6 @@ module.exports = function () {
     if(bttv.settings.get("formatTeamPage") !== true || $("body").attr("data-page") != "teams#show") return;
     debug.log("Formatting team page");
 
-    //add the CSS and JS
     var jquiCSS = $("<link>", {"href":"//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/dark-hive/jquery-ui.min.css", "type":"text/css", "rel":"stylesheet"}),
         jquiJS  = $("<script>", {"src":"//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js", "type":"text/javascript"}),
         teamCSS = $("<link>", {"href":"//cdn.betterttv.net/style/stylesheets/betterttv-team-page.css?"+bttv.info.versionString(), "id":"betterTwitchTeams", "rel":"stylesheet", "type":"text/css"});
@@ -17,13 +16,9 @@ module.exports = function () {
     }
     $('body').append(jquiCSS, jquiJS, teamCSS);
 
-    //remove "Members" text below team logo
     $("h2").remove();
-
-    //move team banner into info section
     $("#about").prepend($("#banner_header"));
 
-    //add follow team button
     var followTeamButton = $("<a>", {"id":"followTeamBtn", "data-ember-action":"135", "class":"js-follow follow button primary action"});
     followTeamButton.text("Follow The Whole Team");
     followTeamButton.click(function(e) {
@@ -31,11 +26,9 @@ module.exports = function () {
     });
     $("#team_logo").after(followTeamButton);
 
-    //add chat holder
     var newDiv = $("<div>", {"id":"team_chat"});
     $(".wrapper.c12.clearfix").append(newDiv);
 
-    //for w/e reason i can't open the share menu from the share btn onclick, i have to hook the doc click
     $(document).click(function(e) {
         if(e.target.id =="sharebtn") {
             var o = $(e.target).offset(),
@@ -45,7 +38,6 @@ module.exports = function () {
         }
     });
 
-    //dynamic element sizing
     $(window).resize(function() {
         var vpWidth = $(window).width(),
             vpHeight = $(window).height(),
@@ -55,7 +47,6 @@ module.exports = function () {
             paddedWidth = 985;
         }
 
-        //left col + right col + margins = 685
         var playerWidth = paddedWidth - 685,
             arMultiplier = (playerWidth - 2) / 16,
             playerHeight = (9 * arMultiplier) + 32;
@@ -75,7 +66,6 @@ module.exports = function () {
         $("#team_member_list").css({"height":teamListHeight+"px"});
     });
 
-    //clear all the twitch timers for updating member list, updating selected chan info, etc
     var maxId = setTimeout(function() {}, 0);
     for(var i=0; i < maxId; i+=1) { 
             clearTimeout(i);
