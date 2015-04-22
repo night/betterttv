@@ -500,6 +500,10 @@ var labelsChanged = exports.labelsChanged = function (user) {
 var clearChat = exports.clearChat = function (user) {
     var trackTimeouts = store.trackTimeouts;
 
+    // Remove chat image preview if it exists.
+    // We really shouldn't have to place this here, but since we don't emit events...
+    $("#chat_preview").remove();
+
     if(!user) {
         helpers.serverMessage("Chat was cleared by a moderator (Prevented by BetterTTV)", true);
     } else {
@@ -573,6 +577,12 @@ var onPrivmsg = exports.onPrivmsg = function (channel, data) {
     }
 };
 var privmsg = exports.privmsg = function (channel, data) {
+    // TODO: Find a better way to handle display names
+    if(data.tags && data.tags['display-name']) {
+        if(!store.displayNames[data.from]) store.displayNames[data.from] = { lookedUp: false };
+        store.displayNames[data.from].displayName = data.tags['display-name'];
+    }
+
     if(data.style && (data.style !== 'admin' && data.style !== 'action' && data.style !== 'notification')) return;
 
     if(data.style === 'admin' || data.style === 'notification') {
@@ -729,16 +739,31 @@ var calculateColorReplacement = require('../helpers/colors').calculateColorRepla
 
 var lookupDisplayName = exports.lookupDisplayName = function(user) {
     if(!user || user === "") return;
+
+    // There's no display-name when sending messages, so we'll fill in for that
+    if(vars.userData.isLoggedIn && user === vars.userData.login) {
+        store.displayNames[user] = {
+            displayName: Twitch.user.displayName(),
+            lookedUp: false
+        };
+    }
+    
     var socketServer = bttv.socketServer;
     if(tmi()) {
         if(store.displayNames[user]) {
-            if(socketServer && (Date.now()-store.displayNames[user].date) > 900000) {
+            if(socketServer && !store.displayNames[user].lookedUp) {
                 socketServer.emit('lookup', { user: user });
+                store.displayNames[user].lookedUp = true;
             }
+            
             return store.displayNames[user].displayName;
         } else if(user !== "jtv" && user !== "twitchnotify") {
             if(socketServer && store.__usersBeingLookedUp < 3) {
                 socketServer.emit('lookup', { user: user });
+                store.displayNames[user] = {
+                    displayName: user.capitalize(),
+                    lookedUp: true
+                };
             }
 
             store.__usersBeingLookedUp++;
@@ -1336,7 +1361,6 @@ var takeover = module.exports = function() {
     if(store.isLoaded) return;
 
     if(bttv.socketServer) {
-        if(bttv.getChannel()) helpers.lookupDisplayName(bttv.getChannel());
         if(vars.userData.isLoggedIn) helpers.lookupDisplayName(vars.userData.login);
     }
 
@@ -1385,7 +1409,7 @@ var takeover = module.exports = function() {
     rooms.newRoom(bttv.getChannel());
     tmi.tmiRoom.on('message', rooms.getRoom(bttv.getChannel()).chatHandler);
     tmi.tmiRoom.on('clearchat', handlers.clearChat);
-    tmi.set('name', helpers.lookupDisplayName(bttv.getChannel()));
+    if(tmi.channel) tmi.set('name', tmi.channel.get('display_name'));
     store.currentRoom = bttv.getChannel();
     //tmi.tmiRoom.on('labelschanged', handlers.labelsChanged);
 
@@ -2450,6 +2474,14 @@ checkJquery();
 var debug = require('../helpers/debug');
 
 module.exports = function () {
+	if(
+		!window.Ember || 
+		!window.App || 
+		App.__container__.lookup("controller:application").get("currentRouteName") !== "channel.index"
+	) {
+		return;
+	}
+	
     // Call 'toggleTheatre' action on the channel controller in Ember
     App.__container__.lookup('controller:channel').send('toggleTheatre');
 }

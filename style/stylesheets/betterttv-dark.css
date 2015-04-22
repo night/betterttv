@@ -364,7 +364,6 @@ body {
     opacity: .5;
     border: 1px solid;
     border-color: rgba(0, 0, 0, 0.4) rgba(0, 0, 0, 0.5) rgba(0, 0, 0, 0.55);
-    background-image: url(../icons/arrow_collapse.png) !important;
     box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 0px 1px;
     background-color: rgb(50, 50, 50);
     box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset;
@@ -1642,6 +1641,14 @@ table.simple_table td {
 
 .modal-form .buttons .button {
     color: #d3d3d3;
+}
+
+.upsell-banner {
+    background-color: #222;
+}
+
+.upsell-banner .message .title {
+    color: #999;
 }
 
 /* darken link list popup */

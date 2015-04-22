@@ -12,16 +12,31 @@ var calculateColorReplacement = require('../helpers/colors').calculateColorRepla
 
 var lookupDisplayName = exports.lookupDisplayName = function(user) {
     if(!user || user === "") return;
+
+    // There's no display-name when sending messages, so we'll fill in for that
+    if(vars.userData.isLoggedIn && user === vars.userData.login) {
+        store.displayNames[user] = {
+            displayName: Twitch.user.displayName(),
+            lookedUp: false
+        };
+    }
+    
     var socketServer = bttv.socketServer;
     if(tmi()) {
         if(store.displayNames[user]) {
-            if(socketServer && (Date.now()-store.displayNames[user].date) > 900000) {
+            if(socketServer && !store.displayNames[user].lookedUp) {
                 socketServer.emit('lookup', { user: user });
+                store.displayNames[user].lookedUp = true;
             }
+            
             return store.displayNames[user].displayName;
         } else if(user !== "jtv" && user !== "twitchnotify") {
             if(socketServer && store.__usersBeingLookedUp < 3) {
                 socketServer.emit('lookup', { user: user });
+                store.displayNames[user] = {
+                    displayName: user.capitalize(),
+                    lookedUp: true
+                };
             }
 
             store.__usersBeingLookedUp++;

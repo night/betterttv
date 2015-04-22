@@ -15,7 +15,6 @@ var takeover = module.exports = function() {
     if(store.isLoaded) return;
 
     if(bttv.socketServer) {
-        if(bttv.getChannel()) helpers.lookupDisplayName(bttv.getChannel());
         if(vars.userData.isLoggedIn) helpers.lookupDisplayName(vars.userData.login);
     }
 
@@ -64,7 +63,7 @@ var takeover = module.exports = function() {
     rooms.newRoom(bttv.getChannel());
     tmi.tmiRoom.on('message', rooms.getRoom(bttv.getChannel()).chatHandler);
     tmi.tmiRoom.on('clearchat', handlers.clearChat);
-    tmi.set('name', helpers.lookupDisplayName(bttv.getChannel()));
+    if(tmi.channel) tmi.set('name', tmi.channel.get('display_name'));
     store.currentRoom = bttv.getChannel();
     //tmi.tmiRoom.on('labelschanged', handlers.labelsChanged);
 

@@ -148,6 +148,10 @@ var labelsChanged = exports.labelsChanged = function (user) {
 var clearChat = exports.clearChat = function (user) {
     var trackTimeouts = store.trackTimeouts;
 
+    // Remove chat image preview if it exists.
+    // We really shouldn't have to place this here, but since we don't emit events...
+    $("#chat_preview").remove();
+
     if(!user) {
         helpers.serverMessage("Chat was cleared by a moderator (Prevented by BetterTTV)", true);
     } else {
@@ -221,6 +225,12 @@ var onPrivmsg = exports.onPrivmsg = function (channel, data) {
     }
 };
 var privmsg = exports.privmsg = function (channel, data) {
+    // TODO: Find a better way to handle display names
+    if(data.tags && data.tags['display-name']) {
+        if(!store.displayNames[data.from]) store.displayNames[data.from] = { lookedUp: false };
+        store.displayNames[data.from].displayName = data.tags['display-name'];
+    }
+
     if(data.style && (data.style !== 'admin' && data.style !== 'action' && data.style !== 'notification')) return;
 
     if(data.style === 'admin' || data.style === 'notification') {
