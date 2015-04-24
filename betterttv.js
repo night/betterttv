@@ -409,20 +409,19 @@ var commands = exports.commands = function (input) {
             bttv.settings.save('chatLineHistory', true);
         }
     } else if (command === "/uptime") {
-        bttv.TwitchAPI.get('streams/' + bttv.getChannel()).done(function (stream) {
+        bttv.TwitchAPI.get('streams/' + bttv.getChannel()).done(function(stream) {
             if (stream.stream !== null) {
-                var started = new Date(stream.stream.created_at),
-                    now = new Date(),
-                    timeDiff = Math.abs(now.getTime() - (started.getTime() - 1000 * 60 * started.getTimezoneOffset())),
-                    days = Math.floor(timeDiff / (1000 * 3600 * 24)),
-                    hours = Math.floor(timeDiff / (1000 * 3600)) - (days * 24),
-                    minutes = Math.floor(timeDiff / (1000 * 60)) - ((days * 24) + (hours * 60)),
-                    seconds = Math.floor(timeDiff / 1000) - ((days * 24 * 60 * 60) + (hours * 60 * 60) + (minutes * 60));
+                var startedTime = new Date(stream.stream.created_at),
+                    totalUptime = Math.round(Math.abs((Date.now() - (startedTime.getTime() - (startedTime.getTimezoneOffset() * 60 * 1000))) / 1000)),
+                    days = Math.floor(totalUptime / 86400),
+                    hours = Math.floor(totalUptime / 3600) - (days * 24),
+                    minutes = Math.floor(totalUptime / 60) - (days * 1440) - (hours * 60),
+                    seconds = totalUptime - (days * 86400) - (hours * 3600) - (minutes * 60);
                 helpers.serverMessage("Stream uptime: " +
-                    (days > 0 ? days + " days " : "") +
-                    (hours > 0 ? hours + " hours " : "") +
-                    (minutes > 0 ? minutes + " minutes " : "") +
-                    (seconds > 0 ? seconds + " seconds " : ""),
+                    (days > 0 ? days + " day"+(days===1?"":"s")+", " : "") +
+                    (hours > 0 ? hours + " hour"+(hours===1?"":"s")+", " : "") +
+                    (minutes > 0 ? minutes + " minute"+(minutes===1?"":"s")+", " : "") +
+                    seconds + " second"+(seconds===1?"":"s"),
                     true
                 );
             } else {
@@ -3009,7 +3008,7 @@ var checkBroadcastInfo = module.exports = function() {
             var $channel = $('#broadcast-meta .channel');
             
             if($channel.find('.playing').length) {
-                $channel.find('a:eq(1)').text(d.game).attr("href", Twitch.uri.game(d.game));
+                $channel.find('a:eq(1)').text(d.game).attr("href", Twitch.uri.game(d.game)).removeAttr('data-ember-action');
             }
         }
         if(d.status) {
