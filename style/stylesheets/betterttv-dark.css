@@ -2008,3 +2008,23 @@ span.subscribe-text {
 .whatisthis .actions a {
     color: #999;
 }
+
+/* Twitch emote menu */
+
+.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box {
+    background-color: rgb(25,25,25);
+}
+
+.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .emotes .emoticon-grid .emote-set {
+    border-color: #444;
+}
+
+.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .tabs {
+    border-color: #444;
+    color: #d3d3d3;
+}
+
+.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .tabs .tab.active {
+    border-color: #888;
+    color: #aaa;
+}
