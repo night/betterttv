@@ -1040,17 +1040,6 @@ body {
     color: #fff;
 }
 
-#controls #control_buttons .emoticon-selector-container .emoticon-selector.not-subscribed #non-subscriber-message {
-    color: #D3D3D3;
-}
-
-#controls #control_buttons .emoticon-selector-container .emoticon-selector .emoticon-selector-inner, #controls #control_buttons .emoticon-selector-container .emoticon-selector .emoticon-selector-inner {
-    background: rgb(20, 20, 20) !important;
-    box-shadow: none;
-    -moz-box-shadow: none;
-    -webkit-box-shadow: none;
-}
-
 /* New Messages Page */
 #main_col .messages #message_actions, #main_col .messages #reply_form, #main_col .messages #reply_message_form, #main_col .messages #send_message_form #top_buttons, #main_col .messages #send_message_form #bottom_buttons, #main_col .messages #reply_form #top_buttons, #main_col .messages #reply_form #top_buttons {
     background: #282828 !important;
@@ -1906,11 +1895,6 @@ span#is-subscribed {
     fill: #D3D3D3 !important;
 }
 
-.ember-chat .chat-interface .emoticon-selector .subscribe-message {
-    padding: 5px;
-    margin: 0px;
-}
-
 .ember-chat .chat-interface .suggestions {
     background-color: #323232;
 }
@@ -2027,4 +2011,16 @@ span.subscribe-text {
 .ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .tabs .tab.active {
     border-color: #888;
     color: #aaa;
+}
+
+.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .tabs .tab:hover {
+    border-color: #888;
+}
+
+.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .channel-emotes .subscribe-message {
+    border-color: #444;
+    color: #aaa;
+    margin: 0px;
+    padding: 5px 15px;
+    background-color: rgb(25,25,25);
 }
