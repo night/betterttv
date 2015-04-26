@@ -277,7 +277,7 @@ var takeover = module.exports = function() {
                     emotes: message.parsedEmotes
                 });
 
-                $(".ember-chat .chat-messages .tse-content .chat-lines").prepend(message);
+                $(".ember-chat .chat-messages .tse-content .chat-lines").append(message);
             });
         }
 
