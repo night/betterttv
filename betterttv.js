@@ -1631,6 +1631,8 @@ var takeover = module.exports = function() {
         bttv.chat.helpers.scrollChat();
     });
 
+    bttv.io.joinChannel();
+
     // Reset chatters list
     store.chatters = {};
     store.chatters[bttv.getChannel()] = true;
@@ -2344,7 +2346,6 @@ var main = function () {
                                 bttv.chat.store.isLoaded = false;
                                 betaChat();
                                 chatFunctions();
-                                bttv.io.joinChannel();
                             }
                         });
                         break;
@@ -4874,17 +4875,20 @@ function SocketClient() {
         reconnectionDelay: 30000,
         reconnectionDelayMax: 300000
     });
-    this.lookedUpUsers = [];
+    this._lookedUpUsers = [];
+    this._connected = false;
 
     var _self = this;
     this.socket.on('connect', function () {
         debug.log("SocketClient: Connected to BetterTTV Socket Server");
 
-        _self.joinChannel();
+        _self._connected = true;
     });
 
     this.socket.on('disconnect', function () {
         debug.log("SocketClient: Disconnected from BetterTTV Socket Server");
+
+        _self._connected = false;
     });
 
     // The rare occasion we need to global message people
@@ -4915,7 +4919,7 @@ function SocketClient() {
 }
 
 SocketClient.prototype.chatHistory = function(callback) {
-    if(!this.socket.connected) callback([]);
+    if(!this._connected || !this.socket.connected) callback([]);
 
     this.socket.emit('chat_history', bttv.getChannel(), function(history) {
         callback(history);
@@ -4924,9 +4928,9 @@ SocketClient.prototype.chatHistory = function(callback) {
 
 // Night's legacy subs
 SocketClient.prototype.lookupUser = function(name) {
-    if(!this.socket.connected) return;
-    if(this.lookedUpUsers.indexOf(name) > -1) return;
-    this.lookedUpUsers.push(name);
+    if(!this._connected || !this.socket.connected) return;
+    if(this._lookedUpUsers.indexOf(name) > -1) return;
+    this._lookedUpUsers.push(name);
 
     this.socket.emit('lookup_user', name, function(subscription) {
         if(!subscription) return;
@@ -4938,6 +4942,7 @@ SocketClient.prototype.lookupUser = function(name) {
 }
 
 SocketClient.prototype.joinChannel = function() {
+    if(!this._connected || !this.socket.connected) return;
     if(!bttv.getChannel().length) return;
     
     this.socket.emit('join_channel', bttv.getChannel());
@@ -4951,6 +4956,8 @@ SocketClient.prototype.joinChannel = function() {
 }
 
 SocketClient.prototype.giveEmoteTip = function(channel) {
+    if(!this._connected || !this.socket.connected) return;
+
     this.socket.emit('give_emote_tip', channel, function(status) {
         debug.log("SocketClient: Gave an emote tip about " + channel + " (success: " + status + ")");
     });

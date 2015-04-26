@@ -287,6 +287,8 @@ var takeover = module.exports = function() {
         bttv.chat.helpers.scrollChat();
     });
 
+    bttv.io.joinChannel();
+
     // Reset chatters list
     store.chatters = {};
     store.chatters[bttv.getChannel()] = true;

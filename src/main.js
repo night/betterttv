@@ -452,7 +452,6 @@ var main = function () {
                                 bttv.chat.store.isLoaded = false;
                                 betaChat();
                                 chatFunctions();
-                                bttv.io.joinChannel();
                             }
                         });
                         break;
