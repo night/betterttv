@@ -15,32 +15,16 @@ var lookupDisplayName = exports.lookupDisplayName = function(user) {
 
     // There's no display-name when sending messages, so we'll fill in for that
     if(vars.userData.isLoggedIn && user === vars.userData.login) {
-        store.displayNames[user] = {
-            displayName: Twitch.user.displayName(),
-            lookedUp: false
-        };
+        store.displayNames[user] = Twitch.user.displayName();
     }
     
-    var socketServer = bttv.socketServer;
+    // Get subscription status (Night's subs)
+    bttv.io.lookupUser(user);
+
     if(tmi()) {
-        if(store.displayNames[user]) {
-            if(socketServer && !store.displayNames[user].lookedUp) {
-                socketServer.emit('lookup', { user: user });
-                store.displayNames[user].lookedUp = true;
-            }
-            
-            return store.displayNames[user].displayName;
+        if(store.displayNames.hasOwnProperty(user)) {
+            return store.displayNames[user];
         } else if(user !== "jtv" && user !== "twitchnotify") {
-            if(socketServer && store.__usersBeingLookedUp < 3) {
-                socketServer.emit('lookup', { user: user });
-                store.displayNames[user] = {
-                    displayName: user.capitalize(),
-                    lookedUp: true
-                };
-            }
-
-            store.__usersBeingLookedUp++;
-
             return user.capitalize();
         } else {
             return user;
@@ -256,6 +240,19 @@ var sendMessage = exports.sendMessage = function(message) {
         tmi().set('savedInput', '');
     }
 };
+var reparseMessages = exports.reparseMessages = function(user) {
+    if(!user || !user.length) return;
+
+    bttv.jQuery('.chat-line[data-sender="' + user + '"] .message').each(function() {
+        var message = $(this);
+
+        var rawMessage = decodeURIComponent(message.data('raw'));
+        var emotes = message.data('emotes') ? JSON.parse(decodeURIComponent(message.data('emotes'))) : false;
+        var color = message.attr('style') ? message.attr('style').split(': ')[1] : false;
+
+        message.replaceWith(templates.message(user, rawMessage, emotes, color));
+    });
+};
 var listMods = exports.listMods = function() {
     if(tmi()) return tmi().tmiRoom._roomUserLabels._sets;
     return {};
@@ -306,6 +303,10 @@ var getBadges = exports.getBadges = function(user) {
     if(tmi() && tmi().tmiRoom.getLabels(user)) badges = tmi().tmiRoom.getLabels(user);
     if(store.__subscriptions[user] && store.__subscriptions[user].indexOf(bttv.getChannel()) !== -1) badges.push("subscriber");
     return badges;
+};
+var hasGlow = exports.hasGlow = function(user) {
+    if(!user || user === "") return false;
+    if(store.__subscriptions[user] && store.__subscriptions[user].indexOf('_glow') !== -1) return true;
 };
 var getColor = exports.getColor = function(user) {
     if(!user || user === "") return false;

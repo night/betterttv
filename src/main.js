@@ -4,7 +4,8 @@ var punycode = require('punycode');
 // Declare public and private variables
 var debug = require('./helpers/debug'),
     vars = require('./vars'),
-    TwitchAPI = require('./twitch-api');
+    TwitchAPI = require('./twitch-api'),
+    io = require('./socketio');
 
 bttv.info = {
     version: "6.8",
@@ -17,8 +18,6 @@ bttv.info = {
 bttv.TwitchAPI = TwitchAPI;
 
 bttv.vars = vars;
-
-bttv.socketServer = false;
 
 bttv.settings = {
     backup: function () {
@@ -233,6 +232,8 @@ bttv.getChannel = function() {
         return bttv.getChatController().currentRoom.id;
     } else if(window.PP && PP.channel) {
         return PP.channel;
+    } else {
+        return '';
     }
 }
 
@@ -397,13 +398,6 @@ var chatFunctions = function () {
     // $.getJSON("http://twitchstatus.com/api/report?type=chat&kind=join&server=" + CurrentChat.currentServer);
 }
 
-var handleLookupServer = function() {
-    var socketJSInject = document.createElement("script");
-    socketJSInject.setAttribute("src", "//cdn.betterttv.net/js/sock.js?"+bttv.info.versionString());
-    socketJSInject.setAttribute("type", "text/javascript");
-    $("head").append(socketJSInject);
-}
-
 var checkJquery = function(times) {
     times = times || 0;
     if(times > 9) return;
@@ -458,9 +452,7 @@ var main = function () {
                                 bttv.chat.store.isLoaded = false;
                                 betaChat();
                                 chatFunctions();
-                                if(bttv.socketServer) {
-                                    bttv.socketServer.emit("join channel", { channel: ((bttv.getChannel()) ? bttv.getChannel() : null) })
-                                }
+                                bttv.io.joinChannel();
                             }
                         });
                         break;
@@ -500,14 +492,14 @@ var main = function () {
         });
     }
 
-    handleLookupServer();
-
     $(document).ready(function () {
         createSettings();
         bttv.settings.load();
 
         debug.log("BTTV v" + bttv.info.versionString());
         debug.log("CALL init " + document.URL);
+
+        bttv.io = new io();
 
         clearClutter();
         channelReformat();

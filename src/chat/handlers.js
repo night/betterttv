@@ -224,10 +224,9 @@ var onPrivmsg = exports.onPrivmsg = function (channel, data) {
     }
 };
 var privmsg = exports.privmsg = function (channel, data) {
-    // TODO: Find a better way to handle display names
+    // Store display names
     if(data.tags && data.tags['display-name']) {
-        if(!store.displayNames[data.from]) store.displayNames[data.from] = { lookedUp: false };
-        store.displayNames[data.from].displayName = data.tags['display-name'];
+        store.displayNames[data.from] = data.tags['display-name'];
     }
 
     if(data.style && (data.style !== 'admin' && data.style !== 'action' && data.style !== 'notification')) return;
@@ -299,7 +298,7 @@ var privmsg = exports.privmsg = function (channel, data) {
 
     data.color = helpers.calculateColor(data.color);
 
-    if (bttv.glow && bttv.glow[data.from] && data.style !== 'action') {
+    if (helpers.hasGlow(data.from) && data.style !== 'action') {
         var rgbColor = (data.color === "#ffffff" ? getRgb("#000000") : getRgb(data.color));
         if(bttv.settings.get("darkenedMode") === true) data.color = data.color+"; text-shadow: 0 0 20px rgba("+rgbColor.r+","+rgbColor.g+","+rgbColor.b+",0.8)";
     }
