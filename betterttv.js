@@ -4869,7 +4869,11 @@ var debug = require('./helpers/debug');
 var vars = require('./vars');
 
 function SocketClient() {
-    this.socket = io('//sockets.betterttv.net/');
+    this.socket = io('//sockets.betterttv.net/', {
+        reconnection: true,
+        reconnectionDelay: 30000,
+        reconnectionDelayMax: 300000
+    });
     this.lookedUpUsers = [];
 
     var _self = this;
