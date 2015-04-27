@@ -12,7 +12,7 @@ var checkBroadcastInfo = module.exports = function() {
             var $channel = $('#broadcast-meta .channel');
             
             if($channel.find('.playing').length) {
-                $channel.find('a:eq(1)').text(d.game).attr("href", Twitch.uri.game(d.game));
+                $channel.find('a:eq(1)').text(d.game).attr("href", Twitch.uri.game(d.game)).removeAttr('data-ember-action');
             }
         }
         if(d.status) {

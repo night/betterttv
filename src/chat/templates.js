@@ -189,7 +189,7 @@ var message = exports.message = function(sender, message, emotes, colored) {
         message = tokenizedMessage.join(' ');
     }
 
-    return '<span class="message" '+(colored?'style="color: '+colored+'" ':'')+'data-raw="'+rawMessage+'">'+message+'</span>';
+    return '<span class="message" '+(colored?'style="color: '+colored+'" ':'')+'data-raw="'+rawMessage+'" data-emotes="'+(emotes ? encodeURIComponent(JSON.stringify(emotes)) : 'false')+'">'+message+'</span>';
 };
 var privmsg = exports.privmsg = function(highlight, action, server, isMod, data) {
     return '<div class="chat-line'+(highlight?' highlight':'')+(action?' action':'')+(server?' admin':'')+'" data-sender="'+data.sender+'">'+timestamp(data.time)+' '+(isMod?modicons():'')+' '+badges(data.badges)+from(data.nickname, data.color)+message(data.sender, data.message, data.emotes, action?data.color:false)+'</div>';
