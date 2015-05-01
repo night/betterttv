@@ -115,6 +115,10 @@ input.text:focus,select:focus,textarea:focus {
     color: #000;
 }
 
+.chat_line {
+    overflow-y: hidden;
+}
+
 .chat_line a, .ember-chat .chat-line a {
     color: #005596;
 }
