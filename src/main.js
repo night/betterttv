@@ -324,6 +324,7 @@ var clearClutter = require('./features/clear-clutter'),
     splitChat = require('./features/split-chat'),
     flipDashboard = require('./features/flip-dashboard'),
     formatDashboard = require('./features/format-dashboard'),
+    formatTeamPage = require('./features/team/team-format-page'),
     dashboardChannelInfo = require('./features/dashboard-channelinfo'),
     giveawayCompatibility = require('./features/giveaway-compatibility'),
     handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes'),
@@ -331,7 +332,6 @@ var clearClutter = require('./features/clear-clutter'),
     createSettings = require('./features/create-settings');
     enableImagePreview = require('./features/image-preview').enablePreview;
     enableTheatreMode = require('./features/auto-theatre-mode');
-    formatTeamPage = require('./features/team-format-page');
 
 var chatFunctions = function () {
 
