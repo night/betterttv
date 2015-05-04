@@ -1,5 +1,9 @@
 var debug = require('../../debug'),
     vars = require('../../vars'),
+    buttonTemplate = require('../../templates/team_channel-button'),
+    tooltipTemplate = require('../../templates/team_channel-button-tooltip'),
+    descAndTitleTemplate = require('../../templates/team_channel-description-and-title'),
+    tseInnerTemplate = require('../../templates/team_tse-content-inner-div'),
     loadChannel = require('./team-load-channel');
 
 var loadTeam = module.exports = function() {
@@ -8,16 +12,13 @@ var loadTeam = module.exports = function() {
     var theTeam = (window.location.pathname).replace("/team/", "");
     theTeam = theTeam.replace("/event/", "");
     
-    var hardPreviewUrl = "http://static-cdn.jtvnw.net/previews-ttv/live_user_CHANNEL-320x200.jpg",
-        updatedPreviewUrl = "none";
-        
     bttv.TwitchAPI.get("/api/team/"+theTeam+"/all_channels.json")
     .done(function(d) {
         debug.log("team load success");
         vars.jsnTeam = d.channels;
         
         if(vars.teamFirstLoad === 1) {
-            var membersInnerDiv = $("<div>", {"id":"bttvTeamMemberListInner", "class":"tse-content"});
+            var membersInnerDiv = $(tseInnerTemplate({"id":"bttvTeamMemberListInner"}));
             $("#team_member_list").addClass("scroll").empty().append(membersInnerDiv);
             $("#team_member_list").TrackpadScrollEmulator({scrollbarHideStrategy: "rightAndBottom"});
         
@@ -34,82 +35,66 @@ var loadTeam = module.exports = function() {
     
     var createButtons = function() {
         $("#bttvTeamMemberListInner").empty();
-        //todo: make a jade template for the buttons
-
+        
         vars.jsnTeam.forEach(function(a) {
-            var chanName = (a.channel.name).toLowerCase(),
+            var chanName = a.channel.name,
                 dispName = a.channel.display_name,
                 chanImgUrl = a.channel.image.size50,
                 chanGame = a.channel.meta_game,
                 chanStatus = a.channel.status,
                 chanViewers = a.channel.current_viewers,
-                newDiv = $("<div>", {"id":"bttvTeamChannelButton_"+chanName, "class":"member", "title":dispName+" is offline"});
+                theButtonArray = {"name": chanName, "displayName": dispName, "profileImage": chanImgUrl, "tooltip": dispName+" is offline"};
             
-            //update since we have fresh data
+            //update info below player
             if(chanName === vars.teamCurrentChannel) {
-                debug.log("updating current channel info");
                 $("#channel_viewer_count").text(chanViewers);
                 $("#views_count").text(a.channel.total_views);
                 $("#followers_count").text(a.channel.followers_count);
-                //todo: jade template?
-                $("#description").html("<b>Channel Description:</b><br>"+a.channel.description+"<br><br><b>Broadcast Title:</b><br>"+a.channel.title);
+                $("#description").html(descAndTitleTemplate({"description":a.channel.description, "title":a.channel.title}));
             }
             
-            newDiv.click(function(e) {
-                loadChannel(chanName); 
-            });
-            
             if(vars.teamCurrentChannel === chanName) {
-                newDiv.addClass("js-playing");
+                theButtonArray["isPlaying"] = true;
             }
             
             if(chanStatus === "live") {
-                newDiv.addClass("live");
-
                 var ttTime = new Date().getTime(),
-                    //just in case we haven't been able to grab the template yet
-                    ttImgUrl = "http://static-cdn.jtvnw.net/previews-ttv/live_user_"+chanName+"-320x200.jpg?"+ttTime;
+                    ttImgUrl = "//static-cdn.jtvnw.net/previews-ttv/live_user_"+chanName+"-320x200.jpg?"+ttTime;
                     
                 if(typeof vars.updatedPreviewUrl !== "undefined") {
                     ttImgUrl = vars.updatedPreviewUrl.replace("CHANNEL", chanName) + "?"+ttTime;
+                     debug.log("have updated preview url");
+                } else {
+                    bttv.TwitchAPI.get("/kraken/streams/featured?limit=1")
+                    .done(function(d) {
+                        //debug.log("got updated preview url during team load");
+                        var targetName = d.featured[0].stream.channel.name;
+                        var targetPreviewUrl = d.featured[0].stream.preview;
+                        vars.updatedPreviewUrl = targetPreviewUrl.replace(targetName, "CHANNEL");
+                    })
+                    .fail(function(d) {
+                        debug.log("failed getting featured streams for preview url template during team load");
+                    });
                 }
-                newDiv.attr("title", dispName+" playing "+chanGame+"<br><img src='"+ttImgUrl+"' class='ttImg' />");
                 
-                newDiv.tooltip({
-                    show:{
-                        effect: "fold",
-                        duration: 350,
-                        delay: 500
-                    },
-                    hide:{
-                        effect: "fold",
-                        duration: 350,
-                        delay: 500
-                    },
-                    position:{
-                        my:"left top",
-                        at:"right top"
-                    },
-                    content: function() { return $(this).attr("title"); }
-                });
+                theButtonArray["viewerCount"] = chanViewers;
+                theButtonArray["tooltip"] = tooltipTemplate({"name": dispName, "game": chanGame, "imageUrl": ttImgUrl});
             }
             
-            var countSpan = $("<span>", {"class":"channel_count small"}),
-                countImg = $("<img>", {"src":"http://www-cdn.jtvnw.net/images/xarth/g/g16_live_viewers.png", "class":"viewers_icon"}),
-                chanInfoHolder = $("<div>", {"class":"chanBtnChanInfoHolder"}),
-                chanImg = $("<img>", {"src":chanImgUrl, "class":"chanBtnChanImg"}),
-                chanNameSpan = $("<span>", {"class":"member_name"});
+            var buttonObject = $(buttonTemplate(theButtonArray));
+            buttonObject.click(function(e) {
+                loadChannel(chanName); 
+            });
             
-            countSpan.text(chanViewers);
-            chanNameSpan.text(dispName);
-            chanInfoHolder.append(chanImg, chanNameSpan);
-
-            if(chanStatus === "live") {
-                chanInfoHolder.append(countSpan, countImg, chanInfoHolder);
-            }
+            buttonObject.tooltip({
+                position:{
+                    my:"left top",
+                    at:"right top"
+                },
+                content: function() { return $(this).attr("title"); }
+            });
             
-            newDiv.append(chanInfoHolder);
-            $("#bttvTeamMemberListInner").append(newDiv);
+            $("#bttvTeamMemberListInner").append(buttonObject);
         });
     }
 }

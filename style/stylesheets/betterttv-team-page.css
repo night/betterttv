@@ -211,9 +211,20 @@ div.wrapper.c12.clearfix {
     color:black;
 }
 
-.ttImg {
+.bttv-team-tooltip-image {
     width:300px;
     height:188px;
+}
+
+/*style the jqueryui tooltip*/
+.ui-tooltip {
+    max-width: 320px;
+    padding: 10px;
+    background-color:#F2F2F2;
+    color: black;
+    border: 2px solid #DEDEDE;
+    z-index:9999;
+    position:absolute;
 }
 
 .channel_count.small {
@@ -224,11 +235,11 @@ div.wrapper.c12.clearfix {
     margin:30px 5px 0px 0px;
 }
 
-.chanBtnChanInfoHolder {
+.bttv-team-channel-button-info-holder {
     width:100%;
 }
 
-.chanBtnChanImg {
+.bttv-team-channel-button-profile-image {
     margin:10px;
     border:1px solid black;
 }
@@ -239,19 +250,19 @@ div.wrapper.c12.clearfix {
     font-size:14px;
 }
 
-.ttvFlashPlayer {
+.bttvTeamFlashPlayer {
     width:100%;
     height:100%;
 }
 
-#chatEmbed {
+#bttvChatEmbed {
     width:100%;
     height:100%;
     scrolling:no;
 }
 
 #facebook_like_button {
-    margin:0px 0px 0px 50px;
+    margin:0px 0px 0px 50px !important;
 }
 
 #facebook_like_iframe {
@@ -268,7 +279,7 @@ div.wrapper.c12.clearfix {
 }
 
 #channel_viewer_count.stat {
-    margin:0px 0px 0px -4px !important;
+    margin:0px 0px 0px 0px !important;
 }
 
 #views_count {
@@ -279,4 +290,8 @@ div.wrapper.c12.clearfix {
     position:absolute;
     top:15px;
     right:15px;
+}
+
+#is-subscribed {
+    display: none !important;
 }

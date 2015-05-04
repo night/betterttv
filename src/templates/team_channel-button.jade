@@ -1,0 +1,26 @@
+if typeof viewerCount !== "undefined"
+  if typeof isPlaying !== "undefined"
+    div.member.live.js-playing(id="bttvTeamChannelButton_"+name title=tooltip)
+      div.bttv-team-channel-button-info-holder
+        img.bttv-team-channel-button-profile-image(src=profileImage)
+        span.member_name=displayName
+        span.channel_count.small=viewerCount
+        img.viewers_icon(src="//www-cdn.jtvnw.net/images/xarth/g/g16_live_viewers.png")
+  else
+    div.member.live(id="bttvTeamChannelButton_"+name title=tooltip)
+      div.bttv-team-channel-button-info-holder
+        img.bttv-team-channel-button-profile-image(src=profileImage)
+        span.member_name=displayName
+        span.channel_count.small=viewerCount
+        img.viewers_icon(src="//www-cdn.jtvnw.net/images/xarth/g/g16_live_viewers.png")
+else
+  if typeof isPlaying !== "undefined"
+    div.member.js-playing(id="bttvTeamChannelButton_"+name title=tooltip)
+      div.bttv-team-channel-button-info-holder
+        img.bttv-team-channel-button-profile-image(src=profileImage)
+        span.member_name=displayName
+  else
+    div.member(id="bttvTeamChannelButton_"+name title=tooltip)
+      div.bttv-team-channel-button-info-holder
+        img.bttv-team-channel-button-profile-image(src=profileImage)
+        span.member_name=displayName

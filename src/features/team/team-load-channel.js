@@ -1,5 +1,9 @@
 var debug = require('../../debug'),
-    vars = require("../../vars");
+    vars = require("../../vars"),
+    playerTemplate = require('../../templates/team_video-player'),
+    chatTemplate = require('../../templates/team_chat-iframe'),
+    shareMenuTemplate = require('../../templates/team_share-menu-iframes'),
+    descAndTitleTemplate = require('../../templates/team_channel-description-and-title');
 
 module.exports = function(val) {
     debug.log("Loading channel "+val);
@@ -12,19 +16,13 @@ module.exports = function(val) {
     
     var loadVideo = function(chan) {
         $("#standard_holder").empty();
-        var p1 = $("<param>", {"name":"allowFullScreen", "value":"true"}),
-            p2 = $("<param>", {"name":"allowNetworking", "value":"all"}),
-            p3 = $("<param>", {"name":"allowScriptAccess", "value":"always"}),
-            p4 = $("<param>", {"name":"flashvars", "value":"channel="+chan+"&auto_play=true"}),
-            player = $("<object>", {"type":"application/x-shockwave-flash", "id":chan+"_video_embed", "class":"ttvFlashPlayer", "wmode":"transparent"});
-        player.attr("data", "//www-cdn.jtvnw.net/swflibs/TwitchPlayer.swf");
-        player.append(p1, p2, p3, p4);
+        var player = $(playerTemplate({"channel":chan}));
         $("#standard_holder").append(player);
     }
     
     var loadChat = function(chan) {
         $("#bttvTeamChat").empty();
-        var chatEmbed = $("<iframe>", {"id":"chatEmbed", "src":"http://www.twitch.tv/"+chan+"/chat", "frameborder":"0"});
+        var chatEmbed = $(chatTemplate({"channel":chan}));
         $("#bttvTeamChat").append(chatEmbed);
     }
     
@@ -37,20 +35,22 @@ module.exports = function(val) {
                 $("#channel_viewer_count").text(jsnTeam[i].channel.current_viewers);
                 $("#views_count").text(jsnTeam[i].channel.total_views);
                 $("#followers_count").text(jsnTeam[i].channel.followers_count);
-                $("#description").html("<b>Channel Description:</b><br>"+jsnTeam[i].channel.description+"<br><br><b>Broadcast Title:</b><br>"+jsnTeam[i].channel.title);
                 $("#live_channel_name").attr("href", "/"+chan).text(jsnTeam[i].channel.display_name+" playing "+jsnTeam[i].channel.meta_game);
+                
+                $("#description").html(descAndTitleTemplate({"description":jsnTeam[i].channel.description, "title":jsnTeam[i].channel.title}));
                 
                 //update share menu
                 $("#channel_url").val("http://www.twitch.tv/"+chan);
-                //$("#live_embed").val('<object type="application/x-shockwave-flash" height="378" width="620" id="live_embed_player_flash" data="http://www.twitch.tv/widgets/live_embed_player.swf?channel='+chan+'" bgcolor="#000000"><param name="allowFullScreen" value="true" /><param name="allowScriptAccess" value="always" /><param name="allowNetworking" value="all" /><param name="movie" value="http://www.twitch.tv/widgets/live_embed_player.swf" /><param name="flashvars" value="hostname=www.twitch.tv&channel='+chan+'&auto_play=true&start_volume=25" /></object>');
-                $("#live_embed").val('<object type="application/x-shockwave-flash" height="378" width="620" data="//www-cdn.jtvnw.net/swflibs/TwitchPlayer.swf" bgcolor="#000000"><param name="allowFullScreen" value="true" /><param name="allowScriptAccess" value="always" /><param name="allowNetworking" value="all" /><param name="movie" value="//www-cdn.jtvnw.net/swflibs/TwitchPlayer.swf" /><param name="flashvars" value="channel='+chan+'&auto_play=true&start_volume=25" /></object>');
+                $("#live_embed").val(playerTemplate({"channel":chan}));
                 
-                //share menu facebook
-                $("#facebook_like_iframe").attr("src", "http://www.facebook.com/plugins/like.php?href=http://www.twitch.tv/"+chan+"&layout=button_count&show-faces=false&share=false&action=like&width=85&height=21&colorscheme=light");
-
+                //share menu facebook - can't recycle
+                $("#facebook_like_button").empty();
+                var facebookFrame = $(shareMenuTemplate({"id":"facebook_like_iframe", "channel": chan}));
+                $("#facebook_like_button").append(facebookFrame);
+                
                 //share menu twitter - can't recycle
                 $("#twitter_share_button").empty();
-                var twitterFrame = $("<iframe>", {"id":"bttvTwitterIframe", "scrolling":"no", "frameborder":"0", "src":"https://platform.twitter.com/widgets/tweet_button.html?size=s&align=right&url=http://www.twitch.tv/"+chan+"&text="+jsnTeam[i].channel.display_name+" is playing "+jsnTeam[i].channel.meta_game+" at:"});
+                var twitterFrame = $(shareMenuTemplate({"id":"bttvTwitterIframe", "channel": chan, "displayName": jsnTeam[i].channel.display_name, "game": jsnTeam[i].channel.meta_game}));
                 $("#twitter_share_button").append(twitterFrame);
                 
                 break;
@@ -80,6 +80,7 @@ module.exports = function(val) {
         bttv.TwitchAPI.get("/api/channels/"+chan+"/product")
         .done(function(d) {
             debug.log(chan+" has subs:"+d.price);
+            $("#subscribe_action").attr("href", "//www.twitch.tv/"+chan+"/subscribe?ref=below_video_subscribe_button");
             checkIsSubbed(chan, d.price);
         })
         .fail(function(d) {
@@ -88,6 +89,7 @@ module.exports = function(val) {
             if(d.status == 404) {
                 debug.log(chan+" not in sub program");
                 $("#subscribe_action").hide();
+                $("#subscribe_action").attr("href", "");
             }
         });
     }
@@ -99,6 +101,7 @@ module.exports = function(val) {
                 if((d.tickets).length != 0) {
                     debug.log(vars.userData.login+" is subbed to "+chan+" len:"+(d.tickets).length);
                     $("#subscribe_action").hide();
+                    
                 } else {
                     debug.log(vars.userData.login+" is not subbed to "+chan);
                     $("#subscribe_action").show();
