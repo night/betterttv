@@ -9,8 +9,8 @@ module.exports = function () {
     if(bttv.settings.get("formatTeamPage") !== true || $("body").attr("data-page") != "teams#show") return;
     debug.log("Formatting team page");
     
-    //var jquiJS  = $("<script>", {"src":"//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js", "type":"text/javascript"}),
-    var jquiJS  = $("<script>", {"src":"//cdn.betterttv.net/src/features/team/jquery-ui-1.11.1.min.js", "type":"text/javascript"}),
+    var jquiJS  = $("<script>", {"src":"//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js", "type":"text/javascript"}),
+    //var jquiJS  = $("<script>", {"src":"//cdn.betterttv.net/src/features/team/jquery-ui-1.11.1.min.js", "type":"text/javascript"}),
         teamCSS = $("<link>", {"href":"//cdn.betterttv.net/style/stylesheets/betterttv-team-page.css?"+bttv.info.versionString(), "id":"betterTwitchTeams", "rel":"stylesheet", "type":"text/css"});
     
     if(bttv.settings.get("darkenedMode") === true) {
@@ -31,7 +31,7 @@ module.exports = function () {
     $("#about").prepend($("#banner_header"));
     
     //setup player column for tse scrollbar and move all column elements inside inner div
-    var playerColInnerDiv = $(tseInnerTemplate({"id":"bttvTeamMemberListInner"}));
+    var playerColInnerDiv = $(tseInnerTemplate({"id":"bttvTeamPlayerColumnInner"}));
     playerColInnerDiv.append($("#live_player"), $("#team_info_tabs"), $("#videos"), $("#about"), $("#site_footer"));
     $("#player_column").addClass("scroll").append(playerColInnerDiv);
     $("#player_column").TrackpadScrollEmulator({scrollbarHideStrategy: 'rightAndBottom'});
