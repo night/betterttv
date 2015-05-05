@@ -1,5 +1,6 @@
 var tmi = require('./tmi'),
-    store = require('./store');
+    store = require('./store'),
+    punycode = require('punycode');
 
 var badge = exports.badge = function(type, name, description) {
     return '<div class="'+type+''+((bttv.settings.get('alphaTags') && ['admin','global-moderator','staff','broadcaster','moderator','turbo','ign'].indexOf(type) !== -1)?' alpha'+(!bttv.settings.get("darkenedMode")?' invert':''):'')+' badge" title="'+description+'">'+name+'</div> ';

@@ -1,5 +1,4 @@
 var keyCodes = require('./keycodes');
-var punycode = require('punycode');
 
 // Declare public and private variables
 var debug = require('./helpers/debug'),
