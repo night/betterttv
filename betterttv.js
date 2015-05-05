@@ -1663,7 +1663,8 @@ var takeover = module.exports = function() {
 
 },{"../features/chat-load-settings":20,"../features/css-loader":26,"../features/override-emotes":41,"../helpers/debug":47,"../keycodes":50,"../vars":69,"./handlers":4,"./helpers":5,"./rooms":7,"./store":8,"./tmi":11}],10:[function(require,module,exports){
 var tmi = require('./tmi'),
-    store = require('./store');
+    store = require('./store'),
+    punycode = require('punycode');
 
 var badge = exports.badge = function(type, name, description) {
     return '<div class="'+type+''+((bttv.settings.get('alphaTags') && ['admin','global-moderator','staff','broadcaster','moderator','turbo','ign'].indexOf(type) !== -1)?' alpha'+(!bttv.settings.get("darkenedMode")?' invert':''):'')+' badge" title="'+description+'">'+name+'</div> ';
@@ -1859,7 +1860,8 @@ var privmsg = exports.privmsg = function(highlight, action, server, isMod, data)
     return '<div class="chat-line'+(highlight?' highlight':'')+(action?' action':'')+(server?' admin':'')+'" data-sender="'+data.sender+'">'+timestamp(data.time)+' '+(isMod?modicons():'')+' '+badges(data.badges)+from(data.nickname, data.color)+message(data.sender, data.message, data.emotes, action?data.color:false)+'</div>';
 }
 
-},{"../templates/chat-suggestions":55,"../templates/moderation-card":57,"./helpers":5,"./store":8,"./tmi":11}],11:[function(require,module,exports){
+},{"../templates/chat-suggestions":51,"../templates/moderation-card":53,"./helpers":5,"./store":8,"./tmi":11,"punycode":58}],11:[function(require,module,exports){
+
 module.exports = function() {
 	return bttv.getChatController() ? bttv.getChatController().currentRoom : false;
 }
@@ -1871,7 +1873,6 @@ module.exports = {
 };
 },{}],13:[function(require,module,exports){
 var keyCodes = require('./keycodes');
-var punycode = require('punycode');
 
 // Declare public and private variables
 var debug = require('./helpers/debug'),
@@ -2460,7 +2461,8 @@ debug.log("BTTV LOADED " + document.URL);
 BTTVLOADED = true;
 checkJquery();
 
-},{"./chat":2,"./features/auto-theatre-mode":14,"./features/beta-chat":15,"./features/brand":16,"./features/channel-reformat":18,"./features/check-broadcast-info":21,"./features/check-following":22,"./features/check-messages":23,"./features/clear-clutter":24,"./features/create-settings":25,"./features/darken-page":27,"./features/dashboard-channelinfo":28,"./features/directory-functions":29,"./features/emoticon-text-in-clipboard":31,"./features/flip-dashboard":32,"./features/format-dashboard":33,"./features/giveaway-compatibility":34,"./features/handle-background":35,"./features/handle-twitchchat-emotes":36,"./features/image-preview":38,"./features/split-chat":42,"./features/team/team-format-page":43,"./helpers/debug":47,"./keycodes":50,"./settings-list":52,"./socketio":53,"./templates/setting-switch":58,"./twitch-api":68,"./vars":69,"punycode":70}],14:[function(require,module,exports){
+},{"./chat":2,"./features/auto-theatre-mode":13,"./features/beta-chat":14,"./features/brand":15,"./features/channel-reformat":17,"./features/check-broadcast-info":20,"./features/check-following":21,"./features/check-messages":22,"./features/clear-clutter":23,"./features/create-settings":24,"./features/darken-page":26,"./features/dashboard-channelinfo":27,"./features/directory-functions":28,"./features/emoticon-text-in-clipboard":30,"./features/flip-dashboard":31,"./features/format-dashboard":32,"./features/giveaway-compatibility":33,"./features/handle-background":34,"./features/handle-twitchchat-emotes":35,"./features/image-preview":37,"./features/split-chat":41,"./helpers/debug":43,"./keycodes":46,"./settings-list":48,"./socketio":49,"./templates/setting-switch":54,"./twitch-api":56,"./vars":57}],13:[function(require,module,exports){
+
 var debug = require('../helpers/debug');
 
 module.exports = function () {
