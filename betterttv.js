@@ -4088,64 +4088,17 @@ var debug = require("../../debug"),
 module.exports = function () {
 
     if(bttv.settings.get("formatTeamPage") !== true || $("body").attr("data-page") != "teams#show") return;
-    debug.log("Formatting team page");
+    debug.log("BetterTTVteams Loading");
     
-    var jquiJS  = $("<script>", {"src":"//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js", "type":"text/javascript"}),
-    //var jquiJS  = $("<script>", {"src":"//cdn.betterttv.net/src/features/team/jquery-ui-1.11.1.min.js", "type":"text/javascript"}),
-        teamCSS = $("<link>", {"href":"//cdn.betterttv.net/style/stylesheets/betterttv-team-page.css?"+bttv.info.versionString(), "id":"betterTwitchTeams", "rel":"stylesheet", "type":"text/css"});
+    var teamFollowList = "none",
+        teamFollowedFailedList = "none",
+        teamFollowRequestCount = 0,
+        teamFollowResponseCount = 0,
+        teamFollowInterval = "none";
+        
+    vars.teamCurrentChannel = ($(".js-playing").attr("id")).replace("channel_", "");
+    vars.teamFirstLoad = 1;
     
-    if(bttv.settings.get("darkenedMode") === true) {
-        teamCSS = $("<link>", {"href":"//cdn.betterttv.net/style/stylesheets/betterttv-team-page-dark.css?"+bttv.info.versionString(), "id":"betterTwitchTeams", "rel":"stylesheet", "type":"text/css"});
-    }
-    $('body').append(jquiJS, teamCSS);
-    
-    //kill Twitch timers to update channel list, viewer count, etc (not ideal, i know)
-    //need to figure out the original functions so i can take them over
-    var maxId = setTimeout(function() {}, 0);
-    for(var i=0; i < maxId; i+=1) {
-        clearTimeout(i);
-    }
-
-    //remove "Members" text between team logo and member list
-    $(".filters.grid.c4 h2").remove();
-    //move team banner into about section
-    $("#about").prepend($("#banner_header"));
-    
-    //setup player column for tse scrollbar and move all column elements inside inner div
-    var playerColInnerDiv = $(tseInnerTemplate({"id":"bttvTeamPlayerColumnInner"}));
-    playerColInnerDiv.append($("#live_player"), $("#team_info_tabs"), $("#videos"), $("#about"), $("#site_footer"));
-    $("#player_column").addClass("scroll").append(playerColInnerDiv);
-    $("#player_column").TrackpadScrollEmulator({scrollbarHideStrategy: 'rightAndBottom'});
-    
-    //follow current channel button
-    var followButton = $(followButtonTemplate({"id":"bttvFollowButton"}));
-    followButton.text("Follow");
-    followButton.click(function(e) {
-        followCurrentChannel();
-    });
-    $(".js-share").before(followButton);
-    
-    //follow team button
-    var followTeamButton = $(followButtonTemplate({"id":"bttvFollowTeamButton"}));
-    followTeamButton.text("Follow The Whole Team");
-    followTeamButton.click(function(e) {
-        populateFollowQueue();
-    });
-    $("#team_logo").after(followTeamButton);
-    
-    //chat holder
-    var newDiv = $("<div>", {"id":"bttvTeamChat"});
-    $(".wrapper.c12.clearfix").append(newDiv);
-    
-    //add column toggle to logo (for now. todo: add the small arrows)
-    $("#team_logo").click(function(e) {
-        toggleLeftColumn();
-    });
-    
-    //change share drop down to an action button
-    $(".js-share").removeClass("drop").addClass("button primary action");
-    
-    //updated the resizing
     $(window).resize(function() {
         var vpWidth = $(window).width(),
             vpHeight = $(window).height(),
@@ -4166,47 +4119,87 @@ module.exports = function () {
         $("#site_footer").css("width", playerWidth+"px");
         $("#standard_holder").css({"width":playerWidth+"px", "height":playerHeight+"px"});
         $("#bttvTeamChat").css("height", (paddedHeight-2)+"px");
-        $("#team_member_list").css({"height":teamListHeight+"px"});
-    });
-
-    var teamFollowList = "none",
-        teamFollowedFailedList = "none",
-        teamFollowRequestCount = 0,
-        teamFollowResponseCount = 0,
-        teamFollowInterval = "none";
-        
-    vars.teamCurrentChannel = ($(".js-playing").attr("id")).replace("channel_", "");
-    vars.teamFirstLoad = 1;
-    
-    //grab a featured stream so we can get a preview image url template
-    debug.log("calling streams");
-    bttv.TwitchAPI.get("/kraken/streams/featured?limit=1")
-    .done(function(d) {
-        debug.log("got preview url template");
-        var chanName = d.featured[0].stream.channel.name;
-        var updatedPreviewUrl = d.featured[0].stream.preview;
-        vars.updatedPreviewUrl = updatedPreviewUrl.replace(chanName, "CHANNEL");
-        
-        //loadTeam();
-    })
-    .fail(function(d) {
-        debug.log("failed getting featured streams for preview url template");
-        //loadTeam();
+        $("#bttvTeamMemberListOuter").css({"height":teamListHeight+"px"});
     });
     
-    //still have to delay it for Firefox (Chrome is fine)
-    //anytime i make a ref to bttv.TwitchAPI too quickly i get a bttv.TwitchAPI._ref is null error
-    //so in FF the streams/featured call above always fails at load, but works later
-    setTimeout(loadTeam, 500);
-    //loadTeam();
+    var betterTeamInit = function() {
+        var teamCSS = $("<link>", {"href":"//cdn.betterttv.net/style/stylesheets/betterttv-team-page.css?"+bttv.info.versionString(), "id":"betterTwitchTeams", "rel":"stylesheet", "type":"text/css"});
+        
+        if(bttv.settings.get("darkenedMode") === true) {
+            teamCSS = $("<link>", {"href":"//cdn.betterttv.net/style/stylesheets/betterttv-team-page-dark.css?"+bttv.info.versionString(), "id":"betterTwitchTeams", "rel":"stylesheet", "type":"text/css"});
+        }
+        $("body").append(teamCSS);
+        
+        getFeatured();
+        formatTeamPage();
+        setTimeout(loadTeam, 500);
+    }
+    
+    var getFeatured = function() {
+        bttv.TwitchAPI.get("/kraken/streams/featured?limit=1")
+        .done(function(d) {
+            debug.log("got preview url template on load");
+            var chanName = d.featured[0].stream.channel.name;
+            var updatedPreviewUrl = d.featured[0].stream.preview;
+            vars.updatedPreviewUrl = updatedPreviewUrl.replace(chanName, "CHANNEL");
+        })
+        .fail(function(d) {
+            debug.log("failed loading preview url template on load");
+        });
+    }
+    
+    var formatTeamPage = function() {
+        debug.log("Formatting page");
+        
+        //remove "Members" text between team logo and member list
+        $(".filters.grid.c4 h2").remove();
+        //move team banner into about section
+        $("#about").prepend($("#banner_header"));
+        //change the id so the anonymous function on a timer can't find it (and stops)
+        $("#team_member_list").attr("id", "bttvTeamMemberListOuter");
+        
+        //setup player column for tse scrollbar and move all column elements inside inner div
+        var playerColInnerDiv = $(tseInnerTemplate({"id":"bttvTeamPlayerColumnInner"}));
+        playerColInnerDiv.append($("#live_player"), $("#team_info_tabs"), $("#videos"), $("#about"), $("#site_footer"));
+        $("#player_column").addClass("scroll").append(playerColInnerDiv);
+        $("#player_column").TrackpadScrollEmulator({scrollbarHideStrategy: 'rightAndBottom'});
+        
+        //follow current channel button
+        var followButton = $(followButtonTemplate({"id":"bttvFollowButton"}));
+        followButton.text("Follow");
+        followButton.click(function(e) {
+            followCurrentChannel();
+        });
+        $(".js-share").before(followButton);
+        
+        //follow team button
+        var followTeamButton = $(followButtonTemplate({"id":"bttvFollowTeamButton"}));
+        followTeamButton.text("Follow The Whole Team");
+        followTeamButton.click(function(e) {
+            populateFollowQueue();
+        });
+        $("#team_logo").after(followTeamButton);
+        
+        //chat holder. didn't use a template because it would only be used once by one function
+        var newDiv = $("<div>", {"id":"bttvTeamChat"});
+        $(".wrapper.c12.clearfix").append(newDiv);
+        
+        //add column toggle to logo (for now. todo: add the small arrows)
+        $("#team_logo").click(function(e) {
+            toggleLeftColumn();
+        });
+        
+        //change share drop down to an action button
+        $(".js-share").removeClass("drop").addClass("button primary action");
+    }
     
     var toggleLeftColumn = function() {
         if($(".bttv-team-left-column-mini").length) {
             $(".filters.grid.c4").removeClass("bttv-team-left-column-mini");
-            followTeamButton.removeClass("bttv-team-follow-mini").text("Follow The Team");
+            $("#bttvFollowTeamButton").removeClass("bttv-team-follow-mini").text("Follow The Team");
         } else {
             $(".filters.grid.c4").addClass("bttv-team-left-column-mini");
-            followTeamButton.addClass("bttv-team-follow-mini").text("Follow");
+            $("#bttvFollowTeamButton").addClass("bttv-team-follow-mini").text("Follow");
         }
         $(window).resize();
     }
@@ -4215,6 +4208,7 @@ module.exports = function () {
         if(vars.userData.isLoggedIn === true) { 
             debug.log("processing follow");
             $("#bttvFollowButton").removeClass("bttv-team-follow-success bttv-team-follow-fail bttv-team-follow-processing").addClass("bttv-team-follow-processing");
+            
             bttv.TwitchAPI.put("/kraken/users/"+vars.userData.login+"/follows/channels/"+vars.teamCurrentChannel)
             .done(function(d){
                 debug.log(vars.userData.login+" is now following "+vars.teamCurrentChannel);
@@ -4227,7 +4221,6 @@ module.exports = function () {
         } else {
             debug.log("need to login");
             $("#header_login").click();
-            //window.location.href = "/login";
         }
     }
     
@@ -4240,7 +4233,6 @@ module.exports = function () {
     
     var populateFollowQueue = function () {
         if(vars.userData.isLoggedIn === false) {
-            //alert("You need to log in first!");
             $("#header_login").click();
         } else {
             //reset everything in case it's not first team follow since the page loaded, or accidental double click, etc
@@ -4250,8 +4242,8 @@ module.exports = function () {
             teamFollowResponseCount = 0;
             
             //followTeamButton is defined on line 65 as a jquery object. does it matter if the variable name has a $ in it?
-            followTeamButton.removeClass("bttv-team-follow-success bttv-team-follow-fail bttv-team-follow-processing").addClass("bttv-team-follow-processing");
-            followTeamButton.attr("title", "").text("Processing...");
+            $("#bttvFollowTeamButton").removeClass("bttv-team-follow-success bttv-team-follow-fail bttv-team-follow-processing").addClass("bttv-team-follow-processing");
+            $("#bttvFollowTeamButton").attr("title", "").text("Processing...");
             
             vars.jsnTeam.forEach(function(a) {
                 teamFollowList.push(a.channel.name);
@@ -4287,20 +4279,17 @@ module.exports = function () {
                     debug.log("Follow Failed: "+c);
                     teamFollowFailedList.push(c);
                 }
-                
             });
         }
     }
     
     var isFollowingComplete = function() {
         if(teamFollowList.length === 0 && teamFollowResponseCount === teamFollowRequestCount) {
-            followTeamButton.removeClass("bttv-team-follow-processing");
-            followTeamButton.text("Team Follow Complete");
+            $("#bttvFollowTeamButton").removeClass("bttv-team-follow-processing").text("Team Follow Complete");
             window.clearInterval(teamFollowInterval);
             
             if(teamFollowFailedList.length > 0) {
-                followTeamButton.addClass("bttv-team-follow-fail");
-                followTeamButton.text("Team Follow Complete ("+ teamFollowFailedList.length + " Errors)");
+                $("#bttvFollowTeamButton").addClass("bttv-team-follow-fail").text("Team Follow Complete ("+ teamFollowFailedList.length + " Errors)");
                 var failedString = "Following errors: ";
                 
                 teamFollowFailedList.forEach(function(a) {
@@ -4309,96 +4298,15 @@ module.exports = function () {
                 //don't have to trim it but a comma following the last item in a list drives me crazy lol
                 failedString = failedString.slice(0, -2);
                 
-                followTeamButton.attr("title", failedString);
+                $("#bttvFollowTeamButton").attr("title", failedString);
                 alert(failedString);
             } else {
-                followTeamButton.addClass("bttv-team-follow-success");
+                $("#bttvFollowTeamButton").addClass("bttv-team-follow-success");
             }
         }
     }
     
-    
-    /* Alternative
-    //it's recursive but just uses callbacks and no a timers at all. which is lesser of 2 evils lol?
-    //we will also know the channel name for any follows that fail due to time out or etc unlike using the interval
-    
-    var populateFollowQueue = function () {
-        if(vars.userData.isLoggedIn === false) {
-            //alert("You need to log in first!");
-            $("#header_login").click();
-        } else {
-            teamFollowList = [];
-            teamFollowFailedList = [];
-            
-            //followTeamButton is defined on line 65 as a jquery object. does it matter if the variable name has a $ in it?
-            followTeamButton.removeClass("bttv-team-follow-success bttv-team-follow-fail bttv-team-follow-processing").addClass("bttv-team-follow-processing");
-            followTeamButton.text("Processing...");
-            followTeamButton.attr("title", "");
-            
-            vars.jsnTeam.forEach(function(a) {
-                teamFollowList.push(a.channel.name);
-            });
-            
-            followTeam();
-        }
-    }
-    
-    var followTeam = function() {
-        var targetChannel = teamFollowList[0];
-            
-        bttv.TwitchAPI.put("/kraken/users/"+vars.userData.login+"/follows/channels/"+targetChannel)
-        .done(function(data) {
-            teamFollowList.splice(0, 1);
-            
-            if(teamFollowList.length > 0) {
-                followTeam();
-            } else {
-                teamFollowComplete();
-            }
-        })
-        .fail(function(a, b, c) {
-            if(typeof a.responseJSON.message !== "undefined") {
-                //error message from the API (ie: channel doesn't exist, channel unprocessable, etc)
-                debug.log("Follow Failed: "+a.responseJSON.message);
-                teamFollowFailedList.push(a.responseJSON.message);
-            } else {
-                //error message from time out etc
-                debug.log("Follow Failed: "+c);
-                teamFollowFailedList.push(targetChannel+" - "+c);
-            }
-            
-            teamFollowList.splice(0, 1);
-            
-            if(teamFollowList.length > 0) {
-                followTeam();
-            } else {
-                teamFollowComplete();
-            }
-        });
-    }
-    
-    var teamFollowComplete = function() {
-        followTeamButton.removeClass("bttv-team-follow-processing");
-        followTeamButton.text("Team Follow Complete");
-        
-        if(teamFollowFailedList.length > 0) {
-            followTeamButton.addClass("bttv-team-follow-fail");
-            followTeamButton.text("Team Follow Complete ("+ teamFollowFailedList.length + " Errors)");
-            var failedString = "Following errors: ";
-            
-            teamFollowFailedList.forEach(function(a) {
-                failedString += a+", ";
-            });
-            //don't have to trim it but a comma following the last item in a list drives me crazy lol
-            failedString = failedString.slice(0, -2);
-            
-            followTeamButton.attr("title", failedString);
-            alert(failedString);
-        } else {
-            followTeamButton.addClass("bttv-team-follow-success");
-        }
-    }
-    */
+    betterTeamInit();
 }
 },{"../../debug":12,"../../templates/team_follow-button":64,"../../templates/team_tse-content-inner-div":66,"../../vars":69,"./team-load-team":45}],44:[function(require,module,exports){
 var debug = require('../../debug'),
@@ -4408,28 +4316,31 @@ var debug = require('../../debug'),
     shareMenuTemplate = require('../../templates/team_share-menu-iframes'),
     descAndTitleTemplate = require('../../templates/team_channel-description-and-title');
 
-module.exports = function(val) {
-    debug.log("Loading channel "+val);
+module.exports = function(chan) {
+    debug.log("Loading channel "+chan);
     
     $("div.member.js-playing").removeClass("js-playing");
-    $("#bttvTeamChannelButton_"+val).addClass("js-playing");
+    $("#bttvTeamChannelButton_"+chan).addClass("js-playing");
     $("#bttvFollowButton").removeClass("bttv-team-follow-success bttv-team-follow-fail bttv-team-follow-processing")
     
-    vars.teamCurrentChannel = val;
+    vars.teamCurrentChannel = chan;
     
-    var loadVideo = function(chan) {
+    var loadVideo = function() {
         $("#standard_holder").empty();
         var player = $(playerTemplate({"channel":chan}));
         $("#standard_holder").append(player);
+        
+        loadChat();
+        loadChannelInfo();
     }
     
-    var loadChat = function(chan) {
+    var loadChat = function() {
         $("#bttvTeamChat").empty();
         var chatEmbed = $(chatTemplate({"channel":chan}));
         $("#bttvTeamChat").append(chatEmbed);
     }
     
-    var loadChannelInfo = function(chan) {
+    var loadChannelInfo = function() {
         var jsnTeam = vars.jsnTeam;
         
         for(var i=0; i<jsnTeam.length; i++) {
@@ -4456,12 +4367,15 @@ module.exports = function(val) {
                 var twitterFrame = $(shareMenuTemplate({"id":"bttvTwitterIframe", "channel": chan, "displayName": jsnTeam[i].channel.display_name, "game": jsnTeam[i].channel.meta_game}));
                 $("#twitter_share_button").append(twitterFrame);
                 
+                checkIsFollowing();
+                checkIfHasSubs();
+                
                 break;
             }
         }
     }
     
-    var checkIsFollowing = function(chan) {
+    var checkIsFollowing = function() {
         if(vars.userData.isLoggedIn === true) {
             bttv.TwitchAPI.get("/kraken/users/"+vars.userData.login+"/follows/channels/"+chan)
             .done(function(d) {
@@ -4479,12 +4393,12 @@ module.exports = function(val) {
         }
     }
     
-    var checkIfHasSubs = function(chan) {
+    var checkIfHasSubs = function() {
         bttv.TwitchAPI.get("/api/channels/"+chan+"/product")
         .done(function(d) {
             debug.log(chan+" has subs:"+d.price);
             $("#subscribe_action").attr("href", "//www.twitch.tv/"+chan+"/subscribe?ref=below_video_subscribe_button");
-            checkIsSubbed(chan, d.price);
+            checkIsSubbed(d.price);
         })
         .fail(function(d) {
             debug.log(chan+" subs check failed");
@@ -4497,7 +4411,7 @@ module.exports = function(val) {
         });
     }
     
-    var checkIsSubbed = function(chan, price) {
+    var checkIsSubbed = function(price) {
         if(vars.userData.isLoggedIn === true) {
             bttv.TwitchAPI.get("/api/users/"+vars.userData.login+"/tickets?channel="+chan)
             .done(function(d) {
@@ -4517,119 +4431,9 @@ module.exports = function(val) {
         }
     }
     
-    //you said you wanted me to use more functions. am i being too literal in this case?
-    loadVideo(val);
-    loadChat(val);
-    loadChannelInfo(val);
-    checkIsFollowing(val);
-    checkIfHasSubs(val);
-    //or should i just execute it as in the comment block below?
-    //i mean it's all going to be executed for each channel load anyways
-    
-    /* 
-    $("div.member.js-playing").removeClass("js-playing");
-    //$("#channel_"+val).addClass("js-playing");
-    $("#bttvTeamChannelButton_"+chan).addClass("js-playing");
-    
-    vars.teamCurrentChannel = val;
-    
-    //load video
-    $("#standard_holder").empty();
-    var p1 = $("<param>", {"name":"allowFullScreen", "value":"true"}),
-        p2 = $("<param>", {"name":"allowNetworking", "value":"all"}),
-        p3 = $("<param>", {"name":"allowScriptAccess", "value":"always"}),
-        p4 = $("<param>", {"name":"flashvars", "value":"channel="+chan+"&auto_play=true"}),
-        player = $("<object>", {"type":"application/x-shockwave-flash", "id":chan+"_video_embed", "class":"ttvFlashPlayer", "wmode":"transparent"});
-    player.attr("data", "//www-cdn.jtvnw.net/swflibs/TwitchPlayer.swf");
-    player.append(p1, p2, p3, p4);
-    $("#standard_holder").append(player);
-    
-    //load chat
-    $("#bttvTeamChat").empty();
-    var chatEmbed = $("<iframe>", {"id":"chatEmbed", "src":"http://www.twitch.tv/"+chan+"/chat", "frameborder":"0"});
-    $("#bttvTeamChat").append(chatEmbed);
-
-    //load channel info
-    var jsnTeam = vars.jsnTeam;
-    for(var i=0; i<jsnTeam.length; i++) {
-        if(jsnTeam[i].channel.name === chan) {
-            //info below player
-            $("#channel_viewer_count").text(jsnTeam[i].channel.current_viewers);
-            $("#views_count").text(jsnTeam[i].channel.total_views);
-            $("#followers_count").text(jsnTeam[i].channel.followers_count);
-            $("#description").html("<b>Channel Description:</b><br>"+jsnTeam[i].channel.description+"<br><br><b>Broadcast Title:</b><br>"+jsnTeam[i].channel.title);
-            $("#live_channel_name").attr("href", "/"+chan).text(jsnTeam[i].channel.display_name+" playing "+jsnTeam[i].channel.meta_game);
-            
-            //update share menu
-            $("#channel_url").val("http://www.twitch.tv/"+chan);
-            $("#live_embed").val('<object type="application/x-shockwave-flash" height="378" width="620" id="live_embed_player_flash" data="http://www.twitch.tv/widgets/live_embed_player.swf?channel='+chan+'" bgcolor="#000000"><param name="allowFullScreen" value="true" /><param name="allowScriptAccess" value="always" /><param name="allowNetworking" value="all" /><param name="movie" value="http://www.twitch.tv/widgets/live_embed_player.swf" /><param name="flashvars" value="hostname=www.twitch.tv&channel='+chan+'&auto_play=true&start_volume=25" /></object>');
-            
-            //share menu facebook
-            $("#facebook_like_button").empty();
-            var faceBookFrame = $("<iframe>", {"id":"facebook_like_iframe", "frameborder":"0", "allowtransparency":"true", "src":"http://www.facebook.com/plugins/like.php?href=http://www.twitch.tv/"+chan+"&layout=button_count&show-faces=false&share=false&action=like&width=85&height=21&colorscheme=light"});
-            $("#facebook_like_button").append(faceBookFrame);
-
-            //share menu twitter
-            $("#twitter_share_button").empty();
-            var twitterFrame = $("<iframe>", {"id":"twitter_iframe", "scrolling":"no", "frameborder":"0", "allowtransparency":"true", "src":"https://platform.twitter.com/widgets/tweet_button.html?size=s&url=http://www.twitch.tv/"+chan+"&text="+jsnTeam[i].channel.display_name+" is playing "+jsnTeam[i].channel.meta_game+" at:"});
-            $("#twitter_share_button").append(twitterFrame);
-            
-            break;
-        }
-    }
-    
-    var isLoggedIn = vars.userData.isLoggedIn,
-        userName = vars.userData.login;
-    
-    //check if following
-    if(isLoggedIn === true) {
-        Twitch.api.get("/kraken/users/"+userName+"/follows/channels/"+chan)
-        .done(function(d) {
-            debug.log(userName+" is following "+chan);
-            $("#bttvFollowButton").hide();
-        })
-        .fail(function(d) {
-            debug.log("is following checked failed");
-            
-            if(d.status == 404) {
-                debug.log(userName+" is not following "+chan);
-                $("#bttvFollowButton").show();
-                
-            }
-        });
-    }
-    
-    //check if channel in sub program, if so, check if user is subbed
-    bttv.TwitchAPI.get("/api/channels/"+chan+"/product")
-    .done(function(a) {
-        debug.log(chan+" has subs:"+a.price);
-        
-        if(isLoggedIn === true) {
-            bttv.TwitchAPI.get("/api/users/"+userName+"/tickets?channel="+chan)
-            .done(function(b) {
-                if((b.tickets).length != 0) {
-                    debug.log(userName+" is subbed to "+chan+" len:"+(b.tickets).length);
-                    $("#subscribe_action").hide();
-                } else {
-                    debug.log(userName+" is not subbed to "+chan);
-                    $("#subscribe_action").show();
-                    $(".subscribe-price").text(a.price);
-                }
-            })
-            .fail(function(d) {
-                debug.log("check if "+userName+" is subbed to "+chan+" failed");
-            });
-        }
-    })
-    .fail(function(d) {
-        debug.log(chan+" subs check failed");
-        
-        if(d.status == 404) {
-            debug.log(chan+" not in sub program");
-            $("#subscribe_action").hide();
-        }
-    });
-    */
+    //you said you wanted me to use more functions.
+    //am i being too literal by breaking all of this up into individual functions?
+    loadVideo();
 }
 },{"../../debug":12,"../../templates/team_channel-description-and-title":62,"../../templates/team_chat-iframe":63,"../../templates/team_share-menu-iframes":65,"../../templates/team_video-player":67,"../../vars":69}],45:[function(require,module,exports){
 var debug = require('../../debug'),
@@ -4653,9 +4457,9 @@ var loadTeam = module.exports = function() {
         
         if(vars.teamFirstLoad === 1) {
             var membersInnerDiv = $(tseInnerTemplate({"id":"bttvTeamMemberListInner"}));
-            $("#team_member_list").addClass("scroll").empty().append(membersInnerDiv);
-            $("#team_member_list").TrackpadScrollEmulator({scrollbarHideStrategy: "rightAndBottom"});
-        
+            $("#bttvTeamMemberListOuter").addClass("scroll").empty().append(membersInnerDiv);
+            $("#bttvTeamMemberListOuter").TrackpadScrollEmulator({scrollbarHideStrategy: "rightAndBottom"});
+            
             loadChannel(vars.teamCurrentChannel);
             vars.teamFirstLoad = 0;
             var bttvLoadTeamInterval = window.setInterval(loadTeam, 60000);
@@ -4679,16 +4483,15 @@ var loadTeam = module.exports = function() {
                 chanViewers = a.channel.current_viewers,
                 theButtonArray = {"name": chanName, "displayName": dispName, "profileImage": chanImgUrl, "tooltip": dispName+" is offline"};
             
-            //update info below player
+            
             if(chanName === vars.teamCurrentChannel) {
+                theButtonArray["isPlaying"] = true;
+                
+                //update info below player
                 $("#channel_viewer_count").text(chanViewers);
                 $("#views_count").text(a.channel.total_views);
                 $("#followers_count").text(a.channel.followers_count);
                 $("#description").html(descAndTitleTemplate({"description":a.channel.description, "title":a.channel.title}));
-            }
-            
-            if(vars.teamCurrentChannel === chanName) {
-                theButtonArray["isPlaying"] = true;
             }
             
             if(chanStatus === "live") {
@@ -4697,17 +4500,15 @@ var loadTeam = module.exports = function() {
                     
                 if(typeof vars.updatedPreviewUrl !== "undefined") {
                     ttImgUrl = vars.updatedPreviewUrl.replace("CHANNEL", chanName) + "?"+ttTime;
-                     debug.log("have updated preview url");
                 } else {
                     bttv.TwitchAPI.get("/kraken/streams/featured?limit=1")
                     .done(function(d) {
-                        //debug.log("got updated preview url during team load");
                         var targetName = d.featured[0].stream.channel.name;
                         var targetPreviewUrl = d.featured[0].stream.preview;
                         vars.updatedPreviewUrl = targetPreviewUrl.replace(targetName, "CHANNEL");
                     })
                     .fail(function(d) {
-                        debug.log("failed getting featured streams for preview url template during team load");
+                        debug.log("failed getting preview url template during team load");
                     });
                 }
                 
@@ -4716,16 +4517,10 @@ var loadTeam = module.exports = function() {
             }
             
             var buttonObject = $(buttonTemplate(theButtonArray));
+            buttonObject.tipsy({"html": true, "gravity": "w", "opacity": 1.0, "fade": true});
+            
             buttonObject.click(function(e) {
                 loadChannel(chanName); 
-            });
-            
-            buttonObject.tooltip({
-                position:{
-                    my:"left top",
-                    at:"right top"
-                },
-                content: function() { return $(this).attr("title"); }
             });
             
             $("#bttvTeamMemberListInner").append(buttonObject);

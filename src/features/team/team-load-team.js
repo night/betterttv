@@ -19,9 +19,9 @@ var loadTeam = module.exports = function() {
         
         if(vars.teamFirstLoad === 1) {
             var membersInnerDiv = $(tseInnerTemplate({"id":"bttvTeamMemberListInner"}));
-            $("#team_member_list").addClass("scroll").empty().append(membersInnerDiv);
-            $("#team_member_list").TrackpadScrollEmulator({scrollbarHideStrategy: "rightAndBottom"});
-        
+            $("#bttvTeamMemberListOuter").addClass("scroll").empty().append(membersInnerDiv);
+            $("#bttvTeamMemberListOuter").TrackpadScrollEmulator({scrollbarHideStrategy: "rightAndBottom"});
+            
             loadChannel(vars.teamCurrentChannel);
             vars.teamFirstLoad = 0;
             var bttvLoadTeamInterval = window.setInterval(loadTeam, 60000);
@@ -45,16 +45,15 @@ var loadTeam = module.exports = function() {
                 chanViewers = a.channel.current_viewers,
                 theButtonArray = {"name": chanName, "displayName": dispName, "profileImage": chanImgUrl, "tooltip": dispName+" is offline"};
             
-            //update info below player
+            
             if(chanName === vars.teamCurrentChannel) {
+                theButtonArray["isPlaying"] = true;
+                
+                //update info below player
                 $("#channel_viewer_count").text(chanViewers);
                 $("#views_count").text(a.channel.total_views);
                 $("#followers_count").text(a.channel.followers_count);
                 $("#description").html(descAndTitleTemplate({"description":a.channel.description, "title":a.channel.title}));
-            }
-            
-            if(vars.teamCurrentChannel === chanName) {
-                theButtonArray["isPlaying"] = true;
             }
             
             if(chanStatus === "live") {
@@ -63,17 +62,15 @@ var loadTeam = module.exports = function() {
                     
                 if(typeof vars.updatedPreviewUrl !== "undefined") {
                     ttImgUrl = vars.updatedPreviewUrl.replace("CHANNEL", chanName) + "?"+ttTime;
-                     debug.log("have updated preview url");
                 } else {
                     bttv.TwitchAPI.get("/kraken/streams/featured?limit=1")
                     .done(function(d) {
-                        //debug.log("got updated preview url during team load");
                         var targetName = d.featured[0].stream.channel.name;
                         var targetPreviewUrl = d.featured[0].stream.preview;
                         vars.updatedPreviewUrl = targetPreviewUrl.replace(targetName, "CHANNEL");
                     })
                     .fail(function(d) {
-                        debug.log("failed getting featured streams for preview url template during team load");
+                        debug.log("failed getting preview url template during team load");
                     });
                 }
                 
@@ -82,16 +79,10 @@ var loadTeam = module.exports = function() {
             }
             
             var buttonObject = $(buttonTemplate(theButtonArray));
+            buttonObject.tipsy({"html": true, "gravity": "w", "opacity": 1.0, "fade": true});
+            
             buttonObject.click(function(e) {
                 loadChannel(chanName); 
-            });
-            
-            buttonObject.tooltip({
-                position:{
-                    my:"left top",
-                    at:"right top"
-                },
-                content: function() { return $(this).attr("title"); }
             });
             
             $("#bttvTeamMemberListInner").append(buttonObject);

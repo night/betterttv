@@ -71,7 +71,7 @@ div.filters.grid.c4.bttv-team-left-column-mini {
 }
 
 #bttvFollowTeamButton {
-    width: 278px;
+    width: 280px;
     border: 1px solid black;
     margin:20px 0px 0px 0px;
     text-align:center;
@@ -96,6 +96,12 @@ div.filters.grid.c4.bttv-team-left-column-mini {
 #team_member_list {
     border: 1px solid black;
     background-color: #2E2F2F;
+}
+
+#bttvTeamMemberListOuter{
+    border: 1px solid black;
+    background-color: #2E2F2F;
+    margin: 20px 0px 0px 0px;
 }
 
 .tse-scrollbar .drag-handle  {
@@ -226,17 +232,6 @@ div.filters.grid.c4.bttv-team-left-column-mini {
     height:188px;
 }
 
-/*style the jqueryui tooltip*/
-.ui-tooltip {
-    max-width: 320px;
-    padding: 10px;
-    background-color:#1E1E1E;
-    color:white;
-    border: 2px solid white;
-    z-index:9999;
-    position:absolute;
-}
-
 .channel_count.small {
     color:white;
     margin:30px 5px 0px 0px;
@@ -305,4 +300,9 @@ div.filters.grid.c4.bttv-team-left-column-mini {
 
 #is-subscribed {
     display: none !important;
+}
+
+.tipsy-inner{
+    max-width:320px;
+    padding: 10px;
 }
