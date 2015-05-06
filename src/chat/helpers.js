@@ -15,7 +15,7 @@ var lookupDisplayName = exports.lookupDisplayName = function(user) {
 
     // There's no display-name when sending messages, so we'll fill in for that
     if(vars.userData.isLoggedIn && user === vars.userData.login) {
-        store.displayNames[user] = Twitch.user.displayName();
+        store.displayNames[user] = Twitch.user.displayName() || user;
     }
     
     // Get subscription status (Night's subs)
@@ -23,7 +23,7 @@ var lookupDisplayName = exports.lookupDisplayName = function(user) {
 
     if(tmi()) {
         if(store.displayNames.hasOwnProperty(user)) {
-            return store.displayNames[user];
+            return store.displayNames[user] || user.capitalize();
         } else if(user !== "jtv" && user !== "twitchnotify") {
             return user.capitalize();
         } else {
