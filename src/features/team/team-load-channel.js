@@ -2,7 +2,8 @@ var debug = require('../../debug'),
     vars = require("../../vars"),
     playerTemplate = require('../../templates/team_video-player'),
     chatTemplate = require('../../templates/team_chat-iframe'),
-    shareMenuTemplate = require('../../templates/team_share-menu-iframes'),
+    playingStatsTemplate = require('../../templates/team_now-playing-stats'),
+    shareMenuTemplate = require('../../templates/team_share-menu'),
     descAndTitleTemplate = require('../../templates/team_channel-description-and-title');
 
 module.exports = function(chan) {
@@ -18,9 +19,6 @@ module.exports = function(chan) {
         $("#standard_holder").empty();
         var player = $(playerTemplate({"channel":chan}));
         $("#standard_holder").append(player);
-        
-        loadChat();
-        loadChannelInfo();
     }
     
     var loadChat = function() {
@@ -30,34 +28,17 @@ module.exports = function(chan) {
     }
     
     var loadChannelInfo = function() {
-        var jsnTeam = vars.jsnTeam;
+        var jsnTeam = vars.teamMembersJson;
         
         for(var i=0; i<jsnTeam.length; i++) {
             if(jsnTeam[i].channel.name === chan) {
-                //info below player - hooray for recycling! lol
-                $("#channel_viewer_count").text(jsnTeam[i].channel.current_viewers);
-                $("#views_count").text(jsnTeam[i].channel.total_views);
-                $("#followers_count").text(jsnTeam[i].channel.followers_count);
-                $("#live_channel_name").attr("href", "/"+chan).text(jsnTeam[i].channel.display_name+" playing "+jsnTeam[i].channel.meta_game);
-                
+                $("#bttvNowPlayingStatsHolder").html(playingStatsTemplate({"channel": jsnTeam[i].channel.name, "displayName": jsnTeam[i].channel.display_name, "views": jsnTeam[i].channel.total_views, "viewers": jsnTeam[i].channel.current_viewers, "followers": jsnTeam[i].channel.followers_count, "game": jsnTeam[i].channel.meta_game}));
                 $("#description").html(descAndTitleTemplate({"description":jsnTeam[i].channel.description, "title":jsnTeam[i].channel.title}));
+                $("#share").html(shareMenuTemplate({"channel": jsnTeam[i].channel.name, "displayName": jsnTeam[i].channel.display_name, "game": jsnTeam[i].channel.meta_game, "embedText": playerTemplate({"channel":chan})}));
                 
-                //update share menu
-                $("#channel_url").val("http://www.twitch.tv/"+chan);
-                $("#live_embed").val(playerTemplate({"channel":chan}));
-                
-                //share menu facebook - can't recycle
-                $("#facebook_like_button").empty();
-                var facebookFrame = $(shareMenuTemplate({"id":"facebook_like_iframe", "channel": chan}));
-                $("#facebook_like_button").append(facebookFrame);
-                
-                //share menu twitter - can't recycle
-                $("#twitter_share_button").empty();
-                var twitterFrame = $(shareMenuTemplate({"id":"bttvTwitterIframe", "channel": chan, "displayName": jsnTeam[i].channel.display_name, "game": jsnTeam[i].channel.meta_game}));
-                $("#twitter_share_button").append(twitterFrame);
-                
-                checkIsFollowing();
-                checkIfHasSubs();
+                $("#bttvNowPlayingStatsHolder").children().each(function() {
+                    $(this).tipsy({"gravity": "s", "fade": true});
+                });
                 
                 break;
             }
@@ -72,11 +53,9 @@ module.exports = function(chan) {
                 $("#bttvFollowButton").hide();
             })
             .fail(function(d) {
-                debug.log("is following checked failed");
-                
                 if(d.status == 404) {
                     debug.log(vars.userData.login+" is not following "+chan);
-                    $("#bttvFollowButton").show();
+                    $("#bttvFollowButton").attr("title", "Click to follow "+chan).show();
                 }
             });
         }
@@ -90,8 +69,6 @@ module.exports = function(chan) {
             checkIsSubbed(d.price);
         })
         .fail(function(d) {
-            debug.log(chan+" subs check failed");
-            
             if(d.status == 404) {
                 debug.log(chan+" not in sub program");
                 $("#subscribe_action").hide();
@@ -107,10 +84,9 @@ module.exports = function(chan) {
                 if((d.tickets).length != 0) {
                     debug.log(vars.userData.login+" is subbed to "+chan+" len:"+(d.tickets).length);
                     $("#subscribe_action").hide();
-                    
                 } else {
                     debug.log(vars.userData.login+" is not subbed to "+chan);
-                    $("#subscribe_action").show();
+                    $("#subscribe_action").attr("title", "Click to subscribe "+chan).show();
                     $(".subscribe-price").text(price);
                 }
             })
@@ -123,4 +99,8 @@ module.exports = function(chan) {
     //you said you wanted me to use more functions.
     //am i being too literal by breaking all of this up into individual functions?
     loadVideo();
+    loadChat();
+    loadChannelInfo();
+    checkIsFollowing();
+    checkIfHasSubs();
 }

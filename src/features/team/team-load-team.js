@@ -2,6 +2,7 @@ var debug = require('../../debug'),
     vars = require('../../vars'),
     buttonTemplate = require('../../templates/team_channel-button'),
     tooltipTemplate = require('../../templates/team_channel-button-tooltip'),
+    playingStatsTemplate = require('../../templates/team_now-playing-stats'),
     descAndTitleTemplate = require('../../templates/team_channel-description-and-title'),
     tseInnerTemplate = require('../../templates/team_tse-content-inner-div'),
     loadChannel = require('./team-load-channel');
@@ -9,13 +10,10 @@ var debug = require('../../debug'),
 var loadTeam = module.exports = function() {
     debug.log("Loading team data");
     
-    var theTeam = (window.location.pathname).replace("/team/", "");
-    theTeam = theTeam.replace("/event/", "");
-    
-    bttv.TwitchAPI.get("/api/team/"+theTeam+"/all_channels.json")
+    bttv.TwitchAPI.get("/api/team/"+vars.teamName+"/all_channels.json")
     .done(function(d) {
-        debug.log("team load success");
-        vars.jsnTeam = d.channels;
+        //debug.log("Team load success");
+        vars.teamMembersJson = d.channels;
         
         if(vars.teamFirstLoad === 1) {
             var membersInnerDiv = $(tseInnerTemplate({"id":"bttvTeamMemberListInner"}));
@@ -30,30 +28,35 @@ var loadTeam = module.exports = function() {
         createButtons();
     })
     .fail(function(data) {
-        debug.log("team load fail");
+        debug.log("Team load fail");
     });
     
     var createButtons = function() {
         $("#bttvTeamMemberListInner").empty();
         
-        vars.jsnTeam.forEach(function(a) {
+        vars.teamMembersJson.forEach(function(a) {
             var chanName = a.channel.name,
                 dispName = a.channel.display_name,
                 chanImgUrl = a.channel.image.size50,
                 chanGame = a.channel.meta_game,
                 chanStatus = a.channel.status,
+                chanViews = a.channel.total_views,
                 chanViewers = a.channel.current_viewers,
+                chanFollowers = a.channel.followers_count,
+                chanDesc = a.channel.description,
+                chanTitle = a.channel.title,
                 theButtonArray = {"name": chanName, "displayName": dispName, "profileImage": chanImgUrl, "tooltip": dispName+" is offline"};
             
-            
             if(chanName === vars.teamCurrentChannel) {
-                theButtonArray["isPlaying"] = true;
-                
                 //update info below player
-                $("#channel_viewer_count").text(chanViewers);
-                $("#views_count").text(a.channel.total_views);
-                $("#followers_count").text(a.channel.followers_count);
-                $("#description").html(descAndTitleTemplate({"description":a.channel.description, "title":a.channel.title}));
+                $("#bttvNowPlayingStatsHolder").html(playingStatsTemplate({"channel": chanName, "displayName": dispName, "views": chanViews, "viewers": chanViewers, "followers": chanFollowers, "game": chanGame}));
+                $("#description").html(descAndTitleTemplate({"description": chanDesc, "title": chanTitle}));
+                
+                $("#bttvNowPlayingStatsHolder").children().each(function() {
+                    $(this).tipsy({"gravity": "s", "fade": true});
+                });
+                
+                theButtonArray["isPlaying"] = true;
             }
             
             if(chanStatus === "live") {

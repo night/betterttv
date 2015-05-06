@@ -1,0 +1,11 @@
+div.social-share.clearfix
+  span#face_book_like_button
+    iframe(id="facebook_like_iframe" scrolling="no" frameborder="0" src="http://www.facebook.com/plugins/like.php?href=http://www.twitch.tv/"+channel+"&layout=button_count&show-faces=false&share=false&action=like&width=85&height=21&colorscheme=light")
+  span#twitter_share_button
+    iframe(id="bttvTwitterIframe" scrolling="no" frameborder="0" src="https://platform.twitter.com/widgets/tweet_button.html?size=s&align=right&url=http://www.twitch.tv/"+channel+"&text="+displayName+" is playing "+game+" at:")
+div#share_link.share_field
+  label="Channel Link"
+  input#channel_url.text(name="uri" type="text" onclick="this.select()" autocomplete="off" value="http://www.twitch.tv/"+channel)
+div#share_embed.share_field
+  label="Embed Live Player"
+  input#live_embed.text(type="text" onclick="this.select()" value=embedText)

@@ -5,9 +5,11 @@ var debug = require("../../debug"),
     loadTeam = require("./team-load-team");
 
 module.exports = function () {
-
     if(bttv.settings.get("formatTeamPage") !== true || $("body").attr("data-page") != "teams#show") return;
-    debug.log("BetterTTVteams Loading");
+    
+    vars.teamCurrentChannel = ($(".js-playing").attr("id")).replace("channel_", "");
+    vars.teamFirstLoad = 1;
+    vars.teamName = window.location.pathname.replace(/\/team\/|\/event\//, "");
     
     var teamFollowList = "none",
         teamFollowedFailedList = "none",
@@ -15,9 +17,6 @@ module.exports = function () {
         teamFollowResponseCount = 0,
         teamFollowInterval = "none";
         
-    vars.teamCurrentChannel = ($(".js-playing").attr("id")).replace("channel_", "");
-    vars.teamFirstLoad = 1;
-    
     $(window).resize(function() {
         var vpWidth = $(window).width(),
             vpHeight = $(window).height(),
@@ -51,13 +50,14 @@ module.exports = function () {
         
         getFeatured();
         formatTeamPage();
-        setTimeout(loadTeam, 500);
+        //if it wasn't for the bttv.TwitchAPI._ref is null error in Firefox, I would just load the team without the timeout
+        setTimeout(loadTeam, 1000);
     }
     
     var getFeatured = function() {
         bttv.TwitchAPI.get("/kraken/streams/featured?limit=1")
         .done(function(d) {
-            debug.log("got preview url template on load");
+            //debug.log("got preview url template on load");
             var chanName = d.featured[0].stream.channel.name;
             var updatedPreviewUrl = d.featured[0].stream.preview;
             vars.updatedPreviewUrl = updatedPreviewUrl.replace(chanName, "CHANNEL");
@@ -68,7 +68,7 @@ module.exports = function () {
     }
     
     var formatTeamPage = function() {
-        debug.log("Formatting page");
+        debug.log("Formatting Team Page");
         
         //remove "Members" text between team logo and member list
         $(".filters.grid.c4 h2").remove();
@@ -84,17 +84,15 @@ module.exports = function () {
         $("#player_column").TrackpadScrollEmulator({scrollbarHideStrategy: 'rightAndBottom'});
         
         //follow current channel button
-        var followButton = $(followButtonTemplate({"id":"bttvFollowButton"}));
-        followButton.text("Follow");
+        var followButton = $(followButtonTemplate({"id":"bttvFollowButton", "title":"Click to follow "+vars.teamCurrentChannel, "text":"Follow"}));
         followButton.click(function(e) {
             followCurrentChannel();
         });
         $(".js-share").before(followButton);
         
         //follow team button
-        var followTeamButton = $(followButtonTemplate({"id":"bttvFollowTeamButton"}));
-        followTeamButton.text("Follow The Whole Team");
-        followTeamButton.click(function(e) {
+        var followTeamButton = $(followButtonTemplate({"id":"bttvFollowTeamButton", "title":"Click to follow all team channels", "text":"Follow The Team"}));
+        followTeamButton.tipsy({"gravity": "w", "fade": true}).click(function(e) {
             populateFollowQueue();
         });
         $("#team_logo").after(followTeamButton);
@@ -103,13 +101,26 @@ module.exports = function () {
         var newDiv = $("<div>", {"id":"bttvTeamChat"});
         $(".wrapper.c12.clearfix").append(newDiv);
         
-        //add column toggle to logo (for now. todo: add the small arrows)
+        //add column toggle to logo
         $("#team_logo").click(function(e) {
             toggleLeftColumn();
         });
+        $("#team_logo").attr("title", "Click to toggle the left column").tipsy({"gravity": "w", "fade": true});
         
-        //change share drop down to an action button
-        $(".js-share").removeClass("drop").addClass("button primary action");
+        //add now playing stats holder (so we can use template to update stats) and dump the garbage that we can't remove by class/id
+        var tempActionsObject = $("#channel_actions").clone(true),
+            tempDescObject = $("#description").clone(),
+            //no template because one time use
+            nowPlayingStatsHolder = $("<span>", {"id": "bttvNowPlayingStatsHolder"});
+        $("#stats_and_description").empty().append(nowPlayingStatsHolder, tempActionsObject, tempDescObject);
+        
+        //change share button to an action button
+        $(".js-share").removeClass("drop").addClass("button primary action").attr("title", "Click for sharing options");
+        
+        //tipsy everywhere! lol
+        $("#channel_actions").append($("#share")).children("a").each(function() {
+            $(this).tipsy({"gravity": "s", "fade": true});
+        });
     }
     
     var toggleLeftColumn = function() {
@@ -125,20 +136,19 @@ module.exports = function () {
     
     var followCurrentChannel = function() {
         if(vars.userData.isLoggedIn === true) { 
-            debug.log("processing follow");
+            //debug.log("processing follow");
             $("#bttvFollowButton").removeClass("bttv-team-follow-success bttv-team-follow-fail bttv-team-follow-processing").addClass("bttv-team-follow-processing");
             
             bttv.TwitchAPI.put("/kraken/users/"+vars.userData.login+"/follows/channels/"+vars.teamCurrentChannel)
             .done(function(d){
-                debug.log(vars.userData.login+" is now following "+vars.teamCurrentChannel);
-                $("#bttvFollowButton").removeClass("bttv-team-follow-processing").addClass("bttv-team-follow-success");
+                //debug.log(vars.userData.login+" is now following "+vars.teamCurrentChannel);
+                $("#bttvFollowButton").removeClass("bttv-team-follow-processing").addClass("bttv-team-follow-success").text("Followed");
             })
             .fail(function(d){
                 debug.log(vars.userData.login+" follow "+vars.teamCurrentChannel+" failed");
-                $("#bttvFollowButton").removeClass("bttv-team-follow-processing").addClass("bttv-team-follow-fail");
+                $("#bttvFollowButton").removeClass("bttv-team-follow-processing").addClass("bttv-team-follow-fail").text("Error");
             });
         } else {
-            debug.log("need to login");
             $("#header_login").click();
         }
     }
@@ -160,11 +170,11 @@ module.exports = function () {
             teamFollowRequestCount = 0;
             teamFollowResponseCount = 0;
             
-            //followTeamButton is defined on line 65 as a jquery object. does it matter if the variable name has a $ in it?
             $("#bttvFollowTeamButton").removeClass("bttv-team-follow-success bttv-team-follow-fail bttv-team-follow-processing").addClass("bttv-team-follow-processing");
             $("#bttvFollowTeamButton").attr("title", "").text("Processing...");
             
-            vars.jsnTeam.forEach(function(a) {
+            //vars.jsnTeam.forEach(function(a) {
+            vars.teamMembersJson.forEach(function(a) {
                 teamFollowList.push(a.channel.name);
             });
             
