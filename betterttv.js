@@ -635,7 +635,7 @@ var privmsg = exports.privmsg = function (channel, data) {
         "night": { dev: true, tagType: "bttvDeveloper" },
         "dtittel": { dev: true, tagType: "bttvDeveloper" },
         "vendethiel": { dev: true, tagType: "bttvDeveloper" },
-        "teak42": { dev: true, tagType: "bttvDeveloper" },
+        "teak": { dev: true, tagType: "bttvDeveloper" },
         "matthewjk": { supporter: true, team: "Support", tagType: "bttvSupporter" },
         "julia_cs": { supporter: true, team: "Design", tagType: "bttvSupporter" },
         "vaughnwhiskey": { supporter: true, team: "Support", tagType: "bttvSupporter" },
@@ -712,7 +712,7 @@ var lookupDisplayName = exports.lookupDisplayName = function(user) {
 
     // There's no display-name when sending messages, so we'll fill in for that
     if(vars.userData.isLoggedIn && user === vars.userData.login) {
-        store.displayNames[user] = Twitch.user.displayName();
+        store.displayNames[user] = Twitch.user.displayName() || user;
     }
     
     // Get subscription status (Night's subs)
@@ -720,7 +720,7 @@ var lookupDisplayName = exports.lookupDisplayName = function(user) {
 
     if(tmi()) {
         if(store.displayNames.hasOwnProperty(user)) {
-            return store.displayNames[user];
+            return store.displayNames[user] || user.capitalize();
         } else if(user !== "jtv" && user !== "twitchnotify") {
             return user.capitalize();
         } else {
