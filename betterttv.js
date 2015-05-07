@@ -663,7 +663,7 @@ var privmsg = exports.privmsg = function (channel, data) {
         "night": { dev: true, tagType: "bttvDeveloper" },
         "dtittel": { dev: true, tagType: "bttvDeveloper" },
         "vendethiel": { dev: true, tagType: "bttvDeveloper" },
-        "teak42": { dev: true, tagType: "bttvDeveloper" },
+        "teak": { dev: true, tagType: "bttvDeveloper" },
         "matthewjk": { supporter: true, team: "Support", tagType: "bttvSupporter" },
         "julia_cs": { supporter: true, team: "Design", tagType: "bttvSupporter" },
         "vaughnwhiskey": { supporter: true, team: "Support", tagType: "bttvSupporter" },
@@ -2518,26 +2518,17 @@ module.exports = function () {
                 }
 
                 var chatDJSInject = document.createElement("script");
-                chatDJSInject.setAttribute("src", "//chat.betterttv.net/client/external.php?type=djs");
+                chatDJSInject.setAttribute("src", "https://chat.betterttv.net/chat/cometchatjs.php");
                 chatDJSInject.setAttribute("type", "text/javascript");
                 $("body").append(chatDJSInject);
-
-                setTimeout(function() {
-                    var chatJSInject = document.createElement("script");
-                    chatJSInject.setAttribute("src", "//chat.betterttv.net/client/external.php?type=js");
-                    chatJSInject.setAttribute("type", "text/javascript");
-                    $("body").append(chatJSInject);
-                }, 5000);
             });
 
             var chatCSSInject = document.createElement("link");
-            chatCSSInject.setAttribute("href", "//chat.betterttv.net/client/external.php?type=css");
+            chatCSSInject.setAttribute("href", "https://chat.betterttv.net/chat/cometchatcss.php");
             chatCSSInject.setAttribute("type", "text/css");
             chatCSSInject.setAttribute("id", "arrowchat_css");
             chatCSSInject.setAttribute("rel", "stylesheet");
             $("head").append(chatCSSInject);
-
-            jqac = $;
         }
 
         if(!bttv.getChannel()) return;

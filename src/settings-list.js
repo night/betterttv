@@ -38,7 +38,7 @@ module.exports = [
     },
     {
         name: 'BetterTTV Chat',
-        description: 'A tiny chat bar for personal messaging friends (BETA)',
+        description: 'A tiny chat bar for personal messaging friends',
         default: false,
         storageKey: 'bttvChat',
         toggle: function(value) {
