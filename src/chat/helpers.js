@@ -3,6 +3,7 @@ var vars = require('../vars'),
 var tmi = require('./tmi'),
     store = require('./store'),
     templates = require('./templates');
+var bots = require('../bots');
 
 // Helper functions
 var removeElement = require('../helpers/element').remove;
@@ -302,6 +303,7 @@ var getBadges = exports.getBadges = function(user) {
     var badges = [];
     if(tmi() && tmi().tmiRoom.getLabels(user)) badges = tmi().tmiRoom.getLabels(user);
     if(store.__subscriptions[user] && store.__subscriptions[user].indexOf(bttv.getChannel()) !== -1) badges.push("subscriber");
+    if(store.__channelBots.indexOf(user) > -1 || (bots.indexOf(user) > -1 && isModerator(user))) badges.push("bot");
     return badges;
 };
 var hasGlow = exports.hasGlow = function(user) {
@@ -387,6 +389,12 @@ var assignBadges = exports.assignBadges = function(badges, data) {
                 type: (bttv.settings.get("showJTVTags") === true?'old':'')+'global-moderator',
                 name: (bttv.settings.get("showJTVTags") === true?'GMod':''),
                 description: 'Twitch Global Moderator'
+            });
+        } else if(badges.indexOf('bot') !== -1) {
+            bttvBadges.push({
+                type: 'bot',
+                name: 'Bot',
+                description: 'Channel Bot'
             });
         } else if(badges.indexOf('owner') !== -1 && !data.bttvTagType) {
             bttvBadges.push({

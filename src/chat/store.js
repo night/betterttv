@@ -5,6 +5,7 @@ exports.__messageQueue = [];
 exports.__reportedErrors = [];
 exports.__subscriptions = {};
 exports.__unbannedUsers = [];
+exports.__channelBots = [];
 exports.displayNames = {};
 exports.trackTimeouts = {};
 exports.chatters = {};

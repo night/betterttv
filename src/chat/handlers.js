@@ -282,10 +282,6 @@ var privmsg = exports.privmsg = function (channel, data) {
         }
     }
 
-    //Bots
-    var bots = require('../bots');
-    if(bots.indexOf(data.from) !== -1 && helpers.isModerator(data.from)) { data.bttvTagType="bot"; data.bttvTagName = "Bot"; }
-
     if (bttv.settings.get("showJTVTags") === true) {
         if (data.bttvTagType == "moderator" || data.bttvTagType == "broadcaster" || data.bttvTagType == "admin" || data.bttvTagType == "global_mod" || data.bttvTagType == "staff" || data.bttvTagType === "bot") data.bttvTagType = 'old'+data.bttvTagType;
     }
