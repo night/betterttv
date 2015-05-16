@@ -4,12 +4,5 @@ module.exports = [
     "sourbot",
     "xanbot",
     "manabot",
-    "mtgbot",
-    "ackbot",
-    "baconrobot",
-    "tardisbot",
-    "deejbot",
-    "valuebot",
-    "stahpbot",
-    "mikuia"
+    "ackbot"
 ];
