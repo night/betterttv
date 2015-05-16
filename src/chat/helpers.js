@@ -1,9 +1,9 @@
 var vars = require('../vars'),
-    keyCodes = require('../keycodes');
-var tmi = require('./tmi'),
+    keyCodes = require('../keycodes'),
+    tmi = require('./tmi'),
     store = require('./store'),
-    templates = require('./templates');
-var bots = require('../bots');
+    templates = require('./templates'),
+    bots = require('../bots');
 
 // Helper functions
 var removeElement = require('../helpers/element').remove;
@@ -370,70 +370,117 @@ var calculateColor = exports.calculateColor = function(color) {
 var assignBadges = exports.assignBadges = function(badges, data) {
     data = data || {};
     var bttvBadges = [];
+    var legacyTags = require('../legacy-tags')(data);
 
-    if(badges && badges.length > 0) {
-        if(badges.indexOf('staff') !== -1) {
-            bttvBadges.push({
-                type: (bttv.settings.get("showJTVTags") === true?'old':'')+'staff',
-                name: (bttv.settings.get("showJTVTags") === true?'Staff':''),
-                description: 'Twitch Staff'
-            });
-        } else if(badges.indexOf('admin') !== -1) {
-            bttvBadges.push({
-                type: (bttv.settings.get("showJTVTags") === true?'old':'')+'admin',
-                name: (bttv.settings.get("showJTVTags") === true?'Admin':''),
-                description: 'Twitch Admin'
-            });
-        } else if(badges.indexOf('global_mod') !== -1) {
-            bttvBadges.push({
-                type: (bttv.settings.get("showJTVTags") === true?'old':'')+'global-moderator',
-                name: (bttv.settings.get("showJTVTags") === true?'GMod':''),
-                description: 'Twitch Global Moderator'
-            });
-        } else if(badges.indexOf('bot') !== -1) {
-            bttvBadges.push({
-                type: 'bot',
-                name: 'Bot',
-                description: 'Channel Bot'
-            });
-        } else if(badges.indexOf('owner') !== -1 && !data.bttvTagType) {
-            bttvBadges.push({
-                type: (bttv.settings.get("showJTVTags") === true?'old':'')+'broadcaster',
-                name: (bttv.settings.get("showJTVTags") === true?'Host':''),
-                description: 'Channel Broadcaster'
-            });
-        } else if(badges.indexOf('mod') !== -1 && !data.bttvTagType) {
-            bttvBadges.push({
-                type: (bttv.settings.get("showJTVTags") === true?'oldmoderator':'moderator'),
-                name: (bttv.settings.get("showJTVTags") === true?'Mod':''),
-                description: 'Channel Moderator'
-            });
-        }
-
-        if(data.bttvTagType && data.bttvTagName) {
-            bttvBadges.unshift({
-                type: data.bttvTagType,
-                name: data.bttvTagName,
-                description: data.bttvTagDesc?data.bttvTagDesc:data.bttvTagName
-            });
-        }
-
-        if(badges.indexOf('turbo') !== -1) {
-            bttvBadges.push({
-                type: 'turbo',
-                name: '',
-                description: 'Twitch Turbo'
-            });
-        }
-
-        if(badges.indexOf('subscriber') !== -1) {
-            bttvBadges.push({
-                type: 'subscriber',
-                name: '',
-                description: 'Channel Subscriber'
-            });
-        }
+    if(badges.indexOf('staff') !== -1) {
+        bttvBadges.push({
+            type: 'staff',
+            name: 'Staff',
+            description: 'Twitch Staff'
+        });
+    } else if(badges.indexOf('admin') !== -1) {
+        bttvBadges.push({
+            type: 'admin',
+            name: 'Admin',
+            description: 'Twitch Admin'
+        });
+    } else if(badges.indexOf('global_mod') !== -1) {
+        bttvBadges.push({
+            type: 'global-moderator',
+            name: 'GMod',
+            description: 'Twitch Global Moderator'
+        });
+    } else if(badges.indexOf('bot') !== -1) {
+        bttvBadges.push({
+            type: 'bot',
+            name: 'Bot',
+            description: 'Channel Bot'
+        });
+    } else if(badges.indexOf('owner') !== -1 && !legacyTags[data.from]) {
+        bttvBadges.push({
+            type: 'broadcaster',
+            name: 'Host',
+            description: 'Channel Broadcaster'
+        });
+    } else if(badges.indexOf('mod') !== -1 && !legacyTags[data.from]) {
+        bttvBadges.push({
+            type: 'moderator',
+            name: 'Mod',
+            description: 'Channel Moderator'
+        });
     }
+
+    // Legacy Swag Tags
+    if(
+        legacyTags[data.from] &&
+        (
+            (
+                legacyTags[data.from].mod === true && isModerator(data.from)
+            ) ||
+            legacyTags[data.from].mod === false
+        )
+    ) {
+        var userData = legacyTags[data.from];
+
+        // Shouldn't be setting color and nickname here, but it's legacy so
+        if(userData.color && data.style !== 'action') data.color = userData.color;
+        if(userData.nickname) data.bttvDisplayName = userData.nickname;
+
+        bttvBadges.unshift({
+            type: userData.tagType,
+            name: userData.tagName,
+            description: "Grandfathered BetterTTV Swag Tag"
+        });
+    }
+
+    if(data.bttvTagType && data.bttvTagName) {
+        bttvBadges.unshift({
+            type: data.bttvTagType,
+            name: data.bttvTagName,
+            description: data.bttvTagDesc?data.bttvTagDesc:data.bttvTagName
+        });
+    }
+
+    if(badges.indexOf('turbo') !== -1) {
+        bttvBadges.push({
+            type: 'turbo',
+            name: '',
+            description: 'Twitch Turbo'
+        });
+    }
+
+    if(badges.indexOf('subscriber') !== -1) {
+        bttvBadges.push({
+            type: 'subscriber',
+            name: '',
+            description: 'Channel Subscriber'
+        });
+    }
+
+    bttvBadges.forEach(function(badge) {
+        if(
+            bttv.settings.get("showJTVTags") === false &&
+            badge.description !== "Grandfathered BetterTTV Swag Tag"
+        ) {
+            badge.name = "";
+            return;
+        }
+
+        if(
+            [
+                "moderator",
+                "broadcaster",
+                "admin",
+                "global-moderator",
+                "staff",
+                "bot"
+            ].indexOf(badge.type) === -1
+        ) {
+            return;
+        }
+
+        badge.type = "old" + badge.type;
+    });
 
     return bttvBadges;
 };
