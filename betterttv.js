@@ -291,14 +291,7 @@ module.exports = [
     "sourbot",
     "xanbot",
     "manabot",
-    "mtgbot",
-    "ackbot",
-    "baconrobot",
-    "tardisbot",
-    "deejbot",
-    "valuebot",
-    "stahpbot",
-    "mikuia"
+    "ackbot"
 ];
 },{}],2:[function(require,module,exports){
 exports.tmi = require('./chat/tmi');
@@ -1946,7 +1939,7 @@ var debug = require('./helpers/debug'),
 
 bttv.info = {
     version: "6.8",
-    release: 34,
+    release: 35,
     versionString: function() {
         return bttv.info.version + 'R' + bttv.info.release;
     }
