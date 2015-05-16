@@ -441,9 +441,8 @@ var main = function () {
 
                 if(App.__container__.lookup("controller:application").get("currentRouteName") !== "channel.index") {
                     $('#main_col').removeAttr('style');
-                } else if (App.__container__.lookup("controller:channel").get("theatreMode") === false && bttv.settings.get('autoTheatreMode') === true) {
-                    enableTheatreMode();
                 }
+
                 switch(payload.template) {
                     case 'shared/right-column':
                         waitForLoad(function(ready) {
@@ -460,6 +459,12 @@ var main = function () {
                                 handleBackground();
                                 clearClutter();
                                 channelReformat();
+                                if (
+                                    App.__container__.lookup("controller:channel").get("theatreMode") === false && 
+                                    bttv.settings.get('autoTheatreMode') === true
+                                ) {
+                                    enableTheatreMode();
+                                }
                                 $(window).trigger('resize');
                                 setTimeout(function() {
                                     $(window).trigger('resize');
