@@ -1,6 +1,9 @@
 module.exports = {
     _ref: null,
     _headers: function(e, t) {
+        //addresses the TwitchAPI._ref is null type error on team pages
+        if(!bttv.TwitchAPI._ref) return;
+        
         e.setRequestHeader("Client-ID", "6x8avioex0zt85ht6py4sq55z6avsea");
 
         bttv.TwitchAPI._ref.call(Twitch.api, e, t);
