@@ -82,6 +82,7 @@ var takeover = module.exports = function() {
         if(store.bttvEmotes[emote].id.toString().charAt(0) !== 'c') continue;
         delete store.bttvEmotes[emote];
     }
+    store.__channelBots = [];
     $.getJSON("https://api.betterttv.net/2/channels/"+bttv.getChannel()).done(function(data) {
         data.emotes.forEach(function(emote) {
             emote.channelEmote = true;
@@ -89,6 +90,7 @@ var takeover = module.exports = function() {
             emote.url = emote.urlTemplate.replace('{{image}}', '1x');
             store.bttvEmotes[emote.code] = emote;
         });
+        store.__channelBots = data.bots;
     });
 
     // Load Chat Settings

@@ -263,14 +263,7 @@ module.exports = [
     "sourbot",
     "xanbot",
     "manabot",
-    "mtgbot",
-    "ackbot",
-    "baconrobot",
-    "tardisbot",
-    "deejbot",
-    "valuebot",
-    "stahpbot",
-    "mikuia"
+    "ackbot"
 ];
 },{}],2:[function(require,module,exports){
 exports.tmi = require('./chat/tmi');
@@ -606,10 +599,6 @@ var privmsg = exports.privmsg = function (channel, data) {
         }
     }
 
-    //Bots
-    var bots = require('../bots');
-    if(bots.indexOf(data.from) !== -1 && helpers.isModerator(data.from)) { data.bttvTagType="bot"; data.bttvTagName = "Bot"; }
-
     if (bttv.settings.get("showJTVTags") === true) {
         if (data.bttvTagType == "moderator" || data.bttvTagType == "broadcaster" || data.bttvTagType == "admin" || data.bttvTagType == "global_mod" || data.bttvTagType == "staff" || data.bttvTagType === "bot") data.bttvTagType = 'old'+data.bttvTagType;
     }
@@ -641,17 +630,6 @@ var privmsg = exports.privmsg = function (channel, data) {
         "vaughnwhiskey": { supporter: true, team: "Support", tagType: "bttvSupporter" },
         "izl": { supporter: true, team: "Support", tagType: "bttvSupporter" },
         "jacksack": { supporter: true, team: "Design", tagType: "bttvSupporter" }
-    }
-
-    var legacyTags = require('../legacy-tags')(data);
-
-    if(legacyTags[data.from] && ((legacyTags[data.from].mod === true && helpers.isModerator(data.from)) || legacyTags[data.from].mod === false)) {
-        var userData = legacyTags[data.from];
-        if(userData.tagType) data.bttvTagType = (["moderator","broadcaster","admin","global_mod","staff","bot"].indexOf(userData.tagType) !== -1) ? 'old'+userData.tagType : userData.tagType;
-        if(userData.tagName) data.bttvTagName = userData.tagName;
-        if(userData.color && data.style !== 'action') data.color = userData.color;
-        if(userData.nickname) data.bttvDisplayName = userData.nickname;
-        data.bttvTagDesc = "Grandfathered BetterTTV Swag Tag";
     }
 
     var badges = helpers.getBadges(data.from);
@@ -694,12 +672,13 @@ var privmsg = exports.privmsg = function (channel, data) {
     store.__messageQueue.push(message);
 }
 
-},{"../bots":1,"../features/embedded-polling":30,"../features/keywords-lists":39,"../features/make-card":40,"../helpers/colors":44,"../helpers/debug":45,"../helpers/regex":47,"../legacy-tags":49,"../vars":68,"./helpers":5,"./rooms":7,"./store":8,"./templates":10,"./tmi":11}],5:[function(require,module,exports){
+},{"../features/embedded-polling":30,"../features/keywords-lists":39,"../features/make-card":40,"../helpers/colors":44,"../helpers/debug":45,"../helpers/regex":47,"../vars":68,"./helpers":5,"./rooms":7,"./store":8,"./templates":10,"./tmi":11}],5:[function(require,module,exports){
 var vars = require('../vars'),
-    keyCodes = require('../keycodes');
-var tmi = require('./tmi'),
+    keyCodes = require('../keycodes'),
+    tmi = require('./tmi'),
     store = require('./store'),
-    templates = require('./templates');
+    templates = require('./templates'),
+    bots = require('../bots');
 
 // Helper functions
 var removeElement = require('../helpers/element').remove;
@@ -999,6 +978,7 @@ var getBadges = exports.getBadges = function(user) {
     var badges = [];
     if(tmi() && tmi().tmiRoom.getLabels(user)) badges = tmi().tmiRoom.getLabels(user);
     if(store.__subscriptions[user] && store.__subscriptions[user].indexOf(bttv.getChannel()) !== -1) badges.push("subscriber");
+    if(store.__channelBots.indexOf(user) > -1 || (bots.indexOf(user) > -1 && isModerator(user))) badges.push("bot");
     return badges;
 };
 var hasGlow = exports.hasGlow = function(user) {
@@ -1065,64 +1045,117 @@ var calculateColor = exports.calculateColor = function(color) {
 var assignBadges = exports.assignBadges = function(badges, data) {
     data = data || {};
     var bttvBadges = [];
+    var legacyTags = require('../legacy-tags')(data);
 
-    if(badges && badges.length > 0) {
-        if(badges.indexOf('staff') !== -1) {
-            bttvBadges.push({
-                type: (bttv.settings.get("showJTVTags") === true?'old':'')+'staff',
-                name: (bttv.settings.get("showJTVTags") === true?'Staff':''),
-                description: 'Twitch Staff'
-            });
-        } else if(badges.indexOf('admin') !== -1) {
-            bttvBadges.push({
-                type: (bttv.settings.get("showJTVTags") === true?'old':'')+'admin',
-                name: (bttv.settings.get("showJTVTags") === true?'Admin':''),
-                description: 'Twitch Admin'
-            });
-        } else if(badges.indexOf('global_mod') !== -1) {
-            bttvBadges.push({
-                type: (bttv.settings.get("showJTVTags") === true?'old':'')+'global-moderator',
-                name: (bttv.settings.get("showJTVTags") === true?'GMod':''),
-                description: 'Twitch Global Moderator'
-            });
-        } else if(badges.indexOf('owner') !== -1 && !data.bttvTagType) {
-            bttvBadges.push({
-                type: (bttv.settings.get("showJTVTags") === true?'old':'')+'broadcaster',
-                name: (bttv.settings.get("showJTVTags") === true?'Host':''),
-                description: 'Channel Broadcaster'
-            });
-        } else if(badges.indexOf('mod') !== -1 && !data.bttvTagType) {
-            bttvBadges.push({
-                type: (bttv.settings.get("showJTVTags") === true?'oldmoderator':'moderator'),
-                name: (bttv.settings.get("showJTVTags") === true?'Mod':''),
-                description: 'Channel Moderator'
-            });
-        }
-
-        if(data.bttvTagType && data.bttvTagName) {
-            bttvBadges.unshift({
-                type: data.bttvTagType,
-                name: data.bttvTagName,
-                description: data.bttvTagDesc?data.bttvTagDesc:data.bttvTagName
-            });
-        }
-
-        if(badges.indexOf('turbo') !== -1) {
-            bttvBadges.push({
-                type: 'turbo',
-                name: '',
-                description: 'Twitch Turbo'
-            });
-        }
-
-        if(badges.indexOf('subscriber') !== -1) {
-            bttvBadges.push({
-                type: 'subscriber',
-                name: '',
-                description: 'Channel Subscriber'
-            });
-        }
+    if(badges.indexOf('staff') !== -1) {
+        bttvBadges.push({
+            type: 'staff',
+            name: 'Staff',
+            description: 'Twitch Staff'
+        });
+    } else if(badges.indexOf('admin') !== -1) {
+        bttvBadges.push({
+            type: 'admin',
+            name: 'Admin',
+            description: 'Twitch Admin'
+        });
+    } else if(badges.indexOf('global_mod') !== -1) {
+        bttvBadges.push({
+            type: 'global-moderator',
+            name: 'GMod',
+            description: 'Twitch Global Moderator'
+        });
+    } else if(badges.indexOf('bot') !== -1) {
+        bttvBadges.push({
+            type: 'bot',
+            name: 'Bot',
+            description: 'Channel Bot'
+        });
+    } else if(badges.indexOf('owner') !== -1 && !legacyTags[data.from]) {
+        bttvBadges.push({
+            type: 'broadcaster',
+            name: 'Host',
+            description: 'Channel Broadcaster'
+        });
+    } else if(badges.indexOf('mod') !== -1 && !legacyTags[data.from]) {
+        bttvBadges.push({
+            type: 'moderator',
+            name: 'Mod',
+            description: 'Channel Moderator'
+        });
     }
+
+    // Legacy Swag Tags
+    if(
+        legacyTags[data.from] &&
+        (
+            (
+                legacyTags[data.from].mod === true && isModerator(data.from)
+            ) ||
+            legacyTags[data.from].mod === false
+        )
+    ) {
+        var userData = legacyTags[data.from];
+
+        // Shouldn't be setting color and nickname here, but it's legacy so
+        if(userData.color && data.style !== 'action') data.color = userData.color;
+        if(userData.nickname) data.bttvDisplayName = userData.nickname;
+
+        bttvBadges.unshift({
+            type: userData.tagType,
+            name: userData.tagName,
+            description: "Grandfathered BetterTTV Swag Tag"
+        });
+    }
+
+    if(data.bttvTagType && data.bttvTagName) {
+        bttvBadges.unshift({
+            type: data.bttvTagType,
+            name: data.bttvTagName,
+            description: data.bttvTagDesc?data.bttvTagDesc:data.bttvTagName
+        });
+    }
+
+    if(badges.indexOf('turbo') !== -1) {
+        bttvBadges.push({
+            type: 'turbo',
+            name: '',
+            description: 'Twitch Turbo'
+        });
+    }
+
+    if(badges.indexOf('subscriber') !== -1) {
+        bttvBadges.push({
+            type: 'subscriber',
+            name: '',
+            description: 'Channel Subscriber'
+        });
+    }
+
+    bttvBadges.forEach(function(badge) {
+        if(
+            bttv.settings.get("showJTVTags") === false &&
+            badge.description !== "Grandfathered BetterTTV Swag Tag"
+        ) {
+            badge.name = "";
+            return;
+        }
+
+        if(
+            [
+                "moderator",
+                "broadcaster",
+                "admin",
+                "global-moderator",
+                "staff",
+                "bot"
+            ].indexOf(badge.type) === -1
+        ) {
+            return;
+        }
+
+        badge.type = "old" + badge.type;
+    });
 
     return bttvBadges;
 };
@@ -1215,7 +1248,7 @@ var massUnban = exports.massUnban = function() {
     });
 }*/
 
-},{"../helpers/colors":44,"../helpers/element":46,"../helpers/regex":47,"../keycodes":48,"../vars":68,"./handlers":4,"./store":8,"./templates":10,"./tmi":11}],6:[function(require,module,exports){
+},{"../bots":1,"../helpers/colors":44,"../helpers/element":46,"../helpers/regex":47,"../keycodes":48,"../legacy-tags":49,"../vars":68,"./handlers":4,"./store":8,"./templates":10,"./tmi":11}],6:[function(require,module,exports){
 
 // Add mouseover image preview to image links
 module.exports = function(imgUrl) {
@@ -1298,6 +1331,7 @@ exports.__messageQueue = [];
 exports.__reportedErrors = [];
 exports.__subscriptions = {};
 exports.__unbannedUsers = [];
+exports.__channelBots = [];
 exports.displayNames = {};
 exports.trackTimeouts = {};
 exports.chatters = {};
@@ -1398,6 +1432,7 @@ var takeover = module.exports = function() {
         if(store.bttvEmotes[emote].id.toString().charAt(0) !== 'c') continue;
         delete store.bttvEmotes[emote];
     }
+    store.__channelBots = [];
     $.getJSON("https://api.betterttv.net/2/channels/"+bttv.getChannel()).done(function(data) {
         data.emotes.forEach(function(emote) {
             emote.channelEmote = true;
@@ -1405,6 +1440,7 @@ var takeover = module.exports = function() {
             emote.url = emote.urlTemplate.replace('{{image}}', '1x');
             store.bttvEmotes[emote.code] = emote;
         });
+        store.__channelBots = data.bots;
     });
 
     // Load Chat Settings
@@ -1703,7 +1739,7 @@ var emoticonBTTV = exports.emoticonBTTV = function(emote) {
     return '<img class="emoticon bttv-emo-' + emote.id + '" src="' + emote.urlTemplate.replace('{{image}}','1x') + '" srcset="' + emote.urlTemplate.replace('{{image}}','2x') + ' 2x" ' + channel + 'data-regex="' + encodeURIComponent(emote.code) + '" />';
 };
 var emoticon = exports.emoticon = function(id, name) {
-    if(id < 15 && bttv.settings.get("showDefaultEmotes") !== true) {
+    if(id < 15 && bttv.settings.get("showMonkeyEmotes") === true) {
         return '<img class="emoticon ttv-emo-' + id + '" src="' + jtvEmoticonize(id) + '" data-id="' + id + '" data-regex="' + encodeURIComponent(name) + '" />';
     } else {
         return '<img class="emoticon ttv-emo-' + id + '" src="//static-cdn.jtvnw.net/emoticons/v1/' + id + '/1.0" srcset="//static-cdn.jtvnw.net/emoticons/v1/' + id + '/2.0 2x" data-id="' + id + '" data-regex="' + encodeURIComponent(name) + '" />';
@@ -1857,7 +1893,7 @@ var message = exports.message = function(sender, message, emotes, colored) {
     return '<span class="message" '+(colored?'style="color: '+colored+'" ':'')+'data-raw="'+rawMessage+'" data-emotes="'+(emotes ? encodeURIComponent(JSON.stringify(emotes)) : 'false')+'">'+message+'</span>';
 };
 var privmsg = exports.privmsg = function(highlight, action, server, isMod, data) {
-    return '<div class="chat-line'+(highlight?' highlight':'')+(action?' action':'')+(server?' admin':'')+'" data-sender="'+data.sender+'">'+timestamp(data.time)+' '+(isMod?modicons():'')+' '+badges(data.badges)+from(data.nickname, data.color)+message(data.sender, data.message, data.emotes, action?data.color:false)+'</div>';
+    return '<div class="chat-line'+(highlight?' highlight':'')+(action?' action':'')+(server?' admin':'')+'" data-sender="'+data.sender+'">'+timestamp(data.time)+' '+(isMod?modicons():'')+' '+badges(data.badges)+from(data.nickname, data.color)+message(data.sender, data.message, data.emotes, (action && !highlight)?data.color:false)+'</div>';
 }
 
 },{"../templates/chat-suggestions":53,"../templates/moderation-card":55,"./helpers":5,"./store":8,"./tmi":11,"punycode":69}],11:[function(require,module,exports){
@@ -1881,7 +1917,7 @@ var debug = require('./helpers/debug'),
 
 bttv.info = {
     version: "6.8",
-    release: 34,
+    release: 35,
     versionString: function() {
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -2315,9 +2351,8 @@ var main = function () {
 
                 if(App.__container__.lookup("controller:application").get("currentRouteName") !== "channel.index") {
                     $('#main_col').removeAttr('style');
-                } else if (App.__container__.lookup("controller:channel").get("theatreMode") === false && bttv.settings.get('autoTheatreMode') === true) {
-                    enableTheatreMode();
                 }
+
                 switch(payload.template) {
                     case 'shared/right-column':
                         waitForLoad(function(ready) {
@@ -2334,6 +2369,12 @@ var main = function () {
                                 handleBackground();
                                 clearClutter();
                                 channelReformat();
+                                if (
+                                    App.__container__.lookup("controller:channel").get("theatreMode") === false && 
+                                    bttv.settings.get('autoTheatreMode') === true
+                                ) {
+                                    enableTheatreMode();
+                                }
                                 $(window).trigger('resize');
                                 setTimeout(function() {
                                     $(window).trigger('resize');
@@ -2497,27 +2538,20 @@ module.exports = function () {
                     debug.log("Not logged into BTTV Chat");
                 }
 
-                var chatDJSInject = document.createElement("script");
-                chatDJSInject.setAttribute("src", "//chat.betterttv.net/client/external.php?type=djs");
-                chatDJSInject.setAttribute("type", "text/javascript");
-                $("body").append(chatDJSInject);
-
                 setTimeout(function() {
-                    var chatJSInject = document.createElement("script");
-                    chatJSInject.setAttribute("src", "//chat.betterttv.net/client/external.php?type=js");
-                    chatJSInject.setAttribute("type", "text/javascript");
-                    $("body").append(chatJSInject);
+                    var chatDJSInject = document.createElement("script");
+                    chatDJSInject.setAttribute("src", "https://chat.betterttv.net/chat/cometchatjs.php");
+                    chatDJSInject.setAttribute("type", "text/javascript");
+                    $("body").append(chatDJSInject);
                 }, 5000);
             });
 
             var chatCSSInject = document.createElement("link");
-            chatCSSInject.setAttribute("href", "//chat.betterttv.net/client/external.php?type=css");
+            chatCSSInject.setAttribute("href", "https://chat.betterttv.net/chat/cometchatcss.php");
             chatCSSInject.setAttribute("type", "text/css");
             chatCSSInject.setAttribute("id", "arrowchat_css");
             chatCSSInject.setAttribute("rel", "stylesheet");
             $("head").append(chatCSSInject);
-
-            jqac = $;
         }
 
         if(!bttv.getChannel()) return;
@@ -4822,8 +4856,8 @@ module.exports = [
         storageKey: 'adminStaffAlert'
     },
     {
-        name: 'Alpha Chat Tags',
-        description: 'Removes the background from chat tags',
+        name: 'Alpha Chat Badges',
+        description: 'Removes the background from chat badges',
         default: false,
         storageKey: 'alphaTags'
     },
@@ -4835,7 +4869,7 @@ module.exports = [
     },
     {
         name: 'BetterTTV Chat',
-        description: 'A tiny chat bar for personal messaging friends (BETA)',
+        description: 'A tiny chat bar for personal messaging friends',
         default: false,
         storageKey: 'bttvChat',
         toggle: function(value) {
@@ -4857,7 +4891,7 @@ module.exports = [
     },
     {
         name: 'Blue Buttons',
-        description: 'BetterTTV replaces Twitch\'s purple with blue by default',
+        description: 'Blue is better than purple, so we make it an option.',
         default: false,
         storageKey: 'showBlueButtons',
         toggle: function(value) {
@@ -5001,6 +5035,19 @@ module.exports = [
         storageKey: 'embeddedPolling'
     },
     {
+        name: 'Emote Menu',
+        description: 'Get a more advanced emote menu for Twitch. (Made by Ryan Chatham)',
+        default: false,
+        storageKey: 'clickTwitchEmotes',
+        toggle: function(value) {
+            if(value === true) {
+                bttv.handleTwitchChatEmotesScript();
+            } else {
+                window.location.reload();
+            }
+        }
+    },
+    {
         name: 'Featured Channels',
         description: 'The left sidebar is too cluttered, so BetterTTV removes featured channels by default',
         default: false,
@@ -5034,10 +5081,19 @@ module.exports = [
         }
     },
     {
-        name: 'JTV Chat Tags',
-        description: 'BetterTTV can replace the chat tags with the ones from JTV',
+        name: 'JTV Chat Badges',
+        description: 'BetterTTV can replace the chat badges with the ones from JTV',
         default: false,
         storageKey: 'showJTVTags'
+    },
+    {
+        name: 'JTV Monkey Emotes',
+        description: 'BetterTTV replaces the robot emoticons with the old JTV monkey faces',
+        default: true,
+        storageKey: 'showMonkeyEmotes',
+        toggle: function() {
+            window.location.reload();
+        }
     },
     {
         name: 'Mod Card Keybinds',
@@ -5065,15 +5121,6 @@ module.exports = [
         description: 'Completely removes timed out messages from view',
         default: false,
         storageKey: 'hideDeletedMessages'
-    },
-    {
-        name: 'Robot Emoticons',
-        description: 'BetterTTV replaces the robot emoticons with the old JTV monkey faces by default',
-        default: false,
-        storageKey: 'showDefaultEmotes',
-        toggle: function() {
-            window.location.reload();
-        }
     },
     {
         name: 'Show Deleted Messages',
@@ -5107,19 +5154,6 @@ module.exports = [
         storageKey: 'twitchCast',
         toggle: function(value) {
             channelReformat();
-        }
-    },
-    {
-        name: 'Twitch Chat Emotes',
-        description: 'Why remember emotes when you can "click-to-insert" them (by Ryan Chatham)',
-        default: false,
-        storageKey: 'clickTwitchEmotes',
-        toggle: function(value) {
-            if(value === true) {
-                bttv.handleTwitchChatEmotesScript();
-            } else {
-                window.location.reload();
-            }
         }
     },
     {

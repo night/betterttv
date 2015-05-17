@@ -282,10 +282,6 @@ var privmsg = exports.privmsg = function (channel, data) {
         }
     }
 
-    //Bots
-    var bots = require('../bots');
-    if(bots.indexOf(data.from) !== -1 && helpers.isModerator(data.from)) { data.bttvTagType="bot"; data.bttvTagName = "Bot"; }
-
     if (bttv.settings.get("showJTVTags") === true) {
         if (data.bttvTagType == "moderator" || data.bttvTagType == "broadcaster" || data.bttvTagType == "admin" || data.bttvTagType == "global_mod" || data.bttvTagType == "staff" || data.bttvTagType === "bot") data.bttvTagType = 'old'+data.bttvTagType;
     }
@@ -317,17 +313,6 @@ var privmsg = exports.privmsg = function (channel, data) {
         "vaughnwhiskey": { supporter: true, team: "Support", tagType: "bttvSupporter" },
         "izl": { supporter: true, team: "Support", tagType: "bttvSupporter" },
         "jacksack": { supporter: true, team: "Design", tagType: "bttvSupporter" }
-    }
-
-    var legacyTags = require('../legacy-tags')(data);
-
-    if(legacyTags[data.from] && ((legacyTags[data.from].mod === true && helpers.isModerator(data.from)) || legacyTags[data.from].mod === false)) {
-        var userData = legacyTags[data.from];
-        if(userData.tagType) data.bttvTagType = (["moderator","broadcaster","admin","global_mod","staff","bot"].indexOf(userData.tagType) !== -1) ? 'old'+userData.tagType : userData.tagType;
-        if(userData.tagName) data.bttvTagName = userData.tagName;
-        if(userData.color && data.style !== 'action') data.color = userData.color;
-        if(userData.nickname) data.bttvDisplayName = userData.nickname;
-        data.bttvTagDesc = "Grandfathered BetterTTV Swag Tag";
     }
 
     var badges = helpers.getBadges(data.from);

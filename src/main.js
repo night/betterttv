@@ -8,7 +8,7 @@ var debug = require('./helpers/debug'),
 
 bttv.info = {
     version: "6.8",
-    release: 34,
+    release: 35,
     versionString: function() {
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -442,9 +442,8 @@ var main = function () {
 
                 if(App.__container__.lookup("controller:application").get("currentRouteName") !== "channel.index") {
                     $('#main_col').removeAttr('style');
-                } else if (App.__container__.lookup("controller:channel").get("theatreMode") === false && bttv.settings.get('autoTheatreMode') === true) {
-                    enableTheatreMode();
                 }
+
                 switch(payload.template) {
                     case 'shared/right-column':
                         waitForLoad(function(ready) {
@@ -461,6 +460,12 @@ var main = function () {
                                 handleBackground();
                                 clearClutter();
                                 channelReformat();
+                                if (
+                                    App.__container__.lookup("controller:channel").get("theatreMode") === false && 
+                                    bttv.settings.get('autoTheatreMode') === true
+                                ) {
+                                    enableTheatreMode();
+                                }
                                 $(window).trigger('resize');
                                 setTimeout(function() {
                                     $(window).trigger('resize');

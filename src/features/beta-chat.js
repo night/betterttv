@@ -18,27 +18,20 @@ module.exports = function () {
                     debug.log("Not logged into BTTV Chat");
                 }
 
-                var chatDJSInject = document.createElement("script");
-                chatDJSInject.setAttribute("src", "//chat.betterttv.net/client/external.php?type=djs");
-                chatDJSInject.setAttribute("type", "text/javascript");
-                $("body").append(chatDJSInject);
-
                 setTimeout(function() {
-                    var chatJSInject = document.createElement("script");
-                    chatJSInject.setAttribute("src", "//chat.betterttv.net/client/external.php?type=js");
-                    chatJSInject.setAttribute("type", "text/javascript");
-                    $("body").append(chatJSInject);
+                    var chatDJSInject = document.createElement("script");
+                    chatDJSInject.setAttribute("src", "https://chat.betterttv.net/chat/cometchatjs.php");
+                    chatDJSInject.setAttribute("type", "text/javascript");
+                    $("body").append(chatDJSInject);
                 }, 5000);
             });
 
             var chatCSSInject = document.createElement("link");
-            chatCSSInject.setAttribute("href", "//chat.betterttv.net/client/external.php?type=css");
+            chatCSSInject.setAttribute("href", "https://chat.betterttv.net/chat/cometchatcss.php");
             chatCSSInject.setAttribute("type", "text/css");
             chatCSSInject.setAttribute("id", "arrowchat_css");
             chatCSSInject.setAttribute("rel", "stylesheet");
             $("head").append(chatCSSInject);
-
-            jqac = $;
         }
 
         if(!bttv.getChannel()) return;
