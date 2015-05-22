@@ -4802,7 +4802,6 @@ module.exports = function (data) {
         "mrimjustaminorthreat": { mod: true, tagType: "staff", tagName: "<span style='color:pink;'>Major</span>", nickname: "mrimjustamajorthreat" },
         "sournothardcore": { mod: true, tagType: "brown", tagName: "<span style='color:#FFE600 !important;'>Saucy</span>", color: data.color+";text-shadow: 0 0 10px #FFD700" },
         //People
-        "whitesammy": { mod: false, color: "white;text-shadow: 0 0 2px #000" },
         "mac027": { mod: true, tagType: "admin", tagName: "Hacks" },
         "vaughnwhiskey": { mod: true, tagType: "admin", tagName: "Bacon" },
         "socaldesigner": { mod: true, tagType: "broadcaster", tagName: "Legend" },
