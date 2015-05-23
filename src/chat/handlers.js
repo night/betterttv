@@ -308,6 +308,7 @@ var privmsg = exports.privmsg = function (channel, data) {
         "dtittel": { dev: true, tagType: "bttvDeveloper" },
         "vendethiel": { dev: true, tagType: "bttvDeveloper" },
         "teak": { dev: true, tagType: "bttvDeveloper" },
+        "polecat": { dev: true, tagType: "bttvDeveloper" },
         "matthewjk": { supporter: true, team: "Support", tagType: "bttvSupporter" },
         "julia_cs": { supporter: true, team: "Design", tagType: "bttvSupporter" },
         "vaughnwhiskey": { supporter: true, team: "Support", tagType: "bttvSupporter" },
