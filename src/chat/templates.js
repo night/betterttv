@@ -133,7 +133,7 @@ var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message
         var piece = tokenizedString[i];
 
         if(bttv.settings.get('chatImagePreview') === true) {
-            var imageTest = new RegExp('(https?:\/\/.)([a-z\-_0-9\/\:\.\%]*\.(jpg|jpeg|png|gif))', 'i');
+            var imageTest = new RegExp('(https?:\/\/.)([a-z\-_0-9\/\:\.\%\+]*\.(jpg|jpeg|png|gif))', 'i');
             if (imageTest.test(piece)) {
                 piece = bttv.chat.imagePreview(piece);
                 tokenizedString[i] = piece;
