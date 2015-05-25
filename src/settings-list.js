@@ -10,6 +10,7 @@ var betaChat = require('./features/beta-chat'),
     darkenPage = require('./features/darken-page'),
     handleBackground = require('./features/handle-background'),
     flipDashboard = require('./features/flip-dashboard'),
+    formatTeamPage = require('./features/team-pages'),
     cssLoader = require('./features/css-loader'),
     theatreMode = require('./features/auto-theatre-mode');
 var displayElement = require('./helpers/element').display,
@@ -106,6 +107,13 @@ module.exports = [
                     $("#splitChat").remove();
                     splitChat();
                 }
+            }
+            
+            //chat on team page is iframe embed
+            if(typeof parent.$("body").attr("data-page") !== "undefined" && parent.$("body").attr("data-page") == "teams#show") {
+                parent.location.reload();
+                var bttvSetWin = window.open("", "BetterTTV Settings", "", true);
+                bttvSetWin.close();
             }
         },
         load: function() {
@@ -421,6 +429,20 @@ module.exports = [
                 chat.helpers.serverMessage("Chat scrollback is now set to: default (150)", true);
             } else {
                 chat.helpers.serverMessage("Chat scrollback is now set to: " + lines, true);
+            }
+        }
+    },
+    {
+        default: true,
+        storageKey: 'formatTeamPage',
+        name: 'Better Team Pages',
+        description: 'Formats the team pages on Twitch to make them more functional',
+        toggle: function(value) {
+            //chat on team page is iframe embed
+            if(typeof parent.$("body").attr("data-page") !== "undefined" && parent.$("body").attr("data-page") == "teams#show") {
+                parent.location.reload();
+                var bttvSetWin = window.open("", "BetterTTV Settings", "", true);
+                bttvSetWin.close();
             }
         }
     }

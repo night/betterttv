@@ -323,6 +323,7 @@ var clearClutter = require('./features/clear-clutter'),
     splitChat = require('./features/split-chat'),
     flipDashboard = require('./features/flip-dashboard'),
     formatDashboard = require('./features/format-dashboard'),
+    formatTeamPage = require('./features/team-pages'),
     dashboardChannelInfo = require('./features/dashboard-channelinfo'),
     giveawayCompatibility = require('./features/giveaway-compatibility'),
     handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes'),
@@ -519,6 +520,7 @@ var main = function () {
         directoryFunctions();
         handleTwitchChatEmotesScript();
         emoticonTextInClipboard();
+        formatTeamPage();
         if (bttv.settings.get('chatImagePreview') === true) {
             enableImagePreview();
         }

@@ -1,6 +1,9 @@
 var debug = require('../helpers/debug');
 
 var checkBroadcastInfo = module.exports = function() {
+    //only really need to do this on channel pages... Why not save 1 api call every 60 seconds else where?
+    if(!$('body[data-page="ember#ember"]').length) return;
+
     var channel = bttv.getChannel();
 
     if(!channel) return setTimeout(checkBroadcastInfo, 60000);

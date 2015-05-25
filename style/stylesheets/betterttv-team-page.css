@@ -1,0 +1,291 @@
+body {
+    color: #9A9A9A;
+    background-image: none;
+    background-color: white;
+}
+
+a {
+    color: black;
+}
+
+h1 {
+    text-align: center;
+    margin: 0px;
+}
+
+li.tab a {
+    color: red;
+}
+
+li.selected.tab a {
+    color: red;
+    text-decoration: underline;
+}
+
+div.main.discovery.team {
+    background-color: rgba(0,0,0,0.0);
+    margin: auto auto;
+    padding: 0px;
+}
+
+div.filters.grid.c4 {
+    width: 302px;
+}
+
+div.filters.grid.c4.bttv-team-left-column-mini {
+    width: 72px;
+}
+
+#site_header {
+    background-color: #F2F2F2;
+    border-bottom: 1px solid #DEDEDE;
+}
+
+#mantle_skin {
+    background-color: white;
+}
+
+#player_column {
+    margin: 20px 0px 0px 0px;
+}
+
+div.wrapper.c12.clearfix {
+    background-color: white;
+    margin: auto auto;
+    padding: 0px;
+}
+
+#banner_header {
+    width: 100%;
+    margin: 0px 0px 40px 0px;
+    overflow: hidden;
+}
+
+#banner_header img {
+    width: 620px;
+    height: 121px;
+    display: block;
+    margin: 0px auto 0px auto;
+}
+
+#standard_holder {
+    border: 1px solid #DEDEDE;
+}
+
+#live_player {
+    margin: 0px 0px 0px 0px;
+}
+
+#team_logo {
+    background-color: #F2F2F2;
+    border: 1px solid #DEDEDE;
+    margin: 20px 0px 0px 0px;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+#bttvFollowTeamButton {
+    width: 280px;
+    border: 1px solid black;
+    margin: 20px 0px 0px 0px;
+    text-align: center;
+}
+
+.bttv-team-follow-success{
+    background-color: green !important;
+}
+
+.bttv-team-follow-fail{
+    background-color: red !important
+}
+
+.bttv-team-follow-processing{
+    background-color: #B9A3E3 !important;
+}
+
+#bttvFollowTeamButton.bttv-team-follow-mini {
+    width: 50px;
+}
+
+#bttvTeamMemberListOuter{
+    border: 1px solid black;
+    background-color: #D9D9D9;
+    margin: 20px 0px 0px 0px;
+    border: 1px solid #DEDEDE;
+}
+
+#team_info_tabs {
+    margin: 20px 0px 0px 0px;
+    border-bottom: 0px;
+}
+
+#about {
+    margin: 0px !important;
+    padding: 20px 20px 20px 20px !important;
+    background-color: #F2F2F2;
+    border: 1px solid #DEDEDE;
+}
+
+#stats_and_description {
+    background-color: #F2F2F2;
+    position: relative;
+}
+
+#videos {
+    background-color: #F2F2F2;
+    border: 1px solid #DEDEDE;
+    padding: 20px 0px 20px 20px;
+}
+
+#bttvTeamChat {
+    width: 343px;
+    float: left;
+    border: 1px solid #DEDEDE;
+    background-color: #F2F2F2;
+    margin: 20px 0px 0px 20px;
+}
+
+#site_footer {
+    color: black;
+}
+
+#site_footer a {
+    color: black;
+}
+
+#copyright_and_footer_links {
+    background-color:#F2F2F2;
+    border: 1px solid #DEDEDE;
+    padding: 20px;
+}
+
+.svg-glitch {
+    color: red;
+    background-color:#B9A3E3;
+    margin: 21px 20px 0px 20px;
+    border-top: 5px solid #B9A3E3;
+    border-right: 3px solid #B9A3E3;
+    border-bottom: 4px solid #B9A3E3;
+    border-left: 5px solid #B9A3E3;
+}
+
+#languages {
+    margin: 20px 20px 0px 0px;
+}
+
+#share {
+    padding-bottom: 20px;
+    left: -277px !important;
+    top: -214px !important;
+}
+
+.member {
+    height: 72px;
+    overflow: hidden;
+    background-color: #F2F2F2;
+    color: #9A9A9A;
+    cursor: pointer;
+}
+
+.member:hover {
+    background-color: white;
+    color: black;
+    text-decoration: underline;
+}
+
+.member.live {
+    background-color: #B9A3E3;
+    color: white;
+}
+
+.member.live:hover {
+    background-color: white;
+    color: black;
+    text-decoration: underline;
+}
+
+.member.js-playing {
+    background-color: #6441A5;
+    border: 0px solid black;
+}
+
+.member.js-playing:hover {
+    background-color: white;
+    color: black;
+    text-decoration: underline;
+}
+
+.stat {
+    color: black;
+}
+
+.bttv-team-tooltip-image {
+    width: 300px;
+    height: 188px;
+}
+
+.channel_count.small {
+    margin: 30px 5px 0px 0px;
+}
+
+.viewers_icon {
+    margin: 30px 5px 0px 0px;
+}
+
+.bttv-team-channel-button-info-holder {
+    width: 100%;
+}
+
+.bttv-team-channel-button-profile-image {
+    margin: 10px;
+    border: 1px solid black;
+}
+
+.member_name {
+    margin: 0px 0px 0px 5px;
+    line-height: 72px;
+    font-size: 14px;
+}
+
+.bttvTeamFlashPlayer {
+    width: 100%;
+    height: 100%;
+}
+
+#bttvChatEmbed {
+    width: 100%;
+    height: 100%;
+    scrolling: no;
+}
+
+#facebook_like_iframe {
+    width: 85px;
+    height: 21px;
+    border: none;
+    overflow: hidden;
+    position: relative;
+}
+
+#twitter_share_button {
+    margin: 0px 0px 0px 35px;
+}
+
+#bttvTwitterIframe {
+    width: 100px;
+    height: 21px;
+}
+
+#channel_actions {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+
+#is-subscribed {
+    display: none !important;
+}
+
+.tipsy-inner{
+    max-width: 320px;
+    padding: 10px;
+}
