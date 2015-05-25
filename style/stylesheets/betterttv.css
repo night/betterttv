@@ -197,29 +197,23 @@ input.text:focus,select:focus,textarea:focus {
 }
 
 .line .bttvDeveloper, .ember-chat .badges .bttvDeveloper {
-    background: url(../../tags/developer.png) no-repeat;
-    padding-left: 12px !important;
-    border-radius: 2px 2px 2px 2px;
-    padding: 2px 3px;
-    font-weight: bold;
-    font-size: 0.8572em;
-    color: white;
-    display: inline !important;
+    background: url("../../tags/badge-dev.svg");
+    background-size: 100%;
 }
 
+/* red badge on red highlight = :( */
 .ember-chat .chat-line.highlight .badges .bttvDeveloper {
-    filter: brightness(1.35);
+    filter: brightness(1.4);
 }
 
 .line .bttvSupporter, .ember-chat .badges .bttvSupporter {
-    background: url(../../tags/supporter.png) no-repeat;
-    padding-left: 12px !important;
-    border-radius: 2px 2px 2px 2px;
-    padding: 2px 3px;
-    font-weight: bold;
-    font-size: 0.8572em;
-    color: white;
-    display: inline !important;
+    background: url("../../tags/badge-support.svg");
+    background-size: 100%;
+}
+
+.line .bttvApprover, .ember-chat .badges .bttvApprover {
+    background: url("../../tags/badge-approver.svg");
+    background-size: 100%;
 }
 
 .line .brown, .ember-chat .badges .brown {

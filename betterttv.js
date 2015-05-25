@@ -31,7 +31,7 @@
  *  Free to modify for personal use
  *  Need permission to distribute the code
  *  Can't sell addon or features of the addon
- *  
+ *
  */
 /** @license
  * Gritter for jQuery
@@ -298,7 +298,7 @@ module.exports = function() {
         if(emote.restrictions) {
             if(emote.restrictions.channels.length && emote.restrictions.channels.indexOf(bttv.getChannel()) === -1) return;
             if(emote.restrictions.games.length && tmi().channel && emote.restrictions.games.indexOf(tmi().channel.game) === -1) return;
-     
+
             if(emote.restrictions.emoticonSet && emoteSets.indexOf(emote.restrictions.emoticonSet) === -1) return;
         }
 
@@ -625,6 +625,7 @@ var privmsg = exports.privmsg = function (channel, data) {
         "dtittel": { dev: true, tagType: "bttvDeveloper" },
         "vendethiel": { dev: true, tagType: "bttvDeveloper" },
         "teak": { dev: true, tagType: "bttvDeveloper" },
+        "polecat": { dev: true, tagType: "bttvDeveloper" },
         "matthewjk": { supporter: true, team: "Support", tagType: "bttvSupporter" },
         "julia_cs": { supporter: true, team: "Design", tagType: "bttvSupporter" },
         "vaughnwhiskey": { supporter: true, team: "Support", tagType: "bttvSupporter" },
@@ -693,7 +694,7 @@ var lookupDisplayName = exports.lookupDisplayName = function(user) {
     if(vars.userData.isLoggedIn && user === vars.userData.login) {
         store.displayNames[user] = Twitch.user.displayName() || user;
     }
-    
+
     // Get subscription status (Night's subs)
     bttv.io.lookupUser(user);
 
@@ -1280,7 +1281,7 @@ var newRoom = exports.newRoom = function(name) {
     var emberRoom = null;
     var groupRooms = bttv.getChatController().get('connectedPrivateGroupRooms');
     var channelRoom = bttv.getChatController().get('currentChannelRoom');
-    
+
     if(channelRoom.get('id') === name) {
         emberRoom = channelRoom;
     } else {
@@ -1833,7 +1834,7 @@ var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message
         var piece = tokenizedString[i];
 
         if(bttv.settings.get('chatImagePreview') === true) {
-            var imageTest = new RegExp('(https?:\/\/.)([a-z\-_0-9\/\:\.\%]*\.(jpg|jpeg|png|gif))', 'i');
+            var imageTest = new RegExp('(https?:\/\/.)([a-z\-_0-9\/\:\.\%\+]*\.(jpg|jpeg|png|gif))', 'i');
             if (imageTest.test(piece)) {
                 piece = bttv.chat.imagePreview(piece);
                 tokenizedString[i] = piece;
@@ -2370,7 +2371,7 @@ var main = function () {
                                 clearClutter();
                                 channelReformat();
                                 if (
-                                    App.__container__.lookup("controller:channel").get("theatreMode") === false && 
+                                    App.__container__.lookup("controller:channel").get("theatreMode") === false &&
                                     bttv.settings.get('autoTheatreMode') === true
                                 ) {
                                     enableTheatreMode();
@@ -2506,13 +2507,13 @@ var debug = require('../helpers/debug');
 
 module.exports = function () {
 	if(
-		!window.Ember || 
-		!window.App || 
+		!window.Ember ||
+		!window.App ||
 		App.__container__.lookup("controller:application").get("currentRouteName") !== "channel.index"
 	) {
 		return;
 	}
-	
+
     // Call 'toggleTheatre' action on the channel controller in Ember
     App.__container__.lookup('controller:channel').send('toggleTheatre');
 }
@@ -2799,7 +2800,7 @@ module.exports = function () {
 
     $("#right_col .bottom #controls #control_buttons .primary_button").css({
         float: 'right',
-        marginRight: '-1px' 
+        marginRight: '-1px'
     });
     $("#right_nav").css({
         'margin-left': 'auto',
@@ -2845,7 +2846,7 @@ module.exports = function () {
 },{"../../helpers/debug":45,"../../keycodes":48,"../../vars":68,"./handle-resize":17,"./twitchcast":19}],19:[function(require,module,exports){
 module.exports = function() {
     if($('.archive_info').length) return;
-    
+
     var template = '<iframe id="twitchcast" src="https://nightdev.com/twitchcast/?ontwitch={{hostname}}&channel={{channel}}" width="100%" height="100%" style="position: absolute;top: 0px;left: 0px;border: none;"></iframe>';
 
     var openTwitchCast = function() {
@@ -2866,7 +2867,7 @@ module.exports = function() {
         }
         window.addEventListener("message", close, false);
     }
-    
+
     var placeButton = function() {
         if($('#twitchcast_button').length) return;
 
@@ -2882,7 +2883,7 @@ module.exports = function() {
         if(window.chrome.cast && window.chrome.cast.isAvailable) {
             return callback(false);
         }
-        
+
         setTimeout(function() {
             castAvailable(callback);
         }, 1000);
@@ -3034,7 +3035,7 @@ var checkBroadcastInfo = module.exports = function() {
     bttv.TwitchAPI.get("channels/"+channel).done(function(d) {
         if(d.game) {
             var $channel = $('#broadcast-meta .channel');
-            
+
             if($channel.find('.playing').length) {
                 $channel.find('a:eq(1)').text(d.game).attr("href", Twitch.uri.game(d.game)).removeAttr('data-ember-action');
             }
@@ -3143,7 +3144,7 @@ module.exports = function () {
                 if (notificationsLoaded === true && notifications < j) {
                     $.get('/messages/inbox', function (data) {
                         var $message = $(data).find("#message-list .unread:first");
-                            
+
                         if ($message) {
                             var $senderData = $message.children("div.from_to_user"),
                                 $messageData = $message.children("div.message_data"),
@@ -3303,7 +3304,7 @@ var debug = require('../helpers/debug');
 
 function load(file, key){
     if(!bttv.settings.get(key)) return;
-    
+
     var css = document.createElement("link");
     css.setAttribute("href", "//cdn.betterttv.net/style/stylesheets/betterttv-"+file+".css?"+bttv.info.versionString());
     css.setAttribute("type", "text/css");
@@ -3316,8 +3317,9 @@ function unload(key){
 }
 
 module.exports.load = load;
-module.exports.unload = unload; 
-},{"../helpers/debug":45}],27:[function(require,module,exports){
+module.exports.unload = unload;
+},{"../helpers/debug":43}],26:[function(require,module,exports){
+
 var debug = require('../helpers/debug'),
     handleBackground = require('./handle-background');
 
@@ -3475,7 +3477,7 @@ module.exports = function (pollId) {
     if(!bttv.settings.get('embeddedPolling')) return;
 
     var $poll = $('#bttv-poll-contain');
-    
+
     // Dont replace the poll with the same one
     if($poll.length && pollId == lastPollId) return;
 
@@ -3490,12 +3492,12 @@ module.exports = function (pollId) {
 
     // Reset $poll to newly created poll
     $poll = $('#bttv-poll-contain');
-    
+
     // If timeout exists already, clear it
     if(frameTimeout !== null) {
         clearTimeout(frameTimeout);
     }
-    
+
     // After 30 seconds, remove poll if user doesn't open it
     frameTimeout = setTimeout(function() {
         if($poll && !$poll.children('.frame').is(':visible')) $poll.remove();
@@ -3514,7 +3516,7 @@ module.exports = function (pollId) {
     });
 
     $poll.slideDown(200);
-    
+
     lastPollId = pollId;
 }
 
@@ -3640,7 +3642,7 @@ module.exports = function () {
 },{"../helpers/debug":45}],35:[function(require,module,exports){
 module.exports = function handleBackground(tiled) {
     var tiled = tiled || false;
-    
+
     var canvasID = 'custom-bg';
 
     if($("#"+canvasID).length === 0) {
@@ -4031,7 +4033,7 @@ module.exports = function () {
         data.emotes.forEach(function(emote, count) {
             emote.urlTemplate = data.urlTemplate.replace('{{id}}', emote.id);
             emote.url = emote.urlTemplate.replace('{{image}}', '1x');
-            
+
             bttv.chat.store.bttvEmotes[emote.code] = emote;
         });
 
@@ -4079,7 +4081,7 @@ module.exports = function () {
         }).on('click', '.chat-line .emoticon', function() {
             var $emote = $(this);
             if($emote.data('channel') && $emote.data('channel') === 'BetterTTV Emotes') return;
-            
+
             if(bttv.TwitchEmoteIDToChannel && $emote.data('id') && bttv.TwitchEmoteIDToChannel[$emote.data('id')]) {
                 window.open('http://www.twitch.tv/'+bttv.TwitchEmoteIDToChannel[$emote.data('id')],'_blank');
             } else if($emote.data('channel')) {
@@ -5316,7 +5318,7 @@ function SocketClient() {
     // Night's legacy subs
     this.socket.on('new_subscriber', function(data) {
         if(data.channel !== bttv.getChannel()) return;
-        
+
         bttv.chat.helpers.notifyMessage("subscriber", bttv.chat.helpers.lookupDisplayName(data.user) + " just subscribed!");
         bttv.chat.store.__subscriptions[data.user] = ['night'];
         bttv.chat.helpers.reparseMessages(data.user);
@@ -5357,7 +5359,7 @@ SocketClient.prototype.lookupUser = function(name) {
 SocketClient.prototype.joinChannel = function() {
     if(!this._connected || !this.socket.connected) return;
     if(!bttv.getChannel().length) return;
-    
+
     this.socket.emit('join_channel', bttv.getChannel());
 
     // Night's legacy subs
@@ -8743,7 +8745,7 @@ JSONPPolling.prototype.doPoll = function () {
   this.script = script;
 
   var isUAgecko = 'undefined' != typeof navigator && /gecko/i.test(navigator.userAgent);
-  
+
   if (isUAgecko) {
     setTimeout(function () {
       var iframe = document.createElement('iframe');
@@ -13152,4 +13154,5 @@ function toArray(list, index) {
     return array
 }
 
-},{}]},{},[13])}(window.BetterTTV = window.BetterTTV || {}));
+},{}]},{},[12])}(window.BetterTTV = window.BetterTTV || {}));
+
