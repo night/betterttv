@@ -15,6 +15,7 @@ var betaChat = require('./features/beta-chat'),
 var displayElement = require('./helpers/element').display,
     removeElement = require('./helpers/element').remove,
     imagePreview = require('./features/image-preview');
+var pauseHostMode = require('./features/pause-host-mode');
 
 module.exports = [
     {
@@ -422,6 +423,15 @@ module.exports = [
             } else {
                 chat.helpers.serverMessage("Chat scrollback is now set to: " + lines, true);
             }
+        }
+    },
+    {
+        name: 'Pause Host Mode',
+        description: 'Keeps the video player paused if it was paused before entering/exiting host mode.',
+        default: true,
+        storageKey: 'pauseHostMode',
+        toggle: function(value) {
+            pauseHostMode();
         }
     }
 ];

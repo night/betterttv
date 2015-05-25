@@ -330,6 +330,8 @@ var clearClutter = require('./features/clear-clutter'),
     createSettings = require('./features/create-settings');
     enableImagePreview = require('./features/image-preview').enablePreview;
     enableTheatreMode = require('./features/auto-theatre-mode');
+    
+var pauseHostMode = require('./features/pause-host-mode');
 
 var chatFunctions = function () {
 
@@ -525,6 +527,7 @@ var main = function () {
         if (bttv.settings.get('autoTheatreMode') === true) {
             enableTheatreMode();
         }
+        pauseHostMode();
 
         $(window).trigger('resize');
         setTimeout(function() {
