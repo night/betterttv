@@ -3,7 +3,7 @@ var debug = require('./helpers/debug');
 var vars = require('./vars');
 
 function SocketClient() {
-    this.socket = io('//sockets.betterttv.net/', {
+    this.socket = io('https://sockets.betterttv.net/', {
         reconnection: true,
         reconnectionDelay: 30000,
         reconnectionDelayMax: 300000
@@ -84,7 +84,7 @@ SocketClient.prototype.joinChannel = function() {
     if(bttv.getChannel() !== 'night') return;
     var element = document.createElement("style");
     element.type = "text/css";
-    element.innerHTML = '.badge.subscriber { background-image: url("//cdn.betterttv.net/tags/supporter.png") !important; }';
+    element.innerHTML = '.badge.subscriber { background-image: url("https://cdn.betterttv.net/tags/supporter.png") !important; }';
     bttv.jQuery(".ember-chat .chat-room").append(element);
 }
 

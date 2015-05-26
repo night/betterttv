@@ -10,11 +10,11 @@ module.exports = function () {
 
         if(!vars.betaChatLoaded) {
             vars.betaChatLoaded = true;
-            $.getJSON("//chat.betterttv.net/login.php?onsite=true&verify=true&callback=?", function(d) {
+            $.getJSON("https://chat.betterttv.net/login.php?onsite=true&verify=true&callback=?", function(d) {
                 if(d.status === true) {
                     debug.log("Logged into BTTV Chat");
                 } else {
-                    $.getJSON("//chat.betterttv.net/login.php?onsite=true&user="+vars.userData.login+"&callback=?");
+                    $.getJSON("https://chat.betterttv.net/login.php?onsite=true&user="+vars.userData.login+"&callback=?");
                     debug.log("Not logged into BTTV Chat");
                 }
 

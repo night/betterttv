@@ -46,7 +46,7 @@ module.exports = function() {
             $("#darkTwitch").remove();
             $("#splitChat").remove();
             var darkCSS = document.createElement("link");
-            darkCSS.setAttribute("href", "//cdn.betterttv.net/style/stylesheets/betterttv-blackchat.css");
+            darkCSS.setAttribute("href", "https://cdn.betterttv.net/style/stylesheets/betterttv-blackchat.css");
             darkCSS.setAttribute("type", "text/css");
             darkCSS.setAttribute("rel", "stylesheet");
             darkCSS.setAttribute("id", "blackChat");

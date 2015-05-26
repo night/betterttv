@@ -22,13 +22,13 @@ module.exports = function () {
         }, 1000);
     }
 
-    $.get('//cdn.betterttv.net/privacy.html', function (data) {
+    $.get('https://cdn.betterttv.net/privacy.html', function (data) {
         if(data) {
             $('#bttvPrivacy .tse-content').html(data);
         }
     });
 
-    $.get('//cdn.betterttv.net/changelog.html?'+ bttv.info.versionString(), function (data) {
+    $.get('https://cdn.betterttv.net/changelog.html?'+ bttv.info.versionString(), function (data) {
         if(data) {
             $('#bttvChangelog .tse-content').html(data);
         }

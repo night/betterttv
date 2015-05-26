@@ -8,7 +8,7 @@ var enablePreview = exports.enablePreview = function() {
     /* END CONFIG */
     $(document).on({
         mouseenter: function (e) {
-            $("body").append('<iframe id="chat_preview" marginwidth="0" marginheight="0" hspace="0" vspace="0" frameborder="0" width="250px" scrolling="no" src="//api.betterttv.net/2/image_embed/'+ encodeURIComponent(this.href) +'"></iframe>');
+            $("body").append('<iframe id="chat_preview" marginwidth="0" marginheight="0" hspace="0" vspace="0" frameborder="0" width="250px" scrolling="no" src="https://api.betterttv.net/2/image_embed/'+ encodeURIComponent(this.href) +'"></iframe>');
             $("#chat_preview")
                 .css("top",(e.pageY - yOffset) + "px")
                 .css("left", (e.pageX - xOffset) + "px")

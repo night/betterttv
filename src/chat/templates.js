@@ -42,7 +42,7 @@ var emoticon = exports.emoticon = function(id, name) {
     if(id < 15 && bttv.settings.get("showMonkeyEmotes") === true) {
         return '<img class="emoticon ttv-emo-' + id + '" src="' + jtvEmoticonize(id) + '" data-id="' + id + '" data-regex="' + encodeURIComponent(name) + '" />';
     } else {
-        return '<img class="emoticon ttv-emo-' + id + '" src="//static-cdn.jtvnw.net/emoticons/v1/' + id + '/1.0" srcset="//static-cdn.jtvnw.net/emoticons/v1/' + id + '/2.0 2x" data-id="' + id + '" data-regex="' + encodeURIComponent(name) + '" />';
+        return '<img class="emoticon ttv-emo-' + id + '" src="https://static-cdn.jtvnw.net/emoticons/v1/' + id + '/1.0" srcset="https://static-cdn.jtvnw.net/emoticons/v1/' + id + '/2.0 2x" data-id="' + id + '" data-regex="' + encodeURIComponent(name) + '" />';
     }
 };
 var emoticonCss = exports.emoticonCss = function(image, id) {
@@ -52,20 +52,20 @@ var emoticonCss = exports.emoticonCss = function(image, id) {
 };
 var jtvEmoticonize = exports.jtvEmoticonize = function(id) {
     var jtvEmotes = [
-        "//cdn.betterttv.net/emotes/jtv/happy.gif",
-        "//cdn.betterttv.net/emotes/jtv/sad.gif",
-        "//cdn.betterttv.net/emotes/mw.png",
-        "//cdn.betterttv.net/emotes/jtv/angry.gif",
-        "//cdn.betterttv.net/emotes/jtv/bored.gif",
-        "//cdn.betterttv.net/emotes/jtv/drunk.gif",
-        "//cdn.betterttv.net/emotes/jtv/cool.gif",
-        "//cdn.betterttv.net/emotes/jtv/surprised.gif",
-        "//cdn.betterttv.net/emotes/jtv/horny.gif",
-        "//cdn.betterttv.net/emotes/jtv/skeptical.gif",
-        "//cdn.betterttv.net/emotes/jtv/wink.gif",
-        "//cdn.betterttv.net/emotes/jtv/raspberry.gif",
-        "//cdn.betterttv.net/emotes/jtv/winkberry.gif",
-        "//cdn.betterttv.net/emotes/jtv/pirate.gif"
+        "https://cdn.betterttv.net/emotes/jtv/happy.gif",
+        "https://cdn.betterttv.net/emotes/jtv/sad.gif",
+        "https://cdn.betterttv.net/emotes/mw.png",
+        "https://cdn.betterttv.net/emotes/jtv/angry.gif",
+        "https://cdn.betterttv.net/emotes/jtv/bored.gif",
+        "https://cdn.betterttv.net/emotes/jtv/drunk.gif",
+        "https://cdn.betterttv.net/emotes/jtv/cool.gif",
+        "https://cdn.betterttv.net/emotes/jtv/surprised.gif",
+        "https://cdn.betterttv.net/emotes/jtv/horny.gif",
+        "https://cdn.betterttv.net/emotes/jtv/skeptical.gif",
+        "https://cdn.betterttv.net/emotes/jtv/wink.gif",
+        "https://cdn.betterttv.net/emotes/jtv/raspberry.gif",
+        "https://cdn.betterttv.net/emotes/jtv/winkberry.gif",
+        "https://cdn.betterttv.net/emotes/jtv/pirate.gif"
     ];
 
     return jtvEmotes[id-1];

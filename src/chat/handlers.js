@@ -219,7 +219,7 @@ var onPrivmsg = exports.onPrivmsg = function (channel, data) {
             stack: e.stack,
             message: e.message
         };
-        $.get('//nightdev.com/betterttv/errors/?obj='+encodeURIComponent(JSON.stringify(error)));
+        $.get('https://nightdev.com/betterttv/errors/?obj='+encodeURIComponent(JSON.stringify(error)));
         helpers.serverMessage('BetterTTV encountered an error reading chat. The developer has been sent a log of this action. Please try clearing your cookies and cache.');
     }
 };

@@ -33,7 +33,7 @@ module.exports = function dashboardChannelInfo() {
             $("#followers_count").after($chattersContainer);
         }
 
-        $.getJSON('http://tmi.twitch.tv/group/user/' + bttv.getChannel() + '/chatters?callback=?', function(data) {
+        $.getJSON('https://tmi.twitch.tv/group/user/' + bttv.getChannel() + '/chatters?callback=?', function(data) {
             if(data.data && data.data.chatter_count) $("#chatters_count span").text(Twitch.display.commatize(data.data.chatter_count));
         });
 

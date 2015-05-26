@@ -1,4 +1,4 @@
-var debug = require('../helpers/debug'),
+https:var debug = require('../helpers/debug'),
     handleBackground = require('./handle-background');
 
 module.exports = function () {
@@ -20,7 +20,7 @@ module.exports = function () {
         if(pageKind === "dashboards" && pageType !== "show" || pageType === "legal") return;
 
         var darkCSS = document.createElement("link");
-        darkCSS.setAttribute("href", "//cdn.betterttv.net/style/stylesheets/betterttv-dark.css?"+bttv.info.versionString());
+        darkCSS.setAttribute("href", "https://cdn.betterttv.net/style/stylesheets/betterttv-dark.css?"+bttv.info.versionString());
         darkCSS.setAttribute("type", "text/css");
         darkCSS.setAttribute("rel", "stylesheet");
         darkCSS.setAttribute("id", "darkTwitch");
@@ -30,8 +30,8 @@ module.exports = function () {
         //setTimeout(handleBackground, 1000);
 
         // Messages Delete Icon Fix
-        $('#main_col .messages img[src="http://www-cdn.jtvnw.net/images/xarth/g/g18_trash-00000080.png"]').attr("src", "//cdn.betterttv.net/style/icons/delete.png");
-        $('#main_col .messages img[src="http://www-cdn.jtvnw.net/images/xarth/g/g16_trash-00000020.png"]').attr("src", "//cdn.betterttv.net/style/icons/delete.png").attr("width","16").attr("height","16");
+        $('#main_col .messages img[src="http://www-cdn.jtvnw.net/images/xarth/g/g18_trash-00000080.png"]').attr("src", "https://cdn.betterttv.net/style/icons/delete.png");
+        $('#main_col .messages img[src="http://www-cdn.jtvnw.net/images/xarth/g/g16_trash-00000020.png"]').attr("src", "https://cdn.betterttv.net/style/icons/delete.png").attr("width","16").attr("height","16");
     }
 
 }

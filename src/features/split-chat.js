@@ -5,7 +5,7 @@ module.exports = function () {
         debug.log("Splitting Chat");
 
         var splitCSS = document.createElement("link");
-        bttv.settings.get("darkenedMode") === true ? splitCSS.setAttribute("href", "//cdn.betterttv.net/style/stylesheets/betterttv-split-chat-dark.css") : splitCSS.setAttribute("href", "//cdn.betterttv.net/style/stylesheets/betterttv-split-chat.css");
+        bttv.settings.get("darkenedMode") === true ? splitCSS.setAttribute("href", "https://cdn.betterttv.net/style/stylesheets/betterttv-split-chat-dark.css") : splitCSS.setAttribute("href", "https://cdn.betterttv.net/style/stylesheets/betterttv-split-chat.css");
         splitCSS.setAttribute("type", "text/css");
         splitCSS.setAttribute("rel", "stylesheet");
         splitCSS.setAttribute("id", "splitChat");

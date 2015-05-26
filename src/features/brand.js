@@ -6,9 +6,9 @@ module.exports = function () {
 
     // Old Site Header Logo Branding
     if ($("#header_logo").length) {
-        $("#header_logo").html("<img alt=\"TwitchTV\" src=\"//cdn.betterttv.net/style/logos/black_twitch_logo.png\">");
+        $("#header_logo").html("<img alt=\"TwitchTV\" src=\"https://cdn.betterttv.net/style/logos/black_twitch_logo.png\">");
         var $watermark = $('<img />');
-        $watermark.attr('src', '//cdn.betterttv.net/style/logos/logo_icon.png');
+        $watermark.attr('src', 'https://cdn.betterttv.net/style/logos/logo_icon.png');
         $watermark.css({
             'z-index': 9000,
             'margin-left': '-82px',
@@ -23,7 +23,7 @@ module.exports = function () {
     // New Site Logo Branding
     if ($("#large_nav #logo").length) {
         var $watermark = $('<img />');
-        $watermark.attr('src', '//cdn.betterttv.net/style/logos/logo_icon.png');
+        $watermark.attr('src', 'https://cdn.betterttv.net/style/logos/logo_icon.png');
         $watermark.css({
             'z-index': 9000,
             'margin-left': '-76px',
@@ -45,7 +45,7 @@ module.exports = function () {
 
     // Import Global BTTV CSS Changes
     var globalCSSInject = document.createElement("link");
-    globalCSSInject.setAttribute("href", "//cdn.betterttv.net/style/stylesheets/betterttv.css?"+bttv.info.versionString());
+    globalCSSInject.setAttribute("href", "https://cdn.betterttv.net/style/stylesheets/betterttv.css?"+bttv.info.versionString());
     globalCSSInject.setAttribute("type", "text/css");
     globalCSSInject.setAttribute("rel", "stylesheet");
     $("body").append(globalCSSInject);
