@@ -31,7 +31,7 @@
  *  Free to modify for personal use
  *  Need permission to distribute the code
  *  Can't sell addon or features of the addon
- *
+ *  
  */
 /** @license
  * Gritter for jQuery
@@ -47,7 +47,7 @@
  * Copyright (c) 2009-2014 TJ Holowaychuk (tj@vision-media.ca)
  * Licensed under the MIT license.
  */
-!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.jade=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+!function(e){if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.jade=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
 'use strict';
 
 /**
@@ -110,9 +110,7 @@ function nulls(val) {
  */
 exports.joinClasses = joinClasses;
 function joinClasses(val) {
-  return (Array.isArray(val) ? val.map(joinClasses) :
-    (val && typeof val === 'object') ? Object.keys(val).filter(function (key) { return val[key]; }) :
-    [val]).filter(nulls).join(' ');
+  return Array.isArray(val) ? val.map(joinClasses).filter(nulls).join(' ') : val;
 }
 
 /**
@@ -139,16 +137,6 @@ exports.cls = function cls(classes, escaped) {
   }
 };
 
-
-exports.style = function (val) {
-  if (val && typeof val === 'object') {
-    return Object.keys(val).map(function (style) {
-      return style + ':' + val[style];
-    }).join(';');
-  } else {
-    return val;
-  }
-};
 /**
  * Render the given attribute.
  *
@@ -159,9 +147,6 @@ exports.style = function (val) {
  * @return {String}
  */
 exports.attr = function attr(key, val, escaped, terse) {
-  if (key === 'style') {
-    val = exports.style(val);
-  }
   if ('boolean' == typeof val || null == val) {
     if (val) {
       return ' ' + (terse ? key : key + '="' + key + '"');
@@ -169,24 +154,10 @@ exports.attr = function attr(key, val, escaped, terse) {
       return '';
     }
   } else if (0 == key.indexOf('data') && 'string' != typeof val) {
-    if (JSON.stringify(val).indexOf('&') !== -1) {
-      console.warn('Since Jade 2.0.0, ampersands (`&`) in data attributes ' +
-                   'will be escaped to `&amp;`');
-    };
-    if (val && typeof val.toISOString === 'function') {
-      console.warn('Jade will eliminate the double quotes around dates in ' +
-                   'ISO form after 2.0.0');
-    }
     return ' ' + key + "='" + JSON.stringify(val).replace(/'/g, '&apos;') + "'";
   } else if (escaped) {
-    if (val && typeof val.toISOString === 'function') {
-      console.warn('Jade will stringify dates in ISO form after 2.0.0');
-    }
     return ' ' + key + '="' + exports.escape(val) + '"';
   } else {
-    if (val && typeof val.toISOString === 'function') {
-      console.warn('Jade will stringify dates in ISO form after 2.0.0');
-    }
     return ' ' + key + '="' + val + '"';
   }
 };
@@ -256,7 +227,7 @@ exports.rethrow = function rethrow(err, filename, lineno, str){
     throw err;
   }
   try {
-    str = str || require('fs').readFileSync(filename, 'utf8')
+    str = str || _dereq_('fs').readFileSync(filename, 'utf8')
   } catch (ex) {
     rethrow(err, null, lineno)
   }
@@ -281,9 +252,10 @@ exports.rethrow = function rethrow(err, filename, lineno, str){
   throw err;
 };
 
-},{"fs":2}],2:[function(require,module,exports){
+},{"fs":2}],2:[function(_dereq_,module,exports){
 
-},{}]},{},[1])(1)
+},{}]},{},[1])
+(1)
 });(function(bttv) {(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 module.exports = [
     "nightbot",
@@ -326,7 +298,7 @@ module.exports = function() {
         if(emote.restrictions) {
             if(emote.restrictions.channels.length && emote.restrictions.channels.indexOf(bttv.getChannel()) === -1) return;
             if(emote.restrictions.games.length && tmi().channel && emote.restrictions.games.indexOf(tmi().channel.game) === -1) return;
-
+     
             if(emote.restrictions.emoticonSet && emoteSets.indexOf(emote.restrictions.emoticonSet) === -1) return;
         }
 
@@ -701,7 +673,7 @@ var privmsg = exports.privmsg = function (channel, data) {
     store.__messageQueue.push(message);
 }
 
-},{"../features/embedded-polling":29,"../features/keywords-lists":38,"../features/make-card":39,"../helpers/colors":42,"../helpers/debug":43,"../helpers/regex":45,"../vars":57,"./helpers":5,"./rooms":7,"./store":8,"./templates":10,"./tmi":11}],5:[function(require,module,exports){
+},{"../features/embedded-polling":29,"../features/keywords-lists":38,"../features/make-card":39,"../helpers/colors":43,"../helpers/debug":44,"../helpers/regex":46,"../vars":58,"./helpers":5,"./rooms":7,"./store":8,"./templates":10,"./tmi":11}],5:[function(require,module,exports){
 var vars = require('../vars'),
     keyCodes = require('../keycodes'),
     tmi = require('./tmi'),
@@ -722,7 +694,7 @@ var lookupDisplayName = exports.lookupDisplayName = function(user) {
     if(vars.userData.isLoggedIn && user === vars.userData.login) {
         store.displayNames[user] = Twitch.user.displayName() || user;
     }
-
+    
     // Get subscription status (Night's subs)
     bttv.io.lookupUser(user);
 
@@ -1277,7 +1249,7 @@ var massUnban = exports.massUnban = function() {
     });
 }*/
 
-},{"../bots":1,"../helpers/colors":42,"../helpers/element":44,"../helpers/regex":45,"../keycodes":46,"../legacy-tags":47,"../vars":57,"./handlers":4,"./store":8,"./templates":10,"./tmi":11}],6:[function(require,module,exports){
+},{"../bots":1,"../helpers/colors":43,"../helpers/element":45,"../helpers/regex":46,"../keycodes":47,"../legacy-tags":48,"../vars":58,"./handlers":4,"./store":8,"./templates":10,"./tmi":11}],6:[function(require,module,exports){
 
 // Add mouseover image preview to image links
 module.exports = function(imgUrl) {
@@ -1309,7 +1281,7 @@ var newRoom = exports.newRoom = function(name) {
     var emberRoom = null;
     var groupRooms = bttv.getChatController().get('connectedPrivateGroupRooms');
     var channelRoom = bttv.getChatController().get('currentChannelRoom');
-
+    
     if(channelRoom.get('id') === name) {
         emberRoom = channelRoom;
     } else {
@@ -1726,7 +1698,7 @@ var takeover = module.exports = function() {
     });
 }
 
-},{"../features/chat-load-settings":19,"../features/css-loader":25,"../features/override-emotes":40,"../helpers/debug":43,"../keycodes":46,"../vars":57,"./handlers":4,"./helpers":5,"./rooms":7,"./store":8,"./tmi":11}],10:[function(require,module,exports){
+},{"../features/chat-load-settings":19,"../features/css-loader":25,"../features/override-emotes":40,"../helpers/debug":44,"../keycodes":47,"../vars":58,"./handlers":4,"./helpers":5,"./rooms":7,"./store":8,"./tmi":11}],10:[function(require,module,exports){
 var tmi = require('./tmi'),
     store = require('./store'),
     punycode = require('punycode');
@@ -1925,7 +1897,7 @@ var privmsg = exports.privmsg = function(highlight, action, server, isMod, data)
     return '<div class="chat-line'+(highlight?' highlight':'')+(action?' action':'')+(server?' admin':'')+'" data-sender="'+data.sender+'">'+timestamp(data.time)+' '+(isMod?modicons():'')+' '+badges(data.badges)+from(data.nickname, data.color)+message(data.sender, data.message, data.emotes, (action && !highlight)?data.color:false)+'</div>';
 }
 
-},{"../templates/chat-suggestions":51,"../templates/moderation-card":53,"./helpers":5,"./store":8,"./tmi":11,"punycode":58}],11:[function(require,module,exports){
+},{"../templates/chat-suggestions":52,"../templates/moderation-card":54,"./helpers":5,"./store":8,"./tmi":11,"punycode":59}],11:[function(require,module,exports){
 module.exports = function() {
 	return bttv.getChatController() ? bttv.getChatController().currentRoom : false;
 }
@@ -2259,9 +2231,10 @@ var clearClutter = require('./features/clear-clutter'),
     giveawayCompatibility = require('./features/giveaway-compatibility'),
     handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes'),
     emoticonTextInClipboard = require('./features/emoticon-text-in-clipboard'),
-    createSettings = require('./features/create-settings');
-    enableImagePreview = require('./features/image-preview').enablePreview;
-    enableTheatreMode = require('./features/auto-theatre-mode');
+    createSettings = require('./features/create-settings'),
+    enableImagePreview = require('./features/image-preview').enablePreview,
+    enableTheatreMode = require('./features/auto-theatre-mode'),
+    pauseHostMode = require('./features/pause-host-mode');
 
 var chatFunctions = function () {
 
@@ -2392,7 +2365,7 @@ var main = function () {
                                 clearClutter();
                                 channelReformat();
                                 if (
-                                    App.__container__.lookup("controller:channel").get("theatreMode") === false &&
+                                    App.__container__.lookup("controller:channel").get("theatreMode") === false && 
                                     bttv.settings.get('autoTheatreMode') === true
                                 ) {
                                     enableTheatreMode();
@@ -2457,6 +2430,7 @@ var main = function () {
         if (bttv.settings.get('autoTheatreMode') === true) {
             enableTheatreMode();
         }
+        pauseHostMode();
 
         $(window).trigger('resize');
         setTimeout(function() {
@@ -2522,23 +2496,23 @@ debug.log("BTTV LOADED " + document.URL);
 BTTVLOADED = true;
 checkJquery();
 
-},{"./chat":2,"./features/auto-theatre-mode":13,"./features/beta-chat":14,"./features/brand":15,"./features/channel-reformat":17,"./features/check-broadcast-info":20,"./features/check-following":21,"./features/check-messages":22,"./features/clear-clutter":23,"./features/create-settings":24,"./features/darken-page":26,"./features/dashboard-channelinfo":27,"./features/directory-functions":28,"./features/emoticon-text-in-clipboard":30,"./features/flip-dashboard":31,"./features/format-dashboard":32,"./features/giveaway-compatibility":33,"./features/handle-background":34,"./features/handle-twitchchat-emotes":35,"./features/image-preview":37,"./features/split-chat":41,"./helpers/debug":43,"./keycodes":46,"./settings-list":48,"./socketio":49,"./templates/setting-switch":54,"./twitch-api":56,"./vars":57}],13:[function(require,module,exports){
+},{"./chat":2,"./features/auto-theatre-mode":13,"./features/beta-chat":14,"./features/brand":15,"./features/channel-reformat":17,"./features/check-broadcast-info":20,"./features/check-following":21,"./features/check-messages":22,"./features/clear-clutter":23,"./features/create-settings":24,"./features/darken-page":26,"./features/dashboard-channelinfo":27,"./features/directory-functions":28,"./features/emoticon-text-in-clipboard":30,"./features/flip-dashboard":31,"./features/format-dashboard":32,"./features/giveaway-compatibility":33,"./features/handle-background":34,"./features/handle-twitchchat-emotes":35,"./features/image-preview":37,"./features/pause-host-mode":41,"./features/split-chat":42,"./helpers/debug":44,"./keycodes":47,"./settings-list":49,"./socketio":50,"./templates/setting-switch":55,"./twitch-api":57,"./vars":58}],13:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 module.exports = function () {
 	if(
-		!window.Ember ||
-		!window.App ||
+		!window.Ember || 
+		!window.App || 
 		App.__container__.lookup("controller:application").get("currentRouteName") !== "channel.index"
 	) {
 		return;
 	}
-
+	
     // Call 'toggleTheatre' action on the channel controller in Ember
     App.__container__.lookup('controller:channel').send('toggleTheatre');
 }
 
-},{"../helpers/debug":43}],14:[function(require,module,exports){
+},{"../helpers/debug":44}],14:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars');
 
@@ -2579,7 +2553,7 @@ module.exports = function () {
         $('body').append("<style>.ember-chat .chat-interface { height: 140px !important; } .ember-chat .chat-messages { bottom: 140px; } .ember-chat .chat-settings { bottom: 80px; } .ember-chat .emoticon-selector { bottom: 142px !important; }</style>");
     }
 }
-},{"../helpers/debug":43,"../vars":57}],15:[function(require,module,exports){
+},{"../helpers/debug":44,"../vars":58}],15:[function(require,module,exports){
 var debug = require('../helpers/debug');
 var betaChat = require('./beta-chat');
 
@@ -2646,7 +2620,7 @@ module.exports = function () {
     // Run Beta Chat After BTTV CSS
     betaChat();
 };
-},{"../helpers/debug":43,"./beta-chat":14}],16:[function(require,module,exports){
+},{"../helpers/debug":44,"./beta-chat":14}],16:[function(require,module,exports){
 var debug = require('../../helpers/debug'),
     vars = require('../../vars');
 
@@ -2704,7 +2678,7 @@ var handleResize = module.exports = function () {
 
     $("#channel_panels").masonry("reload");
 };
-},{"../../helpers/debug":43,"../../vars":57}],17:[function(require,module,exports){
+},{"../../helpers/debug":44,"../../vars":58}],17:[function(require,module,exports){
 var debug = require('../../helpers/debug'),
     keyCodes = require('../../keycodes'),
     vars = require('../../vars');
@@ -2820,7 +2794,7 @@ module.exports = function () {
 
     $("#right_col .bottom #controls #control_buttons .primary_button").css({
         float: 'right',
-        marginRight: '-1px'
+        marginRight: '-1px' 
     });
     $("#right_nav").css({
         'margin-left': 'auto',
@@ -2863,10 +2837,10 @@ module.exports = function () {
         bttv.settings.save("chatWidth", $("#right_col").width());
     }
 }
-},{"../../helpers/debug":43,"../../keycodes":46,"../../vars":57,"./handle-resize":16,"./twitchcast":18}],18:[function(require,module,exports){
+},{"../../helpers/debug":44,"../../keycodes":47,"../../vars":58,"./handle-resize":16,"./twitchcast":18}],18:[function(require,module,exports){
 module.exports = function() {
     if($('.archive_info').length) return;
-
+    
     var template = '<iframe id="twitchcast" src="https://nightdev.com/twitchcast/?ontwitch={{hostname}}&channel={{channel}}" width="100%" height="100%" style="position: absolute;top: 0px;left: 0px;border: none;"></iframe>';
 
     var openTwitchCast = function() {
@@ -2887,7 +2861,7 @@ module.exports = function() {
         }
         window.addEventListener("message", close, false);
     }
-
+    
     var placeButton = function() {
         if($('#twitchcast_button').length) return;
 
@@ -2903,7 +2877,7 @@ module.exports = function() {
         if(window.chrome.cast && window.chrome.cast.isAvailable) {
             return callback(false);
         }
-
+        
         setTimeout(function() {
             castAvailable(callback);
         }, 1000);
@@ -3039,7 +3013,7 @@ module.exports = function() {
     });
 };
 
-},{"../helpers/debug":43,"../helpers/element":44,"../templates/chat-settings":50,"../vars":57,"./darken-page":26,"./split-chat":41}],20:[function(require,module,exports){
+},{"../helpers/debug":44,"../helpers/element":45,"../templates/chat-settings":51,"../vars":58,"./darken-page":26,"./split-chat":42}],20:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 var checkBroadcastInfo = module.exports = function() {
@@ -3052,7 +3026,7 @@ var checkBroadcastInfo = module.exports = function() {
     bttv.TwitchAPI.get("channels/"+channel).done(function(d) {
         if(d.game) {
             var $channel = $('#broadcast-meta .channel');
-
+            
             if($channel.find('.playing').length) {
                 $channel.find('a:eq(1)').text(d.game).attr("href", Twitch.uri.game(d.game)).removeAttr('data-ember-action');
             }
@@ -3074,7 +3048,7 @@ var checkBroadcastInfo = module.exports = function() {
         setTimeout(checkBroadcastInfo, 60000);
     });
 }
-},{"../helpers/debug":43}],21:[function(require,module,exports){
+},{"../helpers/debug":44}],21:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars');
 
@@ -3141,7 +3115,7 @@ var checkFollowing = module.exports = function () {
         setTimeout(checkFollowing, 60000);
     });
 }
-},{"../helpers/debug":43,"../vars":57}],22:[function(require,module,exports){
+},{"../helpers/debug":44,"../vars":58}],22:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars');
 
@@ -3161,7 +3135,7 @@ module.exports = function () {
                 if (notificationsLoaded === true && notifications < j) {
                     $.get('/messages/inbox', function (data) {
                         var $message = $(data).find("#message-list .unread:first");
-
+                            
                         if ($message) {
                             var $senderData = $message.children("div.from_to_user"),
                                 $messageData = $message.children("div.message_data"),
@@ -3232,7 +3206,7 @@ module.exports = function () {
     setInterval(checkOther, 30000);
     checkOther();
 }
-},{"../helpers/debug":43,"../vars":57}],23:[function(require,module,exports){
+},{"../helpers/debug":44,"../vars":58}],23:[function(require,module,exports){
 var debug = require('../helpers/debug'),
 	removeElement = require('../helpers/element').remove;
 
@@ -3249,7 +3223,7 @@ module.exports = function () {
         $('body').append('<style>#nav_games, #nav_streams, #nav_related_streams { display: none; }</style>');
     }
 }
-},{"../helpers/debug":43,"../helpers/element":44}],24:[function(require,module,exports){
+},{"../helpers/debug":44,"../helpers/element":45}],24:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars'),
     removeElement = require('../helpers/element').remove;
@@ -3316,12 +3290,12 @@ module.exports = function () {
         $(this).parent("li").addClass("active");
     });
 };
-},{"../helpers/debug":43,"../helpers/element":44,"../templates/settings-panel":55,"../vars":57,"./darken-page":26,"./split-chat":41}],25:[function(require,module,exports){
+},{"../helpers/debug":44,"../helpers/element":45,"../templates/settings-panel":56,"../vars":58,"./darken-page":26,"./split-chat":42}],25:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 function load(file, key){
     if(!bttv.settings.get(key)) return;
-
+    
     var css = document.createElement("link");
     css.setAttribute("href", "//cdn.betterttv.net/style/stylesheets/betterttv-"+file+".css?"+bttv.info.versionString());
     css.setAttribute("type", "text/css");
@@ -3334,8 +3308,8 @@ function unload(key){
 }
 
 module.exports.load = load;
-module.exports.unload = unload;
-},{"../helpers/debug":43}],26:[function(require,module,exports){
+module.exports.unload = unload; 
+},{"../helpers/debug":44}],26:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     handleBackground = require('./handle-background');
 
@@ -3373,7 +3347,7 @@ module.exports = function () {
     }
 
 }
-},{"../helpers/debug":43,"./handle-background":34}],27:[function(require,module,exports){
+},{"../helpers/debug":44,"./handle-background":34}],27:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars');
 
@@ -3459,7 +3433,7 @@ module.exports = function dashboardChannelInfo() {
         setTimeout(dashboardChannelInfo, 60000);
     }
 };
-},{"../helpers/debug":43,"../vars":57}],28:[function(require,module,exports){
+},{"../helpers/debug":44,"../vars":58}],28:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars');
 
@@ -3482,7 +3456,7 @@ module.exports = function () {
         }
     });
 }
-},{"../helpers/debug":43,"../vars":57}],29:[function(require,module,exports){
+},{"../helpers/debug":44,"../vars":58}],29:[function(require,module,exports){
 var debug = require('../helpers/debug');
 var pollTemplate = require('../templates/embedded-poll');
 
@@ -3493,7 +3467,7 @@ module.exports = function (pollId) {
     if(!bttv.settings.get('embeddedPolling')) return;
 
     var $poll = $('#bttv-poll-contain');
-
+    
     // Dont replace the poll with the same one
     if($poll.length && pollId == lastPollId) return;
 
@@ -3508,12 +3482,12 @@ module.exports = function (pollId) {
 
     // Reset $poll to newly created poll
     $poll = $('#bttv-poll-contain');
-
+    
     // If timeout exists already, clear it
     if(frameTimeout !== null) {
         clearTimeout(frameTimeout);
     }
-
+    
     // After 30 seconds, remove poll if user doesn't open it
     frameTimeout = setTimeout(function() {
         if($poll && !$poll.children('.frame').is(':visible')) $poll.remove();
@@ -3532,11 +3506,11 @@ module.exports = function (pollId) {
     });
 
     $poll.slideDown(200);
-
+    
     lastPollId = pollId;
 }
 
-},{"../helpers/debug":43,"../templates/embedded-poll":52}],30:[function(require,module,exports){
+},{"../helpers/debug":44,"../templates/embedded-poll":53}],30:[function(require,module,exports){
 // Add an event listener to the "copy" event that fires when text is copied to
 // the clipboard to convert any emoticons within the text selection to the
 // corresponding text that will create the emoticon. This allows copy/pasted
@@ -3613,7 +3587,7 @@ module.exports = function () {
     }
 }
 
-},{"../helpers/debug":43}],32:[function(require,module,exports){
+},{"../helpers/debug":44}],32:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 module.exports = function () {
@@ -3633,7 +3607,7 @@ module.exports = function () {
     }
 }
 
-},{"../helpers/debug":43}],33:[function(require,module,exports){
+},{"../helpers/debug":44}],33:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 module.exports = function () {
@@ -3655,10 +3629,10 @@ module.exports = function () {
         });
     }
 };
-},{"../helpers/debug":43}],34:[function(require,module,exports){
+},{"../helpers/debug":44}],34:[function(require,module,exports){
 module.exports = function handleBackground(tiled) {
     var tiled = tiled || false;
-
+    
     var canvasID = 'custom-bg';
 
     if($("#"+canvasID).length === 0) {
@@ -3776,7 +3750,7 @@ module.exports = function () {
         }, 1000);
     }
 }
-},{"../helpers/debug":43}],36:[function(require,module,exports){
+},{"../helpers/debug":44}],36:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 var ts_tink;
@@ -3794,7 +3768,7 @@ module.exports = function () {
     };
 };
 
-},{"../helpers/debug":43}],37:[function(require,module,exports){
+},{"../helpers/debug":44}],37:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 var enablePreview = exports.enablePreview = function() {
@@ -3826,7 +3800,7 @@ var disablePreview = exports.disablePreview = function() {
     $(document).off('mouseenter mouseleave mousemove', 'a.chat-preview');
 };
 
-},{"../helpers/debug":43}],38:[function(require,module,exports){
+},{"../helpers/debug":44}],38:[function(require,module,exports){
 var vars = require('../vars');
 var escapeRegExp = require('../helpers/regex').escapeRegExp;
 
@@ -3923,7 +3897,7 @@ exports.highlighting = function (data) {
 
     return false;
 }
-},{"../features/highlight-feedback":36,"../helpers/regex":45,"../vars":57}],39:[function(require,module,exports){
+},{"../features/highlight-feedback":36,"../helpers/regex":46,"../vars":58}],39:[function(require,module,exports){
 module.exports = function(user, $event) {
     var template = bttv.chat.templates.moderationCard(user, $event.offset().top, $('.chat-line:last').offset().left);
     $('.ember-chat .moderation-card').remove();
@@ -4049,7 +4023,7 @@ module.exports = function () {
         data.emotes.forEach(function(emote, count) {
             emote.urlTemplate = data.urlTemplate.replace('{{id}}', emote.id);
             emote.url = emote.urlTemplate.replace('{{image}}', '1x');
-
+            
             bttv.chat.store.bttvEmotes[emote.code] = emote;
         });
 
@@ -4097,7 +4071,7 @@ module.exports = function () {
         }).on('click', '.chat-line .emoticon', function() {
             var $emote = $(this);
             if($emote.data('channel') && $emote.data('channel') === 'BetterTTV Emotes') return;
-
+            
             if(bttv.TwitchEmoteIDToChannel && $emote.data('id') && bttv.TwitchEmoteIDToChannel[$emote.data('id')]) {
                 window.open('http://www.twitch.tv/'+bttv.TwitchEmoteIDToChannel[$emote.data('id')],'_blank');
             } else if($emote.data('channel')) {
@@ -4118,7 +4092,50 @@ module.exports = function () {
         generate(data);
     });
 };
-},{"../helpers/debug":43,"../vars":57}],41:[function(require,module,exports){
+},{"../helpers/debug":44,"../vars":58}],41:[function(require,module,exports){
+var debug = require("../helpers/debug");
+    
+var pauseHostMode = module.exports = function () {
+
+    if(bttv.settings.get("pauseHostMode") !== true || !window.App) return;
+    
+    var currentRouteValue = App.__container__.lookup("controller:application").get("currentRouteName");
+    
+    if(currentRouteValue !== "channel.index") {
+    
+        //firefox so slow...
+        if(currentRouteValue === "loading") {
+            setTimeout(pauseHostMode, 500);
+        }
+        
+        return;
+    }
+    
+    var chatController = App.__container__.lookup('controller:chat');
+    
+    if(typeof chatController.currentRoom !== "undefined" && typeof chatController.currentRoom.tmiRoom !== "undefined") {
+        var currentPlayerIsPaused;
+    
+        chatController.currentRoom.tmiRoom.on("host_target", function(d) {
+            currentPlayerIsPaused = $('#player object')[0].isPaused();
+        });
+        
+        $("#channel").bind("DOMNodeInserted", function(event) {
+            if(event.target.nodeName == "OBJECT" && currentPlayerIsPaused === true) {
+            
+                if(event.target.outerHTML.indexOf("auto_play=true") !== -1) {
+                    event.target.outerHTML = event.target.outerHTML.replace("auto_play=true", "auto_play=false");
+                    debug.log("disabled auto play on host mode toggle");
+                }
+            }
+        });
+        
+        debug.log("Pause Host Mode Enabled");
+    } else {
+        setTimeout(pauseHostMode, 500);
+    }
+}
+},{"../helpers/debug":44}],42:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 module.exports = function () {
@@ -4133,7 +4150,7 @@ module.exports = function () {
         $('body').append(splitCSS);
     }
 }
-},{"../helpers/debug":43}],42:[function(require,module,exports){
+},{"../helpers/debug":44}],43:[function(require,module,exports){
 var calculateColorBackground = exports.calculateColorBackground = function (color) {
     // Converts HEX to YIQ to judge what color background the color would look best on
     color = String(color).replace(/[^0-9a-f]/gi, '');
@@ -4270,13 +4287,13 @@ var getHex = exports.getHex = function (color) {
     return '#'+convert(color['r'])+convert(color['g'])+convert(color['b']);
 };
 
-},{}],43:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 module.exports = {
     log: function(string) {
         if(window.console && console.log && bttv.settings.get('consoleLog') === true) console.log("BTTV: " + string);
     }
 };
-},{}],44:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 exports.remove = function (e) {
     // Removes all of an element
     $(e).each(function () {
@@ -4289,7 +4306,7 @@ exports.display = function (e) {
         $(this).show();
     });
 };
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 exports.escapeRegExp = function (text) {
     // Escapes an input to make it usable for regexes
     return text.replace(/[-[\]{}()+?.,\\^$|#\s]/g, "\\$&");
@@ -4312,7 +4329,7 @@ exports.getEmoteFromRegEx = function(regex) {
         .replace(/^\\b|\\b$/g, '') // remove boundaries
         .replace(/\\/g, ''); // unescape
 }
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 module.exports = {
     'LeftClick': 1,
     'Backspace': 8,
@@ -4403,7 +4420,7 @@ module.exports = {
     'Slash': 191,
     'Backslash': 220
 }
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 module.exports = function (data) {
     return {
         //Developers and Supporters
@@ -4469,7 +4486,7 @@ module.exports = function (data) {
         "ackleyman": { mod: true, tagType: "orange", tagName: "Ack" }
     };
 };
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 /** BTTV :
  * cssBlueButtons
  * handleTwitchChatEmotesScript
@@ -4487,6 +4504,7 @@ var betaChat = require('./features/beta-chat'),
 var displayElement = require('./helpers/element').display,
     removeElement = require('./helpers/element').remove,
     imagePreview = require('./features/image-preview');
+var pauseHostMode = require('./features/pause-host-mode');
 
 module.exports = [
     {
@@ -4895,10 +4913,19 @@ module.exports = [
                 chat.helpers.serverMessage("Chat scrollback is now set to: " + lines, true);
             }
         }
+    },
+    {
+        name: 'Pause Host Mode',
+        description: 'Keeps the video player paused if it was paused before entering/exiting host mode.',
+        default: true,
+        storageKey: 'pauseHostMode',
+        toggle: function(value) {
+            pauseHostMode();
+        }
     }
 ];
 
-},{"./features/auto-theatre-mode":13,"./features/beta-chat":14,"./features/channel-reformat":17,"./features/css-loader":25,"./features/darken-page":26,"./features/flip-dashboard":31,"./features/handle-background":34,"./features/image-preview":37,"./features/split-chat":41,"./helpers/element":44}],49:[function(require,module,exports){
+},{"./features/auto-theatre-mode":13,"./features/beta-chat":14,"./features/channel-reformat":17,"./features/css-loader":25,"./features/darken-page":26,"./features/flip-dashboard":31,"./features/handle-background":34,"./features/image-preview":37,"./features/pause-host-mode":41,"./features/split-chat":42,"./helpers/element":45}],50:[function(require,module,exports){
 var io = require('socket.io-client');
 var debug = require('./helpers/debug');
 var vars = require('./vars');
@@ -4937,7 +4964,7 @@ function SocketClient() {
     // Night's legacy subs
     this.socket.on('new_subscriber', function(data) {
         if(data.channel !== bttv.getChannel()) return;
-
+        
         bttv.chat.helpers.notifyMessage("subscriber", bttv.chat.helpers.lookupDisplayName(data.user) + " just subscribed!");
         bttv.chat.store.__subscriptions[data.user] = ['night'];
         bttv.chat.helpers.reparseMessages(data.user);
@@ -4978,7 +5005,7 @@ SocketClient.prototype.lookupUser = function(name) {
 SocketClient.prototype.joinChannel = function() {
     if(!this._connected || !this.socket.connected) return;
     if(!bttv.getChannel().length) return;
-
+    
     this.socket.emit('join_channel', bttv.getChannel());
 
     // Night's legacy subs
@@ -4998,7 +5025,7 @@ SocketClient.prototype.giveEmoteTip = function(channel) {
 }
 
 module.exports = SocketClient;
-},{"./helpers/debug":43,"./vars":57,"socket.io-client":59}],50:[function(require,module,exports){
+},{"./helpers/debug":44,"./vars":58,"socket.io-client":60}],51:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -5024,7 +5051,7 @@ buf.push("</a></p>");
 }
 buf.push("<p><input type=\"checkbox\"" + (jade.attr("checked", bttv.settings.get("darkenedMode"), true, false)) + " class=\"toggleDarkenTTV\"/>Dark Mode</p><p><a href=\"#\" class=\"g18_gear-00000080 setBlacklistKeywords\">Set Blacklist Keywords</a></p><p><a href=\"#\" class=\"g18_gear-00000080 setHighlightKeywords\">Set Highlight Keywords</a></p><p><a href=\"#\" class=\"g18_gear-00000080 setScrollbackAmount\">Set Scrollback Amount</a></p><p><a href=\"#\" class=\"g18_trash-00000080 clearChat\">Clear My Chat</a></p><p><a href=\"#\" style=\"display: block;margin-top: 8px;text-align: center;\" class=\"button-simple dark openSettings\">BetterTTV Settings</a></p></div>");}.call(this,"$" in locals_for_with?locals_for_with.$:typeof $!=="undefined"?$:undefined,"window" in locals_for_with?locals_for_with.window:typeof window!=="undefined"?window:undefined,"bttv" in locals_for_with?locals_for_with.bttv:typeof bttv!=="undefined"?bttv:undefined));;return buf.join("");
 };module.exports=template;
-},{}],51:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -5057,7 +5084,7 @@ buf.push("<div" + (jade.cls([highlighted], [true])) + "><div class=\"suggestion\
 
 buf.push("</div>");}.call(this,"suggestions" in locals_for_with?locals_for_with.suggestions:typeof suggestions!=="undefined"?suggestions:undefined,"index" in locals_for_with?locals_for_with.index:typeof index!=="undefined"?index:undefined));;return buf.join("");
 };module.exports=template;
-},{}],52:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -5065,7 +5092,7 @@ var jade_interp;
 ;var locals_for_with = (locals || {});(function (pollId) {
 buf.push("<div id=\"bttv-poll-contain\"><div class=\"title\">New poll available! <span style=\"text-decoration: underline;\">Vote now!</span></div><div class=\"close\"><svg height=\"16px\" version=\"1.1\" viewbox=\"0 0 16 16\" width=\"16px\" x=\"0px\" y=\"0px\" class=\"svg-close\"><path clip-rule=\"evenodd\" d=\"M13.657,3.757L9.414,8l4.243,4.242l-1.415,1.415L8,9.414l-4.243,4.243l-1.414-1.415L6.586,8L2.343,3.757l1.414-1.414L8,6.586l4.242-4.243L13.657,3.757z\" fill-rule=\"evenodd\"></path></svg></div><iframe" + (jade.attr("src", 'http://strawpoll.me/embed_2/' + (pollId) + '', true, false)) + " class=\"frame\"></iframe></div>");}.call(this,"pollId" in locals_for_with?locals_for_with.pollId:typeof pollId!=="undefined"?pollId:undefined));;return buf.join("");
 };module.exports=template;
-},{}],53:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -5098,7 +5125,7 @@ buf.push("</div>");
 }
 buf.push("</div>");}.call(this,"require" in locals_for_with?locals_for_with.require:typeof require!=="undefined"?require:undefined,"user" in locals_for_with?locals_for_with.user:typeof user!=="undefined"?user:undefined,"top" in locals_for_with?locals_for_with.top:typeof top!=="undefined"?top:undefined,"left" in locals_for_with?locals_for_with.left:typeof left!=="undefined"?left:undefined,"Twitch" in locals_for_with?locals_for_with.Twitch:typeof Twitch!=="undefined"?Twitch:undefined,"bttv" in locals_for_with?locals_for_with.bttv:typeof bttv!=="undefined"?bttv:undefined));;return buf.join("");
 };module.exports=template;
-},{"../vars":57}],54:[function(require,module,exports){
+},{"../vars":58}],55:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -5106,7 +5133,7 @@ var jade_interp;
 ;var locals_for_with = (locals || {});(function (storageKey, name, description) {
 buf.push("<div" + (jade.cls(['option',"bttvOption-" + (storageKey) + ""], [null,true])) + "><span style=\"font-weight:bold;font-size:14px;color:#D3D3D3;\">" + (jade.escape(null == (jade_interp = name) ? "" : jade_interp)) + "</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;" + (jade.escape(null == (jade_interp = description) ? "" : jade_interp)) + "<div class=\"bttv-switch\"><input type=\"radio\"" + (jade.attr("name", storageKey, true, false)) + " value=\"false\"" + (jade.attr("id", "" + (storageKey) + "False", true, false)) + " class=\"bttv-switch-input bttv-switch-off\"/><label" + (jade.attr("for", "" + (storageKey) + "False", true, false)) + " class=\"bttv-switch-label bttv-switch-label-off\">Off</label><input type=\"radio\"" + (jade.attr("name", storageKey, true, false)) + " value=\"true\"" + (jade.attr("id", "" + (storageKey) + "True", true, false)) + " class=\"bttv-switch-input\"/><label" + (jade.attr("for", "" + (storageKey) + "True", true, false)) + " class=\"bttv-switch-label bttv-switch-label-on\">On</label><span class=\"bttv-switch-selection\"></span></div></div>");}.call(this,"storageKey" in locals_for_with?locals_for_with.storageKey:typeof storageKey!=="undefined"?storageKey:undefined,"name" in locals_for_with?locals_for_with.name:typeof name!=="undefined"?name:undefined,"description" in locals_for_with?locals_for_with.description:typeof description!=="undefined"?description:undefined));;return buf.join("");
 };module.exports=template;
-},{}],55:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -5114,7 +5141,7 @@ var jade_interp;
 ;var locals_for_with = (locals || {});(function (bttv) {
 buf.push("<div id=\"header\"><span id=\"logo\"><img height=\"45px\" src=\"//cdn.betterttv.net/style/logos/settings_logo.png\"/></span><ul class=\"nav\"><li><a href=\"#bttvAbout\">About</a></li><li class=\"active\"><a href=\"#bttvSettings\">Settings</a></li><li><a href=\"#bttvChannel\" target=\"_blank\">Channel</a></li><li><a href=\"#bttvChangelog\">Changelog</a></li><li><a href=\"#bttvPrivacy\">Privacy Policy</a></li><li><a href=\"#bttvBackup\">Backup/Import</a></li></ul><span id=\"close\">&times;</span></div><div id=\"bttvSettings\" style=\"height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content options-list\"><h2 class=\"option\">Here you can manage the various BetterTTV options. Click On or Off to toggle settings.</h2></div></div><div id=\"bttvAbout\" style=\"display:none;\"><div class=\"aboutHalf\"><img src=\"//cdn.betterttv.net/style/logos/mascot.png\" class=\"bttvAboutIcon\"/><h1>BetterTTV v " + (jade.escape((jade_interp = bttv.info.versionString()) == null ? '' : jade_interp)) + "</h1><h2>from your friends at <a href=\"https://www.nightdev.com\" target=\"_blank\">NightDev</a></h2><br/></div><div class=\"aboutHalf\"><h1 style=\"margin-top: 100px;\">Think this addon is awesome?</h1><br/><br/><h2><a target=\"_blank\" href=\"https://chrome.google.com/webstore/detail/ajopnjidmegmdimjlfnijceegpefgped\">Drop a Review on the Chrome Webstore</a></h2><br/><h2>or maybe</h2><br/><h2><a target=\"_blank\" href=\"https://streamtip.com/t/night\">Support the Developer</a></h2><br/></div></div><div id=\"bttvChannel\" style=\"display:none;\"><iframe src=\"https://manage.betterttv.net\" frameborder=\"0\" width=\"100%\" height=\"425\"></iframe></div><div id=\"bttvPrivacy\" style=\"display:none;height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content\"></div></div><div id=\"bttvChangelog\" style=\"display:none;height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content\"></div></div><div id=\"bttvBackup\" style=\"display:none;height:425px;padding:25px;\"><h1 style=\"padding-bottom:15px;\">Backup Settings</h1><button id=\"bttvBackupButton\" class=\"primary_button\"><span>Download</span></button><h1 style=\"padding-top:25px;padding-bottom:15px;\">Import Settings</h1><input id=\"bttvImportInput\" type=\"file\" style=\"height: 25px;width: 250px;\"/></div><div id=\"footer\"><span>BetterTTV &copy; <a href=\"https://www.nightdev.com\" target=\"_blank\">NightDev, LLC</a> 2015</span><span style=\"float:right;\"><a href=\"https://community.nightdev.com/c/betterttv\" target=\"_blank\">Get Support</a> | <a href=\"https://github.com/night/BetterTTV/issues/new?labels=bug\" target=\"_blank\">Report a Bug</a> | <a href=\"https://streamtip.com/t/night\" target=\"_blank\">Support the Developer</a></span></div>");}.call(this,"bttv" in locals_for_with?locals_for_with.bttv:typeof bttv!=="undefined"?bttv:undefined));;return buf.join("");
 };module.exports=template;
-},{}],56:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 module.exports = {
     _ref: null,
     _headers: function(e, t) {
@@ -5159,7 +5186,7 @@ module.exports = {
         return this._call('del', url);
     }
 };
-},{}],57:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 module.exports = {
     userData: {
         isLoggedIn: window.Twitch ? Twitch.user.isLoggedIn() : false,
@@ -5169,7 +5196,7 @@ module.exports = {
     liveChannels: [],
     blackChat: false
 };
-},{}],58:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 (function (global){
 /*! http://mths.be/punycode v1.2.4 by @mathias */
 ;(function(root) {
@@ -5680,11 +5707,11 @@ module.exports = {
 }(this));
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],59:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 
 module.exports = require('./lib/');
 
-},{"./lib/":60}],60:[function(require,module,exports){
+},{"./lib/":61}],61:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -5773,7 +5800,7 @@ exports.connect = lookup;
 exports.Manager = require('./manager');
 exports.Socket = require('./socket');
 
-},{"./manager":61,"./socket":63,"./url":64,"debug":68,"socket.io-parser":104}],61:[function(require,module,exports){
+},{"./manager":62,"./socket":64,"./url":65,"debug":69,"socket.io-parser":105}],62:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -6278,7 +6305,7 @@ Manager.prototype.onreconnect = function(){
   this.emitAll('reconnect', attempt);
 };
 
-},{"./on":62,"./socket":63,"./url":64,"backo2":65,"component-bind":66,"component-emitter":67,"debug":68,"engine.io-client":69,"indexof":100,"object-component":101,"socket.io-parser":104}],62:[function(require,module,exports){
+},{"./on":63,"./socket":64,"./url":65,"backo2":66,"component-bind":67,"component-emitter":68,"debug":69,"engine.io-client":70,"indexof":101,"object-component":102,"socket.io-parser":105}],63:[function(require,module,exports){
 
 /**
  * Module exports.
@@ -6304,7 +6331,7 @@ function on(obj, ev, fn) {
   };
 }
 
-},{}],63:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -6691,7 +6718,7 @@ Socket.prototype.disconnect = function(){
   return this;
 };
 
-},{"./on":62,"component-bind":66,"component-emitter":67,"debug":68,"has-binary":98,"socket.io-parser":104,"to-array":108}],64:[function(require,module,exports){
+},{"./on":63,"component-bind":67,"component-emitter":68,"debug":69,"has-binary":99,"socket.io-parser":105,"to-array":109}],65:[function(require,module,exports){
 (function (global){
 
 /**
@@ -6768,7 +6795,7 @@ function url(uri, loc){
 }
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"debug":68,"parseuri":102}],65:[function(require,module,exports){
+},{"debug":69,"parseuri":103}],66:[function(require,module,exports){
 
 /**
  * Expose `Backoff`.
@@ -6855,7 +6882,7 @@ Backoff.prototype.setJitter = function(jitter){
 };
 
 
-},{}],66:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 /**
  * Slice reference.
  */
@@ -6880,7 +6907,7 @@ module.exports = function(obj, fn){
   }
 };
 
-},{}],67:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 
 /**
  * Expose `Emitter`.
@@ -7046,7 +7073,7 @@ Emitter.prototype.hasListeners = function(event){
   return !! this.listeners(event).length;
 };
 
-},{}],68:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 
 /**
  * Expose `debug()` as the module.
@@ -7185,11 +7212,11 @@ try {
   if (window.localStorage) debug.enable(localStorage.debug);
 } catch(e){}
 
-},{}],69:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 
 module.exports =  require('./lib/');
 
-},{"./lib/":70}],70:[function(require,module,exports){
+},{"./lib/":71}],71:[function(require,module,exports){
 
 module.exports = require('./socket');
 
@@ -7201,7 +7228,7 @@ module.exports = require('./socket');
  */
 module.exports.parser = require('engine.io-parser');
 
-},{"./socket":71,"engine.io-parser":83}],71:[function(require,module,exports){
+},{"./socket":72,"engine.io-parser":84}],72:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies.
@@ -7910,7 +7937,7 @@ Socket.prototype.filterUpgrades = function (upgrades) {
 };
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./transport":72,"./transports":73,"component-emitter":67,"debug":80,"engine.io-parser":83,"indexof":100,"parsejson":94,"parseqs":95,"parseuri":96}],72:[function(require,module,exports){
+},{"./transport":73,"./transports":74,"component-emitter":68,"debug":81,"engine.io-parser":84,"indexof":101,"parsejson":95,"parseqs":96,"parseuri":97}],73:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -8071,7 +8098,7 @@ Transport.prototype.onClose = function () {
   this.emit('close');
 };
 
-},{"component-emitter":67,"engine.io-parser":83}],73:[function(require,module,exports){
+},{"component-emitter":68,"engine.io-parser":84}],74:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies
@@ -8128,7 +8155,7 @@ function polling(opts){
 }
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./polling-jsonp":74,"./polling-xhr":75,"./websocket":77,"xmlhttprequest":78}],74:[function(require,module,exports){
+},{"./polling-jsonp":75,"./polling-xhr":76,"./websocket":78,"xmlhttprequest":79}],75:[function(require,module,exports){
 (function (global){
 
 /**
@@ -8268,7 +8295,7 @@ JSONPPolling.prototype.doPoll = function () {
   this.script = script;
 
   var isUAgecko = 'undefined' != typeof navigator && /gecko/i.test(navigator.userAgent);
-
+  
   if (isUAgecko) {
     setTimeout(function () {
       var iframe = document.createElement('iframe');
@@ -8365,7 +8392,7 @@ JSONPPolling.prototype.doWrite = function (data, fn) {
 };
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./polling":76,"component-inherit":79}],75:[function(require,module,exports){
+},{"./polling":77,"component-inherit":80}],76:[function(require,module,exports){
 (function (global){
 /**
  * Module requirements.
@@ -8753,7 +8780,7 @@ function unloadHandler() {
 }
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./polling":76,"component-emitter":67,"component-inherit":79,"debug":80,"xmlhttprequest":78}],76:[function(require,module,exports){
+},{"./polling":77,"component-emitter":68,"component-inherit":80,"debug":81,"xmlhttprequest":79}],77:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -9000,7 +9027,7 @@ Polling.prototype.uri = function(){
   return schema + '://' + this.hostname + port + this.path + query;
 };
 
-},{"../transport":72,"component-inherit":79,"debug":80,"engine.io-parser":83,"parseqs":95,"xmlhttprequest":78}],77:[function(require,module,exports){
+},{"../transport":73,"component-inherit":80,"debug":81,"engine.io-parser":84,"parseqs":96,"xmlhttprequest":79}],78:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -9240,7 +9267,7 @@ WS.prototype.check = function(){
   return !!WebSocket && !('__initialize' in WebSocket && this.name === WS.prototype.name);
 };
 
-},{"../transport":72,"component-inherit":79,"debug":80,"engine.io-parser":83,"parseqs":95,"ws":97}],78:[function(require,module,exports){
+},{"../transport":73,"component-inherit":80,"debug":81,"engine.io-parser":84,"parseqs":96,"ws":98}],79:[function(require,module,exports){
 // browser shim for xmlhttprequest module
 var hasCORS = require('has-cors');
 
@@ -9278,7 +9305,7 @@ module.exports = function(opts) {
   }
 }
 
-},{"has-cors":92}],79:[function(require,module,exports){
+},{"has-cors":93}],80:[function(require,module,exports){
 
 module.exports = function(a, b){
   var fn = function(){};
@@ -9286,7 +9313,7 @@ module.exports = function(a, b){
   a.prototype = new fn;
   a.prototype.constructor = a;
 };
-},{}],80:[function(require,module,exports){
+},{}],81:[function(require,module,exports){
 
 /**
  * This is the web browser implementation of `debug()`.
@@ -9435,7 +9462,7 @@ function load() {
 
 exports.enable(load());
 
-},{"./debug":81}],81:[function(require,module,exports){
+},{"./debug":82}],82:[function(require,module,exports){
 
 /**
  * This is the common logic for both the Node.js and web browser
@@ -9634,7 +9661,7 @@ function coerce(val) {
   return val;
 }
 
-},{"ms":82}],82:[function(require,module,exports){
+},{"ms":83}],83:[function(require,module,exports){
 /**
  * Helpers.
  */
@@ -9747,7 +9774,7 @@ function plural(ms, n, name) {
   return Math.ceil(ms / n) + ' ' + name + 's';
 }
 
-},{}],83:[function(require,module,exports){
+},{}],84:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies.
@@ -10345,7 +10372,7 @@ exports.decodePayloadAsBinary = function (data, binaryType, callback) {
 };
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./keys":84,"after":85,"arraybuffer.slice":86,"base64-arraybuffer":87,"blob":88,"has-binary":89,"utf8":91}],84:[function(require,module,exports){
+},{"./keys":85,"after":86,"arraybuffer.slice":87,"base64-arraybuffer":88,"blob":89,"has-binary":90,"utf8":92}],85:[function(require,module,exports){
 
 /**
  * Gets the keys for an object.
@@ -10366,7 +10393,7 @@ module.exports = Object.keys || function keys (obj){
   return arr;
 };
 
-},{}],85:[function(require,module,exports){
+},{}],86:[function(require,module,exports){
 module.exports = after
 
 function after(count, callback, err_cb) {
@@ -10396,7 +10423,7 @@ function after(count, callback, err_cb) {
 
 function noop() {}
 
-},{}],86:[function(require,module,exports){
+},{}],87:[function(require,module,exports){
 /**
  * An abstraction for slicing an arraybuffer even when
  * ArrayBuffer.prototype.slice is not supported
@@ -10427,7 +10454,7 @@ module.exports = function(arraybuffer, start, end) {
   return result.buffer;
 };
 
-},{}],87:[function(require,module,exports){
+},{}],88:[function(require,module,exports){
 /*
  * base64-arraybuffer
  * https://github.com/niklasvh/base64-arraybuffer
@@ -10488,7 +10515,7 @@ module.exports = function(arraybuffer, start, end) {
   };
 })("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/");
 
-},{}],88:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 (function (global){
 /**
  * Create a blob builder even when vendor prefixes exist
@@ -10541,7 +10568,7 @@ module.exports = (function() {
 })();
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],89:[function(require,module,exports){
+},{}],90:[function(require,module,exports){
 (function (global){
 
 /*
@@ -10603,12 +10630,12 @@ function hasBinary(data) {
 }
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"isarray":90}],90:[function(require,module,exports){
+},{"isarray":91}],91:[function(require,module,exports){
 module.exports = Array.isArray || function (arr) {
   return Object.prototype.toString.call(arr) == '[object Array]';
 };
 
-},{}],91:[function(require,module,exports){
+},{}],92:[function(require,module,exports){
 (function (global){
 /*! http://mths.be/utf8js v2.0.0 by @mathias */
 ;(function(root) {
@@ -10851,7 +10878,7 @@ module.exports = Array.isArray || function (arr) {
 }(this));
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],92:[function(require,module,exports){
+},{}],93:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -10876,7 +10903,7 @@ try {
   module.exports = false;
 }
 
-},{"global":93}],93:[function(require,module,exports){
+},{"global":94}],94:[function(require,module,exports){
 
 /**
  * Returns `this`. Execute this without a "context" (i.e. without it being
@@ -10886,7 +10913,7 @@ try {
 
 module.exports = (function () { return this; })();
 
-},{}],94:[function(require,module,exports){
+},{}],95:[function(require,module,exports){
 (function (global){
 /**
  * JSON parse.
@@ -10921,7 +10948,7 @@ module.exports = function parsejson(data) {
   }
 };
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],95:[function(require,module,exports){
+},{}],96:[function(require,module,exports){
 /**
  * Compiles a querystring
  * Returns string representation of the object
@@ -10960,7 +10987,7 @@ exports.decode = function(qs){
   return qry;
 };
 
-},{}],96:[function(require,module,exports){
+},{}],97:[function(require,module,exports){
 /**
  * Parses an URI
  *
@@ -11001,7 +11028,7 @@ module.exports = function parseuri(str) {
     return uri;
 };
 
-},{}],97:[function(require,module,exports){
+},{}],98:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -11046,7 +11073,7 @@ function ws(uri, protocols, opts) {
 
 if (WebSocket) ws.prototype = WebSocket.prototype;
 
-},{}],98:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 (function (global){
 
 /*
@@ -11108,9 +11135,9 @@ function hasBinary(data) {
 }
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"isarray":99}],99:[function(require,module,exports){
-module.exports=require(90)
-},{}],100:[function(require,module,exports){
+},{"isarray":100}],100:[function(require,module,exports){
+module.exports=require(91)
+},{}],101:[function(require,module,exports){
 
 var indexOf = [].indexOf;
 
@@ -11121,7 +11148,7 @@ module.exports = function(arr, obj){
   }
   return -1;
 };
-},{}],101:[function(require,module,exports){
+},{}],102:[function(require,module,exports){
 
 /**
  * HOP ref.
@@ -11206,7 +11233,7 @@ exports.length = function(obj){
 exports.isEmpty = function(obj){
   return 0 == exports.length(obj);
 };
-},{}],102:[function(require,module,exports){
+},{}],103:[function(require,module,exports){
 /**
  * Parses an URI
  *
@@ -11233,7 +11260,7 @@ module.exports = function parseuri(str) {
   return uri;
 };
 
-},{}],103:[function(require,module,exports){
+},{}],104:[function(require,module,exports){
 (function (global){
 /*global Blob,File*/
 
@@ -11378,7 +11405,7 @@ exports.removeBlobs = function(data, callback) {
 };
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./is-buffer":105,"isarray":106}],104:[function(require,module,exports){
+},{"./is-buffer":106,"isarray":107}],105:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -11780,7 +11807,7 @@ function error(data){
   };
 }
 
-},{"./binary":103,"./is-buffer":105,"component-emitter":67,"debug":68,"isarray":106,"json3":107}],105:[function(require,module,exports){
+},{"./binary":104,"./is-buffer":106,"component-emitter":68,"debug":69,"isarray":107,"json3":108}],106:[function(require,module,exports){
 (function (global){
 
 module.exports = isBuf;
@@ -11797,9 +11824,9 @@ function isBuf(obj) {
 }
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],106:[function(require,module,exports){
-module.exports=require(90)
 },{}],107:[function(require,module,exports){
+module.exports=require(91)
+},{}],108:[function(require,module,exports){
 /*! JSON v3.2.6 | http://bestiejs.github.io/json3 | Copyright 2012-2013, Kit Cambridge | http://kit.mit-license.org */
 ;(function (window) {
   // Convenience aliases.
@@ -12662,7 +12689,7 @@ module.exports=require(90)
   }
 }(this));
 
-},{}],108:[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 module.exports = toArray
 
 function toArray(list, index) {

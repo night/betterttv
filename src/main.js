@@ -327,9 +327,10 @@ var clearClutter = require('./features/clear-clutter'),
     giveawayCompatibility = require('./features/giveaway-compatibility'),
     handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes'),
     emoticonTextInClipboard = require('./features/emoticon-text-in-clipboard'),
-    createSettings = require('./features/create-settings');
-    enableImagePreview = require('./features/image-preview').enablePreview;
-    enableTheatreMode = require('./features/auto-theatre-mode');
+    createSettings = require('./features/create-settings'),
+    enableImagePreview = require('./features/image-preview').enablePreview,
+    enableTheatreMode = require('./features/auto-theatre-mode'),
+    pauseHostMode = require('./features/pause-host-mode');
 
 var chatFunctions = function () {
 
@@ -525,6 +526,7 @@ var main = function () {
         if (bttv.settings.get('autoTheatreMode') === true) {
             enableTheatreMode();
         }
+        pauseHostMode();
 
         $(window).trigger('resize');
         setTimeout(function() {
