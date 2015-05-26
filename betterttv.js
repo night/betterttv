@@ -2231,11 +2231,10 @@ var clearClutter = require('./features/clear-clutter'),
     giveawayCompatibility = require('./features/giveaway-compatibility'),
     handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes'),
     emoticonTextInClipboard = require('./features/emoticon-text-in-clipboard'),
-    createSettings = require('./features/create-settings');
-    enableImagePreview = require('./features/image-preview').enablePreview;
-    enableTheatreMode = require('./features/auto-theatre-mode');
-    
-var pauseHostMode = require('./features/pause-host-mode');
+    createSettings = require('./features/create-settings'),
+    enableImagePreview = require('./features/image-preview').enablePreview,
+    enableTheatreMode = require('./features/auto-theatre-mode'),
+    pauseHostMode = require('./features/pause-host-mode');
 
 var chatFunctions = function () {
 
@@ -4100,16 +4099,15 @@ var pauseHostMode = module.exports = function () {
 
     if(bttv.settings.get("pauseHostMode") !== true || !window.App) return;
     
-    var appController = App.__container__.lookup("controller:application");
+    var currentRouteValue = App.__container__.lookup("controller:application").get("currentRouteName");
     
-    if(appController.get("currentRouteName") !== "channel.index") {
-        //fookin firefox...
-        if(appController.get("currentRouteName") === "loading") {
-            debug.log("pause host mode - still loading");
-            setTimeout(pauseHostMode, 1000);
-        } else {
-            debug.log("pause host mode - not channel page");
+    if(currentRouteValue !== "channel.index") {
+    
+        //firefox so slow...
+        if(currentRouteValue === "loading") {
+            setTimeout(pauseHostMode, 500);
         }
+        
         return;
     }
     
@@ -4120,7 +4118,6 @@ var pauseHostMode = module.exports = function () {
     
         chatController.currentRoom.tmiRoom.on("host_target", function(d) {
             currentPlayerIsPaused = $('#player object')[0].isPaused();
-            debug.log("host mode toggle, current player paused:"+currentPlayerIsPaused);
         });
         
         $("#channel").bind("DOMNodeInserted", function(event) {
@@ -4135,8 +4132,7 @@ var pauseHostMode = module.exports = function () {
         
         debug.log("Pause Host Mode Enabled");
     } else {
-        debug.log("pause host mode - no current/tmi room");
-        setTimeout(pauseHostMode, 1000);
+        setTimeout(pauseHostMode, 500);
     }
 }
 },{"../helpers/debug":44}],42:[function(require,module,exports){
