@@ -344,13 +344,13 @@ module.exports = function() {
 };
 },{"./helpers":5,"./store":8,"./tmi":11}],4:[function(require,module,exports){
 var vars = require('../vars'),
-    debug = require('../helpers/debug');
-var store = require('./store'),
+    debug = require('../helpers/debug'),
+    store = require('./store'),
     tmi = require('./tmi'),
-    helpers = require('./helpers')
+    helpers = require('./helpers'),
     templates = require('./templates'),
-    rooms = require('./rooms');
-var embeddedPolling = require('../features/embedded-polling');
+    rooms = require('./rooms'),
+    embeddedPolling = require('../features/embedded-polling');
 
 // Helper Functions
 var getEmoteFromRegEx = require('../helpers/regex').getEmoteFromRegEx;
@@ -633,7 +633,6 @@ var privmsg = exports.privmsg = function (channel, data) {
 
     if(store.trackTimeouts[data.from]) delete store.trackTimeouts[data.from];
 
-
     var blacklistFilter = require('../features/keywords-lists').blacklistFilter,
         highlighting = require('../features/keywords-lists').highlighting;
 
@@ -643,24 +642,10 @@ var privmsg = exports.privmsg = function (channel, data) {
 
     var messageHighlighted = bttv.settings.get("highlightKeywords") && highlighting(data);
 
-    if(bttv.settings.get('embeddedPolling')) {
-        if(helpers.isModerator(data.from)) {
-            var strawpoll = /strawpoll\.me\/([0-9]+)/g.exec(data.message);
-            if(strawpoll) {
-                embeddedPolling(strawpoll[1]);
-            }
-        }
-    }
-
-    if (bttv.settings.get("showJTVTags") === true) {
-        if (data.bttvTagType == "moderator" || data.bttvTagType == "broadcaster" || data.bttvTagType == "admin" || data.bttvTagType == "global_mod" || data.bttvTagType == "staff" || data.bttvTagType === "bot") data.bttvTagType = 'old'+data.bttvTagType;
-    }
+    // Strawpoll
+    embeddedPolling(data);
 
     data.color = helpers.getColor(data.from);
-
-    if(data.color === "black") data.color = "#000000";
-    if(data.color === "MidnightBlue") data.color = "#191971";
-    if(data.color === "DarkRed") data.color = "#8B0000";
 
     data.color = helpers.calculateColor(data.color);
 
@@ -673,30 +658,8 @@ var privmsg = exports.privmsg = function (channel, data) {
         data.color = "#ffffff";
     }
 
-    var specialUsers = {
-        "night": { dev: true, tagType: "bttvDeveloper" },
-        "dtittel": { dev: true, tagType: "bttvDeveloper" },
-        "vendethiel": { dev: true, tagType: "bttvDeveloper" },
-        "teak": { dev: true, tagType: "bttvDeveloper" },
-        "polecat": { dev: true, tagType: "bttvDeveloper" },
-        "matthewjk": { supporter: true, team: "Support", tagType: "bttvSupporter" },
-        "julia_cs": { supporter: true, team: "Design", tagType: "bttvSupporter" },
-        "vaughnwhiskey": { supporter: true, team: "Support", tagType: "bttvSupporter" },
-        "izl": { supporter: true, team: "Support", tagType: "bttvSupporter" },
-        "jacksack": { supporter: true, team: "Design", tagType: "bttvSupporter" }
-    }
-
     var badges = helpers.getBadges(data.from);
     var bttvBadges = helpers.assignBadges(badges, data);
-
-    if(specialUsers[data.from]) {
-        var userData = specialUsers[data.from];
-        bttvBadges.push({
-            type: userData.tagType,
-            name: "&#8203;",
-            description: userData.dev ? 'NightDev Developer':'NightDev '+userData.team+' Team'
-        });
-    }
 
     data.sender = data.from;
 
@@ -726,7 +689,7 @@ var privmsg = exports.privmsg = function (channel, data) {
     store.__messageQueue.push(message);
 }
 
-},{"../features/embedded-polling":29,"../features/keywords-lists":38,"../features/make-card":39,"../helpers/colors":42,"../helpers/debug":43,"../helpers/regex":45,"../vars":57,"./helpers":5,"./rooms":7,"./store":8,"./templates":10,"./tmi":11}],5:[function(require,module,exports){
+},{"../features/embedded-polling":29,"../features/keywords-lists":38,"../features/make-card":39,"../helpers/colors":42,"../helpers/debug":43,"../helpers/regex":46,"../vars":60,"./helpers":5,"./rooms":7,"./store":8,"./templates":10,"./tmi":11}],5:[function(require,module,exports){
 var vars = require('../vars'),
     keyCodes = require('../keycodes'),
     tmi = require('./tmi'),
@@ -1096,6 +1059,26 @@ var calculateColor = exports.calculateColor = function(color) {
 
     return color;
 };
+var loadBadges = exports.loadBadges = function() {
+    if($('#bttv_volunteer_badges').length) return;
+
+    $.getJSON("https://api.betterttv.net/2/badges").done(function(data) {
+        var $style = $('<style />');
+
+        $style.attr('id', 'bttv_volunteer_badges');
+
+        data.types.forEach(function(badge) {
+            $style.append(".ember-chat .badges .bttv-" + badge.name + " { background: url(\"" + badge.svg + "\"); background-size: 100%; }");
+            store.__badgeTypes[badge.name] = badge;
+        });
+
+        $style.appendTo('head');
+
+        data.badges.forEach(function(user) {
+            store.__badges[user.name] = user.type;
+        });
+    });
+};
 var assignBadges = exports.assignBadges = function(badges, data) {
     data = data || {};
     var bttvBadges = [];
@@ -1162,11 +1145,13 @@ var assignBadges = exports.assignBadges = function(badges, data) {
         });
     }
 
-    if(data.bttvTagType && data.bttvTagName) {
+    // Volunteer badges
+    if(data.from in store.__badges) {
+        var type = store.__badges[data.from];
         bttvBadges.unshift({
-            type: data.bttvTagType,
-            name: data.bttvTagName,
-            description: data.bttvTagDesc?data.bttvTagDesc:data.bttvTagName
+            type: 'bttv-' + type,
+            name: '',
+            description: store.__badgeTypes[type]
         });
     }
 
@@ -1302,7 +1287,7 @@ var massUnban = exports.massUnban = function() {
     });
 }*/
 
-},{"../bots":1,"../helpers/colors":42,"../helpers/element":44,"../helpers/regex":45,"../keycodes":46,"../legacy-tags":47,"../vars":57,"./handlers":4,"./store":8,"./templates":10,"./tmi":11}],6:[function(require,module,exports){
+},{"../bots":1,"../helpers/colors":42,"../helpers/element":44,"../helpers/regex":46,"../keycodes":47,"../legacy-tags":48,"../vars":60,"./handlers":4,"./store":8,"./templates":10,"./tmi":11}],6:[function(require,module,exports){
 
 // Add mouseover image preview to image links
 module.exports = function(imgUrl) {
@@ -1386,6 +1371,8 @@ exports.__reportedErrors = [];
 exports.__subscriptions = {};
 exports.__unbannedUsers = [];
 exports.__channelBots = [];
+exports.__badgeTypes = {};
+exports.__badges = {};
 exports.displayNames = {};
 exports.trackTimeouts = {};
 exports.chatters = {};
@@ -1496,6 +1483,9 @@ var takeover = module.exports = function() {
         });
         store.__channelBots = data.bots;
     });
+
+    // Load Volunteer Badges
+    helpers.loadBadges();
 
     // Load Chat Settings
     loadChatSettings();
@@ -1752,7 +1742,7 @@ var takeover = module.exports = function() {
     });
 }
 
-},{"../features/chat-load-settings":19,"../features/css-loader":25,"../features/override-emotes":40,"../helpers/debug":43,"../keycodes":46,"../vars":57,"./handlers":4,"./helpers":5,"./rooms":7,"./store":8,"./tmi":11}],10:[function(require,module,exports){
+},{"../features/chat-load-settings":19,"../features/css-loader":25,"../features/override-emotes":40,"../helpers/debug":43,"../keycodes":47,"../vars":60,"./handlers":4,"./helpers":5,"./rooms":7,"./store":8,"./tmi":11}],10:[function(require,module,exports){
 var tmi = require('./tmi'),
     store = require('./store'),
     punycode = require('punycode');
@@ -1951,7 +1941,7 @@ var privmsg = exports.privmsg = function(highlight, action, server, isMod, data)
     return '<div class="chat-line'+(highlight?' highlight':'')+(action?' action':'')+(server?' admin':'')+'" data-sender="'+data.sender+'">'+timestamp(data.time)+' '+(isMod?modicons():'')+' '+badges(data.badges)+from(data.nickname, data.color)+message(data.sender, data.message, data.emotes, (action && !highlight)?data.color:false)+'</div>';
 }
 
-},{"../templates/chat-suggestions":51,"../templates/moderation-card":53,"./helpers":5,"./store":8,"./tmi":11,"punycode":58}],11:[function(require,module,exports){
+},{"../templates/chat-suggestions":54,"../templates/moderation-card":56,"./helpers":5,"./store":8,"./tmi":11,"punycode":62}],11:[function(require,module,exports){
 module.exports = function() {
 	return bttv.getChatController() ? bttv.getChatController().currentRoom : false;
 }
@@ -1973,214 +1963,9 @@ bttv.info = {
 };
 
 bttv.TwitchAPI = TwitchAPI;
-
 bttv.vars = vars;
-
-bttv.settings = {
-    backup: function () {
-        var download = {};
-
-        for(var setting in vars.settings) {
-            if(vars.settings.hasOwnProperty(setting)) {
-                var value = vars.settings[setting].value;
-                download[setting] = value;
-            }
-        }
-
-        download = new Blob([JSON.stringify(download)], {
-            type: "text/plain;charset=utf-8;"
-        });
-
-        bttv.saveAs(download, "bttv_settings.backup");
-    },
-    get: function(setting) {
-        return ((vars.settings[setting]) ? vars.settings[setting].value : null);
-    },
-    import: function(input) {
-        var getDataUrlFromUpload = function(input, callback) {
-            var reader = new FileReader();
-
-            reader.onload = function (e) {
-                callback(e.target.result);
-            }
-
-            reader.readAsText(input.files[0]);
-        }
-
-        var isJson = function(string) {
-            try {
-                JSON.parse(string);
-            } catch (e) {
-                return false;
-            }
-            return true;
-        }
-
-        getDataUrlFromUpload(input, function(data) {
-            if(isJson(data)) {
-                var settings = JSON.parse(data),
-                    count = 0;
-
-                for(var setting in settings) {
-                    if(settings.hasOwnProperty(setting)) {
-                        var value = settings[setting];
-
-                        if(vars.settings[setting] && vars.settings[setting].value !== value) {
-                            count++;
-                            bttv.settings.save(setting, value);
-                        }
-                    }
-                }
-                bttv.notify("BetterTTV imported "+count+" settings, and will now refresh in a few seconds.");
-                setTimeout(function() {
-                    window.location.reload();
-                }, 3000);
-            } else {
-                bttv.notify("You uploaded an invalid file.");
-            }
-        });
-    },
-    load: function () {
-        var parseSetting = function(value) {
-            if(value == null) {
-                return null;
-            } else if(value === "true") {
-                return true;
-            } else if(value === "false") {
-                return false;
-            } else if(value === "") {
-                return "";
-            } else if(isNaN(value) === false) {
-                return parseInt(value);
-            } else {
-                return value;
-            }
-        }
-        var settingsList = require('./settings-list');
-
-        var settingTemplate = require('./templates/setting-switch');
-
-        var featureRequests = ' \
-            <div class="option"> \
-                Think something is missing here? Send in a <a href="https://github.com/night/BetterTTV/issues/new?labels=enhancement" target="_blank">feature request</a>! \
-            </div> \
-        ';
-
-        settingsList.forEach(function(setting) {
-            vars.settings[setting.storageKey] = setting;
-            vars.settings[setting.storageKey].value = (parseSetting(bttv.storage.get(bttv.settings.prefix+setting.storageKey)) == null) ? setting.default : parseSetting(bttv.storage.get(bttv.settings.prefix+setting.storageKey));
-
-            if(setting.name) {
-                var settingHTML = settingTemplate(setting);
-                $('#bttvSettings .options-list').append(settingHTML);
-                bttv.settings.get(setting.storageKey) === true ? $('#'+setting.storageKey+'True').prop('checked', true) : $('#'+setting.storageKey+'False').prop('checked', true);
-            }
-
-            if(setting.hidden) {
-                $("#bttvSettingsPanel .bttvOption-"+setting.storageKey).css('display','none');
-                $("#bttvSettingsPanel .bttvOption-"+setting.storageKey).addClass('konami');
-            }
-
-            if(setting.load) {
-                setting.load();
-            }
-        });
-
-        $('#bttvSettings .options-list').append(featureRequests);
-
-        $('.option input:radio').change(function (e) {
-            bttv.settings.save(e.target.name, parseSetting(e.target.value));
-        });
-
-        var notifications = bttv.storage.getObject("bttvNotifications");
-        for(var notification in notifications) {
-            if(notifications.hasOwnProperty(notification)) {
-                var expireObj = notifications[notification];
-                if(expireObj.expire < Date.now()) {
-                    bttv.storage.spliceObject("bttvNotifications", notification);
-                }
-            }
-        }
-
-        var receiveMessage = function(e) {
-            if(e.origin !== window.location.protocol+'//'+window.location.host) return;
-            if(e.data) {
-                if(typeof e.data !== 'string') return;
-
-                var data = e.data.split(' ');
-                if(data[0] === "bttv_setting") {
-                    var key = data[1],
-                        value = parseSetting(data[2]);
-
-                    bttv.settings.save(key, value);
-                }
-            }
-        }
-        window.addEventListener("message", receiveMessage, false);
-    },
-    popup: function() {
-        var settingsUrl = window.location.protocol+'//'+window.location.host+'/settings?bttvSettings=true';
-        window.open(settingsUrl, 'BetterTTV Settings', 'width=800,height=500,top=500,left=800,scrollbars=no,location=no,directories=no,status=no,menubar=no,toolbar=no,resizable=no');
-    },
-    prefix: "bttv_",
-    save: function(setting, value) {
-        if(/\?bttvSettings=true/.test(window.location)) {
-            window.opener.postMessage('bttv_setting '+setting+' '+value, window.location.protocol+'//'+window.location.host);
-        } else {
-            if(window.__bttvga) __bttvga('send', 'event', 'BTTV', 'Change Setting: '+setting+'='+value);
-            if(window !== window.top) window.parent.postMessage('bttv_setting '+setting+' '+value, window.location.protocol+'//'+window.location.host);
-            vars.settings[setting].value = value;
-            bttv.storage.put(bttv.settings.prefix+setting, value);
-            if(vars.settings[setting].toggle) vars.settings[setting].toggle(value);
-        }
-    }
-}
-
-bttv.storage = {
-    exists: function(item) {
-        return (bttv.storage.get(item) ? true : false);
-    },
-    get: function(item) {
-        return localStorage.getItem(item);
-    },
-    getArray: function(item) {
-        if(!bttv.storage.exists(item)) bttv.storage.putArray(item, []);
-        return JSON.parse(bttv.storage.get(item));
-    },
-    getObject: function(item) {
-        if(!bttv.storage.exists(item)) bttv.storage.putObject(item, {});
-        return JSON.parse(bttv.storage.get(item));
-    },
-    put: function(item, value) {
-        localStorage.setItem(item, value);
-    },
-    pushArray: function(item, value) {
-        var i = bttv.storage.getArray(item);
-        i.push(value);
-        bttv.storage.putArray(item, i);
-    },
-    pushObject: function(item, key, value) {
-        var i = bttv.storage.getObject(item);
-        i[key] = value;
-        bttv.storage.putObject(item, i);
-    },
-    putArray: function(item, value) {
-        bttv.storage.put(item, JSON.stringify(value));
-    },
-    putObject: function(item, value) {
-        bttv.storage.put(item, JSON.stringify(value));
-    },
-    spliceArray: function(item, value) {
-        var i = bttv.storage.getArray(item);
-        if(i.indexOf(value) !== -1) i.splice(i.indexOf(value), 1);
-        bttv.storage.putArray(item, i);
-    },
-    spliceObject: function(item, key) {
-        var i = bttv.storage.getObject(item);
-        delete i[key];
-        bttv.storage.putObject(item, i);
-    }
-}
+bttv.storage = require('./storage');
+bttv.settings = require('./settings');
 
 bttv.getChannel = function() {
     if(window.Ember && window.App && App.__container__.lookup("controller:application").get("currentRouteName") === "channel.index") {
@@ -2445,7 +2230,6 @@ var main = function () {
         __bttvga('send', 'pageview');
 
         (function(b){b.gritter={};b.gritter.options={position:"top-left",class_name:"",fade_in_speed:"medium",fade_out_speed:1000,time:6000};b.gritter.add=function(f){try{return a.add(f||{})}catch(d){var c="Gritter Error: "+d;(typeof(console)!="undefined"&&console.error)?console.error(c,f):alert(c)}};b.gritter.remove=function(d,c){a.removeSpecific(d,c||{})};b.gritter.removeAll=function(c){a.stop(c||{})};var a={position:"",fade_in_speed:"",fade_out_speed:"",time:"",_custom_timer:0,_item_count:0,_is_setup:0,_tpl_close:'<div class="gritter-close"></div>',_tpl_title:'<span class="gritter-title">[[title]]</span>',_tpl_item:'<div id="gritter-item-[[number]]" class="gritter-item-wrapper [[item_class]]" style="display:none"><div class="gritter-top"></div><div class="gritter-item">[[close]][[image]]<div class="[[class_name]]">[[title]]<p>[[text]]</p></div><div style="clear:both"></div></div><div class="gritter-bottom"></div></div>',_tpl_wrap:'<div id="gritter-notice-wrapper"></div>',add:function(g){if(typeof(g)=="string"){g={text:g}}if(!g.text){throw'You must supply "text" parameter.'}if(!this._is_setup){this._runSetup()}var k=g.title,n=g.text,e=g.image||"",l=g.sticky||false,m=g.class_name||b.gritter.options.class_name,j=b.gritter.options.position,d=g.time||"";this._verifyWrapper();this._item_count++;var f=this._item_count,i=this._tpl_item;b(["before_open","after_open","before_close","after_close"]).each(function(p,q){a["_"+q+"_"+f]=(b.isFunction(g[q]))?g[q]:function(){}});this._custom_timer=0;if(d){this._custom_timer=d}var c=(e!="")?'<img src="'+e+'" class="gritter-image" />':"",h=(e!="")?"gritter-with-image":"gritter-without-image";if(k){k=this._str_replace("[[title]]",k,this._tpl_title)}else{k=""}i=this._str_replace(["[[title]]","[[text]]","[[close]]","[[image]]","[[number]]","[[class_name]]","[[item_class]]"],[k,n,this._tpl_close,c,this._item_count,h,m],i);if(this["_before_open_"+f]()===false){return false}b("#gritter-notice-wrapper").addClass(j).append(i);var o=b("#gritter-item-"+this._item_count);o.fadeIn(this.fade_in_speed,function(){a["_after_open_"+f](b(this))});if(!l){this._setFadeTimer(o,f)}b(o).bind("mouseenter mouseleave",function(p){if(p.type=="mouseenter"){if(!l){a._restoreItemIfFading(b(this),f)}}else{if(!l){a._setFadeTimer(b(this),f)}}a._hoverState(b(this),p.type)});b(o).find(".gritter-close").click(function(){a.removeSpecific(f,{},null,true)});return f},_countRemoveWrapper:function(c,d,f){d.remove();this["_after_close_"+c](d,f);if(b(".gritter-item-wrapper").length==0){b("#gritter-notice-wrapper").remove()}},_fade:function(g,d,j,f){var j=j||{},i=(typeof(j.fade)!="undefined")?j.fade:true,c=j.speed||this.fade_out_speed,h=f;this["_before_close_"+d](g,h);if(f){g.unbind("mouseenter mouseleave")}if(i){g.animate({opacity:0},c,function(){g.animate({height:0},300,function(){a._countRemoveWrapper(d,g,h)})})}else{this._countRemoveWrapper(d,g)}},_hoverState:function(d,c){if(c=="mouseenter"){d.addClass("hover");d.find(".gritter-close").show()}else{d.removeClass("hover");d.find(".gritter-close").hide()}},removeSpecific:function(c,g,f,d){if(!f){var f=b("#gritter-item-"+c)}this._fade(f,c,g||{},d)},_restoreItemIfFading:function(d,c){clearTimeout(this["_int_id_"+c]);d.stop().css({opacity:"",height:""})},_runSetup:function(){for(opt in b.gritter.options){this[opt]=b.gritter.options[opt]}this._is_setup=1},_setFadeTimer:function(f,d){var c=(this._custom_timer)?this._custom_timer:this.time;this["_int_id_"+d]=setTimeout(function(){a._fade(f,d)},c)},stop:function(e){var c=(b.isFunction(e.before_close))?e.before_close:function(){};var f=(b.isFunction(e.after_close))?e.after_close:function(){};var d=b("#gritter-notice-wrapper");c(d);d.fadeOut(function(){b(this).remove();f()})},_str_replace:function(v,e,o,n){var k=0,h=0,t="",m="",g=0,q=0,l=[].concat(v),c=[].concat(e),u=o,d=c instanceof Array,p=u instanceof Array;u=[].concat(u);if(n){this.window[n]=0}for(k=0,g=u.length;k<g;k++){if(u[k]===""){continue}for(h=0,q=l.length;h<q;h++){t=u[k]+"";m=d?(c[h]!==undefined?c[h]:""):c[0];u[k]=(t).split(l[h]).join(m);if(n&&u[k]!==t){this.window[n]+=(t.length-u[k].length)/l[h].length}}}return p?u:u[0]},_verifyWrapper:function(){if(b("#gritter-notice-wrapper").length==0){b("body").append(this._tpl_wrap)}}}})($);
-        bttv.saveAs=bttv.saveAs||typeof navigator!=="undefined"&&navigator.msSaveOrOpenBlob&&navigator.msSaveOrOpenBlob.bind(navigator)||function(e){"use strict";var t=e.document,n=function(){return e.URL||e.webkitURL||e},r=e.URL||e.webkitURL||e,i=t.createElementNS("http://www.w3.org/1999/xhtml","a"),s=!e.externalHost&&"download"in i,o=function(n){var r=t.createEvent("MouseEvents");r.initMouseEvent("click",true,false,e,0,0,0,0,0,false,false,false,false,0,null);n.dispatchEvent(r)},u=e.webkitRequestFileSystem,a=e.requestFileSystem||u||e.mozRequestFileSystem,f=function(t){(e.setImmediate||e.setTimeout)(function(){throw t},0)},l="application/octet-stream",c=0,h=[],p=function(){var e=h.length;while(e--){var t=h[e];if(typeof t==="string"){r.revokeObjectURL(t)}else{t.remove()}}h.length=0},d=function(e,t,n){t=[].concat(t);var r=t.length;while(r--){var i=e["on"+t[r]];if(typeof i==="function"){try{i.call(e,n||e)}catch(s){f(s)}}}},v=function(r,o){var f=this,p=r.type,v=false,m,g,y=function(){var e=n().createObjectURL(r);h.push(e);return e},b=function(){d(f,"writestart progress write writeend".split(" "))},w=function(){if(v||!m){m=y(r)}if(g){g.location.href=m}else{window.open(m,"_blank")}f.readyState=f.DONE;b()},E=function(e){return function(){if(f.readyState!==f.DONE){return e.apply(this,arguments)}}},S={create:true,exclusive:false},x;f.readyState=f.INIT;if(!o){o="download"}if(s){m=y(r);t=e.document;i=t.createElementNS("http://www.w3.org/1999/xhtml","a");i.href=m;i.download=o;var T=t.createEvent("MouseEvents");T.initMouseEvent("click",true,false,e,0,0,0,0,0,false,false,false,false,0,null);i.dispatchEvent(T);f.readyState=f.DONE;b();return}if(e.chrome&&p&&p!==l){x=r.slice||r.webkitSlice;r=x.call(r,0,r.size,l);v=true}if(u&&o!=="download"){o+=".download"}if(p===l||u){g=e}if(!a){w();return}c+=r.size;a(e.TEMPORARY,c,E(function(e){e.root.getDirectory("saved",S,E(function(e){var t=function(){e.getFile(o,S,E(function(e){e.createWriter(E(function(t){t.onwriteend=function(t){g.location.href=e.toURL();h.push(e);f.readyState=f.DONE;d(f,"writeend",t)};t.onerror=function(){var e=t.error;if(e.code!==e.ABORT_ERR){w()}};"writestart progress write abort".split(" ").forEach(function(e){t["on"+e]=f["on"+e]});t.write(r);f.abort=function(){t.abort();f.readyState=f.DONE};f.readyState=f.WRITING}),w)}),w)};e.getFile(o,{create:false},E(function(e){e.remove();t()}),E(function(e){if(e.code===e.NOT_FOUND_ERR){t()}else{w()}}))}),w)}),w)},m=v.prototype,g=function(e,t){return new v(e,t)};m.abort=function(){var e=this;e.readyState=e.DONE;d(e,"abort")};m.readyState=m.INIT=0;m.WRITING=1;m.DONE=2;m.error=m.onwritestart=m.onprogress=m.onwrite=m.onabort=m.onerror=m.onwriteend=null;e.addEventListener("unload",p,false);return g}(typeof self!=="undefined"&&self||typeof window!=="undefined"&&window||this.content);if(typeof module!=="undefined")module.exports=bttv.saveAs;
         (function(e){e.fn.drags=function(t){t=e.extend({handle:"",cursor:"move",el:""},t);if(t.handle===""){var n=this}else{var n=this.find(t.handle)}return n.css("cursor",t.cursor).on("mousedown",function(n){if(t.handle===""){var r=e(this).addClass("bttv-draggable")}else{if(t.el===""){var r=e(this).addClass("active-handle").parent().addClass("bttv-draggable")}else{e(this).addClass("active-handle");var r=e(t.el).addClass("bttv-draggable")}}var i=r.css("z-index"),s=r.outerHeight(),o=r.outerWidth(),u=r.offset().top+s-n.pageY,a=r.offset().left+o-n.pageX;r.css("z-index",1e3).parents().on("mousemove",function(t){e(".bttv-draggable").offset({top:t.pageY+u-s,left:t.pageX+a-o}).on("mouseup",function(){e(this).removeClass("bttv-draggable").css("z-index",i)})});n.preventDefault()}).on("mouseup",function(){if(t.handle===""){e(this).removeClass("bttv-draggable")}else{e(this).removeClass("active-handle");e(t.el).removeClass("bttv-draggable")}})}})(jQuery);            (function(e){e.fn.konami=function(t){var n=[];var r={left:37,up:38,right:39,down:40,a:65,b:66};var i=e.extend({code:["up","up","down","down","left","right","left","right","b","a"],callback:function(){}},t);var s=i.code;var o=[];$.each(s,function(e){if(s[e]!==undefined&&r[s[e]]!==undefined){o.push(r[s[e]])}else if(s[e]!==undefined&&typeof s[e]=="number"){o.push(s[e])}});$(document).keyup(function(e){var t=e.keyCode?e.keyCode:e.charCode;n.push(t);if(n.toString().indexOf(o)>=0){n=[];i.callback($(this))}})}})($);
         $(window).konami({callback:function(){
             $("#bttvSettingsPanel .konami").each(function(){$(this).show()});
@@ -2468,29 +2252,12 @@ if(!window.Twitch) {
     return;
 }
 
-if(!window.localStorage) {
-    debug.log("window.localStorage not detected.");
-    return;
-} else {
-    var works = false;
-
-    try {
-        window.localStorage.setItem('bttv_test', 'it works!');
-        window.localStorage.removeItem('bttv_test');
-        works = true;
-    } catch(e) {
-        debug.log("window.localStorage detected, but unable to save.");
-    }
-
-    if(!works) return;
-}
-
 if(window.BTTVLOADED === true) return;
 debug.log("BTTV LOADED " + document.URL);
 BTTVLOADED = true;
 checkJquery();
 
-},{"./chat":2,"./features/auto-theatre-mode":13,"./features/beta-chat":14,"./features/brand":15,"./features/channel-reformat":17,"./features/check-broadcast-info":20,"./features/check-following":21,"./features/check-messages":22,"./features/clear-clutter":23,"./features/create-settings":24,"./features/darken-page":26,"./features/dashboard-channelinfo":27,"./features/directory-functions":28,"./features/emoticon-text-in-clipboard":30,"./features/flip-dashboard":31,"./features/format-dashboard":32,"./features/giveaway-compatibility":33,"./features/handle-background":34,"./features/handle-twitchchat-emotes":35,"./features/image-preview":37,"./features/split-chat":41,"./helpers/debug":43,"./keycodes":46,"./settings-list":48,"./socketio":49,"./templates/setting-switch":54,"./twitch-api":56,"./vars":57}],13:[function(require,module,exports){
+},{"./chat":2,"./features/auto-theatre-mode":13,"./features/beta-chat":14,"./features/brand":15,"./features/channel-reformat":17,"./features/check-broadcast-info":20,"./features/check-following":21,"./features/check-messages":22,"./features/clear-clutter":23,"./features/create-settings":24,"./features/darken-page":26,"./features/dashboard-channelinfo":27,"./features/directory-functions":28,"./features/emoticon-text-in-clipboard":30,"./features/flip-dashboard":31,"./features/format-dashboard":32,"./features/giveaway-compatibility":33,"./features/handle-background":34,"./features/handle-twitchchat-emotes":35,"./features/image-preview":37,"./features/split-chat":41,"./helpers/debug":43,"./keycodes":47,"./settings":50,"./socketio":51,"./storage":52,"./twitch-api":59,"./vars":60}],13:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 module.exports = function () {
@@ -2547,7 +2314,7 @@ module.exports = function () {
         $('body').append("<style>.ember-chat .chat-interface { height: 140px !important; } .ember-chat .chat-messages { bottom: 140px; } .ember-chat .chat-settings { bottom: 80px; } .ember-chat .emoticon-selector { bottom: 142px !important; }</style>");
     }
 }
-},{"../helpers/debug":43,"../vars":57}],15:[function(require,module,exports){
+},{"../helpers/debug":43,"../vars":60}],15:[function(require,module,exports){
 var debug = require('../helpers/debug');
 var betaChat = require('./beta-chat');
 
@@ -2672,7 +2439,7 @@ var handleResize = module.exports = function () {
 
     $("#channel_panels").masonry("reload");
 };
-},{"../../helpers/debug":43,"../../vars":57}],17:[function(require,module,exports){
+},{"../../helpers/debug":43,"../../vars":60}],17:[function(require,module,exports){
 var debug = require('../../helpers/debug'),
     keyCodes = require('../../keycodes'),
     vars = require('../../vars');
@@ -2831,7 +2598,7 @@ module.exports = function () {
         bttv.settings.save("chatWidth", $("#right_col").width());
     }
 }
-},{"../../helpers/debug":43,"../../keycodes":46,"../../vars":57,"./handle-resize":16,"./twitchcast":18}],18:[function(require,module,exports){
+},{"../../helpers/debug":43,"../../keycodes":47,"../../vars":60,"./handle-resize":16,"./twitchcast":18}],18:[function(require,module,exports){
 module.exports = function() {
     if($('.archive_info').length) return;
     
@@ -3007,7 +2774,7 @@ module.exports = function() {
     });
 };
 
-},{"../helpers/debug":43,"../helpers/element":44,"../templates/chat-settings":50,"../vars":57,"./darken-page":26,"./split-chat":41}],20:[function(require,module,exports){
+},{"../helpers/debug":43,"../helpers/element":44,"../templates/chat-settings":53,"../vars":60,"./darken-page":26,"./split-chat":41}],20:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 var checkBroadcastInfo = module.exports = function() {
@@ -3109,7 +2876,7 @@ var checkFollowing = module.exports = function () {
         setTimeout(checkFollowing, 60000);
     });
 }
-},{"../helpers/debug":43,"../vars":57}],22:[function(require,module,exports){
+},{"../helpers/debug":43,"../vars":60}],22:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars');
 
@@ -3200,7 +2967,7 @@ module.exports = function () {
     setInterval(checkOther, 30000);
     checkOther();
 }
-},{"../helpers/debug":43,"../vars":57}],23:[function(require,module,exports){
+},{"../helpers/debug":43,"../vars":60}],23:[function(require,module,exports){
 var debug = require('../helpers/debug'),
 	removeElement = require('../helpers/element').remove;
 
@@ -3284,7 +3051,7 @@ module.exports = function () {
         $(this).parent("li").addClass("active");
     });
 };
-},{"../helpers/debug":43,"../helpers/element":44,"../templates/settings-panel":55,"../vars":57,"./darken-page":26,"./split-chat":41}],25:[function(require,module,exports){
+},{"../helpers/debug":43,"../helpers/element":44,"../templates/settings-panel":58,"../vars":60,"./darken-page":26,"./split-chat":41}],25:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 function load(file, key){
@@ -3427,7 +3194,7 @@ module.exports = function dashboardChannelInfo() {
         setTimeout(dashboardChannelInfo, 60000);
     }
 };
-},{"../helpers/debug":43,"../vars":57}],28:[function(require,module,exports){
+},{"../helpers/debug":43,"../vars":60}],28:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars');
 
@@ -3450,15 +3217,26 @@ module.exports = function () {
         }
     });
 }
-},{"../helpers/debug":43,"../vars":57}],29:[function(require,module,exports){
+},{"../helpers/debug":43,"../vars":60}],29:[function(require,module,exports){
 var debug = require('../helpers/debug');
 var pollTemplate = require('../templates/embedded-poll');
+var chatHelpers = require('../chat/helpers');
 
 var frameTimeout = null;
 var lastPollId = null;
 
-module.exports = function (pollId) {
-    if(!bttv.settings.get('embeddedPolling')) return;
+module.exports = function (message) {
+    var strawpoll = /strawpoll\.me\/([0-9]+)/g.exec(message.message);
+
+    if(
+        !bttv.settings.get('embeddedPolling') ||
+        !strawpoll ||
+        !helpers.isModerator(message.from)
+    ) {
+        return;
+    }
+
+    var pollId = strawpoll[1];
 
     var $poll = $('#bttv-poll-contain');
     
@@ -3504,7 +3282,7 @@ module.exports = function (pollId) {
     lastPollId = pollId;
 }
 
-},{"../helpers/debug":43,"../templates/embedded-poll":52}],30:[function(require,module,exports){
+},{"../chat/helpers":5,"../helpers/debug":43,"../templates/embedded-poll":55}],30:[function(require,module,exports){
 // Add an event listener to the "copy" event that fires when text is copied to
 // the clipboard to convert any emoticons within the text selection to the
 // corresponding text that will create the emoticon. This allows copy/pasted
@@ -3891,7 +3669,7 @@ exports.highlighting = function (data) {
 
     return false;
 }
-},{"../features/highlight-feedback":36,"../helpers/regex":45,"../vars":57}],39:[function(require,module,exports){
+},{"../features/highlight-feedback":36,"../helpers/regex":46,"../vars":60}],39:[function(require,module,exports){
 module.exports = function(user, $event) {
     var template = bttv.chat.templates.moderationCard(user, $event.offset().top, $('.chat-line:last').offset().left);
     $('.ember-chat .moderation-card').remove();
@@ -4086,7 +3864,7 @@ module.exports = function () {
         generate(data);
     });
 };
-},{"../helpers/debug":43,"../vars":57}],41:[function(require,module,exports){
+},{"../helpers/debug":43,"../vars":60}],41:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 module.exports = function () {
@@ -4258,6 +4036,260 @@ exports.display = function (e) {
     });
 };
 },{}],45:[function(require,module,exports){
+/* FileSaver.js
+ * A saveAs() FileSaver implementation.
+ * 2015-05-07.2
+ *
+ * By Eli Grey, http://eligrey.com
+ * License: X11/MIT
+ *   See https://github.com/eligrey/FileSaver.js/blob/master/LICENSE.md
+ */
+
+/*global self */
+/*jslint bitwise: true, indent: 4, laxbreak: true, laxcomma: true, smarttabs: true, plusplus: true */
+
+/*! @source http://purl.eligrey.com/github/FileSaver.js/blob/master/FileSaver.js */
+
+var saveAs = saveAs || (function(view) {
+	"use strict";
+	// IE <10 is explicitly unsupported
+	if (typeof navigator !== "undefined" && /MSIE [1-9]\./.test(navigator.userAgent)) {
+		return;
+	}
+	var
+		  doc = view.document
+		  // only get URL when necessary in case Blob.js hasn't overridden it yet
+		, get_URL = function() {
+			return view.URL || view.webkitURL || view;
+		}
+		, save_link = doc.createElementNS("http://www.w3.org/1999/xhtml", "a")
+		, can_use_save_link = "download" in save_link
+		, click = function(node) {
+			var event = doc.createEvent("MouseEvents");
+			event.initMouseEvent(
+				"click", true, false, view, 0, 0, 0, 0, 0
+				, false, false, false, false, 0, null
+			);
+			node.dispatchEvent(event);
+		}
+		, webkit_req_fs = view.webkitRequestFileSystem
+		, req_fs = view.requestFileSystem || webkit_req_fs || view.mozRequestFileSystem
+		, throw_outside = function(ex) {
+			(view.setImmediate || view.setTimeout)(function() {
+				throw ex;
+			}, 0);
+		}
+		, force_saveable_type = "application/octet-stream"
+		, fs_min_size = 0
+		// See https://code.google.com/p/chromium/issues/detail?id=375297#c7 and
+		// https://github.com/eligrey/FileSaver.js/commit/485930a#commitcomment-8768047
+		// for the reasoning behind the timeout and revocation flow
+		, arbitrary_revoke_timeout = 500 // in ms
+		, revoke = function(file) {
+			var revoker = function() {
+				if (typeof file === "string") { // file is an object URL
+					get_URL().revokeObjectURL(file);
+				} else { // file is a File
+					file.remove();
+				}
+			};
+			if (view.chrome) {
+				revoker();
+			} else {
+				setTimeout(revoker, arbitrary_revoke_timeout);
+			}
+		}
+		, dispatch = function(filesaver, event_types, event) {
+			event_types = [].concat(event_types);
+			var i = event_types.length;
+			while (i--) {
+				var listener = filesaver["on" + event_types[i]];
+				if (typeof listener === "function") {
+					try {
+						listener.call(filesaver, event || filesaver);
+					} catch (ex) {
+						throw_outside(ex);
+					}
+				}
+			}
+		}
+		, auto_bom = function(blob) {
+			// prepend BOM for UTF-8 XML and text/* types (including HTML)
+			if (/^\s*(?:text\/\S*|application\/xml|\S*\/\S*\+xml)\s*;.*charset\s*=\s*utf-8/i.test(blob.type)) {
+				return new Blob(["\ufeff", blob], {type: blob.type});
+			}
+			return blob;
+		}
+		, FileSaver = function(blob, name) {
+			blob = auto_bom(blob);
+			// First try a.download, then web filesystem, then object URLs
+			var
+				  filesaver = this
+				, type = blob.type
+				, blob_changed = false
+				, object_url
+				, target_view
+				, dispatch_all = function() {
+					dispatch(filesaver, "writestart progress write writeend".split(" "));
+				}
+				// on any filesys errors revert to saving with object URLs
+				, fs_error = function() {
+					// don't create more object URLs than needed
+					if (blob_changed || !object_url) {
+						object_url = get_URL().createObjectURL(blob);
+					}
+					if (target_view) {
+						target_view.location.href = object_url;
+					} else {
+						var new_tab = view.open(object_url, "_blank");
+						if (new_tab == undefined && typeof safari !== "undefined") {
+							//Apple do not allow window.open, see http://bit.ly/1kZffRI
+							view.location.href = object_url
+						}
+					}
+					filesaver.readyState = filesaver.DONE;
+					dispatch_all();
+					revoke(object_url);
+				}
+				, abortable = function(func) {
+					return function() {
+						if (filesaver.readyState !== filesaver.DONE) {
+							return func.apply(this, arguments);
+						}
+					};
+				}
+				, create_if_not_found = {create: true, exclusive: false}
+				, slice
+			;
+			filesaver.readyState = filesaver.INIT;
+			if (!name) {
+				name = "download";
+			}
+			if (can_use_save_link) {
+				object_url = get_URL().createObjectURL(blob);
+				save_link.href = object_url;
+				save_link.download = name;
+				click(save_link);
+				filesaver.readyState = filesaver.DONE;
+				dispatch_all();
+				revoke(object_url);
+				return;
+			}
+			// Object and web filesystem URLs have a problem saving in Google Chrome when
+			// viewed in a tab, so I force save with application/octet-stream
+			// http://code.google.com/p/chromium/issues/detail?id=91158
+			// Update: Google errantly closed 91158, I submitted it again:
+			// https://code.google.com/p/chromium/issues/detail?id=389642
+			if (view.chrome && type && type !== force_saveable_type) {
+				slice = blob.slice || blob.webkitSlice;
+				blob = slice.call(blob, 0, blob.size, force_saveable_type);
+				blob_changed = true;
+			}
+			// Since I can't be sure that the guessed media type will trigger a download
+			// in WebKit, I append .download to the filename.
+			// https://bugs.webkit.org/show_bug.cgi?id=65440
+			if (webkit_req_fs && name !== "download") {
+				name += ".download";
+			}
+			if (type === force_saveable_type || webkit_req_fs) {
+				target_view = view;
+			}
+			if (!req_fs) {
+				fs_error();
+				return;
+			}
+			fs_min_size += blob.size;
+			req_fs(view.TEMPORARY, fs_min_size, abortable(function(fs) {
+				fs.root.getDirectory("saved", create_if_not_found, abortable(function(dir) {
+					var save = function() {
+						dir.getFile(name, create_if_not_found, abortable(function(file) {
+							file.createWriter(abortable(function(writer) {
+								writer.onwriteend = function(event) {
+									target_view.location.href = file.toURL();
+									filesaver.readyState = filesaver.DONE;
+									dispatch(filesaver, "writeend", event);
+									revoke(file);
+								};
+								writer.onerror = function() {
+									var error = writer.error;
+									if (error.code !== error.ABORT_ERR) {
+										fs_error();
+									}
+								};
+								"writestart progress write abort".split(" ").forEach(function(event) {
+									writer["on" + event] = filesaver["on" + event];
+								});
+								writer.write(blob);
+								filesaver.abort = function() {
+									writer.abort();
+									filesaver.readyState = filesaver.DONE;
+								};
+								filesaver.readyState = filesaver.WRITING;
+							}), fs_error);
+						}), fs_error);
+					};
+					dir.getFile(name, {create: false}, abortable(function(file) {
+						// delete file if it already exists
+						file.remove();
+						save();
+					}), abortable(function(ex) {
+						if (ex.code === ex.NOT_FOUND_ERR) {
+							save();
+						} else {
+							fs_error();
+						}
+					}));
+				}), fs_error);
+			}), fs_error);
+		}
+		, FS_proto = FileSaver.prototype
+		, saveAs = function(blob, name) {
+			return new FileSaver(blob, name);
+		}
+	;
+	// IE 10+ (native saveAs)
+	if (typeof navigator !== "undefined" && navigator.msSaveOrOpenBlob) {
+		return function(blob, name) {
+			return navigator.msSaveOrOpenBlob(auto_bom(blob), name);
+		};
+	}
+
+	FS_proto.abort = function() {
+		var filesaver = this;
+		filesaver.readyState = filesaver.DONE;
+		dispatch(filesaver, "abort");
+	};
+	FS_proto.readyState = FS_proto.INIT = 0;
+	FS_proto.WRITING = 1;
+	FS_proto.DONE = 2;
+
+	FS_proto.error =
+	FS_proto.onwritestart =
+	FS_proto.onprogress =
+	FS_proto.onwrite =
+	FS_proto.onabort =
+	FS_proto.onerror =
+	FS_proto.onwriteend =
+		null;
+
+	return saveAs;
+}(
+	   typeof self !== "undefined" && self
+	|| typeof window !== "undefined" && window
+	|| this.content
+));
+// `self` is undefined in Firefox for Android content script context
+// while `this` is nsIContentFrameMessageManager
+// with an attribute `content` that corresponds to the window
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports.saveAs = saveAs;
+} else if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) {
+  define([], function() {
+    return saveAs;
+  });
+}
+},{}],46:[function(require,module,exports){
 exports.escapeRegExp = function (text) {
     // Escapes an input to make it usable for regexes
     return text.replace(/[-[\]{}()+?.,\\^$|#\s]/g, "\\$&");
@@ -4280,7 +4312,7 @@ exports.getEmoteFromRegEx = function(regex) {
         .replace(/^\\b|\\b$/g, '') // remove boundaries
         .replace(/\\/g, ''); // unescape
 }
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 module.exports = {
     'LeftClick': 1,
     'Backspace': 8,
@@ -4371,7 +4403,7 @@ module.exports = {
     'Slash': 191,
     'Backslash': 220
 }
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 module.exports = function (data) {
     return {
         //Developers and Supporters
@@ -4437,7 +4469,7 @@ module.exports = function (data) {
         "ackleyman": { mod: true, tagType: "orange", tagName: "Ack" }
     };
 };
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 /** BTTV :
  * cssBlueButtons
  * handleTwitchChatEmotesScript
@@ -4866,7 +4898,177 @@ module.exports = [
     }
 ];
 
-},{"./features/auto-theatre-mode":13,"./features/beta-chat":14,"./features/channel-reformat":17,"./features/css-loader":25,"./features/darken-page":26,"./features/flip-dashboard":31,"./features/handle-background":34,"./features/image-preview":37,"./features/split-chat":41,"./helpers/element":44}],49:[function(require,module,exports){
+},{"./features/auto-theatre-mode":13,"./features/beta-chat":14,"./features/channel-reformat":17,"./features/css-loader":25,"./features/darken-page":26,"./features/flip-dashboard":31,"./features/handle-background":34,"./features/image-preview":37,"./features/split-chat":41,"./helpers/element":44}],50:[function(require,module,exports){
+var saveAs = require('./helpers/filesaver').saveAs;
+
+function Settings() {
+    this._settings = {};
+    this.prefix = 'bttv_';
+}
+
+Settings.prototype._parseSetting = function(value) {
+    if(value == null) {
+        return null;
+    } else if(value === "true") {
+        return true;
+    } else if(value === "false") {
+        return false;
+    } else if(value === "") {
+        return "";
+    } else if(isNaN(value) === false) {
+        return parseInt(value);
+    } else {
+        return value;
+    }
+}
+
+Settings.prototype.load = function() {
+    var _self = this;
+    var settingsList = require('./settings-list');
+
+    var settingTemplate = require('./templates/setting-switch');
+
+    var featureRequests = ' \
+        <div class="option"> \
+            Think something is missing here? Send in a <a href="https://github.com/night/BetterTTV/issues/new?labels=enhancement" target="_blank">feature request</a>! \
+        </div> \
+    ';
+
+    settingsList.forEach(function(setting) {
+        _self._settings[setting.storageKey] = setting;
+        _self._settings[setting.storageKey].value = _self._parseSetting(bttv.storage.get(_self.prefix + setting.storageKey)) || setting.default;
+
+        if(setting.name) {
+            var settingHTML = settingTemplate(setting);
+            $('#bttvSettings .options-list').append(settingHTML);
+            _self._settings[setting.storageKey] === true ? $('#'+setting.storageKey+'True').prop('checked', true) : $('#'+setting.storageKey+'False').prop('checked', true);
+        }
+
+        if(setting.hidden) {
+            $("#bttvSettingsPanel .bttvOption-"+setting.storageKey).css('display','none');
+            $("#bttvSettingsPanel .bttvOption-"+setting.storageKey).addClass('konami');
+        }
+
+        if(setting.load) {
+            setting.load();
+        }
+    });
+
+    $('#bttvSettings .options-list').append(featureRequests);
+
+    $('.option input:radio').change(function (e) {
+        _self.set(e.target.name, _self._parseSetting(e.target.value));
+    });
+
+    var notifications = bttv.storage.getObject("bttvNotifications");
+    for(var notification in notifications) {
+        if(notifications.hasOwnProperty(notification)) {
+            var expireObj = notifications[notification];
+            if(expireObj.expire < Date.now()) {
+                bttv.storage.spliceObject("bttvNotifications", notification);
+            }
+        }
+    }
+
+    var receiveMessage = function(e) {
+        if(e.origin !== window.location.protocol+'//'+window.location.host) return;
+        if(e.data) {
+            if(typeof e.data !== 'string') return;
+
+            var data = e.data.split(' ');
+            if(data[0] === "bttv_setting") {
+                var key = data[1],
+                    value = _self._parseSetting(data[2]);
+
+                _self.set(key, value);
+            }
+        }
+    }
+    window.addEventListener("message", receiveMessage, false);
+}
+
+Settings.prototype.backup = function() {
+    var download = {};
+    var _self = this;
+
+    Object.keys(this._settings).forEach(function(setting) {
+        var val = _self._settings[setting].value;
+        download[setting] = val;
+    });
+
+    download = new Blob([JSON.stringify(download)], {
+        type: "text/plain;charset=utf-8;"
+    });
+
+    saveAs(download, "bttv_settings.backup");
+}
+
+Settings.prototype.import = function(input) {
+    var getDataUrlFromUpload = function(input, callback) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            callback(e.target.result);
+        }
+
+        reader.readAsText(input.files[0]);
+    }
+
+    var isJson = function(string) {
+        try {
+            JSON.parse(string);
+        } catch (e) {
+            return false;
+        }
+        return true;
+    }
+
+    getDataUrlFromUpload(input, function(data) {
+        if(isJson(data)) {
+            var settings = JSON.parse(data),
+                count = 0;
+
+            Object.keys(settings).forEach(function(setting) {
+                var val = settings[setting].value;
+                bttv.settings.set(setting, val);
+            });
+
+            bttv.notify("BetterTTV imported " + count + " settings, and will now refresh in a few seconds.");
+
+            setTimeout(function() {
+                window.location.reload();
+            }, 3000);
+        } else {
+            bttv.notify("You uploaded an invalid file.");
+        }
+    });
+}
+
+Settings.prototype.get = function(setting) {
+    return (setting in this._settings) ? this._settings[setting].value : null;
+}
+
+Settings.prototype.set = function(setting, value) {
+    if(/\?bttvSettings=true/.test(window.location)) {
+        window.opener.postMessage('bttv_setting '+setting+' '+value, window.location.protocol+'//'+window.location.host);
+    } else {
+        if(window.__bttvga) __bttvga('send', 'event', 'BTTV', 'Change Setting: '+setting+'='+value);
+
+        if(window !== window.top) window.parent.postMessage('bttv_setting '+setting+' '+value, window.location.protocol+'//'+window.location.host);
+
+        this._settings[setting].value = value;
+
+        bttv.storage.put(this.prefix + setting, value);
+
+        if(this._settings[setting].toggle) this._settings[setting].toggle(value);
+    }
+}
+
+Setting.prototype.popup = function() {
+    var settingsUrl = window.location.protocol+'//'+window.location.host+'/settings?bttvSettings=true';
+    window.open(settingsUrl, 'BetterTTV Settings', 'width=800,height=500,top=500,left=800,scrollbars=no,location=no,directories=no,status=no,menubar=no,toolbar=no,resizable=no');
+}
+},{"./helpers/filesaver":45,"./settings-list":49,"./templates/setting-switch":57}],51:[function(require,module,exports){
 var io = require('socket.io-client');
 var debug = require('./helpers/debug');
 var vars = require('./vars');
@@ -4966,7 +5168,81 @@ SocketClient.prototype.giveEmoteTip = function(channel) {
 }
 
 module.exports = SocketClient;
-},{"./helpers/debug":43,"./vars":57,"socket.io-client":59}],50:[function(require,module,exports){
+},{"./helpers/debug":43,"./vars":60,"socket.io-client":63}],52:[function(require,module,exports){
+var cookies = require('cookies-js');
+var debug = require('./helpers/debug');
+
+function Storage() {
+    this._localStorageSupport = true;
+
+    if(!window.localStorage) {
+        debug.log("window.localStorage not detected. Defaulting to cookies.");
+        this._localStorageSupport = false;
+    } else {
+        try {
+            window.localStorage.setItem('bttv_test', 'it works!');
+            window.localStorage.removeItem('bttv_test');
+        } catch(e) {
+            debug.log("window.localStorage detected, but unable to save. Defaulting to cookies.");
+            this._localStorageSupport = false;
+        }
+    }
+};
+
+Storage.prototype.exists = function(item) {
+    return (this.get(item) ? true : false);
+}
+
+Storage.prototype.get = function(item) {
+    return this._localStorageSupport ? window.localStorage.getItem(item) : cookies.get(item);
+}
+
+Storage.prototype.getArray = function(item) {
+    if(!this.exists(item)) this.putArray(item, []);
+    return JSON.parse(this.get(item));
+}
+
+Storage.prototype.getObject = function(item) {
+    if(!this.exists(item)) this.putObject(item, {});
+    return JSON.parse(this.get(item));
+}
+
+Storage.prototype.put = function(item, value) {
+    this._localStorageSupport ? window.localStorage.setItem(item, value) : cookies.set(item, value, { expires: Infinity });
+}
+
+Storage.prototype.pushArray = function(item, value) {
+    var i = this.getArray(item);
+    i.push(value);
+    this.putArray(item, i);
+}
+
+Storage.prototype.pushObject = function(item, key, value) {
+    var i = this.getObject(item);
+    i[key] = value;
+    this.putObject(item, i);
+}
+
+Storage.prototype.putArray = function(item, value) {
+    this.put(item, JSON.stringify(value));
+}
+
+Storage.prototype.putObject = function(item, value) {
+    this.put(item, JSON.stringify(value));
+}
+
+Storage.prototype.spliceArray = function(item, value) {
+    var i = this.getArray(item);
+    if(i.indexOf(value) !== -1) i.splice(i.indexOf(value), 1);
+    this.putArray(item, i);
+}
+
+Storage.prototype.spliceObject = function(item, key) {
+    var i = this.getObject(item);
+    delete i[key];
+    this.putObject(item, i);
+}
+},{"./helpers/debug":43,"cookies-js":61}],53:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -4992,7 +5268,7 @@ buf.push("</a></p>");
 }
 buf.push("<p><input type=\"checkbox\"" + (jade.attr("checked", bttv.settings.get("darkenedMode"), true, false)) + " class=\"toggleDarkenTTV\"/>Dark Mode</p><p><a href=\"#\" class=\"g18_gear-00000080 setBlacklistKeywords\">Set Blacklist Keywords</a></p><p><a href=\"#\" class=\"g18_gear-00000080 setHighlightKeywords\">Set Highlight Keywords</a></p><p><a href=\"#\" class=\"g18_gear-00000080 setScrollbackAmount\">Set Scrollback Amount</a></p><p><a href=\"#\" class=\"g18_trash-00000080 clearChat\">Clear My Chat</a></p><p><a href=\"#\" style=\"display: block;margin-top: 8px;text-align: center;\" class=\"button-simple dark openSettings\">BetterTTV Settings</a></p></div>");}.call(this,"$" in locals_for_with?locals_for_with.$:typeof $!=="undefined"?$:undefined,"window" in locals_for_with?locals_for_with.window:typeof window!=="undefined"?window:undefined,"bttv" in locals_for_with?locals_for_with.bttv:typeof bttv!=="undefined"?bttv:undefined));;return buf.join("");
 };module.exports=template;
-},{}],51:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -5025,7 +5301,7 @@ buf.push("<div" + (jade.cls([highlighted], [true])) + "><div class=\"suggestion\
 
 buf.push("</div>");}.call(this,"suggestions" in locals_for_with?locals_for_with.suggestions:typeof suggestions!=="undefined"?suggestions:undefined,"index" in locals_for_with?locals_for_with.index:typeof index!=="undefined"?index:undefined));;return buf.join("");
 };module.exports=template;
-},{}],52:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -5033,7 +5309,7 @@ var jade_interp;
 ;var locals_for_with = (locals || {});(function (pollId) {
 buf.push("<div id=\"bttv-poll-contain\"><div class=\"title\">New poll available! <span style=\"text-decoration: underline;\">Vote now!</span></div><div class=\"close\"><svg height=\"16px\" version=\"1.1\" viewbox=\"0 0 16 16\" width=\"16px\" x=\"0px\" y=\"0px\" class=\"svg-close\"><path clip-rule=\"evenodd\" d=\"M13.657,3.757L9.414,8l4.243,4.242l-1.415,1.415L8,9.414l-4.243,4.243l-1.414-1.415L6.586,8L2.343,3.757l1.414-1.414L8,6.586l4.242-4.243L13.657,3.757z\" fill-rule=\"evenodd\"></path></svg></div><iframe" + (jade.attr("src", 'https://strawpoll.me/embed_2/' + (pollId) + '', true, false)) + " class=\"frame\"></iframe></div>");}.call(this,"pollId" in locals_for_with?locals_for_with.pollId:typeof pollId!=="undefined"?pollId:undefined));;return buf.join("");
 };module.exports=template;
-},{}],53:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -5066,7 +5342,7 @@ buf.push("</div>");
 }
 buf.push("</div>");}.call(this,"require" in locals_for_with?locals_for_with.require:typeof require!=="undefined"?require:undefined,"user" in locals_for_with?locals_for_with.user:typeof user!=="undefined"?user:undefined,"top" in locals_for_with?locals_for_with.top:typeof top!=="undefined"?top:undefined,"left" in locals_for_with?locals_for_with.left:typeof left!=="undefined"?left:undefined,"Twitch" in locals_for_with?locals_for_with.Twitch:typeof Twitch!=="undefined"?Twitch:undefined,"bttv" in locals_for_with?locals_for_with.bttv:typeof bttv!=="undefined"?bttv:undefined));;return buf.join("");
 };module.exports=template;
-},{"../vars":57}],54:[function(require,module,exports){
+},{"../vars":60}],57:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -5074,7 +5350,7 @@ var jade_interp;
 ;var locals_for_with = (locals || {});(function (storageKey, name, description) {
 buf.push("<div" + (jade.cls(['option',"bttvOption-" + (storageKey) + ""], [null,true])) + "><span style=\"font-weight:bold;font-size:14px;color:#D3D3D3;\">" + (jade.escape(null == (jade_interp = name) ? "" : jade_interp)) + "</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;" + (jade.escape(null == (jade_interp = description) ? "" : jade_interp)) + "<div class=\"bttv-switch\"><input type=\"radio\"" + (jade.attr("name", storageKey, true, false)) + " value=\"false\"" + (jade.attr("id", "" + (storageKey) + "False", true, false)) + " class=\"bttv-switch-input bttv-switch-off\"/><label" + (jade.attr("for", "" + (storageKey) + "False", true, false)) + " class=\"bttv-switch-label bttv-switch-label-off\">Off</label><input type=\"radio\"" + (jade.attr("name", storageKey, true, false)) + " value=\"true\"" + (jade.attr("id", "" + (storageKey) + "True", true, false)) + " class=\"bttv-switch-input\"/><label" + (jade.attr("for", "" + (storageKey) + "True", true, false)) + " class=\"bttv-switch-label bttv-switch-label-on\">On</label><span class=\"bttv-switch-selection\"></span></div></div>");}.call(this,"storageKey" in locals_for_with?locals_for_with.storageKey:typeof storageKey!=="undefined"?storageKey:undefined,"name" in locals_for_with?locals_for_with.name:typeof name!=="undefined"?name:undefined,"description" in locals_for_with?locals_for_with.description:typeof description!=="undefined"?description:undefined));;return buf.join("");
 };module.exports=template;
-},{}],55:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -5082,7 +5358,7 @@ var jade_interp;
 ;var locals_for_with = (locals || {});(function (bttv) {
 buf.push("<div id=\"header\"><span id=\"logo\"><img height=\"45px\" src=\"https://cdn.betterttv.net/style/logos/settings_logo.png\"/></span><ul class=\"nav\"><li><a href=\"#bttvAbout\">About</a></li><li class=\"active\"><a href=\"#bttvSettings\">Settings</a></li><li><a href=\"#bttvChannel\" target=\"_blank\">Channel</a></li><li><a href=\"#bttvChangelog\">Changelog</a></li><li><a href=\"#bttvPrivacy\">Privacy Policy</a></li><li><a href=\"#bttvBackup\">Backup/Import</a></li></ul><span id=\"close\">&times;</span></div><div id=\"bttvSettings\" style=\"height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content options-list\"><h2 class=\"option\">Here you can manage the various BetterTTV options. Click On or Off to toggle settings.</h2></div></div><div id=\"bttvAbout\" style=\"display:none;\"><div class=\"aboutHalf\"><img src=\"https://cdn.betterttv.net/style/logos/mascot.png\" class=\"bttvAboutIcon\"/><h1>BetterTTV v " + (jade.escape((jade_interp = bttv.info.versionString()) == null ? '' : jade_interp)) + "</h1><h2>from your friends at <a href=\"https://www.nightdev.com\" target=\"_blank\">NightDev</a></h2><br/></div><div class=\"aboutHalf\"><h1 style=\"margin-top: 100px;\">Think this addon is awesome?</h1><br/><br/><h2><a target=\"_blank\" href=\"https://chrome.google.com/webstore/detail/ajopnjidmegmdimjlfnijceegpefgped\">Drop a Review on the Chrome Webstore</a></h2><br/><h2>or maybe</h2><br/><h2><a target=\"_blank\" href=\"https://streamtip.com/t/night\">Support the Developer</a></h2><br/></div></div><div id=\"bttvChannel\" style=\"display:none;\"><iframe src=\"https://manage.betterttv.net\" frameborder=\"0\" width=\"100%\" height=\"425\"></iframe></div><div id=\"bttvPrivacy\" style=\"display:none;height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content\"></div></div><div id=\"bttvChangelog\" style=\"display:none;height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content\"></div></div><div id=\"bttvBackup\" style=\"display:none;height:425px;padding:25px;\"><h1 style=\"padding-bottom:15px;\">Backup Settings</h1><button id=\"bttvBackupButton\" class=\"primary_button\"><span>Download</span></button><h1 style=\"padding-top:25px;padding-bottom:15px;\">Import Settings</h1><input id=\"bttvImportInput\" type=\"file\" style=\"height: 25px;width: 250px;\"/></div><div id=\"footer\"><span>BetterTTV &copy; <a href=\"https://www.nightdev.com\" target=\"_blank\">NightDev, LLC</a> 2015</span><span style=\"float:right;\"><a href=\"https://community.nightdev.com/c/betterttv\" target=\"_blank\">Get Support</a> | <a href=\"https://github.com/night/BetterTTV/issues/new?labels=bug\" target=\"_blank\">Report a Bug</a> | <a href=\"https://streamtip.com/t/night\" target=\"_blank\">Support the Developer</a></span></div>");}.call(this,"bttv" in locals_for_with?locals_for_with.bttv:typeof bttv!=="undefined"?bttv:undefined));;return buf.join("");
 };module.exports=template;
-},{}],56:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 module.exports = {
     _ref: null,
     _headers: function(e, t) {
@@ -5127,7 +5403,7 @@ module.exports = {
         return this._call('del', url);
     }
 };
-},{}],57:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 module.exports = {
     userData: {
         isLoggedIn: window.Twitch ? Twitch.user.isLoggedIn() : false,
@@ -5137,7 +5413,169 @@ module.exports = {
     liveChannels: [],
     blackChat: false
 };
-},{}],58:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
+/*
+ * Cookies.js - 1.2.1
+ * https://github.com/ScottHamper/Cookies
+ *
+ * This is free and unencumbered software released into the public domain.
+ */
+(function (global, undefined) {
+    'use strict';
+
+    var factory = function (window) {
+        if (typeof window.document !== 'object') {
+            throw new Error('Cookies.js requires a `window` with a `document` object');
+        }
+
+        var Cookies = function (key, value, options) {
+            return arguments.length === 1 ?
+                Cookies.get(key) : Cookies.set(key, value, options);
+        };
+
+        // Allows for setter injection in unit tests
+        Cookies._document = window.document;
+
+        // Used to ensure cookie keys do not collide with
+        // built-in `Object` properties
+        Cookies._cacheKeyPrefix = 'cookey.'; // Hurr hurr, :)
+        
+        Cookies._maxExpireDate = new Date('Fri, 31 Dec 9999 23:59:59 UTC');
+
+        Cookies.defaults = {
+            path: '/',
+            secure: false
+        };
+
+        Cookies.get = function (key) {
+            if (Cookies._cachedDocumentCookie !== Cookies._document.cookie) {
+                Cookies._renewCache();
+            }
+
+            return Cookies._cache[Cookies._cacheKeyPrefix + key];
+        };
+
+        Cookies.set = function (key, value, options) {
+            options = Cookies._getExtendedOptions(options);
+            options.expires = Cookies._getExpiresDate(value === undefined ? -1 : options.expires);
+
+            Cookies._document.cookie = Cookies._generateCookieString(key, value, options);
+
+            return Cookies;
+        };
+
+        Cookies.expire = function (key, options) {
+            return Cookies.set(key, undefined, options);
+        };
+
+        Cookies._getExtendedOptions = function (options) {
+            return {
+                path: options && options.path || Cookies.defaults.path,
+                domain: options && options.domain || Cookies.defaults.domain,
+                expires: options && options.expires || Cookies.defaults.expires,
+                secure: options && options.secure !== undefined ?  options.secure : Cookies.defaults.secure
+            };
+        };
+
+        Cookies._isValidDate = function (date) {
+            return Object.prototype.toString.call(date) === '[object Date]' && !isNaN(date.getTime());
+        };
+
+        Cookies._getExpiresDate = function (expires, now) {
+            now = now || new Date();
+
+            if (typeof expires === 'number') {
+                expires = expires === Infinity ?
+                    Cookies._maxExpireDate : new Date(now.getTime() + expires * 1000);
+            } else if (typeof expires === 'string') {
+                expires = new Date(expires);
+            }
+
+            if (expires && !Cookies._isValidDate(expires)) {
+                throw new Error('`expires` parameter cannot be converted to a valid Date instance');
+            }
+
+            return expires;
+        };
+
+        Cookies._generateCookieString = function (key, value, options) {
+            key = key.replace(/[^#$&+\^`|]/g, encodeURIComponent);
+            key = key.replace(/\(/g, '%28').replace(/\)/g, '%29');
+            value = (value + '').replace(/[^!#$&-+\--:<-\[\]-~]/g, encodeURIComponent);
+            options = options || {};
+
+            var cookieString = key + '=' + value;
+            cookieString += options.path ? ';path=' + options.path : '';
+            cookieString += options.domain ? ';domain=' + options.domain : '';
+            cookieString += options.expires ? ';expires=' + options.expires.toUTCString() : '';
+            cookieString += options.secure ? ';secure' : '';
+
+            return cookieString;
+        };
+
+        Cookies._getCacheFromString = function (documentCookie) {
+            var cookieCache = {};
+            var cookiesArray = documentCookie ? documentCookie.split('; ') : [];
+
+            for (var i = 0; i < cookiesArray.length; i++) {
+                var cookieKvp = Cookies._getKeyValuePairFromCookieString(cookiesArray[i]);
+
+                if (cookieCache[Cookies._cacheKeyPrefix + cookieKvp.key] === undefined) {
+                    cookieCache[Cookies._cacheKeyPrefix + cookieKvp.key] = cookieKvp.value;
+                }
+            }
+
+            return cookieCache;
+        };
+
+        Cookies._getKeyValuePairFromCookieString = function (cookieString) {
+            // "=" is a valid character in a cookie value according to RFC6265, so cannot `split('=')`
+            var separatorIndex = cookieString.indexOf('=');
+
+            // IE omits the "=" when the cookie value is an empty string
+            separatorIndex = separatorIndex < 0 ? cookieString.length : separatorIndex;
+
+            return {
+                key: decodeURIComponent(cookieString.substr(0, separatorIndex)),
+                value: decodeURIComponent(cookieString.substr(separatorIndex + 1))
+            };
+        };
+
+        Cookies._renewCache = function () {
+            Cookies._cache = Cookies._getCacheFromString(Cookies._document.cookie);
+            Cookies._cachedDocumentCookie = Cookies._document.cookie;
+        };
+
+        Cookies._areEnabled = function () {
+            var testKey = 'cookies.js';
+            var areEnabled = Cookies.set(testKey, 1).get(testKey) === '1';
+            Cookies.expire(testKey);
+            return areEnabled;
+        };
+
+        Cookies.enabled = Cookies._areEnabled();
+
+        return Cookies;
+    };
+
+    var cookiesExport = typeof global.document === 'object' ? factory(global) : factory;
+
+    // AMD support
+    if (typeof define === 'function' && define.amd) {
+        define(function () { return cookiesExport; });
+    // CommonJS/Node.js support
+    } else if (typeof exports === 'object') {
+        // Support Node.js specific `module.exports` (which can be a function)
+        if (typeof module === 'object' && typeof module.exports === 'object') {
+            exports = module.exports = cookiesExport;
+        }
+        // But always support CommonJS module 1.1.1 spec (`exports` cannot be a function)
+        exports.Cookies = cookiesExport;
+    } else {
+        global.Cookies = cookiesExport;
+    }
+})(typeof window === 'undefined' ? this : window);
+},{}],62:[function(require,module,exports){
 (function (global){
 /*! http://mths.be/punycode v1.2.4 by @mathias */
 ;(function(root) {
@@ -5648,11 +6086,11 @@ module.exports = {
 }(this));
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],59:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 
 module.exports = require('./lib/');
 
-},{"./lib/":60}],60:[function(require,module,exports){
+},{"./lib/":64}],64:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -5741,7 +6179,7 @@ exports.connect = lookup;
 exports.Manager = require('./manager');
 exports.Socket = require('./socket');
 
-},{"./manager":61,"./socket":63,"./url":64,"debug":68,"socket.io-parser":104}],61:[function(require,module,exports){
+},{"./manager":65,"./socket":67,"./url":68,"debug":72,"socket.io-parser":108}],65:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -6246,7 +6684,7 @@ Manager.prototype.onreconnect = function(){
   this.emitAll('reconnect', attempt);
 };
 
-},{"./on":62,"./socket":63,"./url":64,"backo2":65,"component-bind":66,"component-emitter":67,"debug":68,"engine.io-client":69,"indexof":100,"object-component":101,"socket.io-parser":104}],62:[function(require,module,exports){
+},{"./on":66,"./socket":67,"./url":68,"backo2":69,"component-bind":70,"component-emitter":71,"debug":72,"engine.io-client":73,"indexof":104,"object-component":105,"socket.io-parser":108}],66:[function(require,module,exports){
 
 /**
  * Module exports.
@@ -6272,7 +6710,7 @@ function on(obj, ev, fn) {
   };
 }
 
-},{}],63:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -6659,7 +7097,7 @@ Socket.prototype.disconnect = function(){
   return this;
 };
 
-},{"./on":62,"component-bind":66,"component-emitter":67,"debug":68,"has-binary":98,"socket.io-parser":104,"to-array":108}],64:[function(require,module,exports){
+},{"./on":66,"component-bind":70,"component-emitter":71,"debug":72,"has-binary":102,"socket.io-parser":108,"to-array":112}],68:[function(require,module,exports){
 (function (global){
 
 /**
@@ -6736,7 +7174,7 @@ function url(uri, loc){
 }
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"debug":68,"parseuri":102}],65:[function(require,module,exports){
+},{"debug":72,"parseuri":106}],69:[function(require,module,exports){
 
 /**
  * Expose `Backoff`.
@@ -6823,7 +7261,7 @@ Backoff.prototype.setJitter = function(jitter){
 };
 
 
-},{}],66:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 /**
  * Slice reference.
  */
@@ -6848,7 +7286,7 @@ module.exports = function(obj, fn){
   }
 };
 
-},{}],67:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 
 /**
  * Expose `Emitter`.
@@ -7014,7 +7452,7 @@ Emitter.prototype.hasListeners = function(event){
   return !! this.listeners(event).length;
 };
 
-},{}],68:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 
 /**
  * Expose `debug()` as the module.
@@ -7153,11 +7591,11 @@ try {
   if (window.localStorage) debug.enable(localStorage.debug);
 } catch(e){}
 
-},{}],69:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
 
 module.exports =  require('./lib/');
 
-},{"./lib/":70}],70:[function(require,module,exports){
+},{"./lib/":74}],74:[function(require,module,exports){
 
 module.exports = require('./socket');
 
@@ -7169,7 +7607,7 @@ module.exports = require('./socket');
  */
 module.exports.parser = require('engine.io-parser');
 
-},{"./socket":71,"engine.io-parser":83}],71:[function(require,module,exports){
+},{"./socket":75,"engine.io-parser":87}],75:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies.
@@ -7878,7 +8316,7 @@ Socket.prototype.filterUpgrades = function (upgrades) {
 };
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./transport":72,"./transports":73,"component-emitter":67,"debug":80,"engine.io-parser":83,"indexof":100,"parsejson":94,"parseqs":95,"parseuri":96}],72:[function(require,module,exports){
+},{"./transport":76,"./transports":77,"component-emitter":71,"debug":84,"engine.io-parser":87,"indexof":104,"parsejson":98,"parseqs":99,"parseuri":100}],76:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -8039,7 +8477,7 @@ Transport.prototype.onClose = function () {
   this.emit('close');
 };
 
-},{"component-emitter":67,"engine.io-parser":83}],73:[function(require,module,exports){
+},{"component-emitter":71,"engine.io-parser":87}],77:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies
@@ -8096,7 +8534,7 @@ function polling(opts){
 }
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./polling-jsonp":74,"./polling-xhr":75,"./websocket":77,"xmlhttprequest":78}],74:[function(require,module,exports){
+},{"./polling-jsonp":78,"./polling-xhr":79,"./websocket":81,"xmlhttprequest":82}],78:[function(require,module,exports){
 (function (global){
 
 /**
@@ -8333,7 +8771,7 @@ JSONPPolling.prototype.doWrite = function (data, fn) {
 };
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./polling":76,"component-inherit":79}],75:[function(require,module,exports){
+},{"./polling":80,"component-inherit":83}],79:[function(require,module,exports){
 (function (global){
 /**
  * Module requirements.
@@ -8721,7 +9159,7 @@ function unloadHandler() {
 }
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./polling":76,"component-emitter":67,"component-inherit":79,"debug":80,"xmlhttprequest":78}],76:[function(require,module,exports){
+},{"./polling":80,"component-emitter":71,"component-inherit":83,"debug":84,"xmlhttprequest":82}],80:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -8968,7 +9406,7 @@ Polling.prototype.uri = function(){
   return schema + '://' + this.hostname + port + this.path + query;
 };
 
-},{"../transport":72,"component-inherit":79,"debug":80,"engine.io-parser":83,"parseqs":95,"xmlhttprequest":78}],77:[function(require,module,exports){
+},{"../transport":76,"component-inherit":83,"debug":84,"engine.io-parser":87,"parseqs":99,"xmlhttprequest":82}],81:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -9208,7 +9646,7 @@ WS.prototype.check = function(){
   return !!WebSocket && !('__initialize' in WebSocket && this.name === WS.prototype.name);
 };
 
-},{"../transport":72,"component-inherit":79,"debug":80,"engine.io-parser":83,"parseqs":95,"ws":97}],78:[function(require,module,exports){
+},{"../transport":76,"component-inherit":83,"debug":84,"engine.io-parser":87,"parseqs":99,"ws":101}],82:[function(require,module,exports){
 // browser shim for xmlhttprequest module
 var hasCORS = require('has-cors');
 
@@ -9246,7 +9684,7 @@ module.exports = function(opts) {
   }
 }
 
-},{"has-cors":92}],79:[function(require,module,exports){
+},{"has-cors":96}],83:[function(require,module,exports){
 
 module.exports = function(a, b){
   var fn = function(){};
@@ -9254,7 +9692,7 @@ module.exports = function(a, b){
   a.prototype = new fn;
   a.prototype.constructor = a;
 };
-},{}],80:[function(require,module,exports){
+},{}],84:[function(require,module,exports){
 
 /**
  * This is the web browser implementation of `debug()`.
@@ -9403,7 +9841,7 @@ function load() {
 
 exports.enable(load());
 
-},{"./debug":81}],81:[function(require,module,exports){
+},{"./debug":85}],85:[function(require,module,exports){
 
 /**
  * This is the common logic for both the Node.js and web browser
@@ -9602,7 +10040,7 @@ function coerce(val) {
   return val;
 }
 
-},{"ms":82}],82:[function(require,module,exports){
+},{"ms":86}],86:[function(require,module,exports){
 /**
  * Helpers.
  */
@@ -9715,7 +10153,7 @@ function plural(ms, n, name) {
   return Math.ceil(ms / n) + ' ' + name + 's';
 }
 
-},{}],83:[function(require,module,exports){
+},{}],87:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies.
@@ -10313,7 +10751,7 @@ exports.decodePayloadAsBinary = function (data, binaryType, callback) {
 };
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./keys":84,"after":85,"arraybuffer.slice":86,"base64-arraybuffer":87,"blob":88,"has-binary":89,"utf8":91}],84:[function(require,module,exports){
+},{"./keys":88,"after":89,"arraybuffer.slice":90,"base64-arraybuffer":91,"blob":92,"has-binary":93,"utf8":95}],88:[function(require,module,exports){
 
 /**
  * Gets the keys for an object.
@@ -10334,7 +10772,7 @@ module.exports = Object.keys || function keys (obj){
   return arr;
 };
 
-},{}],85:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 module.exports = after
 
 function after(count, callback, err_cb) {
@@ -10364,7 +10802,7 @@ function after(count, callback, err_cb) {
 
 function noop() {}
 
-},{}],86:[function(require,module,exports){
+},{}],90:[function(require,module,exports){
 /**
  * An abstraction for slicing an arraybuffer even when
  * ArrayBuffer.prototype.slice is not supported
@@ -10395,7 +10833,7 @@ module.exports = function(arraybuffer, start, end) {
   return result.buffer;
 };
 
-},{}],87:[function(require,module,exports){
+},{}],91:[function(require,module,exports){
 /*
  * base64-arraybuffer
  * https://github.com/niklasvh/base64-arraybuffer
@@ -10456,7 +10894,7 @@ module.exports = function(arraybuffer, start, end) {
   };
 })("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/");
 
-},{}],88:[function(require,module,exports){
+},{}],92:[function(require,module,exports){
 (function (global){
 /**
  * Create a blob builder even when vendor prefixes exist
@@ -10509,7 +10947,7 @@ module.exports = (function() {
 })();
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],89:[function(require,module,exports){
+},{}],93:[function(require,module,exports){
 (function (global){
 
 /*
@@ -10571,12 +11009,12 @@ function hasBinary(data) {
 }
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"isarray":90}],90:[function(require,module,exports){
+},{"isarray":94}],94:[function(require,module,exports){
 module.exports = Array.isArray || function (arr) {
   return Object.prototype.toString.call(arr) == '[object Array]';
 };
 
-},{}],91:[function(require,module,exports){
+},{}],95:[function(require,module,exports){
 (function (global){
 /*! http://mths.be/utf8js v2.0.0 by @mathias */
 ;(function(root) {
@@ -10819,7 +11257,7 @@ module.exports = Array.isArray || function (arr) {
 }(this));
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],92:[function(require,module,exports){
+},{}],96:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -10844,7 +11282,7 @@ try {
   module.exports = false;
 }
 
-},{"global":93}],93:[function(require,module,exports){
+},{"global":97}],97:[function(require,module,exports){
 
 /**
  * Returns `this`. Execute this without a "context" (i.e. without it being
@@ -10854,7 +11292,7 @@ try {
 
 module.exports = (function () { return this; })();
 
-},{}],94:[function(require,module,exports){
+},{}],98:[function(require,module,exports){
 (function (global){
 /**
  * JSON parse.
@@ -10889,7 +11327,7 @@ module.exports = function parsejson(data) {
   }
 };
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],95:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 /**
  * Compiles a querystring
  * Returns string representation of the object
@@ -10928,7 +11366,7 @@ exports.decode = function(qs){
   return qry;
 };
 
-},{}],96:[function(require,module,exports){
+},{}],100:[function(require,module,exports){
 /**
  * Parses an URI
  *
@@ -10969,7 +11407,7 @@ module.exports = function parseuri(str) {
     return uri;
 };
 
-},{}],97:[function(require,module,exports){
+},{}],101:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -11014,7 +11452,7 @@ function ws(uri, protocols, opts) {
 
 if (WebSocket) ws.prototype = WebSocket.prototype;
 
-},{}],98:[function(require,module,exports){
+},{}],102:[function(require,module,exports){
 (function (global){
 
 /*
@@ -11076,9 +11514,9 @@ function hasBinary(data) {
 }
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"isarray":99}],99:[function(require,module,exports){
-module.exports=require(90)
-},{}],100:[function(require,module,exports){
+},{"isarray":103}],103:[function(require,module,exports){
+module.exports=require(94)
+},{}],104:[function(require,module,exports){
 
 var indexOf = [].indexOf;
 
@@ -11089,7 +11527,7 @@ module.exports = function(arr, obj){
   }
   return -1;
 };
-},{}],101:[function(require,module,exports){
+},{}],105:[function(require,module,exports){
 
 /**
  * HOP ref.
@@ -11174,7 +11612,7 @@ exports.length = function(obj){
 exports.isEmpty = function(obj){
   return 0 == exports.length(obj);
 };
-},{}],102:[function(require,module,exports){
+},{}],106:[function(require,module,exports){
 /**
  * Parses an URI
  *
@@ -11201,7 +11639,7 @@ module.exports = function parseuri(str) {
   return uri;
 };
 
-},{}],103:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 (function (global){
 /*global Blob,File*/
 
@@ -11346,7 +11784,7 @@ exports.removeBlobs = function(data, callback) {
 };
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./is-buffer":105,"isarray":106}],104:[function(require,module,exports){
+},{"./is-buffer":109,"isarray":110}],108:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -11748,7 +12186,7 @@ function error(data){
   };
 }
 
-},{"./binary":103,"./is-buffer":105,"component-emitter":67,"debug":68,"isarray":106,"json3":107}],105:[function(require,module,exports){
+},{"./binary":107,"./is-buffer":109,"component-emitter":71,"debug":72,"isarray":110,"json3":111}],109:[function(require,module,exports){
 (function (global){
 
 module.exports = isBuf;
@@ -11765,9 +12203,9 @@ function isBuf(obj) {
 }
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],106:[function(require,module,exports){
-module.exports=require(90)
-},{}],107:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
+module.exports=require(94)
+},{}],111:[function(require,module,exports){
 /*! JSON v3.2.6 | http://bestiejs.github.io/json3 | Copyright 2012-2013, Kit Cambridge | http://kit.mit-license.org */
 ;(function (window) {
   // Convenience aliases.
@@ -12630,7 +13068,7 @@ module.exports=require(90)
   }
 }(this));
 
-},{}],108:[function(require,module,exports){
+},{}],112:[function(require,module,exports){
 module.exports = toArray
 
 function toArray(list, index) {

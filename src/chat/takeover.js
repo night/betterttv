@@ -93,6 +93,9 @@ var takeover = module.exports = function() {
         store.__channelBots = data.bots;
     });
 
+    // Load Volunteer Badges
+    helpers.loadBadges();
+
     // Load Chat Settings
     loadChatSettings();
 

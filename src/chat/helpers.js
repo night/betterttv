@@ -367,6 +367,26 @@ var calculateColor = exports.calculateColor = function(color) {
 
     return color;
 };
+var loadBadges = exports.loadBadges = function() {
+    if($('#bttv_volunteer_badges').length) return;
+
+    $.getJSON("https://api.betterttv.net/2/badges").done(function(data) {
+        var $style = $('<style />');
+
+        $style.attr('id', 'bttv_volunteer_badges');
+
+        data.types.forEach(function(badge) {
+            $style.append(".ember-chat .badges .bttv-" + badge.name + " { background: url(\"" + badge.svg + "\"); background-size: 100%; }");
+            store.__badgeTypes[badge.name] = badge;
+        });
+
+        $style.appendTo('head');
+
+        data.badges.forEach(function(user) {
+            store.__badges[user.name] = user.type;
+        });
+    });
+};
 var assignBadges = exports.assignBadges = function(badges, data) {
     data = data || {};
     var bttvBadges = [];
@@ -433,11 +453,13 @@ var assignBadges = exports.assignBadges = function(badges, data) {
         });
     }
 
-    if(data.bttvTagType && data.bttvTagName) {
+    // Volunteer badges
+    if(data.from in store.__badges) {
+        var type = store.__badges[data.from];
         bttvBadges.unshift({
-            type: data.bttvTagType,
-            name: data.bttvTagName,
-            description: data.bttvTagDesc?data.bttvTagDesc:data.bttvTagName
+            type: 'bttv-' + type,
+            name: '',
+            description: store.__badgeTypes[type]
         });
     }
 

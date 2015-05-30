@@ -1,11 +1,22 @@
 var debug = require('../helpers/debug');
 var pollTemplate = require('../templates/embedded-poll');
+var chatHelpers = require('../chat/helpers');
 
 var frameTimeout = null;
 var lastPollId = null;
 
-module.exports = function (pollId) {
-    if(!bttv.settings.get('embeddedPolling')) return;
+module.exports = function (message) {
+    var strawpoll = /strawpoll\.me\/([0-9]+)/g.exec(message.message);
+
+    if(
+        !bttv.settings.get('embeddedPolling') ||
+        !strawpoll ||
+        !helpers.isModerator(message.from)
+    ) {
+        return;
+    }
+
+    var pollId = strawpoll[1];
 
     var $poll = $('#bttv-poll-contain');
     

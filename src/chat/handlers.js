@@ -1,11 +1,11 @@
 var vars = require('../vars'),
-    debug = require('../helpers/debug');
-var store = require('./store'),
+    debug = require('../helpers/debug'),
+    store = require('./store'),
     tmi = require('./tmi'),
-    helpers = require('./helpers')
+    helpers = require('./helpers'),
     templates = require('./templates'),
-    rooms = require('./rooms');
-var embeddedPolling = require('../features/embedded-polling');
+    rooms = require('./rooms'),
+    embeddedPolling = require('../features/embedded-polling');
 
 // Helper Functions
 var getEmoteFromRegEx = require('../helpers/regex').getEmoteFromRegEx;
@@ -288,7 +288,6 @@ var privmsg = exports.privmsg = function (channel, data) {
 
     if(store.trackTimeouts[data.from]) delete store.trackTimeouts[data.from];
 
-
     var blacklistFilter = require('../features/keywords-lists').blacklistFilter,
         highlighting = require('../features/keywords-lists').highlighting;
 
@@ -298,24 +297,10 @@ var privmsg = exports.privmsg = function (channel, data) {
 
     var messageHighlighted = bttv.settings.get("highlightKeywords") && highlighting(data);
 
-    if(bttv.settings.get('embeddedPolling')) {
-        if(helpers.isModerator(data.from)) {
-            var strawpoll = /strawpoll\.me\/([0-9]+)/g.exec(data.message);
-            if(strawpoll) {
-                embeddedPolling(strawpoll[1]);
-            }
-        }
-    }
-
-    if (bttv.settings.get("showJTVTags") === true) {
-        if (data.bttvTagType == "moderator" || data.bttvTagType == "broadcaster" || data.bttvTagType == "admin" || data.bttvTagType == "global_mod" || data.bttvTagType == "staff" || data.bttvTagType === "bot") data.bttvTagType = 'old'+data.bttvTagType;
-    }
+    // Strawpoll
+    embeddedPolling(data);
 
     data.color = helpers.getColor(data.from);
-
-    if(data.color === "black") data.color = "#000000";
-    if(data.color === "MidnightBlue") data.color = "#191971";
-    if(data.color === "DarkRed") data.color = "#8B0000";
 
     data.color = helpers.calculateColor(data.color);
 
@@ -328,30 +313,8 @@ var privmsg = exports.privmsg = function (channel, data) {
         data.color = "#ffffff";
     }
 
-    var specialUsers = {
-        "night": { dev: true, tagType: "bttvDeveloper" },
-        "dtittel": { dev: true, tagType: "bttvDeveloper" },
-        "vendethiel": { dev: true, tagType: "bttvDeveloper" },
-        "teak": { dev: true, tagType: "bttvDeveloper" },
-        "polecat": { dev: true, tagType: "bttvDeveloper" },
-        "matthewjk": { supporter: true, team: "Support", tagType: "bttvSupporter" },
-        "julia_cs": { supporter: true, team: "Design", tagType: "bttvSupporter" },
-        "vaughnwhiskey": { supporter: true, team: "Support", tagType: "bttvSupporter" },
-        "izl": { supporter: true, team: "Support", tagType: "bttvSupporter" },
-        "jacksack": { supporter: true, team: "Design", tagType: "bttvSupporter" }
-    }
-
     var badges = helpers.getBadges(data.from);
     var bttvBadges = helpers.assignBadges(badges, data);
-
-    if(specialUsers[data.from]) {
-        var userData = specialUsers[data.from];
-        bttvBadges.push({
-            type: userData.tagType,
-            name: "&#8203;",
-            description: userData.dev ? 'NightDev Developer':'NightDev '+userData.team+' Team'
-        });
-    }
 
     data.sender = data.from;
 
