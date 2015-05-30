@@ -38,6 +38,12 @@ var commands = exports.commands = function (input) {
     } else if (command === "/localsuboff") {
         helpers.serverMessage("Local subscribers-only mode disabled.", true);
         vars.localSubsOnly = false;
+    } else if (command === "/localmod") {
+        helpers.serverMessage("Local moderators-only mode enabled.", true);
+        vars.localModsOnly = true;
+    } else if (command === "/localmodoff") {
+        helpers.serverMessage("Local moderators-only mode disabled.", true);
+        vars.localModsOnly = false;
     } else if (command === "/viewers") {
         bttv.TwitchAPI.get('streams/' + bttv.getChannel()).done(function(stream) {
             helpers.serverMessage("Current Viewers: " + Twitch.display.commatize(stream.stream.viewers), true);
@@ -78,6 +84,24 @@ var commands = exports.commands = function (input) {
         }).fail(function () {
             helpers.serverMessage("Could not fetch start time.", true);
         });
+    } else if (command === '/help') {
+        helpers.serverMessage("BetterTTV Chat Commands:");
+        helpers.serverMessage("/b [username] -- Shortcut for /ban");
+        helpers.serverMessage("/followers -- Retrieves the number of followers for the channel");
+        helpers.serverMessage("/linehistory on/off -- Toggles the chat field history (pressing up/down arrow in textbox)");
+        helpers.serverMessage("/localmod -- Turns on local mod-only mode (only your chat is mod-only mode)");
+        helpers.serverMessage("/localmodoff -- Turns off local mod-only mode");
+        helpers.serverMessage("/localsub -- Turns on local sub-only mode (only your chat is sub-only mode)");
+        helpers.serverMessage("/localsuboff -- Turns off local sub-only mode");
+        helpers.serverMessage("/massunban (or /unban all or /u all) -- Unbans all users in the channel (channel owner only)");
+        helpers.serverMessage("/sub -- Shortcut for /subscribers");
+        helpers.serverMessage("/suboff -- Shortcut for /subscribersoff");
+        helpers.serverMessage("/t [username] [time in seconds] -- Shortcut for /timeout");
+        helpers.serverMessage("/u [username] -- Shortcut for /unban");
+        helpers.serverMessage("/uptime -- Retrieves the amount of time the channel has been live");
+        helpers.serverMessage("/viewers -- Retrieves the number of viewers watching the channel");
+        helpers.serverMessage("Native Chat Commands:");
+        return false;
     } else {
         return false;
     }
@@ -243,11 +267,11 @@ var privmsg = exports.privmsg = function (channel, data) {
                 time: data.date == null ? '' : data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
                 nickname: data.from || 'jtv',
                 sender: data.from,
-                badges: data.badges || (data.from==='twitchnotify'?[{
+                badges: data.badges || (data.from === 'twitchnotify' ? [{
                     type: 'subscriber',
                     name: '',
                     description: 'Channel Subscriber'
-                }]:[]),
+                }] : []),
                 color: '#555'
             }
         );
@@ -260,6 +284,7 @@ var privmsg = exports.privmsg = function (channel, data) {
     if(!store.chatters[data.from]) store.chatters[data.from] = true;
 
     if(vars.localSubsOnly && !helpers.isModerator(data.from) && !helpers.isSubscriber(data.from)) return;
+    if(vars.localModsOnly && !helpers.isModerator(data.from)) return;
 
     if(store.trackTimeouts[data.from]) delete store.trackTimeouts[data.from];
 
@@ -274,7 +299,7 @@ var privmsg = exports.privmsg = function (channel, data) {
     var messageHighlighted = bttv.settings.get("highlightKeywords") && highlighting(data);
 
     if(bttv.settings.get('embeddedPolling')) {
-        if(helpers.isOwner(data.from)) {
+        if(helpers.isModerator(data.from)) {
             var strawpoll = /strawpoll\.me\/([0-9]+)/g.exec(data.message);
             if(strawpoll) {
                 embeddedPolling(strawpoll[1]);

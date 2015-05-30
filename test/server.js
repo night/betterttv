@@ -1,16 +1,21 @@
 var fs = require("fs"),
     http = require("http"),
+    https = require("https"),
     path = require("path"),
     request = require("request"),
     url = require("url");
 
-http.createServer(function(req, res) {
+process.on('uncaughtException', function(err) {
+  console.log('Caught exception: ' + err);
+});
+
+var server = function(req, res) {
   var uri = url.parse(req.url).pathname,
       file = path.join(process.cwd(), uri);
 
   fs.exists(file, function(exists) {
     if(!exists) {
-      request.get('http://dev.betterttv.net/'+uri).pipe(res);
+      request.get('http://cdn.betterttv.net/'+uri).pipe(res);
       return;
     }
 
@@ -26,4 +31,11 @@ http.createServer(function(req, res) {
     });
     fs.createReadStream(file).pipe(res);
   });
-}).listen(80);
+};
+
+https.createServer({
+  key: fs.readFileSync(path.join(__dirname, 'test-cdn.betterttv.net.key')),
+  cert: fs.readFileSync(path.join(__dirname, 'test-cdn.betterttv.net.cert'))
+}, server).listen(443);
+
+http.createServer(server).listen(80);

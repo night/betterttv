@@ -308,6 +308,7 @@ var takeover = module.exports = function() {
                     store.activeView = false;
                     break;
                 case "focus":
+                    $('.chat-interface textarea').focus();
                     store.activeView = true;
                     break;
             }
