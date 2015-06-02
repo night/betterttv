@@ -35,7 +35,7 @@ Settings.prototype.load = function() {
 
     settingsList.forEach(function(setting) {
         _self._settings[setting.storageKey] = setting;
-        _self._settings[setting.storageKey].value = _self._parseSetting(bttv.storage.get(_self.prefix + setting.storageKey)) || setting.default;
+        _self._settings[setting.storageKey].value = bttv.storage.get(_self.prefix + setting.storageKey) !== null ? _self._parseSetting(bttv.storage.get(_self.prefix + setting.storageKey)) : setting.default;
 
         if(setting.name) {
             var settingHTML = settingTemplate(setting);
