@@ -3,7 +3,8 @@ var vars = require('../vars'),
     tmi = require('./tmi'),
     store = require('./store'),
     templates = require('./templates'),
-    bots = require('../bots');
+    bots = require('../bots'),
+    punycode = require('punycode');
 
 // Helper functions
 var removeElement = require('../helpers/element').remove;
@@ -367,6 +368,45 @@ var calculateColor = exports.calculateColor = function(color) {
 
     return color;
 };
+var surrogateOffset = function(surrogates, index) {
+    var offset = index;
+
+    for(var id in surrogates) {
+        if(!surrogates.hasOwnProperty(id)) continue;
+        if(id < index) offset++;
+    }
+
+    return offset;
+};
+var handleSurrogatePairs = exports.handleSurrogatePairs = function(message, emotes) {
+    // Entire message decoded to array of char codes, combines
+    // surrogate pairs to a single index
+    var decoded = punycode.ucs2.decode(message);
+
+    var surrogates = {};
+    for(var i = 0; i < decoded.length; i++) {
+        // Not surrogate
+        if(decoded[i] <= 0xFFFF) continue;
+
+        surrogates[i] = true;
+    }
+
+    // We can loop through all emote ids and all indexes that id
+    // appears in the message, offsetting the indexes +1 for each
+    // surrogate pair occurring before the index
+    for(var id in emotes) {
+        if(!emotes.hasOwnProperty(id)) continue;
+
+        var emote = emotes[id];
+        for(var i = emote.length-1; i >= 0; i--) {
+            for(var j = 0; j < emote[i].length; j++) {
+                emote[i][j] = surrogateOffset(surrogates, emote[i][j]);
+            }
+        }
+    }
+
+    return emotes;
+};
 var loadBadges = exports.loadBadges = function() {
     if($('#bttv_volunteer_badges').length) return;
 
@@ -456,10 +496,10 @@ var assignBadges = exports.assignBadges = function(badges, data) {
     // Volunteer badges
     if(data.from in store.__badges) {
         var type = store.__badges[data.from];
-        bttvBadges.unshift({
+        bttvBadges.push({
             type: 'bttv-' + type,
             name: '',
-            description: store.__badgeTypes[type]
+            description: store.__badgeTypes[type].description
         });
     }
 

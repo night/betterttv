@@ -71,3 +71,5 @@ Storage.prototype.spliceObject = function(item, key) {
     delete i[key];
     this.putObject(item, i);
 }
+
+module.exports = Storage;

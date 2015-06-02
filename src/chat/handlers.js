@@ -226,6 +226,12 @@ var clearChat = exports.clearChat = function (user) {
         }
     }
 };
+var notice = exports.notice = function (data) {
+    var messageId = data.msgId;
+    var message = data.message;
+
+    helpers.serverMessage(message, true);
+};
 var onPrivmsg = exports.onPrivmsg = function (channel, data) {
     if(!rooms.getRoom(channel).active() && data.from && data.from !== 'jtv') {
         rooms.getRoom(channel).queueMessage(data);
@@ -323,6 +329,13 @@ var privmsg = exports.privmsg = function (channel, data) {
         data.from = data.bttvDisplayName;
     } else {
         data.from = helpers.lookupDisplayName(data.from);
+    }
+
+    // Handle surrogate pairs only on incoming server messages
+    //  (basically a shitty check since the tmi.js doesn't fill
+    //  in "user-type" for outgoing messages)
+    if(data.tags.emotes && data.tags['user-type']) {
+        data.tags.emotes = helpers.handleSurrogatePairs(data.message, data.tags.emotes);
     }
 
     var message = templates.privmsg(

@@ -40,7 +40,7 @@ Settings.prototype.load = function() {
         if(setting.name) {
             var settingHTML = settingTemplate(setting);
             $('#bttvSettings .options-list').append(settingHTML);
-            _self._settings[setting.storageKey] === true ? $('#'+setting.storageKey+'True').prop('checked', true) : $('#'+setting.storageKey+'False').prop('checked', true);
+            _self._settings[setting.storageKey].value === true ? $('#'+setting.storageKey+'True').prop('checked', true) : $('#'+setting.storageKey+'False').prop('checked', true);
         }
 
         if(setting.hidden) {
@@ -147,7 +147,7 @@ Settings.prototype.get = function(setting) {
     return (setting in this._settings) ? this._settings[setting].value : null;
 }
 
-Settings.prototype.set = function(setting, value) {
+Settings.prototype.set = Settings.prototype.save = function(setting, value) {
     if(/\?bttvSettings=true/.test(window.location)) {
         window.opener.postMessage('bttv_setting '+setting+' '+value, window.location.protocol+'//'+window.location.host);
     } else {
@@ -163,7 +163,9 @@ Settings.prototype.set = function(setting, value) {
     }
 }
 
-Setting.prototype.popup = function() {
+Settings.prototype.popup = function() {
     var settingsUrl = window.location.protocol+'//'+window.location.host+'/settings?bttvSettings=true';
     window.open(settingsUrl, 'BetterTTV Settings', 'width=800,height=500,top=500,left=800,scrollbars=no,location=no,directories=no,status=no,menubar=no,toolbar=no,resizable=no');
 }
+
+module.exports = Settings;

@@ -571,6 +571,12 @@ var clearChat = exports.clearChat = function (user) {
         }
     }
 };
+var notice = exports.notice = function (data) {
+    var messageId = data.msgId;
+    var message = data.message;
+
+    helpers.serverMessage(message, true);
+};
 var onPrivmsg = exports.onPrivmsg = function (channel, data) {
     if(!rooms.getRoom(channel).active() && data.from && data.from !== 'jtv') {
         rooms.getRoom(channel).queueMessage(data);
@@ -670,6 +676,13 @@ var privmsg = exports.privmsg = function (channel, data) {
         data.from = helpers.lookupDisplayName(data.from);
     }
 
+    // Handle surrogate pairs only on incoming server messages
+    //  (basically a shitty check since the tmi.js doesn't fill
+    //  in "user-type" for outgoing messages)
+    if(data.tags.emotes && data.tags['user-type']) {
+        data.tags.emotes = helpers.handleSurrogatePairs(data.message, data.tags.emotes);
+    }
+
     var message = templates.privmsg(
         messageHighlighted,
         data.style === 'action' ? true : false,
@@ -695,7 +708,8 @@ var vars = require('../vars'),
     tmi = require('./tmi'),
     store = require('./store'),
     templates = require('./templates'),
-    bots = require('../bots');
+    bots = require('../bots'),
+    punycode = require('punycode');
 
 // Helper functions
 var removeElement = require('../helpers/element').remove;
@@ -1059,6 +1073,45 @@ var calculateColor = exports.calculateColor = function(color) {
 
     return color;
 };
+var surrogateOffset = function(surrogates, index) {
+    var offset = index;
+
+    for(var id in surrogates) {
+        if(!surrogates.hasOwnProperty(id)) continue;
+        if(id < index) offset++;
+    }
+
+    return offset;
+};
+var handleSurrogatePairs = exports.handleSurrogatePairs = function(message, emotes) {
+    // Entire message decoded to array of char codes, combines
+    // surrogate pairs to a single index
+    var decoded = punycode.ucs2.decode(message);
+
+    var surrogates = {};
+    for(var i = 0; i < decoded.length; i++) {
+        // Not surrogate
+        if(decoded[i] <= 0xFFFF) continue;
+
+        surrogates[i] = true;
+    }
+
+    // We can loop through all emote ids and all indexes that id
+    // appears in the message, offsetting the indexes +1 for each
+    // surrogate pair occurring before the index
+    for(var id in emotes) {
+        if(!emotes.hasOwnProperty(id)) continue;
+
+        var emote = emotes[id];
+        for(var i = emote.length-1; i >= 0; i--) {
+            for(var j = 0; j < emote[i].length; j++) {
+                emote[i][j] = surrogateOffset(surrogates, emote[i][j]);
+            }
+        }
+    }
+
+    return emotes;
+};
 var loadBadges = exports.loadBadges = function() {
     if($('#bttv_volunteer_badges').length) return;
 
@@ -1148,10 +1201,10 @@ var assignBadges = exports.assignBadges = function(badges, data) {
     // Volunteer badges
     if(data.from in store.__badges) {
         var type = store.__badges[data.from];
-        bttvBadges.unshift({
+        bttvBadges.push({
             type: 'bttv-' + type,
             name: '',
-            description: store.__badgeTypes[type]
+            description: store.__badgeTypes[type].description
         });
     }
 
@@ -1287,7 +1340,7 @@ var massUnban = exports.massUnban = function() {
     });
 }*/
 
-},{"../bots":1,"../helpers/colors":42,"../helpers/element":44,"../helpers/regex":46,"../keycodes":47,"../legacy-tags":48,"../vars":60,"./handlers":4,"./store":8,"./templates":10,"./tmi":11}],6:[function(require,module,exports){
+},{"../bots":1,"../helpers/colors":42,"../helpers/element":44,"../helpers/regex":46,"../keycodes":47,"../legacy-tags":48,"../vars":60,"./handlers":4,"./store":8,"./templates":10,"./tmi":11,"punycode":62}],6:[function(require,module,exports){
 
 // Add mouseover image preview to image links
 module.exports = function(imgUrl) {
@@ -1443,6 +1496,7 @@ var takeover = module.exports = function() {
         if(tmi.tmiSession._rooms.hasOwnProperty(channel)) {
             delete tmi.tmiSession._rooms[channel]._events['message'];
             delete tmi.tmiSession._rooms[channel]._events['clearchat'];
+            delete tmi.tmiSession._rooms[channel]._events['notice'];
         }
     }
 
@@ -1450,6 +1504,7 @@ var takeover = module.exports = function() {
     rooms.newRoom(bttv.getChannel());
     tmi.tmiRoom.on('message', rooms.getRoom(bttv.getChannel()).chatHandler);
     tmi.tmiRoom.on('clearchat', handlers.clearChat);
+    tmi.tmiRoom.on('notice', handlers.notice);
     if(tmi.channel) tmi.set('name', tmi.channel.get('display_name'));
     store.currentRoom = bttv.getChannel();
     //tmi.tmiRoom.on('labelschanged', handlers.labelsChanged);
@@ -1461,6 +1516,7 @@ var takeover = module.exports = function() {
             rooms.newRoom(room.get('id'));
             room.tmiRoom.on('message', rooms.getRoom(room.get('id')).chatHandler);
             room.tmiRoom.on('clearchat', handlers.clearChat);
+            room.tmiRoom.on('notice', handlers.notice);
         });
     }
 
@@ -1744,8 +1800,7 @@ var takeover = module.exports = function() {
 
 },{"../features/chat-load-settings":19,"../features/css-loader":25,"../features/override-emotes":40,"../helpers/debug":43,"../keycodes":47,"../vars":60,"./handlers":4,"./helpers":5,"./rooms":7,"./store":8,"./tmi":11}],10:[function(require,module,exports){
 var tmi = require('./tmi'),
-    store = require('./store'),
-    punycode = require('punycode');
+    store = require('./store');
 
 var badge = exports.badge = function(type, name, description) {
     return '<div class="'+type+''+((bttv.settings.get('alphaTags') && ['admin','global-moderator','staff','broadcaster','moderator','turbo','ign'].indexOf(type) !== -1)?' alpha'+(!bttv.settings.get("darkenedMode")?' invert':''):'')+' badge" title="'+description+'">'+name+'</div> ';
@@ -1819,12 +1874,9 @@ var emoticonize = exports.emoticonize = function(message, emotes) {
     if(!emotes) return [message];
 
     var tokenizedMessage = [];
-
-    var emotesList = Object.keys(emotes);
-
     var replacements = [];
 
-    emotesList.forEach(function(id) {
+    Object.keys(emotes).forEach(function(id) {
         var emote = emotes[id];
 
         for(var i=emote.length-1; i>=0; i--) {
@@ -1836,17 +1888,12 @@ var emoticonize = exports.emoticonize = function(message, emotes) {
         return b.first - a.first;
     });
 
-    // Tokenizes each character into an array
-    // punycode deals with unicode symbols on surrogate pairs
-    // punycode is used in the replacements loop below as well
-    message = punycode.ucs2.decode(message);
-
     replacements.forEach(function(replacement) {
         // The emote command
-        var name = punycode.ucs2.encode(message.slice(replacement.first, replacement.last+1));
+        var name = message.slice(replacement.first, replacement.last+1);
 
         // Unshift the end of the message (that doesn't contain the emote)
-        tokenizedMessage.unshift(punycode.ucs2.encode(message.slice(replacement.last+1)));
+        tokenizedMessage.unshift(message.slice(replacement.last+1));
 
         // Unshift the emote HTML (but not as a string to allow us to process links and escape html still)
         tokenizedMessage.unshift([ emoticon(replacement.id, name) ]);
@@ -1856,7 +1903,7 @@ var emoticonize = exports.emoticonize = function(message, emotes) {
     });
 
     // Unshift the remaining part of the message (that contains no emotes)
-    tokenizedMessage.unshift(punycode.ucs2.encode(message));
+    tokenizedMessage.unshift(message);
 
     return tokenizedMessage;
 };
@@ -1941,7 +1988,7 @@ var privmsg = exports.privmsg = function(highlight, action, server, isMod, data)
     return '<div class="chat-line'+(highlight?' highlight':'')+(action?' action':'')+(server?' admin':'')+'" data-sender="'+data.sender+'">'+timestamp(data.time)+' '+(isMod?modicons():'')+' '+badges(data.badges)+from(data.nickname, data.color)+message(data.sender, data.message, data.emotes, (action && !highlight)?data.color:false)+'</div>';
 }
 
-},{"../templates/chat-suggestions":54,"../templates/moderation-card":56,"./helpers":5,"./store":8,"./tmi":11,"punycode":62}],11:[function(require,module,exports){
+},{"../templates/chat-suggestions":54,"../templates/moderation-card":56,"./helpers":5,"./store":8,"./tmi":11}],11:[function(require,module,exports){
 module.exports = function() {
 	return bttv.getChatController() ? bttv.getChatController().currentRoom : false;
 }
@@ -1952,7 +1999,9 @@ var keyCodes = require('./keycodes');
 var debug = require('./helpers/debug'),
     vars = require('./vars'),
     TwitchAPI = require('./twitch-api'),
-    io = require('./socketio');
+    io = require('./socketio'),
+    storage = require('./storage'),
+    settings = require('./settings');
 
 bttv.info = {
     version: "6.8",
@@ -1964,8 +2013,8 @@ bttv.info = {
 
 bttv.TwitchAPI = TwitchAPI;
 bttv.vars = vars;
-bttv.storage = require('./storage');
-bttv.settings = require('./settings');
+bttv.storage = new storage();
+bttv.settings = new settings();
 
 bttv.getChannel = function() {
     if(window.Ember && window.App && App.__container__.lookup("controller:application").get("currentRouteName") === "channel.index") {
@@ -4941,7 +4990,7 @@ Settings.prototype.load = function() {
         if(setting.name) {
             var settingHTML = settingTemplate(setting);
             $('#bttvSettings .options-list').append(settingHTML);
-            _self._settings[setting.storageKey] === true ? $('#'+setting.storageKey+'True').prop('checked', true) : $('#'+setting.storageKey+'False').prop('checked', true);
+            _self._settings[setting.storageKey].value === true ? $('#'+setting.storageKey+'True').prop('checked', true) : $('#'+setting.storageKey+'False').prop('checked', true);
         }
 
         if(setting.hidden) {
@@ -5048,7 +5097,7 @@ Settings.prototype.get = function(setting) {
     return (setting in this._settings) ? this._settings[setting].value : null;
 }
 
-Settings.prototype.set = function(setting, value) {
+Settings.prototype.set = Settings.prototype.save = function(setting, value) {
     if(/\?bttvSettings=true/.test(window.location)) {
         window.opener.postMessage('bttv_setting '+setting+' '+value, window.location.protocol+'//'+window.location.host);
     } else {
@@ -5064,10 +5113,12 @@ Settings.prototype.set = function(setting, value) {
     }
 }
 
-Setting.prototype.popup = function() {
+Settings.prototype.popup = function() {
     var settingsUrl = window.location.protocol+'//'+window.location.host+'/settings?bttvSettings=true';
     window.open(settingsUrl, 'BetterTTV Settings', 'width=800,height=500,top=500,left=800,scrollbars=no,location=no,directories=no,status=no,menubar=no,toolbar=no,resizable=no');
 }
+
+module.exports = Settings;
 },{"./helpers/filesaver":45,"./settings-list":49,"./templates/setting-switch":57}],51:[function(require,module,exports){
 var io = require('socket.io-client');
 var debug = require('./helpers/debug');
@@ -5242,6 +5293,8 @@ Storage.prototype.spliceObject = function(item, key) {
     delete i[key];
     this.putObject(item, i);
 }
+
+module.exports = Storage;
 },{"./helpers/debug":43,"cookies-js":61}],53:[function(require,module,exports){
 function template(locals) {
 var buf = [];

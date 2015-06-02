@@ -52,6 +52,7 @@ var takeover = module.exports = function() {
         if(tmi.tmiSession._rooms.hasOwnProperty(channel)) {
             delete tmi.tmiSession._rooms[channel]._events['message'];
             delete tmi.tmiSession._rooms[channel]._events['clearchat'];
+            delete tmi.tmiSession._rooms[channel]._events['notice'];
         }
     }
 
@@ -59,6 +60,7 @@ var takeover = module.exports = function() {
     rooms.newRoom(bttv.getChannel());
     tmi.tmiRoom.on('message', rooms.getRoom(bttv.getChannel()).chatHandler);
     tmi.tmiRoom.on('clearchat', handlers.clearChat);
+    tmi.tmiRoom.on('notice', handlers.notice);
     if(tmi.channel) tmi.set('name', tmi.channel.get('display_name'));
     store.currentRoom = bttv.getChannel();
     //tmi.tmiRoom.on('labelschanged', handlers.labelsChanged);
@@ -70,6 +72,7 @@ var takeover = module.exports = function() {
             rooms.newRoom(room.get('id'));
             room.tmiRoom.on('message', rooms.getRoom(room.get('id')).chatHandler);
             room.tmiRoom.on('clearchat', handlers.clearChat);
+            room.tmiRoom.on('notice', handlers.notice);
         });
     }
 

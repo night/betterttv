@@ -4,7 +4,9 @@ var keyCodes = require('./keycodes');
 var debug = require('./helpers/debug'),
     vars = require('./vars'),
     TwitchAPI = require('./twitch-api'),
-    io = require('./socketio');
+    io = require('./socketio'),
+    storage = require('./storage'),
+    settings = require('./settings');
 
 bttv.info = {
     version: "6.8",
@@ -16,8 +18,8 @@ bttv.info = {
 
 bttv.TwitchAPI = TwitchAPI;
 bttv.vars = vars;
-bttv.storage = require('./storage');
-bttv.settings = require('./settings');
+bttv.storage = new storage();
+bttv.settings = new settings();
 
 bttv.getChannel = function() {
     if(window.Ember && window.App && App.__container__.lookup("controller:application").get("currentRouteName") === "channel.index") {
