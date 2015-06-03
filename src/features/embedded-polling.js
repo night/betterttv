@@ -11,7 +11,7 @@ module.exports = function (message) {
     if(
         !bttv.settings.get('embeddedPolling') ||
         !strawpoll ||
-        !helpers.isModerator(message.from)
+        !chatHelpers.isModerator(message.from)
     ) {
         return;
     }
