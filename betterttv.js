@@ -676,13 +676,6 @@ var privmsg = exports.privmsg = function (channel, data) {
         data.from = helpers.lookupDisplayName(data.from);
     }
 
-    // Handle surrogate pairs only on incoming server messages
-    //  (basically a shitty check since the tmi.js doesn't fill
-    //  in "user-type" for outgoing messages)
-    if(data.tags.emotes && data.tags['user-type']) {
-        data.tags.emotes = helpers.handleSurrogatePairs(data.message, data.tags.emotes);
-    }
-
     var message = templates.privmsg(
         messageHighlighted,
         data.style === 'action' ? true : false,
