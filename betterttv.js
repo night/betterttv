@@ -5046,6 +5046,8 @@ Settings.prototype.backup = function() {
 }
 
 Settings.prototype.import = function(input) {
+    var _self = this;
+
     var getDataUrlFromUpload = function(input, callback) {
         var reader = new FileReader();
 
@@ -5071,8 +5073,7 @@ Settings.prototype.import = function(input) {
                 count = 0;
 
             Object.keys(settings).forEach(function(setting) {
-                var val = settings[setting].value;
-                bttv.settings.set(setting, val);
+                _self.set(setting, settings[setting]);
             });
 
             bttv.notify("BetterTTV imported " + count + " settings, and will now refresh in a few seconds.");
