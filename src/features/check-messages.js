@@ -6,7 +6,7 @@ module.exports = function () {
 
     if($("body#chat").length) return;
 
-    if (vars.userData.isLoggedIn && window.Firebase) {
+    /* if (vars.userData.isLoggedIn && window.Firebase) {
         var newMessages = function(id, namespaced) {
             var notificationsLoaded = false;
             var notifications = 0;
@@ -57,7 +57,7 @@ module.exports = function () {
                 newMessages(d.id, e.namespaced);
             });
         });
-    }
+    }*/
 
     // Twitch doesn't tell us when messages from /messages/other show up.
     if(bttv.settings.get('alertOtherMessages') === false) return;
