@@ -10,11 +10,11 @@
 a.js-follow.follow.button.primary.action:hover,
 #subscribe_action .subscribe-text:focus,
 .button.primary:hover,
-#channel .stats-and-actions .follow-button .follow:hover,
-.directory_header .follow-button .follow:hover,
-.profile-info .follow-button .follow:hover,
-#hostmode .channel-actions .follow:hover,
-.chat-room .moderation-card .follow:hover { 
+#channel .stats-and-actions .follow-button a:hover,
+.directory_header .follow-button a:hover,
+.profile-info .follow-button a:hover,
+#hostmode .channel-actions:hover,
+.chat-room .moderation-card:hover { 
     background: linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
     background: -o-linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
     background: -moz-linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
@@ -25,11 +25,11 @@ a.js-follow.follow.button.primary.action:hover,
 .primary_button,
 a.js-follow.follow.button.primary.action,
 #dash_main #commercial_buttons #intervals,
-#channel .stats-and-actions .follow-button .follow,
-.directory_header .follow-button .follow,
-.profile-info .follow-button .follow,
-#hostmode .channel-actions .follow,
-.chat-room .moderation-card .follow { 
+#channel .stats-and-actions .follow-button a,
+.directory_header .follow-button a,
+.profile-info .follow-button a,
+#hostmode .channel-actions,
+.chat-room .moderation-card { 
     border-color: #000 !important;
     background: linear-gradient(bottom, rgb(47,88,185) 31%, rgb(50,108,211) 80%) !important; 
     background: -o-linear-gradient(bottom, rgb(47,88,185) 31%, rgb(50,108,211) 80%) !important; 
