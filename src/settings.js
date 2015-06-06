@@ -148,7 +148,13 @@ Settings.prototype.get = function(setting) {
     return (setting in this._settings) ? this._settings[setting].value : null;
 }
 
-Settings.prototype.set = Settings.prototype.save = function(setting, value) {
+Settings.prototype.set = function(setting, value) {
+    this._settings[setting].value = value;
+
+    bttv.storage.put(this.prefix + setting, value);
+}
+
+Settings.prototype.save = function(setting, value) {
     if(/\?bttvSettings=true/.test(window.location)) {
         window.opener.postMessage('bttv_setting '+setting+' '+value, window.location.protocol+'//'+window.location.host);
     } else {
@@ -156,9 +162,7 @@ Settings.prototype.set = Settings.prototype.save = function(setting, value) {
 
         if(window !== window.top) window.parent.postMessage('bttv_setting '+setting+' '+value, window.location.protocol+'//'+window.location.host);
 
-        this._settings[setting].value = value;
-
-        bttv.storage.put(this.prefix + setting, value);
+        this.set(setting, value);
 
         if(this._settings[setting].toggle) this._settings[setting].toggle(value);
     }
