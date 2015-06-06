@@ -1442,3 +1442,8 @@ body.channel_new.columns.ember-application {
     box-shadow: 0px 2px 0px 0px #f00;
 }
 
+/* dropmenu margin fix */
+.stats-and-actions .channel-actions .dropmenu,
+.chat-interface .dropmenu {
+    margin-bottom: 5px;
+}
