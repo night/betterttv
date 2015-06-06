@@ -259,7 +259,7 @@ var privmsg = exports.privmsg = function (channel, data) {
         store.displayNames[data.from] = data.tags['display-name'];
     }
 
-    if(data.style && (data.style !== 'admin' && data.style !== 'action' && data.style !== 'notification')) return;
+    if(data.style && ['admin','action','notification'].indexOf(data.style) === -1) return;
 
     if(data.style === 'admin' || data.style === 'notification') {
         data.style = 'admin';

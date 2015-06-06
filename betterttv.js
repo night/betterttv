@@ -604,7 +604,7 @@ var privmsg = exports.privmsg = function (channel, data) {
         store.displayNames[data.from] = data.tags['display-name'];
     }
 
-    if(data.style && (data.style !== 'admin' && data.style !== 'action' && data.style !== 'notification')) return;
+    if(data.style && ['admin','action','notification'].indexOf(data.style) === -1) return;
 
     if(data.style === 'admin' || data.style === 'notification') {
         data.style = 'admin';
@@ -1509,7 +1509,6 @@ var takeover = module.exports = function() {
             rooms.newRoom(room.get('id'));
             room.tmiRoom.on('message', rooms.getRoom(room.get('id')).chatHandler);
             room.tmiRoom.on('clearchat', handlers.clearChat);
-            room.tmiRoom.on('notice', handlers.notice);
         });
     }
 

@@ -72,7 +72,6 @@ var takeover = module.exports = function() {
             rooms.newRoom(room.get('id'));
             room.tmiRoom.on('message', rooms.getRoom(room.get('id')).chatHandler);
             room.tmiRoom.on('clearchat', handlers.clearChat);
-            room.tmiRoom.on('notice', handlers.notice);
         });
     }
 
