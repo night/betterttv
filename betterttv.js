@@ -1464,6 +1464,14 @@ var takeover = module.exports = function() {
     $("body").off("click", ".chat-line .from").on("click", ".chat-line .from", function() {
         handlers.moderationCard($(this).parent().data('sender')+"", $(this));
     });
+    
+    // Make names right-clickable to mention username
+    $('body').on('contextmenu', '.from', function(e) {
+	e.stopPropagation();
+	$('.ember-view.ember-text-area').val(e.target.innerHTML+', ').focus().get(0).setSelectionRange(e.target.innerHTML.length+2, e.target.innerHTML.length+2);
+	return false;
+    	
+    });
 
     // Give some tips to Twitch Emotes
     if(bttv.TwitchEmoteSets && tmi.product && tmi.product.emoticons) {
