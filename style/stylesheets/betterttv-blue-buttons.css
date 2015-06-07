@@ -13,8 +13,8 @@ a.js-follow.follow.button.primary.action:hover,
 #channel .stats-and-actions .follow-button a:hover,
 .directory_header .follow-button a:hover,
 .profile-info .follow-button a:hover,
-#hostmode .channel-actions:hover,
-.chat-room .moderation-card:hover { 
+#hostmode .channel-actions .follow-button a:hover,
+.chat-room .moderation-card .mod-card-follow:hover { 
     background: linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
     background: -o-linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
     background: -moz-linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
@@ -28,8 +28,8 @@ a.js-follow.follow.button.primary.action,
 #channel .stats-and-actions .follow-button a,
 .directory_header .follow-button a,
 .profile-info .follow-button a,
-#hostmode .channel-actions,
-.chat-room .moderation-card { 
+#hostmode .channel-actions .follow-button a,
+.chat-room .moderation-card .mod-card-follow { 
     border-color: #000 !important;
     background: linear-gradient(bottom, rgb(47,88,185) 31%, rgb(50,108,211) 80%) !important; 
     background: -o-linear-gradient(bottom, rgb(47,88,185) 31%, rgb(50,108,211) 80%) !important; 
