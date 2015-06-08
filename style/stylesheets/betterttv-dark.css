@@ -1758,6 +1758,7 @@ table.simple_table td {
     background-color: rgb(50,50,50);
     border-top: 1px solid #000;
     border-bottom: 1px solid #000;
+    box-shadow: none;
 }
 .ember-chat .chat-header.all-rooms-header {
     background-color: rgb(50,50,50);

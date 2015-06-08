@@ -61,7 +61,7 @@ ul.tabs li.selected a {
 
 .ember-chat .chat-messages {
     top: 0px;
-    bottom: 115px;
+    bottom: 114px;
     background-color: #f2f2f2; /* hide group chat feature depends on having a background */
 }
 
@@ -1127,6 +1127,12 @@ body#chat #speak {
 
 .ember-chat .chat-interface .chat-buttons-container .chat-option-buttons {
     margin-left: 8px;
+}
+
+/* more-messages-indicator is not full width */
+.ember-chat .chat-interface .more-messages-indicator {
+    left: 0px;
+    right: 0px;
 }
 
 .ember-chat .chat-header {
