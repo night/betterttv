@@ -1443,8 +1443,7 @@ body.channel_new.columns.ember-application {
 }
 
 /* mod card user locater */
-.chat-line.bttv-user-locate .from,
-.chat-line.bttv-user-locate .colon {
+.chat-line.bttv-user-locate .from {
     box-shadow: 0px 2px 0px 0px #f00;
 }
 
@@ -1452,4 +1451,12 @@ body.channel_new.columns.ember-application {
 .stats-and-actions .channel-actions .dropmenu,
 .chat-interface .dropmenu {
     margin-bottom: 5px;
+}
+
+/* whispers */
+.chat-messages .chat-line.whisper {
+    background-color: #E8D6FF !important;
+}
+.chat-messages .chat-line .svg-whisper-arrow {
+    fill: #32323e;
 }

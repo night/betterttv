@@ -47,7 +47,7 @@
  * Copyright (c) 2009-2014 TJ Holowaychuk (tj@vision-media.ca)
  * Licensed under the MIT license.
  */
-!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.jade=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.jade = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
 /**
@@ -280,6 +280,11 @@ exports.rethrow = function rethrow(err, filename, lineno, str){
     + '\n' + context + '\n\n' + err.message;
   throw err;
 };
+
+exports.DebugItem = function DebugItem(lineno, filename) {
+  this.lineno = lineno;
+  this.filename = filename;
+}
 
 },{"fs":2}],2:[function(require,module,exports){
 
@@ -604,7 +609,7 @@ var privmsg = exports.privmsg = function (channel, data) {
         store.displayNames[data.from] = data.tags['display-name'];
     }
 
-    if(data.style && ['admin','action','notification'].indexOf(data.style) === -1) return;
+    if(data.style && ['admin','action','notification','whisper'].indexOf(data.style) === -1) return;
 
     if(data.style === 'admin' || data.style === 'notification') {
         data.style = 'admin';
@@ -676,6 +681,28 @@ var privmsg = exports.privmsg = function (channel, data) {
         data.from = helpers.lookupDisplayName(data.from);
     }
 
+    // handle twitch whispers
+    if (data.style === 'whisper') {
+        var toColor = helpers.getColor(data.to);
+        toColor = helpers.calculateColor(toColor);
+
+        var message = templates.whisper({
+            message: data.message,
+            time: data.date == null ? '' : data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
+            from: data.from,
+            sender: data.sender,
+            receiver: data.to,
+            to: helpers.lookupDisplayName(data.to),
+            fromColor: data.color,
+            toColor: toColor,
+            emotes: data.tags.emotes
+        });
+
+        $('.ember-chat .chat-messages .tse-content .chat-lines').append(message);
+        helpers.scrollChat();
+        return;
+    }
+
     var message = templates.privmsg(
         messageHighlighted,
         data.style === 'action' ? true : false,
@@ -733,15 +760,50 @@ var lookupDisplayName = exports.lookupDisplayName = function(user) {
         return user.capitalize();
     }
 };
+var tcCommands = [
+    'mod',
+    'unmod',
+    'ban',
+    'unban',
+    'timeout',
+    'host',
+    'unhost',
+    'b',
+    't',
+    'u',
+    'w'
+];
+var detectServerCommand = function(input) {
+    var input = input.split(' ');
+
+    input.pop();
+    input = input.pop();
+
+    for(var i = 0; i < tcCommands.length; i++) {
+        var r = new RegExp('^(\/|\.)' + tcCommands[i] + '$', 'i');
+
+        if(r.test(input)) return true;
+    }
+
+    return false;
+};
+var tcSaveToHistory = function(user) {
+    if(store.tabCompleteHistory.indexOf(user) > -1) {
+        store.tabCompleteHistory.splice(store.tabCompleteHistory.indexOf(user), 1);
+    }
+
+    store.tabCompleteHistory.unshift(user);
+}
 var tabCompletion = exports.tabCompletion = function(e) {
     var keyCode = e.keyCode || e.which;
     var $chatInterface = $('.ember-chat .chat-interface');
     var $chatInput = $chatInterface.find('textarea');
 
-    var sentence = $chatInput.val().trim().split(' ');
+    var input = $chatInput.val();
+    var sentence = input.trim().split(' ');
     var lastWord = sentence.pop().toLowerCase();
 
-    if(keyCode === keyCodes.Tab || lastWord.charAt(0) === '@' && keyCode !== keyCodes.Enter) {
+    if((detectServerCommand(input) || keyCode === keyCodes.Tab || lastWord.charAt(0) === '@') && keyCode !== keyCodes.Enter) {
         var sugStore = store.suggestions;
 
         var currentMatch = lastWord.replace(/(^@|,$)/g, '');
@@ -788,11 +850,17 @@ var tabCompletion = exports.tabCompletion = function(e) {
             }
         } else {
             var search = currentMatch;
-            var users = Object.keys(store.chatters);
+            var users = store.tabCompleteHistory;
+            
+            users = users.concat(Object.keys(store.chatters));
 
             users = users.sort();
 
-            if(currentMatch.length && search.length) {
+            if(/^(\/|\.)/.test(search)) {
+                search = '';
+            }
+
+            if(search.length) {
                 users = users.filter(function(user) {
                     return (user.search(search, "i") === 0);
                 });
@@ -817,6 +885,14 @@ var tabCompletion = exports.tabCompletion = function(e) {
         sugStore.lastMatch = user;
 
         user = lookupDisplayName(user);
+
+        tcSaveToHistory(user);
+
+        if(/^(\/|\.)/.test(lastWord)) {
+            user = lastWord + ' ' + user;
+            $chatInput.val(user);
+            return;
+        }
 
         if(lastWord.charAt(0) === '@') {
             user = '@'+user;
@@ -867,16 +943,29 @@ var suggestions = exports.suggestions = function(words, index) {
     var $suggestions = $chatInterface.find('.suggestions');
     if($suggestions.length) $suggestions.remove();
 
+    var input = $chatInput.val();
+    var sentence = input.trim().split(' ');
+    var lastWord = sentence.pop();
+
+    if(
+        lastWord.charAt(0) !== '@' &&
+        !detectServerCommand(input) &&
+        bttv.settings.get('tabCompletionTooltip') === false
+    ) {
+        return;
+    }
+
     var $suggestions = $chatInterface.find('.textarea-contain').append(templates.suggestions(words, index)).find('.suggestions');
     $suggestions.find('.suggestion').on('click', function() {
         var user = $(this).text();
         var sentence = $chatInput.val().trim().split(' ');
         var lastWord = sentence.pop();
         if (lastWord.charAt(0) === '@') {
-        sentence.push("@" + lookupDisplayName(user));
+            sentence.push("@" + lookupDisplayName(user));
         } else {
             sentence.push(lookupDisplayName(user));
         }
+
         if(sentence.length === 1) {
             $chatInput.val(sentence.join(' ') + ", ");
         } else {
@@ -1422,6 +1511,7 @@ exports.__badges = {};
 exports.displayNames = {};
 exports.trackTimeouts = {};
 exports.chatters = {};
+exports.tabCompleteHistory = [];
 exports.suggestions = {
     matchList: [],
     lastMatch: '',
@@ -1585,7 +1675,8 @@ var takeover = module.exports = function() {
 
     // Make names clickable
     $("body").off("click", ".chat-line .from").on("click", ".chat-line .from", function() {
-        handlers.moderationCard($(this).parent().data('sender')+"", $(this));
+        var sender = $(this).data('sender') || $(this).parent().data('sender');
+        handlers.moderationCard(sender + "", $(this));
     });
 
     // Give some tips to Twitch Emotes
@@ -1672,7 +1763,7 @@ var takeover = module.exports = function() {
         }
 
         // Actual tabs must be captured on keydown
-        if(e.which === keyCodes.Tab && !e.ctrlKey) {
+        if((e.which === keyCodes.Tab && !e.ctrlKey) || /^(\/|.)w $/.test(val)) {
             helpers.tabCompletion(e);
             e.preventDefault();
         }
@@ -1951,10 +2042,8 @@ var moderationCard = exports.moderationCard = function(user, top, left) {
     return moderationCardTemplate({user: user, top: top, left: left});
 };
 var suggestions = exports.suggestions = function(suggestions, index) {
-    if (bttv.settings.get('tabCompletionTooltip') === true){
-        var suggestionsTemplate = require('../templates/chat-suggestions');
-        return suggestionsTemplate({suggestions: suggestions, index: index});
-    }
+    var suggestionsTemplate = require('../templates/chat-suggestions');
+    return suggestionsTemplate({suggestions: suggestions, index: index});
 };
 var message = exports.message = function(sender, message, emotes, colored) {
     colored = colored || false;
@@ -1978,6 +2067,12 @@ var message = exports.message = function(sender, message, emotes, colored) {
 };
 var privmsg = exports.privmsg = function(highlight, action, server, isMod, data) {
     return '<div class="chat-line'+(highlight?' highlight':'')+(action?' action':'')+(server?' admin':'')+'" data-sender="'+data.sender+'">'+timestamp(data.time)+' '+(isMod?modicons():'')+' '+badges(data.badges)+from(data.nickname, data.color)+message(data.sender, data.message, data.emotes, (action && !highlight)?data.color:false)+'</div>';
+}
+var whisperName = exports.whisperName = function(sender, receiver, from, to, fromColor, toColor) {
+    return '<span style="color: '+fromColor+';" class="from" data-sender="'+sender+'">'+escape(from)+'</span><svg class="svg-whisper-arrow" height="10px" version="1.1" width="16px"><polyline points="6 2, 10 6, 6 10, 6 2"></polyline></svg><span style="color: '+toColor+';" class="from" data-sender="'+receiver+'">'+escape(to)+'</span><span class="colon">:</span>&nbsp;<wbr></wbr>';
+}
+var whisper = exports.whisper = function(data) {
+    return '<div class="chat-line whisper" data-sender="'+data.sender+'">'+timestamp(data.time)+' '+whisperName(data.sender, data.receiver, data.from, data.to, data.fromColor, data.toColor)+message(data.sender, data.message, data.emotes, false)+'</div>';
 }
 
 },{"../templates/chat-suggestions":54,"../templates/moderation-card":56,"./helpers":5,"./store":8,"./tmi":11}],11:[function(require,module,exports){

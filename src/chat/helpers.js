@@ -35,15 +35,50 @@ var lookupDisplayName = exports.lookupDisplayName = function(user) {
         return user.capitalize();
     }
 };
+var tcCommands = [
+    'mod',
+    'unmod',
+    'ban',
+    'unban',
+    'timeout',
+    'host',
+    'unhost',
+    'b',
+    't',
+    'u',
+    'w'
+];
+var detectServerCommand = function(input) {
+    var input = input.split(' ');
+
+    input.pop();
+    input = input.pop();
+
+    for(var i = 0; i < tcCommands.length; i++) {
+        var r = new RegExp('^(\/|\.)' + tcCommands[i] + '$', 'i');
+
+        if(r.test(input)) return true;
+    }
+
+    return false;
+};
+var tcSaveToHistory = function(user) {
+    if(store.tabCompleteHistory.indexOf(user) > -1) {
+        store.tabCompleteHistory.splice(store.tabCompleteHistory.indexOf(user), 1);
+    }
+
+    store.tabCompleteHistory.unshift(user);
+}
 var tabCompletion = exports.tabCompletion = function(e) {
     var keyCode = e.keyCode || e.which;
     var $chatInterface = $('.ember-chat .chat-interface');
     var $chatInput = $chatInterface.find('textarea');
 
-    var sentence = $chatInput.val().trim().split(' ');
+    var input = $chatInput.val();
+    var sentence = input.trim().split(' ');
     var lastWord = sentence.pop().toLowerCase();
 
-    if(keyCode === keyCodes.Tab || lastWord.charAt(0) === '@' && keyCode !== keyCodes.Enter) {
+    if((detectServerCommand(input) || keyCode === keyCodes.Tab || lastWord.charAt(0) === '@') && keyCode !== keyCodes.Enter) {
         var sugStore = store.suggestions;
 
         var currentMatch = lastWord.replace(/(^@|,$)/g, '');
@@ -90,11 +125,17 @@ var tabCompletion = exports.tabCompletion = function(e) {
             }
         } else {
             var search = currentMatch;
-            var users = Object.keys(store.chatters);
+            var users = store.tabCompleteHistory;
+            
+            users = users.concat(Object.keys(store.chatters));
 
             users = users.sort();
 
-            if(currentMatch.length && search.length) {
+            if(/^(\/|\.)/.test(search)) {
+                search = '';
+            }
+
+            if(search.length) {
                 users = users.filter(function(user) {
                     return (user.search(search, "i") === 0);
                 });
@@ -119,6 +160,14 @@ var tabCompletion = exports.tabCompletion = function(e) {
         sugStore.lastMatch = user;
 
         user = lookupDisplayName(user);
+
+        tcSaveToHistory(user);
+
+        if(/^(\/|\.)/.test(lastWord)) {
+            user = lastWord + ' ' + user;
+            $chatInput.val(user);
+            return;
+        }
 
         if(lastWord.charAt(0) === '@') {
             user = '@'+user;
@@ -169,16 +218,29 @@ var suggestions = exports.suggestions = function(words, index) {
     var $suggestions = $chatInterface.find('.suggestions');
     if($suggestions.length) $suggestions.remove();
 
+    var input = $chatInput.val();
+    var sentence = input.trim().split(' ');
+    var lastWord = sentence.pop();
+
+    if(
+        lastWord.charAt(0) !== '@' &&
+        !detectServerCommand(input) &&
+        bttv.settings.get('tabCompletionTooltip') === false
+    ) {
+        return;
+    }
+
     var $suggestions = $chatInterface.find('.textarea-contain').append(templates.suggestions(words, index)).find('.suggestions');
     $suggestions.find('.suggestion').on('click', function() {
         var user = $(this).text();
         var sentence = $chatInput.val().trim().split(' ');
         var lastWord = sentence.pop();
         if (lastWord.charAt(0) === '@') {
-        sentence.push("@" + lookupDisplayName(user));
+            sentence.push("@" + lookupDisplayName(user));
         } else {
             sentence.push(lookupDisplayName(user));
         }
+
         if(sentence.length === 1) {
             $chatInput.val(sentence.join(' ') + ", ");
         } else {

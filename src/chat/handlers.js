@@ -259,7 +259,7 @@ var privmsg = exports.privmsg = function (channel, data) {
         store.displayNames[data.from] = data.tags['display-name'];
     }
 
-    if(data.style && ['admin','action','notification'].indexOf(data.style) === -1) return;
+    if(data.style && ['admin','action','notification','whisper'].indexOf(data.style) === -1) return;
 
     if(data.style === 'admin' || data.style === 'notification') {
         data.style = 'admin';
@@ -329,6 +329,28 @@ var privmsg = exports.privmsg = function (channel, data) {
         data.from = data.bttvDisplayName;
     } else {
         data.from = helpers.lookupDisplayName(data.from);
+    }
+
+    // handle twitch whispers
+    if (data.style === 'whisper') {
+        var toColor = helpers.getColor(data.to);
+        toColor = helpers.calculateColor(toColor);
+
+        var message = templates.whisper({
+            message: data.message,
+            time: data.date == null ? '' : data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
+            from: data.from,
+            sender: data.sender,
+            receiver: data.to,
+            to: helpers.lookupDisplayName(data.to),
+            fromColor: data.color,
+            toColor: toColor,
+            emotes: data.tags.emotes
+        });
+
+        $('.ember-chat .chat-messages .tse-content .chat-lines').append(message);
+        helpers.scrollChat();
+        return;
     }
 
     var message = templates.privmsg(

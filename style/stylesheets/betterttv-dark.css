@@ -2028,3 +2028,12 @@ span.subscribe-text {
     padding: 5px 15px;
     background-color: rgb(25,25,25);
 }
+
+/* dark whispers (lenny face) */
+.chat-messages .chat-line.whisper {
+    background-color: #352645 !important; /* blue: #202236 */
+}
+.chat-messages .chat-line .svg-whisper-arrow {
+    fill: #D3D3D3;
+}
+
