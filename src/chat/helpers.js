@@ -59,7 +59,7 @@ var detectServerCommand = function(input) {
     if(input[0] !== checkCommand) return false;
 
     for(var i = 0; i < tcCommands.length; i++) {
-        var r = new RegExp('^(\/|\.)' + tcCommands[i] + '$', 'i');
+        var r = new RegExp('^(\\/|\\.)' + tcCommands[i] + '$', 'i');
 
         if(r.test(checkCommand)) return true;
     }
