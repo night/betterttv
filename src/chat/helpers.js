@@ -51,13 +51,17 @@ var tcCommands = [
 var detectServerCommand = function(input) {
     var input = input.split(' ');
 
+    if(input.length < 2) return false;
+
     input.pop();
-    input = input.pop();
+    checkCommand = input[input.length - 1];
+
+    if(input[0] !== checkCommand) return false;
 
     for(var i = 0; i < tcCommands.length; i++) {
         var r = new RegExp('^(\/|\.)' + tcCommands[i] + '$', 'i');
 
-        if(r.test(input)) return true;
+        if(r.test(checkCommand)) return true;
     }
 
     return false;
