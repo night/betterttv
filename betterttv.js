@@ -380,6 +380,17 @@ var commands = exports.commands = function (input) {
         helpers.unban(sentence[1]);
     } else if (command === "/sub") {
         tmi().tmiRoom.startSubscribersMode();
+    } else if (command === '/r') {
+            var to = ($.grep(store.__rooms[store.currentRoom].messages, function(msg) {
+                return msg.style === 'whisper';
+            }))[0].from;
+            if (to) {
+                sentence[0] = '/w';
+                sentence.splice(1, 0, to);
+                helpers.sendMessage(sentence.join(' '));
+            } else {
+                helpers.serverMessage('You have not recieved any whispers', true);
+            }
     } else if (command === "/suboff") {
         tmi().tmiRoom.stopSubscribersMode();
     } else if (command === "/localsub") {
@@ -444,6 +455,7 @@ var commands = exports.commands = function (input) {
         helpers.serverMessage("/localsub -- Turns on local sub-only mode (only your chat is sub-only mode)");
         helpers.serverMessage("/localsuboff -- Turns off local sub-only mode");
         helpers.serverMessage("/massunban (or /unban all or /u all) -- Unbans all users in the channel (channel owner only)");
+        helpers.serverMessage("/r [message] -- Reply to your last recieved whisper");
         helpers.serverMessage("/sub -- Shortcut for /subscribers");
         helpers.serverMessage("/suboff -- Shortcut for /subscribersoff");
         helpers.serverMessage("/t [username] [time in seconds] -- Shortcut for /timeout");
@@ -698,6 +710,7 @@ var privmsg = exports.privmsg = function (channel, data) {
             emotes: data.tags.emotes
         });
 
+
         $('.ember-chat .chat-messages .tse-content .chat-lines').append(message);
         helpers.scrollChat();
         return;
@@ -792,7 +805,7 @@ var detectServerCommand = function(input) {
     return false;
 };
 var tcSaveToHistory = function(user) {
-    if(store.tabCompleteHistory.indexOf(user) > -1) {
+    if(store.tabCompleteHistory.map(function(el) { return el.toLowerCase();}).indexOf(user.toLowerCase()) > -1) {
         store.tabCompleteHistory.splice(store.tabCompleteHistory.indexOf(user), 1);
     }
 
@@ -805,9 +818,11 @@ var tabCompletion = exports.tabCompletion = function(e) {
 
     var input = $chatInput.val();
     var sentence = input.trim().split(' ');
+    console.log('Sentence:' + sentence);
     var lastWord = sentence.pop().toLowerCase();
+    console.log('Sentence:' + sentence);
 
-    if((detectServerCommand(input) || keyCode === keyCodes.Tab || lastWord.charAt(0) === '@') && keyCode !== keyCodes.Enter) {
+    if(((detectServerCommand(input) && !sentence[1]) || keyCode === keyCodes.Tab || lastWord.charAt(0) === '@') && keyCode !== keyCodes.Enter) {
         var sugStore = store.suggestions;
 
         var currentMatch = lastWord.replace(/(^@|,$)/g, '');
@@ -950,7 +965,6 @@ var suggestions = exports.suggestions = function(words, index) {
     var input = $chatInput.val();
     var sentence = input.trim().split(' ');
     var lastWord = sentence.pop();
-
     if(
         lastWord.charAt(0) !== '@' &&
         !detectServerCommand(input) &&
@@ -963,13 +977,12 @@ var suggestions = exports.suggestions = function(words, index) {
     $suggestions.find('.suggestion').on('click', function() {
         var user = $(this).text();
         var sentence = $chatInput.val().trim().split(' ');
-        var lastWord = sentence.pop();
+        var lastWord = sentence[0] === '/w' && !sentence[1] ? '' : sentence.pop();
         if (lastWord.charAt(0) === '@') {
             sentence.push("@" + lookupDisplayName(user));
         } else {
             sentence.push(lookupDisplayName(user));
         }
-
         if(sentence.length === 1) {
             $chatInput.val(sentence.join(' ') + ", ");
         } else {

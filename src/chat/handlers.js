@@ -30,6 +30,17 @@ var commands = exports.commands = function (input) {
         helpers.unban(sentence[1]);
     } else if (command === "/sub") {
         tmi().tmiRoom.startSubscribersMode();
+    } else if (command === '/r') {
+            var to = ($.grep(store.__rooms[store.currentRoom].messages, function(msg) {
+                return msg.style === 'whisper';
+            }))[0].from;
+            if (to) {
+                sentence[0] = '/w';
+                sentence.splice(1, 0, to);
+                helpers.sendMessage(sentence.join(' '));
+            } else {
+                helpers.serverMessage('You have not recieved any whispers', true);
+            }
     } else if (command === "/suboff") {
         tmi().tmiRoom.stopSubscribersMode();
     } else if (command === "/localsub") {
@@ -94,6 +105,7 @@ var commands = exports.commands = function (input) {
         helpers.serverMessage("/localsub -- Turns on local sub-only mode (only your chat is sub-only mode)");
         helpers.serverMessage("/localsuboff -- Turns off local sub-only mode");
         helpers.serverMessage("/massunban (or /unban all or /u all) -- Unbans all users in the channel (channel owner only)");
+        helpers.serverMessage("/r [message] -- Reply to your last recieved whisper");
         helpers.serverMessage("/sub -- Shortcut for /subscribers");
         helpers.serverMessage("/suboff -- Shortcut for /subscribersoff");
         helpers.serverMessage("/t [username] [time in seconds] -- Shortcut for /timeout");
@@ -347,6 +359,7 @@ var privmsg = exports.privmsg = function (channel, data) {
             toColor: toColor,
             emotes: data.tags.emotes
         });
+
 
         $('.ember-chat .chat-messages .tse-content .chat-lines').append(message);
         helpers.scrollChat();
