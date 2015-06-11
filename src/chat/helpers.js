@@ -19,7 +19,7 @@ var lookupDisplayName = exports.lookupDisplayName = function(user) {
     if(vars.userData.isLoggedIn && user === vars.userData.login) {
         store.displayNames[user] = Twitch.user.displayName() || user;
     }
-    
+
     // Get subscription status (Night's subs)
     bttv.io.lookupUser(user);
 
@@ -130,7 +130,7 @@ var tabCompletion = exports.tabCompletion = function(e) {
         } else {
             var search = currentMatch;
             var users = store.tabCompleteHistory;
-            
+
             users = users.concat(Object.keys(store.chatters));
 
             users = users.sort();
@@ -700,3 +700,20 @@ var massUnban = exports.massUnban = function() {
         }
     });
 }*/
+var whisperReply = exports.whisperReply = function(msg) {
+    if(!msg || msg === "") return;
+
+    if (!vars.lastWhisperFrom) {
+        serverMessage("There is no recorded whisper to reply to.");
+        return;
+    }
+
+    var currentTime = new Date().getTime();
+    if (currentTime - vars.lastWhisperTime < 3000) {
+        serverMessage("Message not sent because the reply target just changed.");
+        return;
+    }
+
+    var reply = "/w " + vars.lastWhisperFrom + " " + msg;
+    tmi().tmiRoom.sendMessage(reply);
+};

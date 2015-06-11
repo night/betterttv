@@ -28,6 +28,8 @@ var commands = exports.commands = function (input) {
         helpers.massUnban();
     } else if (command === "/u") {
         helpers.unban(sentence[1]);
+    } else if (command === "/r") {
+        helpers.whisperReply(sentence[1]);
     } else if (command === "/sub") {
         tmi().tmiRoom.startSubscribersMode();
     } else if (command === "/suboff") {
@@ -352,6 +354,11 @@ var privmsg = exports.privmsg = function (channel, data) {
         if (data.to === vars.userData.login) {
             if(bttv.settings.get('chatLineHistory') === true) {
                 var val = "/w " + data.from + " ";
+                if (data.from !== vars.lastWhisperFrom) {
+                    // Only reset timer if sender changes
+                    vars.lastWhisperTime = new Date().getTime();
+                }
+                vars.lastWhisperFrom = data.from;
                 if(store.chatHistory.indexOf(val) !== -1) {
                     store.chatHistory.splice(store.chatHistory.indexOf(val), 1);
                 }
