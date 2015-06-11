@@ -348,6 +348,17 @@ var privmsg = exports.privmsg = function (channel, data) {
             emotes: data.tags.emotes
         });
 
+        // Add prepared reply template to chat history
+        if (data.to === vars.userData.login) {
+            if(bttv.settings.get('chatLineHistory') === true) {
+                var val = "/w " + data.from + " ";
+                if(store.chatHistory.indexOf(val) !== -1) {
+                    store.chatHistory.splice(store.chatHistory.indexOf(val), 1);
+                }
+                store.chatHistory.unshift(val);
+            }
+        }
+
         $('.ember-chat .chat-messages .tse-content .chat-lines').append(message);
         helpers.scrollChat();
         return;
