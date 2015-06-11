@@ -158,10 +158,8 @@ var moderationCard = exports.moderationCard = function(user, top, left) {
     return moderationCardTemplate({user: user, top: top, left: left});
 };
 var suggestions = exports.suggestions = function(suggestions, index) {
-    if (bttv.settings.get('tabCompletionTooltip') === true){
-        var suggestionsTemplate = require('../templates/chat-suggestions');
-        return suggestionsTemplate({suggestions: suggestions, index: index});
-    }
+    var suggestionsTemplate = require('../templates/chat-suggestions');
+    return suggestionsTemplate({suggestions: suggestions, index: index});
 };
 var message = exports.message = function(sender, message, emotes, colored) {
     colored = colored || false;
@@ -185,4 +183,10 @@ var message = exports.message = function(sender, message, emotes, colored) {
 };
 var privmsg = exports.privmsg = function(highlight, action, server, isMod, data) {
     return '<div class="chat-line'+(highlight?' highlight':'')+(action?' action':'')+(server?' admin':'')+'" data-sender="'+data.sender+'">'+timestamp(data.time)+' '+(isMod?modicons():'')+' '+badges(data.badges)+from(data.nickname, data.color)+message(data.sender, data.message, data.emotes, (action && !highlight)?data.color:false)+'</div>';
+}
+var whisperName = exports.whisperName = function(sender, receiver, from, to, fromColor, toColor) {
+    return '<span style="color: '+fromColor+';" class="from" data-sender="'+sender+'">'+escape(from)+'</span><svg class="svg-whisper-arrow" height="10px" version="1.1" width="16px"><polyline points="6 2, 10 6, 6 10, 6 2"></polyline></svg><span style="color: '+toColor+';" class="from" data-sender="'+receiver+'">'+escape(to)+'</span><span class="colon">:</span>&nbsp;<wbr></wbr>';
+}
+var whisper = exports.whisper = function(data) {
+    return '<div class="chat-line whisper" data-sender="'+data.sender+'">'+timestamp(data.time)+' '+whisperName(data.sender, data.receiver, data.from, data.to, data.fromColor, data.toColor)+message(data.sender, data.message, data.emotes, false)+'</div>';
 }

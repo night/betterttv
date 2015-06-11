@@ -61,7 +61,7 @@ ul.tabs li.selected a {
 
 .ember-chat .chat-messages {
     top: 0px;
-    bottom: 115px;
+    bottom: 114px;
     background-color: #f2f2f2; /* hide group chat feature depends on having a background */
 }
 
@@ -1129,6 +1129,12 @@ body#chat #speak {
     margin-left: 8px;
 }
 
+/* more-messages-indicator is not full width */
+.ember-chat .chat-interface .more-messages-indicator {
+    left: 0px;
+    right: 0px;
+}
+
 .ember-chat .chat-header {
     right: 0px;
     left: 0px;
@@ -1437,8 +1443,7 @@ body.channel_new.columns.ember-application {
 }
 
 /* mod card user locater */
-.chat-line.bttv-user-locate .from,
-.chat-line.bttv-user-locate .colon {
+.chat-line.bttv-user-locate .from {
     box-shadow: 0px 2px 0px 0px #f00;
 }
 
@@ -1446,4 +1451,12 @@ body.channel_new.columns.ember-application {
 .stats-and-actions .channel-actions .dropmenu,
 .chat-interface .dropmenu {
     margin-bottom: 5px;
+}
+
+/* whispers */
+.chat-messages .chat-line.whisper {
+    background-color: #E8D6FF !important;
+}
+.chat-messages .chat-line .svg-whisper-arrow {
+    fill: #32323e;
 }

@@ -148,7 +148,8 @@ var takeover = module.exports = function() {
 
     // Make names clickable
     $("body").off("click", ".chat-line .from").on("click", ".chat-line .from", function() {
-        handlers.moderationCard($(this).parent().data('sender')+"", $(this));
+        var sender = $(this).data('sender') || $(this).parent().data('sender');
+        handlers.moderationCard(sender + "", $(this));
     });
 
     // Give some tips to Twitch Emotes
@@ -235,7 +236,7 @@ var takeover = module.exports = function() {
         }
 
         // Actual tabs must be captured on keydown
-        if(e.which === keyCodes.Tab && !e.ctrlKey) {
+        if((e.which === keyCodes.Tab && !e.ctrlKey) || /^(\/|.)w $/.test(val)) {
             helpers.tabCompletion(e);
             e.preventDefault();
         }
