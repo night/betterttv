@@ -705,13 +705,13 @@ var whisperReply = exports.whisperReply = function(msg) {
     if(!msg || msg === "") return;
 
     if (!vars.lastWhisperFrom) {
-        serverMessage("There is no recorded whisper to reply to.");
+        serverMessage("There is no whisper to reply to.");
         return;
     }
 
     var currentTime = new Date().getTime();
-    if (currentTime - vars.lastWhisperTime < 3000) {
-        serverMessage("Message not sent because the reply target just changed.");
+    if (currentTime - vars.lastWhisperTime < 2000) {
+        serverMessage("Message not sent because the whisper recipient just changed.");
         return;
     }
 
