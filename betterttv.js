@@ -714,7 +714,6 @@ var privmsg = exports.privmsg = function (channel, data) {
             emotes: data.tags.emotes
         });
 
-
         $('.ember-chat .chat-messages .tse-content .chat-lines').append(message);
         helpers.scrollChat();
         return;
@@ -817,13 +816,14 @@ var tabCompletion = exports.tabCompletion = function(e) {
     var sentence = input.trim().split(' ');
     var lastWord = sentence.pop().toLowerCase();
 
-    if(((detectServerCommand(input)) || keyCode === keyCodes.Tab || lastWord.charAt(0) === '@') && keyCode !== keyCodes.Enter) {
+    if((detectServerCommand(input) || keyCode === keyCodes.Tab || lastWord.charAt(0) === '@') && keyCode !== keyCodes.Enter) {
         var sugStore = store.suggestions;
 
         var currentMatch = lastWord.replace(/(^@|,$)/g, '');
         var currentIndex = sugStore.matchList.indexOf(currentMatch);
 
         var user;
+
         if(currentMatch === sugStore.lastMatch && currentIndex > -1) {
             var nextIndex;
             var prevIndex;
@@ -843,6 +843,7 @@ var tabCompletion = exports.tabCompletion = function(e) {
             var index = e.shiftKey ? prevIndex : nextIndex;
 
             user = sugStore.matchList[index];
+
             if(sugStore.matchList.length < 6) {
                 suggestions(sugStore.matchList, index);
             } else {
@@ -857,6 +858,7 @@ var tabCompletion = exports.tabCompletion = function(e) {
                     slice = index-2;
                     index = 2;
                 }
+
                 suggestions(sugStore.matchList.slice(slice,slice+5), index);
             }
         } else {
@@ -894,6 +896,7 @@ var tabCompletion = exports.tabCompletion = function(e) {
             }
 
             if(!users.length) return;
+
             sugStore.matchList = users;
 
             suggestions(users.slice(0,5), 0);
@@ -988,6 +991,7 @@ var suggestions = exports.suggestions = function(words, index) {
         } else {
             sentence.push(lookupDisplayName(user));
         }
+        
         if(sentence.length === 1) {
             $chatInput.val(sentence.join(' ') + ", ");
         } else {

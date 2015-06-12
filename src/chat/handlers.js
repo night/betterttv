@@ -364,7 +364,6 @@ var privmsg = exports.privmsg = function (channel, data) {
             emotes: data.tags.emotes
         });
 
-
         $('.ember-chat .chat-messages .tse-content .chat-lines').append(message);
         helpers.scrollChat();
         return;
