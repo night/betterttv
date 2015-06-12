@@ -352,13 +352,14 @@ var privmsg = exports.privmsg = function (channel, data) {
 
         // Add prepared reply template to chat history
         if (data.to === vars.userData.login) {
+            if (data.from !== vars.lastWhisperFrom) {
+                // Only reset timer if sender changes
+                vars.lastWhisperTime = new Date().getTime();
+                vars.lastWhisperFrom = data.from;
+            }
+
             if(bttv.settings.get('chatLineHistory') === true) {
                 var val = "/w " + data.from + " ";
-                if (data.from !== vars.lastWhisperFrom) {
-                    // Only reset timer if sender changes
-                    vars.lastWhisperTime = new Date().getTime();
-                }
-                vars.lastWhisperFrom = data.from;
                 if(store.chatHistory.indexOf(val) !== -1) {
                     store.chatHistory.splice(store.chatHistory.indexOf(val), 1);
                 }
