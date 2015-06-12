@@ -595,10 +595,7 @@ var onPrivmsg = exports.onPrivmsg = function (channel, data) {
     try {
         if (data.style === 'whisper') {
             store.chatters[data.from] = {lastWhisper:Date.now()};
-            if (bttv.settings.get('disableWhispers') === true) {
-                console.log('Whisper recieved, hiding');
-                return;
-            }
+            if (bttv.settings.get('disableWhispers') === true) return;
         }
         privmsg(channel, data);
     } catch(e) {
@@ -933,11 +930,13 @@ var whisperReply = exports.whisperReply = function(e) {
     if ($chatInput.val() === '/r ' && bttv.settings.get('disableWhispers') === false) {
         var to = ($.grep(store.__rooms[store.currentRoom].messages, function(msg) {
             return (msg.style === 'whisper' && msg.from.toLowerCase() !== vars.userData.login);
-        }));
+        }).pop() || {from:null}).from;
         if (to) {
-            to = to[to.length - 1].from;
             $chatInput.val('/w ' + to + ' ');
-        } 
+        } else {
+            $chatInput.val('');
+            serverMessage('You have not received any whispers', true);
+        }
     }
 };
 var chatLineHistory = exports.chatLineHistory = function($chatInput, e) {

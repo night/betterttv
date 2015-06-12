@@ -198,11 +198,13 @@ var whisperReply = exports.whisperReply = function(e) {
     if ($chatInput.val() === '/r ' && bttv.settings.get('disableWhispers') === false) {
         var to = ($.grep(store.__rooms[store.currentRoom].messages, function(msg) {
             return (msg.style === 'whisper' && msg.from.toLowerCase() !== vars.userData.login);
-        }));
+        }).pop() || {from:null}).from;
         if (to) {
-            to = to[to.length - 1].from;
             $chatInput.val('/w ' + to + ' ');
-        } 
+        } else {
+            $chatInput.val('');
+            serverMessage('You have not received any whispers', true);
+        }
     }
 };
 var chatLineHistory = exports.chatLineHistory = function($chatInput, e) {
