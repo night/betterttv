@@ -28,6 +28,8 @@ var commands = exports.commands = function (input) {
         helpers.massUnban();
     } else if (command === "/u") {
         helpers.unban(sentence[1]);
+    } else if (command === "/r") {
+        helpers.whisperReply(sentence[1]);
     } else if (command === "/sub") {
         tmi().tmiRoom.startSubscribersMode();
     } else if (command === "/suboff") {
@@ -98,6 +100,7 @@ var commands = exports.commands = function (input) {
         helpers.serverMessage("/suboff -- Shortcut for /subscribersoff");
         helpers.serverMessage("/t [username] [time in seconds] -- Shortcut for /timeout");
         helpers.serverMessage("/u [username] -- Shortcut for /unban");
+        helpers.serverMessage("/r [message] -- Shortcut for /w [last whisper sender] [message]");
         helpers.serverMessage("/uptime -- Retrieves the amount of time the channel has been live");
         helpers.serverMessage("/viewers -- Retrieves the number of viewers watching the channel");
         helpers.serverMessage("Native Chat Commands:");
@@ -347,6 +350,23 @@ var privmsg = exports.privmsg = function (channel, data) {
             toColor: toColor,
             emotes: data.tags.emotes
         });
+
+        // Add prepared reply template to chat history
+        if (data.to === vars.userData.login) {
+            if (data.from !== vars.lastWhisperFrom) {
+                // Only reset timer if sender changes
+                vars.lastWhisperTime = Date.now();
+                vars.lastWhisperFrom = data.from;
+            }
+
+            if(bttv.settings.get('chatLineHistory') === true) {
+                var val = "/w " + data.from + " ";
+                if(store.chatHistory.indexOf(val) !== -1) {
+                    store.chatHistory.splice(store.chatHistory.indexOf(val), 1);
+                }
+                store.chatHistory.unshift(val);
+            }
+        }
 
         $('.ember-chat .chat-messages .tse-content .chat-lines').append(message);
         helpers.scrollChat();
