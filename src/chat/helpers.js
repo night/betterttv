@@ -128,14 +128,14 @@ var tabCompletion = exports.tabCompletion = function(e) {
 
             if (detectServerCommand(input)) {
                 for (var i = users.length; i >= 0; i--) {
-                    if (store.chatters[users[i]] !== undefined && store.chatters[users[i]].lastWhisper) {
+                    if (store.chatters[users[i]] !== undefined && store.chatters[users[i]].lastWhisper !== 0) {
                         recentWhispers.push(users[i]);
                         users.splice(i,1);
                     }
                 }
 
                 recentWhispers.sort(function(a, b) {
-                    return new Date(store.chatters[b].lastWhisper) - new Date(store.chatters[a].lastWhisper);
+                    return store.chatters[b].lastWhisper - store.chatters[a].lastWhisper;
                 });
             }
 
@@ -191,6 +191,18 @@ var tabCompletion = exports.tabCompletion = function(e) {
         } else {
             $chatInput.val(sentence.join(' '));
         }
+    }
+};
+var whisperReply = exports.whisperReply = function(e) {
+    var $chatInput = $('.ember-chat .chat-interface').find('textarea');
+    if ($chatInput.val() === '/r ') {
+        var to = ($.grep(store.__rooms[store.currentRoom].messages, function(msg) {
+            return (msg.style === 'whisper' && msg.from.toLowerCase() !== vars.userData.login);
+        }));
+        if (to) {
+            to = to[to.length - 1].from;
+            $chatInput.val('/w ' + to + ' ');
+        } 
     }
 };
 var chatLineHistory = exports.chatLineHistory = function($chatInput, e) {
@@ -250,7 +262,7 @@ var suggestions = exports.suggestions = function(words, index) {
         } else {
             sentence.push(lookupDisplayName(user));
         }
-        
+
         if(sentence.length === 1) {
             $chatInput.val(sentence.join(' ') + ", ");
         } else {

@@ -380,18 +380,6 @@ var commands = exports.commands = function (input) {
         helpers.unban(sentence[1]);
     } else if (command === "/sub") {
         tmi().tmiRoom.startSubscribersMode();
-    } else if (command === '/r') {
-            var to = ($.grep(store.__rooms[store.currentRoom].messages, function(msg) {
-                return (msg.style === 'whisper' && msg.from.toLowerCase() !== vars.userData.login);
-            }));
-            if (to) {
-                to = to[to.length - 1];
-                sentence[0] = '/w';
-                sentence.splice(1, 0, to.from);
-                helpers.sendMessage(sentence.join(' '));
-            } else {
-                helpers.serverMessage('You have not recieved any whispers', true);
-            }
     } else if (command === "/suboff") {
         tmi().tmiRoom.stopSubscribersMode();
     } else if (command === "/localsub") {
@@ -456,7 +444,7 @@ var commands = exports.commands = function (input) {
         helpers.serverMessage("/localsub -- Turns on local sub-only mode (only your chat is sub-only mode)");
         helpers.serverMessage("/localsuboff -- Turns off local sub-only mode");
         helpers.serverMessage("/massunban (or /unban all or /u all) -- Unbans all users in the channel (channel owner only)");
-        helpers.serverMessage("/r [message] -- Reply to your last recieved whisper");
+        helpers.serverMessage("/r -- Type '/r ' to respond to your last whisper");
         helpers.serverMessage("/sub -- Shortcut for /subscribers");
         helpers.serverMessage("/suboff -- Shortcut for /subscribersoff");
         helpers.serverMessage("/t [username] [time in seconds] -- Shortcut for /timeout");
@@ -653,7 +641,7 @@ var privmsg = exports.privmsg = function (channel, data) {
         return;
     }
 
-    if(!store.chatters[data.from]) store.chatters[data.from] = true;
+    if(!store.chatters[data.from]) store.chatters[data.from] = {lastWhisper: 0};
 
     if(vars.localSubsOnly && !helpers.isModerator(data.from) && !helpers.isSubscriber(data.from)) return;
     if(vars.localModsOnly && !helpers.isModerator(data.from)) return;
@@ -869,14 +857,14 @@ var tabCompletion = exports.tabCompletion = function(e) {
 
             if (detectServerCommand(input)) {
                 for (var i = users.length; i >= 0; i--) {
-                    if (store.chatters[users[i]] !== undefined && store.chatters[users[i]].lastWhisper) {
+                    if (store.chatters[users[i]] !== undefined && store.chatters[users[i]].lastWhisper !== 0) {
                         recentWhispers.push(users[i]);
                         users.splice(i,1);
                     }
                 }
 
                 recentWhispers.sort(function(a, b) {
-                    return new Date(store.chatters[b].lastWhisper) - new Date(store.chatters[a].lastWhisper);
+                    return store.chatters[b].lastWhisper - store.chatters[a].lastWhisper;
                 });
             }
 
@@ -932,6 +920,18 @@ var tabCompletion = exports.tabCompletion = function(e) {
         } else {
             $chatInput.val(sentence.join(' '));
         }
+    }
+};
+var whisperReply = exports.whisperReply = function(e) {
+    var $chatInput = $('.ember-chat .chat-interface').find('textarea');
+    if ($chatInput.val() === '/r ') {
+        var to = ($.grep(store.__rooms[store.currentRoom].messages, function(msg) {
+            return (msg.style === 'whisper' && msg.from.toLowerCase() !== vars.userData.login);
+        }));
+        if (to) {
+            to = to[to.length - 1].from;
+            $chatInput.val('/w ' + to + ' ');
+        } 
     }
 };
 var chatLineHistory = exports.chatLineHistory = function($chatInput, e) {
@@ -991,7 +991,7 @@ var suggestions = exports.suggestions = function(words, index) {
         } else {
             sentence.push(lookupDisplayName(user));
         }
-        
+
         if(sentence.length === 1) {
             $chatInput.val(sentence.join(' ') + ", ");
         } else {
@@ -1739,8 +1739,8 @@ var takeover = module.exports = function() {
     $chatInput.on('keyup', function(e) {
         // '@' completion is captured only on keyup
         if(e.which === keyCodes.Tab || e.which === keyCodes.Shift) return;
-
         helpers.tabCompletion(e);
+        helpers.whisperReply(e);
     });
 
     // Implement our own text senders (+ commands & legacy tab completion)
@@ -1852,7 +1852,7 @@ var takeover = module.exports = function() {
 
     // Reset chatters list
     store.chatters = {};
-    store.chatters[bttv.getChannel()] = true;
+    store.chatters[bttv.getChannel()] = {lastWhisper: 0};
 
     // When messages come in too fast, things get laggy
     if(!store.__messageTimer) store.__messageTimer = setInterval(handlers.shiftQueue, 500);
