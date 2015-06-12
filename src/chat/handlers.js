@@ -28,6 +28,8 @@ var commands = exports.commands = function (input) {
         helpers.massUnban();
     } else if (command === "/u") {
         helpers.unban(sentence[1]);
+    } else if (command === '/w' && bttv.settings.get('disableWhispers') === true) {
+        helpers.serverMessage('You have disabled whispers in BetterTTV settings');
     } else if (command === "/sub") {
         tmi().tmiRoom.startSubscribersMode();
     } else if (command === "/suboff") {
@@ -243,6 +245,7 @@ var onPrivmsg = exports.onPrivmsg = function (channel, data) {
     try {
         if (data.style === 'whisper') {
             store.chatters[data.from] = {lastWhisper:Date.now()};
+            if (bttv.settings.get('disableWhispers') === true) return;
         }
         privmsg(channel, data);
     } catch(e) {

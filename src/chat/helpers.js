@@ -195,7 +195,7 @@ var tabCompletion = exports.tabCompletion = function(e) {
 };
 var whisperReply = exports.whisperReply = function(e) {
     var $chatInput = $('.ember-chat .chat-interface').find('textarea');
-    if ($chatInput.val() === '/r ') {
+    if ($chatInput.val() === '/r ' && bttv.settings.get('disableWhispers') === false) {
         var to = ($.grep(store.__rooms[store.currentRoom].messages, function(msg) {
             return (msg.style === 'whisper' && msg.from.toLowerCase() !== vars.userData.login);
         }));

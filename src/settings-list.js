@@ -191,6 +191,12 @@ module.exports = [
         }
     },*/
     {
+        name: 'Disable whispers',
+        description: 'Disables the twitch whisper functionalitiy, hiding any whispers you recieve',
+        default: false,
+        storageKey: 'disableWhispers'
+    },
+    {
         name: 'Embedded Polling',
         description: 'See polls posted by the broadcaster embedded right into chat',
         default: true,

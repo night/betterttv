@@ -378,6 +378,8 @@ var commands = exports.commands = function (input) {
         helpers.massUnban();
     } else if (command === "/u") {
         helpers.unban(sentence[1]);
+    } else if (command === '/w' && bttv.settings.get('disableWhispers') === true) {
+        helpers.serverMessage('You have disabled whispers in BetterTTV settings');
     } else if (command === "/sub") {
         tmi().tmiRoom.startSubscribersMode();
     } else if (command === "/suboff") {
@@ -593,6 +595,10 @@ var onPrivmsg = exports.onPrivmsg = function (channel, data) {
     try {
         if (data.style === 'whisper') {
             store.chatters[data.from] = {lastWhisper:Date.now()};
+            if (bttv.settings.get('disableWhispers') === true) {
+                console.log('Whisper recieved, hiding');
+                return;
+            }
         }
         privmsg(channel, data);
     } catch(e) {
@@ -924,7 +930,7 @@ var tabCompletion = exports.tabCompletion = function(e) {
 };
 var whisperReply = exports.whisperReply = function(e) {
     var $chatInput = $('.ember-chat .chat-interface').find('textarea');
-    if ($chatInput.val() === '/r ') {
+    if ($chatInput.val() === '/r ' && bttv.settings.get('disableWhispers') === false) {
         var to = ($.grep(store.__rooms[store.currentRoom].messages, function(msg) {
             return (msg.style === 'whisper' && msg.from.toLowerCase() !== vars.userData.login);
         }));
@@ -4831,6 +4837,12 @@ module.exports = [
             }
         }
     },*/
+    {
+        name: 'Disable whispers',
+        description: 'Disables the twitch whisper functionalitiy, hiding any whispers you recieve',
+        default: false,
+        storageKey: 'disableWhispers'
+    },
     {
         name: 'Embedded Polling',
         description: 'See polls posted by the broadcaster embedded right into chat',
