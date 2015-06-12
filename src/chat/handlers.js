@@ -100,6 +100,7 @@ var commands = exports.commands = function (input) {
         helpers.serverMessage("/suboff -- Shortcut for /subscribersoff");
         helpers.serverMessage("/t [username] [time in seconds] -- Shortcut for /timeout");
         helpers.serverMessage("/u [username] -- Shortcut for /unban");
+        helpers.serverMessage("/r [message] -- Shortcut for /w [last whisper sender] [message]");
         helpers.serverMessage("/uptime -- Retrieves the amount of time the channel has been live");
         helpers.serverMessage("/viewers -- Retrieves the number of viewers watching the channel");
         helpers.serverMessage("Native Chat Commands:");
@@ -354,7 +355,7 @@ var privmsg = exports.privmsg = function (channel, data) {
         if (data.to === vars.userData.login) {
             if (data.from !== vars.lastWhisperFrom) {
                 // Only reset timer if sender changes
-                vars.lastWhisperTime = new Date().getTime();
+                vars.lastWhisperTime = Date.now();
                 vars.lastWhisperFrom = data.from;
             }
 

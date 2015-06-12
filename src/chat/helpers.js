@@ -709,8 +709,7 @@ var whisperReply = exports.whisperReply = function(msg) {
         return;
     }
 
-    var currentTime = new Date().getTime();
-    if (currentTime - vars.lastWhisperTime < 2000) {
+    if (Date.now() - vars.lastWhisperTime < 2000) {
         serverMessage("Message not sent because the whisper recipient just changed.");
         return;
     }
