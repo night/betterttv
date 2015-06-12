@@ -349,6 +349,13 @@ var takeover = module.exports = function() {
                     helpers.sendMessage("/ignore "+user);
                     $('.bttv-mod-card').remove();
                     break;
+                case keyCodes.w:
+                    e.preventDefault();
+                    var $chatInput = $('.ember-chat .chat-interface').find('textarea');
+                    $chatInput.val('/w ' + user + ' ');
+                    $chatInput.focus();
+                    $('.bttv-mod-card').remove();
+                    break;
             }
         }
     });

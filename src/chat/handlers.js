@@ -32,11 +32,12 @@ var commands = exports.commands = function (input) {
         tmi().tmiRoom.startSubscribersMode();
     } else if (command === '/r') {
             var to = ($.grep(store.__rooms[store.currentRoom].messages, function(msg) {
-                return msg.style === 'whisper';
-            }))[0].from;
+                return (msg.style === 'whisper' && msg.from.toLowerCase() !== vars.userData.login);
+            }));
             if (to) {
+                to = to[to.length - 1];
                 sentence[0] = '/w';
-                sentence.splice(1, 0, to);
+                sentence.splice(1, 0, to.from);
                 helpers.sendMessage(sentence.join(' '));
             } else {
                 helpers.serverMessage('You have not recieved any whispers', true);
@@ -252,6 +253,9 @@ var onPrivmsg = exports.onPrivmsg = function (channel, data) {
     if(!data.message.length) return;
     if(!tmi() || !tmi().tmiRoom) return;
     try {
+        if (data.style === 'whisper') {
+            store.chatters[data.from] = {lastWhisper:Date.now()};
+        }
         privmsg(channel, data);
     } catch(e) {
         if(store.__reportedErrors.indexOf(e.message) !== -1) return;

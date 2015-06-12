@@ -382,11 +382,12 @@ var commands = exports.commands = function (input) {
         tmi().tmiRoom.startSubscribersMode();
     } else if (command === '/r') {
             var to = ($.grep(store.__rooms[store.currentRoom].messages, function(msg) {
-                return msg.style === 'whisper';
-            }))[0].from;
+                return (msg.style === 'whisper' && msg.from.toLowerCase() !== vars.userData.login);
+            }));
             if (to) {
+                to = to[to.length - 1];
                 sentence[0] = '/w';
-                sentence.splice(1, 0, to);
+                sentence.splice(1, 0, to.from);
                 helpers.sendMessage(sentence.join(' '));
             } else {
                 helpers.serverMessage('You have not recieved any whispers', true);
@@ -602,6 +603,9 @@ var onPrivmsg = exports.onPrivmsg = function (channel, data) {
     if(!data.message.length) return;
     if(!tmi() || !tmi().tmiRoom) return;
     try {
+        if (data.style === 'whisper') {
+            store.chatters[data.from] = {lastWhisper:Date.now()};
+        }
         privmsg(channel, data);
     } catch(e) {
         if(store.__reportedErrors.indexOf(e.message) !== -1) return;
@@ -804,13 +808,6 @@ var detectServerCommand = function(input) {
 
     return false;
 };
-var tcSaveToHistory = function(user) {
-    if(store.tabCompleteHistory.map(function(el) { return el.toLowerCase();}).indexOf(user.toLowerCase()) > -1) {
-        store.tabCompleteHistory.splice(store.tabCompleteHistory.indexOf(user), 1);
-    }
-
-    store.tabCompleteHistory.unshift(user);
-}
 var tabCompletion = exports.tabCompletion = function(e) {
     var keyCode = e.keyCode || e.which;
     var $chatInterface = $('.ember-chat .chat-interface');
@@ -818,18 +815,15 @@ var tabCompletion = exports.tabCompletion = function(e) {
 
     var input = $chatInput.val();
     var sentence = input.trim().split(' ');
-    console.log('Sentence:' + sentence);
     var lastWord = sentence.pop().toLowerCase();
-    console.log('Sentence:' + sentence);
 
-    if(((detectServerCommand(input) && !sentence[1]) || keyCode === keyCodes.Tab || lastWord.charAt(0) === '@') && keyCode !== keyCodes.Enter) {
+    if(((detectServerCommand(input)) || keyCode === keyCodes.Tab || lastWord.charAt(0) === '@') && keyCode !== keyCodes.Enter) {
         var sugStore = store.suggestions;
 
         var currentMatch = lastWord.replace(/(^@|,$)/g, '');
         var currentIndex = sugStore.matchList.indexOf(currentMatch);
 
         var user;
-
         if(currentMatch === sugStore.lastMatch && currentIndex > -1) {
             var nextIndex;
             var prevIndex;
@@ -849,7 +843,6 @@ var tabCompletion = exports.tabCompletion = function(e) {
             var index = e.shiftKey ? prevIndex : nextIndex;
 
             user = sugStore.matchList[index];
-
             if(sugStore.matchList.length < 6) {
                 suggestions(sugStore.matchList, index);
             } else {
@@ -864,16 +857,31 @@ var tabCompletion = exports.tabCompletion = function(e) {
                     slice = index-2;
                     index = 2;
                 }
-
                 suggestions(sugStore.matchList.slice(slice,slice+5), index);
             }
         } else {
             var search = currentMatch;
-            var users = store.tabCompleteHistory;
-            
-            users = users.concat(Object.keys(store.chatters));
+            var users = Object.keys(store.chatters);
 
-            users = users.sort();
+            var recentWhispers = [];
+
+            if (detectServerCommand(input)) {
+                for (var i = users.length; i >= 0; i--) {
+                    if (store.chatters[users[i]] !== undefined && store.chatters[users[i]].lastWhisper) {
+                        recentWhispers.push(users[i]);
+                        users.splice(i,1);
+                    }
+                }
+
+                recentWhispers.sort(function(a, b) {
+                    return new Date(store.chatters[b].lastWhisper) - new Date(store.chatters[a].lastWhisper);
+                });
+            }
+
+            users.sort();
+            users = recentWhispers.concat(users);
+
+            if (users.indexOf(vars.userData.login) > -1) users.splice(users.indexOf(vars.userData.login), 1);
 
             if(/^(\/|\.)/.test(search)) {
                 search = '';
@@ -886,7 +894,6 @@ var tabCompletion = exports.tabCompletion = function(e) {
             }
 
             if(!users.length) return;
-
             sugStore.matchList = users;
 
             suggestions(users.slice(0,5), 0);
@@ -904,8 +911,6 @@ var tabCompletion = exports.tabCompletion = function(e) {
         sugStore.lastMatch = user;
 
         user = lookupDisplayName(user);
-
-        tcSaveToHistory(user);
 
         if(/^(\/|\.)/.test(lastWord)) {
             user = lastWord + ' ' + user;
@@ -973,7 +978,7 @@ var suggestions = exports.suggestions = function(words, index) {
         return;
     }
 
-    var $suggestions = $chatInterface.find('.textarea-contain').append(templates.suggestions(words, index)).find('.suggestions');
+    $suggestions = $chatInterface.find('.textarea-contain').append(templates.suggestions(words, index)).find('.suggestions');
     $suggestions.find('.suggestion').on('click', function() {
         var user = $(this).text();
         var sentence = $chatInput.val().trim().split(' ');
@@ -1891,6 +1896,13 @@ var takeover = module.exports = function() {
                     break;
                 case keyCodes.i:
                     helpers.sendMessage("/ignore "+user);
+                    $('.bttv-mod-card').remove();
+                    break;
+                case keyCodes.w:
+                    e.preventDefault();
+                    var $chatInput = $('.ember-chat .chat-interface').find('textarea');
+                    $chatInput.val('/w ' + user + ' ');
+                    $chatInput.focus();
                     $('.bttv-mod-card').remove();
                     break;
             }
@@ -4884,7 +4896,7 @@ module.exports = [
     },
     {
         name: 'Mod Card Keybinds',
-        description: 'Enable keybinds when you click on a username: P(urge), T(imeout), B(an)',
+        description: 'Enable keybinds when you click on a username: P(urge), T(imeout), B(an), W(whisper)',
         default: false,
         storageKey: 'modcardsKeybinds'
     },
