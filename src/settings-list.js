@@ -319,6 +319,12 @@ module.exports = [
         }
     },
     {
+        name: 'YouTube Links',
+        description: 'Adds titles to YouTube Links',
+        default: false,
+        storageKey: 'youTubeLinks'
+    },
+    {
         default: '',
         storageKey: 'blacklistKeywords',
         toggle: function(keywords) {
