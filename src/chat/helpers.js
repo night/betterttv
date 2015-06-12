@@ -206,6 +206,7 @@ var chatLineHistory = exports.chatLineHistory = function($chatInput, e) {
                 $chatInput.val(store.chatHistory[0]);
             }
         }
+        e.preventDefault(); // Prevent cursor going to start of line
     } else if(keyCode === keyCodes.DownArrow) {
         if(historyIndex >= 0) {
             if(store.chatHistory[historyIndex-1]) {
