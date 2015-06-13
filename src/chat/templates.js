@@ -24,12 +24,39 @@ var modicons = exports.modicons = function() {
 var escape = exports.escape = function(message) {
     return message.replace(/</g,'&lt;').replace(/>/g, '&gt;');
 };
+var linkifyCache = {};
 var linkify = exports.linkify = function(message) {
     var regex = /(?:https?:\/\/)?(?:[-a-zA-Z0-9@:%_\+~#=]+\.)+[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?&\/=]*)/gi;
     return message.replace(regex, function(e) {
         if (/\x02/.test(e)) return e;
         if (e.indexOf("@") > -1 && (e.indexOf("/") === -1 || e.indexOf("@") < e.indexOf("/"))) return '<a href="mailto:' + e + '">' + e + "</a>";
         var link = e.replace(/^(?!(?:https?:\/\/|mailto:))/i, 'http://');
+        if (bttv.settings.get('youTubeLinks') === true){
+            var ytMatch;
+            if (ytMatch = /((?:https?:\/\/)?(?:youtu\.be\/|(?:www\.)?youtube\.com\/(?:watch\?v|playlist\?list)=)([^&]+)).*/.exec(e)) {
+                var ytClass = ytMatch[2];
+                if (!linkifyCache[ytMatch[2]]) {
+                    linkifyCache[ytMatch[2]] = true;
+                    var query = 'https://www.youtube.com/oembed?url='+ytMatch[1]+'&format=json';
+                    $.ajax({
+                        url: query,
+                        cache: !1,
+                        timeoutLength: 6E3,
+                        dataType: 'json',
+                        success: function (data) {
+                            linkifyCache[matchYT[2]] = data.title;
+                            var linksYT;
+                            data.title && setTimeout(function(){
+                                (linksYT = $('.youtube-link[data-youtube="' + classYT + '"]')) && linksYT.attr('title',data.title);
+                            },500);
+                        },
+                        error: function() {
+                            console.log("YouTube Server Error");
+                        }
+                    });
+                }
+            }
+        }
         return '<a href="' + link + '" target="_blank">' + e + '</a>';
     });
 };
