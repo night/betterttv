@@ -1,0 +1,19 @@
+{
+   "content_scripts": [ {
+      "all_frames": true,
+      "js": [ "betterttv.js" ],
+      "matches": [ "*://*.twitch.tv/*" ]
+   } ],
+   "description": "Enhances Twitch with new features, bug fixes, and reduced clutter.",
+   "homepage_url": "http://www.betterttv.com",
+   "icons": {
+      "128": "icon.png"
+   },
+   "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDGodR8UOS1OhLctEpt4tzWBax9vHSCjff/Ir2Y32FzNq5CyWdKpC7Ak9r+rK8jKBV6VZt+4D+pOPctfof3pO2r3DD2/YDSRhDxu0znYtioLihfTOvS+AlB1pBqLrK0yNMcAvs9Eu/yIgrD/8UoSI/WnVEI/Z5ohv3u0Gha6QSS7wIDAQAB",
+   "manifest_version": 2,
+   "name": "BetterTTV",
+   "permissions": [ "*://*.twitch.tv/*", "*://*.youtube.com/*" ],
+   "short_name": "BTTV",
+   "update_url": "https://clients2.google.com/service/update2/crx",
+   "version": "6.9"
+}

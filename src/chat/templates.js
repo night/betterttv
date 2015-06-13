@@ -24,12 +24,42 @@ var modicons = exports.modicons = function() {
 var escape = exports.escape = function(message) {
     return message.replace(/</g,'&lt;').replace(/>/g, '&gt;');
 };
+var linkifyCache = {};
+var linkifyListener = false;
 var linkify = exports.linkify = function(message) {
     var regex = /(?:https?:\/\/)?(?:[-a-zA-Z0-9@:%_\+~#=]+\.)+[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?&\/=]*)/gi;
     return message.replace(regex, function(e) {
         if (/\x02/.test(e)) return e;
         if (e.indexOf("@") > -1 && (e.indexOf("/") === -1 || e.indexOf("@") < e.indexOf("/"))) return '<a href="mailto:' + e + '">' + e + "</a>";
         var link = e.replace(/^(?!(?:https?:\/\/|mailto:))/i, 'http://');
+        if (bttv.settings.get('youTubeLinks') === true){
+            var matchYT;
+            if (matchYT = /((?:https?:\/\/)?(?:youtu\.be\/|(?:www\.)?youtube\.com\/(?:watch\?v|playlist\?list)=)([^&]+)).*/.exec(e)) {
+                if (!linkifyCache[matchYT[2]]) {
+                    linkifyCache[matchYT[2]] = true;
+                    if (!linkifyListener){
+                        linkifyListener = true;
+                        window.addEventListener('message', function(event) {
+                            if (event.data.type === 'youtube-title-response') {
+                                linkifyCache[event.data.id] = event.data.title;
+                                event.data.title && setTimeout(function(){
+                                    (linksYT = $('.youtube-link[data-youtube="' + event.data.id + '"]')) && linksYT.attr('title',event.data.title);
+                                },500);
+                            }
+                        });
+                    }
+                    
+                    window.postMessage({ type: 'youtube-title-query',
+                        url: matchYT[1],
+                        id: matchYT[2]},
+                        '*');
+                    
+                    return '<a href="' + link + '" target="_blank" class="youtube-link" data-youtube="' + matchYT[2] + '">' + e + '</a>';
+                }
+                else if (linkifyCache[matchYT[2]] !== true) return '<a href="' + link + '" target="_blank" class="youtube-link" data-youtube="' + matchYT[2] + '" title="' + linkifyCache[matchYT[2]] + '">' + e + '</a>';
+                else return '<a href="' + link + '" target="_blank" class="youtube-link" data-youtube="' + matchYT[2] + '">' + e + '</a>';
+            };
+        }
         return '<a href="' + link + '" target="_blank">' + e + '</a>';
     });
 };
