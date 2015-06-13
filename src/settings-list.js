@@ -191,6 +191,12 @@ module.exports = [
         }
     },*/
     {
+        name: 'Disable whispers',
+        description: 'Disables the twitch whisper functionalitiy, hiding any whispers you recieve',
+        default: false,
+        storageKey: 'disableWhispers'
+    },
+    {
         name: 'Embedded Polling',
         description: 'See polls posted by the broadcaster embedded right into chat',
         default: true,
@@ -259,7 +265,7 @@ module.exports = [
     },
     {
         name: 'Mod Card Keybinds',
-        description: 'Enable keybinds when you click on a username: P(urge), T(imeout), B(an)',
+        description: 'Enable keybinds when you click on a username: P(urge), T(imeout), B(an), W(whisper)',
         default: false,
         storageKey: 'modcardsKeybinds'
     },

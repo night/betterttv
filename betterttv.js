@@ -378,6 +378,8 @@ var commands = exports.commands = function (input) {
         helpers.massUnban();
     } else if (command === "/u") {
         helpers.unban(sentence[1]);
+    } else if (command === '/w' && bttv.settings.get('disableWhispers') === true) {
+        helpers.serverMessage('You have disabled whispers in BetterTTV settings');
     } else if (command === "/sub") {
         tmi().tmiRoom.startSubscribersMode();
     } else if (command === "/suboff") {
@@ -444,6 +446,7 @@ var commands = exports.commands = function (input) {
         helpers.serverMessage("/localsub -- Turns on local sub-only mode (only your chat is sub-only mode)");
         helpers.serverMessage("/localsuboff -- Turns off local sub-only mode");
         helpers.serverMessage("/massunban (or /unban all or /u all) -- Unbans all users in the channel (channel owner only)");
+        helpers.serverMessage("/r -- Type '/r ' to respond to your last whisper");
         helpers.serverMessage("/sub -- Shortcut for /subscribers");
         helpers.serverMessage("/suboff -- Shortcut for /subscribersoff");
         helpers.serverMessage("/t [username] [time in seconds] -- Shortcut for /timeout");
@@ -590,6 +593,10 @@ var onPrivmsg = exports.onPrivmsg = function (channel, data) {
     if(!data.message.length) return;
     if(!tmi() || !tmi().tmiRoom) return;
     try {
+        if (data.style === 'whisper') {
+            store.chatters[data.from] = {lastWhisper:Date.now()};
+            if (bttv.settings.get('disableWhispers') === true) return;
+        }
         privmsg(channel, data);
     } catch(e) {
         if(store.__reportedErrors.indexOf(e.message) !== -1) return;
@@ -637,7 +644,7 @@ var privmsg = exports.privmsg = function (channel, data) {
         return;
     }
 
-    if(!store.chatters[data.from]) store.chatters[data.from] = true;
+    if(!store.chatters[data.from]) store.chatters[data.from] = {lastWhisper: 0};
 
     if(vars.localSubsOnly && !helpers.isModerator(data.from) && !helpers.isSubscriber(data.from)) return;
     if(vars.localModsOnly && !helpers.isModerator(data.from)) return;
@@ -791,13 +798,6 @@ var detectServerCommand = function(input) {
 
     return false;
 };
-var tcSaveToHistory = function(user) {
-    if(store.tabCompleteHistory.indexOf(user) > -1) {
-        store.tabCompleteHistory.splice(store.tabCompleteHistory.indexOf(user), 1);
-    }
-
-    store.tabCompleteHistory.unshift(user);
-}
 var tabCompletion = exports.tabCompletion = function(e) {
     var keyCode = e.keyCode || e.which;
     var $chatInterface = $('.ember-chat .chat-interface');
@@ -854,11 +854,27 @@ var tabCompletion = exports.tabCompletion = function(e) {
             }
         } else {
             var search = currentMatch;
-            var users = store.tabCompleteHistory;
-            
-            users = users.concat(Object.keys(store.chatters));
+            var users = Object.keys(store.chatters);
 
-            users = users.sort();
+            var recentWhispers = [];
+
+            if (detectServerCommand(input)) {
+                for (var i = users.length; i >= 0; i--) {
+                    if (store.chatters[users[i]] !== undefined && store.chatters[users[i]].lastWhisper !== 0) {
+                        recentWhispers.push(users[i]);
+                        users.splice(i,1);
+                    }
+                }
+
+                recentWhispers.sort(function(a, b) {
+                    return store.chatters[b].lastWhisper - store.chatters[a].lastWhisper;
+                });
+            }
+
+            users.sort();
+            users = recentWhispers.concat(users);
+
+            if (users.indexOf(vars.userData.login) > -1) users.splice(users.indexOf(vars.userData.login), 1);
 
             if(/^(\/|\.)/.test(search)) {
                 search = '';
@@ -890,8 +906,6 @@ var tabCompletion = exports.tabCompletion = function(e) {
 
         user = lookupDisplayName(user);
 
-        tcSaveToHistory(user);
-
         if(/^(\/|\.)/.test(lastWord)) {
             user = lastWord + ' ' + user;
             $chatInput.val(user);
@@ -908,6 +922,20 @@ var tabCompletion = exports.tabCompletion = function(e) {
             $chatInput.val(sentence.join(' ') + ", ");
         } else {
             $chatInput.val(sentence.join(' '));
+        }
+    }
+};
+var whisperReply = exports.whisperReply = function(e) {
+    var $chatInput = $('.ember-chat .chat-interface').find('textarea');
+    if ($chatInput.val() === '/r ' && bttv.settings.get('disableWhispers') === false) {
+        var to = ($.grep(store.__rooms[store.currentRoom].messages, function(msg) {
+            return (msg.style === 'whisper' && msg.from.toLowerCase() !== vars.userData.login);
+        }).pop() || {from:null}).from;
+        if (to) {
+            $chatInput.val('/w ' + to + ' ');
+        } else {
+            $chatInput.val('');
+            serverMessage('You have not received any whispers', true);
         }
     }
 };
@@ -950,7 +978,6 @@ var suggestions = exports.suggestions = function(words, index) {
     var input = $chatInput.val();
     var sentence = input.trim().split(' ');
     var lastWord = sentence.pop();
-
     if(
         lastWord.charAt(0) !== '@' &&
         !detectServerCommand(input) &&
@@ -959,11 +986,11 @@ var suggestions = exports.suggestions = function(words, index) {
         return;
     }
 
-    var $suggestions = $chatInterface.find('.textarea-contain').append(templates.suggestions(words, index)).find('.suggestions');
+    $suggestions = $chatInterface.find('.textarea-contain').append(templates.suggestions(words, index)).find('.suggestions');
     $suggestions.find('.suggestion').on('click', function() {
         var user = $(this).text();
         var sentence = $chatInput.val().trim().split(' ');
-        var lastWord = sentence.pop();
+        var lastWord = detectServerCommand(input) ? '' : sentence.pop();
         if (lastWord.charAt(0) === '@') {
             sentence.push("@" + lookupDisplayName(user));
         } else {
@@ -1717,8 +1744,8 @@ var takeover = module.exports = function() {
     $chatInput.on('keyup', function(e) {
         // '@' completion is captured only on keyup
         if(e.which === keyCodes.Tab || e.which === keyCodes.Shift) return;
-
         helpers.tabCompletion(e);
+        helpers.whisperReply(e);
     });
 
     // Implement our own text senders (+ commands & legacy tab completion)
@@ -1830,7 +1857,7 @@ var takeover = module.exports = function() {
 
     // Reset chatters list
     store.chatters = {};
-    store.chatters[bttv.getChannel()] = true;
+    store.chatters[bttv.getChannel()] = {lastWhisper: 0};
 
     // When messages come in too fast, things get laggy
     if(!store.__messageTimer) store.__messageTimer = setInterval(handlers.shiftQueue, 500);
@@ -1878,6 +1905,13 @@ var takeover = module.exports = function() {
                     break;
                 case keyCodes.i:
                     helpers.sendMessage("/ignore "+user);
+                    $('.bttv-mod-card').remove();
+                    break;
+                case keyCodes.w:
+                    e.preventDefault();
+                    var $chatInput = $('.ember-chat .chat-interface').find('textarea');
+                    $chatInput.val('/w ' + user + ' ');
+                    $chatInput.focus();
                     $('.bttv-mod-card').remove();
                     break;
             }
@@ -4803,6 +4837,12 @@ module.exports = [
         }
     },*/
     {
+        name: 'Disable whispers',
+        description: 'Disables the twitch whisper functionalitiy, hiding any whispers you recieve',
+        default: false,
+        storageKey: 'disableWhispers'
+    },
+    {
         name: 'Embedded Polling',
         description: 'See polls posted by the broadcaster embedded right into chat',
         default: true,
@@ -4871,7 +4911,7 @@ module.exports = [
     },
     {
         name: 'Mod Card Keybinds',
-        description: 'Enable keybinds when you click on a username: P(urge), T(imeout), B(an)',
+        description: 'Enable keybinds when you click on a username: P(urge), T(imeout), B(an), W(whisper)',
         default: false,
         storageKey: 'modcardsKeybinds'
     },

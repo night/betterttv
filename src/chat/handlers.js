@@ -28,6 +28,8 @@ var commands = exports.commands = function (input) {
         helpers.massUnban();
     } else if (command === "/u") {
         helpers.unban(sentence[1]);
+    } else if (command === '/w' && bttv.settings.get('disableWhispers') === true) {
+        helpers.serverMessage('You have disabled whispers in BetterTTV settings');
     } else if (command === "/sub") {
         tmi().tmiRoom.startSubscribersMode();
     } else if (command === "/suboff") {
@@ -94,6 +96,7 @@ var commands = exports.commands = function (input) {
         helpers.serverMessage("/localsub -- Turns on local sub-only mode (only your chat is sub-only mode)");
         helpers.serverMessage("/localsuboff -- Turns off local sub-only mode");
         helpers.serverMessage("/massunban (or /unban all or /u all) -- Unbans all users in the channel (channel owner only)");
+        helpers.serverMessage("/r -- Type '/r ' to respond to your last whisper");
         helpers.serverMessage("/sub -- Shortcut for /subscribers");
         helpers.serverMessage("/suboff -- Shortcut for /subscribersoff");
         helpers.serverMessage("/t [username] [time in seconds] -- Shortcut for /timeout");
@@ -240,6 +243,10 @@ var onPrivmsg = exports.onPrivmsg = function (channel, data) {
     if(!data.message.length) return;
     if(!tmi() || !tmi().tmiRoom) return;
     try {
+        if (data.style === 'whisper') {
+            store.chatters[data.from] = {lastWhisper:Date.now()};
+            if (bttv.settings.get('disableWhispers') === true) return;
+        }
         privmsg(channel, data);
     } catch(e) {
         if(store.__reportedErrors.indexOf(e.message) !== -1) return;
@@ -287,7 +294,7 @@ var privmsg = exports.privmsg = function (channel, data) {
         return;
     }
 
-    if(!store.chatters[data.from]) store.chatters[data.from] = true;
+    if(!store.chatters[data.from]) store.chatters[data.from] = {lastWhisper: 0};
 
     if(vars.localSubsOnly && !helpers.isModerator(data.from) && !helpers.isSubscriber(data.from)) return;
     if(vars.localModsOnly && !helpers.isModerator(data.from)) return;

@@ -186,8 +186,8 @@ var takeover = module.exports = function() {
     $chatInput.on('keyup', function(e) {
         // '@' completion is captured only on keyup
         if(e.which === keyCodes.Tab || e.which === keyCodes.Shift) return;
-
         helpers.tabCompletion(e);
+        helpers.whisperReply(e);
     });
 
     // Implement our own text senders (+ commands & legacy tab completion)
@@ -299,7 +299,7 @@ var takeover = module.exports = function() {
 
     // Reset chatters list
     store.chatters = {};
-    store.chatters[bttv.getChannel()] = true;
+    store.chatters[bttv.getChannel()] = {lastWhisper: 0};
 
     // When messages come in too fast, things get laggy
     if(!store.__messageTimer) store.__messageTimer = setInterval(handlers.shiftQueue, 500);
@@ -347,6 +347,13 @@ var takeover = module.exports = function() {
                     break;
                 case keyCodes.i:
                     helpers.sendMessage("/ignore "+user);
+                    $('.bttv-mod-card').remove();
+                    break;
+                case keyCodes.w:
+                    e.preventDefault();
+                    var $chatInput = $('.ember-chat .chat-interface').find('textarea');
+                    $chatInput.val('/w ' + user + ' ');
+                    $chatInput.focus();
                     $('.bttv-mod-card').remove();
                     break;
             }

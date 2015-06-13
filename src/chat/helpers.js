@@ -66,13 +66,6 @@ var detectServerCommand = function(input) {
 
     return false;
 };
-var tcSaveToHistory = function(user) {
-    if(store.tabCompleteHistory.indexOf(user) > -1) {
-        store.tabCompleteHistory.splice(store.tabCompleteHistory.indexOf(user), 1);
-    }
-
-    store.tabCompleteHistory.unshift(user);
-}
 var tabCompletion = exports.tabCompletion = function(e) {
     var keyCode = e.keyCode || e.which;
     var $chatInterface = $('.ember-chat .chat-interface');
@@ -129,11 +122,27 @@ var tabCompletion = exports.tabCompletion = function(e) {
             }
         } else {
             var search = currentMatch;
-            var users = store.tabCompleteHistory;
-            
-            users = users.concat(Object.keys(store.chatters));
+            var users = Object.keys(store.chatters);
 
-            users = users.sort();
+            var recentWhispers = [];
+
+            if (detectServerCommand(input)) {
+                for (var i = users.length; i >= 0; i--) {
+                    if (store.chatters[users[i]] !== undefined && store.chatters[users[i]].lastWhisper !== 0) {
+                        recentWhispers.push(users[i]);
+                        users.splice(i,1);
+                    }
+                }
+
+                recentWhispers.sort(function(a, b) {
+                    return store.chatters[b].lastWhisper - store.chatters[a].lastWhisper;
+                });
+            }
+
+            users.sort();
+            users = recentWhispers.concat(users);
+
+            if (users.indexOf(vars.userData.login) > -1) users.splice(users.indexOf(vars.userData.login), 1);
 
             if(/^(\/|\.)/.test(search)) {
                 search = '';
@@ -165,8 +174,6 @@ var tabCompletion = exports.tabCompletion = function(e) {
 
         user = lookupDisplayName(user);
 
-        tcSaveToHistory(user);
-
         if(/^(\/|\.)/.test(lastWord)) {
             user = lastWord + ' ' + user;
             $chatInput.val(user);
@@ -183,6 +190,20 @@ var tabCompletion = exports.tabCompletion = function(e) {
             $chatInput.val(sentence.join(' ') + ", ");
         } else {
             $chatInput.val(sentence.join(' '));
+        }
+    }
+};
+var whisperReply = exports.whisperReply = function(e) {
+    var $chatInput = $('.ember-chat .chat-interface').find('textarea');
+    if ($chatInput.val() === '/r ' && bttv.settings.get('disableWhispers') === false) {
+        var to = ($.grep(store.__rooms[store.currentRoom].messages, function(msg) {
+            return (msg.style === 'whisper' && msg.from.toLowerCase() !== vars.userData.login);
+        }).pop() || {from:null}).from;
+        if (to) {
+            $chatInput.val('/w ' + to + ' ');
+        } else {
+            $chatInput.val('');
+            serverMessage('You have not received any whispers', true);
         }
     }
 };
@@ -225,7 +246,6 @@ var suggestions = exports.suggestions = function(words, index) {
     var input = $chatInput.val();
     var sentence = input.trim().split(' ');
     var lastWord = sentence.pop();
-
     if(
         lastWord.charAt(0) !== '@' &&
         !detectServerCommand(input) &&
@@ -234,11 +254,11 @@ var suggestions = exports.suggestions = function(words, index) {
         return;
     }
 
-    var $suggestions = $chatInterface.find('.textarea-contain').append(templates.suggestions(words, index)).find('.suggestions');
+    $suggestions = $chatInterface.find('.textarea-contain').append(templates.suggestions(words, index)).find('.suggestions');
     $suggestions.find('.suggestion').on('click', function() {
         var user = $(this).text();
         var sentence = $chatInput.val().trim().split(' ');
-        var lastWord = sentence.pop();
+        var lastWord = detectServerCommand(input) ? '' : sentence.pop();
         if (lastWord.charAt(0) === '@') {
             sentence.push("@" + lookupDisplayName(user));
         } else {
