@@ -990,7 +990,7 @@ var suggestions = exports.suggestions = function(words, index) {
     $suggestions.find('.suggestion').on('click', function() {
         var user = $(this).text();
         var sentence = $chatInput.val().trim().split(' ');
-        var lastWord = detectServerCommand(input) ? '' : sentence.pop();
+        var lastWord = (detectServerCommand(input) && !sentence[1]) ? '' : sentence.pop();
         if (lastWord.charAt(0) === '@') {
             sentence.push("@" + lookupDisplayName(user));
         } else {
