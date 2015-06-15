@@ -359,4 +359,12 @@ var takeover = module.exports = function() {
             }
         }
     });
+    
+    $('.tse-content').on('dblclick', '.chat-line .from', function(e) {
+        //if(bttv.settings.get('dblClickAutoComplete') === false) return;
+        var sender = $(this).text();
+        if (sender) {
+            $('.ember-chat .chat-interface').find('textarea').val(sender + ", ");
+        }
+    });
 }
