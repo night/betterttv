@@ -2085,7 +2085,8 @@ var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message
                 piece = escape(piece);
                 var link = piece.replace(/^(?!(?:https?:\/\/))/i, 'http://'),
                     link2 = match[1];
-                piece = '<a href="' + link + '" target="_blank" class="info-link" link-type="twitch" link-data="' + encodeURIComponent(link2) + '">' + piece + '</a>';
+                if ('directory following settings login logout'.indexOf(link2) !== -1) piece = '<a href="' + link + '" target="_blank">' + piece + '</a>';
+                else piece = '<a href="' + link + '" target="_blank" class="info-link" link-type="twitch" link-data="' + encodeURIComponent(link2) + '">' + piece + '</a>';
                 tokenizedString[i] = piece;
                 continue;
             }
