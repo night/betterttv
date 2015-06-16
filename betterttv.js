@@ -3888,7 +3888,8 @@ exports.highlighting = function (data) {
 },{"../features/highlight-feedback":36,"../helpers/regex":47,"../vars":61}],39:[function(require,module,exports){
 
 /* CONFIG */
-var refreshTime = 10 * 1000;
+var refreshTime = 60 * 1000;
+var refreshTimeTwitch = 10 * 1000;
 
 /* END CONFIG */
 
@@ -3898,6 +3899,7 @@ var lookup = {
             (typeof d === 'object' && typeof d.title === 'string') ? callback(d.title) : callback(false);
         }).error(function() {
             callback(false);
+            setTimeout(function() {cache[link] = undefined;} , refreshTime);
         });
     },
     'tiny': function(link, data, callback) {
@@ -3905,15 +3907,16 @@ var lookup = {
             (typeof d === 'object' && typeof d.fullurl === 'string') ? callback(d.fullurl) : callback(false);
         }).error(function() {
             callback(false);
+            setTimeout(function() {cache[link] = undefined;} , refreshTime);
         });
     },
     'twitch': function(link, data, callback) {
         bttv.TwitchAPI.get('streams/' + data).done(function(d) {
             (typeof d === 'object' && d.stream !== null) ? callback('This channel is:<br><div style="color: rgb(0, 255, 0);">LIVE NOW</div>') : callback('This channel is:<br><div style="color: rgb(255, 0, 0);">OFFLINE</div>');
-            setTimeout(function() {cache[link] = undefined;} , refreshTime);
+            setTimeout(function() {cache[link] = undefined;} , refreshTimeTwitch);
         }).fail(function() {
             callback(false);
-            setTimeout(function() {cache[link] = undefined;} , refreshTime);
+            setTimeout(function() {cache[link] = undefined;} , refreshTimeTwitch);
         });
     },
 };
