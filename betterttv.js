@@ -4854,16 +4854,16 @@ module.exports = [
         }
     },*/
     {
-        name: 'Double-Click autocomplete',
-        description: 'Double-clicking a username in chat copies it into the chat text box',
-        default: false,
-        storageKey: 'dblClickAutoComplete'
-    },
-    {
         name: 'Disable whispers',
         description: 'Disables the twitch whisper functionalitiy, hiding any whispers you recieve',
         default: false,
         storageKey: 'disableWhispers'
+    },
+	{
+        name: 'Double-Click autocomplete',
+        description: 'Double-clicking a username in chat copies it into the chat text box',
+        default: false,
+        storageKey: 'dblClickAutoComplete'
     },
     {
         name: 'Embedded Polling',
