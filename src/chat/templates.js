@@ -132,6 +132,35 @@ var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message
             }
         }
 
+        if(bttv.settings.get('linkInfo') === true) {
+            var match;
+            if (match = /((?:https?:\/\/)?(?:youtu\.be\/|(?:www\.)?youtube\.com\/(?:watch\?v|playlist\?list)=)[-a-zA-Z0-9_]+)[-a-zA-Z0-9@:%_\+.~#?&\/=]*/i.exec(piece)) {
+                piece = escape(piece);
+                var link = piece.replace(/^(?!(?:https?:\/\/))/i, 'http://'),
+                    link2 = match[1].replace(/^(?!(?:https?:\/\/))/i, 'http://');
+                piece = '<a href="' + link + '" target="_blank" class="info-link" link-type="youtube" link-data="' + encodeURIComponent(link2) + '">' + piece + '</a>';
+                tokenizedString[i] = piece;
+                continue;
+            }
+            else if (match = /((?:https?:\/\/)?(?:www\.)?(?:bit\.ly|goo\.gl|ow\.ly|t\.co|tinyurl\.com|tr\.im)\/[-a-zA-Z0-9_]+)[-a-zA-Z0-9@:%_\+.~#?&\/=]*/i.exec(piece)) {
+                piece = escape(piece);
+                var link = piece.replace(/^(?!(?:https?:\/\/))/i, 'http://'),
+                    link2 = match[1].replace(/^(?!(?:https?:\/\/))/i, 'http://');
+                piece = '<a href="' + link + '" target="_blank" class="info-link" link-type="tiny" link-data="' + encodeURIComponent(link2) + '">' + piece + '</a>';
+                tokenizedString[i] = piece;
+                continue;
+            }
+            else if (match = /(?:https?:\/\/)?(?:www\.)?twitch\.tv\/([-a-zA-Z0-9_]+)(?:\/[-a-zA-Z0-9@:%_\+.~#?&\/=]*)?/i.exec(piece)) {
+                piece = escape(piece);
+                var link = piece.replace(/^(?!(?:https?:\/\/))/i, 'http://'),
+                    link2 = match[1];
+                if (['directory','following','settings','login','logout'].indexOf(link2) !== -1) piece = '<a href="' + link + '" target="_blank">' + piece + '</a>';
+                else piece = '<a href="' + link + '" target="_blank" class="info-link" link-type="twitch" link-data="' + encodeURIComponent(link2) + '">' + piece + '</a>';
+                tokenizedString[i] = piece;
+                continue;
+            }
+        }
+
         var test = piece.replace(/(^[~!@#$%\^&\*\(\)]+|[~!@#$%\^&\*\(\)]+$)/g, '');
         var emote = null;
 

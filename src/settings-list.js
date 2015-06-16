@@ -264,6 +264,12 @@ module.exports = [
         }
     },
     {
+        name: 'Link Info',
+        description: 'Adds video titles to YouTube links, and the full URL to shortened links (such as bit.ly and goo.gl)',
+        default: true,
+        storageKey: 'linkInfo'
+    },
+    {
         name: 'Mod Card Keybinds',
         description: 'Enable keybinds when you click on a username: P(urge), T(imeout), B(an), W(whisper)',
         default: false,
