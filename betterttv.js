@@ -1107,7 +1107,8 @@ var isStaff = exports.isStaff = function(user) {
 };
 var isModerator = exports.isModerator = function(user) {
     if(!user || user === "") return false;
-    return tmi() && tmi().tmiRoom.getLabels(user).indexOf('mod') !== -1;
+    return tmi() && (tmi().tmiRoom.getLabels(user).indexOf('mod') !== -1 || 
+                    isAdmin(user) || isStaff(user) || isOwner(user) || isGlobalMod(user));
 };
 var isTurbo = exports.isTurbo = function(user) {
     if(!user || user === "") return false;
