@@ -29,6 +29,19 @@ var checkBroadcastInfo = module.exports = function() {
             }
         }
 
+        if(window.Ember && window.App) {
+            var emberCtrl = App.__container__.lookup('controller:channel');
+            if(d.views) {
+                var fmtViews = Twitch.display.commatize(d.views);
+                emberCtrl.set('views', fmtViews);
+            }
+
+            if (d.followers) {
+                var fmtFollowers = Twitch.display.commatize(d.followers);
+                emberCtrl.set('followersTotal', fmtFollowers);
+            }
+        }
+
         setTimeout(checkBroadcastInfo, 60000);
     });
 }
