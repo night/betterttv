@@ -10,7 +10,7 @@ var checkBroadcastInfo = module.exports = function() {
     bttv.TwitchAPI.get("channels/"+channel).done(function(d) {
         if(d.game) {
             var $channel = $('#broadcast-meta .channel');
-            
+
             if($channel.find('.playing').length) {
                 $channel.find('a:eq(1)').text(d.game).attr("href", Twitch.uri.game(d.game)).removeAttr('data-ember-action');
             }
@@ -19,7 +19,10 @@ var checkBroadcastInfo = module.exports = function() {
             var $title = $('#broadcast-meta .title');
 
             if($title.data('status') !== d.status) {
-                document.title = d.display_name + " - Twitch | " + d.status;
+                var title = d.display_name + " - Twitch | " + d.status;
+                if (title.length > 512) title = title.substr(0, 509) + "...";
+                document.title = title;
+
                 $title.data('status', d.status);
 
                 d.status = d.status.replace(/</g, '&lt;').replace(/>/g, '&gt;');
