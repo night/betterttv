@@ -952,8 +952,9 @@ body#chat #speak {
     position: absolute;
     top: 0px;
     left: 0px;
-    width: auto;
-    height: 72px;
+    width: 100%;
+    z-index: 0;
+    opacity: 0.8;
 }
 
 .ember-chat .moderation-card h3.name {
@@ -983,6 +984,7 @@ body#chat #speak {
     margin-left: 60px;
     position: relative;
     z-index: 4;
+    width: 120px;
 }
 
 .ember-chat .moderation-card .button-simple {
@@ -1010,6 +1012,7 @@ body#chat #speak {
 }
 
 .ember-chat .moderation-card .interface {
+    position: relative;
     display: inline-block;
     width: 100%;
 }
