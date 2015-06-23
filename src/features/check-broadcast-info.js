@@ -19,6 +19,7 @@ var checkBroadcastInfo = module.exports = function() {
             var $title = $('#broadcast-meta .title');
 
             if($title.data('status') !== d.status) {
+                document.title = d.display_name + " - Twitch | " + d.status;
                 $title.data('status', d.status);
 
                 d.status = d.status.replace(/</g, '&lt;').replace(/>/g, '&gt;');
