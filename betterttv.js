@@ -229,12 +229,21 @@ exports.attrs = function attrs(obj, terse){
  * @api private
  */
 
-exports.escape = function escape(html){
-  var result = String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+var jade_encode_html_rules = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;'
+};
+var jade_match_html = /[&<>"]/g;
+
+function jade_encode_char(c) {
+  return jade_encode_html_rules[c] || c;
+}
+
+exports.escape = jade_escape;
+function jade_escape(html){
+  var result = String(html).replace(jade_match_html, jade_encode_char);
   if (result === '' + html) return html;
   else return result;
 };
@@ -2959,7 +2968,7 @@ var checkBroadcastInfo = module.exports = function() {
 
     debug.log("Check Channel Title/Game");
 
-    bttv.TwitchAPI.get("channels/"+channel).done(function(d) {
+    bttv.TwitchAPI.get("channels/"+channel+"?api_version=3").done(function(d) {
         if(d.game) {
             var $channel = $('#broadcast-meta .channel');
             
@@ -2978,6 +2987,19 @@ var checkBroadcastInfo = module.exports = function() {
 
                 $title.find('.real').html(d.status);
                 $title.find('.over').html(d.status);
+            }
+        }
+
+        if(window.Ember && window.App) {
+            var emberCtrl = App.__container__.lookup('controller:channel');
+            if(d.views) {
+                var fmtViews = Twitch.display.commatize(d.views);
+                emberCtrl.set('views', fmtViews);
+            }
+
+            if (d.followers) {
+                var fmtFollowers = Twitch.display.commatize(d.followers);
+                emberCtrl.set('followersTotal', fmtFollowers);
             }
         }
 
