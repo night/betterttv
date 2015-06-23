@@ -229,12 +229,21 @@ exports.attrs = function attrs(obj, terse){
  * @api private
  */
 
-exports.escape = function escape(html){
-  var result = String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+var jade_encode_html_rules = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;'
+};
+var jade_match_html = /[&<>"]/g;
+
+function jade_encode_char(c) {
+  return jade_encode_html_rules[c] || c;
+}
+
+exports.escape = jade_escape;
+function jade_escape(html){
+  var result = String(html).replace(jade_match_html, jade_encode_char);
   if (result === '' + html) return html;
   else return result;
 };
@@ -2962,7 +2971,7 @@ var checkBroadcastInfo = module.exports = function() {
     bttv.TwitchAPI.get("channels/"+channel).done(function(d) {
         if(d.game) {
             var $channel = $('#broadcast-meta .channel');
-            
+
             if($channel.find('.playing').length) {
                 $channel.find('a:eq(1)').text(d.game).attr("href", Twitch.uri.game(d.game)).removeAttr('data-ember-action');
             }
@@ -2971,6 +2980,10 @@ var checkBroadcastInfo = module.exports = function() {
             var $title = $('#broadcast-meta .title');
 
             if($title.data('status') !== d.status) {
+                var title = d.display_name + " - Twitch | " + d.status;
+                if (title.length > 512) title = title.substr(0, 509) + "...";
+                document.title = title;
+
                 $title.data('status', d.status);
 
                 d.status = d.status.replace(/</g, '&lt;').replace(/>/g, '&gt;');
