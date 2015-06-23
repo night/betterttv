@@ -957,6 +957,7 @@ body#chat #speak {
 }
 
 .ember-chat .moderation-card h3.name {
+    margin-top: 0px;
     font-size: 18px;
 }
 
@@ -968,7 +969,17 @@ body#chat #speak {
 .ember-chat .moderation-card h4.real-name {
     font-size: 11px;
     color: #AAA;
-    margin-top: -2px;
+    margin-top: -3px;
+    margin-bottom: -5px;
+    margin-left: 60px;
+    position: relative;
+    z-index: 4;
+}
+
+.ember-chat .moderation-card h4.followers,
+.ember-chat .moderation-card h4.views {
+    font-size: 11px;
+    color: #BDB;
     margin-left: 60px;
     position: relative;
     z-index: 4;
