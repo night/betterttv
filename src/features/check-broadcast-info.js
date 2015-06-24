@@ -7,10 +7,10 @@ var checkBroadcastInfo = module.exports = function() {
 
     debug.log("Check Channel Title/Game");
 
-    bttv.TwitchAPI.get("channels/"+channel+"?api_version=3").done(function(d) {
+    bttv.TwitchAPI.get("channels/"+channel, {}, {version: 3}).done(function(d) {
         if(d.game) {
             var $channel = $('#broadcast-meta .channel');
-            
+
             if($channel.find('.playing').length) {
                 $channel.find('a:eq(1)').text(d.game).attr("href", Twitch.uri.game(d.game)).removeAttr('data-ember-action');
             }
