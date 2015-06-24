@@ -954,11 +954,11 @@ body#chat #speak {
     left: 0px;
     width: 100%;
     z-index: 0;
-    opacity: 0.8;
+    opacity: 0.5;
 }
 
 .ember-chat .moderation-card h3.name {
-    margin-top: 0px;
+    margin-top: -3px;
     font-size: 18px;
 }
 
@@ -970,7 +970,7 @@ body#chat #speak {
 .ember-chat .moderation-card h4.real-name {
     font-size: 11px;
     color: #AAA;
-    margin-top: -3px;
+    margin-top: -4px;
     margin-bottom: -5px;
     margin-left: 60px;
     position: relative;
@@ -980,7 +980,7 @@ body#chat #speak {
 .ember-chat .moderation-card h4.followers,
 .ember-chat .moderation-card h4.views {
     font-size: 11px;
-    color: #BDB;
+    color: rgb(220,220,190);
     margin-left: 60px;
     position: relative;
     z-index: 4;
