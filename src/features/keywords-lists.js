@@ -46,7 +46,7 @@ exports.blacklistFilter = function (data) {
 }
 
 exports.highlighting = function (data) {
-    var highlightFeedback = require('../features/highlight-feedback');
+    var audibleFeedback = require('../features/audible-feedback');
 
     var highlightKeywords = [];
     var highlightUsers = [];
@@ -78,7 +78,7 @@ exports.highlighting = function (data) {
         if (vars.userData.isLoggedIn && vars.userData.login !== data.from && wordRegex.test(data.message)) {
             if(bttv.settings.get("desktopNotifications") === true && bttv.chat.store.activeView === false) {
                 bttv.notify("You were mentioned in "+bttv.chat.helpers.lookupDisplayName(bttv.getChannel())+"'s channel.");
-                highlightFeedback();
+                audibleFeedback('highlight');
             }
             return true;
         }

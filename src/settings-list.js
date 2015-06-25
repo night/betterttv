@@ -285,6 +285,12 @@ module.exports = [
         storageKey: 'highlightFeedback'
     },
     {
+        name: 'Play Sound on Whisper',
+        description: 'Get audio feedback when a whisper is received (BETA)',
+        default: false,
+        storageKey: 'whisperFeedback'
+    },
+    {
         name: 'Remove Deleted Messages',
         description: 'Completely removes timed out messages from view',
         default: false,
