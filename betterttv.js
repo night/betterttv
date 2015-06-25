@@ -229,12 +229,21 @@ exports.attrs = function attrs(obj, terse){
  * @api private
  */
 
-exports.escape = function escape(html){
-  var result = String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+var jade_encode_html_rules = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;'
+};
+var jade_match_html = /[&<>"]/g;
+
+function jade_encode_char(c) {
+  return jade_encode_html_rules[c] || c;
+}
+
+exports.escape = jade_escape;
+function jade_escape(html){
+  var result = String(html).replace(jade_match_html, jade_encode_char);
   if (result === '' + html) return html;
   else return result;
 };
@@ -355,7 +364,8 @@ var vars = require('../vars'),
     helpers = require('./helpers'),
     templates = require('./templates'),
     rooms = require('./rooms'),
-    embeddedPolling = require('../features/embedded-polling');
+    embeddedPolling = require('../features/embedded-polling'),
+    audibleFeedback = require('../features/audible-feedback');
 
 // Helper Functions
 var getEmoteFromRegEx = require('../helpers/regex').getEmoteFromRegEx;
@@ -596,6 +606,7 @@ var onPrivmsg = exports.onPrivmsg = function (channel, data) {
         if (data.style === 'whisper') {
             store.chatters[data.from] = {lastWhisper:Date.now()};
             if (bttv.settings.get('disableWhispers') === true) return;
+            if (data.from !== vars.userData.login) audibleFeedback('whisper');
         }
         privmsg(channel, data);
     } catch(e) {
@@ -729,7 +740,7 @@ var privmsg = exports.privmsg = function (channel, data) {
     store.__messageQueue.push(message);
 }
 
-},{"../features/embedded-polling":29,"../features/keywords-lists":38,"../features/make-card":39,"../helpers/colors":42,"../helpers/debug":43,"../helpers/regex":46,"../vars":60,"./helpers":5,"./rooms":7,"./store":8,"./templates":10,"./tmi":11}],5:[function(require,module,exports){
+},{"../features/audible-feedback":13,"../features/embedded-polling":30,"../features/keywords-lists":38,"../features/make-card":39,"../helpers/colors":42,"../helpers/debug":43,"../helpers/regex":46,"../vars":60,"./helpers":5,"./rooms":7,"./store":8,"./templates":10,"./tmi":11}],5:[function(require,module,exports){
 var vars = require('../vars'),
     keyCodes = require('../keycodes'),
     tmi = require('./tmi'),
@@ -1920,7 +1931,7 @@ var takeover = module.exports = function() {
     });
 }
 
-},{"../features/chat-load-settings":19,"../features/css-loader":25,"../features/override-emotes":40,"../helpers/debug":43,"../keycodes":47,"../vars":60,"./handlers":4,"./helpers":5,"./rooms":7,"./store":8,"./tmi":11}],10:[function(require,module,exports){
+},{"../features/chat-load-settings":20,"../features/css-loader":26,"../features/override-emotes":40,"../helpers/debug":43,"../keycodes":47,"../vars":60,"./handlers":4,"./helpers":5,"./rooms":7,"./store":8,"./tmi":11}],10:[function(require,module,exports){
 var tmi = require('./tmi'),
     store = require('./store');
 
@@ -2432,7 +2443,25 @@ debug.log("BTTV LOADED " + document.URL);
 BTTVLOADED = true;
 checkJquery();
 
-},{"./chat":2,"./features/auto-theatre-mode":13,"./features/beta-chat":14,"./features/brand":15,"./features/channel-reformat":17,"./features/check-broadcast-info":20,"./features/check-following":21,"./features/check-messages":22,"./features/clear-clutter":23,"./features/create-settings":24,"./features/darken-page":26,"./features/dashboard-channelinfo":27,"./features/directory-functions":28,"./features/emoticon-text-in-clipboard":30,"./features/flip-dashboard":31,"./features/format-dashboard":32,"./features/giveaway-compatibility":33,"./features/handle-background":34,"./features/handle-twitchchat-emotes":35,"./features/image-preview":37,"./features/split-chat":41,"./helpers/debug":43,"./keycodes":47,"./settings":50,"./socketio":51,"./storage":52,"./twitch-api":59,"./vars":60}],13:[function(require,module,exports){
+},{"./chat":2,"./features/auto-theatre-mode":14,"./features/beta-chat":15,"./features/brand":16,"./features/channel-reformat":18,"./features/check-broadcast-info":21,"./features/check-following":22,"./features/check-messages":23,"./features/clear-clutter":24,"./features/create-settings":25,"./features/darken-page":27,"./features/dashboard-channelinfo":28,"./features/directory-functions":29,"./features/emoticon-text-in-clipboard":31,"./features/flip-dashboard":32,"./features/format-dashboard":33,"./features/giveaway-compatibility":34,"./features/handle-background":35,"./features/handle-twitchchat-emotes":36,"./features/image-preview":37,"./features/split-chat":41,"./helpers/debug":43,"./keycodes":47,"./settings":50,"./socketio":51,"./storage":52,"./twitch-api":59,"./vars":60}],13:[function(require,module,exports){
+var debug = require('../helpers/debug');
+
+var ts_tink;
+
+module.exports = function (type) {
+    if (bttv.settings.get(type + 'Feedback') === true) { // Valid types are 'highlight' and 'whisper'
+        if (!ts_tink) {
+            debug.log('loading audio feedback sound');
+
+            ts_tink = new Audio('https://cdn.betterttv.net/style/sounds/ts-tink.ogg'); // btw ogg does not work in ie
+        }
+
+        ts_tink.load(); // needed to play sound more then once
+        ts_tink.play();
+    };
+};
+
+},{"../helpers/debug":43}],14:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 module.exports = function () {
@@ -2448,7 +2477,7 @@ module.exports = function () {
     App.__container__.lookup('controller:channel').send('toggleTheatre');
 }
 
-},{"../helpers/debug":43}],14:[function(require,module,exports){
+},{"../helpers/debug":43}],15:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars');
 
@@ -2489,7 +2518,7 @@ module.exports = function () {
         $('body').append("<style>.ember-chat .chat-interface { height: 140px !important; } .ember-chat .chat-messages { bottom: 140px; } .ember-chat .chat-settings { bottom: 80px; } .ember-chat .emoticon-selector { bottom: 142px !important; }</style>");
     }
 }
-},{"../helpers/debug":43,"../vars":60}],15:[function(require,module,exports){
+},{"../helpers/debug":43,"../vars":60}],16:[function(require,module,exports){
 var debug = require('../helpers/debug');
 var betaChat = require('./beta-chat');
 
@@ -2556,7 +2585,7 @@ module.exports = function () {
     // Run Beta Chat After BTTV CSS
     betaChat();
 };
-},{"../helpers/debug":43,"./beta-chat":14}],16:[function(require,module,exports){
+},{"../helpers/debug":43,"./beta-chat":15}],17:[function(require,module,exports){
 var debug = require('../../helpers/debug'),
     vars = require('../../vars');
 
@@ -2614,7 +2643,7 @@ var handleResize = module.exports = function () {
 
     $("#channel_panels").masonry("reload");
 };
-},{"../../helpers/debug":43,"../../vars":60}],17:[function(require,module,exports){
+},{"../../helpers/debug":43,"../../vars":60}],18:[function(require,module,exports){
 var debug = require('../../helpers/debug'),
     keyCodes = require('../../keycodes'),
     vars = require('../../vars');
@@ -2773,7 +2802,7 @@ module.exports = function () {
         bttv.settings.save("chatWidth", $("#right_col").width());
     }
 }
-},{"../../helpers/debug":43,"../../keycodes":47,"../../vars":60,"./handle-resize":16,"./twitchcast":18}],18:[function(require,module,exports){
+},{"../../helpers/debug":43,"../../keycodes":47,"../../vars":60,"./handle-resize":17,"./twitchcast":19}],19:[function(require,module,exports){
 module.exports = function() {
     if($('.archive_info').length) return;
     
@@ -2834,7 +2863,7 @@ module.exports = function() {
         $('#twitchcast_button').remove();
     }
 }
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars'),
     removeElement = require('../helpers/element').remove;
@@ -2949,7 +2978,7 @@ module.exports = function() {
     });
 };
 
-},{"../helpers/debug":43,"../helpers/element":44,"../templates/chat-settings":53,"../vars":60,"./darken-page":26,"./split-chat":41}],20:[function(require,module,exports){
+},{"../helpers/debug":43,"../helpers/element":44,"../templates/chat-settings":53,"../vars":60,"./darken-page":27,"./split-chat":41}],21:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 var checkBroadcastInfo = module.exports = function() {
@@ -2984,7 +3013,7 @@ var checkBroadcastInfo = module.exports = function() {
         setTimeout(checkBroadcastInfo, 60000);
     });
 }
-},{"../helpers/debug":43}],21:[function(require,module,exports){
+},{"../helpers/debug":43}],22:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars');
 
@@ -3051,7 +3080,7 @@ var checkFollowing = module.exports = function () {
         setTimeout(checkFollowing, 60000);
     });
 }
-},{"../helpers/debug":43,"../vars":60}],22:[function(require,module,exports){
+},{"../helpers/debug":43,"../vars":60}],23:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars');
 
@@ -3142,7 +3171,7 @@ module.exports = function () {
     setInterval(checkOther, 30000);
     checkOther();
 }
-},{"../helpers/debug":43,"../vars":60}],23:[function(require,module,exports){
+},{"../helpers/debug":43,"../vars":60}],24:[function(require,module,exports){
 var debug = require('../helpers/debug'),
 	removeElement = require('../helpers/element').remove;
 
@@ -3159,7 +3188,7 @@ module.exports = function () {
         $('body').append('<style>#nav_games, #nav_streams, #nav_related_streams { display: none; }</style>');
     }
 }
-},{"../helpers/debug":43,"../helpers/element":44}],24:[function(require,module,exports){
+},{"../helpers/debug":43,"../helpers/element":44}],25:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars'),
     removeElement = require('../helpers/element').remove;
@@ -3226,7 +3255,7 @@ module.exports = function () {
         $(this).parent("li").addClass("active");
     });
 };
-},{"../helpers/debug":43,"../helpers/element":44,"../templates/settings-panel":58,"../vars":60,"./darken-page":26,"./split-chat":41}],25:[function(require,module,exports){
+},{"../helpers/debug":43,"../helpers/element":44,"../templates/settings-panel":58,"../vars":60,"./darken-page":27,"./split-chat":41}],26:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 function load(file, key){
@@ -3245,7 +3274,7 @@ function unload(key){
 
 module.exports.load = load;
 module.exports.unload = unload; 
-},{"../helpers/debug":43}],26:[function(require,module,exports){
+},{"../helpers/debug":43}],27:[function(require,module,exports){
 https:var debug = require('../helpers/debug'),
     handleBackground = require('./handle-background');
 
@@ -3283,7 +3312,7 @@ module.exports = function () {
     }
 
 }
-},{"../helpers/debug":43,"./handle-background":34}],27:[function(require,module,exports){
+},{"../helpers/debug":43,"./handle-background":35}],28:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars');
 
@@ -3369,7 +3398,7 @@ module.exports = function dashboardChannelInfo() {
         setTimeout(dashboardChannelInfo, 60000);
     }
 };
-},{"../helpers/debug":43,"../vars":60}],28:[function(require,module,exports){
+},{"../helpers/debug":43,"../vars":60}],29:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars');
 
@@ -3392,7 +3421,7 @@ module.exports = function () {
         }
     });
 }
-},{"../helpers/debug":43,"../vars":60}],29:[function(require,module,exports){
+},{"../helpers/debug":43,"../vars":60}],30:[function(require,module,exports){
 var debug = require('../helpers/debug');
 var pollTemplate = require('../templates/embedded-poll');
 var chatHelpers = require('../chat/helpers');
@@ -3457,7 +3486,7 @@ module.exports = function (message) {
     lastPollId = pollId;
 }
 
-},{"../chat/helpers":5,"../helpers/debug":43,"../templates/embedded-poll":55}],30:[function(require,module,exports){
+},{"../chat/helpers":5,"../helpers/debug":43,"../templates/embedded-poll":55}],31:[function(require,module,exports){
 // Add an event listener to the "copy" event that fires when text is copied to
 // the clipboard to convert any emoticons within the text selection to the
 // corresponding text that will create the emoticon. This allows copy/pasted
@@ -3504,7 +3533,7 @@ module.exports = function() {
     document.addEventListener('copy', onCopy);
 }
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 module.exports = function () {
@@ -3534,7 +3563,7 @@ module.exports = function () {
     }
 }
 
-},{"../helpers/debug":43}],32:[function(require,module,exports){
+},{"../helpers/debug":43}],33:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 module.exports = function () {
@@ -3554,7 +3583,7 @@ module.exports = function () {
     }
 }
 
-},{"../helpers/debug":43}],33:[function(require,module,exports){
+},{"../helpers/debug":43}],34:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 module.exports = function () {
@@ -3576,7 +3605,7 @@ module.exports = function () {
         });
     }
 };
-},{"../helpers/debug":43}],34:[function(require,module,exports){
+},{"../helpers/debug":43}],35:[function(require,module,exports){
 module.exports = function handleBackground(tiled) {
     var tiled = tiled || false;
     
@@ -3668,7 +3697,7 @@ module.exports = function handleBackground(tiled) {
         }
     }
 }
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 module.exports = function () {
@@ -3697,24 +3726,6 @@ module.exports = function () {
         }, 1000);
     }
 }
-},{"../helpers/debug":43}],36:[function(require,module,exports){
-var debug = require('../helpers/debug');
-
-var ts_tink;
-
-module.exports = function () {
-    if (bttv.settings.get('highlightFeedback') === true) {
-        if (!ts_tink) {
-            debug.log('loading audio feedback sound');
-
-            ts_tink = new Audio('https://cdn.betterttv.net/style/sounds/ts-tink.ogg'); // btw ogg does not work in ie
-        }
-
-        ts_tink.load(); // needed to play sound more then once
-        ts_tink.play();
-    };
-};
-
 },{"../helpers/debug":43}],37:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
@@ -3796,7 +3807,7 @@ exports.blacklistFilter = function (data) {
 }
 
 exports.highlighting = function (data) {
-    var highlightFeedback = require('../features/highlight-feedback');
+    var audibleFeedback = require('../features/audible-feedback');
 
     var highlightKeywords = [];
     var highlightUsers = [];
@@ -3828,7 +3839,7 @@ exports.highlighting = function (data) {
         if (vars.userData.isLoggedIn && vars.userData.login !== data.from && wordRegex.test(data.message)) {
             if(bttv.settings.get("desktopNotifications") === true && bttv.chat.store.activeView === false) {
                 bttv.notify("You were mentioned in "+bttv.chat.helpers.lookupDisplayName(bttv.getChannel())+"'s channel.");
-                highlightFeedback();
+                audibleFeedback('highlight');
             }
             return true;
         }
@@ -3844,7 +3855,7 @@ exports.highlighting = function (data) {
 
     return false;
 }
-},{"../features/highlight-feedback":36,"../helpers/regex":46,"../vars":60}],39:[function(require,module,exports){
+},{"../features/audible-feedback":13,"../helpers/regex":46,"../vars":60}],39:[function(require,module,exports){
 module.exports = function(user, $event) {
     var template = bttv.chat.templates.moderationCard(user, $event.offset().top, $('.chat-line:last').offset().left);
     $('.ember-chat .moderation-card').remove();
@@ -4932,6 +4943,12 @@ module.exports = [
         storageKey: 'highlightFeedback'
     },
     {
+        name: 'Play Sound on Whisper',
+        description: 'Get audio feedback when a whisper is received (BETA)',
+        default: false,
+        storageKey: 'whisperFeedback'
+    },
+    {
         name: 'Remove Deleted Messages',
         description: 'Completely removes timed out messages from view',
         default: false,
@@ -5079,7 +5096,7 @@ module.exports = [
     }
 ];
 
-},{"./features/auto-theatre-mode":13,"./features/beta-chat":14,"./features/channel-reformat":17,"./features/css-loader":25,"./features/darken-page":26,"./features/flip-dashboard":31,"./features/handle-background":34,"./features/image-preview":37,"./features/split-chat":41,"./helpers/element":44}],50:[function(require,module,exports){
+},{"./features/auto-theatre-mode":14,"./features/beta-chat":15,"./features/channel-reformat":18,"./features/css-loader":26,"./features/darken-page":27,"./features/flip-dashboard":32,"./features/handle-background":35,"./features/image-preview":37,"./features/split-chat":41,"./helpers/element":44}],50:[function(require,module,exports){
 var saveAs = require('./helpers/filesaver').saveAs;
 
 function Settings() {
