@@ -5080,6 +5080,7 @@ module.exports = [
 ];
 
 },{"./features/auto-theatre-mode":13,"./features/beta-chat":14,"./features/channel-reformat":17,"./features/css-loader":25,"./features/darken-page":26,"./features/flip-dashboard":31,"./features/handle-background":34,"./features/image-preview":37,"./features/split-chat":41,"./helpers/element":44}],50:[function(require,module,exports){
+var debug = require('./helpers/debug');
 var saveAs = require('./helpers/filesaver').saveAs;
 
 function Settings() {
@@ -5212,7 +5213,11 @@ Settings.prototype.import = function(input) {
                 count = 0;
 
             Object.keys(settings).forEach(function(setting) {
-                _self.set(setting, settings[setting]);
+                try {
+                    _self.set(setting, settings[setting]);
+                } catch(e) {
+                    debug.log("Import Error: " + setting + " does not exist in settings list. Ignoring...");
+                }
             });
 
             bttv.notify("BetterTTV imported " + count + " settings, and will now refresh in a few seconds.");
@@ -5256,7 +5261,7 @@ Settings.prototype.popup = function() {
 }
 
 module.exports = Settings;
-},{"./helpers/filesaver":45,"./settings-list":49,"./templates/setting-switch":57}],51:[function(require,module,exports){
+},{"./helpers/debug":43,"./helpers/filesaver":45,"./settings-list":49,"./templates/setting-switch":57}],51:[function(require,module,exports){
 var io = require('socket.io-client');
 var debug = require('./helpers/debug');
 var vars = require('./vars');

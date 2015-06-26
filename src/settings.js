@@ -1,3 +1,4 @@
+var debug = require('./helpers/debug');
 var saveAs = require('./helpers/filesaver').saveAs;
 
 function Settings() {
@@ -130,7 +131,11 @@ Settings.prototype.import = function(input) {
                 count = 0;
 
             Object.keys(settings).forEach(function(setting) {
-                _self.set(setting, settings[setting]);
+                try {
+                    _self.set(setting, settings[setting]);
+                } catch(e) {
+                    debug.log("Import Error: " + setting + " does not exist in settings list. Ignoring...");
+                }
             });
 
             bttv.notify("BetterTTV imported " + count + " settings, and will now refresh in a few seconds.");
