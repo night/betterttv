@@ -606,7 +606,11 @@ var onPrivmsg = exports.onPrivmsg = function (channel, data) {
         if (data.style === 'whisper') {
             store.chatters[data.from] = {lastWhisper:Date.now()};
             if (bttv.settings.get('disableWhispers') === true) return;
-            if (data.from !== vars.userData.login) audibleFeedback();
+            if (data.from !== vars.userData.login) {
+                audibleFeedback();
+                if(bttv.settings.get("desktopNotifications") === true && bttv.chat.store.activeView === false)
+                    bttv.notify("You received a whisper from "+((data.tags && data.tags['display-name']) || data.from));
+            }
         }
         privmsg(channel, data);
     } catch(e) {
