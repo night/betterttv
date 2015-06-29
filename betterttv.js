@@ -2959,10 +2959,10 @@ var checkBroadcastInfo = module.exports = function() {
 
     debug.log("Check Channel Title/Game");
 
-    bttv.TwitchAPI.get("channels/"+channel).done(function(d) {
+    bttv.TwitchAPI.get("channels/"+channel, {}, {version: 3}).done(function(d) {
         if(d.game) {
             var $channel = $('#broadcast-meta .channel');
-            
+
             if($channel.find('.playing').length) {
                 $channel.find('a:eq(1)').text(d.game).attr("href", Twitch.uri.game(d.game)).removeAttr('data-ember-action');
             }
@@ -2978,6 +2978,19 @@ var checkBroadcastInfo = module.exports = function() {
 
                 $title.find('.real').html(d.status);
                 $title.find('.over').html(d.status);
+            }
+        }
+
+        if(window.Ember && window.App) {
+            var emberCtrl = App.__container__.lookup('controller:channel');
+            if(d.views) {
+                var fmtViews = Twitch.display.commatize(d.views);
+                emberCtrl.set('views', fmtViews);
+            }
+
+            if (d.followers) {
+                var fmtFollowers = Twitch.display.commatize(d.followers);
+                emberCtrl.set('followersTotal', fmtFollowers);
             }
         }
 
@@ -5561,11 +5574,11 @@ module.exports = {
 
         bttv.TwitchAPI._ref.call(Twitch.api, e, t);
     },
-    _call: function(method, url, data) {
+    _call: function(method, url, data, options) {
         // Replace Twitch's beforeSend with ours (to add Client ID)
         var rep = this._takeover();
 
-        var callTwitchAPI = window.Twitch.api[method].call(this, url, data);
+        var callTwitchAPI = window.Twitch.api[method].call(this, url, data, options);
 
         // Replace Twitch's beforeSend back with theirs
         this._untakeover();
@@ -5585,17 +5598,17 @@ module.exports = {
         window.Twitch.api._beforeSend = this._ref;
         this._ref = null;
     },
-    get: function(url) {
-        return this._call('get', url);
+    get: function(url, data, options) {
+        return this._call('get', url, data, options);
     },
-    post: function(url, data) {
-        return this._call('post', url, data);
+    post: function(url, data, options) {
+        return this._call('post', url, data, options);
     },
-    put: function(url, data) {
-        return this._call('put', url, data);
+    put: function(url, data, options) {
+        return this._call('put', url, data, options);
     },
-    del: function(url) {
-        return this._call('del', url);
+    del: function(url, data, options) {
+        return this._call('del', url, data, options);
     }
 };
 },{}],60:[function(require,module,exports){
