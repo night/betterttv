@@ -78,7 +78,7 @@ exports.highlighting = function (data) {
         if (vars.userData.isLoggedIn && vars.userData.login !== data.from && wordRegex.test(data.message)) {
             if(bttv.settings.get("desktopNotifications") === true && bttv.chat.store.activeView === false) {
                 bttv.notify("You were mentioned in "+bttv.chat.helpers.lookupDisplayName(bttv.getChannel())+"'s channel.");
-                audibleFeedback('highlight');
+                audibleFeedback();
             }
             return true;
         }

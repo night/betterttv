@@ -606,7 +606,7 @@ var onPrivmsg = exports.onPrivmsg = function (channel, data) {
         if (data.style === 'whisper') {
             store.chatters[data.from] = {lastWhisper:Date.now()};
             if (bttv.settings.get('disableWhispers') === true) return;
-            if (data.from !== vars.userData.login) audibleFeedback('whisper');
+            if (data.from !== vars.userData.login) audibleFeedback();
         }
         privmsg(channel, data);
     } catch(e) {
@@ -2448,8 +2448,8 @@ var debug = require('../helpers/debug');
 
 var ts_tink;
 
-module.exports = function (type) {
-    if (bttv.settings.get(type + 'Feedback') === true) { // Valid types are 'highlight' and 'whisper'
+module.exports = function () {
+    if (bttv.settings.get('audibleFeedback') === true) {
         if (!ts_tink) {
             debug.log('loading audio feedback sound');
 
@@ -3839,7 +3839,7 @@ exports.highlighting = function (data) {
         if (vars.userData.isLoggedIn && vars.userData.login !== data.from && wordRegex.test(data.message)) {
             if(bttv.settings.get("desktopNotifications") === true && bttv.chat.store.activeView === false) {
                 bttv.notify("You were mentioned in "+bttv.chat.helpers.lookupDisplayName(bttv.getChannel())+"'s channel.");
-                audibleFeedback('highlight');
+                audibleFeedback();
             }
             return true;
         }
@@ -4937,16 +4937,10 @@ module.exports = [
         }
     },
     {
-        name: 'Play Sound on Highlight',
-        description: 'Get audio feedback when any message is highlighted (BETA)',
+        name: 'Play Sound on Highlight or Whisper',
+        description: 'Get audio feedback for messages directed at you (BETA)',
         default: false,
-        storageKey: 'highlightFeedback'
-    },
-    {
-        name: 'Play Sound on Whisper',
-        description: 'Get audio feedback when a whisper is received (BETA)',
-        default: false,
-        storageKey: 'whisperFeedback'
+        storageKey: 'audibleFeedback'
     },
     {
         name: 'Remove Deleted Messages',

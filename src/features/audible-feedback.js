@@ -2,8 +2,8 @@ var debug = require('../helpers/debug');
 
 var ts_tink;
 
-module.exports = function (type) {
-    if (bttv.settings.get(type + 'Feedback') === true) { // Valid types are 'highlight' and 'whisper'
+module.exports = function () {
+    if (bttv.settings.get('audibleFeedback') === true) {
         if (!ts_tink) {
             debug.log('loading audio feedback sound');
 

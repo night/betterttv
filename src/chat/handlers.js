@@ -247,7 +247,7 @@ var onPrivmsg = exports.onPrivmsg = function (channel, data) {
         if (data.style === 'whisper') {
             store.chatters[data.from] = {lastWhisper:Date.now()};
             if (bttv.settings.get('disableWhispers') === true) return;
-            if (data.from !== vars.userData.login) audibleFeedback('whisper');
+            if (data.from !== vars.userData.login) audibleFeedback();
         }
         privmsg(channel, data);
     } catch(e) {
