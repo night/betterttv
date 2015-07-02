@@ -313,10 +313,6 @@ input.text:focus,select:focus,textarea:focus {
     padding-top: 0px !important;
 }
 
-.emoticon {
-    vertical-align: baseline !important;
-}
-
 #chat_line_list .highlight, .chat-messages .chat-line.highlight {
     color: #000 !important;
     padding-top: 5px;
@@ -1358,7 +1354,9 @@ body.channel_new.columns.ember-application {
 
 /* Emoticons */
 .emoticon {
+    vertical-align: baseline !important;
     display: inline-block;
+    padding-top: 5px;
 }
 
 /* tehMorag's emote */
