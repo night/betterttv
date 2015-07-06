@@ -2453,7 +2453,7 @@ var debug = require('../helpers/debug');
 var ts_tink;
 
 module.exports = function () {
-    if (bttv.settings.get('audibleFeedback') === true) {
+    if (bttv.settings.get('highlightFeedback') === true) {
         if (!ts_tink) {
             debug.log('loading audio feedback sound');
 
@@ -4957,7 +4957,7 @@ module.exports = [
         name: 'Play Sound on Highlight or Whisper',
         description: 'Get audio feedback for messages directed at you (BETA)',
         default: false,
-        storageKey: 'audibleFeedback'
+        storageKey: 'highlightFeedback'
     },
     {
         name: 'Remove Deleted Messages',

@@ -3,7 +3,7 @@ var debug = require('../helpers/debug');
 var ts_tink;
 
 module.exports = function () {
-    if (bttv.settings.get('audibleFeedback') === true) {
+    if (bttv.settings.get('highlightFeedback') === true) {
         if (!ts_tink) {
             debug.log('loading audio feedback sound');
 

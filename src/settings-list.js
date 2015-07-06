@@ -282,7 +282,7 @@ module.exports = [
         name: 'Play Sound on Highlight or Whisper',
         description: 'Get audio feedback for messages directed at you (BETA)',
         default: false,
-        storageKey: 'audibleFeedback'
+        storageKey: 'highlightFeedback'
     },
     {
         name: 'Remove Deleted Messages',
