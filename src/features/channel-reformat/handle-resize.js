@@ -27,6 +27,9 @@ var handleResize = module.exports = function () {
     }
 
     var fullPlayerHeight = ($('#player object').width() * 0.5625) + 30;
+    if (!$('#player object').length) {
+        fullPlayerHeight = ($('#player video').width() * 0.5625) + 30;
+    }
 
     var metaAndStatsHeight = $('#broadcast-meta').outerHeight(true) + $('.stats-and-actions').outerHeight();
 

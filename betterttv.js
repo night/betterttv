@@ -2619,6 +2619,9 @@ var handleResize = module.exports = function () {
     }
 
     var fullPlayerHeight = ($('#player object').width() * 0.5625) + 30;
+    if (!$('#player object').length) {
+        fullPlayerHeight = ($('#player video').width() * 0.5625) + 30;
+    }
 
     var metaAndStatsHeight = $('#broadcast-meta').outerHeight(true) + $('.stats-and-actions').outerHeight();
 
@@ -5167,7 +5170,7 @@ Settings.prototype.load = function() {
     $('#bttvSettings .options-list').append(featureRequests);
 
     $('.option input:radio').change(function (e) {
-        _self.set(e.target.name, _self._parseSetting(e.target.value));
+        _self.save(e.target.name, _self._parseSetting(e.target.value));
     });
 
     var notifications = bttv.storage.getObject("bttvNotifications");
@@ -5273,13 +5276,17 @@ Settings.prototype.save = function(setting, value) {
     if(/\?bttvSettings=true/.test(window.location)) {
         window.opener.postMessage('bttv_setting '+setting+' '+value, window.location.protocol+'//'+window.location.host);
     } else {
-        if(window.__bttvga) __bttvga('send', 'event', 'BTTV', 'Change Setting: '+setting+'='+value);
+        try {
+            if(window.__bttvga) __bttvga('send', 'event', 'BTTV', 'Change Setting: '+setting+'='+value);
 
-        if(window !== window.top) window.parent.postMessage('bttv_setting '+setting+' '+value, window.location.protocol+'//'+window.location.host);
+            if(window !== window.top) window.parent.postMessage('bttv_setting '+setting+' '+value, window.location.protocol+'//'+window.location.host);
 
-        this.set(setting, value);
+            this.set(setting, value);
 
-        if(this._settings[setting].toggle) this._settings[setting].toggle(value);
+            if(this._settings[setting].toggle) this._settings[setting].toggle(value);
+        } catch(e) {
+            debug.log(e)
+        }
     }
 }
 
