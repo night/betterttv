@@ -279,8 +279,8 @@ module.exports = [
         }
     },
     {
-        name: 'Play Sound on Highlight',
-        description: 'Get audio feedback when any message is highlighted (BETA)',
+        name: 'Play Sound on Highlight or Whisper',
+        description: 'Get audio feedback for messages directed at you (BETA)',
         default: false,
         storageKey: 'highlightFeedback'
     },

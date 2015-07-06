@@ -5,7 +5,8 @@ var vars = require('../vars'),
     helpers = require('./helpers'),
     templates = require('./templates'),
     rooms = require('./rooms'),
-    embeddedPolling = require('../features/embedded-polling');
+    embeddedPolling = require('../features/embedded-polling'),
+    audibleFeedback = require('../features/audible-feedback');
 
 // Helper Functions
 var getEmoteFromRegEx = require('../helpers/regex').getEmoteFromRegEx;
@@ -246,6 +247,11 @@ var onPrivmsg = exports.onPrivmsg = function (channel, data) {
         if (data.style === 'whisper') {
             store.chatters[data.from] = {lastWhisper:Date.now()};
             if (bttv.settings.get('disableWhispers') === true) return;
+            if (data.from !== vars.userData.login) {
+                audibleFeedback();
+                if(bttv.settings.get("desktopNotifications") === true && bttv.chat.store.activeView === false)
+                    bttv.notify("You received a whisper from "+((data.tags && data.tags['display-name']) || data.from));
+            }
         }
         privmsg(channel, data);
     } catch(e) {
