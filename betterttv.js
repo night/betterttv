@@ -1,5 +1,5 @@
 /** @license
- * Copyright (c) 2014 NightDev
+ * Copyright (c) 2015 NightDev
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -229,21 +229,12 @@ exports.attrs = function attrs(obj, terse){
  * @api private
  */
 
-var jade_encode_html_rules = {
-  '&': '&amp;',
-  '<': '&lt;',
-  '>': '&gt;',
-  '"': '&quot;'
-};
-var jade_match_html = /[&<>"]/g;
-
-function jade_encode_char(c) {
-  return jade_encode_html_rules[c] || c;
-}
-
-exports.escape = jade_escape;
-function jade_escape(html){
-  var result = String(html).replace(jade_match_html, jade_encode_char);
+exports.escape = function escape(html){
+  var result = String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
   if (result === '' + html) return html;
   else return result;
 };
@@ -1931,6 +1922,14 @@ var takeover = module.exports = function() {
                     $('.bttv-mod-card').remove();
                     break;
             }
+        }
+    });
+    
+    $('.tse-content').on('dblclick', '.chat-line .from', function(e) {
+        if(bttv.settings.get('dblClickAutoComplete') === false) return;
+        var sender = $(this).text();
+        if (sender) {
+            $('.ember-chat .chat-interface').find('textarea').val(sender + ", ");
         }
     });
 }
@@ -4873,6 +4872,12 @@ module.exports = [
         description: 'Disables the twitch whisper functionalitiy, hiding any whispers you recieve',
         default: false,
         storageKey: 'disableWhispers'
+    },
+	{
+        name: 'Double-Click autocomplete',
+        description: 'Double-clicking a username in chat copies it into the chat text box',
+        default: false,
+        storageKey: 'dblClickAutoComplete'
     },
     {
         name: 'Embedded Polling',
