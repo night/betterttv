@@ -196,6 +196,12 @@ module.exports = [
         default: false,
         storageKey: 'disableWhispers'
     },
+	{
+        name: 'Double-Click autocomplete',
+        description: 'Double-clicking a username in chat copies it into the chat text box',
+        default: false,
+        storageKey: 'dblClickAutoComplete'
+    },
     {
         name: 'Embedded Polling',
         description: 'See polls posted by the broadcaster embedded right into chat',
