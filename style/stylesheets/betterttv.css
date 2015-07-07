@@ -1427,6 +1427,7 @@ body.channel_new.columns.ember-application {
 }
 
 .ttv-emo-6633 {
+    padding-top: 0px;
     -webkit-animation: morag-spin 1.5s linear infinite;
     -moz-animation: morag-spin 1.5s linear infinite;
     -ms-animation: morag-spin 1.5s linear infinite;
