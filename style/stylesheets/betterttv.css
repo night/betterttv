@@ -1458,3 +1458,12 @@ body.channel_new.columns.ember-application {
 .chat-messages .chat-line .svg-whisper-arrow {
     fill: #32323e;
 }
+
+/* small nav follow count */
+#bttv-small-nav-count {
+    position: absolute;
+    left: 30px;
+    top: 20px;
+    color: #CFCFCF;
+    font-size: 10px;
+}

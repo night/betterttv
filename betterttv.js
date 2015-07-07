@@ -3064,6 +3064,13 @@ var debug = require('../helpers/debug'),
 var checkFollowing = module.exports = function () {
     debug.log("Check Following List");
 
+    if(!$("#bttv-small-nav-count").length) {
+        $count = $('<div/>');
+        $count.addClass('js-total');
+        $count.attr('id', 'bttv-small-nav-count');
+        $count.insertBefore('#small_nav li[data-name=\"following\"] a[href=\"/directory/following\"] .filter_icon');
+    }
+
     if($("body#chat").length || $('body[data-page="ember#chat"]').length || !vars.userData.isLoggedIn) return;
 
     var fetchFollowing = function(callback, followingList, followingNames, offset) {
@@ -3118,8 +3125,8 @@ var checkFollowing = module.exports = function () {
         if(!$("#nav_personal li[data-name=\"following\"] a[href=\"/directory/following\"] .js-total").length) {
             $("#nav_personal li[data-name=\"following\"] a[href=\"/directory/following\"]").append('<span class="total_count js-total" style="display: none;"></span>');
         }
-        $("#nav_personal li[data-name=\"following\"] a[href=\"/directory/following\"] .js-total").text(streams.length);
-        $("#nav_personal li[data-name=\"following\"] a[href=\"/directory/following\"] .js-total").css("display","inline");
+        $("#left_col li[data-name=\"following\"] a[href=\"/directory/following\"] .js-total").text(streams.length);
+        $("#left_col li[data-name=\"following\"] a[href=\"/directory/following\"] .js-total").css("display","inline");
 
         setTimeout(checkFollowing, 60000);
     });
