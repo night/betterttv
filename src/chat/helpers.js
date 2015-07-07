@@ -696,35 +696,21 @@ var massUnban = exports.massUnban = function() {
         }
     });
 };
-/*var translate = exports.translate = function(element, sender, text) {
-    var language = (window.cookie && window.cookie.get('language')) ? window.cookie.get('language') : 'en',
-        query = 'http://translate.google.com/translate_a/t?client=bttv&sl=auto&tl='+language+'&ie=UTF-8&oe=UTF-8&q='+text,
-        translate = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20json%20where%20url%3D\""+encodeURIComponent(query)+"\"&format=json&diagnostics=false&callback=?";
+var translate = exports.translate = function(element, sender, text) {
+    var language = (window.cookie && window.cookie.get('language')) ? window.cookie.get('language') : 'en';
 
-    $.ajax({
-        url: translate,
-        cache: !1,
-        timeoutLength: 6E3,
-        dataType: 'json',
-        success: function (data) {
-            if(data.error) {
-                $(element).text("Translation Error");
-            } else {
-                var sentences = data.query.results.json.sentences;
-                if(sentences instanceof Array) {
-                    var translation = "";
-                    sentences.forEach(function(sentence) {
-                        translation += sentence.trans;
-                    });
-                } else {
-                    var translation = sentences.trans;
-                }
+    var qs = $.param({
+        target: language,
+        q: decodeURIComponent(text)
+    });
 
-                $(element).replaceWith(templates.message(sender, translation));
-            }
-        },
-        error: function() {
-            $(element).text("Translation Error: Server Error");
+    $.getJSON('https://api.betterttv.net/2/translate?' + qs).success(function(data) {
+        $(element).replaceWith(templates.message(sender, data.translation));
+    }).error(function(data) {
+        if(data.responseJSON && data.responseJSON.message) {
+            $(element).text(data.responseJSON.message);
+        } else {
+            $(element).text("Translation Error");
         }
     });
-}*/
+};

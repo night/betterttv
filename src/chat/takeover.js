@@ -194,14 +194,14 @@ var takeover = module.exports = function() {
     }
 
     // Make chat translatable
-    /*if (!vars.loadedDoubleClickTranslation && bttv.settings.get("dblclickTranslation") !== false) {
+    if (!vars.loadedDoubleClickTranslation && bttv.settings.get("dblclickTranslation") !== false) {
         vars.loadedDoubleClickTranslation = true;
         $('body').on('dblclick', '.chat-line', function() {
             helpers.translate($(this).find('.message'), $(this).data("sender"), $(this).find('.message').data("raw"));
             $(this).find('.message').text("Translating..");
             $('div.tipsy').remove();
         });
-    }*/
+    }
 
     var $chatInterface = $('.ember-chat .chat-interface');
     var $chatInput = $chatInterface.find('textarea');

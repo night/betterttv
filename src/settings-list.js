@@ -187,7 +187,7 @@ module.exports = [
             }
         }
     },
-    /*{
+    {
         name: 'Double-Click Translation',
         description: 'Double-clicking on chat lines translates them with Google Translate',
         default: true,
@@ -203,7 +203,7 @@ module.exports = [
                 $('body').unbind("dblclick");
             }
         }
-    },*/
+    },
     {
         name: 'Disable Whispers',
         description: 'Disables the twitch whisper functionalitiy, hiding any whispers you recieve',
