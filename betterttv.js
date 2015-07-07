@@ -2183,7 +2183,7 @@ var debug = require('./helpers/debug'),
 
 bttv.info = {
     version: "6.8",
-    release: 36,
+    release: 37,
     versionString: function() {
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -2957,6 +2957,8 @@ var template = require('../templates/channel-state');
 var chatHelpers = require('../chat/helpers');
 
 module.exports = function(user, $event) {
+    return;
+
     $('.chat-container .chat-header').append(template());
 }
 
