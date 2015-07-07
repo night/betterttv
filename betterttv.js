@@ -3071,45 +3071,48 @@ module.exports = function() {
 var debug = require('../helpers/debug');
 
 var checkBroadcastInfo = module.exports = function() {
-    var channel = bttv.getChannel();
+    if(!window.App || !window.App.__container__) return;
 
-    if(!channel) return setTimeout(checkBroadcastInfo, 60000);
+    var channelCtrl = window.App.__container__.lookup('controller:channel');
+
+    if(!channelCtrl) return setTimeout(checkBroadcastInfo, 60000);
+
+    if(!channelCtrl.model);
+
+    var hostedChannel = channelCtrl.model.get('hostModeTarget');
+    var channel = hostedChannel ? hostedChannel : channelCtrl.model;
 
     debug.log("Check Channel Title/Game");
 
-    bttv.TwitchAPI.get("channels/"+channel, {}, {version: 3}).done(function(d) {
+    bttv.TwitchAPI.get("channels/" + channel.id, {}, { version: 3 }).done(function(d) {
         if(d.game) {
-            var $channel = $('#broadcast-meta .channel');
-
-            if($channel.find('.playing').length) {
-                $channel.find('a:eq(1)').text(d.game).attr("href", Twitch.uri.game(d.game)).removeAttr('data-ember-action');
-            }
+            channel.set('game', d.game);
         }
+
         if(d.status) {
-            var $title = $('#broadcast-meta .title');
+            channel.set('status', d.status);
 
-            if($title.data('status') !== d.status) {
-                $title.data('status', d.status);
+            if(!hostedChannel) {
+                var $title = $('#broadcast-meta .title');
 
-                d.status = d.status.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                d.status = bttv.chat.templates.linkify(d.status);
+                if($title.data('status') !== d.status) {
+                    $title.data('status', d.status);
 
-                $title.find('.real').html(d.status);
-                $title.find('.over').html(d.status);
+                    d.status = d.status.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                    d.status = bttv.chat.templates.linkify(d.status);
+
+                    $title.find('.real').html(d.status);
+                    $title.find('.over').html(d.status);
+                }
             }
         }
 
-        if(window.Ember && window.App) {
-            var emberCtrl = App.__container__.lookup('controller:channel');
-            if(d.views) {
-                var fmtViews = Twitch.display.commatize(d.views);
-                emberCtrl.set('views', fmtViews);
-            }
+        if(d.views) {
+            channel.set('views', d.views);
+        }
 
-            if (d.followers) {
-                var fmtFollowers = Twitch.display.commatize(d.followers);
-                emberCtrl.set('followersTotal', fmtFollowers);
-            }
+        if(d.followers) {
+            channel.set('followersTotal', d.followers);
         }
 
         setTimeout(checkBroadcastInfo, 60000);
