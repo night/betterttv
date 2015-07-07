@@ -362,6 +362,10 @@ var takeover = module.exports = function() {
                     helpers.timeout(user, 1);
                     $('.bttv-mod-card').remove();
                     break;
+                case keyCodes.a:
+                    helpers.sendMessage("!permit "+user);
+                    $('.bttv-mod-card').remove();
+                    break;
                 case keyCodes.b:
                     helpers.ban(user);
                     $('.bttv-mod-card').remove();

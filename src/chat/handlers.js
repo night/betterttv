@@ -25,6 +25,8 @@ var commands = exports.commands = function (input) {
         var time = 600;
         if(!isNaN(sentence[2])) time = sentence[2];
         helpers.timeout(sentence[1], time);
+    } else if (command === "/p" || command === "/purge") {
+        helpers.timeout(sentence[1], 1);
     } else if (command === "/massunban" || ((command === "/unban" || command === "/u") && sentence[1] === "all")) {
         helpers.massUnban();
     } else if (command === "/u") {
@@ -96,6 +98,7 @@ var commands = exports.commands = function (input) {
         helpers.serverMessage("/localmodoff -- Turns off local mod-only mode");
         helpers.serverMessage("/localsub -- Turns on local sub-only mode (only your chat is sub-only mode)");
         helpers.serverMessage("/localsuboff -- Turns off local sub-only mode");
+        helpers.serverMessage("/purge [username] (or /p) -- Purges a user's chat");
         helpers.serverMessage("/massunban (or /unban all or /u all) -- Unbans all users in the channel (channel owner only)");
         helpers.serverMessage("/r -- Type '/r ' to respond to your last whisper");
         helpers.serverMessage("/sub -- Shortcut for /subscribers");

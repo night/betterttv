@@ -41,12 +41,14 @@ var tcCommands = [
     'ban',
     'unban',
     'timeout',
+    'purge',
     'host',
     'unhost',
     'b',
     't',
     'u',
-    'w'
+    'w',
+    'p'
 ];
 var detectServerCommand = function(input) {
     var input = input.split(' ');
