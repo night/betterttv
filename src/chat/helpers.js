@@ -323,6 +323,11 @@ var sendMessage = exports.sendMessage = function(message) {
             return;
         }
 
+        if(bttv.settings.get('anonChat') === true) {
+            serverMessage('You can\'t send messages when Anon Chat is enabled. You can disable Anon Chat in the BetterTTV settings.');
+            return;
+        }
+
         tmi().tmiRoom.sendMessage(message);
 
         // Fixes issue when using Twitch's sub emote selector

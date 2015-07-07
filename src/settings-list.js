@@ -12,18 +12,31 @@ var betaChat = require('./features/beta-chat'),
     flipDashboard = require('./features/flip-dashboard'),
     cssLoader = require('./features/css-loader'),
     theatreMode = require('./features/auto-theatre-mode'),
-    hostButton = require('./features/host-btn-below-video');
+    hostButton = require('./features/host-btn-below-video'),
+    anonChat = require('./features/anon-chat');
 var displayElement = require('./helpers/element').display,
     removeElement = require('./helpers/element').remove,
     imagePreview = require('./features/image-preview');
 
 module.exports = [
-    {
+    /*{
         name: 'Admin/Staff Alert',
         description: 'Get alerted in chat when admins or staff join',
         default: false,
         hidden: true,
         storageKey: 'adminStaffAlert'
+    },*/
+    {
+        name: 'Anon Chat',
+        description: 'Join channels without appearing in chat',
+        default: false,
+        storageKey: 'anonChat',
+        toggle: function() {
+            anonChat();
+        },
+        load: function() {
+            anonChat();
+        }
     },
     {
         name: 'Alpha Chat Badges',
