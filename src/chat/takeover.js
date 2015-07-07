@@ -101,6 +101,27 @@ var takeover = module.exports = function() {
     // Load Chat Settings
     loadChatSettings();
 
+    // Hover over links
+    $("body").off('mouseover', '.chat-line .message a').on('mouseover', '.chat-line .message a', function() {
+        var $this = $(this);
+
+        var encodedURL = encodeURIComponent($this.attr('href'));
+        $.getJSON("https://api.betterttv.net/2/link_resolver/" + encodedURL).done(function(data) {
+            if(!data.tooltip || !$this.is(':hover')) return;
+
+            $this.tipsy({
+                trigger: 'manual',
+                gravity: $.fn.tipsy.autoNS,
+                html: true,
+                title: function() { return data.tooltip; }
+            });
+            $this.tipsy("show");
+        });
+    }).off('mouseout', '.chat-line .message a').on('mouseout', '.chat-line .message a', function() {
+        $(this).tipsy("hide");
+        $('div.tipsy').remove();
+    });
+
     // Hover over icons
     $("body").off('mouseover', '.chat-line .badges .badge, .chat-line .mod-icons a').on('mouseover', '.chat-line .badges .badge, .chat-line .mod-icons a', function() {
         $(this).tipsy({
