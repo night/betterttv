@@ -8,13 +8,17 @@ var store = require('./store'),
 var overrideEmotes = require('../features/override-emotes'),
     loadChatSettings = require('../features/chat-load-settings'),
     cssLoader = require('../features/css-loader'),
-    anonChat = require('../features/anon-chat');
+    anonChat = require('../features/anon-chat'),
+    channelState = require('../features/channel-state');
 
 var takeover = module.exports = function() {
     var tmi = require('./tmi')();
 
     // Anonymize Chat if it isn't already
     anonChat();
+
+    //add channel state info
+    channelState();
 
     if(store.isLoaded) return;
 

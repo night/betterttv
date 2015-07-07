@@ -229,12 +229,21 @@ exports.attrs = function attrs(obj, terse){
  * @api private
  */
 
-exports.escape = function escape(html){
-  var result = String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+var jade_encode_html_rules = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;'
+};
+var jade_match_html = /[&<>"]/g;
+
+function jade_encode_char(c) {
+  return jade_encode_html_rules[c] || c;
+}
+
+exports.escape = jade_escape;
+function jade_escape(html){
+  var result = String(html).replace(jade_match_html, jade_encode_char);
   if (result === '' + html) return html;
   else return result;
 };
@@ -738,7 +747,7 @@ var privmsg = exports.privmsg = function (channel, data) {
     store.__messageQueue.push(message);
 }
 
-},{"../features/audible-feedback":14,"../features/embedded-polling":31,"../features/keywords-lists":40,"../features/make-card":41,"../helpers/colors":44,"../helpers/debug":45,"../helpers/regex":48,"../vars":62,"./helpers":5,"./rooms":7,"./store":8,"./templates":10,"./tmi":11}],5:[function(require,module,exports){
+},{"../features/audible-feedback":14,"../features/embedded-polling":32,"../features/keywords-lists":41,"../features/make-card":42,"../helpers/colors":45,"../helpers/debug":46,"../helpers/regex":49,"../vars":64,"./helpers":5,"./rooms":7,"./store":8,"./templates":10,"./tmi":11}],5:[function(require,module,exports){
 var vars = require('../vars'),
     keyCodes = require('../keycodes'),
     tmi = require('./tmi'),
@@ -1470,7 +1479,7 @@ var massUnban = exports.massUnban = function() {
     });
 }*/
 
-},{"../bots":1,"../helpers/colors":44,"../helpers/element":46,"../helpers/regex":48,"../keycodes":49,"../legacy-tags":50,"../vars":62,"./handlers":4,"./store":8,"./templates":10,"./tmi":11,"punycode":64}],6:[function(require,module,exports){
+},{"../bots":1,"../helpers/colors":45,"../helpers/element":47,"../helpers/regex":49,"../keycodes":50,"../legacy-tags":51,"../vars":64,"./handlers":4,"./store":8,"./templates":10,"./tmi":11,"punycode":66}],6:[function(require,module,exports){
 
 // Add mouseover image preview to image links
 module.exports = function(imgUrl) {
@@ -1583,13 +1592,17 @@ var store = require('./store'),
 var overrideEmotes = require('../features/override-emotes'),
     loadChatSettings = require('../features/chat-load-settings'),
     cssLoader = require('../features/css-loader'),
-    anonChat = require('../features/anon-chat');
+    anonChat = require('../features/anon-chat'),
+    channelState = require('../features/channel-state');
 
 var takeover = module.exports = function() {
     var tmi = require('./tmi')();
 
     // Anonymize Chat if it isn't already
     anonChat();
+
+    //add channel state info
+    channelState();
 
     if(store.isLoaded) return;
 
@@ -1973,7 +1986,7 @@ var takeover = module.exports = function() {
     });
 }
 
-},{"../features/anon-chat":13,"../features/chat-load-settings":21,"../features/css-loader":27,"../features/override-emotes":42,"../helpers/debug":45,"../keycodes":49,"../vars":62,"./handlers":4,"./helpers":5,"./rooms":7,"./store":8,"./tmi":11}],10:[function(require,module,exports){
+},{"../features/anon-chat":13,"../features/channel-state":21,"../features/chat-load-settings":22,"../features/css-loader":28,"../features/override-emotes":43,"../helpers/debug":46,"../keycodes":50,"../vars":64,"./handlers":4,"./helpers":5,"./rooms":7,"./store":8,"./tmi":11}],10:[function(require,module,exports){
 var tmi = require('./tmi'),
     store = require('./store');
 
@@ -2167,7 +2180,7 @@ var whisper = exports.whisper = function(data) {
     return '<div class="chat-line whisper" data-sender="'+data.sender+'">'+timestamp(data.time)+' '+whisperName(data.sender, data.receiver, data.from, data.to, data.fromColor, data.toColor)+message(data.sender, data.message, data.emotes, false)+'</div>';
 }
 
-},{"../templates/chat-suggestions":56,"../templates/moderation-card":58,"./helpers":5,"./store":8,"./tmi":11}],11:[function(require,module,exports){
+},{"../templates/chat-suggestions":58,"../templates/moderation-card":60,"./helpers":5,"./store":8,"./tmi":11}],11:[function(require,module,exports){
 module.exports = function() {
 	return bttv.getChatController() ? bttv.getChatController().currentRoom : false;
 }
@@ -2489,7 +2502,7 @@ debug.log("BTTV LOADED " + document.URL);
 BTTVLOADED = true;
 checkJquery();
 
-},{"./chat":2,"./features/auto-theatre-mode":15,"./features/beta-chat":16,"./features/brand":17,"./features/channel-reformat":19,"./features/check-broadcast-info":22,"./features/check-following":23,"./features/check-messages":24,"./features/clear-clutter":25,"./features/create-settings":26,"./features/darken-page":28,"./features/dashboard-channelinfo":29,"./features/directory-functions":30,"./features/emoticon-text-in-clipboard":32,"./features/flip-dashboard":33,"./features/format-dashboard":34,"./features/giveaway-compatibility":35,"./features/handle-background":36,"./features/handle-twitchchat-emotes":37,"./features/host-btn-below-video":38,"./features/image-preview":39,"./features/split-chat":43,"./helpers/debug":45,"./keycodes":49,"./settings":52,"./socketio":53,"./storage":54,"./twitch-api":61,"./vars":62}],13:[function(require,module,exports){
+},{"./chat":2,"./features/auto-theatre-mode":15,"./features/beta-chat":16,"./features/brand":17,"./features/channel-reformat":19,"./features/check-broadcast-info":23,"./features/check-following":24,"./features/check-messages":25,"./features/clear-clutter":26,"./features/create-settings":27,"./features/darken-page":29,"./features/dashboard-channelinfo":30,"./features/directory-functions":31,"./features/emoticon-text-in-clipboard":33,"./features/flip-dashboard":34,"./features/format-dashboard":35,"./features/giveaway-compatibility":36,"./features/handle-background":37,"./features/handle-twitchchat-emotes":38,"./features/host-btn-below-video":39,"./features/image-preview":40,"./features/split-chat":44,"./helpers/debug":46,"./keycodes":50,"./settings":53,"./socketio":54,"./storage":55,"./twitch-api":63,"./vars":64}],13:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars');
 
@@ -2529,7 +2542,7 @@ module.exports = function() {
     }
 };
 
-},{"../helpers/debug":45,"../vars":62}],14:[function(require,module,exports){
+},{"../helpers/debug":46,"../vars":64}],14:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 var ts_tink;
@@ -2547,7 +2560,7 @@ module.exports = function () {
     };
 };
 
-},{"../helpers/debug":45}],15:[function(require,module,exports){
+},{"../helpers/debug":46}],15:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 module.exports = function () {
@@ -2563,7 +2576,7 @@ module.exports = function () {
     App.__container__.lookup('controller:channel').send('toggleTheatre');
 }
 
-},{"../helpers/debug":45}],16:[function(require,module,exports){
+},{"../helpers/debug":46}],16:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars');
 
@@ -2604,7 +2617,7 @@ module.exports = function () {
         $('body').append("<style>.ember-chat .chat-interface { height: 140px !important; } .ember-chat .chat-messages { bottom: 140px; } .ember-chat .chat-settings { bottom: 80px; } .ember-chat .emoticon-selector { bottom: 142px !important; }</style>");
     }
 }
-},{"../helpers/debug":45,"../vars":62}],17:[function(require,module,exports){
+},{"../helpers/debug":46,"../vars":64}],17:[function(require,module,exports){
 var debug = require('../helpers/debug');
 var betaChat = require('./beta-chat');
 
@@ -2671,7 +2684,7 @@ module.exports = function () {
     // Run Beta Chat After BTTV CSS
     betaChat();
 };
-},{"../helpers/debug":45,"./beta-chat":16}],18:[function(require,module,exports){
+},{"../helpers/debug":46,"./beta-chat":16}],18:[function(require,module,exports){
 var debug = require('../../helpers/debug'),
     vars = require('../../vars');
 
@@ -2732,7 +2745,7 @@ var handleResize = module.exports = function () {
 
     $("#channel_panels").masonry("reload");
 };
-},{"../../helpers/debug":45,"../../vars":62}],19:[function(require,module,exports){
+},{"../../helpers/debug":46,"../../vars":64}],19:[function(require,module,exports){
 var debug = require('../../helpers/debug'),
     keyCodes = require('../../keycodes'),
     vars = require('../../vars');
@@ -2891,7 +2904,7 @@ module.exports = function () {
         bttv.settings.save("chatWidth", $("#right_col").width());
     }
 }
-},{"../../helpers/debug":45,"../../keycodes":49,"../../vars":62,"./handle-resize":18,"./twitchcast":20}],20:[function(require,module,exports){
+},{"../../helpers/debug":46,"../../keycodes":50,"../../vars":64,"./handle-resize":18,"./twitchcast":20}],20:[function(require,module,exports){
 module.exports = function() {
     if($('.archive_info').length) return;
     
@@ -2953,6 +2966,17 @@ module.exports = function() {
     }
 }
 },{}],21:[function(require,module,exports){
+var debug = require('../helpers/debug');
+var template = require('../templates/channel-state');
+var chatHelpers = require('../chat/helpers');
+
+module.exports = function(user, $event) {
+    $('.chat-container .chat-header').append(template());
+
+    console.log('asdfasdfasdfa');
+}
+
+},{"../chat/helpers":5,"../helpers/debug":46,"../templates/channel-state":56}],22:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars'),
     removeElement = require('../helpers/element').remove;
@@ -3067,7 +3091,7 @@ module.exports = function() {
     });
 };
 
-},{"../helpers/debug":45,"../helpers/element":46,"../templates/chat-settings":55,"../vars":62,"./darken-page":28,"./split-chat":43}],22:[function(require,module,exports){
+},{"../helpers/debug":46,"../helpers/element":47,"../templates/chat-settings":57,"../vars":64,"./darken-page":29,"./split-chat":44}],23:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 var checkBroadcastInfo = module.exports = function() {
@@ -3118,7 +3142,7 @@ var checkBroadcastInfo = module.exports = function() {
         setTimeout(checkBroadcastInfo, 60000);
     });
 }
-},{"../helpers/debug":45}],23:[function(require,module,exports){
+},{"../helpers/debug":46}],24:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars');
 
@@ -3192,7 +3216,7 @@ var checkFollowing = module.exports = function () {
         setTimeout(checkFollowing, 60000);
     });
 }
-},{"../helpers/debug":45,"../vars":62}],24:[function(require,module,exports){
+},{"../helpers/debug":46,"../vars":64}],25:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars');
 
@@ -3283,7 +3307,7 @@ module.exports = function () {
     setInterval(checkOther, 30000);
     checkOther();
 }
-},{"../helpers/debug":45,"../vars":62}],25:[function(require,module,exports){
+},{"../helpers/debug":46,"../vars":64}],26:[function(require,module,exports){
 var debug = require('../helpers/debug'),
 	removeElement = require('../helpers/element').remove;
 
@@ -3300,7 +3324,7 @@ module.exports = function () {
         $('body').append('<style>#nav_games, #nav_streams, #nav_related_streams { display: none; }</style>');
     }
 }
-},{"../helpers/debug":45,"../helpers/element":46}],26:[function(require,module,exports){
+},{"../helpers/debug":46,"../helpers/element":47}],27:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars'),
     removeElement = require('../helpers/element').remove;
@@ -3367,7 +3391,7 @@ module.exports = function () {
         $(this).parent("li").addClass("active");
     });
 };
-},{"../helpers/debug":45,"../helpers/element":46,"../templates/settings-panel":60,"../vars":62,"./darken-page":28,"./split-chat":43}],27:[function(require,module,exports){
+},{"../helpers/debug":46,"../helpers/element":47,"../templates/settings-panel":62,"../vars":64,"./darken-page":29,"./split-chat":44}],28:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 function load(file, key){
@@ -3386,7 +3410,7 @@ function unload(key){
 
 module.exports.load = load;
 module.exports.unload = unload; 
-},{"../helpers/debug":45}],28:[function(require,module,exports){
+},{"../helpers/debug":46}],29:[function(require,module,exports){
 https:var debug = require('../helpers/debug'),
     handleBackground = require('./handle-background');
 
@@ -3424,7 +3448,7 @@ module.exports = function () {
     }
 
 }
-},{"../helpers/debug":45,"./handle-background":36}],29:[function(require,module,exports){
+},{"../helpers/debug":46,"./handle-background":37}],30:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars');
 
@@ -3510,7 +3534,7 @@ module.exports = function dashboardChannelInfo() {
         setTimeout(dashboardChannelInfo, 60000);
     }
 };
-},{"../helpers/debug":45,"../vars":62}],30:[function(require,module,exports){
+},{"../helpers/debug":46,"../vars":64}],31:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars');
 
@@ -3533,7 +3557,7 @@ module.exports = function () {
         }
     });
 }
-},{"../helpers/debug":45,"../vars":62}],31:[function(require,module,exports){
+},{"../helpers/debug":46,"../vars":64}],32:[function(require,module,exports){
 var debug = require('../helpers/debug');
 var pollTemplate = require('../templates/embedded-poll');
 var chatHelpers = require('../chat/helpers');
@@ -3598,7 +3622,7 @@ module.exports = function (message) {
     lastPollId = pollId;
 }
 
-},{"../chat/helpers":5,"../helpers/debug":45,"../templates/embedded-poll":57}],32:[function(require,module,exports){
+},{"../chat/helpers":5,"../helpers/debug":46,"../templates/embedded-poll":59}],33:[function(require,module,exports){
 // Add an event listener to the "copy" event that fires when text is copied to
 // the clipboard to convert any emoticons within the text selection to the
 // corresponding text that will create the emoticon. This allows copy/pasted
@@ -3645,7 +3669,7 @@ module.exports = function() {
     document.addEventListener('copy', onCopy);
 }
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 module.exports = function () {
@@ -3675,7 +3699,7 @@ module.exports = function () {
     }
 }
 
-},{"../helpers/debug":45}],34:[function(require,module,exports){
+},{"../helpers/debug":46}],35:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 module.exports = function () {
@@ -3695,7 +3719,7 @@ module.exports = function () {
     }
 }
 
-},{"../helpers/debug":45}],35:[function(require,module,exports){
+},{"../helpers/debug":46}],36:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 module.exports = function () {
@@ -3717,7 +3741,7 @@ module.exports = function () {
         });
     }
 };
-},{"../helpers/debug":45}],36:[function(require,module,exports){
+},{"../helpers/debug":46}],37:[function(require,module,exports){
 module.exports = function handleBackground(tiled) {
     var tiled = tiled || false;
     
@@ -3809,7 +3833,7 @@ module.exports = function handleBackground(tiled) {
         }
     }
 }
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 module.exports = function () {
@@ -3838,7 +3862,7 @@ module.exports = function () {
         }, 1000);
     }
 }
-},{"../helpers/debug":45}],38:[function(require,module,exports){
+},{"../helpers/debug":46}],39:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars');
 
@@ -3898,7 +3922,7 @@ module.exports = function() {
         }
     });
 }
-},{"../helpers/debug":45,"../vars":62}],39:[function(require,module,exports){
+},{"../helpers/debug":46,"../vars":64}],40:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 var enablePreview = exports.enablePreview = function() {
@@ -3924,7 +3948,7 @@ var disablePreview = exports.disablePreview = function() {
     $(document).off('mouseenter mouseleave mousemove', 'a.chat-preview');
 };
 
-},{"../helpers/debug":45}],40:[function(require,module,exports){
+},{"../helpers/debug":46}],41:[function(require,module,exports){
 var vars = require('../vars');
 var escapeRegExp = require('../helpers/regex').escapeRegExp;
 
@@ -4021,7 +4045,7 @@ exports.highlighting = function (data) {
 
     return false;
 }
-},{"../features/audible-feedback":14,"../helpers/regex":48,"../vars":62}],41:[function(require,module,exports){
+},{"../features/audible-feedback":14,"../helpers/regex":49,"../vars":64}],42:[function(require,module,exports){
 module.exports = function(user, $event) {
     var template = bttv.chat.templates.moderationCard(user, $event.offset().top, $('.chat-line:last').offset().left);
     $('.ember-chat .moderation-card').remove();
@@ -4132,7 +4156,7 @@ module.exports = function(user, $event) {
     });
 }
 
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars');
 
@@ -4216,7 +4240,7 @@ module.exports = function () {
         generate(data);
     });
 };
-},{"../helpers/debug":45,"../vars":62}],43:[function(require,module,exports){
+},{"../helpers/debug":46,"../vars":64}],44:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 module.exports = function () {
@@ -4231,7 +4255,7 @@ module.exports = function () {
         $('body').append(splitCSS);
     }
 }
-},{"../helpers/debug":45}],44:[function(require,module,exports){
+},{"../helpers/debug":46}],45:[function(require,module,exports){
 var calculateColorBackground = exports.calculateColorBackground = function (color) {
     // Converts HEX to YIQ to judge what color background the color would look best on
     color = String(color).replace(/[^0-9a-f]/gi, '');
@@ -4368,13 +4392,13 @@ var getHex = exports.getHex = function (color) {
     return '#'+convert(color['r'])+convert(color['g'])+convert(color['b']);
 };
 
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 module.exports = {
     log: function(string) {
         if(window.console && console.log && bttv.settings.get('consoleLog') === true) console.log("BTTV: " + string);
     }
 };
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 exports.remove = function (e) {
     // Removes all of an element
     $(e).each(function () {
@@ -4387,7 +4411,7 @@ exports.display = function (e) {
         $(this).show();
     });
 };
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 /* FileSaver.js
  * A saveAs() FileSaver implementation.
  * 2015-05-07.2
@@ -4641,7 +4665,7 @@ if (typeof module !== "undefined" && module.exports) {
     return saveAs;
   });
 }
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 exports.escapeRegExp = function (text) {
     // Escapes an input to make it usable for regexes
     return text.replace(/[-[\]{}()+?.,\\^$|#\s]/g, "\\$&");
@@ -4664,7 +4688,7 @@ exports.getEmoteFromRegEx = function(regex) {
         .replace(/^\\b|\\b$/g, '') // remove boundaries
         .replace(/\\/g, ''); // unescape
 }
-},{}],49:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 module.exports = {
     'LeftClick': 1,
     'Backspace': 8,
@@ -4755,7 +4779,7 @@ module.exports = {
     'Slash': 191,
     'Backslash': 220
 }
-},{}],50:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 module.exports = function (data) {
     return {
         //Developers and Supporters
@@ -4821,7 +4845,7 @@ module.exports = function (data) {
         "ackleyman": { mod: true, tagType: "orange", tagName: "Ack" }
     };
 };
-},{}],51:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 /** BTTV :
  * cssBlueButtons
  * handleTwitchChatEmotesScript
@@ -5289,7 +5313,7 @@ module.exports = [
     }
 ];
 
-},{"./features/anon-chat":13,"./features/auto-theatre-mode":15,"./features/beta-chat":16,"./features/channel-reformat":19,"./features/css-loader":27,"./features/darken-page":28,"./features/flip-dashboard":33,"./features/handle-background":36,"./features/host-btn-below-video":38,"./features/image-preview":39,"./features/split-chat":43,"./helpers/element":46}],52:[function(require,module,exports){
+},{"./features/anon-chat":13,"./features/auto-theatre-mode":15,"./features/beta-chat":16,"./features/channel-reformat":19,"./features/css-loader":28,"./features/darken-page":29,"./features/flip-dashboard":34,"./features/handle-background":37,"./features/host-btn-below-video":39,"./features/image-preview":40,"./features/split-chat":44,"./helpers/element":47}],53:[function(require,module,exports){
 var debug = require('./helpers/debug');
 var saveAs = require('./helpers/filesaver').saveAs;
 
@@ -5475,7 +5499,7 @@ Settings.prototype.popup = function() {
 }
 
 module.exports = Settings;
-},{"./helpers/debug":45,"./helpers/filesaver":47,"./settings-list":51,"./templates/setting-switch":59}],53:[function(require,module,exports){
+},{"./helpers/debug":46,"./helpers/filesaver":48,"./settings-list":52,"./templates/setting-switch":61}],54:[function(require,module,exports){
 var io = require('socket.io-client');
 var debug = require('./helpers/debug');
 var vars = require('./vars');
@@ -5575,7 +5599,7 @@ SocketClient.prototype.giveEmoteTip = function(channel) {
 }
 
 module.exports = SocketClient;
-},{"./helpers/debug":45,"./vars":62,"socket.io-client":65}],54:[function(require,module,exports){
+},{"./helpers/debug":46,"./vars":64,"socket.io-client":67}],55:[function(require,module,exports){
 var cookies = require('cookies-js');
 var debug = require('./helpers/debug');
 
@@ -5651,7 +5675,15 @@ Storage.prototype.spliceObject = function(item, key) {
 }
 
 module.exports = Storage;
-},{"./helpers/debug":45,"cookies-js":63}],55:[function(require,module,exports){
+},{"./helpers/debug":46,"cookies-js":65}],56:[function(require,module,exports){
+function template(locals) {
+var buf = [];
+var jade_mixins = {};
+var jade_interp;
+
+buf.push("<div id=\"bttv-channel-state-contain\"><svg width=\"20px\" height=\"20px\" version=\"1.1\" viewBox=\"0 0 20 20\" x=\"0px\" y=\"0px\" class=\"r9k\"><path clip-rule=\"evenodd\" fill-rule=\"evenodd\" fill=\"#DDDDDD\" stroke=\"#DDDDDD\" d=\"M1.01248289,6.16611188 C1.01248289,5.89231989 1.00585899,5.61411607 0.992610987,5.33149208 C0.979362987,5.04886808 0.968323153,4.68234559 0.959491154,4.2319136 L1.82060683,4.2319136 L1.82060683,5.38448381 L1.8471027,5.38448381 C1.90892669,5.21667581 1.99724537,5.05549423 2.11206137,4.90093424 C2.22687736,4.74637424 2.36597927,4.60727233 2.52937127,4.48362433 C2.69276327,4.35997634 2.88264841,4.26061783 3.09903241,4.18554583 C3.3154164,4.11047383 3.56050072,4.0729384 3.83429272,4.0729384 C4.08158871,4.0729384 4.29796946,4.099434 4.48344146,4.152426 L4.31121832,5.01354167 C4.19640232,4.96938167 4.02859684,4.947302 3.80779685,4.947302 C3.47218086,4.947302 3.18514517,5.01133304 2.94668117,5.13939704 C2.70821718,5.26746104 2.50950016,5.43085058 2.35052417,5.62957058 C2.19154817,5.82829057 2.07452593,6.04246336 1.99945393,6.27209535 C1.92438193,6.50172735 1.8868465,6.72252403 1.8868465,6.93449202 L1.8868465,10.4319465 L1.01248289,10.4319465 L1.01248289,6.16611188 Z M10.140309,3.79473179 C10.140309,3.4944438 10.0895258,3.22065591 9.98795781,2.97335992 C9.88638982,2.72606392 9.74287197,2.51409911 9.55739998,2.33745911 C9.37192798,2.16081911 9.1511313,2.0217172 8.8950033,1.92014921 C8.63887531,1.81858121 8.35625555,1.76779797 8.04713556,1.76779797 C7.73801557,1.76779797 7.45539581,1.81858121 7.19926782,1.92014921 C6.94313982,2.0217172 6.72234314,2.16081911 6.53687114,2.33745911 C6.35139915,2.51409911 6.2078813,2.72606392 6.10631331,2.97335992 C6.00474531,3.22065591 5.95396207,3.4944438 5.95396207,3.79473179 C5.95396207,4.09501979 6.00474531,4.36880767 6.10631331,4.61610367 C6.2078813,4.86339966 6.35139915,5.07757244 6.53687114,5.25862844 C6.72234314,5.43968444 6.94313982,5.57878635 7.19926782,5.67593835 C7.45539581,5.77309034 7.73801557,5.82166561 8.04713556,5.82166561 C8.35625555,5.82166561 8.63887531,5.77309034 8.8950033,5.67593835 C9.1511313,5.57878635 9.37192798,5.43968444 9.55739998,5.25862844 C9.74287197,5.07757244 9.88638982,4.86339966 9.98795781,4.61610367 C10.0895258,4.36880767 10.140309,4.09501979 10.140309,3.79473179 L10.140309,3.79473179 Z M9.18645784,6.40457469 L9.15996197,6.37807882 C9.00981797,6.48406282 8.80889299,6.56354962 8.557181,6.61654162 C8.305469,6.66953362 8.07363249,6.69602922 7.86166449,6.69602922 C7.4553925,6.69602922 7.07783017,6.62316632 6.72896618,6.47743832 C6.38010219,6.33171032 6.07761073,6.13078534 5.82148274,5.87465735 C5.56535474,5.61852935 5.36442976,5.31382993 5.21870176,4.96054994 C5.07297377,4.60726995 5.00011086,4.21866778 5.00011086,3.79473179 C5.00011086,3.3619638 5.07518173,2.96894571 5.22532573,2.61566571 C5.37546973,2.26238572 5.58743454,1.9576863 5.86122654,1.7015583 C6.13501853,1.44543031 6.45738169,1.2467133 6.82832568,1.1054013 C7.19926967,0.964089301 7.60553557,0.893434363 8.04713556,0.893434363 C8.48873555,0.893434363 8.89500145,0.964089301 9.26594544,1.1054013 C9.63688943,1.2467133 9.95925259,1.44543031 10.2330446,1.7015583 C10.5068366,1.9576863 10.7188014,2.26238572 10.8689454,2.61566571 C11.0190894,2.96894571 11.0941603,3.3619638 11.0941603,3.79473179 C11.0941603,4.31581978 11.0168814,4.77066095 10.8623214,5.15926894 C10.7077614,5.54787693 10.5156683,5.93206316 10.2860363,6.31183915 L7.75568102,10.4319465 L6.62960668,10.4319465 L9.18645784,6.40457469 Z M13.5582759,7.02722756 L16.4860692,4.2319136 L17.7976146,4.2319136 L14.7108461,7.06697136 L18.1288129,10.4319465 L16.7775237,10.4319465 L13.5582759,7.17295483 L13.5582759,10.4319465 L12.6839123,10.4319465 L12.6839123,0.416508758 L13.5582759,0.416508758 L13.5582759,7.02722756 Z\"></path></svg><svg width=\"20px\" height=\"20px\" version=\"1.1\" viewBox=\"0 0 20 20\" x=\"0px\" y=\"0px\" class=\"slow\"><path clip-rule=\"evenodd\" fill-rule=\"evenodd\" fill=\"#DDDDDD\" stroke=\"#DDDDDD\" d=\"M15.6951243,12.9726234 C16.7999167,12.9841915 16.9996,10.6550744 17.6532799,10.6076191 C19.5809076,10.4676789 20.0938593,10.0336882 20.8742323,9.40261006 C22.0801198,8.42742345 18.6355163,9.58355446 18.1773155,7.60933781 C17.7191146,5.63512116 18.7562657,7.3613703 18.7562657,7.3613703 C18.7562657,7.3613703 20.6744196,1.22453381 14.0044531,0.948535324 C7.33448662,0.672536835 8.51916085,6.65645978 8.51916085,6.65645978 C8.51916085,6.65645978 9.4123829,5.56892524 9.4123829,6.95096612 C9.4123829,7.5447275 7.82927094,8.03577606 6.51152254,6.95096612 C5.19377413,5.86615618 6.06805583,4.53310326 5.60051142,3.81291938 C5.13296701,3.09273549 1.4239827,2.07912173 0.871519609,3.02679051 C0.319056514,3.97445929 3.56446759,5.99925395 3.77112224,6.95096612 C3.97777688,7.90267828 4.9194991,9.60475748 5.4029473,10.0727206 C5.8863955,10.5406837 3.73618033,12.1108408 4.54862597,12.167268 C5.3610716,12.2236953 7.51804174,10.4564588 8.1654952,10.2645895 C8.81294865,10.0727203 11.4219675,10.4770661 12.9655064,10.5585339 C13.7840657,10.6017374 14.590332,12.9610552 15.6951243,12.9726234 Z M2.57854225,3.88605182 C2.7944845,3.88605182 2.96954028,3.72129344 2.96954028,3.51805367 C2.96954028,3.3148139 2.7944845,3.15005552 2.57854225,3.15005552 C2.36259999,3.15005552 2.18754421,3.3148139 2.18754421,3.51805367 C2.18754421,3.72129344 2.36259999,3.88605182 2.57854225,3.88605182 Z\"></path></svg><div class=\"slow-time\">0:00</div></div>");;return buf.join("");
+};module.exports=template;
+},{}],57:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -5677,7 +5709,7 @@ buf.push("</a></p>");
 }
 buf.push("<p><input type=\"checkbox\"" + (jade.attr("checked", bttv.settings.get("darkenedMode"), true, false)) + " class=\"toggleDarkenTTV\"/>Dark Mode</p><p><a href=\"#\" class=\"g18_gear-00000080 setBlacklistKeywords\">Set Blacklist Keywords</a></p><p><a href=\"#\" class=\"g18_gear-00000080 setHighlightKeywords\">Set Highlight Keywords</a></p><p><a href=\"#\" class=\"g18_gear-00000080 setScrollbackAmount\">Set Scrollback Amount</a></p><p><a href=\"#\" class=\"g18_trash-00000080 clearChat\">Clear My Chat</a></p><p><a href=\"#\" style=\"display: block;margin-top: 8px;text-align: center;\" class=\"button-simple dark openSettings\">BetterTTV Settings</a></p></div>");}.call(this,"$" in locals_for_with?locals_for_with.$:typeof $!=="undefined"?$:undefined,"window" in locals_for_with?locals_for_with.window:typeof window!=="undefined"?window:undefined,"bttv" in locals_for_with?locals_for_with.bttv:typeof bttv!=="undefined"?bttv:undefined));;return buf.join("");
 };module.exports=template;
-},{}],56:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -5710,7 +5742,7 @@ buf.push("<div" + (jade.cls([highlighted], [true])) + "><div class=\"suggestion\
 
 buf.push("</div>");}.call(this,"suggestions" in locals_for_with?locals_for_with.suggestions:typeof suggestions!=="undefined"?suggestions:undefined,"index" in locals_for_with?locals_for_with.index:typeof index!=="undefined"?index:undefined));;return buf.join("");
 };module.exports=template;
-},{}],57:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -5718,7 +5750,7 @@ var jade_interp;
 ;var locals_for_with = (locals || {});(function (pollId) {
 buf.push("<div id=\"bttv-poll-contain\"><div class=\"title\">New poll available! <span style=\"text-decoration: underline;\">Vote now!</span></div><div class=\"close\"><svg height=\"16px\" version=\"1.1\" viewbox=\"0 0 16 16\" width=\"16px\" x=\"0px\" y=\"0px\" class=\"svg-close\"><path clip-rule=\"evenodd\" d=\"M13.657,3.757L9.414,8l4.243,4.242l-1.415,1.415L8,9.414l-4.243,4.243l-1.414-1.415L6.586,8L2.343,3.757l1.414-1.414L8,6.586l4.242-4.243L13.657,3.757z\" fill-rule=\"evenodd\"></path></svg></div><iframe" + (jade.attr("src", 'https://strawpoll.me/embed_2/' + (pollId) + '', true, false)) + " class=\"frame\"></iframe></div>");}.call(this,"pollId" in locals_for_with?locals_for_with.pollId:typeof pollId!=="undefined"?pollId:undefined));;return buf.join("");
 };module.exports=template;
-},{}],58:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -5751,7 +5783,7 @@ buf.push("</div>");
 }
 buf.push("</div>");}.call(this,"require" in locals_for_with?locals_for_with.require:typeof require!=="undefined"?require:undefined,"user" in locals_for_with?locals_for_with.user:typeof user!=="undefined"?user:undefined,"top" in locals_for_with?locals_for_with.top:typeof top!=="undefined"?top:undefined,"left" in locals_for_with?locals_for_with.left:typeof left!=="undefined"?left:undefined,"Twitch" in locals_for_with?locals_for_with.Twitch:typeof Twitch!=="undefined"?Twitch:undefined,"bttv" in locals_for_with?locals_for_with.bttv:typeof bttv!=="undefined"?bttv:undefined));;return buf.join("");
 };module.exports=template;
-},{"../vars":62}],59:[function(require,module,exports){
+},{"../vars":64}],61:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -5759,7 +5791,7 @@ var jade_interp;
 ;var locals_for_with = (locals || {});(function (storageKey, name, description) {
 buf.push("<div" + (jade.cls(['option',"bttvOption-" + (storageKey) + ""], [null,true])) + "><span style=\"font-weight:bold;font-size:14px;color:#D3D3D3;\">" + (jade.escape(null == (jade_interp = name) ? "" : jade_interp)) + "</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;" + (jade.escape(null == (jade_interp = description) ? "" : jade_interp)) + "<div class=\"bttv-switch\"><input type=\"radio\"" + (jade.attr("name", storageKey, true, false)) + " value=\"false\"" + (jade.attr("id", "" + (storageKey) + "False", true, false)) + " class=\"bttv-switch-input bttv-switch-off\"/><label" + (jade.attr("for", "" + (storageKey) + "False", true, false)) + " class=\"bttv-switch-label bttv-switch-label-off\">Off</label><input type=\"radio\"" + (jade.attr("name", storageKey, true, false)) + " value=\"true\"" + (jade.attr("id", "" + (storageKey) + "True", true, false)) + " class=\"bttv-switch-input\"/><label" + (jade.attr("for", "" + (storageKey) + "True", true, false)) + " class=\"bttv-switch-label bttv-switch-label-on\">On</label><span class=\"bttv-switch-selection\"></span></div></div>");}.call(this,"storageKey" in locals_for_with?locals_for_with.storageKey:typeof storageKey!=="undefined"?storageKey:undefined,"name" in locals_for_with?locals_for_with.name:typeof name!=="undefined"?name:undefined,"description" in locals_for_with?locals_for_with.description:typeof description!=="undefined"?description:undefined));;return buf.join("");
 };module.exports=template;
-},{}],60:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -5767,7 +5799,7 @@ var jade_interp;
 ;var locals_for_with = (locals || {});(function (bttv) {
 buf.push("<div id=\"header\"><span id=\"logo\"><img height=\"45px\" src=\"https://cdn.betterttv.net/style/logos/settings_logo.png\"/></span><ul class=\"nav\"><li><a href=\"#bttvAbout\">About</a></li><li class=\"active\"><a href=\"#bttvSettings\">Settings</a></li><li><a href=\"#bttvChannel\" target=\"_blank\">Channel</a></li><li><a href=\"#bttvChangelog\">Changelog</a></li><li><a href=\"#bttvPrivacy\">Privacy Policy</a></li><li><a href=\"#bttvBackup\">Backup/Import</a></li></ul><span id=\"close\">&times;</span></div><div id=\"bttvSettings\" style=\"height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content options-list\"><h2 class=\"option\">Here you can manage the various BetterTTV options. Click On or Off to toggle settings.</h2></div></div><div id=\"bttvAbout\" style=\"display:none;\"><div class=\"aboutHalf\"><img src=\"https://cdn.betterttv.net/style/logos/mascot.png\" class=\"bttvAboutIcon\"/><h1>BetterTTV v " + (jade.escape((jade_interp = bttv.info.versionString()) == null ? '' : jade_interp)) + "</h1><h2>from your friends at <a href=\"https://www.nightdev.com\" target=\"_blank\">NightDev</a></h2><br/></div><div class=\"aboutHalf\"><h1 style=\"margin-top: 100px;\">Think this addon is awesome?</h1><br/><br/><h2><a target=\"_blank\" href=\"https://chrome.google.com/webstore/detail/ajopnjidmegmdimjlfnijceegpefgped\">Drop a Review on the Chrome Webstore</a></h2><br/><h2>or maybe</h2><br/><h2><a target=\"_blank\" href=\"https://streamtip.com/t/night\">Support the Developer</a></h2><br/></div></div><div id=\"bttvChannel\" style=\"display:none;\"><iframe src=\"https://manage.betterttv.net\" frameborder=\"0\" width=\"100%\" height=\"425\"></iframe></div><div id=\"bttvPrivacy\" style=\"display:none;height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content\"></div></div><div id=\"bttvChangelog\" style=\"display:none;height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content\"></div></div><div id=\"bttvBackup\" style=\"display:none;height:425px;padding:25px;\"><h1 style=\"padding-bottom:15px;\">Backup Settings</h1><button id=\"bttvBackupButton\" class=\"primary_button\"><span>Download</span></button><h1 style=\"padding-top:25px;padding-bottom:15px;\">Import Settings</h1><input id=\"bttvImportInput\" type=\"file\" style=\"height: 25px;width: 250px;\"/></div><div id=\"footer\"><span>BetterTTV &copy; <a href=\"https://www.nightdev.com\" target=\"_blank\">NightDev, LLC</a> 2015</span><span style=\"float:right;\"><a href=\"https://community.nightdev.com/c/betterttv\" target=\"_blank\">Get Support</a> | <a href=\"https://github.com/night/BetterTTV/issues/new?labels=bug\" target=\"_blank\">Report a Bug</a> | <a href=\"https://streamtip.com/t/night\" target=\"_blank\">Support the Developer</a></span></div>");}.call(this,"bttv" in locals_for_with?locals_for_with.bttv:typeof bttv!=="undefined"?bttv:undefined));;return buf.join("");
 };module.exports=template;
-},{}],61:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 module.exports = {
     _ref: null,
     _headers: function(e, t) {
@@ -5812,7 +5844,7 @@ module.exports = {
         return this._call('del', url, data, options);
     }
 };
-},{}],62:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 module.exports = {
     userData: {
         isLoggedIn: window.Twitch ? Twitch.user.isLoggedIn() : false,
@@ -5822,7 +5854,7 @@ module.exports = {
     liveChannels: [],
     blackChat: false
 };
-},{}],63:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 /*
  * Cookies.js - 1.2.1
  * https://github.com/ScottHamper/Cookies
@@ -5984,7 +6016,7 @@ module.exports = {
         global.Cookies = cookiesExport;
     }
 })(typeof window === 'undefined' ? this : window);
-},{}],64:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 (function (global){
 /*! http://mths.be/punycode v1.2.4 by @mathias */
 ;(function(root) {
@@ -6495,11 +6527,11 @@ module.exports = {
 }(this));
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],65:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 
 module.exports = require('./lib/');
 
-},{"./lib/":66}],66:[function(require,module,exports){
+},{"./lib/":68}],68:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -6588,7 +6620,7 @@ exports.connect = lookup;
 exports.Manager = require('./manager');
 exports.Socket = require('./socket');
 
-},{"./manager":67,"./socket":69,"./url":70,"debug":74,"socket.io-parser":110}],67:[function(require,module,exports){
+},{"./manager":69,"./socket":71,"./url":72,"debug":76,"socket.io-parser":112}],69:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -7093,7 +7125,7 @@ Manager.prototype.onreconnect = function(){
   this.emitAll('reconnect', attempt);
 };
 
-},{"./on":68,"./socket":69,"./url":70,"backo2":71,"component-bind":72,"component-emitter":73,"debug":74,"engine.io-client":75,"indexof":106,"object-component":107,"socket.io-parser":110}],68:[function(require,module,exports){
+},{"./on":70,"./socket":71,"./url":72,"backo2":73,"component-bind":74,"component-emitter":75,"debug":76,"engine.io-client":77,"indexof":108,"object-component":109,"socket.io-parser":112}],70:[function(require,module,exports){
 
 /**
  * Module exports.
@@ -7119,7 +7151,7 @@ function on(obj, ev, fn) {
   };
 }
 
-},{}],69:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -7506,7 +7538,7 @@ Socket.prototype.disconnect = function(){
   return this;
 };
 
-},{"./on":68,"component-bind":72,"component-emitter":73,"debug":74,"has-binary":104,"socket.io-parser":110,"to-array":114}],70:[function(require,module,exports){
+},{"./on":70,"component-bind":74,"component-emitter":75,"debug":76,"has-binary":106,"socket.io-parser":112,"to-array":116}],72:[function(require,module,exports){
 (function (global){
 
 /**
@@ -7583,7 +7615,7 @@ function url(uri, loc){
 }
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"debug":74,"parseuri":108}],71:[function(require,module,exports){
+},{"debug":76,"parseuri":110}],73:[function(require,module,exports){
 
 /**
  * Expose `Backoff`.
@@ -7670,7 +7702,7 @@ Backoff.prototype.setJitter = function(jitter){
 };
 
 
-},{}],72:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 /**
  * Slice reference.
  */
@@ -7695,7 +7727,7 @@ module.exports = function(obj, fn){
   }
 };
 
-},{}],73:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 
 /**
  * Expose `Emitter`.
@@ -7861,7 +7893,7 @@ Emitter.prototype.hasListeners = function(event){
   return !! this.listeners(event).length;
 };
 
-},{}],74:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 
 /**
  * Expose `debug()` as the module.
@@ -8000,11 +8032,11 @@ try {
   if (window.localStorage) debug.enable(localStorage.debug);
 } catch(e){}
 
-},{}],75:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 
 module.exports =  require('./lib/');
 
-},{"./lib/":76}],76:[function(require,module,exports){
+},{"./lib/":78}],78:[function(require,module,exports){
 
 module.exports = require('./socket');
 
@@ -8016,7 +8048,7 @@ module.exports = require('./socket');
  */
 module.exports.parser = require('engine.io-parser');
 
-},{"./socket":77,"engine.io-parser":89}],77:[function(require,module,exports){
+},{"./socket":79,"engine.io-parser":91}],79:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies.
@@ -8725,7 +8757,7 @@ Socket.prototype.filterUpgrades = function (upgrades) {
 };
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./transport":78,"./transports":79,"component-emitter":73,"debug":86,"engine.io-parser":89,"indexof":106,"parsejson":100,"parseqs":101,"parseuri":102}],78:[function(require,module,exports){
+},{"./transport":80,"./transports":81,"component-emitter":75,"debug":88,"engine.io-parser":91,"indexof":108,"parsejson":102,"parseqs":103,"parseuri":104}],80:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -8886,7 +8918,7 @@ Transport.prototype.onClose = function () {
   this.emit('close');
 };
 
-},{"component-emitter":73,"engine.io-parser":89}],79:[function(require,module,exports){
+},{"component-emitter":75,"engine.io-parser":91}],81:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies
@@ -8943,7 +8975,7 @@ function polling(opts){
 }
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./polling-jsonp":80,"./polling-xhr":81,"./websocket":83,"xmlhttprequest":84}],80:[function(require,module,exports){
+},{"./polling-jsonp":82,"./polling-xhr":83,"./websocket":85,"xmlhttprequest":86}],82:[function(require,module,exports){
 (function (global){
 
 /**
@@ -9180,7 +9212,7 @@ JSONPPolling.prototype.doWrite = function (data, fn) {
 };
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./polling":82,"component-inherit":85}],81:[function(require,module,exports){
+},{"./polling":84,"component-inherit":87}],83:[function(require,module,exports){
 (function (global){
 /**
  * Module requirements.
@@ -9568,7 +9600,7 @@ function unloadHandler() {
 }
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./polling":82,"component-emitter":73,"component-inherit":85,"debug":86,"xmlhttprequest":84}],82:[function(require,module,exports){
+},{"./polling":84,"component-emitter":75,"component-inherit":87,"debug":88,"xmlhttprequest":86}],84:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -9815,7 +9847,7 @@ Polling.prototype.uri = function(){
   return schema + '://' + this.hostname + port + this.path + query;
 };
 
-},{"../transport":78,"component-inherit":85,"debug":86,"engine.io-parser":89,"parseqs":101,"xmlhttprequest":84}],83:[function(require,module,exports){
+},{"../transport":80,"component-inherit":87,"debug":88,"engine.io-parser":91,"parseqs":103,"xmlhttprequest":86}],85:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -10055,7 +10087,7 @@ WS.prototype.check = function(){
   return !!WebSocket && !('__initialize' in WebSocket && this.name === WS.prototype.name);
 };
 
-},{"../transport":78,"component-inherit":85,"debug":86,"engine.io-parser":89,"parseqs":101,"ws":103}],84:[function(require,module,exports){
+},{"../transport":80,"component-inherit":87,"debug":88,"engine.io-parser":91,"parseqs":103,"ws":105}],86:[function(require,module,exports){
 // browser shim for xmlhttprequest module
 var hasCORS = require('has-cors');
 
@@ -10093,7 +10125,7 @@ module.exports = function(opts) {
   }
 }
 
-},{"has-cors":98}],85:[function(require,module,exports){
+},{"has-cors":100}],87:[function(require,module,exports){
 
 module.exports = function(a, b){
   var fn = function(){};
@@ -10101,7 +10133,7 @@ module.exports = function(a, b){
   a.prototype = new fn;
   a.prototype.constructor = a;
 };
-},{}],86:[function(require,module,exports){
+},{}],88:[function(require,module,exports){
 
 /**
  * This is the web browser implementation of `debug()`.
@@ -10250,7 +10282,7 @@ function load() {
 
 exports.enable(load());
 
-},{"./debug":87}],87:[function(require,module,exports){
+},{"./debug":89}],89:[function(require,module,exports){
 
 /**
  * This is the common logic for both the Node.js and web browser
@@ -10449,7 +10481,7 @@ function coerce(val) {
   return val;
 }
 
-},{"ms":88}],88:[function(require,module,exports){
+},{"ms":90}],90:[function(require,module,exports){
 /**
  * Helpers.
  */
@@ -10562,7 +10594,7 @@ function plural(ms, n, name) {
   return Math.ceil(ms / n) + ' ' + name + 's';
 }
 
-},{}],89:[function(require,module,exports){
+},{}],91:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies.
@@ -11160,7 +11192,7 @@ exports.decodePayloadAsBinary = function (data, binaryType, callback) {
 };
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./keys":90,"after":91,"arraybuffer.slice":92,"base64-arraybuffer":93,"blob":94,"has-binary":95,"utf8":97}],90:[function(require,module,exports){
+},{"./keys":92,"after":93,"arraybuffer.slice":94,"base64-arraybuffer":95,"blob":96,"has-binary":97,"utf8":99}],92:[function(require,module,exports){
 
 /**
  * Gets the keys for an object.
@@ -11181,7 +11213,7 @@ module.exports = Object.keys || function keys (obj){
   return arr;
 };
 
-},{}],91:[function(require,module,exports){
+},{}],93:[function(require,module,exports){
 module.exports = after
 
 function after(count, callback, err_cb) {
@@ -11211,7 +11243,7 @@ function after(count, callback, err_cb) {
 
 function noop() {}
 
-},{}],92:[function(require,module,exports){
+},{}],94:[function(require,module,exports){
 /**
  * An abstraction for slicing an arraybuffer even when
  * ArrayBuffer.prototype.slice is not supported
@@ -11242,7 +11274,7 @@ module.exports = function(arraybuffer, start, end) {
   return result.buffer;
 };
 
-},{}],93:[function(require,module,exports){
+},{}],95:[function(require,module,exports){
 /*
  * base64-arraybuffer
  * https://github.com/niklasvh/base64-arraybuffer
@@ -11303,7 +11335,7 @@ module.exports = function(arraybuffer, start, end) {
   };
 })("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/");
 
-},{}],94:[function(require,module,exports){
+},{}],96:[function(require,module,exports){
 (function (global){
 /**
  * Create a blob builder even when vendor prefixes exist
@@ -11356,7 +11388,7 @@ module.exports = (function() {
 })();
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],95:[function(require,module,exports){
+},{}],97:[function(require,module,exports){
 (function (global){
 
 /*
@@ -11418,12 +11450,12 @@ function hasBinary(data) {
 }
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"isarray":96}],96:[function(require,module,exports){
+},{"isarray":98}],98:[function(require,module,exports){
 module.exports = Array.isArray || function (arr) {
   return Object.prototype.toString.call(arr) == '[object Array]';
 };
 
-},{}],97:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 (function (global){
 /*! http://mths.be/utf8js v2.0.0 by @mathias */
 ;(function(root) {
@@ -11666,7 +11698,7 @@ module.exports = Array.isArray || function (arr) {
 }(this));
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],98:[function(require,module,exports){
+},{}],100:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -11691,7 +11723,7 @@ try {
   module.exports = false;
 }
 
-},{"global":99}],99:[function(require,module,exports){
+},{"global":101}],101:[function(require,module,exports){
 
 /**
  * Returns `this`. Execute this without a "context" (i.e. without it being
@@ -11701,7 +11733,7 @@ try {
 
 module.exports = (function () { return this; })();
 
-},{}],100:[function(require,module,exports){
+},{}],102:[function(require,module,exports){
 (function (global){
 /**
  * JSON parse.
@@ -11736,7 +11768,7 @@ module.exports = function parsejson(data) {
   }
 };
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],101:[function(require,module,exports){
+},{}],103:[function(require,module,exports){
 /**
  * Compiles a querystring
  * Returns string representation of the object
@@ -11775,7 +11807,7 @@ exports.decode = function(qs){
   return qry;
 };
 
-},{}],102:[function(require,module,exports){
+},{}],104:[function(require,module,exports){
 /**
  * Parses an URI
  *
@@ -11816,7 +11848,7 @@ module.exports = function parseuri(str) {
     return uri;
 };
 
-},{}],103:[function(require,module,exports){
+},{}],105:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -11861,7 +11893,7 @@ function ws(uri, protocols, opts) {
 
 if (WebSocket) ws.prototype = WebSocket.prototype;
 
-},{}],104:[function(require,module,exports){
+},{}],106:[function(require,module,exports){
 (function (global){
 
 /*
@@ -11923,9 +11955,9 @@ function hasBinary(data) {
 }
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"isarray":105}],105:[function(require,module,exports){
-module.exports=require(96)
-},{}],106:[function(require,module,exports){
+},{"isarray":107}],107:[function(require,module,exports){
+module.exports=require(98)
+},{}],108:[function(require,module,exports){
 
 var indexOf = [].indexOf;
 
@@ -11936,7 +11968,7 @@ module.exports = function(arr, obj){
   }
   return -1;
 };
-},{}],107:[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 
 /**
  * HOP ref.
@@ -12021,7 +12053,7 @@ exports.length = function(obj){
 exports.isEmpty = function(obj){
   return 0 == exports.length(obj);
 };
-},{}],108:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 /**
  * Parses an URI
  *
@@ -12048,7 +12080,7 @@ module.exports = function parseuri(str) {
   return uri;
 };
 
-},{}],109:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 (function (global){
 /*global Blob,File*/
 
@@ -12193,7 +12225,7 @@ exports.removeBlobs = function(data, callback) {
 };
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./is-buffer":111,"isarray":112}],110:[function(require,module,exports){
+},{"./is-buffer":113,"isarray":114}],112:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -12595,7 +12627,7 @@ function error(data){
   };
 }
 
-},{"./binary":109,"./is-buffer":111,"component-emitter":73,"debug":74,"isarray":112,"json3":113}],111:[function(require,module,exports){
+},{"./binary":111,"./is-buffer":113,"component-emitter":75,"debug":76,"isarray":114,"json3":115}],113:[function(require,module,exports){
 (function (global){
 
 module.exports = isBuf;
@@ -12612,9 +12644,9 @@ function isBuf(obj) {
 }
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],112:[function(require,module,exports){
-module.exports=require(96)
-},{}],113:[function(require,module,exports){
+},{}],114:[function(require,module,exports){
+module.exports=require(98)
+},{}],115:[function(require,module,exports){
 /*! JSON v3.2.6 | http://bestiejs.github.io/json3 | Copyright 2012-2013, Kit Cambridge | http://kit.mit-license.org */
 ;(function (window) {
   // Convenience aliases.
@@ -13477,7 +13509,7 @@ module.exports=require(96)
   }
 }(this));
 
-},{}],114:[function(require,module,exports){
+},{}],116:[function(require,module,exports){
 module.exports = toArray
 
 function toArray(list, index) {

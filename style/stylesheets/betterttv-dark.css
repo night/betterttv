@@ -2036,3 +2036,10 @@ span.subscribe-text {
 .chat-messages .chat-line .svg-whisper-arrow {
     fill: #D3D3D3;
 }
+
+/* channel state */
+#bttv-channel-state-contain svg path {
+    fill: #D3D3D3;
+    stroke: #D3D3D3;
+}
+
