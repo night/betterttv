@@ -7,10 +7,14 @@ var checkBroadcastInfo = module.exports = function() {
 
     if(!channelCtrl) return setTimeout(checkBroadcastInfo, 60000);
 
-    if(!channelCtrl.model);
+    if(!channelCtrl.get('model'));
 
-    var hostedChannel = channelCtrl.model.get('hostModeTarget');
-    var channel = hostedChannel ? hostedChannel : channelCtrl.model;
+    var model = channelCtrl.get('model');
+
+    if(Ember.isEmpty(model)) return setTimeout(checkBroadcastInfo, 60000);
+
+    var hostedChannel = model.get('hostModeTarget');
+    var channel = hostedChannel ? hostedChannel : model;
 
     debug.log("Check Channel Title/Game");
 

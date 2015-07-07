@@ -196,9 +196,9 @@ var takeover = module.exports = function() {
     // Make chat translatable
     if (!vars.loadedDoubleClickTranslation && bttv.settings.get("dblclickTranslation") !== false) {
         vars.loadedDoubleClickTranslation = true;
-        $('body').on('dblclick', '.chat-line', function() {
-            helpers.translate($(this).find('.message'), $(this).data("sender"), $(this).find('.message').data("raw"));
-            $(this).find('.message').text("Translating..");
+        $('body').on('dblclick', '.chat-line .message', function() {
+            helpers.translate($(this), $(this).parent().data("sender"), $(this).data("raw"));
+            $(this).text("Translating..");
             $('div.tipsy').remove();
         });
     }

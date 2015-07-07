@@ -1766,9 +1766,9 @@ var takeover = module.exports = function() {
     // Make chat translatable
     if (!vars.loadedDoubleClickTranslation && bttv.settings.get("dblclickTranslation") !== false) {
         vars.loadedDoubleClickTranslation = true;
-        $('body').on('dblclick', '.chat-line', function() {
-            helpers.translate($(this).find('.message'), $(this).data("sender"), $(this).find('.message').data("raw"));
-            $(this).find('.message').text("Translating..");
+        $('body').on('dblclick', '.chat-line .message', function() {
+            helpers.translate($(this), $(this).parent().data("sender"), $(this).data("raw"));
+            $(this).text("Translating..");
             $('div.tipsy').remove();
         });
     }
@@ -2492,6 +2492,8 @@ checkJquery();
 var debug = require('../helpers/debug'),
     vars = require('../vars');
 
+var forcedAnonChat = window.location.search && window.location.search.indexOf('bttvAnonChat=true') > -1;
+
 module.exports = function() {
     if(!vars.userData.isLoggedIn) return;
 
@@ -2510,7 +2512,7 @@ module.exports = function() {
 
         var prodConnOpts = prodConn._opts;
 
-        if(bttv.settings.get('anonChat') === true) {
+        if(bttv.settings.get('anonChat') === true || forcedAnonChat) {
             if(prodConnOpts.nickname === vars.userData.login) {
                 prodConnOpts.nickname = 'justinfan12345';
                 room._showAdminMessage('BetterTTV: [Anon Chat] Logging you out of chat..');
@@ -3087,10 +3089,14 @@ var checkBroadcastInfo = module.exports = function() {
 
     if(!channelCtrl) return setTimeout(checkBroadcastInfo, 60000);
 
-    if(!channelCtrl.model);
+    if(!channelCtrl.get('model'));
 
-    var hostedChannel = channelCtrl.model.get('hostModeTarget');
-    var channel = hostedChannel ? hostedChannel : channelCtrl.model;
+    var model = channelCtrl.get('model');
+
+    if(Ember.isEmpty(model)) return setTimeout(checkBroadcastInfo, 60000);
+
+    var hostedChannel = model.get('hostModeTarget');
+    var channel = hostedChannel ? hostedChannel : model;
 
     debug.log("Check Channel Title/Game");
 

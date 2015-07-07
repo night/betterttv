@@ -1,6 +1,8 @@
 var debug = require('../helpers/debug'),
     vars = require('../vars');
 
+var forcedAnonChat = window.location.search && window.location.search.indexOf('bttvAnonChat=true') > -1;
+
 module.exports = function() {
     if(!vars.userData.isLoggedIn) return;
 
@@ -19,7 +21,7 @@ module.exports = function() {
 
         var prodConnOpts = prodConn._opts;
 
-        if(bttv.settings.get('anonChat') === true) {
+        if(bttv.settings.get('anonChat') === true || forcedAnonChat) {
             if(prodConnOpts.nickname === vars.userData.login) {
                 prodConnOpts.nickname = 'justinfan12345';
                 room._showAdminMessage('BetterTTV: [Anon Chat] Logging you out of chat..');
