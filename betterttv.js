@@ -1944,6 +1944,10 @@ var takeover = module.exports = function() {
                     helpers.sendMessage("!permit "+user);
                     $('.bttv-mod-card').remove();
                     break;
+                case keyCodes.u:
+                    helpers.sendMessage("/unban "+user);
+                    $('.bttv-mod-card').remove();
+                    break;
                 case keyCodes.b:
                     helpers.ban(user);
                     $('.bttv-mod-card').remove();
