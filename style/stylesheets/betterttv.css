@@ -1472,31 +1472,35 @@ body.channel_new.columns.ember-application {
 /* channel state feature */
 #bttv-channel-state-contain {
     position: absolute;
-    top: 2px;
+    top: 12px;
     right: 5px;
+    width: 150px;
+    height: 24px;
 }
 
 #bttv-channel-state-contain svg path {
     fill: #222;
-    stroke: #222;
+}
+
+
+#bttv-channel-state-contain .slow,
+#bttv-channel-state-contain .subs-only,
+#bttv-channel-state-contain .r9k {
+    float: right;
+    width: 26px;
+    height: 22px;
 }
 
 #bttv-channel-state-contain .slow {
-    position: absolute;
-    top: 4px;
-    right: 2px;
+    position: relative;
+    width: 70px;
+    text-align: right;
 }
 
-#bttv-channel-state-contain .slow-time {
+#bttv-channel-state-contain .slow .slow-time {
     position: absolute;
     top: 8px;
     right: 24px;
     font-size: 9px;
-    line-height: 10px;
-}
-
-#bttv-channel-state-contain .r9k {
-    position: absolute;
-    top: 22px;
-    right: 0px;
+    line-height: 9px;
 }
