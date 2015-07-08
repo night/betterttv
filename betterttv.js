@@ -2297,7 +2297,7 @@ var debug = require('./helpers/debug'),
 
 bttv.info = {
     version: "6.8",
-    release: 37,
+    release: 38,
     versionString: function() {
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -4277,7 +4277,7 @@ exports.highlighting = function (data) {
 },{"../features/audible-feedback":14,"../helpers/regex":49,"../vars":64}],42:[function(require,module,exports){
 module.exports = function(user, $event) {
     // adds in user messages from chat
-    user.messages = $('.chat-container .chat-messages .chat-line[data-sender="'+user.name+'"]').reverse();
+    user.messages = $.makeArray($('.chat-container .chat-messages .chat-line[data-sender="'+user.name+'"]')).reverse();
 
     var template = bttv.chat.templates.moderationCard(user, $event.offset().top, $('.chat-line:last').offset().left);
     $('.ember-chat .moderation-card').remove();

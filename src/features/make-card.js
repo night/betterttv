@@ -1,6 +1,6 @@
 module.exports = function(user, $event) {
     // adds in user messages from chat
-    user.messages = $('.chat-container .chat-messages .chat-line[data-sender="'+user.name+'"]').reverse();
+    user.messages = $.makeArray($('.chat-container .chat-messages .chat-line[data-sender="'+user.name+'"]')).reverse();
 
     var template = bttv.chat.templates.moderationCard(user, $event.offset().top, $('.chat-line:last').offset().left);
     $('.ember-chat .moderation-card').remove();
