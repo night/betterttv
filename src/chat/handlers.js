@@ -5,7 +5,9 @@ var vars = require('../vars'),
     helpers = require('./helpers'),
     templates = require('./templates'),
     rooms = require('./rooms'),
+    anonChat = require('../features/anon-chat'),
     embeddedPolling = require('../features/embedded-polling'),
+    channelState = require('../features/channel-state'),
     audibleFeedback = require('../features/audible-feedback');
 
 // Helper Functions
@@ -19,7 +21,11 @@ var commands = exports.commands = function (input) {
     var sentence = input.trim().split(' ');
     var command = sentence[0];
 
-    if (command === "/b") {
+    if (command === "/join") {
+        anonChat(false);
+    } else if(command === "/part") {
+        anonChat(true);
+    } else if (command === "/b") {
         helpers.ban(sentence[1]);
     } else if (command === "/t") {
         var time = 600;
@@ -237,6 +243,14 @@ var notice = exports.notice = function (data) {
     var messageId = data.msgId;
     var message = data.message;
 
+    channelState({
+        type: 'notice',
+        tags: {
+            'msg-id': messageId
+        },
+        message: message
+    });
+
     helpers.serverMessage(message, true);
 };
 var onPrivmsg = exports.onPrivmsg = function (channel, data) {
@@ -278,6 +292,11 @@ var privmsg = exports.privmsg = function (channel, data) {
     if(data.style && ['admin','action','notification','whisper'].indexOf(data.style) === -1) return;
 
     if(data.style === 'admin' || data.style === 'notification') {
+        if(data.message.indexOf('Sorry, we were unable to connect to chat.') > -1 && store.ignoreDC === true) {
+            store.ignoreDC = false;
+            return;
+        }
+
         data.style = 'admin';
         var message = templates.privmsg(
             false,

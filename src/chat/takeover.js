@@ -8,8 +8,14 @@ var store = require('./store'),
 var overrideEmotes = require('../features/override-emotes'),
     loadChatSettings = require('../features/chat-load-settings'),
     cssLoader = require('../features/css-loader'),
-    anonChat = require('../features/anon-chat'),
-    channelState = require('../features/channel-state');
+    anonChat = require('../features/anon-chat');
+
+var contains = function(arr, obj) {
+    for(var i = 0; i < arr.length; i++)
+        if(arr[i] === obj)
+            return true;
+    return false;
+};
 
 var takeover = module.exports = function() {
     var tmi = require('./tmi')();
@@ -17,8 +23,19 @@ var takeover = module.exports = function() {
     // Anonymize Chat if it isn't already
     anonChat();
 
-    //add channel state info
-    channelState();
+    // We need to get ROOMSTATE, but Twitch doesn't parse it yet..
+    try {
+        var connection = tmi.tmiSession._connections.prod;
+        var events = connection._socket._events;
+
+        if(!contains(events.data, helpers.parseRoomState)) {
+            connection._socket.on('data', helpers.parseRoomState);
+            connection._send('QUIT');
+            bttv.chat.store.ignoreDC = true;
+        }
+    } catch(e) {
+        debug.log('There was an error patching socket for ROOMSTATE');
+    }
 
     if(store.isLoaded) return;
 

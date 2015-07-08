@@ -4,7 +4,8 @@ var vars = require('../vars'),
     store = require('./store'),
     templates = require('./templates'),
     bots = require('../bots'),
-    punycode = require('punycode');
+    punycode = require('punycode'),
+    channelState = require('../features/channel-state');
 
 // Helper functions
 var removeElement = require('../helpers/element').remove;
@@ -68,8 +69,39 @@ var detectServerCommand = function(input) {
 
     return false;
 };
+var parseTags = exports.parseTags = function(tags) {
+    var rawTags = tags.slice(1, tags.length).split(';');
+
+    tags = {};
+
+    for(var i = 0; i < rawTags.length; i++) {
+        var tag = rawTags[i];
+        var pair = tag.split('=');
+        tags[pair[0]] = pair[1];
+    }
+
+    return tags;
+};
+var parseRoomState = exports.parseRoomState = function(e) {
+    var params = e.data.split(' ', 3);
+
+    if(params.length < 3 || params[0].charAt(0) !== '@') return;
+
+    if(params[2] !== 'ROOMSTATE') return;
+
+    channelState({
+        type: params[2].toLowerCase(),
+        tags: parseTags(params[0])
+    });
+};
 var completableEmotes = function() {
     var completableEmotes = [];
+
+    bttv.chat.emotes().forEach(function(emote) {
+        if(!emote.text) return;
+
+        completableEmotes.push(emote.text);
+    });
 
     try {
         var usableEmotes = tmi().tmiSession._emotesParser.emoticonRegexToIds;
@@ -170,7 +202,11 @@ var tabCompletion = exports.tabCompletion = function(e) {
 
             users.sort();
             users = recentWhispers.concat(users);
-            users = users.concat(emotes);
+
+            // Mix in emotes if not directly asking for a user
+            if(lastWord.charAt(0) !== '@') {
+                users = users.concat(emotes);
+            }
 
             if (users.indexOf(vars.userData.login) > -1) users.splice(users.indexOf(vars.userData.login), 1);
 
@@ -180,7 +216,8 @@ var tabCompletion = exports.tabCompletion = function(e) {
 
             if(search.length) {
                 users = users.filter(function(user) {
-                    return (user.search(search, "i") === 0);
+                    var lcUser = user.toLowerCase();
+                    return (lcUser.search(search) === 0);
                 });
             }
 
@@ -203,8 +240,10 @@ var tabCompletion = exports.tabCompletion = function(e) {
         sugStore.lastMatch = user;
 
         // Casing is important for emotes
+        var isEmote = true;
         if(emotes.indexOf(user) === -1) {
             user = lookupDisplayName(user);
+            isEmote = false;
         }
 
         if(/^(\/|\.)/.test(lastWord)) {
@@ -219,7 +258,7 @@ var tabCompletion = exports.tabCompletion = function(e) {
 
         sentence.push(user);
 
-        if(sentence.length === 1) {
+        if(sentence.length === 1 && !isEmote) {
             $chatInput.val(sentence.join(' ') + ", ");
         } else {
             $chatInput.val(sentence.join(' '));
@@ -360,6 +399,10 @@ var sendMessage = exports.sendMessage = function(message) {
         }
 
         tmi().tmiRoom.sendMessage(message);
+
+        channelState({
+            type: 'outgoing_message'
+        });
 
         // Fixes issue when using Twitch's sub emote selector
         tmi().set('messageToSend', '');
