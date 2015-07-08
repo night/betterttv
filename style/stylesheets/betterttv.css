@@ -545,6 +545,65 @@ input.text:focus,select:focus,textarea:focus {
     margin-top: 5px;
 }
 
+.bttv-mod-card .user-messages {
+    padding-top: 10px;
+    margin-left: -10px;
+    margin-bottom: -10px;
+    margin-right: -12px;
+    width: 300px;
+    float: left;
+}
+
+.bttv-mod-card .user-messages .label {
+    padding-top: 15px;
+    padding-left: 10px;
+    padding-bottom: 15px;
+    background-color: #222;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.bttv-mod-card .user-messages .label .triangle {
+    width: 0; 
+    height: 0; 
+    opacity: 0.5;
+    position: absolute;
+    right: 15px;
+    margin-top: -6px;
+    border-top: 7px solid transparent;
+    border-bottom: 7px solid transparent;
+    border-left: 7px solid white;
+    transition: all 300ms ease-in;
+}
+
+.bttv-mod-card .user-messages .label .triangle.open {
+    -moz-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+
+.bttv-mod-card .user-messages .mod-icons {
+    display: none;
+}
+
+.bttv-mod-card .user-messages .bttv-user-locate .from {
+    box-shadow: none;
+}
+
+.bttv-mod-card .chat-messages {
+    display: none;
+    top: auto !important;
+    bottom: auto !important;
+    position: relative;
+    float: left;
+    max-height: 100px;
+    width: 300px !important;
+    max-height: 100px !important;
+    overflow-y: scroll;
+}
+
 .bttv-switch {
   position: relative;
   float: right;
