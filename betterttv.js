@@ -818,6 +818,27 @@ var detectServerCommand = function(input) {
 
     return false;
 };
+var completableEmotes = function() {
+    var completableEmotes = [];
+
+    try {
+        var usableEmotes = tmi().tmiSession._emotesParser.emoticonRegexToIds;
+
+        for(var emote in usableEmotes) {
+            if(!usableEmotes.hasOwnProperty(emote)) continue;
+
+            emote = usableEmotes[emote];
+
+            if(emote.isRegex === true || !emote.text) continue;
+
+            completableEmotes.push(emote.text);
+        }
+    } catch(e) {
+        debug.log('Couldn\'t grab user emotes for tab completion.');
+    }
+
+    return completableEmotes;
+};
 var tabCompletion = exports.tabCompletion = function(e) {
     var keyCode = e.keyCode || e.which;
     var $chatInterface = $('.ember-chat .chat-interface');
@@ -825,12 +846,18 @@ var tabCompletion = exports.tabCompletion = function(e) {
 
     var input = $chatInput.val();
     var sentence = input.trim().split(' ');
-    var lastWord = sentence.pop().toLowerCase();
+    var lastWord = sentence.pop().replace(/,$/, '');
+
+    // If word is an emote, casing is important
+    var emotes = completableEmotes();
+    if(emotes.indexOf(lastWord) === -1) {
+        lastWord = lastWord.toLowerCase();
+    }
 
     if((detectServerCommand(input) || keyCode === keyCodes.Tab || lastWord.charAt(0) === '@') && keyCode !== keyCodes.Enter) {
         var sugStore = store.suggestions;
 
-        var currentMatch = lastWord.replace(/(^@|,$)/g, '');
+        var currentMatch = lastWord.replace(/^@/, '');
         var currentIndex = sugStore.matchList.indexOf(currentMatch);
 
         var user;
@@ -893,6 +920,7 @@ var tabCompletion = exports.tabCompletion = function(e) {
 
             users.sort();
             users = recentWhispers.concat(users);
+            users = users.concat(emotes);
 
             if (users.indexOf(vars.userData.login) > -1) users.splice(users.indexOf(vars.userData.login), 1);
 
@@ -924,7 +952,10 @@ var tabCompletion = exports.tabCompletion = function(e) {
 
         sugStore.lastMatch = user;
 
-        user = lookupDisplayName(user);
+        // Casing is important for emotes
+        if(emotes.indexOf(user) === -1) {
+            user = lookupDisplayName(user);
+        }
 
         if(/^(\/|\.)/.test(lastWord)) {
             user = lastWord + ' ' + user;
