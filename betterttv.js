@@ -1100,13 +1100,18 @@ var suggestions = exports.suggestions = function(words, index) {
         var user = $(this).text();
         var sentence = $chatInput.val().trim().split(' ');
         var lastWord = (detectServerCommand(input) && !sentence[1]) ? '' : sentence.pop();
-        if (lastWord.charAt(0) === '@') {
-            sentence.push("@" + lookupDisplayName(user));
-        } else {
-            sentence.push(lookupDisplayName(user));
+
+        var isEmote = (completableEmotes().indexOf(user) !== -1);
+
+        if(!isEmote) {
+            if(lastWord.charAt(0) === '@') {
+                sentence.push("@" + lookupDisplayName(user));
+            } else {
+                sentence.push(lookupDisplayName(user));
+            }
         }
 
-        if(sentence.length === 1) {
+        if(sentence.length === 1 && !isEmote) {
             $chatInput.val(sentence.join(' ') + ", ");
         } else {
             $chatInput.val(sentence.join(' ') + " ");
@@ -3179,8 +3184,6 @@ module.exports = function(event) {
 
             if(bttv.chat.store.slowTime > 0) {
                 initiateCountDown(bttv.chat.store.slowTime);
-            } else {
-                initiateCountDown(2);
             }
             break;
         case "notice":

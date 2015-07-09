@@ -98,8 +98,6 @@ module.exports = function(event) {
 
             if(bttv.chat.store.slowTime > 0) {
                 initiateCountDown(bttv.chat.store.slowTime);
-            } else {
-                initiateCountDown(2);
             }
             break;
         case "notice":
