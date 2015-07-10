@@ -958,8 +958,9 @@ body#chat #speak {
 }
 
 .ember-chat .moderation-card h3.name {
-    margin-top: -3px;
+    margin-top: -5px;
     font-size: 18px;
+    margin-bottom: -3px;
 }
 
 .ember-chat .moderation-card .svg-edit {
@@ -970,21 +971,37 @@ body#chat #speak {
 .ember-chat .moderation-card h4.real-name {
     font-size: 11px;
     color: #AAA;
-    margin-top: -4px;
-    margin-bottom: -5px;
-    margin-left: 60px;
-    position: relative;
     z-index: 4;
+    position: relative;
+    display: inline-block;
+    margin-left: 5px;
 }
 
-.ember-chat .moderation-card h4.followers,
-.ember-chat .moderation-card h4.views {
+.ember-chat .moderation-card h4.created-at {
     font-size: 11px;
     color: rgb(220,220,190);
     margin-left: 60px;
     position: relative;
     z-index: 4;
     width: 120px;
+}
+
+.moderation-card div.channel-stats {
+  margin-left: 60px;
+  height: 20px;
+  line-height: 20px;
+  float: left;
+  opacity: 0.7;
+  position: relative;
+  margin-top: 3px;
+}
+
+.moderation-card .channel-stats .stat svg {
+    margin-top: 2px;
+}
+
+.moderation-card .channel-stats .stat {
+    color: white;
 }
 
 .ember-chat .moderation-card .button-simple {
