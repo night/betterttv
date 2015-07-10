@@ -1109,6 +1109,8 @@ var suggestions = exports.suggestions = function(words, index) {
             } else {
                 sentence.push(lookupDisplayName(user));
             }
+        } else {
+            sentence.push(user);
         }
 
         if(sentence.length === 1 && !isEmote) {
