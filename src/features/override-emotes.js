@@ -4,7 +4,7 @@ var debug = require('../helpers/debug'),
 module.exports = function () {
     if(vars.emotesLoaded) return;
 
-    debug.log("Overriding Twitch Emoticons");
+    debug.log("Loading BetterTTV Emoticons");
 
     var generate = function(data) {
         vars.emotesLoaded = true;

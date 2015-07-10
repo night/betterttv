@@ -24,6 +24,10 @@ module.exports = function() {
             if(emote.restrictions.emoticonSet && emoteSets.indexOf(emote.restrictions.emoticonSet) === -1) return;
         }
 
+        if(emote.imageType === 'gif' && bttv.settings.get("bttvGIFEmotes") !== true) {
+            return;
+        }
+
         emote.text = emote.code;
 
         if(!emote.channel) {

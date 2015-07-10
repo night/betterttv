@@ -60,11 +60,11 @@ module.exports = function () {
     }*/
 
     // Twitch doesn't tell us when messages from /messages/other show up.
-    if(bttv.settings.get('alertOtherMessages') === false) return;
     var seenMessages = [];
     var recentMessageTimes = ['less than a minute ago', '1 minute ago'];
 
     var checkOther = function() {
+        if(bttv.settings.get('alertOtherMessages') === false) return;
         $.get('/messages/other', function (data) {
             var $messages = $(data).find("#message-list .unread");
 

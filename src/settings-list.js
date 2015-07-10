@@ -1,8 +1,3 @@
-/** BTTV :
- * cssBlueButtons
- * handleTwitchChatEmotesScript
- */
-
 var chat = bttv.chat, vars = bttv.vars;
 var betaChat = require('./features/beta-chat'),
     channelReformat = require('./features/channel-reformat'),
@@ -13,7 +8,8 @@ var betaChat = require('./features/beta-chat'),
     cssLoader = require('./features/css-loader'),
     theatreMode = require('./features/auto-theatre-mode'),
     hostButton = require('./features/host-btn-below-video'),
-    anonChat = require('./features/anon-chat');
+    anonChat = require('./features/anon-chat'),
+    handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes');
 var displayElement = require('./helpers/element').display,
     removeElement = require('./helpers/element').remove,
     imagePreview = require('./features/image-preview');
@@ -52,7 +48,7 @@ module.exports = [
     },
     {
         name: 'BetterTTV Chat',
-        description: 'A tiny chat bar for personal messaging friends',
+        description: 'A tiny chat bar for personal messaging friends (reloads page when turning off)',
         default: false,
         storageKey: 'bttvChat',
         toggle: function(value) {
@@ -67,10 +63,13 @@ module.exports = [
         name: 'BetterTTV Emotes',
         description: 'BetterTTV adds extra cool emotes for you to use',
         default: true,
-        storageKey: 'bttvEmotes',
-        toggle: function() {
-            window.location.reload();
-        }
+        storageKey: 'bttvEmotes'
+    },
+    {
+        name: 'BetterTTV GIF Emotes',
+        description: 'We realize not everyone likes GIFs, but some people do.',
+        default: false,
+        storageKey: 'bttvGIFEmotes'
     },
     {
         name: 'Blue Buttons',
@@ -229,9 +228,10 @@ module.exports = [
         storageKey: 'clickTwitchEmotes',
         toggle: function(value) {
             if(value === true) {
-                bttv.handleTwitchChatEmotesScript();
+                handleTwitchChatEmotesScript();
             } else {
-                window.location.reload();
+                $('#emote-menu-button').remove();
+                $('#clickTwitchEmotes').remove();
             }
         }
     },
@@ -290,11 +290,8 @@ module.exports = [
     {
         name: 'JTV Monkey Emotes',
         description: 'BetterTTV replaces the robot emoticons with the old JTV monkey faces',
-        default: true,
-        storageKey: 'showMonkeyEmotes',
-        toggle: function() {
-            window.location.reload();
-        }
+        default: false,
+        storageKey: 'showMonkeyEmotes'
     },
     {
         name: 'Mod Card Keybinds',
@@ -306,10 +303,7 @@ module.exports = [
         name: 'Other Messages Alert',
         description: 'BetterTTV can alert you when you receive a message to your "Other" messages folder',
         default: false,
-        storageKey: 'alertOtherMessages',
-        toggle: function() {
-            window.location.reload();
-        }
+        storageKey: 'alertOtherMessages'
     },
     {
         name: 'Play Sound on Highlight/Whisper',
@@ -332,7 +326,7 @@ module.exports = [
     {
         name: 'Split Chat',
         description: 'Easily distinguish between messages from different users in chat',
-        default: true,
+        default: false,
         storageKey: 'splitChat',
         toggle: function(value) {
             if(value === true) {
@@ -345,7 +339,7 @@ module.exports = [
     {
         name: 'Tab Completion Tooltip',
         description: 'Shows a tooltip with suggested names when using tab completion',
-        default: true,
+        default: false,
         storageKey: 'tabCompletionTooltip'
     },
     {

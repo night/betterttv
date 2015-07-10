@@ -141,7 +141,12 @@ var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message
             emote = store.bttvEmotes[test];
         }
 
-        if(emote && emote.urlTemplate && bttv.settings.get("bttvEmotes") === true) {
+        if(
+            emote &&
+            emote.urlTemplate && 
+            bttv.settings.get("bttvEmotes") === true && 
+            (emote.imageType === 'png' || (emote.imageType === 'gif' && bttv.settings.get("bttvGIFEmotes") === true))
+        ) {
             piece = bttvEmoticonize(sender, piece, emote);
         } else {
             piece = escape(piece);

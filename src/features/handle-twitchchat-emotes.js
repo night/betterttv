@@ -20,8 +20,8 @@ module.exports = function () {
             }
 
             if(window.emoteMenu) {
-                window.emoteMenu.registerEmoteGetter('BetterTTV', bttv.chat.emotes);
                 clearInterval(getterInterval);
+                window.emoteMenu.registerEmoteGetter('BetterTTV', bttv.chat.emotes);
             }
         }, 1000);
     }

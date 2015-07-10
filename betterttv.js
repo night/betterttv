@@ -344,6 +344,10 @@ module.exports = function() {
             if(emote.restrictions.emoticonSet && emoteSets.indexOf(emote.restrictions.emoticonSet) === -1) return;
         }
 
+        if(emote.imageType === 'gif' && bttv.settings.get("bttvGIFEmotes") !== true) {
+            return;
+        }
+
         emote.text = emote.code;
 
         if(!emote.channel) {
@@ -2237,7 +2241,12 @@ var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message
             emote = store.bttvEmotes[test];
         }
 
-        if(emote && emote.urlTemplate && bttv.settings.get("bttvEmotes") === true) {
+        if(
+            emote &&
+            emote.urlTemplate && 
+            bttv.settings.get("bttvEmotes") === true && 
+            (emote.imageType === 'png' || (emote.imageType === 'gif' && bttv.settings.get("bttvGIFEmotes") === true))
+        ) {
             piece = bttvEmoticonize(sender, piece, emote);
         } else {
             piece = escape(piece);
@@ -3513,11 +3522,11 @@ module.exports = function () {
     }*/
 
     // Twitch doesn't tell us when messages from /messages/other show up.
-    if(bttv.settings.get('alertOtherMessages') === false) return;
     var seenMessages = [];
     var recentMessageTimes = ['less than a minute ago', '1 minute ago'];
 
     var checkOther = function() {
+        if(bttv.settings.get('alertOtherMessages') === false) return;
         $.get('/messages/other', function (data) {
             var $messages = $(data).find("#message-list .unread");
 
@@ -4090,8 +4099,8 @@ module.exports = function () {
             }
 
             if(window.emoteMenu) {
-                window.emoteMenu.registerEmoteGetter('BetterTTV', bttv.chat.emotes);
                 clearInterval(getterInterval);
+                window.emoteMenu.registerEmoteGetter('BetterTTV', bttv.chat.emotes);
             }
         }, 1000);
     }
@@ -4410,7 +4419,7 @@ var debug = require('../helpers/debug'),
 module.exports = function () {
     if(vars.emotesLoaded) return;
 
-    debug.log("Overriding Twitch Emoticons");
+    debug.log("Loading BetterTTV Emoticons");
 
     var generate = function(data) {
         vars.emotesLoaded = true;
@@ -5093,11 +5102,6 @@ module.exports = function (data) {
     };
 };
 },{}],52:[function(require,module,exports){
-/** BTTV :
- * cssBlueButtons
- * handleTwitchChatEmotesScript
- */
-
 var chat = bttv.chat, vars = bttv.vars;
 var betaChat = require('./features/beta-chat'),
     channelReformat = require('./features/channel-reformat'),
@@ -5108,7 +5112,8 @@ var betaChat = require('./features/beta-chat'),
     cssLoader = require('./features/css-loader'),
     theatreMode = require('./features/auto-theatre-mode'),
     hostButton = require('./features/host-btn-below-video'),
-    anonChat = require('./features/anon-chat');
+    anonChat = require('./features/anon-chat'),
+    handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes');
 var displayElement = require('./helpers/element').display,
     removeElement = require('./helpers/element').remove,
     imagePreview = require('./features/image-preview');
@@ -5147,7 +5152,7 @@ module.exports = [
     },
     {
         name: 'BetterTTV Chat',
-        description: 'A tiny chat bar for personal messaging friends',
+        description: 'A tiny chat bar for personal messaging friends (reloads page when turning off)',
         default: false,
         storageKey: 'bttvChat',
         toggle: function(value) {
@@ -5162,10 +5167,13 @@ module.exports = [
         name: 'BetterTTV Emotes',
         description: 'BetterTTV adds extra cool emotes for you to use',
         default: true,
-        storageKey: 'bttvEmotes',
-        toggle: function() {
-            window.location.reload();
-        }
+        storageKey: 'bttvEmotes'
+    },
+    {
+        name: 'BetterTTV GIF Emotes',
+        description: 'We realize not everyone likes GIFs, but some people do.',
+        default: false,
+        storageKey: 'bttvGIFEmotes'
     },
     {
         name: 'Blue Buttons',
@@ -5324,9 +5332,10 @@ module.exports = [
         storageKey: 'clickTwitchEmotes',
         toggle: function(value) {
             if(value === true) {
-                bttv.handleTwitchChatEmotesScript();
+                handleTwitchChatEmotesScript();
             } else {
-                window.location.reload();
+                $('#emote-menu-button').remove();
+                $('#clickTwitchEmotes').remove();
             }
         }
     },
@@ -5385,11 +5394,8 @@ module.exports = [
     {
         name: 'JTV Monkey Emotes',
         description: 'BetterTTV replaces the robot emoticons with the old JTV monkey faces',
-        default: true,
-        storageKey: 'showMonkeyEmotes',
-        toggle: function() {
-            window.location.reload();
-        }
+        default: false,
+        storageKey: 'showMonkeyEmotes'
     },
     {
         name: 'Mod Card Keybinds',
@@ -5401,10 +5407,7 @@ module.exports = [
         name: 'Other Messages Alert',
         description: 'BetterTTV can alert you when you receive a message to your "Other" messages folder',
         default: false,
-        storageKey: 'alertOtherMessages',
-        toggle: function() {
-            window.location.reload();
-        }
+        storageKey: 'alertOtherMessages'
     },
     {
         name: 'Play Sound on Highlight/Whisper',
@@ -5427,7 +5430,7 @@ module.exports = [
     {
         name: 'Split Chat',
         description: 'Easily distinguish between messages from different users in chat',
-        default: true,
+        default: false,
         storageKey: 'splitChat',
         toggle: function(value) {
             if(value === true) {
@@ -5440,7 +5443,7 @@ module.exports = [
     {
         name: 'Tab Completion Tooltip',
         description: 'Shows a tooltip with suggested names when using tab completion',
-        default: true,
+        default: false,
         storageKey: 'tabCompletionTooltip'
     },
     {
@@ -5560,7 +5563,7 @@ module.exports = [
     }
 ];
 
-},{"./features/anon-chat":13,"./features/auto-theatre-mode":15,"./features/beta-chat":16,"./features/channel-reformat":19,"./features/css-loader":28,"./features/darken-page":29,"./features/flip-dashboard":34,"./features/handle-background":37,"./features/host-btn-below-video":39,"./features/image-preview":40,"./features/split-chat":44,"./helpers/element":47}],53:[function(require,module,exports){
+},{"./features/anon-chat":13,"./features/auto-theatre-mode":15,"./features/beta-chat":16,"./features/channel-reformat":19,"./features/css-loader":28,"./features/darken-page":29,"./features/flip-dashboard":34,"./features/handle-background":37,"./features/handle-twitchchat-emotes":38,"./features/host-btn-below-video":39,"./features/image-preview":40,"./features/split-chat":44,"./helpers/element":47}],53:[function(require,module,exports){
 var debug = require('./helpers/debug');
 var saveAs = require('./helpers/filesaver').saveAs;
 
