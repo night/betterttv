@@ -1,5 +1,5 @@
 /** @license
- * Copyright (c) 2014 NightDev
+ * Copyright (c) 2015 NightDev
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -1109,6 +1109,8 @@ var suggestions = exports.suggestions = function(words, index) {
             } else {
                 sentence.push(lookupDisplayName(user));
             }
+        } else {
+            sentence.push(user);
         }
 
         if(sentence.length === 1 && !isEmote) {
