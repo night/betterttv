@@ -4,7 +4,8 @@ var vars = require('../vars'),
     store = require('./store'),
     templates = require('./templates'),
     bots = require('../bots'),
-    punycode = require('punycode');
+    punycode = require('punycode'),
+    channelState = require('../features/channel-state');
 
 // Helper functions
 var removeElement = require('../helpers/element').remove;
@@ -41,12 +42,14 @@ var tcCommands = [
     'ban',
     'unban',
     'timeout',
+    'purge',
     'host',
     'unhost',
     'b',
     't',
     'u',
-    'w'
+    'w',
+    'p'
 ];
 var detectServerCommand = function(input) {
     var input = input.split(' ');
@@ -66,6 +69,58 @@ var detectServerCommand = function(input) {
 
     return false;
 };
+var parseTags = exports.parseTags = function(tags) {
+    var rawTags = tags.slice(1, tags.length).split(';');
+
+    tags = {};
+
+    for(var i = 0; i < rawTags.length; i++) {
+        var tag = rawTags[i];
+        var pair = tag.split('=');
+        tags[pair[0]] = pair[1];
+    }
+
+    return tags;
+};
+var parseRoomState = exports.parseRoomState = function(e) {
+    var params = e.data.split(' ', 3);
+
+    if(params.length < 3 || params[0].charAt(0) !== '@') return;
+
+    if(params[2] !== 'ROOMSTATE') return;
+
+    channelState({
+        type: params[2].toLowerCase(),
+        tags: parseTags(params[0])
+    });
+};
+var completableEmotes = function() {
+    var completableEmotes = [];
+
+    bttv.chat.emotes().forEach(function(emote) {
+        if(!emote.text) return;
+
+        completableEmotes.push(emote.text);
+    });
+
+    try {
+        var usableEmotes = tmi().tmiSession._emotesParser.emoticonRegexToIds;
+
+        for(var emote in usableEmotes) {
+            if(!usableEmotes.hasOwnProperty(emote)) continue;
+
+            emote = usableEmotes[emote];
+
+            if(emote.isRegex === true || !emote.text) continue;
+
+            completableEmotes.push(emote.text);
+        }
+    } catch(e) {
+        debug.log('Couldn\'t grab user emotes for tab completion.');
+    }
+
+    return completableEmotes;
+};
 var tabCompletion = exports.tabCompletion = function(e) {
     var keyCode = e.keyCode || e.which;
     var $chatInterface = $('.ember-chat .chat-interface');
@@ -73,12 +128,18 @@ var tabCompletion = exports.tabCompletion = function(e) {
 
     var input = $chatInput.val();
     var sentence = input.trim().split(' ');
-    var lastWord = sentence.pop().toLowerCase();
+    var lastWord = sentence.pop().replace(/,$/, '');
+
+    // If word is an emote, casing is important
+    var emotes = completableEmotes();
+    if(emotes.indexOf(lastWord) === -1) {
+        lastWord = lastWord.toLowerCase();
+    }
 
     if((detectServerCommand(input) || keyCode === keyCodes.Tab || lastWord.charAt(0) === '@') && keyCode !== keyCodes.Enter) {
         var sugStore = store.suggestions;
 
-        var currentMatch = lastWord.replace(/(^@|,$)/g, '');
+        var currentMatch = lastWord.replace(/^@/, '');
         var currentIndex = sugStore.matchList.indexOf(currentMatch);
 
         var user;
@@ -142,6 +203,11 @@ var tabCompletion = exports.tabCompletion = function(e) {
             users.sort();
             users = recentWhispers.concat(users);
 
+            // Mix in emotes if not directly asking for a user
+            if(lastWord.charAt(0) !== '@') {
+                users = users.concat(emotes);
+            }
+
             if (users.indexOf(vars.userData.login) > -1) users.splice(users.indexOf(vars.userData.login), 1);
 
             if(/^(\/|\.)/.test(search)) {
@@ -150,7 +216,8 @@ var tabCompletion = exports.tabCompletion = function(e) {
 
             if(search.length) {
                 users = users.filter(function(user) {
-                    return (user.search(search, "i") === 0);
+                    var lcUser = user.toLowerCase();
+                    return (lcUser.search(search) === 0);
                 });
             }
 
@@ -172,7 +239,12 @@ var tabCompletion = exports.tabCompletion = function(e) {
 
         sugStore.lastMatch = user;
 
-        user = lookupDisplayName(user);
+        // Casing is important for emotes
+        var isEmote = true;
+        if(emotes.indexOf(user) === -1) {
+            user = lookupDisplayName(user);
+            isEmote = false;
+        }
 
         if(/^(\/|\.)/.test(lastWord)) {
             user = lastWord + ' ' + user;
@@ -186,7 +258,7 @@ var tabCompletion = exports.tabCompletion = function(e) {
 
         sentence.push(user);
 
-        if(sentence.length === 1) {
+        if(sentence.length === 1 && !isEmote) {
             $chatInput.val(sentence.join(' ') + ", ");
         } else {
             $chatInput.val(sentence.join(' '));
@@ -259,13 +331,18 @@ var suggestions = exports.suggestions = function(words, index) {
         var user = $(this).text();
         var sentence = $chatInput.val().trim().split(' ');
         var lastWord = (detectServerCommand(input) && !sentence[1]) ? '' : sentence.pop();
-        if (lastWord.charAt(0) === '@') {
-            sentence.push("@" + lookupDisplayName(user));
-        } else {
-            sentence.push(lookupDisplayName(user));
+
+        var isEmote = (completableEmotes().indexOf(user) !== -1);
+
+        if(!isEmote) {
+            if(lastWord.charAt(0) === '@') {
+                sentence.push("@" + lookupDisplayName(user));
+            } else {
+                sentence.push(lookupDisplayName(user));
+            }
         }
 
-        if(sentence.length === 1) {
+        if(sentence.length === 1 && !isEmote) {
             $chatInput.val(sentence.join(' ') + ", ");
         } else {
             $chatInput.val(sentence.join(' ') + " ");
@@ -321,7 +398,16 @@ var sendMessage = exports.sendMessage = function(message) {
             return;
         }
 
+        if(bttv.settings.get('anonChat') === true) {
+            serverMessage('You can\'t send messages when Anon Chat is enabled. You can disable Anon Chat in the BetterTTV settings.');
+            return;
+        }
+
         tmi().tmiRoom.sendMessage(message);
+
+        channelState({
+            type: 'outgoing_message'
+        });
 
         // Fixes issue when using Twitch's sub emote selector
         tmi().set('messageToSend', '');
@@ -689,35 +775,21 @@ var massUnban = exports.massUnban = function() {
         }
     });
 };
-/*var translate = exports.translate = function(element, sender, text) {
-    var language = (window.cookie && window.cookie.get('language')) ? window.cookie.get('language') : 'en',
-        query = 'http://translate.google.com/translate_a/t?client=bttv&sl=auto&tl='+language+'&ie=UTF-8&oe=UTF-8&q='+text,
-        translate = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20json%20where%20url%3D\""+encodeURIComponent(query)+"\"&format=json&diagnostics=false&callback=?";
+var translate = exports.translate = function(element, sender, text) {
+    var language = (window.cookie && window.cookie.get('language')) ? window.cookie.get('language') : 'en';
 
-    $.ajax({
-        url: translate,
-        cache: !1,
-        timeoutLength: 6E3,
-        dataType: 'json',
-        success: function (data) {
-            if(data.error) {
-                $(element).text("Translation Error");
-            } else {
-                var sentences = data.query.results.json.sentences;
-                if(sentences instanceof Array) {
-                    var translation = "";
-                    sentences.forEach(function(sentence) {
-                        translation += sentence.trans;
-                    });
-                } else {
-                    var translation = sentences.trans;
-                }
+    var qs = $.param({
+        target: language,
+        q: decodeURIComponent(text)
+    });
 
-                $(element).replaceWith(templates.message(sender, translation));
-            }
-        },
-        error: function() {
-            $(element).text("Translation Error: Server Error");
+    $.getJSON('https://api.betterttv.net/2/translate?' + qs).success(function(data) {
+        $(element).replaceWith(templates.message(sender, data.translation));
+    }).error(function(data) {
+        if(data.responseJSON && data.responseJSON.message) {
+            $(element).text(data.responseJSON.message);
+        } else {
+            $(element).text("Translation Error");
         }
     });
-}*/
+};

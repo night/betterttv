@@ -7,10 +7,35 @@ var store = require('./store'),
     rooms = require('./rooms');
 var overrideEmotes = require('../features/override-emotes'),
     loadChatSettings = require('../features/chat-load-settings'),
-    cssLoader = require('../features/css-loader');
+    cssLoader = require('../features/css-loader'),
+    anonChat = require('../features/anon-chat');
+
+var contains = function(arr, obj) {
+    for(var i = 0; i < arr.length; i++)
+        if(arr[i] === obj)
+            return true;
+    return false;
+};
 
 var takeover = module.exports = function() {
     var tmi = require('./tmi')();
+
+    // Anonymize Chat if it isn't already
+    anonChat();
+
+    // We need to get ROOMSTATE, but Twitch doesn't parse it yet..
+    try {
+        var connection = tmi.tmiSession._connections.prod;
+        var events = connection._socket._events;
+
+        if(!contains(events.data, helpers.parseRoomState)) {
+            connection._socket.on('data', helpers.parseRoomState);
+            connection._send('QUIT');
+            bttv.chat.store.ignoreDC = true;
+        }
+    } catch(e) {
+        debug.log('There was an error patching socket for ROOMSTATE');
+    }
 
     if(store.isLoaded) return;
 
@@ -101,6 +126,27 @@ var takeover = module.exports = function() {
     // Load Chat Settings
     loadChatSettings();
 
+    // Hover over links
+    $("body").off('mouseover', '.chat-line .message a').on('mouseover', '.chat-line .message a', function() {
+        var $this = $(this);
+
+        var encodedURL = encodeURIComponent($this.attr('href'));
+        $.getJSON("https://api.betterttv.net/2/link_resolver/" + encodedURL).done(function(data) {
+            if(!data.tooltip || !$this.is(':hover')) return;
+
+            $this.tipsy({
+                trigger: 'manual',
+                gravity: $.fn.tipsy.autoNS,
+                html: true,
+                title: function() { return data.tooltip; }
+            });
+            $this.tipsy("show");
+        });
+    }).off('mouseout', '.chat-line .message a').on('mouseout', '.chat-line .message a', function() {
+        $(this).tipsy("hide");
+        $('div.tipsy').remove();
+    });
+
     // Hover over icons
     $("body").off('mouseover', '.chat-line .badges .badge, .chat-line .mod-icons a').on('mouseover', '.chat-line .badges .badge, .chat-line .mod-icons a', function() {
         $(this).tipsy({
@@ -165,14 +211,14 @@ var takeover = module.exports = function() {
     }
 
     // Make chat translatable
-    /*if (!vars.loadedDoubleClickTranslation && bttv.settings.get("dblclickTranslation") !== false) {
+    if (!vars.loadedDoubleClickTranslation && bttv.settings.get("dblclickTranslation") !== false) {
         vars.loadedDoubleClickTranslation = true;
-        $('body').on('dblclick', '.chat-line', function() {
-            helpers.translate($(this).find('.message'), $(this).data("sender"), $(this).find('.message').data("raw"));
-            $(this).find('.message').text("Translating..");
+        $('body').on('dblclick', '.chat-line .message', function() {
+            helpers.translate($(this), $(this).parent().data("sender"), $(this).data("raw"));
+            $(this).text("Translating..");
             $('div.tipsy').remove();
         });
-    }*/
+    }
 
     var $chatInterface = $('.ember-chat .chat-interface');
     var $chatInput = $chatInterface.find('textarea');
@@ -341,6 +387,14 @@ var takeover = module.exports = function() {
                     helpers.timeout(user, 1);
                     $('.bttv-mod-card').remove();
                     break;
+                case keyCodes.a:
+                    helpers.sendMessage("!permit "+user);
+                    $('.bttv-mod-card').remove();
+                    break;
+                case keyCodes.u:
+                    helpers.sendMessage("/unban "+user);
+                    $('.bttv-mod-card').remove();
+                    break;
                 case keyCodes.b:
                     helpers.ban(user);
                     $('.bttv-mod-card').remove();
@@ -357,6 +411,14 @@ var takeover = module.exports = function() {
                     $('.bttv-mod-card').remove();
                     break;
             }
+        }
+    });
+    
+    $('.tse-content').on('dblclick', '.chat-line .from', function(e) {
+        if(bttv.settings.get('dblClickAutoComplete') === false) return;
+        var sender = $(this).text();
+        if (sender) {
+            $('.ember-chat .chat-interface').find('textarea').val(sender + ", ");
         }
     });
 }

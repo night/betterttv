@@ -5,7 +5,10 @@ var vars = require('../vars'),
     helpers = require('./helpers'),
     templates = require('./templates'),
     rooms = require('./rooms'),
-    embeddedPolling = require('../features/embedded-polling');
+    anonChat = require('../features/anon-chat'),
+    embeddedPolling = require('../features/embedded-polling'),
+    channelState = require('../features/channel-state'),
+    audibleFeedback = require('../features/audible-feedback');
 
 // Helper Functions
 var getEmoteFromRegEx = require('../helpers/regex').getEmoteFromRegEx;
@@ -18,12 +21,18 @@ var commands = exports.commands = function (input) {
     var sentence = input.trim().split(' ');
     var command = sentence[0];
 
-    if (command === "/b") {
+    if (command === "/join") {
+        anonChat(false);
+    } else if(command === "/part") {
+        anonChat(true);
+    } else if (command === "/b") {
         helpers.ban(sentence[1]);
     } else if (command === "/t") {
         var time = 600;
         if(!isNaN(sentence[2])) time = sentence[2];
         helpers.timeout(sentence[1], time);
+    } else if (command === "/p" || command === "/purge") {
+        helpers.timeout(sentence[1], 1);
     } else if (command === "/massunban" || ((command === "/unban" || command === "/u") && sentence[1] === "all")) {
         helpers.massUnban();
     } else if (command === "/u") {
@@ -95,6 +104,7 @@ var commands = exports.commands = function (input) {
         helpers.serverMessage("/localmodoff -- Turns off local mod-only mode");
         helpers.serverMessage("/localsub -- Turns on local sub-only mode (only your chat is sub-only mode)");
         helpers.serverMessage("/localsuboff -- Turns off local sub-only mode");
+        helpers.serverMessage("/purge [username] (or /p) -- Purges a user's chat");
         helpers.serverMessage("/massunban (or /unban all or /u all) -- Unbans all users in the channel (channel owner only)");
         helpers.serverMessage("/r -- Type '/r ' to respond to your last whisper");
         helpers.serverMessage("/sub -- Shortcut for /subscribers");
@@ -233,6 +243,14 @@ var notice = exports.notice = function (data) {
     var messageId = data.msgId;
     var message = data.message;
 
+    channelState({
+        type: 'notice',
+        tags: {
+            'msg-id': messageId
+        },
+        message: message
+    });
+
     helpers.serverMessage(message, true);
 };
 var onPrivmsg = exports.onPrivmsg = function (channel, data) {
@@ -246,6 +264,11 @@ var onPrivmsg = exports.onPrivmsg = function (channel, data) {
         if (data.style === 'whisper') {
             store.chatters[data.from] = {lastWhisper:Date.now()};
             if (bttv.settings.get('disableWhispers') === true) return;
+            if (data.from !== vars.userData.login) {
+                audibleFeedback();
+                if(bttv.settings.get("desktopNotifications") === true && bttv.chat.store.activeView === false)
+                    bttv.notify("You received a whisper from "+((data.tags && data.tags['display-name']) || data.from));
+            }
         }
         privmsg(channel, data);
     } catch(e) {
@@ -269,6 +292,11 @@ var privmsg = exports.privmsg = function (channel, data) {
     if(data.style && ['admin','action','notification','whisper'].indexOf(data.style) === -1) return;
 
     if(data.style === 'admin' || data.style === 'notification') {
+        if(data.message.indexOf('Sorry, we were unable to connect to chat.') > -1 && store.ignoreDC === true) {
+            store.ignoreDC = false;
+            return;
+        }
+
         data.style = 'admin';
         var message = templates.privmsg(
             false,

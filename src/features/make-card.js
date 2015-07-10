@@ -1,4 +1,7 @@
 module.exports = function(user, $event) {
+    // adds in user messages from chat
+    user.messages = $.makeArray($('.chat-container .chat-messages .chat-line[data-sender="'+user.name+'"]')).reverse();
+
     var template = bttv.chat.templates.moderationCard(user, $event.offset().top, $('.chat-line:last').offset().left);
     $('.ember-chat .moderation-card').remove();
     $('.ember-chat').append(template);
@@ -7,6 +10,16 @@ module.exports = function(user, $event) {
 
     $modCard.find('.close-button').click(function() {
         $modCard.remove();
+    });
+    $modCard.find('.user-messages .label').click(function() {
+        $modCard.find('.user-messages .chat-messages').toggle('fast');
+
+        var triangle = $(this).find('.triangle');
+        if(triangle.hasClass('open')) {
+            triangle.removeClass('open').addClass('closed');
+        } else {
+            triangle.removeClass('closed').addClass('open');
+        }
     });
     $modCard.find('.permit').click(function() {
         bttv.chat.helpers.sendMessage('!permit '+user.name);

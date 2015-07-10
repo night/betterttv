@@ -5,11 +5,11 @@ module.exports = {
 
         bttv.TwitchAPI._ref.call(Twitch.api, e, t);
     },
-    _call: function(method, url, data) {
+    _call: function(method, url, data, options) {
         // Replace Twitch's beforeSend with ours (to add Client ID)
         var rep = this._takeover();
 
-        var callTwitchAPI = window.Twitch.api[method].call(this, url, data);
+        var callTwitchAPI = window.Twitch.api[method].call(this, url, data, options);
 
         // Replace Twitch's beforeSend back with theirs
         this._untakeover();
@@ -29,16 +29,16 @@ module.exports = {
         window.Twitch.api._beforeSend = this._ref;
         this._ref = null;
     },
-    get: function(url) {
-        return this._call('get', url);
+    get: function(url, data, options) {
+        return this._call('get', url, data, options);
     },
-    post: function(url, data) {
-        return this._call('post', url, data);
+    post: function(url, data, options) {
+        return this._call('post', url, data, options);
     },
-    put: function(url, data) {
-        return this._call('put', url, data);
+    put: function(url, data, options) {
+        return this._call('put', url, data, options);
     },
-    del: function(url) {
-        return this._call('del', url);
+    del: function(url, data, options) {
+        return this._call('del', url, data, options);
     }
 };

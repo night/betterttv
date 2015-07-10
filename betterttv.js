@@ -364,7 +364,10 @@ var vars = require('../vars'),
     helpers = require('./helpers'),
     templates = require('./templates'),
     rooms = require('./rooms'),
-    embeddedPolling = require('../features/embedded-polling');
+    anonChat = require('../features/anon-chat'),
+    embeddedPolling = require('../features/embedded-polling'),
+    channelState = require('../features/channel-state'),
+    audibleFeedback = require('../features/audible-feedback');
 
 // Helper Functions
 var getEmoteFromRegEx = require('../helpers/regex').getEmoteFromRegEx;
@@ -377,12 +380,18 @@ var commands = exports.commands = function (input) {
     var sentence = input.trim().split(' ');
     var command = sentence[0];
 
-    if (command === "/b") {
+    if (command === "/join") {
+        anonChat(false);
+    } else if(command === "/part") {
+        anonChat(true);
+    } else if (command === "/b") {
         helpers.ban(sentence[1]);
     } else if (command === "/t") {
         var time = 600;
         if(!isNaN(sentence[2])) time = sentence[2];
         helpers.timeout(sentence[1], time);
+    } else if (command === "/p" || command === "/purge") {
+        helpers.timeout(sentence[1], 1);
     } else if (command === "/massunban" || ((command === "/unban" || command === "/u") && sentence[1] === "all")) {
         helpers.massUnban();
     } else if (command === "/u") {
@@ -454,6 +463,7 @@ var commands = exports.commands = function (input) {
         helpers.serverMessage("/localmodoff -- Turns off local mod-only mode");
         helpers.serverMessage("/localsub -- Turns on local sub-only mode (only your chat is sub-only mode)");
         helpers.serverMessage("/localsuboff -- Turns off local sub-only mode");
+        helpers.serverMessage("/purge [username] (or /p) -- Purges a user's chat");
         helpers.serverMessage("/massunban (or /unban all or /u all) -- Unbans all users in the channel (channel owner only)");
         helpers.serverMessage("/r -- Type '/r ' to respond to your last whisper");
         helpers.serverMessage("/sub -- Shortcut for /subscribers");
@@ -592,6 +602,14 @@ var notice = exports.notice = function (data) {
     var messageId = data.msgId;
     var message = data.message;
 
+    channelState({
+        type: 'notice',
+        tags: {
+            'msg-id': messageId
+        },
+        message: message
+    });
+
     helpers.serverMessage(message, true);
 };
 var onPrivmsg = exports.onPrivmsg = function (channel, data) {
@@ -605,6 +623,11 @@ var onPrivmsg = exports.onPrivmsg = function (channel, data) {
         if (data.style === 'whisper') {
             store.chatters[data.from] = {lastWhisper:Date.now()};
             if (bttv.settings.get('disableWhispers') === true) return;
+            if (data.from !== vars.userData.login) {
+                audibleFeedback();
+                if(bttv.settings.get("desktopNotifications") === true && bttv.chat.store.activeView === false)
+                    bttv.notify("You received a whisper from "+((data.tags && data.tags['display-name']) || data.from));
+            }
         }
         privmsg(channel, data);
     } catch(e) {
@@ -628,6 +651,11 @@ var privmsg = exports.privmsg = function (channel, data) {
     if(data.style && ['admin','action','notification','whisper'].indexOf(data.style) === -1) return;
 
     if(data.style === 'admin' || data.style === 'notification') {
+        if(data.message.indexOf('Sorry, we were unable to connect to chat.') > -1 && store.ignoreDC === true) {
+            store.ignoreDC = false;
+            return;
+        }
+
         data.style = 'admin';
         var message = templates.privmsg(
             false,
@@ -738,14 +766,15 @@ var privmsg = exports.privmsg = function (channel, data) {
     store.__messageQueue.push(message);
 }
 
-},{"../features/embedded-polling":29,"../features/keywords-lists":38,"../features/make-card":39,"../helpers/colors":42,"../helpers/debug":43,"../helpers/regex":46,"../vars":60,"./helpers":5,"./rooms":7,"./store":8,"./templates":10,"./tmi":11}],5:[function(require,module,exports){
+},{"../features/anon-chat":13,"../features/audible-feedback":14,"../features/channel-state":21,"../features/embedded-polling":32,"../features/keywords-lists":41,"../features/make-card":42,"../helpers/colors":45,"../helpers/debug":46,"../helpers/regex":49,"../vars":64,"./helpers":5,"./rooms":7,"./store":8,"./templates":10,"./tmi":11}],5:[function(require,module,exports){
 var vars = require('../vars'),
     keyCodes = require('../keycodes'),
     tmi = require('./tmi'),
     store = require('./store'),
     templates = require('./templates'),
     bots = require('../bots'),
-    punycode = require('punycode');
+    punycode = require('punycode'),
+    channelState = require('../features/channel-state');
 
 // Helper functions
 var removeElement = require('../helpers/element').remove;
@@ -782,12 +811,14 @@ var tcCommands = [
     'ban',
     'unban',
     'timeout',
+    'purge',
     'host',
     'unhost',
     'b',
     't',
     'u',
-    'w'
+    'w',
+    'p'
 ];
 var detectServerCommand = function(input) {
     var input = input.split(' ');
@@ -807,6 +838,58 @@ var detectServerCommand = function(input) {
 
     return false;
 };
+var parseTags = exports.parseTags = function(tags) {
+    var rawTags = tags.slice(1, tags.length).split(';');
+
+    tags = {};
+
+    for(var i = 0; i < rawTags.length; i++) {
+        var tag = rawTags[i];
+        var pair = tag.split('=');
+        tags[pair[0]] = pair[1];
+    }
+
+    return tags;
+};
+var parseRoomState = exports.parseRoomState = function(e) {
+    var params = e.data.split(' ', 3);
+
+    if(params.length < 3 || params[0].charAt(0) !== '@') return;
+
+    if(params[2] !== 'ROOMSTATE') return;
+
+    channelState({
+        type: params[2].toLowerCase(),
+        tags: parseTags(params[0])
+    });
+};
+var completableEmotes = function() {
+    var completableEmotes = [];
+
+    bttv.chat.emotes().forEach(function(emote) {
+        if(!emote.text) return;
+
+        completableEmotes.push(emote.text);
+    });
+
+    try {
+        var usableEmotes = tmi().tmiSession._emotesParser.emoticonRegexToIds;
+
+        for(var emote in usableEmotes) {
+            if(!usableEmotes.hasOwnProperty(emote)) continue;
+
+            emote = usableEmotes[emote];
+
+            if(emote.isRegex === true || !emote.text) continue;
+
+            completableEmotes.push(emote.text);
+        }
+    } catch(e) {
+        debug.log('Couldn\'t grab user emotes for tab completion.');
+    }
+
+    return completableEmotes;
+};
 var tabCompletion = exports.tabCompletion = function(e) {
     var keyCode = e.keyCode || e.which;
     var $chatInterface = $('.ember-chat .chat-interface');
@@ -814,12 +897,18 @@ var tabCompletion = exports.tabCompletion = function(e) {
 
     var input = $chatInput.val();
     var sentence = input.trim().split(' ');
-    var lastWord = sentence.pop().toLowerCase();
+    var lastWord = sentence.pop().replace(/,$/, '');
+
+    // If word is an emote, casing is important
+    var emotes = completableEmotes();
+    if(emotes.indexOf(lastWord) === -1) {
+        lastWord = lastWord.toLowerCase();
+    }
 
     if((detectServerCommand(input) || keyCode === keyCodes.Tab || lastWord.charAt(0) === '@') && keyCode !== keyCodes.Enter) {
         var sugStore = store.suggestions;
 
-        var currentMatch = lastWord.replace(/(^@|,$)/g, '');
+        var currentMatch = lastWord.replace(/^@/, '');
         var currentIndex = sugStore.matchList.indexOf(currentMatch);
 
         var user;
@@ -883,6 +972,11 @@ var tabCompletion = exports.tabCompletion = function(e) {
             users.sort();
             users = recentWhispers.concat(users);
 
+            // Mix in emotes if not directly asking for a user
+            if(lastWord.charAt(0) !== '@') {
+                users = users.concat(emotes);
+            }
+
             if (users.indexOf(vars.userData.login) > -1) users.splice(users.indexOf(vars.userData.login), 1);
 
             if(/^(\/|\.)/.test(search)) {
@@ -891,7 +985,8 @@ var tabCompletion = exports.tabCompletion = function(e) {
 
             if(search.length) {
                 users = users.filter(function(user) {
-                    return (user.search(search, "i") === 0);
+                    var lcUser = user.toLowerCase();
+                    return (lcUser.search(search) === 0);
                 });
             }
 
@@ -913,7 +1008,12 @@ var tabCompletion = exports.tabCompletion = function(e) {
 
         sugStore.lastMatch = user;
 
-        user = lookupDisplayName(user);
+        // Casing is important for emotes
+        var isEmote = true;
+        if(emotes.indexOf(user) === -1) {
+            user = lookupDisplayName(user);
+            isEmote = false;
+        }
 
         if(/^(\/|\.)/.test(lastWord)) {
             user = lastWord + ' ' + user;
@@ -927,7 +1027,7 @@ var tabCompletion = exports.tabCompletion = function(e) {
 
         sentence.push(user);
 
-        if(sentence.length === 1) {
+        if(sentence.length === 1 && !isEmote) {
             $chatInput.val(sentence.join(' ') + ", ");
         } else {
             $chatInput.val(sentence.join(' '));
@@ -1000,13 +1100,18 @@ var suggestions = exports.suggestions = function(words, index) {
         var user = $(this).text();
         var sentence = $chatInput.val().trim().split(' ');
         var lastWord = (detectServerCommand(input) && !sentence[1]) ? '' : sentence.pop();
-        if (lastWord.charAt(0) === '@') {
-            sentence.push("@" + lookupDisplayName(user));
-        } else {
-            sentence.push(lookupDisplayName(user));
+
+        var isEmote = (completableEmotes().indexOf(user) !== -1);
+
+        if(!isEmote) {
+            if(lastWord.charAt(0) === '@') {
+                sentence.push("@" + lookupDisplayName(user));
+            } else {
+                sentence.push(lookupDisplayName(user));
+            }
         }
 
-        if(sentence.length === 1) {
+        if(sentence.length === 1 && !isEmote) {
             $chatInput.val(sentence.join(' ') + ", ");
         } else {
             $chatInput.val(sentence.join(' ') + " ");
@@ -1062,7 +1167,16 @@ var sendMessage = exports.sendMessage = function(message) {
             return;
         }
 
+        if(bttv.settings.get('anonChat') === true) {
+            serverMessage('You can\'t send messages when Anon Chat is enabled. You can disable Anon Chat in the BetterTTV settings.');
+            return;
+        }
+
         tmi().tmiRoom.sendMessage(message);
+
+        channelState({
+            type: 'outgoing_message'
+        });
 
         // Fixes issue when using Twitch's sub emote selector
         tmi().set('messageToSend', '');
@@ -1430,40 +1544,26 @@ var massUnban = exports.massUnban = function() {
         }
     });
 };
-/*var translate = exports.translate = function(element, sender, text) {
-    var language = (window.cookie && window.cookie.get('language')) ? window.cookie.get('language') : 'en',
-        query = 'http://translate.google.com/translate_a/t?client=bttv&sl=auto&tl='+language+'&ie=UTF-8&oe=UTF-8&q='+text,
-        translate = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20json%20where%20url%3D\""+encodeURIComponent(query)+"\"&format=json&diagnostics=false&callback=?";
+var translate = exports.translate = function(element, sender, text) {
+    var language = (window.cookie && window.cookie.get('language')) ? window.cookie.get('language') : 'en';
 
-    $.ajax({
-        url: translate,
-        cache: !1,
-        timeoutLength: 6E3,
-        dataType: 'json',
-        success: function (data) {
-            if(data.error) {
-                $(element).text("Translation Error");
-            } else {
-                var sentences = data.query.results.json.sentences;
-                if(sentences instanceof Array) {
-                    var translation = "";
-                    sentences.forEach(function(sentence) {
-                        translation += sentence.trans;
-                    });
-                } else {
-                    var translation = sentences.trans;
-                }
+    var qs = $.param({
+        target: language,
+        q: decodeURIComponent(text)
+    });
 
-                $(element).replaceWith(templates.message(sender, translation));
-            }
-        },
-        error: function() {
-            $(element).text("Translation Error: Server Error");
+    $.getJSON('https://api.betterttv.net/2/translate?' + qs).success(function(data) {
+        $(element).replaceWith(templates.message(sender, data.translation));
+    }).error(function(data) {
+        if(data.responseJSON && data.responseJSON.message) {
+            $(element).text(data.responseJSON.message);
+        } else {
+            $(element).text("Translation Error");
         }
     });
-}*/
+};
 
-},{"../bots":1,"../helpers/colors":42,"../helpers/element":44,"../helpers/regex":46,"../keycodes":47,"../legacy-tags":48,"../vars":60,"./handlers":4,"./store":8,"./templates":10,"./tmi":11,"punycode":62}],6:[function(require,module,exports){
+},{"../bots":1,"../features/channel-state":21,"../helpers/colors":45,"../helpers/element":47,"../helpers/regex":49,"../keycodes":50,"../legacy-tags":51,"../vars":64,"./handlers":4,"./store":8,"./templates":10,"./tmi":11,"punycode":66}],6:[function(require,module,exports){
 
 // Add mouseover image preview to image links
 module.exports = function(imgUrl) {
@@ -1575,10 +1675,35 @@ var store = require('./store'),
     rooms = require('./rooms');
 var overrideEmotes = require('../features/override-emotes'),
     loadChatSettings = require('../features/chat-load-settings'),
-    cssLoader = require('../features/css-loader');
+    cssLoader = require('../features/css-loader'),
+    anonChat = require('../features/anon-chat');
+
+var contains = function(arr, obj) {
+    for(var i = 0; i < arr.length; i++)
+        if(arr[i] === obj)
+            return true;
+    return false;
+};
 
 var takeover = module.exports = function() {
     var tmi = require('./tmi')();
+
+    // Anonymize Chat if it isn't already
+    anonChat();
+
+    // We need to get ROOMSTATE, but Twitch doesn't parse it yet..
+    try {
+        var connection = tmi.tmiSession._connections.prod;
+        var events = connection._socket._events;
+
+        if(!contains(events.data, helpers.parseRoomState)) {
+            connection._socket.on('data', helpers.parseRoomState);
+            connection._send('QUIT');
+            bttv.chat.store.ignoreDC = true;
+        }
+    } catch(e) {
+        debug.log('There was an error patching socket for ROOMSTATE');
+    }
 
     if(store.isLoaded) return;
 
@@ -1669,6 +1794,27 @@ var takeover = module.exports = function() {
     // Load Chat Settings
     loadChatSettings();
 
+    // Hover over links
+    $("body").off('mouseover', '.chat-line .message a').on('mouseover', '.chat-line .message a', function() {
+        var $this = $(this);
+
+        var encodedURL = encodeURIComponent($this.attr('href'));
+        $.getJSON("https://api.betterttv.net/2/link_resolver/" + encodedURL).done(function(data) {
+            if(!data.tooltip || !$this.is(':hover')) return;
+
+            $this.tipsy({
+                trigger: 'manual',
+                gravity: $.fn.tipsy.autoNS,
+                html: true,
+                title: function() { return data.tooltip; }
+            });
+            $this.tipsy("show");
+        });
+    }).off('mouseout', '.chat-line .message a').on('mouseout', '.chat-line .message a', function() {
+        $(this).tipsy("hide");
+        $('div.tipsy').remove();
+    });
+
     // Hover over icons
     $("body").off('mouseover', '.chat-line .badges .badge, .chat-line .mod-icons a').on('mouseover', '.chat-line .badges .badge, .chat-line .mod-icons a', function() {
         $(this).tipsy({
@@ -1733,14 +1879,14 @@ var takeover = module.exports = function() {
     }
 
     // Make chat translatable
-    /*if (!vars.loadedDoubleClickTranslation && bttv.settings.get("dblclickTranslation") !== false) {
+    if (!vars.loadedDoubleClickTranslation && bttv.settings.get("dblclickTranslation") !== false) {
         vars.loadedDoubleClickTranslation = true;
-        $('body').on('dblclick', '.chat-line', function() {
-            helpers.translate($(this).find('.message'), $(this).data("sender"), $(this).find('.message').data("raw"));
-            $(this).find('.message').text("Translating..");
+        $('body').on('dblclick', '.chat-line .message', function() {
+            helpers.translate($(this), $(this).parent().data("sender"), $(this).data("raw"));
+            $(this).text("Translating..");
             $('div.tipsy').remove();
         });
-    }*/
+    }
 
     var $chatInterface = $('.ember-chat .chat-interface');
     var $chatInput = $chatInterface.find('textarea');
@@ -1909,6 +2055,14 @@ var takeover = module.exports = function() {
                     helpers.timeout(user, 1);
                     $('.bttv-mod-card').remove();
                     break;
+                case keyCodes.a:
+                    helpers.sendMessage("!permit "+user);
+                    $('.bttv-mod-card').remove();
+                    break;
+                case keyCodes.u:
+                    helpers.sendMessage("/unban "+user);
+                    $('.bttv-mod-card').remove();
+                    break;
                 case keyCodes.b:
                     helpers.ban(user);
                     $('.bttv-mod-card').remove();
@@ -1927,9 +2081,17 @@ var takeover = module.exports = function() {
             }
         }
     });
+    
+    $('.tse-content').on('dblclick', '.chat-line .from', function(e) {
+        if(bttv.settings.get('dblClickAutoComplete') === false) return;
+        var sender = $(this).text();
+        if (sender) {
+            $('.ember-chat .chat-interface').find('textarea').val(sender + ", ");
+        }
+    });
 }
 
-},{"../features/chat-load-settings":19,"../features/css-loader":25,"../features/override-emotes":40,"../helpers/debug":43,"../keycodes":47,"../vars":60,"./handlers":4,"./helpers":5,"./rooms":7,"./store":8,"./tmi":11}],10:[function(require,module,exports){
+},{"../features/anon-chat":13,"../features/chat-load-settings":22,"../features/css-loader":28,"../features/override-emotes":43,"../helpers/debug":46,"../keycodes":50,"../vars":64,"./handlers":4,"./helpers":5,"./rooms":7,"./store":8,"./tmi":11}],10:[function(require,module,exports){
 var tmi = require('./tmi'),
     store = require('./store');
 
@@ -2123,7 +2285,7 @@ var whisper = exports.whisper = function(data) {
     return '<div class="chat-line whisper" data-sender="'+data.sender+'">'+timestamp(data.time)+' '+whisperName(data.sender, data.receiver, data.from, data.to, data.fromColor, data.toColor)+message(data.sender, data.message, data.emotes, false)+'</div>';
 }
 
-},{"../templates/chat-suggestions":54,"../templates/moderation-card":56,"./helpers":5,"./store":8,"./tmi":11}],11:[function(require,module,exports){
+},{"../templates/chat-suggestions":58,"../templates/moderation-card":60,"./helpers":5,"./store":8,"./tmi":11}],11:[function(require,module,exports){
 module.exports = function() {
 	return bttv.getChatController() ? bttv.getChatController().currentRoom : false;
 }
@@ -2140,7 +2302,7 @@ var debug = require('./helpers/debug'),
 
 bttv.info = {
     version: "6.8",
-    release: 36,
+    release: 38,
     versionString: function() {
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -2257,6 +2419,7 @@ var clearClutter = require('./features/clear-clutter'),
     createSettings = require('./features/create-settings');
     enableImagePreview = require('./features/image-preview').enablePreview;
     enableTheatreMode = require('./features/auto-theatre-mode');
+    hostButtonBelowVideo = require('./features/host-btn-below-video');
 
 var chatFunctions = function () {
     debug.log("Modifying Chat Functionality");
@@ -2328,6 +2491,7 @@ var main = function () {
                                 handleBackground();
                                 clearClutter();
                                 channelReformat();
+                                hostButtonBelowVideo();
                                 if (
                                     App.__container__.lookup("controller:channel").get("theatreMode") === false && 
                                     bttv.settings.get('autoTheatreMode') === true
@@ -2388,6 +2552,8 @@ var main = function () {
         directoryFunctions();
         handleTwitchChatEmotesScript();
         emoticonTextInClipboard();
+        hostButtonBelowVideo();
+
         if (bttv.settings.get('chatImagePreview') === true) {
             enableImagePreview();
         }
@@ -2441,7 +2607,78 @@ debug.log("BTTV LOADED " + document.URL);
 BTTVLOADED = true;
 checkJquery();
 
-},{"./chat":2,"./features/auto-theatre-mode":13,"./features/beta-chat":14,"./features/brand":15,"./features/channel-reformat":17,"./features/check-broadcast-info":20,"./features/check-following":21,"./features/check-messages":22,"./features/clear-clutter":23,"./features/create-settings":24,"./features/darken-page":26,"./features/dashboard-channelinfo":27,"./features/directory-functions":28,"./features/emoticon-text-in-clipboard":30,"./features/flip-dashboard":31,"./features/format-dashboard":32,"./features/giveaway-compatibility":33,"./features/handle-background":34,"./features/handle-twitchchat-emotes":35,"./features/image-preview":37,"./features/split-chat":41,"./helpers/debug":43,"./keycodes":47,"./settings":50,"./socketio":51,"./storage":52,"./twitch-api":59,"./vars":60}],13:[function(require,module,exports){
+},{"./chat":2,"./features/auto-theatre-mode":15,"./features/beta-chat":16,"./features/brand":17,"./features/channel-reformat":19,"./features/check-broadcast-info":23,"./features/check-following":24,"./features/check-messages":25,"./features/clear-clutter":26,"./features/create-settings":27,"./features/darken-page":29,"./features/dashboard-channelinfo":30,"./features/directory-functions":31,"./features/emoticon-text-in-clipboard":33,"./features/flip-dashboard":34,"./features/format-dashboard":35,"./features/giveaway-compatibility":36,"./features/handle-background":37,"./features/handle-twitchchat-emotes":38,"./features/host-btn-below-video":39,"./features/image-preview":40,"./features/split-chat":44,"./helpers/debug":46,"./keycodes":50,"./settings":53,"./socketio":54,"./storage":55,"./twitch-api":63,"./vars":64}],13:[function(require,module,exports){
+var debug = require('../helpers/debug'),
+    vars = require('../vars');
+
+var forcedURL = window.location.search && window.location.search.indexOf('bttvAnonChat=true') > -1;
+
+module.exports = function(force) {
+    if(!vars.userData.isLoggedIn) return;
+
+    var enabled = false;
+    if(forcedURL) {
+        enabled = true;
+    } else if(typeof force === 'boolean') {
+        enabled = force;
+    } else {
+        enabled = bttv.settings.get('anonChat');
+    }
+
+    var tmi = bttv.chat.tmi();
+    if(!tmi) return;
+
+    var session = tmi.tmiSession;
+    if(!session) return;
+
+    var room = tmi.tmiRoom;
+    if(!room) return;
+
+    try {
+        var prodConn = session._connections.prod;
+        if(!prodConn) return;
+
+        var prodConnOpts = prodConn._opts;
+
+        if(enabled) {
+            if(prodConnOpts.nickname === vars.userData.login) {
+                prodConnOpts.nickname = 'justinfan12345';
+                room._showAdminMessage('BetterTTV: [Anon Chat] Logging you out of chat..');
+                bttv.chat.store.ignoreDC = true;
+                prodConn._send('QUIT');
+            }
+        } else {
+            if(prodConnOpts.nickname !== vars.userData.login) {
+                prodConnOpts.nickname = vars.userData.login;
+                room._showAdminMessage('BetterTTV: [Anon Chat] Logging you back into chat..');
+                bttv.chat.store.ignoreDC = true;
+                prodConn._send('QUIT');
+            }
+        }
+    } catch(e) {
+        room._showAdminMessage('BetterTTV: [Anon Chat] We encountered an error anonymizing your chat. You won\'t be hidden in this channel.');
+    }
+};
+
+},{"../helpers/debug":46,"../vars":64}],14:[function(require,module,exports){
+var debug = require('../helpers/debug');
+
+var ts_tink;
+
+module.exports = function () {
+    if (bttv.settings.get('highlightFeedback') === true) {
+        if (!ts_tink) {
+            debug.log('loading audio feedback sound');
+
+            ts_tink = new Audio('https://cdn.betterttv.net/style/sounds/ts-tink.ogg'); // btw ogg does not work in ie
+        }
+
+        ts_tink.load(); // needed to play sound more then once
+        ts_tink.play();
+    };
+};
+
+},{"../helpers/debug":46}],15:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 module.exports = function () {
@@ -2457,7 +2694,7 @@ module.exports = function () {
     App.__container__.lookup('controller:channel').send('toggleTheatre');
 }
 
-},{"../helpers/debug":43}],14:[function(require,module,exports){
+},{"../helpers/debug":46}],16:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars');
 
@@ -2498,7 +2735,7 @@ module.exports = function () {
         $('body').append("<style>.ember-chat .chat-interface { height: 140px !important; } .ember-chat .chat-messages { bottom: 140px; } .ember-chat .chat-settings { bottom: 80px; } .ember-chat .emoticon-selector { bottom: 142px !important; }</style>");
     }
 }
-},{"../helpers/debug":43,"../vars":60}],15:[function(require,module,exports){
+},{"../helpers/debug":46,"../vars":64}],17:[function(require,module,exports){
 var debug = require('../helpers/debug');
 var betaChat = require('./beta-chat');
 
@@ -2565,7 +2802,7 @@ module.exports = function () {
     // Run Beta Chat After BTTV CSS
     betaChat();
 };
-},{"../helpers/debug":43,"./beta-chat":14}],16:[function(require,module,exports){
+},{"../helpers/debug":46,"./beta-chat":16}],18:[function(require,module,exports){
 var debug = require('../../helpers/debug'),
     vars = require('../../vars');
 
@@ -2595,6 +2832,9 @@ var handleResize = module.exports = function () {
     }
 
     var fullPlayerHeight = ($('#player object').width() * 0.5625) + 30;
+    if (!$('#player object').length) {
+        fullPlayerHeight = ($('#player video').width() * 0.5625) + 30;
+    }
 
     var metaAndStatsHeight = $('#broadcast-meta').outerHeight(true) + $('.stats-and-actions').outerHeight();
 
@@ -2623,7 +2863,7 @@ var handleResize = module.exports = function () {
 
     $("#channel_panels").masonry("reload");
 };
-},{"../../helpers/debug":43,"../../vars":60}],17:[function(require,module,exports){
+},{"../../helpers/debug":46,"../../vars":64}],19:[function(require,module,exports){
 var debug = require('../../helpers/debug'),
     keyCodes = require('../../keycodes'),
     vars = require('../../vars');
@@ -2782,7 +3022,7 @@ module.exports = function () {
         bttv.settings.save("chatWidth", $("#right_col").width());
     }
 }
-},{"../../helpers/debug":43,"../../keycodes":47,"../../vars":60,"./handle-resize":16,"./twitchcast":18}],18:[function(require,module,exports){
+},{"../../helpers/debug":46,"../../keycodes":50,"../../vars":64,"./handle-resize":18,"./twitchcast":20}],20:[function(require,module,exports){
 module.exports = function() {
     if($('.archive_info').length) return;
     
@@ -2843,7 +3083,128 @@ module.exports = function() {
         $('#twitchcast_button').remove();
     }
 }
-},{}],19:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
+var debug = require('../helpers/debug');
+var vars = require('../vars');
+var template = require('../templates/channel-state');
+var chatHelpers = require('../chat/helpers');
+
+var stateContainer = '#bttv-channel-state-contain';
+var chatHeader = '.chat-container .chat-header';
+var chatButton = '.chat-interface .chat-buttons-container .send-chat-button';
+
+var displaySeconds = function(s) {
+    var date = new Date(0);
+    date.setSeconds(s);
+    date = date.toISOString().substr(11, 8);
+    date = date.split(':');
+
+    while(date[0] === '00') {
+        date.shift();
+    }
+
+    if(date.length === 1 && date[0].charAt(0) === "0") {
+        date[0] = parseInt(date[0]);
+    }
+
+    return date.join(':');
+};
+
+var initiateCountDown = function(length) {
+    if(bttv.chat.store.chatCountDown) clearInterval(bttv.chat.store.chatCountDown);
+
+    var timer = length;
+
+    bttv.chat.store.chatCountDown = setInterval(function() {
+        var $chatButton = $(chatButton);
+
+        if(timer === 0) {
+            clearInterval(bttv.chat.store.chatCountDown);
+            bttv.chat.store.chatCountDown = false;
+            $chatButton.find('span').text('Chat');
+            return;
+        }
+
+        $chatButton.find('span').text('Chat in ' + displaySeconds(timer));
+
+        timer--;
+    }, 1000);
+};
+
+module.exports = function(event) {
+    var $stateContainer = $(stateContainer);
+    if(!$stateContainer.length) {
+        $(chatHeader).append(template());
+        $stateContainer = $(stateContainer);
+        $stateContainer.children().each(function() {
+            $(this).hide();
+        });
+    }
+
+    switch(event.type) {
+        case "roomstate":
+            if('slow' in event.tags) {
+                var length = parseInt(event.tags['slow']);
+
+                bttv.chat.store.slowTime = length;
+
+                $stateContainer.find('.slow-time').text(displaySeconds(length));
+
+                if(length === 0) {
+                    $stateContainer.find('.slow').hide();
+                    $stateContainer.find('.slow-time').hide();
+                } else {
+                    $stateContainer.find('.slow').show();
+                    $stateContainer.find('.slow-time').show();
+                }
+            }
+
+            if('r9k' in event.tags) {
+                var enabled = parseInt(event.tags['r9k']);
+
+                if(enabled === 0) {
+                    $stateContainer.find('.r9k').hide();
+                } else {
+                    $stateContainer.find('.r9k').show();
+                }
+            }
+
+            if('subs-only' in event.tags) {
+                var enabled = parseInt(event.tags['subs-only']);
+
+                if(enabled === 0) {
+                    $stateContainer.find('.subs-only').hide();
+                } else {
+                    $stateContainer.find('.subs-only').show();
+                }
+            }
+            break;
+        case "outgoing_message":
+            if(!vars.userData.isLoggedIn || bttv.chat.helpers.isModerator(vars.userData.login)) return;
+
+            if(bttv.chat.store.slowTime > 0) {
+                initiateCountDown(bttv.chat.store.slowTime);
+            }
+            break;
+        case "notice":
+            if(!('msg-id' in event.tags)) return;
+
+            var msg = event.tags['msg-id'];
+
+            if(msg === 'msg_slowmode' || msg === 'msg_timedout') {
+                var matches = /([0-9]+)/.exec(event.message);
+                if(!matches) return;
+
+                var seconds = parseInt(matches[1]);
+                initiateCountDown(seconds);
+            } else if(msg === 'msg_banned') {
+                initiateCountDown(86400);
+            }
+            break;
+    }
+};
+
+},{"../chat/helpers":5,"../helpers/debug":46,"../templates/channel-state":56,"../vars":64}],22:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars'),
     removeElement = require('../helpers/element').remove;
@@ -2958,47 +3319,74 @@ module.exports = function() {
     });
 };
 
-},{"../helpers/debug":43,"../helpers/element":44,"../templates/chat-settings":53,"../vars":60,"./darken-page":26,"./split-chat":41}],20:[function(require,module,exports){
+},{"../helpers/debug":46,"../helpers/element":47,"../templates/chat-settings":57,"../vars":64,"./darken-page":29,"./split-chat":44}],23:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 var checkBroadcastInfo = module.exports = function() {
-    var channel = bttv.getChannel();
+    if(!window.App || !window.App.__container__) return;
 
-    if(!channel) return setTimeout(checkBroadcastInfo, 60000);
+    var channelCtrl = window.App.__container__.lookup('controller:channel');
+
+    if(!channelCtrl) return setTimeout(checkBroadcastInfo, 60000);
+
+    if(!channelCtrl.get('model'));
+
+    var model = channelCtrl.get('model');
+
+    if(Ember.isEmpty(model)) return setTimeout(checkBroadcastInfo, 60000);
+
+    var hostedChannel = model.get('hostModeTarget');
+    var channel = hostedChannel ? hostedChannel : model;
 
     debug.log("Check Channel Title/Game");
 
-    bttv.TwitchAPI.get("channels/"+channel).done(function(d) {
+    bttv.TwitchAPI.get("channels/" + channel.id, {}, { version: 3 }).done(function(d) {
         if(d.game) {
-            var $channel = $('#broadcast-meta .channel');
-            
-            if($channel.find('.playing').length) {
-                $channel.find('a:eq(1)').text(d.game).attr("href", Twitch.uri.game(d.game)).removeAttr('data-ember-action');
+            channel.set('game', d.game);
+        }
+
+        if(d.status) {
+            channel.set('status', d.status);
+
+            if(!hostedChannel) {
+                var $title = $('#broadcast-meta .title');
+
+                if($title.data('status') !== d.status) {
+                    $title.data('status', d.status);
+
+                    d.status = d.status.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                    d.status = bttv.chat.templates.linkify(d.status);
+
+                    $title.find('.real').html(d.status);
+                    $title.find('.over').html(d.status);
+                }
             }
         }
-        if(d.status) {
-            var $title = $('#broadcast-meta .title');
 
-            if($title.data('status') !== d.status) {
-                $title.data('status', d.status);
+        if(d.views) {
+            channel.set('views', d.views);
+        }
 
-                d.status = d.status.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                d.status = bttv.chat.templates.linkify(d.status);
-
-                $title.find('.real').html(d.status);
-                $title.find('.over').html(d.status);
-            }
+        if(d.followers) {
+            channel.set('followersTotal', d.followers);
         }
 
         setTimeout(checkBroadcastInfo, 60000);
     });
 }
-},{"../helpers/debug":43}],21:[function(require,module,exports){
+},{"../helpers/debug":46}],24:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars');
 
 var checkFollowing = module.exports = function () {
     debug.log("Check Following List");
+
+    if(!$("#bttv-small-nav-count").length) {
+        $count = $('<div/>');
+        $count.addClass('js-total');
+        $count.attr('id', 'bttv-small-nav-count');
+        $count.insertBefore('#small_nav li[data-name=\"following\"] a[href=\"/directory/following\"] .filter_icon');
+    }
 
     if($("body#chat").length || $('body[data-page="ember#chat"]').length || !vars.userData.isLoggedIn) return;
 
@@ -3054,13 +3442,13 @@ var checkFollowing = module.exports = function () {
         if(!$("#nav_personal li[data-name=\"following\"] a[href=\"/directory/following\"] .js-total").length) {
             $("#nav_personal li[data-name=\"following\"] a[href=\"/directory/following\"]").append('<span class="total_count js-total" style="display: none;"></span>');
         }
-        $("#nav_personal li[data-name=\"following\"] a[href=\"/directory/following\"] .js-total").text(streams.length);
-        $("#nav_personal li[data-name=\"following\"] a[href=\"/directory/following\"] .js-total").css("display","inline");
+        $("#left_col li[data-name=\"following\"] a[href=\"/directory/following\"] .js-total").text(streams.length);
+        $("#left_col li[data-name=\"following\"] a[href=\"/directory/following\"] .js-total").css("display","inline");
 
         setTimeout(checkFollowing, 60000);
     });
 }
-},{"../helpers/debug":43,"../vars":60}],22:[function(require,module,exports){
+},{"../helpers/debug":46,"../vars":64}],25:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars');
 
@@ -3151,7 +3539,7 @@ module.exports = function () {
     setInterval(checkOther, 30000);
     checkOther();
 }
-},{"../helpers/debug":43,"../vars":60}],23:[function(require,module,exports){
+},{"../helpers/debug":46,"../vars":64}],26:[function(require,module,exports){
 var debug = require('../helpers/debug'),
 	removeElement = require('../helpers/element').remove;
 
@@ -3168,7 +3556,7 @@ module.exports = function () {
         $('body').append('<style>#nav_games, #nav_streams, #nav_related_streams { display: none; }</style>');
     }
 }
-},{"../helpers/debug":43,"../helpers/element":44}],24:[function(require,module,exports){
+},{"../helpers/debug":46,"../helpers/element":47}],27:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars'),
     removeElement = require('../helpers/element').remove;
@@ -3235,7 +3623,7 @@ module.exports = function () {
         $(this).parent("li").addClass("active");
     });
 };
-},{"../helpers/debug":43,"../helpers/element":44,"../templates/settings-panel":58,"../vars":60,"./darken-page":26,"./split-chat":41}],25:[function(require,module,exports){
+},{"../helpers/debug":46,"../helpers/element":47,"../templates/settings-panel":62,"../vars":64,"./darken-page":29,"./split-chat":44}],28:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 function load(file, key){
@@ -3254,7 +3642,7 @@ function unload(key){
 
 module.exports.load = load;
 module.exports.unload = unload; 
-},{"../helpers/debug":43}],26:[function(require,module,exports){
+},{"../helpers/debug":46}],29:[function(require,module,exports){
 https:var debug = require('../helpers/debug'),
     handleBackground = require('./handle-background');
 
@@ -3292,7 +3680,7 @@ module.exports = function () {
     }
 
 }
-},{"../helpers/debug":43,"./handle-background":34}],27:[function(require,module,exports){
+},{"../helpers/debug":46,"./handle-background":37}],30:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars');
 
@@ -3378,7 +3766,7 @@ module.exports = function dashboardChannelInfo() {
         setTimeout(dashboardChannelInfo, 60000);
     }
 };
-},{"../helpers/debug":43,"../vars":60}],28:[function(require,module,exports){
+},{"../helpers/debug":46,"../vars":64}],31:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars');
 
@@ -3401,7 +3789,7 @@ module.exports = function () {
         }
     });
 }
-},{"../helpers/debug":43,"../vars":60}],29:[function(require,module,exports){
+},{"../helpers/debug":46,"../vars":64}],32:[function(require,module,exports){
 var debug = require('../helpers/debug');
 var pollTemplate = require('../templates/embedded-poll');
 var chatHelpers = require('../chat/helpers');
@@ -3466,7 +3854,7 @@ module.exports = function (message) {
     lastPollId = pollId;
 }
 
-},{"../chat/helpers":5,"../helpers/debug":43,"../templates/embedded-poll":55}],30:[function(require,module,exports){
+},{"../chat/helpers":5,"../helpers/debug":46,"../templates/embedded-poll":59}],33:[function(require,module,exports){
 // Add an event listener to the "copy" event that fires when text is copied to
 // the clipboard to convert any emoticons within the text selection to the
 // corresponding text that will create the emoticon. This allows copy/pasted
@@ -3513,7 +3901,7 @@ module.exports = function() {
     document.addEventListener('copy', onCopy);
 }
 
-},{}],31:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 module.exports = function () {
@@ -3543,7 +3931,7 @@ module.exports = function () {
     }
 }
 
-},{"../helpers/debug":43}],32:[function(require,module,exports){
+},{"../helpers/debug":46}],35:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 module.exports = function () {
@@ -3563,7 +3951,7 @@ module.exports = function () {
     }
 }
 
-},{"../helpers/debug":43}],33:[function(require,module,exports){
+},{"../helpers/debug":46}],36:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 module.exports = function () {
@@ -3585,7 +3973,7 @@ module.exports = function () {
         });
     }
 };
-},{"../helpers/debug":43}],34:[function(require,module,exports){
+},{"../helpers/debug":46}],37:[function(require,module,exports){
 module.exports = function handleBackground(tiled) {
     var tiled = tiled || false;
     
@@ -3677,7 +4065,7 @@ module.exports = function handleBackground(tiled) {
         }
     }
 }
-},{}],35:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 module.exports = function () {
@@ -3706,48 +4094,84 @@ module.exports = function () {
         }, 1000);
     }
 }
-},{"../helpers/debug":43}],36:[function(require,module,exports){
-var debug = require('../helpers/debug');
+},{"../helpers/debug":46}],39:[function(require,module,exports){
+var debug = require('../helpers/debug'),
+    vars = require('../vars');
 
-var ts_tink;
+module.exports = function() {
+    if(bttv.settings.get("hostButton") !== true || !vars.userData.isLoggedIn) return;
+    
+    var chat = bttv.chat;
+    var tmi = chat.tmi();
 
-module.exports = function () {
-    if (bttv.settings.get('highlightFeedback') === true) {
-        if (!ts_tink) {
-            debug.log('loading audio feedback sound');
+    if(!tmi) return;
 
-            ts_tink = new Audio('https://cdn.betterttv.net/style/sounds/ts-tink.ogg'); // btw ogg does not work in ie
+    var helpers = chat.helpers;
+    var userId = tmi.tmiSession ? tmi.tmiSession.userId : 0;
+    var ownerId = tmi.tmiRoom ? tmi.tmiRoom.ownerId : 0;
+
+    if(!tmi.tmiSession || !tmi.tmiSession._tmiApi) return;
+
+    var $hostButton = $('#bttv-host-button');
+
+    if(!$hostButton.length) {
+        $hostButton = $("<span><span></span></span>");
+        $hostButton.addClass('button').addClass('action');
+        $hostButton.attr('id', 'bttv-host-button');
+        $hostButton.insertBefore('#channel .channel-actions .theatre-button');
+        $hostButton.click(function() {
+            var action = $hostButton.text();
+
+            if(action === 'Unhost') {
+                try {
+                    tmi.tmiSession._connections.prod._send('PRIVMSG #' + vars.userData.login + ' :/unhost');
+                    helpers.serverMessage('BetterTTV: We sent a /unhost to your channel.');
+                    $hostButton.children('span').text('Host');
+                } catch(e) {
+                    helpers.serverMessage('BetterTTV: There was an error unhosting the channel. You may need to unhost it from your channel.');
+                }
+            } else {
+                try {
+                    tmi.tmiSession._connections.prod._send('PRIVMSG #' + vars.userData.login + ' :/host ' + bttv.getChannel());
+                    helpers.serverMessage('BetterTTV: We sent a /host to your channel. Please note you can only host 3 times per 30 minutes.');
+                    $hostButton.children('span').text('Unhost');
+                } catch(e) {
+                    helpers.serverMessage('BetterTTV: There was an error hosting the channel. You may need to host it from your channel.');
+                }
+            }
+        });
+    }
+
+    tmi.tmiSession._tmiApi.get('/hosts', {
+        host: userId
+    }).then(function(data) {
+        if(!data.hosts || !data.hosts.length) return;
+
+        if(data.hosts[0].target_id === ownerId) {
+            $hostButton.children('span').text('Unhost');
+        } else {
+            $hostButton.children('span').text('Host');
         }
-
-        ts_tink.load(); // needed to play sound more then once
-        ts_tink.play();
-    };
-};
-
-},{"../helpers/debug":43}],37:[function(require,module,exports){
+    });
+}
+},{"../helpers/debug":46,"../vars":64}],40:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 var enablePreview = exports.enablePreview = function() {
-    /* CONFIG */
-    var xOffset = -255,
-        yOffset = 0;
-
-    /* END CONFIG */
     $(document).on({
-        mouseenter: function (e) {
-            $("body").append('<iframe id="chat_preview" marginwidth="0" marginheight="0" hspace="0" vspace="0" frameborder="0" width="250px" scrolling="no" src="https://api.betterttv.net/2/image_embed/'+ encodeURIComponent(this.href) +'"></iframe>');
-            $("#chat_preview")
-                .css("top",(e.pageY - yOffset) + "px")
-                .css("left", (e.pageX - xOffset) + "px")
-                .css("position", "absolute")
-                .css("z-index", '100')
-                .fadeIn("fast");
-        }, mouseleave: function (e) {
-            $("#chat_preview").remove();
-        }, mousemove: function (e) {
-            $("#chat_preview")
-            .css("top",(e.pageY - yOffset) + "px")
-            .css("left",(e.pageX + xOffset) + "px");
+        mouseenter: function(e) {
+            var url = this.href;
+
+            $(this).tipsy({
+                trigger: 'manual',
+                gravity: $.fn.tipsy.autoNS,
+                html: true,
+                title: function() { return '<iframe id="chat_preview" marginwidth="0" marginheight="0" hspace="0" vspace="0" frameborder="0" width="200px" scrolling="no" src="https://api.betterttv.net/2/image_embed/'+ encodeURIComponent(url) +'"></iframe>'; }
+            });
+            $(this).tipsy("show");
+        }, mouseleave: function(e) {
+            $(this).tipsy("hide");
+            $('div.tipsy').remove();
         }
     }, 'a.chat-preview');
 };
@@ -3756,7 +4180,7 @@ var disablePreview = exports.disablePreview = function() {
     $(document).off('mouseenter mouseleave mousemove', 'a.chat-preview');
 };
 
-},{"../helpers/debug":43}],38:[function(require,module,exports){
+},{"../helpers/debug":46}],41:[function(require,module,exports){
 var vars = require('../vars');
 var escapeRegExp = require('../helpers/regex').escapeRegExp;
 
@@ -3805,7 +4229,7 @@ exports.blacklistFilter = function (data) {
 }
 
 exports.highlighting = function (data) {
-    var highlightFeedback = require('../features/highlight-feedback');
+    var audibleFeedback = require('../features/audible-feedback');
 
     var highlightKeywords = [];
     var highlightUsers = [];
@@ -3837,7 +4261,7 @@ exports.highlighting = function (data) {
         if (vars.userData.isLoggedIn && vars.userData.login !== data.from && wordRegex.test(data.message)) {
             if(bttv.settings.get("desktopNotifications") === true && bttv.chat.store.activeView === false) {
                 bttv.notify("You were mentioned in "+bttv.chat.helpers.lookupDisplayName(bttv.getChannel())+"'s channel.");
-                highlightFeedback();
+                audibleFeedback();
             }
             return true;
         }
@@ -3853,8 +4277,11 @@ exports.highlighting = function (data) {
 
     return false;
 }
-},{"../features/highlight-feedback":36,"../helpers/regex":46,"../vars":60}],39:[function(require,module,exports){
+},{"../features/audible-feedback":14,"../helpers/regex":49,"../vars":64}],42:[function(require,module,exports){
 module.exports = function(user, $event) {
+    // adds in user messages from chat
+    user.messages = $.makeArray($('.chat-container .chat-messages .chat-line[data-sender="'+user.name+'"]')).reverse();
+
     var template = bttv.chat.templates.moderationCard(user, $event.offset().top, $('.chat-line:last').offset().left);
     $('.ember-chat .moderation-card').remove();
     $('.ember-chat').append(template);
@@ -3863,6 +4290,16 @@ module.exports = function(user, $event) {
 
     $modCard.find('.close-button').click(function() {
         $modCard.remove();
+    });
+    $modCard.find('.user-messages .label').click(function() {
+        $modCard.find('.user-messages .chat-messages').toggle('fast');
+
+        var triangle = $(this).find('.triangle');
+        if(triangle.hasClass('open')) {
+            triangle.removeClass('open').addClass('closed');
+        } else {
+            triangle.removeClass('closed').addClass('open');
+        }
     });
     $modCard.find('.permit').click(function() {
         bttv.chat.helpers.sendMessage('!permit '+user.name);
@@ -3964,7 +4401,7 @@ module.exports = function(user, $event) {
     });
 }
 
-},{}],40:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars');
 
@@ -4048,7 +4485,7 @@ module.exports = function () {
         generate(data);
     });
 };
-},{"../helpers/debug":43,"../vars":60}],41:[function(require,module,exports){
+},{"../helpers/debug":46,"../vars":64}],44:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 module.exports = function () {
@@ -4063,7 +4500,7 @@ module.exports = function () {
         $('body').append(splitCSS);
     }
 }
-},{"../helpers/debug":43}],42:[function(require,module,exports){
+},{"../helpers/debug":46}],45:[function(require,module,exports){
 var calculateColorBackground = exports.calculateColorBackground = function (color) {
     // Converts HEX to YIQ to judge what color background the color would look best on
     color = String(color).replace(/[^0-9a-f]/gi, '');
@@ -4200,13 +4637,13 @@ var getHex = exports.getHex = function (color) {
     return '#'+convert(color['r'])+convert(color['g'])+convert(color['b']);
 };
 
-},{}],43:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 module.exports = {
     log: function(string) {
         if(window.console && console.log && bttv.settings.get('consoleLog') === true) console.log("BTTV: " + string);
     }
 };
-},{}],44:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 exports.remove = function (e) {
     // Removes all of an element
     $(e).each(function () {
@@ -4219,7 +4656,7 @@ exports.display = function (e) {
         $(this).show();
     });
 };
-},{}],45:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 /* FileSaver.js
  * A saveAs() FileSaver implementation.
  * 2015-05-07.2
@@ -4473,7 +4910,7 @@ if (typeof module !== "undefined" && module.exports) {
     return saveAs;
   });
 }
-},{}],46:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 exports.escapeRegExp = function (text) {
     // Escapes an input to make it usable for regexes
     return text.replace(/[-[\]{}()+?.,\\^$|#\s]/g, "\\$&");
@@ -4496,7 +4933,7 @@ exports.getEmoteFromRegEx = function(regex) {
         .replace(/^\\b|\\b$/g, '') // remove boundaries
         .replace(/\\/g, ''); // unescape
 }
-},{}],47:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 module.exports = {
     'LeftClick': 1,
     'Backspace': 8,
@@ -4587,7 +5024,7 @@ module.exports = {
     'Slash': 191,
     'Backslash': 220
 }
-},{}],48:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 module.exports = function (data) {
     return {
         //Developers and Supporters
@@ -4653,7 +5090,7 @@ module.exports = function (data) {
         "ackleyman": { mod: true, tagType: "orange", tagName: "Ack" }
     };
 };
-},{}],49:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 /** BTTV :
  * cssBlueButtons
  * handleTwitchChatEmotesScript
@@ -4667,18 +5104,32 @@ var betaChat = require('./features/beta-chat'),
     handleBackground = require('./features/handle-background'),
     flipDashboard = require('./features/flip-dashboard'),
     cssLoader = require('./features/css-loader'),
-    theatreMode = require('./features/auto-theatre-mode');
+    theatreMode = require('./features/auto-theatre-mode'),
+    hostButton = require('./features/host-btn-below-video'),
+    anonChat = require('./features/anon-chat');
 var displayElement = require('./helpers/element').display,
     removeElement = require('./helpers/element').remove,
     imagePreview = require('./features/image-preview');
 
 module.exports = [
-    {
+    /*{
         name: 'Admin/Staff Alert',
         description: 'Get alerted in chat when admins or staff join',
         default: false,
         hidden: true,
         storageKey: 'adminStaffAlert'
+    },*/
+    {
+        name: 'Anon Chat',
+        description: 'Join channels without appearing in chat',
+        default: false,
+        storageKey: 'anonChat',
+        toggle: function() {
+            anonChat();
+        },
+        load: function() {
+            anonChat();
+        }
     },
     {
         name: 'Alpha Chat Badges',
@@ -4829,7 +5280,7 @@ module.exports = [
             }
         }
     },
-    /*{
+    {
         name: 'Double-Click Translation',
         description: 'Double-clicking on chat lines translates them with Google Translate',
         default: true,
@@ -4845,12 +5296,18 @@ module.exports = [
                 $('body').unbind("dblclick");
             }
         }
-    },*/
+    },
     {
-        name: 'Disable whispers',
+        name: 'Disable Whispers',
         description: 'Disables the twitch whisper functionalitiy, hiding any whispers you recieve',
         default: false,
         storageKey: 'disableWhispers'
+    },
+	{
+        name: 'Double-Click Auto-Complete',
+        description: 'Double-clicking a username in chat copies it into the chat text box',
+        default: false,
+        storageKey: 'dblClickAutoComplete'
     },
     {
         name: 'Embedded Polling',
@@ -4905,6 +5362,19 @@ module.exports = [
         }
     },
     {
+        name: 'Host Button',
+        description: 'Places a Host/Unhost button below the video player',
+        default: false,
+        storageKey: 'hostButton',
+        toggle: function(value) {
+            if(value === true) {
+                hostButton();
+            } else {
+                $('#bttv-host-button').remove();
+            }
+        }
+    },
+    {
         name: 'JTV Chat Badges',
         description: 'BetterTTV can replace the chat badges with the ones from JTV',
         default: false,
@@ -4935,8 +5405,8 @@ module.exports = [
         }
     },
     {
-        name: 'Play Sound on Highlight',
-        description: 'Get audio feedback when any message is highlighted (BETA)',
+        name: 'Play Sound on Highlight/Whisper',
+        description: 'Get audio feedback for messages directed at you (BETA)',
         default: false,
         storageKey: 'highlightFeedback'
     },
@@ -5088,7 +5558,8 @@ module.exports = [
     }
 ];
 
-},{"./features/auto-theatre-mode":13,"./features/beta-chat":14,"./features/channel-reformat":17,"./features/css-loader":25,"./features/darken-page":26,"./features/flip-dashboard":31,"./features/handle-background":34,"./features/image-preview":37,"./features/split-chat":41,"./helpers/element":44}],50:[function(require,module,exports){
+},{"./features/anon-chat":13,"./features/auto-theatre-mode":15,"./features/beta-chat":16,"./features/channel-reformat":19,"./features/css-loader":28,"./features/darken-page":29,"./features/flip-dashboard":34,"./features/handle-background":37,"./features/host-btn-below-video":39,"./features/image-preview":40,"./features/split-chat":44,"./helpers/element":47}],53:[function(require,module,exports){
+var debug = require('./helpers/debug');
 var saveAs = require('./helpers/filesaver').saveAs;
 
 function Settings() {
@@ -5147,7 +5618,7 @@ Settings.prototype.load = function() {
     $('#bttvSettings .options-list').append(featureRequests);
 
     $('.option input:radio').change(function (e) {
-        _self.set(e.target.name, _self._parseSetting(e.target.value));
+        _self.save(e.target.name, _self._parseSetting(e.target.value));
     });
 
     var notifications = bttv.storage.getObject("bttvNotifications");
@@ -5221,7 +5692,11 @@ Settings.prototype.import = function(input) {
                 count = 0;
 
             Object.keys(settings).forEach(function(setting) {
-                _self.set(setting, settings[setting]);
+                try {
+                    _self.set(setting, settings[setting]);
+                } catch(e) {
+                    debug.log("Import Error: " + setting + " does not exist in settings list. Ignoring...");
+                }
             });
 
             bttv.notify("BetterTTV imported " + count + " settings, and will now refresh in a few seconds.");
@@ -5249,13 +5724,17 @@ Settings.prototype.save = function(setting, value) {
     if(/\?bttvSettings=true/.test(window.location)) {
         window.opener.postMessage('bttv_setting '+setting+' '+value, window.location.protocol+'//'+window.location.host);
     } else {
-        if(window.__bttvga) __bttvga('send', 'event', 'BTTV', 'Change Setting: '+setting+'='+value);
+        try {
+            if(window.__bttvga) __bttvga('send', 'event', 'BTTV', 'Change Setting: '+setting+'='+value);
 
-        if(window !== window.top) window.parent.postMessage('bttv_setting '+setting+' '+value, window.location.protocol+'//'+window.location.host);
+            if(window !== window.top) window.parent.postMessage('bttv_setting '+setting+' '+value, window.location.protocol+'//'+window.location.host);
 
-        this.set(setting, value);
+            this.set(setting, value);
 
-        if(this._settings[setting].toggle) this._settings[setting].toggle(value);
+            if(this._settings[setting].toggle) this._settings[setting].toggle(value);
+        } catch(e) {
+            debug.log(e)
+        }
     }
 }
 
@@ -5265,7 +5744,7 @@ Settings.prototype.popup = function() {
 }
 
 module.exports = Settings;
-},{"./helpers/filesaver":45,"./settings-list":49,"./templates/setting-switch":57}],51:[function(require,module,exports){
+},{"./helpers/debug":46,"./helpers/filesaver":48,"./settings-list":52,"./templates/setting-switch":61}],54:[function(require,module,exports){
 var io = require('socket.io-client');
 var debug = require('./helpers/debug');
 var vars = require('./vars');
@@ -5365,7 +5844,7 @@ SocketClient.prototype.giveEmoteTip = function(channel) {
 }
 
 module.exports = SocketClient;
-},{"./helpers/debug":43,"./vars":60,"socket.io-client":63}],52:[function(require,module,exports){
+},{"./helpers/debug":46,"./vars":64,"socket.io-client":67}],55:[function(require,module,exports){
 var cookies = require('cookies-js');
 var debug = require('./helpers/debug');
 
@@ -5441,7 +5920,15 @@ Storage.prototype.spliceObject = function(item, key) {
 }
 
 module.exports = Storage;
-},{"./helpers/debug":43,"cookies-js":61}],53:[function(require,module,exports){
+},{"./helpers/debug":46,"cookies-js":65}],56:[function(require,module,exports){
+function template(locals) {
+var buf = [];
+var jade_mixins = {};
+var jade_interp;
+
+buf.push("<div id=\"bttv-channel-state-contain\"><div class=\"r9k\"><svg width=\"26px\" height=\"22px\" version=\"1.1\" viewBox=\"0 0 26 22\" x=\"0px\" y=\"0px\"><path clip-rule=\"evenodd\" fill-rule=\"evenodd\" fill=\"#d3d3d3\" stroke=\"none\" d=\"M2.98763607,10.2134233 C2.98763607,9.87789913 2.97951867,9.53696837 2.96328363,9.19062081 C2.94704859,8.84427325 2.93351959,8.3951105 2.92269623,7.84311909 L3.97796866,7.84311909 L3.97796866,9.25556065 L4.01043858,9.25556065 C4.08620211,9.04991679 4.1944341,8.85239341 4.33513779,8.66298459 C4.47584149,8.47357577 4.64630687,8.30311039 4.84653905,8.15158334 C5.04677123,8.00005628 5.27947001,7.87829529 5.54464235,7.78629672 C5.8098147,7.69429815 6.11015847,7.64829956 6.44568266,7.64829956 C6.74873677,7.64829956 7.01390514,7.68076916 7.24119573,7.74570932 L7.03014124,8.80098176 C6.88943755,8.74686495 6.68379677,8.71980695 6.41321274,8.71980695 C6.00192502,8.71980695 5.65017106,8.79827515 5.35794031,8.95521388 C5.06570956,9.11215262 4.82218758,9.3123818 4.62736708,9.55590742 C4.43254658,9.79943305 4.2891392,10.0618956 4.19714063,10.343303 C4.10514206,10.6247104 4.05914347,10.8952904 4.05914347,11.155051 L4.05914347,15.4410806 L2.98763607,15.4410806 L2.98763607,10.2134233 Z M14.1735239,7.30736539 C14.1735239,6.93937111 14.1112905,6.60385195 13.9868218,6.30079784 C13.8623532,5.99774372 13.6864762,5.73798695 13.4591856,5.52151973 C13.231895,5.30505251 12.9613151,5.13458713 12.6474376,5.01011847 C12.3335601,4.88564982 11.9872178,4.82341643 11.6084001,4.82341643 C11.2295825,4.82341643 10.8832401,4.88564982 10.5693626,5.01011847 C10.2554852,5.13458713 9.98490519,5.30505251 9.75761461,5.52151973 C9.53032403,5.73798695 9.35444705,5.99774372 9.22997839,6.30079784 C9.10550974,6.60385195 9.04327635,6.93937111 9.04327635,7.30736539 C9.04327635,7.67535967 9.10550974,8.01087883 9.22997839,8.31393294 C9.35444705,8.61698705 9.53032403,8.87944962 9.75761461,9.10132853 C9.98490519,9.32320743 10.2554852,9.49367281 10.5693626,9.61272978 C10.8832401,9.73178676 11.2295825,9.79131435 11.6084001,9.79131435 C11.9872178,9.79131435 12.3335601,9.73178676 12.6474376,9.61272978 C12.9613151,9.49367281 13.231895,9.32320743 13.4591856,9.10132853 C13.6864762,8.87944962 13.8623532,8.61698705 13.9868218,8.31393294 C14.1112905,8.01087883 14.1735239,7.67535967 14.1735239,7.30736539 L14.1735239,7.30736539 Z M13.0046067,10.5056526 L12.9721368,10.4731827 C12.7881397,10.603063 12.5419119,10.7004718 12.2334461,10.765412 C11.9249803,10.8303521 11.6408713,10.8628217 11.3811107,10.8628217 C10.8832361,10.8628217 10.4205443,10.7735304 9.99302154,10.5949449 C9.56549877,10.4163594 9.19480422,10.1701317 8.88092674,9.85625419 C8.56704927,9.54237672 8.3208215,9.16897636 8.14223604,8.73604192 C7.96365058,8.30310747 7.87435919,7.82688672 7.87435919,7.30736539 C7.87435919,6.77702069 7.96635638,6.29538835 8.15035352,5.8624539 C8.33435066,5.42951946 8.59410743,5.0561191 8.92963162,4.74224162 C9.26515582,4.42836415 9.66020257,4.18484218 10.1147837,4.0116684 C10.5693649,3.83849462 11.0672321,3.75190903 11.6084001,3.75190903 C12.1495682,3.75190903 12.6474353,3.83849462 13.1020165,4.0116684 C13.5565976,4.18484218 13.9516444,4.42836415 14.2871686,4.74224162 C14.6226928,5.0561191 14.8824496,5.42951946 15.0664467,5.8624539 C15.2504438,6.29538835 15.342441,6.77702069 15.342441,7.30736539 C15.342441,7.9459437 15.247738,8.50333843 15.0583292,8.97956632 C14.8689204,9.45579421 14.6335158,9.92660336 14.3521084,10.3920079 L11.251231,15.4410806 L9.87125933,15.4410806 L13.0046067,10.5056526 Z M18.3621437,11.2686958 L21.95007,7.84311909 L23.5573311,7.84311909 L19.7745853,11.3174006 L23.9632051,15.4410806 L22.3072391,15.4410806 L18.3621437,11.4472803 L18.3621437,15.4410806 L17.2906363,15.4410806 L17.2906363,3.16745045 L18.3621437,3.16745045 L18.3621437,11.2686958 Z\"></path></svg></div><div class=\"subs-only\"><svg width=\"26px\" height=\"22px\" version=\"1.1\" viewBox=\"0 0 26 22\" x=\"0px\" y=\"0px\"><path clip-rule=\"evenodd\" fill-rule=\"evenodd\" fill=\"#d3d3d3\" stroke=\"none\" d=\"M9.27481618,13.6268381 C9.27481619,15.0585936 21.1132816,15.0078128 21.1132816,13.6268381 C21.1132816,12.2458633 16.9215274,13.7446739 16.6289064,11.3913143 C16.3362854,9.03795478 17.8113514,9.06502765 17.8113514,7.74195776 C17.8113514,6.41888788 16.1631438,5.44732696 15.194049,5.3492647 C14.2249543,5.25120244 12.5834099,6.17624082 12.5834099,7.74195772 C12.5834099,9.30767461 13.8025847,9.44785699 13.6895682,11.3913143 C13.5765516,13.3347717 9.27481616,12.1950825 9.27481618,13.6268381 Z\"></path><path clip-rule=\"evenodd\" fill-rule=\"evenodd\" fill=\"#d3d3d3\" stroke=\"none\" d=\"M9.05269623,4.02031837 C9.41269803,4.02031837 9.78602763,4.06698457 10.1726962,4.16031837 C10.5593648,4.25365217 10.8993614,4.41698387 11.1926962,4.65031837 L10.2326962,5.82031837 C10.0726954,5.68031767 9.88936393,5.57865202 9.68269623,5.51531837 C9.47602853,5.45198472 9.26603063,5.41365177 9.05269623,5.40031837 L9.05269623,6.99031837 L10.0126962,7.27031837 C10.4526984,7.40365237 10.8043616,7.62198352 11.0676962,7.92531837 C11.3310309,8.22865322 11.4626962,8.61364937 11.4626962,9.08031837 C11.4626962,9.43365347 11.3993635,9.74365037 11.2726962,10.0103184 C11.1460289,10.2769864 10.9726973,10.5036508 10.7526962,10.6903184 C10.5326951,10.876986 10.276031,11.0236512 9.98269623,11.1303184 C9.68936143,11.2369856 9.37936453,11.3069849 9.05269623,11.3403184 L9.05269623,12.0403184 L8.39269623,12.0403184 L8.39269623,11.3403184 C7.95269403,11.3403184 7.51436508,11.280319 7.07769623,11.1603184 C6.64102738,11.0403178 6.25603123,10.8303199 5.92269623,10.5303184 L6.98269623,9.34031837 C7.15603043,9.55365277 7.36602833,9.70531792 7.61269623,9.79531837 C7.85936413,9.88531882 8.11936153,9.94031827 8.39269623,9.96031837 L8.39269623,8.27031837 L7.66269623,8.05031837 C7.15602703,7.89031757 6.77103088,7.66531982 6.50769623,7.37531837 C6.24436158,7.08531692 6.11269623,6.68698757 6.11269623,6.18031837 C6.11269623,5.86698347 6.17602893,5.58365297 6.30269623,5.33031837 C6.42936353,5.07698377 6.59769518,4.86031927 6.80769623,4.68031837 C7.01769728,4.50031747 7.26102818,4.35365227 7.53769623,4.24031837 C7.81436428,4.12698447 8.09936143,4.05365187 8.39269623,4.02031837 L8.39269623,3.32031837 L9.05269623,3.32031837 L9.05269623,4.02031837 Z M8.39269623,5.43031837 C8.20602863,5.47031857 8.03936363,5.54031787 7.89269623,5.64031837 C7.74602883,5.74031887 7.67269623,5.89698397 7.67269623,6.11031837 C7.67269623,6.26365247 7.70269593,6.38365127 7.76269623,6.47031837 C7.82269653,6.55698547 7.89269583,6.62531812 7.97269623,6.67531837 C8.05269663,6.72531862 8.13269583,6.76031827 8.21269623,6.78031837 C8.29269663,6.80031847 8.35269603,6.81698497 8.39269623,6.83031837 L8.39269623,5.43031837 Z M9.05269623,9.94031837 C9.15269673,9.92031827 9.25436238,9.89198522 9.35769623,9.85531837 C9.46103008,9.81865152 9.55269583,9.77031867 9.63269623,9.71031837 C9.71269663,9.65031807 9.77769598,9.57865212 9.82769623,9.49531837 C9.87769648,9.41198462 9.90269623,9.31365227 9.90269623,9.20031837 C9.90269623,9.09365117 9.88436308,9.00365207 9.84769623,8.93031837 C9.81102938,8.85698467 9.76269653,8.79531862 9.70269623,8.74531837 C9.64269593,8.69531812 9.57269663,8.65198522 9.49269623,8.61531837 C9.41269583,8.57865152 9.32936333,8.54365187 9.24269623,8.51031837 L9.05269623,8.44031837 L9.05269623,9.94031837 Z\"></path></svg></div><div class=\"slow\"><div class=\"slow-time\">0:00</div><svg width=\"26px\" height=\"22px\" version=\"1.1\" viewBox=\"0 0 26 22\" x=\"0px\" y=\"0px\"><path clip-rule=\"evenodd\" fill-rule=\"evenodd\" fill=\"#d3d3d3\" stroke=\"none\" d=\"M17.1477712,15.2881724 C18.1841482,15.2990242 18.3714659,13.1141401 18.984666,13.0696235 C20.7929233,12.9383492 21.27411,12.5312339 22.0061575,11.9392359 C23.1373692,11.0244387 19.9060764,12.1089751 19.4762501,10.2570139 C19.0464238,8.40505269 20.0193482,10.024402 20.0193482,10.024402 C20.0193482,10.024402 21.8187185,4.26759557 15.5617966,4.00868857 C9.30487476,3.74978158 10.4161868,9.36314385 10.4161868,9.36314385 C10.4161868,9.36314385 11.2540951,8.34295601 11.2540951,9.63941257 C11.2540951,10.1964047 9.76901904,10.6570445 8.53287358,9.63941257 C7.29672813,8.62178061 8.11686902,7.37127839 7.67827778,6.69569265 C7.23968654,6.02010691 3.76038497,5.06926224 3.24213373,5.95824564 C2.72388249,6.84722904 5.76831809,8.74663617 5.96217543,9.63941257 C6.15603277,10.532189 7.03943787,12.1288651 7.49294803,12.5678492 C7.94645819,13.0068332 5.92939735,14.4797566 6.69153143,14.5326896 C7.45366552,14.5856225 9.47706304,12.9278239 10.0844223,12.7478364 C10.6917815,12.5678489 13.1392341,12.9471552 14.5871877,13.023578 C15.3550569,13.064106 16.1113943,15.2773206 17.1477712,15.2881724 Z M4.84344721,6.76429629 C5.04601701,6.76429629 5.21023228,6.60974074 5.21023228,6.41908681 C5.21023228,6.22843288 5.04601701,6.07387733 4.84344721,6.07387733 C4.6408774,6.07387733 4.47666213,6.22843288 4.47666213,6.41908681 C4.47666213,6.60974074 4.6408774,6.76429629 4.84344721,6.76429629 Z M11.7028228,7.36314163 C11.7326095,6.35178988 13.3449525,4.92929352 15.0963754,4.98088076 C16.8477983,5.032468 18.7948736,6.68625403 18.7749376,7.36314154 C18.7550016,8.04002904 16.952545,5.71526454 15.0963754,5.66059204 C13.2402058,5.60591954 11.673036,8.37449337 11.7028228,7.36314163 Z\"></path></svg></div></div>");;return buf.join("");
+};module.exports=template;
+},{}],57:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -5467,7 +5954,7 @@ buf.push("</a></p>");
 }
 buf.push("<p><input type=\"checkbox\"" + (jade.attr("checked", bttv.settings.get("darkenedMode"), true, false)) + " class=\"toggleDarkenTTV\"/>Dark Mode</p><p><a href=\"#\" class=\"g18_gear-00000080 setBlacklistKeywords\">Set Blacklist Keywords</a></p><p><a href=\"#\" class=\"g18_gear-00000080 setHighlightKeywords\">Set Highlight Keywords</a></p><p><a href=\"#\" class=\"g18_gear-00000080 setScrollbackAmount\">Set Scrollback Amount</a></p><p><a href=\"#\" class=\"g18_trash-00000080 clearChat\">Clear My Chat</a></p><p><a href=\"#\" style=\"display: block;margin-top: 8px;text-align: center;\" class=\"button-simple dark openSettings\">BetterTTV Settings</a></p></div>");}.call(this,"$" in locals_for_with?locals_for_with.$:typeof $!=="undefined"?$:undefined,"window" in locals_for_with?locals_for_with.window:typeof window!=="undefined"?window:undefined,"bttv" in locals_for_with?locals_for_with.bttv:typeof bttv!=="undefined"?bttv:undefined));;return buf.join("");
 };module.exports=template;
-},{}],54:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -5500,7 +5987,7 @@ buf.push("<div" + (jade.cls([highlighted], [true])) + "><div class=\"suggestion\
 
 buf.push("</div>");}.call(this,"suggestions" in locals_for_with?locals_for_with.suggestions:typeof suggestions!=="undefined"?suggestions:undefined,"index" in locals_for_with?locals_for_with.index:typeof index!=="undefined"?index:undefined));;return buf.join("");
 };module.exports=template;
-},{}],55:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -5508,7 +5995,7 @@ var jade_interp;
 ;var locals_for_with = (locals || {});(function (pollId) {
 buf.push("<div id=\"bttv-poll-contain\"><div class=\"title\">New poll available! <span style=\"text-decoration: underline;\">Vote now!</span></div><div class=\"close\"><svg height=\"16px\" version=\"1.1\" viewbox=\"0 0 16 16\" width=\"16px\" x=\"0px\" y=\"0px\" class=\"svg-close\"><path clip-rule=\"evenodd\" d=\"M13.657,3.757L9.414,8l4.243,4.242l-1.415,1.415L8,9.414l-4.243,4.243l-1.414-1.415L6.586,8L2.343,3.757l1.414-1.414L8,6.586l4.242-4.243L13.657,3.757z\" fill-rule=\"evenodd\"></path></svg></div><iframe" + (jade.attr("src", 'https://strawpoll.me/embed_2/' + (pollId) + '', true, false)) + " class=\"frame\"></iframe></div>");}.call(this,"pollId" in locals_for_with?locals_for_with.pollId:typeof pollId!=="undefined"?pollId:undefined));;return buf.join("");
 };module.exports=template;
-},{}],56:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -5537,11 +6024,34 @@ if ( vars.userData.isLoggedIn && bttv.chat.helpers.isModerator(vars.userData.log
 {
 buf.push("<span class=\"mod-controls\"><button title=\"!permit this user\" class=\"permit button-simple light\"><svg height=\"16px\" width=\"16px\" version=\"1.1\" viewBox=\"0 0 16 16\" x=\"0px\" y=\"0px\" class=\"svg-permit\"><path clip-rule=\"evenodd\" fill-rule=\"evenodd\" d=\"M 13.71875,3.75 A 0.750075,0.750075 0 0 0 13.28125,4 L 5.71875,11.90625 3.59375,9.71875 A 0.750075,0.750075 0 1 0 2.53125,10.75 L 5.21875,13.53125 A 0.750075,0.750075 0 0 0 6.28125,13.5 L 14.34375,5.03125 A 0.750075,0.750075 0 0 0 13.71875,3.75 z M 4.15625,5.15625 C 2.1392444,5.1709094 0.53125,6.2956115 0.53125,7.6875 0.53125,8.1957367 0.75176764,8.6679042 1.125,9.0625 A 1.60016,1.60016 0 0 1 2.15625,8.25 C 2.0893446,8.0866555 2.0625,7.9078494 2.0625,7.71875 2.0625,6.9200694 2.7013192,6.25 3.5,6.25 L 7.15625,6.25 C 7.1438569,5.1585201 6.6779611,5.1379224 4.15625,5.15625 z M 9.625,5.15625 C 8.4334232,5.1999706 8.165545,5.4313901 8.15625,6.25 L 9.96875,6.25 11.03125,5.15625 C 10.471525,5.1447549 9.9897684,5.1428661 9.625,5.15625 z M 14.28125,6.40625 13.3125,7.40625 C 13.336036,7.5094042 13.34375,7.6089314 13.34375,7.71875 13.34375,8.5174307 12.67368,9.125 11.875,9.125 L 11.65625,9.125 10.65625,10.1875 C 10.841425,10.189327 10.941084,10.186143 11.15625,10.1875 13.17327,10.200222 14.78125,9.0793881 14.78125,7.6875 14.78125,7.2160918 14.606145,6.7775069 14.28125,6.40625 z M 4.40625,7.1875 C 4.0977434,7.1875 3.84375,7.4414933 3.84375,7.75 3.84375,8.0585065 4.0977434,8.3125 4.40625,8.3125 L 8,8.3125 9.0625,7.1875 4.40625,7.1875 z M 4.125,9.125 5.15625,10.1875 C 5.5748133,10.180859 5.9978157,10.155426 6.25,10.125 L 7.15625,9.1875 C 7.1572971,9.1653754 7.1553832,9.1481254 7.15625,9.125 L 4.125,9.125 z\"></path></svg></button></span><br/><span class=\"mod-controls\"><button style=\"width:44px;\" data-time=\"1\" title=\"Clear this user's chat\" class=\"timeout button-simple light\">Purge</button><button data-time=\"600\" title=\"Temporary 10 minute ban\" class=\"timeout button-simple light\"><img src=\"/images/xarth/g/g18_timeout-00000080.png\"/></button><button style=\"width:30px;\" data-time=\"3600\" title=\"Temporary 1 hour ban\" class=\"timeout button-simple light\">1hr</button><button style=\"width:30px;\" data-time=\"28800\" title=\"Temporary 8 hour ban\" class=\"timeout button-simple light\">8hr</button><button style=\"width:38px;\" data-time=\"86400\" title=\"Temporary 24 hour ban\" class=\"timeout button-simple light\">24hr</button><button title=\"Permanent Ban\" class=\"ban button-simple light\"><img src=\"/images/xarth/g/g18_ban-00000080.png\"/></button></span>");
 }
-buf.push("</div>");
+buf.push("<br/><div class=\"user-messages\"><div class=\"label\"><span>Chat Messages</span><div class=\"triangle closed\"></div></div><div class=\"message-list chat-messages\">");
+// iterate user.messages
+;(function(){
+  var $$obj = user.messages;
+  if ('number' == typeof $$obj.length) {
+
+    for (var $index = 0, $$l = $$obj.length; $index < $$l; $index++) {
+      var message = $$obj[$index];
+
+buf.push("<div>" + (null == (jade_interp = message.outerHTML) ? "" : jade_interp) + "</div>");
+    }
+
+  } else {
+    var $$l = 0;
+    for (var $index in $$obj) {
+      $$l++;      var message = $$obj[$index];
+
+buf.push("<div>" + (null == (jade_interp = message.outerHTML) ? "" : jade_interp) + "</div>");
+    }
+
+  }
+}).call(this);
+
+buf.push("</div></div></div>");
 }
 buf.push("</div>");}.call(this,"require" in locals_for_with?locals_for_with.require:typeof require!=="undefined"?require:undefined,"user" in locals_for_with?locals_for_with.user:typeof user!=="undefined"?user:undefined,"top" in locals_for_with?locals_for_with.top:typeof top!=="undefined"?top:undefined,"left" in locals_for_with?locals_for_with.left:typeof left!=="undefined"?left:undefined,"bttv" in locals_for_with?locals_for_with.bttv:typeof bttv!=="undefined"?bttv:undefined,"Twitch" in locals_for_with?locals_for_with.Twitch:typeof Twitch!=="undefined"?Twitch:undefined,"Date" in locals_for_with?locals_for_with.Date:typeof Date!=="undefined"?Date:undefined));;return buf.join("");
 };module.exports=template;
-},{"../vars":60}],57:[function(require,module,exports){
+},{"../vars":64}],61:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -5549,7 +6059,7 @@ var jade_interp;
 ;var locals_for_with = (locals || {});(function (storageKey, name, description) {
 buf.push("<div" + (jade.cls(['option',"bttvOption-" + (storageKey) + ""], [null,true])) + "><span style=\"font-weight:bold;font-size:14px;color:#D3D3D3;\">" + (jade.escape(null == (jade_interp = name) ? "" : jade_interp)) + "</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;" + (jade.escape(null == (jade_interp = description) ? "" : jade_interp)) + "<div class=\"bttv-switch\"><input type=\"radio\"" + (jade.attr("name", storageKey, true, false)) + " value=\"false\"" + (jade.attr("id", "" + (storageKey) + "False", true, false)) + " class=\"bttv-switch-input bttv-switch-off\"/><label" + (jade.attr("for", "" + (storageKey) + "False", true, false)) + " class=\"bttv-switch-label bttv-switch-label-off\">Off</label><input type=\"radio\"" + (jade.attr("name", storageKey, true, false)) + " value=\"true\"" + (jade.attr("id", "" + (storageKey) + "True", true, false)) + " class=\"bttv-switch-input\"/><label" + (jade.attr("for", "" + (storageKey) + "True", true, false)) + " class=\"bttv-switch-label bttv-switch-label-on\">On</label><span class=\"bttv-switch-selection\"></span></div></div>");}.call(this,"storageKey" in locals_for_with?locals_for_with.storageKey:typeof storageKey!=="undefined"?storageKey:undefined,"name" in locals_for_with?locals_for_with.name:typeof name!=="undefined"?name:undefined,"description" in locals_for_with?locals_for_with.description:typeof description!=="undefined"?description:undefined));;return buf.join("");
 };module.exports=template;
-},{}],58:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -5557,7 +6067,7 @@ var jade_interp;
 ;var locals_for_with = (locals || {});(function (bttv) {
 buf.push("<div id=\"header\"><span id=\"logo\"><img height=\"45px\" src=\"https://cdn.betterttv.net/style/logos/settings_logo.png\"/></span><ul class=\"nav\"><li><a href=\"#bttvAbout\">About</a></li><li class=\"active\"><a href=\"#bttvSettings\">Settings</a></li><li><a href=\"#bttvChannel\" target=\"_blank\">Channel</a></li><li><a href=\"#bttvChangelog\">Changelog</a></li><li><a href=\"#bttvPrivacy\">Privacy Policy</a></li><li><a href=\"#bttvBackup\">Backup/Import</a></li></ul><span id=\"close\">&times;</span></div><div id=\"bttvSettings\" style=\"height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content options-list\"><h2 class=\"option\">Here you can manage the various BetterTTV options. Click On or Off to toggle settings.</h2></div></div><div id=\"bttvAbout\" style=\"display:none;\"><div class=\"aboutHalf\"><img src=\"https://cdn.betterttv.net/style/logos/mascot.png\" class=\"bttvAboutIcon\"/><h1>BetterTTV v " + (jade.escape((jade_interp = bttv.info.versionString()) == null ? '' : jade_interp)) + "</h1><h2>from your friends at <a href=\"https://www.nightdev.com\" target=\"_blank\">NightDev</a></h2><br/></div><div class=\"aboutHalf\"><h1 style=\"margin-top: 100px;\">Think this addon is awesome?</h1><br/><br/><h2><a target=\"_blank\" href=\"https://chrome.google.com/webstore/detail/ajopnjidmegmdimjlfnijceegpefgped\">Drop a Review on the Chrome Webstore</a></h2><br/><h2>or maybe</h2><br/><h2><a target=\"_blank\" href=\"https://streamtip.com/t/night\">Support the Developer</a></h2><br/></div></div><div id=\"bttvChannel\" style=\"display:none;\"><iframe src=\"https://manage.betterttv.net\" frameborder=\"0\" width=\"100%\" height=\"425\"></iframe></div><div id=\"bttvPrivacy\" style=\"display:none;height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content\"></div></div><div id=\"bttvChangelog\" style=\"display:none;height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content\"></div></div><div id=\"bttvBackup\" style=\"display:none;height:425px;padding:25px;\"><h1 style=\"padding-bottom:15px;\">Backup Settings</h1><button id=\"bttvBackupButton\" class=\"primary_button\"><span>Download</span></button><h1 style=\"padding-top:25px;padding-bottom:15px;\">Import Settings</h1><input id=\"bttvImportInput\" type=\"file\" style=\"height: 25px;width: 250px;\"/></div><div id=\"footer\"><span>BetterTTV &copy; <a href=\"https://www.nightdev.com\" target=\"_blank\">NightDev, LLC</a> 2015</span><span style=\"float:right;\"><a href=\"https://community.nightdev.com/c/betterttv\" target=\"_blank\">Get Support</a> | <a href=\"https://github.com/night/BetterTTV/issues/new?labels=bug\" target=\"_blank\">Report a Bug</a> | <a href=\"https://streamtip.com/t/night\" target=\"_blank\">Support the Developer</a></span></div>");}.call(this,"bttv" in locals_for_with?locals_for_with.bttv:typeof bttv!=="undefined"?bttv:undefined));;return buf.join("");
 };module.exports=template;
-},{}],59:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 module.exports = {
     _ref: null,
     _headers: function(e, t) {
@@ -5565,11 +6075,11 @@ module.exports = {
 
         bttv.TwitchAPI._ref.call(Twitch.api, e, t);
     },
-    _call: function(method, url, data) {
+    _call: function(method, url, data, options) {
         // Replace Twitch's beforeSend with ours (to add Client ID)
         var rep = this._takeover();
 
-        var callTwitchAPI = window.Twitch.api[method].call(this, url, data);
+        var callTwitchAPI = window.Twitch.api[method].call(this, url, data, options);
 
         // Replace Twitch's beforeSend back with theirs
         this._untakeover();
@@ -5589,20 +6099,20 @@ module.exports = {
         window.Twitch.api._beforeSend = this._ref;
         this._ref = null;
     },
-    get: function(url) {
-        return this._call('get', url);
+    get: function(url, data, options) {
+        return this._call('get', url, data, options);
     },
-    post: function(url, data) {
-        return this._call('post', url, data);
+    post: function(url, data, options) {
+        return this._call('post', url, data, options);
     },
-    put: function(url, data) {
-        return this._call('put', url, data);
+    put: function(url, data, options) {
+        return this._call('put', url, data, options);
     },
-    del: function(url) {
-        return this._call('del', url);
+    del: function(url, data, options) {
+        return this._call('del', url, data, options);
     }
 };
-},{}],60:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 module.exports = {
     userData: {
         isLoggedIn: window.Twitch ? Twitch.user.isLoggedIn() : false,
@@ -5612,7 +6122,7 @@ module.exports = {
     liveChannels: [],
     blackChat: false
 };
-},{}],61:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 /*
  * Cookies.js - 1.2.1
  * https://github.com/ScottHamper/Cookies
@@ -5774,7 +6284,7 @@ module.exports = {
         global.Cookies = cookiesExport;
     }
 })(typeof window === 'undefined' ? this : window);
-},{}],62:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 (function (global){
 /*! http://mths.be/punycode v1.2.4 by @mathias */
 ;(function(root) {
@@ -6285,11 +6795,11 @@ module.exports = {
 }(this));
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],63:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 
 module.exports = require('./lib/');
 
-},{"./lib/":64}],64:[function(require,module,exports){
+},{"./lib/":68}],68:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -6378,7 +6888,7 @@ exports.connect = lookup;
 exports.Manager = require('./manager');
 exports.Socket = require('./socket');
 
-},{"./manager":65,"./socket":67,"./url":68,"debug":72,"socket.io-parser":108}],65:[function(require,module,exports){
+},{"./manager":69,"./socket":71,"./url":72,"debug":76,"socket.io-parser":112}],69:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -6883,7 +7393,7 @@ Manager.prototype.onreconnect = function(){
   this.emitAll('reconnect', attempt);
 };
 
-},{"./on":66,"./socket":67,"./url":68,"backo2":69,"component-bind":70,"component-emitter":71,"debug":72,"engine.io-client":73,"indexof":104,"object-component":105,"socket.io-parser":108}],66:[function(require,module,exports){
+},{"./on":70,"./socket":71,"./url":72,"backo2":73,"component-bind":74,"component-emitter":75,"debug":76,"engine.io-client":77,"indexof":108,"object-component":109,"socket.io-parser":112}],70:[function(require,module,exports){
 
 /**
  * Module exports.
@@ -6909,7 +7419,7 @@ function on(obj, ev, fn) {
   };
 }
 
-},{}],67:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -7296,7 +7806,7 @@ Socket.prototype.disconnect = function(){
   return this;
 };
 
-},{"./on":66,"component-bind":70,"component-emitter":71,"debug":72,"has-binary":102,"socket.io-parser":108,"to-array":112}],68:[function(require,module,exports){
+},{"./on":70,"component-bind":74,"component-emitter":75,"debug":76,"has-binary":106,"socket.io-parser":112,"to-array":116}],72:[function(require,module,exports){
 (function (global){
 
 /**
@@ -7373,7 +7883,7 @@ function url(uri, loc){
 }
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"debug":72,"parseuri":106}],69:[function(require,module,exports){
+},{"debug":76,"parseuri":110}],73:[function(require,module,exports){
 
 /**
  * Expose `Backoff`.
@@ -7460,7 +7970,7 @@ Backoff.prototype.setJitter = function(jitter){
 };
 
 
-},{}],70:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 /**
  * Slice reference.
  */
@@ -7485,7 +7995,7 @@ module.exports = function(obj, fn){
   }
 };
 
-},{}],71:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 
 /**
  * Expose `Emitter`.
@@ -7651,7 +8161,7 @@ Emitter.prototype.hasListeners = function(event){
   return !! this.listeners(event).length;
 };
 
-},{}],72:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 
 /**
  * Expose `debug()` as the module.
@@ -7790,11 +8300,11 @@ try {
   if (window.localStorage) debug.enable(localStorage.debug);
 } catch(e){}
 
-},{}],73:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 
 module.exports =  require('./lib/');
 
-},{"./lib/":74}],74:[function(require,module,exports){
+},{"./lib/":78}],78:[function(require,module,exports){
 
 module.exports = require('./socket');
 
@@ -7806,7 +8316,7 @@ module.exports = require('./socket');
  */
 module.exports.parser = require('engine.io-parser');
 
-},{"./socket":75,"engine.io-parser":87}],75:[function(require,module,exports){
+},{"./socket":79,"engine.io-parser":91}],79:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies.
@@ -8515,7 +9025,7 @@ Socket.prototype.filterUpgrades = function (upgrades) {
 };
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./transport":76,"./transports":77,"component-emitter":71,"debug":84,"engine.io-parser":87,"indexof":104,"parsejson":98,"parseqs":99,"parseuri":100}],76:[function(require,module,exports){
+},{"./transport":80,"./transports":81,"component-emitter":75,"debug":88,"engine.io-parser":91,"indexof":108,"parsejson":102,"parseqs":103,"parseuri":104}],80:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -8676,7 +9186,7 @@ Transport.prototype.onClose = function () {
   this.emit('close');
 };
 
-},{"component-emitter":71,"engine.io-parser":87}],77:[function(require,module,exports){
+},{"component-emitter":75,"engine.io-parser":91}],81:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies
@@ -8733,7 +9243,7 @@ function polling(opts){
 }
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./polling-jsonp":78,"./polling-xhr":79,"./websocket":81,"xmlhttprequest":82}],78:[function(require,module,exports){
+},{"./polling-jsonp":82,"./polling-xhr":83,"./websocket":85,"xmlhttprequest":86}],82:[function(require,module,exports){
 (function (global){
 
 /**
@@ -8970,7 +9480,7 @@ JSONPPolling.prototype.doWrite = function (data, fn) {
 };
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./polling":80,"component-inherit":83}],79:[function(require,module,exports){
+},{"./polling":84,"component-inherit":87}],83:[function(require,module,exports){
 (function (global){
 /**
  * Module requirements.
@@ -9358,7 +9868,7 @@ function unloadHandler() {
 }
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./polling":80,"component-emitter":71,"component-inherit":83,"debug":84,"xmlhttprequest":82}],80:[function(require,module,exports){
+},{"./polling":84,"component-emitter":75,"component-inherit":87,"debug":88,"xmlhttprequest":86}],84:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -9605,7 +10115,7 @@ Polling.prototype.uri = function(){
   return schema + '://' + this.hostname + port + this.path + query;
 };
 
-},{"../transport":76,"component-inherit":83,"debug":84,"engine.io-parser":87,"parseqs":99,"xmlhttprequest":82}],81:[function(require,module,exports){
+},{"../transport":80,"component-inherit":87,"debug":88,"engine.io-parser":91,"parseqs":103,"xmlhttprequest":86}],85:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -9845,7 +10355,7 @@ WS.prototype.check = function(){
   return !!WebSocket && !('__initialize' in WebSocket && this.name === WS.prototype.name);
 };
 
-},{"../transport":76,"component-inherit":83,"debug":84,"engine.io-parser":87,"parseqs":99,"ws":101}],82:[function(require,module,exports){
+},{"../transport":80,"component-inherit":87,"debug":88,"engine.io-parser":91,"parseqs":103,"ws":105}],86:[function(require,module,exports){
 // browser shim for xmlhttprequest module
 var hasCORS = require('has-cors');
 
@@ -9883,7 +10393,7 @@ module.exports = function(opts) {
   }
 }
 
-},{"has-cors":96}],83:[function(require,module,exports){
+},{"has-cors":100}],87:[function(require,module,exports){
 
 module.exports = function(a, b){
   var fn = function(){};
@@ -9891,7 +10401,7 @@ module.exports = function(a, b){
   a.prototype = new fn;
   a.prototype.constructor = a;
 };
-},{}],84:[function(require,module,exports){
+},{}],88:[function(require,module,exports){
 
 /**
  * This is the web browser implementation of `debug()`.
@@ -10040,7 +10550,7 @@ function load() {
 
 exports.enable(load());
 
-},{"./debug":85}],85:[function(require,module,exports){
+},{"./debug":89}],89:[function(require,module,exports){
 
 /**
  * This is the common logic for both the Node.js and web browser
@@ -10239,7 +10749,7 @@ function coerce(val) {
   return val;
 }
 
-},{"ms":86}],86:[function(require,module,exports){
+},{"ms":90}],90:[function(require,module,exports){
 /**
  * Helpers.
  */
@@ -10352,7 +10862,7 @@ function plural(ms, n, name) {
   return Math.ceil(ms / n) + ' ' + name + 's';
 }
 
-},{}],87:[function(require,module,exports){
+},{}],91:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies.
@@ -10950,7 +11460,7 @@ exports.decodePayloadAsBinary = function (data, binaryType, callback) {
 };
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./keys":88,"after":89,"arraybuffer.slice":90,"base64-arraybuffer":91,"blob":92,"has-binary":93,"utf8":95}],88:[function(require,module,exports){
+},{"./keys":92,"after":93,"arraybuffer.slice":94,"base64-arraybuffer":95,"blob":96,"has-binary":97,"utf8":99}],92:[function(require,module,exports){
 
 /**
  * Gets the keys for an object.
@@ -10971,7 +11481,7 @@ module.exports = Object.keys || function keys (obj){
   return arr;
 };
 
-},{}],89:[function(require,module,exports){
+},{}],93:[function(require,module,exports){
 module.exports = after
 
 function after(count, callback, err_cb) {
@@ -11001,7 +11511,7 @@ function after(count, callback, err_cb) {
 
 function noop() {}
 
-},{}],90:[function(require,module,exports){
+},{}],94:[function(require,module,exports){
 /**
  * An abstraction for slicing an arraybuffer even when
  * ArrayBuffer.prototype.slice is not supported
@@ -11032,7 +11542,7 @@ module.exports = function(arraybuffer, start, end) {
   return result.buffer;
 };
 
-},{}],91:[function(require,module,exports){
+},{}],95:[function(require,module,exports){
 /*
  * base64-arraybuffer
  * https://github.com/niklasvh/base64-arraybuffer
@@ -11093,7 +11603,7 @@ module.exports = function(arraybuffer, start, end) {
   };
 })("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/");
 
-},{}],92:[function(require,module,exports){
+},{}],96:[function(require,module,exports){
 (function (global){
 /**
  * Create a blob builder even when vendor prefixes exist
@@ -11146,7 +11656,7 @@ module.exports = (function() {
 })();
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],93:[function(require,module,exports){
+},{}],97:[function(require,module,exports){
 (function (global){
 
 /*
@@ -11208,12 +11718,12 @@ function hasBinary(data) {
 }
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"isarray":94}],94:[function(require,module,exports){
+},{"isarray":98}],98:[function(require,module,exports){
 module.exports = Array.isArray || function (arr) {
   return Object.prototype.toString.call(arr) == '[object Array]';
 };
 
-},{}],95:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 (function (global){
 /*! http://mths.be/utf8js v2.0.0 by @mathias */
 ;(function(root) {
@@ -11456,7 +11966,7 @@ module.exports = Array.isArray || function (arr) {
 }(this));
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],96:[function(require,module,exports){
+},{}],100:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -11481,7 +11991,7 @@ try {
   module.exports = false;
 }
 
-},{"global":97}],97:[function(require,module,exports){
+},{"global":101}],101:[function(require,module,exports){
 
 /**
  * Returns `this`. Execute this without a "context" (i.e. without it being
@@ -11491,7 +12001,7 @@ try {
 
 module.exports = (function () { return this; })();
 
-},{}],98:[function(require,module,exports){
+},{}],102:[function(require,module,exports){
 (function (global){
 /**
  * JSON parse.
@@ -11526,7 +12036,7 @@ module.exports = function parsejson(data) {
   }
 };
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],99:[function(require,module,exports){
+},{}],103:[function(require,module,exports){
 /**
  * Compiles a querystring
  * Returns string representation of the object
@@ -11565,7 +12075,7 @@ exports.decode = function(qs){
   return qry;
 };
 
-},{}],100:[function(require,module,exports){
+},{}],104:[function(require,module,exports){
 /**
  * Parses an URI
  *
@@ -11606,7 +12116,7 @@ module.exports = function parseuri(str) {
     return uri;
 };
 
-},{}],101:[function(require,module,exports){
+},{}],105:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -11651,7 +12161,7 @@ function ws(uri, protocols, opts) {
 
 if (WebSocket) ws.prototype = WebSocket.prototype;
 
-},{}],102:[function(require,module,exports){
+},{}],106:[function(require,module,exports){
 (function (global){
 
 /*
@@ -11713,9 +12223,9 @@ function hasBinary(data) {
 }
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"isarray":103}],103:[function(require,module,exports){
-module.exports=require(94)
-},{}],104:[function(require,module,exports){
+},{"isarray":107}],107:[function(require,module,exports){
+module.exports=require(98)
+},{}],108:[function(require,module,exports){
 
 var indexOf = [].indexOf;
 
@@ -11726,7 +12236,7 @@ module.exports = function(arr, obj){
   }
   return -1;
 };
-},{}],105:[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 
 /**
  * HOP ref.
@@ -11811,7 +12321,7 @@ exports.length = function(obj){
 exports.isEmpty = function(obj){
   return 0 == exports.length(obj);
 };
-},{}],106:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 /**
  * Parses an URI
  *
@@ -11838,7 +12348,7 @@ module.exports = function parseuri(str) {
   return uri;
 };
 
-},{}],107:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 (function (global){
 /*global Blob,File*/
 
@@ -11983,7 +12493,7 @@ exports.removeBlobs = function(data, callback) {
 };
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./is-buffer":109,"isarray":110}],108:[function(require,module,exports){
+},{"./is-buffer":113,"isarray":114}],112:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -12385,7 +12895,7 @@ function error(data){
   };
 }
 
-},{"./binary":107,"./is-buffer":109,"component-emitter":71,"debug":72,"isarray":110,"json3":111}],109:[function(require,module,exports){
+},{"./binary":111,"./is-buffer":113,"component-emitter":75,"debug":76,"isarray":114,"json3":115}],113:[function(require,module,exports){
 (function (global){
 
 module.exports = isBuf;
@@ -12402,9 +12912,9 @@ function isBuf(obj) {
 }
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],110:[function(require,module,exports){
-module.exports=require(94)
-},{}],111:[function(require,module,exports){
+},{}],114:[function(require,module,exports){
+module.exports=require(98)
+},{}],115:[function(require,module,exports){
 /*! JSON v3.2.6 | http://bestiejs.github.io/json3 | Copyright 2012-2013, Kit Cambridge | http://kit.mit-license.org */
 ;(function (window) {
   // Convenience aliases.
@@ -13267,7 +13777,7 @@ module.exports=require(94)
   }
 }(this));
 
-},{}],112:[function(require,module,exports){
+},{}],116:[function(require,module,exports){
 module.exports = toArray
 
 function toArray(list, index) {

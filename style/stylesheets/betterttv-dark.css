@@ -2037,3 +2037,7 @@ span.subscribe-text {
     fill: #D3D3D3;
 }
 
+/* channel state */
+#bttv-channel-state-contain svg path {
+    fill: #d3d3d3;
+}

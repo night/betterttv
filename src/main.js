@@ -10,7 +10,7 @@ var debug = require('./helpers/debug'),
 
 bttv.info = {
     version: "6.8",
-    release: 36,
+    release: 38,
     versionString: function() {
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -127,6 +127,7 @@ var clearClutter = require('./features/clear-clutter'),
     createSettings = require('./features/create-settings');
     enableImagePreview = require('./features/image-preview').enablePreview;
     enableTheatreMode = require('./features/auto-theatre-mode');
+    hostButtonBelowVideo = require('./features/host-btn-below-video');
 
 var chatFunctions = function () {
     debug.log("Modifying Chat Functionality");
@@ -198,6 +199,7 @@ var main = function () {
                                 handleBackground();
                                 clearClutter();
                                 channelReformat();
+                                hostButtonBelowVideo();
                                 if (
                                     App.__container__.lookup("controller:channel").get("theatreMode") === false && 
                                     bttv.settings.get('autoTheatreMode') === true
@@ -258,6 +260,8 @@ var main = function () {
         directoryFunctions();
         handleTwitchChatEmotesScript();
         emoticonTextInClipboard();
+        hostButtonBelowVideo();
+
         if (bttv.settings.get('chatImagePreview') === true) {
             enableImagePreview();
         }

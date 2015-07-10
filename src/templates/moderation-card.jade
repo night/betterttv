@@ -57,3 +57,11 @@ div.bttv-mod-card.ember-view.moderation-card(data-user=user.name style="top: #{t
           button.timeout.button-simple.light(style="width:38px;" data-time="86400" title="Temporary 24 hour ban") 24hr
           button.ban.button-simple.light(title="Permanent Ban")
             img(src="/images/xarth/g/g18_ban-00000080.png")
+      br
+      .user-messages
+        .label
+          span Chat Messages
+          .triangle.closed
+        .message-list.chat-messages
+          each message in user.messages
+            div!= message.outerHTML

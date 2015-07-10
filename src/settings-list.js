@@ -11,18 +11,32 @@ var betaChat = require('./features/beta-chat'),
     handleBackground = require('./features/handle-background'),
     flipDashboard = require('./features/flip-dashboard'),
     cssLoader = require('./features/css-loader'),
-    theatreMode = require('./features/auto-theatre-mode');
+    theatreMode = require('./features/auto-theatre-mode'),
+    hostButton = require('./features/host-btn-below-video'),
+    anonChat = require('./features/anon-chat');
 var displayElement = require('./helpers/element').display,
     removeElement = require('./helpers/element').remove,
     imagePreview = require('./features/image-preview');
 
 module.exports = [
-    {
+    /*{
         name: 'Admin/Staff Alert',
         description: 'Get alerted in chat when admins or staff join',
         default: false,
         hidden: true,
         storageKey: 'adminStaffAlert'
+    },*/
+    {
+        name: 'Anon Chat',
+        description: 'Join channels without appearing in chat',
+        default: false,
+        storageKey: 'anonChat',
+        toggle: function() {
+            anonChat();
+        },
+        load: function() {
+            anonChat();
+        }
     },
     {
         name: 'Alpha Chat Badges',
@@ -173,7 +187,7 @@ module.exports = [
             }
         }
     },
-    /*{
+    {
         name: 'Double-Click Translation',
         description: 'Double-clicking on chat lines translates them with Google Translate',
         default: true,
@@ -189,12 +203,18 @@ module.exports = [
                 $('body').unbind("dblclick");
             }
         }
-    },*/
+    },
     {
-        name: 'Disable whispers',
+        name: 'Disable Whispers',
         description: 'Disables the twitch whisper functionalitiy, hiding any whispers you recieve',
         default: false,
         storageKey: 'disableWhispers'
+    },
+	{
+        name: 'Double-Click Auto-Complete',
+        description: 'Double-clicking a username in chat copies it into the chat text box',
+        default: false,
+        storageKey: 'dblClickAutoComplete'
     },
     {
         name: 'Embedded Polling',
@@ -249,6 +269,19 @@ module.exports = [
         }
     },
     {
+        name: 'Host Button',
+        description: 'Places a Host/Unhost button below the video player',
+        default: false,
+        storageKey: 'hostButton',
+        toggle: function(value) {
+            if(value === true) {
+                hostButton();
+            } else {
+                $('#bttv-host-button').remove();
+            }
+        }
+    },
+    {
         name: 'JTV Chat Badges',
         description: 'BetterTTV can replace the chat badges with the ones from JTV',
         default: false,
@@ -279,8 +312,8 @@ module.exports = [
         }
     },
     {
-        name: 'Play Sound on Highlight',
-        description: 'Get audio feedback when any message is highlighted (BETA)',
+        name: 'Play Sound on Highlight/Whisper',
+        description: 'Get audio feedback for messages directed at you (BETA)',
         default: false,
         storageKey: 'highlightFeedback'
     },

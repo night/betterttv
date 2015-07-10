@@ -1,3 +1,4 @@
+var debug = require('./helpers/debug');
 var saveAs = require('./helpers/filesaver').saveAs;
 
 function Settings() {
@@ -56,7 +57,7 @@ Settings.prototype.load = function() {
     $('#bttvSettings .options-list').append(featureRequests);
 
     $('.option input:radio').change(function (e) {
-        _self.set(e.target.name, _self._parseSetting(e.target.value));
+        _self.save(e.target.name, _self._parseSetting(e.target.value));
     });
 
     var notifications = bttv.storage.getObject("bttvNotifications");
@@ -130,7 +131,11 @@ Settings.prototype.import = function(input) {
                 count = 0;
 
             Object.keys(settings).forEach(function(setting) {
-                _self.set(setting, settings[setting]);
+                try {
+                    _self.set(setting, settings[setting]);
+                } catch(e) {
+                    debug.log("Import Error: " + setting + " does not exist in settings list. Ignoring...");
+                }
             });
 
             bttv.notify("BetterTTV imported " + count + " settings, and will now refresh in a few seconds.");
@@ -158,13 +163,17 @@ Settings.prototype.save = function(setting, value) {
     if(/\?bttvSettings=true/.test(window.location)) {
         window.opener.postMessage('bttv_setting '+setting+' '+value, window.location.protocol+'//'+window.location.host);
     } else {
-        if(window.__bttvga) __bttvga('send', 'event', 'BTTV', 'Change Setting: '+setting+'='+value);
+        try {
+            if(window.__bttvga) __bttvga('send', 'event', 'BTTV', 'Change Setting: '+setting+'='+value);
 
-        if(window !== window.top) window.parent.postMessage('bttv_setting '+setting+' '+value, window.location.protocol+'//'+window.location.host);
+            if(window !== window.top) window.parent.postMessage('bttv_setting '+setting+' '+value, window.location.protocol+'//'+window.location.host);
 
-        this.set(setting, value);
+            this.set(setting, value);
 
-        if(this._settings[setting].toggle) this._settings[setting].toggle(value);
+            if(this._settings[setting].toggle) this._settings[setting].toggle(value);
+        } catch(e) {
+            debug.log(e)
+        }
     }
 }
 
