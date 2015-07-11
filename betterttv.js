@@ -570,6 +570,7 @@ var clearChat = exports.clearChat = function (user) {
         } else {
             if(bttv.settings.get("showDeletedMessages") !== true) {
                 $('.chat-line[data-sender="' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '"] .message').each(function () {
+                    $(this).addClass('timed-out');
                     $(this).html("<span style=\"color: #999\">&lt;message deleted&gt;</span>").off('click').on('click', function() {
                         $(this).replaceWith(templates.message(user, decodeURIComponent($(this).data('raw'))));
                     });
@@ -583,6 +584,7 @@ var clearChat = exports.clearChat = function (user) {
                     $(".emoticon", this).each(function () {
                         $(this).css("opacity","0.1");
                     });
+                    $(this).addClass('timed-out');
                     $(this).html("<span style=\"color: #999\">" + $(this).html() + "</span>");
                 });
             }
@@ -1550,21 +1552,21 @@ var massUnban = exports.massUnban = function() {
         }
     });
 };
-var translate = exports.translate = function(element, sender, text) {
+var translate = exports.translate = function($element, sender, text) {
     var language = (window.cookie && window.cookie.get('language')) ? window.cookie.get('language') : 'en';
 
     var qs = $.param({
         target: language,
-        q: decodeURIComponent(text)
+        q: text
     });
 
     $.getJSON('https://api.betterttv.net/2/translate?' + qs).success(function(data) {
-        $(element).replaceWith(templates.message(sender, data.translation));
+        $element.replaceWith(templates.message(sender, data.translation));
     }).error(function(data) {
         if(data.responseJSON && data.responseJSON.message) {
-            $(element).text(data.responseJSON.message);
+            $element.text(data.responseJSON.message);
         } else {
-            $(element).text("Translation Error");
+            $element.text("Translation Error");
         }
     });
 };
@@ -1678,7 +1680,8 @@ var vars = require('../vars'),
 var store = require('./store'),
     handlers = require('./handlers'),
     helpers = require('./helpers'),
-    rooms = require('./rooms');
+    rooms = require('./rooms'),
+    templates = require('./templates');
 var overrideEmotes = require('../features/override-emotes'),
     loadChatSettings = require('../features/chat-load-settings'),
     cssLoader = require('../features/css-loader'),
@@ -1888,8 +1891,15 @@ var takeover = module.exports = function() {
     if (!vars.loadedDoubleClickTranslation && bttv.settings.get("dblclickTranslation") !== false) {
         vars.loadedDoubleClickTranslation = true;
         $('body').on('dblclick', '.chat-line .message', function() {
-            helpers.translate($(this), $(this).parent().data("sender"), $(this).data("raw"));
-            $(this).text("Translating..");
+            var sender = $(this).parent().data("sender");
+            var message = decodeURIComponent($(this).data("raw"));
+
+            if($(this).hasClass('timed-out')) {
+                $(this).replaceWith(templates.message(sender, message));
+            } else {
+                helpers.translate($(this), sender, message);
+                $(this).text("Translating..");
+            }
             $('div.tipsy').remove();
         });
     }
@@ -2097,7 +2107,7 @@ var takeover = module.exports = function() {
     });
 }
 
-},{"../features/anon-chat":13,"../features/chat-load-settings":22,"../features/css-loader":28,"../features/override-emotes":43,"../helpers/debug":46,"../keycodes":50,"../vars":64,"./handlers":4,"./helpers":5,"./rooms":7,"./store":8,"./tmi":11}],10:[function(require,module,exports){
+},{"../features/anon-chat":13,"../features/chat-load-settings":22,"../features/css-loader":28,"../features/override-emotes":43,"../helpers/debug":46,"../keycodes":50,"../vars":64,"./handlers":4,"./helpers":5,"./rooms":7,"./store":8,"./templates":10,"./tmi":11}],10:[function(require,module,exports){
 var tmi = require('./tmi'),
     store = require('./store');
 

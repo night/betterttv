@@ -4,7 +4,8 @@ var vars = require('../vars'),
 var store = require('./store'),
     handlers = require('./handlers'),
     helpers = require('./helpers'),
-    rooms = require('./rooms');
+    rooms = require('./rooms'),
+    templates = require('./templates');
 var overrideEmotes = require('../features/override-emotes'),
     loadChatSettings = require('../features/chat-load-settings'),
     cssLoader = require('../features/css-loader'),
@@ -214,8 +215,15 @@ var takeover = module.exports = function() {
     if (!vars.loadedDoubleClickTranslation && bttv.settings.get("dblclickTranslation") !== false) {
         vars.loadedDoubleClickTranslation = true;
         $('body').on('dblclick', '.chat-line .message', function() {
-            helpers.translate($(this), $(this).parent().data("sender"), $(this).data("raw"));
-            $(this).text("Translating..");
+            var sender = $(this).parent().data("sender");
+            var message = decodeURIComponent($(this).data("raw"));
+
+            if($(this).hasClass('timed-out')) {
+                $(this).replaceWith(templates.message(sender, message));
+            } else {
+                helpers.translate($(this), sender, message);
+                $(this).text("Translating..");
+            }
             $('div.tipsy').remove();
         });
     }

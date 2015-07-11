@@ -777,21 +777,21 @@ var massUnban = exports.massUnban = function() {
         }
     });
 };
-var translate = exports.translate = function(element, sender, text) {
+var translate = exports.translate = function($element, sender, text) {
     var language = (window.cookie && window.cookie.get('language')) ? window.cookie.get('language') : 'en';
 
     var qs = $.param({
         target: language,
-        q: decodeURIComponent(text)
+        q: text
     });
 
     $.getJSON('https://api.betterttv.net/2/translate?' + qs).success(function(data) {
-        $(element).replaceWith(templates.message(sender, data.translation));
+        $element.replaceWith(templates.message(sender, data.translation));
     }).error(function(data) {
         if(data.responseJSON && data.responseJSON.message) {
-            $(element).text(data.responseJSON.message);
+            $element.text(data.responseJSON.message);
         } else {
-            $(element).text("Translation Error");
+            $element.text("Translation Error");
         }
     });
 };

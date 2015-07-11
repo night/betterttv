@@ -207,6 +207,7 @@ var clearChat = exports.clearChat = function (user) {
         } else {
             if(bttv.settings.get("showDeletedMessages") !== true) {
                 $('.chat-line[data-sender="' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '"] .message').each(function () {
+                    $(this).addClass('timed-out');
                     $(this).html("<span style=\"color: #999\">&lt;message deleted&gt;</span>").off('click').on('click', function() {
                         $(this).replaceWith(templates.message(user, decodeURIComponent($(this).data('raw'))));
                     });
@@ -220,6 +221,7 @@ var clearChat = exports.clearChat = function (user) {
                     $(".emoticon", this).each(function () {
                         $(this).css("opacity","0.1");
                     });
+                    $(this).addClass('timed-out');
                     $(this).html("<span style=\"color: #999\">" + $(this).html() + "</span>");
                 });
             }
