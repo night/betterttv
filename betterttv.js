@@ -979,7 +979,7 @@ var tabCompletion = exports.tabCompletion = function(e) {
             users = recentWhispers.concat(users);
 
             // Mix in emotes if not directly asking for a user
-            if(lastWord.charAt(0) !== '@') {
+            if(lastWord.charAt(0) !== '@' && !detectServerCommand(input)) {
                 users = users.concat(emotes);
             }
 
@@ -3380,6 +3380,7 @@ var checkBroadcastInfo = module.exports = function() {
     bttv.TwitchAPI.get("channels/" + channel.id, {}, { version: 3 }).done(function(d) {
         if(d.game) {
             channel.set('game', d.game);
+            channel.set('rollbackData.game', d.game);
         }
 
         if(d.status) {

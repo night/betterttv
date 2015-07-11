@@ -21,6 +21,7 @@ var checkBroadcastInfo = module.exports = function() {
     bttv.TwitchAPI.get("channels/" + channel.id, {}, { version: 3 }).done(function(d) {
         if(d.game) {
             channel.set('game', d.game);
+            channel.set('rollbackData.game', d.game);
         }
 
         if(d.status) {
