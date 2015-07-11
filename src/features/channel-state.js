@@ -52,6 +52,19 @@ module.exports = function(event) {
         $stateContainer = $(stateContainer);
         $stateContainer.children().each(function() {
             $(this).hide();
+
+            if($(this).hasClass('slow')) {
+                $(this).find('.slow-time').tipsy({
+                    gravity: $.fn.tipsy.autoNS
+                });
+                $(this).find('svg').tipsy({
+                    gravity: $.fn.tipsy.autoNS
+                });
+            } else {
+                $(this).tipsy({
+                    gravity: $.fn.tipsy.autoNS
+                });
+            }
         });
     }
 
@@ -62,7 +75,10 @@ module.exports = function(event) {
 
                 bttv.chat.store.slowTime = length;
 
-                $stateContainer.find('.slow-time').text(displaySeconds(length));
+                $stateContainer
+                    .find('.slow-time')
+                    .attr('original-title', length + ' seconds')
+                    .text(displaySeconds(length));
 
                 if(length === 0) {
                     $stateContainer.find('.slow').hide();
