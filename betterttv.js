@@ -1714,6 +1714,12 @@ var takeover = module.exports = function() {
         debug.log('There was an error patching socket for ROOMSTATE');
     }
 
+    if(bttv.settings.get('disableUsernameColors') === true) {
+        $('.ember-chat .chat-room').addClass('no-name-colors');
+    } else {
+        $('.ember-chat .chat-room').removeClass('no-name-colors');
+    }
+
     if(store.isLoaded) return;
 
     // Hides Group List if coming from directory
@@ -1754,6 +1760,7 @@ var takeover = module.exports = function() {
         if(tmi.tmiSession._rooms.hasOwnProperty(channel)) {
             delete tmi.tmiSession._rooms[channel]._events['message'];
             delete tmi.tmiSession._rooms[channel]._events['clearchat'];
+            delete tmi.tmiSession._rooms[channel]._events['notice'];
             delete tmi.tmiSession._rooms[channel]._events['notice'];
         }
     }
@@ -5348,6 +5355,19 @@ module.exports = [
             try {
                 window.App.set("enableHostMode", !bttv.settings.get('disableHostMode'));
             } catch(e) {}
+        }
+    },
+    {
+        name: 'Disable Name Colors',
+        description: 'Disables colors in chat (useful for those who may suffer from color blindness)',
+        default: false,
+        storageKey: 'disableUsernameColors',
+        toggle: function(value) {
+            if(value === true) {
+                $('.ember-chat .chat-room').addClass('no-name-colors');
+            } else {
+                $('.ember-chat .chat-room').removeClass('no-name-colors');
+            }
         }
     },
     {

@@ -1563,3 +1563,8 @@ body.channel_new.columns.ember-application {
     font-size: 9px;
     line-height: 9px;
 }
+
+/* normalizes username colors in chat */
+.ember-chat .chat-room.no-name-colors .chat-messages .chat-line .from, .ember-chat .chat-room.no-name-colors .chat-messages .chat-line .to {
+    color: #6441A5 !important;
+}

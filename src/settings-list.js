@@ -220,6 +220,19 @@ module.exports = [
         }
     },
     {
+        name: 'Disable Name Colors',
+        description: 'Disables colors in chat (useful for those who may suffer from color blindness)',
+        default: false,
+        storageKey: 'disableUsernameColors',
+        toggle: function(value) {
+            if(value === true) {
+                $('.ember-chat .chat-room').addClass('no-name-colors');
+            } else {
+                $('.ember-chat .chat-room').removeClass('no-name-colors');
+            }
+        }
+    },
+    {
         name: 'Disable Whispers',
         description: 'Disables the twitch whisper functionalitiy, hiding any whispers you recieve',
         default: false,

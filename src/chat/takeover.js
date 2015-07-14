@@ -38,6 +38,12 @@ var takeover = module.exports = function() {
         debug.log('There was an error patching socket for ROOMSTATE');
     }
 
+    if(bttv.settings.get('disableUsernameColors') === true) {
+        $('.ember-chat .chat-room').addClass('no-name-colors');
+    } else {
+        $('.ember-chat .chat-room').removeClass('no-name-colors');
+    }
+
     if(store.isLoaded) return;
 
     // Hides Group List if coming from directory
@@ -78,6 +84,7 @@ var takeover = module.exports = function() {
         if(tmi.tmiSession._rooms.hasOwnProperty(channel)) {
             delete tmi.tmiSession._rooms[channel]._events['message'];
             delete tmi.tmiSession._rooms[channel]._events['clearchat'];
+            delete tmi.tmiSession._rooms[channel]._events['notice'];
             delete tmi.tmiSession._rooms[channel]._events['notice'];
         }
     }

@@ -2041,3 +2041,8 @@ span.subscribe-text {
 #bttv-channel-state-contain svg path {
     fill: #d3d3d3;
 }
+
+/* normalizes username colors in chat */
+.ember-chat .chat-room.no-name-colors .chat-messages .chat-line .from, .ember-chat .chat-room.no-name-colors .chat-messages .chat-line .to {
+    color: #d3d3d3 !important;
+}
