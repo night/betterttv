@@ -558,7 +558,7 @@ input.text:focus,select:focus,textarea:focus {
     padding-top: 15px;
     padding-left: 10px;
     padding-bottom: 15px;
-    background-color: #222;
+    background-color: rgb(60,60,60);
     font-size: 12px;
     font-weight: bold;
     cursor: pointer;
@@ -601,7 +601,8 @@ input.text:focus,select:focus,textarea:focus {
     max-height: 100px;
     width: 300px !important;
     max-height: 100px !important;
-    overflow-y: scroll;
+    overflow-y: auto;
+    box-shadow: 0px 2px 0px 0px #f00;
 }
 
 .bttv-switch {
