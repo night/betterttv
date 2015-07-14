@@ -1196,7 +1196,7 @@ body {
     color: white;
 }
 
-.ember-chat .chatters-view {
+.ember-chat .chatters-view, .ember-chat .chatters-view .chatters-container .chatters {
     background: rgb(30,30,30);
 }
 
