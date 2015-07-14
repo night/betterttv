@@ -204,6 +204,22 @@ module.exports = [
         }
     },
     {
+        name: 'Disable Host Mode',
+        description: 'Disables hosted channels on Twitch',
+        default: false,
+        storageKey: 'disableHostMode',
+        toggle: function(value) {
+            try {
+                window.App.set("enableHostMode", !value);
+            } catch(e) {}
+        },
+        load: function() {
+            try {
+                window.App.set("enableHostMode", !bttv.settings.get('disableHostMode'));
+            } catch(e) {}
+        }
+    },
+    {
         name: 'Disable Whispers',
         description: 'Disables the twitch whisper functionalitiy, hiding any whispers you recieve',
         default: false,
