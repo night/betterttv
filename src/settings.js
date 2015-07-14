@@ -133,6 +133,7 @@ Settings.prototype.import = function(input) {
             Object.keys(settings).forEach(function(setting) {
                 try {
                     _self.set(setting, settings[setting]);
+                    count++;
                 } catch(e) {
                     debug.log("Import Error: " + setting + " does not exist in settings list. Ignoring...");
                 }

@@ -343,7 +343,7 @@ var privmsg = exports.privmsg = function (channel, data) {
     // Strawpoll
     embeddedPolling(data);
 
-    data.color = helpers.getColor(data.from);
+    data.color = (data.tags && data.tags.color && data.tags.color.length) ? data.tags.color : helpers.getColor(data.from);
 
     data.color = helpers.calculateColor(data.color);
 
