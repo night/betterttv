@@ -47,7 +47,7 @@
  * Copyright (c) 2009-2014 TJ Holowaychuk (tj@vision-media.ca)
  * Licensed under the MIT license.
  */
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.jade = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+!function(e){if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.jade=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
 'use strict';
 
 /**
@@ -110,9 +110,7 @@ function nulls(val) {
  */
 exports.joinClasses = joinClasses;
 function joinClasses(val) {
-  return (Array.isArray(val) ? val.map(joinClasses) :
-    (val && typeof val === 'object') ? Object.keys(val).filter(function (key) { return val[key]; }) :
-    [val]).filter(nulls).join(' ');
+  return Array.isArray(val) ? val.map(joinClasses).filter(nulls).join(' ') : val;
 }
 
 /**
@@ -139,16 +137,6 @@ exports.cls = function cls(classes, escaped) {
   }
 };
 
-
-exports.style = function (val) {
-  if (val && typeof val === 'object') {
-    return Object.keys(val).map(function (style) {
-      return style + ':' + val[style];
-    }).join(';');
-  } else {
-    return val;
-  }
-};
 /**
  * Render the given attribute.
  *
@@ -159,9 +147,6 @@ exports.style = function (val) {
  * @return {String}
  */
 exports.attr = function attr(key, val, escaped, terse) {
-  if (key === 'style') {
-    val = exports.style(val);
-  }
   if ('boolean' == typeof val || null == val) {
     if (val) {
       return ' ' + (terse ? key : key + '="' + key + '"');
@@ -169,24 +154,10 @@ exports.attr = function attr(key, val, escaped, terse) {
       return '';
     }
   } else if (0 == key.indexOf('data') && 'string' != typeof val) {
-    if (JSON.stringify(val).indexOf('&') !== -1) {
-      console.warn('Since Jade 2.0.0, ampersands (`&`) in data attributes ' +
-                   'will be escaped to `&amp;`');
-    };
-    if (val && typeof val.toISOString === 'function') {
-      console.warn('Jade will eliminate the double quotes around dates in ' +
-                   'ISO form after 2.0.0');
-    }
     return ' ' + key + "='" + JSON.stringify(val).replace(/'/g, '&apos;') + "'";
   } else if (escaped) {
-    if (val && typeof val.toISOString === 'function') {
-      console.warn('Jade will stringify dates in ISO form after 2.0.0');
-    }
     return ' ' + key + '="' + exports.escape(val) + '"';
   } else {
-    if (val && typeof val.toISOString === 'function') {
-      console.warn('Jade will stringify dates in ISO form after 2.0.0');
-    }
     return ' ' + key + '="' + val + '"';
   }
 };
@@ -229,21 +200,12 @@ exports.attrs = function attrs(obj, terse){
  * @api private
  */
 
-var jade_encode_html_rules = {
-  '&': '&amp;',
-  '<': '&lt;',
-  '>': '&gt;',
-  '"': '&quot;'
-};
-var jade_match_html = /[&<>"]/g;
-
-function jade_encode_char(c) {
-  return jade_encode_html_rules[c] || c;
-}
-
-exports.escape = jade_escape;
-function jade_escape(html){
-  var result = String(html).replace(jade_match_html, jade_encode_char);
+exports.escape = function escape(html){
+  var result = String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
   if (result === '' + html) return html;
   else return result;
 };
@@ -265,7 +227,7 @@ exports.rethrow = function rethrow(err, filename, lineno, str){
     throw err;
   }
   try {
-    str = str || require('fs').readFileSync(filename, 'utf8')
+    str = str || _dereq_('fs').readFileSync(filename, 'utf8')
   } catch (ex) {
     rethrow(err, null, lineno)
   }
@@ -290,14 +252,10 @@ exports.rethrow = function rethrow(err, filename, lineno, str){
   throw err;
 };
 
-exports.DebugItem = function DebugItem(lineno, filename) {
-  this.lineno = lineno;
-  this.filename = filename;
-}
+},{"fs":2}],2:[function(_dereq_,module,exports){
 
-},{"fs":2}],2:[function(require,module,exports){
-
-},{}]},{},[1])(1)
+},{}]},{},[1])
+(1)
 });(function(bttv) {(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 module.exports = [
     "nightbot",
@@ -4114,6 +4072,7 @@ module.exports = function handleBackground(tiled) {
 var debug = require('../helpers/debug');
 
 module.exports = function () {
+    // Inject the emote menu if option is enabled.
     if(bttv.settings.get("clickTwitchEmotes") === true) {
         debug.log("Injecting Twitch Chat Emotes Script");
 
@@ -4122,23 +4081,26 @@ module.exports = function () {
         emotesJSInject.setAttribute("type", "text/javascript");
         emotesJSInject.setAttribute("id", "clickTwitchEmotes");
         $("body").append(emotesJSInject);
-
-        var counter = 0;
-        var getterInterval = setInterval(function() {
-            counter++;
-
-            if(counter > 29) {
-                clearInterval(getterInterval);
-                return;
-            }
-
-            if(window.emoteMenu) {
-                clearInterval(getterInterval);
-                window.emoteMenu.registerEmoteGetter('BetterTTV', bttv.chat.emotes);
-            }
-        }, 1000);
     }
+
+    // Try hooking into the emote menu, regardless of whether we injected or not.
+    var counter = 0;
+    var getterInterval = setInterval(function() {
+        counter++;
+
+        if(counter > 29) {
+            clearInterval(getterInterval);
+            return;
+        }
+
+        if(window.emoteMenu) {
+            clearInterval(getterInterval);
+            debug.log("Hooking into Twitch Chat Emotes Script");
+            window.emoteMenu.registerEmoteGetter('BetterTTV', bttv.chat.emotes);
+        }
+    }, 1000);
 }
+
 },{"../helpers/debug":46}],39:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars');
