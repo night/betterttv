@@ -33,9 +33,7 @@ var initiateCountDown = function(length) {
         var $chatButton = $(chatButton);
 
         if(timer === 0) {
-            clearInterval(bttv.chat.store.chatCountDown);
-            bttv.chat.store.chatCountDown = false;
-            $chatButton.find('span').text('Chat');
+            resetCountDown();
             return;
         }
 
@@ -43,6 +41,12 @@ var initiateCountDown = function(length) {
 
         timer--;
     }, 1000);
+};
+
+var resetCountDown = function() {
+    if(bttv.chat.store.chatCountDown) clearInterval(bttv.chat.store.chatCountDown);
+    bttv.chat.store.chatCountDown = false;
+    $chatButton.find('span').text('Chat');
 };
 
 module.exports = function(event) {
@@ -114,6 +118,8 @@ module.exports = function(event) {
 
             if(bttv.chat.store.slowTime > 0) {
                 initiateCountDown(bttv.chat.store.slowTime);
+            } else {
+                resetCountDown();
             }
             break;
         case "notice":

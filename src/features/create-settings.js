@@ -60,6 +60,10 @@ module.exports = function () {
             $(this).parent("li").removeClass("active");
         });
 
+        if(tab === '#bttvChannel') {
+            $(tab).children('iframe').attr('src', 'https://manage.betterttv.net/')
+        }
+
         $(tab).fadeIn();
         $(this).parent("li").addClass("active");
     });

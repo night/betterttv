@@ -85,7 +85,6 @@ var takeover = module.exports = function() {
             delete tmi.tmiSession._rooms[channel]._events['message'];
             delete tmi.tmiSession._rooms[channel]._events['clearchat'];
             delete tmi.tmiSession._rooms[channel]._events['notice'];
-            delete tmi.tmiSession._rooms[channel]._events['notice'];
         }
     }
 
