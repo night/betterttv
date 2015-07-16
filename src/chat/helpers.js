@@ -405,6 +405,12 @@ var sendMessage = exports.sendMessage = function(message) {
             return;
         }
 
+        if(message.charAt(0) === '/' || message.charAt(0) === '.') {
+            message = message.split(' ');
+            message[0] = message[0].toLowerCase();
+            message = message.join(' ');
+        }
+
         tmi().tmiRoom.sendMessage(message);
 
         channelState({

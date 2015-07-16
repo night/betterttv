@@ -19,7 +19,7 @@ var getHex = require('../helpers/colors').getHex;
 
 var commands = exports.commands = function (input) {
     var sentence = input.trim().split(' ');
-    var command = sentence[0];
+    var command = sentence[0].toLowerCase();
 
     if (command === "/join") {
         anonChat(false);

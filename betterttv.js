@@ -382,7 +382,7 @@ var getHex = require('../helpers/colors').getHex;
 
 var commands = exports.commands = function (input) {
     var sentence = input.trim().split(' ');
-    var command = sentence[0];
+    var command = sentence[0].toLowerCase();
 
     if (command === "/join") {
         anonChat(false);
@@ -1188,6 +1188,12 @@ var sendMessage = exports.sendMessage = function(message) {
             return;
         }
 
+        if(message.charAt(0) === '/' || message.charAt(0) === '.') {
+            message = message.split(' ');
+            message[0] = message[0].toLowerCase();
+            message = message.join(' ');
+        }
+
         tmi().tmiRoom.sendMessage(message);
 
         channelState({
@@ -1932,7 +1938,7 @@ var takeover = module.exports = function() {
     var $chatSend = $chatInterface.find('.send-chat-button');
 
     // Disable Twitch's chat senders
-    $chatInput.off('keydown').off('keyup');
+    $chatInput.off('keydown').off('keyup').off('mouseup');
     $chatSend.off();
 
     // Message input features (tab completion, message history)
