@@ -239,7 +239,7 @@ var takeover = module.exports = function() {
     var $chatSend = $chatInterface.find('.send-chat-button');
 
     // Disable Twitch's chat senders
-    $chatInput.off();
+    $chatInput.off('keydown').off('keyup').off('mouseup');
     $chatSend.off();
 
     // Message input features (tab completion, message history)

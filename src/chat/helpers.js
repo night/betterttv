@@ -411,6 +411,15 @@ var sendMessage = exports.sendMessage = function(message) {
             type: 'outgoing_message'
         });
 
+        try {
+            if(!/^\/w(\s|$)/.test(message)) {
+                tmi().trackSubOnly(message);
+                tmi().trackChat();
+            }
+        } catch(e) {
+            debug.log('Error sending tracking data to Twitch');
+        }
+
         // Fixes issue when using Twitch's sub emote selector
         tmi().set('messageToSend', '');
         tmi().set('savedInput', '');

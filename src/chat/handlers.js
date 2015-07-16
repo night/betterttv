@@ -291,6 +291,13 @@ var privmsg = exports.privmsg = function (channel, data) {
         store.displayNames[data.from] = data.tags['display-name'];
     }
 
+    try {
+        tmi().trackLatency(data);
+        tmi().trackWhisper(data);
+    } catch(e) {
+        debug.log('Error sending tracking data to Twitch');
+    }
+
     if(data.style && ['admin','action','notification','whisper'].indexOf(data.style) === -1) return;
 
     if(data.style === 'admin' || data.style === 'notification') {
@@ -359,13 +366,14 @@ var privmsg = exports.privmsg = function (channel, data) {
     var badges = helpers.getBadges(data.from);
     var bttvBadges = helpers.assignBadges(badges, data);
 
-    data.sender = data.from;
+    var from = data.from;
+    var sender = data.from;
 
     if(data.bttvDisplayName) {
         helpers.lookupDisplayName(data.from);
-        data.from = data.bttvDisplayName;
+        from = data.bttvDisplayName;
     } else {
-        data.from = helpers.lookupDisplayName(data.from);
+        from = helpers.lookupDisplayName(data.from);
     }
 
     // handle twitch whispers
@@ -376,8 +384,8 @@ var privmsg = exports.privmsg = function (channel, data) {
         var message = templates.whisper({
             message: data.message,
             time: data.date == null ? '' : data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
-            from: data.from,
-            sender: data.sender,
+            from: from,
+            sender: sender,
             receiver: data.to,
             to: helpers.lookupDisplayName(data.to),
             fromColor: data.color,
@@ -398,8 +406,8 @@ var privmsg = exports.privmsg = function (channel, data) {
         {
             message: data.message,
             time: data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
-            nickname: data.from,
-            sender: data.sender,
+            nickname: from,
+            sender: sender,
             badges: bttvBadges,
             color: data.color,
             emotes: data.tags.emotes
