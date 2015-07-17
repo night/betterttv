@@ -333,9 +333,6 @@ var privmsg = exports.privmsg = function (channel, data) {
 
     if(!store.chatters[data.from]) store.chatters[data.from] = {lastWhisper: 0};
 
-    if(vars.localSubsOnly && !helpers.isModerator(data.from) && !helpers.isSubscriber(data.from)) return;
-    if(vars.localModsOnly && !helpers.isModerator(data.from)) return;
-
     if(store.trackTimeouts[data.from]) delete store.trackTimeouts[data.from];
 
     var blacklistFilter = require('../features/keywords-lists').blacklistFilter,
@@ -397,6 +394,9 @@ var privmsg = exports.privmsg = function (channel, data) {
         helpers.scrollChat();
         return;
     }
+
+    if(vars.localSubsOnly && !helpers.isModerator(data.from) && !helpers.isSubscriber(data.from)) return;
+    if(vars.localModsOnly && !helpers.isModerator(data.from)) return;
 
     var message = templates.privmsg(
         messageHighlighted,

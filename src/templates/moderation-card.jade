@@ -7,15 +7,23 @@ div.bttv-mod-card.ember-view.moderation-card(data-user=user.name style="top: #{t
   .card-header(style="background-color: #{user.profile_banner_background_color?user.profile_banner_background_color:'#000'}")
     img.channel_logo(src=user.logo?user.logo:'https://www-cdn.jtvnw.net/images/xarth/404_user_300x300.png')
     .drag-handle
+    if bttv.storage.getObject("nicknames")[user.name.toLowerCase()]
+      h4.real-name= user.display_name
     h3.name
       a(href=Twitch.url.profile(user.name), target="_blank")= bttv.storage.getObject("nicknames")[user.name.toLowerCase()] || user.display_name
       svg.svg-edit.mod-card-edit(style="margin-left: 5px;" height='10px', width='10px', version='1.1', viewBox='0 0 16 16', x='0px', y='0px')
           path(clip-rule='evenodd', fill-rule='evenodd', d='M6.414,12.414L3.586,9.586l8-8l2.828,2.828L6.414,12.414z M4.829,14H2l0,0v-2.828l0.586-0.586l2.828,2.828L4.829,14z')
-    if bttv.storage.getObject("nicknames")[user.name.toLowerCase()]
-      h4.real-name= user.display_name
+    h4.created-at="Created " + Date.parse(user.created_at).toString("MMM d, yyyy")
     .channel_background_cover
     if user.profile_banner
       img.channel_background(src=user.profile_banner)
+    div.channel-stats
+      span.stat=Twitch.display.commatize(user.views)
+        svg.svg-glyph_views(height='16px', version='1.1', viewbox='1 1 16 16', width='16px', x='0px', y='0px')
+          path(clip-rule='evenodd', d='M11,13H5L1,9V8V7l4-4h6l4,4v1v1L11,13z M8,5C6.344,5,5,6.343,5,8c0,1.656,1.344,3,3,3c1.657,0,3-1.344,3-3C11,6.343,9.657,5,8,5z M8,9C7.447,9,7,8.552,7,8s0.447-1,1-1s1,0.448,1,1S8.553,9,8,9z', fill-rule='evenodd')
+      span.stat=Twitch.display.commatize(user.followers)
+        svg.svg-glyph_followers(height='16px', version='1.1', viewbox='0 0 16 16', width='16px', x='0px', y='0px')
+          path(clip-rule='evenodd', d='M8,13.5L1.5,7V4l2-2h3L8,3.5L9.5,2h3l2,2v3L8,13.5z', fill-rule='evenodd')
   if user.name != vars.userData.login
     .interface
       button.button-simple.primary.mod-card-follow Follow

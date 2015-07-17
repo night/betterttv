@@ -29,7 +29,8 @@ a.js-follow.follow.button.primary.action,
 .directory_header .follow-button a,
 .profile-info .follow-button a,
 #hostmode .channel-actions .follow-button a,
-.chat-room .moderation-card .mod-card-follow { 
+.chat-room .moderation-card .mod-card-follow,
+.ember-follow.follow-button:not(.is-following) a { 
     border-color: #000 !important;
     background: linear-gradient(bottom, rgb(47,88,185) 31%, rgb(50,108,211) 80%) !important; 
     background: -o-linear-gradient(bottom, rgb(47,88,185) 31%, rgb(50,108,211) 80%) !important; 
@@ -60,7 +61,7 @@ a.js-follow.follow.button.primary.action,
 .ember-chat .chat-menu-button-container svg path, .button.unfollow .svg-check path, .button.unfollow .svg-x path, #is-subscribed svg path {
     fill: #2A4687 !important;
 }
-.dropmenu.menu-like .dropmenu_action:hover, .hostmode-title-container .hostmode-title .what {
+.dropmenu.menu-like .dropmenu_action:hover, .hostmode-title-container .hostmode-title .what, .ui-autocomplete .game.ui-menu-item a:hover {
     background-color: #2A4687 !important;
 }
 

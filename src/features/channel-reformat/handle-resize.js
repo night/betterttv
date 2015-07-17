@@ -28,7 +28,7 @@ var getPlayerHeight = function() {
         return ($(player).width() * 0.5625) + 30;
     }
 
-    return 0;
+    return -1;
 };
 
 var handleResize = module.exports = function () {
@@ -57,6 +57,7 @@ var handleResize = module.exports = function () {
 
     var fullPageHeight = $(window).height();
     var fullPlayerHeight = getPlayerHeight();
+    if(fullPlayerHeight === -1) return;
     var metaAndStatsHeight;
 
     if($('#hostmode').length) {

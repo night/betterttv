@@ -4,7 +4,7 @@ var template = require('../templates/channel-state');
 var chatHelpers = require('../chat/helpers');
 
 var stateContainer = '#bttv-channel-state-contain';
-var chatHeader = '.chat-container .chat-header';
+var chatHeader = '.chat-container .chat-header:first';
 var chatButton = '.chat-interface .chat-buttons-container .send-chat-button';
 
 var displaySeconds = function(s) {

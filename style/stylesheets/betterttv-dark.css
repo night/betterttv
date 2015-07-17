@@ -248,10 +248,12 @@ body {
     width: 97%;
     background: #4e4e4e;
     height: 12px;
-    margin-bottom: 6px;
 }
 .teespring-panel .progress-bar {
     max-width: 320px;
+}
+.teespring-panel .teespring-panel-reservations {
+    margin-top: -6px;
 }
 
 /* dashboard bookmarks darken */
@@ -267,13 +269,13 @@ body {
     background: #343434;
 }
 
-#ui-id-1.ui-autocomplete.ui-front.ui-menu.ui-widget.ui-widget-content.ui-corner-all {
+.ui-autocomplete {
     color: #3b3b3b;
     border: 1px solid rgba(0,0,0,0.2);
     background: #3b3b3b;
 }
 
-#ui-id-1.ui-autocomplete.ui-front.ui-menu.ui-widget.ui-widget-content.ui-corner-all .game.ui-menu-item a {
+.ui-autocomplete .game.ui-menu-item a {
     display: block;
     background-position: 20px center;
     color: #d3d3d3 !important;
@@ -533,7 +535,7 @@ body {
 #channel .channel-actions .button.drop:after,
 #channel_actions .button.drop:after,
 .profile-info .buttons .button.drop:after,
-#channel .channel-actions .notification-controls .toggle-notification-menu:before {
+.notification-controls .toggle-notification-menu:before {
     border-top-color: #777;
     margin-right: 5px;
 }
@@ -574,7 +576,7 @@ body {
 }
 
 /* follow button for the fifth time*/
-#channel .channel-actions .notification-controls .toggle-notification-menu {
+.notification-controls .toggle-notification-menu {
     background-color: rgb(30,30,30);
     color: #d3d3d3;
 }
@@ -1475,13 +1477,7 @@ table.simple_table th {
 #settings #followers_content .hdr {
     background: #171717;
 }
-.connect_items {
-    border-color: #343434;
-}
-.connect_items .connect_item {
-    background: #404040;
-    color: #cdcdcd;
-}
+
 .section ul li, .section .sub {
     border-color: #333;
 }
@@ -1491,17 +1487,31 @@ table.simple_table th {
 table.simple_table td {
     border-color: transparent transparent #333;
 }
-.connect-items .connect-item .connect-item-info {
+.connect_items {
+    border-color: #343434;
+}
+.connect_items .connect_item {
+    background: #404040;
+    color: #cdcdcd;
+}
+.connect_items .connect_item .connect-item-info {
     background: #343434;
 }
-
-/* darken text on connections page */
-#user_edit_form .connect_items .connect-item-desc {
-    color: #333;
+.connect_items .connect-item-info .status {
+    background-color: #111;
 }
-
-#user_edit_form .form_microcopy {
-    background: #212121;
+.connect_items .connect-item-desc {
+    color: #d3d3d3;
+}
+.connect_items .connect-item-details-legal {
+    border: none;
+    padding-right: 25px;
+}
+#developer label {
+    color: #d3d3d3;
+}
+.streams .stream .content .thumb .boxart, .videos .video .content .thumb .boxart {
+    border-color: #111;
 }
 
 /*~~~~~~~Caster's Page~~~~~~~~*/
@@ -2045,4 +2055,23 @@ span.subscribe-text {
 /* normalizes username colors in chat */
 .ember-chat .chat-room.no-name-colors .chat-messages .chat-line .from, .ember-chat .chat-room.no-name-colors .chat-messages .chat-line .to {
     color: #d3d3d3 !important;
+}
+
+/* profile page fixes */
+.card .item textarea {
+    background-color: #111;
+    color: #d3d3d3;
+}
+
+.change-banner .banner-preview, .change-banner .sp-replacer {
+    border-color: #111;
+}
+
+.sp-replacer {
+    background-color: #101010;
+    color: #d3d3d3;
+}
+
+.sp-replacer:hover {
+    color: #d3d3d3;
 }

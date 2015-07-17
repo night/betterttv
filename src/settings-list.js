@@ -234,7 +234,7 @@ module.exports = [
     },
     {
         name: 'Disable Whispers',
-        description: 'Disables the twitch whisper functionalitiy, hiding any whispers you recieve',
+        description: 'Disables the Twitch whisper feature and hides any whispers you receive',
         default: false,
         storageKey: 'disableWhispers'
     },

@@ -8,7 +8,7 @@ var checkFollowing = module.exports = function () {
         $count = $('<div/>');
         $count.addClass('js-total');
         $count.attr('id', 'bttv-small-nav-count');
-        $count.insertBefore('#small_nav li[data-name=\"following\"] a[href=\"/directory/following\"] .filter_icon');
+        $count.insertBefore('#small_nav li[data-name=\"following\"] a[href=\"/directory/following\"] .filter_icon:first');
     }
 
     if($("body#chat").length || $('body[data-page="ember#chat"]').length || !vars.userData.isLoggedIn) return;
