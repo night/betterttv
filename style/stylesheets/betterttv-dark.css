@@ -248,6 +248,7 @@ body {
     width: 97%;
     background: #4e4e4e;
     height: 12px;
+    margin-bottom: 6px;
 }
 .teespring-panel .progress-bar {
     max-width: 320px;
