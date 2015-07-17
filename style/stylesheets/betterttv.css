@@ -545,12 +545,19 @@ input.text:focus,select:focus,textarea:focus {
     margin-top: 5px;
 }
 
+.bttv-mod-card .interface {
+    width: 100% !important;
+    padding: 0px !important;
+}
+
+.bttv-mod-card .btn-wrapper {
+    padding: 10px;
+}
+
 .bttv-mod-card .user-messages {
     padding-top: 10px;
-    margin-left: -10px;
-    margin-bottom: -10px;
-    margin-right: -12px;
-    width: 300px;
+    width: 100%;
+    max-width: 320px;
     float: left;
 }
 
@@ -558,6 +565,7 @@ input.text:focus,select:focus,textarea:focus {
     padding-top: 15px;
     padding-left: 10px;
     padding-bottom: 15px;
+    padding-right: 10px;
     background-color: rgb(60,60,60);
     font-size: 12px;
     font-weight: bold;
@@ -597,9 +605,8 @@ input.text:focus,select:focus,textarea:focus {
     top: auto !important;
     bottom: auto !important;
     position: relative;
-    float: left;
     max-height: 100px;
-    width: 300px !important;
+    width: 100% !important;
     max-height: 100px !important;
     overflow-y: auto;
     box-shadow: 0px 2px 0px 0px #f00;
@@ -1040,17 +1047,16 @@ body#chat #speak {
     margin-left: 60px;
     position: relative;
     z-index: 4;
-    width: 120px;
 }
 
 .moderation-card div.channel-stats {
-  margin-left: 60px;
-  height: 20px;
-  line-height: 20px;
-  float: left;
-  opacity: 0.7;
-  position: relative;
-  margin-top: 3px;
+    margin-left: 60px;
+    height: 20px;
+    line-height: 20px;
+    float: left;
+    opacity: 0.7;
+    position: relative;
+    margin-top: 3px;
 }
 
 .moderation-card .channel-stats .stat svg {
@@ -1088,7 +1094,6 @@ body#chat #speak {
 .ember-chat .moderation-card .interface {
     position: relative;
     display: inline-block;
-    width: 100%;
 }
 
 .ember-chat .moderation-card .button-simple.dark {
