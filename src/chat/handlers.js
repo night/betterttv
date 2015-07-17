@@ -22,9 +22,9 @@ var commands = exports.commands = function (input) {
     var command = sentence[0].toLowerCase();
 
     if (command === "/join") {
-        anonChat(false);
+        bttv.settings.save('anonChat', false);
     } else if(command === "/part") {
-        anonChat(true);
+        bttv.settings.save('anonChat', true);
     } else if (command === "/b") {
         helpers.ban(sentence[1]);
     } else if (command === "/t") {
