@@ -2647,7 +2647,7 @@ if(location.pathname.match(/^\/(.*)\/popout/)) {
     return;
 }
 
-if(!window.Twitch) {
+if(!window.Twitch || !window.Twitch.video || !window.Twitch.api || !window.Twitch.user) {
     debug.log("window.Twitch not detected.");
     return;
 }
@@ -6253,8 +6253,8 @@ module.exports = {
 },{}],64:[function(require,module,exports){
 module.exports = {
     userData: {
-        isLoggedIn: window.Twitch ? Twitch.user.isLoggedIn() : false,
-        login: window.Twitch ? Twitch.user.login() : ''
+        isLoggedIn: window.Twitch && Twitch.user ? Twitch.user.isLoggedIn() : false,
+        login: window.Twitch && Twitch.user ? Twitch.user.login() : ''
     },
     settings: {},
     liveChannels: [],

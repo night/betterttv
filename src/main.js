@@ -305,7 +305,7 @@ if(location.pathname.match(/^\/(.*)\/popout/)) {
     return;
 }
 
-if(!window.Twitch) {
+if(!window.Twitch || !window.Twitch.video || !window.Twitch.api || !window.Twitch.user) {
     debug.log("window.Twitch not detected.");
     return;
 }
