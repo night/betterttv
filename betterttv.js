@@ -302,7 +302,8 @@ exports.DebugItem = function DebugItem(lineno, filename) {
 module.exports = [
     "nightbot",
     "moobot",
-    "xanbot"
+    "xanbot",
+    "mtgbot"
 ];
 },{}],2:[function(require,module,exports){
 exports.tmi = require('./chat/tmi');
