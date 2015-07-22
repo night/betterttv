@@ -1,5 +1,6 @@
 module.exports = [
     "nightbot",
     "moobot",
-    "xanbot"
+    "xanbot",
+    "mtgbot"
 ];
