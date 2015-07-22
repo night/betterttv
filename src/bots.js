@@ -4,5 +4,6 @@ module.exports = [
     "sourbot",
     "xanbot",
     "manabot",
-    "ackbot"
+    "ackbot",
+	"mtgbot"
 ];

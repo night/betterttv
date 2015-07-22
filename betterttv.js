@@ -305,7 +305,8 @@ module.exports = [
     "sourbot",
     "xanbot",
     "manabot",
-    "ackbot"
+    "ackbot",
+	"mtgbot"
 ];
 },{}],2:[function(require,module,exports){
 exports.tmi = require('./chat/tmi');
