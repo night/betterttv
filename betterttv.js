@@ -889,11 +889,9 @@ var completableEmotes = function() {
         for(var emote in usableEmotes) {
             if(!usableEmotes.hasOwnProperty(emote)) continue;
 
-            emote = usableEmotes[emote];
+            if(usableEmotes[emote].isRegex === true) continue;
 
-            if(emote.isRegex === true || !emote.text) continue;
-
-            completableEmotes.push(emote.text);
+            completableEmotes.push(emote);
         }
     } catch(e) {
         debug.log('Couldn\'t grab user emotes for tab completion.');
