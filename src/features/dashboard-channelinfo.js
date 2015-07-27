@@ -80,6 +80,6 @@ module.exports = function dashboardChannelInfo() {
             });
         }
 
-        setTimeout(dashboardChannelInfo, 60000);
+        setTimeout(dashboardChannelInfo, 60000 + Math.random() * 5000);
     }
 };

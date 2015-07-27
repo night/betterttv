@@ -68,6 +68,6 @@ var checkFollowing = module.exports = function () {
         $("#left_col li[data-name=\"following\"] a[href=\"/directory/following\"] .js-total").text(streams.length);
         $("#left_col li[data-name=\"following\"] a[href=\"/directory/following\"] .js-total").css("display","inline");
 
-        setTimeout(checkFollowing, 60000);
+        setTimeout(checkFollowing, 60000 + Math.random() * 5000);
     });
 }

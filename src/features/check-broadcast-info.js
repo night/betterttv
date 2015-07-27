@@ -50,6 +50,6 @@ var checkBroadcastInfo = module.exports = function() {
             channel.set('followersTotal', d.followers);
         }
 
-        setTimeout(checkBroadcastInfo, 60000);
+        setTimeout(checkBroadcastInfo, 60000 + Math.random() * 5000);
     });
 }

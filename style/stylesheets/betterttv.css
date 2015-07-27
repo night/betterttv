@@ -728,7 +728,7 @@ input.text:focus,select:focus,textarea:focus {
 }
 
 #dash_main .dash-broadcast-contain {
-    padding-bottom: 10px;
+    padding: 10px;
 }
 
 #dash_main .dash-player-contain {

@@ -85,6 +85,6 @@ module.exports = function () {
         });
     }
 
-    setInterval(checkOther, 30000);
+    setInterval(checkOther, 30000 + Math.random() * 5000);
     checkOther();
 }

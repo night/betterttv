@@ -1779,6 +1779,7 @@ var takeover = module.exports = function() {
             delete tmi.tmiSession._rooms[channel]._events['message'];
             delete tmi.tmiSession._rooms[channel]._events['clearchat'];
             delete tmi.tmiSession._rooms[channel]._events['notice'];
+            //delete tmi.tmiSession._rooms[channel]._events['roomstate'];
         }
     }
 
@@ -1787,6 +1788,7 @@ var takeover = module.exports = function() {
     tmi.tmiRoom.on('message', rooms.getRoom(bttv.getChannel()).chatHandler);
     tmi.tmiRoom.on('clearchat', handlers.clearChat);
     tmi.tmiRoom.on('notice', handlers.notice);
+    //tmi.tmiRoom.on('roomstate', helpers.parseRoomState);
     if(tmi.channel) tmi.set('name', tmi.channel.get('display_name'));
     store.currentRoom = bttv.getChannel();
     //tmi.tmiRoom.on('labelschanged', handlers.labelsChanged);
@@ -3472,7 +3474,7 @@ var checkBroadcastInfo = module.exports = function() {
             channel.set('followersTotal', d.followers);
         }
 
-        setTimeout(checkBroadcastInfo, 60000);
+        setTimeout(checkBroadcastInfo, 60000 + Math.random() * 5000);
     });
 }
 },{"../helpers/debug":46}],24:[function(require,module,exports){
@@ -3546,7 +3548,7 @@ var checkFollowing = module.exports = function () {
         $("#left_col li[data-name=\"following\"] a[href=\"/directory/following\"] .js-total").text(streams.length);
         $("#left_col li[data-name=\"following\"] a[href=\"/directory/following\"] .js-total").css("display","inline");
 
-        setTimeout(checkFollowing, 60000);
+        setTimeout(checkFollowing, 60000 + Math.random() * 5000);
     });
 }
 },{"../helpers/debug":46,"../vars":64}],25:[function(require,module,exports){
@@ -3637,7 +3639,7 @@ module.exports = function () {
         });
     }
 
-    setInterval(checkOther, 30000);
+    setInterval(checkOther, 30000 + Math.random() * 5000);
     checkOther();
 }
 },{"../helpers/debug":46,"../vars":64}],26:[function(require,module,exports){
@@ -3868,7 +3870,7 @@ module.exports = function dashboardChannelInfo() {
             });
         }
 
-        setTimeout(dashboardChannelInfo, 60000);
+        setTimeout(dashboardChannelInfo, 60000 + Math.random() * 5000);
     }
 };
 },{"../helpers/debug":46,"../vars":64}],31:[function(require,module,exports){
