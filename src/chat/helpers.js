@@ -83,10 +83,14 @@ var parseTags = exports.parseTags = function(tags) {
     return tags;
 };
 var parseRoomState = exports.parseRoomState = function(e) {
-    channelState({
-        type: 'roomstate',
-        tags: e.tags
-    });
+    try {
+        channelState({
+            type: 'roomstate',
+            tags: e.tags
+        });
+    } catch(e) {
+        debug.log('Couldn\'t handle roomstate update.', e);
+    }
 };
 var completableEmotes = function() {
     var completableEmotes = [];
@@ -108,7 +112,7 @@ var completableEmotes = function() {
             completableEmotes.push(emote);
         }
     } catch(e) {
-        debug.log('Couldn\'t grab user emotes for tab completion.');
+        debug.log('Couldn\'t grab user emotes for tab completion.', e);
     }
 
     return completableEmotes;

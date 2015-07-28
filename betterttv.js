@@ -863,10 +863,14 @@ var parseTags = exports.parseTags = function(tags) {
     return tags;
 };
 var parseRoomState = exports.parseRoomState = function(e) {
-    channelState({
-        type: 'roomstate',
-        tags: e.tags
-    });
+    try {
+        channelState({
+            type: 'roomstate',
+            tags: e.tags
+        });
+    } catch(e) {
+        debug.log('Couldn\'t handle roomstate update.', e);
+    }
 };
 var completableEmotes = function() {
     var completableEmotes = [];
@@ -888,7 +892,7 @@ var completableEmotes = function() {
             completableEmotes.push(emote);
         }
     } catch(e) {
-        debug.log('Couldn\'t grab user emotes for tab completion.');
+        debug.log('Couldn\'t grab user emotes for tab completion.', e);
     }
 
     return completableEmotes;
@@ -4737,8 +4741,10 @@ var getHex = exports.getHex = function (color) {
 
 },{}],46:[function(require,module,exports){
 module.exports = {
-    log: function(string) {
-        if(window.console && console.log && bttv.settings.get('consoleLog') === true) console.log("BTTV: " + string);
+    log: function() {
+        if(!window.console || !console.log || !bttv.settings.get('consoleLog') === true) return;
+        var args = Array.prototype.slice.call(arguments);
+        console.log.apply(console.log, ['BTTV:'].concat(args));
     }
 };
 },{}],47:[function(require,module,exports){

@@ -1,5 +1,7 @@
 module.exports = {
-    log: function(string) {
-        if(window.console && console.log && bttv.settings.get('consoleLog') === true) console.log("BTTV: " + string);
+    log: function() {
+        if(!window.console || !console.log || !bttv.settings.get('consoleLog') === true) return;
+        var args = Array.prototype.slice.call(arguments);
+        console.log.apply(console.log, ['BTTV:'].concat(args));
     }
 };
