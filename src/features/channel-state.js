@@ -75,7 +75,7 @@ module.exports = function(event) {
     switch(event.type) {
         case "roomstate":
             if('slow' in event.tags) {
-                var length = parseInt(event.tags['slow']);
+                var length = event.tags['slow'];
 
                 bttv.chat.store.slowTime = length;
 
@@ -94,22 +94,22 @@ module.exports = function(event) {
             }
 
             if('r9k' in event.tags) {
-                var enabled = parseInt(event.tags['r9k']);
+                var enabled = event.tags['r9k'];
 
-                if(enabled === 0) {
-                    $stateContainer.find('.r9k').hide();
-                } else {
+                if(enabled === true) {
                     $stateContainer.find('.r9k').show();
+                } else {
+                    $stateContainer.find('.r9k').hide();
                 }
             }
 
             if('subs-only' in event.tags) {
-                var enabled = parseInt(event.tags['subs-only']);
+                var enabled = event.tags['subs-only'];
 
-                if(enabled === 0) {
-                    $stateContainer.find('.subs-only').hide();
-                } else {
+                if(enabled === true) {
                     $stateContainer.find('.subs-only').show();
+                } else {
+                    $stateContainer.find('.subs-only').hide();
                 }
             }
             break;

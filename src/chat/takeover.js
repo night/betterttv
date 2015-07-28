@@ -24,20 +24,6 @@ var takeover = module.exports = function() {
     // Anonymize Chat if it isn't already
     anonChat();
 
-    // We need to get ROOMSTATE, but Twitch doesn't parse it yet..
-    try {
-        var connection = tmi.tmiSession._connections.prod;
-        var events = connection._socket._events;
-
-        if(!contains(events.data, helpers.parseRoomState)) {
-            connection._socket.on('data', helpers.parseRoomState);
-            connection._send('QUIT');
-            bttv.chat.store.ignoreDC = true;
-        }
-    } catch(e) {
-        debug.log('There was an error patching socket for ROOMSTATE');
-    }
-
     if(bttv.settings.get('disableUsernameColors') === true) {
         $('.ember-chat .chat-room').addClass('no-name-colors');
     } else {
@@ -85,7 +71,6 @@ var takeover = module.exports = function() {
             delete tmi.tmiSession._rooms[channel]._events['message'];
             delete tmi.tmiSession._rooms[channel]._events['clearchat'];
             delete tmi.tmiSession._rooms[channel]._events['notice'];
-            //delete tmi.tmiSession._rooms[channel]._events['roomstate'];
         }
     }
 
@@ -94,10 +79,19 @@ var takeover = module.exports = function() {
     tmi.tmiRoom.on('message', rooms.getRoom(bttv.getChannel()).chatHandler);
     tmi.tmiRoom.on('clearchat', handlers.clearChat);
     tmi.tmiRoom.on('notice', handlers.notice);
-    //tmi.tmiRoom.on('roomstate', helpers.parseRoomState);
+    tmi.tmiRoom.on('roomstate', helpers.parseRoomState);
     if(tmi.channel) tmi.set('name', tmi.channel.get('display_name'));
     store.currentRoom = bttv.getChannel();
     //tmi.tmiRoom.on('labelschanged', handlers.labelsChanged);
+
+    // Fake the initial roomstate
+    helpers.parseRoomState({
+        tags: {
+            'subs-only': tmi.get('subsOnly'),
+            slow: tmi.get('slow'),
+            r9k: tmi.get('r9k')
+        }
+    });
 
     // Handle Group Chats
     var privateRooms = bttv.getChatController().get('connectedPrivateGroupRooms');

@@ -863,15 +863,9 @@ var parseTags = exports.parseTags = function(tags) {
     return tags;
 };
 var parseRoomState = exports.parseRoomState = function(e) {
-    var params = e.data.split(' ', 3);
-
-    if(params.length < 3 || params[0].charAt(0) !== '@') return;
-
-    if(params[2] !== 'ROOMSTATE') return;
-
     channelState({
-        type: params[2].toLowerCase(),
-        tags: parseTags(params[0])
+        type: 'roomstate',
+        tags: e.tags
     });
 };
 var completableEmotes = function() {
@@ -1191,12 +1185,11 @@ var sendMessage = exports.sendMessage = function(message) {
 
         tmi().tmiRoom.sendMessage(message);
 
-        channelState({
-            type: 'outgoing_message'
-        });
-
         try {
             if(!/^\/w(\s|$)/.test(message)) {
+                channelState({
+                    type: 'outgoing_message'
+                });
                 tmi().trackSubOnly(message);
                 tmi().trackChat();
             }
@@ -1718,20 +1711,6 @@ var takeover = module.exports = function() {
     // Anonymize Chat if it isn't already
     anonChat();
 
-    // We need to get ROOMSTATE, but Twitch doesn't parse it yet..
-    try {
-        var connection = tmi.tmiSession._connections.prod;
-        var events = connection._socket._events;
-
-        if(!contains(events.data, helpers.parseRoomState)) {
-            connection._socket.on('data', helpers.parseRoomState);
-            connection._send('QUIT');
-            bttv.chat.store.ignoreDC = true;
-        }
-    } catch(e) {
-        debug.log('There was an error patching socket for ROOMSTATE');
-    }
-
     if(bttv.settings.get('disableUsernameColors') === true) {
         $('.ember-chat .chat-room').addClass('no-name-colors');
     } else {
@@ -1779,7 +1758,6 @@ var takeover = module.exports = function() {
             delete tmi.tmiSession._rooms[channel]._events['message'];
             delete tmi.tmiSession._rooms[channel]._events['clearchat'];
             delete tmi.tmiSession._rooms[channel]._events['notice'];
-            //delete tmi.tmiSession._rooms[channel]._events['roomstate'];
         }
     }
 
@@ -1788,10 +1766,19 @@ var takeover = module.exports = function() {
     tmi.tmiRoom.on('message', rooms.getRoom(bttv.getChannel()).chatHandler);
     tmi.tmiRoom.on('clearchat', handlers.clearChat);
     tmi.tmiRoom.on('notice', handlers.notice);
-    //tmi.tmiRoom.on('roomstate', helpers.parseRoomState);
+    tmi.tmiRoom.on('roomstate', helpers.parseRoomState);
     if(tmi.channel) tmi.set('name', tmi.channel.get('display_name'));
     store.currentRoom = bttv.getChannel();
     //tmi.tmiRoom.on('labelschanged', handlers.labelsChanged);
+
+    // Fake the initial roomstate
+    helpers.parseRoomState({
+        tags: {
+            'subs-only': tmi.get('subsOnly'),
+            slow: tmi.get('slow'),
+            r9k: tmi.get('r9k')
+        }
+    });
 
     // Handle Group Chats
     var privateRooms = bttv.getChatController().get('connectedPrivateGroupRooms');
@@ -3241,7 +3228,7 @@ module.exports = function(event) {
     switch(event.type) {
         case "roomstate":
             if('slow' in event.tags) {
-                var length = parseInt(event.tags['slow']);
+                var length = event.tags['slow'];
 
                 bttv.chat.store.slowTime = length;
 
@@ -3260,22 +3247,22 @@ module.exports = function(event) {
             }
 
             if('r9k' in event.tags) {
-                var enabled = parseInt(event.tags['r9k']);
+                var enabled = event.tags['r9k'];
 
-                if(enabled === 0) {
-                    $stateContainer.find('.r9k').hide();
-                } else {
+                if(enabled === true) {
                     $stateContainer.find('.r9k').show();
+                } else {
+                    $stateContainer.find('.r9k').hide();
                 }
             }
 
             if('subs-only' in event.tags) {
-                var enabled = parseInt(event.tags['subs-only']);
+                var enabled = event.tags['subs-only'];
 
-                if(enabled === 0) {
-                    $stateContainer.find('.subs-only').hide();
-                } else {
+                if(enabled === true) {
                     $stateContainer.find('.subs-only').show();
+                } else {
+                    $stateContainer.find('.subs-only').hide();
                 }
             }
             break;

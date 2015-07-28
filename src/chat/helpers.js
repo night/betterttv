@@ -83,15 +83,9 @@ var parseTags = exports.parseTags = function(tags) {
     return tags;
 };
 var parseRoomState = exports.parseRoomState = function(e) {
-    var params = e.data.split(' ', 3);
-
-    if(params.length < 3 || params[0].charAt(0) !== '@') return;
-
-    if(params[2] !== 'ROOMSTATE') return;
-
     channelState({
-        type: params[2].toLowerCase(),
-        tags: parseTags(params[0])
+        type: 'roomstate',
+        tags: e.tags
     });
 };
 var completableEmotes = function() {
@@ -411,12 +405,11 @@ var sendMessage = exports.sendMessage = function(message) {
 
         tmi().tmiRoom.sendMessage(message);
 
-        channelState({
-            type: 'outgoing_message'
-        });
-
         try {
             if(!/^\/w(\s|$)/.test(message)) {
+                channelState({
+                    type: 'outgoing_message'
+                });
                 tmi().trackSubOnly(message);
                 tmi().trackChat();
             }

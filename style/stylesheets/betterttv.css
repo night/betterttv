@@ -115,6 +115,10 @@ input.text:focus,select:focus,textarea:focus {
     color: #000;
 }
 
+.ember-chat .chat-hidden-overlay {
+    left: 0px;
+}
+
 .chat_line a, .ember-chat .chat-line a {
     color: #005596;
 }
@@ -1094,6 +1098,7 @@ body#chat #speak {
 .ember-chat .moderation-card .interface {
     position: relative;
     display: inline-block;
+    width: 100%;
 }
 
 .ember-chat .moderation-card .button-simple.dark {
@@ -1130,6 +1135,11 @@ body#chat #speak {
 
 #chat_emote_dropmenu_button.newlayout {
     margin-left: 3px !important;
+}
+
+/* Fix Group Chat Pane Height */
+.ember-chat .chat-room-list {
+    height: calc(100% - 60px);
 }
 
 /* Canvas Channel Backgrounds */
@@ -1383,6 +1393,7 @@ body.channel_new.columns.ember-application {
 
     overflow: hidden;
     display: none;
+    z-index: 99999;
 }
 
 #bttv-poll-contain .title {
