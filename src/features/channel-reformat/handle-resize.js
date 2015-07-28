@@ -36,6 +36,8 @@ var handleResize = module.exports = function () {
 
     debug.log("Page resized");
 
+    var hostModeEnabled = $('#hostmode').length;
+
     var $playerStyle = $('#bttvPlayerStyle');
 
     if(!$playerStyle.length) {
@@ -60,7 +62,7 @@ var handleResize = module.exports = function () {
     if(fullPlayerHeight === -1) return;
     var metaAndStatsHeight;
 
-    if($('#hostmode').length) {
+    if(hostModeEnabled) {
         var title = $(".hostmode-title-container").outerHeight(true);
         var meta = $(".target-meta").outerHeight(true);
         var stats = $("#hostmode .channel-actions").outerHeight(true);
@@ -89,5 +91,7 @@ var handleResize = module.exports = function () {
     }
 
     // Channel panels below the stream auto arrange based on width
-    $("#channel_panels").masonry("reload");
+    if(!hostModeEnabled) {
+        $("#channel_panels").masonry("reload");
+    }
 };
