@@ -109,7 +109,7 @@ var takeover = module.exports = function() {
     var bttvEmoteKeys = Object.keys(store.bttvEmotes);
     for(var i=bttvEmoteKeys.length-1; i>=0; i--) {
         var emote = bttvEmoteKeys[i];
-        if(store.bttvEmotes[emote].id.toString().charAt(0) !== 'c') continue;
+        if(!store.bttvEmotes[emote].channelEmote) continue;
         delete store.bttvEmotes[emote];
     }
     store.__channelBots = [];
@@ -323,9 +323,9 @@ var takeover = module.exports = function() {
     });
 
     $('.ember-chat .chat-messages .chat-line').remove();
-    bttv.io.chatHistory(function(history) {
-        if(history.length) {
-            history.forEach(function(message) {
+    $.getJSON("https://api.betterttv.net/2/channels/"+encodeURIComponent(bttv.getChannel())+"/history").done(function(data) {
+        if(data.messages.length) {
+            data.messages.forEach(function(message) {
                 var badges = [];
                 if(message.user.name === message.channel.name) badges.push("owner");
 
@@ -334,7 +334,7 @@ var takeover = module.exports = function() {
                 message = bttv.chat.templates.privmsg(false, false, false, false, {
                     message: message.message,
                     time: (new Date(message.date.replace("T", " ").replace(/\.[0-9]+Z/, " GMT"))).toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, "$1:$2"),
-                    nickname: message.user.name,
+                    nickname: message.user.displayName,
                     sender: message.user.name,
                     badges: bttv.chat.helpers.assignBadges(badges),
                     color: bttv.chat.helpers.calculateColor(message.user.color),
@@ -344,7 +344,7 @@ var takeover = module.exports = function() {
                 $(".ember-chat .chat-messages .tse-content .chat-lines").append(message);
             });
         }
-
+    }).always(function() {
         helpers.serverMessage('<center><small>BetterTTV v' + bttv.info.version + ' Loaded.</small></center>');
         helpers.serverMessage('Welcome to '+helpers.lookupDisplayName(bttv.getChannel())+'\'s chat room!', true);
 

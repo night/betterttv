@@ -779,6 +779,7 @@ var privmsg = exports.privmsg = function (channel, data) {
 
 },{"../features/anon-chat":13,"../features/audible-feedback":14,"../features/channel-state":21,"../features/embedded-polling":32,"../features/keywords-lists":41,"../features/make-card":42,"../helpers/colors":45,"../helpers/debug":46,"../helpers/regex":49,"../vars":64,"./helpers":5,"./rooms":7,"./store":8,"./templates":10,"./tmi":11}],5:[function(require,module,exports){
 var vars = require('../vars'),
+    debug = require('../helpers/debug'),
     keyCodes = require('../keycodes'),
     tmi = require('./tmi'),
     store = require('./store'),
@@ -1586,7 +1587,7 @@ var translate = exports.translate = function($element, sender, text) {
     });
 };
 
-},{"../bots":1,"../features/channel-state":21,"../helpers/colors":45,"../helpers/element":47,"../helpers/regex":49,"../keycodes":50,"../legacy-tags":51,"../vars":64,"./handlers":4,"./store":8,"./templates":10,"./tmi":11,"punycode":66}],6:[function(require,module,exports){
+},{"../bots":1,"../features/channel-state":21,"../helpers/colors":45,"../helpers/debug":46,"../helpers/element":47,"../helpers/regex":49,"../keycodes":50,"../legacy-tags":51,"../vars":64,"./handlers":4,"./store":8,"./templates":10,"./tmi":11,"punycode":66}],6:[function(require,module,exports){
 
 // Add mouseover image preview to image links
 module.exports = function(imgUrl) {
@@ -1800,7 +1801,7 @@ var takeover = module.exports = function() {
     var bttvEmoteKeys = Object.keys(store.bttvEmotes);
     for(var i=bttvEmoteKeys.length-1; i>=0; i--) {
         var emote = bttvEmoteKeys[i];
-        if(store.bttvEmotes[emote].id.toString().charAt(0) !== 'c') continue;
+        if(!store.bttvEmotes[emote].channelEmote) continue;
         delete store.bttvEmotes[emote];
     }
     store.__channelBots = [];
@@ -2014,9 +2015,9 @@ var takeover = module.exports = function() {
     });
 
     $('.ember-chat .chat-messages .chat-line').remove();
-    bttv.io.chatHistory(function(history) {
-        if(history.length) {
-            history.forEach(function(message) {
+    $.getJSON("https://api.betterttv.net/2/channels/"+encodeURIComponent(bttv.getChannel())+"/history").done(function(data) {
+        if(data.messages.length) {
+            data.messages.forEach(function(message) {
                 var badges = [];
                 if(message.user.name === message.channel.name) badges.push("owner");
 
@@ -2025,7 +2026,7 @@ var takeover = module.exports = function() {
                 message = bttv.chat.templates.privmsg(false, false, false, false, {
                     message: message.message,
                     time: (new Date(message.date.replace("T", " ").replace(/\.[0-9]+Z/, " GMT"))).toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, "$1:$2"),
-                    nickname: message.user.name,
+                    nickname: message.user.displayName,
                     sender: message.user.name,
                     badges: bttv.chat.helpers.assignBadges(badges),
                     color: bttv.chat.helpers.calculateColor(message.user.color),
@@ -2035,7 +2036,7 @@ var takeover = module.exports = function() {
                 $(".ember-chat .chat-messages .tse-content .chat-lines").append(message);
             });
         }
-
+    }).always(function() {
         helpers.serverMessage('<center><small>BetterTTV v' + bttv.info.version + ' Loaded.</small></center>');
         helpers.serverMessage('Welcome to '+helpers.lookupDisplayName(bttv.getChannel())+'\'s chat room!', true);
 
@@ -5903,7 +5904,7 @@ function SocketClient() {
         _self._connected = false;
     });
 
-    // The rare occasion we need to global message people
+    // The rare occasion we need to global message to people
     this.socket.on('alert', function(data) {
         if(data.type === "chat") {
             bttv.chat.helpers.serverMessage(data.message);
@@ -5927,14 +5928,6 @@ function SocketClient() {
         if(!vars.userData.isLoggedIn || !bttv.chat.helpers.isModerator(vars.userData.login)) return;
 
         bttv.chat.helpers.notifyMessage("bot", data.message);
-    });
-}
-
-SocketClient.prototype.chatHistory = function(callback) {
-    if(!this._connected || !this.socket.connected) callback([]);
-
-    this.socket.emit('chat_history', bttv.getChannel(), function(history) {
-        callback(history);
     });
 }
 

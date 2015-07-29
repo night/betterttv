@@ -1,4 +1,5 @@
 var vars = require('../vars'),
+    debug = require('../helpers/debug'),
     keyCodes = require('../keycodes'),
     tmi = require('./tmi'),
     store = require('./store'),

@@ -24,7 +24,7 @@ function SocketClient() {
         _self._connected = false;
     });
 
-    // The rare occasion we need to global message people
+    // The rare occasion we need to global message to people
     this.socket.on('alert', function(data) {
         if(data.type === "chat") {
             bttv.chat.helpers.serverMessage(data.message);
@@ -48,14 +48,6 @@ function SocketClient() {
         if(!vars.userData.isLoggedIn || !bttv.chat.helpers.isModerator(vars.userData.login)) return;
 
         bttv.chat.helpers.notifyMessage("bot", data.message);
-    });
-}
-
-SocketClient.prototype.chatHistory = function(callback) {
-    if(!this._connected || !this.socket.connected) callback([]);
-
-    this.socket.emit('chat_history', bttv.getChannel(), function(history) {
-        callback(history);
     });
 }
 
