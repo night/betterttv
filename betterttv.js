@@ -3411,8 +3411,6 @@ module.exports = function() {
             bttv.settings.save("scrollbackAmount", 150);
         } else if (lines != null && isNaN(lines) !== true && lines > 0) {
             bttv.settings.save("scrollbackAmount", parseInt(lines));
-        } else {
-            bttv.settings.save("scrollbackAmount", 150);
         }
     });
 };
