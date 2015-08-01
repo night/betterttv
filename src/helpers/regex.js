@@ -1,6 +1,6 @@
-exports.escapeRegExp = function (text) {
+exports.escapeRegExp = function(text) {
     // Escapes an input to make it usable for regexes
-    return text.replace(/[-[\]{}()+?.,\\^$|#\s]/g, "\\$&");
+    return text.replace(/[-[\]{}()+?.,\\^$|#\s]/g, '\\$&');
 };
 
 
@@ -19,4 +19,4 @@ exports.getEmoteFromRegEx = function(regex) {
         .replace(/[^\\]\?/g, '') // remove optional chars
         .replace(/^\\b|\\b$/g, '') // remove boundaries
         .replace(/\\/g, ''); // unescape
-}
+};

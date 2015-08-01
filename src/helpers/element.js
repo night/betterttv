@@ -1,12 +1,12 @@
-exports.remove = function (e) {
+exports.remove = function(e) {
     // Removes all of an element
-    $(e).each(function () {
+    $(e).each(function() {
         $(this).hide();
     });
 };
-exports.display = function (e) {
+exports.display = function(e) {
     // Displays all of an element
-    $(e).each(function () {
+    $(e).each(function() {
         $(this).show();
     });
 };
