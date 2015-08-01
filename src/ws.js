@@ -63,17 +63,20 @@ SocketClient.prototype.connect = function() {
         _self._connectAttempts = 0;
     }
 
+    this.socket.onerror = function() {
+        debug.log("SocketClient: Error from Beta BetterTTV Socket Server");
+
+        _self._connectAttempts++;
+        _self.reconnect();
+    }
+
     this.socket.onclose = function() {
         if(!_self._connected || !_self.socket) return;
 
         debug.log("SocketClient: Disconnected from Beta BetterTTV Socket Server");
 
-        _self._connected = false;
         _self._connectAttempts++;
-        delete _self.socket;
-        setTimeout(function() {
-            _self.connect();
-        }, Math.random() * (Math.pow(2, _self._connectAttempts) - 1) * 1000);
+        _self.reconnect();
     }
 
     this.socket.onmessage = function(message) {
@@ -91,6 +94,24 @@ SocketClient.prototype.connect = function() {
 
         _self._events[evt.name](evt.data);
     }
+}
+
+SocketClient.prototype.reconnect = function() {
+    var _self = this;
+
+    if(this.socket) {
+        try {
+            this.socket.close();
+        } catch(e) {}
+    }
+
+    delete this.socket;
+
+    this._connected = false;
+
+    setTimeout(function() {
+        _self.connect();
+    }, Math.random() * (Math.pow(2, this._connectAttempts) - 1) * 1000);
 }
 
 SocketClient.prototype.emit = function(evt, data) {
