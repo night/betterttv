@@ -1,8 +1,10 @@
 var io = require('socket.io-client');
 var debug = require('./helpers/debug');
 var vars = require('./vars');
+var betaSocket = require('./ws')
 
 function SocketClient() {
+    this.beta = new betaSocket();
     this.socket = io('https://sockets.betterttv.net/', {
         reconnection: true,
         reconnectionDelay: 30000,
@@ -57,6 +59,7 @@ SocketClient.prototype.lookupUser = function(name) {
     if(this._lookedUpUsers.indexOf(name) > -1) return;
     this._lookedUpUsers.push(name);
 
+    this.beta.lookupUser(name);
     this.socket.emit('lookup_user', name, function(subscription) {
         if(!subscription) return;
 
