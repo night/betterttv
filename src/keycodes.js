@@ -87,4 +87,4 @@ module.exports = {
     'Comma': 188,
     'Slash': 191,
     'Backslash': 220
-}
+};

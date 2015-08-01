@@ -10,7 +10,8 @@
     "App":true,
     "__bttvga":true,
     "Twitch":true,
-    "Ember": true
+    "Ember": true,
+    "webkitNotifications": true
   },
 
   "rules": {
