@@ -1,10 +1,9 @@
-var debug = require('../helpers/debug'),
-    vars = require('../vars');
+var debug = require('../helpers/debug');
 
-module.exports = function () {
-    debug.log("Check for New Messages");
+module.exports = function() {
+    debug.log('Check for New Messages');
 
-    if($("body#chat").length) return;
+    if ($('body#chat').length) return;
 
     /* if (vars.userData.isLoggedIn && window.Firebase) {
         var newMessages = function(id, namespaced) {
@@ -17,7 +16,7 @@ module.exports = function () {
                 if (notificationsLoaded === true && notifications < j) {
                     $.get('/messages/inbox', function (data) {
                         var $message = $(data).find("#message-list .unread:first");
-                            
+
                         if ($message) {
                             var $senderData = $message.children("div.from_to_user"),
                                 $messageData = $message.children("div.message_data"),
@@ -64,27 +63,27 @@ module.exports = function () {
     var recentMessageTimes = ['less than a minute ago', '1 minute ago'];
 
     var checkOther = function() {
-        if(bttv.settings.get('alertOtherMessages') === false) return;
-        $.get('/messages/other', function (data) {
-            var $messages = $(data).find("#message-list .unread");
+        if (bttv.settings.get('alertOtherMessages') === false) return;
+        $.get('/messages/other', function(data) {
+            var $messages = $(data).find('#message-list .unread');
 
             $messages.each(function() {
                 var $message = $(this),
-                    $senderData = $message.children("div.from_to_user"),
-                    $messageData = $message.children("div.message_data"),
-                    url = location.protocol+'//'+location.host+$message.data('url'),
+                    $senderData = $message.children('div.from_to_user'),
+                    $messageData = $message.children('div.message_data'),
+                    url = location.protocol + '//' + location.host + $message.data('url'),
                     messageId = $message.data('url').match(/\/message\/show\/([a-z0-9]+)/)[1],
-                    avatar = $senderData.children(".prof").children("img").attr("src"),
-                    sender = $senderData.children(".capital").text().trim().capitalize(),
-                    time = $messageData.children(".time_ago").text().trim();
+                    avatar = $senderData.children('.prof').children('img').attr('src'),
+                    sender = $senderData.children('.capital').text().trim().capitalize(),
+                    time = $messageData.children('.time_ago').text().trim();
 
-                if(seenMessages.indexOf(url) !== -1 || recentMessageTimes.indexOf(time) === -1) return;
+                if (seenMessages.indexOf(url) !== -1 || recentMessageTimes.indexOf(time) === -1) return;
                 seenMessages.push(url);
-                bttv.notify(sender+' just sent you a Message!\nClick here to view it.', 'Twitch Message Received', url, avatar, 'new_message_'+messageId);
+                bttv.notify(sender + ' just sent you a Message!\nClick here to view it.', 'Twitch Message Received', url, avatar, 'new_message_' + messageId);
             });
         });
-    }
+    };
 
     setInterval(checkOther, 30000 + Math.random() * 5000);
     checkOther();
-}
+};
