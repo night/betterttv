@@ -12,6 +12,7 @@ var overrideEmotes = require('../features/override-emotes'),
 
 var takeover = module.exports = function() {
     var tmi = require('./tmi')();
+    var channel;
 
     // Anonymize Chat if it isn't already
     anonChat();
@@ -58,7 +59,7 @@ var takeover = module.exports = function() {
 
     // Take over listeners
     debug.log('Loading chat listeners');
-    for (var channel in tmi.tmiSession._rooms) {
+    for (channel in tmi.tmiSession._rooms) {
         if (tmi.tmiSession._rooms.hasOwnProperty(channel)) {
             delete tmi.tmiSession._rooms[channel]._events.message;
             delete tmi.tmiSession._rooms[channel]._events.clearchat;
@@ -199,7 +200,12 @@ var takeover = module.exports = function() {
             var emote = tmi.product.emoticons[i];
 
             if (emote.state && emote.state === 'active' && !bttv.TwitchEmoteSets[emote.emoticon_set]) {
-                bttv.io.giveEmoteTip(bttv.getChannel());
+                channel = bttv.getChannel();
+                $.post('https://api.betterttv.net/2/emotes/channel_tip/' + encodeURIComponent(channel)).done(function() {
+                    debug.log('Gave an emote tip about ' + channel);
+                }).fail(function() {
+                    debug.log('Error giving an emote tip about ' + channel);
+                });
                 break;
             }
         }

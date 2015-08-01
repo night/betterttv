@@ -55,11 +55,12 @@ function SocketClient() {
 
 // Night's legacy subs
 SocketClient.prototype.lookupUser = function(name) {
+    this.beta.lookupUser(name);
+
     if (!this._connected || !this.socket.connected) return;
     if (this._lookedUpUsers.indexOf(name) > -1) return;
     this._lookedUpUsers.push(name);
 
-    this.beta.lookupUser(name);
     this.socket.emit('lookup_user', name, function(subscription) {
         if (!subscription) return;
 
@@ -81,14 +82,6 @@ SocketClient.prototype.joinChannel = function() {
     element.type = 'text/css';
     element.innerHTML = '.badge.subscriber { background-image: url("https://cdn.betterttv.net/tags/supporter.png") !important; }';
     bttv.jQuery('.ember-chat .chat-room').append(element);
-};
-
-SocketClient.prototype.giveEmoteTip = function(channel) {
-    if (!this._connected || !this.socket.connected) return;
-
-    this.socket.emit('give_emote_tip', channel, function(status) {
-        debug.log('SocketClient: Gave an emote tip about ' + channel + ' (success: ' + status + ')');
-    });
 };
 
 module.exports = SocketClient;
