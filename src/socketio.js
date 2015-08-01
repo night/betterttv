@@ -55,11 +55,12 @@ function SocketClient() {
 
 // Night's legacy subs
 SocketClient.prototype.lookupUser = function(name) {
+    this.beta.lookupUser(name);
+
     if(!this._connected || !this.socket.connected) return;
     if(this._lookedUpUsers.indexOf(name) > -1) return;
     this._lookedUpUsers.push(name);
 
-    this.beta.lookupUser(name);
     this.socket.emit('lookup_user', name, function(subscription) {
         if(!subscription) return;
 
