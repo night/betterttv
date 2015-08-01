@@ -1,4 +1,4 @@
-/*global chatWidthStartingPoint: true*/
+/* global chatWidthStartingPoint: true*/
 
 var debug = require('../../helpers/debug'),
     keyCodes = require('../../keycodes'),

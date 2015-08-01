@@ -383,9 +383,9 @@ exports.notifyMessage = function(type, message) {
         from: 'twitchnotify',
         date: new Date(),
         badges: [{
-                    type: tagType,
-                    name: ((bttv.settings.get('showJTVTags') && type !== 'subscriber' && type !== 'turbo') ? type.capitalize() : ''),
-                    description: tagType.capitalize()
+            type: tagType,
+            name: ((bttv.settings.get('showJTVTags') && type !== 'subscriber' && type !== 'turbo') ? type.capitalize() : ''),
+            description: tagType.capitalize()
         }],
         message: message,
         style: 'notification'

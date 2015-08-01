@@ -70,7 +70,8 @@ module.exports = function(event) {
             }
         });
     }
-
+    /* eslint-disable indent */
+    // bug in eslint doesn't like switch formatting
     switch (event.type) {
         case 'roomstate':
             var enabled;
@@ -138,4 +139,5 @@ module.exports = function(event) {
             }
             break;
     }
+    /* eslint-enable indent */
 };

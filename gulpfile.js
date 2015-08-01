@@ -4,8 +4,8 @@ var fs = require('fs'),
     browserify = require('gulp-browserify'),
     header = require('gulp-header'),
     footer = require('gulp-footer'),
-    rename = require('gulp-rename'),
-    concat = require('gulp-concat');
+    concat = require('gulp-concat'),
+    eslint = require('gulp-eslint');
 
 gulp.task('templates', function() {
     return gulp.src(['src/templates/*.jade'])
@@ -17,19 +17,30 @@ gulp.task('templates', function() {
 gulp.task('prepare', function() {
     return gulp.src(['src/**/*'])
                .pipe(gulp.dest('build/'));
-})
+});
+
+gulp.task('lint', function() {
+    var options = {
+        configFile: '.eslintrc'
+    };
+
+    return gulp.src(['src/**/*'])
+        .pipe(eslint(options))
+        .pipe(eslint.format())
+        .pipe(eslint.failOnError());
+});
 
 var jadeDefinition = fs.readFileSync('node_modules/jade/runtime.js').toString();
 var license = fs.readFileSync('license.txt').toString();
 
-gulp.task('scripts', ['prepare', 'templates'], function() {
+gulp.task('scripts', ['prepare', 'templates', 'lint'], function() {
     gulp.src(['build/main.js'])
         .pipe(browserify())
         .pipe(concat('betterttv.js'))
         .pipe(header('(function(bttv) {'))
         .pipe(header(jadeDefinition))
-        .pipe(header(license+'\n'))
-        .pipe(footer("}(window.BetterTTV = window.BetterTTV || {}));"))
+        .pipe(header(license + '\n'))
+        .pipe(footer('}(window.BetterTTV = window.BetterTTV || {}));'))
         .pipe(gulp.dest(__dirname));
 });
 

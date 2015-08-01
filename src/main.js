@@ -1,4 +1,4 @@
-/*global BTTVLOADED:true PP:true*/
+/* global BTTVLOADED:true PP:true*/
 // Declare public and private variables
 var debug = require('./helpers/debug'),
     vars = require('./vars'),
@@ -167,7 +167,8 @@ var main = function() {
                 if (App.__container__.lookup('controller:application').get('currentRouteName') !== 'channel.index') {
                     $('#main_col').removeAttr('style');
                 }
-
+                /* eslint-disable indent */
+                // bug in eslint doesn't like switch formatting
                 switch (payload.template) {
                     case 'shared/right-column':
                         waitForLoad(function(ready) {
@@ -217,6 +218,7 @@ var main = function() {
                         });
                         break;
                 }
+                /* eslint-enable indent */
             }
         });
     }

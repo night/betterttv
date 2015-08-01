@@ -97,12 +97,12 @@ var takeover = module.exports = function() {
 
     // Load BTTV emotes if not loaded
     overrideEmotes();
-
+    var i;
     var bttvEmoteKeys = Object.keys(store.bttvEmotes);
-    for (var i = bttvEmoteKeys.length - 1; i >= 0; i--) {
-        var emote = bttvEmoteKeys[i];
-        if (!store.bttvEmotes[emote].channelEmote) continue;
-        delete store.bttvEmotes[emote];
+    for (i = bttvEmoteKeys.length - 1; i >= 0; i--) {
+        var bttvEmoteKey = bttvEmoteKeys[i];
+        if (!store.bttvEmotes[bttvEmoteKey].channelEmote) continue;
+        delete store.bttvEmotes[bttvEmoteKey];
     }
     store.__channelBots = [];
     $.getJSON('https://api.betterttv.net/2/channels/' + bttv.getChannel()).done(function(data) {
@@ -195,7 +195,7 @@ var takeover = module.exports = function() {
 
     // Give some tips to Twitch Emotes
     if (bttv.TwitchEmoteSets && tmi.product && tmi.product.emoticons) {
-        for(var i=0; i<tmi.product.emoticons.length; i++) {
+        for (i = 0; i < tmi.product.emoticons.length; i++) {
             var emote = tmi.product.emoticons[i];
 
             if (emote.state && emote.state === 'active' && !bttv.TwitchEmoteSets[emote.emoticon_set]) {
@@ -283,11 +283,14 @@ var takeover = module.exports = function() {
             $suggestions.remove();
         }
 
+        /* eslint-disable */
+        // No idea why /^(\/|.)w $/.test(val) is there, val is undefined
         // Actual tabs must be captured on keydown
         if ((e.which === keyCodes.Tab && !e.ctrlKey) || /^(\/|.)w $/.test(val)) {
             helpers.tabCompletion(e);
             e.preventDefault();
         }
+        /* eslint-enable */
 
         helpers.chatLineHistory($chatInput, e);
     });
@@ -356,6 +359,8 @@ var takeover = module.exports = function() {
     $(window).off('blur focus').on('blur focus', function(e) {
         var prevType = $(this).data('prevType');
 
+        /* eslint-disable indent */
+        // bug in eslint doesn't like switch formatting
         if (prevType !== e.type) {   //  reduce double fire issues
             switch (e.type) {
                 case 'blur':
@@ -367,6 +372,7 @@ var takeover = module.exports = function() {
                     break;
             }
         }
+        /* eslint-enable indent */
 
         $(this).data('prevType', e.type);
     });
@@ -377,6 +383,8 @@ var takeover = module.exports = function() {
 
         if ($('.bttv-mod-card').length && bttv.settings.get('modcardsKeybinds') === true) {
             var user = $('.bttv-mod-card').data('user');
+            /* eslint-disable indent */
+            // bug in eslint doesn't like switch formatting
             switch (keyCode) {
                 case keyCodes.Esc:
                     $('.bttv-mod-card').remove();
@@ -413,6 +421,7 @@ var takeover = module.exports = function() {
                     $('.bttv-mod-card').remove();
                     break;
             }
+            /* eslint-enable indent */
         }
     });
 

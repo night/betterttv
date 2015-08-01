@@ -14,7 +14,7 @@ var displayElement = require('./helpers/element').display,
     imagePreview = require('./features/image-preview');
 
 module.exports = [
-    /*{
+    /* {
         name: 'Admin/Staff Alert',
         description: 'Get alerted in chat when admins or staff join',
         default: false,
@@ -237,7 +237,7 @@ module.exports = [
         default: false,
         storageKey: 'disableWhispers'
     },
-	{
+    {
         name: 'Double-Click Auto-Complete',
         description: 'Double-clicking a username in chat copies it into the chat text box',
         default: false,
