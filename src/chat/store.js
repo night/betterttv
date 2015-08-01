@@ -1,5 +1,3 @@
-var tmi = require('./tmi');
-
 exports.__rooms = {};
 exports.__messageQueue = [];
 exports.__reportedErrors = [];
@@ -14,8 +12,8 @@ exports.chatters = {};
 exports.tabCompleteHistory = [];
 exports.suggestions = {
     matchList: [],
-    lastMatch: '',
-},
+    lastMatch: ''
+};
 exports.chatHistory = [];
 exports.bttvEmotes = {};
 exports.autoCompleteEmotes = {};
