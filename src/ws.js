@@ -148,11 +148,4 @@ SocketClient.prototype.joinChannel = function() {
     bttv.jQuery(".ember-chat .chat-room").append(element);
 }
 
-SocketClient.prototype.giveEmoteTip = function(channel) {
-    if(!this._connected) return;
-
-    debug.log("SocketClient: Gave an emote tip about " + channel);
-    this.emit('give_emote_tip', { name: channel });
-}
-
 module.exports = SocketClient;

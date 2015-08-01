@@ -207,7 +207,12 @@ var takeover = module.exports = function() {
             var emote = tmi.product.emoticons[i];
 
             if(emote.state && emote.state === "active" && !bttv.TwitchEmoteSets[emote.emoticon_set]) {
-                bttv.io.giveEmoteTip(bttv.getChannel());
+                var channel = bttv.getChannel();
+                $.post('https://api.betterttv.net/2/emotes/channel_tip/' + encodeURIComponent(channel)).done(function() {
+                    debug.log('Gave an emote tip about ' + channel);
+                }).fail(function() {
+                    debug.log('Error giving an emote tip about ' + channel);
+                });
                 break;
             }
         }

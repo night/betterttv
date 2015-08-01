@@ -1899,7 +1899,12 @@ var takeover = module.exports = function() {
             var emote = tmi.product.emoticons[i];
 
             if(emote.state && emote.state === "active" && !bttv.TwitchEmoteSets[emote.emoticon_set]) {
-                bttv.io.giveEmoteTip(bttv.getChannel());
+                var channel = bttv.getChannel();
+                $.post('https://api.betterttv.net/2/emotes/channel_tip/' + encodeURIComponent(channel)).done(function() {
+                    debug.log('Gave an emote tip about ' + channel);
+                }).fail(function() {
+                    debug.log('Error giving an emote tip about ' + channel);
+                });
                 break;
             }
         }
@@ -5961,14 +5966,6 @@ SocketClient.prototype.joinChannel = function() {
     bttv.jQuery(".ember-chat .chat-room").append(element);
 }
 
-SocketClient.prototype.giveEmoteTip = function(channel) {
-    if(!this._connected || !this.socket.connected) return;
-
-    this.socket.emit('give_emote_tip', channel, function(status) {
-        debug.log("SocketClient: Gave an emote tip about " + channel + " (success: " + status + ")");
-    });
-}
-
 module.exports = SocketClient;
 },{"./helpers/debug":46,"./vars":64,"./ws":65,"socket.io-client":68}],55:[function(require,module,exports){
 var cookies = require('cookies-js');
@@ -6397,13 +6394,6 @@ SocketClient.prototype.joinChannel = function() {
     element.type = "text/css";
     element.innerHTML = '.badge.subscriber { background-image: url("https://cdn.betterttv.net/tags/supporter.png") !important; }';
     bttv.jQuery(".ember-chat .chat-room").append(element);
-}
-
-SocketClient.prototype.giveEmoteTip = function(channel) {
-    if(!this._connected) return;
-
-    debug.log("SocketClient: Gave an emote tip about " + channel);
-    this.emit('give_emote_tip', { name: channel });
 }
 
 module.exports = SocketClient;
