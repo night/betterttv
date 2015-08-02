@@ -420,7 +420,7 @@ exports.sendMessage = function(message) {
                 channelState({
                     type: 'outgoing_message'
                 });
-
+                bttv.ws.broadcastMe();
                 tmi().trackSubOnly(message);
                 tmi().trackChat();
             }

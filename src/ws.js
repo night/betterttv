@@ -129,7 +129,7 @@ SocketClient.prototype.emit = function(evt, data) {
 SocketClient.prototype.broadcastMe = function() {
     if (!this._connected || !vars.userData.isLoggedIn) return;
 
-    this.emit('broadcast_me', { name: vars.userData.login });
+    this.emit('broadcast_me', { name: vars.userData.login, channel: bttv.getChannel() });
 };
 
 SocketClient.prototype.joinChannel = function() {
