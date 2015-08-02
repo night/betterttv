@@ -2923,7 +2923,7 @@ var getPlayerHeight = function() {
 
         if (!$(player).length) continue;
 
-        return ($(player).width() * 0.5625) + 30;
+        return ($(player).width() * 0.5625) + (player.indexOf('iframe') > -1 ? 0 : 30);
     }
 
     return -1;
