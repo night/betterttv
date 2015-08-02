@@ -3,7 +3,7 @@
 var debug = require('./helpers/debug'),
     vars = require('./vars'),
     TwitchAPI = require('./twitch-api'),
-    Io = require('./socketio'),
+    WS = require('./ws'),
     Storage = require('./storage'),
     Settings = require('./settings');
 
@@ -228,7 +228,7 @@ var main = function() {
         debug.log('BTTV v' + bttv.info.versionString());
         debug.log('CALL init ' + document.URL);
 
-        bttv.io = new Io();
+        bttv.ws = new WS();
 
         clearClutter();
         channelReformat();

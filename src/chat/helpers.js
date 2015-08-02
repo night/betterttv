@@ -20,9 +20,6 @@ var lookupDisplayName = exports.lookupDisplayName = function(user) {
         store.displayNames[user] = Twitch.user.displayName() || user;
     }
 
-    // Get subscription status (Night's subs)
-    bttv.io.lookupUser(user);
-
     if (tmi()) {
         if (store.displayNames.hasOwnProperty(user)) {
             return store.displayNames[user] || user.capitalize();
@@ -423,6 +420,7 @@ exports.sendMessage = function(message) {
                 channelState({
                     type: 'outgoing_message'
                 });
+
                 tmi().trackSubOnly(message);
                 tmi().trackChat();
             }

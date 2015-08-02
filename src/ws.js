@@ -43,6 +43,7 @@ function SocketClient() {
     this._lookedUpUsers = [];
     this._connected = false;
     this._connectAttempts = 0;
+    this._joinedChannel = null;
     this._events = events;
 
     this.connect();
@@ -61,6 +62,7 @@ SocketClient.prototype.connect = function() {
 
         _self._connected = true;
         _self._connectAttempts = 0;
+        _self.joinChannel();
     };
 
     this.socket.onerror = function() {
@@ -124,27 +126,31 @@ SocketClient.prototype.emit = function(evt, data) {
 };
 
 // Night's legacy subs
-SocketClient.prototype.lookupUser = function(name) {
-    if (!this._connected) return;
+SocketClient.prototype.broadcastMe = function() {
+    if (!this._connected || !vars.userData.isLoggedIn) return;
 
-    if (this._lookedUpUsers.indexOf(name) > -1) return;
-    this._lookedUpUsers.push(name);
-
-    this.emit('lookup_user', { name: name });
+    this.emit('broadcast_me', { name: vars.userData.login });
 };
 
 SocketClient.prototype.joinChannel = function() {
     if (!this._connected) return;
 
-    if (!bttv.getChannel().length) return;
+    var channel = bttv.getChannel();
 
-    this.emit('join_channel', { name: bttv.getChannel() });
+    if (!channel.length) return;
+
+    if (this._joinedChannel) {
+        this.emit('part_channel', { name: this._joinedChannel });
+    }
+
+    this.emit('join_channel', { name: channel });
+    this._joinedChannel = channel;
 
     // Night's legacy subs
-    if (bttv.getChannel() !== 'night') return;
+    if (channel !== 'night') return;
     var element = document.createElement('style');
     element.type = 'text/css';
-    element.innerHTML = '.badge.subscriber { background-image: url("https://cdn.betterttv.net/tags/supporter.png") !important; }';
+    element.innerHTML = '.badge.subscriber { background-image: url("https://cdn.betterttv.net/tags/subscriber.png") !important; }';
     bttv.jQuery('.ember-chat .chat-room').append(element);
 };
 
