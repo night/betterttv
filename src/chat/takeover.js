@@ -379,8 +379,6 @@ var takeover = module.exports = function() {
 
         if ($('.bttv-mod-card').length && bttv.settings.get('modcardsKeybinds') === true) {
             var user = $('.bttv-mod-card').data('user');
-            /* eslint-disable indent */
-            // bug in eslint doesn't like switch formatting
             switch (keyCode) {
                 case keyCodes.Esc:
                     $('.bttv-mod-card').remove();
@@ -417,7 +415,6 @@ var takeover = module.exports = function() {
                     $('.bttv-mod-card').remove();
                     break;
             }
-            /* eslint-enable indent */
         }
     });
 

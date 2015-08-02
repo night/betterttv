@@ -24,14 +24,11 @@ var rgbToHsl = exports.rgbToHsl = function(r, g, b) {
     } else {
         s = l > 0.5 ? d / (2 * (1 - l)) : d / (2 * l);
         s = Math.min(Math.max(0, s), 1);
-        /* eslint-disable indent */
-        // bug in eslint doesn't like switch formatting
         switch (max) {
             case r: h = Math.min(Math.max(0, (g - b) / d + (g < b ? 6 : 0)), 6); break;
             case g: h = Math.min(Math.max(0, (b - r) / d + 2), 6); break;
             case b: h = Math.min(Math.max(0, (r - g) / d + 4), 6); break;
         }
-        /* eslint-enable indent */
         h /= 6;
     }
     return [h, s, l];

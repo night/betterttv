@@ -1,7 +1,6 @@
 var vars = require('../vars');
 var template = require('../templates/channel-state');
 
-
 var stateContainer = '#bttv-channel-state-contain';
 var chatHeader = '.chat-container .chat-header:first';
 var chatButton = '.chat-interface .chat-buttons-container .send-chat-button';
@@ -70,8 +69,7 @@ module.exports = function(event) {
             }
         });
     }
-    /* eslint-disable indent */
-    // bug in eslint doesn't like switch formatting
+
     switch (event.type) {
         case 'roomstate':
             var enabled;
@@ -139,5 +137,4 @@ module.exports = function(event) {
             }
             break;
     }
-    /* eslint-enable indent */
 };

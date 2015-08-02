@@ -35,6 +35,7 @@ Settings.prototype.load = function() {
         </div> \
     ';
     /*eslint-enable */
+
     settingsList.forEach(function(setting) {
         _self._settings[setting.storageKey] = setting;
         _self._settings[setting.storageKey].value = bttv.storage.get(_self.prefix + setting.storageKey) !== null ? _self._parseSetting(bttv.storage.get(_self.prefix + setting.storageKey)) : setting.default;

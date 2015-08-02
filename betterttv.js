@@ -2118,8 +2118,6 @@ var takeover = module.exports = function() {
 
         if ($('.bttv-mod-card').length && bttv.settings.get('modcardsKeybinds') === true) {
             var user = $('.bttv-mod-card').data('user');
-            /* eslint-disable indent */
-            // bug in eslint doesn't like switch formatting
             switch (keyCode) {
                 case keyCodes.Esc:
                     $('.bttv-mod-card').remove();
@@ -2156,7 +2154,6 @@ var takeover = module.exports = function() {
                     $('.bttv-mod-card').remove();
                     break;
             }
-            /* eslint-enable indent */
         }
     });
 
@@ -2561,8 +2558,7 @@ var main = function() {
                 if (App.__container__.lookup('controller:application').get('currentRouteName') !== 'channel.index') {
                     $('#main_col').removeAttr('style');
                 }
-                /* eslint-disable indent */
-                // bug in eslint doesn't like switch formatting
+
                 switch (payload.template) {
                     case 'shared/right-column':
                         waitForLoad(function(ready) {
@@ -2612,7 +2608,6 @@ var main = function() {
                         });
                         break;
                 }
-                /* eslint-enable indent */
             }
         });
     }
@@ -3230,7 +3225,6 @@ module.exports = function() {
 var vars = require('../vars');
 var template = require('../templates/channel-state');
 
-
 var stateContainer = '#bttv-channel-state-contain';
 var chatHeader = '.chat-container .chat-header:first';
 var chatButton = '.chat-interface .chat-buttons-container .send-chat-button';
@@ -3299,8 +3293,7 @@ module.exports = function(event) {
             }
         });
     }
-    /* eslint-disable indent */
-    // bug in eslint doesn't like switch formatting
+
     switch (event.type) {
         case 'roomstate':
             var enabled;
@@ -3368,7 +3361,6 @@ module.exports = function(event) {
             }
             break;
     }
-    /* eslint-enable indent */
 };
 
 },{"../templates/channel-state":56,"../vars":64}],22:[function(require,module,exports){
@@ -4707,14 +4699,11 @@ var rgbToHsl = exports.rgbToHsl = function(r, g, b) {
     } else {
         s = l > 0.5 ? d / (2 * (1 - l)) : d / (2 * l);
         s = Math.min(Math.max(0, s), 1);
-        /* eslint-disable indent */
-        // bug in eslint doesn't like switch formatting
         switch (max) {
             case r: h = Math.min(Math.max(0, (g - b) / d + (g < b ? 6 : 0)), 6); break;
             case g: h = Math.min(Math.max(0, (b - r) / d + 2), 6); break;
             case b: h = Math.min(Math.max(0, (r - g) / d + 4), 6); break;
         }
-        /* eslint-enable indent */
         h /= 6;
     }
     return [h, s, l];
@@ -5811,6 +5800,7 @@ Settings.prototype.load = function() {
         </div> \
     ';
     /*eslint-enable */
+
     settingsList.forEach(function(setting) {
         _self._settings[setting.storageKey] = setting;
         _self._settings[setting.storageKey].value = bttv.storage.get(_self.prefix + setting.storageKey) !== null ? _self._parseSetting(bttv.storage.get(_self.prefix + setting.storageKey)) : setting.default;
