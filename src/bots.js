@@ -1,5 +1,5 @@
 module.exports = [
-    "nightbot",
-    "moobot",
-    "xanbot"
+    'nightbot',
+    'moobot',
+    'xanbot'
 ];

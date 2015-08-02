@@ -1,36 +1,36 @@
 var debug = require('../helpers/debug');
 
 var checkBroadcastInfo = module.exports = function() {
-    if(!window.App || !window.App.__container__) return;
+    if (!window.App || !window.App.__container__) return;
 
     var channelCtrl = window.App.__container__.lookup('controller:channel');
 
-    if(!channelCtrl) return setTimeout(checkBroadcastInfo, 60000);
+    if (!channelCtrl) return setTimeout(checkBroadcastInfo, 60000);
 
-    if(!channelCtrl.get('model'));
+    if (!channelCtrl.get('model')) return;
 
     var model = channelCtrl.get('model');
 
-    if(Ember.isEmpty(model)) return setTimeout(checkBroadcastInfo, 60000);
+    if (Ember.isEmpty(model)) return setTimeout(checkBroadcastInfo, 60000);
 
     var hostedChannel = model.get('hostModeTarget');
     var channel = hostedChannel ? hostedChannel : model;
 
-    debug.log("Check Channel Title/Game");
+    debug.log('Check Channel Title/Game');
 
-    bttv.TwitchAPI.get("channels/" + channel.id, {}, { version: 3 }).done(function(d) {
-        if(d.game) {
+    bttv.TwitchAPI.get('channels/' + channel.id, {}, { version: 3 }).done(function(d) {
+        if (d.game) {
             channel.set('game', d.game);
             channel.set('rollbackData.game', d.game);
         }
 
-        if(d.status) {
+        if (d.status) {
             channel.set('status', d.status);
 
-            if(!hostedChannel) {
+            if (!hostedChannel) {
                 var $title = $('#broadcast-meta .title');
 
-                if($title.data('status') !== d.status) {
+                if ($title.data('status') !== d.status) {
                     $title.data('status', d.status);
 
                     d.status = d.status.replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -42,14 +42,14 @@ var checkBroadcastInfo = module.exports = function() {
             }
         }
 
-        if(d.views) {
+        if (d.views) {
             channel.set('views', d.views);
         }
 
-        if(d.followers) {
+        if (d.followers) {
             channel.set('followersTotal', d.followers);
         }
 
         setTimeout(checkBroadcastInfo, 60000 + Math.random() * 5000);
     });
-}
+};

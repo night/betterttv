@@ -42,4 +42,5 @@ module.exports = function() {
     };
 
     document.addEventListener('copy', onCopy);
-}
+};
+

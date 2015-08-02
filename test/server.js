@@ -1,36 +1,36 @@
-var fs = require("fs"),
-    http = require("http"),
-    https = require("https"),
-    path = require("path"),
-    request = require("request"),
-    url = require("url");
+var fs = require('fs'),
+    http = require('http'),
+    https = require('https'),
+    path = require('path'),
+    request = require('request'),
+    url = require('url');
 
 process.on('uncaughtException', function(err) {
-  console.log('Caught exception: ' + err);
+    console.log('Caught exception: ' + err);
 });
 
 var server = function(req, res) {
-  var uri = url.parse(req.url).pathname,
-      file = path.join(process.cwd(), uri);
+    var uri = url.parse(req.url).pathname,
+        file = path.join(process.cwd(), uri);
 
-  fs.exists(file, function(exists) {
-    if(!exists) {
-      request.get('http://dev.betterttv.net/'+uri).pipe(res);
-      return;
-    }
+    fs.exists(file, function(exists) {
+        if (!exists) {
+            request.get('http://dev.betterttv.net/' + uri).pipe(res);
+            return;
+        }
 
-    if(fs.lstatSync(file).isDirectory()) {
-      res.writeHead(403);
-      res.write('403 Forbidden');
-      res.end();
-      return;
-    }
+        if (fs.lstatSync(file).isDirectory()) {
+            res.writeHead(403);
+            res.write('403 Forbidden');
+            res.end();
+            return;
+        }
 
-    res.writeHead(200, {
-      'Access-Control-Allow-Origin': '*'
+        res.writeHead(200, {
+            'Access-Control-Allow-Origin': '*'
+        });
+        fs.createReadStream(file).pipe(res);
     });
-    fs.createReadStream(file).pipe(res);
-  });
 };
 
 https.createServer({

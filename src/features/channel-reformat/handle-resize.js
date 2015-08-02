@@ -20,10 +20,10 @@ var generateCSS = function(height) {
 };
 
 var getPlayerHeight = function() {
-    for(var i = 0; i < players.length; i++) {
+    for (var i = 0; i < players.length; i++) {
         var player = players[i];
 
-        if(!$(player).length) continue;
+        if (!$(player).length) continue;
 
         return ($(player).width() * 0.5625) + 30;
     }
@@ -31,49 +31,51 @@ var getPlayerHeight = function() {
     return -1;
 };
 
-var handleResize = module.exports = function () {
-    if($('#main_col #channel').length === 0 || $("#right_col").length === 0) return;
+module.exports = function() {
+    if ($('#main_col #channel').length === 0 || $('#right_col').length === 0) return;
 
-    debug.log("Page resized");
+    debug.log('Page resized');
 
     var hostModeEnabled = $('#hostmode').length;
 
     var $playerStyle = $('#bttvPlayerStyle');
 
-    if(!$playerStyle.length) {
+    if (!$playerStyle.length) {
         $playerStyle = $('<style></style>');
         $playerStyle.attr('id', 'bttvPlayerStyle');
         $('body').append($playerStyle);
     }
 
     // If chat sidebar is closed, element width != 0
-    if(vars.chatWidth == 0) {
-        $("#main_col").css({
+    if (vars.chatWidth === 0) {
+        $('#main_col').css({
             marginRight: '0px'
         });
     } else {
-        $("#main_col").css({
-            marginRight: $("#right_col").width() + 'px'
+        $('#main_col').css({
+            marginRight: $('#right_col').width() + 'px'
         });
     }
 
     var fullPageHeight = $(window).height();
     var fullPlayerHeight = getPlayerHeight();
-    if(fullPlayerHeight === -1) return;
+    if (fullPlayerHeight === -1) return;
     var metaAndStatsHeight;
 
-    if(hostModeEnabled) {
-        var title = $(".hostmode-title-container").outerHeight(true);
-        var meta = $(".target-meta").outerHeight(true);
-        var stats = $("#hostmode .channel-actions").outerHeight(true);
-        var close = $(".close-hostmode").outerHeight(true);
+    var meta,
+        stats;
+    if (hostModeEnabled) {
+        var title = $('.hostmode-title-container').outerHeight(true);
+        meta = $('.target-meta').outerHeight(true);
+        stats = $('#hostmode .channel-actions').outerHeight(true);
+        var close = $('.close-hostmode').outerHeight(true);
         metaAndStatsHeight = title + meta + stats + close + 33;
 
         // Fixes host frame height on resize (the close button repositions)
-        $('.target-frame').css('height',$(window).height());
+        $('.target-frame').css('height', $(window).height());
     } else {
-        var meta = $('#broadcast-meta').outerHeight(true);
-        var stats = $('.stats-and-actions').outerHeight();
+        meta = $('#broadcast-meta').outerHeight(true);
+        stats = $('.stats-and-actions').outerHeight();
         metaAndStatsHeight = meta + stats;
     }
 
@@ -82,7 +84,7 @@ var handleResize = module.exports = function () {
     // If the window height is larger than the height needed to display
     // the title (meta) and stats below video, the video player can be its'
     // 16:9 normal height
-    if($(window).height() > desiredPageHeight) {
+    if ($(window).height() > desiredPageHeight) {
         $playerStyle.html(generateCSS(fullPlayerHeight));
     } else {
         // Otherwise we need to create black bars on the video
@@ -91,7 +93,7 @@ var handleResize = module.exports = function () {
     }
 
     // Channel panels below the stream auto arrange based on width
-    if(!hostModeEnabled) {
-        $("#channel_panels").masonry("reload");
+    if (!hostModeEnabled) {
+        $('#channel_panels').masonry('reload');
     }
 };
