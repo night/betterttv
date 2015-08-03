@@ -33,7 +33,7 @@ body {
     background: rgb(30, 30, 30) !important;
 }
 
-.ember-chat .chat-messages {
+#channel-prompt, .ember-chat .chat-messages {
     background: rgb(30, 30, 30) !important;
 }
 

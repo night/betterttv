@@ -85,6 +85,8 @@ var takeover = module.exports = function() {
             r9k: tmi.get('r9k')
         }
     });
+    vars.localSubsOnly = false;
+    vars.localModsOnly = false;
 
     // Handle Group Chats
     var privateRooms = bttv.getChatController().get('connectedPrivateGroupRooms');
@@ -118,6 +120,7 @@ var takeover = module.exports = function() {
 
     // Load Volunteer Badges
     helpers.loadBadges();
+    bttv.ws.broadcastMe();
 
     // Load Chat Settings
     loadChatSettings();

@@ -558,6 +558,19 @@ input.text:focus,select:focus,textarea:focus {
     padding: 10px;
 }
 
+.bttv-mod-card .name a {
+    max-width: 210px;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+}
+
+.bttv-mod-card .name .mod-card-edit {
+    margin-left: 3px;
+    margin-bottom: 6px;
+    padding-right: 15px;
+}
+
 .bttv-mod-card .user-messages {
     padding-top: 10px;
     width: 100%;
@@ -1028,7 +1041,7 @@ body#chat #speak {
     margin-top: -5px;
     font-size: 18px;
     display: inline-block;
-    margin-bottom: -3px;
+    margin-bottom: -8px;
 }
 
 .ember-chat .moderation-card .svg-edit {
@@ -1037,12 +1050,13 @@ body#chat #speak {
 }
 
 .ember-chat .moderation-card h4.real-name {
-    font-size: 11px;
+    font-size: 10px;
     color: #AAA;
     z-index: 4;
     position: relative;
-    display: inline-block;
-    margin-left: 5px;
+    margin-left: 60px;
+    margin-top: -10px;
+    margin-bottom: -2px;
 }
 
 .ember-chat .moderation-card h4.created-at {
