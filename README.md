@@ -133,11 +133,11 @@ Linting
 ---
 We use [ESLint](http://eslint.org/) to ensure a consistent code style and avoid buggy code.
 
-Running ```gulp``` will automatically check for any errors in the code. Please fix any errors before creating a pull request. Any warnings that were not produced by your changes(were there before you started making changes) can be ignored.
+Running ```gulp``` will automatically check for any errors in the code. Please fix any errors before creating a pull request. Any warnings produced prior to your changes can be ignored.
 
-**Live linting with Sublime Text:**
+**Live Linting with Sublime Text:**
 
-If you use Sublime Text as you text editor, you can set it up to highlight any errors that the linter would produce live.
+If you use Sublime Text as your text editor, you can set it up to highlight any errors that ESLint would throw in real-time.
 
 1. Get ESLint using ```npm install eslint```
 2. Install [Sublime Package Control](https://packagecontrol.io/installation)
