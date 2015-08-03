@@ -128,3 +128,18 @@ Type this in the JavaScript console to enable console logging:
 ```
 BetterTTV.settings.save('consoleLog', true);
 ```
+
+Linting
+---
+We use [ESLint](http://eslint.org/) to ensure a consistent code style and avoid buggy code.
+
+Running ```gulp``` will automatically check for any errors in the code. Please fix any errors before creating a pull request. Any warnings that were not produced by your changes(were there before you started making changes) can be ignored.
+
+**Live linting with Sublime Text:**
+
+If you use Sublime Text as you text editor, you can set it up to highlight any errors that the linter would produce live.
+
+1. Get ESLint using ```npm install eslint```
+2. Install [Sublime Package Control](https://packagecontrol.io/installation)
+3. Install [SublimeLinter](http://www.sublimelinter.com/en/latest/installation.html#installing-via-pc)
+4. Install [SublimeLinter-eslint](https://github.com/roadhump/SublimeLinter-eslint#linter-installation)
