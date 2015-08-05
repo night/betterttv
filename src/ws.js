@@ -42,6 +42,7 @@ function SocketClient() {
     this.socket = false;
     this._lookedUpUsers = [];
     this._connected = false;
+    this._connecting = false;
     this._connectAttempts = 0;
     this._joinedChannel = null;
     this._events = events;
@@ -50,7 +51,8 @@ function SocketClient() {
 }
 
 SocketClient.prototype.connect = function() {
-    if (this._connected) return;
+    if (this._connected || this._connecting) return;
+    this._connecting = true;
 
     debug.log('SocketClient: Connecting to Beta BetterTTV Socket Server');
 
@@ -110,6 +112,9 @@ SocketClient.prototype.reconnect = function() {
     delete this.socket;
 
     this._connected = false;
+
+    if (this._connecting === false) return;
+    this._connecting = false;
 
     setTimeout(function() {
         _self.connect();
