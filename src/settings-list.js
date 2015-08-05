@@ -281,6 +281,12 @@ module.exports = [
         }
     },
     {
+        name: 'Following Notifications',
+        description: 'BetterTTV will notify you when channels you follow go live',
+        default: true,
+        storageKey: 'followingNotifications'
+    },
+    {
         name: 'Hide Group Chat',
         description: 'Hides the group chat bar above chat',
         default: false,

@@ -40,6 +40,10 @@ var checkFollowing = module.exports = function() {
     };
 
     fetchFollowing(function(streams) {
+        if (!streams) {
+            streams = [];
+        }
+
         if (vars.liveChannels.length === 0) {
             vars.liveChannels.push('loaded');
             streams.forEach(function(stream) {
@@ -53,10 +57,14 @@ var checkFollowing = module.exports = function() {
             streams.forEach(function(stream) {
                 var channel = stream.channel;
                 channels.push(channel.name);
-                if (vars.liveChannels.indexOf(channel.name) === -1) {
-                    debug.log(channel.name + ' is now streaming');
-                    if (channel.game === null) channel.game = 'on Twitch';
-                    bttv.notify(channel.display_name + ' just started streaming ' + channel.game + '.\nClick here to head to ' + channel.display_name + '\'s channel.', channel.display_name + ' is Now Streaming', channel.url, channel.logo, 'channel_live_' + channel.name);
+                if (vars.userData.isLoggedIn && vars.liveChannels.indexOf(channel.name) === -1 && bttv.settings.get('followingNotifications') === true) {
+                    bttv.TwitchAPI.get('users/' + encodeURIComponent(vars.userData.login) + '/follows/channels/' + encodeURIComponent(channel.name)).done(function(follow) {
+                        if (follow.notifications === false) return;
+
+                        debug.log(channel.name + ' is now streaming');
+                        if (channel.game === null) channel.game = 'on Twitch';
+                        bttv.notify(channel.display_name + ' just started streaming ' + channel.game + '.\nClick here to head to ' + channel.display_name + '\'s channel.', channel.display_name + ' is Now Streaming', channel.url, channel.logo, 'channel_live_' + channel.name);
+                    });
                 }
             });
             vars.liveChannels = channels;
