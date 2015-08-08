@@ -1497,7 +1497,7 @@ body.channel_new.columns.ember-application {
         -o-transform: rotate(360deg);
         -ms-transform: rotate(360deg);
         transform: rotate(360deg);
-    };
+    }
 }
 
 @-moz-keyframes morag-spin {
@@ -1509,7 +1509,7 @@ body.channel_new.columns.ember-application {
     to {
         -moz-transform: rotate(360deg);
         transform: rotate(360deg);
-    };
+    }
 }
 
 @-webkit-keyframes morag-spin {
@@ -1521,7 +1521,7 @@ body.channel_new.columns.ember-application {
     to {
         -webkit-transform: rotate(360deg);
         transform: rotate(360deg);
-    };
+    }
 }
 
 @-ms-keyframes morag-spin {
@@ -1533,7 +1533,7 @@ body.channel_new.columns.ember-application {
     to {
         -ms-transform: rotate(360deg);
         transform: rotate(360deg);
-    };
+    }
 }
 
 @-o-keyframes morag-spin {
@@ -1545,7 +1545,7 @@ body.channel_new.columns.ember-application {
     to {
         -o-transform: rotate(360deg);
         transform: rotate(360deg);
-    };
+    }
 }
 
 .ttv-emo-6633 {
