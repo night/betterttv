@@ -743,16 +743,14 @@ exports.assignBadges = function(badges, data) {
             return;
         }
 
-        if (
-            [
-                'moderator',
-                'broadcaster',
-                'admin',
-                'global-moderator',
-                'staff',
-                'bot'
-            ].indexOf(badge.type) === -1
-        ) {
+        if ([
+            'moderator',
+            'broadcaster',
+            'admin',
+            'global-moderator',
+            'staff',
+            'bot'
+        ].indexOf(badge.type) === -1) {
             return;
         }
 

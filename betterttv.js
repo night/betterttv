@@ -1529,16 +1529,14 @@ exports.assignBadges = function(badges, data) {
             return;
         }
 
-        if (
-            [
-                'moderator',
-                'broadcaster',
-                'admin',
-                'global-moderator',
-                'staff',
-                'bot'
-            ].indexOf(badge.type) === -1
-        ) {
+        if ([
+            'moderator',
+            'broadcaster',
+            'admin',
+            'global-moderator',
+            'staff',
+            'bot'
+        ].indexOf(badge.type) === -1) {
             return;
         }
 
@@ -2921,12 +2919,14 @@ var generateCSS = function(height) {
 };
 
 var getPlayerHeight = function() {
+    var isNewPlayer = typeof $('#player .dynamic-player .player').data('playertype') !== 'undefined';
+
     for (var i = 0; i < players.length; i++) {
         var player = players[i];
 
         if (!$(player).length) continue;
 
-        return ($(player).width() * 0.5625) + (player.indexOf('iframe') > -1 ? 0 : 30);
+        return ($(player).width() * 0.5625) + (player.indexOf('iframe') > -1 || isNewPlayer ? 0 : 30);
     }
 
     return -1;
