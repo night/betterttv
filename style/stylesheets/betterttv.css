@@ -789,7 +789,8 @@ input.text:focus,select:focus,textarea:focus {
 }
 
 .ember-chat .chat-interface .chat-buttons-container .send-chat-button {
-    width: 100px;
+    max-width: 180px;
+    min-width: 100px;
     float: right;
     left: auto;
     right: 0px;
@@ -798,6 +799,10 @@ input.text:focus,select:focus,textarea:focus {
     position: auto;
     color: #fff !important;
     margin-right: 0px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 input, textarea, select {
