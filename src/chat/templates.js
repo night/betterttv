@@ -202,7 +202,7 @@ var message = exports.message = function(sender, msg, emotes, colored, force) {
     }
 
     var spam = false;
-    if (helpers.isSpammer(sender) && !force) {
+    if (helpers.isSpammer(sender) && !helpers.isModerator(sender) && !force) {
         msg = '<span style="color: #999">&lt;spam deleted&gt;</span>';
         spam = true;
     }
