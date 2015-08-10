@@ -125,6 +125,15 @@ var takeover = module.exports = function() {
     // Load Chat Settings
     loadChatSettings();
 
+    // Load spammer list
+    $.getJSON('https://api.betterttv.net/2/spammers').done(function(data) {
+        store.spammers = data.users;
+    });
+    $('body').off('click', '.chat-line .message.spam').on('click', '.chat-line .message.spam', function() {
+        var user = $(this).parent().data('sender');
+        $(this).replaceWith(templates.message(user, decodeURIComponent($(this).data('raw')), null, null, true));
+    });
+
     // Hover over links
     $('body').off('mouseover', '.chat-line .message a').on('mouseover', '.chat-line .message a', function() {
         var $this = $(this);

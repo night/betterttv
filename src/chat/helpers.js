@@ -504,6 +504,11 @@ exports.isSubscriber = function(user) {
     return tmi() && tmi().tmiRoom.getLabels(user).indexOf('subscriber') !== -1;
 };
 
+exports.isSpammer = function(user) {
+    if (!user || user === '') return false;
+    return store.spammers.indexOf(user.toLowerCase()) > -1;
+};
+
 exports.getBadges = function(user) {
     if (!user || user === '') return false;
     var badges = [];

@@ -1290,6 +1290,11 @@ exports.isSubscriber = function(user) {
     return tmi() && tmi().tmiRoom.getLabels(user).indexOf('subscriber') !== -1;
 };
 
+exports.isSpammer = function(user) {
+    if (!user || user === '') return false;
+    return store.spammers.indexOf(user.toLowerCase()) > -1;
+};
+
 exports.getBadges = function(user) {
     if (!user || user === '') return false;
     var badges = [];
@@ -1718,6 +1723,7 @@ exports.__badges = {};
 exports.displayNames = {};
 exports.trackTimeouts = {};
 exports.chatters = {};
+exports.spammers = [];
 exports.tabCompleteHistory = [];
 exports.suggestions = {
     matchList: [],
@@ -1859,6 +1865,15 @@ var takeover = module.exports = function() {
 
     // Load Chat Settings
     loadChatSettings();
+
+    // Load spammer list
+    $.getJSON('https://api.betterttv.net/2/spammers').done(function(data) {
+        store.spammers = data.users;
+    });
+    $('body').off('click', '.chat-line .message.spam').on('click', '.chat-line .message.spam', function() {
+        var user = $(this).parent().data('sender');
+        $(this).replaceWith(templates.message(user, decodeURIComponent($(this).data('raw')), null, null, true));
+    });
 
     // Hover over links
     $('body').off('mouseover', '.chat-line .message a').on('mouseover', '.chat-line .message a', function() {
@@ -2167,7 +2182,8 @@ var takeover = module.exports = function() {
 
 },{"../features/anon-chat":13,"../features/chat-load-settings":22,"../features/override-emotes":43,"../helpers/debug":46,"../keycodes":50,"../vars":63,"./handlers":4,"./helpers":5,"./rooms":7,"./store":8,"./templates":10,"./tmi":11}],10:[function(require,module,exports){
 var tmi = require('./tmi'),
-    store = require('./store');
+    store = require('./store'),
+    helpers = require('./helpers');
 
 var badge = exports.badge = function(type, name, description) {
     return '<div class="' + type + '' + ((bttv.settings.get('alphaTags') && ['admin', 'global-moderator', 'staff', 'broadcaster', 'moderator', 'turbo', 'ign'].indexOf(type) !== -1) ? ' alpha' + (!bttv.settings.get('darkenedMode') ? ' invert' : '') : '') + ' badge" title="' + description + '">' + name + '</div> ';
@@ -2290,7 +2306,7 @@ var bttvEmoticonize = exports.bttvEmoticonize = function(sender, message, emote)
         if (emote.restrictions.channels.length && emote.restrictions.channels.indexOf(bttv.getChannel()) === -1) return message;
         if (emote.restrictions.games.length && tmi().channel && emote.restrictions.games.indexOf(tmi().channel.game) === -1) return message;
 
-        var emoteSets = require('./helpers').getEmotes(sender);
+        var emoteSets = helpers.getEmotes(sender);
         if (emote.restrictions.emoticonSet && emoteSets.indexOf(emote.restrictions.emoticonSet) === -1) return message;
     }
 
@@ -2349,8 +2365,9 @@ exports.suggestions = function(suggestions, index) {
     return suggestionsTemplate({suggestions: suggestions, index: index});
 };
 
-var message = exports.message = function(sender, msg, emotes, colored) {
+var message = exports.message = function(sender, msg, emotes, colored, force) {
     colored = colored || false;
+    force = force || false;
     var rawMessage = encodeURIComponent(msg);
 
     if (sender !== 'jtv') {
@@ -2367,7 +2384,13 @@ var message = exports.message = function(sender, msg, emotes, colored) {
         msg = tokenizedMessage.join(' ');
     }
 
-    return '<span class="message" ' + (colored ? 'style="color: ' + colored + '" ' : '') + 'data-raw="' + rawMessage + '" data-emotes="' + (emotes ? encodeURIComponent(JSON.stringify(emotes)) : 'false') + '">' + msg + '</span>';
+    var spam = false;
+    if (helpers.isSpammer(sender) && !force) {
+        msg = '<span style="color: #999">&lt;spam deleted&gt;</span>';
+        spam = true;
+    }
+
+    return '<span class="message ' + (spam ? 'spam' : '') + '" ' + (colored ? 'style="color: ' + colored + '" ' : '') + 'data-raw="' + rawMessage + '" data-emotes="' + (emotes ? encodeURIComponent(JSON.stringify(emotes)) : 'false') + '">' + msg + '</span>';
 };
 
 exports.privmsg = function(highlight, action, server, isMod, data) {
@@ -6270,6 +6293,11 @@ events.new_subscriber = function(data) {
     bttv.chat.helpers.notifyMessage('subscriber', bttv.chat.helpers.lookupDisplayName(data.user) + ' just subscribed!');
     bttv.chat.store.__subscriptions[data.user] = ['night'];
     bttv.chat.helpers.reparseMessages(data.user);
+};
+
+// Chat Spammers
+events.new_spammer = function(data) {
+    bttv.chat.store.spammers.push(data.name);
 };
 
 // Nightbot emits commercial warnings to mods

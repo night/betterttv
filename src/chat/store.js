@@ -9,6 +9,7 @@ exports.__badges = {};
 exports.displayNames = {};
 exports.trackTimeouts = {};
 exports.chatters = {};
+exports.spammers = [];
 exports.tabCompleteHistory = [];
 exports.suggestions = {
     matchList: [],

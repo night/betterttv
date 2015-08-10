@@ -1,5 +1,6 @@
 var tmi = require('./tmi'),
-    store = require('./store');
+    store = require('./store'),
+    helpers = require('./helpers');
 
 var badge = exports.badge = function(type, name, description) {
     return '<div class="' + type + '' + ((bttv.settings.get('alphaTags') && ['admin', 'global-moderator', 'staff', 'broadcaster', 'moderator', 'turbo', 'ign'].indexOf(type) !== -1) ? ' alpha' + (!bttv.settings.get('darkenedMode') ? ' invert' : '') : '') + ' badge" title="' + description + '">' + name + '</div> ';
@@ -122,7 +123,7 @@ var bttvEmoticonize = exports.bttvEmoticonize = function(sender, message, emote)
         if (emote.restrictions.channels.length && emote.restrictions.channels.indexOf(bttv.getChannel()) === -1) return message;
         if (emote.restrictions.games.length && tmi().channel && emote.restrictions.games.indexOf(tmi().channel.game) === -1) return message;
 
-        var emoteSets = require('./helpers').getEmotes(sender);
+        var emoteSets = helpers.getEmotes(sender);
         if (emote.restrictions.emoticonSet && emoteSets.indexOf(emote.restrictions.emoticonSet) === -1) return message;
     }
 
@@ -181,8 +182,9 @@ exports.suggestions = function(suggestions, index) {
     return suggestionsTemplate({suggestions: suggestions, index: index});
 };
 
-var message = exports.message = function(sender, msg, emotes, colored) {
+var message = exports.message = function(sender, msg, emotes, colored, force) {
     colored = colored || false;
+    force = force || false;
     var rawMessage = encodeURIComponent(msg);
 
     if (sender !== 'jtv') {
@@ -199,7 +201,13 @@ var message = exports.message = function(sender, msg, emotes, colored) {
         msg = tokenizedMessage.join(' ');
     }
 
-    return '<span class="message" ' + (colored ? 'style="color: ' + colored + '" ' : '') + 'data-raw="' + rawMessage + '" data-emotes="' + (emotes ? encodeURIComponent(JSON.stringify(emotes)) : 'false') + '">' + msg + '</span>';
+    var spam = false;
+    if (helpers.isSpammer(sender) && !force) {
+        msg = '<span style="color: #999">&lt;spam deleted&gt;</span>';
+        spam = true;
+    }
+
+    return '<span class="message ' + (spam ? 'spam' : '') + '" ' + (colored ? 'style="color: ' + colored + '" ' : '') + 'data-raw="' + rawMessage + '" data-emotes="' + (emotes ? encodeURIComponent(JSON.stringify(emotes)) : 'false') + '">' + msg + '</span>';
 };
 
 exports.privmsg = function(highlight, action, server, isMod, data) {
