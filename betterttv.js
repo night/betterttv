@@ -6322,7 +6322,7 @@ function SocketClient() {
     this._lookedUpUsers = [];
     this._connected = false;
     this._connecting = false;
-    this._connectAttempts = 0;
+    this._connectAttempts = 1;
     this._joinedChannel = null;
     this._events = events;
 
@@ -6342,7 +6342,7 @@ SocketClient.prototype.connect = function() {
         debug.log('SocketClient: Connected to Beta BetterTTV Socket Server');
 
         _self._connected = true;
-        _self._connectAttempts = 0;
+        _self._connectAttempts = 1;
         _self.joinChannel();
     };
 
@@ -6397,7 +6397,7 @@ SocketClient.prototype.reconnect = function() {
 
     setTimeout(function() {
         _self.connect();
-    }, Math.random() * (Math.pow(2, this._connectAttempts) - 1) * 1000);
+    }, Math.random() * (Math.pow(2, this._connectAttempts) - 1) * 30000);
 };
 
 SocketClient.prototype.emit = function(evt, data) {
