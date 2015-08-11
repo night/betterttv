@@ -2078,11 +2078,11 @@ span.subscribe-text {
 }
 
 /* new player darkening */
-.dynamic-player .player-hover.player-controls-bottom .player-menu__menu {
+.player .player-hover.player-controls-bottom .player-menu__menu {
     background: rgb(35, 35, 35);
     color: #d3d3d3;
 }
 
-.dynamic-player .player-hover.player-controls-bottom .player-menu__menu:after {
+.player .player-hover.player-controls-bottom .player-menu__menu:after {
     border-top-color: rgb(35, 35, 35);
 }
