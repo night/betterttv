@@ -303,6 +303,12 @@ module.exports = [
         }
     },
     {
+        name: 'Hide Spam Messages',
+        description: 'Hides known spam messages. Click on the message to reveal it',
+        default: true,
+        storageKey: 'HideSpam'
+    },
+    {
         name: 'Host Button',
         description: 'Places a Host/Unhost button below the video player',
         default: false,

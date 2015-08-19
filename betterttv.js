@@ -2385,7 +2385,7 @@ var message = exports.message = function(sender, msg, emotes, colored, force) {
     }
 
     var spam = false;
-    if (helpers.isSpammer(sender) && !helpers.isModerator(sender) && !force) {
+    if (bttv.settings.get('HideSpam') && helpers.isSpammer(sender) && !helpers.isModerator(sender) && !force) {
         msg = '<span style="color: #999">&lt;spam deleted&gt;</span>';
         spam = true;
     }
@@ -5607,6 +5607,12 @@ module.exports = [
         load: function() {
             cssLoader.load('hide-group-chat', 'groupChatRemoval');
         }
+    },
+    {
+        name: 'Hide Spam Messages',
+        description: 'Hides known spam messages. Click on the message to reveal it',
+        default: true,
+        storageKey: 'HideSpam'
     },
     {
         name: 'Host Button',
