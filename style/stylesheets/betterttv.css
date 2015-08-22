@@ -583,7 +583,7 @@ input.text:focus,select:focus,textarea:focus {
     padding-left: 10px;
     padding-bottom: 15px;
     padding-right: 10px;
-    background-color: rgb(60,60,60);
+    background-color: rgb(220,220,220);
     font-size: 12px;
     font-weight: bold;
     cursor: pointer;
@@ -1069,6 +1069,7 @@ body#chat #speak {
     color: rgb(220,220,190);
     margin-left: 60px;
     position: relative;
+    display: table;
     z-index: 4;
 }
 

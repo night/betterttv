@@ -2086,3 +2086,8 @@ span.subscribe-text {
 .player .player-hover.player-controls-bottom .player-menu__menu:after {
     border-top-color: rgb(35, 35, 35);
 }
+
+/* dark mod card */
+.bttv-mod-card .user-messages .label {
+    background-color: rgb(60,60,60);
+}
