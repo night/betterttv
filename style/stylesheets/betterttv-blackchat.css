@@ -402,3 +402,28 @@ body {
 .ember-chat .chat-room {
 	top: 0px;
 }
+
+/* deprecation warning */
+.ember-chat .chat-room .bttvBlackDeprecationWarning {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 100%;
+    padding: 8px;
+
+    background: #822;
+    color: #e3e3e3;
+    font-size: 15px;
+    text-align: center;
+
+    overflow: hidden;
+    z-index: 99999;
+}
+.ember-chat .chat-room .bttvBlackDeprecationWarning a {
+    color: #e3e3e3;
+    text-decoration: underline;
+}
+.ember-chat .chat-room .bttvBlackDeprecationWarning .close {
+    font-size: 13px;
+    cursor: pointer;
+}

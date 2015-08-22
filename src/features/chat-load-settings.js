@@ -53,6 +53,11 @@ module.exports = function() {
             darkCSS.innerHTML = '';
             $('body').append(darkCSS);
             $('.blackChatLink').text('Unblacken Chat');
+
+            $('.ember-chat .chat-room').append('<div class="bttvBlackDeprecationWarning">BTTV Black chat feature is deprecated in favor of <a href="https://nightdev.com/obschat/" target="_blank">OBS Chat</a>, and will eventually be removed. <span class="close">(close)</span></div>');
+            $('.ember-chat .chat-room .bttvBlackDeprecationWarning').one('click', function() {
+                $('.ember-chat .chat-room .bttvBlackDeprecationWarning').remove();
+            });
         }
     });
 
