@@ -2385,7 +2385,7 @@ var message = exports.message = function(sender, msg, emotes, colored, force) {
     }
 
     var spam = false;
-    if (bttv.settings.get('HideSpam') && helpers.isSpammer(sender) && !helpers.isModerator(sender) && !force) {
+    if (bttv.settings.get('hideSpam') && helpers.isSpammer(sender) && !helpers.isModerator(sender) && !force) {
         msg = '<span style="color: #999">&lt;spam deleted&gt;</span>';
         spam = true;
     }
@@ -5617,7 +5617,7 @@ module.exports = [
         name: 'Hide Spam Messages',
         description: 'Hides known spam messages. Click on the message to reveal it',
         default: true,
-        storageKey: 'HideSpam'
+        storageKey: 'hideSpam'
     },
     {
         name: 'Host Button',

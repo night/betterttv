@@ -306,7 +306,7 @@ module.exports = [
         name: 'Hide Spam Messages',
         description: 'Hides known spam messages. Click on the message to reveal it',
         default: true,
-        storageKey: 'HideSpam'
+        storageKey: 'hideSpam'
     },
     {
         name: 'Host Button',
