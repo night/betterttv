@@ -49,7 +49,7 @@ var checkBroadcastInfo = module.exports = function() {
         if (d.followers) {
             channel.set('followersTotal', d.followers);
         }
-
+    }).always(function() {
         setTimeout(checkBroadcastInfo, 60000 + Math.random() * 5000);
     });
 };
