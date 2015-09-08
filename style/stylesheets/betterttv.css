@@ -1637,3 +1637,55 @@ body.channel_new.columns.ember-application {
 .ember-chat .chat-room.no-name-colors .chat-messages .chat-line .from, .ember-chat .chat-room.no-name-colors .chat-messages .chat-line .to {
     color: #6441A5 !important;
 }
+
+
+/* custom timeouts */
+#bttv-custom-timeout-contain {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 80px;
+    height: 200px;
+    overflow: hidden;
+
+    background: rgba(90,90,90,0.4);
+
+    z-index: 99999;
+}
+
+#bttv-custom-timeout-contain .text,
+#bttv-custom-timeout-contain .cursor {
+    position: absolute;
+    left: 0px;
+    top: 100px;
+    width: 80px;
+    height: 1px;
+    background: #f00;
+}
+
+#bttv-custom-timeout-contain .text {
+    top: 85px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    background: rgba(0,0,0,0.6);
+    cursor: default;
+    display: none;
+}
+
+#bttv-custom-timeout-contain:hover .text {
+    display: block;
+}
+
+#bttv-custom-timeout-contain:hover .cursor {
+    background: #0f0;
+}
+
+.chat-messages .chat-line .from {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}

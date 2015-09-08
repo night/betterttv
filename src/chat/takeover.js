@@ -8,7 +8,8 @@ var store = require('./store'),
     templates = require('./templates');
 var overrideEmotes = require('../features/override-emotes'),
     loadChatSettings = require('../features/chat-load-settings'),
-    anonChat = require('../features/anon-chat');
+    anonChat = require('../features/anon-chat'),
+    customTimeouts = require('../features/custom-timeouts');
 
 var takeover = module.exports = function() {
     var tmi = require('./tmi')();
@@ -204,6 +205,12 @@ var takeover = module.exports = function() {
     $('body').off('click', '.chat-line .from').on('click', '.chat-line .from', function() {
         var sender = $(this).data('sender') || $(this).parent().data('sender');
         handlers.moderationCard(sender + '', $(this));
+    }).on('mousedown', '.chat-line .from', function(e) {
+        if (e.which === 3) {
+            customTimeouts($(this).data('sender') || $(this).parent().data('sender'), $(this));
+        }
+    }).on('contextmenu', '.chat-line :not(.message)', function() {
+        if (helpers.isModerator(vars.userData.login)) return false;
     });
 
     // Give some tips to Twitch Emotes
