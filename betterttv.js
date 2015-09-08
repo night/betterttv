@@ -3564,7 +3564,7 @@ var checkBroadcastInfo = module.exports = function() {
         if (d.followers) {
             channel.set('followersTotal', d.followers);
         }
-
+    }).always(function() {
         setTimeout(checkBroadcastInfo, 60000 + Math.random() * 5000);
     });
 };
@@ -3591,23 +3591,25 @@ var checkFollowing = module.exports = function() {
         offset = offset || 0;
 
         bttv.TwitchAPI.get('streams/followed?limit=100&offset=' + offset).done(function(d) {
-            if (d.streams && d.streams.length > 0) {
-                d.streams.forEach(function(stream) {
-                    if (followingNames.indexOf(stream.channel.name) === -1) {
-                        followingNames.push(stream.channel.name);
-                        followingList.push(stream);
-                    }
-                });
-                if (d.streams.length === 100) {
-                    fetchFollowing(function(fetchedFollowingList) {
-                        callback(fetchedFollowingList);
-                    }, followingList, followingNames, offset + 100);
-                } else {
-                    callback(followingList);
+            if (!d.streams || !d.streams.length) return callback(followingList);
+
+            d.streams.forEach(function(stream) {
+                if (followingNames.indexOf(stream.channel.name) === -1) {
+                    followingNames.push(stream.channel.name);
+                    followingList.push(stream);
                 }
-            } else {
-                callback(followingList);
+            });
+
+            if (d.streams.length === 100) {
+                fetchFollowing(function(fetchedFollowingList) {
+                    callback(fetchedFollowingList);
+                }, followingList, followingNames, offset + 100);
+                return;
             }
+
+            callback(followingList);
+        }).fail(function() {
+            callback(followingList);
         });
     };
 
