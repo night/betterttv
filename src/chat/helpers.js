@@ -20,6 +20,9 @@ var lookupDisplayName = exports.lookupDisplayName = function(user) {
         store.displayNames[user] = Twitch.user.displayName() || user;
     }
 
+    var nicknames = bttv.storage.getObject('nicknames');
+    if (user in nicknames) return nicknames[user];
+
     if (tmi()) {
         if (store.displayNames.hasOwnProperty(user)) {
             return store.displayNames[user] || user.capitalize();

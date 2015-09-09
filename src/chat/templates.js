@@ -20,7 +20,7 @@ var escape = exports.escape = function(message) {
 };
 
 var from = exports.from = function(name, color) {
-    return '<span ' + (color ? 'style="color: ' + color + ';" ' : '') + 'class="from">' + escape(bttv.storage.getObject('nicknames')[name.toLowerCase()] || name) + '</span><span class="colon">:</span>' + (name !== 'jtv' ? '&nbsp;<wbr></wbr>' : '');
+    return '<span ' + (color ? 'style="color: ' + color + ';" ' : '') + 'class="from">' + escape(name) + '</span><span class="colon">:</span>' + (name !== 'jtv' ? '&nbsp;<wbr></wbr>' : '');
 };
 
 var timestamp = exports.timestamp = function(time) {
