@@ -3864,7 +3864,8 @@ module.exports = function(user, $event) {
         return;
     }
 
-    $('.ember-chat .chat-room').append(template({ displayName: $event.text() }));
+    $('#bttv-custom-timeout-contain').remove();
+    $('.ember-chat .chat-room').append(template());
 
     $('#bttv-custom-timeout-contain').css({
         'top': $event.offset().top + ($event.height() / 2) - ($('#bttv-custom-timeout-contain').height() / 2),
@@ -3892,7 +3893,7 @@ module.exports = function(user, $event) {
         $('#bttv-custom-timeout-contain .cursor').css('top', offset);
     });
 
-    $('body').on('mouseup.custom-timeouts', function() {
+    $('body').on('mousedown.custom-timeouts', function() {
         if (action.type === 'ban') helpers.ban(user);
         if (action.type === 'time') helpers.timeout(user, action.length);
 
