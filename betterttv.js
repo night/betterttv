@@ -1946,15 +1946,18 @@ var takeover = module.exports = function() {
     });
 
     // Make names clickable
-    $('body').off('click', '.chat-line .from').on('click', '.chat-line .from', function() {
+    $('body').off('click', '.chat-line .from').on('click', '.chat-line .from', function(e) {
+        if (e.shiftKey) return;
         var sender = $(this).data('sender') || $(this).parent().data('sender');
         handlers.moderationCard(sender + '', $(this));
     }).on('mousedown', '.chat-line .from', function(e) {
-        if (e.which === 3) {
+        if (e.which === 3 && !bttv.settings.get('customTOShiftOnly') || e.shiftKey) {
             customTimeouts($(this).data('sender') || $(this).parent().data('sender'), $(this));
         }
-    }).on('contextmenu', '.chat-line :not(.message)', function() {
-        if (helpers.isModerator(vars.userData.login)) return false;
+    }).on('contextmenu', '.chat-line .from', function(e) {
+        if (!helpers.isModerator(vars.userData.login)) return true;
+        if (bttv.settings.get('customTOShiftOnly') && !e.shiftKey) return true;
+        return false;
     });
 
     // Give some tips to Twitch Emotes
@@ -3864,7 +3867,10 @@ module.exports = function(user, $event) {
         return;
     }
 
+    $('body').off('.custom-timeouts');
+    $('.chat-line').removeClass('bttv-user-locate');
     $('#bttv-custom-timeout-contain').remove();
+
     $('.ember-chat .chat-room').append(template());
 
     $('#bttv-custom-timeout-contain').css({
@@ -3893,13 +3899,15 @@ module.exports = function(user, $event) {
         $('#bttv-custom-timeout-contain .cursor').css('top', offset);
     });
 
-    $('body').on('mousedown.custom-timeouts', function() {
+    $('body').on('mousedown.custom-timeouts', function(e) {
+        if (e.which === 3 || e.shiftKey) return;
+
         if (action.type === 'ban') helpers.ban(user);
         if (action.type === 'time') helpers.timeout(user, action.length);
 
         $('#bttv-custom-timeout-contain').remove();
         $('body').off('.custom-timeouts');
-        $('.chat-line[data-sender="' + user + '"]').removeClass('bttv-user-locate');
+        $('.chat-line').removeClass('bttv-user-locate');
     });
 
     $('.chat-line[data-sender="' + user + '"]').addClass('bttv-user-locate');
@@ -5472,6 +5480,12 @@ module.exports = [
                 imagePreview.disablePreview();
             }
         }
+    },
+    {
+        name: 'Custom Timeouts',
+        description: 'Only use Shift-Click to activate custom timeouts',
+        default: false,
+        storageKey: 'customTOShiftOnly'
     },
     {
         name: 'DarkenTTV',

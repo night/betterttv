@@ -100,6 +100,12 @@ module.exports = [
         }
     },
     {
+        name: 'Custom Timeouts',
+        description: 'Only use Shift-Click to activate custom timeouts',
+        default: false,
+        storageKey: 'customTOShiftOnly'
+    },
+    {
         name: 'DarkenTTV',
         description: 'A sleek, grey theme which will make you love the site even more',
         default: false,

@@ -7,7 +7,10 @@ module.exports = function(user, $event) {
         return;
     }
 
+    $('body').off('.custom-timeouts');
+    $('.chat-line').removeClass('bttv-user-locate');
     $('#bttv-custom-timeout-contain').remove();
+
     $('.ember-chat .chat-room').append(template());
 
     $('#bttv-custom-timeout-contain').css({
@@ -36,13 +39,15 @@ module.exports = function(user, $event) {
         $('#bttv-custom-timeout-contain .cursor').css('top', offset);
     });
 
-    $('body').on('mousedown.custom-timeouts', function() {
+    $('body').on('mousedown.custom-timeouts', function(e) {
+        if (e.which === 3 || e.shiftKey) return;
+
         if (action.type === 'ban') helpers.ban(user);
         if (action.type === 'time') helpers.timeout(user, action.length);
 
         $('#bttv-custom-timeout-contain').remove();
         $('body').off('.custom-timeouts');
-        $('.chat-line[data-sender="' + user + '"]').removeClass('bttv-user-locate');
+        $('.chat-line').removeClass('bttv-user-locate');
     });
 
     $('.chat-line[data-sender="' + user + '"]').addClass('bttv-user-locate');

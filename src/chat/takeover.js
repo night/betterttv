@@ -202,15 +202,18 @@ var takeover = module.exports = function() {
     });
 
     // Make names clickable
-    $('body').off('click', '.chat-line .from').on('click', '.chat-line .from', function() {
+    $('body').off('click', '.chat-line .from').on('click', '.chat-line .from', function(e) {
+        if (e.shiftKey) return;
         var sender = $(this).data('sender') || $(this).parent().data('sender');
         handlers.moderationCard(sender + '', $(this));
     }).on('mousedown', '.chat-line .from', function(e) {
-        if (e.which === 3) {
+        if (e.which === 3 && !bttv.settings.get('customTOShiftOnly') || e.shiftKey) {
             customTimeouts($(this).data('sender') || $(this).parent().data('sender'), $(this));
         }
-    }).on('contextmenu', '.chat-line :not(.message)', function() {
-        if (helpers.isModerator(vars.userData.login)) return false;
+    }).on('contextmenu', '.chat-line .from', function(e) {
+        if (!helpers.isModerator(vars.userData.login)) return true;
+        if (bttv.settings.get('customTOShiftOnly') && !e.shiftKey) return true;
+        return false;
     });
 
     // Give some tips to Twitch Emotes
