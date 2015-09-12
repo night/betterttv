@@ -1997,6 +1997,11 @@ span.subscribe-text {
     border-top-color: rgb(30,30,30);
 }
 
+/* pinned highlights */
+#bttv-pin-container {
+    background: rgb(30, 30, 30);
+}
+
 /* random "whatisthis" darkening */
 .app-main .directory_header .whatisthis {
     background-color: rgb(30,30,30);

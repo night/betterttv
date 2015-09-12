@@ -352,6 +352,19 @@ module.exports = [
         storageKey: 'alertOtherMessages'
     },
     {
+        name: 'Pin Highlighted Messages',
+        description: 'Pin your ten latest highlighted messages right above chat',
+        default: false,
+        storageKey: 'pinnedHighlights',
+        toggle: function(value) {
+            if (value === true) {
+                $('.ember-chat .chat-room').append($('<div id="bttv-pin-container">'));
+            } else {
+                $('#bttv-pin-container').remove();
+            }
+        }
+    },
+    {
         name: 'Play Sound on Highlight/Whisper',
         description: 'Get audio feedback for messages directed at you (BETA)',
         default: false,
