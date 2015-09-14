@@ -36,6 +36,6 @@ var server = function(req, res) {
 https.createServer({
   key: fs.readFileSync(path.join(__dirname, 'test-cdn.betterttv.net.key')),
   cert: fs.readFileSync(path.join(__dirname, 'test-cdn.betterttv.net.cert'))
-}, server).listen(443);
+}, server).listen(443, '127.0.0.1');
 
-http.createServer(server).listen(80);
+http.createServer(server).listen(80, '127.0.0.1');
