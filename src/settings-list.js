@@ -357,9 +357,7 @@ module.exports = [
         default: false,
         storageKey: 'pinnedHighlights',
         toggle: function(value) {
-            if (value === true) {
-                $('.ember-chat .chat-room').append($('<div id="bttv-pin-container">'));
-            } else {
+            if (value === false) {
                 $('#bttv-pin-container').remove();
             }
         }
