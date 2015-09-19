@@ -194,7 +194,7 @@ module.exports = [
     {
         name: 'Double-Click Translation',
         description: 'Double-clicking on chat lines translates them with Google Translate',
-        default: true,
+        default: false,
         storageKey: 'dblclickTranslation',
         toggle: function(value) {
             if (value === true) {

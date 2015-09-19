@@ -1625,11 +1625,25 @@ exports.translate = function($element, sender, text) {
     $.getJSON('https://api.betterttv.net/2/translate?' + qs).success(function(data) {
         $element.replaceWith(templates.message(sender, data.translation));
     }).error(function(data) {
+        $element.replaceWith(templates.message(sender, text));
+
+        var error = 'There was an unknown error translating this message.';
+
         if (data.responseJSON && data.responseJSON.message) {
-            $element.text(data.responseJSON.message);
-        } else {
-            $element.text('Translation Error');
+            error = data.responseJSON.message;
         }
+
+        $element.tipsy({
+            trigger: 'manual',
+            gravity: $.fn.tipsy.autoNS,
+            title: function() { return error; }
+        });
+        $element.tipsy('show');
+        setTimeout(function() {
+            try {
+                $element.tipsy('hide');
+            } catch(e) {}
+        }, 3000);
     });
 };
 
@@ -5576,7 +5590,7 @@ module.exports = [
     {
         name: 'Double-Click Translation',
         description: 'Double-clicking on chat lines translates them with Google Translate',
-        default: true,
+        default: false,
         storageKey: 'dblclickTranslation',
         toggle: function(value) {
             if (value === true) {
