@@ -4788,10 +4788,11 @@ module.exports = function(message) {
         $highlightContainer = $('<div id="bttv-pin-container">').appendTo($('.ember-chat .chat-room'));
     }
 
-    // Format the time string
-    var timeSent = message.date.getHours() + ':' + ('0' + message.date.getMinutes()).slice(-2);
+    // Format the time string (12 hour format)
+    var currentHour = message.date.getHours() % 12 || 12;
+    var timeSent = currentHour + ':' + ('0' + message.date.getMinutes()).slice(-2);
 
-    var $nextHighlight = $(highlightTemplate({ time: timeSent, displayName: message.tags['display-name'] + ':', message: message.message }));
+    var $nextHighlight = $(highlightTemplate({ time: timeSent, displayName: message.tags['display-name'], message: message.message }));
 
     // If the next highlight will bump the container over the limit, remove the oldest highlight
     if ($highlightContainer.children().length + 1 > maximumPinCount) {
@@ -6354,7 +6355,7 @@ var buf = [];
 var jade_mixins = {};
 var jade_interp;
 ;var locals_for_with = (locals || {});(function (time, displayName, message) {
-buf.push("<div id=\"bttv-pinned-highlight\"><span class=\"close\"><svg height=\"8px\" version=\"1.1\" viewbox=\"0 0 16 16\" width=\"8px\" x=\"0px\" y=\"0px\" class=\"svg-close\"><path clip-rule=\"evenodd\" d=\"M13.657,3.757L9.414,8l4.243,4.242l-1.415,1.415L8,9.414l-4.243,4.243l-1.414-1.415L6.586,8L2.343,3.757l1.414-1.414L8,6.586l4.242-4.243L13.657,3.757z\" fill-rule=\"evenodd\"></path></svg></span><span class=\"time\">" + (jade.escape((jade_interp = time) == null ? '' : jade_interp)) + "</span><span class=\"display-name\">" + (jade.escape((jade_interp = displayName) == null ? '' : jade_interp)) + "</span><span class=\"message\">" + (jade.escape((jade_interp = message) == null ? '' : jade_interp)) + "</span></div>");}.call(this,"time" in locals_for_with?locals_for_with.time:typeof time!=="undefined"?time:undefined,"displayName" in locals_for_with?locals_for_with.displayName:typeof displayName!=="undefined"?displayName:undefined,"message" in locals_for_with?locals_for_with.message:typeof message!=="undefined"?message:undefined));;return buf.join("");
+buf.push("<div id=\"bttv-pinned-highlight\"><span class=\"close\"><svg height=\"8px\" version=\"1.1\" viewbox=\"0 0 16 16\" width=\"8px\" x=\"0px\" y=\"0px\" class=\"svg-close\"><path clip-rule=\"evenodd\" d=\"M13.657,3.757L9.414,8l4.243,4.242l-1.415,1.415L8,9.414l-4.243,4.243l-1.414-1.415L6.586,8L2.343,3.757l1.414-1.414L8,6.586l4.242-4.243L13.657,3.757z\" fill-rule=\"evenodd\"></path></svg></span><span class=\"time\">" + (jade.escape((jade_interp = time) == null ? '' : jade_interp)) + "</span><span class=\"display-name\">" + (jade.escape((jade_interp = displayName) == null ? '' : jade_interp)) + ":</span><span class=\"message\">" + (jade.escape((jade_interp = message) == null ? '' : jade_interp)) + "</span></div>");}.call(this,"time" in locals_for_with?locals_for_with.time:typeof time!=="undefined"?time:undefined,"displayName" in locals_for_with?locals_for_with.displayName:typeof displayName!=="undefined"?displayName:undefined,"message" in locals_for_with?locals_for_with.message:typeof message!=="undefined"?message:undefined));;return buf.join("");
 };module.exports=template;
 },{}],64:[function(require,module,exports){
 function template(locals) {

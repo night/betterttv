@@ -15,10 +15,11 @@ module.exports = function(message) {
         $highlightContainer = $('<div id="bttv-pin-container">').appendTo($('.ember-chat .chat-room'));
     }
 
-    // Format the time string
-    var timeSent = message.date.getHours() + ':' + ('0' + message.date.getMinutes()).slice(-2);
+    // Format the time string (12 hour format)
+    var currentHour = message.date.getHours() % 12 || 12;
+    var timeSent = currentHour + ':' + ('0' + message.date.getMinutes()).slice(-2);
 
-    var $nextHighlight = $(highlightTemplate({ time: timeSent, displayName: message.tags['display-name'] + ':', message: message.message }));
+    var $nextHighlight = $(highlightTemplate({ time: timeSent, displayName: message.tags['display-name'], message: message.message }));
 
     // If the next highlight will bump the container over the limit, remove the oldest highlight
     if ($highlightContainer.children().length + 1 > maximumPinCount) {
