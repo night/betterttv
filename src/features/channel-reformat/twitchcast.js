@@ -24,6 +24,7 @@ module.exports = function() {
 
     var placeButton = function() {
         if ($('#twitchcast_button').length) return;
+        if (typeof $('#player .dynamic-player .player').data('playertype') !== 'undefined') return;
 
         var $button = $('<div/>');
         $button.attr('id', 'twitchcast_button');
