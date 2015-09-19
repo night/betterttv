@@ -798,16 +798,18 @@ var vars = require('../vars'),
 var calculateColorBackground = require('../helpers/colors').calculateColorBackground;
 var calculateColorReplacement = require('../helpers/colors').calculateColorReplacement;
 
-var lookupDisplayName = exports.lookupDisplayName = function(user) {
-    if (!user || user === '') return;
+var lookupDisplayName = exports.lookupDisplayName = function(user, nicknames) {
+    if (!user) return;
 
     // There's no display-name when sending messages, so we'll fill in for that
     if (vars.userData.isLoggedIn && user === vars.userData.login) {
         store.displayNames[user] = Twitch.user.displayName() || user;
     }
 
-    var nicknames = bttv.storage.getObject('nicknames');
-    if (user in nicknames) return nicknames[user];
+    if (nicknames !== false) {
+        nicknames = bttv.storage.getObject('nicknames');
+        if (user in nicknames) return nicknames[user];
+    }
 
     if (tmi()) {
         if (store.displayNames.hasOwnProperty(user)) {
@@ -935,9 +937,9 @@ var suggestions = exports.suggestions = function(words, index) {
 
         if (!isEmote) {
             if (lastWord.charAt(0) === '@') {
-                sentence.push('@' + lookupDisplayName(user));
+                sentence.push('@' + lookupDisplayName(user, false));
             } else {
-                sentence.push(lookupDisplayName(user));
+                sentence.push(lookupDisplayName(user, false));
             }
         } else {
             sentence.push(user);
@@ -1084,7 +1086,7 @@ exports.tabCompletion = function(e) {
         // Casing is important for emotes
         var isEmote = true;
         if (emotes.indexOf(user) === -1) {
-            user = lookupDisplayName(user);
+            user = lookupDisplayName(user, false);
             isEmote = false;
         }
 
