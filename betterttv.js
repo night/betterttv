@@ -2451,7 +2451,7 @@ var debug = require('./helpers/debug'),
 
 bttv.info = {
     version: '6.8',
-    release: 42,
+    release: 43,
     versionString: function() {
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -5536,12 +5536,6 @@ module.exports = [
         }
     },
     {
-        name: 'Custom Timeouts',
-        description: 'Only use Shift-Click to activate custom timeouts',
-        default: false,
-        storageKey: 'customTOShiftOnly'
-    },
-    {
         name: 'DarkenTTV',
         description: 'A sleek, grey theme which will make you love the site even more',
         default: false,
@@ -5807,6 +5801,12 @@ module.exports = [
         description: 'Completely removes timed out messages from view',
         default: false,
         storageKey: 'hideDeletedMessages'
+    },
+    {
+        name: 'Shift-Click Custom Timeouts',
+        description: 'Requires shift + click to activate the custom timeout selector',
+        default: false,
+        storageKey: 'customTOShiftOnly'
     },
     {
         name: 'Show Deleted Messages',
