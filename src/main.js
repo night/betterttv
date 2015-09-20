@@ -126,7 +126,8 @@ var clearClutter = require('./features/clear-clutter'),
     createSettings = require('./features/create-settings'),
     enableImagePreview = require('./features/image-preview').enablePreview,
     enableTheatreMode = require('./features/auto-theatre-mode'),
-    hostButtonBelowVideo = require('./features/host-btn-below-video');
+    hostButtonBelowVideo = require('./features/host-btn-below-video'),
+    html5Player = require('./features/html5player');
 
 var chatFunctions = function() {
     debug.log('Modifying Chat Functionality');
@@ -175,6 +176,7 @@ var main = function() {
                                 bttv.chat.store.isLoaded = false;
                                 betaChat();
                                 chatFunctions();
+                                html5Player();
                             }
                         });
                         break;
@@ -232,6 +234,7 @@ var main = function() {
 
         clearClutter();
         channelReformat();
+        html5Player();
         checkBroadcastInfo();
         brand();
         darkenPage();

@@ -328,6 +328,15 @@ module.exports = [
         }
     },
     {
+        name: 'HTML5 Player',
+        description: 'This is buggy, but it replaces Twitch\'s old player with their beta HTML5 player',
+        default: false,
+        storageKey: 'forceHTML5Player',
+        toggle: function() {
+            window.location.reload();
+        }
+    },
+    {
         name: 'JTV Chat Badges',
         description: 'BetterTTV can replace the chat badges with the ones from JTV',
         default: false,

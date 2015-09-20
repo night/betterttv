@@ -24,7 +24,6 @@ module.exports = function() {
 
     var placeButton = function() {
         if ($('#twitchcast_button').length) return;
-        if (typeof $('#player .dynamic-player .player').data('playertype') !== 'undefined') return;
 
         var $button = $('<div/>');
         $button.attr('id', 'twitchcast_button');
@@ -44,7 +43,7 @@ module.exports = function() {
         }, 1000);
     };
 
-    if (bttv.settings.get('twitchCast')) {
+    if (bttv.settings.get('twitchCast') && typeof $('#player .player').data('playertype') === 'undefined') {
         if (!$('#chromecast_sender').length) {
             var $senderjs = $('<script/>');
             $senderjs.attr('id', 'chromecast_sender');
