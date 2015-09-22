@@ -100,12 +100,6 @@ module.exports = [
         }
     },
     {
-        name: 'Custom Timeouts',
-        description: 'Only use Shift-Click to activate custom timeouts',
-        default: false,
-        storageKey: 'customTOShiftOnly'
-    },
-    {
         name: 'DarkenTTV',
         description: 'A sleek, grey theme which will make you love the site even more',
         default: false,
@@ -328,6 +322,15 @@ module.exports = [
         }
     },
     {
+        name: 'HTML5 Player',
+        description: 'This is buggy, but it replaces Twitch\'s old player with their beta HTML5 player',
+        default: false,
+        storageKey: 'forceHTML5Player',
+        toggle: function() {
+            window.location.reload();
+        }
+    },
+    {
         name: 'JTV Chat Badges',
         description: 'BetterTTV can replace the chat badges with the ones from JTV',
         default: false,
@@ -373,6 +376,12 @@ module.exports = [
         description: 'Completely removes timed out messages from view',
         default: false,
         storageKey: 'hideDeletedMessages'
+    },
+    {
+        name: 'Shift-Click Custom Timeouts',
+        description: 'Requires shift + click to activate the custom timeout selector',
+        default: false,
+        storageKey: 'customTOShiftOnly'
     },
     {
         name: 'Show Deleted Messages',

@@ -20,7 +20,7 @@ var generateCSS = function(height) {
 };
 
 var getPlayerHeight = function() {
-    var isNewPlayer = typeof $('#player .dynamic-player .player').data('playertype') !== 'undefined';
+    var isNewPlayer = typeof $('#player .player').data('playertype') !== 'undefined';
 
     for (var i = 0; i < players.length; i++) {
         var player = players[i];
