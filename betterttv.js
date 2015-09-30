@@ -1963,10 +1963,26 @@ var takeover = module.exports = function() {
     });
 
     // Make names clickable
+    var clickCounter = 0;
     $('body').off('click', '.chat-line .from').on('click', '.chat-line .from', function(e) {
         if (e.shiftKey) return;
-        var sender = $(this).data('sender') || $(this).parent().data('sender');
-        handlers.moderationCard(sender + '', $(this));
+
+        var $element = $(this);
+        var sender = ($element.data('sender') || $element.parent().data('sender')).toString();
+
+        if (clickCounter > 0) return clickCounter++;
+
+        setTimeout(function() {
+            if (clickCounter >= 2 && bttv.settings.get('dblClickAutoComplete') === true) {
+                $('.ember-chat .chat-interface').find('textarea').val(helpers.lookupDisplayName(sender, false) + ', ');
+            } else {
+                handlers.moderationCard(sender, $element);
+            }
+
+            clickCounter = 0;
+        }, 250);
+
+        clickCounter++;
     }).on('mousedown', '.chat-line .from', function(e) {
         if (e.which === 3 && !bttv.settings.get('customTOShiftOnly') || e.shiftKey) {
             customTimeouts($(this).data('sender') || $(this).parent().data('sender'), $(this));
@@ -2198,14 +2214,6 @@ var takeover = module.exports = function() {
                     $('.bttv-mod-card').remove();
                     break;
             }
-        }
-    });
-
-    $('.tse-content').on('dblclick', '.chat-line .from', function() {
-        if (bttv.settings.get('dblClickAutoComplete') === false) return;
-        var sender = $(this).text();
-        if (sender) {
-            $('.ember-chat .chat-interface').find('textarea').val(sender + ', ');
         }
     });
 };
