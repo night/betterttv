@@ -1627,7 +1627,8 @@ exports.translate = function($element, sender, text) {
     $.getJSON('https://api.betterttv.net/2/translate?' + qs).success(function(data) {
         $element.replaceWith(templates.message(sender, data.translation));
     }).error(function(data) {
-        $element.replaceWith(templates.message(sender, text));
+        $newElement = $(templates.message(sender, text));
+        $element.replaceWith($newElement);
 
         var error = 'There was an unknown error translating this message.';
 
@@ -1635,15 +1636,15 @@ exports.translate = function($element, sender, text) {
             error = data.responseJSON.message;
         }
 
-        $element.tipsy({
+        $newElement.tipsy({
             trigger: 'manual',
             gravity: $.fn.tipsy.autoNS,
             title: function() { return error; }
         });
-        $element.tipsy('show');
+        $newElement.tipsy('show');
         setTimeout(function() {
             try {
-                $element.tipsy('hide');
+                $newElement.tipsy('hide');
             } catch(e) {}
         }, 3000);
     });
@@ -5755,15 +5756,6 @@ module.exports = [
             } else {
                 $('#bttv-host-button').remove();
             }
-        }
-    },
-    {
-        name: 'HTML5 Player',
-        description: 'This is buggy, but it replaces Twitch\'s old player with their beta HTML5 player',
-        default: false,
-        storageKey: 'forceHTML5Player',
-        toggle: function() {
-            window.location.reload();
         }
     },
     {
