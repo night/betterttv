@@ -126,8 +126,7 @@ var clearClutter = require('./features/clear-clutter'),
     createSettings = require('./features/create-settings'),
     enableImagePreview = require('./features/image-preview').enablePreview,
     enableTheatreMode = require('./features/auto-theatre-mode'),
-    hostButtonBelowVideo = require('./features/host-btn-below-video'),
-    html5Player = require('./features/html5player');
+    hostButtonBelowVideo = require('./features/host-btn-below-video');
 
 var chatFunctions = function() {
     debug.log('Modifying Chat Functionality');
