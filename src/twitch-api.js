@@ -1,33 +1,21 @@
-module.exports = {
-    _ref: null,
-    _headers: function(e, t) {
-        e.setRequestHeader('Client-ID', '6x8avioex0zt85ht6py4sq55z6avsea');
+vars = require('./vars');
 
-        bttv.TwitchAPI._ref.call(Twitch.api, e, t);
+module.exports = {
+    _setHeaders: function(options) {
+        if (!options.headers) options.headers = {};
+
+        options.headers['Client-ID'] = '6x8avioex0zt85ht6py4sq55z6avsea';
+
+        if (vars.userData.isLoggedIn) {
+            options.headers.Authorization = 'OAuth ' + vars.userData.oauthToken;
+        }
     },
     _call: function(method, url, data, options) {
-        // Replace Twitch's beforeSend with ours (to add Client ID)
-        this._takeover();
+        if (!options) options = {};
 
-        var callTwitchAPI = window.Twitch.api[method].call(this, url, data, options);
+        this._setHeaders(options);
 
-        // Replace Twitch's beforeSend back with theirs
-        this._untakeover();
-
-        return callTwitchAPI;
-    },
-    _takeover: function() {
-        if (!window.Twitch.api._beforeSend) return;
-
-        this._ref = window.Twitch.api._beforeSend;
-
-        window.Twitch.api._beforeSend = this._headers;
-    },
-    _untakeover: function() {
-        if (!this._ref) return;
-
-        window.Twitch.api._beforeSend = this._ref;
-        this._ref = null;
+        return window.Twitch.api[method].call(this, url, data, options);
     },
     get: function(url, data, options) {
         return this._call('get', url, data, options);

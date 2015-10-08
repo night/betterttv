@@ -16,7 +16,7 @@ var lookupDisplayName = exports.lookupDisplayName = function(user, nicknames) {
     if (!user) return;
 
     // There's no display-name when sending messages, so we'll fill in for that
-    if (vars.userData.isLoggedIn && user === vars.userData.login) {
+    if (vars.userData.isLoggedIn && user === vars.userData.name) {
         store.displayNames[user] = Twitch.user.displayName() || user;
     }
 
@@ -266,7 +266,7 @@ exports.tabCompletion = function(e) {
                 users = users.concat(emotes);
             }
 
-            if (users.indexOf(vars.userData.login) > -1) users.splice(users.indexOf(vars.userData.login), 1);
+            if (users.indexOf(vars.userData.name) > -1) users.splice(users.indexOf(vars.userData.name), 1);
 
             if (/^(\/|\.)/.test(search)) {
                 search = '';
@@ -338,7 +338,7 @@ exports.whisperReply = function() {
     var $chatInput = $('.ember-chat .chat-interface').find('textarea');
     if ($chatInput.val() === '/r ' && bttv.settings.get('disableWhispers') === false) {
         var to = ($.grep(store.__rooms[store.currentRoom].messages, function(msg) {
-            return (msg.style === 'whisper' && msg.from.toLowerCase() !== vars.userData.login);
+            return (msg.style === 'whisper' && msg.from.toLowerCase() !== vars.userData.name);
         }).pop() || {from: null}).from;
         if (to) {
             $chatInput.val('/w ' + to + ' ');
@@ -787,7 +787,7 @@ var unban = exports.unban = function(user) {
 };
 
 var massUnban = exports.massUnban = function() {
-    if (!vars.userData.isLoggedIn || vars.userData.login !== bttv.getChannel()) {
+    if (!vars.userData.isLoggedIn || vars.userData.name !== bttv.getChannel()) {
         serverMessage("You're not the channel owner.");
         return;
     }

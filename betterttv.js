@@ -330,8 +330,8 @@ module.exports = function() {
     var usableEmotes = [];
     var emoteSets;
 
-    if (vars.userData.isLoggedIn && bttv.chat.helpers.getEmotes(vars.userData.login)) {
-        emoteSets = helpers.getEmotes(vars.userData.login);
+    if (vars.userData.isLoggedIn && bttv.chat.helpers.getEmotes(vars.userData.name)) {
+        emoteSets = helpers.getEmotes(vars.userData.name);
     }
 
     Object.keys(emotes).forEach(function(key) {
@@ -646,7 +646,7 @@ var privmsg = exports.privmsg = function(channel, data) {
             false,
             data.style === 'action' ? true : false,
             data.style === 'admin' ? true : false,
-            vars.userData.isLoggedIn ? helpers.isModerator(vars.userData.login) : false,
+            vars.userData.isLoggedIn ? helpers.isModerator(vars.userData.name) : false,
             {
                 message: data.message,
                 time: data.date === null ? '' : data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
@@ -737,7 +737,7 @@ var privmsg = exports.privmsg = function(channel, data) {
         messageHighlighted,
         data.style === 'action' ? true : false,
         data.style === 'admin' ? true : false,
-        vars.userData.isLoggedIn ? (helpers.isModerator(vars.userData.login) && (!helpers.isModerator(sender) || (vars.userData.login === channel && vars.userData.login !== sender))) : false,
+        vars.userData.isLoggedIn ? (helpers.isModerator(vars.userData.name) && (!helpers.isModerator(sender) || (vars.userData.name === channel && vars.userData.name !== sender))) : false,
         {
             message: data.message,
             time: data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
@@ -763,7 +763,7 @@ exports.onPrivmsg = function(channel, data) {
         if (data.style === 'whisper') {
             store.chatters[data.from] = {lastWhisper: Date.now()};
             if (bttv.settings.get('disableWhispers') === true) return;
-            if (data.from !== vars.userData.login) {
+            if (data.from !== vars.userData.name) {
                 audibleFeedback();
                 if (bttv.settings.get('desktopNotifications') === true && bttv.chat.store.activeView === false) bttv.notify('You received a whisper from ' + ((data.tags && data.tags['display-name']) || data.from));
             }
@@ -802,7 +802,7 @@ var lookupDisplayName = exports.lookupDisplayName = function(user, nicknames) {
     if (!user) return;
 
     // There's no display-name when sending messages, so we'll fill in for that
-    if (vars.userData.isLoggedIn && user === vars.userData.login) {
+    if (vars.userData.isLoggedIn && user === vars.userData.name) {
         store.displayNames[user] = Twitch.user.displayName() || user;
     }
 
@@ -1052,7 +1052,7 @@ exports.tabCompletion = function(e) {
                 users = users.concat(emotes);
             }
 
-            if (users.indexOf(vars.userData.login) > -1) users.splice(users.indexOf(vars.userData.login), 1);
+            if (users.indexOf(vars.userData.name) > -1) users.splice(users.indexOf(vars.userData.name), 1);
 
             if (/^(\/|\.)/.test(search)) {
                 search = '';
@@ -1124,7 +1124,7 @@ exports.whisperReply = function() {
     var $chatInput = $('.ember-chat .chat-interface').find('textarea');
     if ($chatInput.val() === '/r ' && bttv.settings.get('disableWhispers') === false) {
         var to = ($.grep(store.__rooms[store.currentRoom].messages, function(msg) {
-            return (msg.style === 'whisper' && msg.from.toLowerCase() !== vars.userData.login);
+            return (msg.style === 'whisper' && msg.from.toLowerCase() !== vars.userData.name);
         }).pop() || {from: null}).from;
         if (to) {
             $chatInput.val('/w ' + to + ' ');
@@ -1573,7 +1573,7 @@ var unban = exports.unban = function(user) {
 };
 
 var massUnban = exports.massUnban = function() {
-    if (!vars.userData.isLoggedIn || vars.userData.login !== bttv.getChannel()) {
+    if (!vars.userData.isLoggedIn || vars.userData.name !== bttv.getChannel()) {
         serverMessage("You're not the channel owner.");
         return;
     }
@@ -1988,7 +1988,7 @@ var takeover = module.exports = function() {
             customTimeouts($(this).data('sender') || $(this).parent().data('sender'), $(this));
         }
     }).on('contextmenu', '.chat-line .from', function(e) {
-        if (!helpers.isModerator(vars.userData.login)) return true;
+        if (!helpers.isModerator(vars.userData.name)) return true;
         if (bttv.settings.get('customTOShiftOnly') && !e.shiftKey) return true;
         return false;
     });
@@ -2626,7 +2626,6 @@ var main = function() {
                                 bttv.chat.store.isLoaded = false;
                                 betaChat();
                                 chatFunctions();
-                                html5Player();
                             }
                         });
                         break;
@@ -2673,18 +2672,27 @@ var main = function() {
         });
     }
 
-    $(document).ready(function() {
-        createSettings();
-        bttv.settings.load();
+    var loadUser = function(callback) {
+        if (window.Twitch.user.isLoggedIn()) {
+            window.Twitch.user().then(function(user) {
+                vars.userData.isLoggedIn = true;
+                vars.userData.name = user.login;
+                vars.userData.displayName = user.name;
+                vars.userData.oauthToken = user.chat_oauth_token;
 
-        debug.log('BTTV v' + bttv.info.versionString());
-        debug.log('CALL init ' + document.URL);
+                callback();
+            });
+            return;
+        }
 
+        callback();
+    };
+
+    var initialFuncs = function() {
         bttv.ws = new WS();
 
         clearClutter();
         channelReformat();
-        html5Player();
         checkBroadcastInfo();
         brand();
         darkenPage();
@@ -2708,15 +2716,16 @@ var main = function() {
         }
 
         $(window).trigger('resize');
-        setTimeout(function() {
-            channelReformat();
-            vars.userData.isLoggedIn = Twitch.user.isLoggedIn();
-            vars.userData.login = Twitch.user.login();
-            $(window).trigger('resize');
-        }, 3000);
-        setTimeout(chatFunctions, 3000);
-        setTimeout(directoryFunctions, 3000);
+    };
 
+    var delayedFuncs = function() {
+        channelReformat();
+        $(window).trigger('resize');
+        chatFunctions();
+        directoryFunctions();
+    };
+
+    var thirdPartyDeps = function() {
         /*eslint-disable */
         // NOPE.avi
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -2733,6 +2742,20 @@ var main = function() {
             $("#bttvSettingsPanel .konami").each(function(){$(this).show()});
         }});
         /*eslint-enable */
+    };
+
+    $(document).ready(function() {
+        loadUser(function() {
+            createSettings();
+            bttv.settings.load();
+
+            debug.log('BTTV v' + bttv.info.versionString());
+            debug.log('CALL init ' + document.URL);
+
+            initialFuncs();
+            setTimeout(delayedFuncs, 3000);
+            thirdPartyDeps();
+        });
     });
 };
 
@@ -2748,7 +2771,6 @@ var checkJquery = function(times) {
     bttv.jQuery = $;
     main();
 };
-
 
 if (document.URL.indexOf('receiver.html') !== -1 || document.URL.indexOf('cbs_ad_local.html') !== -1) {
     debug.log('HTML file called by Twitch.');
@@ -2803,15 +2825,15 @@ module.exports = function(force) {
         var prodConnOpts = prodConn._opts;
 
         if (enabled) {
-            if (prodConnOpts.nickname === vars.userData.login) {
+            if (prodConnOpts.nickname === vars.userData.name) {
                 prodConnOpts.nickname = 'justinfan12345';
                 room._showAdminMessage('BetterTTV: [Anon Chat] Logging you out of chat..');
                 bttv.chat.store.ignoreDC = true;
                 prodConn._send('QUIT');
             }
         } else {
-            if (prodConnOpts.nickname !== vars.userData.login) {
-                prodConnOpts.nickname = vars.userData.login;
+            if (prodConnOpts.nickname !== vars.userData.name) {
+                prodConnOpts.nickname = vars.userData.name;
                 room._showAdminMessage('BetterTTV: [Anon Chat] Logging you back into chat..');
                 bttv.chat.store.ignoreDC = true;
                 prodConn._send('QUIT');
@@ -2867,7 +2889,7 @@ module.exports = function() {
                 if (d.status === true) {
                     debug.log('Logged into BTTV Chat');
                 } else {
-                    $.getJSON('https://chat.betterttv.net/login.php?onsite=true&user=' + vars.userData.login + '&callback=?');
+                    $.getJSON('https://chat.betterttv.net/login.php?onsite=true&user=' + vars.userData.name + '&callback=?');
                     debug.log('Not logged into BTTV Chat');
                 }
 
@@ -3401,7 +3423,7 @@ module.exports = function(event) {
             }
             break;
         case 'outgoing_message':
-            if (!vars.userData.isLoggedIn || bttv.chat.helpers.isModerator(vars.userData.login)) return;
+            if (!vars.userData.isLoggedIn || bttv.chat.helpers.isModerator(vars.userData.name)) return;
 
             if (bttv.chat.store.slowTime > 0) {
                 initiateCountDown(bttv.chat.store.slowTime);
@@ -3665,7 +3687,7 @@ var checkFollowing = module.exports = function() {
                 var channel = stream.channel;
                 channels.push(channel.name);
                 if (vars.userData.isLoggedIn && vars.liveChannels.indexOf(channel.name) === -1 && bttv.settings.get('followingNotifications') === true) {
-                    bttv.TwitchAPI.get('users/' + encodeURIComponent(vars.userData.login) + '/follows/channels/' + encodeURIComponent(channel.name)).done(function(follow) {
+                    bttv.TwitchAPI.get('users/' + encodeURIComponent(vars.userData.name) + '/follows/channels/' + encodeURIComponent(channel.name)).done(function(follow) {
                         if (follow.notifications === false) return;
 
                         debug.log(channel.name + ' is now streaming');
@@ -3890,7 +3912,7 @@ var vars = require('../vars');
 var helpers = require('../chat/helpers');
 
 module.exports = function(user, $event) {
-    if (!helpers.isModerator(vars.userData.login)) {
+    if (!helpers.isModerator(vars.userData.name)) {
         return;
     }
 
@@ -4427,7 +4449,7 @@ module.exports = function() {
 
             if (action === 'Unhost') {
                 try {
-                    tmi.tmiSession._connections.prod._send('PRIVMSG #' + vars.userData.login + ' :/unhost');
+                    tmi.tmiSession._connections.prod._send('PRIVMSG #' + vars.userData.name + ' :/unhost');
                     helpers.serverMessage('BetterTTV: We sent a /unhost to your channel.');
                     $hostButton.children('span').text('Host');
                 } catch(e) {
@@ -4435,7 +4457,7 @@ module.exports = function() {
                 }
             } else {
                 try {
-                    tmi.tmiSession._connections.prod._send('PRIVMSG #' + vars.userData.login + ' :/host ' + bttv.getChannel());
+                    tmi.tmiSession._connections.prod._send('PRIVMSG #' + vars.userData.name + ' :/host ' + bttv.getChannel());
                     helpers.serverMessage('BetterTTV: We sent a /host to your channel. Please note you can only host 3 times per 30 minutes.');
                     $hostButton.children('span').text('Unhost');
                 } catch(e) {
@@ -4515,7 +4537,7 @@ exports.blacklistFilter = function(data) {
     for (i = 0; i < blacklistKeywords.length; i++) {
         var keyword = escapeRegExp(blacklistKeywords[i]).replace(/\*/g, '[^ ]*');
         var blacklistRegex = new RegExp(keyword, 'i');
-        if (blacklistRegex.test(data.message) && vars.userData.login !== data.from) {
+        if (blacklistRegex.test(data.message) && vars.userData.name !== data.from) {
             return true;
         }
     }
@@ -4562,7 +4584,7 @@ exports.highlighting = function(data) {
     for (i = 0; i < highlightKeywords.length; i++) {
         var hlKeyword = escapeRegExp(highlightKeywords[i]).replace(/\*/g, '[^ ]*');
         var wordRegex = new RegExp('(\\s|^|@)' + hlKeyword + '([!.,:\';?/]|\\s|$)', 'i');
-        if (vars.userData.isLoggedIn && vars.userData.login !== data.from && wordRegex.test(data.message)) {
+        if (vars.userData.isLoggedIn && vars.userData.name !== data.from && wordRegex.test(data.message)) {
             if (bttv.settings.get('desktopNotifications') === true && bttv.chat.store.activeView === false) {
                 bttv.notify('You were mentioned in ' + bttv.chat.helpers.lookupDisplayName(bttv.getChannel()) + '\'s channel.');
                 audibleFeedback();
@@ -5871,7 +5893,7 @@ module.exports = [
         }
     },
     {
-        default: (vars.userData.isLoggedIn ? vars.userData.login : ''),
+        default: (vars.userData.isLoggedIn ? vars.userData.name : ''),
         storageKey: 'highlightKeywords',
         toggle: function(keywords) {
             var phraseRegex = /\{.+?\}/g;
@@ -6283,14 +6305,14 @@ if ( user.profile_banner)
 buf.push("<img" + (jade.attr("src", user.profile_banner, true, false)) + " class=\"channel_background\"/>");
 }
 buf.push("<div class=\"channel-stats\"><span class=\"stat\">" + (jade.escape(null == (jade_interp = Twitch.display.commatize(user.views)) ? "" : jade_interp)) + "<svg height=\"16px\" version=\"1.1\" viewbox=\"1 1 16 16\" width=\"16px\" x=\"0px\" y=\"0px\" class=\"svg-glyph_views\"><path clip-rule=\"evenodd\" d=\"M11,13H5L1,9V8V7l4-4h6l4,4v1v1L11,13z M8,5C6.344,5,5,6.343,5,8c0,1.656,1.344,3,3,3c1.657,0,3-1.344,3-3C11,6.343,9.657,5,8,5z M8,9C7.447,9,7,8.552,7,8s0.447-1,1-1s1,0.448,1,1S8.553,9,8,9z\" fill-rule=\"evenodd\"></path></svg></span><span class=\"stat\">" + (jade.escape(null == (jade_interp = Twitch.display.commatize(user.followers)) ? "" : jade_interp)) + "<svg height=\"16px\" version=\"1.1\" viewbox=\"0 0 16 16\" width=\"16px\" x=\"0px\" y=\"0px\" class=\"svg-glyph_followers\"><path clip-rule=\"evenodd\" d=\"M8,13.5L1.5,7V4l2-2h3L8,3.5L9.5,2h3l2,2v3L8,13.5z\" fill-rule=\"evenodd\"></path></svg></span></div></div>");
-if ( user.name != vars.userData.login)
+if ( user.name != vars.userData.name)
 {
 buf.push("<div class=\"interface\"><div class=\"btn-wrapper\"><button class=\"button-simple primary mod-card-follow\">Follow</button><button style=\"height: 30px;vertical-align: top;\" title=\"View user's profile\" class=\"button-simple dark mod-card-profile\"><img src=\"https://www-cdn.jtvnw.net/images/xarth/g/g18_person-00000080.png\" style=\"margin-top: 6px;\"/></button><button style=\"height: 30px;vertical-align: top;\" title=\"Send user a message\" class=\"button-simple dark mod-card-message\"><img src=\"https://www-cdn.jtvnw.net/images/xarth/g/g18_mail-00000080.png\" style=\"margin-top: 6px;\"/></button><button title=\"Add/Remove user from ignores\" class=\"button-simple dark mod-card-ignore\"><svg height=\"16px\" width=\"16px\" version=\"1.1\" viewBox=\"0 0 16 16\" x=\"0px\" y=\"0px\" class=\"svg-ignore\"><path clip-rule=\"evenodd\" fill-rule=\"evenodd\" d=\"M13,11.341V16l-3.722-3.102C8.863,12.959,8.438,13,8,13c-3.866,0-7-2.462-7-5.5C1,4.462,4.134,2,8,2s7,2.462,7,5.5C15,8.996,14.234,10.35,13,11.341z M11,7H5v1h6V7z\"></path></svg><svg style=\"display: none;\" height=\"16px\" width=\"16px\" version=\"1.1\" viewBox=\"0 0 16 16\" x=\"0px\" y=\"0px\" class=\"svg-unignore\"><path clip-rule=\"evenodd\" fill-rule=\"evenodd\" d=\"M13,11.341V16l-3.722-3.102C8.863,12.959,8.438,13,8,13c-3.866,0-7-2.462-7-5.5C1,4.462,4.134,2,8,2s7,2.462,7,5.5C15,8.996,14.234,10.35,13,11.341z\"></path></svg></button>");
-if ( vars.userData.isLoggedIn && (bttv.chat.helpers.isOwner(vars.userData.login) || bttv.chat.helpers.isStaff(vars.userData.login) || bttv.chat.helpers.isAdmin(vars.userData.login)))
+if ( vars.userData.isLoggedIn && (bttv.chat.helpers.isOwner(vars.userData.name) || bttv.chat.helpers.isStaff(vars.userData.name) || bttv.chat.helpers.isAdmin(vars.userData.name)))
 {
 buf.push("<button title=\"Add/Remove this user as a moderator\" class=\"button-simple dark mod-card-mod\"><svg height=\"16px\" width=\"16px\" version=\"1.1\" viewBox=\"0 0 16 16\" x=\"0px\" y=\"0px\" class=\"svg-add-mod\"><path clip-rule=\"evenodd\" fill-rule=\"evenodd\" d=\"M15,7L1,16l4.666-7H1l14-9l-4.667,7H15z\"></path></svg><svg style=\"display: none;\" height=\"16px\" width=\"16px\" version=\"1.1\" viewBox=\"0 0 16 16\" x=\"0px\" y=\"0px\" class=\"svg-remove-mod\"><path clip-rule=\"evenodd\" fill-rule=\"evenodd\" d=\"M 1.7692223,7.3226542 14.725057,7.3226542 14.725057,8.199533 1.7692223,8.199533 z M 15,0 5.4375,6.15625 10.90625,6.15625 15,0 z M 5.375,9.40625 1,16 11.25,9.40625 5.375,9.40625 z\"></path></svg></button>");
 }
-if ( vars.userData.isLoggedIn && bttv.chat.helpers.isModerator(vars.userData.login) && (!bttv.chat.helpers.isModerator(user.name) || vars.userData.login === bttv.getChannel()))
+if ( vars.userData.isLoggedIn && bttv.chat.helpers.isModerator(vars.userData.name) && (!bttv.chat.helpers.isModerator(user.name) || vars.userData.name === bttv.getChannel()))
 {
 buf.push("<span class=\"mod-controls\"><button title=\"!permit this user\" class=\"permit button-simple light\"><svg height=\"16px\" width=\"16px\" version=\"1.1\" viewBox=\"0 0 16 16\" x=\"0px\" y=\"0px\" class=\"svg-permit\"><path clip-rule=\"evenodd\" fill-rule=\"evenodd\" d=\"M 13.71875,3.75 A 0.750075,0.750075 0 0 0 13.28125,4 L 5.71875,11.90625 3.59375,9.71875 A 0.750075,0.750075 0 1 0 2.53125,10.75 L 5.21875,13.53125 A 0.750075,0.750075 0 0 0 6.28125,13.5 L 14.34375,5.03125 A 0.750075,0.750075 0 0 0 13.71875,3.75 z M 4.15625,5.15625 C 2.1392444,5.1709094 0.53125,6.2956115 0.53125,7.6875 0.53125,8.1957367 0.75176764,8.6679042 1.125,9.0625 A 1.60016,1.60016 0 0 1 2.15625,8.25 C 2.0893446,8.0866555 2.0625,7.9078494 2.0625,7.71875 2.0625,6.9200694 2.7013192,6.25 3.5,6.25 L 7.15625,6.25 C 7.1438569,5.1585201 6.6779611,5.1379224 4.15625,5.15625 z M 9.625,5.15625 C 8.4334232,5.1999706 8.165545,5.4313901 8.15625,6.25 L 9.96875,6.25 11.03125,5.15625 C 10.471525,5.1447549 9.9897684,5.1428661 9.625,5.15625 z M 14.28125,6.40625 13.3125,7.40625 C 13.336036,7.5094042 13.34375,7.6089314 13.34375,7.71875 13.34375,8.5174307 12.67368,9.125 11.875,9.125 L 11.65625,9.125 10.65625,10.1875 C 10.841425,10.189327 10.941084,10.186143 11.15625,10.1875 13.17327,10.200222 14.78125,9.0793881 14.78125,7.6875 14.78125,7.2160918 14.606145,6.7775069 14.28125,6.40625 z M 4.40625,7.1875 C 4.0977434,7.1875 3.84375,7.4414933 3.84375,7.75 3.84375,8.0585065 4.0977434,8.3125 4.40625,8.3125 L 8,8.3125 9.0625,7.1875 4.40625,7.1875 z M 4.125,9.125 5.15625,10.1875 C 5.5748133,10.180859 5.9978157,10.155426 6.25,10.125 L 7.15625,9.1875 C 7.1572971,9.1653754 7.1553832,9.1481254 7.15625,9.125 L 4.125,9.125 z\"></path></svg></button></span><br/><span class=\"mod-controls\"><button style=\"width:44px;\" data-time=\"1\" title=\"Clear this user's chat\" class=\"timeout button-simple light\">Purge</button><button data-time=\"600\" title=\"Temporary 10 minute ban\" class=\"timeout button-simple light\"><img src=\"/images/xarth/g/g18_timeout-00000080.png\"/></button><button style=\"width:30px;\" data-time=\"3600\" title=\"Temporary 1 hour ban\" class=\"timeout button-simple light\">1hr</button><button style=\"width:30px;\" data-time=\"28800\" title=\"Temporary 8 hour ban\" class=\"timeout button-simple light\">8hr</button><button style=\"width:38px;\" data-time=\"86400\" title=\"Temporary 24 hour ban\" class=\"timeout button-simple light\">24hr</button><button title=\"Permanent Ban\" class=\"ban button-simple light\"><img src=\"/images/xarth/g/g18_ban-00000080.png\"/></button></span>");
 }
@@ -6338,36 +6360,24 @@ var jade_interp;
 buf.push("<div id=\"header\"><span id=\"logo\"><img height=\"45px\" src=\"https://cdn.betterttv.net/style/logos/settings_logo.png\"/></span><ul class=\"nav\"><li><a href=\"#bttvAbout\">About</a></li><li class=\"active\"><a href=\"#bttvSettings\">Settings</a></li><li><a href=\"#bttvChannel\" target=\"_blank\">Channel</a></li><li><a href=\"#bttvChangelog\">Changelog</a></li><li><a href=\"#bttvPrivacy\">Privacy Policy</a></li><li><a href=\"#bttvBackup\">Backup/Import</a></li></ul><span id=\"close\">&times;</span></div><div id=\"bttvSettings\" style=\"height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content options-list\"><h2 class=\"option\">Here you can manage the various BetterTTV options. Click On or Off to toggle settings.</h2></div></div><div id=\"bttvAbout\" style=\"display:none;\"><div class=\"aboutHalf\"><img src=\"https://cdn.betterttv.net/style/logos/mascot.png\" class=\"bttvAboutIcon\"/><h1>BetterTTV v" + (jade.escape((jade_interp = bttv.info.versionString()) == null ? '' : jade_interp)) + "</h1><h2>from your friends at <a href=\"https://www.nightdev.com\" target=\"_blank\">NightDev</a></h2><br/></div><div class=\"aboutHalf\"><h1 style=\"margin-top: 100px;\">Think this addon is awesome?</h1><br/><br/><h2><a target=\"_blank\" href=\"https://chrome.google.com/webstore/detail/ajopnjidmegmdimjlfnijceegpefgped\">Drop a Review on the Chrome Webstore</a></h2><br/><h2>or maybe</h2><br/><h2><a target=\"_blank\" href=\"https://streamtip.com/t/night\">Send us a Tip</a></h2><br/></div></div><div id=\"bttvChannel\" style=\"display:none;\"><iframe frameborder=\"0\" width=\"100%\" height=\"425\"></iframe></div><div id=\"bttvPrivacy\" style=\"display:none;height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content\"></div></div><div id=\"bttvChangelog\" style=\"display:none;height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content\"></div></div><div id=\"bttvBackup\" style=\"display:none;height:425px;padding:25px;\"><h1 style=\"padding-bottom:15px;\">Backup Settings</h1><button id=\"bttvBackupButton\" class=\"primary_button\"><span>Download</span></button><h1 style=\"padding-top:25px;padding-bottom:15px;\">Import Settings</h1><input id=\"bttvImportInput\" type=\"file\" style=\"height: 25px;width: 250px;\"/></div><div id=\"footer\"><span>BetterTTV &copy; <a href=\"https://www.nightdev.com\" target=\"_blank\">NightDev, LLC</a> 2015</span><span style=\"float:right;\"><a href=\"https://twitter.com/betterttv\" target=\"_blank\">Twitter</a> | <a href=\"https://community.nightdev.com/c/betterttv\" target=\"_blank\">Forums</a> | <a href=\"https://github.com/night/BetterTTV/issues/new?labels=bug\" target=\"_blank\">Bug Report</a> | <a href=\"https://streamtip.com/t/night\" target=\"_blank\">Tip Us</a></span></div>");}.call(this,"bttv" in locals_for_with?locals_for_with.bttv:typeof bttv!=="undefined"?bttv:undefined));;return buf.join("");
 };module.exports=template;
 },{}],64:[function(require,module,exports){
-module.exports = {
-    _ref: null,
-    _headers: function(e, t) {
-        e.setRequestHeader('Client-ID', '6x8avioex0zt85ht6py4sq55z6avsea');
+vars = require('./vars');
 
-        bttv.TwitchAPI._ref.call(Twitch.api, e, t);
+module.exports = {
+    _setHeaders: function(options) {
+        if (!options.headers) options.headers = {};
+
+        options.headers['Client-ID'] = '6x8avioex0zt85ht6py4sq55z6avsea';
+
+        if (vars.userData.isLoggedIn) {
+            options.headers.Authorization = 'OAuth ' + vars.userData.oauthToken;
+        }
     },
     _call: function(method, url, data, options) {
-        // Replace Twitch's beforeSend with ours (to add Client ID)
-        this._takeover();
+        if (!options) options = {};
 
-        var callTwitchAPI = window.Twitch.api[method].call(this, url, data, options);
+        this._setHeaders(options);
 
-        // Replace Twitch's beforeSend back with theirs
-        this._untakeover();
-
-        return callTwitchAPI;
-    },
-    _takeover: function() {
-        if (!window.Twitch.api._beforeSend) return;
-
-        this._ref = window.Twitch.api._beforeSend;
-
-        window.Twitch.api._beforeSend = this._headers;
-    },
-    _untakeover: function() {
-        if (!this._ref) return;
-
-        window.Twitch.api._beforeSend = this._ref;
-        this._ref = null;
+        return window.Twitch.api[method].call(this, url, data, options);
     },
     get: function(url, data, options) {
         return this._call('get', url, data, options);
@@ -6383,11 +6393,13 @@ module.exports = {
     }
 };
 
-},{}],65:[function(require,module,exports){
+},{"./vars":65}],65:[function(require,module,exports){
 module.exports = {
     userData: {
-        isLoggedIn: window.Twitch && Twitch.user ? Twitch.user.isLoggedIn() : false,
-        login: window.Twitch && Twitch.user ? Twitch.user.login() : ''
+        isLoggedIn: false,
+        name: '',
+        displayName: '',
+        oauthToken: ''
     },
     settings: {},
     liveChannels: [],
@@ -6426,7 +6438,7 @@ events.new_spammer = function(data) {
 // Nightbot emits commercial warnings to mods
 events.commercial = function(data) {
     if (data.channel !== bttv.getChannel()) return;
-    if (!vars.userData.isLoggedIn || !bttv.chat.helpers.isModerator(vars.userData.login)) return;
+    if (!vars.userData.isLoggedIn || !bttv.chat.helpers.isModerator(vars.userData.name)) return;
 
     bttv.chat.helpers.notifyMessage('bot', data.message);
 };
@@ -6536,7 +6548,7 @@ SocketClient.prototype.emit = function(evt, data) {
 SocketClient.prototype.broadcastMe = function() {
     if (!this._connected || !vars.userData.isLoggedIn) return;
 
-    this.emit('broadcast_me', { name: vars.userData.login, channel: bttv.getChannel() });
+    this.emit('broadcast_me', { name: vars.userData.name, channel: bttv.getChannel() });
 };
 
 SocketClient.prototype.joinChannel = function() {

@@ -462,7 +462,7 @@ module.exports = [
         }
     },
     {
-        default: (vars.userData.isLoggedIn ? vars.userData.login : ''),
+        default: (vars.userData.isLoggedIn ? vars.userData.name : ''),
         storageKey: 'highlightKeywords',
         toggle: function(keywords) {
             var phraseRegex = /\{.+?\}/g;

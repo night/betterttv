@@ -60,7 +60,7 @@ var checkFollowing = module.exports = function() {
                 var channel = stream.channel;
                 channels.push(channel.name);
                 if (vars.userData.isLoggedIn && vars.liveChannels.indexOf(channel.name) === -1 && bttv.settings.get('followingNotifications') === true) {
-                    bttv.TwitchAPI.get('users/' + encodeURIComponent(vars.userData.login) + '/follows/channels/' + encodeURIComponent(channel.name)).done(function(follow) {
+                    bttv.TwitchAPI.get('users/' + encodeURIComponent(vars.userData.name) + '/follows/channels/' + encodeURIComponent(channel.name)).done(function(follow) {
                         if (follow.notifications === false) return;
 
                         debug.log(channel.name + ' is now streaming');

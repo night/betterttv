@@ -29,7 +29,7 @@ events.new_spammer = function(data) {
 // Nightbot emits commercial warnings to mods
 events.commercial = function(data) {
     if (data.channel !== bttv.getChannel()) return;
-    if (!vars.userData.isLoggedIn || !bttv.chat.helpers.isModerator(vars.userData.login)) return;
+    if (!vars.userData.isLoggedIn || !bttv.chat.helpers.isModerator(vars.userData.name)) return;
 
     bttv.chat.helpers.notifyMessage('bot', data.message);
 };
@@ -139,7 +139,7 @@ SocketClient.prototype.emit = function(evt, data) {
 SocketClient.prototype.broadcastMe = function() {
     if (!this._connected || !vars.userData.isLoggedIn) return;
 
-    this.emit('broadcast_me', { name: vars.userData.login, channel: bttv.getChannel() });
+    this.emit('broadcast_me', { name: vars.userData.name, channel: bttv.getChannel() });
 };
 
 SocketClient.prototype.joinChannel = function() {

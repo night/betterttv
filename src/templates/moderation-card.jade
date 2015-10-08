@@ -24,7 +24,7 @@ div.bttv-mod-card.ember-view.moderation-card(data-user=user.name style="top: #{t
       span.stat=Twitch.display.commatize(user.followers)
         svg.svg-glyph_followers(height='16px', version='1.1', viewbox='0 0 16 16', width='16px', x='0px', y='0px')
           path(clip-rule='evenodd', d='M8,13.5L1.5,7V4l2-2h3L8,3.5L9.5,2h3l2,2v3L8,13.5z', fill-rule='evenodd')
-  if user.name != vars.userData.login
+  if user.name != vars.userData.name
     .interface
       .btn-wrapper
         button.button-simple.primary.mod-card-follow Follow
@@ -37,13 +37,13 @@ div.bttv-mod-card.ember-view.moderation-card(data-user=user.name style="top: #{t
             path(clip-rule='evenodd', fill-rule='evenodd', d='M13,11.341V16l-3.722-3.102C8.863,12.959,8.438,13,8,13c-3.866,0-7-2.462-7-5.5C1,4.462,4.134,2,8,2s7,2.462,7,5.5C15,8.996,14.234,10.35,13,11.341z M11,7H5v1h6V7z')
           svg.svg-unignore(style='display: none;', height='16px', width='16px', version='1.1', viewBox='0 0 16 16', x='0px', y='0px')
             path(clip-rule='evenodd', fill-rule='evenodd', d='M13,11.341V16l-3.722-3.102C8.863,12.959,8.438,13,8,13c-3.866,0-7-2.462-7-5.5C1,4.462,4.134,2,8,2s7,2.462,7,5.5C15,8.996,14.234,10.35,13,11.341z')
-        if vars.userData.isLoggedIn && (bttv.chat.helpers.isOwner(vars.userData.login) || bttv.chat.helpers.isStaff(vars.userData.login) || bttv.chat.helpers.isAdmin(vars.userData.login))
+        if vars.userData.isLoggedIn && (bttv.chat.helpers.isOwner(vars.userData.name) || bttv.chat.helpers.isStaff(vars.userData.name) || bttv.chat.helpers.isAdmin(vars.userData.name))
           button.button-simple.dark.mod-card-mod(title="Add/Remove this user as a moderator")
             svg.svg-add-mod(height='16px', width='16px', version='1.1', viewBox='0 0 16 16', x='0px', y='0px')
               path(clip-rule='evenodd', fill-rule='evenodd', d='M15,7L1,16l4.666-7H1l14-9l-4.667,7H15z')
             svg.svg-remove-mod(style='display: none;', height='16px', width='16px', version='1.1', viewBox='0 0 16 16', x='0px', y='0px')
               path(clip-rule='evenodd', fill-rule='evenodd', d='M 1.7692223,7.3226542 14.725057,7.3226542 14.725057,8.199533 1.7692223,8.199533 z M 15,0 5.4375,6.15625 10.90625,6.15625 15,0 z M 5.375,9.40625 1,16 11.25,9.40625 5.375,9.40625 z')
-        if vars.userData.isLoggedIn && bttv.chat.helpers.isModerator(vars.userData.login) && (!bttv.chat.helpers.isModerator(user.name) || vars.userData.login === bttv.getChannel())
+        if vars.userData.isLoggedIn && bttv.chat.helpers.isModerator(vars.userData.name) && (!bttv.chat.helpers.isModerator(user.name) || vars.userData.name === bttv.getChannel())
           span.mod-controls
             button.permit.button-simple.light(title="!permit this user")
               svg.svg-permit(height='16px', width='16px', version='1.1', viewBox='0 0 16 16', x='0px', y='0px')

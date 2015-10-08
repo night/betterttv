@@ -12,8 +12,8 @@ module.exports = function() {
     var usableEmotes = [];
     var emoteSets;
 
-    if (vars.userData.isLoggedIn && bttv.chat.helpers.getEmotes(vars.userData.login)) {
-        emoteSets = helpers.getEmotes(vars.userData.login);
+    if (vars.userData.isLoggedIn && bttv.chat.helpers.getEmotes(vars.userData.name)) {
+        emoteSets = helpers.getEmotes(vars.userData.name);
     }
 
     Object.keys(emotes).forEach(function(key) {

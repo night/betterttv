@@ -227,7 +227,7 @@ var takeover = module.exports = function() {
             customTimeouts($(this).data('sender') || $(this).parent().data('sender'), $(this));
         }
     }).on('contextmenu', '.chat-line .from', function(e) {
-        if (!helpers.isModerator(vars.userData.login)) return true;
+        if (!helpers.isModerator(vars.userData.name)) return true;
         if (bttv.settings.get('customTOShiftOnly') && !e.shiftKey) return true;
         return false;
     });

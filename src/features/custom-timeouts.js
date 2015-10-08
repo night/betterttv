@@ -3,7 +3,7 @@ var vars = require('../vars');
 var helpers = require('../chat/helpers');
 
 module.exports = function(user, $event) {
-    if (!helpers.isModerator(vars.userData.login)) {
+    if (!helpers.isModerator(vars.userData.name)) {
         return;
     }
 

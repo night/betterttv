@@ -113,7 +113,7 @@ module.exports = function(event) {
             }
             break;
         case 'outgoing_message':
-            if (!vars.userData.isLoggedIn || bttv.chat.helpers.isModerator(vars.userData.login)) return;
+            if (!vars.userData.isLoggedIn || bttv.chat.helpers.isModerator(vars.userData.name)) return;
 
             if (bttv.chat.store.slowTime > 0) {
                 initiateCountDown(bttv.chat.store.slowTime);

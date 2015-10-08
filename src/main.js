@@ -175,7 +175,6 @@ var main = function() {
                                 bttv.chat.store.isLoaded = false;
                                 betaChat();
                                 chatFunctions();
-                                html5Player();
                             }
                         });
                         break;
@@ -222,18 +221,27 @@ var main = function() {
         });
     }
 
-    $(document).ready(function() {
-        createSettings();
-        bttv.settings.load();
+    var loadUser = function(callback) {
+        if (window.Twitch.user.isLoggedIn()) {
+            window.Twitch.user().then(function(user) {
+                vars.userData.isLoggedIn = true;
+                vars.userData.name = user.login;
+                vars.userData.displayName = user.name;
+                vars.userData.oauthToken = user.chat_oauth_token;
 
-        debug.log('BTTV v' + bttv.info.versionString());
-        debug.log('CALL init ' + document.URL);
+                callback();
+            });
+            return;
+        }
 
+        callback();
+    };
+
+    var initialFuncs = function() {
         bttv.ws = new WS();
 
         clearClutter();
         channelReformat();
-        html5Player();
         checkBroadcastInfo();
         brand();
         darkenPage();
@@ -257,15 +265,16 @@ var main = function() {
         }
 
         $(window).trigger('resize');
-        setTimeout(function() {
-            channelReformat();
-            vars.userData.isLoggedIn = Twitch.user.isLoggedIn();
-            vars.userData.login = Twitch.user.login();
-            $(window).trigger('resize');
-        }, 3000);
-        setTimeout(chatFunctions, 3000);
-        setTimeout(directoryFunctions, 3000);
+    };
 
+    var delayedFuncs = function() {
+        channelReformat();
+        $(window).trigger('resize');
+        chatFunctions();
+        directoryFunctions();
+    };
+
+    var thirdPartyDeps = function() {
         /*eslint-disable */
         // NOPE.avi
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -282,6 +291,20 @@ var main = function() {
             $("#bttvSettingsPanel .konami").each(function(){$(this).show()});
         }});
         /*eslint-enable */
+    };
+
+    $(document).ready(function() {
+        loadUser(function() {
+            createSettings();
+            bttv.settings.load();
+
+            debug.log('BTTV v' + bttv.info.versionString());
+            debug.log('CALL init ' + document.URL);
+
+            initialFuncs();
+            setTimeout(delayedFuncs, 3000);
+            thirdPartyDeps();
+        });
     });
 };
 
@@ -297,7 +320,6 @@ var checkJquery = function(times) {
     bttv.jQuery = $;
     main();
 };
-
 
 if (document.URL.indexOf('receiver.html') !== -1 || document.URL.indexOf('cbs_ad_local.html') !== -1) {
     debug.log('HTML file called by Twitch.');

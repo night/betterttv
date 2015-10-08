@@ -13,7 +13,7 @@ module.exports = function() {
                 if (d.status === true) {
                     debug.log('Logged into BTTV Chat');
                 } else {
-                    $.getJSON('https://chat.betterttv.net/login.php?onsite=true&user=' + vars.userData.login + '&callback=?');
+                    $.getJSON('https://chat.betterttv.net/login.php?onsite=true&user=' + vars.userData.name + '&callback=?');
                     debug.log('Not logged into BTTV Chat');
                 }
 

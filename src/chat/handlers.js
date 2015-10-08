@@ -282,7 +282,7 @@ var privmsg = exports.privmsg = function(channel, data) {
             false,
             data.style === 'action' ? true : false,
             data.style === 'admin' ? true : false,
-            vars.userData.isLoggedIn ? helpers.isModerator(vars.userData.login) : false,
+            vars.userData.isLoggedIn ? helpers.isModerator(vars.userData.name) : false,
             {
                 message: data.message,
                 time: data.date === null ? '' : data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
@@ -373,7 +373,7 @@ var privmsg = exports.privmsg = function(channel, data) {
         messageHighlighted,
         data.style === 'action' ? true : false,
         data.style === 'admin' ? true : false,
-        vars.userData.isLoggedIn ? (helpers.isModerator(vars.userData.login) && (!helpers.isModerator(sender) || (vars.userData.login === channel && vars.userData.login !== sender))) : false,
+        vars.userData.isLoggedIn ? (helpers.isModerator(vars.userData.name) && (!helpers.isModerator(sender) || (vars.userData.name === channel && vars.userData.name !== sender))) : false,
         {
             message: data.message,
             time: data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
@@ -399,7 +399,7 @@ exports.onPrivmsg = function(channel, data) {
         if (data.style === 'whisper') {
             store.chatters[data.from] = {lastWhisper: Date.now()};
             if (bttv.settings.get('disableWhispers') === true) return;
-            if (data.from !== vars.userData.login) {
+            if (data.from !== vars.userData.name) {
                 audibleFeedback();
                 if (bttv.settings.get('desktopNotifications') === true && bttv.chat.store.activeView === false) bttv.notify('You received a whisper from ' + ((data.tags && data.tags['display-name']) || data.from));
             }

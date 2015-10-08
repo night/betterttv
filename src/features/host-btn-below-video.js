@@ -26,7 +26,7 @@ module.exports = function() {
 
             if (action === 'Unhost') {
                 try {
-                    tmi.tmiSession._connections.prod._send('PRIVMSG #' + vars.userData.login + ' :/unhost');
+                    tmi.tmiSession._connections.prod._send('PRIVMSG #' + vars.userData.name + ' :/unhost');
                     helpers.serverMessage('BetterTTV: We sent a /unhost to your channel.');
                     $hostButton.children('span').text('Host');
                 } catch(e) {
@@ -34,7 +34,7 @@ module.exports = function() {
                 }
             } else {
                 try {
-                    tmi.tmiSession._connections.prod._send('PRIVMSG #' + vars.userData.login + ' :/host ' + bttv.getChannel());
+                    tmi.tmiSession._connections.prod._send('PRIVMSG #' + vars.userData.name + ' :/host ' + bttv.getChannel());
                     helpers.serverMessage('BetterTTV: We sent a /host to your channel. Please note you can only host 3 times per 30 minutes.');
                     $hostButton.children('span').text('Unhost');
                 } catch(e) {

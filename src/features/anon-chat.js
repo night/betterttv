@@ -30,15 +30,15 @@ module.exports = function(force) {
         var prodConnOpts = prodConn._opts;
 
         if (enabled) {
-            if (prodConnOpts.nickname === vars.userData.login) {
+            if (prodConnOpts.nickname === vars.userData.name) {
                 prodConnOpts.nickname = 'justinfan12345';
                 room._showAdminMessage('BetterTTV: [Anon Chat] Logging you out of chat..');
                 bttv.chat.store.ignoreDC = true;
                 prodConn._send('QUIT');
             }
         } else {
-            if (prodConnOpts.nickname !== vars.userData.login) {
-                prodConnOpts.nickname = vars.userData.login;
+            if (prodConnOpts.nickname !== vars.userData.name) {
+                prodConnOpts.nickname = vars.userData.name;
                 room._showAdminMessage('BetterTTV: [Anon Chat] Logging you back into chat..');
                 bttv.chat.store.ignoreDC = true;
                 prodConn._send('QUIT');
