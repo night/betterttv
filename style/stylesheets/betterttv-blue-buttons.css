@@ -61,7 +61,7 @@ a.js-follow.follow.button.primary.action,
 .ember-chat .chat-menu-button-container svg path, .button.unfollow .svg-check path, .button.unfollow .svg-x path, #is-subscribed svg path {
     fill: #2A4687 !important;
 }
-.dropmenu.menu-like .dropmenu_action:hover, .hostmode-title-container .hostmode-title .what, .ui-autocomplete .game.ui-menu-item a:hover {
+.dropmenu.menu-like .dropmenu_action:hover, .dropmenu.menu-like .edit_action:hover span, .hostmode-title-container .hostmode-title .what, .ui-autocomplete .game.ui-menu-item a:hover {
     background-color: #2A4687 !important;
 }
 

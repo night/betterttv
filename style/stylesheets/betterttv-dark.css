@@ -610,6 +610,10 @@ body {
 .streams-grid .sort-contain .sort-options {
     background-color: rgb(30,30,30);
 }
+.search input.text {
+    color: #d3d3d3;
+    background-color: #303030;
+}
 
 /* darken jquery ui */
 .ui-menu {
@@ -891,8 +895,8 @@ body {
 
 #main_col ul.nav.js-nav {
     padding-bottom: 2px !important;
-    border-color: #292929 !important;
-    box-shadow: 0px -1px 0px rgba(0, 0, 0, 0.3) inset!important;
+    border-color: #676767 !important;
+    box-shadow: 0px -1px 0px rgba(255, 255, 255, 0.3) inset!important;
 }
 
 #main_col .normal_button {
@@ -2007,6 +2011,19 @@ span.subscribe-text {
 .whatisthis .actions a {
     color: #999;
 }
+.playlist-controller .whatisthis {
+    background-color: rgba(0,0,0,0.7);
+}
+.playlist-controller .whatisthis.anchor-bottom:before {
+    bottom: -20px;
+    top: inherit;
+    margin-left: -10px;
+    border: 10px solid #000;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+    border-right-color: transparent;
+    z-index: 2;
+}
 
 /* Twitch emote menu */
 
@@ -2059,8 +2076,8 @@ span.subscribe-text {
 }
 
 /* profile page fixes */
-.card .item textarea {
-    background-color: #111;
+.card .item textarea,  {
+    background-color: #303030;
     color: #d3d3d3;
 }
 
@@ -2090,4 +2107,45 @@ span.subscribe-text {
 /* dark mod card */
 .bttv-mod-card .user-messages .label {
     background-color: rgb(60,60,60);
+}
+
+/* highlight maker */
+#highlighter .highlight-content .form-container li label {
+    color: #d3d3d3;
+}
+
+#highlighter .highlight-content .form-container li input, #highlighter .highlight-content .form-container li textarea {
+    background: #303030;
+    color: #d3d3d3;
+}
+
+/* playlists */
+.video.ui-draggable-dragging {
+    background: rgb(35, 35, 35);
+    border: #000;
+}
+
+.video:hover .meta .actions li a {
+    color: #d3d3d3;
+}
+
+.dropmenu.menu-like .edit_action span {
+    color: #d3d3d3;
+}
+
+.playlist-item {
+    border-top-color: #303030;
+    border-bottom-color: #303030;
+}
+
+.playlist-controller {
+    border-color: #676767;
+}
+
+.playlist-container:not(.playlist-enabled) .playlist-item:hover, .playlist-container:not(.playlist-enabled) .ui-sortable-helper {
+    background-color: #303030;
+}
+
+.manager .meta .actions {
+    border-color: #676767;
 }
