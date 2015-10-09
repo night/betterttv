@@ -144,6 +144,13 @@ exports.shiftQueue = function() {
         store.__messageQueue = [];
         rooms.getRoom(id).playQueue();
         helpers.serverMessage('You switched to: ' + tmi().get('name').replace(/</g, '&lt;').replace(/>/g, '&gt;'), true);
+
+        // TODO: this should not have to be here
+        if (tmi().tmiRoom.isGroupRoom) {
+            $('#bttv-channel-state-contain').hide();
+        } else {
+            $('#bttv-channel-state-contain').show();
+        }
     } else {
         if (store.__messageQueue.length === 0) return;
         $('.ember-chat .chat-messages .tse-content .chat-lines').append(store.__messageQueue.join(''));
