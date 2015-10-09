@@ -1785,6 +1785,10 @@ var takeover = module.exports = function() {
         $('.ember-chat .chat-room').removeClass('no-name-colors');
     }
 
+    if (!$('.ember-chat .chat-header:first').hasClass('main-header')) {
+        $('.ember-chat .chat-header:first').addClass('main-header');
+    }
+
     if (store.isLoaded) return;
 
     // Hides Group List if coming from directory
