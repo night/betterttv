@@ -22,6 +22,8 @@ var checkFollowing = module.exports = function() {
             if (!d.streams || !d.streams.length) return callback(followingList);
 
             d.streams.forEach(function(stream) {
+                if (stream.is_playlist) return;
+
                 if (followingNames.indexOf(stream.channel.name) === -1) {
                     followingNames.push(stream.channel.name);
                     followingList.push(stream);
