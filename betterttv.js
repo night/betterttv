@@ -519,7 +519,7 @@ exports.shiftQueue = function() {
 exports.moderationCard = function(user, $event) {
     var makeCard = require('../features/make-card');
 
-    bttv.TwitchAPI.get('/api/channels/' + user.toLowerCase() + '/ember').done(function(userApi) {
+    bttv.TwitchAPI.get('channels/' + user.toLowerCase()).done(function(userApi) {
         if (!userApi.name) {
             makeCard({ name: userApi, display_name: userApi.capitalize() }, $event);
             return;
