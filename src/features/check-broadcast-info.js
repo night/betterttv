@@ -5,9 +5,7 @@ var checkBroadcastInfo = module.exports = function() {
 
     var channelCtrl = window.App.__container__.lookup('controller:channel');
 
-    if (!channelCtrl) return setTimeout(checkBroadcastInfo, 60000);
-
-    if (!channelCtrl.get('model')) return;
+    if (!channelCtrl || !channelCtrl.get('model')) return setTimeout(checkBroadcastInfo, 60000);
 
     var model = channelCtrl.get('model');
 
