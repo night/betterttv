@@ -5,6 +5,7 @@ var vars = require('../vars'),
     helpers = require('./helpers'),
     templates = require('./templates'),
     rooms = require('./rooms'),
+    pinnedHighlights = require('../features/pinned-highlights'),
     embeddedPolling = require('../features/embedded-polling'),
     channelState = require('../features/channel-state'),
     audibleFeedback = require('../features/audible-feedback');
@@ -321,6 +322,11 @@ var privmsg = exports.privmsg = function(channel, data) {
     }
 
     var messageHighlighted = bttv.settings.get('highlightKeywords') && highlighting(data);
+
+	// Pinned Highlights
+    if (messageHighlighted) {
+        pinnedHighlights(data);
+    }
 
     // Strawpoll
     embeddedPolling(data);
