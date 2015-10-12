@@ -1638,6 +1638,10 @@ body.channel_new.columns.ember-application {
     color: #6441A5 !important;
 }
 
+/* twitch floats all chat elements */
+.chat-line .float-left {
+    float: none;
+}
 
 /* custom timeouts */
 #bttv-custom-timeout-contain {
