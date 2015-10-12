@@ -4840,7 +4840,7 @@ module.exports = function(message) {
         $highlightContainer = $('<div id="bttv-pin-container">').appendTo($('.ember-chat .chat-room'));
     }
 
-    var timeSent = (new Date(message.date.replace('T', ' ').replace(/\.[0-9]+Z/, ' GMT'))).toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2');
+    var timeSent = message.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2');
 
     var $nextHighlight = $(highlightTemplate({ time: timeSent, displayName: message.tags['display-name'], message: message.message }));
 
