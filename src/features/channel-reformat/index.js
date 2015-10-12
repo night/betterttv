@@ -3,15 +3,12 @@
 var debug = require('../../helpers/debug'),
     keyCodes = require('../../keycodes'),
     vars = require('../../vars');
-var handleResize = require('./handle-resize'),
-    twitchcast = require('./twitchcast');
+var handleResize = require('./handle-resize');
 
 module.exports = function() {
     if ($('#main_col #channel').length === 0 || $('#right_col').length === 0) return;
 
     debug.log('Reformatting Channel Page');
-
-    twitchcast();
 
     if (!vars.loadedChannelResize) {
         vars.loadedChannelResize = true;

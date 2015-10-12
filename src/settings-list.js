@@ -400,15 +400,6 @@ module.exports = [
         storageKey: 'tabCompletionTooltip'
     },
     {
-        name: 'TwitchCast',
-        description: 'Watch a Twitch stream via Chromecast (Google Chrome only)',
-        default: false,
-        storageKey: 'twitchCast',
-        toggle: function() {
-            channelReformat();
-        }
-    },
-    {
         default: '',
         storageKey: 'blacklistKeywords',
         toggle: function(keywords) {

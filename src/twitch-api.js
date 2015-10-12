@@ -6,9 +6,11 @@ module.exports = {
 
         options.headers['Client-ID'] = '6x8avioex0zt85ht6py4sq55z6avsea';
 
-        if (vars.userData.isLoggedIn) {
+        if (options.auth && vars.userData.isLoggedIn) {
             options.headers.Authorization = 'OAuth ' + vars.userData.oauthToken;
         }
+
+        delete options.auth;
     },
     _call: function(method, url, data, options) {
         if (!options) options = {};

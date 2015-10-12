@@ -18,7 +18,7 @@ var checkFollowing = module.exports = function() {
         followingNames = followingNames || [];
         offset = offset || 0;
 
-        bttv.TwitchAPI.get('streams/followed?limit=100&offset=' + offset).done(function(d) {
+        bttv.TwitchAPI.get('streams/followed?limit=100&offset=' + offset, {}, { auth: true }).done(function(d) {
             if (!d.streams || !d.streams.length) return callback(followingList);
 
             d.streams.forEach(function(stream) {
