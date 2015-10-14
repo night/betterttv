@@ -2037,19 +2037,22 @@ span.subscribe-text {
 }
 
 .ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .emotes .emoticon-grid .emote-set {
-    border-color: #444;
+    border-color: #444 !important;
 }
 
 .ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .tabs {
-    border-color: #444;
+    border-color: #444 !important;
     color: #d3d3d3;
+    background-color: #191919 !important;
 }
 
 .ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .tabs .tab.active {
-    border-color: #888;
-    color: #aaa;
+    border-color: #888 !important;
+    color: #aaa !important;
 }
-
+.app-main.theatre .chat-container .chat-interface .emoticon-selector .tabs .tab {
+	color: #dedede;
+}
 .ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .tabs .tab:hover {
     border-color: #888;
 }
@@ -2060,6 +2063,10 @@ span.subscribe-text {
     margin: 0px;
     padding: 5px 15px;
     background-color: rgb(25,25,25);
+}
+.app-main.theatre .chat-container .chat-interface .emoticon-selector .emoticon-grid, .ember-chat .chat-interface .emoticon-selector .emoticon-selector-box {
+	background-color: #191919 !important;
+	border: 1px solid #191919 !important;
 }
 
 /* dark whispers (lenny face) */
