@@ -2032,31 +2032,28 @@ span.subscribe-text {
 
 /* Twitch emote menu */
 
-.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box {
-    background-color: rgb(25,25,25);
+.chat-container.dark .chat-interface .emoticon-selector .emoticon-selector-box, .app-main.theatre .chat-container .chat-interface .emoticon-selector .emoticon-selector-box, .ember-chat .chat-interface .emoticon-selector .emoticon-selector-box {
+    background-color: #191919;
+    border-color: #191919;
 }
 
-.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .emotes .emoticon-grid .emote-set {
-    border-color: #444 !important;
+.chat-container.dark .chat-interface .emoticon-selector .tabs, .app-main.theatre .chat-container .chat-interface .emoticon-selector .tabs, .ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .emotes .emoticon-grid .emote-set, .app-main.theatre .chat-container .chat-interface .emoticon-selector .emoticon-grid, .ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .emotes .emoticon-grid .emote-set {
+	background-color: #191919;
+	border-color: #444;
+	color: #d3d3d3;
 }
-
+.chat-container.dark .chat-interface .emoticon-selector .tabs .tab.active, .ember-chat .chat-interface .emoticon-selector .tabs .tab.active, .app-main.theatre .chat-container .chat-interface .emoticon-selector .tabs .tab.active {
+    border-color: #888;
+    color: #aaa;
+}
 .ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .tabs {
-    border-color: #444 !important;
+    border-color: #444;
     color: #d3d3d3;
-    background-color: #191919 !important;
-}
-
-.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .tabs .tab.active {
-    border-color: #888 !important;
-    color: #aaa !important;
-}
-.app-main.theatre .chat-container .chat-interface .emoticon-selector .tabs .tab {
-	color: #dedede;
+    background-color:#191919;
 }
 .ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .tabs .tab:hover {
     border-color: #888;
 }
-
 .ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .channel-emotes .subscribe-message {
     border-color: #444;
     color: #aaa;
@@ -2064,11 +2061,9 @@ span.subscribe-text {
     padding: 5px 15px;
     background-color: rgb(25,25,25);
 }
-.app-main.theatre .chat-container .chat-interface .emoticon-selector .emoticon-grid, .ember-chat .chat-interface .emoticon-selector .emoticon-selector-box {
-	background-color: #191919 !important;
-	border: 1px solid #191919 !important;
+.chat-container.dark .chat-interface .emoticon-selector .tabs .tab, .app-main.theatre .chat-container .chat-interface .emoticon-selector .tabs .tab {
+	color: #888;
 }
-
 /* dark whispers (lenny face) */
 .chat-messages .chat-line.whisper {
     background-color: #352645 !important; /* blue: #202236 */
