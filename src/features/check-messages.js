@@ -79,7 +79,12 @@ module.exports = function() {
 
                 if (seenMessages.indexOf(url) !== -1 || recentMessageTimes.indexOf(time) === -1) return;
                 seenMessages.push(url);
-                bttv.notify(sender + ' just sent you a Message!\nClick here to view it.', 'Twitch Message Received', url, avatar, 'new_message_' + messageId);
+                bttv.notify(sender + ' just sent you a Message!\nClick here to view it.', {
+                    title: 'Twitch Message Received',
+                    url: url,
+                    image: avatar,
+                    tag: 'new_message_' + messageId
+                });
             });
         });
     };

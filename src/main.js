@@ -41,14 +41,18 @@ bttv.getChatController = function() {
     return false;
 };
 
-bttv.notify = function(message, title, url, image, tag, permanent) {
-    title = title || 'Notice';
-    url = url || '';
-    image = image || 'https://cdn.betterttv.net/style/logos/bttv_logo.png';
-    message = message || '';
-    tag = tag || 'bttv_' + message;
+bttv.notify = function(message, options) {
+    if (!message) return;
+
+    options = options || {};
+    var title = options.title || 'Notice';
+    var url = options.url || '';
+    var image = options.image || 'https://cdn.betterttv.net/style/logos/bttv_logo.png';
+    var tag = options.tag || 'bttv_' + message;
+    var permanent = options.permanent || false;
+    var expires = options.expires || 60000;
+
     tag = 'bttv_' + tag.toLowerCase().replace(/[^\w_]/g, '');
-    permanent = permanent || false;
 
     if ($('body#chat').length) return;
 
@@ -71,8 +75,8 @@ bttv.notify = function(message, title, url, image, tag, permanent) {
                 notification.close();
             };
         }
-        bttv.storage.pushObject('bttvNotifications', tag, { expire: Date.now() + 60000 });
-        setTimeout(function() { bttv.storage.spliceObject('bttvNotifications', tag); }, 60000);
+        bttv.storage.pushObject('bttvNotifications', tag, { expire: Date.now() + expires });
+        setTimeout(function() { bttv.storage.spliceObject('bttvNotifications', tag); }, expires);
     };
 
     if (bttv.settings.get('desktopNotifications') === true && ((window.Notification && Notification.permission === 'granted') || (window.webkitNotifications && webkitNotifications.checkPermission() === 0))) {

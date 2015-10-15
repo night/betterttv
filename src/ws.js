@@ -8,7 +8,13 @@ events.alert = function(data) {
     if (data.type === 'chat') {
         bttv.chat.helpers.serverMessage(data.message);
     } else if (data.type === 'growl') {
-        bttv.notify(data.message.text, data.message.title, data.message.url, data.message.image, data.message.tag, data.message.permanent);
+        bttv.notify(data.message.text, {
+            title: data.message.title,
+            url: data.message.url,
+            image: data.message.image,
+            tag: data.message.tag,
+            permanent: data.message.permanent
+        });
     }
 };
 

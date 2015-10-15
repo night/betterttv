@@ -2509,14 +2509,18 @@ bttv.getChatController = function() {
     return false;
 };
 
-bttv.notify = function(message, title, url, image, tag, permanent) {
-    title = title || 'Notice';
-    url = url || '';
-    image = image || 'https://cdn.betterttv.net/style/logos/bttv_logo.png';
-    message = message || '';
-    tag = tag || 'bttv_' + message;
+bttv.notify = function(message, options) {
+    if (!message) return;
+
+    options = options || {};
+    var title = options.title || 'Notice';
+    var url = options.url || '';
+    var image = options.image || 'https://cdn.betterttv.net/style/logos/bttv_logo.png';
+    var tag = options.tag || 'bttv_' + message;
+    var permanent = options.permanent || false;
+    var expires = options.expires || 60000;
+
     tag = 'bttv_' + tag.toLowerCase().replace(/[^\w_]/g, '');
-    permanent = permanent || false;
 
     if ($('body#chat').length) return;
 
@@ -2539,8 +2543,8 @@ bttv.notify = function(message, title, url, image, tag, permanent) {
                 notification.close();
             };
         }
-        bttv.storage.pushObject('bttvNotifications', tag, { expire: Date.now() + 60000 });
-        setTimeout(function() { bttv.storage.spliceObject('bttvNotifications', tag); }, 60000);
+        bttv.storage.pushObject('bttvNotifications', tag, { expire: Date.now() + expires });
+        setTimeout(function() { bttv.storage.spliceObject('bttvNotifications', tag); }, expires);
     };
 
     if (bttv.settings.get('desktopNotifications') === true && ((window.Notification && Notification.permission === 'granted') || (window.webkitNotifications && webkitNotifications.checkPermission() === 0))) {
@@ -3593,12 +3597,10 @@ var checkFollowing = module.exports = function() {
         followingNames = followingNames || [];
         offset = offset || 0;
 
-        bttv.TwitchAPI.get('streams/followed?limit=100&offset=' + offset, {}, { auth: true }).done(function(d) {
+        bttv.TwitchAPI.get('streams/followed?stream_type=live&limit=100&offset=' + offset, {}, { auth: true }).done(function(d) {
             if (!d.streams || !d.streams.length) return callback(followingList);
 
             d.streams.forEach(function(stream) {
-                if (stream.is_playlist) return;
-
                 if (followingNames.indexOf(stream.channel.name) === -1) {
                     followingNames.push(stream.channel.name);
                     followingList.push(stream);
@@ -3642,7 +3644,13 @@ var checkFollowing = module.exports = function() {
 
                         debug.log(channel.name + ' is now streaming');
                         if (channel.game === null) channel.game = 'on Twitch';
-                        bttv.notify(channel.display_name + ' just started streaming ' + channel.game + '.\nClick here to head to ' + channel.display_name + '\'s channel.', channel.display_name + ' is Now Streaming', channel.url, channel.logo, 'channel_live_' + channel.name);
+                        bttv.notify(channel.display_name + ' just started streaming ' + channel.game + '.\nClick here to head to ' + channel.display_name + '\'s channel.', {
+                            title: channel.display_name + ' is Now Streaming',
+                            url: channel.url,
+                            image: channel.logo,
+                            tag: 'channel_live_' + channel.name,
+                            expires: 600000
+                        });
                     });
                 }
             });
@@ -3741,7 +3749,12 @@ module.exports = function() {
 
                 if (seenMessages.indexOf(url) !== -1 || recentMessageTimes.indexOf(time) === -1) return;
                 seenMessages.push(url);
-                bttv.notify(sender + ' just sent you a Message!\nClick here to view it.', 'Twitch Message Received', url, avatar, 'new_message_' + messageId);
+                bttv.notify(sender + ' just sent you a Message!\nClick here to view it.', {
+                    title: 'Twitch Message Received',
+                    url: url,
+                    image: avatar,
+                    tag: 'new_message_' + messageId
+                });
             });
         });
     };
@@ -6461,7 +6474,13 @@ events.alert = function(data) {
     if (data.type === 'chat') {
         bttv.chat.helpers.serverMessage(data.message);
     } else if (data.type === 'growl') {
-        bttv.notify(data.message.text, data.message.title, data.message.url, data.message.image, data.message.tag, data.message.permanent);
+        bttv.notify(data.message.text, {
+            title: data.message.title,
+            url: data.message.url,
+            image: data.message.image,
+            tag: data.message.tag,
+            permanent: data.message.permanent
+        });
     }
 };
 
