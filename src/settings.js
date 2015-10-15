@@ -73,16 +73,19 @@ Settings.prototype.load = function() {
     }
 
     var receiveMessage = function(e) {
-        if (e.origin !== window.location.protocol + '//' + window.location.host) return;
         if (e.data) {
             if (typeof e.data !== 'string') return;
 
             var data = e.data.split(' ');
             if (data[0] === 'bttv_setting') {
+                if (e.origin !== window.location.protocol + '//' + window.location.host) return;
                 var key = data[1],
                     value = _self._parseSetting(data[2]);
 
                 _self.set(key, value);
+            } else if (data[0] === 'bttv_is_login_dark') {
+                if (bttv.settings.get('darkenedMode') !== true) return;
+                e.source.postMessage('bttv_login_dark', e.origin);
             }
         }
     };

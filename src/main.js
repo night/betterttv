@@ -5,7 +5,8 @@ var debug = require('./helpers/debug'),
     TwitchAPI = require('./twitch-api'),
     WS = require('./ws'),
     Storage = require('./storage'),
-    Settings = require('./settings');
+    Settings = require('./settings'),
+    loginIframeTheme = require('./login-iframe');
 
 bttv.info = {
     version: '6.8',
@@ -327,6 +328,9 @@ if (location.pathname.match(/^\/(.*)\/popout/)) {
 
 if (!window.Twitch || !window.Twitch.video || !window.Twitch.api || !window.Twitch.user) {
     debug.log('window.Twitch not detected.');
+
+    loginIframeTheme();
+
     return;
 }
 
