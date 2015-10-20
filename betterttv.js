@@ -3494,7 +3494,7 @@ module.exports = function() {
 
     $('.setBlacklistKeywords').click(function(e) {
         e.preventDefault();
-        var keywords = prompt('Type some blacklist keywords. Messages containing keywords will be filtered from your chat. Use spaces in the field to specify multiple keywords. Place {} around a set of words to form a phrase. Wildcards are supported.', bttv.settings.get('blacklistKeywords'));
+        var keywords = prompt('Type some blacklist keywords. Messages containing keywords will be filtered from your chat. Use spaces in the field to specify multiple keywords. Place {} around a set of words to form a phrase, and () around a word to specify a username. Wildcards are supported.', bttv.settings.get('blacklistKeywords'));
         if (keywords !== null) {
             keywords = keywords.trim().replace(/\s\s+/g, ' ');
             bttv.settings.save('blacklistKeywords', keywords);
