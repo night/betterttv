@@ -91,8 +91,8 @@ module.exports = function() {
         });
     }
 
-    if (bttv.settings.get.chatWidth && bttv.settings.get.chatWidth < 0) {
-        bttv.settings.save('chatWidth', 0);
+    if (bttv.settings.get.chatWidth && bttv.settings.get.chatWidth < 320) {
+        bttv.settings.save('chatWidth', 320);
     }
 
     var layout = bttv.storage.getObject('TwitchCache:Layout');
