@@ -3197,8 +3197,8 @@ module.exports = function() {
         });
     }
 
-    if (bttv.settings.get.chatWidth && bttv.settings.get.chatWidth < 320) {
-        bttv.settings.save('chatWidth', 320);
+    if (bttv.settings.get.chatWidth && bttv.settings.get.chatWidth < 0) {
+        bttv.settings.save('chatWidth', 0);
     }
 
     var layout = bttv.storage.getObject('TwitchCache:Layout');
@@ -3238,6 +3238,11 @@ module.exports = function() {
 
     if (bttv.settings.get('chatWidth') !== null) {
         vars.chatWidth = bttv.settings.get('chatWidth');
+
+        if (vars.chatWidth < 340) {
+            vars.chatWidth = 340;
+            bttv.settings.save('chatWidth', 340);
+        }
 
         if (vars.chatWidth === 0) {
             $('#right_col').css({
