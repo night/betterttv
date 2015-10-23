@@ -412,7 +412,7 @@ exports.sendMessage = function(message) {
             return;
         }
 
-        if (message.charAt(0) === '/' || message.charAt(0) === '.') {
+        if (['/', '.'].indexOf(message.charAt(0)) > -1) {
             message = message.split(' ');
             message[0] = message[0].toLowerCase();
             message = message.join(' ');
@@ -422,9 +422,11 @@ exports.sendMessage = function(message) {
 
         try {
             if (!/^\/w(\s|$)/.test(message)) {
-                channelState({
-                    type: 'outgoing_message'
-                });
+                if (['/', '.'].indexOf(message.charAt(0)) === -1) {
+                    channelState({
+                        type: 'outgoing_message'
+                    });
+                }
                 bttv.ws.broadcastMe();
                 tmi().trackSubOnly(message);
                 tmi().trackChat();
