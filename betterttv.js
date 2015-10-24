@@ -3242,8 +3242,8 @@ module.exports = function() {
         vars.chatWidth = bttv.settings.get('chatWidth');
 
         if (vars.chatWidth < 340) {
-            vars.chatWidth = 340;
-            bttv.settings.save('chatWidth', 340);
+            vars.chatWidth = 0;
+            bttv.settings.save('chatWidth', 0);
         }
 
         if (vars.chatWidth === 0) {
