@@ -2762,6 +2762,19 @@ var main = function() {
         /*eslint-enable */
     };
 
+    setInterval(function() {
+        var strangeAd = $('iframe.brtmedia');
+        if (!strangeAd.length) return;
+
+        strangeAd.remove();
+        var data = {
+            err: 'unknown_ad',
+            bttvVersion: bttv.info.versionString(),
+            user: vars.userData.isLoggedIn ? vars.userData.name : null
+        };
+        $.get('https://nightdev.com/betterttv/errors/?obj=' + encodeURIComponent(JSON.stringify(data)));
+    }, 5000);
+
     $(document).ready(function() {
         loadUser(function() {
             createSettings();
