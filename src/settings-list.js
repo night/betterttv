@@ -228,7 +228,7 @@ module.exports = [
                     trigger: 'manual',
                     gravity: $.fn.tipsy.autoNS,
                     html: true,
-                    title: function() { return '<iframe src="http://player.twitch.tv/?channel=' + chan + '&!branding&!showInfo&autoplay&volume=0.1' + html5 + '" style="border: none;" width="320" height="208"></iframe><style>.tipsy-inner{max-width:320px;}</style>'; }
+                    title: function() { return '<iframe src="http://player.twitch.tv/?channel=' + chan + '&!branding&!showInfo&autoplay&volume=0.1' + html5 + '" style="border: none;" width="320" height="208"></iframe><style>.tipsy{opacity:1;}.tipsy-inner{max-width:320px;}</style>'; }
                 });
                 $(this).tipsy('show');
             }).on('mouseout', '#directory-list .streams a.cap', function() {
