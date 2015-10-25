@@ -4061,7 +4061,11 @@ var debug = require('../helpers/debug'),
     vars = require('../vars');
 
 module.exports = function() {
-    if (bttv.settings.get('showDirectoryLiveTab') === true && $('h2.title:contains("Following")').length && $('a.active:contains("Overview")').length) {
+    if (
+        bttv.settings.get('showDirectoryLiveTab') === true &&
+        $('h2.title:contains("Following")').length &&
+        $('a.active:contains("Overview")').length
+    ) {
         debug.log('Changing Directory View');
 
         $('a[href="/directory/following/live"]').click();
@@ -5680,6 +5684,45 @@ module.exports = [
             } else {
                 $('body').unbind('dblclick');
             }
+        }
+    },
+    {
+        name: 'Directory Preview',
+        description: 'Hover over streams to get a live preview of the stream',
+        default: false,
+        storageKey: 'directoryPreview',
+        toggle: function(value) {
+            if (value === true) {
+                this.load();
+            } else {
+                $('body').off('mouseover', '#directory-list .streams a.cap').off('mouseout', '#directory-list .streams a.cap');
+            }
+        },
+        load: function() {
+            if (bttv.settings.get('directoryPreview') === false) return;
+
+            $('body').on('mouseover', '#directory-list .streams a.cap', function() {
+                var chan = encodeURIComponent($(this).attr('href').substr(1));
+
+                var html5 = '';
+                if (window.navigator.userAgent.indexOf('Chrome') > -1) {
+                    html5 = '&html5';
+                }
+
+                $(this).tipsy({
+                    trigger: 'manual',
+                    gravity: $.fn.tipsy.autoNS,
+                    html: true,
+                    title: function() { return '<iframe src="http://player.twitch.tv/?channel=' + chan + '&!branding&!showInfo&autoplay&volume=0.1' + html5 + '" style="border: none;" width="320" height="208"></iframe><style>.tipsy-inner{max-width:320px;}</style>'; }
+                });
+                $(this).tipsy('show');
+            }).on('mouseout', '#directory-list .streams a.cap', function() {
+                $(this).tipsy('hide');
+                $('div.tipsy').remove();
+            }).on('click', '#directory-list .streams a.cap', function() {
+                $(this).tipsy('hide');
+                $('div.tipsy').remove();
+            });
         }
     },
     {
