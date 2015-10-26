@@ -225,14 +225,21 @@ module.exports = [
                 }
 
                 $('div.tipsy').remove();
-                $(this).tipsy({
-                    trigger: 'manual',
-                    gravity: $.fn.tipsy.autoNS,
-                    html: true,
-                    opacity: 1,
-                    title: function() { return '<iframe src="http://player.twitch.tv/?channel=' + chan + '&!branding&!showInfo&autoplay&volume=0.1' + html5 + '" style="border: none;" width="320" height="208"></iframe><style>.tipsy-inner{max-width:320px;}</style>'; }
-                });
-                $(this).tipsy('show');
+
+                var $this = $(this);
+                setTimeout(function() {
+                    if (!$this.is(':hover')) return;
+
+                    $('div.tipsy').remove();
+                    $this.tipsy({
+                        trigger: 'manual',
+                        gravity: $.fn.tipsy.autoNS,
+                        html: true,
+                        opacity: 1,
+                        title: function() { return '<iframe src="http://player.twitch.tv/?channel=' + chan + '&!branding&!showInfo&autoplay&volume=0.1' + html5 + '" style="border: none;" width="320" height="208"></iframe><style>.tipsy-inner{max-width:320px;}</style>'; }
+                    });
+                    $this.tipsy('show');
+                }, 1500);
             }).on('mouseout', '#directory-list .streams a.cap', function() {
                 var $this = $(this);
 
