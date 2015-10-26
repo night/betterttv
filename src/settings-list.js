@@ -224,6 +224,7 @@ module.exports = [
                     html5 = '&html5';
                 }
 
+                $('div.tipsy').remove();
                 $(this).tipsy({
                     trigger: 'manual',
                     gravity: $.fn.tipsy.autoNS,
@@ -233,8 +234,14 @@ module.exports = [
                 });
                 $(this).tipsy('show');
             }).on('mouseout', '#directory-list .streams a.cap', function() {
-                $(this).tipsy('hide');
-                $('div.tipsy').remove();
+                var $this = $(this);
+
+                var timer = setInterval(function() {
+                    if ($('div.tipsy').is(':hover')) return;
+
+                    clearInterval(timer);
+                    $this.tipsy('hide');
+                }, 1000);
             }).on('click', '#directory-list .streams a.cap', function() {
                 $(this).tipsy('hide');
                 $('div.tipsy').remove();
