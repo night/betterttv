@@ -2170,18 +2170,18 @@ span.subscribe-text {
     opacity: .5;
 }
 
-.filter-nav.goleft {
+.creativetag-list-contain .filter-nav.goleft {
     border-right: 1px solid #666;
     border-left-color: transparent;
 }
-.filter-nav.goright {
+.creativetag-list-contain .filter-nav.goright {
     border-left: 1px solid #666;
     border-right-color: transparent;
 }
 
-.filter-nav.goleft:before {
+.creativetag-list-contain .filter-nav.goleft:before {
     margin-left: -8px;
 }
-.filter-nav.goright:before {
+.creativetag-list-contain .filter-nav.goright:before {
     margin-left: -3px;
 }
