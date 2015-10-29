@@ -31,17 +31,14 @@ var resetCountDown = function() {
 var initiateCountDown = function(length) {
     if (bttv.chat.store.chatCountDown) clearInterval(bttv.chat.store.chatCountDown);
 
-    var startTimestamp = Date.now();
-    var endTimestamp = startTimestamp + (length * 1000);
+    var endTimestamp = Date.now() + (length * 1000);
 
     bttv.chat.store.chatCountDown = setInterval(function() {
-        var currentTimestamp = Date.now();
-        var remainingTime = endTimestamp - currentTimestamp;
+        var remainingTime = endTimestamp - Date.now();
         var $chatButton = $(chatButton);
 
         if (remainingTime <= 0) {
             resetCountDown();
-            return;
         } else {
             var remainingSeconds = Math.ceil(remainingTime / 1000);
             $chatButton.find('span').text('Chat in ' + displaySeconds(remainingSeconds));
