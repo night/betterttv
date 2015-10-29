@@ -2156,3 +2156,32 @@ span.subscribe-text {
 .manager .meta .actions {
     border-color: #676767;
 }
+
+/* creative tag filter arrows */
+.creativetag-list-contain .filter-nav {
+    background: #333;
+}
+
+.creativetag-list-contain .filter-nav:before {
+    margin-top: -9px;
+    border: 5px solid #fff;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+    opacity: .5;
+}
+
+.creativetag-list-contain .filter-nav.goleft {
+    border-right: 1px solid #666;
+    border-left-color: transparent;
+}
+.creativetag-list-contain .filter-nav.goright {
+    border-left: 1px solid #666;
+    border-right-color: transparent;
+}
+
+.creativetag-list-contain .filter-nav.goleft:before {
+    margin-left: -8px;
+}
+.creativetag-list-contain .filter-nav.goright:before {
+    margin-left: -3px;
+}

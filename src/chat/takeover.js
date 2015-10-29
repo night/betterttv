@@ -274,6 +274,9 @@ var takeover = module.exports = function() {
     var $chatInput = $chatInterface.find('textarea');
     var $chatSend = $chatInterface.find('.send-chat-button');
 
+    // Limit chat input to 500 characters
+    $chatInput.attr('maxlength', '500');
+
     // Disable Twitch's chat senders
     $chatInput.off('keydown').off('keyup').off('mouseup');
     $chatSend.off();
