@@ -2773,7 +2773,8 @@ var main = function() {
         var data = {
             err: 'unknown_ad',
             bttvVersion: bttv.info.versionString(),
-            user: vars.userData.isLoggedIn ? vars.userData.name : null
+            user: vars.userData.isLoggedIn ? vars.userData.name : null,
+            ua: navigator.userAgent
         };
         $.get('https://nightdev.com/betterttv/errors/?obj=' + encodeURIComponent(JSON.stringify(data)));
     }, 5000);
