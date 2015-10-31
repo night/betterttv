@@ -243,6 +243,8 @@ module.exports = [
             }).on('mouseout', '#directory-list .streams a.cap', function() {
                 var $this = $(this);
 
+                if (!$('div.tipsy').length) return;
+
                 var timer = setInterval(function() {
                     if ($('div.tipsy').is(':hover')) return;
 
