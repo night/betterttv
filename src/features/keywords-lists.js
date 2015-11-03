@@ -7,7 +7,15 @@ exports.blacklistFilter = function(data) {
 
     var keywords = bttv.settings.get('blacklistKeywords');
     var phraseRegex = /\{.+?\}/g;
-    var testCases = keywords.match(phraseRegex);
+
+    var testCases;
+    try {
+        testCases = keywords.match(phraseRegex);
+    } catch(e) {
+        debug.log(e);
+        return false;
+    }
+
     var i;
     if (testCases) {
         for (i = 0; i < testCases.length; i++) {
@@ -54,7 +62,15 @@ exports.highlighting = function(data) {
 
     var extraKeywords = bttv.settings.get('highlightKeywords');
     var phraseRegex = /\{.+?\}/g;
-    var testCases = extraKeywords.match(phraseRegex);
+
+    var testCases;
+    try {
+        testCases = extraKeywords.match(phraseRegex);
+    } catch(e) {
+        debug.log(e);
+        return false;
+    }
+
     var i;
     if (testCases) {
         for (i = 0; i < testCases.length; i++) {

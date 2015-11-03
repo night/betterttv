@@ -27,12 +27,12 @@ Storage.prototype.get = function(item) {
 };
 
 Storage.prototype.getArray = function(item) {
-    if (!this.exists(item)) this.putArray(item, []);
+    if (!this.exists(item)) [];
     return JSON.parse(this.get(item));
 };
 
 Storage.prototype.getObject = function(item) {
-    if (!this.exists(item)) this.putObject(item, {});
+    if (!this.exists(item)) return {};
     return JSON.parse(this.get(item));
 };
 

@@ -82,6 +82,10 @@ var takeover = module.exports = function() {
     store.currentRoom = bttv.getChannel();
     // tmi.tmiRoom.on('labelschanged', handlers.labelsChanged);
 
+    // Take over whispers until we can properly handle them
+    delete tmi.tmiSession._events.whisper;
+    tmi.tmiSession.on('whisper', rooms.getRoom(bttv.getChannel()).chatHandler);
+
     // Fake the initial roomstate
     helpers.parseRoomState({
         tags: {

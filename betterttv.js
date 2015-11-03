@@ -636,7 +636,6 @@ var privmsg = exports.privmsg = function(channel, data) {
 
     try {
         tmi().trackLatency(data);
-        tmi().trackWhisper(data);
     } catch(e) {
         debug.log('Error sending tracking data to Twitch');
     }
@@ -770,7 +769,7 @@ exports.onPrivmsg = function(channel, data) {
         rooms.getRoom(channel).queueMessage(data);
         return;
     }
-    if (!data.message.length) return;
+    if (!data.message || !data.message.length) return;
     if (!tmi() || !tmi().tmiRoom) return;
     try {
         if (data.style === 'whisper') {
@@ -1206,15 +1205,22 @@ exports.sendMessage = function(message) {
             return;
         }
 
-        if (bttv.settings.get('anonChat') === true) {
-            serverMessage('You can\'t send messages when Anon Chat is enabled. You can disable Anon Chat in the BetterTTV settings.');
-            return;
-        }
-
         if (['/', '.'].indexOf(message.charAt(0)) > -1) {
             message = message.split(' ');
             message[0] = message[0].toLowerCase();
             message = message.join(' ');
+        }
+
+        if (tmi().tmiSession.sendWhisper && ['/w', '.w'].indexOf(message.substr(0, 2)) > -1) {
+            var parts = message.split(' ');
+            parts.shift();
+            tmi().tmiSession.sendWhisper(parts.shift(), parts.join(' '));
+            return;
+        }
+
+        if (bttv.settings.get('anonChat') === true) {
+            serverMessage('You can\'t send messages when Anon Chat is enabled. You can disable Anon Chat in the BetterTTV settings.');
+            return;
         }
 
         tmi().tmiRoom.sendMessage(message);
@@ -1857,6 +1863,10 @@ var takeover = module.exports = function() {
     if (tmi.channel) tmi.set('name', tmi.channel.get('display_name'));
     store.currentRoom = bttv.getChannel();
     // tmi.tmiRoom.on('labelschanged', handlers.labelsChanged);
+
+    // Take over whispers until we can properly handle them
+    delete tmi.tmiSession._events.whisper;
+    tmi.tmiSession.on('whisper', rooms.getRoom(bttv.getChannel()).chatHandler);
 
     // Fake the initial roomstate
     helpers.parseRoomState({
@@ -2569,6 +2579,9 @@ bttv.notify = function(message, options) {
         desktopNotify();
     } else {
         message = message.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br /><br />').replace(/Click here(.*)./, '<a style="color: white;" target="_blank" href="' + url + '">Click here$1.</a>');
+
+        if (!$.gritter) return;
+
         $.gritter.add({
             title: title,
             image: image,
@@ -2764,20 +2777,6 @@ var main = function() {
         }});
         /*eslint-enable */
     };
-
-    setInterval(function() {
-        var strangeAd = $('iframe.brtmedia');
-        if (!strangeAd.length) return;
-
-        strangeAd.remove();
-        var data = {
-            err: 'unknown_ad',
-            bttvVersion: bttv.info.versionString(),
-            user: vars.userData.isLoggedIn ? vars.userData.name : null,
-            ua: navigator.userAgent
-        };
-        $.get('https://nightdev.com/betterttv/errors/?obj=' + encodeURIComponent(JSON.stringify(data)));
-    }, 5000);
 
     $(document).ready(function() {
         loadUser(function() {
@@ -4505,7 +4504,15 @@ exports.blacklistFilter = function(data) {
 
     var keywords = bttv.settings.get('blacklistKeywords');
     var phraseRegex = /\{.+?\}/g;
-    var testCases = keywords.match(phraseRegex);
+
+    var testCases;
+    try {
+        testCases = keywords.match(phraseRegex);
+    } catch(e) {
+        debug.log(e);
+        return false;
+    }
+
     var i;
     if (testCases) {
         for (i = 0; i < testCases.length; i++) {
@@ -4552,7 +4559,15 @@ exports.highlighting = function(data) {
 
     var extraKeywords = bttv.settings.get('highlightKeywords');
     var phraseRegex = /\{.+?\}/g;
-    var testCases = extraKeywords.match(phraseRegex);
+
+    var testCases;
+    try {
+        testCases = extraKeywords.match(phraseRegex);
+    } catch(e) {
+        debug.log(e);
+        return false;
+    }
+
     var i;
     if (testCases) {
         for (i = 0; i < testCases.length; i++) {
@@ -6288,12 +6303,12 @@ Storage.prototype.get = function(item) {
 };
 
 Storage.prototype.getArray = function(item) {
-    if (!this.exists(item)) this.putArray(item, []);
+    if (!this.exists(item)) [];
     return JSON.parse(this.get(item));
 };
 
 Storage.prototype.getObject = function(item) {
-    if (!this.exists(item)) this.putObject(item, {});
+    if (!this.exists(item)) return {};
     return JSON.parse(this.get(item));
 };
 

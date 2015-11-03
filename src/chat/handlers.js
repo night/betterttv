@@ -272,7 +272,6 @@ var privmsg = exports.privmsg = function(channel, data) {
 
     try {
         tmi().trackLatency(data);
-        tmi().trackWhisper(data);
     } catch(e) {
         debug.log('Error sending tracking data to Twitch');
     }
@@ -406,7 +405,7 @@ exports.onPrivmsg = function(channel, data) {
         rooms.getRoom(channel).queueMessage(data);
         return;
     }
-    if (!data.message.length) return;
+    if (!data.message || !data.message.length) return;
     if (!tmi() || !tmi().tmiRoom) return;
     try {
         if (data.style === 'whisper') {

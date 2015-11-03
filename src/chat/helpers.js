@@ -407,15 +407,22 @@ exports.sendMessage = function(message) {
             return;
         }
 
-        if (bttv.settings.get('anonChat') === true) {
-            serverMessage('You can\'t send messages when Anon Chat is enabled. You can disable Anon Chat in the BetterTTV settings.');
-            return;
-        }
-
         if (['/', '.'].indexOf(message.charAt(0)) > -1) {
             message = message.split(' ');
             message[0] = message[0].toLowerCase();
             message = message.join(' ');
+        }
+
+        if (tmi().tmiSession.sendWhisper && ['/w', '.w'].indexOf(message.substr(0, 2)) > -1) {
+            var parts = message.split(' ');
+            parts.shift();
+            tmi().tmiSession.sendWhisper(parts.shift(), parts.join(' '));
+            return;
+        }
+
+        if (bttv.settings.get('anonChat') === true) {
+            serverMessage('You can\'t send messages when Anon Chat is enabled. You can disable Anon Chat in the BetterTTV settings.');
+            return;
         }
 
         tmi().tmiRoom.sendMessage(message);

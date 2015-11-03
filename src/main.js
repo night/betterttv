@@ -96,6 +96,9 @@ bttv.notify = function(message, options) {
         desktopNotify();
     } else {
         message = message.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br /><br />').replace(/Click here(.*)./, '<a style="color: white;" target="_blank" href="' + url + '">Click here$1.</a>');
+
+        if (!$.gritter) return;
+
         $.gritter.add({
             title: title,
             image: image,
@@ -291,20 +294,6 @@ var main = function() {
         }});
         /*eslint-enable */
     };
-
-    setInterval(function() {
-        var strangeAd = $('iframe.brtmedia');
-        if (!strangeAd.length) return;
-
-        strangeAd.remove();
-        var data = {
-            err: 'unknown_ad',
-            bttvVersion: bttv.info.versionString(),
-            user: vars.userData.isLoggedIn ? vars.userData.name : null,
-            ua: navigator.userAgent
-        };
-        $.get('https://nightdev.com/betterttv/errors/?obj=' + encodeURIComponent(JSON.stringify(data)));
-    }, 5000);
 
     $(document).ready(function() {
         loadUser(function() {
