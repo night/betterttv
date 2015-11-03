@@ -117,7 +117,6 @@ String.prototype.capitalize = function() {
 var clearClutter = require('./features/clear-clutter'),
     channelReformat = require('./features/channel-reformat'),
     brand = require('./features/brand'),
-    betaChat = require('./features/beta-chat'),
     checkMessages = require('./features/check-messages'),
     directoryFunctions = require('./features/directory-functions'),
     checkFollowing = require('./features/check-following'),
@@ -181,7 +180,6 @@ var main = function() {
                         waitForLoad(function(ready) {
                             if (ready) {
                                 bttv.chat.store.isLoaded = false;
-                                betaChat();
                                 chatFunctions();
                             }
                         });
@@ -210,7 +208,6 @@ var main = function() {
                         waitForLoad(function(ready) {
                             if (ready) {
                                 vars.emotesLoaded = false;
-                                betaChat();
                                 chatFunctions();
                                 channelReformat();
                                 $(window).trigger('resize');

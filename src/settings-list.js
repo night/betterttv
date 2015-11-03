@@ -1,6 +1,5 @@
 var chat = bttv.chat, vars = bttv.vars;
-var betaChat = require('./features/beta-chat'),
-    splitChat = require('./features/split-chat'),
+var splitChat = require('./features/split-chat'),
     darkenPage = require('./features/darken-page'),
     handleBackground = require('./features/handle-background'),
     flipDashboard = require('./features/flip-dashboard'),
@@ -43,19 +42,6 @@ module.exports = [
         description: 'Automatically enables theatre mode',
         default: false,
         storageKey: 'autoTheatreMode'
-    },
-    {
-        name: 'BetterTTV Chat',
-        description: 'A tiny chat bar for personal messaging friends (reloads page when turning off)',
-        default: false,
-        storageKey: 'bttvChat',
-        toggle: function(value) {
-            if (value === true) {
-                betaChat();
-            } else {
-                window.location.reload();
-            }
-        }
     },
     {
         name: 'BetterTTV Emotes',
