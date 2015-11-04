@@ -571,7 +571,7 @@ exports.scrollChat = function() {
 
     var $chatMessages = $chat.find('.chat-messages');
     var $chatScroller = $chatMessages.children('.tse-scroll-content');
-    var $chatLines = $chatScroller.children('.tse-content').children('.chat-lines').children('div.chat-line');
+    var $chatLines = $chatScroller.find('.chat-lines').children('div.chat-line');
 
     setTimeout(function() {
         if (!$chatScroller.length) return;
