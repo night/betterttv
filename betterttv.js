@@ -4448,6 +4448,7 @@ exports.disablePreview = function() {
 
 },{}],40:[function(require,module,exports){
 var vars = require('../vars');
+var debug = require('../helpers/debug');
 var escapeRegExp = require('../helpers/regex').escapeRegExp;
 
 exports.blacklistFilter = function(data) {
@@ -4562,7 +4563,7 @@ exports.highlighting = function(data) {
     return false;
 };
 
-},{"../features/audible-feedback":14,"../helpers/regex":49,"../vars":66}],41:[function(require,module,exports){
+},{"../features/audible-feedback":14,"../helpers/debug":46,"../helpers/regex":49,"../vars":66}],41:[function(require,module,exports){
 module.exports = function(user, $event) {
     // adds in user messages from chat
     user.messages = $.makeArray($('.chat-room .chat-messages .chat-line[data-sender="' + user.name + '"]')).reverse();

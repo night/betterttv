@@ -1,4 +1,5 @@
 var vars = require('../vars');
+var debug = require('../helpers/debug');
 var escapeRegExp = require('../helpers/regex').escapeRegExp;
 
 exports.blacklistFilter = function(data) {
