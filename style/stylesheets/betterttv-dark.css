@@ -2185,3 +2185,98 @@ span.subscribe-text {
 .creativetag-list-contain .filter-nav.goright:before {
     margin-left: -3px;
 }
+
+/* conversations */
+
+/* conversations list icon */
+.conversations-content .conversations-list-icon {
+    background-color: rgb(30,30,30);
+    border-color: #0e0e0e;
+}
+
+.conversations-content .conversations-list {
+    background-color: rgb(35,35,35);
+    border-color: #0e0e0e;
+}
+.conversations-content .conversations-list:before {
+    border-top-color: #0e0e0e;
+}
+.conversations-content .conversations-list:after {
+    border-top-color: rgb(35,35,35);
+}
+
+.conversations-content .conversations-list-header {
+    background-color: #282828;
+    border-color: #0e0e0e;
+}
+
+.conversations-content .conversations-list-item {
+    border-color: #333;
+}
+
+.conversations-content .conversations-list-item:hover {
+    background-color: #282828;
+}
+
+/* conversations window */
+.conversations-content .conversation-window {
+    background-color: rgb(35,35,35);
+    box-shadow: inset 0 0px 0 1px #0e0e0e;
+}
+
+.conversations-content .conversation-header {
+    background-color: #282828;
+    box-shadow: inset 0 0px 0 1px #0e0e0e;
+}
+
+.conversations-content .conversation-header .conversation-header-name {
+    color: #d3d3d3;
+}
+
+.conversations-content .conversation-window textarea {
+    background-color: rgb(20, 20, 20);
+    border: solid 1px #333;
+    color: #d3d3d3;
+}
+
+.conversations-content .conversation-window textarea:focus {
+    box-shadow: 0 0 3px 1px #444;
+    -moz-box-shadow: 0 0 3px 1px #444;
+    -webkit-box-shadow: 0 0 3px 1px #444;
+}
+
+.conversations-content .conversation-window.has-focus .conversation-header {
+    background-color: #333;
+}
+
+.conversations-content .conversation-window .conversation-chat-lines {
+    color: #d3d3d3;
+}
+
+.conversations-content .conversation-window .conversation-chat-lines a {
+    color: #999;
+}
+
+.conversations-content .conversation-window .conversation-chat-lines .ignore-cta-container {
+    color: #555;
+}
+
+/* conversations setting menu */
+.conversations-content .conversation-settings-menu {
+    background-color: #383838;
+    border-color: #0e0e0e;
+}
+.conversations-content .conversation-settings-menu:before {
+    border-bottom-color: #0e0e0e;
+}
+.conversations-content .conversation-settings-menu:after {
+    border-bottom-color: #383838;
+}
+
+.conversations-content .conversation-settings-menu .options-divider {
+    border-color: #0e0e0e;
+}
+
+.conversations-content .conversation-settings-menu .options-section a {
+    color: #d3d3d3;
+}
