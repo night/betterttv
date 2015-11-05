@@ -13,49 +13,29 @@ var vars = require('../vars'),
 // Helper Functions
 var getRgb = require('../helpers/colors').getRgb;
 
+var secondsToLength = function(s) {
+    var days = Math.floor(s / 86400);
+    var hours = Math.floor(s / 3600) - (days * 24);
+    var minutes = Math.floor(s / 60) - (days * 1440) - (hours * 60);
+    var seconds = s - (days * 86400) - (hours * 3600) - (minutes * 60);
+
+    return (days > 0 ? days + ' day' + (days === 1 ? '' : 's') + ', ' : '') +
+           (hours > 0 ? hours + ' hour' + (hours === 1 ? '' : 's') + ', ' : '') +
+           (minutes > 0 ? minutes + ' minute' + (minutes === 1 ? '' : 's') + ', ' : '') +
+           seconds + ' second' + (seconds === 1 ? '' : 's');
+};
+
 exports.commands = function(input) {
     var sentence = input.trim().split(' ');
     var command = sentence[0].toLowerCase();
 
-    if (command === '/join') {
-        bttv.settings.save('anonChat', false);
-    } else if (command === '/part') {
-        bttv.settings.save('anonChat', true);
-    } else if (command === '/b') {
+    if (command === '/b') {
         helpers.ban(sentence[1]);
-    } else if (command === '/t') {
-        var time = 600;
-        if (!isNaN(sentence[2])) time = sentence[2];
-        helpers.timeout(sentence[1], time);
-    } else if (command === '/p' || command === '/purge') {
-        helpers.timeout(sentence[1], 1);
-    } else if (command === '/massunban' || ((command === '/unban' || command === '/u') && sentence[1] === 'all')) {
-        helpers.massUnban();
-    } else if (command === '/u') {
-        helpers.unban(sentence[1]);
-    } else if (command === '/w' && bttv.settings.get('disableWhispers') === true) {
-        helpers.serverMessage('You have disabled whispers in BetterTTV settings');
-    } else if (command === '/sub') {
-        tmi().tmiRoom.startSubscribersMode();
-    } else if (command === '/suboff') {
-        tmi().tmiRoom.stopSubscribersMode();
-    } else if (command === '/localsub') {
-        helpers.serverMessage('Local subscribers-only mode enabled.', true);
-        vars.localSubsOnly = true;
-    } else if (command === '/localsuboff') {
-        helpers.serverMessage('Local subscribers-only mode disabled.', true);
-        vars.localSubsOnly = false;
-    } else if (command === '/localmod') {
-        helpers.serverMessage('Local moderators-only mode enabled.', true);
-        vars.localModsOnly = true;
-    } else if (command === '/localmodoff') {
-        helpers.serverMessage('Local moderators-only mode disabled.', true);
-        vars.localModsOnly = false;
-    } else if (command === '/viewers') {
-        bttv.TwitchAPI.get('streams/' + bttv.getChannel()).done(function(stream) {
-            helpers.serverMessage('Current Viewers: ' + Twitch.display.commatize(stream.stream.viewers), true);
+    } else if (command === '/chatters') {
+        $.getJSON('https://tmi.twitch.tv/group/user/' + bttv.getChannel() + '?callback=?').done(function(resp) {
+            helpers.serverMessage('Current Chatters: ' + Twitch.display.commatize(resp.data.chatter_count), true);
         }).fail(function() {
-            helpers.serverMessage('Could not fetch viewer count.', true);
+            helpers.serverMessage('Could not fetch chatter count.', true);
         });
     } else if (command === '/followers') {
         bttv.TwitchAPI.get('channels/' + bttv.getChannel() + '/follows').done(function(channel) {
@@ -63,46 +43,77 @@ exports.commands = function(input) {
         }).fail(function() {
             helpers.serverMessage('Could not fetch follower count.', true);
         });
+    } else if (command === '/join') {
+        bttv.settings.save('anonChat', false);
     } else if (command === '/linehistory') {
-        if (sentence[1] === 'off') {
-            bttv.settings.save('chatLineHistory', false);
-        } else {
-            bttv.settings.save('chatLineHistory', true);
-        }
+        bttv.settings.save('chatLineHistory', sentence[1] === 'off' ? false : true);
+    } else if (command === '/localmod') {
+        helpers.serverMessage('Local moderators-only mode enabled.', true);
+        vars.localModsOnly = true;
+    } else if (command === '/localmodoff') {
+        helpers.serverMessage('Local moderators-only mode disabled.', true);
+        vars.localModsOnly = false;
+    } else if (command === '/localsub') {
+        helpers.serverMessage('Local subscribers-only mode enabled.', true);
+        vars.localSubsOnly = true;
+    } else if (command === '/localsuboff') {
+        helpers.serverMessage('Local subscribers-only mode disabled.', true);
+        vars.localSubsOnly = false;
+    } else if (command === '/massunban' || ((command === '/unban' || command === '/u') && sentence[1] === 'all')) {
+        helpers.massUnban();
+    } else if (command === '/p' || command === '/purge') {
+        helpers.timeout(sentence[1], 1);
+    } else if (command === '/part') {
+        bttv.settings.save('anonChat', true);
+    } else if (command === '/shrug') {
+        sentence.shift();
+        helpers.sendMessage(sentence.join() + ' ¯\\_(ツ)_/¯');
+    } else if (command === '/sub') {
+        tmi().tmiRoom.startSubscribersMode();
+    } else if (command === '/suboff') {
+        tmi().tmiRoom.stopSubscribersMode();
+    } else if (command === '/t') {
+        var time = 600;
+        if (!isNaN(sentence[2])) time = sentence[2];
+        helpers.timeout(sentence[1], time);
+    } else if (command === '/u') {
+        helpers.unban(sentence[1]);
     } else if (command === '/uptime') {
         bttv.TwitchAPI.get('streams/' + bttv.getChannel()).done(function(stream) {
             if (stream.stream !== null) {
                 var startedTime = new Date(stream.stream.created_at),
-                    totalUptime = Math.round(Math.abs((Date.now() - (startedTime.getTime() - (startedTime.getTimezoneOffset() * 60 * 1000))) / 1000)),
-                    days = Math.floor(totalUptime / 86400),
-                    hours = Math.floor(totalUptime / 3600) - (days * 24),
-                    minutes = Math.floor(totalUptime / 60) - (days * 1440) - (hours * 60),
-                    seconds = totalUptime - (days * 86400) - (hours * 3600) - (minutes * 60);
-                helpers.serverMessage('Stream uptime: ' +
-                    (days > 0 ? days + ' day' + (days === 1 ? '' : 's') + ', ' : '') +
-                    (hours > 0 ? hours + ' hour' + (hours === 1 ? '' : 's') + ', ' : '') +
-                    (minutes > 0 ? minutes + ' minute' + (minutes === 1 ? '' : 's') + ', ' : '') +
-                    seconds + ' second' + (seconds === 1 ? '' : 's'),
-                    true
-                );
+                    totalUptime = Math.round(Math.abs((Date.now() - (startedTime.getTime() - (startedTime.getTimezoneOffset() * 60 * 1000))) / 1000));
+                helpers.serverMessage('Stream uptime: ' + secondsToLength(totalUptime), true);
             } else {
                 helpers.serverMessage('Stream offline', true);
             }
         }).fail(function() {
             helpers.serverMessage('Could not fetch start time.', true);
         });
+    } else if (command === '/viewers') {
+        bttv.TwitchAPI.get('streams/' + bttv.getChannel()).done(function(stream) {
+            helpers.serverMessage('Current Viewers: ' + Twitch.display.commatize(stream.stream.viewers), true);
+        }).fail(function() {
+            helpers.serverMessage('Could not fetch viewer count.', true);
+        });
+    } else if (command === '/w' && bttv.settings.get('disableWhispers') === true) {
+        helpers.serverMessage('You have disabled whispers in BetterTTV settings');
     } else if (command === '/help') {
         helpers.serverMessage('BetterTTV Chat Commands:');
         helpers.serverMessage('/b [username] -- Shortcut for /ban');
+        helpers.serverMessage('/chatters -- Tells you how many users are currently in chat');
         helpers.serverMessage('/followers -- Retrieves the number of followers for the channel');
+        helpers.serverMessage('/join -- Joins the channel (deactivates anon chat mode)');
         helpers.serverMessage('/linehistory on/off -- Toggles the chat field history (pressing up/down arrow in textbox)');
         helpers.serverMessage('/localmod -- Turns on local mod-only mode (only your chat is mod-only mode)');
         helpers.serverMessage('/localmodoff -- Turns off local mod-only mode');
         helpers.serverMessage('/localsub -- Turns on local sub-only mode (only your chat is sub-only mode)');
         helpers.serverMessage('/localsuboff -- Turns off local sub-only mode');
-        helpers.serverMessage('/purge [username] (or /p) -- Purges a user\'s chat');
         helpers.serverMessage('/massunban (or /unban all or /u all) -- Unbans all users in the channel (channel owner only)');
+        helpers.serverMessage('/part -- Parts the channel (activates anon chat mode)');
+        helpers.serverMessage('/purge [username] (or /p) -- Purges a user\'s chat');
         helpers.serverMessage('/r -- Type \'/r \' to respond to your last whisper');
+        helpers.serverMessage('/shrug -- Appends your chat line with a shrug face');
         helpers.serverMessage('/sub -- Shortcut for /subscribers');
         helpers.serverMessage('/suboff -- Shortcut for /subscribersoff');
         helpers.serverMessage('/t [username] [time in seconds] -- Shortcut for /timeout');
