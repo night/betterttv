@@ -12,7 +12,7 @@ exports.blacklistFilter = function(data) {
     var testCases;
     try {
         testCases = keywords.match(phraseRegex);
-    } catch(e) {
+    } catch (e) {
         debug.log(e);
         return false;
     }
@@ -67,7 +67,7 @@ exports.highlighting = function(data) {
     var testCases;
     try {
         testCases = extraKeywords.match(phraseRegex);
-    } catch(e) {
+    } catch (e) {
         debug.log(e);
         return false;
     }

@@ -44,7 +44,7 @@ module.exports = function(force) {
                 prodConn._send('QUIT');
             }
         }
-    } catch(e) {
+    } catch (e) {
         room._showAdminMessage('BetterTTV: [Anon Chat] We encountered an error anonymizing your chat. You won\'t be hidden in this channel.');
     }
 };

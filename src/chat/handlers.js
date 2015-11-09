@@ -140,7 +140,7 @@ exports.countUnreadMessages = function() {
         }
         try {
             channel.emberRoom.set('unreadCount', channel.unread);
-        } catch(e) {
+        } catch (e) {
             debug.log('Error setting unread count! Ember controller for channel must be removed.');
         }
     });
@@ -283,7 +283,7 @@ var privmsg = exports.privmsg = function(channel, data) {
 
     try {
         tmi().trackLatency(data);
-    } catch(e) {
+    } catch (e) {
         debug.log('Error sending tracking data to Twitch');
     }
 
@@ -428,7 +428,7 @@ exports.onPrivmsg = function(channel, data) {
             }
         }
         privmsg(channel, data);
-    } catch(e) {
+    } catch (e) {
         if (store.__reportedErrors.indexOf(e.message) !== -1) return;
         store.__reportedErrors.push(e.message);
         console.log(e);

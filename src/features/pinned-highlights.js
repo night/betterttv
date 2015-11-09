@@ -15,7 +15,7 @@ module.exports = function(message) {
 
     var timeSent = message.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2');
 
-    var $nextHighlight = $(highlightTemplate({ time: timeSent, displayName: message.tags['display-name'], message: message.message }));
+    var $nextHighlight = $(highlightTemplate({ time: timeSent, displayName: message.tags['display-name'] || message.from, message: message.message }));
 
     // If the next highlight will bump the container over the limit, remove the oldest highlight
     if ($highlightContainer.children().length + 1 > maximumPinCount) {

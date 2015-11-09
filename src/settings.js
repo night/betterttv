@@ -139,7 +139,7 @@ Settings.prototype.import = function(input) {
                 try {
                     _self.set(setting, settings[setting]);
                     count++;
-                } catch(e) {
+                } catch (e) {
                     debug.log('Import Error: ' + setting + ' does not exist in settings list. Ignoring...');
                 }
             });
@@ -177,7 +177,7 @@ Settings.prototype.save = function(setting, value) {
             this.set(setting, value);
 
             if (this._settings[setting].toggle) this._settings[setting].toggle(value);
-        } catch(e) {
+        } catch (e) {
             debug.log(e);
         }
     }

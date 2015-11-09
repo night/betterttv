@@ -251,12 +251,12 @@ module.exports = [
         toggle: function(value) {
             try {
                 window.App.set('enableHostMode', !value);
-            } catch(e) {}
+            } catch (e) {}
         },
         load: function() {
             try {
                 window.App.set('enableHostMode', !bttv.settings.get('disableHostMode'));
-            } catch(e) {}
+            } catch (e) {}
         }
     },
     {

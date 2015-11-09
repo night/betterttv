@@ -93,7 +93,7 @@ exports.parseRoomState = function(e) {
             type: 'roomstate',
             tags: e.tags
         });
-    } catch(err) {
+    } catch (err) {
         debug.log('Couldn\'t handle roomstate update.', err);
     }
 };
@@ -117,7 +117,7 @@ var completableEmotes = function() {
 
             completableEmotesList.push(emote);
         }
-    } catch(e) {
+    } catch (e) {
         debug.log('Couldn\'t grab user emotes for tab completion.', e);
     }
 
@@ -400,7 +400,7 @@ exports.sendMessage = function(message) {
         if (!vars.userData.isLoggedIn) {
             try {
                 window.Ember.$.login();
-            } catch(e) {
+            } catch (e) {
                 serverMessage('You must be logged into Twitch to send messages.');
             }
 
@@ -438,7 +438,7 @@ exports.sendMessage = function(message) {
                 tmi().trackSubOnly(message);
                 tmi().trackChat();
             }
-        } catch(e) {
+        } catch (e) {
             debug.log('Error sending tracking data to Twitch');
         }
 
@@ -868,7 +868,7 @@ exports.translate = function($element, sender, text) {
         setTimeout(function() {
             try {
                 $newElement.tipsy('hide');
-            } catch(e) {}
+            } catch (e) {}
         }, 3000);
     });
 };

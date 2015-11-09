@@ -11,7 +11,7 @@ function Storage() {
         try {
             window.localStorage.setItem('bttv_test', 'it works!');
             window.localStorage.removeItem('bttv_test');
-        } catch(e) {
+        } catch (e) {
             debug.log('window.localStorage detected, but unable to save. Defaulting to cookies.');
             this._localStorageSupport = false;
         }

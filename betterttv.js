@@ -504,7 +504,7 @@ exports.countUnreadMessages = function() {
         }
         try {
             channel.emberRoom.set('unreadCount', channel.unread);
-        } catch(e) {
+        } catch (e) {
             debug.log('Error setting unread count! Ember controller for channel must be removed.');
         }
     });
@@ -647,7 +647,7 @@ var privmsg = exports.privmsg = function(channel, data) {
 
     try {
         tmi().trackLatency(data);
-    } catch(e) {
+    } catch (e) {
         debug.log('Error sending tracking data to Twitch');
     }
 
@@ -792,7 +792,7 @@ exports.onPrivmsg = function(channel, data) {
             }
         }
         privmsg(channel, data);
-    } catch(e) {
+    } catch (e) {
         if (store.__reportedErrors.indexOf(e.message) !== -1) return;
         store.__reportedErrors.push(e.message);
         console.log(e);
@@ -902,7 +902,7 @@ exports.parseRoomState = function(e) {
             type: 'roomstate',
             tags: e.tags
         });
-    } catch(err) {
+    } catch (err) {
         debug.log('Couldn\'t handle roomstate update.', err);
     }
 };
@@ -926,7 +926,7 @@ var completableEmotes = function() {
 
             completableEmotesList.push(emote);
         }
-    } catch(e) {
+    } catch (e) {
         debug.log('Couldn\'t grab user emotes for tab completion.', e);
     }
 
@@ -1209,7 +1209,7 @@ exports.sendMessage = function(message) {
         if (!vars.userData.isLoggedIn) {
             try {
                 window.Ember.$.login();
-            } catch(e) {
+            } catch (e) {
                 serverMessage('You must be logged into Twitch to send messages.');
             }
 
@@ -1247,7 +1247,7 @@ exports.sendMessage = function(message) {
                 tmi().trackSubOnly(message);
                 tmi().trackChat();
             }
-        } catch(e) {
+        } catch (e) {
             debug.log('Error sending tracking data to Twitch');
         }
 
@@ -1677,7 +1677,7 @@ exports.translate = function($element, sender, text) {
         setTimeout(function() {
             try {
                 $newElement.tipsy('hide');
-            } catch(e) {}
+            } catch (e) {}
         }, 3000);
     });
 };
@@ -2884,7 +2884,7 @@ module.exports = function(force) {
                 prodConn._send('QUIT');
             }
         }
-    } catch(e) {
+    } catch (e) {
         room._showAdminMessage('BetterTTV: [Anon Chat] We encountered an error anonymizing your chat. You won\'t be hidden in this channel.');
     }
 };
@@ -4405,7 +4405,7 @@ module.exports = function() {
                     tmi.tmiSession._connections.prod._send('PRIVMSG #' + vars.userData.name + ' :/unhost');
                     helpers.serverMessage('BetterTTV: We sent a /unhost to your channel.');
                     $hostButton.children('span').text('Host');
-                } catch(e) {
+                } catch (e) {
                     helpers.serverMessage('BetterTTV: There was an error unhosting the channel. You may need to unhost it from your channel.');
                 }
             } else {
@@ -4413,7 +4413,7 @@ module.exports = function() {
                     tmi.tmiSession._connections.prod._send('PRIVMSG #' + vars.userData.name + ' :/host ' + bttv.getChannel());
                     helpers.serverMessage('BetterTTV: We sent a /host to your channel. Please note you can only host 3 times per 30 minutes.');
                     $hostButton.children('span').text('Unhost');
-                } catch(e) {
+                } catch (e) {
                     helpers.serverMessage('BetterTTV: There was an error hosting the channel. You may need to host it from your channel.');
                 }
             }
@@ -4472,7 +4472,7 @@ exports.blacklistFilter = function(data) {
     var testCases;
     try {
         testCases = keywords.match(phraseRegex);
-    } catch(e) {
+    } catch (e) {
         debug.log(e);
         return false;
     }
@@ -4527,7 +4527,7 @@ exports.highlighting = function(data) {
     var testCases;
     try {
         testCases = extraKeywords.match(phraseRegex);
-    } catch(e) {
+    } catch (e) {
         debug.log(e);
         return false;
     }
@@ -4801,7 +4801,7 @@ module.exports = function(message) {
 
     var timeSent = message.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2');
 
-    var $nextHighlight = $(highlightTemplate({ time: timeSent, displayName: message.tags['display-name'], message: message.message }));
+    var $nextHighlight = $(highlightTemplate({ time: timeSent, displayName: message.tags['display-name'] || message.from, message: message.message }));
 
     // If the next highlight will bump the container over the limit, remove the oldest highlight
     if ($highlightContainer.children().length + 1 > maximumPinCount) {
@@ -5732,12 +5732,12 @@ module.exports = [
         toggle: function(value) {
             try {
                 window.App.set('enableHostMode', !value);
-            } catch(e) {}
+            } catch (e) {}
         },
         load: function() {
             try {
                 window.App.set('enableHostMode', !bttv.settings.get('disableHostMode'));
-            } catch(e) {}
+            } catch (e) {}
         }
     },
     {
@@ -6172,7 +6172,7 @@ Settings.prototype.import = function(input) {
                 try {
                     _self.set(setting, settings[setting]);
                     count++;
-                } catch(e) {
+                } catch (e) {
                     debug.log('Import Error: ' + setting + ' does not exist in settings list. Ignoring...');
                 }
             });
@@ -6210,7 +6210,7 @@ Settings.prototype.save = function(setting, value) {
             this.set(setting, value);
 
             if (this._settings[setting].toggle) this._settings[setting].toggle(value);
-        } catch(e) {
+        } catch (e) {
             debug.log(e);
         }
     }
@@ -6237,7 +6237,7 @@ function Storage() {
         try {
             window.localStorage.setItem('bttv_test', 'it works!');
             window.localStorage.removeItem('bttv_test');
-        } catch(e) {
+        } catch (e) {
             debug.log('window.localStorage detected, but unable to save. Defaulting to cookies.');
             this._localStorageSupport = false;
         }
@@ -6614,7 +6614,7 @@ SocketClient.prototype.connect = function() {
 
         try {
             evt = JSON.parse(message.data);
-        } catch(e) {
+        } catch (e) {
             debug.log('SocketClient: Error Parsing Message', e);
         }
 
@@ -6632,7 +6632,7 @@ SocketClient.prototype.reconnect = function() {
     if (this.socket) {
         try {
             this.socket.close();
-        } catch(e) {}
+        } catch (e) {}
     }
 
     delete this.socket;
@@ -6689,7 +6689,7 @@ module.exports = SocketClient;
 
 },{"./helpers/debug":46,"./vars":66}],68:[function(require,module,exports){
 /*
- * Cookies.js - 1.2.1
+ * Cookies.js - 1.2.2
  * https://github.com/ScottHamper/Cookies
  *
  * This is free and unencumbered software released into the public domain.
@@ -6725,8 +6725,10 @@ module.exports = SocketClient;
             if (Cookies._cachedDocumentCookie !== Cookies._document.cookie) {
                 Cookies._renewCache();
             }
+            
+            var value = Cookies._cache[Cookies._cacheKeyPrefix + key];
 
-            return Cookies._cache[Cookies._cacheKeyPrefix + key];
+            return value === undefined ? undefined : decodeURIComponent(value);
         };
 
         Cookies.set = function (key, value, options) {
@@ -6809,9 +6811,19 @@ module.exports = SocketClient;
             // IE omits the "=" when the cookie value is an empty string
             separatorIndex = separatorIndex < 0 ? cookieString.length : separatorIndex;
 
+            var key = cookieString.substr(0, separatorIndex);
+            var decodedKey;
+            try {
+                decodedKey = decodeURIComponent(key);
+            } catch (e) {
+                if (console && typeof console.error === 'function') {
+                    console.error('Could not decode cookie with key "' + key + '"', e);
+                }
+            }
+            
             return {
-                key: decodeURIComponent(cookieString.substr(0, separatorIndex)),
-                value: decodeURIComponent(cookieString.substr(separatorIndex + 1))
+                key: decodedKey,
+                value: cookieString.substr(separatorIndex + 1) // Defer decoding value until accessed
             };
         };
 

@@ -99,7 +99,7 @@ SocketClient.prototype.connect = function() {
 
         try {
             evt = JSON.parse(message.data);
-        } catch(e) {
+        } catch (e) {
             debug.log('SocketClient: Error Parsing Message', e);
         }
 
@@ -117,7 +117,7 @@ SocketClient.prototype.reconnect = function() {
     if (this.socket) {
         try {
             this.socket.close();
-        } catch(e) {}
+        } catch (e) {}
     }
 
     delete this.socket;
