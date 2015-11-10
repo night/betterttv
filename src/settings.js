@@ -184,7 +184,7 @@ Settings.prototype.save = function(setting, value) {
 };
 
 Settings.prototype.popup = function() {
-    var settingsUrl = window.location.protocol + '//' + window.location.host + '/settings?bttvSettings=true';
+    var settingsUrl = window.location.protocol + '//' + window.location.host + '/directory?bttvSettings=true';
     window.open(settingsUrl, 'BetterTTV Settings', 'width=800,height=500,top=500,left=800,scrollbars=no,location=no,directories=no,status=no,menubar=no,toolbar=no,resizable=no');
 };
 

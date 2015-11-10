@@ -10,6 +10,7 @@ module.exports = function() {
     if (/\?bttvSettings=true/.test(window.location)) {
         $('#left_col').remove();
         $('#main_col').remove();
+        $('#right_col').remove();
         setTimeout(function() {
             $('#bttvSettingsPanel').hide(function() {
                 $('#bttvSettingsPanel').show();
