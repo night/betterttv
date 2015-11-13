@@ -2245,6 +2245,14 @@ span.subscribe-text {
     -webkit-box-shadow: 0 0 3px 1px #444;
 }
 
+.conversations-content .conversation-window .conversation-input-bar .emoticon-selector-toggle svg path {
+    fill: rgba(255,255,255,.2);
+}
+
+.conversations-content .conversation-window .emoticon-selector-box .emote-set {
+    border-color: #444;
+}
+
 .conversations-content .conversation-window.has-focus .conversation-header {
     background-color: #333;
 }
