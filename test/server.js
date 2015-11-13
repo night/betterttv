@@ -15,7 +15,12 @@ var server = function(req, res) {
 
     fs.exists(file, function(exists) {
         if (!exists) {
-            request.get('http://dev.betterttv.net/' + uri).pipe(res);
+            request.get({
+                url: 'https://cdn-dev.betterttv.net/' + uri,
+                headers: {
+                    'Host': 'cdn.betterttv.net'
+                }
+            }).pipe(res);
             return;
         }
 

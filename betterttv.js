@@ -806,7 +806,7 @@ exports.onPrivmsg = function(channel, data) {
 };
 
 
-},{"../features/audible-feedback":14,"../features/channel-state":19,"../features/embedded-polling":31,"../features/keywords-lists":40,"../features/make-card":41,"../features/pinned-highlights":43,"../helpers/colors":45,"../helpers/debug":46,"../vars":66,"./helpers":5,"./rooms":7,"./store":8,"./templates":10,"./tmi":11}],5:[function(require,module,exports){
+},{"../features/audible-feedback":14,"../features/channel-state":19,"../features/embedded-polling":32,"../features/keywords-lists":41,"../features/make-card":42,"../features/pinned-highlights":44,"../helpers/colors":46,"../helpers/debug":47,"../vars":67,"./helpers":5,"./rooms":7,"./store":8,"./templates":10,"./tmi":11}],5:[function(require,module,exports){
 var vars = require('../vars'),
     debug = require('../helpers/debug'),
     keyCodes = require('../keycodes'),
@@ -1682,8 +1682,7 @@ exports.translate = function($element, sender, text) {
     });
 };
 
-},{"../bots":1,"../features/channel-state":19,"../helpers/colors":45,"../helpers/debug":46,"../keycodes":50,"../legacy-tags":51,"../vars":66,"./handlers":4,"./store":8,"./templates":10,"./tmi":11,"punycode":69}],6:[function(require,module,exports){
-
+},{"../bots":1,"../features/channel-state":19,"../helpers/colors":46,"../helpers/debug":47,"../keycodes":51,"../legacy-tags":52,"../vars":67,"./handlers":4,"./store":8,"./templates":10,"./tmi":11,"punycode":70}],6:[function(require,module,exports){
 // Add mouseover image preview to image links
 module.exports = function(imgUrl) {
     return '<a href="' + imgUrl + '" class="chat-preview" target="_blank">' + imgUrl + '</a>';
@@ -2270,7 +2269,7 @@ var takeover = module.exports = function() {
     });
 };
 
-},{"../features/anon-chat":13,"../features/chat-load-settings":20,"../features/custom-timeouts":27,"../features/override-emotes":42,"../helpers/debug":46,"../keycodes":50,"../vars":66,"./handlers":4,"./helpers":5,"./rooms":7,"./store":8,"./templates":10,"./tmi":11}],10:[function(require,module,exports){
+},{"../features/anon-chat":13,"../features/chat-load-settings":20,"../features/custom-timeouts":28,"../features/override-emotes":43,"../helpers/debug":47,"../keycodes":51,"../vars":67,"./handlers":4,"./helpers":5,"./rooms":7,"./store":8,"./templates":10,"./tmi":11}],10:[function(require,module,exports){
 var tmi = require('./tmi'),
     store = require('./store'),
     helpers = require('./helpers');
@@ -2391,13 +2390,10 @@ var emoticonize = exports.emoticonize = function(message, emotes) {
     return tokenizedMessage;
 };
 
-var bttvEmoticonize = exports.bttvEmoticonize = function(sender, message, emote) {
+var bttvEmoticonize = exports.bttvEmoticonize = function(message, emote) {
     if (emote.restrictions) {
         if (emote.restrictions.channels.length && emote.restrictions.channels.indexOf(bttv.getChannel()) === -1) return message;
         if (emote.restrictions.games.length && tmi().channel && emote.restrictions.games.indexOf(tmi().channel.game) === -1) return message;
-
-        var emoteSets = helpers.getEmotes(sender);
-        if (emote.restrictions.emoticonSet && emoteSets.indexOf(emote.restrictions.emoticonSet) === -1) return message;
     }
 
     return message.replace(emote.code, emoticonBTTV(emote));
@@ -2433,7 +2429,7 @@ var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message
             bttv.settings.get('bttvEmotes') === true &&
             (emote.imageType === 'png' || (emote.imageType === 'gif' && bttv.settings.get('bttvGIFEmotes') === true))
         ) {
-            piece = bttvEmoticonize(sender, piece, emote);
+            piece = bttvEmoticonize(piece, emote);
         } else {
             piece = escape(piece);
             piece = linkify(piece);
@@ -2495,7 +2491,7 @@ exports.whisper = function(data) {
     return '<div class="chat-line whisper" data-sender="' + data.sender + '">' + timestamp(data.time) + ' ' + whisperName(data.sender, data.receiver, data.from, data.to, data.fromColor, data.toColor) + message(data.sender, data.message, data.emotes, false) + '</div>';
 };
 
-},{"../templates/chat-suggestions":58,"../templates/moderation-card":61,"./helpers":5,"./store":8,"./tmi":11}],11:[function(require,module,exports){
+},{"../templates/chat-suggestions":59,"../templates/moderation-card":62,"./helpers":5,"./store":8,"./tmi":11}],11:[function(require,module,exports){
 module.exports = function() {
     return bttv.getChatController() ? bttv.getChatController().currentRoom : false;
 };
@@ -2636,7 +2632,8 @@ var clearClutter = require('./features/clear-clutter'),
     createSettings = require('./features/create-settings'),
     enableImagePreview = require('./features/image-preview').enablePreview,
     enableTheatreMode = require('./features/auto-theatre-mode'),
-    hostButtonBelowVideo = require('./features/host-btn-below-video');
+    hostButtonBelowVideo = require('./features/host-btn-below-video'),
+    conversations = require('./features/conversations');
 
 var chatFunctions = function() {
     debug.log('Modifying Chat Functionality');
@@ -2748,6 +2745,7 @@ var main = function() {
     var initialFuncs = function() {
         bttv.ws = new WS();
 
+        conversations();
         clearClutter();
         channelReformat();
         checkBroadcastInfo();
@@ -2785,13 +2783,8 @@ var main = function() {
     var thirdPartyDeps = function() {
         /*eslint-disable */
         // NOPE.avi
-
-
         (function(b){b.gritter={};b.gritter.options={position:"top-left",class_name:"",fade_in_speed:"medium",fade_out_speed:1000,time:6000};b.gritter.add=function(f){try{return a.add(f||{})}catch(d){var c="Gritter Error: "+d;(typeof(console)!="undefined"&&console.error)?console.error(c,f):alert(c)}};b.gritter.remove=function(d,c){a.removeSpecific(d,c||{})};b.gritter.removeAll=function(c){a.stop(c||{})};var a={position:"",fade_in_speed:"",fade_out_speed:"",time:"",_custom_timer:0,_item_count:0,_is_setup:0,_tpl_close:'<div class="gritter-close"></div>',_tpl_title:'<span class="gritter-title">[[title]]</span>',_tpl_item:'<div id="gritter-item-[[number]]" class="gritter-item-wrapper [[item_class]]" style="display:none"><div class="gritter-top"></div><div class="gritter-item">[[close]][[image]]<div class="[[class_name]]">[[title]]<p>[[text]]</p></div><div style="clear:both"></div></div><div class="gritter-bottom"></div></div>',_tpl_wrap:'<div id="gritter-notice-wrapper"></div>',add:function(g){if(typeof(g)=="string"){g={text:g}}if(!g.text){throw'You must supply "text" parameter.'}if(!this._is_setup){this._runSetup()}var k=g.title,n=g.text,e=g.image||"",l=g.sticky||false,m=g.class_name||b.gritter.options.class_name,j=b.gritter.options.position,d=g.time||"";this._verifyWrapper();this._item_count++;var f=this._item_count,i=this._tpl_item;b(["before_open","after_open","before_close","after_close"]).each(function(p,q){a["_"+q+"_"+f]=(b.isFunction(g[q]))?g[q]:function(){}});this._custom_timer=0;if(d){this._custom_timer=d}var c=(e!="")?'<img src="'+e+'" class="gritter-image" />':"",h=(e!="")?"gritter-with-image":"gritter-without-image";if(k){k=this._str_replace("[[title]]",k,this._tpl_title)}else{k=""}i=this._str_replace(["[[title]]","[[text]]","[[close]]","[[image]]","[[number]]","[[class_name]]","[[item_class]]"],[k,n,this._tpl_close,c,this._item_count,h,m],i);if(this["_before_open_"+f]()===false){return false}b("#gritter-notice-wrapper").addClass(j).append(i);var o=b("#gritter-item-"+this._item_count);o.fadeIn(this.fade_in_speed,function(){a["_after_open_"+f](b(this))});if(!l){this._setFadeTimer(o,f)}b(o).bind("mouseenter mouseleave",function(p){if(p.type=="mouseenter"){if(!l){a._restoreItemIfFading(b(this),f)}}else{if(!l){a._setFadeTimer(b(this),f)}}a._hoverState(b(this),p.type)});b(o).find(".gritter-close").click(function(){a.removeSpecific(f,{},null,true)});return f},_countRemoveWrapper:function(c,d,f){d.remove();this["_after_close_"+c](d,f);if(b(".gritter-item-wrapper").length==0){b("#gritter-notice-wrapper").remove()}},_fade:function(g,d,j,f){var j=j||{},i=(typeof(j.fade)!="undefined")?j.fade:true,c=j.speed||this.fade_out_speed,h=f;this["_before_close_"+d](g,h);if(f){g.unbind("mouseenter mouseleave")}if(i){g.animate({opacity:0},c,function(){g.animate({height:0},300,function(){a._countRemoveWrapper(d,g,h)})})}else{this._countRemoveWrapper(d,g)}},_hoverState:function(d,c){if(c=="mouseenter"){d.addClass("hover");d.find(".gritter-close").show()}else{d.removeClass("hover");d.find(".gritter-close").hide()}},removeSpecific:function(c,g,f,d){if(!f){var f=b("#gritter-item-"+c)}this._fade(f,c,g||{},d)},_restoreItemIfFading:function(d,c){clearTimeout(this["_int_id_"+c]);d.stop().css({opacity:"",height:""})},_runSetup:function(){for(opt in b.gritter.options){this[opt]=b.gritter.options[opt]}this._is_setup=1},_setFadeTimer:function(f,d){var c=(this._custom_timer)?this._custom_timer:this.time;this["_int_id_"+d]=setTimeout(function(){a._fade(f,d)},c)},stop:function(e){var c=(b.isFunction(e.before_close))?e.before_close:function(){};var f=(b.isFunction(e.after_close))?e.after_close:function(){};var d=b("#gritter-notice-wrapper");c(d);d.fadeOut(function(){b(this).remove();f()})},_str_replace:function(v,e,o,n){var k=0,h=0,t="",m="",g=0,q=0,l=[].concat(v),c=[].concat(e),u=o,d=c instanceof Array,p=u instanceof Array;u=[].concat(u);if(n){this.window[n]=0}for(k=0,g=u.length;k<g;k++){if(u[k]===""){continue}for(h=0,q=l.length;h<q;h++){t=u[k]+"";m=d?(c[h]!==undefined?c[h]:""):c[0];u[k]=(t).split(l[h]).join(m);if(n&&u[k]!==t){this.window[n]+=(t.length-u[k].length)/l[h].length}}}return p?u:u[0]},_verifyWrapper:function(){if(b("#gritter-notice-wrapper").length==0){b("body").append(this._tpl_wrap)}}}})($);
-        (function(e){e.fn.drags=function(t){t=e.extend({handle:"",cursor:"move",el:""},t);if(t.handle===""){var n=this}else{var n=this.find(t.handle)}return n.css("cursor",t.cursor).on("mousedown",function(n){if(t.handle===""){var r=e(this).addClass("bttv-draggable")}else{if(t.el===""){var r=e(this).addClass("active-handle").parent().addClass("bttv-draggable")}else{e(this).addClass("active-handle");var r=e(t.el).addClass("bttv-draggable")}}var i=r.css("z-index"),s=r.outerHeight(),o=r.outerWidth(),u=r.offset().top+s-n.pageY,a=r.offset().left+o-n.pageX;r.css("z-index",1e3).parents().on("mousemove",function(t){e(".bttv-draggable").offset({top:t.pageY+u-s,left:t.pageX+a-o}).on("mouseup",function(){e(this).removeClass("bttv-draggable").css("z-index",i)})});n.preventDefault()}).on("mouseup",function(){if(t.handle===""){e(this).removeClass("bttv-draggable")}else{e(this).removeClass("active-handle");e(t.el).removeClass("bttv-draggable")}})}})(jQuery);            (function(e){e.fn.konami=function(t){var n=[];var r={left:37,up:38,right:39,down:40,a:65,b:66};var i=e.extend({code:["up","up","down","down","left","right","left","right","b","a"],callback:function(){}},t);var s=i.code;var o=[];$.each(s,function(e){if(s[e]!==undefined&&r[s[e]]!==undefined){o.push(r[s[e]])}else if(s[e]!==undefined&&typeof s[e]=="number"){o.push(s[e])}});$(document).keyup(function(e){var t=e.keyCode?e.keyCode:e.charCode;n.push(t);if(n.toString().indexOf(o)>=0){n=[];i.callback($(this))}})}})($);
-        $(window).konami({callback:function(){
-            $("#bttvSettingsPanel .konami").each(function(){$(this).show()});
-        }});
+        (function(e){e.fn.drags=function(t){t=e.extend({handle:"",cursor:"move",el:""},t);if(t.handle===""){var n=this}else{var n=this.find(t.handle)}return n.css("cursor",t.cursor).on("mousedown",function(n){if(t.handle===""){var r=e(this).addClass("bttv-draggable")}else{if(t.el===""){var r=e(this).addClass("active-handle").parent().addClass("bttv-draggable")}else{e(this).addClass("active-handle");var r=e(t.el).addClass("bttv-draggable")}}var i=r.css("z-index"),s=r.outerHeight(),o=r.outerWidth(),u=r.offset().top+s-n.pageY,a=r.offset().left+o-n.pageX;r.css("z-index",1e3).parents().on("mousemove",function(t){e(".bttv-draggable").offset({top:t.pageY+u-s,left:t.pageX+a-o}).on("mouseup",function(){e(this).removeClass("bttv-draggable").css("z-index",i)})});n.preventDefault()}).on("mouseup",function(){if(t.handle===""){e(this).removeClass("bttv-draggable")}else{e(this).removeClass("active-handle");e(t.el).removeClass("bttv-draggable")}})}})(jQuery);
         /*eslint-enable */
     };
 
@@ -2846,7 +2839,7 @@ debug.log('BTTV LOADED ' + document.URL);
 BTTVLOADED = true;
 checkJquery();
 
-},{"./chat":2,"./features/auto-theatre-mode":15,"./features/brand":16,"./features/channel-reformat":18,"./features/check-broadcast-info":21,"./features/check-following":22,"./features/check-messages":23,"./features/clear-clutter":24,"./features/create-settings":25,"./features/darken-page":28,"./features/dashboard-channelinfo":29,"./features/directory-functions":30,"./features/emoticon-text-in-clipboard":32,"./features/flip-dashboard":33,"./features/format-dashboard":34,"./features/giveaway-compatibility":35,"./features/handle-background":36,"./features/handle-twitchchat-emotes":37,"./features/host-btn-below-video":38,"./features/image-preview":39,"./features/split-chat":44,"./helpers/debug":46,"./login-iframe":52,"./settings":54,"./storage":55,"./twitch-api":65,"./vars":66,"./ws":67}],13:[function(require,module,exports){
+},{"./chat":2,"./features/auto-theatre-mode":15,"./features/brand":16,"./features/channel-reformat":18,"./features/check-broadcast-info":21,"./features/check-following":22,"./features/check-messages":23,"./features/clear-clutter":24,"./features/conversations":25,"./features/create-settings":26,"./features/darken-page":29,"./features/dashboard-channelinfo":30,"./features/directory-functions":31,"./features/emoticon-text-in-clipboard":33,"./features/flip-dashboard":34,"./features/format-dashboard":35,"./features/giveaway-compatibility":36,"./features/handle-background":37,"./features/handle-twitchchat-emotes":38,"./features/host-btn-below-video":39,"./features/image-preview":40,"./features/split-chat":45,"./helpers/debug":47,"./login-iframe":53,"./settings":55,"./storage":56,"./twitch-api":66,"./vars":67,"./ws":68}],13:[function(require,module,exports){
 var vars = require('../vars');
 
 var forcedURL = window.location.search && window.location.search.indexOf('bttvAnonChat=true') > -1;
@@ -2898,7 +2891,7 @@ module.exports = function(force) {
     }
 };
 
-},{"../vars":66}],14:[function(require,module,exports){
+},{"../vars":67}],14:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 var tsTink;
@@ -2916,7 +2909,7 @@ module.exports = function() {
     }
 };
 
-},{"../helpers/debug":46}],15:[function(require,module,exports){
+},{"../helpers/debug":47}],15:[function(require,module,exports){
 module.exports = function() {
     if (!window.Ember || !window.App ||
         App.__container__.lookup('controller:application').get('currentRouteName') !== 'channel.index') {
@@ -2990,7 +2983,7 @@ module.exports = function() {
     $('#chat_loading_spinner').attr('src', 'data:image/gif;base64,R0lGODlhFgAWAPMGANfX1wAAADc3N1tbW6Ojo39/f2tra8fHx9nZ2RsbG+np6SwsLEtLS4eHh7q6ugAAACH/C05FVFNDQVBFMi4wAwEAAAAh/hoiQ3JlYXRlZCB3aXRoIENoaW1wbHkuY29tIgAh+QQJCgAGACwAAAAAFgAWAAAEbNCESY29OEvBRdDgFXReGI7dZ2oop65YWypIjSgGbSOW/CGAIICnEAIOPdLPSDQiNykDUNgUPn1SZs6ZjE6D1eBVmaVurV1XGXwWp0vfYfv4XpqLaKg6HqbrZzs4OjZ1MBlYhiJkiYWMfy+GEQAh+QQJCgAGACwAAAAAFgAWAAAEctDIKYO9NKe9lwlCKAQZlQzo4IEiWUpnuorjC6fqR7tvjM4tgwJBJN5kuqACwGQef8kQadkEPHMsqbBqNfiwu231CtRSm+Ro7ez04sprbjobH7uR9Kn8Ds2L0XxgSkVGgXA8JV+HNoZqiBocCYuMJX4vEQAh+QQJCgAAACwAAAAAFgAWAAAEcxDISWu4uNLEOwhCKASSGA5AMqxD8pkkIBR0gaqsC4rxXN+s1otXqtlSQR2s+EPmhqGeEfjcRZk06kpJlE2dW+gIe8SFrWNv0yxES9dJ8TsLbi/VdDb3ii/H3WRadl0+eX93hX5ViCaCe2kaKR0ccpGWlREAIfkECQoAAQAsAAAAABYAFgAABHUwyEmrvTisxHlmQigw2mAOiWSsaxMwRVyQy4mqRE64sEzbqYBBt3vJZqVTcKjjHX9KXNPoS5qWRGe1FhVmqTHoVZrThq0377R35o7VZTDSnWbG2XMguYgX1799aFhrT4J7ZnldLC1yfkEXICKOGRcbHY+UlBEAIfkECQoAAQAsAAAAABYAFgAABHIwyEmrvThrOoQXTFYYpFEEQ6EWgkS8rxMUMHGmaxsQR3/INNhtxXL5frPaMGf0AZUooo7nTAqjzN3xecWpplvra/lt9rhjbFlbDaa9RfZZbFPHqXN3HQ5uQ/lmSHpkdzVoe1IiJSZ2OhsTHR8hj5SVFREAIfkECQoAAQAsAAAAABYAFgAABGowyEmrvTjrzWczIJg5REk4QWMShoQAMKAExGEfRLq2QQzPtVtOZeL5ZLQbTleUHIHK4c7pgwqZJWM1eSVmqTGrTdrsbYNjLAv846a9a3PYvYRr5+j6NPDCR9U8FyQmKHYdHiEih4uMjRQRACH5BAkKAAEALAAAAAAWABYAAARkMMhJq7046807d0QYSkhZKoFiIqhzvAchATSNIjWABC4sBznALbfrvX7BYa0Ii81yShrT96xFdbwmEhrALbNUINcrBR+rti7R7BRb1V9jOwkvy38rVmrV0nokICI/f4SFhocSEQAh+QQJCgABACwAAAAAFgAWAAAEWjDISau9OOvNu7dIGCqBIiKkeUoH4AIk8gJIOR/sHM+1cuev3av3C7SCAdnQ9sIZdUke0+U8uoQuYhN4jS592ydSmZ0CqlAyzYweS8FUyQlVOqXmn7x+z+9bIgA7');
 };
 
-},{"../helpers/debug":46}],17:[function(require,module,exports){
+},{"../helpers/debug":47}],17:[function(require,module,exports){
 var debug = require('../../helpers/debug'),
     vars = require('../../vars');
 
@@ -3093,7 +3086,7 @@ module.exports = function() {
     }
 };
 
-},{"../../helpers/debug":46,"../../vars":66}],18:[function(require,module,exports){
+},{"../../helpers/debug":47,"../../vars":67}],18:[function(require,module,exports){
 /* global chatWidthStartingPoint: true*/
 
 var debug = require('../../helpers/debug'),
@@ -3256,7 +3249,7 @@ module.exports = function() {
     }
 };
 
-},{"../../helpers/debug":46,"../../keycodes":50,"../../vars":66,"./handle-resize":17}],19:[function(require,module,exports){
+},{"../../helpers/debug":47,"../../keycodes":51,"../../vars":67,"./handle-resize":17}],19:[function(require,module,exports){
 var vars = require('../vars');
 var template = require('../templates/channel-state');
 
@@ -3398,7 +3391,7 @@ module.exports = function(event) {
     }
 };
 
-},{"../templates/channel-state":56,"../vars":66}],20:[function(require,module,exports){
+},{"../templates/channel-state":57,"../vars":67}],20:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars'),
     removeElement = require('../helpers/element').remove;
@@ -3516,7 +3509,7 @@ module.exports = function() {
     });
 };
 
-},{"../helpers/debug":46,"../helpers/element":47,"../templates/chat-settings":57,"../vars":66,"./darken-page":28,"./split-chat":44}],21:[function(require,module,exports){
+},{"../helpers/debug":47,"../helpers/element":48,"../templates/chat-settings":58,"../vars":67,"./darken-page":29,"./split-chat":45}],21:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 var checkBroadcastInfo = module.exports = function() {
@@ -3571,7 +3564,7 @@ var checkBroadcastInfo = module.exports = function() {
     });
 };
 
-},{"../helpers/debug":46}],22:[function(require,module,exports){
+},{"../helpers/debug":47}],22:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars');
 
@@ -3662,7 +3655,7 @@ var checkFollowing = module.exports = function() {
     });
 };
 
-},{"../helpers/debug":46,"../vars":66}],23:[function(require,module,exports){
+},{"../helpers/debug":47,"../vars":67}],23:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 module.exports = function() {
@@ -3758,7 +3751,7 @@ module.exports = function() {
     checkOther();
 };
 
-},{"../helpers/debug":46}],24:[function(require,module,exports){
+},{"../helpers/debug":47}],24:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     removeElement = require('../helpers/element').remove;
 
@@ -3776,7 +3769,123 @@ module.exports = function() {
     }
 };
 
-},{"../helpers/debug":46,"../helpers/element":47}],25:[function(require,module,exports){
+},{"../helpers/debug":47,"../helpers/element":48}],25:[function(require,module,exports){
+var chatStore = require('../chat/store');
+var chatTemplates = require('../chat/templates');
+var chatHelpers = require('../chat/helpers');
+var colors = require('../helpers/colors');
+
+var conversationsContainer = '.conversations-content';
+var conversationContainer = '.conversation-content';
+var conversationLine = '.conversation-chat-line';
+
+function Conversations(timeout) {
+    timeout = timeout || 0;
+
+    if (!(this instanceof Conversations)) return new Conversations(0);
+
+    var $conversations = $(conversationsContainer);
+
+    if (!$conversations.length) {
+        setTimeout(function() {
+            return new Conversations(2 * timeout);
+        }, 2 * timeout);
+        return;
+    }
+
+    var _self = this;
+
+    var watcher = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            var el, subEls, len = mutation.addedNodes.length;
+
+            for (var i = 0; i < len; i++) {
+                el = mutation.addedNodes[i];
+                if (!el.querySelector) return;
+
+                _self.messageParser(el);
+
+                subEls = el.querySelectorAll(conversationLine);
+                for (var j = 0; j < subEls.length; j++) {
+                    _self.messageParser(subEls[j]);
+                }
+            }
+        });
+    });
+
+    watcher.observe($conversations[0], { childList: true, subtree: true });
+}
+
+Conversations.prototype.messageParser = function(element) {
+    var from = element.querySelector('.from');
+    var message = element.querySelector('.message');
+
+    if (!from || !message) return;
+
+    var $element = $(element);
+
+    if ($element.hasClass('bttv-parsed-message')) return;
+    $element.addClass('bttv-parsed-message');
+
+    from.style.color = this.usernameRecolor(from.style.color);
+    message.innerHTML = this.emoticonize(message.innerHTML);
+
+    this.scrollDownParent(element);
+};
+
+Conversations.prototype.scrollDownParent = function(element) {
+    var container = $(element).parents(conversationContainer)[0];
+
+    setTimeout(function() {
+        if (!container) return;
+        container.scrollTop = container.scrollHeight;
+    }, 500);
+};
+
+Conversations.prototype.emoticonize = function(message) {
+    if (bttv.settings.get('bttvEmotes') === false) return message;
+
+    var parts = message.split(' ');
+    var test;
+    var emote;
+
+    for (var i = 0; i < parts.length; i++) {
+        test = parts[i].replace(/(^[~!@#$%\^&\*\(\)]+|[~!@#$%\^&\*\(\)]+$)/g, '');
+        emote = null;
+
+        if (chatStore.bttvEmotes.hasOwnProperty(parts[i])) {
+            emote = chatStore.bttvEmotes[parts[i]];
+        } else if (chatStore.bttvEmotes.hasOwnProperty(test)) {
+            emote = chatStore.bttvEmotes[test];
+        }
+
+        if (
+            emote &&
+            emote.urlTemplate &&
+            (emote.imageType === 'png' || (emote.imageType === 'gif' && bttv.settings.get('bttvGIFEmotes') === true))
+        ) {
+            parts[i] = chatTemplates.bttvEmoticonize(parts[i], emote);
+        }
+    }
+
+    return parts.join(' ');
+};
+
+Conversations.prototype.usernameRecolor = function(color) {
+    var matcher = color.match(/rgb\(([0-9]+), ([0-9]+), ([0-9]+)\)/);
+
+    if (!matcher) return color;
+
+    return chatHelpers.calculateColor(colors.getHex({
+        r: matcher[1],
+        g: matcher[2],
+        b: matcher[3]
+    }));
+};
+
+module.exports = Conversations;
+
+},{"../chat/helpers":5,"../chat/store":8,"../chat/templates":10,"../helpers/colors":46}],26:[function(require,module,exports){
 var settingsPanelTemplate = require('../templates/settings-panel');
 
 module.exports = function() {
@@ -3847,7 +3956,7 @@ module.exports = function() {
     });
 };
 
-},{"../templates/settings-panel":64}],26:[function(require,module,exports){
+},{"../templates/settings-panel":65}],27:[function(require,module,exports){
 function load(file, key) {
     if (!bttv.settings.get(key)) return;
 
@@ -3865,7 +3974,7 @@ function unload(key) {
 module.exports.load = load;
 module.exports.unload = unload;
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 var template = require('../templates/custom-timeouts');
 var vars = require('../vars');
 var helpers = require('../chat/helpers');
@@ -3921,7 +4030,7 @@ module.exports = function(user, $event) {
     $('.chat-line[data-sender="' + user + '"]').addClass('bttv-user-locate');
 };
 
-},{"../chat/helpers":5,"../templates/custom-timeouts":59,"../vars":66}],28:[function(require,module,exports){
+},{"../chat/helpers":5,"../templates/custom-timeouts":60,"../vars":67}],29:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     handleBackground = require('./handle-background');
 
@@ -3958,7 +4067,7 @@ module.exports = function() {
     }
 };
 
-},{"../helpers/debug":46,"./handle-background":36}],29:[function(require,module,exports){
+},{"../helpers/debug":47,"./handle-background":37}],30:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars');
 
@@ -4045,7 +4154,7 @@ module.exports = function dashboardChannelInfo() {
     }
 };
 
-},{"../helpers/debug":46,"../vars":66}],30:[function(require,module,exports){
+},{"../helpers/debug":47,"../vars":67}],31:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars');
 
@@ -4073,7 +4182,7 @@ module.exports = function() {
     });
 };
 
-},{"../helpers/debug":46,"../vars":66}],31:[function(require,module,exports){
+},{"../helpers/debug":47,"../vars":67}],32:[function(require,module,exports){
 var pollTemplate = require('../templates/embedded-poll');
 var chatHelpers = require('../chat/helpers');
 
@@ -4135,7 +4244,7 @@ module.exports = function(message) {
     lastPollId = pollId;
 };
 
-},{"../chat/helpers":5,"../templates/embedded-poll":60}],32:[function(require,module,exports){
+},{"../chat/helpers":5,"../templates/embedded-poll":61}],33:[function(require,module,exports){
 // Add an event listener to the "copy" event that fires when text is copied to
 // the clipboard to convert any emoticons within the text selection to the
 // corresponding text that will create the emoticon. This allows copy/pasted
@@ -4183,7 +4292,7 @@ module.exports = function() {
 };
 
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 module.exports = function() {
@@ -4213,7 +4322,7 @@ module.exports = function() {
     }
 };
 
-},{"../helpers/debug":46}],34:[function(require,module,exports){
+},{"../helpers/debug":47}],35:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 module.exports = function() {
@@ -4233,7 +4342,7 @@ module.exports = function() {
     }
 };
 
-},{"../helpers/debug":46}],35:[function(require,module,exports){
+},{"../helpers/debug":47}],36:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 module.exports = function() {
@@ -4256,7 +4365,7 @@ module.exports = function() {
     }
 };
 
-},{"../helpers/debug":46}],36:[function(require,module,exports){
+},{"../helpers/debug":47}],37:[function(require,module,exports){
 module.exports = function handleBackground(tiled) {
     tiled = tiled || false;
 
@@ -4350,7 +4459,7 @@ module.exports = function handleBackground(tiled) {
     /*eslint-enable */
 };
 
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 module.exports = function() {
@@ -4383,7 +4492,7 @@ module.exports = function() {
     }, 1000);
 };
 
-},{"../helpers/debug":46}],38:[function(require,module,exports){
+},{"../helpers/debug":47}],39:[function(require,module,exports){
 var vars = require('../vars');
 
 module.exports = function() {
@@ -4443,7 +4552,7 @@ module.exports = function() {
     });
 };
 
-},{"../vars":66}],39:[function(require,module,exports){
+},{"../vars":67}],40:[function(require,module,exports){
 exports.enablePreview = function() {
     $(document).on({
         mouseenter: function() {
@@ -4467,7 +4576,7 @@ exports.disablePreview = function() {
     $(document).off('mouseenter mouseleave mousemove', 'a.chat-preview');
 };
 
-},{}],40:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 var vars = require('../vars');
 var debug = require('../helpers/debug');
 var escapeRegExp = require('../helpers/regex').escapeRegExp;
@@ -4584,7 +4693,7 @@ exports.highlighting = function(data) {
     return false;
 };
 
-},{"../features/audible-feedback":14,"../helpers/debug":46,"../helpers/regex":49,"../vars":66}],41:[function(require,module,exports){
+},{"../features/audible-feedback":14,"../helpers/debug":47,"../helpers/regex":50,"../vars":67}],42:[function(require,module,exports){
 module.exports = function(user, $event) {
     // adds in user messages from chat
     user.messages = $.makeArray($('.chat-room .chat-messages .chat-line[data-sender="' + user.name + '"]')).reverse();
@@ -4708,7 +4817,7 @@ module.exports = function(user, $event) {
     });
 };
 
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 var debug = require('../helpers/debug'),
     vars = require('../vars');
 
@@ -4793,7 +4902,7 @@ module.exports = function() {
     });
 };
 
-},{"../helpers/debug":46,"../vars":66}],43:[function(require,module,exports){
+},{"../helpers/debug":47,"../vars":67}],44:[function(require,module,exports){
 var highlightTemplate = require('../templates/pinned-highlight');
 
 // only pin up to 10 messages
@@ -4827,7 +4936,7 @@ module.exports = function(message) {
     $highlightContainer.append($nextHighlight);
 };
 
-},{"../templates/pinned-highlight":62}],44:[function(require,module,exports){
+},{"../templates/pinned-highlight":63}],45:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 module.exports = function() {
@@ -4843,7 +4952,7 @@ module.exports = function() {
     }
 };
 
-},{"../helpers/debug":46}],45:[function(require,module,exports){
+},{"../helpers/debug":47}],46:[function(require,module,exports){
 /**
  * Converts an RGB color value to HSL. Conversion formula
  * adapted from https://en.wikipedia.org/wiki/HSL_color_space
@@ -4982,7 +5091,7 @@ exports.getHex = function(color) {
     return '#' + convert(color.r) + convert(color.g) + convert(color.b);
 };
 
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 module.exports = {
     log: function() {
         if (!window.console || !console.log || !bttv.settings.get('consoleLog') === true) return;
@@ -4991,7 +5100,7 @@ module.exports = {
     }
 };
 
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 exports.remove = function(e) {
     // Removes all of an element
     $(e).each(function() {
@@ -5005,7 +5114,7 @@ exports.display = function(e) {
     });
 };
 
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 /* FileSaver.js
  * A saveAs() FileSaver implementation.
  * 2015-05-07.2
@@ -5259,7 +5368,7 @@ if (typeof module !== "undefined" && module.exports) {
     return saveAs;
   });
 }
-},{}],49:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 exports.escapeRegExp = function(text) {
     // Escapes an input to make it usable for regexes
     return text.replace(/[-[\]{}()+?.,\\^$|#\s]/g, '\\$&');
@@ -5283,7 +5392,7 @@ exports.getEmoteFromRegEx = function(regex) {
         .replace(/\\/g, ''); // unescape
 };
 
-},{}],50:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 module.exports = {
     'LeftClick': 1,
     'Backspace': 8,
@@ -5375,7 +5484,7 @@ module.exports = {
     'Backslash': 220
 };
 
-},{}],51:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 module.exports = function(data) {
     return {
         // Developers and Supporters
@@ -5442,7 +5551,7 @@ module.exports = function(data) {
     };
 };
 
-},{}],52:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 function inFrame() {
     try {
         return !!window.frameElement;
@@ -5488,7 +5597,7 @@ module.exports = function() {
     window.parent.postMessage('bttv_is_login_dark', 'http://www.twitch.tv');
 };
 
-},{}],53:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 var chat = bttv.chat, vars = bttv.vars;
 var splitChat = require('./features/split-chat'),
     darkenPage = require('./features/darken-page'),
@@ -5503,13 +5612,6 @@ var displayElement = require('./helpers/element').display,
     imagePreview = require('./features/image-preview');
 
 module.exports = [
-    /* {
-        name: 'Admin/Staff Alert',
-        description: 'Get alerted in chat when admins or staff join',
-        default: false,
-        hidden: true,
-        storageKey: 'adminStaffAlert'
-    },*/
     {
         name: 'Anon Chat',
         description: 'Join channels without appearing in chat',
@@ -6040,7 +6142,7 @@ module.exports = [
     }
 ];
 
-},{"./features/anon-chat":13,"./features/css-loader":26,"./features/darken-page":28,"./features/flip-dashboard":33,"./features/handle-background":36,"./features/handle-twitchchat-emotes":37,"./features/host-btn-below-video":38,"./features/image-preview":39,"./features/split-chat":44,"./helpers/element":47}],54:[function(require,module,exports){
+},{"./features/anon-chat":13,"./features/css-loader":27,"./features/darken-page":29,"./features/flip-dashboard":34,"./features/handle-background":37,"./features/handle-twitchchat-emotes":38,"./features/host-btn-below-video":39,"./features/image-preview":40,"./features/split-chat":45,"./helpers/element":48}],55:[function(require,module,exports){
 var debug = require('./helpers/debug');
 var saveAs = require('./helpers/filesaver').saveAs;
 
@@ -6087,11 +6189,6 @@ Settings.prototype.load = function() {
             var settingHTML = settingTemplate(setting);
             $('#bttvSettings .options-list').append(settingHTML);
             _self._settings[setting.storageKey].value === true ? $('#' + setting.storageKey + 'True').prop('checked', true) : $('#' + setting.storageKey + 'False').prop('checked', true);
-        }
-
-        if (setting.hidden) {
-            $('#bttvSettingsPanel .bttvOption-' + setting.storageKey).css('display', 'none');
-            $('#bttvSettingsPanel .bttvOption-' + setting.storageKey).addClass('konami');
         }
 
         if (setting.load) {
@@ -6233,7 +6330,7 @@ Settings.prototype.popup = function() {
 
 module.exports = Settings;
 
-},{"./helpers/debug":46,"./helpers/filesaver":48,"./settings-list":53,"./templates/setting-switch":63}],55:[function(require,module,exports){
+},{"./helpers/debug":47,"./helpers/filesaver":49,"./settings-list":54,"./templates/setting-switch":64}],56:[function(require,module,exports){
 var cookies = require('cookies-js');
 var debug = require('./helpers/debug');
 
@@ -6310,7 +6407,7 @@ Storage.prototype.spliceObject = function(item, key) {
 
 module.exports = Storage;
 
-},{"./helpers/debug":46,"cookies-js":68}],56:[function(require,module,exports){
+},{"./helpers/debug":47,"cookies-js":69}],57:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -6318,7 +6415,7 @@ var jade_interp;
 
 buf.push("<div id=\"bttv-channel-state-contain\"><div title=\"Robot9000 Enabled\" class=\"r9k\"><svg width=\"26px\" height=\"22px\" version=\"1.1\" viewBox=\"0 0 26 22\" x=\"0px\" y=\"0px\"><path clip-rule=\"evenodd\" fill-rule=\"evenodd\" fill=\"#d3d3d3\" stroke=\"none\" d=\"M2.98763607,10.2134233 C2.98763607,9.87789913 2.97951867,9.53696837 2.96328363,9.19062081 C2.94704859,8.84427325 2.93351959,8.3951105 2.92269623,7.84311909 L3.97796866,7.84311909 L3.97796866,9.25556065 L4.01043858,9.25556065 C4.08620211,9.04991679 4.1944341,8.85239341 4.33513779,8.66298459 C4.47584149,8.47357577 4.64630687,8.30311039 4.84653905,8.15158334 C5.04677123,8.00005628 5.27947001,7.87829529 5.54464235,7.78629672 C5.8098147,7.69429815 6.11015847,7.64829956 6.44568266,7.64829956 C6.74873677,7.64829956 7.01390514,7.68076916 7.24119573,7.74570932 L7.03014124,8.80098176 C6.88943755,8.74686495 6.68379677,8.71980695 6.41321274,8.71980695 C6.00192502,8.71980695 5.65017106,8.79827515 5.35794031,8.95521388 C5.06570956,9.11215262 4.82218758,9.3123818 4.62736708,9.55590742 C4.43254658,9.79943305 4.2891392,10.0618956 4.19714063,10.343303 C4.10514206,10.6247104 4.05914347,10.8952904 4.05914347,11.155051 L4.05914347,15.4410806 L2.98763607,15.4410806 L2.98763607,10.2134233 Z M14.1735239,7.30736539 C14.1735239,6.93937111 14.1112905,6.60385195 13.9868218,6.30079784 C13.8623532,5.99774372 13.6864762,5.73798695 13.4591856,5.52151973 C13.231895,5.30505251 12.9613151,5.13458713 12.6474376,5.01011847 C12.3335601,4.88564982 11.9872178,4.82341643 11.6084001,4.82341643 C11.2295825,4.82341643 10.8832401,4.88564982 10.5693626,5.01011847 C10.2554852,5.13458713 9.98490519,5.30505251 9.75761461,5.52151973 C9.53032403,5.73798695 9.35444705,5.99774372 9.22997839,6.30079784 C9.10550974,6.60385195 9.04327635,6.93937111 9.04327635,7.30736539 C9.04327635,7.67535967 9.10550974,8.01087883 9.22997839,8.31393294 C9.35444705,8.61698705 9.53032403,8.87944962 9.75761461,9.10132853 C9.98490519,9.32320743 10.2554852,9.49367281 10.5693626,9.61272978 C10.8832401,9.73178676 11.2295825,9.79131435 11.6084001,9.79131435 C11.9872178,9.79131435 12.3335601,9.73178676 12.6474376,9.61272978 C12.9613151,9.49367281 13.231895,9.32320743 13.4591856,9.10132853 C13.6864762,8.87944962 13.8623532,8.61698705 13.9868218,8.31393294 C14.1112905,8.01087883 14.1735239,7.67535967 14.1735239,7.30736539 L14.1735239,7.30736539 Z M13.0046067,10.5056526 L12.9721368,10.4731827 C12.7881397,10.603063 12.5419119,10.7004718 12.2334461,10.765412 C11.9249803,10.8303521 11.6408713,10.8628217 11.3811107,10.8628217 C10.8832361,10.8628217 10.4205443,10.7735304 9.99302154,10.5949449 C9.56549877,10.4163594 9.19480422,10.1701317 8.88092674,9.85625419 C8.56704927,9.54237672 8.3208215,9.16897636 8.14223604,8.73604192 C7.96365058,8.30310747 7.87435919,7.82688672 7.87435919,7.30736539 C7.87435919,6.77702069 7.96635638,6.29538835 8.15035352,5.8624539 C8.33435066,5.42951946 8.59410743,5.0561191 8.92963162,4.74224162 C9.26515582,4.42836415 9.66020257,4.18484218 10.1147837,4.0116684 C10.5693649,3.83849462 11.0672321,3.75190903 11.6084001,3.75190903 C12.1495682,3.75190903 12.6474353,3.83849462 13.1020165,4.0116684 C13.5565976,4.18484218 13.9516444,4.42836415 14.2871686,4.74224162 C14.6226928,5.0561191 14.8824496,5.42951946 15.0664467,5.8624539 C15.2504438,6.29538835 15.342441,6.77702069 15.342441,7.30736539 C15.342441,7.9459437 15.247738,8.50333843 15.0583292,8.97956632 C14.8689204,9.45579421 14.6335158,9.92660336 14.3521084,10.3920079 L11.251231,15.4410806 L9.87125933,15.4410806 L13.0046067,10.5056526 Z M18.3621437,11.2686958 L21.95007,7.84311909 L23.5573311,7.84311909 L19.7745853,11.3174006 L23.9632051,15.4410806 L22.3072391,15.4410806 L18.3621437,11.4472803 L18.3621437,15.4410806 L17.2906363,15.4410806 L17.2906363,3.16745045 L18.3621437,3.16745045 L18.3621437,11.2686958 Z\"></path></svg></div><div title=\"Subscribers-Only Mode Enabled\" class=\"subs-only\"><svg width=\"26px\" height=\"22px\" version=\"1.1\" viewBox=\"0 0 26 22\" x=\"0px\" y=\"0px\"><path clip-rule=\"evenodd\" fill-rule=\"evenodd\" fill=\"#d3d3d3\" stroke=\"none\" d=\"M9.27481618,13.6268381 C9.27481619,15.0585936 21.1132816,15.0078128 21.1132816,13.6268381 C21.1132816,12.2458633 16.9215274,13.7446739 16.6289064,11.3913143 C16.3362854,9.03795478 17.8113514,9.06502765 17.8113514,7.74195776 C17.8113514,6.41888788 16.1631438,5.44732696 15.194049,5.3492647 C14.2249543,5.25120244 12.5834099,6.17624082 12.5834099,7.74195772 C12.5834099,9.30767461 13.8025847,9.44785699 13.6895682,11.3913143 C13.5765516,13.3347717 9.27481616,12.1950825 9.27481618,13.6268381 Z\"></path><path clip-rule=\"evenodd\" fill-rule=\"evenodd\" fill=\"#d3d3d3\" stroke=\"none\" d=\"M9.05269623,4.02031837 C9.41269803,4.02031837 9.78602763,4.06698457 10.1726962,4.16031837 C10.5593648,4.25365217 10.8993614,4.41698387 11.1926962,4.65031837 L10.2326962,5.82031837 C10.0726954,5.68031767 9.88936393,5.57865202 9.68269623,5.51531837 C9.47602853,5.45198472 9.26603063,5.41365177 9.05269623,5.40031837 L9.05269623,6.99031837 L10.0126962,7.27031837 C10.4526984,7.40365237 10.8043616,7.62198352 11.0676962,7.92531837 C11.3310309,8.22865322 11.4626962,8.61364937 11.4626962,9.08031837 C11.4626962,9.43365347 11.3993635,9.74365037 11.2726962,10.0103184 C11.1460289,10.2769864 10.9726973,10.5036508 10.7526962,10.6903184 C10.5326951,10.876986 10.276031,11.0236512 9.98269623,11.1303184 C9.68936143,11.2369856 9.37936453,11.3069849 9.05269623,11.3403184 L9.05269623,12.0403184 L8.39269623,12.0403184 L8.39269623,11.3403184 C7.95269403,11.3403184 7.51436508,11.280319 7.07769623,11.1603184 C6.64102738,11.0403178 6.25603123,10.8303199 5.92269623,10.5303184 L6.98269623,9.34031837 C7.15603043,9.55365277 7.36602833,9.70531792 7.61269623,9.79531837 C7.85936413,9.88531882 8.11936153,9.94031827 8.39269623,9.96031837 L8.39269623,8.27031837 L7.66269623,8.05031837 C7.15602703,7.89031757 6.77103088,7.66531982 6.50769623,7.37531837 C6.24436158,7.08531692 6.11269623,6.68698757 6.11269623,6.18031837 C6.11269623,5.86698347 6.17602893,5.58365297 6.30269623,5.33031837 C6.42936353,5.07698377 6.59769518,4.86031927 6.80769623,4.68031837 C7.01769728,4.50031747 7.26102818,4.35365227 7.53769623,4.24031837 C7.81436428,4.12698447 8.09936143,4.05365187 8.39269623,4.02031837 L8.39269623,3.32031837 L9.05269623,3.32031837 L9.05269623,4.02031837 Z M8.39269623,5.43031837 C8.20602863,5.47031857 8.03936363,5.54031787 7.89269623,5.64031837 C7.74602883,5.74031887 7.67269623,5.89698397 7.67269623,6.11031837 C7.67269623,6.26365247 7.70269593,6.38365127 7.76269623,6.47031837 C7.82269653,6.55698547 7.89269583,6.62531812 7.97269623,6.67531837 C8.05269663,6.72531862 8.13269583,6.76031827 8.21269623,6.78031837 C8.29269663,6.80031847 8.35269603,6.81698497 8.39269623,6.83031837 L8.39269623,5.43031837 Z M9.05269623,9.94031837 C9.15269673,9.92031827 9.25436238,9.89198522 9.35769623,9.85531837 C9.46103008,9.81865152 9.55269583,9.77031867 9.63269623,9.71031837 C9.71269663,9.65031807 9.77769598,9.57865212 9.82769623,9.49531837 C9.87769648,9.41198462 9.90269623,9.31365227 9.90269623,9.20031837 C9.90269623,9.09365117 9.88436308,9.00365207 9.84769623,8.93031837 C9.81102938,8.85698467 9.76269653,8.79531862 9.70269623,8.74531837 C9.64269593,8.69531812 9.57269663,8.65198522 9.49269623,8.61531837 C9.41269583,8.57865152 9.32936333,8.54365187 9.24269623,8.51031837 L9.05269623,8.44031837 L9.05269623,9.94031837 Z\"></path></svg></div><div class=\"slow\"><div title=\"0 seconds\" class=\"slow-time\">0:00</div><svg width=\"26px\" height=\"22px\" version=\"1.1\" viewBox=\"0 0 26 22\" x=\"0px\" y=\"0px\" title=\"Slow Mode Enabled\"><path clip-rule=\"evenodd\" fill-rule=\"evenodd\" fill=\"#d3d3d3\" stroke=\"none\" d=\"M17.1477712,15.2881724 C18.1841482,15.2990242 18.3714659,13.1141401 18.984666,13.0696235 C20.7929233,12.9383492 21.27411,12.5312339 22.0061575,11.9392359 C23.1373692,11.0244387 19.9060764,12.1089751 19.4762501,10.2570139 C19.0464238,8.40505269 20.0193482,10.024402 20.0193482,10.024402 C20.0193482,10.024402 21.8187185,4.26759557 15.5617966,4.00868857 C9.30487476,3.74978158 10.4161868,9.36314385 10.4161868,9.36314385 C10.4161868,9.36314385 11.2540951,8.34295601 11.2540951,9.63941257 C11.2540951,10.1964047 9.76901904,10.6570445 8.53287358,9.63941257 C7.29672813,8.62178061 8.11686902,7.37127839 7.67827778,6.69569265 C7.23968654,6.02010691 3.76038497,5.06926224 3.24213373,5.95824564 C2.72388249,6.84722904 5.76831809,8.74663617 5.96217543,9.63941257 C6.15603277,10.532189 7.03943787,12.1288651 7.49294803,12.5678492 C7.94645819,13.0068332 5.92939735,14.4797566 6.69153143,14.5326896 C7.45366552,14.5856225 9.47706304,12.9278239 10.0844223,12.7478364 C10.6917815,12.5678489 13.1392341,12.9471552 14.5871877,13.023578 C15.3550569,13.064106 16.1113943,15.2773206 17.1477712,15.2881724 Z M4.84344721,6.76429629 C5.04601701,6.76429629 5.21023228,6.60974074 5.21023228,6.41908681 C5.21023228,6.22843288 5.04601701,6.07387733 4.84344721,6.07387733 C4.6408774,6.07387733 4.47666213,6.22843288 4.47666213,6.41908681 C4.47666213,6.60974074 4.6408774,6.76429629 4.84344721,6.76429629 Z M11.7028228,7.36314163 C11.7326095,6.35178988 13.3449525,4.92929352 15.0963754,4.98088076 C16.8477983,5.032468 18.7948736,6.68625403 18.7749376,7.36314154 C18.7550016,8.04002904 16.952545,5.71526454 15.0963754,5.66059204 C13.2402058,5.60591954 11.673036,8.37449337 11.7028228,7.36314163 Z\"></path></svg></div></div>");;return buf.join("");
 };module.exports=template;
-},{}],57:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -6344,7 +6441,7 @@ buf.push("</a></p>");
 }
 buf.push("<p><input type=\"checkbox\"" + (jade.attr("checked", bttv.settings.get("darkenedMode"), true, false)) + " class=\"toggleDarkenTTV\"/>Dark Mode</p><p><a href=\"#\" class=\"g18_gear-00000080 setBlacklistKeywords\">Set Blacklist Keywords</a></p><p><a href=\"#\" class=\"g18_gear-00000080 setHighlightKeywords\">Set Highlight Keywords</a></p><p><a href=\"#\" class=\"g18_gear-00000080 setScrollbackAmount\">Set Scrollback Amount</a></p><p><a href=\"#\" class=\"g18_trash-00000080 clearChat\">Clear My Chat</a></p><p><a href=\"#\" style=\"display: block;margin-top: 8px;text-align: center;\" class=\"button-simple dark openSettings\">BetterTTV Settings</a></p></div>");}.call(this,"$" in locals_for_with?locals_for_with.$:typeof $!=="undefined"?$:undefined,"window" in locals_for_with?locals_for_with.window:typeof window!=="undefined"?window:undefined,"bttv" in locals_for_with?locals_for_with.bttv:typeof bttv!=="undefined"?bttv:undefined));;return buf.join("");
 };module.exports=template;
-},{}],58:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -6377,7 +6474,7 @@ buf.push("<div" + (jade.cls([highlighted], [true])) + "><div class=\"suggestion\
 
 buf.push("</div>");}.call(this,"suggestions" in locals_for_with?locals_for_with.suggestions:typeof suggestions!=="undefined"?suggestions:undefined,"index" in locals_for_with?locals_for_with.index:typeof index!=="undefined"?index:undefined));;return buf.join("");
 };module.exports=template;
-},{}],59:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -6385,7 +6482,7 @@ var jade_interp;
 
 buf.push("<div id=\"bttv-custom-timeout-contain\"><div class=\"text\"></div><svg width=\"80px\" height=\"200px\" version=\"1.1\" viewBox=\"0 0 80 200\" x=\"0px\" y=\"0px\" class=\"back\"><rect id=\"purge-rect\" fill-opacity=\"0.303979846\" fill=\"#000000\" sketch:type=\"MSShapeGroup\" x=\"0\" y=\"0\" width=\"80\" height=\"20\"></rect><rect id=\"ban-rect\" fill-opacity=\"0.303979846\" fill=\"#000000\" sketch:type=\"MSShapeGroup\" x=\"0\" y=\"180\" width=\"80\" height=\"20\"></rect><path id=\"time-curve\" d=\"M-5.68434189e-14,19.8046875 C15.9905561,51.8248392 9.84960937,154.183594 80,180\" fill=\"none\" stroke-opacity=\"0.3\" stroke=\"#ACACAC\" sketch:type=\"MSShapeGroup\" transform=\"translate(40.000000, 99.902344) scale(-1, 1) translate(-40.000000, -99.902344) \"></path><path id=\"Ban\" d=\"M34.5654297,11.9848633 C34.5654297,12.5268582 34.4628917,13.005369 34.2578125,13.4204102 C34.0527333,13.8354513 33.7768572,14.1772448 33.4301758,14.4458008 C33.0200175,14.768068 32.5695825,14.9975579 32.0788574,15.1342773 C31.5881323,15.2709968 30.9643593,15.3393555 30.2075195,15.3393555 L26.340332,15.3393555 L26.340332,4.43359375 L29.5703125,4.43359375 C30.3662149,4.43359375 30.9619121,4.46289033 31.3574219,4.52148438 C31.7529317,4.58007842 32.1313458,4.70214751 32.4926758,4.88769531 C32.8930684,5.0976573 33.1835928,5.36742999 33.3642578,5.69702148 C33.5449228,6.02661298 33.6352539,6.42089614 33.6352539,6.87988281 C33.6352539,7.39746353 33.5034193,7.83813295 33.2397461,8.2019043 C32.9760729,8.56567565 32.6245139,8.85742078 32.1850586,9.07714844 L32.1850586,9.13574219 C32.922367,9.28711013 33.5034158,9.61059323 33.9282227,10.1062012 C34.3530295,10.6018091 34.5654297,11.2280236 34.5654297,11.9848633 L34.5654297,11.9848633 Z M32.1264648,7.0703125 C32.1264648,6.80663931 32.08252,6.58447356 31.9946289,6.40380859 C31.9067378,6.22314363 31.7651377,6.07666072 31.5698242,5.96435547 C31.3403309,5.83251887 31.0620134,5.75073258 30.7348633,5.71899414 C30.4077132,5.6872557 30.0024438,5.67138672 29.519043,5.67138672 L27.7905273,5.67138672 L27.7905273,8.82080078 L29.6655273,8.82080078 C30.1196312,8.82080078 30.4809557,8.79760765 30.7495117,8.7512207 C31.0180677,8.70483375 31.2670887,8.60839917 31.496582,8.46191406 C31.7260754,8.31542896 31.8884273,8.12622186 31.9836426,7.89428711 C32.0788579,7.66235236 32.1264648,7.3876969 32.1264648,7.0703125 L32.1264648,7.0703125 Z M33.0566406,12.043457 C33.0566406,11.6040017 32.9907233,11.2548841 32.8588867,10.9960938 C32.7270501,10.7373034 32.4877947,10.517579 32.1411133,10.3369141 C31.9067371,10.2148431 31.6223161,10.1354982 31.2878418,10.098877 C30.9533675,10.0622557 30.5468774,10.0439453 30.0683594,10.0439453 L27.7905273,10.0439453 L27.7905273,14.1015625 L29.7094727,14.1015625 C30.3442415,14.1015625 30.8642558,14.0686038 31.2695312,14.0026855 C31.6748067,13.9367672 32.0068346,13.8159188 32.265625,13.6401367 C32.5390639,13.4497061 32.7392572,13.2324231 32.8662109,12.9882812 C32.9931647,12.7441394 33.0566406,12.4292011 33.0566406,12.043457 L33.0566406,12.043457 Z M42.8710938,15.3393555 L41.5014648,15.3393555 L41.5014648,14.4677734 C41.3793939,14.5507817 41.2146006,14.6667473 41.0070801,14.8156738 C40.7995595,14.9646004 40.5981455,15.0830074 40.402832,15.1708984 C40.1733387,15.2832037 39.9096695,15.3771969 39.6118164,15.4528809 C39.3139634,15.5285648 38.9648458,15.5664062 38.5644531,15.5664062 C37.8271448,15.5664062 37.202151,15.3222681 36.6894531,14.8339844 C36.1767552,14.3457007 35.9204102,13.7231483 35.9204102,12.9663086 C35.9204102,12.3461883 36.0534655,11.8444843 36.3195801,11.4611816 C36.5856947,11.0778789 36.9653296,10.7763683 37.4584961,10.5566406 C37.9565455,10.336913 38.554684,10.1879887 39.2529297,10.1098633 C39.9511754,10.0317379 40.7006796,9.97314473 41.5014648,9.93408203 L41.5014648,9.72167969 C41.5014648,9.40917813 41.4465338,9.15039165 41.3366699,8.9453125 C41.2268061,8.74023335 41.069337,8.57910215 40.8642578,8.46191406 C40.6689443,8.34960881 40.4345717,8.27392598 40.1611328,8.23486328 C39.8876939,8.19580059 39.6020523,8.17626953 39.3041992,8.17626953 C38.9428693,8.17626953 38.5400413,8.22387648 38.0957031,8.3190918 C37.651365,8.41430712 37.1923852,8.55224519 36.71875,8.73291016 L36.6455078,8.73291016 L36.6455078,7.33398438 C36.9140638,7.26074182 37.3022436,7.18017622 37.8100586,7.09228516 C38.3178736,7.00439409 38.8183569,6.96044922 39.3115234,6.96044922 C39.8876982,6.96044922 40.3894022,7.00805616 40.8166504,7.10327148 C41.2438986,7.1984868 41.613768,7.3608387 41.9262695,7.59033203 C42.2338883,7.81494253 42.4682609,8.10546697 42.6293945,8.46191406 C42.7905281,8.81836116 42.8710938,9.26025127 42.8710938,9.78759766 L42.8710938,15.3393555 Z M41.5014648,13.3251953 L41.5014648,11.0473633 C41.0815409,11.0717775 40.587161,11.1083982 40.0183105,11.1572266 C39.44946,11.2060549 38.9990251,11.276855 38.6669922,11.3696289 C38.2714824,11.4819342 37.9516614,11.656493 37.7075195,11.8933105 C37.4633777,12.1301281 37.3413086,12.4560526 37.3413086,12.8710938 C37.3413086,13.3398461 37.4829087,13.6926258 37.7661133,13.9294434 C38.0493178,14.1662609 38.4814424,14.284668 39.0625,14.284668 C39.5459009,14.284668 39.987791,14.1906748 40.3881836,14.0026855 C40.7885762,13.8146963 41.1596663,13.5888685 41.5014648,13.3251953 L41.5014648,13.3251953 Z M52.3632812,15.3393555 L50.9863281,15.3393555 L50.9863281,10.6811523 C50.9863281,10.3051739 50.9643557,9.95239423 50.9204102,9.62280273 C50.8764646,9.29321124 50.795899,9.03564546 50.6787109,8.85009766 C50.55664,8.64501851 50.3808605,8.49243214 50.1513672,8.39233398 C49.9218739,8.29223583 49.6240253,8.2421875 49.2578125,8.2421875 C48.8818341,8.2421875 48.4887716,8.33496001 48.0786133,8.52050781 C47.668455,8.70605562 47.2753925,8.94286965 46.8994141,9.23095703 L46.8994141,15.3393555 L45.5224609,15.3393555 L45.5224609,7.15820312 L46.8994141,7.15820312 L46.8994141,8.06640625 C47.3291037,7.70995916 47.7734352,7.43164163 48.2324219,7.23144531 C48.6914085,7.031249 49.1625952,6.93115234 49.6459961,6.93115234 C50.5297896,6.93115234 51.203611,7.19726296 51.6674805,7.72949219 C52.13135,8.26172141 52.3632812,9.02831531 52.3632812,10.0292969 L52.3632812,15.3393555 Z\" fill=\"#FFFFFF\" sketch:type=\"MSShapeGroup\"></path><path id=\"Purge\" d=\"M26.2561035,186.291992 C26.2561035,186.775393 26.1718758,187.223387 26.003418,187.635986 C25.8349601,188.048586 25.5993667,188.406248 25.2966309,188.708984 C24.9206524,189.084963 24.4763209,189.366942 23.963623,189.554932 C23.4509252,189.742921 22.803959,189.836914 22.0227051,189.836914 L20.5725098,189.836914 L20.5725098,193.901855 L19.1223145,193.901855 L19.1223145,182.996094 L22.0812988,182.996094 C22.735599,182.996094 23.2897927,183.051025 23.7438965,183.160889 C24.1980003,183.270753 24.6008283,183.44287 24.9523926,183.677246 C25.3674337,183.955568 25.6884754,184.302244 25.9155273,184.717285 C26.1425793,185.132326 26.2561035,185.657223 26.2561035,186.291992 L26.2561035,186.291992 Z M24.7473145,186.328613 C24.7473145,185.952635 24.6813971,185.62549 24.5495605,185.347168 C24.417724,185.068846 24.2175306,184.841798 23.9489746,184.666016 C23.7145984,184.514648 23.4472671,184.406006 23.1469727,184.340088 C22.8466782,184.27417 22.4670433,184.241211 22.0080566,184.241211 L20.5725098,184.241211 L20.5725098,188.599121 L21.7956543,188.599121 C22.3815947,188.599121 22.8576642,188.546631 23.223877,188.44165 C23.5900897,188.336669 23.8879383,188.169435 24.1174316,187.939941 C24.346925,187.705565 24.5092769,187.458986 24.6044922,187.200195 C24.6997075,186.941405 24.7473145,186.650881 24.7473145,186.328613 L24.7473145,186.328613 Z M34.8400879,193.901855 L33.4631348,193.901855 L33.4631348,192.993652 C32.9992653,193.359865 32.5549338,193.640624 32.130127,193.835938 C31.7053201,194.031251 31.2365748,194.128906 30.723877,194.128906 C29.8644977,194.128906 29.195559,193.866458 28.717041,193.341553 C28.238523,192.816648 27.9992676,192.046392 27.9992676,191.030762 L27.9992676,185.720703 L29.3762207,185.720703 L29.3762207,190.378906 C29.3762207,190.793947 29.3957518,191.149168 29.4348145,191.44458 C29.4738771,191.739992 29.5568841,191.992675 29.6838379,192.202637 C29.8156745,192.417482 29.9865712,192.57373 30.1965332,192.671387 C30.4064952,192.769043 30.7116679,192.817871 31.1120605,192.817871 C31.4685076,192.817871 31.857908,192.725099 32.2802734,192.539551 C32.7026388,192.354003 33.096922,192.117189 33.4631348,191.829102 L33.4631348,185.720703 L34.8400879,185.720703 L34.8400879,193.901855 Z M42.6550293,187.222168 L42.5817871,187.222168 C42.376708,187.17334 42.1777353,187.13794 41.9848633,187.115967 C41.7919912,187.093994 41.563722,187.083008 41.3000488,187.083008 C40.875242,187.083008 40.4650899,187.177001 40.0695801,187.36499 C39.6740703,187.552979 39.2932147,187.795897 38.927002,188.09375 L38.927002,193.901855 L37.5500488,193.901855 L37.5500488,185.720703 L38.927002,185.720703 L38.927002,186.929199 C39.4738797,186.489744 39.9560526,186.178468 40.3735352,185.995361 C40.7910177,185.812255 41.2170388,185.720703 41.6516113,185.720703 C41.8908703,185.720703 42.0642084,185.726807 42.1716309,185.739014 C42.2790533,185.751221 42.4401845,185.774414 42.6550293,185.808594 L42.6550293,187.222168 Z M50.5871582,192.97168 C50.5871582,194.358405 50.2722199,195.376462 49.642334,196.025879 C49.012448,196.675296 48.0432194,197 46.7346191,197 C46.3000467,197 45.8764669,196.969483 45.4638672,196.908447 C45.0512675,196.847412 44.6447774,196.760743 44.2443848,196.648438 L44.2443848,195.242188 L44.317627,195.242188 C44.5422375,195.330079 44.8986792,195.43872 45.3869629,195.568115 C45.8752466,195.69751 46.3635229,195.762207 46.8518066,195.762207 C47.320559,195.762207 47.7087387,195.706055 48.0163574,195.59375 C48.3239761,195.481445 48.5632316,195.325196 48.7341309,195.125 C48.9050302,194.934569 49.0270992,194.705079 49.1003418,194.436523 C49.1735844,194.167967 49.2102051,193.867677 49.2102051,193.535645 L49.2102051,192.788574 C48.7951639,193.120607 48.3984394,193.368407 48.0200195,193.531982 C47.6415997,193.695557 47.1594268,193.777344 46.5734863,193.777344 C45.5969189,193.777344 44.8217802,193.424564 44.2480469,192.718994 C43.6743135,192.013424 43.3874512,191.018561 43.3874512,189.734375 C43.3874512,189.031246 43.4863271,188.424563 43.684082,187.914307 C43.8818369,187.40405 44.1516096,186.963381 44.4934082,186.592285 C44.8107926,186.245604 45.1965309,185.975831 45.6506348,185.782959 C46.1047386,185.590087 46.5563942,185.493652 47.0056152,185.493652 C47.4792504,185.493652 47.875975,185.541259 48.1958008,185.636475 C48.5156266,185.73169 48.853758,185.876952 49.2102051,186.072266 L49.2980957,185.720703 L50.5871582,185.720703 L50.5871582,192.97168 Z M49.2102051,191.65332 L49.2102051,187.192871 C48.8439923,187.026855 48.5034195,186.908448 48.1884766,186.837646 C47.8735336,186.766845 47.559816,186.731445 47.2473145,186.731445 C46.4904747,186.731445 45.8947776,186.985349 45.4602051,187.493164 C45.0256326,188.000979 44.8083496,188.738276 44.8083496,189.705078 C44.8083496,190.623051 44.9694808,191.318845 45.291748,191.79248 C45.6140153,192.266116 46.1486779,192.50293 46.895752,192.50293 C47.2961446,192.50293 47.6977519,192.426026 48.1005859,192.272217 C48.50342,192.118407 48.8732893,191.912111 49.2102051,191.65332 L49.2102051,191.65332 Z M60.1452637,189.954102 L54.1174316,189.954102 C54.1174316,190.457034 54.1931145,190.895262 54.3444824,191.268799 C54.4958504,191.642336 54.7033678,191.948729 54.967041,192.187988 C55.2209485,192.422364 55.5224592,192.598144 55.871582,192.715332 C56.2207049,192.83252 56.6052225,192.891113 57.0251465,192.891113 C57.5817899,192.891113 58.142087,192.78003 58.7060547,192.557861 C59.2700224,192.335692 59.6716297,192.117189 59.9108887,191.902344 L59.9841309,191.902344 L59.9841309,193.403809 C59.5202614,193.599122 59.0466333,193.762695 58.5632324,193.894531 C58.0798316,194.026368 57.5720241,194.092285 57.0397949,194.092285 C55.6823663,194.092285 54.6228065,193.724857 53.861084,192.98999 C53.0993614,192.255123 52.7185059,191.211433 52.7185059,189.858887 C52.7185059,188.520989 53.0834924,187.458988 53.8134766,186.672852 C54.5434607,185.886715 55.5041444,185.493652 56.6955566,185.493652 C57.7990778,185.493652 58.6498994,185.815915 59.2480469,186.460449 C59.8461944,187.104984 60.1452637,188.020502 60.1452637,189.207031 L60.1452637,189.954102 Z M58.8049316,188.899414 C58.8000488,188.176754 58.6181659,187.617678 58.2592773,187.222168 C57.9003888,186.826658 57.35474,186.628906 56.6223145,186.628906 C55.8850061,186.628906 55.2978537,186.846189 54.8608398,187.280762 C54.4238259,187.715334 54.1760257,188.25488 54.1174316,188.899414 L58.8049316,188.899414 Z\" fill=\"#FFFFFF\" sketch:type=\"MSShapeGroup\"></path></svg><div class=\"cursor\"></div></div>");;return buf.join("");
 };module.exports=template;
-},{}],60:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -6393,7 +6490,7 @@ var jade_interp;
 ;var locals_for_with = (locals || {});(function (pollId) {
 buf.push("<div id=\"bttv-poll-contain\"><div class=\"title\">New poll available! <span style=\"text-decoration: underline;\">Vote now!</span></div><div class=\"close\"><svg height=\"16px\" version=\"1.1\" viewbox=\"0 0 16 16\" width=\"16px\" x=\"0px\" y=\"0px\" class=\"svg-close\"><path clip-rule=\"evenodd\" d=\"M13.657,3.757L9.414,8l4.243,4.242l-1.415,1.415L8,9.414l-4.243,4.243l-1.414-1.415L6.586,8L2.343,3.757l1.414-1.414L8,6.586l4.242-4.243L13.657,3.757z\" fill-rule=\"evenodd\"></path></svg></div><iframe" + (jade.attr("src", 'https://strawpoll.me/embed_2/' + (pollId) + '', true, false)) + " class=\"frame\"></iframe></div>");}.call(this,"pollId" in locals_for_with?locals_for_with.pollId:typeof pollId!=="undefined"?pollId:undefined));;return buf.join("");
 };module.exports=template;
-},{}],61:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -6449,7 +6546,7 @@ buf.push("</div></div></div>");
 }
 buf.push("</div>");}.call(this,"require" in locals_for_with?locals_for_with.require:typeof require!=="undefined"?require:undefined,"user" in locals_for_with?locals_for_with.user:typeof user!=="undefined"?user:undefined,"top" in locals_for_with?locals_for_with.top:typeof top!=="undefined"?top:undefined,"left" in locals_for_with?locals_for_with.left:typeof left!=="undefined"?left:undefined,"bttv" in locals_for_with?locals_for_with.bttv:typeof bttv!=="undefined"?bttv:undefined,"Twitch" in locals_for_with?locals_for_with.Twitch:typeof Twitch!=="undefined"?Twitch:undefined,"Date" in locals_for_with?locals_for_with.Date:typeof Date!=="undefined"?Date:undefined));;return buf.join("");
 };module.exports=template;
-},{"../vars":66}],62:[function(require,module,exports){
+},{"../vars":67}],63:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -6457,7 +6554,7 @@ var jade_interp;
 ;var locals_for_with = (locals || {});(function (time, displayName, message) {
 buf.push("<div id=\"bttv-pinned-highlight\"><span class=\"close\"><svg height=\"8px\" version=\"1.1\" viewbox=\"0 0 16 16\" width=\"8px\" x=\"0px\" y=\"0px\" class=\"svg-close\"><path clip-rule=\"evenodd\" d=\"M13.657,3.757L9.414,8l4.243,4.242l-1.415,1.415L8,9.414l-4.243,4.243l-1.414-1.415L6.586,8L2.343,3.757l1.414-1.414L8,6.586l4.242-4.243L13.657,3.757z\" fill-rule=\"evenodd\"></path></svg></span><span class=\"time\">" + (jade.escape((jade_interp = time) == null ? '' : jade_interp)) + "</span><span class=\"display-name\">" + (jade.escape((jade_interp = displayName) == null ? '' : jade_interp)) + ":</span><span class=\"message\">" + (jade.escape((jade_interp = message) == null ? '' : jade_interp)) + "</span></div>");}.call(this,"time" in locals_for_with?locals_for_with.time:typeof time!=="undefined"?time:undefined,"displayName" in locals_for_with?locals_for_with.displayName:typeof displayName!=="undefined"?displayName:undefined,"message" in locals_for_with?locals_for_with.message:typeof message!=="undefined"?message:undefined));;return buf.join("");
 };module.exports=template;
-},{}],63:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -6465,7 +6562,7 @@ var jade_interp;
 ;var locals_for_with = (locals || {});(function (storageKey, name, description) {
 buf.push("<div" + (jade.cls(['option',"bttvOption-" + (storageKey) + ""], [null,true])) + "><span style=\"font-weight:bold;font-size:14px;color:#D3D3D3;\">" + (jade.escape(null == (jade_interp = name) ? "" : jade_interp)) + "</span>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;" + (jade.escape(null == (jade_interp = description) ? "" : jade_interp)) + "<div class=\"bttv-switch\"><input type=\"radio\"" + (jade.attr("name", storageKey, true, false)) + " value=\"false\"" + (jade.attr("id", "" + (storageKey) + "False", true, false)) + " class=\"bttv-switch-input bttv-switch-off\"/><label" + (jade.attr("for", "" + (storageKey) + "False", true, false)) + " class=\"bttv-switch-label bttv-switch-label-off\">Off</label><input type=\"radio\"" + (jade.attr("name", storageKey, true, false)) + " value=\"true\"" + (jade.attr("id", "" + (storageKey) + "True", true, false)) + " class=\"bttv-switch-input\"/><label" + (jade.attr("for", "" + (storageKey) + "True", true, false)) + " class=\"bttv-switch-label bttv-switch-label-on\">On</label><span class=\"bttv-switch-selection\"></span></div></div>");}.call(this,"storageKey" in locals_for_with?locals_for_with.storageKey:typeof storageKey!=="undefined"?storageKey:undefined,"name" in locals_for_with?locals_for_with.name:typeof name!=="undefined"?name:undefined,"description" in locals_for_with?locals_for_with.description:typeof description!=="undefined"?description:undefined));;return buf.join("");
 };module.exports=template;
-},{}],64:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -6473,7 +6570,7 @@ var jade_interp;
 ;var locals_for_with = (locals || {});(function (bttv) {
 buf.push("<div id=\"header\"><span id=\"logo\"><img height=\"45px\" src=\"https://cdn.betterttv.net/style/logos/settings_logo.png\"/></span><ul class=\"nav\"><li><a href=\"#bttvAbout\">About</a></li><li class=\"active\"><a href=\"#bttvSettings\">Settings</a></li><li><a href=\"#bttvChannel\" target=\"_blank\">Channel</a></li><li><a href=\"#bttvChangelog\">Changelog</a></li><li><a href=\"#bttvPrivacy\">Privacy Policy</a></li><li><a href=\"#bttvBackup\">Backup/Import</a></li></ul><span id=\"close\">&times;</span></div><div id=\"bttvSettings\" style=\"height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content options-list\"><h2 class=\"option\">Here you can manage the various BetterTTV options. Click On or Off to toggle settings.</h2></div></div><div id=\"bttvAbout\" style=\"display:none;\"><div class=\"aboutHalf\"><img src=\"https://cdn.betterttv.net/style/logos/mascot.png\" class=\"bttvAboutIcon\"/><h1>BetterTTV v" + (jade.escape((jade_interp = bttv.info.versionString()) == null ? '' : jade_interp)) + "</h1><h2>from your friends at <a href=\"https://www.nightdev.com\" target=\"_blank\">NightDev</a></h2><br/></div><div class=\"aboutHalf\"><h1 style=\"margin-top: 100px;\">Think this addon is awesome?</h1><br/><br/><h2><a target=\"_blank\" href=\"https://chrome.google.com/webstore/detail/ajopnjidmegmdimjlfnijceegpefgped\">Drop a Review on the Chrome Webstore</a></h2><br/><h2>or maybe</h2><br/><h2><a target=\"_blank\" href=\"https://streamtip.com/t/night\">Send us a Tip</a></h2><br/></div></div><div id=\"bttvChannel\" style=\"display:none;\"><iframe frameborder=\"0\" width=\"100%\" height=\"425\"></iframe></div><div id=\"bttvPrivacy\" style=\"display:none;height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content\"></div></div><div id=\"bttvChangelog\" style=\"display:none;height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content\"></div></div><div id=\"bttvBackup\" style=\"display:none;height:425px;padding:25px;\"><h1 style=\"padding-bottom:15px;\">Backup Settings</h1><button id=\"bttvBackupButton\" class=\"primary_button\"><span>Download</span></button><h1 style=\"padding-top:25px;padding-bottom:15px;\">Import Settings</h1><input id=\"bttvImportInput\" type=\"file\" style=\"height: 25px;width: 250px;\"/></div><div id=\"footer\"><span>BetterTTV &copy; <a href=\"https://www.nightdev.com\" target=\"_blank\">NightDev, LLC</a> 2015</span><span style=\"float:right;\"><a href=\"https://twitter.com/betterttv\" target=\"_blank\">Twitter</a> | <a href=\"https://community.nightdev.com/c/betterttv\" target=\"_blank\">Forums</a> | <a href=\"https://github.com/night/BetterTTV/issues/new?labels=bug\" target=\"_blank\">Bug Report</a> | <a href=\"https://streamtip.com/t/night\" target=\"_blank\">Tip Us</a></span></div>");}.call(this,"bttv" in locals_for_with?locals_for_with.bttv:typeof bttv!=="undefined"?bttv:undefined));;return buf.join("");
 };module.exports=template;
-},{}],65:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 vars = require('./vars');
 
 module.exports = {
@@ -6509,7 +6606,7 @@ module.exports = {
     }
 };
 
-},{"./vars":66}],66:[function(require,module,exports){
+},{"./vars":67}],67:[function(require,module,exports){
 module.exports = {
     userData: {
         isLoggedIn: false,
@@ -6522,7 +6619,7 @@ module.exports = {
     blackChat: false
 };
 
-},{}],67:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 var debug = require('./helpers/debug');
 var vars = require('./vars');
 
@@ -6697,7 +6794,7 @@ SocketClient.prototype.joinChannel = function() {
 
 module.exports = SocketClient;
 
-},{"./helpers/debug":46,"./vars":66}],68:[function(require,module,exports){
+},{"./helpers/debug":47,"./vars":67}],69:[function(require,module,exports){
 /*
  * Cookies.js - 1.2.2
  * https://github.com/ScottHamper/Cookies
@@ -6871,7 +6968,7 @@ module.exports = SocketClient;
         global.Cookies = cookiesExport;
     }
 })(typeof window === 'undefined' ? this : window);
-},{}],69:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 (function (global){
 /*! http://mths.be/punycode v1.2.4 by @mathias */
 ;(function(root) {

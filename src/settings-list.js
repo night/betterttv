@@ -12,13 +12,6 @@ var displayElement = require('./helpers/element').display,
     imagePreview = require('./features/image-preview');
 
 module.exports = [
-    /* {
-        name: 'Admin/Staff Alert',
-        description: 'Get alerted in chat when admins or staff join',
-        default: false,
-        hidden: true,
-        storageKey: 'adminStaffAlert'
-    },*/
     {
         name: 'Anon Chat',
         description: 'Join channels without appearing in chat',

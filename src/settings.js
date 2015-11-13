@@ -46,11 +46,6 @@ Settings.prototype.load = function() {
             _self._settings[setting.storageKey].value === true ? $('#' + setting.storageKey + 'True').prop('checked', true) : $('#' + setting.storageKey + 'False').prop('checked', true);
         }
 
-        if (setting.hidden) {
-            $('#bttvSettingsPanel .bttvOption-' + setting.storageKey).css('display', 'none');
-            $('#bttvSettingsPanel .bttvOption-' + setting.storageKey).addClass('konami');
-        }
-
         if (setting.load) {
             setting.load();
         }
