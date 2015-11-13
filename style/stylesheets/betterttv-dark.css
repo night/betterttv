@@ -2253,12 +2253,27 @@ span.subscribe-text {
     color: #d3d3d3;
 }
 
-.conversations-content .conversation-window .conversation-chat-lines a {
+.conversations-content .conversation-window .conversation-chat-lines a,
+.conversations-content .conversation-window .ignore-cta a {
     color: #999;
 }
 
 .conversations-content .conversation-window .conversation-chat-lines .ignore-cta-container {
     color: #555;
+}
+
+.conversations-content .conversation-window .conversation-chat-lines .timestamp-line span {
+    background-color: rgb(35,35,35);
+    
+}
+.conversations-content .conversation-window .conversation-chat-lines .timestamp-line:after {
+    background-color: #555;
+}
+
+.conversations-content .conversation-window .ignore-cta {
+    background-color: rgb(35,35,35);
+    box-shadow: 0 3px 0 rgb(35,35,35);
+    border-bottom: solid 1px #000;
 }
 
 /* conversations setting menu */
