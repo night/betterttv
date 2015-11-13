@@ -2218,6 +2218,10 @@ span.subscribe-text {
     background-color: #282828;
 }
 
+.conversations-content .conversations-list .conversation-preview a {
+    color: #999;
+}
+
 /* conversations window */
 .conversations-content .conversation-window {
     background-color: rgb(35,35,35);
