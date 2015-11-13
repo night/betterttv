@@ -1875,9 +1875,18 @@ var takeover = module.exports = function() {
     store.currentRoom = bttv.getChannel();
     // tmi.tmiRoom.on('labelschanged', handlers.labelsChanged);
 
-    // Take over whispers until we can properly handle them
-    delete tmi.tmiSession._events.whisper;
-    tmi.tmiSession.on('whisper', rooms.getRoom(bttv.getChannel()).chatHandler);
+    // Take over whispers only when user is either not in Whispers 2.0 Beta
+    // OR
+    // user is in popout or embedded chat
+    var conversationsEnabled = false;
+    try {
+        conversationsEnabled = App.__container__.lookup('route:application').controller.get('isConversationsEnabled');
+    } catch (e) { }
+
+    if (!conversationsEnabled || tmi.get('isEmbedChat')) {
+        delete tmi.tmiSession._events.whisper;
+        tmi.tmiSession.on('whisper', rooms.getRoom(bttv.getChannel()).chatHandler);
+    }
 
     // Fake the initial roomstate
     helpers.parseRoomState({
