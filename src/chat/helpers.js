@@ -13,16 +13,16 @@ var calculateColorBackground = require('../helpers/colors').calculateColorBackgr
 var calculateColorReplacement = require('../helpers/colors').calculateColorReplacement;
 
 var lookupDisplayName = exports.lookupDisplayName = function(user, nicknames) {
-    if (!user) return;
+    if (!user) return '';
 
     // There's no display-name when sending messages, so we'll fill in for that
     if (vars.userData.isLoggedIn && user === vars.userData.name) {
-        store.displayNames[user] = Twitch.user.displayName() || user;
+        store.displayNames[user] = vars.userData.displayName || user;
     }
 
     if (nicknames !== false) {
         nicknames = bttv.storage.getObject('nicknames');
-        if (user in nicknames) return nicknames[user];
+        if (user in nicknames) return ( nicknames[user] || user.capitalize() );
     }
 
     if (tmi()) {

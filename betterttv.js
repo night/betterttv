@@ -822,16 +822,16 @@ var calculateColorBackground = require('../helpers/colors').calculateColorBackgr
 var calculateColorReplacement = require('../helpers/colors').calculateColorReplacement;
 
 var lookupDisplayName = exports.lookupDisplayName = function(user, nicknames) {
-    if (!user) return;
+    if (!user) return '';
 
     // There's no display-name when sending messages, so we'll fill in for that
     if (vars.userData.isLoggedIn && user === vars.userData.name) {
-        store.displayNames[user] = Twitch.user.displayName() || user;
+        store.displayNames[user] = vars.userData.displayName || user;
     }
 
     if (nicknames !== false) {
         nicknames = bttv.storage.getObject('nicknames');
-        if (user in nicknames) return nicknames[user];
+        if (user in nicknames) return ( nicknames[user] || user.capitalize() );
     }
 
     if (tmi()) {
@@ -6810,7 +6810,7 @@ module.exports = SocketClient;
 
 },{"./helpers/debug":47,"./vars":67}],69:[function(require,module,exports){
 /*
- * Cookies.js - 1.2.1
+ * Cookies.js - 1.2.2
  * https://github.com/ScottHamper/Cookies
  *
  * This is free and unencumbered software released into the public domain.
@@ -6846,8 +6846,10 @@ module.exports = SocketClient;
             if (Cookies._cachedDocumentCookie !== Cookies._document.cookie) {
                 Cookies._renewCache();
             }
+            
+            var value = Cookies._cache[Cookies._cacheKeyPrefix + key];
 
-            return Cookies._cache[Cookies._cacheKeyPrefix + key];
+            return value === undefined ? undefined : decodeURIComponent(value);
         };
 
         Cookies.set = function (key, value, options) {
@@ -6930,9 +6932,19 @@ module.exports = SocketClient;
             // IE omits the "=" when the cookie value is an empty string
             separatorIndex = separatorIndex < 0 ? cookieString.length : separatorIndex;
 
+            var key = cookieString.substr(0, separatorIndex);
+            var decodedKey;
+            try {
+                decodedKey = decodeURIComponent(key);
+            } catch (e) {
+                if (console && typeof console.error === 'function') {
+                    console.error('Could not decode cookie with key "' + key + '"', e);
+                }
+            }
+            
             return {
-                key: decodeURIComponent(cookieString.substr(0, separatorIndex)),
-                value: decodeURIComponent(cookieString.substr(separatorIndex + 1))
+                key: decodedKey,
+                value: cookieString.substr(separatorIndex + 1) // Defer decoding value until accessed
             };
         };
 
