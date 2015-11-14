@@ -2,6 +2,7 @@ var chatStore = require('../chat/store');
 var chatTemplates = require('../chat/templates');
 var chatHelpers = require('../chat/helpers');
 var colors = require('../helpers/colors');
+var store = require('../chat/store');
 
 var conversationsContainer = '.conversations-content';
 var conversationContainer = '.conversation-content';
@@ -30,6 +31,8 @@ function Conversations(timeout) {
             for (var i = 0; i < len; i++) {
                 el = mutation.addedNodes[i];
                 if (!el.querySelector) return;
+
+                if ($(el).hasClass('conversation-window')) _self.newConversation(el);
 
                 _self.messageParser(el);
 
@@ -109,6 +112,20 @@ Conversations.prototype.usernameRecolor = function(color) {
         g: matcher[2],
         b: matcher[3]
     }));
+};
+
+Conversations.prototype.newConversation = function(element) {
+    this.addBadges(element);
+};
+
+Conversations.prototype.addBadges = function(element) {
+    var $element = $(element);
+    var name = $element.find('.conversation-header-name').text().toLowerCase();
+    if (name in store.__badges) {
+        var type = store.__badges[name];
+        var badgeTemplate = chatTemplates.badge('bttv-' + type, '', store.__badgeTypes[type].description);
+        $element.find('.badges').prepend($.parseHTML(badgeTemplate));
+    }
 };
 
 module.exports = Conversations;

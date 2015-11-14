@@ -3771,6 +3771,7 @@ var chatStore = require('../chat/store');
 var chatTemplates = require('../chat/templates');
 var chatHelpers = require('../chat/helpers');
 var colors = require('../helpers/colors');
+var store = require('../chat/store');
 
 var conversationsContainer = '.conversations-content';
 var conversationContainer = '.conversation-content';
@@ -3799,6 +3800,8 @@ function Conversations(timeout) {
             for (var i = 0; i < len; i++) {
                 el = mutation.addedNodes[i];
                 if (!el.querySelector) return;
+
+                if ($(el).hasClass('conversation-window')) _self.newConversation(el);
 
                 _self.messageParser(el);
 
@@ -3878,6 +3881,20 @@ Conversations.prototype.usernameRecolor = function(color) {
         g: matcher[2],
         b: matcher[3]
     }));
+};
+
+Conversations.prototype.newConversation = function(element) {
+    this.addBadges(element);
+};
+
+Conversations.prototype.addBadges = function(element) {
+    var $element = $(element);
+    var name = $element.find('.conversation-header-name').text().toLowerCase();
+    if (name in store.__badges) {
+        var type = store.__badges[name];
+        var badgeTemplate = chatTemplates.badge('bttv-' + type, '', store.__badgeTypes[type].description);
+        $element.find('.badges').prepend($.parseHTML(badgeTemplate));
+    }
 };
 
 module.exports = Conversations;
@@ -6793,7 +6810,7 @@ module.exports = SocketClient;
 
 },{"./helpers/debug":47,"./vars":67}],69:[function(require,module,exports){
 /*
- * Cookies.js - 1.2.2
+ * Cookies.js - 1.2.1
  * https://github.com/ScottHamper/Cookies
  *
  * This is free and unencumbered software released into the public domain.
@@ -6829,10 +6846,8 @@ module.exports = SocketClient;
             if (Cookies._cachedDocumentCookie !== Cookies._document.cookie) {
                 Cookies._renewCache();
             }
-            
-            var value = Cookies._cache[Cookies._cacheKeyPrefix + key];
 
-            return value === undefined ? undefined : decodeURIComponent(value);
+            return Cookies._cache[Cookies._cacheKeyPrefix + key];
         };
 
         Cookies.set = function (key, value, options) {
@@ -6915,19 +6930,9 @@ module.exports = SocketClient;
             // IE omits the "=" when the cookie value is an empty string
             separatorIndex = separatorIndex < 0 ? cookieString.length : separatorIndex;
 
-            var key = cookieString.substr(0, separatorIndex);
-            var decodedKey;
-            try {
-                decodedKey = decodeURIComponent(key);
-            } catch (e) {
-                if (console && typeof console.error === 'function') {
-                    console.error('Could not decode cookie with key "' + key + '"', e);
-                }
-            }
-            
             return {
-                key: decodedKey,
-                value: cookieString.substr(separatorIndex + 1) // Defer decoding value until accessed
+                key: decodeURIComponent(cookieString.substr(0, separatorIndex)),
+                value: decodeURIComponent(cookieString.substr(separatorIndex + 1))
             };
         };
 
