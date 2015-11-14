@@ -31,20 +31,19 @@ var resetCountDown = function() {
 var initiateCountDown = function(length) {
     if (bttv.chat.store.chatCountDown) clearInterval(bttv.chat.store.chatCountDown);
 
-    var timer = length;
+    var endTimestamp = Date.now() + (length * 1000);
 
     bttv.chat.store.chatCountDown = setInterval(function() {
+        var remainingTime = endTimestamp - Date.now();
         var $chatButton = $(chatButton);
 
-        if (timer === 0) {
+        if (remainingTime <= 0) {
             resetCountDown();
-            return;
+        } else {
+            var remainingSeconds = Math.ceil(remainingTime / 1000);
+            $chatButton.find('span').text('Chat in ' + displaySeconds(remainingSeconds));
         }
-
-        $chatButton.find('span').text('Chat in ' + displaySeconds(timer));
-
-        timer--;
-    }, 1000);
+    }, 500);
 };
 
 module.exports = function(event) {
