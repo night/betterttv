@@ -6,7 +6,8 @@ var vars = require('../vars'),
     templates = require('./templates'),
     bots = require('../bots'),
     punycode = require('punycode'),
-    channelState = require('../features/channel-state');
+    channelState = require('../features/channel-state'),
+    MassUnbanPopup = require('../helpers/massunban-popup');
 
 // Helper functions
 var calculateColorBackground = require('../helpers/colors').calculateColorBackground;
@@ -795,48 +796,56 @@ var unban = exports.unban = function(user) {
     return tmi() && tmi().tmiRoom ? tmi().tmiRoom.unbanUser(user) : null;
 };
 
-var massUnban = exports.massUnban = function() {
+exports.massUnban = function() {
     if (!vars.userData.isLoggedIn || vars.userData.name !== bttv.getChannel()) {
         serverMessage("You're not the channel owner.");
         return;
     }
 
-    var bannedUsers = [];
-    serverMessage('Fetching banned users...');
-    $.ajax({url: '/settings/channel', cache: !1, timeoutLength: 6E3, dataType: 'html'}).done(function(chatInfo) {
-        if (chatInfo) {
-            $(chatInfo).find('#banned_chatter_list .ban .obj').each(function() {
-                var user = $(this).text().trim();
-                if (store.__unbannedUsers.indexOf(user) === -1 && bannedUsers.indexOf(user) === -1) bannedUsers.push(user);
-            });
-            if (bannedUsers.length > 0) {
-                serverMessage('Fetched ' + bannedUsers.length + ' banned users.');
-                if (bannedUsers.length > 10) {
-                    serverMessage('Starting purge process in 5 seconds. Get ready for a spam fest!');
-                } else {
-                    serverMessage('Starting purge process in 5 seconds.');
-                }
-                serverMessage('By my calculations, this block of users will take ' + (bannedUsers.length * 0.333).toFixed(1) + ' minutes to unban.');
-                if (bannedUsers.length > 70) serverMessage('Twitch only provides up to 100 users at a time (some repeat), but this script will cycle through all of the blocks of users.');
-                setTimeout(function() {
-                    var startTime = 0;
-                    bannedUsers.forEach(function(user) {
-                        setTimeout(function() {
-                            unban(user);
-                            store.__unbannedUsers.push(user);
-                        }, startTime += 333);
-                    });
-                    setTimeout(function() {
-                        serverMessage('This block of users has been purged. Checking for more..');
-                        massUnban();
-                    }, startTime += 333);
-                }, 5000);
-            } else {
-                serverMessage('You have no banned users.');
-                store.__unbannedUsers = [];
+    var massUnbanPopup = new MassUnbanPopup();
+    var unbanCount = 0;
+
+    var unbanChatters = function(users, callback) {
+        var interval = setInterval(function() {
+            var user = users.shift();
+
+            if (!user) {
+                clearInterval(interval);
+                callback();
+                return;
             }
-        }
-    });
+
+            unban(user);
+        }, 333);
+    };
+
+    var getBannedChatters = function() {
+        serverMessage('Fetching banned users...');
+
+        massUnbanPopup.getNextBatch(function(users) {
+            if (users.length === 0) {
+                serverMessage('You have no more banned users. Total Unbanned Users: ' + unbanCount);
+                massUnbanPopup.done();
+                return;
+            }
+
+            unbanCount += users.length;
+
+            serverMessage('Starting purge process in 5 seconds.');
+            serverMessage('This block of users will take ' + (users.length / 3).toFixed(1) + ' seconds to unban.');
+
+            if (users.length > 70) serverMessage('Twitch only provides up to 100 users at a time (some repeat), but this script will cycle through all of the blocks of users.');
+
+            setTimeout(function() {
+                unbanChatters(users, function() {
+                    serverMessage('This block of users has been purged. Checking for more..');
+                    getBannedChatters();
+                });
+            }, 5000);
+        });
+    };
+
+    getBannedChatters();
 };
 
 exports.translate = function($element, sender, text) {

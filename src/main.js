@@ -134,7 +134,8 @@ var clearClutter = require('./features/clear-clutter'),
     enableImagePreview = require('./features/image-preview').enablePreview,
     enableTheatreMode = require('./features/auto-theatre-mode'),
     hostButtonBelowVideo = require('./features/host-btn-below-video'),
-    conversations = require('./features/conversations');
+    conversations = require('./features/conversations'),
+    MassUnbanPopup = require('./helpers/massunban-popup');
 
 var chatFunctions = function() {
     debug.log('Modifying Chat Functionality');
@@ -296,6 +297,10 @@ var main = function() {
 
             debug.log('BTTV v' + bttv.info.versionString());
             debug.log('CALL init ' + document.URL);
+
+            if (/\?bttvMassUnban=true/.test(window.location)) {
+                return new MassUnbanPopup();
+            }
 
             initialFuncs();
             setTimeout(delayedFuncs, 3000);
