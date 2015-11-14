@@ -2304,7 +2304,7 @@ var modicons = exports.modicons = function() {
 };
 
 var linkify = exports.linkify = function(message) {
-    var regex = /(?:https?:\/\/)?(?:[-a-zA-Z0-9@:%_\+~#=]+\.)+[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?&\/=]*)/gi;
+    var regex = /(?:https?:\/\/)?(?:[-a-zA-Z0-9@:%_\+~#=]+\.)+[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?&\/=!,]+)[-a-zA-Z0-9@:%_\+.~#?&\/=]/gi;
     return message.replace(regex, function(e) {
         if (/\x02/.test(e)) return e;
         if (e.indexOf('@') > -1 && (e.indexOf('/') === -1 || e.indexOf('@') < e.indexOf('/'))) return '<a href="mailto:' + e + '">' + e + '</a>';
@@ -3283,20 +3283,17 @@ var resetCountDown = function() {
 var initiateCountDown = function(length) {
     if (bttv.chat.store.chatCountDown) clearInterval(bttv.chat.store.chatCountDown);
 
-    var timer = length;
+    var endTimestamp = Date.now() + (length * 1000);
 
     bttv.chat.store.chatCountDown = setInterval(function() {
-        var $chatButton = $(chatButton);
+        var remainingTime = endTimestamp - Date.now();
 
-        if (timer === 0) {
-            resetCountDown();
-            return;
+        if (remainingTime <= 0) {
+            return resetCountDown();
         }
 
-        $chatButton.find('span').text('Chat in ' + displaySeconds(timer));
-
-        timer--;
-    }, 1000);
+        $(chatButton).find('span').text('Chat in ' + displaySeconds(Math.ceil(remainingTime / 1000)));
+    }, 500);
 };
 
 module.exports = function(event) {
