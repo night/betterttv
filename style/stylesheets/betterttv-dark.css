@@ -2307,3 +2307,7 @@ span.subscribe-text {
 .conversations-content .conversation-settings-menu .options-section a {
     color: #d3d3d3;
 }
+
+.conversation-window .new-message-divider span {
+    background-color: #232323;
+}

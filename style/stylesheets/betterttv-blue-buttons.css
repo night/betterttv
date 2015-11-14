@@ -14,7 +14,9 @@ a.js-follow.follow.button.primary.action:hover,
 .directory_header .follow-button a:hover,
 .profile-info .follow-button a:hover,
 #hostmode .channel-actions .follow-button a:hover,
-.chat-room .moderation-card .mod-card-follow:hover { 
+.chat-room .moderation-card .mod-card-follow:hover,
+.conversation-window.has-unread > .conversation-header,
+.conversations-list .notification-jewel { 
     background: linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
     background: -o-linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
     background: -moz-linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
@@ -132,8 +134,12 @@ ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .ember-chat .chat-
 .button.glyph svg path, .follow-button .glyph.follow svg path, .button.glyph-only svg path, .follow-button .glyph-only.follow svg path {
     fill: #144CA5;
 }
-.button, #channel .player-column #broadcast-meta .info .edit-link span {
-    color: #144CA5;
+.button, #channel .player-column #broadcast-meta .info .edit-link span,
+.conversation-window .new-message-divider {
+    color: #b8b8b8;
+}
+.conversation-window .new-message-divider:after {
+    background-color: #b8b8b8;
 }
 .banner-contain .profile-info .profile-bio a, .banner-contain #change_profile_banner .add_image {
     color:#6E99DD
@@ -148,4 +154,7 @@ ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .ember-chat .chat-
     box-shadow: 0 0 3px 1px #8EA1D2,inset 0 0 3px 1px #8EA1D2;
     -moz-box-shadow: 0 0 3px 1px #8EA1D2,inset 0 0 3px 1px #8EA1D2;
     -webkit-box-shadow: 0 0 3px 1px #8EA1D2,inset 0 0 3px 1px #8EA1D2;
+}
+.conversation-window.has-unread .conversation-unread-count {
+    color: #fff;
 }
