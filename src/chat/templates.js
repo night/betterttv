@@ -118,11 +118,14 @@ var emoticonize = exports.emoticonize = function(message, emotes) {
     return tokenizedMessage;
 };
 
-var bttvEmoticonize = exports.bttvEmoticonize = function(message, emote) {
+var bttvEmoticonize = exports.bttvEmoticonize = function(message, emote, sender) {
     if (emote.restrictions) {
         if (emote.restrictions.channels.length && emote.restrictions.channels.indexOf(bttv.getChannel()) === -1) return message;
         if (emote.restrictions.games.length && tmi().channel && emote.restrictions.games.indexOf(tmi().channel.game) === -1) return message;
     }
+
+    var emoteSets = sender ? helpers.getEmotes(sender) : [];
+    if (emote.restrictions.emoticonSet && emoteSets.indexOf(emote.restrictions.emoticonSet) === -1) return message;
 
     return message.replace(emote.code, emoticonBTTV(emote));
 };
@@ -157,7 +160,7 @@ var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message
             bttv.settings.get('bttvEmotes') === true &&
             (emote.imageType === 'png' || (emote.imageType === 'gif' && bttv.settings.get('bttvGIFEmotes') === true))
         ) {
-            piece = bttvEmoticonize(piece, emote);
+            piece = bttvEmoticonize(piece, emote, sender);
         } else {
             piece = escape(piece);
             piece = linkify(piece);
