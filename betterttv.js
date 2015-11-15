@@ -3787,16 +3787,12 @@ var chatHelpers = require('../chat/helpers');
 var colors = require('../helpers/colors');
 var store = require('../chat/store');
 
-var conversationsContainer = '.conversations-content';
-var conversationContainer = '.conversation-content';
-var conversationLine = '.conversation-chat-line';
-
 function Conversations(timeout) {
     timeout = timeout || 0;
 
     if (!(this instanceof Conversations)) return new Conversations(0);
 
-    var $conversations = $(conversationsContainer);
+    var $conversations = $('.conversations-content');
 
     if (!$conversations.length) {
         setTimeout(function() {
@@ -3819,7 +3815,7 @@ function Conversations(timeout) {
 
                 _self.messageParser(el);
 
-                subEls = el.querySelectorAll(conversationLine);
+                subEls = el.querySelectorAll('.conversation-chat-line');
                 for (var j = 0; j < subEls.length; j++) {
                     _self.messageParser(subEls[j]);
                 }
@@ -3848,7 +3844,7 @@ Conversations.prototype.messageParser = function(element) {
 };
 
 Conversations.prototype.scrollDownParent = function(element) {
-    var container = $(element).parents(conversationContainer)[0];
+    var container = $(element).parents('.conversation-content')[0];
 
     setTimeout(function() {
         if (!container) return;
@@ -3907,7 +3903,7 @@ Conversations.prototype.addBadges = function(element) {
     if (name in store.__badges) {
         var type = store.__badges[name];
         var badgeTemplate = chatTemplates.badge('bttv-' + type, '', store.__badgeTypes[type].description);
-        $element.find('.badges').prepend($.parseHTML(badgeTemplate));
+        $element.find('.badges').prepend(badgeTemplate);
     }
 };
 
