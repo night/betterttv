@@ -1459,7 +1459,7 @@ exports.loadBadges = function() {
         $style.attr('id', 'bttv_volunteer_badges');
 
         data.types.forEach(function(badge) {
-            $style.append('.ember-chat .badges .bttv-' + badge.name + ' { background: url("' + badge.svg + '"); background-size: 100%; }');
+            $style.append('.badges .bttv-' + badge.name + ' { background: url("' + badge.svg + '"); background-size: 100%; }');
             store.__badgeTypes[badge.name] = badge;
         });
 
