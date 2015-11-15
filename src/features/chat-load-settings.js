@@ -113,4 +113,7 @@ module.exports = function() {
             bttv.settings.save('scrollbackAmount', parseInt(lines, 10));
         }
     });
+
+    // Make chat settings scrollable
+    $('.ember-chat .chat-settings').css('max-height', $(window).height() - 100);
 };
