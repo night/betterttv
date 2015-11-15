@@ -67,7 +67,7 @@ exports.commands = function(input) {
         bttv.settings.save('anonChat', true);
     } else if (command === '/shrug') {
         sentence.shift();
-        helpers.sendMessage(sentence.join() + ' ¯\\_(ツ)_/¯');
+        helpers.sendMessage(sentence.join(' ') + ' ¯\\_(ツ)_/¯');
     } else if (command === '/sub') {
         tmi().tmiRoom.startSubscribersMode();
     } else if (command === '/suboff') {
