@@ -1215,6 +1215,10 @@ body {
     border-top: none;
 }
 
+ #viewers>div>a{
+    color: #D3D3D3;
+}
+
 /*~~~~~~Ember Dark Settings Menu ~~~~~~~~~*/
 .ember-chat .chat-menu .chat-menu-header {
     color:  rgb(200,200,200);
