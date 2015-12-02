@@ -1215,7 +1215,7 @@ body {
     border-top: none;
 }
 
- #viewers>div>a{
+.ember-chat .chatters-view .chatters div a {
     color: #D3D3D3;
 }
 
