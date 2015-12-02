@@ -343,6 +343,10 @@ body {
     color: #999;
 }
 
+#channel_panels .panel .description hr {
+    background-color: #666;
+}
+
 /* Twitch overrides the link color in their theater mode, so this overrides theirs */
 .app-main.theatre .chat-container .chat-line a, .app-main.theatre .ember-chat-container.chat-container .chat-line a {
     color: #999;
