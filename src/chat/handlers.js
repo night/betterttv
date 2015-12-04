@@ -287,6 +287,8 @@ var privmsg = exports.privmsg = function(channel, data) {
         debug.log('Error sending tracking data to Twitch');
     }
 
+    if (data.message.substr(0, 5) === ':act ') return;
+
     if (data.style && ['admin', 'action', 'notification', 'whisper'].indexOf(data.style) === -1) return;
 
     if (data.style === 'admin' || data.style === 'notification') {
