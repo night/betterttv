@@ -18,11 +18,12 @@ var checkBroadcastInfo = module.exports = function() {
 
     bttv.TwitchAPI.get('channels/' + channel.id, {}, { version: 3 }).done(function(d) {
         if (d.game) {
-            channel.set('game', d.game);
             channel.set('rollbackData.game', d.game);
+            channel.set('game', d.game);
         }
 
         if (d.status) {
+            channel.set('rollbackData.status', d.status);
             channel.set('status', d.status);
 
             if (!hostedChannel) {
@@ -41,11 +42,12 @@ var checkBroadcastInfo = module.exports = function() {
         }
 
         if (d.views) {
+            channel.set('rollbackData.views', d.views);
             channel.set('views', d.views);
         }
 
-        if (d.followers) {
-            channel.set('followersTotal', d.followers);
+        if (d.followers && channel.get('followers')) {
+            channel.get('followers').set('total', d.followers);
         }
     }).always(function() {
         setTimeout(checkBroadcastInfo, 60000 + Math.random() * 5000);
