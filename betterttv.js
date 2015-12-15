@@ -3848,7 +3848,7 @@ Conversations.prototype.messageParser = function(element) {
     $element.addClass('bttv-parsed-message');
 
     from.style.color = this.usernameRecolor(from.style.color);
-    message.innerHTML = this.emoticonize(message.innerHTML);
+    // message.innerHTML = this.emoticonize(message.innerHTML);
 
     this.scrollDownParent(element);
 };
