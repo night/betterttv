@@ -2197,11 +2197,6 @@ span.subscribe-text {
 /* conversations */
 
 /* conversations list icon */
-.conversations-content .conversations-list-icon {
-    background-color: rgb(30,30,30);
-    border-color: #0e0e0e;
-}
-
 .conversations-content .conversations-list {
     background-color: rgb(35,35,35);
     border-color: #0e0e0e;
@@ -2228,6 +2223,25 @@ span.subscribe-text {
 
 .conversations-content .conversations-list .conversation-preview a {
     color: #999;
+}
+
+.conversations-content .conversations-list .search-divider {
+    border-color: #444;
+}
+
+.conversations-content .conversations-list-bottom-bar {
+    background-color: rgb(30,30,30);
+    border-color: #0e0e0e;
+}
+.conversations-content .conversations-list-search-bar .text {
+    background-color: rgb(20, 20, 20);
+    border: solid 1px #333;
+    color: #d3d3d3;
+}
+.conversations-content .conversations-list-search-bar .text:focus {
+    box-shadow: 0 0 3px 1px #444;
+    -moz-box-shadow: 0 0 3px 1px #444;
+    -webkit-box-shadow: 0 0 3px 1px #444;
 }
 
 /* conversations window */
