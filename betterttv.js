@@ -3800,6 +3800,11 @@ var store = require('../chat/store');
 function Conversations(timeout) {
     timeout = timeout || 0;
 
+    if (bttv.settings.get('disableWhispers') === true) {
+        $('.conversations-content').hide();
+        return;
+    }
+
     if (!(this instanceof Conversations)) return new Conversations(0);
 
     var $conversations = $('.conversations-content');
@@ -3812,7 +3817,7 @@ function Conversations(timeout) {
     }
 
     var _self = this;
-
+    
     var watcher = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
             var el, subEls, len = mutation.addedNodes.length;
@@ -6944,7 +6949,7 @@ module.exports = SocketClient;
 
 },{"./helpers/debug":47,"./vars":68}],70:[function(require,module,exports){
 /*
- * Cookies.js - 1.2.2
+ * Cookies.js - 1.2.1
  * https://github.com/ScottHamper/Cookies
  *
  * This is free and unencumbered software released into the public domain.
@@ -6980,10 +6985,8 @@ module.exports = SocketClient;
             if (Cookies._cachedDocumentCookie !== Cookies._document.cookie) {
                 Cookies._renewCache();
             }
-            
-            var value = Cookies._cache[Cookies._cacheKeyPrefix + key];
 
-            return value === undefined ? undefined : decodeURIComponent(value);
+            return Cookies._cache[Cookies._cacheKeyPrefix + key];
         };
 
         Cookies.set = function (key, value, options) {
@@ -7066,19 +7069,9 @@ module.exports = SocketClient;
             // IE omits the "=" when the cookie value is an empty string
             separatorIndex = separatorIndex < 0 ? cookieString.length : separatorIndex;
 
-            var key = cookieString.substr(0, separatorIndex);
-            var decodedKey;
-            try {
-                decodedKey = decodeURIComponent(key);
-            } catch (e) {
-                if (console && typeof console.error === 'function') {
-                    console.error('Could not decode cookie with key "' + key + '"', e);
-                }
-            }
-            
             return {
-                key: decodedKey,
-                value: cookieString.substr(separatorIndex + 1) // Defer decoding value until accessed
+                key: decodeURIComponent(cookieString.substr(0, separatorIndex)),
+                value: decodeURIComponent(cookieString.substr(separatorIndex + 1))
             };
         };
 
