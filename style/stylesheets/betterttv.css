@@ -756,6 +756,15 @@ input.text:focus,select:focus,textarea:focus {
     -webkit-box-shadow: none;
 }
 
+#dash_main .dash-items-contain .primary_button span {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+#dash_main #stats {
+    height: 48px;
+}
+
 #dash_main #stats .stat#views_count svg path,
 #dash_main #stats .stat#followers_count svg path {
     fill: #2a2a2a;
