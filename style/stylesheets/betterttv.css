@@ -1239,6 +1239,8 @@ body#chat #speak {
 
 .ember-chat .chat-settings {
     padding: 0px;
+    left: 12px;
+    bottom: 42px;
 }
 
 .ember-chat .chat-interface {
