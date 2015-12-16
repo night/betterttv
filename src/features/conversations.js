@@ -7,7 +7,7 @@ var store = require('../chat/store');
 function Conversations(timeout) {
     timeout = timeout || 0;
 
-    if (bttv.settings.get('disableWhispers') === true) {
+    if (bttv.settings.get('disableWhispers')) {
         $('.conversations-content').hide();
         return;
     }

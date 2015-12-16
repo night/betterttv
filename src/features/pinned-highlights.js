@@ -29,4 +29,10 @@ module.exports = function(message) {
 
     // Append the highlight to the container
     $highlightContainer.append($nextHighlight);
+
+    if (bttv.settings.get('timeoutHighlights')) {
+        setTimeout(function() {
+            $nextHighlight.remove();
+        }, 60000);
+    }
 };

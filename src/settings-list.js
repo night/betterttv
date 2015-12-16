@@ -434,6 +434,12 @@ module.exports = [
         storageKey: 'tabCompletionTooltip'
     },
     {
+        name: 'Timeout Pinned Highlights',
+        description: 'Automatically hide pinned highlights after 1 minute',
+        default: false,
+        storageKey: 'timeoutHighlights',
+    },
+    {
         default: '',
         storageKey: 'blacklistKeywords',
         toggle: function(keywords) {

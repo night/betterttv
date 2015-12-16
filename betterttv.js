@@ -3800,7 +3800,7 @@ var store = require('../chat/store');
 function Conversations(timeout) {
     timeout = timeout || 0;
 
-    if (bttv.settings.get('disableWhispers') === true) {
+    if (bttv.settings.get('disableWhispers')) {
         $('.conversations-content').hide();
         return;
     }
@@ -3817,7 +3817,7 @@ function Conversations(timeout) {
     }
 
     var _self = this;
-    
+
     var watcher = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
             var el, subEls, len = mutation.addedNodes.length;
@@ -4973,6 +4973,12 @@ module.exports = function(message) {
 
     // Append the highlight to the container
     $highlightContainer.append($nextHighlight);
+
+    if (bttv.settings.get('timeoutHighlights')) {
+        setTimeout(function() {
+            $nextHighlight.remove();
+        }, 60000);
+    }
 };
 
 },{"../templates/pinned-highlight":64}],45:[function(require,module,exports){
@@ -6185,6 +6191,12 @@ module.exports = [
         description: 'Shows a tooltip with suggested names when using tab completion',
         default: false,
         storageKey: 'tabCompletionTooltip'
+    },
+    {
+        name: 'Timeout Pinned Highlights',
+        description: 'Automatically hide pinned highlights after 1 minute',
+        default: false,
+        storageKey: 'timeoutHighlights',
     },
     {
         default: '',
