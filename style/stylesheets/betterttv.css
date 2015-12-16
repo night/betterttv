@@ -1306,6 +1306,12 @@ body#chat #speak {
     left: 0px;
 }
 
+.ember-chat .chat-menu-content p a {
+    background-repeat: no-repeat;
+    padding-left: 20px;
+    padding-top: 3px;
+}
+
 .ember-chat .chat-messages .chat-line.admin {
     margin: 0;
 }
