@@ -2,6 +2,7 @@ var chatStore = require('../chat/store');
 var chatTemplates = require('../chat/templates');
 var chatHelpers = require('../chat/helpers');
 var colors = require('../helpers/colors');
+var keyCodes = require('../keycodes');
 var store = require('../chat/store');
 
 function Conversations(timeout) {
@@ -116,6 +117,67 @@ Conversations.prototype.usernameRecolor = function(color) {
 };
 
 Conversations.prototype.newConversation = function(element) {
+    var $chatInput = $(element).find('.chat_text_input');
+    var name = $(element).find('.conversation-header-name').text().toLowerCase();
+
+    function storeMessage(message) {
+        if (!bttv.settings.get('chatLineHistory')) return;
+        if (store.whisperHistory[name]) {
+            if (store.whisperHistory[name].indexOf(message) !== -1) {
+                store.whisperHistory[name].splice(store.whisperHistory[name].indexOf(message), 1);
+            }
+            store.whisperHistory[name].unshift(message);
+        } else {
+            store.whisperHistory[name] = [message];
+        }
+    }
+
+    function loadHistory(e) {
+        $chatInput = $(element).find('.chat_text_input');
+        if (!bttv.settings.get('chatLineHistory')) return;
+        if (!store.whisperHistory[name]) return;
+        var historyIndex = store.whisperHistory[name].indexOf($chatInput.val().trim());
+        if (e.keyCode === keyCodes.UpArrow) {
+            if (historyIndex >= 0) {
+                if (store.whisperHistory[name][historyIndex + 1]) {
+                    $chatInput.val(store.whisperHistory[name][historyIndex + 1]);
+                }
+            } else {
+                if ($chatInput.val().trim().length) {
+                    store.whisperHistory[name].unshift($chatInput.val().trim());
+                    $chatInput.val(store.whisperHistory[name][1]);
+                } else {
+                    $chatInput.val(store.whisperHistory[name][0]);
+                }
+            }
+        } else if (e.keyCode === keyCodes.DownArrow) {
+            if (historyIndex >= 0) {
+                if (store.whisperHistory[name][historyIndex - 1]) {
+                    $chatInput.val(store.whisperHistory[name][historyIndex - 1]);
+                } else {
+                    $chatInput.val('');
+                }
+            }
+        }
+    }
+
+    $chatInput.on('keydown', function(e) {
+        if (e.which === keyCodes.Enter) {
+            var val = $chatInput.val().trim();
+            if (bttv.settings.get('chatLineHistory') === true) {
+                storeMessage(val);
+            }
+        }
+        loadHistory(e);
+    });
+
+    $(element).find('.send-button').on('click', function() {
+        var val = $chatInput.val().trim();
+        if (bttv.settings.get('chatLineHistory') === true) {
+            storeMessage(val);
+        }
+    });
+
     this.addBadges(element);
 };
 

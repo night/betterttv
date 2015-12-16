@@ -16,6 +16,7 @@ exports.suggestions = {
     lastMatch: ''
 };
 exports.chatHistory = [];
+exports.whisperHistory = {};
 exports.bttvEmotes = {};
 exports.autoCompleteEmotes = {};
 
