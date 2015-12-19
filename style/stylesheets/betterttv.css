@@ -378,6 +378,7 @@ input.text:focus,select:focus,textarea:focus {
     background-color: #282828;
     width: 100%;
     border-bottom: 1px solid #111;
+    line-height: 42px;
 }
 
 #bttvSettingsPanel #footer {
@@ -392,6 +393,7 @@ input.text:focus,select:focus,textarea:focus {
     width: calc(100% - 10px);
     padding: 5px;
     border-top: 1px solid #111;
+    box-sizing: content-box;
 }
 
 #bttvSettingsPanel #footer a {
@@ -431,6 +433,15 @@ input.text:focus,select:focus,textarea:focus {
 
 #bttvSettingsPanel #bttvSettings {
     font: 12px "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+#bttvSettingsPanel #bttvSettings div {
+    box-sizing: content-box;
+}
+
+#bttvSettingsPanel #bttvSettings h2 {
+    box-sizing: content-box;
+    margin: 0px;
 }
 
 #bttvSettingsPanel .option {
