@@ -1736,3 +1736,8 @@ body.channel_new.columns.ember-application {
 #bttv-custom-timeout-contain:hover .cursor {
     background: #0f0;
 }
+
+/* fix small font in chat */
+.ember-chat .chat-messages .chat-line {
+    font-size: 13.3333px;
+}
