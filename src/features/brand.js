@@ -4,21 +4,6 @@ module.exports = function() {
     debug.log('Branding Site with Better & Importing Styles');
 
     var $watermark = $('<img />');
-    // Old Site Header Logo Branding
-    if ($('#header_logo').length) {
-        $('#header_logo').html('<img alt="TwitchTV" src="https://cdn.betterttv.net/style/logos/black_twitch_logo.png">');
-        $watermark.attr('src', 'https://cdn.betterttv.net/style/logos/logo_icon.png');
-        $watermark.css({
-            'z-index': 9000,
-            'margin-left': '-82px',
-            'margin-top': '-10px',
-            'float': 'left',
-            'height': 18,
-            'position': 'absolute'
-        });
-        $('#header_logo').append($watermark);
-    }
-
     // New Site Logo Branding
     if ($('#large_nav #logo').length) {
         $watermark.attr('src', 'https://cdn.betterttv.net/style/logos/logo_icon.png');
