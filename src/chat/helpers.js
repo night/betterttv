@@ -264,7 +264,11 @@ exports.tabCompletion = function(e) {
 
             // Mix in emotes if not directly asking for a user
             if (lastWord.charAt(0) !== '@' && !detectServerCommand(input)) {
-                users = users.concat(emotes);
+                if (bttv.settings.get('emoteOnlyAutoComplete') === true) {
+                    users = emotes;
+                } else {
+                    users = users.concat(emotes);
+                }
             }
 
             if (users.indexOf(vars.userData.name) > -1) users.splice(users.indexOf(vars.userData.name), 1);
