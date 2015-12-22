@@ -298,6 +298,12 @@ module.exports = [
         }
     },
     {
+        name: 'Emote Only Auto-Complete',
+        description: 'Tab auto-completion only uses emotes',
+        default: false,
+        storageKey: 'emoteOnlyAutoComplete'
+    },
+    {
         name: 'Featured Channels',
         description: 'The left sidebar is too cluttered, so BetterTTV removes featured channels by default',
         default: false,

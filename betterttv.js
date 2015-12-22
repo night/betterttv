@@ -1075,7 +1075,7 @@ exports.tabCompletion = function(e) {
 
             // Mix in emotes if not directly asking for a user
             if (lastWord.charAt(0) !== '@' && !detectServerCommand(input)) {
-                users = users.concat(emotes);
+                users = bttv.setting.get('emoteOnlyAutoComplete') ? emotes : users.concat(emotes);
             }
 
             if (users.indexOf(vars.userData.name) > -1) users.splice(users.indexOf(vars.userData.name), 1);
@@ -6103,6 +6103,12 @@ module.exports = [
                 $('#clickTwitchEmotes').remove();
             }
         }
+    },
+    {
+        name: 'Emote Only Auto-Complete',
+        description: 'Tab auto-completion only uses emotes',
+        default: false,
+        storageKey: 'emoteOnlyAutoComplete'
     },
     {
         name: 'Featured Channels',
