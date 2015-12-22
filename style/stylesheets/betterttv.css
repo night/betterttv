@@ -1626,6 +1626,19 @@ body.channel_new.columns.ember-application {
     animation: morag-spin 1.5s linear infinite;
 }
 
+/* holiday emote, remove after */
+.bttv-emo-567941303ec3c0b565335c2f {
+    position: absolute;
+    bottom: 5px;
+    right: 0px;
+    pointer-events: none;
+}
+/* also temp for holiday emote */
+.ember-chat .chat-line {
+    position: relative;
+}
+
+
 /* Notification Container above chat */
 .ember-chat .notification-container {
     left: 0px;
