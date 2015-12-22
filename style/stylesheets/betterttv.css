@@ -101,7 +101,7 @@ input.text:focus,select:focus,textarea:focus {
     box-shadow: 0 0 3px 1px #dad9d9;
     -moz-box-shadow: 0 0 3px 1px #dad9d9;
     -webkit-box-shadow: 0 0 3px 1px #dad9d9;
-    border: 1px solid #000;
+    border: 1px solid #aaa;
     color: #000;
 }
 
