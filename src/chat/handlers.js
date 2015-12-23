@@ -28,6 +28,7 @@ var secondsToLength = function(s) {
 exports.commands = function(input) {
     var sentence = input.trim().split(' ');
     var command = sentence[0].toLowerCase();
+    var oldSetting;
 
     if (command === '/b') {
         helpers.ban(sentence[1]);
@@ -44,7 +45,9 @@ exports.commands = function(input) {
             helpers.serverMessage('Could not fetch follower count.', true);
         });
     } else if (command === '/join') {
+        oldSetting = bttv.settings.get('anonChat');
         bttv.settings.save('anonChat', false);
+        bttv.settings.set('anonChat', oldSetting);
     } else if (command === '/linehistory') {
         bttv.settings.save('chatLineHistory', sentence[1] === 'off' ? false : true);
     } else if (command === '/localmod') {
@@ -64,7 +67,9 @@ exports.commands = function(input) {
     } else if (command === '/p' || command === '/purge') {
         helpers.timeout(sentence[1], 1);
     } else if (command === '/part') {
+        oldSetting = bttv.settings.get('anonChat');
         bttv.settings.save('anonChat', true);
+        bttv.settings.set('anonChat', oldSetting);
     } else if (command === '/shrug') {
         sentence.shift();
         helpers.sendMessage(sentence.join(' ') + ' ¯\\_(ツ)_/¯');
