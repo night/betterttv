@@ -160,11 +160,10 @@ var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message
             emote &&
             emote.urlTemplate &&
             bttv.settings.get('bttvEmotes') === true &&
-            (emote.imageType === 'png' || (emote.imageType === 'gif' && bttv.settings.get('bttvGIFEmotes') === true)) &&
-            gifCount < 5
+            (emote.imageType === 'png' || (emote.imageType === 'gif' && bttv.settings.get('bttvGIFEmotes') === true) && gifCount < 5)
         ) {
             piece = bttvEmoticonize(piece, emote, sender);
-            gifCount++;
+            if (emote.id === '567b5b520e984428652809b6') gifCount++;
         } else {
             piece = escape(piece);
             piece = linkify(piece);
