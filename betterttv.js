@@ -938,7 +938,7 @@ var completableEmotes = function() {
         debug.log('Couldn\'t grab user emotes for tab completion.', e);
     }
 
-    return completableEmotesList;
+    return completableEmotesList.sort();
 };
 
 var suggestions = exports.suggestions = function(words, index) {
@@ -1092,7 +1092,7 @@ exports.tabCompletion = function(e) {
             if (search.length) {
                 users = users.filter(function(userToFilter) {
                     var lcUser = userToFilter.toLowerCase();
-                    return (lcUser.search(search) === 0);
+                    return (lcUser.indexOf(search) === 0);
                 });
             }
 
