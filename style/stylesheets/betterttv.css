@@ -1623,6 +1623,12 @@ body.channel_new.columns.ember-application {
     right: 0px;
     pointer-events: none;
 }
+.bttv-emo-567b5bd80e984428652809b8 {
+    margin-left: -35px;
+}
+.bttv-emo-567b5c080e984428652809ba, .bttv-emo-567b5b520e984428652809b6, .bttv-emo-567b5dc00e984428652809bd {
+    margin-left: -33px;
+}
 /* also temp for holiday emote */
 .ember-chat .chat-line {
     position: relative;
