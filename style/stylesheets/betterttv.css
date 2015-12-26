@@ -546,6 +546,10 @@ input.text:focus,select:focus,textarea:focus {
     width: 7px;
 }
 
+.bttv-mod-card {
+    width: 290px;
+}
+
 .bttv-mod-card .interface button {
     margin-top: 5px;
 }
@@ -560,7 +564,7 @@ input.text:focus,select:focus,textarea:focus {
 }
 
 .bttv-mod-card .name a {
-    max-width: 210px;
+    max-width: 185px;
     overflow-x: hidden;
     text-overflow: ellipsis;
     display: inline-block;
@@ -1070,8 +1074,8 @@ body#chat #speak {
     z-index: 4;
     position: relative;
     margin-left: 60px;
-    margin-top: -10px;
-    margin-bottom: -2px;
+    margin-top: -20px;
+    margin-bottom: -1px;
 }
 
 .ember-chat .moderation-card h4.created-at {

@@ -44,9 +44,9 @@ module.exports = function(user, $event) {
     });
     $modCard.find('.mod-card-edit').click(function() {
         var nickname = prompt('Enter the new nickname for ' + user.display_name + '. (Leave blank to reset...)');
-        if (!nickname) return;
+        if (nickname === null) return;
 
-        if (nickname.length) {
+        if (nickname && nickname.length) {
             nickname = nickname.trim();
             if (!nickname.length) return;
 
