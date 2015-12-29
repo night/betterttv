@@ -783,6 +783,7 @@ var privmsg = exports.privmsg = function(channel, data) {
 };
 
 exports.onPrivmsg = function(channel, data) {
+    if ($('#right_col').css('display') === 'none') return;
     if (!rooms.getRoom(channel).active() && data.from && data.from !== 'jtv') {
         rooms.getRoom(channel).queueMessage(data);
         return;
