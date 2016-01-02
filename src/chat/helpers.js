@@ -7,7 +7,8 @@ var vars = require('../vars'),
     bots = require('../bots'),
     punycode = require('punycode'),
     channelState = require('../features/channel-state'),
-    MassUnbanPopup = require('../helpers/massunban-popup');
+    MassUnbanPopup = require('../helpers/massunban-popup'),
+    throttle = require('lodash.throttle');
 
 // Helper functions
 var calculateColorBackground = require('../helpers/colors').calculateColorBackground;
@@ -455,6 +456,8 @@ exports.reparseMessages = function(user) {
     bttv.jQuery('.chat-line[data-sender="' + user + '"] .message').each(function() {
         var message = $(this);
 
+        if (message.hasClass('timed-out')) return;
+
         var rawMessage = decodeURIComponent(message.data('raw'));
         var emotes = message.data('emotes') ? JSON.parse(decodeURIComponent(message.data('emotes'))) : false;
         var color = message.attr('style') ? message.attr('style').split(': ')[1] : false;
@@ -563,7 +566,7 @@ exports.getSpecials = function(user) {
     return specials;
 };
 
-exports.scrollChat = function() {
+exports.scrollChat = throttle(function() {
     var $chat = $('.ember-chat');
 
     var chatPaused = $chat.find('.chat-interface').children('span').children('.more-messages-indicator').length;
@@ -587,7 +590,7 @@ exports.scrollChat = function() {
     $chatLines.slice(0, linesToDelete).each(function() {
         $(this).remove();
     });
-};
+}, 250);
 
 exports.calculateColor = function(color) {
     var colorRegex = /^#[0-9a-f]+$/i;

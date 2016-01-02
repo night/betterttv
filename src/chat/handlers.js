@@ -170,7 +170,12 @@ exports.shiftQueue = function() {
         }
     } else {
         if (store.__messageQueue.length === 0) return;
-        $('.ember-chat .chat-messages .tse-content .chat-lines').append(store.__messageQueue.join(''));
+        store.__messageQueue.forEach(function($message) {
+            $message.find('img').on('load', function() {
+                helpers.scrollChat();
+            });
+        });
+        $('.ember-chat .chat-messages .tse-content .chat-lines').append(store.__messageQueue);
         store.__messageQueue = [];
     }
     helpers.scrollChat();
@@ -213,9 +218,13 @@ exports.clearChat = function(user) {
     if (!user) {
         helpers.serverMessage('Chat was cleared by a moderator (Prevented by BetterTTV)', true);
     } else {
-        if ($('.chat-line[data-sender="' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '"]').length === 0) return;
+        var $chatLines = $('.chat-line[data-sender="' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '"]');
+
+        $chatLines = $(store.__messageQueue.concat($chatLines));
+
+        if (!$chatLines.length) return;
         if (bttv.settings.get('hideDeletedMessages') === true) {
-            $('.chat-line[data-sender="' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '"]').each(function() {
+            $chatLines.each(function() {
                 $(this).hide();
                 $('div.tipsy').remove();
             });
@@ -228,23 +237,26 @@ exports.clearChat = function(user) {
             }, 3000);
         } else {
             if (bttv.settings.get('showDeletedMessages') !== true) {
-                $('.chat-line[data-sender="' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '"] .message').each(function() {
-                    $(this).addClass('timed-out');
-                    $(this).html('<span style="color: #999">&lt;message deleted&gt;</span>').off('click').on('click', function() {
+                $chatLines.each(function() {
+                    var $message = $(this).find('.message');
+
+                    $message.addClass('timed-out');
+                    $message.html('<span style="color: #999">&lt;message deleted&gt;</span>').off('click').on('click', function() {
                         $(this).replaceWith(templates.message(user, decodeURIComponent($(this).data('raw'))));
                     });
                 });
             } else {
-                $('.chat-line[data-sender="' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '"] .message').each(function() {
-                    $('a', this).each(function() {
+                $chatLines.each(function() {
+                    var $message = $(this).find('.message');
+                    $('a', $message).each(function() {
                         var rawLink = '<span style="text-decoration: line-through;">' + $(this).attr('href').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</span>';
                         $(this).replaceWith(rawLink);
                     });
-                    $('.emoticon', this).each(function() {
+                    $('.emoticon', $message).each(function() {
                         $(this).css('opacity', '0.1');
                     });
-                    $(this).addClass('timed-out');
-                    $(this).html('<span style="color: #999">' + $(this).html() + '</span>');
+                    $message.addClass('timed-out');
+                    $message.html('<span style="color: #999">' + $message.html() + '</span>');
                 });
             }
             if (trackTimeouts[user]) {
@@ -415,7 +427,7 @@ var privmsg = exports.privmsg = function(channel, data) {
         }
     );
 
-    store.__messageQueue.push(message);
+    store.__messageQueue.push($(message));
 };
 
 exports.onPrivmsg = function(channel, data) {

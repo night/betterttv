@@ -69,9 +69,23 @@ var jtvEmoticonize = exports.jtvEmoticonize = function(id) {
 
 var emoticon = exports.emoticon = function(id, name) {
     if (id < 15 && bttv.settings.get('showMonkeyEmotes') === true) {
-        return '<img class="emoticon ttv-emo-' + id + '" src="' + jtvEmoticonize(id) + '" data-id="' + id + '" data-regex="' + encodeURIComponent(name) + '" />';
+        return '<img class="emoticon ttv-emo-' + id + '" src="' + jtvEmoticonize(id) + '" data-id="' + id + '" data-regex="' + encodeURIComponent(name) + '" width="22" height="22" />';
     }
-    return '<img class="emoticon ttv-emo-' + id + '" src="https://static-cdn.jtvnw.net/emoticons/v1/' + id + '/1.0" srcset="https://static-cdn.jtvnw.net/emoticons/v1/' + id + '/2.0 2x" data-id="' + id + '" data-regex="' + encodeURIComponent(name) + '" />';
+
+    var emote = $('<img/>');
+
+    emote.on('load', '.emoticon', function() {
+        console.log('emote loaded');
+        helpers.scrollChat();
+    });
+
+    emote.addClass('emoticon').addClass('ttv-emo-' + id);
+    emote.attr('src', 'https://static-cdn.jtvnw.net/emoticons/v1/' + id + '/1.0');
+    emote.attr('srcset', 'https://static-cdn.jtvnw.net/emoticons/v1/' + id + '/2.0 2x, https://static-cdn.jtvnw.net/emoticons/v1/' + id + '/3.0 4x');
+    emote.attr('data-id', id);
+    emote.attr('data-regex', encodeURIComponent(name));
+
+    return emote[0].outerHTML;
 };
 
 exports.emoticonCss = function(image, id) {
