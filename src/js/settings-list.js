@@ -554,6 +554,12 @@ module.exports = [
         storageKey: 'timeoutHighlights',
     },
     {
+        name: 'Regular Expression Highlighting',
+        description: 'Surround keywords with semicolons to treat them as regular expressions',
+        default: false,
+        storageKey: 'regexHighlights',
+    },
+    {
         name: 'Unread Whispers Count in Title',
         description: 'Display the number of unread whispers in the tab title',
         default: true,
