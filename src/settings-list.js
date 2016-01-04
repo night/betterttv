@@ -440,6 +440,12 @@ module.exports = [
         storageKey: 'timeoutHighlights',
     },
     {
+        name: 'Regular Expression Highlighting',
+        description: 'Surround keywords with semicolons to treat them as regular expressions',
+        default: false,
+        storageKey: 'regexHighlights',
+    },
+    {
         default: '',
         storageKey: 'blacklistKeywords',
         toggle: function(keywords) {
