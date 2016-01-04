@@ -224,7 +224,7 @@ exports.clearChat = function(user) {
             return false;
         });
 
-        $chatLines = $(queuedMessages.concat($chatLines));
+        $chatLines = $chatLines.length ? $(queuedMessages.concat($chatLines)) : queuedMessages;
 
         if (!$chatLines.length) return;
         if (bttv.settings.get('hideDeletedMessages') === true) {
