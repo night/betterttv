@@ -218,13 +218,17 @@ exports.clearChat = function(user) {
     if (!user) {
         helpers.serverMessage('Chat was cleared by a moderator (Prevented by BetterTTV)', true);
     } else {
-        var $chatLines = $('.chat-line[data-sender="' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '"]');
-        var queuedMessages = store.__messageQueue.filter(function($message) {
+        var printedChatLines = [];
+        $('.chat-line[data-sender="' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '"]').each(function() {
+            printedChatLines.push($(this));
+        });
+
+        var queuedLines = store.__messageQueue.filter(function($message) {
             if ($message.data('sender') === user) return true;
             return false;
         });
 
-        $chatLines = $chatLines.length ? $(queuedMessages.concat($chatLines)) : queuedMessages;
+        $chatLines = $(printedChatLines.concat(queuedLines));
 
         if (!$chatLines.length) return;
         if (bttv.settings.get('hideDeletedMessages') === true) {
