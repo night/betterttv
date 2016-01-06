@@ -533,7 +533,12 @@ exports.shiftQueue = function() {
             $('#bttv-channel-state-contain').show();
         }
     } else {
+        if ($('#right_col').css('display') === 'none') return;
         if (store.__messageQueue.length === 0) return;
+        if (store.__messageQueue.length > bttv.settings.get('scrollbackAmount')) {
+            store.__messageQueue.splice(0, store.__messageQueue.length - bttv.settings.get('scrollbackAmount'));
+        }
+
         store.__messageQueue.forEach(function($message) {
             $message.find('img').on('load', function() {
                 helpers.scrollChat();
@@ -803,7 +808,6 @@ var privmsg = exports.privmsg = function(channel, data) {
 };
 
 exports.onPrivmsg = function(channel, data) {
-    if ($('#right_col').css('display') === 'none') return;
     if (!rooms.getRoom(channel).active() && data.from && data.from !== 'jtv') {
         rooms.getRoom(channel).queueMessage(data);
         return;
