@@ -46,7 +46,6 @@ function Conversations(timeout) {
         });
     });
 
-    watcher.observe($conversations[0], { childList: true, subtree: true });
 }
 
 Conversations.prototype.messageParser = function(element) {
