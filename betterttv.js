@@ -1106,7 +1106,7 @@ exports.tabCompletion = function(e) {
 
             // Mix in emotes if not directly asking for a user
             if (lastWord.charAt(0) !== '@' && !detectServerCommand(input)) {
-                users = users.concat(emotes);
+                users = bttv.settings.get('emotePriority') ? emotes.concat(users) : users.concat(emotes);
             }
 
             if (users.indexOf(vars.userData.name) > -1) users.splice(users.indexOf(vars.userData.name), 1);
@@ -6179,6 +6179,12 @@ module.exports = [
                 $('#clickTwitchEmotes').remove();
             }
         }
+    },
+    {
+        name: 'Emote Priority',
+        description: 'Complete emotes before usernames when using tab completion',
+        default: false,
+        storageKey: 'emotePriority'
     },
     {
         name: 'Featured Channels',

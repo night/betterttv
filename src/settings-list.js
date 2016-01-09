@@ -298,6 +298,12 @@ module.exports = [
         }
     },
     {
+        name: 'Emote Priority',
+        description: 'Prioritize emotes over usernames when using tab completion',
+        default: false,
+        storageKey: 'emotePriority'
+    },
+    {
         name: 'Featured Channels',
         description: 'The left sidebar is too cluttered, so BetterTTV removes featured channels by default',
         default: false,
