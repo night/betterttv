@@ -440,6 +440,12 @@ module.exports = [
         storageKey: 'timeoutHighlights',
     },
     {
+        name: 'Unread Whispers Count in Title',
+        description: 'Display the number of unread whispers in the tab title',
+        default: true,
+        storageKey: 'unreadInTitle'
+    },
+    {
         default: '',
         storageKey: 'blacklistKeywords',
         toggle: function(keywords) {
