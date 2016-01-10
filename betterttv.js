@@ -6182,7 +6182,7 @@ module.exports = [
     },
     {
         name: 'Emote Priority',
-        description: 'Complete emotes before usernames when using tab completion',
+        description: 'Prioritize emotes over usernames when using tab completion',
         default: false,
         storageKey: 'emotePriority'
     },
