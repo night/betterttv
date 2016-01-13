@@ -511,6 +511,12 @@ module.exports = [
         load: audibleFeedback.load
     },
     {
+        name: 'Regular Expression Highlighting',
+        description: 'Surround keywords with forward slashes to use them as regular expressions',
+        default: false,
+        storageKey: 'regexHighlights',
+    },
+    {
         name: 'Remove Deleted Messages',
         description: 'Completely removes timed out messages from view',
         default: false,
@@ -552,12 +558,6 @@ module.exports = [
         description: 'Automatically hide pinned highlights after 1 minute',
         default: false,
         storageKey: 'timeoutHighlights',
-    },
-    {
-        name: 'Regular Expression Highlighting',
-        description: 'Surround keywords with semicolons to treat them as regular expressions',
-        default: false,
-        storageKey: 'regexHighlights',
     },
     {
         name: 'Unread Whispers Count in Title',

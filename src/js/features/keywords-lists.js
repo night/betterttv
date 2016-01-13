@@ -69,7 +69,7 @@ exports.highlighting = function(data) {
     if (useRegex) {
         // Pull the regular expressions out first so curly braces
         // in the expression won't double count as phrases
-        var regexPhrase = /;.+?;/g;
+        var regexPhrase = /\/.+?\//g;
         var regexStrings;
         try {
             regexStrings = extraKeywords.match(regexPhrase);
@@ -83,7 +83,7 @@ exports.highlighting = function(data) {
                 debug.log(regexString);
                 extraKeywords = extraKeywords.replace(regexString, '')
                     .replace(/s\s\s+/g, ' ').trim();
-                highlightRegex.push(regexString.replace(/(^;|;$)/g, '')
+                highlightRegex.push(regexString.replace(/(^\/|\/$)/g, '')
                                     .trim());
             }
         }
