@@ -1492,8 +1492,8 @@ body.channel_new.columns.ember-application {
     position: absolute;
     top: 0px;
     right: 0px;
-    width: 16px;
-    height: 16px;
+    width: 50px;
+    height: 50px;
     padding: 17px;
 
     background: #800;
