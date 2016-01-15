@@ -833,6 +833,73 @@ input, textarea, select {
     height: 490px !important;
 }
 
+#bvl-panel {
+    min-width: 200px;
+    min-height: 300px;
+    margin: 10px;
+    z-index: 99999;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.25);
+}
+
+#bvl-panel .chat-header {
+    cursor: move !important;
+}
+
+#bvl-panel .chat-header p {
+    line-height: 3rem;
+}
+
+#bvl-panel a.button {
+    top: 5px;
+}
+
+#bvl-panel .status {
+    margin: 10px;
+    text-align: center;
+}
+
+#bvl-panel .filter {
+    background-color: rgb(20,20,20) !important;
+    color: #D3D3D3;
+    border: solid 1px #333;
+    box-shadow: none;
+    border-radius: 0;
+    margin: 5px;
+    width: calc(100% - 10px);
+    display: none;
+}
+
+#bvl-panel .viewer-list {
+    width: 101%;
+    margin: 0 15px;
+    padding-bottom: 15px;
+    overflow: auto;
+}
+
+#bvl-panel li {
+    height: 20px;
+}
+
+#bvl-panel li:not(.user-type) {
+    cursor: pointer;
+}
+
+#bvl-panel li.user-type {
+    color: #8c8c8c;
+}
+
+#bvl-panel .resizable-handle-se {
+    width: 20px !important;
+    height: 20px !important;
+}
+
+#bvl-panel .bvl-resizer {
+    position: absolute;
+    fill: #555;
+    right: 0;
+    bottom: 0;
+}
+
 .bttvSettingsIcon {
     background: url(../icons/bttv_settings.png) no-repeat 0 0px;
 }
