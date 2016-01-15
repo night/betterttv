@@ -194,7 +194,7 @@ var main = function() {
                                 channelReformat();
                                 hostButtonBelowVideo();
                                 if (
-                                    App.__container__.lookup('controller:channel').get('theatreMode') === false &&
+                                    App.__container__.lookup('controller:channel').get('isTheatreMode') === false &&
                                     bttv.settings.get('autoTheatreMode') === true
                                 ) {
                                     enableTheatreMode();
