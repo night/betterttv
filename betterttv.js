@@ -2746,7 +2746,7 @@ var main = function() {
                                 channelReformat();
                                 hostButtonBelowVideo();
                                 if (
-                                    App.__container__.lookup('controller:channel').get('theatreMode') === false &&
+                                    App.__container__.lookup('controller:channel').get('isTheatreMode') === false &&
                                     bttv.settings.get('autoTheatreMode') === true
                                 ) {
                                     enableTheatreMode();
@@ -6110,7 +6110,7 @@ module.exports = [
                 if (!$('div.tipsy').length) return;
 
                 var timer = setInterval(function() {
-                    if ($('div.tipsy').is(':hover')) return;
+                    if ($('div.tipsy').length && $('div.tipsy').is(':hover')) return;
 
                     clearInterval(timer);
                     $this.tipsy('hide');
@@ -6128,12 +6128,12 @@ module.exports = [
         storageKey: 'disableHostMode',
         toggle: function(value) {
             try {
-                window.App.set('enableHostMode', !value);
+                window.App.__container__.lookup('service:globals').set('enableHostMode', !value);
             } catch (e) {}
         },
         load: function() {
             try {
-                window.App.set('enableHostMode', !bttv.settings.get('disableHostMode'));
+                window.App.__container__.lookup('service:globals').set('enableHostMode', !bttv.settings.get('disableHostMode'));
             } catch (e) {}
         }
     },
