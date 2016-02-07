@@ -60,7 +60,7 @@ module.exports = function() {
         });
 
         if (tab === '#bttvChannel') {
-            $(tab).children('iframe').attr('src', 'https://manage.betterttv.net/');
+            $(tab).children('iframe').attr('src', 'https://manage.betterttv.net/channel');
         }
 
         $(tab).fadeIn();
