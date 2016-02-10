@@ -414,6 +414,12 @@ exports.commands = function(input) {
         bttv.settings.set('anonChat', oldSetting);
     } else if (command === '/linehistory') {
         bttv.settings.save('chatLineHistory', sentence[1] === 'off' ? false : true);
+    } else if (command === '/localascii') {
+        helpers.serverMessage('Local ascii-only mode enabled.', true);
+        vars.localAsciiOnly = true;
+    } else if (command === '/localasciioff') {
+        helpers.serverMessage('Local ascii-only mode disabled.', true);
+        vars.localAsciiOnly = false;
     } else if (command === '/localmod') {
         helpers.serverMessage('Local moderators-only mode enabled.', true);
         vars.localModsOnly = true;
@@ -474,6 +480,8 @@ exports.commands = function(input) {
         helpers.serverMessage('/followers -- Retrieves the number of followers for the channel');
         helpers.serverMessage('/join -- Joins the channel (deactivates anon chat mode)');
         helpers.serverMessage('/linehistory on/off -- Toggles the chat field history (pressing up/down arrow in textbox)');
+        helpers.serverMessage('/localascii -- Turns on local ascii-only mode (only your chat is ascii-only mode)');
+        helpers.serverMessage('/localasciioff -- Turns off local ascii-only mode');
         helpers.serverMessage('/localmod -- Turns on local mod-only mode (only your chat is mod-only mode)');
         helpers.serverMessage('/localmodoff -- Turns off local mod-only mode');
         helpers.serverMessage('/localsub -- Turns on local sub-only mode (only your chat is sub-only mode)');
@@ -787,6 +795,11 @@ var privmsg = exports.privmsg = function(channel, data) {
 
     if (vars.localSubsOnly && !helpers.isModerator(data.from) && !helpers.isSubscriber(data.from)) return;
     if (vars.localModsOnly && !helpers.isModerator(data.from)) return;
+    if (vars.localAsciiOnly) {
+        for (var i = 0; i < data.message.length; i++) {
+            if (data.message.charCodeAt(i) > 128) return;
+        }
+    }
 
     message = templates.privmsg(
         messageHighlighted,
