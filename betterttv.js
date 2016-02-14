@@ -5792,7 +5792,7 @@ module.exports = function(data) {
         // Donations
         'gspwar': { mod: false, tagType: 'admin', tagName: 'EH?' },
         'nightmare': { mod: false, tagType: 'broadcaster', tagName: 'MLG' },
-        'sour': { mod: false, tagType: 'brown', tagName: '<span style="color:#FFE600;">Saucy</span>', color: data.color + ';text-shadow: 0 0 10px #FFD700' },
+        'sour': { mod: false, tagType: 'teal', tagName: '<span style="color:#FF0077;">Saucy</span>', color: data.color + ';text-shadow: 0 0 10px #FFD700' },
         'yorkyyork': { mod: false, tagType: 'broadcaster', tagName: 'Nerd' },
         'striker035': { mod: true, tagType: 'admin', tagName: 'MotherLover' },
         'dog': { mod: true, tagType: 'bot', tagName: 'Smelly' },

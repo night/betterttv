@@ -220,6 +220,16 @@ input.text:focus,select:focus,textarea:focus {
     display: inline !important;
 }
 
+.line .teal, .ember-chat .badges .teal {
+    background-color: #2FC4CC;
+    border-radius: 2px 2px 2px 2px;
+    padding: 2px 3px;
+    font-weight: bold;
+    font-size: 0.8572em;
+    color: white;
+    display: inline !important;
+}
+
 .line .orange, .ember-chat .badges .orange {
     background-color: orange;
     border-radius: 2px 2px 2px 2px;
