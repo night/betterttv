@@ -103,6 +103,7 @@ bttv.notify = function(message, options) {
         window.Twitch.notify.alert(message, {
             layout: 'bottomCenter',
             timeout: 5000,
+            killer: true,
             escape: false
         });
     }
