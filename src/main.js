@@ -23,7 +23,8 @@ bttv.settings = new Settings();
 
 bttv.getChannel = function() {
     if (window.Ember && window.App && App.__container__.lookup('controller:application').get('currentRouteName') === 'channel.index') {
-        return App.__container__.lookup('controller:channel').get('model.id');
+        var channel = App.__container__.lookup('controller:channel');
+        return channel.get('id') || channel.get('model.id');
     } else if (bttv.getChatController() && bttv.getChatController().currentRoom) {
         return bttv.getChatController().currentRoom.id;
     } else if (window.PP && PP.channel) {
