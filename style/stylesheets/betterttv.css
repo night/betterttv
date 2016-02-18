@@ -221,7 +221,8 @@ input.text:focus,select:focus,textarea:focus {
 }
 
 .line .teal, .ember-chat .badges .teal {
-    background-color: #2FC4CC;
+    /* Not even teal anymore */
+    background-color: #565656;
     border-radius: 2px 2px 2px 2px;
     padding: 2px 3px;
     font-weight: bold;

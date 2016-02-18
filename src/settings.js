@@ -96,6 +96,8 @@ Settings.prototype.backup = function() {
         download[setting] = val;
     });
 
+    download.nicknames = bttv.storage.getObject('nicknames');
+
     download = new Blob([JSON.stringify(download)], {
         type: 'text/plain;charset=utf-8;'
     });
@@ -131,11 +133,16 @@ Settings.prototype.import = function(input) {
                 count = 0;
 
             Object.keys(settings).forEach(function(setting) {
-                try {
-                    _self.set(setting, settings[setting]);
+                if (setting === 'nicknames') {
                     count++;
-                } catch (e) {
-                    debug.log('Import Error: ' + setting + ' does not exist in settings list. Ignoring...');
+                    bttv.storage.putObject('nicknames', settings[setting]);
+                } else {
+                    try {
+                        _self.set(setting, settings[setting]);
+                        count++;
+                    } catch (e) {
+                        debug.log('Import Error: ' + setting + ' does not exist in settings list. Ignoring...');
+                    }
                 }
             });
 
@@ -144,6 +151,48 @@ Settings.prototype.import = function(input) {
             setTimeout(function() {
                 window.location.reload();
             }, 3000);
+        } else {
+            bttv.notify('You uploaded an invalid file.');
+        }
+    });
+};
+
+Settings.prototype.nicknamesBackup = function() {
+    var download = bttv.storage.getObject('nicknames');
+
+    download = new Blob([JSON.stringify(download)], {
+        type: 'text/plain;charset=utf-8;'
+    });
+
+    saveAs(download, 'bttv_nicknames.backup');
+};
+
+Settings.prototype.nicknamesImport = function(input) {
+    var getDataUrlFromUpload = function(urlInput, callback) {
+        var reader = new FileReader();
+
+        reader.onload = function(e) {
+            callback(e.target.result);
+        };
+
+        reader.readAsText(urlInput.files[0]);
+    };
+
+    var isJson = function(string) {
+        try {
+            JSON.parse(string);
+        } catch (e) {
+            return false;
+        }
+        return true;
+    };
+
+    getDataUrlFromUpload(input, function(data) {
+        if (isJson(data)) {
+            var nicknames = JSON.parse(data);
+            bttv.storage.putObject('nicknames', nicknames);
+
+            bttv.notify('BetterTTV imported nicknames');
         } else {
             bttv.notify('You uploaded an invalid file.');
         }
