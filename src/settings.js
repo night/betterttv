@@ -96,8 +96,6 @@ Settings.prototype.backup = function() {
         download[setting] = val;
     });
 
-    download.nicknames = bttv.storage.getObject('nicknames');
-
     download = new Blob([JSON.stringify(download)], {
         type: 'text/plain;charset=utf-8;'
     });
@@ -133,16 +131,11 @@ Settings.prototype.import = function(input) {
                 count = 0;
 
             Object.keys(settings).forEach(function(setting) {
-                if (setting === 'nicknames') {
+                try {
+                    _self.set(setting, settings[setting]);
                     count++;
-                    bttv.storage.putObject('nicknames', settings[setting]);
-                } else {
-                    try {
-                        _self.set(setting, settings[setting]);
-                        count++;
-                    } catch (e) {
-                        debug.log('Import Error: ' + setting + ' does not exist in settings list. Ignoring...');
-                    }
+                } catch (e) {
+                    debug.log('Import Error: ' + setting + ' does not exist in settings list. Ignoring...');
                 }
             });
 
@@ -190,7 +183,12 @@ Settings.prototype.nicknamesImport = function(input) {
     getDataUrlFromUpload(input, function(data) {
         if (isJson(data)) {
             var nicknames = JSON.parse(data);
-            bttv.storage.putObject('nicknames', nicknames);
+            var currentNicknames = bttv.storage.getObject('nicknames');
+            Object.keys(nicknames).forEach(function(name) {
+                currentNicknames[name] = nicknames[name];
+            });
+
+            bttv.storage.putObject('nicknames', currentNicknames);
 
             bttv.notify('BetterTTV imported nicknames');
         } else {

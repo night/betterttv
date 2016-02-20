@@ -6554,8 +6554,6 @@ Settings.prototype.backup = function() {
         download[setting] = val;
     });
 
-    download.nicknames = bttv.storage.getObject('nicknames');
-
     download = new Blob([JSON.stringify(download)], {
         type: 'text/plain;charset=utf-8;'
     });
@@ -6591,16 +6589,11 @@ Settings.prototype.import = function(input) {
                 count = 0;
 
             Object.keys(settings).forEach(function(setting) {
-                if (setting === 'nicknames') {
+                try {
+                    _self.set(setting, settings[setting]);
                     count++;
-                    bttv.storage.putObject('nicknames', settings[setting]);
-                } else {
-                    try {
-                        _self.set(setting, settings[setting]);
-                        count++;
-                    } catch (e) {
-                        debug.log('Import Error: ' + setting + ' does not exist in settings list. Ignoring...');
-                    }
+                } catch (e) {
+                    debug.log('Import Error: ' + setting + ' does not exist in settings list. Ignoring...');
                 }
             });
 
@@ -6648,7 +6641,12 @@ Settings.prototype.nicknamesImport = function(input) {
     getDataUrlFromUpload(input, function(data) {
         if (isJson(data)) {
             var nicknames = JSON.parse(data);
-            bttv.storage.putObject('nicknames', nicknames);
+            var currentNicknames = bttv.storage.getObject('nicknames');
+            Object.keys(nicknames).forEach(function(name) {
+                currentNicknames[name] = nicknames[name];
+            });
+
+            bttv.storage.putObject('nicknames', currentNicknames);
 
             bttv.notify('BetterTTV imported nicknames');
         } else {
@@ -7158,7 +7156,7 @@ module.exports = SocketClient;
 
 },{"./helpers/debug":47,"./vars":68}],70:[function(require,module,exports){
 /*
- * Cookies.js - 1.2.2
+ * Cookies.js - 1.2.1
  * https://github.com/ScottHamper/Cookies
  *
  * This is free and unencumbered software released into the public domain.
@@ -7194,10 +7192,8 @@ module.exports = SocketClient;
             if (Cookies._cachedDocumentCookie !== Cookies._document.cookie) {
                 Cookies._renewCache();
             }
-            
-            var value = Cookies._cache[Cookies._cacheKeyPrefix + key];
 
-            return value === undefined ? undefined : decodeURIComponent(value);
+            return Cookies._cache[Cookies._cacheKeyPrefix + key];
         };
 
         Cookies.set = function (key, value, options) {
@@ -7280,19 +7276,9 @@ module.exports = SocketClient;
             // IE omits the "=" when the cookie value is an empty string
             separatorIndex = separatorIndex < 0 ? cookieString.length : separatorIndex;
 
-            var key = cookieString.substr(0, separatorIndex);
-            var decodedKey;
-            try {
-                decodedKey = decodeURIComponent(key);
-            } catch (e) {
-                if (console && typeof console.error === 'function') {
-                    console.error('Could not decode cookie with key "' + key + '"', e);
-                }
-            }
-            
             return {
-                key: decodedKey,
-                value: cookieString.substr(separatorIndex + 1) // Defer decoding value until accessed
+                key: decodeURIComponent(cookieString.substr(0, separatorIndex)),
+                value: decodeURIComponent(cookieString.substr(separatorIndex + 1))
             };
         };
 
