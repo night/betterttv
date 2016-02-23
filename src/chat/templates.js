@@ -32,7 +32,7 @@ var modicons = exports.modicons = function() {
 };
 
 var linkify = exports.linkify = function(message) {
-    var regex = /(?:https?:\/\/)?(?:[-a-zA-Z0-9@:%_\+~#=]+\.)+[a-z]{2,6}\b(?:(?:[-a-zA-Z0-9@:%_\+.~#?&\/=!,]+)(?:[-a-zA-Z0-9@:%_\+.~#?&\/=]))?/gi;
+    var regex = /(?:https?:\/\/)?(?:[-a-zA-Z0-9@:%_\+~#=]+\.)+[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?&\/=!,]*[-a-zA-Z0-9@:%_\+.~#?&\/=])?/gi;
     return message.replace(regex, function(e) {
         if (/\x02/.test(e)) return e;
         if (e.indexOf('@') > -1 && (e.indexOf('/') === -1 || e.indexOf('@') < e.indexOf('/'))) return '<a href="mailto:' + e + '">' + e + '</a>';
