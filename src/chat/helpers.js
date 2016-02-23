@@ -688,7 +688,9 @@ exports.assignBadges = function(badges, data) {
             name: 'GMod',
             description: 'Twitch Global Moderator'
         });
-    } else if (badges.indexOf('bot') !== -1) {
+    }
+
+    if (badges.indexOf('bot') !== -1) {
         bttvBadges.push({
             type: 'bot',
             name: 'Bot',

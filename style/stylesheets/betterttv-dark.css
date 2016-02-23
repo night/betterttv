@@ -847,24 +847,17 @@ body {
 }
 
 .panel.masonry-brick {
-    background-color: rgb(30, 30, 30) !important;
-    color: rgb(154, 154, 154) !important;
-    box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 2px 0px inset, rgba(255, 255, 255, 0.01) 0px 0px 0px 1px, rgba(255, 255, 255, 0.01) 0px 1px 0px 0px !important;
-    border-radius: 0px !important;
-    text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px !important;
-    border: 1px solid #000 !important;
-    padding-left: 5px !important;
-    padding-right: 5px !important;
-    padding-top: 5px !important;
-    margin-bottom: 30px !important;
+    background-color: rgb(30, 30, 30);
+    color: rgb(154, 154, 154);
 }
 
 .panel.masonry-brick h3.title {
     color: rgb(154, 154, 154) !important;
 }
 
-.panel.masonry-brick a.link {
-    margin-bottom: 5px !important;
+.panel.masonry-brick .part.description,
+.panel.masonry-brick .part .title {
+    padding: 3px;
 }
 
 .masonry a {

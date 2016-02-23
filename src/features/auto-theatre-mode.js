@@ -4,6 +4,8 @@ module.exports = function() {
         return;
     }
 
-    // Call 'toggleTheatre' action on the channel controller in Ember
-    App.__container__.lookup('controller:channel').send('toggleTheatre');
+    var emberView = $('#player').children()[0].id;
+    var emberViews = App.__container__.lookup('-view-registry:main');
+    var player = window.require('web-client/components/twitch-player2').getPlayer();
+    emberViews[emberView].sendAction('toggleTheatreAction', player);
 };

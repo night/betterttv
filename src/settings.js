@@ -150,6 +150,53 @@ Settings.prototype.import = function(input) {
     });
 };
 
+Settings.prototype.nicknamesBackup = function() {
+    var download = bttv.storage.getObject('nicknames');
+
+    download = new Blob([JSON.stringify(download)], {
+        type: 'text/plain;charset=utf-8;'
+    });
+
+    saveAs(download, 'bttv_nicknames.backup');
+};
+
+Settings.prototype.nicknamesImport = function(input) {
+    var getDataUrlFromUpload = function(urlInput, callback) {
+        var reader = new FileReader();
+
+        reader.onload = function(e) {
+            callback(e.target.result);
+        };
+
+        reader.readAsText(urlInput.files[0]);
+    };
+
+    var isJson = function(string) {
+        try {
+            JSON.parse(string);
+        } catch (e) {
+            return false;
+        }
+        return true;
+    };
+
+    getDataUrlFromUpload(input, function(data) {
+        if (isJson(data)) {
+            var nicknames = JSON.parse(data);
+            var currentNicknames = bttv.storage.getObject('nicknames');
+            Object.keys(nicknames).forEach(function(name) {
+                currentNicknames[name] = nicknames[name];
+            });
+
+            bttv.storage.putObject('nicknames', currentNicknames);
+
+            bttv.notify('BetterTTV imported nicknames');
+        } else {
+            bttv.notify('You uploaded an invalid file.');
+        }
+    });
+};
+
 Settings.prototype.get = function(setting) {
     return (setting in this._settings) ? this._settings[setting].value : null;
 };
