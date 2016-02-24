@@ -2327,3 +2327,8 @@ span.subscribe-text {
 .conversation-window .new-message-divider span {
     background-color: #232323;
 }
+
+/* Fix for white hover */
+.tabs__fullwidth li:not(.selected) a:hover {
+    background: #333;
+}
