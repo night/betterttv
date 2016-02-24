@@ -2332,3 +2332,8 @@ span.subscribe-text {
 .tabs__fullwidth li:not(.selected) a:hover {
     background: #333;
 }
+
+/* darken commissions modal */
+.stats-and-actions #commission_modal {
+    background-color: #232323 !important; /* inline styles? really Twitch?*/
+}
