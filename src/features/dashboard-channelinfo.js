@@ -38,7 +38,7 @@ module.exports = function dashboardChannelInfo() {
         });
 
         if (vars.dontCheckSubs !== true) {
-            $.getJSON('/' + bttv.getChannel() + '/dashboard/revenue/summary_data', function(data) {
+            $.getJSON('/' + bttv.getChannel() + '/dashboard/revenue/summary_data').done(function(data) {
                 if (typeof data.total_subscriptions === 'string') {
                     data.total_subscriptions = parseInt(data.total_subscriptions, 10);
                 }
