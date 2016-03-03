@@ -332,7 +332,7 @@ if (location.pathname.match(/^\/(.*)\/popout/)) {
     return;
 }
 
-if (!window.Twitch || !window.Twitch.video || !window.Twitch.api || !window.Twitch.user) {
+if (!window.Twitch || !window.Twitch.api || !window.Twitch.user) {
     debug.log('window.Twitch not detected.');
 
     loginIframeTheme();
