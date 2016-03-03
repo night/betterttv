@@ -22,7 +22,7 @@ bttv.storage = new Storage();
 bttv.settings = new Settings();
 
 bttv.getChannel = function() {
-    if (window.Ember && window.App && App.__container__.lookup('controller:application').get('currentRouteName') === 'channel.index') {
+    if (window.Ember && window.App && App.__container__.lookup('controller:application').get('currentRouteName') === 'channel.index.index') {
         var channel = App.__container__.lookup('controller:channel');
         return channel.get('id') || channel.get('model.id');
     } else if (bttv.getChatController() && bttv.getChatController().currentRoom) {
@@ -174,7 +174,7 @@ var main = function() {
                 if (!payload.template) return;
                 // debug.log(payload.template);
 
-                if (App.__container__.lookup('controller:application').get('currentRouteName') !== 'channel.index') {
+                if (App.__container__.lookup('controller:application').get('currentRouteName') !== 'channel.index.index') {
                     $('#main_col').removeAttr('style');
                 }
 
