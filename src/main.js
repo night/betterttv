@@ -135,7 +135,8 @@ var clearClutter = require('./features/clear-clutter'),
     enableTheatreMode = require('./features/auto-theatre-mode'),
     hostButtonBelowVideo = require('./features/host-btn-below-video'),
     conversations = require('./features/conversations'),
-    MassUnbanPopup = require('./helpers/massunban-popup');
+    MassUnbanPopup = require('./helpers/massunban-popup'),
+    chatReplay = require('./features/chat-replay');
 
 var chatFunctions = function() {
     debug.log('Modifying Chat Functionality');
@@ -247,6 +248,7 @@ var main = function() {
     var initialFuncs = function() {
         bttv.ws = new WS();
 
+        chatReplay();
         conversations();
         clearClutter();
         channelReformat();
