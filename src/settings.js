@@ -72,16 +72,43 @@ Settings.prototype.load = function() {
             if (typeof e.data !== 'string') return;
 
             var data = e.data.split(' ');
+            var key, value;
             if (data[0] === 'bttv_setting') {
-                if (e.origin !== window.location.protocol + '//' + window.location.host) return;
-                var key = data[1],
-                    value = _self._parseSetting(data[2]);
+                if (e.origin.split('//')[1] !== window.location.host) return;
+                key = data[1];
+                value = _self._parseSetting(data[2]);
 
                 _self.save(key, value);
+            }
+
+            if (data[0] === 'bttv_transfer') {
+                if (e.origin.split('//')[1] !== window.location.host) return;
+                key = data[1];
+                value = _self._parseSetting(data[2]);
+
+                localStorage.setItem(key, value);
+            }
+
+            if (data[0] === 'bttv_end_transfer') {
+                if (e.origin.split('//')[1] !== window.location.host) return;
+                window.location.reload();
             }
         }
     };
     window.addEventListener('message', receiveMessage, false);
+
+    // Prompt users to import from no-ssl
+    if (!bttv.settings.get('importNonSsl')) {
+        window.Twitch.notify.alert('Twitch recently moved the entire site to SSL. If you were using BetterTTV before this change we lost your saved settings. <a href="#" onclick="BetterTTV.settings.save(\'importNonSsl\', true);BetterTTV.settings.popupImport();">You can import them by clicking here.</a>', {
+            layout: 'bottomCenter',
+            timeout: false,
+            killer: true,
+            escape: false
+        });
+        $('.noty_close').click(function() {
+            bttv.settings.save('importNonSsl', true);
+        });
+    }
 };
 
 Settings.prototype.backup = function() {
@@ -225,6 +252,10 @@ Settings.prototype.save = function(setting, value) {
 Settings.prototype.popup = function() {
     var settingsUrl = window.location.protocol + '//' + window.location.host + '/directory?bttvSettings=true';
     window.open(settingsUrl, 'BetterTTV Settings', 'width=800,height=500,top=500,left=800,scrollbars=no,location=no,directories=no,status=no,menubar=no,toolbar=no,resizable=no');
+};
+
+Settings.prototype.popupImport = function() {
+    window.open('http://www.twitch.tv/crossdomain/transfer', 'BetterTTV Settings Import', 'width=200,height=100,top=100,left=100,scrollbars=no,location=no,directories=no,status=no,menubar=no,toolbar=no,resizable=no');
 };
 
 module.exports = Settings;

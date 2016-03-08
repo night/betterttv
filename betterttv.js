@@ -2561,6 +2561,14 @@ module.exports = function() {
 
 },{}],12:[function(require,module,exports){
 /* global BTTVLOADED:true PP:true*/
+// import
+if (window.location.href === 'http://www.twitch.tv/crossdomain/transfer') {
+    var script = document.createElement('script');
+    script.setAttribute('src', 'https://cdn.betterttv.net/settings-import.js');
+    document.getElementsByTagName('head')[0].appendChild(script);
+    return;
+}
+
 // Declare public and private variables
 var debug = require('./helpers/debug'),
     vars = require('./vars'),
@@ -4211,6 +4219,11 @@ module.exports = function() {
 
     $('#bttvNicknamesImportInput').change(function() {
         bttv.settings.nicknamesImport(this);
+    });
+
+    $('#bttvNoSSLImportInput').click(function() {
+        bttv.settings.save('importNonSsl', true);
+        bttv.settings.popupImport();
     });
 
     /*eslint-disable */
@@ -6456,6 +6469,10 @@ module.exports = [
     },
     {
         default: false,
+        storageKey: 'importNonSsl'
+    },
+    {
+        default: false,
         storageKey: 'flipDashboard',
         toggle: function(value) {
             if (value === true) {
@@ -6587,16 +6604,43 @@ Settings.prototype.load = function() {
             if (typeof e.data !== 'string') return;
 
             var data = e.data.split(' ');
+            var key, value;
             if (data[0] === 'bttv_setting') {
-                if (e.origin !== window.location.protocol + '//' + window.location.host) return;
-                var key = data[1],
-                    value = _self._parseSetting(data[2]);
+                if (e.origin.split('//')[1] !== window.location.host) return;
+                key = data[1];
+                value = _self._parseSetting(data[2]);
 
                 _self.save(key, value);
+            }
+
+            if (data[0] === 'bttv_transfer') {
+                if (e.origin.split('//')[1] !== window.location.host) return;
+                key = data[1];
+                value = _self._parseSetting(data[2]);
+
+                localStorage.setItem(key, value);
+            }
+
+            if (data[0] === 'bttv_end_transfer') {
+                if (e.origin.split('//')[1] !== window.location.host) return;
+                window.location.reload();
             }
         }
     };
     window.addEventListener('message', receiveMessage, false);
+
+    // Prompt users to import from no-ssl
+    if (!bttv.settings.get('importNonSsl')) {
+        window.Twitch.notify.alert('Twitch recently moved the entire site to SSL. If you were using BetterTTV before this change we lost your saved settings. <a href="#" onclick="BetterTTV.settings.save(\'importNonSsl\', true);BetterTTV.settings.popupImport();">You can import them by clicking here.</a>', {
+            layout: 'bottomCenter',
+            timeout: false,
+            killer: true,
+            escape: false
+        });
+        $('.noty_close').click(function() {
+            bttv.settings.save('importNonSsl', true);
+        });
+    }
 };
 
 Settings.prototype.backup = function() {
@@ -6740,6 +6784,10 @@ Settings.prototype.save = function(setting, value) {
 Settings.prototype.popup = function() {
     var settingsUrl = window.location.protocol + '//' + window.location.host + '/directory?bttvSettings=true';
     window.open(settingsUrl, 'BetterTTV Settings', 'width=800,height=500,top=500,left=800,scrollbars=no,location=no,directories=no,status=no,menubar=no,toolbar=no,resizable=no');
+};
+
+Settings.prototype.popupImport = function() {
+    window.open('http://www.twitch.tv/crossdomain/transfer', 'BetterTTV Settings Import', 'width=200,height=100,top=100,left=100,scrollbars=no,location=no,directories=no,status=no,menubar=no,toolbar=no,resizable=no');
 };
 
 module.exports = Settings;
@@ -6982,7 +7030,7 @@ var buf = [];
 var jade_mixins = {};
 var jade_interp;
 ;var locals_for_with = (locals || {});(function (bttv, Date) {
-buf.push("<div id=\"header\"><span id=\"logo\"><img height=\"45px\" src=\"https://cdn.betterttv.net/style/logos/settings_logo.png\"/></span><ul class=\"nav\"><li><a href=\"#bttvAbout\">About</a></li><li class=\"active\"><a href=\"#bttvSettings\">Settings</a></li><li><a href=\"#bttvChannel\" target=\"_blank\">Channel</a></li><li><a href=\"#bttvChangelog\">Changelog</a></li><li><a href=\"#bttvPrivacy\">Privacy Policy</a></li><li><a href=\"#bttvBackup\">Backup/Import</a></li></ul><span id=\"close\">&times;</span></div><div id=\"bttvSettings\" style=\"height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content options-list\"><h2 class=\"option\">Here you can manage the various BetterTTV options. Click On or Off to toggle settings.</h2></div></div><div id=\"bttvAbout\" style=\"display:none;\"><div class=\"aboutHalf\"><img src=\"https://cdn.betterttv.net/style/logos/mascot.png\" class=\"bttvAboutIcon\"/><h1>BetterTTV v" + (jade.escape((jade_interp = bttv.info.versionString()) == null ? '' : jade_interp)) + "</h1><h2>from your friends at <a href=\"https://www.nightdev.com\" target=\"_blank\">NightDev</a></h2><br/></div><div class=\"aboutHalf\"><h1 style=\"margin-top: 100px;\">Think this addon is awesome?</h1><br/><br/><h2><a target=\"_blank\" href=\"https://chrome.google.com/webstore/detail/ajopnjidmegmdimjlfnijceegpefgped\">Drop a Review on the Chrome Webstore</a></h2><br/><h2>or maybe</h2><br/><h2><a target=\"_blank\" href=\"https://streamtip.com/t/night\">Send us a Tip</a></h2><br/></div></div><div id=\"bttvChannel\" style=\"display:none;\"><iframe frameborder=\"0\" width=\"100%\" height=\"425\"></iframe></div><div id=\"bttvPrivacy\" style=\"display:none;height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content\"></div></div><div id=\"bttvChangelog\" style=\"display:none;height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content\"></div></div><div id=\"bttvBackup\" style=\"display:none;height:425px;padding:25px;\"><h1 style=\"padding-bottom:10px;\">Backup Settings</h1><button id=\"bttvBackupButton\" class=\"primary_button\"><span>Download</span></button><h1 style=\"padding-top:15px;padding-bottom:10px;\">Import Settings</h1><input id=\"bttvImportInput\" type=\"file\" style=\"height: 25px;width: 250px;\"/><h1 style=\"padding-top:15px;padding-bottom:10px;\">Backup Nicknames</h1><button id=\"bttvNicknamesBackupButton\" class=\"primary_button\"><span>Download</span></button><h1 style=\"padding-top:15px;padding-bottom:10px;\">Import Nicknames</h1><input id=\"bttvNicknamesImportInput\" type=\"file\" style=\"height: 25px;width: 250px;\"/></div><div id=\"footer\"><span>BetterTTV &copy; <a href=\"https://www.nightdev.com\" target=\"_blank\">NightDev, LLC</a> " + (jade.escape((jade_interp = new Date().getFullYear()) == null ? '' : jade_interp)) + "</span><span style=\"float:right;\"><a href=\"https://twitter.com/betterttv\" target=\"_blank\">Twitter</a> | <a href=\"https://community.nightdev.com/c/betterttv\" target=\"_blank\">Forums</a> | <a href=\"https://github.com/night/BetterTTV/issues/new?labels=bug\" target=\"_blank\">Bug Report</a> | <a href=\"https://streamtip.com/t/night\" target=\"_blank\">Tip Us</a></span></div>");}.call(this,"bttv" in locals_for_with?locals_for_with.bttv:typeof bttv!=="undefined"?bttv:undefined,"Date" in locals_for_with?locals_for_with.Date:typeof Date!=="undefined"?Date:undefined));;return buf.join("");
+buf.push("<div id=\"header\"><span id=\"logo\"><img height=\"45px\" src=\"https://cdn.betterttv.net/style/logos/settings_logo.png\"/></span><ul class=\"nav\"><li><a href=\"#bttvAbout\">About</a></li><li class=\"active\"><a href=\"#bttvSettings\">Settings</a></li><li><a href=\"#bttvChannel\" target=\"_blank\">Channel</a></li><li><a href=\"#bttvChangelog\">Changelog</a></li><li><a href=\"#bttvPrivacy\">Privacy Policy</a></li><li><a href=\"#bttvBackup\">Backup/Import</a></li></ul><span id=\"close\">&times;</span></div><div id=\"bttvSettings\" style=\"height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content options-list\"><h2 class=\"option\">Here you can manage the various BetterTTV options. Click On or Off to toggle settings.</h2></div></div><div id=\"bttvAbout\" style=\"display:none;\"><div class=\"aboutHalf\"><img src=\"https://cdn.betterttv.net/style/logos/mascot.png\" class=\"bttvAboutIcon\"/><h1>BetterTTV v" + (jade.escape((jade_interp = bttv.info.versionString()) == null ? '' : jade_interp)) + "</h1><h2>from your friends at <a href=\"https://www.nightdev.com\" target=\"_blank\">NightDev</a></h2><br/></div><div class=\"aboutHalf\"><h1 style=\"margin-top: 100px;\">Think this addon is awesome?</h1><br/><br/><h2><a target=\"_blank\" href=\"https://chrome.google.com/webstore/detail/ajopnjidmegmdimjlfnijceegpefgped\">Drop a Review on the Chrome Webstore</a></h2><br/><h2>or maybe</h2><br/><h2><a target=\"_blank\" href=\"https://streamtip.com/t/night\">Send us a Tip</a></h2><br/></div></div><div id=\"bttvChannel\" style=\"display:none;\"><iframe frameborder=\"0\" width=\"100%\" height=\"425\"></iframe></div><div id=\"bttvPrivacy\" style=\"display:none;height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content\"></div></div><div id=\"bttvChangelog\" style=\"display:none;height:425px;\" class=\"scroll scroll-dark\"><div class=\"tse-content\"></div></div><div id=\"bttvBackup\" style=\"display:none;height:425px;padding:25px;\"><h1 style=\"padding-bottom:10px;\">Backup Settings</h1><button id=\"bttvBackupButton\" class=\"primary_button\"><span>Download</span></button><h1 style=\"padding-top:15px;padding-bottom:10px;\">Import Settings</h1><input id=\"bttvImportInput\" type=\"file\" style=\"height: 25px;width: 250px;\"/><br/><button id=\"bttvNoSSLImportInput\" class=\"primary_button\"><span>Import from Non-SSL Twitch</span></button><h1 style=\"padding-top:15px;padding-bottom:10px;\">Backup Nicknames</h1><button id=\"bttvNicknamesBackupButton\" class=\"primary_button\"><span>Download</span></button><h1 style=\"padding-top:15px;padding-bottom:10px;\">Import Nicknames</h1><input id=\"bttvNicknamesImportInput\" type=\"file\" style=\"height: 25px;width: 250px;\"/></div><div id=\"footer\"><span>BetterTTV &copy; <a href=\"https://www.nightdev.com\" target=\"_blank\">NightDev, LLC</a> " + (jade.escape((jade_interp = new Date().getFullYear()) == null ? '' : jade_interp)) + "</span><span style=\"float:right;\"><a href=\"https://twitter.com/betterttv\" target=\"_blank\">Twitter</a> | <a href=\"https://community.nightdev.com/c/betterttv\" target=\"_blank\">Forums</a> | <a href=\"https://github.com/night/BetterTTV/issues/new?labels=bug\" target=\"_blank\">Bug Report</a> | <a href=\"https://streamtip.com/t/night\" target=\"_blank\">Tip Us</a></span></div>");}.call(this,"bttv" in locals_for_with?locals_for_with.bttv:typeof bttv!=="undefined"?bttv:undefined,"Date" in locals_for_with?locals_for_with.Date:typeof Date!=="undefined"?Date:undefined));;return buf.join("");
 };module.exports=template;
 },{}],67:[function(require,module,exports){
 vars = require('./vars');

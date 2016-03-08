@@ -498,6 +498,10 @@ module.exports = [
     },
     {
         default: false,
+        storageKey: 'importNonSsl'
+    },
+    {
+        default: false,
         storageKey: 'flipDashboard',
         toggle: function(value) {
             if (value === true) {

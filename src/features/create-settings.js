@@ -46,6 +46,11 @@ module.exports = function() {
         bttv.settings.nicknamesImport(this);
     });
 
+    $('#bttvNoSSLImportInput').click(function() {
+        bttv.settings.save('importNonSsl', true);
+        bttv.settings.popupImport();
+    });
+
     /*eslint-disable */
     // ヽ༼ಢ_ಢ༽ﾉ
     $('#bttvSettingsPanel .scroll').TrackpadScrollEmulator({
