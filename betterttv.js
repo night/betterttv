@@ -855,6 +855,7 @@ var vars = require('../vars'),
     punycode = require('punycode'),
     channelState = require('../features/channel-state'),
     MassUnbanPopup = require('../helpers/massunban-popup'),
+    overrideEmotes = require('../features/override-emotes'),
     throttle = require('lodash.throttle');
 
 // Helper functions
@@ -1734,7 +1735,32 @@ exports.translate = function($element, sender, text) {
     });
 };
 
-},{"../bots":1,"../features/channel-state":19,"../helpers/colors":47,"../helpers/debug":48,"../helpers/massunban-popup":51,"../keycodes":53,"../legacy-tags":54,"../vars":68,"./handlers":4,"./store":8,"./templates":10,"./tmi":11,"lodash.throttle":73,"punycode":72}],6:[function(require,module,exports){
+exports.loadBTTVChannelData = function() {
+    // Loads global BTTV emotes (if not loaded)
+    overrideEmotes();
+
+    // When swapping channels, removes old channel emotes
+    var bttvEmoteKeys = Object.keys(store.bttvEmotes);
+    for (var i = bttvEmoteKeys.length - 1; i >= 0; i--) {
+        var bttvEmoteKey = bttvEmoteKeys[i];
+        if (!store.bttvEmotes[bttvEmoteKey].channelEmote) continue;
+        delete store.bttvEmotes[bttvEmoteKey];
+    }
+
+    store.__channelBots = [];
+
+    $.getJSON('https://api.betterttv.net/2/channels/' + bttv.getChannel()).done(function(data) {
+        data.emotes.forEach(function(bttvEmote) {
+            bttvEmote.channelEmote = true;
+            bttvEmote.urlTemplate = data.urlTemplate.replace('{{id}}', bttvEmote.id);
+            bttvEmote.url = bttvEmote.urlTemplate.replace('{{image}}', '1x');
+            store.bttvEmotes[bttvEmote.code] = bttvEmote;
+        });
+        store.__channelBots = data.bots;
+    });
+};
+
+},{"../bots":1,"../features/channel-state":19,"../features/override-emotes":44,"../helpers/colors":47,"../helpers/debug":48,"../helpers/massunban-popup":51,"../keycodes":53,"../legacy-tags":54,"../vars":68,"./handlers":4,"./store":8,"./templates":10,"./tmi":11,"lodash.throttle":73,"punycode":72}],6:[function(require,module,exports){
 // Add mouseover image preview to image links
 module.exports = function(imgUrl) {
     return '<a href="' + imgUrl + '" class="chat-preview" target="_blank">' + imgUrl + '</a>';
@@ -1845,13 +1871,12 @@ exports.activeView = true;
 },{}],9:[function(require,module,exports){
 var vars = require('../vars'),
     debug = require('../helpers/debug'),
-    keyCodes = require('../keycodes');
-var store = require('./store'),
+    keyCodes = require('../keycodes'),
+    store = require('./store'),
     handlers = require('./handlers'),
     helpers = require('./helpers'),
     rooms = require('./rooms'),
-    templates = require('./templates');
-var overrideEmotes = require('../features/override-emotes'),
+    templates = require('./templates'),
     loadChatSettings = require('../features/chat-load-settings'),
     anonChat = require('../features/anon-chat'),
     customTimeouts = require('../features/custom-timeouts');
@@ -1961,25 +1986,8 @@ var takeover = module.exports = function() {
         });
     }
 
-    // Load BTTV emotes if not loaded
-    overrideEmotes();
-    var i;
-    var bttvEmoteKeys = Object.keys(store.bttvEmotes);
-    for (i = bttvEmoteKeys.length - 1; i >= 0; i--) {
-        var bttvEmoteKey = bttvEmoteKeys[i];
-        if (!store.bttvEmotes[bttvEmoteKey].channelEmote) continue;
-        delete store.bttvEmotes[bttvEmoteKey];
-    }
-    store.__channelBots = [];
-    $.getJSON('https://api.betterttv.net/2/channels/' + bttv.getChannel()).done(function(data) {
-        data.emotes.forEach(function(bttvEmote) {
-            bttvEmote.channelEmote = true;
-            bttvEmote.urlTemplate = data.urlTemplate.replace('{{id}}', bttvEmote.id);
-            bttvEmote.url = bttvEmote.urlTemplate.replace('{{image}}', '1x');
-            store.bttvEmotes[bttvEmote.code] = bttvEmote;
-        });
-        store.__channelBots = data.bots;
-    });
+    // Load BTTV channel emotes/bots
+    helpers.loadBTTVChannelData();
 
     // Load Volunteer Badges
     helpers.loadBadges();
@@ -2322,7 +2330,7 @@ var takeover = module.exports = function() {
     });
 };
 
-},{"../features/anon-chat":13,"../features/chat-load-settings":20,"../features/custom-timeouts":29,"../features/override-emotes":44,"../helpers/debug":48,"../keycodes":53,"../vars":68,"./handlers":4,"./helpers":5,"./rooms":7,"./store":8,"./templates":10,"./tmi":11}],10:[function(require,module,exports){
+},{"../features/anon-chat":13,"../features/chat-load-settings":20,"../features/custom-timeouts":29,"../helpers/debug":48,"../keycodes":53,"../vars":68,"./handlers":4,"./helpers":5,"./rooms":7,"./store":8,"./templates":10,"./tmi":11}],10:[function(require,module,exports){
 var tmi = require('./tmi'),
     store = require('./store'),
     helpers = require('./helpers');
@@ -2575,9 +2583,10 @@ bttv.storage = new Storage();
 bttv.settings = new Settings();
 
 bttv.getChannel = function() {
-    if (window.Ember && window.App && App.__container__.lookup('controller:application').get('currentRouteName') === 'channel.index.index') {
+    if (window.Ember && window.App && ['channel.index.index', 'vod'].indexOf(App.__container__.lookup('controller:application').get('currentRouteName')) > -1) {
         var channel = App.__container__.lookup('controller:channel');
-        return channel.get('id') || channel.get('model.id');
+        var user = App.__container__.lookup('controller:user');
+        return (!Ember.isNone(channel) && channel.get('model.id')) || (!Ember.isNone(user) && user.get('model.id'));
     } else if (bttv.getChatController() && bttv.getChatController().currentRoom) {
         return bttv.getChatController().currentRoom.id;
     } else if (window.PP && PP.channel) {
@@ -2690,15 +2699,17 @@ var clearClutter = require('./features/clear-clutter'),
     hostButtonBelowVideo = require('./features/host-btn-below-video'),
     conversations = require('./features/conversations'),
     MassUnbanPopup = require('./helpers/massunban-popup'),
-    chatReplay = require('./features/chat-replay');
+    ChatReplay = require('./features/chat-replay');
 
 var chatFunctions = function() {
     debug.log('Modifying Chat Functionality');
 
-    if (bttv.getChatController() && bttv.getChannel()) {
+    if (bttv.getChatController() && bttv.getChannel() && bttv.getChatController().currentRoom) {
         bttv.chat.takeover();
     }
 };
+
+var chatReplay = null;
 
 var main = function() {
     if (window.Ember) {
@@ -2730,6 +2741,14 @@ var main = function() {
 
                 if (App.__container__.lookup('controller:application').get('currentRouteName') !== 'channel.index.index') {
                     $('#main_col').removeAttr('style');
+                }
+
+                if (App.__container__.lookup('controller:application').get('currentRouteName') === 'vod') {
+                    // disconnect old chat replay watcher, spawn new
+                    try {
+                        chatReplay.disconnect();
+                    } catch (e) {}
+                    chatReplay = new ChatReplay();
                 }
 
                 switch (payload.template) {
@@ -2802,7 +2821,7 @@ var main = function() {
     var initialFuncs = function() {
         bttv.ws = new WS();
 
-        chatReplay();
+        chatReplay = new ChatReplay();
         conversations();
         clearClutter();
         channelReformat();
@@ -3558,54 +3577,63 @@ module.exports = function() {
 var chatHelpers = require('../chat/helpers');
 var chatStore = require('../chat/store');
 var chatTemplates = require('../chat/templates');
-var overrideEmotes = require('./override-emotes');
-
 
 function ChatReplay() {
-    if (!(this instanceof ChatReplay)) return new ChatReplay();
+    this._waitForLoad = setInterval(function() {
+        if (!window.Ember || !window.App) return;
 
-    var _self = this;
-    var switched = false;
-    var watcher = new MutationObserver(function(mutations) {
-        _self.loadEmotes();
-        if (!switched && $('.chatReplay').length) {
-            _self.cleaUpUI();
-            switched = true;
-            watcher.disconnect();
-            watcher.observe($('.chat-lines')[0], { childList: true});
+        var route = App.__container__.lookup('controller:application').get('currentRouteName');
+
+        if (route === 'loading' || route !== 'vod') return;
+
+        clearTimeout(this._waitForLoad);
+        this._waitForLoad = null;
+
+        chatHelpers.loadBTTVChannelData();
+
+        this.connect();
+    }.bind(this), 1000);
+}
+
+ChatReplay.prototype.connect = function() {
+    this.watcher = new MutationObserver(function(mutations) {
+        if ($('.chatReplay').length && $('.chat-lines').length) {
+            this.watcher.disconnect();
+            this.watcher.observe($('.chat-lines')[0], { childList: true, subtree: true });
         }
 
         mutations.forEach(function(mutation) {
-            var el, len = mutation.addedNodes.length;
-
-            for (var i = 0; i < len; i++) {
+            var el;
+            for (var i = 0; i < mutation.addedNodes.length; i++) {
                 el = mutation.addedNodes[i];
 
                 if ($(el).hasClass('chat-line')) {
-                    if ($(el).find('.horizontal-line').length) return;
-                    if ($('.chatReplay')) _self.messageParser(el);
+                    if ($(el).find('.horizontal-line').length) continue;
+                    this.messageParser(el);
                 }
             }
-        });
-    });
+        }.bind(this));
+    }.bind(this));
 
-    watcher.observe($('.app-main')[0], { childList: true, subtree: true});
-}
+    this.watcher.observe($('body')[0], { childList: true, subtree: true });
+};
+
+ChatReplay.prototype.disconnect = function() {
+    if (this._waitForLoad) clearTimeout(this._waitForLoad);
+    this.watcher.disconnect();
+};
 
 ChatReplay.prototype.messageParser = function(element) {
     var $element = $(element);
-
 
     if ($element.find('.deleted').length) {
         $element.remove();
         return;
     }
 
-
     var $name = $element.find('.from');
     var color = $name.attr('style').replace('color:', '');
     $name.css('color', chatHelpers.calculateColor(color));
-
 
     var message = element.querySelector('.message');
 
@@ -3641,34 +3669,9 @@ ChatReplay.prototype.emoticonize = function(message) {
     return parts.join(' ');
 };
 
-ChatReplay.prototype.loadEmotes = function() {
-    if (Object.keys(chatStore.bttvEmotes).length !== 0) return;
-
-    if (window.Ember && window.App && App.__container__.lookup('controller:application').get('currentRouteName') === 'vod') {
-        overrideEmotes();
-        var channel = App.__container__.lookup('controller:user').get('id');
-        $.getJSON('https://api.betterttv.net/2/channels/' + channel).done(function(data) {
-            data.emotes.forEach(function(bttvEmote) {
-                bttvEmote.channelEmote = true;
-                bttvEmote.urlTemplate = data.urlTemplate.replace('{{id}}', bttvEmote.id);
-                bttvEmote.url = bttvEmote.urlTemplate.replace('{{image}}', '1x');
-                chatStore.bttvEmotes[bttvEmote.code] = bttvEmote;
-            });
-        });
-    }
-};
-
-ChatReplay.prototype.cleaUpUI = function() {
-    if ($('.chat-room').length) {
-        $('.chat-interface').remove();
-        $('.chat-room').css('top', 5);
-        $('.chat-messages').css('bottom', 5);
-    }
-};
-
 module.exports = ChatReplay;
 
-},{"../chat/helpers":5,"../chat/store":8,"../chat/templates":10,"./override-emotes":44}],22:[function(require,module,exports){
+},{"../chat/helpers":5,"../chat/store":8,"../chat/templates":10}],22:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 var checkBroadcastInfo = module.exports = function() {
@@ -7207,7 +7210,7 @@ module.exports = SocketClient;
 
 },{"./helpers/debug":48,"./vars":68}],70:[function(require,module,exports){
 /*
- * Cookies.js - 1.2.1
+ * Cookies.js - 1.2.2
  * https://github.com/ScottHamper/Cookies
  *
  * This is free and unencumbered software released into the public domain.
@@ -7243,8 +7246,10 @@ module.exports = SocketClient;
             if (Cookies._cachedDocumentCookie !== Cookies._document.cookie) {
                 Cookies._renewCache();
             }
+            
+            var value = Cookies._cache[Cookies._cacheKeyPrefix + key];
 
-            return Cookies._cache[Cookies._cacheKeyPrefix + key];
+            return value === undefined ? undefined : decodeURIComponent(value);
         };
 
         Cookies.set = function (key, value, options) {
@@ -7327,9 +7332,19 @@ module.exports = SocketClient;
             // IE omits the "=" when the cookie value is an empty string
             separatorIndex = separatorIndex < 0 ? cookieString.length : separatorIndex;
 
+            var key = cookieString.substr(0, separatorIndex);
+            var decodedKey;
+            try {
+                decodedKey = decodeURIComponent(key);
+            } catch (e) {
+                if (console && typeof console.error === 'function') {
+                    console.error('Could not decode cookie with key "' + key + '"', e);
+                }
+            }
+            
             return {
-                key: decodeURIComponent(cookieString.substr(0, separatorIndex)),
-                value: decodeURIComponent(cookieString.substr(separatorIndex + 1))
+                key: decodedKey,
+                value: cookieString.substr(separatorIndex + 1) // Defer decoding value until accessed
             };
         };
 

@@ -21,9 +21,10 @@ bttv.storage = new Storage();
 bttv.settings = new Settings();
 
 bttv.getChannel = function() {
-    if (window.Ember && window.App && App.__container__.lookup('controller:application').get('currentRouteName') === 'channel.index.index') {
+    if (window.Ember && window.App && ['channel.index.index', 'vod'].indexOf(App.__container__.lookup('controller:application').get('currentRouteName')) > -1) {
         var channel = App.__container__.lookup('controller:channel');
-        return channel.get('id') || channel.get('model.id');
+        var user = App.__container__.lookup('controller:user');
+        return (!Ember.isNone(channel) && channel.get('model.id')) || (!Ember.isNone(user) && user.get('model.id'));
     } else if (bttv.getChatController() && bttv.getChatController().currentRoom) {
         return bttv.getChatController().currentRoom.id;
     } else if (window.PP && PP.channel) {
@@ -136,15 +137,17 @@ var clearClutter = require('./features/clear-clutter'),
     hostButtonBelowVideo = require('./features/host-btn-below-video'),
     conversations = require('./features/conversations'),
     MassUnbanPopup = require('./helpers/massunban-popup'),
-    chatReplay = require('./features/chat-replay');
+    ChatReplay = require('./features/chat-replay');
 
 var chatFunctions = function() {
     debug.log('Modifying Chat Functionality');
 
-    if (bttv.getChatController() && bttv.getChannel()) {
+    if (bttv.getChatController() && bttv.getChannel() && bttv.getChatController().currentRoom) {
         bttv.chat.takeover();
     }
 };
+
+var chatReplay = null;
 
 var main = function() {
     if (window.Ember) {
@@ -176,6 +179,14 @@ var main = function() {
 
                 if (App.__container__.lookup('controller:application').get('currentRouteName') !== 'channel.index.index') {
                     $('#main_col').removeAttr('style');
+                }
+
+                if (App.__container__.lookup('controller:application').get('currentRouteName') === 'vod') {
+                    // disconnect old chat replay watcher, spawn new
+                    try {
+                        chatReplay.disconnect();
+                    } catch (e) {}
+                    chatReplay = new ChatReplay();
                 }
 
                 switch (payload.template) {
@@ -248,7 +259,7 @@ var main = function() {
     var initialFuncs = function() {
         bttv.ws = new WS();
 
-        chatReplay();
+        chatReplay = new ChatReplay();
         conversations();
         clearClutter();
         channelReformat();

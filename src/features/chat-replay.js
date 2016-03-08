@@ -1,54 +1,63 @@
 var chatHelpers = require('../chat/helpers');
 var chatStore = require('../chat/store');
 var chatTemplates = require('../chat/templates');
-var overrideEmotes = require('./override-emotes');
-
 
 function ChatReplay() {
-    if (!(this instanceof ChatReplay)) return new ChatReplay();
+    this._waitForLoad = setInterval(function() {
+        if (!window.Ember || !window.App) return;
 
-    var _self = this;
-    var switched = false;
-    var watcher = new MutationObserver(function(mutations) {
-        _self.loadEmotes();
-        if (!switched && $('.chatReplay').length) {
-            _self.cleaUpUI();
-            switched = true;
-            watcher.disconnect();
-            watcher.observe($('.chat-lines')[0], { childList: true});
+        var route = App.__container__.lookup('controller:application').get('currentRouteName');
+
+        if (route === 'loading' || route !== 'vod') return;
+
+        clearTimeout(this._waitForLoad);
+        this._waitForLoad = null;
+
+        chatHelpers.loadBTTVChannelData();
+
+        this.connect();
+    }.bind(this), 1000);
+}
+
+ChatReplay.prototype.connect = function() {
+    this.watcher = new MutationObserver(function(mutations) {
+        if ($('.chatReplay').length && $('.chat-lines').length) {
+            this.watcher.disconnect();
+            this.watcher.observe($('.chat-lines')[0], { childList: true, subtree: true });
         }
 
         mutations.forEach(function(mutation) {
-            var el, len = mutation.addedNodes.length;
-
-            for (var i = 0; i < len; i++) {
+            var el;
+            for (var i = 0; i < mutation.addedNodes.length; i++) {
                 el = mutation.addedNodes[i];
 
                 if ($(el).hasClass('chat-line')) {
-                    if ($(el).find('.horizontal-line').length) return;
-                    if ($('.chatReplay')) _self.messageParser(el);
+                    if ($(el).find('.horizontal-line').length) continue;
+                    this.messageParser(el);
                 }
             }
-        });
-    });
+        }.bind(this));
+    }.bind(this));
 
-    watcher.observe($('.app-main')[0], { childList: true, subtree: true});
-}
+    this.watcher.observe($('body')[0], { childList: true, subtree: true });
+};
+
+ChatReplay.prototype.disconnect = function() {
+    if (this._waitForLoad) clearTimeout(this._waitForLoad);
+    this.watcher.disconnect();
+};
 
 ChatReplay.prototype.messageParser = function(element) {
     var $element = $(element);
-
 
     if ($element.find('.deleted').length) {
         $element.remove();
         return;
     }
 
-
     var $name = $element.find('.from');
     var color = $name.attr('style').replace('color:', '');
     $name.css('color', chatHelpers.calculateColor(color));
-
 
     var message = element.querySelector('.message');
 
@@ -82,31 +91,6 @@ ChatReplay.prototype.emoticonize = function(message) {
         }
     }
     return parts.join(' ');
-};
-
-ChatReplay.prototype.loadEmotes = function() {
-    if (Object.keys(chatStore.bttvEmotes).length !== 0) return;
-
-    if (window.Ember && window.App && App.__container__.lookup('controller:application').get('currentRouteName') === 'vod') {
-        overrideEmotes();
-        var channel = App.__container__.lookup('controller:user').get('id');
-        $.getJSON('https://api.betterttv.net/2/channels/' + channel).done(function(data) {
-            data.emotes.forEach(function(bttvEmote) {
-                bttvEmote.channelEmote = true;
-                bttvEmote.urlTemplate = data.urlTemplate.replace('{{id}}', bttvEmote.id);
-                bttvEmote.url = bttvEmote.urlTemplate.replace('{{image}}', '1x');
-                chatStore.bttvEmotes[bttvEmote.code] = bttvEmote;
-            });
-        });
-    }
-};
-
-ChatReplay.prototype.cleaUpUI = function() {
-    if ($('.chat-room').length) {
-        $('.chat-interface').remove();
-        $('.chat-room').css('top', 5);
-        $('.chat-messages').css('bottom', 5);
-    }
 };
 
 module.exports = ChatReplay;

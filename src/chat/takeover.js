@@ -1,12 +1,11 @@
 var vars = require('../vars'),
     debug = require('../helpers/debug'),
-    keyCodes = require('../keycodes');
-var store = require('./store'),
+    keyCodes = require('../keycodes'),
+    store = require('./store'),
     handlers = require('./handlers'),
     helpers = require('./helpers'),
     rooms = require('./rooms'),
-    templates = require('./templates');
-var overrideEmotes = require('../features/override-emotes'),
+    templates = require('./templates'),
     loadChatSettings = require('../features/chat-load-settings'),
     anonChat = require('../features/anon-chat'),
     customTimeouts = require('../features/custom-timeouts');
@@ -116,25 +115,8 @@ var takeover = module.exports = function() {
         });
     }
 
-    // Load BTTV emotes if not loaded
-    overrideEmotes();
-    var i;
-    var bttvEmoteKeys = Object.keys(store.bttvEmotes);
-    for (i = bttvEmoteKeys.length - 1; i >= 0; i--) {
-        var bttvEmoteKey = bttvEmoteKeys[i];
-        if (!store.bttvEmotes[bttvEmoteKey].channelEmote) continue;
-        delete store.bttvEmotes[bttvEmoteKey];
-    }
-    store.__channelBots = [];
-    $.getJSON('https://api.betterttv.net/2/channels/' + bttv.getChannel()).done(function(data) {
-        data.emotes.forEach(function(bttvEmote) {
-            bttvEmote.channelEmote = true;
-            bttvEmote.urlTemplate = data.urlTemplate.replace('{{id}}', bttvEmote.id);
-            bttvEmote.url = bttvEmote.urlTemplate.replace('{{image}}', '1x');
-            store.bttvEmotes[bttvEmote.code] = bttvEmote;
-        });
-        store.__channelBots = data.bots;
-    });
+    // Load BTTV channel emotes/bots
+    helpers.loadBTTVChannelData();
 
     // Load Volunteer Badges
     helpers.loadBadges();

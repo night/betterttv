@@ -8,6 +8,7 @@ var vars = require('../vars'),
     punycode = require('punycode'),
     channelState = require('../features/channel-state'),
     MassUnbanPopup = require('../helpers/massunban-popup'),
+    overrideEmotes = require('../features/override-emotes'),
     throttle = require('lodash.throttle');
 
 // Helper functions
@@ -884,5 +885,30 @@ exports.translate = function($element, sender, text) {
                 $newElement.tipsy('hide');
             } catch (e) {}
         }, 3000);
+    });
+};
+
+exports.loadBTTVChannelData = function() {
+    // Loads global BTTV emotes (if not loaded)
+    overrideEmotes();
+
+    // When swapping channels, removes old channel emotes
+    var bttvEmoteKeys = Object.keys(store.bttvEmotes);
+    for (var i = bttvEmoteKeys.length - 1; i >= 0; i--) {
+        var bttvEmoteKey = bttvEmoteKeys[i];
+        if (!store.bttvEmotes[bttvEmoteKey].channelEmote) continue;
+        delete store.bttvEmotes[bttvEmoteKey];
+    }
+
+    store.__channelBots = [];
+
+    $.getJSON('https://api.betterttv.net/2/channels/' + bttv.getChannel()).done(function(data) {
+        data.emotes.forEach(function(bttvEmote) {
+            bttvEmote.channelEmote = true;
+            bttvEmote.urlTemplate = data.urlTemplate.replace('{{id}}', bttvEmote.id);
+            bttvEmote.url = bttvEmote.urlTemplate.replace('{{image}}', '1x');
+            store.bttvEmotes[bttvEmote.code] = bttvEmote;
+        });
+        store.__channelBots = data.bots;
     });
 };

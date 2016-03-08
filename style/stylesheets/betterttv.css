@@ -1776,3 +1776,14 @@ body.channel_new.columns.ember-application {
 .ember-chat .chat-messages .chat-line {
     font-size: 13.3333px;
 }
+
+/* chat replay */
+.chat-container.chatReplay .ember-chat .chat-interface {
+    display: none;
+}
+.chat-container.chatReplay .ember-chat .chat-room {
+    top: 5px;
+}
+.chat-container.chatReplay .ember-chat .chat-messages {
+    bottom: 5px;
+}
