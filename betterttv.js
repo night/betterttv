@@ -4287,10 +4287,6 @@ module.exports = function dashboardChannelInfo() {
             $.getJSON('/' + bttv.getChannel() + '/dashboard/revenue/summary_data', function(data) {
                 if (!data.data) return;
 
-                if (typeof data.data.total_subscriptions === 'string') {
-                    data.data.total_subscriptions = parseInt(data.data.total_subscriptions, 10);
-                }
-
                 if (data.data.total_subscriptions === 0) {
                     vars.dontCheckSubs = true;
                     return;
