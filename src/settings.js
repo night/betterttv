@@ -78,9 +78,6 @@ Settings.prototype.load = function() {
                     value = _self._parseSetting(data[2]);
 
                 _self.save(key, value);
-            } else if (data[0] === 'bttv_is_login_dark') {
-                if (bttv.settings.get('darkenedMode') !== true) return;
-                e.source.postMessage('bttv_login_dark', e.origin);
             }
         }
     };
