@@ -6186,7 +6186,7 @@ module.exports = [
                         gravity: $.fn.tipsy.autoNS,
                         html: true,
                         opacity: 1,
-                        title: function() { return '<iframe src="http://player.twitch.tv/?channel=' + chan + '&!branding&!showInfo&autoplay&volume=0.1' + html5 + '" style="border: none;" width="320" height="208"></iframe><style>.tipsy-inner{max-width:320px;}</style>'; }
+                        title: function() { return '<iframe src="https://player.twitch.tv/?channel=' + chan + '&!branding&!showInfo&autoplay&volume=0.1' + html5 + '" style="border: none;" width="320" height="208"></iframe><style>.tipsy-inner{max-width:320px;}</style>'; }
                     });
                     $this.tipsy('show');
                 }, 1500);
