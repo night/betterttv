@@ -83,8 +83,9 @@ Settings.prototype.load = function() {
 
             if (data[0] === 'bttv_transfer') {
                 if (e.origin.split('//')[1] !== window.location.host) return;
-                key = data[1];
-                value = _self._parseSetting(data[2]);
+                data.shift();
+                key = data.shift();
+                value = _self._parseSetting(data.join(' '));
 
                 localStorage.setItem(key, value);
             }
