@@ -369,7 +369,7 @@ module.exports = [
     },
     {
         name: 'Mod Card Keybinds',
-        description: 'Enable keybinds when you click on a username: P(urge), T(imeout), B(an), W(whisper)',
+        description: 'Enable keybinds when you click on a username: P(urge), T(imeout), B(an), W(hisper)',
         default: false,
         storageKey: 'modcardsKeybinds'
     },
