@@ -2337,3 +2337,17 @@ span.subscribe-text {
 .stats-and-actions #commission_modal {
     background-color: #232323 !important; /* inline styles? really Twitch?*/
 }
+
+/* fixes for right sidebar when not chat */
+#right_col .top .tabs li a:hover {
+    background-color: #333;
+}
+
+#right_col .top .tabs li.selected a {
+    border-bottom-color: #999 !important; /* !important because of overly broad legacy css above */
+}
+
+.ember-chat .chat-room .notice-wrapper {
+    background-color: rgb(30, 30, 30);
+}
+
