@@ -1861,6 +1861,7 @@ exports.suggestions = {
 exports.chatHistory = [];
 exports.whisperHistory = {};
 exports.bttvEmotes = {};
+exports.proEmotes = {};
 exports.autoCompleteEmotes = {};
 
 // as these aren't objects, they can't be local variables (otherwise we wouldn't be able to modify them from outside)
@@ -2485,6 +2486,12 @@ var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message
             emote = store.bttvEmotes[piece];
         } else if (store.bttvEmotes.hasOwnProperty(test)) {
             emote = store.bttvEmotes[test];
+        } else if (store.proEmotes.hasOwnProperty(sender)) {
+            if (store.proEmotes[sender].hasOwnProperty(piece)) {
+                emote = store.proEmotes[sender][piece];
+            } else if (store.proEmotes[sender].hasOwnProperty(test)) {
+                emote = store.proEmotes[sender][test];
+            }
         }
 
         if (
@@ -6341,7 +6348,7 @@ module.exports = [
     },
     {
         name: 'Mod Card Keybinds',
-        description: 'Enable keybinds when you click on a username: P(urge), T(imeout), B(an), W(whisper)',
+        description: 'Enable keybinds when you click on a username: P(urge), T(imeout), B(an), W(hisper)',
         default: false,
         storageKey: 'modcardsKeybinds'
     },
@@ -7128,6 +7135,14 @@ events.commercial = function(data) {
 
 // Night's legacy subs
 events.lookup_user = function(subscription) {
+    if (subscription.pro && subscription.emotes && subscription.emotes.length) {
+        bttv.chat.store.proEmotes[subscription.name] = {};
+
+        subscription.emotes.forEach(function(emote) {
+            bttv.chat.store.proEmotes[subscription.name][emote.code] = emote;
+        });
+    }
+
     if (!subscription.subscribed) return;
 
     bttv.chat.store.__subscriptions[subscription.name] = ['night'];
