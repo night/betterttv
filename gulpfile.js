@@ -5,6 +5,7 @@ var fs = require('fs'),
     header = require('gulp-header'),
     footer = require('gulp-footer'),
     concat = require('gulp-concat'),
+    react = require('gulp-react'),
     eslint = require('gulp-eslint');
 
 gulp.task('templates', function() {
@@ -19,12 +20,18 @@ gulp.task('prepare', function() {
                .pipe(gulp.dest('build/'));
 });
 
+gulp.task('settings', function() {
+    return gulp.src(['src/settings/settings.jsx'])
+               .pipe(react())
+               .pipe(gulp.dest('build/settings/'));
+});
+
 gulp.task('lint', function() {
     var options = {
         configFile: '.eslintrc'
     };
 
-    return gulp.src(['src/**/*'])
+    return gulp.src(['src/**/*.js'])
         .pipe(eslint(options))
         .pipe(eslint.format())
         .pipe(eslint.failOnError());
@@ -33,7 +40,7 @@ gulp.task('lint', function() {
 var jadeDefinition = fs.readFileSync('node_modules/jade/runtime.js').toString();
 var license = fs.readFileSync('license.txt').toString();
 
-gulp.task('scripts', ['prepare', 'templates', 'lint'], function() {
+gulp.task('scripts', ['prepare', 'settings', 'templates', 'lint'], function() {
     gulp.src(['build/main.js'])
         .pipe(browserify())
         .pipe(concat('betterttv.js'))

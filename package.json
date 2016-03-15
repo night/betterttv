@@ -26,6 +26,8 @@
   },
   "dependencies": {
     "cookies-js": "^1.2.1",
+    "gulp-react": "^3.1.0",
+    "localforage": "^1.4.0",
     "lodash.throttle": "^3.0.4",
     "socket.io-client": "^1.3.5"
   }
