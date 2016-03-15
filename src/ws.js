@@ -42,6 +42,14 @@ events.commercial = function(data) {
 
 // Night's legacy subs
 events.lookup_user = function(subscription) {
+    if (subscription.pro && subscription.emotes && subscription.emotes.length) {
+        bttv.chat.store.proEmotes[subscription.name] = {};
+
+        subscription.emotes.forEach(function(emote) {
+            bttv.chat.store.proEmotes[subscription.name][emote.code] = emote;
+        });
+    }
+
     if (!subscription.subscribed) return;
 
     bttv.chat.store.__subscriptions[subscription.name] = ['night'];

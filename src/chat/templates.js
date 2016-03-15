@@ -152,6 +152,12 @@ var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message
             emote = store.bttvEmotes[piece];
         } else if (store.bttvEmotes.hasOwnProperty(test)) {
             emote = store.bttvEmotes[test];
+        } else if (store.proEmotes.hasOwnProperty(sender)) {
+            if (store.proEmotes[sender].hasOwnProperty(piece)) {
+                emote = store.proEmotes[sender][piece];
+            } else if (store.proEmotes[sender].hasOwnProperty(test)) {
+                emote = store.proEmotes[sender][test];
+            }
         }
 
         if (
