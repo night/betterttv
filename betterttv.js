@@ -2753,7 +2753,7 @@ var main = function() {
                 renderingCounter--;
 
                 if (!payload.template) return;
-                // debug.log(payload.template);
+                // debug.log(payload.template, App.__container__.lookup('controller:application').get('currentRouteName'));
 
                 if (App.__container__.lookup('controller:application').get('currentRouteName') !== 'channel.index.index') {
                     $('#main_col').removeAttr('style');
@@ -2768,7 +2768,7 @@ var main = function() {
                 }
 
                 switch (payload.template) {
-                    case 'shared/right-column':
+                    case 'chat/chat':
                         waitForLoad(function(ready) {
                             if (ready) {
                                 bttv.chat.store.isLoaded = false;
