@@ -8,7 +8,8 @@ module.exports = function() {
     if (bttv.settings.get('bttvEmotes') === false) {
         return [];
     }
-    var emotes = store.bttvEmotes;
+    var proEmotes = store.proEmotes[vars.userData.name];
+    var emotes = $.extend({}, store.bttvEmotes, proEmotes);
     var usableEmotes = [];
     var emoteSets;
 
