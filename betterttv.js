@@ -2769,7 +2769,6 @@ var main = function() {
                         waitForLoad(function(ready) {
                             if (ready) {
                                 handleBackground();
-                                debug.log('test 1');
                                 clearClutter();
                                 channelReformat();
                                 hostButtonBelowVideo();
@@ -2852,7 +2851,6 @@ var main = function() {
         chatReplay = new ChatReplay();
         conversations();
         clearClutter();
-        debug.log('test 2');
         channelReformat();
         checkBroadcastInfo();
         brand();
