@@ -1626,6 +1626,10 @@ table.simple_table td {
     background-color: #1e1e1e;
 }
 
+#passport_iframe_container {
+    background-color: transparent;
+}
+
 .channel_new .twitch_subwindow_container .twitch_subwindow .content-header,
 .channel_new .twitch_subwindow_container .twitch_subwindow .buttons {
     border-color: #555;
