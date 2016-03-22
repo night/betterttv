@@ -2769,6 +2769,7 @@ var main = function() {
                         waitForLoad(function(ready) {
                             if (ready) {
                                 handleBackground();
+                                debug.log('test 1');
                                 clearClutter();
                                 channelReformat();
                                 hostButtonBelowVideo();
@@ -2851,6 +2852,7 @@ var main = function() {
         chatReplay = new ChatReplay();
         conversations();
         clearClutter();
+        debug.log('test 2');
         channelReformat();
         checkBroadcastInfo();
         brand();
@@ -7147,6 +7149,9 @@ events.lookup_user = function(subscription) {
         bttv.chat.store.proEmotes[subscription.name] = {};
 
         subscription.emotes.forEach(function(emote) {
+            if (subscription.name === vars.userData.name) {
+                emote.channel = 'Personal Emote';
+            }
             bttv.chat.store.proEmotes[subscription.name][emote.code] = emote;
         });
     }
