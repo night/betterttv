@@ -34,7 +34,7 @@ var getPlayerHeight = function() {
 };
 
 module.exports = function() {
-    if ($('#main_col #channel').length === 0 || $('#right_col').length === 0) return;
+    if ($('#right_col').length === 0) return;
 
     debug.log('Page resized');
 
@@ -58,6 +58,8 @@ module.exports = function() {
             marginRight: $('#right_col').width() + 'px'
         });
     }
+
+    if ($('#main_col #channel').length === 0) return;
 
     var fullPageHeight = $(window).height();
     var fullPlayerHeight = getPlayerHeight();

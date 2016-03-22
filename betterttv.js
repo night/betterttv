@@ -2764,28 +2764,8 @@ var main = function() {
                 if (!payload.template) return;
                 // debug.log(payload.template, App.__container__.lookup('controller:application').get('currentRouteName'));
 
-                if (App.__container__.lookup('controller:application').get('currentRouteName') !== 'channel.index.index') {
-                    $('#main_col').removeAttr('style');
-                }
-
-                if (App.__container__.lookup('controller:application').get('currentRouteName') === 'vod') {
-                    // disconnect old chat replay watcher, spawn new
-                    try {
-                        chatReplay.disconnect();
-                    } catch (e) {}
-                    chatReplay = new ChatReplay();
-                }
-
-                switch (payload.template) {
-                    case 'chat/chat':
-                        waitForLoad(function(ready) {
-                            if (ready) {
-                                bttv.chat.store.isLoaded = false;
-                                chatFunctions();
-                            }
-                        });
-                        break;
-                    case 'channel/index':
+                switch (App.__container__.lookup('controller:application').get('currentRouteName')) {
+                    case 'channel.index.index':
                         waitForLoad(function(ready) {
                             if (ready) {
                                 handleBackground();
@@ -2805,7 +2785,21 @@ var main = function() {
                             }
                         });
                         break;
-                    case 'channel/profile':
+                    case 'vod':
+                        // disconnect old chat replay watcher, spawn new
+                        try {
+                            chatReplay.disconnect();
+                        } catch (e) {}
+                        chatReplay = new ChatReplay();
+                        break;
+                    case 'following.index':
+                        waitForLoad(function(ready) {
+                            if (ready) {
+                                directoryFunctions();
+                            }
+                        });
+                        break;
+                    case 'profile.index':
                         waitForLoad(function(ready) {
                             if (ready) {
                                 vars.emotesLoaded = false;
@@ -2815,10 +2809,18 @@ var main = function() {
                             }
                         });
                         break;
-                    case 'directory/following':
+                    default:
+                        // resets main col width on all non-resized pages
+                        $('#main_col').removeAttr('style');
+                        break;
+                }
+
+                switch (payload.template) {
+                    case 'chat/chat':
                         waitForLoad(function(ready) {
                             if (ready) {
-                                directoryFunctions();
+                                bttv.chat.store.isLoaded = false;
+                                chatFunctions();
                             }
                         });
                         break;
@@ -3109,7 +3111,7 @@ var getPlayerHeight = function() {
 };
 
 module.exports = function() {
-    if ($('#main_col #channel').length === 0 || $('#right_col').length === 0) return;
+    if ($('#right_col').length === 0) return;
 
     debug.log('Page resized');
 
@@ -3133,6 +3135,8 @@ module.exports = function() {
             marginRight: $('#right_col').width() + 'px'
         });
     }
+
+    if ($('#main_col #channel').length === 0) return;
 
     var fullPageHeight = $(window).height();
     var fullPlayerHeight = getPlayerHeight();
@@ -4465,8 +4469,7 @@ module.exports = function dashboardChannelInfo() {
 };
 
 },{"../helpers/debug":48,"../vars":68}],32:[function(require,module,exports){
-var debug = require('../helpers/debug'),
-    vars = require('../vars');
+var debug = require('../helpers/debug');
 
 module.exports = function() {
     if (
@@ -4478,21 +4481,9 @@ module.exports = function() {
 
         $('a[href="/directory/following/live"]').click();
     }
-
-    if (vars.watchScroll) return;
-    vars.watchScroll = $('#main_col .tse-scroll-content').scroll(function() {
-        var scrollHeight = $('#main_col .tse-scroll-content')[0].scrollHeight - $('#main_col .tse-scroll-content').height(),
-            scrollTop = $('#main_col .tse-scroll-content').scrollTop(),
-            distanceFromBottom = scrollHeight - scrollTop;
-
-        if (distanceFromBottom < 251) {
-            if ($('#directory-list a.list_more .spinner').length) return;
-            $('#directory-list a.list_more').click();
-        }
-    });
 };
 
-},{"../helpers/debug":48,"../vars":68}],33:[function(require,module,exports){
+},{"../helpers/debug":48}],33:[function(require,module,exports){
 var pollTemplate = require('../templates/embedded-poll');
 var chatHelpers = require('../chat/helpers');
 
