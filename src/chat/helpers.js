@@ -7,7 +7,6 @@ var vars = require('../vars'),
     bots = require('../bots'),
     punycode = require('punycode'),
     channelState = require('../features/channel-state'),
-    MassUnbanPopup = require('../helpers/massunban-popup'),
     overrideEmotes = require('../features/override-emotes'),
     throttle = require('lodash.throttle');
 
@@ -808,7 +807,6 @@ exports.massUnban = function() {
         return;
     }
 
-    var massUnbanPopup = new MassUnbanPopup();
     var unbanCount = 0;
 
     var unbanChatters = function(users, callback) {
@@ -828,10 +826,20 @@ exports.massUnban = function() {
     var getBannedChatters = function() {
         serverMessage('Fetching banned users...');
 
-        massUnbanPopup.getNextBatch(function(users) {
+        $.get('/settings/channel').success(function(data) {
+            var $chatterList = $(data).find('#banned_chatter_list');
+
+            if (!$chatterList.length) return serverMessage('Error fetching banned users list.');
+
+            var users = [];
+
+            $chatterList.find('.ban .obj').each(function() {
+                var user = $(this).text().trim();
+                if (users.indexOf(user) === -1) users.push(user);
+            });
+
             if (users.length === 0) {
                 serverMessage('You have no more banned users. Total Unbanned Users: ' + unbanCount);
-                massUnbanPopup.done();
                 return;
             }
 

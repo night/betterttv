@@ -40,9 +40,11 @@ events.commercial = function(data) {
     bttv.chat.helpers.notifyMessage('bot', data.message);
 };
 
-// Night's legacy subs
+// Night's legacy subs & BetterTTV Pro
 events.lookup_user = function(subscription) {
-    if (subscription.pro && subscription.emotes && subscription.emotes.length) {
+    if (!subscription.pro && !subscription.subscribed) return;
+
+    if (subscription.pro && subscription.emotes) {
         bttv.chat.store.proEmotes[subscription.name] = {};
 
         subscription.emotes.forEach(function(emote) {
@@ -50,10 +52,11 @@ events.lookup_user = function(subscription) {
         });
     }
 
-    if (!subscription.subscribed) return;
+    if (subscription.subscribed) {
+        bttv.chat.store.__subscriptions[subscription.name] = ['night'];
+        if (subscription.glow) bttv.chat.store.__subscriptions[subscription.name].push('_glow');
+    }
 
-    bttv.chat.store.__subscriptions[subscription.name] = ['night'];
-    if (subscription.glow) bttv.chat.store.__subscriptions[subscription.name].push('_glow');
     bttv.chat.helpers.reparseMessages(subscription.name);
 };
 

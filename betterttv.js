@@ -855,7 +855,6 @@ var vars = require('../vars'),
     bots = require('../bots'),
     punycode = require('punycode'),
     channelState = require('../features/channel-state'),
-    MassUnbanPopup = require('../helpers/massunban-popup'),
     overrideEmotes = require('../features/override-emotes'),
     throttle = require('lodash.throttle');
 
@@ -1656,7 +1655,6 @@ exports.massUnban = function() {
         return;
     }
 
-    var massUnbanPopup = new MassUnbanPopup();
     var unbanCount = 0;
 
     var unbanChatters = function(users, callback) {
@@ -1676,10 +1674,20 @@ exports.massUnban = function() {
     var getBannedChatters = function() {
         serverMessage('Fetching banned users...');
 
-        massUnbanPopup.getNextBatch(function(users) {
+        $.get('/settings/channel').success(function(data) {
+            var $chatterList = $(data).find('#banned_chatter_list');
+
+            if (!$chatterList.length) return serverMessage('Error fetching banned users list.');
+
+            var users = [];
+
+            $chatterList.find('.ban .obj').each(function() {
+                var user = $(this).text().trim();
+                if (users.indexOf(user) === -1) users.push(user);
+            });
+
             if (users.length === 0) {
                 serverMessage('You have no more banned users. Total Unbanned Users: ' + unbanCount);
-                massUnbanPopup.done();
                 return;
             }
 
@@ -1761,7 +1769,7 @@ exports.loadBTTVChannelData = function() {
     });
 };
 
-},{"../bots":1,"../features/channel-state":19,"../features/override-emotes":44,"../helpers/colors":47,"../helpers/debug":48,"../helpers/massunban-popup":51,"../keycodes":53,"../legacy-tags":54,"../vars":68,"./handlers":4,"./store":8,"./templates":10,"./tmi":11,"lodash.throttle":73,"punycode":72}],6:[function(require,module,exports){
+},{"../bots":1,"../features/channel-state":19,"../features/override-emotes":44,"../helpers/colors":47,"../helpers/debug":48,"../keycodes":53,"../legacy-tags":54,"../vars":68,"./handlers":4,"./store":8,"./templates":10,"./tmi":11,"lodash.throttle":73,"punycode":72}],6:[function(require,module,exports){
 // Add mouseover image preview to image links
 module.exports = function(imgUrl) {
     return '<a href="' + imgUrl + '" class="chat-preview" target="_blank">' + imgUrl + '</a>';
@@ -7137,9 +7145,11 @@ events.commercial = function(data) {
     bttv.chat.helpers.notifyMessage('bot', data.message);
 };
 
-// Night's legacy subs
+// Night's legacy subs & BetterTTV Pro
 events.lookup_user = function(subscription) {
-    if (subscription.pro && subscription.emotes && subscription.emotes.length) {
+    if (!subscription.pro && !subscription.subscribed) return;
+
+    if (subscription.pro && subscription.emotes) {
         bttv.chat.store.proEmotes[subscription.name] = {};
 
         subscription.emotes.forEach(function(emote) {
@@ -7147,10 +7157,11 @@ events.lookup_user = function(subscription) {
         });
     }
 
-    if (!subscription.subscribed) return;
+    if (subscription.subscribed) {
+        bttv.chat.store.__subscriptions[subscription.name] = ['night'];
+        if (subscription.glow) bttv.chat.store.__subscriptions[subscription.name].push('_glow');
+    }
 
-    bttv.chat.store.__subscriptions[subscription.name] = ['night'];
-    if (subscription.glow) bttv.chat.store.__subscriptions[subscription.name].push('_glow');
     bttv.chat.helpers.reparseMessages(subscription.name);
 };
 
