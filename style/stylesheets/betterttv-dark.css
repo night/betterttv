@@ -2375,3 +2375,8 @@ span.subscribe-text {
     border-color: #333;
     background-color: #333;
 }
+
+/* chat replay */
+.chatReplay .loading-spinner-container {
+    background: rgba(10,10,10,.85);
+}
