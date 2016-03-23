@@ -24,7 +24,7 @@ module.exports = function(force) {
     if (!room) return;
 
     try {
-        var prodConn = session._connections.prod || session._connections.main;
+        var prodConn = session._connections.aws || session._connections.prod || session._connections.main;
         if (!prodConn) return;
 
         var prodConnOpts = prodConn._opts;
