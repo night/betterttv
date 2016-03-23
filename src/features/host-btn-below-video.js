@@ -24,7 +24,7 @@ module.exports = function() {
         $hostButton.click(function() {
             var action = $hostButton.text();
 
-            var conn = tmi.tmiSession._connections.prod || tmi.tmiSession._connections.main;
+            var conn = tmi.tmiSession._connections.aws || tmi.tmiSession._connections.prod || tmi.tmiSession._connections.main;
 
             if (action === 'Unhost') {
                 try {
