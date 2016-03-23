@@ -344,7 +344,9 @@ module.exports = function() {
 
         emote.text = emote.code;
 
-        if (!emote.channel) {
+        if (emote.personal) {
+            emote.channel = 'Personal Emotes';
+        } else if (!emote.channel) {
             emote.channel = 'BetterTTV Emotes';
             emote.badge = 'https://cdn.betterttv.net/tags/developer.png';
         }
@@ -2386,7 +2388,8 @@ var linkify = exports.linkify = function(message) {
 
 var emoticonBTTV = exports.emoticonBTTV = function(emote) {
     var channel = emote.channel ? 'data-channel="' + emote.channel + '" ' : '';
-    return '<img class="emoticon bttv-emo-' + emote.id + '" src="' + emote.urlTemplate.replace('{{image}}', '1x') + '" srcset="' + emote.urlTemplate.replace('{{image}}', '2x') + ' 2x" ' + channel + 'data-regex="' + encodeURIComponent(emote.code) + '" />';
+    var type = 'data-emote-type="' + (emote.pro ? 'BTTV Pro' : 'BTTV') + '" ';
+    return '<img class="emoticon bttv-emo-' + emote.id + '" src="' + emote.urlTemplate.replace('{{image}}', '1x') + '" srcset="' + emote.urlTemplate.replace('{{image}}', '2x') + ' 2x" ' + channel + type + 'data-regex="' + encodeURIComponent(emote.code) + '" />';
 };
 
 var jtvEmoticonize = exports.jtvEmoticonize = function(id) {
@@ -5163,7 +5166,8 @@ module.exports = function() {
                         } else if ($emote.data('channel') && $emote.data('channel') === 'BetterTTV Emotes') {
                             return 'Emote: ' + raw + '<br />BetterTTV Emoticon';
                         } else if ($emote.data('channel')) {
-                            return 'Emote: ' + raw + '<br />Channel: ' + $emote.data('channel') + ' (BTTV)';
+                            var type = $emote.data('emote-type') ? ' (' + $emote.data('emote-type') + ')' : '';
+                            return 'Emote: ' + raw + '<br />Channel: ' + $emote.data('channel') + type;
                         } else {
                             return raw;
                         }
@@ -7147,8 +7151,9 @@ events.lookup_user = function(subscription) {
         bttv.chat.store.proEmotes[subscription.name] = {};
 
         subscription.emotes.forEach(function(emote) {
+            emote.pro = true;
             if (subscription.name === vars.userData.name) {
-                emote.channel = 'Personal Emote';
+                emote.personal = true;
             }
             bttv.chat.store.proEmotes[subscription.name][emote.code] = emote;
         });

@@ -43,7 +43,8 @@ var linkify = exports.linkify = function(message) {
 
 var emoticonBTTV = exports.emoticonBTTV = function(emote) {
     var channel = emote.channel ? 'data-channel="' + emote.channel + '" ' : '';
-    return '<img class="emoticon bttv-emo-' + emote.id + '" src="' + emote.urlTemplate.replace('{{image}}', '1x') + '" srcset="' + emote.urlTemplate.replace('{{image}}', '2x') + ' 2x" ' + channel + 'data-regex="' + encodeURIComponent(emote.code) + '" />';
+    var type = 'data-emote-type="' + (emote.pro ? 'BTTV Pro' : 'BTTV') + '" ';
+    return '<img class="emoticon bttv-emo-' + emote.id + '" src="' + emote.urlTemplate.replace('{{image}}', '1x') + '" srcset="' + emote.urlTemplate.replace('{{image}}', '2x') + ' 2x" ' + channel + type + 'data-regex="' + encodeURIComponent(emote.code) + '" />';
 };
 
 var jtvEmoticonize = exports.jtvEmoticonize = function(id) {

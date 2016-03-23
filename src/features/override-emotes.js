@@ -32,7 +32,8 @@ module.exports = function() {
                         } else if ($emote.data('channel') && $emote.data('channel') === 'BetterTTV Emotes') {
                             return 'Emote: ' + raw + '<br />BetterTTV Emoticon';
                         } else if ($emote.data('channel')) {
-                            return 'Emote: ' + raw + '<br />Channel: ' + $emote.data('channel') + ' (BTTV)';
+                            var type = $emote.data('emote-type') ? ' (' + $emote.data('emote-type') + ')' : '';
+                            return 'Emote: ' + raw + '<br />Channel: ' + $emote.data('channel') + type;
                         } else {
                             return raw;
                         }
