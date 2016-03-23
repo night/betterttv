@@ -345,7 +345,11 @@ module.exports = function() {
         emote.text = emote.code;
 
         if (emote.personal) {
-            emote.channel = 'Personal Emotes';
+            emote = {
+                text: emote.text,
+                url: emote.url,
+                channel: 'Personal Emotes',
+            };
         } else if (!emote.channel) {
             emote.channel = 'BetterTTV Emotes';
             emote.badge = 'https://cdn.betterttv.net/tags/developer.png';
