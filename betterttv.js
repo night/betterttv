@@ -2793,6 +2793,7 @@ var main = function() {
                         chatReplay = new ChatReplay();
                         break;
                     case 'following.index':
+                        $('#main_col').removeAttr('style');
                         waitForLoad(function(ready) {
                             if (ready) {
                                 directoryFunctions();
