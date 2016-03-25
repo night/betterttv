@@ -1967,6 +1967,10 @@ color: white;
 color: white;
 }
 
+.player-column .brick {
+    background-color: #222;
+}
+
 /* Video Manager */
 .channel_new .app-main #directory-list #video-manager .videos-grid .video.item .meta {
     background: #1f1f1f;
