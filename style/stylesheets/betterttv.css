@@ -1789,7 +1789,7 @@ body.channel_new.columns.ember-application {
 }
 
 /* host & playlist banner fix */
-.player-column .brick, .host-frame .brick {
+.player-column .brick {
 	border-left: 5px solid #6441a5 !important;
 	box-shadow: 0px 0 0 #6441a4 inset !important;
 }
