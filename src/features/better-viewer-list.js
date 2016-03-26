@@ -7,13 +7,23 @@ var buttonTemplate = require('../templates/bvl-button'),
 
 var viewList, chatterList;
 
+
 function renderViewerList() {
     var results = chatterList;
-    var search = $('#bvl-panel .filter').val().toLowerCase();
-    if (search.trim() !== '') {
+    var search = $('#bvl-panel .filter').val();
+    search = search.toLowerCase().trim();
+    if (search.length > 0) {
+        var tmpResults = [];
         results = chatterList.filter(function(v) {
-            return v.text.indexOf(search) >= 0 && !v.filter;
+            return v.text.indexOf(search) >= 0 || v.filter;
         });
+
+        // Filter empty subsections
+        for (var i = 0; i < results.length - 1; i++) {
+            if (results[i].filter && results[i + 1].text === ' ') i++;
+            else tmpResults.push(results[i]);
+        }
+        results = tmpResults;
     }
     viewList.render(results);
 }
@@ -26,12 +36,14 @@ function extractViewers(data) {
     for (var i = 0; i < userTypes.length; i++) {
         if (chatters[userTypes[i]].length === 0) continue;
 
+        // User type header
         results.push({
             filter: true,
             tag: 'li.user-type',
             text: typeDisplays[i]
         });
 
+        // users
         var users = chatters[userTypes[i]];
         for (var j = 0; j < users.length; j++) {
             results.push({
@@ -40,6 +52,7 @@ function extractViewers(data) {
             });
         }
 
+        // Blank space
         results.push({
             filter: true,
             tag: 'li.user-type',
@@ -54,37 +67,39 @@ function loadViewerList() {
     var tmi = bttv.chat.tmi();
     if (!tmi) return;
 
-    var oldList = $('#bvl-panel .viewer-list');
-    if (oldList) oldList.remove();
+    var $oldList = $('#bvl-panel .viewer-list');
+    $oldList.hide();
 
-    var opts = {
+    var $refreshButton = $('#bvl-panel .refresh-button');
+    $refreshButton.addClass('disable');
+
+    var target = document.getElementById('bvl-panel');
+    var spinner = new Spinner({
         color: '#fff',
         lines: 12,
         length: 6,
         width: 3,
         radius: 12,
-    };
-    var target = document.getElementById('bvl-panel');
-    var spinner = new Spinner(opts).spin(target);
+    }).spin(target);
 
     var deferred = tmi.tmiRoom.list();
     deferred.then(function(data) {
         spinner.stop();
-
-        if (!data || data.status !== 200) {
-            return;
-        }
+        $oldList.remove();
+        setTimeout(function() {
+            $refreshButton.removeClass('disable');
+        }, 30 * 1000);
 
         $('#bvl-panel .status').hide();
         $('#bvl-panel .filter').show();
-        var parent = $('#bvl-panel');
+        var $parent = $('#bvl-panel');
         viewList = new ViewList({
             className: 'viewer-list',
             topClassName: 'bvl-top',
             bottomClassName: 'bvl-bottom',
-            appendTo: parent[0],
+            appendTo: $parent[0],
             rowHeight: 20,
-            height: parent.height() - 40,
+            height: $parent.height() - 85,
             eachrow: function(row) {
                 return this.html(row.tag, {
                     onclick: function(e) {
@@ -96,47 +111,52 @@ function loadViewerList() {
 
         viewList.render([]);
         chatterList = extractViewers(data);
-        var el = $('#bvl-panel .viewer-list');
-        el.height(parent.height() - 40);
+        var $el = $('#bvl-panel .viewer-list');
+        $el.height($parent.height() - 85);
         renderViewerList();
-
-        // /*eslint-disable */
-        // // ヽ༼ಢ_ಢ༽ﾉ
-        // el.TrackpadScrollEmulator({
-        //     scrollbarHideStrategy: 'rightAndBottom'
-        // });
-        // /*eslint-enable */
+        viewList.lastUpdate = Date.now();
     }, function() {
+        var errorText;
         spinner.stop();
-        $('#bvl-panel .status').show()
-            .text('Failed to load viewer list, try again.');
-        $('#bvl-panel .filter').hide();
+        $refreshButton.removeClass('disable');
+        $('#bvl-panel .status').show();
+        if (viewList !== undefined) {
+            $oldList.show();
+            $('#bvl-panel .filter').show();
+            var time = Math.ceil((Date.now() - viewList.lastUpdate) / 60000);
+            errorText = 'Failed to load, showing ' + time + 'm old list.';
+        } else {
+            $('#bvl-panel .filter').hide();
+            errorText = 'Failed to load viewer list, try again.';
+        }
+        $('#bvl-panel .status').text(errorText);
     });
 }
 
 function createPanel() {
     // Create panel
-    panel = $(panelTemplate())
+    $panel = $(panelTemplate())
         .draggable({handle: '.drag_handle'});
 
-    panel.find('.close-button').click(function() {
-        panel.remove();
+    $panel.find('.close-button').click(function() {
+        $panel.remove();
     });
 
-    panel.find('.refresh-button').click(function() {
+    $panel.find('.refresh-button').click(function() {
+        if (this.classList.contains('disable')) return;
         loadViewerList();
     });
 
     var container = $('.chat-room');
-    panel.css({
+    $panel.css({
         width: container.width() - 20,
         height: Math.max(500, container.height() - 400)
     });
 
-    container.append(panel);
+    container.append($panel);
 
     // Setup resizing
-    var resizable = new Resizable(panel[0], {
+    var resizable = new Resizable($panel[0], {
         handles: 's, se, e',
         threshold: 10,
         draggable: false
@@ -144,9 +164,7 @@ function createPanel() {
 
     resizable.on('resize', function() {
         if (viewList === undefined) return;
-        var parent = $('#bvl-panel');
-        var el = $('#bvl-panel .viewer-list');
-        el.height(parent.height() - 40);
+        $('#bvl-panel .viewer-list').height($('#bvl-panel').height() - 85);
         renderViewerList();
     });
 
@@ -158,21 +176,33 @@ function createPanel() {
 }
 
 module.exports = function() {
+    if (bttv.settings.get('betterViewerList') === false) return;
+    if (!window.Ember || !window.App ||
+        App.__container__.lookup('controller:application').get('currentRouteName') !== 'channel.index.index') return;
+
     if ($('#bvl-button').length > 0) {
         $('#bvl-button').show();
         return;
     }
 
-    debug.log('Adding BetterViewerList button');
-    var settingsButton = $('.chat-buttons-container > :nth-child(1)');
-    settingsButton.after(buttonTemplate());
+    var interval = setInterval(function() {
+        if ($('#bvl-button').length > 0) return;
+        var $oldViewerList = $('a.button[title="Viewer List"]');
+        if ($oldViewerList.length === 0) return;
+        $oldViewerList.hide();
 
-    $('#bvl-button').click(function() {
-        var panel = $('#bvl-panel');
-        if (panel.length > 0) {
-            panel.remove();
-        } else {
-            createPanel();
-        }
-    });
+        debug.log('Adding BetterViewerList button');
+        $('.chat-buttons-container > :nth-child(1)').after(buttonTemplate());
+        $('a.button[title="Viewer List"]').hide();
+        $('#bvl-button').click(function() {
+            var $panel = $('#bvl-panel');
+            if ($panel.length > 0) {
+                $panel.remove();
+            } else {
+                createPanel();
+            }
+        });
+
+        clearInterval(interval);
+    }, 100);
 };

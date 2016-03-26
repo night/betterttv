@@ -48,14 +48,12 @@ module.exports = [
                 $('a.button[title="Viewer List"]').hide();
             } else {
                 $('#bvl-button').hide();
+                $('#bvl-panel').remove();
                 $('a.button[title="Viewer List"]').show();
             }
         },
         load: function() {
-            if (bttv.settings.get('betterViewerList') === true) {
-                betterViewerList();
-                $('a.button[title="Viewer List"]').hide();
-            }
+            betterViewerList();
         }
     },
     {
