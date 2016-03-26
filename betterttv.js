@@ -5190,7 +5190,6 @@ module.exports = function() {
             $('div.tipsy').remove();
         }).on('click', '.chat-line .emoticon', function() {
             var $emote = $(this);
-            if ($emote.data('channel') && $emote.data('type') === 'BetterTTV Emotes') return;
 
             if (bttv.TwitchEmoteIDToChannel && $emote.data('id') && bttv.TwitchEmoteIDToChannel[$emote.data('id')]) {
                 window.open('http://www.twitch.tv/' + bttv.TwitchEmoteIDToChannel[$emote.data('id')], '_blank');
