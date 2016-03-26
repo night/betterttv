@@ -12,6 +12,7 @@ module.exports = function() {
         data.emotes.forEach(function(emote) {
             emote.urlTemplate = data.urlTemplate.replace('{{id}}', emote.id);
             emote.url = emote.urlTemplate.replace('{{image}}', '1x');
+            emote.type = 'global';
 
             bttv.chat.store.bttvEmotes[emote.code] = emote;
         });
@@ -29,10 +30,10 @@ module.exports = function() {
                         var raw = decodeURIComponent($emote.data('regex'));
                         if (bttv.TwitchEmoteIDToChannel && $emote.data('id') && bttv.TwitchEmoteIDToChannel[$emote.data('id')]) {
                             return 'Emote: ' + raw + '<br />Channel: ' + bttv.TwitchEmoteIDToChannel[$emote.data('id')];
-                        } else if ($emote.data('channel') && $emote.data('channel') === 'BetterTTV Emotes') {
-                            return 'Emote: ' + raw + '<br />BetterTTV Emoticon';
+                        } else if (!$emote.data('channel') && $emote.data('type')) {
+                            return 'Emote: ' + raw + '<br />BetterTTV ' + $emote.data('type').capitalize() + ' Emote';
                         } else if ($emote.data('channel')) {
-                            return 'Emote: ' + raw + '<br />Channel: ' + $emote.data('channel');
+                            return 'Emote: ' + raw + '<br />Channel: ' + $emote.data('channel') + '<br />BetterTTV ' + $emote.data('type').capitalize() + ' Emote';
                         } else {
                             return raw;
                         }
@@ -59,7 +60,7 @@ module.exports = function() {
             $('div.tipsy').remove();
         }).on('click', '.chat-line .emoticon', function() {
             var $emote = $(this);
-            if ($emote.data('channel') && $emote.data('channel') === 'BetterTTV Emotes') return;
+            if ($emote.data('channel') && $emote.data('type') === 'BetterTTV Emotes') return;
 
             if (bttv.TwitchEmoteIDToChannel && $emote.data('id') && bttv.TwitchEmoteIDToChannel[$emote.data('id')]) {
                 window.open('http://www.twitch.tv/' + bttv.TwitchEmoteIDToChannel[$emote.data('id')], '_blank');

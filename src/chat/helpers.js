@@ -904,7 +904,7 @@ exports.loadBTTVChannelData = function() {
     var bttvEmoteKeys = Object.keys(store.bttvEmotes);
     for (var i = bttvEmoteKeys.length - 1; i >= 0; i--) {
         var bttvEmoteKey = bttvEmoteKeys[i];
-        if (!store.bttvEmotes[bttvEmoteKey].channelEmote) continue;
+        if (store.bttvEmotes[bttvEmoteKey].type !== 'channel') continue;
         delete store.bttvEmotes[bttvEmoteKey];
     }
 
@@ -912,7 +912,7 @@ exports.loadBTTVChannelData = function() {
 
     $.getJSON('https://api.betterttv.net/2/channels/' + bttv.getChannel()).done(function(data) {
         data.emotes.forEach(function(bttvEmote) {
-            bttvEmote.channelEmote = true;
+            bttvEmote.type = 'channel';
             bttvEmote.urlTemplate = data.urlTemplate.replace('{{id}}', bttvEmote.id);
             bttvEmote.url = bttvEmote.urlTemplate.replace('{{image}}', '1x');
             store.bttvEmotes[bttvEmote.code] = bttvEmote;

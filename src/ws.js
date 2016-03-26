@@ -48,6 +48,7 @@ events.lookup_user = function(subscription) {
         bttv.chat.store.proEmotes[subscription.name] = {};
 
         subscription.emotes.forEach(function(emote) {
+            emote.type = 'personal';
             bttv.chat.store.proEmotes[subscription.name][emote.code] = emote;
         });
     }

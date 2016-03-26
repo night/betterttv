@@ -342,14 +342,12 @@ module.exports = function() {
             return;
         }
 
-        emote.text = emote.code;
-
-        if (!emote.channel) {
-            emote.channel = 'BetterTTV Emotes';
-            emote.badge = 'https://cdn.betterttv.net/tags/developer.png';
-        }
-
-        usableEmotes.push(emote);
+        usableEmotes.push({
+            text: emote.code,
+            channel: 'BetterTTV ' + emote.type.capitalize() + ' Emotes',
+            badge: 'https://cdn.betterttv.net/tags/developer.png',
+            url: emote.url
+        });
     });
 
     return usableEmotes;
@@ -1752,7 +1750,7 @@ exports.loadBTTVChannelData = function() {
     var bttvEmoteKeys = Object.keys(store.bttvEmotes);
     for (var i = bttvEmoteKeys.length - 1; i >= 0; i--) {
         var bttvEmoteKey = bttvEmoteKeys[i];
-        if (!store.bttvEmotes[bttvEmoteKey].channelEmote) continue;
+        if (store.bttvEmotes[bttvEmoteKey].type !== 'channel') continue;
         delete store.bttvEmotes[bttvEmoteKey];
     }
 
@@ -1760,7 +1758,7 @@ exports.loadBTTVChannelData = function() {
 
     $.getJSON('https://api.betterttv.net/2/channels/' + bttv.getChannel()).done(function(data) {
         data.emotes.forEach(function(bttvEmote) {
-            bttvEmote.channelEmote = true;
+            bttvEmote.type = 'channel';
             bttvEmote.urlTemplate = data.urlTemplate.replace('{{id}}', bttvEmote.id);
             bttvEmote.url = bttvEmote.urlTemplate.replace('{{image}}', '1x');
             store.bttvEmotes[bttvEmote.code] = bttvEmote;
@@ -2386,7 +2384,8 @@ var linkify = exports.linkify = function(message) {
 
 var emoticonBTTV = exports.emoticonBTTV = function(emote) {
     var channel = emote.channel ? 'data-channel="' + emote.channel + '" ' : '';
-    return '<img class="emoticon bttv-emo-' + emote.id + '" src="' + emote.urlTemplate.replace('{{image}}', '1x') + '" srcset="' + emote.urlTemplate.replace('{{image}}', '2x') + ' 2x" ' + channel + 'data-regex="' + encodeURIComponent(emote.code) + '" />';
+    var type = emote.type ? 'data-type="' + emote.type + '" ' : '';
+    return '<img class="emoticon bttv-emo-' + emote.id + '" src="' + emote.urlTemplate.replace('{{image}}', '1x') + '" srcset="' + emote.urlTemplate.replace('{{image}}', '2x') + ' 2x" ' + type + channel + 'data-regex="' + encodeURIComponent(emote.code) + '" />';
 };
 
 var jtvEmoticonize = exports.jtvEmoticonize = function(id) {
@@ -5143,6 +5142,7 @@ module.exports = function() {
         data.emotes.forEach(function(emote) {
             emote.urlTemplate = data.urlTemplate.replace('{{id}}', emote.id);
             emote.url = emote.urlTemplate.replace('{{image}}', '1x');
+            emote.type = 'global';
 
             bttv.chat.store.bttvEmotes[emote.code] = emote;
         });
@@ -5160,10 +5160,10 @@ module.exports = function() {
                         var raw = decodeURIComponent($emote.data('regex'));
                         if (bttv.TwitchEmoteIDToChannel && $emote.data('id') && bttv.TwitchEmoteIDToChannel[$emote.data('id')]) {
                             return 'Emote: ' + raw + '<br />Channel: ' + bttv.TwitchEmoteIDToChannel[$emote.data('id')];
-                        } else if ($emote.data('channel') && $emote.data('channel') === 'BetterTTV Emotes') {
-                            return 'Emote: ' + raw + '<br />BetterTTV Emoticon';
+                        } else if (!$emote.data('channel') && $emote.data('type')) {
+                            return 'Emote: ' + raw + '<br />BetterTTV ' + $emote.data('type').capitalize() + ' Emote';
                         } else if ($emote.data('channel')) {
-                            return 'Emote: ' + raw + '<br />Channel: ' + $emote.data('channel');
+                            return 'Emote: ' + raw + '<br />Channel: ' + $emote.data('channel') + '<br />BetterTTV ' + $emote.data('type').capitalize() + ' Emote';
                         } else {
                             return raw;
                         }
@@ -5190,7 +5190,7 @@ module.exports = function() {
             $('div.tipsy').remove();
         }).on('click', '.chat-line .emoticon', function() {
             var $emote = $(this);
-            if ($emote.data('channel') && $emote.data('channel') === 'BetterTTV Emotes') return;
+            if ($emote.data('channel') && $emote.data('type') === 'BetterTTV Emotes') return;
 
             if (bttv.TwitchEmoteIDToChannel && $emote.data('id') && bttv.TwitchEmoteIDToChannel[$emote.data('id')]) {
                 window.open('http://www.twitch.tv/' + bttv.TwitchEmoteIDToChannel[$emote.data('id')], '_blank');
@@ -7147,6 +7147,7 @@ events.lookup_user = function(subscription) {
         bttv.chat.store.proEmotes[subscription.name] = {};
 
         subscription.emotes.forEach(function(emote) {
+            emote.type = 'personal';
             bttv.chat.store.proEmotes[subscription.name][emote.code] = emote;
         });
     }
