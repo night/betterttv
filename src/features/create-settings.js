@@ -38,6 +38,19 @@ module.exports = function() {
         bttv.settings.import(this);
     });
 
+    $('#bttvNicknamesBackupButton').click(function() {
+        bttv.settings.nicknamesBackup();
+    });
+
+    $('#bttvNicknamesImportInput').change(function() {
+        bttv.settings.nicknamesImport(this);
+    });
+
+    $('#bttvNoSSLImportInput').click(function() {
+        bttv.settings.save('importNonSsl', true);
+        bttv.settings.popupImport();
+    });
+
     /*eslint-disable */
     // ヽ༼ಢ_ಢ༽ﾉ
     $('#bttvSettingsPanel .scroll').TrackpadScrollEmulator({
@@ -60,7 +73,7 @@ module.exports = function() {
         });
 
         if (tab === '#bttvChannel') {
-            $(tab).children('iframe').attr('src', 'https://manage.betterttv.net/');
+            $(tab).children('iframe').attr('src', 'https://manage.betterttv.net/channel');
         }
 
         $(tab).fadeIn();

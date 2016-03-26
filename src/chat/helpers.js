@@ -7,7 +7,8 @@ var vars = require('../vars'),
     bots = require('../bots'),
     punycode = require('punycode'),
     channelState = require('../features/channel-state'),
-    MassUnbanPopup = require('../helpers/massunban-popup');
+    overrideEmotes = require('../features/override-emotes'),
+    throttle = require('lodash.throttle');
 
 // Helper functions
 var calculateColorBackground = require('../helpers/colors').calculateColorBackground;
@@ -455,6 +456,8 @@ exports.reparseMessages = function(user) {
     bttv.jQuery('.chat-line[data-sender="' + user + '"] .message').each(function() {
         var message = $(this);
 
+        if (message.hasClass('timed-out')) return;
+
         var rawMessage = decodeURIComponent(message.data('raw'));
         var emotes = message.data('emotes') ? JSON.parse(decodeURIComponent(message.data('emotes'))) : false;
         var color = message.attr('style') ? message.attr('style').split(': ')[1] : false;
@@ -563,7 +566,7 @@ exports.getSpecials = function(user) {
     return specials;
 };
 
-exports.scrollChat = function() {
+exports.scrollChat = throttle(function() {
     var $chat = $('.ember-chat');
 
     var chatPaused = $chat.find('.chat-interface').children('span').children('.more-messages-indicator').length;
@@ -587,7 +590,7 @@ exports.scrollChat = function() {
     $chatLines.slice(0, linesToDelete).each(function() {
         $(this).remove();
     });
-};
+}, 250);
 
 exports.calculateColor = function(color) {
     var colorRegex = /^#[0-9a-f]+$/i;
@@ -685,7 +688,9 @@ exports.assignBadges = function(badges, data) {
             name: 'GMod',
             description: 'Twitch Global Moderator'
         });
-    } else if (badges.indexOf('bot') !== -1) {
+    }
+
+    if (badges.indexOf('bot') !== -1) {
         bttvBadges.push({
             type: 'bot',
             name: 'Bot',
@@ -802,7 +807,6 @@ exports.massUnban = function() {
         return;
     }
 
-    var massUnbanPopup = new MassUnbanPopup();
     var unbanCount = 0;
 
     var unbanChatters = function(users, callback) {
@@ -822,10 +826,20 @@ exports.massUnban = function() {
     var getBannedChatters = function() {
         serverMessage('Fetching banned users...');
 
-        massUnbanPopup.getNextBatch(function(users) {
+        $.get('/settings/channel').success(function(data) {
+            var $chatterList = $(data).find('#banned_chatter_list');
+
+            if (!$chatterList.length) return serverMessage('Error fetching banned users list.');
+
+            var users = [];
+
+            $chatterList.find('.ban .obj').each(function() {
+                var user = $(this).text().trim();
+                if (users.indexOf(user) === -1) users.push(user);
+            });
+
             if (users.length === 0) {
                 serverMessage('You have no more banned users. Total Unbanned Users: ' + unbanCount);
-                massUnbanPopup.done();
                 return;
             }
 
@@ -879,5 +893,30 @@ exports.translate = function($element, sender, text) {
                 $newElement.tipsy('hide');
             } catch (e) {}
         }, 3000);
+    });
+};
+
+exports.loadBTTVChannelData = function() {
+    // Loads global BTTV emotes (if not loaded)
+    overrideEmotes();
+
+    // When swapping channels, removes old channel emotes
+    var bttvEmoteKeys = Object.keys(store.bttvEmotes);
+    for (var i = bttvEmoteKeys.length - 1; i >= 0; i--) {
+        var bttvEmoteKey = bttvEmoteKeys[i];
+        if (store.bttvEmotes[bttvEmoteKey].type !== 'channel') continue;
+        delete store.bttvEmotes[bttvEmoteKey];
+    }
+
+    store.__channelBots = [];
+
+    $.getJSON('https://api.betterttv.net/2/channels/' + bttv.getChannel()).done(function(data) {
+        data.emotes.forEach(function(bttvEmote) {
+            bttvEmote.type = 'channel';
+            bttvEmote.urlTemplate = data.urlTemplate.replace('{{id}}', bttvEmote.id);
+            bttvEmote.url = bttvEmote.urlTemplate.replace('{{image}}', '1x');
+            store.bttvEmotes[bttvEmote.code] = bttvEmote;
+        });
+        store.__channelBots = data.bots;
     });
 };

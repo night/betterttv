@@ -50,6 +50,12 @@ exports.commands = function(input) {
         bttv.settings.set('anonChat', oldSetting);
     } else if (command === '/linehistory') {
         bttv.settings.save('chatLineHistory', sentence[1] === 'off' ? false : true);
+    } else if (command === '/localascii') {
+        helpers.serverMessage('Local ascii-only mode enabled.', true);
+        vars.localAsciiOnly = true;
+    } else if (command === '/localasciioff') {
+        helpers.serverMessage('Local ascii-only mode disabled.', true);
+        vars.localAsciiOnly = false;
     } else if (command === '/localmod') {
         helpers.serverMessage('Local moderators-only mode enabled.', true);
         vars.localModsOnly = true;
@@ -110,6 +116,8 @@ exports.commands = function(input) {
         helpers.serverMessage('/followers -- Retrieves the number of followers for the channel');
         helpers.serverMessage('/join -- Joins the channel (deactivates anon chat mode)');
         helpers.serverMessage('/linehistory on/off -- Toggles the chat field history (pressing up/down arrow in textbox)');
+        helpers.serverMessage('/localascii -- Turns on local ascii-only mode (only your chat is ascii-only mode)');
+        helpers.serverMessage('/localasciioff -- Turns off local ascii-only mode');
         helpers.serverMessage('/localmod -- Turns on local mod-only mode (only your chat is mod-only mode)');
         helpers.serverMessage('/localmodoff -- Turns off local mod-only mode');
         helpers.serverMessage('/localsub -- Turns on local sub-only mode (only your chat is sub-only mode)');
@@ -169,8 +177,18 @@ exports.shiftQueue = function() {
             $('#bttv-channel-state-contain').show();
         }
     } else {
+        if ($('#right_col').css('display') === 'none') return;
         if (store.__messageQueue.length === 0) return;
-        $('.ember-chat .chat-messages .tse-content .chat-lines').append(store.__messageQueue.join(''));
+        if (store.__messageQueue.length > bttv.settings.get('scrollbackAmount')) {
+            store.__messageQueue.splice(0, store.__messageQueue.length - bttv.settings.get('scrollbackAmount'));
+        }
+
+        store.__messageQueue.forEach(function($message) {
+            $message.find('img').on('load', function() {
+                helpers.scrollChat();
+            });
+        });
+        $('.ember-chat .chat-messages .tse-content .chat-lines').append(store.__messageQueue);
         store.__messageQueue = [];
     }
     helpers.scrollChat();
@@ -213,9 +231,21 @@ exports.clearChat = function(user) {
     if (!user) {
         helpers.serverMessage('Chat was cleared by a moderator (Prevented by BetterTTV)', true);
     } else {
-        if ($('.chat-line[data-sender="' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '"]').length === 0) return;
+        var printedChatLines = [];
+        $('.chat-line[data-sender="' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '"]').each(function() {
+            printedChatLines.push($(this));
+        });
+
+        var queuedLines = store.__messageQueue.filter(function($message) {
+            if ($message.data('sender') === user) return true;
+            return false;
+        });
+
+        $chatLines = $(printedChatLines.concat(queuedLines));
+
+        if (!$chatLines.length) return;
         if (bttv.settings.get('hideDeletedMessages') === true) {
-            $('.chat-line[data-sender="' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '"]').each(function() {
+            $chatLines.each(function() {
                 $(this).hide();
                 $('div.tipsy').remove();
             });
@@ -228,23 +258,26 @@ exports.clearChat = function(user) {
             }, 3000);
         } else {
             if (bttv.settings.get('showDeletedMessages') !== true) {
-                $('.chat-line[data-sender="' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '"] .message').each(function() {
-                    $(this).addClass('timed-out');
-                    $(this).html('<span style="color: #999">&lt;message deleted&gt;</span>').off('click').on('click', function() {
+                $chatLines.each(function() {
+                    var $message = $(this).find('.message');
+
+                    $message.addClass('timed-out');
+                    $message.html('<span style="color: #999">&lt;message deleted&gt;</span>').off('click').on('click', function() {
                         $(this).replaceWith(templates.message(user, decodeURIComponent($(this).data('raw'))));
                     });
                 });
             } else {
-                $('.chat-line[data-sender="' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '"] .message').each(function() {
-                    $('a', this).each(function() {
+                $chatLines.each(function() {
+                    var $message = $(this).find('.message');
+                    $('a', $message).each(function() {
                         var rawLink = '<span style="text-decoration: line-through;">' + $(this).attr('href').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</span>';
                         $(this).replaceWith(rawLink);
                     });
-                    $('.emoticon', this).each(function() {
+                    $('.emoticon', $message).each(function() {
                         $(this).css('opacity', '0.1');
                     });
-                    $(this).addClass('timed-out');
-                    $(this).html('<span style="color: #999">' + $(this).html() + '</span>');
+                    $message.addClass('timed-out');
+                    $message.html('<span style="color: #999">' + $message.html() + '</span>');
                 });
             }
             if (trackTimeouts[user]) {
@@ -398,6 +431,11 @@ var privmsg = exports.privmsg = function(channel, data) {
 
     if (vars.localSubsOnly && !helpers.isModerator(data.from) && !helpers.isSubscriber(data.from)) return;
     if (vars.localModsOnly && !helpers.isModerator(data.from)) return;
+    if (vars.localAsciiOnly) {
+        for (var i = 0; i < data.message.length; i++) {
+            if (data.message.charCodeAt(i) > 128) return;
+        }
+    }
 
     message = templates.privmsg(
         messageHighlighted,
@@ -415,11 +453,10 @@ var privmsg = exports.privmsg = function(channel, data) {
         }
     );
 
-    store.__messageQueue.push(message);
+    store.__messageQueue.push($(message));
 };
 
 exports.onPrivmsg = function(channel, data) {
-    if ($('#right_col').css('display') === 'none') return;
     if (!rooms.getRoom(channel).active() && data.from && data.from !== 'jtv') {
         rooms.getRoom(channel).queueMessage(data);
         return;

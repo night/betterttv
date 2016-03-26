@@ -34,13 +34,6 @@
  *  
  */
 /** @license
- * Gritter for jQuery
- * http://www.boedesign.com/
- *
- * Copyright (c) 2014 Jordan Boesch
- * Dual licensed under the MIT and GPL licenses.
- */
-/** @license
  * Jade
  * https://github.com/visionmedia/jade
  *

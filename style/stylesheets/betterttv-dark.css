@@ -847,24 +847,17 @@ body {
 }
 
 .panel.masonry-brick {
-    background-color: rgb(30, 30, 30) !important;
-    color: rgb(154, 154, 154) !important;
-    box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 2px 0px inset, rgba(255, 255, 255, 0.01) 0px 0px 0px 1px, rgba(255, 255, 255, 0.01) 0px 1px 0px 0px !important;
-    border-radius: 0px !important;
-    text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px !important;
-    border: 1px solid #000 !important;
-    padding-left: 5px !important;
-    padding-right: 5px !important;
-    padding-top: 5px !important;
-    margin-bottom: 30px !important;
+    background-color: rgb(30, 30, 30);
+    color: rgb(154, 154, 154);
 }
 
 .panel.masonry-brick h3.title {
     color: rgb(154, 154, 154) !important;
 }
 
-.panel.masonry-brick a.link {
-    margin-bottom: 5px !important;
+.panel.masonry-brick .part.description,
+.panel.masonry-brick .part .title {
+    padding: 3px;
 }
 
 .masonry a {
@@ -1633,6 +1626,10 @@ table.simple_table td {
     background-color: #1e1e1e;
 }
 
+#passport_iframe_container {
+    background-color: transparent;
+}
+
 .channel_new .twitch_subwindow_container .twitch_subwindow .content-header,
 .channel_new .twitch_subwindow_container .twitch_subwindow .buttons {
     border-color: #555;
@@ -1968,6 +1965,10 @@ color: white;
 
 #actions.dropmenu a {
 color: white;
+}
+
+.player-column .brick {
+    background-color: #222;
 }
 
 /* Video Manager */
@@ -2333,4 +2334,53 @@ span.subscribe-text {
 
 .conversation-window .new-message-divider span {
     background-color: #232323;
+}
+
+/* Fix for white hover */
+.tabs__fullwidth li:not(.selected) a:hover {
+    background: #333;
+}
+
+/* darken commissions modal */
+.stats-and-actions #commission_modal {
+    background-color: #232323 !important; /* inline styles? really Twitch?*/
+}
+
+/* fixes for right sidebar when not chat */
+#right_col .top .tabs li a:hover {
+    background-color: #333;
+}
+
+#right_col .top .tabs li.selected a {
+    border-bottom-color: #999 !important; /* !important because of overly broad legacy css above */
+}
+
+.ember-chat .chat-room .notice-wrapper {
+    background-color: rgb(30, 30, 30);
+}
+
+/* darken posts */
+.activity-container .activity-card {
+    border-color: rgb(30, 30, 30);
+}
+
+.activity-container .activity-card > div {
+    background-color: rgb(30, 30, 30);
+}
+
+.activity-container .activity-card > div .activity-meta {
+    box-shadow: inset 0 -1px 0 #333;
+}
+
+.activity-container .activity-card > div .activity-meta:before,
+.activity-container .activity-card > div .activity-react a,
+.activity-container .activity-card > div .activity-options .balloon,
+.activity-container .activity-card > div .activity-options .balloon:after {
+    border-color: #333;
+    background-color: #333;
+}
+
+/* chat replay */
+.chatReplay .loading-spinner-container {
+    background: rgba(10,10,10,.85);
 }

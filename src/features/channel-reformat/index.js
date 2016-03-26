@@ -42,6 +42,7 @@ module.exports = function() {
 
             resize = false;
             handleResize();
+            window.dispatchEvent(new Event('resize'));
         });
 
         $(document).on('mousedown', '#right_close, #right_col .resizer', function(event) {
@@ -150,6 +151,8 @@ module.exports = function() {
         }
 
         $(window).trigger('resize');
+
+        window.dispatchEvent(new Event('resize'));
     } else {
         if ($('#right_col').width() === '0') {
             $('#right_col').width('340px');

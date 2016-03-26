@@ -96,7 +96,10 @@ exports.highlighting = function(data) {
         var wordRegex = new RegExp('(\\s|^|@)' + hlKeyword + '([!.,:\';?/]|\\s|$)', 'i');
         if (vars.userData.isLoggedIn && vars.userData.name !== data.from && wordRegex.test(data.message)) {
             if (bttv.settings.get('desktopNotifications') === true && bttv.chat.store.activeView === false) {
-                bttv.notify('You were mentioned in ' + bttv.chat.helpers.lookupDisplayName(bttv.getChannel()) + '\'s channel.');
+                bttv.notify('You were mentioned by {{name}} in {{channel}}\'s channel: {{message}}'
+                    .replace('{{name}}', data.from)
+                    .replace('{{channel}}', bttv.chat.helpers.lookupDisplayName(bttv.getChannel()))
+                    .replace('{{message}}', data.message.substr(0, 100)));
                 audibleFeedback();
             }
             return true;

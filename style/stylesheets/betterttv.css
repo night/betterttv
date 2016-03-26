@@ -220,6 +220,17 @@ input.text:focus,select:focus,textarea:focus {
     display: inline !important;
 }
 
+.line .teal, .ember-chat .badges .teal {
+    /* Not even teal anymore */
+    background-color: #565656;
+    border-radius: 2px 2px 2px 2px;
+    padding: 2px 3px;
+    font-weight: bold;
+    font-size: 0.8572em;
+    color: white;
+    display: inline !important;
+}
+
 .line .orange, .ember-chat .badges .orange {
     background-color: orange;
     border-radius: 2px 2px 2px 2px;
@@ -1559,8 +1570,8 @@ body.channel_new.columns.ember-application {
     position: absolute;
     top: 0px;
     right: 0px;
-    width: 16px;
-    height: 16px;
+    width: 50px;
+    height: 50px;
     padding: 17px;
 
     background: #800;
@@ -1831,4 +1842,15 @@ body.channel_new.columns.ember-application {
 /* fix small font in chat */
 .ember-chat .chat-messages .chat-line {
     font-size: 13.3333px;
+}
+
+/* chat replay */
+.chat-container.chatReplay .ember-chat .chat-interface {
+    display: none;
+}
+.chat-container.chatReplay .ember-chat .chat-room {
+    top: 5px;
+}
+.chat-container.chatReplay .ember-chat .chat-messages {
+    bottom: 5px;
 }

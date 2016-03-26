@@ -38,45 +38,35 @@ module.exports = function dashboardChannelInfo() {
         });
 
         if (vars.dontCheckSubs !== true) {
-            $.get('/broadcast/dashboard/partnership', function(data) {
-                var $subsContainer = $(data).find('div.wrapper'),
-                    subsRegex = /Your channel currently has ([0-9,]+) paying subscribers and ([0-9,]+) total active subscribers/;
+            $.getJSON('/' + bttv.getChannel() + '/dashboard/revenue/summary_data', function(data) {
+                if (!data.data) return;
 
-                if ($subsContainer) {
-                    var containerText = $subsContainer.text();
-
-                    if (containerText.match(subsRegex)) {
-                        var subAmounts = subsRegex.exec(containerText),
-                            activeSubs = subAmounts[2];
-
-                        if (!$('#subs_count').length) {
-                            $subsContainer = $('<div/>');
-                            var $subs = $('<span/>');
-
-                            $subsContainer.attr('class', 'stat');
-                            $subsContainer.attr('id', 'subs_count');
-
-                            $subs.text('0');
-                            $subs.attr('tooltipdata', 'Active Subscribers');
-
-                            $subsContainer.append($subs);
-                            $('#chatters_count').after($subsContainer);
-
-                            bttv.TwitchAPI.get('chat/' + bttv.getChannel() + '/badges').done(function(a) {
-                                if (a.subscriber) {
-                                    $('#subs_count').css('background-image', 'url(' + a.subscriber.image + ')');
-                                }
-                            });
-                        }
-
-                        $('#subs_count span').text(Twitch.display.commatize(activeSubs));
-                    } else {
-                        vars.dontCheckSubs = true;
-                        debug.log('Dashboard Info -> Channel doesn\'t have subscribers.');
-                    }
-                } else {
-                    debug.warn('Dashboard Info -> Error loading partnership page.');
+                if (data.data.total_subscriptions === 0) {
+                    vars.dontCheckSubs = true;
+                    return;
                 }
+
+                if (!$('#subs_count').length) {
+                    $subsContainer = $('<div/>');
+                    var $subs = $('<span/>');
+
+                    $subsContainer.attr('class', 'stat');
+                    $subsContainer.attr('id', 'subs_count');
+
+                    $subs.text('0');
+                    $subs.attr('tooltipdata', 'Active Subscribers');
+
+                    $subsContainer.append($subs);
+                    $('#chatters_count').after($subsContainer);
+
+                    bttv.TwitchAPI.get('chat/' + bttv.getChannel() + '/badges').done(function(a) {
+                        if (a.subscriber) {
+                            $('#subs_count').css('background-image', 'url(' + a.subscriber.image + ')');
+                        }
+                    });
+                }
+
+                $('#subs_count span').text(Twitch.display.commatize(data.data.total_subscriptions));
             });
         }
 

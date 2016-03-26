@@ -28,6 +28,7 @@ function Conversations(timeout) {
 
     var watcher = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
+            if (mutation.attributeName) _self.updateTitle(mutation);
             var el, subEls, len = mutation.addedNodes.length;
 
             for (var i = 0; i < len; i++) {
@@ -46,7 +47,7 @@ function Conversations(timeout) {
         });
     });
 
-    watcher.observe($conversations[0], { childList: true, subtree: true });
+    watcher.observe($conversations[0], { childList: true, subtree: true, attributes: true, attributeFilter: ['class']});
 }
 
 Conversations.prototype.messageParser = function(element) {
@@ -117,6 +118,7 @@ Conversations.prototype.usernameRecolor = function(color) {
 };
 
 Conversations.prototype.newConversation = function(element) {
+    var _self = this;
     var $chatInput = $(element).find('.chat_text_input');
     var name = $(element).find('.conversation-header-name').text().toLowerCase();
 
@@ -178,6 +180,12 @@ Conversations.prototype.newConversation = function(element) {
         }
     });
 
+    $(element).find('.svg-close').on('click', function() {
+        setTimeout(function() {
+            _self.updateTitle();
+        }, 500);
+    });
+
     this.addBadges(element);
 };
 
@@ -188,6 +196,33 @@ Conversations.prototype.addBadges = function(element) {
         var type = store.__badges[name];
         var badgeTemplate = chatTemplates.badge('bttv-' + type, '', store.__badgeTypes[type].description);
         $element.find('.badges').prepend(badgeTemplate);
+    }
+};
+
+Conversations.prototype.updateTitle = function(m) {
+    if (!bttv.settings.get('unreadInTitle')) return;
+
+    if (!m || $(m.target).is('.conversation-window, .has-unread, .incoming')) {
+        var title = document.title;
+        var hasUnreads = $('.has-unread').length;
+        if (hasUnreads) {
+            var numOfUnreads = 0;
+            var $headers = $('.conversation-unread-count');
+            for (var i = 0; i < $headers.length; i++) {
+                numOfUnreads += Number($($headers[i]).text());
+            }
+            if (!numOfUnreads) return;
+            numOfUnreads = '(' + numOfUnreads + ') ';
+            if (title.charAt(0) === '(') {
+                document.title = document.title.replace(/\(\d+\)\s/, numOfUnreads);
+            } else {
+                document.title = numOfUnreads + title;
+            }
+        } else {
+            if (title.charAt(0) === '(') {
+                document.title = document.title.replace(/\(\d+\)\s/, '');
+            }
+        }
     }
 };
 

@@ -18,6 +18,7 @@ exports.suggestions = {
 exports.chatHistory = [];
 exports.whisperHistory = {};
 exports.bttvEmotes = {};
+exports.proEmotes = {};
 exports.autoCompleteEmotes = {};
 
 // as these aren't objects, they can't be local variables (otherwise we wouldn't be able to modify them from outside)

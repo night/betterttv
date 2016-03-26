@@ -237,7 +237,7 @@ module.exports = [
                         gravity: $.fn.tipsy.autoNS,
                         html: true,
                         opacity: 1,
-                        title: function() { return '<iframe src="http://player.twitch.tv/?channel=' + chan + '&!branding&!showInfo&autoplay&volume=0.1' + html5 + '" style="border: none;" width="320" height="208"></iframe><style>.tipsy-inner{max-width:320px;}</style>'; }
+                        title: function() { return '<iframe src="https://player.twitch.tv/?channel=' + chan + '&!branding&!showInfo&autoplay&volume=0.1' + html5 + '" style="border: none;" width="320" height="208"></iframe><style>.tipsy-inner{max-width:320px;}</style>'; }
                     });
                     $this.tipsy('show');
                 }, 1500);
@@ -247,7 +247,7 @@ module.exports = [
                 if (!$('div.tipsy').length) return;
 
                 var timer = setInterval(function() {
-                    if ($('div.tipsy').is(':hover')) return;
+                    if ($('div.tipsy').length && $('div.tipsy').is(':hover')) return;
 
                     clearInterval(timer);
                     $this.tipsy('hide');
@@ -265,12 +265,12 @@ module.exports = [
         storageKey: 'disableHostMode',
         toggle: function(value) {
             try {
-                window.App.set('enableHostMode', !value);
+                window.App.__container__.lookup('service:globals').set('enableHostMode', !value);
             } catch (e) {}
         },
         load: function() {
             try {
-                window.App.set('enableHostMode', !bttv.settings.get('disableHostMode'));
+                window.App.__container__.lookup('service:globals').set('enableHostMode', !bttv.settings.get('disableHostMode'));
             } catch (e) {}
         }
     },
@@ -391,7 +391,7 @@ module.exports = [
     },
     {
         name: 'Mod Card Keybinds',
-        description: 'Enable keybinds when you click on a username: P(urge), T(imeout), B(an), W(whisper)',
+        description: 'Enable keybinds when you click on a username: P(urge), T(imeout), B(an), W(hisper)',
         default: false,
         storageKey: 'modcardsKeybinds'
     },
@@ -462,6 +462,12 @@ module.exports = [
         storageKey: 'timeoutHighlights',
     },
     {
+        name: 'Unread Whispers Count in Title',
+        description: 'Display the number of unread whispers in the tab title',
+        default: true,
+        storageKey: 'unreadInTitle'
+    },
+    {
         default: '',
         storageKey: 'blacklistKeywords',
         toggle: function(keywords) {
@@ -511,6 +517,10 @@ module.exports = [
     {
         default: false,
         storageKey: 'consoleLog'
+    },
+    {
+        default: false,
+        storageKey: 'importNonSsl'
     },
     {
         default: false,

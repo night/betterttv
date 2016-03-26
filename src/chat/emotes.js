@@ -8,7 +8,8 @@ module.exports = function() {
     if (bttv.settings.get('bttvEmotes') === false) {
         return [];
     }
-    var emotes = store.bttvEmotes;
+    var proEmotes = store.proEmotes[vars.userData.name];
+    var emotes = $.extend({}, store.bttvEmotes, proEmotes);
     var usableEmotes = [];
     var emoteSets;
 
@@ -30,14 +31,12 @@ module.exports = function() {
             return;
         }
 
-        emote.text = emote.code;
-
-        if (!emote.channel) {
-            emote.channel = 'BetterTTV Emotes';
-            emote.badge = 'https://cdn.betterttv.net/tags/developer.png';
-        }
-
-        usableEmotes.push(emote);
+        usableEmotes.push({
+            text: emote.code,
+            channel: 'BetterTTV ' + emote.type.capitalize() + ' Emotes',
+            badge: 'https://cdn.betterttv.net/tags/developer.png',
+            url: emote.url
+        });
     });
 
     return usableEmotes;

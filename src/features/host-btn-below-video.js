@@ -20,13 +20,15 @@ module.exports = function() {
         $hostButton = $('<span><span></span></span>');
         $hostButton.addClass('button').addClass('action');
         $hostButton.attr('id', 'bttv-host-button');
-        $hostButton.insertBefore('#channel .channel-actions .theatre-button');
+        $hostButton.insertBefore('#channel .channel-actions .js-options');
         $hostButton.click(function() {
             var action = $hostButton.text();
 
+            var conn = tmi.tmiSession._connections.aws || tmi.tmiSession._connections.prod || tmi.tmiSession._connections.main;
+
             if (action === 'Unhost') {
                 try {
-                    tmi.tmiSession._connections.prod._send('PRIVMSG #' + vars.userData.name + ' :/unhost');
+                    conn._send('PRIVMSG #' + vars.userData.name + ' :/unhost');
                     helpers.serverMessage('BetterTTV: We sent a /unhost to your channel.');
                     $hostButton.children('span').text('Host');
                 } catch (e) {
@@ -34,7 +36,7 @@ module.exports = function() {
                 }
             } else {
                 try {
-                    tmi.tmiSession._connections.prod._send('PRIVMSG #' + vars.userData.name + ' :/host ' + bttv.getChannel());
+                    conn._send('PRIVMSG #' + vars.userData.name + ' :/host ' + bttv.getChannel());
                     helpers.serverMessage('BetterTTV: We sent a /host to your channel. Please note you can only host 3 times per 30 minutes.');
                     $hostButton.children('span').text('Unhost');
                 } catch (e) {

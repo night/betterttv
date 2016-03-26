@@ -28,11 +28,11 @@ var timestamp = exports.timestamp = function(time) {
 };
 
 var modicons = exports.modicons = function() {
-    return '<span class="mod-icons"><a class="timeout" title="Timeout">Timeout</a><a class="ban" title="Ban">Ban</a><a class="unban" title="Unban" style="display: none;">Unban</a></span>';
+    return '<span class="mod-icons"><a class="mod-icon timeout" title="Timeout">Timeout</a><a class="mod-icon ban" title="Ban">Ban</a><a class="mod-icon unban" title="Unban" style="display: none;">Unban</a></span>';
 };
 
 var linkify = exports.linkify = function(message) {
-    var regex = /(?:https?:\/\/)?(?:[-a-zA-Z0-9@:%_\+~#=]+\.)+[a-z]{2,6}\b(?:(?:[-a-zA-Z0-9@:%_\+.~#?&\/=!,]+)(?:[-a-zA-Z0-9@:%_\+.~#?&\/=]))?/gi;
+    var regex = /(?:https?:\/\/)?(?:[-a-zA-Z0-9@:%_\+~#=]+\.)+[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?&\/\/=()]*)/gi;
     return message.replace(regex, function(e) {
         if (/\x02/.test(e)) return e;
         if (e.indexOf('@') > -1 && (e.indexOf('/') === -1 || e.indexOf('@') < e.indexOf('/'))) return '<a href="mailto:' + e + '">' + e + '</a>';
@@ -43,7 +43,8 @@ var linkify = exports.linkify = function(message) {
 
 var emoticonBTTV = exports.emoticonBTTV = function(emote) {
     var channel = emote.channel ? 'data-channel="' + emote.channel + '" ' : '';
-    return '<img class="emoticon bttv-emo-' + emote.id + '" src="' + emote.urlTemplate.replace('{{image}}', '1x') + '" srcset="' + emote.urlTemplate.replace('{{image}}', '2x') + ' 2x" ' + channel + 'data-regex="' + encodeURIComponent(emote.code) + '" />';
+    var type = emote.type ? 'data-type="' + emote.type + '" ' : '';
+    return '<img class="emoticon bttv-emo-' + emote.id + '" src="' + emote.urlTemplate.replace('{{image}}', '1x') + '" srcset="' + emote.urlTemplate.replace('{{image}}', '2x') + ' 2x" ' + type + channel + 'data-regex="' + encodeURIComponent(emote.code) + '" />';
 };
 
 var jtvEmoticonize = exports.jtvEmoticonize = function(id) {
@@ -133,8 +134,6 @@ var bttvEmoticonize = exports.bttvEmoticonize = function(message, emote, sender)
 var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message) {
     var tokenizedString = message.split(' ');
 
-    var gifCount = 0;
-
     for (var i = 0; i < tokenizedString.length; i++) {
         var piece = tokenizedString[i];
 
@@ -154,16 +153,21 @@ var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message
             emote = store.bttvEmotes[piece];
         } else if (store.bttvEmotes.hasOwnProperty(test)) {
             emote = store.bttvEmotes[test];
+        } else if (store.proEmotes.hasOwnProperty(sender)) {
+            if (store.proEmotes[sender].hasOwnProperty(piece)) {
+                emote = store.proEmotes[sender][piece];
+            } else if (store.proEmotes[sender].hasOwnProperty(test)) {
+                emote = store.proEmotes[sender][test];
+            }
         }
 
         if (
             emote &&
             emote.urlTemplate &&
             bttv.settings.get('bttvEmotes') === true &&
-            (emote.imageType === 'png' || (emote.imageType === 'gif' && bttv.settings.get('bttvGIFEmotes') === true) && gifCount < 5)
+            (emote.imageType === 'png' || (emote.imageType === 'gif' && bttv.settings.get('bttvGIFEmotes') === true))
         ) {
             piece = bttvEmoticonize(piece, emote, sender);
-            if (emote.id === '567b5b520e984428652809b6') gifCount++;
         } else {
             piece = escape(piece);
             piece = linkify(piece);
