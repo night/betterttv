@@ -3680,6 +3680,7 @@ ChatReplay.prototype.emoticonize = function(message) {
     var emote;
 
     for (var i = 0; i < parts.length; i++) {
+        if (parts[i].length > 1) parts[i] = parts[i].replace(/\n/, '');
         test = parts[i].replace(/(^[~!@#$%\^&\*\(\)]+|[~!@#$%\^&\*\(\)]+$)/g, '');
         emote = null;
 
