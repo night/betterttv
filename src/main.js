@@ -138,7 +138,6 @@ var clearClutter = require('./features/clear-clutter'),
     dashboardChannelInfo = require('./features/dashboard-channelinfo'),
     giveawayCompatibility = require('./features/giveaway-compatibility'),
     handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes'),
-    emoticonTextInClipboard = require('./features/emoticon-text-in-clipboard'),
     createSettings = require('./features/create-settings'),
     enableImagePreview = require('./features/image-preview').enablePreview,
     enableTheatreMode = require('./features/auto-theatre-mode'),
@@ -286,7 +285,6 @@ var main = function() {
         dashboardChannelInfo();
         directoryFunctions();
         handleTwitchChatEmotesScript();
-        emoticonTextInClipboard();
         hostButtonBelowVideo();
 
         if (bttv.settings.get('chatImagePreview') === true) {
