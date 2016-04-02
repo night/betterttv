@@ -20,8 +20,13 @@ module.exports = function() {
 
         // Iterator to replace an element matching an emoticon image with its text.
         var replaceEmoticon = function(i, el) {
-            var regex = decodeURIComponent($(el).data('regex'));
-            $(el).after(regex).remove();
+            var emoteText;
+            if ($(el).hasClass('tooltip')) {
+                emoteText = $(el).attr('alt');
+            } else {
+                emoteText = decodeURIComponent($(el).data('regex'));
+            }
+            $(el).after(emoteText).remove();
         };
 
         var selection = $(window.getSelection().getRangeAt(0).cloneContents());
