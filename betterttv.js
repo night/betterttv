@@ -2382,10 +2382,14 @@ var linkify = exports.linkify = function(message) {
     });
 };
 
+var escapeEmoteCode = function(code) {
+    return code.replace(/('|"|>|<|&)/g, '');
+};
+
 var emoticonBTTV = exports.emoticonBTTV = function(emote) {
     var channel = emote.channel ? 'data-channel="' + emote.channel + '" ' : '';
     var type = emote.type ? 'data-type="' + emote.type + '" ' : '';
-    return '<img class="emoticon bttv-emo-' + emote.id + '" src="' + emote.urlTemplate.replace('{{image}}', '1x') + '" srcset="' + emote.urlTemplate.replace('{{image}}', '2x') + ' 2x" ' + type + channel + 'alt="' + encodeURIComponent(emote.code) + '" />';
+    return '<img class="emoticon bttv-emo-' + emote.id + '" src="' + emote.urlTemplate.replace('{{image}}', '1x') + '" srcset="' + emote.urlTemplate.replace('{{image}}', '2x') + ' 2x" ' + type + channel + 'alt="' + escapeEmoteCode(emote.code) + '" />';
 };
 
 var jtvEmoticonize = exports.jtvEmoticonize = function(id) {
@@ -2411,9 +2415,9 @@ var jtvEmoticonize = exports.jtvEmoticonize = function(id) {
 
 var emoticon = exports.emoticon = function(id, name) {
     if (id < 15 && bttv.settings.get('showMonkeyEmotes') === true) {
-        return '<img class="emoticon ttv-emo-' + id + '" src="' + jtvEmoticonize(id) + '" data-id="' + id + '" data-regex="' + encodeURIComponent(name) + '" />';
+        return '<img class="emoticon ttv-emo-' + id + '" src="' + jtvEmoticonize(id) + '" data-id="' + id + '" alt="' + escapeEmoteCode(name) + '" />';
     }
-    return '<img class="emoticon ttv-emo-' + id + '" src="https://static-cdn.jtvnw.net/emoticons/v1/' + id + '/1.0" srcset="https://static-cdn.jtvnw.net/emoticons/v1/' + id + '/2.0 2x" data-id="' + id + '" data-regex="' + encodeURIComponent(name) + '" />';
+    return '<img class="emoticon ttv-emo-' + id + '" src="https://static-cdn.jtvnw.net/emoticons/v1/' + id + '/1.0" srcset="https://static-cdn.jtvnw.net/emoticons/v1/' + id + '/2.0 2x" data-id="' + id + '" alt="' + escapeEmoteCode(name) + '" />';
 };
 
 exports.emoticonCss = function(image, id) {
@@ -5107,8 +5111,8 @@ module.exports = function() {
                 html: true,
                 fallback: function() {
                     var $emote = vars.hoveringEmote;
-                    if ($emote && $emote.data('regex')) {
-                        var raw = decodeURIComponent($emote.data('regex'));
+                    if ($emote && $emote.attr('alt')) {
+                        var raw = $emote.attr('alt');
                         if (bttv.TwitchEmoteIDToChannel && $emote.data('id') && bttv.TwitchEmoteIDToChannel[$emote.data('id')]) {
                             return 'Emote: ' + raw + '<br />Channel: ' + bttv.TwitchEmoteIDToChannel[$emote.data('id')];
                         } else if (!$emote.data('channel') && $emote.data('type')) {
