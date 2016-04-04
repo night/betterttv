@@ -26,8 +26,8 @@ module.exports = function() {
                 html: true,
                 fallback: function() {
                     var $emote = vars.hoveringEmote;
-                    if ($emote && $emote.data('regex')) {
-                        var raw = decodeURIComponent($emote.data('regex'));
+                    if ($emote && $emote.attr('alt')) {
+                        var raw = $emote.attr('alt');
                         if (bttv.TwitchEmoteIDToChannel && $emote.data('id') && bttv.TwitchEmoteIDToChannel[$emote.data('id')]) {
                             return 'Emote: ' + raw + '<br />Channel: ' + bttv.TwitchEmoteIDToChannel[$emote.data('id')];
                         } else if (!$emote.data('channel') && $emote.data('type')) {
