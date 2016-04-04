@@ -1,12 +1,4 @@
 /* global BTTVLOADED:true PP:true*/
-// import
-if (window.location.href === 'http://www.twitch.tv/crossdomain/transfer') {
-    var script = document.createElement('script');
-    script.setAttribute('src', 'https://cdn.betterttv.net/settings-import.js');
-    document.getElementsByTagName('head')[0].appendChild(script);
-    return;
-}
-
 // Declare public and private variables
 var debug = require('./helpers/debug'),
     vars = require('./vars'),
