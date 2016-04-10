@@ -871,7 +871,19 @@ exports.translate = function($element, sender, text) {
     });
 
     $.getJSON('https://api.betterttv.net/2/translate?' + qs).success(function(data) {
-        $element.replaceWith(templates.message(sender, data.translation));
+        var $newElement = $(templates.message(sender, data.translation));
+        $element.replaceWith($newElement);
+
+        // Show original message on hover
+        $newElement.on('mouseover', function() {
+            $(this).tipsy({
+                trigger: 'manual',
+                title: function() { return 'Original message: ' + text; }
+            }).tipsy('show');
+        }).on('mouseout', function() {
+            $(this).tipsy('hide');
+            $('div.tipsy').remove();
+        });
     }).error(function(data) {
         $newElement = $(templates.message(sender, text));
         $element.replaceWith($newElement);
