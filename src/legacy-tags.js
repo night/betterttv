@@ -49,7 +49,7 @@ module.exports = function(data) {
         'the_chopsticks': { mod: true, tagType: 'admin', tagName: 'oZn' },
         'bacon_donut': { mod: true, tagType: 'bacon', tagName: '&#8203;', nickname: 'Donut' },
         'tacos': { mod: true, tagType: 'taco', tagName: '&#8203;' },
-        'sauce': { mod: true, tagType: 'purple', tagName: 'Drippin" Dat' },
+        'sauce': { mod: true, tagType: 'purple', tagName: 'Drippin\' Dat' },
         'thejokko': { mod: true, tagType: 'purple', tagName: 'Swede' },
         'missmiarose': { mod: true, tagType: 'admin', tagName: 'Lovely' },
         // Xmas
