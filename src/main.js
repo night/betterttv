@@ -134,6 +134,7 @@ var clearClutter = require('./features/clear-clutter'),
     enableImagePreview = require('./features/image-preview').enablePreview,
     enableTheatreMode = require('./features/auto-theatre-mode'),
     hostButtonBelowVideo = require('./features/host-btn-below-video'),
+    audiotwitchButton = require('./features/audiotwitch-btn-below-video'),
     conversations = require('./features/conversations'),
     MassUnbanPopup = require('./helpers/massunban-popup'),
     ChatReplay = require('./features/chat-replay');
@@ -184,6 +185,7 @@ var main = function() {
                                 clearClutter();
                                 channelReformat();
                                 hostButtonBelowVideo();
+                                audiotwitchButton();
                                 if (
                                     App.__container__.lookup('controller:channel').get('isTheatreMode') === false &&
                                     bttv.settings.get('autoTheatreMode') === true
@@ -278,6 +280,7 @@ var main = function() {
         directoryFunctions();
         handleTwitchChatEmotesScript();
         hostButtonBelowVideo();
+        audiotwitchButton();
 
         if (bttv.settings.get('chatImagePreview') === true) {
             enableImagePreview();
