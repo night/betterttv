@@ -1717,7 +1717,19 @@ exports.translate = function($element, sender, text) {
     });
 
     $.getJSON('https://api.betterttv.net/2/translate?' + qs).success(function(data) {
-        $element.replaceWith(templates.message(sender, data.translation));
+        var $newElement = $(templates.message(sender, data.translation));
+        $element.replaceWith($newElement);
+
+        // Show original message on hover
+        $newElement.on('mouseover', function() {
+            $(this).tipsy({
+                trigger: 'manual',
+                title: function() { return 'Original message: ' + text; }
+            }).tipsy('show');
+        }).on('mouseout', function() {
+            $(this).tipsy('hide');
+            $('div.tipsy').remove();
+        });
     }).error(function(data) {
         $newElement = $(templates.message(sender, text));
         $element.replaceWith($newElement);
@@ -5990,8 +6002,8 @@ module.exports = [
         toggle: function(value) {
             if (value === true) {
                 $('body').on('dblclick', '.chat-line', function() {
-                    chat.helpers.translate($(this).find('.message'), $(this).data('sender'), $(this).find('.message').data('raw'));
-                    $(this).find('.message').text('Translating..');
+                    chat.helpers.translate($(this).find('.message'), $(this).data('sender'), $(this).find('.message').text());
+                    $(this).find('.message').text('Translating...');
                     $('div.tipsy').remove();
                 });
             } else {
