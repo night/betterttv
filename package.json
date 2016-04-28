@@ -5,6 +5,7 @@
   "description": "BetterTTV enhances Twitch with new features, bug fixes, and reduced clutter.",
   "main": "betterttv.js",
   "devDependencies": {
+    "del": "^2.2.0",
     "gulp": "^3.8.0",
     "gulp-browserify": "^0.5.0",
     "gulp-changed": "~0.3.0",

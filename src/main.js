@@ -135,7 +135,6 @@ var clearClutter = require('./features/clear-clutter'),
     enableTheatreMode = require('./features/auto-theatre-mode'),
     hostButtonBelowVideo = require('./features/host-btn-below-video'),
     conversations = require('./features/conversations'),
-    MassUnbanPopup = require('./helpers/massunban-popup'),
     ChatReplay = require('./features/chat-replay');
 
 var chatFunctions = function() {
