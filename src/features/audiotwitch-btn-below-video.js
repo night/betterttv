@@ -1,5 +1,3 @@
-var vars = require('../vars.js');
-
 module.exports = function() {
     if (bttv.settings.get('audiotwitchButton') !== true) return;
 
@@ -11,11 +9,13 @@ module.exports = function() {
         $btn.insertBefore('#channel .channel-actions .js-options');
         $btn.children('span').text('RadioTwitch');
         $btn.click(function() {
-            if (vars.liveChannels.indexOf(bttv.getChannel()) >= 0) {
-                window.open('http://' + bttv.getChannel() + '.radiotwitch.in/');
-            } else {
-                bttv.notify('Channel is offline.', {});
-            }
+            bttv.TwitchAPI.get('streams/' + bttv.getChannel()).done(function(res) {
+                if (res.stream !== null) {
+                    window.open('http://' + bttv.getChannel() + '.radiotwitch.in/');
+                } else {
+                    bttv.notify('Channel is offline.', {});
+                }
+            });
         });
     }
 };
