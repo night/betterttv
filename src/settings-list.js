@@ -357,19 +357,6 @@ module.exports = [
         }
     },
     {
-        name: 'Audiotwitch Button',
-        description: 'Direct link to Audiotwitch under the video player.',
-        default: false,
-        storageKey: 'audiotwitchButton',
-        toggle: function(value) {
-            if (value === true) {
-                audiotwitchButton();
-            } else {
-                $('#bttv-audiotwitch-button').remove();
-            }
-        }
-    },
-    {
         name: 'JTV Chat Badges',
         description: 'BetterTTV can replace the chat badges with the ones from JTV',
         default: false,
@@ -409,6 +396,19 @@ module.exports = [
         description: 'Get audio feedback for messages directed at you (BETA)',
         default: false,
         storageKey: 'highlightFeedback'
+    },
+    {
+        name: 'RadioTwitch Button',
+        description: 'Direct link to a audio-only stream under the video player.',
+        default: false,
+        storageKey: 'audiotwitchButton',
+        toggle: function(value) {
+            if (value === true) {
+                audiotwitchButton();
+            } else {
+                $('#bttv-audiotwitch-button').remove();
+            }
+        }
     },
     {
         name: 'Remove Deleted Messages',
