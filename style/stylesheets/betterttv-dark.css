@@ -309,12 +309,11 @@ body {
     background-color: #222;
 }
 
-/* centered the border >:( */
-#main_col .content #broadcast_meta .profile-photo, #main_col #broadcast-meta .profile-photo {
+#main_col .content #broadcast_meta .profile-photo,
+#main_col #broadcast-meta .profile-photo {
     background-color: #222;
-    border: 4px solid #222;
-    margin-left: -4px;
-    margin-top: -4px;
+    border: 0px solid #222;
+    margin: 0px;
 }
 
 #main_col .content #broadcast_meta, #main_col #broadcast-meta, #main_col .archive_info {
