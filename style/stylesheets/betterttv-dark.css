@@ -300,12 +300,9 @@ body {
     border-top: 1px solid rgba(0, 0, 0, 0.65);
 }
 
-.channel-main, .title_over, #channel .player-column #broadcast-meta .info .title:hover {
+.channel-main, .title_over,
+#channel .player-column #broadcast-meta .info .title:hover {
     background: #000;
-}
-
-#channel .player-column #broadcast-meta .info .title .over {
-    color: #fff;
 }
 
 #main_col .content #broadcast_meta .image, #main_col #broadcast-meta .image {
