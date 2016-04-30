@@ -2392,11 +2392,11 @@ span.subscribe-text {
 }
 
 .activity-container .activity-create {
-    border-color: #333;
+    border: none;
 }
 
 .activity-container .activity-create > textarea {
-    background-color: rgb(20, 20, 20);
+    background-color: rgb(30, 30, 30);
     color: #d3d3d3;
 }
 
