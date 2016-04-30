@@ -1294,7 +1294,12 @@ body#chat #speak {
     padding: 0px;
 }
 
+.ember-chat .chat-header .room-title {
+    padding-top: 10px;
+}
+
 .ember-chat .chat-header .button.left {
+    top: 5px;
     left: 10px;
 }
 
@@ -1687,7 +1692,7 @@ body.channel_new.columns.ember-application {
 /* channel state feature */
 #bttv-channel-state-contain {
     position: absolute;
-    top: 12px;
+    top: 7px;
     right: 5px;
     width: 150px;
     height: 24px;
