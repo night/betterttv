@@ -2125,6 +2125,10 @@ span.subscribe-text {
     color: #d3d3d3;
 }
 
+.player .player-hover.player-controls-bottom .player-menu__menu .player-menu__header {
+    color: #888;
+}
+
 .player .player-hover.player-controls-bottom .player-menu__menu:after {
     border-top-color: rgb(35, 35, 35);
 }
