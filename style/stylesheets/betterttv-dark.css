@@ -2386,6 +2386,21 @@ span.subscribe-text {
     background-color: #333;
 }
 
+.activity-container .activity-create {
+    border-color: #333;
+}
+
+.activity-container .activity-create > textarea {
+    background-color: rgb(20, 20, 20);
+    color: #d3d3d3;
+}
+
+.activity-container .activity-create > div {
+    background: #282828;
+    box-shadow: 0 -1px 0 #333;
+}
+
+
 /* chat replay */
 .chatReplay .loading-spinner-container {
     background: rgba(10,10,10,.85);
