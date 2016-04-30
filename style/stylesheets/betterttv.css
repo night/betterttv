@@ -808,10 +808,6 @@ input.text:focus,select:focus,textarea:focus {
     font-weight: bold;
 }
 
-.primary_button, .primary.button {
-    border: solid 1px black;
-}
-
 .ember-chat .chat-interface .chat-buttons-container .send-chat-button {
     max-width: 180px;
     min-width: 100px;

@@ -502,11 +502,11 @@ body {
 
 #channel .player-column .stats-and-actions .channel-actions .action,
 #is-subscribed,
-#channel_actions .action {
+#channel_actions .action,
+.channel-actions .notification-controls {
     margin-right: 10px !important;
 }
 
-#channel .channel-actions .button,
 .chat-buttons-container .button,
 .profile-info .buttons .button,
 #channel_actions .button {
@@ -520,6 +520,18 @@ body {
     border: 1px solid;
     border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.35);
     border-radius: 2px;
+}
+
+#channel .channel-actions .button {
+    padding: 0px 10px;
+
+    background-color: rgb(30, 30, 30);
+    color: rgb(170, 170, 170);
+    border-radius: 2px;
+}
+
+#channel .channel-actions .button.subscribe-button {
+    padding-right: 0px;
 }
 
 .chat-buttons-container .button {
@@ -587,6 +599,7 @@ body {
 .notification-controls .toggle-notification-menu {
     background-color: rgb(30,30,30);
     color: #d3d3d3;
+    outline: none;
 }
 
 /* Ember Pages Dropmenu Fix */
@@ -634,14 +647,15 @@ body {
 /* Taken from http://userstyles.org/styles/82967/twitch-dark-view */
 #channel_stats, .channel-stats {
     background-color: rgb(30, 30, 30);
-    box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset;
-    border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.35);
+    padding-right: 10px;
+    border-radius: 2px;
     color: rgb(170, 170, 170);
+
+    /*box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset;
+    border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.35);
     text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px;
     border: 1px solid;
-    padding-right: 10px;
-    border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.35);
-    border-radius: 2px;
+    border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.35);*/
 }
 
 .dropdown_glyph, .dropdown_static, #subscribe_action .subscribe-price, #channel_following.normal_button, .follow-button .notify, .channel-following.normal_button {
@@ -1900,15 +1914,15 @@ span#is-subscribed {
     padding-left: 10px;
     padding-right: 10px;
     background-color: rgb(30, 30, 30);
-    box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset;
-    border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.35);
     color: rgb(170, 170, 170);
-    text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px;
-    border: 1px solid;
-    padding-right: 10px;
-    border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.35);
     border-radius: 2px;
     font-size: 12px;
+
+    /*box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset;
+    border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.35);
+    text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px;
+    border: 1px solid;
+    border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.35);*/
 }
 
 #channel .player-column .stats-and-actions .channel-actions .button.primary span {
