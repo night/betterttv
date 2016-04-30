@@ -2410,3 +2410,8 @@ span.subscribe-text {
 .chatReplay .loading-spinner-container {
     background: rgba(10,10,10,.85);
 }
+
+/* remove rounded corners on posts toggle box */
+.player-column .feed-toggle-contain {
+    border-radius: 0px;
+}
