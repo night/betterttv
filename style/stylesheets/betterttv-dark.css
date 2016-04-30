@@ -370,11 +370,13 @@ body {
     -moz-opacity: .50;
     -khtml-opacity: .50;
     opacity: .5;
-    border: 1px solid;
+    
+    background-color: rgb(50, 50, 50);
+    
+    /*border: 1px solid;
     border-color: rgba(0, 0, 0, 0.4) rgba(0, 0, 0, 0.5) rgba(0, 0, 0, 0.55);
     box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 0px 1px;
-    background-color: rgb(50, 50, 50);
-    box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset;
+    box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset;*/
 }
 
 #left_close:before, #right_close:before {
