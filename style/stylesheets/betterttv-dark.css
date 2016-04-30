@@ -356,6 +356,11 @@ body {
     color: #fff;
 }
 
+/* Twitch theater mode chat header text un-override */
+.app-main.theatre .chat-container .chat-header {
+    color: #D3D3D3;
+}
+
 #left_col {
     background-color: #222;
 }
