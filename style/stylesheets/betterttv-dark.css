@@ -416,7 +416,7 @@ body {
     border-bottom-color: transparent;
 }
 
-#left_col.closed #left_close:before {
+#left_close.closed:before {
     margin-left: -2px;
     border: 5px solid #fff;
     border-right-color: transparent;
