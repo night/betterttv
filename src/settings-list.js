@@ -5,6 +5,7 @@ var splitChat = require('./features/split-chat'),
     flipDashboard = require('./features/flip-dashboard'),
     cssLoader = require('./features/css-loader'),
     hostButton = require('./features/host-btn-below-video'),
+    audiotwitchButton = require('./features/audiotwitch-btn-below-video'),
     anonChat = require('./features/anon-chat'),
     handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes');
 var displayElement = require('./helpers/element').display,
@@ -395,6 +396,19 @@ module.exports = [
         description: 'Get audio feedback for messages directed at you (BETA)',
         default: false,
         storageKey: 'highlightFeedback'
+    },
+    {
+        name: 'RadioTwitch Button',
+        description: 'Direct link to a audio-only stream under the video player.',
+        default: false,
+        storageKey: 'audiotwitchButton',
+        toggle: function(value) {
+            if (value === true) {
+                audiotwitchButton();
+            } else {
+                $('#bttv-audiotwitch-button').remove();
+            }
+        }
     },
     {
         name: 'Remove Deleted Messages',
