@@ -1089,6 +1089,7 @@ body#chat #speak {
     font-size: 11px;
     color: rgb(220,220,190);
     margin-left: 60px;
+    margin-top: -4px;
     position: relative;
     display: table;
     z-index: 4;
@@ -1101,7 +1102,7 @@ body#chat #speak {
     float: left;
     opacity: 0.7;
     position: relative;
-    margin-top: 3px;
+    margin-top: -3px;
 }
 
 .moderation-card .channel-stats .stat svg {
