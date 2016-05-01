@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "cookies-js": "^1.2.1",
+    "lodash.debounce": "^4.0.6",
     "lodash.throttle": "^3.0.4",
     "socket.io-client": "^1.3.5"
   }

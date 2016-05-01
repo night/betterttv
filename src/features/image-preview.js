@@ -1,19 +1,29 @@
-exports.enablePreview = function() {
-    $(document).on({
-        mouseenter: function() {
-            var url = this.href;
+var debounce = require('lodash.debounce');
 
+exports.enablePreview = function() {
+    var enter = debounce(function() {
+        var url = this.href;
+
+        $.get('https://api.betterttv.net/2/image_embed/' + encodeURIComponent(url)).done(function(data) {
             $(this).tipsy({
                 trigger: 'manual',
                 gravity: $.fn.tipsy.autoNS,
                 html: true,
-                title: function() { return '<iframe id="chat_preview" marginwidth="0" marginheight="0" hspace="0" vspace="0" frameborder="0" width="200px" scrolling="no" src="https://api.betterttv.net/2/image_embed/' + encodeURIComponent(url) + '"></iframe>'; }
+                title: function() { return data; }
             });
             $(this).tipsy('show');
-        }, mouseleave: function() {
-            $(this).tipsy('hide');
-            $('div.tipsy').remove();
-        }
+        }.bind(this));
+    }, 250);
+
+    var leave = function() {
+        enter.cancel();
+        $(this).tipsy('hide');
+        $('div.tipsy').remove();
+    };
+
+    $(document).on({
+        mouseenter: enter,
+        mouseleave: leave
     }, 'a.chat-preview');
 };
 

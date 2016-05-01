@@ -6,6 +6,7 @@ var vars = require('../vars'),
     helpers = require('./helpers'),
     rooms = require('./rooms'),
     templates = require('./templates'),
+    debounce = require('lodash.debounce'),
     loadChatSettings = require('../features/chat-load-settings'),
     anonChat = require('../features/anon-chat'),
     customTimeouts = require('../features/custom-timeouts');
@@ -135,8 +136,10 @@ var takeover = module.exports = function() {
     });
 
     // Hover over links
-    $('body').off('mouseover', '.chat-line .message a').on('mouseover', '.chat-line .message a', function() {
+    var hoverLink = debounce(function() {
         var $this = $(this);
+
+        if ($this.hasClass('chat-preview')) return;
 
         var encodedURL = encodeURIComponent($this.attr('href'));
         $.getJSON('https://api.betterttv.net/2/link_resolver/' + encodedURL).done(function(data) {
@@ -150,7 +153,9 @@ var takeover = module.exports = function() {
             });
             $this.tipsy('show');
         });
-    }).off('mouseout', '.chat-line .message a').on('mouseout', '.chat-line .message a', function() {
+    }, 250);
+    $('body').off('mouseover', '.chat-line .message a').on('mouseover', '.chat-line .message a', hoverLink).off('mouseout', '.chat-line .message a').on('mouseout', '.chat-line .message a', function() {
+        hoverLink.cancel();
         $(this).tipsy('hide');
         $('div.tipsy').remove();
     });
