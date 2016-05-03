@@ -3125,7 +3125,7 @@ module.exports = function() {
     }
 
     // If chat sidebar is closed, element width != 0
-    if (vars.chatWidth === 0) {
+    if (vars.chatWidth === 0 || $('#right_col').hasClass('closed')) {
         $('#main_col').css({
             marginRight: '0px'
         });
@@ -3267,7 +3267,7 @@ module.exports = function() {
         });
 
         $(window).off('fluid-resize');
-        $(window).off('resize').resize(function() {
+        $(window).resize(function() {
             debug.log('Debug: Resize Called');
             setTimeout(handleResize, 1000);
         });

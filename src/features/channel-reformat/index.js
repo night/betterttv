@@ -86,7 +86,7 @@ module.exports = function() {
         });
 
         $(window).off('fluid-resize');
-        $(window).off('resize').resize(function() {
+        $(window).resize(function() {
             debug.log('Debug: Resize Called');
             setTimeout(handleResize, 1000);
         });
