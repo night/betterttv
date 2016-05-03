@@ -5,6 +5,8 @@ exports.enablePreview = function() {
         var url = this.href;
 
         $.get('https://api.betterttv.net/2/image_embed/' + encodeURIComponent(url)).done(function(data) {
+            if (!$(this).length || !$(this).is(':hover')) return;
+
             $(this).tipsy({
                 trigger: 'manual',
                 gravity: $.fn.tipsy.autoNS,
