@@ -416,9 +416,7 @@ exports.sendMessage = function(message) {
         }
 
         if (tmi().tmiSession.sendWhisper && ['/w', '.w'].indexOf(message.substr(0, 2)) > -1) {
-            var parts = message.split(' ');
-            parts.shift();
-            tmi().tmiSession.sendWhisper(parts.shift(), parts.join(' '));
+            tmi().send(message);
             return;
         }
 

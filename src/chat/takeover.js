@@ -91,8 +91,9 @@ var takeover = module.exports = function() {
     } catch (e) { }
 
     if (!conversationsEnabled || tmi.get('isEmbedChat')) {
-        delete tmi.tmiSession._events.whisper;
-        tmi.tmiSession.on('whisper', rooms.getRoom(bttv.getChannel()).chatHandler);
+        tmi.set('addMessage', function(d) {
+            handlers.onPrivmsg(bttv.getChannel(), d);
+        });
     }
 
     // Fake the initial roomstate

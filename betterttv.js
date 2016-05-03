@@ -1262,9 +1262,7 @@ exports.sendMessage = function(message) {
         }
 
         if (tmi().tmiSession.sendWhisper && ['/w', '.w'].indexOf(message.substr(0, 2)) > -1) {
-            var parts = message.split(' ');
-            parts.shift();
-            tmi().tmiSession.sendWhisper(parts.shift(), parts.join(' '));
+            tmi().send(message);
             return;
         }
 
@@ -1982,8 +1980,9 @@ var takeover = module.exports = function() {
     } catch (e) { }
 
     if (!conversationsEnabled || tmi.get('isEmbedChat')) {
-        delete tmi.tmiSession._events.whisper;
-        tmi.tmiSession.on('whisper', rooms.getRoom(bttv.getChannel()).chatHandler);
+        tmi.set('addMessage', function(d) {
+            handlers.onPrivmsg(bttv.getChannel(), d);
+        });
     }
 
     // Fake the initial roomstate
