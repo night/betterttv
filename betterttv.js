@@ -2778,9 +2778,9 @@ var main = function() {
                                 ) {
                                     enableTheatreMode();
                                 }
-                                $(window).trigger('resize');
+                                window.dispatchEvent(new Event('resize'));
                                 setTimeout(function() {
-                                    $(window).trigger('resize');
+                                    window.dispatchEvent(new Event('resize'));
                                 }, 3000);
                             }
                         });
@@ -2791,6 +2791,7 @@ var main = function() {
                             chatReplay.disconnect();
                         } catch (e) {}
                         chatReplay = new ChatReplay();
+                        window.dispatchEvent(new Event('resize'));
                         break;
                     case 'following.index':
                         $('#main_col').removeAttr('style');
@@ -2806,7 +2807,7 @@ var main = function() {
                                 vars.emotesLoaded = false;
                                 chatFunctions();
                                 channelReformat();
-                                $(window).trigger('resize');
+                                window.dispatchEvent(new Event('resize'));
                             }
                         });
                         break;
@@ -2874,12 +2875,12 @@ var main = function() {
             enableTheatreMode();
         }
 
-        $(window).trigger('resize');
+        window.dispatchEvent(new Event('resize'));
     };
 
     var delayedFuncs = function() {
         channelReformat();
-        $(window).trigger('resize');
+        window.dispatchEvent(new Event('resize'));
         chatFunctions();
         directoryFunctions();
     };
@@ -3198,7 +3199,7 @@ module.exports = function() {
 
         $(document).keydown(function(event) {
             if (event.keyCode === keyCodes.r && event.altKey) {
-                $(window).trigger('resize');
+                window.dispatchEvent(new Event('resize'));
             }
         });
 
@@ -3309,7 +3310,7 @@ module.exports = function() {
     $('#right_close').removeAttr('data-ember-action');
 
     $('#left_close').off('click').click(function() {
-        $(window).trigger('resize');
+        window.dispatchEvent(new Event('resize'));
     });
 
     if (bttv.settings.get('chatWidth') !== null) {
@@ -3330,8 +3331,6 @@ module.exports = function() {
             $('#right_col #chat').width(vars.chatWidth);
             $('#right_col .top').width(vars.chatWidth);
         }
-
-        $(window).trigger('resize');
 
         window.dispatchEvent(new Event('resize'));
     } else {

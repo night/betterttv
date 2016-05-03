@@ -189,9 +189,9 @@ var main = function() {
                                 ) {
                                     enableTheatreMode();
                                 }
-                                $(window).trigger('resize');
+                                window.dispatchEvent(new Event('resize'));
                                 setTimeout(function() {
-                                    $(window).trigger('resize');
+                                    window.dispatchEvent(new Event('resize'));
                                 }, 3000);
                             }
                         });
@@ -202,6 +202,7 @@ var main = function() {
                             chatReplay.disconnect();
                         } catch (e) {}
                         chatReplay = new ChatReplay();
+                        window.dispatchEvent(new Event('resize'));
                         break;
                     case 'following.index':
                         $('#main_col').removeAttr('style');
@@ -217,7 +218,7 @@ var main = function() {
                                 vars.emotesLoaded = false;
                                 chatFunctions();
                                 channelReformat();
-                                $(window).trigger('resize');
+                                window.dispatchEvent(new Event('resize'));
                             }
                         });
                         break;
@@ -285,12 +286,12 @@ var main = function() {
             enableTheatreMode();
         }
 
-        $(window).trigger('resize');
+        window.dispatchEvent(new Event('resize'));
     };
 
     var delayedFuncs = function() {
         channelReformat();
-        $(window).trigger('resize');
+        window.dispatchEvent(new Event('resize'));
         chatFunctions();
         directoryFunctions();
     };
