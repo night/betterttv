@@ -82,19 +82,10 @@ var takeover = module.exports = function() {
     store.currentRoom = bttv.getChannel();
     // tmi.tmiRoom.on('labelschanged', handlers.labelsChanged);
 
-    // Take over whispers only when user is either not in Whispers 2.0 Beta
-    // OR
-    // user is in popout or embedded chat
-    var conversationsEnabled = false;
-    try {
-        conversationsEnabled = App.__container__.lookup('route:application').controller.get('isConversationsEnabled');
-    } catch (e) { }
-
-    if (!conversationsEnabled || tmi.get('isEmbedChat')) {
-        tmi.set('addMessage', function(d) {
-            handlers.onPrivmsg(bttv.getChannel(), d);
-        });
-    }
+    // Takes over whisper replies (actually all messages Twitch still emits)
+    tmi.set('addMessage', function(d) {
+        handlers.onPrivmsg(bttv.getChannel(), d);
+    });
 
     // Fake the initial roomstate
     helpers.parseRoomState({

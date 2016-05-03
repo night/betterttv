@@ -343,7 +343,7 @@ var privmsg = exports.privmsg = function(channel, data) {
             vars.userData.isLoggedIn ? helpers.isModerator(vars.userData.name) : false,
             {
                 message: data.message,
-                time: data.date === null ? '' : data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
+                time: data.date ? data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2') : '',
                 nickname: data.from || 'jtv',
                 sender: data.from,
                 badges: data.badges || (data.from === 'twitchnotify' ? [{
@@ -395,7 +395,7 @@ var privmsg = exports.privmsg = function(channel, data) {
     }
 
     var badges = helpers.getBadges(data.from);
-    var bttvBadges = helpers.assignBadges(badges, data);
+    var bttvBadges = helpers.assignBadges(badges || [], data);
 
     var from = data.from;
     var sender = data.from;
@@ -414,7 +414,7 @@ var privmsg = exports.privmsg = function(channel, data) {
 
         message = templates.whisper({
             message: data.message,
-            time: data.date === null ? '' : data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
+            time: data.date ? data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2') : '',
             from: from,
             sender: sender,
             receiver: data.to,

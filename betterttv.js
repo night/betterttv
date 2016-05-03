@@ -699,7 +699,7 @@ var privmsg = exports.privmsg = function(channel, data) {
             vars.userData.isLoggedIn ? helpers.isModerator(vars.userData.name) : false,
             {
                 message: data.message,
-                time: data.date === null ? '' : data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
+                time: data.date ? data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2') : '',
                 nickname: data.from || 'jtv',
                 sender: data.from,
                 badges: data.badges || (data.from === 'twitchnotify' ? [{
@@ -751,7 +751,7 @@ var privmsg = exports.privmsg = function(channel, data) {
     }
 
     var badges = helpers.getBadges(data.from);
-    var bttvBadges = helpers.assignBadges(badges, data);
+    var bttvBadges = helpers.assignBadges(badges || [], data);
 
     var from = data.from;
     var sender = data.from;
@@ -770,7 +770,7 @@ var privmsg = exports.privmsg = function(channel, data) {
 
         message = templates.whisper({
             message: data.message,
-            time: data.date === null ? '' : data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
+            time: data.date ? data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2') : '',
             from: from,
             sender: sender,
             receiver: data.to,
@@ -1971,19 +1971,10 @@ var takeover = module.exports = function() {
     store.currentRoom = bttv.getChannel();
     // tmi.tmiRoom.on('labelschanged', handlers.labelsChanged);
 
-    // Take over whispers only when user is either not in Whispers 2.0 Beta
-    // OR
-    // user is in popout or embedded chat
-    var conversationsEnabled = false;
-    try {
-        conversationsEnabled = App.__container__.lookup('route:application').controller.get('isConversationsEnabled');
-    } catch (e) { }
-
-    if (!conversationsEnabled || tmi.get('isEmbedChat')) {
-        tmi.set('addMessage', function(d) {
-            handlers.onPrivmsg(bttv.getChannel(), d);
-        });
-    }
+    // Takes over whisper replies (actually all messages Twitch still emits)
+    tmi.set('addMessage', function(d) {
+        handlers.onPrivmsg(bttv.getChannel(), d);
+    });
 
     // Fake the initial roomstate
     helpers.parseRoomState({
