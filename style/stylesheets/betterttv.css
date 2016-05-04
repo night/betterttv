@@ -854,10 +854,6 @@ input, textarea, select {
     cursor: move !important;
 }
 
-#bvl-panel .chat-header p {
-    line-height: 3rem;
-}
-
 #bvl-panel a.button {
     top: 5px;
 }
@@ -884,7 +880,7 @@ input, textarea, select {
 }
 
 #bvl-panel .viewer-list {
-    width: calc(100% - 30px);;
+    width: calc(100% - 25px);;
     margin: 0 15px;
     overflow: auto;
 }
