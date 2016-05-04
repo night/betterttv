@@ -67,6 +67,10 @@ function loadViewerList() {
     var tmi = bttv.chat.tmi();
     if (!tmi) return;
 
+    if (viewList !== undefined && Date.now() - viewList.lastUpdate < 30 * 1000) {
+        return;
+    }
+
     var $oldList = $('#bvl-panel .viewer-list');
     $oldList.hide();
 
@@ -139,7 +143,7 @@ function createPanel() {
         .draggable({handle: '.drag_handle'});
 
     $panel.find('.close-button').click(function() {
-        $panel.remove();
+        $panel.hide();
     });
 
     $panel.find('.refresh-button').click(function() {
@@ -197,7 +201,11 @@ module.exports = function() {
         $('#bvl-button').click(function() {
             var $panel = $('#bvl-panel');
             if ($panel.length > 0) {
-                $panel.remove();
+                $panel.toggle();
+
+                if ($panel.is(':visible')) {
+                    loadViewerList();
+                }
             } else {
                 createPanel();
             }
