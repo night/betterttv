@@ -191,8 +191,8 @@ module.exports = [
         toggle: function(value) {
             if (value === true) {
                 $('body').on('dblclick', '.chat-line', function() {
-                    chat.helpers.translate($(this).find('.message'), $(this).data('sender'), $(this).find('.message').data('raw'));
-                    $(this).find('.message').text('Translating..');
+                    chat.helpers.translate($(this).find('.message'), $(this).data('sender'), $(this).find('.message').text());
+                    $(this).find('.message').text('Translating...');
                     $('div.tipsy').remove();
                 });
             } else {

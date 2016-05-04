@@ -416,9 +416,7 @@ exports.sendMessage = function(message) {
         }
 
         if (tmi().tmiSession.sendWhisper && ['/w', '.w'].indexOf(message.substr(0, 2)) > -1) {
-            var parts = message.split(' ');
-            parts.shift();
-            tmi().tmiSession.sendWhisper(parts.shift(), parts.join(' '));
+            tmi().send(message);
             return;
         }
 
@@ -532,7 +530,7 @@ exports.getBadges = function(user) {
     var badges = [];
     if (tmi() && tmi().tmiRoom.getLabels(user)) badges = tmi().tmiRoom.getLabels(user);
     if (store.__subscriptions[user] && store.__subscriptions[user].indexOf(bttv.getChannel()) !== -1) badges.push('subscriber');
-    if (store.__channelBots.indexOf(user) > -1 || (bots.indexOf(user) > -1 && isModerator(user))) badges.push('bot');
+    if ((store.__channelBots.indexOf(user) > -1 || bots.indexOf(user) > -1) && isModerator(user)) badges.push('bot');
     return badges;
 };
 
@@ -871,7 +869,19 @@ exports.translate = function($element, sender, text) {
     });
 
     $.getJSON('https://api.betterttv.net/2/translate?' + qs).success(function(data) {
-        $element.replaceWith(templates.message(sender, data.translation));
+        var $newElement = $(templates.message(sender, data.translation));
+        $element.replaceWith($newElement);
+
+        // Show original message on hover
+        $newElement.on('mouseover', function() {
+            $(this).tipsy({
+                trigger: 'manual',
+                title: function() { return 'Original message: ' + text; }
+            }).tipsy('show');
+        }).on('mouseout', function() {
+            $(this).tipsy('hide');
+            $('div.tipsy').remove();
+        });
     }).error(function(data) {
         $newElement = $(templates.message(sender, text));
         $element.replaceWith($newElement);

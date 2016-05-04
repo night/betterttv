@@ -49,7 +49,7 @@ module.exports = function() {
     }
 
     // If chat sidebar is closed, element width != 0
-    if (vars.chatWidth === 0) {
+    if (vars.chatWidth === 0 || $('#right_col').hasClass('closed')) {
         $('#main_col').css({
             marginRight: '0px'
         });

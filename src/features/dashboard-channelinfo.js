@@ -7,7 +7,10 @@ module.exports = function dashboardChannelInfo() {
 
         bttv.TwitchAPI.get('streams/' + bttv.getChannel()).done(function(a) {
             if (a.stream) {
-                $('#channel_viewer_count').text(Twitch.display.commatize(a.stream.viewers));
+                // lol, a function in window context Twitch uses to update viewer count
+                // and we have to use this because they now added viewer count hiding
+                window.updateLiveViewers(a.stream.viewers);
+
                 if (a.stream.channel.views) $('#views_count span').text(Twitch.display.commatize(a.stream.channel.views));
                 if (a.stream.channel.followers) $('#followers_count span').text(Twitch.display.commatize(a.stream.channel.followers));
             } else {

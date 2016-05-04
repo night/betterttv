@@ -1,12 +1,4 @@
 /* global BTTVLOADED:true PP:true*/
-// import
-if (window.location.href === 'http://www.twitch.tv/crossdomain/transfer') {
-    var script = document.createElement('script');
-    script.setAttribute('src', 'https://cdn.betterttv.net/settings-import.js');
-    document.getElementsByTagName('head')[0].appendChild(script);
-    return;
-}
-
 // Declare public and private variables
 var debug = require('./helpers/debug'),
     vars = require('./vars'),
@@ -138,13 +130,11 @@ var clearClutter = require('./features/clear-clutter'),
     dashboardChannelInfo = require('./features/dashboard-channelinfo'),
     giveawayCompatibility = require('./features/giveaway-compatibility'),
     handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes'),
-    emoticonTextInClipboard = require('./features/emoticon-text-in-clipboard'),
     createSettings = require('./features/create-settings'),
     enableImagePreview = require('./features/image-preview').enablePreview,
     enableTheatreMode = require('./features/auto-theatre-mode'),
     hostButtonBelowVideo = require('./features/host-btn-below-video'),
     conversations = require('./features/conversations'),
-    MassUnbanPopup = require('./helpers/massunban-popup'),
     betterViewerList = require('./features/better-viewer-list'),
     ChatReplay = require('./features/chat-replay');
 
@@ -201,9 +191,9 @@ var main = function() {
                                 ) {
                                     enableTheatreMode();
                                 }
-                                $(window).trigger('resize');
+                                window.dispatchEvent(new Event('resize'));
                                 setTimeout(function() {
-                                    $(window).trigger('resize');
+                                    window.dispatchEvent(new Event('resize'));
                                 }, 3000);
                             }
                         });
@@ -214,6 +204,7 @@ var main = function() {
                             chatReplay.disconnect();
                         } catch (e) {}
                         chatReplay = new ChatReplay();
+                        window.dispatchEvent(new Event('resize'));
                         break;
                     case 'following.index':
                         $('#main_col').removeAttr('style');
@@ -229,7 +220,7 @@ var main = function() {
                                 vars.emotesLoaded = false;
                                 chatFunctions();
                                 channelReformat();
-                                $(window).trigger('resize');
+                                window.dispatchEvent(new Event('resize'));
                             }
                         });
                         break;
@@ -288,7 +279,6 @@ var main = function() {
         dashboardChannelInfo();
         directoryFunctions();
         handleTwitchChatEmotesScript();
-        emoticonTextInClipboard();
         hostButtonBelowVideo();
 
         if (bttv.settings.get('chatImagePreview') === true) {
@@ -298,12 +288,12 @@ var main = function() {
             enableTheatreMode();
         }
 
-        $(window).trigger('resize');
+        window.dispatchEvent(new Event('resize'));
     };
 
     var delayedFuncs = function() {
         channelReformat();
-        $(window).trigger('resize');
+        window.dispatchEvent(new Event('resize'));
         chatFunctions();
         directoryFunctions();
     };
