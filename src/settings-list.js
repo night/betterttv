@@ -343,6 +343,22 @@ module.exports = [
         storageKey: 'hideSpam'
     },
     {
+        name: 'Hide Whisper Icons in Theatre Mode',
+        description: 'Hides the whisper bar in theatre mode',
+        default: false,
+        storageKey: 'hideWhisperInTheatre',
+        load: function() {
+            if (!window.App || !App.__container__.lookup('controller:Layout')) return;
+            App.__container__.lookup('controller:Layout').addObserver('isTheatreMode', function() {
+                if (this.get('isTheatreMode') === true) {
+                    if (bttv.settings.get('hideWhisperInTheatre') === true) $('.conversations-content').hide();
+                } else {
+                    if (bttv.settings.get('hideWhisperInTheatre') === true) $('.conversations-content').show();
+                }
+            });
+        }
+    },
+    {
         name: 'Host Button',
         description: 'Places a Host/Unhost button below the video player',
         default: false,
