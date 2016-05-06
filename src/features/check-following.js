@@ -4,13 +4,6 @@ var debug = require('../helpers/debug'),
 var checkFollowing = module.exports = function() {
     debug.log('Check Following List');
 
-    if (!$('#bttv-small-nav-count').length) {
-        var $count = $('<div/>');
-        $count.addClass('js-total');
-        $count.attr('id', 'bttv-small-nav-count');
-        $count.insertBefore('#small_nav li[data-name="following"] a[href="/directory/following"] .filter_icon:first');
-    }
-
     if ($('body#chat').length || $('body[data-page="ember#chat"]').length || !vars.userData.isLoggedIn) return;
 
     var fetchFollowing = function(callback, followingList, followingNames, offset) {
@@ -78,11 +71,15 @@ var checkFollowing = module.exports = function() {
             vars.liveChannels = channels;
         }
 
-        if (!$('#nav_personal li[data-name="following"] a[href="/directory/following"] .js-total').length) {
-            $('#nav_personal li[data-name="following"] a[href="/directory/following"]').append('<span class="total_count js-total" style="display: none;"></span>');
+        if (!$('#bttv-small-nav-count').length) {
+            var $count = $('<div/>');
+            $count.addClass('js-total');
+            $count.attr('id', 'bttv-small-nav-count');
+            $count.insertBefore('.warp a.warp__tipsy[data-tt_content="directory_following"] figure');
         }
-        $('#left_col li[data-name="following"] a[href="/directory/following"] .js-total').text(streams.length);
-        $('#left_col li[data-name="following"] a[href="/directory/following"] .js-total').css('display', 'inline');
+
+        $('#bttv-small-nav-count').text(streams.length);
+        $('#bttv-small-nav-count').css('display', 'inline');
 
         setTimeout(checkFollowing, 60000 + Math.random() * 5000);
     });

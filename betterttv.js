@@ -2754,6 +2754,11 @@ var main = function() {
             }, 1000);
         };
 
+        // Some page changes do not trigger a re-render
+        App.__container__.lookup('controller:application').addObserver('currentRouteName', function() {
+            $('#main_col').removeAttr('style');
+        });
+
         Ember.subscribe('render', {
             before: function() {
                 renderingCounter++;
@@ -2762,7 +2767,7 @@ var main = function() {
                 renderingCounter--;
 
                 if (!payload.template) return;
-                // debug.log(payload.template, App.__container__.lookup('controller:application').get('currentRouteName'));
+                debug.log(payload.template, App.__container__.lookup('controller:application').get('currentRouteName'));
 
                 switch (App.__container__.lookup('controller:application').get('currentRouteName')) {
                     case 'channel.index.index':
@@ -3033,19 +3038,36 @@ module.exports = function() {
     debug.log('Branding Site with Better & Importing Styles');
 
     var $watermark = $('<img />');
+    $watermark.attr('id', 'bttv_logo');
+
     // New Site Logo Branding
     if ($('#large_nav #logo').length) {
         $watermark.attr('src', 'https://cdn.betterttv.net/style/logos/logo_icon.png');
         $watermark.css({
             'z-index': 9000,
-            'margin-left': '-76px',
-            'margin-top': '-16px',
-            'float': 'left',
+            'left': '90px',
+            'top': '10px',
             'position': 'absolute'
 
         });
         $('#large_nav #logo').append($watermark);
     }
+
+    // New Twitch Friends List (lazy loads, pita)
+    var lameLLT = setInterval(function() {
+        if (!$('.warp .warp__logo').length) return;
+
+        clearInterval(lameLLT);
+
+        $watermark.attr('src', 'https://cdn.betterttv.net/style/logos/logo_icon.png');
+        $watermark.css({
+            'z-index': 9000,
+            'left': '90px',
+            'top': '-10px',
+            'position': 'absolute'
+        });
+        $('.warp .warp__logo').append($watermark);
+    }, 100);
 
     // Adds BTTV Settings Icon to Left Sidebar
     $('.column .content #you').append('<a class="bttvSettingsIcon" href="#""></a>');
@@ -3766,13 +3788,6 @@ var debug = require('../helpers/debug'),
 var checkFollowing = module.exports = function() {
     debug.log('Check Following List');
 
-    if (!$('#bttv-small-nav-count').length) {
-        var $count = $('<div/>');
-        $count.addClass('js-total');
-        $count.attr('id', 'bttv-small-nav-count');
-        $count.insertBefore('#small_nav li[data-name="following"] a[href="/directory/following"] .filter_icon:first');
-    }
-
     if ($('body#chat').length || $('body[data-page="ember#chat"]').length || !vars.userData.isLoggedIn) return;
 
     var fetchFollowing = function(callback, followingList, followingNames, offset) {
@@ -3840,11 +3855,15 @@ var checkFollowing = module.exports = function() {
             vars.liveChannels = channels;
         }
 
-        if (!$('#nav_personal li[data-name="following"] a[href="/directory/following"] .js-total').length) {
-            $('#nav_personal li[data-name="following"] a[href="/directory/following"]').append('<span class="total_count js-total" style="display: none;"></span>');
+        if (!$('#bttv-small-nav-count').length) {
+            var $count = $('<div/>');
+            $count.addClass('js-total');
+            $count.attr('id', 'bttv-small-nav-count');
+            $count.insertBefore('.warp a.warp__tipsy[data-tt_content="directory_following"] figure');
         }
-        $('#left_col li[data-name="following"] a[href="/directory/following"] .js-total').text(streams.length);
-        $('#left_col li[data-name="following"] a[href="/directory/following"] .js-total').css('display', 'inline');
+
+        $('#bttv-small-nav-count').text(streams.length);
+        $('#bttv-small-nav-count').css('display', 'inline');
 
         setTimeout(checkFollowing, 60000 + Math.random() * 5000);
     });
