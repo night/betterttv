@@ -272,6 +272,20 @@ module.exports = [
         storageKey: 'disableWhispers'
     },
     {
+        name: 'Disable Frontpage Video',
+        description: 'Disable video on the frontpage',
+        default: false,
+        storageKey: 'disableFPVideo',
+        load: function() {
+            if (window.location.href === 'https://www.twitch.tv/' && bttv.settings.get('disableFPVideo') === true) {
+                $(window).load(function() {
+                    $('#video-1').hide();
+                    $('.items').css('width', '940px');
+                });
+            }
+        }
+    },
+    {
         name: 'Double-Click Auto-Complete',
         description: 'Double-clicking a username in chat copies it into the chat text box',
         default: false,
