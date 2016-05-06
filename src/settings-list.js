@@ -279,8 +279,13 @@ module.exports = [
         load: function() {
             if (window.location.href === 'https://www.twitch.tv/' && bttv.settings.get('disableFPVideo') === true) {
                 $(window).load(function() {
+                    $('#video-1').children('iframe').eq(0).attr('src', '');
                     $('#video-1').hide();
                     $('.items').css('width', '940px');
+                    $('#video-1').bind('DOMNodeInserted DOMNodeRemoved', function() {
+                        $('#video-1').children('iframe').eq(0).attr('src', '');
+                        $('#video-1').hide();
+                    });
                 });
             }
         }
