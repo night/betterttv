@@ -272,19 +272,18 @@ module.exports = [
         storageKey: 'disableWhispers'
     },
     {
-        name: 'Disable Frontpage Video',
-        description: 'Disable video on the frontpage',
+        name: 'Disable Frontpage Video Autplay',
+        description: 'Disable video autplay on the frontpage',
         default: false,
         storageKey: 'disableFPVideo',
         load: function() {
             if (window.location.href === 'https://www.twitch.tv/' && bttv.settings.get('disableFPVideo') === true) {
                 $(window).load(function() {
-                    $('#video-1').children('iframe').eq(0).attr('src', '');
-                    $('#video-1').hide();
-                    $('.items').css('width', '940px');
+                    var frameSrc = $('#video-1').children('iframe').eq(0).attr('src');
+                    $('#video-1').children('iframe').eq(0).attr('src', frameSrc + '&autoplay=false');
                     $('#video-1').bind('DOMNodeInserted DOMNodeRemoved', function() {
-                        $('#video-1').children('iframe').eq(0).attr('src', '');
-                        $('#video-1').hide();
+                        frameSrc = $('#video-1').children('iframe').eq(0).attr('src');
+                        $('#video-1').children('iframe').eq(0).attr('src', frameSrc + '&autoplay=false');
                     });
                 });
             }
