@@ -340,6 +340,22 @@ module.exports = [
         storageKey: 'followingNotifications'
     },
     {
+        name: 'Hide Friends',
+        description: 'Hides the friend list from the left sidebar',
+        default: false,
+        storageKey: 'hideFriends',
+        toggle: function(value) {
+            if (value === true) {
+                cssLoader.load('hide-friends', 'hideFriends');
+            } else {
+                cssLoader.unload('hideFriends');
+            }
+        },
+        load: function() {
+            cssLoader.load('hide-friends', 'hideFriends');
+        }
+    },
+    {
         name: 'Hide Group Chat',
         description: 'Hides the group chat bar above chat',
         default: false,

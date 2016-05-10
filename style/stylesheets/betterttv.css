@@ -1678,7 +1678,15 @@ body.channel_new.columns.ember-application {
 }
 
 /* small nav follow count */
-#bttv-small-nav-count {
+ #bttv-small-nav-count {
+    position: absolute;
+    left: 30px;
+    margin-top: 20px;
+    color: #CFCFCF;
+    font-size: 10px;
+}
+
+#bttv-follow-count {
     position: absolute;
     left: 33px;
     bottom: 0px;
@@ -1688,7 +1696,7 @@ body.channel_new.columns.ember-application {
     text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
 }
 
-#left_col.closed #bttv-small-nav-count {
+#left_col.closed #bttv-follow-count {
     left: 23px;
     bottom: 4px;
 }

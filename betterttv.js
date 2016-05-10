@@ -3371,7 +3371,7 @@ var template = require('../templates/channel-state');
 
 var stateContainer = '#bttv-channel-state-contain';
 var chatHeader = '.chat-container .chat-header:first';
-var chatButton = '.chat-interface .chat-buttons-container .send-chat-button';
+var chatButton = '.chat-interface .chat-buttons-container .button.primary.float-right';
 
 var displaySeconds = function(s) {
     var date = new Date(0);
@@ -3790,6 +3790,14 @@ var checkFollowing = module.exports = function() {
 
     if ($('body#chat').length || $('body[data-page="ember#chat"]').length || !vars.userData.isLoggedIn) return;
 
+    // old nav
+    if (!$('#bttv-small-nav-count').length) {
+        var $sbcount = $('<div/>');
+        $sbcount.addClass('js-total');
+        $sbcount.attr('id', 'bttv-small-nav-count');
+        $sbcount.insertBefore('#small_nav li[data-name="following"] a[href="/directory/following"] .filter_icon:first');
+    }
+
     var fetchFollowing = function(callback, followingList, followingNames, offset) {
         followingList = followingList || [];
         followingNames = followingNames || [];
@@ -3855,15 +3863,24 @@ var checkFollowing = module.exports = function() {
             vars.liveChannels = channels;
         }
 
-        if (!$('#bttv-small-nav-count').length) {
+        // old nav
+        if (!$('#nav_personal li[data-name="following"] a[href="/directory/following"] .js-total').length) {
+            $('#nav_personal li[data-name="following"] a[href="/directory/following"]').append('<span class="total_count js-total" style="display: none;"></span>');
+        }
+
+        $('#left_col li[data-name="following"] a[href="/directory/following"] .js-total').text(streams.length);
+        $('#left_col li[data-name="following"] a[href="/directory/following"] .js-total').css('display', 'inline');
+
+        // new nav
+        if (!$('#bttv-follow-count').length) {
             var $count = $('<div/>');
             $count.addClass('js-total');
-            $count.attr('id', 'bttv-small-nav-count');
+            $count.attr('id', 'bttv-follow-count');
             $count.insertBefore('.warp a.warp__tipsy[data-tt_content="directory_following"] figure');
         }
 
-        $('#bttv-small-nav-count').text(streams.length);
-        $('#bttv-small-nav-count').css('display', 'inline');
+        $('#bttv-follow-count').text(streams.length);
+        $('#bttv-follow-count').css('display', 'inline');
 
         setTimeout(checkFollowing, 60000 + Math.random() * 5000);
     });
@@ -6175,6 +6192,22 @@ module.exports = [
         description: 'BetterTTV will notify you when channels you follow go live',
         default: true,
         storageKey: 'followingNotifications'
+    },
+    {
+        name: 'Hide Friends',
+        description: 'Hides the friend list from the left sidebar',
+        default: false,
+        storageKey: 'hideFriends',
+        toggle: function(value) {
+            if (value === true) {
+                cssLoader.load('hide-friends', 'hideFriends');
+            } else {
+                cssLoader.unload('hideFriends');
+            }
+        },
+        load: function() {
+            cssLoader.load('hide-friends', 'hideFriends');
+        }
     },
     {
         name: 'Hide Group Chat',
