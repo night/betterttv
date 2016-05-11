@@ -2,7 +2,7 @@ BetterTTV
 =========
 
 >
->  Copyright (c) 2015 NightDev
+>  Copyright (c) 2016 NightDev, LLC
 >
 >
 >  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -112,7 +112,7 @@ npm test
 
 A webserver will start and you can visit Twitch in your browser and browse normally. Files not included in the repo are pulled from the actual server, so everything works.
 
-Note: As of June, 2015 SSL is now used. The localhost webserver presents a self-signed certificate, which browsers will by default reject.
+SSL is used to connect to the localhost webserver. The localhost webserver presents a self-signed certificate, which browsers will by default reject.
 
 For Google Chrome, you can use the ```--ignore-certificate-errors``` flag to ignore the self-signed certificate. Only run Google Chrome with this flag enabled when testing, since it will accept all certificates.
 
