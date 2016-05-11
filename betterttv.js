@@ -6144,8 +6144,8 @@ module.exports = [
         storageKey: 'disableWhispers'
     },
     {
-        name: 'Disable Frontpage Video Autplay',
-        description: 'Disable video autplay on the frontpage',
+        name: 'Disable Frontpage Autoplay',
+        description: 'Disable autoplay on the frontpage video player',
         default: false,
         storageKey: 'disableFPVideo',
         load: function() {
