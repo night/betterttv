@@ -1152,7 +1152,7 @@ exports.tabCompletion = function(e) {
             isEmote = false;
         }
 
-        if (/^(\/|\.)/.test(lastWord)) {
+        if (/^(\/|\.)/.test(lastWord) && sentence.length === 0) {
             user = lastWord + ' ' + user;
             $chatInput.val(user);
             return;
