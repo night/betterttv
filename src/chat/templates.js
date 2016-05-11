@@ -28,7 +28,7 @@ var timestamp = exports.timestamp = function(time) {
 };
 
 var modicons = exports.modicons = function() {
-    return '<span class="mod-icons"><a class="mod-icon timeout" title="Timeout">Timeout</a><a class="mod-icon ban" title="Ban">Ban</a><a class="mod-icon unban" title="Unban" style="display: none;">Unban</a></span>';
+    return '<span class="mod-icons"><a class="mod-icon ban" title="Ban">Ban</a><a class="mod-icon unban" title="Unban" style="display: none;">Unban</a><a class="mod-icon timeout" title="Timeout">Timeout</a></span>';
 };
 
 var linkify = exports.linkify = function(message) {

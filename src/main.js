@@ -166,6 +166,11 @@ var main = function() {
             }, 1000);
         };
 
+        // Some page changes do not trigger a re-render
+        App.__container__.lookup('controller:application').addObserver('currentRouteName', function() {
+            $('#main_col').removeAttr('style');
+        });
+
         Ember.subscribe('render', {
             before: function() {
                 renderingCounter++;
@@ -174,7 +179,7 @@ var main = function() {
                 renderingCounter--;
 
                 if (!payload.template) return;
-                // debug.log(payload.template, App.__container__.lookup('controller:application').get('currentRouteName'));
+                debug.log(payload.template, App.__container__.lookup('controller:application').get('currentRouteName'));
 
                 switch (App.__container__.lookup('controller:application').get('currentRouteName')) {
                     case 'channel.index.index':

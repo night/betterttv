@@ -35,8 +35,7 @@ var checkBroadcastInfo = module.exports = function() {
                     d.status = d.status.replace(/</g, '&lt;').replace(/>/g, '&gt;');
                     d.status = bttv.chat.templates.linkify(d.status);
 
-                    $title.find('.real').html(d.status);
-                    $title.find('.over').html(d.status);
+                    $title.html(d.status);
                 }
             }
         }

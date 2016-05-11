@@ -4,19 +4,36 @@ module.exports = function() {
     debug.log('Branding Site with Better & Importing Styles');
 
     var $watermark = $('<img />');
+    $watermark.attr('id', 'bttv_logo');
+
     // New Site Logo Branding
     if ($('#large_nav #logo').length) {
         $watermark.attr('src', 'https://cdn.betterttv.net/style/logos/logo_icon.png');
         $watermark.css({
             'z-index': 9000,
-            'margin-left': '-76px',
-            'margin-top': '-16px',
-            'float': 'left',
+            'left': '90px',
+            'top': '10px',
             'position': 'absolute'
 
         });
         $('#large_nav #logo').append($watermark);
     }
+
+    // New Twitch Friends List (lazy loads, pita)
+    var lameLLT = setInterval(function() {
+        if (!$('.warp .warp__logo').length) return;
+
+        clearInterval(lameLLT);
+
+        $watermark.attr('src', 'https://cdn.betterttv.net/style/logos/logo_icon.png');
+        $watermark.css({
+            'z-index': 9000,
+            'left': '90px',
+            'top': '-10px',
+            'position': 'absolute'
+        });
+        $('.warp .warp__logo').append($watermark);
+    }, 100);
 
     // Adds BTTV Settings Icon to Left Sidebar
     $('.column .content #you').append('<a class="bttvSettingsIcon" href="#""></a>');

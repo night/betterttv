@@ -1,5 +1,5 @@
 /** @license
- * Copyright (c) 2015 NightDev
+ * Copyright (c) 2016 NightDev, LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -1111,7 +1111,7 @@ exports.tabCompletion = function(e) {
 
             // Mix in emotes if not directly asking for a user
             if (lastWord.charAt(0) !== '@' && !detectServerCommand(input)) {
-                users = users.concat(emotes);
+                users = bttv.settings.get('tabCompletionEmotePriority') ? emotes.concat(users) : users.concat(emotes);
             }
 
             if (users.indexOf(vars.userData.name) > -1) users.splice(users.indexOf(vars.userData.name), 1);
@@ -1152,7 +1152,7 @@ exports.tabCompletion = function(e) {
             isEmote = false;
         }
 
-        if (/^(\/|\.)/.test(lastWord)) {
+        if (/^(\/|\.)/.test(lastWord) && sentence.length === 0) {
             user = lastWord + ' ' + user;
             $chatInput.val(user);
             return;
@@ -2376,7 +2376,7 @@ var timestamp = exports.timestamp = function(time) {
 };
 
 var modicons = exports.modicons = function() {
-    return '<span class="mod-icons"><a class="mod-icon timeout" title="Timeout">Timeout</a><a class="mod-icon ban" title="Ban">Ban</a><a class="mod-icon unban" title="Unban" style="display: none;">Unban</a></span>';
+    return '<span class="mod-icons"><a class="mod-icon ban" title="Ban">Ban</a><a class="mod-icon unban" title="Unban" style="display: none;">Unban</a><a class="mod-icon timeout" title="Timeout">Timeout</a></span>';
 };
 
 var linkify = exports.linkify = function(message) {
@@ -2755,6 +2755,11 @@ var main = function() {
             }, 1000);
         };
 
+        // Some page changes do not trigger a re-render
+        App.__container__.lookup('controller:application').addObserver('currentRouteName', function() {
+            $('#main_col').removeAttr('style');
+        });
+
         Ember.subscribe('render', {
             before: function() {
                 renderingCounter++;
@@ -2763,7 +2768,7 @@ var main = function() {
                 renderingCounter--;
 
                 if (!payload.template) return;
-                // debug.log(payload.template, App.__container__.lookup('controller:application').get('currentRouteName'));
+                debug.log(payload.template, App.__container__.lookup('controller:application').get('currentRouteName'));
 
                 switch (App.__container__.lookup('controller:application').get('currentRouteName')) {
                     case 'channel.index.index':
@@ -3253,19 +3258,36 @@ module.exports = function() {
     debug.log('Branding Site with Better & Importing Styles');
 
     var $watermark = $('<img />');
+    $watermark.attr('id', 'bttv_logo');
+
     // New Site Logo Branding
     if ($('#large_nav #logo').length) {
         $watermark.attr('src', 'https://cdn.betterttv.net/style/logos/logo_icon.png');
         $watermark.css({
             'z-index': 9000,
-            'margin-left': '-76px',
-            'margin-top': '-16px',
-            'float': 'left',
+            'left': '90px',
+            'top': '10px',
             'position': 'absolute'
 
         });
         $('#large_nav #logo').append($watermark);
     }
+
+    // New Twitch Friends List (lazy loads, pita)
+    var lameLLT = setInterval(function() {
+        if (!$('.warp .warp__logo').length) return;
+
+        clearInterval(lameLLT);
+
+        $watermark.attr('src', 'https://cdn.betterttv.net/style/logos/logo_icon.png');
+        $watermark.css({
+            'z-index': 9000,
+            'left': '90px',
+            'top': '-10px',
+            'position': 'absolute'
+        });
+        $('.warp .warp__logo').append($watermark);
+    }, 100);
 
     // Adds BTTV Settings Icon to Left Sidebar
     $('.column .content #you').append('<a class="bttvSettingsIcon" href="#""></a>');
@@ -3569,7 +3591,7 @@ var template = require('../templates/channel-state');
 
 var stateContainer = '#bttv-channel-state-contain';
 var chatHeader = '.chat-container .chat-header:first';
-var chatButton = '.chat-interface .chat-buttons-container .send-chat-button';
+var chatButton = '.chat-interface .chat-buttons-container .button.primary.float-right';
 
 var displaySeconds = function(s) {
     var date = new Date(0);
@@ -3960,8 +3982,7 @@ var checkBroadcastInfo = module.exports = function() {
                     d.status = d.status.replace(/</g, '&lt;').replace(/>/g, '&gt;');
                     d.status = bttv.chat.templates.linkify(d.status);
 
-                    $title.find('.real').html(d.status);
-                    $title.find('.over').html(d.status);
+                    $title.html(d.status);
                 }
             }
         }
@@ -3986,14 +4007,15 @@ var debug = require('../helpers/debug'),
 var checkFollowing = module.exports = function() {
     debug.log('Check Following List');
 
-    if (!$('#bttv-small-nav-count').length) {
-        var $count = $('<div/>');
-        $count.addClass('js-total');
-        $count.attr('id', 'bttv-small-nav-count');
-        $count.insertBefore('#small_nav li[data-name="following"] a[href="/directory/following"] .filter_icon:first');
-    }
-
     if ($('body#chat').length || $('body[data-page="ember#chat"]').length || !vars.userData.isLoggedIn) return;
+
+    // old nav
+    if (!$('#bttv-small-nav-count').length) {
+        var $sbcount = $('<div/>');
+        $sbcount.addClass('js-total');
+        $sbcount.attr('id', 'bttv-small-nav-count');
+        $sbcount.insertBefore('#small_nav li[data-name="following"] a[href="/directory/following"] .filter_icon:first');
+    }
 
     var fetchFollowing = function(callback, followingList, followingNames, offset) {
         followingList = followingList || [];
@@ -4060,11 +4082,24 @@ var checkFollowing = module.exports = function() {
             vars.liveChannels = channels;
         }
 
+        // old nav
         if (!$('#nav_personal li[data-name="following"] a[href="/directory/following"] .js-total').length) {
             $('#nav_personal li[data-name="following"] a[href="/directory/following"]').append('<span class="total_count js-total" style="display: none;"></span>');
         }
+
         $('#left_col li[data-name="following"] a[href="/directory/following"] .js-total').text(streams.length);
         $('#left_col li[data-name="following"] a[href="/directory/following"] .js-total').css('display', 'inline');
+
+        // new nav
+        if (!$('#bttv-follow-count').length) {
+            var $count = $('<div/>');
+            $count.addClass('js-total');
+            $count.attr('id', 'bttv-follow-count');
+            $count.insertBefore('.warp a.warp__tipsy[data-tt_content="directory_following"] figure');
+        }
+
+        $('#bttv-follow-count').text(streams.length);
+        $('#bttv-follow-count').css('display', 'inline');
 
         setTimeout(checkFollowing, 60000 + Math.random() * 5000);
     });
@@ -6349,6 +6384,24 @@ module.exports = [
         storageKey: 'disableWhispers'
     },
     {
+        name: 'Disable Frontpage Autoplay',
+        description: 'Disable autoplay on the frontpage video player',
+        default: false,
+        storageKey: 'disableFPVideo',
+        load: function() {
+            if (window.location.href === 'https://www.twitch.tv/' && bttv.settings.get('disableFPVideo') === true) {
+                $(window).load(function() {
+                    var frameSrc = $('#video-1').children('iframe').eq(0).attr('src');
+                    $('#video-1').children('iframe').eq(0).attr('src', frameSrc + '&autoplay=false');
+                    $('#video-1').bind('DOMNodeInserted DOMNodeRemoved', function() {
+                        frameSrc = $('#video-1').children('iframe').eq(0).attr('src');
+                        $('#video-1').children('iframe').eq(0).attr('src', frameSrc + '&autoplay=false');
+                    });
+                });
+            }
+        }
+    },
+    {
         name: 'Double-Click Auto-Complete',
         description: 'Double-clicking a username in chat copies it into the chat text box',
         default: false,
@@ -6396,6 +6449,22 @@ module.exports = [
         description: 'BetterTTV will notify you when channels you follow go live',
         default: true,
         storageKey: 'followingNotifications'
+    },
+    {
+        name: 'Hide Friends',
+        description: 'Hides the friend list from the left sidebar',
+        default: false,
+        storageKey: 'hideFriends',
+        toggle: function(value) {
+            if (value === true) {
+                cssLoader.load('hide-friends', 'hideFriends');
+            } else {
+                cssLoader.unload('hideFriends');
+            }
+        },
+        load: function() {
+            cssLoader.load('hide-friends', 'hideFriends');
+        }
     },
     {
         name: 'Hide Group Chat',
@@ -6503,6 +6572,12 @@ module.exports = [
                 $('#splitChat').remove();
             }
         }
+    },
+    {
+        name: 'Tab Completion Emote Priority',
+        description: 'Prioritize emotes over usernames when using tab completion',
+        default: false,
+        storageKey: 'tabCompletionEmotePriority'
     },
     {
         name: 'Tab Completion Tooltip',

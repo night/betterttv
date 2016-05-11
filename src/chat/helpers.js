@@ -265,7 +265,7 @@ exports.tabCompletion = function(e) {
 
             // Mix in emotes if not directly asking for a user
             if (lastWord.charAt(0) !== '@' && !detectServerCommand(input)) {
-                users = users.concat(emotes);
+                users = bttv.settings.get('tabCompletionEmotePriority') ? emotes.concat(users) : users.concat(emotes);
             }
 
             if (users.indexOf(vars.userData.name) > -1) users.splice(users.indexOf(vars.userData.name), 1);
@@ -306,7 +306,7 @@ exports.tabCompletion = function(e) {
             isEmote = false;
         }
 
-        if (/^(\/|\.)/.test(lastWord)) {
+        if (/^(\/|\.)/.test(lastWord) && sentence.length === 0) {
             user = lastWord + ' ' + user;
             $chatInput.val(user);
             return;
