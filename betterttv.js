@@ -1777,7 +1777,7 @@ exports.loadBTTVChannelData = function() {
     });
 };
 
-},{"../bots":1,"../features/channel-state":20,"../features/override-emotes":44,"../helpers/colors":47,"../helpers/debug":48,"../keycodes":52,"../legacy-tags":53,"../vars":69,"./handlers":4,"./store":8,"./templates":10,"./tmi":11,"lodash.throttle":111,"punycode":154}],6:[function(require,module,exports){
+},{"../bots":1,"../features/channel-state":20,"../features/override-emotes":44,"../helpers/colors":47,"../helpers/debug":48,"../keycodes":52,"../legacy-tags":53,"../vars":69,"./handlers":4,"./store":8,"./templates":10,"./tmi":11,"lodash.throttle":111,"punycode":155}],6:[function(require,module,exports){
 // Add mouseover image preview to image links
 module.exports = function(imgUrl) {
     return '<a href="' + imgUrl + '" class="chat-preview" target="_blank">' + imgUrl + '</a>';
@@ -3251,7 +3251,7 @@ module.exports = function() {
     }, 100);
 };
 
-},{"../chat/handlers":4,"../helpers/debug":48,"../templates/bvl-button":57,"../templates/bvl-panel":58,"resizable":164,"view-list":190}],17:[function(require,module,exports){
+},{"../chat/handlers":4,"../helpers/debug":48,"../templates/bvl-button":57,"../templates/bvl-panel":58,"resizable":165,"view-list":191}],17:[function(require,module,exports){
 var debug = require('../helpers/debug');
 
 module.exports = function() {
@@ -7034,7 +7034,7 @@ var buf = [];
 var jade_mixins = {};
 var jade_interp;
 
-buf.push("<div id=\"bvl-panel\" class=\"chatters-view\"><div class=\"drag_handle chat-header\"><a class=\"button glyph-only close-button left\"><svg viewbox=\"0 0 16 16\" width=\"16px\" height=\"16px\" class=\"svg-close\"><path clip-rule=\"evenodd\" d=\"M6.4,8 L1.8,3.3 L1,2.5 L2.5,1 L3.3,1.8 L8,6.4 L12.67,1.8 L13.4,1 L15,2.5 L14.2,3.3 L9.5,8 L14.2,12.67 L15,13.4 L13.4,15 L12.67,14.2 L8,9.5 L3.3,14.2 L2.5,15 L1,13.4 L1.8,12.67 L6.4,8 Z\" fill-rule=\"evenodd\"></path></svg></a><a class=\"button glyph-only refresh-button right\"><svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewbox=\"0 0 16 16\"><path id=\"spin\" style=\"fill:#030104;\" d=\"M2.083,9H0.062H0v5l1.481-1.361C2.932,14.673,5.311,16,8,16c4.08,0,7.446-3.054,7.938-7h-2.021 c-0.476,2.838-2.944,5-5.917,5c-2.106,0-3.96-1.086-5.03-2.729L5.441,9H2.083z\"></path><g transform=\"translate(16, 16) rotate(180)\"><use xlink:href=\"#spin\"></use></g></svg></a><p class=\"room-title\">Viewer List</p></div><div class=\"status\"></div><input type=\"text\" autocomplete=\"off\" placeholder=\"Filter Viewers\" class=\"filter text\"/><svg viewbox=\"0 0 16 16\" width=\"16\" height=\"16\" class=\"bvl-resizer\"><path clip-rule=\"evenodd\" d=\"M12,12h2v2H12V11z M12,8h2v2H12V11z M12,4h2v2H12V11z M8,8h2v2H8V11z M8,12h2v2H8V11z M4,12h2v2H4V11z\"></path></svg></div>");;return buf.join("");
+buf.push("<div id=\"bvl-panel\" class=\"chatters-view\"><div class=\"drag_handle chat-header\"><a class=\"button glyph-only close-button left\"><svg viewbox=\"0 0 16 16\" width=\"16px\" height=\"16px\" class=\"svg-close\"><path clip-rule=\"evenodd\" d=\"M6.4,8 L1.8,3.3 L1,2.5 L2.5,1 L3.3,1.8 L8,6.4 L12.67,1.8 L13.4,1 L15,2.5 L14.2,3.3 L9.5,8 L14.2,12.67 L15,13.4 L13.4,15 L12.67,14.2 L8,9.5 L3.3,14.2 L2.5,15 L1,13.4 L1.8,12.67 L6.4,8 Z\" fill-rule=\"evenodd\"></path></svg></a><a class=\"button glyph-only refresh-button right\"><svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewbox=\"0 0 16 16\"><path id=\"spin\" d=\"M2.083,9H0.062H0v5l1.481-1.361C2.932,14.673,5.311,16,8,16c4.08,0,7.446-3.054,7.938-7h-2.021 c-0.476,2.838-2.944,5-5.917,5c-2.106,0-3.96-1.086-5.03-2.729L5.441,9H2.083z\"></path><g transform=\"translate(16, 16) rotate(180)\"><use xlink:href=\"#spin\"></use></g></svg></a><p class=\"room-title\">Viewer List</p></div><div class=\"status\"></div><input type=\"text\" autocomplete=\"off\" placeholder=\"Filter Viewers\" class=\"filter text\"/><svg viewbox=\"0 0 16 16\" width=\"16\" height=\"16\" class=\"bvl-resizer\"><path clip-rule=\"evenodd\" d=\"M12,12h2v2H12V11z M12,8h2v2H12V11z M12,4h2v2H12V11z M8,8h2v2H8V11z M8,12h2v2H8V11z M4,12h2v2H4V11z\"></path></svg></div>");;return buf.join("");
 };module.exports=template;
 },{}],59:[function(require,module,exports){
 function template(locals) {
@@ -7740,7 +7740,7 @@ function amdefine(module, requireFn) {
 module.exports = amdefine;
 
 }).call(this,require("qC859L"),"/..\\node_modules\\amdefine\\amdefine.js")
-},{"path":152,"qC859L":153}],72:[function(require,module,exports){
+},{"path":153,"qC859L":154}],72:[function(require,module,exports){
 'use strict'
 
 /**
@@ -9231,7 +9231,7 @@ exports.comment = function(node) {
     return this._comment(node);
 };
 
-},{"fs":86,"path":152,"source-map":173,"source-map-resolve":171,"urix":185}],83:[function(require,module,exports){
+},{"fs":86,"path":153,"source-map":174,"source-map-resolve":172,"urix":186}],83:[function(require,module,exports){
 module.exports = BaseElement
 
 var h = require('virtual-dom/h')
@@ -9321,7 +9321,7 @@ Onload.prototype.unhook = function (node) {
   }, 10)
 }
 
-},{"vdom-to-html":187,"virtual-dom/create-element":191,"virtual-dom/diff":192,"virtual-dom/h":193,"virtual-dom/patch":195}],84:[function(require,module,exports){
+},{"vdom-to-html":188,"virtual-dom/create-element":192,"virtual-dom/diff":193,"virtual-dom/h":194,"virtual-dom/patch":196}],84:[function(require,module,exports){
 
 },{}],85:[function(require,module,exports){
 /*!
@@ -9655,7 +9655,7 @@ function defineState (target, property, descriptor, isFn) {
 
 	return target;
 }
-},{"st8":184}],89:[function(require,module,exports){
+},{"st8":185}],89:[function(require,module,exports){
 /**
  * Simple draggable component
  *
@@ -9731,21 +9731,27 @@ function Draggable(target, options) {
 	//ignore existing instance
 	var instance = draggableCache.get(target);
 	if (instance) {
+		instance.state = 'reset';
+
 		//take over options
 		extend(instance, options);
+
+		instance.update();
 
 		return instance;
 	}
 
-	//get unique id for instance
-	//needed to track event binders
-	self.id = getUid();
-	self._ns = '.draggy_' + self.id;
+	else {
+		//get unique id for instance
+		//needed to track event binders
+		self.id = getUid();
+		self._ns = '.draggy_' + self.id;
 
-	//save element passed
-	self.element = target;
+		//save element passed
+		self.element = target;
 
-	draggableCache.set(target, self);
+		draggableCache.set(target, self);
+	}
 
 	//define mode of drag
 	defineState(self, 'css3', self.css3);
@@ -10091,6 +10097,21 @@ proto.state = {
 
 	destroy: function () {
 		var self = this;
+	},
+
+	reset: function () {
+		var self = this;
+
+		self.currentHandles.forEach(function (handle) {
+			off(handle, self._ns);
+		});
+
+		clearTimeout(self._animateTimeout);
+
+		off(doc, self._ns);
+		off(self.element, self._ns);
+
+		return '_';
 	}
 };
 
@@ -10591,7 +10612,7 @@ proto.destroy = function () {
 
 
 module.exports = Draggable;
-},{"define-state":88,"emmy/emit":90,"emmy/off":92,"emmy/on":93,"events":96,"get-client-xy":97,"get-uid":99,"intersects":105,"mucss/css":114,"mucss/offset":119,"mucss/parse-value":121,"mucss/selection":125,"mucss/translate":126,"mumath/clamp":127,"mumath/mod":128,"mumath/round":130,"mutype/is-array":135,"mutype/is-fn":140,"mutype/is-number":142,"mutype/is-string":147,"queried":155,"xtend/mutable":221}],90:[function(require,module,exports){
+},{"define-state":88,"emmy/emit":90,"emmy/off":92,"emmy/on":93,"events":96,"get-client-xy":97,"get-uid":99,"intersects":105,"mucss/css":115,"mucss/offset":120,"mucss/parse-value":122,"mucss/selection":126,"mucss/translate":127,"mumath/clamp":128,"mumath/mod":129,"mumath/round":131,"mutype/is-array":136,"mutype/is-fn":141,"mutype/is-number":143,"mutype/is-string":148,"queried":156,"xtend/mutable":222}],90:[function(require,module,exports){
 /**
  * @module emmy/emit
  */
@@ -10711,7 +10732,7 @@ function emit(target, eventName, data, bubbles){
 
 	return target;
 }
-},{"./listeners":91,"icicle":101,"mutype/is-event":139,"mutype/is-node":141,"mutype/is-string":147,"sliced":170}],91:[function(require,module,exports){
+},{"./listeners":91,"icicle":101,"mutype/is-event":140,"mutype/is-node":142,"mutype/is-string":148,"sliced":171}],91:[function(require,module,exports){
 /**
  * A storage of per-target callbacks.
  * WeakMap is the most safe solution.
@@ -10953,7 +10974,7 @@ function off(target, evt, fn) {
 
 	return target;
 }
-},{"./listeners":91,"icicle":101,"mutype/is-array":135,"sliced":170}],93:[function(require,module,exports){
+},{"./listeners":91,"icicle":101,"mutype/is-array":136,"sliced":171}],93:[function(require,module,exports){
 /**
  * @module emmy/on
  */
@@ -11038,7 +11059,7 @@ on.wrap = function(target, evt, fn, condition){
 
 	return cb;
 };
-},{"./listeners":91,"icicle":101,"mutype/is-object":143}],94:[function(require,module,exports){
+},{"./listeners":91,"icicle":101,"mutype/is-object":144}],94:[function(require,module,exports){
 /*!
  * escape-html
  * Copyright(c) 2012-2013 TJ Holowaychuk
@@ -11913,6 +11934,500 @@ module.exports = getNative;
 
 },{}],110:[function(require,module,exports){
 /**
+ * lodash 4.0.6 (Custom Build) <https://lodash.com/>
+ * Build: `lodash modularize exports="npm" -o ./`
+ * Copyright jQuery Foundation and other contributors <https://jquery.org/>
+ * Released under MIT license <https://lodash.com/license>
+ * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+ * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ */
+
+/** Used as the `TypeError` message for "Functions" methods. */
+var FUNC_ERROR_TEXT = 'Expected a function';
+
+/** Used as references for various `Number` constants. */
+var NAN = 0 / 0;
+
+/** `Object#toString` result references. */
+var funcTag = '[object Function]',
+    genTag = '[object GeneratorFunction]',
+    symbolTag = '[object Symbol]';
+
+/** Used to match leading and trailing whitespace. */
+var reTrim = /^\s+|\s+$/g;
+
+/** Used to detect bad signed hexadecimal string values. */
+var reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
+
+/** Used to detect binary string values. */
+var reIsBinary = /^0b[01]+$/i;
+
+/** Used to detect octal string values. */
+var reIsOctal = /^0o[0-7]+$/i;
+
+/** Built-in method references without a dependency on `root`. */
+var freeParseInt = parseInt;
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/**
+ * Used to resolve the
+ * [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var objectToString = objectProto.toString;
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeMax = Math.max,
+    nativeMin = Math.min;
+
+/**
+ * Gets the timestamp of the number of milliseconds that have elapsed since
+ * the Unix epoch (1 January 1970 00:00:00 UTC).
+ *
+ * @static
+ * @memberOf _
+ * @since 2.4.0
+ * @type {Function}
+ * @category Date
+ * @returns {number} Returns the timestamp.
+ * @example
+ *
+ * _.defer(function(stamp) {
+ *   console.log(_.now() - stamp);
+ * }, _.now());
+ * // => Logs the number of milliseconds it took for the deferred function to be invoked.
+ */
+var now = Date.now;
+
+/**
+ * Creates a debounced function that delays invoking `func` until after `wait`
+ * milliseconds have elapsed since the last time the debounced function was
+ * invoked. The debounced function comes with a `cancel` method to cancel
+ * delayed `func` invocations and a `flush` method to immediately invoke them.
+ * Provide an options object to indicate whether `func` should be invoked on
+ * the leading and/or trailing edge of the `wait` timeout. The `func` is invoked
+ * with the last arguments provided to the debounced function. Subsequent calls
+ * to the debounced function return the result of the last `func` invocation.
+ *
+ * **Note:** If `leading` and `trailing` options are `true`, `func` is invoked
+ * on the trailing edge of the timeout only if the debounced function is
+ * invoked more than once during the `wait` timeout.
+ *
+ * See [David Corbacho's article](https://css-tricks.com/debouncing-throttling-explained-examples/)
+ * for details over the differences between `_.debounce` and `_.throttle`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Function
+ * @param {Function} func The function to debounce.
+ * @param {number} [wait=0] The number of milliseconds to delay.
+ * @param {Object} [options={}] The options object.
+ * @param {boolean} [options.leading=false]
+ *  Specify invoking on the leading edge of the timeout.
+ * @param {number} [options.maxWait]
+ *  The maximum time `func` is allowed to be delayed before it's invoked.
+ * @param {boolean} [options.trailing=true]
+ *  Specify invoking on the trailing edge of the timeout.
+ * @returns {Function} Returns the new debounced function.
+ * @example
+ *
+ * // Avoid costly calculations while the window size is in flux.
+ * jQuery(window).on('resize', _.debounce(calculateLayout, 150));
+ *
+ * // Invoke `sendMail` when clicked, debouncing subsequent calls.
+ * jQuery(element).on('click', _.debounce(sendMail, 300, {
+ *   'leading': true,
+ *   'trailing': false
+ * }));
+ *
+ * // Ensure `batchLog` is invoked once after 1 second of debounced calls.
+ * var debounced = _.debounce(batchLog, 250, { 'maxWait': 1000 });
+ * var source = new EventSource('/stream');
+ * jQuery(source).on('message', debounced);
+ *
+ * // Cancel the trailing debounced invocation.
+ * jQuery(window).on('popstate', debounced.cancel);
+ */
+function debounce(func, wait, options) {
+  var lastArgs,
+      lastThis,
+      maxWait,
+      result,
+      timerId,
+      lastCallTime = 0,
+      lastInvokeTime = 0,
+      leading = false,
+      maxing = false,
+      trailing = true;
+
+  if (typeof func != 'function') {
+    throw new TypeError(FUNC_ERROR_TEXT);
+  }
+  wait = toNumber(wait) || 0;
+  if (isObject(options)) {
+    leading = !!options.leading;
+    maxing = 'maxWait' in options;
+    maxWait = maxing ? nativeMax(toNumber(options.maxWait) || 0, wait) : maxWait;
+    trailing = 'trailing' in options ? !!options.trailing : trailing;
+  }
+
+  function invokeFunc(time) {
+    var args = lastArgs,
+        thisArg = lastThis;
+
+    lastArgs = lastThis = undefined;
+    lastInvokeTime = time;
+    result = func.apply(thisArg, args);
+    return result;
+  }
+
+  function leadingEdge(time) {
+    // Reset any `maxWait` timer.
+    lastInvokeTime = time;
+    // Start the timer for the trailing edge.
+    timerId = setTimeout(timerExpired, wait);
+    // Invoke the leading edge.
+    return leading ? invokeFunc(time) : result;
+  }
+
+  function remainingWait(time) {
+    var timeSinceLastCall = time - lastCallTime,
+        timeSinceLastInvoke = time - lastInvokeTime,
+        result = wait - timeSinceLastCall;
+
+    return maxing ? nativeMin(result, maxWait - timeSinceLastInvoke) : result;
+  }
+
+  function shouldInvoke(time) {
+    var timeSinceLastCall = time - lastCallTime,
+        timeSinceLastInvoke = time - lastInvokeTime;
+
+    // Either this is the first call, activity has stopped and we're at the
+    // trailing edge, the system time has gone backwards and we're treating
+    // it as the trailing edge, or we've hit the `maxWait` limit.
+    return (!lastCallTime || (timeSinceLastCall >= wait) ||
+      (timeSinceLastCall < 0) || (maxing && timeSinceLastInvoke >= maxWait));
+  }
+
+  function timerExpired() {
+    var time = now();
+    if (shouldInvoke(time)) {
+      return trailingEdge(time);
+    }
+    // Restart the timer.
+    timerId = setTimeout(timerExpired, remainingWait(time));
+  }
+
+  function trailingEdge(time) {
+    clearTimeout(timerId);
+    timerId = undefined;
+
+    // Only invoke if we have `lastArgs` which means `func` has been
+    // debounced at least once.
+    if (trailing && lastArgs) {
+      return invokeFunc(time);
+    }
+    lastArgs = lastThis = undefined;
+    return result;
+  }
+
+  function cancel() {
+    if (timerId !== undefined) {
+      clearTimeout(timerId);
+    }
+    lastCallTime = lastInvokeTime = 0;
+    lastArgs = lastThis = timerId = undefined;
+  }
+
+  function flush() {
+    return timerId === undefined ? result : trailingEdge(now());
+  }
+
+  function debounced() {
+    var time = now(),
+        isInvoking = shouldInvoke(time);
+
+    lastArgs = arguments;
+    lastThis = this;
+    lastCallTime = time;
+
+    if (isInvoking) {
+      if (timerId === undefined) {
+        return leadingEdge(lastCallTime);
+      }
+      if (maxing) {
+        // Handle invocations in a tight loop.
+        clearTimeout(timerId);
+        timerId = setTimeout(timerExpired, wait);
+        return invokeFunc(lastCallTime);
+      }
+    }
+    if (timerId === undefined) {
+      timerId = setTimeout(timerExpired, wait);
+    }
+    return result;
+  }
+  debounced.cancel = cancel;
+  debounced.flush = flush;
+  return debounced;
+}
+
+/**
+ * Checks if `value` is classified as a `Function` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is correctly classified,
+ *  else `false`.
+ * @example
+ *
+ * _.isFunction(_);
+ * // => true
+ *
+ * _.isFunction(/abc/);
+ * // => false
+ */
+function isFunction(value) {
+  // The use of `Object#toString` avoids issues with the `typeof` operator
+  // in Safari 8 which returns 'object' for typed array and weak map constructors,
+  // and PhantomJS 1.9 which returns 'function' for `NodeList` instances.
+  var tag = isObject(value) ? objectToString.call(value) : '';
+  return tag == funcTag || tag == genTag;
+}
+
+/**
+ * Checks if `value` is the
+ * [language type](http://www.ecma-international.org/ecma-262/6.0/#sec-ecmascript-language-types)
+ * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+ * @example
+ *
+ * _.isObject({});
+ * // => true
+ *
+ * _.isObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isObject(_.noop);
+ * // => true
+ *
+ * _.isObject(null);
+ * // => false
+ */
+function isObject(value) {
+  var type = typeof value;
+  return !!value && (type == 'object' || type == 'function');
+}
+
+/**
+ * Checks if `value` is object-like. A value is object-like if it's not `null`
+ * and has a `typeof` result of "object".
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+ * @example
+ *
+ * _.isObjectLike({});
+ * // => true
+ *
+ * _.isObjectLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isObjectLike(_.noop);
+ * // => false
+ *
+ * _.isObjectLike(null);
+ * // => false
+ */
+function isObjectLike(value) {
+  return !!value && typeof value == 'object';
+}
+
+/**
+ * Checks if `value` is classified as a `Symbol` primitive or object.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is correctly classified,
+ *  else `false`.
+ * @example
+ *
+ * _.isSymbol(Symbol.iterator);
+ * // => true
+ *
+ * _.isSymbol('abc');
+ * // => false
+ */
+function isSymbol(value) {
+  return typeof value == 'symbol' ||
+    (isObjectLike(value) && objectToString.call(value) == symbolTag);
+}
+
+/**
+ * Converts `value` to a number.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to process.
+ * @returns {number} Returns the number.
+ * @example
+ *
+ * _.toNumber(3);
+ * // => 3
+ *
+ * _.toNumber(Number.MIN_VALUE);
+ * // => 5e-324
+ *
+ * _.toNumber(Infinity);
+ * // => Infinity
+ *
+ * _.toNumber('3');
+ * // => 3
+ */
+function toNumber(value) {
+  if (typeof value == 'number') {
+    return value;
+  }
+  if (isSymbol(value)) {
+    return NAN;
+  }
+  if (isObject(value)) {
+    var other = isFunction(value.valueOf) ? value.valueOf() : value;
+    value = isObject(other) ? (other + '') : other;
+  }
+  if (typeof value != 'string') {
+    return value === 0 ? value : +value;
+  }
+  value = value.replace(reTrim, '');
+  var isBinary = reIsBinary.test(value);
+  return (isBinary || reIsOctal.test(value))
+    ? freeParseInt(value.slice(2), isBinary ? 2 : 8)
+    : (reIsBadHex.test(value) ? NAN : +value);
+}
+
+module.exports = debounce;
+
+},{}],111:[function(require,module,exports){
+/**
+ * lodash 3.0.4 (Custom Build) <https://lodash.com/>
+ * Build: `lodash modern modularize exports="npm" -o ./`
+ * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <https://lodash.com/license>
+ */
+var debounce = require('lodash.debounce');
+
+/** Used as the `TypeError` message for "Functions" methods. */
+var FUNC_ERROR_TEXT = 'Expected a function';
+
+/**
+ * Creates a throttled function that only invokes `func` at most once per
+ * every `wait` milliseconds. The throttled function comes with a `cancel`
+ * method to cancel delayed invocations. Provide an options object to indicate
+ * that `func` should be invoked on the leading and/or trailing edge of the
+ * `wait` timeout. Subsequent calls to the throttled function return the
+ * result of the last `func` call.
+ *
+ * **Note:** If `leading` and `trailing` options are `true`, `func` is invoked
+ * on the trailing edge of the timeout only if the the throttled function is
+ * invoked more than once during the `wait` timeout.
+ *
+ * See [David Corbacho's article](http://drupalmotion.com/article/debounce-and-throttle-visual-explanation)
+ * for details over the differences between `_.throttle` and `_.debounce`.
+ *
+ * @static
+ * @memberOf _
+ * @category Function
+ * @param {Function} func The function to throttle.
+ * @param {number} [wait=0] The number of milliseconds to throttle invocations to.
+ * @param {Object} [options] The options object.
+ * @param {boolean} [options.leading=true] Specify invoking on the leading
+ *  edge of the timeout.
+ * @param {boolean} [options.trailing=true] Specify invoking on the trailing
+ *  edge of the timeout.
+ * @returns {Function} Returns the new throttled function.
+ * @example
+ *
+ * // avoid excessively updating the position while scrolling
+ * jQuery(window).on('scroll', _.throttle(updatePosition, 100));
+ *
+ * // invoke `renewToken` when the click event is fired, but not more than once every 5 minutes
+ * jQuery('.interactive').on('click', _.throttle(renewToken, 300000, {
+ *   'trailing': false
+ * }));
+ *
+ * // cancel a trailing throttled call
+ * jQuery(window).on('popstate', throttled.cancel);
+ */
+function throttle(func, wait, options) {
+  var leading = true,
+      trailing = true;
+
+  if (typeof func != 'function') {
+    throw new TypeError(FUNC_ERROR_TEXT);
+  }
+  if (options === false) {
+    leading = false;
+  } else if (isObject(options)) {
+    leading = 'leading' in options ? !!options.leading : leading;
+    trailing = 'trailing' in options ? !!options.trailing : trailing;
+  }
+  return debounce(func, wait, { 'leading': leading, 'maxWait': +wait, 'trailing': trailing });
+}
+
+/**
+ * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
+ * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+ *
+ * @static
+ * @memberOf _
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+ * @example
+ *
+ * _.isObject({});
+ * // => true
+ *
+ * _.isObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isObject(1);
+ * // => false
+ */
+function isObject(value) {
+  // Avoid a V8 JIT bug in Chrome 19-20.
+  // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
+  var type = typeof value;
+  return !!value && (type == 'object' || type == 'function');
+}
+
+module.exports = throttle;
+
+},{"lodash.debounce":112}],112:[function(require,module,exports){
+/**
  * lodash 3.1.1 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
  * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
@@ -12147,105 +12662,7 @@ function isObject(value) {
 
 module.exports = debounce;
 
-},{"lodash._getnative":109}],111:[function(require,module,exports){
-/**
- * lodash 3.0.4 (Custom Build) <https://lodash.com/>
- * Build: `lodash modern modularize exports="npm" -o ./`
- * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <https://lodash.com/license>
- */
-var debounce = require('lodash.debounce');
-
-/** Used as the `TypeError` message for "Functions" methods. */
-var FUNC_ERROR_TEXT = 'Expected a function';
-
-/**
- * Creates a throttled function that only invokes `func` at most once per
- * every `wait` milliseconds. The throttled function comes with a `cancel`
- * method to cancel delayed invocations. Provide an options object to indicate
- * that `func` should be invoked on the leading and/or trailing edge of the
- * `wait` timeout. Subsequent calls to the throttled function return the
- * result of the last `func` call.
- *
- * **Note:** If `leading` and `trailing` options are `true`, `func` is invoked
- * on the trailing edge of the timeout only if the the throttled function is
- * invoked more than once during the `wait` timeout.
- *
- * See [David Corbacho's article](http://drupalmotion.com/article/debounce-and-throttle-visual-explanation)
- * for details over the differences between `_.throttle` and `_.debounce`.
- *
- * @static
- * @memberOf _
- * @category Function
- * @param {Function} func The function to throttle.
- * @param {number} [wait=0] The number of milliseconds to throttle invocations to.
- * @param {Object} [options] The options object.
- * @param {boolean} [options.leading=true] Specify invoking on the leading
- *  edge of the timeout.
- * @param {boolean} [options.trailing=true] Specify invoking on the trailing
- *  edge of the timeout.
- * @returns {Function} Returns the new throttled function.
- * @example
- *
- * // avoid excessively updating the position while scrolling
- * jQuery(window).on('scroll', _.throttle(updatePosition, 100));
- *
- * // invoke `renewToken` when the click event is fired, but not more than once every 5 minutes
- * jQuery('.interactive').on('click', _.throttle(renewToken, 300000, {
- *   'trailing': false
- * }));
- *
- * // cancel a trailing throttled call
- * jQuery(window).on('popstate', throttled.cancel);
- */
-function throttle(func, wait, options) {
-  var leading = true,
-      trailing = true;
-
-  if (typeof func != 'function') {
-    throw new TypeError(FUNC_ERROR_TEXT);
-  }
-  if (options === false) {
-    leading = false;
-  } else if (isObject(options)) {
-    leading = 'leading' in options ? !!options.leading : leading;
-    trailing = 'trailing' in options ? !!options.trailing : trailing;
-  }
-  return debounce(func, wait, { 'leading': leading, 'maxWait': +wait, 'trailing': trailing });
-}
-
-/**
- * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
- * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
- *
- * @static
- * @memberOf _
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an object, else `false`.
- * @example
- *
- * _.isObject({});
- * // => true
- *
- * _.isObject([1, 2, 3]);
- * // => true
- *
- * _.isObject(1);
- * // => false
- */
-function isObject(value) {
-  // Avoid a V8 JIT bug in Chrome 19-20.
-  // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
-  var type = typeof value;
-  return !!value && (type == 'object' || type == 'function');
-}
-
-module.exports = throttle;
-
-},{"lodash.debounce":110}],112:[function(require,module,exports){
+},{"lodash._getnative":109}],113:[function(require,module,exports){
 /**
  * Special language-specific overrides.
  *
@@ -12301,7 +12718,7 @@ module.exports = function (str, locale) {
   return str.toLowerCase()
 }
 
-},{}],113:[function(require,module,exports){
+},{}],114:[function(require,module,exports){
 /**
  * Parse element’s borders
  *
@@ -12328,7 +12745,7 @@ module.exports = function(el){
 		parse(style.borderBottomWidth)
 	);
 };
-},{"./parse-value":121,"./rect":123}],114:[function(require,module,exports){
+},{"./parse-value":122,"./rect":124}],115:[function(require,module,exports){
 /**
  * Get or set element’s style, prefix-agnostic.
  *
@@ -12388,13 +12805,13 @@ function prefixize(name){
 	return '';
 }
 
-},{"./fake-element":115,"./prefix":122}],115:[function(require,module,exports){
+},{"./fake-element":116,"./prefix":123}],116:[function(require,module,exports){
 /** Just a fake element to test styles
  * @module mucss/fake-element
  */
 
 module.exports = document.createElement('div');
-},{}],116:[function(require,module,exports){
+},{}],117:[function(require,module,exports){
 /**
  * Window scrollbar detector.
  *
@@ -12408,7 +12825,7 @@ exports.x = function () {
 exports.y = function () {
 	return window.innerWidth > document.documentElement.clientWidth;
 };
-},{}],117:[function(require,module,exports){
+},{}],118:[function(require,module,exports){
 /**
  * Detect whether element is placed to fixed container or is fixed itself.
  *
@@ -12433,7 +12850,7 @@ module.exports = function (el) {
 	}
 	return false;
 };
-},{}],118:[function(require,module,exports){
+},{}],119:[function(require,module,exports){
 /**
  * Get margins of an element.
  * @module mucss/margins
@@ -12463,7 +12880,7 @@ module.exports = function(el){
 	);
 };
 
-},{"./parse-value":121,"./rect":123}],119:[function(require,module,exports){
+},{"./parse-value":122,"./rect":124}],120:[function(require,module,exports){
 /**
  * Calculate absolute offsets of an element, relative to the document.
  *
@@ -12542,7 +12959,7 @@ function offsets (el) {
 
 	return result;
 };
-},{"./has-scroll":116,"./is-fixed":117,"./rect":123,"./scrollbar":124,"./translate":126}],120:[function(require,module,exports){
+},{"./has-scroll":117,"./is-fixed":118,"./rect":124,"./scrollbar":125,"./translate":127}],121:[function(require,module,exports){
 /**
  * Caclulate paddings of an element.
  * @module  mucss/paddings
@@ -12573,7 +12990,7 @@ module.exports = function(el){
 		parse(style.paddingBottom)
 	);
 };
-},{"./parse-value":121,"./rect":123}],121:[function(require,module,exports){
+},{"./parse-value":122,"./rect":124}],122:[function(require,module,exports){
 /**
  * Returns parsed css value.
  *
@@ -12589,7 +13006,7 @@ module.exports = function (str){
 };
 
 //FIXME: add parsing units
-},{}],122:[function(require,module,exports){
+},{}],123:[function(require,module,exports){
 /**
  * Vendor prefixes
  * Method of http://davidwalsh.name/vendor-prefix
@@ -12598,20 +13015,29 @@ module.exports = function (str){
 
 var styles = getComputedStyle(document.documentElement, '');
 
-var pre = (Array.prototype.slice.call(styles)
-	.join('')
-	.match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o'])
-)[1];
+if (!styles) {
+	module.exports = {
+		dom: '', lowercase: '', css: '', js: ''
+	};
+}
 
-var dom = ('WebKit|Moz|MS|O').match(new RegExp('(' + pre + ')', 'i'))[1];
+else {
+	var pre = (Array.prototype.slice.call(styles)
+		.join('')
+		.match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o'])
+	)[1];
 
-module.exports = {
-	dom: dom,
-	lowercase: pre,
-	css: '-' + pre + '-',
-	js: pre[0].toUpperCase() + pre.substr(1)
-};
-},{}],123:[function(require,module,exports){
+	var dom = ('WebKit|Moz|MS|O').match(new RegExp('(' + pre + ')', 'i'))[1];
+
+	module.exports = {
+		dom: dom,
+		lowercase: pre,
+		css: '-' + pre + '-',
+		js: pre[0].toUpperCase() + pre.substr(1)
+	};
+}
+
+},{}],124:[function(require,module,exports){
 /**
  * Simple rect constructor.
  * It is just faster and smaller than constructing an object.
@@ -12635,7 +13061,7 @@ module.exports = function Rect (l,t,r,b) {
 	this.width=Math.abs(this.right - this.left);
 	this.height=Math.abs(this.bottom - this.top);
 };
-},{}],124:[function(require,module,exports){
+},{}],125:[function(require,module,exports){
 /**
  * Calculate scrollbar width.
  *
@@ -12660,7 +13086,7 @@ module.exports = scrollDiv.offsetWidth - scrollDiv.clientWidth;
 
 // Delete fake DIV
 document.documentElement.removeChild(scrollDiv);
-},{}],125:[function(require,module,exports){
+},{}],126:[function(require,module,exports){
 /**
  * Enable/disable selectability of an element
  * @module mucss/selection
@@ -12697,7 +13123,7 @@ exports.enable = function(el){
 function pd(e){
 	e.preventDefault();
 }
-},{"./css":114}],126:[function(require,module,exports){
+},{"./css":115}],127:[function(require,module,exports){
 /**
  * Parse translate3d
  *
@@ -12724,7 +13150,7 @@ module.exports = function (el) {
 		return parseValue(value);
 	});
 };
-},{"./css":114,"./parse-value":121}],127:[function(require,module,exports){
+},{"./css":115,"./parse-value":122}],128:[function(require,module,exports){
 /**
  * Clamp value.
  * Detects proper clamp min/max.
@@ -12739,7 +13165,7 @@ module.exports = function (el) {
 module.exports = require('./wrap')(function(a, min, max){
 	return max > min ? Math.max(Math.min(a,max),min) : Math.max(Math.min(a,min),max);
 });
-},{"./wrap":131}],128:[function(require,module,exports){
+},{"./wrap":132}],129:[function(require,module,exports){
 /**
  * Looping function for any framesize.
  * Like fmod.
@@ -12770,7 +13196,7 @@ module.exports = require('./wrap')(function (value, left, right) {
 
 	return value;
 });
-},{"./wrap":131}],129:[function(require,module,exports){
+},{"./wrap":132}],130:[function(require,module,exports){
 /**
  * @module  mumath/precision
  *
@@ -12790,7 +13216,7 @@ module.exports = require('./wrap')(function(n){
 
 	return !d ? 0 : s.length - d;
 });
-},{"./wrap":131}],130:[function(require,module,exports){
+},{"./wrap":132}],131:[function(require,module,exports){
 /**
  * Precision round
  *
@@ -12813,7 +13239,7 @@ module.exports = require('./wrap')(function(value, step) {
 	value = Math.round(value / step) * step;
 	return parseFloat(value.toFixed(precision(step)));
 });
-},{"./precision":129,"./wrap":131}],131:[function(require,module,exports){
+},{"./precision":130,"./wrap":132}],132:[function(require,module,exports){
 /**
  * Get fn wrapped with array/object attrs recognition
  *
@@ -12853,7 +13279,7 @@ module.exports = function(fn){
 		}
 	};
 };
-},{}],132:[function(require,module,exports){
+},{}],133:[function(require,module,exports){
 //speedy implementation of `in`
 //NOTE: `!target[propName]` 2-3 orders faster than `!(propName in target)`
 module.exports = function(a, b){
@@ -12867,7 +13293,7 @@ module.exports = function(a, b){
 	// return a.hasOwnProperty(b);
 }
 
-},{}],133:[function(require,module,exports){
+},{}],134:[function(require,module,exports){
 /**
 * Trivial types checkers.
 * Because there’re no common lib for that ( lodash_ is a fatguy)
@@ -12891,7 +13317,7 @@ module.exports = {
 	isEmpty: require('./is-empty')
 };
 
-},{"./has":132,"./is-array":135,"./is-array-like":134,"./is-bool":136,"./is-element":137,"./is-empty":138,"./is-fn":140,"./is-number":142,"./is-object":143,"./is-plain":144,"./is-private-name":145,"./is-regex":146,"./is-string":147}],134:[function(require,module,exports){
+},{"./has":133,"./is-array":136,"./is-array-like":135,"./is-bool":137,"./is-element":138,"./is-empty":139,"./is-fn":141,"./is-number":143,"./is-object":144,"./is-plain":145,"./is-private-name":146,"./is-regex":147,"./is-string":148}],135:[function(require,module,exports){
 var isString = require('./is-string');
 var isArray = require('./is-array');
 var isFn = require('./is-fn');
@@ -12900,19 +13326,19 @@ var isFn = require('./is-fn');
 module.exports = function (a){
 	return isArray(a) || (a && !isString(a) && !a.nodeType && (typeof window != 'undefined' ? a != window : true) && !isFn(a) && typeof a.length === 'number');
 }
-},{"./is-array":135,"./is-fn":140,"./is-string":147}],135:[function(require,module,exports){
+},{"./is-array":136,"./is-fn":141,"./is-string":148}],136:[function(require,module,exports){
 module.exports = function(a){
 	return a instanceof Array;
 }
-},{}],136:[function(require,module,exports){
+},{}],137:[function(require,module,exports){
 module.exports = function(a){
 	return typeof a === 'boolean' || a instanceof Boolean;
 }
-},{}],137:[function(require,module,exports){
+},{}],138:[function(require,module,exports){
 module.exports = function(target){
 	return typeof document !== 'undefined' && target instanceof HTMLElement;
 };
-},{}],138:[function(require,module,exports){
+},{}],139:[function(require,module,exports){
 module.exports = function(a){
 	if (!a) return true;
 	for (var k in a) {
@@ -12920,23 +13346,23 @@ module.exports = function(a){
 	}
 	return true;
 }
-},{}],139:[function(require,module,exports){
+},{}],140:[function(require,module,exports){
 module.exports = function(target){
 	return typeof Event !== 'undefined' && target instanceof Event;
 };
-},{}],140:[function(require,module,exports){
+},{}],141:[function(require,module,exports){
 module.exports = function(a){
 	return !!(a && a.apply);
 }
-},{}],141:[function(require,module,exports){
+},{}],142:[function(require,module,exports){
 module.exports = function(target){
 	return typeof document !== 'undefined' && target instanceof Node;
 };
-},{}],142:[function(require,module,exports){
+},{}],143:[function(require,module,exports){
 module.exports = function(a){
 	return typeof a === 'number' || a instanceof Number;
 }
-},{}],143:[function(require,module,exports){
+},{}],144:[function(require,module,exports){
 /**
  * @module mutype/is-object
  */
@@ -12949,7 +13375,7 @@ module.exports = function(o){
 	return !!o && typeof o === 'object' && o.constructor === Object;
 };
 
-},{}],144:[function(require,module,exports){
+},{}],145:[function(require,module,exports){
 var isString = require('./is-string'),
 	isNumber = require('./is-number'),
 	isBool = require('./is-bool');
@@ -12957,20 +13383,20 @@ var isString = require('./is-string'),
 module.exports = function isPlain(a){
 	return !a || isString(a) || isNumber(a) || isBool(a);
 };
-},{"./is-bool":136,"./is-number":142,"./is-string":147}],145:[function(require,module,exports){
+},{"./is-bool":137,"./is-number":143,"./is-string":148}],146:[function(require,module,exports){
 module.exports = function(n){
 	return n[0] === '_' && n.length > 1;
 }
 
-},{}],146:[function(require,module,exports){
+},{}],147:[function(require,module,exports){
 module.exports = function(target){
 	return target instanceof RegExp;
 }
-},{}],147:[function(require,module,exports){
+},{}],148:[function(require,module,exports){
 module.exports = function(a){
 	return typeof a === 'string' || a instanceof String;
 }
-},{}],148:[function(require,module,exports){
+},{}],149:[function(require,module,exports){
 var sentenceCase = require('sentence-case')
 
 /**
@@ -12984,15 +13410,18 @@ module.exports = function (string, locale) {
   return sentenceCase(string, locale, '-')
 }
 
-},{"sentence-case":166}],149:[function(require,module,exports){
+},{"sentence-case":167}],150:[function(require,module,exports){
 /**
  * @module parenthesis
  */
-module.exports = {
-	parse: require('./parse'),
-	stringify: require('./stringify')
-};
-},{"./parse":150,"./stringify":151}],150:[function(require,module,exports){
+
+var parse = require('./parse');
+var stringify = require('./stringify');
+parse.parse = parse;
+parse.stringify = stringify;
+
+module.exports = parse;
+},{"./parse":151,"./stringify":152}],151:[function(require,module,exports){
 /**
  * @module  parenthesis/parse
  *
@@ -13033,7 +13462,7 @@ module.exports = function(str, bracket){
 
 	return res;
 };
-},{}],151:[function(require,module,exports){
+},{}],152:[function(require,module,exports){
 /**
  * @module parenthesis/stringify
  *
@@ -13045,7 +13474,7 @@ module.exports = function(str, bracket){
  * @return {string} A string with inserted regex references
  */
 
-//FIXME: circular references causes recursions here
+//FIXME: circular references cause recursions here
 //TODO: there’s possible a recursive version of this algorithm, so test it & compare
 module.exports = function (str, refs, bracket){
 	var prevStr;
@@ -13072,7 +13501,7 @@ module.exports = function (str, refs, bracket){
 
 	return str;
 };
-},{}],152:[function(require,module,exports){
+},{}],153:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -13300,7 +13729,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require("qC859L"))
-},{"qC859L":153}],153:[function(require,module,exports){
+},{"qC859L":154}],154:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -13365,7 +13794,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],154:[function(require,module,exports){
+},{}],155:[function(require,module,exports){
 (function (global){
 /*! http://mths.be/punycode v1.2.4 by @mathias */
 ;(function(root) {
@@ -13876,7 +14305,7 @@ process.chdir = function (dir) {
 }(this));
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],155:[function(require,module,exports){
+},{}],156:[function(require,module,exports){
 /**
  * @module  queried
  */
@@ -13934,7 +14363,7 @@ q.matches = require('./lib/pseudos/matches');
 
 
 module.exports = q;
-},{"./lib/":156,"./lib/pseudos/has":157,"./lib/pseudos/matches":158,"./lib/pseudos/not":159,"./lib/pseudos/root":160,"./lib/pseudos/scope":161,"get-doc":98}],156:[function(require,module,exports){
+},{"./lib/":157,"./lib/pseudos/has":158,"./lib/pseudos/matches":159,"./lib/pseudos/not":160,"./lib/pseudos/root":161,"./lib/pseudos/scope":162,"get-doc":98}],157:[function(require,module,exports){
 /**
  * @module queried/lib/index
  */
@@ -14148,7 +14577,7 @@ querySingle.document = doc;
 
 
 module.exports = querySingle;
-},{"array-unique":73,"arrayify-compact":74,"get-doc":98,"get-uid":99,"mutype/is-array":135,"mutype/is-array-like":134,"mutype/is-string":147,"parenthesis":149,"sliced":162}],157:[function(require,module,exports){
+},{"array-unique":73,"arrayify-compact":74,"get-doc":98,"get-uid":99,"mutype/is-array":136,"mutype/is-array-like":135,"mutype/is-string":148,"parenthesis":150,"sliced":163}],158:[function(require,module,exports){
 var q = require('..');
 
 function has(el, subSelector){
@@ -14156,7 +14585,7 @@ function has(el, subSelector){
 }
 
 module.exports = has;
-},{"..":156}],158:[function(require,module,exports){
+},{"..":157}],159:[function(require,module,exports){
 /** :matches pseudo */
 
 var q = require('..');
@@ -14171,7 +14600,7 @@ function matches(el, selector){
 }
 
 module.exports = matches;
-},{"..":156}],159:[function(require,module,exports){
+},{"..":157}],160:[function(require,module,exports){
 var matches = require('./matches');
 
 function not(el, selector){
@@ -14179,13 +14608,13 @@ function not(el, selector){
 }
 
 module.exports = not;
-},{"./matches":158}],160:[function(require,module,exports){
+},{"./matches":159}],161:[function(require,module,exports){
 var q = require('..');
 
 module.exports = function root(el){
 	return el === q.document.documentElement;
 };
-},{"..":156}],161:[function(require,module,exports){
+},{"..":157}],162:[function(require,module,exports){
 /**
  * :scope pseudo
  * Return element if it has `scoped` attribute.
@@ -14196,10 +14625,10 @@ module.exports = function root(el){
 module.exports = function scope(el){
 	return el.hasAttribute('scoped');
 };
-},{}],162:[function(require,module,exports){
+},{}],163:[function(require,module,exports){
 module.exports = exports = require('./lib/sliced');
 
-},{"./lib/sliced":163}],163:[function(require,module,exports){
+},{"./lib/sliced":164}],164:[function(require,module,exports){
 
 /**
  * An Array.prototype.slice.call(arguments) alternative
@@ -14234,7 +14663,7 @@ module.exports = function (args, slice, sliceEnd) {
 }
 
 
-},{}],164:[function(require,module,exports){
+},{}],165:[function(require,module,exports){
 /**
  * @module  resizable
  */
@@ -14283,17 +14712,17 @@ function Resizable (el, options) {
 	//if element isn’t draggable yet - force it to be draggable, without movements
 	if (self.draggable === true) {
 		self.draggable = new Draggable(self.element, {
-			within: self.within
+			within: self.within,
+			css3: true
 		});
 	} else if (self.draggable) {
 		self.draggable = new Draggable(self.element, self.draggable);
+		self.draggable.css3 = true;
 	} else {
 		self.draggable = new Draggable(self.element, {
 			handle: null
 		});
 	}
-
-	self.draggable.css3 = true;
 
 	self.createHandles();
 
@@ -14489,10 +14918,14 @@ proto.createHandle = function(handle, direction){
 				case 'e':
 					break;
 				case 'nw':
-				case 'n':
-				case 'w':
 					coords[0] = -coords[0];
 					coords[1] = -coords[1];
+					break;
+				case 'n':
+					coords[1] = -coords[1];
+					break;
+				case 'w':
+					coords[0] = -coords[0];
 					break;
 				case 'ne':
 					coords[1] = -coords[1];
@@ -14533,8 +14966,6 @@ proto.createHandle = function(handle, direction){
 		else {
 			switch (direction) {
 				case 'se':
-				case 's':
-				case 'e':
 					css(el, {
 						width: Math.min(
 							self.initSize[0] + coords[0],
@@ -14546,6 +14977,24 @@ proto.createHandle = function(handle, direction){
 						)
 					});
 
+				case 's':
+					css(el, {
+						height: Math.min(
+							self.initSize[1] + coords[1],
+							self.maxSize[3]
+						)
+					});
+
+				case 'e':
+					css(el, {
+						width: Math.min(
+							self.initSize[0] + coords[0],
+							self.maxSize[2]
+						)
+					});
+				case 'se':
+				case 's':
+				case 'e':
 					self.draggable.updateLimits();
 
 					self.draggable.move(
@@ -14554,14 +15003,23 @@ proto.createHandle = function(handle, direction){
 					);
 
 					break;
+
 				case 'nw':
-				case 'n':
-				case 'w':
 					css(el, {
 						width: between(self.initSize[0] - coords[0], 0, self.maxSize[0]),
 						height: between(self.initSize[1] - coords[1], 0, self.maxSize[1])
 					});
-
+				case 'n':
+					css(el, {
+						height: between(self.initSize[1] - coords[1], 0, self.maxSize[1])
+					});
+				case 'w':
+					css(el, {
+						width: between(self.initSize[0] - coords[0], 0, self.maxSize[0])
+					});
+				case 'nw':
+				case 'n':
+				case 'w':
 					self.draggable.updateLimits();
 
 					//subtract t/l on changed size
@@ -14570,6 +15028,7 @@ proto.createHandle = function(handle, direction){
 
 					self.draggable.move(self.offsets[0] + deltaX, self.offsets[1] + deltaY);
 					break;
+
 				case 'ne':
 					css(el, {
 						width: between(self.initSize[0] + coords[0], 0, self.maxSize[2]),
@@ -14708,7 +15167,7 @@ var handleStyles = splitKeys({
  * @module resizable
  */
 module.exports = Resizable;
-},{"draggy":89,"emmy/emit":90,"emmy/on":93,"events":96,"inherits":104,"mucss/border":113,"mucss/css":114,"mucss/margin":118,"mucss/offset":119,"mucss/padding":120,"mumath/clamp":127,"mutype/is-array":135,"mutype/is-object":143,"mutype/is-string":147,"split-keys":183,"xtend/mutable":221}],165:[function(require,module,exports){
+},{"draggy":89,"emmy/emit":90,"emmy/on":93,"events":96,"inherits":104,"mucss/border":114,"mucss/css":115,"mucss/margin":119,"mucss/offset":120,"mucss/padding":121,"mumath/clamp":128,"mutype/is-array":136,"mutype/is-object":144,"mutype/is-string":148,"split-keys":184,"xtend/mutable":222}],166:[function(require,module,exports){
 // Copyright 2014 Simon Lydell
 // X11 (“MIT”) Licensed. (See LICENSE.)
 
@@ -14757,7 +15216,7 @@ void (function(root, factory) {
 
 }));
 
-},{}],166:[function(require,module,exports){
+},{}],167:[function(require,module,exports){
 var lowerCase = require('lower-case')
 
 var NON_WORD_REGEXP = require('./vendor/non-word-regexp')
@@ -14799,18 +15258,18 @@ module.exports = function (str, locale, replacement) {
   return lowerCase(str, locale)
 }
 
-},{"./vendor/camel-case-regexp":167,"./vendor/non-word-regexp":168,"./vendor/trailing-digit-regexp":169,"lower-case":112}],167:[function(require,module,exports){
+},{"./vendor/camel-case-regexp":168,"./vendor/non-word-regexp":169,"./vendor/trailing-digit-regexp":170,"lower-case":113}],168:[function(require,module,exports){
 module.exports = /([\u0061-\u007A\u00B5\u00DF-\u00F6\u00F8-\u00FF\u0101\u0103\u0105\u0107\u0109\u010B\u010D\u010F\u0111\u0113\u0115\u0117\u0119\u011B\u011D\u011F\u0121\u0123\u0125\u0127\u0129\u012B\u012D\u012F\u0131\u0133\u0135\u0137\u0138\u013A\u013C\u013E\u0140\u0142\u0144\u0146\u0148\u0149\u014B\u014D\u014F\u0151\u0153\u0155\u0157\u0159\u015B\u015D\u015F\u0161\u0163\u0165\u0167\u0169\u016B\u016D\u016F\u0171\u0173\u0175\u0177\u017A\u017C\u017E-\u0180\u0183\u0185\u0188\u018C\u018D\u0192\u0195\u0199-\u019B\u019E\u01A1\u01A3\u01A5\u01A8\u01AA\u01AB\u01AD\u01B0\u01B4\u01B6\u01B9\u01BA\u01BD-\u01BF\u01C6\u01C9\u01CC\u01CE\u01D0\u01D2\u01D4\u01D6\u01D8\u01DA\u01DC\u01DD\u01DF\u01E1\u01E3\u01E5\u01E7\u01E9\u01EB\u01ED\u01EF\u01F0\u01F3\u01F5\u01F9\u01FB\u01FD\u01FF\u0201\u0203\u0205\u0207\u0209\u020B\u020D\u020F\u0211\u0213\u0215\u0217\u0219\u021B\u021D\u021F\u0221\u0223\u0225\u0227\u0229\u022B\u022D\u022F\u0231\u0233-\u0239\u023C\u023F\u0240\u0242\u0247\u0249\u024B\u024D\u024F-\u0293\u0295-\u02AF\u0371\u0373\u0377\u037B-\u037D\u0390\u03AC-\u03CE\u03D0\u03D1\u03D5-\u03D7\u03D9\u03DB\u03DD\u03DF\u03E1\u03E3\u03E5\u03E7\u03E9\u03EB\u03ED\u03EF-\u03F3\u03F5\u03F8\u03FB\u03FC\u0430-\u045F\u0461\u0463\u0465\u0467\u0469\u046B\u046D\u046F\u0471\u0473\u0475\u0477\u0479\u047B\u047D\u047F\u0481\u048B\u048D\u048F\u0491\u0493\u0495\u0497\u0499\u049B\u049D\u049F\u04A1\u04A3\u04A5\u04A7\u04A9\u04AB\u04AD\u04AF\u04B1\u04B3\u04B5\u04B7\u04B9\u04BB\u04BD\u04BF\u04C2\u04C4\u04C6\u04C8\u04CA\u04CC\u04CE\u04CF\u04D1\u04D3\u04D5\u04D7\u04D9\u04DB\u04DD\u04DF\u04E1\u04E3\u04E5\u04E7\u04E9\u04EB\u04ED\u04EF\u04F1\u04F3\u04F5\u04F7\u04F9\u04FB\u04FD\u04FF\u0501\u0503\u0505\u0507\u0509\u050B\u050D\u050F\u0511\u0513\u0515\u0517\u0519\u051B\u051D\u051F\u0521\u0523\u0525\u0527\u0561-\u0587\u1D00-\u1D2B\u1D6B-\u1D77\u1D79-\u1D9A\u1E01\u1E03\u1E05\u1E07\u1E09\u1E0B\u1E0D\u1E0F\u1E11\u1E13\u1E15\u1E17\u1E19\u1E1B\u1E1D\u1E1F\u1E21\u1E23\u1E25\u1E27\u1E29\u1E2B\u1E2D\u1E2F\u1E31\u1E33\u1E35\u1E37\u1E39\u1E3B\u1E3D\u1E3F\u1E41\u1E43\u1E45\u1E47\u1E49\u1E4B\u1E4D\u1E4F\u1E51\u1E53\u1E55\u1E57\u1E59\u1E5B\u1E5D\u1E5F\u1E61\u1E63\u1E65\u1E67\u1E69\u1E6B\u1E6D\u1E6F\u1E71\u1E73\u1E75\u1E77\u1E79\u1E7B\u1E7D\u1E7F\u1E81\u1E83\u1E85\u1E87\u1E89\u1E8B\u1E8D\u1E8F\u1E91\u1E93\u1E95-\u1E9D\u1E9F\u1EA1\u1EA3\u1EA5\u1EA7\u1EA9\u1EAB\u1EAD\u1EAF\u1EB1\u1EB3\u1EB5\u1EB7\u1EB9\u1EBB\u1EBD\u1EBF\u1EC1\u1EC3\u1EC5\u1EC7\u1EC9\u1ECB\u1ECD\u1ECF\u1ED1\u1ED3\u1ED5\u1ED7\u1ED9\u1EDB\u1EDD\u1EDF\u1EE1\u1EE3\u1EE5\u1EE7\u1EE9\u1EEB\u1EED\u1EEF\u1EF1\u1EF3\u1EF5\u1EF7\u1EF9\u1EFB\u1EFD\u1EFF-\u1F07\u1F10-\u1F15\u1F20-\u1F27\u1F30-\u1F37\u1F40-\u1F45\u1F50-\u1F57\u1F60-\u1F67\u1F70-\u1F7D\u1F80-\u1F87\u1F90-\u1F97\u1FA0-\u1FA7\u1FB0-\u1FB4\u1FB6\u1FB7\u1FBE\u1FC2-\u1FC4\u1FC6\u1FC7\u1FD0-\u1FD3\u1FD6\u1FD7\u1FE0-\u1FE7\u1FF2-\u1FF4\u1FF6\u1FF7\u210A\u210E\u210F\u2113\u212F\u2134\u2139\u213C\u213D\u2146-\u2149\u214E\u2184\u2C30-\u2C5E\u2C61\u2C65\u2C66\u2C68\u2C6A\u2C6C\u2C71\u2C73\u2C74\u2C76-\u2C7B\u2C81\u2C83\u2C85\u2C87\u2C89\u2C8B\u2C8D\u2C8F\u2C91\u2C93\u2C95\u2C97\u2C99\u2C9B\u2C9D\u2C9F\u2CA1\u2CA3\u2CA5\u2CA7\u2CA9\u2CAB\u2CAD\u2CAF\u2CB1\u2CB3\u2CB5\u2CB7\u2CB9\u2CBB\u2CBD\u2CBF\u2CC1\u2CC3\u2CC5\u2CC7\u2CC9\u2CCB\u2CCD\u2CCF\u2CD1\u2CD3\u2CD5\u2CD7\u2CD9\u2CDB\u2CDD\u2CDF\u2CE1\u2CE3\u2CE4\u2CEC\u2CEE\u2CF3\u2D00-\u2D25\u2D27\u2D2D\uA641\uA643\uA645\uA647\uA649\uA64B\uA64D\uA64F\uA651\uA653\uA655\uA657\uA659\uA65B\uA65D\uA65F\uA661\uA663\uA665\uA667\uA669\uA66B\uA66D\uA681\uA683\uA685\uA687\uA689\uA68B\uA68D\uA68F\uA691\uA693\uA695\uA697\uA723\uA725\uA727\uA729\uA72B\uA72D\uA72F-\uA731\uA733\uA735\uA737\uA739\uA73B\uA73D\uA73F\uA741\uA743\uA745\uA747\uA749\uA74B\uA74D\uA74F\uA751\uA753\uA755\uA757\uA759\uA75B\uA75D\uA75F\uA761\uA763\uA765\uA767\uA769\uA76B\uA76D\uA76F\uA771-\uA778\uA77A\uA77C\uA77F\uA781\uA783\uA785\uA787\uA78C\uA78E\uA791\uA793\uA7A1\uA7A3\uA7A5\uA7A7\uA7A9\uA7FA\uFB00-\uFB06\uFB13-\uFB17\uFF41-\uFF5A])([\u0041-\u005A\u00C0-\u00D6\u00D8-\u00DE\u0100\u0102\u0104\u0106\u0108\u010A\u010C\u010E\u0110\u0112\u0114\u0116\u0118\u011A\u011C\u011E\u0120\u0122\u0124\u0126\u0128\u012A\u012C\u012E\u0130\u0132\u0134\u0136\u0139\u013B\u013D\u013F\u0141\u0143\u0145\u0147\u014A\u014C\u014E\u0150\u0152\u0154\u0156\u0158\u015A\u015C\u015E\u0160\u0162\u0164\u0166\u0168\u016A\u016C\u016E\u0170\u0172\u0174\u0176\u0178\u0179\u017B\u017D\u0181\u0182\u0184\u0186\u0187\u0189-\u018B\u018E-\u0191\u0193\u0194\u0196-\u0198\u019C\u019D\u019F\u01A0\u01A2\u01A4\u01A6\u01A7\u01A9\u01AC\u01AE\u01AF\u01B1-\u01B3\u01B5\u01B7\u01B8\u01BC\u01C4\u01C7\u01CA\u01CD\u01CF\u01D1\u01D3\u01D5\u01D7\u01D9\u01DB\u01DE\u01E0\u01E2\u01E4\u01E6\u01E8\u01EA\u01EC\u01EE\u01F1\u01F4\u01F6-\u01F8\u01FA\u01FC\u01FE\u0200\u0202\u0204\u0206\u0208\u020A\u020C\u020E\u0210\u0212\u0214\u0216\u0218\u021A\u021C\u021E\u0220\u0222\u0224\u0226\u0228\u022A\u022C\u022E\u0230\u0232\u023A\u023B\u023D\u023E\u0241\u0243-\u0246\u0248\u024A\u024C\u024E\u0370\u0372\u0376\u0386\u0388-\u038A\u038C\u038E\u038F\u0391-\u03A1\u03A3-\u03AB\u03CF\u03D2-\u03D4\u03D8\u03DA\u03DC\u03DE\u03E0\u03E2\u03E4\u03E6\u03E8\u03EA\u03EC\u03EE\u03F4\u03F7\u03F9\u03FA\u03FD-\u042F\u0460\u0462\u0464\u0466\u0468\u046A\u046C\u046E\u0470\u0472\u0474\u0476\u0478\u047A\u047C\u047E\u0480\u048A\u048C\u048E\u0490\u0492\u0494\u0496\u0498\u049A\u049C\u049E\u04A0\u04A2\u04A4\u04A6\u04A8\u04AA\u04AC\u04AE\u04B0\u04B2\u04B4\u04B6\u04B8\u04BA\u04BC\u04BE\u04C0\u04C1\u04C3\u04C5\u04C7\u04C9\u04CB\u04CD\u04D0\u04D2\u04D4\u04D6\u04D8\u04DA\u04DC\u04DE\u04E0\u04E2\u04E4\u04E6\u04E8\u04EA\u04EC\u04EE\u04F0\u04F2\u04F4\u04F6\u04F8\u04FA\u04FC\u04FE\u0500\u0502\u0504\u0506\u0508\u050A\u050C\u050E\u0510\u0512\u0514\u0516\u0518\u051A\u051C\u051E\u0520\u0522\u0524\u0526\u0531-\u0556\u10A0-\u10C5\u10C7\u10CD\u1E00\u1E02\u1E04\u1E06\u1E08\u1E0A\u1E0C\u1E0E\u1E10\u1E12\u1E14\u1E16\u1E18\u1E1A\u1E1C\u1E1E\u1E20\u1E22\u1E24\u1E26\u1E28\u1E2A\u1E2C\u1E2E\u1E30\u1E32\u1E34\u1E36\u1E38\u1E3A\u1E3C\u1E3E\u1E40\u1E42\u1E44\u1E46\u1E48\u1E4A\u1E4C\u1E4E\u1E50\u1E52\u1E54\u1E56\u1E58\u1E5A\u1E5C\u1E5E\u1E60\u1E62\u1E64\u1E66\u1E68\u1E6A\u1E6C\u1E6E\u1E70\u1E72\u1E74\u1E76\u1E78\u1E7A\u1E7C\u1E7E\u1E80\u1E82\u1E84\u1E86\u1E88\u1E8A\u1E8C\u1E8E\u1E90\u1E92\u1E94\u1E9E\u1EA0\u1EA2\u1EA4\u1EA6\u1EA8\u1EAA\u1EAC\u1EAE\u1EB0\u1EB2\u1EB4\u1EB6\u1EB8\u1EBA\u1EBC\u1EBE\u1EC0\u1EC2\u1EC4\u1EC6\u1EC8\u1ECA\u1ECC\u1ECE\u1ED0\u1ED2\u1ED4\u1ED6\u1ED8\u1EDA\u1EDC\u1EDE\u1EE0\u1EE2\u1EE4\u1EE6\u1EE8\u1EEA\u1EEC\u1EEE\u1EF0\u1EF2\u1EF4\u1EF6\u1EF8\u1EFA\u1EFC\u1EFE\u1F08-\u1F0F\u1F18-\u1F1D\u1F28-\u1F2F\u1F38-\u1F3F\u1F48-\u1F4D\u1F59\u1F5B\u1F5D\u1F5F\u1F68-\u1F6F\u1FB8-\u1FBB\u1FC8-\u1FCB\u1FD8-\u1FDB\u1FE8-\u1FEC\u1FF8-\u1FFB\u2102\u2107\u210B-\u210D\u2110-\u2112\u2115\u2119-\u211D\u2124\u2126\u2128\u212A-\u212D\u2130-\u2133\u213E\u213F\u2145\u2183\u2C00-\u2C2E\u2C60\u2C62-\u2C64\u2C67\u2C69\u2C6B\u2C6D-\u2C70\u2C72\u2C75\u2C7E-\u2C80\u2C82\u2C84\u2C86\u2C88\u2C8A\u2C8C\u2C8E\u2C90\u2C92\u2C94\u2C96\u2C98\u2C9A\u2C9C\u2C9E\u2CA0\u2CA2\u2CA4\u2CA6\u2CA8\u2CAA\u2CAC\u2CAE\u2CB0\u2CB2\u2CB4\u2CB6\u2CB8\u2CBA\u2CBC\u2CBE\u2CC0\u2CC2\u2CC4\u2CC6\u2CC8\u2CCA\u2CCC\u2CCE\u2CD0\u2CD2\u2CD4\u2CD6\u2CD8\u2CDA\u2CDC\u2CDE\u2CE0\u2CE2\u2CEB\u2CED\u2CF2\uA640\uA642\uA644\uA646\uA648\uA64A\uA64C\uA64E\uA650\uA652\uA654\uA656\uA658\uA65A\uA65C\uA65E\uA660\uA662\uA664\uA666\uA668\uA66A\uA66C\uA680\uA682\uA684\uA686\uA688\uA68A\uA68C\uA68E\uA690\uA692\uA694\uA696\uA722\uA724\uA726\uA728\uA72A\uA72C\uA72E\uA732\uA734\uA736\uA738\uA73A\uA73C\uA73E\uA740\uA742\uA744\uA746\uA748\uA74A\uA74C\uA74E\uA750\uA752\uA754\uA756\uA758\uA75A\uA75C\uA75E\uA760\uA762\uA764\uA766\uA768\uA76A\uA76C\uA76E\uA779\uA77B\uA77D\uA77E\uA780\uA782\uA784\uA786\uA78B\uA78D\uA790\uA792\uA7A0\uA7A2\uA7A4\uA7A6\uA7A8\uA7AA\uFF21-\uFF3A\u0030-\u0039\u00B2\u00B3\u00B9\u00BC-\u00BE\u0660-\u0669\u06F0-\u06F9\u07C0-\u07C9\u0966-\u096F\u09E6-\u09EF\u09F4-\u09F9\u0A66-\u0A6F\u0AE6-\u0AEF\u0B66-\u0B6F\u0B72-\u0B77\u0BE6-\u0BF2\u0C66-\u0C6F\u0C78-\u0C7E\u0CE6-\u0CEF\u0D66-\u0D75\u0E50-\u0E59\u0ED0-\u0ED9\u0F20-\u0F33\u1040-\u1049\u1090-\u1099\u1369-\u137C\u16EE-\u16F0\u17E0-\u17E9\u17F0-\u17F9\u1810-\u1819\u1946-\u194F\u19D0-\u19DA\u1A80-\u1A89\u1A90-\u1A99\u1B50-\u1B59\u1BB0-\u1BB9\u1C40-\u1C49\u1C50-\u1C59\u2070\u2074-\u2079\u2080-\u2089\u2150-\u2182\u2185-\u2189\u2460-\u249B\u24EA-\u24FF\u2776-\u2793\u2CFD\u3007\u3021-\u3029\u3038-\u303A\u3192-\u3195\u3220-\u3229\u3248-\u324F\u3251-\u325F\u3280-\u3289\u32B1-\u32BF\uA620-\uA629\uA6E6-\uA6EF\uA830-\uA835\uA8D0-\uA8D9\uA900-\uA909\uA9D0-\uA9D9\uAA50-\uAA59\uABF0-\uABF9\uFF10-\uFF19])/g
 
-},{}],168:[function(require,module,exports){
+},{}],169:[function(require,module,exports){
 module.exports = /[^\u0041-\u005A\u0061-\u007A\u00AA\u00B5\u00BA\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02C1\u02C6-\u02D1\u02E0-\u02E4\u02EC\u02EE\u0370-\u0374\u0376\u0377\u037A-\u037D\u0386\u0388-\u038A\u038C\u038E-\u03A1\u03A3-\u03F5\u03F7-\u0481\u048A-\u0527\u0531-\u0556\u0559\u0561-\u0587\u05D0-\u05EA\u05F0-\u05F2\u0620-\u064A\u066E\u066F\u0671-\u06D3\u06D5\u06E5\u06E6\u06EE\u06EF\u06FA-\u06FC\u06FF\u0710\u0712-\u072F\u074D-\u07A5\u07B1\u07CA-\u07EA\u07F4\u07F5\u07FA\u0800-\u0815\u081A\u0824\u0828\u0840-\u0858\u08A0\u08A2-\u08AC\u0904-\u0939\u093D\u0950\u0958-\u0961\u0971-\u0977\u0979-\u097F\u0985-\u098C\u098F\u0990\u0993-\u09A8\u09AA-\u09B0\u09B2\u09B6-\u09B9\u09BD\u09CE\u09DC\u09DD\u09DF-\u09E1\u09F0\u09F1\u0A05-\u0A0A\u0A0F\u0A10\u0A13-\u0A28\u0A2A-\u0A30\u0A32\u0A33\u0A35\u0A36\u0A38\u0A39\u0A59-\u0A5C\u0A5E\u0A72-\u0A74\u0A85-\u0A8D\u0A8F-\u0A91\u0A93-\u0AA8\u0AAA-\u0AB0\u0AB2\u0AB3\u0AB5-\u0AB9\u0ABD\u0AD0\u0AE0\u0AE1\u0B05-\u0B0C\u0B0F\u0B10\u0B13-\u0B28\u0B2A-\u0B30\u0B32\u0B33\u0B35-\u0B39\u0B3D\u0B5C\u0B5D\u0B5F-\u0B61\u0B71\u0B83\u0B85-\u0B8A\u0B8E-\u0B90\u0B92-\u0B95\u0B99\u0B9A\u0B9C\u0B9E\u0B9F\u0BA3\u0BA4\u0BA8-\u0BAA\u0BAE-\u0BB9\u0BD0\u0C05-\u0C0C\u0C0E-\u0C10\u0C12-\u0C28\u0C2A-\u0C33\u0C35-\u0C39\u0C3D\u0C58\u0C59\u0C60\u0C61\u0C85-\u0C8C\u0C8E-\u0C90\u0C92-\u0CA8\u0CAA-\u0CB3\u0CB5-\u0CB9\u0CBD\u0CDE\u0CE0\u0CE1\u0CF1\u0CF2\u0D05-\u0D0C\u0D0E-\u0D10\u0D12-\u0D3A\u0D3D\u0D4E\u0D60\u0D61\u0D7A-\u0D7F\u0D85-\u0D96\u0D9A-\u0DB1\u0DB3-\u0DBB\u0DBD\u0DC0-\u0DC6\u0E01-\u0E30\u0E32\u0E33\u0E40-\u0E46\u0E81\u0E82\u0E84\u0E87\u0E88\u0E8A\u0E8D\u0E94-\u0E97\u0E99-\u0E9F\u0EA1-\u0EA3\u0EA5\u0EA7\u0EAA\u0EAB\u0EAD-\u0EB0\u0EB2\u0EB3\u0EBD\u0EC0-\u0EC4\u0EC6\u0EDC-\u0EDF\u0F00\u0F40-\u0F47\u0F49-\u0F6C\u0F88-\u0F8C\u1000-\u102A\u103F\u1050-\u1055\u105A-\u105D\u1061\u1065\u1066\u106E-\u1070\u1075-\u1081\u108E\u10A0-\u10C5\u10C7\u10CD\u10D0-\u10FA\u10FC-\u1248\u124A-\u124D\u1250-\u1256\u1258\u125A-\u125D\u1260-\u1288\u128A-\u128D\u1290-\u12B0\u12B2-\u12B5\u12B8-\u12BE\u12C0\u12C2-\u12C5\u12C8-\u12D6\u12D8-\u1310\u1312-\u1315\u1318-\u135A\u1380-\u138F\u13A0-\u13F4\u1401-\u166C\u166F-\u167F\u1681-\u169A\u16A0-\u16EA\u1700-\u170C\u170E-\u1711\u1720-\u1731\u1740-\u1751\u1760-\u176C\u176E-\u1770\u1780-\u17B3\u17D7\u17DC\u1820-\u1877\u1880-\u18A8\u18AA\u18B0-\u18F5\u1900-\u191C\u1950-\u196D\u1970-\u1974\u1980-\u19AB\u19C1-\u19C7\u1A00-\u1A16\u1A20-\u1A54\u1AA7\u1B05-\u1B33\u1B45-\u1B4B\u1B83-\u1BA0\u1BAE\u1BAF\u1BBA-\u1BE5\u1C00-\u1C23\u1C4D-\u1C4F\u1C5A-\u1C7D\u1CE9-\u1CEC\u1CEE-\u1CF1\u1CF5\u1CF6\u1D00-\u1DBF\u1E00-\u1F15\u1F18-\u1F1D\u1F20-\u1F45\u1F48-\u1F4D\u1F50-\u1F57\u1F59\u1F5B\u1F5D\u1F5F-\u1F7D\u1F80-\u1FB4\u1FB6-\u1FBC\u1FBE\u1FC2-\u1FC4\u1FC6-\u1FCC\u1FD0-\u1FD3\u1FD6-\u1FDB\u1FE0-\u1FEC\u1FF2-\u1FF4\u1FF6-\u1FFC\u2071\u207F\u2090-\u209C\u2102\u2107\u210A-\u2113\u2115\u2119-\u211D\u2124\u2126\u2128\u212A-\u212D\u212F-\u2139\u213C-\u213F\u2145-\u2149\u214E\u2183\u2184\u2C00-\u2C2E\u2C30-\u2C5E\u2C60-\u2CE4\u2CEB-\u2CEE\u2CF2\u2CF3\u2D00-\u2D25\u2D27\u2D2D\u2D30-\u2D67\u2D6F\u2D80-\u2D96\u2DA0-\u2DA6\u2DA8-\u2DAE\u2DB0-\u2DB6\u2DB8-\u2DBE\u2DC0-\u2DC6\u2DC8-\u2DCE\u2DD0-\u2DD6\u2DD8-\u2DDE\u2E2F\u3005\u3006\u3031-\u3035\u303B\u303C\u3041-\u3096\u309D-\u309F\u30A1-\u30FA\u30FC-\u30FF\u3105-\u312D\u3131-\u318E\u31A0-\u31BA\u31F0-\u31FF\u3400-\u4DB5\u4E00-\u9FCC\uA000-\uA48C\uA4D0-\uA4FD\uA500-\uA60C\uA610-\uA61F\uA62A\uA62B\uA640-\uA66E\uA67F-\uA697\uA6A0-\uA6E5\uA717-\uA71F\uA722-\uA788\uA78B-\uA78E\uA790-\uA793\uA7A0-\uA7AA\uA7F8-\uA801\uA803-\uA805\uA807-\uA80A\uA80C-\uA822\uA840-\uA873\uA882-\uA8B3\uA8F2-\uA8F7\uA8FB\uA90A-\uA925\uA930-\uA946\uA960-\uA97C\uA984-\uA9B2\uA9CF\uAA00-\uAA28\uAA40-\uAA42\uAA44-\uAA4B\uAA60-\uAA76\uAA7A\uAA80-\uAAAF\uAAB1\uAAB5\uAAB6\uAAB9-\uAABD\uAAC0\uAAC2\uAADB-\uAADD\uAAE0-\uAAEA\uAAF2-\uAAF4\uAB01-\uAB06\uAB09-\uAB0E\uAB11-\uAB16\uAB20-\uAB26\uAB28-\uAB2E\uABC0-\uABE2\uAC00-\uD7A3\uD7B0-\uD7C6\uD7CB-\uD7FB\uF900-\uFA6D\uFA70-\uFAD9\uFB00-\uFB06\uFB13-\uFB17\uFB1D\uFB1F-\uFB28\uFB2A-\uFB36\uFB38-\uFB3C\uFB3E\uFB40\uFB41\uFB43\uFB44\uFB46-\uFBB1\uFBD3-\uFD3D\uFD50-\uFD8F\uFD92-\uFDC7\uFDF0-\uFDFB\uFE70-\uFE74\uFE76-\uFEFC\uFF21-\uFF3A\uFF41-\uFF5A\uFF66-\uFFBE\uFFC2-\uFFC7\uFFCA-\uFFCF\uFFD2-\uFFD7\uFFDA-\uFFDC\u0030-\u0039\u00B2\u00B3\u00B9\u00BC-\u00BE\u0660-\u0669\u06F0-\u06F9\u07C0-\u07C9\u0966-\u096F\u09E6-\u09EF\u09F4-\u09F9\u0A66-\u0A6F\u0AE6-\u0AEF\u0B66-\u0B6F\u0B72-\u0B77\u0BE6-\u0BF2\u0C66-\u0C6F\u0C78-\u0C7E\u0CE6-\u0CEF\u0D66-\u0D75\u0E50-\u0E59\u0ED0-\u0ED9\u0F20-\u0F33\u1040-\u1049\u1090-\u1099\u1369-\u137C\u16EE-\u16F0\u17E0-\u17E9\u17F0-\u17F9\u1810-\u1819\u1946-\u194F\u19D0-\u19DA\u1A80-\u1A89\u1A90-\u1A99\u1B50-\u1B59\u1BB0-\u1BB9\u1C40-\u1C49\u1C50-\u1C59\u2070\u2074-\u2079\u2080-\u2089\u2150-\u2182\u2185-\u2189\u2460-\u249B\u24EA-\u24FF\u2776-\u2793\u2CFD\u3007\u3021-\u3029\u3038-\u303A\u3192-\u3195\u3220-\u3229\u3248-\u324F\u3251-\u325F\u3280-\u3289\u32B1-\u32BF\uA620-\uA629\uA6E6-\uA6EF\uA830-\uA835\uA8D0-\uA8D9\uA900-\uA909\uA9D0-\uA9D9\uAA50-\uAA59\uABF0-\uABF9\uFF10-\uFF19]+/g
 
-},{}],169:[function(require,module,exports){
+},{}],170:[function(require,module,exports){
 module.exports = /([\u0030-\u0039\u00B2\u00B3\u00B9\u00BC-\u00BE\u0660-\u0669\u06F0-\u06F9\u07C0-\u07C9\u0966-\u096F\u09E6-\u09EF\u09F4-\u09F9\u0A66-\u0A6F\u0AE6-\u0AEF\u0B66-\u0B6F\u0B72-\u0B77\u0BE6-\u0BF2\u0C66-\u0C6F\u0C78-\u0C7E\u0CE6-\u0CEF\u0D66-\u0D75\u0E50-\u0E59\u0ED0-\u0ED9\u0F20-\u0F33\u1040-\u1049\u1090-\u1099\u1369-\u137C\u16EE-\u16F0\u17E0-\u17E9\u17F0-\u17F9\u1810-\u1819\u1946-\u194F\u19D0-\u19DA\u1A80-\u1A89\u1A90-\u1A99\u1B50-\u1B59\u1BB0-\u1BB9\u1C40-\u1C49\u1C50-\u1C59\u2070\u2074-\u2079\u2080-\u2089\u2150-\u2182\u2185-\u2189\u2460-\u249B\u24EA-\u24FF\u2776-\u2793\u2CFD\u3007\u3021-\u3029\u3038-\u303A\u3192-\u3195\u3220-\u3229\u3248-\u324F\u3251-\u325F\u3280-\u3289\u32B1-\u32BF\uA620-\uA629\uA6E6-\uA6EF\uA830-\uA835\uA8D0-\uA8D9\uA900-\uA909\uA9D0-\uA9D9\uAA50-\uAA59\uABF0-\uABF9\uFF10-\uFF19])([^\u0030-\u0039\u00B2\u00B3\u00B9\u00BC-\u00BE\u0660-\u0669\u06F0-\u06F9\u07C0-\u07C9\u0966-\u096F\u09E6-\u09EF\u09F4-\u09F9\u0A66-\u0A6F\u0AE6-\u0AEF\u0B66-\u0B6F\u0B72-\u0B77\u0BE6-\u0BF2\u0C66-\u0C6F\u0C78-\u0C7E\u0CE6-\u0CEF\u0D66-\u0D75\u0E50-\u0E59\u0ED0-\u0ED9\u0F20-\u0F33\u1040-\u1049\u1090-\u1099\u1369-\u137C\u16EE-\u16F0\u17E0-\u17E9\u17F0-\u17F9\u1810-\u1819\u1946-\u194F\u19D0-\u19DA\u1A80-\u1A89\u1A90-\u1A99\u1B50-\u1B59\u1BB0-\u1BB9\u1C40-\u1C49\u1C50-\u1C59\u2070\u2074-\u2079\u2080-\u2089\u2150-\u2182\u2185-\u2189\u2460-\u249B\u24EA-\u24FF\u2776-\u2793\u2CFD\u3007\u3021-\u3029\u3038-\u303A\u3192-\u3195\u3220-\u3229\u3248-\u324F\u3251-\u325F\u3280-\u3289\u32B1-\u32BF\uA620-\uA629\uA6E6-\uA6EF\uA830-\uA835\uA8D0-\uA8D9\uA900-\uA909\uA9D0-\uA9D9\uAA50-\uAA59\uABF0-\uABF9\uFF10-\uFF19])/g
 
-},{}],170:[function(require,module,exports){
-module.exports=require(163)
 },{}],171:[function(require,module,exports){
+module.exports=require(164)
+},{}],172:[function(require,module,exports){
 // Copyright 2014 Simon Lydell
 // X11 (“MIT”) Licensed. (See LICENSE.)
 
@@ -15035,7 +15494,7 @@ void (function(root, factory) {
 
 }));
 
-},{"resolve-url":165,"source-map-url":172}],172:[function(require,module,exports){
+},{"resolve-url":166,"source-map-url":173}],173:[function(require,module,exports){
 // Copyright 2014 Simon Lydell
 // X11 (“MIT”) Licensed. (See LICENSE.)
 
@@ -15094,7 +15553,7 @@ void (function(root, factory) {
 
 }));
 
-},{}],173:[function(require,module,exports){
+},{}],174:[function(require,module,exports){
 /*
  * Copyright 2009-2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE.txt or:
@@ -15104,7 +15563,7 @@ exports.SourceMapGenerator = require('./source-map/source-map-generator').Source
 exports.SourceMapConsumer = require('./source-map/source-map-consumer').SourceMapConsumer;
 exports.SourceNode = require('./source-map/source-node').SourceNode;
 
-},{"./source-map/source-map-consumer":179,"./source-map/source-map-generator":180,"./source-map/source-node":181}],174:[function(require,module,exports){
+},{"./source-map/source-map-consumer":180,"./source-map/source-map-generator":181,"./source-map/source-node":182}],175:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -15203,7 +15662,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./util":182,"amdefine":71}],175:[function(require,module,exports){
+},{"./util":183,"amdefine":71}],176:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -15347,7 +15806,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./base64":176,"amdefine":71}],176:[function(require,module,exports){
+},{"./base64":177,"amdefine":71}],177:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -15391,7 +15850,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":71}],177:[function(require,module,exports){
+},{"amdefine":71}],178:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -15473,7 +15932,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":71}],178:[function(require,module,exports){
+},{"amdefine":71}],179:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2014 Mozilla Foundation and contributors
@@ -15561,7 +16020,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./util":182,"amdefine":71}],179:[function(require,module,exports){
+},{"./util":183,"amdefine":71}],180:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -16138,7 +16597,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./array-set":174,"./base64-vlq":175,"./binary-search":177,"./util":182,"amdefine":71}],180:[function(require,module,exports){
+},{"./array-set":175,"./base64-vlq":176,"./binary-search":178,"./util":183,"amdefine":71}],181:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -16540,7 +16999,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./array-set":174,"./base64-vlq":175,"./mapping-list":178,"./util":182,"amdefine":71}],181:[function(require,module,exports){
+},{"./array-set":175,"./base64-vlq":176,"./mapping-list":179,"./util":183,"amdefine":71}],182:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -16956,7 +17415,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./source-map-generator":180,"./util":182,"amdefine":71}],182:[function(require,module,exports){
+},{"./source-map-generator":181,"./util":183,"amdefine":71}],183:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -17277,7 +17736,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":71}],183:[function(require,module,exports){
+},{"amdefine":71}],184:[function(require,module,exports){
 var type = require('mutype');
 var extend = require('xtend/mutable');
 
@@ -17340,7 +17799,7 @@ function splitKeys(obj, deep, separator){
 
 /** default separator */
 splitKeys.separator = /\s?,\s?/;
-},{"mutype":133,"xtend/mutable":221}],184:[function(require,module,exports){
+},{"mutype":134,"xtend/mutable":222}],185:[function(require,module,exports){
 /**
  * @module  st8
  *
@@ -17521,7 +17980,7 @@ function getValue(holder, meth, ctx){
 
 
 module.exports = State;
-},{"events":96,"is-plain-object":107}],185:[function(require,module,exports){
+},{"events":96,"is-plain-object":107}],186:[function(require,module,exports){
 // Copyright 2014 Simon Lydell
 // X11 (“MIT”) Licensed. (See LICENSE.)
 
@@ -17540,7 +17999,7 @@ function urix(aPath) {
 
 module.exports = urix
 
-},{"path":152}],186:[function(require,module,exports){
+},{"path":153}],187:[function(require,module,exports){
 var escape = require('escape-html');
 var propConfig = require('./property-config');
 var types = propConfig.attributeTypes;
@@ -17610,7 +18069,7 @@ function memoizeString(callback) {
     }
   };
 }
-},{"./property-config":188,"escape-html":94}],187:[function(require,module,exports){
+},{"./property-config":189,"escape-html":94}],188:[function(require,module,exports){
 var escape = require('escape-html');
 var extend = require('xtend');
 var isVNode = require('virtual-dom/vnode/is-vnode');
@@ -17702,7 +18161,7 @@ function closeTag(node) {
   var tag = node.tagName.toLowerCase();
   return voidElements[tag] ? '' : '</' + tag + '>';
 }
-},{"./create-attribute":186,"./void-elements":189,"escape-html":94,"param-case":148,"virtual-dom/virtual-hyperscript/hooks/attribute-hook":202,"virtual-dom/virtual-hyperscript/hooks/soft-set-hook":204,"virtual-dom/vnode/is-thunk":208,"virtual-dom/vnode/is-vnode":210,"virtual-dom/vnode/is-vtext":211,"virtual-dom/vnode/is-widget":212,"xtend":220}],188:[function(require,module,exports){
+},{"./create-attribute":187,"./void-elements":190,"escape-html":94,"param-case":149,"virtual-dom/virtual-hyperscript/hooks/attribute-hook":203,"virtual-dom/virtual-hyperscript/hooks/soft-set-hook":205,"virtual-dom/vnode/is-thunk":209,"virtual-dom/vnode/is-vnode":211,"virtual-dom/vnode/is-vtext":212,"virtual-dom/vnode/is-widget":213,"xtend":221}],189:[function(require,module,exports){
 /**
  * Attribute types.
  */
@@ -17864,7 +18323,7 @@ module.exports = {
   properties: properties,
   attributeNames: attributeNames
 };
-},{}],189:[function(require,module,exports){
+},{}],190:[function(require,module,exports){
 
 /**
  * Void elements.
@@ -17889,7 +18348,7 @@ module.exports = {
   'track': true,
   'wbr': true
 };
-},{}],190:[function(require,module,exports){
+},{}],191:[function(require,module,exports){
 var BaseElement = require('base-element')
 var xtend = require('xtend/mutable')
 var inherits = require('inherits')
@@ -17996,22 +18455,22 @@ ViewList.prototype.css = function () {
   ].join('\n'), this.vtree)
 }
 
-},{"attach-css":75,"base-element":83,"inherits":104,"xtend/mutable":221}],191:[function(require,module,exports){
+},{"attach-css":75,"base-element":83,"inherits":104,"xtend/mutable":222}],192:[function(require,module,exports){
 var createElement = require("./vdom/create-element.js")
 
 module.exports = createElement
 
-},{"./vdom/create-element.js":197}],192:[function(require,module,exports){
+},{"./vdom/create-element.js":198}],193:[function(require,module,exports){
 var diff = require("./vtree/diff.js")
 
 module.exports = diff
 
-},{"./vtree/diff.js":218}],193:[function(require,module,exports){
+},{"./vtree/diff.js":219}],194:[function(require,module,exports){
 var h = require("./virtual-hyperscript/index.js")
 
 module.exports = h
 
-},{"./virtual-hyperscript/index.js":205}],194:[function(require,module,exports){
+},{"./virtual-hyperscript/index.js":206}],195:[function(require,module,exports){
 (function (global){
 var topLevel = typeof global !== 'undefined' ? global :
     typeof window !== 'undefined' ? window : {}
@@ -18030,12 +18489,12 @@ if (typeof document !== 'undefined') {
 }
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"min-document":84}],195:[function(require,module,exports){
+},{"min-document":84}],196:[function(require,module,exports){
 var patch = require("./vdom/patch.js")
 
 module.exports = patch
 
-},{"./vdom/patch.js":200}],196:[function(require,module,exports){
+},{"./vdom/patch.js":201}],197:[function(require,module,exports){
 var isObject = require("is-object")
 var isHook = require("../vnode/is-vhook.js")
 
@@ -18134,7 +18593,7 @@ function getPrototype(value) {
     }
 }
 
-},{"../vnode/is-vhook.js":209,"is-object":106}],197:[function(require,module,exports){
+},{"../vnode/is-vhook.js":210,"is-object":106}],198:[function(require,module,exports){
 var document = require("global/document")
 
 var applyProperties = require("./apply-properties")
@@ -18182,7 +18641,7 @@ function createElement(vnode, opts) {
     return node
 }
 
-},{"../vnode/handle-thunk.js":207,"../vnode/is-vnode.js":210,"../vnode/is-vtext.js":211,"../vnode/is-widget.js":212,"./apply-properties":196,"global/document":194}],198:[function(require,module,exports){
+},{"../vnode/handle-thunk.js":208,"../vnode/is-vnode.js":211,"../vnode/is-vtext.js":212,"../vnode/is-widget.js":213,"./apply-properties":197,"global/document":195}],199:[function(require,module,exports){
 // Maps a virtual DOM tree onto a real DOM tree in an efficient manner.
 // We don't want to read all of the DOM nodes in the tree so we use
 // the in-order tree indexing to eliminate recursion down certain branches.
@@ -18269,7 +18728,7 @@ function ascending(a, b) {
     return a > b ? 1 : -1
 }
 
-},{}],199:[function(require,module,exports){
+},{}],200:[function(require,module,exports){
 var applyProperties = require("./apply-properties")
 
 var isWidget = require("../vnode/is-widget.js")
@@ -18422,7 +18881,7 @@ function replaceRoot(oldRoot, newRoot) {
     return newRoot;
 }
 
-},{"../vnode/is-widget.js":212,"../vnode/vpatch.js":215,"./apply-properties":196,"./update-widget":201}],200:[function(require,module,exports){
+},{"../vnode/is-widget.js":213,"../vnode/vpatch.js":216,"./apply-properties":197,"./update-widget":202}],201:[function(require,module,exports){
 var document = require("global/document")
 var isArray = require("x-is-array")
 
@@ -18504,7 +18963,7 @@ function patchIndices(patches) {
     return indices
 }
 
-},{"./create-element":197,"./dom-index":198,"./patch-op":199,"global/document":194,"x-is-array":219}],201:[function(require,module,exports){
+},{"./create-element":198,"./dom-index":199,"./patch-op":200,"global/document":195,"x-is-array":220}],202:[function(require,module,exports){
 var isWidget = require("../vnode/is-widget.js")
 
 module.exports = updateWidget
@@ -18521,7 +18980,7 @@ function updateWidget(a, b) {
     return false
 }
 
-},{"../vnode/is-widget.js":212}],202:[function(require,module,exports){
+},{"../vnode/is-widget.js":213}],203:[function(require,module,exports){
 'use strict';
 
 module.exports = AttributeHook;
@@ -18558,7 +19017,7 @@ AttributeHook.prototype.unhook = function (node, prop, next) {
 
 AttributeHook.prototype.type = 'AttributeHook';
 
-},{}],203:[function(require,module,exports){
+},{}],204:[function(require,module,exports){
 'use strict';
 
 var EvStore = require('ev-store');
@@ -18587,7 +19046,7 @@ EvHook.prototype.unhook = function(node, propertyName) {
     es[propName] = undefined;
 };
 
-},{"ev-store":95}],204:[function(require,module,exports){
+},{"ev-store":95}],205:[function(require,module,exports){
 'use strict';
 
 module.exports = SoftSetHook;
@@ -18606,7 +19065,7 @@ SoftSetHook.prototype.hook = function (node, propertyName) {
     }
 };
 
-},{}],205:[function(require,module,exports){
+},{}],206:[function(require,module,exports){
 'use strict';
 
 var isArray = require('x-is-array');
@@ -18745,7 +19204,7 @@ function errorString(obj) {
     }
 }
 
-},{"../vnode/is-thunk":208,"../vnode/is-vhook":209,"../vnode/is-vnode":210,"../vnode/is-vtext":211,"../vnode/is-widget":212,"../vnode/vnode.js":214,"../vnode/vtext.js":216,"./hooks/ev-hook.js":203,"./hooks/soft-set-hook.js":204,"./parse-tag.js":206,"x-is-array":219}],206:[function(require,module,exports){
+},{"../vnode/is-thunk":209,"../vnode/is-vhook":210,"../vnode/is-vnode":211,"../vnode/is-vtext":212,"../vnode/is-widget":213,"../vnode/vnode.js":215,"../vnode/vtext.js":217,"./hooks/ev-hook.js":204,"./hooks/soft-set-hook.js":205,"./parse-tag.js":207,"x-is-array":220}],207:[function(require,module,exports){
 'use strict';
 
 var split = require('browser-split');
@@ -18801,7 +19260,7 @@ function parseTag(tag, props) {
     return props.namespace ? tagName : tagName.toUpperCase();
 }
 
-},{"browser-split":85}],207:[function(require,module,exports){
+},{"browser-split":85}],208:[function(require,module,exports){
 var isVNode = require("./is-vnode")
 var isVText = require("./is-vtext")
 var isWidget = require("./is-widget")
@@ -18843,14 +19302,14 @@ function renderThunk(thunk, previous) {
     return renderedThunk
 }
 
-},{"./is-thunk":208,"./is-vnode":210,"./is-vtext":211,"./is-widget":212}],208:[function(require,module,exports){
+},{"./is-thunk":209,"./is-vnode":211,"./is-vtext":212,"./is-widget":213}],209:[function(require,module,exports){
 module.exports = isThunk
 
 function isThunk(t) {
     return t && t.type === "Thunk"
 }
 
-},{}],209:[function(require,module,exports){
+},{}],210:[function(require,module,exports){
 module.exports = isHook
 
 function isHook(hook) {
@@ -18859,7 +19318,7 @@ function isHook(hook) {
        typeof hook.unhook === "function" && !hook.hasOwnProperty("unhook"))
 }
 
-},{}],210:[function(require,module,exports){
+},{}],211:[function(require,module,exports){
 var version = require("./version")
 
 module.exports = isVirtualNode
@@ -18868,7 +19327,7 @@ function isVirtualNode(x) {
     return x && x.type === "VirtualNode" && x.version === version
 }
 
-},{"./version":213}],211:[function(require,module,exports){
+},{"./version":214}],212:[function(require,module,exports){
 var version = require("./version")
 
 module.exports = isVirtualText
@@ -18877,17 +19336,17 @@ function isVirtualText(x) {
     return x && x.type === "VirtualText" && x.version === version
 }
 
-},{"./version":213}],212:[function(require,module,exports){
+},{"./version":214}],213:[function(require,module,exports){
 module.exports = isWidget
 
 function isWidget(w) {
     return w && w.type === "Widget"
 }
 
-},{}],213:[function(require,module,exports){
+},{}],214:[function(require,module,exports){
 module.exports = "2"
 
-},{}],214:[function(require,module,exports){
+},{}],215:[function(require,module,exports){
 var version = require("./version")
 var isVNode = require("./is-vnode")
 var isWidget = require("./is-widget")
@@ -18961,7 +19420,7 @@ function VirtualNode(tagName, properties, children, key, namespace) {
 VirtualNode.prototype.version = version
 VirtualNode.prototype.type = "VirtualNode"
 
-},{"./is-thunk":208,"./is-vhook":209,"./is-vnode":210,"./is-widget":212,"./version":213}],215:[function(require,module,exports){
+},{"./is-thunk":209,"./is-vhook":210,"./is-vnode":211,"./is-widget":213,"./version":214}],216:[function(require,module,exports){
 var version = require("./version")
 
 VirtualPatch.NONE = 0
@@ -18985,7 +19444,7 @@ function VirtualPatch(type, vNode, patch) {
 VirtualPatch.prototype.version = version
 VirtualPatch.prototype.type = "VirtualPatch"
 
-},{"./version":213}],216:[function(require,module,exports){
+},{"./version":214}],217:[function(require,module,exports){
 var version = require("./version")
 
 module.exports = VirtualText
@@ -18997,7 +19456,7 @@ function VirtualText(text) {
 VirtualText.prototype.version = version
 VirtualText.prototype.type = "VirtualText"
 
-},{"./version":213}],217:[function(require,module,exports){
+},{"./version":214}],218:[function(require,module,exports){
 var isObject = require("is-object")
 var isHook = require("../vnode/is-vhook")
 
@@ -19057,7 +19516,7 @@ function getPrototype(value) {
   }
 }
 
-},{"../vnode/is-vhook":209,"is-object":106}],218:[function(require,module,exports){
+},{"../vnode/is-vhook":210,"is-object":106}],219:[function(require,module,exports){
 var isArray = require("x-is-array")
 
 var VPatch = require("../vnode/vpatch")
@@ -19486,7 +19945,7 @@ function appendPatch(apply, patch) {
     }
 }
 
-},{"../vnode/handle-thunk":207,"../vnode/is-thunk":208,"../vnode/is-vnode":210,"../vnode/is-vtext":211,"../vnode/is-widget":212,"../vnode/vpatch":215,"./diff-props":217,"x-is-array":219}],219:[function(require,module,exports){
+},{"../vnode/handle-thunk":208,"../vnode/is-thunk":209,"../vnode/is-vnode":211,"../vnode/is-vtext":212,"../vnode/is-widget":213,"../vnode/vpatch":216,"./diff-props":218,"x-is-array":220}],220:[function(require,module,exports){
 var nativeIsArray = Array.isArray
 var toString = Object.prototype.toString
 
@@ -19496,7 +19955,7 @@ function isArray(obj) {
     return toString.call(obj) === "[object Array]"
 }
 
-},{}],220:[function(require,module,exports){
+},{}],221:[function(require,module,exports){
 module.exports = extend
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -19517,7 +19976,7 @@ function extend() {
     return target
 }
 
-},{}],221:[function(require,module,exports){
+},{}],222:[function(require,module,exports){
 module.exports = extend
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
