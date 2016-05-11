@@ -110,8 +110,13 @@ function loadViewerList() {
                         handlers.moderationCard(row.text, $(e.target));
                     }
                 }, row.text);
-            },
+            }
         });
+
+        var oldRender = viewList.render;
+        viewList.render = function(list) {
+            if (list) oldRender.call(viewList, list);
+        };
 
         viewList.render([]);
         chatterList = extractViewers(data);
