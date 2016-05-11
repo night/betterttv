@@ -135,6 +135,7 @@ var clearClutter = require('./features/clear-clutter'),
     enableTheatreMode = require('./features/auto-theatre-mode'),
     hostButtonBelowVideo = require('./features/host-btn-below-video'),
     conversations = require('./features/conversations'),
+    betterViewerList = require('./features/better-viewer-list'),
     ChatReplay = require('./features/chat-replay');
 
 var chatFunctions = function() {
@@ -188,6 +189,7 @@ var main = function() {
                                 clearClutter();
                                 channelReformat();
                                 hostButtonBelowVideo();
+                                betterViewerList();
                                 if (
                                     App.__container__.lookup('controller:channel').get('isTheatreMode') === false &&
                                     bttv.settings.get('autoTheatreMode') === true

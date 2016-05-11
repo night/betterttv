@@ -6,6 +6,7 @@ var splitChat = require('./features/split-chat'),
     cssLoader = require('./features/css-loader'),
     hostButton = require('./features/host-btn-below-video'),
     anonChat = require('./features/anon-chat'),
+    betterViewerList = require('./features/better-viewer-list'),
     handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes');
 var displayElement = require('./helpers/element').display,
     removeElement = require('./helpers/element').remove,
@@ -35,6 +36,25 @@ module.exports = [
         description: 'Automatically enables theatre mode',
         default: false,
         storageKey: 'autoTheatreMode'
+    },
+    {
+        name: 'Better Viewer List',
+        description: 'Adds extra features to the viewer list, such as filtering',
+        default: false,
+        storageKey: 'betterViewerList',
+        toggle: function(value) {
+            if (value === true) {
+                betterViewerList();
+                $('a.button[title="Viewer List"]').hide();
+            } else {
+                $('#bvl-button').hide();
+                $('#bvl-panel').remove();
+                $('a.button[title="Viewer List"]').show();
+            }
+        },
+        load: function() {
+            betterViewerList();
+        }
     },
     {
         name: 'BetterTTV Emotes',

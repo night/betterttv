@@ -605,8 +605,8 @@ input.text:focus,select:focus,textarea:focus {
 }
 
 .bttv-mod-card .user-messages .label .triangle {
-    width: 0; 
-    height: 0; 
+    width: 0;
+    height: 0;
     opacity: 0.5;
     position: absolute;
     right: 15px;
@@ -839,6 +839,90 @@ input, textarea, select {
 .viewers_box .list {
     height: 490px !important;
 }
+
+
+/* Better Viewer List */
+#bvl-panel {
+    min-width: 200px;
+    min-height: 300px;
+    margin: 10px;
+    z-index: 99999;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.25);
+}
+
+#bvl-panel .chat-header {
+    cursor: move !important;
+}
+
+#bvl-panel a.button {
+    top: 5px;
+}
+
+#bvl-panel a.button.disable {
+    opacity: 0.2;
+    cursor: not-allowed;
+}
+
+#bvl-panel .status {
+    margin-top: 8px;
+    text-align: center;
+}
+
+#bvl-panel .filter {
+    background-color: rgb(20,20,20) !important;
+    color: #D3D3D3;
+    border: solid 1px #333;
+    box-shadow: none;
+    border-radius: 0;
+    margin: 6px;
+    width: calc(100% - 10px);
+    display: none;
+}
+
+#bvl-panel .viewer-list {
+    width: calc(100% - 25px);;
+    margin: 0 15px;
+    overflow: auto;
+}
+
+#bvl-panel .viewer-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+#bvl-panel .viewer-list::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.7);
+  border-radius: 7px;
+}
+
+#bvl-panel .viewer-list::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0);
+}
+
+#bvl-panel li {
+    height: 20px;
+    display: table;
+}
+
+#bvl-panel li:not(.user-type) {
+    cursor: pointer;
+}
+
+#bvl-panel li.user-type {
+    color: #8c8c8c;
+}
+
+#bvl-panel .resizable-handle-se {
+    width: 20px !important;
+    height: 20px !important;
+}
+
+#bvl-panel .bvl-resizer {
+    position: absolute;
+    fill: #555;
+    right: 0;
+    bottom: 0;
+}
+/* ============= */
 
 .bttvSettingsIcon {
     background: url(../icons/bttv_settings.png) no-repeat 0 0px;
@@ -1439,20 +1523,20 @@ body.channel_new.columns.ember-application {
     top: 0px;
     right: 0px;
     width: 100%;
-    
+
     background-color: #f2f2f2;
     box-shadow: 0px 8px 8px -5px #000;
 
     z-index: 99998;
 }
 
-#bttv-pinned-highlight {    
+#bttv-pinned-highlight {
     padding: 2px 10px;
-    
+
     font-weight: bold;
     font-size: 0.8572em;
     color: #fff;
-    
+
     background-color: rgba(255, 0, 0, 0.5);
 }
 
