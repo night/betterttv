@@ -370,9 +370,9 @@ body {
     -moz-opacity: .50;
     -khtml-opacity: .50;
     opacity: .5;
-    
+
     background-color: rgb(50, 50, 50);
-    
+
     /*border: 1px solid;
     border-color: rgba(0, 0, 0, 0.4) rgba(0, 0, 0, 0.5) rgba(0, 0, 0, 0.55);
     box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 0px 1px;
@@ -2327,7 +2327,6 @@ span.subscribe-text {
 
 .conversations-content .conversation-window .conversation-chat-lines .timestamp-line span {
     background-color: rgb(35,35,35);
-    
 }
 .conversations-content .conversation-window .conversation-chat-lines .timestamp-line:after {
     background-color: #555;
@@ -2430,4 +2429,19 @@ span.subscribe-text {
 /* remove rounded corners on posts toggle box */
 .player-column .feed-toggle-contain {
     border-radius: 0px;
+}
+
+/* Better Viewer List */
+#bvl-panel .filter {
+    background-color: rgb(20,20,20) !important;
+    color: #D3D3D3;
+    border: solid 1px #333;
+}
+
+#bvl-panel .viewer-list::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.7);
+}
+
+#bvl-panel li {
+    color: #D3D3D3;
 }
