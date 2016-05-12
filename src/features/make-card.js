@@ -2,7 +2,7 @@ module.exports = function(user, $event) {
     // adds in user messages from chat
     user.messages = $.makeArray($('.chat-room .chat-messages .chat-line[data-sender="' + user.name + '"]')).reverse();
 
-    var template = bttv.chat.templates.moderationCard(user, $event.offset().top + 25, $event.offset().left - 25);
+    var template = bttv.chat.templates.moderationCard(user, $event.offset().top + 25, $event.offset().left - 50);
     $('.ember-chat .moderation-card').remove();
     $('.ember-chat').append(template);
 
@@ -118,7 +118,7 @@ module.exports = function(user, $event) {
         }
     });
 
-    $modCard.drags({ handle: '.drag-handle', el: $modCard });
+    $modCard.draggable({ handle: '.drag-handle', containment: 'body', el: $modCard });
 
     $('.chat-line[data-sender="' + user.name + '"]').addClass('bttv-user-locate');
     $modCard.on('remove', function() {

@@ -303,13 +303,6 @@ var main = function() {
         directoryFunctions();
     };
 
-    var thirdPartyDeps = function() {
-        /*eslint-disable */
-        // NOPE.avi
-        (function(e){e.fn.drags=function(t){t=e.extend({handle:"",cursor:"move",el:""},t);if(t.handle===""){var n=this}else{var n=this.find(t.handle)}return n.css("cursor",t.cursor).on("mousedown",function(n){if(t.handle===""){var r=e(this).addClass("bttv-draggable")}else{if(t.el===""){var r=e(this).addClass("active-handle").parent().addClass("bttv-draggable")}else{e(this).addClass("active-handle");var r=e(t.el).addClass("bttv-draggable")}}var i=r.css("z-index"),s=r.outerHeight(),o=r.outerWidth(),u=r.offset().top+s-n.pageY,a=r.offset().left+o-n.pageX;r.css("z-index",1e3).parents().on("mousemove",function(t){e(".bttv-draggable").offset({top:t.pageY+u-s,left:t.pageX+a-o}).on("mouseup",function(){e(this).removeClass("bttv-draggable").css("z-index",i)})});n.preventDefault()}).on("mouseup",function(){if(t.handle===""){e(this).removeClass("bttv-draggable")}else{e(this).removeClass("active-handle");e(t.el).removeClass("bttv-draggable")}})}})(jQuery);
-        /*eslint-enable */
-    };
-
     $(document).ready(function() {
         loadUser(function() {
             createSettings();
@@ -324,7 +317,6 @@ var main = function() {
 
             initialFuncs();
             setTimeout(delayedFuncs, 3000);
-            thirdPartyDeps();
         });
     });
 };
