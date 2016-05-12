@@ -869,9 +869,6 @@ input, textarea, select {
 }
 
 #bvl-panel .filter {
-    background-color: #fff;
-    border: 1px solid #aaa;
-    color: #fff;
     box-shadow: none;
     border-radius: 0;
     margin: 6px;
