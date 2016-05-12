@@ -577,7 +577,7 @@ exports.labelsChanged = function(user) {
     }
 };
 
-exports.clearChat = function(user) {
+exports.clearChat = function(user, info) {
     var trackTimeouts = store.trackTimeouts;
 
     // Remove chat image preview if it exists.
@@ -636,7 +636,21 @@ exports.clearChat = function(user) {
                     $message.html('<span style="color: #999">' + $message.html() + '</span>');
                 });
             }
-            if (trackTimeouts[user]) {
+
+            var message;
+            var reason = info['ban-reason'] ? ' Reason: ' + templates.escape(info['ban-reason']) : '';
+            var type = info['ban-duration'] ? 'timed out for ' + info['ban-duration'] + ' seconds.' : 'banned from this room.';
+            var typeSimple = info['ban-duration'] ? 'timed out.' : 'banned.';
+
+            if (vars.userData.isLoggedIn && user === vars.userData.name) {
+                message = 'You have been ' + type + reason;
+            } else if (vars.userData.isLoggedIn && helpers.isModerator(vars.userData.name)) {
+                message = helpers.lookupDisplayName(user) + ' has been ' + type + reason;
+            } else {
+                message = helpers.lookupDisplayName(user) + ' has been ' + typeSimple;
+            }
+
+            if (trackTimeouts[user] && message === trackTimeouts[user].message) {
                 trackTimeouts[user].count++;
                 $('#times_from_' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '_' + trackTimeouts[user].timesID).each(function() {
                     $(this).text('(' + trackTimeouts[user].count + ' times)');
@@ -644,10 +658,10 @@ exports.clearChat = function(user) {
             } else {
                 trackTimeouts[user] = {
                     count: 1,
-                    timesID: Math.floor(Math.random() * 100001)
+                    timesID: Math.floor(Math.random() * 100001),
+                    message: message
                 };
-                var displayName = helpers.lookupDisplayName(user);
-                helpers.serverMessage(displayName + ' has been timed out. <span id="times_from_' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '_' + trackTimeouts[user].timesID + '"></span>', true);
+                helpers.serverMessage(message + ' <span id="times_from_' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '_' + trackTimeouts[user].timesID + '"></span>', true);
             }
         }
     }
