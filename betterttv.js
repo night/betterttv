@@ -3181,7 +3181,10 @@ function loadViewerList() {
 function createPanel() {
     // Create panel
     $panel = $(panelTemplate())
-        .draggable({handle: '.drag_handle'});
+        .draggable({
+            handle: '.drag_handle',
+            containment: 'body'
+        });
 
     $panel.find('.close-button').click(function() {
         $panel.hide();
