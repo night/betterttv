@@ -577,7 +577,7 @@ exports.labelsChanged = function(user) {
     }
 };
 
-exports.clearChat = function(user) {
+exports.clearChat = function(user, info) {
     var trackTimeouts = store.trackTimeouts;
 
     // Remove chat image preview if it exists.
@@ -636,18 +636,45 @@ exports.clearChat = function(user) {
                     $message.html('<span style="color: #999">' + $message.html() + '</span>');
                 });
             }
+
+            var message;
+            var reason = info['ban-reason'] ? ' Reason: ' + templates.escape(info['ban-reason']) : '';
+            var type = info['ban-duration'] ? 'timed out for ' + templates.escape(info['ban-duration']) + ' seconds.' : 'banned from this room.';
+            var typeSimple = info['ban-duration'] ? 'timed out.' : 'banned.';
+
+            if (vars.userData.isLoggedIn && user === vars.userData.name) {
+                message = 'You have been ' + type + reason;
+            } else if (vars.userData.isLoggedIn && helpers.isModerator(vars.userData.name)) {
+                message = helpers.lookupDisplayName(user) + ' has been ' + type + reason;
+            } else {
+                message = helpers.lookupDisplayName(user) + ' has been ' + typeSimple;
+            }
+
+            var timesID = trackTimeouts[user] ? trackTimeouts[user].timesID : Math.floor(Math.random() * 100001);
+            var spanID = 'times_from_' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '_' + timesID;
+
             if (trackTimeouts[user]) {
                 trackTimeouts[user].count++;
-                $('#times_from_' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '_' + trackTimeouts[user].timesID).each(function() {
-                    $(this).text('(' + trackTimeouts[user].count + ' times)');
+                $('#' + spanID).each(function() {
+                    $(this).text(message + ' (' + trackTimeouts[user].count + ' times)');
                 });
             } else {
                 trackTimeouts[user] = {
                     count: 1,
-                    timesID: Math.floor(Math.random() * 100001)
+                    timesID: timesID
                 };
-                var displayName = helpers.lookupDisplayName(user);
-                helpers.serverMessage(displayName + ' has been timed out. <span id="times_from_' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '_' + trackTimeouts[user].timesID + '"></span>', true);
+                helpers.serverMessage('<span id="' + spanID + '">' + message + '</span>', true);
+            }
+
+            // Update channel state with timeout duration
+            if (vars.userData.isLoggedIn && user === vars.userData.name) {
+                channelState({
+                    type: 'notice',
+                    tags: {
+                        'msg-id': info['ban-duration'] ? 'msg_timedout' : 'msg_banned',
+                    },
+                    message: info['ban-duration']
+                });
             }
         }
     }
