@@ -930,6 +930,14 @@ input, textarea, select {
     background: url(../icons/bttv_settings.png) no-repeat -18px 0px;
 }
 
+.bttvSettingsIconDropDown {
+    width: 18px;
+    margin-left: 6px;
+    margin-right: 16px;
+    height: 18px;
+    background: url(../icons/bttv_settings.png) no-repeat 0 0px;
+}
+
 .xbox_button {
     display: none !important;
 }

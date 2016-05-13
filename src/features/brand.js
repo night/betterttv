@@ -33,9 +33,18 @@ module.exports = function() {
             'position': 'absolute'
         });
         $('.warp .warp__logo').append($watermark);
+
+        $('.warp__drawer .warp__list .warp__item:eq(2)').before('<li class="warp__item"><a class="warp__tipsy" data-tt_medium="twitch_leftnav" href="#" title="BetterTTV Settings"><figure class="warp__avatar bttvSettingsIconDropDown"></figure><span class="drawer__item">BetterTTV Settings</span></a></li>');
+        $('.bttvSettingsIconDropDown').parent().click(function(e) {
+            e.preventDefault();
+            $('#chat_settings_dropmenu').hide();
+            $('#bttvSettingsPanel').show('slow');
+        }).tipsy({
+            gravity: 'w'
+        });
     }, 100);
 
-    // Adds BTTV Settings Icon to Left Sidebar
+    // Adds BTTV Settings Icon to Old Left Sidebar
     $('.column .content #you').append('<a class="bttvSettingsIcon" href="#""></a>');
     $('.bttvSettingsIcon').click(function(e) {
         e.preventDefault();
