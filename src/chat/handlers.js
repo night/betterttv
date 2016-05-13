@@ -309,6 +309,17 @@ exports.clearChat = function(user, info) {
                 };
                 helpers.serverMessage('<span id="' + spanID + '">' + message + '</span>', true);
             }
+
+            // Update channel state with timeout duration
+            if (vars.userData.isLoggedIn && user === vars.userData.name) {
+                channelState({
+                    type: 'notice',
+                    tags: {
+                        'msg-id': info['ban-duration'] ? 'msg_timedout' : 'msg_banned',
+                    },
+                    message: info['ban-duration']
+                });
+            }
         }
     }
 };
