@@ -294,18 +294,20 @@ exports.clearChat = function(user, info) {
                 message = helpers.lookupDisplayName(user) + ' has been ' + typeSimple;
             }
 
+            var timesID = trackTimeouts[user] ? trackTimeouts[user].timesID : Math.floor(Math.random() * 100001);
+            var spanID = 'times_from_' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '_' + timesID;
+
             if (trackTimeouts[user] && message === trackTimeouts[user].message) {
                 trackTimeouts[user].count++;
-                $('#times_from_' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '_' + trackTimeouts[user].timesID).each(function() {
-                    $(this).text('(' + trackTimeouts[user].count + ' times)');
+                $('#' + spanID).each(function() {
+                    $(this).text(message + ' (' + trackTimeouts[user].count + ' times)');
                 });
             } else {
                 trackTimeouts[user] = {
                     count: 1,
-                    timesID: Math.floor(Math.random() * 100001),
-                    message: message
+                    timesID: timesID
                 };
-                helpers.serverMessage(message + ' <span id="times_from_' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '_' + trackTimeouts[user].timesID + '"></span>', true);
+                helpers.serverMessage('<span id="' + spanID + '">' + message + '</span>', true);
             }
         }
     }
