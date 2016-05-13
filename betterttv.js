@@ -4575,7 +4575,7 @@ function load(file, key) {
     if (!bttv.settings.get(key)) return;
 
     var css = document.createElement('link');
-    css.setAttribute('href', 'https://cdn.betterttv.net/style/stylesheets/betterttv-' + file + '.css?' + bttv.info.versionString());
+    css.setAttribute('href', 'https://localhost/style/stylesheets/betterttv-' + file + '.css?' + bttv.info.versionString());
     css.setAttribute('type', 'text/css');
     css.setAttribute('rel', 'stylesheet');
     css.setAttribute('id', key);
@@ -6521,6 +6521,22 @@ module.exports = [
         }
     },
     {
+        name: 'Hide Recommended Friends',
+        description: 'Hides the recommended friend list from the left sidebar',
+        default: false,
+        storageKey: 'hideRecommendedFriends',
+        toggle: function(value) {
+            if (value === true) {
+                cssLoader.load('hide-recommended-friends', 'hideRecommendedFriends');
+            } else {
+                cssLoader.unload('hideRecommendedFriends');
+            }
+        },
+        load: function() {
+            cssLoader.load('hide-recommended-friends', 'hideRecommendedFriends');
+        }
+    },
+    {
         name: 'Hide Spam Messages',
         description: 'Hides known spam messages. Click on the message to reveal it',
         default: true,
@@ -7777,8 +7793,8 @@ function amdefine(module, requireFn) {
 
 module.exports = amdefine;
 
-}).call(this,require("+xKvab"),"/../node_modules/amdefine/amdefine.js")
-},{"+xKvab":80,"path":155}],72:[function(require,module,exports){
+}).call(this,require("UYZiDK"),"/..\\node_modules\\amdefine\\amdefine.js")
+},{"UYZiDK":80,"path":155}],72:[function(require,module,exports){
 'use strict'
 
 /**
@@ -13850,8 +13866,8 @@ var substr = 'ab'.substr(-1) === 'b'
     }
 ;
 
-}).call(this,require("+xKvab"))
-},{"+xKvab":80}],156:[function(require,module,exports){
+}).call(this,require("UYZiDK"))
+},{"UYZiDK":80}],156:[function(require,module,exports){
 (function (global){
 /*! http://mths.be/punycode v1.2.4 by @mathias */
 ;(function(root) {

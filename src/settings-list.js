@@ -391,6 +391,22 @@ module.exports = [
         }
     },
     {
+        name: 'Hide Recommended Friends',
+        description: 'Hides the recommended friend list from the left sidebar',
+        default: false,
+        storageKey: 'hideRecommendedFriends',
+        toggle: function(value) {
+            if (value === true) {
+                cssLoader.load('hide-recommended-friends', 'hideRecommendedFriends');
+            } else {
+                cssLoader.unload('hideRecommendedFriends');
+            }
+        },
+        load: function() {
+            cssLoader.load('hide-recommended-friends', 'hideRecommendedFriends');
+        }
+    },
+    {
         name: 'Hide Spam Messages',
         description: 'Hides known spam messages. Click on the message to reveal it',
         default: true,
