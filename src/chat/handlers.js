@@ -283,7 +283,7 @@ exports.clearChat = function(user, info) {
 
             var message;
             var reason = info['ban-reason'] ? ' Reason: ' + templates.escape(info['ban-reason']) : '';
-            var type = info['ban-duration'] ? 'timed out for ' + info['ban-duration'] + ' seconds.' : 'banned from this room.';
+            var type = info['ban-duration'] ? 'timed out for ' + templates.escape(info['ban-duration']) + ' seconds.' : 'banned from this room.';
             var typeSimple = info['ban-duration'] ? 'timed out.' : 'banned.';
 
             if (vars.userData.isLoggedIn && user === vars.userData.name) {
