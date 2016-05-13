@@ -2,6 +2,10 @@ body, code, samp, kbd, .real_title, #right_col .content #chat_line_list, .ember-
     color: #D3D3D3;
 }
 
+.ember-chat .chat-messages .chat-line.admin .message, .ember-chat .chat-messages .chat-line.notification .message, .ember-chat .chat-messages .timestamp {
+    color: #7B7B7B;
+}
+
 #mantle_skin .login_form {
     color: #000;
 }
