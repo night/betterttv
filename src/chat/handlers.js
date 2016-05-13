@@ -297,7 +297,7 @@ exports.clearChat = function(user, info) {
             var timesID = trackTimeouts[user] ? trackTimeouts[user].timesID : Math.floor(Math.random() * 100001);
             var spanID = 'times_from_' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '_' + timesID;
 
-            if (trackTimeouts[user] && message === trackTimeouts[user].message) {
+            if (trackTimeouts[user]) {
                 trackTimeouts[user].count++;
                 $('#' + spanID).each(function() {
                     $(this).text(message + ' (' + trackTimeouts[user].count + ' times)');
