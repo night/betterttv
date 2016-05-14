@@ -49,7 +49,8 @@ function extractViewers(data) {
         for (var j = 0; j < users.length; j++) {
             results.push({
                 tag: 'li',
-                text: helpers.lookupDisplayName(users[j])
+                text: users[j],
+                display: helpers.lookupDisplayName(users[j])
             });
         }
 
@@ -110,7 +111,7 @@ function loadViewerList() {
                     onclick: function(e) {
                         handlers.moderationCard(row.text, $(e.target));
                     }
-                }, row.text);
+                }, row.display || row.text);
             }
         });
 
