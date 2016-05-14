@@ -60,10 +60,36 @@ exports.highlighting = function(data) {
 
     var highlightKeywords = [];
     var highlightUsers = [];
+    var i;
 
     var extraKeywords = bttv.settings.get('highlightKeywords');
-    var phraseRegex = /\{.+?\}/g;
+    var useRegex = bttv.settings.get('regexHighlights');
 
+    var highlightRegex = [];
+    if (useRegex) {
+        // Pull the regular expressions out first so curly braces
+        // in the expression won't double count as phrases
+        var regexPhrase = /\/.+?\//g;
+        var regexStrings;
+        try {
+            regexStrings = extraKeywords.match(regexPhrase);
+        } catch (e) {
+            debug.log(e);
+            return false;
+        }
+        if (regexStrings) {
+            for (i = 0; i < regexStrings.length; i++) {
+                var regexString = regexStrings[i];
+                debug.log(regexString);
+                extraKeywords = extraKeywords.replace(regexString, '')
+                    .replace(/s\s\s+/g, ' ').trim();
+                highlightRegex.push(regexString.replace(/(^\/|\/$)/g, '')
+                                    .trim());
+            }
+        }
+    }
+
+    var phraseRegex = /\{.+?\}/g;
     var testCases;
     try {
         testCases = extraKeywords.match(phraseRegex);
@@ -72,7 +98,6 @@ exports.highlighting = function(data) {
         return false;
     }
 
-    var i;
     if (testCases) {
         for (i = 0; i < testCases.length; i++) {
             var testCase = testCases[i];
@@ -80,6 +105,7 @@ exports.highlighting = function(data) {
             highlightKeywords.push(testCase.replace(/(^\{|\}$)/g, '').trim());
         }
     }
+
     if (extraKeywords !== '') {
         extraKeywords = extraKeywords.split(' ');
         extraKeywords.forEach(function(keyword) {
@@ -113,6 +139,17 @@ exports.highlighting = function(data) {
             return true;
         }
     }
+
+    if (useRegex) {
+        for (i = 0; i < highlightRegex.length; i++) {
+            debug.log('Testing' + highlightRegex);
+            regex = new RegExp(highlightRegex[i], 'g');
+            if (regex.test(data.message)) {
+                return true;
+            }
+        }
+    }
+
 
     return false;
 };
