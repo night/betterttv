@@ -204,8 +204,8 @@ exports.moderationCard = function(user, $event) {
         }
 
         // Since we've fetched the data, let's store the display name
-        if (userApi.displayName) {
-            store.displayNames[user] = userApi.displayName;
+        if (userApi.display_name) {
+            store.displayNames[user] = userApi.display_name;
         }
 
         makeCard(userApi, $event);
