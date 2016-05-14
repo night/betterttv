@@ -1,6 +1,6 @@
 var vars = require('../vars');
 
-var forcedURL = window.location.search && window.location.search.indexOf('bttvAnonChat=true') > -1;
+var forcedURL = window.location.search && window.location.search.indexOf('bttv_anon_chat=true') > -1;
 
 module.exports = function(force) {
     if (!vars.userData.isLoggedIn) return;

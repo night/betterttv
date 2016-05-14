@@ -2180,7 +2180,7 @@ var takeover = module.exports = function() {
 
     var $chatInterface = $('.ember-chat .chat-interface');
     var $chatInput = $chatInterface.find('textarea');
-    var $chatSend = $chatInterface.find('.send-chat-button');
+    var $chatSend = $chatInterface.find('.button.primary.float-right');
 
     // Limit chat input to 500 characters
     $chatInput.attr('maxlength', '500');
@@ -2625,7 +2625,7 @@ var debug = require('./helpers/debug'),
 
 bttv.info = {
     version: '6.8',
-    release: 44,
+    release: 52,
     versionString: function() {
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -2973,7 +2973,7 @@ checkJquery();
 },{"./chat":2,"./features/auto-theatre-mode":15,"./features/better-viewer-list":16,"./features/brand":17,"./features/channel-reformat":19,"./features/chat-replay":22,"./features/check-broadcast-info":23,"./features/check-following":24,"./features/check-messages":25,"./features/clear-clutter":26,"./features/conversations":27,"./features/create-settings":28,"./features/darken-page":31,"./features/dashboard-channelinfo":32,"./features/directory-functions":33,"./features/flip-dashboard":35,"./features/format-dashboard":36,"./features/giveaway-compatibility":37,"./features/handle-background":38,"./features/handle-twitchchat-emotes":39,"./features/host-btn-below-video":40,"./features/image-preview":41,"./features/split-chat":46,"./helpers/debug":48,"./settings":55,"./storage":56,"./twitch-api":68,"./vars":69,"./ws":70}],13:[function(require,module,exports){
 var vars = require('../vars');
 
-var forcedURL = window.location.search && window.location.search.indexOf('bttvAnonChat=true') > -1;
+var forcedURL = window.location.search && window.location.search.indexOf('bttv_anon_chat=true') > -1;
 
 module.exports = function(force) {
     if (!vars.userData.isLoggedIn) return;
