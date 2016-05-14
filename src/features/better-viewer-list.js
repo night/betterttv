@@ -2,6 +2,7 @@ var buttonTemplate = require('../templates/bvl-button'),
     panelTemplate = require('../templates/bvl-panel'),
     debug = require('../helpers/debug'),
     handlers = require('../chat/handlers'),
+    helpers = require('../chat/helpers'),
     ViewList = require('view-list'),
     Resizable = require('resizable');
 
@@ -48,7 +49,7 @@ function extractViewers(data) {
         for (var j = 0; j < users.length; j++) {
             results.push({
                 tag: 'li',
-                text: users[j]
+                text: helpers.lookupDisplayName(users[j])
             });
         }
 
