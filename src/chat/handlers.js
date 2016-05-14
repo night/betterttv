@@ -31,7 +31,7 @@ exports.commands = function(input) {
     var oldSetting;
 
     if (command === '/b') {
-        helpers.ban(sentence[1]);
+        helpers.ban(sentence[1], sentence.slice(2).join(' '));
     } else if (command === '/chatters') {
         $.getJSON('https://tmi.twitch.tv/group/user/' + bttv.getChannel() + '?callback=?').done(function(resp) {
             helpers.serverMessage('Current Chatters: ' + Twitch.display.commatize(resp.data.chatter_count), true);
@@ -86,7 +86,7 @@ exports.commands = function(input) {
     } else if (command === '/t') {
         var time = 600;
         if (!isNaN(sentence[2])) time = sentence[2];
-        helpers.timeout(sentence[1], time);
+        helpers.timeout(sentence[1], time, sentence.slice(3).join(' '));
     } else if (command === '/u') {
         helpers.unban(sentence[1]);
     } else if (command === '/uptime') {
