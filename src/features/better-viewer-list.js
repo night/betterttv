@@ -147,7 +147,17 @@ function createPanel() {
     $panel = $(panelTemplate())
         .draggable({
             handle: '.drag_handle',
-            containment: 'body'
+            containment: 'body',
+            stop: function(ev, ui) {
+                if (ui.offset.top < 0) {
+                    ui.position.top -= ui.offset.top;
+                    ui.helper.css('top', ui.position.top);
+                }
+                if (ui.offset.left < 0) {
+                    ui.position.left -= ui.offset.left;
+                    ui.helper.css('left', ui.position.left);
+                }
+            }
         });
 
     $panel.find('.close-button').click(function() {
