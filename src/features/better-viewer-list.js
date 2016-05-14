@@ -141,6 +141,11 @@ function loadViewerList() {
         }
         $('#bvl-panel .status').text(errorText);
     });
+
+    // Timeout after 15 seconds
+    setTimeout(function() {
+        if (deferred.readyState !== 4) deferred.abort();
+    }, 15 * 1000);
 }
 
 function createPanel() {
