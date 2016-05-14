@@ -2417,7 +2417,7 @@ var linkify = exports.linkify = function(message) {
 };
 
 var escapeEmoteCode = function(code) {
-    return code.replace(/('|"|>|<|&)/g, '');
+    return code.replace(/('|"|&)/g, '');
 };
 
 var emoticonBTTV = exports.emoticonBTTV = function(emote) {
