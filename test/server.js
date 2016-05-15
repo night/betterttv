@@ -16,10 +16,7 @@ var server = function(req, res) {
     fs.exists(file, function(exists) {
         if (!exists) {
             request.get({
-                url: 'https://cdn-dev.betterttv.net/' + uri,
-                headers: {
-                    'Host': 'cdn.betterttv.net'
-                }
+                url: 'https://cdn.betterttv.net/' + uri
             }).pipe(res);
             return;
         }
@@ -39,8 +36,8 @@ var server = function(req, res) {
 };
 
 https.createServer({
-  key: fs.readFileSync(path.join(__dirname, 'test-cdn.betterttv.net.key')),
-  cert: fs.readFileSync(path.join(__dirname, 'test-cdn.betterttv.net.cert'))
+    key: fs.readFileSync(path.join(__dirname, 'test-cdn.betterttv.net.key')),
+    cert: fs.readFileSync(path.join(__dirname, 'test-cdn.betterttv.net.cert'))
 }, server).listen(443);
 
 http.createServer(server).listen(80);

@@ -80,7 +80,7 @@ SocketClient.prototype.connect = function() {
     debug.log('SocketClient: Connecting to Beta BetterTTV Socket Server');
 
     var _self = this;
-    this.socket = new WebSocket('wss://sockets-beta.betterttv.net/ws');
+    this.socket = new WebSocket('wss://sockets.betterttv.net/ws');
 
     this.socket.onopen = function() {
         debug.log('SocketClient: Connected to Beta BetterTTV Socket Server');
