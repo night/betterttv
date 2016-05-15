@@ -4,7 +4,7 @@ env:
 node_js:
 - '5.1'
 before_script:
-- npm list -g gulp --depth=0 || npm install -g gulp
+- which gulp || npm install -g gulp
 script: gulp
 notifications:
   slack:
