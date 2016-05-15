@@ -17,6 +17,18 @@ function Conversations(timeout) {
 
     var $conversations = $('.conversations-content');
 
+    if (bttv.settings.get('hideConversations')) {
+        $conversations.css('opacity', 0);
+
+        $conversations.hover(function() {
+            $conversations.fadeTo(1, 1);
+        }, function() {
+            if ($(this).find('.list-displayed').length || $(this).find('.conversation-window').length) return;
+            $conversations.fadeTo(1, 0);
+        }
+        );
+    }
+
     if (!$conversations.length) {
         setTimeout(function() {
             return new Conversations(2 * timeout);
@@ -121,6 +133,11 @@ Conversations.prototype.newConversation = function(element) {
     var _self = this;
     var $chatInput = $(element).find('.chat_text_input');
     var name = $(element).find('.conversation-header-name').text().toLowerCase();
+
+    if (bttv.settings.get('hideConversations')) $('.conversations-content').fadeTo(1, 1);
+    $(element).find('.header-button-container').children().last().on('click', function() {
+        if (bttv.settings.get('hideConversations') && $('.conversation-window').length === 1) $('.conversations-content').fadeTo(1, 0);
+    });
 
     function storeMessage(message) {
         if (!bttv.settings.get('chatLineHistory')) return;
