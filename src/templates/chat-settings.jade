@@ -1,7 +1,5 @@
 .list-header BetterTTV
 .chat-menu-content
-    if $("body[data-page=\"ember#chat\"]").length
-        p: a.g18_gear-00000080.blackChatLink(href="#") Black Chat (Chroma Key)
     if $("#dash_main").length || window !== window.top
         p: a.g18_gear-00000080.flipDashboard(href="#")
             if bttv.settings.get("flipDashboard")

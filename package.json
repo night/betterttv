@@ -19,7 +19,7 @@
     "request": "2.36.0"
   },
   "scripts": {
-    "test": "node test/server.js"
+    "start": "node dev/server.js"
   },
   "repository": {
     "type": "git",
