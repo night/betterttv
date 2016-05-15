@@ -1,16 +1,22 @@
 var debug = require('../helpers/debug');
 
 module.exports = function() {
-    // Inject the emote menu if option is enabled.
-    if (bttv.settings.get('clickTwitchEmotes') === true) {
-        debug.log('Injecting Twitch Chat Emotes Script');
+    if (window.emoteMenu) {
+        if (bttv.settings.get('clickTwitchEmotes') === true) {
+            $('#emote-menu-button').show();
+        } else {
+            $('#emote-menu-button').hide();
+        }
 
-        var emotesJSInject = document.createElement('script');
-        emotesJSInject.setAttribute('src', 'https://cdn.betterttv.net/js/twitchemotes.js?' + bttv.info.versionString());
-        emotesJSInject.setAttribute('type', 'text/javascript');
-        emotesJSInject.setAttribute('id', 'clickTwitchEmotes');
-        $('body').append(emotesJSInject);
+        return;
     }
+
+    // Inject the emote menu if option is enabled.
+    if (bttv.settings.get('clickTwitchEmotes') === false) return;
+
+    debug.log('Injecting Twitch Chat Emotes Script');
+
+    require('twitch-chat-emotes/script.min');
 
     // Try hooking into the emote menu, regardless of whether we injected or not.
     var counter = 0;
