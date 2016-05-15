@@ -10,3 +10,6 @@ notifications:
   slack:
     secure: ZlbZ0agjSL/qKrkDJqUcuX6gXcUGWqgh+pIOJxaeo0opeT9RtbQTKgEQzUl1Mg6u4dkYPllUaL/kK+7YKOLIip/nkfurQ7VLeLeJMsV6875OGV4QtiSiqRjXPOqv3sIjK1ijgcAUpjFDmZlk3ZUQ/aW8FgJnZYUMKNeMGu+Lgwk=
   email: false
+cache:
+  directories:
+    - node_modules
