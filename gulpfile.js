@@ -6,7 +6,10 @@ var fs = require('fs'),
     footer = require('gulp-footer'),
     concat = require('gulp-concat'),
     del = require('del'),
-    eslint = require('gulp-eslint');
+    eslint = require('gulp-eslint'),
+    uglify = require('gulp-uglify'),
+    saveLicense = require('uglify-save-license'),
+    enviro = require('gulp-environments');
 
 gulp.task('cleanup', function() {
     return del('build/**/*');
@@ -46,6 +49,7 @@ gulp.task('scripts', ['prepare'], function() {
         .pipe(header(jadeDefinition))
         .pipe(header(license + '\n'))
         .pipe(footer('}(window.BetterTTV = window.BetterTTV || {}));'))
+        .pipe(enviro.production(uglify({ preserveComments: saveLicense })))
         .pipe(gulp.dest('build'));
 });
 
