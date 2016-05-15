@@ -2,6 +2,7 @@ var buttonTemplate = require('../../templates/bvl-button'),
     panelTemplate = require('../../templates/bvl-panel'),
     debug = require('../helpers/debug'),
     handlers = require('../chat/handlers'),
+    helpers = require('../chat/helpers'),
     ViewList = require('view-list'),
     Resizable = require('resizable');
 
@@ -48,7 +49,8 @@ function extractViewers(data) {
         for (var j = 0; j < users.length; j++) {
             results.push({
                 tag: 'li',
-                text: users[j]
+                text: users[j],
+                display: helpers.lookupDisplayName(users[j])
             });
         }
 
@@ -109,7 +111,7 @@ function loadViewerList() {
                     onclick: function(e) {
                         handlers.moderationCard(row.text, $(e.target));
                     }
-                }, row.text);
+                }, row.display || row.text);
             }
         });
 
@@ -140,6 +142,11 @@ function loadViewerList() {
         }
         $('#bvl-panel .status').text(errorText);
     });
+
+    // Timeout after 15 seconds
+    setTimeout(function() {
+        if (deferred.readyState !== 4) deferred.abort();
+    }, 15 * 1000);
 }
 
 function createPanel() {
@@ -147,7 +154,17 @@ function createPanel() {
     $panel = $(panelTemplate())
         .draggable({
             handle: '.drag_handle',
-            containment: 'body'
+            containment: 'body',
+            stop: function(ev, ui) {
+                if (ui.offset.top < 0) {
+                    ui.position.top -= ui.offset.top;
+                    ui.helper.css('top', ui.position.top);
+                }
+                if (ui.offset.left < 0) {
+                    ui.position.left -= ui.offset.left;
+                    ui.helper.css('left', ui.position.left);
+                }
+            }
         });
 
     $panel.find('.close-button').click(function() {
@@ -161,8 +178,8 @@ function createPanel() {
 
     var container = $('.chat-room');
     $panel.css({
-        width: container.width() - 20,
-        height: Math.max(500, container.height() - 400)
+        width: container.width(),
+        height: container.height() - 115
     });
 
     container.append($panel);
@@ -189,8 +206,8 @@ function createPanel() {
 
 module.exports = function() {
     if (bttv.settings.get('betterViewerList') === false) return;
-    if (!window.Ember || !window.App ||
-        App.__container__.lookup('controller:application').get('currentRouteName') !== 'channel.index.index') return;
+    if ($('.chat-room').length === 0 && (!window.Ember || !window.App ||
+        App.__container__.lookup('controller:application').get('currentRouteName') !== 'channel.index.index')) return;
 
     if ($('#bvl-button').length > 0) {
         $('#bvl-button').show();
@@ -198,7 +215,11 @@ module.exports = function() {
     }
 
     var interval = setInterval(function() {
-        if ($('#bvl-button').length > 0) return;
+        if ($('#bvl-button').length > 0) {
+            clearInterval(interval);
+            return;
+        }
+
         var $oldViewerList = $('a.button[title="Viewer List"]');
         if ($oldViewerList.length === 0) return;
         $oldViewerList.hide();
