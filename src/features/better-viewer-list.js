@@ -178,8 +178,8 @@ function createPanel() {
 
     var container = $('.chat-room');
     $panel.css({
-        width: container.width() - 20,
-        height: Math.max(500, container.height() - 400)
+        width: container.width(),
+        height: container.height() - 115
     });
 
     container.append($panel);
