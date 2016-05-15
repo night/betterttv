@@ -4,7 +4,15 @@
   "version": "6.7.0",
   "description": "BetterTTV enhances Twitch with new features, bug fixes, and reduced clutter.",
   "main": "betterttv.js",
-  "devDependencies": {
+  "scripts": {
+    "start": "node dev/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/night/BetterTTV.git"
+  },
+  "dependencies": {
+    "cookies-js": "^1.2.1",
     "del": "^2.2.0",
     "gulp": "^3.8.0",
     "gulp-browserify": "^0.5.0",
@@ -18,22 +26,12 @@
     "gulp-rename": "^1.2.0",
     "gulp-uglify": "^1.5.3",
     "jade": "^1.5.0",
-    "request": "2.36.0",
-    "uglify-save-license": "^0.4.1"
-  },
-  "scripts": {
-    "start": "node dev/server.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/night/BetterTTV.git"
-  },
-  "dependencies": {
-    "cookies-js": "^1.2.1",
     "lodash.debounce": "^4.0.6",
     "lodash.throttle": "^3.0.4",
+    "request": "2.36.0",
     "resizable": "^1.1.1",
     "twitch-chat-emotes": "github:cletusc/Userscript--Twitch-Chat-Emotes#8d1c6adc17b56fabdf4e00665348a4e00d58d99a",
+    "uglify-save-license": "^0.4.1",
     "view-list": "^2.1.0"
   }
 }
