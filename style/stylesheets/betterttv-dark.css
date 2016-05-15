@@ -2436,6 +2436,10 @@ span.subscribe-text {
 }
 
 /* Better Viewer List */
+#bvl-panel {
+    background-color: rgb(30, 30, 30) !important;
+}
+
 #bvl-panel .filter {
     background-color: rgb(20,20,20) !important;
     color: #D3D3D3;
