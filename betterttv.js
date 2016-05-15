@@ -2906,6 +2906,7 @@ var main = function() {
         directoryFunctions();
         handleTwitchChatEmotesScript();
         hostButtonBelowVideo();
+        betterViewerList();
 
         if (bttv.settings.get('chatImagePreview') === true) {
             enableImagePreview();
@@ -3266,8 +3267,8 @@ function createPanel() {
 
 module.exports = function() {
     if (bttv.settings.get('betterViewerList') === false) return;
-    if (!window.Ember || !window.App ||
-        App.__container__.lookup('controller:application').get('currentRouteName') !== 'channel.index.index') return;
+    if ($('.chat-room').length === 0 && (!window.Ember || !window.App ||
+        App.__container__.lookup('controller:application').get('currentRouteName') !== 'channel.index.index')) return;
 
     if ($('#bvl-button').length > 0) {
         $('#bvl-button').show();
@@ -3275,6 +3276,11 @@ module.exports = function() {
     }
 
     var interval = setInterval(function() {
+        if ($('#bvl-button').length > 0) {
+            clearInterval(interval);
+            return;
+        }
+
         if ($('#bvl-button').length > 0) return;
         var $oldViewerList = $('a.button[title="Viewer List"]');
         if ($oldViewerList.length === 0) return;
