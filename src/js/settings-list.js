@@ -326,13 +326,8 @@ module.exports = [
         description: 'Get a more advanced emote menu for Twitch. (Made by Ryan Chatham)',
         default: false,
         storageKey: 'clickTwitchEmotes',
-        toggle: function(value) {
-            if (value === true) {
-                handleTwitchChatEmotesScript();
-            } else {
-                $('#emote-menu-button').remove();
-                $('#clickTwitchEmotes').remove();
-            }
+        toggle: function() {
+            handleTwitchChatEmotesScript();
         }
     },
     {
