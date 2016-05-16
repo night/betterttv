@@ -285,6 +285,7 @@ var main = function() {
         directoryFunctions();
         handleTwitchChatEmotesScript();
         hostButtonBelowVideo();
+        betterViewerList();
 
         if (bttv.settings.get('chatImagePreview') === true) {
             enableImagePreview();

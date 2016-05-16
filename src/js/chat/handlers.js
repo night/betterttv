@@ -203,6 +203,11 @@ exports.moderationCard = function(user, $event) {
             return;
         }
 
+        // Since we've fetched the data, let's store the display name
+        if (userApi.display_name) {
+            store.displayNames[user] = userApi.display_name;
+        }
+
         makeCard(userApi, $event);
     }).fail(function() {
         makeCard({ name: user, display_name: user.capitalize() }, $event);
