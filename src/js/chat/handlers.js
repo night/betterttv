@@ -231,6 +231,9 @@ exports.clearChat = function(user, info) {
     if (!user) {
         helpers.serverMessage('Chat was cleared by a moderator (Prevented by BetterTTV)', true);
     } else {
+        var isTarget = vars.userData.isLoggedIn && user === vars.userData.name;
+        var isMod = vars.userData.isLoggedIn && helpers.isModerator(vars.userData.name);
+
         var printedChatLines = [];
         $('.chat-line[data-sender="' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '"]').each(function() {
             printedChatLines.push($(this));
@@ -243,7 +246,8 @@ exports.clearChat = function(user, info) {
 
         $chatLines = $(printedChatLines.concat(queuedLines));
 
-        if (!$chatLines.length) return;
+        if (!$chatLines.length && !isTarget && !isMod) return;
+
         if (bttv.settings.get('hideDeletedMessages') === true) {
             $chatLines.each(function() {
                 $(this).hide();
@@ -286,9 +290,9 @@ exports.clearChat = function(user, info) {
             var type = info['ban-duration'] ? 'timed out for ' + templates.escape(info['ban-duration']) + ' seconds.' : 'banned from this room.';
             var typeSimple = info['ban-duration'] ? 'timed out.' : 'banned.';
 
-            if (vars.userData.isLoggedIn && user === vars.userData.name) {
+            if (isTarget) {
                 message = 'You have been ' + type + reason;
-            } else if (vars.userData.isLoggedIn && helpers.isModerator(vars.userData.name)) {
+            } else if (isMod) {
                 message = helpers.lookupDisplayName(user) + ' has been ' + type + reason;
             } else {
                 message = helpers.lookupDisplayName(user) + ' has been ' + typeSimple;
@@ -335,6 +339,8 @@ exports.notice = function(data) {
         },
         message: message
     });
+
+    if (messageId === 'timeout_success' || messageId === 'ban_success') return;
 
     helpers.serverMessage(message, true);
 };
