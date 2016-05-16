@@ -42,7 +42,7 @@ var linkify = exports.linkify = function(message) {
 };
 
 var escapeEmoteCode = function(code) {
-    return code.replace(/('|"|&)/g, '');
+    return escape(code.replace(/('|"|&)/g, ''));
 };
 
 var emoticonBTTV = exports.emoticonBTTV = function(emote) {
