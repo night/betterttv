@@ -6,7 +6,10 @@ var fs = require('fs'),
     footer = require('gulp-footer'),
     concat = require('gulp-concat'),
     del = require('del'),
-    eslint = require('gulp-eslint');
+    eslint = require('gulp-eslint'),
+    uglify = require('gulp-uglify'),
+    saveLicense = require('uglify-save-license'),
+    enviro = require('gulp-environments');
 
 gulp.task('cleanup', function() {
     return del('build/**/*');
@@ -29,24 +32,25 @@ gulp.task('lint', function() {
         configFile: '.eslintrc'
     };
 
-    return gulp.src(['src/**/*'])
+    return gulp.src(['src/js/**/*'])
         .pipe(eslint(options))
         .pipe(eslint.format())
         .pipe(eslint.failOnError());
 });
 
 var jadeDefinition = fs.readFileSync('node_modules/jade/runtime.js').toString();
-var license = fs.readFileSync('license.txt').toString();
+var license = fs.readFileSync('src/license.txt').toString();
 
 gulp.task('scripts', ['prepare'], function() {
-    gulp.src(['build/main.js'])
+    gulp.src(['build/js/main.js'])
         .pipe(browserify())
         .pipe(concat('betterttv.js'))
         .pipe(header('(function(bttv) {'))
         .pipe(header(jadeDefinition))
         .pipe(header(license + '\n'))
         .pipe(footer('}(window.BetterTTV = window.BetterTTV || {}));'))
-        .pipe(gulp.dest(__dirname));
+        .pipe(enviro.production(uglify({ preserveComments: saveLicense })))
+        .pipe(gulp.dest('build'));
 });
 
 gulp.task('watch', ['default'], function() {

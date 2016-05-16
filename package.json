@@ -4,22 +4,8 @@
   "version": "6.7.0",
   "description": "BetterTTV enhances Twitch with new features, bug fixes, and reduced clutter.",
   "main": "betterttv.js",
-  "devDependencies": {
-    "del": "^2.2.0",
-    "gulp": "^3.8.0",
-    "gulp-browserify": "^0.5.0",
-    "gulp-changed": "~0.3.0",
-    "gulp-concat": "^2.2.0",
-    "gulp-eslint": "^2.0.0",
-    "gulp-footer": "^1.0.4",
-    "gulp-header": "^1.0.2",
-    "gulp-jade": "^0.7.0",
-    "gulp-rename": "^1.2.0",
-    "jade": "^1.5.0",
-    "request": "2.36.0"
-  },
   "scripts": {
-    "test": "node test/server.js"
+    "start": "node dev/server.js"
   },
   "repository": {
     "type": "git",
@@ -27,9 +13,25 @@
   },
   "dependencies": {
     "cookies-js": "^1.2.1",
+    "del": "^2.2.0",
+    "gulp": "^3.8.0",
+    "gulp-browserify": "^0.5.0",
+    "gulp-changed": "~0.3.0",
+    "gulp-concat": "^2.2.0",
+    "gulp-environments": "^0.1.1",
+    "gulp-eslint": "^2.0.0",
+    "gulp-footer": "^1.0.4",
+    "gulp-header": "^1.0.2",
+    "gulp-jade": "^0.7.0",
+    "gulp-rename": "^1.2.0",
+    "gulp-uglify": "^1.5.3",
+    "jade": "^1.5.0",
     "lodash.debounce": "^4.0.6",
     "lodash.throttle": "^3.0.4",
-    "view-list": "^2.1.0",
-    "resizable": "^1.1.1"
+    "request": "2.36.0",
+    "resizable": "^1.1.1",
+    "twitch-chat-emotes": "github:cletusc/Userscript--Twitch-Chat-Emotes#8d1c6adc17b56fabdf4e00665348a4e00d58d99a",
+    "uglify-save-license": "^0.4.1",
+    "view-list": "^2.1.0"
   }
 }
