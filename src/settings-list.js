@@ -397,12 +397,6 @@ module.exports = [
         storageKey: 'hideSpam'
     },
     {
-        name: 'Hide Conversations When Inactive',
-        description: 'Only show conversations ui on mousverover or when active',
-        default: false,
-        storageKey: 'hideConversations'
-    },
-    {
         name: 'Host Button',
         description: 'Places a Host/Unhost button below the video player',
         default: false,
