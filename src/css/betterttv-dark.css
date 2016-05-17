@@ -362,10 +362,6 @@ body {
     color: #D3D3D3;
 }
 
-#left_col {
-    background-color: #222;
-}
-
 .ember-view .app-main {
     background-color: rgb(20,20,20);
 }
@@ -2327,4 +2323,27 @@ span.subscribe-text {
 
 #bvl-panel li {
     color: #D3D3D3;
+}
+
+/* better left sidebar */
+
+#left_col .warp {
+    background: rgb(30, 30, 30);
+}
+
+#left_col .warp .warp__item--anchor {
+    background: #282828;
+}
+
+#left_col .warp .warp__item>a:hover {
+    background: #282828;
+}
+
+#left_col .warp .warp__drawer {
+    background: #282828;
+    box-shadow: 0 -1px 0 #444;
+}
+
+#left_col .warp .sep:after {
+    background: #444;
 }
