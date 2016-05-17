@@ -2271,6 +2271,10 @@ span.subscribe-text {
     background-color: #333;
 }
 
+.activity-container .activity-card > div .activity-options .balloon a {
+    color: #d3d3d3 !important;
+}
+
 .activity-container .activity-create {
     border: none;
 }
