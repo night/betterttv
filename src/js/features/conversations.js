@@ -18,13 +18,10 @@ function Conversations(timeout) {
     var $conversations = $('.conversations-content');
 
     if (bttv.settings.get('hideConversations')) {
-        $conversations.css('opacity', 0);
 
         $conversations.hover(function() {
-            $conversations.css('opacity', 1);
         }, function() {
             if ($(this).find('.list-displayed').length || $(this).find('.conversation-window').length) return;
-            $conversations.css('opacity', 0);
         });
     }
 
@@ -35,8 +32,6 @@ function Conversations(timeout) {
         }, 2 * timeout);
         return;
     }
-
-    var _self = this;
 
     var watcher = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
@@ -134,9 +129,7 @@ Conversations.prototype.newConversation = function(element) {
     var $chatInput = $(element).find('.chat_text_input');
     var name = $(element).find('.conversation-header-name').text().toLowerCase();
 
-    if (bttv.settings.get('hideConversations')) $('.conversations-content').css('opacity', 1);
     $(element).find('.header-button-container').children().last().on('click', function() {
-        if (bttv.settings.get('hideConversations') && $('.conversation-window').length === 1) $('.conversations-content').css('opacity', 0);
     });
 
 
