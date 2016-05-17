@@ -57,11 +57,16 @@ ChatReplay.prototype.messageParser = function(element) {
 
     var $name = $element.find('.from');
     var color = $name.attr('style').replace('color:', '');
-    $name.css('color', chatHelpers.calculateColor(color));
+    var newColor = chatHelpers.calculateColor(color);
+    $name.css('color', newColor);
 
     var message = element.querySelector('.message');
+    var $message = $(element).find('.message');
 
     if (!message) return;
+
+    if ($message.attr('style')) $message.css('color', newColor);
+
     message.innerHTML = this.emoticonize(message.innerHTML);
 };
 
