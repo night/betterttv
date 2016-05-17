@@ -345,8 +345,6 @@ exports.notice = function(data) {
         message: message
     });
 
-    if (messageId === 'timeout_success' || messageId === 'ban_success') return;
-
     helpers.serverMessage(message, true);
 };
 
