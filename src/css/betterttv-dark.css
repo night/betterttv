@@ -2358,3 +2358,34 @@ ul.tabs li a:hover {
     color: #aaa;
     border-color: #aaa !important;
 }
+
+/* darken creative tags */
+.ct-tags .ct-tags__list .ct-banner__tag {
+    background-color: #282828;
+}
+
+.ct-tags .ct-tags__list .ct-banner__tag:hover {
+    background-color: #282828;
+    color: #d3d3d3;
+    box-shadow: 0 0 0 1px #666 inset;
+}
+
+.ct-tags .ct-tags__tools .ct-banner__inputbox {
+    background-color: #282828;
+    color: #d3d3d3;
+    border-color: #444;
+}
+
+.ct-tags .ct-tags__tools .ct-banner__inputbox:focus {
+    background-color: #282828;
+    border-color: #666;
+    box-shadow: none;
+}
+
+.ct-tags .ct-tags__tools .ct-toggle {
+    background: #282828;
+}
+
+#broadcast-meta .info .ct-tags {
+    border-color: #444;
+}
