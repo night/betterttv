@@ -783,15 +783,17 @@ exports.assignBadges = function(badges, data) {
     return bttvBadges;
 };
 
-exports.ban = function(user) {
+exports.ban = function(user, reason) {
     if (!user || user === '') return false;
-    return tmi() && tmi().tmiRoom ? tmi().tmiRoom.banUser(user) : null;
+    var msg = reason ? user + ' ' + reason : user;
+    return tmi() && tmi().tmiRoom ? tmi().tmiRoom.banUser(msg) : null;
 };
 
-exports.timeout = function(user, time) {
-    time = time || 600;
+exports.timeout = function(user, time, reason) {
     if (!user || user === '') return false;
-    return tmi() && tmi().tmiRoom ? tmi().tmiRoom.timeoutUser(user + ' ' + time) : null;
+    var msg = user + ' ' + (time || 600);
+    if (reason) msg = msg + ' ' + reason;
+    return tmi() && tmi().tmiRoom ? tmi().tmiRoom.timeoutUser(msg) : null;
 };
 
 var unban = exports.unban = function(user) {
