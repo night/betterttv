@@ -16,12 +16,16 @@ function Conversations(timeout) {
     if (!(this instanceof Conversations)) return new Conversations(0);
 
     var $conversations = $('.conversations-content');
+    var _self = this;
 
     if (bttv.settings.get('hideConversations')) {
+        this.slideDown();
 
         $conversations.hover(function() {
+            _self.slideUp();
         }, function() {
             if ($(this).find('.list-displayed').length || $(this).find('.conversation-window').length) return;
+            _self.slideDown();
         });
     }
 
@@ -129,7 +133,9 @@ Conversations.prototype.newConversation = function(element) {
     var $chatInput = $(element).find('.chat_text_input');
     var name = $(element).find('.conversation-header-name').text().toLowerCase();
 
+    if (bttv.settings.get('hideConversations')) this.slideUp();
     $(element).find('.header-button-container').children().last().on('click', function() {
+        if (bttv.settings.get('hideConversations') && $('.conversation-window').length === 1) _self.slideDown();
     });
 
 
@@ -235,6 +241,20 @@ Conversations.prototype.updateTitle = function(m) {
             }
         }
     }
+};
+
+Conversations.prototype.slideDown = function() {
+    var $conversations = $('.conversations-content');
+    if ($conversations.height() === 15) return;
+
+    $conversations.animate({'height': '15px'}, 100);
+};
+
+Conversations.prototype.slideUp = function() {
+    var $conversations = $('.conversations-content');
+    if ($conversations.height() === 40) return;
+
+    $conversations.animate({'height': '40px'}, 100);
 };
 
 module.exports = Conversations;
