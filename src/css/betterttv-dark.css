@@ -2320,7 +2320,6 @@ span.subscribe-text {
 }
 
 /* better left sidebar */
-
 #left_col .warp {
     background: rgb(30, 30, 30);
 }
@@ -2343,8 +2342,31 @@ span.subscribe-text {
     background: #444;
 }
 
-/* darken split tabs */
+#left_col .warp input {
+    background-color: #282828;
+    color: #d3d3d3;
+    border-color: #444;
+}
+#left_col .warp input:focus {
+    box-shadow: #666 0 0 0 1px inset;
+}
 
+#left_col .warp .warp__tabs:before {
+    background: #444;
+}
+
+#left_col .warp .warp__tabs .warp__tab:after {
+    background: #666;
+}
+
+.profile-card--balloon .balloon {
+    background: #282828;
+}
+.profile-card--balloon .balloon:after {
+    background-color: #282828;
+}
+
+/* darken split tabs */
 ul.tabs:before {
     border-color: #333;
 }
