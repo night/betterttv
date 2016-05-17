@@ -1769,7 +1769,7 @@ body.channel_new.columns.ember-application {
 
 #bttv-follow-count {
     position: absolute;
-    left: 33px;
+    left: 36px;
     bottom: 0px;
     font-weight: bold;
     color: #fff;
@@ -1778,7 +1778,7 @@ body.channel_new.columns.ember-application {
 }
 
 #left_col.closed #bttv-follow-count {
-    left: 23px;
+    left: 26px;
     bottom: 4px;
 }
 
