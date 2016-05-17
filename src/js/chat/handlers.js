@@ -31,7 +31,7 @@ exports.commands = function(input) {
     var oldSetting;
 
     if (command === '/b') {
-        helpers.ban(sentence[1]);
+        helpers.ban(sentence[1], sentence.slice(2).join(' '));
     } else if (command === '/chatters') {
         $.getJSON('https://tmi.twitch.tv/group/user/' + bttv.getChannel() + '?callback=?').done(function(resp) {
             helpers.serverMessage('Current Chatters: ' + Twitch.display.commatize(resp.data.chatter_count), true);
@@ -86,7 +86,7 @@ exports.commands = function(input) {
     } else if (command === '/t') {
         var time = 600;
         if (!isNaN(sentence[2])) time = sentence[2];
-        helpers.timeout(sentence[1], time);
+        helpers.timeout(sentence[1], time, sentence.slice(3).join(' '));
     } else if (command === '/u') {
         helpers.unban(sentence[1]);
     } else if (command === '/uptime') {
@@ -236,6 +236,9 @@ exports.clearChat = function(user, info) {
     if (!user) {
         helpers.serverMessage('Chat was cleared by a moderator (Prevented by BetterTTV)', true);
     } else {
+        var isTarget = vars.userData.isLoggedIn && user === vars.userData.name;
+        var isMod = vars.userData.isLoggedIn && helpers.isModerator(vars.userData.name);
+
         var printedChatLines = [];
         $('.chat-line[data-sender="' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '"]').each(function() {
             printedChatLines.push($(this));
@@ -248,7 +251,8 @@ exports.clearChat = function(user, info) {
 
         $chatLines = $(printedChatLines.concat(queuedLines));
 
-        if (!$chatLines.length) return;
+        if (!$chatLines.length && !isTarget && !isMod) return;
+
         if (bttv.settings.get('hideDeletedMessages') === true) {
             $chatLines.each(function() {
                 $(this).hide();
@@ -291,9 +295,9 @@ exports.clearChat = function(user, info) {
             var type = info['ban-duration'] ? 'timed out for ' + templates.escape(info['ban-duration']) + ' seconds.' : 'banned from this room.';
             var typeSimple = info['ban-duration'] ? 'timed out.' : 'banned.';
 
-            if (vars.userData.isLoggedIn && user === vars.userData.name) {
+            if (isTarget) {
                 message = 'You have been ' + type + reason;
-            } else if (vars.userData.isLoggedIn && helpers.isModerator(vars.userData.name)) {
+            } else if (isMod) {
                 message = helpers.lookupDisplayName(user) + ' has been ' + type + reason;
             } else {
                 message = helpers.lookupDisplayName(user) + ' has been ' + typeSimple;
