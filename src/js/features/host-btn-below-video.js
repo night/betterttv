@@ -20,7 +20,7 @@ module.exports = function() {
         $hostButton = $('<span><span></span></span>');
         $hostButton.addClass('button').addClass('action');
         $hostButton.attr('id', 'bttv-host-button');
-        $hostButton.insertBefore('#channel .channel-actions .js-options');
+        $hostButton.insertBefore('#channel .channel-actions > span:eq(2)');
         $hostButton.click(function() {
             var action = $hostButton.text();
 
