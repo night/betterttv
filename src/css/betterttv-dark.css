@@ -2329,7 +2329,8 @@ span.subscribe-text {
     background: #282828;
 }
 
-#left_col .warp .warp__item>a:hover {
+#left_col .warp .warp__item>a:hover,
+#left_col .warp .warp__item--toggled>a {
     background: #282828;
 }
 
