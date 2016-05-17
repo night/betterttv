@@ -1,4 +1,5 @@
 var debug = require('../helpers/debug'),
+    templates = require('../chat/templates'),
     vars = require('../vars');
 
 module.exports = function() {
@@ -27,7 +28,7 @@ module.exports = function() {
                 fallback: function() {
                     var $emote = vars.hoveringEmote;
                     if ($emote && $emote.attr('alt')) {
-                        var raw = $emote.attr('alt');
+                        var raw = templates.escape($emote.attr('alt'));
                         if (bttv.TwitchEmoteIDToChannel && $emote.data('id') && bttv.TwitchEmoteIDToChannel[$emote.data('id')]) {
                             return 'Emote: ' + raw + '<br />Channel: ' + bttv.TwitchEmoteIDToChannel[$emote.data('id')];
                         } else if (!$emote.data('channel') && $emote.data('type')) {
