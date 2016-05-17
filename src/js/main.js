@@ -266,10 +266,10 @@ var main = function() {
     };
 
     var initialFuncs = function() {
+        bttv.conversations = conversations();
         bttv.ws = new WS();
 
         chatReplay = new ChatReplay();
-        conversations();
         clearClutter();
         channelReformat();
         checkBroadcastInfo();

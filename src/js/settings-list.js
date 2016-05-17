@@ -395,7 +395,10 @@ module.exports = [
         name: 'Hide Conversations When Inactive',
         description: 'Only show conversations ui on mousverover or when active',
         default: false,
-        storageKey: 'hideConversations'
+        storageKey: 'hideConversations',
+        toggle: function() {
+            bttv.conversations.toggleAutoHide();
+        }
     },
     {
         name: 'Host Button',
