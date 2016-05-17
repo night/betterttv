@@ -1670,7 +1670,6 @@ table.simple_table td {
 /* ~~~~~~~~~~~~Dark Group Chat~~~~~~~~~~~~~~~~~~~~~ */
 .ember-chat .chat-header {
     background-color: rgb(50,50,50);
-    border-top: 1px solid #000;
     border-bottom: 1px solid #000;
     box-shadow: none;
 }
