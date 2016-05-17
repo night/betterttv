@@ -1718,15 +1718,6 @@ div.chat-room-list.chat-menu div.js-rooms.scroll.chat-rooms div.tse-scroll-conte
 }
 
 /* Hot Fixes for Redesign */
-.ember-application ul.tabs li.selected a {
-    color: white;
-    border-bottom-color: white !important;
-}
-
-.ember-application ul.tabs li>a:hover {
-    color: white;
-}
-
 .ember-chat .chat-menu .chat-menu-header {
     border: 0px;
     margin: 0px;
@@ -2345,4 +2336,20 @@ span.subscribe-text {
 
 #left_col .warp .sep:after {
     background: #444;
+}
+
+/* darken split tabs */
+
+ul.tabs:before {
+    border-color: #333;
+}
+
+ul.tabs li a {
+    color: #999;
+}
+
+ul.tabs li.selected a,
+ul.tabs li a:hover {
+    color: #aaa;
+    border-color: #aaa !important;
 }
