@@ -1370,6 +1370,8 @@ body#chat #speak {
     line-height: 40px;
     height: 40px;
     padding: 0px;
+
+    z-index: 4;/* fixes issues with viewer list */
 }
 
 .ember-chat .chat-header .room-title {
