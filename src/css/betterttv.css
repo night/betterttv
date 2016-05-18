@@ -109,10 +109,6 @@ input.text:focus,select:focus,textarea:focus {
     left: 0px;
 }
 
-.chat_line a, .ember-chat .chat-line a {
-    color: #005596;
-}
-
 #chat_line_list li .mod_button img, .ember-chat .mod-icons a {
     vertical-align: baseline;
     padding: 0px;
@@ -1370,6 +1366,8 @@ body#chat #speak {
     line-height: 40px;
     height: 40px;
     padding: 0px;
+
+    z-index: 4;/* fixes issues with viewer list */
 }
 
 .ember-chat .chat-header .room-title {

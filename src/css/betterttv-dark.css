@@ -362,10 +362,6 @@ body {
     color: #D3D3D3;
 }
 
-#left_col {
-    background-color: #222;
-}
-
 .ember-view .app-main {
     background-color: rgb(20,20,20);
 }
@@ -1674,7 +1670,6 @@ table.simple_table td {
 /* ~~~~~~~~~~~~Dark Group Chat~~~~~~~~~~~~~~~~~~~~~ */
 .ember-chat .chat-header {
     background-color: rgb(50,50,50);
-    border-top: 1px solid #000;
     border-bottom: 1px solid #000;
     box-shadow: none;
 }
@@ -1723,15 +1718,6 @@ div.chat-room-list.chat-menu div.js-rooms.scroll.chat-rooms div.tse-scroll-conte
 }
 
 /* Hot Fixes for Redesign */
-.ember-application ul.tabs li.selected a {
-    color: white;
-    border-bottom-color: white !important;
-}
-
-.ember-application ul.tabs li>a:hover {
-    color: white;
-}
-
 .ember-chat .chat-menu .chat-menu-header {
     border: 0px;
     margin: 0px;
@@ -1759,7 +1745,6 @@ div#actions {
 
 .button.glyph:hover path,
 .button.glyph-only:hover path,
-#channel .player-column .stats-and-actions .channel-actions .button:hover,
 .ember-chat .chat-menu-button-container:hover svg path {
     fill: #fff;
     color: #fff;
@@ -2286,6 +2271,10 @@ span.subscribe-text {
     background-color: #333;
 }
 
+.activity-container .activity-card > div .activity-options .balloon a {
+    color: #d3d3d3 !important;
+}
+
 .activity-container .activity-create {
     border: none;
 }
@@ -2313,7 +2302,7 @@ span.subscribe-text {
 
 /* Better Viewer List */
 #bvl-panel {
-    background-color: rgb(30, 30, 30) !important;
+    background-color: rgb(35, 35, 35) !important;
 }
 
 #bvl-panel .filter {
@@ -2328,4 +2317,97 @@ span.subscribe-text {
 
 #bvl-panel li {
     color: #D3D3D3;
+}
+
+/* better left sidebar */
+#left_col .warp {
+    background: rgb(30, 30, 30);
+}
+
+#left_col .warp .warp__item--anchor {
+    background: #282828;
+}
+
+#left_col .warp .warp__item>a:hover,
+#left_col .warp .warp__item--toggled>a {
+    background: #282828;
+}
+
+#left_col .warp .warp__drawer {
+    background: #282828;
+    box-shadow: 0 -1px 0 #444;
+}
+
+#left_col .warp .sep:after {
+    background: #444;
+}
+
+#left_col .warp input {
+    background-color: #282828;
+    color: #d3d3d3;
+    border-color: #444;
+}
+#left_col .warp input:focus {
+    box-shadow: #666 0 0 0 1px inset;
+}
+
+#left_col .warp .warp__tabs:before {
+    background: #444;
+}
+
+#left_col .warp .warp__tabs .warp__tab:after {
+    background: #666;
+}
+
+.profile-card--balloon .balloon {
+    background: #282828;
+}
+.profile-card--balloon .balloon:after {
+    background-color: #282828;
+}
+
+/* darken split tabs */
+ul.tabs:before {
+    border-color: #333;
+}
+
+ul.tabs li a {
+    color: #999;
+}
+
+ul.tabs li.selected a,
+ul.tabs li a:hover {
+    color: #aaa;
+    border-color: #aaa !important;
+}
+
+/* darken creative tags */
+.ct-tags .ct-tags__list .ct-banner__tag {
+    background-color: #282828;
+}
+
+.ct-tags .ct-tags__list .ct-banner__tag:hover {
+    background-color: #282828;
+    color: #d3d3d3;
+    box-shadow: 0 0 0 1px #666 inset;
+}
+
+.ct-tags .ct-tags__tools .ct-banner__inputbox {
+    background-color: #282828;
+    color: #d3d3d3;
+    border-color: #444;
+}
+
+.ct-tags .ct-tags__tools .ct-banner__inputbox:focus {
+    background-color: #282828;
+    border-color: #666;
+    box-shadow: none;
+}
+
+.ct-tags .ct-tags__tools .ct-toggle {
+    background: #282828;
+}
+
+#broadcast-meta .info .ct-tags {
+    border-color: #444;
 }
