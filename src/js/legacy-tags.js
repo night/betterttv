@@ -5,7 +5,7 @@ module.exports = function(data) {
         // Donations
         'gspwar': { mod: false, tagType: 'admin', tagName: 'EH?' },
         'nightmare': { mod: false, tagType: 'broadcaster', tagName: 'MLG' },
-        'sour': { mod: false, tagType: 'teal', tagName: '<span style="color:#d00162;">Saucy</span>', color: data.color + ';text-shadow: 0 0 10px #FFD700' },
+        'sour': { mod: false, tagType: 'teal', tagName: '<span style="color:#FF0071;">Saucy</span>', color: data.color + ';text-shadow: 0 0 10px #FFD700' },
         'yorkyyork': { mod: false, tagType: 'broadcaster', tagName: 'Nerd' },
         'striker035': { mod: true, tagType: 'admin', tagName: 'MotherLover' },
         'dog': { mod: true, tagType: 'bot', tagName: 'Smelly' },
@@ -37,7 +37,7 @@ module.exports = function(data) {
         'nobama12345': { mod: true, tagType: 'broadcaster', tagName: 'Señor' },
         'uleet': { mod: true, tagType: 'moderator', tagName: 'Taco' },
         'mrimjustaminorthreat': { mod: true, tagType: 'staff', tagName: '<span style="color:pink;">Major</span>', nickname: 'mrimjustamajorthreat' },
-        'sournothardcore': { mod: true, tagType: 'brown', tagName: '<span style="color:#FF0071 !important;">Saucy</span>', color: data.color + ';text-shadow: 0 0 10px #FFD700' },
+        'sournothardcore': { mod: true, tagType: 'brown', tagName: '<span style="color:#FFE600 !important;">Saucy</span>', color: data.color + ';text-shadow: 0 0 10px #FFD700' },
         // People
         'mac027': { mod: true, tagType: 'admin', tagName: 'Hacks' },
         'vaughnwhiskey': { mod: true, tagType: 'admin', tagName: 'Bacon' },
