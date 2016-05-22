@@ -127,7 +127,9 @@ Conversations.prototype.newConversation = function(element) {
 
     if (bttv.settings.get('hideConversations')) this.slideUp();
     $(element).find('.header-button-container').children().last().on('click', function() {
-        if (bttv.settings.get('hideConversations') && $('.conversation-window').length === 1) _self.slideDown();
+        setTimeout(function() {
+            if (bttv.settings.get('hideConversations')) _self.slideDown();
+        }, 100);
     });
 
 
