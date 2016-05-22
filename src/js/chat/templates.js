@@ -73,6 +73,11 @@ var jtvEmoticonize = exports.jtvEmoticonize = function(id) {
 };
 
 var emoticon = exports.emoticon = function(id, name) {
+    var fixedTwitchEmotes = [15, 16, 17, 18, 19, 20, 21, 22, 26, 27, 33];
+
+    if (fixedTwitchEmotes.indexOf(parseInt(id, 10)) > -1) {
+        return '<img class="emoticon ttv-emo-' + id + ' "src="https://cdn.betterttv.net/emotes/twitch_fixed/' + id + '_1x.png" srcset="https://cdn.betterttv.net/emotes/twitch_fixed/' + id + '_2x.png 2x" data-id="' + id + '" alt="' + escapeEmoteCode(name) + '" />';
+    }
     if (id < 15 && bttv.settings.get('showMonkeyEmotes') === true) {
         return '<img class="emoticon ttv-emo-' + id + '" src="' + jtvEmoticonize(id) + '" data-id="' + id + '" alt="' + escapeEmoteCode(name) + '" />';
     }
