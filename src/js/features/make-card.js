@@ -44,6 +44,10 @@ module.exports = function(user, $event) {
     $modCard.find('.mod-card-message').click(function() {
         window.open(Twitch.url.compose(user.name), '_blank');
     });
+    $modCard.find('.mod-card-whisper').click(function() {
+        var conversations = App.__container__.lookup('service:twitch-conversations/conversations');
+        conversations.startConversationForUsername(user.name);
+    });
     $modCard.find('.mod-card-edit').click(function() {
         var nickname = prompt('Enter the new nickname for ' + user.display_name + '. (Leave blank to reset...)');
 
