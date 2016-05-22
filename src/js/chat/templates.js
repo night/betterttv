@@ -73,6 +73,10 @@ var jtvEmoticonize = exports.jtvEmoticonize = function(id) {
 };
 
 var emoticon = exports.emoticon = function(id, name) {
+    var fixedTwitchEmotes = ['15', '16', '17', '18', '19', '20', '21', '22', '26', '27', '33'];
+
+    if (fixedTwitchEmotes.indexOf(id) > -1) {
+    }
     if (id < 15 && bttv.settings.get('showMonkeyEmotes') === true) {
         return '<img class="emoticon ttv-emo-' + id + '" src="' + jtvEmoticonize(id) + '" data-id="' + id + '" alt="' + escapeEmoteCode(name) + '" />';
     }
