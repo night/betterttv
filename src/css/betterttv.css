@@ -1884,6 +1884,10 @@ body.channel_new.columns.ember-application {
     bottom: 5px;
 }
 
+.chatReplay .chat-messages .show-timestamp .timestamp { 
+    display: inline; 
+}
+
 /* host & playlist banner fix */
 .player-column .brick {
 	border-left: 5px solid #6441a5 !important;
