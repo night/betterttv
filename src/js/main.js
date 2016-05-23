@@ -204,9 +204,9 @@ var main = function() {
                     chatReplay = new ChatReplay();
                     window.dispatchEvent(new Event('resize'));
                     break;
-                case 'following.index':
+                case 'directory.following.index':
                     // Switching between tabs in following page
-                    if (lastRoute.substr(0, 9) === 'following') break;
+                    if (lastRoute.substr(0, 19) === 'directory.following') break;
 
                     $('#main_col').removeAttr('style');
                     waitForLoad(function(ready) {
