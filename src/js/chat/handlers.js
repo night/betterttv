@@ -251,7 +251,7 @@ exports.clearChat = function(user, info) {
 
         $chatLines = $(printedChatLines.concat(queuedLines));
 
-        if (!$chatLines.length && !isTarget && !isMod) return;
+        if (!$chatLines.length && !isTarget) return;
 
         if (bttv.settings.get('hideDeletedMessages') === true) {
             $chatLines.each(function() {
