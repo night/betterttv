@@ -199,17 +199,22 @@ var takeover = module.exports = function() {
 
     // Make names clickable
     var clickCounter = 0;
-    $('body').off('click', '.chat-line .from').on('click', '.chat-line .from', function(e) {
+    $('body').off('click', '.chat-line .from').on('click', '.chat-line .from, .chat-line .user-mention', function(e) {
         if (e.shiftKey) return;
 
         var $element = $(this);
-        var sender = ($element.data('sender') || $element.parent().data('sender')).toString();
+        var sender;
+        if ($element.hasClass('user-mention')) {
+            sender = $element.text().toLowerCase();
+        } else {
+            sender = ($element.data('sender') || $element.parent().data('sender')).toString();
+        }
 
         if (clickCounter > 0) return clickCounter++;
 
         setTimeout(function() {
             if (clickCounter >= 2 && bttv.settings.get('dblClickAutoComplete') === true) {
-                $('.ember-chat .chat-interface').find('textarea').val(helpers.lookupDisplayName(sender, false) + ', ');
+                $('.ember-chat .chat-interface').find('textarea').val('@' + helpers.lookupDisplayName(sender, false) + ', ');
             } else {
                 handlers.moderationCard(sender, $element);
             }
