@@ -98,6 +98,12 @@ module.exports = [
         }
     },
     {
+        name: 'Clickable @usernames',
+        description: 'Open mod card by clicking @username in chat',
+        default: false,
+        storageKey: 'userMentions'
+    },
+    {
         name: 'DarkenTTV',
         description: 'A sleek, grey theme which will make you love the site even more',
         default: false,
