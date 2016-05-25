@@ -193,6 +193,10 @@ var main = function() {
                             setTimeout(function() {
                                 window.dispatchEvent(new Event('resize'));
                             }, 3000);
+
+                            // chat
+                            bttv.chat.store.isLoaded = false;
+                            chatFunctions();
                         }
                     });
                     break;
@@ -218,10 +222,12 @@ var main = function() {
                 case 'profile.index':
                     waitForLoad(function(ready) {
                         if (ready) {
-                            vars.emotesLoaded = false;
-                            chatFunctions();
                             channelReformat();
                             window.dispatchEvent(new Event('resize'));
+
+                            // chat
+                            bttv.chat.store.isLoaded = false;
+                            chatFunctions();
                         }
                     });
                     break;
@@ -238,17 +244,8 @@ var main = function() {
             before: function() {
                 renderingCounter++;
             },
-            after: function(name, ts, payload) {
+            after: function() {
                 renderingCounter--;
-
-                if (payload.template === 'chat/chat') {
-                    waitForLoad(function(ready) {
-                        if (ready) {
-                            bttv.chat.store.isLoaded = false;
-                            chatFunctions();
-                        }
-                    });
-                }
             }
         });
     }
