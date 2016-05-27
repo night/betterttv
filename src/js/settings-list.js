@@ -7,10 +7,11 @@ var splitChat = require('./features/split-chat'),
     hostButton = require('./features/host-btn-below-video'),
     anonChat = require('./features/anon-chat'),
     betterViewerList = require('./features/better-viewer-list'),
-    handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes');
-var displayElement = require('./helpers/element').display,
-    removeElement = require('./helpers/element').remove,
+    handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes'),
     imagePreview = require('./features/image-preview');
+
+var displayElement = require('./helpers/element').display,
+    removeElement = require('./helpers/element').remove;
 
 module.exports = [
     {
