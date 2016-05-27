@@ -8,6 +8,7 @@ var splitChat = require('./features/split-chat'),
     anonChat = require('./features/anon-chat'),
     betterViewerList = require('./features/better-viewer-list'),
     handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes'),
+    audibleFeedback = require('./features/audible-feedback'),
     imagePreview = require('./features/image-preview');
 
 var displayElement = require('./helpers/element').display,
@@ -453,7 +454,8 @@ module.exports = [
         name: 'Play Sound on Highlight/Whisper',
         description: 'Get audio feedback for messages directed at you (BETA)',
         default: false,
-        storageKey: 'highlightFeedback'
+        storageKey: 'highlightFeedback',
+        load: audibleFeedback.load
     },
     {
         name: 'Remove Deleted Messages',

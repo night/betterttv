@@ -100,7 +100,7 @@ exports.highlighting = function(data) {
                     .replace('{{name}}', data.from)
                     .replace('{{channel}}', bttv.chat.helpers.lookupDisplayName(bttv.getChannel()))
                     .replace('{{message}}', data.message.substr(0, 100)));
-                audibleFeedback();
+                audibleFeedback.play();
             }
             return true;
         }
