@@ -7,7 +7,7 @@ exports.load = function() {
     tsTink = new Audio('https://cdn.betterttv.net/assets/sounds/ts-tink.ogg'); // btw ogg does not work in ie
 };
 
-window.testing = exports.play = function() {
+exports.play = function() {
     if (bttv.settings.get('highlightFeedback') !== true) return;
 
     // Reset the audio and play it
