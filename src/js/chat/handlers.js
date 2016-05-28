@@ -503,8 +503,14 @@ exports.onPrivmsg = function(channel, data) {
             store.chatters[data.from] = {lastWhisper: Date.now()};
             if (bttv.settings.get('disableWhispers') === true) return;
             if (data.from !== vars.userData.name) {
-                audibleFeedback.play();
-                if (bttv.settings.get('desktopNotifications') === true && bttv.chat.store.activeView === false) bttv.notify('You received a whisper from ' + ((data.tags && data.tags['display-name']) || data.from));
+                if (bttv.chat.store.activeView === false) {
+                    if (bttv.settings.get('highlightFeedback') === true) {
+                        audibleFeedback.play();
+                    }
+                    if (bttv.settings.get('desktopNotifications') === true) {
+                        bttv.notify('You received a whisper from ' + ((data.tags && data.tags['display-name']) || data.from));
+                    }
+                }
             }
         }
         privmsg(channel, data);
