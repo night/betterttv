@@ -81,7 +81,11 @@ Conversations.prototype.messageParser = function(element) {
     $element.addClass('bttv-parsed-message');
 
     from.style.color = this.usernameRecolor(from.style.color);
-    // message.innerHTML = this.emoticonize(message.innerHTML);
+
+    if ($element.hasClass('conversation-chat-line') && !$element.hasClass('conversation-preview-line')) {
+        $element.append('<span class="message">' + this.emoticonize(message.innerHTML) + '</span>');
+        message.style.display = 'none';
+    }
 
     this.scrollDownParent(element);
 };
@@ -98,7 +102,7 @@ Conversations.prototype.scrollDownParent = function(element) {
 Conversations.prototype.emoticonize = function(message) {
     if (bttv.settings.get('bttvEmotes') === false) return message;
 
-    var parts = message.split(' ');
+    var parts = message.trim().split(' ');
     var test;
     var emote;
 
