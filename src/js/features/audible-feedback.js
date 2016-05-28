@@ -4,14 +4,14 @@ var tsTink;
 
 exports.load = function() {
     debug.log('Loading audio feedback sound');
-    tsTink = new Audio('https://cdn.betterttv.net/sounds/ts-tink.ogg'); // btw ogg does not work in ie
+    tsTink = new Audio('https://cdn.betterttv.net/assets/sounds/ts-tink.ogg'); // btw ogg does not work in ie
 };
 
-exports.play = function() {
+window.testing = exports.play = function() {
     if (bttv.settings.get('highlightFeedback') !== true) return;
 
     // Reset the audio and play it
-    tsTink.stop();
+    tsTink.pause();
     tsTink.currentTime = 0;
     tsTink.play();
 };
