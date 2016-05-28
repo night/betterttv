@@ -1,9 +1,11 @@
+var audibleFeedback = require('../features/audible-feedback');
 var chatStore = require('../chat/store');
 var chatTemplates = require('../chat/templates');
 var chatHelpers = require('../chat/helpers');
 var colors = require('../helpers/colors');
 var keyCodes = require('../keycodes');
 var store = require('../chat/store');
+var vars = require('../vars');
 
 var conversationsClass = '.conversations-content';
 
@@ -29,6 +31,11 @@ function Conversations(timeout) {
         return;
     }
 
+    if (window.App && App.__container__.lookup('service:whispers-shim')) {
+        var whisperShim = App.__container__.lookup('service:whispers-shim');
+        whisperShim.on('whisper', _self.onWhisper);
+    }
+
     var watcher = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
             if (mutation.attributeName) _self.updateTitle(mutation);
@@ -52,6 +59,15 @@ function Conversations(timeout) {
 
     watcher.observe($conversations[0], { childList: true, subtree: true, attributes: true, attributeFilter: ['class']});
 }
+
+Conversations.prototype.onWhisper = function(data) {
+    if (bttv.settings.get('highlightFeedback') === true && bttv.chat.store.activeView === false) {
+        if (vars.userData.isLoggedIn && vars.userData.name !== data.from) {
+            audibleFeedback.play();
+        }
+    }
+};
+
 
 Conversations.prototype.messageParser = function(element) {
     var from = element.querySelector('.from');
