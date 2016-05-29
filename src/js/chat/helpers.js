@@ -152,11 +152,7 @@ var suggestions = exports.suggestions = function(words, index) {
         var isEmote = (completableEmotes().indexOf(user) !== -1);
 
         if (!isEmote) {
-            if (lastWord.charAt(0) === '@') {
-                sentence.push('@' + lookupDisplayName(user, false));
-            } else {
-                sentence.push(lookupDisplayName(user, false));
-            }
+            sentence.push('@' + lookupDisplayName(user, false));
         } else {
             sentence.push(user);
         }
@@ -312,7 +308,7 @@ exports.tabCompletion = function(e) {
             return;
         }
 
-        if (lastWord.charAt(0) === '@') {
+        if (!isEmote) {
             user = '@' + user;
         }
 
