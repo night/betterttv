@@ -136,6 +136,7 @@ var clearClutter = require('./features/clear-clutter'),
     hostButtonBelowVideo = require('./features/host-btn-below-video'),
     conversations = require('./features/conversations'),
     betterViewerList = require('./features/better-viewer-list'),
+    overrideEmotes = require('./features/override-emotes'),
     ChatReplay = require('./features/chat-replay');
 
 var chatFunctions = function() {
@@ -287,6 +288,9 @@ var main = function() {
         handleTwitchChatEmotesScript();
         hostButtonBelowVideo();
         betterViewerList();
+
+        // Loads global BTTV emotes (if not loaded)
+        overrideEmotes();
 
         if (bttv.settings.get('chatImagePreview') === true) {
             enableImagePreview();

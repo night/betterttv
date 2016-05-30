@@ -7,7 +7,6 @@ var vars = require('../vars'),
     bots = require('../bots'),
     punycode = require('punycode'),
     channelState = require('../features/channel-state'),
-    overrideEmotes = require('../features/override-emotes'),
     throttle = require('lodash.throttle');
 
 // Helper functions
@@ -909,9 +908,6 @@ exports.translate = function($element, sender, text) {
 };
 
 exports.loadBTTVChannelData = function() {
-    // Loads global BTTV emotes (if not loaded)
-    overrideEmotes();
-
     // When swapping channels, removes old channel emotes
     var bttvEmoteKeys = Object.keys(store.bttvEmotes);
     for (var i = bttvEmoteKeys.length - 1; i >= 0; i--) {
