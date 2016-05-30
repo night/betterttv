@@ -52,7 +52,7 @@ ul.tabs li.selected a {
 .ember-chat .chat-messages {
     top: 0px;
     bottom: 114px;
-    background-color: #f2f2f2; /* hide group chat feature depends on having a background */
+    background-color: #efeef1; /* hide group chat feature depends on having a background */
 }
 
 .loading-mask {
@@ -1500,7 +1500,7 @@ body.channel_new.columns.ember-application {
 }
 
 .ember-view.ember-chat.roomMode {
-    background: #f2f2f2 !important;
+    background: #efeef1 !important;
 }
 
 /* Remove Twitch's Dark Mode toggle */
@@ -1519,7 +1519,7 @@ body.channel_new.columns.ember-application {
     right: 0px;
     width: 100%;
 
-    background-color: #f2f2f2;
+    background-color: #efeef1;
     box-shadow: 0px 8px 8px -5px #000;
 
     z-index: 99998;
@@ -1884,8 +1884,8 @@ body.channel_new.columns.ember-application {
     bottom: 5px;
 }
 
-.chatReplay .chat-messages .show-timestamp .timestamp { 
-    display: inline; 
+.chatReplay .chat-messages .show-timestamp .timestamp {
+    display: inline;
 }
 
 /* host & playlist banner fix */
