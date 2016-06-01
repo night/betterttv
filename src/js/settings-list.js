@@ -123,8 +123,8 @@ module.exports = [
         load: function() {
             var currentDarkStatus = false;
 
-            if (!window.App || !App.__container__.lookup('controller:Layout')) return;
-            App.__container__.lookup('controller:Layout').addObserver('isTheatreMode', function() {
+            if (!window.App || !App.__container__.lookup('controller:channel')) return;
+            App.__container__.lookup('controller:channel').addObserver('isTheatreMode', function() {
                 if (this.get('isTheatreMode') === true) {
                     currentDarkStatus = bttv.settings.get('darkenedMode');
                     if (currentDarkStatus === false) {
