@@ -749,9 +749,7 @@ exports.assignBadges = function(badges, data) {
             name: '',
             description: userBadges.warcraft.capitalize()
         });
-    }
-
-    if (badges.indexOf('turbo') !== -1) {
+    } else if (badges.indexOf('turbo') !== -1) {
         bttvBadges.push({
             type: 'turbo',
             name: '',
