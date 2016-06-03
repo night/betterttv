@@ -1893,3 +1893,16 @@ body.channel_new.columns.ember-application {
 	border-left: 5px solid #6441a5 !important;
 	box-shadow: 0px 0 0 #6441a4 inset !important;
 }
+
+.badges .warcraft {
+    background-size: 100%;
+    cursor: pointer;
+}
+
+.badges .warcraft.horde {
+    background: url("https://static-cdn.jtvnw.net/badges/v1/de8b26b6-fd28-4e6c-bc89-3d597343800d/1");
+}
+
+.badges .warcraft.alliance {
+    background: url("https://static-cdn.jtvnw.net/badges/v1/c4816339-bad4-4645-ae69-d1ab2076a6b0/1");
+}
