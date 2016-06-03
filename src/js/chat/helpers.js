@@ -740,7 +740,16 @@ exports.assignBadges = function(badges, data) {
         });
     }
 
-    if (badges.indexOf('turbo') !== -1) {
+    var roomBadges = tmi() && tmi().tmiRoom && tmi().tmiRoom._roomUserBadges;
+    var userBadges = roomBadges && roomBadges[data.from];
+
+    if (userBadges && userBadges.warcraft) {
+        bttvBadges.push({
+            type: 'warcraft ' + userBadges.warcraft,
+            name: '',
+            description: userBadges.warcraft.capitalize()
+        });
+    } else if (badges.indexOf('turbo') !== -1) {
         bttvBadges.push({
             type: 'turbo',
             name: '',
