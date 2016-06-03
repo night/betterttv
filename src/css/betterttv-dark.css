@@ -1013,6 +1013,10 @@ body {
     border-color: #000;
 }
 
+.chat-line .message .deleted {
+    color: #999;
+}
+
 #bttvChatPaused {
     position: absolute;
     float: left;

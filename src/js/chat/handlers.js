@@ -273,7 +273,7 @@ exports.clearChat = function(user, info) {
                     var $message = $(this).find('.message');
 
                     $message.addClass('timed-out');
-                    $message.html('<span style="color: #999">&lt;message deleted&gt;</span>').off('click').on('click', function() {
+                    $message.html('<span class="deleted">&lt;message deleted&gt;</span>').off('click').on('click', function() {
                         $(this).replaceWith(templates.message(user, decodeURIComponent($(this).data('raw'))));
                     });
                 });
@@ -288,7 +288,7 @@ exports.clearChat = function(user, info) {
                         $(this).css('opacity', '0.1');
                     });
                     $message.addClass('timed-out');
-                    $message.html('<span style="color: #999">' + $message.html() + '</span>');
+                    $message.html('<span class="deleted">' + $message.html() + '</span>');
                 });
             }
 
