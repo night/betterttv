@@ -121,10 +121,10 @@ module.exports = [
             }
         },
         load: function() {
-            var currentDarkStatus = false;
+            if (!window.App) return;
 
-            if (!window.App || !App.__container__.lookup('controller:channel')) return;
-            App.__container__.lookup('controller:channel').addObserver('isTheatreMode', function() {
+            var toggleDarkMode = function() {
+                var currentDarkStatus = false;
                 if (this.get('isTheatreMode') === true) {
                     currentDarkStatus = bttv.settings.get('darkenedMode');
                     if (currentDarkStatus === false) {
@@ -133,10 +133,18 @@ module.exports = [
                         // Toggles setting back without removing the darkened css
                         bttv.storage.put('bttv_darkenedMode', false);
                     }
-                } else {
-                    if (currentDarkStatus === false) bttv.settings.save('darkenedMode', false);
+                } else if (currentDarkStatus === false) {
+                    bttv.settings.save('darkenedMode', false);
                 }
-            });
+            };
+
+            if (App.__container__.lookup('controller:channel')) {
+                App.__container__.lookup('controller:channel').addObserver('isTheatreMode', toggleDarkMode);
+            }
+
+            if (App.__container__.lookup('controller:vod')) {
+                App.__container__.lookup('controller:vod').addObserver('isTheatreMode', toggleDarkMode);
+            }
         }
     },
     {
