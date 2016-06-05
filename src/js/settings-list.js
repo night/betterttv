@@ -220,11 +220,6 @@ module.exports = [
             $('body').on('mouseover', '#directory-list .streams a.cap', function() {
                 var chan = encodeURIComponent($(this).attr('href').substr(1));
 
-                var html5 = '';
-                if (window.navigator.userAgent.indexOf('Chrome') > -1) {
-                    html5 = '&html5';
-                }
-
                 $('div.tipsy').remove();
 
                 var $this = $(this);
@@ -237,7 +232,7 @@ module.exports = [
                         gravity: $.fn.tipsy.autoNS,
                         html: true,
                         opacity: 1,
-                        title: function() { return '<iframe src="https://player.twitch.tv/?channel=' + chan + '&!branding&!showInfo&autoplay&volume=0.1' + html5 + '" style="border: none;" width="320" height="208"></iframe><style>.tipsy-inner{max-width:320px;}</style>'; }
+                        title: function() { return '<iframe src="https://player.twitch.tv/?channel=' + chan + '&!branding&!showInfo&autoplay&volume=0.1" style="border: none;" width="320" height="208"></iframe><style>.tipsy-inner{max-width:320px;}</style>'; }
                     });
                     $this.tipsy('show');
                 }, 1500);
