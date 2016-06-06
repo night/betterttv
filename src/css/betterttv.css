@@ -1794,9 +1794,7 @@ body.channel_new.columns.ember-application {
 }
 
 
-#bttv-channel-state-contain .slow,
-#bttv-channel-state-contain .subs-only,
-#bttv-channel-state-contain .r9k {
+#bttv-channel-state-contain div {
     float: right;
     width: 26px;
     height: 22px;
