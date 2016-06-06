@@ -123,8 +123,8 @@ module.exports = [
         load: function() {
             if (!window.App) return;
 
+            var currentDarkStatus = false;
             var toggleDarkMode = function() {
-                var currentDarkStatus = false;
                 if (this.get('isTheatreMode') === true) {
                     currentDarkStatus = bttv.settings.get('darkenedMode');
                     if (currentDarkStatus === false) {
@@ -140,10 +140,6 @@ module.exports = [
 
             if (App.__container__.lookup('controller:channel')) {
                 App.__container__.lookup('controller:channel').addObserver('isTheatreMode', toggleDarkMode);
-            }
-
-            if (App.__container__.lookup('controller:vod')) {
-                App.__container__.lookup('controller:vod').addObserver('isTheatreMode', toggleDarkMode);
             }
         }
     },
