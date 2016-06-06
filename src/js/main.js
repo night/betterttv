@@ -203,6 +203,13 @@ var main = function() {
                     break;
                 case 'vod':
                     // disconnect old chat replay watcher, spawn new
+                    if (
+                        App.__container__.lookup('controller:vod').get('isTheatreMode') === false &&
+                        bttv.settings.get('autoTheatreMode') === true
+                    ) {
+                        enableTheatreMode();
+                    }
+
                     try {
                         chatReplay.disconnect();
                     } catch (e) {}
