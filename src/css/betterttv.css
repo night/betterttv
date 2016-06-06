@@ -27,6 +27,10 @@ body.channel_new {
     padding-right: 8px !important;
 }
 
+.chat-line .message .deleted {
+    color: #6441a4;
+}
+
 #metagame a {
     color: white !important;
 }
