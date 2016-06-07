@@ -2434,3 +2434,13 @@ ul.tabs li a:hover {
 #broadcast-meta .info .ct-tags {
     border-color: #444;
 }
+
+/* yolo balloon popup darkening */
+.balloon,
+.balloon:after {
+    background-color: #1e1e1e;
+}
+
+.balloon .balloon__link {
+    color: #dfdfdf !important;
+}
