@@ -7,7 +7,6 @@ var vars = require('../vars'),
     bots = require('../bots'),
     punycode = require('punycode'),
     channelState = require('../features/channel-state'),
-    overrideEmotes = require('../features/override-emotes'),
     throttle = require('lodash.throttle');
 
 // Helper functions
@@ -741,7 +740,16 @@ exports.assignBadges = function(badges, data) {
         });
     }
 
-    if (badges.indexOf('turbo') !== -1) {
+    var roomBadges = tmi() && tmi().tmiRoom && tmi().tmiRoom._roomUserBadges;
+    var userBadges = roomBadges && roomBadges[data.from];
+
+    if (userBadges && userBadges.warcraft) {
+        bttvBadges.push({
+            type: 'warcraft ' + userBadges.warcraft,
+            name: '',
+            description: userBadges.warcraft.capitalize()
+        });
+    } else if (badges.indexOf('turbo') !== -1) {
         bttvBadges.push({
             type: 'turbo',
             name: '',
@@ -909,9 +917,6 @@ exports.translate = function($element, sender, text) {
 };
 
 exports.loadBTTVChannelData = function() {
-    // Loads global BTTV emotes (if not loaded)
-    overrideEmotes();
-
     // When swapping channels, removes old channel emotes
     var bttvEmoteKeys = Object.keys(store.bttvEmotes);
     for (var i = bttvEmoteKeys.length - 1; i >= 0; i--) {

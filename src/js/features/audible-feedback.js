@@ -2,15 +2,16 @@ var debug = require('../helpers/debug');
 
 var tsTink;
 
-module.exports = function() {
-    if (bttv.settings.get('highlightFeedback') === true) {
-        if (!tsTink) {
-            debug.log('loading audio feedback sound');
+exports.load = function() {
+    debug.log('Loading audio feedback sound');
+    tsTink = new Audio('https://cdn.betterttv.net/assets/sounds/ts-tink.ogg'); // btw ogg does not work in ie
+};
 
-            tsTink = new Audio('https://cdn.betterttv.net/sounds/ts-tink.ogg'); // btw ogg does not work in ie
-        }
+exports.play = function() {
+    if (bttv.settings.get('highlightFeedback') !== true) return;
 
-        tsTink.load(); // needed to play sound more then once
-        tsTink.play();
-    }
+    // Reset the audio and play it
+    tsTink.pause();
+    tsTink.currentTime = 0;
+    tsTink.play();
 };

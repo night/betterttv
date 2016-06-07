@@ -27,6 +27,10 @@ body.channel_new {
     padding-right: 8px !important;
 }
 
+.chat-line .message .deleted {
+    color: #6441a4;
+}
+
 #metagame a {
     color: white !important;
 }
@@ -52,7 +56,7 @@ ul.tabs li.selected a {
 .ember-chat .chat-messages {
     top: 0px;
     bottom: 114px;
-    background-color: #f2f2f2; /* hide group chat feature depends on having a background */
+    background-color: #efeef1; /* hide group chat feature depends on having a background */
 }
 
 .loading-mask {
@@ -1500,7 +1504,7 @@ body.channel_new.columns.ember-application {
 }
 
 .ember-view.ember-chat.roomMode {
-    background: #f2f2f2 !important;
+    background: #efeef1 !important;
 }
 
 /* Remove Twitch's Dark Mode toggle */
@@ -1519,7 +1523,7 @@ body.channel_new.columns.ember-application {
     right: 0px;
     width: 100%;
 
-    background-color: #f2f2f2;
+    background-color: #efeef1;
     box-shadow: 0px 8px 8px -5px #000;
 
     z-index: 99998;
@@ -1794,9 +1798,7 @@ body.channel_new.columns.ember-application {
 }
 
 
-#bttv-channel-state-contain .slow,
-#bttv-channel-state-contain .subs-only,
-#bttv-channel-state-contain .r9k {
+#bttv-channel-state-contain div {
     float: right;
     width: 26px;
     height: 22px;
@@ -1884,8 +1886,25 @@ body.channel_new.columns.ember-application {
     bottom: 5px;
 }
 
+.chatReplay .chat-messages .show-timestamp .timestamp {
+    display: inline;
+}
+
 /* host & playlist banner fix */
 .player-column .brick {
 	border-left: 5px solid #6441a5 !important;
 	box-shadow: 0px 0 0 #6441a4 inset !important;
+}
+
+.badges .warcraft {
+    background-size: 100%;
+    cursor: pointer;
+}
+
+.badges .warcraft.horde {
+    background: url("https://static-cdn.jtvnw.net/badges/v1/de8b26b6-fd28-4e6c-bc89-3d597343800d/1");
+}
+
+.badges .warcraft.alliance {
+    background: url("https://static-cdn.jtvnw.net/badges/v1/c4816339-bad4-4645-ae69-d1ab2076a6b0/1");
 }

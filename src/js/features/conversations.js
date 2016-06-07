@@ -1,9 +1,13 @@
+var audibleFeedback = require('../features/audible-feedback');
 var chatStore = require('../chat/store');
 var chatTemplates = require('../chat/templates');
 var chatHelpers = require('../chat/helpers');
 var colors = require('../helpers/colors');
 var keyCodes = require('../keycodes');
 var store = require('../chat/store');
+var vars = require('../vars');
+
+var conversationsClass = '.conversations-content';
 
 function Conversations(timeout) {
     timeout = timeout || 0;
@@ -15,7 +19,10 @@ function Conversations(timeout) {
 
     if (!(this instanceof Conversations)) return new Conversations(0);
 
-    var $conversations = $('.conversations-content');
+    var $conversations = $(conversationsClass);
+    var _self = this;
+
+    this.toggleAutoHide();
 
     if (!$conversations.length) {
         setTimeout(function() {
@@ -24,7 +31,10 @@ function Conversations(timeout) {
         return;
     }
 
-    var _self = this;
+    if (window.App && App.__container__.lookup('service:whispers-shim')) {
+        var whisperShim = App.__container__.lookup('service:whispers-shim');
+        whisperShim.on('whisper', _self.onWhisper);
+    }
 
     var watcher = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
@@ -50,6 +60,15 @@ function Conversations(timeout) {
     watcher.observe($conversations[0], { childList: true, subtree: true, attributes: true, attributeFilter: ['class']});
 }
 
+Conversations.prototype.onWhisper = function(data) {
+    if (bttv.settings.get('highlightFeedback') === true && bttv.chat.store.activeView === false) {
+        if (vars.userData.isLoggedIn && vars.userData.name !== data.from) {
+            audibleFeedback.play();
+        }
+    }
+};
+
+
 Conversations.prototype.messageParser = function(element) {
     var from = element.querySelector('.from');
     var message = element.querySelector('.message');
@@ -62,7 +81,11 @@ Conversations.prototype.messageParser = function(element) {
     $element.addClass('bttv-parsed-message');
 
     from.style.color = this.usernameRecolor(from.style.color);
-    // message.innerHTML = this.emoticonize(message.innerHTML);
+
+    if ($element.hasClass('conversation-chat-line') && !$element.hasClass('conversation-preview-line')) {
+        $element.append('<span class="message">' + this.emoticonize(message.innerHTML) + '</span>');
+        message.style.display = 'none';
+    }
 
     this.scrollDownParent(element);
 };
@@ -79,7 +102,7 @@ Conversations.prototype.scrollDownParent = function(element) {
 Conversations.prototype.emoticonize = function(message) {
     if (bttv.settings.get('bttvEmotes') === false) return message;
 
-    var parts = message.split(' ');
+    var parts = message.trim().split(' ');
     var test;
     var emote;
 
@@ -121,6 +144,14 @@ Conversations.prototype.newConversation = function(element) {
     var _self = this;
     var $chatInput = $(element).find('.chat_text_input');
     var name = $(element).find('.conversation-header-name').text().toLowerCase();
+
+    if (bttv.settings.get('hideConversations')) this.slideUp();
+    $(element).find('.header-button-container').children().last().on('click', function() {
+        setTimeout(function() {
+            if (bttv.settings.get('hideConversations')) _self.slideDown();
+        }, 100);
+    });
+
 
     function storeMessage(message) {
         if (!bttv.settings.get('chatLineHistory')) return;
@@ -224,6 +255,34 @@ Conversations.prototype.updateTitle = function(m) {
             }
         }
     }
+};
+
+Conversations.prototype.toggleAutoHide = function() {
+    var $conversations = $(conversationsClass);
+
+    if (bttv.settings.get('hideConversations')) {
+        this.slideDown();
+
+        $conversations.hover(this.slideUp.bind(this), this.slideDown.bind(this));
+    } else {
+        this.slideUp();
+
+        $conversations.off('mouseenter', this.slideUp.bind(this)).off('mouseleave', this.slideDown.bind(this));
+    }
+};
+
+Conversations.prototype.slideDown = function() {
+    var $conversations = $(conversationsClass);
+
+    if ($conversations.find('.list-displayed').length || $conversations.find('.conversation-window').length) return;
+
+    $conversations.animate({'bottom': '-26px'}, 100);
+};
+
+Conversations.prototype.slideUp = function() {
+    var $conversations = $(conversationsClass);
+
+    $conversations.animate({'bottom': '0px'}, 100);
 };
 
 module.exports = Conversations;

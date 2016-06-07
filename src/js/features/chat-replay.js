@@ -50,6 +50,8 @@ ChatReplay.prototype.disconnect = function() {
 ChatReplay.prototype.messageParser = function(element) {
     var $element = $(element);
 
+    if (Twitch.storage.getObject('chatSettings').showTimestamps === true) $element.addClass('show-timestamp');
+
     if ($element.find('.deleted').length) {
         $element.remove();
         return;

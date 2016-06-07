@@ -9,7 +9,7 @@ var debug = require('./helpers/debug'),
 
 bttv.info = {
     version: '6.8',
-    release: 52,
+    release: 53,
     versionString: function() {
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -136,6 +136,7 @@ var clearClutter = require('./features/clear-clutter'),
     hostButtonBelowVideo = require('./features/host-btn-below-video'),
     conversations = require('./features/conversations'),
     betterViewerList = require('./features/better-viewer-list'),
+    overrideEmotes = require('./features/override-emotes'),
     ChatReplay = require('./features/chat-replay');
 
 var chatFunctions = function() {
@@ -166,85 +167,93 @@ var main = function() {
             }, 1000);
         };
 
-        // Some page changes do not trigger a re-render
-        App.__container__.lookup('controller:application').addObserver('currentRouteName', function() {
-            $('#main_col').removeAttr('style');
+        // Keep an eye for route change to reapply fixes
+        var lastRoute;
+        App.__container__.lookup('controller:application').addObserver('currentRouteName', function(data) {
+            debug.log('New route: ' + data.currentRouteName);
+
+            switch (data.currentRouteName) {
+                case 'loading':
+                    return;
+
+                case 'channel.index.index':
+                    waitForLoad(function(ready) {
+                        if (ready) {
+                            handleBackground();
+                            clearClutter();
+                            channelReformat();
+                            hostButtonBelowVideo();
+                            betterViewerList();
+                            if (
+                                App.__container__.lookup('controller:channel').get('isTheatreMode') === false &&
+                                bttv.settings.get('autoTheatreMode') === true
+                            ) {
+                                enableTheatreMode();
+                            }
+                            window.dispatchEvent(new Event('resize'));
+                            setTimeout(function() {
+                                window.dispatchEvent(new Event('resize'));
+                            }, 3000);
+
+                            // chat
+                            bttv.chat.store.isLoaded = false;
+                            chatFunctions();
+                        }
+                    });
+                    break;
+                case 'vod':
+                    // disconnect old chat replay watcher, spawn new
+                    if (
+                        App.__container__.lookup('controller:vod').get('isTheatreMode') === false &&
+                        bttv.settings.get('autoTheatreMode') === true
+                    ) {
+                        enableTheatreMode();
+                    }
+
+                    try {
+                        chatReplay.disconnect();
+                    } catch (e) {}
+                    chatReplay = new ChatReplay();
+                    window.dispatchEvent(new Event('resize'));
+                    break;
+                case 'directory.following.index':
+                    // Switching between tabs in following page
+                    if (lastRoute.substr(0, 19) === 'directory.following') break;
+
+                    $('#main_col').removeAttr('style');
+                    waitForLoad(function(ready) {
+                        if (ready) {
+                            directoryFunctions();
+                        }
+                    });
+                    break;
+                case 'profile.index':
+                    waitForLoad(function(ready) {
+                        if (ready) {
+                            channelReformat();
+                            window.dispatchEvent(new Event('resize'));
+
+                            // chat
+                            bttv.chat.store.isLoaded = false;
+                            chatFunctions();
+                        }
+                    });
+                    break;
+                default:
+                    // resets main col width on all non-resized pages
+                    $('#main_col').removeAttr('style');
+                    break;
+            }
+
+            lastRoute = data.currentRouteName;
         });
 
         Ember.subscribe('render', {
             before: function() {
                 renderingCounter++;
             },
-            after: function(name, ts, payload) {
+            after: function() {
                 renderingCounter--;
-
-                if (!payload.template) return;
-                debug.log(payload.template, App.__container__.lookup('controller:application').get('currentRouteName'));
-
-                switch (App.__container__.lookup('controller:application').get('currentRouteName')) {
-                    case 'channel.index.index':
-                        waitForLoad(function(ready) {
-                            if (ready) {
-                                handleBackground();
-                                clearClutter();
-                                channelReformat();
-                                hostButtonBelowVideo();
-                                betterViewerList();
-                                if (
-                                    App.__container__.lookup('controller:channel').get('isTheatreMode') === false &&
-                                    bttv.settings.get('autoTheatreMode') === true
-                                ) {
-                                    enableTheatreMode();
-                                }
-                                window.dispatchEvent(new Event('resize'));
-                                setTimeout(function() {
-                                    window.dispatchEvent(new Event('resize'));
-                                }, 3000);
-                            }
-                        });
-                        break;
-                    case 'vod':
-                        // disconnect old chat replay watcher, spawn new
-                        try {
-                            chatReplay.disconnect();
-                        } catch (e) {}
-                        chatReplay = new ChatReplay();
-                        window.dispatchEvent(new Event('resize'));
-                        break;
-                    case 'following.index':
-                        $('#main_col').removeAttr('style');
-                        waitForLoad(function(ready) {
-                            if (ready) {
-                                directoryFunctions();
-                            }
-                        });
-                        break;
-                    case 'profile.index':
-                        waitForLoad(function(ready) {
-                            if (ready) {
-                                vars.emotesLoaded = false;
-                                chatFunctions();
-                                channelReformat();
-                                window.dispatchEvent(new Event('resize'));
-                            }
-                        });
-                        break;
-                    default:
-                        // resets main col width on all non-resized pages
-                        $('#main_col').removeAttr('style');
-                        break;
-                }
-
-                switch (payload.template) {
-                    case 'chat/chat':
-                        waitForLoad(function(ready) {
-                            if (ready) {
-                                bttv.chat.store.isLoaded = false;
-                                chatFunctions();
-                            }
-                        });
-                        break;
-                }
             }
         });
     }
@@ -266,10 +275,10 @@ var main = function() {
     };
 
     var initialFuncs = function() {
+        bttv.conversations = conversations();
         bttv.ws = new WS();
 
         chatReplay = new ChatReplay();
-        conversations();
         clearClutter();
         channelReformat();
         checkBroadcastInfo();
@@ -286,6 +295,9 @@ var main = function() {
         handleTwitchChatEmotesScript();
         hostButtonBelowVideo();
         betterViewerList();
+
+        // Loads global BTTV emotes (if not loaded)
+        overrideEmotes();
 
         if (bttv.settings.get('chatImagePreview') === true) {
             enableImagePreview();
