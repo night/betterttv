@@ -524,8 +524,6 @@ body {
 }
 
 #channel .channel-actions .button {
-    padding: 0px 10px;
-
     background-color: rgb(30, 30, 30);
     color: rgb(170, 170, 170);
     border-radius: 2px;
@@ -537,6 +535,10 @@ body {
 
 .chat-buttons-container .button {
     margin-right: 10px;
+}
+
+.chat-buttons-container .button--icon-only figure {
+    padding: 0;
 }
 
 #channel .channel-actions .primary,
@@ -567,6 +569,10 @@ body {
     padding-right: 20px !important;
 }
 
+.channel-actions .js-share-box {
+    margin-right: 7px;
+}
+
 .ember-chat .chat-interface .chat-buttons-container .button:first-child {
     padding: 0px 10px;
     margin-left: 1px;
@@ -578,7 +584,7 @@ body {
 
 .chat-buttons-container #emote-menu-button {
     width: 38px;
-    height: 30px;
+    height: 32px;
     margin: 0px;
 }
 
@@ -1748,7 +1754,7 @@ div#actions {
 }
 
 .button.glyph:hover path,
-.button.glyph-only:hover path,
+.button.button--icon-only:hover path,
 .ember-chat .chat-menu-button-container:hover svg path {
     fill: #fff;
     color: #fff;
@@ -1798,7 +1804,7 @@ span#is-subscribed {
     color: #fff;
 }
 
-.button.glyph svg path, .button.glyph-only svg path {
+.button.glyph svg path, .button.button--icon-only svg path {
     fill: rgb(170, 170, 170) !important;
 }
 
