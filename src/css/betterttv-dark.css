@@ -665,7 +665,7 @@ body {
     border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.35);*/
 }
 
-.dropdown_glyph, .dropdown_static, #subscribe_action .subscribe-price, #channel_following.normal_button, .follow-button .notify, .channel-following.normal_button {
+.dropdown_glyph, .dropdown_static, #channel_following.normal_button, .follow-button .notify, .channel-following.normal_button {
     background: rgb(30, 30, 30) url(../assets/icons/dropdown_arrow.png) no-repeat right center !important;
     box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset !important;
     color: rgb(170, 170, 170) !important;
@@ -1889,8 +1889,15 @@ color: white;
 span.subscribe-text {
     color: white;
 }
+
+.button.subscribe-button {
+    background-color: #6441a4 !important;
+}
 .button.subscribe-button .subscribe-price {
+    background-color: rgba(0,0,0,.25) !important;
     color: rgb(170,170,170)!important;
+    border-radius: 2px;
+    box-shadow: 0;
 }
 
 /* theatre mode */
@@ -2425,6 +2432,8 @@ ul.tabs li a:hover {
 #channel #panels-edit-contain .edit-panels-toggle .label,
 #channel .no-channel-message-container .info .message,
 #channel .player-column #broadcast-meta .info .channel,
+#settings .form_microcopy,
+#settings div.boolean label.boolean,
 .items-grid .list_more,
 .items-grid .meta .info,
 .items-grid .section_header h3,
