@@ -845,10 +845,6 @@ input, textarea, select {
     cursor: move !important;
 }
 
-#bvl-panel a.button {
-    top: 5px;
-}
-
 #bvl-panel a.button.disable {
     opacity: 0.2;
     cursor: not-allowed;
