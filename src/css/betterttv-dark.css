@@ -2415,3 +2415,20 @@ ul.tabs li a:hover {
 #broadcast-meta .info .ct-tags {
     border-color: #444;
 }
+
+#channel #panels-edit-contain .edit-panels-toggle .label,
+#channel .no-channel-message-container .info .message,
+#channel .player-column #broadcast-meta .info .channel,
+.items-grid .list_more,
+.items-grid .meta .info,
+.items-grid .section_header h3,
+.following-col .header,
+.following-col .following-list .channel .game,
+.following-col .following-list .channel .viewers,
+.following-col .following-list .channel .viewers svg path,
+.following-col .following-list .search-noresults,
+.following-col .following-list .load-more,
+.following-col .empty-lis,
+.following-col .no-follows {
+    color: #8c8c8c !important;
+}
