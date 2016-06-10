@@ -1922,3 +1922,9 @@ body.channel_new.columns.ember-application {
 .badges .warcraft.alliance {
     background: url("https://static-cdn.jtvnw.net/badges/v1/c4816339-bad4-4645-ae69-d1ab2076a6b0/1");
 }
+
+#emote-menu-button {
+    width: 15px;
+    height: 30px;
+    background-color: transparent;
+}

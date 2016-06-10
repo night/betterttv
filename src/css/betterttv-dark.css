@@ -2492,3 +2492,7 @@ ul.tabs li a:hover {
 .following-col .no-follows {
     color: #8c8c8c !important;
 }
+
+#emote-menu-button {
+    background-color: rgb(30,30,30);
+}
