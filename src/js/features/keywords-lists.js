@@ -1,6 +1,7 @@
 var vars = require('../vars');
 var debug = require('../helpers/debug');
 var escapeRegExp = require('../helpers/regex').escapeRegExp;
+var safeRegex = require('safe-regex');
 
 exports.blacklistFilter = function(data) {
     var blacklistKeywords = [];
@@ -8,6 +9,33 @@ exports.blacklistFilter = function(data) {
 
     var keywords = bttv.settings.get('blacklistKeywords').toString();
     var phraseRegex = /\{.+?\}/g;
+
+    var useRegex = bttv.settings.get('regexHighlights');
+
+    var i;
+    var blacklistRegexes = [];
+    if (useRegex) {
+        // Pull the regular expressions out first so curly braces
+        // in the expression won't double count as phrases
+        var regexPhrase = /\/.+?\//g;
+        var regexStrings;
+        try {
+            regexStrings = keywords.match(regexPhrase);
+        } catch (e) {
+            debug.log(e);
+            return false;
+        }
+        if (regexStrings) {
+            for (i = 0; i < regexStrings.length; i++) {
+                var regexString = regexStrings[i];
+                debug.log(regexString);
+                keywords = keywords.replace(regexString, '')
+                    .replace(/s\s\s+/g, ' ').trim();
+                blacklistRegexes.push(regexString.replace(/(^\/|\/$)/g, '')
+                                    .trim());
+            }
+        }
+    }
 
     var testCases;
     try {
@@ -17,7 +45,6 @@ exports.blacklistFilter = function(data) {
         return false;
     }
 
-    var i;
     if (testCases) {
         for (i = 0; i < testCases.length; i++) {
             var testCase = testCases[i];
@@ -49,6 +76,16 @@ exports.blacklistFilter = function(data) {
         var nickRegex = new RegExp('^' + user + '$', 'i');
         if (nickRegex.test(data.from)) {
             return true;
+        }
+    }
+
+    if (useRegex) {
+        for (i = 0; i < blacklistRegexes.length; i++) {
+            debug.log('Testing' + blacklistRegexes[i]);
+            regex = new RegExp(blacklistRegexes[i], 'g');
+            if (safeRegex(regex) && regex.test(data.message)) {
+                return true;
+            }
         }
     }
 
@@ -149,7 +186,7 @@ exports.highlighting = function(data) {
         for (i = 0; i < highlightRegex.length; i++) {
             debug.log('Testing' + highlightRegex);
             regex = new RegExp(highlightRegex[i], 'g');
-            if (regex.test(data.message)) {
+            if (safeRegex(regex) && regex.test(data.message)) {
                 return true;
             }
         }
