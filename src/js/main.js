@@ -136,6 +136,7 @@ var clearClutter = require('./features/clear-clutter'),
     hostButtonBelowVideo = require('./features/host-btn-below-video'),
     conversations = require('./features/conversations'),
     betterViewerList = require('./features/better-viewer-list'),
+    overrideEmotes = require('./features/override-emotes'),
     ChatReplay = require('./features/chat-replay');
 
 var chatFunctions = function() {
@@ -193,20 +194,31 @@ var main = function() {
                             setTimeout(function() {
                                 window.dispatchEvent(new Event('resize'));
                             }, 3000);
+
+                            // chat
+                            bttv.chat.store.isLoaded = false;
+                            chatFunctions();
                         }
                     });
                     break;
                 case 'vod':
                     // disconnect old chat replay watcher, spawn new
+                    if (
+                        App.__container__.lookup('controller:vod').get('isTheatreMode') === false &&
+                        bttv.settings.get('autoTheatreMode') === true
+                    ) {
+                        enableTheatreMode();
+                    }
+
                     try {
                         chatReplay.disconnect();
                     } catch (e) {}
                     chatReplay = new ChatReplay();
                     window.dispatchEvent(new Event('resize'));
                     break;
-                case 'following.index':
+                case 'directory.following.index':
                     // Switching between tabs in following page
-                    if (lastRoute.substr(0, 9) === 'following') break;
+                    if (lastRoute.substr(0, 19) === 'directory.following') break;
 
                     $('#main_col').removeAttr('style');
                     waitForLoad(function(ready) {
@@ -218,10 +230,12 @@ var main = function() {
                 case 'profile.index':
                     waitForLoad(function(ready) {
                         if (ready) {
-                            vars.emotesLoaded = false;
-                            chatFunctions();
                             channelReformat();
                             window.dispatchEvent(new Event('resize'));
+
+                            // chat
+                            bttv.chat.store.isLoaded = false;
+                            chatFunctions();
                         }
                     });
                     break;
@@ -238,17 +252,8 @@ var main = function() {
             before: function() {
                 renderingCounter++;
             },
-            after: function(name, ts, payload) {
+            after: function() {
                 renderingCounter--;
-
-                if (payload.template === 'chat/chat') {
-                    waitForLoad(function(ready) {
-                        if (ready) {
-                            bttv.chat.store.isLoaded = false;
-                            chatFunctions();
-                        }
-                    });
-                }
             }
         });
     }
@@ -290,6 +295,9 @@ var main = function() {
         handleTwitchChatEmotesScript();
         hostButtonBelowVideo();
         betterViewerList();
+
+        // Loads global BTTV emotes (if not loaded)
+        overrideEmotes();
 
         if (bttv.settings.get('chatImagePreview') === true) {
             enableImagePreview();

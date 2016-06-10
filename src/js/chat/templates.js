@@ -219,7 +219,7 @@ var message = exports.message = function(sender, msg, emotes, colored, force) {
 
     var spam = false;
     if (bttv.settings.get('hideSpam') && helpers.isSpammer(sender) && !helpers.isModerator(sender) && !force) {
-        msg = '<span style="color: #999">&lt;spam deleted&gt;</span>';
+        msg = '<span class="deleted">&lt;spam deleted&gt;</span>';
         spam = true;
     }
 

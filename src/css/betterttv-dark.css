@@ -1013,6 +1013,10 @@ body {
     border-color: #000;
 }
 
+.chat-line .message .deleted {
+    color: #999;
+}
+
 #bttvChatPaused {
     position: absolute;
     float: left;
@@ -2262,16 +2266,34 @@ span.subscribe-text {
 .activity-container .activity-card > div .activity-meta {
     box-shadow: inset 0 -1px 0 #333;
 }
+.activity-container .activity-card > div .activity-meta > * {
+    color: #d3d3d3;
+}
+
+.activity-container .activity-card > div .activity-meta-divider:before {
+    background: #999;
+    border-color: #999;
+}
+.activity-container .activity-card > div .activity-meta-divider {
+    box-shadow: inset 0 -1px 0 #999;
+}
+
+
 
 .activity-container .activity-card > div .activity-meta:before,
-.activity-container .activity-card > div .activity-react a,
-.activity-container .activity-card > div .activity-options .balloon,
-.activity-container .activity-card > div .activity-options .balloon:after {
+.activity-container .activity-card > div .activity-react button,
+.activity-container .activity-card > div .balloon-wrapper .balloon,
+.activity-container .activity-card > div .balloon-wrapper .balloon:after {
     border-color: #333;
     background-color: #333;
 }
 
-.activity-container .activity-card > div .activity-options .balloon a {
+.activity-container .activity-card > div .activity-react .activity-button--selected {
+    border-color: #14b866;
+    color: #14b866;
+}
+
+.activity-container .activity-card > div .balloon-wrapper .balloon a {
     color: #d3d3d3 !important;
 }
 
@@ -2295,9 +2317,10 @@ span.subscribe-text {
     background: rgba(10,10,10,.85);
 }
 
-/* remove rounded corners on posts toggle box */
+/* remove border on posts toggle box */
 .player-column .feed-toggle-contain {
     border-radius: 0px;
+    border: none;
 }
 
 /* Better Viewer List */
@@ -2410,4 +2433,14 @@ ul.tabs li a:hover {
 
 #broadcast-meta .info .ct-tags {
     border-color: #444;
+}
+
+/* yolo balloon popup darkening */
+.balloon,
+.balloon:after {
+    background-color: #1e1e1e;
+}
+
+.balloon .balloon__link {
+    color: #dfdfdf !important;
 }
