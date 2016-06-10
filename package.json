@@ -30,7 +30,7 @@
     "lodash.throttle": "^3.0.4",
     "request": "2.36.0",
     "resizable": "^1.1.1",
-    "twitch-chat-emotes": "github:cletusc/Userscript--Twitch-Chat-Emotes#0425e15628ddd71d1cbdd6cb9c39264f8cde67a2",
+    "twitch-chat-emotes": "github:cletusc/Userscript--Twitch-Chat-Emotes#8d1c6adc17b56fabdf4e00665348a4e00d58d99a",
     "uglify-save-license": "^0.4.1",
     "view-list": "^2.1.0"
   }

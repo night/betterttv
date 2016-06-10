@@ -345,6 +345,9 @@ exports.notice = function(data) {
         message: message
     });
 
+    // Same message as CLEARCHAT, need to filter until twitch removes it
+    if (messageId === 'timeout_success' || messageId === 'ban_success') return;
+
     helpers.serverMessage(message, true);
 };
 

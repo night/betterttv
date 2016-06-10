@@ -5,6 +5,8 @@ var colors = require('../helpers/colors');
 var keyCodes = require('../keycodes');
 var store = require('../chat/store');
 
+var conversationsClass = '.conversations-content';
+
 function Conversations(timeout) {
     timeout = timeout || 0;
 
@@ -15,7 +17,10 @@ function Conversations(timeout) {
 
     if (!(this instanceof Conversations)) return new Conversations(0);
 
-    var $conversations = $('.conversations-content');
+    var $conversations = $(conversationsClass);
+    var _self = this;
+
+    this.toggleAutoHide();
 
     if (!$conversations.length) {
         setTimeout(function() {
@@ -23,8 +28,6 @@ function Conversations(timeout) {
         }, 2 * timeout);
         return;
     }
-
-    var _self = this;
 
     var watcher = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
@@ -121,6 +124,14 @@ Conversations.prototype.newConversation = function(element) {
     var _self = this;
     var $chatInput = $(element).find('.chat_text_input');
     var name = $(element).find('.conversation-header-name').text().toLowerCase();
+
+    if (bttv.settings.get('hideConversations')) this.slideUp();
+    $(element).find('.header-button-container').children().last().on('click', function() {
+        setTimeout(function() {
+            if (bttv.settings.get('hideConversations')) _self.slideDown();
+        }, 100);
+    });
+
 
     function storeMessage(message) {
         if (!bttv.settings.get('chatLineHistory')) return;
@@ -224,6 +235,34 @@ Conversations.prototype.updateTitle = function(m) {
             }
         }
     }
+};
+
+Conversations.prototype.toggleAutoHide = function() {
+    var $conversations = $(conversationsClass);
+
+    if (bttv.settings.get('hideConversations')) {
+        this.slideDown();
+
+        $conversations.hover(this.slideUp.bind(this), this.slideDown.bind(this));
+    } else {
+        this.slideUp();
+
+        $conversations.off('mouseenter', this.slideUp.bind(this)).off('mouseleave', this.slideDown.bind(this));
+    }
+};
+
+Conversations.prototype.slideDown = function() {
+    var $conversations = $(conversationsClass);
+
+    if ($conversations.find('.list-displayed').length || $conversations.find('.conversation-window').length) return;
+
+    $conversations.animate({'bottom': '-26px'}, 100);
+};
+
+Conversations.prototype.slideUp = function() {
+    var $conversations = $(conversationsClass);
+
+    $conversations.animate({'bottom': '0px'}, 100);
 };
 
 module.exports = Conversations;
