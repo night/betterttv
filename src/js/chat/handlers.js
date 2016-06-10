@@ -162,7 +162,9 @@ exports.countUnreadMessages = function() {
     controller.set('notificationsCount', unreadChannels);
 };
 
-exports.shiftQueue = function() {
+var shiftQueue = exports.shiftQueue = function() {
+    setTimeout(shiftQueue, 250);
+
     if (!tmi() || !tmi().get('id')) return;
     var id = tmi().get('id');
     if (id !== store.currentRoom && tmi().get('name')) {
