@@ -92,7 +92,8 @@ var takeover = module.exports = function() {
         tags: {
             'subs-only': tmi.get('subsOnly'),
             slow: tmi.get('slow'),
-            r9k: tmi.get('r9k')
+            r9k: tmi.get('r9k'),
+            'emote-only': tmi.get('emoteOnly')
         }
     });
     vars.localSubsOnly = false;

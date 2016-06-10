@@ -112,7 +112,8 @@ module.exports = function(event) {
             if ('emote-only' in event.tags) {
                 enabled = event.tags['emote-only'];
 
-                if (enabled === true) {
+                // Twitch isn't properly parsing this.. yet? #fail
+                if ([true, '1'].indexOf(enabled) > -1) {
                     $stateContainer.find('.emote-only').show();
                 } else {
                     $stateContainer.find('.emote-only').hide();

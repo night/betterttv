@@ -324,10 +324,6 @@ var main = function() {
             debug.log('BTTV v' + bttv.info.versionString());
             debug.log('CALL init ' + document.URL);
 
-            if (/\?bttvMassUnban=true/.test(window.location)) {
-                return new MassUnbanPopup();
-            }
-
             initialFuncs();
             setTimeout(delayedFuncs, 3000);
         });
