@@ -1349,6 +1349,24 @@ body#chat #speak {
     height: 115px !important;
 }
 
+/* emoticon selector scrollbar in chrome */
+.ember-chat .chat-interface .emoticon-selector ::-webkit-scrollbar {
+  width: 6px;
+}
+
+.ember-chat .chat-interface  .emoticon-selector ::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.7);
+  border-radius: 7px;
+}
+
+.ember-chat .chat-interface  .emoticon-selector ::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0);
+}
+
+.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box {
+    padding: 0 3px;
+}
+
 .ember-chat .chat-interface .chat-buttons-container .chat-option-buttons {
     margin-left: 8px;
 }
