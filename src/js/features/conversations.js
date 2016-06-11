@@ -33,6 +33,9 @@ function Conversations(timeout) {
     if (window.App && App.__container__.lookup('service:whispers-shim')) {
         var whisperShim = App.__container__.lookup('service:whispers-shim');
         whisperShim.on('whisper', _self.onWhisper);
+        whisperShim.on('thread', function(data) {
+            bttv.ws.joinConversation(data.id);
+        });
     }
 
     var watcher = new MutationObserver(function(mutations) {
