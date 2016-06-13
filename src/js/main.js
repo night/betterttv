@@ -9,7 +9,7 @@ var debug = require('./helpers/debug'),
 
 bttv.info = {
     version: '6.8',
-    release: 53,
+    release: 54,
     versionString: function() {
         return bttv.info.version + 'R' + bttv.info.release;
     }
