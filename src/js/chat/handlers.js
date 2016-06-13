@@ -5,6 +5,7 @@ var vars = require('../vars'),
     helpers = require('./helpers'),
     templates = require('./templates'),
     rooms = require('./rooms'),
+    throttle = require('lodash.throttle'),
     pinnedHighlights = require('../features/pinned-highlights'),
     embeddedPolling = require('../features/embedded-polling'),
     channelState = require('../features/channel-state'),
@@ -162,7 +163,7 @@ exports.countUnreadMessages = function() {
     controller.set('notificationsCount', unreadChannels);
 };
 
-exports.shiftQueue = function() {
+var shiftQueue = exports.shiftQueue = throttle(function() {
     if (!tmi() || !tmi().get('id')) return;
     var id = tmi().get('id');
     if (id !== store.currentRoom && tmi().get('name')) {
@@ -194,7 +195,7 @@ exports.shiftQueue = function() {
         store.__messageQueue = [];
     }
     helpers.scrollChat();
-};
+}, 250);
 
 exports.moderationCard = function(user, $event) {
     var makeCard = require('../features/make-card');
@@ -491,6 +492,7 @@ var privmsg = exports.privmsg = function(channel, data) {
     );
 
     store.__messageQueue.push($(message));
+    shiftQueue();
 };
 
 exports.onPrivmsg = function(channel, data) {

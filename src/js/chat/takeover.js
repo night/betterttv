@@ -394,9 +394,6 @@ var takeover = module.exports = function() {
     store.chatters = {};
     store.chatters[bttv.getChannel()] = {lastWhisper: 0};
 
-    // When messages come in too fast, things get laggy
-    if (!store.__messageTimer) store.__messageTimer = setInterval(handlers.shiftQueue, 250);
-
     // Active Tab monitoring - Useful for knowing if a user is 'watching' chat
     $(window).off('blur focus').on('blur focus', function(e) {
         var prevType = $(this).data('prevType');
