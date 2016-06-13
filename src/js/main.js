@@ -353,6 +353,34 @@ if (location.pathname.match(/^\/(.*)\/popout/)) {
     return;
 }
 
+if (location.hostname === 'clips.twitch.tv') {
+    var clipDark = document.createElement('link');
+    clipDark.setAttribute('href', 'https://cdn.betterttv.net/css/betterttv-clips-dark.css');
+    clipDark.setAttribute('type', 'text/css');
+    clipDark.setAttribute('rel', 'stylesheet');
+    clipDark.setAttribute('id', 'clipDark');
+    document.body.appendChild(clipDark);
+
+    var toggleButton = document.createElement('a');
+    toggleButton.classList.add('darkToggleButton');
+    toggleButton.innerText = 'Toggle Dark Mode';
+    toggleButton.onclick = function() {
+        var isDark = bttv.storage.getObject('bttvClipsDark');
+        bttv.storage.putObject('bttvClipsDark', !isDark);
+        if (isDark) {
+            document.body.classList.remove('dark');
+        } else {
+            document.body.classList.add('dark');
+        }
+    };
+    document.body.appendChild(toggleButton);
+
+
+    if (bttv.storage.getObject('bttvClipsDark') === true) {
+        document.body.classList.add('dark');
+    }
+}
+
 if (!window.Twitch || !window.Twitch.api || !window.Twitch.user) {
     debug.log('window.Twitch not detected.');
     return;

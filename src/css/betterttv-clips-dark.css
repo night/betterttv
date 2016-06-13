@@ -1,0 +1,42 @@
+body.dark {
+    background: rgb(20,20,20);
+}
+
+/* make video background black and removes box shadow */
+.dark .clip-wrap, .dark .video-loading  {
+    background: rgb(0, 0, 0);
+    box-shadow: none;
+}
+
+.dark .broadcaster-info .broadcaster-info__title,
+.dark a[class="curator-link js-curator-link"],
+.dark .clip-wrap--error .error-text {
+    color: #d3d3d3;
+}
+
+.dark .svg-logo_twitch {
+    fill: #fff;
+}
+
+.dark a[class^="broadcaster-info__name-link"],
+.dark a[class^="broadcaster-info__game-link"],
+.dark .curator {
+    color: #999;
+}
+
+.dark span[class^=" broadcaster-info__game"] {
+    color: #8c8c8c;
+}
+
+/* removes unnecessary spacing */
+#clip-meta {
+    margin-top: 0px;
+}
+
+/* Button used to toggle dark mode */
+.darkToggleButton {
+    cursor: pointer;
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+}
