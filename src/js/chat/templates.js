@@ -193,7 +193,7 @@ exports.bttvElementTokenize = function(senderEl, messageEl) {
     var tokens = $(messageEl).contents();
     var sender = $(senderEl).text().trim().toLowerCase();
     for (var i = 0; i < tokens.length; i++) {
-        if (tokens[i].nodeType === Node.TEXT_NODE) {
+        if (tokens[i].nodeType === window.Node.TEXT_NODE) {
             newTokens.push(bttvMessageTokenize(sender, tokens[i].data));
         } else {
             newTokens.push(tokens[i].outerHTML);
