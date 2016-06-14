@@ -133,10 +133,7 @@ var suggestions = exports.suggestions = function(words, index) {
     if ($suggestions.length) $suggestions.remove();
 
     var input = $chatInput.val();
-    var sentence = input.trim().split(' ');
-    var lastWord = sentence.pop();
     if (
-        lastWord.charAt(0) !== '@' &&
         !detectServerCommand(input) &&
         bttv.settings.get('tabCompletionTooltip') === false
     ) {
@@ -146,13 +143,16 @@ var suggestions = exports.suggestions = function(words, index) {
     $suggestions = $chatInterface.find('.textarea-contain').append(templates.suggestions(words, index)).find('.suggestions');
     $suggestions.find('.suggestion').on('click', function() {
         var user = $(this).text();
-        sentence = $chatInput.val().trim().split(' ');
-        lastWord = (detectServerCommand(input) && !sentence[1]) ? '' : sentence.pop();
-
+        var sentence = $chatInput.val().trim().split(' ');
+        var lastWord = (detectServerCommand(input) && !sentence[1]) ? '' : sentence.pop();
         var isEmote = (completableEmotes().indexOf(user) !== -1);
 
         if (!isEmote) {
-            sentence.push('@' + lookupDisplayName(user, false));
+            if (!detectServerCommand(input) && (bttv.settings.get('userMentions') === true || lastWord.charAt(0) === '@')) {
+                sentence.push('@' + lookupDisplayName(user, false));
+            } else {
+                sentence.push(lookupDisplayName(user, false));
+            }
         } else {
             sentence.push(user);
         }
@@ -308,7 +308,7 @@ exports.tabCompletion = function(e) {
             return;
         }
 
-        if (!isEmote) {
+        if (!isEmote && !detectServerCommand(input) && (bttv.settings.get('userMentions') === true || lastWord.charAt(0) === '@')) {
             user = '@' + user;
         }
 
