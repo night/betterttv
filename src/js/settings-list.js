@@ -498,9 +498,9 @@ module.exports = [
         storageKey: 'tabCompletionEmotePriority'
     },
     {
-        name: 'Tab Completion Tooltip',
-        description: 'Shows a tooltip with suggested names when using tab completion',
-        default: false,
+        name: 'Completion Tooltip',
+        description: 'Shows a tooltip with suggested names when typing @ or using tab completion',
+        default: true,
         storageKey: 'tabCompletionTooltip'
     },
     {
