@@ -135,10 +135,11 @@ module.exports = function(event) {
             var msg = event.tags['msg-id'];
 
             if (msg === 'msg_slowmode' || msg === 'msg_timedout') {
-                var matches = /([0-9]+)/.exec(event.message);
+                var matches = event.message.split(' ');
                 if (!matches) return;
 
-                var seconds = parseInt(matches[1], 10);
+                var seconds = 0;
+                if (matches.length >= 9) seconds = parseInt(matches[9], 10);
                 initiateCountDown(seconds);
             } else if (msg === 'msg_banned') {
                 initiateCountDown(86400);
