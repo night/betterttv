@@ -214,7 +214,7 @@ var takeover = module.exports = function() {
 
         setTimeout(function() {
             if (clickCounter >= 2 && bttv.settings.get('dblClickAutoComplete') === true) {
-                $('.ember-chat .chat-interface').find('textarea').val('@' + helpers.lookupDisplayName(sender, false) + ', ');
+                $('.ember-chat .chat-interface').find('textarea').val((bttv.settings.get('userMentions') === true ? '@' : '') + helpers.lookupDisplayName(sender, false) + ', ');
             } else {
                 handlers.moderationCard(sender, $element);
             }
