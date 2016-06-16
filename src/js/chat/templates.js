@@ -48,7 +48,7 @@ var userMentions = exports.userMentions = function(message) {
             username = username.slice(0, -1);
         }
         if (username !== '' && store.chatters.hasOwnProperty(username.toLowerCase())) {
-            return message.replace(username, '<span class="user-mention">' + username + '</span>');
+            return message.replace('@' + username, '<span class="user-mention">@' + username + '</span>');
         }
     }
     return message;
