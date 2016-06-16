@@ -208,7 +208,7 @@ var takeover = module.exports = function() {
         var $element = $(this);
         var sender;
         if ($element.hasClass('user-mention')) {
-            sender = $element.text().toLowerCase();
+            sender = $element.text().toLowerCase().substring(1);
         } else {
             sender = ($element.data('sender') || $element.parent().data('sender')).toString();
         }
