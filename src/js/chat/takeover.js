@@ -92,7 +92,8 @@ var takeover = module.exports = function() {
         tags: {
             'subs-only': tmi.get('subsOnly'),
             slow: tmi.get('slow'),
-            r9k: tmi.get('r9k')
+            r9k: tmi.get('r9k'),
+            'emote-only': tmi.get('emoteOnly')
         }
     });
     vars.localSubsOnly = false;
@@ -195,6 +196,8 @@ var takeover = module.exports = function() {
         } else if ($(this).hasClass('subscriber')) {
             window.open(Twitch.url.subscribe(bttv.getChannel(), 'in_chat_subscriber_link'), '_blank');
         }
+    }).off('click', '.chat-line .badges .warcraft').on('click', '.chat-line .badges .warcraft', function() {
+        window.open('http://warcraftontwitch.tv/', '_blank');
     });
 
     // Make names clickable
@@ -395,9 +398,6 @@ var takeover = module.exports = function() {
     // Reset chatters list
     store.chatters = {};
     store.chatters[bttv.getChannel()] = {lastWhisper: 0};
-
-    // When messages come in too fast, things get laggy
-    if (!store.__messageTimer) store.__messageTimer = setInterval(handlers.shiftQueue, 250);
 
     // Active Tab monitoring - Useful for knowing if a user is 'watching' chat
     $(window).off('blur focus').on('blur focus', function(e) {

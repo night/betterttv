@@ -108,6 +108,17 @@ module.exports = function(event) {
                     $stateContainer.find('.subs-only').hide();
                 }
             }
+
+            if ('emote-only' in event.tags) {
+                enabled = event.tags['emote-only'];
+
+                // Twitch isn't properly parsing this.. yet? #fail
+                if ([true, '1'].indexOf(enabled) > -1) {
+                    $stateContainer.find('.emote-only').show();
+                } else {
+                    $stateContainer.find('.emote-only').hide();
+                }
+            }
             break;
         case 'outgoing_message':
             if (!vars.userData.isLoggedIn || bttv.chat.helpers.isModerator(vars.userData.name)) return;

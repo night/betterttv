@@ -1,9 +1,11 @@
+var audibleFeedback = require('../features/audible-feedback');
 var chatStore = require('../chat/store');
 var chatTemplates = require('../chat/templates');
 var chatHelpers = require('../chat/helpers');
 var colors = require('../helpers/colors');
 var keyCodes = require('../keycodes');
 var store = require('../chat/store');
+var vars = require('../vars');
 
 var conversationsClass = '.conversations-content';
 
@@ -27,6 +29,11 @@ function Conversations(timeout) {
             return new Conversations(2 * timeout);
         }, 2 * timeout);
         return;
+    }
+
+    if (window.App && App.__container__.lookup('service:whispers-shim')) {
+        var whisperShim = App.__container__.lookup('service:whispers-shim');
+        whisperShim.on('whisper', _self.onWhisper);
     }
 
     var watcher = new MutationObserver(function(mutations) {
@@ -53,6 +60,15 @@ function Conversations(timeout) {
     watcher.observe($conversations[0], { childList: true, subtree: true, attributes: true, attributeFilter: ['class']});
 }
 
+Conversations.prototype.onWhisper = function(data) {
+    if (bttv.settings.get('highlightFeedback') === true && bttv.chat.store.activeView === false) {
+        if (vars.userData.isLoggedIn && vars.userData.name !== data.from) {
+            audibleFeedback.play();
+        }
+    }
+};
+
+
 Conversations.prototype.messageParser = function(element) {
     var from = element.querySelector('.from');
     var message = element.querySelector('.message');
@@ -65,7 +81,11 @@ Conversations.prototype.messageParser = function(element) {
     $element.addClass('bttv-parsed-message');
 
     from.style.color = this.usernameRecolor(from.style.color);
-    // message.innerHTML = this.emoticonize(message.innerHTML);
+
+    if ($element.hasClass('conversation-chat-line') && !$element.hasClass('conversation-preview-line')) {
+        $element.append('<span class="message">' + this.emoticonize(message.innerHTML) + '</span>');
+        message.style.display = 'none';
+    }
 
     this.scrollDownParent(element);
 };
@@ -82,7 +102,7 @@ Conversations.prototype.scrollDownParent = function(element) {
 Conversations.prototype.emoticonize = function(message) {
     if (bttv.settings.get('bttvEmotes') === false) return message;
 
-    var parts = message.split(' ');
+    var parts = message.trim().split(' ');
     var test;
     var emote;
 

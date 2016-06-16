@@ -7,10 +7,12 @@ var splitChat = require('./features/split-chat'),
     hostButton = require('./features/host-btn-below-video'),
     anonChat = require('./features/anon-chat'),
     betterViewerList = require('./features/better-viewer-list'),
-    handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes');
-var displayElement = require('./helpers/element').display,
-    removeElement = require('./helpers/element').remove,
+    handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes'),
+    audibleFeedback = require('./features/audible-feedback'),
     imagePreview = require('./features/image-preview');
+
+var displayElement = require('./helpers/element').display,
+    removeElement = require('./helpers/element').remove;
 
 module.exports = [
     {
@@ -125,10 +127,10 @@ module.exports = [
             }
         },
         load: function() {
-            var currentDarkStatus = false;
+            if (!window.App) return;
 
-            if (!window.App || !App.__container__.lookup('controller:Layout')) return;
-            App.__container__.lookup('controller:Layout').addObserver('isTheatreMode', function() {
+            var currentDarkStatus = false;
+            var toggleDarkMode = function() {
                 if (this.get('isTheatreMode') === true) {
                     currentDarkStatus = bttv.settings.get('darkenedMode');
                     if (currentDarkStatus === false) {
@@ -137,10 +139,14 @@ module.exports = [
                         // Toggles setting back without removing the darkened css
                         bttv.storage.put('bttv_darkenedMode', false);
                     }
-                } else {
-                    if (currentDarkStatus === false) bttv.settings.save('darkenedMode', false);
+                } else if (currentDarkStatus === false) {
+                    bttv.settings.save('darkenedMode', false);
                 }
-            });
+            };
+
+            if (App.__container__.lookup('controller:channel')) {
+                App.__container__.lookup('controller:channel').addObserver('isTheatreMode', toggleDarkMode);
+            }
         }
     },
     {
@@ -224,11 +230,6 @@ module.exports = [
             $('body').on('mouseover', '#directory-list .streams a.cap', function() {
                 var chan = encodeURIComponent($(this).attr('href').substr(1));
 
-                var html5 = '';
-                if (window.navigator.userAgent.indexOf('Chrome') > -1) {
-                    html5 = '&html5';
-                }
-
                 $('div.tipsy').remove();
 
                 var $this = $(this);
@@ -241,7 +242,7 @@ module.exports = [
                         gravity: $.fn.tipsy.autoNS,
                         html: true,
                         opacity: 1,
-                        title: function() { return '<iframe src="https://player.twitch.tv/?channel=' + chan + '&!branding&!showInfo&autoplay&volume=0.1' + html5 + '" style="border: none;" width="320" height="208"></iframe><style>.tipsy-inner{max-width:320px;}</style>'; }
+                        title: function() { return '<iframe src="https://player.twitch.tv/?channel=' + chan + '&!branding&!showInfo&autoplay&volume=0.1" style="border: none;" width="320" height="208"></iframe><style>.tipsy-inner{max-width:320px;}</style>'; }
                     });
                     $this.tipsy('show');
                 }, 1500);
@@ -458,7 +459,8 @@ module.exports = [
         name: 'Play Sound on Highlight/Whisper',
         description: 'Get audio feedback for messages directed at you (BETA)',
         default: false,
-        storageKey: 'highlightFeedback'
+        storageKey: 'highlightFeedback',
+        load: audibleFeedback.load
     },
     {
         name: 'Remove Deleted Messages',

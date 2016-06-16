@@ -22,6 +22,5 @@ exports.proEmotes = {};
 exports.autoCompleteEmotes = {};
 
 // as these aren't objects, they can't be local variables (otherwise we wouldn't be able to modify them from outside)
-exports.__messageTimer = false;
 exports.currentRoom = '';
 exports.activeView = true;

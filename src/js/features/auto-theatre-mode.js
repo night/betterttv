@@ -1,10 +1,14 @@
-module.exports = function() {
-    if (!window.Ember || !window.App ||
-        App.__container__.lookup('controller:application').get('currentRouteName') !== 'channel.index.index') {
-        return;
-    }
+var debug = require('../helpers/debug');
 
-    var emberView = $('#player').children()[0].id;
-    var emberViews = App.__container__.lookup('-view-registry:main');
-    emberViews[emberView].sendAction('toggleTheatreAction', emberViews[emberView].get('player'));
+module.exports = function() {
+    if (!window.Ember || !window.App) return;
+
+    var routeName = App.__container__.lookup('controller:application').get('currentRouteName');
+    if (routeName !== 'channel.index.index' && routeName !== 'vod') return;
+
+    try {
+        App.__container__.lookup('service:layout').setTheatreMode(true);
+    } catch (e) {
+        debug.log('Error toggling theater mode: ', e);
+    }
 };

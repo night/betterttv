@@ -5,6 +5,7 @@ var vars = require('../vars'),
     helpers = require('./helpers'),
     templates = require('./templates'),
     rooms = require('./rooms'),
+    throttle = require('lodash.throttle'),
     pinnedHighlights = require('../features/pinned-highlights'),
     embeddedPolling = require('../features/embedded-polling'),
     channelState = require('../features/channel-state'),
@@ -83,6 +84,8 @@ exports.commands = function(input) {
         tmi().tmiRoom.startSubscribersMode();
     } else if (command === '/suboff') {
         tmi().tmiRoom.stopSubscribersMode();
+    } else if (command === '/squishy') {
+        helpers.sendMessage('notsquishY WHEN YOU NEED HIM notsquishY IN A JIFFY notsquishY USE THIS EMOTE notsquishY TO SUMMON SQUISHY notsquishY');
     } else if (command === '/t') {
         var time = 600;
         if (!isNaN(sentence[2])) time = sentence[2];
@@ -160,7 +163,7 @@ exports.countUnreadMessages = function() {
     controller.set('notificationsCount', unreadChannels);
 };
 
-exports.shiftQueue = function() {
+var shiftQueue = exports.shiftQueue = throttle(function() {
     if (!tmi() || !tmi().get('id')) return;
     var id = tmi().get('id');
     if (id !== store.currentRoom && tmi().get('name')) {
@@ -192,7 +195,7 @@ exports.shiftQueue = function() {
         store.__messageQueue = [];
     }
     helpers.scrollChat();
-};
+}, 250);
 
 exports.moderationCard = function(user, $event) {
     var makeCard = require('../features/make-card');
@@ -251,7 +254,7 @@ exports.clearChat = function(user, info) {
 
         $chatLines = $(printedChatLines.concat(queuedLines));
 
-        if (!$chatLines.length && !isTarget && !isMod) return;
+        if (!$chatLines.length && !isTarget) return;
 
         if (bttv.settings.get('hideDeletedMessages') === true) {
             $chatLines.each(function() {
@@ -271,7 +274,7 @@ exports.clearChat = function(user, info) {
                     var $message = $(this).find('.message');
 
                     $message.addClass('timed-out');
-                    $message.html('<span style="color: #999">&lt;message deleted&gt;</span>').off('click').on('click', function() {
+                    $message.html('<span class="deleted">&lt;message deleted&gt;</span>').off('click').on('click', function() {
                         $(this).replaceWith(templates.message(user, decodeURIComponent($(this).data('raw'))));
                     });
                 });
@@ -286,7 +289,7 @@ exports.clearChat = function(user, info) {
                         $(this).css('opacity', '0.1');
                     });
                     $message.addClass('timed-out');
-                    $message.html('<span style="color: #999">' + $message.html() + '</span>');
+                    $message.html('<span class="deleted">' + $message.html() + '</span>');
                 });
             }
 
@@ -489,6 +492,7 @@ var privmsg = exports.privmsg = function(channel, data) {
     );
 
     store.__messageQueue.push($(message));
+    shiftQueue();
 };
 
 exports.onPrivmsg = function(channel, data) {
@@ -503,8 +507,14 @@ exports.onPrivmsg = function(channel, data) {
             store.chatters[data.from] = {lastWhisper: Date.now()};
             if (bttv.settings.get('disableWhispers') === true) return;
             if (data.from !== vars.userData.name) {
-                audibleFeedback();
-                if (bttv.settings.get('desktopNotifications') === true && bttv.chat.store.activeView === false) bttv.notify('You received a whisper from ' + ((data.tags && data.tags['display-name']) || data.from));
+                if (bttv.chat.store.activeView === false) {
+                    if (bttv.settings.get('highlightFeedback') === true) {
+                        audibleFeedback.play();
+                    }
+                    if (bttv.settings.get('desktopNotifications') === true) {
+                        bttv.notify('You received a whisper from ' + ((data.tags && data.tags['display-name']) || data.from));
+                    }
+                }
             }
         }
         privmsg(channel, data);

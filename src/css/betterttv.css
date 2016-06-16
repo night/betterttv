@@ -27,6 +27,10 @@ body.channel_new {
     padding-right: 8px !important;
 }
 
+.chat-line .message .deleted {
+    color: #6441a4;
+}
+
 #metagame a {
     color: white !important;
 }
@@ -52,7 +56,7 @@ ul.tabs li.selected a {
 .ember-chat .chat-messages {
     top: 0px;
     bottom: 114px;
-    background-color: #f2f2f2; /* hide group chat feature depends on having a background */
+    background-color: #efeef1; /* hide group chat feature depends on having a background */
 }
 
 .loading-mask {
@@ -841,10 +845,6 @@ input, textarea, select {
     cursor: move !important;
 }
 
-#bvl-panel a.button {
-    top: 5px;
-}
-
 #bvl-panel a.button.disable {
     opacity: 0.2;
     cursor: not-allowed;
@@ -1349,6 +1349,24 @@ body#chat #speak {
     height: 115px !important;
 }
 
+/* emoticon selector scrollbar in chrome */
+.ember-chat .chat-interface .emoticon-selector ::-webkit-scrollbar {
+  width: 6px;
+}
+
+.ember-chat .chat-interface  .emoticon-selector ::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.7);
+  border-radius: 7px;
+}
+
+.ember-chat .chat-interface  .emoticon-selector ::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0);
+}
+
+.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box {
+    padding: 0 3px;
+}
+
 .ember-chat .chat-interface .chat-buttons-container .chat-option-buttons {
     margin-left: 8px;
 }
@@ -1500,7 +1518,7 @@ body.channel_new.columns.ember-application {
 }
 
 .ember-view.ember-chat.roomMode {
-    background: #f2f2f2 !important;
+    background: #efeef1 !important;
 }
 
 /* Remove Twitch's Dark Mode toggle */
@@ -1519,7 +1537,7 @@ body.channel_new.columns.ember-application {
     right: 0px;
     width: 100%;
 
-    background-color: #f2f2f2;
+    background-color: #efeef1;
     box-shadow: 0px 8px 8px -5px #000;
 
     z-index: 99998;
@@ -1794,9 +1812,7 @@ body.channel_new.columns.ember-application {
 }
 
 
-#bttv-channel-state-contain .slow,
-#bttv-channel-state-contain .subs-only,
-#bttv-channel-state-contain .r9k {
+#bttv-channel-state-contain div {
     float: right;
     width: 26px;
     height: 22px;
@@ -1884,8 +1900,8 @@ body.channel_new.columns.ember-application {
     bottom: 5px;
 }
 
-.chatReplay .chat-messages .show-timestamp .timestamp { 
-    display: inline; 
+.chatReplay .chat-messages .show-timestamp .timestamp {
+    display: inline;
 }
 
 /* host & playlist banner fix */
@@ -1903,4 +1919,23 @@ body.channel_new.columns.ember-application {
 .chat-messages .chat-line .user-mention:hover {
     text-decoration: underline;
     cursor: pointer;
+}
+
+.badges .warcraft {
+    background-size: 100%;
+    cursor: pointer;
+}
+
+.badges .warcraft.horde {
+    background: url("https://static-cdn.jtvnw.net/badges/v1/de8b26b6-fd28-4e6c-bc89-3d597343800d/1");
+}
+
+.badges .warcraft.alliance {
+    background: url("https://static-cdn.jtvnw.net/badges/v1/c4816339-bad4-4645-ae69-d1ab2076a6b0/1");
+}
+
+#emote-menu-button {
+    width: 15px;
+    height: 30px;
+    background-color: transparent;
 }

@@ -524,8 +524,6 @@ body {
 }
 
 #channel .channel-actions .button {
-    padding: 0px 10px;
-
     background-color: rgb(30, 30, 30);
     color: rgb(170, 170, 170);
     border-radius: 2px;
@@ -537,6 +535,10 @@ body {
 
 .chat-buttons-container .button {
     margin-right: 10px;
+}
+
+.chat-buttons-container .button--icon-only figure {
+    padding: 0;
 }
 
 #channel .channel-actions .primary,
@@ -567,6 +569,10 @@ body {
     padding-right: 20px !important;
 }
 
+.channel-actions .js-share-box {
+    margin-right: 7px;
+}
+
 .ember-chat .chat-interface .chat-buttons-container .button:first-child {
     padding: 0px 10px;
     margin-left: 1px;
@@ -578,7 +584,7 @@ body {
 
 .chat-buttons-container #emote-menu-button {
     width: 38px;
-    height: 30px;
+    height: 32px;
     margin: 0px;
 }
 
@@ -659,7 +665,7 @@ body {
     border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.35);*/
 }
 
-.dropdown_glyph, .dropdown_static, #subscribe_action .subscribe-price, #channel_following.normal_button, .follow-button .notify, .channel-following.normal_button {
+.dropdown_glyph, .dropdown_static, #channel_following.normal_button, .follow-button .notify, .channel-following.normal_button {
     background: rgb(30, 30, 30) url(../assets/icons/dropdown_arrow.png) no-repeat right center !important;
     box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset !important;
     color: rgb(170, 170, 170) !important;
@@ -1011,6 +1017,10 @@ body {
 
 #main_col .messages .message {
     border-color: #000;
+}
+
+.chat-line .message .deleted {
+    color: #999;
 }
 
 #bttvChatPaused {
@@ -1744,7 +1754,7 @@ div#actions {
 }
 
 .button.glyph:hover path,
-.button.glyph-only:hover path,
+.button.button--icon-only:hover path,
 .ember-chat .chat-menu-button-container:hover svg path {
     fill: #fff;
     color: #fff;
@@ -1794,7 +1804,7 @@ span#is-subscribed {
     color: #fff;
 }
 
-.button.glyph svg path, .button.glyph-only svg path {
+.button.glyph svg path, .button.button--icon-only svg path {
     fill: rgb(170, 170, 170) !important;
 }
 
@@ -1879,8 +1889,15 @@ color: white;
 span.subscribe-text {
     color: white;
 }
+
+.button.subscribe-button {
+    background-color: #6441a4 !important;
+}
 .button.subscribe-button .subscribe-price {
+    background-color: rgba(0,0,0,.25) !important;
     color: rgb(170,170,170)!important;
+    border-radius: 2px;
+    box-shadow: 0;
 }
 
 /* theatre mode */
@@ -1962,6 +1979,21 @@ span.subscribe-text {
 .chat-container.dark .chat-interface .emoticon-selector .tabs .tab, .app-main.theatre .chat-container .chat-interface .emoticon-selector .tabs .tab {
 	color: #888;
 }
+
+.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box input {
+    background-color: #282828;
+    border-color: #444;
+    color: #d3d3d3;
+}
+
+.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box input:focus {
+    box-shadow: 0 0 3px 1px #333;
+}
+
+.ember-chat .chat-interface .emoticon-selector ::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.7) !important;
+}
+
 /* dark whispers (lenny face) */
 .chat-messages .chat-line.whisper {
     background-color: #352645 !important; /* blue: #202236 */
@@ -2262,16 +2294,34 @@ span.subscribe-text {
 .activity-container .activity-card > div .activity-meta {
     box-shadow: inset 0 -1px 0 #333;
 }
+.activity-container .activity-card > div .activity-meta > * {
+    color: #d3d3d3;
+}
+
+.activity-container .activity-card > div .activity-meta-divider:before {
+    background: #999;
+    border-color: #999;
+}
+.activity-container .activity-card > div .activity-meta-divider {
+    box-shadow: inset 0 -1px 0 #999;
+}
+
+
 
 .activity-container .activity-card > div .activity-meta:before,
-.activity-container .activity-card > div .activity-react a,
-.activity-container .activity-card > div .activity-options .balloon,
-.activity-container .activity-card > div .activity-options .balloon:after {
+.activity-container .activity-card > div .activity-react button,
+.activity-container .activity-card > div .balloon-wrapper .balloon,
+.activity-container .activity-card > div .balloon-wrapper .balloon:after {
     border-color: #333;
     background-color: #333;
 }
 
-.activity-container .activity-card > div .activity-options .balloon a {
+.activity-container .activity-card > div .activity-react .activity-button--selected {
+    border-color: #14b866;
+    color: #14b866;
+}
+
+.activity-container .activity-card > div .balloon-wrapper .balloon a {
     color: #d3d3d3 !important;
 }
 
@@ -2295,9 +2345,10 @@ span.subscribe-text {
     background: rgba(10,10,10,.85);
 }
 
-/* remove rounded corners on posts toggle box */
+/* remove border on posts toggle box */
 .player-column .feed-toggle-contain {
     border-radius: 0px;
+    border: none;
 }
 
 /* Better Viewer List */
@@ -2410,4 +2461,38 @@ ul.tabs li a:hover {
 
 #broadcast-meta .info .ct-tags {
     border-color: #444;
+}
+
+/* yolo balloon popup darkening */
+.balloon,
+.balloon:after {
+    background-color: #1e1e1e;
+}
+
+.balloon .balloon__link {
+    color: #dfdfdf !important;
+}
+
+/* fix ugly purpleness */
+#channel #panels-edit-contain .edit-panels-toggle .label,
+#channel .no-channel-message-container .info .message,
+#channel .player-column #broadcast-meta .info .channel,
+#settings .form_microcopy,
+#settings div.boolean label.boolean,
+.items-grid .list_more,
+.items-grid .meta .info,
+.items-grid .section_header h3,
+.following-col .header,
+.following-col .following-list .channel .game,
+.following-col .following-list .channel .viewers,
+.following-col .following-list .channel .viewers svg path,
+.following-col .following-list .search-noresults,
+.following-col .following-list .load-more,
+.following-col .empty-lis,
+.following-col .no-follows {
+    color: #8c8c8c !important;
+}
+
+#emote-menu-button {
+    background-color: rgb(30,30,30);
 }
