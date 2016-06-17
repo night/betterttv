@@ -378,10 +378,11 @@ if (location.hostname === 'clips.twitch.tv') {
     };
     document.body.appendChild(toggleButton);
 
-
     if (bttv.storage.getObject('bttvClipsDark') === true) {
         document.body.classList.add('dark');
     }
+
+    return;
 }
 
 if (!window.Twitch || !window.Twitch.api || !window.Twitch.user) {
