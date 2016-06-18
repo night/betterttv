@@ -188,6 +188,18 @@ var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message
     return tokenizedString.join(' ');
 };
 
+var getEmoteId = function($emote) {
+    if ($emote.data('id')) return $emote.data('id');
+
+    var src = $emote.attr('src');
+
+    if (!src) return null;
+
+    src = /^\/\/static-cdn.jtvnw.net\/emoticons\/v1\/([0-9]+)/.exec(src);
+
+    return src ? src[1] : null;
+};
+
 exports.bttvElementTokenize = function(senderEl, messageEl) {
     var newTokens = [];
     var tokens = $(messageEl).contents();
@@ -195,6 +207,10 @@ exports.bttvElementTokenize = function(senderEl, messageEl) {
     for (var i = 0; i < tokens.length; i++) {
         if (tokens[i].nodeType === window.Node.TEXT_NODE) {
             newTokens.push(bttvMessageTokenize(sender, tokens[i].data));
+        } else if (tokens[i].nodeType === window.Node.ELEMENT_NODE && $(tokens[i]).children('.emoticon')) {
+            // this remakes Twitch's emoticon because they steal on-hover in ember-bound elements
+            var $emote = $(tokens[i]).children('.emoticon');
+            newTokens.push(emoticon(getEmoteId($emote), $emote.attr('alt')));
         } else {
             newTokens.push(tokens[i].outerHTML);
         }
