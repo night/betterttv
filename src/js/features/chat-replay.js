@@ -49,7 +49,11 @@ ChatReplay.prototype.disconnect = function() {
 ChatReplay.prototype.messageParser = function(element) {
     var $element = $(element);
 
-    if (Twitch.storage.getObject('chatSettings').showTimestamps === true) $element.addClass('show-timestamp');
+    if (Twitch.storage.getObject('chatSettings').showTimestamps === true) {
+        $element.addClass('show-timestamp');
+        var modIcons = $element.find('.mod-icons');
+        $(element).find('.timestamp').insertAfter(modIcons);
+    }
 
     if ($element.find('.deleted').length) {
         $element.remove();
