@@ -195,7 +195,7 @@ var shiftQueue = exports.shiftQueue = throttle(function() {
         store.__messageQueue = [];
     }
     helpers.scrollChat();
-}, 250);
+}, 250, { trailing: true });
 
 exports.moderationCard = function(user, $event) {
     var makeCard = require('../features/make-card');
