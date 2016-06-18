@@ -68,6 +68,7 @@ function SocketClient() {
     this._connecting = false;
     this._connectAttempts = 1;
     this._joinedChannel = null;
+    this._joinedConversations = [];
     this._events = events;
 
     this.connect();
@@ -180,6 +181,14 @@ SocketClient.prototype.joinChannel = function() {
     element.type = 'text/css';
     element.innerHTML = '.badge.subscriber { background-image: url("https://cdn.betterttv.net/tags/subscriber.png") !important; }';
     bttv.jQuery('.ember-chat .chat-room').append(element);
+};
+
+SocketClient.prototype.joinConversation = function(threadId) {
+    if (this._joinedConversations.indexOf(threadId) < 0) {
+        this.emit('join_channel', { name: threadId });
+    }
+
+    this.emit('broadcast_me', { name: vars.userData.name, channel: threadId });
 };
 
 module.exports = SocketClient;

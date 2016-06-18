@@ -7,7 +7,7 @@ module.exports = function() {
     if (routeName !== 'channel.index.index' && routeName !== 'vod') return;
 
     try {
-        App.__container__.lookup('service:layout').setTheatreMode(true);
+        window.Mousetrap.trigger('alt+t');
     } catch (e) {
         debug.log('Error toggling theater mode: ', e);
     }

@@ -75,7 +75,7 @@ var takeover = module.exports = function() {
     // Handle Channel Chat
     rooms.newRoom(bttv.getChannel());
     tmi.tmiRoom.on('message', rooms.getRoom(bttv.getChannel()).chatHandler);
-    tmi.tmiRoom.on('clearchat', handlers.clearChat);
+    tmi.tmiRoom.on('clearchat', handlers.clearChat.bind(this, rooms.getRoom(bttv.getChannel())));
     tmi.tmiRoom.on('notice', handlers.notice);
     tmi.tmiRoom.on('roomstate', helpers.parseRoomState);
     if (tmi.channel) tmi.set('name', tmi.channel.get('display_name'));
@@ -105,7 +105,7 @@ var takeover = module.exports = function() {
         privateRooms.forEach(function(room) {
             rooms.newRoom(room.get('id'));
             room.tmiRoom.on('message', rooms.getRoom(room.get('id')).chatHandler);
-            room.tmiRoom.on('clearchat', handlers.clearChat);
+            room.tmiRoom.on('clearchat', handlers.clearChat.bind(this, rooms.getRoom(room.get('id'))));
         });
     }
 
