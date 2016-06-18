@@ -406,7 +406,6 @@ var takeover = module.exports = function() {
             if (e.type === 'blur') {
                 store.activeView = false;
             } else if (e.type === 'focus') {
-                $('.chat-interface textarea').focus();
                 store.activeView = true;
             }
         }
