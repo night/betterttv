@@ -143,7 +143,7 @@ var suggestions = exports.suggestions = function(words, index) {
     $suggestions.find('.suggestion').on('click', function() {
         var user = $(this).text();
         var sentence = $chatInput.val().trim().split(' ');
-        var lastWord = (detectServerCommand(input) && !sentence[1]) ? '' : sentence.pop();
+        if (!detectServerCommand(input) || sentence[1]) sentence.pop();
         var isEmote = (completableEmotes().indexOf(user) !== -1);
 
         if (!isEmote) {
