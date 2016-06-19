@@ -100,12 +100,6 @@ module.exports = [
         }
     },
     {
-        name: 'Clickable @usernames',
-        description: 'Open mod card by clicking @username in chat',
-        default: false,
-        storageKey: 'userMentions'
-    },
-    {
         name: 'Completion Tooltip',
         description: 'Shows a tooltip with suggested names when typing @ or using tab completion',
         default: true,
