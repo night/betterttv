@@ -193,7 +193,7 @@ var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message
         } else {
             piece = escape(piece);
             piece = linkify(piece);
-            if (bttv.settings.get('userMentions') === true) piece = userMentions(piece);
+            piece = userMentions(piece);
         }
 
         tokenizedString[i] = piece;
