@@ -147,7 +147,7 @@ var suggestions = exports.suggestions = function(words, index) {
         var isEmote = (completableEmotes().indexOf(user) !== -1);
 
         if (!isEmote) {
-            if (!detectServerCommand(input) && (bttv.settings.get('userMentions') === true || lastWord.charAt(0) === '@')) {
+            if (!detectServerCommand(input)) {
                 sentence.push('@' + lookupDisplayName(user, false));
             } else {
                 sentence.push(lookupDisplayName(user, false));
@@ -307,7 +307,7 @@ exports.tabCompletion = function(e) {
             return;
         }
 
-        if (!isEmote && !detectServerCommand(input) && (bttv.settings.get('userMentions') === true || lastWord.charAt(0) === '@')) {
+        if (!isEmote && !detectServerCommand(input)) {
             user = '@' + user;
         }
 
