@@ -363,7 +363,7 @@ if (location.hostname === 'clips.twitch.tv') {
 
     var toggleButton = document.createElement('a');
     toggleButton.classList.add('darkToggleButton');
-    toggleButton.innerText = 'Toggle BTTV Dark Mode';
+    toggleButton.innerText = 'Toggle Dark Mode';
     toggleButton.onclick = function() {
         var isDark = bttv.storage.getObject('bttvClipsDark');
         if (typeof isDark !== 'boolean') isDark = false;
