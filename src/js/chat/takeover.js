@@ -75,7 +75,7 @@ var takeover = module.exports = function() {
     // Handle Channel Chat
     rooms.newRoom(bttv.getChannel());
     tmi.tmiRoom.on('message', rooms.getRoom(bttv.getChannel()).chatHandler);
-    tmi.tmiRoom.on('clearchat', handlers.clearChat);
+    tmi.tmiRoom.on('clearchat', handlers.clearChat.bind(this, rooms.getRoom(bttv.getChannel())));
     tmi.tmiRoom.on('notice', handlers.notice);
     tmi.tmiRoom.on('roomstate', helpers.parseRoomState);
     if (tmi.channel) tmi.set('name', tmi.channel.get('display_name'));
@@ -105,7 +105,7 @@ var takeover = module.exports = function() {
         privateRooms.forEach(function(room) {
             rooms.newRoom(room.get('id'));
             room.tmiRoom.on('message', rooms.getRoom(room.get('id')).chatHandler);
-            room.tmiRoom.on('clearchat', handlers.clearChat);
+            room.tmiRoom.on('clearchat', handlers.clearChat.bind(this, rooms.getRoom(room.get('id'))));
         });
     }
 
@@ -359,6 +359,10 @@ var takeover = module.exports = function() {
         $chatInput.val('');
     });
 
+    // watch for current room changes (swap between group chat + channel chat)
+    bttv.getChatController().removeObserver('currentRoom', handlers.shiftQueue);
+    bttv.getChatController().addObserver('currentRoom', handlers.shiftQueue);
+
     $('.ember-chat .chat-messages .chat-line').remove();
     $.getJSON('https://api.betterttv.net/2/channels/' + encodeURIComponent(bttv.getChannel()) + '/history').done(function(data) {
         if (data.messages.length) {
@@ -402,7 +406,6 @@ var takeover = module.exports = function() {
             if (e.type === 'blur') {
                 store.activeView = false;
             } else if (e.type === 'focus') {
-                $('.chat-interface textarea').focus();
                 store.activeView = true;
             }
         }

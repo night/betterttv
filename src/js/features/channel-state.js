@@ -135,7 +135,7 @@ module.exports = function(event) {
             var msg = event.tags['msg-id'];
 
             if (msg === 'msg_slowmode' || msg === 'msg_timedout') {
-                var matches = /([0-9]+)/.exec(event.message);
+                var matches = /\s([0-9]+)/.exec(event.message);
                 if (!matches) return;
 
                 var seconds = parseInt(matches[1], 10);

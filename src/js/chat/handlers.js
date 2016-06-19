@@ -195,7 +195,7 @@ var shiftQueue = exports.shiftQueue = throttle(function() {
         store.__messageQueue = [];
     }
     helpers.scrollChat();
-}, 250);
+}, 250, { trailing: true });
 
 exports.moderationCard = function(user, $event) {
     var makeCard = require('../features/make-card');
@@ -229,12 +229,15 @@ exports.labelsChanged = function(user) {
     }
 };
 
-exports.clearChat = function(user, info) {
+exports.clearChat = function(bttvRoom, user, info) {
     var trackTimeouts = store.trackTimeouts;
 
     // Remove chat image preview if it exists.
     // We really shouldn't have to place this here, but since we don't emit events...
     $('#chat_preview').remove();
+
+    // clearchat is from an inactive room
+    if (!bttvRoom.active()) return;
 
     if (!user) {
         helpers.serverMessage('Chat was cleared by a moderator (Prevented by BetterTTV)', true);
