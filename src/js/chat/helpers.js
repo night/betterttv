@@ -761,6 +761,18 @@ exports.assignBadges = function(badges, data) {
         });
     }
 
+    Object.keys(store.__twitchBadgeTypes).forEach(function(badge) {
+        if (badges.hasOwnProperty(badge)) {
+            var version = badge[badge];
+            var badgeData = store.__twitchBadgeTypes[badge];
+            bttvBadges.push({
+                type: 'twitch-' + badge + '-' + version,
+                name: badgeData[version].title,
+                description: badgeData[version].description
+            });
+        }
+    });
+
     if (badges.hasOwnProperty('subscriber')) {
         bttvBadges.push({
             type: 'subscriber',
