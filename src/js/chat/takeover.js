@@ -373,8 +373,8 @@ var takeover = module.exports = function() {
     $.getJSON('https://api.betterttv.net/2/channels/' + encodeURIComponent(bttv.getChannel()) + '/history').done(function(data) {
         if (data.messages.length) {
             data.messages.forEach(function(message) {
-                var badges = [];
-                if (message.user.name === message.channel.name) badges.push('owner');
+                var badges = {};
+                if (message.user.name === message.channel.name) badges.broadcaster = '1';
 
                 if (bttv.chat.helpers.isIgnored(message.user.name)) return;
 

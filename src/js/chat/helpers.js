@@ -466,38 +466,38 @@ exports.isIgnored = function(user) {
 
 var isOwner = exports.isOwner = function(user) {
     if (!user || user === '') return false;
-    return tmi() && tmi().tmiRoom.getLabels(user).indexOf('owner') !== -1;
+    return tmi() && tmi().tmiRoom.getBadges(user).hasOwnProperty('broadcaster');
 };
 
 var isAdmin = exports.isAdmin = function(user) {
     if (!user || user === '') return false;
-    return tmi() && tmi().tmiRoom.getLabels(user).indexOf('admin') !== -1;
+    return tmi() && tmi().tmiRoom.getBadges(user).hasOwnProperty('admin');
 };
 
 var isGlobalMod = exports.isGlobalMod = function(user) {
     if (!user || user === '') return false;
-    return tmi() && tmi().tmiRoom.getLabels(user).indexOf('global_mod') !== -1;
+    return tmi() && tmi().tmiRoom.getBadges(user).hasOwnProperty('global_mod');
 };
 
 var isStaff = exports.isStaff = function(user) {
     if (!user || user === '') return false;
-    return tmi() && tmi().tmiRoom.getLabels(user).indexOf('staff') !== -1;
+    return tmi() && tmi().tmiRoom.getBadges(user).hasOwnProperty('staff');
 };
 
 var isModerator = exports.isModerator = function(user) {
     if (!user || user === '') return false;
-    return tmi() && (tmi().tmiRoom.getLabels(user).indexOf('mod') !== -1 ||
+    return tmi() && (tmi().tmiRoom.getBadges(user).hasOwnProperty('moderator') ||
                     isAdmin(user) || isStaff(user) || isOwner(user) || isGlobalMod(user));
 };
 
 exports.isTurbo = function(user) {
     if (!user || user === '') return false;
-    return tmi() && tmi().tmiRoom.getLabels(user).indexOf('turbo') !== -1;
+    return tmi() && tmi().tmiRoom.getBadges(user).hasOwnProperty('turbo');
 };
 
 exports.isSubscriber = function(user) {
     if (!user || user === '') return false;
-    return tmi() && tmi().tmiRoom.getLabels(user).indexOf('subscriber') !== -1;
+    return tmi() && tmi().tmiRoom.getBadges(user).hasOwnProperty('subscriber');
 };
 
 exports.isSpammer = function(user) {
@@ -508,9 +508,9 @@ exports.isSpammer = function(user) {
 exports.getBadges = function(user) {
     if (!user || user === '') return false;
     var badges = [];
-    if (tmi() && tmi().tmiRoom.getLabels(user)) badges = tmi().tmiRoom.getLabels(user);
-    if (store.__subscriptions[user] && store.__subscriptions[user].indexOf(bttv.getChannel()) !== -1) badges.push('subscriber');
-    if ((store.__channelBots.indexOf(user) > -1 || bots.indexOf(user) > -1) && isModerator(user)) badges.push('bot');
+    if (tmi() && tmi().tmiRoom.getBadges(user)) badges = tmi().tmiRoom.getBadges(user);
+    if (store.__subscriptions[user] && store.__subscriptions[user].indexOf(bttv.getChannel()) !== -1) badges.subscriber = '1';
+    if ((store.__channelBots.indexOf(user) > -1 || bots.indexOf(user) > -1) && isModerator(user)) badges.bot = '1';
     return badges;
 };
 
@@ -714,19 +714,19 @@ exports.assignBadges = function(badges, data) {
         });
     }
 
-    if (badges.indexOf('staff') !== -1) {
+    if (badges.hasOwnProperty('staff')) {
         bttvBadges.push({
             type: 'staff',
             name: 'Staff',
             description: 'Twitch Staff'
         });
-    } else if (badges.indexOf('admin') !== -1) {
+    } else if (badges.hasOwnProperty('admin')) {
         bttvBadges.push({
             type: 'admin',
             name: 'Admin',
             description: 'Twitch Admin'
         });
-    } else if (badges.indexOf('global_mod') !== -1) {
+    } else if (badges.hasOwnProperty('global_mod')) {
         bttvBadges.push({
             type: 'global-moderator',
             name: 'GMod',
@@ -734,19 +734,19 @@ exports.assignBadges = function(badges, data) {
         });
     }
 
-    if (badges.indexOf('bot') !== -1) {
+    if (badges.hasOwnProperty('bot')) {
         bttvBadges.push({
             type: 'bot',
             name: 'Bot',
             description: 'Channel Bot'
         });
-    } else if (badges.indexOf('owner') !== -1 && !legacyTags[data.from]) {
+    } else if (badges.hasOwnProperty('owner') && !legacyTags[data.from]) {
         bttvBadges.push({
             type: 'broadcaster',
             name: 'Host',
             description: 'Channel Broadcaster'
         });
-    } else if (badges.indexOf('mod') !== -1 && !legacyTags[data.from]) {
+    } else if (badges.hasOwnProperty('moderator') && !legacyTags[data.from]) {
         bttvBadges.push({
             type: 'moderator',
             name: 'Mod',
@@ -754,7 +754,7 @@ exports.assignBadges = function(badges, data) {
         });
     }
 
-    if (badges.indexOf('turbo') !== -1) {
+    if (badges.hasOwnProperty('turbo')) {
         bttvBadges.push({
             type: 'turbo',
             name: '',
@@ -762,7 +762,7 @@ exports.assignBadges = function(badges, data) {
         });
     }
 
-    if (badges.indexOf('subscriber') !== -1) {
+    if (badges.hasOwnProperty('subscriber')) {
         bttvBadges.push({
             type: 'subscriber',
             name: '',

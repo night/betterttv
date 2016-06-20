@@ -436,7 +436,7 @@ var privmsg = exports.privmsg = function(channel, data) {
     }
 
     var badges = helpers.getBadges(data.from);
-    var bttvBadges = helpers.assignBadges(badges || [], data);
+    var bttvBadges = helpers.assignBadges(badges || {}, data);
 
     var from = data.from;
     var sender = data.from;
