@@ -307,7 +307,7 @@ exports.tabCompletion = function(e) {
             return;
         }
 
-        if (!isEmote && !detectServerCommand(input)) {
+        if (lastWord.charAt(0) === '@' && !isEmote && !detectServerCommand(input)) {
             user = '@' + user;
         }
 
