@@ -663,6 +663,39 @@ exports.assignBadges = function(badges, data) {
     var bttvBadges = [];
     var legacyTags = require('../legacy-tags')(data);
 
+    // Legacy Swag Tags
+    if (
+        legacyTags[data.from] &&
+        (
+            (
+                legacyTags[data.from].mod === true && isModerator(data.from)
+            ) ||
+            legacyTags[data.from].mod === false
+        )
+    ) {
+        var userData = legacyTags[data.from];
+
+        // Shouldn't be setting color and nickname here, but it's legacy so
+        if (userData.color && data.style !== 'action') data.color = userData.color;
+        if (userData.nickname) data.bttvDisplayName = userData.nickname;
+
+        bttvBadges.unshift({
+            type: userData.tagType,
+            name: userData.tagName,
+            description: 'Grandfathered BetterTTV Swag Tag'
+        });
+    }
+
+    // Volunteer badges
+    if (data.from in store.__badges) {
+        var type = store.__badges[data.from];
+        bttvBadges.push({
+            type: 'bttv-' + type,
+            name: '',
+            description: store.__badgeTypes[type].description
+        });
+    }
+
     if (badges.indexOf('staff') !== -1) {
         bttvBadges.push({
             type: 'staff',
@@ -700,39 +733,6 @@ exports.assignBadges = function(badges, data) {
             type: 'moderator',
             name: 'Mod',
             description: 'Channel Moderator'
-        });
-    }
-
-    // Legacy Swag Tags
-    if (
-        legacyTags[data.from] &&
-        (
-            (
-                legacyTags[data.from].mod === true && isModerator(data.from)
-            ) ||
-            legacyTags[data.from].mod === false
-        )
-    ) {
-        var userData = legacyTags[data.from];
-
-        // Shouldn't be setting color and nickname here, but it's legacy so
-        if (userData.color && data.style !== 'action') data.color = userData.color;
-        if (userData.nickname) data.bttvDisplayName = userData.nickname;
-
-        bttvBadges.unshift({
-            type: userData.tagType,
-            name: userData.tagName,
-            description: 'Grandfathered BetterTTV Swag Tag'
-        });
-    }
-
-    // Volunteer badges
-    if (data.from in store.__badges) {
-        var type = store.__badges[data.from];
-        bttvBadges.push({
-            type: 'bttv-' + type,
-            name: '',
-            description: store.__badgeTypes[type].description
         });
     }
 
