@@ -464,54 +464,53 @@ exports.isIgnored = function(user) {
     return tmi() && tmi().tmiSession.isIgnored(user);
 };
 
+var getBadges = exports.getBadges = function(user) {
+    var badges = {};
+    if (!user || user === '') return badges;
+    if (tmi() && tmi().tmiRoom.getBadges(user)) badges = tmi().tmiRoom.getBadges(user);
+    if (store.__subscriptions[user] && store.__subscriptions[user].indexOf(bttv.getChannel()) !== -1) badges.subscriber = '1';
+    if ((store.__channelBots.indexOf(user) > -1 || bots.indexOf(user) > -1) && badges.hasOwnProperty('moderator')) badges.bot = '1';
+    return badges;
+};
+
 var isOwner = exports.isOwner = function(user) {
     if (!user || user === '') return false;
-    return tmi() && tmi().tmiRoom.getBadges(user).hasOwnProperty('broadcaster');
+    return getBadges(user).hasOwnProperty('broadcaster');
 };
 
 var isAdmin = exports.isAdmin = function(user) {
     if (!user || user === '') return false;
-    return tmi() && tmi().tmiRoom.getBadges(user).hasOwnProperty('admin');
+    return getBadges(user).hasOwnProperty('admin');
 };
 
 var isGlobalMod = exports.isGlobalMod = function(user) {
     if (!user || user === '') return false;
-    return tmi() && tmi().tmiRoom.getBadges(user).hasOwnProperty('global_mod');
+    return getBadges(user).hasOwnProperty('global_mod');
 };
 
 var isStaff = exports.isStaff = function(user) {
     if (!user || user === '') return false;
-    return tmi() && tmi().tmiRoom.getBadges(user).hasOwnProperty('staff');
+    return getBadges(user).hasOwnProperty('staff');
 };
 
 var isModerator = exports.isModerator = function(user) {
     if (!user || user === '') return false;
-    return tmi() && (tmi().tmiRoom.getBadges(user).hasOwnProperty('moderator') ||
-                    isAdmin(user) || isStaff(user) || isOwner(user) || isGlobalMod(user));
+    return getBadges(user).hasOwnProperty('moderator') || isAdmin(user) || isStaff(user) || isOwner(user) || isGlobalMod(user);
 };
 
 exports.isTurbo = function(user) {
     if (!user || user === '') return false;
-    return tmi() && tmi().tmiRoom.getBadges(user).hasOwnProperty('turbo');
+    return getBadges(user).hasOwnProperty('turbo');
 };
 
 exports.isSubscriber = function(user) {
     if (!user || user === '') return false;
-    return tmi() && tmi().tmiRoom.getBadges(user).hasOwnProperty('subscriber');
+    return getBadges(user).hasOwnProperty('subscriber');
 };
 
 exports.isSpammer = function(user) {
     if (!user || user === '') return false;
     return store.spammers.indexOf(user.toLowerCase()) > -1;
-};
-
-exports.getBadges = function(user) {
-    if (!user || user === '') return false;
-    var badges = [];
-    if (tmi() && tmi().tmiRoom.getBadges(user)) badges = tmi().tmiRoom.getBadges(user);
-    if (store.__subscriptions[user] && store.__subscriptions[user].indexOf(bttv.getChannel()) !== -1) badges.subscriber = '1';
-    if ((store.__channelBots.indexOf(user) > -1 || bots.indexOf(user) > -1) && isModerator(user)) badges.bot = '1';
-    return badges;
 };
 
 exports.hasGlow = function(user) {
