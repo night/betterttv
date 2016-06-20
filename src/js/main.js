@@ -9,7 +9,7 @@ var debug = require('./helpers/debug'),
 
 bttv.info = {
     version: '6.8',
-    release: 53,
+    release: 54,
     versionString: function() {
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -363,7 +363,7 @@ if (location.hostname === 'clips.twitch.tv') {
 
     var toggleButton = document.createElement('a');
     toggleButton.classList.add('darkToggleButton');
-    toggleButton.innerText = 'Toggle BTTV Dark Mode';
+    toggleButton.innerText = 'Toggle Dark Mode';
     toggleButton.onclick = function() {
         var isDark = bttv.storage.getObject('bttvClipsDark');
         if (typeof isDark !== 'boolean') isDark = false;
