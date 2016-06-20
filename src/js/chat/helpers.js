@@ -739,7 +739,7 @@ exports.assignBadges = function(badges, data) {
             name: 'Bot',
             description: 'Channel Bot'
         });
-    } else if (badges.hasOwnProperty('owner') && !legacyTags[data.from]) {
+    } else if (badges.hasOwnProperty('broadcaster') && !legacyTags[data.from]) {
         bttvBadges.push({
             type: 'broadcaster',
             name: 'Host',
