@@ -41,6 +41,19 @@ var linkify = exports.linkify = function(message) {
     });
 };
 
+var userMentions = exports.userMentions = function(message) {
+    if (message.substring(0, 1) === '@' && message.length >= 2) {
+        username = message.substring(1);
+        if (username.substring(username.length - 1) === ',') {
+            username = username.slice(0, -1);
+        }
+        if (username !== '' && store.chatters.hasOwnProperty(username.toLowerCase())) {
+            return message.replace('@' + username, '<span class="user-mention">@' + username + '</span>');
+        }
+    }
+    return message;
+};
+
 var escapeEmoteCode = function(code) {
     return escape(code.replace(/('|"|&)/g, ''));
 };
@@ -180,6 +193,7 @@ var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message
         } else {
             piece = escape(piece);
             piece = linkify(piece);
+            piece = userMentions(piece);
         }
 
         tokenizedString[i] = piece;

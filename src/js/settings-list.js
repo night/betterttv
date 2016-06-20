@@ -100,6 +100,12 @@ module.exports = [
         }
     },
     {
+        name: 'Completion Tooltip',
+        description: 'Shows a tooltip with suggested names when typing @ or using tab completion',
+        default: true,
+        storageKey: 'tabCompletionTooltip'
+    },
+    {
         name: 'DarkenTTV',
         description: 'A sleek, grey theme which will make you love the site even more',
         default: false,
@@ -492,12 +498,6 @@ module.exports = [
         description: 'Prioritize emotes over usernames when using tab completion',
         default: false,
         storageKey: 'tabCompletionEmotePriority'
-    },
-    {
-        name: 'Tab Completion Tooltip',
-        description: 'Shows a tooltip with suggested names when using tab completion',
-        default: false,
-        storageKey: 'tabCompletionTooltip'
     },
     {
         name: 'Timeout Pinned Highlights',
