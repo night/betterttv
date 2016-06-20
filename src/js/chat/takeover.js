@@ -196,8 +196,6 @@ var takeover = module.exports = function() {
         } else if ($(this).hasClass('subscriber')) {
             window.open(Twitch.url.subscribe(bttv.getChannel(), 'in_chat_subscriber_link'), '_blank');
         }
-    }).off('click', '.chat-line .badges .warcraft').on('click', '.chat-line .badges .warcraft', function() {
-        window.open('http://warcraftontwitch.tv/', '_blank');
     });
 
     // Make names clickable
