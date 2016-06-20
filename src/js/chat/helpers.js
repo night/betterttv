@@ -459,21 +459,6 @@ exports.reparseMessages = function(user) {
     });
 };
 
-exports.listMods = function() {
-    if (tmi()) return tmi().tmiRoom._roomUserLabels._sets;
-    return {};
-};
-
-exports.addMod = function(user) {
-    if (!user || user === '') return false;
-    if (tmi()) tmi().tmiRoom._roomUserLabels.add(user, 'mod');
-};
-
-exports.removeMod = function(user) {
-    if (!user || user === '') return false;
-    if (tmi()) tmi().tmiRoom._roomUserLabels.remove(user, 'mod');
-};
-
 exports.isIgnored = function(user) {
     if (!user || user === '') return false;
     return tmi() && tmi().tmiSession.isIgnored(user);
