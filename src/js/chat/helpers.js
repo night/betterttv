@@ -637,7 +637,7 @@ exports.handleSurrogatePairs = function(message, emotes) {
     return emotes;
 };
 
-exports.loadBadges = function() {
+exports.loadBTTVBadges = function() {
     if ($('#bttv_volunteer_badges').length) return;
 
     $.getJSON('https://api.betterttv.net/2/badges').done(function(data) {
@@ -647,13 +647,13 @@ exports.loadBadges = function() {
 
         data.types.forEach(function(badge) {
             $style.append('.badges .bttv-' + badge.name + ' { background: url("' + badge.svg + '"); background-size: 100%; }');
-            store.__badgeTypes[badge.name] = badge;
+            store.__bttvBadgeTypes[badge.name] = badge;
         });
 
         $style.appendTo('head');
 
         data.badges.forEach(function(user) {
-            store.__badges[user.name] = user.type;
+            store.__bttvBadges[user.name] = user.type;
         });
     });
 };
@@ -687,12 +687,12 @@ exports.assignBadges = function(badges, data) {
     }
 
     // Volunteer badges
-    if (data.from in store.__badges) {
-        var type = store.__badges[data.from];
+    if (data.from in store.__bttvBadges) {
+        var type = store.__bttvBadges[data.from];
         bttvBadges.push({
             type: 'bttv-' + type,
             name: '',
-            description: store.__badgeTypes[type].description
+            description: store.__bttvBadgeTypes[type].description
         });
     }
 

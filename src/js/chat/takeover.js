@@ -113,7 +113,7 @@ var takeover = module.exports = function() {
     helpers.loadBTTVChannelData();
 
     // Load Volunteer Badges
-    helpers.loadBadges();
+    helpers.loadBTTVBadges();
     bttv.ws.broadcastMe();
 
     // Load Chat Settings
