@@ -658,6 +658,39 @@ exports.loadBTTVBadges = function() {
     });
 };
 
+
+exports.loadTwitchBadges = function() {
+    if ($('#twitch_badges').length) return;
+
+    $.getJSON('https://badges.twitch.tv/v1/badges/global/display').done(function(data) {
+        if (!data || !data.badge_sets) {
+            debug.log('Failed to load Twitch badges');
+            return;
+        }
+
+        var $style = $('<style />');
+        $style.attr('id', 'twitch_badges');
+
+        var ignoredBadges = ['admin', 'broadcaster', 'global_mod', 'moderator', 'staff', 'subscriber', 'turbo'];
+
+        Object.keys(data.badge_sets).forEach(function(badge) {
+            if (ignoredBadges.indexOf(badge) >= 0) return;
+
+            var badgeData = data.badge_sets[badge];
+            Object.keys(badgeData.versions).forEach(function(version) {
+                var versionData = badgeData.versions[version];
+                var cssLine = '.badges .twitch-' + badge + '-' + version;
+                cssLine += ' { background: url("' + versionData.image_url_1x + '"); }';
+                $style.append(cssLine);
+            });
+
+            store.__twitchBadgeTypes[badge] = badgeData;
+        });
+
+        $style.appendTo('head');
+    });
+};
+
 exports.assignBadges = function(badges, data) {
     data = data || {};
     var bttvBadges = [];

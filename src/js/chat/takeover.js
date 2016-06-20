@@ -109,6 +109,9 @@ var takeover = module.exports = function() {
         });
     }
 
+    // Load Twitch badges
+    helpers.loadTwitchBadges();
+
     // Load BTTV channel emotes/bots
     helpers.loadBTTVChannelData();
 

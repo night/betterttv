@@ -4,6 +4,7 @@ exports.__reportedErrors = [];
 exports.__subscriptions = {};
 exports.__unbannedUsers = [];
 exports.__channelBots = [];
+exports.__twitchBadgeTypes = {};
 exports.__bttvBadgeTypes = {};
 exports.__bttvBadges = {};
 exports.displayNames = {};
