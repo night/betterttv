@@ -66,7 +66,8 @@ function Conversations(timeout) {
 
 Conversations.prototype.onWhisper = function(data) {
     if (bttv.settings.get('highlightFeedback') === true && bttv.chat.store.activeView === false) {
-        if (vars.userData.isLoggedIn && vars.userData.name !== data.from) {
+        var from = data & data.tags && data.tags.login;
+        if (vars.userData.isLoggedIn && vars.userData.name !== from) {
             audibleFeedback.play();
         }
     }

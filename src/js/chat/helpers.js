@@ -143,11 +143,11 @@ var suggestions = exports.suggestions = function(words, index) {
     $suggestions.find('.suggestion').on('click', function() {
         var user = $(this).text();
         var sentence = $chatInput.val().trim().split(' ');
-        if (!detectServerCommand(input) || sentence[1]) sentence.pop();
+        var lastWord = (detectServerCommand(input) && !sentence[1]) ? '' : sentence.pop();
         var isEmote = (completableEmotes().indexOf(user) !== -1);
 
         if (!isEmote) {
-            if (!detectServerCommand(input)) {
+            if (!detectServerCommand(input) && lastWord.charAt(0) === '@') {
                 sentence.push('@' + lookupDisplayName(user, false));
             } else {
                 sentence.push(lookupDisplayName(user, false));
@@ -307,7 +307,7 @@ exports.tabCompletion = function(e) {
             return;
         }
 
-        if (!isEmote && !detectServerCommand(input)) {
+        if (lastWord.charAt(0) === '@' && !isEmote && !detectServerCommand(input)) {
             user = '@' + user;
         }
 
