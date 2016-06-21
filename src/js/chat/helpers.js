@@ -663,8 +663,9 @@ exports.loadTwitchBadges = function() {
             var badgeData = data.badge_sets[badge];
             Object.keys(badgeData.versions).forEach(function(version) {
                 var versionData = badgeData.versions[version];
-                var cssLine = '.badges .twitch-' + badge + '-' + version;
-                cssLine += ' { background: url("' + versionData.image_url_1x + '"); }';
+                var cssLine = '.badges .twitch-' + badge + '-' + version + ' { ';
+                if (versionData.click_action !== 'none') cssLine += 'cursor: pointer; ';
+                cssLine += 'background: url("' + versionData.image_url_1x + '"); }';
                 $style.append(cssLine);
             });
 
