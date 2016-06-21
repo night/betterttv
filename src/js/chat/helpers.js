@@ -768,17 +768,19 @@ exports.assignBadges = function(badges, data) {
         bttvBadges.push({
             type: 'turbo',
             name: '',
+            clickAction: 'turbo',
             description: 'Twitch Turbo'
         });
     }
 
     Object.keys(store.__twitchBadgeTypes).forEach(function(badge) {
         if (badges.hasOwnProperty(badge)) {
-            var version = badge[badge];
-            var badgeData = store.__twitchBadgeTypes[badge];
+            var version = badges[badge];
+            var badgeData = store.__twitchBadgeTypes[badge].versions;
             bttvBadges.push({
                 type: 'twitch-' + badge + '-' + version,
                 name: badgeData[version].title,
+                clickAction: badgeData[version].click_action,
                 description: badgeData[version].description
             });
         }
@@ -788,6 +790,7 @@ exports.assignBadges = function(badges, data) {
         bttvBadges.push({
             type: 'subscriber',
             name: '',
+            clickAction: 'subscribe_to_channel',
             description: 'Channel Subscriber'
         });
     }

@@ -194,11 +194,18 @@ var takeover = module.exports = function() {
         helpers.unban($(this).parents('.chat-line').data('sender'));
         $(this).parent().children('.ban').show();
         $(this).parent().children('.unban').hide();
-    }).off('click', '.chat-line .badges .turbo, .chat-line .badges .subscriber').on('click', '.chat-line .badges .turbo, .chat-line .badges .subscriber', function() {
-        if ($(this).hasClass('turbo')) {
+    }).off('click', '.chat-line .badges .badge').on('click', '.chat-line .badges .badge', function() {
+        var $el = $(this);
+        var action = $el.data('click-action');
+        if (action === 'turbo') {
             window.open('/products/turbo?ref=chat_badge', '_blank');
-        } else if ($(this).hasClass('subscriber')) {
+        } else if (action === 'subscribe_to_channel') {
             window.open(Twitch.url.subscribe(bttv.getChannel(), 'in_chat_subscriber_link'), '_blank');
+        } else if (action === 'visit_url') {
+            // Kinda hacky way, also can't currently test
+            var type = this.classList[0].split('-');
+            var badge = store.__twitchBadgeTypes[type[1]].versions[type[2]];
+            window.open(badge.click_url, '_blank');
         }
     });
 
