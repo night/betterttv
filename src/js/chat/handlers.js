@@ -357,6 +357,14 @@ exports.notice = function(data) {
     helpers.serverMessage(message, true);
 };
 
+exports.userNotice = function(data) {
+    var msgId = data && data.tags && data.tags['msg-id'];
+
+    if (msgId === 'resub') {
+        helpers.serverMessage(data.tags['system-msg'], true);
+    }
+};
+
 var privmsg = exports.privmsg = function(channel, data) {
     // Store display names
     var message;
@@ -524,7 +532,7 @@ exports.onPrivmsg = function(channel, data) {
     } catch (e) {
         if (store.__reportedErrors.indexOf(e.message) !== -1) return;
         store.__reportedErrors.push(e.message);
-        console.log(e);
+        debug.log(e);
         var error = {
             stack: e.stack,
             message: e.message
