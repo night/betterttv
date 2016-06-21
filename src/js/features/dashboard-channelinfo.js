@@ -62,10 +62,11 @@ module.exports = function dashboardChannelInfo() {
                     $subsContainer.append($subs);
                     $('#chatters_count').after($subsContainer);
 
-                    bttv.TwitchAPI.get('chat/' + bttv.getChannel() + '/badges').done(function(a) {
-                        if (a.subscriber) {
-                            $('#subs_count').css('background-image', 'url(' + a.subscriber.image + ')');
-                        }
+                    var channelModel = bttv.getModel();
+                    $.getJSON('https://badges.twitch.tv/v1/badges/channels/' + channelModel._id + '/display', function(badges) {
+                        if (!badges || !badges.badge_sets || !badges.badge_sets.subscriber) return;
+                        var subBadge = data.badge_sets.subscriber.versions['1'];
+                        $('#subs_count').css('background-image', 'url(' + subBadge.image_url_1x + ')');
                     });
                 }
 

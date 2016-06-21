@@ -34,6 +34,12 @@ bttv.getChannel = function() {
     return '';
 };
 
+bttv.getModel = function() {
+    var channel = App.__container__.lookup('controller:channel');
+    var user = App.__container__.lookup('controller:user');
+    return (!Ember.isNone(channel) && channel.get('model')) || (!Ember.isNone(user) && user.get('model'));
+};
+
 bttv.getChatController = function() {
     if (window.Ember && window.App && App.__container__.lookup('controller:chat')) {
         return App.__container__.lookup('controller:chat');

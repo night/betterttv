@@ -671,6 +671,16 @@ exports.loadTwitchBadges = function() {
             store.__twitchBadgeTypes[badge] = badgeData;
         });
 
+        var channelModel = bttv.getModel();
+        if (channelModel && channelModel.partner === true) {
+            $.getJSON('https://badges.twitch.tv/v1/badges/channels/' + channelModel._id + '/display', function(badges) {
+                if (!badges || !badges.badge_sets || !badges.badge_sets.subscriber) return;
+                var subBadge = data.badge_sets.subscriber.versions['1'];
+                var cssLine = '.badge.subscriber { background-image: url("' + subBadge.image_url_1x + '"); }';
+                $style.append(cssLine);
+            });
+        }
+
         $style.appendTo('head');
     });
 };
