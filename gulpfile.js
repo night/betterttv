@@ -1,52 +1,60 @@
 var fs = require('fs'),
     gulp = require('gulp'),
     jade = require('gulp-jade'),
-    wrap = require('gulp-wrap-commonjs'),
+    browserify = require('gulp-browserify'),
     header = require('gulp-header'),
     footer = require('gulp-footer'),
-    rename = require('gulp-rename'),
-    concat = require('gulp-concat');
+    concat = require('gulp-concat'),
+    del = require('del'),
+    eslint = require('gulp-eslint'),
+    uglify = require('gulp-uglify'),
+    saveLicense = require('uglify-save-license'),
+    enviro = require('gulp-environments');
 
-gulp.task('templates', function () {
+gulp.task('cleanup', function() {
+    return del('build/**/*');
+});
+
+gulp.task('templates', ['cleanup'], function() {
     return gulp.src(['src/templates/*.jade'])
                .pipe(jade({client: true, globals: ['$', 'window', 'bttv', 'Twitch']}))
-               .pipe(rename({suffix: '-template'})) // avoid filename clashes
                .pipe(footer(';module.exports=template;'))
                .pipe(gulp.dest('build/templates/'));
 });
 
-var commonJsRequireDefinition = fs.readFileSync('node_modules/commonjs-require/commonjs-require.js').toString();
-var jadeDefinition = fs.readFileSync('node_modules/gulp-jade/node_modules/jade/runtime.js').toString();
-var license = fs.readFileSync('license.txt').toString();
-
-gulp.task('scripts', ['templates'], function () {
-    // if we want .coffee, we can compile them to build/*.js
-    //  and include them here
-    gulp.src(['src/**/*.js', 'build/templates/*.js'])
-        .pipe(wrap({pathModifier: commonjsPath}))
-        .pipe(concat('betterttv.js'))
-        .pipe(header('(function (bttv) { \n'))
-        .pipe(header(jadeDefinition))
-        .pipe(header(commonJsRequireDefinition))
-        .pipe(header(license+'\n'))
-        .pipe(footer("\n\
-require('main'); \n\
-}(window.BetterTTV = window.BetterTTV || {}));"))
-        .pipe(gulp.dest(__dirname));
+gulp.task('prepare', ['lint', 'templates'], function() {
+    return gulp.src(['src/**/*'])
+               .pipe(gulp.dest('build/'));
 });
 
-gulp.task('watch', ['default'], function () {
+gulp.task('lint', function() {
+    var options = {
+        configFile: '.eslintrc'
+    };
+
+    return gulp.src(['src/js/**/*'])
+        .pipe(eslint(options))
+        .pipe(eslint.format())
+        .pipe(eslint.failOnError());
+});
+
+var jadeDefinition = fs.readFileSync('node_modules/jade/runtime.js').toString();
+var license = fs.readFileSync('src/license.txt').toString();
+
+gulp.task('scripts', ['prepare'], function() {
+    gulp.src(['build/js/main.js'])
+        .pipe(browserify())
+        .pipe(concat('betterttv.js'))
+        .pipe(header('(function(bttv) {'))
+        .pipe(header(jadeDefinition))
+        .pipe(header(license + '\n'))
+        .pipe(footer('}(window.BetterTTV = window.BetterTTV || {}));'))
+        .pipe(enviro.production(uglify({ preserveComments: saveLicense })))
+        .pipe(gulp.dest('build'));
+});
+
+gulp.task('watch', ['default'], function() {
     gulp.watch('src/**/*', ['default']);
 });
 
 gulp.task('default', ['scripts']);
-
-function commonjsPath(path) {
-    return path.toLowerCase() // lowercase so that on windows, C:/ is c:/
-               .replace(__dirname.toLowerCase(), '') // remove __dirname *before* normalizing
-               .replace(/\\/g, '/') // normalize path for windows/unix
-               .replace(/(\-template)?\.js$/, '') // drop extension and remove -template suffix
-               .replace(/.*\/src/, '').replace(/.*\/build/, '') // remove directory from path
-               .replace(/^\//, '') // drop leading / if it exists
-               ;
-}
