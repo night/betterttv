@@ -357,19 +357,15 @@ exports.notice = function(data) {
     helpers.serverMessage(message, true);
 };
 
-exports.userNotice = function(data) {
-    var msgId = data && data.tags && data.tags['msg-id'];
-
-    if (msgId === 'resub') {
-        helpers.serverMessage(data.tags['system-msg'], true);
-    }
-};
-
 var privmsg = exports.privmsg = function(channel, data) {
     // Store display names
     var message;
     if (data.tags && data.tags['display-name']) {
         store.displayNames[data.from] = data.tags['display-name'];
+    }
+
+    if (data.tags && data.tags['msg-id'] === 'resub') {
+        helpers.serverMessage(data.tags['system-msg'], true);
     }
 
     try {

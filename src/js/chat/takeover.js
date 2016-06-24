@@ -77,7 +77,6 @@ var takeover = module.exports = function() {
     tmi.tmiRoom.on('message', rooms.getRoom(bttv.getChannel()).chatHandler);
     tmi.tmiRoom.on('clearchat', handlers.clearChat.bind(this, rooms.getRoom(bttv.getChannel())));
     tmi.tmiRoom.on('notice', handlers.notice);
-    tmi.tmiRoom.on('usernotice', handlers.userNotice);
     tmi.tmiRoom.on('roomstate', helpers.parseRoomState);
     if (tmi.channel) tmi.set('name', tmi.channel.get('display_name'));
     store.currentRoom = bttv.getChannel();
