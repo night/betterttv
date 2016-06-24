@@ -377,7 +377,7 @@ var takeover = module.exports = function() {
 
                 if (bttv.chat.helpers.isIgnored(message.user.name)) return;
 
-                message = bttv.chat.templates.privmsg(false, false, false, false, {
+                message = bttv.chat.templates.privmsg({
                     message: message.message,
                     time: (new Date(message.date.replace('T', ' ').replace(/\.[0-9]+Z/, ' GMT'))).toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
                     nickname: message.user.displayName,
