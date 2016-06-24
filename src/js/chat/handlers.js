@@ -365,7 +365,15 @@ var privmsg = exports.privmsg = function(channel, data) {
     }
 
     if (data.tags && data.tags['msg-id'] === 'resub') {
-        helpers.serverMessage(data.tags['system-msg'], true);
+        message = templates.privmsg({
+            nickname: 'jtv',
+            message: data.tags['system-msg'],
+            time: data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
+            badges: [{type: 'subscriber', name: '', description: 'Channel Subscriber'}],
+            color: '#555'
+        }, {server: true, notice: true});
+
+        store.__messageQueue.push($(message));
     }
 
     try {
