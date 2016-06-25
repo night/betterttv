@@ -271,8 +271,10 @@ var message = exports.message = function(sender, msg, emotes, colored, force) {
     return '<span class="message ' + (spam ? 'spam' : '') + '" ' + (colored ? 'style="color: ' + colored + '" ' : '') + 'data-raw="' + rawMessage + '" data-emotes="' + (emotes ? encodeURIComponent(JSON.stringify(emotes)) : 'false') + '">' + msg + '</span>';
 };
 
-exports.privmsg = function(highlight, action, server, isMod, data) {
-    return '<div class="chat-line' + (highlight ? ' highlight' : '') + (action ? ' action' : '') + (server ? ' admin' : '') + '" data-sender="' + data.sender + '">' + timestamp(data.time) + ' ' + (isMod ? modicons() : '') + ' ' + badges(data.badges) + from(data.nickname, data.color) + message(data.sender, data.message, data.emotes, (action && !highlight) ? data.color : false) + '</div>';
+exports.privmsg = function(data, opts) {
+    opts = opts || {};
+    var msg = timestamp(data.time) + ' ' + (opts.isMod ? modicons() : '') + ' ' + badges(data.badges) + from(data.nickname, data.color) + message(data.sender, data.message, data.emotes, (opts.action && !opts.highlight) ? data.color : false);
+    return '<div class="chat-line' + (opts.highlight ? ' highlight' : '') + (opts.action ? ' action' : '') + (opts.server ? ' admin' : '') + (opts.notice ? ' notice' : '') + '" data-sender="' + data.sender + '">' + msg + '</div>';
 };
 
 var whisperName = exports.whisperName = function(sender, receiver, fromNick, to, fromColor, toColor) {

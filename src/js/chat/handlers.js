@@ -357,19 +357,23 @@ exports.notice = function(data) {
     helpers.serverMessage(message, true);
 };
 
-exports.userNotice = function(data) {
-    var msgId = data && data.tags && data.tags['msg-id'];
-
-    if (msgId === 'resub') {
-        helpers.serverMessage(data.tags['system-msg'], true);
-    }
-};
-
 var privmsg = exports.privmsg = function(channel, data) {
     // Store display names
     var message;
     if (data.tags && data.tags['display-name']) {
         store.displayNames[data.from] = data.tags['display-name'];
+    }
+
+    if (data.tags && data.tags['msg-id'] === 'resub') {
+        message = templates.privmsg({
+            nickname: 'jtv',
+            message: data.tags['system-msg'],
+            time: data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
+            badges: [{type: 'subscriber', name: '', description: 'Channel Subscriber'}],
+            color: '#555'
+        }, {server: true, notice: true});
+
+        store.__messageQueue.push($(message));
     }
 
     try {
@@ -389,24 +393,22 @@ var privmsg = exports.privmsg = function(channel, data) {
         }
 
         data.style = 'admin';
-        message = templates.privmsg(
-            false,
-            data.style === 'action' ? true : false,
-            data.style === 'admin' ? true : false,
-            vars.userData.isLoggedIn ? helpers.isModerator(vars.userData.name) : false,
-            {
-                message: data.message,
-                time: data.date ? data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2') : '',
-                nickname: data.from || 'jtv',
-                sender: data.from,
-                badges: data.badges || (data.from === 'twitchnotify' ? [{
-                    type: 'subscriber',
-                    name: '',
-                    description: 'Channel Subscriber'
-                }] : []),
-                color: '#555'
-            }
-        );
+        message = templates.privmsg({
+            message: data.message,
+            time: data.date ? data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2') : '',
+            nickname: data.from || 'jtv',
+            sender: data.from,
+            badges: data.badges || (data.from === 'twitchnotify' ? [{
+                type: 'subscriber',
+                name: '',
+                description: 'Channel Subscriber'
+            }] : []),
+            color: '#555'
+        }, {
+            action: data.style === 'action' ? true : false,
+            server: data.style === 'admin' ? true : false,
+            isMod: vars.userData.isLoggedIn ? helpers.isModerator(vars.userData.name) : false
+        });
 
         $('.ember-chat .chat-messages .tse-content .chat-lines').append(message);
         helpers.scrollChat();
@@ -486,21 +488,21 @@ var privmsg = exports.privmsg = function(channel, data) {
         }
     }
 
-    message = templates.privmsg(
-        messageHighlighted,
-        data.style === 'action' ? true : false,
-        data.style === 'admin' ? true : false,
-        vars.userData.isLoggedIn ? (helpers.isModerator(vars.userData.name) && (!helpers.isModerator(sender) || (vars.userData.name === channel && vars.userData.name !== sender))) : false,
-        {
-            message: data.message,
-            time: data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
-            nickname: from,
-            sender: sender,
-            badges: bttvBadges,
-            color: data.color,
-            emotes: data.tags.emotes
-        }
-    );
+    message = templates.privmsg({
+        message: data.message,
+        time: data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
+        nickname: from,
+        sender: sender,
+        badges: bttvBadges,
+        color: data.color,
+        emotes: data.tags.emotes
+    }, {
+        highlight: messageHighlighted,
+        action: data.style === 'action' ? true : false,
+        server: data.style === 'admin' ? true : false,
+        isMod: vars.userData.isLoggedIn ? (helpers.isModerator(vars.userData.name) && (!helpers.isModerator(sender) || (vars.userData.name === channel && vars.userData.name !== sender))) : false,
+        notice: data.tags && data.tags['msg-id'] === 'resub'
+    });
 
     store.__messageQueue.push($(message));
     shiftQueue();
