@@ -84,8 +84,6 @@ exports.commands = function(input) {
         tmi().tmiRoom.startSubscribersMode();
     } else if (command === '/suboff') {
         tmi().tmiRoom.stopSubscribersMode();
-    } else if (command === '/squishy') {
-        helpers.sendMessage('notsquishY WHEN YOU NEED HIM notsquishY IN A JIFFY notsquishY USE THIS EMOTE notsquishY TO SUMMON SQUISHY notsquishY');
     } else if (command === '/t') {
         var time = 600;
         if (!isNaN(sentence[2])) time = sentence[2];
