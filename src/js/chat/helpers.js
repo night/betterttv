@@ -410,7 +410,10 @@ exports.sendMessage = function(message) {
             message = message.join(' ');
         }
 
-        if (tmi().tmiSession.sendWhisper && ['/w', '.w'].indexOf(message.substr(0, 2)) > -1) {
+        if (
+            (tmi().tmiSession.sendWhisper && ['/w', '.w'].indexOf(message.substr(0, 2)) > -1) ||
+            message.toLowerCase().indexOf('cheer') > -1
+        ) {
             tmi().send(message);
             return;
         }
