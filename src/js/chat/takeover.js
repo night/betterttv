@@ -109,11 +109,14 @@ var takeover = module.exports = function() {
         });
     }
 
+    // Load Twitch badges
+    helpers.loadTwitchBadges();
+
     // Load BTTV channel emotes/bots
     helpers.loadBTTVChannelData();
 
     // Load Volunteer Badges
-    helpers.loadBadges();
+    helpers.loadBTTVBadges();
     bttv.ws.broadcastMe();
 
     // Load Chat Settings
@@ -190,14 +193,19 @@ var takeover = module.exports = function() {
         helpers.unban($(this).parents('.chat-line').data('sender'));
         $(this).parent().children('.ban').show();
         $(this).parent().children('.unban').hide();
-    }).off('click', '.chat-line .badges .turbo, .chat-line .badges .subscriber').on('click', '.chat-line .badges .turbo, .chat-line .badges .subscriber', function() {
-        if ($(this).hasClass('turbo')) {
+    }).off('click', '.chat-line .badges .badge').on('click', '.chat-line .badges .badge', function() {
+        var $el = $(this);
+        var action = $el.data('click-action');
+        if (action === 'turbo') {
             window.open('/products/turbo?ref=chat_badge', '_blank');
-        } else if ($(this).hasClass('subscriber')) {
+        } else if (action === 'subscribe_to_channel') {
             window.open(Twitch.url.subscribe(bttv.getChannel(), 'in_chat_subscriber_link'), '_blank');
+        } else if (action === 'visit_url') {
+            // Kinda hacky way, also can't currently test
+            var type = this.classList[0].split('-');
+            var badge = store.__twitchBadgeTypes[type[1]].versions[type[2]];
+            window.open(badge.click_url, '_blank');
         }
-    }).off('click', '.chat-line .badges .warcraft').on('click', '.chat-line .badges .warcraft', function() {
-        window.open('http://warcraftontwitch.tv/', '_blank');
     });
 
     // Make names clickable
@@ -372,8 +380,8 @@ var takeover = module.exports = function() {
     $.getJSON('https://api.betterttv.net/2/channels/' + encodeURIComponent(bttv.getChannel()) + '/history').done(function(data) {
         if (data.messages.length) {
             data.messages.forEach(function(message) {
-                var badges = [];
-                if (message.user.name === message.channel.name) badges.push('owner');
+                var badges = {};
+                if (message.user.name === message.channel.name) badges.broadcaster = '1';
 
                 if (bttv.chat.helpers.isIgnored(message.user.name)) return;
 

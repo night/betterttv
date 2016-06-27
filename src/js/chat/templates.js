@@ -2,14 +2,15 @@ var tmi = require('./tmi'),
     store = require('./store'),
     helpers = require('./helpers');
 
-var badge = exports.badge = function(type, name, description) {
-    return '<div class="' + type + '' + ((bttv.settings.get('alphaTags') && ['admin', 'global-moderator', 'staff', 'broadcaster', 'moderator', 'turbo', 'ign'].indexOf(type) !== -1) ? ' alpha' + (!bttv.settings.get('darkenedMode') ? ' invert' : '') : '') + ' badge" title="' + description + '">' + name + '</div> ';
+var badge = exports.badge = function(type, name, description, action) {
+    var classes = type + '' + ((bttv.settings.get('alphaTags') && ['admin', 'global-moderator', 'staff', 'broadcaster', 'moderator', 'turbo', 'ign'].indexOf(type) !== -1) ? ' alpha' + (!bttv.settings.get('darkenedMode') ? ' invert' : '') : '') + ' badge';
+    return '<div class="' + classes + '" title="' + description + '"' + (action ? ' data-click-action="' + action + '"' : '') + '>' + name + '</div> ';
 };
 
 var badges = exports.badges = function(badgeList) {
     var resp = '<span class="badges">';
     badgeList.forEach(function(data) {
-        resp += badge(data.type, data.name, data.description);
+        resp += badge(data.type, data.name, data.description, data.clickAction);
     });
     resp += '</span>';
     return resp;
