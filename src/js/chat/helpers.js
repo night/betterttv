@@ -455,7 +455,7 @@ exports.reparseMessages = function(user) {
         var emotes = message.data('emotes') ? JSON.parse(decodeURIComponent(message.data('emotes'))) : false;
         var color = message.attr('style') ? message.attr('style').split(': ')[1] : false;
 
-        message.replaceWith(templates.message(user, rawMessage, emotes, color));
+        message.replaceWith(templates.message(user, rawMessage, {emotes: emotes, colored: color}));
     });
 };
 

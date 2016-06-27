@@ -244,14 +244,14 @@ exports.suggestions = function(suggestions, index) {
     return suggestionsTemplate({suggestions: suggestions, index: index});
 };
 
-var message = exports.message = function(sender, msg, emotes, colored, force) {
-    colored = colored || false;
-    force = force || false;
+var message = exports.message = function(sender, msg, data) {
+    var colored = data.colored || false;
+    var force = data.force || false;
+    var emotes = data.emotes;
     var rawMessage = encodeURIComponent(msg);
 
     if (sender !== 'jtv') {
-        var tokenizedMessage = emoticonize(msg, emotes);
-
+        var tokenizedMessage = emoticonize(msg, data.emotes);
         for (var i = 0; i < tokenizedMessage.length; i++) {
             if (typeof tokenizedMessage[i] === 'string') {
                 tokenizedMessage[i] = bttvMessageTokenize(sender, tokenizedMessage[i]);
@@ -274,7 +274,8 @@ var message = exports.message = function(sender, msg, emotes, colored, force) {
 
 exports.privmsg = function(data, opts) {
     opts = opts || {};
-    var msg = timestamp(data.time) + ' ' + (opts.isMod ? modicons() : '') + ' ' + badges(data.badges) + from(data.nickname, data.color) + message(data.sender, data.message, data.emotes, (opts.action && !opts.highlight) ? data.color : false);
+    var msgOptions = {emotes: data.emotes, colored: (opts.action && !opts.highlight) ? data.color : false};
+    var msg = timestamp(data.time) + ' ' + (opts.isMod ? modicons() : '') + ' ' + badges(data.badges) + from(data.nickname, data.color) + message(data.sender, data.message, msgOptions);
     return '<div class="chat-line' + (opts.highlight ? ' highlight' : '') + (opts.action ? ' action' : '') + (opts.server ? ' admin' : '') + (opts.notice ? ' notice' : '') + '" data-sender="' + data.sender + '">' + msg + '</div>';
 };
 
@@ -283,5 +284,5 @@ var whisperName = exports.whisperName = function(sender, receiver, fromNick, to,
 };
 
 exports.whisper = function(data) {
-    return '<div class="chat-line whisper" data-sender="' + data.sender + '">' + timestamp(data.time) + ' ' + whisperName(data.sender, data.receiver, data.from, data.to, data.fromColor, data.toColor) + message(data.sender, data.message, data.emotes, false) + '</div>';
+    return '<div class="chat-line whisper" data-sender="' + data.sender + '">' + timestamp(data.time) + ' ' + whisperName(data.sender, data.receiver, data.from, data.to, data.fromColor, data.toColor) + message(data.sender, data.message, {emotes: data.emotes, colored: false}) + '</div>';
 };

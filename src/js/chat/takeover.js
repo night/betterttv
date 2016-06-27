@@ -128,7 +128,7 @@ var takeover = module.exports = function() {
     });
     $('body').off('click', '.chat-line .message.spam').on('click', '.chat-line .message.spam', function() {
         var user = $(this).parent().data('sender');
-        $(this).replaceWith(templates.message(user, decodeURIComponent($(this).data('raw')), null, null, true));
+        $(this).replaceWith(templates.message(user, decodeURIComponent($(this).data('raw')), {forced: true}));
     });
 
     // Hover over links
