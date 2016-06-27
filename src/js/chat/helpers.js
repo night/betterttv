@@ -74,6 +74,14 @@ var detectServerCommand = function(input) {
     return false;
 };
 
+var cheerRegex = /^\s*cheer\d+\s*$/i;
+var containsCheer = exports.containsCheer = function(msg) {
+    words = msg ? msg.split(/\s+/) : [];
+    return words.some(function(w) {
+        return cheerRegex.test(w);
+    });
+};
+
 exports.parseTags = function(tags) {
     var rawTags = tags.slice(1, tags.length).split(';');
 
@@ -412,6 +420,28 @@ exports.sendMessage = function(message) {
 
         if (tmi().tmiSession.sendWhisper && ['/w', '.w'].indexOf(message.substr(0, 2)) > -1) {
             tmi().send(message);
+            return;
+        }
+
+        if (containsCheer(message)) {
+            var model = bttv.getModel();
+            var service = App && App.__container__.lookup('service:bits');
+            if (model && service) {
+                service.sendBits(model._id, message).then(function() {
+                    tmi().set('messageToSend', '');
+                    tmi().set('savedInput', '');
+                }, function(e) {
+                    if (e.status === 401) {
+                        var room = App.__container__.lookup('controller:room');
+                        room.send('handleNotLoggedIn', {
+                            mpSourceAction: 'chat-bits',
+                            params: {sudo_reason: 'bits'}
+                        });
+                    } else {
+                        serverMessage(e.responseJSON.message);
+                    }
+                });
+            }
             return;
         }
 

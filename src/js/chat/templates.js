@@ -67,9 +67,9 @@ var bitsEmoticonize = function(config, value) {
     return emote + '<strong><span class="bitsText" style="color: ' + tier.color + '">' + value + '</span></strong>';
 };
 
-var cheerRegex = /^\s*cheer\d+\s*$/i;
+
 var parseBits = function(piece, amount) {
-    if (amount && cheerRegex.test(piece)) {
+    if (amount && helpers.containsCheer(piece)) {
         var config = helpers.getBitsConfig();
         if (!config) return piece;
 
