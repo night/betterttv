@@ -967,3 +967,8 @@ exports.loadBTTVChannelData = function() {
         store.__channelBots = data.bots;
     });
 };
+
+exports.getBitsConfig = function() {
+    if (!App || !App.__container__.lookup('service:bits-rendering-config')) return;
+    return App.__container__.lookup('service:bits-rendering-config').get('config');
+};

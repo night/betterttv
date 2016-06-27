@@ -493,6 +493,7 @@ var privmsg = exports.privmsg = function(channel, data) {
         sender: sender,
         badges: bttvBadges,
         color: data.color,
+        bits: data.tags.bits && parseInt(data.tags.bits, 10),
         emotes: data.tags.emotes
     }, {
         highlight: messageHighlighted,
