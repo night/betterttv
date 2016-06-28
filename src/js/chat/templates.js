@@ -270,9 +270,9 @@ exports.suggestions = function(suggestions, index) {
 };
 
 var message = exports.message = function(sender, msg, data) {
-    var colored = data.colored || false;
-    var force = data.force || false;
+    data = data || {};
     var emotes = data.emotes;
+    var colored = data.colored;
     var rawMessage = encodeURIComponent(msg);
 
     if (sender !== 'jtv') {
@@ -289,7 +289,7 @@ var message = exports.message = function(sender, msg, data) {
     }
 
     var spam = false;
-    if (bttv.settings.get('hideSpam') && helpers.isSpammer(sender) && !helpers.isModerator(sender) && !force) {
+    if (bttv.settings.get('hideSpam') && helpers.isSpammer(sender) && !helpers.isModerator(sender) && !data.force) {
         msg = '<span class="deleted">&lt;spam deleted&gt;</span>';
         spam = true;
     }
