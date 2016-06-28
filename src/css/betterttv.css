@@ -1258,7 +1258,7 @@ body#chat #speak {
 
 /* Fix Group Chat Pane Height */
 .ember-chat .chat-room-list {
-    height: calc(100% - 60px);
+    height: calc(100% - 40px);
 }
 
 /* Canvas Channel Backgrounds */
