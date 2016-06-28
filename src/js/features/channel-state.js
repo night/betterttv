@@ -40,7 +40,7 @@ var initiateCountDown = function(length) {
             return resetCountDown();
         }
 
-        $(chatButton).find('span').text('Chat in ' + displaySeconds(Math.ceil(remainingTime / 1000)));
+        $(chatButton).text('Chat in ' + displaySeconds(Math.ceil(remainingTime / 1000)));
     }, 500);
 };
 
