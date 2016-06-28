@@ -74,6 +74,14 @@ var detectServerCommand = function(input) {
     return false;
 };
 
+var cheerRegex = /^\s*cheer\d+\s*$/i;
+var containsCheer = exports.containsCheer = function(msg) {
+    words = msg ? msg.split(/\s+/) : [];
+    return words.some(function(w) {
+        return cheerRegex.test(w);
+    });
+};
+
 exports.parseTags = function(tags) {
     var rawTags = tags.slice(1, tags.length).split(';');
 
@@ -410,11 +418,30 @@ exports.sendMessage = function(message) {
             message = message.join(' ');
         }
 
-        if (
-            (tmi().tmiSession.sendWhisper && ['/w', '.w'].indexOf(message.substr(0, 2)) > -1) ||
-            message.toLowerCase().indexOf('cheer') > -1
-        ) {
+        if (tmi().tmiSession.sendWhisper && ['/w', '.w'].indexOf(message.substr(0, 2)) > -1) {
             tmi().send(message);
+            return;
+        }
+
+        if (containsCheer(message)) {
+            var model = bttv.getModel();
+            var service = App && App.__container__.lookup('service:bits');
+            if (model && service) {
+                service.sendBits(model._id, message).then(function() {
+                    tmi().set('messageToSend', '');
+                    tmi().set('savedInput', '');
+                }, function(e) {
+                    if (e.status === 401) {
+                        var room = App.__container__.lookup('controller:room');
+                        room.send('handleNotLoggedIn', {
+                            mpSourceAction: 'chat-bits',
+                            params: {sudo_reason: 'bits'}
+                        });
+                    } else {
+                        serverMessage(e.responseJSON.message);
+                    }
+                });
+            }
             return;
         }
 
@@ -458,7 +485,7 @@ exports.reparseMessages = function(user) {
         var emotes = message.data('emotes') ? JSON.parse(decodeURIComponent(message.data('emotes'))) : false;
         var color = message.attr('style') ? message.attr('style').split(': ')[1] : false;
 
-        message.replaceWith(templates.message(user, rawMessage, emotes, color));
+        message.replaceWith(templates.message(user, rawMessage, {emotes: emotes, colored: color}));
     });
 };
 
@@ -784,7 +811,7 @@ exports.assignBadges = function(badges, data) {
                 type: 'twitch-' + badge + '-' + version,
                 name: badgeData[version].title,
                 clickAction: badgeData[version].click_action,
-                description: badgeData[version].description
+                description: badgeData[version].title
             });
         }
     });
@@ -969,4 +996,9 @@ exports.loadBTTVChannelData = function() {
         });
         store.__channelBots = data.bots;
     });
+};
+
+exports.getBitsConfig = function() {
+    if (!App || !App.__container__.lookup('service:bits-rendering-config')) return;
+    return App.__container__.lookup('service:bits-rendering-config').get('config');
 };

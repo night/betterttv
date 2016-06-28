@@ -55,6 +55,30 @@ var userMentions = exports.userMentions = function(message) {
     return message;
 };
 
+var bitsEmoticonize = function(config, value) {
+    var tier;
+    for (var i = 0; i < config.tiers.length; i++) {
+        tier = config.tiers[i];
+        if (tier.min_bits <= value) break;
+    }
+
+    var url = 'https://static-cdn.jtvnw.net/bits/' + (bttv.settings.get('darkenedMode') ? 'dark' : 'light') + '/animated/' + tier.image;
+    var emote = '<img class="chatline__bit" alt="cheer" src="' + url + '/1" srcset="' + url + '/1.5 1.5x, ' + url + '/2 2x, ' + url + '/3 3x, ' + url + '/4 4x">';
+    return emote + '<strong><span class="bitsText" style="color: ' + tier.color + '">' + value + '</span></strong>';
+};
+
+
+var parseBits = function(piece, amount) {
+    if (amount && helpers.containsCheer(piece)) {
+        var config = helpers.getBitsConfig();
+        if (!config) return piece;
+
+        var value = parseInt(piece.match(/\d+/), 10);
+        piece = bitsEmoticonize(config, value);
+    }
+    return piece;
+};
+
 var escapeEmoteCode = function(code) {
     return escape(code.replace(/('|"|&)/g, ''));
 };
@@ -154,7 +178,7 @@ var bttvEmoticonize = exports.bttvEmoticonize = function(message, emote, sender)
     return message.replace(emote.code, emoticonBTTV(emote));
 };
 
-var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message) {
+var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message, bits) {
     var tokenizedString = message.trim().split(' ');
 
     for (var i = 0; i < tokenizedString.length; i++) {
@@ -195,6 +219,7 @@ var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message
             piece = escape(piece);
             piece = linkify(piece);
             piece = userMentions(piece);
+            piece = parseBits(piece, bits);
         }
 
         tokenizedString[i] = piece;
@@ -244,17 +269,17 @@ exports.suggestions = function(suggestions, index) {
     return suggestionsTemplate({suggestions: suggestions, index: index});
 };
 
-var message = exports.message = function(sender, msg, emotes, colored, force) {
-    colored = colored || false;
-    force = force || false;
+var message = exports.message = function(sender, msg, data) {
+    var colored = data.colored || false;
+    var force = data.force || false;
+    var emotes = data.emotes;
     var rawMessage = encodeURIComponent(msg);
 
     if (sender !== 'jtv') {
-        var tokenizedMessage = emoticonize(msg, emotes);
-
+        var tokenizedMessage = emoticonize(msg, data.emotes);
         for (var i = 0; i < tokenizedMessage.length; i++) {
             if (typeof tokenizedMessage[i] === 'string') {
-                tokenizedMessage[i] = bttvMessageTokenize(sender, tokenizedMessage[i]);
+                tokenizedMessage[i] = bttvMessageTokenize(sender, tokenizedMessage[i], data.bits);
             } else {
                 tokenizedMessage[i] = tokenizedMessage[i][0];
             }
@@ -274,7 +299,8 @@ var message = exports.message = function(sender, msg, emotes, colored, force) {
 
 exports.privmsg = function(data, opts) {
     opts = opts || {};
-    var msg = timestamp(data.time) + ' ' + (opts.isMod ? modicons() : '') + ' ' + badges(data.badges) + from(data.nickname, data.color) + message(data.sender, data.message, data.emotes, (opts.action && !opts.highlight) ? data.color : false);
+    var msgOptions = {emotes: data.emotes, colored: (opts.action && !opts.highlight) ? data.color : false, bits: data.bits};
+    var msg = timestamp(data.time) + ' ' + (opts.isMod ? modicons() : '') + ' ' + badges(data.badges) + from(data.nickname, data.color) + message(data.sender, data.message, msgOptions);
     return '<div class="chat-line' + (opts.highlight ? ' highlight' : '') + (opts.action ? ' action' : '') + (opts.server ? ' admin' : '') + (opts.notice ? ' notice' : '') + '" data-sender="' + data.sender + '">' + msg + '</div>';
 };
 
@@ -283,5 +309,5 @@ var whisperName = exports.whisperName = function(sender, receiver, fromNick, to,
 };
 
 exports.whisper = function(data) {
-    return '<div class="chat-line whisper" data-sender="' + data.sender + '">' + timestamp(data.time) + ' ' + whisperName(data.sender, data.receiver, data.from, data.to, data.fromColor, data.toColor) + message(data.sender, data.message, data.emotes, false) + '</div>';
+    return '<div class="chat-line whisper" data-sender="' + data.sender + '">' + timestamp(data.time) + ' ' + whisperName(data.sender, data.receiver, data.from, data.to, data.fromColor, data.toColor) + message(data.sender, data.message, {emotes: data.emotes, colored: false}) + '</div>';
 };
