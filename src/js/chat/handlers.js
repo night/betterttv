@@ -380,6 +380,8 @@ var privmsg = exports.privmsg = function(channel, data) {
         debug.log('Error sending tracking data to Twitch');
     }
 
+    if (!data.message || !data.message.length) return;
+
     if (data.message.substr(0, 5) === ':act ') return;
 
     if (data.style && ['admin', 'action', 'notification', 'whisper'].indexOf(data.style) === -1) return;
@@ -504,7 +506,6 @@ var privmsg = exports.privmsg = function(channel, data) {
     });
 
     store.__messageQueue.push($(message));
-    shiftQueue();
 };
 
 exports.onPrivmsg = function(channel, data) {
@@ -512,7 +513,6 @@ exports.onPrivmsg = function(channel, data) {
         rooms.getRoom(channel).queueMessage(data);
         return;
     }
-    if (!data.message || !data.message.length) return;
     if (!tmi() || !tmi().tmiRoom) return;
     try {
         if (data.style === 'whisper') {
@@ -530,6 +530,7 @@ exports.onPrivmsg = function(channel, data) {
             }
         }
         privmsg(channel, data);
+        shiftQueue();
     } catch (e) {
         if (store.__reportedErrors.indexOf(e.message) !== -1) return;
         store.__reportedErrors.push(e.message);
