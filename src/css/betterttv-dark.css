@@ -2531,3 +2531,7 @@ ul.tabs li>a:hover, .directory_header .nav li>a:hover, ul.tabs li>button:hover, 
     color: #d3d3d3;
     box-shadow: none;
 }
+
+.bits-toggle path {
+    fill: #888;
+}
