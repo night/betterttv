@@ -809,7 +809,7 @@ exports.assignBadges = function(badges, data) {
             var badgeData = store.__twitchBadgeTypes[badge].versions;
             bttvBadges.push({
                 type: 'twitch-' + badge + '-' + version,
-                name: badgeData[version].title,
+                name: '',
                 clickAction: badgeData[version].click_action,
                 description: badgeData[version].title
             });
