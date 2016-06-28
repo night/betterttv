@@ -2532,6 +2532,11 @@ ul.tabs li>a:hover, .directory_header .nav li>a:hover, ul.tabs li>button:hover, 
     box-shadow: none;
 }
 
+/* bits */
 .bits-toggle path {
     fill: #888;
+}
+
+.bits-toggle:hover path {
+    fill: rgba(197, 197, 197, 0.5);
 }

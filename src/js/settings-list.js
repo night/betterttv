@@ -361,6 +361,22 @@ module.exports = [
         storageKey: 'followingNotifications'
     },
     {
+        name: 'Hide Bits',
+        description: 'Bits can be annoying. Disable \'em in chat with this (we can\'t block \'em on stream, sry)',
+        default: false,
+        storageKey: 'hideBits',
+        toggle: function(value) {
+            if (value === true) {
+                cssLoader.load('hide-bits', 'hideBits');
+            } else {
+                cssLoader.unload('hideBits');
+            }
+        },
+        load: function() {
+            cssLoader.load('hide-bits', 'hideBits');
+        }
+    },
+    {
         name: 'Hide Friends',
         description: 'Hides the friend list from the left sidebar',
         default: false,

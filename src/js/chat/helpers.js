@@ -794,6 +794,7 @@ exports.assignBadges = function(badges, data) {
     }
 
     Object.keys(store.__twitchBadgeTypes).forEach(function(badge) {
+        if (badge === 'bits' && bttv.settings.get('hideBits') === true) return;
         if (badges.hasOwnProperty(badge)) {
             var version = badges[badge];
             var badgeData = store.__twitchBadgeTypes[badge].versions;

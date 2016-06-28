@@ -70,6 +70,8 @@ var bitsEmoticonize = function(config, value) {
 
 var parseBits = function(piece, amount) {
     if (amount && helpers.containsCheer(piece)) {
+        if (bttv.settings.get('hideBits') === true) return '';
+
         var config = helpers.getBitsConfig();
         if (!config) return piece;
 
