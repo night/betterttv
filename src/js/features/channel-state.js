@@ -25,7 +25,7 @@ var displaySeconds = function(s) {
 var resetCountDown = function() {
     if (bttv.chat.store.chatCountDown) clearInterval(bttv.chat.store.chatCountDown);
     bttv.chat.store.chatCountDown = false;
-    $(chatButton).find('span').text('Chat');
+    $(chatButton).text('Chat');
 };
 
 var initiateCountDown = function(length) {

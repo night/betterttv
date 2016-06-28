@@ -349,7 +349,7 @@ var takeover = module.exports = function() {
 
         helpers.chatLineHistory($chatInput, e);
     });
-    $chatSend.on('click', function() {
+    $chatSend.on('click', function(e) {
         var val = $chatInput.val().trim(),
             bttvCommand = false;
         if (!val.length) return;
@@ -360,6 +360,8 @@ var takeover = module.exports = function() {
 
         if (!bttvCommand) {
             helpers.sendMessage(val);
+        } else {
+            e.stopPropagation();
         }
 
         if (bttv.settings.get('chatLineHistory') === true) {
