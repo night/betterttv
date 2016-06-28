@@ -744,16 +744,6 @@ exports.assignBadges = function(badges, data) {
         });
     }
 
-    // Volunteer badges
-    if (data.from in store.__bttvBadges) {
-        var type = store.__bttvBadges[data.from];
-        bttvBadges.push({
-            type: 'bttv-' + type,
-            name: '',
-            description: store.__bttvBadgeTypes[type].description
-        });
-    }
-
     if (badges.hasOwnProperty('staff')) {
         bttvBadges.push({
             type: 'staff',
@@ -809,7 +799,7 @@ exports.assignBadges = function(badges, data) {
             var badgeData = store.__twitchBadgeTypes[badge].versions;
             bttvBadges.push({
                 type: 'twitch-' + badge + '-' + version,
-                name: badgeData[version].title,
+                name: '',
                 clickAction: badgeData[version].click_action,
                 description: badgeData[version].title
             });
@@ -822,6 +812,16 @@ exports.assignBadges = function(badges, data) {
             name: '',
             clickAction: 'subscribe_to_channel',
             description: 'Channel Subscriber'
+        });
+    }
+
+    // Volunteer badges
+    if (data.from in store.__bttvBadges) {
+        var type = store.__bttvBadges[data.from];
+        bttvBadges.push({
+            type: 'bttv-' + type,
+            name: '',
+            description: store.__bttvBadgeTypes[type].description
         });
     }
 
