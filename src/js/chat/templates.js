@@ -57,7 +57,7 @@ var userMentions = exports.userMentions = function(message) {
 
 var bitsEmoticonize = function(config, value) {
     var tier;
-    for (var i = 0; i < config.tiers.length; i++) {
+    for (var i = config.tiers.length - 1; i >= 0; i--) {
         tier = config.tiers[i];
         if (tier.min_bits <= value) break;
     }
