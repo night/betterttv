@@ -1200,6 +1200,8 @@ body#chat #speak {
     border: 0;
     margin: 2px 0px;
     height: 30px;
+
+    vertical-align: middle;
 }
 
 .ember-chat .moderation-card button img {
