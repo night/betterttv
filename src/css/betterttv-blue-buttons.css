@@ -161,3 +161,9 @@ div#header_actions a.primary span {
 .chat_line a, .ember-chat .chat-line a {
     color: #005596;
 }
+
+.chat-buttons-container .button.js-chat-buttons__submit {
+    background: linear-gradient(bottom, rgb(47,88,185) 31%, rgb(50,108,211) 80%);
+    background: -moz-linear-gradient(bottom, rgb(47,88,185) 31%, rgb(50,108,211) 80%);
+    background: -webkit-linear-gradient(bottom, rgb(47,88,185) 31%, rgb(50,108,211) 80%);
+}
