@@ -1942,3 +1942,8 @@ body.channel_new.columns.ember-application {
 .bits-card {
     width: 100%;
 }
+
+/* chat notice style */
+.chat-lines .notice {
+    background: #D8BFD8;
+}
