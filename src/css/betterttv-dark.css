@@ -2585,5 +2585,5 @@ ul.tabs li>a:hover, .directory_header .nav li>a:hover, ul.tabs li>button:hover, 
 
 /* chat notice style */
 .chat-lines .notice {
-    background: #392E5C;
+    background: #392E5C !important;
 }

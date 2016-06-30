@@ -1947,5 +1947,5 @@ body.channel_new.columns.ember-application {
 
 /* chat notice style */
 .chat-lines .notice {
-    background: #D8BFD8;
+    background: #D8BFD8 !important;
 }
