@@ -84,8 +84,6 @@ exports.commands = function(input) {
         tmi().tmiRoom.startSubscribersMode();
     } else if (command === '/suboff') {
         tmi().tmiRoom.stopSubscribersMode();
-    } else if (command === '/squishy') {
-        helpers.sendMessage('notsquishY WHEN YOU NEED HIM notsquishY IN A JIFFY notsquishY USE THIS EMOTE notsquishY TO SUMMON SQUISHY notsquishY');
     } else if (command === '/t') {
         var time = 600;
         if (!isNaN(sentence[2])) time = sentence[2];
@@ -364,11 +362,25 @@ var privmsg = exports.privmsg = function(channel, data) {
         store.displayNames[data.from] = data.tags['display-name'];
     }
 
+    if (data.tags && data.tags['msg-id'] === 'resub') {
+        message = templates.privmsg({
+            nickname: 'jtv',
+            message: data.tags['system-msg'],
+            time: data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
+            badges: [{type: 'subscriber', name: '', description: 'Channel Subscriber'}],
+            color: '#555'
+        }, {server: true, notice: true});
+
+        store.__messageQueue.push($(message));
+    }
+
     try {
         tmi().trackLatency(data);
     } catch (e) {
         debug.log('Error sending tracking data to Twitch');
     }
+
+    if (!data.message || !data.message.length) return;
 
     if (data.message.substr(0, 5) === ':act ') return;
 
@@ -381,24 +393,22 @@ var privmsg = exports.privmsg = function(channel, data) {
         }
 
         data.style = 'admin';
-        message = templates.privmsg(
-            false,
-            data.style === 'action' ? true : false,
-            data.style === 'admin' ? true : false,
-            vars.userData.isLoggedIn ? helpers.isModerator(vars.userData.name) : false,
-            {
-                message: data.message,
-                time: data.date ? data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2') : '',
-                nickname: data.from || 'jtv',
-                sender: data.from,
-                badges: data.badges || (data.from === 'twitchnotify' ? [{
-                    type: 'subscriber',
-                    name: '',
-                    description: 'Channel Subscriber'
-                }] : []),
-                color: '#555'
-            }
-        );
+        message = templates.privmsg({
+            message: data.message,
+            time: data.date ? data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2') : '',
+            nickname: data.from || 'jtv',
+            sender: data.from,
+            badges: data.badges || (data.from === 'twitchnotify' ? [{
+                type: 'subscriber',
+                name: '',
+                description: 'Channel Subscriber'
+            }] : []),
+            color: '#555'
+        }, {
+            action: data.style === 'action' ? true : false,
+            server: data.style === 'admin' ? true : false,
+            isMod: vars.userData.isLoggedIn ? helpers.isModerator(vars.userData.name) : false
+        });
 
         $('.ember-chat .chat-messages .tse-content .chat-lines').append(message);
         helpers.scrollChat();
@@ -436,7 +446,7 @@ var privmsg = exports.privmsg = function(channel, data) {
     }
 
     var badges = helpers.getBadges(data.from);
-    var bttvBadges = helpers.assignBadges(badges || [], data);
+    var bttvBadges = helpers.assignBadges(badges || {}, data);
 
     var from = data.from;
     var sender = data.from;
@@ -478,24 +488,24 @@ var privmsg = exports.privmsg = function(channel, data) {
         }
     }
 
-    message = templates.privmsg(
-        messageHighlighted,
-        data.style === 'action' ? true : false,
-        data.style === 'admin' ? true : false,
-        vars.userData.isLoggedIn ? (helpers.isModerator(vars.userData.name) && (!helpers.isModerator(sender) || (vars.userData.name === channel && vars.userData.name !== sender))) : false,
-        {
-            message: data.message,
-            time: data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
-            nickname: from,
-            sender: sender,
-            badges: bttvBadges,
-            color: data.color,
-            emotes: data.tags.emotes
-        }
-    );
+    message = templates.privmsg({
+        message: data.message,
+        time: data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
+        nickname: from,
+        sender: sender,
+        badges: bttvBadges,
+        color: data.color,
+        bits: data.tags.bits && parseInt(data.tags.bits, 10),
+        emotes: data.tags.emotes
+    }, {
+        highlight: messageHighlighted,
+        action: data.style === 'action' ? true : false,
+        server: data.style === 'admin' ? true : false,
+        isMod: vars.userData.isLoggedIn ? (helpers.isModerator(vars.userData.name) && (!helpers.isModerator(sender) || (vars.userData.name === channel && vars.userData.name !== sender))) : false,
+        notice: data.tags && data.tags['msg-id'] === 'resub'
+    });
 
     store.__messageQueue.push($(message));
-    shiftQueue();
 };
 
 exports.onPrivmsg = function(channel, data) {
@@ -503,7 +513,6 @@ exports.onPrivmsg = function(channel, data) {
         rooms.getRoom(channel).queueMessage(data);
         return;
     }
-    if (!data.message || !data.message.length) return;
     if (!tmi() || !tmi().tmiRoom) return;
     try {
         if (data.style === 'whisper') {
@@ -521,10 +530,11 @@ exports.onPrivmsg = function(channel, data) {
             }
         }
         privmsg(channel, data);
+        shiftQueue();
     } catch (e) {
         if (store.__reportedErrors.indexOf(e.message) !== -1) return;
         store.__reportedErrors.push(e.message);
-        console.log(e);
+        debug.log(e);
         var error = {
             stack: e.stack,
             message: e.message

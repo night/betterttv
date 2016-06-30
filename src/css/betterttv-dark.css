@@ -2518,3 +2518,25 @@ ul.tabs li>a:hover, .directory_header .nav li>a:hover, ul.tabs li>button:hover, 
 .tabs--fullwidth li:not(.selected) a:hover {
     background-color: transparent;
 }
+
+/* dark resub popup */
+.resub-notif .balloon {
+    background-color: #282828;
+    color: #d3d3d3;
+}
+
+.resub-notif .balloon .resub-notif__message input {
+    background-color: #222;
+    border-color: #444;
+    color: #d3d3d3;
+    box-shadow: none;
+}
+
+/* bits */
+.bits-toggle path {
+    fill: #888;
+}
+
+.bits-toggle:hover path {
+    fill: rgba(197, 197, 197, 0.5);
+}

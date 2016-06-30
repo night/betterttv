@@ -2,14 +2,15 @@ var tmi = require('./tmi'),
     store = require('./store'),
     helpers = require('./helpers');
 
-var badge = exports.badge = function(type, name, description) {
-    return '<div class="' + type + '' + ((bttv.settings.get('alphaTags') && ['admin', 'global-moderator', 'staff', 'broadcaster', 'moderator', 'turbo', 'ign'].indexOf(type) !== -1) ? ' alpha' + (!bttv.settings.get('darkenedMode') ? ' invert' : '') : '') + ' badge" title="' + description + '">' + name + '</div> ';
+var badge = exports.badge = function(type, name, description, action) {
+    var classes = type + '' + ((bttv.settings.get('alphaTags') && ['admin', 'global-moderator', 'staff', 'broadcaster', 'moderator', 'turbo', 'ign'].indexOf(type) !== -1) ? ' alpha' + (!bttv.settings.get('darkenedMode') ? ' invert' : '') : '') + ' badge';
+    return '<div class="' + classes + '" title="' + description + '"' + (action ? ' data-click-action="' + action + '"' : '') + '>' + name + '</div> ';
 };
 
 var badges = exports.badges = function(badgeList) {
     var resp = '<span class="badges">';
     badgeList.forEach(function(data) {
-        resp += badge(data.type, data.name, data.description);
+        resp += badge(data.type, data.name, data.description, data.clickAction);
     });
     resp += '</span>';
     return resp;
@@ -52,6 +53,32 @@ var userMentions = exports.userMentions = function(message) {
         }
     }
     return message;
+};
+
+var bitsEmoticonize = function(config, value) {
+    var tier;
+    for (var i = config.tiers.length - 1; i >= 0; i--) {
+        tier = config.tiers[i];
+        if (tier.min_bits <= value) break;
+    }
+
+    var url = 'https://static-cdn.jtvnw.net/bits/' + (bttv.settings.get('darkenedMode') ? 'dark' : 'light') + '/animated/' + tier.image;
+    var emote = '<img class="chatline__bit" alt="cheer" src="' + url + '/1" srcset="' + url + '/1.5 1.5x, ' + url + '/2 2x, ' + url + '/3 3x, ' + url + '/4 4x">';
+    return emote + '<strong><span class="bitsText" style="color: ' + tier.color + '">' + value + '</span></strong>';
+};
+
+
+var parseBits = function(piece, amount) {
+    if (amount && helpers.containsCheer(piece)) {
+        if (bttv.settings.get('hideBits') === true) return '';
+
+        var config = helpers.getBitsConfig();
+        if (!config) return piece;
+
+        var value = parseInt(piece.match(/\d+/), 10);
+        piece = bitsEmoticonize(config, value);
+    }
+    return piece;
 };
 
 var escapeEmoteCode = function(code) {
@@ -153,7 +180,7 @@ var bttvEmoticonize = exports.bttvEmoticonize = function(message, emote, sender)
     return message.replace(emote.code, emoticonBTTV(emote));
 };
 
-var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message) {
+var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message, bits) {
     var tokenizedString = message.trim().split(' ');
 
     for (var i = 0; i < tokenizedString.length; i++) {
@@ -194,6 +221,7 @@ var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message
             piece = escape(piece);
             piece = linkify(piece);
             piece = userMentions(piece);
+            piece = parseBits(piece, bits);
         }
 
         tokenizedString[i] = piece;
@@ -243,17 +271,17 @@ exports.suggestions = function(suggestions, index) {
     return suggestionsTemplate({suggestions: suggestions, index: index});
 };
 
-var message = exports.message = function(sender, msg, emotes, colored, force) {
-    colored = colored || false;
-    force = force || false;
+var message = exports.message = function(sender, msg, data) {
+    data = data || {};
+    var emotes = data.emotes;
+    var colored = data.colored;
     var rawMessage = encodeURIComponent(msg);
 
     if (sender !== 'jtv') {
-        var tokenizedMessage = emoticonize(msg, emotes);
-
+        var tokenizedMessage = emoticonize(msg, data.emotes);
         for (var i = 0; i < tokenizedMessage.length; i++) {
             if (typeof tokenizedMessage[i] === 'string') {
-                tokenizedMessage[i] = bttvMessageTokenize(sender, tokenizedMessage[i]);
+                tokenizedMessage[i] = bttvMessageTokenize(sender, tokenizedMessage[i], data.bits);
             } else {
                 tokenizedMessage[i] = tokenizedMessage[i][0];
             }
@@ -263,7 +291,7 @@ var message = exports.message = function(sender, msg, emotes, colored, force) {
     }
 
     var spam = false;
-    if (bttv.settings.get('hideSpam') && helpers.isSpammer(sender) && !helpers.isModerator(sender) && !force) {
+    if (bttv.settings.get('hideSpam') && helpers.isSpammer(sender) && !helpers.isModerator(sender) && !data.force) {
         msg = '<span class="deleted">&lt;spam deleted&gt;</span>';
         spam = true;
     }
@@ -271,8 +299,11 @@ var message = exports.message = function(sender, msg, emotes, colored, force) {
     return '<span class="message ' + (spam ? 'spam' : '') + '" ' + (colored ? 'style="color: ' + colored + '" ' : '') + 'data-raw="' + rawMessage + '" data-emotes="' + (emotes ? encodeURIComponent(JSON.stringify(emotes)) : 'false') + '">' + msg + '</span>';
 };
 
-exports.privmsg = function(highlight, action, server, isMod, data) {
-    return '<div class="chat-line' + (highlight ? ' highlight' : '') + (action ? ' action' : '') + (server ? ' admin' : '') + '" data-sender="' + data.sender + '">' + timestamp(data.time) + ' ' + (isMod ? modicons() : '') + ' ' + badges(data.badges) + from(data.nickname, data.color) + message(data.sender, data.message, data.emotes, (action && !highlight) ? data.color : false) + '</div>';
+exports.privmsg = function(data, opts) {
+    opts = opts || {};
+    var msgOptions = {emotes: data.emotes, colored: (opts.action && !opts.highlight) ? data.color : false, bits: data.bits};
+    var msg = timestamp(data.time) + ' ' + (opts.isMod ? modicons() : '') + ' ' + badges(data.badges) + from(data.nickname, data.color) + message(data.sender, data.message, msgOptions);
+    return '<div class="chat-line' + (opts.highlight ? ' highlight' : '') + (opts.action ? ' action' : '') + (opts.server ? ' admin' : '') + (opts.notice ? ' notice' : '') + '" data-sender="' + data.sender + '">' + msg + '</div>';
 };
 
 var whisperName = exports.whisperName = function(sender, receiver, fromNick, to, fromColor, toColor) {
@@ -280,5 +311,5 @@ var whisperName = exports.whisperName = function(sender, receiver, fromNick, to,
 };
 
 exports.whisper = function(data) {
-    return '<div class="chat-line whisper" data-sender="' + data.sender + '">' + timestamp(data.time) + ' ' + whisperName(data.sender, data.receiver, data.from, data.to, data.fromColor, data.toColor) + message(data.sender, data.message, data.emotes, false) + '</div>';
+    return '<div class="chat-line whisper" data-sender="' + data.sender + '">' + timestamp(data.time) + ' ' + whisperName(data.sender, data.receiver, data.from, data.to, data.fromColor, data.toColor) + message(data.sender, data.message, {emotes: data.emotes, colored: false}) + '</div>';
 };

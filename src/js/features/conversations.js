@@ -66,7 +66,8 @@ function Conversations(timeout) {
 
 Conversations.prototype.onWhisper = function(data) {
     if (bttv.settings.get('highlightFeedback') === true && bttv.chat.store.activeView === false) {
-        if (vars.userData.isLoggedIn && vars.userData.name !== data.from) {
+        var from = data & data.tags && data.tags.login;
+        if (vars.userData.isLoggedIn && vars.userData.name !== from) {
             audibleFeedback.play();
         }
     }
@@ -198,9 +199,9 @@ Conversations.prototype.newConversation = function(element) {
 Conversations.prototype.addBadges = function(element) {
     var $element = $(element);
     var name = $element.find('.conversation-header-name').text().toLowerCase();
-    if (name in store.__badges) {
-        var type = store.__badges[name];
-        var badgeTemplate = chatTemplates.badge('bttv-' + type, '', store.__badgeTypes[type].description);
+    if (name in store.__bttvBadges) {
+        var type = store.__bttvBadges[name];
+        var badgeTemplate = chatTemplates.badge('bttv-' + type, '', store.__bttvBadgeTypes[type].description);
         $element.find('.badges').prepend(badgeTemplate);
     }
 };
