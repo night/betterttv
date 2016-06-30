@@ -1936,3 +1936,9 @@ body.channel_new.columns.ember-application {
     height: 30px;
     background-color: transparent;
 }
+
+/* bits card */
+
+.bits-card {
+    width: 100%;
+}

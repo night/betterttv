@@ -2553,3 +2553,32 @@ ul.tabs li>a:hover, .directory_header .nav li>a:hover, ul.tabs li>button:hover, 
 .bits-toggle:hover path {
     fill: rgba(197, 197, 197, 0.5);
 }
+
+/* bits card */
+
+.bits-card .bits-card--standard {
+    background: #282828;
+    color: #d3d3d3;
+}
+
+.bits-card .bits-footer {
+    background: rgb(30, 30, 30);
+    color: #d3d3d3;
+}
+
+.bits-card .bits-purchase {
+    background: #282828;
+    color: #d3d3d3;
+}
+
+.bits-card .bits-purchase .bits-purchase__header {
+    color: #d3d3d3;
+}
+
+.bits-card .bits-purchase .bits-purchase__row {
+    border-color: #444;
+}
+
+.bits-card .sub-text {
+    color: #bababa;
+}
