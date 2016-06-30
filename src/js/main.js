@@ -143,7 +143,8 @@ var clearClutter = require('./features/clear-clutter'),
     conversations = require('./features/conversations'),
     betterViewerList = require('./features/better-viewer-list'),
     overrideEmotes = require('./features/override-emotes'),
-    ChatReplay = require('./features/chat-replay');
+    ChatReplay = require('./features/chat-replay'),
+    liveViewers = require('./features/live-viewers');
 
 var chatFunctions = function() {
     debug.log('Modifying Chat Functionality');
@@ -190,6 +191,7 @@ var main = function() {
                             channelReformat();
                             hostButtonBelowVideo();
                             betterViewerList();
+                            liveViewers();
                             if (
                                 App.__container__.lookup('controller:channel').get('isTheatreMode') === false &&
                                 bttv.settings.get('autoTheatreMode') === true
@@ -301,6 +303,7 @@ var main = function() {
         handleTwitchChatEmotesScript();
         hostButtonBelowVideo();
         betterViewerList();
+        liveViewers();
 
         // Loads global BTTV emotes (if not loaded)
         overrideEmotes();
@@ -321,6 +324,7 @@ var main = function() {
         chatFunctions();
         directoryFunctions();
     };
+
 
     $(document).ready(function() {
         loadUser(function() {

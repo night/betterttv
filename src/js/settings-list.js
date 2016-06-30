@@ -502,12 +502,11 @@ module.exports = [
         description: 'Replace "LIVE" in the video player with the current number of viewers.',
         default: false,
         storageKey: 'showViewersInPlayer',
-        toggle: function(value) {
-            if (value === true) {
-                liveViewers(true);
-            } else {
-                liveViewers(false);
-            }
+        toggle: function() {
+            liveViewers();
+        },
+        load: function() {
+            liveViewers();
         }
     },
     {
