@@ -3,7 +3,7 @@ var template = require('../../templates/channel-state');
 
 var stateContainer = '#bttv-channel-state-contain';
 var chatHeader = '.chat-container .chat-header:first';
-var chatButton = '.chat-interface .chat-buttons-container .button.primary.float-right';
+var chatButton = '.chat-interface .chat-buttons-container .js-chat-buttons__submit';
 
 var displaySeconds = function(s) {
     var date = new Date(0);
