@@ -210,7 +210,7 @@ var takeover = module.exports = function() {
 
     // Make names clickable
     var clickCounter = 0;
-    $('body').off('click', '.chat-line .from').on('click', '.chat-line .from, .chat-line .user-mention', function(e) {
+    $('body').off('click', '.chat-line .from, .chat-line .user-mention').on('click', '.chat-line .from, .chat-line .user-mention', function(e) {
         if (e.shiftKey) return;
 
         var $element = $(this);

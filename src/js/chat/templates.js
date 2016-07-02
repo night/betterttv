@@ -183,6 +183,8 @@ var bttvEmoticonize = exports.bttvEmoticonize = function(message, emote, sender)
 var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message, bits) {
     var tokenizedString = message.trim().split(' ');
 
+    if (!store.chatters[sender]) store.chatters[sender] = {lastWhisper: 0};
+
     for (var i = 0; i < tokenizedString.length; i++) {
         var piece = tokenizedString[i];
 
