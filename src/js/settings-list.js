@@ -9,8 +9,7 @@ var splitChat = require('./features/split-chat'),
     betterViewerList = require('./features/better-viewer-list'),
     handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes'),
     audibleFeedback = require('./features/audible-feedback'),
-    imagePreview = require('./features/image-preview'),
-    liveViewers = require('./features/live-viewers');
+    imagePreview = require('./features/image-preview');
 
 var displayElement = require('./helpers/element').display,
     removeElement = require('./helpers/element').remove;
@@ -496,18 +495,6 @@ module.exports = [
         description: 'Turn this on to change <message deleted> back to users\' messages.',
         default: false,
         storageKey: 'showDeletedMessages'
-    },
-    {
-        name: 'Show Viewers in Video Player',
-        description: 'Replace "LIVE" in the video player with the current number of viewers.',
-        default: false,
-        storageKey: 'showViewersInPlayer',
-        toggle: function() {
-            liveViewers();
-        },
-        load: function() {
-            liveViewers();
-        }
     },
     {
         name: 'Split Chat',

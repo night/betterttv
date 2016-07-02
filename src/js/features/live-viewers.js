@@ -13,30 +13,54 @@ function checkBind() {
     return isBound;
 }
 
-
 module.exports = function() {
-    if (bttv.settings.get('showViewersInPlayer') === true) {
-        if (checkBind() === true) {
-            $('.live-count').unbind('DOMSubtreeModified');
-        }
-        debug.log('Replacing "LIVE" with viewer count');
-        $('span.js-live-label').text(function() {
+    var $div = $('div.app-main');
+    var viewerSpan = '<span id="viewerSpan">"Loading Viewers...</span>';
+    $('div.player-livestatus').append(viewerSpan);
+    $('#viewerSpan').text(function() {
+        return $('.live-count').text() + 'Viewers';
+    });
+
+    if (checkBind() === true) {
+        $('.live-count').unbind('DOMSubtreeModified');
+    }
+
+    debug.log('Creating viewer count span');
+    $('.live-count').bind('DOMSubtreeModified', function() {
+        $('#viewerSpan').text(function() {
             return $('.live-count').text() + 'Viewers';
         });
-        $('.live-count').bind('DOMSubtreeModified', function() {
-            $('span.js-live-label').text(function() {
-                return $('.live-count').text() + 'Viewers';
-            });
-        });
+    });
+
+    if ($div.hasClass('theatre')) {
+        $('#viewerSpan').show();
+    } else {
+        $('#viewerSpan').hide();
     }
 
-    if (bttv.settings.get('showViewersInPlayer') === false) {
-        debug.log('Restoring "LIVE" in the player');
-        if (checkBind() === true) {
-            $('.live-count').unbind('DOMSubtreeModified');
-        }
-        $('span.js-live-label').text(function() {
-            return 'Live';
-        });
+    function enableCount() {
+        debug.log('Showing viewer count under "LIVE"');
+        $('#viewerSpan').show();
     }
+
+    function disableCount() {
+        debug.log('Hiding viewer count');
+        $('#viewerSpan').hide();
+    }
+
+    var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.attributeName === 'class') {
+                var attributeValue = $(mutation.target).prop(mutation.attributeName);
+                if (attributeValue.includes('theatre')) {
+                    enableCount();
+                } else {
+                    disableCount();
+                }
+            }
+        });
+    });
+    observer.observe($div[0], {
+        attributes: true
+    });
 };

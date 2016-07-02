@@ -303,7 +303,6 @@ var main = function() {
         handleTwitchChatEmotesScript();
         hostButtonBelowVideo();
         betterViewerList();
-        liveViewers();
 
         // Loads global BTTV emotes (if not loaded)
         overrideEmotes();
