@@ -1,18 +1,22 @@
 var debug = require('../helpers/debug');
 
 function checkBind() {
-    $.each($('.live-count').data('events'), function(i) {
-        if (i === 'DOMSubtreeModified') {
-            return true;
-        }
-    });
-    return false;
+    var isBound = false;
+    if ($('.live-count').length) {
+        $.each($('.live-count').data('events'), function(i) {
+            if (i === 'DOMSubtreeModified') {
+                isBound = true;
+                return;
+            }
+        });
+    }
+    return isBound;
 }
 
 
 module.exports = function() {
     if (bttv.settings.get('showViewersInPlayer') === true) {
-        if (checkBind === true) {
+        if (checkBind() === true) {
             $('.live-count').unbind('DOMSubtreeModified');
         }
         debug.log('Replacing "LIVE" with viewer count');
@@ -28,7 +32,7 @@ module.exports = function() {
 
     if (bttv.settings.get('showViewersInPlayer') === false) {
         debug.log('Restoring "LIVE" in the player');
-        if (checkBind === true) {
+        if (checkBind() === true) {
             $('.live-count').unbind('DOMSubtreeModified');
         }
         $('span.js-live-label').text(function() {
