@@ -291,7 +291,7 @@ var message = exports.message = function(sender, msg, data) {
     }
 
     var spam = false;
-    if (bttv.settings.get('hideSpam') && helpers.isSpammer(sender) && !helpers.isModerator(sender) && !data.force) {
+    if (bttv.settings.get('hideSpam') && helpers.isSpammer(sender) && !helpers.isModerator(sender) && !data.forced) {
         msg = '<span class="deleted">&lt;spam deleted&gt;</span>';
         spam = true;
     }
