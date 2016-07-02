@@ -407,7 +407,8 @@ var privmsg = exports.privmsg = function(channel, data) {
         }, {
             action: data.style === 'action' ? true : false,
             server: data.style === 'admin' ? true : false,
-            isMod: vars.userData.isLoggedIn ? helpers.isModerator(vars.userData.name) : false
+            isMod: vars.userData.isLoggedIn ? helpers.isModerator(vars.userData.name) : false,
+            notice: data.message.indexOf('subscribed!') > 0
         });
 
         $('.ember-chat .chat-messages .tse-content .chat-lines').append(message);
