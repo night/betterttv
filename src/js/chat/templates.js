@@ -183,8 +183,6 @@ var bttvEmoticonize = exports.bttvEmoticonize = function(message, emote, sender)
 var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message, bits) {
     var tokenizedString = message.trim().split(' ');
 
-    if (!store.chatters[sender]) store.chatters[sender] = {lastWhisper: 0};
-
     for (var i = 0; i < tokenizedString.length; i++) {
         var piece = tokenizedString[i];
 
@@ -248,6 +246,9 @@ exports.bttvElementTokenize = function(senderEl, messageEl) {
     var newTokens = [];
     var tokens = $(messageEl).contents();
     var sender = $(senderEl).text().trim().toLowerCase();
+
+    if (!store.chatters[sender]) store.chatters[sender] = {lastWhisper: 0};
+
     for (var i = 0; i < tokens.length; i++) {
         if (tokens[i].nodeType === window.Node.TEXT_NODE) {
             newTokens.push(bttvMessageTokenize(sender, tokens[i].data));
