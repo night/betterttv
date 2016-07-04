@@ -1,5 +1,6 @@
 var chatHelpers = require('../chat/helpers');
 var chatTemplates = require('../chat/templates');
+var chatHandlers = require('../chat/handlers');
 
 function ChatReplay() {
     this._waitForLoad = setInterval(function() {
@@ -39,6 +40,16 @@ ChatReplay.prototype.connect = function() {
     }.bind(this));
 
     this.watcher.observe($('body')[0], { childList: true, subtree: true });
+
+    $('body').off('click', '.chat-line .from, .chat-line .user-mention').on('click', '.chat-line .from, .chat-line .user-mention', function() {
+        var $element = $(this);
+        var sender = $element.text().toLowerCase();
+        if ($element.hasClass('user-mention')) {
+            sender = sender.substring(1);
+        }
+
+        chatHandlers.moderationCard(sender, $element);
+    });
 };
 
 ChatReplay.prototype.disconnect = function() {

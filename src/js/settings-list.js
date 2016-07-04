@@ -144,8 +144,13 @@ module.exports = [
                 }
             };
 
-            if (App.__container__.lookup('controller:channel')) {
-                App.__container__.lookup('controller:channel').addObserver('isTheatreMode', toggleDarkMode);
+            var controller = App.__container__.lookup('controller:channel');
+            if (controller) {
+                controller.addObserver('isTheatreMode', toggleDarkMode);
+
+                // "Looking" at this field seems to initialize something which magically makes
+                // the observer work on VODs, otherwise we need to also bind on controller:vod
+                controller.get('isTheatreMode');
             }
         }
     },
