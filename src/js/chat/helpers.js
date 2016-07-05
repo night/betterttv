@@ -445,7 +445,7 @@ exports.sendMessage = function(message) {
             return;
         }
 
-        if (bttv.settings.get('anonChat') === true) {
+        if (bttv.chat.store.isAnonMode === true && message !== '/join') {
             serverMessage('You can\'t send messages when Anon Chat is enabled. You can disable Anon Chat in the BetterTTV settings.');
             return;
         }
