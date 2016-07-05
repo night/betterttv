@@ -1953,3 +1953,12 @@ body.channel_new.columns.ember-application {
 .chat-lines .notice {
     background: #D8BFD8 !important;
 }
+
+/* Only show player viewer count in theatre */
+.player-viewer-count {
+    display: none;
+}
+
+.app-main.theatre .player-viewer-count {
+    display: inline-block;
+}
