@@ -143,6 +143,7 @@ var clearClutter = require('./features/clear-clutter'),
     conversations = require('./features/conversations'),
     betterViewerList = require('./features/better-viewer-list'),
     overrideEmotes = require('./features/override-emotes'),
+    playerViewerCount = require('./features/player-viewer-count.js'),
     ChatReplay = require('./features/chat-replay');
 
 var chatFunctions = function() {
@@ -190,6 +191,7 @@ var main = function() {
                             channelReformat();
                             hostButtonBelowVideo();
                             betterViewerList();
+                            playerViewerCount();
                             if (
                                 App.__container__.lookup('controller:channel').get('isTheatreMode') === false &&
                                 bttv.settings.get('autoTheatreMode') === true
