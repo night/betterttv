@@ -210,7 +210,7 @@ var takeover = module.exports = function() {
 
     // Make names clickable
     var clickCounter = 0;
-    $('body').off('click', '.chat-line .from').on('click', '.chat-line .from, .chat-line .user-mention', function(e) {
+    $('body').off('click', '.chat-line .from, .chat-line .user-mention').on('click', '.chat-line .from, .chat-line .user-mention', function(e) {
         if (e.shiftKey) return;
 
         var $element = $(this);
@@ -280,7 +280,7 @@ var takeover = module.exports = function() {
 
     var $chatInterface = $('.ember-chat .chat-interface');
     var $chatInput = $chatInterface.find('textarea');
-    var $chatSend = $chatInterface.find('.button.primary.float-right');
+    var $chatSend = $chatInterface.find('.js-chat-buttons__submit');
 
     // Limit chat input to 500 characters
     $chatInput.attr('maxlength', '500');

@@ -246,6 +246,9 @@ exports.bttvElementTokenize = function(senderEl, messageEl) {
     var newTokens = [];
     var tokens = $(messageEl).contents();
     var sender = $(senderEl).text().trim().toLowerCase();
+
+    if (!store.chatters[sender]) store.chatters[sender] = {lastWhisper: 0};
+
     for (var i = 0; i < tokens.length; i++) {
         if (tokens[i].nodeType === window.Node.TEXT_NODE) {
             newTokens.push(bttvMessageTokenize(sender, tokens[i].data));
@@ -291,7 +294,7 @@ var message = exports.message = function(sender, msg, data) {
     }
 
     var spam = false;
-    if (bttv.settings.get('hideSpam') && helpers.isSpammer(sender) && !helpers.isModerator(sender) && !data.force) {
+    if (bttv.settings.get('hideSpam') && helpers.isSpammer(sender) && !helpers.isModerator(sender) && !data.forced) {
         msg = '<span class="deleted">&lt;spam deleted&gt;</span>';
         spam = true;
     }
