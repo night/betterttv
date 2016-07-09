@@ -977,6 +977,16 @@ exports.translate = function($element, sender, text) {
     });
 };
 
+exports.followDate = function(user, channel) {
+    bttv.TwitchAPI.get('users/' + user + '/follows/channels/' + channel).done(function(data) {
+        var m = moment(data.created_at);
+        reply = 'Followed ' + m.fromNow() + ' (' + m.format('LLL') + ')';
+        serverMessage(reply, true);
+    }).fail(function(data) {
+        serverMessage(data.responseJSON.message, true);
+    });
+};
+
 exports.loadBTTVChannelData = function() {
     // When swapping channels, removes old channel emotes
     var bttvEmoteKeys = Object.keys(store.bttvEmotes);
