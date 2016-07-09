@@ -1263,6 +1263,11 @@ body#chat #speak {
     height: calc(100% - 40px);
 }
 
+/* Fix chat rooms leave button */
+.ember-chat .chat-room-list .room .leave-chat svg {
+    box-sizing: content-box;
+}
+
 /* Canvas Channel Backgrounds */
 #channel #custom-bg {
     position: absolute;
