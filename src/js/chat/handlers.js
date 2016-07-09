@@ -41,7 +41,8 @@ exports.commands = function(input) {
         });
     } else if (command === '/followed') {
         if (vars.userData.isLoggedIn) {
-            helpers.followDate(vars.userData.name, bttv.getChannel());
+            var chan = sentence.length > 1 ? sentence[1] : bttv.getChannel();
+            helpers.followDate(vars.userData.name, chan);
         } else {
             helpers.serverMessage('You need to be logged in to use this command', true);
         }
@@ -120,7 +121,7 @@ exports.commands = function(input) {
         helpers.serverMessage('BetterTTV Chat Commands:');
         helpers.serverMessage('/b [username] -- Shortcut for /ban');
         helpers.serverMessage('/chatters -- Tells you how many users are currently in chat');
-        helpers.serverMessage('/followed -- Tells you for how long you have been following the current channel');
+        helpers.serverMessage('/followed -- Tells you for how long you have been following a channel');
         helpers.serverMessage('/followers -- Retrieves the number of followers for the channel');
         helpers.serverMessage('/join -- Joins the channel (deactivates anon chat mode)');
         helpers.serverMessage('/linehistory on/off -- Toggles the chat field history (pressing up/down arrow in textbox)');

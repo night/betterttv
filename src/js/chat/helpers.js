@@ -980,7 +980,8 @@ exports.translate = function($element, sender, text) {
 exports.followDate = function(user, channel) {
     bttv.TwitchAPI.get('users/' + user + '/follows/channels/' + channel).done(function(data) {
         var m = moment(data.created_at);
-        reply = 'Followed ' + m.fromNow() + ' (' + m.format('LLL') + ')';
+        var reply = user + ' followed ' + channel + ' ' + m.fromNow();
+        reply = reply + ' (' + m.format('LLL') + ')';
         serverMessage(reply, true);
     }).fail(function(data) {
         serverMessage(data.responseJSON.message, true);
