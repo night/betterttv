@@ -124,7 +124,10 @@ var takeover = module.exports = function() {
 
     // Load spammer list
     $.getJSON('https://api.betterttv.net/2/spammers').done(function(data) {
-        store.spammers = data.users;
+        store.spammers = [];
+        for (var i = 0; i < data.users.length; i++) {
+            store.spammers.push(data.users[i].name);
+        }
     });
     $('body').off('click', '.chat-line .message.spam').on('click', '.chat-line .message.spam', function() {
         var user = $(this).parent().data('sender');

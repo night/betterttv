@@ -855,6 +855,13 @@ input, textarea, select {
     text-align: center;
 }
 
+#bvl-panel .viewer-count {
+    text-align: center;
+    font-size: 8pt;
+    margin: -3px;
+    color: #888;
+}
+
 #bvl-panel .filter {
     box-shadow: none;
     border-radius: 0;
@@ -1261,6 +1268,11 @@ body#chat #speak {
 /* Fix Group Chat Pane Height */
 .ember-chat .chat-room-list {
     height: calc(100% - 40px);
+}
+
+/* Fix chat rooms leave button */
+.ember-chat .chat-room-list .room .leave-chat svg {
+    box-sizing: content-box;
 }
 
 /* Canvas Channel Backgrounds */

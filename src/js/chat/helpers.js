@@ -445,7 +445,7 @@ exports.sendMessage = function(message) {
             return;
         }
 
-        if (bttv.settings.get('anonChat') === true) {
+        if (bttv.chat.store.isAnonMode === true && message !== '/join') {
             serverMessage('You can\'t send messages when Anon Chat is enabled. You can disable Anon Chat in the BetterTTV settings.');
             return;
         }
@@ -974,6 +974,17 @@ exports.translate = function($element, sender, text) {
                 $newElement.tipsy('hide');
             } catch (e) {}
         }, 3000);
+    });
+};
+
+exports.followDate = function(user, channel) {
+    bttv.TwitchAPI.get('users/' + user + '/follows/channels/' + channel).done(function(data) {
+        var m = moment(data.created_at);
+        var reply = user + ' followed ' + channel + ' ' + m.fromNow();
+        reply = reply + ' (' + m.format('LLL') + ')';
+        serverMessage(reply, true);
+    }).fail(function(data) {
+        serverMessage(data.responseJSON.message, true);
     });
 };
 
