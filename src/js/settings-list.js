@@ -9,7 +9,9 @@ var splitChat = require('./features/split-chat'),
     betterViewerList = require('./features/better-viewer-list'),
     handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes'),
     audibleFeedback = require('./features/audible-feedback'),
-    imagePreview = require('./features/image-preview');
+    imagePreview = require('./features/image-preview'),
+    hideHosts = require('./features/hide-hosts'),
+    hideRecommendedStreams = require('./features/hide-recommended-streams');
 
 var displayElement = require('./helpers/element').display,
     removeElement = require('./helpers/element').remove;
@@ -640,6 +642,32 @@ module.exports = [
                 chat.helpers.serverMessage('Chat scrollback is now set to: default (150)', true);
             } else {
                 chat.helpers.serverMessage('Chat scrollback is now set to: ' + lines, true);
+            }
+        }
+    },
+    {
+        name: 'Hide hosted streams',
+        description: 'Hide the "Live Hosts" section of your following page.',
+        default: false,
+        storageKey: 'hideHostedStreams',
+        toggle: function(value) {
+            if (value === true) {
+                hideHosts();
+            } else {
+                //
+            }
+        }
+    },
+    {
+        name: 'Hide Recommended streams',
+        description: 'Hide the "BASED ON YOUR VIEWING HISTORY" section of your following page.',
+        default: false,
+        storageKey: 'hideRecommendedStreams',
+        toggle: function(value) {
+            if (value === true) {
+                hideRecommendedStreams();
+            } else {
+                //
             }
         }
     }

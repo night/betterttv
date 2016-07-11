@@ -144,7 +144,9 @@ var clearClutter = require('./features/clear-clutter'),
     betterViewerList = require('./features/better-viewer-list'),
     overrideEmotes = require('./features/override-emotes'),
     playerViewerCount = require('./features/player-viewer-count.js'),
-    ChatReplay = require('./features/chat-replay');
+    ChatReplay = require('./features/chat-replay'),
+    hideHosts = require('./features/hide-hosts'),
+    hideRecommendedStreams = require('./features/hide-recommended-streams');
 
 var chatFunctions = function() {
     debug.log('Modifying Chat Functionality');
@@ -253,6 +255,13 @@ var main = function() {
                     break;
             }
 
+            waitForLoad(function(ready) {
+                if (ready) {
+                    hideHosts();
+                    hideRecommendedStreams();
+                }
+            });
+
             lastRoute = data.currentRouteName;
         });
 
@@ -322,6 +331,8 @@ var main = function() {
         window.dispatchEvent(new Event('resize'));
         chatFunctions();
         directoryFunctions();
+        hideHosts();
+        hideRecommendedStreams();
     };
 
     $(document).ready(function() {
@@ -333,6 +344,7 @@ var main = function() {
             debug.log('CALL init ' + document.URL);
 
             initialFuncs();
+
             setTimeout(delayedFuncs, 3000);
         });
     });
