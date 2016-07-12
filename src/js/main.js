@@ -9,7 +9,7 @@ var debug = require('./helpers/debug'),
 
 bttv.info = {
     version: '6.8',
-    release: 53,
+    release: 55,
     versionString: function() {
         return bttv.info.version + 'R' + bttv.info.release;
     }
@@ -32,6 +32,12 @@ bttv.getChannel = function() {
     }
 
     return '';
+};
+
+bttv.getModel = function() {
+    var channel = App.__container__.lookup('controller:channel');
+    var user = App.__container__.lookup('controller:user');
+    return (!Ember.isNone(channel) && channel.get('model')) || (!Ember.isNone(user) && user.get('model'));
 };
 
 bttv.getChatController = function() {
@@ -136,6 +142,8 @@ var clearClutter = require('./features/clear-clutter'),
     hostButtonBelowVideo = require('./features/host-btn-below-video'),
     conversations = require('./features/conversations'),
     betterViewerList = require('./features/better-viewer-list'),
+    overrideEmotes = require('./features/override-emotes'),
+    playerViewerCount = require('./features/player-viewer-count.js'),
     ChatReplay = require('./features/chat-replay');
 
 var chatFunctions = function() {
@@ -183,6 +191,7 @@ var main = function() {
                             channelReformat();
                             hostButtonBelowVideo();
                             betterViewerList();
+                            playerViewerCount();
                             if (
                                 App.__container__.lookup('controller:channel').get('isTheatreMode') === false &&
                                 bttv.settings.get('autoTheatreMode') === true
@@ -193,11 +202,22 @@ var main = function() {
                             setTimeout(function() {
                                 window.dispatchEvent(new Event('resize'));
                             }, 3000);
+
+                            // chat
+                            bttv.chat.store.isLoaded = false;
+                            chatFunctions();
                         }
                     });
                     break;
                 case 'vod':
                     // disconnect old chat replay watcher, spawn new
+                    if (
+                        App.__container__.lookup('controller:vod').get('isTheatreMode') === false &&
+                        bttv.settings.get('autoTheatreMode') === true
+                    ) {
+                        enableTheatreMode();
+                    }
+
                     try {
                         chatReplay.disconnect();
                     } catch (e) {}
@@ -218,10 +238,12 @@ var main = function() {
                 case 'profile.index':
                     waitForLoad(function(ready) {
                         if (ready) {
-                            vars.emotesLoaded = false;
-                            chatFunctions();
                             channelReformat();
                             window.dispatchEvent(new Event('resize'));
+
+                            // chat
+                            bttv.chat.store.isLoaded = false;
+                            chatFunctions();
                         }
                     });
                     break;
@@ -238,17 +260,8 @@ var main = function() {
             before: function() {
                 renderingCounter++;
             },
-            after: function(name, ts, payload) {
+            after: function() {
                 renderingCounter--;
-
-                if (payload.template === 'chat/chat') {
-                    waitForLoad(function(ready) {
-                        if (ready) {
-                            bttv.chat.store.isLoaded = false;
-                            chatFunctions();
-                        }
-                    });
-                }
             }
         });
     }
@@ -291,6 +304,9 @@ var main = function() {
         hostButtonBelowVideo();
         betterViewerList();
 
+        // Loads global BTTV emotes (if not loaded)
+        overrideEmotes();
+
         if (bttv.settings.get('chatImagePreview') === true) {
             enableImagePreview();
         }
@@ -315,10 +331,6 @@ var main = function() {
 
             debug.log('BTTV v' + bttv.info.versionString());
             debug.log('CALL init ' + document.URL);
-
-            if (/\?bttvMassUnban=true/.test(window.location)) {
-                return new MassUnbanPopup();
-            }
 
             initialFuncs();
             setTimeout(delayedFuncs, 3000);
@@ -346,6 +358,38 @@ if (document.URL.indexOf('receiver.html') !== -1 || document.URL.indexOf('cbs_ad
 
 if (location.pathname.match(/^\/(.*)\/popout/)) {
     debug.log('Popout player detected.');
+    return;
+}
+
+if (location.hostname === 'clips.twitch.tv') {
+    var clipDark = document.createElement('link');
+    clipDark.setAttribute('href', 'https://cdn.betterttv.net/css/betterttv-clips-dark.css');
+    clipDark.setAttribute('type', 'text/css');
+    clipDark.setAttribute('rel', 'stylesheet');
+    clipDark.setAttribute('id', 'clipDark');
+    document.body.appendChild(clipDark);
+
+    var toggleButton = document.createElement('a');
+    toggleButton.classList.add('darkToggleButton');
+    toggleButton.innerText = 'Toggle Dark Mode';
+    toggleButton.onclick = function() {
+        var isDark = bttv.storage.getObject('bttvClipsDark');
+        if (typeof isDark !== 'boolean') isDark = false;
+
+        bttv.storage.putObject('bttvClipsDark', !isDark);
+
+        if (isDark) {
+            document.body.classList.remove('dark');
+        } else {
+            document.body.classList.add('dark');
+        }
+    };
+    document.body.appendChild(toggleButton);
+
+    if (bttv.storage.getObject('bttvClipsDark') === true) {
+        document.body.classList.add('dark');
+    }
+
     return;
 }
 

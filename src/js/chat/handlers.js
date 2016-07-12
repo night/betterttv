@@ -5,6 +5,7 @@ var vars = require('../vars'),
     helpers = require('./helpers'),
     templates = require('./templates'),
     rooms = require('./rooms'),
+    throttle = require('lodash.throttle'),
     pinnedHighlights = require('../features/pinned-highlights'),
     embeddedPolling = require('../features/embedded-polling'),
     channelState = require('../features/channel-state'),
@@ -38,6 +39,13 @@ exports.commands = function(input) {
         }).fail(function() {
             helpers.serverMessage('Could not fetch chatter count.', true);
         });
+    } else if (command === '/followed') {
+        if (vars.userData.isLoggedIn) {
+            var chan = sentence.length > 1 ? sentence[1] : bttv.getChannel();
+            helpers.followDate(vars.userData.name, chan);
+        } else {
+            helpers.serverMessage('You need to be logged in to use this command', true);
+        }
     } else if (command === '/followers') {
         bttv.TwitchAPI.get('channels/' + bttv.getChannel() + '/follows').done(function(channel) {
             helpers.serverMessage('Current Followers: ' + Twitch.display.commatize(channel._total), true);
@@ -113,6 +121,7 @@ exports.commands = function(input) {
         helpers.serverMessage('BetterTTV Chat Commands:');
         helpers.serverMessage('/b [username] -- Shortcut for /ban');
         helpers.serverMessage('/chatters -- Tells you how many users are currently in chat');
+        helpers.serverMessage('/followed -- Tells you for how long you have been following a channel');
         helpers.serverMessage('/followers -- Retrieves the number of followers for the channel');
         helpers.serverMessage('/join -- Joins the channel (deactivates anon chat mode)');
         helpers.serverMessage('/linehistory on/off -- Toggles the chat field history (pressing up/down arrow in textbox)');
@@ -160,7 +169,7 @@ exports.countUnreadMessages = function() {
     controller.set('notificationsCount', unreadChannels);
 };
 
-exports.shiftQueue = function() {
+var shiftQueue = exports.shiftQueue = throttle(function() {
     if (!tmi() || !tmi().get('id')) return;
     var id = tmi().get('id');
     if (id !== store.currentRoom && tmi().get('name')) {
@@ -192,7 +201,7 @@ exports.shiftQueue = function() {
         store.__messageQueue = [];
     }
     helpers.scrollChat();
-};
+}, 250, { trailing: true });
 
 exports.moderationCard = function(user, $event) {
     var makeCard = require('../features/make-card');
@@ -226,12 +235,15 @@ exports.labelsChanged = function(user) {
     }
 };
 
-exports.clearChat = function(user, info) {
+exports.clearChat = function(bttvRoom, user, info) {
     var trackTimeouts = store.trackTimeouts;
 
     // Remove chat image preview if it exists.
     // We really shouldn't have to place this here, but since we don't emit events...
     $('#chat_preview').remove();
+
+    // clearchat is from an inactive room
+    if (!bttvRoom.active()) return;
 
     if (!user) {
         helpers.serverMessage('Chat was cleared by a moderator (Prevented by BetterTTV)', true);
@@ -251,7 +263,7 @@ exports.clearChat = function(user, info) {
 
         $chatLines = $(printedChatLines.concat(queuedLines));
 
-        if (!$chatLines.length && !isTarget && !isMod) return;
+        if (!$chatLines.length && !isTarget) return;
 
         if (bttv.settings.get('hideDeletedMessages') === true) {
             $chatLines.each(function() {
@@ -271,7 +283,7 @@ exports.clearChat = function(user, info) {
                     var $message = $(this).find('.message');
 
                     $message.addClass('timed-out');
-                    $message.html('<span style="color: #999">&lt;message deleted&gt;</span>').off('click').on('click', function() {
+                    $message.html('<span class="deleted">&lt;message deleted&gt;</span>').off('click').on('click', function() {
                         $(this).replaceWith(templates.message(user, decodeURIComponent($(this).data('raw'))));
                     });
                 });
@@ -286,7 +298,7 @@ exports.clearChat = function(user, info) {
                         $(this).css('opacity', '0.1');
                     });
                     $message.addClass('timed-out');
-                    $message.html('<span style="color: #999">' + $message.html() + '</span>');
+                    $message.html('<span class="deleted">' + $message.html() + '</span>');
                 });
             }
 
@@ -358,11 +370,25 @@ var privmsg = exports.privmsg = function(channel, data) {
         store.displayNames[data.from] = data.tags['display-name'];
     }
 
+    if (data.tags && data.tags['msg-id'] === 'resub') {
+        message = templates.privmsg({
+            nickname: 'jtv',
+            message: data.tags['system-msg'],
+            time: data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
+            badges: [{type: 'subscriber', name: '', description: 'Channel Subscriber'}],
+            color: '#555'
+        }, {server: true, notice: true});
+
+        store.__messageQueue.push($(message));
+    }
+
     try {
         tmi().trackLatency(data);
     } catch (e) {
         debug.log('Error sending tracking data to Twitch');
     }
+
+    if (!data.message || !data.message.length) return;
 
     if (data.message.substr(0, 5) === ':act ') return;
 
@@ -375,24 +401,23 @@ var privmsg = exports.privmsg = function(channel, data) {
         }
 
         data.style = 'admin';
-        message = templates.privmsg(
-            false,
-            data.style === 'action' ? true : false,
-            data.style === 'admin' ? true : false,
-            vars.userData.isLoggedIn ? helpers.isModerator(vars.userData.name) : false,
-            {
-                message: data.message,
-                time: data.date ? data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2') : '',
-                nickname: data.from || 'jtv',
-                sender: data.from,
-                badges: data.badges || (data.from === 'twitchnotify' ? [{
-                    type: 'subscriber',
-                    name: '',
-                    description: 'Channel Subscriber'
-                }] : []),
-                color: '#555'
-            }
-        );
+        message = templates.privmsg({
+            message: data.message,
+            time: data.date ? data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2') : '',
+            nickname: data.from || 'jtv',
+            sender: data.from,
+            badges: data.badges || (data.from === 'twitchnotify' ? [{
+                type: 'subscriber',
+                name: '',
+                description: 'Channel Subscriber'
+            }] : []),
+            color: '#555'
+        }, {
+            action: data.style === 'action' ? true : false,
+            server: data.style === 'admin' ? true : false,
+            isMod: vars.userData.isLoggedIn ? helpers.isModerator(vars.userData.name) : false,
+            notice: data.message.indexOf('subscribed!') > 0
+        });
 
         $('.ember-chat .chat-messages .tse-content .chat-lines').append(message);
         helpers.scrollChat();
@@ -430,7 +455,7 @@ var privmsg = exports.privmsg = function(channel, data) {
     }
 
     var badges = helpers.getBadges(data.from);
-    var bttvBadges = helpers.assignBadges(badges || [], data);
+    var bttvBadges = helpers.assignBadges(badges || {}, data);
 
     var from = data.from;
     var sender = data.from;
@@ -472,21 +497,22 @@ var privmsg = exports.privmsg = function(channel, data) {
         }
     }
 
-    message = templates.privmsg(
-        messageHighlighted,
-        data.style === 'action' ? true : false,
-        data.style === 'admin' ? true : false,
-        vars.userData.isLoggedIn ? (helpers.isModerator(vars.userData.name) && (!helpers.isModerator(sender) || (vars.userData.name === channel && vars.userData.name !== sender))) : false,
-        {
-            message: data.message,
-            time: data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
-            nickname: from,
-            sender: sender,
-            badges: bttvBadges,
-            color: data.color,
-            emotes: data.tags.emotes
-        }
-    );
+    message = templates.privmsg({
+        message: data.message,
+        time: data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
+        nickname: from,
+        sender: sender,
+        badges: bttvBadges,
+        color: data.color,
+        bits: data.tags.bits && parseInt(data.tags.bits, 10),
+        emotes: data.tags.emotes
+    }, {
+        highlight: messageHighlighted,
+        action: data.style === 'action' ? true : false,
+        server: data.style === 'admin' ? true : false,
+        isMod: vars.userData.isLoggedIn ? (helpers.isModerator(vars.userData.name) && (!helpers.isModerator(sender) || (vars.userData.name === channel && vars.userData.name !== sender))) : false,
+        notice: data.tags && data.tags['msg-id'] === 'resub'
+    });
 
     store.__messageQueue.push($(message));
 };
@@ -496,22 +522,28 @@ exports.onPrivmsg = function(channel, data) {
         rooms.getRoom(channel).queueMessage(data);
         return;
     }
-    if (!data.message || !data.message.length) return;
     if (!tmi() || !tmi().tmiRoom) return;
     try {
         if (data.style === 'whisper') {
             store.chatters[data.from] = {lastWhisper: Date.now()};
             if (bttv.settings.get('disableWhispers') === true) return;
             if (data.from !== vars.userData.name) {
-                audibleFeedback();
-                if (bttv.settings.get('desktopNotifications') === true && bttv.chat.store.activeView === false) bttv.notify('You received a whisper from ' + ((data.tags && data.tags['display-name']) || data.from));
+                if (bttv.chat.store.activeView === false) {
+                    if (bttv.settings.get('highlightFeedback') === true) {
+                        audibleFeedback.play();
+                    }
+                    if (bttv.settings.get('desktopNotifications') === true) {
+                        bttv.notify('You received a whisper from ' + ((data.tags && data.tags['display-name']) || data.from));
+                    }
+                }
             }
         }
         privmsg(channel, data);
+        shiftQueue();
     } catch (e) {
         if (store.__reportedErrors.indexOf(e.message) !== -1) return;
         store.__reportedErrors.push(e.message);
-        console.log(e);
+        debug.log(e);
         var error = {
             stack: e.stack,
             message: e.message

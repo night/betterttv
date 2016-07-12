@@ -12,7 +12,7 @@ module.exports = function handleBackground(tiled) {
     if (!window.App || !App.__container__.lookup('controller:Channel') || !App.__container__.lookup('controller:Channel').get('content.panels')) return;
     App.__container__.lookup('controller:Channel').get('content.panels.content').forEach(function(panel) {
         var url = panel.get('data').link;
-        var safeRegex = /^https?:\/\/cdn.betterttv.net\//;
+        var safeRegex = /^https?:\/\/cdn.betterttv.net\/special\/[a-zA-Z0-9-_]+\.(?:png|jpg|jpeg|gif)/;
         if (url && url.indexOf('#BTTV#') !== -1) {
             var options = {};
             var queryString = url.split('#BTTV#')[1];

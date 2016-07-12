@@ -16,7 +16,10 @@ a.js-follow.follow.button.primary.action:hover,
 #hostmode .channel-actions .follow-button a:hover,
 .chat-room .moderation-card .mod-card-follow:hover,
 .conversation-window.has-unread > .conversation-header,
-.conversations-list .notification-jewel { 
+.conversations-list .notification-jewel,
+.conversation-window.has-focus .conversation-input-actions .button,
+.player-video__submit,
+.button.subscribe-button { 
     background: linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
     background: -o-linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
     background: -moz-linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
@@ -113,10 +116,6 @@ a {
     color: black;
 }
 
-.chat-menu.dropmenu a {
-    color: black;
-}
-
 div#header_actions span, div#header_actions a {
     color: black;
 }
@@ -128,7 +127,7 @@ div#header_actions a.primary span {
 #main_col .stats-and-actions #is-subscribed, .button.unfollow, .button.unfollow:hover {
     color: #000 !important;
 }
-ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .ember-chat .chat-room-list .room p.room-title, .dropmenu.menu-like .dropmenu_action  {
+.directory_header .nav li>a, ul.tabs_fake li>a, .ember-chat .chat-room-list .room p.room-title, .dropmenu.menu-like .dropmenu_action  {
     color: #000;
 }
 .button.glyph svg path, .follow-button .glyph.follow svg path, .button.glyph-only svg path, .follow-button .glyph-only.follow svg path {
@@ -161,4 +160,10 @@ ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .ember-chat .chat-
 
 .chat_line a, .ember-chat .chat-line a {
     color: #005596;
+}
+
+.chat-buttons-container .button.js-chat-buttons__submit {
+    background: linear-gradient(bottom, rgb(47,88,185) 31%, rgb(50,108,211) 80%);
+    background: -moz-linear-gradient(bottom, rgb(47,88,185) 31%, rgb(50,108,211) 80%);
+    background: -webkit-linear-gradient(bottom, rgb(47,88,185) 31%, rgb(50,108,211) 80%);
 }

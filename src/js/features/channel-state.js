@@ -3,7 +3,7 @@ var template = require('../../templates/channel-state');
 
 var stateContainer = '#bttv-channel-state-contain';
 var chatHeader = '.chat-container .chat-header:first';
-var chatButton = '.chat-interface .chat-buttons-container .button.primary.float-right';
+var chatButton = '.chat-interface .chat-buttons-container .js-chat-buttons__submit';
 
 var displaySeconds = function(s) {
     var date = new Date(0);
@@ -25,7 +25,7 @@ var displaySeconds = function(s) {
 var resetCountDown = function() {
     if (bttv.chat.store.chatCountDown) clearInterval(bttv.chat.store.chatCountDown);
     bttv.chat.store.chatCountDown = false;
-    $(chatButton).find('span').text('Chat');
+    $(chatButton).text('Chat');
 };
 
 var initiateCountDown = function(length) {
@@ -40,7 +40,7 @@ var initiateCountDown = function(length) {
             return resetCountDown();
         }
 
-        $(chatButton).find('span').text('Chat in ' + displaySeconds(Math.ceil(remainingTime / 1000)));
+        $(chatButton).text('Chat in ' + displaySeconds(Math.ceil(remainingTime / 1000)));
     }, 500);
 };
 
@@ -108,6 +108,17 @@ module.exports = function(event) {
                     $stateContainer.find('.subs-only').hide();
                 }
             }
+
+            if ('emote-only' in event.tags) {
+                enabled = event.tags['emote-only'];
+
+                // Twitch isn't properly parsing this.. yet? #fail
+                if ([true, '1'].indexOf(enabled) > -1) {
+                    $stateContainer.find('.emote-only').show();
+                } else {
+                    $stateContainer.find('.emote-only').hide();
+                }
+            }
             break;
         case 'outgoing_message':
             if (!vars.userData.isLoggedIn || bttv.chat.helpers.isModerator(vars.userData.name)) return;
@@ -124,7 +135,7 @@ module.exports = function(event) {
             var msg = event.tags['msg-id'];
 
             if (msg === 'msg_slowmode' || msg === 'msg_timedout') {
-                var matches = /([0-9]+)/.exec(event.message);
+                var matches = /\s([0-9]+)/.exec(event.message);
                 if (!matches) return;
 
                 var seconds = parseInt(matches[1], 10);

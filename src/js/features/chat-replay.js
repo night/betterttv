@@ -1,6 +1,6 @@
 var chatHelpers = require('../chat/helpers');
-var chatStore = require('../chat/store');
 var chatTemplates = require('../chat/templates');
+var chatHandlers = require('../chat/handlers');
 
 function ChatReplay() {
     this._waitForLoad = setInterval(function() {
@@ -40,6 +40,16 @@ ChatReplay.prototype.connect = function() {
     }.bind(this));
 
     this.watcher.observe($('body')[0], { childList: true, subtree: true });
+
+    $('body').off('click', '.chat-line .from, .chat-line .user-mention').on('click', '.chat-line .from, .chat-line .user-mention', function() {
+        var $element = $(this);
+        var sender = $element.text().toLowerCase();
+        if ($element.hasClass('user-mention')) {
+            sender = sender.substring(1);
+        }
+
+        chatHandlers.moderationCard(sender, $element);
+    });
 };
 
 ChatReplay.prototype.disconnect = function() {
@@ -50,7 +60,11 @@ ChatReplay.prototype.disconnect = function() {
 ChatReplay.prototype.messageParser = function(element) {
     var $element = $(element);
 
-    if (Twitch.storage.getObject('chatSettings').showTimestamps === true) $element.addClass('show-timestamp');
+    if (Twitch.storage.getObject('chatSettings').showTimestamps === true) {
+        $element.addClass('show-timestamp');
+        var modIcons = $element.find('.mod-icons');
+        $(element).find('.timestamp').insertAfter(modIcons);
+    }
 
     if ($element.find('.deleted').length) {
         $element.remove();
@@ -69,36 +83,7 @@ ChatReplay.prototype.messageParser = function(element) {
 
     if ($message.attr('style')) $message.css('color', newColor);
 
-    message.innerHTML = this.emoticonize(message.innerHTML);
-};
-
-ChatReplay.prototype.emoticonize = function(message) {
-    if (bttv.settings.get('bttvEmotes') === false) return message;
-
-    var parts = message.split(' ');
-    var test;
-    var emote;
-
-    for (var i = 0; i < parts.length; i++) {
-        if (parts[i].length > 1) parts[i] = parts[i].replace(/\n/, '');
-        test = parts[i].replace(/(^[~!@#$%\^&\*\(\)]+|[~!@#$%\^&\*\(\)]+$)/g, '');
-        emote = null;
-
-        if (chatStore.bttvEmotes.hasOwnProperty(parts[i])) {
-            emote = chatStore.bttvEmotes[parts[i]];
-        } else if (chatStore.bttvEmotes.hasOwnProperty(test)) {
-            emote = chatStore.bttvEmotes[test];
-        }
-        if (
-            emote &&
-            emote.urlTemplate &&
-            (emote.imageType === 'png' || (emote.imageType === 'gif' && bttv.settings.get('bttvGIFEmotes') === true))
-        ) {
-            parts[i] = chatTemplates.bttvEmoticonize(parts[i], emote);
-            changed = true;
-        }
-    }
-    return parts.join(' ');
+    message.innerHTML = chatTemplates.bttvElementTokenize($name[0], message);
 };
 
 module.exports = ChatReplay;

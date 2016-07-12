@@ -27,6 +27,10 @@ body.channel_new {
     padding-right: 8px !important;
 }
 
+.chat-line .message .deleted {
+    color: #6441a4;
+}
+
 #metagame a {
     color: white !important;
 }
@@ -52,7 +56,7 @@ ul.tabs li.selected a {
 .ember-chat .chat-messages {
     top: 0px;
     bottom: 114px;
-    background-color: #f2f2f2; /* hide group chat feature depends on having a background */
+    background-color: #efeef1; /* hide group chat feature depends on having a background */
 }
 
 .loading-mask {
@@ -841,10 +845,6 @@ input, textarea, select {
     cursor: move !important;
 }
 
-#bvl-panel a.button {
-    top: 5px;
-}
-
 #bvl-panel a.button.disable {
     opacity: 0.2;
     cursor: not-allowed;
@@ -853,6 +853,13 @@ input, textarea, select {
 #bvl-panel .status {
     margin-top: 8px;
     text-align: center;
+}
+
+#bvl-panel .viewer-count {
+    text-align: center;
+    font-size: 8pt;
+    margin: -3px;
+    color: #888;
 }
 
 #bvl-panel .filter {
@@ -1200,6 +1207,8 @@ body#chat #speak {
     border: 0;
     margin: 2px 0px;
     height: 30px;
+
+    vertical-align: middle;
 }
 
 .ember-chat .moderation-card button img {
@@ -1258,7 +1267,12 @@ body#chat #speak {
 
 /* Fix Group Chat Pane Height */
 .ember-chat .chat-room-list {
-    height: calc(100% - 60px);
+    height: calc(100% - 40px);
+}
+
+/* Fix chat rooms leave button */
+.ember-chat .chat-room-list .room .leave-chat svg {
+    box-sizing: content-box;
 }
 
 /* Canvas Channel Backgrounds */
@@ -1349,6 +1363,24 @@ body#chat #speak {
     height: 115px !important;
 }
 
+/* emoticon selector scrollbar in chrome */
+.ember-chat .chat-interface .emoticon-selector ::-webkit-scrollbar {
+  width: 6px;
+}
+
+.ember-chat .chat-interface  .emoticon-selector ::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.7);
+  border-radius: 7px;
+}
+
+.ember-chat .chat-interface  .emoticon-selector ::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0);
+}
+
+.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box {
+    padding: 0 3px;
+}
+
 .ember-chat .chat-interface .chat-buttons-container .chat-option-buttons {
     margin-left: 8px;
 }
@@ -1374,13 +1406,14 @@ body#chat #speak {
     padding-top: 10px;
 }
 
-.ember-chat .chat-header .button.left {
-    top: 5px;
-    left: 10px;
+.ember-chat .chat-header .chat-header__button--left figure {
+    top: -5px;
+    left: -11px;
 }
 
-.ember-chat .chat-header .button.right {
-    right: 10px;
+.ember-chat .chat-header .chat-header__button--right figure {
+    top: -5px;
+    right: -11px;
 }
 
 .ember-chat .chat-menu-button-container {
@@ -1500,7 +1533,7 @@ body.channel_new.columns.ember-application {
 }
 
 .ember-view.ember-chat.roomMode {
-    background: #f2f2f2 !important;
+    background: #efeef1 !important;
 }
 
 /* Remove Twitch's Dark Mode toggle */
@@ -1519,7 +1552,7 @@ body.channel_new.columns.ember-application {
     right: 0px;
     width: 100%;
 
-    background-color: #f2f2f2;
+    background-color: #efeef1;
     box-shadow: 0px 8px 8px -5px #000;
 
     z-index: 99998;
@@ -1794,9 +1827,7 @@ body.channel_new.columns.ember-application {
 }
 
 
-#bttv-channel-state-contain .slow,
-#bttv-channel-state-contain .subs-only,
-#bttv-channel-state-contain .r9k {
+#bttv-channel-state-contain div {
     float: right;
     width: 26px;
     height: 22px;
@@ -1884,12 +1915,62 @@ body.channel_new.columns.ember-application {
     bottom: 5px;
 }
 
-.chatReplay .chat-messages .show-timestamp .timestamp { 
-    display: inline; 
+.chatReplay .chat-messages .show-timestamp .timestamp {
+    display: inline;
+    font-size: 11px;
+}
+
+.chatReplay .chat-messages .badges {
+    margin-bottom: -5px;
+}
+
+.chatReplay .chat-messages .badges .badge-img {
+    border-radius: 2px;
+}
+
+.chatReplay .chat-messages .chat-line .from {
+    cursor: pointer !important;
 }
 
 /* host & playlist banner fix */
 .player-column .brick {
-	border-left: 5px solid #6441a5 !important;
-	box-shadow: 0px 0 0 #6441a4 inset !important;
+    border-left: 5px solid #6441a5 !important;
+    box-shadow: 0px 0 0 #6441a4 inset !important;
+}
+
+/* user chat mentions */
+.chat-messages .chat-line .user-mention {
+    font-weight: 700;
+    padding-right: 0px!important;
+}
+
+.chat-messages .chat-line .user-mention:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#emote-menu-button {
+    width: 15px;
+    height: 30px;
+    background-color: transparent;
+}
+
+/* bits card */
+
+.bits-card {
+    width: 100%;
+}
+
+/* chat notice style */
+.chat-lines .notice {
+    background: #D8BFD8 !important;
+}
+
+/* Only show player viewer count in theatre */
+.player-viewer-count {
+    display: none;
+}
+
+.app-main.theatre .player-viewer-count {
+    display: inline-block;
 }

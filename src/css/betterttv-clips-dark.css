@@ -1,0 +1,60 @@
+/* darken most things */
+body.dark {
+    background: rgb(30,30,30);
+    color: #d3d3d3;
+}
+
+/* dark links */
+.dark a {
+    color: #888;
+}
+
+/* remove shadow on player */
+.dark .clip-wrap {
+    box-shadow: none;
+}
+
+/* black player back instead of purple */
+.dark .video-loading  {
+    background: #000;
+}
+
+/* text color that is not covered by body */
+.dark .curator {
+    color: #d3d3d3;
+}
+
+/* invert Twitch logo */
+.dark .svg-logo_twitch {
+    fill: #d3d3d3;
+}
+
+/* button used to toggle dark mode */
+.darkToggleButton {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+
+    padding: 6px 11px;
+    border-radius: 3px;
+    background: #444;
+    color: #fff;
+}
+
+.darkToggleButton:hover {
+    background: #555;
+    color: #fff;
+    text-decoration: none;
+
+    cursor: pointer;
+}
+
+.dark .darkToggleButton {
+    background: #282828;
+    color: #888;
+}
+
+.dark .darkToggleButton:hover {
+    background: #333;
+    color: #888;
+}

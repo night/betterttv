@@ -61,7 +61,7 @@ var getRoom = exports.getRoom = function(name) {
             delete tmi().tmiRoom._events.message;
             delete tmi().tmiRoom._events.clearchat;
             tmi().tmiRoom.on('message', getRoom(name).chatHandler);
-            tmi().tmiRoom.on('clearchat', handlers.clearChat);
+            tmi().tmiRoom.on('clearchat', handlers.clearChat.bind(this, getRoom(name)));
         }
     }
     return store.__rooms[name];

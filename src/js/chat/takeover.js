@@ -75,7 +75,7 @@ var takeover = module.exports = function() {
     // Handle Channel Chat
     rooms.newRoom(bttv.getChannel());
     tmi.tmiRoom.on('message', rooms.getRoom(bttv.getChannel()).chatHandler);
-    tmi.tmiRoom.on('clearchat', handlers.clearChat);
+    tmi.tmiRoom.on('clearchat', handlers.clearChat.bind(this, rooms.getRoom(bttv.getChannel())));
     tmi.tmiRoom.on('notice', handlers.notice);
     tmi.tmiRoom.on('roomstate', helpers.parseRoomState);
     if (tmi.channel) tmi.set('name', tmi.channel.get('display_name'));
@@ -92,7 +92,8 @@ var takeover = module.exports = function() {
         tags: {
             'subs-only': tmi.get('subsOnly'),
             slow: tmi.get('slow'),
-            r9k: tmi.get('r9k')
+            r9k: tmi.get('r9k'),
+            'emote-only': tmi.get('emoteOnly')
         }
     });
     vars.localSubsOnly = false;
@@ -104,15 +105,18 @@ var takeover = module.exports = function() {
         privateRooms.forEach(function(room) {
             rooms.newRoom(room.get('id'));
             room.tmiRoom.on('message', rooms.getRoom(room.get('id')).chatHandler);
-            room.tmiRoom.on('clearchat', handlers.clearChat);
+            room.tmiRoom.on('clearchat', handlers.clearChat.bind(this, rooms.getRoom(room.get('id'))));
         });
     }
+
+    // Load Twitch badges
+    helpers.loadTwitchBadges();
 
     // Load BTTV channel emotes/bots
     helpers.loadBTTVChannelData();
 
     // Load Volunteer Badges
-    helpers.loadBadges();
+    helpers.loadBTTVBadges();
     bttv.ws.broadcastMe();
 
     // Load Chat Settings
@@ -120,11 +124,14 @@ var takeover = module.exports = function() {
 
     // Load spammer list
     $.getJSON('https://api.betterttv.net/2/spammers').done(function(data) {
-        store.spammers = data.users;
+        store.spammers = [];
+        for (var i = 0; i < data.users.length; i++) {
+            store.spammers.push(data.users[i].name);
+        }
     });
     $('body').off('click', '.chat-line .message.spam').on('click', '.chat-line .message.spam', function() {
         var user = $(this).parent().data('sender');
-        $(this).replaceWith(templates.message(user, decodeURIComponent($(this).data('raw')), null, null, true));
+        $(this).replaceWith(templates.message(user, decodeURIComponent($(this).data('raw')), {forced: true}));
     });
 
     // Hover over links
@@ -189,27 +196,39 @@ var takeover = module.exports = function() {
         helpers.unban($(this).parents('.chat-line').data('sender'));
         $(this).parent().children('.ban').show();
         $(this).parent().children('.unban').hide();
-    }).off('click', '.chat-line .badges .turbo, .chat-line .badges .subscriber').on('click', '.chat-line .badges .turbo, .chat-line .badges .subscriber', function() {
-        if ($(this).hasClass('turbo')) {
+    }).off('click', '.chat-line .badges .badge').on('click', '.chat-line .badges .badge', function() {
+        var $el = $(this);
+        var action = $el.data('click-action');
+        if (action === 'turbo') {
             window.open('/products/turbo?ref=chat_badge', '_blank');
-        } else if ($(this).hasClass('subscriber')) {
+        } else if (action === 'subscribe_to_channel') {
             window.open(Twitch.url.subscribe(bttv.getChannel(), 'in_chat_subscriber_link'), '_blank');
+        } else if (action === 'visit_url') {
+            // Kinda hacky way, also can't currently test
+            var type = this.classList[0].split('-');
+            var badge = store.__twitchBadgeTypes[type[1]].versions[type[2]];
+            window.open(badge.click_url, '_blank');
         }
     });
 
     // Make names clickable
     var clickCounter = 0;
-    $('body').off('click', '.chat-line .from').on('click', '.chat-line .from', function(e) {
+    $('body').off('click', '.chat-line .from, .chat-line .user-mention').on('click', '.chat-line .from, .chat-line .user-mention', function(e) {
         if (e.shiftKey) return;
 
         var $element = $(this);
-        var sender = ($element.data('sender') || $element.parent().data('sender')).toString();
+        var sender;
+        if ($element.hasClass('user-mention')) {
+            sender = $element.text().toLowerCase().substring(1);
+        } else {
+            sender = ($element.data('sender') || $element.parent().data('sender')).toString();
+        }
 
         if (clickCounter > 0) return clickCounter++;
 
         setTimeout(function() {
             if (clickCounter >= 2 && bttv.settings.get('dblClickAutoComplete') === true) {
-                $('.ember-chat .chat-interface').find('textarea').val(helpers.lookupDisplayName(sender, false) + ', ');
+                $('.ember-chat .chat-interface').find('textarea').val('@' + helpers.lookupDisplayName(sender, false) + ', ');
             } else {
                 handlers.moderationCard(sender, $element);
             }
@@ -264,7 +283,7 @@ var takeover = module.exports = function() {
 
     var $chatInterface = $('.ember-chat .chat-interface');
     var $chatInput = $chatInterface.find('textarea');
-    var $chatSend = $chatInterface.find('.button.primary.float-right');
+    var $chatSend = $chatInterface.find('.js-chat-buttons__submit');
 
     // Limit chat input to 500 characters
     $chatInput.attr('maxlength', '500');
@@ -333,7 +352,7 @@ var takeover = module.exports = function() {
 
         helpers.chatLineHistory($chatInput, e);
     });
-    $chatSend.on('click', function() {
+    $chatSend.on('click', function(e) {
         var val = $chatInput.val().trim(),
             bttvCommand = false;
         if (!val.length) return;
@@ -344,6 +363,8 @@ var takeover = module.exports = function() {
 
         if (!bttvCommand) {
             helpers.sendMessage(val);
+        } else {
+            e.stopPropagation();
         }
 
         if (bttv.settings.get('chatLineHistory') === true) {
@@ -356,16 +377,20 @@ var takeover = module.exports = function() {
         $chatInput.val('');
     });
 
+    // watch for current room changes (swap between group chat + channel chat)
+    bttv.getChatController().removeObserver('currentRoom', handlers.shiftQueue);
+    bttv.getChatController().addObserver('currentRoom', handlers.shiftQueue);
+
     $('.ember-chat .chat-messages .chat-line').remove();
     $.getJSON('https://api.betterttv.net/2/channels/' + encodeURIComponent(bttv.getChannel()) + '/history').done(function(data) {
         if (data.messages.length) {
             data.messages.forEach(function(message) {
-                var badges = [];
-                if (message.user.name === message.channel.name) badges.push('owner');
+                var badges = {};
+                if (message.user.name === message.channel.name) badges.broadcaster = '1';
 
                 if (bttv.chat.helpers.isIgnored(message.user.name)) return;
 
-                message = bttv.chat.templates.privmsg(false, false, false, false, {
+                message = bttv.chat.templates.privmsg({
                     message: message.message,
                     time: (new Date(message.date.replace('T', ' ').replace(/\.[0-9]+Z/, ' GMT'))).toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
                     nickname: message.user.displayName,
@@ -391,9 +416,6 @@ var takeover = module.exports = function() {
     store.chatters = {};
     store.chatters[bttv.getChannel()] = {lastWhisper: 0};
 
-    // When messages come in too fast, things get laggy
-    if (!store.__messageTimer) store.__messageTimer = setInterval(handlers.shiftQueue, 250);
-
     // Active Tab monitoring - Useful for knowing if a user is 'watching' chat
     $(window).off('blur focus').on('blur focus', function(e) {
         var prevType = $(this).data('prevType');
@@ -402,7 +424,6 @@ var takeover = module.exports = function() {
             if (e.type === 'blur') {
                 store.activeView = false;
             } else if (e.type === 'focus') {
-                $('.chat-interface textarea').focus();
                 store.activeView = true;
             }
         }

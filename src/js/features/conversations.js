@@ -1,9 +1,10 @@
-var chatStore = require('../chat/store');
+var audibleFeedback = require('../features/audible-feedback');
 var chatTemplates = require('../chat/templates');
 var chatHelpers = require('../chat/helpers');
 var colors = require('../helpers/colors');
 var keyCodes = require('../keycodes');
 var store = require('../chat/store');
+var vars = require('../vars');
 
 var conversationsClass = '.conversations-content';
 
@@ -27,6 +28,16 @@ function Conversations(timeout) {
             return new Conversations(2 * timeout);
         }, 2 * timeout);
         return;
+    }
+
+    if (window.App && App.__container__.lookup('service:whispers-shim')) {
+        var whisperShim = App.__container__.lookup('service:whispers-shim');
+        whisperShim.on('whisper', _self.onWhisper);
+
+        // Called every time new messages are marked as read
+        whisperShim.on('thread', function(data) {
+            bttv.ws.joinConversation(data.id);
+        });
     }
 
     var watcher = new MutationObserver(function(mutations) {
@@ -53,6 +64,16 @@ function Conversations(timeout) {
     watcher.observe($conversations[0], { childList: true, subtree: true, attributes: true, attributeFilter: ['class']});
 }
 
+Conversations.prototype.onWhisper = function(data) {
+    if (bttv.settings.get('highlightFeedback') === true && bttv.chat.store.activeView === false) {
+        var from = data && data.tags && data.tags.login;
+        if (vars.userData.isLoggedIn && vars.userData.name !== from) {
+            audibleFeedback.play();
+        }
+    }
+};
+
+
 Conversations.prototype.messageParser = function(element) {
     var from = element.querySelector('.from');
     var message = element.querySelector('.message');
@@ -65,7 +86,11 @@ Conversations.prototype.messageParser = function(element) {
     $element.addClass('bttv-parsed-message');
 
     from.style.color = this.usernameRecolor(from.style.color);
-    // message.innerHTML = this.emoticonize(message.innerHTML);
+
+    if ($element.hasClass('conversation-chat-line') && !$element.hasClass('conversation-preview-line')) {
+        $element.append(chatTemplates.bttvElementTokenize(from, message));
+        message.style.display = 'none';
+    }
 
     this.scrollDownParent(element);
 };
@@ -77,35 +102,6 @@ Conversations.prototype.scrollDownParent = function(element) {
         if (!container) return;
         container.scrollTop = container.scrollHeight;
     }, 500);
-};
-
-Conversations.prototype.emoticonize = function(message) {
-    if (bttv.settings.get('bttvEmotes') === false) return message;
-
-    var parts = message.split(' ');
-    var test;
-    var emote;
-
-    for (var i = 0; i < parts.length; i++) {
-        test = parts[i].replace(/(^[~!@#$%\^&\*\(\)]+|[~!@#$%\^&\*\(\)]+$)/g, '');
-        emote = null;
-
-        if (chatStore.bttvEmotes.hasOwnProperty(parts[i])) {
-            emote = chatStore.bttvEmotes[parts[i]];
-        } else if (chatStore.bttvEmotes.hasOwnProperty(test)) {
-            emote = chatStore.bttvEmotes[test];
-        }
-
-        if (
-            emote &&
-            emote.urlTemplate &&
-            (emote.imageType === 'png' || (emote.imageType === 'gif' && bttv.settings.get('bttvGIFEmotes') === true))
-        ) {
-            parts[i] = chatTemplates.bttvEmoticonize(parts[i], emote);
-        }
-    }
-
-    return parts.join(' ');
 };
 
 Conversations.prototype.usernameRecolor = function(color) {
@@ -203,9 +199,9 @@ Conversations.prototype.newConversation = function(element) {
 Conversations.prototype.addBadges = function(element) {
     var $element = $(element);
     var name = $element.find('.conversation-header-name').text().toLowerCase();
-    if (name in store.__badges) {
-        var type = store.__badges[name];
-        var badgeTemplate = chatTemplates.badge('bttv-' + type, '', store.__badgeTypes[type].description);
+    if (name in store.__bttvBadges) {
+        var type = store.__bttvBadges[name];
+        var badgeTemplate = chatTemplates.badge('bttv-' + type, '', store.__bttvBadgeTypes[type].description);
         $element.find('.badges').prepend(badgeTemplate);
     }
 };
