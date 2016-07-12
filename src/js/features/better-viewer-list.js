@@ -6,10 +6,11 @@ var buttonTemplate = require('../../templates/bvl-button'),
     ViewList = require('view-list'),
     Resizable = require('resizable');
 
-var viewList, chatterList;
+var viewList, chatterList, chatterCount;
 
 
 function renderViewerList() {
+    var count = 0;
     var results = chatterList;
     var search = $('#bvl-panel .filter').val();
     search = search.toLowerCase().trim();
@@ -21,12 +22,18 @@ function renderViewerList() {
 
         // Filter empty subsections
         for (var i = 0; i < results.length - 1; i++) {
+            if (!results[i].filter) count += 1;
             if (results[i].filter && results[i + 1].text === ' ') i++;
             else tmpResults.push(results[i]);
         }
         results = tmpResults;
+    } else {
+        count = chatterCount;
     }
     viewList.render(results);
+
+    var label = count + (count < 2 ? ' viewer' : ' viewers');
+    $('#bvl-panel .viewer-count').text(label);
 }
 
 function extractViewers(data) {
@@ -122,6 +129,7 @@ function loadViewerList() {
 
         viewList.render([]);
         chatterList = extractViewers(data);
+        chatterCount = data.data.chatter_count;
         var $el = $('#bvl-panel .viewer-list');
         $el.height($parent.height() - 85);
         renderViewerList();

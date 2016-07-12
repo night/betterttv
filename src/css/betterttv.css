@@ -855,6 +855,13 @@ input, textarea, select {
     text-align: center;
 }
 
+#bvl-panel .viewer-count {
+    text-align: center;
+    font-size: 8pt;
+    margin: -3px;
+    color: #888;
+}
+
 #bvl-panel .filter {
     box-shadow: none;
     border-radius: 0;
@@ -1261,6 +1268,11 @@ body#chat #speak {
 /* Fix Group Chat Pane Height */
 .ember-chat .chat-room-list {
     height: calc(100% - 40px);
+}
+
+/* Fix chat rooms leave button */
+.ember-chat .chat-room-list .room .leave-chat svg {
+    box-sizing: content-box;
 }
 
 /* Canvas Channel Backgrounds */
@@ -1916,6 +1928,10 @@ body.channel_new.columns.ember-application {
     border-radius: 2px;
 }
 
+.chatReplay .chat-messages .chat-line .from {
+    cursor: pointer !important;
+}
+
 /* host & playlist banner fix */
 .player-column .brick {
     border-left: 5px solid #6441a5 !important;
@@ -1948,4 +1964,13 @@ body.channel_new.columns.ember-application {
 /* chat notice style */
 .chat-lines .notice {
     background: #D8BFD8 !important;
+}
+
+/* Only show player viewer count in theatre */
+.player-viewer-count {
+    display: none;
+}
+
+.app-main.theatre .player-viewer-count {
+    display: inline-block;
 }

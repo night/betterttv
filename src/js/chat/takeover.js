@@ -124,7 +124,10 @@ var takeover = module.exports = function() {
 
     // Load spammer list
     $.getJSON('https://api.betterttv.net/2/spammers').done(function(data) {
-        store.spammers = data.users;
+        store.spammers = [];
+        for (var i = 0; i < data.users.length; i++) {
+            store.spammers.push(data.users[i].name);
+        }
     });
     $('body').off('click', '.chat-line .message.spam').on('click', '.chat-line .message.spam', function() {
         var user = $(this).parent().data('sender');
@@ -210,7 +213,7 @@ var takeover = module.exports = function() {
 
     // Make names clickable
     var clickCounter = 0;
-    $('body').off('click', '.chat-line .from').on('click', '.chat-line .from, .chat-line .user-mention', function(e) {
+    $('body').off('click', '.chat-line .from, .chat-line .user-mention').on('click', '.chat-line .from, .chat-line .user-mention', function(e) {
         if (e.shiftKey) return;
 
         var $element = $(this);
@@ -280,7 +283,7 @@ var takeover = module.exports = function() {
 
     var $chatInterface = $('.ember-chat .chat-interface');
     var $chatInput = $chatInterface.find('textarea');
-    var $chatSend = $chatInterface.find('.button.primary.float-right');
+    var $chatSend = $chatInterface.find('.js-chat-buttons__submit');
 
     // Limit chat input to 500 characters
     $chatInput.attr('maxlength', '500');

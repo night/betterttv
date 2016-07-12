@@ -39,6 +39,13 @@ exports.commands = function(input) {
         }).fail(function() {
             helpers.serverMessage('Could not fetch chatter count.', true);
         });
+    } else if (command === '/followed') {
+        if (vars.userData.isLoggedIn) {
+            var chan = sentence.length > 1 ? sentence[1] : bttv.getChannel();
+            helpers.followDate(vars.userData.name, chan);
+        } else {
+            helpers.serverMessage('You need to be logged in to use this command', true);
+        }
     } else if (command === '/followers') {
         bttv.TwitchAPI.get('channels/' + bttv.getChannel() + '/follows').done(function(channel) {
             helpers.serverMessage('Current Followers: ' + Twitch.display.commatize(channel._total), true);
@@ -114,6 +121,7 @@ exports.commands = function(input) {
         helpers.serverMessage('BetterTTV Chat Commands:');
         helpers.serverMessage('/b [username] -- Shortcut for /ban');
         helpers.serverMessage('/chatters -- Tells you how many users are currently in chat');
+        helpers.serverMessage('/followed -- Tells you for how long you have been following a channel');
         helpers.serverMessage('/followers -- Retrieves the number of followers for the channel');
         helpers.serverMessage('/join -- Joins the channel (deactivates anon chat mode)');
         helpers.serverMessage('/linehistory on/off -- Toggles the chat field history (pressing up/down arrow in textbox)');
@@ -407,7 +415,8 @@ var privmsg = exports.privmsg = function(channel, data) {
         }, {
             action: data.style === 'action' ? true : false,
             server: data.style === 'admin' ? true : false,
-            isMod: vars.userData.isLoggedIn ? helpers.isModerator(vars.userData.name) : false
+            isMod: vars.userData.isLoggedIn ? helpers.isModerator(vars.userData.name) : false,
+            notice: data.message.indexOf('subscribed!') > 0
         });
 
         $('.ember-chat .chat-messages .tse-content .chat-lines').append(message);

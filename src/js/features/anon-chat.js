@@ -32,14 +32,16 @@ module.exports = function(force) {
         if (enabled) {
             if (prodConnOpts.nickname === vars.userData.name) {
                 prodConnOpts.nickname = 'justinfan12345';
-                room._showAdminMessage('BetterTTV: [Anon Chat] Logging you out of chat..');
+                room._showAdminMessage('BetterTTV: [Anon Chat] Logging you out of chat...');
+                bttv.chat.store.isAnonMode = true;
                 bttv.chat.store.ignoreDC = true;
                 prodConn._send('QUIT');
             }
         } else {
             if (prodConnOpts.nickname !== vars.userData.name) {
                 prodConnOpts.nickname = vars.userData.name;
-                room._showAdminMessage('BetterTTV: [Anon Chat] Logging you back into chat..');
+                room._showAdminMessage('BetterTTV: [Anon Chat] Logging you into chat...');
+                bttv.chat.store.isAnonMode = false;
                 bttv.chat.store.ignoreDC = true;
                 prodConn._send('QUIT');
             }
