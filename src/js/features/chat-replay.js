@@ -19,6 +19,8 @@ function ChatReplay() {
     }.bind(this), 1000);
 }
 
+ChatReplay.prototype.__messages = [];
+
 ChatReplay.prototype.connect = function() {
     this.watcher = new MutationObserver(function(mutations) {
         if ($('.chatReplay').length && $('.chat-lines').length) {
@@ -59,6 +61,12 @@ ChatReplay.prototype.disconnect = function() {
 
 ChatReplay.prototype.messageParser = function(element) {
     var $element = $(element);
+
+    ChatReplay.prototype.__messages.push($element);
+    if (ChatReplay.prototype.__messages.length > bttv.settings.get('scrollbackAmount')) {
+        ChatReplay.prototype.__messages[0].remove();
+        ChatReplay.prototype.__messages.splice(0, ChatReplay.prototype.__messages.length - bttv.settings.get('scrollbackAmount'));
+    }
 
     if (Twitch.storage.getObject('chatSettings').showTimestamps === true) {
         $element.addClass('show-timestamp');
