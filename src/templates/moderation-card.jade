@@ -28,11 +28,11 @@ div.bttv-mod-card.ember-view.moderation-card(data-user=user.name style="top: #{t
     .interface
       .btn-wrapper
         button.button-simple.primary.mod-card-follow Follow
-        button.button-simple.dark.mod-card-profile(style="height: 30px;vertical-align: top;" title="View user's profile")
+        button.button-simple.dark.mod-card-profile(style="height: 30px;" title="View user's profile")
           img(src="https://www-cdn.jtvnw.net/images/xarth/g/g18_person-00000080.png" style="margin-top: 6px;")
-        button.button-simple.dark.mod-card-message(style="height: 30px;vertical-align: top;" title="Send user a message")
+        button.button-simple.dark.mod-card-message(style="height: 30px;" title="Send user a message")
           img(src="https://www-cdn.jtvnw.net/images/xarth/g/g18_mail-00000080.png" style="margin-top: 6px;")
-        button.button-simple.dark.mod-card-whisper(style="height: 30px;vertical-align: top;" title="Send user a whisper")
+        button.button-simple.dark.mod-card-whisper(style="height: 30px;" title="Send user a whisper")
           svg.svg-conversations(height='16px', width='16px', version='1.1', viewBox='0 0 16 16', x='0px', y='0px')
             path(clip-rule='evenodd', fill-rule='evenodd', d='M15,11H8.6L4,15v-4H2V2h13V11z')
         button.button-simple.dark.mod-card-ignore(title="Add/Remove user from ignores")
@@ -51,8 +51,6 @@ div.bttv-mod-card.ember-view.moderation-card(data-user=user.name style="top: #{t
             button.permit.button-simple.light(title="!permit this user")
               svg.svg-permit(height='16px', width='16px', version='1.1', viewBox='0 0 16 16', x='0px', y='0px')
                 path(clip-rule='evenodd', fill-rule='evenodd', d='M 13.71875,3.75 A 0.750075,0.750075 0 0 0 13.28125,4 L 5.71875,11.90625 3.59375,9.71875 A 0.750075,0.750075 0 1 0 2.53125,10.75 L 5.21875,13.53125 A 0.750075,0.750075 0 0 0 6.28125,13.5 L 14.34375,5.03125 A 0.750075,0.750075 0 0 0 13.71875,3.75 z M 4.15625,5.15625 C 2.1392444,5.1709094 0.53125,6.2956115 0.53125,7.6875 0.53125,8.1957367 0.75176764,8.6679042 1.125,9.0625 A 1.60016,1.60016 0 0 1 2.15625,8.25 C 2.0893446,8.0866555 2.0625,7.9078494 2.0625,7.71875 2.0625,6.9200694 2.7013192,6.25 3.5,6.25 L 7.15625,6.25 C 7.1438569,5.1585201 6.6779611,5.1379224 4.15625,5.15625 z M 9.625,5.15625 C 8.4334232,5.1999706 8.165545,5.4313901 8.15625,6.25 L 9.96875,6.25 11.03125,5.15625 C 10.471525,5.1447549 9.9897684,5.1428661 9.625,5.15625 z M 14.28125,6.40625 13.3125,7.40625 C 13.336036,7.5094042 13.34375,7.6089314 13.34375,7.71875 13.34375,8.5174307 12.67368,9.125 11.875,9.125 L 11.65625,9.125 10.65625,10.1875 C 10.841425,10.189327 10.941084,10.186143 11.15625,10.1875 13.17327,10.200222 14.78125,9.0793881 14.78125,7.6875 14.78125,7.2160918 14.606145,6.7775069 14.28125,6.40625 z M 4.40625,7.1875 C 4.0977434,7.1875 3.84375,7.4414933 3.84375,7.75 3.84375,8.0585065 4.0977434,8.3125 4.40625,8.3125 L 8,8.3125 9.0625,7.1875 4.40625,7.1875 z M 4.125,9.125 5.15625,10.1875 C 5.5748133,10.180859 5.9978157,10.155426 6.25,10.125 L 7.15625,9.1875 C 7.1572971,9.1653754 7.1553832,9.1481254 7.15625,9.125 L 4.125,9.125 z')
-          br
-          span.mod-controls
             button.timeout.button-simple.light(style="width:44px;" data-time="1" title="Clear this user's chat") Purge
             button.timeout.button-simple.light(data-time="600" title="Temporary 10 minute ban")
               img(src="/images/xarth/g/g18_timeout-00000080.png")

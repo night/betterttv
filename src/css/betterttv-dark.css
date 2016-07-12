@@ -508,7 +508,6 @@ body {
     margin-right: 10px !important;
 }
 
-.chat-buttons-container .button,
 .profile-info .buttons .button,
 #channel_actions .button {
     padding: 0px 10px;
@@ -523,10 +522,19 @@ body {
     border-radius: 2px;
 }
 
+.chat-buttons-container .button,
 #channel .channel-actions .button {
     background-color: rgb(30, 30, 30);
-    color: rgb(170, 170, 170);
+    color: #d3d3d3;
     border-radius: 2px;
+}
+.chat-buttons-container .button {
+    background-color: rgb(25, 25, 25);
+    padding: 0px 10px;
+}
+
+.chat-buttons-container .button.js-chat-buttons__submit {
+    background-color: #6441a4;
 }
 
 #channel .channel-actions .button.subscribe-button {
@@ -535,6 +543,10 @@ body {
 
 .chat-buttons-container .button {
     margin-right: 10px;
+}
+
+.chat-buttons-container .button.float-right {
+    margin-right: 0px;
 }
 
 .chat-buttons-container .button--icon-only figure {
@@ -583,8 +595,9 @@ body {
 }
 
 .chat-buttons-container #emote-menu-button {
-    width: 38px;
-    height: 32px;
+    background-color: rgb(25, 25, 25);
+    width: 36px;
+    height: 30px;
     margin: 0px;
 }
 
@@ -2539,4 +2552,38 @@ ul.tabs li>a:hover, .directory_header .nav li>a:hover, ul.tabs li>button:hover, 
 
 .bits-toggle:hover path {
     fill: rgba(197, 197, 197, 0.5);
+}
+
+/* bits card */
+
+.bits-card .bits-card--standard {
+    background: #282828;
+    color: #d3d3d3;
+}
+
+.bits-card .bits-footer {
+    background: rgb(30, 30, 30);
+    color: #d3d3d3;
+}
+
+.bits-card .bits-purchase {
+    background: #282828;
+    color: #d3d3d3;
+}
+
+.bits-card .bits-purchase .bits-purchase__header {
+    color: #d3d3d3;
+}
+
+.bits-card .bits-purchase .bits-purchase__row {
+    border-color: #444;
+}
+
+.bits-card .sub-text {
+    color: #bababa;
+}
+
+/* chat notice style */
+.chat-lines .notice {
+    background: #392E5C !important;
 }
