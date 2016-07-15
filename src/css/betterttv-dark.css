@@ -45,7 +45,7 @@ body {
     color: #282828;
 }
 
-#chat_lines_list, #chat_lines, .ember-chat {
+#chat_lines_list, #chat_lines, .ember-chat, .ember-view.ember-chat.roomMode, .chat-container, .ember-chat-container {
     background-color: rgb(30, 30, 30) !important;
     color: #D3D3D3;
 }
