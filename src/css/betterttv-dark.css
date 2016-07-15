@@ -2554,6 +2554,12 @@ ul.tabs li>a:hover, .directory_header .nav li>a:hover, ul.tabs li>button:hover, 
     fill: rgba(197, 197, 197, 0.5);
 }
 
+.bits-tag--container {
+    background-color: rgb(30, 30, 30);
+    color: #D3D3D3;
+    border-bottom: 1px solid #000;
+}
+
 /* bits card */
 
 .bits-card .bits-card--standard {
