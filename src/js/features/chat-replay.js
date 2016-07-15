@@ -28,6 +28,10 @@ ChatReplay.prototype.connect = function() {
 
         mutations.forEach(function(mutation) {
             var el;
+            if ($('.chat-line').length > bttv.settings.get('scrollbackAmount')) {
+                $('.chat-line')[0].remove();
+            }
+
             for (var i = 0; i < mutation.addedNodes.length; i++) {
                 el = mutation.addedNodes[i];
 
@@ -59,10 +63,6 @@ ChatReplay.prototype.disconnect = function() {
 
 ChatReplay.prototype.messageParser = function(element) {
     var $element = $(element);
-
-    if ($('.chat-line').length > bttv.settings.get('scrollbackAmount')) {
-        $('.chat-line')[0].remove();
-    }
 
     if (Twitch.storage.getObject('chatSettings').showTimestamps === true) {
         $element.addClass('show-timestamp');
