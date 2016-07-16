@@ -278,13 +278,14 @@ var message = exports.message = function(sender, msg, data) {
     data = data || {};
     var emotes = data.emotes;
     var colored = data.colored;
+    var bits = data.bits;
     var rawMessage = encodeURIComponent(msg);
 
     if (sender !== 'jtv') {
         var tokenizedMessage = emoticonize(msg, data.emotes);
         for (var i = 0; i < tokenizedMessage.length; i++) {
             if (typeof tokenizedMessage[i] === 'string') {
-                tokenizedMessage[i] = bttvMessageTokenize(sender, tokenizedMessage[i], data.bits);
+                tokenizedMessage[i] = bttvMessageTokenize(sender, tokenizedMessage[i], bits);
             } else {
                 tokenizedMessage[i] = tokenizedMessage[i][0];
             }
@@ -299,7 +300,7 @@ var message = exports.message = function(sender, msg, data) {
         spam = true;
     }
 
-    return '<span class="message ' + (spam ? 'spam' : '') + '" ' + (colored ? 'style="color: ' + colored + '" ' : '') + 'data-raw="' + rawMessage + '" data-emotes="' + (emotes ? encodeURIComponent(JSON.stringify(emotes)) : 'false') + '">' + msg + '</span>';
+    return '<span class="message ' + (spam ? 'spam' : '') + '" ' + (colored ? 'style="color: ' + colored + '" ' : '') + 'data-raw="' + rawMessage + '" data-bits="' + (bits ? encodeURIComponent(JSON.stringify(bits)) : 'false') + '" data-emotes="' + (emotes ? encodeURIComponent(JSON.stringify(emotes)) : 'false') + '">' + msg + '</span>';
 };
 
 exports.privmsg = function(data, opts) {
