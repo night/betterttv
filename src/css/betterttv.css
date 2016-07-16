@@ -1671,9 +1671,9 @@ body.channel_new.columns.ember-application {
 
 /* Emoji */
 .emoji {
-    height: 2em;
-    width: 2em;
-    margin: 0 0.1em -5px;
+    height: 28px;
+    width: 28px;
+    margin-bottom: -4px;
     display: inline-block;
 }
 
