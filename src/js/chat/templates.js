@@ -1,6 +1,7 @@
 var tmi = require('./tmi'),
     store = require('./store'),
-    helpers = require('./helpers');
+    helpers = require('./helpers'),
+    twemoji = require('twemoji');
 
 var badge = exports.badge = function(type, name, description, action) {
     var classes = type + '' + ((bttv.settings.get('alphaTags') && ['admin', 'global-moderator', 'staff', 'broadcaster', 'moderator', 'turbo', 'ign'].indexOf(type) !== -1) ? ' alpha' + (!bttv.settings.get('darkenedMode') ? ' invert' : '') : '') + ' badge';
@@ -180,6 +181,17 @@ var bttvEmoticonize = exports.bttvEmoticonize = function(message, emote, sender)
     return message.replace(emote.code, emoticonBTTV(emote));
 };
 
+var parseEmoji = function(piece) {
+    if (bttv.settings.get('replaceEmoji') === false) return piece;
+    return twemoji.parse(piece, {
+        attributes: function(rawText) {
+            return {
+                title: 'Emoji: ' + rawText
+            };
+        }
+    });
+};
+
 var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message, bits) {
     var tokenizedString = message.trim().split(' ');
 
@@ -222,6 +234,7 @@ var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message
             piece = linkify(piece);
             piece = userMentions(piece);
             piece = parseBits(piece, bits);
+            piece = parseEmoji(piece);
         }
 
         tokenizedString[i] = piece;
