@@ -334,6 +334,12 @@ module.exports = [
         storageKey: 'embeddedPolling'
     },
     {
+        name: 'Emoji Images',
+        description: 'Replace Unicode Emoji characters with images',
+        default: false,
+        storageKey: 'replaceEmoji'
+    },
+    {
         name: 'Emote Menu',
         description: 'Get a more advanced emote menu for Twitch. (Made by Ryan Chatham)',
         default: false,
