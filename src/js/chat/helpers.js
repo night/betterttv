@@ -408,7 +408,6 @@ exports.sendMessage = function(message) {
             } catch (e) {
                 serverMessage('You must be logged into Twitch to send messages.');
             }
-
             return;
         }
 
@@ -417,6 +416,10 @@ exports.sendMessage = function(message) {
             message[0] = message[0].toLowerCase();
             message = message.join(' ');
         }
+
+        // Fixes issues with Twitch's text suggestions (bits, emotes, etc.)
+        tmi().set('messageToSend', '');
+        tmi().set('savedInput', '');
 
         if (tmi().tmiSession.sendWhisper && ['/w', '.w'].indexOf(message.substr(0, 2)) > -1) {
             tmi().send(message);
@@ -427,10 +430,7 @@ exports.sendMessage = function(message) {
             var model = bttv.getModel();
             var service = App && App.__container__.lookup('service:bits');
             if (model && service) {
-                service.sendBits(model._id, message).then(function() {
-                    tmi().set('messageToSend', '');
-                    tmi().set('savedInput', '');
-                }, function(e) {
+                service.sendBits(model._id, message).then(function() {}, function(e) {
                     if (e.status === 401) {
                         var room = App.__container__.lookup('controller:room');
                         room.send('handleNotLoggedIn', {
@@ -466,10 +466,6 @@ exports.sendMessage = function(message) {
         } catch (e) {
             debug.log('Error sending tracking data to Twitch');
         }
-
-        // Fixes issue when using Twitch's sub emote selector
-        tmi().set('messageToSend', '');
-        tmi().set('savedInput', '');
     }
 };
 

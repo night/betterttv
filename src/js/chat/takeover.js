@@ -353,8 +353,12 @@ var takeover = module.exports = function() {
         helpers.chatLineHistory($chatInput, e);
     });
     $chatSend.on('click', function(e) {
+        // Prevents Twitch's event handlers from running on this click
+        e.stopImmediatePropagation();
+
         var val = $chatInput.val().trim(),
             bttvCommand = false;
+
         if (!val.length) return;
 
         if (val.charAt(0) === '/') {
@@ -363,8 +367,6 @@ var takeover = module.exports = function() {
 
         if (!bttvCommand) {
             helpers.sendMessage(val);
-        } else {
-            e.stopPropagation();
         }
 
         if (bttv.settings.get('chatLineHistory') === true) {

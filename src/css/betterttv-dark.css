@@ -2589,6 +2589,10 @@ ul.tabs li>a:hover, .directory_header .nav li>a:hover, ul.tabs li>button:hover, 
     color: #bababa;
 }
 
+.bits-card .bits-card__text a {
+    color: #8e8e8e;
+}
+
 /* chat notice style */
 .chat-lines .notice {
     background: #392E5C !important;
