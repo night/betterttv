@@ -182,7 +182,6 @@ var bttvEmoticonize = exports.bttvEmoticonize = function(message, emote, sender)
 };
 
 var parseEmoji = function(piece) {
-    if (bttv.settings.get('replaceEmoji') === false) return piece;
     return twemoji.parse(piece, {
         attributes: function(rawText) {
             return {
@@ -230,11 +229,22 @@ var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message
         ) {
             piece = bttvEmoticonize(piece, emote, sender);
         } else {
+            // escape is always first, otherwise you're going to
+            // create a security vuln..
             piece = escape(piece);
-            piece = linkify(piece);
-            piece = userMentions(piece);
-            piece = parseBits(piece, bits);
-            piece = parseEmoji(piece);
+
+            // parse only one of the replacers, otherwise you're going to
+            // create a security vuln..
+            var pieceReplacements = [linkify, userMentions, parseBits, parseEmoji];
+            var newPiece;
+            for (var j = 0; j < pieceReplacements.length; j++) {
+                newPiece = pieceReplacements[j](piece, bits);
+
+                if (piece !== newPiece) {
+                    piece = newPiece;
+                    break;
+                }
+            }
         }
 
         tokenizedString[i] = piece;
