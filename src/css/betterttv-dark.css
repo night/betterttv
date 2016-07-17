@@ -1295,7 +1295,7 @@ a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00
 #directory-list .button.drop:after, #directory-list .follow-button .drop.follow:after {
     border-top-color: rgba(255,255,255,0.35);
 }
-#user_edit_form div.connect_items, div.container {
+#user_edit_form div.connect_items, .app-main div.container {
     background-color: #212121;
 }
 .cl-container .section-header {
@@ -2450,6 +2450,57 @@ ul.tabs li a:hover {
 }
 
 /* darken creative tags */
+.app-main .brick--theme-white, .app-main .brick--block, .app-main .brick--faint {
+    background-color: #282828;
+    border-color: #252525;
+}
+
+.app-main .ct-type-grey-light {
+    color: #a9a9a9;
+}
+
+.app-main .ct-spotlight__right {
+    background-color: #282828;
+}
+
+.app-main .ct-spotlight__avatar {
+    box-shadow: none;
+    border: 1px solid #444;
+}
+
+.app-main .ct-crumb__label {
+    color: #d3d3d3;
+}
+
+.app-main .ct-bar, .app-main .ct-crumb--1 .ct-crumb__label, .app-main .ct-crumb--1:after {
+    background-color: #303030;
+}
+
+.app-main .ct-crumb--1:after {
+    border-color: #282828;
+}
+
+.app-main .ct-bar__item {
+    border-left: 1px solid #000;
+    border-right: 1px solid #000;
+}
+
+.app-main .leaf--light {
+    border: 1px solid #282828;
+    background-color: #333;
+    box-shadow: none;
+    color: #d3d3d3;
+}
+
+.app-main ul.tabs li>a.active {
+    color: #d3d3d3;
+    border-color: #d3d3d3 !important;
+}
+
+.app-main .ct-type-3, .app-main .ct-type-4, .app-main .ct-banner__name, .app-main .ct-banner__name a, .app-main .ct-type-2 {
+    color: #d3d3d3;
+}
+
 .ct-tags .ct-tags__list .ct-banner__tag {
     background-color: #282828;
 }
