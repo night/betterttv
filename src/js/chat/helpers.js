@@ -7,7 +7,8 @@ var vars = require('../vars'),
     bots = require('../bots'),
     punycode = require('punycode'),
     channelState = require('../features/channel-state'),
-    throttle = require('lodash.throttle');
+    throttle = require('lodash.throttle'),
+    emojilib = require('emojilib');
 
 // Helper functions
 var calculateColorBackground = require('../helpers/colors').calculateColorBackground;
@@ -399,6 +400,15 @@ exports.notifyMessage = function(type, message) {
     });
 };
 
+var replaceEmojiCodesWithEmoji = function(message) {
+    return message.split(' ').map(function(piece) {
+        if (piece.charAt(0) !== ':' || piece.charAt(piece.length - 1) !== ':') return piece;
+        var emoji = emojilib.ordered[emojilib.ordered.indexOf(piece.replace(/:/g, ''))];
+        if (!emoji || !emojilib.lib[emoji]) return piece;
+        return emojilib.lib[emoji].char;
+    }).join(' ');
+};
+
 exports.sendMessage = function(message) {
     if (!message || message === '') return;
     if (tmi()) {
@@ -416,6 +426,9 @@ exports.sendMessage = function(message) {
             message[0] = message[0].toLowerCase();
             message = message.join(' ');
         }
+
+        // Replace all emoji codes with unicode
+        message = replaceEmojiCodesWithEmoji(message);
 
         // Fixes issues with Twitch's text suggestions (bits, emotes, etc.)
         tmi().set('messageToSend', '');

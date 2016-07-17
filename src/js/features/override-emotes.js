@@ -1,6 +1,7 @@
 var debug = require('../helpers/debug'),
     templates = require('../chat/templates'),
-    vars = require('../vars');
+    vars = require('../vars'),
+    emojilib = require('emojilib');
 
 module.exports = function() {
     if (vars.emotesLoaded) return;
@@ -10,15 +11,25 @@ module.exports = function() {
     var generate = function(data) {
         vars.emotesLoaded = true;
 
-        data.emotes.forEach(function(emote) {
-            emote.urlTemplate = data.urlTemplate.replace('{{id}}', emote.id);
-            emote.url = emote.urlTemplate.replace('{{image}}', '1x');
-            emote.type = 'global';
+        if ('emotes' in data) {
+            data.emotes.forEach(function(emote) {
+                emote.urlTemplate = data.urlTemplate.replace('{{id}}', emote.id);
+                emote.url = emote.urlTemplate.replace('{{image}}', '1x');
+                emote.type = 'global';
 
-            bttv.chat.store.bttvEmotes[emote.code] = emote;
-        });
+                bttv.chat.store.bttvEmotes[emote.code] = emote;
+            });
+        }
 
-        $('body').on('mouseover', '.chat-line .emoticon', function() {
+        if ('emojis' in data) {
+            data.emojis.forEach(function(emoji) {
+                emoji.type = 'emoji';
+
+                bttv.chat.store.bttvEmotes[emoji.code] = emoji;
+            });
+        }
+
+        $('body').on('mouseover', '.chat-line .emoticon, .chat-line .emoji', function() {
             vars.hoveringEmote = $(this);
             $(this).tipsy({
                 trigger: 'manual',
@@ -29,6 +40,12 @@ module.exports = function() {
                     var $emote = vars.hoveringEmote;
                     if ($emote && $emote.attr('alt')) {
                         var raw = templates.escape($emote.attr('alt'));
+                        if ($emote.data('type') === 'emoji') {
+                            var emoji = Object.keys(emojilib.lib).find(function(key) {
+                                return emojilib.lib[key].char === raw;
+                            });
+                            if (emoji) raw = ':' + emoji + ':';
+                        }
                         if (bttv.TwitchEmoteIDToChannel && $emote.data('id') && bttv.TwitchEmoteIDToChannel[$emote.data('id')]) {
                             return 'Emote: ' + raw + '<br />Channel: ' + bttv.TwitchEmoteIDToChannel[$emote.data('id')];
                         } else if (!$emote.data('channel') && $emote.data('type')) {
@@ -50,7 +67,7 @@ module.exports = function() {
             } else if ($emote.data('channel')) {
                 $(this).css('cursor', 'pointer');
             }
-        }).on('mouseout', '.chat-line .emoticon', function() {
+        }).on('mouseout', '.chat-line .emoticon, .chat-line .emoji', function() {
             $(this).tipsy('hide');
             var $emote = $(this);
             if (bttv.TwitchEmoteIDToChannel && $emote.data('id') && bttv.TwitchEmoteIDToChannel[$emote.data('id')]) {
@@ -59,7 +76,7 @@ module.exports = function() {
                 $(this).css('cursor', 'normal');
             }
             $('div.tipsy').remove();
-        }).on('click', '.chat-line .emoticon', function() {
+        }).on('click', '.chat-line .emoticon, .chat-line .emoji', function() {
             var $emote = $(this);
 
             if (bttv.TwitchEmoteIDToChannel && $emote.data('id') && bttv.TwitchEmoteIDToChannel[$emote.data('id')]) {
@@ -79,6 +96,16 @@ module.exports = function() {
     });
 
     $.getJSON('https://api.betterttv.net/2/emotes').done(function(data) {
+        data.emojis = Object.keys(emojilib.lib).map(function(key) {
+            return {
+                code: ':' + key + ':',
+                char: emojilib.lib[key].char,
+                imageType: 'png',
+                channel: null,
+                id: 'emoji_' + key
+            };
+        });
+
         generate(data);
     });
 };

@@ -14,6 +14,7 @@
   "dependencies": {
     "cookies-js": "^1.2.1",
     "del": "^2.2.0",
+    "emojilib": "^2.0.2",
     "gulp": "^3.8.0",
     "gulp-browserify": "^0.5.0",
     "gulp-changed": "~0.3.0",

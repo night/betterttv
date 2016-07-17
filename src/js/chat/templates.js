@@ -87,6 +87,8 @@ var escapeEmoteCode = function(code) {
 };
 
 var emoticonBTTV = exports.emoticonBTTV = function(emote) {
+    if (!emote.urlTemplate) return emote.code;
+
     var channel = emote.channel ? 'data-channel="' + emote.channel + '" ' : '';
     var type = emote.type ? 'data-type="' + emote.type + '" ' : '';
     return '<img class="emoticon bttv-emo-' + emote.id + '" src="' + emote.urlTemplate.replace('{{image}}', '1x') + '" srcset="' + emote.urlTemplate.replace('{{image}}', '2x') + ' 2x" ' + type + channel + 'alt="' + escapeEmoteCode(emote.code) + '" />';
@@ -169,6 +171,16 @@ var emoticonize = exports.emoticonize = function(message, emotes) {
     return tokenizedMessage;
 };
 
+var parseEmoji = function(piece) {
+    return twemoji.parse(piece, {
+        attributes: function() {
+            return {
+                'data-type': 'emoji'
+            };
+        }
+    });
+};
+
 var bttvEmoticonize = exports.bttvEmoticonize = function(message, emote, sender) {
     if (emote.restrictions) {
         if (emote.restrictions.channels.length && emote.restrictions.channels.indexOf(bttv.getChannel()) === -1) return message;
@@ -178,17 +190,7 @@ var bttvEmoticonize = exports.bttvEmoticonize = function(message, emote, sender)
         if (emote.restrictions.emoticonSet && emoteSets.indexOf(emote.restrictions.emoticonSet) === -1) return message;
     }
 
-    return message.replace(emote.code, emoticonBTTV(emote));
-};
-
-var parseEmoji = function(piece) {
-    return twemoji.parse(piece, {
-        attributes: function(rawText) {
-            return {
-                title: 'Emoji: ' + rawText
-            };
-        }
-    });
+    return message.replace(emote.code, emote.type === 'emoji' ? parseEmoji(emote.char) : emoticonBTTV(emote));
 };
 
 var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message, bits) {
@@ -223,7 +225,6 @@ var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message
 
         if (
             emote &&
-            emote.urlTemplate &&
             bttv.settings.get('bttvEmotes') === true &&
             (emote.imageType === 'png' || (emote.imageType === 'gif' && bttv.settings.get('bttvGIFEmotes') === true))
         ) {
