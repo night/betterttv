@@ -2587,3 +2587,54 @@ ul.tabs li>a:hover, .directory_header .nav li>a:hover, ul.tabs li>button:hover, 
 .chat-lines .notice {
     background: #392E5C !important;
 }
+
+/* darken new search */
+#search-panel {
+    background: #222;
+    border: none;
+}
+
+#search-panel .titleBar,
+#search-panel .titleBar .titleBar__back {
+    border-color: #555;
+}
+
+#search-panel .titleBar .titleBar__back:hover {
+    background: #444;
+}
+
+#search-panel .titleBar,
+#search-panel .titleBar .titleBar__title,
+#search-panel .resultView__titlesep {
+    background: #333;
+    color: #d3d3d3;
+}
+
+#search-panel .resultView .card .card__layout .card__title {
+    color: #d3d3d3;
+}
+
+#search-panel .resultView .card .card__layout .card__info span {
+    color: #999;
+}
+
+#search-panel .resultView .card .card__layout.isActive:before {
+    background: #333;
+}
+
+#search-panel .resultView__titlesep .pill,
+#search-panel .resultView__titlesep.isActive .pill {
+    background-color: #555;
+}
+
+#search-panel .resultView__titlesep .resultView__titleMore {
+    color: #777;
+}
+
+#search-panel .resultView__titlesep.isActive .resultView__titleMore {
+    color: #999;
+}
+
+#search-panel .resultView .collectionWrapper::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.7);
+}

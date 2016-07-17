@@ -1974,3 +1974,17 @@ body.channel_new.columns.ember-application {
 .app-main.theatre .player-viewer-count {
     display: inline-block;
 }
+
+/* search scroll bar */
+#search-panel .resultView .collectionWrapper::-webkit-scrollbar {
+    width: 6px;
+}
+
+#search-panel .resultView .collectionWrapper::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.7);
+    border-radius: 7px;
+}
+
+#search-panel .resultView .collectionWrapper::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0);
+}
