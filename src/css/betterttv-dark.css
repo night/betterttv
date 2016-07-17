@@ -930,6 +930,10 @@ body {
     border: none !important;
 }
 
+.profile-actions .balloon {
+    color: #9c9c9c;
+}
+
 .panel-formatting .panel {
     color: #999;
 }
