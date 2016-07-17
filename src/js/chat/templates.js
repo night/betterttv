@@ -1,7 +1,8 @@
 var tmi = require('./tmi'),
     store = require('./store'),
     helpers = require('./helpers'),
-    twemoji = require('twemoji');
+    twemoji = require('twemoji'),
+    blacklistedEmoji = require('../helpers/emoji-blacklist.json');
 
 var badge = exports.badge = function(type, name, description, action) {
     var classes = type + '' + ((bttv.settings.get('alphaTags') && ['admin', 'global-moderator', 'staff', 'broadcaster', 'moderator', 'turbo', 'ign'].indexOf(type) !== -1) ? ' alpha' + (!bttv.settings.get('darkenedMode') ? ' invert' : '') : '') + ' badge';
@@ -182,6 +183,8 @@ var parseEmoji = function(piece) {
 };
 
 var bttvEmoticonize = exports.bttvEmoticonize = function(message, emote, sender) {
+    if (emote.type === 'emoji') return message;
+
     if (emote.restrictions) {
         if (emote.restrictions.channels.length && emote.restrictions.channels.indexOf(bttv.getChannel()) === -1) return message;
         if (emote.restrictions.games.length && tmi().channel && emote.restrictions.games.indexOf(tmi().channel.game) === -1) return message;
@@ -190,10 +193,15 @@ var bttvEmoticonize = exports.bttvEmoticonize = function(message, emote, sender)
         if (emote.restrictions.emoticonSet && emoteSets.indexOf(emote.restrictions.emoticonSet) === -1) return message;
     }
 
-    return message.replace(emote.code, emote.type === 'emoji' ? parseEmoji(emote.char) : emoticonBTTV(emote));
+    return message.replace(emote.code, emoticonBTTV(emote));
 };
 
 var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message, bits) {
+    // filter blacklisted emojis
+    blacklistedEmoji.forEach(function(emoji) {
+        message = message.replace(new RegExp(emoji, 'g'), '');
+    });
+
     var tokenizedString = message.trim().split(' ');
 
     for (var i = 0; i < tokenizedString.length; i++) {

@@ -9,7 +9,8 @@ var vars = require('../vars'),
     pinnedHighlights = require('../features/pinned-highlights'),
     embeddedPolling = require('../features/embedded-polling'),
     channelState = require('../features/channel-state'),
-    audibleFeedback = require('../features/audible-feedback');
+    audibleFeedback = require('../features/audible-feedback'),
+    blacklistedEmoji = require('../helpers/emoji-blacklist.json');
 
 // Helper Functions
 var getRgb = require('../helpers/colors').getRgb;
@@ -369,6 +370,12 @@ var privmsg = exports.privmsg = function(channel, data) {
     if (data.tags && data.tags['display-name']) {
         store.displayNames[data.from] = data.tags['display-name'];
     }
+
+    // filter blacklisted emojis
+    blacklistedEmoji.forEach(function(emoji) {
+        if (data.message) data.message = data.message.replace(new RegExp(emoji, 'g'), '');
+        if (data.tags && data.tags['system-msg']) data.tags['system-msg'] = data.tags['system-msg'].replace(new RegExp(emoji, 'g'), '');
+    });
 
     if (data.tags && data.tags['msg-id'] === 'resub') {
         message = templates.privmsg({
