@@ -405,6 +405,7 @@ var replaceEmojiCodesWithEmoji = function(message) {
         if (piece.charAt(0) !== ':' || piece.charAt(piece.length - 1) !== ':') return piece;
         var emoji = emojilib.ordered[emojilib.ordered.indexOf(piece.replace(/:/g, ''))];
         if (!emoji || !emojilib.lib[emoji]) return piece;
+        if (!store.bttvEmotes[piece] || store.bttvEmotes[piece].type !== 'emoji') return piece;
         return emojilib.lib[emoji].char;
     }).join(' ');
 };

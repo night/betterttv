@@ -20,3 +20,10 @@ exports.getEmoteFromRegEx = function(regex) {
         .replace(/^\\b|\\b$/g, '') // remove boundaries
         .replace(/\\/g, ''); // unescape
 };
+
+exports.stripAll = function(haystack, needle) {
+    while (haystack.indexOf(needle) > -1) {
+        haystack = haystack.replace(needle, '');
+    }
+    return haystack;
+};

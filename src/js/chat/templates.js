@@ -2,6 +2,7 @@ var tmi = require('./tmi'),
     store = require('./store'),
     helpers = require('./helpers'),
     twemoji = require('twemoji'),
+    regexUtils = require('../helpers/regex'),
     blacklistedEmoji = require('../helpers/emoji-blacklist.json');
 
 var badge = exports.badge = function(type, name, description, action) {
@@ -199,7 +200,7 @@ var bttvEmoticonize = exports.bttvEmoticonize = function(message, emote, sender)
 var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message, bits) {
     // filter blacklisted emojis
     blacklistedEmoji.forEach(function(emoji) {
-        message = message.replace(new RegExp(emoji, 'g'), '');
+        message = regexUtils.stripAll(message, emoji);
     });
 
     var tokenizedString = message.trim().split(' ');

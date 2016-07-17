@@ -1,5 +1,6 @@
 var vars = require('../vars'),
     debug = require('../helpers/debug'),
+    regexUtils = require('../helpers/regex'),
     store = require('./store'),
     tmi = require('./tmi'),
     helpers = require('./helpers'),
@@ -373,8 +374,8 @@ var privmsg = exports.privmsg = function(channel, data) {
 
     // filter blacklisted emojis
     blacklistedEmoji.forEach(function(emoji) {
-        if (data.message) data.message = data.message.replace(new RegExp(emoji, 'g'), '');
-        if (data.tags && data.tags['system-msg']) data.tags['system-msg'] = data.tags['system-msg'].replace(new RegExp(emoji, 'g'), '');
+        if (data.message) data.message = regexUtils.stripAll(data.message, emoji);
+        if (data.tags && data.tags['system-msg']) data.tags['system-msg'] = regexUtils.stripAll(data.tags['system-msg'], emoji);
     });
 
     if (data.tags && data.tags['msg-id'] === 'resub') {

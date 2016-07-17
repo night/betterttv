@@ -2,7 +2,8 @@ var debug = require('../helpers/debug'),
     templates = require('../chat/templates'),
     vars = require('../vars'),
     emojilib = require('emojilib'),
-    blacklistedEmoji = require('../helpers/emoji-blacklist.json');
+    blacklistedEmoji = require('../helpers/emoji-blacklist.json'),
+    twemoji = require('twemoji');
 
 module.exports = function() {
     if (vars.emotesLoaded) return;
@@ -96,10 +97,25 @@ module.exports = function() {
         bttv.TwitchEmoteSets = data.sets;
     });
 
+    // There is a bug in twemoji /w emojilib. Emojis returned by emojilib
+    // sometimes return two emojis in twemoji. This counts the number
+    // of parsed emotes being returned in twemoji so we can not load them.
+    var countEmojis = function(emoji) {
+        var count = 0;
+        twemoji.parse(emoji.char, function(d) {
+            count += d.split('-').length;
+        });
+        return count;
+    };
+
     $.getJSON('https://api.betterttv.net/2/emotes').done(function(data) {
         data.emojis = Object.keys(emojilib.lib).filter(function(key) {
             var emoji = emojilib.lib[key];
-            return blacklistedEmoji.indexOf(emoji.char) === -1 && emoji.category !== '_custom';
+            if (!emoji || !emoji.char) return false;
+            var emojiCount = countEmojis(emoji);
+            return blacklistedEmoji.indexOf(emoji.char) === -1 &&
+                   emoji.category !== '_custom' &&
+                   emojiCount === 1;
         }).map(function(key) {
             return {
                 code: ':' + key + ':',
