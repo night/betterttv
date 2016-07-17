@@ -1,7 +1,8 @@
 var debug = require('../helpers/debug'),
     templates = require('../chat/templates'),
     vars = require('../vars'),
-    emojilib = require('emojilib');
+    emojilib = require('emojilib'),
+    blacklistedEmoji = require('../helpers/emoji-blacklist.json');
 
 module.exports = function() {
     if (vars.emotesLoaded) return;
@@ -96,7 +97,9 @@ module.exports = function() {
     });
 
     $.getJSON('https://api.betterttv.net/2/emotes').done(function(data) {
-        data.emojis = Object.keys(emojilib.lib).map(function(key) {
+        data.emojis = Object.keys(emojilib.lib).filter(function(key) {
+            return blacklistedEmoji.indexOf(emojilib.lib[key].char) === -1;
+        }).map(function(key) {
             return {
                 code: ':' + key + ':',
                 char: emojilib.lib[key].char,
