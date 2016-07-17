@@ -98,7 +98,7 @@ module.exports = function() {
 
     $.getJSON('https://api.betterttv.net/2/emotes').done(function(data) {
         data.emojis = Object.keys(emojilib.lib).filter(function(key) {
-            return blacklistedEmoji.indexOf(emojilib.lib[key].char) === -1;
+            return blacklistedEmoji.indexOf(emojilib.lib[key].char) === -1 && emojilib.lib[key].category !== '_custom';
         }).map(function(key) {
             return {
                 code: ':' + key + ':',
