@@ -173,6 +173,8 @@ var emoticonize = exports.emoticonize = function(message, emotes) {
 };
 
 var parseEmoji = function(piece) {
+    if (['™', '®', '©'].indexOf(piece) > -1) return piece;
+
     return twemoji.parse(piece, {
         attributes: function() {
             return {
