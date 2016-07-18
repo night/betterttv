@@ -28,16 +28,19 @@ ChatReplay.prototype.connect = function() {
 
         mutations.forEach(function(mutation) {
             var el;
-            if ($('.chat-line').length > bttv.settings.get('scrollbackAmount')) {
-                $('.chat-line')[0].remove();
-            }
-
             for (var i = 0; i < mutation.addedNodes.length; i++) {
                 el = mutation.addedNodes[i];
 
                 if ($(el).hasClass('chat-line')) {
                     if ($(el).find('.horizontal-line').length) continue;
                     this.messageParser(el);
+                }
+            }
+
+            var chatLines = $('.chat-line');
+            if (bttv.settings.get('scrollbackAmount') < 100 && chatLines.length > bttv.settings.get('scrollbackAmount')) {
+                for (var line = 0; line < (chatLines.length - bttv.settings.get('scrollbackAmount')); line++) {
+                    chatLines[line].remove();
                 }
             }
         }.bind(this));
