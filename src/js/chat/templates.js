@@ -174,9 +174,16 @@ var emoticonize = exports.emoticonize = function(message, emotes) {
 };
 
 var parseEmoji = function(piece) {
-    if (['™', '®', '©'].indexOf(piece) > -1) return piece;
-
     return twemoji.parse(piece, {
+        callback: function(icon, options) {
+            switch (icon) {
+                case 'a9': // ©
+                case 'ae': // ®
+                case '2122': // ™
+                    return false;
+            }
+            return ''.concat(options.base, options.size, '/', icon, options.ext);
+        },
         attributes: function() {
             return {
                 'data-type': 'emoji'
