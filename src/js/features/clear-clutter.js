@@ -13,4 +13,9 @@ module.exports = function() {
         removeElement('#nav_related_streams');
         $('body').append('<style>#nav_games, #nav_streams, #nav_related_streams, .js-recommended-channels { display: none !important; }</style>');
     }
+
+    // if setting "Hide Last Broadcast Banner" is true
+    if (bttv.settings.get('hideLastBroadcast') === true) {
+        $('body').append('<style>.ember-view > .recent-past-broadcast { display: none !important; }</style>');
+    }
 };

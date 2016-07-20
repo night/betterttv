@@ -429,6 +429,12 @@ module.exports = [
         }
     },
     {
+        name: 'Hide Last Broadcast Banner',
+        description: 'Hide the Last Broadcast banner above the player',
+        default: false,
+        storageKey: 'hideLastBroadcast'
+    },
+    {
         name: 'Host Button',
         description: 'Places a Host/Unhost button below the video player',
         default: false,
