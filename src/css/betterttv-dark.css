@@ -1887,7 +1887,8 @@ color: white;
 }
 
 /* Video Manager */
-.channel_new .app-main #directory-list #video-manager .videos-grid .video.item .meta {
+.channel_new .app-main #directory-list #video-manager .videos-grid .video.item .meta,
+#video-manager .videos-grid .video.item .meta {
     background: #1f1f1f;
 }
 
