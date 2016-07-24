@@ -1,6 +1,9 @@
 var tmi = require('./tmi'),
     store = require('./store'),
-    helpers = require('./helpers');
+    helpers = require('./helpers'),
+    twemoji = require('twemoji'),
+    regexUtils = require('../helpers/regex'),
+    blacklistedEmoji = require('../helpers/emoji-blacklist.json');
 
 var badge = exports.badge = function(type, name, description, action) {
     var classes = type + '' + ((bttv.settings.get('alphaTags') && ['admin', 'global-moderator', 'staff', 'broadcaster', 'moderator', 'turbo', 'ign'].indexOf(type) !== -1) ? ' alpha' + (!bttv.settings.get('darkenedMode') ? ' invert' : '') : '') + ' badge';
@@ -86,6 +89,8 @@ var escapeEmoteCode = function(code) {
 };
 
 var emoticonBTTV = exports.emoticonBTTV = function(emote) {
+    if (!emote.urlTemplate) return emote.code;
+
     var channel = emote.channel ? 'data-channel="' + emote.channel + '" ' : '';
     var type = emote.type ? 'data-type="' + emote.type + '" ' : '';
     return '<img class="emoticon bttv-emo-' + emote.id + '" src="' + emote.urlTemplate.replace('{{image}}', '1x') + '" srcset="' + emote.urlTemplate.replace('{{image}}', '2x') + ' 2x" ' + type + channel + 'alt="' + escapeEmoteCode(emote.code) + '" />';
@@ -168,6 +173,25 @@ var emoticonize = exports.emoticonize = function(message, emotes) {
     return tokenizedMessage;
 };
 
+var parseEmoji = function(piece) {
+    return twemoji.parse(piece, {
+        callback: function(icon, options) {
+            switch (icon) {
+                case 'a9': // ©
+                case 'ae': // ®
+                case '2122': // ™
+                    return false;
+            }
+            return ''.concat(options.base, options.size, '/', icon, options.ext);
+        },
+        attributes: function() {
+            return {
+                'data-type': 'emoji'
+            };
+        }
+    });
+};
+
 var bttvEmoticonize = exports.bttvEmoticonize = function(message, emote, sender) {
     if (emote.restrictions) {
         if (emote.restrictions.channels.length && emote.restrictions.channels.indexOf(bttv.getChannel()) === -1) return message;
@@ -177,10 +201,15 @@ var bttvEmoticonize = exports.bttvEmoticonize = function(message, emote, sender)
         if (emote.restrictions.emoticonSet && emoteSets.indexOf(emote.restrictions.emoticonSet) === -1) return message;
     }
 
-    return message.replace(emote.code, emoticonBTTV(emote));
+    return message.replace(emote.code, emote.type === 'emoji' ? parseEmoji(message) : emoticonBTTV(emote));
 };
 
 var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message, bits) {
+    // filter blacklisted emojis
+    blacklistedEmoji.forEach(function(emoji) {
+        message = regexUtils.stripAll(message, emoji);
+    });
+
     var tokenizedString = message.trim().split(' ');
 
     for (var i = 0; i < tokenizedString.length; i++) {
@@ -212,16 +241,27 @@ var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message
 
         if (
             emote &&
-            emote.urlTemplate &&
             bttv.settings.get('bttvEmotes') === true &&
             (emote.imageType === 'png' || (emote.imageType === 'gif' && bttv.settings.get('bttvGIFEmotes') === true))
         ) {
             piece = bttvEmoticonize(piece, emote, sender);
         } else {
+            // escape is always first, otherwise you're going to
+            // create a security vuln..
             piece = escape(piece);
-            piece = linkify(piece);
-            piece = userMentions(piece);
-            piece = parseBits(piece, bits);
+
+            // parse only one of the replacers, otherwise you're going to
+            // create a security vuln..
+            var pieceReplacements = [linkify, userMentions, parseBits, parseEmoji];
+            var newPiece;
+            for (var j = 0; j < pieceReplacements.length; j++) {
+                newPiece = pieceReplacements[j](piece, bits);
+
+                if (piece !== newPiece) {
+                    piece = newPiece;
+                    break;
+                }
+            }
         }
 
         tokenizedString[i] = piece;
@@ -278,13 +318,14 @@ var message = exports.message = function(sender, msg, data) {
     data = data || {};
     var emotes = data.emotes;
     var colored = data.colored;
+    var bits = data.bits;
     var rawMessage = encodeURIComponent(msg);
 
     if (sender !== 'jtv') {
         var tokenizedMessage = emoticonize(msg, data.emotes);
         for (var i = 0; i < tokenizedMessage.length; i++) {
             if (typeof tokenizedMessage[i] === 'string') {
-                tokenizedMessage[i] = bttvMessageTokenize(sender, tokenizedMessage[i], data.bits);
+                tokenizedMessage[i] = bttvMessageTokenize(sender, tokenizedMessage[i], bits);
             } else {
                 tokenizedMessage[i] = tokenizedMessage[i][0];
             }
@@ -299,7 +340,7 @@ var message = exports.message = function(sender, msg, data) {
         spam = true;
     }
 
-    return '<span class="message ' + (spam ? 'spam' : '') + '" ' + (colored ? 'style="color: ' + colored + '" ' : '') + 'data-raw="' + rawMessage + '" data-emotes="' + (emotes ? encodeURIComponent(JSON.stringify(emotes)) : 'false') + '">' + msg + '</span>';
+    return '<span class="message ' + (spam ? 'spam' : '') + '" ' + (colored ? 'style="color: ' + colored + '" ' : '') + 'data-raw="' + rawMessage + '" data-bits="' + (bits ? encodeURIComponent(JSON.stringify(bits)) : 'false') + '" data-emotes="' + (emotes ? encodeURIComponent(JSON.stringify(emotes)) : 'false') + '">' + msg + '</span>';
 };
 
 exports.privmsg = function(data, opts) {

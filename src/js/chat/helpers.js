@@ -7,7 +7,8 @@ var vars = require('../vars'),
     bots = require('../bots'),
     punycode = require('punycode'),
     channelState = require('../features/channel-state'),
-    throttle = require('lodash.throttle');
+    throttle = require('lodash.throttle'),
+    emojilib = require('emojilib');
 
 // Helper functions
 var calculateColorBackground = require('../helpers/colors').calculateColorBackground;
@@ -399,6 +400,16 @@ exports.notifyMessage = function(type, message) {
     });
 };
 
+var replaceEmojiCodesWithEmoji = function(message) {
+    return message.split(' ').map(function(piece) {
+        if (piece.charAt(0) !== ':' || piece.charAt(piece.length - 1) !== ':') return piece;
+        var emoji = emojilib.ordered[emojilib.ordered.indexOf(piece.replace(/:/g, ''))];
+        if (!emoji || !emojilib.lib[emoji]) return piece;
+        if (!store.bttvEmotes[piece] || store.bttvEmotes[piece].type !== 'emoji') return piece;
+        return emojilib.lib[emoji].char;
+    }).join(' ');
+};
+
 exports.sendMessage = function(message) {
     if (!message || message === '') return;
     if (tmi()) {
@@ -408,7 +419,6 @@ exports.sendMessage = function(message) {
             } catch (e) {
                 serverMessage('You must be logged into Twitch to send messages.');
             }
-
             return;
         }
 
@@ -417,6 +427,13 @@ exports.sendMessage = function(message) {
             message[0] = message[0].toLowerCase();
             message = message.join(' ');
         }
+
+        // Replace all emoji codes with unicode
+        message = replaceEmojiCodesWithEmoji(message);
+
+        // Fixes issues with Twitch's text suggestions (bits, emotes, etc.)
+        tmi().set('messageToSend', '');
+        tmi().set('savedInput', '');
 
         if (tmi().tmiSession.sendWhisper && ['/w', '.w'].indexOf(message.substr(0, 2)) > -1) {
             tmi().send(message);
@@ -427,10 +444,7 @@ exports.sendMessage = function(message) {
             var model = bttv.getModel();
             var service = App && App.__container__.lookup('service:bits');
             if (model && service) {
-                service.sendBits(model._id, message).then(function() {
-                    tmi().set('messageToSend', '');
-                    tmi().set('savedInput', '');
-                }, function(e) {
+                service.sendBits(model._id, message).then(function() {}, function(e) {
                     if (e.status === 401) {
                         var room = App.__container__.lookup('controller:room');
                         room.send('handleNotLoggedIn', {
@@ -466,10 +480,6 @@ exports.sendMessage = function(message) {
         } catch (e) {
             debug.log('Error sending tracking data to Twitch');
         }
-
-        // Fixes issue when using Twitch's sub emote selector
-        tmi().set('messageToSend', '');
-        tmi().set('savedInput', '');
     }
 };
 
@@ -483,9 +493,10 @@ exports.reparseMessages = function(user) {
 
         var rawMessage = decodeURIComponent(message.data('raw'));
         var emotes = message.data('emotes') ? JSON.parse(decodeURIComponent(message.data('emotes'))) : false;
+        var bits = message.data('bits') ? JSON.parse(decodeURIComponent(message.data('bits'))) : false;
         var color = message.attr('style') ? message.attr('style').split(': ')[1] : false;
 
-        message.replaceWith(templates.message(user, rawMessage, {emotes: emotes, colored: color}));
+        message.replaceWith(templates.message(user, rawMessage, {emotes: emotes, colored: color, bits: bits}));
     });
 };
 
