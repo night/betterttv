@@ -38,8 +38,9 @@ ChatReplay.prototype.connect = function() {
             }
 
             var chatLines = $('.chat-line');
-            if (bttv.settings.get('scrollbackAmount') < 100 && chatLines.length > bttv.settings.get('scrollbackAmount')) {
-                for (var line = 0; line < (chatLines.length - bttv.settings.get('scrollbackAmount')); line++) {
+            var scrollBackAmount = bttv.settings.get('scrollbackAmount');
+            if (scrollBackAmount < 100 && chatLines.length > scrollBackAmount) {
+                for (var line = 0; line < (chatLines.length - scrollBackAmount); line++) {
                     chatLines[line].remove();
                 }
             }
