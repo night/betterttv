@@ -183,6 +183,18 @@ var takeover = module.exports = function() {
         $('div.tipsy').remove();
     });
 
+    // hover over emoji images
+    $('body').off('mouseover', '.chat-line .emoji').on('mouseover', '.chat-line .emoji', function() {
+        $(this).tipsy({
+            trigger: 'manual',
+            gravity: 's'
+        });
+        $(this).tipsy('show');
+    }).off('mouseout', '.chat-line .emoji').on('mouseout', '.chat-line .emoji', function() {
+        $(this).tipsy('hide');
+        $('div.tipsy').remove();
+    });
+
     // Make Timeout/Ban/Unban buttons work and Turbo/Subscriber clickable
     $('body').off('click', '.chat-line .mod-icons .timeout').on('click', '.chat-line .mod-icons .timeout', function() {
         helpers.timeout($(this).parents('.chat-line').data('sender'));
@@ -353,8 +365,12 @@ var takeover = module.exports = function() {
         helpers.chatLineHistory($chatInput, e);
     });
     $chatSend.on('click', function(e) {
+        // Prevents Twitch's event handlers from running on this click
+        e.stopImmediatePropagation();
+
         var val = $chatInput.val().trim(),
             bttvCommand = false;
+
         if (!val.length) return;
 
         if (val.charAt(0) === '/') {
@@ -363,8 +379,6 @@ var takeover = module.exports = function() {
 
         if (!bttvCommand) {
             helpers.sendMessage(val);
-        } else {
-            e.stopPropagation();
         }
 
         if (bttv.settings.get('chatLineHistory') === true) {

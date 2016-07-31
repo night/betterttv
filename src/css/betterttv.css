@@ -1669,6 +1669,14 @@ body.channel_new.columns.ember-application {
     padding-top: 5px;
 }
 
+/* Emoji */
+.emoji {
+    height: 20px;
+    width: 20px;
+    margin-bottom: -4px;
+    display: inline-block;
+}
+
 /* tehMorag's emote */
 @keyframes morag-spin {
     from {

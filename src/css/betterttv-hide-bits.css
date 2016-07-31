@@ -1,3 +1,7 @@
-.bits-helper-toggle, .bits-card {
+.bits-helper-toggle, .bits-card, .bits-tag--container {
 	display: none;
+}
+
+.ember-chat .chat-messages.bits-tags__offset {
+    top: 0;
 }
