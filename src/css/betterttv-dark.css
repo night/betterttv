@@ -1964,22 +1964,21 @@ span.subscribe-text {
 }
 
 /* Twitch emote menu */
-
-.chat-container.dark .chat-interface .emoticon-selector .emoticon-selector-box, .app-main.theatre .chat-container .chat-interface .emoticon-selector .emoticon-selector-box, .ember-chat .chat-interface .emoticon-selector .emoticon-selector-box {
+.chat-container.dark .chat-interface .emoticon-selector .emoticon-selector-box, .app-main.theatre .chat-container .chat-interface .emoticon-selector .emoticon-selector-box, .ember-chat .chat-interface .emoticon-selector .emoticon-selector-box, .conversation-input-bar .conversation-input-actions .emoticon-selector-container .emoticon-selector, .emoticon-selector-container .emoticon-selector .emoticon-selector-box {
     background-color: #191919;
     border-color: #191919;
 }
 
-.chat-container.dark .chat-interface .emoticon-selector .tabs, .app-main.theatre .chat-container .chat-interface .emoticon-selector .tabs, .ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .emotes .emoticon-grid .emote-set, .app-main.theatre .chat-container .chat-interface .emoticon-selector .emoticon-grid, .ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .emotes .emoticon-grid .emote-set {
+.chat-container.dark .chat-interface .emoticon-selector .tabs, .app-main.theatre .chat-container .chat-interface .emoticon-selector .tabs, .ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .emotes .emoticon-grid .emote-set, .app-main.theatre .chat-container .chat-interface .emoticon-selector .emoticon-grid, .ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .emotes .emoticon-grid .emote-set, .conversation-input-bar .conversation-input-actions .emoticon-selector-container .emoticon-selector .emotes .emoticon-grid .emote-set {
     background-color: #191919;
     border-color: #444;
     color: #d3d3d3;
 }
-.chat-container.dark .chat-interface .emoticon-selector .tabs .tab.active, .ember-chat .chat-interface .emoticon-selector .tabs .tab.active, .app-main.theatre .chat-container .chat-interface .emoticon-selector .tabs .tab.active {
+.chat-container.dark .chat-interface .emoticon-selector .tabs .tab.active, .ember-chat .chat-interface .emoticon-selector .tabs .tab.active, .app-main.theatre .chat-container .chat-interface .emoticon-selector .tabs .tab.active, .emoticon-selector .tabs .tab.active {
     border-color: #888;
     color: #aaa;
 }
-.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .tabs {
+.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .tabs, .emoticon-selector .tabs {
     border-color: #444;
     color: #d3d3d3;
     background-color:#191919;
@@ -1987,6 +1986,7 @@ span.subscribe-text {
 .ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .tabs .tab:hover {
     border-color: #888;
 }
+
 .ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .channel-emotes .subscribe-message {
     border-color: #444;
     color: #aaa;
@@ -1998,17 +1998,17 @@ span.subscribe-text {
     color: #888;
 }
 
-.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box input {
+.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box input, .emoticon-selector-container .emoticon-selector .emoticon-selector-box input {
     background-color: #282828;
     border-color: #444;
     color: #d3d3d3;
 }
 
-.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box input:focus {
+.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box input:focus, .emoticon-selector-container .emoticon-selector .emoticon-selector-box input:focus {
     box-shadow: 0 0 3px 1px #333;
 }
 
-.ember-chat .chat-interface .emoticon-selector ::-webkit-scrollbar-thumb {
+.ember-chat .chat-interface .emoticon-selector ::-webkit-scrollbar-thumb, .conversation-input-bar .conversation-input-actions .emoticon-selector-container .emoticon-selector ::-webkit-scrollbar-thumb, .conversation-content::-webkit-scrollbar-thumb, .conversations-list-inner::-webkit-scrollbar-thumb {
   background: rgba(255,255,255,0.7) !important;
 }
 
