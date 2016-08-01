@@ -1978,7 +1978,7 @@ span.subscribe-text {
     border-color: #888;
     color: #aaa;
 }
-.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .tabs, .emoticon-selector .tabs {
+.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .tabs, .emoticon-selector .emoticon-selector-box .tabs {
     border-color: #444;
     color: #d3d3d3;
     background-color:#191919;
