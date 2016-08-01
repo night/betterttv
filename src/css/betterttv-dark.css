@@ -2277,10 +2277,10 @@ span.subscribe-text {
     background-color: #232323;
 }
 
-/* Conversations Emote menue */
+/* Conversations Emote menu */
 .conversations-content .emoticon-selector .tabs .tab.active {
     color: #d3d3d3;
-    border-top: 1px solid #d3d3d3
+    border-top: 1px solid #d3d3d3;
 }
 
 /* Fix for white hover */
