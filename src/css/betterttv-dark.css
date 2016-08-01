@@ -2277,6 +2277,12 @@ span.subscribe-text {
     background-color: #232323;
 }
 
+/* Conversations Emote menue */
+.conversations-content .emoticon-selector .tabs .tab.active {
+    color: #d3d3d3;
+    border-top: 1px solid #d3d3d3
+}
+
 /* Fix for white hover */
 .tabs__fullwidth li:not(.selected) a:hover {
     background: #333;
