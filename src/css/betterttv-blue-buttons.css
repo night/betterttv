@@ -162,8 +162,50 @@ div#header_actions a.primary span {
     color: #005596;
 }
 
-.chat-buttons-container .button.js-chat-buttons__submit {
-    background: linear-gradient(bottom, rgb(47,88,185) 31%, rgb(50,108,211) 80%);
-    background: -moz-linear-gradient(bottom, rgb(47,88,185) 31%, rgb(50,108,211) 80%);
-    background: -webkit-linear-gradient(bottom, rgb(47,88,185) 31%, rgb(50,108,211) 80%);
+/* Fixes for #1294*/
+.chat-buttons-container .button.js-chat-buttons__submit, .warp__action--primary, .js-friends-onboarding .button, .player-content-button, 
+.ct-bar__item .follow-button, .following-games-onboarding .button, .profile-actions__button .button--dropmenu,
+.stay-sub-button, .message_actions_block .batch_btn, .js-message-form .button.cancel, .dash-player-contain .button.preview_visible, 
+.channel-feed-toggle .switch.active, .chat-create-room .button, .chat-invite-user .button, .button.js-two-factor-enable, 
+.setting_section .button, .profile-card__actions .follow-button.button, .profile-card__actions .friend-button .button, 
+.profile-card__actions .profile-card__whisper.button {
+    background: linear-gradient(bottom,rgb(47,88,185) 31%,rgb(50,108,211) 80%);
+    background: -moz-linear-gradient(bottom,rgb(47,88,185) 31%,rgb(50,108,211) 80%);
+    background: -webkit-linear-gradient(bottom,rgb(47,88,185) 31%,rgb(50,108,211) 80%);
+}
+
+.warp__action--primary:hover, .chat-buttons-container .button.js-chat-buttons__submit:hover, .js-friends-onboarding .button:hover, 
+.player-content-button:hover, .ct-bar__item .follow-button:hover, .following-games-onboarding .button:hover, 
+.profile-actions__button .button--dropmenu:hover, .stay-sub-button:hover, .message_actions_block .batch_btn:hover, 
+.js-message-form .button.cancel:hover, .dash-player-contain .button.preview_visible:hover, .channel-feed-toggle .switch.active:hover, 
+.chat-create-room .button:hover, .chat-invite-user .button:hover, .button.js-two-factor-enable:hover, 
+.setting_section .button:hover, .profile-card__actions .follow-button.button:hover, .profile-card__actions .friend-button .button:hover, 
+.profile-card__actions .profile-card__whisper.button:hover {
+    background: linear-gradient(bottom,rgba(47,88,185,0.9) 31%,rgba(50,108,211,0.9) 80%);
+    background: -moz-linear-gradient(bottom,rgba(47,88,185,0.9) 31%,rgba(50,108,211,0.9) 80%);
+    background: -webkit-linear-gradient(bottom,rgba(47,88,185,0.9) 31%,rgba(50,108,211,0.9) 80%);
+}
+
+.recent-past-broadcast, .player-column .feed-toggle-contain.brick, .player-column .brick.brick--marked {
+	border-left: 5px solid #2F58B9 !important;
+}
+
+.svg-onboarding #Fill-59 {
+	fill: #7A97CA;
+}
+
+.following-games-onboarding {
+	background: #17181c;
+}
+
+.balloon .balloon__link:hover {
+	background: #2F58B9 !important;
+}
+
+.message_actions_block .glyph-only.batch_btn {
+	background: none !important;
+}
+
+.recent-past-broadcast {
+	border-left: 5px solid #2F58B9;
 }
