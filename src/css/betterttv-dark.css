@@ -1968,21 +1968,21 @@ span.subscribe-text {
 }
 
 /* Twitch emote menu */
-.chat-container.dark .chat-interface .emoticon-selector .emoticon-selector-box, .app-main.theatre .chat-container .chat-interface .emoticon-selector .emoticon-selector-box, .ember-chat .chat-interface .emoticon-selector .emoticon-selector-box, .conversation-input-bar .conversation-input-actions .emoticon-selector-container .emoticon-selector, .emoticon-selector-container .emoticon-selector .emoticon-selector-box {
+.chat-container.dark .chat-interface .emoticon-selector .emoticon-selector-box, .app-main.theatre .chat-container .chat-interface .emoticon-selector .emoticon-selector-box, .ember-chat .chat-interface .emoticon-selector .emoticon-selector-box, .conversation-input-bar .conversation-input-actions .emoticon-selector-container .emoticon-selector {
     background-color: #191919;
     border-color: #191919;
 }
 
-.chat-container.dark .chat-interface .emoticon-selector .tabs, .app-main.theatre .chat-container .chat-interface .emoticon-selector .tabs, .ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .emotes .emoticon-grid .emote-set, .app-main.theatre .chat-container .chat-interface .emoticon-selector .emoticon-grid, .ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .emotes .emoticon-grid .emote-set, .conversation-input-bar .conversation-input-actions .emoticon-selector-container .emoticon-selector .emotes .emoticon-grid .emote-set {
+.chat-container.dark .chat-interface .emoticon-selector .tabs, .app-main.theatre .chat-container .chat-interface .emoticon-selector .tabs, .ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .emotes .emoticon-grid .emote-set, .app-main.theatre .chat-container .chat-interface .emoticon-selector .emoticon-grid, .ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .emotes .emoticon-grid .emote-set {
     background-color: #191919;
     border-color: #444;
     color: #d3d3d3;
 }
-.chat-container.dark .chat-interface .emoticon-selector .tabs .tab.active, .ember-chat .chat-interface .emoticon-selector .tabs .tab.active, .app-main.theatre .chat-container .chat-interface .emoticon-selector .tabs .tab.active, .emoticon-selector .tabs .tab.active {
+.chat-container.dark .chat-interface .emoticon-selector .tabs .tab.active, .ember-chat .chat-interface .emoticon-selector .tabs .tab.active, .app-main.theatre .chat-container .chat-interface .emoticon-selector .tabs .tab.active {
     border-color: #888;
     color: #aaa;
 }
-.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .tabs, .emoticon-selector .emoticon-selector-box .tabs {
+.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .tabs {
     border-color: #444;
     color: #d3d3d3;
     background-color:#191919;
