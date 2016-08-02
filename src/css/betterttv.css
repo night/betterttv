@@ -2009,3 +2009,7 @@ body.channel_new.columns.ember-application {
 #search-panel .resultView .collectionWrapper::-webkit-scrollbar-track {
     background: rgba(0,0,0,0);
 }
+
+#video-manager #highlighter {
+    padding: 0px;
+}
