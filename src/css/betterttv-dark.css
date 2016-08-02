@@ -1998,7 +1998,7 @@ span.subscribe-text {
     color: #888;
 }
 
-.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box input {
+.emoticon-selector .emoticon-selector-box input {
     background-color: #282828;
     border-color: #444;
     color: #d3d3d3;
