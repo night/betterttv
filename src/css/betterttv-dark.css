@@ -856,6 +856,10 @@ body {
     box-shadow: 0px -1px 0px rgba(255, 255, 255, 0.3) inset!important;
 }
 
+#main_col ul.nav.js-nav:before {
+    border-color: #676767;
+}
+
 #main_col .normal_button {
     background-color: rgb(30, 30, 30) !important;
     box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset!important;
@@ -2073,9 +2077,15 @@ span.subscribe-text {
     color: #d3d3d3;
 }
 
-#highlighter .highlight-content .form-container li input, #highlighter .highlight-content .form-container li textarea {
+#highlighter .highlight-content .form-container li input,
+#highlighter .highlight-content .form-container li textarea {
     background: #303030;
     color: #d3d3d3;
+    border-color: #676767;
+}
+
+#highlighter .created-highlights {
+    border-color: #676767;
 }
 
 /* playlists */
