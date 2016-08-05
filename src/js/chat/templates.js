@@ -51,7 +51,7 @@ var userMentions = exports.userMentions = function(message) {
         if (username.substring(username.length - 1) === ',') {
             username = username.slice(0, -1);
         }
-        if (username !== '' && store.chatters.hasOwnProperty(username.toLowerCase())) {
+        if (username !== '' && Object.hasOwnProperty.call(store.chatters, username.toLowerCase())) {
             return message.replace('@' + username, '<span class="user-mention">@' + username + '</span>');
         }
     }
@@ -227,14 +227,14 @@ var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message
         var test = piece.replace(/(^[~!@#$%\^&\*\(\)]+|[~!@#$%\^&\*\(\)]+$)/g, '');
         var emote = null;
 
-        if (store.bttvEmotes.hasOwnProperty(piece)) {
+        if (Object.hasOwnProperty.call(store.bttvEmotes, piece)) {
             emote = store.bttvEmotes[piece];
-        } else if (store.bttvEmotes.hasOwnProperty(test)) {
+        } else if (Object.hasOwnProperty.call(store.bttvEmotes, test)) {
             emote = store.bttvEmotes[test];
-        } else if (store.proEmotes.hasOwnProperty(sender)) {
-            if (store.proEmotes[sender].hasOwnProperty(piece)) {
+        } else if (Object.hasOwnProperty.call(store.proEmotes, sender)) {
+            if (Object.hasOwnProperty.call(store.proEmotes[sender], piece)) {
                 emote = store.proEmotes[sender][piece];
-            } else if (store.proEmotes[sender].hasOwnProperty(test)) {
+            } else if (Object.hasOwnProperty.call(store.proEmotes[sender], test)) {
                 emote = store.proEmotes[sender][test];
             }
         }
