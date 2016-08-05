@@ -194,13 +194,27 @@ var shiftQueue = exports.shiftQueue = throttle(function() {
             store.__messageQueue.splice(0, store.__messageQueue.length - bttv.settings.get('scrollbackAmount'));
         }
 
-        store.__messageQueue.forEach(function($message) {
+        var queue = store.__messageQueue;
+        var timeNow = Date.now();
+        var isMod = vars.userData.isLoggedIn && helpers.isModerator(vars.userData.name);
+        var delay = isMod ? 0 : rooms.getRoom(id).delay * 1000;
+        var messagesToPrint = [];
+
+        while (queue.length && timeNow - queue[0].date.getTime() >= delay) {
+            var $message = queue.shift().message;
+            messagesToPrint.push($message);
             $message.find('img').on('load', function() {
                 helpers.scrollChat();
             });
-        });
-        $('.ember-chat .chat-messages .tse-content .chat-lines').append(store.__messageQueue);
-        store.__messageQueue = [];
+        }
+
+        if (queue.length !== messagesToPrint.length) {
+            setTimeout(function() {
+                shiftQueue();
+            }, delay);
+        }
+
+        $('.ember-chat .chat-messages .tse-content .chat-lines').append(messagesToPrint);
     }
     helpers.scrollChat();
 }, 250, { trailing: true });
@@ -258,8 +272,8 @@ exports.clearChat = function(bttvRoom, user, info) {
             printedChatLines.push($(this));
         });
 
-        var queuedLines = store.__messageQueue.filter(function($message) {
-            if ($message.data('sender') === user) return true;
+        var queuedLines = store.__messageQueue.filter(function(m) {
+            if (m.message.data('sender') === user) return true;
             return false;
         });
 
@@ -267,7 +281,9 @@ exports.clearChat = function(bttvRoom, user, info) {
 
         if (!$chatLines.length && !isTarget) return;
 
-        if (bttv.settings.get('hideDeletedMessages') === true) {
+        if (bttv.settings.get('hideDeletedMessages') === true ||
+            (bttv.settings.get('showDeletedMessages') !== true && bttvRoom.delay)
+        ) {
             $chatLines.each(function() {
                 $(this).hide();
                 $('div.tipsy').remove();
@@ -387,7 +403,7 @@ var privmsg = exports.privmsg = function(channel, data) {
             color: '#555'
         }, {server: true, notice: true});
 
-        store.__messageQueue.push($(message));
+        store.__messageQueue.push({message: $(message), date: new Date(0)});
     }
 
     try {
@@ -522,7 +538,7 @@ var privmsg = exports.privmsg = function(channel, data) {
         notice: data.tags && data.tags['msg-id'] === 'resub'
     });
 
-    store.__messageQueue.push($(message));
+    store.__messageQueue.push({message: $(message), date: sender === vars.userData.name ? new Date(0) : data.date});
 };
 
 exports.onPrivmsg = function(channel, data) {

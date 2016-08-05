@@ -6,7 +6,7 @@ exports.blacklistFilter = function(data) {
     var blacklistKeywords = [];
     var blacklistUsers = [];
 
-    var keywords = bttv.settings.get('blacklistKeywords');
+    var keywords = bttv.settings.get('blacklistKeywords').toString();
     var phraseRegex = /\{.+?\}/g;
 
     var testCases;
@@ -61,7 +61,7 @@ exports.highlighting = function(data) {
     var highlightKeywords = [];
     var highlightUsers = [];
 
-    var extraKeywords = bttv.settings.get('highlightKeywords');
+    var extraKeywords = bttv.settings.get('highlightKeywords').toString();
     var phraseRegex = /\{.+?\}/g;
 
     var testCases;

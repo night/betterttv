@@ -74,6 +74,7 @@ var takeover = module.exports = function() {
 
     // Handle Channel Chat
     rooms.newRoom(bttv.getChannel());
+    rooms.getRoom(bttv.getChannel()).delay = 15;
     tmi.tmiRoom.on('message', rooms.getRoom(bttv.getChannel()).chatHandler);
     tmi.tmiRoom.on('clearchat', handlers.clearChat.bind(this, rooms.getRoom(bttv.getChannel())));
     tmi.tmiRoom.on('notice', handlers.notice);
