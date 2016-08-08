@@ -2425,9 +2425,12 @@ span.subscribe-text {
     background-color: #282828;
     color: #d3d3d3;
     border-color: #444;
+    box-shadow: #333 0 0 0 1px inset;
+
 }
 #left_col .warp input:focus {
     box-shadow: #666 0 0 0 1px inset;
+
 }
 
 #left_col .warp .warp__tabs:before {
@@ -2444,6 +2447,7 @@ span.subscribe-text {
 .profile-card--balloon .balloon:after {
     background-color: #282828;
 }
+
 
 /* darken split tabs */
 ul.tabs:before {
