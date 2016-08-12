@@ -22,7 +22,7 @@ a.js-follow.follow.button.primary.action:hover,
 .button.js-buy-bits, .button.js-two-factor-disable,
 .button.bits-buy--button, .button.subscribe-button,
 .js-subwindow-submit.button, .button#bits-learn-more, 
-.button.no-login-contain__button { 
+.button.no-login-contain__button, .button.follow-button.follow { 
     background: linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
     background: -o-linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
     background: -moz-linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
@@ -38,7 +38,6 @@ a.js-follow.follow.button.primary.action,
 .profile-info .follow-button a,
 #hostmode .channel-actions .follow-button a,
 .chat-room .moderation-card .mod-card-follow,
-.button.follow-button.follow,
 .ember-follow.follow-button:not(.is-following) a { 
     border-color: #000 !important;
     background: linear-gradient(bottom, rgb(47,88,185) 31%, rgb(50,108,211) 80%) !important; 
@@ -184,7 +183,7 @@ div#header_actions a.primary span {
 .js-message-form .button.cancel:hover, .dash-player-contain .button.preview_visible:hover, .channel-feed-toggle .switch.active:hover, 
 .chat-create-room .button:hover, .chat-invite-user .button:hover, .button.js-two-factor-enable:hover, 
 .setting_section .button:hover, .profile-card__actions .follow-button.button:hover, .profile-card__actions .friend-button .button:hover, 
-.profile-card__actions .profile-card__whisper.button:hover, {
+.profile-card__actions .profile-card__whisper.button:hover {
     background: linear-gradient(bottom,rgba(47,88,185,0.9) 31%,rgba(50,108,211,0.9) 80%);
     background: -moz-linear-gradient(bottom,rgba(47,88,185,0.9) 31%,rgba(50,108,211,0.9) 80%);
     background: -webkit-linear-gradient(bottom,rgba(47,88,185,0.9) 31%,rgba(50,108,211,0.9) 80%);
