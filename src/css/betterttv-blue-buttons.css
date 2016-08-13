@@ -18,14 +18,17 @@ a.js-follow.follow.button.primary.action:hover,
 .conversation-window.has-unread > .conversation-header,
 .conversations-list .notification-jewel,
 .conversation-window.has-focus .conversation-input-actions .button,
-.player-video__submit,
-.button.subscribe-button { 
+.player-video__submit, .button.js-set-switch, 
+.button.js-buy-bits, .button.js-two-factor-disable,
+.button.bits-buy--button, .button.subscribe-button,
+.js-subwindow-submit.button, .button#bits-learn-more, 
+.button.no-login-contain__button, .button.follow-button.follow { 
     background: linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
     background: -o-linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
     background: -moz-linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
     background: -webkit-linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
     background: -ms-linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
-} 
+}
 .button.primary,
 .primary_button,
 a.js-follow.follow.button.primary.action,
@@ -187,25 +190,25 @@ div#header_actions a.primary span {
 }
 
 .recent-past-broadcast, .player-column .feed-toggle-contain.brick, .player-column .brick.brick--marked {
-	border-left: 5px solid #2F58B9 !important;
+    border-left: 5px solid #2F58B9 !important;
 }
 
 .svg-onboarding #Fill-59 {
-	fill: #7A97CA;
+    fill: #7A97CA;
 }
 
 .following-games-onboarding {
-	background: #17181c;
+    background: #17181c;
 }
 
 .balloon .balloon__link:hover {
-	background: #2F58B9 !important;
+    background: #2F58B9 !important;
 }
 
 .message_actions_block .glyph-only.batch_btn {
-	background: none !important;
+    background: none !important;
 }
 
 .recent-past-broadcast {
-	border-left: 5px solid #2F58B9;
+    border-left: 5px solid #2F58B9;
 }
