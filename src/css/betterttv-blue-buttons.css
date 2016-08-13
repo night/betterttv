@@ -21,8 +21,9 @@ a.js-follow.follow.button.primary.action:hover,
 .player-video__submit, .button.js-set-switch, 
 .button.js-buy-bits, .button.js-two-factor-disable,
 .button.bits-buy--button, .button.subscribe-button,
-.js-subwindow-submit.button, .button#bits-learn-more, 
-.button.no-login-contain__button, .button.follow-button.follow { 
+.js-subwindow-submit.button, .button#bits-learn-more,
+.button.no-login-contain__button, .button.follow-button.follow, 
+.button.float-right, .button.button--file { 
     background: linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
     background: -o-linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
     background: -moz-linear-gradient(bottom, rgb(50,108,211) 31%, rgb(67,113,190) 80%) !important; 
@@ -211,4 +212,55 @@ div#header_actions a.primary span {
 
 .recent-past-broadcast {
     border-left: 5px solid #2F58B9;
+}
+
+/** Emote set button for turbo users when selected. */ 
+#emoticons #emote_switch .set-button.selected {
+    box-shadow: 0 0 0 2px #1661C9;
+}
+
+.no-login-contain li, .brick.mg-b-2.pd-r-4.pos-relative {
+    border-left: 3px solid #2F58B9 !important;
+}
+
+/** Login buttons and other buttons */
+.button, .switch.active {
+    background-color: #2F58B9 !important;
+}
+
+.button.button--icon-only.float-left {
+    background: rgb(20, 20, 20) !important;
+}
+
+/** buttons that dont need to be blue */
+.qa-share-box__button.share-box__button.button.button--text.button--dropmenu, 
+.qa-channel-options.button.button--icon-only.button--dropmenu,
+.follow-button.button.is-initialized.is-logged-out.button--icon {
+    background: rgb(30, 30, 30) !important;
+}
+
+/* Buttons that don't need a color. */
+.button.button--icon-only.chat-header__button.chat-header__button--left.tooltip, 
+.button.button--icon-only.float-right.create.tooltip, .button .button--icon-only .float-right .create .tooltip,
+.button.button--icon-only.close-button.chat-header__button.chat-header__button--left, 
+.button.button--icon-only.popout-button.chat-header__button.chat-header__button--right, 
+.conversations-list-icon.button.button--icon-only, .room, .chat_line a, 
+.ember-chat .chat-line a, .pin-tr.button.button--icon-only.button--secondary,
+.button.button--icon-only.button--secondary.activity-hover-control, 
+.conversations__button.conversations__button--icon.button.button--icon-only.conversations-list-item-archive,
+.button.button--icon-only.js-conversations-list-settings-toggle.conversations-list-settings-toggle,
+.button.button--icon-only.conversation-collapse-toggle, 
+.conversations__button.button.button--icon-only.conversation-settings-menu-toggle,
+.conversations__button.button.button--icon-only, 
+.button.button--icon-only.button--secondary, 
+.header_nick.button.button--text.button--dropmenu.drop, .button.button--text,
+.ember-view.friend-button.js-friend-button, .ignore.button.button--icon-only.tooltip,
+.timeout.button.button--icon-only.light.tooltip, .ban.button.button--icon-only.light.tooltip,
+.mod.button.button--icon-only.light.tooltip  {
+    background-color: transparent !important;
+}
+
+/** Games, Channels and videos button on the left panel */
+.warp__item--toggled>a {
+    box-shadow: 3px 0 0 #2F58B9 inset;
 }

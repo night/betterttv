@@ -2720,3 +2720,10 @@ ul.tabs li>a:hover, .directory_header .nav li>a:hover, ul.tabs li>button:hover, 
 #search-panel .resultView .collectionWrapper::-webkit-scrollbar-thumb {
     background: rgba(255,255,255,0.7);
 }
+
+/** Emote set button for turbo users. */ 
+.js-set-switch.set-button {
+    border: 1px solid #0A0A0A;
+    border-radius: 2px;
+    background-color: #121111 !important;
+}
