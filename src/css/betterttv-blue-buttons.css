@@ -241,7 +241,7 @@ div#header_actions a.primary span {
 
 /* Buttons that don't need a color. */
 .button.button--icon-only.chat-header__button.chat-header__button--left.tooltip, 
-.button.button--icon-only.float-right.create.tooltip, .button .button--icon-only .float-right .create .tooltip,
+.button.button--icon-only.float-right.create.tooltip,
 .button.button--icon-only.close-button.chat-header__button.chat-header__button--left, 
 .button.button--icon-only.popout-button.chat-header__button.chat-header__button--right, 
 .conversations-list-icon.button.button--icon-only, .room, .chat_line a, 
