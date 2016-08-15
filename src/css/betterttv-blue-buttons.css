@@ -235,7 +235,8 @@ div#header_actions a.primary span {
 /** buttons that dont need to be blue */
 .qa-share-box__button.share-box__button.button.button--text.button--dropmenu, 
 .qa-channel-options.button.button--icon-only.button--dropmenu,
-.follow-button.button.is-initialized.is-logged-out.button--icon {
+.follow-button.button.is-initialized.is-logged-out.button--icon,
+.follow-button.button.is-initialized.is-following.button--icon.button--icon-only.button--status {
     background: rgb(30, 30, 30) !important;
 }
 
