@@ -2720,3 +2720,22 @@ ul.tabs li>a:hover, .directory_header .nav li>a:hover, ul.tabs li>button:hover, 
 #search-panel .resultView .collectionWrapper::-webkit-scrollbar-thumb {
     background: rgba(255,255,255,0.7);
 }
+
+/*Carousel arrows on Discover page*/
+.carousel__button {
+    background-color: #222;
+}
+
+.carousel__arrow:before {
+    border-top: 2px solid #9283b5;
+    border-left: 2px solid #9283b5;
+}
+
+.carousel__button:hover {
+    background-color: #333;
+}
+
+.carousel__button:hover .carousel__arrow:before {
+    border-top: 2px solid #9283b5;
+    border-left: 2px solid #9283b5;
+}
