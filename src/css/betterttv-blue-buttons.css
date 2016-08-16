@@ -212,3 +212,21 @@ div#header_actions a.primary span {
 .recent-past-broadcast {
     border-left: 5px solid #2F58B9;
 }
+
+.warp__item--toggled>a {
+    box-shadow: 3px 0 0 #2F58B9 inset;
+}
+
+.card__body a:hover {
+    color: #2F58B9;
+}
+
+.carousel__arrow:before {
+    border-top: 2px solid #2F58B9 !important;
+    border-left: 2px solid #2F58B9 !important;
+}
+
+.carousel__button:hover .carousel__arrow:before {
+    border-top: 2px solid #2F58B9 !important;
+    border-left: 2px solid #2F58B9 !important;
+}
