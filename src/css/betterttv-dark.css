@@ -2721,7 +2721,7 @@ ul.tabs li>a:hover, .directory_header .nav li>a:hover, ul.tabs li>button:hover, 
     background: rgba(255,255,255,0.7);
 }
 
-/*Carousel arrows on Discover page*/
+/* discover page carousel arrows */
 .carousel__button {
     background-color: #222;
 }
