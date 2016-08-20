@@ -11,11 +11,6 @@ var conversationsClass = '.conversations-content';
 function Conversations(timeout) {
     timeout = timeout || 0;
 
-    if (bttv.settings.get('disableWhispers')) {
-        $('.conversations-content').hide();
-        return;
-    }
-
     if (!(this instanceof Conversations)) return new Conversations(0);
 
     var $conversations = $(conversationsClass);
@@ -27,6 +22,11 @@ function Conversations(timeout) {
         setTimeout(function() {
             return new Conversations(2 * timeout);
         }, 2 * timeout);
+        return;
+    }
+
+    if (bttv.settings.get('disableWhispers')) {
+        $('.conversations-content').hide();
         return;
     }
 
