@@ -31,7 +31,7 @@ module.exports = function(data) {
         'slapage': { mod: true, tagType: 'bot', tagName: 'I aM' },
         'eternal_nightmare': { mod: true, tagType: 'broadcaster', tagName: 'Spencer', nickname: 'Nickiforek' },
         'iivii_beauty': { mod: true, tagType: 'purple', tagName: 'Crave' },
-        'theefrenzy': { mod: true, tagType: 'staff', tagName: 'Handsome' },
+        'frenzy': { mod: true, tagType: 'staff', tagName: 'Handsome' },
         'gennousuke69': { mod: true, tagType: 'admin', tagName: 'Evil' },
         'zebbazombies': { mod: true, tagType: 'moderator', tagName: 'Hugs' },
         'nobama12345': { mod: true, tagType: 'broadcaster', tagName: 'Señor' },

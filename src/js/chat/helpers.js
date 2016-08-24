@@ -729,6 +729,7 @@ exports.assignBadges = function(badges, data) {
     data = data || {};
     var bttvBadges = [];
     var legacyTags = require('../legacy-tags')(data);
+    var hasBTTVBadge = false;
 
     // Legacy Swag Tags
     if (
@@ -751,6 +752,8 @@ exports.assignBadges = function(badges, data) {
             name: userData.tagName,
             description: 'Grandfathered BetterTTV Swag Tag'
         });
+
+        hasBTTVBadge = true;
     }
 
     if (badges.hasOwnProperty('staff')) {
@@ -779,13 +782,13 @@ exports.assignBadges = function(badges, data) {
             name: 'Bot',
             description: 'Channel Bot'
         });
-    } else if (badges.hasOwnProperty('broadcaster') && !legacyTags[data.from]) {
+    } else if (badges.hasOwnProperty('broadcaster') && !hasBTTVBadge) {
         bttvBadges.push({
             type: 'broadcaster',
             name: 'Host',
             description: 'Channel Broadcaster'
         });
-    } else if (badges.hasOwnProperty('moderator') && !legacyTags[data.from]) {
+    } else if (badges.hasOwnProperty('moderator') && !hasBTTVBadge) {
         bttvBadges.push({
             type: 'moderator',
             name: 'Mod',

@@ -2198,6 +2198,15 @@ span.subscribe-text {
     -webkit-box-shadow: 0 0 3px 1px #444;
 }
 
+.conversation-window .convoHeader {
+    background: rgb(30,30,30);
+    box-shadow: none;
+}
+
+.conversation-window.has-focus .convoHeader {
+    background-color: #303030;
+}
+
 /* conversations window */
 .conversations-content .conversation-window {
     background-color: rgb(35,35,35);

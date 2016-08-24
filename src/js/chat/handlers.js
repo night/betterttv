@@ -478,8 +478,7 @@ var privmsg = exports.privmsg = function(channel, data) {
         if (bttv.settings.get('darkenedMode') === true) data.color = data.color + '; text-shadow: 0 0 20px rgba(' + rgbColor.r + ',' + rgbColor.g + ',' + rgbColor.b + ',0.8)';
     }
 
-    var badges = helpers.getBadges(data.from);
-    var bttvBadges = helpers.assignBadges(badges || {}, data);
+    var bttvBadges = helpers.assignBadges(data.tags.badges || {}, data);
 
     var from = data.from;
     var sender = data.from;
