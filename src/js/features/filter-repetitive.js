@@ -7,11 +7,11 @@
 * A repetitive message is a message that repeats the same pattern more than three times.
 *
 * Example 1:
-* Input: SPAM Kappa SPAM Kappa SPAM Kappa SPAM Kappa SPAM Kappa SPAM Kappa 
+* Input: SPAM Kappa SPAM Kappa SPAM Kappa SPAM Kappa SPAM Kappa SPAM Kappa
 * Output: SPAM Kappa
 *
 * Example 2:
-* Input: 123 SPAM Kappa SPAM Kappa SPAM Kappa SPAM Kappa SPAM Kappa SPAM Kappa 
+* Input: 123 SPAM Kappa SPAM Kappa SPAM Kappa SPAM Kappa SPAM Kappa SPAM Kappa
 * Output: SPAM Kappa
 *
 * Example 3:
