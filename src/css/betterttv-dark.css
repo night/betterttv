@@ -2583,7 +2583,7 @@ ul.tabs li a:hover {
 }
 
 #emote-menu-button {
-    background-color: rgb(30,30,30);
+    background-color: rgb(30,30,30) !important;
 }
 
 ul.tabs li.selected a, .directory_header .nav li.selected a, ul.tabs li.selected button, .directory_header .nav li.selected button, ul.tabs_fake li.selected a, ul.tabs_fake li.selected button {
