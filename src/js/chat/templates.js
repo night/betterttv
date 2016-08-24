@@ -334,9 +334,10 @@ var message = exports.message = function(sender, msg, data) {
         msg = tokenizedMessage.join(' ');
     }
 
-    var filterRepetitive = require('../features/spam-filter.js').filterRepetitive;
-
-    msg = filterRepetitive(msg);
+    if (bttv.settings.get('filterRepetitive')) {
+        var filterRepetitive = require('../features/filter-repetitive.js');
+        msg = filterRepetitive(msg);
+    }
 
     var spam = false;
     if (bttv.settings.get('hideSpam') && helpers.isSpammer(sender) && !helpers.isModerator(sender) && !data.forced) {

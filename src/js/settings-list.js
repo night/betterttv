@@ -642,5 +642,11 @@ module.exports = [
                 chat.helpers.serverMessage('Chat scrollback is now set to: ' + lines, true);
             }
         }
+    },
+    {
+        name: 'Filter Repetitive Chat',
+        description: 'Trims repetitive chat messages so that they only display once',
+        default: false,
+        storageKey: 'filterRepetitive'
     }
 ];
