@@ -165,7 +165,7 @@ div#header_actions a.primary span {
     color: #005596;
 }
 
-/* Fixes for #1294*/
+/* Fixes for #1294 */
 .chat-buttons-container .button.js-chat-buttons__submit, .warp__action--primary, .js-friends-onboarding .button, .player-content-button, 
 .ct-bar__item .follow-button, .following-games-onboarding .button, .profile-actions__button .button--dropmenu,
 .stay-sub-button, .message_actions_block .batch_btn, .js-message-form .button.cancel, .dash-player-contain .button.preview_visible, 
@@ -211,4 +211,23 @@ div#header_actions a.primary span {
 
 .recent-past-broadcast {
     border-left: 5px solid #2F58B9;
+}
+
+nav .warp__item--toggled>a {
+    box-shadow: 3px 0 0 #2F58B9 inset;
+}
+
+/* discover page carousel */
+.card__body a:hover {
+    color: #2F58B9;
+}
+
+.carousel__arrow:before {
+    border-top: 2px solid #2F58B9;
+    border-left: 2px solid #2F58B9;
+}
+
+.carousel__button:hover .carousel__arrow:before {
+    border-top: 2px solid #2F58B9;
+    border-left: 2px solid #2F58B9;
 }
