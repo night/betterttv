@@ -277,7 +277,7 @@ var getEmoteId = function($emote) {
 
     if (!src) return null;
 
-    src = /(https?:)?\/\/static-cdn.jtvnw.net\/emoticons\/v1\/([0-9]+)/.exec(src);
+    src = /^(?:https?:)?\/\/static-cdn.jtvnw.net\/emoticons\/v1\/([0-9]+)/.exec(src);
 
     return src ? src[1] : null;
 };
