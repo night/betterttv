@@ -1976,10 +1976,14 @@ body.channel_new.columns.ember-application {
     background-color: transparent;
 }
 
-/* bits card */
+/* bits */
 
 .bits-card {
     width: 100%;
+}
+
+.ember-chat .chat-interface .textarea-contain textarea {
+    padding-right: 50px;
 }
 
 /* chat notice style */
