@@ -736,7 +736,7 @@ exports.assignBadges = function(badges, data) {
     var legacyTags = require('../legacy-tags')(data);
     var hasBTTVBadge = false;
 
-    Object.assign(badges, getBTTVBadges());
+    Object.assign(badges, getBTTVBadges(data.from));
 
     // Legacy Swag Tags
     if (
