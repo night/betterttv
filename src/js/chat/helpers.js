@@ -504,10 +504,10 @@ exports.isIgnored = function(user) {
     return tmi() && tmi().tmiSession.isIgnored(user);
 };
 
-var getBTTVBadges = exports.getBTTVBadges = function(user) {
+var getBTTVBadges = exports.getBTTVBadges = function(user, isMod) {
     var badges = {};
     if (store.__subscriptions[user] && store.__subscriptions[user].indexOf(bttv.getChannel()) !== -1) badges.subscriber = '1';
-    if ((store.__channelBots.indexOf(user) > -1 || bots.indexOf(user) > -1) && badges.hasOwnProperty('moderator')) badges.bot = '1';
+    if ((store.__channelBots.indexOf(user) > -1 || bots.indexOf(user) > -1) && isMod) badges.bot = '1';
     return badges;
 };
 
@@ -515,7 +515,7 @@ var getBadges = exports.getBadges = function(user) {
     var badges = {};
     if (!user || user === '') return badges;
     if (tmi() && tmi().tmiRoom.getBadges(user)) badges = tmi().tmiRoom.getBadges(user);
-    return Object.assign(getBTTVBadges(), badges);
+    return Object.assign(getBTTVBadges(user, badges.hasOwnProperty('moderator')), badges);
 };
 
 var isOwner = exports.isOwner = function(user) {
@@ -736,7 +736,7 @@ exports.assignBadges = function(badges, data) {
     var legacyTags = require('../legacy-tags')(data);
     var hasBTTVBadge = false;
 
-    Object.assign(badges, getBTTVBadges());
+    Object.assign(badges, getBTTVBadges(data.from, badges.hasOwnProperty('moderator')));
 
     // Legacy Swag Tags
     if (
