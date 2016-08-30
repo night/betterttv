@@ -2272,6 +2272,10 @@ span.subscribe-text {
     border-bottom: solid 1px #000;
 }
 
+.conversation-window .convoHeader .rich-presence {
+    color: #696969;
+}
+
 /* conversations setting menu */
 .conversations-content .conversation-settings-menu {
     background-color: #383838;
