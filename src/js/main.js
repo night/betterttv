@@ -7,6 +7,8 @@ var debug = require('./helpers/debug'),
     Storage = require('./storage'),
     Settings = require('./settings');
 
+require('es6-object-assign').polyfill();
+
 bttv.info = {
     version: '6.8',
     release: 55,
