@@ -35,7 +35,7 @@ body.dark, body.dark #clips-app-root {
     color: #d3d3d3;
 }
 
-/* darken header dropdown menu hover*/
+/* darken header menu hover */
 .dark .balloon .balloon__link:hover {
     background-color: #282828 !important; 
 }
@@ -49,13 +49,9 @@ body.dark, body.dark #clips-app-root {
     box-shadow: inset 0 -1px 0 #777;
 }
 
-/* remove unnecessary purple */ 
+/* remove unnecessary purple */
 .dark .tabs__item--active, .dark .tabs__item:hover {
     box-shadow: inset 0 -1px 0 #d3d3d3;
-}
-
-.dark .table__header .table__cell {
-    color: #ccc;
 }
 
 /* alternating table rows */
@@ -77,6 +73,10 @@ body.dark, body.dark #clips-app-root {
 }
 
 /* darken all table text */
+.dark .table__header .table__cell {
+    color: #ccc;
+}
+
 .dark .table__cell {
     color: #888;
 }
@@ -98,17 +98,13 @@ body.dark, body.dark #clips-app-root {
     fill: #d3d3d3;
 }
 
-/* remove shadow on player */
-.dark .clip-wrap {
-    box-shadow: none;
-}
-
-/* darken more text/input box */
+/* darken share dropdown menu */
 .dark .top-share-container .balloon-wrapper .balloon, .dark .top-share-container .balloon-wrapper .balloon:after {
     background-color: rgb(30, 30, 30);
 }
 
-.dark .balloon input {
+/* input, select and textarea boxes */
+.dark .balloon input, .dark .modal .js-report-content-modal select, .dark .modal .js-report-content-modal textarea {
     background: #3b3b3b;
     border: 1px solid rgba(0,0,0,0.35);
     color: #d4d4d4
@@ -125,14 +121,14 @@ body.dark, body.dark #clips-app-root {
 }
 
 .dark .clip-card .broadcaster-info .button {
-    background-color: #333;
+    background-color: rgb(30,30,30);
 }
 
 .dark .clip-card .broadcaster-info .follow-btn {
     background-color: rgb(20, 20, 20)
 }
 
-/* remove clip model */
+/* darken remove and report popup */
 .dark .modal {
     background-color: rgba(30,30,30,.85);
 }
@@ -149,19 +145,29 @@ body.dark, body.dark #clips-app-root {
     border-top: 1px solid #333;
 }
 
- /* red color remove button */
-.dark .modal .modal__content .button {
+ /* red remove and report button */
+.dark .modal .modal__content .js-form-send-button, .dark .modal .modal__content .js-report-send-button {
     background-color: #fc3636;
-}
+} 
 
-/* black player back instead of purple */
-.dark .video-loading  {
-    background: #000;
+/* red report link */
+.dark .player-menu .balloon__list .js-report-clip-option {
+        color: #fc3636 !important;
 }
 
 /* text color that is not covered by body */
 .dark .curator, .dark .modal .modal-title {
     color: #d3d3d3;
+}
+
+/* remove shadow on player */
+.dark .clip-wrap {
+    box-shadow: none;
+}
+
+/* black player back instead of purple */
+.dark .video-loading  {
+    background: #000;
 }
 
 /* invert Twitch logo */
