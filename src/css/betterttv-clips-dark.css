@@ -1,6 +1,6 @@
 /* darken most things */
 body.dark, body.dark #clips-app-root {
-    background: rgb(30,30,30);
+    background: rgb(20,20,20);
     color: #d3d3d3;
 }
 
@@ -16,7 +16,7 @@ body.dark, body.dark #clips-app-root {
 
 /* darken header */
 .dark .nav.js-navigation {
-    background: #333;
+    background: rgb(30, 30, 30);
     border-bottom: 1px solid #444;
 }
 
@@ -35,6 +35,11 @@ body.dark, body.dark #clips-app-root {
     color: #d3d3d3;
 }
 
+/* darken header menu hover */
+.dark .balloon .balloon__link:hover {
+    background-color: #282828 !important; 
+}
+
 /* darken tabs bottom border */
 .dark .tabs {
     box-shadow: inset 0 -1px 0 #666;
@@ -44,26 +49,22 @@ body.dark, body.dark #clips-app-root {
     box-shadow: inset 0 -1px 0 #777;
 }
 
-/* bring back the purple */
-.dark .tabs__item:hover, .dark .tabs__item.tabs__item--active {
-    box-shadow: inset 0 -1px 0 #6441a5;
+/* remove unnecessary purple */
+.dark .tabs__item--active, .dark .tabs__item:hover {
+    box-shadow: inset 0 -1px 0 #d3d3d3;
 }
 
-.dark .table__header .table__cell {
-    color: #ccc;
+/* alternating table rows */
+.dark .table .table__row:nth-child(even) {
+    background: rgb(25, 25, 25);
 }
 
-/* darkening table */
-.dark .table__header {
-    background:#222;
+.dark .table .table__row:nth-child(odd) {
+    background: rgb(35, 35, 35);
 }
 
-.dark .table__row:nth-child(even) {
-    background: #333;
-}
-
-.dark .table__row:nth-child(odd) {
-    background: #444;
+.dark .table .table__row, .dark .table .table__header {
+    background-color: rgb(30, 30, 30);
 }
 
 /* table borders */
@@ -72,11 +73,90 @@ body.dark, body.dark #clips-app-root {
 }
 
 /* darken all table text */
+.dark .table__header .table__cell {
+    color: #ccc;
+}
+
 .dark .table__cell {
     color: #888;
 }
 
 .dark .content-wrap .centered-col p {
+    color: #d3d3d3;
+}
+
+/* my_clips preview window */
+.dark .previewer {
+    background: rgba(30, 30, 30, .85);
+}
+
+.dark .previewer .previewer__pane {
+    background: rgb(20, 20, 20);
+}
+
+.dark .previewer .previewer__close {
+    fill: #d3d3d3;
+}
+
+/* darken share dropdown menu */
+.dark .top-share-container .balloon-wrapper .balloon, .dark .top-share-container .balloon-wrapper .balloon:after {
+    background-color: rgb(30, 30, 30);
+}
+
+/* input, select and textarea boxes */
+.dark .balloon input, .dark .modal .js-report-content-modal select, .dark .modal .js-report-content-modal textarea {
+    background: #3b3b3b;
+    border: 1px solid rgba(0,0,0,0.35);
+    color: #d4d4d4
+}
+
+.dark .balloon label {
+    font-weight: 700;
+    color: #d3d3d3;
+}
+
+/* all the buttons */
+.dark .clip-card .follow-btn:hover, .dark .curator-info .js-share-link-options-button:hover {
+    background-color: rgba(35, 35, 35, 0.3);
+}
+
+.dark .clip-card .broadcaster-info .button {
+    background-color: rgb(30,30,30);
+}
+
+.dark .clip-card .broadcaster-info .follow-btn {
+    background-color: rgb(20, 20, 20)
+}
+
+/* darken remove and report popup */
+.dark .modal {
+    background-color: rgba(30,30,30,.85);
+}
+
+.dark .modal .modal__content {
+    background-color: rgb(40, 40, 40);
+}
+
+.dark .player .player-controls-bottom .balloon, .dark .player .player-controls-bottom .balloon:after {
+    background-color: rgb(30, 30, 30);
+}
+
+.dark .modal .modal__content hr, .dark .balloon__list .balloon__stroke {
+    border-top: 1px solid #333;
+}
+
+ /* red remove and report button */
+.dark .modal .modal__content .js-form-send-button, .dark .modal .modal__content .js-report-send-button {
+    background-color: #fc3636;
+} 
+
+/* red report link */
+.dark .player-menu .balloon__list .js-report-clip-option {
+        color: #fc3636 !important;
+}
+
+/* text color that is not covered by body */
+.dark .curator, .dark .modal .modal-title {
     color: #d3d3d3;
 }
 
@@ -88,11 +168,6 @@ body.dark, body.dark #clips-app-root {
 /* black player back instead of purple */
 .dark .video-loading  {
     background: #000;
-}
-
-/* text color that is not covered by body */
-.dark .curator {
-    color: #d3d3d3;
 }
 
 /* invert Twitch logo */
