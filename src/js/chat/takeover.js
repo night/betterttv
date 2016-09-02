@@ -74,6 +74,7 @@ var takeover = module.exports = function() {
 
     // Handle Channel Chat
     rooms.newRoom(bttv.getChannel());
+    rooms.getRoom(bttv.getChannel()).delay = tmi.roomProperties.chat_delay_duration;
     tmi.tmiRoom.on('message', rooms.getRoom(bttv.getChannel()).chatHandler);
     tmi.tmiRoom.on('clearchat', handlers.clearChat.bind(this, rooms.getRoom(bttv.getChannel())));
     tmi.tmiRoom.on('notice', handlers.notice);
@@ -124,7 +125,10 @@ var takeover = module.exports = function() {
 
     // Load spammer list
     $.getJSON('https://api.betterttv.net/2/spammers').done(function(data) {
-        store.spammers = data.users;
+        store.spammers = [];
+        for (var i = 0; i < data.users.length; i++) {
+            store.spammers.push(data.users[i].name);
+        }
     });
     $('body').off('click', '.chat-line .message.spam').on('click', '.chat-line .message.spam', function() {
         var user = $(this).parent().data('sender');
@@ -180,6 +184,18 @@ var takeover = module.exports = function() {
         $('div.tipsy').remove();
     });
 
+    // hover over emoji images
+    $('body').off('mouseover', '.chat-line .emoji').on('mouseover', '.chat-line .emoji', function() {
+        $(this).tipsy({
+            trigger: 'manual',
+            gravity: 's'
+        });
+        $(this).tipsy('show');
+    }).off('mouseout', '.chat-line .emoji').on('mouseout', '.chat-line .emoji', function() {
+        $(this).tipsy('hide');
+        $('div.tipsy').remove();
+    });
+
     // Make Timeout/Ban/Unban buttons work and Turbo/Subscriber clickable
     $('body').off('click', '.chat-line .mod-icons .timeout').on('click', '.chat-line .mod-icons .timeout', function() {
         helpers.timeout($(this).parents('.chat-line').data('sender'));
@@ -210,7 +226,7 @@ var takeover = module.exports = function() {
 
     // Make names clickable
     var clickCounter = 0;
-    $('body').off('click', '.chat-line .from').on('click', '.chat-line .from, .chat-line .user-mention', function(e) {
+    $('body').off('click', '.chat-line .from, .chat-line .user-mention').on('click', '.chat-line .from, .chat-line .user-mention', function(e) {
         if (e.shiftKey) return;
 
         var $element = $(this);
@@ -280,7 +296,7 @@ var takeover = module.exports = function() {
 
     var $chatInterface = $('.ember-chat .chat-interface');
     var $chatInput = $chatInterface.find('textarea');
-    var $chatSend = $chatInterface.find('.button.primary.float-right');
+    var $chatSend = $chatInterface.find('.js-chat-buttons__submit');
 
     // Limit chat input to 500 characters
     $chatInput.attr('maxlength', '500');
@@ -350,8 +366,12 @@ var takeover = module.exports = function() {
         helpers.chatLineHistory($chatInput, e);
     });
     $chatSend.on('click', function(e) {
+        // Prevents Twitch's event handlers from running on this click
+        e.stopImmediatePropagation();
+
         var val = $chatInput.val().trim(),
             bttvCommand = false;
+
         if (!val.length) return;
 
         if (val.charAt(0) === '/') {
@@ -360,8 +380,6 @@ var takeover = module.exports = function() {
 
         if (!bttvCommand) {
             helpers.sendMessage(val);
-        } else {
-            e.stopPropagation();
         }
 
         if (bttv.settings.get('chatLineHistory') === true) {
@@ -430,45 +448,44 @@ var takeover = module.exports = function() {
 
     // Keycode to quickly timeout users
     $(window).off('keydown').on('keydown', function(e) {
-        var keyCode = e.keyCode || e.which;
-
         if ($('.bttv-mod-card').length && bttv.settings.get('modcardsKeybinds') === true) {
+            var keyCode = e.keyCode || e.which;
             var user = $('.bttv-mod-card').data('user');
-            switch (keyCode) {
-                case keyCodes.Esc:
-                    $('.bttv-mod-card').remove();
-                    break;
-                case keyCodes.t:
-                    helpers.timeout(user);
-                    $('.bttv-mod-card').remove();
-                    break;
-                case keyCodes.p:
-                    helpers.timeout(user, 1);
-                    $('.bttv-mod-card').remove();
-                    break;
-                case keyCodes.a:
-                    helpers.sendMessage('!permit ' + user);
-                    $('.bttv-mod-card').remove();
-                    break;
-                case keyCodes.u:
-                    helpers.sendMessage('/unban ' + user);
-                    $('.bttv-mod-card').remove();
-                    break;
-                case keyCodes.b:
-                    helpers.ban(user);
-                    $('.bttv-mod-card').remove();
-                    break;
-                case keyCodes.i:
-                    helpers.sendMessage('/ignore ' + user);
-                    $('.bttv-mod-card').remove();
-                    break;
-                case keyCodes.w:
-                    e.preventDefault();
-                    $chatInput = $('.ember-chat .chat-interface').find('textarea');
-                    $chatInput.val('/w ' + user + ' ');
-                    $chatInput.focus();
-                    $('.bttv-mod-card').remove();
-                    break;
+            var isMod = vars.userData.isLoggedIn && helpers.isModerator(vars.userData.name);
+
+            if (keyCode === keyCodes.Esc) {
+                $('.bttv-mod-card').remove();
+            }
+            if (keyCode === keyCodes.t && isMod) {
+                helpers.timeout(user);
+                $('.bttv-mod-card').remove();
+            }
+            if (keyCode === keyCodes.p && isMod) {
+                helpers.timeout(user, 1);
+                $('.bttv-mod-card').remove();
+            }
+            if (keyCode === keyCodes.a && isMod) {
+                helpers.sendMessage('!permit ' + user);
+                $('.bttv-mod-card').remove();
+            }
+            if (keyCode === keyCodes.u && isMod) {
+                helpers.sendMessage('/unban ' + user);
+                $('.bttv-mod-card').remove();
+            }
+            if (keyCode === keyCodes.b && isMod) {
+                helpers.ban(user);
+                $('.bttv-mod-card').remove();
+            }
+            if (keyCode === keyCodes.i) {
+                helpers.sendMessage('/ignore ' + user);
+                $('.bttv-mod-card').remove();
+            }
+            if (keyCode === keyCodes.w) {
+                e.preventDefault();
+                $chatInput = $('.ember-chat .chat-interface').find('textarea');
+                $chatInput.val('/w ' + user + ' ');
+                $chatInput.focus();
+                $('.bttv-mod-card').remove();
             }
         }
     });

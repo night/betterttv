@@ -1,6 +1,9 @@
 var tmi = require('./tmi'),
     store = require('./store'),
-    helpers = require('./helpers');
+    helpers = require('./helpers'),
+    twemoji = require('twemoji'),
+    regexUtils = require('../helpers/regex'),
+    blacklistedEmoji = require('../helpers/emoji-blacklist.json');
 
 var badge = exports.badge = function(type, name, description, action) {
     var classes = type + '' + ((bttv.settings.get('alphaTags') && ['admin', 'global-moderator', 'staff', 'broadcaster', 'moderator', 'turbo', 'ign'].indexOf(type) !== -1) ? ' alpha' + (!bttv.settings.get('darkenedMode') ? ' invert' : '') : '') + ' badge';
@@ -48,7 +51,7 @@ var userMentions = exports.userMentions = function(message) {
         if (username.substring(username.length - 1) === ',') {
             username = username.slice(0, -1);
         }
-        if (username !== '' && store.chatters.hasOwnProperty(username.toLowerCase())) {
+        if (username !== '' && Object.hasOwnProperty.call(store.chatters, username.toLowerCase())) {
             return message.replace('@' + username, '<span class="user-mention">@' + username + '</span>');
         }
     }
@@ -86,6 +89,8 @@ var escapeEmoteCode = function(code) {
 };
 
 var emoticonBTTV = exports.emoticonBTTV = function(emote) {
+    if (!emote.urlTemplate) return emote.code;
+
     var channel = emote.channel ? 'data-channel="' + emote.channel + '" ' : '';
     var type = emote.type ? 'data-type="' + emote.type + '" ' : '';
     return '<img class="emoticon bttv-emo-' + emote.id + '" src="' + emote.urlTemplate.replace('{{image}}', '1x') + '" srcset="' + emote.urlTemplate.replace('{{image}}', '2x') + ' 2x" ' + type + channel + 'alt="' + escapeEmoteCode(emote.code) + '" />';
@@ -168,6 +173,25 @@ var emoticonize = exports.emoticonize = function(message, emotes) {
     return tokenizedMessage;
 };
 
+var parseEmoji = function(piece) {
+    return twemoji.parse(piece, {
+        callback: function(icon, options) {
+            switch (icon) {
+                case 'a9': // ©
+                case 'ae': // ®
+                case '2122': // ™
+                    return false;
+            }
+            return ''.concat(options.base, options.size, '/', icon, options.ext);
+        },
+        attributes: function() {
+            return {
+                'data-type': 'emoji'
+            };
+        }
+    });
+};
+
 var bttvEmoticonize = exports.bttvEmoticonize = function(message, emote, sender) {
     if (emote.restrictions) {
         if (emote.restrictions.channels.length && emote.restrictions.channels.indexOf(bttv.getChannel()) === -1) return message;
@@ -177,10 +201,15 @@ var bttvEmoticonize = exports.bttvEmoticonize = function(message, emote, sender)
         if (emote.restrictions.emoticonSet && emoteSets.indexOf(emote.restrictions.emoticonSet) === -1) return message;
     }
 
-    return message.replace(emote.code, emoticonBTTV(emote));
+    return message.replace(emote.code, emote.type === 'emoji' ? parseEmoji(message) : emoticonBTTV(emote));
 };
 
 var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message, bits) {
+    // filter blacklisted emojis
+    blacklistedEmoji.forEach(function(emoji) {
+        message = regexUtils.stripAll(message, emoji);
+    });
+
     var tokenizedString = message.trim().split(' ');
 
     for (var i = 0; i < tokenizedString.length; i++) {
@@ -198,30 +227,41 @@ var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message
         var test = piece.replace(/(^[~!@#$%\^&\*\(\)]+|[~!@#$%\^&\*\(\)]+$)/g, '');
         var emote = null;
 
-        if (store.bttvEmotes.hasOwnProperty(piece)) {
+        if (Object.hasOwnProperty.call(store.bttvEmotes, piece)) {
             emote = store.bttvEmotes[piece];
-        } else if (store.bttvEmotes.hasOwnProperty(test)) {
+        } else if (Object.hasOwnProperty.call(store.bttvEmotes, test)) {
             emote = store.bttvEmotes[test];
-        } else if (store.proEmotes.hasOwnProperty(sender)) {
-            if (store.proEmotes[sender].hasOwnProperty(piece)) {
+        } else if (Object.hasOwnProperty.call(store.proEmotes, sender)) {
+            if (Object.hasOwnProperty.call(store.proEmotes[sender], piece)) {
                 emote = store.proEmotes[sender][piece];
-            } else if (store.proEmotes[sender].hasOwnProperty(test)) {
+            } else if (Object.hasOwnProperty.call(store.proEmotes[sender], test)) {
                 emote = store.proEmotes[sender][test];
             }
         }
 
         if (
             emote &&
-            emote.urlTemplate &&
             bttv.settings.get('bttvEmotes') === true &&
             (emote.imageType === 'png' || (emote.imageType === 'gif' && bttv.settings.get('bttvGIFEmotes') === true))
         ) {
             piece = bttvEmoticonize(piece, emote, sender);
         } else {
+            // escape is always first, otherwise you're going to
+            // create a security vuln..
             piece = escape(piece);
-            piece = linkify(piece);
-            piece = userMentions(piece);
-            piece = parseBits(piece, bits);
+
+            // parse only one of the replacers, otherwise you're going to
+            // create a security vuln..
+            var pieceReplacements = [linkify, userMentions, parseBits, parseEmoji];
+            var newPiece;
+            for (var j = 0; j < pieceReplacements.length; j++) {
+                newPiece = pieceReplacements[j](piece, bits);
+
+                if (piece !== newPiece) {
+                    piece = newPiece;
+                    break;
+                }
+            }
         }
 
         tokenizedString[i] = piece;
@@ -237,7 +277,7 @@ var getEmoteId = function($emote) {
 
     if (!src) return null;
 
-    src = /^\/\/static-cdn.jtvnw.net\/emoticons\/v1\/([0-9]+)/.exec(src);
+    src = /^(?:https?:)?\/\/static-cdn.jtvnw.net\/emoticons\/v1\/([0-9]+)/.exec(src);
 
     return src ? src[1] : null;
 };
@@ -246,10 +286,13 @@ exports.bttvElementTokenize = function(senderEl, messageEl) {
     var newTokens = [];
     var tokens = $(messageEl).contents();
     var sender = $(senderEl).text().trim().toLowerCase();
+
+    if (!store.chatters[sender]) store.chatters[sender] = {lastWhisper: 0};
+
     for (var i = 0; i < tokens.length; i++) {
         if (tokens[i].nodeType === window.Node.TEXT_NODE) {
             newTokens.push(bttvMessageTokenize(sender, tokens[i].data));
-        } else if (tokens[i].nodeType === window.Node.ELEMENT_NODE && $(tokens[i]).children('.emoticon')) {
+        } else if (tokens[i].nodeType === window.Node.ELEMENT_NODE && $(tokens[i]).children('.emoticon').length) {
             // this remakes Twitch's emoticon because they steal on-hover in ember-bound elements
             var $emote = $(tokens[i]).children('.emoticon');
             newTokens.push(emoticon(getEmoteId($emote), $emote.attr('alt')));
@@ -275,13 +318,14 @@ var message = exports.message = function(sender, msg, data) {
     data = data || {};
     var emotes = data.emotes;
     var colored = data.colored;
+    var bits = data.bits;
     var rawMessage = encodeURIComponent(msg);
 
     if (sender !== 'jtv') {
         var tokenizedMessage = emoticonize(msg, data.emotes);
         for (var i = 0; i < tokenizedMessage.length; i++) {
             if (typeof tokenizedMessage[i] === 'string') {
-                tokenizedMessage[i] = bttvMessageTokenize(sender, tokenizedMessage[i], data.bits);
+                tokenizedMessage[i] = bttvMessageTokenize(sender, tokenizedMessage[i], bits);
             } else {
                 tokenizedMessage[i] = tokenizedMessage[i][0];
             }
@@ -291,12 +335,12 @@ var message = exports.message = function(sender, msg, data) {
     }
 
     var spam = false;
-    if (bttv.settings.get('hideSpam') && helpers.isSpammer(sender) && !helpers.isModerator(sender) && !data.force) {
+    if (bttv.settings.get('hideSpam') && helpers.isSpammer(sender) && !helpers.isModerator(sender) && !data.forced) {
         msg = '<span class="deleted">&lt;spam deleted&gt;</span>';
         spam = true;
     }
 
-    return '<span class="message ' + (spam ? 'spam' : '') + '" ' + (colored ? 'style="color: ' + colored + '" ' : '') + 'data-raw="' + rawMessage + '" data-emotes="' + (emotes ? encodeURIComponent(JSON.stringify(emotes)) : 'false') + '">' + msg + '</span>';
+    return '<span class="message ' + (spam ? 'spam' : '') + '" ' + (colored ? 'style="color: ' + colored + '" ' : '') + 'data-raw="' + rawMessage + '" data-bits="' + (bits ? encodeURIComponent(JSON.stringify(bits)) : 'false') + '" data-emotes="' + (emotes ? encodeURIComponent(JSON.stringify(emotes)) : 'false') + '">' + msg + '</span>';
 };
 
 exports.privmsg = function(data, opts) {

@@ -92,7 +92,7 @@ var checkFollowing = module.exports = function() {
             var $count = $('<div/>');
             $count.addClass('js-total');
             $count.attr('id', 'bttv-follow-count');
-            $count.insertBefore('.warp a.warp__tipsy[data-tt_content="directory_following"] figure');
+            $count.insertBefore('a[data-tt_content="directory_following"] figure');
         }
 
         $('#bttv-follow-count').text(streams.length);

@@ -1,5 +1,6 @@
 var vars = require('../vars'),
     debug = require('../helpers/debug'),
+    regexUtils = require('../helpers/regex'),
     store = require('./store'),
     tmi = require('./tmi'),
     helpers = require('./helpers'),
@@ -9,7 +10,8 @@ var vars = require('../vars'),
     pinnedHighlights = require('../features/pinned-highlights'),
     embeddedPolling = require('../features/embedded-polling'),
     channelState = require('../features/channel-state'),
-    audibleFeedback = require('../features/audible-feedback');
+    audibleFeedback = require('../features/audible-feedback'),
+    blacklistedEmoji = require('../helpers/emoji-blacklist.json');
 
 // Helper Functions
 var getRgb = require('../helpers/colors').getRgb;
@@ -39,6 +41,13 @@ exports.commands = function(input) {
         }).fail(function() {
             helpers.serverMessage('Could not fetch chatter count.', true);
         });
+    } else if (command === '/followed') {
+        if (vars.userData.isLoggedIn) {
+            var chan = sentence.length > 1 ? sentence[1] : bttv.getChannel();
+            helpers.followDate(vars.userData.name, chan);
+        } else {
+            helpers.serverMessage('You need to be logged in to use this command', true);
+        }
     } else if (command === '/followers') {
         bttv.TwitchAPI.get('channels/' + bttv.getChannel() + '/follows').done(function(channel) {
             helpers.serverMessage('Current Followers: ' + Twitch.display.commatize(channel._total), true);
@@ -114,6 +123,7 @@ exports.commands = function(input) {
         helpers.serverMessage('BetterTTV Chat Commands:');
         helpers.serverMessage('/b [username] -- Shortcut for /ban');
         helpers.serverMessage('/chatters -- Tells you how many users are currently in chat');
+        helpers.serverMessage('/followed -- Tells you for how long you have been following a channel');
         helpers.serverMessage('/followers -- Retrieves the number of followers for the channel');
         helpers.serverMessage('/join -- Joins the channel (deactivates anon chat mode)');
         helpers.serverMessage('/linehistory on/off -- Toggles the chat field history (pressing up/down arrow in textbox)');
@@ -184,13 +194,27 @@ var shiftQueue = exports.shiftQueue = throttle(function() {
             store.__messageQueue.splice(0, store.__messageQueue.length - bttv.settings.get('scrollbackAmount'));
         }
 
-        store.__messageQueue.forEach(function($message) {
+        var queue = store.__messageQueue;
+        var timeNow = Date.now();
+        var isMod = vars.userData.isLoggedIn && helpers.isModerator(vars.userData.name);
+        var delay = isMod ? 0 : rooms.getRoom(id).delay * 1000;
+        var messagesToPrint = [];
+
+        while (queue.length && timeNow - queue[0].date.getTime() >= delay) {
+            var $message = queue.shift().message;
+            messagesToPrint.push($message);
             $message.find('img').on('load', function() {
                 helpers.scrollChat();
             });
-        });
-        $('.ember-chat .chat-messages .tse-content .chat-lines').append(store.__messageQueue);
-        store.__messageQueue = [];
+        }
+
+        if (queue.length !== messagesToPrint.length) {
+            setTimeout(function() {
+                shiftQueue();
+            }, delay);
+        }
+
+        $('.ember-chat .chat-messages .tse-content .chat-lines').append(messagesToPrint);
     }
     helpers.scrollChat();
 }, 250, { trailing: true });
@@ -248,8 +272,8 @@ exports.clearChat = function(bttvRoom, user, info) {
             printedChatLines.push($(this));
         });
 
-        var queuedLines = store.__messageQueue.filter(function($message) {
-            if ($message.data('sender') === user) return true;
+        var queuedLines = store.__messageQueue.filter(function(m) {
+            if (m.message.data('sender') === user) return true;
             return false;
         });
 
@@ -257,7 +281,9 @@ exports.clearChat = function(bttvRoom, user, info) {
 
         if (!$chatLines.length && !isTarget) return;
 
-        if (bttv.settings.get('hideDeletedMessages') === true) {
+        if (bttv.settings.get('hideDeletedMessages') === true ||
+            (bttv.settings.get('showDeletedMessages') !== true && bttvRoom.delay)
+        ) {
             $chatLines.each(function() {
                 $(this).hide();
                 $('div.tipsy').remove();
@@ -362,6 +388,12 @@ var privmsg = exports.privmsg = function(channel, data) {
         store.displayNames[data.from] = data.tags['display-name'];
     }
 
+    // filter blacklisted emojis
+    blacklistedEmoji.forEach(function(emoji) {
+        if (data.message) data.message = regexUtils.stripAll(data.message, emoji);
+        if (data.tags && data.tags['system-msg']) data.tags['system-msg'] = regexUtils.stripAll(data.tags['system-msg'], emoji);
+    });
+
     if (data.tags && data.tags['msg-id'] === 'resub') {
         message = templates.privmsg({
             nickname: 'jtv',
@@ -371,7 +403,7 @@ var privmsg = exports.privmsg = function(channel, data) {
             color: '#555'
         }, {server: true, notice: true});
 
-        store.__messageQueue.push($(message));
+        store.__messageQueue.push({message: $(message), date: new Date(0)});
     }
 
     try {
@@ -407,7 +439,8 @@ var privmsg = exports.privmsg = function(channel, data) {
         }, {
             action: data.style === 'action' ? true : false,
             server: data.style === 'admin' ? true : false,
-            isMod: vars.userData.isLoggedIn ? helpers.isModerator(vars.userData.name) : false
+            isMod: vars.userData.isLoggedIn ? helpers.isModerator(vars.userData.name) : false,
+            notice: data.message.indexOf('subscribed!') > 0
         });
 
         $('.ember-chat .chat-messages .tse-content .chat-lines').append(message);
@@ -445,8 +478,7 @@ var privmsg = exports.privmsg = function(channel, data) {
         if (bttv.settings.get('darkenedMode') === true) data.color = data.color + '; text-shadow: 0 0 20px rgba(' + rgbColor.r + ',' + rgbColor.g + ',' + rgbColor.b + ',0.8)';
     }
 
-    var badges = helpers.getBadges(data.from);
-    var bttvBadges = helpers.assignBadges(badges || {}, data);
+    var bttvBadges = helpers.assignBadges(data.tags.badges || {}, data);
 
     var from = data.from;
     var sender = data.from;
@@ -505,7 +537,7 @@ var privmsg = exports.privmsg = function(channel, data) {
         notice: data.tags && data.tags['msg-id'] === 'resub'
     });
 
-    store.__messageQueue.push($(message));
+    store.__messageQueue.push({message: $(message), date: sender === vars.userData.name ? new Date(0) : data.date});
 };
 
 exports.onPrivmsg = function(channel, data) {
