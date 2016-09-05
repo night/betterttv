@@ -119,6 +119,9 @@ exports.commands = function(input) {
         });
     } else if (command === '/w' && bttv.settings.get('disableWhispers') === true) {
         helpers.serverMessage('You have disabled whispers in BetterTTV settings');
+    } else if (command === '/color') {
+        helpers.serverMessage('Your current color is set to: #' + helpers.getColor(vars.userData.name));
+        return false;
     } else if (command === '/help') {
         helpers.serverMessage('BetterTTV Chat Commands:');
         helpers.serverMessage('/b [username] -- Shortcut for /ban');
