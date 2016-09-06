@@ -395,7 +395,12 @@ var takeover = module.exports = function() {
     // watch for current room changes (swap between group chat + channel chat)
     bttv.getChatController().removeObserver('currentRoom', handlers.shiftQueue);
     bttv.getChatController().addObserver('currentRoom', handlers.shiftQueue);
-    bttv.getChatController().addObserver('hidden', loadChatSettings);
+    bttv.getChatController().addObserver('hidden', function(sender, key, value) {
+        if (value) return;
+        setTimeout(function() {
+            loadChatSettings();
+        }, 0);
+    });
 
     $('.ember-chat .chat-messages .chat-line').remove();
     $.getJSON('https://api.betterttv.net/2/channels/' + encodeURIComponent(bttv.getChannel()) + '/history').done(function(data) {
