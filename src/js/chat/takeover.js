@@ -11,6 +11,13 @@ var vars = require('../vars'),
     anonChat = require('../features/anon-chat'),
     customTimeouts = require('../features/custom-timeouts');
 
+var reloadChatSettings = function(sender, key) {
+    if (bttv.getChatController().get(key)) return;
+    setTimeout(function() {
+        loadChatSettings();
+    }, 1000);
+};
+
 var takeover = module.exports = function() {
     var tmi = require('./tmi')();
     var channel;
@@ -395,13 +402,8 @@ var takeover = module.exports = function() {
     // watch for current room changes (swap between group chat + channel chat)
     bttv.getChatController().removeObserver('currentRoom', handlers.shiftQueue);
     bttv.getChatController().addObserver('currentRoom', handlers.shiftQueue);
-    bttv.getChatController().removeObserver('hidden', handlers.shiftQueue);
-    bttv.getChatController().addObserver('hidden', function(sender, key) {
-        if (bttv.getChatController().get(key)) return;
-        setTimeout(function() {
-            loadChatSettings();
-        }, 1000);
-    });
+    bttv.getChatController().removeObserver('hidden', reloadChatSettings);
+    bttv.getChatController().addObserver('hidden', reloadChatSettings);
 
     $('.ember-chat .chat-messages .chat-line').remove();
     $.getJSON('https://api.betterttv.net/2/channels/' + encodeURIComponent(bttv.getChannel()) + '/history').done(function(data) {
