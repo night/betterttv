@@ -571,6 +571,7 @@ input.text:focus,select:focus,textarea:focus {
     overflow-x: hidden;
     text-overflow: ellipsis;
     display: inline-block;
+    white-space: nowrap;
 }
 
 .bttv-mod-card .name .mod-card-edit {
