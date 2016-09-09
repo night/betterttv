@@ -1,15 +1,16 @@
 var fs = require('fs'),
     gulp = require('gulp'),
     jade = require('gulp-jade'),
-    browserify = require('gulp-browserify'),
+    browserify = require('browserify'),
     header = require('gulp-header'),
     footer = require('gulp-footer'),
-    concat = require('gulp-concat'),
     del = require('del'),
     eslint = require('gulp-eslint'),
     uglify = require('gulp-uglify'),
     saveLicense = require('uglify-save-license'),
-    enviro = require('gulp-environments');
+    enviro = require('gulp-environments'),
+    source = require('vinyl-source-stream'),
+    buffer = require('vinyl-buffer');
 
 gulp.task('cleanup', function() {
     return del('build/**/*');
@@ -42,9 +43,10 @@ var jadeDefinition = fs.readFileSync('node_modules/jade/runtime.js').toString();
 var license = fs.readFileSync('src/license.txt').toString();
 
 gulp.task('scripts', ['prepare'], function() {
-    gulp.src(['build/js/main.js'])
-        .pipe(browserify())
-        .pipe(concat('betterttv.js'))
+    return browserify('build/js/main.js')
+        .bundle()
+        .pipe(source('betterttv.js'))
+        .pipe(buffer())
         .pipe(header('(function(bttv) {'))
         .pipe(header(jadeDefinition))
         .pipe(header(license + '\n'))
