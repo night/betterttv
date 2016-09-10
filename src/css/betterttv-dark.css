@@ -1770,8 +1770,20 @@ div#actions {
     background: rgb(30,30,30)
 }
 
-.chat-menu.dropmenu a {
+.chat-menu.dropmenu a, .chat-menu.dropmenu button {
     color: white;
+}
+
+.chat-menu.dropmenu button svg path {
+    fill: #b8b5c0;
+}
+
+.chat-menu .balloon-wrapper .balloon {
+    color: #d2d2d2;
+}
+
+.ember-chat .chat-settings .chat-colors .chat-colors-swatch.selected {
+    box-shadow: 0 0 0 3px rgb(15, 15, 15);
 }
 
 .button.glyph:hover path,
