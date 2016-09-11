@@ -2026,11 +2026,11 @@ span.subscribe-text {
     box-shadow: 0 0 3px 1px #333;
 }
 
-.ember-chat .chat-interface .emoticon-selector ::-webkit-scrollbar-thumb, 
+.ember-chat .chat-interface .emoticon-selector ::-webkit-scrollbar-thumb,
 .conversation-input-bar .conversation-input-actions .emoticon-selector-container .emoticon-selector ::-webkit-scrollbar-thumb,
-.conversations-list-container .conversation-content::-webkit-scrollbar-thumb, 
-.conversations-list-inner::-webkit-scrollbar-thumb,
-.activity-card .activity-card__status .activity-react .emoticon-selector ::-webkit-scrollbar-thumb {
+.activity-card .activity-card__status .activity-react .emoticon-selector ::-webkit-scrollbar-thumb,
+.conversations-manager .conversation-content::-webkit-scrollbar-thumb,
+.conversations-manager .conversations-list-inner::-webkit-scrollbar-thumb {
     background: rgba(255,255,255,0.7) !important;
 }
 
