@@ -1980,32 +1980,26 @@ span.subscribe-text {
 }
 
 /* Twitch emote menu */
-.chat-container.dark .chat-interface .emoticon-selector .emoticon-selector-box,
-.app-main.theatre .chat-container .chat-interface .emoticon-selector .emoticon-selector-box,
-.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box, 
-.conversation-input-bar .conversation-input-actions .emoticon-selector-container .emoticon-selector {
+.emoticon-selector .emoticon-selector-box, 
+.emoticon-selector-container .emoticon-selector {
     background-color: #191919;
     border-color: #191919;
 }
 
-.chat-container.dark .chat-interface .emoticon-selector .tabs,
-.app-main.theatre .chat-container .chat-interface .emoticon-selector .tabs,
-.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .tabs {
+.emoticon-selector .emoticon-selector-box .tabs,
+.emoticon-selector .emoticon-selector-box .emotes .emoticon-grid .emote-set,
+.emoticon-selector .emoticon-selector-box .emoticon-grid {
     background-color: #191919;
     border-color: #444;
     color: #d3d3d3;
+    box-shadow: none;
 }
-.chat-container.dark .chat-interface .emoticon-selector .tabs .tab.active,
-.ember-chat .chat-interface .emoticon-selector .tabs .tab.active,
-.app-main.theatre .chat-container .chat-interface .emoticon-selector .tabs .tab.active {
+
+.emoticon-selector .tabs .tab.active {
     border-color: #888;
     color: #aaa;
 }
- {
-    border-color: #444;
-    color: #d3d3d3;
-    background-color:#191919;
-}
+
 .ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .tabs .tab:hover {
     border-color: #888;
 }
@@ -2017,7 +2011,8 @@ span.subscribe-text {
     padding: 5px 15px;
     background-color: rgb(25,25,25);
 }
-.chat-container.dark .chat-interface .emoticon-selector .tabs .tab, .app-main.theatre .chat-container .chat-interface .emoticon-selector .tabs .tab {
+
+.emoticon-selector .emoticon-selector-box .tabs .tab {
     color: #888;
 }
 
@@ -2027,12 +2022,16 @@ span.subscribe-text {
     color: #d3d3d3;
 }
 
-.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box input:focus, .emoticon-selector-container .emoticon-selector .emoticon-selector-box input:focus {
+.emoticon-selector .emoticon-selector-box input:focus {
     box-shadow: 0 0 3px 1px #333;
 }
 
-.ember-chat .chat-interface .emoticon-selector ::-webkit-scrollbar-thumb, .conversation-input-bar .conversation-input-actions .emoticon-selector-container .emoticon-selector ::-webkit-scrollbar-thumb, .conversation-content::-webkit-scrollbar-thumb, .conversations-list-inner::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.7) !important;
+.ember-chat .chat-interface .emoticon-selector ::-webkit-scrollbar-thumb, 
+.conversation-input-bar .conversation-input-actions .emoticon-selector-container .emoticon-selector ::-webkit-scrollbar-thumb,
+.conversations-list-container .conversation-content::-webkit-scrollbar-thumb, 
+.conversations-list-inner::-webkit-scrollbar-thumb,
+.activity-card .activity-card__status .activity-react .emoticon-selector ::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.7) !important;
 }
 
 /* dark whispers (lenny face) */

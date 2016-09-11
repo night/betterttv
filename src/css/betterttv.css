@@ -1365,16 +1365,22 @@ body#chat #speak {
 }
 
 /* emoticon selector scrollbar in chrome */
-.ember-chat .chat-interface .emoticon-selector ::-webkit-scrollbar, .conversation-input-bar .conversation-input-actions .emoticon-selector-container .emoticon-selector ::-webkit-scrollbar {
+.ember-chat .chat-interface .emoticon-selector ::-webkit-scrollbar,
+.conversation-input-bar .conversation-input-actions .emoticon-selector-container .emoticon-selector ::-webkit-scrollbar,
+.activity-card .activity-card__status .activity-react .emoticon-selector ::-webkit-scrollbar {
   width: 6px;
 }
 
-.ember-chat .chat-interface  .emoticon-selector ::-webkit-scrollbar-thumb, .conversation-input-bar .conversation-input-actions .emoticon-selector-container .emoticon-selector ::-webkit-scrollbar-thumb {
+.ember-chat .chat-interface  .emoticon-selector ::-webkit-scrollbar-thumb,
+.conversation-input-bar .conversation-input-actions .emoticon-selector-container .emoticon-selector ::-webkit-scrollbar-thumb,
+.activity-card .activity-card__status .activity-react .emoticon-selector ::-webkit-scrollbar-thumb {
   background: rgba(0,0,0,0.7);
   border-radius: 7px;
 }
 
-.ember-chat .chat-interface  .emoticon-selector ::-webkit-scrollbar-track, .conversation-input-bar .conversation-input-actions .emoticon-selector-container .emoticon-selector ::-webkit-scrollbar {
+.ember-chat .chat-interface  .emoticon-selector ::-webkit-scrollbar-track,
+.conversation-input-bar .conversation-input-actions .emoticon-selector-container .emoticon-selector ::-webkit-scrollbar-track,
+.activity-card .activity-card__status .activity-react .emoticon-selector ::-webkit-scrollbar-track {
   background: rgba(0,0,0,0);
 }
 
@@ -2017,4 +2023,17 @@ body.channel_new.columns.ember-application {
 
 #video-manager #highlighter {
     padding: 0px;
+}
+
+/* Twitch Emote Menu */
+.emoticon-selector .emoticon-selector-box .tabs .tab {
+    top: 0;
+}
+
+.emoticon-selector .emoticon-selector-box .tabs {
+    margin-bottom: .25rem;
+}
+
+.emoticon-selector .emoticon-selector-box .tabs > .tab:hover {
+    box-shadow: none;
 }
