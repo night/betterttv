@@ -31,25 +31,26 @@ var secondsToLength = function(s) {
 exports.commands = function(input) {
     var sentence = input.trim().split(' ');
     var command = sentence[0].toLowerCase();
+    var channelName = bttv.getChannel();
     var oldSetting;
 
     if (command === '/b') {
         helpers.ban(sentence[1], sentence.slice(2).join(' '));
     } else if (command === '/chatters') {
-        $.getJSON('https://tmi.twitch.tv/group/user/' + bttv.getChannel() + '?callback=?').done(function(resp) {
+        $.getJSON('https://tmi.twitch.tv/group/user/' + channelName + '?callback=?').done(function(resp) {
             helpers.serverMessage('Current Chatters: ' + Twitch.display.commatize(resp.data.chatter_count), true);
         }).fail(function() {
             helpers.serverMessage('Could not fetch chatter count.', true);
         });
     } else if (command === '/followed') {
         if (vars.userData.isLoggedIn) {
-            var chan = sentence.length > 1 ? sentence[1] : bttv.getChannel();
+            var chan = sentence.length > 1 ? sentence[1] : channelName;
             helpers.followDate(vars.userData.name, chan);
         } else {
             helpers.serverMessage('You need to be logged in to use this command', true);
         }
     } else if (command === '/followers') {
-        bttv.TwitchAPI.get('channels/' + bttv.getChannel() + '/follows').done(function(channel) {
+        bttv.TwitchAPI.get('channels/' + channelName + '/follows').done(function(channel) {
             helpers.serverMessage('Current Followers: ' + Twitch.display.commatize(channel._total), true);
         }).fail(function() {
             helpers.serverMessage('Could not fetch follower count.', true);
@@ -100,7 +101,7 @@ exports.commands = function(input) {
     } else if (command === '/u') {
         helpers.unban(sentence[1]);
     } else if (command === '/uptime') {
-        bttv.TwitchAPI.get('streams/' + bttv.getChannel()).done(function(stream) {
+        bttv.TwitchAPI.get('streams/' + channelName).done(function(stream) {
             if (stream.stream !== null) {
                 var startedTime = new Date(stream.stream.created_at),
                     totalUptime = Math.round(Math.abs((Date.now() - (startedTime.getTime() - (startedTime.getTimezoneOffset() * 60 * 1000))) / 1000));
@@ -112,7 +113,7 @@ exports.commands = function(input) {
             helpers.serverMessage('Could not fetch start time.', true);
         });
     } else if (command === '/viewers') {
-        bttv.TwitchAPI.get('streams/' + bttv.getChannel()).done(function(stream) {
+        bttv.TwitchAPI.get('streams/' + channelName).done(function(stream) {
             helpers.serverMessage('Current Viewers: ' + Twitch.display.commatize(stream.stream.viewers), true);
         }).fail(function() {
             helpers.serverMessage('Could not fetch viewer count.', true);
@@ -175,13 +176,13 @@ exports.countUnreadMessages = function() {
 };
 
 var shiftQueue = exports.shiftQueue = throttle(function() {
-    if (!tmi() || !tmi().get('id')) return;
-    var id = tmi().get('id');
-    if (id !== store.currentRoom && tmi().get('name')) {
-        $('.ember-chat .chat-messages .tse-content .chat-line').remove();
-        store.currentRoom = id;
+    if (!tmi()) return;
+    var channelName = tmi().get('id');
+    if (channelName !== store.currentRoom && tmi().get('name')) {
+        $('.chat-messages .chat-line').remove();
+        store.currentRoom = channelName;
         store.__messageQueue = [];
-        rooms.getRoom(id).playQueue();
+        rooms.getRoom(channelName).playQueue();
         helpers.serverMessage('You switched to: ' + tmi().get('name').replace(/</g, '&lt;').replace(/>/g, '&gt;'), true);
 
         // TODO: this should not have to be here
@@ -200,7 +201,7 @@ var shiftQueue = exports.shiftQueue = throttle(function() {
         var queue = store.__messageQueue;
         var timeNow = Date.now();
         var isMod = vars.userData.isLoggedIn && helpers.isModerator(vars.userData.name);
-        var delay = isMod ? 0 : rooms.getRoom(id).delay * 1000;
+        var delay = isMod ? 0 : rooms.getRoom(channelName).delay * 1000;
         var messagesToPrint = [];
 
         while (queue.length && timeNow - queue[0].date.getTime() >= delay) {
@@ -217,7 +218,7 @@ var shiftQueue = exports.shiftQueue = throttle(function() {
             }, delay);
         }
 
-        $('.ember-chat .chat-messages .tse-content .chat-lines').append(messagesToPrint);
+        $('.chat-messages .chat-lines').append(messagesToPrint);
     }
     helpers.scrollChat();
 }, 250, { trailing: true });
@@ -240,18 +241,6 @@ exports.moderationCard = function(user, $event) {
     }).fail(function() {
         makeCard({ name: user, display_name: user.capitalize() }, $event);
     });
-};
-
-exports.labelsChanged = function(user) {
-    if (bttv.settings.get('adminStaffAlert') === true) {
-        var specials = helpers.getSpecials(user);
-
-        if (specials.indexOf('admin') !== -1) {
-            helpers.notifyMessage('admin', user + ' just joined! Watch out foo!');
-        } else if (specials.indexOf('staff') !== -1) {
-            helpers.notifyMessage('staff', user + ' just joined! Watch out foo!');
-        }
-    }
 };
 
 exports.clearChat = function(bttvRoom, user, info) {

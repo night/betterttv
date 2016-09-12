@@ -580,14 +580,6 @@ exports.getEmotes = function(user) {
     return emotes;
 };
 
-exports.getSpecials = function(user) {
-    if (!user || user === '') return false;
-    var specials = [];
-    if (tmi() && tmi().tmiSession && tmi().tmiSession._users) specials = tmi().tmiSession._users.getSpecials(user);
-    if (store.__subscriptions[user] && store.__subscriptions[user].indexOf(bttv.getChannel()) !== -1) specials.push('subscriber');
-    return specials;
-};
-
 exports.scrollChat = throttle(function() {
     var $chat = $('.ember-chat');
 
