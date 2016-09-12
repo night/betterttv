@@ -404,7 +404,7 @@ var takeover = module.exports = function() {
     bttv.getChatController().removeObserver('hidden', reloadChatSettings);
     bttv.getChatController().addObserver('hidden', reloadChatSettings);
 
-    $('.ember-chat .chat-messages .chat-line').remove();
+    $('.chat-messages .chat-line').remove();
     $.getJSON('https://api.betterttv.net/2/channels/' + encodeURIComponent(channelName) + '/history').done(function(data) {
         if (data.messages.length) {
             data.messages.forEach(function(message) {
@@ -423,10 +423,11 @@ var takeover = module.exports = function() {
                     emotes: message.parsedEmotes
                 });
 
-                $('.ember-chat .chat-messages .tse-content .chat-lines').append(message);
+                $('.chat-messages .chat-lines').append(message);
             });
         }
     }).always(function() {
+        $('.chat-messages .chat-line').remove();
         helpers.serverMessage('<center><small>BetterTTV v' + bttv.info.version + ' Loaded.</small></center>');
         helpers.serverMessage('Welcome to ' + helpers.lookupDisplayName(channelName) + '\'s chat room!', true);
 
