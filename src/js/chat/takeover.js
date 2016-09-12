@@ -413,7 +413,7 @@ var takeover = module.exports = function() {
         bttv.chat.helpers.scrollChat();
     }).done(function(data) {
         if (data.messages.length) {
-            data.messages.forEach(function(message) {
+            data.messages.reverse().forEach(function(message) {
                 var badges = {};
                 if (message.user.name === message.channel.name) badges.broadcaster = '1';
 
@@ -429,7 +429,7 @@ var takeover = module.exports = function() {
                     emotes: message.parsedEmotes
                 });
 
-                $('.chat-messages .chat-lines').append(message);
+                $('.chat-messages .chat-lines').prepend(message);
             });
         }
     });
