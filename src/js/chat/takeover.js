@@ -405,7 +405,13 @@ var takeover = module.exports = function() {
     bttv.getChatController().addObserver('hidden', reloadChatSettings);
 
     $('.chat-messages .chat-line').remove();
-    $.getJSON('https://api.betterttv.net/2/channels/' + encodeURIComponent(channelName) + '/history').done(function(data) {
+    $.getJSON('https://api.betterttv.net/2/channels/' + encodeURIComponent(channelName) + '/history').always(function() {
+        $('.chat-messages .chat-line').remove();
+        helpers.serverMessage('<center><small>BetterTTV v' + bttv.info.version + ' Loaded.</small></center>');
+        helpers.serverMessage('Welcome to ' + helpers.lookupDisplayName(channelName) + '\'s chat room!', true);
+
+        bttv.chat.helpers.scrollChat();
+    }).done(function(data) {
         if (data.messages.length) {
             data.messages.forEach(function(message) {
                 var badges = {};
@@ -426,12 +432,6 @@ var takeover = module.exports = function() {
                 $('.chat-messages .chat-lines').append(message);
             });
         }
-    }).always(function() {
-        $('.chat-messages .chat-line').remove();
-        helpers.serverMessage('<center><small>BetterTTV v' + bttv.info.version + ' Loaded.</small></center>');
-        helpers.serverMessage('Welcome to ' + helpers.lookupDisplayName(channelName) + '\'s chat room!', true);
-
-        bttv.chat.helpers.scrollChat();
     });
 
     bttv.ws.joinChannel();
