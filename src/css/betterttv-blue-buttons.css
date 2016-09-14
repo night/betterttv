@@ -121,14 +121,6 @@ a {
     color: black;
 }
 
-div#header_actions span, div#header_actions a {
-    color: black;
-}
-
-div#header_actions a.primary span {
-    color: white !important;
-}
-
 #main_col .stats-and-actions #is-subscribed, .button.unfollow, .button.unfollow:hover {
     color: #000 !important;
 }

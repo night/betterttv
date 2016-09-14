@@ -744,6 +744,11 @@ input.text:focus,select:focus,textarea:focus {
     height: 272px;
 }
 
+#dash_main #hide_preview {
+    background: transparent;
+    text-decoration: underline;
+}
+
 #dash_main #custom_filter #gameselector_input {
     width: 185px;
 }
