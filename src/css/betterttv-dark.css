@@ -56,9 +56,21 @@ div#site_header {
     border-bottom: 1px solid #444;
 }
 
-/* invert dashboard Twitch logo */
-#site_header #header_inside .svg-logo_twitch path {
+/* invert dashboard Twitch logo and search hour glass*/
+#site_header #header_inside .svg-logo_twitch path, #site_header #header_inside .svg-nav_search path {
     fill: #d3d3d3;
+}
+
+/* search bar */
+#site_header #header_inside .new-header-search input {
+    background-color: rgb(20, 20, 20);
+    color: #D3D3D3;
+    border: solid 1px #333;
+    box-shadow: none;
+}
+
+#site_header #header_inside .new-header-search input::-webkit-input-placeholder {
+    color: #D3D3D3
 }
 
 #dash_main #dashboard_title,
@@ -67,16 +79,16 @@ div#site_header {
     color: #D3D3D3;
 }
 
-#dash_main #dash_nav li.tab.selected > a, #dash_main #dash_nav li.tab > a:hover  {
-    color: #D3D3D3;
+#dash_main #dash_nav {
+    box-shadow: 0 -1px 0 #666 inset;
 }
 
 #dash_main #dash_nav li.tab > a {
     color: #888;
 }
 
-#dash_main #dash_nav {
-    box-shadow: 0 -1px 0 #666 inset;
+#dash_main #dash_nav li.tab.selected > a, #dash_main #dash_nav li.tab > a:hover  {
+    color: #D3D3D3;
 }
 
 #dash_main #dash_nav .selected.tab, #dash_main #dash_nav .tab:hover {
@@ -154,8 +166,7 @@ div#site_header {
 #dash_main #vod_status,
 #dash_main #gameselector_input,
 #dash_main #broadcaster_language_switch,
-#dash_main .ember-application #gameselector_input,
-#site_header #header_inside .new-header-search input {
+#dash_main .ember-application #gameselector_input {
     background-color: rgb(20, 20, 20) !important;
     color: #D3D3D3;
     border: solid 1px #333;
@@ -583,7 +594,8 @@ div#site_header {
 #channel_actions .primary,
 .profile-info .buttons .primary,
 .chat-buttons-container .button.primary,
-.dash-broadcast-contain .button.primary {
+.dash-broadcast-contain .button.primary,
+#bttvSettingsPanel .button.primary {
     background-color: #6441a5;
     color: #d3d3d3;
 }
