@@ -556,7 +556,8 @@ body {
 #channel .channel-actions .primary,
 #channel_actions .primary,
 .profile-info .buttons .primary,
-.chat-buttons-container .button.primary {
+.chat-buttons-container .button.primary,
+.dash-broadcast-contain .button.primary {
     background-color: #6441a5;
     color: #d3d3d3;
 }

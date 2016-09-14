@@ -13,6 +13,5 @@ module.exports = function() {
 
         // Small Dashboard Fixes
         $('#commercial_options .dropmenu_action[data-length=150]').text('2m 30s');
-        $('#controls_column #form_submit button').attr('class', 'primary_button');
     }
 };
