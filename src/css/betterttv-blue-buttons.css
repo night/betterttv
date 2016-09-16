@@ -7,6 +7,7 @@
 .button.primary,
 .button-simple.primary,
 .primary_button:hover,
+.bttvSettingsPanel .button.primary:hover,
 a.js-follow.follow.button.primary.action:hover,
 #subscribe_action .subscribe-text:focus,
 .button.primary:hover,
@@ -31,6 +32,7 @@ a.js-follow.follow.button.primary.action:hover,
 }
 .button.primary,
 .primary_button,
+.bttvSettingsPanel .button.primary,
 a.js-follow.follow.button.primary.action,
 #dash_main #commercial_buttons #intervals,
 #channel .stats-and-actions .follow-button a,
@@ -117,14 +119,6 @@ a {
 
 #site_header .normal_button, #site_header .large_normal_button, #site_header .dropdown, #site_header .dropdown_static, #site_header .dropdown_glyph {
     color: black;
-}
-
-div#header_actions span, div#header_actions a {
-    color: black;
-}
-
-div#header_actions a.primary span {
-    color: white !important;
 }
 
 #main_col .stats-and-actions #is-subscribed, .button.unfollow, .button.unfollow:hover {
