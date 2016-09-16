@@ -9,6 +9,7 @@ var debug = require('./helpers/debug'),
 
 require('es6-object-assign').polyfill();
 
+
 bttv.info = {
     version: '6.8',
     release: 55,
@@ -146,7 +147,8 @@ var clearClutter = require('./features/clear-clutter'),
     betterViewerList = require('./features/better-viewer-list'),
     overrideEmotes = require('./features/override-emotes'),
     playerViewerCount = require('./features/player-viewer-count.js'),
-    ChatReplay = require('./features/chat-replay');
+    ChatReplay = require('./features/chat-replay'),
+    keyboardShortcuts = require('./features/keyboard-shortcuts.js');
 
 var chatFunctions = function() {
     debug.log('Modifying Chat Functionality');
@@ -194,6 +196,7 @@ var main = function() {
                             hostButtonBelowVideo();
                             betterViewerList();
                             playerViewerCount();
+                            keyboardShortcuts();
                             if (
                                 App.__container__.lookup('controller:channel').get('isTheatreMode') === false &&
                                 bttv.settings.get('autoTheatreMode') === true
