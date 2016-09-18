@@ -2741,6 +2741,13 @@ ul.tabs li>a:hover, .directory_header .nav li>a:hover, ul.tabs li>button:hover, 
     color: #8e8e8e;
 }
 
+/* chat rules */
+.chat-interface .chat-rules {
+    background: #333;
+    border-color: #333;
+    color: #d3d3d3;
+}
+
 /* chat notice style */
 .chat-lines .notice {
     background: #392E5C !important;

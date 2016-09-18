@@ -1998,6 +1998,11 @@ body.channel_new.columns.ember-application {
     padding-right: 50px;
 }
 
+/* chat rules */
+.ember-chat .chat-interface .chat-rules {
+    margin: 0 6%;
+}
+
 /* chat notice style */
 .chat-lines .notice {
     background: #D8BFD8 !important;
