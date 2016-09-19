@@ -61,6 +61,11 @@ var takeover = module.exports = function() {
         $('.ember-chat .chat-messages').removeClass('hideTimestamps');
         bttv.storage.putObject('chatSettings', settings);
     }
+    if (typeof settings.showModerationActions === 'undefined') {
+        settings.showModerationActions = true;
+        $('.ember-chat .chat-messages').removeClass('hideModerationActions');
+        bttv.storage.putObject('chatSettings', settings);
+    }
     if (settings.darkMode === true) {
         settings.darkMode = false;
         $('.chat-container').removeClass('dark');
@@ -88,6 +93,17 @@ var takeover = module.exports = function() {
     currentRoom.tmiRoom.on('clearchat', handlers.clearChat.bind(this, rooms.getRoom(channelName)));
     currentRoom.tmiRoom.on('notice', handlers.notice);
     currentRoom.tmiRoom.on('roomstate', helpers.parseRoomState);
+    currentRoom.get('pubsub').off('chat_login_moderation').on('chat_login_moderation', function(e) {
+        if (['timeout', 'ban'].indexOf(e.moderation_action) === -1) {
+            return currentRoom.get('addLoginModerationMessage').call(currentRoom, e);
+        }
+
+        handlers.clearChat(rooms.getRoom(channelName), e.args[0], {
+            'ban-reason': e.moderation_action === 'timeout' ? e.args[2] : e.args[1],
+            'ban-created-by': e.created_by,
+            'ban-duration': e.moderation_action === 'timeout' ? e.args[1] : undefined
+        }, true);
+    });
     if (currentRoom.channel) currentRoom.set('name', currentRoom.channel.get('display_name'));
 
     // Takes over whisper replies (actually all messages Twitch still emits)
