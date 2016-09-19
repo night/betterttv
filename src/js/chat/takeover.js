@@ -26,6 +26,18 @@ var takeover = module.exports = function() {
     // Anonymize Chat if it isn't already
     anonChat();
 
+    // Hides Group List if coming from directory
+    bttv.getChatController().set('showList', false);
+
+    // Wait for chat load, and don't load again after load
+    if (store.isLoaded) return;
+    bttv.getChatController().removeObserver('isLoading', takeover);
+    if (currentRoom.get('isLoading')) {
+        bttv.getChatController().addObserver('isLoading', takeover);
+        return;
+    }
+    store.isLoaded = true;
+
     if (bttv.settings.get('disableUsernameColors') === true) {
         $('.ember-chat .chat-room').addClass('no-name-colors');
     } else {
@@ -34,19 +46,6 @@ var takeover = module.exports = function() {
 
     if (!$('.ember-chat .chat-header:first').hasClass('main-header')) {
         $('.ember-chat .chat-header:first').addClass('main-header');
-    }
-
-    if (store.isLoaded) return;
-
-    // Hides Group List if coming from directory
-    bttv.getChatController().set('showList', false);
-
-    if (currentRoom.get('isLoading')) {
-        debug.log('chat is still loading');
-        setTimeout(function() {
-            takeover();
-        }, 1000);
-        return;
     }
 
     // Default timestamps & mod icons to on
@@ -72,8 +71,6 @@ var takeover = module.exports = function() {
         bttv.storage.putObject('chatSettings', settings);
         bttv.settings.save('darkenedMode', true);
     }
-
-    store.isLoaded = true;
 
     // Take over listeners
     debug.log('Loading chat listeners');
