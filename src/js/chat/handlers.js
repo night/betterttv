@@ -277,7 +277,7 @@ exports.clearChat = function(bttvRoom, user, info, pubsub) {
         if (!$chatLines.length && !isTarget) return;
 
         if (bttv.settings.get('hideDeletedMessages') === true ||
-            (bttv.settings.get('showDeletedMessages') !== true && bttvRoom.delay && !isMod && !isTarget)
+            (bttv.settings.get('showDeletedMessages') !== true && !isMod && !isTarget)
         ) {
             $chatLines.each(function() {
                 $(this).hide();
