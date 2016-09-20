@@ -334,6 +334,11 @@ var message = exports.message = function(sender, msg, data) {
         msg = tokenizedMessage.join(' ');
     }
 
+    if (bttv.settings.get('filterRepetitive')) {
+        var filterRepetitive = require('../features/filter-repetitive.js');
+        msg = filterRepetitive(msg);
+    }
+
     var spam = false;
     if (bttv.settings.get('hideSpam') && helpers.isSpammer(sender) && !helpers.isModerator(sender) && !data.forced) {
         msg = '<span class="deleted">&lt;spam deleted&gt;</span>';
