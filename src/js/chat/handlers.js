@@ -90,6 +90,8 @@ exports.commands = function(input) {
     } else if (command === '/shrug') {
         sentence.shift();
         helpers.sendMessage(sentence.join(' ') + ' ¯\\_(ツ)_/¯');
+    } else if (command === '/squishy') {
+        helpers.sendMessage('notsquishY WHEN YOU NEED HIM notsquishY IN A JIFFY notsquishY USE THIS EMOTE notsquishY TO SUMMON SQUISHY notsquishY');
     } else if (command === '/sub') {
         tmi().tmiRoom.startSubscribersMode();
     } else if (command === '/suboff') {
@@ -203,10 +205,16 @@ var shiftQueue = exports.shiftQueue = throttle(function() {
         var isMod = vars.userData.isLoggedIn && helpers.isModerator(vars.userData.name);
         var delay = isMod ? 0 : rooms.getRoom(channelName).delay * 1000;
         var messagesToPrint = [];
+        var messagesToPrepend = [];
 
         while (queue.length && timeNow - queue[0].date.getTime() >= delay) {
-            var $message = queue.shift().message;
-            messagesToPrint.push($message);
+            var item = queue.shift();
+            var $message = item.message;
+            if (item.prepend) {
+                messagesToPrepend.unshift($message);
+            } else {
+                messagesToPrint.push($message);
+            }
             $message.find('img').on('load', function() {
                 helpers.scrollChat();
             });
@@ -218,7 +226,13 @@ var shiftQueue = exports.shiftQueue = throttle(function() {
             }, delay);
         }
 
-        $('.chat-messages .chat-lines').append(messagesToPrint);
+        $chatLines = $('.chat-messages .chat-lines');
+
+        if (messagesToPrepend.length) {
+            $chatLines.prepend(messagesToPrepend);
+        }
+
+        $chatLines.append(messagesToPrint);
     }
     helpers.scrollChat();
 }, 250, { trailing: true });
@@ -542,7 +556,7 @@ var privmsg = exports.privmsg = function(channel, data) {
         notice: data.tags && data.tags['msg-id'] === 'resub'
     });
 
-    store.__messageQueue.push({message: $(message), date: sender === vars.userData.name ? new Date(0) : data.date});
+    store.__messageQueue.push({message: $(message), date: sender === vars.userData.name ? new Date(0) : data.date, prepend: data.tags.historical ? true : false});
 };
 
 exports.onPrivmsg = function(channel, data) {

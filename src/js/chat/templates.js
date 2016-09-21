@@ -334,13 +334,7 @@ var message = exports.message = function(sender, msg, data) {
         msg = tokenizedMessage.join(' ');
     }
 
-    var spam = false;
-    if (bttv.settings.get('hideSpam') && helpers.isSpammer(sender) && !helpers.isModerator(sender) && !data.forced) {
-        msg = '<span class="deleted">&lt;spam deleted&gt;</span>';
-        spam = true;
-    }
-
-    return '<span class="message ' + (spam ? 'spam' : '') + '" ' + (colored ? 'style="color: ' + colored + '" ' : '') + 'data-raw="' + rawMessage + '" data-bits="' + (bits ? encodeURIComponent(JSON.stringify(bits)) : 'false') + '" data-emotes="' + (emotes ? encodeURIComponent(JSON.stringify(emotes)) : 'false') + '">' + msg + '</span>';
+    return '<span class="message" ' + (colored ? 'style="color: ' + colored + '" ' : '') + 'data-raw="' + rawMessage + '" data-bits="' + (bits ? encodeURIComponent(JSON.stringify(bits)) : 'false') + '" data-emotes="' + (emotes ? encodeURIComponent(JSON.stringify(emotes)) : 'false') + '">' + msg + '</span>';
 };
 
 exports.privmsg = function(data, opts) {

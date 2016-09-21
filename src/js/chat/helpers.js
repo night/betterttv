@@ -553,11 +553,6 @@ exports.isSubscriber = function(user) {
     return getBadges(user).hasOwnProperty('subscriber');
 };
 
-exports.isSpammer = function(user) {
-    if (!user || user === '') return false;
-    return store.spammers.indexOf(user.toLowerCase()) > -1;
-};
-
 exports.hasGlow = function(user) {
     if (!user || user === '') return false;
     if (store.__subscriptions[user] && store.__subscriptions[user].indexOf('_glow') !== -1) return true;

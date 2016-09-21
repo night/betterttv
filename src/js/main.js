@@ -177,11 +177,13 @@ var main = function() {
         };
 
         // Keep an eye for route change to reapply fixes
-        var lastRoute;
+        var route;
         App.__container__.lookup('controller:application').addObserver('currentRouteName', function(data) {
             debug.log('New route: ' + data.currentRouteName);
+            var lastRoute = route;
+            route = data.currentRouteName;
 
-            switch (data.currentRouteName) {
+            switch (route) {
                 case 'loading':
                     return;
 
@@ -233,6 +235,7 @@ var main = function() {
                     $('#main_col').removeAttr('style');
                     waitForLoad(function(ready) {
                         if (ready) {
+                            window.dispatchEvent(new Event('resize'));
                             directoryFunctions();
                         }
                     });
@@ -254,8 +257,6 @@ var main = function() {
                     $('#main_col').removeAttr('style');
                     break;
             }
-
-            lastRoute = data.currentRouteName;
         });
 
         Ember.subscribe('render', {

@@ -26,28 +26,30 @@ var takeover = module.exports = function() {
     // Anonymize Chat if it isn't already
     anonChat();
 
-    if (bttv.settings.get('disableUsernameColors') === true) {
-        $('.ember-chat .chat-room').addClass('no-name-colors');
-    } else {
-        $('.ember-chat .chat-room').removeClass('no-name-colors');
-    }
+    // Setup room
+    store.currentRoom = channelName;
+    rooms.newRoom(channelName);
 
-    if (!$('.ember-chat .chat-header:first').hasClass('main-header')) {
-        $('.ember-chat .chat-header:first').addClass('main-header');
-    }
-
-    if (store.isLoaded) return;
+    // Takes over whisper replies (actually all messages Twitch still emits)
+    currentRoom.set('addMessage', function(d) {
+        handlers.onPrivmsg(channelName, d);
+    });
 
     // Hides Group List if coming from directory
     bttv.getChatController().set('showList', false);
 
+    // Wait for chat load, and don't load again after load
+    if (store.isLoaded) return;
+    currentRoom.removeObserver('isLoading', takeover);
     if (currentRoom.get('isLoading')) {
-        debug.log('chat is still loading');
-        setTimeout(function() {
-            takeover();
-        }, 1000);
+        currentRoom.addObserver('isLoading', takeover);
         return;
     }
+    store.isLoaded = true;
+
+    $('.chat-messages .chat-line').remove();
+    helpers.serverMessage('<center><small>BetterTTV v' + bttv.info.version + ' Loaded.</small></center>');
+    helpers.serverMessage('Welcome to ' + helpers.lookupDisplayName(channelName) + '\'s chat room!', true);
 
     // Default timestamps & mod icons to on
     var settings = bttv.storage.getObject('chatSettings');
@@ -73,7 +75,16 @@ var takeover = module.exports = function() {
         bttv.settings.save('darkenedMode', true);
     }
 
-    store.isLoaded = true;
+    if (bttv.settings.get('disableUsernameColors') === true) {
+        $('.ember-chat .chat-room').addClass('no-name-colors');
+    } else {
+        $('.ember-chat .chat-room').removeClass('no-name-colors');
+    }
+
+    // We need a way to grab onto the chat header
+    if (!$('.ember-chat .chat-header:first').hasClass('main-header')) {
+        $('.ember-chat .chat-header:first').addClass('main-header');
+    }
 
     // Take over listeners
     debug.log('Loading chat listeners');
@@ -86,8 +97,6 @@ var takeover = module.exports = function() {
     }
 
     // Handle Channel Chat
-    store.currentRoom = channelName;
-    rooms.newRoom(channelName);
     rooms.getRoom(channelName).delay = currentRoom.roomProperties.chat_delay_duration;
     currentRoom.tmiRoom.on('message', rooms.getRoom(channelName).chatHandler);
     currentRoom.tmiRoom.on('clearchat', handlers.clearChat.bind(this, rooms.getRoom(channelName)));
@@ -106,20 +115,6 @@ var takeover = module.exports = function() {
     });
     if (currentRoom.channel) currentRoom.set('name', currentRoom.channel.get('display_name'));
 
-    // Takes over whisper replies (actually all messages Twitch still emits)
-    currentRoom.set('addMessage', function(d) {
-        handlers.onPrivmsg(channelName, d);
-    });
-
-    // Fake the initial roomstate
-    helpers.parseRoomState({
-        tags: {
-            'subs-only': currentRoom.get('subsOnly'),
-            slow: currentRoom.get('slow'),
-            r9k: currentRoom.get('r9k'),
-            'emote-only': currentRoom.get('emoteOnly')
-        }
-    });
     vars.localSubsOnly = false;
     vars.localModsOnly = false;
 
@@ -145,18 +140,6 @@ var takeover = module.exports = function() {
 
     // Load Chat Settings
     loadChatSettings();
-
-    // Load spammer list
-    $.getJSON('https://api.betterttv.net/2/spammers').done(function(data) {
-        store.spammers = [];
-        for (var i = 0; i < data.users.length; i++) {
-            store.spammers.push(data.users[i].name);
-        }
-    });
-    $('body').off('click', '.chat-line .message.spam').on('click', '.chat-line .message.spam', function() {
-        var user = $(this).parent().data('sender');
-        $(this).replaceWith(templates.message(user, decodeURIComponent($(this).data('raw')), {forced: true}));
-    });
 
     // Hover over links
     var hoverLink = debounce(function() {
@@ -419,36 +402,6 @@ var takeover = module.exports = function() {
     bttv.getChatController().addObserver('currentRoom', handlers.shiftQueue);
     bttv.getChatController().removeObserver('hidden', reloadChatSettings);
     bttv.getChatController().addObserver('hidden', reloadChatSettings);
-
-    $('.chat-messages .chat-line').remove();
-    $.getJSON('https://api.betterttv.net/2/channels/' + encodeURIComponent(channelName) + '/history').always(function() {
-        $('.chat-messages .chat-line').remove();
-        helpers.serverMessage('<center><small>BetterTTV v' + bttv.info.version + ' Loaded.</small></center>');
-        helpers.serverMessage('Welcome to ' + helpers.lookupDisplayName(channelName) + '\'s chat room!', true);
-
-        bttv.chat.helpers.scrollChat();
-    }).done(function(data) {
-        if (data.messages.length) {
-            data.messages.reverse().forEach(function(message) {
-                var badges = {};
-                if (message.user.name === message.channel.name) badges.broadcaster = '1';
-
-                if (bttv.chat.helpers.isIgnored(message.user.name)) return;
-
-                message = bttv.chat.templates.privmsg({
-                    message: message.message,
-                    time: (new Date(message.date.replace('T', ' ').replace(/\.[0-9]+Z/, ' GMT'))).toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
-                    nickname: message.user.displayName,
-                    sender: message.user.name,
-                    badges: bttv.chat.helpers.assignBadges(badges),
-                    color: bttv.chat.helpers.calculateColor(message.user.color),
-                    emotes: message.parsedEmotes
-                });
-
-                $('.chat-messages .chat-lines').prepend(message);
-            });
-        }
-    });
 
     bttv.ws.joinChannel();
 

@@ -414,12 +414,6 @@ module.exports = [
         }
     },
     {
-        name: 'Hide Spam Messages',
-        description: 'Hides known spam messages. Click on the message to reveal it',
-        default: true,
-        storageKey: 'hideSpam'
-    },
-    {
         name: 'Hide Conversations When Inactive',
         description: 'Only show conversations ui on mousverover or when active',
         default: false,
