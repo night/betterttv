@@ -139,7 +139,9 @@ var takeover = module.exports = function() {
     bttv.ws.broadcastMe();
 
     // Load Chat Settings
-    loadChatSettings();
+    setTimeout(function() {
+        loadChatSettings();
+    }, 500);
 
     // Hover over links
     var hoverLink = debounce(function() {
