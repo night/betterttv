@@ -2,7 +2,7 @@ language: node_js
 env:
 - NODE_ENV=production
 node_js:
-- '5.1'
+- '6.6'
 before_script:
 - which gulp || npm install -g gulp
 script: gulp
