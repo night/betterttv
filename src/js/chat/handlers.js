@@ -291,7 +291,7 @@ exports.clearChat = function(bttvRoom, user, info, pubsub) {
         if (!$chatLines.length && !isTarget) return;
 
         if (bttv.settings.get('hideDeletedMessages') === true ||
-            (bttv.settings.get('showDeletedMessages') !== true && !isMod && !isTarget)
+            (bttv.settings.get('showDeletedMessages') !== true && !bttvRoom.delay && !isMod && !isTarget)
         ) {
             $chatLines.each(function() {
                 $(this).hide();
@@ -341,7 +341,7 @@ exports.clearChat = function(bttvRoom, user, info, pubsub) {
             }
 
             // Timeout messages
-            if (!isTarget && !isMod) return;
+            if (bttv.settings.get('hideDeletedMessages') === true && !isTarget) return;
             if (isMod && bttv.storage.getObject('chatSettings').showModerationActions !== true) return;
 
             if (trackTimeouts[user]) {
@@ -352,12 +352,15 @@ exports.clearChat = function(bttvRoom, user, info, pubsub) {
             var message;
             var reason = info['ban-reason'] ? ' Reason: ' + templates.escape(info['ban-reason']) : '';
             var type = info['ban-duration'] ? 'timed out for ' + templates.escape(info['ban-duration']) + ' seconds' : 'banned from this room';
+            var typeSimple = info['ban-duration'] ? 'timed out.' : 'banned.';
             var by = info['ban-created-by'] ? ' by ' + info['ban-created-by'] : '';
 
             if (isTarget) {
                 message = 'You have been ' + type + '.' + reason;
-            } else {
+            } else if (isMod) {
                 message = helpers.lookupDisplayName(user) + ' has been ' + type + by + '.' + reason;
+            } else {
+                message = helpers.lookupDisplayName(user) + ' has been ' + typeSimple;
             }
 
             var timesID = trackTimeouts[user] ? trackTimeouts[user].timesID : Math.floor(Math.random() * 100001);
