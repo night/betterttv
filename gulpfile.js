@@ -1,5 +1,6 @@
 var fs = require('fs'),
     gulp = require('gulp'),
+    babel = require('gulp-babel'),
     pug = require('gulp-pug'),
     browserify = require('browserify'),
     header = require('gulp-header'),
@@ -19,6 +20,7 @@ gulp.task('cleanup', function() {
 gulp.task('templates', ['cleanup'], function() {
     return gulp.src(['src/templates/*.pug'])
                .pipe(pug({client: true, globals: ['$', 'window', 'bttv', 'Twitch']}))
+               .pipe(babel({presets: ['es2015']}))
                .pipe(footer(';module.exports=template;'))
                .pipe(gulp.dest('build/templates/'));
 });
