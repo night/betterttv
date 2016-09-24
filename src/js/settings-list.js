@@ -42,7 +42,7 @@ module.exports = [
     {
         name: 'Better Viewer List',
         description: 'Adds extra features to the viewer list, such as filtering',
-        default: false,
+        default: true,
         storageKey: 'betterViewerList',
         toggle: function(value) {
             if (value === true) {
