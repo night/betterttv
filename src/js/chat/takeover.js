@@ -232,6 +232,11 @@ var takeover = module.exports = function() {
         }
     });
 
+    // Hide button for Past Broadcast banner
+    $('body').off('click', '.recent-past-broadcast__message_sub').on('click', '.recent-past-broadcast__message_sub', function(e) {
+        if (e.offsetX > e.target.offsetWidth - 26) $('.recent-past-broadcast').hide();
+    });
+
     // Make names clickable
     var clickCounter = 0;
     $('body').off('click', '.chat-line .from, .chat-line .user-mention').on('click', '.chat-line .from, .chat-line .user-mention', function(e) {
