@@ -2047,3 +2047,25 @@ body.channel_new.columns.ember-application {
 .emoticon-selector .emoticon-selector-box .tabs > .tab:hover {
     box-shadow: none;
 }
+
+/* Make past broadcast banner thinner */
+
+.recent-past-broadcast__cap-contain {
+    overflow: hidden;
+}
+
+.recent-past-broadcast__message {
+    padding: 0px 216px 10px 0;
+}
+
+.recent-past-broadcast__message h1 {
+    display: none;
+}
+
+/* Add hide button to past broadcast banner */
+.recent-past-broadcast__message_sub:after {
+    float: right;
+    content: "Hide";
+    cursor: pointer;
+}
+
