@@ -447,45 +447,44 @@ var takeover = module.exports = function() {
 
     // Keycode to quickly timeout users
     $(window).off('keydown').on('keydown', function(e) {
-        var keyCode = e.keyCode || e.which;
-
         if ($('.bttv-mod-card').length && bttv.settings.get('modcardsKeybinds') === true) {
+            var keyCode = e.keyCode || e.which;
             var user = $('.bttv-mod-card').data('user');
-            switch (keyCode) {
-                case keyCodes.Esc:
-                    $('.bttv-mod-card').remove();
-                    break;
-                case keyCodes.t:
-                    helpers.timeout(user);
-                    $('.bttv-mod-card').remove();
-                    break;
-                case keyCodes.p:
-                    helpers.timeout(user, 1);
-                    $('.bttv-mod-card').remove();
-                    break;
-                case keyCodes.a:
-                    helpers.sendMessage('!permit ' + user);
-                    $('.bttv-mod-card').remove();
-                    break;
-                case keyCodes.u:
-                    helpers.sendMessage('/unban ' + user);
-                    $('.bttv-mod-card').remove();
-                    break;
-                case keyCodes.b:
-                    helpers.ban(user);
-                    $('.bttv-mod-card').remove();
-                    break;
-                case keyCodes.i:
-                    helpers.sendMessage('/ignore ' + user);
-                    $('.bttv-mod-card').remove();
-                    break;
-                case keyCodes.w:
-                    e.preventDefault();
-                    $chatInput = $('.ember-chat .chat-interface').find('textarea');
-                    $chatInput.val('/w ' + user + ' ');
-                    $chatInput.focus();
-                    $('.bttv-mod-card').remove();
-                    break;
+            var isMod = vars.userData.isLoggedIn && helpers.isModerator(vars.userData.name);
+
+            if (keyCode === keyCodes.Esc) {
+                $('.bttv-mod-card').remove();
+            }
+            if (keyCode === keyCodes.t && isMod) {
+                helpers.timeout(user);
+                $('.bttv-mod-card').remove();
+            }
+            if (keyCode === keyCodes.p && isMod) {
+                helpers.timeout(user, 1);
+                $('.bttv-mod-card').remove();
+            }
+            if (keyCode === keyCodes.a && isMod) {
+                helpers.sendMessage('!permit ' + user);
+                $('.bttv-mod-card').remove();
+            }
+            if (keyCode === keyCodes.u && isMod) {
+                helpers.sendMessage('/unban ' + user);
+                $('.bttv-mod-card').remove();
+            }
+            if (keyCode === keyCodes.b && isMod) {
+                helpers.ban(user);
+                $('.bttv-mod-card').remove();
+            }
+            if (keyCode === keyCodes.i) {
+                helpers.sendMessage('/ignore ' + user);
+                $('.bttv-mod-card').remove();
+            }
+            if (keyCode === keyCodes.w) {
+                e.preventDefault();
+                $chatInput = $('.ember-chat .chat-interface').find('textarea');
+                $chatInput.val('/w ' + user + ' ');
+                $chatInput.focus();
+                $('.bttv-mod-card').remove();
             }
         }
     });
