@@ -2743,7 +2743,7 @@ ul.tabs li>a:hover, .directory_header .nav li>a:hover, ul.tabs li>button:hover, 
 }
 
 /* chat rules */
-.chat-interface .chat-rules {
+.ember-chat .chat-interface .chat-rules {
     background: #333;
     border-color: #333;
     color: #d3d3d3;
