@@ -2020,12 +2020,12 @@ span.subscribe-text {
 
 /* Twitch emote menu */
 .emoticon-selector .emoticon-selector-box, 
-.emoticon-selector-container .emoticon-selector {
+.emoticon-selector .emoticon-selector-container .emoticon-selector {
     background-color: #191919;
     border-color: #191919;
 }
 
-.emoticon-selector .emoticon-selector-box .tabs,
+.emoticon-selector .emoticon-selector-box .emoticon-selector__tabs,
 .emoticon-selector .emoticon-selector-box .emotes .emoticon-grid .emote-set,
 .emoticon-selector .emoticon-selector-box .emoticon-grid {
     background-color: #191919;
@@ -2034,12 +2034,12 @@ span.subscribe-text {
     box-shadow: none;
 }
 
-.emoticon-selector .tabs .tab.active {
+.emoticon-selector .emoticon-selector__tabs .emoticon-selector__tab.active {
     border-color: #888;
     color: #aaa;
 }
 
-.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .tabs .tab:hover {
+.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .emoticon-selector__tabs .emoticon-selector__tab:hover {
     border-color: #888;
 }
 
@@ -2051,7 +2051,7 @@ span.subscribe-text {
     background-color: rgb(25,25,25);
 }
 
-.emoticon-selector .emoticon-selector-box .tabs .tab {
+.emoticon-selector .emoticon-selector-box .emoticon-selector__tabs .emoticon-selector__tab {
     color: #888;
 }
 
