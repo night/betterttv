@@ -2515,12 +2515,13 @@ span.subscribe-text {
     background-color: #282828;
     color: #d3d3d3;
     border-color: #444;
+    box-shadow: none;
 }
 #left_col .warp input:focus {
     box-shadow: #666 0 0 0 1px inset;
 }
 
-#left_col .warp .warp__tabs:before {
+#left_col .warp .warp__item--header:before {
     background: #444;
 }
 
