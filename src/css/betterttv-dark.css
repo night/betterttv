@@ -2386,6 +2386,25 @@ span.subscribe-text {
     background-color: rgb(30, 30, 30);
 }
 
+/* darken channel edit */
+.twitch_subwindow .channel-edits {
+    background-color: rgb(40, 40, 40);
+}
+
+.twitch_subwindow .channel-edits .text-content form label {
+    color: #d3d3d3;
+}
+
+.twitch_subwindow .channel-edits .text-content .item input, .twitch_subwindow .channel-edits .text-content select {
+    background-color: #3b3b3b;
+    border-color: #444;
+    color: #d4d4d4;
+}
+
+.twitch_subwindow .text-content .js-subwindow-close:hover {
+    color: #ffffff;
+}
+
 /* darken posts and popout posts */
 .activity-container .activity-card, .twitch_subwindow .activity-card {
     border-color: rgb(30, 30, 30);
