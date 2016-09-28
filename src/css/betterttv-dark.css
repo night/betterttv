@@ -533,6 +533,18 @@ div#site_header {
     display: none;
 }
 
+/* Removes Purple Box Shadow */
+.chat-buttons-container .button:focus, .chat-buttons-container .button:hover {
+    box-shadow: none;
+}
+
+#site_header #header_actions .button:focus, #site_header #header_actions .button:hover,
+.conversations-content .conversations-list-icon:focus,
+.conversations-content .header-button-container .button:focus {
+    box-shadow: none;
+    background-color: rgba(0, 0 ,0, 0);
+}
+
 /* Button backgrounds */
 .stats-and-actions .channel-actions .actions {
     margin-right: 0px !important;
