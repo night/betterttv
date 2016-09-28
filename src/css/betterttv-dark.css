@@ -533,6 +533,18 @@ div#site_header {
     display: none;
 }
 
+/* Removes Purple Box Shadow */
+.chat-buttons-container .button:focus, .chat-buttons-container .button:hover {
+    box-shadow: none;
+}
+
+#site_header #header_actions .button:focus, #site_header #header_actions .button:hover,
+.conversations-content .conversations-list-icon:focus,
+.conversations-content .header-button-container .button:focus {
+    box-shadow: none;
+    background-color: rgba(0, 0 ,0, 0);
+}
+
 /* Button backgrounds */
 .stats-and-actions .channel-actions .actions {
     margin-right: 0px !important;
@@ -2025,7 +2037,7 @@ span.subscribe-text {
     border-color: #191919;
 }
 
-.emoticon-selector .emoticon-selector-box .tabs,
+.emoticon-selector .emoticon-selector-box .emoticon-selector__tabs,
 .emoticon-selector .emoticon-selector-box .emotes .emoticon-grid .emote-set,
 .emoticon-selector .emoticon-selector-box .emoticon-grid {
     background-color: #191919;
@@ -2034,12 +2046,12 @@ span.subscribe-text {
     box-shadow: none;
 }
 
-.emoticon-selector .tabs .tab.active {
+.emoticon-selector .emoticon-selector__tabs .emoticon-selector__tab.active {
     border-color: #888;
     color: #aaa;
 }
 
-.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .tabs .tab:hover {
+.ember-chat .chat-interface .emoticon-selector .emoticon-selector-box .emoticon-selector__tabs .emoticon-selector__tab:hover {
     border-color: #888;
 }
 
@@ -2051,7 +2063,7 @@ span.subscribe-text {
     background-color: rgb(25,25,25);
 }
 
-.emoticon-selector .emoticon-selector-box .tabs .tab {
+.emoticon-selector .emoticon-selector-box .emoticon-selector__tabs .emoticon-selector__tab {
     color: #888;
 }
 
@@ -2386,6 +2398,25 @@ span.subscribe-text {
     background-color: rgb(30, 30, 30);
 }
 
+/* darken channel edit */
+.twitch_subwindow .channel-edits {
+    background-color: rgb(40, 40, 40);
+}
+
+.twitch_subwindow .channel-edits .text-content form label {
+    color: #d3d3d3;
+}
+
+.twitch_subwindow .channel-edits .text-content .item input, .twitch_subwindow .channel-edits .text-content select {
+    background-color: #3b3b3b;
+    border-color: #444;
+    color: #d4d4d4;
+}
+
+.twitch_subwindow .text-content .js-subwindow-close:hover {
+    color: #ffffff;
+}
+
 /* darken posts and popout posts */
 .activity-container .activity-card, .twitch_subwindow .activity-card {
     border-color: rgb(30, 30, 30);
@@ -2515,12 +2546,13 @@ span.subscribe-text {
     background-color: #282828;
     color: #d3d3d3;
     border-color: #444;
+    box-shadow: none;
 }
 #left_col .warp input:focus {
     box-shadow: #666 0 0 0 1px inset;
 }
 
-#left_col .warp .warp__tabs:before {
+#left_col .warp .warp__item--header:before {
     background: #444;
 }
 
@@ -2742,7 +2774,7 @@ ul.tabs li>a:hover, .directory_header .nav li>a:hover, ul.tabs li>button:hover, 
 }
 
 /* chat rules */
-.chat-interface .chat-rules {
+.ember-chat .chat-interface .chat-rules {
     background: #333;
     border-color: #333;
     color: #d3d3d3;
