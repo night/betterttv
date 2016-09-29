@@ -19,6 +19,10 @@ var generateCSS = function(height) {
     return playerContainers.join(', ') + ', ' + players.join(', ') + ' { width: 100% !important; height: ' + height + 'px !important; }';
 };
 
+var generateCNBarRight = function(right) {
+    return '.cn-bar-fixed { right: ' + right + 'px }';
+};
+
 var getPlayerHeight = function() {
     var isNewPlayer = typeof $('#player .player').data('playertype') !== 'undefined';
 
@@ -48,6 +52,8 @@ module.exports = function() {
         $('body').append($playerStyle);
     }
 
+    var cnbarRight = 0;
+
     // If chat sidebar is closed, element width != 0
     if (vars.chatWidth === 0 || $('#right_col').hasClass('closed')) {
         $('#main_col').css({
@@ -57,6 +63,7 @@ module.exports = function() {
         $('#main_col').css({
             marginRight: $('#right_col').width() + 'px'
         });
+        cnbarRight = $('#right_col').width();
     }
 
     if ($('#main_col #channel').length === 0) return;
@@ -89,11 +96,11 @@ module.exports = function() {
     // the title (meta) and stats below video, the video player can be its'
     // 16:9 normal height
     if ($(window).height() > desiredPageHeight) {
-        $playerStyle.html(generateCSS(fullPlayerHeight));
+        $playerStyle.html(generateCSS(fullPlayerHeight) + generateCNBarRight(cnbarRight));
     } else {
         // Otherwise we need to create black bars on the video
         // to accomodate room for title (meta) and stats
-        $playerStyle.html(generateCSS(fullPageHeight - metaAndStatsHeight));
+        $playerStyle.html(generateCSS(fullPageHeight - metaAndStatsHeight) + generateCNBarRight(cnbarRight));
     }
 
     // Channel panels below the stream auto arrange based on width

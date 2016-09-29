@@ -2854,3 +2854,44 @@ ul.tabs li>a:hover, .directory_header .nav li>a:hover, ul.tabs li>button:hover, 
     border-top: 2px solid #9283b5;
     border-left: 2px solid #9283b5;
 }
+
+/* new channel page */
+.brick, .cn-bar__avatar-wrap {
+    background-color: #282828;
+    border-color: #282828;
+}
+
+.cn-bar {
+    background-color: #282828;
+    box-shadow: inset 0 -1px 0 #282828,0 -1px 1px rgba(0,0,0,.065);
+}
+
+.cn-cover.cn-cover--withimage {
+    background-color: #282828;
+}
+
+.cn-bar__displayname, .card__title {
+    color: #d3d3d3;
+}
+
+.cn-tabs__button .button.button--icon-only svg path {
+    fill: rgb(255,255,255) !important;
+}
+
+.balloon {
+    color: #D3D3D3;
+}
+
+.button--icon.cn-bar__button--subscribed {
+    background: #282828;
+    box-shadow: 0 0 0 1px #333 inset;
+    color: #d3d3d3;
+}
+
+.button--icon.cn-bar__button--subscribed figure svg {
+    fill: #d3d3d3;
+}
+
+button.cn-btn-toggle.toggle-notification-menu:hover {
+    background-color: #333;
+}
