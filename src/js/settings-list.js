@@ -244,10 +244,10 @@ module.exports = [
                     $('div.tipsy').remove();
                     $this.tipsy({
                         trigger: 'manual',
-                        gravity: $.fn.tipsy.autoNS,
+                        gravity: $.fn.tipsy.autoWE,
                         html: true,
                         opacity: 1,
-                        title: function() { return '<iframe src="https://player.twitch.tv/?channel=' + chan + '&!branding&!showInfo&autoplay&volume=0.1" style="border: none;" width="640" height="416"></iframe><style>.tipsy-inner{max-width:320px;}</style>'; }
+                        title: function() { return '<iframe src="https://player.twitch.tv/?channel=' + chan + '&!branding&!showInfo&autoplay&volume=0.1" style="border: none;" width="640" height="416"></iframe><style>.tipsy-inner{max-width:640px;}</style>'; }
                     });
                     $this.tipsy('show');
                 }, 1500);
