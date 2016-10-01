@@ -15,7 +15,10 @@ var players = [
     '.dynamic-target-player iframe'
 ];
 
+var previousHeight = 0;
+
 var generateCSS = function(height) {
+    previousHeight = height;
     return playerContainers.join(', ') + ', ' + players.join(', ') + ' { width: 100% !important; height: ' + height + 'px !important; }';
 };
 
@@ -70,7 +73,10 @@ module.exports = function() {
 
     var fullPageHeight = $(window).height();
     var fullPlayerHeight = getPlayerHeight();
-    if (fullPlayerHeight === -1) return;
+    if (fullPlayerHeight === -1) {
+        $playerStyle.html(generateCSS(previousHeight) + generateFixedRightOffsets(rightMargin));
+        return;
+    }
     var metaAndStatsHeight;
 
     var meta,
