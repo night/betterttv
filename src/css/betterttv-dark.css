@@ -547,6 +547,7 @@ div#site_header {
 }
 
 #channel .cn-metabar__more .ember-view .button {
+    color: #b8b8b8;
     box-shadow: inset 0 0 0 1px rgba(171, 171, 171, 0.5);
 }
 
@@ -2935,6 +2936,15 @@ button.cn-btn-toggle.toggle-notification-menu:hover {
     background-color: #333;
 }
 
-button.follow-button {
+button.follow-button, .subscription-modal__right button, .subscription-modal__left a.button {
     color: white;
+}
+
+/* Subscription Modal */
+.subscription-modal__balloon .subscription-modal__bar svg path {
+    fill: #d3d3d3;
+}
+
+.subscription-modal__title, .subscription-modal__right .light a {
+    color: #999;
 }
