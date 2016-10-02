@@ -799,6 +799,15 @@ exports.assignBadges = function(badges, data) {
         });
     }
 
+    if (badges.hasOwnProperty('subscriber')) {
+        bttvBadges.push({
+            type: 'subscriber',
+            name: '',
+            clickAction: 'subscribe_to_channel',
+            description: 'Channel Subscriber'
+        });
+    }
+
     Object.keys(store.__twitchBadgeTypes).forEach(function(badge) {
         if (badge === 'bits' && bttv.settings.get('hideBits') === true) return;
         if (badges.hasOwnProperty(badge)) {
@@ -812,15 +821,6 @@ exports.assignBadges = function(badges, data) {
             });
         }
     });
-
-    if (badges.hasOwnProperty('subscriber')) {
-        bttvBadges.push({
-            type: 'subscriber',
-            name: '',
-            clickAction: 'subscribe_to_channel',
-            description: 'Channel Subscriber'
-        });
-    }
 
     // Volunteer badges
     if (data.from in store.__bttvBadges) {
