@@ -15,8 +15,15 @@ var players = [
     '.dynamic-target-player iframe'
 ];
 
+var previousHeight = 0;
+
 var generateCSS = function(height) {
+    previousHeight = height;
     return playerContainers.join(', ') + ', ' + players.join(', ') + ' { width: 100% !important; height: ' + height + 'px !important; }';
+};
+
+var generateFixedRightOffsets = function(right) {
+    return '.cn-bar-fixed, .app-main.theatre .cn-content #player { right: ' + right + 'px !important; }';
 };
 
 var getPlayerHeight = function() {
@@ -48,14 +55,17 @@ module.exports = function() {
         $('body').append($playerStyle);
     }
 
+    var rightMargin = 0;
+
     // If chat sidebar is closed, element width != 0
     if (vars.chatWidth === 0 || $('#right_col').hasClass('closed')) {
         $('#main_col').css({
             marginRight: '0px'
         });
     } else {
+        rightMargin = $('#right_col').width();
         $('#main_col').css({
-            marginRight: $('#right_col').width() + 'px'
+            marginRight: rightMargin + 'px'
         });
     }
 
@@ -63,7 +73,10 @@ module.exports = function() {
 
     var fullPageHeight = $(window).height();
     var fullPlayerHeight = getPlayerHeight();
-    if (fullPlayerHeight === -1) return;
+    if (fullPlayerHeight === -1) {
+        $playerStyle.html(generateCSS(previousHeight) + generateFixedRightOffsets(rightMargin));
+        return;
+    }
     var metaAndStatsHeight;
 
     var meta,
@@ -89,11 +102,11 @@ module.exports = function() {
     // the title (meta) and stats below video, the video player can be its'
     // 16:9 normal height
     if ($(window).height() > desiredPageHeight) {
-        $playerStyle.html(generateCSS(fullPlayerHeight));
+        $playerStyle.html(generateCSS(fullPlayerHeight) + generateFixedRightOffsets(rightMargin));
     } else {
         // Otherwise we need to create black bars on the video
         // to accomodate room for title (meta) and stats
-        $playerStyle.html(generateCSS(fullPageHeight - metaAndStatsHeight));
+        $playerStyle.html(generateCSS(fullPageHeight - metaAndStatsHeight) + generateFixedRightOffsets(rightMargin));
     }
 
     // Channel panels below the stream auto arrange based on width

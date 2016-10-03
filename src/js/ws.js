@@ -27,11 +27,6 @@ events.new_subscriber = function(data) {
     bttv.chat.helpers.reparseMessages(data.user);
 };
 
-// Chat Spammers
-events.new_spammer = function(data) {
-    bttv.chat.store.spammers.push(data.name);
-};
-
 // Nightbot emits commercial warnings to mods
 events.commercial = function(data) {
     if (data.channel !== bttv.getChannel()) return;

@@ -571,6 +571,7 @@ input.text:focus,select:focus,textarea:focus {
     overflow-x: hidden;
     text-overflow: ellipsis;
     display: inline-block;
+    white-space: nowrap;
 }
 
 .bttv-mod-card .name .mod-card-edit {
@@ -741,6 +742,11 @@ input.text:focus,select:focus,textarea:focus {
 
 #dash_main #video_player {
     height: 272px;
+}
+
+#dash_main #hide_preview {
+    background: transparent;
+    text-decoration: underline;
 }
 
 #dash_main #custom_filter #gameselector_input {
@@ -1364,16 +1370,22 @@ body#chat #speak {
 }
 
 /* emoticon selector scrollbar in chrome */
-.ember-chat .chat-interface .emoticon-selector ::-webkit-scrollbar {
+.ember-chat .chat-interface .emoticon-selector ::-webkit-scrollbar,
+.conversation-input-bar .conversation-input-actions .emoticon-selector-container .emoticon-selector ::-webkit-scrollbar,
+.activity-card .activity-card__status .activity-react .emoticon-selector ::-webkit-scrollbar {
   width: 6px;
 }
 
-.ember-chat .chat-interface  .emoticon-selector ::-webkit-scrollbar-thumb {
+.ember-chat .chat-interface  .emoticon-selector ::-webkit-scrollbar-thumb,
+.conversation-input-bar .conversation-input-actions .emoticon-selector-container .emoticon-selector ::-webkit-scrollbar-thumb,
+.activity-card .activity-card__status .activity-react .emoticon-selector ::-webkit-scrollbar-thumb {
   background: rgba(0,0,0,0.7);
   border-radius: 7px;
 }
 
-.ember-chat .chat-interface  .emoticon-selector ::-webkit-scrollbar-track {
+.ember-chat .chat-interface  .emoticon-selector ::-webkit-scrollbar-track,
+.conversation-input-bar .conversation-input-actions .emoticon-selector-container .emoticon-selector ::-webkit-scrollbar-track,
+.activity-card .activity-card__status .activity-react .emoticon-selector ::-webkit-scrollbar-track {
   background: rgba(0,0,0,0);
 }
 
@@ -1797,6 +1809,19 @@ body.channel_new.columns.ember-application {
     fill: #32323e;
 }
 
+.conversation-content::-webkit-scrollbar, .conversations-list-inner::-webkit-scrollbar {
+  width: 6px;
+}
+
+.conversation-content::-webkit-scrollbar-thumb, .conversations-list-inner::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.7);
+  border-radius: 7px;
+}
+
+.conversation-content::-webkit-scrollbar-track, .conversations-list-inner::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0);
+}
+
 /* small nav follow count */
  #bttv-small-nav-count {
     position: absolute;
@@ -1963,10 +1988,19 @@ body.channel_new.columns.ember-application {
     background-color: transparent;
 }
 
-/* bits card */
+/* bits */
 
 .bits-card {
     width: 100%;
+}
+
+.ember-chat .chat-interface .textarea-contain textarea {
+    padding-right: 50px;
+}
+
+/* chat rules */
+.ember-chat .chat-interface .chat-rules {
+    margin: 0 6%;
 }
 
 /* chat notice style */
@@ -2000,3 +2034,38 @@ body.channel_new.columns.ember-application {
 #video-manager #highlighter {
     padding: 0px;
 }
+
+/* Twitch Emote Menu */
+.emoticon-selector .emoticon-selector-box .tabs .tab {
+    top: 0;
+}
+
+.emoticon-selector .emoticon-selector-box .tabs {
+    margin-bottom: .25rem;
+}
+
+.emoticon-selector .emoticon-selector-box .tabs > .tab:hover {
+    box-shadow: none;
+}
+
+/* Make past broadcast banner thinner */
+
+.recent-past-broadcast__cap-contain {
+    overflow: hidden;
+}
+
+.recent-past-broadcast__message {
+    padding: 0px 216px 10px 0;
+}
+
+.recent-past-broadcast__message h1 {
+    display: none;
+}
+
+/* Add hide button to past broadcast banner */
+.recent-past-broadcast__message_sub:after {
+    float: right;
+    content: "Hide";
+    cursor: pointer;
+}
+

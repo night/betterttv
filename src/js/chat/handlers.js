@@ -31,25 +31,26 @@ var secondsToLength = function(s) {
 exports.commands = function(input) {
     var sentence = input.trim().split(' ');
     var command = sentence[0].toLowerCase();
+    var channelName = bttv.getChannel();
     var oldSetting;
 
     if (command === '/b') {
         helpers.ban(sentence[1], sentence.slice(2).join(' '));
     } else if (command === '/chatters') {
-        $.getJSON('https://tmi.twitch.tv/group/user/' + bttv.getChannel() + '?callback=?').done(function(resp) {
+        $.getJSON('https://tmi.twitch.tv/group/user/' + channelName + '?callback=?').done(function(resp) {
             helpers.serverMessage('Current Chatters: ' + Twitch.display.commatize(resp.data.chatter_count), true);
         }).fail(function() {
             helpers.serverMessage('Could not fetch chatter count.', true);
         });
     } else if (command === '/followed') {
         if (vars.userData.isLoggedIn) {
-            var chan = sentence.length > 1 ? sentence[1] : bttv.getChannel();
+            var chan = sentence.length > 1 ? sentence[1] : channelName;
             helpers.followDate(vars.userData.name, chan);
         } else {
             helpers.serverMessage('You need to be logged in to use this command', true);
         }
     } else if (command === '/followers') {
-        bttv.TwitchAPI.get('channels/' + bttv.getChannel() + '/follows').done(function(channel) {
+        bttv.TwitchAPI.get('channels/' + channelName + '/follows').done(function(channel) {
             helpers.serverMessage('Current Followers: ' + Twitch.display.commatize(channel._total), true);
         }).fail(function() {
             helpers.serverMessage('Could not fetch follower count.', true);
@@ -89,6 +90,8 @@ exports.commands = function(input) {
     } else if (command === '/shrug') {
         sentence.shift();
         helpers.sendMessage(sentence.join(' ') + ' ¯\\_(ツ)_/¯');
+    } else if (command === '/squishy') {
+        helpers.sendMessage('notsquishY WHEN YOU NEED HIM notsquishY IN A JIFFY notsquishY USE THIS EMOTE notsquishY TO SUMMON SQUISHY notsquishY');
     } else if (command === '/sub') {
         tmi().tmiRoom.startSubscribersMode();
     } else if (command === '/suboff') {
@@ -100,7 +103,7 @@ exports.commands = function(input) {
     } else if (command === '/u') {
         helpers.unban(sentence[1]);
     } else if (command === '/uptime') {
-        bttv.TwitchAPI.get('streams/' + bttv.getChannel()).done(function(stream) {
+        bttv.TwitchAPI.get('streams/' + channelName).done(function(stream) {
             if (stream.stream !== null) {
                 var startedTime = new Date(stream.stream.created_at),
                     totalUptime = Math.round(Math.abs((Date.now() - (startedTime.getTime() - (startedTime.getTimezoneOffset() * 60 * 1000))) / 1000));
@@ -112,13 +115,16 @@ exports.commands = function(input) {
             helpers.serverMessage('Could not fetch start time.', true);
         });
     } else if (command === '/viewers') {
-        bttv.TwitchAPI.get('streams/' + bttv.getChannel()).done(function(stream) {
+        bttv.TwitchAPI.get('streams/' + channelName).done(function(stream) {
             helpers.serverMessage('Current Viewers: ' + Twitch.display.commatize(stream.stream.viewers), true);
         }).fail(function() {
             helpers.serverMessage('Could not fetch viewer count.', true);
         });
     } else if (command === '/w' && bttv.settings.get('disableWhispers') === true) {
         helpers.serverMessage('You have disabled whispers in BetterTTV settings');
+    } else if (command === '/color') {
+        helpers.serverMessage('Your current color is set to: ' + helpers.getColor(vars.userData.name), true);
+        return false;
     } else if (command === '/help') {
         helpers.serverMessage('BetterTTV Chat Commands:');
         helpers.serverMessage('/b [username] -- Shortcut for /ban');
@@ -172,13 +178,13 @@ exports.countUnreadMessages = function() {
 };
 
 var shiftQueue = exports.shiftQueue = throttle(function() {
-    if (!tmi() || !tmi().get('id')) return;
-    var id = tmi().get('id');
-    if (id !== store.currentRoom && tmi().get('name')) {
-        $('.ember-chat .chat-messages .tse-content .chat-line').remove();
-        store.currentRoom = id;
+    if (!tmi()) return;
+    var channelName = tmi().get('id');
+    if (channelName !== store.currentRoom && tmi().get('name')) {
+        $('.chat-messages .chat-line').remove();
+        store.currentRoom = channelName;
         store.__messageQueue = [];
-        rooms.getRoom(id).playQueue();
+        rooms.getRoom(channelName).playQueue();
         helpers.serverMessage('You switched to: ' + tmi().get('name').replace(/</g, '&lt;').replace(/>/g, '&gt;'), true);
 
         // TODO: this should not have to be here
@@ -194,13 +200,39 @@ var shiftQueue = exports.shiftQueue = throttle(function() {
             store.__messageQueue.splice(0, store.__messageQueue.length - bttv.settings.get('scrollbackAmount'));
         }
 
-        store.__messageQueue.forEach(function($message) {
+        var queue = store.__messageQueue;
+        var timeNow = Date.now();
+        var isMod = vars.userData.isLoggedIn && helpers.isModerator(vars.userData.name);
+        var delay = isMod ? 0 : rooms.getRoom(channelName).delay * 1000;
+        var messagesToPrint = [];
+        var messagesToPrepend = [];
+
+        while (queue.length && timeNow - queue[0].date.getTime() >= delay) {
+            var item = queue.shift();
+            var $message = item.message;
+            if (item.prepend) {
+                messagesToPrepend.unshift($message);
+            } else {
+                messagesToPrint.push($message);
+            }
             $message.find('img').on('load', function() {
                 helpers.scrollChat();
             });
-        });
-        $('.ember-chat .chat-messages .tse-content .chat-lines').append(store.__messageQueue);
-        store.__messageQueue = [];
+        }
+
+        if (queue.length !== messagesToPrint.length) {
+            setTimeout(function() {
+                shiftQueue();
+            }, delay);
+        }
+
+        $chatLines = $('.chat-messages .chat-lines');
+
+        if (messagesToPrepend.length) {
+            $chatLines.prepend(messagesToPrepend);
+        }
+
+        $chatLines.append(messagesToPrint);
     }
     helpers.scrollChat();
 }, 250, { trailing: true });
@@ -225,19 +257,8 @@ exports.moderationCard = function(user, $event) {
     });
 };
 
-exports.labelsChanged = function(user) {
-    if (bttv.settings.get('adminStaffAlert') === true) {
-        var specials = helpers.getSpecials(user);
-
-        if (specials.indexOf('admin') !== -1) {
-            helpers.notifyMessage('admin', user + ' just joined! Watch out foo!');
-        } else if (specials.indexOf('staff') !== -1) {
-            helpers.notifyMessage('staff', user + ' just joined! Watch out foo!');
-        }
-    }
-};
-
-exports.clearChat = function(bttvRoom, user, info) {
+exports.clearChat = function(bttvRoom, user, info, pubsub) {
+    pubsub = pubsub || false;
     var trackTimeouts = store.trackTimeouts;
 
     // Remove chat image preview if it exists.
@@ -258,16 +279,20 @@ exports.clearChat = function(bttvRoom, user, info) {
             printedChatLines.push($(this));
         });
 
-        var queuedLines = store.__messageQueue.filter(function($message) {
-            if ($message.data('sender') === user) return true;
+        var queuedLines = store.__messageQueue.filter(function(m) {
+            if (m.message.data('sender') === user) return true;
             return false;
+        }).map(function(m) {
+            return m.message;
         });
 
         $chatLines = $(printedChatLines.concat(queuedLines));
 
         if (!$chatLines.length && !isTarget) return;
 
-        if (bttv.settings.get('hideDeletedMessages') === true) {
+        if (bttv.settings.get('hideDeletedMessages') === true ||
+            (bttv.settings.get('showDeletedMessages') !== true && bttvRoom.delay && !isMod && !isTarget)
+        ) {
             $chatLines.each(function() {
                 $(this).hide();
                 $('div.tipsy').remove();
@@ -304,15 +329,36 @@ exports.clearChat = function(bttvRoom, user, info) {
                 });
             }
 
+            // Update channel state with timeout duration
+            if (isTarget) {
+                channelState({
+                    type: 'notice',
+                    tags: {
+                        'msg-id': info['ban-duration'] ? 'msg_timedout' : 'msg_banned',
+                    },
+                    message: info['ban-duration']
+                });
+            }
+
+            // Timeout messages
+            if (bttv.settings.get('hideDeletedMessages') === true && !isTarget) return;
+            if (isMod && bttv.storage.getObject('chatSettings').showModerationActions !== true) return;
+
+            if (trackTimeouts[user]) {
+                Object.assign(trackTimeouts[user].info, info);
+                info = trackTimeouts[user].info;
+            }
+
             var message;
             var reason = info['ban-reason'] ? ' Reason: ' + templates.escape(info['ban-reason']) : '';
-            var type = info['ban-duration'] ? 'timed out for ' + templates.escape(info['ban-duration']) + ' seconds.' : 'banned from this room.';
+            var type = info['ban-duration'] ? 'timed out for ' + templates.escape(info['ban-duration']) + ' seconds' : 'banned from this room';
             var typeSimple = info['ban-duration'] ? 'timed out.' : 'banned.';
+            var by = info['ban-created-by'] ? ' by ' + info['ban-created-by'] : '';
 
             if (isTarget) {
-                message = 'You have been ' + type + reason;
+                message = 'You have been ' + type + '.' + reason;
             } else if (isMod) {
-                message = helpers.lookupDisplayName(user) + ' has been ' + type + reason;
+                message = helpers.lookupDisplayName(user) + ' has been ' + type + by + '.' + reason;
             } else {
                 message = helpers.lookupDisplayName(user) + ' has been ' + typeSimple;
             }
@@ -321,27 +367,17 @@ exports.clearChat = function(bttvRoom, user, info) {
             var spanID = 'times_from_' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '_' + timesID;
 
             if (trackTimeouts[user]) {
-                trackTimeouts[user].count++;
+                if (!pubsub) trackTimeouts[user].count++;
                 $('#' + spanID).each(function() {
-                    $(this).text(message + ' (' + trackTimeouts[user].count + ' times)');
+                    $(this).text(message);
                 });
             } else {
                 trackTimeouts[user] = {
                     count: 1,
-                    timesID: timesID
+                    timesID: timesID,
+                    info: info
                 };
                 helpers.serverMessage('<span id="' + spanID + '">' + message + '</span>', true);
-            }
-
-            // Update channel state with timeout duration
-            if (vars.userData.isLoggedIn && user === vars.userData.name) {
-                channelState({
-                    type: 'notice',
-                    tags: {
-                        'msg-id': info['ban-duration'] ? 'msg_timedout' : 'msg_banned',
-                    },
-                    message: info['ban-duration']
-                });
             }
         }
     }
@@ -387,7 +423,7 @@ var privmsg = exports.privmsg = function(channel, data) {
             color: '#555'
         }, {server: true, notice: true});
 
-        store.__messageQueue.push($(message));
+        store.__messageQueue.push({message: $(message), date: new Date(0)});
     }
 
     try {
@@ -407,6 +443,8 @@ var privmsg = exports.privmsg = function(channel, data) {
             store.ignoreDC = false;
             return;
         }
+
+        if (data.isModerationMessage && bttv.storage.getObject('chatSettings').showModerationActions !== true) return;
 
         data.style = 'admin';
         message = templates.privmsg({
@@ -462,8 +500,7 @@ var privmsg = exports.privmsg = function(channel, data) {
         if (bttv.settings.get('darkenedMode') === true) data.color = data.color + '; text-shadow: 0 0 20px rgba(' + rgbColor.r + ',' + rgbColor.g + ',' + rgbColor.b + ',0.8)';
     }
 
-    var badges = helpers.getBadges(data.from);
-    var bttvBadges = helpers.assignBadges(badges || {}, data);
+    var bttvBadges = helpers.assignBadges(data.tags.badges || {}, data);
 
     var from = data.from;
     var sender = data.from;
@@ -522,7 +559,7 @@ var privmsg = exports.privmsg = function(channel, data) {
         notice: data.tags && data.tags['msg-id'] === 'resub'
     });
 
-    store.__messageQueue.push($(message));
+    store.__messageQueue.push({message: $(message), date: sender === vars.userData.name ? new Date(0) : data.date, prepend: data.tags.historical ? true : false});
 };
 
 exports.onPrivmsg = function(channel, data) {

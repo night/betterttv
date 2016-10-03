@@ -17,10 +17,10 @@ module.exports = function() {
     var $hostButton = $('#bttv-host-button');
 
     if (!$hostButton.length) {
-        $hostButton = $('<span><span></span></span>');
-        $hostButton.addClass('button').addClass('action');
+        $hostButton = $('<button><span></span></button>');
+        $hostButton.addClass('button').addClass('action button--hollow mg-l-1');
         $hostButton.attr('id', 'bttv-host-button');
-        $hostButton.insertBefore('#channel .channel-actions > span:eq(2)');
+        $hostButton.insertAfter('#channel .cn-metabar__more .js-share-box');
         $hostButton.click(function() {
             var action = $hostButton.text();
 

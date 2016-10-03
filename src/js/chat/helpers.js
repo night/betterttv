@@ -28,7 +28,7 @@ var lookupDisplayName = exports.lookupDisplayName = function(user, nicknames) {
     }
 
     if (tmi()) {
-        if (store.displayNames.hasOwnProperty(user)) {
+        if (Object.hasOwnProperty.call(store.displayNames, user)) {
             return store.displayNames[user] || user.capitalize();
         } else if (user !== 'jtv' && user !== 'twitchnotify') {
             return user.capitalize();
@@ -121,7 +121,7 @@ var completableEmotes = function() {
         var usableEmotes = tmi().tmiSession._emotesParser.emoticonRegexToIds;
 
         for (var emote in usableEmotes) {
-            if (!usableEmotes.hasOwnProperty(emote)) continue;
+            if (!Object.hasOwnProperty.call(usableEmotes, emote)) continue;
 
             if (usableEmotes[emote].isRegex === true) continue;
 
@@ -441,10 +441,9 @@ exports.sendMessage = function(message) {
         }
 
         if (containsCheer(message)) {
-            var model = bttv.getModel();
             var service = App && App.__container__.lookup('service:bits');
-            if (model && service) {
-                service.sendBits(model._id, message).then(function() {}, function(e) {
+            if (tmi().channel && service) {
+                service.sendBits(tmi().channel._id, message).then(function() {}, function(e) {
                     if (e.status === 401) {
                         var room = App.__container__.lookup('controller:room');
                         room.send('handleNotLoggedIn', {
@@ -505,13 +504,18 @@ exports.isIgnored = function(user) {
     return tmi() && tmi().tmiSession.isIgnored(user);
 };
 
+var getBTTVBadges = exports.getBTTVBadges = function(user, isMod) {
+    var badges = {};
+    if (store.__subscriptions[user] && store.__subscriptions[user].indexOf(bttv.getChannel()) !== -1) badges.subscriber = '1';
+    if ((store.__channelBots.indexOf(user) > -1 || bots.indexOf(user) > -1) && isMod) badges.bot = '1';
+    return badges;
+};
+
 var getBadges = exports.getBadges = function(user) {
     var badges = {};
     if (!user || user === '') return badges;
     if (tmi() && tmi().tmiRoom.getBadges(user)) badges = tmi().tmiRoom.getBadges(user);
-    if (store.__subscriptions[user] && store.__subscriptions[user].indexOf(bttv.getChannel()) !== -1) badges.subscriber = '1';
-    if ((store.__channelBots.indexOf(user) > -1 || bots.indexOf(user) > -1) && badges.hasOwnProperty('moderator')) badges.bot = '1';
-    return badges;
+    return Object.assign(getBTTVBadges(user, badges.hasOwnProperty('moderator')), badges);
 };
 
 var isOwner = exports.isOwner = function(user) {
@@ -549,11 +553,6 @@ exports.isSubscriber = function(user) {
     return getBadges(user).hasOwnProperty('subscriber');
 };
 
-exports.isSpammer = function(user) {
-    if (!user || user === '') return false;
-    return store.spammers.indexOf(user.toLowerCase()) > -1;
-};
-
 exports.hasGlow = function(user) {
     if (!user || user === '') return false;
     if (store.__subscriptions[user] && store.__subscriptions[user].indexOf('_glow') !== -1) return true;
@@ -574,14 +573,6 @@ exports.getEmotes = function(user) {
         });
     }
     return emotes;
-};
-
-exports.getSpecials = function(user) {
-    if (!user || user === '') return false;
-    var specials = [];
-    if (tmi() && tmi().tmiSession && tmi().tmiSession._users) specials = tmi().tmiSession._users.getSpecials(user);
-    if (store.__subscriptions[user] && store.__subscriptions[user].indexOf(bttv.getChannel()) !== -1) specials.push('subscriber');
-    return specials;
 };
 
 exports.scrollChat = throttle(function() {
@@ -624,7 +615,7 @@ var surrogateOffset = function(surrogates, index) {
     var offset = index;
 
     for (var id in surrogates) {
-        if (!surrogates.hasOwnProperty(id)) continue;
+        if (!Object.hasOwnProperty.call(surrogates, id)) continue;
         if (id < index) offset++;
     }
 
@@ -649,7 +640,7 @@ exports.handleSurrogatePairs = function(message, emotes) {
     // appears in the message, offsetting the indexes +1 for each
     // surrogate pair occurring before the index
     for (var id in emotes) {
-        if (!emotes.hasOwnProperty(id)) continue;
+        if (!Object.hasOwnProperty.call(emotes, id)) continue;
 
         var emote = emotes[id];
         for (i = emote.length - 1; i >= 0; i--) {
@@ -713,9 +704,8 @@ exports.loadTwitchBadges = function() {
             store.__twitchBadgeTypes[badge] = badgeData;
         });
 
-        var channelModel = bttv.getModel();
-        if (channelModel && channelModel.partner === true) {
-            $.getJSON('https://badges.twitch.tv/v1/badges/channels/' + channelModel._id + '/display', function(badges) {
+        if (tmi().channel && tmi().channel.partner === true) {
+            $.getJSON('https://badges.twitch.tv/v1/badges/channels/' + tmi().channel._id + '/display', function(badges) {
                 if (!badges || !badges.badge_sets || !badges.badge_sets.subscriber) return;
                 var subBadge = data.badge_sets.subscriber.versions['1'];
                 var cssLine = '.badge.subscriber { background-image: url("' + subBadge.image_url_1x + '"); }';
@@ -731,6 +721,9 @@ exports.assignBadges = function(badges, data) {
     data = data || {};
     var bttvBadges = [];
     var legacyTags = require('../legacy-tags')(data);
+    var hasBTTVBadge = false;
+
+    Object.assign(badges, getBTTVBadges(data.from, badges.hasOwnProperty('moderator')));
 
     // Legacy Swag Tags
     if (
@@ -753,6 +746,8 @@ exports.assignBadges = function(badges, data) {
             name: userData.tagName,
             description: 'Grandfathered BetterTTV Swag Tag'
         });
+
+        hasBTTVBadge = true;
     }
 
     if (badges.hasOwnProperty('staff')) {
@@ -781,13 +776,13 @@ exports.assignBadges = function(badges, data) {
             name: 'Bot',
             description: 'Channel Bot'
         });
-    } else if (badges.hasOwnProperty('broadcaster') && !legacyTags[data.from]) {
+    } else if (badges.hasOwnProperty('broadcaster') && !hasBTTVBadge) {
         bttvBadges.push({
             type: 'broadcaster',
             name: 'Host',
             description: 'Channel Broadcaster'
         });
-    } else if (badges.hasOwnProperty('moderator') && !legacyTags[data.from]) {
+    } else if (badges.hasOwnProperty('moderator') && !hasBTTVBadge) {
         bttvBadges.push({
             type: 'moderator',
             name: 'Mod',
@@ -804,6 +799,15 @@ exports.assignBadges = function(badges, data) {
         });
     }
 
+    if (badges.hasOwnProperty('subscriber')) {
+        bttvBadges.push({
+            type: 'subscriber',
+            name: '',
+            clickAction: 'subscribe_to_channel',
+            description: 'Channel Subscriber'
+        });
+    }
+
     Object.keys(store.__twitchBadgeTypes).forEach(function(badge) {
         if (badge === 'bits' && bttv.settings.get('hideBits') === true) return;
         if (badges.hasOwnProperty(badge)) {
@@ -817,15 +821,6 @@ exports.assignBadges = function(badges, data) {
             });
         }
     });
-
-    if (badges.hasOwnProperty('subscriber')) {
-        bttvBadges.push({
-            type: 'subscriber',
-            name: '',
-            clickAction: 'subscribe_to_channel',
-            description: 'Channel Subscriber'
-        });
-    }
 
     // Volunteer badges
     if (data.from in store.__bttvBadges) {

@@ -42,7 +42,7 @@ module.exports = [
     {
         name: 'Better Viewer List',
         description: 'Adds extra features to the viewer list, such as filtering',
-        default: false,
+        default: true,
         storageKey: 'betterViewerList',
         toggle: function(value) {
             if (value === true) {
@@ -244,10 +244,10 @@ module.exports = [
                     $('div.tipsy').remove();
                     $this.tipsy({
                         trigger: 'manual',
-                        gravity: $.fn.tipsy.autoNS,
+                        gravity: $.fn.tipsy.autoWE,
                         html: true,
                         opacity: 1,
-                        title: function() { return '<iframe src="https://player.twitch.tv/?channel=' + chan + '&!branding&!showInfo&autoplay&volume=0.1" style="border: none;" width="320" height="208"></iframe><style>.tipsy-inner{max-width:320px;}</style>'; }
+                        title: function() { return '<iframe src="https://player.twitch.tv/?channel=' + chan + '&!branding&!showInfo&autoplay&volume=0.1" style="border: none;" width="640" height="416"></iframe><style>.tipsy-inner{max-width:640px;}</style>'; }
                     });
                     $this.tipsy('show');
                 }, 1500);
@@ -412,12 +412,6 @@ module.exports = [
         load: function() {
             cssLoader.load('hide-group-chat', 'groupChatRemoval');
         }
-    },
-    {
-        name: 'Hide Spam Messages',
-        description: 'Hides known spam messages. Click on the message to reveal it',
-        default: true,
-        storageKey: 'hideSpam'
     },
     {
         name: 'Hide Conversations When Inactive',

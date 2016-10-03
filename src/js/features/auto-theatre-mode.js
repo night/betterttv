@@ -11,4 +11,8 @@ module.exports = function() {
     } catch (e) {
         debug.log('Error toggling theater mode: ', e);
     }
+
+    App.__container__.lookup('service:layout').addObserver('isTheatreMode', function() {
+        window.dispatchEvent(new Event('resize'));
+    });
 };

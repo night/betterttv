@@ -26,6 +26,7 @@ var newRoom = exports.newRoom = function(name) {
         emberRoom: emberRoom,
         active: function() { return (bttv.getChatController() && bttv.getChatController().currentRoom && bttv.getChatController().currentRoom.get('id') === name) ? true : false; },
         messages: [],
+        delay: 0,
         playQueue: function() {
             store.__rooms[name].unread = 0;
             handlers.countUnreadMessages();

@@ -1,6 +1,8 @@
 BetterTTV
 =========
 
+[![Build Status](https://travis-ci.org/night/BetterTTV.svg?branch=master)](https://travis-ci.org/night/BetterTTV) [![Dependencies Status](https://david-dm.org/night/BetterTTV/status.svg)](https://david-dm.org/night/BetterTTV) [![Discord](https://discordapp.com/api/guilds/229471495087194112/widget.png)](https://discord.gg/nightdev)
+
 Building BetterTTV
 ===
 
