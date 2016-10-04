@@ -123,30 +123,31 @@ String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 };
 
-var clearClutter = require('./features/clear-clutter'),
-    channelReformat = require('./features/channel-reformat'),
+var betterViewerList = require('./features/better-viewer-list'),
     brand = require('./features/brand'),
-    checkMessages = require('./features/check-messages'),
-    directoryFunctions = require('./features/directory-functions'),
-    checkFollowing = require('./features/check-following'),
+    channelReformat = require('./features/channel-reformat'),
+    ChatReplay = require('./features/chat-replay'),
     checkBroadcastInfo = require('./features/check-broadcast-info'),
-    handleBackground = require('./features/handle-background'),
-    darkenPage = require('./features/darken-page'),
-    splitChat = require('./features/split-chat'),
-    flipDashboard = require('./features/flip-dashboard'),
-    formatDashboard = require('./features/format-dashboard'),
-    dashboardChannelInfo = require('./features/dashboard-channelinfo'),
-    giveawayCompatibility = require('./features/giveaway-compatibility'),
-    handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes'),
+    checkFollowing = require('./features/check-following'),
+    checkMessages = require('./features/check-messages'),
+    clearClutter = require('./features/clear-clutter'),
+    conversations = require('./features/conversations'),
     createSettings = require('./features/create-settings'),
+    darkenPage = require('./features/darken-page'),
+    dashboardChannelInfo = require('./features/dashboard-channelinfo'),
+    directoryFunctions = require('./features/directory-functions'),
     enableImagePreview = require('./features/image-preview').enablePreview,
     enableTheatreMode = require('./features/auto-theatre-mode'),
+    flipDashboard = require('./features/flip-dashboard'),
+    formatDashboard = require('./features/format-dashboard'),
+    giveawayCompatibility = require('./features/giveaway-compatibility'),
+    handleBackground = require('./features/handle-background'),
+    handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes'),
+    hidePrimePromotions = require('./features/hide-prime-promotions'),
     hostButtonBelowVideo = require('./features/host-btn-below-video'),
-    conversations = require('./features/conversations'),
-    betterViewerList = require('./features/better-viewer-list'),
     overrideEmotes = require('./features/override-emotes'),
     playerViewerCount = require('./features/player-viewer-count.js'),
-    ChatReplay = require('./features/chat-replay');
+    splitChat = require('./features/split-chat');
 
 var chatFunctions = function() {
     debug.log('Modifying Chat Functionality');
@@ -196,6 +197,7 @@ var main = function() {
                             hostButtonBelowVideo();
                             betterViewerList();
                             playerViewerCount();
+                            hidePrimePromotions();
                             if (
                                 App.__container__.lookup('controller:channel').get('isTheatreMode') === false &&
                                 bttv.settings.get('autoTheatreMode') === true
