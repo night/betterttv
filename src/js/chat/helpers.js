@@ -7,6 +7,7 @@ var vars = require('../vars'),
     bots = require('../bots'),
     punycode = require('punycode'),
     channelState = require('../features/channel-state'),
+    chatFreeze = require('../features/chat-freeze'),
     throttle = require('lodash.throttle'),
     emojilib = require('emojilib');
 
@@ -580,7 +581,7 @@ exports.scrollChat = throttle(function() {
 
     var chatPaused = $chat.find('.chat-interface').children('span').children('.more-messages-indicator').length;
 
-    if (chatPaused || !$chat.length) return;
+    if (chatPaused || chatFreeze() || !$chat.length) return;
 
     var $chatMessages = $chat.find('.chat-messages');
     var $chatScroller = $chatMessages.children('.tse-scroll-content');
