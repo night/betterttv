@@ -41,10 +41,10 @@ module.exports = function dashboardChannelInfo() {
         });
 
         if (vars.dontCheckSubs !== true) {
-            $.getJSON('/' + bttv.getChannel() + '/dashboard/revenue/summary_data', function(data) {
-                if (!data.data) return;
+            bttv.TwitchAPI.get('/api/channels/' + bttv.getChannel() + '/subscriber_count').done(function(data) {
+                if (!data.count) return;
 
-                if (data.data.total_subscriptions === 0) {
+                if (data.count === 0) {
                     vars.dontCheckSubs = true;
                     return;
                 }
@@ -70,7 +70,7 @@ module.exports = function dashboardChannelInfo() {
                     });
                 }
 
-                $('#subs_count span').text(Twitch.display.commatize(data.data.total_subscriptions));
+                $('#subs_count span').text(Twitch.display.commatize(data.count));
             });
         }
 

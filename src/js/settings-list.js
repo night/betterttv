@@ -382,6 +382,15 @@ module.exports = [
         }
     },
     {
+        name: 'Hide Conversations When Inactive',
+        description: 'Only show conversations ui on mousverover or when active',
+        default: false,
+        storageKey: 'hideConversations',
+        toggle: function() {
+            bttv.conversations.toggleAutoHide();
+        }
+    },
+    {
         name: 'Hide Friends',
         description: 'Hides the friend list from the left sidebar',
         default: false,
@@ -414,12 +423,16 @@ module.exports = [
         }
     },
     {
-        name: 'Hide Conversations When Inactive',
-        description: 'Only show conversations ui on mousverover or when active',
+        name: 'Hide Prime Promotions',
+        description: 'Hides the "Free With Prime" section of the sidebar',
         default: false,
-        storageKey: 'hideConversations',
-        toggle: function() {
-            bttv.conversations.toggleAutoHide();
+        storageKey: 'hidePrimePromotion',
+        toggle: function(value) {
+            if (value === true) {
+                removeElement('.js-offers');
+            } else {
+                displayElement('.js-offers');
+            }
         }
     },
     {
