@@ -30,7 +30,8 @@ var lookupDisplayName = exports.lookupDisplayName = function(user, nicknames) {
 
     if (tmi()) {
         if (Object.hasOwnProperty.call(store.displayNames, user)) {
-            return store.displayNames[user] || user.capitalize();
+            var name = store.displayNames[user] || user.capitalize();
+            return nicknames === false && name.toLowerCase() !== user ? user.capitalize() : name;
         } else if (user !== 'jtv' && user !== 'twitchnotify') {
             return user.capitalize();
         } else {
