@@ -792,21 +792,21 @@ exports.assignBadges = function(badges, data) {
         });
     }
 
-    if (badges.hasOwnProperty('turbo')) {
-        bttvBadges.push({
-            type: 'turbo',
-            name: '',
-            clickAction: 'turbo',
-            description: 'Twitch Turbo'
-        });
-    }
-
     if (badges.hasOwnProperty('subscriber')) {
         bttvBadges.push({
             type: 'subscriber',
             name: '',
             clickAction: 'subscribe_to_channel',
             description: 'Channel Subscriber'
+        });
+    }
+
+    if (badges.hasOwnProperty('turbo')) {
+        bttvBadges.push({
+            type: 'turbo',
+            name: '',
+            clickAction: 'turbo',
+            description: 'Twitch Turbo'
         });
     }
 
