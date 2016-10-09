@@ -1246,6 +1246,7 @@ body#chat #speak {
 
 .tipsy {
     z-index: 9000000001 !important;
+    word-break: break-all;
     /*white-space: nowrap;*/
 }
 
