@@ -17,10 +17,19 @@ module.exports = function() {
     var $hostButton = $('#bttv-host-button');
 
     if (!$hostButton.length) {
-        $hostButton = $('<button><span></span></button>');
-        $hostButton.addClass('button').addClass('action button--hollow mg-l-1');
+        // 10% of users still get the old layout.
+        if ($('#channel .cn-metabar__more .js-share-box').length) {
+            $hostButton = $('<button><span></span></button>');
+            $hostButton.addClass('button').addClass('action button--hollow mg-l-1');
+            $hostButton.insertAfter('#channel .cn-metabar__more .js-share-box');
+        } else {
+            // Old layout
+            $hostButton = $('<span><span></span></span>');
+            $hostButton.addClass('button').addClass('action');
+            $hostButton.insertBefore('#channel .channel-actions > span:eq(2)');
+        }
+
         $hostButton.attr('id', 'bttv-host-button');
-        $hostButton.insertAfter('#channel .cn-metabar__more .js-share-box');
         $hostButton.click(function() {
             var action = $hostButton.text();
 
