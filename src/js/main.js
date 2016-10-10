@@ -189,6 +189,9 @@ var main = function() {
                 case 'loading':
                     return;
 
+                case 'channel.videos.video-type':
+                case 'channel.followers':
+                case 'channel.following':
                 case 'channel.index.index':
                     waitForLoad(function(ready) {
                         if (ready) {
@@ -209,6 +212,9 @@ var main = function() {
                             setTimeout(function() {
                                 window.dispatchEvent(new Event('resize'));
                             }, 3000);
+
+                            // Switching between tabs in channel page
+                            if (lastRoute.substr(0, 8) === 'channel.') return;
 
                             // chat
                             bttv.chat.store.isLoaded = false;
