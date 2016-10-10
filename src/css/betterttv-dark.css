@@ -2947,3 +2947,8 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 .subscription-modal__title, .subscription-modal__right .light a {
     color: #999;
 }
+
+/* Offer gradient is bad */
+.offer-item__ci:after {
+    background: none;
+}
