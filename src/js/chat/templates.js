@@ -341,7 +341,7 @@ exports.privmsg = function(data, opts) {
     opts = opts || {};
     var msgOptions = {emotes: data.emotes, colored: (opts.action && !opts.highlight) ? data.color : false, bits: data.bits};
     var msg = timestamp(data.time) + ' ' + (opts.isMod ? modicons() : '') + ' ' + badges(data.badges) + from(data.nickname, data.color) + message(data.sender, data.message, msgOptions);
-    return '<div class="chat-line' + (opts.highlight ? ' highlight' : '') + (opts.action ? ' action' : '') + (opts.server ? ' admin' : '') + (opts.notice ? ' notice' : '') + '" data-sender="' + data.sender + '">' + msg + '</div>';
+    return '<div class="chat-line' + (opts.highlight ? ' highlight' : '') + (opts.action ? ' action' : '') + (opts.server ? ' admin' : '') + (opts.notice ? ' notice' : '') + '" data-id="' + data.id + '" data-sender="' + data.sender + '">' + msg + '</div>';
 };
 
 var whisperName = exports.whisperName = function(sender, receiver, fromNick, to, fromColor, toColor) {

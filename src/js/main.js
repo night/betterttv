@@ -291,6 +291,7 @@ var main = function() {
         bttv.conversations = conversations();
         bttv.ws = new WS();
 
+        chatFunctions();
         chatReplay = new ChatReplay();
         clearClutter();
         channelReformat();
@@ -324,13 +325,6 @@ var main = function() {
         window.dispatchEvent(new Event('resize'));
     };
 
-    var delayedFuncs = function() {
-        channelReformat();
-        window.dispatchEvent(new Event('resize'));
-        chatFunctions();
-        directoryFunctions();
-    };
-
     $(document).ready(function() {
         loadUser(function() {
             createSettings();
@@ -340,7 +334,6 @@ var main = function() {
             debug.log('CALL init ' + document.URL);
 
             initialFuncs();
-            setTimeout(delayedFuncs, 3000);
         });
     });
 };

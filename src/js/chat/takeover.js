@@ -32,6 +32,8 @@ var takeover = module.exports = function() {
 
     // Takes over whisper replies (actually all messages Twitch still emits)
     currentRoom.set('addMessage', function(d) {
+        // hide admin messages until after load
+        if (!store.isLoaded && d.style === 'admin') return;
         handlers.onPrivmsg(channelName, d);
     });
 
@@ -42,14 +44,34 @@ var takeover = module.exports = function() {
     if (store.isLoaded) return;
     currentRoom.removeObserver('isLoading', takeover);
     if (currentRoom.get('isLoading')) {
+        $('.chat-messages .chat-lines').hide();
         currentRoom.addObserver('isLoading', takeover);
         return;
     }
     store.isLoaded = true;
 
-    $('.chat-messages .chat-line').remove();
+    $('.chat-messages .ember-view.chat-line').remove();
+    $('.chat-messages .chat-lines').show();
     helpers.serverMessage('<center><small>BetterTTV v' + bttv.info.version + ' Loaded.</small></center>');
     helpers.serverMessage('Welcome to ' + helpers.lookupDisplayName(channelName) + '\'s chat room!', true);
+    currentRoom.set('unreadCount', 0);
+    var dupIds = [];
+    var unrenderedMessages = currentRoom._queuedRawMessages
+        .concat(currentRoom._queuedMessages)
+        .concat(currentRoom.delayedMessages)
+        .concat(currentRoom.messages)
+        .filter(function(m) {
+            if (m.tags) {
+                if (dupIds.indexOf(m.tags.id) === -1) return false;
+                dupIds.push(m.tags.id);
+            }
+            return m.style !== 'admin';
+        });
+    currentRoom.set('delayedMessages', []);
+    currentRoom.set('messages', []);
+    currentRoom.set('_queuedMessages', []);
+    currentRoom.set('_queuedRawMessages', []);
+    unrenderedMessages.forEach(currentRoom.addMessage);
 
     // Default timestamps & mod icons to on
     var settings = bttv.storage.getObject('chatSettings');

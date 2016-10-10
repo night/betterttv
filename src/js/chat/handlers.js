@@ -207,11 +207,11 @@ var shiftQueue = exports.shiftQueue = throttle(function() {
         var messagesToPrint = [];
         var messagesToPrepend = [];
 
-        while (queue.length && timeNow - queue[0].date.getTime() >= delay) {
+        while (queue.length && (timeNow - queue[0].date.getTime() >= delay || queue[0].prepend)) {
             var item = queue.shift();
             var $message = item.message;
             if (item.prepend) {
-                messagesToPrepend.unshift($message);
+                messagesToPrepend.unshift(item);
             } else {
                 messagesToPrint.push($message);
             }
@@ -229,7 +229,20 @@ var shiftQueue = exports.shiftQueue = throttle(function() {
         $chatLines = $('.chat-messages .chat-lines');
 
         if (messagesToPrepend.length) {
-            $chatLines.prepend(messagesToPrepend);
+            messagesToPrepend = messagesToPrepend.filter(function(m) {
+                return !$chatLines.find('.chat-line[data-id="' + m.message.data('id') + '"]').length;
+            });
+            var welcomeToChatLine = $chatLines.find('.chat-line.admin');
+            if (welcomeToChatLine.length) {
+                messagesToPrepend.sort(function(a, b) {
+                    return a.date - b.date;
+                });
+                welcomeToChatLine.first().before(messagesToPrepend.map(function(m) {
+                    return m.message;
+                }));
+            } else {
+                store.__messageQueue = messagesToPrepend.concat(store.__messageQueue);
+            }
         }
 
         $chatLines.append(messagesToPrint);
@@ -550,7 +563,8 @@ var privmsg = exports.privmsg = function(channel, data) {
         badges: bttvBadges,
         color: data.color,
         bits: data.tags.bits && parseInt(data.tags.bits, 10),
-        emotes: data.tags.emotes
+        emotes: data.tags.emotes,
+        id: data.tags.id
     }, {
         highlight: messageHighlighted,
         action: data.style === 'action' ? true : false,
