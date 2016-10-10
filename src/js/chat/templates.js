@@ -6,7 +6,7 @@ var tmi = require('./tmi'),
     blacklistedEmoji = require('../helpers/emoji-blacklist.json');
 
 var badge = exports.badge = function(type, name, description, action) {
-    var classes = type + '' + ((bttv.settings.get('alphaTags') && ['admin', 'global-moderator', 'staff', 'broadcaster', 'moderator', 'turbo', 'ign'].indexOf(type) !== -1) ? ' alpha' + (!bttv.settings.get('darkenedMode') ? ' invert' : '') : '') + ' badge';
+    var classes = type + '' + (bttv.settings.get('alphaTags') ? ' alpha' + (!bttv.settings.get('darkenedMode') ? ' invert' : '') : '') + ' badge';
     return '<div class="' + classes + '" title="' + description + '"' + (action ? ' data-click-action="' + action + '"' : '') + '>' + name + '</div> ';
 };
 
