@@ -137,6 +137,15 @@ var takeover = module.exports = function() {
     });
     if (currentRoom.channel) currentRoom.set('name', currentRoom.channel.get('display_name'));
 
+    // Fake the initial roomstate
+    helpers.parseRoomState({
+        tags: {
+            'subs-only': currentRoom.get('subsOnly') || false,
+            slow: currentRoom.get('slow') || 0,
+            r9k: currentRoom.get('r9k') || false,
+            'emote-only': currentRoom.get('emoteOnly') || false
+        }
+    });
     vars.localSubsOnly = false;
     vars.localModsOnly = false;
 
