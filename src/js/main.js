@@ -146,8 +146,9 @@ var betterViewerList = require('./features/better-viewer-list'),
     hidePrimePromotions = require('./features/hide-prime-promotions'),
     hostButtonBelowVideo = require('./features/host-btn-below-video'),
     overrideEmotes = require('./features/override-emotes'),
-    playerViewerCount = require('./features/player-viewer-count.js'),
-    splitChat = require('./features/split-chat');
+    playerViewerCount = require('./features/player-viewer-count'),
+    splitChat = require('./features/split-chat'),
+    videoPlayerFeatures = require('./features/video-player-features');
 
 var chatFunctions = function() {
     debug.log('Modifying Chat Functionality');
@@ -311,6 +312,7 @@ var main = function() {
         betterViewerList();
         playerViewerCount();
         hidePrimePromotions();
+        videoPlayerFeatures();
 
         // Loads global BTTV emotes (if not loaded)
         overrideEmotes();
