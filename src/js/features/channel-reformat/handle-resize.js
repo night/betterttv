@@ -45,8 +45,6 @@ module.exports = function() {
 
     debug.log('Page resized');
 
-    var hostModeEnabled = $('#hostmode').length;
-
     var $playerStyle = $('#bttvPlayerStyle');
 
     if (!$playerStyle.length) {
@@ -77,25 +75,12 @@ module.exports = function() {
         $playerStyle.html(generateCSS(previousHeight) + generateFixedRightOffsets(rightMargin));
         return;
     }
-    var metaAndStatsHeight;
 
-    var meta,
-        stats;
-    if (hostModeEnabled) {
-        var title = $('.hostmode-title-container').outerHeight(true);
-        meta = $('.target-meta').outerHeight(true);
-        stats = $('#hostmode .channel-actions').outerHeight(true);
-        var close = $('.close-hostmode').outerHeight(true);
-        metaAndStatsHeight = title + meta + stats + close + 33;
-
-        // Fixes host frame height on resize (the close button repositions)
-        $('.target-frame').css('height', $(window).height());
-    } else {
-        meta = $('#broadcast-meta').outerHeight(true);
-        stats = $('.stats-and-actions').outerHeight();
-        metaAndStatsHeight = meta + stats;
-    }
-
+    var meta = $('.cn-bar').outerHeight(true);
+    var stats = $('.cn-metabar').outerHeight(true) + 20;
+    var recentPastBroadcastHeight = $('.recent-past-broadcast').length ? $('.recent-past-broadcast').outerHeight(true) : 0;
+    var hostModeHeight = $('.cn-hosting').length ? $('.cn-hosting--top').outerHeight(true) + $('.cn-hosting--bottom').outerHeight(true) + 20 : 0;
+    var metaAndStatsHeight = meta + stats + recentPastBroadcastHeight + hostModeHeight;
     var desiredPageHeight = metaAndStatsHeight + fullPlayerHeight;
 
     // If the window height is larger than the height needed to display
@@ -107,10 +92,5 @@ module.exports = function() {
         // Otherwise we need to create black bars on the video
         // to accomodate room for title (meta) and stats
         $playerStyle.html(generateCSS(fullPageHeight - metaAndStatsHeight) + generateFixedRightOffsets(rightMargin));
-    }
-
-    // Channel panels below the stream auto arrange based on width
-    if (!hostModeEnabled) {
-        $('#channel_panels').masonry('reload');
     }
 };
