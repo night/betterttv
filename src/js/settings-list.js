@@ -102,7 +102,7 @@ module.exports = [
     {
         name: 'Click to Play/Pause Stream',
         description: 'Click on the twitch player to pause/resume playback',
-        default: true,
+        default: false,
         storageKey: 'clickToPlay',
     },
     {
