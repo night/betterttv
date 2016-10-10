@@ -190,11 +190,10 @@ input.text:focus,select:focus,textarea:focus {
     background-color: #0c6f20;
 }
 
-.badges .twitch-premium-1 {
+.badges .twitch-premium-1.alpha {
     cursor: pointer;
     background: url("../assets/icons/badge-prime.svg");
     background-size: 100%;
-    background-color: #199DD9;
 }
 
 .line .bttvDeveloper, .ember-chat .badges .bttvDeveloper {
