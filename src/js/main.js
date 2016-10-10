@@ -179,7 +179,7 @@ var main = function() {
         };
 
         // Keep an eye for route change to reapply fixes
-        var route;
+        var route = '';
         App.__container__.lookup('controller:application').addObserver('currentRouteName', function(data) {
             debug.log('New route: ' + data.currentRouteName);
             var lastRoute = route;
