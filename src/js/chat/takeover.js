@@ -281,19 +281,23 @@ var takeover = module.exports = function() {
             sender = ($element.data('sender') || $element.parent().data('sender')).toString();
         }
 
-        if (clickCounter > 0) return clickCounter++;
+        if (bttv.settings.get('dblClickAutoComplete') === true) {
+            if (clickCounter > 0) return clickCounter++;
 
-        setTimeout(function() {
-            if (clickCounter >= 2 && bttv.settings.get('dblClickAutoComplete') === true) {
-                $('.ember-chat .chat-interface').find('textarea').val('@' + helpers.lookupDisplayName(sender, false) + ', ');
-            } else {
-                handlers.moderationCard(sender, $element);
-            }
+            setTimeout(function() {
+                if (clickCounter >= 2) {
+                    $('.ember-chat .chat-interface').find('textarea').val('@' + helpers.lookupDisplayName(sender, false) + ', ');
+                } else {
+                    handlers.moderationCard(sender, $element);
+                }
 
-            clickCounter = 0;
-        }, 250);
+                clickCounter = 0;
+            }, 250);
 
-        clickCounter++;
+            clickCounter++;
+        } else {
+            handlers.moderationCard(sender, $element);
+        }
     }).on('mousedown', '.chat-line .from', function(e) {
         if (e.which === 3 && !bttv.settings.get('customTOShiftOnly') || e.shiftKey) {
             customTimeouts($(this).data('sender') || $(this).parent().data('sender'), $(this));
