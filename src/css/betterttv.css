@@ -1274,7 +1274,8 @@ body#chat #speak {
 
 /* Fix Group Chat Pane Height */
 .ember-chat .chat-room-list {
-    height: calc(100% - 40px);
+    height: calc(100% - 50px);
+    top: 50px;
 }
 
 /* Fix chat rooms leave button */
@@ -1408,25 +1409,8 @@ body#chat #speak {
     right: 0px;
     left: 0px;
     width: 100%;
-    line-height: 40px;
-    height: 40px;
-    padding: 0px;
 
     z-index: 4;/* fixes issues with viewer list */
-}
-
-.ember-chat .chat-header .room-title {
-    padding-top: 10px;
-}
-
-.ember-chat .chat-header .chat-header__button--left figure {
-    top: -5px;
-    left: -11px;
-}
-
-.ember-chat .chat-header .chat-header__button--right figure {
-    top: -5px;
-    right: -11px;
 }
 
 .ember-chat .chat-menu-button-container {
@@ -1438,7 +1422,7 @@ body#chat #speak {
 }
 
 .ember-chat .chat-room, .ember-chat .chat-rooms {
-    top: 40px;
+    top: 50px;
 }
 
 .ember-chat .chat-menu .list-header {
