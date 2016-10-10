@@ -100,6 +100,12 @@ module.exports = [
         }
     },
     {
+        name: 'Click to Play/Pause Stream',
+        description: 'Click on the twitch player to pause/resume playback',
+        default: true,
+        storageKey: 'clickToPlay',
+    },
+    {
         name: 'Completion Tooltip',
         description: 'Shows a tooltip with suggested names when typing @ or using tab completion',
         default: true,
