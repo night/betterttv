@@ -596,7 +596,11 @@ exports.scrollChat = throttle(function() {
 
     var linesToDelete = $chatLines.length - bttv.settings.get('scrollbackAmount');
 
-    if (linesToDelete <= 0) return;
+    if (linesToDelete <= 1) return;
+
+    if (linesToDelete % 2) {
+        linesToDelete--;
+    }
 
     $chatLines.slice(0, linesToDelete).each(function() {
         $(this).remove();
