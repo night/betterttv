@@ -713,9 +713,12 @@ exports.loadTwitchBadges = function() {
         if (tmi().channel && tmi().channel.partner === true) {
             $.getJSON('https://badges.twitch.tv/v1/badges/channels/' + tmi().channel._id + '/display', function(badges) {
                 if (!badges || !badges.badge_sets || !badges.badge_sets.subscriber) return;
-                var subBadge = data.badge_sets.subscriber.versions['1'];
-                var cssLine = '.badge.subscriber { background-image: url("' + subBadge.image_url_1x + '"); }';
-                $style.append(cssLine);
+                Object.keys(badges.badge_sets.subscriber.versions).forEach(function(version) {
+                    var subBadge = badges.badge_sets.subscriber.versions[version];
+                    var cssLine = '.badges .badge.twitch-subscriber-' + version + ' { cursor: pointer;';
+                    cssLine += 'background-image: url("' + subBadge.image_url_1x + '"); }';
+                    $style.append(cssLine);
+                });
             });
         }
 
@@ -797,8 +800,9 @@ exports.assignBadges = function(badges, data) {
     }
 
     if (badges.hasOwnProperty('subscriber')) {
+        var subType = 'twitch-subscriber-' + badges.subscriber;
         bttvBadges.push({
-            type: 'subscriber',
+            type: 'subscriber ' + subType,
             name: '',
             clickAction: 'subscribe_to_channel',
             description: 'Channel Subscriber'
