@@ -214,10 +214,19 @@ Conversations.prototype.updateTitle = function(m) {
         var hasUnreads = $('.has-unread').length;
         if (hasUnreads) {
             var numOfUnreads = 0;
-            var $headers = $('.conversation-unread-count');
-            for (var i = 0; i < $headers.length; i++) {
-                numOfUnreads += Number($($headers[i]).text());
-            }
+            var $headers = $('.has-unread');
+
+            $headers.each(function() {
+                var $divider = $(this).find('.conversation-chat-lines .new-message-divider');
+
+                if ($divider.length) {
+                    numOfUnreads += $divider.nextAll('.conversation-chat-line').length;
+                } else {
+                    // If there's no new message divider, the user has never messaged this account before
+                    numOfUnreads += $(this).find('.conversation-chat-line').length;
+                }
+            });
+
             if (!numOfUnreads) return;
             numOfUnreads = '(' + numOfUnreads + ') ';
             if (title.charAt(0) === '(') {
