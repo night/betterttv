@@ -509,6 +509,12 @@ module.exports = [
         storageKey: 'customTOShiftOnly'
     },
     {
+        name: 'Chat Freeze',
+        description: 'Pauses the chat when hovering it and holding Ctrl or the Windows / Command key',
+        default: true,
+        storageKey: 'chatFreeze'
+    },
+    {
         name: 'Show Deleted Messages',
         description: 'Turn this on to change <message deleted> back to users\' messages.',
         default: false,
