@@ -683,7 +683,6 @@ exports.loadBTTVBadges = function() {
     });
 };
 
-
 exports.loadTwitchBadges = function() {
     if ($('#twitch_badges').length) return;
 
@@ -713,18 +712,28 @@ exports.loadTwitchBadges = function() {
             store.__twitchBadgeTypes[badge] = badgeData;
         });
 
-        if (tmi().channel && tmi().channel.partner === true) {
-            $.getJSON('https://badges.twitch.tv/v1/badges/channels/' + tmi().channel._id + '/display', function(badges) {
-                if (!badges || !badges.badge_sets || !badges.badge_sets.subscriber) return;
-                Object.keys(badges.badge_sets.subscriber.versions).forEach(function(version) {
-                    var subBadge = badges.badge_sets.subscriber.versions[version];
-                    var cssLine = '.badges .badge.twitch-subscriber-' + version + ' { cursor: pointer;';
-                    cssLine += 'background-image: url("' + subBadge.image_url_1x + '"); }';
-                    $style.append(cssLine);
-                });
-            });
-        }
+        $style.appendTo('head');
+    });
+};
 
+exports.loadSubBadges = function() {
+    var tmiChannel = tmi().channel;
+    if (!tmiChannel || tmiChannel.partner !== true) return;
+    $('#subscriber_badges').remove();
+
+    $.getJSON('https://badges.twitch.tv/v1/badges/channels/' + tmiChannel._id + '/display', function(badges) {
+        if (!badges || !badges.badge_sets || !badges.badge_sets.subscriber) {
+            debug.log('Failed to load Subscribers badges for ' + tmiChannel.id);
+            return;
+        }
+        var $style = $('<style />');
+        $style.attr('id', 'subscriber_badges');
+        Object.keys(badges.badge_sets.subscriber.versions).forEach(function(version) {
+            var subBadge = badges.badge_sets.subscriber.versions[version];
+            var cssLine = '.badges .badge.twitch-subscriber-' + version + ' { cursor: pointer;';
+            cssLine += 'background-image: url("' + subBadge.image_url_1x + '"); }';
+            $style.append(cssLine);
+        });
         $style.appendTo('head');
     });
 };

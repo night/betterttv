@@ -162,6 +162,9 @@ var takeover = module.exports = function() {
     // Load Twitch badges
     helpers.loadTwitchBadges();
 
+    // Load Subscriber badges (if needed)
+    helpers.loadSubBadges();
+
     // Load BTTV channel emotes/bots
     helpers.loadBTTVChannelData();
 
