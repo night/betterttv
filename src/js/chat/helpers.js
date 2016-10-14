@@ -710,21 +710,32 @@ exports.loadTwitchBadges = function() {
             store.__twitchBadgeTypes[badge] = badgeData;
         });
 
-        if (tmi().channel && tmi().channel.partner === true) {
-            $.getJSON('https://badges.twitch.tv/v1/badges/channels/' + tmi().channel._id + '/display', function(badges) {
-                if (!badges || !badges.badge_sets || !badges.badge_sets.subscriber) return;
-                Object.keys(badges.badge_sets.subscriber.versions).forEach(function(version) {
-                    var subBadge = badges.badge_sets.subscriber.versions[version];
-                    var cssLine = '.badges .badge.twitch-subscriber-' + version + ' { cursor: pointer;';
-                    cssLine += 'background-image: url("' + subBadge.image_url_1x + '"); }';
-                    $style.append(cssLine);
-                });
-            });
-        }
-
         $style.appendTo('head');
     });
 };
+
+
+exports.loadSubBadges = function() {
+    if (!tmi().channel || tmi().channel.partner !== true) return;
+    $('#twitch_badges').remove();
+
+    $.getJSON('https://badges.twitch.tv/v1/badges/channels/' + tmi().channel._id + '/display', function(badges) {
+        if (!badges || !badges.badge_sets || !badges.badge_sets.subscriber) {
+            debug.log('Failed to load Subscribers badges for ' + tmi().channel.id);
+            return;
+        }
+        var $style = $('<style />');
+        $style.attr('id', 'subscriber_badges');
+        Object.keys(badges.badge_sets.subscriber.versions).forEach(function(version) {
+            var subBadge = badges.badge_sets.subscriber.versions[version];
+            var cssLine = '.badges .badge.twitch-subscriber-' + version + ' { cursor: pointer;';
+            cssLine += 'background-image: url("' + subBadge.image_url_1x + '"); }';
+            $style.append(cssLine);
+        });
+        $style.appendTo('head');
+    });
+};
+
 
 exports.assignBadges = function(badges, data) {
     data = data || {};
