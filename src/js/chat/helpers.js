@@ -717,7 +717,7 @@ exports.loadTwitchBadges = function() {
 
 exports.loadSubBadges = function() {
     if (!tmi().channel || tmi().channel.partner !== true) return;
-    $('#twitch_badges').remove();
+    $('#subscriber_badges').remove();
 
     $.getJSON('https://badges.twitch.tv/v1/badges/channels/' + tmi().channel._id + '/display', function(badges) {
         if (!badges || !badges.badge_sets || !badges.badge_sets.subscriber) {
