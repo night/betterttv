@@ -523,6 +523,9 @@ var privmsg = exports.privmsg = function(channel, data) {
         from = data.bttvDisplayName;
     } else {
         from = helpers.lookupDisplayName(data.from);
+        if (bttv.settings.get('disableLocalizedNames') === true && from.toLowerCase() !== data.from) {
+            from = data.from;
+        }
     }
 
     // handle twitch whispers
