@@ -680,7 +680,6 @@ exports.loadBTTVBadges = function() {
     });
 };
 
-
 exports.loadTwitchBadges = function() {
     if ($('#twitch_badges').length) return;
 
@@ -714,14 +713,14 @@ exports.loadTwitchBadges = function() {
     });
 };
 
-
 exports.loadSubBadges = function() {
-    if (!tmi().channel || tmi().channel.partner !== true) return;
+    var tmiChannel = tmi().channel;
+    if (!tmiChannel || tmiChannel.partner !== true) return;
     $('#subscriber_badges').remove();
 
-    $.getJSON('https://badges.twitch.tv/v1/badges/channels/' + tmi().channel._id + '/display', function(badges) {
+    $.getJSON('https://badges.twitch.tv/v1/badges/channels/' + tmiChannel._id + '/display', function(badges) {
         if (!badges || !badges.badge_sets || !badges.badge_sets.subscriber) {
-            debug.log('Failed to load Subscribers badges for ' + tmi().channel.id);
+            debug.log('Failed to load Subscribers badges for ' + tmiChannel.id);
             return;
         }
         var $style = $('<style />');
@@ -735,7 +734,6 @@ exports.loadSubBadges = function() {
         $style.appendTo('head');
     });
 };
-
 
 exports.assignBadges = function(badges, data) {
     data = data || {};
