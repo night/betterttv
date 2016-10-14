@@ -275,6 +275,12 @@ module.exports = [
         }
     },
     {
+        name: 'Disable Channel Header',
+        description: 'Disables the large header on top of channels in the new layout',
+        default: false,
+        storageKey: 'disableChannelHeader',
+    },
+    {
         name: 'Disable Host Mode',
         description: 'Disables hosted channels on Twitch',
         default: false,
