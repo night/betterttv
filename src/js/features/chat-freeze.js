@@ -4,6 +4,8 @@ var shouldFreeze = false;
 var isLoaded = false;
 
 module.exports = function() {
+    if (shouldFreeze === true && bttv.chat.store.activeView !== true) shouldFreeze = false;
+
     if (isLoaded) return shouldFreeze;
 
     $('body').on('keydown.chat-freeze', function(e) {
