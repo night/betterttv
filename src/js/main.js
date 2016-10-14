@@ -138,6 +138,7 @@ var betterViewerList = require('./features/better-viewer-list'),
     directoryFunctions = require('./features/directory-functions'),
     enableImagePreview = require('./features/image-preview').enablePreview,
     enableTheatreMode = require('./features/auto-theatre-mode'),
+    disableChannelHeader = require('./features/disable-channel-header'),
     flipDashboard = require('./features/flip-dashboard'),
     formatDashboard = require('./features/format-dashboard'),
     giveawayCompatibility = require('./features/giveaway-compatibility'),
@@ -202,6 +203,7 @@ var main = function() {
                             betterViewerList();
                             playerViewerCount();
                             hidePrimePromotions();
+                            disableChannelHeader();
                             if (
                                 App.__container__.lookup('controller:channel').get('isTheatreMode') === false &&
                                 bttv.settings.get('autoTheatreMode') === true
@@ -319,6 +321,7 @@ var main = function() {
         playerViewerCount();
         hidePrimePromotions();
         videoPlayerFeatures();
+        disableChannelHeader();
 
         // Loads global BTTV emotes (if not loaded)
         overrideEmotes();
