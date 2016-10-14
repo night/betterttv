@@ -297,6 +297,12 @@ module.exports = [
         }
     },
     {
+        name: 'Disable Localized Names',
+        description: 'Show usernames instead of localized names in chat',
+        default: false,
+        storageKey: 'disableLocalizedNames'
+    },
+    {
         name: 'Disable Name Colors',
         description: 'Disables colors in chat (useful for those who may suffer from color blindness)',
         default: false,

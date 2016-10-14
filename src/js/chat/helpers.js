@@ -31,7 +31,10 @@ var lookupDisplayName = exports.lookupDisplayName = function(user, nicknames) {
     if (tmi()) {
         if (Object.hasOwnProperty.call(store.displayNames, user)) {
             var name = store.displayNames[user] || user.capitalize();
-            return nicknames === false && name.toLowerCase() !== user ? user.capitalize() : name;
+            if (name.toLowerCase() !== user && (nicknames === false || bttv.settings.get('disableLocalizedNames') === true)) {
+                return user.capitalize();
+            }
+            return  name;
         } else if (user !== 'jtv' && user !== 'twitchnotify') {
             return user.capitalize();
         } else {
