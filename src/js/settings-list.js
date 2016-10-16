@@ -7,6 +7,7 @@ var splitChat = require('./features/split-chat'),
     hostButton = require('./features/host-btn-below-video'),
     anonChat = require('./features/anon-chat'),
     betterViewerList = require('./features/better-viewer-list'),
+    disableChannelHeader = require('./features/disable-channel-header'),
     handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes'),
     audibleFeedback = require('./features/audible-feedback'),
     imagePreview = require('./features/image-preview');
@@ -279,6 +280,7 @@ module.exports = [
         description: 'Disables the large header on top of channels in the new layout',
         default: false,
         storageKey: 'disableChannelHeader',
+        toggle: disableChannelHeader
     },
     {
         name: 'Disable Host Mode',
