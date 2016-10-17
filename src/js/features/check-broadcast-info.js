@@ -25,14 +25,12 @@ var checkBroadcastInfo = module.exports = function() {
             channel.set('status', d.status);
 
             if (!hostedChannel) {
-                var $title = $('#broadcast-meta .title');
+                var $title = $('.cn-metabar__title .card__title');
 
                 if ($title.data('status') !== d.status) {
                     $title.data('status', d.status);
-
                     d.status = d.status.replace(/</g, '&lt;').replace(/>/g, '&gt;');
                     d.status = bttv.chat.templates.linkify(d.status);
-
                     $title.html(d.status);
                 }
             }
@@ -42,8 +40,8 @@ var checkBroadcastInfo = module.exports = function() {
             channel.set('views', d.views);
         }
 
-        if (d.followers && channel.get('followers')) {
-            channel.get('followers').set('total', d.followers);
+        if (d.followers) {
+            channel.set('followers.content.meta.total', d.followers);
         }
     }).always(function() {
         setTimeout(checkBroadcastInfo, 60000 + Math.random() * 5000);
