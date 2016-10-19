@@ -81,10 +81,12 @@ exports.blacklistFilter = function(data) {
 
     if (useRegex) {
         for (i = 0; i < blacklistRegexes.length; i++) {
-            debug.log('Testing' + blacklistRegexes[i]);
+            debug.log('Testing ' + blacklistRegexes[i]);
             regex = new RegExp(blacklistRegexes[i], 'g');
             if (safeRegex(regex) && regex.test(data.message)) {
                 return true;
+            } else if (!safeRegex(regex)) {
+                debug.log('Unsafe regex detected, not evaluating: ' + regex);
             }
         }
     }
@@ -102,7 +104,7 @@ exports.highlighting = function(data) {
     var extraKeywords = bttv.settings.get('highlightKeywords');
     var useRegex = bttv.settings.get('regexHighlights');
 
-    var highlightRegex = [];
+    var highlightRegexes = [];
     if (useRegex) {
         // Pull the regular expressions out first so curly braces
         // in the expression won't double count as phrases
@@ -120,7 +122,7 @@ exports.highlighting = function(data) {
                 debug.log(regexString);
                 extraKeywords = extraKeywords.replace(regexString, '')
                     .replace(/s\s\s+/g, ' ').trim();
-                highlightRegex.push(regexString.replace(/(^\/|\/$)/g, '')
+                highlightRegexes.push(regexString.replace(/(^\/|\/$)/g, '')
                                     .trim());
             }
         }
@@ -183,11 +185,13 @@ exports.highlighting = function(data) {
     }
 
     if (useRegex) {
-        for (i = 0; i < highlightRegex.length; i++) {
-            debug.log('Testing' + highlightRegex);
-            regex = new RegExp(highlightRegex[i], 'g');
+        for (i = 0; i < highlightRegexes.length; i++) {
+            debug.log('Testing ' + highlightRegexes[i]);
+            regex = new RegExp(highlightRegexes[i], 'g');
             if (safeRegex(regex) && regex.test(data.message)) {
                 return true;
+            } else if (!safeRegex(regex)) {
+                debug.log('Unsafe regex detected, not evaluating: ' + regex);
             }
         }
     }
