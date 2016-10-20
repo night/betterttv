@@ -2678,7 +2678,8 @@ ul.tabs li a:hover {
 
 /* yolo balloon popup darkening */
 .balloon,
-.balloon:after {
+.balloon:after,
+.filter-bar__balloon-footer {
     background-color: #1e1e1e;
 }
 
@@ -2686,6 +2687,14 @@ ul.tabs li a:hover {
     color: #dfdfdf !important;
 }
 
+.filter-bar__balloon-link--active {
+    background-color: #0f0e11 !important;
+}
+
+.filter-bar__item .button--dropmenu:hover, .filter-bar__item .filter-bar__balloon-footer .button:hover {
+    color: #dfdfdf;
+    background-color: rgb(40, 40, 40);
+}
 /* fix ugly purpleness */
 #channel #panels-edit-contain .edit-panels-toggle .label,
 #channel .no-channel-message-container .info .message,
