@@ -4,11 +4,6 @@ body.dark, body.dark #clips-app-root {
     color: #d3d3d3;
 }
 
-/* removes scroll bar on clip page */
-.whole-wrapper {
-    height:100vh;
-}
-
 /* dark links */
 .dark a {
     color: #888;
@@ -116,16 +111,22 @@ body.dark, body.dark #clips-app-root {
 }
 
 /* all the buttons */
-.dark .clip-card .follow-btn:hover, .dark .curator-info .js-share-link-options-button:hover {
+.dark .clip-card .follow-btn:hover, .dark .nv-clip-content__meta .js-share-link-options-button:hover {
     background-color: rgba(35, 35, 35, 0.3);
 }
 
-.dark .clip-card .broadcaster-info .button {
-    background-color: rgb(30,30,30);
+.dark .clip-card .nv-clip-action-buttons .button {
+    background-color: rgb(30,30,30); 
 }
 
-.dark .clip-card .broadcaster-info .follow-btn {
-    background-color: rgb(20, 20, 20)
+.dark .clip-card .nv-clip-action-buttons .button, .dark .top-share-container .button  {
+    box-shadow: inset 0 0 0 1px rgba(171,171,171,0.5);
+    color: #b8b8b8;
+}
+
+/* follow button icon */
+.dark .nv-clip-content .js-follow-btn svg {
+    fill: #d3d3d3 !important; 
 }
 
 /* darken remove and report popup */
@@ -156,18 +157,31 @@ body.dark, body.dark #clips-app-root {
 }
 
 /* text color that is not covered by body */
-.dark .curator, .dark .modal .modal-title {
+.dark .curator, .dark .modal .modal-title, .dark .nv-clip-content__meta h3, .dark .nv-clip-content__meta p, .dark .nv-clip-content__meta .sub-text {
     color: #d3d3d3;
 }
 
 /* remove shadow on player */
-.dark .clip-wrap {
+.dark .nv-clip-content {
     box-shadow: none;
 }
 
 /* black player back instead of purple */
-.dark .video-loading  {
+.dark .nv-video-wrap, .dark .nv-video-wrap .nv-clip-wrap  {
     background: #000;
+}
+
+/* Clip Content */
+.dark .nv-clip-content__meta {
+    background-color: rgb(30, 30, 30);
+}
+
+.dark .nv-clip-content__meta .more-clips {
+    border-top: 1px solid #444;
+}
+
+.dark .more-clips-card__layout:hover {
+    background: #282828;
 }
 
 /* invert Twitch logo */

@@ -535,7 +535,7 @@ div#site_header {
 
 /* Removes Purple Box Shadow */
 .chat-buttons-container .button:focus, .chat-buttons-container .button:hover,
-.cn-bar .follow-button.button:focus {
+.cn-bar .follow-button.button:focus, .cn-bar .cn-btn-collapsed-nav.button:focus {
     box-shadow: none;
 }
 
@@ -546,16 +546,20 @@ div#site_header {
     background-color: rgba(0, 0 ,0, 0);
 }
 
-#channel .cn-metabar__more .ember-view .button {
+#channel .cn-metabar__more .ember-view .button, .cn-bar .cn-tabs .cn-button-edit {
     color: #b8b8b8;
     box-shadow: inset 0 0 0 1px rgba(171, 171, 171, 0.5);
+    background-color: transparent;
 }
 
-#channel .cn-metabar__more .ember-view .button:hover, #channel .cn-metabar__more .ember-view .button:focus {
+#channel .cn-metabar__more .ember-view .button:hover,
+#channel .cn-metabar__more .ember-view .button:focus,
+.cn-bar .cn-tabs__button .cn-button-edit:hover,
+.cn-bar .cn-tabs__button .cn-button-edit:focus {
     color: #d2d2d2;
 }
 
-#channel .cn-metabar__more .ember-view .button svg {
+#channel .cn-metabar__more .ember-view .button svg, .cn-bar .cn-tabs .cn-button-edit svg {
     fill: #d2d2d2;
 }
 /* Button backgrounds */
@@ -2678,7 +2682,8 @@ ul.tabs li a:hover {
 
 /* yolo balloon popup darkening */
 .balloon,
-.balloon:after {
+.balloon:after,
+.filter-bar__balloon-footer {
     background-color: #1e1e1e;
 }
 
@@ -2686,6 +2691,14 @@ ul.tabs li a:hover {
     color: #dfdfdf !important;
 }
 
+.filter-bar__balloon-link--active {
+    background-color: #0f0e11 !important;
+}
+
+.filter-bar__item .button--dropmenu:hover, .filter-bar__item .filter-bar__balloon-footer .button:hover {
+    color: #dfdfdf;
+    background-color: rgb(40, 40, 40);
+}
 /* fix ugly purpleness */
 #channel #panels-edit-contain .edit-panels-toggle .label,
 #channel .no-channel-message-container .info .message,
@@ -2900,6 +2913,10 @@ ul.tabs li>a:hover, .directory_header .nav li>a:hover, ul.tabs li>button:hover, 
 
 .cn-tabs__item > a.active:after {
     border-color: #d3d3d3;
+}
+
+.cn-tabs .js-collapsed-nav-wrapper .balloon__list strong {
+    color: #a49fad;
 }
 
 #channel .cn-hosting {
