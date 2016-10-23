@@ -2,17 +2,11 @@
   "env": {                           // http://eslint.org/docs/user-guide/configuring.html#specifying-environments
     "browser": true,                 // browser global variables
     "node": true,                    // Node.js global variables and Node.js-specific rules
-    "jquery": true                   // Jquery global variables
+    "jquery": true,                  // Jquery global variables
+    "es6": true
   },
   
-  "globals": {
-    "bttv":true,
-    "App":true,
-    "__bttvga":true,
-    "Twitch":true,
-    "Ember": true,
-    "webkitNotifications": true
-  },
+  "globals": {},
 
   "rules": {
 
