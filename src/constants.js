@@ -1,4 +1,10 @@
-module.exports = {
+exports.bots = [
+    'nightbot',
+    'moobot',
+    'xanbot'
+];
+
+exports.keycodes = {
     'LeftClick': 1,
     'Backspace': 8,
     'Tab': 9,
