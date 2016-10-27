@@ -1673,7 +1673,7 @@ body.channel_new.columns.ember-application {
 
     /* temp for holiday emotes*/
     position: relative;
-    z-index: 2;
+    z-index: 1;
 }
 
 /* Emoji */
@@ -1782,7 +1782,7 @@ body.channel_new.columns.ember-application {
     margin-left: -32px;
 }
 .bttv-emo-58017bf38faabf4b3d00845d {
-    z-index: 1;
+    z-index: 0;
 }
 
 
