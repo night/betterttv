@@ -736,7 +736,7 @@ exports.loadSubBadges = function() {
             cssLine += 'background-image: url("' + subBadge[quality] + '"); }';
             $style.append(cssLine);
         });
-        store.__twitchBadgeTypes.subscriber = badges.badge_sets.subscriber;
+        store.__subBadgeTypes = badges.badge_sets.subscriber;
         $style.appendTo('head');
     });
 };
@@ -815,14 +815,20 @@ exports.assignBadges = function(badges, data) {
     }
 
     if (badges.hasOwnProperty('subscriber')) {
-        var subType = 'twitch-subscriber-' + badges.subscriber;
-        var subData = store.__twitchBadgeTypes.subscriber.versions;
-        bttvBadges.push({
-            type: 'subscriber ' + subType,
+        var subBadge = {
+            type: 'subscriber twitch-subscriber-' + badges.subscriber,
             name: '',
-            clickAction: subData[badges.subscriber].click_action,
-            description: subData[badges.subscriber].title
-        });
+            clickAction: 'subscribe_to_channel',
+            description: 'Channel Subscriber'
+        };
+
+        if (store.__subBadgeTypes !== null) {
+            var subData = store.__subBadgeTypes.versions[badges.subscriber];
+            subBadge.clickAction = subData.click_action;
+            subBadge.description = subData.title;
+        }
+
+        bttvBadges.push(subBadge);
     }
 
     if (badges.hasOwnProperty('turbo')) {
@@ -835,7 +841,6 @@ exports.assignBadges = function(badges, data) {
     }
 
     Object.keys(store.__twitchBadgeTypes).forEach(function(badge) {
-        if (badge === 'subscriber') return;
         if (badge === 'bits' && bttv.settings.get('hideBits') === true) return;
         if (badges.hasOwnProperty(badge)) {
             var version = badges[badge];
