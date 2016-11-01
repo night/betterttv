@@ -1670,10 +1670,6 @@ body.channel_new.columns.ember-application {
     vertical-align: baseline !important;
     display: inline-block;
     padding-top: 5px;
-
-    /* temp for holiday emotes*/
-    position: relative;
-    z-index: 1;
 }
 
 /* Emoji */
@@ -1781,10 +1777,6 @@ body.channel_new.columns.ember-application {
 .bttv-emo-58017bf38faabf4b3d00845d {
     margin-left: -32px;
 }
-.bttv-emo-58017bf38faabf4b3d00845d {
-    z-index: 0;
-}
-
 
 /* Notification Container above chat */
 .ember-chat .notification-container {
