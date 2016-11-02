@@ -27,14 +27,12 @@ var generateFixedRightOffsets = function(right) {
 };
 
 var getPlayerHeight = function() {
-    var isNewPlayer = typeof $('#player .player').data('playertype') !== 'undefined';
-
     for (var i = 0; i < players.length; i++) {
         var player = players[i];
 
         if (!$(player).length) continue;
 
-        return ($(player).width() * 0.5625) + (player.indexOf('iframe') > -1 || isNewPlayer ? 0 : 30);
+        return ($(player).width() * 0.5625);
     }
 
     return -1;
