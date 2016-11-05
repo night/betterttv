@@ -81,17 +81,13 @@ Conversations.prototype.messageParser = function(element) {
     if (!from || !message) return;
 
     var $element = $(element);
-
     if ($element.hasClass('bttv-parsed-message')) return;
-    $element.addClass('bttv-parsed-message');
+    if ($element.hasClass('conversation-preview-line')) return;
+    if (!$element.hasClass('conversation-chat-line')) return;
 
     from.style.color = this.usernameRecolor(from.style.color);
-
-    if ($element.hasClass('conversation-chat-line') && !$element.hasClass('conversation-preview-line')) {
-        $element.append(chatTemplates.bttvElementTokenize(from, message));
-        message.style.display = 'none';
-    }
-
+    $element.append(chatTemplates.bttvElementTokenize(from, message));
+    $element.addClass('bttv-parsed-message');
     this.scrollDownParent(element);
 };
 
