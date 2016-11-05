@@ -583,7 +583,7 @@ exports.getEmotes = function(user) {
 exports.scrollChat = throttle(function() {
     var $chat = $('.ember-chat');
 
-    var chatPaused = $chat.find('.chat-interface').children('span').children('.more-messages-indicator').length;
+    var chatPaused = $chat.find('.chat-interface .more-messages-indicator').length;
 
     if (chatPaused || chatFreeze() || !$chat.length) return;
 
