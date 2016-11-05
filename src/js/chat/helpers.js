@@ -824,8 +824,10 @@ exports.assignBadges = function(badges, data) {
 
         if (store.__subBadgeTypes !== null) {
             var subData = store.__subBadgeTypes.versions[badges.subscriber];
-            subBadge.clickAction = subData.click_action;
-            subBadge.description = subData.title;
+            if (subData !== undefined) {
+                subBadge.clickAction = subData.click_action;
+                subBadge.description = subData.title;
+            }
         }
 
         bttvBadges.push(subBadge);
