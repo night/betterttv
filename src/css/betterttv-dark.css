@@ -399,8 +399,14 @@ div#site_header {
     color: #D3D3D3;
 }
 
-.ember-view .app-main {
+.ember-view .app-main,
+.fullwidth_main.front_page {
     background-color: rgb(20,20,20);
+}
+
+.fullwidth_main.front_page a,
+.fullwidth_main.front_page h4:after {
+    color: #d3d3d3;
 }
 
 #left_close, #right_close {
