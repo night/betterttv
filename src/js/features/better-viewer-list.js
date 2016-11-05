@@ -228,13 +228,13 @@ module.exports = function() {
             return;
         }
 
-        var $oldViewerList = $('a.button[title="Viewer List"]');
+        var $oldViewerList = $('.chat-buttons-container a.button:has(.svg-viewerlist)');
         if ($oldViewerList.length === 0) return;
-        $oldViewerList.hide();
 
         debug.log('Adding BetterViewerList button');
-        $('.chat-buttons-container > :nth-child(1)').after(buttonTemplate());
-        $('a.button[title="Viewer List"]').hide();
+        $oldViewerList.after(buttonTemplate());
+        $oldViewerList.hide();
+
         $('#bvl-button').click(function() {
             var $panel = $('#bvl-panel');
             if ($panel.length > 0) {

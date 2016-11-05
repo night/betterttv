@@ -583,7 +583,7 @@ exports.getEmotes = function(user) {
 exports.scrollChat = throttle(function() {
     var $chat = $('.ember-chat');
 
-    var chatPaused = $chat.find('.chat-interface').children('span').children('.more-messages-indicator').length;
+    var chatPaused = $chat.find('.chat-interface .more-messages-indicator').length;
 
     if (chatPaused || chatFreeze() || !$chat.length) return;
 
@@ -824,8 +824,10 @@ exports.assignBadges = function(badges, data) {
 
         if (store.__subBadgeTypes !== null) {
             var subData = store.__subBadgeTypes.versions[badges.subscriber];
-            subBadge.clickAction = subData.click_action;
-            subBadge.description = subData.title;
+            if (subData !== undefined) {
+                subBadge.clickAction = subData.click_action;
+                subBadge.description = subData.title;
+            }
         }
 
         bttvBadges.push(subBadge);

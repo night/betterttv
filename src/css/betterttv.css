@@ -1817,6 +1817,11 @@ body.channel_new.columns.ember-application {
   background: rgba(0,0,0,0);
 }
 
+/* Hide duplicate message once we add our parsed version */
+.conversation-chat-line.bttv-parsed-message .message {
+    display: none;
+}
+
 /* small nav follow count */
  #bttv-small-nav-count {
     position: absolute;
