@@ -331,11 +331,11 @@ module.exports = [
         load: function() {
             if (window.location.href === 'https://www.twitch.tv/' && bttv.settings.get('disableFPVideo') === true) {
                 $(window).load(function() {
-                    var frameSrc = $('#video-1').children('iframe').eq(0).attr('src');
-                    $('#video-1').children('iframe').eq(0).attr('src', frameSrc + '&autoplay=false');
-                    $('#video-1').bind('DOMNodeInserted DOMNodeRemoved', function() {
-                        frameSrc = $('#video-1').children('iframe').eq(0).attr('src');
-                        $('#video-1').children('iframe').eq(0).attr('src', frameSrc + '&autoplay=false');
+                    var frameSrc = $('#player').children('iframe').eq(0).attr('src');
+                    $('#player').children('iframe').eq(0).attr('src', frameSrc + '&autoplay=false');
+                    $('#player').bind('DOMNodeInserted DOMNodeRemoved', function() {
+                        frameSrc = $('#player').children('iframe').eq(0).attr('src');
+                        $('#player').children('iframe').eq(0).attr('src', frameSrc + '&autoplay=false');
                     });
                 });
             }
