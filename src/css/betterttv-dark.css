@@ -273,6 +273,10 @@ div#site_header {
     border: 1px solid #3b3b3b;
 }
 
+.new-dashboard .subscription-dash .section-header .header-back:hover {
+    background-color: #333;
+}
+
 #channel .teespring-panel {
     border: 1px solid #4e4e4e;
     background-color: #1e1e1e;
@@ -690,10 +694,19 @@ div#site_header {
 }
 
 /* follow button for the fifth time*/
-.notification-controls .toggle-notification-menu {
+.notification-controls .toggle-notification-menu,
+.js-sub-button .sub-modal-indicator {
     background-color: rgb(30,30,30);
     color: #d3d3d3;
     outline: none;
+}
+
+.js-sub-button:hover .sub-modal-indicator, .js-sub-button .sub-modal-indicator:hover {
+    background-color: #333;
+}
+
+.js-sub-button .sub-modal-indicator .arrow {
+    border-top-color: #777;
 }
 
 /* Ember Pages Dropmenu Fix */
@@ -1662,6 +1675,35 @@ table.simple_table td {
     color: #999;
 }
 
+.twitch_subwindow_container .card:not(.auth_modal) {
+    background: #222;
+}
+
+.twitch_subwindow_container .card label {
+    color: #d3d3d3;
+}
+
+.twitch_subwindow_container .card .item input[type=text], .twitch_subwindow_container .card .item input[type=password], .twitch_subwindow_container .card .item textarea, .twitch_subwindow_container .card .vod-upload__selectbox, .twitch_subwindow_container .card .upload-modal__notification textarea {
+    color: #d4d4d4;
+    border: 1px solid rgba(0,0,0,0.35);
+    box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+    -moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+    -webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+    background: #3b3b3b;
+}
+
+.twitch_subwindow_container .card .upload-modal__notification {
+    border: none;
+}
+
+.twitch_subwindow_container .modal__thumbnail-selected {
+    box-shadow: inset 0 0 0 1px #222;
+}
+
+.twitch_subwindow_container #login_subwindow {
+    background: 
+}
+
 /* darken link list popup */
 #flyout .content {
     background-color: rgb(35,35,35);
@@ -1928,6 +1970,10 @@ span#is-subscribed {
 
 ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .ember-application .dropmenu .dropmenu_action  {
     color: #D3D3D3;
+}
+
+.tabs__item--active, .tabs__item.active, .tabs__item.selected, .tabs>li.selected, .tabs>li>a.active {
+    color: #d3d3d3;
 }
 
 /* Hosting */
@@ -2974,4 +3020,90 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 /* Offer gradient is bad */
 .offer-item__ci:after {
     background: none;
+}
+
+/* new dashboard */
+.video-stats .form__input[type=text], .video-stats .form__input[type=email], .video-stats .form__input[type=password], .video-stats .form__input[type=search], .video-stats textarea.form__input {
+    background-color: #222;
+    box-shadow: #333 0 0 0 1px inset;
+    color: #d3d3d3;
+}
+
+.video-stats .icon--purple svg, .video-stats__lifetime-stat__value {
+    fill: #a7a7a7;
+    color: #a7a7a7;
+}
+
+.new-dashboard .brick--marked.brick--theme-white, .video-stats .brick--marked.brick--theme-grey {
+    border-color: #282828;
+    border-left-color: #9a7fcc;
+}
+
+.video-stats__table-title {
+    color: #d3d3d3;
+}
+
+.video-stats .table__header {
+    background: #202020;
+}
+
+.video-stats .table__cell--header {
+    border: none;
+    color: #d3d3d3;
+}
+
+.video-stats .table__row {
+    background: #282828;
+    color: #d3d3d3;
+    border-bottom: 1px solid #232323;
+}
+
+.video-stats .table__row:nth-child(even) {
+    background: #303030;
+}
+
+.video-stats .table__row:hover {
+    background-color: #232323;
+}
+
+.video-stats .table__cell {
+    color: #d3d3d3;
+    border-bottom: none;
+    border-top: none;
+}
+
+.pika-label, .pika-button {
+    background: transparent;
+    color: #d3d3d3;
+}
+
+.pika-single {
+    background: #222;
+    border-color: #333;
+}
+
+.pika-table th {
+    color: #d3d3d3;
+}
+
+.pika-prev, .pika-next {
+    filter: invert(100%);
+}
+
+.new-dashboard input.text, .new-dashboard .vod-upload__selectbox, .new-dashboard .pika-input {
+    background: #222;
+    border-color: #333;
+    color: #d3d3d3;
+}
+
+.ui-datepicker {
+    background: #232323;
+}
+
+#video-manager .videos.uploads .video.item.card div:nth-child(3), #video-manager .card__body--theme-grey {
+    background-color: #202020 !important;
+}
+
+#video-manager a.button--text:hover {
+    color: #d3d3d3;
 }

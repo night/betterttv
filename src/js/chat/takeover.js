@@ -37,6 +37,11 @@ var takeover = module.exports = function() {
         handlers.onPrivmsg(channelName, d);
     });
 
+    // Hide Friends Activities
+    if (bttv.settings.get('hideFriendsChatActivity')) {
+        currentRoom.set('addFriendsWatchingMessage', function() {});
+    }
+
     // Hides Group List if coming from directory
     bttv.getChatController().set('showList', false);
 

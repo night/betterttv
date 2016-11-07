@@ -149,7 +149,8 @@ var betterViewerList = require('./features/better-viewer-list'),
     overrideEmotes = require('./features/override-emotes'),
     playerViewerCount = require('./features/player-viewer-count'),
     splitChat = require('./features/split-chat'),
-    videoPlayerFeatures = require('./features/video-player-features');
+    videoPlayerFeatures = require('./features/video-player-features'),
+    freeSubReminder = require('./features/free-sub-reminder');
 
 var chatFunctions = function() {
     debug.log('Modifying Chat Functionality');
@@ -204,6 +205,7 @@ var main = function() {
                             playerViewerCount();
                             hidePrimePromotions();
                             disableChannelHeader();
+                            freeSubReminder();
                             if (
                                 App.__container__.lookup('controller:channel').get('isTheatreMode') === false &&
                                 bttv.settings.get('autoTheatreMode') === true
@@ -322,6 +324,7 @@ var main = function() {
         hidePrimePromotions();
         videoPlayerFeatures();
         disableChannelHeader();
+        freeSubReminder();
 
         // Loads global BTTV emotes (if not loaded)
         overrideEmotes();
@@ -412,4 +415,8 @@ if (!window.Twitch || !window.Twitch.api || !window.Twitch.user) {
 if (window.BTTVLOADED === true) return;
 debug.log('BTTV LOADED ' + document.URL);
 BTTVLOADED = true;
+// We need this because we no longer serve chat history, remove when rolled out entirely
+try {
+    window.Twitch.experiments.overrideExperimentValue('MESSAGE_HISTORY', 'on');
+} catch (e) {}
 checkJquery();

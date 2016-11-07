@@ -1,11 +1,21 @@
 module.exports = function() {
     // Click to play/pause video
     var clicks = 0;
-    $('body').on('click', '.player-overlay', function() {
+    $('body').on('click', '.player-overlay.player-fullscreen-overlay', function() {
         if (bttv.settings.get('clickToPlay') === true) {
             clicks++;
             setTimeout(function() {
-                if (clicks === 1) $('.js-control-playpause-button').click();
+                if (clicks === 1) {
+                    var $player = $('#player');
+                    var isPaused = $player.data('paused');
+                    var playerEmberId = $player.closest('.ember-view').attr('id');
+                    var emberView = App.__container__.lookup('-view-registry:main')[playerEmberId];
+                    if (!emberView) return;
+                    var player = emberView.player;
+                    if (!player) return;
+
+                    if (!isPaused) player.pause();
+                }
                 clicks = 0;
             }, 250);
         }

@@ -427,6 +427,15 @@ module.exports = [
         }
     },
     {
+        name: 'Hide Friends Activity in Chat',
+        description: 'Hides things like "friend has started watching" in chat',
+        default: false,
+        storageKey: 'hideFriendsChatActivity',
+        toggle: function() {
+            window.location.reload();
+        }
+    },
+    {
         name: 'Hide Group Chat',
         description: 'Hides the group chat bar above chat',
         default: false,

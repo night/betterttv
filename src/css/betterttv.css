@@ -2069,3 +2069,14 @@ body.channel_new.columns.ember-application {
     cursor: pointer;
 }
 
+/* Free Sub Reminder */
+.bttv-free-sub-reminder {
+    background: url(https://cdn.betterttv.net/assets/icons/badge-prime.svg);
+    background-size: contain;
+    left: 3px;
+    top: 7px;
+    width: 14px;
+    height: 14px;
+    position: absolute;
+}
+
