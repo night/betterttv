@@ -39,7 +39,7 @@ module.exports = function(user, $event) {
         $('div.tipsy').remove();
     });
     $modCard.find('.mod-card-profile').click(function() {
-        window.open(Twitch.url.profile(user.name), '_blank');
+        window.open(Twitch.url.channel(user.name), '_blank');
     });
     $modCard.find('.mod-card-message').click(function() {
         window.open(Twitch.url.compose(user.name), '_blank');
