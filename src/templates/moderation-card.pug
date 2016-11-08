@@ -10,7 +10,7 @@ div.bttv-mod-card.ember-view.moderation-card(data-user=user.name style=`top: ${t
     if bttv.storage.getObject("nicknames")[user.name] || user.display_name.toLowerCase() !== user.name
       h4.real-name= user.display_name.toLowerCase() !== user.name ? user.name : user.display_name
     h3.name
-      a(href=Twitch.url.profile(user.name), target="_blank")= bttv.storage.getObject("nicknames")[user.name] || user.display_name
+      a(href=Twitch.url.channel(user.name), target="_blank")= bttv.storage.getObject("nicknames")[user.name] || user.display_name
       svg.svg-edit.mod-card-edit(height='10px', width='10px', version='1.1', viewBox='0 0 16 16', x='0px', y='0px')
           path(clip-rule='evenodd', fill-rule='evenodd', d='M6.414,12.414L3.586,9.586l8-8l2.828,2.828L6.414,12.414z M4.829,14H2l0,0v-2.828l0.586-0.586l2.828,2.828L4.829,14z')
     h4.created-at="Created " + moment(user.created_at).format("MMM D, YYYY")
