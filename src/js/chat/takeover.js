@@ -284,10 +284,10 @@ var takeover = module.exports = function() {
         e.preventDefault();
 
         var $element = $(this);
-        var $chatLine = $element.closest('.chat-line');
+        var $chatLineId = $element.closest('.chat-line').attr('id');
         var sender;
-        if ($chatLine.attr('id').indexOf('ember') > -1) {
-            sender = App.__container__.lookup('-view-registry:main')[$chatLine.attr('id')].msgObject.from;
+        if ($chatLineId && $chatLineId.indexOf('ember') > -1) {
+            sender = App.__container__.lookup('-view-registry:main')[$chatLineId].msgObject.from;
         } else if ($element.hasClass('user-mention')) {
             sender = $element.text().toLowerCase().substring(1);
         } else {
