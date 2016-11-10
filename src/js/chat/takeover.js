@@ -281,9 +281,14 @@ var takeover = module.exports = function() {
     $('body').off('click', '.chat-line .from, .chat-line .user-mention').on('click', '.chat-line .from, .chat-line .user-mention', function(e) {
         if (e.shiftKey) return;
 
+        e.preventDefault();
+
         var $element = $(this);
+        var $chatLine = $element.closest('.chat-line');
         var sender;
-        if ($element.hasClass('user-mention')) {
+        if ($chatLine.attr('id').indexOf('ember') > -1) {
+            sender = App.__container__.lookup('-view-registry:main')[$chatLine.attr('id')].msgObject.from;
+        } else if ($element.hasClass('user-mention')) {
             sender = $element.text().toLowerCase().substring(1);
         } else {
             sender = ($element.data('sender') || $element.parent().data('sender')).toString();

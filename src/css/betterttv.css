@@ -2080,3 +2080,29 @@ body.channel_new.columns.ember-application {
     position: absolute;
 }
 
+/* pinned cheers */
+.pinned-cheers__dismiss {
+    left: auto;
+    right: 5px;
+    top: 0px;
+    height: 100%;
+    justify-content: center;
+}
+
+.pinned-cheers {
+    padding-top: 5px;
+    padding-bottom: 10px;
+    padding-left: 5px;
+}
+
+.pinned-cheers .mod-icons {
+    display: none;
+}
+
+.pinned-cheers .timestamp {
+    font-size: 11px;
+}
+
+.pinned-cheers__message .chat-line {
+    max-height: 45px;
+}
