@@ -20,4 +20,18 @@ module.exports = function() {
             }, 250);
         }
     });
+
+    $('body').on('click', '.player-controls-bottom .js-control-fullscreen', function() {
+        var $player = $('#player');
+        var isTheater = $player.data('theatre');
+        if (!isTheater) return;
+
+        var playerEmberId = $player.closest('.ember-view').attr('id');
+        var emberView = App.__container__.lookup('-view-registry:main')[playerEmberId];
+        if (!emberView) return;
+        var player = emberView.player;
+        if (!player) return;
+
+        player.theatre = false;
+    });
 };
