@@ -3107,3 +3107,26 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 #video-manager a.button--text:hover {
     color: #d3d3d3;
 }
+
+/* pinned bits */
+.chat-room .sticky-message {
+    background-color: #181818;
+    border-color: #555;
+}
+
+.chat-room .sticky-message .pinned-cheer__hack-box {
+    background-color: #181818;
+}
+
+.chat-room .sticky-message .timestamp {
+    padding-left: 8px;
+}
+
+.chat-room .sticky-message .pinned-cheers__dismiss {
+    top: 22px;
+}
+
+.chat-room .sticky-message .message span {
+    padding-right: 0px !important;
+}
+
