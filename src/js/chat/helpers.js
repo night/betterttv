@@ -463,6 +463,11 @@ exports.sendMessage = function(message) {
             return;
         }
 
+        if (message.substr(0, 6) === '/unpin') {
+            $('.pinned-cheers__dismiss').click();
+            return;
+        }
+
         if (bttv.chat.store.isAnonMode === true && message !== '/join') {
             serverMessage('You can\'t send messages when Anon Chat is enabled. You can disable Anon Chat in the BetterTTV settings.');
             return;
