@@ -7,5 +7,5 @@
 }
 
 .ember-chat .sticky-message--pinned-cheers {
-    display: none;
+    display: none !important;
 }
