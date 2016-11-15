@@ -125,7 +125,7 @@ body.dark, body.dark #clips-app-root {
 }
 
 /* follow button icon */
-.dark .nv-clip-content .js-follow-btn svg {
+.dark .nv-clip-content .js-follow-btn svg, .dark .nv-clip-content .svg-glyph_views {
     fill: #d3d3d3 !important; 
 }
 
@@ -157,7 +157,7 @@ body.dark, body.dark #clips-app-root {
 }
 
 /* text color that is not covered by body */
-.dark .curator, .dark .modal .modal-title, .dark .nv-clip-content__meta h3, .dark .nv-clip-content__meta p, .dark .nv-clip-content__meta .sub-text {
+.dark .curator, .dark .modal .modal-title, .dark .nv-clip-content__meta h3, .dark .nv-clip-content__meta p, .dark .sub-text, .dark .js-editing-controls label.label {
     color: #d3d3d3;
 }
 
@@ -182,6 +182,53 @@ body.dark, body.dark #clips-app-root {
 
 .dark .more-clips-card__layout:hover {
     background: #282828;
+}
+
+/* new clip edit page */
+.dark .ce-clip-center__pre-control {
+    background-color: rgb(30, 30, 30);
+    border-color: rgba(0, 0, 0, 0.45);
+    box-shadow: 0 2.4rem 3.5rem -2rem rgba(225,225,225,.04);
+}
+
+.dark .ce-clip-center__pre-control input#input-clip-link {
+    background: #3b3b3b;
+    border: 1px solid rgba(0,0,0,0.35);
+    color: #d4d4d4;
+}
+
+.dark .ce-clip-center__pre-control .ce-buttons-wrap .button {
+    box-shadow: inset 0 0 0 2px rgba(171,171,171,0.5);
+    color: #d2d2d2;
+}
+
+.dark .ce-clip-center__pre-control .ce-buttons-wrap .button:hover {
+    background-color: rgba(171,171,171,0.05);
+    color: #d2d2d2;
+}
+
+/* filstrip editor */
+.dark .ce-clip-center__pre-control .ce-filmstrip-container > .ce-buttons-wrap--editing {
+    padding: 1.5rem 2rem 0rem;
+}
+
+.dark .ce-filmstrip-fade--right {
+    background-image: linear-gradient(-90deg,#141414 13%,hsla(300,9%,98%,0) 70%);
+}
+
+.dark .ce-filmstrip-fade--left {
+    background-image: linear-gradient(90deg,#141414 13%,hsla(300,9%,98%,0) 70%);
+}
+
+/* publish button */
+.dark .ce-clip-center__pre-control .ce-filmstrip-container a.button {
+    box-shadow: inset 0 0 0 2px rgba(171,171,171,0.5);
+    color: #d2d2d2;
+    background-color: rgba(57,46,92,0.75);
+}
+
+.dark .ce-clip-center__pre-control .ce-filmstrip-container a.button:hover {
+    background-color: rgba(57,46,92,0.5);
 }
 
 /* invert Twitch logo */
