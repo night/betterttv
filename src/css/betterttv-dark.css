@@ -556,7 +556,9 @@ div#site_header {
     background-color: rgba(0, 0 ,0, 0);
 }
 
-#channel .cn-metabar__more .ember-view .button, .cn-bar .cn-tabs .cn-button-edit {
+#channel .cn-metabar__more .ember-view .button,
+.cn-bar .cn-tabs .cn-button-edit,
+.player .player-menu .pl-button {
     color: #b8b8b8;
     box-shadow: inset 0 0 0 1px rgba(171, 171, 171, 0.5);
     background-color: transparent;
@@ -2202,6 +2204,21 @@ span.subscribe-text {
 
 .player .player-hover.player-controls-bottom .player-menu__menu:after {
     border-top-color: rgb(35, 35, 35);
+}
+
+.player .player-menu .player-menu__section select {
+    background: #3b3b3b;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.35);
+    color: #d4d4d4;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg viewBox='0 0 12 12' xmlns='http://www.w3.org/2000/svg' fill='%23b8b8b8'%3E%3Cpath d='M6 1l4 4H2zM6 11l4-4H2z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right -10px center;
+    background-origin: content-box;
+    background-size: 1.2rem;
+}
+
+.player .player-menu .player-menu__section select:focus {
+    border: none;
 }
 
 /* dark mod card */
