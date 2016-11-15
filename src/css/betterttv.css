@@ -1457,6 +1457,19 @@ body#chat #speak {
     padding-top: 3px;
 }
 
+.g18_gear-00000080 {
+    background-image: url(//www-cdn.jtvnw.net/images/xarth/g/g18_gear-00000080.png);
+}
+.g18_close-00000080 {
+    background-image: url(//www-cdn.jtvnw.net/images/xarth/g/g18_close-00000080.png);
+}
+.g18_popout-00000080 {
+    background-image: url(//www-cdn.jtvnw.net/images/xarth/g/g18_popout-00000080.png);
+}
+.g18_trash-00000080 {
+    background-image: url(//www-cdn.jtvnw.net/images/xarth/g/g18_trash-00000080.png);
+}
+
 .ember-chat .chat-messages .chat-line.admin {
     margin: 0;
 }
