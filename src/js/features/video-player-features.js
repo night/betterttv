@@ -23,8 +23,13 @@ module.exports = function() {
 
     $('body').on('click', '.player-controls-bottom .js-control-fullscreen', function() {
         var $player = $('#player');
-        var isTheater = $player.data('theatre');
-        if (!isTheater) return;
+
+        setTimeout(function() {
+            $('.js-main-col-scroll-content').scrollTop(0);
+        }, 100);
+
+        var isTheater = $player.attr('data-theatre');
+        if (isTheater !== 'true') return;
 
         var playerEmberId = $player.closest('.ember-view').attr('id');
         var emberView = App.__container__.lookup('-view-registry:main')[playerEmberId];
