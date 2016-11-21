@@ -16,11 +16,11 @@ var initFamilyCalled = false;
 var initSizeCalled = false;
 
 var styleSheetTextNode = (function() {
-	  var styleElement = document.createElement('style');
-	  document.head.appendChild(styleElement);
-	  styleElement.appendChild(document.createTextNode('/* ChatFontSettings for BetterTTV */'));
+    var styleElement = document.createElement('style');
+    document.head.appendChild(styleElement);
+    styleElement.appendChild(document.createTextNode('/* ChatFontSettings for BetterTTV */'));
     var styleTextNode = document.createTextNode('');
-	  styleElement.appendChild(styleTextNode);
+    styleElement.appendChild(styleTextNode);
     return styleTextNode;
 })();
 
