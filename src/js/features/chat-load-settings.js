@@ -83,6 +83,24 @@ module.exports = function() {
         }
     });
 
+    $('.setFontFamily').click(function(e) {
+        e.preventDefault();
+        var font = prompt('What font family do you want for chat? You can have multiple font families separated by comma if you want fallbacks. If a font family contains spaces, it must be in quotation marks. Try monospace or "Comic Sans MS" or leave the field blank to use default.', bttv.settings.get('chatFontFamily'));
+        if (font !== null) {
+            bttv.settings.save('chatFontFamily', font);
+        }
+    });
+
+    $('.setFontSize').click(function(e) {
+        e.preventDefault();
+        var size = prompt('What font size (in pixels) do you want for chat? Twitch default is 12, BetterTTV default is 13.33333. Leave the field blank to use BetterTTV default.', bttv.settings.get('chatFontSize'));
+        if (size !== null && size === '') {
+            bttv.settings.save('chatFontSize', -1);
+        } else if (size !== null && !isNaN(size)) {
+            bttv.settings.save('chatFontSize', parseInt(size, 10));
+        }
+    });
+
     // Make chat settings scrollable
     $('.ember-chat .chat-settings').css('max-height', $(window).height() - 100);
 };
