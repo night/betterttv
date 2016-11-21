@@ -25,7 +25,10 @@ var styleSheetTextNode = (function() {
 })();
 
 function update() {
-    if (fontSize > 0) {
+    if (fontFamily === '' && fontSize === defaultFontSize) {
+        styleSheetTextNode.nodeValue = '';
+        return true;
+    } else if (fontSize > 0) {
         var padding = topPaddingRatio * fontSize + 'px ' + rightPaddingRatio * fontSize + 'px ' + bottomPaddingRatio * fontSize + 'px ' + leftPaddingRatio * fontSize + 'px';
         var font = (fontFamily.length > 0 ? fontFamily : defaultFontFamily);
         var cssText = styleRule.replace('<padding>', padding).replace('<family>', font).replace('<size>', fontSize);
