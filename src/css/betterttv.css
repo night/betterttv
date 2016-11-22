@@ -1203,7 +1203,8 @@ body#chat #speak {
 }
 
 .moderation-card .channel-stats .stat svg {
-    margin-top: 2px;
+    margin-bottom: -5px;
+    margin-left: 3px;
 }
 
 .moderation-card .channel-stats .stat {
