@@ -65,8 +65,8 @@ var bitsEmoticonize = function(config, value) {
         if (tier.min_bits <= value) break;
     }
 
-    var url = 'https://static-cdn.jtvnw.net/bits/' + (bttv.settings.get('darkenedMode') ? 'dark' : 'light') + '/animated/' + tier.image;
-    var emote = '<img class="chatline__bit" alt="cheer" src="' + url + '/1" srcset="' + url + '/1.5 1.5x, ' + url + '/2 2x, ' + url + '/3 3x, ' + url + '/4 4x">';
+    var url = 'https://bits-assets.s3.amazonaws.com/actions/cheer/' + (bttv.settings.get('darkenedMode') ? 'dark' : 'light') + '/animated/' + tier.id;
+    var emote = '<img class="chatline__bit" alt="cheer" src="' + url + '/1.gif" srcset="' + url + '/1.5.gif 1.5x, ' + url + '/2.gif 2x">';
     return emote + '<strong><span class="bitsText" style="color: ' + tier.color + '">' + value + '</span></strong>';
 };
 
@@ -76,10 +76,10 @@ var parseBits = function(piece, amount) {
         if (bttv.settings.get('hideBits') === true) return '';
 
         var config = helpers.getBitsConfig();
-        if (!config) return piece;
+        if (!config || !config.cheer) return piece;
 
         var value = parseInt(piece.match(/\d+/), 10);
-        piece = bitsEmoticonize(config, value);
+        piece = bitsEmoticonize(config.cheer, value);
     }
     return piece;
 };
