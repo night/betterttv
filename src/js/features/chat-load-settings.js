@@ -85,15 +85,18 @@ module.exports = function() {
 
     $('.setFontFamily').click(function(e) {
         e.preventDefault();
-        var font = prompt('What font family do you want for chat? You can have multiple font families separated by comma if you want fallbacks. If a font family contains spaces, it must be in quotation marks. Try monospace or "Comic Sans MS" or leave the field blank to use default.', bttv.settings.get('chatFontFamily'));
-        if (font !== null) {
+        var font = prompt('Enter font name for chat. Try "monospace" or "Comic Sans MS" or leave the field blank to use default.', bttv.settings.get('chatFontFamily'));
+        var unsafeFontRegex = /[^A-Za-z0-9\s\.,&\+\-_!]/;
+        if (font !== null && unsafeFontRegex.test(font)) {
+            bttv.chat.helpers.serverMessage('Chat font could not be changed: It contained illegal characters.', true);
+        } else if (font !== null) {
             bttv.settings.save('chatFontFamily', font);
         }
     });
 
     $('.setFontSize').click(function(e) {
         e.preventDefault();
-        var size = prompt('What font size (in pixels) do you want for chat? Twitch default is 12, BetterTTV default is 13.33333. Leave the field blank to use BetterTTV default.', bttv.settings.get('chatFontSize'));
+        var size = prompt('Enter font size for chat (in pixels, but don\'t write that). Twitch default is 12, BetterTTV default is 13.33333. Leave the field blank to use default.', bttv.settings.get('chatFontSize'));
         if (size !== null && size === '') {
             bttv.settings.save('chatFontSize', -1);
         } else if (size !== null && !isNaN(size)) {
