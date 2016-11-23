@@ -2106,9 +2106,16 @@ body.channel_new.columns.ember-application {
 }
 
 .pinned-cheers {
-    padding-top: 5px;
     padding-bottom: 10px;
     padding-left: 5px;
+}
+
+.pinned-cheers:after {
+    content: "Dismiss";
+    float: right;
+    color: #777;
+    margin: -14px 6px -6px 0;
+    cursor: pointer;
 }
 
 .pinned-cheers .mod-icons {

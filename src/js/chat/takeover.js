@@ -276,6 +276,12 @@ var takeover = module.exports = function() {
         if (e.offsetX > e.target.offsetWidth - 26) $('.recent-past-broadcast').hide();
     });
 
+    // Dismiss pinned cheers
+    $('body').off('click', '.pinned-cheers').on('click', '.pinned-cheers', function(e) {
+        if (!e.target.classList.contains('pinned-cheers')) return;
+        if (e.offsetX > e.target.offsetWidth - 50 && e.offsetY > e.target.offsetHeight - 26) $('.pinned-cheers').hide();
+    });
+
     // Make names clickable
     var clickCounter = 0;
     $('body').off('click', '.chat-line .from, .chat-line .user-mention').on('click', '.chat-line .from, .chat-line .user-mention', function(e) {
