@@ -1200,6 +1200,7 @@ body#chat #speak {
     opacity: 0.7;
     position: relative;
     margin-top: -3px;
+    padding-right: 0;
 }
 
 .moderation-card .channel-stats .stat svg {
@@ -1209,6 +1210,7 @@ body#chat #speak {
 
 .moderation-card .channel-stats .stat {
     color: white;
+    padding: 0 5px;
 }
 
 .ember-chat .moderation-card .button-simple {
@@ -2104,9 +2106,16 @@ body.channel_new.columns.ember-application {
 }
 
 .pinned-cheers {
-    padding-top: 5px;
     padding-bottom: 10px;
     padding-left: 5px;
+}
+
+.pinned-cheers:after {
+    content: "Dismiss";
+    float: right;
+    color: #777;
+    margin: -14px 6px -6px 0;
+    cursor: pointer;
 }
 
 .pinned-cheers .mod-icons {
