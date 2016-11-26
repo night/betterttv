@@ -96,11 +96,12 @@ module.exports = function() {
 
     $('.setFontSize').click(function(e) {
         e.preventDefault();
-        var size = prompt('Enter font size for chat (in pixels, but don\'t write that). Twitch default is 12, BetterTTV default is 13.33333. Leave the field blank to use default.', bttv.settings.get('chatFontSize'));
+        var currentSize = bttv.settings.get('chatFontSize');
+        var size = prompt('Enter font size for chat (in pixels, but don\'t write that). Twitch default is 12, BetterTTV default is 13.33333. Leave the field blank to use default.', (currentSize > 0 ? currentSize : ''));
         if (size !== null && size === '') {
-            bttv.settings.save('chatFontSize', -1);
+            bttv.settings.save('chatFontSize', 0);
         } else if (size !== null && !isNaN(size)) {
-            bttv.settings.save('chatFontSize', parseInt(size, 10));
+            bttv.settings.save('chatFontSize', parseFloat(size, 10));
         }
     });
 

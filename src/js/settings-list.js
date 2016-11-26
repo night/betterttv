@@ -692,7 +692,7 @@ module.exports = [
     },
     {
         storageKey: 'chatFontSize',
-        default: -1,
+        default: 0,
         load: function() {
             chatFontSettings.initFontSize();
         },

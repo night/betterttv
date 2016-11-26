@@ -1,21 +1,10 @@
 var styleRule = '.chat-messages, .chat-messages .chat-line { <declarations> }';
 var styleFontFamilyDeclaration = 'font-family: <family> !important; ';
 var styleFontSizeDeclaration = 'font-size: <size> !important; ';
-var stylePaddingDeclaration = 'padding: <padding> !important; ';
-// Defaults from BTTV 6.8R55, fetching dynamically takes too long
-var defaultFontSize = 13.33333;
-var defaultTopPadding = 5;
-var defaultBottomPadding = 6;
-var defaultLeftPadding = 10;
-var defaultRightPadding = 10;
 
-var topPaddingRatio = defaultTopPadding / defaultFontSize;
-var bottomPaddingRatio = defaultBottomPadding / defaultFontSize;
-var leftPaddingRatio = defaultLeftPadding / defaultFontSize;
-var rightPaddingRatio = defaultRightPadding / defaultFontSize;
 var styleNode = null;
 var fontFamily = '';
-var fontSize = defaultFontSize;
+var fontSize = 0;
 var initFamilyCalled = false;
 var initSizeCalled = false;
 
@@ -27,13 +16,9 @@ function createStyleSheet() {
     styleElement.appendChild(styleNode);
 }
 
-function getPadding(ratioToFont) {
-    return (Math.round(ratioToFont * fontSize * 100) / 100) + 'px';
-}
-
 function update() {
-    if (fontSize > 0) {
-        if (fontFamily === '' && fontSize === defaultFontSize) {
+    if (fontSize >= 0) {
+        if (fontFamily === '' && fontSize === 0) {
             styleNode.nodeValue = '';
         } else {
             var styleDeclarations = '';
@@ -41,17 +26,16 @@ function update() {
                 var fontFamilyValue = (fontFamily.indexOf(' ') >= 0 ? '\"' + fontFamily + '\"' : fontFamily);
                 styleDeclarations = styleFontFamilyDeclaration.replace('<family>', fontFamilyValue);
             }
-            if (fontSize !== defaultFontSize) {
+            if (fontSize > 0) {
                 var fontSizeValue = fontSize + 'px';
-                var paddingValue = getPadding(topPaddingRatio) + ' ' + getPadding(rightPaddingRatio) + ' ' + getPadding(bottomPaddingRatio) + ' ' + getPadding(leftPaddingRatio);
-                styleDeclarations = styleDeclarations + styleFontSizeDeclaration.replace('<size>', fontSizeValue) + stylePaddingDeclaration.replace('<padding>', paddingValue);
+                styleDeclarations = styleFontSizeDeclaration.replace('<size>', fontSizeValue);
             }
             styleNode.nodeValue = styleRule.replace('<declarations>', styleDeclarations);
         }
         return true;
     } else {
-        fontSize = defaultFontSize;
-        bttv.settings.save('chatFontSize', defaultFontSize);
+        fontSize = 0;
+        bttv.settings.save('chatFontSize', 0);
         return false;
     }
 }
@@ -78,9 +62,11 @@ exports.initFontSize = function() {
 exports.setFontFamily = function(font) {
     fontFamily = font;
     if (update()) {
-        var message = 'Chat font is now set to: ' + fontFamily;
-        if (fontFamily.length === 0) {
-            message = message + '(default)';
+        var message;
+        if (fontFamily.length > 0) {
+            message = 'Chat font is now set to: ' + fontFamily;
+        } else {
+            message = 'Chat font is now set to default.';
         }
         bttv.chat.helpers.serverMessage(message, true);
     }
@@ -89,9 +75,11 @@ exports.setFontFamily = function(font) {
 exports.setFontSize = function(size) {
     fontSize = size;
     if (update()) {
-        var message = 'Chat font size is now set to: ' + fontSize + 'px';
-        if (fontSize === defaultFontSize) {
-            message = message + ' (default)';
+        var message;
+        if (fontSize > 0) {
+            message = 'Chat font size is now set to: ' + fontSize + 'px';
+        } else {
+            message = 'Chat font size is now set to default.';
         }
         bttv.chat.helpers.serverMessage(message, true);
     }
