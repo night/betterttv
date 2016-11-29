@@ -16,7 +16,7 @@ Settings.prototype._parseSetting = function(value) {
     } else if (value === '') {
         return '';
     } else if (isNaN(value) === false) {
-        return parseInt(value, 10);
+        return parseFloat(value, 10);
     }
 
     return value;
