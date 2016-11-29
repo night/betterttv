@@ -980,8 +980,10 @@ input, textarea, select {
 
 #chat_line_list .line p .chat_line, .ember-chat .chat-messages .chat-line {
     word-break: break-word;
-    padding: .4em .8em;
+    padding-top: 5px;
     margin-top: inherit;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 #chat_line_list li .nick, .ember-chat .chat-messages .from {
