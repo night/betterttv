@@ -2110,11 +2110,11 @@ body.channel_new.columns.ember-application {
     padding-left: 5px;
 }
 
-.pinned-cheers:after {
+.pinned-cheers:before {
     content: "Dismiss";
     float: right;
     color: #777;
-    margin: -14px 6px -6px 0;
+    margin: 2px 5px -10px 0;
     cursor: pointer;
 }
 
