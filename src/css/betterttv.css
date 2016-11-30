@@ -1145,8 +1145,36 @@ body#chat #speak {
     line-height: 0px;
 }
 
+.ember-chat .moderation-card img.channel_logo {
+    display: block;
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    top: 5px;
+    left: 5px;
+    background: white;
+    border: 3px solid white;
+    z-index: 2
+}
+
+.ember-chat .moderation-card .close-button {
+    cursor: pointer;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 16px;
+    height: 20px;
+    padding: 2px;
+    z-index: 6
+}
+
+.ember-chat .moderation-card .close-button svg path {
+    fill: white
+}
+
 .ember-chat .moderation-card .card-header {
     overflow: hidden;
+    height: 70px;
 }
 
 .ember-chat .moderation-card .card-header .channel_background {
@@ -1158,13 +1186,30 @@ body#chat #speak {
     opacity: 0.5;
 }
 
+.ember-chat .moderation-card .card-header .drag-handle {
+    width: 100%;
+    height: 72px;
+    left: 0;
+    top: 0;
+    position: absolute;
+    cursor: move;
+    z-index: 3
+}
+
 .ember-chat .moderation-card h3.name {
-    margin-top: -5px;
+    margin: 6px 0 -8px 70px;
     font-size: 18px;
     display: inline-block;
-    margin-bottom: -8px;
     padding: 0px;
     line-height: 20px;
+    color: white;
+    position: relative;
+    z-index: 4
+}
+
+.ember-chat .moderation-card h3.name a {
+    color: white;
+    cursor: pointer
 }
 
 .ember-chat .moderation-card .svg-edit {
@@ -1177,15 +1222,15 @@ body#chat #speak {
     color: #AAA;
     z-index: 4;
     position: relative;
-    margin-left: 60px;
-    margin-top: -20px;
-    margin-bottom: -1px;
+    margin-left: 70px;
+    margin-top: -8px;
+    margin-bottom: -13px;
 }
 
 .ember-chat .moderation-card h4.created-at {
     font-size: 11px;
     color: rgb(220,220,190);
-    margin-left: 60px;
+    margin-left: 70px;
     margin-top: -4px;
     position: relative;
     display: table;
@@ -1193,13 +1238,13 @@ body#chat #speak {
 }
 
 .moderation-card div.channel-stats {
-    margin-left: 60px;
+    margin-left: 70px;
     height: 20px;
     line-height: 20px;
     float: left;
     opacity: 0.7;
     position: relative;
-    margin-top: -3px;
+    margin-top: -4px;
     padding-right: 0;
 }
 
