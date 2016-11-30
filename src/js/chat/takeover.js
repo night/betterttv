@@ -279,7 +279,7 @@ var takeover = module.exports = function() {
     // Dismiss pinned cheers
     $('body').off('click', '.pinned-cheers').on('click', '.pinned-cheers', function(e) {
         if (!e.target.classList.contains('pinned-cheers')) return;
-        if (e.offsetX > e.target.offsetWidth - 50 && e.offsetY > e.target.offsetHeight - 26) $('.pinned-cheers').hide();
+        if (e.target.offsetWidth - e.offsetX < 48 && e.target.offsetHeight - e.offsetY > 88) $('.pinned-cheers').hide();
     });
 
     // Make names clickable
