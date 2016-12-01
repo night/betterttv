@@ -2153,6 +2153,7 @@ body.channel_new.columns.ember-application {
 .pinned-cheers {
     padding-bottom: 10px;
     padding-left: 5px;
+    margin: 0;
 }
 
 .pinned-cheers:before {
