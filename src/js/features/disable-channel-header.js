@@ -18,8 +18,10 @@ module.exports = function(state) {
     if (routeName.substr(0, 8) !== 'channel.') return;
 
     if (bttv.settings.get('disableChannelHeader') === true) {
+        $('#main_col').addClass('disable-header');
         setHeaderHeight(0);
     } else if (state === false) {
+        $('#main_col').removeClass('disable-header');
         setHeaderHeight(380);
     }
 };
