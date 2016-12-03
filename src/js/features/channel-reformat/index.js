@@ -6,6 +6,9 @@ var debug = require('../../helpers/debug'),
 var handleResize = require('./handle-resize');
 
 module.exports = function() {
+    /* eslint-disable */
+    return;
+
     if ($('#main_col #channel').length === 0 || $('#right_col').length === 0) return;
 
     debug.log('Reformatting Channel Page');

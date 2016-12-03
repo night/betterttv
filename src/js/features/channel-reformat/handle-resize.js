@@ -39,9 +39,6 @@ var getPlayerHeight = function() {
 };
 
 module.exports = function() {
-    // Temporary fix TODO: remove this
-    if ($('#notarealdiv').length === 0) return;
-
     if ($('#right_col').length === 0) return;
 
     debug.log('Page resized');
