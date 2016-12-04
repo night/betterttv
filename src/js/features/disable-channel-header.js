@@ -17,11 +17,14 @@ module.exports = function(state) {
     var routeName = App.__container__.lookup('controller:application').get('currentRouteName');
     if (routeName.substr(0, 8) !== 'channel.') return;
 
+    var playerService = App.__container__.lookup('service:player');
     if (bttv.settings.get('disableChannelHeader') === true) {
-        $('#main_col').addClass('disable-header');
+        playerService.fullSizePlayerLocation.top = 75;
         setHeaderHeight(0);
     } else if (state === false) {
-        $('#main_col').removeClass('disable-header');
+        playerService.fullSizePlayerLocation.top = 455;
         setHeaderHeight(380);
     }
+
+    playerService.playerComponent.ownerView.rerender();
 };

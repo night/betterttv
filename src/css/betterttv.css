@@ -2180,12 +2180,3 @@ body.channel_new.columns.ember-application {
 .pinned-cheers__message .chat-line {
     max-height: 45px;
 }
-
-/* new mini player setting inline css*/
-.js-player-persistent:not(.player-mini) {
-    width: calc(100% - 60px) !important;
-}
-
-.disable-header .js-player-persistent:not(.player-mini) {
-    top: 75px !important;
-}
