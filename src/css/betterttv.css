@@ -378,16 +378,16 @@ input.text:focus,select:focus,textarea:focus {
 }
 
 .swap-chat #main_col .cn-bar-fixed {
-    right: 240px;
-    left: 340px;
+    right: 240px !important;
+    left: 340px !important;
 }
 
 .swap-chat #main_col.expandRight .cn-bar-fixed {
-    left: 0px;
+    left: 0px !important;
 }
 
 .swap-chat #main_col.expandLeft .cn-bar-fixed {
-    right: 50px;
+    right: 50px !important;
 }
 
 .swap-chat .player-mini {
