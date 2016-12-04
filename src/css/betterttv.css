@@ -301,7 +301,13 @@ input.text:focus,select:focus,textarea:focus {
     background-color: transparent;
 }
 
-.line .tag.invert, .ember-chat .badges .badge.invert {
+.line .tag.invert,
+.ember-chat .badges .moderator.invert,
+.ember-chat .badges .global-moderator.invert,
+.ember-chat .badges .admin.invert,
+.ember-chat .badges .staff.invert,
+.ember-chat .badges .turbo.invert,
+.ember-chat .badges .twitch-premium-1.invert {
     filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'invert\'><feColorMatrix in='SourceGraphic' type='matrix' values='-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0'/></filter></svg>#invert");
     filter: invert(100%);
     -webkit-filter: invert(100%);
