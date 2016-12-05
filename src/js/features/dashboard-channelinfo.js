@@ -41,10 +41,10 @@ module.exports = function dashboardChannelInfo() {
         });
 
         if (vars.dontCheckSubs !== true) {
-            $.getJSON('/' + bttv.getChannel() + '/dashboard/revenue/summary_data', function(data) {
-                if (!data.data) return;
+            bttv.TwitchAPI.get('/api/channels/' + bttv.getChannel() + '/subscriber_count').done(function(data) {
+                if (!data.count) return;
 
-                if (data.data.total_subscriptions === 0) {
+                if (data.count === 0) {
                     vars.dontCheckSubs = true;
                     return;
                 }
@@ -62,15 +62,14 @@ module.exports = function dashboardChannelInfo() {
                     $subsContainer.append($subs);
                     $('#chatters_count').after($subsContainer);
 
-                    var channelModel = bttv.getModel();
-                    $.getJSON('https://badges.twitch.tv/v1/badges/channels/' + channelModel._id + '/display', function(badges) {
-                        if (!badges || !badges.badge_sets || !badges.badge_sets.subscriber) return;
-                        var subBadge = data.badge_sets.subscriber.versions['1'];
-                        $('#subs_count').css('background-image', 'url(' + subBadge.image_url_1x + ')');
+                    bttv.TwitchAPI.get('chat/' + bttv.getChannel() + '/badges').done(function(a) {
+                        if (a.subscriber) {
+                            $('#subs_count').css('background-image', 'url(' + a.subscriber.image + ')');
+                        }
                     });
                 }
 
-                $('#subs_count span').text(Twitch.display.commatize(data.data.total_subscriptions));
+                $('#subs_count span').text(Twitch.display.commatize(data.count));
             });
         }
 

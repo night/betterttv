@@ -81,17 +81,13 @@ Conversations.prototype.messageParser = function(element) {
     if (!from || !message) return;
 
     var $element = $(element);
-
     if ($element.hasClass('bttv-parsed-message')) return;
-    $element.addClass('bttv-parsed-message');
+    if ($element.hasClass('conversation-preview-line')) return;
+    if (!$element.hasClass('conversation-chat-line')) return;
 
     from.style.color = this.usernameRecolor(from.style.color);
-
-    if ($element.hasClass('conversation-chat-line') && !$element.hasClass('conversation-preview-line')) {
-        $element.append(chatTemplates.bttvElementTokenize(from, message));
-        message.style.display = 'none';
-    }
-
+    $element.append(chatTemplates.bttvElementTokenize(from, message));
+    $element.addClass('bttv-parsed-message');
     this.scrollDownParent(element);
 };
 
@@ -214,10 +210,19 @@ Conversations.prototype.updateTitle = function(m) {
         var hasUnreads = $('.has-unread').length;
         if (hasUnreads) {
             var numOfUnreads = 0;
-            var $headers = $('.conversation-unread-count');
-            for (var i = 0; i < $headers.length; i++) {
-                numOfUnreads += Number($($headers[i]).text());
-            }
+            var $headers = $('.has-unread');
+
+            $headers.each(function() {
+                var $divider = $(this).find('.conversation-chat-lines .new-message-divider');
+
+                if ($divider.length) {
+                    numOfUnreads += $divider.nextAll('.conversation-chat-line').length;
+                } else {
+                    // If there's no new message divider, the user has never messaged this account before
+                    numOfUnreads += $(this).find('.conversation-chat-line').length;
+                }
+            });
+
             if (!numOfUnreads) return;
             numOfUnreads = '(' + numOfUnreads + ') ';
             if (title.charAt(0) === '(') {

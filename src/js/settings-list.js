@@ -7,6 +7,7 @@ var splitChat = require('./features/split-chat'),
     hostButton = require('./features/host-btn-below-video'),
     anonChat = require('./features/anon-chat'),
     betterViewerList = require('./features/better-viewer-list'),
+    disableChannelHeader = require('./features/disable-channel-header'),
     handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes'),
     audibleFeedback = require('./features/audible-feedback'),
     playerKeyboardShortcuts = require('./features/player-keyboard-shortcuts'),
@@ -43,7 +44,7 @@ module.exports = [
     {
         name: 'Better Viewer List',
         description: 'Adds extra features to the viewer list, such as filtering',
-        default: false,
+        default: true,
         storageKey: 'betterViewerList',
         toggle: function(value) {
             if (value === true) {
@@ -99,6 +100,12 @@ module.exports = [
                 imagePreview.disablePreview();
             }
         }
+    },
+    {
+        name: 'Click to Play/Pause Stream',
+        description: 'Click on the twitch player to pause/resume playback',
+        default: false,
+        storageKey: 'clickToPlay',
     },
     {
         name: 'Completion Tooltip',
@@ -245,7 +252,7 @@ module.exports = [
                     $('div.tipsy').remove();
                     $this.tipsy({
                         trigger: 'manual',
-                        gravity: $.fn.tipsy.autoNS,
+                        gravity: $.fn.tipsy.autoWE,
                         html: true,
                         opacity: 1,
                         title: function() { return '<iframe src="https://player.twitch.tv/?channel=' + chan + '&!branding&!showInfo&autoplay&volume=0.1" style="border: none;" width="320" height="208"></iframe><style>.tipsy-inner{max-width:320px;}</style>'; }
@@ -270,6 +277,13 @@ module.exports = [
         }
     },
     {
+        name: 'Disable Channel Header',
+        description: 'Disables the large header on top of channels in the new layout',
+        default: false,
+        storageKey: 'disableChannelHeader',
+        toggle: disableChannelHeader
+    },
+    {
         name: 'Disable Host Mode',
         description: 'Disables hosted channels on Twitch',
         default: false,
@@ -284,6 +298,12 @@ module.exports = [
                 window.App.__container__.lookup('service:globals').set('enableHostMode', !bttv.settings.get('disableHostMode'));
             } catch (e) {}
         }
+    },
+    {
+        name: 'Disable Localized Names',
+        description: 'Show usernames instead of localized names in chat',
+        default: false,
+        storageKey: 'disableLocalizedNames'
     },
     {
         name: 'Disable Name Colors',
@@ -312,11 +332,11 @@ module.exports = [
         load: function() {
             if (window.location.href === 'https://www.twitch.tv/' && bttv.settings.get('disableFPVideo') === true) {
                 $(window).load(function() {
-                    var frameSrc = $('#video-1').children('iframe').eq(0).attr('src');
-                    $('#video-1').children('iframe').eq(0).attr('src', frameSrc + '&autoplay=false');
-                    $('#video-1').bind('DOMNodeInserted DOMNodeRemoved', function() {
-                        frameSrc = $('#video-1').children('iframe').eq(0).attr('src');
-                        $('#video-1').children('iframe').eq(0).attr('src', frameSrc + '&autoplay=false');
+                    var frameSrc = $('#player').children('iframe').eq(0).attr('src');
+                    $('#player').children('iframe').eq(0).attr('src', frameSrc + '&autoplay=false');
+                    $('#player').bind('DOMNodeInserted DOMNodeRemoved', function() {
+                        frameSrc = $('#player').children('iframe').eq(0).attr('src');
+                        $('#player').children('iframe').eq(0).attr('src', frameSrc + '&autoplay=false');
                     });
                 });
             }
@@ -383,6 +403,15 @@ module.exports = [
         }
     },
     {
+        name: 'Hide Conversations When Inactive',
+        description: 'Only show conversations ui on mousverover or when active',
+        default: false,
+        storageKey: 'hideConversations',
+        toggle: function() {
+            bttv.conversations.toggleAutoHide();
+        }
+    },
+    {
         name: 'Hide Friends',
         description: 'Hides the friend list from the left sidebar',
         default: false,
@@ -396,6 +425,15 @@ module.exports = [
         },
         load: function() {
             cssLoader.load('hide-friends', 'hideFriends');
+        }
+    },
+    {
+        name: 'Hide Friends Activity in Chat',
+        description: 'Hides things like "friend has started watching" in chat',
+        default: false,
+        storageKey: 'hideFriendsChatActivity',
+        toggle: function() {
+            window.location.reload();
         }
     },
     {
@@ -415,18 +453,16 @@ module.exports = [
         }
     },
     {
-        name: 'Hide Spam Messages',
-        description: 'Hides known spam messages. Click on the message to reveal it',
-        default: true,
-        storageKey: 'hideSpam'
-    },
-    {
-        name: 'Hide Conversations When Inactive',
-        description: 'Only show conversations ui on mousverover or when active',
+        name: 'Hide Prime Promotions',
+        description: 'Hides the "Free With Prime" section of the sidebar',
         default: false,
-        storageKey: 'hideConversations',
-        toggle: function() {
-            bttv.conversations.toggleAutoHide();
+        storageKey: 'hidePrimePromotion',
+        toggle: function(value) {
+            if (value === true) {
+                removeElement('.js-offers');
+            } else {
+                displayElement('.js-offers');
+            }
         }
     },
     {

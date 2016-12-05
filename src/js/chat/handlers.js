@@ -90,6 +90,8 @@ exports.commands = function(input) {
     } else if (command === '/shrug') {
         sentence.shift();
         helpers.sendMessage(sentence.join(' ') + ' ¯\\_(ツ)_/¯');
+    } else if (command === '/squishy') {
+        helpers.sendMessage('notsquishY WHEN YOU NEED HIM notsquishY IN A JIFFY notsquishY USE THIS EMOTE notsquishY TO SUMMON SQUISHY notsquishY');
     } else if (command === '/sub') {
         tmi().tmiRoom.startSubscribersMode();
     } else if (command === '/suboff') {
@@ -203,10 +205,16 @@ var shiftQueue = exports.shiftQueue = throttle(function() {
         var isMod = vars.userData.isLoggedIn && helpers.isModerator(vars.userData.name);
         var delay = isMod ? 0 : rooms.getRoom(channelName).delay * 1000;
         var messagesToPrint = [];
+        var messagesToPrepend = [];
 
-        while (queue.length && timeNow - queue[0].date.getTime() >= delay) {
-            var $message = queue.shift().message;
-            messagesToPrint.push($message);
+        while (queue.length && (timeNow - queue[0].date.getTime() >= delay || queue[0].prepend)) {
+            var item = queue.shift();
+            var $message = item.message;
+            if (item.prepend) {
+                messagesToPrepend.unshift(item);
+            } else {
+                messagesToPrint.push($message);
+            }
             $message.find('img').on('load', function() {
                 helpers.scrollChat();
             });
@@ -218,7 +226,26 @@ var shiftQueue = exports.shiftQueue = throttle(function() {
             }, delay);
         }
 
-        $('.chat-messages .chat-lines').append(messagesToPrint);
+        $chatLines = $('.chat-messages .chat-lines');
+
+        if (messagesToPrepend.length) {
+            messagesToPrepend = messagesToPrepend.filter(function(m) {
+                return !$chatLines.find('.chat-line[data-id="' + m.message.data('id') + '"]').length;
+            });
+            var welcomeToChatLine = $chatLines.find('.chat-line.admin');
+            if (welcomeToChatLine.length) {
+                messagesToPrepend.sort(function(a, b) {
+                    return a.date - b.date;
+                });
+                welcomeToChatLine.first().before(messagesToPrepend.map(function(m) {
+                    return m.message;
+                }));
+            } else {
+                store.__messageQueue = messagesToPrepend.concat(store.__messageQueue);
+            }
+        }
+
+        $chatLines.append(messagesToPrint);
     }
     helpers.scrollChat();
 }, 250, { trailing: true });
@@ -243,7 +270,8 @@ exports.moderationCard = function(user, $event) {
     });
 };
 
-exports.clearChat = function(bttvRoom, user, info) {
+exports.clearChat = function(bttvRoom, user, info, pubsub) {
+    pubsub = pubsub || false;
     var trackTimeouts = store.trackTimeouts;
 
     // Remove chat image preview if it exists.
@@ -267,6 +295,8 @@ exports.clearChat = function(bttvRoom, user, info) {
         var queuedLines = store.__messageQueue.filter(function(m) {
             if (m.message.data('sender') === user) return true;
             return false;
+        }).map(function(m) {
+            return m.message;
         });
 
         $chatLines = $(printedChatLines.concat(queuedLines));
@@ -274,7 +304,7 @@ exports.clearChat = function(bttvRoom, user, info) {
         if (!$chatLines.length && !isTarget) return;
 
         if (bttv.settings.get('hideDeletedMessages') === true ||
-            (bttv.settings.get('showDeletedMessages') !== true && bttvRoom.delay)
+            (bttv.settings.get('showDeletedMessages') !== true && bttvRoom.delay && !isMod && !isTarget)
         ) {
             $chatLines.each(function() {
                 $(this).hide();
@@ -312,15 +342,36 @@ exports.clearChat = function(bttvRoom, user, info) {
                 });
             }
 
+            // Update channel state with timeout duration
+            if (isTarget) {
+                channelState({
+                    type: 'notice',
+                    tags: {
+                        'msg-id': info['ban-duration'] ? 'msg_timedout' : 'msg_banned',
+                    },
+                    message: info['ban-duration']
+                });
+            }
+
+            // Timeout messages
+            if (bttv.settings.get('hideDeletedMessages') === true && !isTarget) return;
+            if (isMod && bttv.storage.getObject('chatSettings').showModerationActions !== true) return;
+
+            if (trackTimeouts[user]) {
+                Object.assign(trackTimeouts[user].info, info);
+                info = trackTimeouts[user].info;
+            }
+
             var message;
             var reason = info['ban-reason'] ? ' Reason: ' + templates.escape(info['ban-reason']) : '';
-            var type = info['ban-duration'] ? 'timed out for ' + templates.escape(info['ban-duration']) + ' seconds.' : 'banned from this room.';
+            var type = info['ban-duration'] ? 'timed out for ' + templates.escape(info['ban-duration']) + ' seconds' : 'banned from this room';
             var typeSimple = info['ban-duration'] ? 'timed out.' : 'banned.';
+            var by = info['ban-created-by'] ? ' by ' + info['ban-created-by'] : '';
 
             if (isTarget) {
-                message = 'You have been ' + type + reason;
+                message = 'You have been ' + type + '.' + reason;
             } else if (isMod) {
-                message = helpers.lookupDisplayName(user) + ' has been ' + type + reason;
+                message = helpers.lookupDisplayName(user) + ' has been ' + type + by + '.' + reason;
             } else {
                 message = helpers.lookupDisplayName(user) + ' has been ' + typeSimple;
             }
@@ -329,27 +380,17 @@ exports.clearChat = function(bttvRoom, user, info) {
             var spanID = 'times_from_' + user.replace(/%/g, '_').replace(/[<>,]/g, '') + '_' + timesID;
 
             if (trackTimeouts[user]) {
-                trackTimeouts[user].count++;
+                if (!pubsub) trackTimeouts[user].count++;
                 $('#' + spanID).each(function() {
-                    $(this).text(message + ' (' + trackTimeouts[user].count + ' times)');
+                    $(this).text(message);
                 });
             } else {
                 trackTimeouts[user] = {
                     count: 1,
-                    timesID: timesID
+                    timesID: timesID,
+                    info: info
                 };
                 helpers.serverMessage('<span id="' + spanID + '">' + message + '</span>', true);
-            }
-
-            // Update channel state with timeout duration
-            if (vars.userData.isLoggedIn && user === vars.userData.name) {
-                channelState({
-                    type: 'notice',
-                    tags: {
-                        'msg-id': info['ban-duration'] ? 'msg_timedout' : 'msg_banned',
-                    },
-                    message: info['ban-duration']
-                });
             }
         }
     }
@@ -415,6 +456,8 @@ var privmsg = exports.privmsg = function(channel, data) {
             store.ignoreDC = false;
             return;
         }
+
+        if (data.isModerationMessage && bttv.storage.getObject('chatSettings').showModerationActions !== true) return;
 
         data.style = 'admin';
         message = templates.privmsg({
@@ -520,7 +563,8 @@ var privmsg = exports.privmsg = function(channel, data) {
         badges: bttvBadges,
         color: data.color,
         bits: data.tags.bits && parseInt(data.tags.bits, 10),
-        emotes: data.tags.emotes
+        emotes: data.tags.emotes,
+        id: data.tags.id
     }, {
         highlight: messageHighlighted,
         action: data.style === 'action' ? true : false,
@@ -529,7 +573,7 @@ var privmsg = exports.privmsg = function(channel, data) {
         notice: data.tags && data.tags['msg-id'] === 'resub'
     });
 
-    store.__messageQueue.push({message: $(message), date: sender === vars.userData.name ? new Date(0) : data.date});
+    store.__messageQueue.push({message: $(message), date: sender === vars.userData.name ? new Date(0) : data.date, prepend: data.tags.historical ? true : false});
 };
 
 exports.onPrivmsg = function(channel, data) {

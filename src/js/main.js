@@ -124,31 +124,40 @@ String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 };
 
-var clearClutter = require('./features/clear-clutter'),
-    channelReformat = require('./features/channel-reformat'),
+var betterViewerList = require('./features/better-viewer-list'),
     brand = require('./features/brand'),
-    checkMessages = require('./features/check-messages'),
-    directoryFunctions = require('./features/directory-functions'),
-    checkFollowing = require('./features/check-following'),
+    channelReformat = require('./features/channel-reformat'),
+    ChatReplay = require('./features/chat-replay'),
     checkBroadcastInfo = require('./features/check-broadcast-info'),
-    handleBackground = require('./features/handle-background'),
-    darkenPage = require('./features/darken-page'),
-    splitChat = require('./features/split-chat'),
-    flipDashboard = require('./features/flip-dashboard'),
-    formatDashboard = require('./features/format-dashboard'),
-    dashboardChannelInfo = require('./features/dashboard-channelinfo'),
-    giveawayCompatibility = require('./features/giveaway-compatibility'),
-    handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes'),
+    checkFollowing = require('./features/check-following'),
+    checkMessages = require('./features/check-messages'),
+    clearClutter = require('./features/clear-clutter'),
+    conversations = require('./features/conversations'),
     createSettings = require('./features/create-settings'),
+    darkenPage = require('./features/darken-page'),
+    dashboardChannelInfo = require('./features/dashboard-channelinfo'),
+    directoryFunctions = require('./features/directory-functions'),
     enableImagePreview = require('./features/image-preview').enablePreview,
     enableTheatreMode = require('./features/auto-theatre-mode'),
+    disableChannelHeader = require('./features/disable-channel-header'),
+    flipDashboard = require('./features/flip-dashboard'),
+    formatDashboard = require('./features/format-dashboard'),
+    giveawayCompatibility = require('./features/giveaway-compatibility'),
+    handleBackground = require('./features/handle-background'),
+    handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes'),
+    hidePrimePromotions = require('./features/hide-prime-promotions'),
     hostButtonBelowVideo = require('./features/host-btn-below-video'),
-    conversations = require('./features/conversations'),
-    betterViewerList = require('./features/better-viewer-list'),
     overrideEmotes = require('./features/override-emotes'),
+<<<<<<< HEAD
     playerViewerCount = require('./features/player-viewer-count.js'),
     ChatReplay = require('./features/chat-replay'),
     playerKeyboardShortcuts = require('./features/player-keyboard-shortcuts.js');
+=======
+    playerViewerCount = require('./features/player-viewer-count'),
+    splitChat = require('./features/split-chat'),
+    videoPlayerFeatures = require('./features/video-player-features'),
+    freeSubReminder = require('./features/free-sub-reminder');
+>>>>>>> upstream/master
 
 var chatFunctions = function() {
     debug.log('Modifying Chat Functionality');
@@ -179,14 +188,19 @@ var main = function() {
         };
 
         // Keep an eye for route change to reapply fixes
-        var lastRoute;
+        var route = '';
         App.__container__.lookup('controller:application').addObserver('currentRouteName', function(data) {
             debug.log('New route: ' + data.currentRouteName);
+            var lastRoute = route;
+            route = data.currentRouteName;
 
-            switch (data.currentRouteName) {
+            switch (route) {
                 case 'loading':
                     return;
 
+                case 'channel.videos.video-type':
+                case 'channel.followers':
+                case 'channel.following':
                 case 'channel.index.index':
                     waitForLoad(function(ready) {
                         if (ready) {
@@ -196,6 +210,9 @@ var main = function() {
                             hostButtonBelowVideo();
                             betterViewerList();
                             playerViewerCount();
+                            hidePrimePromotions();
+                            disableChannelHeader();
+                            freeSubReminder();
                             if (
                                 App.__container__.lookup('controller:channel').get('isTheatreMode') === false &&
                                 bttv.settings.get('autoTheatreMode') === true
@@ -206,6 +223,9 @@ var main = function() {
                             setTimeout(function() {
                                 window.dispatchEvent(new Event('resize'));
                             }, 3000);
+
+                            // Switching between tabs in channel page
+                            if (lastRoute.substr(0, 8) === 'channel.') return;
 
                             // chat
                             bttv.chat.store.isLoaded = false;
@@ -235,6 +255,7 @@ var main = function() {
                     $('#main_col').removeAttr('style');
                     waitForLoad(function(ready) {
                         if (ready) {
+                            window.dispatchEvent(new Event('resize'));
                             directoryFunctions();
                         }
                     });
@@ -256,8 +277,6 @@ var main = function() {
                     $('#main_col').removeAttr('style');
                     break;
             }
-
-            lastRoute = data.currentRouteName;
         });
 
         Ember.subscribe('render', {
@@ -290,6 +309,7 @@ var main = function() {
         bttv.conversations = conversations();
         bttv.ws = new WS();
 
+        chatFunctions();
         chatReplay = new ChatReplay();
         clearClutter();
         channelReformat();
@@ -308,6 +328,11 @@ var main = function() {
         hostButtonBelowVideo();
         betterViewerList();
         playerKeyboardShortcuts();
+        playerViewerCount();
+        hidePrimePromotions();
+        videoPlayerFeatures();
+        disableChannelHeader();
+        freeSubReminder();
 
         // Loads global BTTV emotes (if not loaded)
         overrideEmotes();
@@ -322,13 +347,6 @@ var main = function() {
         window.dispatchEvent(new Event('resize'));
     };
 
-    var delayedFuncs = function() {
-        channelReformat();
-        window.dispatchEvent(new Event('resize'));
-        chatFunctions();
-        directoryFunctions();
-    };
-
     $(document).ready(function() {
         loadUser(function() {
             createSettings();
@@ -338,7 +356,6 @@ var main = function() {
             debug.log('CALL init ' + document.URL);
 
             initialFuncs();
-            setTimeout(delayedFuncs, 3000);
         });
     });
 };
@@ -406,4 +423,8 @@ if (!window.Twitch || !window.Twitch.api || !window.Twitch.user) {
 if (window.BTTVLOADED === true) return;
 debug.log('BTTV LOADED ' + document.URL);
 BTTVLOADED = true;
+// We need this because we no longer serve chat history, remove when rolled out entirely
+try {
+    window.Twitch.experiments.overrideExperimentValue('MESSAGE_HISTORY', 'on');
+} catch (e) {}
 checkJquery();

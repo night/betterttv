@@ -7,6 +7,7 @@ var vars = require('../vars'),
     bots = require('../bots'),
     punycode = require('punycode'),
     channelState = require('../features/channel-state'),
+    chatFreeze = require('../features/chat-freeze'),
     throttle = require('lodash.throttle'),
     emojilib = require('emojilib');
 
@@ -29,7 +30,11 @@ var lookupDisplayName = exports.lookupDisplayName = function(user, nicknames) {
 
     if (tmi()) {
         if (Object.hasOwnProperty.call(store.displayNames, user)) {
-            return store.displayNames[user] || user.capitalize();
+            var name = store.displayNames[user] || user.capitalize();
+            if (name.toLowerCase() !== user && (nicknames === false || bttv.settings.get('disableLocalizedNames') === true)) {
+                return user.capitalize();
+            }
+            return  name;
         } else if (user !== 'jtv' && user !== 'twitchnotify') {
             return user.capitalize();
         } else {
@@ -391,7 +396,7 @@ exports.notifyMessage = function(type, message) {
         from: 'twitchnotify',
         date: new Date(),
         badges: [{
-            type: tagType,
+            type: tagType === 'subscriber' ? 'twitch-' + tagType + '-0' : tagType,
             name: ((bttv.settings.get('showJTVTags') && type !== 'subscriber' && type !== 'turbo') ? type.capitalize() : ''),
             description: tagType.capitalize()
         }],
@@ -455,6 +460,11 @@ exports.sendMessage = function(message) {
                     }
                 });
             }
+            return;
+        }
+
+        if (message.substr(0, 6) === '/unpin') {
+            $('.pinned-cheers__dismiss').click();
             return;
         }
 
@@ -553,11 +563,6 @@ exports.isSubscriber = function(user) {
     return getBadges(user).hasOwnProperty('subscriber');
 };
 
-exports.isSpammer = function(user) {
-    if (!user || user === '') return false;
-    return store.spammers.indexOf(user.toLowerCase()) > -1;
-};
-
 exports.hasGlow = function(user) {
     if (!user || user === '') return false;
     if (store.__subscriptions[user] && store.__subscriptions[user].indexOf('_glow') !== -1) return true;
@@ -583,9 +588,9 @@ exports.getEmotes = function(user) {
 exports.scrollChat = throttle(function() {
     var $chat = $('.ember-chat');
 
-    var chatPaused = $chat.find('.chat-interface').children('span').children('.more-messages-indicator').length;
+    var chatPaused = $chat.find('.chat-interface .more-messages-indicator').length;
 
-    if (chatPaused || !$chat.length) return;
+    if (chatPaused || chatFreeze() || !$chat.length) return;
 
     var $chatMessages = $chat.find('.chat-messages');
     var $chatScroller = $chatMessages.children('.tse-scroll-content');
@@ -599,7 +604,11 @@ exports.scrollChat = throttle(function() {
 
     var linesToDelete = $chatLines.length - bttv.settings.get('scrollbackAmount');
 
-    if (linesToDelete <= 0) return;
+    if (linesToDelete <= 1) return;
+
+    if (linesToDelete % 2) {
+        linesToDelete--;
+    }
 
     $chatLines.slice(0, linesToDelete).each(function() {
         $(this).remove();
@@ -679,7 +688,6 @@ exports.loadBTTVBadges = function() {
     });
 };
 
-
 exports.loadTwitchBadges = function() {
     if ($('#twitch_badges').length) return;
 
@@ -692,6 +700,7 @@ exports.loadTwitchBadges = function() {
         var $style = $('<style />');
         $style.attr('id', 'twitch_badges');
 
+        var quality = window.devicePixelRatio > 1 ? 'image_url_2x' : 'image_url_1x';
         var ignoredBadges = ['admin', 'broadcaster', 'global_mod', 'moderator', 'staff', 'subscriber', 'turbo'];
 
         Object.keys(data.badge_sets).forEach(function(badge) {
@@ -702,22 +711,37 @@ exports.loadTwitchBadges = function() {
                 var versionData = badgeData.versions[version];
                 var cssLine = '.badges .twitch-' + badge + '-' + version + ' { ';
                 if (versionData.click_action !== 'none') cssLine += 'cursor: pointer; ';
-                cssLine += 'background: url("' + versionData.image_url_1x + '"); }';
+                cssLine += 'background: url("' + versionData[quality] + '"); }';
                 $style.append(cssLine);
             });
 
             store.__twitchBadgeTypes[badge] = badgeData;
         });
 
-        if (tmi().channel && tmi().channel.partner === true) {
-            $.getJSON('https://badges.twitch.tv/v1/badges/channels/' + tmi().channel._id + '/display', function(badges) {
-                if (!badges || !badges.badge_sets || !badges.badge_sets.subscriber) return;
-                var subBadge = data.badge_sets.subscriber.versions['1'];
-                var cssLine = '.badge.subscriber { background-image: url("' + subBadge.image_url_1x + '"); }';
-                $style.append(cssLine);
-            });
-        }
+        $style.appendTo('head');
+    });
+};
 
+exports.loadSubBadges = function() {
+    var tmiChannel = tmi().channel;
+    if (!tmiChannel || tmiChannel.partner !== true) return;
+    $('#subscriber_badges').remove();
+
+    $.getJSON('https://badges.twitch.tv/v1/badges/channels/' + tmiChannel._id + '/display', function(badges) {
+        if (!badges || !badges.badge_sets || !badges.badge_sets.subscriber) {
+            debug.log('Failed to load Subscribers badges for ' + tmiChannel.id);
+            return;
+        }
+        var $style = $('<style />');
+        $style.attr('id', 'subscriber_badges');
+        var quality = window.devicePixelRatio > 1 ? 'image_url_2x' : 'image_url_1x';
+        Object.keys(badges.badge_sets.subscriber.versions).forEach(function(version) {
+            var subBadge = badges.badge_sets.subscriber.versions[version];
+            var cssLine = '.badges .badge.twitch-subscriber-' + version + ' { cursor: pointer; ';
+            cssLine += 'background-image: url("' + subBadge[quality] + '"); }';
+            $style.append(cssLine);
+        });
+        store.__subBadgeTypes = badges.badge_sets.subscriber;
         $style.appendTo('head');
     });
 };
@@ -795,6 +819,25 @@ exports.assignBadges = function(badges, data) {
         });
     }
 
+    if (badges.hasOwnProperty('subscriber')) {
+        var subBadge = {
+            type: 'subscriber twitch-subscriber-' + badges.subscriber,
+            name: '',
+            clickAction: 'subscribe_to_channel',
+            description: 'Channel Subscriber'
+        };
+
+        if (store.__subBadgeTypes !== null) {
+            var subData = store.__subBadgeTypes.versions[badges.subscriber];
+            if (subData !== undefined) {
+                subBadge.clickAction = subData.click_action;
+                subBadge.description = subData.title;
+            }
+        }
+
+        bttvBadges.push(subBadge);
+    }
+
     if (badges.hasOwnProperty('turbo')) {
         bttvBadges.push({
             type: 'turbo',
@@ -817,15 +860,6 @@ exports.assignBadges = function(badges, data) {
             });
         }
     });
-
-    if (badges.hasOwnProperty('subscriber')) {
-        bttvBadges.push({
-            type: 'subscriber',
-            name: '',
-            clickAction: 'subscribe_to_channel',
-            description: 'Channel Subscriber'
-        });
-    }
 
     // Volunteer badges
     if (data.from in store.__bttvBadges) {
