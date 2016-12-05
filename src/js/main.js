@@ -148,7 +148,7 @@ var clearClutter = require('./features/clear-clutter'),
     overrideEmotes = require('./features/override-emotes'),
     playerViewerCount = require('./features/player-viewer-count.js'),
     ChatReplay = require('./features/chat-replay'),
-    keyboardShortcuts = require('./features/keyboard-shortcuts.js');
+    playerKeyboardShortcuts = require('./features/player-keyboard-shortcuts.js');
 
 var chatFunctions = function() {
     debug.log('Modifying Chat Functionality');
@@ -196,7 +196,6 @@ var main = function() {
                             hostButtonBelowVideo();
                             betterViewerList();
                             playerViewerCount();
-                            keyboardShortcuts();
                             if (
                                 App.__container__.lookup('controller:channel').get('isTheatreMode') === false &&
                                 bttv.settings.get('autoTheatreMode') === true
@@ -308,6 +307,7 @@ var main = function() {
         handleTwitchChatEmotesScript();
         hostButtonBelowVideo();
         betterViewerList();
+        playerKeyboardShortcuts();
 
         // Loads global BTTV emotes (if not loaded)
         overrideEmotes();

@@ -9,6 +9,7 @@ var splitChat = require('./features/split-chat'),
     betterViewerList = require('./features/better-viewer-list'),
     handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes'),
     audibleFeedback = require('./features/audible-feedback'),
+    playerKeyboardShortcuts = require('./features/player-keyboard-shortcuts'),
     imagePreview = require('./features/image-preview');
 
 var displayElement = require('./helpers/element').display,
@@ -482,6 +483,15 @@ module.exports = [
         default: false,
         storageKey: 'highlightFeedback',
         load: audibleFeedback.load
+    },
+    {
+        name: 'Player Keyboard Shortcuts',
+        description: 'Simple keyboard shortcuts. K for play/pause, F for fullscreen and M for mute.',
+        default: false,
+        storageKey: 'playerKeyboardShortcuts',
+        toggle: function() {
+            playerKeyboardShortcuts();
+        }
     },
     {
         name: 'Remove Deleted Messages',
