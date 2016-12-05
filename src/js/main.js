@@ -148,16 +148,12 @@ var betterViewerList = require('./features/better-viewer-list'),
     hidePrimePromotions = require('./features/hide-prime-promotions'),
     hostButtonBelowVideo = require('./features/host-btn-below-video'),
     overrideEmotes = require('./features/override-emotes'),
-<<<<<<< HEAD
     playerViewerCount = require('./features/player-viewer-count.js'),
     ChatReplay = require('./features/chat-replay'),
-    playerKeyboardShortcuts = require('./features/player-keyboard-shortcuts.js');
-=======
-    playerViewerCount = require('./features/player-viewer-count'),
+    playerKeyboardShortcuts = require('./features/player-keyboard-shortcuts.js'),
     splitChat = require('./features/split-chat'),
     videoPlayerFeatures = require('./features/video-player-features'),
     freeSubReminder = require('./features/free-sub-reminder');
->>>>>>> upstream/master
 
 var chatFunctions = function() {
     debug.log('Modifying Chat Functionality');
