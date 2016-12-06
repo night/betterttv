@@ -1,21 +1,37 @@
+var keyCodes = require('../keycodes');
 // adds simple shortcuts to the Twitch player
 module.exports = function() {
     // used for stopping the user from holding the key down
     var keyStopper = false;
 
     function handleKeyEvent(keyPressed) {
-        // check that we aren't focused on any inputs etc and we aren't smashing the key
-        if (!$('input, textarea').is(':focus') && !keyStopper) {
-            keyStopper = true;
-            // works as long as the classnames don't get changed or their order mixed...
-            if (keyPressed.keyCode === 70) {
-                document.getElementsByClassName('js-control-fullscreen')[0].click();
-            } else if (keyPressed.keyCode === 75) {
-                document.getElementsByClassName('js-control-playpause-button')[0].click();
-            } else if (keyPressed.keyCode === 77) {
-                document.getElementsByClassName('js-control-volume')[0].click();
+        try {
+            var player = App.__container__.lookup('service:player').playerComponent.player;
+
+            // check that we aren't focused on any inputs and we've released the key since last press
+            if (!$('input, textarea, select').is(':focus') && !keyStopper) {
+                keyStopper = true;
+
+                if (keyPressed.keyCode === keyCodes.k) {
+                    // 'k', toggle play/pause
+                    if (player.paused) {
+                        player.play();
+                    } else {
+                        player.pause();
+                    }
+                } else if (keyPressed.keyCode === keyCodes.f) {
+                    // 'f', toggle fullscreen
+                    player.fullscreen = !player.fullscreen;
+                } else if (keyPressed.keyCode === keyCodes.m) {
+                    // 'm', toggle mute
+                    player.muted = !player.muted;
+                }
             }
+        } catch (err) {
+            // catch the typeError if the playerComponent.player doesn't exist and then just silently fail
+            return;
         }
+
         // releases the keystopper on keyup, so we can start pressing again.
         $(document).one('keyup.keyStopper', function() {
             keyStopper = false;

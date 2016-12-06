@@ -148,7 +148,6 @@ var betterViewerList = require('./features/better-viewer-list'),
     hostButtonBelowVideo = require('./features/host-btn-below-video'),
     overrideEmotes = require('./features/override-emotes'),
     playerViewerCount = require('./features/player-viewer-count.js'),
-    playerKeyboardShortcuts = require('./features/player-keyboard-shortcuts.js'),
     splitChat = require('./features/split-chat'),
     videoPlayerFeatures = require('./features/video-player-features'),
     freeSubReminder = require('./features/free-sub-reminder');
@@ -321,7 +320,6 @@ var main = function() {
         handleTwitchChatEmotesScript();
         hostButtonBelowVideo();
         betterViewerList();
-        playerKeyboardShortcuts();
         playerViewerCount();
         hidePrimePromotions();
         videoPlayerFeatures();

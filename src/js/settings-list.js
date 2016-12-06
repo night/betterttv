@@ -525,9 +525,8 @@ module.exports = [
         description: 'Simple keyboard shortcuts. K for play/pause, F for fullscreen and M for mute.',
         default: false,
         storageKey: 'playerKeyboardShortcuts',
-        toggle: function() {
-            playerKeyboardShortcuts();
-        }
+        toggle: playerKeyboardShortcuts,
+        load: playerKeyboardShortcuts
     },
     {
         name: 'Remove Deleted Messages',
