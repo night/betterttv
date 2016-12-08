@@ -26,5 +26,5 @@ module.exports = function(state) {
         setHeaderHeight(380);
     }
 
-    playerService.playerComponent.ownerView.rerender();
+    playerService.set('fullSizePlayerLocation', {top: playerService.fullSizePlayerLocation.top, left: playerService.fullSizePlayerLocation.left});
 };
