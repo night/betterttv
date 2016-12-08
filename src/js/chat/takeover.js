@@ -101,6 +101,9 @@ var takeover = module.exports = function() {
         bttv.storage.putObject('chatSettings', settings);
         bttv.settings.save('darkenedMode', true);
     }
+    if (window.location.search && window.location.search.indexOf('darkpopout') >= 0) {
+        $('.ember-chat-container').removeClass('dark');
+    }
 
     if (bttv.settings.get('disableUsernameColors') === true) {
         $('.ember-chat .chat-room').addClass('no-name-colors');
