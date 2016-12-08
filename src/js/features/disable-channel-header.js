@@ -26,5 +26,7 @@ module.exports = function(state) {
         setHeaderHeight(380);
     }
 
-    playerService.playerComponent.ownerView.rerender();
+    try {
+        playerService.playerComponent.ownerView.rerender();
+    } catch (e) {}
 };
