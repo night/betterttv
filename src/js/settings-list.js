@@ -386,6 +386,12 @@ module.exports = [
         storageKey: 'followingNotifications'
     },
     {
+        name: 'GameWisp Emotes',
+        description: 'Use GameWisp emotes',
+        default: false,
+        storageKey: 'gwEmotes'
+    },
+    {
         name: 'Hide Bits',
         description: 'Bits can be annoying. Disable \'em in chat with this (we can\'t block \'em on stream, sry)',
         default: false,

@@ -271,7 +271,7 @@ var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message
         if (
             emote &&
             emote.type === 'gamewisp' &&
-            // bttv.settings.get('gwEmotes') === true &&
+            bttv.settings.get('gwEmotes') === true &&
             (emote.imageType === 'png' || (emote.imageType === 'gif' && bttv.settings.get('bttvGIFEmotes') === true))
         ) {
             console.log('GW EMOTE ENDS UP HERE');

@@ -5,6 +5,10 @@
 // var vars = bttv.vars;
 
 module.exports = function() {
+    if (bttv.settings.get('gwEmotes') === false) {
+        return [];
+    }
+
     var usableEmotes = [];
 
     // var emotes = $.extend({}, store.bttvEmotes, proEmotes);
