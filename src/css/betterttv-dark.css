@@ -564,6 +564,21 @@ div#site_header {
     background-color: transparent;
 }
 
+.cn-bar .cn-tabs .button--more {
+    box-shadow: none;
+    background-color: #1e1e1e;
+    margin-right: 10px;
+}
+
+.cn-bar .cn-tabs .button--more:focus,
+.cn-bar .cn-tabs .button--more:hover {
+    background-color: #333333;
+}
+
+.cn-bar .cn-tabs .button--more svg {
+    fill: #777777;
+}
+
 #channel .cn-metabar__more .ember-view .button:hover,
 #channel .cn-metabar__more .ember-view .button:focus,
 .cn-bar .cn-tabs__button .cn-button-edit:hover,
@@ -1702,10 +1717,6 @@ table.simple_table td {
     box-shadow: inset 0 0 0 1px #222;
 }
 
-.twitch_subwindow_container #login_subwindow {
-    background: 
-}
-
 /* darken link list popup */
 #flyout .content {
     background-color: rgb(35,35,35);
@@ -2101,7 +2112,7 @@ span.subscribe-text {
 }
 
 /* Twitch emote menu */
-.emoticon-selector .emoticon-selector-box, 
+.emoticon-selector .emoticon-selector-box,
 .emoticon-selector-container .emoticon-selector {
     background-color: #191919;
     border-color: #191919;
@@ -2200,6 +2211,10 @@ span.subscribe-text {
 
 .player .player-hover.player-controls-bottom .player-menu__menu .player-menu__header {
     color: #888;
+}
+
+.player .player-hover.player-controls-bottom .player-menu__menu .player-text-link {
+    color: #d3d3d3;
 }
 
 .player .player-hover.player-controls-bottom .player-menu__menu:after {
@@ -2821,6 +2836,23 @@ ul.tabs li>a:hover, .directory_header .nav li>a:hover, ul.tabs li>button:hover, 
     border-color: #444;
     color: #d3d3d3;
     box-shadow: none;
+}
+
+.cn-bar .cn-bar__button--resubscribe {
+    background-color: #1e1e1e;
+    box-shadow: none;
+    color: #d3d3d3;
+}
+
+.cn-bar .cn-bar__button--resubscribe span {
+    color: #b8b8b8;
+}
+
+.cn-bar .cn-bar__button--resubscribe:hover,
+.cn-bar .cn-bar__button--resubscribe:focus {
+    background-color: #333333;
+    box-shadow: none;
+    color: #d3d3d3;
 }
 
 /* bits */
