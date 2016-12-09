@@ -7,12 +7,22 @@
 module.exports = function() {
     var usableEmotes = [];
 
+    // var emotes = $.extend({}, store.bttvEmotes, proEmotes);
+
     usableEmotes.push({
-        text: 'jfl',
+        text: 'gw_test1',
         channel: 'GameWisp Channel Emotes',
         badge: 'http://bdcraft.net/community/images/smilies/aaw.png',
-        url: 'http://az650423.vo.msecnd.net/emotes/emote_image_60_5ea29a53-497a-43ea-862e-f0419dfe32ba_112x112.png'
+        url: 'http://az650423.vo.msecnd.net/emotes/emote_image_60_5ea29a53-497a-43ea-862e-f0419dfe32ba_28x28.png'
     });
 
+    usableEmotes.push({
+        text: 'gw_test2',
+        channel: 'GameWisp Channel Emotes',
+        badge: 'http://bdcraft.net/community/images/smilies/aaw.png',
+        url: 'http://az650423.vo.msecnd.net/emotes/emote_image_60_f275c086-1d9c-45eb-824c-acb3de269a1c_28x28.png'
+    });
+
+    // console.log('usable gw emotes', usableEmotes);
     return usableEmotes;
 };
