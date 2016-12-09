@@ -130,6 +130,15 @@ var takeover = module.exports = function() {
     currentRoom.tmiRoom.on('notice', handlers.notice);
     currentRoom.tmiRoom.on('roomstate', helpers.parseRoomState);
     currentRoom.get('pubsub').off('chat_login_moderation').on('chat_login_moderation', function(e) {
+        console.log(e);
+
+        if (e.moderation_action === 'twitchbot_rejected') {
+            var message = templates.twitchbotRejected(e);
+            store.__messageQueue.push({message: $(message), date: new Date(0)});
+            handlers.shiftQueue();
+            return;
+        }
+
         if (['timeout', 'ban'].indexOf(e.moderation_action) === -1) {
             return currentRoom.get('addLoginModerationMessage').call(currentRoom, e);
         }
@@ -280,6 +289,21 @@ var takeover = module.exports = function() {
     $('body').off('click', '.pinned-cheers').on('click', '.pinned-cheers', function(e) {
         if (!e.target.classList.contains('pinned-cheers')) return;
         if (e.target.offsetWidth - e.offsetX < 48 && e.target.offsetHeight - e.offsetY > 88) $('.pinned-cheers').hide();
+    });
+
+    // Dismiss pinned cheers
+    $('body').off('click', '.chat-line.twitchbot a').on('click', '.chat-line.twitchbot a', function(e) {
+        var $button = $(e.target);
+        var action = $button.attr('data-action');
+        var $chatline = $button.closest('.chat-line');
+        if (action === 'yes' || action === 'no') {
+            var apiService = window.App.__container__.lookup('service:api');
+            var url = action === 'yes' ? 'chat/twitchbot/approve' : 'chat/twitchbot/deny';
+            apiService.authRequest('post', url, {msg_id: $chatline.attr('data-id')}, {version: 5});
+        }
+        $chatline.append('<div class="system-msg"><p>Thank you for your response!</p><br></div>');
+        $chatline.find('.inline-warning').remove();
+        $chatline.find('.pd-y-1').remove();
     });
 
     // Make names clickable
