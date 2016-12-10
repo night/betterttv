@@ -298,7 +298,7 @@ var takeover = module.exports = function() {
         if (e.target.offsetWidth - e.offsetX < 48 && e.target.offsetHeight - e.offsetY > 48) $('.pinned-cheers').hide();
     });
 
-    // Dismiss pinned cheers
+    // Automod buttons
     $('body').off('click', '.chat-line.twitchbot a').on('click', '.chat-line.twitchbot a', function(e) {
         var $button = $(e.target);
         var action = $button.attr('data-action');
