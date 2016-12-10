@@ -3170,3 +3170,20 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 .chat-room .sticky-message .pinned-cheer__hack-box {
     background-color: #181818;
 }
+
+/* automod */
+.ember-chat .chat-messages .chat-line .system-msg {
+    color: #7B7B7B;
+}
+
+.ember-chat .chat-messages .chat-line .inline-warning {
+    color: #fc5c5c;
+}
+
+.ember-chat .chat-messages .chat-line .button--alert {
+    background-color: #bf4040;
+}
+
+.ember-chat .chat-messages .chat-line.twitchbot .button {
+    color: #D3D3D3;
+}

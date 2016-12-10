@@ -2180,3 +2180,9 @@ body.channel_new.columns.ember-application {
 .pinned-cheers__message .chat-line {
     max-height: 45px;
 }
+
+/* automod */
+.ember-chat .chat-messages .chat-line .system-msg {
+    margin-bottom: 8px;
+    color: #575260;
+}
