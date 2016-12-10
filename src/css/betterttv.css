@@ -2149,16 +2149,16 @@ body.channel_new.columns.ember-application {
 }
 
 /* search scroll bar */
-#search-panel .resultView .collectionWrapper::-webkit-scrollbar {
+#search-panel .search-result-view .collection-wrapper::-webkit-scrollbar {
     width: 6px;
 }
 
-#search-panel .resultView .collectionWrapper::-webkit-scrollbar-thumb {
+#search-panel .search-result-view .collection-wrapper::-webkit-scrollbar-thumb {
     background: rgba(0,0,0,0.7);
     border-radius: 7px;
 }
 
-#search-panel .resultView .collectionWrapper::-webkit-scrollbar-track {
+#search-panel .search-result-view .collection-wrapper::-webkit-scrollbar-track {
     background: rgba(0,0,0,0);
 }
 
