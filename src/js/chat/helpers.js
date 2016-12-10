@@ -1055,6 +1055,46 @@ exports.loadBTTVChannelData = function() {
     });
 };
 
+exports.loadGameWispUserData = function() {
+    var testEmotes = [{
+        code: 'gw_test1',
+        id: '1',
+        url: 'http://az650423.vo.msecnd.net/emotes/emote_image_60_5ea29a53-497a-43ea-862e-f0419dfe32ba_28x28.png'
+    },
+        {
+            code: 'gw_test2',
+            id: '2',
+            url: 'http://az650423.vo.msecnd.net/emotes/emote_image_60_f275c086-1d9c-45eb-824c-acb3de269a1c_28x28.png'
+        }
+    ];
+
+    // TODO: make a call to gamewisp public emote api to get all of the emotes that a subscriber can use
+
+    // massage any gw emote data here
+    testEmotes.forEach(function(gwEmote) {
+        gwEmote.type = 'gamewisp';
+        gwEmote.imageType = 'png';
+
+        // add to the store
+        store.gwEmotes[gwEmote.code] = gwEmote;
+    });
+    //     var testEmotes = {'gw_test1': {
+    //     code: 'gw_test1',
+    //     id: '1',
+    //     imageType: 'png',
+    //     type: 'gamewisp',
+    //     url: 'http://az650423.vo.msecnd.net/emotes/emote_image_60_5ea29a53-497a-43ea-862e-f0419dfe32ba_28x28.png'
+    // },
+    //     'gw_test2': {
+    //         code: 'gw_test2',
+    //         id: '2',
+    //         imageType: 'png',
+    //         type: 'gamewisp',
+    //         url: 'http://az650423.vo.msecnd.net/emotes/emote_image_60_f275c086-1d9c-45eb-824c-acb3de269a1c_28x28.png'
+    //     }
+    // };
+};
+
 exports.getBitsConfig = function() {
     if (!App || !App.__container__.lookup('service:bits-rendering-config')) return;
     return App.__container__.lookup('service:bits-rendering-config').get('config');
