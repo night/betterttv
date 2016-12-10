@@ -422,6 +422,37 @@ input.text:focus,select:focus,textarea:focus {
     border-left-color: transparent;
 }
 
+.swap-chat .search-panel {
+    left: initial;
+    right: 240px;
+}
+
+.swap-chat .search-panel--closed {
+    transform: translate3d(900px,0,0);
+}
+
+.swap-chat .profile-card--balloon {
+    left: initial !important;
+    right: 240px;
+}
+
+.swap-chat .js-username-hover-tip .balloon {
+    margin-right: 6px;
+    transform: scaleX(-1);
+}
+
+.swap-chat .js-username-hover-tip .balloon .profile-card {
+    transform: scaleX(-1);
+}
+
+.swap-chat .offer-item__balloon {
+    margin-left: -561px;
+}
+
+.swap-chat .offer-item__balloon:after {
+    display: none;
+}
+
 /* BTTV settings menu */
 #bttvSettingsPanel {
     position: absolute;
