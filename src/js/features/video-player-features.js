@@ -8,13 +8,9 @@ module.exports = function() {
                 if (clicks === 1) {
                     var $player = $('#player');
                     var isPaused = $player.data('paused');
-                    var playerEmberId = $player.closest('.ember-view').attr('id');
-                    var emberView = App.__container__.lookup('-view-registry:main')[playerEmberId];
-                    if (!emberView) return;
-                    var player = emberView.player;
-                    if (!player) return;
-
-                    if (!isPaused) player.pause();
+                    var playerService = App.__container__.lookup('service:player');
+                    if (!playerService || !playerService.playerComponent.player) return;
+                    if (!isPaused) playerService.playerComponent.player.pause();
                 }
                 clicks = 0;
             }, 250);
@@ -25,18 +21,15 @@ module.exports = function() {
         var $player = $('#player');
 
         setTimeout(function() {
-            $('.js-main-col-scroll-content').scrollTop(0);
+            var height = bttv.settings.get('disableChannelHeader') ? 0 : 380;
+            $('.js-main-col-scroll-content').scrollTop(height);
         }, 100);
 
         var isTheater = $player.attr('data-theatre');
         if (isTheater !== 'true') return;
 
-        var playerEmberId = $player.closest('.ember-view').attr('id');
-        var emberView = App.__container__.lookup('-view-registry:main')[playerEmberId];
-        if (!emberView) return;
-        var player = emberView.player;
-        if (!player) return;
-
-        player.theatre = false;
+        var playerService = App.__container__.lookup('service:player');
+        if (!playerService || !playerService.playerComponent.player) return;
+        playerService.playerComponent.player.theatre = false;
     });
 };
