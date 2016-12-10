@@ -357,7 +357,7 @@ exports.twitchbotRejected = function(data) {
     msg += '<p class="inline-warning">This message has been flagged for review.</p><div class="pd-y-1 clearfix">';
     msg += '<a class="button button--small button--alert float-left mg-r-1" data-action="no">Deny</a>';
     msg += '<a class="button button--small float-left mg-r-1" data-action="yes">Allow</a>';
-    msg += '<a class="button button--small button--text float-left">Not Sure</a></div>';
+    msg += '<a class="button button--small button--text float-left" data-action="not sure">Not Sure</a></div>';
     return '<div class="chat-line twitchbot" data-id="' + data.msg_id + '" data-sender="' + data.args[0] + '">' + msg + '</div>';
 };
 

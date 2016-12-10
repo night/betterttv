@@ -298,12 +298,24 @@ var takeover = module.exports = function() {
         var $chatline = $button.closest('.chat-line');
         if (action === 'yes' || action === 'no') {
             var apiService = window.App.__container__.lookup('service:api');
-            var url = action === 'yes' ? 'chat/twitchbot/approve' : 'chat/twitchbot/deny';
+            var url = (action === 'yes') ? 'chat/twitchbot/approve' : 'chat/twitchbot/deny';
             apiService.authRequest('post', url, {msg_id: $chatline.attr('data-id')}, {version: 5});
         }
         $chatline.append('<div class="system-msg"><p>Thank you for your response!</p><br></div>');
         $chatline.find('.inline-warning').remove();
         $chatline.find('.pd-y-1').remove();
+
+        try {  // Help twitch with tracking
+            var trackingService = window.App.__container__.lookup('service:tracking');
+            trackingService.trackEvent({
+                event: 'clicked_twitchbot_response',
+                services: ['spade'],
+                data: Object.assign({
+                    click_type: action,
+                    msg_id: $chatline.attr('data-id')
+                }, currentRoom.getTrackingData())
+            });
+        } catch (exception) {}
     });
 
     // Make names clickable
