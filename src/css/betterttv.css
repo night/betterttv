@@ -2180,3 +2180,41 @@ body.channel_new.columns.ember-application {
 .pinned-cheers__message .chat-line {
     max-height: 45px;
 }
+
+
+/*** Holiday 2016 BTTV emote CSS ***/
+
+/* No multiple modifier emotes in a row */
+.bttv-emo-5849c9a4f52be01a7ee5f79d + .bttv-emo-5849c9a4f52be01a7ee5f79d,
+.bttv-emo-5849c9e5f52be01a7ee5f79f + .bttv-emo-5849c9e5f52be01a7ee5f79f,
+.bttv-emo-5849c9c8f52be01a7ee5f79e + .bttv-emo-5849c9c8f52be01a7ee5f79e,
+.bttv-emo-58487cc6f52be01a7ee5f205 + .bttv-emo-58487cc6f52be01a7ee5f205 {
+    display: none;
+}
+
+/* Ice Cube */
+.emoticon + .bttv-emo-5849c9a4f52be01a7ee5f79d {
+    margin-left: -35px;
+    margin-bottom: -8px;
+    margin-top: -8px;
+}
+
+/* SoSnowy */
+.emoticon + .bttv-emo-5849c9e5f52be01a7ee5f79f {
+    margin-left: -33px;
+}
+
+/* TopHat */
+.emoticon + .bttv-emo-5849c9c8f52be01a7ee5f79e {
+    margin-left: -32px;
+}
+
+/* SantaHat */
+.emoticon + .bttv-emo-58487cc6f52be01a7ee5f205 {
+    margin-left: -34px;
+}
+
+/* Limit of 10 SoSnowy in a single message */
+.bttv-emo-5849c9e5f52be01a7ee5f79f:nth-of-type(n + 11) {
+    display: none;
+}
