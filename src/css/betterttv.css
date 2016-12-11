@@ -2176,12 +2176,12 @@ body.channel_new.columns.ember-application {
 
 .emoticon + .bttv-emo-58487cc6f52be01a7ee5f205 { /* SantaHat */
     margin-left: -34px;
-    margin-bottom: 0px;
+    margin-bottom: -1px;
 }
 
 .emoticon + .bttv-emo-5849c9c8f52be01a7ee5f79e { /* TopHat */
     margin-left: -32px;
-    margin-bottom: -3px;
+    margin-bottom: -2px;
 }
 
 .emoticon + .bttv-emo-567b5b520e984428652809b6,  /* SoSnowy */
