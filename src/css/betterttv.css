@@ -302,6 +302,7 @@ input.text:focus,select:focus,textarea:focus {
 }
 
 .line .tag.invert,
+.ember-chat .badges .broadcaster.invert,
 .ember-chat .badges .moderator.invert,
 .ember-chat .badges .global-moderator.invert,
 .ember-chat .badges .admin.invert,
