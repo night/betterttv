@@ -359,6 +359,101 @@ input.text:focus,select:focus,textarea:focus {
     color: #fff !important;
 }
 
+/* left side chat */
+.swap-chat #right_col {
+    left: 0;
+    right: initial;
+}
+
+.swap-chat #main_col {
+    margin-left: 340px;
+    margin-right: 240px;
+}
+
+.swap-chat #main_col.expandLeft {
+    margin-right: 50px;
+}
+
+.swap-chat #main_col.expandRight {
+    margin-left: 0px;
+}
+
+.swap-chat #left_col {
+    right: 0;
+    left: initial;
+}
+
+.swap-chat #main_col .cn-bar-fixed {
+    right: 240px !important;
+    left: 340px !important;
+}
+
+.swap-chat #main_col.expandRight .cn-bar-fixed {
+    left: 0px !important;
+}
+
+.swap-chat #main_col.expandLeft .cn-bar-fixed {
+    right: 50px !important;
+}
+
+.swap-chat .player-mini {
+    left: 350px;
+}
+
+.swap-chat #left_close {
+    left: initial;
+    right: 5px;
+}
+
+.swap-chat #right_close {
+    left: 5px;
+    right: initial;
+}
+
+.swap-chat #left_close:before, .swap-chat #right_close.closed:before {
+    margin-left: -2px;
+    border-left-color: #fff;
+    border-right-color: transparent;
+}
+
+.swap-chat #left_close.closed:before, .swap-chat #right_close:before {
+    margin-left: -8px;
+    border-right-color: #fff;
+    border-left-color: transparent;
+}
+
+.swap-chat .search-panel {
+    left: initial;
+    right: 240px;
+}
+
+.swap-chat .search-panel--closed {
+    transform: translate3d(900px,0,0);
+}
+
+.swap-chat .profile-card--balloon {
+    left: initial !important;
+    right: 240px;
+}
+
+.swap-chat .js-username-hover-tip .balloon {
+    margin-right: 6px;
+    transform: scaleX(-1);
+}
+
+.swap-chat .js-username-hover-tip .balloon .profile-card {
+    transform: scaleX(-1);
+}
+
+.swap-chat .offer-item__balloon {
+    margin-left: -561px;
+}
+
+.swap-chat .offer-item__balloon:after {
+    display: none;
+}
+
+/* BTTV settings menu */
 #bttvSettingsPanel {
     position: absolute;
     top: 50%;
@@ -2063,16 +2158,16 @@ body.channel_new.columns.ember-application {
 }
 
 /* search scroll bar */
-#search-panel .resultView .collectionWrapper::-webkit-scrollbar {
+#search-panel .search-result-view .collection-wrapper::-webkit-scrollbar {
     width: 6px;
 }
 
-#search-panel .resultView .collectionWrapper::-webkit-scrollbar-thumb {
+#search-panel .search-result-view .collection-wrapper::-webkit-scrollbar-thumb {
     background: rgba(0,0,0,0.7);
     border-radius: 7px;
 }
 
-#search-panel .resultView .collectionWrapper::-webkit-scrollbar-track {
+#search-panel .search-result-view .collection-wrapper::-webkit-scrollbar-track {
     background: rgba(0,0,0,0);
 }
 

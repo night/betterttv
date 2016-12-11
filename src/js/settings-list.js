@@ -490,6 +490,24 @@ module.exports = [
         storageKey: 'showMonkeyEmotes'
     },
     {
+        name: 'Left side chat',
+        description: 'Moves the chat to the left of the player',
+        default: false,
+        storageKey: 'leftSideChat',
+        toggle: function(value) {
+            if (value === true) {
+                $('body').addClass('swap-chat');
+            } else {
+                $('body').removeClass('swap-chat');
+            }
+        },
+        load: function() {
+            if (bttv.settings.get('leftSideChat') === true) {
+                $('body').addClass('swap-chat');
+            }
+        }
+    },
+    {
         name: 'Mod Card Keybinds',
         description: 'Enable keybinds when you click on a username: P(urge), T(imeout), B(an), W(hisper)',
         default: false,
