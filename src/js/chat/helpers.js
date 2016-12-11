@@ -984,7 +984,7 @@ exports.translate = function($element, sender, text) {
         q: text
     });
 
-    $.getJSON(store.bttvTranslateApi + '?' + qs).success(function(data) {
+    $.getJSON('https://api.betterttv.net/2/translate?' + qs).success(function(data) {
         var $newElement = $(templates.message(sender, data.translation));
         $element.replaceWith($newElement);
 

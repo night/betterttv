@@ -25,5 +25,3 @@ exports.autoCompleteEmotes = {};
 // as these aren't objects, they can't be local variables (otherwise we wouldn't be able to modify them from outside)
 exports.currentRoom = '';
 exports.activeView = true;
-
-exports.bttvTranslateApi = 'https://api.betterttv.net/2/translate';
