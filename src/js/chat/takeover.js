@@ -133,15 +133,28 @@ var takeover = module.exports = function() {
     currentRoom.tmiRoom.on('notice', handlers.notice);
     currentRoom.tmiRoom.on('roomstate', helpers.parseRoomState);
     currentRoom.get('pubsub').off('chat_login_moderation').on('chat_login_moderation', function(e) {
-        if (['timeout', 'ban'].indexOf(e.moderation_action) === -1) {
-            return currentRoom.get('addLoginModerationMessage').call(currentRoom, e);
+        var action = e.moderation_action;
+        if (action === 'twitchbot_rejected') {
+            var message = templates.twitchbotRejected(e);
+            store.__messageQueue.push({message: $(message), date: new Date(0)});
+            handlers.shiftQueue();
+            return;
+        } else if (action === 'approved_twitchbot_message' || action === 'denied_twitchbot_message') {
+            var $chatline = $('[data-id="' + e.msg_id + '"]');
+            var decision = action === 'approved_twitchbot_message' ? ' allowed' : ' denied';
+            var msg = helpers.lookupDisplayName(e.created_by) + decision + ' this message.';
+            $chatline.append('<div class="system-msg"><p>' + msg + '</p></div>');
+            $chatline.find('.inline-warning').remove();
+            $chatline.find('.pd-y-1').remove();
+        } else if (action === 'ban' || action === 'timeout') {
+            handlers.clearChat(rooms.getRoom(channelName), e.args[0], {
+                'ban-reason': e.moderation_action === 'timeout' ? e.args[2] : e.args[1],
+                'ban-created-by': e.created_by,
+                'ban-duration': e.moderation_action === 'timeout' ? e.args[1] : undefined
+            }, true);
+        } else {
+            currentRoom.get('addLoginModerationMessage').call(currentRoom, e);
         }
-
-        handlers.clearChat(rooms.getRoom(channelName), e.args[0], {
-            'ban-reason': e.moderation_action === 'timeout' ? e.args[2] : e.args[1],
-            'ban-created-by': e.created_by,
-            'ban-duration': e.moderation_action === 'timeout' ? e.args[1] : undefined
-        }, true);
     });
     if (currentRoom.channel) currentRoom.set('name', currentRoom.channel.get('display_name'));
 
@@ -283,6 +296,33 @@ var takeover = module.exports = function() {
     $('body').off('click', '.pinned-cheers').on('click', '.pinned-cheers', function(e) {
         if (!e.target.classList.contains('pinned-cheers')) return;
         if (e.target.offsetWidth - e.offsetX < 48 && e.target.offsetHeight - e.offsetY > 48) $('.pinned-cheers').hide();
+    });
+
+    // Automod buttons
+    $('body').off('click', '.chat-line.twitchbot a').on('click', '.chat-line.twitchbot a', function(e) {
+        var $button = $(e.target);
+        var action = $button.attr('data-action');
+        var $chatline = $button.closest('.chat-line');
+        if (action === 'yes' || action === 'no') {
+            var apiService = window.App.__container__.lookup('service:api');
+            var url = (action === 'yes') ? 'chat/twitchbot/approve' : 'chat/twitchbot/deny';
+            apiService.authRequest('post', url, {msg_id: $chatline.attr('data-id')}, {version: 5});
+        }
+        $chatline.append('<div class="system-msg"><p>Thank you for your response!</p></div>');
+        $chatline.find('.inline-warning').remove();
+        $chatline.find('.pd-y-1').remove();
+
+        try {  // Help twitch with tracking
+            var trackingService = window.App.__container__.lookup('service:tracking');
+            trackingService.trackEvent({
+                event: 'clicked_twitchbot_response',
+                services: ['spade'],
+                data: Object.assign({
+                    click_type: action,
+                    msg_id: $chatline.attr('data-id')
+                }, currentRoom.getTrackingData())
+            });
+        } catch (exception) {}
     });
 
     // Easy chat swap by dragging

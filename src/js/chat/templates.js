@@ -351,3 +351,13 @@ var whisperName = exports.whisperName = function(sender, receiver, fromNick, to,
 exports.whisper = function(data) {
     return '<div class="chat-line whisper" data-sender="' + data.sender + '">' + timestamp(data.time) + ' ' + whisperName(data.sender, data.receiver, data.from, data.to, data.fromColor, data.toColor) + message(data.sender, data.message, {emotes: data.emotes, colored: false}) + '</div>';
 };
+
+exports.twitchbotRejected = function(data) {
+    var msg = '<p>' + from(data.args[0]) + message(data.args[0], data.args[1]) + '</p>';
+    msg += '<p class="inline-warning">This message has been flagged for review.</p><div class="pd-y-1 clearfix">';
+    msg += '<a class="button button--small button--alert float-left mg-r-1" data-action="no">Deny</a>';
+    msg += '<a class="button button--small float-left mg-r-1" data-action="yes">Allow</a>';
+    msg += '<a class="button button--small button--text float-left" data-action="not sure">Not Sure</a></div>';
+    return '<div class="chat-line twitchbot" data-id="' + data.msg_id + '" data-sender="' + data.args[0] + '">' + msg + '</div>';
+};
+
