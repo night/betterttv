@@ -325,6 +325,17 @@ var takeover = module.exports = function() {
         } catch (exception) {}
     });
 
+    // Easy chat swap by dragging
+    $('body').off('dragend', '.ember-chat .chat-interface').on('dragend', '.ember-chat .chat-interface', function(e) {
+        if ($('body').hasClass('swap-chat') && e.originalEvent.clientX > window.innerWidth * 3 / 4) {
+            $('body').removeClass('swap-chat');
+        }
+
+        if (!$('body').hasClass('swap-chat') && e.originalEvent.clientX < window.innerWidth * 1 / 4) {
+            $('body').addClass('swap-chat');
+        }
+    });
+
     // Make names clickable
     var clickCounter = 0;
     $('body').off('click', '.chat-line .from, .chat-line .user-mention').on('click', '.chat-line .from, .chat-line .user-mention', function(e) {
