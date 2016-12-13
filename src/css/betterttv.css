@@ -453,6 +453,11 @@ input.text:focus,select:focus,textarea:focus {
     display: none;
 }
 
+.swap-chat .app-main.theatre #player {
+    right: 0;
+    left: 340px;
+}
+
 /* BTTV settings menu */
 #bttvSettingsPanel {
     position: absolute;
