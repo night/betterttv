@@ -347,7 +347,7 @@ var takeover = module.exports = function() {
         var $chatLineId = $element.closest('.chat-line').attr('id');
         var sender;
         if ($chatLineId && $chatLineId.indexOf('ember') > -1) {
-            sender = App.__container__.lookup('-view-registry:main')[$chatLineId].msgObject.from;
+            sender = App.__container__.lookup('-view-registry:main')[$chatLineId].msgObject.get('from');
         } else if ($element.hasClass('user-mention')) {
             sender = $element.text().toLowerCase().substring(1);
         } else {

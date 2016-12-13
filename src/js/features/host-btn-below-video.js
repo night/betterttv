@@ -17,11 +17,14 @@ module.exports = function() {
     var $hostButton = $('#bttv-host-button');
 
     if (!$hostButton.length) {
-        // 10% of users still get the old layout.
+        // different layouts...
         if ($('#channel .cn-metabar__more .js-share-box').length) {
             $hostButton = $('<button><span></span></button>');
             $hostButton.addClass('button').addClass('action button--hollow mg-l-1');
             $hostButton.insertAfter('#channel .cn-metabar__more .js-share-box');
+        } else if ($('#channel .cn-bar .cn-tabs--2').length) {
+            $hostButton = $('<dd class="cn-tabs__button"><button class="button"><span></span></button></dd>');
+            $hostButton.insertBefore('#channel .cn-bar .cn-tabs--2 .cn-tabs__button:first');
         } else {
             // Old layout
             $hostButton = $('<span><span></span></span>');
@@ -39,7 +42,7 @@ module.exports = function() {
                 try {
                     conn._send('PRIVMSG #' + vars.userData.name + ' :/unhost');
                     helpers.serverMessage('BetterTTV: We sent a /unhost to your channel.');
-                    $hostButton.children('span').text('Host');
+                    $hostButton.find('span').text('Host');
                 } catch (e) {
                     helpers.serverMessage('BetterTTV: There was an error unhosting the channel. You may need to unhost it from your channel.');
                 }
@@ -47,7 +50,7 @@ module.exports = function() {
                 try {
                     conn._send('PRIVMSG #' + vars.userData.name + ' :/host ' + bttv.getChannel());
                     helpers.serverMessage('BetterTTV: We sent a /host to your channel. Please note you can only host 3 times per 30 minutes.');
-                    $hostButton.children('span').text('Unhost');
+                    $hostButton.find('span').text('Unhost');
                 } catch (e) {
                     helpers.serverMessage('BetterTTV: There was an error hosting the channel. You may need to host it from your channel.');
                 }
@@ -61,9 +64,9 @@ module.exports = function() {
         if (!data.hosts || !data.hosts.length) return;
 
         if (data.hosts[0].target_id === ownerId) {
-            $hostButton.children('span').text('Unhost');
+            $hostButton.find('span').text('Unhost');
         } else {
-            $hostButton.children('span').text('Host');
+            $hostButton.find('span').text('Host');
         }
     });
 };
