@@ -3195,3 +3195,41 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 .ember-chat .chat-messages .chat-line.twitchbot .button {
     color: #D3D3D3;
 }
+
+/* new dashboard */
+
+.new-dashboard .dash-widget {
+    background: #323232;
+    border-color: #222;
+    color: #d3d3d3;
+}
+
+.new-dashboard .dash-widget__header {
+    border-color: #222;
+}
+
+.new-dashboard .form__input {
+    background-color: #292929;
+    box-shadow: #222 0 0 0 1px inset;
+    color: #d3d3d3;
+}
+
+.new-dashboard .form__input[type=checkbox]+label:before,
+.new-dashboard .form__input[type=radio]+label:before {
+    background-color: #292929;
+    border-color: #222;
+}
+
+.new-dashboard .form__input:focus {
+    box-shadow: #555 0 0 0 1px inset;
+    border: none;
+}
+
+.new-dashboard .form__hint,
+.new-dashboard .dash-widget-text-light {
+    color: #999;
+}
+
+.new-dashboard .border-b {
+    border-color: #555
+}
