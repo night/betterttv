@@ -19,7 +19,6 @@ exports.suggestions = {
 exports.chatHistory = [];
 exports.whisperHistory = {};
 exports.bttvEmotes = {};
-// exports.gwEmotes = {};
 exports.gwEmotes = {};
 exports.proEmotes = {};
 exports.autoCompleteEmotes = {};

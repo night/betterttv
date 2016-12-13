@@ -114,9 +114,12 @@ exports.parseRoomState = function(e) {
 };
 
 var completableEmotes = function() {
+    // TODO: add gw emotes here
     var completableEmotesList = [];
 
-    bttv.chat.emotes().forEach(function(emote) {
+    var emotes = bttv.chat.emotes().concat(bttv.chat.gwEmotes());
+
+    emotes.forEach(function(emote) {
         if (!emote.text) return;
 
         completableEmotesList.push(emote.text);
@@ -1055,44 +1058,40 @@ exports.loadBTTVChannelData = function() {
     });
 };
 
-exports.loadGameWispUserData = function() {
-    var testEmotes = [{
-        code: 'gw_test1',
-        id: '1',
-        url: 'http://az650423.vo.msecnd.net/emotes/emote_image_60_5ea29a53-497a-43ea-862e-f0419dfe32ba_28x28.png'
-    },
-        {
-            code: 'gw_test2',
-            id: '2',
-            url: 'http://az650423.vo.msecnd.net/emotes/emote_image_60_f275c086-1d9c-45eb-824c-acb3de269a1c_28x28.png'
-        }
-    ];
+exports.loadGameWispEmotes = function() {
+    console.log('bttv.getChannel()', bttv.getChannel()); // twitch channel info
+    console.log('vars.userData', vars.userData); // data for user watching stream
+    // TODO: make calls to gamewisp public emote api to get all of the emotes that a subscriber can use (gamewisp globals + their subscriber emotes)
+    var getGlobalEmotes = $.getJSON('https://api.gamewisp.com/pub/v1/emote/global');
 
-    // TODO: make a call to gamewisp public emote api to get all of the emotes that a subscriber can use
+    var subscriberParams = {
+        type: 'twitch',
+        user_name: vars.userData.name
+    };
 
-    // massage any gw emote data here
-    testEmotes.forEach(function(gwEmote) {
-        gwEmote.type = 'gamewisp';
-        gwEmote.imageType = 'png';
+    var getSubscriberEmotes = $.getJSON('https://api.gamewisp.com/pub/v1/emote/subscriber', subscriberParams);
 
-        // add to the store
-        store.gwEmotes[gwEmote.code] = gwEmote;
+    $.when(getGlobalEmotes, getSubscriberEmotes).done(function(globalData, subscriberData) {
+        var globalEmotes = globalData[0].data,
+            subscriberEmotes = subscriberData[0].data;
+
+        console.log('globalEmotes', globalEmotes);
+        console.log('subscriberEmotes', subscriberEmotes);
+
+        var emote;
+
+        subscriberEmotes.concat(globalEmotes).forEach(function(gwEmote) {
+            emote = {};
+            emote.type = 'gamewisp';
+            emote.imageType = 'png';
+            emote.url = gwEmote.image_asset.data.content.small;
+            emote.name = gwEmote.name;
+            emote.code = gwEmote.shortcode;
+
+            // TODO: use 1 data store or 2 (global and subscriber)???????
+            store.gwEmotes[emote.code] = emote;
+        });
     });
-    //     var testEmotes = {'gw_test1': {
-    //     code: 'gw_test1',
-    //     id: '1',
-    //     imageType: 'png',
-    //     type: 'gamewisp',
-    //     url: 'http://az650423.vo.msecnd.net/emotes/emote_image_60_5ea29a53-497a-43ea-862e-f0419dfe32ba_28x28.png'
-    // },
-    //     'gw_test2': {
-    //         code: 'gw_test2',
-    //         id: '2',
-    //         imageType: 'png',
-    //         type: 'gamewisp',
-    //         url: 'http://az650423.vo.msecnd.net/emotes/emote_image_60_f275c086-1d9c-45eb-824c-acb3de269a1c_28x28.png'
-    //     }
-    // };
 };
 
 exports.getBitsConfig = function() {

@@ -2,7 +2,7 @@
 //     store = require('./store'),
 //     helpers = require('./helpers');
 
-// var vars = bttv.vars;
+var store = require('./store');
 
 module.exports = function() {
     if (bttv.settings.get('gwEmotes') === false) {
@@ -11,22 +11,33 @@ module.exports = function() {
 
     var usableEmotes = [];
 
-    // var emotes = $.extend({}, store.bttvEmotes, proEmotes);
+    /* TODO: might want to split global and subcriber emotes into separate stores? think about this before commiting to it.
+             they will be displayed in the same section in the emote panel. */
+    // var emotes = $.extend({}, store.gwGlobalEmotes, gwSubEmotes);
+    var emotes = store.gwEmotes;
 
-    usableEmotes.push({
-        text: 'gw_test1',
-        channel: 'GameWisp Channel Emotes',
-        badge: 'http://bdcraft.net/community/images/smilies/aaw.png',
-        url: 'http://az650423.vo.msecnd.net/emotes/emote_image_60_5ea29a53-497a-43ea-862e-f0419dfe32ba_28x28.png'
+    Object.keys(emotes).forEach(function(key) {
+        var emote = emotes[key];
+
+        // if (emote.restrictions) {
+        //     if (emote.restrictions.channels.length && emote.restrictions.channels.indexOf(bttv.getChannel()) === -1) return;
+        //     if (emote.restrictions.games.length && tmi().channel && emote.restrictions.games.indexOf(tmi().channel.game) === -1) return;
+
+        //     if (emote.restrictions.emoticonSet && emoteSets.indexOf(emote.restrictions.emoticonSet) === -1) return;
+        // }
+
+        if (emote.imageType === 'gif' && bttv.settings.get('bttvGIFEmotes') !== true) {
+            return;
+        }
+
+        usableEmotes.push({
+            text: emote.code,
+            channel: 'GameWisp Emotes',
+            badge: 'http://bdcraft.net/community/images/smilies/aaw.png',
+            url: emote.url
+        });
     });
 
-    usableEmotes.push({
-        text: 'gw_test2',
-        channel: 'GameWisp Channel Emotes',
-        badge: 'http://bdcraft.net/community/images/smilies/aaw.png',
-        url: 'http://az650423.vo.msecnd.net/emotes/emote_image_60_f275c086-1d9c-45eb-824c-acb3de269a1c_28x28.png'
-    });
-
-    // console.log('usable gw emotes', usableEmotes);
+    console.log('usable gw emotes', usableEmotes);
     return usableEmotes;
 };

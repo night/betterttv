@@ -39,6 +39,6 @@ module.exports = function() {
         });
     });
 
-    // console.log('usable bttv emotes', usableEmotes);
+    console.log('usable bttv emotes', usableEmotes);
     return usableEmotes;
 };
