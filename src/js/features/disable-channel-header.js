@@ -17,16 +17,17 @@ module.exports = function(state) {
     var routeName = App.__container__.lookup('controller:application').get('currentRouteName');
     if (routeName.substr(0, 8) !== 'channel.') return;
 
-    var playerService = App.__container__.lookup('service:player');
+    var playerService = App.__container__.lookup('service:persistent-player');
+    console.log(playerService.get('fullSizePlayerLocation.top'));
+    var top = playerService.get('fullSizePlayerLocation.top');
     if (bttv.settings.get('disableChannelHeader') === true) {
-        playerService.fullSizePlayerLocation.top = 75;
         setHeaderHeight(0);
+        top = top === 580 ? 135 : 75;
     } else if (state === false) {
-        playerService.fullSizePlayerLocation.top = 455;
         setHeaderHeight(380);
+        top += 380;
     }
 
-    try {
-        playerService.playerComponent.ownerView.rerender();
-    } catch (e) {}
+    playerService.set('fullSizePlayerLocation', {top: top,
+        left: playerService.fullSizePlayerLocation.left});
 };
