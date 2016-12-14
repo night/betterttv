@@ -326,6 +326,7 @@ var takeover = module.exports = function() {
     });
 
     // Easy chat swap by dragging
+    $('.chat-buttons-container').attr('draggable', true);
     $('body').off('dragend', '.ember-chat .chat-interface').on('dragend', '.ember-chat .chat-interface', function(e) {
         if ($('body').hasClass('swap-chat') && e.originalEvent.clientX > window.innerWidth * 3 / 4) {
             $('body').removeClass('swap-chat');
