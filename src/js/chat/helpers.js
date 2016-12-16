@@ -1059,28 +1059,13 @@ exports.loadBTTVChannelData = function() {
 };
 
 exports.loadGameWispEmotes = function() {
-    console.log('bttv.getChannel()', bttv.getChannel()); // twitch channel info
-    console.log('vars.userData', vars.userData); // data for user watching stream
-    // TODO: make calls to gamewisp public emote api to get all of the emotes that a subscriber can use (gamewisp globals + their subscriber emotes)
     var getGlobalEmotes = $.getJSON('https://api.gamewisp.com/pub/v1/emote/global');
 
-    var subscriberParams = {
-        type: 'twitch',
-        user_name: vars.userData.name
-    };
-
-    var getSubscriberEmotes = $.getJSON('https://api.gamewisp.com/pub/v1/emote/subscriber', subscriberParams);
-
-    $.when(getGlobalEmotes, getSubscriberEmotes).done(function(globalData, subscriberData) {
-        var globalEmotes = globalData[0].data,
-            subscriberEmotes = subscriberData[0].data;
-
-        console.log('globalEmotes', globalEmotes);
-        console.log('subscriberEmotes', subscriberEmotes);
-
+    getGlobalEmotes.done(function(globalData) {
+        var globalEmotes = globalData.data ? globalData.data : [];
         var emote;
 
-        subscriberEmotes.concat(globalEmotes).forEach(function(gwEmote) {
+        globalEmotes.forEach(function(gwEmote) {
             emote = {};
             emote.type = 'gamewisp';
             emote.imageType = 'png';
@@ -1088,7 +1073,6 @@ exports.loadGameWispEmotes = function() {
             emote.name = gwEmote.name;
             emote.code = gwEmote.shortcode;
 
-            // TODO: use 1 data store or 2 (global and subscriber)???????
             store.gwEmotes[emote.code] = emote;
         });
     });

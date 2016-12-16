@@ -89,7 +89,6 @@ var escapeEmoteCode = function(code) {
 };
 
 var emoticonBTTV = exports.emoticonBTTV = function(emote) {
-    console.log('bttv emote', emote);
     if (!emote.urlTemplate) return emote.code;
 
     var channel = emote.channel ? 'data-channel="' + emote.channel + '" ' : '';
@@ -98,7 +97,6 @@ var emoticonBTTV = exports.emoticonBTTV = function(emote) {
 };
 
 var emoticonGW = exports.emoticonBTTV = function(emote) {
-    console.log('gw emote', emote);
     if (!emote.url) return emote.code;
 
     var channel = emote.channel ? 'data-channel="' + emote.channel + '" ' : '';
@@ -250,8 +248,6 @@ var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message
         var test = piece.replace(/(^[~!@#$%\^&\*\(\)]+|[~!@#$%\^&\*\(\)]+$)/g, '');
         var emote = null;
 
-        // console.log('store.bttvEmotes', store.bttvEmotes);
-
         if (Object.hasOwnProperty.call(store.bttvEmotes, piece)) {
             emote = store.bttvEmotes[piece];
         } else if (Object.hasOwnProperty.call(store.bttvEmotes, test)) {
@@ -274,7 +270,6 @@ var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message
             bttv.settings.get('gwEmotes') === true &&
             (emote.imageType === 'png' || (emote.imageType === 'gif' && bttv.settings.get('bttvGIFEmotes') === true))
         ) {
-            console.log('GW EMOTE ENDS UP HERE');
             piece = gwEmoticonize(piece, emote, sender);
         } else if (
             emote &&

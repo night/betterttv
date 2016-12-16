@@ -31,7 +31,6 @@ module.exports = function() {
         if (window.emoteMenu) {
             clearInterval(getterInterval);
             debug.log('Hooking into Twitch Chat Emotes Script');
-            console.log('bttv.chat.gwEmotes', bttv.chat.gwEmotes);
             window.emoteMenu.registerEmoteGetter('GameWisp', bttv.chat.gwEmotes);
             window.emoteMenu.registerEmoteGetter('BetterTTV', bttv.chat.emotes);
         }
