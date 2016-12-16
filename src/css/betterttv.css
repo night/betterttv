@@ -459,6 +459,15 @@ input.text:focus,select:focus,textarea:focus {
     left: 340px;
 }
 
+.swap-chat .app-main.theatre #main_col.expandRight #player {
+    left: 0 !important;
+}
+
+.swap-chat .app-main.theatre #main_col {
+    margin-left: 340px;
+    margin-right: 0;
+}
+
 /* BTTV settings menu */
 #bttvSettingsPanel {
     position: absolute;
@@ -2264,6 +2273,10 @@ body.channel_new.columns.ember-application {
 .ember-chat .chat-messages .chat-line .system-msg {
     margin-bottom: 8px;
     color: #575260;
+}
+
+.twitchbot .pd-y-1 {
+    text-align: center;
 }
 
 /*** Holiday 2016 BTTV emote CSS ***/

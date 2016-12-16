@@ -18,7 +18,8 @@ module.exports = function(state) {
     if (routeName.substr(0, 8) !== 'channel.') return;
 
     var playerService = App.__container__.lookup('service:persistent-player');
-    console.log(playerService.get('fullSizePlayerLocation.top'));
+    if (!playerService || !playerService.fullSizePlayerLocation) return;
+
     var top = playerService.get('fullSizePlayerLocation.top');
     if (bttv.settings.get('disableChannelHeader') === true) {
         setHeaderHeight(0);
@@ -30,4 +31,8 @@ module.exports = function(state) {
 
     playerService.set('fullSizePlayerLocation', {top: top,
         left: playerService.fullSizePlayerLocation.left});
+
+    if (playerService.playerComponent) {
+        playerService.playerComponent.ownerView.rerender();
+    }
 };
