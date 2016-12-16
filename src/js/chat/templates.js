@@ -65,21 +65,24 @@ var bitsEmoticonize = function(config, value) {
         if (tier.min_bits <= value) break;
     }
 
-    var url = 'https://bits-assets.s3.amazonaws.com/actions/cheer/' + (bttv.settings.get('darkenedMode') ? 'dark' : 'light') + '/animated/' + tier.id;
-    var emote = '<img class="chatline__bit" alt="cheer" src="' + url + '/1.gif" srcset="' + url + '/1.5.gif 1.5x, ' + url + '/2.gif 2x">';
+    var url = config.template;
+    url = url.replace('{action}', config.prefix.toLowerCase());
+    url = url.replace('{background}', bttv.settings.get('darkenedMode') ? 'dark' : 'light');
+    url = url.replace('{state}', bttv.settings.get('bttvGIFEmotes') ? 'animated' : 'static');
+    url = url.replace('{id}', tier.id);
+    url = url.replace('{extension}', bttv.settings.get('bttvGIFEmotes') ? 'gif' : 'png');
+
+    var emote = '<img class="chatline__bit" alt="cheer" src="' + url.replace('{scale}', '1') + '" srcset="' + url.replace('{scale}', '2') + ' 2x">';
     return emote + '<strong><span class="bitsText" style="color: ' + tier.color + '">' + value + '</span></strong>';
 };
 
-
 var parseBits = function(piece, amount) {
-    if (amount && helpers.containsCheer(piece)) {
+    var config = helpers.getCheerConfig(piece);
+    if (amount && config) {
         if (bttv.settings.get('hideBits') === true) return '';
 
-        var config = helpers.getBitsConfig();
-        if (!config || !config.cheer) return piece;
-
         var value = parseInt(piece.match(/\d+/), 10);
-        piece = bitsEmoticonize(config.cheer, value);
+        piece = bitsEmoticonize(config, value);
     }
     return piece;
 };
