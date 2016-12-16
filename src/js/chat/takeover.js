@@ -141,6 +141,7 @@ var takeover = module.exports = function() {
             return;
         } else if (action === 'approved_twitchbot_message' || action === 'denied_twitchbot_message') {
             var $chatline = $('[data-id="' + e.msg_id + '"]');
+            if ($chatline.find('.pd-y-1').length === 0) return;
             var decision = action === 'approved_twitchbot_message' ? ' allowed' : ' denied';
             var msg = helpers.lookupDisplayName(e.created_by) + decision + ' this message.';
             $chatline.append('<div class="system-msg"><p>' + msg + '</p></div>');

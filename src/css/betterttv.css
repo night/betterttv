@@ -2275,6 +2275,10 @@ body.channel_new.columns.ember-application {
     color: #575260;
 }
 
+.twitchbot .pd-y-1 {
+    text-align: center;
+}
+
 /*** Holiday 2016 BTTV emote CSS ***/
 
 /* No stacking of IceCube or SoSnowy */
