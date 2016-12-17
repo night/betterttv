@@ -470,7 +470,8 @@ var privmsg = exports.privmsg = function(channel, data) {
                 name: '',
                 description: 'Channel Subscriber'
             }] : []),
-            color: '#555'
+            color: '#555',
+            emotes: data.tags && data.tags.emotes,
         }, {
             action: data.style === 'action' ? true : false,
             server: data.style === 'admin' ? true : false,
