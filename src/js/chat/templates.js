@@ -65,21 +65,20 @@ var bitsEmoticonize = function(config, value) {
         if (tier.min_bits <= value) break;
     }
 
-    var url = 'https://bits-assets.s3.amazonaws.com/actions/cheer/' + (bttv.settings.get('darkenedMode') ? 'dark' : 'light') + '/animated/' + tier.id;
-    var emote = '<img class="chatline__bit" alt="cheer" src="' + url + '/1.gif" srcset="' + url + '/1.5.gif 1.5x, ' + url + '/2.gif 2x">';
+    var background = bttv.settings.get('darkenedMode') ? 'dark' : 'light';
+    var state = bttv.settings.get('bttvGIFEmotes') ? 'animated' : 'static';
+    var urls = tier.images[background][state];
+    var emote = '<img class="chatline__bit" alt="cheer" src="' + urls[1] + '" srcset="' + urls[2] + ' 2x">';
     return emote + '<strong><span class="bitsText" style="color: ' + tier.color + '">' + value + '</span></strong>';
 };
 
-
 var parseBits = function(piece, amount) {
-    if (amount && helpers.containsCheer(piece)) {
+    var config = helpers.getCheerConfig(piece);
+    if (amount && config) {
         if (bttv.settings.get('hideBits') === true) return '';
 
-        var config = helpers.getBitsConfig();
-        if (!config || !config.cheer) return piece;
-
         var value = parseInt(piece.match(/\d+/), 10);
-        piece = bitsEmoticonize(config.cheer, value);
+        piece = bitsEmoticonize(config, value);
     }
     return piece;
 };
@@ -351,3 +350,13 @@ var whisperName = exports.whisperName = function(sender, receiver, fromNick, to,
 exports.whisper = function(data) {
     return '<div class="chat-line whisper" data-sender="' + data.sender + '">' + timestamp(data.time) + ' ' + whisperName(data.sender, data.receiver, data.from, data.to, data.fromColor, data.toColor) + message(data.sender, data.message, {emotes: data.emotes, colored: false}) + '</div>';
 };
+
+exports.twitchbotRejected = function(data) {
+    var msg = '<p>' + from(data.args[0]) + message(data.args[0], data.args[1]) + '</p>';
+    msg += '<p class="inline-warning">This message has been flagged for review.</p><div class="pd-y-1 clearfix">';
+    msg += '<a class="button button--small button--alert float-left mg-r-1" data-action="no">Deny</a>';
+    msg += '<a class="button button--small float-left mg-r-1" data-action="yes">Allow</a>';
+    msg += '<a class="button button--small button--text float-left" data-action="not sure">Not Sure</a></div>';
+    return '<div class="chat-line twitchbot" data-id="' + data.msg_id + '" data-sender="' + data.args[0] + '">' + msg + '</div>';
+};
+

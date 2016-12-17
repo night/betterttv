@@ -80,12 +80,38 @@ var detectServerCommand = function(input) {
     return false;
 };
 
-var cheerRegex = /^\s*cheer\d+\s*$/i;
-var containsCheer = exports.containsCheer = function(msg) {
+var bitsServiceCache;
+var getBitsService = function() {
+    if (bitsServiceCache) return bitsServiceCache;
+    if (!App || !App.__container__.lookup('service:bits-rendering-config')) return;
+    bitsServiceCache = App.__container__.lookup('service:bits-rendering-config');
+    return bitsServiceCache;
+};
+
+var containsCheer = function(msg) {
+    var service = getBitsService();
+    if (!service) return false;
+
     words = msg ? msg.split(/\s+/) : [];
     return words.some(function(w) {
-        return cheerRegex.test(w);
+        return service.regexes.some(function(r) {
+            return w.match(r.valid);
+        });
     });
+};
+
+exports.getCheerConfig = function(piece) {
+    var service = getBitsService();
+    if (!service) return;
+
+    var config;
+    for (var i = 0; i < service.regexes.length; i++) {
+        if (piece.match(service.regexes[i].valid)) {
+            var key = service.regexes[i].prefix.toLowerCase();
+            config = service.config[key];
+        }
+    }
+    return config;
 };
 
 exports.parseTags = function(tags) {
@@ -1053,9 +1079,4 @@ exports.loadBTTVChannelData = function() {
         });
         store.__channelBots = data.bots;
     });
-};
-
-exports.getBitsConfig = function() {
-    if (!App || !App.__container__.lookup('service:bits-rendering-config')) return;
-    return App.__container__.lookup('service:bits-rendering-config').get('config');
 };
