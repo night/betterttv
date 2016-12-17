@@ -398,7 +398,11 @@ input.text:focus,select:focus,textarea:focus {
 }
 
 .swap-chat .player-mini {
-    left: 350px;
+    left: 350px !important;
+}
+
+.swap-chat .expandRight .player-mini {
+    left: 10px !important;
 }
 
 .swap-chat #left_close {
