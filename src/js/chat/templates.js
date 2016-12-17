@@ -65,14 +65,10 @@ var bitsEmoticonize = function(config, value) {
         if (tier.min_bits <= value) break;
     }
 
-    var url = config.template;
-    url = url.replace('{action}', config.prefix.toLowerCase());
-    url = url.replace('{background}', bttv.settings.get('darkenedMode') ? 'dark' : 'light');
-    url = url.replace('{state}', bttv.settings.get('bttvGIFEmotes') ? 'animated' : 'static');
-    url = url.replace('{id}', tier.id);
-    url = url.replace('{extension}', bttv.settings.get('bttvGIFEmotes') ? 'gif' : 'png');
-
-    var emote = '<img class="chatline__bit" alt="cheer" src="' + url.replace('{scale}', '1') + '" srcset="' + url.replace('{scale}', '2') + ' 2x">';
+    var background = bttv.settings.get('darkenedMode') ? 'dark' : 'light';
+    var state = bttv.settings.get('bttvGIFEmotes') ? 'animated' : 'static';
+    var urls = tier.images[background][state];
+    var emote = '<img class="chatline__bit" alt="cheer" src="' + urls[1] + '" srcset="' + urls[2] + ' 2x">';
     return emote + '<strong><span class="bitsText" style="color: ' + tier.color + '">' + value + '</span></strong>';
 };
 
