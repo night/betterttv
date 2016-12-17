@@ -1,4 +1,4 @@
-body, code, samp, kbd, .real_title, #right_col .content #chat_line_list, .ember-chat, .ember-chat .message, .ember-chat .from, .ember-chat, .ember-chat .colon, #right_col #chat_line_list, #main_col .content #broadcast_meta .info .channel, #channel .player-column #broadcast-meta .info .title, #channel_panels_contain #channel_panels .panel h3, #channel_panels_contain #channel_panels .panel h1, #channel_panels_contain #channel_panels .panel h2, h3, h2, .tse-content a {
+body, code, samp, kbd, .real_title, #right_col .content #chat_line_list, .ember-chat, .ember-chat .message, .ember-chat .from, .ember-chat, .ember-chat .colon, #right_col #chat_line_list, #main_col .content #broadcast_meta .info .channel, #channel .player-column #broadcast-meta .info .title, #channel_panels_contain #channel_panels .panel h3, #channel_panels_contain #channel_panels .panel h1, #channel_panels_contain #channel_panels .panel h2, h3, h2, .tse-content a, .js-live-widget a {
     color: #D3D3D3;
 }
 
@@ -3198,38 +3198,42 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 
 /* new dashboard */
 
-.new-dashboard .dash-widget {
+.js-live-widget .dash-widget {
     background: #323232;
     border-color: #222;
     color: #d3d3d3;
 }
 
-.new-dashboard .dash-widget__header {
+.js-live-widget .dash-widget__header {
     border-color: #222;
 }
 
-.new-dashboard .form__input {
+.js-live-widget .form__input {
     background-color: #292929;
     box-shadow: #222 0 0 0 1px inset;
     color: #d3d3d3;
 }
 
-.new-dashboard .form__input[type=checkbox]+label:before,
-.new-dashboard .form__input[type=radio]+label:before {
+.js-live-widget .form__input[type=checkbox]+label:before,
+.js-live-widget .form__input[type=radio]+label:before {
     background-color: #292929;
     border-color: #222;
 }
 
-.new-dashboard .form__input:focus {
+.js-live-widget .form__input:focus {
     box-shadow: #555 0 0 0 1px inset;
     border: none;
 }
 
-.new-dashboard .form__hint,
-.new-dashboard .dash-widget-text-light {
+.js-live-widget .form__hint,
+.js-live-widget .dash-widget-text-light {
     color: #999;
 }
 
-.new-dashboard .border-b {
+.js-live-widget .border-b {
     border-color: #555
+}
+
+.js-live-widget.gu-transit {
+    background-color: #1e1e1e;
 }
