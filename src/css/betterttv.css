@@ -468,6 +468,10 @@ input.text:focus,select:focus,textarea:focus {
     margin-right: 0;
 }
 
+.swap-chat .app-main.theatre #main_col.expandRight {
+    margin-left: 0;
+}
+
 /* BTTV settings menu */
 #bttvSettingsPanel {
     position: absolute;
