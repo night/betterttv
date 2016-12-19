@@ -1958,6 +1958,11 @@ body.channel_new.columns.ember-application {
 /* whispers */
 .chat-messages .chat-line.whisper {
     background-color: #E8D6FF !important;
+    position: relative;
+    width: auto;
+    height: auto;
+    top: auto;
+    right: auto;
 }
 .chat-messages .chat-line .svg-whisper-arrow {
     fill: #32323e;
