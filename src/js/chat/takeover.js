@@ -326,20 +326,6 @@ var takeover = module.exports = function() {
         } catch (exception) {}
     });
 
-    // Easy chat swap by dragging
-    $('.chat-buttons-container').attr('draggable', true);
-    $('body').off('dragend', '.ember-chat .chat-interface').on('dragend', '.ember-chat .chat-interface', function(e) {
-        var mouseX = e.originalEvent.pageX || e.originalEvent.clientX;
-        if ($('body').hasClass('swap-chat') && mouseX > window.innerWidth * 3 / 4) {
-            bttv.settings.set('leftSideChat', false);
-            $('body').removeClass('swap-chat');
-        }
-        if (!$('body').hasClass('swap-chat') && mouseX < window.innerWidth * 1 / 4) {
-            bttv.settings.set('leftSideChat', true);
-            $('body').addClass('swap-chat');
-        }
-    });
-
     // Make names clickable
     var clickCounter = 0;
     $('body').off('click', '.chat-line .from, .chat-line .user-mention').on('click', '.chat-line .from, .chat-line .user-mention', function(e) {
