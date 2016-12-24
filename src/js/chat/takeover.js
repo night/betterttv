@@ -471,7 +471,7 @@ var takeover = module.exports = function() {
     bttv.getChatController().addObserver('hidden', reloadChatSettings);
 
     bttv.ws.joinChannel();
-    bttv.gwws.joinChannel(); // TODO GW
+    bttv.gwws.joinRoom(); // TODO GW
 
     // Reset chatters list
     store.chatters = {};

@@ -1,5 +1,5 @@
 var debug = require('./helpers/debug');
-var vars = require('./vars');
+// var vars = require('./vars');
 
 var events = {};
 
@@ -23,14 +23,15 @@ SocketClientGW.prototype.connect = function() {
     debug.log('SocketClientGW: Connecting to GameWisp Socket Server');
 
     var _self = this;
-    this.socket = new WebSocket('wss://sockets.betterttv.net/ws');
+    this.socket = new WebSocket('ws://localhost:3000');
+
 
     this.socket.onopen = function() {
         debug.log('SocketClientGW: Connected to GameWisp Socket Server');
 
         _self._connected = true;
         _self._connectAttempts = 1;
-        _self.joinChannel();
+        _self.joinRoom();
     };
 
     this.socket.onerror = function() {
@@ -50,6 +51,7 @@ SocketClientGW.prototype.connect = function() {
     };
 
     this.socket.onmessage = function(message) {
+        debug.log('message', message);
         var evt;
 
         try {
@@ -88,6 +90,8 @@ SocketClientGW.prototype.reconnect = function() {
 };
 
 SocketClientGW.prototype.emit = function(evt, data) {
+    debug.log('emitting evt', evt);
+    debug.log('emitting data', data);
     if (!this._connected || !this.socket) return;
 
     this.socket.send(JSON.stringify({
@@ -96,27 +100,27 @@ SocketClientGW.prototype.emit = function(evt, data) {
     }));
 };
 
-SocketClientGW.prototype.joinChannel = function() {
+SocketClientGW.prototype.joinRoom = function() {
     if (!this._connected) return;
 
     var channel = bttv.getChannel();
 
     if (!channel.length) return;
 
-    if (this._joinedChannel) {
-        this.emit('part_channel', { name: this._joinedChannel });
-    }
+    // if (this._joinedRoom) {
+    //     this.emit('part_channel', { name: this._joinedChannel });
+    // }
 
-    this.emit('join_channel', { name: channel });
-    this._joinedChannel = channel;
+    this.emit('join_room', { name: channel });
+    this._joinedRoom = channel;
 };
 
-SocketClientGW.prototype.joinConversation = function(threadId) {
-    if (this._joinedConversations.indexOf(threadId) < 0) {
-        this.emit('join_channel', { name: threadId });
-    }
+// SocketClientGW.prototype.joinConversation = function(threadId) {
+//     if (this._joinedConversations.indexOf(threadId) < 0) {
+//         this.emit('join_channel', { name: threadId });
+//     }
 
-    this.emit('broadcast_me', { name: vars.userData.name, channel: threadId });
-};
+//     this.emit('broadcast_me', { name: vars.userData.name, channel: threadId });
+// };
 
 module.exports = SocketClientGW;
