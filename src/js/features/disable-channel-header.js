@@ -12,16 +12,30 @@ function setHeaderHeight(height) {
     }, 100);
 }
 
+function setPlayerHeight(height) {
+    var playerService = App.__container__.lookup('service:persistent-player');
+    if (!playerService || !playerService.fullSizePlayerLocation) return;
+
+    var top = playerService.get('fullSizePlayerLocation.top');
+    playerService.set('fullSizePlayerLocation', {top: top + height,
+        left: playerService.fullSizePlayerLocation.left});
+
+    if (playerService.playerComponent) {
+        playerService.playerComponent.ownerView.rerender();
+    }
+}
+
 module.exports = function(state) {
     if (!window.Ember || !window.App) return;
     var routeName = App.__container__.lookup('controller:application').get('currentRouteName');
     if (routeName.substr(0, 8) !== 'channel.') return;
 
+
     if (bttv.settings.get('disableChannelHeader') === true) {
-        $('#main_col').addClass('disable-header');
         setHeaderHeight(0);
+        setPlayerHeight(-380);
     } else if (state === false) {
-        $('#main_col').removeClass('disable-header');
         setHeaderHeight(380);
+        setPlayerHeight(380);
     }
 };

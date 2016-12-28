@@ -301,7 +301,14 @@ input.text:focus,select:focus,textarea:focus {
     background-color: transparent;
 }
 
-.line .tag.invert, .ember-chat .badges .badge.invert {
+.line .tag.invert,
+.ember-chat .badges .broadcaster.invert,
+.ember-chat .badges .moderator.invert,
+.ember-chat .badges .global-moderator.invert,
+.ember-chat .badges .admin.invert,
+.ember-chat .badges .staff.invert,
+.ember-chat .badges .turbo.invert,
+.ember-chat .badges .twitch-premium-1.invert {
     filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'invert\'><feColorMatrix in='SourceGraphic' type='matrix' values='-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0'/></filter></svg>#invert");
     filter: invert(100%);
     -webkit-filter: invert(100%);
@@ -353,6 +360,119 @@ input.text:focus,select:focus,textarea:focus {
     color: #fff !important;
 }
 
+/* left side chat */
+.swap-chat #right_col {
+    left: 0;
+    right: initial;
+}
+
+.swap-chat #main_col {
+    margin-left: 340px;
+    margin-right: 240px;
+}
+
+.swap-chat #main_col.expandLeft {
+    margin-right: 50px;
+}
+
+.swap-chat #main_col.expandRight {
+    margin-left: 0px;
+}
+
+.swap-chat #left_col {
+    right: 0;
+    left: initial;
+}
+
+.swap-chat #main_col .cn-bar-fixed {
+    right: 240px !important;
+    left: 340px !important;
+}
+
+.swap-chat #main_col.expandRight .cn-bar-fixed {
+    left: 0px !important;
+}
+
+.swap-chat #main_col.expandLeft .cn-bar-fixed {
+    right: 50px !important;
+}
+
+.swap-chat .player-mini {
+    left: 350px;
+}
+
+.swap-chat #left_close {
+    left: initial;
+    right: 5px;
+}
+
+.swap-chat #right_close {
+    left: 5px;
+    right: initial;
+}
+
+.swap-chat #left_close:before, .swap-chat #right_close.closed:before {
+    margin-left: -2px;
+    border-left-color: #fff;
+    border-right-color: transparent;
+}
+
+.swap-chat #left_close.closed:before, .swap-chat #right_close:before {
+    margin-left: -8px;
+    border-right-color: #fff;
+    border-left-color: transparent;
+}
+
+.swap-chat .search-panel {
+    left: initial;
+    right: 240px;
+}
+
+.swap-chat .search-panel--closed {
+    transform: translate3d(900px,0,0);
+}
+
+.swap-chat .profile-card--balloon {
+    left: initial !important;
+    right: 240px;
+}
+
+.swap-chat .js-username-hover-tip .balloon {
+    margin-right: 6px;
+    transform: scaleX(-1);
+}
+
+.swap-chat .js-username-hover-tip .balloon .profile-card {
+    transform: scaleX(-1);
+}
+
+.swap-chat .offer-item__balloon {
+    margin-left: -561px;
+}
+
+.swap-chat .offer-item__balloon:after {
+    display: none;
+}
+
+.swap-chat .app-main.theatre #player {
+    right: 0;
+    left: 340px;
+}
+
+.swap-chat .app-main.theatre #main_col.expandRight #player {
+    left: 0 !important;
+}
+
+.swap-chat .app-main.theatre #main_col {
+    margin-left: 340px;
+    margin-right: 0;
+}
+
+.swap-chat .app-main.theatre #main_col.expandRight {
+    margin-left: 0;
+}
+
+/* BTTV settings menu */
 #bttvSettingsPanel {
     position: absolute;
     top: 50%;
@@ -980,10 +1100,9 @@ input, textarea, select {
 
 #chat_line_list .line p .chat_line, .ember-chat .chat-messages .chat-line {
     word-break: break-word;
-    padding-top: 5px;
+    padding: 0.4em 0.8em;
     margin-top: inherit;
-    padding-left: 10px;
-    padding-right: 10px;
+    line-height: 1.3em;
 }
 
 #chat_line_list li .nick, .ember-chat .chat-messages .from {
@@ -1818,28 +1937,6 @@ body.channel_new.columns.ember-application {
     animation: morag-spin 1.5s linear infinite;
 }
 
-/* holiday emote, remove after */
-.bttv-emo-567941303ec3c0b565335c2f {
-    position: absolute;
-    bottom: 5px;
-    right: 0px;
-    pointer-events: none;
-}
-.bttv-emo-567b5bd80e984428652809b8 {
-    margin-left: -35px;
-}
-.bttv-emo-567b5c080e984428652809ba, .bttv-emo-567b5b520e984428652809b6, .bttv-emo-567b5dc00e984428652809bd {
-    margin-left: -33px;
-}
-.bttv-emo-58017c088faabf4b3d008460,
-.bttv-emo-5801777f8faabf4b3d008434,
-.bttv-emo-58017be38faabf4b3d00845a,
-.bttv-emo-58017bcc8faabf4b3d008456,
-.bttv-emo-5802e7a5d336345f3d4e1ed5,
-.bttv-emo-58017bf38faabf4b3d00845d {
-    margin-left: -32px;
-}
-
 /* Notification Container above chat */
 .ember-chat .notification-container {
     left: 0px;
@@ -1860,6 +1957,11 @@ body.channel_new.columns.ember-application {
 /* whispers */
 .chat-messages .chat-line.whisper {
     background-color: #E8D6FF !important;
+    position: relative;
+    width: auto;
+    height: auto;
+    top: auto;
+    right: auto;
 }
 .chat-messages .chat-line .svg-whisper-arrow {
     fill: #32323e;
@@ -2079,16 +2181,16 @@ body.channel_new.columns.ember-application {
 }
 
 /* search scroll bar */
-#search-panel .resultView .collectionWrapper::-webkit-scrollbar {
+#search-panel .search-result-view .collection-wrapper::-webkit-scrollbar {
     width: 6px;
 }
 
-#search-panel .resultView .collectionWrapper::-webkit-scrollbar-thumb {
+#search-panel .search-result-view .collection-wrapper::-webkit-scrollbar-thumb {
     background: rgba(0,0,0,0.7);
     border-radius: 7px;
 }
 
-#search-panel .resultView .collectionWrapper::-webkit-scrollbar-track {
+#search-panel .search-result-view .collection-wrapper::-webkit-scrollbar-track {
     background: rgba(0,0,0,0);
 }
 
@@ -2153,6 +2255,7 @@ body.channel_new.columns.ember-application {
 .pinned-cheers {
     padding-bottom: 10px;
     padding-left: 5px;
+    margin: 0;
 }
 
 .pinned-cheers:before {
@@ -2175,11 +2278,56 @@ body.channel_new.columns.ember-application {
     max-height: 45px;
 }
 
-/* new mini player setting inline css*/
-.js-player-persistent:not(.player-mini) {
-    width: calc(100% - 60px) !important;
+/* automod */
+.ember-chat .chat-messages .chat-line .system-msg {
+    margin-bottom: 8px;
+    color: #575260;
 }
 
-.disable-header .js-player-persistent:not(.player-mini) {
-    top: 75px !important;
+.twitchbot .pd-y-1 {
+    text-align: center;
+}
+
+/*** Holiday 2016 BTTV emote CSS ***/
+
+/* No stacking of IceCube or SoSnowy */
+.bttv-emo-5849c9a4f52be01a7ee5f79d + .bttv-emo-5849c9a4f52be01a7ee5f79d,
+.bttv-emo-567b5b520e984428652809b6 + .bttv-emo-567b5b520e984428652809b6 {
+    display: none;
+}
+
+.emoticon + .bttv-emo-5849c9a4f52be01a7ee5f79d { /* Ice Cube */
+    margin-left: -35px;
+    margin-bottom: -8px;
+    margin-top: -8px;
+}
+
+.emoticon + .bttv-emo-58487cc6f52be01a7ee5f205 { /* SantaHat */
+    margin-left: -34px;
+    margin-bottom: -1px;
+}
+
+.emoticon + .bttv-emo-5849c9c8f52be01a7ee5f79e { /* TopHat */
+    margin-left: -32px;
+    margin-bottom: -2px;
+}
+
+.emoticon + .bttv-emo-567b5b520e984428652809b6,  /* SoSnowy */
+.emoticon + .bttv-emo-567b5c080e984428652809ba,  /* CandyCane */
+.emoticon + .bttv-emo-567b5dc00e984428652809bd { /* ReinDeer */
+    margin-left: -33px;
+}
+
+.emoticon + .bttv-emo-58017c088faabf4b3d008460,  /* HalloFedora */
+.emoticon + .bttv-emo-5801777f8faabf4b3d008434,  /* HalloWitch */
+.emoticon + .bttv-emo-58017be38faabf4b3d00845a,  /* HalloKKona */
+.emoticon + .bttv-emo-58017bcc8faabf4b3d008456,  /* HalloHalo */
+.emoticon + .bttv-emo-5802e7a5d336345f3d4e1ed5,  /* HalloPirate */
+.emoticon + .bttv-emo-58017bf38faabf4b3d00845d { /* HalloHorns */
+    margin-left: -32px;
+}
+
+/* Limit of 10 SoSnowy in a single message */
+.bttv-emo-567b5b520e984428652809b6:nth-of-type(n + 11) {
+    display: none;
 }

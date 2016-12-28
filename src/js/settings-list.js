@@ -11,7 +11,8 @@ var splitChat = require('./features/split-chat'),
     handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes'),
     audibleFeedback = require('./features/audible-feedback'),
     playerKeyboardShortcuts = require('./features/player-keyboard-shortcuts'),
-    imagePreview = require('./features/image-preview');
+    imagePreview = require('./features/image-preview'),
+    chatFontSettings = require('./features/chat-font-settings');
 
 var displayElement = require('./helpers/element').display,
     removeElement = require('./helpers/element').remove;
@@ -491,6 +492,24 @@ module.exports = [
         storageKey: 'showMonkeyEmotes'
     },
     {
+        name: 'Left side chat',
+        description: 'Moves the chat to the left of the player',
+        default: false,
+        storageKey: 'leftSideChat',
+        toggle: function(value) {
+            if (value === true) {
+                $('body').addClass('swap-chat');
+            } else {
+                $('body').removeClass('swap-chat');
+            }
+        },
+        load: function() {
+            if (bttv.settings.get('leftSideChat') === true) {
+                $('body').addClass('swap-chat');
+            }
+        }
+    },
+    {
         name: 'Mod Card Keybinds',
         description: 'Enable keybinds when you click on a username: P(urge), T(imeout), B(an), W(hisper)',
         default: false,
@@ -686,6 +705,26 @@ module.exports = [
             } else {
                 chat.helpers.serverMessage('Chat scrollback is now set to: ' + lines, true);
             }
+        }
+    },
+    {
+        storageKey: 'chatFontFamily',
+        default: '',
+        load: function() {
+            chatFontSettings.initFontFamily();
+        },
+        toggle: function(font) {
+            chatFontSettings.setFontFamily(font);
+        }
+    },
+    {
+        storageKey: 'chatFontSize',
+        default: 0,
+        load: function() {
+            chatFontSettings.initFontSize();
+        },
+        toggle: function(size) {
+            chatFontSettings.setFontSize(size);
         }
     }
 ];

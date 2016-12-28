@@ -1,4 +1,4 @@
-body, code, samp, kbd, .real_title, #right_col .content #chat_line_list, .ember-chat, .ember-chat .message, .ember-chat .from, .ember-chat, .ember-chat .colon, #right_col #chat_line_list, #main_col .content #broadcast_meta .info .channel, #channel .player-column #broadcast-meta .info .title, #channel_panels_contain #channel_panels .panel h3, #channel_panels_contain #channel_panels .panel h1, #channel_panels_contain #channel_panels .panel h2, h3, h2, .tse-content a {
+body, code, samp, kbd, .real_title, #right_col .content #chat_line_list, .ember-chat, .ember-chat .message, .ember-chat .from, .ember-chat, .ember-chat .colon, #right_col #chat_line_list, #main_col .content #broadcast_meta .info .channel, #channel .player-column #broadcast-meta .info .title, #channel_panels_contain #channel_panels .panel h3, #channel_panels_contain #channel_panels .panel h1, #channel_panels_contain #channel_panels .panel h2, h3, h2, .tse-content a, .js-live-widget a {
     color: #D3D3D3;
 }
 
@@ -562,6 +562,21 @@ div#site_header {
     color: #b8b8b8;
     box-shadow: inset 0 0 0 1px rgba(171, 171, 171, 0.5);
     background-color: transparent;
+}
+
+.cn-bar .cn-tabs .button--more {
+    box-shadow: none;
+    background-color: #1e1e1e;
+    margin-right: 10px;
+}
+
+.cn-bar .cn-tabs .button--more:focus,
+.cn-bar .cn-tabs .button--more:hover {
+    background-color: #333333;
+}
+
+.cn-bar .cn-tabs .button--more svg {
+    fill: #777777;
 }
 
 #channel .cn-metabar__more .ember-view .button:hover,
@@ -1702,10 +1717,6 @@ table.simple_table td {
     box-shadow: inset 0 0 0 1px #222;
 }
 
-.twitch_subwindow_container #login_subwindow {
-    background: 
-}
-
 /* darken link list popup */
 #flyout .content {
     background-color: rgb(35,35,35);
@@ -2101,7 +2112,7 @@ span.subscribe-text {
 }
 
 /* Twitch emote menu */
-.emoticon-selector .emoticon-selector-box, 
+.emoticon-selector .emoticon-selector-box,
 .emoticon-selector-container .emoticon-selector {
     background-color: #191919;
     border-color: #191919;
@@ -2200,6 +2211,10 @@ span.subscribe-text {
 
 .player .player-hover.player-controls-bottom .player-menu__menu .player-menu__header {
     color: #888;
+}
+
+.player .player-hover.player-controls-bottom .player-menu__menu .player-text-link {
+    color: #d3d3d3;
 }
 
 .player .player-hover.player-controls-bottom .player-menu__menu:after {
@@ -2823,6 +2838,23 @@ ul.tabs li>a:hover, .directory_header .nav li>a:hover, ul.tabs li>button:hover, 
     box-shadow: none;
 }
 
+.cn-bar .cn-bar__button--resubscribe {
+    background-color: #1e1e1e;
+    box-shadow: none;
+    color: #d3d3d3;
+}
+
+.cn-bar .cn-bar__button--resubscribe span {
+    color: #b8b8b8;
+}
+
+.cn-bar .cn-bar__button--resubscribe:hover,
+.cn-bar .cn-bar__button--resubscribe:focus {
+    background-color: #333333;
+    box-shadow: none;
+    color: #d3d3d3;
+}
+
 /* bits */
 .bits-toggle path {
     fill: #888;
@@ -2889,49 +2921,57 @@ ul.tabs li>a:hover, .directory_header .nav li>a:hover, ul.tabs li>button:hover, 
     border: none;
 }
 
-#search-panel .titleBar,
-#search-panel .titleBar .titleBar__back {
+#search-panel .search-panel__title-bar,
+#search-panel .search-panel__title-bar .search-panel__title-back {
     border-color: #555;
 }
 
-#search-panel .titleBar .titleBar__back:hover {
+#search-panel .search-panel__title-bar .search-panel__title-back:hover {
     background: #444;
 }
 
-#search-panel .titleBar,
-#search-panel .titleBar .titleBar__title,
-#search-panel .resultView__titlesep {
+#search-panel .search-panel__title-bar,
+#search-panel .search-panel__title-bar .search-panel__title,
+#search-panel .search-result-view__titlesep {
     background: #333;
     color: #d3d3d3;
 }
 
-#search-panel .resultView .card .card__layout .card__title {
+#search-panel .search-result-view .card .card__layout .card__title {
     color: #d3d3d3;
 }
 
-#search-panel .resultView .card .card__layout .card__info span {
+#search-panel .search-result-view .card .card__layout .card__info span {
     color: #999;
 }
 
-#search-panel .resultView .card .card__layout.isActive:before {
+#search-panel .search-result-view .card .card__layout.isActive:before {
     background: #333;
 }
 
-#search-panel .resultView__titlesep .pill,
-#search-panel .resultView__titlesep.isActive .pill {
+#search-panel .search-result-view__titlesep .pill,
+#search-panel .search-result-view__titlesep.isActive .pill {
     background-color: #555;
 }
 
-#search-panel .resultView__titlesep .resultView__titleMore {
+#search-panel .search-result-view__titlesep .search-result-view__title-more {
     color: #777;
 }
 
-#search-panel .resultView__titlesep.isActive .resultView__titleMore {
+#search-panel .search-result-view__titlesep.isActive .search-result-view__title-more {
     color: #999;
 }
 
-#search-panel .resultView .collectionWrapper::-webkit-scrollbar-thumb {
+#search-panel .search-result-view .collection-wrapper::-webkit-scrollbar-thumb {
     background: rgba(255,255,255,0.7);
+}
+
+#search-panel .search-panel__filter-wrapper {
+    background-color: #333;
+}
+
+#search-panel .filter-bar__button--text {
+    color: #d3d3d3;
 }
 
 /* discover page carousel arrows */
@@ -3137,4 +3177,63 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 
 .chat-room .sticky-message .pinned-cheer__hack-box {
     background-color: #181818;
+}
+
+/* automod */
+.ember-chat .chat-messages .chat-line .system-msg {
+    color: #7B7B7B;
+}
+
+.ember-chat .chat-messages .chat-line .inline-warning {
+    color: #fc5c5c;
+}
+
+.ember-chat .chat-messages .chat-line .button--alert {
+    background-color: #bf4040;
+}
+
+.ember-chat .chat-messages .chat-line.twitchbot .button {
+    color: #D3D3D3;
+}
+
+/* new dashboard */
+
+.js-live-widget .dash-widget {
+    background: #323232;
+    border-color: #222;
+    color: #d3d3d3;
+}
+
+.js-live-widget .dash-widget__header {
+    border-color: #222;
+}
+
+.js-live-widget .form__input {
+    background-color: #292929;
+    box-shadow: #222 0 0 0 1px inset;
+    color: #d3d3d3;
+}
+
+.js-live-widget .form__input[type=checkbox]+label:before,
+.js-live-widget .form__input[type=radio]+label:before {
+    background-color: #292929;
+    border-color: #222;
+}
+
+.js-live-widget .form__input:focus {
+    box-shadow: #555 0 0 0 1px inset;
+    border: none;
+}
+
+.js-live-widget .form__hint,
+.js-live-widget .dash-widget-text-light {
+    color: #999;
+}
+
+.js-live-widget .border-b {
+    border-color: #555
+}
+
+.js-live-widget.gu-transit {
+    background-color: #1e1e1e;
 }

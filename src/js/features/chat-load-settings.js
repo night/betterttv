@@ -83,6 +83,33 @@ module.exports = function() {
         }
     });
 
+    $('.setFontFamily').click(function(e) {
+        e.preventDefault();
+        var font = prompt('Enter font name for chat. Try "monospace" or "Comic Sans MS" or leave the field blank to use default.', bttv.settings.get('chatFontFamily'));
+        var unsafeFontRegex = /[^A-Za-z0-9\s\.,&\+\-_!]/;
+        if (font !== null && unsafeFontRegex.test(font)) {
+            bttv.chat.helpers.serverMessage('Chat font could not be changed: It contained illegal characters.', true);
+        } else if (font !== null) {
+            bttv.settings.save('chatFontFamily', font);
+        }
+    });
+
+    $('.setFontSize').click(function(e) {
+        e.preventDefault();
+        var currentSize = bttv.settings.get('chatFontSize');
+        var size = prompt('Enter font size for chat. Leave the blank to use default (13.33333).', (currentSize > 0 ? currentSize : ''));
+        if (size !== null) {
+            var fontSize = 0;
+            if (!isNaN(size)) {
+                var inputSize = parseFloat(size, 10);
+                if (inputSize > 0) {
+                    fontSize = inputSize;
+                }
+            }
+            bttv.settings.save('chatFontSize', fontSize);
+        }
+    });
+
     // Make chat settings scrollable
     $('.ember-chat .chat-settings').css('max-height', $(window).height() - 100);
 };

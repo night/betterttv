@@ -49,7 +49,7 @@ exports.commands = function(input) {
         } else {
             helpers.serverMessage('You need to be logged in to use this command', true);
         }
-    } else if (command === '/followers') {
+    } else if (command === '/followcount') {
         bttv.TwitchAPI.get('channels/' + channelName + '/follows').done(function(channel) {
             helpers.serverMessage('Current Followers: ' + Twitch.display.commatize(channel._total), true);
         }).fail(function() {
@@ -130,7 +130,7 @@ exports.commands = function(input) {
         helpers.serverMessage('/b [username] -- Shortcut for /ban');
         helpers.serverMessage('/chatters -- Tells you how many users are currently in chat');
         helpers.serverMessage('/followed -- Tells you for how long you have been following a channel');
-        helpers.serverMessage('/followers -- Retrieves the number of followers for the channel');
+        helpers.serverMessage('/followcount -- Retrieves the number of followers for the channel');
         helpers.serverMessage('/join -- Joins the channel (deactivates anon chat mode)');
         helpers.serverMessage('/linehistory on/off -- Toggles the chat field history (pressing up/down arrow in textbox)');
         helpers.serverMessage('/localascii -- Turns on local ascii-only mode (only your chat is ascii-only mode)');
@@ -470,7 +470,8 @@ var privmsg = exports.privmsg = function(channel, data) {
                 name: '',
                 description: 'Channel Subscriber'
             }] : []),
-            color: '#555'
+            color: '#555',
+            emotes: data.tags && data.tags.emotes,
         }, {
             action: data.style === 'action' ? true : false,
             server: data.style === 'admin' ? true : false,
