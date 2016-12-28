@@ -41,6 +41,7 @@ var server = function(req, res) {
                 'Access-Control-Allow-Origin': '*'
             });
         }
+
         fs.createReadStream(file).pipe(res);
     });
 };
