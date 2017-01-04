@@ -1,11 +1,75 @@
 var debug = require('./helpers/debug');
-// var vars = require('./vars');
+var vars = require('./vars');
+var chat = require('./chat/store');
 
 var events = {};
 
+events.initialize_room = function(data) {
+    console.log('data', data);
+
+    var emote;
+    var emotes = data.emotes ? data.emotes : [];
+
+    // initialize the room emotes (holds all emotes usable by others in the chat)
+    emotes.forEach(function(gwEmote) {
+        if (!chat.gwRoomEmotes[gwEmote.shortcode]) {
+            emote = {};
+            emote.type = 'gamewisp';
+            emote.imageType = 'png';
+            emote.url = gwEmote.image_asset.data.content.small;
+            emote.name = gwEmote.name;
+            emote.code = gwEmote.shortcode;
+            emote.id = gwEmote.id; // need id to match to usable emotes for each user in the room
+
+            chat.gwRoomEmotes[gwEmote.shortcode] = emote;
+        }
+    });
+
+    if (data.userStore) {
+        if (!chat.gwRoomUsers) {
+            chat.gwRoomUsers = data.userStore;
+        } else {
+            for (user in data.userStore) {
+                if (!chat.gwRoomUsers[user]) {
+                    chat.gwRoomUsers[user] = data.userStore[user];
+                }
+            }
+        }
+    }
+
+    console.log('gwRoomEmotes', chat.gwRoomEmotes);
+    console.log('gwRoomUsers', chat.gwRoomUsers);
+};
+
+events.update_room = function(data) {
+    console.log('data', data);
+
+    var newEmotes = data.emotes;
+
+    // TODO: make sure we dont get duplicates in the datastore
+    newEmotes.forEach(function(gwEmote) {
+        if (!chat.gwRoomEmotes[gwEmote.shortcode]) {
+            emote = {};
+            emote.type = 'gamewisp';
+            emote.imageType = 'png';
+            emote.url = gwEmote.image_asset.data.content.small;
+            emote.name = gwEmote.name;
+            emote.code = gwEmote.shortcode;
+            emote.id = gwEmote.id; // need id to match to usable emotes for each user in the room
+
+            chat.gwRoomEmotes[gwEmote.shortcode] = emote;
+        }
+    });
+
+    var newUser = data.user;
+
+    if (!chat.gwRoomUsers[newUser.name]) {
+        chat.gwRoomUsers[newUser.name] = newUser.emoteIDs;
+    }
+};
+
 function SocketClientGW() {
     this.socket = false;
-    this._lookedUpUsers = [];
     this._connected = false;
     this._connecting = false;
     this._connectAttempts = 1;
@@ -13,7 +77,9 @@ function SocketClientGW() {
     this._joinedConversations = [];
     this._events = events;
 
-    this.connect();
+    if (bttv.settings.get('gwEmotes')) {
+        this.connect();
+    }
 }
 
 SocketClientGW.prototype.connect = function() {
@@ -23,7 +89,8 @@ SocketClientGW.prototype.connect = function() {
     debug.log('SocketClientGW: Connecting to GameWisp Socket Server');
 
     var _self = this;
-    this.socket = new WebSocket('ws://localhost:3000');
+    var socketURL = 'ws://localhost:3000/' + bttv.getChannel();
+    this.socket = new WebSocket(socketURL);
 
 
     this.socket.onopen = function() {
@@ -51,7 +118,7 @@ SocketClientGW.prototype.connect = function() {
     };
 
     this.socket.onmessage = function(message) {
-        debug.log('message', message);
+        // debug.log('message', message);
         var evt;
 
         try {
@@ -106,21 +173,10 @@ SocketClientGW.prototype.joinRoom = function() {
     var channel = bttv.getChannel();
 
     if (!channel.length) return;
+    if (!vars.userData) return;
 
-    // if (this._joinedRoom) {
-    //     this.emit('part_channel', { name: this._joinedChannel });
-    // }
-
-    this.emit('join_room', { name: channel });
+    this.emit('join_room', { room: channel, user: vars.userData.name });
     this._joinedRoom = channel;
 };
-
-// SocketClientGW.prototype.joinConversation = function(threadId) {
-//     if (this._joinedConversations.indexOf(threadId) < 0) {
-//         this.emit('join_channel', { name: threadId });
-//     }
-
-//     this.emit('broadcast_me', { name: vars.userData.name, channel: threadId });
-// };
 
 module.exports = SocketClientGW;

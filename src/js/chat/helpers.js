@@ -1059,13 +1059,19 @@ exports.loadBTTVChannelData = function() {
 };
 
 exports.loadGameWispEmotes = function() {
+    var getUserEmotes = $.getJSON('https://api.gamewisp.com/pub/v1/emote/subscriber', {type: 'twitch', user_name: vars.userData.name});
     var getGlobalEmotes = $.getJSON('https://api.gamewisp.com/pub/v1/emote/global');
 
-    getGlobalEmotes.done(function(globalData) {
-        var globalEmotes = globalData.data ? globalData.data : [];
-        var emote;
+    $.when(getUserEmotes, getGlobalEmotes).done(function(userData, globalData) {
+        var globalEmotes = globalData[0].data ? globalData[0].data : [],
+            userEmotes = userData[0].data ? userData[0].data : [],
+            emote;
 
-        globalEmotes.forEach(function(gwEmote) {
+        globalEmotes.map(function(globalEmote) {
+            globalEmote.global = true;
+        });
+
+        userEmotes.concat(globalEmotes).forEach(function(gwEmote) {
             emote = {};
             emote.type = 'gamewisp';
             emote.imageType = 'png';

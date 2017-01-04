@@ -11,6 +11,8 @@ module.exports = function() {
     Object.keys(emotes).forEach(function(key) {
         var emote = emotes[key];
 
+        // console.log('emote', emote);
+
         if (emote.imageType === 'gif' && bttv.settings.get('bttvGIFEmotes') !== true) {
             return;
         }

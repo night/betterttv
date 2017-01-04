@@ -20,6 +20,8 @@ exports.chatHistory = [];
 exports.whisperHistory = {};
 exports.bttvEmotes = {};
 exports.gwEmotes = {};
+exports.gwRoomEmotes = {};
+exports.gwRoomUsers = {};
 exports.proEmotes = {};
 exports.autoCompleteEmotes = {};
 
