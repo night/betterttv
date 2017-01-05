@@ -8,7 +8,7 @@ module.exports = function() {
                 if (clicks === 1) {
                     var $player = $('#player');
                     var isPaused = $player.data('paused');
-                    var playerService = App.__container__.lookup('service:player');
+                    var playerService = App.__container__.lookup('service:persistent-player');
                     if (!playerService || !playerService.playerComponent.player) return;
                     if (!isPaused) playerService.playerComponent.player.pause();
                 }
@@ -18,18 +18,9 @@ module.exports = function() {
     });
 
     $('body').on('click', '.player-controls-bottom .js-control-fullscreen', function() {
-        var $player = $('#player');
-
         setTimeout(function() {
             var height = bttv.settings.get('disableChannelHeader') ? 0 : 380;
             $('.js-main-col-scroll-content').scrollTop(height);
         }, 100);
-
-        var isTheater = $player.attr('data-theatre');
-        if (isTheater !== 'true') return;
-
-        var playerService = App.__container__.lookup('service:player');
-        if (!playerService || !playerService.playerComponent.player) return;
-        playerService.playerComponent.player.theatre = false;
     });
 };
