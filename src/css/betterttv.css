@@ -1988,6 +1988,10 @@ body.channel_new.columns.ember-application {
   background: rgba(0,0,0,0);
 }
 
+.ember-chat .chat-interface .suggestions {
+    z-index: 1000;
+}
+
 /* Hide duplicate message once we add our parsed version */
 .conversation-chat-line.bttv-parsed-message .message {
     display: none;
