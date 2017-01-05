@@ -496,11 +496,11 @@ module.exports = [
         default: false,
         storageKey: 'leftSideChat',
         toggle: function(value) {
-            $('body .ember-view .app-main').toggleClass('swap-chat', value);
+            $('body').toggleClass('swap-chat', value);
         },
         load: function() {
             if (bttv.settings.get('leftSideChat') === true) {
-                $('body .ember-view .app-main').addClass('swap-chat');
+                $('body').addClass('swap-chat');
             }
         }
     },

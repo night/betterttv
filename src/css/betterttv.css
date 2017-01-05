@@ -361,118 +361,118 @@ input.text:focus,select:focus,textarea:focus {
 }
 
 /* left side chat */
-.swap-chat #right_col {
+.swap-chat .ember-view #right_col {
     left: 0;
     right: initial;
 }
 
-.swap-chat #main_col {
+.swap-chat .ember-view #main_col {
     margin-left: 340px;
     margin-right: 240px;
 }
 
-.swap-chat #main_col.expandLeft {
+.swap-chat .ember-view #main_col.expandLeft {
     margin-right: 50px;
 }
 
-.swap-chat #main_col.expandRight {
+.swap-chat .ember-view #main_col.expandRight {
     margin-left: 0px;
 }
 
-.swap-chat #left_col {
+.swap-chat .ember-view #left_col {
     right: 0;
     left: initial;
 }
 
-.swap-chat #main_col .cn-bar-fixed {
+.swap-chat .ember-view #main_col .cn-bar-fixed {
     right: 240px !important;
     left: 340px !important;
 }
 
-.swap-chat #main_col.expandRight .cn-bar-fixed {
+.swap-chat .ember-view #main_col.expandRight .cn-bar-fixed {
     left: 0px !important;
 }
 
-.swap-chat #main_col.expandLeft .cn-bar-fixed {
+.swap-chat .ember-view #main_col.expandLeft .cn-bar-fixed {
     right: 50px !important;
 }
 
-.swap-chat .player-mini {
+.swap-chat .ember-view .player-mini {
     left: 350px !important;
 }
 
-.swap-chat .expandRight .player-mini {
+.swap-chat .ember-view .expandRight .player-mini {
     left: 10px !important;
 }
 
-.swap-chat #left_close {
+.swap-chat .ember-view #left_close {
     left: initial;
     right: 5px;
 }
 
-.swap-chat #right_close {
+.swap-chat .ember-view #right_close {
     left: 5px;
     right: initial;
 }
 
-.swap-chat #left_close:before, .swap-chat #right_close.closed:before {
+.swap-chat .ember-view #left_close:before, .swap-chat .ember-view #right_close.closed:before {
     margin-left: -2px;
     border-left-color: #fff;
     border-right-color: transparent;
 }
 
-.swap-chat #left_close.closed:before, .swap-chat #right_close:before {
+.swap-chat .ember-view #left_close.closed:before, .swap-chat .ember-view #right_close:before {
     margin-left: -8px;
     border-right-color: #fff;
     border-left-color: transparent;
 }
 
-.swap-chat .search-panel {
+.swap-chat .ember-view .search-panel {
     left: initial;
     right: 240px;
 }
 
-.swap-chat .search-panel--closed {
+.swap-chat .ember-view .search-panel--closed {
     transform: translate3d(900px,0,0);
 }
 
-.swap-chat .profile-card--balloon {
+.swap-chat .ember-view .profile-card--balloon {
     left: initial !important;
     right: 240px;
 }
 
-.swap-chat .js-username-hover-tip .balloon {
+.swap-chat .ember-view .js-username-hover-tip .balloon {
     margin-right: 6px;
     transform: scaleX(-1);
 }
 
-.swap-chat .js-username-hover-tip .balloon .profile-card {
+.swap-chat .ember-view .js-username-hover-tip .balloon .profile-card {
     transform: scaleX(-1);
 }
 
-.swap-chat .offer-item__balloon {
+.swap-chat .ember-view .offer-item__balloon {
     margin-left: -561px;
 }
 
-.swap-chat .offer-item__balloon:after {
+.swap-chat .ember-view .offer-item__balloon:after {
     display: none;
 }
 
-.swap-chat .app-main.theatre #player {
+.swap-chat .ember-view .app-main.theatre #player {
     right: 0;
     left: 340px;
 }
 
-.swap-chat .app-main.theatre #main_col.expandRight #player {
+.swap-chat .ember-view .app-main.theatre #main_col.expandRight #player {
     left: 0 !important;
 }
 
-.swap-chat .app-main.theatre #main_col {
+.swap-chat .ember-view .app-main.theatre #main_col {
     margin-left: 340px;
     margin-right: 0;
 }
 
-.swap-chat .app-main.theatre #main_col.expandRight {
+.swap-chat .ember-view .app-main.theatre #main_col.expandRight {
     margin-left: 0;
 }
 
