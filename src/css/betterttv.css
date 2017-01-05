@@ -476,6 +476,10 @@ input.text:focus,select:focus,textarea:focus {
     margin-left: 0;
 }
 
+.swap-chat .ember-view .app-main.theatre #player[data-isfullscreen=true] {
+    left: 0;
+}
+
 /* BTTV settings menu */
 #bttvSettingsPanel {
     position: absolute;
