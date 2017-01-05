@@ -31,7 +31,7 @@ var resetCountDown = function() {
 var initiateCountDown = function(length) {
     if (bttv.chat.store.chatCountDown) clearInterval(bttv.chat.store.chatCountDown);
 
-    var endTimestamp = Date.now() + (length * 1000);
+    var endTimestamp = Date.now() + ((length + 1) * 1000);
 
     bttv.chat.store.chatCountDown = setInterval(function() {
         var remainingTime = endTimestamp - Date.now();

@@ -3095,9 +3095,52 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
     color: #a7a7a7;
 }
 
-.new-dashboard .brick--marked.brick--theme-white, .video-stats .brick--marked.brick--theme-grey {
+.brick--marked.brick--theme-white, .video-stats .brick--marked.brick--theme-grey {
     border-color: #282828;
     border-left-color: #9a7fcc;
+}
+
+.dash-brick {
+    color: #d3d3d3;
+}
+
+.button--hollow {
+    background-color: #6441a4;
+    color: white;
+    box-shadow: none;
+}
+
+.button--hollow:focus,
+.button--hollow:hover {
+    color: white;
+    text-decoration: none;
+    background-color: #7d5bbe;
+}
+
+.brick {
+    border-color: #666;
+}
+
+.dash-tabs__item {
+    background-color: #242424;
+    border-color: #666;
+}
+
+.dash-tabs__item--active {
+    background-color: #282828;
+}
+
+.dash-tabs__item--active .dash-tabs__label {
+    color: #d3d3d3;
+}
+
+.dash-tabs__item--active .dash-tabs__label:after {
+    border-bottom: 1px solid #252525 !important;
+}
+
+.dash-tabs__item:hover,
+.dash-tabs__label:focus {
+    box-shadow: none;
 }
 
 .video-stats__table-title {
@@ -3216,8 +3259,8 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 
 .js-live-widget .form__input[type=checkbox]+label:before,
 .js-live-widget .form__input[type=radio]+label:before {
-    background-color: #292929;
-    border-color: #222;
+    background-color: #292929
+;    border-color: #222;
 }
 
 .js-live-widget .form__input:focus {

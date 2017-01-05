@@ -496,11 +496,7 @@ module.exports = [
         default: false,
         storageKey: 'leftSideChat',
         toggle: function(value) {
-            if (value === true) {
-                $('body').addClass('swap-chat');
-            } else {
-                $('body').removeClass('swap-chat');
-            }
+            $('body').toggleClass('swap-chat', value);
         },
         load: function() {
             if (bttv.settings.get('leftSideChat') === true) {

@@ -374,9 +374,7 @@ var serverMessage = exports.serverMessage = function(message, displayTimestamp) 
 exports.whisperReply = function() {
     var $chatInput = $('.ember-chat .chat-interface').find('textarea');
     if ($chatInput.val() === '/r ' && bttv.settings.get('disableWhispers') === false) {
-        var to = ($.grep(store.__rooms[store.currentRoom].messages, function(msg) {
-            return (msg.style === 'whisper' && msg.from.toLowerCase() !== vars.userData.name);
-        }).pop() || {from: null}).from;
+        var to = $('.chat-line.whisper:last .from:first').text();
         if (to) {
             $chatInput.val('/w ' + to + ' ');
         } else {
