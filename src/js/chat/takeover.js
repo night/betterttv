@@ -10,6 +10,7 @@ var vars = require('../vars'),
     loadChatSettings = require('../features/chat-load-settings'),
     anonChat = require('../features/anon-chat'),
     customTimeouts = require('../features/custom-timeouts'),
+    disableChannelHeader = require('../features/disable-channel-header'),
     tmi = require('./tmi');
 
 var reloadChatSettings = function(sender, key) {
@@ -290,7 +291,10 @@ var takeover = module.exports = function() {
 
     // Hide button for Past Broadcast banner
     $('body').off('click', '.recent-past-broadcast__message_sub').on('click', '.recent-past-broadcast__message_sub', function(e) {
-        if (e.offsetX > e.target.offsetWidth - 26) $('.recent-past-broadcast').hide();
+        if (e.offsetX > e.target.offsetWidth - 26) {
+            $('.recent-past-broadcast').hide();
+            disableChannelHeader();
+        }
     });
 
     // Dismiss pinned cheers
