@@ -2259,9 +2259,13 @@ body.channel_new.columns.ember-application {
 .pinned-cheers__dismiss {
     left: auto;
     right: 5px;
-    top: 0px;
-    height: 100%;
+    top: 50%;
+    height: 16px;
     justify-content: center;
+}
+
+.pinned-cheers__dismiss .balloon {
+    display: none !important;
 }
 
 .pinned-cheers {
