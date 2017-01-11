@@ -214,10 +214,6 @@ var bttvEmoticonize = exports.bttvEmoticonize = function(message, emote, sender)
 };
 
 var gwEmoticonize = exports.gwEmoticonize = function(message, emote, sender) {
-    console.log('gwEmoticonize message', message);
-    console.log('gwEmoticonize emote', emote);
-    console.log('gwEmoticonize sender', sender);
-
     if (emote.restrictions) {
         if (emote.restrictions.channels.length && emote.restrictions.channels.indexOf(bttv.getChannel()) === -1) return message;
         if (emote.restrictions.games.length && tmi().channel && emote.restrictions.games.indexOf(tmi().channel.game) === -1) return message;

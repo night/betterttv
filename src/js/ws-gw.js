@@ -1,14 +1,13 @@
 var debug = require('./helpers/debug');
 var vars = require('./vars');
 var chat = require('./chat/store');
+var msgpack = require('msgpack-lite');
 
 var events = {};
 
 events.initialize_room = function(data) {
-    console.log('data', data);
-
-    var emote;
-    var emotes = data.emotes ? data.emotes : [];
+    var emotes = data.emotes ? data.emotes : [],
+        emote;
 
     // initialize the room emotes (holds all emotes usable by others in the chat)
     emotes.forEach(function(gwEmote) {
@@ -16,8 +15,7 @@ events.initialize_room = function(data) {
             emote = {};
             emote.type = 'gamewisp';
             emote.imageType = 'png';
-            emote.url = gwEmote.image_asset.data.content.small;
-            emote.name = gwEmote.name;
+            emote.url = gwEmote.url;
             emote.code = gwEmote.shortcode;
             emote.id = gwEmote.id; // need id to match to usable emotes for each user in the room
 
@@ -42,18 +40,16 @@ events.initialize_room = function(data) {
 };
 
 events.update_room = function(data) {
-    console.log('data', data);
+    var newEmotes = data.emotes,
+        newUser = data.user;
 
-    var newEmotes = data.emotes;
-
-    // TODO: make sure we dont get duplicates in the datastore
+    // add the emotes
     newEmotes.forEach(function(gwEmote) {
         if (!chat.gwRoomEmotes[gwEmote.shortcode]) {
             emote = {};
             emote.type = 'gamewisp';
             emote.imageType = 'png';
-            emote.url = gwEmote.image_asset.data.content.small;
-            emote.name = gwEmote.name;
+            emote.url = gwEmote.url;
             emote.code = gwEmote.shortcode;
             emote.id = gwEmote.id; // need id to match to usable emotes for each user in the room
 
@@ -61,11 +57,22 @@ events.update_room = function(data) {
         }
     });
 
-    var newUser = data.user;
+    // add the user
+    chat.gwRoomUsers[newUser.name] = newUser.emoteIDs;
 
-    if (!chat.gwRoomUsers[newUser.name]) {
-        chat.gwRoomUsers[newUser.name] = newUser.emoteIDs;
+    console.log('gwRoomEmotes', chat.gwRoomEmotes);
+    console.log('gwRoomUsers', chat.gwRoomUsers);
+};
+
+events.leave_room = function(data) {
+    var username = data.user;
+
+    if (chat.gwRoomUsers[username]) {
+        delete chat.gwRoomUsers[username];
     }
+
+    console.log('gwRoomEmotes', chat.gwRoomEmotes);
+    console.log('gwRoomUsers', chat.gwRoomUsers);
 };
 
 function SocketClientGW() {
@@ -74,7 +81,6 @@ function SocketClientGW() {
     this._connecting = false;
     this._connectAttempts = 1;
     this._joinedChannel = null;
-    this._joinedConversations = [];
     this._events = events;
 
     if (bttv.settings.get('gwEmotes')) {
@@ -89,9 +95,12 @@ SocketClientGW.prototype.connect = function() {
     debug.log('SocketClientGW: Connecting to GameWisp Socket Server');
 
     var _self = this;
-    var socketURL = 'ws://localhost:3000/' + bttv.getChannel();
-    this.socket = new WebSocket(socketURL);
 
+    if (!bttv.getChannel() || !vars.userData.name) return;
+
+    var socketURL = 'ws://localhost:5100/' + bttv.getChannel() + '/' + vars.userData.name;
+    this.socket = new WebSocket(socketURL);
+    this.socket.binaryType = 'arraybuffer';
 
     this.socket.onopen = function() {
         debug.log('SocketClientGW: Connected to GameWisp Socket Server');
@@ -118,11 +127,11 @@ SocketClientGW.prototype.connect = function() {
     };
 
     this.socket.onmessage = function(message) {
-        // debug.log('message', message);
+        debug.log('message', message);
         var evt;
 
         try {
-            evt = JSON.parse(message.data);
+            evt = msgpack.decode(new Uint8Array(message.data));
         } catch (e) {
             debug.log('SocketClientGW: Error Parsing Message', e);
         }
@@ -153,7 +162,7 @@ SocketClientGW.prototype.reconnect = function() {
 
     setTimeout(function() {
         _self.connect();
-    }, Math.random() * (Math.pow(2, this._connectAttempts) - 1) * 30000);
+    }, Math.random() * (Math.pow(2, this._connectAttempts) - 1) * 5000);
 };
 
 SocketClientGW.prototype.emit = function(evt, data) {
