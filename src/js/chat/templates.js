@@ -229,7 +229,7 @@ var gwEmoticonize = exports.gwEmoticonize = function(message, emote, sender) {
     if (store.gwRoomEmotes && Object.hasOwnProperty.call(store.gwRoomEmotes, emote.code)) {
         var emoteShortcode = emote.code;
 
-        var emoteID = (store.gwRoomEmotes[emoteShortcode].id).toString();
+        var emoteID = (store.gwRoomEmotes[emoteShortcode].id);
 
         if (!Object.hasOwnProperty.call(store.gwRoomUsers, sender) ||
             (store.gwRoomUsers[sender] && store.gwRoomUsers[sender].indexOf(emoteID) < 0)

@@ -75,6 +75,113 @@ events.leave_room = function(data) {
     console.log('gwRoomUsers', chat.gwRoomUsers);
 };
 
+events.remove_emote = function(data) {
+    console.log('remove emote data', data);
+
+    var emoteID = parseInt(data.emoteID, 10),
+        code = data.emoteCode;
+
+    // delete the emote from the room emotes store
+    if (chat.gwRoomEmotes[code] && chat.gwRoomEmotes[code].id === emoteID) {
+        // chat.gwRoomEmotes[code].url = null;
+        delete chat.gwRoomEmotes[code];
+    }
+
+    // delete the emote from main gw emotes store
+    if (chat.gwEmotes[code]) {
+        delete chat.gwEmotes[code];
+    }
+
+    console.log('gwRoomEmotes', chat.gwRoomEmotes);
+    console.log('gwRoomUsers', chat.gwRoomUsers);
+};
+
+events.add_emote = function(data) {
+    console.log('add emote data', data);
+
+    // add the emote
+    var emote = data.emote;
+    emote.type = 'gamewisp';
+    emote.imageType = 'png';
+
+    if (!chat.gwRoomEmotes[emote.code]) {
+        chat.gwRoomEmotes[emote.code] = emote;
+    }
+
+    // add the emote id to all of the users
+    data.emote_users.forEach(function(user) {
+        var usableEmoteIDs = chat.gwRoomUsers[user];
+
+        if (usableEmoteIDs.indexOf(emote.id) === -1) {
+            usableEmoteIDs.push(emote.id);
+        }
+
+        // add to gwEmotes store if user is same as vars.userData.name
+        if (vars.userData && user === vars.userData.name) {
+            if (!chat.gwEmotes[emote.code]) {
+                chat.gwEmotes[emote.code] = emote;
+            }
+        }
+    });
+
+    console.log('gwRoomEmotes', chat.gwRoomEmotes);
+    console.log('gwRoomUsers', chat.gwRoomUsers);
+};
+
+events.new_subscriber = function(data) {
+    console.log('new subscriber data', data);
+
+    if (!chat.gwRoomUsers[data.user] || !data.emotes) return;
+
+    var usableEmoteIDs = chat.gwRoomUsers[data.user];
+
+    data.emotes.forEach(function(emote) {
+        emote.type = 'gamewisp';
+        emote.imageType = 'png';
+
+        // add to the user's available emote ids array
+        if (usableEmoteIDs.indexOf(emote.id) === -1) {
+            usableEmoteIDs.push(emote.id);
+        }
+
+        // add to the gwRoomEmotes
+        if (!chat.gwRoomEmotes[emote.code]) {
+            chat.gwRoomEmotes[emote.code] = emote;
+        }
+
+        // add to gwEmotes store if user is same as new sub
+        if (vars.userData && vars.userData.name === data.user) {
+            console.log('adding to gwEmotes');
+            chat.gwEmotes[emote.code] = emote;
+        }
+    });
+
+    console.log('gwRoomEmotes', chat.gwRoomEmotes);
+    console.log('gwRoomUsers', chat.gwRoomUsers);
+};
+
+events.cancel_subscriber = function(data) {
+    // remove emote ids that the user can no longer use since their subscription was cancelled
+    console.log('cancel subscriber data', data);
+
+    if (!chat.gwRoomUsers[data.user]) return;
+
+    var emoteIDsToRemove = data.emoteIDs,
+        usableEmoteIDs = chat.gwRoomUsers[data.user],
+        idx;
+
+    emoteIDsToRemove.forEach(function(emoteID) {
+        idx = usableEmoteIDs.indexOf(emoteID);
+
+        if (idx >= 0) {
+            usableEmoteIDs.splice(idx, 1);
+        }
+    });
+
+    console.log('gwRoomEmotes', chat.gwRoomEmotes);
+    console.log('gwRoomUsers', chat.gwRoomUsers);
+};
+
 function SocketClientGW() {
     this.socket = false;
     this._connected = false;
