@@ -3,7 +3,7 @@
 }
 
 .ember-chat .chat-messages .bits-tags__offset, .ember-chat .chat-messages {
-    top: 0;
+    top: 0 !important;
 }
 
 .ember-chat .sticky-message--pinned-cheers {

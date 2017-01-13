@@ -2257,15 +2257,10 @@ body.channel_new.columns.ember-application {
 
 /* pinned cheers */
 .pinned-cheers__dismiss {
-    left: auto;
-    right: 5px;
-    top: 50%;
+    left: 5px;
+    top: 5px;
     height: 16px;
     justify-content: center;
-}
-
-.pinned-cheers__dismiss .balloon {
-    display: none !important;
 }
 
 .pinned-cheers {
