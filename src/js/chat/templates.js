@@ -79,6 +79,9 @@ var parseBits = function(piece, amount) {
 
         var value = parseInt(piece.match(/\d+/), 10);
         piece = bitsEmoticonize(config, value);
+
+        // Since we hide pinned-cheers when dismissing, make sure we show them again.
+        $('.pinned-cheers').show();
     }
     return piece;
 };
