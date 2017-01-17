@@ -151,7 +151,6 @@ events.new_subscriber = function(data) {
 
         // add to gwEmotes store if user is same as new sub
         if (vars.userData && vars.userData.name === data.user) {
-            console.log('adding to gwEmotes');
             chat.gwEmotes[emote.code] = emote;
         }
     });
@@ -168,6 +167,7 @@ events.cancel_subscriber = function(data) {
 
     var emoteIDsToRemove = data.emoteIDs,
         usableEmoteIDs = chat.gwRoomUsers[data.user],
+        emote,
         idx;
 
     emoteIDsToRemove.forEach(function(emoteID) {
@@ -177,6 +177,23 @@ events.cancel_subscriber = function(data) {
             usableEmoteIDs.splice(idx, 1);
         }
     });
+
+    // remove from gwEmotes store if user is same as cancelled sub
+    if (vars.userData && vars.userData.name === data.user) {
+        for (var code in chat.gwEmotes) {
+            if (Object.hasOwnProperty.call(chat.gwEmotes, code)) {
+                emote = chat.gwEmotes[code];
+
+                if (
+                    emote &&
+                    Object.hasOwnProperty.call(emote, 'id') &&
+                    emoteIDsToRemove.indexOf(emote.id) !== -1
+                ) {
+                    delete chat.gwEmotes[code];
+                }
+            }
+        }
+    }
 
     console.log('gwRoomEmotes', chat.gwRoomEmotes);
     console.log('gwRoomUsers', chat.gwRoomUsers);
@@ -205,7 +222,8 @@ SocketClientGW.prototype.connect = function() {
 
     if (!bttv.getChannel() || !vars.userData.name) return;
 
-    var socketURL = 'ws://localhost:5100/' + bttv.getChannel() + '/' + vars.userData.name;
+    var socketURL = 'wss://emotes.gamewisp.com/';
+
     this.socket = new WebSocket(socketURL);
     this.socket.binaryType = 'arraybuffer';
 
