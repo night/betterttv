@@ -114,7 +114,6 @@ exports.parseRoomState = function(e) {
 };
 
 var completableEmotes = function() {
-    // TODO: add gw emotes here
     var completableEmotesList = [];
 
     var emotes = bttv.chat.emotes().concat(bttv.chat.gwEmotes());

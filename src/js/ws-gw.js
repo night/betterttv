@@ -17,7 +17,7 @@ events.initialize_room = function(data) {
             emote.imageType = 'png';
             emote.url = gwEmote.url;
             emote.code = gwEmote.shortcode;
-            emote.id = gwEmote.id; // need id to match to usable emotes for each user in the room
+            emote.id = gwEmote.id;
 
             chat.gwRoomEmotes[gwEmote.shortcode] = emote;
         }
@@ -51,7 +51,7 @@ events.update_room = function(data) {
             emote.imageType = 'png';
             emote.url = gwEmote.url;
             emote.code = gwEmote.shortcode;
-            emote.id = gwEmote.id; // need id to match to usable emotes for each user in the room
+            emote.id = gwEmote.id;
 
             chat.gwRoomEmotes[gwEmote.shortcode] = emote;
         }
@@ -110,7 +110,7 @@ events.add_emote = function(data) {
 
     // add the emote id to all of the users
     data.emote_users.forEach(function(user) {
-        var usableEmoteIDs = chat.gwRoomUsers[user];
+        var usableEmoteIDs = chat.gwRoomUsers[user] ? chat.gwRoomUsers[user] : [];
 
         if (usableEmoteIDs.indexOf(emote.id) === -1) {
             usableEmoteIDs.push(emote.id);
@@ -131,7 +131,11 @@ events.add_emote = function(data) {
 events.new_subscriber = function(data) {
     console.log('new subscriber data', data);
 
-    if (!chat.gwRoomUsers[data.user] || !data.emotes) return;
+    if (!data.emotes) return;
+
+    if (!chat.gwRoomUsers[data.user]) {
+        chat.gwRoomUsers[data.user] = [];
+    }
 
     var usableEmoteIDs = chat.gwRoomUsers[data.user];
 
@@ -287,12 +291,13 @@ SocketClientGW.prototype.reconnect = function() {
 
     setTimeout(function() {
         _self.connect();
-    }, Math.random() * (Math.pow(2, this._connectAttempts) - 1) * 5000);
+    }, Math.random() * (Math.pow(2, this._connectAttempts) - 1) * 30000);
 };
 
 SocketClientGW.prototype.emit = function(evt, data) {
     debug.log('emitting evt', evt);
     debug.log('emitting data', data);
+
     if (!this._connected || !this.socket) return;
 
     this.socket.send(JSON.stringify({

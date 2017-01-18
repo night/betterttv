@@ -264,11 +264,6 @@ var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message
         var test = piece.replace(/(^[~!@#$%\^&\*\(\)]+|[~!@#$%\^&\*\(\)]+$)/g, '');
         var emote = null;
 
-        // console.log('bttvMessageTokenize', test);
-        // console.log('bttvMessageTokenize', store.gwEmotes);
-        // console.log('bttvMessageTokenize', store.gwRoomEmotes);
-        // console.log(Object.hasOwnProperty.call(store.gwRoomEmotes, test));
-
         if (Object.hasOwnProperty.call(store.bttvEmotes, piece)) {
             emote = store.bttvEmotes[piece];
         } else if (Object.hasOwnProperty.call(store.bttvEmotes, test)) {
