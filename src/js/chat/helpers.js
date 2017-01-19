@@ -115,12 +115,11 @@ exports.getCheerConfig = function(piece) {
 };
 
 exports.dismissPinnedCheer = function() {
-    if (!window.App) return;
     try {
         var service = window.App.__container__.lookup('service:bits-pinned-cheers');
-        if (service.currentPinnedCheer && service.currentPinnedCheer !== null) service.dismissLocalMessage();
+        if (service.currentPinnedCheer) service.dismissLocalMessage();
     } catch (dismissError) {
-        debug.log('Failed to dismiss cheer: ' + dismissError);
+        debug.log('Failed to dismiss cheer:', dismissError);
     }
 };
 
