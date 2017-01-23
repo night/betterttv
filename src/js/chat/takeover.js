@@ -300,7 +300,7 @@ var takeover = module.exports = function() {
     // Dismiss pinned cheers
     $('body').off('click', '.pinned-cheers').on('click', '.pinned-cheers', function(e) {
         if (!e.target.classList.contains('pinned-cheers')) return;
-        if (e.target.offsetWidth - e.offsetX < 48 && e.target.offsetHeight - e.offsetY > 48) helpers.dismissPinnedCheer();
+        if (e.target.offsetWidth - e.offsetX < 48 && e.target.offsetHeight - e.offsetY > 28) helpers.dismissPinnedCheer();
     });
 
     // Automod buttons
