@@ -2259,10 +2259,9 @@ body.channel_new.columns.ember-application {
 
 /* pinned cheers */
 .pinned-cheers__dismiss {
-    left: auto;
-    right: 5px;
-    top: 0px;
-    height: 100%;
+    left: 5px;
+    top: 8px;
+    height: 16px;
     justify-content: center;
 }
 
@@ -2290,6 +2289,19 @@ body.channel_new.columns.ember-application {
 
 .pinned-cheers__message .chat-line {
     max-height: 45px;
+}
+
+.pinned-cheer__expando-arrow {
+    bottom: 10px;
+    top: auto;
+}
+
+.pinned-cheer__expando-arrow:hover {
+    cursor: pointer;
+}
+
+.pinned-cheers .to-right-reverse-to-left-pinned-cheers .liquid-child {
+    transform: none!important;
 }
 
 /* automod */
