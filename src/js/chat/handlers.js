@@ -106,8 +106,8 @@ exports.commands = function(input) {
         bttv.TwitchAPI.get('streams/' + channelName).done(function(stream) {
             if (stream.stream !== null) {
                 var startedTime = new Date(stream.stream.created_at),
-                    totalUptime = Math.round(Math.abs((Date.now() - (startedTime.getTime() - (startedTime.getTimezoneOffset() * 60 * 1000))) / 1000));
-                helpers.serverMessage('Stream uptime: ' + secondsToLength(totalUptime), true);
+                    secondsSince = Math.round((Date.now() - startedTime.getTime()) / 1000);
+                helpers.serverMessage('Stream uptime: ' + secondsToLength(secondsSince), true);
             } else {
                 helpers.serverMessage('Stream offline', true);
             }
