@@ -114,6 +114,15 @@ exports.getCheerConfig = function(piece) {
     return config;
 };
 
+exports.dismissPinnedCheer = function() {
+    try {
+        var service = window.App.__container__.lookup('service:bits-pinned-cheers');
+        if (service.topPinnedCheer || service.recentPinnedCheer) service.dismissLocalMessage();
+    } catch (dismissError) {
+        debug.log('Failed to dismiss cheer:', dismissError);
+    }
+};
+
 exports.parseTags = function(tags) {
     var rawTags = tags.slice(1, tags.length).split(';');
 

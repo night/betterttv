@@ -393,6 +393,7 @@ module.exports = [
         storageKey: 'hideBits',
         toggle: function(value) {
             if (value === true) {
+                chat.helpers.dismissPinnedCheer();
                 cssLoader.load('hide-bits', 'hideBits');
             } else {
                 cssLoader.unload('hideBits');
