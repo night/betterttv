@@ -1,7 +1,6 @@
 .option(class=`bttvOption-${storageKey}`)
     span(style="font-weight:bold;font-size:14px;color:#D3D3D3;")= name
-    | &nbsp;&nbsp;&mdash;&nbsp;&nbsp;
-    = description
+    span(class="description")= ` — ${description}`
     .bttv-switch
         input.bttv-switch-input.bttv-switch-off(type="radio" name=storageKey value="false" id=`${storageKey}False`)
         label.bttv-switch-label.bttv-switch-label-off(for=`${storageKey}False`) Off

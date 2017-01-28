@@ -573,6 +573,7 @@ input.text:focus,select:focus,textarea:focus {
 }
 
 #bttvSettingsPanel .option {
+    position: relative;
     color: #999;
     line-height: 30px;
     width: -moz-calc(100% - 20px);
@@ -773,9 +774,9 @@ input.text:focus,select:focus,textarea:focus {
 }
 
 .bttv-switch {
-  position: relative;
-  float: right;
+  position: absolute;
   right: 7px;
+  top: 4px;
   height: 26px;
   width: 120px;
   background: rgba(0, 0, 0, 0.25);
