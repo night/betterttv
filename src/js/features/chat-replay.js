@@ -8,7 +8,7 @@ function ChatReplay() {
 
         var route = App.__container__.lookup('controller:application').get('currentRouteName');
 
-        if (route === 'loading' || route !== 'vod') return;
+        if (route === 'loading' || route !== 'videos') return;
 
         clearTimeout(this._waitForLoad);
         this._waitForLoad = null;

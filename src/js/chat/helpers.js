@@ -102,7 +102,7 @@ var containsCheer = function(msg) {
 
 exports.getCheerConfig = function(piece) {
     var service = getBitsService();
-    if (!service) return;
+    if (!service || !service.regexes) return;
 
     var config;
     for (var i = 0; i < service.regexes.length; i++) {
