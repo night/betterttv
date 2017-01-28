@@ -83,8 +83,8 @@ var detectServerCommand = function(input) {
 var bitsServiceCache;
 var getBitsService = function() {
     if (bitsServiceCache) return bitsServiceCache;
-    if (!App || !App.__container__.lookup('service:bits-rendering-config')) return;
-    bitsServiceCache = App.__container__.lookup('service:bits-rendering-config');
+    if (!App || !App.__container__.lookup('service:bits-emotes')) return;
+    bitsServiceCache = App.__container__.lookup('service:bits-emotes');
     return bitsServiceCache;
 };
 
@@ -108,7 +108,7 @@ exports.getCheerConfig = function(piece) {
     for (var i = 0; i < service.regexes.length; i++) {
         if (piece.match(service.regexes[i].valid)) {
             var key = service.regexes[i].prefix.toLowerCase();
-            config = service.config[key];
+            config = service.emoteConfig[key];
         }
     }
     return config;
