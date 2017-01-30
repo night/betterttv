@@ -5,13 +5,9 @@ module.exports = function() {
 
     try {
         var routeName = App.__container__.lookup('controller:application').get('currentRouteName');
-        if (routeName !== 'channel.index.index' && routeName !== 'vod') return;
+        if (routeName !== 'channel.index.index' && ['videos', 'vod'].indexOf(routeName) === -1) return;
 
         window.Mousetrap.trigger('alt+t');
-
-        App.__container__.lookup('service:layout').addObserver('isTheatreMode', function() {
-            window.dispatchEvent(new Event('resize'));
-        });
     } catch (e) {
         debug.log('Error toggling theater mode: ', e);
     }
