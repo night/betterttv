@@ -11,7 +11,8 @@ var vars = require('../vars'),
     embeddedPolling = require('../features/embedded-polling'),
     channelState = require('../features/channel-state'),
     audibleFeedback = require('../features/audible-feedback'),
-    blacklistedEmoji = require('../helpers/emoji-blacklist.json');
+    blacklistedEmoji = require('../helpers/emoji-blacklist.json'),
+    timestamp = require('../helpers/timestamp').timestamp;
 
 // Helper Functions
 var getRgb = require('../helpers/colors').getRgb;
@@ -431,7 +432,7 @@ var privmsg = exports.privmsg = function(channel, data) {
         message = templates.privmsg({
             nickname: 'jtv',
             message: data.tags['system-msg'],
-            time: data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
+            time: timestamp(data.date),
             badges: [{type: 'subscriber', name: '', description: 'Channel Subscriber'}],
             color: '#555'
         }, {server: true, notice: true});
@@ -462,7 +463,7 @@ var privmsg = exports.privmsg = function(channel, data) {
         data.style = 'admin';
         message = templates.privmsg({
             message: data.message,
-            time: data.date ? data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2') : '',
+            time: data.date ? timestamp(data.date) : '',
             nickname: data.from || 'jtv',
             sender: data.from,
             badges: data.badges || (data.from === 'twitchnotify' ? [{
@@ -533,7 +534,7 @@ var privmsg = exports.privmsg = function(channel, data) {
 
         message = templates.whisper({
             message: data.message,
-            time: data.date ? data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2') : '',
+            time: data.date ? timestamp(data.date) : '',
             from: from,
             sender: sender,
             receiver: data.to,
@@ -558,7 +559,7 @@ var privmsg = exports.privmsg = function(channel, data) {
 
     message = templates.privmsg({
         message: data.message,
-        time: data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
+        time: timestamp(data.date),
         nickname: from,
         sender: sender,
         badges: bttvBadges,
