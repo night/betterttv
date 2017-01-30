@@ -110,14 +110,15 @@ bttv.notify = function(message, options) {
     } else {
         message = message.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br /><br />').replace(/Click here(.*)./, '<a style="color: white;" target="_blank" href="' + url + '">Click here$1.</a>');
 
-        if (!window.Twitch.notify) return;
-
-        window.Twitch.notify.alert(message, {
-            layout: 'bottomCenter',
-            timeout: 5000,
-            killer: true,
-            escape: false
-        });
+        // sometimes causes an error with closeAll
+        try {
+            window.Twitch.notify.alert(message, {
+                layout: 'bottomCenter',
+                timeout: 5000,
+                killer: true,
+                escape: false
+            });
+        } catch (e) {}
     }
 };
 
