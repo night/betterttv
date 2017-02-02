@@ -452,6 +452,13 @@ var privmsg = exports.privmsg = function(channel, data) {
 
     if (data.style && ['admin', 'action', 'notification', 'whisper'].indexOf(data.style) === -1) return;
 
+    var blacklistFilter = require('../features/keywords-lists').blacklistFilter,
+        highlighting = require('../features/keywords-lists').highlighting;
+
+    if (bttv.settings.get('blacklistKeywords')) {
+        if (blacklistFilter(data)) return;
+    }
+
     if (data.style === 'admin' || data.style === 'notification') {
         if (data.message.indexOf('Sorry, we were unable to connect to chat.') > -1 && store.ignoreDC === true) {
             store.ignoreDC = false;
@@ -488,13 +495,6 @@ var privmsg = exports.privmsg = function(channel, data) {
     if (!store.chatters[data.from]) store.chatters[data.from] = {lastWhisper: 0};
 
     if (store.trackTimeouts[data.from]) delete store.trackTimeouts[data.from];
-
-    var blacklistFilter = require('../features/keywords-lists').blacklistFilter,
-        highlighting = require('../features/keywords-lists').highlighting;
-
-    if (bttv.settings.get('blacklistKeywords')) {
-        if (blacklistFilter(data)) return;
-    }
 
     var messageHighlighted = bttv.settings.get('highlightKeywords') && highlighting(data);
 
