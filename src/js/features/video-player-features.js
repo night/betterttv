@@ -16,11 +16,4 @@ module.exports = function() {
             }, 250);
         }
     });
-
-    $('body').on('click', '.player-controls-bottom .js-control-fullscreen', function() {
-        setTimeout(function() {
-            var height = bttv.settings.get('disableChannelHeader') ? 0 : 380;
-            $('.js-main-col-scroll-content').scrollTop(height);
-        }, 100);
-    });
 };
