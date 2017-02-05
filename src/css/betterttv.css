@@ -2315,6 +2315,13 @@ body.channel_new.columns.ember-application {
     text-align: center;
 }
 
+/* Mini-player / fullscreen fix */
+.player-mini .player[data-isfullscreen=true] {
+    width: auto;
+    height: auto;
+    top: 0;
+}
+
 /*** Holiday 2016 BTTV emote CSS ***/
 
 /* No stacking of IceCube or SoSnowy */

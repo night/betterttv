@@ -211,13 +211,7 @@ var main = function() {
                             hidePrimePromotions();
                             disableChannelHeader();
                             freeSubReminder();
-
-                            try {
-                                var isTheatre = App.__container__.lookup('service:persistentPlayer').playerComponent.player.theatre;
-                                if (isTheatre && bttv.settings.get('autoTheatreMode')) {
-                                    enableTheatreMode();
-                                }
-                            } catch (e) {}
+                            enableTheatreMode();
 
                             // Switching between tabs in channel page
                             if (lastRoute.substr(0, 8) === 'channel.') return;
@@ -230,14 +224,8 @@ var main = function() {
                     break;
                 case 'vod':
                 case 'videos':
+                    enableTheatreMode();
                     // disconnect old chat replay watcher, spawn new
-                    try {
-                        var isTheatre = App.__container__.lookup('service:persistentPlayer').playerComponent.player.theatre;
-                        if (isTheatre && bttv.settings.get('autoTheatreMode')) {
-                            enableTheatreMode();
-                        }
-                    } catch (e) {}
-
                     try {
                         chatReplay.disconnect();
                     } catch (e) {}
@@ -325,15 +313,13 @@ var main = function() {
         videoPlayerFeatures();
         disableChannelHeader();
         freeSubReminder();
+        enableTheatreMode();
 
         // Loads global BTTV emotes (if not loaded)
         overrideEmotes();
 
         if (bttv.settings.get('chatImagePreview') === true) {
             enableImagePreview();
-        }
-        if (bttv.settings.get('autoTheatreMode') === true) {
-            enableTheatreMode();
         }
 
         window.dispatchEvent(new Event('resize'));

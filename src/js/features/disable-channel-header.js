@@ -4,7 +4,13 @@ function setHeaderHeight(height) {
 
     var viewRegistry = App.__container__.lookup('-view-registry:main');
     var channelRedesign = viewRegistry[channelDiv[0].id];
+    if (!channelRedesign) return;
+
     channelRedesign.set('channelCoverHeight', height);
+
+    layoutService = App.__container__.lookup('service:layout');
+    if (layoutService) layoutService.set('channelCoverHeight', height);
+
     $('.cn-cover.ember-view').height(height);
     $('.js-main-col-scroll-content').scrollTop(1);
     setTimeout(function() {
