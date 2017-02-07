@@ -1077,6 +1077,7 @@ exports.loadGameWispEmotes = function() {
             emote.url = gwEmote.image_asset.data.content.small;
             emote.name = gwEmote.name;
             emote.code = gwEmote.shortcode;
+            emote.id = gwEmote.id;
 
             store.gwEmotes[emote.code] = emote;
         });

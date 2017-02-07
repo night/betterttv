@@ -6,20 +6,15 @@ var msgpack = require('msgpack-lite');
 var events = {};
 
 events.initialize_room = function(data) {
-    var emotes = data.emotes ? data.emotes : [],
-        emote;
+    var emotes = data.emotes ? data.emotes : [];
 
     // initialize the room emotes (holds all emotes usable by others in the chat)
     emotes.forEach(function(gwEmote) {
-        if (!chat.gwRoomEmotes[gwEmote.shortcode]) {
-            emote = {};
-            emote.type = 'gamewisp';
-            emote.imageType = 'png';
-            emote.url = gwEmote.url;
-            emote.code = gwEmote.shortcode;
-            emote.id = gwEmote.id;
+        if (!chat.gwRoomEmotes[gwEmote.code]) {
+            gwEmote.type = 'gamewisp';
+            gwEmote.imageType = 'png';
 
-            chat.gwRoomEmotes[gwEmote.shortcode] = emote;
+            chat.gwRoomEmotes[gwEmote.code] = gwEmote;
         }
     });
 
@@ -45,15 +40,11 @@ events.update_room = function(data) {
 
     // add the emotes
     newEmotes.forEach(function(gwEmote) {
-        if (!chat.gwRoomEmotes[gwEmote.shortcode]) {
-            emote = {};
-            emote.type = 'gamewisp';
-            emote.imageType = 'png';
-            emote.url = gwEmote.url;
-            emote.code = gwEmote.shortcode;
-            emote.id = gwEmote.id;
+        if (!chat.gwRoomEmotes[gwEmote.code]) {
+            gwEmote.type = 'gamewisp';
+            gwEmote.imageType = 'png';
 
-            chat.gwRoomEmotes[gwEmote.shortcode] = emote;
+            chat.gwRoomEmotes[gwEmote.code] = gwEmote;
         }
     });
 
@@ -109,8 +100,12 @@ events.add_emote = function(data) {
     }
 
     // add the emote id to all of the users
-    data.emote_users.forEach(function(user) {
-        var usableEmoteIDs = chat.gwRoomUsers[user] ? chat.gwRoomUsers[user] : [];
+    data.emoteUsers.forEach(function(user) {
+        if (!chat.gwRoomUsers[user]) {
+            chat.gwRoomUsers[user] = [];
+        }
+
+        var usableEmoteIDs = chat.gwRoomUsers[user];
 
         if (usableEmoteIDs.indexOf(emote.id) === -1) {
             usableEmoteIDs.push(emote.id);
@@ -208,7 +203,7 @@ function SocketClientGW() {
     this._connected = false;
     this._connecting = false;
     this._connectAttempts = 1;
-    this._joinedChannel = null;
+    this._joinedRoom = null;
     this._events = events;
 
     if (bttv.settings.get('gwEmotes')) {

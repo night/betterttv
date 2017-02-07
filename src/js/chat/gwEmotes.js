@@ -18,7 +18,7 @@ module.exports = function() {
         usableEmotes.push({
             text: emote.code,
             channel: 'GameWisp Emotes',
-            badge: 'http://bdcraft.net/community/images/smilies/aaw.png',
+            badge: 'https://d32y8axfzs6sv8.cloudfront.net/static/gamewisp_transparent_18px.png',
             url: emote.url
         });
     });
