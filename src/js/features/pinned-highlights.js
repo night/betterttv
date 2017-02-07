@@ -1,4 +1,5 @@
 var highlightTemplate = require('../../templates/pinned-highlight');
+var timestamp = require('../helpers/timestamp').timestamp;
 
 // only pin up to 10 messages
 var maximumPinCount = 10;
@@ -13,7 +14,7 @@ module.exports = function(message) {
         $highlightContainer = $('<div id="bttv-pin-container">').appendTo($('.ember-chat .chat-room'));
     }
 
-    var timeSent = message.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2');
+    var timeSent = timestamp(message.date);
 
     var $nextHighlight = $(highlightTemplate({ time: timeSent, displayName: message.tags['display-name'] || message.from, message: message.message }));
 

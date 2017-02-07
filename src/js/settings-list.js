@@ -10,7 +10,8 @@ var splitChat = require('./features/split-chat'),
     disableChannelHeader = require('./features/disable-channel-header'),
     handleTwitchChatEmotesScript = require('./features/handle-twitchchat-emotes'),
     audibleFeedback = require('./features/audible-feedback'),
-    imagePreview = require('./features/image-preview');
+    imagePreview = require('./features/image-preview'),
+    chatFontSettings = require('./features/chat-font-settings');
 
 var displayElement = require('./helpers/element').display,
     removeElement = require('./helpers/element').remove;
@@ -398,6 +399,7 @@ module.exports = [
         storageKey: 'hideBits',
         toggle: function(value) {
             if (value === true) {
+                chat.helpers.dismissPinnedCheer();
                 cssLoader.load('hide-bits', 'hideBits');
             } else {
                 cssLoader.unload('hideBits');
@@ -494,6 +496,20 @@ module.exports = [
         description: 'BetterTTV replaces the robot emoticons with the old JTV monkey faces',
         default: false,
         storageKey: 'showMonkeyEmotes'
+    },
+    {
+        name: 'Left side chat',
+        description: 'Moves the chat to the left of the player',
+        default: false,
+        storageKey: 'leftSideChat',
+        toggle: function(value) {
+            $('body').toggleClass('swap-chat', value);
+        },
+        load: function() {
+            if (bttv.settings.get('leftSideChat') === true) {
+                $('body').addClass('swap-chat');
+            }
+        }
     },
     {
         name: 'Mod Card Keybinds',
@@ -683,6 +699,26 @@ module.exports = [
             } else {
                 chat.helpers.serverMessage('Chat scrollback is now set to: ' + lines, true);
             }
+        }
+    },
+    {
+        storageKey: 'chatFontFamily',
+        default: '',
+        load: function() {
+            chatFontSettings.initFontFamily();
+        },
+        toggle: function(font) {
+            chatFontSettings.setFontFamily(font);
+        }
+    },
+    {
+        storageKey: 'chatFontSize',
+        default: 0,
+        load: function() {
+            chatFontSettings.initFontSize();
+        },
+        toggle: function(size) {
+            chatFontSettings.setFontSize(size);
         }
     }
 ];

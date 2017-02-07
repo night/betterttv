@@ -116,6 +116,7 @@ function loadViewerList() {
             eachrow: function(row) {
                 return this.html(row.tag, {
                     onclick: function(e) {
+                        if (row.filter) return;
                         handlers.moderationCard(row.text, $(e.target));
                     }
                 }, row.display || row.text);

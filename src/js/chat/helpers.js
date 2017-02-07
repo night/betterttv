@@ -80,12 +80,47 @@ var detectServerCommand = function(input) {
     return false;
 };
 
-var cheerRegex = /^\s*cheer\d+\s*$/i;
-var containsCheer = exports.containsCheer = function(msg) {
+var bitsServiceCache;
+var getBitsService = function() {
+    if (bitsServiceCache) return bitsServiceCache;
+    if (!App || !App.__container__.lookup('service:bits-emotes')) return;
+    bitsServiceCache = App.__container__.lookup('service:bits-emotes');
+    return bitsServiceCache;
+};
+
+var containsCheer = function(msg) {
+    var service = getBitsService();
+    if (!service) return false;
+
     words = msg ? msg.split(/\s+/) : [];
     return words.some(function(w) {
-        return cheerRegex.test(w);
+        return service.regexes.some(function(r) {
+            return w.match(r.valid);
+        });
     });
+};
+
+exports.getCheerConfig = function(piece) {
+    var service = getBitsService();
+    if (!service || !service.regexes) return;
+
+    var config;
+    for (var i = 0; i < service.regexes.length; i++) {
+        if (piece.match(service.regexes[i].valid)) {
+            var key = service.regexes[i].prefix.toLowerCase();
+            config = service.emoteConfig[key];
+        }
+    }
+    return config;
+};
+
+exports.dismissPinnedCheer = function() {
+    try {
+        var service = window.App.__container__.lookup('service:bits-pinned-cheers');
+        if (service.topPinnedCheer || service.recentPinnedCheer) service.dismissLocalMessage();
+    } catch (dismissError) {
+        debug.log('Failed to dismiss cheer:', dismissError);
+    }
 };
 
 exports.parseTags = function(tags) {
@@ -350,9 +385,7 @@ var serverMessage = exports.serverMessage = function(message, displayTimestamp) 
 exports.whisperReply = function() {
     var $chatInput = $('.ember-chat .chat-interface').find('textarea');
     if ($chatInput.val() === '/r ' && bttv.settings.get('disableWhispers') === false) {
-        var to = ($.grep(store.__rooms[store.currentRoom].messages, function(msg) {
-            return (msg.style === 'whisper' && msg.from.toLowerCase() !== vars.userData.name);
-        }).pop() || {from: null}).from;
+        var to = $('.chat-line.whisper:last .from:first').text();
         if (to) {
             $chatInput.val('/w ' + to + ' ');
         } else {
@@ -1082,9 +1115,4 @@ exports.loadGameWispEmotes = function() {
             store.gwEmotes[emote.code] = emote;
         });
     });
-};
-
-exports.getBitsConfig = function() {
-    if (!App || !App.__container__.lookup('service:bits-rendering-config')) return;
-    return App.__container__.lookup('service:bits-rendering-config').get('config');
 };

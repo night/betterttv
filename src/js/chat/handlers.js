@@ -11,7 +11,8 @@ var vars = require('../vars'),
     embeddedPolling = require('../features/embedded-polling'),
     channelState = require('../features/channel-state'),
     audibleFeedback = require('../features/audible-feedback'),
-    blacklistedEmoji = require('../helpers/emoji-blacklist.json');
+    blacklistedEmoji = require('../helpers/emoji-blacklist.json'),
+    timestamp = require('../helpers/timestamp').timestamp;
 
 // Helper Functions
 var getRgb = require('../helpers/colors').getRgb;
@@ -49,7 +50,7 @@ exports.commands = function(input) {
         } else {
             helpers.serverMessage('You need to be logged in to use this command', true);
         }
-    } else if (command === '/followers') {
+    } else if (command === '/followcount') {
         bttv.TwitchAPI.get('channels/' + channelName + '/follows').done(function(channel) {
             helpers.serverMessage('Current Followers: ' + Twitch.display.commatize(channel._total), true);
         }).fail(function() {
@@ -106,8 +107,8 @@ exports.commands = function(input) {
         bttv.TwitchAPI.get('streams/' + channelName).done(function(stream) {
             if (stream.stream !== null) {
                 var startedTime = new Date(stream.stream.created_at),
-                    totalUptime = Math.round(Math.abs((Date.now() - (startedTime.getTime() - (startedTime.getTimezoneOffset() * 60 * 1000))) / 1000));
-                helpers.serverMessage('Stream uptime: ' + secondsToLength(totalUptime), true);
+                    secondsSince = Math.round((Date.now() - startedTime.getTime()) / 1000);
+                helpers.serverMessage('Stream uptime: ' + secondsToLength(secondsSince), true);
             } else {
                 helpers.serverMessage('Stream offline', true);
             }
@@ -130,7 +131,7 @@ exports.commands = function(input) {
         helpers.serverMessage('/b [username] -- Shortcut for /ban');
         helpers.serverMessage('/chatters -- Tells you how many users are currently in chat');
         helpers.serverMessage('/followed -- Tells you for how long you have been following a channel');
-        helpers.serverMessage('/followers -- Retrieves the number of followers for the channel');
+        helpers.serverMessage('/followcount -- Retrieves the number of followers for the channel');
         helpers.serverMessage('/join -- Joins the channel (deactivates anon chat mode)');
         helpers.serverMessage('/linehistory on/off -- Toggles the chat field history (pressing up/down arrow in textbox)');
         helpers.serverMessage('/localascii -- Turns on local ascii-only mode (only your chat is ascii-only mode)');
@@ -431,7 +432,7 @@ var privmsg = exports.privmsg = function(channel, data) {
         message = templates.privmsg({
             nickname: 'jtv',
             message: data.tags['system-msg'],
-            time: data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
+            time: timestamp(data.date),
             badges: [{type: 'subscriber', name: '', description: 'Channel Subscriber'}],
             color: '#555'
         }, {server: true, notice: true});
@@ -451,6 +452,13 @@ var privmsg = exports.privmsg = function(channel, data) {
 
     if (data.style && ['admin', 'action', 'notification', 'whisper'].indexOf(data.style) === -1) return;
 
+    var blacklistFilter = require('../features/keywords-lists').blacklistFilter,
+        highlighting = require('../features/keywords-lists').highlighting;
+
+    if (bttv.settings.get('blacklistKeywords')) {
+        if (blacklistFilter(data)) return;
+    }
+
     if (data.style === 'admin' || data.style === 'notification') {
         if (data.message.indexOf('Sorry, we were unable to connect to chat.') > -1 && store.ignoreDC === true) {
             store.ignoreDC = false;
@@ -462,7 +470,7 @@ var privmsg = exports.privmsg = function(channel, data) {
         data.style = 'admin';
         message = templates.privmsg({
             message: data.message,
-            time: data.date ? data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2') : '',
+            time: data.date ? timestamp(data.date) : '',
             nickname: data.from || 'jtv',
             sender: data.from,
             badges: data.badges || (data.from === 'twitchnotify' ? [{
@@ -470,7 +478,8 @@ var privmsg = exports.privmsg = function(channel, data) {
                 name: '',
                 description: 'Channel Subscriber'
             }] : []),
-            color: '#555'
+            color: '#555',
+            emotes: data.tags && data.tags.emotes,
         }, {
             action: data.style === 'action' ? true : false,
             server: data.style === 'admin' ? true : false,
@@ -486,13 +495,6 @@ var privmsg = exports.privmsg = function(channel, data) {
     if (!store.chatters[data.from]) store.chatters[data.from] = {lastWhisper: 0};
 
     if (store.trackTimeouts[data.from]) delete store.trackTimeouts[data.from];
-
-    var blacklistFilter = require('../features/keywords-lists').blacklistFilter,
-        highlighting = require('../features/keywords-lists').highlighting;
-
-    if (bttv.settings.get('blacklistKeywords')) {
-        if (blacklistFilter(data)) return;
-    }
 
     var messageHighlighted = bttv.settings.get('highlightKeywords') && highlighting(data);
 
@@ -532,7 +534,7 @@ var privmsg = exports.privmsg = function(channel, data) {
 
         message = templates.whisper({
             message: data.message,
-            time: data.date ? data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2') : '',
+            time: data.date ? timestamp(data.date) : '',
             from: from,
             sender: sender,
             receiver: data.to,
@@ -557,7 +559,7 @@ var privmsg = exports.privmsg = function(channel, data) {
 
     message = templates.privmsg({
         message: data.message,
-        time: data.date.toLocaleTimeString().replace(/^(\d{0,2}):(\d{0,2}):(.*)$/i, '$1:$2'),
+        time: timestamp(data.date),
         nickname: from,
         sender: sender,
         badges: bttvBadges,

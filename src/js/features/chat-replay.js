@@ -8,7 +8,7 @@ function ChatReplay() {
 
         var route = App.__container__.lookup('controller:application').get('currentRouteName');
 
-        if (route === 'loading' || route !== 'vod') return;
+        if (route === 'loading' || ['videos', 'vod'].indexOf(route) === -1) return;
 
         clearTimeout(this._waitForLoad);
         this._waitForLoad = null;
@@ -42,10 +42,15 @@ ChatReplay.prototype.connect = function() {
     this.watcher.observe($('body')[0], { childList: true, subtree: true });
 
     $('body').off('click', '.chat-line .from, .chat-line .user-mention').on('click', '.chat-line .from, .chat-line .user-mention', function() {
+        var sender;
         var $element = $(this);
-        var sender = $element.text().toLowerCase();
-        if ($element.hasClass('user-mention')) {
-            sender = sender.substring(1);
+        var $chatLineId = $element.closest('.chat-line').attr('id');
+        if ($chatLineId && $chatLineId.indexOf('ember') > -1) {
+            sender = App.__container__.lookup('-view-registry:main')[$chatLineId].msgObject.get('from');
+        } else if ($element.hasClass('user-mention')) {
+            sender = $element.text().toLowerCase().substring(1);
+        } else {
+            sender = $element.text().toLowerCase();
         }
 
         chatHandlers.moderationCard(sender, $element);
