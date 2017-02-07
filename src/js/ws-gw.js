@@ -29,9 +29,6 @@ events.initialize_room = function(data) {
             }
         }
     }
-
-    console.log('gwRoomEmotes', chat.gwRoomEmotes);
-    console.log('gwRoomUsers', chat.gwRoomUsers);
 };
 
 events.update_room = function(data) {
@@ -50,9 +47,6 @@ events.update_room = function(data) {
 
     // add the user
     chat.gwRoomUsers[newUser.name] = newUser.emoteIDs;
-
-    console.log('gwRoomEmotes', chat.gwRoomEmotes);
-    console.log('gwRoomUsers', chat.gwRoomUsers);
 };
 
 events.leave_room = function(data) {
@@ -61,20 +55,14 @@ events.leave_room = function(data) {
     if (chat.gwRoomUsers[username]) {
         delete chat.gwRoomUsers[username];
     }
-
-    console.log('gwRoomEmotes', chat.gwRoomEmotes);
-    console.log('gwRoomUsers', chat.gwRoomUsers);
 };
 
 events.remove_emote = function(data) {
-    console.log('remove emote data', data);
-
     var emoteID = parseInt(data.emoteID, 10),
         code = data.emoteCode;
 
     // delete the emote from the room emotes store
     if (chat.gwRoomEmotes[code] && chat.gwRoomEmotes[code].id === emoteID) {
-        // chat.gwRoomEmotes[code].url = null;
         delete chat.gwRoomEmotes[code];
     }
 
@@ -82,14 +70,9 @@ events.remove_emote = function(data) {
     if (chat.gwEmotes[code]) {
         delete chat.gwEmotes[code];
     }
-
-    console.log('gwRoomEmotes', chat.gwRoomEmotes);
-    console.log('gwRoomUsers', chat.gwRoomUsers);
 };
 
 events.add_emote = function(data) {
-    console.log('add emote data', data);
-
     // add the emote
     var emote = data.emote;
     emote.type = 'gamewisp';
@@ -118,14 +101,9 @@ events.add_emote = function(data) {
             }
         }
     });
-
-    console.log('gwRoomEmotes', chat.gwRoomEmotes);
-    console.log('gwRoomUsers', chat.gwRoomUsers);
 };
 
 events.new_subscriber = function(data) {
-    console.log('new subscriber data', data);
-
     if (!data.emotes) return;
 
     if (!chat.gwRoomUsers[data.user]) {
@@ -153,15 +131,10 @@ events.new_subscriber = function(data) {
             chat.gwEmotes[emote.code] = emote;
         }
     });
-
-    console.log('gwRoomEmotes', chat.gwRoomEmotes);
-    console.log('gwRoomUsers', chat.gwRoomUsers);
 };
 
 events.cancel_subscriber = function(data) {
     // remove emote ids that the user can no longer use since their subscription was cancelled
-    console.log('cancel subscriber data', data);
-
     if (!chat.gwRoomUsers[data.user]) return;
 
     var emoteIDsToRemove = data.emoteIDs,
@@ -193,9 +166,6 @@ events.cancel_subscriber = function(data) {
             }
         }
     }
-
-    console.log('gwRoomEmotes', chat.gwRoomEmotes);
-    console.log('gwRoomUsers', chat.gwRoomUsers);
 };
 
 function SocketClientGW() {
@@ -290,8 +260,8 @@ SocketClientGW.prototype.reconnect = function() {
 };
 
 SocketClientGW.prototype.emit = function(evt, data) {
-    debug.log('emitting evt', evt);
-    debug.log('emitting data', data);
+    debug.log('SocketClientGW: Emitting Event', evt);
+    debug.log('SocketClientGW: Emitting Data', data);
 
     if (!this._connected || !this.socket) return;
 
