@@ -536,6 +536,12 @@ module.exports = [
         load: audibleFeedback.load
     },
     {
+        name: 'Regex Highlighting/Blacklisting',
+        description: 'Surround terms with "/"s to use them as regular expressions',
+        default: false,
+        storageKey: 'regexHighlights',
+    },
+    {
         name: 'Remove Deleted Messages',
         description: 'Completely removes timed out messages from view',
         default: false,
@@ -588,10 +594,32 @@ module.exports = [
         default: '',
         storageKey: 'blacklistKeywords',
         toggle: function(keywords) {
+            var blacklistRegexes = [];
+            var useRegex = bttv.settings.get('regexHighlights');
+            var i;
+            if (useRegex) {
+                // Pull the regular expressions out first so curly braces
+                // in the expression won't double count as phrases
+                var regexPhrase = /\/.+?\//g;
+                var regexStrings;
+                try {
+                    regexStrings = keywords.match(regexPhrase);
+                } catch (e) {
+                }
+                if (regexStrings) {
+                    for (i = 0; i < regexStrings.length; i++) {
+                        var regexString = regexStrings[i];
+                        keywords = keywords.replace(regexString, '')
+                            .replace(/s\s\s+/g, ' ').trim();
+                        blacklistRegexes.push('/' + regexString.replace(/(^\/|\/$)/g, '')
+                                              .trim() + '/');
+                    }
+                }
+            }
+
             var phraseRegex = /\{.+?\}/g;
             var testCases = keywords.match(phraseRegex);
             var phraseKeywords = [];
-            var i;
             if (testCases) {
                 for (i = 0; i < testCases.length; i++) {
                     var testCase = testCases[i];
@@ -600,7 +628,7 @@ module.exports = [
                 }
             }
 
-            keywords === '' ? keywords = phraseKeywords : keywords = keywords.split(' ').concat(phraseKeywords);
+            keywords === '' ? keywords = phraseKeywords.concat(blacklistRegexes) : keywords = keywords.split(' ').concat(phraseKeywords).concat(blacklistRegexes);
 
             for (i = 0; i < keywords.length; i++) {
                 if (/^\([a-z0-9_\-\*]+\)$/i.test(keywords[i])) {
@@ -656,19 +684,41 @@ module.exports = [
         default: (vars.userData.isLoggedIn ? vars.userData.name : ''),
         storageKey: 'highlightKeywords',
         toggle: function(keywords) {
+            var highlightRegexes = [];
+            var useRegex = bttv.settings.get('regexHighlights');
+            var i;
+            if (useRegex) {
+                // Pull the regular expressions out first so curly braces
+                // in the expression won't double count as phrases
+                var regexPhrase = /\/.+?\//g;
+                var regexStrings;
+                try {
+                    regexStrings = keywords.match(regexPhrase);
+                } catch (e) {
+                }
+                if (regexStrings) {
+                    for (i = 0; i < regexStrings.length; i++) {
+                        var regexString = regexStrings[i];
+                        keywords = keywords.replace(regexString, '')
+                            .replace(/s\s\s+/g, ' ').trim();
+                        highlightRegexes.push('/' + regexString.replace(/(^\/|\/$)/g, '')
+                                            .trim() + '/');
+                    }
+                }
+            }
+
             var phraseRegex = /\{.+?\}/g;
             var testCases = keywords.match(phraseRegex);
             var phraseKeywords = [];
-
             if (testCases) {
-                for (var i = 0; i < testCases.length; i++) {
+                for (i = 0; i < testCases.length; i++) {
                     var testCase = testCases[i];
                     keywords = keywords.replace(testCase, '').replace(/\s\s+/g, ' ').trim();
                     phraseKeywords.push('"' + testCase.replace(/(^\{|\}$)/g, '').trim() + '"');
                 }
             }
 
-            keywords === '' ? keywords = phraseKeywords : keywords = keywords.split(' ').concat(phraseKeywords);
+            keywords === '' ? keywords = phraseKeywords.concat(highlightRegexes) : keywords = keywords.split(' ').concat(phraseKeywords).concat(highlightRegexes);
 
             for (var j = 0; j < keywords.length; j++) {
                 if (/^\([a-z0-9_\-\*]+\)$/i.test(keywords[j])) {

@@ -1,6 +1,7 @@
 var vars = require('../vars');
 var debug = require('../helpers/debug');
 var escapeRegExp = require('../helpers/regex').escapeRegExp;
+var safeRegex = require('safe-regex');
 
 exports.blacklistFilter = function(data) {
     var blacklistKeywords = [];
@@ -8,6 +9,33 @@ exports.blacklistFilter = function(data) {
 
     var keywords = bttv.settings.get('blacklistKeywords').toString();
     var phraseRegex = /\{.+?\}/g;
+
+    var useRegex = bttv.settings.get('regexHighlights');
+
+    var i;
+    var blacklistRegexes = [];
+    if (useRegex) {
+        // Pull the regular expressions out first so curly braces
+        // in the expression won't double count as phrases
+        var regexPhrase = /\/.+?\//g;
+        var regexStrings;
+        try {
+            regexStrings = keywords.match(regexPhrase);
+        } catch (e) {
+            debug.log(e);
+            return false;
+        }
+        if (regexStrings) {
+            for (i = 0; i < regexStrings.length; i++) {
+                var regexString = regexStrings[i];
+                debug.log(regexString);
+                keywords = keywords.replace(regexString, '')
+                    .replace(/s\s\s+/g, ' ').trim();
+                blacklistRegexes.push(regexString.replace(/(^\/|\/$)/g, '')
+                                    .trim());
+            }
+        }
+    }
 
     var testCases;
     try {
@@ -17,7 +45,6 @@ exports.blacklistFilter = function(data) {
         return false;
     }
 
-    var i;
     if (testCases) {
         for (i = 0; i < testCases.length; i++) {
             var testCase = testCases[i];
@@ -52,6 +79,18 @@ exports.blacklistFilter = function(data) {
         }
     }
 
+    if (useRegex) {
+        for (i = 0; i < blacklistRegexes.length; i++) {
+            debug.log('Testing ' + blacklistRegexes[i]);
+            regex = new RegExp(blacklistRegexes[i], 'g');
+            if (safeRegex(regex) && regex.test(data.message)) {
+                return true;
+            } else if (!safeRegex(regex)) {
+                debug.log('Unsafe regex detected, not evaluating: ' + regex);
+            }
+        }
+    }
+
     return false;
 };
 
@@ -60,10 +99,36 @@ exports.highlighting = function(data) {
 
     var highlightKeywords = [];
     var highlightUsers = [];
+    var i;
 
-    var extraKeywords = bttv.settings.get('highlightKeywords').toString();
+    var extraKeywords = bttv.settings.get('highlightKeywords');
+    var useRegex = bttv.settings.get('regexHighlights');
+
+    var highlightRegexes = [];
+    if (useRegex) {
+        // Pull the regular expressions out first so curly braces
+        // in the expression won't double count as phrases
+        var regexPhrase = /\/.+?\//g;
+        var regexStrings;
+        try {
+            regexStrings = extraKeywords.match(regexPhrase);
+        } catch (e) {
+            debug.log(e);
+            return false;
+        }
+        if (regexStrings) {
+            for (i = 0; i < regexStrings.length; i++) {
+                var regexString = regexStrings[i];
+                debug.log(regexString);
+                extraKeywords = extraKeywords.replace(regexString, '')
+                    .replace(/s\s\s+/g, ' ').trim();
+                highlightRegexes.push(regexString.replace(/(^\/|\/$)/g, '')
+                                    .trim());
+            }
+        }
+    }
+
     var phraseRegex = /\{.+?\}/g;
-
     var testCases;
     try {
         testCases = extraKeywords.match(phraseRegex);
@@ -72,7 +137,6 @@ exports.highlighting = function(data) {
         return false;
     }
 
-    var i;
     if (testCases) {
         for (i = 0; i < testCases.length; i++) {
             var testCase = testCases[i];
@@ -80,6 +144,7 @@ exports.highlighting = function(data) {
             highlightKeywords.push(testCase.replace(/(^\{|\}$)/g, '').trim());
         }
     }
+
     if (extraKeywords !== '') {
         extraKeywords = extraKeywords.split(' ');
         extraKeywords.forEach(function(keyword) {
@@ -118,6 +183,19 @@ exports.highlighting = function(data) {
             return true;
         }
     }
+
+    if (useRegex) {
+        for (i = 0; i < highlightRegexes.length; i++) {
+            debug.log('Testing ' + highlightRegexes[i]);
+            regex = new RegExp(highlightRegexes[i], 'g');
+            if (safeRegex(regex) && regex.test(data.message)) {
+                return true;
+            } else if (!safeRegex(regex)) {
+                debug.log('Unsafe regex detected, not evaluating: ' + regex);
+            }
+        }
+    }
+
 
     return false;
 };

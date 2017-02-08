@@ -31,6 +31,7 @@
     "lodash.throttle": "^4.1.1",
     "request": "2.75.0",
     "resizable": "^1.2.0",
+    "safe-regex": "^1.1.0",
     "twemoji": "^2.2.0",
     "twitch-chat-emotes": "github:cletusc/Userscript--Twitch-Chat-Emotes#5fbf5076906840216590435146fc0a8034c3d3e6",
     "uglify-save-license": "^0.4.1",
