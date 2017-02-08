@@ -4,11 +4,11 @@ module.exports = function() {
     function handleKeyEvent(keyup) {
         if (!$('input, textarea, select').is(':focus')) {
             if (keyup.keyCode === keyCodes.k) {
-                document.getElementsByClassName('js-control-playpause-button')[0].click();
+                $('#player').find('.js-control-playpause-button').click();
             } else if (keyup.keyCode === keyCodes.f) {
-                document.getElementsByClassName('js-control-fullscreen')[0].click();
+                $('#player').find('.js-control-fullscreen').click();
             } else if (keyup.keyCode === keyCodes.m) {
-                document.getElementsByClassName('js-control-volume')[0].click();
+                $('#player').find('.js-control-volume').click();
             }
         }
     }
