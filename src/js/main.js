@@ -200,6 +200,7 @@ var main = function() {
                 case 'channel.followers':
                 case 'channel.following':
                 case 'channel.index.index':
+                case 'channel.clips':
                     waitForLoad(function(ready) {
                         if (ready) {
                             handleBackground();
