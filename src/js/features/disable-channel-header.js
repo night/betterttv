@@ -4,7 +4,13 @@ function setHeaderHeight(height) {
 
     var viewRegistry = App.__container__.lookup('-view-registry:main');
     var channelRedesign = viewRegistry[channelDiv[0].id];
+    if (!channelRedesign) return;
+
     channelRedesign.set('channelCoverHeight', height);
+
+    layoutService = App.__container__.lookup('service:layout');
+    if (layoutService) layoutService.set('channelCoverHeight', height);
+
     $('.cn-cover.ember-view').height(height);
     $('.js-main-col-scroll-content').scrollTop(1);
     setTimeout(function() {
@@ -12,17 +18,18 @@ function setHeaderHeight(height) {
     }, 100);
 }
 
-function setPlayerHeight(height) {
-    var playerService = App.__container__.lookup('service:persistent-player');
-    if (!playerService || !playerService.fullSizePlayerLocation) return;
+function updatePlayerPosition() {
+    var playerPlaceholder = $('.player-placeholder');
+    var persistentPlayer = App.__container__.lookup('service:persistentPlayer');
+    if (playerPlaceholder.length === 0 || !persistentPlayer) return;
 
-    var top = playerService.get('fullSizePlayerLocation.top');
-    playerService.set('fullSizePlayerLocation', {top: top + height,
-        left: playerService.fullSizePlayerLocation.left});
+    var scrollParent = playerPlaceholder.scrollParent();
+    var offset = playerPlaceholder.offset();
 
-    if (playerService.playerComponent) {
-        playerService.playerComponent.ownerView.rerender();
-    }
+    persistentPlayer.set('fullSizePlayerLocation', {
+        top: offset.top + scrollParent.scrollTop(),
+        left: offset.left - scrollParent.offset().left
+    });
 }
 
 module.exports = function(state) {
@@ -33,9 +40,9 @@ module.exports = function(state) {
 
     if (bttv.settings.get('disableChannelHeader') === true) {
         setHeaderHeight(0);
-        setPlayerHeight(-380);
     } else if (state === false) {
         setHeaderHeight(380);
-        setPlayerHeight(380);
     }
+
+    setTimeout(updatePlayerPosition);
 };

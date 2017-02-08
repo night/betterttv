@@ -394,6 +394,7 @@ module.exports = [
         storageKey: 'hideBits',
         toggle: function(value) {
             if (value === true) {
+                chat.helpers.dismissPinnedCheer();
                 cssLoader.load('hide-bits', 'hideBits');
             } else {
                 cssLoader.unload('hideBits');
@@ -497,11 +498,7 @@ module.exports = [
         default: false,
         storageKey: 'leftSideChat',
         toggle: function(value) {
-            if (value === true) {
-                $('body').addClass('swap-chat');
-            } else {
-                $('body').removeClass('swap-chat');
-            }
+            $('body').toggleClass('swap-chat', value);
         },
         load: function() {
             if (bttv.settings.get('leftSideChat') === true) {

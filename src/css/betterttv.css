@@ -361,115 +361,123 @@ input.text:focus,select:focus,textarea:focus {
 }
 
 /* left side chat */
-.swap-chat #right_col {
+.swap-chat .ember-view #right_col {
     left: 0;
     right: initial;
 }
 
-.swap-chat #main_col {
+.swap-chat .ember-view #main_col {
     margin-left: 340px;
     margin-right: 240px;
 }
 
-.swap-chat #main_col.expandLeft {
+.swap-chat .ember-view #main_col.expandLeft {
     margin-right: 50px;
 }
 
-.swap-chat #main_col.expandRight {
+.swap-chat .ember-view #main_col.expandRight {
     margin-left: 0px;
 }
 
-.swap-chat #left_col {
+.swap-chat .ember-view #left_col {
     right: 0;
     left: initial;
 }
 
-.swap-chat #main_col .cn-bar-fixed {
+.swap-chat .ember-view #main_col .cn-bar-fixed {
     right: 240px !important;
     left: 340px !important;
 }
 
-.swap-chat #main_col.expandRight .cn-bar-fixed {
+.swap-chat .ember-view #main_col.expandRight .cn-bar-fixed {
     left: 0px !important;
 }
 
-.swap-chat #main_col.expandLeft .cn-bar-fixed {
+.swap-chat .ember-view #main_col.expandLeft .cn-bar-fixed {
     right: 50px !important;
 }
 
-.swap-chat .player-mini {
-    left: 350px;
+.swap-chat .ember-view .player-mini {
+    left: 350px !important;
 }
 
-.swap-chat #left_close {
+.swap-chat .ember-view .expandRight .player-mini {
+    left: 10px !important;
+}
+
+.swap-chat .ember-view #left_close {
     left: initial;
     right: 5px;
 }
 
-.swap-chat #right_close {
+.swap-chat .ember-view #right_close {
     left: 5px;
     right: initial;
 }
 
-.swap-chat #left_close:before, .swap-chat #right_close.closed:before {
+.swap-chat .ember-view #left_close:before, .swap-chat .ember-view #right_close.closed:before {
     margin-left: -2px;
     border-left-color: #fff;
     border-right-color: transparent;
 }
 
-.swap-chat #left_close.closed:before, .swap-chat #right_close:before {
+.swap-chat .ember-view #left_close.closed:before, .swap-chat .ember-view #right_close:before {
     margin-left: -8px;
     border-right-color: #fff;
     border-left-color: transparent;
 }
 
-.swap-chat .search-panel {
+.swap-chat .ember-view .search-panel {
     left: initial;
     right: 240px;
 }
 
-.swap-chat .search-panel--closed {
+.swap-chat .ember-view .search-panel--closed {
     transform: translate3d(900px,0,0);
 }
 
-.swap-chat .profile-card--balloon {
+.swap-chat .ember-view .profile-card--balloon {
     left: initial !important;
     right: 240px;
 }
 
-.swap-chat .js-username-hover-tip .balloon {
+.swap-chat .ember-view .js-username-hover-tip .balloon {
     margin-right: 6px;
     transform: scaleX(-1);
 }
 
-.swap-chat .js-username-hover-tip .balloon .profile-card {
+.swap-chat .ember-view .js-username-hover-tip .balloon .profile-card {
     transform: scaleX(-1);
 }
 
-.swap-chat .offer-item__balloon {
+.swap-chat .ember-view .offer-item__balloon {
     margin-left: -561px;
 }
 
-.swap-chat .offer-item__balloon:after {
+.swap-chat .ember-view .offer-item__balloon:after {
     display: none;
 }
 
-.swap-chat .app-main.theatre #player {
+.swap-chat .ember-view .app-main.theatre #player {
     right: 0;
     left: 340px;
 }
 
-.swap-chat .app-main.theatre #main_col.expandRight #player {
+.swap-chat .ember-view .app-main.theatre #main_col.expandRight #player {
     left: 0 !important;
 }
 
-.swap-chat .app-main.theatre #main_col {
+.swap-chat .ember-view .app-main.theatre #main_col {
     margin-left: 340px;
     margin-right: 0;
 }
 
-.swap-chat .app-main.theatre #main_col.expandRight {
+.swap-chat .ember-view .app-main.theatre #main_col.expandRight {
     margin-left: 0;
+}
+
+.swap-chat .ember-view .app-main.theatre #player[data-isfullscreen=true] {
+    left: 0;
 }
 
 /* BTTV settings menu */
@@ -565,6 +573,7 @@ input.text:focus,select:focus,textarea:focus {
 }
 
 #bttvSettingsPanel .option {
+    position: relative;
     color: #999;
     line-height: 30px;
     width: -moz-calc(100% - 20px);
@@ -765,9 +774,9 @@ input.text:focus,select:focus,textarea:focus {
 }
 
 .bttv-switch {
-  position: relative;
-  float: right;
+  position: absolute;
   right: 7px;
+  top: 4px;
   height: 26px;
   width: 120px;
   background: rgba(0, 0, 0, 0.25);
@@ -1962,6 +1971,8 @@ body.channel_new.columns.ember-application {
     height: auto;
     top: auto;
     right: auto;
+    opacity: 1;
+    transform: none;
 }
 .chat-messages .chat-line .svg-whisper-arrow {
     fill: #32323e;
@@ -1978,6 +1989,10 @@ body.channel_new.columns.ember-application {
 
 .conversation-content::-webkit-scrollbar-track, .conversations-list-inner::-webkit-scrollbar-track {
   background: rgba(0,0,0,0);
+}
+
+.ember-chat .chat-interface .suggestions {
+    z-index: 1000;
 }
 
 /* Hide duplicate message once we add our parsed version */
@@ -2245,10 +2260,9 @@ body.channel_new.columns.ember-application {
 
 /* pinned cheers */
 .pinned-cheers__dismiss {
-    left: auto;
-    right: 5px;
-    top: 0px;
-    height: 100%;
+    left: 5px;
+    top: 8px;
+    height: 16px;
     justify-content: center;
 }
 
@@ -2278,6 +2292,19 @@ body.channel_new.columns.ember-application {
     max-height: 45px;
 }
 
+.pinned-cheer__expando-arrow {
+    bottom: 10px;
+    top: auto;
+}
+
+.pinned-cheer__expando-arrow:hover {
+    cursor: pointer;
+}
+
+.pinned-cheers .to-right-reverse-to-left-pinned-cheers .liquid-child {
+    transform: none!important;
+}
+
 /* automod */
 .ember-chat .chat-messages .chat-line .system-msg {
     margin-bottom: 8px;
@@ -2286,6 +2313,13 @@ body.channel_new.columns.ember-application {
 
 .twitchbot .pd-y-1 {
     text-align: center;
+}
+
+/* Mini-player / fullscreen fix */
+.player-mini .player[data-isfullscreen=true] {
+    width: auto;
+    height: auto;
+    top: 0;
 }
 
 /*** Holiday 2016 BTTV emote CSS ***/

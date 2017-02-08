@@ -10,6 +10,7 @@ var vars = require('../vars'),
     loadChatSettings = require('../features/chat-load-settings'),
     anonChat = require('../features/anon-chat'),
     customTimeouts = require('../features/custom-timeouts'),
+    disableChannelHeader = require('../features/disable-channel-header'),
     tmi = require('./tmi');
 
 var reloadChatSettings = function(sender, key) {
@@ -290,13 +291,16 @@ var takeover = module.exports = function() {
 
     // Hide button for Past Broadcast banner
     $('body').off('click', '.recent-past-broadcast__message_sub').on('click', '.recent-past-broadcast__message_sub', function(e) {
-        if (e.offsetX > e.target.offsetWidth - 26) $('.recent-past-broadcast').hide();
+        if (e.offsetX > e.target.offsetWidth - 26) {
+            $('.recent-past-broadcast').hide();
+            disableChannelHeader();
+        }
     });
 
     // Dismiss pinned cheers
     $('body').off('click', '.pinned-cheers').on('click', '.pinned-cheers', function(e) {
         if (!e.target.classList.contains('pinned-cheers')) return;
-        if (e.target.offsetWidth - e.offsetX < 48 && e.target.offsetHeight - e.offsetY > 48) $('.pinned-cheers').hide();
+        if (e.target.offsetWidth - e.offsetX < 48 && e.target.offsetHeight - e.offsetY > 28) helpers.dismissPinnedCheer();
     });
 
     // Automod buttons

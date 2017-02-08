@@ -23,10 +23,14 @@ bttv.storage = new Storage();
 bttv.settings = new Settings();
 
 bttv.getChannel = function() {
-    if (window.Ember && window.App && ['channel.index.index', 'vod'].indexOf(App.__container__.lookup('controller:application').get('currentRouteName')) > -1) {
-        var channel = App.__container__.lookup('controller:channel');
-        var user = App.__container__.lookup('controller:user');
-        return (!Ember.isNone(channel) && channel.get('model.id')) || (!Ember.isNone(user) && user.get('model.id'));
+    if (window.Ember && window.App && ['channel.index.index', 'vod', 'videos'].indexOf(App.__container__.lookup('controller:application').get('currentRouteName')) > -1) {
+        try {
+            return App.__container__.lookup('service:persistentPlayer').playerComponent.channel.content.id;
+        } catch (e) {
+            var channel = App.__container__.lookup('controller:channel');
+            var user = App.__container__.lookup('controller:user');
+            return (!Ember.isNone(channel) && channel.get('model.id')) || (!Ember.isNone(user) && user.get('model.id'));
+        }
     } else if (bttv.getChatController() && bttv.getChatController().currentRoom) {
         return bttv.getChatController().currentRoom.id;
     } else if (window.PP && PP.channel) {
@@ -106,14 +110,15 @@ bttv.notify = function(message, options) {
     } else {
         message = message.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br /><br />').replace(/Click here(.*)./, '<a style="color: white;" target="_blank" href="' + url + '">Click here$1.</a>');
 
-        if (!window.Twitch.notify) return;
-
-        window.Twitch.notify.alert(message, {
-            layout: 'bottomCenter',
-            timeout: 5000,
-            killer: true,
-            escape: false
-        });
+        // sometimes causes an error with closeAll
+        try {
+            window.Twitch.notify.alert(message, {
+                layout: 'bottomCenter',
+                timeout: 5000,
+                killer: true,
+                escape: false
+            });
+        } catch (e) {}
     }
 };
 
@@ -195,6 +200,7 @@ var main = function() {
                 case 'channel.followers':
                 case 'channel.following':
                 case 'channel.index.index':
+                case 'channel.clips':
                     waitForLoad(function(ready) {
                         if (ready) {
                             handleBackground();
@@ -206,16 +212,7 @@ var main = function() {
                             hidePrimePromotions();
                             disableChannelHeader();
                             freeSubReminder();
-                            if (
-                                App.__container__.lookup('controller:channel').get('isTheatreMode') === false &&
-                                bttv.settings.get('autoTheatreMode') === true
-                            ) {
-                                enableTheatreMode();
-                            }
-                            window.dispatchEvent(new Event('resize'));
-                            setTimeout(function() {
-                                window.dispatchEvent(new Event('resize'));
-                            }, 3000);
+                            enableTheatreMode();
 
                             // Switching between tabs in channel page
                             if (lastRoute.substr(0, 8) === 'channel.') return;
@@ -227,19 +224,13 @@ var main = function() {
                     });
                     break;
                 case 'vod':
+                case 'videos':
+                    enableTheatreMode();
                     // disconnect old chat replay watcher, spawn new
-                    if (
-                        App.__container__.lookup('controller:vod').get('isTheatreMode') === false &&
-                        bttv.settings.get('autoTheatreMode') === true
-                    ) {
-                        enableTheatreMode();
-                    }
-
                     try {
                         chatReplay.disconnect();
                     } catch (e) {}
                     chatReplay = new ChatReplay();
-                    window.dispatchEvent(new Event('resize'));
                     break;
                 case 'directory.following.index':
                     // Switching between tabs in following page
@@ -248,7 +239,6 @@ var main = function() {
                     $('#main_col').removeAttr('style');
                     waitForLoad(function(ready) {
                         if (ready) {
-                            window.dispatchEvent(new Event('resize'));
                             directoryFunctions();
                         }
                     });
@@ -257,7 +247,6 @@ var main = function() {
                     waitForLoad(function(ready) {
                         if (ready) {
                             channelReformat();
-                            window.dispatchEvent(new Event('resize'));
 
                             // chat
                             bttv.chat.store.isLoaded = false;
@@ -325,15 +314,13 @@ var main = function() {
         videoPlayerFeatures();
         disableChannelHeader();
         freeSubReminder();
+        enableTheatreMode();
 
         // Loads global BTTV emotes (if not loaded)
         overrideEmotes();
 
         if (bttv.settings.get('chatImagePreview') === true) {
             enableImagePreview();
-        }
-        if (bttv.settings.get('autoTheatreMode') === true) {
-            enableTheatreMode();
         }
 
         window.dispatchEvent(new Event('resize'));
