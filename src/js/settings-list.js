@@ -388,7 +388,7 @@ module.exports = [
     },
     {
         name: 'GameWisp Emotes',
-        description: 'Use GameWisp global emotes',
+        description: 'Use GameWisp emotes',
         default: false,
         storageKey: 'gwEmotes'
     },
