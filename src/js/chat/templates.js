@@ -5,6 +5,8 @@ var tmi = require('./tmi'),
     regexUtils = require('../helpers/regex'),
     blacklistedEmoji = require('../helpers/emoji-blacklist.json');
 
+var imageTest = new RegExp('(https?:\/\/.)([a-z\-_0-9\/\:\.\%\+]*\.(jpg|jpeg|png|gif|gifv|webm))', 'i');
+
 var badge = exports.badge = function(type, name, description, action) {
     var classes = type + '' + (bttv.settings.get('alphaTags') ? ' alpha' + (!bttv.settings.get('darkenedMode') ? ' invert' : '') : '') + ' badge';
     return '<div class="' + classes + '" title="' + description + '"' + (action ? ' data-click-action="' + action + '"' : '') + '>' + name + '</div> ';
@@ -41,7 +43,8 @@ var linkify = exports.linkify = function(message) {
         if (/\x02/.test(e)) return e;
         if (e.indexOf('@') > -1 && (e.indexOf('/') === -1 || e.indexOf('@') < e.indexOf('/'))) return '<a href="mailto:' + e + '">' + e + '</a>';
         var link = e.replace(/^(?!(?:https?:\/\/|mailto:))/i, 'http://');
-        return '<a href="' + link + '" target="_blank">' + e + '</a>';
+        var isImage = bttv.settings.get('chatImagePreview') === true && imageTest.test(e);
+        return '<a href="' + link + '" ' + (isImage ? 'class="chat-preview" ' : '') + 'target="_blank">' + e + '</a>';
     });
 };
 
@@ -213,15 +216,6 @@ var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message
 
     for (var i = 0; i < tokenizedString.length; i++) {
         var piece = tokenizedString[i];
-
-        if (bttv.settings.get('chatImagePreview') === true) {
-            var imageTest = new RegExp('(https?:\/\/.)([a-z\-_0-9\/\:\.\%\+]*\.(jpg|jpeg|png|gif|gifv|webm))', 'i');
-            if (imageTest.test(piece)) {
-                piece = bttv.chat.imagePreview(piece);
-                tokenizedString[i] = piece;
-                continue;
-            }
-        }
 
         var test = piece.replace(/(^[~!@#$%\^&\*\(\)]+|[~!@#$%\^&\*\(\)]+$)/g, '');
         var emote = null;
