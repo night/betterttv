@@ -5,4 +5,3 @@ exports.emotes = require('./chat/emotes');
 exports.helpers = require('./chat/helpers');
 exports.handlers = require('./chat/handlers');
 exports.store = require('./chat/store');
-exports.imagePreview = require('./chat/image-preview');
