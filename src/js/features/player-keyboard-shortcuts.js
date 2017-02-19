@@ -9,6 +9,8 @@ module.exports = function() {
                 $('#player').find('.js-control-fullscreen').click();
             } else if (keyup.keyCode === keyCodes.m) {
                 $('#player').find('.js-control-volume').click();
+            } else if (keyup.keyCode === keyCodes.t) {
+                $('#player').find('.js-control-theatre').click();
             }
         }
     }
