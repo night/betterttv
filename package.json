@@ -5,7 +5,7 @@
   "description": "BetterTTV enhances Twitch with new features, bug fixes, and reduced clutter.",
   "main": "betterttv.js",
   "scripts": {
-    "start": "node dev/server.js"
+    "start": "node -e 'require(\"./dev/server.js\")()'"
   },
   "repository": {
     "type": "git",
@@ -33,6 +33,7 @@
     "lodash.debounce": "^4.0.6",
     "lodash.throttle": "^4.1.1",
     "request": "2.75.0",
+    "require-globify": "^1.4.1",
     "resizable": "^1.2.0",
     "twemoji": "^2.2.0",
     "twitch-chat-emotes": "github:cletusc/Userscript--Twitch-Chat-Emotes#8ecb15f5e08ee98fcafce0cc900b8d14c88cbd22",
