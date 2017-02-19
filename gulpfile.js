@@ -7,6 +7,7 @@ const gulp = require('gulp');
 const gulpif = require('gulp-if');
 const header = require('gulp-header');
 const saveLicense = require('uglify-save-license');
+const server = require('./dev/server');
 const source = require('vinyl-source-stream');
 const uglify = require('gulp-uglify');
 
@@ -40,6 +41,7 @@ gulp.task(
     'scripts',
     ['prepare'],
     () => browserify('build/index.js')
+        .transform('require-globify')
         .transform('babelify', {presets: ['es2015']})
         .bundle()
         .pipe(source('betterttv.js'))
@@ -50,8 +52,13 @@ gulp.task(
 );
 
 gulp.task(
+    'server',
+    () => server()
+);
+
+gulp.task(
     'watch',
-    ['default'],
+    ['default', 'server'],
     () => gulp.watch('src/**/*', ['default'])
 );
 
