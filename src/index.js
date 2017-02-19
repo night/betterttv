@@ -6,9 +6,7 @@
     debug.log(`BetterTTV v${debug.version} loaded.`);
 
     /* TODO:
-     - Settings
      - Modules for:
-        - Branding
         - Chat State
         - Chat Settings (and scrollback amount)
         - Anon chat?
@@ -28,7 +26,6 @@
         - Hide featured/recommended channels, games, etc.
         - Channel broadcast info auto-updating
         - Chat polls
-        - Darken pages
         - Blue buttons?
         - Disable channel header
         - Hide group chat?
