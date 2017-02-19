@@ -1,9 +1,13 @@
-const debug = require('./helpers/debug');
+const debug = require('./utils/debug');
 const EventEmitter = require('events').EventEmitter;
 const $ = require('jquery');
 
 let route = '';
 let chatWatcher;
+
+function getEmberView(elementId) {
+    return window.App.__container__.lookup('-view-registry:main')[elementId];
+}
 
 class Watcher extends EventEmitter {
     constructor() {
@@ -12,6 +16,8 @@ class Watcher extends EventEmitter {
         this.chatObserver();
         this.routeObserver();
         this.checkClips();
+
+        debug.log('Watcher started');
     }
 
     checkClips() {
@@ -51,12 +57,13 @@ class Watcher extends EventEmitter {
                     case 'channel.followers':
                     case 'channel.following':
                     case 'channel.index.index':
+                    case 'channel.clips':
                         this.emit('load.channel');
                         // Switching between tabs in channel page
                         if (lastRoute.substr(0, 8) === 'channel.') break;
                         this.emit('load.chat');
                         break;
-                    case 'vod':
+                    case 'videos':
                         this.emit('load.vod');
                         this.emit('load.chat');
                         break;
@@ -75,10 +82,10 @@ class Watcher extends EventEmitter {
         applicationController.addObserver('currentRouteName', onRouteChange);
 
         Ember.subscribe('render', {
-            before: function() {
+            before: () => {
                 renderingCounter++;
             },
-            after: function() {
+            after: () => {
                 renderingCounter--;
             }
         });
@@ -98,7 +105,8 @@ class Watcher extends EventEmitter {
 
                     if ($el.hasClass('chat-line')) {
                         if ($el.find('.horizontal-line').length) continue;
-                        console.log($el.find('.message').text());
+                        const view = getEmberView($el.attr('id'));
+                        this.emit('chat.message', $el, view.msgObject);
                     }
                 }
             })
