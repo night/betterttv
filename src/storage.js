@@ -1,6 +1,6 @@
 const cookies = require('cookies-js');
-const debug = require('./utils/debug');
 const EventEmitter = require('events').EventEmitter;
+const debug = require('./utils/debug');
 
 // legacy setting parser
 const parseSetting = function(value) {
@@ -44,50 +44,73 @@ class Storage extends EventEmitter {
         }
 
         Object.keys(window.localStorage)
-            .filter(name => name.startsWith('bttv_') || name === 'nicknames')
-            .map(name => {
-                let value = parseSetting(window.localStorage.getItem(name));
+            .filter(id => id.startsWith('bttv_') || id === 'nicknames')
+            .map(id => {
+                let value = parseSetting(window.localStorage.getItem(id));
 
-                if (name === 'nicknames') {
+                if (id === 'nicknames') {
                     value = JSON.parse(value);
                 }
 
-                name = name.split('bttv_')[1] || name;
+                id = id.split('bttv_')[1] || id;
 
                 return {
-                    name,
+                    id,
                     value
                 };
             })
-            .forEach(setting => this.set(setting.name, setting.value));
+            .forEach(setting => this.set(setting.id, setting.value));
 
         this.set('importedV6', true);
     }
 
-    get(name, prefix = this._prefix) {
-        if (prefix) {
-            name = prefix + name;
+    getStorage() {
+        const storage = {};
+
+        if (!this._localStorageSupport) {
+            return storage;
         }
 
-        if (name in this._cache) {
-            return this._cache[name];
-        }
+        Object.keys(window.localStorage)
+            .filter(id => id.startsWith('bttv_'))
+            .forEach(id => {
+                storage[id] = this.get(id, null);
+            });
 
-        return JSON.parse(this._localStorageSupport ? window.localStorage.getItem(name) : cookies.get(name));
+        return storage;
     }
 
-    set(name, value, prefix = this._prefix) {
-        this.emit(`storage.${name}`, value);
-
+    get(id, prefix = this._prefix) {
         if (prefix) {
-            name = prefix + name;
+            id = prefix + id;
         }
 
-        this._cache[name] = value;
+        if (id in this._cache) {
+            return this._cache[id];
+        }
+
+        return JSON.parse(this._localStorageSupport ? window.localStorage.getItem(id) : cookies.get(id));
+    }
+
+    set(id, value, prefix = this._prefix, emit = true) {
+        let storageId = id;
+        if (prefix) {
+            storageId = prefix + id;
+        }
+
+        this._cache[storageId] = value;
+
+        if (emit) {
+            this.emit(`storage.${id}`, value);
+        }
 
         value = JSON.stringify(value);
 
-        return this._localStorageSupport ? window.localStorage.setItem(name, value) : cookies.set(name, value, { expires: Infinity });
+        return this._localStorageSupport ? (
+            window.localStorage.setItem(storageId, value)
+        ) : (
+            cookies.set(storageId, value, {expires: Infinity})
+        );
     }
 }
 
