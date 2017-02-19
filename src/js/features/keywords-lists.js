@@ -37,7 +37,7 @@ exports.blacklistFilter = function(data) {
     }
 
     for (i = 0; i < blacklistKeywords.length; i++) {
-        var keyword = escapeRegExp(blacklistKeywords[i]).replace(/\*/g, '[^ ]*');
+        var keyword = escapeRegExp(blacklistKeywords[i]).replace(/\*/g, '[^ ]*').replace(/^<(.*)>$/g, '^$1$$');
         var blacklistRegex = new RegExp(keyword, 'i');
         if (blacklistRegex.test(data.message) && vars.userData.name !== data.from) {
             return true;
@@ -92,7 +92,7 @@ exports.highlighting = function(data) {
     }
 
     for (i = 0; i < highlightKeywords.length; i++) {
-        var hlKeyword = escapeRegExp(highlightKeywords[i]).replace(/\*/g, '[^ ]*');
+        var hlKeyword = escapeRegExp(highlightKeywords[i]).replace(/\*/g, '[^ ]*').replace(/^<(.*)>$/g, '^$1$$');
         var wordRegex = new RegExp('(\\s|^|@)' + hlKeyword + '([!.,:\';?/]|\\s|$)', 'i');
         if (vars.userData.isLoggedIn && vars.userData.name !== data.from && wordRegex.test(data.message)) {
             if (bttv.chat.store.activeView === false) {
