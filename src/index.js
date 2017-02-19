@@ -2,9 +2,8 @@
     if (window.location.pathname.endsWith('.html')) return;
 
     const debug = require('./utils/debug');
-    const version = require('../package.json').version;
     require('./modules/**/index.js', {mode: 'expand'});
-    debug.log(`BetterTTV v${version} loaded.`);
+    debug.log(`BetterTTV v${debug.version} loaded.`);
 
     /* TODO:
      - Settings

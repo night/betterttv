@@ -1,4 +1,5 @@
 const storage = require('../storage');
+const version = require('../../package.json').version;
 
 function log() {
     if (!window.console || !window.console.log || !storage.get('consoleLog')) return;
@@ -7,5 +8,6 @@ function log() {
 }
 
 module.exports = {
-    log
+    log,
+    version
 };

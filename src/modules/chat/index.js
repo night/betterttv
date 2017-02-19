@@ -1,7 +1,7 @@
 const watcher = require('../../watcher');
 const debug = require('../../utils/debug');
 const colors = require('../../utils/colors');
-const storage = require('../../storage');
+const settings = require('../../settings');
 
 /* TODO:
  - Chat image preview
@@ -30,11 +30,11 @@ class ChatModule {
             while (
                 (
                     colors.calculateColorBackground(color) === 'light' &&
-                    storage.get('darkenedMode') === true
+                    settings.get('darkenedMode') === true
                 ) ||
                 (
                     colors.calculateColorBackground(color) === 'dark' &&
-                    storage.get('darkenedMode') !== true
+                    settings.get('darkenedMode') !== true
                 )
             ) {
                 color = colors.calculateColorReplacement(
