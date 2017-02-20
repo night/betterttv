@@ -151,17 +151,6 @@ class SettingsModule {
                 scrollbarHideStrategy: 'rightAndBottom'
             });
 
-            const $watermark = $('<img />');
-            $watermark.attr('id', 'bttv_logo');
-            $watermark.attr('src', 'https://cdn.betterttv.net/assets/logos/logo_icon.png');
-            $watermark.css({
-                'z-index': 9000,
-                'left': '90px',
-                'top': '-10px',
-                'position': 'absolute'
-            });
-            $('.warp .warp__logo').append($watermark);
-
             $('.warp__drawer .warp__list .warp__item:eq(2)').before(`
                 <li class="warp__item">
                     <a class="warp__tipsy" data-tt_medium="twitch_leftnav" href="#" title="BetterTTV Settings">
