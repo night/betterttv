@@ -17,7 +17,7 @@ function setHeaderHeight(height) {
 
     $('.cn-cover.ember-view').height(height);
     $('.js-main-col-scroll-content').scrollTop(1);
-    setTimeout(() => $('.js-main-col-scroll-content').scrollTop(0), 100);
+    setTimeout(() => $('.js-main-col-scroll-content').scrollTop(0));
 }
 
 function updatePlayerPosition() {
@@ -25,7 +25,7 @@ function updatePlayerPosition() {
     const persistentPlayer = App.__container__.lookup('service:persistentPlayer');
     if (playerPlaceholder.length === 0 || !persistentPlayer) return;
 
-    const scrollParent = playerPlaceholder.scrollParent();
+    const scrollParent = $('.js-main-col-scroll-content');
     const offset = playerPlaceholder.offset();
 
     persistentPlayer.set('fullSizePlayerLocation', {
@@ -33,6 +33,8 @@ function updatePlayerPosition() {
         left: offset.left - scrollParent.offset().left
     });
 }
+
+let disabled = false;
 
 class DisableChannelHeaderModule {
     constructor() {
@@ -49,11 +51,13 @@ class DisableChannelHeaderModule {
     load() {
         if (settings.get('disableChannelHeader') === true) {
             setHeaderHeight(0);
-        } else if (state === false) {
+            disabled = true;
+        } else if (disabled === true) {
             setHeaderHeight(380);
+            disabled = false;
         }
 
-        setImmediate(updatePlayerPosition);
+        setTimeout(updatePlayerPosition);
     }
 }
 
