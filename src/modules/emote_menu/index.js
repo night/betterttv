@@ -1,6 +1,7 @@
 const $ = require('jquery');
 const debug = require('../../utils/debug');
 const settings = require('../../settings');
+const watcher = require('../../watcher');
 
 class EmoteMenuModule {
     constructor() {
@@ -11,7 +12,7 @@ class EmoteMenuModule {
             description: 'Get a more advanced emote menu for Twitch. (Made by Ryan Chatham)'
         });
         settings.on('changed.clickTwitchEmotes', () => this.load());
-        this.load();
+        watcher.on('load.chat', () => this.load());
     }
 
     load() {
