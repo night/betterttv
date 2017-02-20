@@ -10,7 +10,6 @@
         - Chat State
         - Chat Settings (and scrollback amount)
         - Anon chat?
-        - Auto Theater Mode
         - Chat freeze
         - Chat custom timeouts
         - Split chat
