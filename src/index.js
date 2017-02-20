@@ -17,7 +17,6 @@
         - Pinned highlights (and timeout)
         - Better Viewer List
         - Notifications (desktop, following notices, mentions, audible setting too)
-        - Dashboard features (chat flip, extra stat counts)
         - Player viewer count
         - Free sub reminder
         - Twitch chat emotes plugin
@@ -33,7 +32,6 @@
         - Host button
         - Conversations (and hide conversations when inactive?)
         - Hide friends (and friend activity)
-        - Directory preview
         - Disable front page autoplay
         - Disable whispers
         - Mod card keybinds
