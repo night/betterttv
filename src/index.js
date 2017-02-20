@@ -19,7 +19,6 @@
         - Hide prime promotions
         - Hide featured/recommended channels, games, etc.
         - Channel broadcast info auto-updating
-        - Chat polls
         - Blue buttons?
         - Hide group chat?
         - Hide bits
