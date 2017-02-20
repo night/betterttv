@@ -7,6 +7,7 @@ function handleKeyEvent(keyup) {
     if ($('input, textarea, select').is(':focus')) return;
 
     const $player = $('#player');
+    if (!$player.length) return;
 
     switch (keyup.keyCode) {
         case keyCodes.k:
