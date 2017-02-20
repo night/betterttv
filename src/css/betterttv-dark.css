@@ -2152,6 +2152,10 @@ span.subscribe-text {
     border-top-color: rgb(35, 35, 35);
 }
 
+.player-placeholder {
+    background: rgb(20, 20, 20);
+}
+
 /* dark mod card */
 .bttv-mod-card .user-messages .label {
     background-color: rgb(60,60,60);

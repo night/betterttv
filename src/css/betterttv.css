@@ -2060,3 +2060,8 @@ body.channel_new.columns.ember-application {
     cursor: pointer;
 }
 
+/* hide usernames in chat for localized names */
+.chat-line .from .intl-login {
+    display: none;
+}
+
