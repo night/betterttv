@@ -101,7 +101,10 @@ function isJSON(string) {
 
 class SettingsModule {
     constructor() {
-        watcher.on('load', () => this.renderSettings());
+        watcher.on('load', () => {
+            this.renderSettings();
+            this.renderSettingsMenuOption();
+        });
         settings.on('added', setting => this.addSetting(setting));
     }
 
@@ -150,21 +153,25 @@ class SettingsModule {
             jQuery('#bttvSettingsPanel .scroll').TrackpadScrollEmulator({ // eslint-disable-line new-cap
                 scrollbarHideStrategy: 'rightAndBottom'
             });
-
-            $('.warp__drawer .warp__list .warp__item:eq(2)').before(`
-                <li class="warp__item">
-                    <a class="warp__tipsy" data-tt_medium="twitch_leftnav" href="#" title="BetterTTV Settings">
-                        <figure class="warp__avatar bttvSettingsIconDropDown"></figure>
-                        <span class="drawer__item">BetterTTV Settings</span>
-                    </a>
-                </li>
-            `);
-            $('.bttvSettingsIconDropDown').parent().click(e => {
-                e.preventDefault();
-                $('#chat_settings_dropmenu').hide();
-                $('#bttvSettingsPanel').show('slow');
-            });
         } catch (e) {}
+    }
+
+    renderSettingsMenuOption() {
+        if ($('.bttvSettingsIconDropDown').length) return;
+
+        $('.warp__drawer .warp__list .warp__item:eq(2)').before(`
+            <li class="warp__item">
+                <a class="warp__tipsy" data-tt_medium="twitch_leftnav" href="#" title="BetterTTV Settings">
+                    <figure class="warp__avatar bttvSettingsIconDropDown"></figure>
+                    <span class="drawer__item">BetterTTV Settings</span>
+                </a>
+            </li>
+        `);
+        $('.bttvSettingsIconDropDown').parent().click(e => {
+            e.preventDefault();
+            $('#chat_settings_dropmenu').hide();
+            $('#bttvSettingsPanel').show('slow');
+        });
     }
 
     addSetting(setting) {
