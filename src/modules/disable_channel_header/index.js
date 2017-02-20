@@ -3,11 +3,11 @@ const settings = require('../../settings');
 const watcher = require('../../watcher');
 
 function setHeaderHeight(height) {
-    var channelDiv = $('.cn-content').parent();
+    const channelDiv = $('.cn-content').parent();
     if (channelDiv.length === 0) return;
 
-    var viewRegistry = App.__container__.lookup('-view-registry:main');
-    var channelRedesign = viewRegistry[channelDiv[0].id];
+    const viewRegistry = App.__container__.lookup('-view-registry:main');
+    const channelRedesign = viewRegistry[channelDiv[0].id];
     if (!channelRedesign) return;
 
     channelRedesign.set('channelCoverHeight', height);
@@ -21,12 +21,12 @@ function setHeaderHeight(height) {
 }
 
 function updatePlayerPosition() {
-    var playerPlaceholder = $('.player-placeholder');
-    var persistentPlayer = App.__container__.lookup('service:persistentPlayer');
+    const playerPlaceholder = $('.player-placeholder');
+    const persistentPlayer = App.__container__.lookup('service:persistentPlayer');
     if (playerPlaceholder.length === 0 || !persistentPlayer) return;
 
-    var scrollParent = playerPlaceholder.scrollParent();
-    var offset = playerPlaceholder.offset();
+    const scrollParent = playerPlaceholder.scrollParent();
+    const offset = playerPlaceholder.offset();
 
     persistentPlayer.set('fullSizePlayerLocation', {
         top: offset.top + scrollParent.scrollTop(),
