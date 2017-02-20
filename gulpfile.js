@@ -24,7 +24,7 @@ gulp.task(
 
 gulp.task(
     'prepare',
-    ['lint'],
+    ['cleanup', 'lint'],
     () => gulp.src(['src/**/*'])
         .pipe(gulp.dest('build/'))
 );
