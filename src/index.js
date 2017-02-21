@@ -1,8 +1,13 @@
 (() => {
     if (window.location.pathname.endsWith('.html')) return;
-
     const debug = require('./utils/debug');
-    require('./modules/**/index.js', {mode: 'expand'});
+
+    require('./modules/**/index.js', {mode: function(base, files) {
+        return files.map((module) => {
+            return `try { require('${module}') } catch (e) { debug.log('Failed to load ${module}\\n', e); }`;
+        }).join('\n');
+    }});
+
     debug.log(`BetterTTV v${debug.version} loaded.`);
 
     /* TODO:
