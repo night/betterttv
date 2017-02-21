@@ -25,26 +25,7 @@ class ChatModule {
     }
 
     calculateColor(color) {
-        var colorRegex = /^#[0-9a-f]+$/i;
-        if (colorRegex.test(color)) {
-            while (
-                (
-                    colors.calculateColorBackground(color) === 'light' &&
-                    settings.get('darkenedMode') === true
-                ) ||
-                (
-                    colors.calculateColorBackground(color) === 'dark' &&
-                    settings.get('darkenedMode') !== true
-                )
-            ) {
-                color = colors.calculateColorReplacement(
-                    color,
-                    colors.calculateColorBackground(color)
-                );
-            }
-        }
-
-        return color;
+        return colors.calculateColor(color, settings.get('darkenedMode'));
     }
 
     emoticonize() {
