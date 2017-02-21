@@ -1,4 +1,4 @@
-var button = `
+const button = `
 <a id="bvl-button" title="Better Viewer List" class="button button--icon-only float-left">
   <figure>
     <svg version="1.1" viewbox="0 0 16 16" width="16px" height="16px" class="svg-betterviewerlist">
@@ -7,7 +7,7 @@ var button = `
   </figure>
 </a>`;
 
-var panel = `
+const panel = `
 <div id="bvl-panel" class="chatters-view">
   <div class="drag_handle chat-header"><a class="button button--icon-only close-button chat-header__button chat-header__button--left">
       <svg viewbox="0 0 16 16" width="16px" height="16px" class="svg-close">
