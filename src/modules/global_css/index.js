@@ -35,7 +35,7 @@ class GlobalCSSModule {
         if (settings.get('darkenedMode') !== true || !$('body').attr('data-page')) return;
 
         const pageKind = $('body').data('page').split('#')[0];
-        const allowedPages = ['ember', 'message', 'chat', 'user'];
+        const allowedPages = ['ember', 'message', 'chat', 'user', 'dashboards'];
 
         if (allowedPages.indexOf(pageKind) !== -1) {
             const darkCSS = document.createElement('link');
