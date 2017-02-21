@@ -9,7 +9,7 @@ class DisableLocalizedNamesModule {
             defaultValue: false,
             description: 'Show usernames instead of localized names in chat'
         });
-        watcher.on('chat.message', ($el) => this.delocalizeName($el));
+        watcher.on('chat.message', $el => this.delocalizeName($el));
     }
 
     delocalizeName($el) {

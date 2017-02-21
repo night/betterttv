@@ -44,11 +44,11 @@ class DirectoryPreviewModule {
                     }, 1500);
                 })
                 .on('mouseout', '#directory-list .streams a.cap', ({currentTarget}) => {
-                    var $target = jQuery(currentTarget);
+                    const $target = jQuery(currentTarget);
 
                     if (!jQuery('div.tipsy').length) return;
 
-                    var timer = setInterval(() => {
+                    const timer = setInterval(() => {
                         if (jQuery('div.tipsy').length && jQuery('div.tipsy').is(':hover')) return;
 
                         clearInterval(timer);

@@ -5,7 +5,7 @@ const watcher = require('../../watcher');
 const CONVERSATION_CLASS = '.conversations-content';
 
 function slideDown() {
-    var $conversations = $(CONVERSATION_CLASS);
+    const $conversations = $(CONVERSATION_CLASS);
 
     if ($conversations.find('.list-displayed').length || $conversations.find('.conversation-window').length) return;
 
@@ -13,7 +13,7 @@ function slideDown() {
 }
 
 function slideUp() {
-    var $conversations = $(CONVERSATION_CLASS);
+    const $conversations = $(CONVERSATION_CLASS);
 
     $conversations.animate({bottom: '0px'}, 100);
 }
@@ -60,7 +60,7 @@ class HideConversationsModule {
     }
 
     toggleAutoHide() {
-        var $conversations = $(CONVERSATION_CLASS);
+        const $conversations = $(CONVERSATION_CLASS);
 
         if (settings.get('hideConversations')) {
             slideDown();

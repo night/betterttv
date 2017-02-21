@@ -9,7 +9,6 @@
   "globals": {},
 
   "rules": {
-
     "strict": 0,
 
 /**
@@ -139,5 +138,12 @@
     "space-before-function-paren": [2, "never"], // http://eslint.org/docs/rules/space-before-function-paren
     "space-infix-ops": 2,            // http://eslint.org/docs/rules/space-infix-ops
     "spaced-comment": 2,        // http://eslint.org/docs/rules/spaced-line-comment
-    }
+    "prefer-arrow-callback": 2,
+    "arrow-parens": [2, "as-needed"],
+    "prefer-const": [2, {
+        "destructuring": "any",
+        "ignoreReadBeforeAssign": false
+    }],
+    "no-var": 2
+  }
 }
