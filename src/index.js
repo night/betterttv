@@ -1,8 +1,19 @@
 (() => {
     if (window.location.pathname.endsWith('.html')) return;
-
     const debug = require('./utils/debug');
-    require('./modules/**/index.js', {mode: 'expand'});
+
+    require('./modules/**/index.js', {mode: (base, files) => {
+        return files.map((module) => {
+            return `
+                try {
+                    require('${module}')
+                } catch (e) {
+                    debug.error('Failed to ${module}', e.stack);
+                }
+            `;
+        }).join(' ');
+    }});
+
     debug.log(`BetterTTV v${debug.version} loaded.`);
 
     /* TODO:
@@ -13,7 +24,6 @@
         - Chat custom timeouts
         - Split chat
         - Pinned highlights (and timeout)
-        - Better Viewer List
         - Notifications (desktop, following notices, mentions, audible setting too)
         - Free sub reminder
         - Channel broadcast info auto-updating
