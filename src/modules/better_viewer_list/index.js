@@ -65,9 +65,7 @@ class BetterViewerListModule {
         search = search.toLowerCase().trim();
         if (search.length > 0) {
             let tmpResults = [];
-            results = chatterList.filter(function(v) {
-                return v.text.indexOf(search) >= 0 || v.filter;
-            });
+            results = chatterList.filter(v => v.text.indexOf(search) >= 0 || v.filter);
 
             // Filter empty subsections
             for (let i = 0; i < results.length - 1; i++) {
@@ -155,9 +153,7 @@ class BetterViewerListModule {
         deferred.then((data) => {
             spinner.stop();
             $oldList.remove();
-            setTimeout(function() {
-                $refreshButton.removeClass('disable');
-            }, 30 * 1000);
+            setTimeout(() => $refreshButton.removeClass('disable'), 30 * 1000);
 
             $('#bvl-panel .status').hide();
             $('#bvl-panel .filter').show();
@@ -169,22 +165,20 @@ class BetterViewerListModule {
                 appendTo: $parent[0],
                 rowHeight: 20,
                 height: $parent.height() - 85,
-                eachrow: function(row) {
-                    return this.html(row.tag, {
-                        onclick: function(e) {
+                eachrow: row => (
+                    this.html(row.tag, {
+                        onclick: e => {
                             if (row.filter) return;
                             // TODO(ehsankia): moderation card
                             debug.info('Moderation card: ' + row.text);
                             debug.info(e.target);
                         }
                     }, row.display || row.text);
-                }
+                )
             });
 
             let oldRender = viewList.render;
-            viewList.render = function(list) {
-                if (list) oldRender.call(viewList, list);
-            };
+            viewList.render = list => list && oldRender.call(viewList, list);
 
             viewList.render([]);
             chatterList = this.extractViewers(data);
@@ -211,7 +205,7 @@ class BetterViewerListModule {
         });
 
         // Timeout after 15 seconds
-        setTimeout(function() {
+        setTimeout(() => {
             if (deferred.readyState !== 4) deferred.abort();
         }, 15 * 1000);
     }
@@ -222,7 +216,7 @@ class BetterViewerListModule {
             .draggable({
                 handle: '.drag_handle',
                 containment: 'body',
-                stop: function(ev, ui) {
+                stop: (ev, ui) => {
                     if (ui.offset.top < 0) {
                         ui.position.top -= ui.offset.top;
                         ui.helper.css('top', ui.position.top);
