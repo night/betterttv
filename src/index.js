@@ -20,7 +20,6 @@
         - Blue buttons?
         - Hide group chat?
         - Host button
-        - Hide friends (and friend activity)
         - Disable whispers
         - Mod card keybinds
         - Deleted messages
