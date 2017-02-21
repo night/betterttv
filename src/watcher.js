@@ -119,6 +119,8 @@ class Watcher extends EventEmitter {
 
     conversationObserver() {
         const observe = (watcher, element) => {
+            // Element does not exist when the user is logged out
+            if (!element) return;
             if (watcher) watcher.disconnect();
             watcher.observe(element, {childList: true, subtree: true});
         };
