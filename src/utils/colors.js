@@ -120,23 +120,26 @@ function calculateColorReplacement(color, background) {
                  ('00' + b).substr(b.length);
 }
 
-var _colorCache = {};
+const colorCache = new Map();
 function calculateColor(color, darkenedMode) {
-    var cacheKey = `${color}:${darkenedMode}`;
-    if (cacheKey in _colorCache) return _colorCache[cacheKey];
+    const cacheKey = `${color}:${darkenedMode}`;
+    if (colorCache.has(cacheKey)) return colorCache.get(cacheKey);
 
-    var colorRegex = /^#[0-9a-f]+$/i;
+    const colorRegex = /^#[0-9a-f]+$/i;
     if (!colorRegex.test(color)) return color;
 
-    var bgColor;
-    for (var i = 20; i >= 0; i--) {
+    let bgColor;
+    for (let i = 20; i >= 0; i--) {
         bgColor = calculateColorBackground(color);
         if (bgColor === 'light' && darkenedMode !== true) break;
         if (bgColor === 'dark' && darkenedMode === true) break;
         color = calculateColorReplacement(color, bgColor);
     }
 
-    _colorCache[cacheKey] = color;
+    colorCache.set(cacheKey, color);
+    if (colorCache.size > 1000) {
+        colorCache.delete(colorCache.entries().next().value[0]);
+    }
     return color;
 }
 
