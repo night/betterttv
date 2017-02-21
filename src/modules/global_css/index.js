@@ -42,9 +42,9 @@ class GlobalCSSModule {
 
             // Messages Delete Icon Fix (Old Messages Inbox)
             $('#main_col .messages img[src="http://www-cdn.jtvnw.net/images/xarth/g/g18_trash-00000080.png"]')
-                .attr('src', 'https://cdn.betterttv.net/assets/icons/delete.png');
+                .attr('src', cdn.url('assets/icons/delete.png'));
             $('#main_col .messages img[src="http://www-cdn.jtvnw.net/images/xarth/g/g16_trash-00000020.png"]')
-                .attr('src', 'https://cdn.betterttv.net/assets/icons/delete.png')
+                .attr('src', cdn.url('assets/icons/delete.png'))
                 .attr('width', '16')
                 .attr('height', '16');
         }
