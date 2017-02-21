@@ -165,8 +165,7 @@ a {
 .stay-sub-button, .message_actions_block .batch_btn, .js-message-form .button.cancel, .dash-player-contain .button.preview_visible, 
 .channel-feed-toggle .switch.active, .chat-create-room .button, .chat-invite-user .button, .button.js-two-factor-enable, 
 .setting_section .button, .profile-card__actions .follow-button.button, .profile-card__actions .friend-button .button, 
-.profile-card__actions .profile-card__whisper.button, .chat-rules .button, 
-#main_col .js-sub-button .sub-modal-indicator, #main_col .js-sub-button .sub-modal-indicator:hover {
+.profile-card__actions .profile-card__whisper.button, .chat-rules .button {
     background: linear-gradient(bottom,rgb(47,88,185) 31%,rgb(50,108,211) 80%);
     background: -moz-linear-gradient(bottom,rgb(47,88,185) 31%,rgb(50,108,211) 80%);
     background: -webkit-linear-gradient(bottom,rgb(47,88,185) 31%,rgb(50,108,211) 80%);

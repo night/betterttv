@@ -1,4 +1,5 @@
 const $ = require('jquery');
+const api = require('../../utils/api');
 const watcher = require('../../watcher');
 const debounce = require('lodash.debounce');
 
@@ -10,7 +11,7 @@ const enter = debounce(function() {
 
     const previewType = IMAGE_REGEX.test(url) ? 'image_embed' : 'link_resolver';
 
-    $.get(`https://api.betterttv.net/2/${previewType}/${encodeURIComponent(url)}`).done(data => {
+    api.get(`${previewType}/${encodeURIComponent(url)}`).done(data => {
         if (!$target.length || !$target.is(':hover')) return;
 
         $target.tipsy({

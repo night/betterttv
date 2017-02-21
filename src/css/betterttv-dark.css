@@ -1,4 +1,4 @@
-body, code, samp, kbd, .real_title, #right_col .content #chat_line_list, .ember-chat, .ember-chat .message, .ember-chat .from, .ember-chat, .ember-chat .colon, #right_col #chat_line_list, #main_col .content #broadcast_meta .info .channel, #channel .player-column #broadcast-meta .info .title, #channel_panels_contain #channel_panels .panel h3, #channel_panels_contain #channel_panels .panel h1, #channel_panels_contain #channel_panels .panel h2, h3, h2, .tse-content a {
+body, code, samp, kbd, .real_title, #right_col .content #chat_line_list, .ember-chat, .ember-chat .message, .ember-chat .from, .ember-chat, .ember-chat .colon, #right_col #chat_line_list, #main_col .content #broadcast_meta .info .channel, #channel .player-column #broadcast-meta .info .title, #channel_panels_contain #channel_panels .panel h3, #channel_panels_contain #channel_panels .panel h1, #channel_panels_contain #channel_panels .panel h2, h3, h2, .tse-content a, .js-live-widget a {
     color: #D3D3D3;
 }
 
@@ -48,6 +48,10 @@ body {
 #chat_lines_list, #chat_lines, .ember-chat, .ember-view.ember-chat.roomMode, .chat-container, .ember-chat-container {
     background-color: rgb(30, 30, 30) !important;
     color: #D3D3D3;
+}
+
+.chat-container .special-message {
+    background: #111;
 }
 
 /* live dashboard */
@@ -273,6 +277,10 @@ div#site_header {
     border: 1px solid #3b3b3b;
 }
 
+.new-dashboard .subscription-dash .section-header .header-back:hover {
+    background-color: #333;
+}
+
 #channel .teespring-panel {
     border: 1px solid #4e4e4e;
     background-color: #1e1e1e;
@@ -399,8 +407,14 @@ div#site_header {
     color: #D3D3D3;
 }
 
-.ember-view .app-main {
+.ember-view .app-main,
+.fullwidth_main.front_page {
     background-color: rgb(20,20,20);
+}
+
+.fullwidth_main.front_page a,
+.fullwidth_main.front_page h4:after {
+    color: #d3d3d3;
 }
 
 #left_close, #right_close {
@@ -546,10 +560,27 @@ div#site_header {
     background-color: rgba(0, 0 ,0, 0);
 }
 
-#channel .cn-metabar__more .ember-view .button, .cn-bar .cn-tabs .cn-button-edit {
+#channel .cn-metabar__more .ember-view .button,
+.cn-bar .cn-tabs .cn-button-edit,
+.player .player-menu .pl-button {
     color: #b8b8b8;
     box-shadow: inset 0 0 0 1px rgba(171, 171, 171, 0.5);
     background-color: transparent;
+}
+
+.cn-bar .cn-tabs .button--more {
+    box-shadow: none;
+    background-color: #1e1e1e;
+    margin-right: 10px;
+}
+
+.cn-bar .cn-tabs .button--more:focus,
+.cn-bar .cn-tabs .button--more:hover {
+    background-color: #333333;
+}
+
+.cn-bar .cn-tabs .button--more svg {
+    fill: #777777;
 }
 
 #channel .cn-metabar__more .ember-view .button:hover,
@@ -684,10 +715,19 @@ div#site_header {
 }
 
 /* follow button for the fifth time*/
-.notification-controls .toggle-notification-menu {
+.notification-controls .toggle-notification-menu,
+.js-sub-button .sub-modal-indicator {
     background-color: rgb(30,30,30);
     color: #d3d3d3;
     outline: none;
+}
+
+.js-sub-button:hover .sub-modal-indicator, .js-sub-button .sub-modal-indicator:hover {
+    background-color: #333;
+}
+
+.js-sub-button .sub-modal-indicator .arrow {
+    border-top-color: #777;
 }
 
 /* Ember Pages Dropmenu Fix */
@@ -1656,6 +1696,31 @@ table.simple_table td {
     color: #999;
 }
 
+.twitch_subwindow_container .card:not(.auth_modal) {
+    background: #222;
+}
+
+.twitch_subwindow_container .card label {
+    color: #d3d3d3;
+}
+
+.twitch_subwindow_container .card .item input[type=text], .twitch_subwindow_container .card .item input[type=password], .twitch_subwindow_container .card .item textarea, .twitch_subwindow_container .card .vod-upload__selectbox, .twitch_subwindow_container .card .upload-modal__notification textarea {
+    color: #d4d4d4;
+    border: 1px solid rgba(0,0,0,0.35);
+    box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+    -moz-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+    -webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
+    background: #3b3b3b;
+}
+
+.twitch_subwindow_container .card .upload-modal__notification {
+    border: none;
+}
+
+.twitch_subwindow_container .modal__thumbnail-selected {
+    box-shadow: inset 0 0 0 1px #222;
+}
+
 /* darken link list popup */
 #flyout .content {
     background-color: rgb(35,35,35);
@@ -1924,6 +1989,10 @@ ul.tabs li>a, .directory_header .nav li>a, ul.tabs_fake li>a, .ember-application
     color: #D3D3D3;
 }
 
+.tabs__item--active, .tabs__item.active, .tabs__item.selected, .tabs>li.selected, .tabs>li>a.active {
+    color: #d3d3d3;
+}
+
 /* Hosting */
 .target-frame, .hostmode-title-container, .close-hostmode {
     background: rgb(20,20,20)!important;
@@ -2148,12 +2217,31 @@ span.subscribe-text {
     color: #888;
 }
 
+.player .player-hover.player-controls-bottom .player-menu__menu .player-text-link {
+    color: #d3d3d3;
+}
+
 .player .player-hover.player-controls-bottom .player-menu__menu:after {
     border-top-color: rgb(35, 35, 35);
 }
 
+.player .player-menu .player-menu__section select {
+    background: #3b3b3b;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.35);
+    color: #d4d4d4;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg viewBox='0 0 12 12' xmlns='http://www.w3.org/2000/svg' fill='%23b8b8b8'%3E%3Cpath d='M6 1l4 4H2zM6 11l4-4H2z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right -10px center;
+    background-origin: content-box;
+    background-size: 1.2rem;
+}
+
+.player .player-menu .player-menu__section select:focus {
+    border: none;
+}
+
 .player-placeholder {
-    background: rgb(20, 20, 20);
+    background: #282828;
 }
 
 /* dark mod card */
@@ -2754,6 +2842,23 @@ ul.tabs li>a:hover, .directory_header .nav li>a:hover, ul.tabs li>button:hover, 
     box-shadow: none;
 }
 
+.cn-bar .cn-bar__button--resubscribe {
+    background-color: #1e1e1e;
+    box-shadow: none;
+    color: #d3d3d3;
+}
+
+.cn-bar .cn-bar__button--resubscribe span {
+    color: #b8b8b8;
+}
+
+.cn-bar .cn-bar__button--resubscribe:hover,
+.cn-bar .cn-bar__button--resubscribe:focus {
+    background-color: #333333;
+    box-shadow: none;
+    color: #d3d3d3;
+}
+
 /* bits */
 .bits-toggle path {
     fill: #888;
@@ -2820,49 +2925,57 @@ ul.tabs li>a:hover, .directory_header .nav li>a:hover, ul.tabs li>button:hover, 
     border: none;
 }
 
-#search-panel .titleBar,
-#search-panel .titleBar .titleBar__back {
+#search-panel .search-panel__title-bar,
+#search-panel .search-panel__title-bar .search-panel__title-back {
     border-color: #555;
 }
 
-#search-panel .titleBar .titleBar__back:hover {
+#search-panel .search-panel__title-bar .search-panel__title-back:hover {
     background: #444;
 }
 
-#search-panel .titleBar,
-#search-panel .titleBar .titleBar__title,
-#search-panel .resultView__titlesep {
+#search-panel .search-panel__title-bar,
+#search-panel .search-panel__title-bar .search-panel__title,
+#search-panel .search-result-view__titlesep {
     background: #333;
     color: #d3d3d3;
 }
 
-#search-panel .resultView .card .card__layout .card__title {
+#search-panel .search-result-view .card .card__layout .card__title {
     color: #d3d3d3;
 }
 
-#search-panel .resultView .card .card__layout .card__info span {
+#search-panel .search-result-view .card .card__layout .card__info span {
     color: #999;
 }
 
-#search-panel .resultView .card .card__layout.isActive:before {
+#search-panel .search-result-view .card .card__layout.isActive:before {
     background: #333;
 }
 
-#search-panel .resultView__titlesep .pill,
-#search-panel .resultView__titlesep.isActive .pill {
+#search-panel .search-result-view__titlesep .pill,
+#search-panel .search-result-view__titlesep.isActive .pill {
     background-color: #555;
 }
 
-#search-panel .resultView__titlesep .resultView__titleMore {
+#search-panel .search-result-view__titlesep .search-result-view__title-more {
     color: #777;
 }
 
-#search-panel .resultView__titlesep.isActive .resultView__titleMore {
+#search-panel .search-result-view__titlesep.isActive .search-result-view__title-more {
     color: #999;
 }
 
-#search-panel .resultView .collectionWrapper::-webkit-scrollbar-thumb {
+#search-panel .search-result-view .collection-wrapper::-webkit-scrollbar-thumb {
     background: rgba(255,255,255,0.7);
+}
+
+#search-panel .search-panel__filter-wrapper {
+    background-color: #333;
+}
+
+#search-panel .filter-bar__button--text {
+    color: #d3d3d3;
 }
 
 /* discover page carousel arrows */
@@ -2972,4 +3085,206 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 /* Offer gradient is bad */
 .offer-item__ci:after {
     background: none;
+}
+
+/* pinned cheers */
+.sticky-message--pinned-cheers {
+    background: #111;
+    border-bottom: .1rem solid #111;
+}
+
+.ember-view.ember-chat.roomMode {
+    background: #111;
+}
+
+.pinned-cheer__top-bar--delimiter {
+    border-color: #333;
+}
+
+/* new dashboard */
+.video-stats .form__input[type=text], .video-stats .form__input[type=email], .video-stats .form__input[type=password], .video-stats .form__input[type=search], .video-stats textarea.form__input {
+    background-color: #222;
+    box-shadow: #333 0 0 0 1px inset;
+    color: #d3d3d3;
+}
+
+.video-stats .icon--purple svg, .video-stats__lifetime-stat__value {
+    fill: #a7a7a7;
+    color: #a7a7a7;
+}
+
+.brick--marked.brick--theme-white, .video-stats .brick--marked.brick--theme-grey {
+    border-color: #282828;
+    border-left-color: #9a7fcc;
+}
+
+.dash-brick {
+    color: #d3d3d3;
+}
+
+.button--hollow {
+    background-color: #6441a4;
+    color: white;
+    box-shadow: none;
+}
+
+.button--hollow:focus,
+.button--hollow:hover {
+    color: white;
+    text-decoration: none;
+    background-color: #7d5bbe;
+}
+
+.brick {
+    border-color: #666;
+}
+
+.dash-tabs__item {
+    background-color: #242424;
+    border-color: #666;
+}
+
+.dash-tabs__item--active {
+    background-color: #282828;
+}
+
+.dash-tabs__item--active .dash-tabs__label {
+    color: #d3d3d3;
+}
+
+.dash-tabs__item--active .dash-tabs__label:after {
+    border-bottom: 1px solid #252525 !important;
+}
+
+.dash-tabs__item:hover,
+.dash-tabs__label:focus {
+    box-shadow: none;
+}
+
+.video-stats__table-title {
+    color: #d3d3d3;
+}
+
+.video-stats .table__header {
+    background: #202020;
+}
+
+.video-stats .table__cell--header {
+    border: none;
+    color: #d3d3d3;
+}
+
+.video-stats .table__row {
+    background: #282828;
+    color: #d3d3d3;
+    border-bottom: 1px solid #232323;
+}
+
+.video-stats .table__row:nth-child(even) {
+    background: #303030;
+}
+
+.video-stats .table__row:hover {
+    background-color: #232323;
+}
+
+.video-stats .table__cell {
+    color: #d3d3d3;
+    border-bottom: none;
+    border-top: none;
+}
+
+.pika-label, .pika-button {
+    background: transparent;
+    color: #d3d3d3;
+}
+
+.pika-single {
+    background: #222;
+    border-color: #333;
+}
+
+.pika-table th {
+    color: #d3d3d3;
+}
+
+.pika-prev, .pika-next {
+    filter: invert(100%);
+}
+
+.new-dashboard input.text, .new-dashboard .vod-upload__selectbox, .new-dashboard .pika-input {
+    background: #222;
+    border-color: #333;
+    color: #d3d3d3;
+}
+
+.ui-datepicker {
+    background: #232323;
+}
+
+#video-manager .videos.uploads .video.item.card div:nth-child(3), #video-manager .card__body--theme-grey {
+    background-color: #202020 !important;
+}
+
+#video-manager a.button--text:hover {
+    color: #d3d3d3;
+}
+
+/* automod */
+.ember-chat .chat-messages .chat-line .system-msg {
+    color: #7B7B7B;
+}
+
+.ember-chat .chat-messages .chat-line .inline-warning {
+    color: #fc5c5c;
+}
+
+.ember-chat .chat-messages .chat-line .button--alert {
+    background-color: #bf4040;
+}
+
+.ember-chat .chat-messages .chat-line.twitchbot .button {
+    color: #D3D3D3;
+}
+
+/* new dashboard */
+
+.js-live-widget .dash-widget {
+    background: #323232;
+    border-color: #222;
+    color: #d3d3d3;
+}
+
+.js-live-widget .dash-widget__header {
+    border-color: #222;
+}
+
+.js-live-widget .form__input {
+    background-color: #292929;
+    box-shadow: #222 0 0 0 1px inset;
+    color: #d3d3d3;
+}
+
+.js-live-widget .form__input[type=checkbox]+label:before,
+.js-live-widget .form__input[type=radio]+label:before {
+    background-color: #292929
+;    border-color: #222;
+}
+
+.js-live-widget .form__input:focus {
+    box-shadow: #555 0 0 0 1px inset;
+    border: none;
+}
+
+.js-live-widget .form__hint,
+.js-live-widget .dash-widget-text-light {
+    color: #999;
+}
+
+.js-live-widget .border-b {
+    border-color: #555
+}
+
+.js-live-widget.gu-transit {
+    background-color: #1e1e1e;
 }

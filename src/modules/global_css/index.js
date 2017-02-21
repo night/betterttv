@@ -1,15 +1,25 @@
 const $ = require('jquery');
-const debug = require('../../utils/debug');
+const cdn = require('../../utils/cdn');
+const css = require('../../utils/css');
 const watcher = require('../../watcher');
 const settings = require('../../settings');
 
 class GlobalCSSModule {
     constructor() {
         this.globalCSS();
-        this.branding();
-        watcher.on('load', () => this.branding());
 
-        this.loadDark();
+        watcher.on('load', () => this.branding());
+        this.branding();
+
+        settings.add({
+            id: 'leftSideChat',
+            name: 'Left Side Chat',
+            defaultValue: false,
+            description: 'Moves the chat to the left of the player'
+        });
+        settings.on('changed.leftSideChat', () => this.toggleLeftSideChat());
+        this.toggleLeftSideChat();
+
         settings.add({
             id: 'darkenedMode',
             name: 'Dark Theme',
@@ -17,6 +27,7 @@ class GlobalCSSModule {
             description: 'A sleek, grey theme which will make you love the site even more'
         });
         settings.on('changed.darkenedMode', value => value === true ? this.loadDark() : this.unloadDark());
+        this.loadDark();
     }
 
     loadDark() {
@@ -48,11 +59,7 @@ class GlobalCSSModule {
     }
 
     globalCSS() {
-        const globalCSSInject = document.createElement('link');
-        globalCSSInject.setAttribute('href', `https://cdn.betterttv.net/css/betterttv.css?${debug.version}`);
-        globalCSSInject.setAttribute('type', 'text/css');
-        globalCSSInject.setAttribute('rel', 'stylesheet');
-        $('body').append(globalCSSInject);
+        css.load();
     }
 
     branding() {
@@ -60,7 +67,7 @@ class GlobalCSSModule {
 
         const $watermark = $('<img />');
         $watermark.attr('id', 'bttv_logo');
-        $watermark.attr('src', 'https://cdn.betterttv.net/assets/logos/logo_icon.png');
+        $watermark.attr('src', cdn.url('assets/logos/logo_icon.png'));
         $watermark.css({
             'z-index': 9000,
             'left': '90px',
@@ -68,6 +75,10 @@ class GlobalCSSModule {
             'position': 'absolute'
         });
         $('.warp .warp__logo').append($watermark);
+    }
+
+    toggleLeftSideChat() {
+        $('body').toggleClass('swap-chat', settings.get('leftSideChat'));
     }
 }
 
