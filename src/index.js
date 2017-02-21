@@ -3,7 +3,7 @@
     const debug = require('./utils/debug');
 
     require('./modules/**/index.js', {mode: (base, files) => {
-        return files.map((module) => {
+        return files.map(module => {
             return `
                 try {
                     require('${module}');
