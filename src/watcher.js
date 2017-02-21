@@ -14,6 +14,11 @@ class Watcher extends EventEmitter {
     constructor() {
         super();
 
+        // load is deferred to allow for all modules to initialize first
+        setTimeout(() => this.load());
+    }
+
+    load() {
         this.chatObserver();
         this.conversationObserver();
         this.routeObserver();
