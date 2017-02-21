@@ -28,9 +28,6 @@
         - Free sub reminder
         - Channel broadcast info auto-updating
         - Blue buttons?
-        - Hide group chat?
-        - Host button
-        - Disable whispers
         - Mod card keybinds
         - Deleted messages
         - Chat line history?
