@@ -38,12 +38,7 @@ class GlobalCSSModule {
         const allowedPages = ['ember', 'message', 'chat', 'user', 'dashboards'];
 
         if (allowedPages.indexOf(pageKind) !== -1) {
-            const darkCSS = document.createElement('link');
-            darkCSS.setAttribute('href', `https://cdn.betterttv.net/css/betterttv-dark.css?${debug.version}`);
-            darkCSS.setAttribute('type', 'text/css');
-            darkCSS.setAttribute('rel', 'stylesheet');
-            darkCSS.setAttribute('id', 'bttvDarkTwitch');
-            $('body').append(darkCSS);
+            css.load('dark');
 
             // Messages Delete Icon Fix (Old Messages Inbox)
             $('#main_col .messages img[src="http://www-cdn.jtvnw.net/images/xarth/g/g18_trash-00000080.png"]')
@@ -56,7 +51,7 @@ class GlobalCSSModule {
     }
 
     unloadDark() {
-        $('#bttvDarkTwitch').remove();
+        css.unload('dark');
     }
 
     globalCSS() {
