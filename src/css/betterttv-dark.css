@@ -50,6 +50,10 @@ body {
     color: #D3D3D3;
 }
 
+.chat-container .special-message {
+    background: #111;
+}
+
 /* live dashboard */
 div#site_header {
     background: rgb(30, 30, 30);
@@ -2972,4 +2976,18 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 /* Offer gradient is bad */
 .offer-item__ci:after {
     background: none;
+}
+
+/* pinned cheers */
+.sticky-message--pinned-cheers {
+    background: #111;
+    border-bottom: .1rem solid #111;
+}
+
+.ember-view.ember-chat.roomMode {
+    background: #111;
+}
+
+.pinned-cheer__top-bar--delimiter {
+    border-color: #333;
 }

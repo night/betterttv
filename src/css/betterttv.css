@@ -1536,7 +1536,7 @@ body.channel_new.columns.ember-application {
 }
 
 .ember-view.ember-chat.roomMode {
-    background: #efeef1 !important;
+    background: #efeef1;
 }
 
 /* Remove Twitch's Dark Mode toggle */
@@ -1923,11 +1923,6 @@ body.channel_new.columns.ember-application {
     background: #0f0;
 }
 
-/* fix small font in chat */
-.ember-chat .chat-messages .chat-line {
-    font-size: 13.3333px;
-}
-
 /* chat replay */
 .chat-container.chatReplay .ember-chat .chat-interface {
     display: none;
@@ -2065,3 +2060,8 @@ body.channel_new.columns.ember-application {
     display: none;
 }
 
+/* pinned cheers */
+.pinned-cheers__dismiss {
+    top: 5.2rem;
+    left: .5rem;
+}

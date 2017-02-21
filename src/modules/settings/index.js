@@ -1,9 +1,10 @@
 const $ = require('jquery');
+const cdn = require('../../utils/cdn');
+const debug = require('../../utils/debug');
+const saveAs = require('../../utils/filesaver').saveAs;
 const watcher = require('../../watcher');
 const settings = require('../../settings');
 const storage = require('../../storage');
-const debug = require('../../utils/debug');
-const saveAs = require('../../utils/filesaver').saveAs;
 
 const settingTemplate = ({id, name, description}) => `
     <div id="option" class="option bttvOption-${id}">
@@ -21,7 +22,7 @@ const settingTemplate = ({id, name, description}) => `
 
 const settingsPanelTemplate = () => `
     <div id="header">
-        <span id="logo"><img height="45px" src="https://cdn.betterttv.net/assets/logos/settings_logo.png" /></span>
+        <span id="logo"><img height="45px" src="${cdn.url('assets/logos/settings_logo.png')}" /></span>
         <ul class="nav">
             <li><a href="#bttvAbout">About</a></li>
             <li class="active"><a href="#bttvSettings">Settings</a></li>
@@ -39,7 +40,7 @@ const settingsPanelTemplate = () => `
     </div>
     <div id="bttvAbout" style="display:none;">
         <div class="aboutHalf">
-            <img class="bttvAboutIcon" src="https://cdn.betterttv.net/assets/logos/mascot.png" />
+            <img class="bttvAboutIcon" src="${cdn.url('assets/logos/mascot.png')}" />
             <h1>BetterTTV v${debug.version}</h1>
             <h2>from your friends at <a href="https://www.nightdev.com" target="_blank">NightDev</a></h2>
             <br>
@@ -117,8 +118,8 @@ class SettingsModule {
         panel.innerHTML = settingsPanelTemplate();
         $('body').append(panel);
 
-        $.get('https://cdn.betterttv.net/privacy.html').then(data => $('#bttvPrivacy .tse-content').html(data));
-        $.get(`https://cdn.betterttv.net/changelog.html?version=${debug.version}`).then(data => $('#bttvChangelog .tse-content').html(data));
+        cdn.get('privacy.html').then(data => $('#bttvPrivacy .tse-content').html(data));
+        cdn.get('changelog.html', true).then(data => $('#bttvChangelog .tse-content').html(data));
 
         $('#bttvSettings').on('change', '.option input:radio', ({target}) => settings.set(target.name, target.value === 'true'));
         $('#bttvBackupButton').click(() => this.backup());
