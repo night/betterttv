@@ -216,8 +216,8 @@ class BetterViewerListModule {
     }
 
     createPanel() {
-        // Create panel
-        var $panel = $(bvlTemplates.panel)
+        // Create panel (Use Twitch jQuery to get Draggable)
+        var $panel = jQuery(bvlTemplates.panel)
             .draggable({
                 handle: '.drag_handle',
                 containment: 'body',
