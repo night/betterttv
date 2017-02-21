@@ -4,8 +4,6 @@ const colors = require('../../utils/colors');
 const settings = require('../../settings');
 
 /* TODO:
- - Chat image preview
- - Link unfurl
  - Emoji
  - Emotes
  - Mention mod cards
@@ -13,10 +11,7 @@ const settings = require('../../settings');
  - Emote hover info
  - Commands
  - Custom mod cards
- - Alpha chat badges?
  - Tab completion?
- - Disable localized names
- - Disable name colors
 */
 
 class ChatModule {

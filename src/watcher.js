@@ -14,6 +14,11 @@ class Watcher extends EventEmitter {
     constructor() {
         super();
 
+        // load is deferred to allow for all modules to initialize first
+        setTimeout(() => this.load());
+    }
+
+    load() {
         this.chatObserver();
         this.conversationObserver();
         this.routeObserver();
@@ -55,6 +60,13 @@ class Watcher extends EventEmitter {
                     case 'loading':
                         break;
 
+                    case 'chat':
+                        this.emit('load.chat');
+                        break;
+                    case 'dashboard.index':
+                        this.emit('load.dashboard');
+                        this.emit('load.chat');
+                        break;
                     case 'channel.videos.video-type':
                     case 'channel.followers':
                     case 'channel.following':
@@ -119,6 +131,8 @@ class Watcher extends EventEmitter {
 
     conversationObserver() {
         const observe = (watcher, element) => {
+            // Element does not exist when the user is logged out
+            if (!element) return;
             if (watcher) watcher.disconnect();
             watcher.observe(element, {childList: true, subtree: true});
         };

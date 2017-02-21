@@ -173,7 +173,7 @@ class BetterViewerListModule {
                             debug.info('Moderation card: ' + row.text);
                             debug.info(e.target);
                         }
-                    }, row.display || row.text);
+                    }, row.display || row.text)
                 )
             });
 
