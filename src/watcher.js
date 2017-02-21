@@ -4,6 +4,7 @@ const $ = require('jquery');
 
 let route = '';
 let chatWatcher;
+let conversationWatcher;
 
 function getEmberView(elementId) {
     return window.App.__container__.lookup('-view-registry:main')[elementId];
@@ -14,6 +15,7 @@ class Watcher extends EventEmitter {
         super();
 
         this.chatObserver();
+        this.conversationObserver();
         this.routeObserver();
         this.checkClips();
 
@@ -113,6 +115,31 @@ class Watcher extends EventEmitter {
         );
 
         this.on('load.chat', () => observe(chatWatcher, $('.chat-lines')[0]));
+    }
+
+    conversationObserver() {
+        const observe = (watcher, element) => {
+            if (watcher) watcher.disconnect();
+            watcher.observe(element, {childList: true, subtree: true});
+        };
+
+        conversationWatcher = new window.MutationObserver(mutations =>
+            mutations.forEach(mutation => {
+                for (let i = 0; i < mutation.addedNodes.length; i++) {
+                    const el = mutation.addedNodes[i];
+                    const $el = $(el);
+
+                    if ($el.hasClass('conversation-window')) {
+                        this.emit('conversation.new', $el);
+                    } else if ($el.hasClass('conversation-chat-line')) {
+                        const view = getEmberView($el.attr('id'));
+                        this.emit('conversation.message', $el, view.message);
+                    }
+                }
+            })
+        );
+
+        this.on('load', () => observe(conversationWatcher, $('.conversations-content')[0]));
     }
 }
 

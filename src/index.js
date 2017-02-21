@@ -23,7 +23,6 @@
         - Hide group chat?
         - Hide bits
         - Host button
-        - Conversations (and hide conversations when inactive?)
         - Hide friends (and friend activity)
         - Disable whispers
         - Mod card keybinds
