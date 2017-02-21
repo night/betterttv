@@ -1734,7 +1734,7 @@ body.channel_new.columns.ember-application {
 }
 
 .ember-view.ember-chat.roomMode {
-    background: #efeef1;
+    background: #efeef1 !important;
 }
 
 /* Remove Twitch's Dark Mode toggle */
@@ -2323,6 +2323,60 @@ body.channel_new.columns.ember-application {
     width: auto;
     height: auto;
     top: 0;
+}
+
+/*** Holiday 2016 BTTV emote CSS ***/
+
+/* No stacking of IceCube or SoSnowy */
+.bttv-emo-5849c9a4f52be01a7ee5f79d + .bttv-emo-5849c9a4f52be01a7ee5f79d,
+.bttv-emo-567b5b520e984428652809b6 + .bttv-emo-567b5b520e984428652809b6 {
+    display: none;
+}
+
+.emoticon + .bttv-emo-5849c9a4f52be01a7ee5f79d { /* Ice Cube */
+    margin-left: -35px;
+    margin-bottom: -8px;
+    margin-top: -8px;
+}
+
+.emoticon + .bttv-emo-58487cc6f52be01a7ee5f205 { /* SantaHat */
+    margin-left: -34px;
+    margin-bottom: -1px;
+}
+
+.emoticon + .bttv-emo-5849c9c8f52be01a7ee5f79e { /* TopHat */
+    margin-left: -32px;
+    margin-bottom: -2px;
+}
+
+.emoticon + .bttv-emo-567b5b520e984428652809b6,  /* SoSnowy */
+.emoticon + .bttv-emo-567b5c080e984428652809ba,  /* CandyCane */
+.emoticon + .bttv-emo-567b5dc00e984428652809bd { /* ReinDeer */
+    margin-left: -33px;
+}
+
+.emoticon + .bttv-emo-58017c088faabf4b3d008460,  /* HalloFedora */
+.emoticon + .bttv-emo-5801777f8faabf4b3d008434,  /* HalloWitch */
+.emoticon + .bttv-emo-58017be38faabf4b3d00845a,  /* HalloKKona */
+.emoticon + .bttv-emo-58017bcc8faabf4b3d008456,  /* HalloHalo */
+.emoticon + .bttv-emo-5802e7a5d336345f3d4e1ed5,  /* HalloPirate */
+.emoticon + .bttv-emo-58017bf38faabf4b3d00845d { /* HalloHorns */
+    margin-left: -32px;
+}
+
+/* Limit of 10 SoSnowy in a single message */
+.bttv-emo-567b5b520e984428652809b6:nth-of-type(n + 11) {
+    display: none;
+}
+
+/* automod */
+.ember-chat .chat-messages .chat-line .system-msg {
+    margin-bottom: 8px;
+    color: #575260;
+}
+
+.twitchbot .pd-y-1 {
+    text-align: center;
 }
 
 /*** Holiday 2016 BTTV emote CSS ***/
