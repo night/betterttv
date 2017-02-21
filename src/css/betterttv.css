@@ -2250,14 +2250,15 @@ body.channel_new.columns.ember-application {
     cursor: pointer;
 }
 
-/* Free Sub Reminder */
-.bttv-free-sub-reminder {
+/* Prime Sub Reminder */
+.bttv-prime-sub-reminder::after {
     background: url(https://cdn.betterttv.net/assets/icons/badge-prime.svg);
     background-size: contain;
-    left: 3px;
-    top: 7px;
+    top: 9px;
+    right: 8px;
     width: 14px;
     height: 14px;
+    border: none;
     position: absolute;
 }
 
