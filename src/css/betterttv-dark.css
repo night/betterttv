@@ -1767,11 +1767,11 @@ table.simple_table td {
 }
 
 /* ~~~~~~~~~~~~Dark Group Chat~~~~~~~~~~~~~~~~~~~~~ */
-.ember-chat .chat-header {
+.chat-container .ember-chat .chat-header {
     background-color: rgb(50,50,50);
     box-shadow: none;
 }
-.ember-chat .chat-header.all-rooms-header {
+.chat-container .ember-chat .chat-header.all-rooms-header {
     background-color: rgb(50,50,50);
 }
 .ember-chat .chat-menu .list-header {
@@ -2047,7 +2047,7 @@ span.subscribe-text {
 }
 
 /* Twitch emote menu */
-.emoticon-selector .emoticon-selector-box, 
+.emoticon-selector .emoticon-selector-box,
 .emoticon-selector-container .emoticon-selector {
     background-color: #191919;
     border-color: #191919;
