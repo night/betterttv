@@ -4,8 +4,13 @@
 
     require('./modules/**/index.js', {mode: function(base, files) {
         return files.map((module) => {
-            return `try { require('${module}') } catch (e) { debug.log('Failed to load ${module}\\n', e); }`;
-        }).join('\n');
+            return `
+            try {
+                require('${module}')
+            } catch (e) {
+                debug.log('Failed to load ${module}\\n', e);
+            }`;
+        }).join('');
     }});
 
     debug.log(`BetterTTV v${debug.version} loaded.`);

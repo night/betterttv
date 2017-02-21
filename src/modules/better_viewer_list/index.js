@@ -28,13 +28,13 @@ class BetterViewerListModule {
             return;
         }
 
-        var interval = setInterval(() => {
+        const interval = setInterval(() => {
             if ($('#bvl-button').length > 0) {
                 clearInterval(interval);
                 return;
             }
 
-            var $oldViewerList = $('.chat-buttons-container a.button:has(.svg-viewerlist)');
+            const $oldViewerList = $('.chat-buttons-container a.button:has(.svg-viewerlist)');
             if ($oldViewerList.length === 0) return;
 
             debug.log('Adding BetterViewerList button');
@@ -42,7 +42,7 @@ class BetterViewerListModule {
             $oldViewerList.hide();
 
             $('#bvl-button').click(() => {
-                var $panel = $('#bvl-panel');
+                const $panel = $('#bvl-panel');
                 if ($panel.length > 0) {
                     $panel.toggle();
 
@@ -59,18 +59,18 @@ class BetterViewerListModule {
     }
 
     renderViewerList() {
-        var count = 0;
-        var results = chatterList;
-        var search = $('#bvl-panel .filter').val();
+        let count = 0;
+        let results = chatterList;
+        let search = $('#bvl-panel .filter').val();
         search = search.toLowerCase().trim();
         if (search.length > 0) {
-            var tmpResults = [];
+            let tmpResults = [];
             results = chatterList.filter(function(v) {
                 return v.text.indexOf(search) >= 0 || v.filter;
             });
 
             // Filter empty subsections
-            for (var i = 0; i < results.length - 1; i++) {
+            for (let i = 0; i < results.length - 1; i++) {
                 if (!results[i].filter) count += 1;
                 if (results[i].filter && results[i + 1].text === ' ') i++;
                 else tmpResults.push(results[i]);
@@ -81,16 +81,17 @@ class BetterViewerListModule {
         }
         viewList.render(results);
 
-        var label = count + (count < 2 ? ' viewer' : ' viewers');
+        const label = count + (count < 2 ? ' viewer' : ' viewers');
         $('#bvl-panel .viewer-count').text(label);
     }
 
     extractViewers(data) {
-        var results = [];
-        var chatters = data.data.chatters;
-        var userTypes = ['staff', 'admins', 'global_mods', 'moderators', 'viewers'];
-        var typeDisplays = ['STAFF', 'ADMINS', 'GLOBAL MODERATORS', 'MODERATORS', 'VIEWERS'];
-        for (var i = 0; i < userTypes.length; i++) {
+        const typeDisplays = ['STAFF', 'ADMINS', 'GLOBAL MODERATORS', 'MODERATORS', 'VIEWERS'];
+        const userTypes = ['staff', 'admins', 'global_mods', 'moderators', 'viewers'];
+
+        let results = [];
+        let chatters = data.data.chatters;
+        for (let i = 0; i < userTypes.length; i++) {
             if (chatters[userTypes[i]].length === 0) continue;
 
             // User type header
@@ -101,8 +102,8 @@ class BetterViewerListModule {
             });
 
             // users
-            var users = chatters[userTypes[i]];
-            for (var j = 0; j < users.length; j++) {
+            let users = chatters[userTypes[i]];
+            for (let j = 0; j < users.length; j++) {
                 results.push({
                     tag: 'li',
                     text: users[j],
@@ -127,7 +128,7 @@ class BetterViewerListModule {
             return;
         }
 
-        var tmi;
+        let tmi;
         try {
             tmi = App.__container__.lookup('controller:chat').currentRoom;
         } catch (e) {
@@ -135,14 +136,14 @@ class BetterViewerListModule {
             return;
         }
 
-        var $oldList = $('#bvl-panel .viewer-list');
+        const $oldList = $('#bvl-panel .viewer-list');
         $oldList.hide();
 
-        var $refreshButton = $('#bvl-panel .refresh-button');
+        const $refreshButton = $('#bvl-panel .refresh-button');
         $refreshButton.addClass('disable');
 
-        var target = document.getElementById('bvl-panel');
-        var spinner = new Spinner({
+        const target = document.getElementById('bvl-panel');
+        const spinner = new Spinner({
             color: '#fff',
             lines: 12,
             length: 6,
@@ -150,7 +151,7 @@ class BetterViewerListModule {
             radius: 12,
         }).spin(target);
 
-        var deferred = tmi.tmiRoom.list();
+        const deferred = tmi.tmiRoom.list();
         deferred.then((data) => {
             spinner.stop();
             $oldList.remove();
@@ -160,7 +161,7 @@ class BetterViewerListModule {
 
             $('#bvl-panel .status').hide();
             $('#bvl-panel .filter').show();
-            var $parent = $('#bvl-panel');
+            const $parent = $('#bvl-panel');
             viewList = new ViewList({
                 className: 'viewer-list',
                 topClassName: 'bvl-top',
@@ -180,7 +181,7 @@ class BetterViewerListModule {
                 }
             });
 
-            var oldRender = viewList.render;
+            let oldRender = viewList.render;
             viewList.render = function(list) {
                 if (list) oldRender.call(viewList, list);
             };
@@ -188,19 +189,19 @@ class BetterViewerListModule {
             viewList.render([]);
             chatterList = this.extractViewers(data);
             chatterCount = data.data.chatter_count;
-            var $el = $('#bvl-panel .viewer-list');
+            const $el = $('#bvl-panel .viewer-list');
             $el.height($parent.height() - 85);
             this.renderViewerList();
             viewList.lastUpdate = Date.now();
         }, () => {
-            var errorText;
+            let errorText;
             spinner.stop();
             $refreshButton.removeClass('disable');
             $('#bvl-panel .status').show();
             if (viewList !== undefined) {
                 $oldList.show();
                 $('#bvl-panel .filter').show();
-                var time = Math.ceil((Date.now() - viewList.lastUpdate) / 60000);
+                const time = Math.ceil((Date.now() - viewList.lastUpdate) / 60000);
                 errorText = 'Failed to load, showing ' + time + 'm old list.';
             } else {
                 $('#bvl-panel .filter').hide();
@@ -217,7 +218,7 @@ class BetterViewerListModule {
 
     createPanel() {
         // Create panel (Use Twitch jQuery to get Draggable)
-        var $panel = jQuery(bvlTemplates.panel)
+        const $panel = jQuery(bvlTemplates.panel)
             .draggable({
                 handle: '.drag_handle',
                 containment: 'body',
@@ -240,16 +241,16 @@ class BetterViewerListModule {
             this.loadViewerList();
         });
 
-        var container = $('.chat-room');
+        const $container = $('.chat-room');
         $panel.css({
-            width: container.width(),
-            height: container.height() - 115
+            width: $container.width(),
+            height: $container.height() - 115
         });
 
-        container.append($panel);
+        $container.append($panel);
 
         // Setup resizing
-        var resizable = new Resizable($panel[0], {
+        const resizable = new Resizable($panel[0], {
             handles: 's, se, e',
             threshold: 10,
             draggable: false
