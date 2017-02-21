@@ -18,7 +18,7 @@ function slideUp() {
     $conversations.animate({bottom: '0px'}, 100);
 }
 
-class HideConversations {
+class HideConversationsModule {
     constructor() {
         settings.add({
             id: 'disableWhispers',
@@ -80,4 +80,4 @@ class HideConversations {
     }
 }
 
-module.exports = new HideConversations();
+module.exports = new HideConversationsModule();
