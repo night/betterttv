@@ -120,6 +120,26 @@ function calculateColorReplacement(color, background) {
                  ('00' + b).substr(b.length);
 }
 
+var _colorCache = {};
+function calculateColor(color, darkenedMode) {
+    var cacheKey = `${color}:${darkenedMode}`;
+    if (cacheKey in _colorCache) return _colorCache[cacheKey];
+
+    var colorRegex = /^#[0-9a-f]+$/i;
+    if (!colorRegex.test(color)) return color;
+
+    var bgColor;
+    for (var i = 20; i >= 0; i--) {
+        bgColor = calculateColorBackground(color);
+        if (bgColor === 'light' && darkenedMode !== true) break;
+        if (bgColor === 'dark' && darkenedMode === true) break;
+        color = calculateColorReplacement(color, bgColor);
+    }
+
+    _colorCache[cacheKey] = color;
+    return color;
+}
+
 function getRgb(color) {
     // Convert HEX to RGB
     const regex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(color);
@@ -145,6 +165,7 @@ module.exports = {
     hslToRgb,
     calculateColorBackground,
     calculateColorReplacement,
+    calculateColor,
     getRgb,
     getHex
 };
