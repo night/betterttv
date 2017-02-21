@@ -6,7 +6,7 @@
         return files.map((module) => {
             return `
                 try {
-                    require('${module}')
+                    require('${module}');
                 } catch (e) {
                     debug.error('Failed to ${module}', e.stack);
                 }
@@ -22,12 +22,9 @@
         - Chat Settings (and scrollback amount)
         - Chat freeze
         - Chat custom timeouts
-        - Split chat
         - Pinned highlights (and timeout)
         - Notifications (desktop, following notices, mentions, audible setting too)
-        - Free sub reminder
         - Channel broadcast info auto-updating
-        - Blue buttons?
         - Mod card keybinds
         - Deleted messages
         - Chat line history?
