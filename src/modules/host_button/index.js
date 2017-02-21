@@ -57,11 +57,8 @@ class HostButtonModule {
     }
 
     updateHostButtonText() {
-        if (hosting) {
-            $hostButton.find('span').text('Unhost');
-        } else {
-            $hostButton.find('span').text('Host');
-        }
+        const text = hosting ? 'Unhost' : 'Host';
+        $hostButton.find('span').text(text);
     }
 
     updateHostingState(userId) {
