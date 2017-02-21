@@ -2,12 +2,21 @@ const $ = require('jquery');
 const cdn = require('../../utils/cdn');
 const css = require('../../utils/css');
 const watcher = require('../../watcher');
+const settings = require('../../settings');
 
 class GlobalCSSModule {
     constructor() {
+        settings.add({
+            id: 'leftSideChat',
+            name: 'Left Side Chat',
+            defaultValue: false,
+            description: 'Moves the chat to the left of the player'
+        });
+        settings.on('changed.leftSideChat', () => this.toggleLeftSideChat());
+        watcher.on('load', () => this.branding());
         this.globalCSS();
         this.branding();
-        watcher.on('load', () => this.branding());
+        this.toggleLeftSideChat();
     }
 
     globalCSS() {
@@ -27,6 +36,10 @@ class GlobalCSSModule {
             'position': 'absolute'
         });
         $('.warp .warp__logo').append($watermark);
+    }
+
+    toggleLeftSideChat() {
+        $('body').toggleClass('swap-chat', settings.get('leftSideChat'));
     }
 }
 
