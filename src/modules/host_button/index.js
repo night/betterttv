@@ -29,6 +29,7 @@ class HostButtonModule {
     }
 
     embedHostButton() {
+        if ($('#bttv-host-button').length) return;
         $hostButton = $('<button><span></span></button>');
         $hostButton.attr('id', 'bttv-host-button');
         $hostButton.addClass('button action button--hollow mg-l-1');
