@@ -60,6 +60,9 @@ class Watcher extends EventEmitter {
                     case 'loading':
                         break;
 
+                    case 'chat':
+                        this.emit('load.chat');
+                        break;
                     case 'dashboard.index':
                         this.emit('load.dashboard');
                         this.emit('load.chat');
