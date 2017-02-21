@@ -16,7 +16,6 @@
         - Better Viewer List
         - Notifications (desktop, following notices, mentions, audible setting too)
         - Free sub reminder
-        - Hide prime promotions
         - Channel broadcast info auto-updating
         - Blue buttons?
         - Hide group chat?
