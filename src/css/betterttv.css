@@ -1734,7 +1734,7 @@ body.channel_new.columns.ember-application {
 }
 
 .ember-view.ember-chat.roomMode {
-    background: #efeef1 !important;
+    background: #efeef1;
 }
 
 /* Remove Twitch's Dark Mode toggle */
@@ -2116,11 +2116,6 @@ body.channel_new.columns.ember-application {
 
 #bttv-custom-timeout-contain:hover .cursor {
     background: #0f0;
-}
-
-/* fix small font in chat */
-.ember-chat .chat-messages .chat-line {
-    font-size: 13.3333px;
 }
 
 /* chat replay */

@@ -1,5 +1,5 @@
-.bits-helper-toggle, .bits-card, .bits-tag--container {
-	display: none;
+.bits-helper-toggle, .bits-card, .bits-tag--container, .sticky-message--pinned-cheers {
+	display: none !important;
 }
 
 .ember-chat .chat-messages.bits-tags__offset {
