@@ -1832,11 +1832,11 @@ table.simple_table td {
 }
 
 /* ~~~~~~~~~~~~Dark Group Chat~~~~~~~~~~~~~~~~~~~~~ */
-.ember-chat .chat-header {
+.chat-container .ember-chat .chat-header {
     background-color: rgb(50,50,50);
     box-shadow: none;
 }
-.ember-chat .chat-header.all-rooms-header {
+.chat-container .ember-chat .chat-header.all-rooms-header {
     background-color: rgb(50,50,50);
 }
 .ember-chat .chat-menu .list-header {
