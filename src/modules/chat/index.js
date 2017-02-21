@@ -11,7 +11,6 @@ const settings = require('../../settings');
  - Emote hover info
  - Commands
  - Custom mod cards
- - Alpha chat badges?
  - Tab completion?
 */
 
