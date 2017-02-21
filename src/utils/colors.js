@@ -103,13 +103,13 @@ function calculateColorReplacement(color, background) {
     let r = parseInt(color.substr(0, 2), 16);
     let g = parseInt(color.substr(2, 2), 16);
     let b = parseInt(color.substr(4, 2), 16);
-    let hsl = rgbToHsl(r, g, b);
+    const hsl = rgbToHsl(r, g, b);
 
     // more thoroughly lightens dark colors, with no problems at black
     let l = light ? 1 - (1 - factor) * (1 - hsl[2]) : (1 + factor) * hsl[2];
     l = Math.min(Math.max(0, l), 1);
 
-    let rgb = hslToRgb(hsl[0], hsl[1], l);
+    const rgb = hslToRgb(hsl[0], hsl[1], l);
     r = rgb[0].toString(16);
     g = rgb[1].toString(16);
     b = rgb[2].toString(16);

@@ -28,7 +28,7 @@ class Settings extends EventEmitter {
     }
 
     get(id) {
-        let value = storage.get(id);
+        const value = storage.get(id);
         if (value !== null) {
             return value;
         }

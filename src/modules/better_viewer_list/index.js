@@ -64,7 +64,7 @@ class BetterViewerListModule {
         let search = $('#bvl-panel .filter').val();
         search = search.toLowerCase().trim();
         if (search.length > 0) {
-            let tmpResults = [];
+            const tmpResults = [];
             results = chatterList.filter(v => v.text.indexOf(search) >= 0 || v.filter);
 
             // Filter empty subsections
@@ -87,8 +87,8 @@ class BetterViewerListModule {
         const typeDisplays = ['STAFF', 'ADMINS', 'GLOBAL MODERATORS', 'MODERATORS', 'VIEWERS'];
         const userTypes = ['staff', 'admins', 'global_mods', 'moderators', 'viewers'];
 
-        let results = [];
-        let chatters = data.data.chatters;
+        const results = [];
+        const chatters = data.data.chatters;
         for (let i = 0; i < userTypes.length; i++) {
             if (chatters[userTypes[i]].length === 0) continue;
 
@@ -100,7 +100,7 @@ class BetterViewerListModule {
             });
 
             // users
-            let users = chatters[userTypes[i]];
+            const users = chatters[userTypes[i]];
             for (let j = 0; j < users.length; j++) {
                 results.push({
                     tag: 'li',
@@ -150,7 +150,7 @@ class BetterViewerListModule {
         }).spin(target);
 
         const deferred = tmi.tmiRoom.list();
-        deferred.then((data) => {
+        deferred.then(data => {
             spinner.stop();
             $oldList.remove();
             setTimeout(() => $refreshButton.removeClass('disable'), 30 * 1000);
@@ -177,7 +177,7 @@ class BetterViewerListModule {
                 )
             });
 
-            let oldRender = viewList.render;
+            const oldRender = viewList.render;
             viewList.render = list => list && oldRender.call(viewList, list);
 
             viewList.render([]);

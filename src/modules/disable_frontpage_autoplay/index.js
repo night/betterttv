@@ -18,7 +18,7 @@ class DisableFrontpageAutoplayModule {
         const $player = $('#player');
         let frameSrc = $player.children('iframe').eq(0).attr('src');
         $player.children('iframe').eq(0).attr('src', frameSrc + '&autoplay=false');
-        $player.bind('DOMNodeInserted DOMNodeRemoved', function() {
+        $player.bind('DOMNodeInserted DOMNodeRemoved', () => {
             frameSrc = $player.children('iframe').eq(0).attr('src');
             $player.children('iframe').eq(0).attr('src', frameSrc + '&autoplay=false');
         });
