@@ -18,7 +18,6 @@
         - Chat custom timeouts
         - Split chat
         - Pinned highlights (and timeout)
-        - Better Viewer List
         - Notifications (desktop, following notices, mentions, audible setting too)
         - Free sub reminder
         - Channel broadcast info auto-updating
