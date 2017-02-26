@@ -3,17 +3,6 @@ const debug = require('../../utils/debug');
 const colors = require('../../utils/colors');
 const settings = require('../../settings');
 
-/* TODO:
- - Emoji
- - Emotes
- - Mention mod cards
- - Highlights/Blacklist
- - Emote hover info
- - Commands
- - Custom mod cards
- - Tab completion?
-*/
-
 class ChatModule {
     constructor() {
         watcher.on('chat.message', ($element, message) => this.messageParser($element, message));
