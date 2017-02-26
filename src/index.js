@@ -20,7 +20,6 @@
      - Modules for:
         - Chat State
         - Chat Settings (and scrollback amount)
-        - Chat freeze
         - Chat custom timeouts
         - Pinned highlights (and timeout)
         - Notifications (desktop, following notices, mentions, audible setting too)
