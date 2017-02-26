@@ -16,7 +16,7 @@ const settings = require('../../settings');
 
 class ChatModule {
     constructor() {
-        watcher.on('chat.message', this.messageParser);
+        watcher.on('chat.message', ($element, message) => this.messageParser($element, message));
     }
 
     calculateColor(color) {
@@ -38,6 +38,8 @@ class ChatModule {
     }
 
     messageParser($element, message) {
+        $element.find('.from').css('color', this.calculateColor(message.color));
+        // const $message = $element.find('.message');
         debug.log($element, message);
     }
 }

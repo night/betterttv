@@ -23,7 +23,6 @@
         - Chat custom timeouts
         - Pinned highlights (and timeout)
         - Notifications (desktop, following notices, mentions, audible setting too)
-        - Channel broadcast info auto-updating
         - Mod card keybinds
         - Deleted messages
         - Chat line history?
