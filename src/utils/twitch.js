@@ -13,7 +13,8 @@ function formatUser(data) {
         id: data.id,
         name: data.login,
         displayName: data.name,
-        avatar: data.logo
+        avatar: data.logo,
+        accessToken: data.chat_oauth_token
     };
 }
 
@@ -22,6 +23,10 @@ function lookup(...args) {
 }
 
 module.exports = {
+    getEmberContainer(...args) {
+        return lookup(...args);
+    },
+
     getCurrentChannel() {
         let rv;
         try {
