@@ -6,9 +6,7 @@ const API_ENDPOINT = 'https://api.twitch.tv/v5/';
 const CLIENT_ID = '6x8avioex0zt85ht6py4sq55z6avsea';
 
 function request(method, path, options = {}) {
-    return new Promise(resolve => {
-        twitch.getCurrentUser().then(({accessToken}) => resolve(accessToken));
-    }).then(accessToken => new Promise((resolve, reject) => {
+    const _request = accessToken => new Promise((resolve, reject) => {
         $.ajax({
             url: `${API_ENDPOINT}${path}${options.qs ? `?${querystring.stringify(options.qs)}` : ''}`,
             method,
@@ -25,7 +23,13 @@ function request(method, path, options = {}) {
             success: data => resolve(data),
             error: res => reject(res.responseJSON)
         });
-    }));
+    });
+
+    return options.auth ? (
+        new Promise(resolve => {
+            twitch.getCurrentUser().then(({accessToken}) => resolve(accessToken));
+        }).then(_request)
+    ) : _request();
 }
 
 module.exports = {
