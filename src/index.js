@@ -18,13 +18,18 @@
 
     /* TODO:
      - Modules for:
+        - Chat (channel, replay, conversations)
         - Chat State
         - Chat Settings (and scrollback amount)
-        - Chat custom timeouts
-        - Pinned highlights (and timeout)
+        - Chat Custom Timeouts
+        - Chat Deleted messages
+        - Chat Emotes (and emoji)
+        - Chat Commands
+        - Chat Tab Completion
+        - Chat Moderator Cards
+        - Chat Pinned Highlights (and timeout)
+        - Chat Highlights/Blacklist
+        - TwitchEmotes "found new emotes" integration
         - Notifications (desktop, following notices, mentions, audible setting too)
-        - Mod card keybinds
-        - Deleted messages
-        - Chat line history?
     */
 })();
