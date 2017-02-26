@@ -15,7 +15,7 @@ class ChatFreezeModule {
     constructor() {
         $('body')
             .on('keydown.chat-freeze', e => {
-                if (!(e.metaKey || e.ctrlKey) || !$(`${CHAT_LINES}:hover`).length) return;
+                if (!(e.metaKey || e.ctrlKey) || !$(`${CHAT_LINES}:hover`).length || document.hidden) return;
                 isFrozen = true;
                 setScrollState(false);
             })
