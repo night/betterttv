@@ -2,6 +2,7 @@ const twitch = require('../../utils/twitch');
 const globalEmotes = require('./global-emotes');
 const channelEmotes = require('./channel-emotes');
 const personalEmotes = require('./personal-emotes');
+const emojis = require('./emojis');
 const settings = require('../../settings');
 
 class EmotesModule {
@@ -9,7 +10,8 @@ class EmotesModule {
         this.emoteProviders = [
             personalEmotes,
             globalEmotes,
-            channelEmotes
+            channelEmotes,
+            emojis
         ];
 
         settings.add({
