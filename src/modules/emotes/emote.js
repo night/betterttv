@@ -24,6 +24,7 @@ module.exports = class Emote {
             srcset.push(`${html.escape(this.images['4x'])} 4x`);
         }
 
+        const providerClass = html.escape(this.provider.id);
         const idClass = `${html.escape(this.provider.id)}-emo-${html.escape(this.id)}`;
 
         const balloon = `
@@ -34,7 +35,7 @@ module.exports = class Emote {
 
         return `
             <span class="balloon-wrapper">
-                <img src="${html.escape(this.images['1x'])}" srcset="${srcset.join(', ')}" alt="${html.escape(this.code)}" class="emoticon ${idClass}">
+                <img src="${html.escape(this.images['1x'])}" srcset="${srcset.join(', ')}" alt="${html.escape(this.code)}" class="emoticon ${providerClass} ${idClass}">
                 <div class="balloon balloon--tooltip balloon--up balloon--center mg-t-1" style="text-align: center;">${balloon}</div>
             </span>
         `;
