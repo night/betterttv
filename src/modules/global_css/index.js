@@ -1,10 +1,6 @@
 const $ = require('jquery');
 const cdn = require('../../utils/cdn');
 const css = require('../../utils/css');
-<<<<<<< HEAD
-const debug = require('../../utils/debug');
-=======
->>>>>>> 45258f88849c4036429225acfa8c5e1e7b344e08
 const settings = require('../../settings');
 const watcher = require('../../watcher');
 
