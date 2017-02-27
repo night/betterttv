@@ -23,7 +23,6 @@
         - Chat Settings (and scrollback amount)
         - Chat Custom Timeouts
         - Chat Deleted messages
-        - Chat Emotes (and emoji)
         - Chat Commands
         - Chat Tab Completion
         - Chat Moderator Cards
