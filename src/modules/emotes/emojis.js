@@ -73,8 +73,6 @@ class Emojis extends AbstractEmotes {
                 this.emotes.set(emoji.char, emote);
                 this.emotes.set(code, emote);
             });
-
-        console.log(this.emotes);
     }
 }
 
