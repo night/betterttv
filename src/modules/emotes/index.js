@@ -1,13 +1,15 @@
 const twitch = require('../../utils/twitch');
 const globalEmotes = require('./global-emotes');
 const channelEmotes = require('./channel-emotes');
+const personalEmotes = require('./personal-emotes');
 const settings = require('../../settings');
 
 class EmotesModule {
     constructor() {
         this.emoteProviders = [
-            channelEmotes,
-            globalEmotes
+            personalEmotes,
+            globalEmotes,
+            channelEmotes
         ];
 
         settings.add({
@@ -24,12 +26,12 @@ class EmotesModule {
         });
     }
 
-    getEligibleEmote(user, code) {
+    getEligibleEmote(code, user) {
         const channel = twitch.getCurrentChannel();
 
         for (let i = 0; i < this.emoteProviders.length; i++) {
             const provider = this.emoteProviders[i];
-            const emote = provider.getEligibleEmote(code);
+            const emote = provider.getEligibleEmote(code, user);
             if (!emote || !emote.isUsable(channel, user)) continue;
             if (emote.imageType === 'gif' && settings.get('bttvGIFEmotes') === false) continue;
             if (emote.provider.id.startsWith('bttv') && settings.get('bttvEmotes') === false) continue;

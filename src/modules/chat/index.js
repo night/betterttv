@@ -6,6 +6,8 @@ const emotes = require('../emotes');
 const EMOTE_STRIP_SYMBOLS_REGEX = /(^[~!@#$%\^&\*\(\)]+|[~!@#$%\^&\*\(\)]+$)/g;
 
 function formatChatUser({from, color, tags}) {
+    if (!tags || from === 'jtv') return null;
+
     return {
         id: tags['user-id'],
         name: from,
@@ -26,6 +28,10 @@ class ChatModule {
         return colors.calculateColor(color, settings.get('darkenedMode'));
     }
 
+    customBadges() {
+
+    }
+
     emoticonize($message, user) {
         const tokens = $message.contents();
         for (let i = 0; i < tokens.length; i++) {
@@ -36,9 +42,9 @@ class ChatModule {
             let modified = false;
             for (let j = 0; j < parts.length; j++) {
                 const part = parts[j];
-                let emote = emotes.getEligibleEmote(user, part);
+                let emote = emotes.getEligibleEmote(part, user);
                 if (!emote) {
-                    emote = emotes.getEligibleEmote(user, part.replace(EMOTE_STRIP_SYMBOLS_REGEX, ''));
+                    emote = emotes.getEligibleEmote(part.replace(EMOTE_STRIP_SYMBOLS_REGEX, ''), user);
                 }
                 if (!emote) continue;
                 modified = true;
