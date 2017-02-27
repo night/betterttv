@@ -2,6 +2,7 @@ const watcher = require('../../watcher');
 const api = require('../../utils/api');
 const mustacheFormat = require('../../utils/regex').mustacheFormat;
 const twitch = require('../../utils/twitch');
+const cdn = require('../../utils/cdn');
 
 const AbstractEmotes = require('./abstract-emotes');
 const Emote = require('./emote');
@@ -9,7 +10,8 @@ const Emote = require('./emote');
 let channel = {};
 const provider = {
     id: 'bttv-channel',
-    displayName: 'BetterTTV Channel Emotes'
+    displayName: 'BetterTTV Channel Emotes',
+    badge: cdn.url('tags/developer.png')
 };
 
 class ChannelEmotes extends AbstractEmotes {
