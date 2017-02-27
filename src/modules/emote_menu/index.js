@@ -2,6 +2,7 @@ const $ = require('jquery');
 const debug = require('../../utils/debug');
 const settings = require('../../settings');
 const watcher = require('../../watcher');
+const emotes = require('../emotes');
 
 class EmoteMenuModule {
     constructor() {
@@ -46,8 +47,16 @@ class EmoteMenuModule {
             if (window.emoteMenu) {
                 clearInterval(getterInterval);
                 debug.log('Hooking into Twitch Chat Emotes Script');
-                // TODO: hook up custom emotes
-                // window.emoteMenu.registerEmoteGetter('BetterTTV', bttv.chat.emotes);
+                window.emoteMenu.registerEmoteGetter('BetterTTV', () =>
+                    emotes.getEmotes().map(({code, images, provider}) => {
+                        return {
+                            text: code,
+                            channel: provider.displayName,
+                            badge: provider.badge,
+                            url: images['1x']
+                        };
+                    })
+                );
             }
         }, 1000);
     }
