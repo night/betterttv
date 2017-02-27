@@ -29,7 +29,6 @@
         - Chat Moderator Cards
         - Chat Pinned Highlights (and timeout)
         - Chat Highlights/Blacklist
-        - TwitchEmotes "found new emotes" integration
         - Notifications (desktop, following notices, mentions, audible setting too)
     */
 })();
