@@ -2,13 +2,15 @@ const socketClient = require('../../socket-client');
 const watcher = require('../../watcher');
 const mustacheFormat = require('../../utils/regex').mustacheFormat;
 const twitch = require('../../utils/twitch');
+const cdn = require('../../utils/cdn');
 
 const AbstractEmotes = require('./abstract-emotes');
 const Emote = require('./emote');
 
 const provider = {
     id: 'bttv-personal',
-    displayName: 'BetterTTV Personal Emotes'
+    displayName: 'BetterTTV Personal Emotes',
+    badge: cdn.url('tags/developer.png')
 };
 
 let joinedChannel;
@@ -17,12 +19,22 @@ class PersonalEmotes extends AbstractEmotes {
     constructor() {
         super();
 
+        // TODO: we need to plumb in broadcast me on message send
         socketClient.on('lookup_user', s => this.updatePersonalEmotes(s));
         watcher.on('load.chat', () => this.joinChannel());
     }
 
     get provider() {
         return provider;
+    }
+
+    getEmotes(user) {
+        if (!user) return [];
+
+        const emotes = this.emotes.get(user.name);
+        if (!emotes) return [];
+
+        return [...emotes.values()];
     }
 
     getEligibleEmote(code, user) {

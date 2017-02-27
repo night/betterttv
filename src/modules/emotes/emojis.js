@@ -1,13 +1,15 @@
 const emojilib = require('emojilib');
 const twemoji = require('twemoji');
 const blacklistedEmoji = require('../../utils/emoji-blacklist.json');
+const cdn = require('../../utils/cdn');
 
 const AbstractEmotes = require('./abstract-emotes');
 const Emote = require('./emote');
 
 const provider = {
     id: 'bttv-emoji',
-    displayName: 'BetterTTV Emojis'
+    displayName: 'BetterTTV Emojis',
+    badge: cdn.url('tags/developer.png')
 };
 
 function countEmojis(emoji) {
@@ -22,11 +24,17 @@ class Emojis extends AbstractEmotes {
     constructor() {
         super();
 
+        // TODO: we need to convert emoji codes to surrogates on message send
         this.loadEmojis();
     }
 
     get provider() {
         return provider;
+    }
+
+    getEmotes() {
+        // We do not wish to show these in the emote picker
+        return [];
     }
 
     loadEmojis() {

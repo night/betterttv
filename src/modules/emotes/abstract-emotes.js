@@ -7,6 +7,10 @@ module.exports = class AbstractEmotes {
         }
     }
 
+    getEmotes() {
+        return [...this.emotes.values()];
+    }
+
     getEligibleEmote(code) {
         return this.emotes.get(code);
     }
