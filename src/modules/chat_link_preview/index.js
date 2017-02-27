@@ -11,7 +11,7 @@ const enter = debounce(function() {
 
     const previewType = IMAGE_REGEX.test(url) ? 'image_embed' : 'link_resolver';
 
-    api.get(`${previewType}/${encodeURIComponent(url)}`).done(data => {
+    api.get(`${previewType}/${encodeURIComponent(url)}`).then(data => {
         if (!$target.length || !$target.is(':hover')) return;
 
         $target.tipsy({

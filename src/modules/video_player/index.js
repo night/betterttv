@@ -27,9 +27,9 @@ function handlePlayerClick() {
     clicks++;
     setTimeout(() => {
         if (clicks === 1) {
-            var $player = $('#player');
-            var isPaused = $player.data('paused');
-            var playerService = App.__container__.lookup('service:persistent-player');
+            const $player = $('#player');
+            const isPaused = $player.data('paused');
+            const playerService = App.__container__.lookup('service:persistent-player');
             if (!playerService || !playerService.playerComponent.player) return;
             if (!isPaused) playerService.playerComponent.player.pause();
         }
@@ -60,7 +60,7 @@ class VideoPlayerModule {
 
             $('div.player-livestatus').append('<span class="player-viewer-count"></span>');
             controller.model.addObserver('stream.viewers', (model, key) => {
-                var label = Twitch.display.commatize(model.get(key)) + ' viewers';
+                const label = Twitch.display.commatize(model.get(key)) + ' viewers';
                 $('.player-viewer-count').text(label);
             });
         } catch (e) {}
