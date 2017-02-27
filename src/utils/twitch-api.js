@@ -21,7 +21,10 @@ function request(method, path, options = {}) {
             },
             timeout: 30000,
             success: data => resolve(data),
-            error: res => reject(res.responseJSON)
+            error: ({status, responseJSON}) => reject({
+                status,
+                data: responseJSON
+            })
         });
     });
 

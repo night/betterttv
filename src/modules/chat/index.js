@@ -1,7 +1,21 @@
 const watcher = require('../../watcher');
-const debug = require('../../utils/debug');
 const colors = require('../../utils/colors');
 const settings = require('../../settings');
+const emotes = require('../emotes');
+
+const EMOTE_STRIP_SYMBOLS_REGEX = /(^[~!@#$%\^&\*\(\)]+|[~!@#$%\^&\*\(\)]+$)/g;
+
+function formatChatUser({from, color, tags}) {
+    return {
+        id: tags['user-id'],
+        name: from,
+        displayName: tags['display-name'],
+        color,
+        mod: tags.mod,
+        subscriber: tags.subscriber,
+        badges: tags.badges
+    };
+}
 
 class ChatModule {
     constructor() {
@@ -12,24 +26,38 @@ class ChatModule {
         return colors.calculateColor(color, settings.get('darkenedMode'));
     }
 
-    emoticonize() {
+    emoticonize($message, user) {
+        const tokens = $message.contents();
         for (let i = 0; i < tokens.length; i++) {
-            if (tokens[i].nodeType === window.Node.TEXT_NODE) {
-                newTokens.push(bttvMessageTokenize(sender, tokens[i].data));
-            } else if (tokens[i].nodeType === window.Node.ELEMENT_NODE && $(tokens[i]).children('.emoticon').length) {
-                // this remakes Twitch's emoticon because they steal on-hover in ember-bound elements
-                const $emote = $(tokens[i]).children('.emoticon');
-                newTokens.push(emoticon(getEmoteId($emote), $emote.attr('alt')));
-            } else {
-                newTokens.push(tokens[i].outerHTML);
+            const node = tokens[i];
+            if (node.nodeType !== window.Node.TEXT_NODE) continue;
+
+            const parts = node.data.split(' ');
+            let modified = false;
+            for (let j = 0; j < parts.length; j++) {
+                const part = parts[j];
+                let emote = emotes.getEligibleEmote(user, part);
+                if (!emote) {
+                    emote = emotes.getEligibleEmote(user, part.replace(EMOTE_STRIP_SYMBOLS_REGEX, ''));
+                }
+                if (!emote) continue;
+                modified = true;
+                parts[j] = emote.toHTML();
+            }
+
+            if (modified) {
+                // TODO: find a better way to do this (this seems most performant tho, only a single mutation vs multiple)
+                const span = document.createElement('span');
+                span.innerHTML = parts.join(' ');
+                node.parentNode.replaceChild(span, node);
             }
         }
     }
 
     messageParser($element, message) {
         $element.find('.from').css('color', this.calculateColor(message.color));
-        // const $message = $element.find('.message');
-        debug.log($element, message);
+        const $message = $element.find('.message');
+        this.emoticonize($message, formatChatUser(message));
     }
 }
 

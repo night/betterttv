@@ -52,12 +52,16 @@ module.exports = {
         return Twitch.user().then(d => formatUser(d));
     },
 
+    getCurrentChat() {
+        return lookup('controller:chat').currentRoom;
+    },
+
     getCurrentTMISession() {
         return lookup('controller:chat').tmiSession;
     },
 
     sendChatAdminMessage(message) {
-        lookup('controller:chat').currentRoom.addMessage({
+        this.getCurrentChat().addMessage({
             from: 'jtv',
             date: new Date(),
             style: 'admin',

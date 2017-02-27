@@ -1,4 +1,4 @@
-function escapeRegExp(text) {
+function escape(text) {
     return text.replace(/[-[\]{}()+?.,\\^$|#\s]/g, '\\$&');
 }
 
@@ -9,7 +9,12 @@ function stripAll(haystack, needle) {
     return haystack;
 }
 
+function mustacheFormat(string, replacements) {
+    return string.replace(/\{\{(.*?)\}\}/g, (_, key) => replacements[key]);
+}
+
 module.exports = {
-    escapeRegExp,
-    stripAll
+    escape,
+    stripAll,
+    mustacheFormat
 };
