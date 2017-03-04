@@ -3,13 +3,15 @@
 
     const Raven = require('raven-js');
 
-    Raven.config(
-        process.env.SENTRY_URL,
-        {
-            release: process.env.GIT_REV,
-            environment: process.env.NODE_ENV
-        }
-    ).install();
+    if (process.env.NODE_ENV !== 'development') {
+        Raven.config(
+            process.env.SENTRY_URL,
+            {
+                release: process.env.GIT_REV,
+                environment: process.env.NODE_ENV
+            }
+        ).install();
+    }
 
     const debug = require('./utils/debug');
 

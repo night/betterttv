@@ -1,6 +1,5 @@
 const cookies = require('cookies-js');
 const SafeEventEmitter = require('./utils/safe-event-emitter');
-const debug = require('./utils/debug');
 
 // legacy setting parser
 const parseSetting = function(value) {
@@ -31,7 +30,6 @@ class Storage extends SafeEventEmitter {
             window.localStorage.setItem('bttv_test', 'it works!');
             window.localStorage.removeItem('bttv_test');
         } catch (e) {
-            debug.log('window.localStorage not available. Defaulting to cookies.');
             this._localStorageSupport = false;
         }
 
