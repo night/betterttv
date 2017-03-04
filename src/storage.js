@@ -1,5 +1,5 @@
 const cookies = require('cookies-js');
-const EventEmitter = require('events').EventEmitter;
+const SafeEventEmitter = require('./utils/safe-event-emitter');
 const debug = require('./utils/debug');
 
 // legacy setting parser
@@ -19,7 +19,7 @@ const parseSetting = function(value) {
     return value;
 };
 
-class Storage extends EventEmitter {
+class Storage extends SafeEventEmitter {
     constructor() {
         super();
 

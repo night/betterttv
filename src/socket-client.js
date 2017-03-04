@@ -1,4 +1,4 @@
-const EventEmitter = require('events').EventEmitter;
+const SafeEventEmitter = require('./utils/safe-event-emitter');
 const debug = require('./utils/debug');
 const twitch = require('./utils/twitch');
 
@@ -16,7 +16,7 @@ let attempts = 1;
 
 const joinedChannels = [];
 
-class SocketClient extends EventEmitter {
+class SocketClient extends SafeEventEmitter {
     constructor() {
         super();
 

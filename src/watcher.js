@@ -1,5 +1,5 @@
 const debug = require('./utils/debug');
-const EventEmitter = require('events').EventEmitter;
+const SafeEventEmitter = require('./utils/safe-event-emitter');
 const $ = require('jquery');
 
 let route = '';
@@ -10,7 +10,7 @@ function getEmberView(elementId) {
     return window.App.__container__.lookup('-view-registry:main')[elementId];
 }
 
-class Watcher extends EventEmitter {
+class Watcher extends SafeEventEmitter {
     constructor() {
         super();
 
