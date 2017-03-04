@@ -1627,12 +1627,6 @@ body#chat #speak {
     left: 0px;
 }
 
-.ember-chat .chat-menu-content p a {
-    background-repeat: no-repeat;
-    padding-left: 20px;
-    padding-top: 3px;
-}
-
 .g18_gear-00000080 {
     background-image: url(//www-cdn.jtvnw.net/images/xarth/g/g18_gear-00000080.png);
 }
@@ -1863,9 +1857,9 @@ body.channel_new.columns.ember-application {
 }
 
 /* Emoji */
-.emoji {
+.bttv-emoji {
     height: 20px;
-    width: 20px;
+    width: auto;
     margin-bottom: -4px;
     display: inline-block;
 }

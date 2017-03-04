@@ -168,11 +168,12 @@ class SettingsModule {
                 </a>
             </li>
         `);
-        $('.bttvSettingsIconDropDown').parent().click(e => {
-            e.preventDefault();
-            $('#chat_settings_dropmenu').hide();
-            $('#bttvSettingsPanel').show('slow');
-        });
+        $('.bttvSettingsIconDropDown').parent().click(this.openSettings);
+    }
+
+    openSettings(e) {
+        e.preventDefault();
+        $('#bttvSettingsPanel').show('slow');
     }
 
     addSetting(setting) {

@@ -7,7 +7,7 @@ const htmlEntities = {
 };
 
 function escape(string) {
-    return string.replace(/[<>"'`]/g, s => htmlEntities[s]);
+    return String(string).replace(/[<>"'`]/g, s => htmlEntities[s]);
 }
 
 module.exports = {

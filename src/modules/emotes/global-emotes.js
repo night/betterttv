@@ -1,12 +1,14 @@
 const api = require('../../utils/api');
 const mustacheFormat = require('../../utils/regex').mustacheFormat;
+const cdn = require('../../utils/cdn');
 
 const AbstractEmotes = require('./abstract-emotes');
 const Emote = require('./emote');
 
 const provider = {
     id: 'bttv',
-    displayName: 'BetterTTV Global Emotes'
+    displayName: 'BetterTTV Global Emotes',
+    badge: cdn.url('tags/developer.png')
 };
 
 class GlobalEmotes extends AbstractEmotes {
@@ -27,6 +29,7 @@ class GlobalEmotes extends AbstractEmotes {
             emotes.forEach(({id, channel, code, imageType, restrictions}) => {
                 let restrictionCallback;
                 if (restrictions && restrictions.emoticonSet) {
+                    // TODO: plumb this up to legacy subs
                     restrictionCallback = () => false;
                 }
 

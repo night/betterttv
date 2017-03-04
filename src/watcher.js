@@ -1,5 +1,5 @@
 const debug = require('./utils/debug');
-const EventEmitter = require('events').EventEmitter;
+const SafeEventEmitter = require('./utils/safe-event-emitter');
 const $ = require('jquery');
 
 let route = '';
@@ -10,7 +10,7 @@ function getEmberView(elementId) {
     return window.App.__container__.lookup('-view-registry:main')[elementId];
 }
 
-class Watcher extends EventEmitter {
+class Watcher extends SafeEventEmitter {
     constructor() {
         super();
 
@@ -106,9 +106,15 @@ class Watcher extends EventEmitter {
     }
 
     chatObserver() {
+        const emitMessage = $el => {
+            const view = getEmberView($el.attr('id'));
+            this.emit('chat.message', $el, view.msgObject);
+        };
+
         const observe = (watcher, element) => {
             if (watcher) watcher.disconnect();
             watcher.observe(element, {childList: true, subtree: true});
+            $(element).find('.chat-line').each((index, el) => emitMessage($(el)));
         };
 
         chatWatcher = new window.MutationObserver(mutations =>
@@ -119,8 +125,7 @@ class Watcher extends EventEmitter {
 
                     if ($el.hasClass('chat-line')) {
                         if ($el.find('.horizontal-line').length) continue;
-                        const view = getEmberView($el.attr('id'));
-                        this.emit('chat.message', $el, view.msgObject);
+                        emitMessage($el);
                     }
                 }
             })

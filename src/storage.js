@@ -1,6 +1,5 @@
 const cookies = require('cookies-js');
-const EventEmitter = require('events').EventEmitter;
-const debug = require('./utils/debug');
+const SafeEventEmitter = require('./utils/safe-event-emitter');
 
 // legacy setting parser
 const parseSetting = function(value) {
@@ -19,7 +18,7 @@ const parseSetting = function(value) {
     return value;
 };
 
-class Storage extends EventEmitter {
+class Storage extends SafeEventEmitter {
     constructor() {
         super();
 
@@ -31,7 +30,6 @@ class Storage extends EventEmitter {
             window.localStorage.setItem('bttv_test', 'it works!');
             window.localStorage.removeItem('bttv_test');
         } catch (e) {
-            debug.log('window.localStorage not available. Defaulting to cookies.');
             this._localStorageSupport = false;
         }
 
