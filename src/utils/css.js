@@ -1,7 +1,7 @@
 const $ = require('jquery');
 const cdn = require('./cdn');
 
-const generateID = name => `bttv-css-${name}`;
+const generateID = name => `bttv-css${name ? `-${name}` : ''}`;
 
 module.exports = {
     load(name = null) {
