@@ -61,8 +61,13 @@ class ChatModule {
     }
 
     messageParser($element, message) {
-        $element.find('.from').css('color', this.calculateColor(message.color));
+        const color = this.calculateColor(message.color);
+        $element.find('.from').css('color', color);
         const $message = $element.find('.message');
+        const messageStyle = $message.attr('style');
+        if (messageStyle && messageStyle.includes('color:')) {
+            $message.css('color', color);
+        }
         this.emoticonize($message, formatChatUser(message));
     }
 }
