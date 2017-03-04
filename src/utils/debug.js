@@ -1,10 +1,18 @@
+const $ = require('jquery');
 const storage = require('../storage');
 
 const VERSION = process.env.EXT_VER;
 
+// Twitch is overwriting the console logging with their own..
+// so try to steal a console off an iframe
+let console = window.console;
+try {
+    console = $('iframe')[0].contentWindow.console;
+} catch (e) {}
+
 function log(type, ...args) {
-    if (!window.console || !storage.get('consoleLog')) return;
-    window.console[type].apply(window.console[type], ['BTTV:'].concat(args));
+    if (!console || !storage.get('consoleLog')) return;
+    console[type].apply(console, ['BTTV:'].concat(args));
 }
 
 module.exports = {
