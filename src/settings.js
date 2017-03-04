@@ -1,7 +1,7 @@
-const EventEmitter = require('events').EventEmitter;
+const SafeEventEmitter = require('./utils/safe-event-emitter');
 const storage = require('./storage');
 
-class Settings extends EventEmitter {
+class Settings extends SafeEventEmitter {
     constructor() {
         super();
 

@@ -10,9 +10,15 @@ const saveLicense = require('uglify-save-license');
 const server = require('./dev/server');
 const source = require('vinyl-source-stream');
 const uglify = require('gulp-uglify');
+const git = require('git-rev-sync');
 
-const isProd = process.env.NODE_ENV === 'production';
-const license = `/** @license
+process.env.EXT_VER = require('./package.json').version;
+process.env.GIT_REV = git.long();
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+process.env.SENTRY_URL = process.env.SENTRY_URL || 'https://24dfd2854f97465da5fb14fcea77278c@sentry.io/144851';
+
+const IS_PROD = process.env.NODE_ENV === 'production';
+const LICENSE = `/** @license
  * ${fs.readFileSync('LICENSE').toString().replace(/\n/g, '\n * ')}
  */
 `;
@@ -43,11 +49,12 @@ gulp.task(
     () => browserify('build/index.js')
         .transform('require-globify')
         .transform('babelify', {presets: ['es2015']})
+        .transform('envify')
         .bundle()
         .pipe(source('betterttv.js'))
         .pipe(buffer())
-        .pipe(header(license + '\n'))
-        .pipe(gulpif(isProd, uglify({preserveComments: saveLicense})))
+        .pipe(header(LICENSE + '\n'))
+        .pipe(gulpif(IS_PROD, uglify({preserveComments: saveLicense})))
         .pipe(gulp.dest('build'))
 );
 

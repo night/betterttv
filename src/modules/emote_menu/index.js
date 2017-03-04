@@ -44,20 +44,21 @@ class EmoteMenuModule {
                 return;
             }
 
-            if (window.emoteMenu) {
-                clearInterval(getterInterval);
-                debug.log('Hooking into Twitch Chat Emotes Script');
-                window.emoteMenu.registerEmoteGetter('BetterTTV', () =>
-                    emotes.getEmotes().map(({code, images, provider}) => {
-                        return {
-                            text: code,
-                            channel: provider.displayName,
-                            badge: provider.badge,
-                            url: images['1x']
-                        };
-                    })
-                );
-            }
+            if (!window.emoteMenu) return;
+            clearInterval(getterInterval);
+
+            debug.log('Hooking into Twitch Chat Emotes Script');
+
+            window.emoteMenu.registerEmoteGetter('BetterTTV', () =>
+                emotes.getEmotes().map(({code, images, provider}) => {
+                    return {
+                        text: code,
+                        channel: provider.displayName,
+                        badge: provider.badge,
+                        url: images['1x']
+                    };
+                })
+            );
         }, 1000);
     }
 }
