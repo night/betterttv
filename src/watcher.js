@@ -106,9 +106,15 @@ class Watcher extends SafeEventEmitter {
     }
 
     chatObserver() {
+        const emitMessage = $el => {
+            const view = getEmberView($el.attr('id'));
+            this.emit('chat.message', $el, view.msgObject);
+        };
+
         const observe = (watcher, element) => {
             if (watcher) watcher.disconnect();
             watcher.observe(element, {childList: true, subtree: true});
+            $(element).find('.chat-line').each((index, el) => emitMessage($(el)));
         };
 
         chatWatcher = new window.MutationObserver(mutations =>
@@ -119,8 +125,7 @@ class Watcher extends SafeEventEmitter {
 
                     if ($el.hasClass('chat-line')) {
                         if ($el.find('.horizontal-line').length) continue;
-                        const view = getEmberView($el.attr('id'));
-                        this.emit('chat.message', $el, view.msgObject);
+                        emitMessage($el);
                     }
                 }
             })
