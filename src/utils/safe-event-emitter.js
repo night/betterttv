@@ -1,13 +1,12 @@
 const EventEmitter = require('events').EventEmitter;
 const Raven = require('raven-js');
 
-const debug = require('./debug');
-
 function newListener(listener, ...args) {
     try {
         Raven.context(() => listener(...args));
     } catch (e) {
-        debug.error('Failed to ${module}', e.stack);
+        const debug = require('./debug');
+        debug.error('Failed executing listener callback', e.stack);
     }
 }
 
