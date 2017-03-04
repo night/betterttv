@@ -5,7 +5,7 @@ const CDN_ENDPOINT = 'https://cdn.betterttv.net/';
 
 module.exports = {
     url(path, breakCache = false) {
-        return `${CDN_ENDPOINT}${path}${breakCache ? `?${debug.version}` : ''}`;
+        return `${CDN_ENDPOINT}${path}${breakCache ? `?v=${debug.version}` : ''}`;
     },
 
     get(path, options) {
