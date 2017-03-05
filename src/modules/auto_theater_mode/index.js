@@ -22,7 +22,9 @@ class AutoTheaterModeModule {
             const container = App.__container__;
             const routeName = container.lookup('controller:application').get('currentRouteName');
             if (routeName !== 'channel.index.index' && ['videos', 'vod'].includes(routeName)) return;
-            if (container.lookup('service:persistentPlayer').playerComponent.player.theatre) return;
+
+            const playerComponent = container.lookup('service:persistentPlayer').playerComponent;
+            if (!playerComponent || playerComponent.player.theatre) return;
 
             window.Mousetrap.trigger('alt+t');
         } catch (e) {
