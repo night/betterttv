@@ -50,7 +50,7 @@ body {
     color: #D3D3D3;
 }
 
-.chat-container .special-message {
+.ember-chat .special-message {
     background: #111;
 }
 
@@ -1832,11 +1832,11 @@ table.simple_table td {
 }
 
 /* ~~~~~~~~~~~~Dark Group Chat~~~~~~~~~~~~~~~~~~~~~ */
-.chat-container .ember-chat .chat-header {
+.ember-chat .chat-header {
     background-color: rgb(50,50,50);
     box-shadow: none;
 }
-.chat-container .ember-chat .chat-header.all-rooms-header {
+.ember-chat .chat-header.all-rooms-header {
     background-color: rgb(50,50,50);
 }
 .ember-chat .chat-menu .list-header {
