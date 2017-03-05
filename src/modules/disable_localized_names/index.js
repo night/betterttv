@@ -19,7 +19,7 @@ class DisableLocalizedNamesModule {
         const $login = $name.find('.intl-login');
         if (!$login.length) return;
 
-        $name.text($login.text().replace(/[\(\))]/g, ''));
+        $name.text($login.text().replace(/[\(\)]/g, ''));
     }
 }
 
