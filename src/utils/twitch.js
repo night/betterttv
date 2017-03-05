@@ -43,6 +43,13 @@ module.exports = {
                     rv = user.model;
                 }
             }
+
+            if (!rv) {
+                const chat = lookup('controller:chat');
+                if (!Ember.isNone(chat) && chat.get('currentChannelRoom.channel')) {
+                    rv = chat.get('currentChannelRoom.channel');
+                }
+            }
         }
 
         return formatChannel(rv);
