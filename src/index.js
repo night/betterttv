@@ -34,7 +34,6 @@
         - Chat (channel, replay, conversations)
         - Chat State
         - Chat Settings (and scrollback amount)
-        - Chat Custom Timeouts
         - Chat Deleted messages
         - Chat Commands
         - Chat Tab Completion
