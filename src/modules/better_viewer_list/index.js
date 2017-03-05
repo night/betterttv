@@ -165,16 +165,16 @@ class BetterViewerListModule {
                 appendTo: $parent[0],
                 rowHeight: 20,
                 height: $parent.height() - 85,
-                eachrow: row => (
-                    this.html(row.tag, {
+                eachrow: function(row) {
+                    return this.html(row.tag, {
                         onclick: e => {
                             if (row.filter) return;
                             // TODO(ehsankia): moderation card
                             debug.info('Moderation card: ' + row.text);
                             debug.info(e.target);
                         }
-                    }, row.display || row.text)
-                )
+                    }, row.display || row.text);
+                }
             });
 
             const oldRender = viewList.render;
