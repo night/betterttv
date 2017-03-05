@@ -1,11 +1,18 @@
 const debug = require('./utils/debug');
-const getEmberView = require('./utils/twitch').getEmberView;
+const {getEmberView, getCurrentChat} = require('./utils/twitch');
 const SafeEventEmitter = require('./utils/safe-event-emitter');
 const $ = require('jquery');
 
 let route = '';
 let chatWatcher;
 let conversationWatcher;
+const chatState = {
+    slow: 0,
+    emoteOnly: 0,
+    followersOnly: -1,
+    r9k: 0,
+    subsOnly: 0
+};
 
 class Watcher extends SafeEventEmitter {
     constructor() {
@@ -108,10 +115,35 @@ class Watcher extends SafeEventEmitter {
             this.emit('chat.message', $el, view.msgObject);
         };
 
+        const emitStateChange = (caller, key) => {
+            let newValue = caller[key];
+            if (newValue === undefined || newValue === null) {
+                return;
+            }
+
+            if (typeof newValue === 'boolean') {
+                newValue = newValue === true ? 1 : 0;
+            } else if (typeof newValue === 'string') {
+                newValue = parseInt(newValue, 10);
+            }
+
+            chatState[key] = newValue;
+            this.emit('chat.state', chatState);
+        };
+
+        const observeChatState = () => {
+            const currentChat = getCurrentChat();
+            Object.keys(chatState).forEach(key => {
+                currentChat.addObserver(key, emitStateChange);
+                emitStateChange(currentChat, key);
+            });
+        };
+
         const observe = (watcher, element) => {
             if (watcher) watcher.disconnect();
             watcher.observe(element, {childList: true, subtree: true});
             $(element).find('.chat-line').each((index, el) => emitMessage($(el)));
+            observeChatState();
         };
 
         chatWatcher = new window.MutationObserver(mutations =>
