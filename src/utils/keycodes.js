@@ -1,5 +1,6 @@
 module.exports = {
     'LeftClick': 1,
+    'DOMVKCancel': 3,
     'Backspace': 8,
     'Tab': 9,
     'Enter': 13,

@@ -1,14 +1,11 @@
 const debug = require('./utils/debug');
+const getEmberView = require('./utils/twitch').getEmberView;
 const SafeEventEmitter = require('./utils/safe-event-emitter');
 const $ = require('jquery');
 
 let route = '';
 let chatWatcher;
 let conversationWatcher;
-
-function getEmberView(elementId) {
-    return window.App.__container__.lookup('-view-registry:main')[elementId];
-}
 
 class Watcher extends SafeEventEmitter {
     constructor() {

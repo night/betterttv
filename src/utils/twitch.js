@@ -27,6 +27,10 @@ module.exports = {
         return lookup(...args);
     },
 
+    getEmberView(elementID) {
+        return lookup('-view-registry:main')[elementID];
+    },
+
     getCurrentChannel() {
         let rv;
         try {
@@ -74,5 +78,18 @@ module.exports = {
             style: 'admin',
             message
         });
+    },
+
+    sendChatMessage(message) {
+        this.getCurrentChat().tmiRoom.sendMessage(message);
+    },
+
+    getCurrentUserIsModerator() {
+        return this.getCurrentChat().get('isModeratorOrHigher');
+    },
+
+    getChatMessageObject(domElement) {
+        const id = domElement.getAttribute('id');
+        return this.getEmberView(id).msgObject;
     }
 };
