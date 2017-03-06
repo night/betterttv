@@ -13,6 +13,8 @@ class TabCompletionModule {
     /*
     TODO:
         - priority ordering
+        - suggestions popout
+        - settings for customizations
     */
     constructor() {
         this.load();
@@ -26,13 +28,10 @@ class TabCompletionModule {
         this.textSplit = ['', '', ''];
         this.userList = new Set();
 
-        // Chat
-        $('body').off('click focus', CHAT_TEXT_AREA).on('click focus', CHAT_TEXT_AREA, this.onFocus);
-        $('body').off('keydown', CHAT_TEXT_AREA).on('keydown', CHAT_TEXT_AREA, e => this.onKeydown(e));
-
-        // Conversations
-        $('body').off('click focus', CONVERSATION_TEXT_AREA).on('click focus', CONVERSATION_TEXT_AREA, this.onFocus);
-        $('body').off('keydown', CONVERSATION_TEXT_AREA).on('keydown', CONVERSATION_TEXT_AREA, e => this.onKeydown(e, false));
+        $('body').on('click focus', CHAT_TEXT_AREA, this.onFocus)
+                 .on('click focus', CONVERSATION_TEXT_AREA, this.onFocus)
+                 .on('keydown', CHAT_TEXT_AREA, e => this.onKeyDown(e))
+                 .on('keydown', CONVERSATION_TEXT_AREA, e => this.onKeyDown(e, false));
     }
 
     storeUser($el, msg) {
@@ -54,7 +53,7 @@ class TabCompletionModule {
         this.tabTries = -1;
     }
 
-    onKeydown(e, includeUsers) {
+    onKeyDown(e, includeUsers) {
         const keyCode = e.keyCode || e.which;
         if (e.ctrlKey) return;
 
@@ -65,7 +64,7 @@ class TabCompletionModule {
         if (keyCode === keyCodes.Tab) {
             e.preventDefault();
 
-            // First time presssing tab, split before and after the word
+            // First time pressing tab, split before and after the word
             if (this.tabTries === -1) {
                 const caretPos = $inputField[0].selectionStart;
                 const text = $inputField.val();
@@ -92,14 +91,14 @@ class TabCompletionModule {
             }
         } else if (keyCode === keyCodes.Esc && this.tabTries >= 0) {
             $inputField.val(this.textSplit.join(''));
-        } else if (keyCode !== keyCodes.Shift) {  // not shift
+        } else if (keyCode !== keyCodes.Shift) {
             this.tabTries = -1;
         }
     }
 
     getSuggestions(prefix, includeUsers = true) {
-        const suggestions = emotes.getEmotes().map(emote => emote.code); // Emotes
-        if (includeUsers === true) suggestions.push(...this.userList);   // Users
+        const suggestions = emotes.getEmotes().map(emote => emote.code);  // Emotes
+        if (includeUsers === true) suggestions.push(...this.userList);    // Users
         return suggestions.filter(word => (
             word.toLowerCase().indexOf(prefix.toLowerCase()) === 0
         )).sort();
