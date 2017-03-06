@@ -4,7 +4,6 @@ const watcher = require('../../watcher');
 
 class AutoTheaterModeModule {
     constructor() {
-        this.load();
         settings.add({
             id: 'autoTheatreMode',
             name: 'Automatic Theatre Mode',
