@@ -32,11 +32,9 @@
     /* TODO:
      - Modules for:
         - Chat (channel, replay, conversations)
-        - Chat State
         - Chat Settings (and scrollback amount)
         - Chat Deleted messages
         - Chat Commands
-        - Chat Tab Completion
         - Chat Moderator Cards
         - Chat Pinned Highlights (and timeout)
         - Chat Highlights/Blacklist
