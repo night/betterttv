@@ -1,8 +1,6 @@
 const $ = require('jquery');
-// const debug = require('../../utils/debug');
 const keyCodes = require('../../utils/keycodes');
 const emotes = require('../emotes');
-// const settings = require('../../settings');
 const watcher = require('../../watcher');
 
 const CHAT_TEXT_AREA = '.ember-chat .chat-interface textarea';
