@@ -3280,3 +3280,7 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 .js-live-widget.gu-transit {
     background-color: #1e1e1e;
 }
+
+.newsfeed {
+    background: transparent;
+}
