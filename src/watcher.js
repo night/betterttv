@@ -1,5 +1,5 @@
 const debug = require('./utils/debug');
-const {getEmberView, getCurrentChat} = require('./utils/twitch');
+const twitch = require('./utils/twitch');
 const SafeEventEmitter = require('./utils/safe-event-emitter');
 const $ = require('jquery');
 
@@ -111,7 +111,7 @@ class Watcher extends SafeEventEmitter {
 
     chatObserver() {
         const emitMessage = $el => {
-            const view = getEmberView($el.attr('id'));
+            const view = twitch.getEmberView($el.attr('id'));
             this.emit('chat.message', $el, view.msgObject);
         };
 
@@ -131,12 +131,23 @@ class Watcher extends SafeEventEmitter {
             this.emit('chat.state', chatState);
         };
 
+        const emitChatUnhiddenLoad = (caller, key) => {
+            const value = caller[key];
+            if (value === true) return;
+            // this is a race.. not sure how to fix yet.
+            setTimeout(() => this.emit('load.chat'), 500);
+        };
+
         const observeChatState = () => {
-            const currentChat = getCurrentChat();
+            const currentChat = twitch.getCurrentChat();
             Object.keys(chatState).forEach(key => {
                 currentChat.addObserver(key, emitStateChange);
                 emitStateChange(currentChat, key);
             });
+        };
+
+        const observeChatUnhide = () => {
+            twitch.getChatController().addObserver('isChatHidden', emitChatUnhiddenLoad);
         };
 
         const observe = (watcher, element) => {
@@ -144,6 +155,7 @@ class Watcher extends SafeEventEmitter {
             watcher.observe(element, {childList: true, subtree: true});
             $(element).find('.chat-line').each((index, el) => emitMessage($(el)));
             observeChatState();
+            observeChatUnhide();
         };
 
         chatWatcher = new window.MutationObserver(mutations =>
@@ -180,7 +192,7 @@ class Watcher extends SafeEventEmitter {
                     if ($el.hasClass('conversation-window')) {
                         this.emit('conversation.new', $el);
                     } else if ($el.hasClass('conversation-chat-line')) {
-                        const view = getEmberView($el.attr('id'));
+                        const view = twitch.getEmberView($el.attr('id'));
                         this.emit('conversation.message', $el, view.message);
                     }
                 }

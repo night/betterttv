@@ -63,12 +63,16 @@ module.exports = {
         return Twitch.user().then(d => formatUser(d));
     },
 
+    getChatController() {
+        return lookup('controller:chat');
+    },
+
     getCurrentChat() {
-        return lookup('controller:chat').currentRoom;
+        return this.getChatController().currentRoom;
     },
 
     getCurrentTMISession() {
-        return lookup('controller:chat').tmiSession;
+        return this.getChatController().tmiSession;
     },
 
     sendChatAdminMessage(message) {
