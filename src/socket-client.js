@@ -108,7 +108,9 @@ class SocketClient extends SafeEventEmitter {
     }
 
     broadcastMe(channelName) {
-        twitch.getCurrentUser().then(({name}) => this.send('broadcast_me', {name, channel: channelName}));
+        const currentUser = twitch.getCurrentUser();
+        if (!currentUser) return;
+        this.send('broadcast_me', {name: currentUser.name, channel: channelName});
     }
 }
 

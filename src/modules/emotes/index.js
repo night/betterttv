@@ -4,9 +4,6 @@ const channelEmotes = require('./channel-emotes');
 const personalEmotes = require('./personal-emotes');
 const emojis = require('./emojis');
 const settings = require('../../settings');
-const watcher = require('../../watcher');
-
-let currentUser;
 
 class EmotesModule {
     constructor() {
@@ -29,16 +26,12 @@ class EmotesModule {
             defaultValue: false,
             description: 'We realize not everyone likes GIFs, but some people do.'
         });
-
-        watcher.on('load', () => twitch.getCurrentUser().then(user => {
-            currentUser = user;
-        }));
     }
 
     getEmotes() {
         let emotes = [];
-        for (let i = 0; i < this.emoteProviders.length; i++) {
-            const provider = this.emoteProviders[i];
+        for (const provider of this.emoteProviders) {
+            const currentUser = twitch.getCurrentUser();
             emotes = emotes.concat(
                 provider.getEmotes(currentUser)
                     .filter(emote => {
