@@ -134,8 +134,7 @@ class Watcher extends SafeEventEmitter {
         const emitChatUnhiddenLoad = (caller, key) => {
             const value = caller[key];
             if (value === true) return;
-            // this is a race.. not sure how to fix yet.
-            setTimeout(() => this.emit('load.chat'), 500);
+            this.emit('load.chat');
         };
 
         const observeChatState = () => {
@@ -168,11 +167,15 @@ class Watcher extends SafeEventEmitter {
                         if ($el.find('.horizontal-line').length) continue;
                         emitMessage($el);
                     }
+
+                    if ($el.hasClass('chat-settings')) {
+                        this.emit('load.chat_settings');
+                    }
                 }
             })
         );
 
-        this.on('load.chat', () => observe(chatWatcher, $('.chat-lines')[0]));
+        this.on('load.chat', () => observe(chatWatcher, $('.chat-room')[0]));
     }
 
     conversationObserver() {

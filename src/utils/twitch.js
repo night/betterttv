@@ -22,6 +22,13 @@ function lookup(...args) {
     return window.App.__container__.lookup(...args);
 }
 
+let currentUser;
+Twitch.user()
+    .then(d => formatUser(d))
+    .then(u => {
+        currentUser = u;
+    });
+
 module.exports = {
     getEmberContainer(...args) {
         return lookup(...args);
@@ -60,7 +67,7 @@ module.exports = {
     },
 
     getCurrentUser() {
-        return Twitch.user().then(d => formatUser(d));
+        return currentUser;
     },
 
     getChatController() {
