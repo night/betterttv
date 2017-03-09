@@ -21,11 +21,9 @@ class HostButtonModule {
     load() {
         if (settings.get('hostButton') === false) return;
 
-        twitch.getCurrentUser()
-            .then(u => {
-                this.embedHostButton();
-                this.updateHostingState(u.id);
-            });
+        const currentUser = twitch.getCurrentUser();
+        this.embedHostButton();
+        this.updateHostingState(currentUser.id);
     }
 
     embedHostButton() {
@@ -38,23 +36,21 @@ class HostButtonModule {
     }
 
     toggleHost() {
-        twitch.getCurrentUser()
-            .then(u => {
-                const command = hosting ? 'unhost' : 'host';
-                try {
-                    const channelName = twitch.getCurrentChannel().name;
-                    const conn = twitch.getCurrentTMISession()._connections.main;
-                    conn._send(`PRIVMSG #${u.name} :/${command === 'host' ? `${command} ${channelName}` : command}`);
-                    hosting = !hosting;
-                    this.updateHostButtonText();
-                    twitch.sendChatAdminMessage(`BetterTTV: We sent a /${command} to your channel.`);
-                } catch (e) {
-                    twitch.sendChatAdminMessage(`
-                        BetterTTV: There was an error ${command}ing the channel.
-                        You may need to ${command} it from your channel.
-                    `);
-                }
-            });
+        const currentUser = twitch.getCurrentUser();
+        const command = hosting ? 'unhost' : 'host';
+        try {
+            const channelName = twitch.getCurrentChannel().name;
+            const conn = twitch.getCurrentTMISession()._connections.main;
+            conn._send(`PRIVMSG #${currentUser.name} :/${command === 'host' ? `${command} ${channelName}` : command}`);
+            hosting = !hosting;
+            this.updateHostButtonText();
+            twitch.sendChatAdminMessage(`BetterTTV: We sent a /${command} to your channel.`);
+        } catch (e) {
+            twitch.sendChatAdminMessage(`
+                BetterTTV: There was an error ${command}ing the channel.
+                You may need to ${command} it from your channel.
+            `);
+        }
     }
 
     updateHostButtonText() {

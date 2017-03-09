@@ -37,7 +37,6 @@
         - Chat Commands
         - Chat Moderator Cards
         - Chat Pinned Highlights (and timeout)
-        - Chat Highlights/Blacklist
         - Notifications (desktop, following notices, mentions, audible setting too)
     */
 })();
