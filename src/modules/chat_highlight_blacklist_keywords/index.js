@@ -21,7 +21,6 @@ const PINNED_HIGHLIGHT_ID = 'bttv-pinned-highlight';
 const PINNED_CONTAINER_ID = 'bttv-pin-container';
 const MAXIMUM_PIN_COUNT = 10;
 const PINNED_HIGHLIGHT_TIMEOUT = 60 * 1000;
-const MESSAGE_HISTORY_CLASS = 'historical-message';
 
 const pinnedHighlightTemplate = ({timestamp, from, message}) => `
     <div id="${PINNED_HIGHLIGHT_ID}">
@@ -169,14 +168,14 @@ class ChatHighlightBlacklistKeywordsModule {
         changeKeywords(HIGHLIGHT_KEYWORD_PROMPT, 'highlightKeywords');
     }
 
-    onMessage($message, {from, message, date}) {
+    onMessage($message, {from, message, date, tags}) {
         if (fromContainsKeyword(blacklistUsers, from) || messageContainsKeyword(blacklistKeywords, from, message)) {
             this.markBlacklisted($message);
         }
 
         if (fromContainsKeyword(highlightUsers, from) || messageContainsKeyword(highlightKeywords, from, message)) {
             this.markHighlighted($message);
-            if (!$message.hasClass(MESSAGE_HISTORY_CLASS)) this.pinHighlight({from, message, date});
+            if (tags && !tags.historical) this.pinHighlight({from, message, date});
         }
     }
 
