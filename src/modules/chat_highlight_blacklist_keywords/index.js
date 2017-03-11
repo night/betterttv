@@ -170,7 +170,7 @@ class ChatHighlightBlacklistKeywordsModule {
 
     onMessage($message, {from, message, date, tags}) {
         if (fromContainsKeyword(blacklistUsers, from) || messageContainsKeyword(blacklistKeywords, from, message)) {
-            this.markBlacklisted($message);
+            return this.markBlacklisted($message);
         }
 
         if (fromContainsKeyword(highlightUsers, from) || messageContainsKeyword(highlightKeywords, from, message)) {
