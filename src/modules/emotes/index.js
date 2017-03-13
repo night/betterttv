@@ -3,6 +3,7 @@ const globalEmotes = require('./global-emotes');
 const channelEmotes = require('./channel-emotes');
 const personalEmotes = require('./personal-emotes');
 const emojis = require('./emojis');
+const gwGlobalEmotes = require('./gw-global-emotes');
 const settings = require('../../settings');
 
 class EmotesModule {
@@ -11,6 +12,7 @@ class EmotesModule {
             personalEmotes,
             globalEmotes,
             channelEmotes,
+            gwGlobalEmotes,
             emojis
         ];
 
@@ -20,11 +22,19 @@ class EmotesModule {
             defaultValue: true,
             description: 'BetterTTV adds extra cool emotes for you to use.'
         });
+
         settings.add({
             id: 'bttvGIFEmotes',
             name: 'BetterTTV GIF Emotes',
             defaultValue: false,
             description: 'We realize not everyone likes GIFs, but some people do.'
+        });
+
+        settings.add({
+            id: 'gwEmotes',
+            name: 'GameWisp Emotes',
+            defaultValue: false,
+            description: 'Use GameWisp emotes'
         });
     }
 
@@ -38,6 +48,7 @@ class EmotesModule {
                         if (!emote.isUsable(null, currentUser)) return false;
                         if (emote.imageType === 'gif' && settings.get('bttvGIFEmotes') === false) return false;
                         if (emote.provider.id.startsWith('bttv') && settings.get('bttvEmotes') === false) return false;
+                        if (emote.provider.id.startsWith('gw') && settings.get('gwEmotes') === false) return false;
                         return true;
                     })
             );
@@ -55,6 +66,7 @@ class EmotesModule {
             if (!emote || !emote.isUsable(channel, user)) continue;
             if (emote.imageType === 'gif' && settings.get('bttvGIFEmotes') === false) continue;
             if (emote.provider.id.startsWith('bttv') && settings.get('bttvEmotes') === false) continue;
+            if (emote.provider.id.startsWith('gw') && settings.get('gwEmotes') === false) continue;
             return emote;
         }
 
