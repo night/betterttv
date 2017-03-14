@@ -3288,3 +3288,7 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 .chat-container {
     border-left: none;
 }
+
+.tw-tabs__item>a.active, .tw-tabs__item>button.active {
+    color: #d3d3d3;
+}
