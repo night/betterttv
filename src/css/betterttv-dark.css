@@ -3284,3 +3284,7 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 .newsfeed {
     background: transparent;
 }
+
+.chat-container {
+    border-left: none;
+}
