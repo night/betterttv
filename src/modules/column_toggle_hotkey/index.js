@@ -20,6 +20,11 @@ class ColumnToggleHotkeyModule {
             $(document).keydown(e => {
                 if (e.ctrlKey) {
                     if (e.which === 37) {
+                        // Check if you're in theater mode, don't click left one if you are
+                        // because it has no visual effect, but **is** clicking it in the background
+                        const container = App.__container__;
+                        if (container.lookup('service:persistentPlayer').playerComponent.player.theatre) return;
+
                         $('#left_close').click();
                     } else if (e.which === 39) {
                         $('#right_close').click();
