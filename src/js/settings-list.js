@@ -110,7 +110,7 @@ module.exports = [
     },
     {
         name: 'Column Toggle Hotkey',
-        description: 'Enables use of a Hotkey to toggle hiding/showing left and right columns (CTRL+LEFT and CTRL+RIGHT)',
+        description: 'Enables CTRL+LEFT and CTRL+RIGHT hide / show left and right columns',
         default: false,
         storageKey: 'columnToggleHotkey'
     },
