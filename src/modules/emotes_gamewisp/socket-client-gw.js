@@ -40,7 +40,7 @@ class SocketClientGW extends SafeEventEmitter {
             attempts = 1;
 
             if (joinedChannels.length) {
-                joinedChannels.forEach(c => this.joinChannel(c));
+                joinedChannels.forEach(c => this.joinRoom(c));
             }
         };
 
@@ -66,6 +66,12 @@ class SocketClientGW extends SafeEventEmitter {
             debug.log('SocketClientGW: Received event', evt);
 
             this.emit(evt.name, evt.data);
+
+            // TODO: REMOVE EVERYTHING BELOW THIS COMMENT
+            // setTimeout( () => {this.emit('remove_emote', {emoteID: 13, emoteCode: 'GWcutecat'});}, 10000);
+            // setTimeout( () => {this.emit('add_emote', {'emote': {'id': 5, 'code': 'GWsoundsgood', 'url': 'https://az650423.vo.msecnd.net/emotes/emote_image_60_99332c77-fde5-4353-8265-aac58ca0d211_28x28.png'}, 'emoteUsers': ['tbuida4', 'tbuida8']});}, 10000);
+            // setTimeout( () => {this.emit('new_subscriber', {'emotes': [{'id': 6, 'code': 'gw_oreoxplays_tomato', 'url': 'https://az650423.vo.msecnd.net/emotes/emote_image_60_5ea29a53-497a-43ea-862e-f0419dfe32ba_28x28.png', 'channel': 'oreoxplays', 'twitch_channel_name': 'oreoxplays'}, {'id': 7, 'code': 'gw_oreoxplays_cc', 'url': 'https://az650423.vo.msecnd.net/emotes/emote_image_60_f275c086-1d9c-45eb-824c-acb3de269a1c_28x28.png', 'channel': 'oreoxplays', 'twitch_channel_name': 'oreoxplays'}], 'emoteIDs': [6, 7], 'user': 'tbuida8', 'channel': 'oreoxplays'});}, 10000);
+            setTimeout( () => {this.emit('cancel_subscriber', {'emoteIDs': [13, 14], 'user': 'tbuida4', 'channel': 'oreoxplays'});}, 10000);
         };
     }
 

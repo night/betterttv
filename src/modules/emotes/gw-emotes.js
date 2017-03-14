@@ -17,8 +17,6 @@ class GWEmotes extends AbstractEmotes {
         super();
 
         socketClientGW.on('initialize_room', data => this.initializeRoom(data));
-
-        // TODO:
         socketClientGW.on('update_room', data => this.updateRoom(data));
         socketClientGW.on('leave_room', data => this.leaveRoom(data));
         socketClientGW.on('remove_emote', data => this.removeEmote(data));
@@ -56,11 +54,7 @@ class GWEmotes extends AbstractEmotes {
         console.log('GW EMOTES: JOINING CHANNEL');
 
         const {name} = twitch.getCurrentChannel();
-        // if (name !== joinedChannel) {
-        //     socketClientGW.partChannel(joinedChannel);
-        // }
 
-        // joinedChannel = name;
         socketClientGW.joinRoom(name);
     }
 
@@ -105,28 +99,140 @@ class GWEmotes extends AbstractEmotes {
 
     updateRoom(data) {
         console.log('updateRoom called from gw-emotes', data);
+
+        let newEmotes = data.emotes;
+        const newUser = data.user;
+
+        newEmotes = newEmotes.map(gwEmote => {
+            return new Emote({
+                id: gwEmote.id,
+                provider: this.provider,
+                channel: gwEmote.channel,
+                code: gwEmote.code,
+                images: {
+                    '1x': gwEmote.url,
+                },
+                imgType: 'png'
+            });
+        });
+
+        let userEmotes = this.emotes.get(newUser.name);
+        if (!userEmotes) {
+            userEmotes = new Map();
+            this.emotes.set(newUser.name, userEmotes);
+        }
+
+        const userEmoteIDsSet = new Set(newUser.emoteIDs);
+
+        newEmotes.forEach( e => {
+            if (userEmoteIDsSet.has(e.id)) {
+                userEmotes.set(e.code, e);
+            }
+        });
+
+        console.log('this.emotes', this.emotes);
     }
 
     leaveRoom(data) {
         console.log('leaveRoom called from gw-emotes', data);
+
+        const username = data.user;
+
+        if (this.emotes.get(username)) {
+            this.emotes.delete(username);
+        }
+
+        console.log('this.emotes', this.emotes);
     }
 
     removeEmote(data) {
         console.log('removeEmote called from gw-emotes', data);
+
+        const code = data.emoteCode;
+        const emotes = [...this.emotes.values()];
+
+        emotes.forEach(emoteMap => {
+            emoteMap.delete(code);
+        });
+
+        console.log('this.emotes', this.emotes);
     }
 
     addEmote(data) {
         console.log('addEmote called from gw-emotes', data);
+
+        const emote = new Emote({
+            id: data.emote.id,
+            provider: this.provider,
+            channel: data.emote.channel,
+            code: data.emote.code,
+            images: {
+                '1x': data.emote.url,
+            },
+            imgType: 'png'
+        });
+
+        let userEmotes;
+
+        data.emoteUsers.forEach(user => {
+            if (this.emotes.has(user)) {
+                userEmotes = this.emotes.get(user);
+            } else {
+                userEmotes = new Map();
+                this.emotes.set(user, userEmotes);
+            }
+
+            userEmotes.set(emote.code, emote);
+        });
+
+        console.log('this.emotes', this.emotes);
     }
 
     newSubscriber(data) {
         console.log('newSubscriber called from gw-emotes', data);
+
+        const newSub = data.user;
+        let userEmotes;
+
+        if (this.emotes.has(newSub)) {
+            userEmotes = this.emotes.get(newSub);
+        } else {
+            userEmotes = new Map();
+            this.emotes.set(newSub, userEmotes);
+        }
+
+        data.emotes.forEach(gwEmote => {
+            userEmotes.set(gwEmote.code, new Emote({
+                id: gwEmote.id,
+                provider: this.provider,
+                channel: gwEmote.channel,
+                code: gwEmote.code,
+                images: {
+                    '1x': gwEmote.url,
+                },
+                imgType: 'png'
+            }));
+        });
+
+        console.log('this.emotes', this.emotes);
     }
 
     cancelSubscriber(data) {
         console.log('cancelSubscriber called from gw-emotes', data);
-    }
 
+        if (!this.emotes.has(data.user)) return;
+
+        const emoteIDsToRemove = new Set(data.emoteIDs);
+        const userEmotes = this.emotes.get(data.user);
+
+        userEmotes.forEach(emote => {
+            if (emoteIDsToRemove.has(emote.id)) {
+                userEmotes.delete(emote.code);
+            }
+        });
+
+        console.log('this.emotes', this.emotes);
+    }
 }
 
 module.exports = new GWEmotes();
