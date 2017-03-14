@@ -4,6 +4,7 @@ const channelEmotes = require('./channel-emotes');
 const personalEmotes = require('./personal-emotes');
 const emojis = require('./emojis');
 const gwGlobalEmotes = require('./gw-global-emotes');
+const gwEmotes = require('./gw-emotes');
 const settings = require('../../settings');
 
 class EmotesModule {
@@ -13,6 +14,7 @@ class EmotesModule {
             globalEmotes,
             channelEmotes,
             gwGlobalEmotes,
+            gwEmotes,
             emojis
         ];
 

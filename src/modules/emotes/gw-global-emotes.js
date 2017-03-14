@@ -2,8 +2,8 @@ const AbstractEmotes = require('../emotes/abstract-emotes');
 const Emote = require('../emotes/emote');
 
 const provider = {
-    id: 'gw',
-    displayName: 'GameWisp Global Emotes',
+    id: 'gw-global',
+    displayName: 'GameWisp Emotes',
     badge: 'https://d32y8axfzs6sv8.cloudfront.net/static/gamewisp_transparent_18px.png'
 };
 
