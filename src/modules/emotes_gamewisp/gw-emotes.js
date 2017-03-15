@@ -1,16 +1,15 @@
-const socketClientGW = require('../emotes_gamewisp/socket-client-gw');
+const socketClientGW = require('./socket-client-gw');
 const watcher = require('../../watcher');
 const twitch = require('../../utils/twitch');
 
-const AbstractEmotes = require('./abstract-emotes');
-const Emote = require('./emote');
+const AbstractEmotes = require('../emotes/abstract-emotes');
+const Emote = require('../emotes/emote');
+
 const provider = {
     id: 'gw',
     displayName: 'GameWisp Emotes',
     badge: 'https://d32y8axfzs6sv8.cloudfront.net/static/gamewisp_transparent_18px.png'
 };
-
-// let joinedChannel;
 
 class GWEmotes extends AbstractEmotes {
     constructor() {
@@ -49,13 +48,29 @@ class GWEmotes extends AbstractEmotes {
         return emotes.get(code);
     }
 
+    buildEmote(emoteData) {
+        return new Emote({
+            id: emoteData.id,
+            provider: this.provider,
+            channel: emoteData.channel,
+            code: emoteData.code,
+            images: this.getImageSizes(emoteData.url),
+            imgType: 'png'
+        });
+    }
 
     joinRoom() {
-        console.log('GW EMOTES: JOINING CHANNEL');
-
         const {name} = twitch.getCurrentChannel();
 
         socketClientGW.joinRoom(name);
+    }
+
+    getImageSizes(urlSmall) {
+        return {
+            '1x': urlSmall,
+            '2x': urlSmall.replace('28x28', '56x56'),
+            '4x': urlSmall.replace('28x28', '112x112')
+        };
     }
 
     initializeRoom(data) {
@@ -63,18 +78,7 @@ class GWEmotes extends AbstractEmotes {
 
         let emotes = data.emotes ? data.emotes : [];
 
-        emotes = emotes.map(gwEmote => {
-            return new Emote({
-                id: gwEmote.id,
-                provider: this.provider,
-                channel: gwEmote.channel,
-                code: gwEmote.code,
-                images: {
-                    '1x': gwEmote.url,
-                },
-                imgType: 'png'
-            });
-        });
+        emotes = emotes.map(emoteData => this.buildEmote(emoteData));
 
         for (const username in data.userStore) {
             if (data.userStore.hasOwnProperty(username)) {
@@ -103,18 +107,7 @@ class GWEmotes extends AbstractEmotes {
         let newEmotes = data.emotes;
         const newUser = data.user;
 
-        newEmotes = newEmotes.map(gwEmote => {
-            return new Emote({
-                id: gwEmote.id,
-                provider: this.provider,
-                channel: gwEmote.channel,
-                code: gwEmote.code,
-                images: {
-                    '1x': gwEmote.url,
-                },
-                imgType: 'png'
-            });
-        });
+        newEmotes = newEmotes.map(emoteData => this.buildEmote(emoteData));
 
         let userEmotes = this.emotes.get(newUser.name);
         if (!userEmotes) {
@@ -161,16 +154,7 @@ class GWEmotes extends AbstractEmotes {
     addEmote(data) {
         console.log('addEmote called from gw-emotes', data);
 
-        const emote = new Emote({
-            id: data.emote.id,
-            provider: this.provider,
-            channel: data.emote.channel,
-            code: data.emote.code,
-            images: {
-                '1x': data.emote.url,
-            },
-            imgType: 'png'
-        });
+        const emote = this.buildEmote(data.emote);
 
         let userEmotes;
 
@@ -202,16 +186,7 @@ class GWEmotes extends AbstractEmotes {
         }
 
         data.emotes.forEach(gwEmote => {
-            userEmotes.set(gwEmote.code, new Emote({
-                id: gwEmote.id,
-                provider: this.provider,
-                channel: gwEmote.channel,
-                code: gwEmote.code,
-                images: {
-                    '1x': gwEmote.url,
-                },
-                imgType: 'png'
-            }));
+            userEmotes.set(gwEmote.code, this.buildEmote(gwEmote));
         });
 
         console.log('this.emotes', this.emotes);

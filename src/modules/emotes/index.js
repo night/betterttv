@@ -3,8 +3,8 @@ const globalEmotes = require('./global-emotes');
 const channelEmotes = require('./channel-emotes');
 const personalEmotes = require('./personal-emotes');
 const emojis = require('./emojis');
-const gwGlobalEmotes = require('./gw-global-emotes');
-const gwEmotes = require('./gw-emotes');
+const gwGlobalEmotes = require('../emotes_gamewisp/gw-global-emotes');
+const gwEmotes = require('../emotes_gamewisp/gw-emotes');
 const settings = require('../../settings');
 
 class EmotesModule {

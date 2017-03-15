@@ -2,6 +2,7 @@ const SafeEventEmitter = require('../../utils/safe-event-emitter');
 const debug = require('../../utils/debug');
 const twitch = require('../../utils/twitch');
 const msgpack = require('msgpack-lite');
+const settings = require('../../settings');
 
 const CONNECTION_STATES = {
     DISCONNECTED: 0,
@@ -21,7 +22,17 @@ class SocketClientGW extends SafeEventEmitter {
     constructor() {
         super();
 
-        this.connect();
+        if (settings.get('gwEmotes')) {
+            this.connect();
+        }
+
+        settings.on('changed.gwEmotes', () => {
+            if (settings.get('gwEmotes')) {
+                this.connect();
+            } else {
+                this.disconnect();
+            }
+        });
     }
 
     connect() {
@@ -71,7 +82,7 @@ class SocketClientGW extends SafeEventEmitter {
             // setTimeout( () => {this.emit('remove_emote', {emoteID: 13, emoteCode: 'GWcutecat'});}, 10000);
             // setTimeout( () => {this.emit('add_emote', {'emote': {'id': 5, 'code': 'GWsoundsgood', 'url': 'https://az650423.vo.msecnd.net/emotes/emote_image_60_99332c77-fde5-4353-8265-aac58ca0d211_28x28.png'}, 'emoteUsers': ['tbuida4', 'tbuida8']});}, 10000);
             // setTimeout( () => {this.emit('new_subscriber', {'emotes': [{'id': 6, 'code': 'gw_oreoxplays_tomato', 'url': 'https://az650423.vo.msecnd.net/emotes/emote_image_60_5ea29a53-497a-43ea-862e-f0419dfe32ba_28x28.png', 'channel': 'oreoxplays', 'twitch_channel_name': 'oreoxplays'}, {'id': 7, 'code': 'gw_oreoxplays_cc', 'url': 'https://az650423.vo.msecnd.net/emotes/emote_image_60_f275c086-1d9c-45eb-824c-acb3de269a1c_28x28.png', 'channel': 'oreoxplays', 'twitch_channel_name': 'oreoxplays'}], 'emoteIDs': [6, 7], 'user': 'tbuida8', 'channel': 'oreoxplays'});}, 10000);
-            setTimeout( () => {this.emit('cancel_subscriber', {'emoteIDs': [13, 14], 'user': 'tbuida4', 'channel': 'oreoxplays'});}, 10000);
+            // setTimeout( () => {this.emit('cancel_subscriber', {'emoteIDs': [13, 14], 'user': 'tbuida4', 'channel': 'oreoxplays'});}, 10000);
         };
     }
 
@@ -83,6 +94,7 @@ class SocketClientGW extends SafeEventEmitter {
             try {
                 socket.close();
             } catch (e) {}
+
             socket = null;
         }
 
@@ -90,6 +102,17 @@ class SocketClientGW extends SafeEventEmitter {
             () => this.connect(),
             Math.random() * (Math.pow(2, attempts) - 1) * 30000
         );
+    }
+
+    disconnect() {
+        state = CONNECTION_STATES.DISCONNECTED;
+        if (socket) {
+            try {
+                socket.close();
+            } catch (e) {}
+
+            socket = null;
+        }
     }
 
     send(name, data) {
@@ -106,7 +129,9 @@ class SocketClientGW extends SafeEventEmitter {
             joinedChannels.push(room);
         }
 
-        this.send('join_room', {room: room, user: twitch.getCurrentUser().name});
+        const {name} = twitch.getCurrentUser();
+
+        this.send('join_room', {room: room, user: name});
     }
 }
 
