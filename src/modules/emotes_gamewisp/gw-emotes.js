@@ -7,7 +7,7 @@ const Emote = require('../emotes/emote');
 
 const provider = {
     id: 'gw',
-    displayName: 'GameWisp Emotes',
+    displayName: 'GameWisp Channel Emotes',
     badge: 'https://d32y8axfzs6sv8.cloudfront.net/static/gamewisp_transparent_18px.png'
 };
 
@@ -52,7 +52,7 @@ class GWEmotes extends AbstractEmotes {
         return new Emote({
             id: emoteData.id,
             provider: this.provider,
-            channel: emoteData.channel,
+            channel: {name: emoteData.channel},
             code: emoteData.code,
             images: this.getImageSizes(emoteData.url),
             imgType: 'png'
@@ -74,8 +74,6 @@ class GWEmotes extends AbstractEmotes {
     }
 
     initializeRoom(data) {
-        console.log('initializeRoom called from gw-emotes', data);
-
         let emotes = data.emotes ? data.emotes : [];
 
         emotes = emotes.map(emoteData => this.buildEmote(emoteData));
@@ -90,20 +88,16 @@ class GWEmotes extends AbstractEmotes {
 
                 const emoteIDsSet = new Set(data.userStore[username]);
 
-                emotes.forEach( e => {
+                emotes.forEach(e => {
                     if (emoteIDsSet.has(e.id)) {
                         userEmotes.set(e.code, e);
                     }
                 });
             }
         }
-
-        console.log('this.emotes', this.emotes);
     }
 
     updateRoom(data) {
-        console.log('updateRoom called from gw-emotes', data);
-
         let newEmotes = data.emotes;
         const newUser = data.user;
 
@@ -117,43 +111,31 @@ class GWEmotes extends AbstractEmotes {
 
         const userEmoteIDsSet = new Set(newUser.emoteIDs);
 
-        newEmotes.forEach( e => {
+        newEmotes.forEach(e => {
             if (userEmoteIDsSet.has(e.id)) {
                 userEmotes.set(e.code, e);
             }
         });
-
-        console.log('this.emotes', this.emotes);
     }
 
     leaveRoom(data) {
-        console.log('leaveRoom called from gw-emotes', data);
-
         const username = data.user;
 
         if (this.emotes.get(username)) {
             this.emotes.delete(username);
         }
-
-        console.log('this.emotes', this.emotes);
     }
 
     removeEmote(data) {
-        console.log('removeEmote called from gw-emotes', data);
-
         const code = data.emoteCode;
         const emotes = [...this.emotes.values()];
 
         emotes.forEach(emoteMap => {
             emoteMap.delete(code);
         });
-
-        console.log('this.emotes', this.emotes);
     }
 
     addEmote(data) {
-        console.log('addEmote called from gw-emotes', data);
-
         const emote = this.buildEmote(data.emote);
 
         let userEmotes;
@@ -168,13 +150,9 @@ class GWEmotes extends AbstractEmotes {
 
             userEmotes.set(emote.code, emote);
         });
-
-        console.log('this.emotes', this.emotes);
     }
 
     newSubscriber(data) {
-        console.log('newSubscriber called from gw-emotes', data);
-
         const newSub = data.user;
         let userEmotes;
 
@@ -188,13 +166,9 @@ class GWEmotes extends AbstractEmotes {
         data.emotes.forEach(gwEmote => {
             userEmotes.set(gwEmote.code, this.buildEmote(gwEmote));
         });
-
-        console.log('this.emotes', this.emotes);
     }
 
     cancelSubscriber(data) {
-        console.log('cancelSubscriber called from gw-emotes', data);
-
         if (!this.emotes.has(data.user)) return;
 
         const emoteIDsToRemove = new Set(data.emoteIDs);
@@ -205,8 +179,6 @@ class GWEmotes extends AbstractEmotes {
                 userEmotes.delete(emote.code);
             }
         });
-
-        console.log('this.emotes', this.emotes);
     }
 }
 
