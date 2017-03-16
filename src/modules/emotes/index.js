@@ -43,7 +43,6 @@ class EmotesModule {
                         if (!emote.isUsable(null, currentUser)) return false;
                         if (emote.imageType === 'gif' && settings.get('bttvGIFEmotes') === false) return false;
                         if (emote.provider.id.startsWith('bttv') && settings.get('bttvEmotes') === false) return false;
-                        if (emote.provider.id.startsWith('gw') && settings.get('gwEmotes') === false) return false;
                         return true;
                     })
             );
@@ -61,7 +60,6 @@ class EmotesModule {
             if (!emote || !emote.isUsable(channel, user)) continue;
             if (emote.imageType === 'gif' && settings.get('bttvGIFEmotes') === false) continue;
             if (emote.provider.id.startsWith('bttv') && settings.get('bttvEmotes') === false) continue;
-            if (emote.provider.id.startsWith('gw') && settings.get('gwEmotes') === false) continue;
             return emote;
         }
 

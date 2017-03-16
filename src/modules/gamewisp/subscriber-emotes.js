@@ -1,6 +1,7 @@
 const socketClient = require('./socket-client');
 const watcher = require('../../watcher');
 const twitch = require('../../utils/twitch');
+const settings = require('../../settings');
 
 const AbstractEmotes = require('../emotes/abstract-emotes');
 const Emote = require('../emotes/emote');
@@ -48,6 +49,7 @@ class SubscriberEmotes extends AbstractEmotes {
     }
 
     getEmotes(user) {
+        if (settings.get('gwEmotes') === false) return [];
         if (!user) return [];
 
         const emoteIDs = this.emoteUsers.get(user.name);
@@ -65,6 +67,7 @@ class SubscriberEmotes extends AbstractEmotes {
     }
 
     getEligibleEmote(code, user) {
+        if (settings.get('gwEmotes') === false) return;
         if (!user || !this.emoteUsers) return;
 
         const emoteIDs = this.emoteUsers.get(user.name);
@@ -103,9 +106,6 @@ class SubscriberEmotes extends AbstractEmotes {
                 this.emoteUsers.set(username, userEmoteIDs);
             }
         }
-
-        console.log('this.emotes', this.emotes);
-        console.log('this.emoteUsers', this.emoteUsers);
     }
 
     updateRoom({emotes, user}) {
@@ -122,22 +122,15 @@ class SubscriberEmotes extends AbstractEmotes {
         userEmoteIDs = [...userEmoteIDs, ...user.emoteIDs];
 
         this.emoteUsers.set(user.name, userEmoteIDs);
-
-        console.log('this.emotes', this.emotes);
-        console.log('this.emoteUsers', this.emoteUsers);
     }
 
     leaveRoom({user}) {
         if (this.emoteUsers.get(user)) {
             this.emoteUsers.delete(user);
         }
-        console.log('this.emotes', this.emotes);
-        console.log('this.emoteUsers', this.emoteUsers);
     }
 
     removeEmote({emoteID}) {
-        console.log('emoteID', emoteID);
-
         const emoteUsers = [...this.emoteUsers.values()];
 
         let idx;
@@ -152,9 +145,6 @@ class SubscriberEmotes extends AbstractEmotes {
         if (this.emotes.has(emoteID)) {
             this.emotes.delete(emoteID);
         }
-
-        console.log('this.emotes', this.emotes);
-        console.log('this.emoteUsers', this.emoteUsers);
     }
 
     addEmote({emote, emoteUsers}) {
@@ -174,9 +164,6 @@ class SubscriberEmotes extends AbstractEmotes {
             this.emoteUsers.set(user, userEmoteIDs);
             this.emotes.set(emote.id, emote);
         });
-
-        console.log('this.emotes', this.emotes);
-        console.log('this.emoteUsers', this.emoteUsers);
     }
 
     newSubscriber({user, emotes, emoteIDs}) {
@@ -195,13 +182,9 @@ class SubscriberEmotes extends AbstractEmotes {
                 this.emotes.set(emote.id, buildEmote(emote));
             }
         });
-
-        console.log('this.emotes', this.emotes);
-        console.log('this.emoteUsers', this.emoteUsers);
     }
 
     cancelSubscriber({user, emoteIDs}) {
-        console.log('cancelSubscriber', emoteIDs);
         if (!this.emoteUsers.has(user)) return;
 
         const userEmoteIDs = this.emoteUsers.get(user);
@@ -216,9 +199,6 @@ class SubscriberEmotes extends AbstractEmotes {
         });
 
         this.emoteUsers.set(user, userEmoteIDs);
-
-        console.log('this.emotes', this.emotes);
-        console.log('this.emoteUsers', this.emoteUsers);
     }
 }
 

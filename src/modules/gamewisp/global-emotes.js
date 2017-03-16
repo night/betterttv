@@ -1,7 +1,8 @@
+const $ = require('jquery');
+const settings = require('../../settings');
+
 const AbstractEmotes = require('../emotes/abstract-emotes');
 const Emote = require('../emotes/emote');
-const settings = require('../../settings');
-const $ = require('jquery');
 
 const provider = {
     id: 'gw-global',
@@ -20,11 +21,25 @@ class GWGlobalEmotes extends AbstractEmotes {
             description: 'Use GameWisp emotes'
         });
 
-        this.updateGlobalEmotes();
+        if (settings.get('gwEmotes')) {
+            this.updateGlobalEmotes();
+        }
+
+        settings.on('changed.gwEmotes', () => {
+            if (settings.get('gwEmotes') && !this.emotes.size) {
+                this.updateGlobalEmotes();
+            }
+        });
     }
 
     get provider() {
         return provider;
+    }
+
+    getEmotes() {
+        if (!settings.get('gwEmotes')) return [];
+
+        return [...this.emotes.values()];
     }
 
     updateGlobalEmotes() {
