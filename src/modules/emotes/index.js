@@ -3,8 +3,8 @@ const globalEmotes = require('./global-emotes');
 const channelEmotes = require('./channel-emotes');
 const personalEmotes = require('./personal-emotes');
 const emojis = require('./emojis');
-const gwGlobalEmotes = require('../emotes_gamewisp/gw-global-emotes');
-const gwEmotes = require('../emotes_gamewisp/gw-emotes');
+const gamewispGlobalEmotes = require('../gamewisp/global-emotes');
+const gamewispSubscriberEmotes = require('../gamewisp/subscriber-emotes');
 const settings = require('../../settings');
 
 class EmotesModule {
@@ -13,8 +13,8 @@ class EmotesModule {
             personalEmotes,
             globalEmotes,
             channelEmotes,
-            gwGlobalEmotes,
-            gwEmotes,
+            gamewispGlobalEmotes,
+            gamewispSubscriberEmotes,
             emojis
         ];
 
@@ -30,13 +30,6 @@ class EmotesModule {
             name: 'BetterTTV GIF Emotes',
             defaultValue: false,
             description: 'We realize not everyone likes GIFs, but some people do.'
-        });
-
-        settings.add({
-            id: 'gwEmotes',
-            name: 'GameWisp Emotes',
-            defaultValue: false,
-            description: 'Use GameWisp emotes'
         });
     }
 

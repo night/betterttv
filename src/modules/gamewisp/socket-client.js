@@ -126,7 +126,7 @@ class SocketClientGW extends SafeEventEmitter {
         const currentUser = twitch.getCurrentUser();
         if (!currentUser) return;
 
-        this.send('join_room', {room: room, user: currentUser.name});
+        this.send('join_room', {room, user: currentUser.name});
     }
 }
 

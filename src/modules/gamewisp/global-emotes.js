@@ -1,5 +1,7 @@
 const AbstractEmotes = require('../emotes/abstract-emotes');
 const Emote = require('../emotes/emote');
+const settings = require('../../settings');
+const $ = require('jquery');
 
 const provider = {
     id: 'gw-global',
@@ -10,6 +12,13 @@ const provider = {
 class GWGlobalEmotes extends AbstractEmotes {
     constructor() {
         super();
+
+        settings.add({
+            id: 'gwEmotes',
+            name: 'GameWisp Emotes',
+            defaultValue: false,
+            description: 'Use GameWisp emotes'
+        });
 
         this.updateGlobalEmotes();
     }
