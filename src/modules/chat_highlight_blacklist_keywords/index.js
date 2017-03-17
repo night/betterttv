@@ -137,6 +137,7 @@ class ChatHighlightBlacklistKeywordsModule {
         watcher.on('load.chat', () => {
             computeBlacklistKeywords();
             computeHighlightKeywords();
+            this.loadPinnedHighlights();
         });
         watcher.on('chat.message', ($message, messageObj) => this.onMessage($message, messageObj));
         settings.on('changed.blacklistKeywords', computeBlacklistKeywords);
@@ -148,7 +149,7 @@ class ChatHighlightBlacklistKeywordsModule {
             defaultValue: false,
             description: 'Pin your ten latest highlighted messages right above chat'
         });
-        settings.on('changed.pinnedHighlights', value => value === true ? this.loadPinnedHighlits() : this.unloadPinnedHighlits());
+        settings.on('changed.pinnedHighlights', value => value === true ? this.loadPinnedHighlights() : this.unloadPinnedHighlights());
 
         settings.add({
             id: 'timeoutHighlights',
@@ -156,8 +157,6 @@ class ChatHighlightBlacklistKeywordsModule {
             defaultValue: false,
             description: 'Automatically hide pinned highlights after 1 minute'
         });
-
-        this.loadPinnedHighlits();
     }
 
     setBlacklistKeywords() {
@@ -187,15 +186,13 @@ class ChatHighlightBlacklistKeywordsModule {
         $message.hide();
     }
 
-    loadPinnedHighlits() {
-        if (settings.get('pinnedHighlights') === false) return;
+    loadPinnedHighlights() {
+        if (settings.get('pinnedHighlights') === false || $(`#${PINNED_CONTAINER_ID}`).length) return;
 
-        if (!$pinnedHighlightsContainer) {
-            $pinnedHighlightsContainer = $(`<div id=${PINNED_CONTAINER_ID}>`).appendTo($(CHAT_ROOM_SELECTOR));
-        }
+        $pinnedHighlightsContainer = $(`<div id="${PINNED_CONTAINER_ID}" />`).appendTo($(CHAT_ROOM_SELECTOR));
     }
 
-    unloadPinnedHighlits() {
+    unloadPinnedHighlights() {
         if (!$pinnedHighlightsContainer) return;
 
         $pinnedHighlightsContainer.remove();
@@ -207,8 +204,8 @@ class ChatHighlightBlacklistKeywordsModule {
         if ($pinnedHighlightsContainer.children().length + 1 > MAXIMUM_PIN_COUNT) {
             $pinnedHighlightsContainer.children().first().remove();
         }
-        // probably not the best way to get a timestamp
-        const timestamp = `${('0' + date.getHours()).slice(-2)}:${('0' + date.getMinutes()).slice(-2)}`;
+
+        const timestamp = window.moment(date).format('hh:mm');
 
         const $newHighlight = $(pinnedHighlightTemplate({timestamp, from, message}));
 
