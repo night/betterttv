@@ -50,6 +50,10 @@ body {
     color: #D3D3D3;
 }
 
+.chat-container {
+    border-left: none;
+}
+
 .ember-chat .special-message {
     background: #111;
 }
