@@ -55,7 +55,7 @@ body {
 }
 
 .ember-chat .special-message {
-    background: #111;
+    background: #111 !important;
 }
 
 /* live dashboard */

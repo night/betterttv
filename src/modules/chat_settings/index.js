@@ -2,6 +2,7 @@ const $ = require('jquery');
 const watcher = require('../../watcher');
 const settings = require('../settings');
 const highlightBlacklistKeywords = require('../chat_highlight_blacklist_keywords');
+const chatFontSettings = require('../chat_font_settings');
 
 const CHAT_SETTINGS_SELECTOR = '.ember-chat .chat-interface .chat-settings';
 const BTTV_CHAT_SETTINGS_CLASS = 'bttvChatSettings';
@@ -47,10 +48,11 @@ class ChatSettingsModule {
             $('.chat-line').hide();
         });
 
-        // TODO: blacklist/highlight/scrollback/fonts
-
         $settings.find('.setHighlightKeywords').click(highlightBlacklistKeywords.setHighlightKeywords);
         $settings.find('.setBlacklistKeywords').click(highlightBlacklistKeywords.setBlacklistKeywords);
+
+        $settings.find('.setFontFamily').click(chatFontSettings.setFontFamily);
+        $settings.find('.setFontSize').click(chatFontSettings.setFontSize);
 
         // make the chat settings scrollable
         $(CHAT_SETTINGS_SELECTOR).css('max-height', $(window).height() - 100);
