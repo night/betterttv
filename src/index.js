@@ -31,12 +31,8 @@
 
     /* TODO:
      - Modules for:
-        - Chat (channel, replay, conversations)
-        - Chat Settings (and scrollback amount)
         - Chat Deleted messages
         - Chat Commands
         - Chat Moderator Cards
-        - Chat Pinned Highlights (and timeout)
-        - Notifications (desktop, following notices, mentions, audible setting too)
     */
 })();
