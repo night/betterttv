@@ -99,7 +99,7 @@ class Storage extends SafeEventEmitter {
         this._cache[storageId] = value;
 
         if (emit) {
-            this.emit(`storage.${id}`, value);
+            this.emit(`changed.${id}`, value);
         }
 
         value = JSON.stringify(value);

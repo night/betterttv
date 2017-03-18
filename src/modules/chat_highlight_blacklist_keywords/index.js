@@ -1,6 +1,7 @@
 const $ = require('jquery');
 const watcher = require('../../watcher');
 const settings = require('../../settings');
+const storage = require('../../storage');
 const html = require('../../utils/html');
 const twitch = require('../../utils/twitch');
 const {escape: escapeRegExp} = require('../../utils/regex');
@@ -35,11 +36,11 @@ const pinnedHighlightTemplate = ({timestamp, from, message}) => `
     </div>
 `;
 
-function changeKeywords(promptBody, settingID) {
-    let keywords = prompt(promptBody, settings.get(settingID) || '');
+function changeKeywords(promptBody, storageID) {
+    let keywords = prompt(promptBody, storage.get(storageID) || '');
     if (keywords !== null) {
         keywords = keywords.trim().replace(REPEATING_SPACE_REGEX, ' ');
-        settings.set(settingID, keywords);
+        storage.set(storageID, keywords);
     }
 }
 
@@ -78,8 +79,8 @@ function computeKeywords(keywords) {
 let blacklistKeywords = [];
 let blacklistUsers = [];
 function computeBlacklistKeywords() {
-    const keywords = settings.get('blacklistKeywords');
-    if (typeof keywords !== 'string') return;
+    let keywords = storage.get('blacklistKeywords');
+    if (typeof keywords !== 'string') keywords = '';
 
     const {computedKeywords, computedUsers} = computeKeywords(keywords);
     blacklistKeywords = computedKeywords;
@@ -89,8 +90,11 @@ function computeBlacklistKeywords() {
 let highlightKeywords = [];
 let highlightUsers = [];
 function computeHighlightKeywords() {
-    const keywords = settings.get('highlightKeywords');
-    if (typeof keywords !== 'string') return;
+    let keywords = storage.get('highlightKeywords');
+    if (typeof keywords !== 'string') {
+        const currentUser = twitch.getCurrentUser();
+        keywords = currentUser ? `${currentUser.name}` : '';
+    }
 
     const {computedKeywords, computedUsers} = computeKeywords(keywords);
     highlightKeywords = computedKeywords;
@@ -140,8 +144,8 @@ class ChatHighlightBlacklistKeywordsModule {
             this.loadPinnedHighlights();
         });
         watcher.on('chat.message', ($message, messageObj) => this.onMessage($message, messageObj));
-        settings.on('changed.blacklistKeywords', computeBlacklistKeywords);
-        settings.on('changed.highlightKeywords', computeHighlightKeywords);
+        storage.on('changed.blacklistKeywords', computeBlacklistKeywords);
+        storage.on('changed.highlightKeywords', computeHighlightKeywords);
 
         settings.add({
             id: 'pinnedHighlights',

@@ -55,7 +55,7 @@ body {
 }
 
 .ember-chat .special-message {
-    background: #111;
+    background: #111 !important;
 }
 
 /* live dashboard */
@@ -3295,4 +3295,12 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 
 .newsfeed {
     background: transparent;
+}
+
+.chat-chip {
+    background: #111;
+}
+
+.warp__item--anchor-beta {
+    background: #282828;
 }
