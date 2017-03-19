@@ -2417,3 +2417,7 @@ body.channel_new.columns.ember-application {
 .bttv-emo-567b5b520e984428652809b6:nth-of-type(n + 11) {
     display: none;
 }
+
+.chat-line .bttv-deleted {
+    opacity: 0.3;
+}

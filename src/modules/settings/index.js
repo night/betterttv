@@ -5,16 +5,17 @@ const saveAs = require('../../utils/filesaver').saveAs;
 const watcher = require('../../watcher');
 const settings = require('../../settings');
 const storage = require('../../storage');
+const html = require('../../utils/html');
 
 const settingTemplate = ({id, name, description}) => `
-    <div id="option" class="option bttvOption-${id}">
-        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">${name}</span>
-        <span class="description"> — ${description}</span>
+    <div id="option" class="option bttvOption-${html.escape(id)}">
+        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">${html.escape(name)}</span>
+        <span class="description"> — ${html.escape(description)}</span>
         <div class="bttv-switch">
-            <input class="bttv-switch-input bttv-switch-off" type="radio" name=${id} value="false" id="${id}False" />
-            <label class="bttv-switch-label bttv-switch-label-off" for="${id}False">Off</label>
-            <input class="bttv-switch-input" type="radio" name=${id} value="true" id="${id}True" />
-            <label class="bttv-switch-label bttv-switch-label-on" for="${id}True">On</label>
+            <input class="bttv-switch-input bttv-switch-off" type="radio" name=${html.escape(id)} value="false" id="${html.escape(id)}False" />
+            <label class="bttv-switch-label bttv-switch-label-off" for="${html.escape(id)}False">Off</label>
+            <input class="bttv-switch-input" type="radio" name=${html.escape(id)} value="true" id="${html.escape(id)}True" />
+            <label class="bttv-switch-label bttv-switch-label-on" for="${html.escape(id)}True">On</label>
             <span class="bttv-switch-selection"></span>
         </div>
     </option>
