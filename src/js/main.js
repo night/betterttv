@@ -362,6 +362,14 @@ if (location.pathname.match(/^\/(.*)\/popout/)) {
     return;
 }
 
+if (bttv.storage.get('bttv_beta') === 'true') {
+    debug.log('Launching BetterTTV beta');
+    var beta = document.createElement('script');
+    beta.setAttribute('src', 'https://beta.betterttv.net/betterttv.js');
+    document.body.appendChild(beta);
+    return;
+}
+
 if (location.hostname === 'clips.twitch.tv') {
     var clipDark = document.createElement('link');
     clipDark.setAttribute('href', 'https://cdn.betterttv.net/css/betterttv-clips-dark.css');

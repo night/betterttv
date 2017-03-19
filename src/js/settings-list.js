@@ -19,6 +19,15 @@ var displayElement = require('./helpers/element').display,
 
 module.exports = [
     {
+        name: 'BetterTTV Beta',
+        description: 'Help test the future of BetterTTV. WARNING: may lack some features and may be buggy',
+        default: false,
+        storageKey: 'beta',
+        toggle: function() {
+            window.location.reload();
+        }
+    },
+    {
         name: 'Anon Chat',
         description: 'Join channels without appearing in chat',
         default: false,
