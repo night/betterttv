@@ -110,22 +110,31 @@ body.dark, body.dark #clips-app-root {
     color: #d3d3d3;
 }
 
-/* all the buttons */
-.dark .clip-card .follow-btn:hover, .dark .nv-clip-content__meta .js-share-link-options-button:hover {
-    background-color: rgba(35, 35, 35, 0.3);
+/* all the buttons & title edit */
+.dark .clip-card .button:hover,
+.dark .ct-editable-text:hover,
+.dark .top-share-container .button:hover,
+.dark .ct-editable-text:hover:after {
+    background-color: rgb(50, 50, 50);
 }
 
-.dark .clip-card .nv-clip-action-buttons .button {
-    background-color: rgb(30,30,30); 
+.dark .button--text:hover,
+.dark .ct-editable-text:hover:after {
+    background: #4c4c4c;
 }
 
-.dark .clip-card .nv-clip-action-buttons .button, .dark .top-share-container .button  {
+.dark .clip-card .nv-clip-action-buttons .button,
+.dark .clip-card .ct-view-info .button,
+.dark .ct-fade-in .ct-edit-info .button,
+.dark .top-share-container .button {
+    background-color: rgb(30,30,30);
     box-shadow: inset 0 0 0 1px rgba(171,171,171,0.5);
     color: #b8b8b8;
 }
 
-/* follow button icon */
-.dark .nv-clip-content .js-follow-btn svg, .dark .nv-clip-content .svg-glyph_views {
+/* white icons */
+.dark .nv-clip-content svg,
+.dark .ct-fade-in svg {
     fill: #d3d3d3 !important; 
 }
 
