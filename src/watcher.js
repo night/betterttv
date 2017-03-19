@@ -115,6 +115,11 @@ class Watcher extends SafeEventEmitter {
             this.emit('chat.message', $el, view.msgObject);
         };
 
+        const emitMessageDeleted = $el => {
+            const view = twitch.getEmberView($el.attr('id'));
+            this.emit('chat.message.deleted', $el, view);
+        };
+
         const emitStateChange = (caller, key) => {
             let newValue = caller[key];
             if (newValue === undefined || newValue === null) {
@@ -159,13 +164,16 @@ class Watcher extends SafeEventEmitter {
 
         chatWatcher = new window.MutationObserver(mutations =>
             mutations.forEach(mutation => {
-                for (let i = 0; i < mutation.addedNodes.length; i++) {
-                    const el = mutation.addedNodes[i];
+                for (const el of mutation.addedNodes) {
                     const $el = $(el);
 
                     if ($el.hasClass('chat-line')) {
                         if ($el.find('.horizontal-line').length) continue;
                         emitMessage($el);
+                    }
+
+                    if ($el.hasClass('deleted') && !$el.hasClass('message')) {
+                        emitMessageDeleted($el.parent());
                     }
 
                     if ($el.hasClass('chat-settings')) {
@@ -188,8 +196,7 @@ class Watcher extends SafeEventEmitter {
 
         conversationWatcher = new window.MutationObserver(mutations =>
             mutations.forEach(mutation => {
-                for (let i = 0; i < mutation.addedNodes.length; i++) {
-                    const el = mutation.addedNodes[i];
+                for (const el of mutation.addedNodes) {
                     const $el = $(el);
 
                     if ($el.hasClass('conversation-window')) {
