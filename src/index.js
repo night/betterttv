@@ -31,7 +31,6 @@
 
     /* TODO:
      - Modules for:
-        - Chat Commands
         - Chat Moderator Cards
     */
 })();
