@@ -111,8 +111,8 @@ class Watcher extends SafeEventEmitter {
 
     chatObserver() {
         const emitMessage = $el => {
-            const view = twitch.getEmberView($el.attr('id'));
-            this.emit('chat.message', $el, view.msgObject);
+            const msgObject = twitch.getChatMessageObject($el[0]);
+            this.emit('chat.message', $el, msgObject);
         };
 
         const emitMessageDeleted = $el => {

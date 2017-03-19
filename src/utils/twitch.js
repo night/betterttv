@@ -102,5 +102,24 @@ module.exports = {
     getChatMessageObject(domElement) {
         const id = domElement.getAttribute('id');
         return this.getEmberView(id).msgObject;
+    },
+
+    getUserIsModerator(name) {
+        let badges = this.getCurrentChat().tmiRoom.getBadges(name);
+        if (!badges) return false;
+        badges = Object.keys(badges);
+        return badges.includes('moderator') ||
+               badges.includes('broadcaster') ||
+               badges.includes('global_mod') ||
+               badges.includes('admin') ||
+               badges.includes('staff');
+    },
+
+    getUserIsIgnored(name) {
+        return this.getCurrentTMISession().isIgnored(name);
+    },
+
+    getCurrentUserIsOwner() {
+        return this.getCurrentUser().id === this.getCurrentChannel().id;
     }
 };
