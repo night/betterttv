@@ -19,6 +19,17 @@ function formatChatUser({from, color, tags}) {
     };
 }
 
+let asciiOnly = false;
+let subsOnly = false;
+let modsOnly = false;
+
+function hasNonASCII(message) {
+    for (let i = 0; i < message.length; i++) {
+        if (message.charCodeAt(i) > 128) return true;
+    }
+    return false;
+}
+
 class ChatModule {
     constructor() {
         watcher.on('chat.message', ($element, message) => this.messageParser($element, message));
@@ -30,6 +41,18 @@ class ChatModule {
 
     customBadges() {
 
+    }
+
+    asciiOnly(enabled) {
+        asciiOnly = enabled;
+    }
+
+    subsOnly(enabled) {
+        subsOnly = enabled;
+    }
+
+    modsOnly(enabled) {
+        modsOnly = enabled;
     }
 
     emoticonize($message, user) {
@@ -68,6 +91,17 @@ class ChatModule {
         if (messageStyle && messageStyle.includes('color:')) {
             $message.css('color', color);
         }
+
+        if (message.tags) {
+            if (
+                (modsOnly === true && !message.tags.mod) ||
+                (subsOnly === true && !message.tags.subscriber) ||
+                (asciiOnly === true && hasNonASCII(message.message))
+            ) {
+                $element.hide();
+            }
+        }
+
         this.emoticonize($message, formatChatUser(message));
     }
 }
