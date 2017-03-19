@@ -31,7 +31,6 @@
 
     /* TODO:
      - Modules for:
-        - Chat Deleted messages
         - Chat Commands
         - Chat Moderator Cards
     */
