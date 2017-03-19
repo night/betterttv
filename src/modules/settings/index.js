@@ -7,6 +7,8 @@ const settings = require('../../settings');
 const storage = require('../../storage');
 const html = require('../../utils/html');
 
+const getSettingElement = ({id}) => $(`.bttvOption-${html.escape(id)}`);
+
 const settingTemplate = ({id, name, description}) => `
     <div id="option" class="option bttvOption-${html.escape(id)}">
         <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">${html.escape(name)}</span>
@@ -101,13 +103,32 @@ function isJSON(string) {
     return true;
 }
 
+const renderedSettings = {};
+
+function addSetting(setting) {
+    if (renderedSettings[setting.id]) return;
+    renderedSettings[setting.id] = setting;
+
+    const sortedSettings = Object.values(renderedSettings);
+    sortedSettings.sort((a, b) => a.name.localeCompare(b.name));
+    const beforeIndex = sortedSettings.findIndex(s => s.id === setting.id) - 1;
+
+    const template = settingTemplate(setting);
+    if (beforeIndex === -1) {
+        $('#bttvSettings .options-list h2.option').after(template);
+    } else {
+        getSettingElement(sortedSettings[beforeIndex]).after(template);
+    }
+
+    $(settings.get(setting.id) ? `#${setting.id}True` : `#${setting.id}False`).prop('checked', true);
+}
+
 class SettingsModule {
     constructor() {
         watcher.on('load', () => {
             this.renderSettings();
             this.renderSettingsMenuOption();
         });
-        settings.on('added', setting => this.addSetting(setting));
     }
 
     renderSettings() {
@@ -147,7 +168,7 @@ class SettingsModule {
             $tab.parent('li').addClass('active');
         });
 
-        Object.values(settings.getSettings()).forEach(setting => this.addSetting(setting));
+        Object.values(settings.getSettings()).forEach(setting => addSetting(setting));
 
         // relies on Twitch jQuery.. may break
         // this should be cleaned up
@@ -175,11 +196,6 @@ class SettingsModule {
     openSettings(e) {
         e.preventDefault();
         $('#bttvSettingsPanel').show('slow');
-    }
-
-    addSetting(setting) {
-        $('#bttvSettings .options-list').append(settingTemplate(setting));
-        $(settings.get(setting.id) ? `#${setting.id}True` : `#${setting.id}False`).prop('checked', true);
     }
 
     backup() {

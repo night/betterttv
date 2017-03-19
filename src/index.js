@@ -28,9 +28,4 @@
     }});
 
     debug.log(`BetterTTV v${debug.version} loaded.`);
-
-    /* TODO:
-     - Modules for:
-        - Chat Moderator Cards
-    */
 })();

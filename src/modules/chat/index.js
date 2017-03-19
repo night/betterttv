@@ -2,6 +2,7 @@ const watcher = require('../../watcher');
 const colors = require('../../utils/colors');
 const settings = require('../../settings');
 const emotes = require('../emotes');
+const nicknames = require('../chat_nicknames');
 
 const EMOTE_STRIP_SYMBOLS_REGEX = /(^[~!@#$%\^&\*\(\)]+|[~!@#$%\^&\*\(\)]+$)/g;
 
@@ -85,7 +86,14 @@ class ChatModule {
 
     messageParser($element, message) {
         const color = this.calculateColor(message.color);
-        $element.find('.from').css('color', color);
+        const $from = $element.find('.from');
+        $from.css('color', color);
+
+        const nickname = nicknames.get(message.from);
+        if (nickname) {
+            $from.text(nickname);
+        }
+
         const $message = $element.find('.message');
         const messageStyle = $message.attr('style');
         if (messageStyle && messageStyle.includes('color:')) {
