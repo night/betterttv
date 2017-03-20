@@ -57,11 +57,7 @@ class SubscriberEmotes extends AbstractEmotes {
 
         const emotes = [];
 
-        emoteIDs.forEach(id => {
-            if (this.emotes.has(id)) {
-                emotes.push(this.emotes.get(id));
-            }
-        });
+        emoteIDs.forEach(id => this.emotes.has(id) && emotes.push(this.emotes.get(id)));
 
         return emotes;
     }
@@ -131,13 +127,10 @@ class SubscriberEmotes extends AbstractEmotes {
     }
 
     removeEmote({emoteID}) {
-        const emoteUsers = [...this.emoteUsers.values()];
+        this.emoteUsers.forEach(emoteIDs => {
+            const idx = emoteIDs.indexOf(emoteID);
 
-        let idx;
-        emoteUsers.forEach(emoteIDs => {
-            idx = emoteIDs.indexOf(emoteID);
-
-            if (idx >= 0) {
+            if (idx > -1) {
                 emoteIDs.splice(idx, 1);
             }
         });
@@ -150,16 +143,10 @@ class SubscriberEmotes extends AbstractEmotes {
     addEmote({emote, emoteUsers}) {
         emote = buildEmote(emote);
 
-        let userEmoteIDs;
-
         emoteUsers.forEach(user => {
-            if (this.emoteUsers.has(user)) {
-                userEmoteIDs = this.emoteUsers.get(user);
-            } else {
-                userEmoteIDs = [];
-            }
+            const userEmoteIDs = this.emoteUsers.get(user) || [];
 
-            userEmoteIDs = [...userEmoteIDs, emote.id];
+            userEmoteIDs.push(emote.id);
 
             this.emoteUsers.set(user, userEmoteIDs);
             this.emotes.set(emote.id, emote);
@@ -167,12 +154,7 @@ class SubscriberEmotes extends AbstractEmotes {
     }
 
     newSubscriber({user, emotes, emoteIDs}) {
-        let userEmoteIDs;
-        if (this.emoteUsers.has(user)) {
-            userEmoteIDs = this.emoteUsers.get(user);
-        } else {
-            userEmoteIDs = [];
-        }
+        let userEmoteIDs = this.emoteUsers.get(user) || [];
 
         userEmoteIDs = [...userEmoteIDs, ...emoteIDs];
         this.emoteUsers.set(user, userEmoteIDs);
@@ -189,11 +171,10 @@ class SubscriberEmotes extends AbstractEmotes {
 
         const userEmoteIDs = this.emoteUsers.get(user);
 
-        let idx;
-        emoteIDs.forEach(idToRemove => {
-            idx = userEmoteIDs.indexOf(idToRemove);
+        emoteIDs.forEach(id => {
+            const idx = userEmoteIDs.indexOf(id);
 
-            if (idx >= 0) {
+            if (idx > -1) {
                 userEmoteIDs.splice(idx, 1);
             }
         });
