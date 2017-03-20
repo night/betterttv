@@ -21,7 +21,10 @@ module.exports = function moderatorCard(user, top, left) {
 
     let controls = '';
     if (currentUser && user.id !== currentUser.id) {
-        const ownerControls = twitch.getCurrentUserIsOwner() ? (
+        const currentUserIsOwner = twitch.getCurrentUserIsOwner();
+        const currentUserIsMod = twitch.getCurrentUserIsModerator();
+        const userIsMod = twitch.getUserIsModerator(user.name);
+        const ownerControls = currentUserIsOwner ? (
             `<button title="Add/Remove this user as a moderator" class="button-simple dark mod-card-mod">
                 <svg height="16px" width="16px" version="1.1" viewBox="0 0 16 16" x="0px" y="0px" class="svg-add-mod">
                     <path clip-rule="evenodd" fill-rule="evenodd" d="M15,7L1,16l4.666-7H1l14-9l-4.667,7H15z"></path>
@@ -31,7 +34,7 @@ module.exports = function moderatorCard(user, top, left) {
                 </svg>
             </button>`
         ) : '';
-        const modControls = twitch.getUserIsModerator(user.name) ? (
+        const modControls = ((!userIsMod || currentUserIsOwner) && currentUserIsMod) ? (
             `<span class="mod-controls">
                 <button title="!permit this user" class="permit button-simple light">
                     <svg height="16px" width="16px" version="1.1" viewBox="0 0 16 16" x="0px" y="0px" class="svg-permit">
