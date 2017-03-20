@@ -160,7 +160,15 @@ class Watcher extends SafeEventEmitter {
             if (!element) return;
             if (watcher) watcher.disconnect();
             watcher.observe(element, {childList: true, subtree: true});
+
+            // late load messages events
             $(element).find('.chat-line').each((index, el) => emitMessage($(el)));
+
+            // late load settings event
+            if ($(element).find('.chat-settings').length) {
+                this.emit('load.chat_settings');
+            }
+
             observeChatState();
             observeChatUnhide();
         };
