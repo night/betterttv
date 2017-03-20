@@ -1,6 +1,7 @@
 const $ = require('jquery');
 const keyCodes = require('../../utils/keycodes');
 const emotes = require('../emotes');
+const twitch = require('../../utils/twitch');
 const watcher = require('../../watcher');
 
 const CHAT_TEXT_AREA = '.ember-chat .chat-interface textarea';
@@ -67,7 +68,7 @@ class TabCompletionModule {
                 const caretPos = $inputField[0].selectionStart;
                 const text = $inputField.val();
 
-                const start = (/[@\w]+$/.exec(text.substr(0, caretPos)) || {index: caretPos}).index;
+                const start = (/[\(\)\w]+$/.exec(text.substr(0, caretPos)) || {index: caretPos}).index;
                 const end = caretPos + (/^\w+/.exec(text.substr(caretPos)) || [''])[0].length;
                 this.textSplit = [text.substring(0, start), text.substring(start, end), text.substring(end + 1)];
 
@@ -95,11 +96,39 @@ class TabCompletionModule {
     }
 
     getSuggestions(prefix, includeUsers = true) {
-        const suggestions = emotes.getEmotes().map(emote => emote.code);  // Emotes
-        if (includeUsers === true) suggestions.push(...this.userList);    // Users
+        const suggestions = [];
+
+        // BTTV Emotes
+        suggestions.push(...emotes.getEmotes().map(emote => emote.code));
+
+        // Twitch emotes
+        suggestions.push(...this.getTwitchEmotes().map(emote => emote.code));
+
+        // Users
+        if (includeUsers) {
+            suggestions.push(...this.userList);
+        }
+
+        // Filter and sort emotes
         return suggestions.filter(word => (
             word.toLowerCase().indexOf(prefix.toLowerCase()) === 0
         )).sort();
+    }
+
+    getTwitchEmotes() {
+        const twitchEmotes = [];
+
+        const tmiSession = twitch.getCurrentTMISession();
+        if (tmiSession) {
+            const emoteSets = tmiSession.getEmotes();
+            if (emoteSets) {
+                for (const set of Object.values(emoteSets.emoticon_sets)) {
+                    twitchEmotes.push(...set);
+                }
+            }
+        }
+
+        return twitchEmotes;
     }
 }
 
