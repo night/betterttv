@@ -113,7 +113,6 @@ function renderModeratorCard(user, $el) {
             .catch(() => toggleFollow($modCard, false));
         $modCard.find('.mod-card-follow').click(() => {
             const followed = toggleFollow($modCard);
-            twitch.sendChatMessage(`/${!moderator ? 'un' : ''}mod ${user.name}`);
             const request = followed ? twitchAPI.put(followEndpoint, {auth: true}) : twitchAPI.delete(followEndpoint, {auth: true});
             request.then(() => twitch.sendChatAdminMessage(`You ${!followed ? 'un' : ''}followed ${user.name}`))
                 .catch(() => twitch.sendChatAdminMessage(`Error ${!followed ? 'un' : ''}following ${user.name}`));
