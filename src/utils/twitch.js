@@ -48,26 +48,30 @@ module.exports = {
 
     getCurrentChannel() {
         let rv;
-        try {
-            rv = lookup('service:persistentPlayer').playerComponent.channel;
-        } catch (e) {
+
+        const playerService = lookup('service:persistentPlayer');
+        if (!Ember.isNone(playerService) && playerService.get('playerComponent.channel.id')) {
+            rv = playerService.playerComponent.channel;
+        }
+
+        if (!rv) {
             const channel = lookup('controller:channel');
             if (!Ember.isNone(channel) && channel.get('model.id')) {
                 rv = channel.model;
             }
+        }
 
-            if (!rv) {
-                const user = lookup('controller:user');
-                if (!Ember.isNone(user) && user.get('model.id')) {
-                    rv = user.model;
-                }
+        if (!rv) {
+            const user = lookup('controller:user');
+            if (!Ember.isNone(user) && user.get('model.id')) {
+                rv = user.model;
             }
+        }
 
-            if (!rv) {
-                const chat = lookup('controller:chat');
-                if (!Ember.isNone(chat) && chat.get('currentChannelRoom.channel')) {
-                    rv = chat.get('currentChannelRoom.channel');
-                }
+        if (!rv) {
+            const chat = lookup('controller:chat');
+            if (!Ember.isNone(chat) && chat.get('currentChannelRoom.channel')) {
+                rv = chat.get('currentChannelRoom.channel');
             }
         }
 
