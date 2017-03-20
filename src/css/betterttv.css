@@ -2148,6 +2148,12 @@ body.channel_new.columns.ember-application {
     cursor: pointer;
 }
 
+.chat-container .ember-chat .chat-line .mentioned {
+    background-color: inherit;
+    font-weight: bold;
+    color: white;
+}
+
 #emote-menu-button {
     width: 15px;
     height: 30px;
