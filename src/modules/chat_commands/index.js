@@ -20,7 +20,6 @@ const HELP_TEXT = `BetterTTV Chat Commands:
 /localsub — Turns on local sub-only mode (only your chat is sub-only mode)
 /localsuboff — Turns off local sub-only mode
 /massunban (or /unban all or /u all) — Unbans all users in the channel (channel owner only)
-/part — Parts the channel (activates anon chat mode)
 /purge (or /p) — Purges a user's chat
 /shrug — Appends your chat line with a shrug face
 /sub — Shortcut for /subscribers
