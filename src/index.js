@@ -15,16 +15,19 @@
                     'Blocked a frame with origin',
                     'player-core-min',
                     'NS_ERROR_NOT_INITIALIZED',
+                    'InvalidAccessError',
                     /^<anonymous> in/
                 ],
                 ignoreUrls: [
-                    /\/script\/script\.min\.js$/,
-                    /player\.js$/,
-                    /player-core-min\.js$/,
-                    /instream\/video\/client\.js$/,
-                    /emberapp\-[a-z0-9]+\.js$/,
-                    /global\-[a-z0-9]+\.js$/,
-                    /tmi\-v3\.[a-z0-9]+\.js$/
+                    '/script/script.min.js',
+                    '/js/sdkloader/ima3.js',
+                    'player.js',
+                    'player-core-min.js',
+                    'instream/video/client.js',
+                    /emberapp\-[a-z0-9]+\.js/,
+                    /global\-[a-z0-9]+\.js/,
+                    /tmi\-v3\.[a-z0-9]+\.js/,
+                    /emberhelper\-[a-z0-9]+\.js/
                 ]
             }
         ).install();

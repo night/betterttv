@@ -30,6 +30,9 @@ class EmoteMenuModule {
         // Inject the emote menu if option is enabled.
         if (settings.get('clickTwitchEmotes') === false) return;
 
+        // Emote menu doesn't handle loads on non-chat pages well
+        if (!$('.js-chat-interface').length) return;
+
         debug.log('Injecting Twitch Chat Emotes Script');
 
         require('twitch-chat-emotes/script.min');

@@ -1,10 +1,12 @@
+const Raven = require('raven-js');
+
 function formatChannel(data) {
     return {
-        id: data._id,
-        name: data.name || data.id,
-        displayName: data.display_name,
-        game: data.game,
-        views: data.views
+        id: data.get('_id'),
+        name: data.get('name') || data.get('id'),
+        displayName: data.get('display_name'),
+        game: data.get('game'),
+        views: data.get('views')
     };
 }
 
@@ -28,6 +30,10 @@ if (window.Twitch && window.Twitch.user) {
         .then(d => formatUser(d))
         .then(u => {
             currentUser = u;
+            Raven.setUserContext({
+                id: u.id,
+                username: u.name
+            });
         });
 }
 
@@ -43,7 +49,7 @@ module.exports = {
     getCurrentChannel() {
         let rv;
         try {
-            rv = lookup('service:persistentPlayer').playerComponent.channel.content.id;
+            rv = lookup('service:persistentPlayer').playerComponent.channel;
         } catch (e) {
             const channel = lookup('controller:channel');
             if (!Ember.isNone(channel) && channel.get('model.id')) {
@@ -103,7 +109,8 @@ module.exports = {
 
     getChatMessageObject(domElement) {
         const id = domElement.getAttribute('id');
-        return this.getEmberView(id).msgObject;
+        const view = this.getEmberView(id);
+        return view ? view.msgObject : null;
     },
 
     getUserIsModerator(name) {
