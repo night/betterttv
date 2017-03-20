@@ -32,6 +32,7 @@
     "jquery": "^3.1.1",
     "lodash.debounce": "^4.0.8",
     "lodash.throttle": "^4.1.1",
+    "msgpack-lite": "^0.1.26",
     "raven-js": "^3.12.0",
     "request": "2.80.0",
     "require-globify": "^1.4.1",
