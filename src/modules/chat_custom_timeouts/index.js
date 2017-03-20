@@ -117,7 +117,9 @@ function handleClick(e) {
     if (!twitch.getCurrentUserIsModerator()) return;
     e.preventDefault();
 
-    user = twitch.getChatMessageObject(e.currentTarget.parentNode).from;
+    const msgObject = twitch.getChatMessageObject(e.currentTarget.parentNode);
+    if (!msgObject) return;
+    user = msgObject.from;
     openCustomTimeout($(e.currentTarget));
 }
 
