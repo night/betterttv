@@ -31,7 +31,7 @@ class ChatEmbeddedPollModule {
     onChat($el, messageObj) {
         const strawpoll = STRAWPOLL_REGEX.exec(messageObj.message);
 
-        if (!strawpoll || !(messageObj.labels.includes('mod') || messageObj.labels.includes('owner'))) return;
+        if (!strawpoll || !messageObj.labels || !(messageObj.labels.includes('mod') || messageObj.labels.includes('owner'))) return;
 
         const pollId = strawpoll[1];
 
