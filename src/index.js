@@ -22,7 +22,8 @@
                     /player-core-min\.js$/,
                     /instream\/video\/client\.js$/,
                     /emberapp\-[a-f0-9]+\.js$/,
-                    /global\-[a-f0-9]+\.js$/
+                    /global\-[a-f0-9]+\.js$/,
+                    /tmi\-v3\.[a-f0-9]+\.js$/
                 ]
             }
         ).install();
