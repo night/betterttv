@@ -2,13 +2,19 @@ const $ = require('jquery');
 const watcher = require('../../watcher');
 const storage = require('../../storage');
 const html = require('../../utils/html');
+const showPrompt = require('../../utils/async-prompt');
 
-const FONT_FAMILY_PROMPT = `Enter a font family for chat.
+const FONT_FAMILY_PROMPT = {
+    title: 'Chat Font Style',
+    text: `<p>Enter a font family for chat.</p>
+    <p>Try "monospace" or "Comic Sans MS", or leave the field blank to use the default.</p>`
+};
 
-Try "monospace" or "Comic Sans MS", or leave the field blank to use the default.`;
-const FONT_SIZE_PROMPT = `Enter a font size for chat.
-
-Leave the field blank to use the default.`;
+const FONT_SIZE_PROMPT = {
+    title: 'Chat Font Size',
+    text: `<p>Enter a font size for chat.</p>
+    <p>Leave the field blank to use the default.</p>`
+};
 
 const STYLE_ID = 'bttv-font-size';
 
@@ -19,12 +25,14 @@ const styleTemplate = (fontFamily, fontSize) => `
     }
 `;
 
-function changeFontSetting(promptBody, storageID) {
-    let keywords = prompt(promptBody, storage.get(storageID) || '');
-    if (keywords !== null) {
-        keywords = keywords.trim();
-        storage.set(storageID, keywords);
-    }
+function changeFontSetting(promptConfig, storageID) {
+    // let keywords = prompt(promptBody, storage.get(storageID) || '');
+    showPrompt(promptConfig, storage.get(storageID) || '', keywords => {
+        if (keywords !== null) {
+            keywords = keywords.trim();
+            storage.set(storageID, keywords);
+        }
+    });
 }
 
 let $fontSettings;

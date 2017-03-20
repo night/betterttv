@@ -5,17 +5,23 @@ const storage = require('../../storage');
 const html = require('../../utils/html');
 const twitch = require('../../utils/twitch');
 const {escape: escapeRegExp} = require('../../utils/regex');
+const showPrompt = require('../../utils/async-prompt');
 
 const PHRASE_REGEX = /\{.+?\}/g;
 const USER_REGEX = /\(.+?\)/g;
 const REPEATING_SPACE_REGEX = /\s\s+/g;
 
-const BLACKLIST_KEYWORD_PROMPT = `Type some blacklist keywords. Messages containing keywords will be filtered from your chat.
-        
-Use spaces in the field to specify multiple keywords. Place {} around a set of words to form a phrase, <> inside the {} to use exact search, and () around a single word to specify a username. Wildcards (*) are supported.`;
-const HIGHLIGHT_KEYWORD_PROMPT = `Type some highlight keywords. Messages containing keywords will turn red to get your attention.
-        
-Use spaces in the field to specify multiple keywords. Place {} around a set of words to form a phrase, <> inside the {} to use exact search, and () around a single word to specify a username. Wildcards (*) are supported.`;
+const BLACKLIST_KEYWORD_PROMPT = {
+    title: 'Blacklist Keywords in Chat',
+    text: `Type some blacklist keywords. Messages containing keywords will be filtered from your chat.
+
+Use spaces in the field to specify multiple keywords. Place {} around a set of words to form a phrase, <> inside the {} to use exact search, and () around a single word to specify a username. Wildcards (*) are supported.`
+};
+const HIGHLIGHT_KEYWORD_PROMPT = {
+    title: 'Highlight Keywords in Chat',
+    text: `<p>Type some highlight keywords. Messages containing keywords will turn red to get your attention.</p>
+    <p>Use spaces in the field to specify multiple keywords. Place {} around a set of words to form a phrase, <> inside the {} to use exact search, and () around a single word to specify a username. Wildcards (*) are supported.</p>`
+};
 
 const CHAT_ROOM_SELECTOR = '.ember-chat .chat-room';
 const PINNED_HIGHLIGHT_ID = 'bttv-pinned-highlight';
@@ -36,12 +42,14 @@ const pinnedHighlightTemplate = ({timestamp, from, message}) => `
     </div>
 `;
 
-function changeKeywords(promptBody, storageID) {
-    let keywords = prompt(promptBody, storage.get(storageID) || '');
-    if (keywords !== null) {
-        keywords = keywords.trim().replace(REPEATING_SPACE_REGEX, ' ');
-        storage.set(storageID, keywords);
-    }
+function changeKeywords(promptConfig, storageID) {
+    showPrompt(promptConfig, storage.get(storageID) || '', keywords => {
+        if (keywords !== null) {
+            keywords = keywords.trim().replace(REPEATING_SPACE_REGEX, ' ');
+            storage.set(storageID, keywords);
+        }
+    });
+    // let keywords = prompt(promptBody, storage.get(storageID) || '');
 }
 
 function computeKeywords(keywords) {

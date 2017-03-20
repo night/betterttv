@@ -685,6 +685,66 @@ input.text:focus,select:focus,textarea:focus {
     width: 7px;
 }
 
+/* Prompts for changing chat settings */
+.bttvChatSettingsPrompt {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    /* Top margin will be computed by jquery */
+    margin-left: -200px;
+    width: 400px;
+    z-index: 9003;
+    background-color: #282828;
+    box-shadow: -1px 0 0 rgba(0,0,0,0.3), -2px 0 0 rgba(0,0,0,0.2), -3px 0 0 rgba(0,0,0,0.1),
+                1px 0 0 rgba(0,0,0,0.3), 2px 0 0 rgba(0,0,0,0.2), 3px 0 0 rgba(0,0,0,0.1),
+                0 -1px 0 rgba(0,0,0,0.3), 0 -2px 0 rgba(0,0,0,0.2), 0 -3px 0 rgba(0,0,0,0.1),
+                0 1px 0 rgba(0,0,0,0.3), 0 2px 0 rgba(0,0,0,0.2), 0 3px 0 rgba(0,0,0,0.1);
+    border-radius: 3px;
+    /* Like the settings panel, always use dark colors */
+    color: #D3D3D3;
+}
+
+.promptHead {
+    font-size: 160%;
+    background-color: #353535;
+    border-bottom: 1px solid #111;
+    padding: 10px;
+}
+
+.promptBody {
+    padding: 6px 10px 10px;
+}
+
+.promptBody p {
+    padding: 0;
+    margin: 0 0 .5em;
+}
+
+.bttvChatSettingsPrompt button {
+    padding: 5px;
+    border-radius: 3px;
+    margin: 0 3px;
+    width: 50px;
+}
+
+.bttvChatSettingsPrompt input {
+    display: block;
+    width: 100%;
+    border: none;
+    padding: 3px;
+    margin: 10px 0;
+}
+
+.promptSave {
+    background-image: linear-gradient(to bottom, #C54E4E, #AB2525);
+    background-image: -webkit-linear-gradient(top, #C54E4E, #AB2525);
+    background-image: -moz-linear-gradient(top, #C54E4E, #AB2525);
+    background-image: -o-linear-gradient(top, #C54E4E, #AB2525);
+    padding: 5px;
+    color: #333333;
+    text-shadow: 0 1px rgba(255, 255, 255, 0.25);
+}
+
 .bttv-mod-card {
     width: 290px;
 }
