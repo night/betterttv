@@ -23,11 +23,13 @@ function lookup(...args) {
 }
 
 let currentUser;
-Twitch.user()
-    .then(d => formatUser(d))
-    .then(u => {
-        currentUser = u;
-    });
+if (window.Twitch && window.Twitch.user) {
+    window.Twitch.user()
+        .then(d => formatUser(d))
+        .then(u => {
+            currentUser = u;
+        });
+}
 
 module.exports = {
     getEmberContainer(...args) {

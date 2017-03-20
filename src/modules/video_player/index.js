@@ -60,8 +60,9 @@ class VideoPlayerModule {
 
             $('div.player-livestatus').append('<span class="player-viewer-count"></span>');
             controller.model.addObserver('stream.viewers', (model, key) => {
-                const label = Twitch.display.commatize(model.get(key)) + ' viewers';
-                $('.player-viewer-count').text(label);
+                const viewers = model.get(key);
+                if (!viewers) return;
+                $('.player-viewer-count').text(`${Number(viewers).toLocaleString()} viewers`);
             });
         } catch (e) {}
     }

@@ -1,3 +1,4 @@
+const $ = require('jquery');
 const CHAT_LINES = '.ember-chat .chat-messages .chat-lines';
 const CHAT_SCROLLER = '.ember-chat .chat-messages .tse-scroll-content';
 
