@@ -13,9 +13,8 @@ const REPEATING_SPACE_REGEX = /\s\s+/g;
 
 const BLACKLIST_KEYWORD_PROMPT = {
     title: 'Blacklist Keywords in Chat',
-    text: `Type some blacklist keywords. Messages containing keywords will be filtered from your chat.
-
-Use spaces in the field to specify multiple keywords. Place {} around a set of words to form a phrase, <> inside the {} to use exact search, and () around a single word to specify a username. Wildcards (*) are supported.`
+    text: `<p>Type some blacklist keywords. Messages containing keywords will be filtered from your chat.</p>
+    <p>Use spaces in the field to specify multiple keywords. Place {} around a set of words to form a phrase, <> inside the {} to use exact search, and () around a single word to specify a username. Wildcards (*) are supported.</p>`
 };
 const HIGHLIGHT_KEYWORD_PROMPT = {
     title: 'Highlight Keywords in Chat',
