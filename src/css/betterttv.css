@@ -480,6 +480,11 @@ input.text:focus,select:focus,textarea:focus {
     left: 0;
 }
 
+.swap-chat .notification-center-balloon {
+    right: 0;
+    left: initial;
+}
+
 /* BTTV settings menu */
 #bttvSettingsPanel {
     position: absolute;
