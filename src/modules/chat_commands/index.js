@@ -213,6 +213,8 @@ function handleCommands(message) {
         case 'help':
             HELP_TEXT.split('\n').forEach(m => twitch.sendChatAdminMessage(m));
             return true;
+        default:
+            return true;
     }
 
     return false;
