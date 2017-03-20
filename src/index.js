@@ -14,7 +14,8 @@
                 ignoreErrors: [
                     'Blocked a frame with origin',
                     'player-core-min',
-                    'NS_ERROR_NOT_INITIALIZED'
+                    'NS_ERROR_NOT_INITIALIZED',
+                    /^<anonymous> in/
                 ],
                 ignoreUrls: [
                     /\/script\/script\.min\.js$/,
