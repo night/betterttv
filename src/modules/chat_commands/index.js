@@ -218,7 +218,7 @@ function handleCommands(message) {
     return false;
 }
 
-let oldSendMessage;
+let twitchSendMessage;
 
 function sendMessage() {
     try {
@@ -234,18 +234,25 @@ function sendMessage() {
         debug.log(e);
     }
 
-    oldSendMessage.apply(this, arguments);
+    twitchSendMessage.apply(this, arguments);
 }
 
 class ChatCommands {
     constructor() {
-        watcher.on('load.chat', () => this.load());
+        watcher.on('load.chat_settings', () => this.load());
     }
 
     load() {
         const emberView = twitch.getEmberView($(TEXTAREA_SELECTOR).attr('id'));
-        oldSendMessage = emberView._actions.sendMessage;
+        if (!emberView) return;
+
+        const newTwitchSendMessage = emberView._actions.sendMessage;
+
+        // check if we've already monkeypatched
+        if (newTwitchSendMessage === sendMessage) return;
+
         emberView._actions.sendMessage = sendMessage;
+        twitchSendMessage = newTwitchSendMessage;
     }
 }
 
