@@ -4,9 +4,10 @@ const emotes = require('../emotes');
 const twitch = require('../../utils/twitch');
 const watcher = require('../../watcher');
 
+const CHAT_COMPONENT = '.ember-chat .chat-input';
 const CHAT_TEXT_AREA = '.ember-chat .chat-interface textarea';
-const CONVERSATION_TEXT_AREA = '.conversation-window .chat-input textarea';
 const CHAT_SUGGESTIONS = '.ember-chat .chat-interface .suggestions';
+const CONVERSATION_TEXT_AREA = '.conversation-window .chat-input textarea';
 
 class TabCompletionModule {
     /*
@@ -56,10 +57,13 @@ class TabCompletionModule {
         const keyCode = e.keyCode || e.which;
         if (e.ctrlKey) return;
 
-        const $inputField = $(e.target);
+        // Hide twitch suggestions
         const $suggestions = $(CHAT_SUGGESTIONS);
         if ($suggestions.length) $suggestions.remove();
+        const chatComponent = twitch.getEmberView($(CHAT_COMPONENT).attr('id'));
+        if (chatComponent) chatComponent.closeSuggestions();
 
+        const $inputField = $(e.target);
         if (keyCode === keyCodes.Tab) {
             e.preventDefault();
 
