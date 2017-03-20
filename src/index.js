@@ -21,9 +21,11 @@
                 ignoreUrls: [
                     '/script/script.min.js',
                     '/js/sdkloader/ima3.js',
+                    '/js/sdkloader/loader.js',
                     'player.js',
                     'player-core-min.js',
                     'instream/video/client.js',
+                    'cdn.flashtalking.com',
                     /emberapp\-[a-z0-9]+\.js/,
                     /global\-[a-z0-9]+\.js/,
                     /tmi\-v3\.[a-z0-9]+\.js/,
