@@ -80,7 +80,8 @@ class TabCompletionModule {
                 if (this.textSplit[1] === '') return;
 
                 // Get all matching completions
-                this.suggestions = this.getSuggestions(this.textSplit[1], includeUsers);
+                const includeEmotes = this.textSplit[0].slice(-1) !== '@';
+                this.suggestions = this.getSuggestions(this.textSplit[1], includeUsers, includeEmotes);
             }
 
             if (this.suggestions.length > 0) {
@@ -99,17 +100,19 @@ class TabCompletionModule {
         }
     }
 
-    getSuggestions(prefix, includeUsers = true) {
+    getSuggestions(prefix, includeUsers = true, includeEmotes = true) {
         const suggestions = [];
 
-        // BTTV Emotes
-        suggestions.push(...emotes.getEmotes().map(emote => emote.code));
+        if (includeEmotes) {
+            // BTTV Emotes
+            suggestions.push(...emotes.getEmotes().map(emote => emote.code));
 
-        // Twitch emotes
-        suggestions.push(...this.getTwitchEmotes().map(emote => emote.code));
+            // Twitch emotes
+            suggestions.push(...this.getTwitchEmotes().map(emote => emote.code));
+        }
 
-        // Users
         if (includeUsers) {
+            // Users
             suggestions.push(...this.userList);
         }
 
