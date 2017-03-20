@@ -22,6 +22,7 @@ class HostButtonModule {
         if (settings.get('hostButton') === false) return;
 
         const currentUser = twitch.getCurrentUser();
+        if (!currentUser) return;
         this.embedHostButton();
         this.updateHostingState(currentUser.id);
     }
@@ -61,8 +62,10 @@ class HostButtonModule {
     updateHostingState(userId) {
         const channelId = twitch.getCurrentChannel().id;
 
-        twitch.getCurrentTMISession()
-            ._tmiApi
+        const tmiSession = twitch.getCurrentTMISession();
+        if (!tmiSession) return;
+
+        tmiSession._tmiApi
             .get('/hosts', {host: userId})
             .then(data => {
                 if (!data.hosts || !data.hosts.length) return;

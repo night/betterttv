@@ -112,11 +112,13 @@ class Watcher extends SafeEventEmitter {
     chatObserver() {
         const emitMessage = $el => {
             const msgObject = twitch.getChatMessageObject($el[0]);
+            if (!msgObject) return;
             this.emit('chat.message', $el, msgObject);
         };
 
         const emitMessageDeleted = $el => {
             const view = twitch.getEmberView($el.attr('id'));
+            if (!view) return;
             this.emit('chat.message.deleted', $el, view);
         };
 
@@ -155,6 +157,7 @@ class Watcher extends SafeEventEmitter {
         };
 
         const observe = (watcher, element) => {
+            if (!element) return;
             if (watcher) watcher.disconnect();
             watcher.observe(element, {childList: true, subtree: true});
             $(element).find('.chat-line').each((index, el) => emitMessage($(el)));

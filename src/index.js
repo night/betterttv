@@ -1,4 +1,6 @@
 (() => {
+    require('babel-polyfill');
+
     if (window.location.pathname.endsWith('.html')) return;
 
     const Raven = require('raven-js');
@@ -8,7 +10,18 @@
             process.env.SENTRY_URL,
             {
                 release: process.env.GIT_REV,
-                environment: process.env.NODE_ENV
+                environment: process.env.NODE_ENV,
+                ignoreErrors: [
+                    'Blocked a frame with origin',
+                    'player-core-min',
+                    'NS_ERROR_NOT_INITIALIZED'
+                ],
+                ignoreUrls: [
+                    /\/script\/script\.min\.js$/,
+                    /player\.js$/,
+                    /player-core-min\.js$/,
+                    /instream\/video\/client\.js$/
+                ]
             }
         ).install();
     }
@@ -19,8 +32,9 @@
         return files.map(module => {
             return `
                 try {
-                    Raven.context(() => require('${module}'));
+                    require('${module}');
                 } catch (e) {
+                    Raven.captureException(e);
                     debug.error('Failed to ${module}', e.stack);
                 }
             `;
