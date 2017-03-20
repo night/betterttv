@@ -111,8 +111,17 @@ class Watcher extends SafeEventEmitter {
 
     chatObserver() {
         const emitMessage = $el => {
-            const msgObject = twitch.getChatMessageObject($el[0]);
+            let msgObject = twitch.getChatMessageObject($el[0]);
             if (!msgObject) return;
+
+            if (typeof msgObject.get === 'function') {
+                const newObj = {};
+                ['from', 'date', 'deleted', 'color', 'labels'].forEach(k => {
+                    newObj[k] = msgObject.get(k);
+                });
+                msgObject = newObj;
+            }
+
             this.emit('chat.message', $el, msgObject);
         };
 
@@ -146,6 +155,7 @@ class Watcher extends SafeEventEmitter {
 
         const observeChatState = () => {
             const currentChat = twitch.getCurrentChat();
+            if (!currentChat) return;
             Object.keys(chatState).forEach(key => {
                 currentChat.addObserver(key, emitStateChange);
                 emitStateChange(currentChat, key);
