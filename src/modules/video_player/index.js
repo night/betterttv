@@ -44,6 +44,7 @@ class VideoPlayerModule {
             this.viewerCount();
             this.clickToPause();
         });
+        watcher.on('load.vod', () => this.clickToPause());
         settings.add({
             id: 'clickToPlay',
             name: 'Click to Play/Pause Stream',
