@@ -22,7 +22,10 @@ class ChannelStatsModule {
         debug.log('Updating Channel Stats');
 
         const channelContainer = twitch.getEmberContainer('controller:channel');
+        if (!channelContainer) return;
+
         let channelModel = channelContainer.channelModel;
+        if (!channelModel) return;
 
         if (channelModel.hostModeTarget) {
             channelModel = channelModel.hostModeTarget;
