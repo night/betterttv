@@ -91,7 +91,12 @@ const settingsPanelTemplate = () => `
 function getDataURLFromUpload(input, callback) {
     const reader = new FileReader();
     reader.onload = ({target}) => callback(target.result);
-    reader.readAsText(input.files[0]);
+    const file = input.files[0];
+    if (!file) {
+        callback(null);
+        return;
+    }
+    reader.readAsText(file);
 }
 
 function isJSON(string) {
