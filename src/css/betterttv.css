@@ -716,7 +716,6 @@ input.text:focus,select:focus,textarea:focus {
 }
 
 .bttv-mod-card .user-messages {
-    padding-top: 10px;
     width: 100%;
     max-width: 320px;
     float: left;

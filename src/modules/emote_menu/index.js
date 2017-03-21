@@ -13,7 +13,7 @@ class EmoteMenuModule {
             description: 'Get a more advanced emote menu for Twitch. (Made by Ryan Chatham)'
         });
         settings.on('changed.clickTwitchEmotes', () => this.load());
-        watcher.on('load.chat', () => this.load());
+        watcher.on('load.chat_settings', () => this.load());
     }
 
     load() {
@@ -29,6 +29,9 @@ class EmoteMenuModule {
 
         // Inject the emote menu if option is enabled.
         if (settings.get('clickTwitchEmotes') === false) return;
+
+        // Emote menu doesn't handle loads on non-chat pages well
+        if (!$('.js-chat-interface').length) return;
 
         debug.log('Injecting Twitch Chat Emotes Script');
 

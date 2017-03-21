@@ -5,6 +5,7 @@ const watcher = require('../../watcher');
 const bvlTemplates = require('./templates');
 const ViewList = require('view-list');
 const Resizable = require('resizable');
+const moderatorCards = require('../chat_moderator_cards');
 
 let viewList;
 let chatterList;
@@ -18,44 +19,45 @@ class BetterViewerListModule {
             defaultValue: true,
             description: 'Adds extra features to the viewer list, such as filtering'
         });
-        watcher.on('load.channel', () => this.load());
+        watcher.on('load.chat', () => this.load());
+        settings.on('changed.betterViewerList', () => this.load());
     }
 
     load() {
-        if (settings.get('betterViewerList') === false) return;
-        if ($('#bvl-button').length > 0) {
-            $('#bvl-button').show();
+        const $oldViewerList = $('.chat-buttons-container a.button:has(.svg-viewerlist)');
+        if ($oldViewerList.length === 0) return;
+
+        const $bvlButton = $('#bvl-button');
+
+        if (settings.get('betterViewerList') === false) {
+            $oldViewerList.show();
+            if ($bvlButton.length) $bvlButton.hide();
             return;
         }
 
-        const interval = setInterval(() => {
-            if ($('#bvl-button').length > 0) {
-                clearInterval(interval);
-                return;
-            }
-
-            const $oldViewerList = $('.chat-buttons-container a.button:has(.svg-viewerlist)');
-            if ($oldViewerList.length === 0) return;
-
-            debug.log('Adding BetterViewerList button');
-            $oldViewerList.after(bvlTemplates.button);
+        if ($bvlButton.length) {
             $oldViewerList.hide();
+            $bvlButton.show();
+            return;
+        }
 
-            $('#bvl-button').click(() => {
-                const $panel = $('#bvl-panel');
-                if ($panel.length > 0) {
-                    $panel.toggle();
+        debug.log('Adding BetterViewerList button');
 
-                    if ($panel.is(':visible')) {
-                        this.loadViewerList();
-                    }
-                } else {
-                    this.createPanel();
+        $oldViewerList.after(bvlTemplates.button);
+        $oldViewerList.hide();
+
+        $('#bvl-button').click(() => {
+            const $panel = $('#bvl-panel');
+            if ($panel.length > 0) {
+                $panel.toggle();
+
+                if ($panel.is(':visible')) {
+                    this.loadViewerList();
                 }
-            });
-
-            clearInterval(interval);
-        }, 100);
+            } else {
+                this.createPanel();
+            }
+        });
     }
 
     renderViewerList() {
@@ -169,9 +171,7 @@ class BetterViewerListModule {
                     return this.html(row.tag, {
                         onclick: e => {
                             if (row.filter) return;
-                            // TODO(ehsankia): moderation card
-                            debug.info('Moderation card: ' + row.text);
-                            debug.info(e.target);
+                            moderatorCards.createFromName(row.text, $(e.target));
                         }
                     }, row.display || row.text);
                 }

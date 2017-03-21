@@ -1,10 +1,12 @@
+const Raven = require('raven-js');
+
 function formatChannel(data) {
     return {
-        id: data._id,
-        name: data.name || data.id,
-        displayName: data.display_name,
-        game: data.game,
-        views: data.views
+        id: data.get('_id'),
+        name: data.get('name') || data.get('id'),
+        displayName: data.get('display_name'),
+        game: data.get('game'),
+        views: data.get('views')
     };
 }
 
@@ -23,11 +25,17 @@ function lookup(...args) {
 }
 
 let currentUser;
-Twitch.user()
-    .then(d => formatUser(d))
-    .then(u => {
-        currentUser = u;
-    });
+if (window.Twitch && window.Twitch.user) {
+    window.Twitch.user()
+        .then(d => formatUser(d))
+        .then(u => {
+            currentUser = u;
+            Raven.setUserContext({
+                id: u.id,
+                username: u.name
+            });
+        });
+}
 
 module.exports = {
     getEmberContainer(...args) {
@@ -40,26 +48,30 @@ module.exports = {
 
     getCurrentChannel() {
         let rv;
-        try {
-            rv = lookup('service:persistentPlayer').playerComponent.channel.content.id;
-        } catch (e) {
+
+        const playerService = lookup('service:persistentPlayer');
+        if (!Ember.isNone(playerService) && playerService.get('playerComponent.channel.id')) {
+            rv = playerService.playerComponent.channel;
+        }
+
+        if (!rv) {
             const channel = lookup('controller:channel');
             if (!Ember.isNone(channel) && channel.get('model.id')) {
                 rv = channel.model;
             }
+        }
 
-            if (!rv) {
-                const user = lookup('controller:user');
-                if (!Ember.isNone(user) && user.get('model.id')) {
-                    rv = user.model;
-                }
+        if (!rv) {
+            const user = lookup('controller:user');
+            if (!Ember.isNone(user) && user.get('model.id')) {
+                rv = user.model;
             }
+        }
 
-            if (!rv) {
-                const chat = lookup('controller:chat');
-                if (!Ember.isNone(chat) && chat.get('currentChannelRoom.channel')) {
-                    rv = chat.get('currentChannelRoom.channel');
-                }
+        if (!rv) {
+            const chat = lookup('controller:chat');
+            if (!Ember.isNone(chat) && chat.get('currentChannelRoom.channel')) {
+                rv = chat.get('currentChannelRoom.channel');
             }
         }
 
@@ -101,6 +113,26 @@ module.exports = {
 
     getChatMessageObject(domElement) {
         const id = domElement.getAttribute('id');
-        return this.getEmberView(id).msgObject;
+        const view = this.getEmberView(id);
+        return view ? view.msgObject : null;
+    },
+
+    getUserIsModerator(name) {
+        let badges = this.getCurrentChat().tmiRoom.getBadges(name);
+        if (!badges) return false;
+        badges = Object.keys(badges);
+        return badges.includes('moderator') ||
+               badges.includes('broadcaster') ||
+               badges.includes('global_mod') ||
+               badges.includes('admin') ||
+               badges.includes('staff');
+    },
+
+    getUserIsIgnored(name) {
+        return this.getCurrentTMISession().isIgnored(name);
+    },
+
+    getCurrentUserIsOwner() {
+        return this.getCurrentUser().id === this.getCurrentChannel().id;
     }
 };

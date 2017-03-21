@@ -13,7 +13,6 @@ const CHAT_SETTINGS_TEMPLATE = `
     <div class="chat-menu-content">
         <p><a class="setBlacklistKeywords" href="#">Set Blacklist Keywords</a></p>
         <p><a class="setHighlightKeywords" href="#">Set Highlight Keywords</a></p>
-        <p><a class="setScrollbackAmount" href="#">Set Scrollback Amount</a></p>
         <p><a class="setFontFamily" href="#">Set Font</a></p>
         <p><a class="setFontSize" href="#">Set Font Size</a></p>
         <p><a class="clearChat" href="#">Clear My Chat</a></p>

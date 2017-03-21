@@ -111,12 +111,23 @@ class Watcher extends SafeEventEmitter {
 
     chatObserver() {
         const emitMessage = $el => {
-            const view = twitch.getEmberView($el.attr('id'));
-            this.emit('chat.message', $el, view.msgObject);
+            let msgObject = twitch.getChatMessageObject($el[0]);
+            if (!msgObject) return;
+
+            if (typeof msgObject.get === 'function') {
+                const newObj = {};
+                ['from', 'date', 'deleted', 'color', 'labels'].forEach(k => {
+                    newObj[k] = msgObject.get(k);
+                });
+                msgObject = newObj;
+            }
+
+            this.emit('chat.message', $el, msgObject);
         };
 
         const emitMessageDeleted = $el => {
             const view = twitch.getEmberView($el.attr('id'));
+            if (!view) return;
             this.emit('chat.message.deleted', $el, view);
         };
 
@@ -144,6 +155,7 @@ class Watcher extends SafeEventEmitter {
 
         const observeChatState = () => {
             const currentChat = twitch.getCurrentChat();
+            if (!currentChat) return;
             Object.keys(chatState).forEach(key => {
                 currentChat.addObserver(key, emitStateChange);
                 emitStateChange(currentChat, key);
@@ -155,9 +167,18 @@ class Watcher extends SafeEventEmitter {
         };
 
         const observe = (watcher, element) => {
+            if (!element) return;
             if (watcher) watcher.disconnect();
             watcher.observe(element, {childList: true, subtree: true});
+
+            // late load messages events
             $(element).find('.chat-line').each((index, el) => emitMessage($(el)));
+
+            // late load settings event
+            if ($(element).find('.chat-settings').length) {
+                this.emit('load.chat_settings');
+            }
+
             observeChatState();
             observeChatUnhide();
         };
