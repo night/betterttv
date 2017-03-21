@@ -991,6 +991,10 @@ input, textarea, select {
     cursor: move !important;
 }
 
+#bvl-panel .chat-header svg {
+    vertical-align: middle;
+}
+
 #bvl-panel a.button.disable {
     opacity: 0.2;
     cursor: not-allowed;
