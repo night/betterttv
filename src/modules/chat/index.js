@@ -112,6 +112,15 @@ class ChatModule {
 
         this.emoticonize($message, formatChatUser(message));
     }
+
+    dismissPinnedCheer() {
+        try {
+            const service = window.App.__container__.lookup('service:bits-pinned-cheers');
+            if (service.topPinnedCheer || service.recentPinnedCheer) service.dismissLocalMessage();
+        } catch (dismissError) {
+            debug.log('Failed to dismiss cheer:', dismissError);
+        }
+    }
 }
 
 module.exports = new ChatModule();
