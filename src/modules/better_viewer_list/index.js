@@ -230,9 +230,10 @@ class BetterViewerListModule {
 
         $panel.find('.close-button').click(() => $panel.hide());
 
-        $panel.find('.refresh-button').click(() => {
+        const self = this;
+        $panel.find('.refresh-button').click(function() {
             if (this.classList.contains('disable')) return;
-            this.loadViewerList();
+            self.loadViewerList();
         });
 
         const $container = $('.ember-chat');
