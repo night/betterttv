@@ -145,6 +145,7 @@ class ChatCommands {
             e.stopImmediatePropagation();
             const $target = $(e.target);
             const messageObj = twitch.getChatMessageObject($target.closest('.chat-line')[0]);
+            if (!messageObj) return;
             const id = messageObj.tags['user-id'];
             this.create(id, $target);
         });

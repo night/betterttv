@@ -104,21 +104,38 @@ module.exports = {
     },
 
     sendChatMessage(message) {
-        this.getCurrentChat().tmiRoom.sendMessage(message);
+        const currentChat = this.getCurrentChat();
+        if (!currentChat) return;
+        currentChat.tmiRoom.sendMessage(message);
     },
 
     getCurrentUserIsModerator() {
-        return this.getCurrentChat().get('isModeratorOrHigher');
+        const currentChat = this.getCurrentChat();
+        return currentChat ? currentChat.get('isModeratorOrHigher') : false;
     },
 
     getChatMessageObject(domElement) {
         const id = domElement.getAttribute('id');
         const view = this.getEmberView(id);
-        return view ? view.msgObject : null;
+        if (!view) return null;
+
+        let msgObject = view.msgObject;
+        if (!msgObject) return null;
+
+        if (typeof msgObject.get === 'function') {
+            const newObj = {};
+            ['from', 'date', 'deleted', 'color', 'labels', 'tags'].forEach(k => {
+                newObj[k] = msgObject.get(k);
+            });
+            msgObject = newObj;
+        }
+        return msgObject;
     },
 
     getUserIsModerator(name) {
-        let badges = this.getCurrentChat().tmiRoom.getBadges(name);
+        const currentChat = this.getCurrentChat();
+        if (!currentChat) return false;
+        let badges = currentChat.tmiRoom.getBadges(name);
         if (!badges) return false;
         badges = Object.keys(badges);
         return badges.includes('moderator') ||
@@ -129,10 +146,12 @@ module.exports = {
     },
 
     getUserIsIgnored(name) {
-        return this.getCurrentTMISession().isIgnored(name);
+        const tmiSession = this.getCurrentTMISession();
+        return tmiSession ? tmiSession.isIgnored(name) : false;
     },
 
     getCurrentUserIsOwner() {
+        if (!this.getCurrentChat()) return false;
         return this.getCurrentUser().id === this.getCurrentChannel().id;
     }
 };
