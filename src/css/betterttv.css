@@ -157,6 +157,10 @@ input.text:focus,select:focus,textarea:focus {
     display: inline-block;
 }
 
+.ember-chat .badges a {
+   text-decoration: none;
+}
+
 .ember-chat .badges .badge {
     float: none !important;
     background-size: contain;
