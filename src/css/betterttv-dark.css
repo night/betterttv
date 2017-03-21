@@ -95,7 +95,7 @@ div#site_header {
     color: #888;
 }
 
-#dash_main #dash_nav li.tab.selected > a, #dash_main #dash_nav li.tab > a:hover, .tw-tabs__item>a.active, .tw-tabs__item>button.active  {
+#dash_main #dash_nav li.tab.selected > a, #dash_main #dash_nav li.tab > a:hover, .tw-tabs__item>a.active, .tw-tabs__item>button.active {
     color: #D3D3D3;
 }
 
@@ -1914,8 +1914,13 @@ div#actions {
     fill: #b8b5c0;
 }
 
-.chat-menu .balloon-wrapper .balloon {
+.chat-menu .balloon-wrapper .balloon,
+.chat-menu .balloon-wrapper .balloon .balloon__title {
     color: #d2d2d2;
+}
+
+.chat-menu .balloon .balloon__link.balloon__link--selected {
+    background-color: #3c3c3c !important;
 }
 
 .ember-chat .chat-settings .chat-colors .chat-colors-swatch.selected {
@@ -2523,6 +2528,7 @@ span.subscribe-text {
     background-color: #3b3b3b;
     border-color: #444;
     color: #d4d4d4;
+    box-shadow: none;
 }
 
 .twitch_subwindow .text-content .js-subwindow-close:hover {
@@ -2636,7 +2642,8 @@ span.subscribe-text {
     background: rgb(30, 30, 30);
 }
 
-#left_col .warp .warp__item--anchor {
+#left_col .warp .warp__item--anchor,
+#left_col .warp .warp__item--anchor-beta {
     background: #282828;
 }
 
@@ -3044,7 +3051,7 @@ ul.tabs li>a:hover, .directory_header .nav li>a:hover, ul.tabs li>button:hover, 
     background: rgb(30, 30, 30);
 }
 
-#channel .card__layout .card__body a {
+#channel .card__body a {
     color: #999;
 }
 
