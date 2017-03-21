@@ -1,6 +1,7 @@
 const $ = require('jquery');
-const keyCodes = require('../../utils/keycodes');
 const emotes = require('../emotes');
+const keyCodes = require('../../utils/keycodes');
+const settings = require('../../settings');
 const twitch = require('../../utils/twitch');
 const watcher = require('../../watcher');
 
@@ -17,6 +18,13 @@ class TabCompletionModule {
         - settings for customizations
     */
     constructor() {
+        settings.add({
+            id: 'tabCompletionTooltip',
+            name: 'Completion Tooltip',
+            defaultValue: true,
+            description: 'Shows a tooltip with suggested names when using @ completion'
+        });
+
         this.load();
         watcher.on('chat.message', ($el, msg) => this.storeUser($el, msg));
         watcher.on('load.chat', () => this.resetChannelData());
@@ -57,11 +65,9 @@ class TabCompletionModule {
         const keyCode = e.keyCode || e.which;
         if (e.ctrlKey) return;
 
-        // Hide twitch suggestions
-        const $suggestions = $(CHAT_SUGGESTIONS);
-        if ($suggestions.length) $suggestions.remove();
-        const chatComponent = twitch.getEmberView($(CHAT_COMPONENT).attr('id'));
-        if (chatComponent) chatComponent.closeSuggestions();
+        if (settings.get('tabCompletionTooltip') === false) {
+            this.hideSuggestions();
+        }
 
         const $inputField = $(e.target);
         if (keyCode === keyCodes.Tab) {
@@ -82,6 +88,12 @@ class TabCompletionModule {
                 // Get all matching completions
                 const includeEmotes = this.textSplit[0].slice(-1) !== '@';
                 this.suggestions = this.getSuggestions(this.textSplit[1], includeUsers, includeEmotes);
+            }
+
+            // Get all matching completions
+            const atCompletion = this.textSplit[0].slice(-1) === '@';
+            if (atCompletion && settings.get('tabCompletionTooltip')) {
+                return;
             }
 
             if (this.suggestions.length > 0) {
@@ -136,6 +148,13 @@ class TabCompletionModule {
         }
 
         return twitchEmotes;
+    }
+
+    hideSuggestions() {
+        const $suggestions = $(CHAT_SUGGESTIONS);
+        if ($suggestions.length) $suggestions.remove();
+        const chatComponent = twitch.getEmberView($(CHAT_COMPONENT).attr('id'));
+        if (chatComponent) chatComponent.closeSuggestions();
     }
 }
 
