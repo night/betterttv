@@ -17,6 +17,7 @@ const HELP_TEXT = `BetterTTV Chat Commands:
 /localasciioff — Turns off local ascii-only mode
 /localmod — Turns on local mod-only mode (only your chat is mod-only mode)
 /localmodoff — Turns off local mod-only mode
+/localunpin — Removes pinned cheer locally
 /localsub — Turns on local sub-only mode (only your chat is sub-only mode)
 /localsuboff — Turns off local sub-only mode
 /massunban (or /unban all or /u all) — Unbans all users in the channel (channel owner only)
@@ -209,6 +210,12 @@ function handleCommands(message) {
                 })
                 .catch(() => twitch.sendChatAdminMessage('Could not fetch stream.'));
             break;
+
+        // misc
+        case 'localunpin':
+            chat.dismissPinnedCheer();
+            break;
+
         case 'help':
             HELP_TEXT.split('\n').forEach(m => twitch.sendChatAdminMessage(m));
             return true;

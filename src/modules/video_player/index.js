@@ -4,6 +4,7 @@ const settings = require('../../settings');
 const keyCodes = require('../../utils/keycodes');
 
 function handleKeyEvent(keyup) {
+    if (keyup.ctrlKey || keyup.metaKey || keyup.shiftKey) return;
     if ($('input, textarea, select').is(':focus')) return;
 
     const $player = $('#player');

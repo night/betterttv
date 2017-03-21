@@ -998,6 +998,10 @@ input, textarea, select {
     cursor: move !important;
 }
 
+#bvl-panel .chat-header svg {
+    vertical-align: middle;
+}
+
 #bvl-panel a.button.disable {
     opacity: 0.2;
     cursor: not-allowed;
@@ -2158,6 +2162,12 @@ body.channel_new.columns.ember-application {
 .chat-messages .chat-line .user-mention:hover {
     text-decoration: underline;
     cursor: pointer;
+}
+
+.chat-container .ember-chat .chat-line .mentioned {
+    background-color: inherit;
+    font-weight: bold;
+    color: white;
 }
 
 #emote-menu-button {
