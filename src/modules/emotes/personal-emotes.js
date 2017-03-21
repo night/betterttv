@@ -47,7 +47,11 @@ class PersonalEmotes extends AbstractEmotes {
     }
 
     joinChannel() {
-        const {name} = twitch.getCurrentChannel();
+        const currentChannel = twitch.getCurrentChannel();
+        if (!currentChannel) return;
+
+        const name = currentChannel.name;
+
         if (name !== joinedChannel) {
             socketClient.partChannel(joinedChannel);
         }
