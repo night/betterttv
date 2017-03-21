@@ -75,7 +75,7 @@ module.exports = {
             }
         }
 
-        return formatChannel(rv);
+        return rv ? formatChannel(rv) : null;
     },
 
     getCurrentUser() {
