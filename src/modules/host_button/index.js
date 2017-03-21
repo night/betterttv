@@ -60,7 +60,10 @@ class HostButtonModule {
     }
 
     updateHostingState(userId) {
-        const channelId = twitch.getCurrentChannel().id;
+        const currentChannel = twitch.getCurrentChannel();
+        if (!currentChannel) return;
+
+        const channelId = currentChannel.id;
 
         const tmiSession = twitch.getCurrentTMISession();
         if (!tmiSession) return;
