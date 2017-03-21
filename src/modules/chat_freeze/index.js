@@ -1,15 +1,21 @@
 const $ = require('jquery');
+const twitch = require('../../utils/twitch');
+
 const CHAT_LINES = '.ember-chat .chat-messages .chat-lines';
-const CHAT_SCROLLER = '.ember-chat .chat-messages .tse-scroll-content';
+const CHAT_ROOM_SELECTOR = '.chat-room > div.ember-view';
 
 let isFrozen = false;
 
 function setScrollState(enabled) {
-    const $chatLines = jQuery(CHAT_LINES);
-    $chatLines.css('padding-bottom', enabled ? 0 : 50);
-    const $chatScroller = jQuery(CHAT_SCROLLER);
-    $chatScroller[0].scrollTop = $chatScroller[0].scrollHeight - (enabled ? 0 : 469);
-    $chatScroller.trigger('mousewheel');
+    const chatRoomEmberId = $(CHAT_ROOM_SELECTOR).attr('id');
+    const chatComponent = twitch.getEmberView(chatRoomEmberId);
+    if (!chatComponent) return;
+
+    if (enabled) {
+        chatComponent._scrollToBottom();
+    } else {
+        chatComponent._setStuckToBottom(false);
+    }
 }
 
 class ChatFreezeModule {
