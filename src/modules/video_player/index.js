@@ -31,7 +31,7 @@ function handlePlayerClick() {
             const $player = $('#player');
             const isPaused = $player.data('paused');
             const playerService = App.__container__.lookup('service:persistent-player');
-            if (!playerService || !playerService.playerComponent.player) return;
+            if (!playerService || !playerService.playerComponent || !playerService.playerComponent.player) return;
             if (!isPaused) playerService.playerComponent.player.pause();
         }
         clicks = 0;
