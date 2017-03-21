@@ -81,9 +81,9 @@ class SubscriberEmotes extends AbstractEmotes {
     }
 
     joinRoom() {
-        const {name} = twitch.getCurrentChannel();
-
-        socketClient.joinRoom(name);
+        const currentChannel = twitch.getCurrentChannel();
+        if (!currentChannel) return;
+        socketClient.joinRoom(currentChannel.name);
     }
 
     initializeRoom({userStore, emotes}) {
