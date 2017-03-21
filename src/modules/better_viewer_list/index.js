@@ -166,7 +166,7 @@ class BetterViewerListModule {
                 bottomClassName: 'bvl-bottom',
                 appendTo: $parent[0],
                 rowHeight: 20,
-                height: $parent.height() - 85,
+                height: $parent.height() - 105,
                 eachrow: function(row) {
                     return this.html(row.tag, {
                         onclick: e => {
@@ -184,7 +184,7 @@ class BetterViewerListModule {
             chatterList = this.extractViewers(data);
             chatterCount = data.data.chatter_count;
             const $el = $('#bvl-panel .viewer-list');
-            $el.height($parent.height() - 85);
+            $el.height($parent.height() - 105);
             this.renderViewerList();
             viewList.lastUpdate = Date.now();
         }, () => {
@@ -230,18 +230,19 @@ class BetterViewerListModule {
 
         $panel.find('.close-button').click(() => $panel.hide());
 
-        $panel.find('.refresh-button').click(() => {
+        const self = this;
+        $panel.find('.refresh-button').click(function() {
             if (this.classList.contains('disable')) return;
-            this.loadViewerList();
+            self.loadViewerList();
         });
 
-        const $container = $('.chat-room');
+        const $container = $('.ember-chat');
         $panel.css({
             width: $container.width(),
             height: $container.height() - 115
         });
 
-        $container.append($panel);
+        $container.prepend($panel);
 
         // Setup resizing
         const resizable = new Resizable($panel[0], {
@@ -252,7 +253,7 @@ class BetterViewerListModule {
 
         resizable.on('resize', () => {
             if (viewList === undefined) return;
-            $('#bvl-panel .viewer-list').height($('#bvl-panel').height() - 85);
+            $('#bvl-panel .viewer-list').height($('#bvl-panel').height() - 105);
             this.renderViewerList();
         });
 
