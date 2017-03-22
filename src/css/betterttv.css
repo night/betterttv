@@ -366,12 +366,13 @@ input.text:focus,select:focus,textarea:focus {
     right: initial;
 }
 
-.swap-chat .ember-view #main_col {
+.swap-chat .ember-view .app-main #main_col {
     margin-left: 340px;
     margin-right: 240px;
 }
 
-.swap-chat .ember-view #main_col.expandLeft {
+.swap-chat .ember-view .app-main.has-sc--collapsed #main_col,
+.swap-chat .ember-view .app-main:not(.has-sc) #main_col.expandLeft {
     margin-right: 50px;
 }
 
@@ -379,6 +380,7 @@ input.text:focus,select:focus,textarea:focus {
     margin-left: 0px;
 }
 
+.swap-chat .ember-view .social-column,
 .swap-chat .ember-view #left_col {
     right: 0;
     left: initial;
@@ -393,7 +395,8 @@ input.text:focus,select:focus,textarea:focus {
     left: 0px !important;
 }
 
-.swap-chat .ember-view #main_col.expandLeft .cn-bar-fixed {
+.swap-chat .ember-view .app-main.has-sc--collapsed #main_col .cn-bar-fixed,
+.swap-chat .ember-view .app-main:not(.has-sc) #main_col.expandLeft .cn-bar-fixed {
     right: 50px !important;
 }
 
