@@ -18,7 +18,7 @@ class ChannelEmotes extends AbstractEmotes {
     constructor() {
         super();
 
-        watcher.on('load.channel', () => {
+        watcher.on('load.chat', () => {
             const currentChannel = twitch.getCurrentChannel();
             if (!currentChannel) return;
 
