@@ -1072,9 +1072,9 @@ input, textarea, select {
 }
 
 .bttvSettingsIconDropDown {
-    width: 18px;
+    width: 18px !important;
     margin-left: 6px;
-    margin-right: 16px;
+    margin-right: 16px !important;
     height: 18px;
     background: url(../assets/icons/bttv_settings.png) no-repeat 0 0px;
 }

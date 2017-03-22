@@ -21,7 +21,7 @@ module.exports = function() {
 
     // New Twitch Friends List (lazy loads, pita)
     var lameLLT = setInterval(function() {
-        if (!$('.warp .warp__logo').length) return;
+        if (!$('.warp .warp__logo, .top-nav__logo').length) return;
 
         clearInterval(lameLLT);
 
@@ -34,12 +34,27 @@ module.exports = function() {
         });
         $('.warp .warp__logo').append($watermark);
 
+        var $newWatermark = $('<img />');
+        $newWatermark.attr('id', 'bttv_logo');
+        $newWatermark.attr('src', 'https://cdn.betterttv.net/assets/logos/logo_icon.png');
+        $newWatermark.css({
+            'z-index': 9000,
+            'left': '35px',
+            'top': '0px',
+            'width': '12px',
+            'height': 'auto',
+            'position': 'absolute'
+        });
+        $('.top-nav__logo').append($newWatermark);
+
         $('.warp__drawer .warp__list .warp__item:eq(2)').before('<li class="warp__item"><a class="warp__tipsy" data-tt_medium="twitch_leftnav" href="#" title="BetterTTV Settings"><figure class="warp__avatar bttvSettingsIconDropDown"></figure><span class="drawer__item">BetterTTV Settings</span></a></li>');
+        $('.top-nav-drawer__item a[data-tt_content="settings_profile"]').parent().after('<li class="top-nav-drawer__item"><a title="BetterTTV Settings" href="#" class="flex ember-view"><figure class="icon bttvSettingsIconDropDown"></figure><span class="top-nav-drawer__label">BetterTTV Settings</span></a></li>');
         $('.bttvSettingsIconDropDown').parent().click(function(e) {
             e.preventDefault();
             $('#chat_settings_dropmenu').hide();
             $('#bttvSettingsPanel').show('slow');
-        }).tipsy({
+        });
+        $('.warp__drawer .bttvSettingsIconDropDown').parent().tipsy({
             gravity: 'w'
         });
     }, 100);
