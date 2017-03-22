@@ -195,6 +195,15 @@ class SettingsModule {
                 </a>
             </li>
         `);
+        $('.top-nav-drawer__item a[data-tt_content="settings_profile"]').parent().after(`
+            <li class="top-nav-drawer__item">
+                <a title="BetterTTV Settings" href="#" class="flex ember-view">
+                    <figure class="icon bttvSettingsIconDropDown"></figure>
+                    <span class="top-nav-drawer__label">BetterTTV Settings</span>
+                </a>
+            </li>
+        `);
+
         $('.bttvSettingsIconDropDown').parent().click(this.openSettings);
     }
 

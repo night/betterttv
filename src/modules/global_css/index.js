@@ -8,8 +8,12 @@ class GlobalCSSModule {
     constructor() {
         this.globalCSS();
 
-        watcher.on('load', () => this.branding());
+        watcher.on('load', () => {
+            this.branding();
+            this.newBranding();
+        });
         this.branding();
+        this.newBranding();
 
         settings.add({
             id: 'leftSideChat',
@@ -70,6 +74,23 @@ class GlobalCSSModule {
             'position': 'absolute'
         });
         $('.warp .warp__logo').append($watermark);
+    }
+
+    newBranding() {
+        if ($('#bttv_logo_new').length) return;
+
+        const $watermark = $('<img />');
+        $watermark.attr('id', 'bttv_logo_new');
+        $watermark.attr('src', cdn.url('assets/logos/logo_icon.png'));
+        $watermark.css({
+            'z-index': 9000,
+            'left': '35px',
+            'top': '0px',
+            'width': '12px',
+            'height': 'auto',
+            'position': 'absolute'
+        });
+        $('.top-nav__logo').append($watermark);
     }
 
     toggleLeftSideChat() {
