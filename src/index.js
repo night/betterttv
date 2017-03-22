@@ -13,6 +13,13 @@
             {
                 release: process.env.GIT_REV,
                 environment: process.env.NODE_ENV,
+                ignoreErrors: [
+                    'Blocked a frame with origin',
+                    'player-core-min',
+                    'NS_ERROR_NOT_INITIALIZED',
+                    'InvalidAccessError',
+                    /^<anonymous> in/
+                ],
                 whitelistUrls: [
                     /betterttv\.js/,
                     /\.betterttv\.net/
