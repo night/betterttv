@@ -3482,3 +3482,12 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
     background-color: #282828;
     border-color: #303030
 }
+
+.new-search .form__input[type=text] {
+    background-color: #282828;
+    color: #d3d3d3;
+}
+
+.search-panel--fly:before, .search-panel--fly:after {
+    border-bottom-color: #333;
+}
