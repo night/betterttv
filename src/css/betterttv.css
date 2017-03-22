@@ -54,7 +54,7 @@ ul.tabs li.selected a {
 }
 
 .ember-chat .chat-messages {
-    top: 0px;
+    top: 0px !important;
     bottom: 114px;
     background-color: #efeef1; /* hide group chat feature depends on having a background */
 }
