@@ -14,7 +14,6 @@ class TabCompletionModule {
     /*
     TODO:
         - priority ordering
-        - suggestions popout
         - settings for customizations
     */
     constructor() {
