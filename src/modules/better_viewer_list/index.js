@@ -131,6 +131,7 @@ class BetterViewerListModule {
         let tmi;
         try {
             tmi = App.__container__.lookup('controller:chat').currentRoom;
+            if (!tmi.tmiRoom) return;
         } catch (e) {
             debug.warning('Failed to load TMI in BVL');
             return;
