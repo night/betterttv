@@ -171,7 +171,7 @@ function handleCommands(message) {
         // misc
         case 'join':
         case 'part':
-            anonChat.load(command === 'part');
+            command === 'join' ? anonChat.join() : anonChat.part();
             break;
 
         // info

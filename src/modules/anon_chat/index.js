@@ -1,9 +1,9 @@
 const settings = require('../../settings');
 const watcher = require('../../watcher');
 const twitch = require('../../utils/twitch');
-const Raven = require('raven-js');
 
-const forcedURL = window.location.search && window.location.search.indexOf('bttv_anon_chat=true') > -1;
+let ignoreNextDC = false;
+const forcedURL = window.location.search.includes('bttv_anon_chat=true');
 
 class AnonChatModule {
     constructor() {
@@ -20,45 +20,45 @@ class AnonChatModule {
         settings.on('changed.anonChat', () => this.load());
     }
 
-    load(force) {
-        if (force === undefined) {
-            this.enabled = forcedURL || settings.get('anonChat');
-        } else {
-            this.enabled = force;
-        }
-
+    part() {
         const currentUser = twitch.getCurrentUser();
-        if (!currentUser) return;
+        const tmiSession = twitch.getCurrentTMISession();
+        if (!currentUser || !tmiSession) return;
 
-        const session = twitch.getCurrentTMISession();
-        if (!session) return;
+        const prodConn = tmiSession._connections.main;
+        if (prodConn._opts.nickname !== currentUser.name) return;
 
-        try {
-            const prodConn = session._connections.main;
-            if (!prodConn) return;
+        prodConnOpts.nickname = 'justinfan12345';
+        twitch.sendChatAdminMessage('BetterTTV: [Anon Chat] Logging you out of chat...');
+        ignoreNextDC = true;
+        prodConn._send('QUIT');
+    }
 
-            const prodConnOpts = prodConn._opts;
+    join() {
+        const currentUser = twitch.getCurrentUser();
+        const tmiSession = twitch.getCurrentTMISession();
+        if (!currentUser || !tmiSession) return;
 
-            if (this.enabled && prodConnOpts.nickname === currentUser.name) {
-                prodConnOpts.nickname = 'justinfan12345';
-                twitch.sendChatAdminMessage('BetterTTV: [Anon Chat] Logging you out of chat...');
-                this.ignoreNextDC = true;
-                prodConn._send('QUIT');
-            } else if (!this.enabled && prodConnOpts.nickname !== currentUser.name) {
-                prodConnOpts.nickname = currentUser.name;
-                twitch.sendChatAdminMessage('BetterTTV: [Anon Chat] Logging you into chat...');
-                this.ignoreNextDC = true;
-                prodConn._send('QUIT');
-            }
-        } catch (e) {
-            twitch.sendChatAdminMessage('BetterTTV: [Anon Chat] We encountered an error anonymizing your chat. You won\'t be hidden in this channel.');
-            Raven.captureException(e);
+        const prodConn = tmiSession._connections.main;
+        if (prodConn._opts.nickname === currentUser.name) return;
+
+        prodConnOpts.nickname = currentUser.name;
+        twitch.sendChatAdminMessage('BetterTTV: [Anon Chat] Logging you into chat...');
+        ignoreNextDC = true;
+        prodConn._send('QUIT');
+    }
+
+    load() {
+        if (forcedURL || settings.get('anonChat')) {
+            this.join();
+        } else {
+            this.part();
         }
     }
 
     onMessage($el, data) {
-        if (this.ignoreNextDC && data.message.indexOf('unable to connect to chat') > -1) {
-            this.ignoreNextDC = false;
+        if (ignoreNextDC && data.message.includes('unable to connect to chat')) {
+            ignoreNextDC = false;
             $el.hide();
         }
     }
