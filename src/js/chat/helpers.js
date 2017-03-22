@@ -151,7 +151,9 @@ exports.parseRoomState = function(e) {
 var completableEmotes = function() {
     var completableEmotesList = [];
 
-    bttv.chat.emotes().forEach(function(emote) {
+    var emotes = bttv.chat.emotes().concat(bttv.chat.gwEmotes());
+
+    emotes.forEach(function(emote) {
         if (!emote.text) return;
 
         completableEmotesList.push(emote.text);
@@ -1085,5 +1087,32 @@ exports.loadBTTVChannelData = function() {
             store.bttvEmotes[bttvEmote.code] = bttvEmote;
         });
         store.__channelBots = data.bots;
+    });
+};
+
+exports.loadGameWispEmotes = function() {
+    var getUserEmotes = $.getJSON('https://api.gamewisp.com/pub/v1/emote/subscriber', {type: 'twitch', user_name: vars.userData.name});
+    var getGlobalEmotes = $.getJSON('https://api.gamewisp.com/pub/v1/emote/global');
+
+    $.when(getUserEmotes, getGlobalEmotes).done(function(userData, globalData) {
+        var globalEmotes = globalData[0].data ? globalData[0].data : [],
+            userEmotes = userData[0].data ? userData[0].data : [],
+            emote;
+
+        globalEmotes.map(function(globalEmote) {
+            globalEmote.global = true;
+        });
+
+        userEmotes.concat(globalEmotes).forEach(function(gwEmote) {
+            emote = {};
+            emote.type = 'gamewisp';
+            emote.imageType = 'png';
+            emote.url = gwEmote.image_asset.data.content.small;
+            emote.name = gwEmote.name;
+            emote.code = gwEmote.shortcode;
+            emote.id = gwEmote.id;
+
+            store.gwEmotes[emote.code] = emote;
+        });
     });
 };

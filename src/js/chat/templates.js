@@ -98,6 +98,14 @@ var emoticonBTTV = exports.emoticonBTTV = function(emote) {
     return '<img class="emoticon bttv-emo-' + emote.id + '" src="' + emote.urlTemplate.replace('{{image}}', '1x') + '" srcset="' + emote.urlTemplate.replace('{{image}}', '2x') + ' 2x" ' + type + channel + 'alt="' + escapeEmoteCode(emote.code) + '" />';
 };
 
+var emoticonGW = exports.emoticonBTTV = function(emote) {
+    if (!emote.url) return emote.code;
+
+    var channel = emote.channel ? 'data-channel="' + emote.channel + '" ' : '';
+    var type = emote.type ? 'data-type="' + emote.type + '" ' : '';
+    return '<img class="emoticon bttv-emo-' + emote.id + '" src="' + emote.url + '"' + type + channel + 'alt="' + escapeEmoteCode(emote.code) + '" />';
+};
+
 var jtvEmoticonize = exports.jtvEmoticonize = function(id) {
     var jtvEmotes = [
         'https://cdn.betterttv.net/emotes/jtv/happy.gif',
@@ -137,6 +145,7 @@ exports.emoticonCss = function(image, id) {
     return '.emo-' + id + ' {' + 'background-image: url("' + image.url + '");' + 'height: ' + image.height + 'px;' + 'width: ' + image.width + 'px;' + css + '}';
 };
 
+// emoticonize twitch emotes
 var emoticonize = exports.emoticonize = function(message, emotes) {
     if (!emotes) return [message];
 
@@ -206,6 +215,34 @@ var bttvEmoticonize = exports.bttvEmoticonize = function(message, emote, sender)
     return message.replace(emote.code, emote.type === 'emoji' ? parseEmoji(message) : emoticonBTTV(emote));
 };
 
+var gwEmoticonize = exports.gwEmoticonize = function(message, emote, sender) {
+    if (emote.restrictions) {
+        if (emote.restrictions.channels.length && emote.restrictions.channels.indexOf(bttv.getChannel()) === -1) return message;
+        if (emote.restrictions.games.length && tmi().channel && emote.restrictions.games.indexOf(tmi().channel.game) === -1) return message;
+
+        var emoteSets = sender ? helpers.getEmotes(sender) : [];
+        if (emote.restrictions.emoticonSet && emoteSets.indexOf(emote.restrictions.emoticonSet) === -1) return message;
+    }
+
+    if (emote.global) {
+        return message.replace(emote.code, emote.type === 'emoji' ? parseEmoji(message) : emoticonGW(emote));
+    }
+
+    if (store.gwRoomEmotes && Object.hasOwnProperty.call(store.gwRoomEmotes, emote.code)) {
+        var emoteShortcode = emote.code;
+
+        var emoteID = (store.gwRoomEmotes[emoteShortcode].id);
+
+        if (!Object.hasOwnProperty.call(store.gwRoomUsers, sender) ||
+            (store.gwRoomUsers[sender] && store.gwRoomUsers[sender].indexOf(emoteID) < 0)
+        ) {
+            return message;
+        }
+    }
+
+    return message.replace(emote.code, emote.type === 'emoji' ? parseEmoji(message) : emoticonGW(emote));
+};
+
 var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message, bits) {
     // filter blacklisted emojis
     blacklistedEmoji.forEach(function(emoji) {
@@ -230,9 +267,24 @@ var bttvMessageTokenize = exports.bttvMessageTokenize = function(sender, message
             } else if (Object.hasOwnProperty.call(store.proEmotes[sender], test)) {
                 emote = store.proEmotes[sender][test];
             }
+        } else if (Object.hasOwnProperty.call(store.gwEmotes, piece)) {
+            emote = store.gwEmotes[piece];
+        } else if (Object.hasOwnProperty.call(store.gwEmotes, test)) {
+            emote = store.gwEmotes[test];
+        } else if (Object.hasOwnProperty.call(store.gwRoomEmotes, piece)) {
+            emote = store.gwRoomEmotes[piece];
+        } else if (Object.hasOwnProperty.call(store.gwRoomEmotes, test)) {
+            emote = store.gwRoomEmotes[test];
         }
 
         if (
+            emote &&
+            emote.type === 'gamewisp' &&
+            bttv.settings.get('gwEmotes') === true &&
+            (emote.imageType === 'png' || (emote.imageType === 'gif' && bttv.settings.get('bttvGIFEmotes') === true))
+        ) {
+            piece = gwEmoticonize(piece, emote, sender);
+        } else if (
             emote &&
             bttv.settings.get('bttvEmotes') === true &&
             (emote.imageType === 'png' || (emote.imageType === 'gif' && bttv.settings.get('bttvGIFEmotes') === true))

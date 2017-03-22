@@ -4,6 +4,7 @@ var debug = require('./helpers/debug'),
     vars = require('./vars'),
     TwitchAPI = require('./twitch-api'),
     WS = require('./ws'),
+    GWWS = require('./ws-gw'), // GameWisp web socket
     Storage = require('./storage'),
     Settings = require('./settings');
 
@@ -290,6 +291,7 @@ var main = function() {
     var initialFuncs = function() {
         bttv.conversations = conversations();
         bttv.ws = new WS();
+        bttv.gwws = new GWWS();
 
         chatFunctions();
         chatReplay = new ChatReplay();

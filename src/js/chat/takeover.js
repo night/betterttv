@@ -191,6 +191,9 @@ var takeover = module.exports = function() {
     // Load BTTV channel emotes/bots
     helpers.loadBTTVChannelData();
 
+    // Load GameWisp emotes
+    helpers.loadGameWispEmotes();
+
     // Load Volunteer Badges
     helpers.loadBTTVBadges();
     bttv.ws.broadcastMe();
