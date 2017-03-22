@@ -34,7 +34,7 @@ class AnonChatModule {
         if (!session) return;
 
         try {
-            const prodConn = session._connections.aws || session._connections.prod || session._connections.main;
+            const prodConn = session._connections.main;
             if (!prodConn) return;
 
             const prodConnOpts = prodConn._opts;
