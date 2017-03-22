@@ -1,5 +1,6 @@
 const $ = require('jquery');
 const debug = require('../../utils/debug');
+const twitch = require('../../utils/twitch');
 const settings = require('../../settings');
 const watcher = require('../../watcher');
 const emotes = require('../emotes');
@@ -33,18 +34,25 @@ class EmoteMenuModule {
         // Emote menu doesn't handle loads on non-chat pages well
         if (!$('.js-chat-interface').length) return;
 
-        debug.log('Injecting Twitch Chat Emotes Script');
-
-        require('twitch-chat-emotes/script.min');
-
-        // Try hooking into the emote menu, regardless of whether we injected or not.
+        // Try loading & hooking into the emote menu
         let counter = 0;
+        let loaded = false;
         const getterInterval = setInterval(() => {
             counter++;
 
             if (counter > 29) {
                 clearInterval(getterInterval);
                 return;
+            }
+
+            // we jankily load this because the emote menu is a special snowflake
+            // it doesn't safeguard calls to twitch's current chat room
+            if (!loaded) {
+                const currentChat = twitch.getCurrentChat();
+                if (!currentChat || !currentChat.tmiRoom || !currentChat.tmiRoom.session) return;
+                loaded = true;
+                debug.log('Injecting Twitch Chat Emotes Script');
+                require('twitch-chat-emotes/script.min');
             }
 
             if (!window.emoteMenu) return;
