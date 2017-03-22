@@ -14,7 +14,6 @@ class AnonChatModule {
             description: 'Join channels without appearing in chat'
         });
 
-        this.ignoreNextDC = false;
         watcher.on('load.chat', () => this.load());
         watcher.on('chat.message', ($el, emberView) => this.onMessage($el, emberView));
         settings.on('changed.anonChat', () => this.load());
