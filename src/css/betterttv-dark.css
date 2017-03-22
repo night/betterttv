@@ -3292,3 +3292,86 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 .tw-tabs__item>a.active, .tw-tabs__item>button.active {
     color: #d3d3d3;
 }
+
+/* social layout */
+.theme--dark .social-column {
+    background-color: rgb(30,30,30);
+}
+
+.theme--dark .sc-search {
+    background-color: #282828;
+    border-top-color: #292929;
+}
+
+.theme--dark .sc-header {
+    box-shadow: 0 -0.1rem 0 #333 inset;
+}
+
+.theme--dark .sc-search .form__input[type=text] {
+    box-shadow: #303030 0 0 0 1px inset;
+    background-color: #202020;
+}
+
+.fp-container {
+    background-color: rgb(20, 20, 20);
+}
+
+.fp-side {
+    background-color: rgb(28, 28, 28);
+    box-shadow: inset 0 0 0 1px #333;
+}
+
+.fp-side__header {
+    color: #d3d3d3;
+}
+
+.fp-side .card__info {
+    color: #777;
+}
+
+.fp-side .fp-carousel-nav__item {
+    border-bottom-color: #333;
+}
+
+.fp-side__footer {
+    background-color: #282828;
+    box-shadow: inset 0 -1px 0 #333, inset -1px 0 0 #333, inset 1px 0 0 #333;
+}
+
+.fp-container .activity-card {
+    background-color: rgb(28, 28, 28);
+    box-shadow: inset 0 0 0 1px #333;
+}
+
+.fp-container .activity-card__comments {
+    background-color: #282828;
+    box-shadow: inset 0 -1px 0 #333, inset -1px 0 0 #333, inset 1px 0 0 #333
+}
+
+.fp-container .activity-meta__name {
+    color: #d3d3d3;
+}
+
+.fp-container .activity-meta__stamp {
+    color: #777;
+}
+
+.fp-container .activity-create {
+    border-color: #333;
+    background-color: rgb(25, 25, 25);
+}
+
+.fp-container .activity-create__textarea, .fp-container .activity-create__textarea:focus {
+    color: #d3d3d3;
+    background: none;
+    border-color: #333;
+}
+
+.fp-container .activity-create__actions {
+    background-color: #282828;
+}
+
+.fp-container .activity-button {
+    background-color: #282828;
+    border-color: #303030
+}
