@@ -16,7 +16,7 @@ class AnonChatModule {
 
         this.enabled = false;
         watcher.on('load.chat', () => this.load());
-        watcher.on('chat.message', ($el, emberView) => this.onMessage($el, emberView));
+        watcher.on('chat.message', ($el, msgObj) => this.onMessage($el, msgObj));
         settings.on('changed.anonChat', () => this.load(true));
     }
 
@@ -54,9 +54,8 @@ class AnonChatModule {
         }
     }
 
-    onMessage($el, data) {
-        if (!ignoreNextDC) return;
-        if (data && data.message && data.message.includes('unable to connect to chat')) {
+    onMessage($el, {message}) {
+        if (ignoreNextDC && message && message.includes('unable to connect to chat')) {
             ignoreNextDC = false;
             $el.hide();
         }
