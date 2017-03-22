@@ -26,8 +26,9 @@ function updatePlayerPosition() {
     var scrollParent = playerPlaceholder.scrollParent();
     var offset = playerPlaceholder.offset();
 
+    var topNavOffset = $('.top-nav').length === 0 ? 0 : 50;
     persistentPlayer.set('fullSizePlayerLocation', {
-        top: offset.top + scrollParent.scrollTop(),
+        top: offset.top + scrollParent.scrollTop() - topNavOffset,
         left: offset.left - scrollParent.offset().left
     });
 }
