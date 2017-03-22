@@ -14,7 +14,6 @@ class TabCompletionModule {
     /*
     TODO:
         - priority ordering
-        - suggestions popout
         - settings for customizations
     */
     constructor() {
@@ -100,9 +99,10 @@ class TabCompletionModule {
                 this.tabTries += e.shiftKey ? -1 : 1; // shift key iterates backwards
                 if (this.tabTries >= this.suggestions.length) this.tabTries = 0;
                 if (this.tabTries < 0) this.tabTries = this.suggestions.length + this.tabTries;
-                $inputField.val(this.textSplit[0] + this.suggestions[this.tabTries] + this.textSplit[2]);
+                if (!this.suggestions[this.tabTries]) return;
 
                 const cursorPos = this.textSplit[0].length + this.suggestions[this.tabTries].length;
+                $inputField.val(this.textSplit[0] + this.suggestions[this.tabTries] + this.textSplit[2]);
                 $inputField[0].setSelectionRange(cursorPos, cursorPos);
             }
         } else if (keyCode === keyCodes.Esc && this.tabTries >= 0) {

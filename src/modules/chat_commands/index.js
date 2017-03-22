@@ -4,6 +4,7 @@ const twitch = require('../../utils/twitch');
 const twitchAPI = require('../../utils/twitch-api');
 const debug = require('../../utils/debug');
 const chat = require('../chat');
+const anonChat = require('../anon_chat');
 const Raven = require('raven-js');
 
 const TEXTAREA_SELECTOR = '.textarea-contain';
@@ -13,6 +14,7 @@ const HELP_TEXT = `BetterTTV Chat Commands:
 /chatters — Retrieves the number of chatters in the chat
 /followed — Tells you for how long you have been following a channel
 /follows — Retrieves the number of followers for the channel
+/join & /part — Temporarily join/part chat (anon chat)
 /localascii — Turns on local ascii-only mode (only your chat is ascii-only mode)
 /localasciioff — Turns off local ascii-only mode
 /localmod — Turns on local mod-only mode (only your chat is mod-only mode)
@@ -166,6 +168,12 @@ function handleCommands(message) {
         case 'squishy':
             return 'notsquishY WHEN YOU NEED HIM notsquishY IN A JIFFY notsquishY USE THIS EMOTE notsquishY TO SUMMON SQUISHY notsquishY';
 
+        // misc
+        case 'join':
+        case 'part':
+            command === 'join' ? anonChat.join() : anonChat.part();
+            break;
+
         // info
         case 'chatters':
             twitch.getCurrentTMISession()
@@ -234,6 +242,10 @@ function sendMessage() {
         const result = handleCommands(message);
         if (result === false) {
             this.set('room.messageToSend', '');
+            return;
+        }
+        if (anonChat.enabled) {
+            twitch.sendChatAdminMessage('You can\'t send messages when Anon Chat is enabled. Type /join or disable Anon Chat in options.');
             return;
         }
         if (typeof result === 'string') this.set('room.messageToSend', result);
