@@ -47,12 +47,13 @@ class EmoteMenuModule {
 
             // we jankily load this because the emote menu is a special snowflake
             // it doesn't safeguard calls to twitch's current chat room
-            if (!loaded) {
+            if (!loaded && !window.emoteMenu) {
                 const currentChat = twitch.getCurrentChat();
                 if (!currentChat || !currentChat.tmiRoom || !currentChat.tmiRoom.session) return;
                 loaded = true;
                 debug.log('Injecting Twitch Chat Emotes Script');
                 require('twitch-chat-emotes/script.min');
+                return;
             }
 
             if (!window.emoteMenu) return;
