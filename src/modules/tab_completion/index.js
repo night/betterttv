@@ -89,10 +89,9 @@ class TabCompletionModule {
                 this.suggestions = this.getSuggestions(this.textSplit[1], includeUsers, includeEmotes);
             }
 
-            // Get all matching completions
-            const atCompletion = this.textSplit[0].slice(-1) === '@';
-            if (atCompletion && settings.get('tabCompletionTooltip')) {
-                return;
+            if (settings.get('tabCompletionTooltip')) {
+                if (this.textSplit[0].slice(-1) === '@') return;
+                this.hideSuggestions();
             }
 
             if (this.suggestions.length > 0) {

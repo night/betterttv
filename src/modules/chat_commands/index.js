@@ -246,6 +246,7 @@ function sendMessage() {
         }
         if (anonChat.enabled) {
             twitch.sendChatAdminMessage('You can\'t send messages when Anon Chat is enabled. Type /join or disable Anon Chat in options.');
+            this.set('room.messageToSend', '');
             return;
         }
         if (typeof result === 'string') this.set('room.messageToSend', result);

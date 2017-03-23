@@ -19,6 +19,7 @@ class SafeEventEmitter extends EventEmitter {
         const oldOnce = this.once;
         this.on = (type, listener) => oldOn.call(this, type, newListener.bind(this, listener));
         this.once = (type, listener) => oldOnce.call(this, type, newListener.bind(this, listener));
+        this.setMaxListeners(100);
     }
 }
 
