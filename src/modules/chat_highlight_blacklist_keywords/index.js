@@ -144,6 +144,7 @@ class ChatHighlightBlacklistKeywordsModule {
             this.loadPinnedHighlights();
         });
         watcher.on('chat.message', ($message, messageObj) => this.onMessage($message, messageObj));
+        watcher.on('conversation.message', ($message, messageObj) => this.onConverationMessage($message, messageObj));
         storage.on('changed.blacklistKeywords', computeBlacklistKeywords);
         storage.on('changed.highlightKeywords', computeHighlightKeywords);
 
@@ -179,6 +180,12 @@ class ChatHighlightBlacklistKeywordsModule {
         if (fromContainsKeyword(highlightUsers, from) || messageContainsKeyword(highlightKeywords, from, message)) {
             this.markHighlighted($message);
             if (tags && !tags.historical) this.pinHighlight({from, message, date});
+        }
+    }
+
+    onConverationMessage($message, {tags: {login}, body}) {
+        if (fromContainsKeyword(blacklistUsers, login) || messageContainsKeyword(blacklistKeywords, login, body)) {
+            return this.markBlacklisted($message);
         }
     }
 
