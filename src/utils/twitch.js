@@ -124,7 +124,7 @@ module.exports = {
 
         if (typeof msgObject.get === 'function') {
             const newObj = {};
-            ['from', 'date', 'deleted', 'color', 'labels', 'tags'].forEach(k => {
+            ['from', 'date', 'deleted', 'color', 'labels', 'tags', 'message'].forEach(k => {
                 newObj[k] = msgObject.get(k);
             });
             msgObject = newObj;
