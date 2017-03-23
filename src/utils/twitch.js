@@ -95,7 +95,9 @@ module.exports = {
     },
 
     sendChatAdminMessage(message) {
-        this.getCurrentChat().addMessage({
+        const currentChat = this.getCurrentChat();
+        if (!currentChat) return;
+        currentChat.addMessage({
             from: 'jtv',
             date: new Date(),
             style: 'admin',
