@@ -44,4 +44,9 @@
     }});
 
     debug.log(`BetterTTV v${debug.version} loaded.`);
+
+    window.BetterTTV = {
+        version: debug.version,
+        settings: require('./settings')
+    };
 })();

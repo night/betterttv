@@ -1,30 +1,33 @@
 const SafeEventEmitter = require('./utils/safe-event-emitter');
 const storage = require('./storage');
 
+const settings = {};
+
 class Settings extends SafeEventEmitter {
     constructor() {
         super();
-
-        this._settings = {};
     }
 
     add({id, name, description, defaultValue}) {
-        if (id in this._settings) {
+        if (id in settings) {
             throw new Error(`${id} is already a defined setting.`);
         }
 
-        this._settings[id] = {
+        settings[id] = {
             id,
             name,
             description,
             defaultValue
         };
 
-        this.emit('added', this._settings[id]);
+        this.emit('added', settings[id]);
     }
 
     getSettings() {
-        return this._settings;
+        return Object.values(settings)
+            .map(setting => Object.assign({
+                value: this.get(setting.id)
+            }, setting));
     }
 
     get(id) {
@@ -33,7 +36,7 @@ class Settings extends SafeEventEmitter {
             return value;
         }
 
-        const setting = this._settings[id];
+        const setting = settings[id];
         return setting ? setting.defaultValue : null;
     }
 
