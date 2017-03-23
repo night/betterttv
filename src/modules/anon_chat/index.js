@@ -16,8 +16,8 @@ class AnonChatModule {
 
         this.enabled = false;
         watcher.on('load.chat', () => this.load());
-        watcher.on('chat.message', ($el, emberView) => this.onMessage($el, emberView));
-        settings.on('changed.anonChat', () => this.load());
+        watcher.on('chat.message', ($el, msgObj) => this.onMessage($el, msgObj));
+        settings.on('changed.anonChat', () => this.load(true));
     }
 
     changeUser(username, message) {
@@ -25,7 +25,7 @@ class AnonChatModule {
         if (!tmiSession) return;
 
         const prodConn = tmiSession._connections.main;
-        if (prodConn._opts.nickname === username) return;
+        if (!prodConn || prodConn._opts.nickname === username) return;
 
         ignoreNextDC = true;
         prodConn._opts.nickname = username;
@@ -46,16 +46,16 @@ class AnonChatModule {
         this.enabled = false;
     }
 
-    load() {
+    load(force = false) {
         if (forcedURL || settings.get('anonChat')) {
             this.part();
-        } else {
+        } else if (force) {
             this.join();
         }
     }
 
-    onMessage($el, data) {
-        if (ignoreNextDC && data.message.includes('unable to connect to chat')) {
+    onMessage($el, {message}) {
+        if (ignoreNextDC && message && message.includes('unable to connect to chat')) {
             ignoreNextDC = false;
             $el.hide();
         }
