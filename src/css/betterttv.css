@@ -23,10 +23,6 @@ body.channel_new {
     border-radius: 0px;
 }
 
-.chat_line span, .chat-line .message span {
-    padding-right: 8px !important;
-}
-
 .chat-line .message .deleted {
     color: #6441a4;
 }
