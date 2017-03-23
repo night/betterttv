@@ -10,19 +10,6 @@ function request(method, path, options = {}) {
         const currentUser = twitch.getCurrentUser();
         const fullPath = `${path}${options.qs ? `?${querystring.stringify(options.qs)}` : ''}`;
 
-        // temp fix until twitch fixes cors
-        if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) {
-            method = method.toLowerCase().replace('delete', 'del');
-            window.Twitch
-                .api[method](fullPath, options.body, {
-                    headers: {Authorization: `OAuth ${currentUser.accessToken}`},
-                    version: 5
-                })
-                .done(data => resolve(data))
-                .fail(() => reject());
-            return;
-        }
-
         $.ajax({
             url: `${API_ENDPOINT}${fullPath}`,
             method,
@@ -31,9 +18,6 @@ function request(method, path, options = {}) {
             headers: {
                 'Client-ID': CLIENT_ID,
                 'Authorization': (options.auth && currentUser) ? `OAuth ${currentUser.accessToken}` : undefined
-            },
-            xhrFields: {
-                withCredentials: options.auth
             },
             timeout: 30000,
             success: data => resolve(data),
