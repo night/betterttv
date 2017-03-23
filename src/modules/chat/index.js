@@ -11,9 +11,9 @@ function formatChatUser({from, color, tags}) {
 
     return {
         id: tags['user-id'],
-        name: from,
+        name: tags.login || from,
         displayName: tags['display-name'],
-        color,
+        color: tags.color || color,
         mod: tags.mod,
         subscriber: tags.subscriber,
         badges: tags.badges
@@ -34,6 +34,7 @@ function hasNonASCII(message) {
 class ChatModule {
     constructor() {
         watcher.on('chat.message', ($element, message) => this.messageParser($element, message));
+        watcher.on('conversation.message', ($element, message) => this.messageParser($element, message));
     }
 
     calculateColor(color) {
@@ -84,12 +85,15 @@ class ChatModule {
         }
     }
 
-    messageParser($element, message) {
-        const color = this.calculateColor(message.color);
+    messageParser($element, messageObj) {
+        const user = formatChatUser(messageObj);
+        if (!user) return;
+
+        const color = this.calculateColor(user.color);
         const $from = $element.find('.from');
         $from.css('color', color);
 
-        const nickname = nicknames.get(message.from);
+        const nickname = nicknames.get(user.name);
         if (nickname) {
             $from.text(nickname);
         }
@@ -100,17 +104,15 @@ class ChatModule {
             $message.css('color', color);
         }
 
-        if (message.tags) {
-            if (
-                (modsOnly === true && !message.tags.mod) ||
-                (subsOnly === true && !message.tags.subscriber) ||
-                (asciiOnly === true && hasNonASCII(message.message))
-            ) {
-                $element.hide();
-            }
+        if (
+            (modsOnly === true && !user.mod) ||
+            (subsOnly === true && !user.subscriber) ||
+            (asciiOnly === true && hasNonASCII(messageObj.message))
+        ) {
+            $element.hide();
         }
 
-        this.emoticonize($message, formatChatUser(message));
+        this.emoticonize($message, user);
     }
 
     dismissPinnedCheer() {
