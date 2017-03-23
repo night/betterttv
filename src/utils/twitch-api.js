@@ -8,10 +8,9 @@ const CLIENT_ID = '6x8avioex0zt85ht6py4sq55z6avsea';
 function request(method, path, options = {}) {
     return new Promise((resolve, reject) => {
         const currentUser = twitch.getCurrentUser();
-        const fullPath = `${path}${options.qs ? `?${querystring.stringify(options.qs)}` : ''}`;
 
         $.ajax({
-            url: `${API_ENDPOINT}${fullPath}`,
+            url: `${API_ENDPOINT}${path}${options.qs ? `?${querystring.stringify(options.qs)}` : ''}`,
             method,
             dataType: 'json',
             data: options.body ? JSON.stringify(options.body) : undefined,
