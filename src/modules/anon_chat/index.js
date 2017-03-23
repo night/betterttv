@@ -55,7 +55,7 @@ class AnonChatModule {
     }
 
     onMessage($el, {message}) {
-        if (ignoreNextDC && message && message.includes('unable to connect to chat')) {
+        if (ignoreNextDC && message.includes('unable to connect to chat')) {
             ignoreNextDC = false;
             $el.hide();
         }
