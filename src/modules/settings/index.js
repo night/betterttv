@@ -173,7 +173,7 @@ class SettingsModule {
             $tab.parent('li').addClass('active');
         });
 
-        Object.values(settings.getSettings()).forEach(setting => addSetting(setting));
+        settings.getSettings().forEach(setting => addSetting(setting));
 
         // relies on Twitch jQuery.. may break
         // this should be cleaned up
