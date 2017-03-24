@@ -2325,6 +2325,11 @@ body.channel_new.columns.ember-application {
     display: none;
 }
 
+.chat-line .colon,
+.conversation-chat-line .colon {
+    margin-left: -3px;
+}
+
 .chat-line .bttv-deleted {
     opacity: 0.3;
 }
