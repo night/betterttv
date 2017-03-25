@@ -1,6 +1,7 @@
 const debug = require('./utils/debug');
 const twitch = require('./utils/twitch');
 const SafeEventEmitter = require('./utils/safe-event-emitter');
+const Raven = require('raven-js');
 const $ = require('jquery');
 
 let route = '';
@@ -13,6 +14,8 @@ const chatState = {
     r9k: 0,
     subsOnly: 0
 };
+const TEXTAREA_SELECTOR = '.textarea-contain';
+
 
 class Watcher extends SafeEventEmitter {
     constructor() {
@@ -195,7 +198,46 @@ class Watcher extends SafeEventEmitter {
             })
         );
 
+        let twitchSendMessage;
+
+        const emitSendMessage = sendState => this.emit('chat.send_message', sendState);
+
+        function bttvSendMessage() {
+            try {
+                let defaultPrevented = false;
+                const sendState = {
+                    user: twitch.getCurrentUser(),
+                    message: this.get('room.messageToSend'),
+                    preventDefault: () => (defaultPrevented = true)
+                };
+
+                emitSendMessage(sendState);
+
+                this.set('room.messageToSend', sendState.message);
+                if (defaultPrevented) return;
+            } catch (e) {
+                Raven.captureException(e);
+                debug.log(e);
+            }
+
+            twitchSendMessage.apply(this, arguments);
+        }
+
+        const patchSendMessage = () => {
+            const emberView = twitch.getEmberView($(TEXTAREA_SELECTOR).attr('id'));
+            if (!emberView) return;
+
+            const newTwitchSendMessage = emberView._actions.sendMessage;
+
+            // check if we've already monkeypatched
+            if (newTwitchSendMessage === bttvSendMessage) return;
+
+            emberView._actions.sendMessage = bttvSendMessage;
+            twitchSendMessage = newTwitchSendMessage;
+        };
+
         this.on('load.chat', () => observe(chatWatcher, $('.chat-room')[0]));
+        this.on('load.chat_settings', patchSendMessage);
     }
 
     conversationObserver() {

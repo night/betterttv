@@ -2,12 +2,8 @@ const $ = require('jquery');
 const watcher = require('../../watcher');
 const twitch = require('../../utils/twitch');
 const twitchAPI = require('../../utils/twitch-api');
-const debug = require('../../utils/debug');
 const chat = require('../chat');
 const anonChat = require('../anon_chat');
-const Raven = require('raven-js');
-
-const TEXTAREA_SELECTOR = '.textarea-contain';
 
 const HELP_TEXT = `BetterTTV Chat Commands:
 /b — Shortcut for /ban
@@ -234,46 +230,8 @@ function handleCommands(message) {
     return false;
 }
 
-let twitchSendMessage;
-
-function sendMessage() {
-    try {
-        const message = this.get('room.messageToSend');
-        const result = handleCommands(message);
-        if (result === false) {
-            this.set('room.messageToSend', '');
-            return;
-        }
-        if (anonChat.enabled) {
-            twitch.sendChatAdminMessage('You can\'t send messages when Anon Chat is enabled. Type /join or disable Anon Chat in options.');
-            this.set('room.messageToSend', '');
-            return;
-        }
-        if (typeof result === 'string') this.set('room.messageToSend', result);
-    } catch (e) {
-        Raven.captureException(e);
-        debug.log(e);
-    }
-
-    twitchSendMessage.apply(this, arguments);
-}
-
 class ChatCommands {
     constructor() {
-        watcher.on('load.chat_settings', () => this.load());
-    }
-
-    load() {
-        const emberView = twitch.getEmberView($(TEXTAREA_SELECTOR).attr('id'));
-        if (!emberView) return;
-
-        const newTwitchSendMessage = emberView._actions.sendMessage;
-
-        // check if we've already monkeypatched
-        if (newTwitchSendMessage === sendMessage) return;
-
-        emberView._actions.sendMessage = sendMessage;
-        twitchSendMessage = newTwitchSendMessage;
     }
 }
 
