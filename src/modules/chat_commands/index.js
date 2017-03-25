@@ -232,6 +232,19 @@ function handleCommands(message) {
 
 class ChatCommands {
     constructor() {
+        watcher.on('chat.send_message', sendState => this.handleSendMessage(sendState));
+    }
+
+    handleSendMessage(sendState) {
+        const result = handleCommands(sendState.message);
+        if (result === false) {
+            sendState.message = '';
+            sendState.preventDefault();
+        }
+
+        if (typeof result === 'string') {
+            sendState.message = result;
+        }
     }
 }
 
