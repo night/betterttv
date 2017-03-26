@@ -2171,6 +2171,7 @@ body.channel_new.columns.ember-application {
     background-color: inherit;
     font-weight: bold;
     color: white;
+    padding: 0;
 }
 
 #emote-menu-button {
