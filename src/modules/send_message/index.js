@@ -21,26 +21,26 @@ class SendState {
 }
 
 let twitchSendMessage;
-const moduleList = [
-    chatCommands,
-    anonChat,
-    emojis
+const methodList = [
+    chatCommands.onSendMessage,
+    anonChat.onSendMessage,
+    emojis.onSendMessage,
 ];
 
 function bttvSendMessage() {
-    try {
-        const sendState = new SendState(this.get('room.messageToSend'));
+    const sendState = new SendState(this.get('room.messageToSend'));
 
-        for (const module of moduleList) {
-            module.onSendMessage(sendState);
+    for (const method of methodList) {
+        try {
+            method(sendState);
+        } catch (e) {
+            Raven.captureException(e);
+            debug.log(e);
         }
-
-        this.set('room.messageToSend', sendState.message);
-        if (defaultPrevented) return;
-    } catch (e) {
-        Raven.captureException(e);
-        debug.log(e);
     }
+
+    this.set('room.messageToSend', sendState.message);
+    if (defaultPrevented) return;
 
     twitchSendMessage.apply(this, arguments);
 }
