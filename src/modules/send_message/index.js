@@ -3,6 +3,7 @@ const twitch = require('../../utils/twitch');
 const anonChat = require('../chat_commands');
 const chatCommands = require('../anon_chat');
 const emojis = require('../emotes/emojis');
+const watcher = require('../../watcher');
 
 class SendState {
     constructor(msg) {
@@ -46,7 +47,7 @@ function bttvSendMessage() {
 
 class SendMessagePatcher {
     constructor() {
-        this.on('load.chat_settings', () => patch());
+        watcher.on('load.chat_settings', () => this.patch());
     }
 
     patch() {

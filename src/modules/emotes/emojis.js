@@ -2,7 +2,6 @@ const emojilib = require('emojilib');
 const twemoji = require('twemoji');
 const blacklistedEmoji = require('../../utils/emoji-blacklist.json');
 const cdn = require('../../utils/cdn');
-const watcher = require('../../watcher');
 
 const AbstractEmotes = require('./abstract-emotes');
 const Emote = require('./emote');
