@@ -17,7 +17,6 @@ class AnonChatModule {
         this.enabled = false;
         watcher.on('load.chat', () => this.load());
         watcher.on('chat.message', ($el, msgObj) => this.onMessage($el, msgObj));
-        watcher.on('chat.send_message', sendState => this.onSendMessage(sendState));
         settings.on('changed.anonChat', () => this.load(true));
     }
 
@@ -63,7 +62,7 @@ class AnonChatModule {
     }
 
     onSendMessage(sendState) {
-        if (this.enabled && sendState.message.charAt(0) !== '/') {
+        if (this.enabled) {
             twitch.sendChatAdminMessage('You can\'t send messages when Anon Chat is enabled. Type /join or disable Anon Chat in options.');
             sendState.message = '';
             sendState.preventDefault();

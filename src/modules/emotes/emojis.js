@@ -26,7 +26,6 @@ class Emojis extends AbstractEmotes {
         super();
 
         this.loadEmojis();
-        watcher.on('chat.send_message', sendState => this.convertEmojis(sendState));
     }
 
     get provider() {
@@ -84,8 +83,8 @@ class Emojis extends AbstractEmotes {
             });
     }
 
-    convertEmojis(sendState) {
-        sendState.message =  sendState.message.split(' ').map(piece => {
+    onSendMessage(sendState) {
+        sendState.message = sendState.message.split(' ').map(piece => {
             if (piece.charAt(0) !== ':' || piece.charAt(piece.length - 1) !== ':') return piece;
             const emoji = emojilib.ordered[emojilib.ordered.indexOf(piece.replace(/:/g, ''))];
             if (!emoji || !emojilib.lib[emoji]) return piece;

@@ -1,5 +1,4 @@
 const $ = require('jquery');
-const watcher = require('../../watcher');
 const twitch = require('../../utils/twitch');
 const twitchAPI = require('../../utils/twitch-api');
 const chat = require('../chat');
@@ -231,11 +230,9 @@ function handleCommands(message) {
 }
 
 class ChatCommands {
-    constructor() {
-        watcher.on('chat.send_message', sendState => this.handleSendMessage(sendState));
-    }
+    constructor() {}
 
-    handleSendMessage(sendState) {
+    onSendMessage(sendState) {
         const result = handleCommands(sendState.message);
         if (result === false) {
             sendState.message = '';
