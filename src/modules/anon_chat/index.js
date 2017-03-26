@@ -64,7 +64,6 @@ class AnonChatModule {
     onSendMessage(sendState) {
         if (this.enabled) {
             twitch.sendChatAdminMessage('You can\'t send messages when Anon Chat is enabled. Type /join or disable Anon Chat in options.');
-            sendState.message = '';
             sendState.preventDefault();
         }
     }

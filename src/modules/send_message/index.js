@@ -17,6 +17,7 @@ class SendState {
 
     preventDefault() {
         this.defaultPrevented = true;
+        this.message = '';
     }
 }
 

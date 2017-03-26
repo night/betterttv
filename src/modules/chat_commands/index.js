@@ -235,7 +235,6 @@ class ChatCommands {
     onSendMessage(sendState) {
         const result = handleCommands(sendState.message);
         if (result === false) {
-            sendState.message = '';
             sendState.preventDefault();
         }
 
