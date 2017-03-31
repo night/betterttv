@@ -1,9 +1,13 @@
 const twitch = require('../../utils/twitch');
+const watcher = require('../../watcher');
+const debug = require('../../utils/debug');
+const Raven = require('raven-js');
 
 const anonChat = require('../chat_commands');
 const chatCommands = require('../anon_chat');
 const emojis = require('../emotes/emojis');
-const watcher = require('../../watcher');
+
+const TEXTAREA_SELECTOR = '.textarea-contain';
 
 class SendState {
     constructor(msg) {
@@ -23,9 +27,9 @@ class SendState {
 
 let twitchSendMessage;
 const methodList = [
-    chatCommands.onSendMessage,
-    anonChat.onSendMessage,
-    emojis.onSendMessage,
+    msgObj => chatCommands.onSendMessage(msgObj),
+    msgObj => anonChat.onSendMessage(msgObj),
+    msgObj => emojis.onSendMessage(msgObj),
 ];
 
 function bttvSendMessage() {
@@ -41,7 +45,7 @@ function bttvSendMessage() {
     }
 
     this.set('room.messageToSend', sendState.message);
-    if (defaultPrevented) return;
+    if (sendState.defaultPrevented) return;
 
     twitchSendMessage.apply(this, arguments);
 }
