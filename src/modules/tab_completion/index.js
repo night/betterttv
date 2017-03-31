@@ -34,6 +34,8 @@ class TabCompletionModule {
         this.suggestions = null;
         this.textSplit = ['', '', ''];
         this.userList = new Set();
+        this.messageHistory = [];
+        this.historyPos = -1;
 
         $('body').on('click focus', CHAT_TEXT_AREA, this.onFocus)
                  .on('click focus', CONVERSATION_TEXT_AREA, this.onFocus)
@@ -50,6 +52,11 @@ class TabCompletionModule {
         } else {
             this.userList.add(msg.from);
         }
+    }
+
+    onSendMessage(msgObj) {
+        this.messageHistory.unshift(msgObj.message);
+        this.historyPos = -1;
     }
 
     resetChannelData() {
@@ -108,6 +115,27 @@ class TabCompletionModule {
             $inputField.val(this.textSplit.join(''));
         } else if (keyCode !== keyCodes.Shift) {
             this.tabTries = -1;
+        }
+
+        // Message history
+        if (keyCode === keyCodes.UpArrow) {
+            if ($inputField[0].selectionStart > 0) return;
+            if (this.historyPos + 1 === this.messageHistory.length) return;
+            const prevMsg = this.messageHistory[++this.historyPos];
+            $inputField.val(prevMsg);
+            $inputField[0].setSelectionRange(0, 0);
+        } else if (keyCode === keyCodes.DownArrow) {
+            if ($inputField[0].selectionStart < $inputField.val().length) return;
+            if (this.historyPos > 0) {
+                const prevMsg = this.messageHistory[--this.historyPos];
+                $inputField.val(prevMsg);
+                $inputField[0].setSelectionRange(prevMsg.length, prevMsg.length);
+            } else {
+                this.historyPos = -1;
+                $inputField.val('');
+            }
+        } else if (this.historyPos >= 0) {
+            this.messageHistory[this.historyPos] = $inputField.val();
         }
     }
 

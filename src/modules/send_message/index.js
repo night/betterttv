@@ -5,6 +5,7 @@ const Raven = require('raven-js');
 
 const anonChat = require('../chat_commands');
 const chatCommands = require('../anon_chat');
+const tabCompletion = require('../tab_completion');
 const emojis = require('../emotes/emojis');
 
 const TEXTAREA_SELECTOR = '.textarea-contain';
@@ -27,6 +28,7 @@ class SendState {
 
 let twitchSendMessage;
 const methodList = [
+    msgObj => tabCompletion.onSendMessage(msgObj),
     msgObj => chatCommands.onSendMessage(msgObj),
     msgObj => anonChat.onSendMessage(msgObj),
     msgObj => emojis.onSendMessage(msgObj),
