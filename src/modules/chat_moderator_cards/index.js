@@ -142,6 +142,7 @@ class ChatCommands {
             const name = $target.text().trim().toLowerCase();
             this.createFromName(name, $target);
         }).on('click', '.chat-line span.from', e => {
+            if (e.detail > 1) return;
             e.stopImmediatePropagation();
             const $target = $(e.target);
             const messageObj = twitch.getChatMessageObject($target.closest('.chat-line')[0]);
