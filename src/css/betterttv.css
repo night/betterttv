@@ -1869,8 +1869,8 @@ body.channel_new.columns.ember-application {
 
 /* Emoji */
 .bttv-emoji {
-    height: 20px;
-    width: auto;
+    height: auto;
+    width: 20px;
     margin-bottom: -4px;
     display: inline-block;
 }
