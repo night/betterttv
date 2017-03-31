@@ -471,12 +471,12 @@ input.text:focus,select:focus,textarea:focus {
 }
 
 .swap-chat .ember-view .app-main.theatre #main_col {
-    margin-left: 340px;
+    margin-left: 340px !important;
     margin-right: 0;
 }
 
 .swap-chat .ember-view .app-main.theatre #main_col.expandRight {
-    margin-left: 0;
+    margin-left: 0 !important;
 }
 
 .swap-chat .ember-view .app-main.theatre #player[data-isfullscreen=true] {
