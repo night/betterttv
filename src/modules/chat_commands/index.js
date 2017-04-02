@@ -258,7 +258,7 @@ function sendMessage() {
     twitchSendMessage.apply(this, arguments);
 }
 
-class ChatCommands {
+class ChatCommandsModule {
     constructor() {
         watcher.on('load.chat_settings', () => this.load());
     }
@@ -277,4 +277,4 @@ class ChatCommands {
     }
 }
 
-module.exports = new ChatCommands();
+module.exports = new ChatCommandsModule();

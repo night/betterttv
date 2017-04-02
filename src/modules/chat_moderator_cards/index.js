@@ -130,7 +130,7 @@ function renderModeratorCard(user, $el) {
     jQuery(MODERATOR_CARD_SELECTOR).on('remove', () => $(user.messages).toggleClass('bttv-user-locate', false));
 }
 
-class ChatCommands {
+class ChatModeratorCardsModule {
     constructor() {
         watcher.on('load.chat', () => this.load());
     }
@@ -173,4 +173,4 @@ class ChatCommands {
     }
 }
 
-module.exports = new ChatCommands();
+module.exports = new ChatModeratorCardsModule();
