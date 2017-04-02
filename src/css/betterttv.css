@@ -986,7 +986,7 @@ input, textarea, select {
 #bvl-panel {
     min-width: 200px;
     min-height: 300px;
-    z-index: 99999;
+    z-index: 10;
     box-shadow: 0 0 0 1px rgba(0,0,0,0.25);
 }
 
