@@ -77,7 +77,7 @@ class TabCompletionModule {
                 const caretPos = $inputField[0].selectionStart;
                 const text = $inputField.val();
 
-                const start = (/[\(\)\w]+$/.exec(text.substr(0, caretPos)) || {index: caretPos}).index;
+                const start = (/[\:\(\)\w]+$/.exec(text.substr(0, caretPos)) || {index: caretPos}).index;
                 const end = caretPos + (/^\w+/.exec(text.substr(caretPos)) || [''])[0].length;
                 this.textSplit = [text.substring(0, start), text.substring(start, end), text.substring(end + 1)];
 

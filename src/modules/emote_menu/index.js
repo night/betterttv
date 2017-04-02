@@ -62,7 +62,7 @@ class EmoteMenuModule {
             debug.log('Hooking into Twitch Chat Emotes Script');
 
             window.emoteMenu.registerEmoteGetter('BetterTTV', () =>
-                emotes.getEmotes().map(({code, images, provider}) => {
+                emotes.getEmotes(['bttv-emoji']).map(({code, images, provider}) => {
                     return {
                         text: code,
                         channel: provider.displayName,

@@ -124,18 +124,10 @@ class BetterViewerListModule {
     }
 
     loadViewerList() {
-        if (viewList !== undefined && Date.now() - viewList.lastUpdate < 30 * 1000) {
-            return;
-        }
+        if (viewList && Date.now() - viewList.lastUpdate < 30 * 1000) return;
 
-        let tmi;
-        try {
-            tmi = App.__container__.lookup('controller:chat').currentRoom;
-            if (!tmi.tmiRoom) return;
-        } catch (e) {
-            debug.warning('Failed to load TMI in BVL');
-            return;
-        }
+        const tmi = twitch.getCurrentChat();
+        if (!tmi || !tmi.tmiRoom) return;
 
         const $oldList = $('#bvl-panel .viewer-list');
         $oldList.hide();
