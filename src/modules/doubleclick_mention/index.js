@@ -14,14 +14,14 @@ function clearSelection() {
 class DoubleClickMentionModule {
     constructor() {
         $('body').on('dblclick', '.chat-line span.from', e => {
-            console.log(e.target);
+            if (e.shiftKey || e.ctrlKey) return;
             clearSelection();
             chatModerationCards.close();
-            const username = e.target.innerText;
+            const user = e.target.innerText;
             const $inputField = $(CHAT_TEXT_AREA);
-            const inputContent = $inputField.val().trim();
-            $inputField.val(`${inputContent} @${username}`.trim());
-            $inputField.focus();
+            const input = $inputField.val().trim();
+            const output = input ? `${input} @${user} ` : `@${user}, `;
+            $inputField.val(output).focus();
         });
     }
 }
