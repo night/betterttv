@@ -2160,10 +2160,18 @@ body.channel_new.columns.ember-application {
     cursor: pointer;
 }
 
+.chat-container .ember-chat .chat-line .mentioning {
+    background-color: inherit;
+    font-weight: bold;
+    color: white;
+    padding: 0;
+}
+
 .chat-container .ember-chat .chat-line .mentioned {
     background-color: inherit;
     font-weight: bold;
     color: white;
+    padding: 0;
 }
 
 #emote-menu-button {
@@ -2425,6 +2433,15 @@ body.channel_new.columns.ember-application {
 /* Limit of 10 SoSnowy in a single message */
 .bttv-emo-567b5b520e984428652809b6:nth-of-type(n + 11) {
     display: none;
+}
+
+.chat-line .colon,
+.conversation-chat-line .colon {
+    margin-left: -3px;
+}
+
+.chat-line .undelete a {
+    text-decoration: none
 }
 
 .chat-line .bttv-deleted {
