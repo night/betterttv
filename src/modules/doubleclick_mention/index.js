@@ -1,6 +1,8 @@
 const $ = require('jquery');
+const watcher = require('../../watcher');
 const chatModerationCards = require('../chat_moderator_cards');
 
+const CHAT_ROOM_SELECTOR = '.chat-room';
 const CHAT_TEXT_AREA = '.ember-chat .chat-interface textarea';
 
 function clearSelection() {
@@ -13,7 +15,11 @@ function clearSelection() {
 
 class DoubleClickMentionModule {
     constructor() {
-        $('body').on('dblclick', '.chat-line span.from', e => {
+        watcher.on('load.chat', () => this.load());
+    }
+
+    load() {
+        $(CHAT_ROOM_SELECTOR).on('dblclick', '.chat-line span.from', e => {
             if (e.shiftKey || e.ctrlKey) return;
             clearSelection();
             chatModerationCards.close();
