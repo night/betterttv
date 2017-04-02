@@ -32,11 +32,6 @@ class Emojis extends AbstractEmotes {
         return provider;
     }
 
-    getEmotes() {
-        // We do not wish to show these in the emote picker
-        return [];
-    }
-
     loadEmojis() {
         Object.keys(emojilib.lib)
             .filter(key => {

@@ -33,9 +33,10 @@ class EmotesModule {
         });
     }
 
-    getEmotes() {
+    getEmotes(providerFilter = []) {
         let emotes = [];
         for (const provider of this.emoteProviders) {
+            if (providerFilter.includes(provider.provider.id)) continue;
             const currentUser = twitch.getCurrentUser();
             emotes = emotes.concat(
                 provider.getEmotes(currentUser)
