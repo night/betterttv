@@ -64,13 +64,13 @@ class TabCompletionModule {
         const keyCode = e.keyCode || e.which;
         if (e.ctrlKey) return;
 
-        if (settings.get('tabCompletionTooltip') === false) {
-            this.hideSuggestions();
-        }
-
         const $inputField = $(e.target);
         if (keyCode === keyCodes.Tab) {
             e.preventDefault();
+
+            if (settings.get('tabCompletionTooltip') === false) {
+                this.hideSuggestions();
+            }
 
             // First time pressing tab, split before and after the word
             if (this.tabTries === -1) {
