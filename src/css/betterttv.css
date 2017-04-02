@@ -2160,14 +2160,9 @@ body.channel_new.columns.ember-application {
     cursor: pointer;
 }
 
-.chat-container .ember-chat .chat-line .mentioning {
-    background-color: inherit;
-    font-weight: bold;
-    color: white;
-    padding: 0;
-}
-
+.chat-container .ember-chat .chat-line .mentioning,
 .chat-container .ember-chat .chat-line .mentioned {
+    cursor: pointer;
     background-color: inherit;
     font-weight: bold;
     color: white;

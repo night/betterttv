@@ -4,6 +4,7 @@ const chatModerationCards = require('../chat_moderator_cards');
 
 const CHAT_ROOM_SELECTOR = '.chat-room';
 const CHAT_TEXT_AREA = '.ember-chat .chat-interface textarea';
+const USERNAME_SELECTORS = '.chat-line span.from, .chat-line .mentioning, .chat-line .mentioned';
 
 function clearSelection() {
     if (document.selection && document.selection.empty) {
@@ -19,11 +20,11 @@ class DoubleClickMentionModule {
     }
 
     load() {
-        $(CHAT_ROOM_SELECTOR).on('dblclick', '.chat-line span.from', e => {
+        $(CHAT_ROOM_SELECTOR).on('dblclick', USERNAME_SELECTORS, e => {
             if (e.shiftKey || e.ctrlKey) return;
             clearSelection();
             chatModerationCards.close();
-            const user = e.target.innerText;
+            const user = e.target.innerText.replace('@', '');
             const $inputField = $(CHAT_TEXT_AREA);
             const input = $inputField.val().trim();
             const output = input ? `${input} @${user} ` : `@${user}, `;
