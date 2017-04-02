@@ -23,6 +23,10 @@ function closeModeratorCard() {
     jQuery(MODERATOR_CARD_SELECTOR).remove();
 }
 
+function isModeratorCardOpen() {
+    return jQuery(MODERATOR_CARD_SELECTOR).length > 0;
+}
+
 function toggleIgnore($modCard, value) {
     if (value === undefined) {
         value = $modCard.find('.mod-card-ignore .svg-unignore').css('display') === 'none';
@@ -132,6 +136,7 @@ function renderModeratorCard(user, $el) {
 
 class ChatModeratorCardsModule {
     constructor() {
+        this.user = null;
         watcher.on('load.chat', () => this.load());
     }
 
@@ -147,7 +152,8 @@ class ChatModeratorCardsModule {
             const $target = $(e.target);
             const messageObj = twitch.getChatMessageObject($target.closest('.chat-line')[0]);
             if (!messageObj) return;
-            const id = messageObj.tags['user-id'];
+            // If there is no id, the user must be yourself
+            const id = messageObj.tags['user-id'] || twitch.getCurrentUser().id;
             this.create(id, $target);
         });
     }
@@ -160,6 +166,7 @@ class ChatModeratorCardsModule {
                 // adds in user messages from chat
                 user.messages = getUserChatMessages(id);
                 renderModeratorCard(user, $el);
+                this.user = user;
             });
     }
 
@@ -168,8 +175,17 @@ class ChatModeratorCardsModule {
             .then(({users}) => users.length && this.create(users[0]._id, $el));
     }
 
+    getUser() {
+        return this.user;
+    }
+
+    isOpen() {
+        return isModeratorCardOpen() && this.user !== null;
+    }
+
     close() {
         closeModeratorCard();
+        this.user = null;
     }
 }
 
