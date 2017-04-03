@@ -3,6 +3,7 @@
 }
 .ember-chat .chat-room-list {
     padding-top: 0px !important;
+    display: none !important;
 }
 .ember-chat .chat-room {
     top: 0px !important;
