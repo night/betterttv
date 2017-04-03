@@ -1,5 +1,6 @@
 const watcher = require('../../watcher');
 const colors = require('../../utils/colors');
+const twitch = require('../../utils/twitch');
 const settings = require('../../settings');
 const emotes = require('../emotes');
 const nicknames = require('../chat_nicknames');
@@ -110,6 +111,16 @@ class ChatModule {
             (asciiOnly === true && hasNonASCII(messageObj.message))
         ) {
             $element.hide();
+        }
+
+        const $modIcons = $element.find('.mod-icons');
+        if ($modIcons.length) {
+            const userIsOwner = twitch.getUserIsOwnerFromTagsBadges(user.badges);
+            const userIsMod = twitch.getUserIsModeratorFromTagsBadges(user.badges);
+            const currentUserIsOwner = twitch.getCurrentUserIsOwner();
+            if ((userIsMod && !currentUserIsOwner) || userIsOwner) {
+                $modIcons.hide();
+            }
         }
 
         this.emoticonize($message, user);
