@@ -2535,74 +2535,6 @@ span.subscribe-text {
     color: #ffffff;
 }
 
-/* darken posts and popout posts */
-.activity-container .activity-card, .twitch_subwindow .activity-card {
-    border-color: rgb(30, 30, 30);
-}
-
-.activity-container .activity-card > div, .twitch_subwindow .activity-card > div {
-    background-color: rgb(30, 30, 30);
-}
-
-.activity-container .activity-card > div .activity-meta, .twitch_subwindow .activity-card > div .activity-meta {
-    box-shadow: inset 0 -1px 0 #333;
-}
-
-.activity-container .activity-card > div .activity-meta > *, .twitch_subwindow .activity-card > div .activity-meta > * {
-    color: #d3d3d3;
-}
-
-.activity-container .activity-card > div .activity-meta-divider:before, .twitch_subwindow .activity-card > div .activity-meta-divider:before {
-    background: #999;
-    border-color: #999;
-}
-.activity-container .activity-card > div .activity-meta-divider, .twitch_subwindow .activity-container .activity-card > div .activity-meta-divider {
-    box-shadow: inset 0 -1px 0 #999;
-}
-
-.activity-container .activity-card > div .activity-meta:before,
-.activity-container .activity-card > div .activity-react button,
-.activity-container .activity-card > div .balloon-wrapper .balloon,
-.activity-container .activity-card > div .balloon-wrapper .balloon:after,
-.twitch_subwindow .activity-card > div .activity-meta:before,
-.twitch_subwindow .activity-card > div .activity-react button,
-.twitch_subwindow .activity-card > div .balloon-wrapper .balloon,
-.twitch_subwindow .activity-card > div .balloon-wrapper .balloon:after {
-    border-color: #333;
-    background-color: #333;
-}
-
-.activity-container .activity-card > div .activity-react .activity-button--selected, .twitch_subwindow .activity-card > div .activity-react .activity-button--selected {
-    border-color: #14b866;
-    color: #14b866;
-}
-
-.activity-container .activity-card > div .balloon-wrapper .balloon a, .twitch_subwindow .activity-card > div .balloon-wrapper .balloon a {
-    color: #d3d3d3 !important;
-}
-
-.activity-container .activity-create, .twitch_subwindow .activity-create {
-    border: none;
-}
-
-.activity-container .activity-create > textarea, .twitch_subwindow .activity-create > textarea {
-    background-color: rgb(30, 30, 30);
-    color: #d3d3d3;
-}
-
-.activity-container .activity-create > div, .twitch_subwindow .activity-create > div {
-    background: #282828;
-    box-shadow: 0 -1px 0 #333;
-}
-
-.twitch_subwindow .activity-card .activity-card__comments a {
-    color: #D3D3D3;
-}
-
-.twitch_subwindow .activity-card .activity-card__comments .inherit-color:hover {
-    color: inherit;
-}
-
 /* chat replay */
 .chatReplay .loading-spinner-container {
     background: rgba(10,10,10,.85);
@@ -3445,40 +3377,40 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
     box-shadow: inset 0 -1px 0 #333, inset -1px 0 0 #333, inset 1px 0 0 #333;
 }
 
-.fp-container .activity-card {
+.activity-card {
     background-color: rgb(28, 28, 28);
     box-shadow: inset 0 0 0 1px #333;
 }
 
-.fp-container .activity-card__comments {
+.activity-card__comments {
     background-color: #282828;
     box-shadow: inset 0 -1px 0 #333, inset -1px 0 0 #333, inset 1px 0 0 #333
 }
 
-.fp-container .activity-meta__name {
+.activity-meta__name {
     color: #d3d3d3;
 }
 
-.fp-container .activity-meta__stamp {
+.activity-meta__stamp {
     color: #777;
 }
 
-.fp-container .activity-create {
+.activity-create {
     border-color: #333;
     background-color: rgb(25, 25, 25);
 }
 
-.fp-container .activity-create__textarea, .fp-container .activity-create__textarea:focus {
+.activity-create__textarea, .activity-create__textarea:focus {
     color: #d3d3d3;
     background: none;
     border-color: #333;
 }
 
-.fp-container .activity-create__actions {
+.activity-create__actions {
     background-color: #282828;
 }
 
-.fp-container .activity-button {
+.activity-button {
     background-color: #282828;
     border-color: #303030
 }
