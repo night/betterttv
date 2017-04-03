@@ -10,6 +10,8 @@ const emojis = require('../emotes/emojis');
 
 const TEXTAREA_SELECTOR = '.textarea-contain';
 
+const PATCHED_SENTINEL = () => {};
+
 class SendState {
     constructor(msg) {
         this.message = msg;
@@ -64,9 +66,10 @@ class SendMessagePatcher {
         const newTwitchSendMessage = emberView._actions.sendMessage;
 
         // check if we've already monkeypatched
-        if (newTwitchSendMessage === bttvSendMessage) return;
+        if (newTwitchSendMessage === bttvSendMessage || emberView._actions._bttvSendMessagePatched) return;
 
         emberView._actions.sendMessage = bttvSendMessage;
+        emberView._actions._bttvSendMessagePatched = PATCHED_SENTINEL;
         twitchSendMessage = newTwitchSendMessage;
     }
 }

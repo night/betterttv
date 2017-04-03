@@ -148,7 +148,7 @@ module.exports = {
     },
 
     getUserIsModeratorFromTagsBadges(badges) {
-        badges = badges.map(b => b.id);
+        badges = Array.isArray(badges) ? badges.map(b => b.id) : Object.keys(badges);
         return badges.includes('moderator') ||
                badges.includes('broadcaster') ||
                badges.includes('global_mod') ||
@@ -157,7 +157,7 @@ module.exports = {
     },
 
     getUserIsOwnerFromTagsBadges(badges) {
-        badges = badges.map(b => b.id);
+        badges = Array.isArray(badges) ? badges.map(b => b.id) : Object.keys(badges);
         return badges.includes('broadcaster') ||
                badges.includes('global_mod') ||
                badges.includes('admin') ||
