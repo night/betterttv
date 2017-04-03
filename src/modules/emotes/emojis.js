@@ -24,7 +24,6 @@ class Emojis extends AbstractEmotes {
     constructor() {
         super();
 
-        // TODO: we need to convert emoji codes to surrogates on message send
         this.loadEmojis();
     }
 
@@ -76,6 +75,15 @@ class Emojis extends AbstractEmotes {
                 this.emotes.set(emoji.char, emote);
                 this.emotes.set(code, emote);
             });
+    }
+
+    onSendMessage(sendState) {
+        sendState.message = sendState.message.split(' ').map(piece => {
+            if (piece.charAt(0) !== ':' || piece.charAt(piece.length - 1) !== ':') return piece;
+            const emoji = emojilib.ordered[emojilib.ordered.indexOf(piece.replace(/:/g, ''))];
+            if (!emoji || !emojilib.lib[emoji]) return piece;
+            return emojilib.lib[emoji].char;
+        }).join(' ');
     }
 }
 
