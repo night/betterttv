@@ -1,3 +1,3 @@
-.recommended-friends, .friend-list {
-    display: none;
+.recommended-friends, .friend-list, .sc-online-friends, .sc-search {
+    display: none !important;
 }
