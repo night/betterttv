@@ -19,9 +19,9 @@ class PersonalEmotes extends AbstractEmotes {
     constructor() {
         super();
 
-        // TODO: we need to plumb in broadcast me on message send
         socketClient.on('lookup_user', s => this.updatePersonalEmotes(s));
         watcher.on('load.chat', () => this.joinChannel());
+        watcher.on('conversation.new', $el => this.joinConversation($el));
     }
 
     get provider() {
@@ -58,6 +58,18 @@ class PersonalEmotes extends AbstractEmotes {
 
         joinedChannel = name;
         socketClient.joinChannel(name);
+    }
+
+    joinConversation($el) {
+        try {
+            const view = twitch.getEmberView($el.attr('id'));
+            const threadID = view.conversation.thread.id;
+            socketClient.joinChannel(threadID);
+
+            const currentUser = twitch.getCurrentUser();
+            const receiver = view.get('conversation.thread.participants').find(({id}) => id !== currentUser.id);
+            socketClient.broadcastMe(threadID, receiver.get('username'));
+        } catch (e) {}
     }
 
     updatePersonalEmotes({name, pro, emotes}) {
