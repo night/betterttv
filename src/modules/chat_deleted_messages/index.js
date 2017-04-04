@@ -20,14 +20,16 @@ function onClearChat(name, tags) {
                 const $el = $(this);
                 const view = twitch.getEmberView($el.attr('id'));
                 if (!view || !view.msgObject || !view.msgObject.tags) return;
-                if (view.msgObject.tags['user-id'] !== tags['target-user-id']) return;
+                if (view.msgObject.tags['user-id'] && view.msgObject.tags['user-id'] !== tags['target-user-id']) {
+                    return;
+                } else if (view.msgObject.from !== name) {
+                    return;
+                }
 
                 if (settings.get('hideDeletedMessages') === true) {
                     $el.hide();
                     return;
                 }
-
-                if (settings.get('showDeletedMessages') === false) return;
 
                 const $message = $el.find('.message');
                 if ($message.hasClass('bttv-deleted')) return;

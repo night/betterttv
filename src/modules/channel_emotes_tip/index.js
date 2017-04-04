@@ -2,20 +2,35 @@ const watcher = require('../../watcher');
 const api = require('../../utils/api');
 const debug = require('../../utils/debug');
 const twitch = require('../../utils/twitch');
+const html = require('../../utils/html');
 
 class ChannelEmotesTipModule {
     constructor() {
         this.sets = {};
+        this.ids = {};
 
-        this.updateEmoteSets();
+        this.updateEmoteLists();
         watcher.on('load.chat', () => this.checkEmoteSets());
     }
 
-    updateEmoteSets() {
+    updateEmoteLists() {
         api.get('emotes/sets')
             .then(({sets}) => {
                 this.sets = sets;
             });
+
+        api.get('emotes/ids')
+            .then(({ids}) => {
+                this.ids = ids;
+            });
+    }
+
+    getEmoteBalloon(id, code) {
+        const channel = this.ids[id];
+        return `
+            ${html.escape(code)}<br>
+            ${channel ? `Channel: ${html.escape(channel)}` : ''}
+        `;
     }
 
     checkEmoteSets() {

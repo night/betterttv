@@ -7,6 +7,7 @@ const anonChat = require('../chat_commands');
 const chatCommands = require('../anon_chat');
 const tabCompletion = require('../tab_completion');
 const emojis = require('../emotes/emojis');
+const socketClient = require('../../socket-client');
 
 const TEXTAREA_SELECTOR = '.textarea-contain';
 
@@ -37,6 +38,11 @@ const methodList = [
 ];
 
 function bttvSendMessage() {
+    const channel = twitch.getCurrentChannel();
+    if (channel) {
+        socketClient.broadcastMe(channel.name);
+    }
+
     const sendState = new SendState(this.get('room.messageToSend'));
 
     for (const method of methodList) {
