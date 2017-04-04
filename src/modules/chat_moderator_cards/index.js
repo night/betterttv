@@ -1,4 +1,5 @@
 const $ = require('jquery');
+const keyCodes = require('../../utils/keycodes');
 const twitch = require('../../utils/twitch');
 const twitchAPI = require('../../utils/twitch-api');
 const watcher = require('../../watcher');
@@ -7,6 +8,7 @@ const nicknames = require('../chat_nicknames');
 
 const CHAT_ROOM_SELECTOR = '.chat-room';
 const CHAT_LINE_SELECTOR = '.chat-room .chat-messages .chat-line';
+const CHAT_TEXT_AREA = '.ember-chat .chat-interface textarea';
 const MODERATOR_CARD_SELECTOR = '.moderation-card';
 const EMBER_CHAT_SELECTOR = '.ember-chat';
 
@@ -21,10 +23,6 @@ function getUserChatMessages(id) {
 
 function closeModeratorCard() {
     jQuery(MODERATOR_CARD_SELECTOR).remove();
-}
-
-function isModeratorCardOpen() {
-    return jQuery(MODERATOR_CARD_SELECTOR).length > 0;
 }
 
 function toggleIgnore($modCard, value) {
@@ -136,7 +134,6 @@ function renderModeratorCard(user, $el) {
 
 class ChatModeratorCardsModule {
     constructor() {
-        this.user = null;
         watcher.on('load.chat', () => this.load());
     }
 
@@ -166,7 +163,7 @@ class ChatModeratorCardsModule {
                 // adds in user messages from chat
                 user.messages = getUserChatMessages(id);
                 renderModeratorCard(user, $el);
-                this.user = user;
+                $('body').on('keydown.modCard', e => this.onKeyDown(e, user));
             });
     }
 
@@ -175,17 +172,44 @@ class ChatModeratorCardsModule {
             .then(({users}) => users.length && this.create(users[0]._id, $el));
     }
 
-    getUser() {
-        return this.user;
-    }
-
-    isOpen() {
-        return isModeratorCardOpen() && this.user !== null;
-    }
-
     close() {
+        $('body').off('keydown.modCard');
         closeModeratorCard();
-        this.user = null;
+    }
+
+    onKeyDown(e, user) {
+        if (e.shiftKey || e.ctrlKey) return;
+
+        const keyCode = e.keyCode || e.which;
+        const isMod = twitch.getCurrentUserIsModerator();
+
+        if (keyCode === keyCodes.Esc) {
+            this.close();
+        } else if (keyCode === keyCodes.t && isMod) {
+            twitch.sendChatMessage('/timeout ' + user.name);
+            this.close();
+        } else if (keyCode === keyCodes.p && isMod) {
+            twitch.sendChatMessage('/timeout ' + user.name + ' 1');
+            this.close();
+        } else if (keyCode === keyCodes.a && isMod) {
+            twitch.sendChatMessage('!permit ' + user.name);
+            this.close();
+        } else if (keyCode === keyCodes.u && isMod) {
+            twitch.sendChatMessage('/unban ' + user.name);
+            this.close();
+        } else if (keyCode === keyCodes.b && isMod) {
+            twitch.sendChatMessage('/ban ' + user.name);
+            this.close();
+        } else if (keyCode === keyCodes.i) {
+            twitch.sendChatMessage('/ignore ' + user.name);
+            this.close();
+        } else if (keyCode === keyCodes.w) {
+            e.preventDefault();
+            const $chatInput = $(CHAT_TEXT_AREA);
+            $chatInput.val('/w ' + user.name + ' ');
+            $chatInput.focus();
+            this.close();
+        }
     }
 }
 
