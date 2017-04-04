@@ -2,6 +2,7 @@ const $ = require('jquery');
 const debug = require('../../utils/debug');
 const settings = require('../../settings');
 const watcher = require('../../watcher');
+const twitch = require('../../utils/twitch');
 const bvlTemplates = require('./templates');
 const ViewList = require('view-list');
 const Resizable = require('resizable');
