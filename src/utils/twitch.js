@@ -147,6 +147,23 @@ module.exports = {
                badges.includes('staff');
     },
 
+    getUserIsModeratorFromTagsBadges(badges) {
+        badges = Array.isArray(badges) ? badges.map(b => b.id) : Object.keys(badges);
+        return badges.includes('moderator') ||
+               badges.includes('broadcaster') ||
+               badges.includes('global_mod') ||
+               badges.includes('admin') ||
+               badges.includes('staff');
+    },
+
+    getUserIsOwnerFromTagsBadges(badges) {
+        badges = Array.isArray(badges) ? badges.map(b => b.id) : Object.keys(badges);
+        return badges.includes('broadcaster') ||
+               badges.includes('global_mod') ||
+               badges.includes('admin') ||
+               badges.includes('staff');
+    },
+
     getUserIsIgnored(name) {
         const tmiSession = this.getCurrentTMISession();
         return tmiSession ? tmiSession.isIgnored(name) : false;
