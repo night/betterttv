@@ -4,6 +4,7 @@ const twitch = require('../../utils/twitch');
 const settings = require('../../settings');
 const emotes = require('../emotes');
 const nicknames = require('../chat_nicknames');
+const channelEmotesTip = require('../channel_emotes_tip');
 
 const EMOTE_STRIP_SYMBOLS_REGEX = /(^[~!@#$%\^&\*\(\)]+|[~!@#$%\^&\*\(\)]+$)/g;
 
@@ -62,7 +63,16 @@ class ChatModule {
         const tokens = $message.contents();
         for (let i = 0; i < tokens.length; i++) {
             const node = tokens[i];
-            if (node.nodeType !== window.Node.TEXT_NODE) continue;
+            if (node.nodeType === window.Node.ELEMENT_NODE && node.classList.contains('balloon-wrapper')) {
+                const $emote = $(node);
+                const $image = $emote.find('.emoticon');
+                const code = $image.attr('alt');
+                const id = ($image.attr('src').split('emoticons/v1/')[1] || '').split('/')[0];
+                $emote.find('.balloon').css('text-align', 'center').html(channelEmotesTip.getEmoteBalloon(id, code));
+                continue;
+            } else if (node.nodeType !== window.Node.TEXT_NODE) {
+                continue;
+            }
 
             const parts = node.data.split(' ');
             let modified = false;
