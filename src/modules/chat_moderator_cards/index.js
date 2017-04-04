@@ -1,4 +1,5 @@
 const $ = require('jquery');
+const keyCodes = require('../../utils/keycodes');
 const twitch = require('../../utils/twitch');
 const twitchAPI = require('../../utils/twitch-api');
 const watcher = require('../../watcher');
@@ -7,6 +8,7 @@ const nicknames = require('../chat_nicknames');
 
 const CHAT_ROOM_SELECTOR = '.chat-room';
 const CHAT_LINE_SELECTOR = '.chat-room .chat-messages .chat-line';
+const CHAT_TEXT_AREA = '.ember-chat .chat-interface textarea';
 const MODERATOR_CARD_SELECTOR = '.moderation-card';
 const EMBER_CHAT_SELECTOR = '.ember-chat';
 
@@ -130,7 +132,7 @@ function renderModeratorCard(user, $el) {
     jQuery(MODERATOR_CARD_SELECTOR).on('remove', () => $(user.messages).toggleClass('bttv-user-locate', false));
 }
 
-class ChatCommands {
+class ChatModeratorCardsModule {
     constructor() {
         watcher.on('load.chat', () => this.load());
     }
@@ -142,11 +144,13 @@ class ChatCommands {
             const name = $target.text().trim().toLowerCase();
             this.createFromName(name, $target);
         }).on('click', '.chat-line span.from', e => {
+            if (e.detail > 1) return;
             e.stopImmediatePropagation();
             const $target = $(e.target);
             const messageObj = twitch.getChatMessageObject($target.closest('.chat-line')[0]);
             if (!messageObj) return;
-            const id = messageObj.tags['user-id'];
+            // If there is no id, the user must be yourself
+            const id = messageObj.tags['user-id'] || twitch.getCurrentUser().id;
             this.create(id, $target);
         });
     }
@@ -159,6 +163,7 @@ class ChatCommands {
                 // adds in user messages from chat
                 user.messages = getUserChatMessages(id);
                 renderModeratorCard(user, $el);
+                $('body').on('keydown.modCard', e => this.onKeyDown(e, user));
             });
     }
 
@@ -168,8 +173,44 @@ class ChatCommands {
     }
 
     close() {
+        $('body').off('keydown.modCard');
         closeModeratorCard();
+    }
+
+    onKeyDown(e, user) {
+        if (e.shiftKey || e.ctrlKey) return;
+
+        const keyCode = e.keyCode || e.which;
+        const isMod = twitch.getCurrentUserIsModerator();
+
+        if (keyCode === keyCodes.Esc) {
+            this.close();
+        } else if (keyCode === keyCodes.t && isMod) {
+            twitch.sendChatMessage('/timeout ' + user.name);
+            this.close();
+        } else if (keyCode === keyCodes.p && isMod) {
+            twitch.sendChatMessage('/timeout ' + user.name + ' 1');
+            this.close();
+        } else if (keyCode === keyCodes.a && isMod) {
+            twitch.sendChatMessage('!permit ' + user.name);
+            this.close();
+        } else if (keyCode === keyCodes.u && isMod) {
+            twitch.sendChatMessage('/unban ' + user.name);
+            this.close();
+        } else if (keyCode === keyCodes.b && isMod) {
+            twitch.sendChatMessage('/ban ' + user.name);
+            this.close();
+        } else if (keyCode === keyCodes.i) {
+            twitch.sendChatMessage('/ignore ' + user.name);
+            this.close();
+        } else if (keyCode === keyCodes.w) {
+            e.preventDefault();
+            const $chatInput = $(CHAT_TEXT_AREA);
+            $chatInput.val('/w ' + user.name + ' ');
+            $chatInput.focus();
+            this.close();
+        }
     }
 }
 
-module.exports = new ChatCommands();
+module.exports = new ChatModeratorCardsModule();
