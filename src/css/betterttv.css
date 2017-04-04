@@ -471,12 +471,12 @@ input.text:focus,select:focus,textarea:focus {
 }
 
 .swap-chat .ember-view .app-main.theatre #main_col {
-    margin-left: 340px;
+    margin-left: 340px !important;
     margin-right: 0;
 }
 
 .swap-chat .ember-view .app-main.theatre #main_col.expandRight {
-    margin-left: 0;
+    margin-left: 0 !important;
 }
 
 .swap-chat .ember-view .app-main.theatre #player[data-isfullscreen=true] {
@@ -986,7 +986,7 @@ input, textarea, select {
 #bvl-panel {
     min-width: 200px;
     min-height: 300px;
-    z-index: 99999;
+    z-index: 10;
     box-shadow: 0 0 0 1px rgba(0,0,0,0.25);
 }
 
@@ -2160,14 +2160,9 @@ body.channel_new.columns.ember-application {
     cursor: pointer;
 }
 
-.chat-container .ember-chat .chat-line .mentioning {
-    background-color: inherit;
-    font-weight: bold;
-    color: white;
-    padding: 0;
-}
-
+.chat-container .ember-chat .chat-line .mentioning,
 .chat-container .ember-chat .chat-line .mentioned {
+    cursor: pointer;
     background-color: inherit;
     font-weight: bold;
     color: white;

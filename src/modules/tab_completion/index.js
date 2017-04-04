@@ -71,13 +71,13 @@ class TabCompletionModule {
         const keyCode = e.keyCode || e.which;
         if (e.ctrlKey) return;
 
-        if (settings.get('tabCompletionTooltip') === false) {
-            this.hideSuggestions();
-        }
-
         const $inputField = $(e.target);
         if (keyCode === keyCodes.Tab) {
             e.preventDefault();
+
+            if (settings.get('tabCompletionTooltip') === false) {
+                this.hideSuggestions();
+            }
 
             // First time pressing tab, split before and after the word
             if (this.tabTries === -1) {
@@ -107,7 +107,13 @@ class TabCompletionModule {
                 if (this.tabTries < 0) this.tabTries = this.suggestions.length + this.tabTries;
                 if (!this.suggestions[this.tabTries]) return;
 
-                const cursorPos = this.textSplit[0].length + this.suggestions[this.tabTries].length;
+                let cursorOffset = 0;
+                if (this.textSplit[2].trim() === '') {
+                    this.textSplit[2] = ' ';
+                    cursorOffset = 1;
+                }
+
+                const cursorPos = this.textSplit[0].length + this.suggestions[this.tabTries].length + cursorOffset;
                 $inputField.val(this.textSplit[0] + this.suggestions[this.tabTries] + this.textSplit[2]);
                 $inputField[0].setSelectionRange(cursorPos, cursorPos);
             }

@@ -229,7 +229,7 @@ function handleCommands(message) {
     return false;
 }
 
-class ChatCommands {
+class ChatCommandsModule {
     constructor() {}
 
     onSendMessage(sendState) {
@@ -244,4 +244,4 @@ class ChatCommands {
     }
 }
 
-module.exports = new ChatCommands();
+module.exports = new ChatCommandsModule();
