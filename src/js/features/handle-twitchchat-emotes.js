@@ -16,22 +16,22 @@ module.exports = function() {
 
     debug.log('Injecting Twitch Chat Emotes Script');
 
-    require('twitch-chat-emotes/script.min');
+    // require('twitch-chat-emotes/script.min');
 
     // Try hooking into the emote menu, regardless of whether we injected or not.
-    var counter = 0;
-    var getterInterval = setInterval(function() {
-        counter++;
+    // var counter = 0;
+    // var getterInterval = setInterval(function() {
+    //     counter++;
 
-        if (counter > 29) {
-            clearInterval(getterInterval);
-            return;
-        }
+    //     if (counter > 29) {
+    //         clearInterval(getterInterval);
+    //         return;
+    //     }
 
-        if (window.emoteMenu) {
-            clearInterval(getterInterval);
-            debug.log('Hooking into Twitch Chat Emotes Script');
-            window.emoteMenu.registerEmoteGetter('BetterTTV', bttv.chat.emotes);
-        }
-    }, 1000);
+    //     if (window.emoteMenu) {
+    //         clearInterval(getterInterval);
+    //         debug.log('Hooking into Twitch Chat Emotes Script');
+    //         window.emoteMenu.registerEmoteGetter('BetterTTV', bttv.chat.emotes);
+    //     }
+    // }, 1000);
 };
