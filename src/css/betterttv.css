@@ -163,7 +163,7 @@ input.text:focus,select:focus,textarea:focus {
     margin: 0px;
 }
 
-.ember-chat .badges .badge:last-child {
+.ember-chat .badges span:last-child .badge{
     margin-right: 5px;
 }
 
