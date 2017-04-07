@@ -22,6 +22,7 @@ function getUserChatMessages(id) {
 }
 
 function closeModeratorCard() {
+    $('body').off('keydown.modCard');
     jQuery(MODERATOR_CARD_SELECTOR).remove();
 }
 
@@ -173,12 +174,12 @@ class ChatModeratorCardsModule {
     }
 
     close() {
-        $('body').off('keydown.modCard');
         closeModeratorCard();
     }
 
     onKeyDown(e, user) {
-        if (e.shiftKey || e.ctrlKey) return;
+        if (e.ctrlKey || e.metaKey || e.shiftKey) return;
+        if ($('input, textarea, select').is(':focus')) return;
 
         const keyCode = e.keyCode || e.which;
         const isMod = twitch.getCurrentUserIsModerator();
