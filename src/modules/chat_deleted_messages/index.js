@@ -67,7 +67,7 @@ class ChatDeletedMessagesModule {
 
     patch() {
         const currentChat = twitch.getCurrentChat();
-        if (!currentChat.tmiRoom) return;
+        if (!currentChat || !currentChat.tmiRoom) return;
         const tmiRoom = currentChat.tmiRoom;
         const clearChatCallbacks = tmiRoom._events.clearchat;
         if (!clearChatCallbacks || !clearChatCallbacks[0]) return;
