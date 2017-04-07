@@ -2726,6 +2726,19 @@ ul.tabs li a:hover {
     color: #dfdfdf !important;
 }
 
+.offer-list .offer-item--title {
+    background-color: initial;
+    border-bottom: .1rem solid #333;
+}
+
+.offer-list .offer-item__new-count {
+    background-color: #111;
+}
+
+.offer-list .offer-item__background--gray {
+    background-color: initial;
+}
+
 .filter-bar__balloon-link--active {
     background-color: #0f0e11 !important;
 }
