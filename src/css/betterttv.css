@@ -2249,13 +2249,6 @@ body.channel_new.columns.ember-application {
     display: none;
 }
 
-/* Add hide button to past broadcast banner */
-.recent-past-broadcast__message_sub:after {
-    float: right;
-    content: "Hide";
-    cursor: pointer;
-}
-
 /* Prime Sub Reminder */
 .bttv-prime-sub-reminder::after {
     background: url(https://cdn.betterttv.net/assets/icons/badge-prime.svg);
