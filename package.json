@@ -38,7 +38,7 @@
     "require-globify": "^1.4.1",
     "resizable": "^1.2.0",
     "twemoji": "^2.2.5",
-    "twitch-chat-emotes": "github:night/Userscript--Twitch-Chat-Emotes#1fcd73bdfe491235506cecf3f32f56c2e06a31ff",
+    "twitch-chat-emotes": "github:cletusc/Userscript--Twitch-Chat-Emotes#8ecb15f5e08ee98fcafce0cc900b8d14c88cbd22",
     "uglify-save-license": "^0.4.1",
     "view-list": "^2.1.0",
     "vinyl-buffer": "^1.0.0",
