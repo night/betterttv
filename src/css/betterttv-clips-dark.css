@@ -194,9 +194,6 @@ body.dark {
     color: #d3d3d3;
 }
 
-/* .dark .nv-clip-content__meta h3
-    .dark .nv-clip-content__meta p, .dark .sub-text */
-
 /* remove shadow on player */
 .dark .nv-clip-content {
     box-shadow: none;
