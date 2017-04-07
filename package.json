@@ -32,7 +32,7 @@
     "request": "2.75.0",
     "resizable": "^1.2.0",
     "twemoji": "^2.2.0",
-    "twitch-chat-emotes": "github:cletusc/Userscript--Twitch-Chat-Emotes#5fbf5076906840216590435146fc0a8034c3d3e6",
+    "twitch-chat-emotes": "github:cletusc/Userscript--Twitch-Chat-Emotes#8ecb15f5e08ee98fcafce0cc900b8d14c88cbd22",
     "uglify-save-license": "^0.4.1",
     "view-list": "^2.1.0",
     "vinyl-buffer": "^1.0.0",
