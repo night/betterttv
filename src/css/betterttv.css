@@ -151,6 +151,7 @@ input.text:focus,select:focus,textarea:focus {
 
 .ember-chat .badges {
     display: inline-block;
+    margin-right: 2px;
 }
 
 .ember-chat .badges a {
@@ -159,12 +160,16 @@ input.text:focus,select:focus,textarea:focus {
 
 .ember-chat .badges .badge {
     float: none !important;
-    background-size: contain;
-    margin: 0px;
+    margin: 1px 0px 1px 4px;
 }
 
-.ember-chat .badges .badge:last-child {
-    margin-right: 5px;
+.ember-chat .badges, .ember-chat .mod-icons {
+    font-size: 0;
+    vertical-align: middle;
+}
+
+.ember-chat .chat-messages .timestamp, .ember-chat .mod-icons {
+    margin-right: 0;
 }
 
 .badges .oldbot {
@@ -1108,10 +1113,6 @@ input, textarea, select {
 .ember-chat .chat-messages {
     left: 0px;
     right: 0px;
-}
-
-.ember-chat .mod-icons, .ember-chat .chat-messages .timestamp {
-    margin-right: 0px;
 }
 
 .ember-chat {
