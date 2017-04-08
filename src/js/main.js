@@ -362,7 +362,14 @@ if (location.pathname.match(/^\/(.*)\/popout/)) {
     return;
 }
 
-if (bttv.storage.get('bttv_beta') === 'true') {
+var BETA_FORCED = false;
+var FORCE_PERCENT = 1;
+try {
+    var userData = window.Twitch.user.peek().userData;
+    BETA_FORCED = FORCE_PERCENT > 0 && parseInt(userData.id.toString().substr(-2), 10) <= FORCE_PERCENT - 1;
+} catch (e) {}
+
+if (bttv.storage.get('bttv_beta') === 'true' || BETA_FORCED === true) {
     debug.log('Launching BetterTTV beta');
     var beta = document.createElement('script');
     beta.setAttribute('src', 'https://beta.betterttv.net/betterttv.js');
