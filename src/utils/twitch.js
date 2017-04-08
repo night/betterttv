@@ -148,6 +148,7 @@ module.exports = {
     },
 
     getUserIsModeratorFromTagsBadges(badges) {
+        if (!badges) return false;
         badges = Array.isArray(badges) ? badges.map(b => b.id) : Object.keys(badges);
         return badges.includes('moderator') ||
                badges.includes('broadcaster') ||
@@ -157,6 +158,7 @@ module.exports = {
     },
 
     getUserIsOwnerFromTagsBadges(badges) {
+        if (!badges) return false;
         badges = Array.isArray(badges) ? badges.map(b => b.id) : Object.keys(badges);
         return badges.includes('broadcaster') ||
                badges.includes('global_mod') ||
@@ -170,7 +172,7 @@ module.exports = {
     },
 
     getCurrentUserIsOwner() {
-        if (!this.getCurrentChat()) return false;
+        if (!this.getCurrentChat() || !this.getCurrentUser()) return false;
         return this.getCurrentUser().id === this.getCurrentChannel().id;
     }
 };
