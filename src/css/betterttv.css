@@ -2332,5 +2332,6 @@ body.channel_new.columns.ember-application {
 }
 
 .chat-line .bttv-deleted {
-    opacity: 0.3;
+    cursor: pointer;
+    opacity: 0.5;
 }
