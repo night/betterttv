@@ -65,6 +65,7 @@ class ChatDeletedMessagesModule {
         });
         watcher.on('load.chat', () => this.patch());
         watcher.on('load.chat_settings', () => this.patch());
+        watcher.on('chat.message', ($el, msgObj) => this.checkDeleted($el, msgObj));
     }
 
     patch() {
@@ -79,6 +80,15 @@ class ChatDeletedMessagesModule {
         delete tmiRoom._events.clearchat;
         tmiRoom.on('clearchat', onClearChat);
         tmiRoom._bttvClearChatMonkeyPatched = true;
+    }
+
+    checkDeleted($el, msgObj) {
+        const $message = $el.find('.message');
+        const text = $message.text().trim();
+        if (text.includes('<deleted link>') && text !== msgObj.message) {
+            $message.click(() => $message.text(msgObj.message));
+            $message.addClass('bttv-deleted');
+        }
     }
 }
 
