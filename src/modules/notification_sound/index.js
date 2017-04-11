@@ -1,4 +1,5 @@
 const settings = require('../../settings');
+const cdn = require('../../utils/cdn');
 
 class NotificationSoundModule {
     constructor() {
@@ -15,13 +16,12 @@ class NotificationSoundModule {
 
     load() {
         if (settings.get('highlightFeedback') !== true) return;
-        this.sound = new Audio('https://cdn.betterttv.net/assets/sounds/ts-tink.ogg');
+        this.sound = new Audio(cdn.url('assets/sounds/ts-tink.ogg'));
     }
 
     play(ignoreFocus = false) {
         if (!ignoreFocus && document.hasFocus()) return;
         if (settings.get('highlightFeedback') !== true) return;
-        console.log(this.sound.paused);
         this.sound.pause();
         this.sound.currentTime = 0;
         this.sound.play();

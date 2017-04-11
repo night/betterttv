@@ -15,7 +15,7 @@ class HostButtonModule {
             description: 'Places a Host/Unhost button below the video player'
         });
         settings.on('changed.hostButton', value => value === true ? this.load() : this.unload());
-        watcher.on('load.channel', () => this.load());
+        watcher.on('load.chat', () => this.load());
     }
 
     load() {
@@ -29,7 +29,7 @@ class HostButtonModule {
 
     embedHostButton() {
         if ($('#bttv-host-button').length) return;
-        $hostButton = $('<button><span>Host</span></button>');
+        $hostButton = $('<button><span></span></button>');
         $hostButton.attr('id', 'bttv-host-button');
         $hostButton.addClass('button action button--hollow mg-l-1');
         $hostButton.insertAfter('#channel .cn-metabar__more .js-share-box');
@@ -64,20 +64,16 @@ class HostButtonModule {
         if (!currentChannel) return;
 
         const channelId = currentChannel.id;
+        const tmiSession = twitch.getCurrentTMISession();
+        if (!tmiSession) return;
 
-        let counter = 0;
-        const interval = setInterval(() => {
-            const tmiSession = twitch.getCurrentTMISession();
-            if (tmiSession || counter++ === 5) clearInterval(interval);
-            if (!tmiSession) return;
-            tmiSession._tmiApi
-                .get('/hosts', {host: userId})
-                .then(data => {
-                    if (!data.hosts || !data.hosts.length) return;
-                    hosting = data.hosts[0].target_id === channelId;
-                    this.updateHostButtonText();
-                });
-        }, 500);
+        tmiSession._tmiApi
+            .get('/hosts', {host: userId})
+            .then(data => {
+                if (!data.hosts || !data.hosts.length) return;
+                hosting = data.hosts[0].target_id === channelId;
+                this.updateHostButtonText();
+            });
     }
 
     unload() {

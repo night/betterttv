@@ -1,6 +1,7 @@
 const twitch = require('../../utils/twitch');
 const watcher = require('../../watcher');
 const settings = require('../../settings');
+const chat = require('../chat');
 const Raven = require('raven-js');
 
 let twitchClearChat;
@@ -38,8 +39,12 @@ function onClearChat(name, tags) {
                 });
 
                 if (!settings.get('showDeletedMessages')) {
+                    $message.addClass('bttv-click');
                     const $messageClone = $message.clone();
-                    $message.click(() => $message.replaceWith($messageClone));
+                    $message.click(() => {
+                        $message.replaceWith($messageClone);
+                        $message.removeClass('bttv-click');
+                    });
                     $message.text('<message deleted>');
                 }
             });
@@ -65,7 +70,6 @@ class ChatDeletedMessagesModule {
         });
         watcher.on('load.chat', () => this.patch());
         watcher.on('load.chat_settings', () => this.patch());
-        watcher.on('chat.message', ($el, msgObj) => this.checkDeleted($el, msgObj));
     }
 
     patch() {
@@ -80,15 +84,6 @@ class ChatDeletedMessagesModule {
         delete tmiRoom._events.clearchat;
         tmiRoom.on('clearchat', onClearChat);
         tmiRoom._bttvClearChatMonkeyPatched = true;
-    }
-
-    checkDeleted($el, msgObj) {
-        const $message = $el.find('.message');
-        const text = $message.text().trim();
-        if (text.includes('<deleted link>') && text !== msgObj.message) {
-            $message.click(() => $message.text(msgObj.message));
-            $message.addClass('bttv-deleted');
-        }
     }
 }
 

@@ -106,6 +106,7 @@ class GlobalCSSModule {
         playerService.playerComponent.player.addEventListener('theatrechange', state => {
             if (settings.get('darkenedMode') === true) return;
             settings.set('darkenedMode', state);
+            // Turn darkenedMode setting off again if needed but without emit
             if (state) settings.set('darkenedMode', false, false);
         });
     }
