@@ -151,25 +151,14 @@ input.text:focus,select:focus,textarea:focus {
 
 .ember-chat .badges {
     display: inline-block;
-    margin-right: 2px;
 }
 
 .ember-chat .badges a {
    text-decoration: none;
 }
 
-.ember-chat .badges .badge {
-    float: none !important;
-    margin: 1px 0px 1px 4px;
-}
-
 .ember-chat .badges, .ember-chat .mod-icons {
     font-size: 0;
-    vertical-align: middle;
-}
-
-.ember-chat .chat-messages .timestamp, .ember-chat .mod-icons {
-    margin-right: 0;
 }
 
 .badges .oldbot {
@@ -300,6 +289,8 @@ input.text:focus,select:focus,textarea:focus {
 .line .admin, .line .staff, .line .broadcaster, .line .mod, .line .turbo a, .line .subscriber a, .ember-chat .badges .badge, .ember-chat .badges .badge a {
     margin-bottom: 1px;
     border-radius: 2px;
+    margin-top: -8px;
+    float: none;
 }
 
 .line .tag.alpha, .ember-chat .badges .badge.alpha {
@@ -2071,7 +2062,7 @@ body.channel_new.columns.ember-application {
 
 /* twitch floats all chat elements */
 .chat-line .float-left {
-    float: none;
+    float: none !important;
 }
 
 /* custom timeouts */
