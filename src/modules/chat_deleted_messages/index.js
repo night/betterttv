@@ -1,7 +1,6 @@
 const twitch = require('../../utils/twitch');
 const watcher = require('../../watcher');
 const settings = require('../../settings');
-const chat = require('../chat');
 const Raven = require('raven-js');
 
 let twitchClearChat;
