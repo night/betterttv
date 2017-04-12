@@ -1,4 +1,5 @@
 const $ = require('jquery');
+const notificationSound = require('../notification_sound');
 const watcher = require('../../watcher');
 const settings = require('../../settings');
 const storage = require('../../storage');
@@ -11,10 +12,10 @@ const USER_REGEX = /\(.+?\)/g;
 const REPEATING_SPACE_REGEX = /\s\s+/g;
 
 const BLACKLIST_KEYWORD_PROMPT = `Type some blacklist keywords. Messages containing keywords will be filtered from your chat.
-        
+
 Use spaces in the field to specify multiple keywords. Place {} around a set of words to form a phrase, <> inside the {} to use exact search, and () around a single word to specify a username. Wildcards (*) are supported.`;
 const HIGHLIGHT_KEYWORD_PROMPT = `Type some highlight keywords. Messages containing keywords will turn red to get your attention.
-        
+
 Use spaces in the field to specify multiple keywords. Place {} around a set of words to form a phrase, <> inside the {} to use exact search, and () around a single word to specify a username. Wildcards (*) are supported.`;
 
 const CHAT_ROOM_SELECTOR = '.ember-chat .chat-room';
@@ -184,12 +185,14 @@ class ChatHighlightBlacklistKeywordsModule {
     }
 
     onConverationMessage($message, {tags: {login}, body}) {
+        if (login !== twitch.getCurrentUser().name) notificationSound.play();
         if (fromContainsKeyword(blacklistUsers, login) || messageContainsKeyword(blacklistKeywords, login, body)) {
             return this.markBlacklisted($message);
         }
     }
 
     markHighlighted($message) {
+        notificationSound.play();
         $message.addClass('highlight');
     }
 

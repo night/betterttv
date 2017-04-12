@@ -32,6 +32,9 @@ class GlobalCSSModule {
         });
         settings.on('changed.darkenedMode', value => value === true ? this.loadDark() : this.unloadDark());
         this.loadDark();
+
+        watcher.on('load.channel', () => this.attachTheatreListener());
+        watcher.on('load.vod', () => this.attachTheatreListener());
     }
 
     loadDark() {
@@ -95,6 +98,17 @@ class GlobalCSSModule {
 
     toggleLeftSideChat() {
         $('body').toggleClass('swap-chat', settings.get('leftSideChat'));
+    }
+
+    attachTheatreListener() {
+        const playerService = App.__container__.lookup('service:persistentPlayer');
+        if (!playerService || !playerService.playerComponent || !playerService.playerComponent.player) return;
+        playerService.playerComponent.player.addEventListener('theatrechange', state => {
+            if (settings.get('darkenedMode') === true) return;
+            settings.set('darkenedMode', state);
+            // Turn darkenedMode setting off again if needed but without emit
+            if (state) settings.set('darkenedMode', false, false);
+        });
     }
 }
 
