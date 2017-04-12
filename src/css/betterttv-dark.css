@@ -2735,8 +2735,13 @@ ul.tabs li a:hover {
     background-color: #111;
 }
 
-.offer-list .offer-item__background--gray {
+.offer-list .offer-item__background--gray,
+.offer-list .offer-item__background--purple {
     background-color: initial;
+}
+
+.offer-list .offer-list__core:after {
+    background-image: none;
 }
 
 .filter-bar__balloon-link--active {
