@@ -3349,3 +3349,7 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 .search-panel--fly:before, .search-panel--fly:after {
     border-bottom-color: #333;
 }
+
+.top-nav__menu .balloon {
+    box-shadow: 0px 0px 0 1px #282828
+}
