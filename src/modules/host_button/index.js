@@ -15,7 +15,7 @@ class HostButtonModule {
             description: 'Places a Host/Unhost button below the video player'
         });
         settings.on('changed.hostButton', value => value === true ? this.load() : this.unload());
-        watcher.on('load.channel', () => this.load());
+        watcher.on('load.chat', () => this.load());
     }
 
     load() {
@@ -64,7 +64,6 @@ class HostButtonModule {
         if (!currentChannel) return;
 
         const channelId = currentChannel.id;
-
         const tmiSession = twitch.getCurrentTMISession();
         if (!tmiSession) return;
 
