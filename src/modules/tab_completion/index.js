@@ -55,6 +55,7 @@ class TabCompletionModule {
     }
 
     onSendMessage(msgObj) {
+        if (msgObj.message.trim().length === 0) return;
         this.messageHistory.unshift(msgObj.message);
         this.historyPos = -1;
     }

@@ -2158,6 +2158,7 @@ body.channel_new.columns.ember-application {
     background-color: inherit;
     font-weight: bold;
     color: white;
+    margin-right: -3px;
     padding: 0;
 }
 
@@ -2424,6 +2425,11 @@ body.channel_new.columns.ember-application {
     text-decoration: none
 }
 
+.chat-line .bttv-click:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 .chat-line .bttv-deleted {
-    opacity: 0.3;
+    opacity: 0.5;
 }

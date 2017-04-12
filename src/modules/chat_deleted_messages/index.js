@@ -10,10 +10,6 @@ function onClearChat(name, tags) {
         return;
     }
 
-    if (settings.get('hideDeletedMessages') === false && settings.get('showDeletedMessages') === false) {
-        return twitchClearChat.call(twitchClearChat, ...arguments);
-    }
-
     try {
         $('.chat-line')
             .each(function() {
@@ -40,6 +36,16 @@ function onClearChat(name, tags) {
                     $unlinked.text($link.attr('href'));
                     $link.replaceWith($unlinked);
                 });
+
+                if (!settings.get('showDeletedMessages')) {
+                    $message.addClass('bttv-click');
+                    const $messageClone = $message.clone();
+                    $message.click(() => {
+                        $message.replaceWith($messageClone);
+                        $message.removeClass('bttv-click');
+                    });
+                    $message.text('<message deleted>');
+                }
             });
     } catch (e) {
         Raven.captureException(e);
