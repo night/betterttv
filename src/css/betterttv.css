@@ -2152,13 +2152,11 @@ body.channel_new.columns.ember-application {
     cursor: pointer;
 }
 
-.chat-container .ember-chat .chat-line .mentioning,
-.chat-container .ember-chat .chat-line .mentioned {
+.ember-chat .chat-line .mentioning,
+.ember-chat .chat-line .mentioned {
     cursor: pointer;
     background-color: inherit;
     font-weight: bold;
-    color: white;
-    margin-right: -3px;
     padding: 0;
 }
 
