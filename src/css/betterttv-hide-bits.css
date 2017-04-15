@@ -1,4 +1,4 @@
-.bits-helper-toggle, .bits-card, .bits-tag--container, .sticky-message--pinned-cheers, .js-bits-emote-image {
+.bits-helper-toggle, .bits-card, .bits-tag--container, .sticky-message--pinned-cheers, .js-bits-emote-image, .chat-line .badge[alt~=cheer] {
 	display: none !important;
 }
 

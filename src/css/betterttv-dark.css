@@ -944,6 +944,11 @@ div#site_header {
     color: #fff !important;
 }
 
+.ember-chat .chat-line .mentioning,
+.ember-chat .chat-line .mentioned {
+    color: white;
+}
+
 #main_col ul.nav.js-nav a.active {
     color: #D3D3D3 !important;
     border-color: #D3D3D3 !important;
@@ -2179,12 +2184,18 @@ span.subscribe-text {
     background: rgba(255,255,255,0.7) !important;
 }
 
-/* dark whispers (lenny face) */
-.chat-messages .chat-line.whisper {
-    background-color: #352645 !important; /* blue: #202236 */
+/* legacy dark whispers */
+.chat-messages .whisper-line.whisper-incoming,
+.chat-messages .whisper-line.whisper-outgoing {
+    background-color: #111 !important;
 }
-.chat-messages .chat-line .svg-whisper-arrow {
-    fill: #D3D3D3;
+
+.chat-messages .whisper-line .svg-whisper-arrow polyline {
+    fill: #D3D3D3 !important;
+}
+
+.ember-chat .chat-messages .whisper-line .message {
+    font-weight: normal;
 }
 
 /* channel state */
@@ -2735,8 +2746,13 @@ ul.tabs li a:hover {
     background-color: #111;
 }
 
-.offer-list .offer-item__background--gray {
+.offer-list .offer-item__background--gray,
+.offer-list .offer-item__background--purple {
     background-color: initial;
+}
+
+.offer-list .offer-list__core:after {
+    background-image: none;
 }
 
 .filter-bar__balloon-link--active {
@@ -3435,4 +3451,8 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 
 .search-panel--fly:before, .search-panel--fly:after {
     border-bottom-color: #333;
+}
+
+.balloon {
+    box-shadow: 0px 0px 0 1px #282828;
 }
