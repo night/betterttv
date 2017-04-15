@@ -526,6 +526,7 @@ input.text:focus,select:focus,textarea:focus {
     padding: 5px;
     border-top: 1px solid #111;
     box-sizing: content-box;
+    z-index: inherit;
 }
 
 #bttvSettingsPanel #footer a {
