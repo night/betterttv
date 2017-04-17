@@ -2371,6 +2371,29 @@ body.channel_new.columns.ember-application {
     text-align: center;
 }
 
+/* front page pulse/featured stream */
+.featured-only .fp-container__pulse {
+    display: none;
+}
+
+.featured-only .fp-container__side {
+    left: 30rem;
+    right: 30rem;
+}
+
+.pulse-only .fp-container__pulse {
+    margin: auto;
+}
+
+.pulse-only .fp-container__side {
+    display: none;
+}
+
+.bttv-frontpage-buttons {
+    margin: 5px 0 -25px 30px;
+    opacity: 0.5;
+}
+
 /*** Holiday 2016 BTTV emote CSS ***/
 
 /* No stacking of IceCube or SoSnowy */

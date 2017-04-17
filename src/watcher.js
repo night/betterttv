@@ -64,6 +64,9 @@ class Watcher extends SafeEventEmitter {
                     case 'loading':
                         break;
 
+                    case 'index':
+                        this.emit('load.frontpage');
+                        break;
                     case 'chat':
                         this.emit('load.chat');
                         break;
