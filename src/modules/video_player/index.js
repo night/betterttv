@@ -18,7 +18,7 @@ function handleKeyEvent(keyup) {
             $player.find('.js-control-fullscreen').click();
             break;
         case keyCodes.m:
-            $player.find('.js-control-volume').click();
+            $player.find('.player-button--volume').click();
             break;
     }
 }
