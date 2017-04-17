@@ -11,6 +11,15 @@ const CHAT_LINE_SELECTOR = '.chat-room .chat-messages .chat-line';
 const CHAT_TEXT_AREA = '.ember-chat .chat-interface textarea';
 const MODERATOR_CARD_SELECTOR = '.moderation-card';
 const EMBER_CHAT_SELECTOR = '.ember-chat';
+const USERNAME_SELECTORS = '.chat-line span.from, .chat-line .mentioning, .chat-line .mentioned';
+
+const STATES = {
+    CLOSED: 0,
+    OPENING: 1,
+    OPEN: 2,
+};
+
+let state = STATES.CLOSED;
 
 function getUserChatMessages(id) {
     return $.makeArray($(CHAT_LINE_SELECTOR))
@@ -24,6 +33,7 @@ function getUserChatMessages(id) {
 function closeModeratorCard() {
     $('body').off('keydown.modCard');
     jQuery(MODERATOR_CARD_SELECTOR).remove();
+    state = STATES.CLOSED;
 }
 
 function toggleIgnore($modCard, value) {
@@ -144,33 +154,53 @@ class ChatModeratorCardsModule {
             const $target = $(e.target);
             const name = $target.text().trim().toLowerCase();
             this.createFromName(name, $target);
-        }).on('click', '.chat-line span.from', e => {
+        }).on('click', USERNAME_SELECTORS, e => {
             if (e.detail > 1) return;
             e.stopImmediatePropagation();
             const $target = $(e.target);
-            const messageObj = twitch.getChatMessageObject($target.closest('.chat-line')[0]);
-            if (!messageObj) return;
-            // If there is no id, the user must be yourself
-            const id = messageObj.tags['user-id'] || twitch.getCurrentUser().id;
-            this.create(id, $target);
+            if ($target.hasClass('mentioning') || $target.hasClass('mentioned')) {
+                this.createFromName($target.text().toLowerCase(), $target);
+            } else {
+                const messageObj = twitch.getChatMessageObject($target.closest('.chat-line')[0]);
+                if (!messageObj) return;
+                // If there is no id, the user must be yourself
+                const id = messageObj.tags['user-id'] || twitch.getCurrentUser().id;
+                this.create(id, $target);
+            }
         });
     }
 
-    create(id, $el) {
+    create(id, $el, startTime) {
+        if (state === STATES.OPENING && !startTime) return;
+        state = STATES.OPENING;
+
+        startTime = startTime || Date.now();
+
         twitchAPI.get(`channels/${id}`)
             .then(user => {
-                user.id = user._id;
-                delete user._id;
-                // adds in user messages from chat
-                user.messages = getUserChatMessages(id);
-                renderModeratorCard(user, $el);
-                $('body').on('keydown.modCard', e => this.onKeyDown(e, user));
+                const elapsed = Date.now() - startTime;
+
+                setTimeout(() => {
+                    if (state === STATES.CLOSED) return;
+                    state = STATES.OPEN;
+                    user.id = user._id;
+                    delete user._id;
+                    // adds in user messages from chat
+                    user.messages = getUserChatMessages(id);
+                    renderModeratorCard(user, $el);
+                    $('body').on('keydown.modCard', e => this.onKeyDown(e, user));
+                }, elapsed < 250 ? 250 - elapsed : 0);
             });
     }
 
     createFromName(login, $el) {
+        if (state === STATES.OPENING) return;
+        state = STATES.OPENING;
+
+        const startTime = Date.now();
+
         twitchAPI.get('users', {qs: {login}})
-            .then(({users}) => users.length && this.create(users[0]._id, $el));
+            .then(({users}) => users.length && this.create(users[0]._id, $el, startTime));
     }
 
     close() {
