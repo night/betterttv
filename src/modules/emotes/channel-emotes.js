@@ -1,5 +1,4 @@
 const watcher = require('../../watcher');
-const api = require('../../utils/api');
 const mustacheFormat = require('../../utils/regex').mustacheFormat;
 const twitch = require('../../utils/twitch');
 const cdn = require('../../utils/cdn');
@@ -7,7 +6,6 @@ const cdn = require('../../utils/cdn');
 const AbstractEmotes = require('./abstract-emotes');
 const Emote = require('./emote');
 
-let channel = {};
 const provider = {
     id: 'bttv-channel',
     displayName: 'BetterTTV Channel Emotes',
@@ -18,27 +16,20 @@ class ChannelEmotes extends AbstractEmotes {
     constructor() {
         super();
 
-        watcher.on('load.chat', () => {
-            const currentChannel = twitch.getCurrentChannel();
-            if (!currentChannel) return;
-
-            if (currentChannel.id !== channel.id) {
-                channel = currentChannel;
-                this.updateChannelEmotes();
-            }
-        });
+        watcher.on('channel.updated', d => this.updateChannelEmotes(d));
     }
 
     get provider() {
         return provider;
     }
 
-    updateChannelEmotes() {
+    updateChannelEmotes({urlTemplate, emotes}) {
         this.emotes.clear();
 
-        api
-        .get(`channels/${channel.name}`)
-        .then(({urlTemplate, emotes}) => emotes.forEach(({id, code, imageType}) => {
+        const channel = twitch.getCurrentChannel();
+        if (!channel) return;
+
+        emotes.forEach(({id, code, imageType}) => (
             this.emotes.set(code, new Emote({
                 id,
                 provider: this.provider,
@@ -50,8 +41,8 @@ class ChannelEmotes extends AbstractEmotes {
                     '4x': mustacheFormat(urlTemplate, {id, image: '3x'})
                 },
                 imageType
-            }));
-        }));
+            }))
+        ));
     }
 }
 

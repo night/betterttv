@@ -1,3 +1,4 @@
+const api = require('./utils/api');
 const debug = require('./utils/debug');
 const twitch = require('./utils/twitch');
 const SafeEventEmitter = require('./utils/safe-event-emitter');
@@ -6,6 +7,7 @@ const $ = require('jquery');
 let route = '';
 let chatWatcher;
 let conversationWatcher;
+let channel = {};
 const chatState = {
     slow: 0,
     emoteOnly: 0,
@@ -23,6 +25,7 @@ class Watcher extends SafeEventEmitter {
     }
 
     load() {
+        this.channelObserver();
         this.chatObserver();
         this.conversationObserver();
         this.routeObserver();
@@ -215,6 +218,19 @@ class Watcher extends SafeEventEmitter {
         );
 
         this.on('load', () => observe(conversationWatcher, $('.conversations-content')[0]));
+    }
+
+    channelObserver() {
+        this.on('load.chat', () => {
+            const currentChannel = twitch.getCurrentChannel();
+            if (!currentChannel) return;
+
+            if (currentChannel.id === channel.id) return;
+            channel = currentChannel;
+            api
+                .get(`channels/${channel.name}`)
+                .then(d => this.emit('channel.updated', d));
+        });
     }
 }
 

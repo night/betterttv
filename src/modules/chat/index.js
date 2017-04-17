@@ -1,12 +1,22 @@
 const watcher = require('../../watcher');
 const colors = require('../../utils/colors');
 const twitch = require('../../utils/twitch');
+const api = require('../../utils/api');
+const cdn = require('../../utils/cdn');
 const settings = require('../../settings');
 const emotes = require('../emotes');
 const nicknames = require('../chat_nicknames');
 const channelEmotesTip = require('../channel_emotes_tip');
+const legacySubscribers = require('../legacy_subscribers');
 
 const EMOTE_STRIP_SYMBOLS_REGEX = /(^[~!@#$%\^&\*\(\)]+|[~!@#$%\^&\*\(\)]+$)/g;
+
+const badgeTemplate = (url, description) => `
+    <span class="balloon-wrapper float-left">
+        <img src="${url}" alt="${description}" class="badge">
+        <div class="balloon balloon--tooltip balloon--up">${description}</div>
+    </span>
+`;
 
 function formatChatUser({from, color, tags}) {
     if (!tags || from === 'jtv') return null;
@@ -22,6 +32,9 @@ function formatChatUser({from, color, tags}) {
     };
 }
 
+const staff = new Map();
+const globalBots = ['nightbot', 'moobot'];
+let channelBots = [];
 let asciiOnly = false;
 let subsOnly = false;
 let modsOnly = false;
@@ -37,14 +50,40 @@ class ChatModule {
     constructor() {
         watcher.on('chat.message', ($element, message) => this.messageParser($element, message));
         watcher.on('conversation.message', ($element, message) => this.messageParser($element, message));
+        watcher.on('channel.updated', ({bots}) => {
+            channelBots = bots;
+        });
+
+        api.get('badges').then(({types, badges}) => {
+            const staffBadges = {};
+            types.forEach(({name, description, svg}) => {
+                staffBadges[name] = {
+                    description,
+                    svg
+                };
+            });
+
+            badges.forEach(({name, type}) => staff.set(name, staffBadges[type]));
+        });
     }
 
     calculateColor(color) {
         return colors.calculateColor(color, settings.get('darkenedMode'));
     }
 
-    customBadges() {
+    customBadges($element, user) {
+        if ((globalBots.includes(user.name) || channelBots.includes(user.name)) && user.mod) {
+            $element.find('img.badge[alt="Moderator"]').attr('src', cdn.url('tags/bot.png')).attr('srcset', '');
+        }
 
+        const badge = staff.get(user.name);
+        if (badge) {
+            $element.find('.badges').append(badgeTemplate(badge.svg, badge.description));
+        }
+
+        if (legacySubscribers.hasSubscription(user.name)) {
+            $element.find('.badges').append(badgeTemplate(cdn.url('tags/subscriber.png'), 'Subscriber'));
+        }
     }
 
     asciiOnly(enabled) {
@@ -103,6 +142,13 @@ class ChatModule {
         const color = this.calculateColor(user.color);
         const $from = $element.find('.from');
         $from.css('color', color);
+
+        if (legacySubscribers.hasGlow(user.name) && settings.get('darkenedMode') === true) {
+            const rgbColor = colors.getRgb(color);
+            $from.css('text-shadow', `0 0 20px rgba(${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b}, 0.8)`);
+        }
+
+        this.customBadges($element, user);
 
         const nickname = nicknames.get(user.name);
         if (nickname) {
