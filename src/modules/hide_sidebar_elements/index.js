@@ -35,8 +35,10 @@ class HideSidebarElementsModule {
     togglePrimePromotions() {
         if (settings.get('hidePrimePromotion') === false) {
             $('.js-offers').show();
+            $('.top-nav__prime-anchor').show();
         } else {
             $('.js-offers').hide();
+            $('.top-nav__prime-anchor').hide();
         }
     }
 }
