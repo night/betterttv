@@ -31,6 +31,8 @@ class LegacySubscribersModule {
     }
 
     hasSubscription(name) {
+        const currentChannel = twitch.getCurrentChannel();
+        if (!currentChannel || currentChannel.name !== 'night') return false;
         const user = users.get(name);
         return user ? user.subscribed : false;
     }
