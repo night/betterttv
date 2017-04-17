@@ -173,10 +173,13 @@ class ChatHighlightBlacklistKeywordsModule {
         changeKeywords(HIGHLIGHT_KEYWORD_PROMPT, 'highlightKeywords');
     }
 
-    onMessage($message, {from, message, date, tags}) {
+    onMessage($message, {from, message, date, tags, style}) {
         if (fromContainsKeyword(blacklistUsers, from) || messageContainsKeyword(blacklistKeywords, from, message)) {
             return this.markBlacklisted($message);
         }
+
+        // no highlights on admin messages etc.
+        if (style) return;
 
         if (fromContainsKeyword(highlightUsers, from) || messageContainsKeyword(highlightKeywords, from, message)) {
             this.markHighlighted($message);

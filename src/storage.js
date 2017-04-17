@@ -87,7 +87,11 @@ class Storage extends SafeEventEmitter {
             return this._cache[id];
         }
 
-        return JSON.parse(this._localStorageSupport ? window.localStorage.getItem(id) : cookies.get(id));
+        try {
+            return JSON.parse(this._localStorageSupport ? window.localStorage.getItem(id) : cookies.get(id));
+        } catch (e) {
+            return null;
+        }
     }
 
     set(id, value, prefix = this._prefix, emit = true) {
