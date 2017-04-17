@@ -76,6 +76,9 @@ class SocketClientGW extends SafeEventEmitter {
 
             debug.log('SocketClientGW: Received event', evt);
 
+            // ignore unhandled error events
+            if (evt.name === 'error') return;
+
             this.emit(evt.name, evt.data);
         };
     }
