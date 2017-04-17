@@ -19,17 +19,19 @@ class FrontpageColumnsModule {
     }
 
     load() {
+        const $container = $('.fp-container');
+        if ($container.length === 0) return;
+
         $(CONTAINER_CLASS).prepend(BUTTONS_HTML);
         $('.bttv-fp-pulse-button').click(() => this.updateClass('pulse-only'));
         $('.bttv-fp-featured-button').click(() => this.updateClass('featured-only'));
         $('.bttv-fp-both-button').click(() => this.updateClass());
 
         const storedClass = settings.get('frontpageColumns');
-        if (storedClass) $('.fp-container').addClass(storedClass);
+        if (storedClass) $container.addClass(storedClass);
     }
 
     updateClass(newClass) {
-        console.log(newClass);
         const $container = $('.fp-container');
         $container.removeClass('pulse-only');
         $container.removeClass('featured-only');
