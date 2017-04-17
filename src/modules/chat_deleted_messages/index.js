@@ -47,6 +47,15 @@ function onClearChat(name, tags) {
                     $message.text('<message deleted>');
                 }
             });
+
+        // this is a gross hack to show timeout messages without us having to implement them
+        const currentChat = twitch.getCurrentChat();
+        if (!currentChat) return;
+        const tmiSession = currentChat.tmiSession;
+        const sessionNick = tmiSession.nickname;
+        tmiSession.nickname = ` ${sessionNick}`;
+        twitchClearChat.call(twitchClearChat, ` ${name}`, tags);
+        tmiSession.nickname = sessionNick;
     } catch (e) {
         Raven.captureException(e);
         twitchClearChat.call(twitchClearChat, ...arguments);
