@@ -904,6 +904,22 @@ exports.assignBadges = function(badges, data) {
         });
     }
 
+    if (data.tags && data.tags.badges && typeof(data.tags.badges.warcraft) !== undefined) {
+        if (!$('#bttv_misc_badges').length) {
+            var $style = $('<style />');
+            $style.attr('id', 'bttv_misc_badges');
+            $style.append('.badges .bttv-warcraft-alliance { background: url("https://static-cdn.jtvnw.net/badges/v1/c4816339-bad4-4645-ae69-d1ab2076a6b0/1"); background-size: 100%; }');
+            $style.append('.badges .bttv-warcraft-horde { background: url("https://static-cdn.jtvnw.net/badges/v1/de8b26b6-fd28-4e6c-bc89-3d597343800d/1"); background-size: 100%; }');
+            $style.appendTo('head');
+        }
+
+        bttvBadges.push({
+            type: 'bttv-warcraft-' + data.tags.badges.warcraft.toLowerCase(),
+            name: 'alliance',
+            description: (data.tags.badges.warcraft === 'alliance' ? 'Alliance' : 'Horde')
+        });
+    }
+
     bttvBadges.forEach(function(badge) {
         if (
             bttv.settings.get('showJTVTags') === false &&

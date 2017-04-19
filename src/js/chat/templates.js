@@ -13,7 +13,7 @@ var badge = exports.badge = function(type, name, description, action) {
 };
 
 var badges = exports.badges = function(badgeList) {
-    var resp = '<span class="badges">';
+    var resp = '<span class="badges float-left">';
     badgeList.forEach(function(data) {
         resp += badge(data.type, data.name, data.description, data.clickAction);
     });
@@ -30,7 +30,7 @@ var from = exports.from = function(name, color) {
 };
 
 var timestamp = exports.timestamp = function(time) {
-    return '<span class="timestamp"><small>' + time + '</small></span>';
+    return '<span class="timestamp float-left"><small>' + time + '</small></span>';
 };
 
 var modicons = exports.modicons = function() {
