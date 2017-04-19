@@ -363,7 +363,7 @@ if (location.pathname.match(/^\/(.*)\/popout/)) {
 }
 
 var BETA_FORCED = false;
-var FORCE_PERCENT = 1;
+var FORCE_PERCENT = 10;
 try {
     var userData = window.Twitch.user.peek().userData;
     BETA_FORCED = FORCE_PERCENT > 0 && parseInt(userData.id.toString().substr(-2), 10) <= FORCE_PERCENT - 1;
