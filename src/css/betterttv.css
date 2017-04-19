@@ -23,10 +23,6 @@ body.channel_new {
     border-radius: 0px;
 }
 
-.chat-line .message .deleted {
-    color: #6441a4;
-}
-
 #metagame a {
     color: white !important;
 }
@@ -2348,5 +2344,10 @@ body.channel_new.columns.ember-application {
 }
 
 .chat-line .bttv-deleted {
+    opacity: 0.75;
+}
+
+.chat-line .bttv-deleted.bttv-click {
     opacity: 0.5;
 }
+
