@@ -138,7 +138,7 @@ module.exports = function(event) {
                 var matches = /\s([0-9]+)/.exec(event.message);
                 if (!matches) return;
 
-                var seconds = parseInt(matches[1], 10);
+                var seconds = parseInt(matches[0], 10);
                 initiateCountDown(seconds);
             } else if (msg === 'msg_banned') {
                 initiateCountDown(86400);
