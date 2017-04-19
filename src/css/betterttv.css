@@ -153,8 +153,12 @@ input.text:focus,select:focus,textarea:focus {
    text-decoration: none;
 }
 
-.ember-chat .badges, .ember-chat .mod-icons {
+.ember-chat .badges {
     font-size: 0;
+}
+
+.ember-chat .mod-icons {
+    margin-right: 0;
 }
 
 .badges .oldbot {
