@@ -36,6 +36,14 @@ ChatReplay.prototype.connect = function() {
                     this.messageParser(el);
                 }
             }
+
+            var chatLines = $('.chat-line');
+            var scrollBackAmount = bttv.settings.get('scrollbackAmount');
+            if (scrollBackAmount < 100 && chatLines.length > scrollBackAmount) {
+                for (var line = 0; line < (chatLines.length - scrollBackAmount); line++) {
+                    chatLines[line].remove();
+                }
+            }
         }.bind(this));
     }.bind(this));
 
