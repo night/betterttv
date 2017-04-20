@@ -2350,11 +2350,8 @@ body.channel_new.columns.ember-application {
     cursor: pointer;
 }
 
-.chat-line .bttv-deleted {
-    opacity: 0.75;
-}
-
 .chat-line .bttv-deleted.bttv-click {
     opacity: 0.5;
+    text-decoration: none;
 }
 
