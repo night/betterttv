@@ -21,6 +21,15 @@ const badgeTemplate = (url, description) => `
 function formatChatUser({from, color, tags}) {
     if (!tags || from === 'jtv') return null;
 
+    if (typeof from !== 'string') {
+        return {
+            id: from.get('id'),
+            name: from.get('username'),
+            displayName: from.get('displayName'),
+            color: from.get('color')
+        };
+    }
+
     return {
         id: tags['user-id'],
         name: tags.login || from,
