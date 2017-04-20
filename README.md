@@ -67,7 +67,7 @@ For Firefox, you can add an exception to Firefox:
 In order to receive debug messages inside the browser's console log, you must toggle the consoleLog localStorage setting.
 
 Type this in the JavaScript console to enable console logging:
-```
+```js
 BetterTTV.settings.save('consoleLog', true);
 ```
 
