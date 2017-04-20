@@ -306,6 +306,7 @@ exports.clearChat = function(bttvRoom, user, info, pubsub) {
             (bttv.settings.get('showDeletedMessages') !== true && bttvRoom.delay && !isMod && !isTarget)
         ) {
             $chatLines.each(function() {
+                store.__messageQueue.pop();
                 $(this).hide();
                 $('div.tipsy').remove();
             });
