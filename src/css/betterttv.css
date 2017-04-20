@@ -153,12 +153,16 @@ input.text:focus,select:focus,textarea:focus {
    text-decoration: none;
 }
 
-.ember-chat .badges {
-    font-size: 0;
+.ember-chat .badges span:last-child .badge {
+    margin-right: 3px;
 }
 
 .ember-chat .mod-icons {
     margin-right: 0;
+}
+
+.ember-chat .mod-icons .mod-icon {
+    margin: -4px 0 0 -2px;
 }
 
 .badges .oldbot {
@@ -287,9 +291,8 @@ input.text:focus,select:focus,textarea:focus {
 }
 
 .line .admin, .line .staff, .line .broadcaster, .line .mod, .line .turbo a, .line .subscriber a, .ember-chat .badges .badge, .ember-chat .badges .badge a {
-    margin-bottom: 1px;
     border-radius: 2px;
-    margin-top: -8px;
+    margin: -4px 0 0 0;
     float: none;
 }
 
