@@ -2,6 +2,7 @@ const $ = require('jquery');
 const cdn = require('../../utils/cdn');
 const css = require('../../utils/css');
 const settings = require('../../settings');
+const storage = require('../../storage');
 const watcher = require('../../watcher');
 
 class GlobalCSSModule {
@@ -107,7 +108,7 @@ class GlobalCSSModule {
             if (settings.get('darkenedMode') === true) return;
             settings.set('darkenedMode', state);
             // Turn darkenedMode setting off again if needed but without emit
-            if (state) settings.set('darkenedMode', false, false);
+            if (state) storage.set('darkenedMode', false, undefined, false, false);
         });
     }
 }
