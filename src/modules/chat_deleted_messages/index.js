@@ -91,6 +91,7 @@ class ChatDeletedMessagesModule {
         delete tmiRoom._events.clearchat;
         tmiRoom.on('clearchat', onClearChat);
         tmiRoom._bttvClearChatMonkeyPatched = true;
+        currentChat.set('roomProperties.hide_chat_links', false);
     }
 }
 
