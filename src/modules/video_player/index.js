@@ -60,7 +60,7 @@ class VideoPlayerModule {
             const controller = window.App && window.App.__container__.lookup('controller:channel');
             if (!controller || !controller.model || $('.player-viewer-count').length) return;
 
-            $('div.player-livestatus').append('<span class="player-viewer-count"></span>');
+            $('div.player-streamstatus').append('<span class="player-viewer-count"></span>');
             controller.model.addObserver('stream.viewers', (model, key) => {
                 const viewers = model.get(key);
                 if (!viewers) return;
