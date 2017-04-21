@@ -38,11 +38,10 @@ function onClearChat(name, tags) {
                 });
 
                 if (!settings.get('showDeletedMessages')) {
-                    $message.addClass('bttv-click');
                     const $messageClone = $message.clone();
+                    $message.addClass('bttv-click');
                     $message.click(() => {
                         $message.replaceWith($messageClone);
-                        $message.removeClass('bttv-click');
                     });
                     $message.text('<message deleted>');
                 }
