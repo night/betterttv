@@ -179,7 +179,7 @@ class ChatHighlightBlacklistKeywordsModule {
         }
 
         // no highlights on admin messages etc.
-        if (style) return;
+        if (style && style !== 'action') return;
 
         if (fromContainsKeyword(highlightUsers, from) || messageContainsKeyword(highlightKeywords, from, message)) {
             this.markHighlighted($message);
