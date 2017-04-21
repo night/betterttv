@@ -94,13 +94,15 @@ class Storage extends SafeEventEmitter {
         }
     }
 
-    set(id, value, prefix = this._prefix, emit = true) {
+    set(id, value, prefix = this._prefix, emit = true, cache = true) {
         let storageId = id;
         if (prefix) {
             storageId = prefix + id;
         }
 
-        this._cache[storageId] = value;
+        if (cache) {
+            this._cache[storageId] = value;
+        }
 
         if (emit) {
             this.emit(`changed.${id}`, value);
