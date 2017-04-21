@@ -3272,6 +3272,10 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
     background: #111;
 }
 
+.chat-chip .card__info {
+    color: #777;
+}
+
 /* social layout */
 .theme--dark .social-column {
     background-color: rgb(30,30,30);
