@@ -3019,7 +3019,7 @@ ul.tabs li>a:hover, .directory_header .nav li>a:hover, ul.tabs li>button:hover, 
     color: #999;
 }
 
-#channel .card__info {
+.js-directory .card__info {
     color: #666;
 }
 
