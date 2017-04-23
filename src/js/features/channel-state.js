@@ -5,6 +5,8 @@ var stateContainer = '#bttv-channel-state-contain';
 var chatHeader = '.chat-container .chat-header:first';
 var chatButton = '.chat-interface .chat-buttons-container .js-chat-buttons__submit';
 
+var secondsToLength = require('../helpers/time').secondsToLength;
+
 var displaySeconds = function(s) {
     var date = new Date(0);
     date.setSeconds(s);
@@ -77,7 +79,7 @@ module.exports = function(event) {
 
                 $stateContainer
                     .find('.slow-time')
-                    .attr('original-title', length + ' seconds')
+                    .attr('original-title', secondsToLength(length))
                     .text(displaySeconds(length));
 
                 if (length === 0) {
