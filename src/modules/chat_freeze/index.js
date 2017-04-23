@@ -37,11 +37,11 @@ class ChatFreezeModule {
     }
 
     load() {
-        $(CHAT_CONTAINER).on('mousewheel', e => {
+        $(CHAT_CONTAINER).on('mousewheel', ({originalEvent}) => {
             const indicator = $('.more-messages-indicator').length > 0;
-            if (e.originalEvent.wheelDelta > 0 && !indicator) {
+            if (originalEvent.wheelDelta > 0 && !indicator) {
                 setScrollState(false);
-            } else if (e.originalEvent.wheelDelta < 0 && indicator) {
+            } else if (originalEvent.wheelDelta < 0 && indicator) {
                 const $chatContent = $('.chat-messages .tse-content');
                 const $chatScroller = $('.chat-messages .tse-scroll-content');
                 if ($chatContent.offset().top + $chatContent.height() - $chatScroller.height() < 200) {
