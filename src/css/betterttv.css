@@ -1964,6 +1964,20 @@ body.channel_new.columns.ember-application {
     margin-bottom: 5px;
 }
 
+/* chat hover balloon */
+.chat-line .balloon {
+    pointer-events: none;  /* Disable hovering on tooltip itself */
+    color: white;
+    background-color: black;
+    padding: 4px 6px;
+    margin-bottom: 8px;
+    opacity: 0.8;
+}
+
+.chat-line .balloon:after {
+    background-color: black;
+}
+
 /* whispers */
 .chat-messages .chat-line.whisper {
     background-color: #E8D6FF !important;
