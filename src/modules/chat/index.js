@@ -139,6 +139,9 @@ class ChatModule {
             let modified = false;
             for (let j = 0; j < parts.length; j++) {
                 const part = parts[j];
+                if (!part || typeof part !== 'string') {
+                    continue;
+                }
 
                 const mention = part.match(MENTION_REGEX);
                 if (part.length > 2 && part.charAt(0) === '@' && mention && mention[1]) {

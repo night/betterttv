@@ -17,9 +17,16 @@
                     'Blocked a frame with origin',
                     'player-core-min',
                     'InvalidAccessError',
+                    'wrapped(betterttv)',
+                    'Access is denied.',
                     /^<anonymous> in/,
                     /^null$/,
-                    /^undefined$/
+                    /^undefined$/,
+                    // Users that have broken jQuery
+                    'this.dom.draggable is not a function',
+                    'Cannot read property \'autoNS\' of undefined',
+                    'jQuery(...).tipsy is not a function',
+                    'jQuery(...).draggable is not a function'
                 ],
                 whitelistUrls: [
                     /betterttv\.js/,
