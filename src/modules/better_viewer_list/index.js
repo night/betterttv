@@ -209,15 +209,13 @@ class BetterViewerListModule {
         const $panel = jQuery(bvlTemplates.panel)
             .draggable({
                 handle: '.drag_handle',
-                containment: 'body',
+                containment: '.app-body',
                 stop: (ev, ui) => {
                     if (ui.offset.top < 0) {
-                        ui.position.top -= ui.offset.top;
-                        ui.helper.css('top', ui.position.top);
+                        ui.helper.css('top', 0);
                     }
                     if (ui.offset.left < 0) {
-                        ui.position.left -= ui.offset.left;
-                        ui.helper.css('left', ui.position.left);
+                        ui.helper.css('left', 0);
                     }
                 }
             });

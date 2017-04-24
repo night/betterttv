@@ -1,5 +1,7 @@
 const settings = require('../../settings');
 
+const PREVIEW_SELECTOR = '#directory-list .js-streams figure.card__img a';
+
 class DirectoryPreviewModule {
     constructor() {
         settings.add({
@@ -18,7 +20,7 @@ class DirectoryPreviewModule {
         // relies on Twitch jQuery
         try {
             jQuery('body')
-                .on('mouseover', '#directory-list .streams a.cap', ({currentTarget}) => {
+                .on('mouseover', PREVIEW_SELECTOR, ({currentTarget}) => {
                     const $target = jQuery(currentTarget);
                     const chan = encodeURIComponent($target.attr('href').substr(1));
 
@@ -43,7 +45,7 @@ class DirectoryPreviewModule {
                         $target.tipsy('show');
                     }, 1500);
                 })
-                .on('mouseout', '#directory-list .streams a.cap', ({currentTarget}) => {
+                .on('mouseout', PREVIEW_SELECTOR, ({currentTarget}) => {
                     const $target = jQuery(currentTarget);
 
                     if (!jQuery('div.tipsy').length) return;
@@ -55,7 +57,7 @@ class DirectoryPreviewModule {
                         $target.tipsy('hide');
                     }, 1000);
                 })
-                .on('click', '#directory-list .streams a.cap', ({currentTarget}) => {
+                .on('click', PREVIEW_SELECTOR, ({currentTarget}) => {
                     jQuery(currentTarget).tipsy('hide');
                     jQuery('div.tipsy').remove();
                 });
@@ -66,8 +68,8 @@ class DirectoryPreviewModule {
         // relies on Twitch jQuery
         try {
             jQuery('body')
-                .off('mouseover', '#directory-list .streams a.cap')
-                .off('mouseout', '#directory-list .streams a.cap');
+                .off('mouseover', PREVIEW_SELECTOR)
+                .off('mouseout', PREVIEW_SELECTOR);
         } catch (e) {}
     }
 }
