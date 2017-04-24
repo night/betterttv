@@ -3,6 +3,7 @@ const colors = require('../../utils/colors');
 const twitch = require('../../utils/twitch');
 const api = require('../../utils/api');
 const cdn = require('../../utils/cdn');
+const html = require('../../utils/html');
 const settings = require('../../settings');
 const emotes = require('../emotes');
 const nicknames = require('../chat_nicknames');
@@ -10,6 +11,7 @@ const channelEmotesTip = require('../channel_emotes_tip');
 const legacySubscribers = require('../legacy_subscribers');
 
 const EMOTE_STRIP_SYMBOLS_REGEX = /(^[~!@#$%\^&\*\(\)]+|[~!@#$%\^&\*\(\)]+$)/g;
+const MENTION_REGEX = /@\b(.*)\b/;
 
 const badgeTemplate = (url, description) => `
     <span class="balloon-wrapper float-left">
@@ -17,6 +19,8 @@ const badgeTemplate = (url, description) => `
         <div class="balloon balloon--tooltip balloon--up">${description}</div>
     </span>
 `;
+
+const mentionTemplate = name => `<span class="mentioning">@${html.escape(name)}</span>`;
 
 function formatChatUser({from, color, tags}) {
     if (!tags || from === 'jtv') return null;
@@ -74,6 +78,11 @@ class ChatModule {
 
             badges.forEach(({name, type}) => staff.set(name, staffBadges[type]));
         });
+
+        // Twitch has message history natively, but it is not on for everyone
+        try {
+            window.Twitch.experiments.overrideExperimentValue('MESSAGE_HISTORY', 'on');
+        } catch (e) {}
     }
 
     calculateColor(color) {
@@ -107,7 +116,7 @@ class ChatModule {
         modsOnly = enabled;
     }
 
-    emoticonize($message, user) {
+    messageReplacer($message, user) {
         const tokens = $message.contents();
         for (let i = 0; i < tokens.length; i++) {
             const node = tokens[i];
@@ -116,7 +125,11 @@ class ChatModule {
                 const $image = $emote.find('.emoticon');
                 const code = $image.attr('alt');
                 const id = ($image.attr('src').split('emoticons/v1/')[1] || '').split('/')[0];
-                $emote.find('.balloon').css('text-align', 'center').html(channelEmotesTip.getEmoteBalloon(id, code));
+                const emoteChannel = channelEmotesTip.getEmote(id, code);
+                if (emoteChannel.channel) {
+                    $emote.on('click', () => window.open(emoteChannel.channelURL, '_blank'));
+                    $emote.find('.balloon').css('text-align', 'center').html(emoteChannel.balloon);
+                }
                 continue;
             } else if (node.nodeType !== window.Node.TEXT_NODE) {
                 continue;
@@ -126,13 +139,19 @@ class ChatModule {
             let modified = false;
             for (let j = 0; j < parts.length; j++) {
                 const part = parts[j];
-                let emote = emotes.getEligibleEmote(part, user);
-                if (!emote) {
-                    emote = emotes.getEligibleEmote(part.replace(EMOTE_STRIP_SYMBOLS_REGEX, ''), user);
+
+                if (part.length > 2 && part.charAt(0) === '@') {
+                    parts[j] = mentionTemplate(part.match(MENTION_REGEX)[1]);
+                } else {
+                    let emote = emotes.getEligibleEmote(part, user);
+                    if (!emote) {
+                        emote = emotes.getEligibleEmote(part.replace(EMOTE_STRIP_SYMBOLS_REGEX, ''), user);
+                    }
+                    if (!emote) continue;
+                    parts[j] = emote.toHTML();
                 }
-                if (!emote) continue;
+
                 modified = true;
-                parts[j] = emote.toHTML();
             }
 
             if (modified) {
@@ -188,7 +207,7 @@ class ChatModule {
             }
         }
 
-        this.emoticonize($message, user);
+        this.messageReplacer($message, user);
     }
 
     dismissPinnedCheer() {

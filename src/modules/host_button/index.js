@@ -29,7 +29,7 @@ class HostButtonModule {
 
     embedHostButton() {
         if ($('#bttv-host-button').length) return;
-        $hostButton = $('<button><span></span></button>');
+        $hostButton = $('<button><span>Host</span></button>');
         $hostButton.attr('id', 'bttv-host-button');
         $hostButton.addClass('button action button--hollow mg-l-1');
         $hostButton.insertAfter('#channel .cn-metabar__more .js-share-box');
