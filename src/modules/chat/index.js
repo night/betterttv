@@ -140,8 +140,9 @@ class ChatModule {
             for (let j = 0; j < parts.length; j++) {
                 const part = parts[j];
 
-                if (part.length > 2 && part.charAt(0) === '@') {
-                    parts[j] = mentionTemplate(part.match(MENTION_REGEX)[1]);
+                const mention = part.match(MENTION_REGEX);
+                if (part.length > 2 && part.charAt(0) === '@' && mention && mention[1]) {
+                    parts[j] = mentionTemplate(mention[1]);
                 } else {
                     let emote = emotes.getEligibleEmote(part, user);
                     if (!emote) {
