@@ -37,8 +37,18 @@ const pinnedHighlightTemplate = ({timestamp, from, message}) => `
     </div>
 `;
 
+function defaultHighlightKeywords(value) {
+    if (typeof value === 'string') return value;
+    const currentUser = twitch.getCurrentUser();
+    return currentUser ? currentUser.name : '';
+}
+
 function changeKeywords(promptBody, storageID) {
-    let keywords = prompt(promptBody, storage.get(storageID) || '');
+    let storageKeywords = storage.get(storageID);
+    if (storageID === 'highlightKeywords') {
+        storageKeywords = defaultHighlightKeywords(storageKeywords);
+    }
+    let keywords = prompt(promptBody, storageKeywords || '');
     if (keywords !== null) {
         keywords = keywords.trim().replace(REPEATING_SPACE_REGEX, ' ');
         storage.set(storageID, keywords);
@@ -91,12 +101,7 @@ function computeBlacklistKeywords() {
 let highlightKeywords = [];
 let highlightUsers = [];
 function computeHighlightKeywords() {
-    let keywords = storage.get('highlightKeywords');
-    if (typeof keywords !== 'string') {
-        const currentUser = twitch.getCurrentUser();
-        keywords = currentUser ? `${currentUser.name}` : '';
-    }
-
+    const keywords = defaultHighlightKeywords(storage.get('highlightKeywords'));
     const {computedKeywords, computedUsers} = computeKeywords(keywords);
     highlightKeywords = computedKeywords;
     highlightUsers = computedUsers;

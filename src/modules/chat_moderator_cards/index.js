@@ -159,7 +159,7 @@ class ChatModeratorCardsModule {
             e.stopImmediatePropagation();
             const $target = $(e.target);
             if ($target.hasClass('mentioning') || $target.hasClass('mentioned')) {
-                this.createFromName($target.text().toLowerCase(), $target);
+                this.createFromName($target.text().toLowerCase().replace('@', ''), $target);
             } else {
                 const messageObj = twitch.getChatMessageObject($target.closest('.chat-line')[0]);
                 if (!messageObj) return;

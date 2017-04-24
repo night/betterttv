@@ -25,12 +25,16 @@ class ChannelEmotesTipModule {
             });
     }
 
-    getEmoteBalloon(id, code) {
+    getEmote(id, code) {
         const channel = this.ids[id];
-        return `
-            ${html.escape(code)}<br>
-            ${channel ? `Channel: ${html.escape(channel)}` : ''}
-        `;
+        return {
+            channel,
+            channelURL: `https://www.twitch.tv/${channel}`,
+            balloon: `
+                ${html.escape(code)}<br>
+                ${channel ? `Channel: ${html.escape(channel)}` : ''}
+            `
+        };
     }
 
     checkEmoteSets() {
