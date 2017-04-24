@@ -25,8 +25,9 @@ function getUserChatMessages(id) {
     return $.makeArray($(CHAT_LINE_SELECTOR))
         .reverse()
         .filter(m => {
-            const {tags} = twitch.getChatMessageObject(m);
-            return tags && tags['user-id'] === id;
+            const messageObj = twitch.getChatMessageObject(m);
+            if (!messageObj || !messageObj.tags) return false;
+            return messageObj.tags['user-id'] === id;
         });
 }
 
