@@ -21,7 +21,7 @@ class NotificationSoundModule {
 
     play(ignoreFocus = false) {
         if (!ignoreFocus && document.hasFocus()) return;
-        if (settings.get('highlightFeedback') !== true) return;
+        if (settings.get('highlightFeedback') !== true || !this.sound) return;
         this.sound.pause();
         this.sound.currentTime = 0;
         this.sound.play();
