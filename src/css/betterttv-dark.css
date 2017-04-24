@@ -3471,3 +3471,12 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 .form__label, .form__input[type=checkbox]+label, .form__input[type=radio]+label {
     color: #d3d3d3;
 }
+
+/* directory changes, game on stream preview  */
+.card__img {
+    background-color: #000000;
+}
+
+.card__boxpin {
+    border-color: #000000;
+}
