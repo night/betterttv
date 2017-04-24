@@ -126,18 +126,24 @@ class TabCompletionModule {
 
         // Message history
         if (keyCode === keyCodes.UpArrow) {
+            if ($(CHAT_SUGGESTIONS).length > 0) return;
             if ($inputField[0].selectionStart > 0) return;
             if (this.historyPos + 1 === this.messageHistory.length) return;
             const prevMsg = this.messageHistory[++this.historyPos];
             $inputField.val(prevMsg);
             $inputField[0].setSelectionRange(0, 0);
         } else if (keyCode === keyCodes.DownArrow) {
+            if ($(CHAT_SUGGESTIONS).length > 0) return;
             if ($inputField[0].selectionStart < $inputField.val().length) return;
             if (this.historyPos > 0) {
                 const prevMsg = this.messageHistory[--this.historyPos];
                 $inputField.val(prevMsg);
                 $inputField[0].setSelectionRange(prevMsg.length, prevMsg.length);
             } else {
+                const draft = $inputField.val().trim();
+                if (this.historyPos < 0 && draft.length > 0) {
+                    this.messageHistory.unshift(draft);
+                }
                 this.historyPos = -1;
                 $inputField.val('');
             }

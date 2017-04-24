@@ -3019,6 +3019,10 @@ ul.tabs li>a:hover, .directory_header .nav li>a:hover, ul.tabs li>button:hover, 
     color: #999;
 }
 
+.js-directory .card__info {
+    color: #666;
+}
+
 .balloon, .balloon label {
     color: #D3D3D3;
 }
