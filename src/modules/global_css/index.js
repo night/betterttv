@@ -5,6 +5,8 @@ const settings = require('../../settings');
 const storage = require('../../storage');
 const watcher = require('../../watcher');
 
+let tempToggledDarkMode = false;
+
 class GlobalCSSModule {
     constructor() {
         this.globalCSS();
@@ -105,6 +107,8 @@ class GlobalCSSModule {
         const playerService = App.__container__.lookup('service:persistentPlayer');
         if (!playerService || !playerService.playerComponent || !playerService.playerComponent.player) return;
         playerService.playerComponent.player.addEventListener('theatrechange', state => {
+            if (settings.get('darkenedMode') === true && !tempToggledDarkMode) return;
+            tempToggledDarkMode = !tempToggledDarkMode;
             settings.set('darkenedMode', state);
             // Turn darkenedMode setting off again if needed but without emit
             if (state) storage.set('darkenedMode', false, undefined, false, false);
