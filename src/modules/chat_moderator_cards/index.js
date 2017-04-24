@@ -119,8 +119,8 @@ function renderModeratorCard(user, $el) {
     });
 
     const currentUser = twitch.getCurrentUser();
-    const followEndpoint = `users/${currentUser.id}/follows/channels/${user.id}`;
     if (currentUser) {
+        const followEndpoint = `users/${currentUser.id}/follows/channels/${user.id}`;
         twitchAPI.get(followEndpoint)
             .then(() => toggleFollow($modCard, true))
             .catch(() => toggleFollow($modCard, false));
