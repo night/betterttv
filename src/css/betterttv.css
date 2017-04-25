@@ -2115,6 +2115,7 @@ body.channel_new.columns.ember-application {
     background: rgba(0,0,0,0.6);
     cursor: default;
     display: none;
+    color: #d3d3d3;
 }
 
 #bttv-custom-timeout-contain:hover .text {
