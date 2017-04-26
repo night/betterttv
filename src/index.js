@@ -29,7 +29,7 @@
                     'tipsy is not a function',
                     'tipsy is undefined',
                     'draggable is not a function',
-                    'tipsy is undefined',
+                    'draggable is undefined',
                     // Emote Menu
                     'Cannot read property \'setChannelName\' of undefined',
                     'l is undefined'
