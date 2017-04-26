@@ -143,6 +143,7 @@ var betterViewerList = require('./features/better-viewer-list'),
     directoryFunctions = require('./features/directory-functions'),
     enableImagePreview = require('./features/image-preview').enablePreview,
     enableTheatreMode = require('./features/auto-theatre-mode'),
+    addColumnToggleHotkey = require('./features/column-toggle-hotkey'),
     disableChannelHeader = require('./features/disable-channel-header'),
     flipDashboard = require('./features/flip-dashboard'),
     formatDashboard = require('./features/format-dashboard'),
@@ -315,6 +316,7 @@ var main = function() {
         disableChannelHeader();
         freeSubReminder();
         enableTheatreMode();
+        addColumnToggleHotkey();
 
         // Loads global BTTV emotes (if not loaded)
         overrideEmotes();

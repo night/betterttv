@@ -109,6 +109,12 @@ module.exports = [
         storageKey: 'clickToPlay',
     },
     {
+        name: 'Column Toggle Hotkey',
+        description: 'Enables CTRL+LEFT and CTRL+RIGHT hide / show left and right columns',
+        default: false,
+        storageKey: 'columnToggleHotkey'
+    },
+    {
         name: 'Completion Tooltip',
         description: 'Shows a tooltip with suggested names when typing @ or using tab completion',
         default: true,
