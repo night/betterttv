@@ -3218,7 +3218,7 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
     background-color: #bf4040;
 }
 
-.ember-chat .chat-messages .chat-line.twitchbot .button {
+.ember-chat .chat-messages .chat-line .button {
     color: #D3D3D3;
 }
 
