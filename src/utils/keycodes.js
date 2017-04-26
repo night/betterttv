@@ -57,6 +57,7 @@ module.exports = {
     'x': 88,
     'y': 89,
     'z': 90,
+    'Meta': 91,
     '0numpad': 96,
     '1numpad': 97,
     '2numpad': 98,
