@@ -1,11 +1,18 @@
 const $ = require('jquery');
 const twitch = require('../../utils/twitch');
+const keycodes = require('../../utils/keycodes');
 const watcher = require('../../watcher');
 
-const CHAT_CONTAINER = '.chat-room .chat-messages';
-const CHAT_LINES = '.ember-chat .chat-messages .chat-lines';
+const CHAT_CONTAINER_SELECTOR = '.chat-room .chat-messages';
+const CHAT_CONTENT_SELECTOR = '.chat-messages .tse-content';
+const CHAT_LINES_SELECTOR = '.ember-chat .chat-messages .chat-lines';
 const CHAT_ROOM_SELECTOR = '.chat-room > div.ember-view';
+const CHAT_SCROLLER_SELECTOR = '.chat-messages .tse-scroll-content';
 const MESSAGES_INDICATOR_SELECTOR = '.more-messages-indicator';
+const FREEZE_KEYS = [keycodes.Ctrl, keycodes.Meta];
+const CHAT_SCROLL_THRESHOLD = 150;
+
+let keysPressed = 0;
 
 function setScrollState(enabled) {
     const chatRoomEmberId = $(CHAT_ROOM_SELECTOR).attr('id');
@@ -19,11 +26,22 @@ function setScrollState(enabled) {
     }
 }
 
+function shouldFreeze(e) {
+    return FREEZE_KEYS.includes(e.keyCode) && $(`${CHAT_LINES_SELECTOR}:hover`).length && !document.hidden;
+}
+
 class ChatFreezeModule {
     constructor() {
         $('body')
             .on('keydown.chat-freeze', e => {
-                if (!(e.metaKey || e.ctrlKey) || !$(`${CHAT_LINES}:hover`).length || document.hidden) return;
+                keysPressed++;
+
+                if (!shouldFreeze(e)) return;
+                keysPressed = 0;
+            })
+            .on('keyup.chat-freeze', e => {
+                if (!shouldFreeze(e) || keysPressed > 0) return;
+
                 const indicator = $(MESSAGES_INDICATOR_SELECTOR).length > 0;
                 setScrollState(indicator);
             });
@@ -31,14 +49,19 @@ class ChatFreezeModule {
     }
 
     load() {
-        $(CHAT_CONTAINER).on('mousewheel', ({originalEvent}) => {
+        $(CHAT_CONTAINER_SELECTOR).on('mousewheel', ({originalEvent}) => {
             const indicator = $(MESSAGES_INDICATOR_SELECTOR).length > 0;
+            const $chatContent = $(CHAT_CONTENT_SELECTOR);
+            const $chatScroller = $(CHAT_SCROLLER_SELECTOR);
+
+            if (!$chatScroller.length || !$chatContent.length) return;
+
             if (originalEvent.wheelDelta > 0 && !indicator) {
-                setScrollState(false);
+                if ($chatScroller[0].scrollHeight - $chatScroller[0].scrollTop - $chatScroller.height() > CHAT_SCROLL_THRESHOLD) {
+                    setScrollState(false);
+                }
             } else if (originalEvent.wheelDelta < 0 && indicator) {
-                const $chatContent = $('.chat-messages .tse-content');
-                const $chatScroller = $('.chat-messages .tse-scroll-content');
-                if ($chatContent.offset().top + $chatContent.height() - $chatScroller.height() < 200) {
+                if ($chatContent.offset().top + $chatContent.height() - $chatScroller.height() < CHAT_SCROLL_THRESHOLD) {
                     setScrollState(true);
                 }
             }
