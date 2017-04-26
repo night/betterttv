@@ -25,7 +25,7 @@ class DoubleClickMentionModule {
             if (e.shiftKey || e.ctrlKey) return;
             clearSelection();
             chatModerationCards.close();
-            let user = e.target.innerText.replace('@', '');
+            let user = e.target.innerText ? e.target.innerText.replace('@', '') : '';
             const $target = $(e.target);
             const messageObj = twitch.getChatMessageObject($target.closest('.chat-line')[0]);
             if (messageObj && !$target.hasClass('mentioning') && !$target.hasClass('mentioned')) {

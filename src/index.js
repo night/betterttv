@@ -25,13 +25,27 @@
                     // Users that have broken jQuery
                     'this.dom.draggable is not a function',
                     'Cannot read property \'autoNS\' of undefined',
-                    'jQuery(...).tipsy is not a function',
-                    'jQuery(...).draggable is not a function'
+                    'Cannot read property \'autoWE\' of undefined',
+                    'tipsy is not a function',
+                    'tipsy is undefined',
+                    'draggable is not a function',
+                    'tipsy is undefined',
+                    // Emote Menu
+                    'Cannot read property \'setChannelName\' of undefined',
+                    'l is undefined'
                 ],
                 whitelistUrls: [
                     /betterttv\.js/,
                     /\.betterttv\.net/
-                ]
+                ],
+                shouldSendCallback: data => {
+                    const exception = data.exception && data.exception.values[0];
+                    if (data.message && data.message.includes('betterttv.js in wrap')) return false;
+                    if (data.culprit === 'wrapped(betterttv)') return false;
+                    if (exception && !exception.value) return false;
+                    if (exception && ['NS_ERROR_NOT_INITIALIZED', 'NS_ERROR_OUT_OF_MEMORY', 'NS_ERROR_FAILURE'].includes(exception.type)) return true;
+                    return true;
+                }
             }
         ).install();
     }
