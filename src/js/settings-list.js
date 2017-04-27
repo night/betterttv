@@ -538,7 +538,7 @@ module.exports = [
     },
     {
         name: 'Player Keyboard Shortcuts',
-        description: 'Simple keyboard shortcuts. K for play/pause, F for fullscreen and M for mute.',
+        description: 'Simple keyboard shortcuts. K: play/pause, F: fullscreen, M: mute, T: theatre',
         default: false,
         storageKey: 'playerKeyboardShortcuts',
         toggle: playerKeyboardShortcuts,
