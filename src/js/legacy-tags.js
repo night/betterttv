@@ -52,6 +52,7 @@ module.exports = function(data) {
         'sauce': { mod: true, tagType: 'purple', tagName: 'Drippin\' Dat' },
         'thejokko': { mod: true, tagType: 'purple', tagName: 'Swede' },
         'missmiarose': { mod: true, tagType: 'admin', tagName: 'Lovely' },
+        'morgonbladet': { mod: false, tagType: 'orange', tagName: '<span style="color:#FFE600 !important;">Try-hard</span>', color: data.color + ';text-shadow: 0 0 10px #FFD700' },
         // Xmas
         'r3lapse': { mod: true, tagType: 'staff', tagName: 'Kershaw' },
         'im_tony_': { mod: true, tagType: 'admin', tagName: 'oZn' },
