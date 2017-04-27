@@ -320,6 +320,22 @@ module.exports = [
         }
     },
     {
+        name: 'Disable Player Overlay Gradient',
+        description: 'Disables the gradient that shows over the player on mouse hover',
+        default: false,
+        storageKey: 'disablePlayerOverlayGradient',
+        toggle: function(value) {
+            if (value === true) {
+                cssLoader.load('disable-player-overlay-gradient', 'disablePlayerOverlayGradient');
+            } else {
+                cssLoader.unload('disablePlayerOverlayGradient');
+            }
+        },
+        load: function() {
+            cssLoader.load('disable-player-overlay-gradient', 'disablePlayerOverlayGradient');
+        }
+    },
+    {
         name: 'Disable Whispers',
         description: 'Disables the Twitch whisper feature and hides any whispers you receive',
         default: false,
