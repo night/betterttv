@@ -20,3 +20,4 @@ deploy:
   skip_cleanup: true
   on:
     repo: night/BetterTTV
+    tags: true
