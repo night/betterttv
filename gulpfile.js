@@ -3,14 +3,17 @@ const buffer = require('vinyl-buffer');
 const del = require('del');
 const eslint = require('gulp-eslint');
 const fs = require('fs');
+const git = require('git-rev-sync');
 const gulp = require('gulp');
 const gulpif = require('gulp-if');
+const gzip = require('gulp-gzip');
 const header = require('gulp-header');
 const saveLicense = require('uglify-save-license');
 const server = require('./dev/server');
 const source = require('vinyl-source-stream');
+const sourcemaps = require('gulp-sourcemaps');
+const tar = require('gulp-tar');
 const uglify = require('gulp-uglify');
-const git = require('git-rev-sync');
 
 process.env.EXT_VER = require('./package.json').version;
 process.env.GIT_REV = git.long();
@@ -46,7 +49,7 @@ gulp.task(
 gulp.task(
     'scripts',
     ['prepare'],
-    () => browserify('build/index.js')
+    () => browserify('build/index.js', {debug: true})
         .transform('require-globify')
         .transform('babelify', {presets: ['es2015']})
         .transform('envify')
@@ -54,7 +57,9 @@ gulp.task(
         .pipe(source('betterttv.js'))
         .pipe(buffer())
         .pipe(header(LICENSE + '\n'))
+        .pipe(gulpif(IS_PROD, sourcemaps.init({loadMaps: true})))
         .pipe(gulpif(IS_PROD, uglify({preserveComments: saveLicense})))
+        .pipe(gulpif(IS_PROD, sourcemaps.write('./')))
         .pipe(gulp.dest('build'))
 );
 
@@ -72,4 +77,13 @@ gulp.task(
 gulp.task(
     'default',
     ['scripts']
+);
+
+gulp.task(
+    'dist',
+    ['scripts'],
+    () => gulp.src('build/**/*')
+        .pipe(tar('betterttv.tar'))
+        .pipe(gzip())
+        .pipe(gulp.dest('dist'))
 );
