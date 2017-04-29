@@ -292,7 +292,7 @@ input.text:focus,select:focus,textarea:focus {
 
 .line .admin, .line .staff, .line .broadcaster, .line .mod, .line .turbo a, .line .subscriber a, .ember-chat .badges .badge, .ember-chat .badges .badge a {
     border-radius: 2px;
-    margin: -1px 0 1px 0;
+    margin: -1px 3px 1px 0;
     float: none;
 }
 
