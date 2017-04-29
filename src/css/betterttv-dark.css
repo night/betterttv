@@ -2974,8 +2974,9 @@ ul.tabs li>a:hover, .directory_header .nav li>a:hover, ul.tabs li>button:hover, 
 
 /* new channel page */
 .brick, .cn-bar__avatar-wrap {
-    background-color: #282828;
-    border-color: #282828;
+    background-color: #141414 !important; /* because Twitch loves being !important */
+    border-color: #141414;
+    border-top: none; 
 }
 
 .cn-bar {
@@ -3098,10 +3099,6 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
     color: white;
     text-decoration: none;
     background-color: #7d5bbe;
-}
-
-.brick {
-    border-color: #666;
 }
 
 .dash-tabs__item {
