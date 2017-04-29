@@ -3365,6 +3365,10 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
     border-bottom-color: #333;
 }
 
+.chat-chip {
+    background: #111;
+}
+
 .chat-chip .card__info {
     color: #777;
 }
