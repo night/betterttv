@@ -17,5 +17,6 @@ deploy:
   api_key:
     secure: OOtn65N/l9Wnre9a3pgcA8MeFfXP/jKoJWa/j/wFFW0tSbLkGEw+dz5uOniL3PYmOh1UsNOLAqtUVnhrhSaCQVoM/WV6RtVrogEb5VyS5oRQhBub28S7B3wRroiW6C6aN4X4nsJ9K3MOP/ViUwJ4dXeuvroXRHo8gnhFAesnnYo=
   file: dist/betterttv.tar.gz
+  skip_cleanup: true
   on:
     repo: night/BetterTTV
