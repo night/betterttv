@@ -34,7 +34,7 @@
     "lodash.throttle": "^4.1.1",
     "msgpack-lite": "^0.1.26",
     "raven-js": "^3.14.2",
-    "request": "2.81.0",
+    "request": "^2.81.0",
     "require-globify": "^1.4.1",
     "resizable": "^1.2.0",
     "twemoji": "^2.2.5",
