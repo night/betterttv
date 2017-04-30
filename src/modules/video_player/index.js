@@ -57,11 +57,11 @@ class VideoPlayerModule {
 
     viewerCount() {
         try {
-            const controller = window.App && window.App.__container__.lookup('controller:channel');
-            if (!controller || !controller.model || $('.player-viewer-count').length) return;
+            const player = window.App && window.App.__container__.lookup('service:persistent-player');
+            if (!player || !player.playerComponent || $('.player-viewer-count').length) return;
 
             $('div.player-streamstatus').append('<span class="player-viewer-count"></span>');
-            controller.model.addObserver('stream.viewers', (model, key) => {
+            player.playerComponent.addObserver('channel.stream.viewers', (model, key) => {
                 const viewers = model.get(key);
                 if (!viewers) return;
                 $('.player-viewer-count').text(`${Number(viewers).toLocaleString()} viewers`);
