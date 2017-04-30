@@ -27,6 +27,9 @@ function onClearChat(name, tags) {
                     return;
                 }
 
+                // remove the clips cards
+                $el.find('.chat-chip').remove();
+
                 const $message = $el.find('.message');
                 if ($message.hasClass('bttv-deleted')) return;
                 $message.addClass('bttv-deleted');
