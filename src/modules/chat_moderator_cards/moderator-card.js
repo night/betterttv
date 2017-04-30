@@ -96,16 +96,16 @@ module.exports = function moderatorCard(user, top, left) {
                 ${background}
                 <div class="channel-stats">
                     <span class="stat">
-                        ${html.escape(user.views.toLocaleString())}
                         <svg height="16px" version="1.1" viewbox="1 1 16 16" width="16px" x="0px" y="0px" class="svg-glyph_views">
                             <path clip-rule="evenodd" d="M11,13H5L1,9V8V7l4-4h6l4,4v1v1L11,13z M8,5C6.344,5,5,6.343,5,8c0,1.656,1.344,3,3,3c1.657,0,3-1.344,3-3C11,6.343,9.657,5,8,5z M8,9C7.447,9,7,8.552,7,8s0.447-1,1-1s1,0.448,1,1S8.553,9,8,9z" fill-rule="evenodd"></path>
                         </svg>
+                        ${html.escape(user.views.toLocaleString())}
                     </span>
                     <span class="stat">
-                        ${html.escape(user.followers.toLocaleString())}
                         <svg height="16px" version="1.1" viewbox="0 0 16 16" width="16px" x="0px" y="0px" class="svg-glyph_followers">
                             <path clip-rule="evenodd" d="M8,13.5L1.5,7V4l2-2h3L8,3.5L9.5,2h3l2,2v3L8,13.5z" fill-rule="evenodd"></path>
                         </svg>
+                        ${html.escape(user.followers.toLocaleString())}
                     </span>
                 </div>
             </div>
