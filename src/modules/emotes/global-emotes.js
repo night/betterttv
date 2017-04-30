@@ -1,6 +1,7 @@
 const api = require('../../utils/api');
 const mustacheFormat = require('../../utils/regex').mustacheFormat;
 const cdn = require('../../utils/cdn');
+const legacySubscribers = require('../legacy_subscribers');
 
 const AbstractEmotes = require('./abstract-emotes');
 const Emote = require('./emote');
@@ -29,8 +30,10 @@ class GlobalEmotes extends AbstractEmotes {
             emotes.forEach(({id, channel, code, imageType, restrictions}) => {
                 let restrictionCallback;
                 if (restrictions && restrictions.emoticonSet) {
-                    // TODO: plumb this up to legacy subs
-                    restrictionCallback = () => false;
+                    restrictionCallback = (_, user) => {
+                        if (restrictions.emoticonSet !== 'night') return false;
+                        return legacySubscribers.hasSubscription(user.name);
+                    };
                 }
 
                 this.emotes.set(code, new Emote({

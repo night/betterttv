@@ -946,10 +946,7 @@ div#site_header {
 
 .ember-chat .chat-line .mentioning,
 .ember-chat .chat-line .mentioned {
-    color: white;
-    font-weight: bold;
-    background-color: inherit;
-    padding: 0;
+    color: #d3d3d3;
 }
 
 #main_col ul.nav.js-nav a.active {

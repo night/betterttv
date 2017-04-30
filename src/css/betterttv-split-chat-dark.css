@@ -1,4 +1,4 @@
-#chat_line_list .line, .chat-messages .chat-line {
+.chat-messages .chat-line {
     border-bottom: 1px solid rgb(0, 0, 0) !important;
     padding-left: 5px !important;
     padding-right: 5px !important;
@@ -9,20 +9,20 @@
     box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.04) inset !important;
 }
 
-#chat_line_list .line p, .chat-messages .chat-line {
+.chat-messages .chat-line {
     margin-bottom: 0px !important;
 }
 
-#chat_line_list .line:nth-child(2n), .chat-messages .chat-line:nth-child(2n) {
+.chat-messages .chat-line.bttv-alt-bg {
     background-color: rgb(35, 35, 35);
 }
 
-#chat_line_list, .ember-chat .chat-messages .tse-content {
+.ember-chat .chat-messages .tse-content {
     padding-left: 0px !important;
     padding-right: 0px !important;
 }
 
-#chat_line_list, .ember-chat .chat-messages .chat-line {
+.ember-chat .chat-messages .chat-line {
     padding-left: 10px !important;
     padding-right: 10px !important;
     margin-right: 0px !important;
@@ -32,7 +32,7 @@
     padding: 0px;
 }
 
-#chat_line_list .highlight, .chat-messages .chat-line.highlight {
+.chat-messages .chat-line.highlight {
     box-shadow: 0px 1px 0px rgba(0,0,0, 0.8) inset !important;
     border-bottom: 1px solid rgba(180,0,0,0.8) !important;
     background-color: rgba(255, 0, 0, 0.5);
@@ -41,15 +41,7 @@
     margin-right: 0px !important;*/
 }
 
-#chat_line_list .highlight p {
-    padding-top: 2px;
-}
-
-#chat_line_list {
-    padding: 0 !important;
-}
-
-#chat_line_list li:last-child, .chat-messages .chat-line {
+.chat-messages .chat-line {
     border-bottom: none;
 }
 
@@ -59,7 +51,7 @@
     margin-top: -9px;
 }
 
-#dash_main #chat_lines_list, #dash_main #chat_lines {
+#dash_main #chat_lines {
     background-color: rgb(30, 30, 30) !important;
 }
 

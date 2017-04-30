@@ -1,8 +1,11 @@
 const settings = require('../../settings');
+const watcher = require('../../watcher');
 const css = require('../../utils/css');
 
 const LIGHT_KEY = 'split-chat';
 const DARK_KEY = 'split-chat-dark';
+
+let alternateBackground = false;
 
 class SplitChatModule {
     constructor() {
@@ -14,6 +17,14 @@ class SplitChatModule {
         });
         settings.on('changed.splitChat', () => this.load());
         settings.on('changed.darkenedMode', () => this.load());
+        watcher.on('chat.message', $el => {
+            if (settings.get('splitChat') === false) return;
+
+            if (alternateBackground) {
+                $el.toggleClass('bttv-alt-bg');
+            }
+            alternateBackground = !alternateBackground;
+        });
         this.load();
     }
 

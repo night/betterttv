@@ -2174,6 +2174,10 @@ body.channel_new.columns.ember-application {
 .ember-chat .chat-line .mentioning,
 .ember-chat .chat-line .mentioned {
     cursor: pointer;
+    color: rgb(67, 63, 74);
+    background-color: transparent;
+    font-weight: bold;
+    padding: 0px;
 }
 
 #emote-menu-button {
