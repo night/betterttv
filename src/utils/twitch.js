@@ -37,6 +37,8 @@ if (window.Twitch && window.Twitch.user) {
         });
 }
 
+const clipInfo = window.clipInfo;
+
 module.exports = {
     getEmberContainer(...args) {
         return lookup(...args);
@@ -48,6 +50,14 @@ module.exports = {
 
     getCurrentChannel() {
         let rv;
+
+        if (clipInfo) {
+            return {
+                id: clipInfo.broadcaster_id,
+                name: clipInfo.broadcaster_login,
+                displayName: clipInfo.broadcaster_display_name
+            };
+        }
 
         const playerService = lookup('service:persistentPlayer');
         if (!Ember.isNone(playerService) && playerService.get('playerComponent.channel.id')) {

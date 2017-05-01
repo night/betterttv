@@ -1,3 +1,4 @@
+const $ = require('jquery');
 const watcher = require('../../watcher');
 const colors = require('../../utils/colors');
 const twitch = require('../../utils/twitch');
@@ -122,7 +123,8 @@ class ChatModule {
             const node = tokens[i];
             if (node.nodeType === window.Node.ELEMENT_NODE && node.classList.contains('balloon-wrapper')) {
                 const $emote = $(node);
-                const $image = $emote.find('.emoticon');
+                const $image = $emote.find('img');
+                if (!$image) continue;
                 const code = $image.attr('alt');
                 const id = ($image.attr('src').split('emoticons/v1/')[1] || '').split('/')[0];
                 const emoteChannel = channelEmotesTip.getEmote(id, code);
@@ -131,11 +133,17 @@ class ChatModule {
                     $emote.find('.balloon').css('text-align', 'center').html(emoteChannel.balloon);
                 }
                 continue;
-            } else if (node.nodeType !== window.Node.TEXT_NODE) {
+            }
+            let data;
+            if (node.nodeType === window.Node.ELEMENT_NODE && node.nodeName === 'SPAN') {
+                data = $(node).text();
+            } else if (node.nodeType === window.Node.TEXT_NODE) {
+                data = node.data;
+            } else {
                 continue;
             }
 
-            const parts = node.data.split(' ');
+            const parts = data.split(' ');
             let modified = false;
             for (let j = 0; j < parts.length; j++) {
                 const part = parts[j];

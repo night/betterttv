@@ -29,6 +29,7 @@ class Watcher extends SafeEventEmitter {
         this.chatObserver();
         this.conversationObserver();
         this.routeObserver();
+        this.clipsChatObserver();
         this.checkClips();
 
         debug.log('Watcher started');
@@ -231,6 +232,28 @@ class Watcher extends SafeEventEmitter {
                 .get(`channels/${channel.name}`)
                 .then(d => this.emit('channel.updated', d));
         });
+    }
+
+    clipsChatObserver() {
+        const observe = (watcher, element) => {
+            if (!element) return;
+            if (watcher) watcher.disconnect();
+            watcher.observe(element, {childList: true, subtree: true});
+        };
+
+        conversationWatcher = new window.MutationObserver(mutations =>
+            mutations.forEach(mutation => {
+                for (const el of mutation.addedNodes) {
+                    const $el = $(el);
+
+                    if ($el.hasClass('clip-chat-line')) {
+                        this.emit('clips.message', $el);
+                    }
+                }
+            })
+        );
+
+        this.on('load.clips', () => observe(conversationWatcher, $('body')[0]));
     }
 }
 

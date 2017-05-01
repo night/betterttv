@@ -2484,3 +2484,15 @@ body.channel_new.columns.ember-application {
 .chat-line .bttv-deleted {
     opacity: 0.5;
 }
+
+/* clips */
+.clip-chat-badge .clip-chat-badge__img {
+    border-radius: 2px;
+}
+
+.clip-chat-line .emoticon {
+    vertical-align: middle !important;
+    display: inline;
+    line-height: 1.4;
+    cursor: default;
+}

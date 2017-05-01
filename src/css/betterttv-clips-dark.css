@@ -291,3 +291,32 @@ body.dark {
     background: #333;
     color: #888;
 }
+
+/* replay chat */
+.view-clip__smallTitle>div {
+    background: #111;
+}
+
+.view-clip__smallTitle {
+    color: #d3d3d3;
+}
+
+.view-clip__main--darker {
+    background: transparent;
+}
+
+.clip-chat-message {
+    color: #d3d3d3;
+}
+
+.view-clip__actions, .view-clip__bc, .view-clip__smallTitle>div {
+    border-color: #333;
+}
+
+.view-clip__bc-meta, .sub-text {
+    color: #d3d3d3;
+}
+
+.dark a {
+    color: #f7f7f7;
+}
