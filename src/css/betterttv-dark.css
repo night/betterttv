@@ -3298,7 +3298,7 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
     box-shadow: inset 0 0 0 1px #333;
 }
 
-.fp-side__header {
+.fp-side__header, .fp-carousel__title {
     color: #d3d3d3;
 }
 
@@ -3477,4 +3477,25 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 
 .card__boxpin {
     border-color: #000000;
+}
+
+/* directory game details */
+.game-details__section--grey {
+    background: #111;
+}
+
+.game-details__section--white {
+    background: rgb(20, 20, 20);
+}
+
+.game-details__section--white+.game-details__section--grey, .game-details__section--grey+.game-details__section--white, .game-details-separator {
+    border-top-color: #333;
+}
+
+.game-details-igc__card {
+    border-color: #333;
+}
+
+.game-details-igc__details {
+    background-color: rgb(28, 28, 28);
 }
