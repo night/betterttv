@@ -30,6 +30,16 @@ function shouldFreeze(e) {
     return FREEZE_KEYS.includes(e.keyCode) && $(`${CHAT_LINES_SELECTOR}:hover`).length && !document.hidden;
 }
 
+// TODO: we really shouldn't have to do this.. this is a bandaid
+let chatComponent;
+function scrollOnEmoteLoad($el) {
+    $el.find('img.emoticon').on('load', () => {
+        const indicator = $(MESSAGES_INDICATOR_SELECTOR).length > 0;
+        if (!chatComponent || indicator) return;
+        chatComponent._scrollToBottom();
+    });
+}
+
 class ChatFreezeModule {
     constructor() {
         $('body')
@@ -46,6 +56,7 @@ class ChatFreezeModule {
                 setScrollState(indicator);
             });
         watcher.on('load.chat', () => this.load());
+        watcher.on('chat.message', $el => scrollOnEmoteLoad($el));
     }
 
     load() {
@@ -66,6 +77,9 @@ class ChatFreezeModule {
                 }
             }
         });
+
+        const chatRoomEmberId = $(CHAT_ROOM_SELECTOR).attr('id');
+        chatComponent = twitch.getEmberView(chatRoomEmberId);
     }
 }
 
