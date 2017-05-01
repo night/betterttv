@@ -2016,6 +2016,10 @@ body.channel_new.columns.ember-application {
     z-index: 1000;
 }
 
+.conversation-window .conversation-chat-line {
+    overflow: visible;
+}
+
 /* Hide duplicate message once we add our parsed version */
 .conversation-chat-line.bttv-parsed-message .message {
     display: none;
