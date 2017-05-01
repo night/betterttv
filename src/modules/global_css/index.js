@@ -7,6 +7,14 @@ const watcher = require('../../watcher');
 
 let tempToggledDarkMode = false;
 
+function dismissPinnedCheers() {
+    $('body').on('click', '.pinned-cheers', e => {
+        if (!e.target.classList.contains('pinned-cheers')) return;
+        if (e.offsetX < e.target.offsetWidth - 50 || e.offsetY > 26) return;
+        $('.pinned-cheers').hide();
+    });
+}
+
 class GlobalCSSModule {
     constructor() {
         this.globalCSS();
@@ -35,6 +43,7 @@ class GlobalCSSModule {
         });
         settings.on('changed.darkenedMode', value => value === true ? this.loadDark() : this.unloadDark());
         this.loadDark();
+        dismissPinnedCheers();
 
         watcher.on('load.channel', () => this.attachTheatreListener());
         watcher.on('load.vod', () => this.attachTheatreListener());
