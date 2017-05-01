@@ -1,5 +1,7 @@
 const $ = require('jquery');
 const settings = require('../../settings');
+const watcher = require('../../watcher');
+const twitch = require('../../utils/twitch');
 
 class DisableFrontpageAutoplayModule {
     constructor() {
@@ -9,19 +11,36 @@ class DisableFrontpageAutoplayModule {
             defaultValue: false,
             description: 'Disable autoplay on the frontpage video player'
         });
-        this.load();
+
+        watcher.on('load', () => this.load());
     }
 
     load() {
         if (settings.get('disableFPVideo') === false || window.location.pathname !== '/') return;
 
         const $player = $('#player');
-        let frameSrc = $player.children('iframe').eq(0).attr('src');
-        $player.children('iframe').eq(0).attr('src', frameSrc + '&autoplay=false');
-        $player.bind('DOMNodeInserted DOMNodeRemoved', () => {
-            frameSrc = $player.children('iframe').eq(0).attr('src');
-            $player.children('iframe').eq(0).attr('src', frameSrc + '&autoplay=false');
-        });
+        const id = $player.parent().attr('id');
+        if (!id) return;
+
+        const view = twitch.getEmberView(id);
+        if (!view) return;
+
+        let startedPlaying = false;
+        const interval = setInterval(() => {
+            const paused = view.player.isPaused();
+            const channel = view.player.getChannel();
+            const quality = view.player.getQuality();
+            if (paused && channel && startedPlaying) {
+                clearInterval(interval);
+                return;
+            }
+
+            if (!quality) return;
+            startedPlaying = true;
+            try {
+                view.player.pause();
+            } catch (e) {}
+        }, 100);
     }
 }
 
