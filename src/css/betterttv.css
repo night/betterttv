@@ -684,6 +684,12 @@ input.text:focus,select:focus,textarea:focus {
     padding-top: 10px;
 }
 
+@media (max-width: 800px) {
+  .bttvChatSettings .openSettings {
+    display: none !important;
+  }
+}
+
 #chat_line_list, .ember-chat .chat-messages {
     font-size: 13.33333px;
     line-height: 17.33333px;
