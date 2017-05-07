@@ -22,9 +22,11 @@ class HostButtonModule {
         if (settings.get('hostButton') === false) return;
 
         const currentUser = twitch.getCurrentUser();
-        if (!currentUser) return;
+        const currentChannel = twitch.getCurrentChannel();
+        if (!currentUser || !currentChannel) return;
+        if (currentUser.id === currentChannel.id) return;
         this.embedHostButton();
-        this.updateHostingState(currentUser.id);
+        this.updateHostingState(currentUser.id, currentChannel.id);
     }
 
     embedHostButton() {
@@ -59,11 +61,7 @@ class HostButtonModule {
         $hostButton.find('span').text(text);
     }
 
-    updateHostingState(userId) {
-        const currentChannel = twitch.getCurrentChannel();
-        if (!currentChannel) return;
-
-        const channelId = currentChannel.id;
+    updateHostingState(userId, channelId) {
         const tmiSession = twitch.getCurrentTMISession();
         if (!tmiSession) return;
 
