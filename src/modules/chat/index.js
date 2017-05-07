@@ -129,8 +129,9 @@ class ChatModule {
                 const id = ($image.attr('src').split('emoticons/v1/')[1] || '').split('/')[0];
                 const emoteChannel = channelEmotesTip.getEmote(id, code);
                 if (emoteChannel.channel) {
-                    $emote.on('click', () => window.open(emoteChannel.channelURL, '_blank'));
                     $emote.find('.balloon').css('text-align', 'center').html(emoteChannel.balloon);
+                    if (emoteChannel.channelURL === window.location.href) continue;
+                    $emote.on('click', () => window.open(emoteChannel.channelURL, '_blank'));
                 }
                 continue;
             }
