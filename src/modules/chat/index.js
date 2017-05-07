@@ -35,14 +35,16 @@ function formatChatUser({from, color, tags}) {
         };
     }
 
+    const badges = tags.badges || {};
+
     return {
         id: tags['user-id'],
         name: tags.login || from,
         displayName: tags['display-name'],
         color: tags.color || color,
-        mod: tags.mod,
-        subscriber: tags.subscriber,
-        badges: tags.badges
+        mod: tags.mod || badges.hasOwnProperty('moderator'),
+        subscriber: tags.subscriber || badges.hasOwnProperty('subscriber'),
+        badges: badges
     };
 }
 
