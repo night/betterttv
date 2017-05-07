@@ -21,7 +21,7 @@ class DoubleClickMentionModule {
     }
 
     load() {
-        $(CHAT_ROOM_SELECTOR).on('dblclick', USERNAME_SELECTORS, e => {
+        $(CHAT_ROOM_SELECTOR).off('dblclick.mention').on('dblclick.mention', USERNAME_SELECTORS, e => {
             if (e.shiftKey || e.ctrlKey) return;
             clearSelection();
             chatModerationCards.close();
