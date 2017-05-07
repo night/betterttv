@@ -944,8 +944,8 @@ div#site_header {
     color: #fff !important;
 }
 
-.ember-chat .chat-line .mentioning,
-.ember-chat .chat-line .mentioned {
+.chat-container .ember-chat .chat-line .mentioning,
+.chat-container .ember-chat .chat-line .mentioned {
     color: #d3d3d3;
 }
 
@@ -2973,7 +2973,7 @@ ul.tabs li>a:hover, .directory_header .nav li>a:hover, ul.tabs li>button:hover, 
 .brick, .cn-bar__avatar-wrap {
     background-color: #141414 !important; /* because Twitch loves being !important */
     border-color: #141414;
-    border-top: none; 
+    border-top: none;
 }
 
 .cn-bar {
