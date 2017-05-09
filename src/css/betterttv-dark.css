@@ -50,6 +50,14 @@ body {
     color: #D3D3D3;
 }
 
+.chat-container {
+    border-left: none;
+}
+
+.ember-chat .special-message {
+    background: #111 !important;
+}
+
 /* live dashboard */
 div#site_header {
     background: rgb(30, 30, 30);
@@ -87,7 +95,7 @@ div#site_header {
     color: #888;
 }
 
-#dash_main #dash_nav li.tab.selected > a, #dash_main #dash_nav li.tab > a:hover  {
+#dash_main #dash_nav li.tab.selected > a, #dash_main #dash_nav li.tab > a:hover, .tw-tabs__item>a.active, .tw-tabs__item>button.active {
     color: #D3D3D3;
 }
 
@@ -936,6 +944,11 @@ div#site_header {
     color: #fff !important;
 }
 
+.ember-chat .chat-line .mentioning,
+.ember-chat .chat-line .mentioned {
+    color: #d3d3d3;
+}
+
 #main_col ul.nav.js-nav a.active {
     color: #D3D3D3 !important;
     border-color: #D3D3D3 !important;
@@ -1142,10 +1155,6 @@ div#site_header {
 
 #main_col .messages .message {
     border-color: #000;
-}
-
-.chat-line .message .deleted {
-    color: #999;
 }
 
 #bttvChatPaused {
@@ -1778,6 +1787,10 @@ table.simple_table td {
     border-color: #343434;
 }
 
+.cl-container .section-header .header-back:hover {
+    background-color: #333;
+}
+
 .new-dashboard .subscription-dash .video-quality-list li.selectable {
     background: #1b1b1b;
     border-right: 1px solid #343434;
@@ -1906,8 +1919,13 @@ div#actions {
     fill: #b8b5c0;
 }
 
-.chat-menu .balloon-wrapper .balloon {
+.chat-menu .balloon-wrapper .balloon,
+.chat-menu .balloon-wrapper .balloon .balloon__title {
     color: #d2d2d2;
+}
+
+.chat-menu .balloon .balloon__link.balloon__link--selected {
+    background-color: #3c3c3c !important;
 }
 
 .ember-chat .chat-settings .chat-colors .chat-colors-swatch.selected {
@@ -2166,12 +2184,18 @@ span.subscribe-text {
     background: rgba(255,255,255,0.7) !important;
 }
 
-/* dark whispers (lenny face) */
-.chat-messages .chat-line.whisper {
-    background-color: #352645 !important; /* blue: #202236 */
+/* legacy dark whispers */
+.chat-messages .whisper-line.whisper-incoming,
+.chat-messages .whisper-line.whisper-outgoing {
+    background-color: #111 !important;
 }
-.chat-messages .chat-line .svg-whisper-arrow {
-    fill: #D3D3D3;
+
+.chat-messages .whisper-line .svg-whisper-arrow polyline {
+    fill: #D3D3D3 !important;
+}
+
+.ember-chat .chat-messages .whisper-line .message {
+    font-weight: normal;
 }
 
 /* channel state */
@@ -2515,78 +2539,11 @@ span.subscribe-text {
     background-color: #3b3b3b;
     border-color: #444;
     color: #d4d4d4;
+    box-shadow: none;
 }
 
 .twitch_subwindow .text-content .js-subwindow-close:hover {
     color: #ffffff;
-}
-
-/* darken posts and popout posts */
-.activity-container .activity-card, .twitch_subwindow .activity-card {
-    border-color: rgb(30, 30, 30);
-}
-
-.activity-container .activity-card > div, .twitch_subwindow .activity-card > div {
-    background-color: rgb(30, 30, 30);
-}
-
-.activity-container .activity-card > div .activity-meta, .twitch_subwindow .activity-card > div .activity-meta {
-    box-shadow: inset 0 -1px 0 #333;
-}
-
-.activity-container .activity-card > div .activity-meta > *, .twitch_subwindow .activity-card > div .activity-meta > * {
-    color: #d3d3d3;
-}
-
-.activity-container .activity-card > div .activity-meta-divider:before, .twitch_subwindow .activity-card > div .activity-meta-divider:before {
-    background: #999;
-    border-color: #999;
-}
-.activity-container .activity-card > div .activity-meta-divider, .twitch_subwindow .activity-container .activity-card > div .activity-meta-divider {
-    box-shadow: inset 0 -1px 0 #999;
-}
-
-.activity-container .activity-card > div .activity-meta:before,
-.activity-container .activity-card > div .activity-react button,
-.activity-container .activity-card > div .balloon-wrapper .balloon,
-.activity-container .activity-card > div .balloon-wrapper .balloon:after,
-.twitch_subwindow .activity-card > div .activity-meta:before,
-.twitch_subwindow .activity-card > div .activity-react button,
-.twitch_subwindow .activity-card > div .balloon-wrapper .balloon,
-.twitch_subwindow .activity-card > div .balloon-wrapper .balloon:after {
-    border-color: #333;
-    background-color: #333;
-}
-
-.activity-container .activity-card > div .activity-react .activity-button--selected, .twitch_subwindow .activity-card > div .activity-react .activity-button--selected {
-    border-color: #14b866;
-    color: #14b866;
-}
-
-.activity-container .activity-card > div .balloon-wrapper .balloon a, .twitch_subwindow .activity-card > div .balloon-wrapper .balloon a {
-    color: #d3d3d3 !important;
-}
-
-.activity-container .activity-create, .twitch_subwindow .activity-create {
-    border: none;
-}
-
-.activity-container .activity-create > textarea, .twitch_subwindow .activity-create > textarea {
-    background-color: rgb(30, 30, 30);
-    color: #d3d3d3;
-}
-
-.activity-container .activity-create > div, .twitch_subwindow .activity-create > div {
-    background: #282828;
-    box-shadow: 0 -1px 0 #333;
-}
-
-.twitch_subwindow .activity-card .activity-card__comments a {
-    color: #D3D3D3;
-}
-
-.twitch_subwindow .activity-card .activity-card__comments .inherit-color:hover {
-    color: inherit;
 }
 
 /* chat replay */
@@ -2628,7 +2585,8 @@ span.subscribe-text {
     background: rgb(30, 30, 30);
 }
 
-#left_col .warp .warp__item--anchor {
+#left_col .warp .warp__item--anchor,
+#left_col .warp .warp__item--anchor-beta {
     background: #282828;
 }
 
@@ -2777,6 +2735,24 @@ ul.tabs li a:hover {
 
 .balloon .balloon__link {
     color: #dfdfdf !important;
+}
+
+.offer-list .offer-item--title {
+    background-color: initial;
+    border-bottom: .1rem solid #333;
+}
+
+.offer-list .offer-item__new-count {
+    background-color: #111;
+}
+
+.offer-list .offer-item__background--gray,
+.offer-list .offer-item__background--purple {
+    background-color: initial;
+}
+
+.offer-list .offer-list__core:after {
+    background-image: none;
 }
 
 .filter-bar__balloon-link--active {
@@ -2995,8 +2971,9 @@ ul.tabs li>a:hover, .directory_header .nav li>a:hover, ul.tabs li>button:hover, 
 
 /* new channel page */
 .brick, .cn-bar__avatar-wrap {
-    background-color: #282828;
-    border-color: #282828;
+    background-color: #141414 !important; /* because Twitch loves being !important */
+    border-color: #141414;
+    border-top: none; 
 }
 
 .cn-bar {
@@ -3036,8 +3013,12 @@ ul.tabs li>a:hover, .directory_header .nav li>a:hover, ul.tabs li>button:hover, 
     background: rgb(30, 30, 30);
 }
 
-#channel .card__layout .card__body a {
+#channel .card__body a {
     color: #999;
+}
+
+.js-directory .card__info {
+    color: #666;
 }
 
 .balloon, .balloon label {
@@ -3115,10 +3096,6 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
     color: white;
     text-decoration: none;
     background-color: #7d5bbe;
-}
-
-.brick {
-    border-color: #666;
 }
 
 .dash-tabs__item {
@@ -3235,7 +3212,7 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
     background-color: #bf4040;
 }
 
-.ember-chat .chat-messages .chat-line.twitchbot .button {
+.ember-chat .chat-messages .chat-line .button {
     color: #D3D3D3;
 }
 
@@ -3321,7 +3298,7 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
     box-shadow: inset 0 0 0 1px #333;
 }
 
-.fp-side__header {
+.fp-side__header, .fp-carousel__title {
     color: #d3d3d3;
 }
 
@@ -3383,4 +3360,142 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 
 .search-panel--fly:before, .search-panel--fly:after {
     border-bottom-color: #333;
+}
+
+.chat-chip {
+    background: #111;
+}
+
+.chat-chip .card__info {
+    color: #777;
+}
+
+/* social layout */
+.theme--dark .social-column {
+    background-color: rgb(30,30,30);
+}
+
+.theme--dark .sc-search {
+    background-color: #282828;
+    border-top-color: #292929;
+}
+
+.theme--dark .sc-header {
+    box-shadow: 0 -0.1rem 0 #333 inset;
+}
+
+.theme--dark .sc-search .form__input[type=text] {
+    box-shadow: #303030 0 0 0 1px inset;
+    background-color: #202020;
+}
+
+.fp-container {
+    background-color: rgb(20, 20, 20);
+}
+
+.fp-side {
+    background-color: rgb(28, 28, 28);
+    box-shadow: inset 0 0 0 1px #333;
+}
+
+.fp-side__header {
+    color: #d3d3d3;
+}
+
+.fp-side .card__info {
+    color: #777;
+}
+
+.fp-side .fp-carousel-nav__item {
+    border-bottom-color: #333;
+}
+
+.fp-side__footer {
+    background-color: #282828;
+    box-shadow: inset 0 -1px 0 #333, inset -1px 0 0 #333, inset 1px 0 0 #333;
+}
+
+.activity-card {
+    background-color: rgb(28, 28, 28);
+    box-shadow: inset 0 0 0 1px #333;
+}
+
+.activity-card__comments {
+    background-color: #282828;
+    box-shadow: inset 0 -1px 0 #333, inset -1px 0 0 #333, inset 1px 0 0 #333
+}
+
+.activity-meta__name {
+    color: #d3d3d3;
+}
+
+.activity-meta__stamp {
+    color: #777;
+}
+
+.activity-create {
+    border-color: #333;
+    background-color: rgb(25, 25, 25);
+}
+
+.activity-create__textarea, .activity-create__textarea:focus {
+    color: #d3d3d3;
+    background: none;
+    border-color: #333;
+}
+
+.activity-create__actions {
+    background-color: #282828;
+}
+
+.activity-button {
+    background-color: #282828;
+    border-color: #303030
+}
+
+.new-search .form__input[type=text] {
+    background-color: #282828;
+    color: #d3d3d3;
+}
+
+.search-panel--fly:before, .search-panel--fly:after {
+    border-bottom-color: #333;
+}
+
+.balloon {
+    box-shadow: 0px 0px 0 1px #282828;
+}
+
+.form__label, .form__input[type=checkbox]+label, .form__input[type=radio]+label {
+    color: #d3d3d3;
+}
+
+/* directory changes, game on stream preview  */
+.card__img {
+    background-color: #000000;
+}
+
+.card__boxpin {
+    border-color: #000000;
+}
+
+/* directory game details */
+.game-details__section--grey {
+    background: #111;
+}
+
+.game-details__section--white {
+    background: rgb(20, 20, 20);
+}
+
+.game-details__section--white+.game-details__section--grey, .game-details__section--grey+.game-details__section--white, .game-details-separator {
+    border-top-color: #333;
+}
+
+.game-details-igc__card {
+    border-color: #333;
+}
+
+.game-details-igc__details {
+    background-color: rgb(28, 28, 28);
 }

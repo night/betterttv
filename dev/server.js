@@ -1,19 +1,17 @@
-var fs = require('fs'),
-    http = require('http'),
-    https = require('https'),
-    path = require('path'),
-    request = require('request'),
-    url = require('url');
+const fs = require('fs');
+const http = require('http');
+const https = require('https');
+const path = require('path');
+const request = require('request');
+const url = require('url');
 
-process.on('uncaughtException', function(err) {
-    console.log('Caught exception: ' + err);
-});
+process.on('uncaughtException', err => console.log('Caught exception: ', err));
 
-var server = function(req, res) {
-    var uri = url.parse(req.url).pathname,
-        file = path.join(process.cwd(), 'build', uri);
+function server(req, res) {
+    const uri = url.parse(req.url).pathname;
+    const file = path.join(process.cwd(), 'build', uri);
 
-    fs.exists(file, function(exists) {
+    fs.exists(file, exists => {
         if (!exists) {
             request.get({
                 url: 'https://cdn-dev.betterttv.net/' + uri,
@@ -44,11 +42,15 @@ var server = function(req, res) {
 
         fs.createReadStream(file).pipe(res);
     });
-};
+}
 
-https.createServer({
-    key: fs.readFileSync(path.join(__dirname, 'test-cdn.betterttv.net.key')),
-    cert: fs.readFileSync(path.join(__dirname, 'test-cdn.betterttv.net.cert'))
-}, server).listen(443);
+function start() {
+    https.createServer({
+        key: fs.readFileSync(path.join(__dirname, 'test-cdn.betterttv.net.key')),
+        cert: fs.readFileSync(path.join(__dirname, 'test-cdn.betterttv.net.cert'))
+    }, server).listen(443);
 
-http.createServer(server).listen(80);
+    http.createServer(server).listen(80);
+}
+
+module.exports = start;

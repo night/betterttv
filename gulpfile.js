@@ -1,62 +1,89 @@
-var fs = require('fs'),
-    gulp = require('gulp'),
-    babel = require('gulp-babel'),
-    pug = require('gulp-pug'),
-    browserify = require('browserify'),
-    header = require('gulp-header'),
-    footer = require('gulp-footer'),
-    del = require('del'),
-    eslint = require('gulp-eslint'),
-    uglify = require('gulp-uglify'),
-    saveLicense = require('uglify-save-license'),
-    gulpif = require('gulp-if'),
-    source = require('vinyl-source-stream'),
-    buffer = require('vinyl-buffer');
+const browserify = require('browserify');
+const buffer = require('vinyl-buffer');
+const del = require('del');
+const eslint = require('gulp-eslint');
+const fs = require('fs');
+const git = require('git-rev-sync');
+const gulp = require('gulp');
+const gulpif = require('gulp-if');
+const gzip = require('gulp-gzip');
+const header = require('gulp-header');
+const saveLicense = require('uglify-save-license');
+const server = require('./dev/server');
+const source = require('vinyl-source-stream');
+const sourcemaps = require('gulp-sourcemaps');
+const tar = require('gulp-tar');
+const uglify = require('gulp-uglify');
 
-gulp.task('cleanup', function() {
-    return del('build/**/*');
-});
+process.env.EXT_VER = require('./package.json').version;
+process.env.GIT_REV = git.long();
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+process.env.SENTRY_URL = process.env.SENTRY_URL || 'https://24dfd2854f97465da5fb14fcea77278c@sentry.io/144851';
 
-gulp.task('templates', ['cleanup'], function() {
-    return gulp.src(['src/templates/*.pug'])
-               .pipe(pug({client: true, globals: ['$', 'window', 'bttv', 'Twitch']}))
-               .pipe(babel({presets: ['es2015']}))
-               .pipe(footer(';module.exports=template;'))
-               .pipe(gulp.dest('build/templates/'));
-});
+const IS_PROD = process.env.NODE_ENV === 'production';
+const LICENSE = `/** @license
+ * ${fs.readFileSync('LICENSE').toString().replace(/\n/g, '\n * ')}
+ */
+`;
 
-gulp.task('prepare', ['lint', 'templates'], function() {
-    return gulp.src(['src/**/*'])
-               .pipe(gulp.dest('build/'));
-});
+gulp.task(
+    'cleanup',
+    () => del('build/**/*')
+);
 
-gulp.task('lint', function() {
-    var options = {
-        configFile: '.eslintrc'
-    };
+gulp.task(
+    'prepare',
+    ['cleanup', 'lint'],
+    () => gulp.src(['src/**/*'])
+        .pipe(gulp.dest('build/'))
+);
 
-    return gulp.src(['src/js/**/*'])
-        .pipe(eslint(options))
+gulp.task(
+    'lint',
+    () => gulp.src(['src/**/*.js'])
+        .pipe(eslint())
         .pipe(eslint.format())
-        .pipe(eslint.failOnError());
-});
+        .pipe(eslint.failOnError())
+);
 
-var license = fs.readFileSync('src/license.txt').toString();
-
-gulp.task('scripts', ['prepare'], function() {
-    return browserify('build/js/main.js')
+gulp.task(
+    'scripts',
+    ['prepare'],
+    () => browserify('build/index.js', {debug: true})
+        .transform('require-globify')
+        .transform('babelify', {presets: ['es2015']})
+        .transform('envify')
         .bundle()
         .pipe(source('betterttv.js'))
         .pipe(buffer())
-        .pipe(header('(function(bttv) {'))
-        .pipe(header(license + '\n'))
-        .pipe(footer('}(window.BetterTTV = window.BetterTTV || {}));'))
-        .pipe(gulpif(process.env.NODE_ENV === 'production', uglify({ preserveComments: saveLicense })))
-        .pipe(gulp.dest('build'));
-});
+        .pipe(header(LICENSE + '\n'))
+        .pipe(gulpif(IS_PROD, sourcemaps.init({loadMaps: true})))
+        .pipe(gulpif(IS_PROD, uglify({preserveComments: saveLicense})))
+        .pipe(gulpif(IS_PROD, sourcemaps.write('./')))
+        .pipe(gulp.dest('build'))
+);
 
-gulp.task('watch', ['default'], function() {
-    gulp.watch('src/**/*', ['default']);
-});
+gulp.task(
+    'server',
+    () => server()
+);
 
-gulp.task('default', ['scripts']);
+gulp.task(
+    'watch',
+    ['default', 'server'],
+    () => gulp.watch('src/**/*', ['default'])
+);
+
+gulp.task(
+    'default',
+    ['scripts']
+);
+
+gulp.task(
+    'dist',
+    ['scripts'],
+    () => gulp.src('build/**/*')
+        .pipe(tar('betterttv.tar'))
+        .pipe(gzip())
+        .pipe(gulp.dest('dist'))
+);

@@ -23,14 +23,6 @@ body.channel_new {
     border-radius: 0px;
 }
 
-.chat_line span, .chat-line .message span {
-    padding-right: 8px !important;
-}
-
-.chat-line .message .deleted {
-    color: #6441a4;
-}
-
 #metagame a {
     color: white !important;
 }
@@ -157,14 +149,20 @@ input.text:focus,select:focus,textarea:focus {
     display: inline-block;
 }
 
-.ember-chat .badges .badge {
-    float: none !important;
-    background-size: contain;
-    margin: 0px;
+.ember-chat .badges a {
+   text-decoration: none;
 }
 
-.ember-chat .badges .badge:last-child {
-    margin-right: 5px;
+.ember-chat .badges span:last-child .badge {
+    margin-right: 3px;
+}
+
+.ember-chat .mod-icons {
+    margin-right: 0;
+}
+
+.ember-chat .mod-icons .mod-icon {
+    margin: -2px 0 0 -2px;
 }
 
 .badges .oldbot {
@@ -293,8 +291,9 @@ input.text:focus,select:focus,textarea:focus {
 }
 
 .line .admin, .line .staff, .line .broadcaster, .line .mod, .line .turbo a, .line .subscriber a, .ember-chat .badges .badge, .ember-chat .badges .badge a {
-    margin-bottom: 1px;
     border-radius: 2px;
+    margin: -1px 3px 1px 0;
+    float: none;
 }
 
 .line .tag.alpha, .ember-chat .badges .badge.alpha {
@@ -471,12 +470,12 @@ input.text:focus,select:focus,textarea:focus {
 }
 
 .swap-chat .ember-view .app-main.theatre #main_col {
-    margin-left: 340px;
+    margin-left: 340px !important;
     margin-right: 0;
 }
 
 .swap-chat .ember-view .app-main.theatre #main_col.expandRight {
-    margin-left: 0;
+    margin-left: 0 !important;
 }
 
 .swap-chat .ember-view .app-main.theatre #player[data-isfullscreen=true] {
@@ -530,6 +529,7 @@ input.text:focus,select:focus,textarea:focus {
     padding: 5px;
     border-top: 1px solid #111;
     box-sizing: content-box;
+    z-index: inherit;
 }
 
 #bttvSettingsPanel #footer a {
@@ -684,6 +684,12 @@ input.text:focus,select:focus,textarea:focus {
     padding-top: 10px;
 }
 
+@media (max-width: 800px) {
+  .bttvChatSettings .openSettings {
+    display: none !important;
+  }
+}
+
 #chat_line_list, .ember-chat .chat-messages {
     font-size: 13.33333px;
     line-height: 17.33333px;
@@ -724,7 +730,6 @@ input.text:focus,select:focus,textarea:focus {
 }
 
 .bttv-mod-card .user-messages {
-    padding-top: 10px;
     width: 100%;
     max-width: 320px;
     float: left;
@@ -987,12 +992,16 @@ input, textarea, select {
 #bvl-panel {
     min-width: 200px;
     min-height: 300px;
-    z-index: 99999;
+    z-index: 1001;
     box-shadow: 0 0 0 1px rgba(0,0,0,0.25);
 }
 
 #bvl-panel .chat-header {
     cursor: move !important;
+}
+
+#bvl-panel .chat-header svg {
+    vertical-align: middle;
 }
 
 #bvl-panel a.button.disable {
@@ -1105,10 +1114,6 @@ input, textarea, select {
 .ember-chat .chat-messages {
     left: 0px;
     right: 0px;
-}
-
-.ember-chat .mod-icons, .ember-chat .chat-messages .timestamp {
-    margin-right: 0px;
 }
 
 .ember-chat {
@@ -1635,12 +1640,6 @@ body#chat #speak {
     left: 0px;
 }
 
-.ember-chat .chat-menu-content p a {
-    background-repeat: no-repeat;
-    padding-left: 20px;
-    padding-top: 3px;
-}
-
 .g18_gear-00000080 {
     background-image: url(//www-cdn.jtvnw.net/images/xarth/g/g18_gear-00000080.png);
 }
@@ -1871,8 +1870,8 @@ body.channel_new.columns.ember-application {
 }
 
 /* Emoji */
-.emoji {
-    height: 20px;
+.bttv-emoji {
+    height: auto;
     width: 20px;
     margin-bottom: -4px;
     display: inline-block;
@@ -1971,6 +1970,20 @@ body.channel_new.columns.ember-application {
     margin-bottom: 5px;
 }
 
+/* chat hover balloon */
+.chat-line .balloon {
+    pointer-events: none;  /* Disable hovering on tooltip itself */
+    color: white;
+    background-color: black;
+    padding: 4px 6px;
+    margin-bottom: 8px;
+    opacity: 0.8;
+}
+
+.chat-line .balloon:after {
+    background-color: black;
+}
+
 /* whispers */
 .chat-messages .chat-line.whisper {
     background-color: #E8D6FF !important;
@@ -2001,6 +2014,10 @@ body.channel_new.columns.ember-application {
 
 .ember-chat .chat-interface .suggestions {
     z-index: 1000;
+}
+
+.conversation-window .conversation-chat-line {
+    overflow: visible;
 }
 
 /* Hide duplicate message once we add our parsed version */
@@ -2073,7 +2090,7 @@ body.channel_new.columns.ember-application {
 
 /* twitch floats all chat elements */
 .chat-line .float-left {
-    float: none;
+    float: none !important;
 }
 
 /* custom timeouts */
@@ -2108,6 +2125,7 @@ body.channel_new.columns.ember-application {
     background: rgba(0,0,0,0.6);
     cursor: default;
     display: none;
+    color: #d3d3d3;
 }
 
 #bttv-custom-timeout-contain:hover .text {
@@ -2116,11 +2134,6 @@ body.channel_new.columns.ember-application {
 
 #bttv-custom-timeout-contain:hover .cursor {
     background: #0f0;
-}
-
-/* fix small font in chat */
-.ember-chat .chat-messages .chat-line {
-    font-size: 13.3333px;
 }
 
 /* chat replay */
@@ -2166,6 +2179,15 @@ body.channel_new.columns.ember-application {
 .chat-messages .chat-line .user-mention:hover {
     text-decoration: underline;
     cursor: pointer;
+}
+
+.ember-chat .chat-line .mentioning,
+.ember-chat .chat-line .mentioned {
+    cursor: pointer;
+    color: rgb(67, 63, 74);
+    background-color: transparent;
+    font-weight: bold;
+    padding: 0px;
 }
 
 #emote-menu-button {
@@ -2248,21 +2270,15 @@ body.channel_new.columns.ember-application {
     display: none;
 }
 
-/* Add hide button to past broadcast banner */
-.recent-past-broadcast__message_sub:after {
-    float: right;
-    content: "Hide";
-    cursor: pointer;
-}
-
-/* Free Sub Reminder */
-.bttv-free-sub-reminder {
+/* Prime Sub Reminder */
+.bttv-prime-sub-reminder::after {
     background: url(https://cdn.betterttv.net/assets/icons/badge-prime.svg);
     background-size: contain;
-    left: 3px;
-    top: 7px;
+    top: 9px;
+    right: 8px;
     width: 14px;
     height: 14px;
+    border: none;
     position: absolute;
 }
 
@@ -2372,4 +2388,111 @@ body.channel_new.columns.ember-application {
 /* Limit of 10 SoSnowy in a single message */
 .bttv-emo-567b5b520e984428652809b6:nth-of-type(n + 11) {
     display: none;
+}
+
+/* automod */
+.ember-chat .chat-messages .chat-line .system-msg {
+    margin-bottom: 8px;
+    color: #575260;
+}
+
+.twitchbot .pd-y-1 {
+    text-align: center;
+}
+
+/* front page pulse/featured stream */
+.featured-only .fp-container__pulse {
+    display: none;
+}
+
+.featured-only .fp-container__side {
+    left: 30rem;
+    right: 30rem;
+}
+
+.pulse-only .fp-container__pulse {
+    margin: auto;
+}
+
+.pulse-only .fp-container__side {
+    display: none;
+}
+
+.bttv-frontpage-buttons {
+    margin: 5px 0 -25px 30px;
+    opacity: 0.5;
+}
+
+/*** Holiday 2016 BTTV emote CSS ***/
+
+/* No stacking of IceCube or SoSnowy */
+.bttv-emo-5849c9a4f52be01a7ee5f79d + .bttv-emo-5849c9a4f52be01a7ee5f79d,
+.bttv-emo-567b5b520e984428652809b6 + .bttv-emo-567b5b520e984428652809b6 {
+    display: none;
+}
+
+.emoticon + .bttv-emo-5849c9a4f52be01a7ee5f79d { /* Ice Cube */
+    margin-left: -35px;
+    margin-bottom: -8px;
+    margin-top: -8px;
+}
+
+.emoticon + .bttv-emo-58487cc6f52be01a7ee5f205 { /* SantaHat */
+    margin-left: -34px;
+    margin-bottom: -1px;
+}
+
+.emoticon + .bttv-emo-5849c9c8f52be01a7ee5f79e { /* TopHat */
+    margin-left: -32px;
+    margin-bottom: -2px;
+}
+
+.emoticon + .bttv-emo-567b5b520e984428652809b6,  /* SoSnowy */
+.emoticon + .bttv-emo-567b5c080e984428652809ba,  /* CandyCane */
+.emoticon + .bttv-emo-567b5dc00e984428652809bd { /* ReinDeer */
+    margin-left: -33px;
+}
+
+.emoticon + .bttv-emo-58017c088faabf4b3d008460,  /* HalloFedora */
+.emoticon + .bttv-emo-5801777f8faabf4b3d008434,  /* HalloWitch */
+.emoticon + .bttv-emo-58017be38faabf4b3d00845a,  /* HalloKKona */
+.emoticon + .bttv-emo-58017bcc8faabf4b3d008456,  /* HalloHalo */
+.emoticon + .bttv-emo-5802e7a5d336345f3d4e1ed5,  /* HalloPirate */
+.emoticon + .bttv-emo-58017bf38faabf4b3d00845d { /* HalloHorns */
+    margin-left: -32px;
+}
+
+/* Limit of 10 SoSnowy in a single message */
+.bttv-emo-567b5b520e984428652809b6:nth-of-type(n + 11) {
+    display: none;
+}
+
+.chat-line .colon,
+.conversation-chat-line .colon {
+    margin-left: -3px;
+}
+
+.chat-line .undelete a {
+    text-decoration: none
+}
+
+.chat-line .bttv-click:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.chat-line .bttv-deleted {
+    opacity: 0.5;
+}
+
+/* clips */
+.clip-chat-badge .clip-chat-badge__img {
+    border-radius: 2px;
+}
+
+.clip-chat-line .emoticon {
+    vertical-align: middle !important;
+    display: inline;
+    line-height: 1.4;
+    cursor: default;
 }

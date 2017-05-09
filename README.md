@@ -11,23 +11,10 @@ Getting the essentials
 1. Install nodejs.
 2. Run ```npm install``` within the BetterTTV directory.
 
-Gulp
----
-We use gulp to concatenate all of the files and templates into one. You can either make gulp watch for changes or run it manually.
-
-From the BetterTTV directory, run
-```
-gulp
-```
-or
-```
-gulp watch
-```
-
 Development
 ----
 
-We include a dev module that creates a server to imitate the CDN.
+We use gulp to concatenate all of the files and templates into one. We include a dev module that creates a server to imitate the CDN when gulp is watching.
 
 To use it, we must first modify the hosts file on your computer.
 
@@ -44,12 +31,12 @@ Now just run the following command from the BetterTTV directory.
 
 **on *nix:**
 ```
-sudo npm start
+sudo gulp watch
 ```
 
 **on Windows you need an elevated command prompt:**
 ```
-npm start
+gulp watch
 ```
 
 A webserver will start and you can visit Twitch in your browser and browse normally. Files not included in the repo are pulled from the actual server, so everything works.
@@ -68,7 +55,7 @@ In order to receive debug messages inside the browser's console log, you must to
 
 Type this in the JavaScript console to enable console logging:
 ```
-BetterTTV.settings.save('consoleLog', true);
+BetterTTV.settings.set('consoleLog', true);
 ```
 
 Linting
@@ -85,3 +72,10 @@ If you use Sublime Text as your text editor, you can set it up to highlight any 
 2. Install [Sublime Package Control](https://packagecontrol.io/installation)
 3. Install [SublimeLinter](http://www.sublimelinter.com/en/latest/installation.html#installing-via-pc)
 4. Install [SublimeLinter-eslint](https://github.com/roadhump/SublimeLinter-eslint#linter-installation)
+
+**Live Linting with VSCode:**
+
+If you use VSCode as your text editor, you can set it up to highlight any errors that ESLint would throw in real-time.
+
+1. Get ESLint using ```npm install eslint```
+2. Install the ESLint extension from the extensions marketplace
