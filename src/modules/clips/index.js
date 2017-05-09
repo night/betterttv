@@ -14,6 +14,7 @@ const SCROLL_INDICATOR_SELECTOR = '.view-clip__scrollButton';
 const SCROLL_CONTAINER_SELECTOR = '.view-clip__main';
 
 const $body = $('body');
+const $html = $('html');
 
 function parseColor(rgbText) {
     const rgb = (rgbText.split(')')[0].split('rgb(')[1] || '').split(',');
@@ -50,7 +51,7 @@ class GlobalCSSModule {
         }
 
         if (!settings.get(SETTING_KEY)) return;
-        $body.addClass(DARK_CLASS);
+        $html.addClass(DARK_CLASS);
     }
 
     darkenToggleButton() {
@@ -63,7 +64,7 @@ class GlobalCSSModule {
 
     toggleDarkMode() {
         const newValue = !(settings.get(SETTING_KEY) || false);
-        $body.toggleClass(DARK_CLASS, newValue);
+        $html.toggleClass(DARK_CLASS, newValue);
         settings.set(SETTING_KEY, newValue);
     }
 

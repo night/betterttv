@@ -1,15 +1,5 @@
-/* removes locked 100% height */
-html, body {
-    height: auto;
-}
-
-/* clip editor doesn't have enough content to use auto */
-.dark .ce-wrapper {
-    height: 100vh;
-}
-
 /* darken most things */
-body.dark {
+html.dark, .dark body {
     background: rgb(20,20,20);
     color: #d3d3d3;
 }
