@@ -2467,9 +2467,9 @@ body.channel_new.columns.ember-application {
     display: none;
 }
 
-.chat-line .colon,
+.chatReplay .chat-line .colon,
 .conversation-chat-line .colon {
-    margin-left: 3px;
+    margin-left: -3px;
 }
 
 .chat-line .undelete a {
