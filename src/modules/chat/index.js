@@ -35,14 +35,16 @@ function formatChatUser({from, color, tags}) {
         };
     }
 
+    const badges = tags.badges || {};
+
     return {
         id: tags['user-id'],
         name: tags.login || from,
         displayName: tags['display-name'],
         color: tags.color || color,
-        mod: tags.mod,
-        subscriber: tags.subscriber,
-        badges: tags.badges
+        mod: tags.mod || badges.hasOwnProperty('moderator'),
+        subscriber: tags.subscriber || badges.hasOwnProperty('subscriber'),
+        badges: badges
     };
 }
 
@@ -129,8 +131,9 @@ class ChatModule {
                 const id = ($image.attr('src').split('emoticons/v1/')[1] || '').split('/')[0];
                 const emoteChannel = channelEmotesTip.getEmote(id, code);
                 if (emoteChannel.channel) {
-                    $emote.on('click', () => window.open(emoteChannel.channelURL, '_blank'));
                     $emote.find('.balloon').css('text-align', 'center').html(emoteChannel.balloon);
+                    if (emoteChannel.channelURL === window.location.href) continue;
+                    $emote.on('click', () => window.open(emoteChannel.channelURL, '_blank'));
                 }
                 continue;
             }

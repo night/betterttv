@@ -3,6 +3,8 @@ const watcher = require('../../watcher');
 const settings = require('../../settings');
 const Raven = require('raven-js');
 
+const CHAT_EMBER = '.chat-room > div';
+
 let twitchClearChat;
 function onClearChat(name, tags) {
     if (!name) {
@@ -49,6 +51,11 @@ function onClearChat(name, tags) {
                     $message.text('<message deleted>');
                 }
             });
+
+        // Remove messages in the delayed message queue
+        const chatComponent = twitch.getEmberView($(CHAT_EMBER).attr('id'));
+        const filtered = chatComponent.room.delayedMessages.filter(msg => msg.from !== name);
+        chatComponent.room.set('delayedMessages', filtered);
 
         // this is a gross hack to show timeout messages without us having to implement them
         const currentChat = twitch.getCurrentChat();

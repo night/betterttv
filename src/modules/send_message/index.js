@@ -10,6 +10,7 @@ const emojis = require('../emotes/emojis');
 const socketClient = require('../../socket-client');
 
 const TEXTAREA_SELECTOR = '.textarea-contain';
+const CHAT_TEXT_AREA = '.ember-chat .chat-interface textarea';
 
 const PATCHED_SENTINEL = () => {};
 
@@ -66,6 +67,9 @@ class SendMessagePatcher {
     }
 
     patch() {
+        // Set message box limit character to 500
+        $(CHAT_TEXT_AREA).attr('maxlength', 500);
+
         const emberView = twitch.getEmberView($(TEXTAREA_SELECTOR).attr('id'));
         if (!emberView) return;
 

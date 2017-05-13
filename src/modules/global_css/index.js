@@ -2,10 +2,8 @@ const $ = require('jquery');
 const cdn = require('../../utils/cdn');
 const css = require('../../utils/css');
 const settings = require('../../settings');
-const storage = require('../../storage');
 const watcher = require('../../watcher');
 
-let tempToggledDarkMode = false;
 
 function dismissPinnedCheers() {
     $('body').on('click', '.pinned-cheers', e => {
@@ -44,9 +42,6 @@ class GlobalCSSModule {
         settings.on('changed.darkenedMode', value => value === true ? this.loadDark() : this.unloadDark());
         this.loadDark();
         dismissPinnedCheers();
-
-        watcher.on('load.channel', () => this.attachTheatreListener());
-        watcher.on('load.vod', () => this.attachTheatreListener());
     }
 
     loadDark() {
@@ -110,18 +105,6 @@ class GlobalCSSModule {
 
     toggleLeftSideChat() {
         $('body').toggleClass('swap-chat', settings.get('leftSideChat'));
-    }
-
-    attachTheatreListener() {
-        const playerService = App.__container__.lookup('service:persistentPlayer');
-        if (!playerService || !playerService.playerComponent || !playerService.playerComponent.player) return;
-        playerService.playerComponent.player.addEventListener('theatrechange', state => {
-            if (settings.get('darkenedMode') === true && !tempToggledDarkMode) return;
-            tempToggledDarkMode = !tempToggledDarkMode;
-            settings.set('darkenedMode', state);
-            // Turn darkenedMode setting off again if needed but without emit
-            if (state) storage.set('darkenedMode', false, undefined, false, false);
-        });
     }
 }
 
