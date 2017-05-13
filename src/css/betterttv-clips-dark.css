@@ -1,15 +1,5 @@
-/* removes locked 100% height */
-html, body {
-    height: auto;
-}
-
-/* clip editor doesn't have enough content to use auto */
-.dark .ce-wrapper {
-    height: 100vh;
-}
-
 /* darken most things */
-body.dark {
+html.dark, .dark body {
     background: rgb(20,20,20);
     color: #d3d3d3;
 }
@@ -74,7 +64,7 @@ body.dark {
 
 /* table borders */
 .dark .table .table__cell {
-    border-bottom: 1px solid #666;
+    border-bottom: 1px solid #333;
 }
 
 /* darken all table text */
@@ -109,7 +99,11 @@ body.dark {
 }
 
 /* input, select and textarea boxes */
-.dark .balloon input, .dark .balloon input:focus, .dark .modal .js-report-content-modal select, .dark .modal .js-report-content-modal textarea {
+.dark .balloon input,
+.dark .balloon input:focus,
+.dark .modal .js-report-content-modal select,
+.dark .modal .js-report-content-modal textarea,
+.dark textarea.ct-text-input {
     background: #3b3b3b;
     border: 1px solid rgba(0,0,0,0.35);
     color: #d4d4d4
