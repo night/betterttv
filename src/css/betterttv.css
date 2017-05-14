@@ -2164,6 +2164,10 @@ body.channel_new.columns.ember-application {
     cursor: pointer !important;
 }
 
+.chatReplay .chat-messages .chat-line {
+    overflow: visible;
+}
+
 /* host & playlist banner fix */
 .player-column .brick {
     border-left: 5px solid #6441a5 !important;
