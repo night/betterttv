@@ -8,7 +8,7 @@ function request(method, path, options = {}) {
         $.ajax({
             url: `${API_ENDPOINT}${path}${options.qs ? `?${querystring.stringify(options.qs)}` : ''}`,
             method,
-            dataType: 'json',
+            dataType: options.dataType || 'json',
             data: options.body ? JSON.stringify(options.body) : undefined,
             timeout: 30000,
             success: data => resolve(data),

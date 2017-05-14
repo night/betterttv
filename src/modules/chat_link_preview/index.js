@@ -3,7 +3,7 @@ const api = require('../../utils/api');
 const watcher = require('../../watcher');
 const debounce = require('lodash.debounce');
 
-const IMAGE_REGEX = new RegExp('(https?:\/\/.)([a-z\-_0-9\/\:\.\%\+]*\.(jpg|jpeg|png|gif|gifv|webm))', 'i');
+const IMAGE_REGEX = new RegExp('(https?:\/\/.)([a-z\-_0-9\/\:\.\%\+]*\.(jpg|jpeg|png|gif|gifv|webm|mp4))', 'i');
 
 const enter = debounce(function() {
     const url = this.href;
@@ -11,7 +11,10 @@ const enter = debounce(function() {
 
     const previewType = IMAGE_REGEX.test(url) ? 'image_embed' : 'link_resolver';
 
-    api.get(`${previewType}/${encodeURIComponent(url)}`).then(data => {
+    api.get(
+        `${previewType}/${encodeURIComponent(url)}`,
+        {dataType: previewType === 'image_embed' ? 'html' : 'json'}
+    ).then(data => {
         if (!$target.length || !$target.is(':hover')) return;
 
         $target.tipsy({
