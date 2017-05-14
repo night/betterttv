@@ -1,4 +1,5 @@
 const $ = require('jquery');
+const css = require('../../utils/css');
 const watcher = require('../../watcher');
 const settings = require('../../settings');
 
@@ -26,9 +27,9 @@ class HideSidebarElementsModule {
 
     toggleFeaturedChannels() {
         if (settings.get('hideFeaturedChannels') === false) {
-            $('.js-recommended-channels').show();
+            css.unload('hide-recommended-channels');
         } else {
-            $('.js-recommended-channels').hide();
+            css.load('hide-recommended-channels');
         }
     }
 

@@ -4,7 +4,6 @@ const css = require('../../utils/css');
 const settings = require('../../settings');
 const watcher = require('../../watcher');
 
-
 function dismissPinnedCheers() {
     $('body').on('click', '.pinned-cheers', e => {
         if (!e.target.classList.contains('pinned-cheers')) return;
