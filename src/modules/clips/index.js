@@ -17,7 +17,7 @@ const $body = $('body');
 const $html = $('html');
 
 function parseColor(rgbText) {
-    const rgb = (rgbText.split(')')[0].split('rgb(')[1] || '').split(',');
+    const rgb = ((rgbText || '').split(')')[0].split('rgb(')[1] || '').split(',');
     const sanitize = c => parseInt((c || '0').trim(), 10);
     return {
         r: sanitize(rgb[0]),

@@ -26,14 +26,11 @@ class ChannelEmotes extends AbstractEmotes {
     updateChannelEmotes({urlTemplate, emotes}) {
         this.emotes.clear();
 
-        const channel = twitch.getCurrentChannel();
-        if (!channel) return;
-
-        emotes.forEach(({id, code, imageType}) => (
+        emotes.forEach(({id, code, imageType, channel}) => (
             this.emotes.set(code, new Emote({
                 id,
                 provider: this.provider,
-                channel,
+                channel: {name: channel},
                 code,
                 images: {
                     '1x': mustacheFormat(urlTemplate, {id, image: '1x'}),

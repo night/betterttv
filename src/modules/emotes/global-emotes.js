@@ -32,7 +32,7 @@ class GlobalEmotes extends AbstractEmotes {
                 if (restrictions && restrictions.emoticonSet) {
                     restrictionCallback = (_, user) => {
                         if (restrictions.emoticonSet !== 'night') return false;
-                        return legacySubscribers.hasSubscription(user.name);
+                        return user ? legacySubscribers.hasSubscription(user.name) : false;
                     };
                 }
 

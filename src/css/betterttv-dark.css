@@ -945,7 +945,9 @@ div#site_header {
 }
 
 .ember-chat .chat-line .mentioning,
-.ember-chat .chat-line .mentioned {
+.ember-chat .chat-line .mentioned,
+.chat-container.dark .chat-line .mentioned,
+.ember-chat-container.dark .chat-line .mentioned {
     color: #d3d3d3;
 }
 

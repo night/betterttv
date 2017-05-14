@@ -2182,7 +2182,9 @@ body.channel_new.columns.ember-application {
 }
 
 .ember-chat .chat-line .mentioning,
-.ember-chat .chat-line .mentioned {
+.ember-chat .chat-line .mentioned,
+.chat-container.dark .chat-line .mentioned,
+.ember-chat-container.dark .chat-line .mentioned {
     cursor: pointer;
     color: rgb(67, 63, 74);
     background-color: transparent;

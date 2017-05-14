@@ -26,7 +26,16 @@ class DisableFrontpageAutoplayModule {
         if (!view) return;
 
         let startedPlaying = false;
+        let loops = 0;
         const interval = setInterval(() => {
+            loops++;
+            if (loops > 300) {
+                clearInterval(interval);
+                return;
+            }
+
+            if (!view.player) return;
+
             const paused = view.player.isPaused();
             const channel = view.player.getChannel();
             const quality = view.player.getQuality();
