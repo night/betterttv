@@ -2502,3 +2502,8 @@ body.channel_new.columns.ember-application {
     line-height: 1.4;
     cursor: default;
 }
+
+/* vod chat */
+.vod-message__badge {
+    border-radius: 2px;
+}

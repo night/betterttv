@@ -8,6 +8,7 @@ let route = '';
 let chatWatcher;
 let conversationWatcher;
 let clipsChatWatcher;
+let vodChatWatcher;
 let channel = {};
 const chatState = {
     slow: 0,
@@ -32,6 +33,7 @@ class Watcher extends SafeEventEmitter {
         this.routeObserver();
         this.clipsChatObserver();
         this.checkClips();
+        this.vodChatObserver();
 
         debug.log('Watcher started');
     }
@@ -255,6 +257,30 @@ class Watcher extends SafeEventEmitter {
         );
 
         this.on('load.clips', () => observe(clipsChatWatcher, $('body')[0]));
+    }
+
+    vodChatObserver() {
+        const observe = (watcher, element) => {
+            if (!element) return;
+            if (watcher) watcher.disconnect();
+            watcher.observe(element, {childList: true, subtree: true});
+        };
+
+        vodChatWatcher = new window.MutationObserver(mutations =>
+            mutations.forEach(mutation => {
+                for (const el of mutation.addedNodes) {
+                    const $el = $(el);
+
+                    if ($el.hasClass('vod-message__content')) {
+                        this.emit('vod.message', $el);
+                    } else if ($el.hasClass('vod-message')) {
+                        $el.find('.vod-message__content').each((_, message) => this.emit('vod.message', $(message)));
+                    }
+                }
+            })
+        );
+
+        this.on('load.vod', () => observe(vodChatWatcher, $('.vod-chat')[0]));
     }
 }
 
