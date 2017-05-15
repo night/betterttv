@@ -94,9 +94,10 @@ class ChatDeletedMessagesModule {
         if (!currentChat || !currentChat.tmiRoom) return;
         const tmiRoom = currentChat.tmiRoom;
         const clearChatCallbacks = tmiRoom._events.clearchat;
-        if (!clearChatCallbacks || !clearChatCallbacks[0]) return;
-        if (clearChatCallbacks[0] !== onClearChat && !tmiRoom._bttvClearChatMonkeyPatched) {
-            twitchClearChat = clearChatCallbacks[0];
+        if (!clearChatCallbacks || !clearChatCallbacks.length) return;
+        const defaultClearChatCallback = clearChatCallbacks.find(c => c && c !== onClearChat);
+        if (defaultClearChatCallback && !tmiRoom._bttvClearChatMonkeyPatched) {
+            twitchClearChat = defaultClearChatCallback;
         }
         delete tmiRoom._events.clearchat;
         tmiRoom.on('clearchat', onClearChat);

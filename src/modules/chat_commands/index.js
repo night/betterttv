@@ -202,12 +202,12 @@ function handleCommands(message) {
         case 'uptime':
             twitchAPI.get(`streams/${channel.id}`)
                 .then(({stream}) => {
-                    if (!stream) {
+                    const startedTime = stream ? new Date(stream.created_at) : null;
+                    if (!startedTime) {
                         twitch.sendChatAdminMessage('Stream is not live');
                         return;
                     }
 
-                    const startedTime = new Date(stream.created_at);
                     const secondsSince = Math.round((Date.now() - startedTime.getTime()) / 1000);
                     twitch.sendChatAdminMessage(`Current Uptime: ${secondsToLength(secondsSince)}`);
                 })

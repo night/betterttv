@@ -2429,6 +2429,7 @@ span.subscribe-text {
 .conversations-content .conversation-window textarea {
     background-color: rgb(20, 20, 20);
     border: solid 1px #333;
+    box-shadow: none;
     color: #d3d3d3;
 }
 
