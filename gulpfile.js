@@ -8,6 +8,7 @@ const gulp = require('gulp');
 const gulpif = require('gulp-if');
 const gzip = require('gulp-gzip');
 const header = require('gulp-header');
+const rename = require('gulp-rename');
 const saveLicense = require('uglify-save-license');
 const server = require('./dev/server');
 const source = require('vinyl-source-stream');
@@ -57,10 +58,12 @@ gulp.task(
         .pipe(source('betterttv.js'))
         .pipe(buffer())
         .pipe(header(LICENSE + '\n'))
+        .pipe(gulp.dest('build'))
+        .pipe(gulpif(IS_PROD, rename('betterttv.min.js')))
         .pipe(gulpif(IS_PROD, sourcemaps.init({loadMaps: true})))
         .pipe(gulpif(IS_PROD, uglify({preserveComments: saveLicense})))
         .pipe(gulpif(IS_PROD, sourcemaps.write('./')))
-        .pipe(gulp.dest('build'))
+        .pipe(gulpif(IS_PROD, gulp.dest('build')))
 );
 
 gulp.task(
