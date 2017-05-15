@@ -54,6 +54,7 @@ module.exports = function moderatorCard(user, top, left) {
             <div class="interface">
                 <div class="btn-wrapper">
                     <button class="button-simple primary mod-card-follow">Follow</button>
+                    <button class="button-simple primary mod-card-friend">Friend</button>
                     <button style="height: 30px;" title="Send user a whisper" class="button-simple dark mod-card-whisper">
                         <svg height="16px" width="16px" version="1.1" viewBox="0 0 16 16" x="0px" y="0px" class="svg-conversations">
                             <path clip-rule="evenodd" fill-rule="evenodd" d="M15,11H8.6L4,15v-4H2V2h13V11z"></path>
