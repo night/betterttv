@@ -1025,7 +1025,8 @@ input, textarea, select {
     box-shadow: none;
     border-radius: 0;
     margin: 6px;
-    width: calc(100% - 10px);
+    padding: 6px;
+    width: calc(100% - 12px);
     display: none;
 }
 

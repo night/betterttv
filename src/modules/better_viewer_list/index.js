@@ -108,8 +108,7 @@ class BetterViewerListModule {
                 results.push({
                     tag: 'li',
                     text: users[j],
-                    display: users[j]
-                    // TODO(ehsankia): Replace display name
+                    display: this.capitalize(users[j])
                 });
             }
 
@@ -254,6 +253,10 @@ class BetterViewerListModule {
 
         // Load viewers
         this.loadViewerList();
+    }
+
+    capitalize(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
     }
 }
 
