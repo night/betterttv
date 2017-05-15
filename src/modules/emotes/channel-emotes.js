@@ -1,6 +1,5 @@
 const watcher = require('../../watcher');
 const mustacheFormat = require('../../utils/regex').mustacheFormat;
-const twitch = require('../../utils/twitch');
 const cdn = require('../../utils/cdn');
 
 const AbstractEmotes = require('./abstract-emotes');
