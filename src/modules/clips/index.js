@@ -35,7 +35,7 @@ function scrollOnEmoteLoad($el) {
     });
 }
 
-class GlobalCSSModule {
+class ClipsModule {
     constructor() {
         watcher.on('load.clips', () => this.load());
         watcher.on('clips.message', $el => this.parseMessage($el));
@@ -80,4 +80,4 @@ class GlobalCSSModule {
     }
 }
 
-module.exports = new GlobalCSSModule();
+module.exports = new ClipsModule();

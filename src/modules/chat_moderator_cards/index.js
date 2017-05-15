@@ -63,6 +63,14 @@ function toggleFollow($modCard, value) {
     return value;
 }
 
+function toggleFriend($modCard, value) {
+    if (value === undefined) {
+        value = $modCard.find('.mod-card-friend').text() !== 'Unfriend';
+    }
+    $modCard.find('.mod-card-friend').text(value ? 'Unfriend' : 'Friend');
+    return value;
+}
+
 function renderModeratorCard(user, $el) {
     const top = Math.max(0, Math.min($el.offset().top + 25, window.innerHeight - 200));
     const left = Math.max(0, Math.min($el.offset().left - 25, window.innerWidth - 290));
@@ -131,6 +139,35 @@ function renderModeratorCard(user, $el) {
             request.then(() => twitch.sendChatAdminMessage(`You ${!followed ? 'un' : ''}followed ${user.name}`))
                 .catch(() => twitch.sendChatAdminMessage(`Error ${!followed ? 'un' : ''}following ${user.name}`));
         });
+
+        const store = twitch.getEmberContainer('service:store');
+        if (store) {
+            if (store.peekRecord('friends-list-user', user.id)) {
+                toggleFriend($modCard, true);
+            } else {
+                toggleFriend($modCard, false);
+            }
+
+            $modCard.find('.mod-card-friend').click(() => {
+                const friended = toggleFriend($modCard);
+
+                const action = !friended ? (
+                    store.queryRecord('friends-list-user', {
+                        type: 'unfriend',
+                        id: user.id,
+                        login: user.name
+                    })
+                ) : (
+                    store.createRecord('friends-list-request', {
+                        friendId: user.id,
+                        friendLogin: user.name
+                    }).save()
+                );
+
+                action.then(() => twitch.sendChatAdminMessage(`You ${!friended ? 'un' : ''}friended ${user.name}`))
+                    .catch(() => twitch.sendChatAdminMessage(`Error ${!friended ? 'un' : ''}friending ${user.name}`));
+            });
+        }
     }
 
     // use Twitch jQuery for Draggable
