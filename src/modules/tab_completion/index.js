@@ -106,7 +106,7 @@ class TabCompletionModule {
             if (this.suggestions.length > 0) {
                 this.tabTries += e.shiftKey ? -1 : 1; // shift key iterates backwards
                 if (this.tabTries >= this.suggestions.length) this.tabTries = 0;
-                if (this.tabTries < 0) this.tabTries = this.suggestions.length + this.tabTries;
+                if (this.tabTries < 0) this.tabTries = this.suggestions.length - 1;
                 if (!this.suggestions[this.tabTries]) return;
 
                 let cursorOffset = 0;
