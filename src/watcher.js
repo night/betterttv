@@ -7,6 +7,7 @@ const $ = require('jquery');
 let route = '';
 let chatWatcher;
 let conversationWatcher;
+let clipsChatWatcher;
 let channel = {};
 const chatState = {
     slow: 0,
@@ -241,7 +242,7 @@ class Watcher extends SafeEventEmitter {
             watcher.observe(element, {childList: true, subtree: true});
         };
 
-        conversationWatcher = new window.MutationObserver(mutations =>
+        clipsChatWatcher = new window.MutationObserver(mutations =>
             mutations.forEach(mutation => {
                 for (const el of mutation.addedNodes) {
                     const $el = $(el);
@@ -253,7 +254,7 @@ class Watcher extends SafeEventEmitter {
             })
         );
 
-        this.on('load.clips', () => observe(conversationWatcher, $('body')[0]));
+        this.on('load.clips', () => observe(clipsChatWatcher, $('body')[0]));
     }
 }
 
