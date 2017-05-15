@@ -2383,8 +2383,9 @@ span.subscribe-text {
 }
 
 .conversations-content .conversations-list-bottom-bar {
-    background-color: rgb(30,30,30);
+    background-color: #282828;
     border-color: #0e0e0e;
+    border-top-color: #292929;
 }
 .conversations-content .conversations-list-search-bar .text {
     background-color: rgb(20, 20, 20);
@@ -2395,6 +2396,10 @@ span.subscribe-text {
     box-shadow: 0 0 3px 1px #444;
     -moz-box-shadow: 0 0 3px 1px #444;
     -webkit-box-shadow: 0 0 3px 1px #444;
+}
+.conversations-content .conversations-list-search-bar input {
+    box-shadow: #303030 0 0 0 1px inset;
+    background-color: #202020;
 }
 
 .conversation-window .convoHeader {
