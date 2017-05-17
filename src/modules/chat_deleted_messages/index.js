@@ -54,8 +54,10 @@ function onClearChat(name, tags) {
 
         // Remove messages in the delayed message queue
         const chatComponent = twitch.getEmberView($(CHAT_EMBER).attr('id'));
-        const filtered = chatComponent.room.delayedMessages.filter(msg => msg.from !== name);
-        chatComponent.room.set('delayedMessages', filtered);
+        if (chatComponent && chatComponent.room) {
+            const filtered = chatComponent.room.delayedMessages.filter(msg => msg.from !== name);
+            chatComponent.room.set('delayedMessages', filtered);
+        }
 
         // this is a gross hack to show timeout messages without us having to implement them
         const currentChat = twitch.getCurrentChat();

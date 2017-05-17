@@ -21,7 +21,7 @@ function formatUser(data) {
 }
 
 function lookup(...args) {
-    return window.App.__container__.lookup(...args);
+    return window.App ? window.App.__container__.lookup(...args) : null;
 }
 
 let currentUser;

@@ -19,6 +19,9 @@
                     'InvalidAccessError',
                     'wrapped(betterttv)',
                     'Access is denied.',
+                    'container.className.match is not a function',
+                    'this exception cannot be caught',
+                    'Wrong length!',
                     /^<anonymous> in/,
                     /^null$/,
                     /^undefined$/,
@@ -30,9 +33,12 @@
                     'tipsy is undefined',
                     'draggable is not a function',
                     'draggable is undefined',
+                    'jQuery is not a function',
                     // Emote Menu
+                    'Getter already exists.',
                     'Cannot read property \'setChannelName\' of undefined',
-                    'l is undefined'
+                    '.getTime is not a function',
+                    '`callback` must be a function.'
                 ],
                 whitelistUrls: [
                     /betterttv\.js/,
