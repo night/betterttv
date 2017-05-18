@@ -1,7 +1,7 @@
 {
   "name": "BetterTTV",
   "author": "Night",
-  "version": "7.0.6",
+  "version": "7.0.7",
   "description": "BetterTTV enhances Twitch with new features, bug fixes, and reduced clutter.",
   "main": "betterttv.js",
   "scripts": {
