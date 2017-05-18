@@ -55,7 +55,7 @@ gulp.task(
         .transform('babelify', {presets: ['es2015']})
         .transform('envify')
         .bundle()
-        .pipe(source('betterttv.unmin.js'))
+        .pipe(gulpif(IS_PROD, source('betterttv.unmin.js'), source('betterttv.js')))
         .pipe(buffer())
         .pipe(header(LICENSE + '\n'))
         .pipe(gulp.dest('build'))

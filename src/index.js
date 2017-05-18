@@ -1,8 +1,4 @@
 (() => {
-    if (!window._babelPolyfill) {
-        require('babel-polyfill');
-    }
-
     if (window.location.pathname.endsWith('.html')) return;
 
     const Raven = require('raven-js');
