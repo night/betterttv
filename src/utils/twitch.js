@@ -45,7 +45,8 @@ module.exports = {
     },
 
     getEmberView(elementID) {
-        return lookup('-view-registry:main')[elementID];
+        const obj = lookup('-view-registry:main');
+        return obj ? obj[elementID] : null;
     },
 
     getCurrentChannel() {
