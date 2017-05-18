@@ -39,7 +39,7 @@ class ChatLinkPreviewModule {
     }
 
     load() {
-        $('#right_col .chat-messages .chat-lines')
+        $('.chat-messages .chat-lines')
         .off({
             mouseenter: enter,
             mouseleave: leave
