@@ -15,7 +15,7 @@ class AnonChatModule {
         });
 
         this.enabled = false;
-        watcher.on('load.chat', () => this.load());
+        watcher.on('load.chat_settings', () => this.load());
         watcher.on('chat.message', ($el, msgObj) => this.onMessage($el, msgObj));
         settings.on('changed.anonChat', () => this.load(true));
     }
