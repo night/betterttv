@@ -24,6 +24,13 @@ class TabCompletionModule {
             description: 'Shows a tooltip with suggested names when using @ completion'
         });
 
+        settings.add({
+            id: 'tabCompletionEmotePriority',
+            name: 'Tab Completion Emote Priority',
+            description: 'Prioritize emotes over usernames when using tab completion',
+            default: false,
+        });
+
         this.load();
         watcher.on('chat.message', ($el, msg) => this.storeUser($el, msg));
         watcher.on('load.chat', () => this.resetChannelData());
@@ -154,25 +161,26 @@ class TabCompletionModule {
     }
 
     getSuggestions(prefix, includeUsers = true, includeEmotes = true) {
-        const suggestions = [];
+        let userList = [];
+        let emoteList = [];
 
         if (includeEmotes) {
-            // BTTV Emotes
-            suggestions.push(...emotes.getEmotes().map(emote => emote.code));
-
-            // Twitch emotes
-            suggestions.push(...this.getTwitchEmotes().map(emote => emote.code));
+            emoteList.push(...emotes.getEmotes().map(emote => emote.code));
+            emoteList.push(...this.getTwitchEmotes().map(emote => emote.code));
+            emoteList = emoteList.filter(word => word.toLowerCase().indexOf(prefix.toLowerCase()) === 0);
+            emoteList.sort();
         }
 
         if (includeUsers) {
-            // Users
-            suggestions.push(...this.userList);
+            userList = Array.from(this.userList).filter(word => word.toLowerCase().indexOf(prefix.toLowerCase()) === 0);
+            userList.sort();
         }
 
-        // Filter and sort emotes
-        return suggestions.filter(word => (
-            word.toLowerCase().indexOf(prefix.toLowerCase()) === 0
-        )).sort();
+        if (settings.get('tabCompletionEmotePriority') === true) {
+            return [ ...emoteList, ...userList];
+        } else {
+            return [...userList, ...emoteList];
+        }
     }
 
     getTwitchEmotes() {
