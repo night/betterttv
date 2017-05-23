@@ -21,7 +21,7 @@ function formatUser(data) {
 }
 
 function lookup(...args) {
-    return window.App.__container__.lookup(...args);
+    return window.App ? window.App.__container__.lookup(...args) : null;
 }
 
 let currentUser;
@@ -45,7 +45,8 @@ module.exports = {
     },
 
     getEmberView(elementID) {
-        return lookup('-view-registry:main')[elementID];
+        const obj = lookup('-view-registry:main');
+        return obj ? obj[elementID] : null;
     },
 
     getCurrentChannel() {
