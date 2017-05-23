@@ -8,6 +8,7 @@ const ViewList = require('view-list');
 const Resizable = require('resizable');
 const moderatorCards = require('../chat_moderator_cards');
 
+const capitalize = str => str.charAt(0).toUpperCase() + str.slice(1);
 let viewList;
 let chatterList;
 let chatterCount;
@@ -89,7 +90,6 @@ class BetterViewerListModule {
     extractViewers(data) {
         const typeDisplays = ['STAFF', 'ADMINS', 'GLOBAL MODERATORS', 'MODERATORS', 'VIEWERS'];
         const userTypes = ['staff', 'admins', 'global_mods', 'moderators', 'viewers'];
-        const capitalize = str => str.charAt(0).toUpperCase() + str.slice(1);
 
         const results = [];
         const chatters = data.data.chatters;
