@@ -89,6 +89,7 @@ class BetterViewerListModule {
     extractViewers(data) {
         const typeDisplays = ['STAFF', 'ADMINS', 'GLOBAL MODERATORS', 'MODERATORS', 'VIEWERS'];
         const userTypes = ['staff', 'admins', 'global_mods', 'moderators', 'viewers'];
+        const capitalize = str => str.charAt(0).toUpperCase() + str.slice(1);
 
         const results = [];
         const chatters = data.data.chatters;
@@ -108,7 +109,7 @@ class BetterViewerListModule {
                 results.push({
                     tag: 'li',
                     text: users[j],
-                    display: this.capitalize(users[j])
+                    display: capitalize(users[j])
                 });
             }
 
@@ -253,10 +254,6 @@ class BetterViewerListModule {
 
         // Load viewers
         this.loadViewerList();
-    }
-
-    capitalize(str) {
-        return str.charAt(0).toUpperCase() + str.slice(1);
     }
 }
 
