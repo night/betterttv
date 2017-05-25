@@ -2164,7 +2164,7 @@ body.channel_new.columns.ember-application {
     cursor: pointer !important;
 }
 
-.chatReplay .chat-messages .chat-line {
+.chatReplay .chat-messages .chat-line, .chatReplay .chat-messages .chat-line:hover {
     overflow: visible;
 }
 
