@@ -8,10 +8,13 @@ const ViewList = require('view-list');
 const Resizable = require('resizable');
 const moderatorCards = require('../chat_moderator_cards');
 
-const capitalize = str => str.charAt(0).toUpperCase() + str.slice(1);
 let viewList;
 let chatterList;
 let chatterCount;
+
+function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
 
 class BetterViewerListModule {
     constructor() {
