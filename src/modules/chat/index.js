@@ -12,7 +12,7 @@ const channelEmotesTip = require('../channel_emotes_tip');
 const legacySubscribers = require('../legacy_subscribers');
 
 const EMOTE_STRIP_SYMBOLS_REGEX = /(^[~!@#$%\^&\*\(\)]+|[~!@#$%\^&\*\(\)]+$)/g;
-const MENTION_REGEX = /@\b(.*)\b/;
+const MENTION_REGEX = /^@([a-zA-Z\d_]+)$/;
 
 const badgeTemplate = (url, description) => `
     <span class="balloon-wrapper float-left">

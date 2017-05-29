@@ -12,6 +12,10 @@ let viewList;
 let chatterList;
 let chatterCount;
 
+function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
 class BetterViewerListModule {
     constructor() {
         settings.add({
@@ -108,8 +112,7 @@ class BetterViewerListModule {
                 results.push({
                     tag: 'li',
                     text: users[j],
-                    display: users[j]
-                    // TODO(ehsankia): Replace display name
+                    display: capitalize(users[j])
                 });
             }
 
