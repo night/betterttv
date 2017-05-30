@@ -3594,3 +3594,7 @@ circle#Oval {
 .notification__empty{
     background-color: #1e1e1e;
 }
+
+.notification-center__core--empty {
+    background-color: #1e1e1e;
+}
