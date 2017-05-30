@@ -3590,3 +3590,7 @@ circle#Oval {
 .notification-center__subheader-unread-count>span {
     color: #D3D3D3;
 }
+
+.notification__empty{
+    background-color: #1e1e1e;
+}
