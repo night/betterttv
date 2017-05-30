@@ -3523,3 +3523,70 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 .vod-chat__scroll-wrapper::-webkit-scrollbar-thumb{
     border-color: #201c2b;
 }
+
+.offer-list__container>.ember-tether>.border-t {
+    border-top: .1rem solid #333;
+}
+
+.notification-center__header-text {
+    color: #D3D3D3;
+}
+
+.notification-center__header {
+    background-color: #1e1e1e;
+    border-bottom: .1rem solid #333;
+}
+
+.notification-center__subheader-text {
+    color: #D3D3D3;
+}
+
+.notification-center__subheader {
+    background-color: #1e1e1e;
+    border-bottom: .1rem solid #333;
+}
+
+.friend-requests__empty {
+    background-color: #1e1e1e;
+    border-bottom: .1rem solid #333;
+}
+
+.notification-center__empty {
+    background-color: #1e1e1e
+    border-bottom: .1rem solid #333;
+}
+
+.notification-center__footer {
+    background-color: #1e1e1e;
+    border-top: .1rem solid #333;
+}
+
+.notification__container.notification--read {
+    background-color: #1e1e1e;
+    border-bottom: .1rem solid #333;
+}
+
+.notification__container.notification--unread {
+    background-color: #323232;
+    border-bottom: .1rem solid #333;
+}
+
+.notification-center__core-end {
+    background-color: #1e1e1e;
+}
+
+.notification__container:hover {
+    background-color: #464646;
+}
+
+circle#Oval {
+    fill: #1e1e1e;
+}
+
+.notification-center__subheader-unread-count {
+    background-color: #323232;
+}
+
+.notification-center__subheader-unread-count>span {
+    color: #D3D3D3;
+}
