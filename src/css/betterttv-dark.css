@@ -3571,7 +3571,7 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
     border-bottom: .1rem solid #333;
 }
 
-.notification-center__core-end {
+.notification-center__core {
     background-color: #1e1e1e;
 }
 
@@ -3579,7 +3579,7 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
     background-color: #464646;
 }
 
-circle#Oval {
+.notification__container #Oval {
     fill: #1e1e1e;
 }
 
@@ -3597,4 +3597,8 @@ circle#Oval {
 
 .notification-center__core--empty {
     background-color: #1e1e1e;
+}
+
+.friend-request__action--icon > .icon > svg.svg-ban {
+    fill: white;
 }
