@@ -3602,3 +3602,12 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 .friend-request__action--icon > .icon > svg.svg-ban {
     fill: white;
 }
+
+.friend-request__action--icon {
+    background-color: inherit;
+    box-shadow: inset 0 0 0 1px #323232;
+}
+
+.notification-center__header .button:hover {
+    color:#D3D3D3
+}
