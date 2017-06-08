@@ -6,6 +6,7 @@ const watcher = require('../../watcher');
 const settings = require('../../settings');
 const storage = require('../../storage');
 const html = require('../../utils/html');
+const api = require('../../utils/api');
 
 const getSettingElement = ({id}) => $(`.bttvOption-${html.escape(id)}`);
 
@@ -146,7 +147,20 @@ class SettingsModule {
         $('body').append(panel);
 
         cdn.get('privacy.html').then(data => $('#bttvPrivacy .tse-content').html(data));
-        cdn.get('changelog.html', true).then(data => $('#bttvChangelog .tse-content').html(data));
+
+        const changelogPanel = $('#bttvChangelog .tse-content');
+        api.get('changelog').then(data => {
+            if (data.status === 200) {
+                changelogPanel.append('<h1>Changelog</h1');
+                data.changelog.forEach(entry => {
+                    const pubdate = window.moment(entry.publishedAt).format('MMM D, YYYY');
+                    changelogPanel.append(`<h2>Version ${entry.version} (${pubdate})</h2> ${entry.body}`);
+                });
+            } else {
+                debug.log(`Changelog bad status: ${data.status}`);
+                changelogPanel.append('<h2>Error fetching changelog.</h2>');
+            }
+        });
 
         $('#bttvSettings').on('change', '.option input:radio', ({target}) => settings.set(target.name, target.value === 'true'));
         $('#bttvBackupButton').click(() => this.backup());
