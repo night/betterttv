@@ -2352,6 +2352,9 @@ span.subscribe-text {
 /* conversations */
 
 /* conversations list icon */
+.conversations-content {
+    color: #d3d3d3;
+}
 .conversations-content .conversations-list {
     background-color: rgb(35,35,35);
     border-color: #0e0e0e;
