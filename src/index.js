@@ -1,4 +1,5 @@
 (() => {
+    if (!String.prototype.includes || !Array.prototype.findIndex) return;
     if (window.location.pathname.endsWith('.html')) return;
 
     const Raven = require('raven-js');
@@ -18,6 +19,9 @@
                     'container.className.match is not a function',
                     'this exception cannot be caught',
                     'Wrong length!',
+                    'Cannot read property \'value\' of undefined',
+                    '"onJsReady"',
+                    'Can\'t execute code from a freed script',
                     /^<anonymous> in/,
                     /^null$/,
                     /^undefined$/,
@@ -30,6 +34,7 @@
                     'draggable is not a function',
                     'draggable is undefined',
                     'jQuery is not a function',
+                    'unsupported pseudo: hover',
                     // Emote Menu
                     'Getter already exists.',
                     'Cannot read property \'setChannelName\' of undefined',

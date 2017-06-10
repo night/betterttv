@@ -31,8 +31,8 @@ class HideFriendsModule {
 
     hideChatLine($el, messageObj) {
         if (!settings.get('hideFriendsChatActivity')) return;
-        const isFriendMessage = / (VoHiYo|HeyGuys)$/.test(messageObj.message);
-        if (!isFriendMessage || messageObj.style !== 'admin') return;
+        const isFriendMessage = /(VoHiYo|HeyGuys)/.test(messageObj.message) && messageObj.style === 'admin';
+        if (!isFriendMessage) return;
         $el.hide();
     }
 }
