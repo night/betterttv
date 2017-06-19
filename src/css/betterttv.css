@@ -637,14 +637,14 @@ input.text:focus,select:focus,textarea:focus {
 }
 
 #bttvSettingsPanel #bttvAbout .aboutHalf {
-    width: -moz-calc(50% - 30px);
-    width: -webkit-calc(50% - 30px);
-    width: calc(50% - 30px);
+    width: -moz-calc(50% - 24px);
+    width: -webkit-calc(50% - 24px);
+    width: calc(50% - 24px);
     display: inline-block;
     float: left;
     background-color: rgb(35, 35, 35);
     border-radius: 3px;
-    margin: 10px;
+    margin: 12px;
     padding: 5px;
     text-align: center;
     height: 395px;
