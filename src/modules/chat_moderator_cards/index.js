@@ -21,13 +21,13 @@ const STATES = {
 
 let state = STATES.CLOSED;
 
-function getUserChatMessages(id) {
+function getUserChatMessages(id, name) {
     return $.makeArray($(CHAT_LINE_SELECTOR))
         .reverse()
         .filter(m => {
             const messageObj = twitch.getChatMessageObject(m);
             if (!messageObj || !messageObj.tags) return false;
-            return messageObj.tags['user-id'] === id;
+            return messageObj.tags['user-id'] === id || messageObj.from === name;
         });
 }
 
@@ -226,7 +226,7 @@ class ChatModeratorCardsModule {
                     user.id = user._id;
                     delete user._id;
                     // adds in user messages from chat
-                    user.messages = getUserChatMessages(id);
+                    user.messages = getUserChatMessages(id, user.name);
                     renderModeratorCard(user, $el);
                     $('body').on('keydown.modCard', e => this.onKeyDown(e, user));
                 }, elapsed < 250 ? 250 - elapsed : 0);

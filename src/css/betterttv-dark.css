@@ -2137,7 +2137,7 @@ span.subscribe-text {
 .emoticon-selector .emoticon-selector-box,
 .emoticon-selector-container .emoticon-selector {
     background-color: #191919;
-    border-color: #191919;
+    box-shadow: inset 0 0 0 1px #191919;
 }
 
 .emoticon-selector .emoticon-selector-box .emoticon-selector__tabs,
@@ -2174,6 +2174,7 @@ span.subscribe-text {
     background-color: #282828;
     border-color: #444;
     color: #d3d3d3;
+    box-shadow: 0 0 3px 1px #333;
 }
 
 .emoticon-selector .emoticon-selector-box input:focus {
@@ -3099,16 +3100,26 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 }
 
 .button--hollow {
-    background-color: #6441a4;
-    color: white;
-    box-shadow: none;
+    color: #d3d3d3;
+    box-shadow: inset 0 0 0 1px #6441a4;
 }
 
 .button--hollow:focus,
 .button--hollow:hover {
-    color: white;
+    color: #d3d3d3;
     text-decoration: none;
-    background-color: #7d5bbe;
+    background-color: #6441a4;
+}
+
+.button--hollow.button--dropmenu:hover:after, .button--hollow.button--dropmenu:focus:after {
+    border: 5px solid #6441a4;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+}
+
+.button--icon.button--hollow:focus figure svg, .button--icon.button--hollow:hover figure svg {
+    fill: #d3d3d3;
 }
 
 .dash-tabs__item {
@@ -3286,6 +3297,7 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 /* social layout */
 .theme--dark .social-column {
     background-color: rgb(30,30,30);
+    box-shadow: none;
 }
 
 .theme--dark .sc-search {
@@ -3449,12 +3461,13 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 
 .activity-create {
     border-color: #333;
-    background-color: rgb(25, 25, 25);
+    background-color: rgb(25, 25, 25) !important;
 }
 
-.activity-create__textarea, .activity-create__textarea:focus {
+textarea.form__input.activity-create__textarea, textarea.form__input.activity-create__textarea:focus {
     color: #d3d3d3;
     background: none;
+    background-color: transparent;
     border-color: #333;
 }
 

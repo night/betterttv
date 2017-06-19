@@ -81,11 +81,14 @@ class Watcher extends SafeEventEmitter {
                         this.emit('load.dashboard');
                         this.emit('load.chat');
                         break;
+                    case 'channel.index.index':
+                    case 'channel.index.post':
                     case 'channel.videos.video-type':
+                    case 'channel.clips.index':
+                    case 'channel.collections':
+                    case 'channel.events':
                     case 'channel.followers':
                     case 'channel.following':
-                    case 'channel.index.index':
-                    case 'channel.clips':
                         this.emit('load.channel');
                         // Switching between tabs in channel page
                         if (lastRoute.substr(0, 8) === 'channel.') break;
