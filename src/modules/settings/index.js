@@ -89,8 +89,8 @@ const settingsPanelTemplate = () => `
     </div>
 `;
 
-const changelogEntryTemplate = (version, pubdate, body) => `
-    <h2>Version ${html.escape(version)} (${pubdate})</h2>
+const changelogEntryTemplate = (version, publishedAt, body) => `
+    <h2>Version ${html.escape(version)} (${window.moment(publishedAt).format('MMM D, YYYY')})</h2>
     <p>${body}</p>
 `;
 
@@ -156,8 +156,7 @@ class SettingsModule {
         const changelogPanel = $('#bttvChangelog .tse-content');
         api.get('changelog').then(data => {
             data.changelog.forEach(entry => {
-                const pubdate = window.moment(entry.publishedAt).format('MMM D, YYYY');
-                changelogPanel.append(changelogEntryTemplate(entry.version, pubdate, entry.body));
+                changelogPanel.append(changelogEntryTemplate(entry.version, entry.publishedAt, entry.body));
             });
         });
 
