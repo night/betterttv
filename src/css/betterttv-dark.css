@@ -1050,7 +1050,11 @@ div#site_header {
     color: #d3d3d3;
 }
 
-.tickets .ticket .benefits {
+.ticket__img {
+    background: #111;
+}
+
+.ticket__benefits {
     background: #222 !important;
     border: none !important;
 }
