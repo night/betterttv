@@ -91,7 +91,7 @@ const settingsPanelTemplate = () => `
 
 const changelogEntryTemplate = (version, pubdate, body) => `
     <h2>Version ${html.escape(version)} (${pubdate})</h2>
-    ${body}
+    <p>${body}</p>
 `;
 
 function getDataURLFromUpload(input, callback) {
