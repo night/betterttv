@@ -155,7 +155,7 @@ class SettingsModule {
 
         api.get('changelog')
             .then(({changelog}) => changelog.map(({version, publishedAt, body}) => changelogEntryTemplate(version, publishedAt, body)))
-            .then(releases => $('#bttvChangelog .bttv-changelog-releases').append(releases.join('')));
+            .then(releases => $('#bttvChangelog .bttv-changelog-releases').html(releases.join('')));
 
         $('#bttvSettings').on('change', '.option input:radio', ({target}) => settings.set(target.name, target.value === 'true'));
         $('#bttvBackupButton').click(() => this.backup());
