@@ -70,7 +70,7 @@ const settingsPanelTemplate = () => `
         <div class="tse-content"></div>
     </div>
     <div id="bttvChangelog" class="scroll scroll-dark" style="display:none;height:425px;">
-        <div class="tse-content"></div>
+        <div class="tse-content"><h1>Changelog</h1></div>
     </div>
     <div id="bttvBackup" style="display:none;height:425px;padding:25px;">
         <h4 style="padding-bottom:10px;">Backup Settings</h4>
@@ -87,6 +87,11 @@ const settingsPanelTemplate = () => `
             <a href="https://discord.gg/nightdev" target="_blank">Discord</a>
         </span>
     </div>
+`;
+
+const changelogEntryTemplate = (version, pubdate, body) => `
+    <h2>Version ${html.escape(version)} (${pubdate})</h2>
+    ${body}
 `;
 
 function getDataURLFromUpload(input, callback) {
@@ -150,16 +155,10 @@ class SettingsModule {
 
         const changelogPanel = $('#bttvChangelog .tse-content');
         api.get('changelog').then(data => {
-            if (data.status === 200) {
-                changelogPanel.append('<h1>Changelog</h1');
-                data.changelog.forEach(entry => {
-                    const pubdate = window.moment(entry.publishedAt).format('MMM D, YYYY');
-                    changelogPanel.append(`<h2>Version ${entry.version} (${pubdate})</h2> ${entry.body}`);
-                });
-            } else {
-                debug.log(`Changelog bad status: ${data.status}`);
-                changelogPanel.append('<h2>Error fetching changelog.</h2>');
-            }
+            data.changelog.forEach(entry => {
+                const pubdate = window.moment(entry.publishedAt).format('MMM D, YYYY');
+                changelogPanel.append(changelogEntryTemplate(entry.version, pubdate, entry.body));
+            });
         });
 
         $('#bttvSettings').on('change', '.option input:radio', ({target}) => settings.set(target.name, target.value === 'true'));
