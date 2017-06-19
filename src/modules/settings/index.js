@@ -70,7 +70,7 @@ const settingsPanelTemplate = () => `
         <div class="tse-content"></div>
     </div>
     <div id="bttvChangelog" class="scroll scroll-dark" style="display:none;height:425px;">
-        <div class="tse-content"><h1>Changelog</h1></div>
+        <div class="tse-content"><h1>Changelog</h1><div class="bttv-changelog-releases"></div></div>
     </div>
     <div id="bttvBackup" style="display:none;height:425px;padding:25px;">
         <h4 style="padding-bottom:10px;">Backup Settings</h4>
@@ -153,12 +153,9 @@ class SettingsModule {
 
         cdn.get('privacy.html').then(data => $('#bttvPrivacy .tse-content').html(data));
 
-        const changelogPanel = $('#bttvChangelog .tse-content');
-        api.get('changelog').then(data => {
-            data.changelog.forEach(entry => {
-                changelogPanel.append(changelogEntryTemplate(entry.version, entry.publishedAt, entry.body));
-            });
-        });
+        api.get('changelog')
+            .then(({changelog}) => changelog.map(({version, publishedAt, body}) => changelogEntryTemplate(version, publishedAt, body)))
+            .then(releases => $('#bttvChangelog .bttv-changelog-releases').append(releases.join('')));
 
         $('#bttvSettings').on('change', '.option input:radio', ({target}) => settings.set(target.name, target.value === 'true'));
         $('#bttvBackupButton').click(() => this.backup());
