@@ -2508,3 +2508,10 @@ body.channel_new.columns.ember-application {
 .vod-message__badge {
     border-radius: 2px;
 }
+
+/* Changelog version headers */
+#bttvChangelog .tse-content h2 {
+    margin-top: 20px;
+    margin-bottom: 5px;
+    font-weight: bold;
+}

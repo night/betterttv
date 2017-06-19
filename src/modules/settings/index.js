@@ -6,6 +6,7 @@ const watcher = require('../../watcher');
 const settings = require('../../settings');
 const storage = require('../../storage');
 const html = require('../../utils/html');
+const api = require('../../utils/api');
 
 const getSettingElement = ({id}) => $(`.bttvOption-${html.escape(id)}`);
 
@@ -69,7 +70,7 @@ const settingsPanelTemplate = () => `
         <div class="tse-content"></div>
     </div>
     <div id="bttvChangelog" class="scroll scroll-dark" style="display:none;height:425px;">
-        <div class="tse-content"></div>
+        <div class="tse-content"><h1>Changelog</h1><div class="bttv-changelog-releases"></div></div>
     </div>
     <div id="bttvBackup" style="display:none;height:425px;padding:25px;">
         <h4 style="padding-bottom:10px;">Backup Settings</h4>
@@ -86,6 +87,11 @@ const settingsPanelTemplate = () => `
             <a href="https://discord.gg/nightdev" target="_blank">Discord</a>
         </span>
     </div>
+`;
+
+const changelogEntryTemplate = (version, publishedAt, body) => `
+    <h2>Version ${html.escape(version)} (${window.moment(publishedAt).format('MMM D, YYYY')})</h2>
+    <p>${body}</p>
 `;
 
 function getDataURLFromUpload(input, callback) {
@@ -146,7 +152,10 @@ class SettingsModule {
         $('body').append(panel);
 
         cdn.get('privacy.html').then(data => $('#bttvPrivacy .tse-content').html(data));
-        cdn.get('changelog.html', true).then(data => $('#bttvChangelog .tse-content').html(data));
+
+        api.get('changelog')
+            .then(({changelog}) => changelog.map(({version, publishedAt, body}) => changelogEntryTemplate(version, publishedAt, body)))
+            .then(releases => $('#bttvChangelog .bttv-changelog-releases').html(releases.join('')));
 
         $('#bttvSettings').on('change', '.option input:radio', ({target}) => settings.set(target.name, target.value === 'true'));
         $('#bttvBackupButton').click(() => this.backup());
