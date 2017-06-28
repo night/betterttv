@@ -63,7 +63,7 @@ function bttvSendMessage() {
 
 class SendMessagePatcher {
     constructor() {
-        watcher.on('load.chat_settings', () => this.patch());
+        watcher.on('load.chat_connected', () => this.patch());
     }
 
     patch() {

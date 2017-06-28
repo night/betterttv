@@ -164,6 +164,14 @@ class Watcher extends SafeEventEmitter {
             twitch.getChatController().addObserver('isChatHidden', emitChatUnhiddenLoad);
         };
 
+        let loaded = false;
+        const checkChatConnected = () => {
+            const currentChat = twitch.getCurrentChat();
+            if (loaded || !currentChat || currentChat.isLoading) return;
+            loaded = true;
+            this.emit('load.chat_connected');
+        };
+
         const observe = (watcher, element) => {
             if (!element) return;
             if (watcher) watcher.disconnect();
@@ -179,6 +187,9 @@ class Watcher extends SafeEventEmitter {
 
             observeChatState();
             observeChatUnhide();
+
+            loaded = false;
+            checkChatConnected();
         };
 
         chatWatcher = new window.MutationObserver(mutations =>
@@ -194,6 +205,8 @@ class Watcher extends SafeEventEmitter {
                     if ($el.hasClass('chat-settings')) {
                         this.emit('load.chat_settings');
                     }
+
+                    checkChatConnected();
                 }
             })
         );
