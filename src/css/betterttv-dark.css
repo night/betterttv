@@ -58,13 +58,18 @@ body {
     background: #111 !important;
 }
 
+/* brighten default dark star sub badge */
+.ember-chat .badges img.badge[src="https://static-cdn.jtvnw.net/badges/v1/19dd8673-124d-4f44-830c-b0f4f9d78635/1"] {
+    filter: brightness(6);
+}
+
 /* live dashboard */
 div#site_header {
     background: rgb(30, 30, 30);
     border-bottom: 1px solid #444;
 }
 
-/* invert dashboard Twitch logo and search hour glass*/
+/* invert dashboard Twitch logo and search hour glass */
 #site_header #header_inside .svg-logo_twitch path, #site_header #header_inside .svg-nav_search path {
     fill: #d3d3d3;
 }
