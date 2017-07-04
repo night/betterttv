@@ -11,7 +11,7 @@ class PrimeSubReminderModule {
     }
 
     load() {
-        const $subButton = $('.js-subscribe-button-dynamic').parent();
+        const $subButton = $('.js-sub-button');
         if ($subButton.length === 0) return;
 
         const subButton = App.__container__.lookup('-view-registry:main')[$subButton.attr('id')];
