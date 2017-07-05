@@ -9,13 +9,13 @@ function slideDown() {
 
     if ($conversations.find('.list-displayed').length || $conversations.find('.conversation-window').length) return;
 
-    $conversations.animate({bottom: '-26px'}, 100);
+    $conversations.stop().animate({bottom: '-26px'}, 100);
 }
 
 function slideUp() {
     const $conversations = $(CONVERSATION_CLASS);
 
-    $conversations.animate({bottom: '0px'}, 100);
+    $conversations.stop().animate({bottom: '0px'}, 100);
 }
 
 class HideConversationsModule {

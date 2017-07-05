@@ -2,7 +2,7 @@ const $ = require('jquery');
 const watcher = require('../../watcher');
 
 function toggleSubCreditIcon($subButton, hasSubCredit) {
-    $subButton.find('.button').toggleClass('bttv-prime-sub-reminder', hasSubCredit);
+    $subButton.find('.button').toggleClass('bttv-prime-sub-reminder', hasSubCredit || false);
 }
 
 class PrimeSubReminderModule {

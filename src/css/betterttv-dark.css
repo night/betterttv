@@ -231,6 +231,14 @@ div#site_header {
     background: url(../assets/icons/chatters_light.png) no-repeat left center;
 }
 
+#dash_main .action {
+    border-bottom-color: #333;
+}
+
+#dash_main .action .content .data {
+    background: #282828;
+}
+
 #play_switch.dropmenu {
     color: #3b3b3b;
     border: 1px solid rgba(0,0,0,0.2);
@@ -1445,6 +1453,7 @@ a.g18_gear-00000080, a.g18_close-00000080, a.g18_popout-00000080, a.g18_trash-00
 .cl-container .cl-section .cl-subheader {
     border-color: #343434;
     background: #171717;
+    color: #5F5F5F;
 }
 .cl-container .cl-section .cl-subheader p {
     color: #5F5F5F;
@@ -1722,7 +1731,7 @@ table.simple_table td {
     color: #d3d3d3;
 }
 
-.twitch_subwindow_container .card .item input[type=text], .twitch_subwindow_container .card .item input[type=password], .twitch_subwindow_container .card .item textarea, .twitch_subwindow_container .card .vod-upload__selectbox, .twitch_subwindow_container .card .upload-modal__notification textarea {
+.twitch_subwindow_container .card .item input[type=text], .twitch_subwindow_container .card .item input[type=password], .twitch_subwindow_container .card .item textarea, .twitch_subwindow_container .card .vod-upload__selectbox, .twitch_subwindow_container .card .upload-modal__notification textarea, .twitch_subwindow_container .card .item select {
     color: #d4d4d4;
     border: 1px solid rgba(0,0,0,0.35);
     box-shadow: inset 0 0px 0px rgba(0,0,0,0.1),inset 0 0 0px rgba(0,0,0,0.05),0 0px 0 rgba(255,255,255,0.65);
@@ -1848,9 +1857,58 @@ table.simple_table td {
     background: #404040;
 }
 
+.cl-container fieldset .cl-input-container label {
+    color: #d3d3d3;
+}
+
+.cl-subsection {
+    background-color: #212121;
+}
+
+.autohost-onboarding {
+    background-color: transparent;
+}
+
+.search-result-view__titlesep {
+    background: #292929;
+}
+
+.user_global_banned_words_optout {
+    background: #212121;
+}
+
+#settings .js-automod-words .c-background-alt-2 {
+    background: #212121 !important;
+}
+
+#settings .automod-words__item {
+    border: 1px solid #282828;
+    background-color: #282828;
+}
+
+#settings .automod-words__item:hover {
+    background-color: #212121;
+}
+
+#settings .automod-words__fade-mask {
+    background: none;
+}
+
+#settings .automod-words__text {
+    color: #d3d3d3;
+}
+
+#settings .automod-words__item:nth-child(5)~:nth-last-child(2):after {
+    background: none;
+}
+
 .new-dashboard .subscription-dash .video-quality-list li.selectable {
     background: #1b1b1b;
     border-right: 1px solid #343434;
+}
+
+.subscription-dash .subscription-feature-list--disabled:after {
+    background: black;
 }
 
 /* ~~~~~~~~~~~~Dark Group Chat~~~~~~~~~~~~~~~~~~~~~ */
@@ -2669,7 +2727,7 @@ ul.tabs li a:hover {
 
 /* darken creative tags */
 .app-main .brick--theme-white, .app-main .brick--block, .app-main .brick--faint {
-    background-color: #282828;
+    background-color: #282828 !important;
     border-color: #252525;
 }
 
@@ -3088,7 +3146,29 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 }
 
 /* new dashboard */
-.video-stats .form__input[type=text], .video-stats .form__input[type=email], .video-stats .form__input[type=password], .video-stats .form__input[type=search], .video-stats textarea.form__input {
+.video-stats .form__input[type=text],
+.video-stats .form__input[type=email],
+.video-stats .form__input[type=password],
+.video-stats .form__input[type=search],
+.video-stats textarea.form__input,
+#video-manager .form__input[type=text],
+#video-manager .form__input[type=email],
+#video-manager .form__input[type=password],
+#video-manager .form__input[type=search],
+#video-manager textarea.form__input,
+.new-dashboard .form__input[type=text],
+.new-dashboard .form__input[type=email],
+.new-dashboard .form__input[type=password],
+.new-dashboard .form__input[type=search],
+.new-dashboard textarea.form__input,
+.new-dashboard select.form__input,
+#settings .form__input[type=text],
+#settings .form__input[type=email],
+#settings .form__input[type=password],
+#settings .form__input[type=search],
+#settings textarea.form__input,
+#settings select.form__input,
+.twitch_subwindow_container .form__input[type=search] {
     background-color: #222;
     box-shadow: #333 0 0 0 1px inset;
     color: #d3d3d3;
@@ -3121,14 +3201,34 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 }
 
 .button--hollow.button--dropmenu:hover:after, .button--hollow.button--dropmenu:focus:after {
-    border: 5px solid #6441a4;
+    border: 5px solid #d3d3d3;
     border-right-color: transparent;
     border-bottom-color: transparent;
     border-left-color: transparent;
 }
 
-.button--icon.button--hollow:focus figure svg, .button--icon.button--hollow:hover figure svg {
+.button--hollow:focus figure svg, .button--hollow:hover figure svg {
     fill: #d3d3d3;
+}
+
+.button--radio, .button--checkbox {
+    box-shadow: inset 0 0 0 1px #6441a4;
+}
+
+.button--radio:hover, .button--checkbox:hover {
+    background-color: rgb(40, 40, 40);
+}
+
+.button--radio:nth-of-type(n+2), .button--checkbox:nth-of-type(n+2) {
+    box-shadow: inset -1px 0 0 #6441a4, inset 0 1px 0 #6441a4, inset 0 -1px 0 #6441a4;
+}
+
+.button--radio:nth-of-type(n+2):hover, .button--checkbox:nth-of-type(n+2):hover {
+    background-color: rgb(40, 40, 40);
+}
+
+.button--radio .button__label, .button--checkbox .button__label {
+    color: #d3d3d3;
 }
 
 .dash-tabs__item {
@@ -3157,30 +3257,50 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
     color: #d3d3d3;
 }
 
-.video-stats .table__header {
+.video-stats .table__header, .new-dashboard .stats-table__header {
     background: #202020;
 }
 
-.video-stats .table__cell--header {
+.new-dasboard .stats-table {
+    border-top: none;
+}
+
+.new-dashboard .bg--grey {
+    background: rgb(28, 28, 28);
+}
+
+.new-dashboard .border-r {
+    border-right-color: #333;
+}
+
+.new-dashboard .button--text:hover, .button--text:focus {
+    color: #916adc;
+}
+
+.new-dashboard .stats-table__header-cell {
+    border-color: #333;
+}
+
+.video-stats .table__cell--header, .new-dashboard .stats-table__cell--header {
     border: none;
     color: #d3d3d3;
 }
 
-.video-stats .table__row {
+.video-stats .table__row, .new-dashboard .stats-table__row {
     background: #282828;
     color: #d3d3d3;
     border-bottom: 1px solid #232323;
 }
 
-.video-stats .table__row:nth-child(even) {
+.video-stats .table__row:nth-child(even), .new-dashboard .stats-table__row:nth-child(even) {
     background: #303030;
 }
 
-.video-stats .table__row:hover {
+.video-stats .table__row:hover, .new-dashboard .stats-table__row {
     background-color: #232323;
 }
 
-.video-stats .table__cell {
+.video-stats .table__cell, .new-dashboard .stats-table__cell {
     color: #d3d3d3;
     border-bottom: none;
     border-top: none;
@@ -3198,6 +3318,10 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 
 .pika-table th {
     color: #d3d3d3;
+}
+
+.is-disabled .pika-button {
+    background: #282828;
 }
 
 .pika-prev, .pika-next {
@@ -3218,8 +3342,67 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
     background-color: #202020 !important;
 }
 
+#video-manager .card--bordered {
+    background: transparent;
+    border: none;
+}
+
 #video-manager a.button--text:hover {
     color: #d3d3d3;
+}
+
+.card-vod-edit {
+    border: none;
+    box-shadow: none;
+}
+
+.playlist-menu-create {
+    background-color: #282828;
+    border-bottom: none;
+}
+
+.drop-zone__border {
+    background: #282828;
+}
+
+#video-manager .c-text-alt,
+#video-manager .c-text {
+    color: #d3d3d3 !important;
+}
+
+#video-manager .form__input[type=checkbox]+label:before,
+#video-manager .form__input[type=radio]+label:before,
+.new-dashboard .form__input[type=checkbox]+label:before,
+.new-dashboard .form__input[type=radio]+label:before {
+    background: #282828;
+    box-shadow: inset 0 0 0 1px #545454, 0 0 0 transparent;
+}
+
+#video-manager .clmgr-table-sort-desc:hover:after {
+    border-top-color: #d3d3d3;
+}
+
+.clmgr-table__cell-wrapper .clmgr-table__cell--collapsed {
+    background: #282828;
+    color: #d3d3d3;
+    border-bottom: 1px solid #232323;
+}
+
+.clmgr-table__cell-wrapper .clmgr-table__cell--collapsed:hover,
+.clmgr-table__cell-wrapper:nth-child(even) .clmgr-table__cell--collapsed:hover {
+    background-color: #232323;
+}
+
+.clmgr-table__cell-wrapper:nth-child(even) .clmgr-table__cell--collapsed {
+    background: #303030;
+}
+
+.clmgr-meta-special svg {
+    fill: #d3d3d3;
+}
+
+.clmgr-cell-content {
+    background: #232323 !important;
 }
 
 /* pinned bits */
@@ -3635,4 +3818,11 @@ textarea.form__input.activity-create__textarea, textarea.form__input.activity-cr
 
 .notification-center__header .button:hover {
     color:#D3D3D3
+}
+
+/* disabled buttons */
+.button:disabled, .button:disabled:hover, .button:disabled:focus {
+    background: #3a3a3a;
+    color: #7d7d7d;
+    border-color: #3a3a3a;
 }
