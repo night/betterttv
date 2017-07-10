@@ -6,49 +6,57 @@ const html = require('../../utils/html');
 
 class ChannelEmotesTipModule {
     constructor() {
-        this.sets = {};
-        this.ids = {};
+        this.ids = null;
 
         this.updateEmoteLists();
         watcher.on('load.chat', () => this.checkEmoteSets());
     }
 
     updateEmoteLists() {
-        api.get('emotes/sets')
-            .then(({sets}) => {
-                this.sets = sets;
-            });
-
-        api.get('emotes/ids')
+        api.get('twitch_emotes/ids')
             .then(({ids}) => {
                 this.ids = ids;
-            });
+            })
+            .then(() => this.checkEmoteSets());
     }
 
     getEmote(id, code) {
-        const channel = this.ids[id];
+        if (!this.ids) return null;
+
+        const name = this.ids[id];
+        if (!name) return null;
+
         return {
-            channel,
-            channelURL: `https://www.twitch.tv/${channel}`,
+            id,
+            code,
+            channel: {
+                name,
+                url: `https://www.twitch.tv/${name}`
+            },
             balloon: `
                 ${html.escape(code)}<br>
-                ${channel ? `Channel: ${html.escape(channel)}` : ''}
+                ${name ? `Channel: ${html.escape(name)}` : ''}
             `
         };
     }
 
     checkEmoteSets() {
-        const room = twitch.getCurrentChat();
-        if (!room || !room.product || !Array.isArray(room.product.emoticons)) return;
+        if (!this.ids) return null;
 
-        const activeEmote = room.product.emoticons.find(emote => emote.state === 'active');
-        if (!activeEmote || this.sets[activeEmote.emoticon_set]) {
-            debug.log(`Channel set exists for ${room.product.name}, no need to give a tip`);
+        const room = twitch.getCurrentChat();
+        if (!room || !room.product) return;
+
+        const {emoticons, name} = room.product;
+        if (!Array.isArray(emoticons) || !name) return;
+
+        const emote = emoticons.find(({state}) => state === 'active');
+        if (!emote || this.ids[emote.id]) {
+            debug.log(`Channel set exists for ${name}, no need to give a tip`);
             return;
         }
 
-        api.post(`emotes/channel_tip/${room.product.name}`)
-            .then(() => debug.log(`Gave a channel tip for ${room.product.name}`));
+        api.post('twitch_emotes/channel_tip', {body: {name}})
+            .then(() => debug.log(`Gave a channel tip for ${name}`));
     }
 }
 

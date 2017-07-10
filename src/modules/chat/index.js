@@ -120,6 +120,7 @@ class ChatModule {
     }
 
     messageReplacer($message, user) {
+        const currentChannel = twitch.getCurrentChannel();
         const tokens = $message.contents();
         for (let i = 0; i < tokens.length; i++) {
             const node = tokens[i];
@@ -129,11 +130,11 @@ class ChatModule {
                 if (!$image) continue;
                 const code = $image.attr('alt');
                 const id = ($image.attr('src').split('emoticons/v1/')[1] || '').split('/')[0];
-                const emoteChannel = channelEmotesTip.getEmote(id, code);
-                if (emoteChannel.channel) {
-                    $emote.find('.balloon').css('text-align', 'center').html(emoteChannel.balloon);
-                    if (emoteChannel.channelURL === window.location.href) continue;
-                    $emote.on('click', () => window.open(emoteChannel.channelURL, '_blank'));
+                const emote = channelEmotesTip.getEmote(id, code);
+                if (emote) {
+                    $emote.find('.balloon').css('text-align', 'center').html(emote.balloon);
+                    if (!currentChannel || emote.channel.name === currentChannel.name) continue;
+                    $emote.on('click', () => window.open(emote.channel.url, '_blank'));
                 }
                 continue;
             }

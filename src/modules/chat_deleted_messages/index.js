@@ -97,10 +97,11 @@ class ChatDeletedMessagesModule {
         const tmiRoom = currentChat.tmiRoom;
         const clearChatCallbacks = tmiRoom._events.clearchat;
         if (!clearChatCallbacks || !clearChatCallbacks.length) return;
-        const defaultClearChatCallback = clearChatCallbacks.find(c => c && c !== onClearChat);
-        if (defaultClearChatCallback && !tmiRoom._bttvClearChatMonkeyPatched) {
-            twitchClearChat = defaultClearChatCallback;
-        }
+        if (clearChatCallbacks.find(c => c && c === onClearChat)) return;
+        const defaultClearChatCallback = clearChatCallbacks.find(c => typeof c === 'function' && c !== onClearChat);
+        if (!defaultClearChatCallback || tmiRoom._bttvClearChatMonkeyPatched) return;
+
+        twitchClearChat = defaultClearChatCallback;
         delete tmiRoom._events.clearchat;
         tmiRoom.on('clearchat', onClearChat);
         tmiRoom._bttvClearChatMonkeyPatched = true;
