@@ -205,7 +205,7 @@ class SettingsModule {
             </li>
         `);
         $('.top-nav-drawer__item a[data-tt_content="settings_profile"]').parent().after(`
-            <li class="top-nav-drawer__item">
+            <li class="top-nav-drawer__item top-nav-drawer__item--link">
                 <a title="BetterTTV Settings" href="#" class="flex ember-view">
                     <figure class="icon bttvSettingsIconDropDown"></figure>
                     <span class="top-nav-drawer__label">BetterTTV Settings</span>
