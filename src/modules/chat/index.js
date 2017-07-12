@@ -127,7 +127,7 @@ class ChatModule {
             if (node.nodeType === window.Node.ELEMENT_NODE && node.classList.contains('balloon-wrapper')) {
                 const $emote = $(node);
                 const $image = $emote.find('img');
-                if (!$image) continue;
+                if (!$image.length) continue;
                 const code = $image.attr('alt');
                 const id = ($image.attr('src').split('emoticons/v1/')[1] || '').split('/')[0];
                 const emote = channelEmotesTip.getEmote(id, code);
