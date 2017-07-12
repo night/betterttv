@@ -3826,3 +3826,7 @@ textarea.form__input.activity-create__textarea, textarea.form__input.activity-cr
     color: #7d7d7d;
     border-color: #3a3a3a;
 }
+
+.header-announcement--net-neutrality {
+    color: black;
+}
