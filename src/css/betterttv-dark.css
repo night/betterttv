@@ -3418,6 +3418,7 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 /* automod */
 .ember-chat .chat-messages .chat-line .system-msg {
     color: #7B7B7B;
+    background: none !important;
 }
 
 .ember-chat .chat-messages .chat-line .inline-warning {

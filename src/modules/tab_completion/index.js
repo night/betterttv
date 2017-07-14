@@ -184,19 +184,9 @@ class TabCompletionModule {
     }
 
     getTwitchEmotes() {
-        const twitchEmotes = [];
-
-        const tmiSession = twitch.getCurrentTMISession();
-        if (tmiSession) {
-            const emoteSets = tmiSession.getEmotes();
-            if (emoteSets) {
-                for (const set of Object.values(emoteSets.emoticon_sets)) {
-                    twitchEmotes.push(...set);
-                }
-            }
-        }
-
-        return twitchEmotes;
+        const userEmotes = twitch.getEmberContainer('service:user-emotes');
+        if (!userEmotes) return [];
+        return userEmotes.get('allEmotesArray') || [];
     }
 
     hideSuggestions() {

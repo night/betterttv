@@ -1,7 +1,7 @@
 {
   "name": "BetterTTV",
   "author": "Night",
-  "version": "7.0.20",
+  "version": "7.0.21",
   "description": "BetterTTV enhances Twitch with new features, bug fixes, and reduced clutter.",
   "main": "betterttv.js",
   "scripts": {
@@ -42,7 +42,7 @@
     "require-globify": "^1.4.1",
     "resizable": "^1.2.0",
     "twemoji": "^2.2.5",
-    "twitch-chat-emotes": "github:night/Userscript--Twitch-Chat-Emotes#84f913938890a143b6168488b67462c13baf4752",
+    "twitch-chat-emotes": "github:night/Userscript--Twitch-Chat-Emotes#8fedfb663799d446d78c3259d3c48b2596531f69",
     "uglify-save-license": "^0.4.1",
     "view-list": "^2.1.0",
     "vinyl-buffer": "^1.0.0",
