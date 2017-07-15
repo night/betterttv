@@ -158,16 +158,19 @@ class ChatModule {
                 const mention = part.match(MENTION_REGEX);
                 if (part.length > 2 && part.charAt(0) === '@' && mention && mention[1]) {
                     parts[j] = mentionTemplate(mention[1]);
-                } else {
-                    let emote = emotes.getEligibleEmote(part, user);
-                    if (!emote) {
-                        emote = emotes.getEligibleEmote(part.replace(EMOTE_STRIP_SYMBOLS_REGEX, ''), user);
-                    }
-                    if (!emote) continue;
-                    parts[j] = emote.toHTML();
+                    modified = true;
+                    continue;
                 }
 
-                modified = true;
+                const emote = emotes.getEligibleEmote(part, user) || emotes.getEligibleEmote(part.replace(EMOTE_STRIP_SYMBOLS_REGEX, ''), user);
+                if (emote) {
+                    parts[j] = emote.toHTML();
+                    modified = true;
+                    continue;
+                }
+
+                // escape all non-emotes since html strings would be rendered as html
+                parts[j] = html.escape(parts[j]);
             }
 
             if (modified) {
