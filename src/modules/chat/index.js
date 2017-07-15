@@ -148,7 +148,7 @@ class ChatModule {
             }
 
             const parts = data.split(' ');
-            let modified = false;
+            // let modified = false;
             for (let j = 0; j < parts.length; j++) {
                 const part = parts[j];
                 if (!part || typeof part !== 'string') {
@@ -167,15 +167,15 @@ class ChatModule {
                     parts[j] = emote.toHTML();
                 }
 
-                modified = true;
+                // modified = true;
             }
 
-            if (modified) {
-                // TODO: find a better way to do this (this seems most performant tho, only a single mutation vs multiple)
-                const span = document.createElement('span');
-                span.innerHTML = parts.join(' ');
-                node.parentNode.replaceChild(span, node);
-            }
+            // if (modified) {
+            //     // TODO: find a better way to do this (this seems most performant tho, only a single mutation vs multiple)
+            //     const span = document.createElement('span');
+            //     span.innerHTML = parts.join(' ');
+            //     node.parentNode.replaceChild(span, node);
+            // }
         }
     }
 
