@@ -47,7 +47,8 @@ class ChatLinkPreviewModule {
 
         watcher.on('load.chat', () => this.load());
     }
-
+    /* eslint-disable indent */
+    // bug in eslint doesn't like switch formatting
     load() {
         $('.chat-messages .chat-lines')
         .off({
@@ -59,6 +60,7 @@ class ChatLinkPreviewModule {
             mouseleave: leave
         }, '.chat-line .message a');
     }
+    /* eslint-enable indent */
 }
 
 module.exports = new ChatLinkPreviewModule();
