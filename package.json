@@ -27,7 +27,7 @@
     "gulp-eslint": "^4.0.0",
     "gulp-footer": "^1.0.5",
     "gulp-gzip": "^1.4.0",
-    "gulp-header": "^1.8.8",
+    "gulp-header": "^1.8.9",
     "gulp-if": "^2.0.2",
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^2.6.0",
