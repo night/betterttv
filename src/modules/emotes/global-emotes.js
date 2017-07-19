@@ -22,11 +22,12 @@ class GlobalEmotes extends AbstractEmotes {
     get provider() {
         return provider;
     }
-
+    /* eslint-disable indent */
+    // bug in eslint doesn't like switch formatting
     updateGlobalEmotes() {
         api
-            .get('emotes')
-            .then(({urlTemplate, emotes}) =>
+        .get('emotes')
+        .then(({urlTemplate, emotes}) =>
             emotes.forEach(({id, channel, code, imageType, restrictions}) => {
                 let restrictionCallback;
                 if (restrictions && restrictions.emoticonSet) {
@@ -52,6 +53,7 @@ class GlobalEmotes extends AbstractEmotes {
             })
         );
     }
+    /* eslint-enable indent */
 }
 
 module.exports = new GlobalEmotes();
