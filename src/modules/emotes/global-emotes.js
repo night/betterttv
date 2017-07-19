@@ -25,8 +25,8 @@ class GlobalEmotes extends AbstractEmotes {
 
     updateGlobalEmotes() {
         api
-        .get('emotes')
-        .then(({urlTemplate, emotes}) =>
+            .get('emotes')
+            .then(({urlTemplate, emotes}) =>
             emotes.forEach(({id, channel, code, imageType, restrictions}) => {
                 let restrictionCallback;
                 if (restrictions && restrictions.emoticonSet) {
