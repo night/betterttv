@@ -24,15 +24,15 @@ class GlobalEmotes extends AbstractEmotes {
     }
 
     updateGlobalEmotes() {
-            api
-            .get('emotes')
-            .then(({urlTemplate, emotes}) =>
-            emotes.forEach(({id, channel, code, imageType, restrictions}) => {
-                let restrictionCallback;
-                if (restrictions && restrictions.emoticonSet) {
-                    restrictionCallback = (_, user) => {
-                          if (restrictions.emoticonSet !== 'night') return false;
-                          return user ? legacySubscribers.hasSubscription(user.name) : false;
+        api
+        .get('emotes')
+        .then(({urlTemplate, emotes}) =>
+        emotes.forEach(({id, channel, code, imageType, restrictions}) => {
+            let restrictionCallback;
+            if (restrictions && restrictions.emoticonSet) {
+                restrictionCallback = (_, user) => {
+                      if (restrictions.emoticonSet !== 'night') return false;
+                      return user ? legacySubscribers.hasSubscription(user.name) : false;
                       };
                 }
 
