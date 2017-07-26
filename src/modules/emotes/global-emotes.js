@@ -49,7 +49,7 @@ class GlobalEmotes extends AbstractEmotes {
                         imageType,
                         restrictionCallback
                     }));
-            })
+                })
         );
     }
 }
