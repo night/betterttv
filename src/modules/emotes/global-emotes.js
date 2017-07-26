@@ -50,7 +50,7 @@ class GlobalEmotes extends AbstractEmotes {
                         restrictionCallback
                     }));
                 })
-        );
+            );
     }
 }
 
