@@ -27,14 +27,14 @@ class GlobalEmotes extends AbstractEmotes {
         api
             .get('emotes')
             .then(({urlTemplate, emotes}) =>
-            emotes.forEach(({id, channel, code, imageType, restrictions}) => {
-                let restrictionCallback;
-                if (restrictions && restrictions.emoticonSet) {
-                    restrictionCallback = (_, user) => {
-                          if (restrictions.emoticonSet !== 'night') return false;
-                          return user ? legacySubscribers.hasSubscription(user.name) : false;
-                      };
-                }
+                emotes.forEach(({id, channel, code, imageType, restrictions}) => {
+                    let restrictionCallback;
+                    if (restrictions && restrictions.emoticonSet) {
+                        restrictionCallback = (_, user) => {
+                            if (restrictions.emoticonSet !== 'night') return false;
+                            return user ? legacySubscribers.hasSubscription(user.name) : false;
+                        };
+                    }
 
             this.emotes.set(code, new Emote({
                     id,
