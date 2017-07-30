@@ -52,7 +52,12 @@ gulp.task(
     ['prepare'],
     () => browserify('build/index.js', {debug: true})
         .transform('require-globify')
-        .transform('babelify', {presets: ['es2015'], plugins: ['transform-runtime']})
+        .transform('babelify', {
+            global: true,
+            presets: ['es2015'],
+            plugins: ['transform-runtime'],
+            ignore: /node_modules\/(?!draggy)/
+        })
         .transform('envify')
         .bundle()
         .pipe(gulpif(IS_PROD, source('betterttv.unmin.js'), source('betterttv.js')))
