@@ -69,6 +69,11 @@ class ChatModule {
         watcher.on('channel.updated', ({bots}) => {
             channelBots = bots;
         });
+        watcher.on('load.chat', () => {
+            const controller = twitch.getChatController();
+            if (!controller) return;
+            controller.set('showList', false);
+        });
 
         api.get('badges').then(({types, badges}) => {
             const staffBadges = {};
@@ -102,7 +107,8 @@ class ChatModule {
             $element.find('.badges').append(badgeTemplate(badge.svg, badge.description));
         }
 
-        if (legacySubscribers.hasSubscription(user.name)) {
+        const currentChannel = twitch.getCurrentChannel();
+        if (currentChannel && currentChannel.name === 'night' && legacySubscribers.hasSubscription(user.name)) {
             $element.find('.badges').append(badgeTemplate(cdn.url('tags/subscriber.png'), 'Subscriber'));
         }
     }

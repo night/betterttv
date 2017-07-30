@@ -2425,11 +2425,6 @@ body.channel_new.columns.ember-application {
     display: none;
 }
 
-.bttv-frontpage-buttons {
-    margin: 5px 0 -25px 30px;
-    opacity: 0.5;
-}
-
 /*** Holiday 2016 BTTV emote CSS ***/
 
 /* No stacking of IceCube or SoSnowy */

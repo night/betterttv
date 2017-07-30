@@ -2636,6 +2636,11 @@ span.subscribe-text {
     background: transparent;
 }
 
+.cn-chat-replay-header {
+    background: rgb(50, 50, 50);
+    border: none;
+}
+
 /* remove border on posts toggle box */
 .player-column .feed-toggle-contain {
     border-radius: 0px;
@@ -3435,6 +3440,14 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 
 /* new dashboard */
 
+.dash-column {
+    border: none;
+}
+
+.dash-chat .chat-container {
+    border: none !important;
+}
+
 .js-live-widget .dash-widget {
     background: #323232;
     border-color: #222;
@@ -3556,9 +3569,12 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
     background-color: rgb(25, 25, 25);
 }
 
-.fp-container .activity-create__textarea, .fp-container .activity-create__textarea:focus {
+.fp-container .activity-create__textarea,
+.fp-container .activity-create__textarea:focus,
+.fp-container textarea.form__input,
+.fp-container textarea.form__input:focus {
     color: #d3d3d3;
-    background: none;
+    background: #282828;
     border-color: #333;
     box-shadow: none;
 }
@@ -3743,6 +3759,15 @@ textarea.activity-create__textarea, textarea.activity-create__textarea:focus,
 }
 
 /* vod chat */
+.vod-chat__header {
+    background: rgb(50, 50, 50);
+    box-shadow: none;
+}
+
+.vod-chat {
+    background: none;
+}
+
 .vod-chat span {
     color: #d3d3d3;
 }
@@ -3751,7 +3776,7 @@ textarea.activity-create__textarea, textarea.activity-create__textarea:focus,
     background-color: transparent;
 }
 
-.vod-chat__scroll-wrapper::-webkit-scrollbar-thumb{
+.vod-chat__message-list-wrapper::-webkit-scrollbar-thumb{
     border-color: #201c2b;
 }
 
