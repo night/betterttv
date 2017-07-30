@@ -52,6 +52,7 @@
                     if (['betterttv in apply', 'wrapped(betterttv)'].contains(data.culprit)) return false;
                     if (exception && !exception.value) return false;
                     if (exception && ['NS_ERROR_NOT_INITIALIZED', 'NS_ERROR_OUT_OF_MEMORY', 'NS_ERROR_FAILURE'].includes(exception.type)) return true;
+                    if (data.exception && data.exception.values.length < 3) return false;
                     return true;
                 }
             }
