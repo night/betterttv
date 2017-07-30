@@ -6,7 +6,6 @@ const watcher = require('../../watcher');
 const CHAT_CONTAINER_SELECTOR = '.chat-room .chat-messages';
 const CHAT_CONTENT_SELECTOR = '.chat-messages .tse-content';
 const CHAT_LINES_SELECTOR = '.ember-chat .chat-messages .chat-lines';
-const CHAT_ROOM_SELECTOR = '.chat-room > div.ember-view';
 const CHAT_SCROLLER_SELECTOR = '.chat-messages .tse-scroll-content';
 const MESSAGES_INDICATOR_SELECTOR = '.more-messages-indicator';
 const FREEZE_KEYS = [keycodes.Ctrl, keycodes.Meta];
@@ -15,7 +14,7 @@ const CHAT_SCROLL_THRESHOLD = 150;
 let keysPressed = 0;
 
 function setScrollState(enabled) {
-    const chatRoomEmberId = $(CHAT_ROOM_SELECTOR).attr('id');
+    const chatRoomEmberId = $(CHAT_CONTAINER_SELECTOR).parent().attr('id');
     const chatComponent = twitch.getEmberView(chatRoomEmberId);
     if (!chatComponent) return;
 
@@ -78,7 +77,7 @@ class ChatFreezeModule {
             }
         });
 
-        const chatRoomEmberId = $(CHAT_ROOM_SELECTOR).attr('id');
+        const chatRoomEmberId = $(CHAT_CONTAINER_SELECTOR).parent().attr('id');
         chatComponent = twitch.getEmberView(chatRoomEmberId);
     }
 }
