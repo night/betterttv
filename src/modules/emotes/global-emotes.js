@@ -25,32 +25,32 @@ class GlobalEmotes extends AbstractEmotes {
 
     updateGlobalEmotes() {
         api
-        .get('emotes')
-        .then(({urlTemplate, emotes}) =>
-            emotes.forEach(({id, channel, code, imageType, restrictions}) => {
-                let restrictionCallback;
-                if (restrictions && restrictions.emoticonSet) {
-                    restrictionCallback = (_, user) => {
-                        if (restrictions.emoticonSet !== 'night') return false;
-                        return user ? legacySubscribers.hasSubscription(user.name) : false;
-                    };
-                }
+            .get('emotes')
+            .then(({urlTemplate, emotes}) =>
+                emotes.forEach(({id, channel, code, imageType, restrictions}) => {
+                    let restrictionCallback;
+                    if (restrictions && restrictions.emoticonSet) {
+                        restrictionCallback = (_, user) => {
+                            if (restrictions.emoticonSet !== 'night') return false;
+                            return user ? legacySubscribers.hasSubscription(user.name) : false;
+                        };
+                    }
 
-                this.emotes.set(code, new Emote({
-                    id,
-                    provider: this.provider,
-                    channel: channel ? {name: channel} : undefined,
-                    code,
-                    images: {
-                        '1x': mustacheFormat(urlTemplate, {id, image: '1x'}),
-                        '2x': mustacheFormat(urlTemplate, {id, image: '2x'}),
-                        '4x': mustacheFormat(urlTemplate, {id, image: '3x'})
-                    },
-                    imageType,
-                    restrictionCallback
-                }));
-            })
-        );
+                    this.emotes.set(code, new Emote({
+                        id,
+                        provider: this.provider,
+                        channel: channel ? {name: channel} : undefined,
+                        code,
+                        images: {
+                            '1x': mustacheFormat(urlTemplate, {id, image: '1x'}),
+                            '2x': mustacheFormat(urlTemplate, {id, image: '2x'}),
+                            '4x': mustacheFormat(urlTemplate, {id, image: '3x'})
+                        },
+                        imageType,
+                        restrictionCallback
+                    }));
+                })
+            );
     }
 }
 

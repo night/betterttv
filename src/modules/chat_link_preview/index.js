@@ -47,17 +47,16 @@ class ChatLinkPreviewModule {
 
         watcher.on('load.chat', () => this.load());
     }
-
     load() {
         $('.chat-messages .chat-lines')
-        .off({
-            mouseenter: enter,
-            mouseleave: leave
-        }, '.chat-line .message a')
-        .on({
-            mouseenter: enter,
-            mouseleave: leave
-        }, '.chat-line .message a');
+            .off({
+                mouseenter: enter,
+                mouseleave: leave
+            }, '.chat-line .message a')
+            .on({
+                mouseenter: enter,
+                mouseleave: leave
+            }, '.chat-line .message a');
     }
 }
 
