@@ -204,7 +204,7 @@ class ChatModeratorCardsModule {
                 // If there is no id, the user must be yourself
                 const currentUser = twitch.getCurrentUser();
                 if (!currentUser) return;
-                const id = messageObj.tags['user-id'] || currentUser.id;
+                const id = (messageObj.tags && messageObj.tags['user-id']) || currentUser.id;
                 this.create(id, $target);
             }
         });
