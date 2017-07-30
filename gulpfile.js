@@ -61,7 +61,7 @@ gulp.task(
         .pipe(gulp.dest('build'))
         .pipe(gulpif(IS_PROD, rename('betterttv.js')))
         .pipe(gulpif(IS_PROD, sourcemaps.init({loadMaps: true})))
-        .pipe(gulpif(IS_PROD, uglify({preserveComments: saveLicense})))
+        .pipe(gulpif(IS_PROD, uglify({output: {comments: saveLicense}})))
         .pipe(gulpif(IS_PROD, sourcemaps.write('./')))
         .pipe(gulpif(IS_PROD, gulp.dest('build')))
 );
