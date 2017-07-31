@@ -3466,8 +3466,8 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 
 .js-live-widget .form__input[type=checkbox]+label:before,
 .js-live-widget .form__input[type=radio]+label:before {
-    background-color: #292929
-;    border-color: #222;
+    background-color: #292929;
+    border-color: #222;
 }
 
 .js-live-widget .form__input:focus {
@@ -3650,14 +3650,20 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
     box-shadow: inset 0 -1px 0 #333, inset -1px 0 0 #333, inset 1px 0 0 #333;
 }
 
+.activity-create--card,
 .activity-card {
     background-color: rgb(28, 28, 28);
     box-shadow: inset 0 0 0 1px #333;
     color: #d3d3d3;
 }
 
-.activity-card__comments, .activity-comments {
-    background-color: #282828;
+.activity-create--card {
+    padding: 1.5rem;
+}
+
+.activity-card__comments,
+.activity-comments {
+    background-color: #1c1c1c;
     box-shadow: inset 0 -1px 0 #333, inset -1px 0 0 #333, inset 1px 0 0 #333;
     border-color: #333;
 }
@@ -3689,12 +3695,13 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
     background-color: rgb(25, 25, 25) !important;
 }
 
-textarea.activity-create__textarea, textarea.activity-create__textarea:focus,
-.activity-add-comment textarea.form__input, .activity-add-comment textarea.form__input:focus {
+.activity-create--card textarea.form__input ,
+.activity-create--card textarea.form__input:focus,
+.activity-add-comment textarea.form__input,
+.activity-add-comment textarea.form__input:focus {
     color: #d3d3d3;
-    background: none;
-    background-color: transparent;
-    border-color: #333;
+    background: #282828;
+    border: 1px solid #333;
     box-shadow: none;
 }
 
@@ -3808,7 +3815,7 @@ textarea.activity-create__textarea, textarea.activity-create__textarea:focus,
 }
 
 .notification-center__empty {
-    background-color: #1e1e1e
+    background-color: #1e1e1e;
     border-bottom: .1rem solid #333;
 }
 
