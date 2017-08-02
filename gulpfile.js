@@ -33,23 +33,31 @@ gulp.task(
 );
 
 gulp.task(
-    'prepare',
-    ['cleanup', 'lint'],
-    () => gulp.src(['src/**/*'])
-        .pipe(gulp.dest('build/'))
-);
-
-gulp.task(
     'lint',
-    () => gulp.src(['src/**/*.js'])
+    () => gulp.src('src/**/*.js')
         .pipe(eslint())
         .pipe(eslint.format())
         .pipe(eslint.failOnError())
 );
 
 gulp.task(
-    'scripts',
+    'prepare',
+    ['cleanup', 'lint'],
+    () => gulp.src('src/**/*')
+        .pipe(gulp.dest('build/'))
+);
+
+gulp.task(
+    'license',
     ['prepare'],
+    () => gulp.src('build/index.js')
+        .pipe(header(LICENSE + '\n'))
+        .pipe(gulp.dest('build'))
+);
+
+gulp.task(
+    'scripts',
+    ['license'],
     () => browserify('build/index.js', {debug: true})
         .transform('require-globify')
         .transform('babelify', {
@@ -62,7 +70,6 @@ gulp.task(
         .bundle()
         .pipe(gulpif(IS_PROD, source('betterttv.unmin.js'), source('betterttv.js')))
         .pipe(buffer())
-        .pipe(header(LICENSE + '\n'))
         .pipe(gulp.dest('build'))
         .pipe(gulpif(IS_PROD, rename('betterttv.js')))
         .pipe(gulpif(IS_PROD, sourcemaps.init({loadMaps: true})))
