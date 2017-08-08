@@ -23,7 +23,7 @@
     "envify": "^4.1.0",
     "git-rev-sync": "^1.9.1",
     "gulp": "^3.9.1",
-    "gulp-babel": "^6.1.2",
+    "gulp-babel": "^7.0.0",
     "gulp-eslint": "^4.0.0",
     "gulp-footer": "^1.0.5",
     "gulp-gzip": "^1.4.0",
