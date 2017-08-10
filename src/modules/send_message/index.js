@@ -5,8 +5,8 @@ const Raven = require('raven-js');
 
 const anonChat = require('../chat_commands');
 const chatCommands = require('../anon_chat');
-const tabCompletion = require('../tab_completion');
 const globalBanProtection = require('../global_ban_protection');
+const tabCompletion = require('../tab_completion');
 const emojis = require('../emotes/emojis');
 const socketClient = require('../../socket-client');
 
@@ -33,8 +33,8 @@ class SendState {
 
 let twitchSendMessage;
 const methodList = [
-    msgObj => globalBanProtection.onSendMessage(msgObj),
     msgObj => tabCompletion.onSendMessage(msgObj),
+    msgObj => globalBanProtection.onSendMessage(msgObj),
     msgObj => chatCommands.onSendMessage(msgObj),
     msgObj => anonChat.onSendMessage(msgObj),
     msgObj => emojis.onSendMessage(msgObj),
