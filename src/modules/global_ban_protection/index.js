@@ -1,3 +1,4 @@
+const settings = require('../../settings');
 const twitch = require('../../utils/twitch');
 
 // Regular users are allowed 20 messages in 30 seconds, mods (and higher
@@ -9,6 +10,13 @@ const timeLimit = 30;
 
 class GlobalBanProtectionModule {
     constructor() {
+        settings.add({
+            id: 'globalBanProtection',
+            name: 'Global Ban Protection',
+            description: 'Prevent sending a message if it resulted in a global ban',
+            default: false,
+        });
+
         this.msgTimeStamps = new Array();
         // TODO: Check if user is moderator in current channel
         if (false) {
@@ -19,12 +27,13 @@ class GlobalBanProtectionModule {
     }
 
     onSendMessage(sendState) {
+        if (settings.get('globalBanProtection') === false) return;
+
         // Clear collected time stamps older than timeLimit seconds as they are
         // no longer relevant for a global ban.
         while (true) {
-            if (this.msgTimeStamps.length === 0) {
-                break;
-            }
+            if (this.msgTimeStamps.length === 0) break;
+
             const oldestMsgTimeStamp = this.msgTimeStamps.shift();
             if ((Date.now() - oldestMsgTimeStamp) / 1000 <= timeLimit) {
                 this.msgTimeStamps.unshift(oldestMsgTimeStamp);
