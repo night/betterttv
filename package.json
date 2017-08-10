@@ -41,7 +41,7 @@
     "request": "^2.81.0",
     "require-globify": "^1.4.1",
     "resizable": "^1.2.0",
-    "twemoji": "^2.4.1",
+    "twemoji": "^2.5.0",
     "twitch-chat-emotes": "github:night/Userscript--Twitch-Chat-Emotes#8fedfb663799d446d78c3259d3c48b2596531f69",
     "uglify-save-license": "^0.4.1",
     "view-list": "^2.1.0",
