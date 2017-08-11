@@ -18,8 +18,7 @@ class GlobalBanProtectionModule {
         });
 
         this.msgTimeStamps = new Array();
-        // TODO: Check if user is moderator in current channel
-        if (false) {
+        if (twitch.getCurrentUserIsModerator()) {
             this.msgLimit = modMsgLimit;
         } else {
             this.msgLimit = regularMsgLimit;
@@ -31,13 +30,14 @@ class GlobalBanProtectionModule {
 
         // Clear collected time stamps older than timeLimit seconds as they are
         // no longer relevant for a global ban.
-        while (true) {
+        let done = false;
+        while (!done) {
             if (this.msgTimeStamps.length === 0) break;
 
             const oldestMsgTimeStamp = this.msgTimeStamps.shift();
             if ((Date.now() - oldestMsgTimeStamp) / 1000 <= timeLimit) {
                 this.msgTimeStamps.unshift(oldestMsgTimeStamp);
-                break;
+                done = true;
             }
         }
 
