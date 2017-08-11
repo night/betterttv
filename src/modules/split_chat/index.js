@@ -1,5 +1,6 @@
 const settings = require('../../settings');
 const watcher = require('../../watcher');
+const twitch = require('../../utils/twitch');
 const css = require('../../utils/css');
 
 const LIGHT_KEY = 'split-chat';
@@ -17,8 +18,14 @@ class SplitChatModule {
         });
         settings.on('changed.splitChat', () => this.load());
         settings.on('changed.darkenedMode', () => this.load());
-        watcher.on('chat.message', $el => {
+        watcher.on('chat.message', ($el, msg) => {
             if (settings.get('splitChat') === false) return;
+
+            const currentUser = twitch.getCurrentUser();
+            if (msg.from === currentUser.name) {
+                $el.toggleClass('bttv-own-msg-bg');
+                return;
+            }
 
             if (alternateBackground) {
                 $el.toggleClass('bttv-alt-bg');

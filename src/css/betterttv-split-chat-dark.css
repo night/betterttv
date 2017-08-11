@@ -13,6 +13,10 @@
     margin-bottom: 0px !important;
 }
 
+.chat-messages .chat-line.bttv-own-msg-bg {
+    background-color: rgb(35, 50, 35);
+}
+
 .chat-messages .chat-line.bttv-alt-bg {
     background-color: rgb(35, 35, 35);
 }
