@@ -99,10 +99,13 @@ class Watcher extends SafeEventEmitter {
                         this.emit('load.chat');
                         break;
                     case 'directory.following.index':
+                        this.emit('load.following');
                         // Switching between tabs in following page
                         if (lastRoute.substr(0, 19) === 'directory.following') break;
                         this.emit('load.directory.following');
                         break;
+                    case 'directory.following.channels':
+                        this.emit('load.following');
                 }
             });
         };
