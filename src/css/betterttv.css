@@ -90,6 +90,10 @@ ul.tabs li.selected a {
     background: url(../assets/icons/logo_navbar_icons.png) no-repeat 0px -50px;
 }
 
+.panel-formatting .panel .description ul li {
+    list-style-position: inside;
+}
+
 /* Chat CSS */
 input.text:focus,select:focus,textarea:focus {
     outline: 0;
