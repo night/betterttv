@@ -9,6 +9,7 @@ let chatWatcher;
 let conversationWatcher;
 let clipsChatWatcher;
 let vodChatWatcher;
+let directoryWatcher;
 let channel = {};
 const chatState = {
     slow: 0,
@@ -34,6 +35,7 @@ class Watcher extends SafeEventEmitter {
         this.clipsChatObserver();
         this.checkClips();
         this.vodChatObserver();
+        this.directoryObserver();
 
         debug.log('Watcher started');
     }
@@ -99,13 +101,23 @@ class Watcher extends SafeEventEmitter {
                         this.emit('load.chat');
                         break;
                     case 'directory.following.index':
-                        this.emit('load.following');
+                        this.emit('load.following.overview');
                         // Switching between tabs in following page
                         if (lastRoute.substr(0, 19) === 'directory.following') break;
                         this.emit('load.directory.following');
                         break;
+                    case 'directory.channels.all':
+                        this.emit('load.directory.channels.all');
+                        break;
+                    case 'directory.game.index':
+                        this.emit('load.directory.game');
+                        break;
+                    case 'communities.community':
+                        this.emit('load.communities.community');
+                        break;
                     case 'directory.following.channels':
-                        this.emit('load.following');
+                        this.emit('load.directory.following.channels');
+                        break;
                 }
             });
         };
@@ -300,6 +312,29 @@ class Watcher extends SafeEventEmitter {
         );
 
         this.on('load.vod', () => observe(vodChatWatcher, $('.vod-chat')[0]));
+    }
+
+    directoryObserver() {
+        const observe = (watcher, selector) => {
+            // timeout used because events sometimes fire before elements are created
+            setTimeout(() => {
+                const element = $(selector)[0];
+                if (!element) return;
+                if (watcher) watcher.disconnect();
+                watcher.observe(element, {childList: true, subtree: true});
+            }, 200);
+        };
+
+        directoryWatcher = new window.MutationObserver(() => {
+            this.emit('directory.changed');
+        });
+
+        const infiniteScrollSelector = '.js-streams .infinite-scroll.tower';
+        this.on('load.communities.community', () => observe(directoryWatcher, infiniteScrollSelector));
+        this.on('load.directory.channels.all', () => observe(directoryWatcher, infiniteScrollSelector));
+        this.on('load.directory.following.channels', () => observe(directoryWatcher, infiniteScrollSelector));
+        this.on('load.directory.game', () => observe(directoryWatcher, infiniteScrollSelector));
+        this.on('load.following.overview', () => observe(directoryWatcher, '.js-streams.qa-live-streams'));
     }
 }
 

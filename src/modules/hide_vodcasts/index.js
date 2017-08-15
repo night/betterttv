@@ -2,44 +2,42 @@ const $ = require('jquery');
 const settings = require('../../settings');
 const watcher = require('../../watcher');
 
+const VODCAST_SELECTOR = '.js-streams .pill.is-watch-party';
+const CARD_SELECTOR = '.card';
+
 class HideVodcastsModule {
     constructor() {
         settings.add({
             id: 'hideVodcasts',
             name: 'Hide Vodcasts',
             defaultValue: false,
-            description: 'Hide Vodcasts in your following list'
+            description: 'Hide Vodcasts from directory listings'
         });
-        settings.on('changed.hideVodcasts', value => value === true ? this.load() : this.unload());
-        watcher.on('load.following', () => this.load());
+        settings.on('changed.hideVodcasts', value => value === true ? this.hide() : this.show());
+
+        watcher.on('directory.changed', () => this.hide());
+
+        watcher.on('load.communities.community', () => this.delayedHide());
+        watcher.on('load.directory.channels.all', () => this.delayedHide());
+        watcher.on('load.directory.following.channels', () => this.delayedHide());
+        watcher.on('load.directory.game', () => this.delayedHide());
+        watcher.on('load.following.overview', () => this.delayedHide());
     }
 
-    load() {
+    delayedHide() {
+        // timeout used because events sometimes fire before elements are created
+        setTimeout(() => {
+            this.hide();
+        }, 200);
+    }
+
+    hide() {
         if (settings.get('hideVodcasts') === false) return;
-        $('.qa-stream-preview .is-watch-party').closest('.qa-stream-preview:visible').hide(); // hide vodcasts on page load
-        this.registerMutationObserver();
+        $(VODCAST_SELECTOR).closest(CARD_SELECTOR).parent(':visible').hide();
     }
 
-    unload() {
-        if ( this.observer ) {
-            this.observer.disconnect();
-            $('.qa-stream-preview .is-watch-party').closest('.qa-stream-preview:hidden').show();
-        }
-    }
-
-    registerMutationObserver() {
-        let target = document.querySelector('.js-streams .infinite-scroll.tower'); // Overview tab (twitch.tv/directory/following/live)
-        if ( !target ) target = document.querySelector('.js-streams.qa-live-streams'); // Channels tab (twitch.tv/directory/following)
-        if ( target ) {
-            // hides vodcasts when infinite scrolling
-            this.observer = new MutationObserver(() => {
-                $('.qa-stream-preview .is-watch-party').closest('.qa-stream-preview:visible').hide();
-            });
-            const config = {
-                childList: true
-            };
-            this.observer.observe(target, config);
-        }
+    show() {
+        $(VODCAST_SELECTOR).closest(CARD_SELECTOR).parent(':hidden').show();
     }
 }
 
