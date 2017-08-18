@@ -101,22 +101,18 @@ class Watcher extends SafeEventEmitter {
                         this.emit('load.chat');
                         break;
                     case 'directory.following.index':
-                        this.emit('load.following.overview');
+                        this.emit('load.directory');
                         // Switching between tabs in following page
                         if (lastRoute.substr(0, 19) === 'directory.following') break;
                         this.emit('load.directory.following');
                         break;
                     case 'directory.channels.all':
-                        this.emit('load.directory.channels.all');
-                        break;
+                    case 'directory.following.channels':
                     case 'directory.game.index':
-                        this.emit('load.directory.game');
+                        this.emit('load.directory');
                         break;
                     case 'communities.community':
-                        this.emit('load.communities.community');
-                        break;
-                    case 'directory.following.channels':
-                        this.emit('load.directory.following.channels');
+                        this.emit('load.communities');
                         break;
                 }
             });
@@ -316,25 +312,26 @@ class Watcher extends SafeEventEmitter {
 
     directoryObserver() {
         const observe = (watcher, selector) => {
-            // timeout used because events sometimes fire before elements are created
-            setTimeout(() => {
-                const element = $(selector)[0];
-                if (!element) return;
-                if (watcher) watcher.disconnect();
-                watcher.observe(element, {childList: true, subtree: true});
-            }, 200);
+            const element = $(selector)[0];
+            if (!element) return;
+            if (watcher) watcher.disconnect();
+            watcher.observe(element, {childList: true, subtree: true});
         };
 
-        directoryWatcher = new window.MutationObserver(() => {
-            this.emit('directory.changed');
-        });
+        directoryWatcher = new window.MutationObserver(mutations =>
+            mutations.forEach(mutation => {
+                for (const el of mutation.addedNodes) {
+                    const $el = $(el);
 
-        const infiniteScrollSelector = '.js-streams .infinite-scroll.tower';
-        this.on('load.communities.community', () => observe(directoryWatcher, infiniteScrollSelector));
-        this.on('load.directory.channels.all', () => observe(directoryWatcher, infiniteScrollSelector));
-        this.on('load.directory.following.channels', () => observe(directoryWatcher, infiniteScrollSelector));
-        this.on('load.directory.game', () => observe(directoryWatcher, infiniteScrollSelector));
-        this.on('load.following.overview', () => observe(directoryWatcher, '.js-streams.qa-live-streams'));
+                    if ($el.hasClass('is-watch-party')) {
+                        this.emit('directory.vodcast');
+                    }
+                }
+            })
+        );
+
+        this.on('load.communities', () => observe(directoryWatcher, '.js-directory'));
+        this.on('load.directory', () => observe(directoryWatcher, '.js-directory'));
     }
 }
 

@@ -2,7 +2,7 @@ const $ = require('jquery');
 const settings = require('../../settings');
 const watcher = require('../../watcher');
 
-const VODCAST_SELECTOR = '.js-streams .pill.is-watch-party';
+const VODCAST_SELECTOR = '.pill.is-watch-party';
 const CARD_SELECTOR = '.card';
 
 class HideVodcastsModule {
@@ -15,20 +15,9 @@ class HideVodcastsModule {
         });
         settings.on('changed.hideVodcasts', value => value === true ? this.hide() : this.show());
 
-        watcher.on('directory.changed', () => this.hide());
-
-        watcher.on('load.communities.community', () => this.delayedHide());
-        watcher.on('load.directory.channels.all', () => this.delayedHide());
-        watcher.on('load.directory.following.channels', () => this.delayedHide());
-        watcher.on('load.directory.game', () => this.delayedHide());
-        watcher.on('load.following.overview', () => this.delayedHide());
-    }
-
-    delayedHide() {
-        // timeout used because events sometimes fire before elements are created
-        setTimeout(() => {
-            this.hide();
-        }, 200);
+        watcher.on('directory.vodcast', () => this.hide());
+        watcher.on('load.communities', () => this.hide());
+        watcher.on('load.directory', () => this.hide());
     }
 
     hide() {
