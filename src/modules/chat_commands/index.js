@@ -7,6 +7,7 @@ const anonChat = require('../anon_chat');
 const HELP_TEXT = `BetterTTV Chat Commands:
 /b — Shortcut for /ban
 /chatters — Retrieves the number of chatters in the chat
+/follow - follows current channel you watching
 /followed — Tells you for how long you have been following a channel
 /follows — Retrieves the number of followers for the channel
 /join & /part — Temporarily join/part chat (anon chat)
@@ -24,10 +25,10 @@ const HELP_TEXT = `BetterTTV Chat Commands:
 /suboff — Shortcut for /subscribersoff
 /t — Shortcut for /timeout
 /u — Shortcut for /unban
+/unfollow - unfollows current channel you watching
 /uptime — Retrieves the amount of time the channel has been live
 /viewers — Retrieves the number of viewers watching the channel
-/follow - follows current channel you watching.
-/unfollow - unfollows current channel you watching.
+/follow - follows current channel you watching
 Native Chat Commands:`;
 
 function secondsToLength(s) {
@@ -115,6 +116,8 @@ function handleCommands(message) {
 
     const channel = twitch.getCurrentChannel();
     const currentUser = twitch.getCurrentUser();
+    const followEndpoint = `users/${currentUser.id}/follows/channels/${channel.id}`;
+
     switch (command) {
         // moderation command shortcuts
         case 'b':
@@ -180,7 +183,7 @@ function handleCommands(message) {
             break;
         case 'followed':
             if (!currentUser) break;
-            twitchAPI.get(`users/${currentUser.id}/follows/channels/${channel.id}`)
+            twitchAPI.get(followEndpoint)
                 .then(({created_at}) => {
                     const since = window.moment(created_at);
                     twitch.sendChatAdminMessage(`You followed ${channel.displayName} ${since.fromNow()} (${since.format('LLL')})`);
@@ -219,21 +222,21 @@ function handleCommands(message) {
         // follow and unfollow
         case 'follow':
             if (!currentUser) break;
-            twitchAPI.get(`users/${currentUser.id}/follows/channels/${channel.id}`)
-                .then(() => twitch.sendChatAdminMessage(`You already following ${channel.displayName}`))
+            twitchAPI.get(followEndpoint)
+                .then(() => twitch.sendChatAdminMessage(`You are already following ${channel.displayName}.`))
                 .catch(() => {
-                    twitchAPI.put(`users/${currentUser.id}/follows/channels/${channel.id}`, {auth: true});
-                    twitch.sendChatAdminMessage(`You followed ${channel.displayName}`);
+                    twitchAPI.put(followEndpoint, {auth: true});
+                    twitch.sendChatAdminMessage(`You are now following ${channel.displayName}.`);
                 });
             break;
         case 'unfollow':
             if (!currentUser) break;
-            twitchAPI.get(`users/${currentUser.id}/follows/channels/${channel.id}`)
+            twitchAPI.get(followEndpoint)
                 .then(() => {
-                    twitchAPI.delete(`users/${currentUser.id}/follows/channels/${channel.id}`, {auth: true});
-                    twitch.sendChatAdminMessage(`You unfollowed ${channel.displayName}`);
+                    twitchAPI.delete(followEndpoint, {auth: true});
+                    twitch.sendChatAdminMessage(`You unfollowed ${channel.displayName}.`);
                 })
-                .catch(() => twitch.sendChatAdminMessage(`You are not following ${channel.displayName}`));
+                .catch(() => twitch.sendChatAdminMessage(`You are not following ${channel.displayName}.`));
             break;
         // misc
         case 'localunpin':
