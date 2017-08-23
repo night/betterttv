@@ -3869,9 +3869,6 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 
 .notification-center__subheader-unread-count {
     background-color: #323232;
-}
-
-.notification-center__subheader-unread-count>span {
     color: #D3D3D3;
 }
 
@@ -3905,4 +3902,16 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 
 .header-announcement--net-neutrality {
     color: black;
+}
+
+.dashboard-page .card__body {
+    background-color: #282828;
+}
+
+.dashboard-page .card--bordered {
+    background-color: #282828;
+}
+
+.dashboard-page .card__title, .dashboard-page .card__info {
+    color: #D3D3D3;
 }
