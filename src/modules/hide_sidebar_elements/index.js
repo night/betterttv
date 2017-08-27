@@ -12,6 +12,12 @@ class HideSidebarElementsModule {
             description: 'The left sidebar is too cluttered, so you can remove recommended channels'
         });
         settings.add({
+            id: 'hideRecommendedFriends',
+            name: 'Hide Recommended Friends',
+            defaultValue: true,
+            description: 'Hides the Recommended Friends section so you have more room for activities!'
+        });
+        settings.add({
             id: 'hidePrimePromotion',
             name: 'Hide Prime Promotions',
             defaultValue: false,
@@ -23,6 +29,14 @@ class HideSidebarElementsModule {
             this.toggleFeaturedChannels();
             this.togglePrimePromotions();
         });
+    }
+
+    toggleFeaturedChannels() {
+        if (settings.get('hideRecommendedFriends') === false) {
+            css.unload('hide-recommended-friends');
+        } else {
+            css.load('hide-recommended-friends');
+        }
     }
 
     toggleFeaturedChannels() {
