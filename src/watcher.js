@@ -106,9 +106,9 @@ class Watcher extends SafeEventEmitter {
                         if (lastRoute.substr(0, 19) === 'directory.following') break;
                         this.emit('load.directory.following');
                         break;
-                    case 'directory.channels.all':
-                    case 'directory.following.channels':
                     case 'directory.game.index':
+                    case 'directory.following.channels':
+                    case 'directory.channels.all':
                         this.emit('load.directory');
                         break;
                     case 'communities.community':
