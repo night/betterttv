@@ -6,17 +6,15 @@ const $ = require('jquery');
 
 let route = '';
 let chatWatcher;
-let conversationWatcher;
 let clipsChatWatcher;
-let vodChatWatcher;
 let channel = {};
-const chatState = {
-    slow: 0,
-    emoteOnly: 0,
-    followersOnly: -1,
-    r9k: 0,
-    subsOnly: 0
-};
+// const chatState = {
+//     slow: 0,
+//     emoteOnly: 0,
+//     followersOnly: -1,
+//     r9k: 0,
+//     subsOnly: 0
+// };
 
 class Watcher extends SafeEventEmitter {
     constructor() {
@@ -29,11 +27,9 @@ class Watcher extends SafeEventEmitter {
     load() {
         this.channelObserver();
         this.chatObserver();
-        this.conversationObserver();
         this.routeObserver();
         this.clipsChatObserver();
         this.checkClips();
-        this.vodChatObserver();
 
         debug.log('Watcher started');
     }
@@ -44,82 +40,36 @@ class Watcher extends SafeEventEmitter {
     }
 
     routeObserver() {
-        if (!window.App || !window.Ember) return;
+        const router = twitch.getRouter();
 
-        let renderingCounter = 0;
-        const waitForLoad = () => {
-            return new Promise(resolve => {
-                setTimeout(() => resolve(renderingCounter === 0 ? null : waitForLoad), 25);
-            });
-        };
+        const onRouteChange = location => {
+            debug.log(`New route: ${location.pathname}`);
 
-        const onRouteChange = data => {
-            if (data.currentRouteName === route) return;
+            // trigger on all loads (like resize functions)
+            this.emit('load');
 
             const lastRoute = route;
-            route = data.currentRouteName;
+            route = location.pathname.split('/')[1];
 
-            debug.log(`New route: ${route}`);
-
-            waitForLoad().then(() => {
-                debug.log(`Route loaded: ${route}`);
-
-                // trigger on all loads (like resize functions)
-                this.emit('load');
-
-                switch (route) {
-                    case 'loading':
-                        break;
-
-                    case 'index':
-                        this.emit('load.frontpage');
-                        break;
-                    case 'chat':
-                        this.emit('load.chat');
-                        break;
-                    case 'dashboards.index':
-                        this.emit('load.dashboard');
-                        this.emit('load.chat');
-                        break;
-                    case 'channel.index.index':
-                    case 'channel.index.post':
-                    case 'channel.videos.video-type':
-                    case 'channel.clips.index':
-                    case 'channel.collections':
-                    case 'channel.events':
-                    case 'channel.followers':
-                    case 'channel.following':
-                        this.emit('load.channel');
-                        // Switching between tabs in channel page
-                        if (lastRoute.substr(0, 8) === 'channel.') break;
-                        this.emit('load.chat');
-                        break;
-                    case 'videos':
-                        this.emit('load.vod');
-                        this.emit('load.chat');
-                        break;
-                    case 'directory.following.index':
-                        // Switching between tabs in following page
-                        if (lastRoute.substr(0, 19) === 'directory.following') break;
-                        this.emit('load.directory.following');
-                        break;
-                }
-            });
+            switch (route) {
+                case '':
+                    this.emit('load.frontpage');
+                    break;
+                case 'directory':
+                    if (lastRoute === 'directory') break;
+                    this.emit('load.directory.following');
+                    break;
+                default:
+                    route = 'channel';
+                    if (lastRoute === 'channel') break;
+                    this.emit('load.channel');
+                    this.emit('load.chat');
+                    break;
+            }
         };
 
-        const applicationController = window.App.__container__.lookup('controller:application');
-
-        onRouteChange({currentRouteName: applicationController.get('currentRouteName')});
-        applicationController.addObserver('currentRouteName', onRouteChange);
-
-        Ember.subscribe('render', {
-            before: () => {
-                renderingCounter++;
-            },
-            after: () => {
-                renderingCounter--;
-            }
-        });
+        router.history.listen(location => onRouteChange(location));
+        onRouteChange(router.history.location);
     }
 
     chatObserver() {
@@ -129,48 +79,30 @@ class Watcher extends SafeEventEmitter {
             this.emit('chat.message', $el, msgObject);
         };
 
-        const emitStateChange = (caller, key) => {
-            let newValue = caller[key];
-            if (newValue === undefined || newValue === null) {
-                return;
-            }
+        // const emitStateChange = (caller, key) => {
+        //     let newValue = caller[key];
+        //     if (newValue === undefined || newValue === null) {
+        //         return;
+        //     }
 
-            if (typeof newValue === 'boolean') {
-                newValue = newValue === true ? 1 : 0;
-            } else if (typeof newValue === 'string') {
-                newValue = parseInt(newValue, 10);
-            }
+        //     if (typeof newValue === 'boolean') {
+        //         newValue = newValue === true ? 1 : 0;
+        //     } else if (typeof newValue === 'string') {
+        //         newValue = parseInt(newValue, 10);
+        //     }
 
-            chatState[key] = newValue;
-            this.emit('chat.state', chatState);
-        };
+        //     chatState[key] = newValue;
+        //     this.emit('chat.state', chatState);
+        // };
 
-        const emitChatUnhiddenLoad = (caller, key) => {
-            const value = caller[key];
-            if (value === true) return;
-            this.emit('load.chat');
-        };
-
-        const observeChatState = () => {
-            const currentChat = twitch.getCurrentChat();
-            if (!currentChat) return;
-            Object.keys(chatState).forEach(key => {
-                currentChat.addObserver(key, emitStateChange);
-                emitStateChange(currentChat, key);
-            });
-        };
-
-        const observeChatUnhide = () => {
-            twitch.getChatController().addObserver('isChatHidden', emitChatUnhiddenLoad);
-        };
-
-        let loaded = false;
-        const checkChatConnected = () => {
-            const currentChat = twitch.getCurrentChat();
-            if (loaded || !currentChat || currentChat.isLoading) return;
-            loaded = true;
-            this.emit('load.chat_connected');
-        };
+        // const observeChatState = () => {
+        //     const currentChat = twitch.getCurrentChat();
+        //     if (!currentChat) return;
+        //     Object.keys(chatState).forEach(key => {
+        //         currentChat.addObserver(key, emitStateChange);
+        //         emitStateChange(currentChat, key);
+        //     });
+        // };
 
         const observe = (watcher, element) => {
             if (!element) return;
@@ -178,18 +110,9 @@ class Watcher extends SafeEventEmitter {
             watcher.observe(element, {childList: true, subtree: true});
 
             // late load messages events
-            $(element).find('.chat-line').each((index, el) => emitMessage($(el)));
+            $(element).find('.chat-line__message').each((index, el) => emitMessage($(el)));
 
-            // late load settings event
-            if ($(element).find('.chat-settings').length) {
-                this.emit('load.chat_settings');
-            }
-
-            observeChatState();
-            observeChatUnhide();
-
-            loaded = false;
-            checkChatConnected();
+            // observeChatState();
         };
 
         chatWatcher = new window.MutationObserver(mutations =>
@@ -197,47 +120,18 @@ class Watcher extends SafeEventEmitter {
                 for (const el of mutation.addedNodes) {
                     const $el = $(el);
 
-                    if ($el.hasClass('chat-line')) {
-                        if ($el.find('.horizontal-line').length) continue;
+                    if ($el.hasClass('chat__container')) {
+                        this.emit('load.chat', true);
+                    }
+
+                    if ($el.hasClass('chat-line__message')) {
                         emitMessage($el);
                     }
-
-                    if ($el.hasClass('chat-settings')) {
-                        this.emit('load.chat_settings');
-                    }
-
-                    checkChatConnected();
                 }
             })
         );
 
-        this.on('load.chat', () => observe(chatWatcher, $('.chat-room')[0]));
-    }
-
-    conversationObserver() {
-        const observe = (watcher, element) => {
-            // Element does not exist when the user is logged out
-            if (!element) return;
-            if (watcher) watcher.disconnect();
-            watcher.observe(element, {childList: true, subtree: true});
-        };
-
-        conversationWatcher = new window.MutationObserver(mutations =>
-            mutations.forEach(mutation => {
-                for (const el of mutation.addedNodes) {
-                    const $el = $(el);
-
-                    if ($el.hasClass('conversation-window')) {
-                        this.emit('conversation.new', $el);
-                    } else if ($el.hasClass('conversation-chat-line')) {
-                        const view = twitch.getEmberView($el.attr('id'));
-                        this.emit('conversation.message', $el, view.message);
-                    }
-                }
-            })
-        );
-
-        this.on('load', () => observe(conversationWatcher, $('.conversations-content')[0]));
+        this.on('load.chat', loaded => observe(chatWatcher, $(loaded ? '.chat__container' : '.channel__sidebar')[0]));
     }
 
     channelObserver() {
@@ -273,30 +167,6 @@ class Watcher extends SafeEventEmitter {
         );
 
         this.on('load.clips', () => observe(clipsChatWatcher, $('body')[0]));
-    }
-
-    vodChatObserver() {
-        const observe = (watcher, element) => {
-            if (!element) return;
-            if (watcher) watcher.disconnect();
-            watcher.observe(element, {childList: true, subtree: true});
-        };
-
-        vodChatWatcher = new window.MutationObserver(mutations =>
-            mutations.forEach(mutation => {
-                for (const el of mutation.addedNodes) {
-                    const $el = $(el);
-
-                    if ($el.hasClass('vod-message__content')) {
-                        this.emit('vod.message', $el);
-                    } else if ($el.hasClass('vod-message')) {
-                        $el.find('.vod-message__content').each((_, message) => this.emit('vod.message', $(message)));
-                    }
-                }
-            })
-        );
-
-        this.on('load.vod', () => observe(vodChatWatcher, $('.vod-chat')[0]));
     }
 }
 

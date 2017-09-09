@@ -1,6 +1,6 @@
 (() => {
     if (!String.prototype.includes || !Array.prototype.findIndex) return;
-    if (window.location.pathname.endsWith('.html')) return;
+    if (window.location.pathname.endsWith('.html') || window.location.hostname === 'player.twitch.tv') return;
 
     const Raven = require('raven-js');
 

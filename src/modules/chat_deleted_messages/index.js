@@ -88,7 +88,6 @@ class ChatDeletedMessagesModule {
             description: 'Completely removes timed out messages from view'
         });
         watcher.on('load.chat', () => this.patch());
-        watcher.on('load.chat_connected', () => this.patch());
     }
 
     patch() {
