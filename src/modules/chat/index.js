@@ -65,7 +65,7 @@ function hasNonASCII(message) {
 class ChatModule {
     constructor() {
         watcher.on('chat.message', ($element, message) => this.messageParser($element, message));
-        watcher.on('conversation.message', ($element, message) => this.messageParser($element, message));
+        watcher.on('conversation.message', ($element, message) => this.messageParser($element, message, false));
         watcher.on('channel.updated', ({bots}) => {
             channelBots = bots;
         });
@@ -188,7 +188,7 @@ class ChatModule {
         }
     }
 
-    messageParser($element, messageObj) {
+    messageParser($element, messageObj, channelChat = true) {
         const user = formatChatUser(messageObj);
         if (!user) return;
 
@@ -214,10 +214,15 @@ class ChatModule {
             $message.css('color', color);
         }
 
+        if (channelChat && ($element.hasClass('whisper-line') || $element.hasClass('admin'))) {
+            channelChat = false;
+        }
         if (
-            (modsOnly === true && !user.mod) ||
-            (subsOnly === true && !user.subscriber) ||
-            (asciiOnly === true && hasNonASCII(messageObj.message))
+            channelChat && (
+                (modsOnly === true && !user.mod) ||
+                (subsOnly === true && !user.subscriber) ||
+                (asciiOnly === true && hasNonASCII(messageObj.message))
+            )
         ) {
             $element.hide();
         }

@@ -2,6 +2,7 @@ const $ = require('jquery');
 const cdn = require('../../utils/cdn');
 const css = require('../../utils/css');
 const settings = require('../../settings');
+const storage = require('../../storage');
 const watcher = require('../../watcher');
 const twitch = require('../../utils/twitch');
 
@@ -45,6 +46,12 @@ class GlobalCSSModule {
     }
 
     loadDark() {
+        if (!settings.get('darkenedMode') && window.location.search && window.location.search.indexOf('darkpopout') >= 0) {
+            settings.set('darkenedMode', true);
+            // Turn darkenedMode setting off again if needed but without emit
+            storage.set('darkenedMode', false, undefined, false, false);
+        }
+
         if (settings.get('darkenedMode') !== true || !$('body').attr('data-page')) return;
 
         const pageKind = $('body').data('page').split('#')[0];
