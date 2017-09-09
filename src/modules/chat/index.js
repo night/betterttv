@@ -40,16 +40,16 @@ function formatChatUser({user, badges}) {
 const staff = new Map();
 const globalBots = ['nightbot', 'moobot'];
 let channelBots = [];
-let asciiOnly = false;
+// let asciiOnly = false;
 let subsOnly = false;
 let modsOnly = false;
 
-function hasNonASCII(message) {
-    for (let i = 0; i < message.length; i++) {
-        if (message.charCodeAt(i) > 128) return true;
-    }
-    return false;
-}
+// function hasNonASCII(message) {
+//     for (let i = 0; i < message.length; i++) {
+//         if (message.charCodeAt(i) > 128) return true;
+//     }
+//     return false;
+// }
 
 function replaceTwitchEmoticonTooltip(currentChannel, $emote) {
     const code = $emote.attr('alt');
@@ -213,8 +213,8 @@ class ChatModule {
 
         if (
             (modsOnly === true && !user.mod) ||
-            (subsOnly === true && !user.subscriber) ||
-            (asciiOnly === true && hasNonASCII(messageObj.message))
+            (subsOnly === true && !user.subscriber)// ||
+            // (asciiOnly === true && hasNonASCII(messageObj.message))
         ) {
             $element.hide();
         }
