@@ -14,36 +14,23 @@ const legacySubscribers = require('../legacy_subscribers');
 const EMOTE_STRIP_SYMBOLS_REGEX = /(^[~!@#$%\^&\*\(\)]+|[~!@#$%\^&\*\(\)]+$)/g;
 const MENTION_REGEX = /^@([a-zA-Z\d_]+)$/;
 
-const badgeTemplate = (url, description) => `
-    <span class="balloon-wrapper float-left">
-        <img src="${url}" alt="${description}" class="badge">
-        <div class="balloon balloon--tooltip balloon--up">${description}</div>
-    </span>
-`;
+// const badgeTemplate = (url, description) => `
+//     <span class="balloon-wrapper float-left">
+//         <img src="${url}" alt="${description}" class="badge">
+//         <div class="balloon balloon--tooltip balloon--up">${description}</div>
+//     </span>
+// `;
 
 const mentionTemplate = name => `<span class="mentioning">@${html.escape(name)}</span>`;
 
-function formatChatUser({from, color, tags}) {
-    if (!tags || from === 'jtv') return null;
-
-    if (from && typeof from !== 'string') {
-        return {
-            id: from.get('id'),
-            name: from.get('username'),
-            displayName: from.get('displayName'),
-            color: from.get('color')
-        };
-    }
-
-    const badges = tags.badges || {};
-
+function formatChatUser({user, badges}) {
     return {
-        id: tags['user-id'],
-        name: tags.login || from,
-        displayName: tags['display-name'],
-        color: tags.color || color,
-        mod: tags.mod || badges.hasOwnProperty('moderator'),
-        subscriber: tags.subscriber || badges.hasOwnProperty('subscriber'),
+        id: null, // TODO: twitch does not forward this data from their worker
+        name: user.username,
+        displayName: user.usernameDisplay,
+        color: user.color,
+        mod: badges.hasOwnProperty('moderator'),
+        subscriber: badges.hasOwnProperty('subscriber'),
         badges: badges
     };
 }
@@ -51,16 +38,16 @@ function formatChatUser({from, color, tags}) {
 const staff = new Map();
 const globalBots = ['nightbot', 'moobot'];
 let channelBots = [];
-let asciiOnly = false;
+// let asciiOnly = false;
 let subsOnly = false;
 let modsOnly = false;
 
-function hasNonASCII(message) {
-    for (let i = 0; i < message.length; i++) {
-        if (message.charCodeAt(i) > 128) return true;
-    }
-    return false;
-}
+// function hasNonASCII(message) {
+//     for (let i = 0; i < message.length; i++) {
+//         if (message.charCodeAt(i) > 128) return true;
+//     }
+//     return false;
+// }
 
 class ChatModule {
     constructor() {
@@ -68,11 +55,6 @@ class ChatModule {
         watcher.on('conversation.message', ($element, message) => this.messageParser($element, message));
         watcher.on('channel.updated', ({bots}) => {
             channelBots = bots;
-        });
-        watcher.on('load.chat', () => {
-            const controller = twitch.getChatController();
-            if (!controller) return;
-            controller.set('showList', false);
         });
 
         api.get('badges').then(({types, badges}) => {
@@ -86,11 +68,6 @@ class ChatModule {
 
             badges.forEach(({name, type}) => staff.set(name, staffBadges[type]));
         });
-
-        // Twitch has message history natively, but it is not on for everyone
-        try {
-            window.Twitch.experiments.overrideExperimentValue('MESSAGE_HISTORY', 'on');
-        } catch (e) {}
     }
 
     calculateColor(color) {
@@ -99,18 +76,18 @@ class ChatModule {
 
     customBadges($element, user) {
         if ((globalBots.includes(user.name) || channelBots.includes(user.name)) && user.mod) {
-            $element.find('img.badge[alt="Moderator"]').attr('src', cdn.url('tags/bot.png')).attr('srcset', '');
+            $element.find('img.chat-badge[alt="Moderator"]').attr('src', cdn.url('tags/bot.png')).attr('srcset', '');
         }
 
-        const badge = staff.get(user.name);
-        if (badge) {
-            $element.find('.badges').append(badgeTemplate(badge.svg, badge.description));
-        }
+        // const badge = staff.get(user.name);
+        // if (badge) {
+        //     $element.find('.badges').append(badgeTemplate(badge.svg, badge.description));
+        // }
 
-        const currentChannel = twitch.getCurrentChannel();
-        if (currentChannel && currentChannel.name === 'night' && legacySubscribers.hasSubscription(user.name)) {
-            $element.find('.badges').append(badgeTemplate(cdn.url('tags/subscriber.png'), 'Subscriber'));
-        }
+        // const currentChannel = twitch.getCurrentChannel();
+        // if (currentChannel && currentChannel.name === 'night' && legacySubscribers.hasSubscription(user.name)) {
+        //     $element.find('.badges').append(badgeTemplate(cdn.url('tags/subscriber.png'), 'Subscriber'));
+        // }
     }
 
     asciiOnly(enabled) {
@@ -193,7 +170,7 @@ class ChatModule {
         if (!user) return;
 
         const color = this.calculateColor(user.color);
-        const $from = $element.find('.from');
+        const $from = $element.find('.chat-line__message--username');
         $from.css('color', color);
 
         if (legacySubscribers.hasGlow(user.name) && settings.get('darkenedMode') === true) {
@@ -208,29 +185,30 @@ class ChatModule {
             $from.text(nickname);
         }
 
-        const $message = $element.find('.message');
-        const messageStyle = $message.attr('style');
+        const messageStyle = $element.attr('style');
         if (messageStyle && messageStyle.includes('color:')) {
-            $message.css('color', color);
+            $element.css('color', color);
         }
+
+        const $message = $element.find('span[data-a-target="chat-message-text"]');
 
         if (
             (modsOnly === true && !user.mod) ||
-            (subsOnly === true && !user.subscriber) ||
-            (asciiOnly === true && hasNonASCII(messageObj.message))
+            (subsOnly === true && !user.subscriber)// ||
+            // (asciiOnly === true && hasNonASCII(messageObj.message))
         ) {
             $element.hide();
         }
 
-        const $modIcons = $element.find('.mod-icons');
-        if ($modIcons.length) {
-            const userIsOwner = twitch.getUserIsOwnerFromTagsBadges(user.badges);
-            const userIsMod = twitch.getUserIsModeratorFromTagsBadges(user.badges);
-            const currentUserIsOwner = twitch.getCurrentUserIsOwner();
-            if ((userIsMod && !currentUserIsOwner) || userIsOwner) {
-                $modIcons.hide();
-            }
-        }
+        // const $modIcons = $element.find('.mod-icons');
+        // if ($modIcons.length) {
+        //     const userIsOwner = twitch.getUserIsOwnerFromTagsBadges(user.badges);
+        //     const userIsMod = twitch.getUserIsModeratorFromTagsBadges(user.badges);
+        //     const currentUserIsOwner = twitch.getCurrentUserIsOwner();
+        //     if ((userIsMod && !currentUserIsOwner) || userIsOwner) {
+        //         $modIcons.hide();
+        //     }
+        // }
 
         this.messageReplacer($message, user);
     }

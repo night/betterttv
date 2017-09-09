@@ -1,22 +1,76 @@
+const $ = require('jquery');
 const Raven = require('raven-js');
+const twitchAPI = require('./twitch-api');
+
+const REACT_ROOT = '#root div[data-reactroot]';
+const CHAT_CONTAINER = '.chat__container';
+const CHAT_LINES = '.chat-list__lines';
+
+const TMIActionTypes = {
+    POST: 0,
+    ACTION: 1,
+    BAN: 2,
+    TIMEOUT: 3,
+    CONNECTED: 4,
+    DISCONNECTED: 5,
+    RECONNECT: 6,
+    HOSTING: 7,
+    UNHOST: 8,
+    SUBSCRIPTION: 9,
+    RESUBSCRIPTION: 10,
+    CLEAR: 11,
+    SUBSCRIBER_ONLY_MODE: 12,
+    FOLLOWER_ONLY_MODE: 13,
+    SLOW_MODE: 14,
+    AUTOMOD_REJECTED: 15
+};
+
+function getReactInstance(element) {
+    for (const key in element) {
+        if (key.startsWith('__reactInternalInstance$')) {
+            return element[key];
+        }
+    }
+
+    return null;
+}
+
+function getReactElement(element) {
+    const instance = getReactInstance(element);
+    if (!instance) return null;
+
+    return instance._currentElement;
+}
+
+function getParentNode(reactElement) {
+    try {
+        return reactElement._owner._currentElement._owner;
+    } catch (_) {
+        return null;
+    }
+}
+
+function getParentElement(reactElement) {
+    try {
+        return getParentNode(reactElement)._currentElement;
+    } catch (_) {
+        return null;
+    }
+}
 
 function formatChannel(data) {
     return {
-        id: data.get('_id'),
-        name: data.get('name') || data.get('id'),
-        displayName: data.get('display_name'),
-        game: data.get('game'),
-        views: data.get('views')
+        id: (data.broadcaster_id || data.props.channelID).toString(),
+        name: data.broadcaster_login || data.props.channelName
     };
 }
 
 function formatUser(data) {
     return {
-        id: data.id,
-        name: data.login,
-        displayName: data.name,
-        avatar: data.logo,
-        accessToken: data.chat_oauth_token
+        id: data._id.toString(),
+        name: data.name,
+        displayName: data.display_name,
+        avatar: data.logo
     };
 }
 
@@ -25,21 +79,34 @@ function lookup(...args) {
 }
 
 let currentUser;
-if (window.Twitch && window.Twitch.user) {
-    window.Twitch.user()
-        .then(d => formatUser(d))
-        .then(u => {
-            currentUser = u;
-            Raven.setUserContext({
-                id: u.id,
-                username: u.name
-            });
+let router;
+
+try {
+    const connectRoot = getParentNode(getReactElement($(REACT_ROOT)[0]));
+    const context = connectRoot._context;
+    router = context.router;
+    twitchAPI.setAccessToken(context.store.getState().session.authToken);
+    twitchAPI.get('user', {auth: true}).then(user => {
+        currentUser = formatUser(user);
+
+        Raven.setUserContext({
+            id: currentUser.id,
+            username: currentUser.name
         });
-}
+    });
+} catch (_) {}
 
 const clipInfo = window.clipInfo;
 
 module.exports = {
+    TMIActionTypes,
+
+    getReactElement,
+
+    getRouter() {
+        return router;
+    },
+
     getEmberContainer(...args) {
         return lookup(...args);
     },
@@ -53,37 +120,12 @@ module.exports = {
         let rv;
 
         if (clipInfo) {
-            return {
-                id: clipInfo.broadcaster_id,
-                name: clipInfo.broadcaster_login,
-                displayName: clipInfo.broadcaster_display_name
-            };
+            rv = clipInfo;
         }
 
-        const channel = lookup('controller:channel');
-        if (!Ember.isNone(channel) && channel.get('model.id')) {
-            rv = channel.model;
-        }
-
-        if (!rv) {
-            const user = lookup('controller:user');
-            if (!Ember.isNone(user) && user.get('model.id')) {
-                rv = user.model;
-            }
-        }
-
-        if (!rv) {
-            const playerService = lookup('service:persistentPlayer');
-            if (!Ember.isNone(playerService) && playerService.get('playerComponent.channel.id')) {
-                rv = playerService.playerComponent.channel;
-            }
-        }
-
-        if (!rv) {
-            const chat = lookup('controller:chat');
-            if (!Ember.isNone(chat) && chat.get('currentChannelRoom.channel')) {
-                rv = chat.get('currentChannelRoom.channel');
-            }
+        const currentChat = this.getCurrentChat();
+        if (currentChat) {
+            rv = currentChat;
         }
 
         return rv ? formatChannel(rv) : null;
@@ -94,68 +136,95 @@ module.exports = {
     },
 
     getChatController() {
-        return lookup('controller:chat');
+        const container = $(CHAT_CONTAINER)[0];
+        if (!container) return null;
+
+        let controller;
+        try {
+            controller = getParentNode(getParentElement(getReactElement(container)))._instance;
+        } catch (_) {}
+
+        return controller;
     },
 
     getCurrentChat() {
-        return this.getChatController().currentRoom;
+        const container = $(CHAT_CONTAINER)[0];
+        if (!container) return null;
+
+        let controller;
+        try {
+            controller = getParentNode(getReactElement(container))._instance;
+        } catch (_) {}
+
+        return controller;
     },
 
     getCurrentTMISession() {
         return this.getChatController().tmiSession;
     },
 
-    sendChatAdminMessage(message) {
-        const currentChat = this.getCurrentChat();
-        if (!currentChat) return;
-        currentChat.addMessage({
-            from: 'jtv',
-            date: new Date(),
-            style: 'admin',
-            message
-        });
+    sendChatAdminMessage(content) {
+        const chatController = this.getChatController();
+        if (!chatController) return;
+
+        const data = {
+            type: TMIActionTypes.POST,
+            badges: {},
+            bits: undefined,
+            deleted: false,
+            id: 'betterttv-0',
+            messageParts: [{type: 0, content}],
+            timestamp: Date.now(),
+            user: {
+                color: '#000000',
+                isIntl: false,
+                name: 'betterttv',
+                usernameDisplay: 'BetterTTV'
+            }
+        };
+
+        // TODO: on render we need to style these appropriately
+
+        chatController.chatBuffer.consumeChatEvent({data});
     },
 
     sendChatMessage(message) {
         const currentChat = this.getCurrentChat();
         if (!currentChat) return;
-        currentChat.tmiRoom.sendMessage(message);
+        currentChat.send(message);
     },
 
     getCurrentUserIsModerator() {
-        const currentChat = this.getCurrentChat();
-        return currentChat ? currentChat.get('isModeratorOrHigher') : false;
+        // TODO: twitch does not support this yet
+        return false;
     },
 
-    getChatMessageObject(domElement) {
-        const id = domElement.getAttribute('id');
-        const view = this.getEmberView(id);
-        if (!view) return null;
+    getChatMessageObject(element) {
+        // it doesn't seem possible to get the data we need
+        // from the message itself, so we need to associate from the message
+        // its object in the chat lines children
+        const chatLines = getReactElement($(CHAT_LINES)[0]);
+        if (!chatLines) return null;
 
-        let msgObject = view.msgObject;
+        let badgesToRender;
+        try {
+            badgesToRender = getReactElement(element).props.children[1].props.badgesToRender;
+        } catch (_) {}
+        if (!badgesToRender) return null;
+
+        const children = chatLines.props.children;
+        let msgObject;
+        for (let i = children.length - 1; i >= 0; i--) {
+            const child = children[i];
+            // this is a hack if i've ever seen one.. but they share the same ref
+            if (child.props.message.badges === badgesToRender) {
+                msgObject = child;
+                break;
+            }
+        }
         if (!msgObject) return null;
 
-        if (typeof msgObject.get === 'function') {
-            const newObj = {};
-            ['from', 'date', 'deleted', 'color', 'labels', 'tags', 'message'].forEach(k => {
-                newObj[k] = msgObject.get(k);
-            });
-            msgObject = newObj;
-        }
-        return msgObject;
-    },
-
-    getUserIsModerator(name) {
-        const currentChat = this.getCurrentChat();
-        if (!currentChat) return false;
-        let badges = currentChat.tmiRoom.getBadges(name);
-        if (!badges) return false;
-        badges = Object.keys(badges);
-        return badges.includes('moderator') ||
-               badges.includes('broadcaster') ||
-               badges.includes('global_mod') ||
-               badges.includes('admin') ||
-               badges.includes('staff');
+        return msgObject.props.message;
     },
 
     getUserIsModeratorFromTagsBadges(badges) {
@@ -177,13 +246,9 @@ module.exports = {
                badges.includes('staff');
     },
 
-    getUserIsIgnored(name) {
-        const tmiSession = this.getCurrentTMISession();
-        return tmiSession ? tmiSession.isIgnored(name) : false;
-    },
-
     getCurrentUserIsOwner() {
-        if (!this.getCurrentChat() || !this.getCurrentUser()) return false;
-        return this.getCurrentUser().id === this.getCurrentChannel().id;
+        const currentChat = this.getCurrentChat();
+        if (!currentChat) return false;
+        return currentChat.isOwnChannel || false;
     }
 };

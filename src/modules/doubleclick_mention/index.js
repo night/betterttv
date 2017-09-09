@@ -1,7 +1,6 @@
 const $ = require('jquery');
 const watcher = require('../../watcher');
 const twitch = require('../../utils/twitch');
-const chatModerationCards = require('../chat_moderator_cards');
 
 const CHAT_ROOM_SELECTOR = '.chat-room';
 const CHAT_TEXT_AREA = '.ember-chat .chat-interface textarea';
@@ -24,7 +23,6 @@ class DoubleClickMentionModule {
         $(CHAT_ROOM_SELECTOR).off('dblclick.mention').on('dblclick.mention', USERNAME_SELECTORS, e => {
             if (e.shiftKey || e.ctrlKey) return;
             clearSelection();
-            chatModerationCards.close();
             let user = e.target.innerText ? e.target.innerText.replace('@', '') : '';
             const $target = $(e.target);
             const messageObj = twitch.getChatMessageObject($target.closest('.chat-line')[0]);

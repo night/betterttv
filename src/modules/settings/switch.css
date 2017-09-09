@@ -1,0 +1,81 @@
+.bttv-switch {
+  position: absolute;
+  right: 7px;
+  top: 4px;
+  height: 26px;
+  width: 120px;
+  background: rgba(#000000, 0.25);
+  border-radius: 3px;
+  box-shadow: inset 0 1px 3px rgba(#000000, 0.3), 0 1px rgba(#ffffff, 0.1);
+}
+
+.bttv-switch-label {
+  position: relative;
+  z-index: 2;
+  float: left;
+  width: 58px;
+  line-height: 26px;
+  font-size: 11px;
+  color: rgba(#ffffff, 0.35);
+  text-align: center;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.45);
+  cursor: pointer;
+
+  &:active {
+    font-weight: bold;
+  }
+}
+
+.bttv-switch-label-off {
+  padding-left: 2px;
+}
+
+.bttv-switch-label-on {
+  padding-right: 2px;
+}
+
+.bttv-switch-input {
+  display: none;
+
+  &:checked + .bttv-switch-label-on {
+    font-weight: bold;
+    color: rgba(0, 0, 0, 0.65);
+    text-shadow: 0 1px rgba(#ffffff, 0.25);
+    transition: 0.15s ease-out;
+  }
+
+  &:checked + .bttv-switch-label-off {
+    font-weight: bold;
+    color: #d3d3d3;
+    text-shadow: 0 1px rgba(#000000, 0.25);
+    transition: 0.15s ease-out;
+  }
+
+  &:checked + .bttv-switch-label-on ~ .bttv-switch-selection {
+    left: 60px;
+  }
+
+  &:checked + .bttv-switch-label-off ~ .bttv-switch-selection {
+    background: #111111;
+    box-shadow: none;
+  }
+}
+
+.bttv-switch-selection {
+  display: block;
+  position: absolute;
+  z-index: 1;
+  top: 2px;
+  left: 2px;
+  width: 58px;
+  height: 22px;
+  background: #65bd63;
+  border-radius: 3px;
+  background-image: linear-gradient(to bottom, #c54e4e, #ab2525);
+  box-shadow: inset 0 1px rgba(#ffffff, 0.5), 0 0 2px rgba(#000000, 0.2);
+  transition: left 0.15s ease-out;
+}
+
+.bttv-switch-off {
+  color: #d3d3d3;
+}

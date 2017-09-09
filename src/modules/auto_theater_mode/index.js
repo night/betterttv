@@ -19,11 +19,10 @@ class AutoTheaterModeModule {
     }
 
     load() {
-        this.attachTheatreListener();
-
         if (settings.get('autoTheatreMode') === false) return;
 
         try {
+            this.attachTheatreListener();
             if (App.__container__.lookup('service:persistentPlayer').playerComponent.player.theatre) return;
             window.Mousetrap.trigger('alt+t');
         } catch (e) {

@@ -14,7 +14,7 @@ class EmoteMenuModule {
             description: 'Get a more advanced emote menu for Twitch. (Made by Ryan Chatham)'
         });
         settings.on('changed.clickTwitchEmotes', () => this.load());
-        watcher.on('load.chat_connected', () => this.load());
+        watcher.on('load.chat', () => this.load());
     }
 
     load() {

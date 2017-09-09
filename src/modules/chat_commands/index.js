@@ -3,6 +3,7 @@ const twitch = require('../../utils/twitch');
 const twitchAPI = require('../../utils/twitch-api');
 const chat = require('../chat');
 const anonChat = require('../anon_chat');
+const moment = require('moment');
 
 const HELP_TEXT = `BetterTTV Chat Commands:
 /b — Shortcut for /ban
@@ -181,7 +182,7 @@ function handleCommands(message) {
             if (!currentUser) break;
             twitchAPI.get(`users/${currentUser.id}/follows/channels/${channel.id}`)
                 .then(({created_at}) => {
-                    const since = window.moment(created_at);
+                    const since = moment(created_at);
                     twitch.sendChatAdminMessage(`You followed ${channel.displayName} ${since.fromNow()} (${since.format('LLL')})`);
                 })
                 .catch(() => twitch.sendChatAdminMessage(`You do not follow ${channel.displayName}.`));

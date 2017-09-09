@@ -5,6 +5,7 @@ const settings = require('../../settings');
 const storage = require('../../storage');
 const html = require('../../utils/html');
 const twitch = require('../../utils/twitch');
+const moment = require('moment');
 const {escape: escapeRegExp} = require('../../utils/regex');
 
 const PHRASE_REGEX = /\{.+?\}/g;
@@ -227,7 +228,7 @@ class ChatHighlightBlacklistKeywordsModule {
             $pinnedHighlightsContainer.children().first().remove();
         }
 
-        const timestamp = window.moment(date).format('hh:mm');
+        const timestamp = moment(date).format('hh:mm');
 
         const $newHighlight = $(pinnedHighlightTemplate({timestamp, from, message}));
 

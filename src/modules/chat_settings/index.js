@@ -31,7 +31,7 @@ function inIFrame() {
 
 class ChatSettingsModule {
     constructor() {
-        watcher.on('load.chat_settings', () => this.load());
+        watcher.on('load.chat', () => this.load());
     }
 
     load() {
