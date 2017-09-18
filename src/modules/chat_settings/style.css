@@ -1,0 +1,7 @@
+.chat-settings {
+  overflow-y: scroll;
+
+  button[data-a-target="clear-chat-button"] {
+    display: none;
+  }
+}

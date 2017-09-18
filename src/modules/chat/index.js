@@ -14,45 +14,44 @@ const legacySubscribers = require('../legacy_subscribers');
 const EMOTE_STRIP_SYMBOLS_REGEX = /(^[~!@#$%\^&\*\(\)]+|[~!@#$%\^&\*\(\)]+$)/g;
 const MENTION_REGEX = /^@([a-zA-Z\d_]+)$/;
 
-// const badgeTemplate = (url, description) => `
-//     <span class="balloon-wrapper float-left">
-//         <img src="${url}" alt="${description}" class="badge">
-//         <div class="balloon balloon--tooltip balloon--up">${description}</div>
-//     </span>
-// `;
+const badgeTemplate = (url, description) => `
+    <div class="tw-tooltip-wrapper inline">
+        <img alt="Moderator" class="chat-badge bttv-chat-badge" src="${url}" alt="" srcset="" data-a-target="chat-badge">
+        <div class="tw-tooltip tw-tooltip--up tw-tooltip--align-left" data-a-target="tw-tooltip-label" style="margin-bottom: 0.9rem;">${description}</div>
+    </div>
+`;
 
 const mentionTemplate = name => `<span class="mentioning">@${html.escape(name)}</span>`;
 
 function formatChatUser({user, badges}) {
     return {
-        id: null, // TODO: twitch does not forward this data from their worker
-        name: user.username,
-        displayName: user.usernameDisplay,
+        id: user.userID,
+        name: user.userLogin,
+        displayName: user.userDisplayName,
         color: user.color,
         mod: badges.hasOwnProperty('moderator'),
         subscriber: badges.hasOwnProperty('subscriber'),
-        badges: badges
+        badges
     };
 }
 
 const staff = new Map();
 const globalBots = ['nightbot', 'moobot'];
 let channelBots = [];
-// let asciiOnly = false;
+let asciiOnly = false;
 let subsOnly = false;
 let modsOnly = false;
 
-// function hasNonASCII(message) {
-//     for (let i = 0; i < message.length; i++) {
-//         if (message.charCodeAt(i) > 128) return true;
-//     }
-//     return false;
-// }
+function hasNonASCII(message) {
+    for (let i = 0; i < message.length; i++) {
+        if (message.charCodeAt(i) > 128) return true;
+    }
+    return false;
+}
 
 class ChatModule {
     constructor() {
         watcher.on('chat.message', ($element, message) => this.messageParser($element, message));
-        watcher.on('conversation.message', ($element, message) => this.messageParser($element, message));
         watcher.on('channel.updated', ({bots}) => {
             channelBots = bots;
         });
@@ -76,18 +75,23 @@ class ChatModule {
 
     customBadges($element, user) {
         if ((globalBots.includes(user.name) || channelBots.includes(user.name)) && user.mod) {
-            $element.find('img.chat-badge[alt="Moderator"]').attr('src', cdn.url('tags/bot.png')).attr('srcset', '');
+            $element.find('img.chat-badge[alt="Moderator"]')
+                .addClass('bttv-chat-badge')
+                .attr('srcset', '')
+                .attr('src', cdn.url('tags/bot.png'));
         }
 
-        // const badge = staff.get(user.name);
-        // if (badge) {
-        //     $element.find('.badges').append(badgeTemplate(badge.svg, badge.description));
-        // }
+        const $badgesContainer = $element.find('.chat-badge').closest('span');
 
-        // const currentChannel = twitch.getCurrentChannel();
-        // if (currentChannel && currentChannel.name === 'night' && legacySubscribers.hasSubscription(user.name)) {
-        //     $element.find('.badges').append(badgeTemplate(cdn.url('tags/subscriber.png'), 'Subscriber'));
-        // }
+        const badge = staff.get(user.name);
+        if (badge) {
+            $badgesContainer.append(badgeTemplate(badge.svg, badge.description));
+        }
+
+        const currentChannel = twitch.getCurrentChannel();
+        if (currentChannel && currentChannel.name === 'night' && legacySubscribers.hasSubscription(user.name)) {
+            $badgesContainer.append(badgeTemplate(cdn.url('tags/subscriber.png'), 'Subscriber'));
+        }
     }
 
     asciiOnly(enabled) {
@@ -107,15 +111,13 @@ class ChatModule {
         const tokens = $message.contents();
         for (let i = 0; i < tokens.length; i++) {
             const node = tokens[i];
-            if (node.nodeType === window.Node.ELEMENT_NODE && node.classList.contains('balloon-wrapper')) {
+            if (node.nodeType === window.Node.ELEMENT_NODE && node.classList.contains('chat-line__message--emote')) {
                 const $emote = $(node);
-                const $image = $emote.find('img');
-                if (!$image.length) continue;
-                const code = $image.attr('alt');
-                const id = ($image.attr('src').split('emoticons/v1/')[1] || '').split('/')[0];
+                const code = $emote.attr('alt');
+                const id = ($emote.attr('src').split('emoticons/v1/')[1] || '').split('/')[0];
                 const emote = channelEmotesTip.getEmote(id, code);
                 if (emote) {
-                    $emote.find('.balloon').css('text-align', 'center').html(emote.balloon);
+                    $emote.parent().find('.tw-tooltip').css('text-align', 'center').html(emote.balloon);
                     if (!currentChannel || emote.channel.name === currentChannel.name) continue;
                     $emote.on('click', () => window.open(emote.channel.url, '_blank'));
                 }
@@ -190,36 +192,27 @@ class ChatModule {
             $element.css('color', color);
         }
 
-        const $message = $element.find('span[data-a-target="chat-message-text"]');
+        const $message = $element.find('span[data-a-target="chat-message-text"],div.tw-tooltip-wrapper');
 
         if (
             (modsOnly === true && !user.mod) ||
-            (subsOnly === true && !user.subscriber)// ||
-            // (asciiOnly === true && hasNonASCII(messageObj.message))
+            (subsOnly === true && !user.subscriber) ||
+            (asciiOnly === true && hasNonASCII(messageObj.message))
         ) {
             $element.hide();
         }
 
-        // const $modIcons = $element.find('.mod-icons');
-        // if ($modIcons.length) {
-        //     const userIsOwner = twitch.getUserIsOwnerFromTagsBadges(user.badges);
-        //     const userIsMod = twitch.getUserIsModeratorFromTagsBadges(user.badges);
-        //     const currentUserIsOwner = twitch.getCurrentUserIsOwner();
-        //     if ((userIsMod && !currentUserIsOwner) || userIsOwner) {
-        //         $modIcons.hide();
-        //     }
-        // }
+        const $modIcons = $element.find('.chat-line__mod-icons');
+        if ($modIcons.length) {
+            const userIsOwner = twitch.getUserIsOwnerFromTagsBadges(user.badges);
+            const userIsMod = twitch.getUserIsModeratorFromTagsBadges(user.badges);
+            const currentUserIsOwner = twitch.getCurrentUserIsOwner();
+            if ((userIsMod && !currentUserIsOwner) || userIsOwner) {
+                $modIcons.remove();
+            }
+        }
 
         this.messageReplacer($message, user);
-    }
-
-    dismissPinnedCheer() {
-        try {
-            const service = window.App.__container__.lookup('service:bits-pinned-cheers');
-            if (service.topPinnedCheer || service.recentPinnedCheer) service.dismissLocalMessage();
-        } catch (dismissError) {
-            debug.log('Failed to dismiss cheer:', dismissError);
-        }
     }
 }
 

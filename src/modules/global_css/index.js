@@ -4,6 +4,16 @@ const settings = require('../../settings');
 const watcher = require('../../watcher');
 const twitch = require('../../utils/twitch');
 
+const CHAT_SETTINGS_DARK_TOGGLE_SELECTOR = '#chat-settings-dark-mode';
+
+function toggleDarkChat(value) {
+    const chatDarkModeToggle = twitch.getReactElement($(CHAT_SETTINGS_DARK_TOGGLE_SELECTOR)[0]);
+    if (!chatDarkModeToggle) return;
+    const {checked, onChange} = chatDarkModeToggle.props;
+    if ((!checked && !value) || (checked && value)) return;
+    onChange();
+}
+
 class GlobalCSSModule {
     constructor() {
         this.globalCSS();
@@ -16,30 +26,16 @@ class GlobalCSSModule {
             id: 'darkenedMode',
             name: 'Dark Theme',
             defaultValue: false,
-            description: 'A sleek, dark theme which will make you love the site even more'
+            description: 'Enable Twitch\'s dark theme'
         });
-        settings.on('changed.darkenedMode', value => value === true ? this.loadDark() : this.unloadDark());
+        settings.on('changed.darkenedMode', () => this.loadDark());
         this.loadDark();
     }
 
     loadDark() {
-        if (settings.get('darkenedMode') !== true) return;
-
-        $('html').toggleClass('theme--dark', true);
-        const chatDarkModeToggle = twitch.getReactElement($('#chat-settings-dark-mode')[0]);
-        if (!chatDarkModeToggle) return;
-        const {checked, onChange} = chatDarkModeToggle.props;
-        if (checked) return;
-        onChange();
-    }
-
-    unloadDark() {
-        $('html').toggleClass('theme--dark', false);
-        const chatDarkModeToggle = twitch.getReactElement($('#chat-settings-dark-mode')[0]);
-        if (!chatDarkModeToggle) return;
-        const {checked, onChange} = chatDarkModeToggle.props;
-        if (!checked) return;
-        onChange();
+        const value = settings.get('darkenedMode');
+        $('html').toggleClass('theme--dark', value);
+        toggleDarkChat(value);
     }
 
     globalCSS() {

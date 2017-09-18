@@ -1,5 +1,6 @@
 const $ = require('jquery');
 const watcher = require('../../watcher');
+const twitch = require('../../utils/twitch');
 
 const STRAWPOLL_REGEX = /strawpoll\.me\/([0-9]+)/g;
 
@@ -16,7 +17,7 @@ const pollTemplate = pollId => `
                       fill-rule="evenodd" />
             </svg>
         </div>
-        <iframe class="frame" src="https://www.strawpoll.me/embed_2/${pollId}"></iframe>
+        <iframe class="frame" src="https://www.strawpoll.me/embed_1/${pollId}"></iframe>
     </div>
 `;
 
@@ -29,51 +30,40 @@ class ChatEmbeddedPollModule {
     }
 
     onChat($el, messageObj) {
-        const strawpoll = STRAWPOLL_REGEX.exec(messageObj.message);
+        const strawpoll = STRAWPOLL_REGEX.exec($el.text());
+        if (!strawpoll || !messageObj.badges) return;
 
-        if (!strawpoll || !messageObj.labels || !(messageObj.labels.includes('mod') || messageObj.labels.includes('owner'))) return;
+        const isModerator = twitch.getUserIsModeratorFromTagsBadges(messageObj.badges);
+        const isOwner = twitch.getUserIsOwnerFromTagsBadges(messageObj.badges);
+        if (!isModerator && !isOwner) return;
 
         const pollId = strawpoll[1];
 
         let $poll = $('#bttv-poll-contain');
-
-        // Dont replace the poll with the same one
         if ($poll.length && pollId === lastPollId) return;
-
-        // If poll exists and there's an iframe open, don't do anything.
         if ($poll.length && $poll.children('.frame').is(':visible')) return;
-
-        // Otherwise, if the poll exists delete the poll
         if ($poll.length) $poll.remove();
 
-        // Push new poll to DOM
-        $('.ember-chat .chat-room').append(pollTemplate(pollId));
+        $('.chat-list').append(pollTemplate(pollId));
 
-        // Reset $poll to newly created poll
         $poll = $('#bttv-poll-contain');
 
-        // If timeout exists already, clear it
         if (frameTimeout !== null) {
             clearTimeout(frameTimeout);
         }
 
-        // After 30 seconds, remove poll if user doesn't open it
         frameTimeout = setTimeout(() => {
             if ($poll && !$poll.children('.frame').is(':visible')) $poll.remove();
         }, 30000);
 
-        // User manually closes the poll
         $poll.children('.close').on('click', () => {
             $poll.remove();
         });
-
-        // User opens the poll
         $poll.children('.title').on('click', () => {
             $poll.children('.frame').show();
             $poll.children('.title').text('Thanks!');
             $poll.css('height', '450px');
         });
-
         $poll.slideDown(200);
 
         lastPollId = pollId;

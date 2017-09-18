@@ -2,6 +2,7 @@ const api = require('../../utils/api');
 const mustacheFormat = require('../../utils/regex').mustacheFormat;
 const cdn = require('../../utils/cdn');
 const legacySubscribers = require('../legacy_subscribers');
+const watcher = require('../../watcher');
 
 const AbstractEmotes = require('./abstract-emotes');
 const Emote = require('./emote');
@@ -50,7 +51,8 @@ class GlobalEmotes extends AbstractEmotes {
                         restrictionCallback
                     }));
                 })
-            );
+            )
+            .then(() => watcher.emit('emotes.updated'));
     }
 }
 

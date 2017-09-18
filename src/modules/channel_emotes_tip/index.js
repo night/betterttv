@@ -1,7 +1,7 @@
 const watcher = require('../../watcher');
 const api = require('../../utils/api');
-const debug = require('../../utils/debug');
-const twitch = require('../../utils/twitch');
+// const debug = require('../../utils/debug');
+// const twitch = require('../../utils/twitch');
 const html = require('../../utils/html');
 
 class ChannelEmotesTipModule {
@@ -43,20 +43,22 @@ class ChannelEmotesTipModule {
     checkEmoteSets() {
         if (!this.ids) return null;
 
-        const room = twitch.getCurrentChat();
-        if (!room || !room.product) return;
+        // TODO: need a solution for this
 
-        const {emoticons, name} = room.product;
-        if (!Array.isArray(emoticons) || !name) return;
+        // const room = twitch.getCurrentChat();
+        // if (!room || !room.product) return;
 
-        const emote = emoticons.find(({state}) => state === 'active');
-        if (!emote || this.ids[emote.id]) {
-            debug.log(`Channel set exists for ${name}, no need to give a tip`);
-            return;
-        }
+        // const {emoticons, name} = room.product;
+        // if (!Array.isArray(emoticons) || !name) return;
 
-        api.post('twitch_emotes/channel_tip', {body: {name}})
-            .then(() => debug.log(`Gave a channel tip for ${name}`));
+        // const emote = emoticons.find(({state}) => state === 'active');
+        // if (!emote || this.ids[emote.id]) {
+        //     debug.log(`Channel set exists for ${name}, no need to give a tip`);
+        //     return;
+        // }
+
+        // api.post('twitch_emotes/channel_tip', {body: {name}})
+        //     .then(() => debug.log(`Gave a channel tip for ${name}`));
     }
 }
 

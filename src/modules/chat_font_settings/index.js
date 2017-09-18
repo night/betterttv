@@ -13,7 +13,7 @@ Leave the field blank to use the default.`;
 const STYLE_ID = 'bttv-font-size';
 
 const styleTemplate = (fontFamily, fontSize) => `
-    .ember-chat .chat-messages, .ember-chat .chat-messages .chat-line {
+    .chat-list__lines {
         font-family: ${fontFamily ? `"${html.escape(fontFamily)}", sans-serif` : 'inherit'} !important;
         font-size: ${fontSize ? `${html.escape(fontSize)}px` : 'inherit'} !important;
     }

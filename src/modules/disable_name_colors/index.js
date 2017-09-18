@@ -15,10 +15,7 @@ class DisableNameColorsModule {
     }
 
     load() {
-        const $chatroom = $('.ember-chat .chat-room');
-        $chatroom.removeClass('no-name-colors');
-        if (settings.get('disableUsernameColors') === false) return;
-        $chatroom.addClass('no-name-colors');
+        $('.chat-list__lines').toggleClass('bttv-disable-name-colors', settings.get('disableUsernameColors'));
     }
 }
 

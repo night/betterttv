@@ -1,42 +1,23 @@
 const $ = require('jquery');
 const twitch = require('../../utils/twitch');
 const keycodes = require('../../utils/keycodes');
-const watcher = require('../../watcher');
 
-const CHAT_CONTAINER_SELECTOR = '.chat-room .chat-messages';
-const CHAT_CONTENT_SELECTOR = '.chat-messages .tse-content';
-const CHAT_LINES_SELECTOR = '.ember-chat .chat-messages .chat-lines';
-const CHAT_SCROLLER_SELECTOR = '.chat-messages .tse-scroll-content';
-const MESSAGES_INDICATOR_SELECTOR = '.more-messages-indicator';
+const CHAT_LIST_SELECTOR = '.chat-list';
+const MESSAGES_INDICATOR_SELECTOR = '.chat-list__more-messages';
 const FREEZE_KEYS = [keycodes.Ctrl, keycodes.Meta];
-const CHAT_SCROLL_THRESHOLD = 150;
 
 let keysPressed = 0;
 
 function setScrollState(enabled) {
-    const chatRoomEmberId = $(CHAT_CONTAINER_SELECTOR).parent().attr('id');
-    const chatComponent = twitch.getEmberView(chatRoomEmberId);
-    if (!chatComponent) return;
-
-    if (enabled) {
-        chatComponent._scrollToBottom();
-    } else {
-        chatComponent._setStuckToBottom(false);
-    }
+    const scroller = twitch.getChatScroller();
+    if (!scroller) return;
+    scroller.setState({
+        isAutoScrolling: enabled
+    });
 }
 
 function shouldFreeze(e) {
-    return FREEZE_KEYS.includes(e.keyCode) && $(`${CHAT_LINES_SELECTOR}:hover`).length && !document.hidden;
-}
-
-// TODO: we really shouldn't have to do this.. this is a bandaid
-let chatComponent;
-function scrollOnEmoteLoad($el) {
-    $el.find('img.emoticon').on('load', () => {
-        const indicator = $(MESSAGES_INDICATOR_SELECTOR).length > 0;
-        if (!chatComponent || indicator) return;
-        chatComponent._scrollToBottom();
-    });
+    return FREEZE_KEYS.includes(e.keyCode) && $(`${CHAT_LIST_SELECTOR}:hover`).length && !document.hidden;
 }
 
 class ChatFreezeModule {
@@ -54,31 +35,6 @@ class ChatFreezeModule {
                 const indicator = $(MESSAGES_INDICATOR_SELECTOR).length > 0;
                 setScrollState(indicator);
             });
-        watcher.on('load.chat', () => this.load());
-        watcher.on('chat.message', $el => scrollOnEmoteLoad($el));
-    }
-
-    load() {
-        $(CHAT_CONTAINER_SELECTOR).on('mousewheel', ({originalEvent}) => {
-            const indicator = $(MESSAGES_INDICATOR_SELECTOR).length > 0;
-            const $chatContent = $(CHAT_CONTENT_SELECTOR);
-            const $chatScroller = $(CHAT_SCROLLER_SELECTOR);
-
-            if (!$chatScroller.length || !$chatContent.length) return;
-
-            if (originalEvent.wheelDelta > 0 && !indicator) {
-                if ($chatScroller[0].scrollHeight - $chatScroller[0].scrollTop - $chatScroller.height() > CHAT_SCROLL_THRESHOLD) {
-                    setScrollState(false);
-                }
-            } else if (originalEvent.wheelDelta < 0 && indicator) {
-                if ($chatContent.offset().top + $chatContent.height() - $chatScroller.height() < CHAT_SCROLL_THRESHOLD) {
-                    setScrollState(true);
-                }
-            }
-        });
-
-        const chatRoomEmberId = $(CHAT_CONTAINER_SELECTOR).parent().attr('id');
-        chatComponent = twitch.getEmberView(chatRoomEmberId);
     }
 }
 

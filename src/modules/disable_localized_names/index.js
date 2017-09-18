@@ -15,11 +15,12 @@ class DisableLocalizedNamesModule {
     delocalizeName($el) {
         if (settings.get('disableLocalizedNames') === false) return;
 
-        const $name = $el.find('.from');
-        const $login = $name.find('.intl-login');
+        const $name = $el.find('.chat-line__message--username');
+        const $login = $el.find('.chat-line__message--username-canonical');
         if (!$login.length) return;
 
-        $name.text($login.text().replace(/[\(\)]/g, ''));
+        $name.text($login.text().replace(/[\(\)]/g, '').trim());
+        $login.remove();
     }
 }
 

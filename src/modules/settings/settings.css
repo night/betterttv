@@ -17,8 +17,12 @@
               0 1px 0 rgba(#000000, 0.3), 0 2px 0 rgba(#000000, 0.2), 0 3px 0 rgba(#000000, 0.1);
 
   h1 {
-    font-size: 26px;
+    font-size: 20px;
     color: #d3d3d3;
+  }
+
+  h2 {
+    font-size: 16px;
   }
 
   #header {
