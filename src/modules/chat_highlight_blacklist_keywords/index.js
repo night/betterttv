@@ -19,7 +19,7 @@ const HIGHLIGHT_KEYWORD_PROMPT = `Type some highlight keywords. Messages contain
 
 Use spaces in the field to specify multiple keywords. Place {} around a set of words to form a phrase, <> inside the {} to use exact search, and () around a single word to specify a username. Wildcards (*) are supported.`;
 
-const CHAT_ROOM_SELECTOR = '.ember-chat .chat-room';
+const CHAT_LIST_SELECTOR = '.chat-list';
 const PINNED_HIGHLIGHT_ID = 'bttv-pinned-highlight';
 const PINNED_CONTAINER_ID = 'bttv-pin-container';
 const MAXIMUM_PIN_COUNT = 10;
@@ -87,7 +87,7 @@ function computeKeywords(keywords) {
     };
 }
 
-
+let loadTime = 0;
 let blacklistKeywords = [];
 let blacklistUsers = [];
 function computeBlacklistKeywords() {
@@ -149,9 +149,9 @@ class ChatHighlightBlacklistKeywordsModule {
             computeBlacklistKeywords();
             computeHighlightKeywords();
             this.loadPinnedHighlights();
+            loadTime = Date.now();
         });
         watcher.on('chat.message', ($message, messageObj) => this.onMessage($message, messageObj));
-        watcher.on('conversation.message', ($message, messageObj) => this.onConverationMessage($message, messageObj));
         storage.on('changed.blacklistKeywords', computeBlacklistKeywords);
         storage.on('changed.highlightKeywords', computeHighlightKeywords);
 
@@ -179,24 +179,18 @@ class ChatHighlightBlacklistKeywordsModule {
         changeKeywords(HIGHLIGHT_KEYWORD_PROMPT, 'highlightKeywords');
     }
 
-    onMessage($message, {from, message, date, tags, style}) {
+    onMessage($message, {user, timestamp}) {
+        const from = user.userLogin;
+        const message = $message.find('span[data-a-target="chat-message-text"]').text();
+        const date = new Date(timestamp);
+
         if (fromContainsKeyword(blacklistUsers, from) || messageContainsKeyword(blacklistKeywords, from, message)) {
             return this.markBlacklisted($message);
         }
 
-        // no highlights on admin messages etc.
-        if (style && style !== 'action') return;
-
         if (fromContainsKeyword(highlightUsers, from) || messageContainsKeyword(highlightKeywords, from, message)) {
             this.markHighlighted($message);
-            if (tags && !tags.historical) this.pinHighlight({from, message, date});
-        }
-    }
-
-    onConverationMessage($message, {tags: {login}, body}) {
-        if (login !== twitch.getCurrentUser().name) notificationSound.play();
-        if (fromContainsKeyword(blacklistUsers, login) || messageContainsKeyword(blacklistKeywords, login, body)) {
-            return this.markBlacklisted($message);
+            if (timestamp > loadTime) this.pinHighlight({from, message, date});
         }
     }
 
@@ -212,7 +206,7 @@ class ChatHighlightBlacklistKeywordsModule {
     loadPinnedHighlights() {
         if (settings.get('pinnedHighlights') === false || $(`#${PINNED_CONTAINER_ID}`).length) return;
 
-        $pinnedHighlightsContainer = $(`<div id="${PINNED_CONTAINER_ID}" />`).appendTo($(CHAT_ROOM_SELECTOR));
+        $pinnedHighlightsContainer = $(`<div id="${PINNED_CONTAINER_ID}" />`).appendTo($(CHAT_LIST_SELECTOR));
     }
 
     unloadPinnedHighlights() {

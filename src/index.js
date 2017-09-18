@@ -4,6 +4,34 @@
 
     const Raven = require('raven-js');
 
+    /*
+    
+     TODO:
+
+     - Anon Chat
+     - TwitchEmotes Sub Emote Tip
+     - Better Viewer List? (Twitch's viewer list now has search.. might be good enough)
+     - Channel Stats? (Twitch's new rate limits make this impractical moving forward, time to remove?)
+     - Chat Commands
+     - Chat Deleted Messages
+     - Chat Moderator Cards (Twitch did not implement this yet)
+     - Clips (Twitch did not implement this yet)
+     - Directory Preview? (meh about this feature, maybe time to retire it)
+     - Disable Channel Header (Twitch did not implement this yet)
+     - Emote Menu? (requires a lot of work, maybe time to just try and integrate into twitch's)
+     - Hide Chat Clips (Twitch did not implement this yet)
+     - Hide Conversations (Twitch did not implement this yet)
+     - Hide Group Chat (Twitch did not implement this yet)
+     - Host Button
+     - Prime Sub Reminder? (requires us to make an API call since Twitch lazy loads this)
+     - Tab Completion? (requires a lot of work, maybe time to just try and integrate into twitch's)
+     - Video Player Keybinds/Clicks (Twitch did not implement a full player yet; using iframe rn)
+     - VOD Chat (Twitch did not implement this yet)
+
+     ? - denotes maybe not returning
+
+    */
+
     if (process.env.NODE_ENV !== 'development') {
         Raven.config(
             process.env.SENTRY_URL,

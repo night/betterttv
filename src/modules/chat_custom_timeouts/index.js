@@ -3,7 +3,9 @@ const watcher = require('../../watcher');
 const keyCodes = require('../../utils/keycodes');
 const twitch = require('../../utils/twitch');
 
-const CHAT_ROOM_SELECTOR = '.ember-chat .chat-room';
+const CHAT_ROOM_SELECTOR = '.chat__pane';
+const CHAT_LINE_SELECTOR = '.chat-line__message';
+const CHAT_LINE_USERNAME_SELECTOR = `${CHAT_LINE_SELECTOR} .chat-line__message--username`;
 const CUSTOM_TIMEOUT_ID = 'bttv-custom-timeout-contain';
 const CUSTOM_TIMEOUT_TEMPLATE = `
     <div id="${CUSTOM_TIMEOUT_ID}">
@@ -117,10 +119,10 @@ function handleClick(e) {
     if (!twitch.getCurrentUserIsModerator()) return;
     e.preventDefault();
 
-    const $chatLine = $(e.currentTarget).closest('.chat-line');
+    const $chatLine = $(e.currentTarget).closest(CHAT_LINE_SELECTOR);
     const msgObject = twitch.getChatMessageObject($chatLine[0]);
     if (!msgObject) return;
-    user = msgObject.from;
+    user = msgObject.user.userLogin;
     openCustomTimeout($(e.currentTarget));
 }
 
@@ -131,8 +133,8 @@ class ChatCustomTimeoutsModule {
 
     loadClickHandler() {
         $(CHAT_ROOM_SELECTOR)
-            .off('contextmenu', '.chat-line .from', handleClick)
-            .on('contextmenu', '.chat-line .from', handleClick)
+            .off('contextmenu', CHAT_LINE_USERNAME_SELECTOR, handleClick)
+            .on('contextmenu', CHAT_LINE_USERNAME_SELECTOR, handleClick)
             .off('click', handleTimeoutClick)
             .on('click', handleTimeoutClick);
     }

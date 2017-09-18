@@ -1,5 +1,4 @@
 const $ = require('jquery');
-const css = require('../../utils/css');
 const watcher = require('../../watcher');
 const settings = require('../../settings');
 
@@ -26,21 +25,11 @@ class HideSidebarElementsModule {
     }
 
     toggleFeaturedChannels() {
-        if (settings.get('hideFeaturedChannels') === false) {
-            css.unload('hide-recommended-channels');
-        } else {
-            css.load('hide-recommended-channels');
-        }
+        $('body').toggleClass('bttv-hide-featured-channels', settings.get('hideFeaturedChannels'));
     }
 
     togglePrimePromotions() {
-        if (settings.get('hidePrimePromotion') === false) {
-            $('.js-offers').show();
-            $('.top-nav__prime-anchor').show();
-        } else {
-            $('.js-offers').hide();
-            $('.top-nav__prime-anchor').hide();
-        }
+        $('body').toggleClass('bttv-hide-prime-promotions', settings.get('hidePrimePromotion'));
     }
 }
 

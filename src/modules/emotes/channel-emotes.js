@@ -39,6 +39,8 @@ class ChannelEmotes extends AbstractEmotes {
                 imageType
             }))
         ));
+
+        setTimeout(() => watcher.emit('emotes.updated'), 0);
     }
 }
 

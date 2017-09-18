@@ -3,8 +3,10 @@ const Raven = require('raven-js');
 const twitchAPI = require('./twitch-api');
 
 const REACT_ROOT = '#root div[data-reactroot]';
+const CHAT_CONTAINER_CONTAINER = '.channel__sidebar';
 const CHAT_CONTAINER = '.chat__container';
-const CHAT_LINES = '.chat-list__lines';
+const CHAT_LIST = '.chat-list';
+const PLAYER = '.player';
 
 const TMIActionTypes = {
     POST: 0,
@@ -50,55 +52,54 @@ function getParentNode(reactElement) {
     }
 }
 
-function getParentElement(reactElement) {
+function searchReactChildren(node, predicate, maxDepth = 15, depth = 0) {
     try {
-        return getParentNode(reactElement)._currentElement;
-    } catch (_) {
+        if (predicate(node)) {
+            return node;
+        }
+    } catch (_) {}
+
+    if (!node || depth > maxDepth) {
         return null;
     }
-}
 
-function formatChannel(data) {
-    return {
-        id: (data.broadcaster_id || data.props.channelID).toString(),
-        name: data.broadcaster_login || data.props.channelName
-    };
-}
+    const {_renderedChildren: children, _renderedComponent: componenet} = node;
 
-function formatUser(data) {
-    return {
-        id: data._id.toString(),
-        name: data.name,
-        displayName: data.display_name,
-        avatar: data.logo
-    };
-}
+    if (children) {
+        for (const key of Object.keys(children)) {
+            const childResult = searchReactChildren(children[key], predicate, maxDepth, depth + 1);
+            if (childResult) {
+                return childResult;
+            }
+        }
+    }
 
-function lookup(...args) {
-    return window.App ? window.App.__container__.lookup(...args) : null;
+    if (componenet) {
+        return searchReactChildren(componenet, predicate, maxDepth, depth + 1);
+    }
+
+    return null;
 }
 
 let currentUser;
-let router;
+const clipInfo = window.clipInfo;
 
-try {
-    const connectRoot = getParentNode(getReactElement($(REACT_ROOT)[0]));
-    const context = connectRoot._context;
-    router = context.router;
-    twitchAPI.setAccessToken(context.store.getState().session.authToken);
-    twitchAPI.get('user', {auth: true}).then(user => {
-        currentUser = formatUser(user);
+module.exports = {
+    setCurrentUser(accessToken, id, name, displayName) {
+        twitchAPI.setAccessToken(accessToken);
+
+        currentUser = {
+            id: id.toString(),
+            name,
+            displayName
+        };
 
         Raven.setUserContext({
             id: currentUser.id,
             username: currentUser.name
         });
-    });
-} catch (_) {}
+    },
 
-const clipInfo = window.clipInfo;
-
-module.exports = {
     TMIActionTypes,
 
     getReactElement,
@@ -107,44 +108,79 @@ module.exports = {
         return router;
     },
 
-    getEmberContainer(...args) {
-        return lookup(...args);
-    },
-
-    getEmberView(elementID) {
-        const obj = lookup('-view-registry:main');
-        return obj ? obj[elementID] : null;
-    },
-
     getCurrentChannel() {
         let rv;
 
         if (clipInfo) {
-            rv = clipInfo;
+            rv = {
+                id: clipInfo.broadcaster_id.toString(),
+                name: clipInfo.broadcaster_login,
+                displayName: clipInfo.broadcaster_display_name,
+                avatar: clipInfo.broadcaster_logo
+            };
         }
 
         const currentChat = this.getCurrentChat();
-        if (currentChat) {
-            rv = currentChat;
+        if (currentChat && currentChat.props && currentChat.props.channelID) {
+            const {channelID, channelLogin, channelDisplayName} = currentChat.props;
+            rv = {
+                id: channelID.toString(),
+                name: channelLogin,
+                displayName: channelDisplayName
+            };
         }
 
-        return rv ? formatChannel(rv) : null;
+        return rv;
     },
 
     getCurrentUser() {
         return currentUser;
     },
 
-    getChatController() {
-        const container = $(CHAT_CONTAINER)[0];
-        if (!container) return null;
-
-        let controller;
+    getConnectRoot() {
+        let root;
         try {
-            controller = getParentNode(getParentElement(getReactElement(container)))._instance;
+            root = getParentNode(getReactElement($(REACT_ROOT)[0]));
         } catch (_) {}
 
+        return root;
+    },
+
+    getCurrentPlayer() {
+        let player;
+        try {
+            player = getReactElement($(PLAYER)[0])._owner._instance;
+        } catch (_) {}
+
+        return player;
+    },
+
+    getChatController() {
+        const container = $(CHAT_CONTAINER_CONTAINER)[0];
+        if (!container) return null;
+
+        let controller = searchReactChildren(
+            getReactInstance(container),
+            node => node._instance && node._instance.chatBuffer
+        );
+
+        if (controller) {
+            controller = controller._instance;
+        }
+
         return controller;
+    },
+
+    getChatScroller() {
+        const list = $(CHAT_LIST)[0];
+        if (!list) return null;
+
+        let scroller;
+        try {
+            scroller = getParentNode(getReactElement(list))._instance;
+        } catch (_) {}
+
+        return scroller;
     },
 
     getCurrentChat() {
@@ -178,8 +214,9 @@ module.exports = {
             user: {
                 color: '#000000',
                 isIntl: false,
-                name: 'betterttv',
-                usernameDisplay: 'BetterTTV'
+                userID: undefined,
+                userLogin: 'betterttv',
+                userDisplayName: 'BetterTTV'
             }
         };
 
@@ -191,40 +228,23 @@ module.exports = {
     sendChatMessage(message) {
         const currentChat = this.getCurrentChat();
         if (!currentChat) return;
-        currentChat.send(message);
+        currentChat.props.onSendMessage(message);
     },
 
     getCurrentUserIsModerator() {
-        // TODO: twitch does not support this yet
-        return false;
+        const currentChat = this.getCurrentChat();
+        if (!currentChat) return;
+        return currentChat.props.isCurrentUserModerator;
     },
 
     getChatMessageObject(element) {
-        // it doesn't seem possible to get the data we need
-        // from the message itself, so we need to associate from the message
-        // its object in the chat lines children
-        const chatLines = getReactElement($(CHAT_LINES)[0]);
-        if (!chatLines) return null;
-
-        let badgesToRender;
-        try {
-            badgesToRender = getReactElement(element).props.children[1].props.badgesToRender;
-        } catch (_) {}
-        if (!badgesToRender) return null;
-
-        const children = chatLines.props.children;
         let msgObject;
-        for (let i = children.length - 1; i >= 0; i--) {
-            const child = children[i];
-            // this is a hack if i've ever seen one.. but they share the same ref
-            if (child.props.message.badges === badgesToRender) {
-                msgObject = child;
-                break;
-            }
-        }
+        try {
+            msgObject = getReactElement(element)._owner._instance.props.message;
+        } catch (_) {}
         if (!msgObject) return null;
 
-        return msgObject.props.message;
+        return msgObject;
     },
 
     getUserIsModeratorFromTagsBadges(badges) {
@@ -249,6 +269,6 @@ module.exports = {
     getCurrentUserIsOwner() {
         const currentChat = this.getCurrentChat();
         if (!currentChat) return false;
-        return currentChat.isOwnChannel || false;
+        return currentChat.props.isOwnChannel || false;
     }
 };

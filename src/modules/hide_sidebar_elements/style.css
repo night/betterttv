@@ -1,0 +1,11 @@
+.bttv-hide-featured-channels {
+  .recommended-channels {
+    display: none;
+  }
+}
+
+.bttv-hide-prime-promotions {
+  .top-nav__prime {
+    display: none;
+  }
+}
