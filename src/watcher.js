@@ -300,28 +300,6 @@ class Watcher extends SafeEventEmitter {
         this.on('load.chat', updateChannel);
         this.on('load.vod', updateChannel);
     }
-
-    clipsChatObserver() {
-        const observe = (watcher, element) => {
-            if (!element) return;
-            if (watcher) watcher.disconnect();
-            watcher.observe(element, {childList: true, subtree: true});
-        };
-
-        clipsChatWatcher = new window.MutationObserver(mutations =>
-            mutations.forEach(mutation => {
-                for (const el of mutation.addedNodes) {
-                    const $el = $(el);
-
-                    if ($el.hasClass('clip-chat-line')) {
-                        this.emit('clips.message', $el);
-                    }
-                }
-            })
-        );
-
-        this.on('load.clips', () => observe(clipsChatWatcher, $('body')[0]));
-    }
 }
 
 module.exports = new Watcher();
