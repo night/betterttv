@@ -4,7 +4,6 @@ const css = require('../../utils/css');
 const settings = require('../../settings');
 const storage = require('../../storage');
 const watcher = require('../../watcher');
-const twitch = require('../../utils/twitch');
 
 function dismissPinnedCheers() {
     $('body').on('click', '.pinned-cheers', e => {
@@ -67,12 +66,6 @@ class GlobalCSSModule {
                 .attr('src', cdn.url('assets/icons/delete.png'))
                 .attr('width', '16')
                 .attr('height', '16');
-
-            // Turn on dark bits emotes
-            const bitsService = twitch.getEmberContainer('service:bits');
-            if (bitsService) {
-                bitsService.set('bitsEmotes.isDarkChat', true);
-            }
         }
     }
 

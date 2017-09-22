@@ -287,16 +287,16 @@ class Watcher extends SafeEventEmitter {
                 for (const el of mutation.addedNodes) {
                     const $el = $(el);
 
-                    if ($el.hasClass('vod-message__content')) {
-                        this.emit('vod.message', $el);
-                    } else if ($el.hasClass('vod-message')) {
-                        $el.find('.vod-message__content').each((_, message) => this.emit('vod.message', $(message)));
+                    const $chatContents = $el.find('.vod-message__content,.video-chat__message');
+
+                    for (const chatContent of $chatContents) {
+                        this.emit('vod.message', $(chatContent));
                     }
                 }
             })
         );
 
-        this.on('load.vod', () => observe(vodChatWatcher, $('.vod-chat')[0]));
+        this.on('load.vod', () => observe(vodChatWatcher, $('.video-chat__wrapper,.vod-chat')[0]));
     }
 }
 

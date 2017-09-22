@@ -349,7 +349,7 @@ div#site_header {
     color: #d3d3d3 !important;
 }
 
-#chat_text_input, #chat_text_login, .ember-chat .chat-interface textarea, .vod-chat textarea {
+#chat_text_input, #chat_text_login, .ember-chat .chat-interface textarea, .vod-chat textarea, .video-chat textarea {
     background-color: rgb(20, 20, 20) !important;
     color: #D3D3D3;
     border: solid 1px #333 !important;
@@ -2202,15 +2202,21 @@ span.subscribe-text {
 
 /* Twitch emote menu */
 .emoticon-selector .emoticon-selector-box,
-.emoticon-selector-container .emoticon-selector {
+.emoticon-selector-container .emoticon-selector,
+.emote-picker-and-button .tw-balloon {
     background-color: #191919;
     box-shadow: inset 0 0 0 1px #191919;
 }
 
+.emote-picker__controls-container .border-t {
+    border-color: #282828;
+}
+
 .emoticon-selector .emoticon-selector-box .emoticon-selector__tabs,
 .emoticon-selector .emoticon-selector-box .emotes .emoticon-grid .emote-set,
-.emoticon-selector .emoticon-selector-box .emoticon-grid {
-    background-color: #191919;
+.emoticon-selector .emoticon-selector-box .emoticon-grid,
+.emote-picker__tabs-container {
+    background-color: #191919 !important;
     border-color: #444;
     color: #d3d3d3;
     box-shadow: none;
@@ -2237,14 +2243,14 @@ span.subscribe-text {
     color: #888;
 }
 
-.emoticon-selector .emoticon-selector-box input {
+.emoticon-selector .emoticon-selector-box input, .emote-picker-and-button .tw-input {
     background-color: #282828;
     border-color: #444;
     color: #d3d3d3;
     box-shadow: 0 0 3px 1px #333;
 }
 
-.emoticon-selector .emoticon-selector-box input:focus {
+.emoticon-selector .emoticon-selector-box input:focus, , .emote-picker-and-button .tw-input {
     box-shadow: 0 0 3px 1px #333;
 }
 
@@ -3787,16 +3793,17 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 }
 
 /* vod chat */
-.vod-chat__header {
+.vod-chat__header,.video-chat__header,.video-chat__message-menu .tw-balloon, div[data-a-target="emote-picker-button"] .tw-balloon {
     background: rgb(50, 50, 50);
     box-shadow: none;
 }
 
-.vod-chat {
+.vod-chat,.video-chat {
     background: none;
+    border-left: none;
 }
 
-.vod-chat span {
+.vod-chat,.video-chat span, div[data-test-selector="video-chat-cta"] {
     color: #d3d3d3;
 }
 
@@ -3804,7 +3811,7 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
     background-color: transparent;
 }
 
-.vod-chat__message-list-wrapper::-webkit-scrollbar-thumb{
+.vod-chat__message-list-wrapper::-webkit-scrollbar-thumb, .video-chat__message-list-wrapper::-webkit-scrollbar-thumb {
     border-color: #201c2b;
 }
 

@@ -182,6 +182,7 @@ class ChatModule {
             if (modified) {
                 // TODO: find a better way to do this (this seems most performant tho, only a single mutation vs multiple)
                 const span = document.createElement('span');
+                span.className = 'bttv-parsed';
                 span.innerHTML = parts.join(' ');
                 node.parentNode.replaceChild(span, node);
             }
