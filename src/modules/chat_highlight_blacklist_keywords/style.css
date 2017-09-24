@@ -32,6 +32,6 @@
   }
 }
 
-.chat-line__message.highlighted {
+.chat-line__message.bttv-highlighted {
   background-color: rgba(255, 0, 0, 0.3);
 }
