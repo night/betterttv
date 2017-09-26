@@ -2,7 +2,7 @@ const $ = require('jquery');
 const chat = require('../chat');
 const watcher = require('../../watcher');
 
-const CHAT_MESSAGE_SELECTOR = '.vod-message__message,.qa-mod-message span';
+const CHAT_MESSAGE_SELECTOR = '.vod-message__message,.qa-mod-message';
 const CHAT_USERNAME_SELECTOR = '.vod-message__author,.video-chat__message-author';
 const SCROLL_INDICATOR_SELECTOR = '.vod-chat__sync-button,.video-chat__sync-button';
 const SCROLL_CONTAINER_SELECTOR = '.vod-chat__scroll-wrapper,.video-chat__message-list-wrapper';

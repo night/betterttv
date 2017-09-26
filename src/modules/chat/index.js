@@ -130,7 +130,7 @@ class ChatModule {
         const tokens = $message.contents();
         for (let i = 0; i < tokens.length; i++) {
             const node = tokens[i];
-            if (node.nodeType === window.Node.ELEMENT_NODE && node.classList.contains('balloon-wrapper')) {
+            if (node.nodeType === window.Node.ELEMENT_NODE && (node.classList.contains('balloon-wrapper') || node.classList.contains('tw-tooltip-wrapper'))) {
                 const $emote = $(node);
                 const $image = $emote.find('img');
                 if (!$image.length) continue;
@@ -138,7 +138,7 @@ class ChatModule {
                 const id = ($image.attr('src').split('emoticons/v1/')[1] || '').split('/')[0];
                 const emote = channelEmotesTip.getEmote(id, code);
                 if (emote) {
-                    $emote.find('.balloon').css('text-align', 'center').html(emote.balloon);
+                    $emote.find('.balloon,.tw-tooltip').css('text-align', 'center').html(emote.balloon);
                     if (!currentChannel || emote.channel.name === currentChannel.name) continue;
                     $emote.on('click', () => window.open(emote.channel.url, '_blank'));
                 }

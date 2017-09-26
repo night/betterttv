@@ -287,7 +287,7 @@ class Watcher extends SafeEventEmitter {
                 for (const el of mutation.addedNodes) {
                     const $el = $(el);
 
-                    const $chatContents = $el.find('.vod-message__content,.video-chat__message');
+                    const $chatContents = $el.find('.vod-message__content,.vod-message');
 
                     for (const chatContent of $chatContents) {
                         this.emit('vod.message', $(chatContent));
