@@ -12,9 +12,17 @@ Leave the field blank to use the default.`;
 
 const STYLE_ID = 'bttv-font-size';
 
+const encodeFontFamily(fontFamily) => {
+    if (['serif', 'sans-serif', 'monospace', 'cursive', 'fantasy', 'system-ui'].indexOf(fontFamily)) {
+        return html.escape(fontFamily);
+    } else {
+        return '"' + html.escape(fontFamily) + '"';
+    }
+};
+
 const styleTemplate = (fontFamily, fontSize) => `
     .ember-chat .chat-messages, .ember-chat .chat-messages .chat-line {
-        font-family: ${fontFamily ? `"${html.escape(fontFamily)}", sans-serif` : 'inherit'} !important;
+        font-family: ${fontFamily ? `${encodeFontFamily(fontFamily)}, sans-serif` : 'inherit'} !important;
         font-size: ${fontSize ? `${html.escape(fontSize)}px` : 'inherit'} !important;
     }
 `;
