@@ -12,11 +12,11 @@ Leave the field blank to use the default.`;
 
 const STYLE_ID = 'bttv-font-size';
 
-const encodeFontFamily(fontFamily) => {
-    if (['serif', 'sans-serif', 'monospace', 'cursive', 'fantasy', 'system-ui'].indexOf(fontFamily)) {
+const encodeFontFamily = (fontFamily) => {
+    if (['serif', 'sans-serif', 'monospace', 'cursive', 'fantasy', 'system-ui'].indexOf(fontFamily) >= 0) {
         return html.escape(fontFamily);
     } else {
-        return '"' + html.escape(fontFamily) + '"';
+        return `"${html.escape(fontFamily)}"`;
     }
 };
 
