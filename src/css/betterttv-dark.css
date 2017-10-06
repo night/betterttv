@@ -3803,6 +3803,14 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
     border-left: none;
 }
 
+.vod-chat,.video-chat span, div[data-test-selector="video-chat-cta"] {
+    color: #d3d3d3;
+}
+
+.video-chat__message-author span {
+	color: inherit;
+}
+
 .vod-message.vod-message--focused, .vod-message:hover {
     background-color: transparent;
 }
