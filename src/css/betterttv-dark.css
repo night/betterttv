@@ -3808,7 +3808,7 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 }
 
 .video-chat__message-author span {
-	color: inherit;
+    color: inherit;
 }
 
 .vod-message.vod-message--focused, .vod-message:hover {
