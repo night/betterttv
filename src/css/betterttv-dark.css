@@ -2250,7 +2250,7 @@ span.subscribe-text {
     box-shadow: 0 0 3px 1px #333;
 }
 
-.emoticon-selector .emoticon-selector-box input:focus, , .emote-picker-and-button .tw-input {
+.emoticon-selector .emoticon-selector-box input:focus, .emote-picker-and-button .tw-input {
     box-shadow: 0 0 3px 1px #333;
 }
 
@@ -3120,7 +3120,7 @@ ul.tabs li>a:hover, .directory_header .nav li>a:hover, ul.tabs li>button:hover, 
 .balloon div input, .balloon div input:focus {
     background: #3b3b3b;
     border: 1px solid rgba(0,0,0,0.35);
-    -webkit-box-shadow: 0 0 3px 1px rgba(0,0,0,0.35);
+    box-shadow: 0 0 3px 1px rgba(0,0,0,0.35);
     color: #d4d4d4;
 }
 
