@@ -11,13 +11,11 @@ const FONT_SIZE_PROMPT = `Enter a font size for chat.
 Leave the field blank to use the default.`;
 
 const STYLE_ID = 'bttv-font-size';
+const GENERIC_FONT_FAMILIES = ['serif', 'sans-serif', 'monospace', 'cursive', 'fantasy', 'system-ui'];
 
-const styleTemplate = (fontFamily, fontSize) => `
-    .chat-list__lines {
-        font-family: ${fontFamily ? `"${html.escape(fontFamily)}", sans-serif` : 'inherit'} !important;
-        font-size: ${fontSize ? `${html.escape(fontSize)}px` : 'inherit'} !important;
-    }
-`;
+function encodeFontFamily(fontFamily) {
+    return GENERIC_FONT_FAMILIES.includes(fontFamily) ? fontFamily : `"${html.escape(fontFamily)}", sans-serif`;
+}
 
 function changeFontSetting(promptBody, storageID) {
     let keywords = prompt(promptBody, storage.get(storageID) || '');
@@ -26,6 +24,13 @@ function changeFontSetting(promptBody, storageID) {
         storage.set(storageID, keywords);
     }
 }
+
+const styleTemplate = (fontFamily, fontSize) => `
+.ember-chat .chat-messages, .ember-chat .chat-messages .chat-line {
+    font-family: ${fontFamily ? encodeFontFamily(fontFamily) : 'inherit'} !important;
+    font-size: ${fontSize ? `${html.escape(fontSize)}px` : 'inherit'} !important;
+}
+`;
 
 let $fontSettings;
 
