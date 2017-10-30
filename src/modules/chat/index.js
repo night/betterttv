@@ -175,7 +175,7 @@ class ChatModule {
         const $from = $element.find('.chat-line__message--username');
         $from.css('color', color);
 
-        if (legacySubscribers.hasGlow(user.name) && settings.get('darkenedMode')) {
+        if (legacySubscribers.hasGlow(user.name) && settings.get('darkenedMode') === true) {
             const rgbColor = colors.getRgb(color);
             $from.css('text-shadow', `0 0 20px rgba(${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b}, 0.8)`);
         }
