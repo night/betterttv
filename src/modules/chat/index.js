@@ -5,7 +5,7 @@ const twitch = require('../../utils/twitch');
 const api = require('../../utils/api');
 const cdn = require('../../utils/cdn');
 const html = require('../../utils/html');
-const storage = require('../../storage');
+const settings = require('../../settings');
 const emotes = require('../emotes');
 const nicknames = require('../chat_nicknames');
 const channelEmotesTip = require('../channel_emotes_tip');
@@ -13,8 +13,6 @@ const legacySubscribers = require('../legacy_subscribers');
 
 const EMOTE_STRIP_SYMBOLS_REGEX = /(^[~!@#$%\^&\*\(\)]+|[~!@#$%\^&\*\(\)]+$)/g;
 const MENTION_REGEX = /^@([a-zA-Z\d_]+)$/;
-
-const THEME_KEY = 'twilight.theme';
 
 const badgeTemplate = (url, description) => `
     <div class="tw-tooltip-wrapper inline">
@@ -72,7 +70,7 @@ class ChatModule {
     }
 
     calculateColor(color) {
-        return colors.calculateColor(color, !!storage.get(THEME_KEY, null));
+        return colors.calculateColor(color, settings.get('darkenedMode'));
     }
 
     customBadges($element, user) {
@@ -177,7 +175,7 @@ class ChatModule {
         const $from = $element.find('.chat-line__message--username');
         $from.css('color', color);
 
-        if (legacySubscribers.hasGlow(user.name) && !!storage.get(THEME_KEY, null)) {
+        if (legacySubscribers.hasGlow(user.name) && settings.get('darkenedMode')) {
             const rgbColor = colors.getRgb(color);
             $from.css('text-shadow', `0 0 20px rgba(${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b}, 0.8)`);
         }
