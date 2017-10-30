@@ -51,34 +51,30 @@ class HideSidebarElementsModule {
     toggleFeaturedChannels() {
         $('body').toggleClass('bttv-hide-featured-channels', settings.get('hideFeaturedChannels'));
     }
-    
+
     toggleAutoExpandChannels() {
         if (settings.get('autoExpandChannels') === true) {
             $('.side-nav-load-more__button').trigger('click');
         }
     }
-    
-    toggleRecommendedFriends() { 
+
+    toggleRecommendedFriends() {
         $('body').toggleClass('bttv-hide-recommended-friends', settings.get('hideRecommendedFriends'));
     }
-    
+
     toggleOfflineFollowedChannels() {
-        
         var resizeTimer = null;
-        
         function hideOfflineUser() {
             if (settings.get('hideOfflineFollowedChannels') === true) {
                 $('.side-nav-card__avatar--offline').parent().css('cssText', 'display: none!important');
             }
         };
-        
         $(window).bind('resize', function() {
             if (resizeTimer) clearTimeout(resizeTimer);
             resizeTimer = setTimeout(hideOfflineUser, 100);
         });
-        
     }
-    
+
     togglePrimePromotions() {
         $('body').toggleClass('bttv-hide-prime-promotions', settings.get('hidePrimePromotion'));
     }
