@@ -3,7 +3,7 @@ const Raven = require('raven-js');
 const twitchAPI = require('./twitch-api');
 
 const REACT_ROOT = '#root div[data-reactroot]';
-const CHAT_CONTAINER_CONTAINER = '.channel__sidebar';
+const CHAT_CONTAINER_CONTAINER = '.channel-page__right-column';
 const CHAT_CONTAINER = '.chat__container';
 const CHAT_LIST = '.chat-list';
 const PLAYER = '.player';
