@@ -19,7 +19,7 @@ const badgeTemplate = (url, description) => `
         <img alt="Moderator" class="chat-badge bttv-chat-badge" src="${url}" alt="" srcset="" data-a-target="chat-badge">
         <div class="tw-tooltip tw-tooltip--up tw-tooltip--align-left" data-a-target="tw-tooltip-label" style="margin-bottom: 0.9rem;">${description}</div>
     </div>
-`;
+`.replace(/\n^(?!<)\s+(?=<)/gm, '');
 
 const mentionTemplate = name => `<span class="mentioning">@${html.escape(name)}</span>`;
 
