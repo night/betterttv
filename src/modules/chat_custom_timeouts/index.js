@@ -5,7 +5,7 @@ const twitch = require('../../utils/twitch');
 
 const CHAT_ROOM_SELECTOR = '.chat__pane';
 const CHAT_LINE_SELECTOR = '.chat-line__message';
-const CHAT_LINE_USERNAME_SELECTOR = `${CHAT_LINE_SELECTOR} .chat-line__message--username`;
+const CHAT_LINE_USERNAME_SELECTOR = `${CHAT_LINE_SELECTOR} .chat-author__display-name`;
 const CUSTOM_TIMEOUT_ID = 'bttv-custom-timeout-contain';
 const CUSTOM_TIMEOUT_TEMPLATE = `
     <div id="${CUSTOM_TIMEOUT_ID}">
