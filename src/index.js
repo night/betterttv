@@ -16,7 +16,6 @@
      - Clips (Twitch did not implement this yet)
      - Disable Channel Header (Twitch did not implement this yet)
      - Emote Menu? (requires a lot of work, maybe time to just try and integrate into twitch's)
-     - Hide Conversations
      - Host Button
      - Tab Completion? (requires a lot of work, maybe time to just try and integrate into twitch's)
      - Video Player Keybinds/Clicks
