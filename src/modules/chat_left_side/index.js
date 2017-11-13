@@ -14,7 +14,7 @@ class ChatLeftSide {
     }
 
     toggleLeftSideChat() {
-        $('body').toggleClass('swap-chat', settings.get('leftSideChat'));
+        $('body').toggleClass('bttv-swap-chat', settings.get('leftSideChat'));
     }
 }
 

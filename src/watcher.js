@@ -7,6 +7,7 @@ const $ = require('jquery');
 let router;
 let route = '';
 let chatWatcher;
+let vodChatWatcher;
 let channel = {};
 
 const loadPredicates = {
@@ -69,6 +70,7 @@ class Watcher extends SafeEventEmitter {
     load() {
         this.channelObserver();
         this.chatObserver();
+        this.vodChatObserver();
         this.routeObserver();
 
         debug.log('Watcher started');
@@ -93,10 +95,16 @@ class Watcher extends SafeEventEmitter {
                             .then(() => this.emit('load.directory.following'));
                     }
                     break;
+                case 'popout':
+                    this.waitForLoad('chat').then(() => this.emit('load.chat'));
+                    break;
                 default:
                     route = 'channel';
                     if (lastRoute === 'channel') break;
-                    this.waitForLoad('channel').then(() => this.emit('load.channel'));
+                    this.waitForLoad('channel').then(() => {
+                        this.emit('load.channel');
+                        this.emit('load.vod');
+                    });
                     this.waitForLoad('chat').then(() => this.emit('load.chat'));
                     this.waitForLoad('player').then(() => this.emit('load.player'));
                     break;
@@ -136,6 +144,36 @@ class Watcher extends SafeEventEmitter {
         );
 
         this.on('load.chat', () => observe(chatWatcher, $('.chat__container')[0]));
+    }
+
+    vodChatObserver() {
+        const emitMessage = chatContent => this.emit('vod.message', $(chatContent));
+
+        const observe = (watcher, element) => {
+            if (!element) return;
+            if (watcher) watcher.disconnect();
+            watcher.observe(element, {childList: true, subtree: true});
+
+            // late load messages events
+            $(element).find('.vod-message__content').each((_, el) => emitMessage(el));
+        };
+
+        vodChatWatcher = new window.MutationObserver(mutations =>
+            mutations.forEach(mutation => {
+                for (const el of mutation.addedNodes) {
+                    const $el = $(el);
+
+                    const $chatContents = $el.find('.vod-message__content,.vod-message');
+
+                    for (const chatContent of $chatContents) {
+                        console.log(chatContent);
+                        emitMessage(chatContent);
+                    }
+                }
+            })
+        );
+
+        this.on('load.vod', () => observe(vodChatWatcher, $('.qa-vod-chat')[0]));
     }
 
     channelObserver() {
