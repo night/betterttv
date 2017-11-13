@@ -38,8 +38,6 @@ class VODChatModule {
             color
         };
 
-        console.log(mockUser);
-
         if (mockUser.color) {
             const newColor = chat.calculateColor(mockUser.color);
             $username.css('color', newColor);
