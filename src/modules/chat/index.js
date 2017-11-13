@@ -186,7 +186,7 @@ class ChatModule {
         if (!user) return;
 
         const color = this.calculateColor(user.color);
-        const $from = $element.find('.chat-author__display-name');
+        const $from = $element.find('.chat-author__display-name,.chat-author__intl-login');
         $from.css('color', color);
 
         if (legacySubscribers.hasGlow(user.name) && settings.get('darkenedMode') === true) {

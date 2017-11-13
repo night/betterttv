@@ -6,7 +6,7 @@ const colors = require('../../utils/colors');
 
 const CHAT_MESSAGE_SELECTOR = '.qa-mod-message';
 const CHAT_FROM_SELECTOR = '.video-chat__message-author';
-const CHAT_USER_SELECTOR = 'span[data-test-selector="message-username"]';
+const CHAT_USER_SELECTOR = '.chat-author__display-name,.chat-author__intl-login';
 const SCROLL_INDICATOR_SELECTOR = '.video-chat__sync-button';
 const SCROLL_CONTAINER_SELECTOR = '.video-chat__message-list-wrapper';
 const COLOR_REGEX = /rgb\(([0-9]+), ([0-9]+), ([0-9]+)\)/;
