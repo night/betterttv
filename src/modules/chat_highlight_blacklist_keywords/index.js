@@ -194,7 +194,6 @@ class ChatHighlightBlacklistKeywordsModule {
     }
 
     markHighlighted($message) {
-        notificationSound.play();
         $message.addClass('bttv-highlighted');
     }
 
