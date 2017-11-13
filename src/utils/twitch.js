@@ -11,20 +11,32 @@ const PLAYER = '.player';
 const TMIActionTypes = {
     POST: 0,
     ACTION: 1,
-    BAN: 2,
-    TIMEOUT: 3,
-    CONNECTED: 4,
-    DISCONNECTED: 5,
-    RECONNECT: 6,
-    HOSTING: 7,
-    UNHOST: 8,
-    SUBSCRIPTION: 9,
-    RESUBSCRIPTION: 10,
-    CLEAR: 11,
-    SUBSCRIBER_ONLY_MODE: 12,
-    FOLLOWER_ONLY_MODE: 13,
-    SLOW_MODE: 14,
-    AUTOMOD_REJECTED: 15
+    POST_WITH_MENTION: 2,
+    BAN: 3,
+    TIMEOUT: 4,
+    AUTOMOD_REJECTED_PROMPT: 5,
+    AUTOMOD_MESSAGE_REJECTED: 6,
+    AUTOMOD_MESSAGE_ALLOWED: 7,
+    AUTOMOD_MESSAGE_DENIED: 8,
+    CONNECTED: 9,
+    DISCONNECTED: 10,
+    RECONNECT: 11,
+    HOSTING: 12,
+    UNHOST: 13,
+    SUBSCRIPTION: 14,
+    RESUBSCRIPTION: 15,
+    CLEAR_CHAT: 16,
+    SUBSCRIBER_ONLY_MODE: 17,
+    FOLLOWERS_ONLY_MODE: 18,
+    SLOW_MODE: 19,
+    ROOM_MODS: 20,
+    ROOM_STATE: 21,
+    RAID: 22,
+    UNRAID: 23,
+    NOTICE: 24,
+    INFO: 25,
+    BADGES_UPDATED: 26,
+    PURCHASE: 27
 };
 
 function getReactInstance(element) {
@@ -193,10 +205,6 @@ module.exports = {
         } catch (_) {}
 
         return controller;
-    },
-
-    getCurrentTMISession() {
-        return this.getChatController().tmiSession;
     },
 
     sendChatAdminMessage(content) {

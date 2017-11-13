@@ -59,7 +59,7 @@ class ChatStateModule {
 
         let message;
         for (let i = messages.length - 1; i >= 0; i--) {
-            if (messages[i].type !== 16) continue;
+            if (messages[i].type !== twitch.TMIActionTypes.ROOM_STATE) continue;
             message = messages[i];
             break;
         }
@@ -70,22 +70,22 @@ class ChatStateModule {
 
         lastStateMessage = message;
 
-        const {slowMode, emoteOnlyMode, subsOnlyMode, r9k} = message.state;
+        const {slowMode, slowModeDuration, emoteOnly, subsOnly, r9k} = message.state;
 
         if (slowMode) {
             $stateContainer
                 .find('.slow-time')
-                .attr('title', `${slowMode} seconds`)
-                .text(displaySeconds(slowMode));
+                .attr('title', `${slowModeDuration} seconds`)
+                .text(displaySeconds(slowModeDuration));
         }
         $stateContainer.find('.slow').toggle(slowMode ? true : false);
         $stateContainer.find('.slow-time').toggle(slowMode ? true : false);
 
         $stateContainer.find('.r9k').toggle(r9k ? true : false);
 
-        $stateContainer.find('.subs-only').toggle(subsOnlyMode ? true : false);
+        $stateContainer.find('.subs-only').toggle(subsOnly ? true : false);
 
-        $stateContainer.find('.emote-only').toggle(emoteOnlyMode ? true : false);
+        $stateContainer.find('.emote-only').toggle(emoteOnly ? true : false);
     }
 }
 
