@@ -15,3 +15,9 @@
     display: none;
   }
 }
+
+.bttv-hide-prime-promotions {
+  .side-nav-card[href*="/videos/all"], .side-nav-card__link[href*="/videos/all"] {
+    display: none!important;
+  }
+}
