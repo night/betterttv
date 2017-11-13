@@ -8,6 +8,7 @@ let router;
 let currentPath = '';
 let chatWatcher;
 let vodChatWatcher;
+let currentChatReference;
 let channel = {};
 
 const loadPredicates = {
@@ -16,8 +17,19 @@ const loadPredicates = {
         const href = $('.channel-header__user').attr('href');
         return !!href && href !== '/undefined';
     },
-    chat: () => !!twitch.getCurrentChat() && !!twitch.getCurrentChannel(),
-    player: () => !!twitch.getCurrentPlayer()
+    chat: () => {
+        if (!twitch.getCurrentChannel()) return false;
+
+        const lastReference = currentChatReference;
+        const currentChat = twitch.getCurrentChat();
+
+        if (currentChat && currentChat === lastReference) return false;
+        currentChatReference = currentChat;
+
+        return true;
+    },
+    player: () => !!twitch.getCurrentPlayer(),
+    vod: () => twitch.getCurrentChannel() && $('.video-chat__input textarea').length
 };
 
 const routes = {
@@ -126,7 +138,7 @@ class Watcher extends SafeEventEmitter {
                     this.waitForLoad('chat').then(() => this.emit('load.chat'));
                     break;
                 case routes.VOD:
-                    this.waitForLoad('channel').then(() => this.emit('load.vod'));
+                    this.waitForLoad('vod').then(() => this.emit('load.vod'));
                     this.waitForLoad('player').then(() => this.emit('load.player'));
                     break;
                 case routes.CHANNEL:
@@ -181,7 +193,7 @@ class Watcher extends SafeEventEmitter {
             watcher.observe(element, {childList: true, subtree: true});
 
             // late load messages events
-            $(element).find('.vod-message__content').each((_, el) => emitMessage(el));
+            $(element).find('.vod-message__content,.vod-message').each((_, el) => emitMessage(el));
         };
 
         vodChatWatcher = new window.MutationObserver(mutations =>
@@ -192,7 +204,6 @@ class Watcher extends SafeEventEmitter {
                     const $chatContents = $el.find('.vod-message__content,.vod-message');
 
                     for (const chatContent of $chatContents) {
-                        console.log(chatContent);
                         emitMessage(chatContent);
                     }
                 }
@@ -203,7 +214,7 @@ class Watcher extends SafeEventEmitter {
     }
 
     channelObserver() {
-        this.on('load.channel', () => {
+        const updateChannel = () => {
             const currentChannel = twitch.getCurrentChannel();
             if (!currentChannel) return;
 
@@ -212,7 +223,11 @@ class Watcher extends SafeEventEmitter {
             api
                 .get(`channels/${channel.name}`)
                 .then(d => this.emit('channel.updated', d));
-        });
+        };
+
+
+        this.on('load.channel', updateChannel);
+        this.on('load.vod', updateChannel);
     }
 }
 
