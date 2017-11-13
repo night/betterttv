@@ -5,6 +5,7 @@ const twitchAPI = require('./twitch-api');
 const REACT_ROOT = '#root div[data-reactroot]';
 const CHAT_CONTAINER_CONTAINER = '.channel__sidebar';
 const CHAT_CONTAINER = '.chat__container';
+const VOD_CHAT_CONTAINER = '.video-watch-page__right-column';
 const CHAT_LIST = '.chat-list';
 const PLAYER = '.player';
 
@@ -94,6 +95,7 @@ function searchReactChildren(node, predicate, maxDepth = 15, depth = 0) {
 }
 
 let currentUser;
+let currentChannel;
 const clipInfo = window.clipInfo;
 
 module.exports = {
@@ -112,15 +114,7 @@ module.exports = {
         });
     },
 
-    TMIActionTypes,
-
-    getReactElement,
-
-    getRouter() {
-        return router;
-    },
-
-    getCurrentChannel() {
+    updateCurrentChannel() {
         let rv;
 
         if (clipInfo) {
@@ -142,7 +136,31 @@ module.exports = {
             };
         }
 
+        const currentVodChat = this.getCurrentVodChat();
+        if (currentVodChat && currentVodChat.props && currentVodChat.props.data && currentVodChat.props.data.video) {
+            const {owner: {id, login}} = currentVodChat.props.data.video;
+            rv = {
+                id: id.toString(),
+                name: login,
+                displayName: login
+            };
+        }
+
+        currentChannel = rv;
+
         return rv;
+    },
+
+    TMIActionTypes,
+
+    getReactElement,
+
+    getRouter() {
+        return router;
+    },
+
+    getCurrentChannel() {
+        return currentChannel;
     },
 
     getCurrentUser() {
@@ -203,6 +221,22 @@ module.exports = {
         try {
             controller = getParentNode(getReactElement(container))._instance;
         } catch (_) {}
+
+        return controller;
+    },
+
+    getCurrentVodChat() {
+        const container = $(VOD_CHAT_CONTAINER)[0];
+        if (!container) return null;
+
+        let controller = searchReactChildren(
+            getReactInstance(container),
+            node => node._instance && node._instance.props && node._instance.props.data.video
+        );
+
+        if (controller) {
+            controller = controller._instance;
+        }
 
         return controller;
     },
