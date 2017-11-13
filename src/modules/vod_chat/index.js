@@ -14,7 +14,7 @@ const COLOR_REGEX = /rgb\(([0-9]+), ([0-9]+), ([0-9]+)\)/;
 function scrollOnEmoteLoad($el) {
     const indicator = $(SCROLL_INDICATOR_SELECTOR).length > 0;
     if (indicator) return;
-    $el.find('img.emoticon').on('load', () => {
+    $el.find('img.bttv').on('load', () => {
         const $scrollContainer = $(SCROLL_CONTAINER_SELECTOR);
         $scrollContainer.scrollTop($scrollContainer[0].scrollHeight);
     });

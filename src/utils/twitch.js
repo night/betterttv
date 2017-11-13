@@ -272,6 +272,15 @@ module.exports = {
         return msgObject;
     },
 
+    getConversationMessageObject(element) {
+        let msgObject;
+        try {
+            msgObject = getParentNode(getReactElement(element))._instance.props.message;
+        } catch (_) {}
+
+        return msgObject;
+    },
+
     getUserIsModeratorFromTagsBadges(badges) {
         if (!badges) return false;
         badges = Array.isArray(badges) ? badges.map(b => b.id) : Object.keys(badges);

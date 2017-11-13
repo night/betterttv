@@ -109,6 +109,7 @@ class Watcher extends SafeEventEmitter {
 
     load() {
         this.channelObserver();
+        this.conversationObserver();
         this.chatObserver();
         this.vodChatObserver();
         this.routeObserver();
@@ -151,6 +152,37 @@ class Watcher extends SafeEventEmitter {
 
         router.history.listen(location => onRouteChange(location));
         onRouteChange(router.history.location);
+    }
+
+    conversationObserver() {
+        const emitMessage = element => {
+            const msgObject = twitch.getConversationMessageObject(element);
+            if (!msgObject) return;
+            this.emit('conversation.message', $(element), msgObject);
+        };
+
+        const conversationWatcher = new window.MutationObserver(mutations =>
+            mutations.forEach(mutation => {
+                for (const el of mutation.addedNodes) {
+                    const $el = $(el);
+                    if ($el.hasClass('thread-message__message')) {
+                        emitMessage($el[0]);
+                    } else {
+                        const $messages = $el.find('.thread-message__message');
+                        for (const message of $messages) {
+                            emitMessage(message);
+                        }
+                    }
+                }
+            })
+        );
+
+        const timer = setInterval(() => {
+            const element = $('.whispers')[0];
+            if (!element) return;
+            clearInterval(timer);
+            conversationWatcher.observe(element, {childList: true, subtree: true});
+        }, 1000);
     }
 
     chatObserver() {
