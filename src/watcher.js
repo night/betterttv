@@ -5,7 +5,7 @@ const SafeEventEmitter = require('./utils/safe-event-emitter');
 const $ = require('jquery');
 
 let router;
-let route = '';
+let currentPath = '';
 let chatWatcher;
 let vodChatWatcher;
 let channel = {};
@@ -19,6 +19,34 @@ const loadPredicates = {
     chat: () => !!twitch.getCurrentChat() && !!twitch.getCurrentChannel(),
     player: () => !!twitch.getCurrentPlayer()
 };
+
+const routes = {
+    DIRECTORY_FOLLOWING_LIVE: 'DIRECTORY_FOLLOWING_LIVE',
+    DIRECTORY_FOLLOWING: 'DIRECTORY_FOLLOWING',
+    DIRECTORY: 'DIRECTORY',
+    CHAT: 'CHAT',
+    CHANNEL: 'CHANNEL',
+    VOD: 'VOD'
+};
+
+const routeKeysToPaths = {
+    [routes.DIRECTORY_FOLLOWING_LIVE]: /^\/directory\/following\/live$/i,
+    [routes.DIRECTORY_FOLLOWING]: /^\/directory\/following$/i,
+    [routes.DIRECTORY]: /^\/directory/i,
+    [routes.CHAT]: /^(\/popout)?\/[a-z0-9-_]+\/chat$/i,
+    [routes.VOD]: /^\/videos\/[0-9]+$/i,
+    [routes.CHANNEL]: /^\/[a-z0-9-_]+/i
+};
+
+function getRouteFromPath(path) {
+    for (const name of Object.keys(routeKeysToPaths)) {
+        const regex = routeKeysToPaths[name];
+        if (!regex.test(path)) continue;
+        return name;
+    }
+
+    return null;
+}
 
 class Watcher extends SafeEventEmitter {
     constructor() {
@@ -78,33 +106,31 @@ class Watcher extends SafeEventEmitter {
 
     routeObserver() {
         const onRouteChange = location => {
-            debug.log(`New route: ${location.pathname}`);
+            const lastPath = currentPath;
+            const path = location.pathname;
+            const route = getRouteFromPath(path);
+
+            debug.log(`New route: ${location.pathname} as ${route}`);
 
             // trigger on all loads (like resize functions)
             this.emit('load');
 
-            const lastRoute = route;
-            const path = location.pathname.split('/');
-            route = path[1];
+            currentPath = path;
+            if (currentPath === lastPath) return;
 
             switch (route) {
-                case 'directory':
-                    if (lastRoute === 'directory') break;
-                    if (path[2] === 'following') {
-                        this.waitForLoad('following')
-                            .then(() => this.emit('load.directory.following'));
-                    }
+                case routes.DIRECTORY_FOLLOWING:
+                    this.waitForLoad('following').then(() => this.emit('load.directory.following'));
                     break;
-                case 'popout':
+                case routes.CHAT:
                     this.waitForLoad('chat').then(() => this.emit('load.chat'));
                     break;
-                default:
-                    route = 'channel';
-                    if (lastRoute === 'channel') break;
-                    this.waitForLoad('channel').then(() => {
-                        this.emit('load.channel');
-                        this.emit('load.vod');
-                    });
+                case routes.VOD:
+                    this.waitForLoad('channel').then(() => this.emit('load.vod'));
+                    this.waitForLoad('player').then(() => this.emit('load.player'));
+                    break;
+                case routes.CHANNEL:
+                    this.waitForLoad('channel').then(() => this.emit('load.channel'));
                     this.waitForLoad('chat').then(() => this.emit('load.chat'));
                     this.waitForLoad('player').then(() => this.emit('load.player'));
                     break;
