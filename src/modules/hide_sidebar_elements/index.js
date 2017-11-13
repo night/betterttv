@@ -63,16 +63,7 @@ class HideSidebarElementsModule {
     }
 
     toggleOfflineFollowedChannels() {
-        var resizeTimer = null;
-        function hideOfflineUser() {
-            if (settings.get('hideOfflineFollowedChannels') === true) {
-                $('.side-nav-card__avatar--offline').parent().css('cssText', 'display: none!important');
-            }
-        };
-        $(window).bind('resize', function() {
-            if (resizeTimer) clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(hideOfflineUser, 100);
-        });
+        $('body').toggleClass('bttv-hide-followed-offlines', settings.get('hideOfflineFollowedChannels'));
     }
 
     togglePrimePromotions() {
