@@ -18,7 +18,7 @@ const loadPredicates = {
         return !!href && href !== '/undefined';
     },
     chat: () => {
-        if (!twitch.getCurrentChannel()) return false;
+        if (!twitch.updateCurrentChannel()) return false;
 
         const lastReference = currentChatReference;
         const currentChat = twitch.getCurrentChat();
@@ -29,7 +29,7 @@ const loadPredicates = {
         return true;
     },
     player: () => !!twitch.getCurrentPlayer(),
-    vod: () => twitch.getCurrentChannel() && $('.video-chat__input textarea').length
+    vod: () => twitch.updateCurrentChannel() && $('.video-chat__input textarea').length
 };
 
 const routes = {
@@ -226,7 +226,7 @@ class Watcher extends SafeEventEmitter {
         };
 
 
-        this.on('load.channel', updateChannel);
+        this.on('load.chat', updateChannel);
         this.on('load.vod', updateChannel);
     }
 }
