@@ -12,14 +12,14 @@
      - TwitchEmotes Sub Emote Tip
      - Chat Commands
      - Chat Deleted Messages
-     - Chat Moderator Cards (Twitch did not implement this yet)
+     - Chat Moderator Cards
      - Clips (Twitch did not implement this yet)
      - Disable Channel Header (Twitch did not implement this yet)
      - Emote Menu? (requires a lot of work, maybe time to just try and integrate into twitch's)
-     - Hide Conversations (Twitch did not implement this yet)
+     - Hide Conversations
      - Host Button
      - Tab Completion? (requires a lot of work, maybe time to just try and integrate into twitch's)
-     - Video Player Keybinds/Clicks (Twitch did not implement a full player yet; using iframe rn)
+     - Video Player Keybinds/Clicks
 
      ? - denotes maybe not returning
 

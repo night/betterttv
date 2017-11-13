@@ -3,7 +3,6 @@ const Raven = require('raven-js');
 const twitchAPI = require('./twitch-api');
 
 const REACT_ROOT = '#root div[data-reactroot]';
-const CHAT_CONTAINER_CONTAINER = '.channel__sidebar';
 const CHAT_CONTAINER = '.chat__container';
 const VOD_CHAT_CONTAINER = '.video-watch-page__right-column';
 const CHAT_LIST = '.chat-list';
@@ -186,7 +185,7 @@ module.exports = {
     },
 
     getChatController() {
-        const container = $(CHAT_CONTAINER_CONTAINER)[0];
+        const container = $(CHAT_CONTAINER).parent()[0];
         if (!container) return null;
 
         let controller = searchReactChildren(
@@ -241,30 +240,14 @@ module.exports = {
         return controller;
     },
 
-    sendChatAdminMessage(content) {
+    sendChatAdminMessage(body) {
         const chatController = this.getChatController();
         if (!chatController) return;
 
-        const data = {
-            type: TMIActionTypes.POST,
-            badges: {},
-            bits: undefined,
-            deleted: false,
-            id: 'betterttv-0',
-            messageParts: [{type: 0, content}],
-            timestamp: Date.now(),
-            user: {
-                color: '#000000',
-                isIntl: false,
-                userID: undefined,
-                userLogin: 'betterttv',
-                userDisplayName: 'BetterTTV'
-            }
-        };
-
-        // TODO: on render we need to style these appropriately
-
-        chatController.chatBuffer.consumeChatEvent({data});
+        chatController.chatService.onChatNoticeEvent({
+            msgid: Date.now(),
+            body
+        });
     },
 
     sendChatMessage(message) {
