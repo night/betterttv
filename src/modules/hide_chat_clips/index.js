@@ -1,3 +1,4 @@
+const $ = require('jquery');
 const settings = require('../../settings');
 
 class HideChatClipsModule {
