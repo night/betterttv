@@ -2,7 +2,7 @@
     if (!String.prototype.includes || !Array.prototype.findIndex) return;
     if (window.location.pathname.endsWith('.html') || window.location.hostname === 'player.twitch.tv') return;
 
-    if (window.location.hostname === 'go.twitch.tv') {
+    if (!window.Ember) {
         const script = document.createElement('script');
         script.type = 'text/javascript';
         script.src = 'https://beta.betterttv.net/betterttv.js';
