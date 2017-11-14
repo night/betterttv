@@ -9,6 +9,7 @@ let chatWatcher;
 let conversationWatcher;
 let clipsChatWatcher;
 let vodChatWatcher;
+let directoryWatcher;
 let channel = {};
 const chatState = {
     slow: 0,
@@ -34,6 +35,7 @@ class Watcher extends SafeEventEmitter {
         this.clipsChatObserver();
         this.checkClips();
         this.vodChatObserver();
+        this.directoryObserver();
 
         debug.log('Watcher started');
     }
@@ -99,9 +101,18 @@ class Watcher extends SafeEventEmitter {
                         this.emit('load.chat');
                         break;
                     case 'directory.following.index':
+                        this.emit('load.directory');
                         // Switching between tabs in following page
                         if (lastRoute.substr(0, 19) === 'directory.following') break;
                         this.emit('load.directory.following');
+                        break;
+                    case 'directory.game.index':
+                    case 'directory.following.channels':
+                    case 'directory.channels.all':
+                        this.emit('load.directory');
+                        break;
+                    case 'communities.community':
+                        this.emit('load.communities');
                         break;
                 }
             });
@@ -297,6 +308,30 @@ class Watcher extends SafeEventEmitter {
         );
 
         this.on('load.vod', () => observe(vodChatWatcher, $('.video-chat__wrapper,.vod-chat')[0]));
+    }
+
+    directoryObserver() {
+        const observe = (watcher, selector) => {
+            const element = $(selector)[0];
+            if (!element) return;
+            if (watcher) watcher.disconnect();
+            watcher.observe(element, {childList: true, subtree: true});
+        };
+
+        directoryWatcher = new window.MutationObserver(mutations =>
+            mutations.forEach(mutation => {
+                for (const el of mutation.addedNodes) {
+                    const $el = $(el);
+
+                    if ($el.hasClass('is-watch-party')) {
+                        this.emit('directory.vodcast');
+                    }
+                }
+            })
+        );
+
+        this.on('load.communities', () => observe(directoryWatcher, '.js-directory'));
+        this.on('load.directory', () => observe(directoryWatcher, '.js-directory'));
     }
 }
 
