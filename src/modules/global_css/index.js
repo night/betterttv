@@ -18,14 +18,16 @@ class GlobalCSSModule {
             description: 'Enable Twitch\'s dark theme'
         });
 
-        settings.on('changed.darkenedMode', val => this.darkChange(val));
+        settings.on('changed.darkenedMode', isDark => this.darkChange(isDark));
         watcher.on('dark.change', isDark => this.darkChange(isDark));
 
         this.darkSet(settings.get('darkenedMode'));
     }
 
     darkSet(isDark) {
-        twitch.getConnectRoot()._context.store.dispatch({type: 'core.ui.THEME_CHANGED', theme: (isDark ? 1 : 0)});
+        const connectRoot = twitch.getConnectRoot();
+        if (!connectRoot) return;
+        connectRoot._context.store.dispatch({type: 'core.ui.THEME_CHANGED', theme: (isDark ? 1 : 0)});
     }
 
     darkChange(isDark) {
