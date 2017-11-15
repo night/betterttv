@@ -29,10 +29,11 @@ function handlePlayerClick() {
     setTimeout(() => {
         if (clicks === 1) {
             const $player = $('#player');
-            const isPaused = $player.data('paused');
+            const isPaused = $player.attr('data-paused');
             const playerService = App.__container__.lookup('service:persistent-player');
             if (!playerService || !playerService.playerComponent || !playerService.playerComponent.player) return;
-            if (!isPaused) playerService.playerComponent.player.pause();
+            if (isPaused === 'false') playerService.playerComponent.player.pause();
+            else playerService.playerComponent.player.play();
         }
         clicks = 0;
     }, 250);
@@ -58,9 +59,11 @@ class VideoPlayerModule {
 
     clickToPause() {
         $('#player').off('click', '.player-overlay.player-fullscreen-overlay', handlePlayerClick);
+        $('#player').off('click', '.player-overlay.player-play-overlay.js-paused-overlay', handlePlayerClick);
 
         if (settings.get('clickToPlay') === true) {
             $('#player').on('click', '.player-overlay.player-fullscreen-overlay', handlePlayerClick);
+            $('#player').on('click', '.player-overlay.player-play-overlay.js-paused-overlay', handlePlayerClick);
         }
     }
 }
