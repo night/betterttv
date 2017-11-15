@@ -5,28 +5,20 @@
     const Raven = require('raven-js');
 
     /*
-    
+
      TODO:
 
      - Anon Chat
      - TwitchEmotes Sub Emote Tip
-     - Better Viewer List? (Twitch's viewer list now has search.. might be good enough)
-     - Channel Stats? (Twitch's new rate limits make this impractical moving forward, time to remove?)
      - Chat Commands
      - Chat Deleted Messages
-     - Chat Moderator Cards (Twitch did not implement this yet)
+     - Chat Moderator Cards
      - Clips (Twitch did not implement this yet)
-     - Directory Preview? (meh about this feature, maybe time to retire it)
      - Disable Channel Header (Twitch did not implement this yet)
      - Emote Menu? (requires a lot of work, maybe time to just try and integrate into twitch's)
-     - Hide Chat Clips (Twitch did not implement this yet)
-     - Hide Conversations (Twitch did not implement this yet)
-     - Hide Group Chat (Twitch did not implement this yet)
      - Host Button
-     - Prime Sub Reminder? (requires us to make an API call since Twitch lazy loads this)
      - Tab Completion? (requires a lot of work, maybe time to just try and integrate into twitch's)
-     - Video Player Keybinds/Clicks (Twitch did not implement a full player yet; using iframe rn)
-     - VOD Chat (Twitch did not implement this yet)
+     - Video Player Keybinds/Clicks
 
      ? - denotes maybe not returning
 
@@ -77,7 +69,7 @@
                     const exception = data.exception && data.exception.values[0];
                     if (data.message && data.message.includes('betterttv.js in wrap')) return false;
                     if (data.message === 'out of memory') return;
-                    if (['betterttv in apply', 'wrapped(betterttv)'].contains(data.culprit)) return false;
+                    if (['betterttv in apply', 'wrapped(betterttv)'].includes(data.culprit)) return false;
                     if (exception && !exception.value) return false;
                     if (exception && ['NS_ERROR_NOT_INITIALIZED', 'NS_ERROR_OUT_OF_MEMORY', 'NS_ERROR_FAILURE'].includes(exception.type)) return true;
                     if (data.exception && data.exception.values.length < 3) return false;

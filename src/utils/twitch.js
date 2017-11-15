@@ -3,28 +3,40 @@ const Raven = require('raven-js');
 const twitchAPI = require('./twitch-api');
 
 const REACT_ROOT = '#root div[data-reactroot]';
-const CHAT_CONTAINER_CONTAINER = '.channel-page__right-column';
 const CHAT_CONTAINER = '.chat__container';
+const VOD_CHAT_CONTAINER = '.video-watch-page__right-column';
 const CHAT_LIST = '.chat-list';
 const PLAYER = '.player';
 
 const TMIActionTypes = {
     POST: 0,
     ACTION: 1,
-    BAN: 2,
-    TIMEOUT: 3,
-    CONNECTED: 4,
-    DISCONNECTED: 5,
-    RECONNECT: 6,
-    HOSTING: 7,
-    UNHOST: 8,
-    SUBSCRIPTION: 9,
-    RESUBSCRIPTION: 10,
-    CLEAR: 11,
-    SUBSCRIBER_ONLY_MODE: 12,
-    FOLLOWER_ONLY_MODE: 13,
-    SLOW_MODE: 14,
-    AUTOMOD_REJECTED: 15
+    POST_WITH_MENTION: 2,
+    BAN: 3,
+    TIMEOUT: 4,
+    AUTOMOD_REJECTED_PROMPT: 5,
+    AUTOMOD_MESSAGE_REJECTED: 6,
+    AUTOMOD_MESSAGE_ALLOWED: 7,
+    AUTOMOD_MESSAGE_DENIED: 8,
+    CONNECTED: 9,
+    DISCONNECTED: 10,
+    RECONNECT: 11,
+    HOSTING: 12,
+    UNHOST: 13,
+    SUBSCRIPTION: 14,
+    RESUBSCRIPTION: 15,
+    CLEAR_CHAT: 16,
+    SUBSCRIBER_ONLY_MODE: 17,
+    FOLLOWERS_ONLY_MODE: 18,
+    SLOW_MODE: 19,
+    ROOM_MODS: 20,
+    ROOM_STATE: 21,
+    RAID: 22,
+    UNRAID: 23,
+    NOTICE: 24,
+    INFO: 25,
+    BADGES_UPDATED: 26,
+    PURCHASE: 27
 };
 
 function getReactInstance(element) {
@@ -82,6 +94,7 @@ function searchReactChildren(node, predicate, maxDepth = 15, depth = 0) {
 }
 
 let currentUser;
+let currentChannel;
 const clipInfo = window.clipInfo;
 
 module.exports = {
@@ -100,15 +113,7 @@ module.exports = {
         });
     },
 
-    TMIActionTypes,
-
-    getReactElement,
-
-    getRouter() {
-        return router;
-    },
-
-    getCurrentChannel() {
+    updateCurrentChannel() {
         let rv;
 
         if (clipInfo) {
@@ -130,7 +135,31 @@ module.exports = {
             };
         }
 
+        const currentVodChat = this.getCurrentVodChat();
+        if (currentVodChat && currentVodChat.props && currentVodChat.props.data && currentVodChat.props.data.video) {
+            const {owner: {id, login}} = currentVodChat.props.data.video;
+            rv = {
+                id: id.toString(),
+                name: login,
+                displayName: login
+            };
+        }
+
+        currentChannel = rv;
+
         return rv;
+    },
+
+    TMIActionTypes,
+
+    getReactElement,
+
+    getRouter() {
+        return router;
+    },
+
+    getCurrentChannel() {
+        return currentChannel;
     },
 
     getCurrentUser() {
@@ -156,7 +185,7 @@ module.exports = {
     },
 
     getChatController() {
-        const container = $(CHAT_CONTAINER_CONTAINER)[0];
+        const container = $(CHAT_CONTAINER).parent()[0];
         if (!container) return null;
 
         let controller = searchReactChildren(
@@ -195,34 +224,30 @@ module.exports = {
         return controller;
     },
 
-    getCurrentTMISession() {
-        return this.getChatController().tmiSession;
+    getCurrentVodChat() {
+        const container = $(VOD_CHAT_CONTAINER)[0];
+        if (!container) return null;
+
+        let controller = searchReactChildren(
+            getReactInstance(container),
+            node => node._instance && node._instance.props && node._instance.props.data.video
+        );
+
+        if (controller) {
+            controller = controller._instance;
+        }
+
+        return controller;
     },
 
-    sendChatAdminMessage(content) {
+    sendChatAdminMessage(body) {
         const chatController = this.getChatController();
         if (!chatController) return;
 
-        const data = {
-            type: TMIActionTypes.POST,
-            badges: {},
-            bits: undefined,
-            deleted: false,
-            id: 'betterttv-0',
-            messageParts: [{type: 0, content}],
-            timestamp: Date.now(),
-            user: {
-                color: '#000000',
-                isIntl: false,
-                userID: undefined,
-                userLogin: 'betterttv',
-                userDisplayName: 'BetterTTV'
-            }
-        };
-
-        // TODO: on render we need to style these appropriately
-
-        chatController.chatBuffer.consumeChatEvent({data});
+        chatController.chatService.onChatNoticeEvent({
+            msgid: Date.now(),
+            body
+        });
     },
 
     sendChatMessage(message) {
@@ -243,6 +268,15 @@ module.exports = {
             msgObject = getReactElement(element)._owner._instance.props.message;
         } catch (_) {}
         if (!msgObject) return null;
+
+        return msgObject;
+    },
+
+    getConversationMessageObject(element) {
+        let msgObject;
+        try {
+            msgObject = getParentNode(getReactElement(element))._instance.props.message;
+        } catch (_) {}
 
         return msgObject;
     },

@@ -1,5 +1,4 @@
 const $ = require('jquery');
-const notificationSound = require('../notification_sound');
 const watcher = require('../../watcher');
 const settings = require('../../settings');
 const storage = require('../../storage');
@@ -195,7 +194,6 @@ class ChatHighlightBlacklistKeywordsModule {
     }
 
     markHighlighted($message) {
-        notificationSound.play();
         $message.addClass('bttv-highlighted');
     }
 

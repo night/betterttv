@@ -1,0 +1,44 @@
+.bttv-swap-chat {
+    .right-column {
+        order: 1;
+    }
+    
+    .twilight-main {
+        order: 2;
+    }
+
+    .side-nav {
+        order: 3;
+    }
+
+    /* Toggle Visibility Arrows */
+    .side-nav__toggle-visibility {
+        right: unset;
+        left: -2.5rem;
+        transform: rotate(-90deg);
+    }
+
+    .side-nav--collapsed .side-nav__toggle-visibility {
+        transform: rotate(90deg);
+    }
+    
+    .right-column__toggle-visibility {
+         right: -2.5rem;
+         left: unset;
+         transform: rotate(90deg);
+    }
+
+    .right-column--collapsed .right-column__toggle-visibility {
+        transform: rotate(-90deg);
+    }
+
+    /* Theatre Mode */
+    .channel-page__video-player--theatre-mode {
+        right: 0;
+        left: unset;
+    }
+
+    .right-column--theatre {
+        right: unset !important;
+    }
+}

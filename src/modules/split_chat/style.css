@@ -1,9 +1,9 @@
-.chat-line__message.bttv-split-chat-alt-bg {
+.chat-line__message.bttv-split-chat-alt-bg, .vod-message.bttv-split-chat-alt-bg {
   background-color: #efeded;
 }
 
 .theme--dark {
-  .chat-line__message.bttv-split-chat-alt-bg {
+  .chat-line__message.bttv-split-chat-alt-bg, .vod-message.bttv-split-chat-alt-bg {
     background-color: #1f1925;
   }
 }

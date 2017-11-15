@@ -49,6 +49,16 @@ function hasNonASCII(message) {
     return false;
 }
 
+function replaceTwitchEmoticonTooltip(currentChannel, $emote) {
+    const code = $emote.attr('alt');
+    const id = ($emote.attr('src').split('emoticons/v1/')[1] || '').split('/')[0];
+    const emote = channelEmotesTip.getEmote(id, code);
+    if (!emote) return;
+    $emote.parent().find('.tw-tooltip').css('text-align', 'center').html(emote.balloon);
+    if (!currentChannel || emote.channel.name === currentChannel.name) return;
+    $emote.on('click', () => window.open(emote.channel.url, '_blank'));
+}
+
 class ChatModule {
     constructor() {
         watcher.on('chat.message', ($element, message) => this.messageParser($element, message));
@@ -111,16 +121,20 @@ class ChatModule {
         const tokens = $message.contents();
         for (let i = 0; i < tokens.length; i++) {
             const node = tokens[i];
-            if (node.nodeType === window.Node.ELEMENT_NODE && node.classList.contains('chat-line__message--emote')) {
-                const $emote = $(node);
-                const code = $emote.attr('alt');
-                const id = ($emote.attr('src').split('emoticons/v1/')[1] || '').split('/')[0];
-                const emote = channelEmotesTip.getEmote(id, code);
-                if (emote) {
-                    $emote.parent().find('.tw-tooltip').css('text-align', 'center').html(emote.balloon);
-                    if (!currentChannel || emote.channel.name === currentChannel.name) continue;
-                    $emote.on('click', () => window.open(emote.channel.url, '_blank'));
+            let $emote;
+            // non-chat renders have a wrapper element
+            if (node.nodeType === window.Node.ELEMENT_NODE && node.classList.contains('tw-tooltip-wrapper')) {
+                const $emoteTooltip = $(node);
+                $emote = $emoteTooltip.find('.chat-line__message--emote');
+                if ($emote.length) {
+                    replaceTwitchEmoticonTooltip(currentChannel, $emote);
+                    continue;
                 }
+            }
+            // chat doesn't have a wrapper element, so we grab all the inner elements
+            if (node.nodeType === window.Node.ELEMENT_NODE && node.classList.contains('chat-line__message--emote')) {
+                $emote = $(node);
+                replaceTwitchEmoticonTooltip(currentChannel, $emote);
                 continue;
             }
             let data;
@@ -172,7 +186,7 @@ class ChatModule {
         if (!user) return;
 
         const color = this.calculateColor(user.color);
-        const $from = $element.find('.chat-line__message--username');
+        const $from = $element.find('.chat-author__display-name,.chat-author__intl-login');
         $from.css('color', color);
 
         if (legacySubscribers.hasGlow(user.name) && settings.get('darkenedMode') === true) {
