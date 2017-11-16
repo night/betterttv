@@ -168,6 +168,11 @@ class Watcher extends SafeEventEmitter {
                     if ($el.hasClass('thread-message__message')) {
                         emitMessage($el[0]);
                     } else {
+                        const $thread = $el.find('.whispers-thread');
+                        if ($thread.length) {
+                            this.emit('conversation.new', $thread);
+                        }
+
                         const $messages = $el.find('.thread-message__message');
                         for (const message of $messages) {
                             emitMessage(message);
