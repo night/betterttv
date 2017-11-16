@@ -54,9 +54,6 @@ class ChatSettingsModule {
 
         $settings.find('.setFontFamily').click(chatFontSettings.setFontFamily);
         $settings.find('.setFontSize').click(chatFontSettings.setFontSize);
-
-        // make the chat settings scrollable
-        $(CHAT_SETTINGS_SELECTOR).css('max-height', $(window).height() - 100);
     }
 }
 
