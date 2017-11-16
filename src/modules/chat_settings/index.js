@@ -4,7 +4,7 @@ const settings = require('../settings');
 const highlightBlacklistKeywords = require('../chat_highlight_blacklist_keywords');
 const chatFontSettings = require('../chat_font_settings');
 
-const CHAT_SETTINGS_SELECTOR = '.chat-settings';
+const CHAT_SETTINGS_SELECTOR = '.chat-settings__content';
 const BTTV_CHAT_SETTINGS_CLASS = 'bttv-chat-settings';
 
 const CHAT_SETTINGS_TEMPLATE = `
