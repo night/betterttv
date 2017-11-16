@@ -26,7 +26,7 @@ function changeFontSetting(promptBody, storageID) {
 }
 
 const styleTemplate = (fontFamily, fontSize) => `
-.ember-chat .chat-messages, .ember-chat .chat-messages .chat-line {
+.chat__pane .chat-line__message, .chat__pane .chat-line__status  {
     font-family: ${fontFamily ? encodeFontFamily(fontFamily) : 'inherit'} !important;
     font-size: ${fontSize ? `${html.escape(fontSize)}px` : 'inherit'} !important;
 }
