@@ -5,7 +5,7 @@ const twitch = require('../../utils/twitch');
 const CHAT_ROOM_SELECTOR = '.chat-list';
 const CHAT_TEXT_AREA = '.chat-input textarea';
 const CHAT_LINE_SELECTOR = '.chat-line__message';
-const USERNAME_SELECTORS = '.chat-line__message span.chat-line__message--username, .chat-line__message div[data-a-target="chat-message-mention"]';
+const USERNAME_SELECTORS = '.chat-line__message span.chat-author__display-name, .chat-line__message div[data-a-target="chat-message-mention"]';
 
 function clearSelection() {
     if (document.selection && document.selection.empty) {
