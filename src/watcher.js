@@ -113,7 +113,6 @@ class Watcher extends SafeEventEmitter {
         this.chatObserver();
         this.vodChatObserver();
         this.routeObserver();
-        this.darkObserver();
 
         debug.log('Watcher started');
     }
@@ -215,18 +214,6 @@ class Watcher extends SafeEventEmitter {
         );
 
         this.on('load.chat', () => observe(chatWatcher, $('.chat__container')[0]));
-    }
-
-    darkObserver() {
-        const store = twitch.getConnectRoot()._context.store;
-        let currentState = store.getState().ui.theme;
-        store.subscribe(() => {
-            const newState = twitch.getConnectRoot()._context.store.getState().ui.theme;
-            if (currentState !== newState) {
-                currentState = newState;
-                this.emit('dark.change', newState ? true : false);
-            }
-        });
     }
 
     vodChatObserver() {
