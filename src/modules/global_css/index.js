@@ -4,11 +4,13 @@ const settings = require('../../settings');
 const watcher = require('../../watcher');
 const twitch = require('../../utils/twitch');
 
-const DISPATCH_TYPE = 'core.ui.THEME_CHANGED';
-const THEMES = {
+const TWITCH_THEME_CHANGED_DISPATCH_TYPE = 'core.ui.THEME_CHANGED';
+const TwitchThemes = {
     LIGHT: 0,
     DARK: 1
 };
+
+let twitchStore;
 
 class GlobalCSSModule {
     constructor() {
@@ -23,24 +25,28 @@ class GlobalCSSModule {
             defaultValue: false,
             description: 'Enable Twitch\'s dark theme'
         });
-        settings.on('changed.darkenedMode', val => this.setTwitchTheme(val));
+        settings.on('changed.darkenedMode', value => this.setTwitchTheme(value));
 
+        this.loadTwitchThemeObserver();
         this.setTwitchTheme(settings.get('darkenedMode'));
-        this.darkObserver();
     }
 
-    setTwitchTheme(val) {
-        const connectRoot = twitch.getConnectRoot();
-        if (!connectRoot) return;
-        connectRoot._context.store.dispatch({type: DISPATCH_TYPE, theme: +val});
+    setTwitchTheme(value) {
+        if (!twitchStore) return;
+
+        twitchStore.dispatch({
+            type: TWITCH_THEME_CHANGED_DISPATCH_TYPE,
+            theme: value === true ? TwitchThemes.DARK : TwitchThemes.LIGHT
+        });
     }
 
-    darkObserver() {
+    loadTwitchThemeObserver() {
         const connectRoot = twitch.getConnectRoot();
-        if (!connectRoot) return;
-        const {store} = connectRoot._context;
-        store.subscribe(() => {
-            const isDarkMode = store.getState().ui.theme === THEMES.DARK;
+        if (!connectRoot || twitchStore) return;
+
+        twitchStore = connectRoot._context.store;
+        twitchStore.subscribe(() => {
+            const isDarkMode = twitchStore.getState().ui.theme === TwitchThemes.DARK;
             if (settings.get('darkenedMode') !== isDarkMode) {
                 settings.set('darkenedMode', isDarkMode);
             }
