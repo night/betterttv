@@ -180,7 +180,7 @@ class ChatHighlightBlacklistKeywordsModule {
 
     onMessage($message, {user, timestamp}) {
         const from = user.userLogin;
-        const message = $message.find('span[data-a-target="chat-message-text"]').text();
+        const message = $message.find('span[data-a-target="chat-message-text"], div[data-a-target="emote-name"], a.chat-line__message--link').text();
         const date = new Date(timestamp);
 
         if (fromContainsKeyword(blacklistUsers, from) || messageContainsKeyword(blacklistKeywords, from, message)) {
