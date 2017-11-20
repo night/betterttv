@@ -19,7 +19,7 @@ class HideSidebarElementsModule {
         settings.add({
             id: 'hideRecommendedFriends',
             name: 'Hide Recommended Friends',
-            defaultValue: true,
+            defaultValue: false,
             description: 'Hides the Recommended Friends section so you have more room for activities!'
         });
         settings.add({
