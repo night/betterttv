@@ -18,6 +18,6 @@
 
 .bttv-hide-followed-offline {
   .side-nav-card[href*="/videos/all"], .side-nav-card__link[href*="/videos/all"] {
-    display: none!important;
+    display: none !important;
   }
 }
