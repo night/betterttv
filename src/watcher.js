@@ -241,6 +241,7 @@ class Watcher extends SafeEventEmitter {
                 }
             })
         );
+
         this.on('load.vod', () => observe(vodChatWatcher, $('.qa-vod-chat')[0]));
     }
 
