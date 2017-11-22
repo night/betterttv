@@ -4,22 +4,19 @@ const settings = require('../../settings');
 const watcher = require('../../watcher');
 const twitch = require('../../utils/twitch');
 
-const CHAT_SETTINGS_DARK_TOGGLE_SELECTOR = '#chat-settings-dark-mode';
+const TWITCH_THEME_CHANGED_DISPATCH_TYPE = 'core.ui.THEME_CHANGED';
+const TwitchThemes = {
+    LIGHT: 0,
+    DARK: 1
+};
 
-function toggleDarkChat(value) {
-    const chatDarkModeToggle = twitch.getReactElement($(CHAT_SETTINGS_DARK_TOGGLE_SELECTOR)[0]);
-    if (!chatDarkModeToggle) return;
-    const {checked, onChange} = chatDarkModeToggle.props;
-    if ((!checked && !value) || (checked && value)) return;
-    onChange();
-}
+let twitchStore;
 
 class GlobalCSSModule {
     constructor() {
         this.globalCSS();
 
         watcher.on('load', () => this.branding());
-        watcher.on('load.chat', () => this.loadDark());
         this.branding();
 
         settings.add({
@@ -28,14 +25,32 @@ class GlobalCSSModule {
             defaultValue: false,
             description: 'Enable Twitch\'s dark theme'
         });
-        settings.on('changed.darkenedMode', () => this.loadDark());
-        this.loadDark();
+        settings.on('changed.darkenedMode', value => this.setTwitchTheme(value));
+
+        this.loadTwitchThemeObserver();
+        this.setTwitchTheme(settings.get('darkenedMode'));
     }
 
-    loadDark() {
-        const value = settings.get('darkenedMode');
-        $('html').toggleClass('theme--dark', value);
-        toggleDarkChat(value);
+    setTwitchTheme(value) {
+        if (!twitchStore) return;
+
+        twitchStore.dispatch({
+            type: TWITCH_THEME_CHANGED_DISPATCH_TYPE,
+            theme: value === true ? TwitchThemes.DARK : TwitchThemes.LIGHT
+        });
+    }
+
+    loadTwitchThemeObserver() {
+        const connectRoot = twitch.getConnectRoot();
+        if (!connectRoot || twitchStore) return;
+
+        twitchStore = connectRoot._context.store;
+        twitchStore.subscribe(() => {
+            const isDarkMode = twitchStore.getState().ui.theme === TwitchThemes.DARK;
+            if (settings.get('darkenedMode') !== isDarkMode) {
+                settings.set('darkenedMode', isDarkMode);
+            }
+        });
     }
 
     globalCSS() {
