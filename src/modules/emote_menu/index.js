@@ -29,9 +29,6 @@ class EmoteMenuModule {
         // Inject the emote menu if option is enabled.
         if (settings.get('clickTwitchEmotes') === false) return;
 
-        debug.log('Injecting Twitch Chat Emotes Script');
-        require('twitch-chat-emotes/script.min');
-
         debug.log('Hooking into Twitch Chat Emotes Script');
         try { // try/catch protects against re-registered emote getters
             window.emoteMenu.registerEmoteGetter('BetterTTV', () =>
@@ -45,6 +42,9 @@ class EmoteMenuModule {
                 })
             );
         } catch (e) {}
+
+        debug.log('Injecting Twitch Chat Emotes Script');
+        require('twitch-chat-emotes/script.min');
     }
 }
 
