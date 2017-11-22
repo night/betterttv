@@ -129,6 +129,7 @@ class Watcher extends SafeEventEmitter {
         this.chatObserver();
         this.vodChatObserver();
         this.routeObserver();
+        this.directoryObserver();
 
         require('./watchers/*.js', {mode: (base, files) => {
             return files.map(module => {
@@ -162,6 +163,9 @@ class Watcher extends SafeEventEmitter {
 
             switch (route) {
                 case routes.DIRECTORY_FOLLOWING:
+                    this.waitForLoad('following').then(() => this.emit('load.directory.following'));
+                    break;
+                case routes.DIRECTORY_FOLLOWING_LIVE:
                     this.waitForLoad('following').then(() => this.emit('load.directory.following'));
                     break;
                 case routes.CHAT:
@@ -299,6 +303,29 @@ class Watcher extends SafeEventEmitter {
         this.on('load.channel', updateChannel);
         this.on('load.chat', updateChannel);
         this.on('load.vod', updateChannel);
+    }
+
+    directoryObserver() {
+        const observe = (watcher, element) => {
+            if (!element) return;
+            if (watcher) watcher.disconnect();
+            watcher.observe(element, {childList: true, subtree: true});
+        };
+
+        directoryWatcher = new window.MutationObserver(mutations =>
+            mutations.forEach(mutation => {
+                for (const el of mutation.addedNodes) {
+                    const $el = $(el);
+
+                    const vodCasts = $el.find('.tw-pill');
+
+                    if (vodCasts.length > 0) {
+                        this.emit('directory.vodcast');
+                    }
+                }
+            })
+        );
+        this.on('load.directory.following', () => observe(directoryWatcher, $('.twilight-main')[0]));
     }
 }
 
