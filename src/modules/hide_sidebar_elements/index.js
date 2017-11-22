@@ -63,7 +63,7 @@ class HideSidebarElementsModule {
     }
 
     toggleOfflineFollowedChannels() {
-        $('body').toggleClass('bttv-hide-followed-offlines', settings.get('hideOfflineFollowedChannels'));
+        $('body').toggleClass('bttv-hide-followed-offline', settings.get('hideOfflineFollowedChannels'));
     }
 
     togglePrimePromotions() {
