@@ -2,6 +2,7 @@ const $ = require('jquery');
 const watcher = require('../../watcher');
 const keyCodes = require('../../utils/keycodes');
 const twitch = require('../../utils/twitch');
+const settings = require('../../settings');
 
 const CHAT_ROOM_SELECTOR = '.chat__pane';
 const CHAT_LINE_SELECTOR = '.chat-line__message';
@@ -29,15 +30,30 @@ const ACTION_TYPES = {
 let action;
 let user;
 
+function setReason(type) {
+    if (settings.get('customTimeoutReasons')) {
+        const reason = prompt(`Enter ${type === ACTION_TYPES.BAN ? 'ban' : 'timeout'} reason: (leave blank for none)`);
+        if (
+            reason === null ||
+            reason === ''
+        ) return '';
+        else return ` ${reason}`;
+    } else {
+        return '';
+    }
+}
+
 function handleTimeoutClick(e) {
     const $customTimeout = $(`#${CUSTOM_TIMEOUT_ID}`);
     if (!$customTimeout.length || e.which === keyCodes.DOMVKCancel || e.shiftKey) return;
 
     if ($customTimeout.is(':hover')) {
         if (action.type === ACTION_TYPES.BAN) {
-            twitch.sendChatMessage(`/ban ${user}`);
+            const reason = setReason(action.type);
+            twitch.sendChatMessage(`/ban ${user}${reason}`);
         } else if (action.type === ACTION_TYPES.TIMEOUT) {
-            twitch.sendChatMessage(`/timeout ${user} ${action.length}`);
+            const reason = setReason(action.type);
+            twitch.sendChatMessage(`/timeout ${user} ${action.length}${reason}`);
         }
     }
 
@@ -129,6 +145,13 @@ function handleClick(e) {
 class ChatCustomTimeoutsModule {
     constructor() {
         watcher.on('load.chat', () => this.loadClickHandler());
+
+        settings.add({
+            id: 'customTimeoutReasons',
+            name: 'Custom Timeout Reasons',
+            defaultValue: false,
+            description: 'Prompts for a reason when banning or timing out using the rightclick menu'
+        });
     }
 
     loadClickHandler() {
