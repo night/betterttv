@@ -1,4 +1,4 @@
-const $ = require('JQuery');
+const $ = require('jquery');
 const settings = require('../../settings');
 
 class ChatLeftSide {
