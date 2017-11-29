@@ -29,6 +29,12 @@ class HideSidebarElementsModule {
             description: 'Hides all offline followed channels for those who follow a ton of channels'
         });
         settings.add({
+            id: 'hideOnlineFollowedChannels',
+            name: 'Hide Online Followed Channels',
+            defaultValue: false,
+            description: 'Hides all online followed channels in the left sidebar'
+        });
+        settings.add({
             id: 'hidePrimePromotion',
             name: 'Hide Prime Promotions',
             defaultValue: false,
@@ -38,11 +44,13 @@ class HideSidebarElementsModule {
         settings.on('changed.autoExpandChannels', () => this.toggleAutoExpandChannels());
         settings.on('changed.hideRecommendedFriends', () => this.toggleRecommendedFriends());
         settings.on('changed.hideOfflineFollowedChannels', () => this.toggleOfflineFollowedChannels());
+        settings.on('changed.hideOnlineFollowedChannels', () => this.toggleOnlineFollowedChannels());
         settings.on('changed.hidePrimePromotion', () => this.togglePrimePromotions());
         watcher.on('load', () => {
             this.toggleFeaturedChannels();
             this.toggleAutoExpandChannels();
             this.toggleRecommendedFriends();
+            this.toggleOnlineFollowedChannels();
             this.toggleOfflineFollowedChannels();
             this.togglePrimePromotions();
         });
@@ -64,6 +72,10 @@ class HideSidebarElementsModule {
 
     toggleOfflineFollowedChannels() {
         $('body').toggleClass('bttv-hide-followed-offline', settings.get('hideOfflineFollowedChannels'));
+    }
+
+    toggleOnlineFollowedChannels() {
+        $('body').toggleClass('bttv-hide-followed-online', settings.get('hideOnlineFollowedChannels'));
     }
 
     togglePrimePromotions() {

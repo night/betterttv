@@ -21,3 +21,9 @@
     display: none !important;
   }
 }
+
+.bttv-hide-followed-online {
+  .followed-channels {
+    display: none;
+  }
+}
