@@ -218,7 +218,7 @@ class Watcher extends SafeEventEmitter {
             })
         );
 
-        this.on('load.chat', () => observe(chatWatcher, $('.chat__container')[0]));
+        this.on('load.chat', () => observe(chatWatcher, $('.chat-room__container')[0]));
     }
 
     vodChatObserver() {
