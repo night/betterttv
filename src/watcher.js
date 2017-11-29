@@ -76,7 +76,7 @@ class Watcher extends SafeEventEmitter {
                 return;
             }
 
-            if (!router) return;
+            if (!router || !user) return;
             clearInterval(loadInterval);
 
             twitch.setCurrentUser(user.authToken, user.id, user.login, user.displayName);
