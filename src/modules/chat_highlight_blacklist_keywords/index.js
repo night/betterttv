@@ -140,6 +140,21 @@ function messageContainsKeyword(keywords, from, message) {
     return false;
 }
 
+function messageTextFromAST(ast) {
+    return ast.map(node => {
+        switch (node.type) {
+            case 0:
+                return node.content.trim();
+            case 1:
+                return node.content.recipient;
+            case 2:
+                return node.content.url;
+            case 3:
+                return node.content.alt;
+        }
+    }).join(' ');
+}
+
 let $pinnedHighlightsContainer;
 
 class ChatHighlightBlacklistKeywordsModule {
@@ -178,9 +193,9 @@ class ChatHighlightBlacklistKeywordsModule {
         changeKeywords(HIGHLIGHT_KEYWORD_PROMPT, 'highlightKeywords');
     }
 
-    onMessage($message, {user, timestamp}) {
+    onMessage($message, {user, timestamp, messageParts}) {
         const from = user.userLogin;
-        const message = $message.find('span[data-a-target="chat-message-text"], div[data-a-target="chat-message-mention"], div[data-a-target="emote-name"], a.chat-line__message--link').text();
+        const message = messageTextFromAST(messageParts);
         const date = new Date(timestamp);
 
         if (fromContainsKeyword(blacklistUsers, from) || messageContainsKeyword(blacklistKeywords, from, message)) {
