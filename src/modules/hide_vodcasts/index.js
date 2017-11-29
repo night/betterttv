@@ -16,6 +16,7 @@ class HideVodcastsModule {
         settings.on('changed.hideVodcasts', value => value === true ? this.hide() : this.show());
 
         watcher.on('directory.vodcast', () => this.hide());
+        watcher.on('load.directory.following', () => this.hide());
     }
 
     hide() {
