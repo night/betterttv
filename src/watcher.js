@@ -4,6 +4,8 @@ const twitch = require('./utils/twitch');
 const SafeEventEmitter = require('./utils/safe-event-emitter');
 const $ = require('jquery');
 
+const chatBufferWatcher = require('./watchers/chat-buffer-watcher');
+
 let router;
 let currentPath = '';
 let chatWatcher;
@@ -113,6 +115,7 @@ class Watcher extends SafeEventEmitter {
         this.chatObserver();
         this.vodChatObserver();
         this.routeObserver();
+        chatBufferWatcher(this);
 
         debug.log('Watcher started');
     }
