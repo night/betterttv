@@ -23,7 +23,7 @@ const CUSTOM_TIMEOUT_TEMPLATE = `
 `;
 const ACTION_TYPES = {
     CANCEL: 'cancel',
-    TIMEOUT: 'time',
+    TIMEOUT: 'timeout',
     BAN: 'ban'
 };
 
@@ -31,16 +31,9 @@ let action;
 let user;
 
 function setReason(type) {
-    if (settings.get('customTimeoutReasons')) {
-        const reason = prompt(`Enter ${type === ACTION_TYPES.BAN ? 'ban' : 'timeout'} reason: (leave blank for none)`);
-        if (
-            reason === null ||
-            reason === ''
-        ) return '';
-        else return ` ${reason}`;
-    } else {
-        return '';
-    }
+    if (settings.get('customTimeoutReasons')) return '';
+    const reason = prompt(`Enter ${type} reason: (leave blank for none)`);
+    return reason ? ` ${reason}` : '';
 }
 
 function handleTimeoutClick(e) {
@@ -48,11 +41,10 @@ function handleTimeoutClick(e) {
     if (!$customTimeout.length || e.which === keyCodes.DOMVKCancel || e.shiftKey) return;
 
     if ($customTimeout.is(':hover')) {
+        const reason = setReason(action.type);
         if (action.type === ACTION_TYPES.BAN) {
-            const reason = setReason(action.type);
             twitch.sendChatMessage(`/ban ${user}${reason}`);
         } else if (action.type === ACTION_TYPES.TIMEOUT) {
-            const reason = setReason(action.type);
             twitch.sendChatMessage(`/timeout ${user} ${action.length}${reason}`);
         }
     }
