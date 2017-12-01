@@ -13,6 +13,8 @@ const legacySubscribers = require('../legacy_subscribers');
 
 const EMOTE_STRIP_SYMBOLS_REGEX = /(^[~!@#$%\^&\*\(\)]+|[~!@#$%\^&\*\(\)]+$)/g;
 const MENTION_REGEX = /^@([a-zA-Z\d_]+)$/;
+const EMOTES_TO_CAP = ['567b5b520e984428652809b6'];
+const MAX_EMOTES_WHEN_CAPPED = 10;
 
 const badgeTemplate = (url, description) => `
     <div class="tw-tooltip-wrapper inline">
@@ -119,6 +121,7 @@ class ChatModule {
     messageReplacer($message, user) {
         const currentChannel = twitch.getCurrentChannel();
         const tokens = $message.contents();
+        let cappedEmoteCount = 0;
         for (let i = 0; i < tokens.length; i++) {
             const node = tokens[i];
             let $emote;
@@ -163,7 +166,7 @@ class ChatModule {
 
                 const emote = emotes.getEligibleEmote(part, user) || emotes.getEligibleEmote(part.replace(EMOTE_STRIP_SYMBOLS_REGEX, ''), user);
                 if (emote) {
-                    parts[j] = emote.toHTML();
+                    parts[j] = (EMOTES_TO_CAP.includes(emote.id) && ++cappedEmoteCount > MAX_EMOTES_WHEN_CAPPED) ? '' : emote.toHTML();
                     modified = true;
                     continue;
                 }
