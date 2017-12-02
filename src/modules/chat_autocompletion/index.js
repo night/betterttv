@@ -16,9 +16,7 @@ class ChatAutocompletionModule {
             description: 'Autocomplete with Tab key'
         });
 
-        this.customInput = new CustomInputModule(message => {
-            this.chatHistory.onSendMessage(message);
-        });
+        this.customInput = new CustomInputModule();
         this.patchedInput = new InputPatcherModule();
         this.chatHistory = new ChatHistoryModule();
         this.currentInput = null;

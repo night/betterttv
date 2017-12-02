@@ -1,5 +1,6 @@
 const $ = require('jquery');
 const keyCodes = require('../../utils/keycodes');
+const watcher = require('../../watcher');
 
 function isSuggestionsShowing() {
     return !!$('[data-a-target="autocomplete-balloon"]')[0];
@@ -57,6 +58,7 @@ class ChatHistoryModule {
         if (message.trim().length === 0) return;
         this.messageHistory.unshift(message);
         this.historyPos = -1;
+        watcher.emit('input.onSendMessage', message);
     }
 
     onFocus() {

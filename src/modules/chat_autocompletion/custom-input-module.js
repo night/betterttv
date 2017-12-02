@@ -3,6 +3,7 @@ const emotes = require('../emotes');
 const keyCodes = require('../../utils/keycodes');
 const twitch = require('../../utils/twitch');
 const settings = require('../../settings');
+const watcher = require('../../watcher');
 
 const ORIGINAL_TEXTAREA = '.chat-input textarea';
 
@@ -12,8 +13,8 @@ function setReactTextareaValue(txt, msg) {
     txt.dispatchEvent(ev);
 }
 
-// Replaces Twitch Text Input with our own
 function newTextArea() {
+    // Replaces Twitch Text Input with our own
     const text = document.createElement('textarea');
     const $oldText = $(ORIGINAL_TEXTAREA);
     $oldText[0].before(text);
@@ -41,7 +42,7 @@ function newTextArea() {
 }
 
 class CustomInputModule {
-    constructor(onMessage) {
+    constructor() {
         settings.add({
             id: 'tabCompletionEmotePriority',
             name: 'Tab Completion Emote Priority',
@@ -49,8 +50,10 @@ class CustomInputModule {
             default: false,
         });
 
-        this.onMessage = onMessage; // this callback notifies the ChatHistoryModule of a new message
         this.init();
+        watcher.on('input.onSendMessage', () => {
+            this.sendMessage();
+        });
     }
 
     sendMessage() {
@@ -60,7 +63,6 @@ class CustomInputModule {
         }
         this.chatInputCtrl.props.onSendMessage(message);
         this.$text.val('');
-        this.onMessage(message);
     }
 
     load(createTextarea = true) {
@@ -121,7 +123,6 @@ class CustomInputModule {
 
         if (keyCode === keyCodes.Enter && !e.shiftKey) {
             e.preventDefault();
-            this.sendMessage();
         } else if (keyCode === keyCodes.Tab) {
             e.preventDefault();
             this.onAutoComplete(includeUsers, e.shiftKey);
