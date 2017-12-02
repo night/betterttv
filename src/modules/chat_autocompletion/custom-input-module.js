@@ -51,9 +51,19 @@ class CustomInputModule {
         });
 
         this.init();
-        watcher.on('input.onSendMessage', () => {
-            this.sendMessage();
-        });
+        watcher.on('input.onSendMessage', () => this.sendMessage());
+        watcher.on('chat.message', ($el, msg) => this.storeUser($el, msg));
+    }
+
+    init() {
+        this.userList = new Set();
+        this.tabTries = -1;
+        this.suggestions = null;
+        this.textSplit = ['', '', ''];
+    }
+
+    storeUser($el, message) {
+        this.userList.add(message.user.userDisplayName);
     }
 
     sendMessage() {
@@ -71,6 +81,7 @@ class CustomInputModule {
             const { $text, $oldText } = newTextArea();
             this.$text = $text;
             this.$oldText = $oldText;
+            this.userList = new Set();
         }
     }
 
@@ -82,12 +93,6 @@ class CustomInputModule {
     disable() {
         this.$text.hide();
         this.$oldText.show();
-    }
-
-    init() {
-        this.tabTries = -1;
-        this.suggestions = null;
-        this.textSplit = ['', '', ''];
     }
 
     getSuggestions(prefix, includeUsers = true, includeEmotes = true) {
@@ -186,17 +191,9 @@ class CustomInputModule {
     }
 
     getChatMembers() {
-        let chatMembers = this.chatInputCtrl.props.chatMembers;
         const broadcasterName = this.chatInputCtrl.props.channelDisplayName;
-        if (!chatMembers) {
-            return [];
-        }
-        chatMembers = chatMembers
-            .map(v => v.userDisplayName);
-        if (!chatMembers.find(v => v === broadcasterName)) {
-            chatMembers.push(broadcasterName);
-        }
-        return chatMembers;
+        this.userList.add(broadcasterName);
+        return Array.from(this.userList.values());
     }
 }
 

@@ -46,12 +46,14 @@ function getReactInstance(element) {
             return element[key];
         }
     }
+
     return null;
 }
 
 function getReactElement(element) {
     const instance = getReactInstance(element);
     if (!instance) return null;
+
     return instance._currentElement;
 }
 
