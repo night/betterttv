@@ -1,0 +1,25 @@
+.bttv-adaptive-chat__dummy {
+    display: none;
+}
+.bttv-adaptive-chat {
+    .right-column {
+        position: absolute !important;
+        height: auto !important;
+        width: auto;
+        max-width: 100%;
+        left: -1px;
+        right: 0;
+    }
+
+    .channel-page__right-column {
+        width: 100%;
+    }
+
+    .whispers {
+        margin-right: 8em !important;
+    }
+
+    .bttv-adaptive-chat__dummy {
+        display: block;
+    }
+}
