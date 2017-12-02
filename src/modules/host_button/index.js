@@ -2,6 +2,7 @@ const $ = require('jquery');
 const settings = require('../../settings');
 const watcher = require('../../watcher');
 const twitch = require('../../utils/twitch');
+const tmiApi = require('../../utils/tmi-api');
 
 let $hostButton;
 let hosting = false;
@@ -67,11 +68,9 @@ class HostButtonModule {
     }
 
     updateHostingState(userId, channelId) {
-        return fetch(`https://tmi.twitch.tv/hosts?include_logins=1&host=${userId}`)
-            .then(t => t.json())
-            .then(({ hosts }) => {
-                if (!hosts || !hosts.length) return;
-                hosting = `${hosts[0].target_id}` === channelId;
+        return tmiApi.getHostedChannel(userId)
+            .then(data => {
+                hosting = `${data.target_id}` === channelId;
                 this.updateHostButtonText();
             });
     }
