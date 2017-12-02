@@ -1,6 +1,7 @@
 const $ = require('jquery');
 const settings = require('../../settings');
 const watcher = require('../../watcher');
+const debug = require('../../utils/debug');
 const twitch = require('../../utils/twitch');
 const tmiApi = require('../../utils/tmi-api');
 
@@ -72,6 +73,10 @@ class HostButtonModule {
             .then(data => {
                 hosting = `${data.target_id}` === channelId;
                 this.updateHostButtonText();
+            })
+            .catch(error => {
+                debug.log('error updatingHostingState');
+                debug.error(error);
             });
     }
 
