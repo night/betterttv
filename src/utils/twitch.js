@@ -200,6 +200,14 @@ module.exports = {
         return controller;
     },
 
+    getTmiSocket() {
+        let ws;
+        try {
+            ws = this.getChatController().chatService.client.connection.ws;
+        } catch (_) {}
+        return ws;
+    },
+
     getChatScroller() {
         const list = $(CHAT_LIST)[0];
         if (!list) return null;
