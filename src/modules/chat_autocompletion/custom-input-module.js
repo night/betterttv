@@ -1,12 +1,16 @@
 const $ = require('jquery');
-const watcher = require('../../watcher');
 const emotes = require('../emotes');
 const keyCodes = require('../../utils/keycodes');
 const twitch = require('../../utils/twitch');
 const settings = require('../../settings');
 
 const ORIGINAL_TEXTAREA = '.chat-input textarea';
-const CHAT_TEXTAREA = '#bttv-chat-input';
+
+function setReactTextareaValue(txt, msg) {
+    txt.value = msg;
+    const ev = new Event('input', { target: txt, bubbles: true });
+    txt.dispatchEvent(ev);
+}
 
 // Replaces Twitch Text Input with our own
 function newTextArea() {
@@ -24,11 +28,20 @@ function newTextArea() {
     $text.attr('id', 'bttv-chat-input');
     $oldText.attr('id', 'twitch-chat-input');
     $oldText.hide();
-    return { $text, $oldText};
+
+    $text[0].customSetValue = value => {
+        $text.val(value);
+    };
+
+    $oldText[0].customSetValue = value => {
+        setReactTextareaValue($oldText[0], value);
+    };
+
+    return { $text, $oldText };
 }
 
 class CustomInputModule {
-    constructor() {
+    constructor(onMessage) {
         settings.add({
             id: 'tabCompletionEmotePriority',
             name: 'Tab Completion Emote Priority',
@@ -36,8 +49,8 @@ class CustomInputModule {
             default: false,
         });
 
-        this.load();
-        watcher.on('load.chat', () => this.onChatLoad());
+        this.onMessage = onMessage; // this callback notifies the ChatHistoryModule of a new message
+        this.init();
     }
 
     sendMessage() {
@@ -47,39 +60,32 @@ class CustomInputModule {
         }
         this.chatInputCtrl.props.onSendMessage(message);
         this.$text.val('');
-        this.messageHistory.unshift(message);
-        this.historyPos = -1;
+        this.onMessage(message);
     }
 
-    onChatLoad() {
+    load(createTextarea = true) {
         this.chatInputCtrl = twitch.getChatInputController();
-        const { $text, $oldText } = newTextArea();
-        this.$text = $text;
-        this.$oldText = $oldText;
+        if (createTextarea) {
+            const { $text, $oldText } = newTextArea();
+            this.$text = $text;
+            this.$oldText = $oldText;
+        }
     }
 
     enable() {
         this.$text.show();
         this.$oldText.hide();
-        this.isEnabled = true;
     }
 
     disable() {
         this.$text.hide();
         this.$oldText.show();
-        this.isEnabled = false;
     }
 
-    load() {
+    init() {
         this.tabTries = -1;
         this.suggestions = null;
         this.textSplit = ['', '', ''];
-        this.messageHistory = [];
-        this.historyPos = -1;
-
-        $('body').off('click.tabComplete focus.tabComplete keydown.tabComplete')
-            .on('click.tabComplete focus.tabComplete', CHAT_TEXTAREA, () => this.onFocus())
-            .on('keydown.tabComplete', CHAT_TEXTAREA, e => this.onKeyDown(e));
     }
 
     getSuggestions(prefix, includeUsers = true, includeEmotes = true) {
@@ -106,8 +112,7 @@ class CustomInputModule {
         }
     }
 
-    onKeyDown(e, includeUsers) {
-        if (!this.isEnabled) return;
+    onKeydown(e, includeUsers) {
         const keyCode = e.keyCode || e.which;
         if (e.ctrlKey) {
             return;
@@ -124,31 +129,6 @@ class CustomInputModule {
             $inputField.val(this.textSplit.join(''));
         } else if (keyCode !== keyCodes.Shift) {
             this.tabTries = -1;
-        }
-
-        // Message history
-        if (keyCode === keyCodes.UpArrow) {
-            if ($inputField[0].selectionStart > 0) return;
-            if (this.historyPos + 1 === this.messageHistory.length) return;
-            const prevMsg = this.messageHistory[++this.historyPos];
-            $inputField.val(prevMsg);
-            $inputField[0].setSelectionRange(0, 0);
-        } else if (keyCode === keyCodes.DownArrow) {
-            if ($inputField[0].selectionStart < $inputField.val().length) return;
-            if (this.historyPos > 0) {
-                const prevMsg = this.messageHistory[--this.historyPos];
-                $inputField.val(prevMsg);
-                $inputField[0].setSelectionRange(prevMsg.length, prevMsg.length);
-            } else {
-                const draft = $inputField.val().trim();
-                if (this.historyPos < 0 && draft.length > 0) {
-                    this.messageHistory.unshift(draft);
-                }
-                this.historyPos = -1;
-                $inputField.val('');
-            }
-        } else if (this.historyPos >= 0) {
-            this.messageHistory[this.historyPos] = $inputField.val();
         }
     }
 

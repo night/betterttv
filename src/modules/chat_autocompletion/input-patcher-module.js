@@ -1,13 +1,8 @@
-const $ = require('jquery');
-const watcher = require('../../watcher');
 const emotes = require('../emotes');
-const keyCodes = require('../../utils/keycodes');
 const twitch = require('../../utils/twitch');
 const debounce = require('lodash.debounce');
 
-
 const BTTV_EMOTES_ID = 'bttv-emotes';
-const INPUT_FIELD_SELECTOR = '#twitch-chat-input';
 
 function bttvEmToTwitch(bttvEm) {
     return {
@@ -19,46 +14,19 @@ function bttvEmToTwitch(bttvEm) {
     };
 }
 
-function isSuggestionsShowing() {
-    return !!$('[data-a-target="autocomplete-balloon"]')[0];
-}
-
-function setTextareaValue(txt, msg) {
-    txt.value = msg;
-    // setting the value of an input with react need an 'input' event
-    const ev = new Event('input', { target: txt, bubbles: true });
-    txt.dispatchEvent(ev);
-}
+const NOPE = () => {};
 
 class InputPatcherModule {
     constructor() {
-        watcher.on('load.chat', () => {
-            this.load();
-        });
-
         this.debounceLoadEmotes = debounce(() => {
             this.loadEmotes();
         }, 4000, { leading: true, trailing: false });
 
-        this.isEnabled = false;
-        $('body').on('keydown', INPUT_FIELD_SELECTOR, e => this.onKeydown(e));
-    }
-
-    load() {
-        this.messageHistory = [];
-        this.historyPos = -1;
-    }
-
-    disable() {
-        this.isEnabled = false;
-    }
-
-    enable() {
-        this.isEnabled = true;
+        this.load = NOPE;
+        this.onFocus = NOPE;
     }
 
     loadEmotes() {
-        if (!this.isEnabled) return;
         const controller = twitch.getChatInputController();
 
         const emotesFormatted = emotes.getEmotes()
@@ -78,47 +46,8 @@ class InputPatcherModule {
         }
     }
 
-    onSendMessage(message) {
-        if (message.trim().length === 0) return;
-        this.messageHistory.unshift(message);
-        this.historyPos = -1;
-    }
-
-    onKeydown(e) {
-        if (!this.isEnabled) return;
+    onKeydown() {
         this.debounceLoadEmotes();
-        const keyCode = e.keyCode || e.which;
-        if (e.ctrlKey) return;
-        const $inputField = $(INPUT_FIELD_SELECTOR);
-
-        // Message history
-        if (keyCode === keyCodes.Enter && !e.shiftKey) {
-            this.onSendMessage($inputField.val());
-        } else if (keyCode === keyCodes.UpArrow) {
-            if (isSuggestionsShowing()) return;
-            if ($inputField[0].selectionStart > 0) return;
-            if (this.historyPos + 1 === this.messageHistory.length) return;
-            const prevMsg = this.messageHistory[++this.historyPos];
-            setTextareaValue($inputField[0], prevMsg);
-            $inputField[0].setSelectionRange(0, 0);
-        } else if (keyCode === keyCodes.DownArrow) {
-            if (isSuggestionsShowing()) return;
-            if ($inputField[0].selectionStart < $inputField.val().length) return;
-            if (this.historyPos > 0) {
-                const prevMsg = this.messageHistory[--this.historyPos];
-                setTextareaValue($inputField[0], prevMsg);
-                $inputField[0].setSelectionRange(prevMsg.length, prevMsg.length);
-            } else {
-                const draft = $inputField.val().trim();
-                if (this.historyPos < 0 && draft.length > 0) {
-                    this.messageHistory.unshift(draft);
-                }
-                this.historyPos = -1;
-                setTextareaValue($inputField[0], '');
-            }
-        } else if (this.historyPos >= 0) {
-            this.messageHistory[this.historyPos] = $inputField.val();
-        }
     }
 }
 
