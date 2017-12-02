@@ -49,7 +49,7 @@ class HostButtonModule {
         try {
             const currentChannel = twitch.getCurrentChannel();
             const channelName = currentChannel.name;
-            const conn = twitch.getTmiSocket();
+            const conn = twitch.getTmiClient().connection.ws;
             const wsMessage = `PRIVMSG ${currentUser.name} : /${command === 'host' ? `${command} ${channelName}` : command}`;
             conn.send(wsMessage);
             hosting = !hosting;

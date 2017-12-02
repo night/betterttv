@@ -200,12 +200,12 @@ module.exports = {
         return controller;
     },
 
-    getTmiSocket() {
-        let ws;
+    getTmiClient() {
+        let client;
         try {
-            ws = this.getChatController().chatService.client.connection.ws;
+            client = this.getChatController().chatService.client;
         } catch (_) {}
-        return ws;
+        return client;
     },
 
     getChatScroller() {
