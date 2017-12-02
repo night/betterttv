@@ -255,13 +255,18 @@ class Watcher extends SafeEventEmitter {
             const currentChannel = twitch.getCurrentChannel();
             if (!currentChannel) return;
 
-            if (currentChannel.id === channel.id) return;
+            if (currentChannel.name === channel.name) return;
             channel = currentChannel;
             api
                 .get(`channels/${channel.name}`)
-                .then(d => this.emit('channel.updated', d));
+                .catch(error => ({
+                    bots: [],
+                    emotes: [],
+                    status: error.status || 0
+                }))
+                .then(data => this.emit('channel.updated', data));
+            return true;
         };
-
 
         this.on('load.chat', updateChannel);
         this.on('load.vod', updateChannel);
