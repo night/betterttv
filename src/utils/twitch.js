@@ -6,6 +6,7 @@ const REACT_ROOT = '#root div[data-reactroot]';
 const CHAT_CONTAINER = '.chat-room__container';
 const VOD_CHAT_CONTAINER = '.video-watch-page__right-column';
 const CHAT_LIST = '.chat-list';
+const CHAT_INPUT = '.chat-input';
 const PLAYER = '.player';
 
 const TMIActionTypes = {
@@ -75,7 +76,7 @@ function searchReactChildren(node, predicate, maxDepth = 15, depth = 0) {
         return null;
     }
 
-    const {_renderedChildren: children, _renderedComponent: componenet} = node;
+    const {_renderedChildren: children, _renderedComponent: component} = node;
 
     if (children) {
         for (const key of Object.keys(children)) {
@@ -86,8 +87,8 @@ function searchReactChildren(node, predicate, maxDepth = 15, depth = 0) {
         }
     }
 
-    if (componenet) {
-        return searchReactChildren(componenet, predicate, maxDepth, depth + 1);
+    if (component) {
+        return searchReactChildren(component, predicate, maxDepth, depth + 1);
     }
 
     return null;
@@ -196,6 +197,18 @@ module.exports = {
         if (controller) {
             controller = controller._instance;
         }
+
+        return controller;
+    },
+
+    getChatInputController() {
+        const container = $(CHAT_INPUT)[0];
+        if (!container) return null;
+
+        let controller;
+        try {
+            controller = getParentNode(getReactElement(container))._instance;
+        } catch (_) {}
 
         return controller;
     },
