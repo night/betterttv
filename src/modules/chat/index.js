@@ -11,6 +11,7 @@ const nicknames = require('../chat_nicknames');
 const channelEmotesTip = require('../channel_emotes_tip');
 const legacySubscribers = require('../legacy_subscribers');
 
+const MIRROR_FLAG = 'Flip';
 const EMOTE_STRIP_SYMBOLS_REGEX = /(^[~!@#$%\^&\*\(\)]+|[~!@#$%\^&\*\(\)]+$)/g;
 const MENTION_REGEX = /^@([a-zA-Z\d_]+)$/;
 const EMOTES_TO_CAP = ['567b5b520e984428652809b6'];
@@ -122,6 +123,7 @@ class ChatModule {
         const currentChannel = twitch.getCurrentChannel();
         const tokens = $message.contents();
         let cappedEmoteCount = 0;
+        const mutations = [];
         for (let i = 0; i < tokens.length; i++) {
             const node = tokens[i];
             let $emote;
@@ -142,15 +144,16 @@ class ChatModule {
             }
             let data;
             if (node.nodeType === window.Node.ELEMENT_NODE && node.nodeName === 'SPAN') {
-                data = $(node).text();
+                data = $(node).text().trim();
             } else if (node.nodeType === window.Node.TEXT_NODE) {
-                data = node.data;
+                data = node.data.trim();
             } else {
                 continue;
             }
 
             const parts = data.split(' ');
             let modified = false;
+            let mirrorNextEmote = false;
             for (let j = 0; j < parts.length; j++) {
                 const part = parts[j];
                 if (!part || typeof part !== 'string') {
@@ -164,9 +167,18 @@ class ChatModule {
                     continue;
                 }
 
+                const mirrorCurrentEmote = mirrorNextEmote;
+                mirrorNextEmote = part.trim() === MIRROR_FLAG;
+                if (mirrorNextEmote) {
+                    continue;
+                }
+
                 const emote = emotes.getEligibleEmote(part, user) || emotes.getEligibleEmote(part.replace(EMOTE_STRIP_SYMBOLS_REGEX, ''), user);
                 if (emote) {
-                    parts[j] = (EMOTES_TO_CAP.includes(emote.id) && ++cappedEmoteCount > MAX_EMOTES_WHEN_CAPPED) ? '' : emote.toHTML();
+                    if (mirrorCurrentEmote && j > 0) {
+                        parts[j - 1] = '';
+                    }
+                    parts[j] = (EMOTES_TO_CAP.includes(emote.id) && ++cappedEmoteCount > MAX_EMOTES_WHEN_CAPPED) ? '' : emote.toHTML(mirrorCurrentEmote);
                     modified = true;
                     continue;
                 }
@@ -175,7 +187,23 @@ class ChatModule {
                 parts[j] = html.escape(parts[j]);
             }
 
-            if (modified) {
+            mutations.push([node, parts, modified]);
+        }
+
+        for (let i = 0; i < mutations.length; i++) {
+            const [node, parts, modified] = mutations[i];
+            const nextNode = (i < mutations.length - 1) ? mutations[i + 1][0] : null;
+
+            let mutate = modified;
+            if (parts[parts.length - 1] === MIRROR_FLAG && $(nextNode).hasClass('chat-image__placeholder')) {
+                // next node is a twitch emote, mirror it
+                $(nextNode).parent().addClass('bttv-emote-mirror');
+                mutate = true;
+                // remove mirrorring character
+                parts.pop();
+            }
+
+            if (mutate) {
                 // TODO: find a better way to do this (this seems most performant tho, only a single mutation vs multiple)
                 const span = document.createElement('span');
                 span.innerHTML = parts.join(' ');
@@ -187,6 +215,15 @@ class ChatModule {
     messageParser($element, messageObj) {
         const user = formatChatUser(messageObj);
         if (!user) return;
+
+        if (
+            (modsOnly === true && !user.mod) ||
+            (subsOnly === true && !user.subscriber) ||
+            (asciiOnly === true && hasNonASCII(messageObj.message))
+        ) {
+            $element.hide();
+            return;
+        }
 
         const color = this.calculateColor(user.color);
         const $from = $element.find('.chat-author__display-name,.chat-author__intl-login');
@@ -210,14 +247,6 @@ class ChatModule {
         }
 
         const $message = $element.find('span[data-a-target="chat-message-text"],div.tw-tooltip-wrapper');
-
-        if (
-            (modsOnly === true && !user.mod) ||
-            (subsOnly === true && !user.subscriber) ||
-            (asciiOnly === true && hasNonASCII(messageObj.message))
-        ) {
-            $element.hide();
-        }
 
         const $modIcons = $element.find('.chat-line__mod-icons');
         if ($modIcons.length) {
