@@ -8,9 +8,9 @@ class HideExtensionsModule {
     constructor() {
         settings.add({
             id: 'hideExtensions',
-            name: 'Hide Extensions',
+            name: 'Hide Twitch Extensions',
             defaultValue: false,
-            description: 'Hides Twitch extensions that are displayed over the video player'
+            description: 'Hides the interactive overlays on top of Twitch\'s video player'
         });
         watcher.on('load.player', () => this.load());
     }
