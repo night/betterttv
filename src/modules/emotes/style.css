@@ -1,3 +1,11 @@
+.tw-tooltip-wrapper[data-a-target="emote-name"] .tw-tooltip {
+    text-align: center;
+}
+
+.bttv-flip img {
+    transform: scaleX(-1);
+}
+
 /* Prevent stacking of IceCube, SoSnowy */
 .bttv-emo-5849c9a4f52be01a7ee5f79d + .bttv-emo-5849c9a4f52be01a7ee5f79d,
 .bttv-emo-567b5b520e984428652809b6 + .bttv-emo-567b5b520e984428652809b6 {
@@ -5,31 +13,31 @@
 }
 
 /* Ice Cube */
-div[data-a-target="emote-name"] + span .bttv-emo-5849c9a4f52be01a7ee5f79d img,
-span.bttv-emote + .bttv-emo-5849c9a4f52be01a7ee5f79d img {
+div[data-a-target="emote-name"] + .bttv-emo-5849c9a4f52be01a7ee5f79d img,
+div[data-a-target="emote-name"] + .bttv-emo-5849c9a4f52be01a7ee5f79d img {
   margin-left: -33px;
 }
 
 /* SoSnowy */
-div[data-a-target="emote-name"] + span .bttv-emo-567b5b520e984428652809b6 img,
-span.bttv-emote + .bttv-emo-567b5b520e984428652809b6 img {
+div[data-a-target="emote-name"] + .bttv-emo-567b5b520e984428652809b6 img,
+div[data-a-target="emote-name"] + .bttv-emo-567b5b520e984428652809b6 img {
   margin-left: -32px;
 }
 
 /* SantaHat */
-div[data-a-target="emote-name"] + span .bttv-emo-58487cc6f52be01a7ee5f205 img,
-span.bttv-emote + .bttv-emo-58487cc6f52be01a7ee5f205 img {
+div[data-a-target="emote-name"] + .bttv-emo-58487cc6f52be01a7ee5f205 img,
+div[data-a-target="emote-name"] + .bttv-emo-58487cc6f52be01a7ee5f205 img {
   margin-left: -34px;
   margin-top: -18px;
 }
 
 /* TopHat, CandyCane, ReinDeer */
-div[data-a-target="emote-name"] + span .bttv-emo-5849c9c8f52be01a7ee5f79e img,
-span.bttv-emote + .bttv-emo-5849c9c8f52be01a7ee5f79e img,
-div[data-a-target="emote-name"] + span .bttv-emo-567b5c080e984428652809ba img,
-span.bttv-emote + .bttv-emo-567b5c080e984428652809ba img,
-div[data-a-target="emote-name"] + span .bttv-emo-567b5dc00e984428652809bd img,
-span.bttv-emote + .bttv-emo-567b5dc00e984428652809bd img {
+div[data-a-target="emote-name"] + .bttv-emo-5849c9c8f52be01a7ee5f79e img,
+div[data-a-target="emote-name"] + .bttv-emo-5849c9c8f52be01a7ee5f79e img,
+div[data-a-target="emote-name"] + .bttv-emo-567b5c080e984428652809ba img,
+div[data-a-target="emote-name"] + .bttv-emo-567b5c080e984428652809ba img,
+div[data-a-target="emote-name"] + .bttv-emo-567b5dc00e984428652809bd img,
+div[data-a-target="emote-name"] + .bttv-emo-567b5dc00e984428652809bd img {
   margin-left: -31px;
   margin-top: -18px;
 }
