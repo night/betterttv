@@ -197,7 +197,7 @@ class ChatModule {
             let mutate = modified;
             if (parts[parts.length - 1] === MIRROR_FLAG && $(nextNode).hasClass('chat-image__placeholder')) {
                 // next node is a twitch emote, mirror it
-                $(nextNode).parent().addClass('bttv-emote-mirror');
+                $(nextNode).parent().addClass('bttv-flip');
                 mutate = true;
                 // remove mirrorring character
                 parts.pop();

@@ -34,6 +34,6 @@ span.bttv-emote + .bttv-emo-567b5dc00e984428652809bd img {
   margin-top: -18px;
 }
 
-.bttv-emote-mirror > img {
+.bttv-flip > img {
     transform: scaleX(-1);
 }
