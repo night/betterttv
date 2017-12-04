@@ -32,10 +32,21 @@
         transform: rotate(-90deg);
     }
 
+    /* Friend Hover Balloon */
+    .user-card-layer__balloon {
+        left: calc(100% - 65rem) !important;
+
+        .tw-balloon__tail {
+            margin: 0 -3px 0 0;
+            left: unset;
+            right: 0;
+        }
+    }
+
     /* Theatre Mode */
-    .channel-page__video-player--theatre-mode {
+    .persistent-player--theatre {
+        left: auto !important;
         right: 0;
-        left: unset;
     }
 
     .right-column--theatre {
