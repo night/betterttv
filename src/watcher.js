@@ -113,6 +113,7 @@ class Watcher extends SafeEventEmitter {
         this.chatObserver();
         this.vodChatObserver();
         this.routeObserver();
+        this.tmiObserver();
 
         debug.log('Watcher started');
     }
@@ -265,6 +266,37 @@ class Watcher extends SafeEventEmitter {
 
         this.on('load.chat', updateChannel);
         this.on('load.vod', updateChannel);
+    }
+
+    tmiObserver() {
+        const PATCHED_SENTINEL = () => {};
+        let twitchConsumeEvent;
+        const watcher = this;
+        function bttvConsumeEvent(event) {
+            let prevent = false;
+            event.preventDefault = () => {
+                prevent = true;
+            };
+
+            watcher.emit('tmi.message', event);
+            if (prevent) {
+                return;
+            }
+            return twitchConsumeEvent.call(this, event);
+        }
+
+        watcher.on('load.chat', () => {
+            const chatBuffer = twitch.getChatController().chatBuffer;
+            if (!chatBuffer) {
+                return;
+            }
+            const newTwitchConsumeEvent = chatBuffer.consumeChatEvent;
+            // check if already monkey patched
+            if (newTwitchConsumeEvent === bttvConsumeEvent || chatBuffer._bttvConsumeEventPatched) return;
+            chatBuffer.consumeChatEvent = bttvConsumeEvent;
+            chatBuffer._bttvConsumeEventPatched = PATCHED_SENTINEL;
+            twitchConsumeEvent = newTwitchConsumeEvent;
+        });
     }
 }
 

@@ -1,10 +1,10 @@
 const $ = require('jquery');
 const watcher = require('../../watcher');
 const colors = require('../../utils/colors');
+const debug = require('../../utils/debug');
 const twitch = require('../../utils/twitch');
 const api = require('../../utils/api');
 const cdn = require('../../utils/cdn');
-const html = require('../../utils/html');
 const settings = require('../../settings');
 const emotes = require('../emotes');
 const nicknames = require('../chat_nicknames');
@@ -12,9 +12,15 @@ const channelEmotesTip = require('../channel_emotes_tip');
 const legacySubscribers = require('../legacy_subscribers');
 
 const EMOTE_STRIP_SYMBOLS_REGEX = /(^[~!@#$%\^&\*\(\)]+|[~!@#$%\^&\*\(\)]+$)/g;
-const MENTION_REGEX = /^@([a-zA-Z\d_]+)$/;
-const EMOTES_TO_CAP = ['567b5b520e984428652809b6'];
-const MAX_EMOTES_WHEN_CAPPED = 10;
+
+const MessagePartType = {
+    TEXT: 0,
+    MENTION: 1,
+    LINK: 2,
+    EMOTE: 3,
+    CLIP: 4
+};
+
 
 const badgeTemplate = (url, description) => `
     <div class="tw-tooltip-wrapper inline">
@@ -22,8 +28,6 @@ const badgeTemplate = (url, description) => `
         <div class="tw-tooltip tw-tooltip--up tw-tooltip--align-left" data-a-target="tw-tooltip-label" style="margin-bottom: 0.9rem;">${description}</div>
     </div>
 `;
-
-const mentionTemplate = name => `<span class="mentioning">@${html.escape(name)}</span>`;
 
 function formatChatUser({user, badges}) {
     return {
@@ -63,9 +67,18 @@ function replaceTwitchEmoticonTooltip(currentChannel, $emote) {
 
 class ChatModule {
     constructor() {
+        window.chatModule = this;
+        window.watcher = watcher;
+        window.twitch = twitch;
+
         watcher.on('chat.message', ($element, message) => this.messageParser($element, message));
         watcher.on('channel.updated', ({bots}) => {
             channelBots = bots;
+        });
+        watcher.on('tmi.message', event => {
+            if (event.type === twitch.TMIActionTypes.POST) {
+                this.handleMessage(event);
+            }
         });
 
         api.get('badges').then(({types, badges}) => {
@@ -118,75 +131,17 @@ class ChatModule {
         modsOnly = enabled;
     }
 
-    messageReplacer($message, user) {
-        const currentChannel = twitch.getCurrentChannel();
-        const tokens = $message.contents();
-        let cappedEmoteCount = 0;
-        for (let i = 0; i < tokens.length; i++) {
-            const node = tokens[i];
-            let $emote;
-            // non-chat renders have a wrapper element
-            if (node.nodeType === window.Node.ELEMENT_NODE && node.classList.contains('tw-tooltip-wrapper')) {
-                const $emoteTooltip = $(node);
-                $emote = $emoteTooltip.find('.chat-line__message--emote');
-                if ($emote.length) {
-                    replaceTwitchEmoticonTooltip(currentChannel, $emote);
-                    continue;
-                }
-            }
-            // chat doesn't have a wrapper element, so we grab all the inner elements
-            if (node.nodeType === window.Node.ELEMENT_NODE && node.classList.contains('chat-line__message--emote')) {
-                $emote = $(node);
-                replaceTwitchEmoticonTooltip(currentChannel, $emote);
-                continue;
-            }
-            let data;
-            if (node.nodeType === window.Node.ELEMENT_NODE && node.nodeName === 'SPAN') {
-                data = $(node).text();
-            } else if (node.nodeType === window.Node.TEXT_NODE) {
-                data = node.data;
-            } else {
-                continue;
-            }
-
-            const parts = data.split(' ');
-            let modified = false;
-            for (let j = 0; j < parts.length; j++) {
-                const part = parts[j];
-                if (!part || typeof part !== 'string') {
-                    continue;
-                }
-
-                const mention = part.match(MENTION_REGEX);
-                if (part.length > 2 && part.charAt(0) === '@' && mention && mention[1]) {
-                    parts[j] = mentionTemplate(mention[1]);
-                    modified = true;
-                    continue;
-                }
-
-                const emote = emotes.getEligibleEmote(part, user) || emotes.getEligibleEmote(part.replace(EMOTE_STRIP_SYMBOLS_REGEX, ''), user);
-                if (emote) {
-                    parts[j] = (EMOTES_TO_CAP.includes(emote.id) && ++cappedEmoteCount > MAX_EMOTES_WHEN_CAPPED) ? '' : emote.toHTML();
-                    modified = true;
-                    continue;
-                }
-
-                // escape all non-emotes since html strings would be rendered as html
-                parts[j] = html.escape(parts[j]);
-            }
-
-            if (modified) {
-                // TODO: find a better way to do this (this seems most performant tho, only a single mutation vs multiple)
-                const span = document.createElement('span');
-                span.innerHTML = parts.join(' ');
-                node.parentNode.replaceChild(span, node);
-            }
-        }
-    }
-
     messageParser($element, messageObj) {
         const user = formatChatUser(messageObj);
         if (!user) return;
+
+        if (
+            (modsOnly === true && !user.mod) ||
+            (subsOnly === true && !user.subscriber) ||
+            (asciiOnly === true && hasNonASCII(messageObj.message))
+        ) {
+            $element.hide();
+        }
 
         const color = this.calculateColor(user.color);
         const $from = $element.find('.chat-author__display-name,.chat-author__intl-login');
@@ -209,16 +164,6 @@ class ChatModule {
             $element.css('color', color);
         }
 
-        const $message = $element.find('span[data-a-target="chat-message-text"],div.tw-tooltip-wrapper');
-
-        if (
-            (modsOnly === true && !user.mod) ||
-            (subsOnly === true && !user.subscriber) ||
-            (asciiOnly === true && hasNonASCII(messageObj.message))
-        ) {
-            $element.hide();
-        }
-
         const $modIcons = $element.find('.chat-line__mod-icons');
         if ($modIcons.length) {
             const userIsOwner = twitch.getUserIsOwnerFromTagsBadges(user.badges);
@@ -229,7 +174,106 @@ class ChatModule {
             }
         }
 
-        this.messageReplacer($message, user);
+        this.messageReplacer($element, user, messageObj);
+    }
+
+    messageReplacer($element, user, messageObj) {
+        const elements = Array.from($element.children()).slice(3);
+        const { messageParts } = messageObj;
+
+        if (messageParts.length !== elements.length) {
+            debug.error('Html elements don\'t match messageParts object');
+            return;
+        }
+        const currentChannel = twitch.getCurrentChannel();
+
+        for (let i = 0; i < messageParts.length; i++) {
+            const part = messageParts[i];
+            const $el = $(elements[i]);
+
+            if (part.type === 3 && $el.find('img').length) {
+                const $emote = $el.find('.chat-line__message--emote');
+                if ($emote.length) {
+                    replaceTwitchEmoticonTooltip(currentChannel, $emote);
+
+                    const emote = part._emote ? part._emote : emotes.getEligibleEmote($emote.attr('alt'), user);
+                    if (!emote) {
+                        continue;
+                    }
+                    $el.addClass('bttv-emote');
+                    $el.addClass(emote.providerClass());
+                    $el.addClass(emote.idClass());
+
+                    const $twitchTooltip = $el.find('.tw-tooltip');
+                    $twitchTooltip.html(emote.balloon());
+                }
+            }
+        }
+    }
+
+    handleMessage(messageObj) {
+        const user = formatChatUser(messageObj);
+        const { messageParts } = messageObj;
+
+        const newMessageParts = [];
+        messageObj.messageParts = newMessageParts;
+        for (let i = 0; i < messageParts.length; i++) {
+            const messagePart = messageParts[i];
+
+            switch (messagePart.type) {
+                case MessagePartType.TEXT:
+                    newMessageParts.push(
+                        ...this.parseText(user, messagePart.content.trim())
+                    );
+                    break;
+                default:
+                    newMessageParts.push(messagePart);
+            }
+        }
+    }
+
+    parseText(user, text) {
+        const newText = [];
+        const parts = text.split(' ');
+        const newParts = [];
+
+        for (let j = 0; j < parts.length; j++) {
+            const part = parts[j];
+            const emote = emotes.getEligibleEmote(part, user)
+                || emotes.getEligibleEmote(part.replace(EMOTE_STRIP_SYMBOLS_REGEX, ''), user);
+            if (emote) {
+                const newEmote = {
+                    alt: emote.code,
+                    style: 'test',
+                    images: {
+                        sources: emote.images,
+                        themed: false
+                    },
+                    _emote: emote
+                };
+                if (newText.length) {
+                    newParts.push({
+                        type: MessagePartType.TEXT,
+                        content: ' ' + newText.join(' ') + ' '
+                    });
+                    newText.length = 0;
+                }
+                newParts.push({
+                    type: MessagePartType.EMOTE,
+                    content: newEmote
+                });
+            } else {
+                newText.push(part);
+                if (j === parts.length - 1) {
+                    newParts.push({
+                        type: MessagePartType.TEXT,
+                        content: ' ' + newText.join(' ') + ' '
+                    });
+                }
+            }
+        }
+
+        return newParts;
     }
 }
 
