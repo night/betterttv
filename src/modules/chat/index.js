@@ -12,7 +12,7 @@ const channelEmotesTip = require('../channel_emotes_tip');
 const legacySubscribers = require('../legacy_subscribers');
 
 const EMOTE_STRIP_SYMBOLS_REGEX = /(^[~!@#$%\^&\*\(\)]+|[~!@#$%\^&\*\(\)]+$)/g;
-
+const MIRROR_FLAG = 'Flip';
 const MessagePartType = {
     TEXT: 0,
     MENTION: 1,
@@ -67,10 +67,6 @@ function replaceTwitchEmoticonTooltip(currentChannel, $emote) {
 
 class ChatModule {
     constructor() {
-        window.chatModule = this;
-        window.watcher = watcher;
-        window.twitch = twitch;
-
         watcher.on('chat.message', ($element, message) => this.messageParser($element, message));
         watcher.on('channel.updated', ({bots}) => {
             channelBots = bots;
@@ -191,12 +187,15 @@ class ChatModule {
             const part = messageParts[i];
             const $el = $(elements[i]);
 
-            if (part.type === 3 && $el.find('img').length) {
+            if (part.type === MessagePartType.EMOTE && $el.find('img').length) {
+                if (part.content._flip) {
+                    $el.addClass('bttv-flip');
+                }
                 const $emote = $el.find('.chat-line__message--emote');
                 if ($emote.length) {
                     replaceTwitchEmoticonTooltip(currentChannel, $emote);
 
-                    const emote = part._emote ? part._emote : emotes.getEligibleEmote($emote.attr('alt'), user);
+                    const emote = part.content._emote ? part.content._emote : emotes.getEligibleEmote($emote.attr('alt'), user);
                     if (!emote) {
                         continue;
                     }
@@ -226,6 +225,20 @@ class ChatModule {
                         ...this.parseText(user, messagePart.content.trim())
                     );
                     break;
+                case MessagePartType.EMOTE:
+                    // figure out if previous part is a text ending by the Mirror flag
+                    const previousPart = newMessageParts[newMessageParts.length - 1];
+                    if (previousPart && previousPart.type === MessagePartType.TEXT) {
+                        const tokens = previousPart.content.trim().split(' ');
+                        const lastToken = tokens.pop();
+                        if (lastToken === MIRROR_FLAG) {
+                            // flip current emote and remove mirror flag from previous text
+                            messagePart.content._flip = true;
+                            previousPart.content = ' ' + tokens.join(' ') + ' ';
+                        }
+                    }
+                    newMessageParts.push(messagePart);
+                    break;
                 default:
                     newMessageParts.push(messagePart);
             }
@@ -237,21 +250,29 @@ class ChatModule {
         const parts = text.split(' ');
         const newParts = [];
 
+        let flipNextEmote = false;
         for (let j = 0; j < parts.length; j++) {
             const part = parts[j];
             const emote = emotes.getEligibleEmote(part, user)
                 || emotes.getEligibleEmote(part.replace(EMOTE_STRIP_SYMBOLS_REGEX, ''), user);
+            const flipCurrentEmote = flipNextEmote;
+            flipNextEmote = part === MIRROR_FLAG;
+
             if (emote) {
                 const newEmote = {
                     alt: emote.code,
-                    style: 'test',
                     images: {
                         sources: emote.images,
                         themed: false
                     },
+                    _flip: flipCurrentEmote,
                     _emote: emote
                 };
                 if (newText.length) {
+                    if (flipCurrentEmote) {
+                        // the text part before the emote must be removed
+                        newText.pop();
+                    }
                     newParts.push({
                         type: MessagePartType.TEXT,
                         content: ' ' + newText.join(' ') + ' '

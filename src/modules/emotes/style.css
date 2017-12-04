@@ -2,6 +2,10 @@
     text-align: center;
 }
 
+.bttv-flip img {
+    transform: scaleX(-1);
+}
+
 /* Prevent stacking of IceCube, SoSnowy */
 .bttv-emo-5849c9a4f52be01a7ee5f79d + .bttv-emo-5849c9a4f52be01a7ee5f79d,
 .bttv-emo-567b5b520e984428652809b6 + .bttv-emo-567b5b520e984428652809b6 {
