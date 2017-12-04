@@ -29,6 +29,7 @@ class GlobalCSSModule {
 
         this.loadTwitchThemeObserver();
         this.setTwitchTheme(settings.get('darkenedMode'));
+        this.dismissPinnedCheers();
     }
 
     setTwitchTheme(value) {
@@ -76,6 +77,14 @@ class GlobalCSSModule {
             'position': 'relative'
         });
         $('.top-nav__home-link').append($watermark);
+    }
+
+    dismissPinnedCheers() {
+        $('body').on('click', '.pinned-cheer', e => {
+            if (!e.target.classList.contains('align-items-center')) return;
+            if (e.offsetX < e.target.offsetWidth - 50 || e.offsetY > 26) return;
+            $('.pinned-cheer').hide();
+        });
     }
 }
 
