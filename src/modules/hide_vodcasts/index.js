@@ -3,7 +3,7 @@ const settings = require('../../settings');
 const watcher = require('../../watcher');
 
 const VODCAST_SELECTOR = '.live-channel-card .tw-pill';
-const CARD_SELECTOR = '.live-channel-card';
+const CARD_CONTAINER = '.mg-b-2';
 
 class HideVodcastsModule {
     constructor() {
@@ -13,19 +13,22 @@ class HideVodcastsModule {
             defaultValue: false,
             description: 'Hide Vodcasts from directory listings'
         });
-        settings.on('changed.hideVodcasts', value => value === true ? this.hide() : this.show());
+        settings.on('changed.hideVodcasts', value => value === true ? this.hide(undefined) : this.show());
 
-        watcher.on('directory.vodcast', () => this.hide());
-        watcher.on('load.directory.following', () => this.hide());
+        watcher.on('directory.vodcast', vodCast => this.hide(vodCast));
     }
 
-    hide() {
+    hide(vodCast) {
         if (settings.get('hideVodcasts') === false) return;
-        $(VODCAST_SELECTOR).closest(CARD_SELECTOR).parent(':visible').hide();
+        if (vodCast === undefined) {
+            $(VODCAST_SELECTOR).closest(CARD_CONTAINER).hide();
+        } else {
+            $(vodCast).closest(CARD_CONTAINER).hide();
+        }
     }
 
     show() {
-        $(VODCAST_SELECTOR).closest(CARD_SELECTOR).parent(':hidden').show();
+        $(VODCAST_SELECTOR).closest(CARD_CONTAINER).show();
     }
 }
 

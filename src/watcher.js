@@ -16,7 +16,6 @@ let channel = {};
 
 const loadPredicates = {
     following: () => !!$('.following__header-tabs').length,
-    followingLive: () => !!$('.following__header-tabs').length,
     channel: () => {
         const href = $('.channel-header__user').attr('href');
         return !!href && href !== '/undefined';
@@ -167,7 +166,7 @@ class Watcher extends SafeEventEmitter {
                     this.waitForLoad('following').then(() => this.emit('load.directory.following'));
                     break;
                 case routes.DIRECTORY_FOLLOWING_LIVE:
-                    this.waitForLoad('followingLive').then(() => this.emit('load.directory.following.live'));
+                    this.waitForLoad('following').then(() => this.emit('load.directory.following.live'));
                     break;
                 case routes.CHAT:
                     this.waitForLoad('chat').then(() => this.emit('load.chat'));
@@ -321,13 +320,20 @@ class Watcher extends SafeEventEmitter {
                     const $vodCasts = $el.find('.tw-pill');
 
                     if ($vodCasts.length > 0) {
-                        this.emit('directory.vodcast', $vodCasts);
+                        for (const vodCast of $vodCasts) {
+                            this.emit('directory.vodcast', $(vodCast));
+                        }
                     }
                 }
             })
         );
-        this.on('load.directory.following', () => observe(directoryWatcher, $('main .scrollable-area .pd-3')[0]));
-        this.on('load.directory.following.live', () => observe(directoryWatcher, $('main .scrollable-area .pd-3')[0]));
+
+        const observeDirectory = () => {
+            observe(directoryWatcher, $('main .scrollable-area .pd-3')[0]);
+        };
+
+        this.on('load.directory.following', observeDirectory);
+        this.on('load.directory.following.live', observeDirectory);
     }
 }
 
