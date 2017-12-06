@@ -1,60 +1,89 @@
-const $ = require('jquery');
+// const $ = require('jquery');
 const emotes = require('../emotes');
 const twitch = require('../../utils/twitch');
-const debounce = require('lodash.debounce');
+// const watcher = require('../../watcher');
+// const debounce = require('lodash.debounce');
 
 const BTTV_EMOTES_STORE_ID = 'bttv-emotes';
-const CHAT_INPUT = '.chat-input';
+// const BTTV_EMOTES_STORE_ID = '1';
+// const CHAT_INPUT = '.chat-input';
+
+function esca(str) {
+    return str.replace(/\(/g, '\\(')
+        .replace(/\)/g, '\\)')
+        .replace(/\'/g, "\\'");
+}
 
 function bttvEmToTwitch(bttvEm) {
     return {
         displayName: bttvEm.code,
         srcSet: Object.values(bttvEm.images).join(', '),
         id: `${bttvEm.id}`,
-        token: bttvEm.code,
+        token: esca(bttvEm.code),
         __typename: 'Emote'
     };
 }
 
-function getBttvEmotesAsTwitchEmotes() {
-    return emotes.getEmotes()
-        .filter(em => !em.code.startsWith(':')) // emojis or any emote using special char break the chat.
+window.emotes = emotes;
+window.twitch = twitch;
+
+function getBttvEmotesAsTwitchEmotes(emoteGetter) {
+    // const idSet = new Set();
+    // const codeSet = new Set();
+    return emoteGetter()
+        // .filter(em => isASCII(em.code))
+        // .filter(em => {
+        //     if (!idSet.has('' + em.id) || !codeSet.has(em.code)) {
+        //         idSet.add('' + em.id);
+        //         codeSet.add(em.code);
+        //         return true;
+        //     }
+        //     return false;
+        // })
+        // .filter(em => !em.code.startsWith(':')) // emojis or any emote using special char break the chat.
         .map(bttvEmToTwitch);
-}
-
-function getParentNode(reactElement) {
-    try {
-        return reactElement._owner._currentElement._owner;
-    } catch (_) {
-        return null;
-    }
-}
-
-function getChatInputController() {
-    const container = document.querySelector(CHAT_INPUT);
-    if (!container) return null;
-    let controller;
-    try {
-        controller = getParentNode(twitch.getReactElement(container))._instance;
-    } catch (_) {}
-
-    return controller;
 }
 
 class ChatEmotesSuggestion {
     constructor() {
-        const debounceLoadEmotes = debounce(() => this.loadEmotes(), 500, { leading: true, trailing: false });
-        $('body').on('keydown', CHAT_INPUT, () => {
-            debounceLoadEmotes();
-        });
+        // const debounceLoadEmotes = debounce(() => this.loadEmotes(), 500, { leading: true, trailing: false });
+        // $('body').on('keydown', CHAT_INPUT, () => {
+        //     debounceLoadEmotes();
+        // });
+        window.AAA = this;
+        // let timeout;
+        // const checkForEmotes = () => {
+        //     clearTimeout(timeout);
+        //     const nb = this.applyNewStore();
+        //     console.log('UPT');
+        //     if (!nb) {
+        //         timeout = setTimeout(() => {
+        //             checkForEmotes();
+        //         }, 500);
+        //     }
+        // };
+        // watcher.on('emotes.updated', () => checkForEmotes());
+
+        // watcher.on('load.chat', () => {
+        //     const x = twitch.getChatController().updateEmoteSets;
+        //     twitch.getChatController().updateEmoteSets = function(e) {
+        //         console.log('EEE', e);
+        //         window.EEE = e;
+        //         return x.apply(this, arguments);
+        //     };
+        // });
+
+        setInterval(() => {
+            this.applyNewStore();
+        }, 500);
     }
 
     validateEmoteStore() {
-        const controller = getChatInputController();
+        const controller = twitch.getChatController();
         if (!controller) return;
-        if (!controller.props || !controller.props.emotes) return;
+        if (!controller.props || !controller.props.emoteSets) return;
 
-        const emotesStore = controller.props.emotes;
+        const emotesStore = controller.props.emoteSets;
         if (!(emotesStore instanceof Array) || emotesStore.length === 0) return;
 
         const twitchEmotes = emotesStore[0];
@@ -64,21 +93,41 @@ class ChatEmotesSuggestion {
         return true;
     }
 
-    loadEmotes() {
-        if (!this.validateEmoteStore()) return;
-        const controller = getChatInputController();
-        const emotesFormatted = getBttvEmotesAsTwitchEmotes();
-        const emotesEntry = Object.values(controller.props.emotes)
-            .find(v => v.id === BTTV_EMOTES_STORE_ID);
+    emotes() {
+        return getBttvEmotesAsTwitchEmotes(() => emotes.getEmotes()); // ['bttv-emoji']
+    }
 
-        if (emotesEntry) {
-            emotesEntry.emotes = emotesFormatted;
-        } else {
-            controller.props.emotes.push({
-                id: BTTV_EMOTES_STORE_ID,
-                emotes: emotesFormatted
-            });
+    cloneTwitchEmotes() {
+        const emoteStore = twitch.getConnectRoot()._context.store.getState().chat.emoteSets;
+        const myStore = [];
+        for (const entry of emoteStore) {
+            if (entry.id === BTTV_EMOTES_STORE_ID) continue;
+            const myEntry = { id: entry.id, emotes: []};
+            myStore.push(myEntry);
+            for (const em of entry.emotes) {
+                myEntry.emotes.push(em);
+            }
         }
+        return myStore;
+    }
+
+    createNewStore() {
+        const st = this.cloneTwitchEmotes();
+        const bttvEmotes = this.emotes();
+        st.push({
+            id: BTTV_EMOTES_STORE_ID,
+            emotes: bttvEmotes
+        });
+        return [st, bttvEmotes];
+    }
+
+    applyNewStore() {
+        if (!this.validateEmoteStore()) return;
+        const [st, bttvEmotes] = this.createNewStore();
+        twitch.getChatController().props.emoteSets = st;
+        console.log('store updated');
+        return bttvEmotes.length;
+        // twitch.getConnectRoot()._context.store.getState().chat.emoteSets = st;
     }
 }
 
