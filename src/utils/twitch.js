@@ -25,18 +25,19 @@ const TMIActionTypes = {
     UNHOST: 13,
     SUBSCRIPTION: 14,
     RESUBSCRIPTION: 15,
-    CLEAR_CHAT: 16,
-    SUBSCRIBER_ONLY_MODE: 17,
-    FOLLOWERS_ONLY_MODE: 18,
-    SLOW_MODE: 19,
-    ROOM_MODS: 20,
-    ROOM_STATE: 21,
-    RAID: 22,
-    UNRAID: 23,
-    NOTICE: 24,
-    INFO: 25,
-    BADGES_UPDATED: 26,
-    PURCHASE: 27
+    SUBGIFT: 16,
+    CLEAR_CHAT: 17,
+    SUBSCRIBER_ONLY_MODE: 18,
+    FOLLOWERS_ONLY_MODE: 19,
+    SLOW_MODE: 20,
+    ROOM_MODS: 21,
+    ROOM_STATE: 22,
+    RAID: 23,
+    UNRAID: 24,
+    NOTICE: 25,
+    INFO: 26,
+    BADGES_UPDATED: 27,
+    PURCHASE: 28
 };
 
 function getReactInstance(element) {
