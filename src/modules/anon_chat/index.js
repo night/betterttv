@@ -2,8 +2,15 @@ const settings = require('../../settings');
 const watcher = require('../../watcher');
 const twitch = require('../../utils/twitch');
 
-let ignoreNextDC = false;
 const forcedURL = window.location.search.includes('bttv_anon_chat=true');
+
+function getConnectionClient() {
+    let client;
+    try {
+        client = twitch.getChatController().chatService.client;
+    } catch (_) {}
+    return client;
+}
 
 class AnonChatModule {
     constructor() {
@@ -16,19 +23,18 @@ class AnonChatModule {
 
         this.enabled = false;
         watcher.on('load.chat', () => this.load());
-        watcher.on('chat.message', ($el, msgObj) => this.onMessage($el, msgObj));
         settings.on('changed.anonChat', () => this.load(true));
     }
 
     changeUser(username, message) {
-        const tmiClient = twitch.getTmiClient();
-        if (!tmiClient) return;
+        const client = getConnectionClient();
+        if (!client) return;
 
-        const socket = tmiClient.connection.ws;
-        if (!socket || tmiClient.configuration.username === username) return;
+        const socket = client.connection.ws;
+        if (!socket || client.configuration.username === username) return;
 
-        ignoreNextDC = true;
-        tmiClient.configuration.username = username;
+        // ignoreNextDC = true;
+        client.configuration.username = username;
         twitch.sendChatAdminMessage(`BetterTTV: [Anon Chat] ${message}`);
         socket.send('QUIT');
     }
@@ -51,13 +57,6 @@ class AnonChatModule {
             this.part();
         } else if (force) {
             this.join();
-        }
-    }
-
-    onMessage($el, { message }) {
-        if (ignoreNextDC && message.includes('unable to connect to chat')) {
-            ignoreNextDC = false;
-            $el.hide();
         }
     }
 

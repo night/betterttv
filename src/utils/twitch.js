@@ -202,14 +202,6 @@ module.exports = {
         return controller;
     },
 
-    getTmiClient() {
-        let client;
-        try {
-            client = this.getChatController().chatService.client;
-        } catch (_) {}
-        return client;
-    },
-
     getChatScroller() {
         const list = $(CHAT_LIST)[0];
         if (!list) return null;

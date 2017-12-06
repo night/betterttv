@@ -2,13 +2,11 @@ const $ = require('jquery');
 const moment = require('moment');
 const twitch = require('../../utils/twitch');
 const twitchAPI = require('../../utils/twitch-api');
-const tmiAPI = require('../../utils/tmi-api');
 const chat = require('../chat');
 const anonChat = require('../anon_chat');
 
 const HELP_TEXT = `BetterTTV Chat Commands:
 /b — Shortcut for /ban
-/chatters — Retrieves the number of chatters in the chat
 /followed — Tells you for how long you have been following a channel
 /follows — Retrieves the number of followers for the channel
 /join & /part — Temporarily join/part chat (anon chat)
@@ -16,7 +14,6 @@ const HELP_TEXT = `BetterTTV Chat Commands:
 /localasciioff — Turns off local ascii-only mode
 /localmod — Turns on local mod-only mode (only your chat is mod-only mode)
 /localmodoff — Turns off local mod-only mode
-/localunpin — Removes pinned cheer locally
 /localsub — Turns on local sub-only mode (only your chat is sub-only mode)
 /localsuboff — Turns off local sub-only mode
 /massunban (or /unban all or /u all) — Unbans all users in the channel (channel owner only)
@@ -171,11 +168,6 @@ function handleCommands(message) {
             command === 'join' ? anonChat.join() : anonChat.part();
             break;
 
-        // info
-        case 'chatters':
-            tmiAPI.getChatterCount(channel.name)
-                .then(chatterCount => twitch.sendChatAdminMessage(`Current Chatters: ${chatterCount.toLocaleString()}`));
-            break;
         case 'followed':
             const currentUser = twitch.getCurrentUser();
             if (!currentUser) break;
@@ -212,11 +204,6 @@ function handleCommands(message) {
                     twitch.sendChatAdminMessage(`Current Uptime: ${secondsToLength(secondsSince)}`);
                 })
                 .catch(() => twitch.sendChatAdminMessage('Could not fetch stream.'));
-            break;
-
-        // misc
-        case 'localunpin':
-            chat.dismissPinnedCheer();
             break;
 
         case 'help':

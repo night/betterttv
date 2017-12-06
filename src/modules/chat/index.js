@@ -231,10 +231,6 @@ class ChatModule {
 
         this.messageReplacer($message, user);
     }
-
-    dismissPinnedCheer() {
-        console.warn('dismissPinnedCheer() is not implemented');
-    }
 }
 
 module.exports = new ChatModule();

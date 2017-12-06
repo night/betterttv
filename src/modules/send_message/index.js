@@ -4,9 +4,17 @@ const debug = require('../../utils/debug');
 
 const chatCommands = require('../chat_commands');
 const anonChat = require('../anon_chat');
-const socketClient = require('../../socket-client');
+const emojis = require('../emotes/emojis');
 
-const PATCHED_SENTINEL = () => {};
+const PATCHED_SENTINEL = Symbol('bttvPatched');
+
+function getConnectionClient() {
+    let client;
+    try {
+        client = twitch.getChatController().chatService.client;
+    } catch (_) {}
+    return client;
+}
 
 class SendState {
     constructor(msg) {
@@ -26,30 +34,31 @@ class SendState {
 
 let twitchSendMessage;
 const methodList = [
-    // msgObj => tabCompletion.onSendMessage(msgObj),
     msgObj => chatCommands.onSendMessage(msgObj),
-    msgObj => anonChat.onSendMessage(msgObj)
+    msgObj => anonChat.onSendMessage(msgObj),
+    msgObj => emojis.onSendMessage(msgObj)
 ];
 
-function bttvSendMessage(channelName, messageToSend) {
-    const channel = twitch.getCurrentChannel();
-    if (channel) {
-        socketClient.broadcastMe(channel.name);
-    }
+function bttvSendMessage() {
+    try {
+        const messageToSend = arguments[1];
+        if (!messageToSend) return;
 
-    const sendState = new SendState(messageToSend);
-
-    for (const method of methodList) {
-        try {
-            method(sendState);
-        } catch (e) {
-            debug.log(e);
+        const sendState = new SendState(messageToSend);
+        for (const method of methodList) {
+            try {
+                method(sendState);
+            } catch (e) {
+                debug.log(e);
+            }
         }
-    }
 
-    if (sendState.defaultPrevented) return;
-    messageToSend = sendState.message;
-    twitchSendMessage.call(this, channelName, messageToSend);
+        if (sendState.defaultPrevented) return;
+        arguments[1] = sendState.message;
+    } catch (error) {
+        debug.log(error);
+    }
+    twitchSendMessage.apply(this, arguments);
 }
 
 class SendMessagePatcher {
@@ -58,16 +67,13 @@ class SendMessagePatcher {
     }
 
     patch() {
-        const client = twitch.getTmiClient();
+        const client = getConnectionClient();
         if (!client) return;
-
-        const newTwitchSendMessage = client.sendCommand;
         // check if we've already monkeypatched
-        if (newTwitchSendMessage === bttvSendMessage || client._bttvSendMessagePatched) return;
-
-        client.sendCommand = bttvSendMessage;
+        if (client._bttvSendMessagePatched === PATCHED_SENTINEL) return;
         client._bttvSendMessagePatched = PATCHED_SENTINEL;
-        twitchSendMessage = newTwitchSendMessage;
+        twitchSendMessage = client.sendCommand;
+        client.sendCommand = bttvSendMessage;
     }
 }
 
