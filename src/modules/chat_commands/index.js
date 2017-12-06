@@ -24,8 +24,7 @@ const HELP_TEXT = `BetterTTV Chat Commands:
 /t — Shortcut for /timeout
 /u — Shortcut for /unban
 /uptime — Retrieves the amount of time the channel has been live
-/viewers — Retrieves the number of viewers watching the channel
-Native Chat Commands:`;
+/viewers — Retrieves the number of viewers watching the channel`;
 
 function secondsToLength(s) {
     const days = Math.floor(s / 86400);
@@ -47,6 +46,8 @@ function massUnban() {
         return;
     }
 
+    // some users can fail to be unbanned, so store unbanned names to prevent infinite loop
+    const unbannedChatters = [];
     let unbanCount = 0;
 
     function unbanChatters(users, callback) {
@@ -58,7 +59,7 @@ function massUnban() {
                 callback();
                 return;
             }
-
+            unbannedChatters.push(user);
             twitch.sendChatMessage(`/unban ${user}`);
         }, 333);
     }
@@ -73,7 +74,9 @@ function massUnban() {
             if ($chatterList.length) {
                 $chatterList.find('.ban .obj').each(function() {
                     const user = $(this).text().trim();
-                    if (users.indexOf(user) === -1) users.push(user);
+                    if (users.indexOf(user) === -1 && unbannedChatters.indexOf(user) === -1) {
+                        users.push(user);
+                    }
                 });
             }
 
@@ -127,7 +130,7 @@ function handleCommands(message) {
             return `/timeout ${messageParts.join(' ')}`;
         case 'u':
         case 'unban':
-            const user = messageParts.shift();
+            const user = messageParts.shift() || '';
             if (user !== 'all') {
                 return `/unban ${user}`;
             }
@@ -207,7 +210,19 @@ function handleCommands(message) {
             break;
 
         case 'help':
-            HELP_TEXT.split('\n').forEach(m => twitch.sendChatAdminMessage(m));
+
+            setTimeout(() => {
+                const helpLines = HELP_TEXT.split('\n');
+                const interval = setInterval(() => {
+                    const line = helpLines.shift();
+                    if (line) {
+                        twitch.sendChatAdminMessage(line);
+                    } else {
+                        clearInterval(interval);
+                    }
+                }, 25);
+            }, 500);
+
             return true;
         default:
             return true;
