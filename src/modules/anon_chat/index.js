@@ -23,7 +23,7 @@ class AnonChatModule {
 
         this.enabled = false;
         watcher.on('load.chat', () => this.load());
-        settings.on('changed.anonChat', () => this.load(true));
+        settings.on('changed.anonChat', () => this.load());
     }
 
     changeUser(username, message) {
@@ -52,10 +52,11 @@ class AnonChatModule {
         this.enabled = false;
     }
 
-    load(force = false) {
+    load() {
+        this.enabled = false;
         if (forcedURL || settings.get('anonChat')) {
             this.part();
-        } else if (force) {
+        } else {
             this.join();
         }
     }
