@@ -35,7 +35,7 @@ module.exports = class Emote {
 
         return `
             <div class="tw-tooltip-wrapper inline bttv-emote ${providerClass} ${idClass}">
-                <img src="${html.escape(this.images['1x'])}" srcset="${srcset.join(', ')}" alt="${html.escape(this.code)}" class="chat-line__message--emote ${providerClass} ${idClass}">
+                <img src="${html.escape(this.images['1x'])}" srcset="${srcset.join(', ')}" alt="${html.escape(this.code)}" class="chat-line__message--emote">
                 <div class="tw-tooltip tw-tooltip--up tw-tooltip--align-center">${balloon}</div>
             </div>
         `;
