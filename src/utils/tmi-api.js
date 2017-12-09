@@ -20,17 +20,8 @@ function request(method, path, options = {}) {
     });
 }
 
-function get(path, options) {
-    return request('GET', path, options);
-}
-
-function getHostedChannel(userId) {
-    return get('/hosts', { qs: { include_logins: 1, host: userId }})
-        .then(data => data.hosts[0]);
-}
-
 module.exports = {
-    get,
-    getHostedChannel
+    get(path, options) {
+        return request('GET', path, options);
+    }
 };
-
