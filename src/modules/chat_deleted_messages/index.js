@@ -4,9 +4,11 @@ const twitch = require('../../utils/twitch');
 const settings = require('../../settings');
 
 const CHAT_LINE_SELECTOR = '.chat-line__message';
+const CHAT_LINE_LINK_SELECTOR = 'a.chat-line__message--link';
+const CHAT_LINE_CLIP_CARD_SELECTOR = '.chat-card__link';
 const CHAT_LINE_DELETED_CLASS = 'bttv-chat-line-deleted';
 
-function findAllUserMessages(userlogin) {
+function findAllUserMessages(name) {
     return Array.from(document.querySelectorAll(CHAT_LINE_SELECTOR)).filter(node => {
         const message = twitch.getChatMessageObject(node);
         if (!message) {
@@ -18,7 +20,7 @@ function findAllUserMessages(userlogin) {
         if (node.classList.contains(CHAT_LINE_DELETED_CLASS)) {
             return false;
         }
-        return message.user.userLogin === userlogin;
+        return message.user.userLogin === name;
     });
 }
 
@@ -42,7 +44,7 @@ class ChatDeletedMessagesModule {
         });
     }
 
-    handleBufferEvent({ event, preventDefault }) {
+    handleBufferEvent({event, preventDefault}) {
         if (event.type === twitch.TMIActionTypes.CLEAR_CHAT) {
             twitch.sendChatAdminMessage('Chat was cleared by a moderator (Prevented by BetterTTV)');
             preventDefault();
@@ -50,22 +52,40 @@ class ChatDeletedMessagesModule {
         if (event.type === twitch.TMIActionTypes.BAN || event.type === twitch.TMIActionTypes.TIMEOUT) {
             if (this.handleDelete(event.userLogin)) {
                 preventDefault();
+                // we still want to render moderation messages
+                const chatController = twitch.getChatController();
+                if (chatController) {
+                    chatController.chatBuffer.delayedMessageBuffer.push({
+                        event,
+                        time: Date.now(),
+                        shouldDelay: false
+                    });
+                }
+                // TODO: we need to handle delayed messages.. not sure of an elegant way yet
             }
         }
     }
 
-    handleDelete(userlogin) {
+    handleDelete(name) {
         const showDeletedMessages = settings.get('showDeletedMessages');
         const hideDeletedMessages = settings.get('hideDeletedMessages');
         if (!hideDeletedMessages && !showDeletedMessages) {
             return false;
         }
-        const messages = findAllUserMessages(userlogin);
-        messages.forEach(node => {
+        const messages = findAllUserMessages(name);
+        messages.forEach(message => {
+            const $message = $(message);
             if (hideDeletedMessages) {
-                $(node).hide();
+                $message.hide();
             } else if (showDeletedMessages) {
-                node.classList.add(CHAT_LINE_DELETED_CLASS);
+                $message.toggleClass(CHAT_LINE_DELETED_CLASS, true);
+                $message.find(CHAT_LINE_LINK_SELECTOR).each(function() {
+                    const $link = $(this);
+                    const $unlinked = $('<span />');
+                    $unlinked.text($link.attr('href'));
+                    $link.replaceWith($unlinked);
+                });
+                $message.find(CHAT_LINE_CLIP_CARD_SELECTOR).remove();
             }
         });
         return true;

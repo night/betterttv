@@ -4,8 +4,6 @@ const twitch = require('./utils/twitch');
 const SafeEventEmitter = require('./utils/safe-event-emitter');
 const $ = require('jquery');
 
-const chatBufferWatcher = require('./watchers/chat-buffer-watcher');
-
 let router;
 let currentPath = '';
 let chatWatcher;
@@ -115,7 +113,19 @@ class Watcher extends SafeEventEmitter {
         this.chatObserver();
         this.vodChatObserver();
         this.routeObserver();
-        chatBufferWatcher(this);
+
+        require('./watchers/*.js', {mode: (base, files) => {
+            return files.map(module => {
+                return `
+                    try {
+                        require('${module}');
+                    } catch (e) {
+                        Raven.captureException(e);
+                        debug.error('Failed to load watcher ${module}', e.stack);
+                    }
+                `;
+            }).join(' ');
+        }});
 
         debug.log('Watcher started');
     }
