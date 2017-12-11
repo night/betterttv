@@ -45,24 +45,27 @@ class ChatDeletedMessagesModule {
     }
 
     handleBufferEvent({event, preventDefault}) {
-        if (event.type === twitch.TMIActionTypes.CLEAR_CHAT) {
-            twitch.sendChatAdminMessage('Chat was cleared by a moderator (Prevented by BetterTTV)');
-            preventDefault();
-        }
-        if (event.type === twitch.TMIActionTypes.BAN || event.type === twitch.TMIActionTypes.TIMEOUT) {
-            if (this.handleDelete(event.userLogin)) {
+        switch (event.type) {
+            case twitch.TMIActionTypes.CLEAR_CHAT:
+                twitch.sendChatAdminMessage('Chat was cleared by a moderator (Prevented by BetterTTV)');
                 preventDefault();
-                // we still want to render moderation messages
-                const chatController = twitch.getChatController();
-                if (chatController) {
-                    chatController.chatBuffer.delayedMessageBuffer.push({
-                        event,
-                        time: Date.now(),
-                        shouldDelay: false
-                    });
+                break;
+            case twitch.TMIActionTypes.BAN:
+            case twitch.TMIActionTypes.TIMEOUT:
+                if (this.handleDelete(event.userLogin)) {
+                    preventDefault();
+                    // we still want to render moderation messages
+                    const chatController = twitch.getChatController();
+                    if (chatController) {
+                        chatController.chatBuffer.delayedMessageBuffer.push({
+                            event,
+                            time: Date.now(),
+                            shouldDelay: false
+                        });
+                    }
+                    // TODO: we need to handle delayed messages.. not sure of an elegant way yet
                 }
-                // TODO: we need to handle delayed messages.. not sure of an elegant way yet
-            }
+                break;
         }
     }
 
