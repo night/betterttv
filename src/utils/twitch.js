@@ -226,6 +226,14 @@ module.exports = {
         return controller;
     },
 
+    getCurrentTMISocket() {
+        let socket;
+        try {
+            socket = this.getChatController().chatService.client.connection.ws;
+        } catch (_) {}
+        return socket;
+    },
+
     getCurrentVodChat() {
         const container = $(VOD_CHAT_CONTAINER)[0];
         if (!container) return null;
