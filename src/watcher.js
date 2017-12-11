@@ -255,7 +255,7 @@ class Watcher extends SafeEventEmitter {
             const currentChannel = twitch.getCurrentChannel();
             if (!currentChannel) return;
 
-            if (currentChannel.name === channel.name) return;
+            if (currentChannel.id === channel.id) return;
             channel = currentChannel;
             api
                 .get(`channels/${channel.name}`)
