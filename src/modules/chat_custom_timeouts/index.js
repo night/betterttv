@@ -40,14 +40,16 @@ function handleTimeoutClick(e) {
 
     if ($customTimeout.is(':hover')) {
         let command;
+        let duration;
         if (action.type === ActionTypes.BAN) {
             command = '/ban';
         } else if (action.type === ActionTypes.TIMEOUT) {
             command = '/timeout';
+            duration = action.length;
         }
         if (command) {
             const reason = e.shiftKey ? setReason(action.type) : '';
-            twitch.sendChatMessage(`${command} ${user}${reason ? ` ${reason}` : ''}`);
+            twitch.sendChatMessage(`${command} ${user}${duration ? ` ${duration}` : ''}${reason ? ` ${reason}` : ''}`);
         }
     }
 
@@ -116,7 +118,7 @@ function openCustomTimeout($target) {
     });
 
     action = {
-        type: ACTION_TYPES.CANCEL,
+        type: ActionTypes.CANCEL,
         length: 0,
         text: 'CANCEL'
     };
