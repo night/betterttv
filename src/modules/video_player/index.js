@@ -40,7 +40,6 @@ function handlePlayerClick() {
 
 class VideoPlayerModule {
     constructor() {
-        this.toggleHidePlayerExtensions();
         this.keybinds();
         watcher.on('load.player', () => this.clickToPause());
         settings.add({
@@ -57,6 +56,7 @@ class VideoPlayerModule {
         });
         settings.on('changed.hidePlayerExtensions', () => this.toggleHidePlayerExtensions());
         settings.on('changed.clickToPlay', () => this.clickToPause());
+        this.toggleHidePlayerExtensions();
     }
 
     toggleHidePlayerExtensions() {
