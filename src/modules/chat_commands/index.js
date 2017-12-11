@@ -178,8 +178,8 @@ function handleCommands(message) {
             const currentUser = twitch.getCurrentUser();
             if (!currentUser) break;
             twitchAPI.get(`users/${currentUser.id}/follows/channels/${channel.id}`)
-                .then(({created_at}) => {
-                    const since = moment(created_at);
+                .then(({created_at: createdAt}) => {
+                    const since = moment(createdAt);
                     twitch.sendChatAdminMessage(`You followed ${channel.displayName} ${since.fromNow()} (${since.format('LLL')})`);
                 })
                 .catch(() => twitch.sendChatAdminMessage(`You do not follow ${channel.displayName}.`));
