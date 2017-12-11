@@ -21,7 +21,7 @@ const CUSTOM_TIMEOUT_TEMPLATE = `
         <div class="cursor"></div>
     </div>
 `;
-const ACTION_TYPES = {
+const ActionTypes = {
     CANCEL: 'cancel',
     TIMEOUT: 'timeout',
     BAN: 'ban'
@@ -31,21 +31,24 @@ let action;
 let user;
 
 function setReason(type) {
-    if (settings.get('customTimeoutReasons')) return '';
     const reason = prompt(`Enter ${type} reason: (leave blank for none)`);
-    return reason ? ` ${reason}` : '';
+    return reason || '';
 }
 
 function handleTimeoutClick(e) {
     const $customTimeout = $(`#${CUSTOM_TIMEOUT_ID}`);
-    if (!$customTimeout.length || e.which === keyCodes.DOMVKCancel || e.shiftKey) return;
+    if (!$customTimeout.length || e.which === keyCodes.DOMVKCancel) return;
 
     if ($customTimeout.is(':hover')) {
-        const reason = setReason(action.type);
-        if (action.type === ACTION_TYPES.BAN) {
-            twitch.sendChatMessage(`/ban ${user}${reason}`);
-        } else if (action.type === ACTION_TYPES.TIMEOUT) {
-            twitch.sendChatMessage(`/timeout ${user} ${action.length}${reason}`);
+        const reason = e.shiftKey ? setReason(action.type) : '';
+        let command;
+        if (action.type === ActionTypes.BAN) {
+            command = '/ban';
+        } else if (action.type === ActionTypes.TIMEOUT) {
+            command = '/timeout';
+        }
+        if (command) {
+            twitch.sendChatMessage(`${command} ${user}${reason ? ` ${reason}` : ''}`);
         }
     }
 
@@ -72,25 +75,25 @@ function handleMouseMove(e) {
 
     if (amount > 200 || amount < 0 || offsetx > 80 || offsetx < 0) {
         action = {
-            type: ACTION_TYPES.CANCEL,
+            type: ActionTypes.CANCEL,
             length: 0,
             text: 'CANCEL'
         };
     } else if (amount > 20 && amount < 180) {
         action = {
-            type: ACTION_TYPES.TIMEOUT,
+            type: ActionTypes.TIMEOUT,
             length: time,
             text: humanTime
         };
     } else if (amount >= 180 && amount < 200) {
         action = {
-            type: ACTION_TYPES.BAN,
+            type: ActionTypes.BAN,
             length: 0,
             text: 'BAN'
         };
     } else if (amount > 0 && amount <= 20) {
         action = {
-            type: ACTION_TYPES.TIMEOUT,
+            type: ActionTypes.TIMEOUT,
             length: 2,
             text: 'PURGE'
         };
@@ -137,13 +140,6 @@ function handleClick(e) {
 class ChatCustomTimeoutsModule {
     constructor() {
         watcher.on('load.chat', () => this.loadClickHandler());
-
-        settings.add({
-            id: 'customTimeoutReasons',
-            name: 'Custom Timeout Reasons',
-            defaultValue: false,
-            description: 'Prompts for a reason when banning or timing out using the rightclick menu'
-        });
     }
 
     loadClickHandler() {
