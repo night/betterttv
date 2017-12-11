@@ -53,8 +53,8 @@ class HostButtonModule {
         const command = hosting ? 'unhost' : 'host';
         try {
             const channelName = twitch.getCurrentChannel().name;
-            const wsMessage = `PRIVMSG ${currentUser.name} : /${command === 'host' ? `${command} ${channelName}` : command}`;
-            twitch.getCurrentTMISocket().send(wsMessage);
+            const rawMessage = `PRIVMSG ${currentUser.name} : /${command === 'host' ? `${command} ${channelName}` : command}`;
+            twitch.getCurrentTMISocket().send(rawMessage);
             hosting = !hosting;
             this.updateHostButtonText();
             twitch.sendChatAdminMessage(`BetterTTV: We sent a /${command} to your channel.`);
@@ -68,8 +68,11 @@ class HostButtonModule {
 
     updateHostingState(userId, channelId) {
         return tmiApi.get('hosts', {qs: {host: userId}})
-            .then(data => {
-                hosting = data.hosts[0].target_id && data.hosts[0].target_id.toString() === channelId;
+            .then(({hosts}) => {
+                if (!Array.isArray(hosts) || !hosts.length) return;
+                const host = hosts[0];
+                if (!host || !host.target_id) return;
+                hosting = host.target_id.toString() === channelId;
                 this.updateHostButtonText();
             });
     }
