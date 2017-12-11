@@ -4,10 +4,13 @@ const twitch = require('./utils/twitch');
 const SafeEventEmitter = require('./utils/safe-event-emitter');
 const $ = require('jquery');
 
+const CLIPS_HOSTNAME = 'clips.twitch.tv';
+
 let router;
 let currentPath = '';
 let chatWatcher;
 let vodChatWatcher;
+let clipsChatWatcher;
 let currentChatReference;
 let channel = {};
 
@@ -64,6 +67,11 @@ class Watcher extends SafeEventEmitter {
     constructor() {
         super();
 
+        if (window.location.hostname === CLIPS_HOSTNAME) {
+            this.loadClips();
+            return;
+        }
+
         const loadInterval = setInterval(() => {
             let user;
             try {
@@ -105,6 +113,14 @@ class Watcher extends SafeEventEmitter {
             clearTimeout(timeout);
             clearInterval(interval);
         }).then(() => this.emit('load'));
+    }
+
+    loadClips() {
+        this.clipsChatObserver();
+        this.channelObserver();
+        twitch.updateCurrentChannel();
+        this.emit('load.clips');
+        this.emit('load.channel');
     }
 
     load() {
@@ -270,20 +286,41 @@ class Watcher extends SafeEventEmitter {
 
             if (currentChannel.id === channel.id) return;
             channel = currentChannel;
-            api
-                .get(`channels/${channel.name}`)
+
+            api.get(`channels/${channel.name}`)
                 .catch(error => ({
                     bots: [],
                     emotes: [],
                     status: error.status || 0
                 }))
                 .then(data => this.emit('channel.updated', data));
-            return true;
         };
 
         this.on('load.channel', updateChannel);
         this.on('load.chat', updateChannel);
         this.on('load.vod', updateChannel);
+    }
+
+    clipsChatObserver() {
+        const observe = (watcher, element) => {
+            if (!element) return;
+            if (watcher) watcher.disconnect();
+            watcher.observe(element, {childList: true, subtree: true});
+        };
+
+        clipsChatWatcher = new window.MutationObserver(mutations =>
+            mutations.forEach(mutation => {
+                for (const el of mutation.addedNodes) {
+                    const $el = $(el);
+
+                    if ($el.hasClass('clip-chat-line')) {
+                        this.emit('clips.message', $el);
+                    }
+                }
+            })
+        );
+
+        this.on('load.clips', () => observe(clipsChatWatcher, $('body')[0]));
     }
 }
 
