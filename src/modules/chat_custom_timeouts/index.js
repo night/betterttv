@@ -2,7 +2,6 @@ const $ = require('jquery');
 const watcher = require('../../watcher');
 const keyCodes = require('../../utils/keycodes');
 const twitch = require('../../utils/twitch');
-const settings = require('../../settings');
 
 const CHAT_ROOM_SELECTOR = '.chat__pane';
 const CHAT_LINE_SELECTOR = '.chat-line__message';
@@ -40,7 +39,6 @@ function handleTimeoutClick(e) {
     if (!$customTimeout.length || e.which === keyCodes.DOMVKCancel) return;
 
     if ($customTimeout.is(':hover')) {
-        const reason = e.shiftKey ? setReason(action.type) : '';
         let command;
         if (action.type === ActionTypes.BAN) {
             command = '/ban';
@@ -48,6 +46,7 @@ function handleTimeoutClick(e) {
             command = '/timeout';
         }
         if (command) {
+            const reason = e.shiftKey ? setReason(action.type) : '';
             twitch.sendChatMessage(`${command} ${user}${reason ? ` ${reason}` : ''}`);
         }
     }
