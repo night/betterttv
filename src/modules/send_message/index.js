@@ -52,6 +52,7 @@ function bttvSendMessage(username, messageToSend, ...args) {
         }
 
         if (sendState.defaultPrevented) return Promise.resolve();
+        messageToSend = sendState.message;
     }
 
     return twitchSendMessage.call(this, username, messageToSend, ...args);
