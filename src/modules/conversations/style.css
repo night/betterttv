@@ -16,3 +16,11 @@
     }
   }
 }
+
+.bttv-hide-conversations, .bttv-auto-hide-conversations {
+  .video-player--theatre {
+    .video-player__container {
+      bottom: 0rem;
+    }
+  }
+}
