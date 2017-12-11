@@ -11,7 +11,6 @@
      - Anon Chat
      - TwitchEmotes Sub Emote Tip
      - Chat Commands
-     - Chat Deleted Messages
      - Chat Moderator Cards
      - Clips (Twitch did not implement this yet)
      - Disable Channel Header (Twitch did not implement this yet)
