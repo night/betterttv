@@ -2,6 +2,16 @@
     if (!String.prototype.includes || !Array.prototype.findIndex) return;
     if (window.location.pathname.endsWith('.html') || window.location.hostname === 'player.twitch.tv') return;
 
+    if (window.Ember) {
+        const script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = 'https://legacy.betterttv.net/betterttv.js';
+        const head = document.getElementsByTagName('head')[0];
+        if (!head) return;
+        head.appendChild(script);
+        return;
+    }
+
     const Raven = require('raven-js');
 
     /*
@@ -11,9 +21,7 @@
      - TwitchEmotes Sub Emote Tip
      - Chat Moderator Cards
      - Disable Channel Header (Twitch did not implement this yet)
-     - Tab Completion? (requires a lot of work, maybe time to just try and integrate into twitch's)
-
-     ? - denotes maybe not returning
+     - Tab Completion
 
     */
 
