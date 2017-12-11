@@ -202,6 +202,22 @@ module.exports = {
         return controller;
     },
 
+    getChatServiceClient() {
+        let client;
+        try {
+            client = this.getChatController().chatService.client;
+        } catch (_) {}
+        return client;
+    },
+
+    getChatServiceSocket() {
+        let socket;
+        try {
+            socket = this.getChatServiceClient().connection.ws;
+        } catch (_) {}
+        return socket;
+    },
+
     getChatScroller() {
         const list = $(CHAT_LIST)[0];
         if (!list) return null;
@@ -224,14 +240,6 @@ module.exports = {
         } catch (_) {}
 
         return controller;
-    },
-
-    getCurrentTMISocket() {
-        let socket;
-        try {
-            socket = this.getChatController().chatService.client.connection.ws;
-        } catch (_) {}
-        return socket;
     },
 
     getCurrentVodChat() {
