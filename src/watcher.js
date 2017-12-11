@@ -114,6 +114,19 @@ class Watcher extends SafeEventEmitter {
         this.vodChatObserver();
         this.routeObserver();
 
+        require('./watchers/*.js', {mode: (base, files) => {
+            return files.map(module => {
+                return `
+                    try {
+                        require('${module}');
+                    } catch (e) {
+                        Raven.captureException(e);
+                        debug.error('Failed to load watcher ${module}', e.stack);
+                    }
+                `;
+            }).join(' ');
+        }});
+
         debug.log('Watcher started');
     }
 
