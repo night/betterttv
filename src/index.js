@@ -14,7 +14,6 @@
      - Chat Moderator Cards
      - Clips (Twitch did not implement this yet)
      - Disable Channel Header (Twitch did not implement this yet)
-     - Host Button
      - Tab Completion? (requires a lot of work, maybe time to just try and integrate into twitch's)
 
      ? - denotes maybe not returning
