@@ -39,6 +39,12 @@ class ChatSettingsModule {
     renderSettings() {
         // Hide the settings when in an iframe for now
         if ($(CHAT_SETTINGS_SELECTOR).find(`.${BTTV_CHAT_SETTINGS_CLASS}`).length || inIFrame()) return;
+
+        // Twitch lazy loads settings
+        if (!$(CHAT_SETTINGS_SELECTOR).length) {
+            setTimeout(() => this.renderSettings(), 100);
+        }
+
         $(CHAT_SETTINGS_SELECTOR).append(CHAT_SETTINGS_TEMPLATE);
 
         const $settings = $(CHAT_SETTINGS_SELECTOR).find(`.${BTTV_CHAT_SETTINGS_CLASS}`);
