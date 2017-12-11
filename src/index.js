@@ -2,16 +2,6 @@
     if (!String.prototype.includes || !Array.prototype.findIndex) return;
     if (window.location.pathname.endsWith('.html') || window.location.hostname === 'player.twitch.tv') return;
 
-    if (!window.Ember) {
-        const script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = 'https://beta.betterttv.net/betterttv.js';
-        const head = document.getElementsByTagName('head')[0];
-        if (!head) return;
-        head.appendChild(script);
-        return;
-    }
-
     const Raven = require('raven-js');
 
     if (process.env.NODE_ENV !== 'development') {
