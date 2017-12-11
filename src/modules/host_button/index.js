@@ -54,7 +54,7 @@ class HostButtonModule {
         try {
             const channelName = twitch.getCurrentChannel().name;
             const rawMessage = `PRIVMSG ${currentUser.name} : /${command === 'host' ? `${command} ${channelName}` : command}`;
-            twitch.getCurrentTMISocket().send(rawMessage);
+            twitch.getChatServiceSocket().send(rawMessage);
             hosting = !hosting;
             this.updateHostButtonText();
             twitch.sendChatAdminMessage(`BetterTTV: We sent a /${command} to your channel.`);

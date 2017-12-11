@@ -25,7 +25,6 @@ class PersonalEmotes extends AbstractEmotes {
 
         socketClient.on('lookup_user', s => this.updatePersonalEmotes(s));
         watcher.on('load.chat', () => this.joinChannel());
-        watcher.on('chat.message', ($el, msgObject) => this.broadcastMeChannel($el, msgObject));
         watcher.on('conversation.new', $el => this.joinConversation($el));
         watcher.on('conversation.message', ($el, msgObject) => this.broadcastMeConversation($el, msgObject));
     }
@@ -74,16 +73,6 @@ class PersonalEmotes extends AbstractEmotes {
         if (!threadId) return;
 
         socketClient.joinChannel(threadId);
-    }
-
-    broadcastMeChannel(_, msgObject) {
-        const user = twitch.getCurrentUser();
-        if (!user || msgObject.user.userLogin !== user.name) return;
-
-        const currentChannel = twitch.getCurrentChannel();
-        if (!currentChannel) return;
-
-        socketClient.broadcastMe(currentChannel.name);
     }
 
     broadcastMeConversation($el, msgObject) {
