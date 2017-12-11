@@ -5,26 +5,29 @@ const twitchAPI = require('../../utils/twitch-api');
 const chat = require('../chat');
 const anonChat = require('../anon_chat');
 
-const HELP_TEXT = `BetterTTV Chat Commands:
-/b — Shortcut for /ban
-/followed — Tells you for how long you have been following a channel
-/follows — Retrieves the number of followers for the channel
-/join & /part — Temporarily join/part chat (anon chat)
-/localascii — Turns on local ascii-only mode (only your chat is ascii-only mode)
-/localasciioff — Turns off local ascii-only mode
-/localmod — Turns on local mod-only mode (only your chat is mod-only mode)
-/localmodoff — Turns off local mod-only mode
-/localsub — Turns on local sub-only mode (only your chat is sub-only mode)
-/localsuboff — Turns off local sub-only mode
-/massunban (or /unban all or /u all) — Unbans all users in the channel (channel owner only)
-/purge (or /p) — Purges a user's chat
-/shrug — Appends your chat line with a shrug face
-/sub — Shortcut for /subscribers
-/suboff — Shortcut for /subscribersoff
-/t — Shortcut for /timeout
-/u — Shortcut for /unban
-/uptime — Retrieves the amount of time the channel has been live
-/viewers — Retrieves the number of viewers watching the channel`;
+const CommandHelp = {
+    b: 'Usage: "/b <login> [reason]" - Shortcut for /ban',
+    followed: 'Usage: "/followed" - Tells you for how long you have been following a channel',
+    follows: 'Usage: "/follows" - Retrieves the number of followers for the channel',
+    join: 'Usage: "/join" - Temporarily join a chat (anon chat)',
+    localascii: 'Usage "/localascii" - Turns on local ascii-only mode (only your chat is ascii-only mode)',
+    localasciioff: 'Usage "/localasciioff" - Turns off local ascii-only mode',
+    localmod: 'Usage "/localmod" - Turns on local mod-only mode (only your chat is mod-only mode)',
+    localmodoff: 'Usage "/localmodoff" - Turns off local mod-only mode',
+    localsub: 'Usage "/localsub" - Turns on local sub-only mode (only your chat is sub-only mode)',
+    localsuboff: 'Usage "/localsuboff" - Turns off local sub-only mode',
+    massunban: 'Usage "/massunban" - Unbans all users in the channel (channel owner only)',
+    p: 'Usage "/p <login> [reason]" - Shortcut for /purge',
+    part: 'Usage: "/part" - Temporarily leave a chat (anon chat)',
+    purge: 'Usage "/purge <login> [reason]" - Purges a user\'s chat',
+    shrug: 'Usage "/shrug" - Appends your chat line with a shrug face',
+    sub: 'Usage "/sub" - Shortcut for /subscribers',
+    suboff: 'Usage "/suboff" - Shortcut for /subscribersoff',
+    t: 'Usage "/t <login> [duration] [reason]" - Shortcut for /timeout',
+    u: 'Usage "/u <login>" - Shortcut for /unban',
+    uptime: 'Usage "/uptime" - Retrieves the amount of time the channel has been live',
+    viewers: 'Usage "/viewers" - Retrieves the number of viewers watching the channel'
+};
 
 function secondsToLength(s) {
     const days = Math.floor(s / 86400);
@@ -210,20 +213,16 @@ function handleCommands(message) {
             break;
 
         case 'help':
-
-            setTimeout(() => {
-                const helpLines = HELP_TEXT.split('\n');
-                const interval = setInterval(() => {
-                    const line = helpLines.shift();
-                    if (line) {
-                        twitch.sendChatAdminMessage(line);
-                    } else {
-                        clearInterval(interval);
-                    }
-                }, 25);
-            }, 500);
-
+            const commandNames = Object.keys(CommandHelp);
+            const subCommand = messageParts.length && messageParts[0].replace(/^\//, '').toLowerCase();
+            if (subCommand && commandNames.includes(subCommand)) {
+                twitch.sendChatAdminMessage(CommandHelp[subCommand]);
+                return false;
+            } else if (!subCommand) {
+                twitch.sendChatAdminMessage(`BetterTTV Chat Commands: (Use "/help <command>" for more info on a command) /${commandNames.join(' /')}`);
+            }
             return true;
+
         default:
             return true;
     }
