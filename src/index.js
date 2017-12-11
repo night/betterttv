@@ -12,7 +12,6 @@
      - TwitchEmotes Sub Emote Tip
      - Chat Commands
      - Chat Moderator Cards
-     - Clips (Twitch did not implement this yet)
      - Disable Channel Header (Twitch did not implement this yet)
      - Tab Completion? (requires a lot of work, maybe time to just try and integrate into twitch's)
 
