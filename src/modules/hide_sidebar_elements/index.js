@@ -11,12 +11,6 @@ class HideSidebarElementsModule {
             description: 'The left sidebar is too cluttered, so you can remove recommended channels'
         });
         settings.add({
-            id: 'autoExpandChannels',
-            name: 'Auto Expand Followed Channels List',
-            defaultValue: false,
-            description: 'Automatically clicks the "Load More" option for you'
-        });
-        settings.add({
             id: 'hideRecommendedFriends',
             name: 'Hide Recommended Friends',
             defaultValue: false,
@@ -50,12 +44,6 @@ class HideSidebarElementsModule {
 
     toggleFeaturedChannels() {
         $('body').toggleClass('bttv-hide-featured-channels', settings.get('hideFeaturedChannels'));
-    }
-
-    toggleAutoExpandChannels() {
-        if (settings.get('autoExpandChannels') === true) {
-            $('.side-nav-load-more__button').trigger('click');
-        }
     }
 
     toggleRecommendedFriends() {
