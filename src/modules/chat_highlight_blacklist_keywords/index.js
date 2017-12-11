@@ -18,7 +18,7 @@ const HIGHLIGHT_KEYWORD_PROMPT = `Type some highlight keywords. Messages contain
 
 Use spaces in the field to specify multiple keywords. Place {} around a set of words to form a phrase, <> inside the {} to use exact search, and () around a single word to specify a username. Wildcards (*) are supported.`;
 
-const CHAT_LIST_SELECTOR = '.chat-list';
+const CHAT_LIST_SELECTOR = '.chat-list .chat-list__lines';
 const PINNED_HIGHLIGHT_ID = 'bttv-pinned-highlight';
 const PINNED_CONTAINER_ID = 'bttv-pin-container';
 const MAXIMUM_PIN_COUNT = 10;
