@@ -17,7 +17,6 @@
      - Disable Channel Header (Twitch did not implement this yet)
      - Host Button
      - Tab Completion? (requires a lot of work, maybe time to just try and integrate into twitch's)
-     - Video Player Keybinds/Clicks
 
      ? - denotes maybe not returning
 
