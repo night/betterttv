@@ -33,7 +33,6 @@ class AnonChatModule {
         const socket = client.connection.ws;
         if (!socket || client.configuration.username === username) return;
 
-        // ignoreNextDC = true;
         client.configuration.username = username;
         twitch.sendChatAdminMessage(`BetterTTV: [Anon Chat] ${message}`);
         socket.send('QUIT');

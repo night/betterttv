@@ -1,20 +1,14 @@
 const twitch = require('../../utils/twitch');
 const watcher = require('../../watcher');
 const debug = require('../../utils/debug');
+const socketClient = require('../../socket-client');
+const Raven = require('raven-js');
 
 const chatCommands = require('../chat_commands');
 const anonChat = require('../anon_chat');
 const emojis = require('../emotes/emojis');
 
-const PATCHED_SENTINEL = Symbol('bttvPatched');
-
-function getConnectionClient() {
-    let client;
-    try {
-        client = twitch.getChatController().chatService.client;
-    } catch (_) {}
-    return client;
-}
+const PATCHED_SENTINEL = Symbol();
 
 class SendState {
     constructor(msg) {
@@ -39,26 +33,28 @@ const methodList = [
     msgObj => emojis.onSendMessage(msgObj)
 ];
 
-function bttvSendMessage() {
-    try {
-        const messageToSend = arguments[1];
-        if (!messageToSend) return;
+function bttvSendMessage(username, messageToSend, ...args) {
+    const channel = twitch.getCurrentChannel();
+    if (channel) {
+        socketClient.broadcastMe(channel.name);
+    }
 
+    if (typeof messageToSend === 'string') {
         const sendState = new SendState(messageToSend);
+
         for (const method of methodList) {
             try {
                 method(sendState);
             } catch (e) {
+                Raven.captureException(e);
                 debug.log(e);
             }
         }
 
-        if (sendState.defaultPrevented) return;
-        arguments[1] = sendState.message;
-    } catch (error) {
-        debug.log(error);
+        if (sendState.defaultPrevented) return Promise.resolve();
     }
-    twitchSendMessage.apply(this, arguments);
+
+    return twitchSendMessage.call(this, username, messageToSend, ...args);
 }
 
 class SendMessagePatcher {
@@ -67,10 +63,16 @@ class SendMessagePatcher {
     }
 
     patch() {
-        const client = getConnectionClient();
+        const client = twitch.getChatServiceClient();
         if (!client) return;
-        // check if we've already monkeypatched
-        if (client._bttvSendMessagePatched === PATCHED_SENTINEL) return;
+
+        if (
+            client._bttvSendMessagePatched === PATCHED_SENTINEL ||
+            client.sendCommand === bttvSendMessage
+        ) {
+            return;
+        }
+
         client._bttvSendMessagePatched = PATCHED_SENTINEL;
         twitchSendMessage = client.sendCommand;
         client.sendCommand = bttvSendMessage;
