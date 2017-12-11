@@ -268,6 +268,7 @@ class Watcher extends SafeEventEmitter {
             return true;
         };
 
+        this.on('load.channel', updateChannel);
         this.on('load.chat', updateChannel);
         this.on('load.vod', updateChannel);
     }
