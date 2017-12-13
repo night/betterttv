@@ -2,7 +2,7 @@
   background-color: #efeded;
 }
 
-.theme--dark {
+.tw-theme--dark {
   .chat-line__message.bttv-split-chat-alt-bg, .vod-message.bttv-split-chat-alt-bg {
     background-color: #1f1925;
   }
