@@ -49,7 +49,7 @@
     "require-globify": "^1.4.1",
     "resizable": "^1.2.0",
     "twemoji": "^2.5.0",
-    "twitch-chat-emotes": "github:Aaron128l/Userscript--Twitch-Chat-Emotes#010786583080997fe228a0684887e926e58bd2c0",
+    "twitch-chat-emotes": "github:Aaron128l/Userscript--Twitch-Chat-Emotes#7a459e3922cc6f345a5d7bdfbbd1a17bdb73de79",
     "uglify-save-license": "^0.4.1",
     "view-list": "^2.1.0",
     "vinyl-buffer": "^1.0.0",
