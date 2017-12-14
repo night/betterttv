@@ -21,7 +21,7 @@ const ACTIONS_MAP = {
 };
 
 const buttonTextTemplate = text => `
-    <button class="tw-button-icon bttv-tx-size-10">
+    <button class="tw-button-icon bttv-font-size-10">
         <span class="tw-button__text">
             ${text}
         </span>
@@ -29,7 +29,7 @@ const buttonTextTemplate = text => `
 `;
 
 const buttonWrapperTemplate = (action, actionVal, tooltip, buttonTemplate) => `
-    <div class="tw-tooltip-wrapper inline-flex">
+    <div class="tw-tooltip-wrapper tw-inline-flex">
         <div class="${BTTV_ACTION_CLASS}"
             ${BTTV_ACTION_ATTR}="${action}"
             ${BTTV_ACTION_VAL_ATTR}="${actionVal || ''}"
@@ -45,9 +45,9 @@ const textButton = (action, actionVal, tooltip, text) => `
 `;
 
 const modCardTemplate = `
-<div class="c-background-alt-2 full-width flex" id="${BTTV_MOD_CARDS_ID}">
-    <div class="pd-l-1 inline-flex flex-row">
-        <div class="inline-flex">
+<div class="tw-c-background-alt-2 tw-full-width tw-flex" id="${BTTV_MOD_CARDS_ID}">
+    <div class="tw-pd-l-1 tw-inline-flex tw-flex-row">
+        <div class="tw-inline-flex">
             ${textButton('TIMEOUT', 1, 'Purge', '1s')}
             ${textButton('TIMEOUT', 60, 'Timeout 1m', '1m')}
             ${textButton('TIMEOUT', 600, 'Timeout 10m', '10m')}
