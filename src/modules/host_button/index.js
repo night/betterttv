@@ -4,14 +4,14 @@ const watcher = require('../../watcher');
 const twitch = require('../../utils/twitch');
 const tmiApi = require('../../utils/tmi-api');
 
-const SHARE_BUTTON_SELECTOR = '.channel-info-bar__action-container .mg-x-1:first';
+const SHARE_BUTTON_SELECTOR = '.channel-info-bar__action-container .tw-mg-x-1:first';
 const HOST_BUTTON_ID = 'bttv-host-button';
 
 let $hostButton;
 let hosting = false;
 
 const buttonTemplate = `
-    <div class="mg-r-1">
+    <div class="tw-mg-r-1">
         <button id="${HOST_BUTTON_ID}" class="tw-button tw-button--hollow">
             <span class="tw-button__text">Host</span>
         </button>

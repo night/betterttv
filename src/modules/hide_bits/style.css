@@ -2,7 +2,7 @@
   .pinned-cheer,
   button[data-a-target="bits-button"],
   div[data-a-target="bits-card"],
-  .channel-header__right div.mg-l-1:last-child button:not([data-test-selector="subscribe-button__dropdown"]),
+  .channel-header__right div.tw-mg-l-1:last-child button:not([data-test-selector="subscribe-button__dropdown"]),
   img.chat-line__message--emote[src^="https://d3aqoihi2n8ty8.cloudfront.net/actions/"],
   img.chat-line__message--emote[src^="https://d3aqoihi2n8ty8.cloudfront.net/partner-actions/"] {
     display: none !important;

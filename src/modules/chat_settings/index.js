@@ -8,13 +8,13 @@ const CHAT_SETTINGS_SELECTOR = '.chat-settings__content';
 const BTTV_CHAT_SETTINGS_CLASS = 'bttv-chat-settings';
 
 const CHAT_SETTINGS_TEMPLATE = `
-    <div class="${BTTV_CHAT_SETTINGS_CLASS} border-t mg-t-2 pd-t-2">
-        <div class="mg-b-2"><p class="c-text-alt-2 upcase">BetterTTV</p></div>
-        <div class="mg-b-1"><button class="setBlacklistKeywords">Set Blacklist Keywords</button></div>
-        <div class="mg-b-1"><button class="setHighlightKeywords">Set Highlight Keywords</button></div>
-        <div class="mg-b-1"><button class="setFontFamily">Set Font</button></div>
-        <div class="mg-b-1"><button class="setFontSize">Set Font Size</button></div>
-        <div class="mg-b-1"><button class="clearChat">Clear My Chat</button></div>
+    <div class="${BTTV_CHAT_SETTINGS_CLASS} tw-border-t tw-mg-t-2 tw-pd-t-2">
+        <div class="tw-mg-b-2"><p class="tw-c-text-alt-2 tw-upcase">BetterTTV</p></div>
+        <div class="tw-mg-b-1"><button class="setBlacklistKeywords">Set Blacklist Keywords</button></div>
+        <div class="tw-mg-b-1"><button class="setHighlightKeywords">Set Highlight Keywords</button></div>
+        <div class="tw-mg-b-1"><button class="setFontFamily">Set Font</button></div>
+        <div class="tw-mg-b-1"><button class="setFontSize">Set Font Size</button></div>
+        <div class="tw-mg-b-1"><button class="clearChat">Clear My Chat</button></div>
         <button class="openSettings">BetterTTV Settings</button>
     </div>
 `;

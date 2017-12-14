@@ -189,8 +189,8 @@ class SettingsModule {
 
         $('.top-nav__dropdown-wrapper a[data-a-target="settings-dropdown-link"]').after(`
             <a href="#" target="_blank" class="tw-interactable" data-a-target="bttv-settings-dropdown-link">
-                <div class="c-text-alt align-items-center flex pd-x-2 pd-y-05">
-                    <div class="align-items-center flex mg-r-1">
+                <div class="tw-c-text-alt tw-align-items-center tw-flex tw-pd-x-2 tw-pd-y-05">
+                    <div class="tw-align-items-center tw-flex tw-mg-r-1">
                         <figure class="icon bttvSettingsIconDropDown"></figure>
                     </div>
                     <p>BetterTTV Settings</p>
