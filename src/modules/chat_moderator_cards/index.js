@@ -1,9 +1,11 @@
 const $ = require('jquery');
+const watcher = require('../../watcher');
 const settings = require('../../settings');
 const twitch = require('../../utils/twitch');
 const keyCodes = require('../../utils/keycodes');
 const debug = require('../../utils/debug');
 const nicknames = require('../chat_nicknames');
+const dragDomElement = require('../../utils/drag-dom-element');
 
 const ROW_CONTAINER_SELECTOR = '.chat-room__viewer-card .viewer-card__actions';
 const VIEWER_CARD_CLOSE = '.viewer-card__hide button';
@@ -87,6 +89,11 @@ class ChatModCardsModule {
             .on('click.modCard_action', BTTV_ACTION_SELECTOR, e => this.onModActionClick(e))
             .on('keydown.modCard', e => this.onKeydown(e));
         this.targetUser = {};
+
+        watcher.on('load.chat', () => {
+            // allow the card to be moved out the chat.
+            $('.chat-room__viewer-card').parent().removeClass('tw-relative');
+        });
     }
 
     onViewerListClick(e) {
@@ -136,6 +143,7 @@ class ChatModCardsModule {
         // initial load of a card requires to render asynchronously
         this.lazyRender(() => {
             $(`#${BTTV_MOD_SECTION_ID}`).toggleClass(BTTV_HIDE_MOD_SECTION_CLASS, !canModTargetUser);
+            dragDomElement($('.chat-room__viewer-card')[0], '.viewer-card');
         });
     }
 
