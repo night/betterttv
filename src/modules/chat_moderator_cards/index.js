@@ -80,15 +80,19 @@ class ChatModCardsModule {
         const name = $target.attr('data-username');
 
         twitch.getChannelModerators()
-            .then(moderators => {
+            .then(moderators => moderators.indexOf(name) !== -1)
+            .catch(error => {
+                debug.error(error);
+                return false;
+            })
+            .then(isMod => {
                 this.targetUser = {
                     name: name,
                     isOwner: name === twitch.getCurrentChannel().name,
-                    isMod: moderators.indexOf(name) !== -1
+                    isMod: isMod
                 };
                 this.onRenderModcards();
-            })
-            .catch(error => debug.error(error));
+            });
     }
 
     onUsernameClick(e) {
@@ -96,8 +100,8 @@ class ChatModCardsModule {
         const $line = $target.closest(CHAT_LINE_SELECTOR);
         const messageObj = twitch.getChatMessageObject($line[0]);
         this.targetUser = {
-            name: targetUserName,
-            isOwner: targetUserName === twitch.getCurrentChannel().name,
+            name: messageObj.user.userLogin,
+            isOwner: twitch.getUserIsOwnerFromTagsBadges(messageObj.badges),
             isMod: twitch.getUserIsModeratorFromTagsBadges(messageObj.badges)
         };
         this.onRenderModcards();

@@ -37,8 +37,20 @@ function patchChatController() {
     twitchConsumeChatEvent = newTwitchConsumeChatEvent;
 }
 
+const DO_NOTHING = () => {};
+
+function serializePromises(promiseFunction) {
+    // protect against race conditions
+    let topTask = Promise.resolve();
+    return (...args) => {
+        topTask = topTask
+            .catch(DO_NOTHING)
+            .then(() => promiseFunction(...args));
+        return topTask;
+    };
+}
+
 function makeGetChannelModerators() {
-    const DO_NOTHING = () => {};
     let captureEvent = DO_NOTHING;
 
     watcher.on('chat.buffer.event', eventObj => {
@@ -54,7 +66,7 @@ function makeGetChannelModerators() {
         const timeout = setTimeout(() => {
             captureEvent = DO_NOTHING;
             reject(new Error(`Can't get channel ${channelName} moderators.`));
-        }, 500);
+        }, 1000);
 
         captureEvent = ({event, preventDefault}) => {
             preventDefault();
@@ -74,7 +86,7 @@ class ChatBufferWatcher {
     }
 
     extendTwitch() {
-        twitch.getChannelModerators = makeGetChannelModerators();
+        twitch.getChannelModerators = serializePromises(makeGetChannelModerators());
     }
 }
 
