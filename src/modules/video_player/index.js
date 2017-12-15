@@ -17,27 +17,28 @@ function stepPlaybackSpeed(faster) {
     currentPlayer.player.setPlaybackRate(rates[idx]);
 }
 
-function handleKeyEvent(keyup) {
-    if (keyup.ctrlKey || keyup.metaKey) return;
+function handleKeyEvent(keypress) {
+    const offsetLower = 32;
+    if (keypress.ctrlKey || keypress.metaKey) return;
     if ($('input, textarea, select').is(':focus')) return;
 
     const $player = $(VIDEO_PLAYER_SELECTOR);
     if (!$player.length) return;
 
-    switch (keyup.keyCode) {
+    switch (keypress.keyCode) {
         case keyCodes.LessThan:
             stepPlaybackSpeed(false);
             break;
         case keyCodes.GreaterThan:
             stepPlaybackSpeed(true);
             break;
-        case keyCodes.k:
+        case offsetLower + keyCodes.k:
             $player.find('.qa-pause-play-button').click();
             break;
-        case keyCodes.f:
+        case offsetLower + keyCodes.f:
             $player.find('.qa-fullscreen-button').click();
             break;
-        case keyCodes.m:
+        case offsetLower + keyCodes.m:
             $player.find('.qa-control-volume').click();
             break;
     }
