@@ -1,11 +1,13 @@
 const $ = require('jquery');
 const twitch = require('../../utils/twitch');
 const keyCodes = require('../../utils/keycodes');
+const debug = require('../../utils/debug');
 
 const ROW_CONTAINER_SELECTOR = '.chat-room__viewer-card .viewer-card__actions';
 const VIEWER_CARD_CLOSE = '.viewer-card__hide button';
 const CHAT_LINE_SELECTOR = '.chat-line__message';
 const CHAT_LINE_USERNAME_SELECTOR = '.chat-line__username';
+const VIEWER_LIST_USERNAME_SELECTOR = '.chat-viewers-list__button';
 const CHAT_INPUT_SELECTOR = '.chat-input textarea';
 
 const BTTV_MOD_CARDS_ID = 'bttv-mod-cards';
@@ -66,34 +68,51 @@ function setTextareaValue($inputField, msg) {
 class ChatModCardsModule {
     constructor() {
         $('body')
-            .on('click', CHAT_LINE_USERNAME_SELECTOR, e => this.onUsernameClick(e))
+            .on('click.modCard_chatName', CHAT_LINE_USERNAME_SELECTOR, e => this.onUsernameClick(e))
+            .on('click.modCard_viewerList', VIEWER_LIST_USERNAME_SELECTOR, e => this.onViewerListClick(e))
             .on('click', BTTV_ACTION_SELECTOR, e => this.onModActionClick(e))
             .on('keydown.modCard', e => this.onKeydown(e));
         this.targetUser = {};
     }
 
+    onViewerListClick(e) {
+        const $target = $(e.currentTarget);
+        const name = $target.attr('data-username');
+
+        twitch.getChannelModerators()
+            .then(moderators => {
+                this.targetUser = {
+                    name: name,
+                    isOwner: name === twitch.getCurrentChannel().name,
+                    isMod: moderators.indexOf(name) !== -1
+                };
+                this.onRenderModcards();
+            })
+            .catch(error => debug.error(error));
+    }
+
     onUsernameClick(e) {
-        const $target = $(e.target);
+        const $target = $(e.currentTarget);
         const $line = $target.closest(CHAT_LINE_SELECTOR);
         const messageObj = twitch.getChatMessageObject($line[0]);
-
-        const targetUser = {
-            name: messageObj.user.userLogin,
-            isMod: twitch.getUserIsModeratorFromTagsBadges(messageObj.badges),
-            isOwner: twitch.getUserIsOwnerFromTagsBadges(messageObj.badges)
+        this.targetUser = {
+            name: targetUserName,
+            isOwner: targetUserName === twitch.getCurrentChannel().name,
+            isMod: twitch.getUserIsModeratorFromTagsBadges(messageObj.badges)
         };
+        this.onRenderModcards();
+    }
 
+    onRenderModcards() {
         const currentUser = twitch.getCurrentUser();
         const currentIsOwner = twitch.getCurrentUserIsOwner();
         const currentIsMod = twitch.getCurrentUserIsModerator();
 
-        const targetIsNotStaff = !(targetUser.isOwner || targetUser.isMod);
+        const targetIsNotStaff = !(this.targetUser.isOwner || this.targetUser.isMod);
         const canModTargetUser = currentIsOwner || (currentIsMod && targetIsNotStaff);
 
-        this.targetUser = targetUser;
-
         clearInterval(this.renderInterval);
-        if (currentUser.name !== targetUser.name && canModTargetUser) {
+        if (currentUser.name !== this.targetUser.name && canModTargetUser) {
             // initial load of a card requires to render asynchronously
             this.lazyRender();
         } else {
