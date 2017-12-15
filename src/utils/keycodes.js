@@ -31,6 +31,8 @@ module.exports = {
     '7': 55,
     '8': 56,
     '9': 57,
+    'LessThan': 60,
+    'GreaterThan': 62,
     'a': 65,
     'b': 66,
     'c': 67,
