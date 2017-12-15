@@ -1,7 +1,9 @@
 const $ = require('jquery');
+const settings = require('../../settings');
 const twitch = require('../../utils/twitch');
 const keyCodes = require('../../utils/keycodes');
 const debug = require('../../utils/debug');
+const nicknames = require('../chat_nicknames');
 
 const ROW_CONTAINER_SELECTOR = '.chat-room__viewer-card .viewer-card__actions';
 const VIEWER_CARD_CLOSE = '.viewer-card__hide button';
@@ -12,6 +14,9 @@ const CHAT_INPUT_SELECTOR = '.chat-input textarea';
 
 const BTTV_MOD_CARDS_ID = 'bttv-mod-cards';
 const BTTV_MOD_CARDS_SELECTOR = `#${BTTV_MOD_CARDS_ID}`;
+const BTTV_MOD_SECTION_ID = 'bttv-mod-section';
+const BTTV_HIDE_MOD_SECTION_CLASS = 'bttv-hide-mod-section';
+
 const BTTV_ACTION_CLASS = 'bttv-mod-action';
 const BTTV_ACTION_SELECTOR = `.${BTTV_ACTION_CLASS}`;
 const BTTV_ACTION_ATTR = 'bttv-action';
@@ -49,13 +54,16 @@ const textButton = (action, actionVal, tooltip, text) => `
 const modCardTemplate = `
 <div class="tw-c-background-alt-2 tw-full-width tw-flex" id="${BTTV_MOD_CARDS_ID}">
     <div class="tw-pd-l-1 tw-inline-flex tw-flex-row">
-        <div class="tw-inline-flex">
+        <div class="tw-inline-flex" id="${BTTV_MOD_SECTION_ID}">
             ${textButton('TIMEOUT', 1, 'Purge', '1s')}
             ${textButton('TIMEOUT', 60, 'Timeout 1m', '1m')}
             ${textButton('TIMEOUT', 600, 'Timeout 10m', '10m')}
             ${textButton('TIMEOUT', 3600, 'Timeout 1hr', '1hr')}
             ${textButton('TIMEOUT', 24 * 3600, 'Timeout 24hr', '24hr')}
-            ${textButton('PERMIT', null, '!permit the user', '!permit')}
+            ${textButton('PERMIT', null, '!permit User', '!permit')}
+        </div>
+        <div class="tw-inline-flex">
+            ${textButton('NICKNAME', null, 'Set Nickname', 'Set Nick')}
         </div>
     </div>
 </div>`;
@@ -67,10 +75,16 @@ function setTextareaValue($inputField, msg) {
 
 class ChatModCardsModule {
     constructor() {
+        settings.add({
+            id: 'modcardsKeybinds',
+            name: 'Enable Keybinds for Moderator Cards',
+            defaultValue: false,
+            description: 'Add keybinds to moderate users faster.'
+        });
         $('body')
             .on('click.modCard_chatName', CHAT_LINE_USERNAME_SELECTOR, e => this.onUsernameClick(e))
             .on('click.modCard_viewerList', VIEWER_LIST_USERNAME_SELECTOR, e => this.onViewerListClick(e))
-            .on('click', BTTV_ACTION_SELECTOR, e => this.onModActionClick(e))
+            .on('click.modCard_action', BTTV_ACTION_SELECTOR, e => this.onModActionClick(e))
             .on('keydown.modCard', e => this.onKeydown(e));
         this.targetUser = {};
     }
@@ -116,18 +130,20 @@ class ChatModCardsModule {
         const canModTargetUser = currentIsOwner || (currentIsMod && targetIsNotStaff);
 
         clearInterval(this.renderInterval);
-        if (currentUser.name !== this.targetUser.name && canModTargetUser) {
-            // initial load of a card requires to render asynchronously
-            this.lazyRender();
-        } else {
-            $(BTTV_MOD_CARDS_SELECTOR).remove();
+        if (currentUser.name === this.targetUser.name) {
+            return $(BTTV_MOD_CARDS_SELECTOR).remove();
         }
+        // initial load of a card requires to render asynchronously
+        this.lazyRender(() => {
+            $(`#${BTTV_MOD_SECTION_ID}`).toggleClass(BTTV_HIDE_MOD_SECTION_CLASS, !canModTargetUser);
+        });
     }
 
-    lazyRender() {
+    lazyRender(callback) {
         const currentRenderInterval = setInterval(() => {
             if (this.checkAndRender()) {
                 clearInterval(currentRenderInterval);
+                callback && callback();
             }
         }, 25);
         setTimeout(() => clearInterval(currentRenderInterval), 3000);
@@ -144,11 +160,16 @@ class ChatModCardsModule {
 
     onModActionClick(e) {
         const $action = $(e.currentTarget);
-        const action = ACTIONS_MAP[$action.attr(BTTV_ACTION_ATTR)];
+        const action = $action.attr(BTTV_ACTION_ATTR);
+        const actionCommand = ACTIONS_MAP[action];
         const actionVal = $action.attr(BTTV_ACTION_VAL_ATTR);
+        if (!action || !this.targetUser.name) return;
 
-        if (action && this.targetUser.name) {
-            twitch.sendChatMessage(`${action} ${this.targetUser.name} ${actionVal}`);
+        if (action === 'NICKNAME') {
+            return nicknames.set(this.targetUser.name);
+        }
+        if (actionCommand) {
+            twitch.sendChatMessage(`${actionCommand} ${this.targetUser.name} ${actionVal}`);
         }
     }
 
@@ -170,10 +191,10 @@ class ChatModCardsModule {
             return this.close();
         }
 
+        if (!settings.get('modcardsKeybinds')) return;
+
         const userName = this.targetUser.name;
-        if (!userName) {
-            return this.close();
-        }
+        if (!userName) return;
 
         const isMod = twitch.getCurrentUserIsModerator();
         if (keyCode === keyCodes.t && isMod) {
