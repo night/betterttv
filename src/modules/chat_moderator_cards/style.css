@@ -30,3 +30,12 @@
         display: none!important;
     }
 }
+
+[data-a-target=chat-message-mention] {
+    font-weight: bold;
+
+    &:hover {
+        text-decoration: underline;
+        cursor: pointer;
+    }
+}

@@ -14,6 +14,7 @@ const VIEWER_CARD_CLOSE = '.viewer-card__hide button';
 const CHAT_LINE_SELECTOR = '.chat-line__message';
 const CHAT_LINE_USERNAME_SELECTOR = '.chat-line__username';
 const VIEWER_LIST_USERNAME_SELECTOR = '.chat-viewers-list__button';
+const MENTION_SELECTOR = '[data-a-target=chat-message-mention]';
 const CHAT_INPUT_SELECTOR = '.chat-input textarea';
 
 const BTTV_MOD_CARDS_ID = 'bttv-mod-cards';
@@ -79,7 +80,7 @@ const modCardsTemplate = `
             ${textButton(ACTIONS.MESSAGES, null, 'Show chat messages', 'Messages')}
         </div>
     </div>
-    <div class="tw-inline-flex tw-flex-row ${BTTV_HIDE_SECTION_CLASS}" id="${BTTV_USER_MESSAGES_ID}">
+    <div class="tw-inline-flex tw-flex-row" id="${BTTV_USER_MESSAGES_ID}">
         <div class="tw-pd-b-1 bttv-messages-scroll">
             <!-- messages -->
         </div>
@@ -109,9 +110,7 @@ const createdTemplate = `
 
 const nicknameButtonTemplate = `
 <button class="tw-button-icon tw-button-icon--overlay tw-mg-l-1 bttv-nickname-button">
-    <span class="tw-button-icon__icon">
-        ${svgPen}
-    </span>
+    <span class="tw-button-icon__icon">${svgPen}</span>
 </button>
 `;
 
@@ -140,6 +139,14 @@ function getUserDataFromName(login) {
         .then(({users}) => users.length && getUserDataFromId(users[0]._id));
 }
 
+function openViewerCard(name) {
+    try {
+        twitch.getReactElement($(CHAT_LINE_SELECTOR)[0])._owner._instance.props.onUsernameClick(name);
+        return true;
+    } catch (_) {}
+    return false;
+}
+
 class ChatModCardsModule {
     constructor() {
         settings.add({
@@ -151,6 +158,7 @@ class ChatModCardsModule {
         $('body')
             .on('click.modCard_chatName', CHAT_LINE_USERNAME_SELECTOR, e => this.onUsernameClick(e))
             .on('click.modCard_viewerList', VIEWER_LIST_USERNAME_SELECTOR, e => this.onViewerListClick(e))
+            .on('click.modCard_mention', MENTION_SELECTOR, e => this.onMentionClick(e))
             .on('click.modCard_action', BTTV_ACTION_SELECTOR, e => this.onModActionClick(e))
             .on('keydown.modCard', e => this.onKeydown(e));
         this.targetUser = {};
@@ -161,11 +169,24 @@ class ChatModCardsModule {
         });
     }
 
+    onMentionClick(e) {
+        if (e.originalEvent.detail !== 1) return;
+        const $target = $(e.currentTarget);
+        const name = $target.text().substr(1).toLowerCase();
+        if (!openViewerCard(name)) return;
+
+        this.createFromName(name);
+    }
+
     onViewerListClick(e) {
         const $target = $(e.currentTarget);
         const name = $target.attr('data-username');
 
-        if (this.targetUser && this.targetUser.name === name) {
+        this.createFromName(name);
+    }
+
+    createFromName(name) {
+        if (this.targetUser.name === name) {
             if (this.isOpen()) {
                 return;
             }
@@ -185,7 +206,7 @@ class ChatModCardsModule {
         const $line = $target.closest(CHAT_LINE_SELECTOR);
         const messageObj = twitch.getChatMessageObject($line[0]);
 
-        if (this.targetUser && this.targetUser.name === messageObj.user.userLogin) {
+        if (this.targetUser.name === messageObj.user.userLogin) {
             if (this.isOpen()) {
                 return;
             }
