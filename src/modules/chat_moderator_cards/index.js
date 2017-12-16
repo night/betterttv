@@ -1,7 +1,9 @@
 const $ = require('jquery');
+const moment = require('moment');
 const watcher = require('../../watcher');
 const settings = require('../../settings');
 const twitch = require('../../utils/twitch');
+const twitchAPI = require('../../utils/twitch-api');
 const keyCodes = require('../../utils/keycodes');
 const nicknames = require('../chat_nicknames');
 const dragDomElement = require('../../utils/drag-dom-element');
@@ -28,7 +30,6 @@ const BTTV_ACTION_VAL_ATTR = 'bttv-val';
 const ACTIONS = {
     TIMEOUT: 'TIMEOUT',
     PERMIT: 'PERMIT',
-    NICKNAME: 'NICKNAME',
     MESSAGES: 'MESSAGES'
 };
 
@@ -61,7 +62,7 @@ const textButton = (action, actionVal, tooltip, text) => `
     ${buttonWrapperTemplate(action, actionVal, tooltip, buttonTextTemplate(text))}
 `;
 
-const modCardTemplate = `
+const modCardsTemplate = `
 <div class="tw-c-background-alt-2 tw-full-width tw-flex" id="${BTTV_MOD_CARDS_ID}">
     <div class="tw-pd-l-1 tw-inline-flex tw-flex-row" id="${BTTV_MOD_SECTION_ID}">
         <div class="tw-inline-flex">
@@ -75,7 +76,6 @@ const modCardTemplate = `
     </div>
     <div class="tw-pd-l-1 tw-inline-flex tw-flex-row">
         <div class="tw-inline-flex">
-            ${textButton(ACTIONS.NICKNAME, null, 'Set Nickname', 'Nickname')}
             ${textButton(ACTIONS.MESSAGES, null, 'Show chat messages', 'Messages')}
         </div>
     </div>
@@ -85,6 +85,36 @@ const modCardTemplate = `
         </div>
     </div>
 </div>`;
+
+const svgHeart = '<figure class="tw-svg"><svg class="tw-svg__asset tw-svg__asset--heart tw-svg__asset--inherit" width="16px" height="16px" version="1.1" viewBox="0 0 16 16" x="0px" y="0px"><path clip-rule="evenodd" d="M8,14L1,7V4l2-2h3l2,2l2-2h3l2,2v3L8,14z" fill-rule="evenodd"></path></svg></figure>';
+const svgEye = '<figure class="tw-svg"><svg class="tw-svg__asset tw-svg__asset--glyphviews tw-svg__asset--inherit" width="16px" height="16px" version="1.1" viewBox="0 0 16 16" x="0px" y="0px"><path clip-rule="evenodd" d="M11,13H5L1,9V8V7l4-4h6l4,4v1v1L11,13z M8,5C6.344,5,5,6.343,5,8c0,1.656,1.344,3,3,3c1.657,0,3-1.344,3-3C11,6.343,9.657,5,8,5z M8,9C7.447,9,7,8.552,7,8s0.447-1,1-1s1,0.448,1,1S8.553,9,8,9z" fill-rule="evenodd"></path></svg></figure>';
+const svgPen = '<figure class="tw-svg"><svg class="tw-svg__asset tw-svg__asset--edit tw-svg__asset--inherit" width="16px" height="16px" version="1.1" viewBox="0 0 16 16" x="0px" y="0px"><path clip-rule="evenodd" d="M6.414,12.414L3.586,9.586l8-8l2.828,2.828L6.414,12.414z M4.829,14H2l0,0v-2.828l0.586-0.586l2.828,2.828L4.829,14z" fill-rule="evenodd"></path></svg></figure>';
+
+const viewStatTemplate = `
+<div class="tw-flex tw-full-width tw-pd-l-1 bttv-stats">
+    <div class="tw-stat tw-pd-l-1">
+        <span class="tw-stat__icon">${svgEye}</span>
+        <span class="tw-stat__value bttv-views-value"><!-- VIEWS  --></span>
+    </div>
+    <div class="tw-stat tw-pd-l-1">
+        <span class="tw-stat__icon">${svgHeart}</span>
+        <span class="tw-stat__value bttv-follows-value"><!-- FOLLOWERS  --></span>
+    </div>
+</div>
+`;
+
+const createdTemplate = `
+    <div class="tw-pd-b-1 bttv-created-at"></div>
+`;
+
+const nicknameButtonTemplate = `
+<button class="tw-button-icon tw-button-icon--overlay tw-mg-l-1 bttv-nickname-button">
+    <span class="tw-button-icon__icon">
+        ${svgPen}
+    </span>
+</button>
+`;
+
 
 const INPUT_EVENT = new Event('input', { bubbles: true });
 function setTextareaValue($inputField, msg) {
@@ -99,6 +129,15 @@ function getUserMessages(userName) {
             if (!messageObj || !messageObj.user) return false;
             return messageObj.user.userLogin === userName;
         });
+}
+
+function getUserDataFromId(id) {
+    return twitchAPI.get(`/channels/${id}`);
+}
+
+function getUserDataFromName(login) {
+    return twitchAPI.get('users', {qs: {login}})
+        .then(({users}) => users.length && getUserDataFromId(users[0]._id));
 }
 
 class ChatModCardsModule {
@@ -126,10 +165,17 @@ class ChatModCardsModule {
         const $target = $(e.currentTarget);
         const name = $target.attr('data-username');
 
+        if (this.targetUser && this.targetUser.name === name) {
+            if (this.isOpen()) {
+                return;
+            }
+        }
+
         this.targetUser = {
             name: name,
             isOwner: name === twitch.getCurrentChannel().name,
-            isMod: false // assume target user can be moderated.
+            isMod: false, // assume target user can be moderated.
+            dataPromise: getUserDataFromName(name)
         };
         this.onRenderModcards();
     }
@@ -138,10 +184,22 @@ class ChatModCardsModule {
         const $target = $(e.currentTarget);
         const $line = $target.closest(CHAT_LINE_SELECTOR);
         const messageObj = twitch.getChatMessageObject($line[0]);
+
+        if (this.targetUser && this.targetUser.name === messageObj.user.userLogin) {
+            if (this.isOpen()) {
+                return;
+            }
+        }
+
+        const dataPromise = messageObj.user.userID ?
+            getUserDataFromId(messageObj.user.userID) :
+            getUserDataFromName(messageObj.user.userLogin);
+
         this.targetUser = {
             name: messageObj.user.userLogin,
             isOwner: twitch.getUserIsOwnerFromTagsBadges(messageObj.badges),
-            isMod: twitch.getUserIsModeratorFromTagsBadges(messageObj.badges)
+            isMod: twitch.getUserIsModeratorFromTagsBadges(messageObj.badges),
+            dataPromise
         };
         this.onRenderModcards();
     }
@@ -152,38 +210,81 @@ class ChatModCardsModule {
         const currentIsMod = twitch.getCurrentUserIsModerator();
 
         const targetIsNotStaff = !(this.targetUser.isOwner || this.targetUser.isMod);
-        const canModTargetUser = currentIsOwner || (currentIsMod && targetIsNotStaff);
+        const targetIsCurrent = currentUser.name === this.targetUser.name;
+        const canModTargetUser = !targetIsCurrent && (currentIsOwner || (currentIsMod && targetIsNotStaff));
 
         clearInterval(this.renderInterval);
-        if (currentUser.name === this.targetUser.name) {
-            return $(BTTV_MOD_CARDS_SELECTOR).remove();
-        }
-
         // initial load of a card requires to render asynchronously
         this.lazyRender(() => {
-            $(`#${BTTV_MOD_SECTION_ID}`).toggleClass(BTTV_HIDE_SECTION_CLASS, !canModTargetUser);
-            $(`#${BTTV_USER_MESSAGES_ID}`).toggleClass(BTTV_HIDE_SECTION_CLASS, true);
             dragDomElement($(VIEWER_CARD)[0], '.viewer-card');
+
+            this.renderModCards(canModTargetUser);
+            this.renderNicknameButton();
+            this.renderStats();
+            this.renderCreatedDate();
+        });
+    }
+
+    renderModCards(canModTargetUser) {
+        let $modCards = $(BTTV_MOD_CARDS_SELECTOR);
+        if ($modCards.length === 0) {
+            $modCards = $(modCardsTemplate);
+            $modCards.appendTo(ROW_CONTAINER_SELECTOR);
+        }
+
+        $(`#${BTTV_MOD_SECTION_ID}`).toggleClass(BTTV_HIDE_SECTION_CLASS, !canModTargetUser);
+        $(`#${BTTV_USER_MESSAGES_ID}`).toggleClass(BTTV_HIDE_SECTION_CLASS, true);
+    }
+
+    renderNicknameButton() {
+        const $name = $('.viewer-card__display-name').children().first();
+        let $el = $name.find('.bttv-nickname-button');
+        if ($el.length === 0) {
+            $el = $(nicknameButtonTemplate);
+            $el.appendTo($name);
+            $el.on('click', () => {
+                if (!this.targetUser || !this.targetUser.name) return;
+                nicknames.set(this.targetUser.name);
+            });
+        }
+    }
+
+    renderCreatedDate() {
+        let $el = $('.viewer-card__display-name').find('.bttv-created-at');
+        if ($el.length === 0) {
+            $el = $(createdTemplate);
+            $el.appendTo('.viewer-card__display-name');
+        }
+        $el.text('');
+        this.targetUser.dataPromise.then(data => {
+            $el.text(`Created ${moment(data.created_at).format('MMM D, YYYY')}`);
+        });
+    }
+
+    renderStats() {
+        let $stats = $('.viewer-card__display-name').find('.bttv-stats');
+        if ($stats.length === 0) {
+            $stats = $(viewStatTemplate);
+            $stats.appendTo('.viewer-card__display-name');
+        }
+        $stats.find('.bttv-views-value').text('0');
+        $stats.find('.bttv-follows-value').text('0');
+
+        this.targetUser.dataPromise.then(data => {
+            $stats.find('.bttv-views-value').text(data.views.toLocaleString());
+            $stats.find('.bttv-follows-value').text(data.followers.toLocaleString());
         });
     }
 
     lazyRender(callback) {
         const currentRenderInterval = setInterval(() => {
-            if (this.checkAndRender()) {
+            if (this.isOpen()) {
                 clearInterval(currentRenderInterval);
                 callback && callback();
             }
         }, 25);
         setTimeout(() => clearInterval(currentRenderInterval), 3000);
         this.renderInterval = currentRenderInterval;
-    }
-
-    checkAndRender() {
-        if ($(BTTV_MOD_CARDS_SELECTOR).length) {
-            return true;
-        }
-        $(modCardTemplate).appendTo(ROW_CONTAINER_SELECTOR);
-        return $(BTTV_MOD_CARDS_SELECTOR).length > 0;
     }
 
     onModActionClick(e) {
@@ -193,9 +294,6 @@ class ChatModCardsModule {
         const actionVal = $action.attr(BTTV_ACTION_VAL_ATTR);
         if (!action || !this.targetUser.name) return;
 
-        if (action === ACTIONS.NICKNAME) {
-            return nicknames.set(this.targetUser.name);
-        }
         if (action === ACTIONS.MESSAGES) {
             const $messages = $(`#${BTTV_USER_MESSAGES_ID}`);
             $messages.toggleClass(BTTV_HIDE_SECTION_CLASS);
@@ -217,7 +315,7 @@ class ChatModCardsModule {
     }
 
     isOpen() {
-        return $(VIEWER_CARD_CLOSE).length > 0;
+        return $('.viewer-card__overlay').length > 0;
     }
 
     onKeydown(e) {
