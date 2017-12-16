@@ -3,10 +3,10 @@ const watcher = require('../../watcher');
 const settings = require('../../settings');
 const twitch = require('../../utils/twitch');
 const keyCodes = require('../../utils/keycodes');
-const debug = require('../../utils/debug');
 const nicknames = require('../chat_nicknames');
 const dragDomElement = require('../../utils/drag-dom-element');
 
+const VIEWER_CARD = '.chat-room__viewer-card';
 const ROW_CONTAINER_SELECTOR = '.chat-room__viewer-card .viewer-card__actions';
 const VIEWER_CARD_CLOSE = '.viewer-card__hide button';
 const CHAT_LINE_SELECTOR = '.chat-line__message';
@@ -92,7 +92,7 @@ class ChatModCardsModule {
 
         watcher.on('load.chat', () => {
             // allow the card to be moved out the chat.
-            $('.chat-room__viewer-card').parent().removeClass('tw-relative');
+            $(VIEWER_CARD).parent().removeClass('tw-relative');
         });
     }
 
@@ -100,20 +100,12 @@ class ChatModCardsModule {
         const $target = $(e.currentTarget);
         const name = $target.attr('data-username');
 
-        twitch.getChannelModerators()
-            .then(moderators => moderators.indexOf(name) !== -1)
-            .catch(error => {
-                debug.error(error);
-                return false;
-            })
-            .then(isMod => {
-                this.targetUser = {
-                    name: name,
-                    isOwner: name === twitch.getCurrentChannel().name,
-                    isMod: isMod
-                };
-                this.onRenderModcards();
-            });
+        this.targetUser = {
+            name: name,
+            isOwner: name === twitch.getCurrentChannel().name,
+            isMod: false // assume target user can be moderated.
+        };
+        this.onRenderModcards();
     }
 
     onUsernameClick(e) {
@@ -143,7 +135,7 @@ class ChatModCardsModule {
         // initial load of a card requires to render asynchronously
         this.lazyRender(() => {
             $(`#${BTTV_MOD_SECTION_ID}`).toggleClass(BTTV_HIDE_MOD_SECTION_CLASS, !canModTargetUser);
-            dragDomElement($('.chat-room__viewer-card')[0], '.viewer-card');
+            dragDomElement($(VIEWER_CARD)[0], '.viewer-card');
         });
     }
 
