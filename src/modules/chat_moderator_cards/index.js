@@ -17,12 +17,20 @@ const CHAT_INPUT_SELECTOR = '.chat-input textarea';
 const BTTV_MOD_CARDS_ID = 'bttv-mod-cards';
 const BTTV_MOD_CARDS_SELECTOR = `#${BTTV_MOD_CARDS_ID}`;
 const BTTV_MOD_SECTION_ID = 'bttv-mod-section';
-const BTTV_HIDE_MOD_SECTION_CLASS = 'bttv-hide-mod-section';
+const BTTV_HIDE_SECTION_CLASS = 'bttv-hide-section';
+const BTTV_USER_MESSAGES_ID = 'bttv-user-messages';
 
 const BTTV_ACTION_CLASS = 'bttv-mod-action';
 const BTTV_ACTION_SELECTOR = `.${BTTV_ACTION_CLASS}`;
 const BTTV_ACTION_ATTR = 'bttv-action';
 const BTTV_ACTION_VAL_ATTR = 'bttv-val';
+
+const ACTIONS = {
+    TIMEOUT: 'TIMEOUT',
+    PERMIT: 'PERMIT',
+    NICKNAME: 'NICKNAME',
+    MESSAGES: 'MESSAGES'
+};
 
 const ACTIONS_MAP = {
     TIMEOUT: '/timeout',
@@ -55,17 +63,25 @@ const textButton = (action, actionVal, tooltip, text) => `
 
 const modCardTemplate = `
 <div class="tw-c-background-alt-2 tw-full-width tw-flex" id="${BTTV_MOD_CARDS_ID}">
-    <div class="tw-pd-l-1 tw-inline-flex tw-flex-row">
-        <div class="tw-inline-flex" id="${BTTV_MOD_SECTION_ID}">
-            ${textButton('TIMEOUT', 1, 'Purge', '1s')}
-            ${textButton('TIMEOUT', 60, 'Timeout 1m', '1m')}
-            ${textButton('TIMEOUT', 600, 'Timeout 10m', '10m')}
-            ${textButton('TIMEOUT', 3600, 'Timeout 1hr', '1hr')}
-            ${textButton('TIMEOUT', 24 * 3600, 'Timeout 24hr', '24hr')}
-            ${textButton('PERMIT', null, '!permit User', '!permit')}
-        </div>
+    <div class="tw-pd-l-1 tw-inline-flex tw-flex-row" id="${BTTV_MOD_SECTION_ID}">
         <div class="tw-inline-flex">
-            ${textButton('NICKNAME', null, 'Set Nickname', 'Set Nick')}
+            ${textButton(ACTIONS.TIMEOUT, 1, 'Purge', '1s')}
+            ${textButton(ACTIONS.TIMEOUT, 60, 'Timeout 1m', '1m')}
+            ${textButton(ACTIONS.TIMEOUT, 600, 'Timeout 10m', '10m')}
+            ${textButton(ACTIONS.TIMEOUT, 3600, 'Timeout 1hr', '1hr')}
+            ${textButton(ACTIONS.TIMEOUT, 24 * 3600, 'Timeout 24hr', '24hr')}
+            ${textButton(ACTIONS.PERMIT, null, '!permit User', '!permit')}
+        </div>
+    </div>
+    <div class="tw-pd-l-1 tw-inline-flex tw-flex-row">
+        <div class="tw-inline-flex">
+            ${textButton(ACTIONS.NICKNAME, null, 'Set Nickname', 'Nickname')}
+            ${textButton(ACTIONS.MESSAGES, null, 'Show chat messages', 'Messages')}
+        </div>
+    </div>
+    <div class="tw-inline-flex tw-flex-row ${BTTV_HIDE_SECTION_CLASS}" id="${BTTV_USER_MESSAGES_ID}">
+        <div class="tw-pd-b-1 bttv-messages-scroll">
+            <!-- messages -->
         </div>
     </div>
 </div>`;
@@ -73,6 +89,16 @@ const modCardTemplate = `
 const INPUT_EVENT = new Event('input', { bubbles: true });
 function setTextareaValue($inputField, msg) {
     $inputField.val(msg)[0].dispatchEvent(INPUT_EVENT);
+}
+
+function getUserMessages(userName) {
+    return Array.from($(CHAT_LINE_SELECTOR))
+        .reverse()
+        .filter(el => {
+            const messageObj = twitch.getChatMessageObject(el);
+            if (!messageObj || !messageObj.user) return false;
+            return messageObj.user.userLogin === userName;
+        });
 }
 
 class ChatModCardsModule {
@@ -132,9 +158,11 @@ class ChatModCardsModule {
         if (currentUser.name === this.targetUser.name) {
             return $(BTTV_MOD_CARDS_SELECTOR).remove();
         }
+
         // initial load of a card requires to render asynchronously
         this.lazyRender(() => {
-            $(`#${BTTV_MOD_SECTION_ID}`).toggleClass(BTTV_HIDE_MOD_SECTION_CLASS, !canModTargetUser);
+            $(`#${BTTV_MOD_SECTION_ID}`).toggleClass(BTTV_HIDE_SECTION_CLASS, !canModTargetUser);
+            $(`#${BTTV_USER_MESSAGES_ID}`).toggleClass(BTTV_HIDE_SECTION_CLASS, true);
             dragDomElement($(VIEWER_CARD)[0], '.viewer-card');
         });
     }
@@ -165,8 +193,19 @@ class ChatModCardsModule {
         const actionVal = $action.attr(BTTV_ACTION_VAL_ATTR);
         if (!action || !this.targetUser.name) return;
 
-        if (action === 'NICKNAME') {
+        if (action === ACTIONS.NICKNAME) {
             return nicknames.set(this.targetUser.name);
+        }
+        if (action === ACTIONS.MESSAGES) {
+            const $messages = $(`#${BTTV_USER_MESSAGES_ID}`);
+            $messages.toggleClass(BTTV_HIDE_SECTION_CLASS);
+            if (!$messages.hasClass(BTTV_HIDE_SECTION_CLASS)) {
+                const userMessages = getUserMessages(this.targetUser.name);
+                $messages
+                    .children()
+                    .html(userMessages.map(m => m.outerHTML).join(''));
+            }
+            return;
         }
         if (actionCommand) {
             twitch.sendChatMessage(`${actionCommand} ${this.targetUser.name} ${actionVal}`);

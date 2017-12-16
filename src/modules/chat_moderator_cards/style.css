@@ -3,10 +3,26 @@
     font-size: 10px;
 }
 
-.bttv-hide-mod-section {
+.bttv-hide-section {
     display: none!important;
 }
 
 .viewer-card__overlay {
     background: rgba(20, 20, 20, 0.7);
+}
+
+.bttv-messages-scroll {
+    overflow-y: auto;
+    max-height: 250px;
+    width: 1000px;
+
+    &::-webkit-scrollbar {
+        width: 12px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+        background-color: #777;
+    }
 }
