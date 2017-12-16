@@ -6,3 +6,7 @@
 .bttv-hide-mod-section {
     display: none!important;
 }
+
+.viewer-card__overlay {
+    background: rgba(20, 20, 20, 0.7);
+}
