@@ -1,6 +1,6 @@
 
-.bttv-font-size-10 {
-    font-size: 10px;
+.bttv-font-size-1 {
+    font-size: 1rem;
 }
 
 .bttv-hide-section {
@@ -9,6 +9,10 @@
 
 .viewer-card__overlay {
     background: rgba(20, 20, 20, 0.7);
+}
+
+.bttv-stats, .bttv-created-at {
+    color: #fff;
 }
 
 .bttv-messages-scroll {
