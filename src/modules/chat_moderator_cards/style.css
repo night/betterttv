@@ -3,6 +3,10 @@
     font-size: 1rem;
 }
 
+button.bttv-font-size-1:focus {
+    color: inherit;
+}
+
 .bttv-hide-section {
     display: none!important;
 }
