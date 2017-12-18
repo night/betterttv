@@ -39,7 +39,7 @@ button.bttv-font-size-1:focus {
     }
 }
 
-[data-a-target=chat-message-mention] {
+.chat-line__message [data-a-target="chat-message-mention"] {
     font-weight: bold;
 
     &:hover {

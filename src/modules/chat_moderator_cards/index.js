@@ -1,20 +1,17 @@
 const $ = require('jquery');
 const moment = require('moment');
-const watcher = require('../../watcher');
 const settings = require('../../settings');
 const twitch = require('../../utils/twitch');
 const twitchAPI = require('../../utils/twitch-api');
 const keyCodes = require('../../utils/keycodes');
 const nicknames = require('../chat_nicknames');
-const dragDomElement = require('../../utils/drag-dom-element');
 
-const VIEWER_CARD = '.chat-room__viewer-card';
 const ROW_CONTAINER_SELECTOR = '.chat-room__viewer-card .viewer-card__actions';
 const VIEWER_CARD_CLOSE = '.viewer-card__hide button';
 const CHAT_LINE_SELECTOR = '.chat-line__message';
 const CHAT_LINE_USERNAME_SELECTOR = '.chat-line__username';
 const VIEWER_LIST_USERNAME_SELECTOR = '.chat-viewers-list__button';
-const MENTION_SELECTOR = '[data-a-target=chat-message-mention]';
+const MENTION_SELECTOR = '.chat-line__message [data-a-target="chat-message-mention"]';
 const CHAT_INPUT_SELECTOR = '.chat-input textarea';
 
 const BTTV_MOD_CARDS_ID = 'bttv-mod-cards';
@@ -178,9 +175,7 @@ function getUserDataFromName(login) {
 function openViewerCard(name) {
     try {
         twitch.getReactElement($(CHAT_LINE_SELECTOR)[0])._owner._instance.props.onUsernameClick(name);
-        return true;
     } catch (_) {}
-    return false;
 }
 
 class ChatModCardsModule {
@@ -198,20 +193,15 @@ class ChatModCardsModule {
             .on('click.modCard_action', BTTV_ACTION_SELECTOR, e => this.onModActionClick(e))
             .on('keydown.modCard', e => this.onKeydown(e));
         this.targetUser = {};
-
-        watcher.on('load.chat', () => {
-            // allow the card to be moved out the chat.
-            $(VIEWER_CARD).parent().removeClass('tw-relative');
-        });
     }
 
     onMentionClick(e) {
         if (e.originalEvent.detail !== 1) return;
         const $target = $(e.currentTarget);
         const name = $target.text().substr(1).toLowerCase();
-        if (!openViewerCard(name)) return;
 
         this.createFromName(name);
+        openViewerCard(name);
     }
 
     onViewerListClick(e) {
@@ -273,8 +263,6 @@ class ChatModCardsModule {
         clearInterval(this.renderInterval);
         // initial load of a card requires to render asynchronously
         this.lazyRender(() => {
-            dragDomElement($(VIEWER_CARD)[0], '.viewer-card');
-
             this.renderModCards(currentIsOwner, canModTargetUser);
             this.renderNicknameButton();
             this.renderStats();
