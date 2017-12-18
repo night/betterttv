@@ -9,9 +9,10 @@ Leave the field blank to use the default.
 `;
 
 const STORAGE_ID = 'scrollbackAmount';
-let initialSize;
+let initialValue;
 
 function setChatBufferSize(value) {
+    if (!value) return;
     try {
         twitch.getChatController().chatBuffer.maxSize = value;
     } catch (_) {}
@@ -24,7 +25,7 @@ function getChatBufferSize() {
 }
 
 function checkError() {
-    if (!initialSize) {
+    if (!getChatBufferSize()) {
         debug.error('"chatBuffer.maxSize" is undefined, did twitch change the path to the chatBuffer?');
         return true;
     }
@@ -36,7 +37,13 @@ function promptSizeSettings() {
 
     const sizeString = prompt(PROMPT_BODY, getChatBufferSize());
     if (sizeString !== null) {
-        const size = parseInt(sizeString, 10) || initialSize;
+        let size;
+        if (sizeString.trim().length === 0) {
+            size = initialValue;
+        } else {
+            size = parseInt(sizeString, 10);
+            if (!size) return;
+        }
         storage.set(STORAGE_ID, size);
     }
 }
@@ -44,7 +51,7 @@ function promptSizeSettings() {
 function updateSizeSettings() {
     if (checkError()) return;
 
-    setChatBufferSize(storage.get(STORAGE_ID) || initialSize);
+    setChatBufferSize(storage.get(STORAGE_ID));
 }
 
 class ChatScrollbackSizeModule {
@@ -54,7 +61,7 @@ class ChatScrollbackSizeModule {
     }
 
     load() {
-        initialSize = getChatBufferSize();
+        initialValue = getChatBufferSize();
         updateSizeSettings();
     }
 
