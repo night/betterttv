@@ -52,7 +52,7 @@ class ChatSettingsModule {
         $settings.find('.openSettings').click(settings.openSettings);
         $settings.find('.clearChat').click(e => {
             e.preventDefault();
-            $('.chat-line').hide();
+            $('.chat-line__message').hide();
         });
 
         $settings.find('.setHighlightKeywords').click(highlightBlacklistKeywords.setHighlightKeywords);
