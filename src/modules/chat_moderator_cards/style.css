@@ -15,7 +15,7 @@ button.bttv-font-size-1:focus {
     background: rgba(20, 20, 20, 0.7);
 }
 
-.bttv-stats, .bttv-created-at {
+.bttv-stats, .bttv-created-date {
     color: #fff;
 }
 
