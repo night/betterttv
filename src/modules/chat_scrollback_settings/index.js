@@ -1,45 +1,65 @@
 const watcher = require('../../watcher');
 const storage = require('../../storage');
 const twitch = require('../../utils/twitch');
+const debug = require('../../utils/debug');
 
-const DEFAULT_SIZE = 200;
 const PROMPT_BODY = `Change the number of messages the chat is able to scrollback to. Increasing this value can slow down your browser...
-Leaving this value empty restore default settings.
+
+Leave the field blank to use the default.
 `;
 
-function changeSizeSettings(promptBody, storageID) {
-    const size = prompt(promptBody, storage.get(storageID) || DEFAULT_SIZE);
-    if (size !== null) {
-        storage.set(storageID, size.trim());
+const STORAGE_ID = 'scrollbackAmount';
+let initialSize;
+
+function setChatBufferSize(value) {
+    try {
+        twitch.getChatController().chatBuffer.maxSize = value;
+    } catch (_) {}
+}
+
+function getChatBufferSize() {
+    try {
+        return twitch.getChatController().chatBuffer.maxSize;
+    } catch (_) {}
+}
+
+function checkError() {
+    if (!initialSize) {
+        debug.error('"chatBuffer.maxSize" is undefined, did twitch change the path to the chatBuffer?');
+        return true;
+    }
+    return false;
+}
+
+function promptSizeSettings() {
+    if (checkError()) return;
+
+    const sizeString = prompt(PROMPT_BODY, getChatBufferSize());
+    if (sizeString !== null) {
+        const size = parseInt(sizeString, 10) || initialSize;
+        storage.set(STORAGE_ID, size);
     }
 }
 
 function updateSizeSettings() {
-    const sizeString = storage.get('chatScrollbackSize') || '';
-    let size;
-    if (sizeString.trim().length === 0) {
-        size = DEFAULT_SIZE;
-    } else {
-        try {
-            size = parseInt(sizeString, 10);
-        } catch (_) {
-            size = DEFAULT_SIZE;
-        }
-    }
-    try {
-        twitch.getChatController().chatBuffer.maxSize = size;
-    } catch (_) {}
-}
+    if (checkError()) return;
 
+    setChatBufferSize(storage.get(STORAGE_ID) || initialSize);
+}
 
 class ChatScrollbackSizeModule {
     constructor() {
-        watcher.on('load.chat', updateSizeSettings);
-        storage.on('changed.chatScrollbackSize', updateSizeSettings);
+        watcher.on('load.chat', () => this.load());
+        storage.on(`changed.${STORAGE_ID}`, updateSizeSettings);
+    }
+
+    load() {
+        initialSize = getChatBufferSize();
+        updateSizeSettings();
     }
 
     setChatScrollbackSize() {
-        changeSizeSettings(PROMPT_BODY, 'chatScrollbackSize');
+        promptSizeSettings();
     }
 }
 
