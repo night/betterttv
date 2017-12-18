@@ -82,11 +82,48 @@ class ChatTabcompletionModule {
             return;
         }
         const $inputField = $(e.target);
+        this.onTabComplete(e, keyCode, $inputField, includeUsers);
+        this.onChatHistory(e, keyCode, $inputField);
+    }
 
+    onTabComplete(e, keyCode, $inputField, includeUsers) {
         if (keyCode === keyCodes.Tab) {
             e.preventDefault();
             e.stopPropagation();
-            this.onTabComplete(e.shiftKey, $inputField, includeUsers);
+
+            // First time pressing tab, split before and after the word
+            if (this.tabTries === -1) {
+                const caretPos = $inputField[0].selectionStart;
+                const text = $inputField.val();
+
+                const start = (/[\:\(\)\w]+$/.exec(text.substr(0, caretPos)) || {index: caretPos}).index;
+                const end = caretPos + (/^\w+/.exec(text.substr(caretPos)) || [''])[0].length;
+                this.textSplit = [text.substring(0, start), text.substring(start, end), text.substring(end + 1)];
+
+                // If there are no words in front of the caret, exit
+                if (this.textSplit[1] === '') return;
+
+                // Get all matching completions
+                const includeEmotes = this.textSplit[0].slice(-1) !== '@';
+                this.suggestions = this.getSuggestions(this.textSplit[1], includeUsers, includeEmotes);
+            }
+
+            if (this.suggestions.length > 0) {
+                this.tabTries += e.shiftKey ? -1 : 1; // shift key iterates backwards
+                if (this.tabTries >= this.suggestions.length) this.tabTries = 0;
+                if (this.tabTries < 0) this.tabTries = this.suggestions.length - 1;
+                if (!this.suggestions[this.tabTries]) return;
+
+                let cursorOffset = 0;
+                if (this.textSplit[2].trim() === '') {
+                    this.textSplit[2] = ' ';
+                    cursorOffset = 1;
+                }
+
+                const cursorPos = this.textSplit[0].length + this.suggestions[this.tabTries].length + cursorOffset;
+                setTextareaValue($inputField, this.textSplit[0] + this.suggestions[this.tabTries] + this.textSplit[2]);
+                $inputField[0].setSelectionRange(cursorPos, cursorPos);
+            }
         } else if (keyCode === keyCodes.Esc && this.tabTries >= 0) {
             e.preventDefault();
             e.stopPropagation();
@@ -94,8 +131,6 @@ class ChatTabcompletionModule {
         } else if (keyCode !== keyCodes.Shift) {
             this.tabTries = -1;
         }
-
-        this.onChatHistory(e, keyCode, $inputField);
     }
 
     onChatHistory(e, keyCode, $inputField) {
@@ -125,42 +160,6 @@ class ChatTabcompletionModule {
             }
         } else if (this.historyPos >= 0) {
             this.messageHistory[this.historyPos] = $inputField.val();
-        }
-    }
-
-    onTabComplete(shiftKey, $inputField, includeUsers) {
-        // First time pressing tab, split before and after the word
-        if (this.tabTries === -1) {
-            const caretPos = $inputField[0].selectionStart;
-            const text = $inputField.val();
-
-            const start = (/[\:\(\)\w]+$/.exec(text.substr(0, caretPos)) || {index: caretPos}).index;
-            const end = caretPos + (/^\w+/.exec(text.substr(caretPos)) || [''])[0].length;
-            this.textSplit = [text.substring(0, start), text.substring(start, end), text.substring(end + 1)];
-
-            // If there are no words in front of the caret, exit
-            if (this.textSplit[1] === '') return;
-
-            // Get all matching completions
-            const includeEmotes = this.textSplit[0].slice(-1) !== '@';
-            this.suggestions = this.getSuggestions(this.textSplit[1], includeUsers, includeEmotes);
-        }
-
-        if (this.suggestions.length > 0) {
-            this.tabTries += shiftKey ? -1 : 1; // shift key iterates backwards
-            if (this.tabTries >= this.suggestions.length) this.tabTries = 0;
-            if (this.tabTries < 0) this.tabTries = this.suggestions.length - 1;
-            if (!this.suggestions[this.tabTries]) return;
-
-            let cursorOffset = 0;
-            if (this.textSplit[2].trim() === '') {
-                this.textSplit[2] = ' ';
-                cursorOffset = 1;
-            }
-
-            const cursorPos = this.textSplit[0].length + this.suggestions[this.tabTries].length + cursorOffset;
-            setTextareaValue($inputField, this.textSplit[0] + this.suggestions[this.tabTries] + this.textSplit[2]);
-            $inputField[0].setSelectionRange(cursorPos, cursorPos);
         }
     }
 
