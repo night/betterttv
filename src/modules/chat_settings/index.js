@@ -14,7 +14,7 @@ const CHAT_SETTINGS_TEMPLATE = `
         <div class="tw-mg-b-1"><button class="setHighlightKeywords">Set Highlight Keywords</button></div>
         <div class="tw-mg-b-1"><button class="setFontFamily">Set Font</button></div>
         <div class="tw-mg-b-1"><button class="setFontSize">Set Font Size</button></div>
-        <div class="tw-mg-b-1"><button class="setChatScrollbackSize">Set Chat Scrollback Size</button></div>
+        <div class="tw-mg-b-1"><button class="setChatScrollbackAmount">Set Scrollback Amount</button></div>
         <div class="tw-mg-b-1"><button class="clearChat">Clear My Chat</button></div>
         <button class="openSettings">BetterTTV Settings</button>
     </div>
@@ -52,7 +52,7 @@ function renderSettings() {
 
     $settings.find('.setFontFamily').click(chatFontSettings.setFontFamily);
     $settings.find('.setFontSize').click(chatFontSettings.setFontSize);
-    $settings.find('.setChatScrollbackSize').click(chatScrollbackSettings.setChatScrollbackSize);
+    $settings.find('.setChatScrollbackAmount').click(chatScrollbackSettings.setChatScrollback);
 }
 
 class ChatSettingsModule {

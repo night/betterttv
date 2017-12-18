@@ -3,10 +3,9 @@ const storage = require('../../storage');
 const twitch = require('../../utils/twitch');
 const debug = require('../../utils/debug');
 
-const PROMPT_BODY = `Change the number of messages the chat is able to scrollback to. Increasing this value can slow down your browser...
+const PROMPT_BODY = `Change the amount of messages the chat contains. Increasing this value can slow down your browser...
 
-Leave the field blank to use the default.
-`;
+Leave the field blank to use the default.`;
 
 const STORAGE_ID = 'scrollbackAmount';
 let initialValue;
@@ -65,7 +64,7 @@ class ChatScrollbackSizeModule {
         updateSizeSettings();
     }
 
-    setChatScrollbackSize() {
+    setChatScrollback() {
         promptSizeSettings();
     }
 }
