@@ -174,14 +174,14 @@ function handleCommands(message) {
             twitch.getCurrentTMISession()
                 ._tmiApi
                 .get(`/group/user/${channel.name}`)
-                .then(({chatter_count}) => twitch.sendChatAdminMessage(`Current Chatters: ${chatter_count.toLocaleString()}`));
+                .then(({chatter_count: chatterCount}) => twitch.sendChatAdminMessage(`Current Chatters: ${chatterCount.toLocaleString()}`));
             break;
         case 'followed':
             const currentUser = twitch.getCurrentUser();
             if (!currentUser) break;
             twitchAPI.get(`users/${currentUser.id}/follows/channels/${channel.id}`)
-                .then(({created_at}) => {
-                    const since = window.moment(created_at);
+                .then(({created_at: createdAt}) => {
+                    const since = window.moment(createdAt);
                     twitch.sendChatAdminMessage(`You followed ${channel.displayName} ${since.fromNow()} (${since.format('LLL')})`);
                 })
                 .catch(() => twitch.sendChatAdminMessage(`You do not follow ${channel.displayName}.`));
