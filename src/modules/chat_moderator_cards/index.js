@@ -44,7 +44,7 @@ class ChatModCardsModule {
             .on('click.modCard_chatName', CHAT_LINE_USERNAME_SELECTOR, e => this.onUsernameClick(e))
             .on('click.modCard_viewerList', VIEWER_LIST_USERNAME_SELECTOR, e => this.onViewerListClick(e))
             .on('click.modCard_mention', MENTION_SELECTOR, e => this.onMentionClick(e))
-            .on('click.modCard_action', modCards.BTTV_ACTION_SELECTOR, e => this.onModActionClick(e))
+            .on('click.modCard_action', `.${modCards.BTTV_ACTION_CLASS}`, e => this.onModActionClick(e))
             .on('keydown.modCard', e => this.onKeydown(e));
         this.targetUser = {};
     }
@@ -126,16 +126,14 @@ class ChatModCardsModule {
 
     onModActionClick(e) {
         const $action = $(e.currentTarget);
-        const action = $action.attr(modCards.BTTV_ACTION_ATTR);
-        const actionCommand = modCards.ACTIONS[action].action;
-        const actionVal = $action.attr(modCards.BTTV_ACTION_VAL_ATTR);
+        const {action, command, val} = modCards.getActionFrom($action);
         if (!action || !this.targetUser.name) return;
 
         if (action === modCards.ACTIONS.MESSAGES.id) {
             return modCards.renderUserChatMessages(this.targetUser.name);
         }
-        if (actionCommand) {
-            twitch.sendChatMessage(`${actionCommand} ${this.targetUser.name} ${actionVal}`);
+        if (command) {
+            twitch.sendChatMessage(`${command} ${this.targetUser.name} ${val}`);
         }
     }
 

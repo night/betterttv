@@ -1,15 +1,16 @@
+const $ = require('jquery');
 const moment = require('moment');
 const nicknames = require('../chat_nicknames');
 const twitch = require('../../utils/twitch');
 
 const ACTIONS = {
-    BAN: {id: 'BAN', action: '/ban'},
-    UNBAN: {id: 'UNBAN', action: '/unban'},
-    MOD: {id: 'MOD', action: '/mod'},
-    UNMOD: {id: 'UNMOD', action: '/unmod'},
-    TIMEOUT: {id: 'TIMEOUT', action: '/timeout'},
-    PERMIT: {id: 'PERMIT', action: '!permit'},
-    MESSAGES: {id: 'MESSAGES', action: ''}
+    BAN: {id: 'BAN', command: '/ban'},
+    UNBAN: {id: 'UNBAN', command: '/unban'},
+    MOD: {id: 'MOD', command: '/mod'},
+    UNMOD: {id: 'UNMOD', command: '/unmod'},
+    TIMEOUT: {id: 'TIMEOUT', command: '/timeout'},
+    PERMIT: {id: 'PERMIT', command: '!permit'},
+    MESSAGES: {id: 'MESSAGES'}
 };
 
 const ACTION_CONTAINER_SELECTOR = '.chat-room__viewer-card .viewer-card__actions';
@@ -137,7 +138,7 @@ function renderModCards(targetUser) {
 
     let $modCards = $(`.${BTTV_MOD_CARDS_CLASS}`);
     if ($modCards.length === 0) {
-        $(ACTION_CONTAINER_SELECTOR).children().last().remove(); // remove twitch mod cards.
+        $(ACTION_CONTAINER_SELECTOR).children().last().remove(); // remove twitch default buttons.
         $modCards = $(MOD_ACTIONS_TEMPLATE);
         $modCards.appendTo(ACTION_CONTAINER_SELECTOR);
     }
@@ -160,30 +161,22 @@ function renderNicknameButton(targetUser) {
     }
 }
 
-function renderCreatedDate(targetUser) {
-    let $el = $('.viewer-card__display-name').find('.bttv-created-date');
-    if ($el.length === 0) {
-        $el = $(CREATED_TEMPLATE);
-        $el.appendTo('.viewer-card__display-name');
-    }
-    $el.text('Loading...');
-    targetUser.dataPromise.then(data => {
-        $el.text(`Created ${moment(data.created_at).format('MMM D, YYYY')}`);
-    });
-}
-
 function renderStats(targetUser) {
-    let $stats = $('.viewer-card__display-name').find('.bttv-stats');
+    const $displayName = $('.viewer-card__display-name');
+    let $stats = $displayName.find('.bttv-stats');
+    let $created = $displayName.find('.bttv-created-date');
     if ($stats.length === 0) {
-        $stats = $(STATS_TEMPLATE);
-        $stats.appendTo('.viewer-card__display-name');
+        $stats = $(STATS_TEMPLATE).appendTo($displayName);
+        $created = $(CREATED_TEMPLATE).appendTo($displayName);
     }
     $stats.find('.bttv-views-value').text('0');
     $stats.find('.bttv-follows-value').text('0');
+    $created.text('Loading...');
 
     targetUser.dataPromise.then(data => {
         $stats.find('.bttv-views-value').text(data.views.toLocaleString());
         $stats.find('.bttv-follows-value').text(data.followers.toLocaleString());
+        $created.text(`Created ${moment(data.created_at).format('MMM D, YYYY')}`);
     });
 }
 
@@ -192,7 +185,6 @@ function render(targetUser) {
     renderModCards(targetUser);
     renderNicknameButton(targetUser);
     renderStats(targetUser);
-    renderCreatedDate(targetUser);
 }
 
 function getUserMessages(userName) {
@@ -216,12 +208,19 @@ function renderUserChatMessages(userName) {
     }
 }
 
+function getActionFrom($action) {
+    const action = $action.attr(BTTV_ACTION_ATTR);
+    return {
+        action,
+        command: ACTIONS[action].command,
+        val: $action.attr(BTTV_ACTION_VAL_ATTR)
+    };
+}
+
 module.exports = {
     render,
     renderUserChatMessages,
+    getActionFrom,
     ACTIONS,
-    BTTV_ACTION_SELECTOR: `.${BTTV_ACTION_CLASS}`,
-    BTTV_ACTION_ATTR,
-    BTTV_ACTION_VAL_ATTR,
-    BTTV_HIDE_SECTION_CLASS
+    BTTV_ACTION_CLASS
 };
