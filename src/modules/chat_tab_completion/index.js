@@ -17,6 +17,17 @@ function setTextareaValue($inputField, msg) {
     $inputField.val(msg)[0].dispatchEvent(INPUT_EVENT);
 }
 
+function duplicates() {
+    const set = new Set();
+    return emoteName => {
+        if (set.has(emoteName)) {
+            return false;
+        }
+        set.add(emoteName);
+        return true;
+    };
+}
+
 class ChatTabcompletionModule {
     constructor() {
         settings.add({
@@ -56,7 +67,8 @@ class ChatTabcompletionModule {
             emoteList = emotes.getEmotes()
                 .map(emote => emote.code)
                 .concat(this.getTwitchEmotes())
-                .filter(word => word.toLowerCase().indexOf(prefix.toLowerCase()) === 0);
+                .filter(word => word.toLowerCase().indexOf(prefix.toLowerCase()) === 0)
+                .filter(duplicates());
             emoteList.sort();
         }
 
