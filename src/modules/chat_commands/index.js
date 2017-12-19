@@ -4,7 +4,6 @@ const twitch = require('../../utils/twitch');
 const twitchAPI = require('../../utils/twitch-api');
 const chat = require('../chat');
 const anonChat = require('../anon_chat');
-const moment = require('moment');
 
 const CommandHelp = {
     b: 'Usage: "/b <login> [reason]" - Shortcut for /ban',
