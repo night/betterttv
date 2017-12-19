@@ -173,10 +173,10 @@ function renderStats(targetUser) {
     $stats.find('.bttv-follows-value').text('0');
     $created.text('Loading...');
 
-    targetUser.dataPromise.then(data => {
-        $stats.find('.bttv-views-value').text(data.views.toLocaleString());
-        $stats.find('.bttv-follows-value').text(data.followers.toLocaleString());
-        $created.text(`Created ${moment(data.created_at).format('MMM D, YYYY')}`);
+    targetUser.dataPromise.then(({views, followers, created_at: createdAt}) => {
+        $stats.find('.bttv-views-value').text(views.toLocaleString());
+        $stats.find('.bttv-follows-value').text(followers.toLocaleString());
+        $created.text(`Created ${moment(createdAt).format('MMM D, YYYY')}`);
     });
 }
 
