@@ -187,7 +187,7 @@ class SettingsModule {
     renderSettingsMenuOption() {
         if ($('.bttvSettingsIconDropDown').length) return;
 
-        $('.top-nav__dropdown-wrapper a[data-a-target="settings-dropdown-link"]').after(`
+        $('a[data-a-target="settings-dropdown-link"]').after(`
             <a href="#" target="_blank" class="tw-interactable" data-a-target="bttv-settings-dropdown-link">
                 <div class="tw-c-text-alt tw-align-items-center tw-flex tw-pd-x-2 tw-pd-y-05">
                     <div class="tw-align-items-center tw-flex tw-mg-r-1">
