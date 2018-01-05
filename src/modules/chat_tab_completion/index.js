@@ -7,29 +7,25 @@ const emotes = require('../emotes');
 
 const CHAT_INPUT_SELECTOR = '.chat-input textarea';
 const AUTOCOMPLETE_SUGGESTIONS_SELECTOR = 'div[data-a-target="autocomplete-balloon"]';
+const INPUT_EVENT = new Event('input', {bubbles: true});
 
-function isSuggestionsShowing() {
-    return $(AUTOCOMPLETE_SUGGESTIONS_SELECTOR).length > 0;
-}
-
-const INPUT_EVENT = new Event('input', { bubbles: true });
 function setTextareaValue($inputField, msg) {
     $inputField.val(msg)[0].dispatchEvent(INPUT_EVENT);
 }
 
-function duplicates() {
-    const set = new Set();
-    return emoteName => {
-        if (set.has(emoteName)) {
-            return false;
-        }
-        set.add(emoteName);
-        return true;
-    };
+function normalizedStartsWith(word, prefix) {
+    return word.toLowerCase().startsWith(prefix);
 }
 
 class ChatTabcompletionModule {
     constructor() {
+        settings.add({
+            id: 'tabCompletionTooltip',
+            name: 'Completion Tooltip',
+            defaultValue: true,
+            description: 'Shows a tooltip with suggested names when using @ completion'
+        });
+
         settings.add({
             id: 'tabCompletionEmotePriority',
             name: 'Tab Completion Emote Priority',
@@ -37,51 +33,44 @@ class ChatTabcompletionModule {
             default: false,
         });
 
-        watcher.on('load.chat', () => this.load());
-        watcher.on('chat.message', ($el, messageObj) => this.storeUser(messageObj.user));
+        watcher.on('chat.message', ($el, messageObj) => this.storeUser(messageObj));
+        watcher.on('load.chat', () => this.resetChannelData());
+        settings.on('changed.tabCompletionTooltip', () => this.loadTabCompletionTooltip());
+        this.load();
+    }
 
-        $('body')
-            .on('keydown', CHAT_INPUT_SELECTOR, e => this.onKeydown(e))
-            .on('focus', CHAT_INPUT_SELECTOR, () => this.onFocus());
-
-        this.messageHistory = [];
+    loadTabCompletionTooltip() {
+        $('body').toggleClass('bttv-hide-tab-completion-tooltip', !settings.get('tabCompletionTooltip'));
     }
 
     load() {
-        this.userList = new Set();
         this.tabTries = -1;
         this.suggestions = null;
         this.textSplit = ['', '', ''];
+        this.userList = new Set();
+        this.messageHistory = [];
+        this.historyPos = -1;
+
+        $('body').off('keydown.tabComplete focus.tabComplete')
+            .on('keydown.tabComplete', CHAT_INPUT_SELECTOR, e => this.onKeydown(e))
+            .on('focus.tabComplete', CHAT_INPUT_SELECTOR, () => this.onFocus());
+
+        this.loadTabCompletionTooltip();
+    }
+
+    storeUser({user: {userDisplayName, userLogin}}) {
+        const user = userDisplayName && userDisplayName.toLowerCase() === userLogin ? userDisplayName : userLogin;
+        this.userList.add(user);
+    }
+
+    onSendMessage({message}) {
+        if (message.trim().length === 0) return;
+        this.messageHistory.unshift(message);
         this.historyPos = -1;
     }
 
-    storeUser(user) {
-        this.userList.add(user.userDisplayName || user.userLogin);
-    }
-
-    getSuggestions(prefix, includeUsers = true, includeEmotes = true) {
-        let userList = [];
-        let emoteList = [];
-
-        if (includeEmotes) {
-            emoteList = emotes.getEmotes()
-                .map(emote => emote.code)
-                .concat(this.getTwitchEmotes())
-                .filter(word => word.toLowerCase().indexOf(prefix.toLowerCase()) === 0)
-                .filter(duplicates());
-            emoteList.sort();
-        }
-
-        if (includeUsers) {
-            userList = this.getChatMembers().filter(word => word.toLowerCase().indexOf(prefix.toLowerCase()) === 0);
-            userList.sort();
-        }
-
-        if (settings.get('tabCompletionEmotePriority') === true) {
-            return [...emoteList, ...userList];
-        } else {
-            return [...userList, ...emoteList];
-        }
+    resetChannelData() {
+        this.userList = new Set();
     }
 
     onFocus() {
@@ -90,18 +79,11 @@ class ChatTabcompletionModule {
 
     onKeydown(e, includeUsers = true) {
         const keyCode = e.keyCode || e.which;
-        if (isSuggestionsShowing() || e.ctrlKey) {
-            return;
-        }
-        const $inputField = $(e.target);
-        this.onTabComplete(e, keyCode, $inputField, includeUsers);
-        this.onChatHistory(e, keyCode, $inputField);
-    }
+        if (e.ctrlKey) return;
 
-    onTabComplete(e, keyCode, $inputField, includeUsers) {
+        const $inputField = $(e.target);
         if (keyCode === keyCodes.Tab) {
             e.preventDefault();
-            e.stopPropagation();
 
             // First time pressing tab, split before and after the word
             if (this.tabTries === -1) {
@@ -118,6 +100,10 @@ class ChatTabcompletionModule {
                 // Get all matching completions
                 const includeEmotes = this.textSplit[0].slice(-1) !== '@';
                 this.suggestions = this.getSuggestions(this.textSplit[1], includeUsers, includeEmotes);
+            }
+
+            if (settings.get('tabCompletionTooltip') && this.textSplit[0].slice(-1) === '@') {
+                return;
             }
 
             if (this.suggestions.length > 0) {
@@ -137,27 +123,22 @@ class ChatTabcompletionModule {
                 $inputField[0].setSelectionRange(cursorPos, cursorPos);
             }
         } else if (keyCode === keyCodes.Esc && this.tabTries >= 0) {
-            e.preventDefault();
-            e.stopPropagation();
             setTextareaValue($inputField, this.textSplit.join(''));
         } else if (keyCode !== keyCodes.Shift) {
             this.tabTries = -1;
         }
-    }
 
-    onChatHistory(e, keyCode, $inputField) {
+        // Message history
         if (keyCode === keyCodes.UpArrow) {
+            if ($(AUTOCOMPLETE_SUGGESTIONS_SELECTOR).length > 0) return;
             if ($inputField[0].selectionStart > 0) return;
             if (this.historyPos + 1 === this.messageHistory.length) return;
-            e.preventDefault();
-            e.stopPropagation();
             const prevMsg = this.messageHistory[++this.historyPos];
             setTextareaValue($inputField, prevMsg);
             $inputField[0].setSelectionRange(0, 0);
         } else if (keyCode === keyCodes.DownArrow) {
+            if ($(AUTOCOMPLETE_SUGGESTIONS_SELECTOR).length > 0) return;
             if ($inputField[0].selectionStart < $inputField.val().length) return;
-            e.preventDefault();
-            e.stopPropagation();
             if (this.historyPos > 0) {
                 const prevMsg = this.messageHistory[--this.historyPos];
                 setTextareaValue($inputField, prevMsg);
@@ -175,23 +156,42 @@ class ChatTabcompletionModule {
         }
     }
 
+    getSuggestions(prefix, includeUsers = true, includeEmotes = true) {
+        let userList;
+        let emoteList;
+
+        prefix = prefix.toLowerCase();
+
+        if (includeEmotes) {
+            const emoteSet = new Set();
+            emotes.getEmotes()
+                .forEach(({code}) => {
+                    if (!normalizedStartsWith(code, prefix)) return;
+                    emoteSet.add(code);
+                });
+            this.getTwitchEmotes()
+                .forEach(code => {
+                    if (!normalizedStartsWith(code, prefix)) return;
+                    emoteSet.add(code);
+                });
+            emoteList = Array.from(emoteSet);
+            emoteList.sort();
+        }
+
+        if (includeUsers) {
+            userList = Array.from(this.userList).filter(word => normalizedStartsWith(word, prefix));
+            userList.sort();
+        }
+
+        if (settings.get('tabCompletionEmotePriority') === true) {
+            return [...emoteList, ...userList];
+        } else {
+            return [...userList, ...emoteList];
+        }
+    }
+
     getTwitchEmotes() {
         return Object.keys(twitch.getChatController().getCurrentEmotes());
-    }
-
-    getChatMembers() {
-        const channel = twitch.getCurrentChannel();
-        if (channel && channel.displayName) {
-            this.userList.add(channel.displayName);
-        }
-        return Array.from(this.userList.values());
-    }
-
-    onSendMessage(msgObj) {
-        const message = msgObj.message;
-        if (message.trim().length === 0) return;
-        this.messageHistory.unshift(message);
-        this.historyPos = -1;
     }
 }
 
