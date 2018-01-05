@@ -18,7 +18,6 @@ function stepPlaybackSpeed(faster) {
 }
 
 function handleKeyEvent(keypress) {
-    const offsetLower = 32;
     if (keypress.ctrlKey || keypress.metaKey) return;
     if ($('input, textarea, select').is(':focus')) return;
 
@@ -26,19 +25,21 @@ function handleKeyEvent(keypress) {
     if (!$player.length) return;
 
     switch (keypress.keyCode) {
-        case keyCodes.LessThan:
+        case keyCodes.KeyPress.LessThan:
+        case keyCodes.KeyPress.Comma:
             stepPlaybackSpeed(false);
             break;
-        case keyCodes.GreaterThan:
+        case keyCodes.KeyPress.GreaterThan:
+        case keyCodes.KeyPress.Period:
             stepPlaybackSpeed(true);
             break;
-        case offsetLower + keyCodes.k:
+        case keyCodes.KeyPress.k:
             $player.find('.qa-pause-play-button').click();
             break;
-        case offsetLower + keyCodes.f:
+        case keyCodes.KeyPress.f:
             $player.find('.qa-fullscreen-button').click();
             break;
-        case offsetLower + keyCodes.m:
+        case keyCodes.KeyPress.m:
             $player.find('.qa-control-volume').click();
             break;
     }
