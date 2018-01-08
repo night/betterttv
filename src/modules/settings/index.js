@@ -39,8 +39,7 @@ const settingsPanelTemplate = () => `
         <span id="close">&times;</span>
     </div>
     <div id="bttvSettings" class="options-list">
-        <h2 class="option" style="color: orange;">🚨 🚧 ⚠️ BetterTTV for Twitch's new site is incomplete. We know things are broken/missing. ⚠️ 🚧 🚨</h2>
-        <!--h2 class="option">Here you can manage the various BetterTTV options. Click On or Off to toggle settings.</h2-->
+        <h2 class="option">Here you can manage the various BetterTTV options. Click On or Off to toggle settings.</h2>
     </div>
     <div id="bttvAbout" style="display:none;">
         <div class="aboutHalf">
