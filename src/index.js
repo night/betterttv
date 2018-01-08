@@ -19,9 +19,7 @@
      TODO:
 
      - TwitchEmotes Sub Emote Tip
-     - Chat Moderator Cards
      - Disable Channel Header (Twitch did not implement this yet)
-     - Tab Completion
 
     */
 
