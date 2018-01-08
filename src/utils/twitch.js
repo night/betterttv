@@ -299,6 +299,14 @@ module.exports = {
         return msgObject;
     },
 
+    getChatModeratorCardProps(element) {
+        const apolloComponent = searchReactChildren(
+            getReactInstance(element),
+            node => node._instance && node._instance.props.data
+        );
+        return apolloComponent ? apolloComponent._instance.props : null;
+    },
+
     getUserIsModeratorFromTagsBadges(badges) {
         if (!badges) return false;
         badges = Array.isArray(badges) ? badges.map(b => b.id) : Object.keys(badges);

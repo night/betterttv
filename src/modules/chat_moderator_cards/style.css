@@ -1,0 +1,81 @@
+.viewer-card__overlay {
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.viewer-card__actions .tw-c-background-alt-2 .tw-tooltip-wrapper {
+    .tw-pd-r-1, .tw-pd-l-1 {
+        padding-right: 0px !important;
+        padding-left: 0px !important;
+    }
+}
+
+.bttv-moderator-card-action {
+    font-size: 1rem;
+
+    .tw-button__text {
+        height: 28px;
+    }
+}
+
+.bttv-moderator-card-user-stats {
+    color: white;
+    margin-bottom: 10px;
+}
+
+.bttv-moderator-card-messages {
+    .message-list {
+        overflow-y: auto;
+        max-height: 100px;
+        width: 100%;
+        display: none;
+
+        &::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+            background-color: #777;
+        }
+
+        .chat-line__mod-icons {
+            display: none !important;
+        }
+    }
+
+    .label {
+        padding-top: 5px;
+        padding-left: 8px;
+        padding-bottom: 5px;
+        padding-right: 5px;
+        position: relative;
+        font-size: 12px;
+        font-weight: bold;
+        cursor: pointer;
+        user-select: none;
+
+        .triangle {
+            width: 0;
+            height: 0;
+            opacity: 0.5;
+            position: absolute;
+            right: 8px;
+            top: 8px;
+            border-top: 7px solid transparent;
+            border-bottom: 7px solid transparent;
+            border-left: 7px solid #6441a4;
+            transition: all 50ms ease-in;
+
+            &.open {
+                transform: rotate(90deg);
+            }
+        }
+    }
+}
+
+.tw-theme--dark {
+    .bttv-moderator-card-messages .triangle {
+        border-left-color: white;
+    }
+}
