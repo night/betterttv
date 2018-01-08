@@ -243,6 +243,18 @@ class Watcher extends SafeEventEmitter {
                     if ($el.hasClass('chat-line__message')) {
                         emitMessage($el);
                     }
+
+                    if ($el.hasClass('viewer-card-layer')) {
+                        this.emit('chat.moderator_card.open', $el);
+                    }
+                }
+
+                for (const el of mutation.removedNodes) {
+                    const $el = $(el);
+
+                    if ($el.hasClass('viewer-card-layer')) {
+                        this.emit('chat.moderator_card.close', $el);
+                    }
                 }
             })
         );
