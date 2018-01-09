@@ -42,6 +42,11 @@
         .chat-line__mod-icons {
             display: none !important;
         }
+
+        /* Prevent Message Delete Link */
+        .chat-line__message--deleted > a {
+            pointer-events: none;
+        }
     }
 
     .label {

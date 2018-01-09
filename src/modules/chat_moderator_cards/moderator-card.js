@@ -104,7 +104,7 @@ class ModeratorCard {
     }
 
     close() {
-        this.$element.find('.viewer-card__hide').click();
+        this.$element.find('.viewer-card__hide > button').click();
     }
 
     render() {
@@ -182,20 +182,20 @@ class ModeratorCard {
             let command;
             let duration;
             switch (keyCode) {
-                case keyCodes.t:
+                case keyCodes.T:
                     command = Commands.TIMEOUT;
                     break;
-                case keyCodes.p:
+                case keyCodes.P:
                     command = Commands.TIMEOUT;
                     duration = 1;
                     break;
-                case keyCodes.a:
+                case keyCodes.A:
                     command = Commands.PERMIT;
                     break;
-                case keyCodes.u:
+                case keyCodes.U:
                     command = Commands.UNBAN;
                     break;
-                case keyCodes.b:
+                case keyCodes.B:
                     command = Commands.BAN;
                     break;
             }
@@ -206,10 +206,11 @@ class ModeratorCard {
             }
         }
 
-        if (keyCode === keyCodes.i) {
+        if (keyCode === keyCodes.I) {
             twitch.sendChatMessage(`${Commands.IGNORE} ${this.user.name}`);
             this.close();
-        } else if (keyCode === keyCodes.w) {
+        } else if (keyCode === keyCodes.W) {
+            e.preventDefault();
             const $chatInput = $(CHAT_INPUT_SELECTOR);
             $chatInput.val(`${Commands.WHISPER} ${this.user.name} `);
             $chatInput.focus();
