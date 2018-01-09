@@ -1,7 +1,3 @@
-.viewer-card__overlay {
-    background: rgba(0, 0, 0, 0.4);
-}
-
 .viewer-card__actions .tw-c-background-alt-2 .tw-tooltip-wrapper {
     .tw-pd-r-1, .tw-pd-l-1 {
         padding-right: 0px !important;
@@ -19,7 +15,8 @@
 
 .bttv-moderator-card-user-stats {
     color: white;
-    margin-bottom: 10px;
+    padding-bottom: 10px;
+    background-color: rgba(0,0,0,0.6);
 }
 
 .bttv-moderator-card-messages {
