@@ -143,7 +143,7 @@ class ModeratorCard {
         const isCurrentUser = currentUser.name === this.user.name;
         const isModerator = this.user.isOwner || this.user.isModerator;
 
-        const currentUserCanModerate = !isCurrentUser && (currentUserIsOwner || (currentUserIsModerator && isModerator));
+        const currentUserCanModerate = !isCurrentUser && (currentUserIsOwner || (currentUserIsModerator && !isModerator));
         if (!currentUserCanModerate) return;
 
         const $modCards = $(MODERATOR_ACTIONS_TEMPLATE);
