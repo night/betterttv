@@ -191,7 +191,7 @@ class ChatTabcompletionModule {
     }
 
     getTwitchEmotes() {
-        return Object.keys(twitch.getChatController().getCurrentEmotes());
+        return Object.keys(twitch.getChatController().chatService.selfEmotes);
     }
 }
 
