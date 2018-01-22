@@ -10,7 +10,7 @@ class HideNewViewerGreetingModule {
             description: 'Hides the new viewer greeting message from the chat'
         });
         settings.on('changed.hideNewViewerGreeting', () => this.toggleNewViewerGreeting());
-        this.toggleFriendsList();
+        this.toggleNewViewerGreeting();
     }
 
     toggleNewViewerGreeting() {
