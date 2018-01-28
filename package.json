@@ -1,7 +1,7 @@
 {
   "name": "BetterTTV",
   "author": "Night",
-  "version": "7.2.5",
+  "version": "7.2.6",
   "description": "BetterTTV enhances Twitch with new features, emotes, and more.",
   "main": "betterttv.js",
   "scripts": {
@@ -49,7 +49,7 @@
     "require-globify": "^1.4.1",
     "resizable": "^1.2.0",
     "twemoji": "^2.5.0",
-    "twitch-chat-emotes": "github:night/Userscript--Twitch-Chat-Emotes#5be5af36763ae36da718d0a9df449f3c5957dbd1",
+    "twitch-chat-emotes": "github:night/Userscript--Twitch-Chat-Emotes#250e2ee1a3cbe687aec1d6df80dd4c7d23f84593",
     "uglify-save-license": "^0.4.1",
     "view-list": "^2.1.0",
     "vinyl-buffer": "^1.0.1",
