@@ -1,0 +1,5 @@
+.bttv-hide-new-viewer-greeting {
+  .chat-line__ritual {
+    display: none;
+  }
+}
