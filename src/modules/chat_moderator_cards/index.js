@@ -39,7 +39,9 @@ class ChatModeratorCardsModule {
             const {chat: {messages}} = connectRoot._context.store.getState();
             const currentChannel = twitch.getCurrentChannel();
             if (!currentChannel) return;
-            const message = messages[currentChannel.name].find(({id}) => id === sourceID);
+            const channelMessages = messages[currentChannel.name];
+            if (!channelMessages) return;
+            const message = channelMessages.find(({id}) => id === sourceID);
             if (message) {
                 isOwner = twitch.getUserIsOwnerFromTagsBadges(message.badges);
                 isModerator = twitch.getUserIsModeratorFromTagsBadges(message.badges);

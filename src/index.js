@@ -37,9 +37,9 @@
                     /\.betterttv\.net/
                 ],
                 shouldSendCallback: data => {
-                    if (['raven-js/src/raven in wrapped'].includes(data.culprit)) return false;
+                    if (data.culprit && data.culprit.includes('raven-js/src/raven')) return false;
                     const exception = data.exception && data.exception.values[0];
-                    if (exception && ['NS_ERROR_NOT_INITIALIZED', 'NS_ERROR_OUT_OF_MEMORY', 'NS_ERROR_FAILURE'].includes(exception.type)) return false;
+                    if (exception && ['NS_ERROR_NOT_INITIALIZED', 'NS_ERROR_OUT_OF_MEMORY', 'NS_ERROR_FAILURE', 'NS_ERROR_FILE_CORRUPTED'].includes(exception.type)) return false;
                     return true;
                 }
             }

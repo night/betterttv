@@ -14,7 +14,7 @@ function setTextareaValue($inputField, msg) {
 }
 
 function normalizedStartsWith(word, prefix) {
-    return word.toLowerCase().startsWith(prefix);
+    return word && word.toLowerCase().startsWith(prefix);
 }
 
 class ChatTabcompletionModule {
@@ -157,8 +157,8 @@ class ChatTabcompletionModule {
     }
 
     getSuggestions(prefix, includeUsers = true, includeEmotes = true) {
-        let userList;
-        let emoteList;
+        let userList = [];
+        let emoteList = [];
 
         prefix = prefix.toLowerCase();
 
@@ -191,7 +191,11 @@ class ChatTabcompletionModule {
     }
 
     getTwitchEmotes() {
-        return Object.keys(twitch.getChatController().chatService.selfEmotes);
+        try {
+            return Object.keys(twitch.getChatController().chatService.selfEmotes);
+        } catch (_) {
+            return [];
+        }
     }
 }
 
