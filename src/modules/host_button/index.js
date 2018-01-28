@@ -35,7 +35,7 @@ class HostButtonModule {
 
         const currentUser = twitch.getCurrentUser();
         const currentChannel = twitch.getCurrentChannel();
-        if (currentUser.id === currentChannel.id) return;
+        if (!currentChannel || currentUser.id === currentChannel.id) return;
 
         $hostButton = $(buttonTemplate);
         this.embedHostButton();

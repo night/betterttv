@@ -41,6 +41,7 @@ const routes = {
     DIRECTORY: 'DIRECTORY',
     CHAT: 'CHAT',
     CHANNEL: 'CHANNEL',
+    DASHBOARD: 'DASHBOARD',
     VOD: 'VOD'
 };
 
@@ -50,6 +51,7 @@ const routeKeysToPaths = {
     [routes.DIRECTORY]: /^\/directory/i,
     [routes.CHAT]: /^(\/popout)?\/[a-z0-9-_]+\/chat$/i,
     [routes.VOD]: /^\/videos\/[0-9]+$/i,
+    [routes.DASHBOARD]: /^\/[a-z0-9-_]+\/dashboard/i,
     [routes.CHANNEL]: /^\/[a-z0-9-_]+/i
 };
 

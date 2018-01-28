@@ -21,7 +21,10 @@ function bttvConsumeChatEvent(event) {
 }
 
 function patchChatController() {
-    const chatBuffer = twitch.getChatController().chatBuffer;
+    const chatController = twitch.getChatController();
+    if (!chatController) return;
+
+    const chatBuffer = chatController.chatBuffer;
     if (!chatBuffer) return;
 
     const newTwitchConsumeChatEvent = chatBuffer.consumeChatEvent;

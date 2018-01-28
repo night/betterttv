@@ -35,7 +35,11 @@ class AnonChatModule {
 
         client.configuration.username = username;
         twitch.sendChatAdminMessage(`BetterTTV: [Anon Chat] ${message}`);
-        socket.send('QUIT');
+        try {
+            socket.send('QUIT');
+        } catch (_) {
+            // Failed to execute 'send' on 'WebSocket': Still in CONNECTING state.
+        }
     }
 
     part() {

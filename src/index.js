@@ -29,12 +29,15 @@
             {
                 release: process.env.GIT_REV,
                 environment: process.env.NODE_ENV,
-                ignoreErrors: [],
+                ignoreErrors: [
+                    'InvalidAccessError',
+                ],
                 whitelistUrls: [
                     /betterttv\.js/,
                     /\.betterttv\.net/
                 ],
                 shouldSendCallback: data => {
+                    if (['raven-js/src/raven in wrapped'].includes(data.culprit)) return false;
                     const exception = data.exception && data.exception.values[0];
                     if (exception && ['NS_ERROR_NOT_INITIALIZED', 'NS_ERROR_OUT_OF_MEMORY', 'NS_ERROR_FAILURE'].includes(exception.type)) return false;
                     return true;

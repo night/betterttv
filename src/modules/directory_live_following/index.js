@@ -15,7 +15,9 @@ class DirectoryLiveFollowingModule {
 
     load() {
         if (settings.get('showDirectoryLiveTab') === false) return;
-        $('a[href="/directory/following/live"]')[0].click();
+        const button = $('a[href="/directory/following/live"]');
+        if (!button.length) return;
+        button[0].click();
     }
 }
 

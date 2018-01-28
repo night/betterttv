@@ -22,7 +22,8 @@ class DisableHostModeModule {
 
     load() {
         const chatController = twitch.getChatController();
-        if (!chatController) return;
+        if (!chatController || !chatController.hostingHandler) return;
+        if (!chatController.props || !chatController.props.onHostingChange) return;
 
         if (chatController.hostingHandler !== newHostingHandler) {
             oldHostingHandler = chatController.hostingHandler;

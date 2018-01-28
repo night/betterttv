@@ -47,6 +47,7 @@ class ConversationsModule {
 
     parseMessage($element, message) {
         const $from = $element.find(CHAT_USER_SELECTOR);
+        if (!message.from) return;
         const {id, login: name, displayName, chatColor: color} = message.from;
         const mockUser = {
             id,

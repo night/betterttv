@@ -77,7 +77,7 @@ class PersonalEmotes extends AbstractEmotes {
 
     broadcastMeConversation($el, msgObject) {
         const user = twitch.getCurrentUser();
-        if (!user || msgObject.from.id !== user.id) return;
+        if (!user || !msgObject.from || msgObject.from.id !== user.id) return;
 
         const threadId = getThreadId($el.closest('.whispers-thread'));
         if (!threadId) return;
