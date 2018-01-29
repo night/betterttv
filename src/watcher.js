@@ -8,6 +8,7 @@ const CLIPS_HOSTNAME = 'clips.twitch.tv';
 
 let router;
 let currentPath = '';
+let currentRoute = '';
 let chatWatcher;
 let vodChatWatcher;
 let clipsChatWatcher;
@@ -17,8 +18,8 @@ let channel = {};
 const loadPredicates = {
     following: () => !!$('.following__header-tabs').length,
     channel: () => {
-        const href = $('.channel-header__user').attr('href');
-        return !!href && href !== '/undefined';
+        const href = $('.channel-header__user-avatar img').attr('src');
+        return !!href;
     },
     chat: () => {
         if (!twitch.updateCurrentChannel()) return false;
@@ -32,10 +33,12 @@ const loadPredicates = {
         return true;
     },
     player: () => !!twitch.getCurrentPlayer(),
-    vod: () => twitch.updateCurrentChannel() && $('.video-chat__input textarea').length
+    vod: () => twitch.updateCurrentChannel() && $('.video-chat__input textarea').length,
+    homepage: () => !!$('.front-page .carousel-player .player').length
 };
 
 const routes = {
+    HOMEPAGE: 'HOMEPAGE',
     DIRECTORY_FOLLOWING_LIVE: 'DIRECTORY_FOLLOWING_LIVE',
     DIRECTORY_FOLLOWING: 'DIRECTORY_FOLLOWING',
     DIRECTORY: 'DIRECTORY',
@@ -46,6 +49,7 @@ const routes = {
 };
 
 const routeKeysToPaths = {
+    [routes.HOMEPAGE]: /^\/$/i,
     [routes.DIRECTORY_FOLLOWING_LIVE]: /^\/directory\/following\/live$/i,
     [routes.DIRECTORY_FOLLOWING]: /^\/directory\/following$/i,
     [routes.DIRECTORY]: /^\/directory/i,
@@ -151,6 +155,7 @@ class Watcher extends SafeEventEmitter {
     routeObserver() {
         const onRouteChange = location => {
             const lastPath = currentPath;
+            const lastRoute = currentRoute;
             const path = location.pathname;
             const route = getRouteFromPath(path);
 
@@ -160,10 +165,12 @@ class Watcher extends SafeEventEmitter {
             this.emit('load');
 
             currentPath = path;
+            currentRoute = route;
             if (currentPath === lastPath) return;
 
             switch (route) {
                 case routes.DIRECTORY_FOLLOWING:
+                    if (lastRoute === routes.DIRECTORY_FOLLOWING_LIVE) break;
                     this.waitForLoad('following').then(() => this.emit('load.directory.following'));
                     break;
                 case routes.CHAT:
@@ -177,6 +184,9 @@ class Watcher extends SafeEventEmitter {
                     this.waitForLoad('channel').then(() => this.emit('load.channel'));
                     this.waitForLoad('chat').then(() => this.emit('load.chat'));
                     this.waitForLoad('player').then(() => this.emit('load.player'));
+                    break;
+                case routes.HOMEPAGE:
+                    this.waitForLoad('homepage').then(() => this.emit('load.homepage'));
                     break;
             }
         };
@@ -246,8 +256,8 @@ class Watcher extends SafeEventEmitter {
                         emitMessage($el);
                     }
 
-                    if ($el.hasClass('viewer-card-layer')) {
-                        this.emit('chat.moderator_card.open', $el);
+                    if ($el.children('.viewer-card').length) {
+                        this.emit('chat.moderator_card.open', $el.closest('.viewer-card-layer'));
                     }
                 }
 

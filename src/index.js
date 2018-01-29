@@ -40,6 +40,7 @@
                     if (data.message && data.message.includes('raven-js/src/raven')) return false;
                     const exception = data.exception && data.exception.values[0];
                     if (exception && ['NS_ERROR_NOT_INITIALIZED', 'NS_ERROR_OUT_OF_MEMORY', 'NS_ERROR_FAILURE', 'NS_ERROR_FILE_CORRUPTED'].includes(exception.type)) return false;
+                    if (data.exception && data.exception.values.length < 2) return false;
                     return true;
                 }
             }
