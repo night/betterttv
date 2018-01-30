@@ -135,6 +135,7 @@ class Watcher extends SafeEventEmitter {
         this.chatObserver();
         this.vodChatObserver();
         this.routeObserver();
+        this.directoryObserver();
 
         require('./watchers/*.js', {mode: (base, files) => {
             return files.map(module => {
@@ -172,6 +173,9 @@ class Watcher extends SafeEventEmitter {
                 case routes.DIRECTORY_FOLLOWING:
                     if (lastRoute === routes.DIRECTORY_FOLLOWING_LIVE) break;
                     this.waitForLoad('following').then(() => this.emit('load.directory.following'));
+                    break;
+                case routes.DIRECTORY_FOLLOWING_LIVE:
+                    this.waitForLoad('following').then(() => this.emit('load.directory.following.live'));
                     break;
                 case routes.CHAT:
                     this.waitForLoad('chat').then(() => this.emit('load.chat'));
@@ -345,6 +349,37 @@ class Watcher extends SafeEventEmitter {
         );
 
         this.on('load.clips', () => observe(clipsChatWatcher, $('body')[0]));
+    }
+
+    directoryObserver() {
+        const observe = (watcher, element) => {
+            if (!element) return;
+            if (watcher) watcher.disconnect();
+            watcher.observe(element, {childList: true, subtree: true});
+        };
+
+        directoryWatcher = new window.MutationObserver(mutations =>
+            mutations.forEach(mutation => {
+                for (const el of mutation.addedNodes) {
+                    const $el = $(el);
+
+                    const $vodCasts = $el.find('.tw-pill');
+
+                    if ($vodCasts.length > 0) {
+                        for (const vodCast of $vodCasts) {
+                            this.emit('directory.vodcast', $(vodCast));
+                        }
+                    }
+                }
+            })
+        );
+
+        const observeDirectory = () => {
+            observe(directoryWatcher, $('main .scrollable-area .pd-3')[0]);
+        };
+
+        this.on('load.directory.following', observeDirectory);
+        this.on('load.directory.following.live', observeDirectory);
     }
 }
 
