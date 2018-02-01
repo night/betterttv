@@ -1,0 +1,7 @@
+.bttv-highlight-follow-nick {
+  background: rgba(255, 255, 0, 0.7) !important;
+}
+
+.bttv-highlight-streamer-nick {
+  background: radial-gradient(yellow 30%, green 100%) !important;
+}
