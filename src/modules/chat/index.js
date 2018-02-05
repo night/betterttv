@@ -74,6 +74,11 @@ class ChatModule {
             if (!controller) return;
             controller.set('showList', false);
         });
+        watcher.on('load.dashboard', () => {
+            const currentChannel = twitch.getCurrentChannel();
+            if (!currentChannel) return;
+            $('.js-dashboard-chat-module').html(`<iframe src="https://www.twitch.tv/popout/${currentChannel.name}/chat" width="100%" height="100%" scrolling="no"></iframe>`);
+        });
 
         api.get('badges').then(({types, badges}) => {
             const staffBadges = {};
