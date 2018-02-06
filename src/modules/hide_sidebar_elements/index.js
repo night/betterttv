@@ -54,7 +54,7 @@ class HideSidebarElementsModule {
 
     toggleAutoExpandChannels() {
         if (settings.get('autoExpandChannels') === true) {
-            $('.side-nav-load-more__button').trigger('click');
+            $('.side-nav-show-more-toggle__button').trigger('click');
         }
     }
 
