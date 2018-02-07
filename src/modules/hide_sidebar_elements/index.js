@@ -58,6 +58,11 @@ class HideSidebarElementsModule {
                 $(".side-nav-show-more-toggle__button:contains('Show more')").trigger('click');   
             }
         }
+        else if (settings.get('autoExpandChannels') === false) {
+            while ($(".side-nav-show-more-toggle__button:contains('Show less')").length) {
+                $(".side-nav-show-more-toggle__button:contains('Show less')").trigger('click');   
+            }
+        }
     }
 
     toggleRecommendedFriends() {
