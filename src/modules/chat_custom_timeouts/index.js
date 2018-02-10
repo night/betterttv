@@ -3,7 +3,7 @@ const watcher = require('../../watcher');
 const keyCodes = require('../../utils/keycodes');
 const twitch = require('../../utils/twitch');
 
-const CHAT_ROOM_SELECTOR = '.chat-room__container';
+const CHAT_ROOM_SELECTOR = 'div[data-test-selector="chat-room-component-layout"]';
 const CHAT_LINE_SELECTOR = '.chat-line__message';
 const CHAT_LINE_USERNAME_SELECTOR = `${CHAT_LINE_SELECTOR} .chat-author__display-name`;
 const CUSTOM_TIMEOUT_ID = 'bttv-custom-timeout-contain';

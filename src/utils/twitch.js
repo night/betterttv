@@ -3,7 +3,7 @@ const Raven = require('raven-js');
 const twitchAPI = require('./twitch-api');
 
 const REACT_ROOT = '#root div[data-reactroot]';
-const CHAT_CONTAINER = '.chat-room__container';
+const CHAT_CONTAINER = 'div[data-test-selector="chat-room-component-layout"]';
 const VOD_CHAT_CONTAINER = '.video-watch-page__right-column';
 const CHAT_LIST = '.chat-list';
 const PLAYER = '.player';
