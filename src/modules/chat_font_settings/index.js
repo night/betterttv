@@ -26,7 +26,7 @@ function changeFontSetting(promptBody, storageID) {
 }
 
 const styleTemplate = (fontFamily, fontSize) => `
-.chat-room__container .chat-list__lines, .whispers .thread-message__message {
+.chat-list__lines, .whispers .thread-message__message {
     font-family: ${fontFamily ? encodeFontFamily(fontFamily) : 'inherit'} !important;
     font-size: ${fontSize ? `${html.escape(fontSize)}px` : 'inherit'} !important;
 }
