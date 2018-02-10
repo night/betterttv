@@ -256,7 +256,7 @@ class Watcher extends SafeEventEmitter {
                         emitMessage($el);
                     }
 
-                    if ($el.children('.viewer-card').length) {
+                    if ($el.find('.viewer-card').length) {
                         this.emit('chat.moderator_card.open', $el.closest('.viewer-card-layer'));
                     }
                 }
