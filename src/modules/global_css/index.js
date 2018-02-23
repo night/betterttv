@@ -10,7 +10,7 @@ const TwitchThemes = {
     DARK: 1
 };
 
-let twitchStore;
+let connectStore;
 
 class GlobalCSSModule {
     constructor() {
@@ -33,21 +33,20 @@ class GlobalCSSModule {
     }
 
     setTwitchTheme(value) {
-        if (!twitchStore) return;
+        if (!connectStore) return;
 
-        twitchStore.dispatch({
+        connectStore.dispatch({
             type: TWITCH_THEME_CHANGED_DISPATCH_TYPE,
             theme: value === true ? TwitchThemes.DARK : TwitchThemes.LIGHT
         });
     }
 
     loadTwitchThemeObserver() {
-        const connectRoot = twitch.getConnectRoot();
-        if (!connectRoot || twitchStore) return;
+        connectStore = twitch.getConnectStore();
+        if (!connectStore || twitchStore) return;
 
-        twitchStore = connectRoot._context.store;
-        twitchStore.subscribe(() => {
-            const isDarkMode = twitchStore.getState().ui.theme === TwitchThemes.DARK;
+        connectStore.subscribe(() => {
+            const isDarkMode = connectStore.getState().ui.theme === TwitchThemes.DARK;
             if (settings.get('darkenedMode') !== isDarkMode) {
                 settings.set('darkenedMode', isDarkMode);
             }

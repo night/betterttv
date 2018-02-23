@@ -104,7 +104,15 @@ class ModeratorCard {
     }
 
     close() {
+        this.cleanup();
         this.$element.find('.viewer-card__hide > button').click();
+    }
+
+    cleanup() {
+        $('.bttv-moderator-card-nickname-change-button').remove();
+        $('.bttv-moderator-card-user-stats').remove();
+        $('.bttv-moderator-card-actions').remove();
+        $('.bttv-moderator-card-messages').remove();
     }
 
     render() {

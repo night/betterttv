@@ -34,9 +34,9 @@ class ChatModeratorCardsModule {
         let isOwner = false;
         let isModerator = false;
         if (sourceID) {
-            const connectRoot = twitch.getConnectRoot();
-            if (!connectRoot) return;
-            const {chat: {messages}} = connectRoot._context.store.getState();
+            const connectStore = twitch.getConnectStore();
+            if (!connectStore) return;
+            const {chat: {messages}} = connectStore.getState();
             const currentChannel = twitch.getCurrentChannel();
             if (!currentChannel) return;
             const channelMessages = messages[currentChannel.name];
@@ -49,6 +49,12 @@ class ChatModeratorCardsModule {
         }
 
         dataFetcher.then(targetUser => {
+            if (openModeratorCard && openModeratorCard.user.id === targetUser.id) {
+                return;
+            }
+
+            this.onClose();
+
             openModeratorCard = new ModeratorCard($element, {
                 id: targetUser.id,
                 name: targetUser.login,
@@ -60,6 +66,9 @@ class ChatModeratorCardsModule {
     }
 
     onClose() {
+        if (openModeratorCard) {
+            openModeratorCard.cleanup();
+        }
         openModeratorCard = null;
     }
 

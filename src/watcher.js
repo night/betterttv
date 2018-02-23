@@ -81,11 +81,10 @@ class Watcher extends SafeEventEmitter {
         const loadInterval = setInterval(() => {
             let user;
             try {
-                const connectRoot = twitch.getConnectRoot();
-                if (!connectRoot) return;
-                const context = connectRoot._context;
-                router = context.router;
-                user = context.store.getState().session.user;
+                router = twitch.getRouter();
+                const connectStore = twitch.getConnectStore();
+                if (!connectStore || !router) return;
+                user = connectStore.getState().session.user;
             } catch (_) {
                 return;
             }
@@ -249,6 +248,13 @@ class Watcher extends SafeEventEmitter {
 
         chatWatcher = new window.MutationObserver(mutations =>
             mutations.forEach(mutation => {
+                const target = mutation.target;
+                if (target && target.classList && target.classList.contains('viewer-card')) {
+                    const $el = $(target);
+                    this.emit('chat.moderator_card.open', $el);
+                    return;
+                }
+
                 for (const el of mutation.addedNodes) {
                     const $el = $(el);
 
@@ -256,16 +262,21 @@ class Watcher extends SafeEventEmitter {
                         emitMessage($el);
                     }
 
-                    if ($el.children('.viewer-card').length) {
-                        this.emit('chat.moderator_card.open', $el.closest('.viewer-card-layer'));
+                    if ($el.hasClass('viewer-card')) {
+                        this.emit('chat.moderator_card.open', $el);
+                    } else if ($el.hasClass('viewer-card-layer__draggable') && $el.find('.viewer-card').length) {
+                        const $viewerCard = $el.find('.viewer-card');
+                        if ($viewerCard.length) {
+                            this.emit('chat.moderator_card.open', $viewerCard);
+                        }
                     }
                 }
 
                 for (const el of mutation.removedNodes) {
                     const $el = $(el);
 
-                    if ($el.hasClass('viewer-card-layer')) {
-                        this.emit('chat.moderator_card.close', $el);
+                    if ($el.hasClass('viewer-card-layer__draggable')) {
+                        this.emit('chat.moderator_card.close');
                     }
                 }
             })

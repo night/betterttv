@@ -38,14 +38,13 @@ class ChatStateModule {
     }
 
     load() {
-        const connectRoot = twitch.getConnectRoot();
-        if (!connectRoot || listening) return;
+        const connectStore = twitch.getConnectStore();
+        if (!connectStore || listening) return;
 
         try {
-            const {store} = connectRoot._context;
-            store.subscribe(() => {
+            connectStore.subscribe(() => {
                 try {
-                    this.updateState(store);
+                    this.updateState(connectStore);
                 } catch (_) {}
             });
             listening = true;
