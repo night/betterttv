@@ -170,7 +170,7 @@ module.exports = {
                 getReactInstance($(PLAYER)[0]),
                 n => n.stateNode && n.stateNode.player
             );
-            player = node.stateNode.player;
+            player = node.stateNode;
         } catch (_) {}
 
         return player;
