@@ -51,10 +51,6 @@ class ChatTabcompletionModule {
         this.messageHistory = [];
         this.historyPos = -1;
 
-        $('body').off('keydown.tabComplete focus.tabComplete')
-            .on('keydown.tabComplete', CHAT_INPUT_SELECTOR, e => this.onKeydown(e))
-            .on('focus.tabComplete', CHAT_INPUT_SELECTOR, () => this.onFocus());
-
         this.loadTabCompletionTooltip();
     }
 
@@ -71,6 +67,9 @@ class ChatTabcompletionModule {
 
     resetChannelData() {
         this.userList = new Set();
+        $(CHAT_INPUT_SELECTOR).off('keydown.tabComplete focus.tabComplete')
+            .on('keydown.tabComplete', e => this.onKeydown(e))
+            .on('focus.tabComplete', () => this.onFocus());
     }
 
     onFocus() {
@@ -117,6 +116,9 @@ class ChatTabcompletionModule {
                     this.textSplit[2] = ' ';
                     cursorOffset = 1;
                 }
+
+                // prevent twitch's tab completion from preventing text replacement
+                e.stopImmediatePropagation();
 
                 const cursorPos = this.textSplit[0].length + this.suggestions[this.tabTries].length + cursorOffset;
                 setTextareaValue($inputField, this.textSplit[0] + this.suggestions[this.tabTries] + this.textSplit[2]);
