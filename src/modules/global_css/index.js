@@ -43,7 +43,7 @@ class GlobalCSSModule {
 
     loadTwitchThemeObserver() {
         connectStore = twitch.getConnectStore();
-        if (!connectStore || twitchStore) return;
+        if (!connectStore) return;
 
         connectStore.subscribe(() => {
             const isDarkMode = connectStore.getState().ui.theme === TwitchThemes.DARK;
