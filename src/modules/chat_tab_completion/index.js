@@ -10,7 +10,15 @@ const AUTOCOMPLETE_SUGGESTIONS_SELECTOR = 'div[data-a-target="autocomplete-ballo
 const INPUT_EVENT = new Event('input', {bubbles: true});
 
 function setTextareaValue($inputField, msg) {
-    $inputField.val(msg)[0].dispatchEvent(INPUT_EVENT);
+    $inputField.val(msg);
+    const inputField = $inputField[0];
+    inputField.dispatchEvent(INPUT_EVENT);
+    const instance = twitch.getReactInstance(inputField);
+    if (!instance) return;
+    const props = instance.memoizedProps;
+    if (props && props.onChange) {
+        props.onChange({target: inputField});
+    }
 }
 
 function normalizedStartsWith(word, prefix) {

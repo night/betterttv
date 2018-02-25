@@ -129,6 +129,8 @@ module.exports = {
 
     TMIActionTypes,
 
+    getReactInstance,
+
     getCurrentChannel() {
         return currentChannel;
     },
@@ -250,7 +252,8 @@ module.exports = {
 
         chatController.chatService.onChatNoticeEvent({
             msgid: Date.now(),
-            body
+            body,
+            channel: `#${chatController.chatService.channelLogin}`
         });
     },
 
