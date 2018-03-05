@@ -5,6 +5,7 @@ const SafeEventEmitter = require('./utils/safe-event-emitter');
 const $ = require('jquery');
 
 const CLIPS_HOSTNAME = 'clips.twitch.tv';
+const CHAT_ROOM_SELECTOR = 'div[data-test-selector="chat-room-component-layout"]';
 
 let router;
 let currentPath = '';
@@ -23,6 +24,8 @@ const loadPredicates = {
     },
     chat: () => {
         if (!twitch.updateCurrentChannel()) return false;
+
+        if (!$(CHAT_ROOM_SELECTOR).length) return false;
 
         const lastReference = currentChatReference;
         const currentChat = twitch.getCurrentChat();
@@ -151,6 +154,11 @@ class Watcher extends SafeEventEmitter {
         debug.log('Watcher started');
     }
 
+    forceReloadChat() {
+        currentChatReference = null;
+        this.waitForLoad('chat').then(() => this.emit('load.chat'));
+    }
+
     routeObserver() {
         const onRouteChange = location => {
             const lastPath = currentPath;
@@ -270,6 +278,10 @@ class Watcher extends SafeEventEmitter {
                             this.emit('chat.moderator_card.open', $viewerCard);
                         }
                     }
+
+                    if ($el.hasClass('chat-input')) {
+                        this.forceReloadChat();
+                    }
                 }
 
                 for (const el of mutation.removedNodes) {
@@ -282,7 +294,14 @@ class Watcher extends SafeEventEmitter {
             })
         );
 
-        this.on('load.chat', () => observe(chatWatcher, $('div[data-test-selector="chat-room-component-layout"]')[0]));
+        this.on('load.chat', () => observe(chatWatcher, $(CHAT_ROOM_SELECTOR)[0]));
+
+        // force reload of chat on room swap
+        $('body').on(
+            'click',
+            '.room-picker button[data-test-selector="stream-chat-room-picker-option"]',
+            () => this.forceReloadChat()
+        );
     }
 
     vodChatObserver() {

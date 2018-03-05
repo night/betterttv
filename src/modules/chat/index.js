@@ -185,6 +185,8 @@ class ChatModule {
     }
 
     messageParser($element, messageObj) {
+        if ($element[0].__bttvParsed) return;
+
         const user = formatChatUser(messageObj);
         if (!user) return;
 
@@ -230,6 +232,8 @@ class ChatModule {
         }
 
         this.messageReplacer($message, user);
+
+        $element[0].__bttvParsed = true;
     }
 }
 
