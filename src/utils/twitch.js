@@ -212,7 +212,7 @@ module.exports = {
         try {
             const node = searchReactParents(
                 getReactInstance($(CHAT_LIST)[0]),
-                n => n.stateNode && n.stateNode.scroll
+                n => n.stateNode && n.stateNode.props && n.stateNode.scroll
             );
             chatScroller = node.stateNode;
         } catch (_) {}
