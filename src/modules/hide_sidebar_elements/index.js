@@ -53,9 +53,8 @@ class HideSidebarElementsModule {
     }
 
     toggleAutoExpandChannels() {
-        if (settings.get('autoExpandChannels') === true) {
-            $('.side-nav-load-more__button').trigger('click');
-        }
+        if (!settings.get('autoExpandChannels')) return;
+        $('.side-nav-show-more-toggle__button').trigger('click');
     }
 
     toggleRecommendedFriends() {
