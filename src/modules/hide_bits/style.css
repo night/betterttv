@@ -1,5 +1,6 @@
 .bttv-hide-bits {
   .pinned-cheer,
+  .pinned-cheer-v2,
   button[data-a-target="bits-button"],
   div[data-a-target="bits-card"],
   .channel-header__right div.tw-mg-l-1:last-child button:not([data-test-selector="subscribe-button__dropdown"]),
