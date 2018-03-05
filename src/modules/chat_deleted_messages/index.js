@@ -50,8 +50,7 @@ class ChatDeletedMessagesModule {
                 twitch.sendChatAdminMessage('Chat was cleared by a moderator (Prevented by BetterTTV)');
                 preventDefault();
                 break;
-            case twitch.TMIActionTypes.BAN:
-            case twitch.TMIActionTypes.TIMEOUT:
+            case twitch.TMIActionTypes.MODERATION:
                 if (this.handleDelete(event.userLogin)) {
                     preventDefault();
                     // we still want to render moderation messages
