@@ -54,7 +54,13 @@ class HideSidebarElementsModule {
 
     toggleAutoExpandChannels() {
         if (settings.get('autoExpandChannels') === true) {
-            $('.side-nav-load-more__button').trigger('click');
+            while ($(".side-nav-show-more-toggle__button:contains('Show more')").length) {
+                $(".side-nav-show-more-toggle__button:contains('Show more')").trigger('click');
+            }
+        } else if (settings.get('autoExpandChannels') === false) {
+            while ($(".side-nav-show-more-toggle__button:contains('Show less')").length) {
+                $(".side-nav-show-more-toggle__button:contains('Show less')").trigger('click');
+            }
         }
     }
 
