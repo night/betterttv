@@ -1,5 +1,5 @@
 .bttv-hide-player-extensions {
-  #js-player-extension-root {
+  .extension-container {
     display: none !important;
   }
 }
