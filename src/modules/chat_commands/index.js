@@ -2,11 +2,13 @@ const $ = require('jquery');
 const moment = require('moment');
 const twitch = require('../../utils/twitch');
 const twitchAPI = require('../../utils/twitch-api');
+const tmiAPI = require('../../utils/tmi-api');
 const chat = require('../chat');
 const anonChat = require('../anon_chat');
 
 const CommandHelp = {
     b: 'Usage: "/b <login> [reason]" - Shortcut for /ban',
+    chatters: 'Usage: "/chatters" - Retrieces the number of chatters in the chat',
     followed: 'Usage: "/followed" - Tells you for how long you have been following a channel',
     follows: 'Usage: "/follows" - Retrieves the number of followers for the channel',
     join: 'Usage: "/join" - Temporarily join a chat (anon chat)',
@@ -174,6 +176,11 @@ function handleCommands(message) {
             command === 'join' ? anonChat.join() : anonChat.part();
             break;
 
+        case 'chatters':
+            tmiAPI.get(`group/user/${channel.name}/chatters`)
+                .then(({chatter_count: chatterCount}) => twitch.sendChatAdminMessage(`Current Chatters: ${chatterCount.toLocaleString()}`))
+                .catch(() => twitch.sendChatAdminMessage('Could not fetch chatter count.'));
+            break;
         case 'followed':
             const currentUser = twitch.getCurrentUser();
             if (!currentUser) break;
