@@ -26,7 +26,7 @@ function parseColor(rgbText) {
 function scrollOnEmoteLoad($el) {
     const indicator = $(SCROLL_INDICATOR_SELECTOR).length > 0;
     if (indicator) return;
-    $el.find('img.emoticon').on('load', () => {
+    $el.find('.bttv-emote-tooltip-wrapper img').on('load', () => {
         const $scrollContainer = $(SCROLL_CONTAINER_SELECTOR);
         $scrollContainer.scrollTop($scrollContainer[0].scrollHeight);
     });
