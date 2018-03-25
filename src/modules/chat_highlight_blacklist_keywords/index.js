@@ -38,8 +38,19 @@ const pinnedHighlightTemplate = ({timestamp, from, message}) => `
 `;
 
 function defaultHighlightKeywords(value) {
-    if (typeof value === 'string') return value;
     const currentUser = twitch.getCurrentUser();
+    if (typeof value === 'string') {
+        if (currentUser) {
+            // Check for changed Twitch name, which isn't already in the string of highlights
+            if (!value.split(' ').some( w => {return w === currentUser.name;}) ) {
+                return value + ' ' + currentUser.name;
+            } else {
+                return value;
+            }
+        } else {
+            return value;
+        }
+    }
     return currentUser ? currentUser.name : '';
 }
 
