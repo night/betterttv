@@ -40,6 +40,7 @@ const settingsPanelTemplate = () => `
     </div>
     <div id="bttvSettings" class="options-list">
         <h2 class="option">Here you can manage the various BetterTTV options. Click On or Off to toggle settings.</h2>
+        <input type="text" placeholder="Search settings" id = "bttvSettingsSearch">
     </div>
     <div id="bttvAbout" style="display:none;">
         <div class="aboutHalf">
@@ -124,7 +125,7 @@ function addSetting(setting) {
 
     const template = settingTemplate(setting);
     if (beforeIndex === -1) {
-        $('#bttvSettings.options-list h2.option').after(template);
+        $('#bttvSettings.options-list input#bttvSettingsSearch').after(template);
     } else {
         getSettingElement(sortedSettings[beforeIndex]).after(template);
     }
@@ -158,6 +159,7 @@ class SettingsModule {
         $('#bttvSettings').on('change', '.option input:radio', ({target}) => settings.set(target.name, target.value === 'true'));
         $('#bttvBackupButton').click(() => this.backup());
         $('#bttvImportInput').change(({target}) => this.import(target));
+        $('#bttvSettingsSearch').on('input', () => this.doSearch());
 
         $('#bttvSettingsPanel #close').click(() => $('#bttvSettingsPanel').hide('slow'));
         $('#bttvSettingsPanel .nav a').click(e => {
@@ -223,6 +225,21 @@ class SettingsModule {
             Object.keys(settingsToImport).forEach(s => settings.set(s.split('bttv_')[1], settingsToImport[s]));
 
             setTimeout(() => window.location.reload(), 1000);
+        });
+    }
+
+    doSearch() {
+        const val = $('#bttvSettingsSearch').val().trim().toLowerCase();
+        if (val === '') {
+            $('[class^="option bttvOption-"]').css('display', 'block');
+            return;
+        }
+        settings.getSettings().forEach(setting => {
+            if (setting.name.toLowerCase().includes(val) || setting.description.toLowerCase().includes(val)) {
+                $('.bttvOption-' + setting.id).css('display', 'block');
+            } else {
+                $('.bttvOption-' + setting.id).css('display', 'none');
+            }
         });
     }
 }
