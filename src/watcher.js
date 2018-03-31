@@ -353,7 +353,7 @@ class Watcher extends SafeEventEmitter {
                     return [...acc, ...addedNodes];
                 }, [])
                 .some(el => {
-                    return el.classList.value.indexOf('recommendations-overlay') !== -1;
+                    return el.classList.length > 0 && el.classList.value.indexOf('recommendations-overlay') > -1;
                 });
 
             if (recommendationsOverlay) {
