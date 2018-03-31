@@ -12,6 +12,7 @@ let currentPath = '';
 let currentRoute = '';
 let chatWatcher;
 let vodChatWatcher;
+let vodRecommendationWatcher;
 let clipsChatWatcher;
 let currentChatReference;
 let channel = {};
@@ -116,11 +117,13 @@ class Watcher extends SafeEventEmitter {
                 }
                 interval = setInterval(() => loaded() && resolve(), 25);
             })
-        ]).then(() => {
-            debug.log(`waited for ${type} load: ${Date.now() - startTime}ms`);
-            clearTimeout(timeout);
-            clearInterval(interval);
-        }).then(() => this.emit('load'));
+        ])
+            .then(() => {
+                debug.log(`waited for ${type} load: ${Date.now() - startTime}ms`);
+                clearTimeout(timeout);
+                clearInterval(interval);
+            })
+            .then(() => this.emit('load'));
     }
 
     loadClips() {
@@ -137,10 +140,13 @@ class Watcher extends SafeEventEmitter {
         this.chatObserver();
         this.vodChatObserver();
         this.routeObserver();
+        this.vodRecommendationObserver();
 
-        require('./watchers/*.js', {mode: (base, files) => {
-            return files.map(module => {
-                return `
+        require('./watchers/*.js', {
+            mode: (base, files) => {
+                return files
+                    .map(module => {
+                        return `
                     try {
                         require('${module}');
                     } catch (e) {
@@ -148,8 +154,10 @@ class Watcher extends SafeEventEmitter {
                         debug.error('Failed to load watcher ${module}', e.stack);
                     }
                 `;
-            }).join(' ');
-        }});
+                    })
+                    .join(' ');
+            }
+        });
 
         debug.log('Watcher started');
     }
@@ -234,7 +242,7 @@ class Watcher extends SafeEventEmitter {
             const element = $('.whispers')[0];
             if (!element) return;
             clearInterval(timer);
-            conversationWatcher.observe(element, {childList: true, subtree: true});
+            conversationWatcher.observe(element, { childList: true, subtree: true });
         }, 1000);
     }
 
@@ -248,10 +256,12 @@ class Watcher extends SafeEventEmitter {
         const observe = (watcher, element) => {
             if (!element) return;
             if (watcher) watcher.disconnect();
-            watcher.observe(element, {childList: true, subtree: true});
+            watcher.observe(element, { childList: true, subtree: true });
 
             // late load messages events
-            $(element).find('.chat-line__message').each((index, el) => emitMessage($(el)));
+            $(element)
+                .find('.chat-line__message')
+                .each((index, el) => emitMessage($(el)));
         };
 
         chatWatcher = new window.MutationObserver(mutations =>
@@ -297,10 +307,8 @@ class Watcher extends SafeEventEmitter {
         this.on('load.chat', () => observe(chatWatcher, $(CHAT_ROOM_SELECTOR)[0]));
 
         // force reload of chat on room swap
-        $('body').on(
-            'click',
-            '.room-picker button[data-test-selector="stream-chat-room-picker-option"]',
-            () => this.forceReloadChat()
+        $('body').on('click', '.room-picker button[data-test-selector="stream-chat-room-picker-option"]', () =>
+            this.forceReloadChat()
         );
     }
 
@@ -310,10 +318,12 @@ class Watcher extends SafeEventEmitter {
         const observe = (watcher, element) => {
             if (!element) return;
             if (watcher) watcher.disconnect();
-            watcher.observe(element, {childList: true, subtree: true});
+            watcher.observe(element, { childList: true, subtree: true });
 
             // late load messages events
-            $(element).find('.vod-message__content,.vod-message').each((_, el) => emitMessage(el));
+            $(element)
+                .find('.vod-message__content,.vod-message')
+                .each((_, el) => emitMessage(el));
         };
 
         vodChatWatcher = new window.MutationObserver(mutations =>
@@ -333,6 +343,33 @@ class Watcher extends SafeEventEmitter {
         this.on('load.vod', () => observe(vodChatWatcher, $('.qa-vod-chat')[0]));
     }
 
+    vodRecommendationObserver() {
+        vodRecommendationWatcher = new window.MutationObserver(mutations => {
+            const recommendationsOverlay = mutations
+                .filter(mutation => {
+                    return mutation.addedNodes && mutation.addedNodes.length > 0;
+                })
+                .reduce((acc, { addedNodes }) => {
+                    return [...acc, ...addedNodes];
+                }, [])
+                .some(el => {
+                    return el.classList.value.indexOf('recommendations-overlay') !== -1;
+                });
+
+            if (recommendationsOverlay) {
+                this.emit('vod.recommendation');
+            }
+        });
+
+        const observe = (watcher, element) => {
+            if (!element) return;
+            if (watcher) watcher.disconnect();
+            watcher.observe(element, { childList: true, subtree: true });
+        };
+
+        this.on('load.vod', () => observe(vodRecommendationWatcher, $('.player-ui')[0]));
+    }
+
     channelObserver() {
         const updateChannel = () => {
             const currentChannel = twitch.getCurrentChannel();
@@ -341,7 +378,8 @@ class Watcher extends SafeEventEmitter {
             if (currentChannel.id === channel.id) return;
             channel = currentChannel;
 
-            api.get(`channels/${channel.name}`)
+            api
+                .get(`channels/${channel.name}`)
                 .catch(error => ({
                     bots: [],
                     emotes: [],
@@ -359,7 +397,7 @@ class Watcher extends SafeEventEmitter {
         const observe = (watcher, element) => {
             if (!element) return;
             if (watcher) watcher.disconnect();
-            watcher.observe(element, {childList: true, subtree: true});
+            watcher.observe(element, { childList: true, subtree: true });
         };
 
         clipsChatWatcher = new window.MutationObserver(mutations =>
