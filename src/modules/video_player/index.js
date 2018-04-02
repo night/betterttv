@@ -5,16 +5,33 @@ const keyCodes = require('../../utils/keycodes');
 const twitch = require('../../utils/twitch');
 
 const VIDEO_PLAYER_SELECTOR = '.video-player .player';
+const CANCEL_VOD_RECOMMENDATION_SELECTOR = '.recommendations-overlay .pl-rec__cancel.pl-button';
 
 function stepPlaybackSpeed(faster) {
     const currentPlayer = twitch.getCurrentPlayer();
     if (!currentPlayer || !currentPlayer.props.vodID) return;
-    const rates = [ 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0 ];
+    const rates = [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0];
     let idx = rates.indexOf(currentPlayer.player.getPlaybackRate());
     if (idx === -1) return;
     idx += faster ? 1 : -1;
     if (idx < 0 || idx >= rates.length) return;
     currentPlayer.player.setPlaybackRate(rates[idx]);
+}
+
+function watchPlayerRecommendationVodsAutoplay() {
+    const player = twitch.getCurrentPlayer().player;
+
+    if (!player) {
+        return;
+    }
+
+    player.addEventListener('ended', () => {
+        if (settings.get('disableVodAutoplay') === true) {
+            watcher.waitForLoad('recommendation').then(() => {
+                $(CANCEL_VOD_RECOMMENDATION_SELECTOR).trigger('click');
+            });
+        }
+    });
 }
 
 function handleKeyEvent(keypress) {
@@ -61,7 +78,10 @@ function handlePlayerClick() {
 class VideoPlayerModule {
     constructor() {
         this.keybinds();
-        watcher.on('load.player', () => this.clickToPause());
+        watcher.on('load.player', () => {
+            this.clickToPause();
+            watchPlayerRecommendationVodsAutoplay();
+        });
         settings.add({
             id: 'hidePlayerExtensions',
             name: 'Hide Twitch Extensions',
@@ -73,6 +93,12 @@ class VideoPlayerModule {
             name: 'Click to Play/Pause Stream',
             defaultValue: false,
             description: 'Click on the twitch player to pause/resume playback'
+        });
+        settings.add({
+            id: 'disableVodAutoplay',
+            name: 'Disable VOD Autoplay',
+            defaultValue: false,
+            description: 'Disables autoplay of recommended videos'
         });
         settings.on('changed.hidePlayerExtensions', () => this.toggleHidePlayerExtensions());
         settings.on('changed.clickToPlay', () => this.clickToPause());

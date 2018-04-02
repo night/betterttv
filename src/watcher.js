@@ -6,13 +6,13 @@ const $ = require('jquery');
 
 const CLIPS_HOSTNAME = 'clips.twitch.tv';
 const CHAT_ROOM_SELECTOR = 'div[data-test-selector="chat-room-component-layout"]';
+const CANCEL_VOD_RECOMMENDATION_SELECTOR = '.recommendations-overlay .pl-rec__cancel.pl-button';
 
 let router;
 let currentPath = '';
 let currentRoute = '';
 let chatWatcher;
 let vodChatWatcher;
-let vodRecommendationWatcher;
 let clipsChatWatcher;
 let currentChatReference;
 let channel = {};
@@ -38,6 +38,7 @@ const loadPredicates = {
     },
     player: () => !!twitch.getCurrentPlayer(),
     vod: () => twitch.updateCurrentChannel() && $('.video-chat__input textarea').length,
+    recommendation: () => $(CANCEL_VOD_RECOMMENDATION_SELECTOR).length,
     homepage: () => !!$('.front-page .carousel-player .player').length
 };
 
@@ -140,7 +141,6 @@ class Watcher extends SafeEventEmitter {
         this.chatObserver();
         this.vodChatObserver();
         this.routeObserver();
-        this.vodRecommendationObserver();
 
         require('./watchers/*.js', {
             mode: (base, files) => {
@@ -341,33 +341,6 @@ class Watcher extends SafeEventEmitter {
         );
 
         this.on('load.vod', () => observe(vodChatWatcher, $('.qa-vod-chat')[0]));
-    }
-
-    vodRecommendationObserver() {
-        vodRecommendationWatcher = new window.MutationObserver(mutations => {
-            const recommendationsOverlay = mutations
-                .filter(mutation => {
-                    return mutation.addedNodes && mutation.addedNodes.length > 0;
-                })
-                .reduce((acc, { addedNodes }) => {
-                    return [...acc, ...addedNodes];
-                }, [])
-                .some(el => {
-                    return el.classList.length > 0 && el.classList.value.indexOf('recommendations-overlay') > -1;
-                });
-
-            if (recommendationsOverlay) {
-                this.emit('vod.recommendation');
-            }
-        });
-
-        const observe = (watcher, element) => {
-            if (!element) return;
-            if (watcher) watcher.disconnect();
-            watcher.observe(element, { childList: true, subtree: true });
-        };
-
-        this.on('load.vod', () => observe(vodRecommendationWatcher, $('.player-ui')[0]));
     }
 
     channelObserver() {
