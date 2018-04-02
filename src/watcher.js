@@ -140,10 +140,9 @@ class Watcher extends SafeEventEmitter {
         this.vodChatObserver();
         this.routeObserver();
 
-        require('./watchers/*.js', {
-            mode: (base, files) => {
-                return files.map(module => {
-                    return `
+        require('./watchers/*.js', {mode: (base, files) => {
+            return files.map(module => {
+                return `
                     try {
                         require('${module}');
                     } catch (e) {
@@ -151,9 +150,8 @@ class Watcher extends SafeEventEmitter {
                         debug.error('Failed to load watcher ${module}', e.stack);
                     }
                 `;
-                }).join(' ');
-            }
-        });
+            }).join(' ');
+        }});
 
         debug.log('Watcher started');
     }
@@ -238,7 +236,7 @@ class Watcher extends SafeEventEmitter {
             const element = $('.whispers')[0];
             if (!element) return;
             clearInterval(timer);
-            conversationWatcher.observe(element, { childList: true, subtree: true });
+            conversationWatcher.observe(element, {childList: true, subtree: true});
         }, 1000);
     }
 
@@ -252,7 +250,7 @@ class Watcher extends SafeEventEmitter {
         const observe = (watcher, element) => {
             if (!element) return;
             if (watcher) watcher.disconnect();
-            watcher.observe(element, { childList: true, subtree: true });
+            watcher.observe(element, {childList: true, subtree: true});
 
             // late load messages events
             $(element).find('.chat-line__message').each((index, el) => emitMessage($(el)));
@@ -314,12 +312,10 @@ class Watcher extends SafeEventEmitter {
         const observe = (watcher, element) => {
             if (!element) return;
             if (watcher) watcher.disconnect();
-            watcher.observe(element, { childList: true, subtree: true });
+            watcher.observe(element, {childList: true, subtree: true});
 
             // late load messages events
-            $(element)
-                .find('.vod-message__content,.vod-message')
-                .each((_, el) => emitMessage(el));
+            $(element).find('.vod-message__content,.vod-message').each((_, el) => emitMessage(el));
         };
 
         vodChatWatcher = new window.MutationObserver(mutations =>
