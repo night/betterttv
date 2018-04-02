@@ -118,13 +118,11 @@ class Watcher extends SafeEventEmitter {
                 }
                 interval = setInterval(() => loaded() && resolve(), 25);
             })
-        ])
-            .then(() => {
-                debug.log(`waited for ${type} load: ${Date.now() - startTime}ms`);
-                clearTimeout(timeout);
-                clearInterval(interval);
-            })
-            .then(() => this.emit('load'));
+        ]).then(() => {
+            debug.log(`waited for ${type} load: ${Date.now() - startTime}ms`);
+            clearTimeout(timeout);
+            clearInterval(interval);
+        }).then(() => this.emit('load'));
     }
 
     loadClips() {
@@ -144,9 +142,8 @@ class Watcher extends SafeEventEmitter {
 
         require('./watchers/*.js', {
             mode: (base, files) => {
-                return files
-                    .map(module => {
-                        return `
+                return files.map(module => {
+                    return `
                     try {
                         require('${module}');
                     } catch (e) {
@@ -154,8 +151,7 @@ class Watcher extends SafeEventEmitter {
                         debug.error('Failed to load watcher ${module}', e.stack);
                     }
                 `;
-                    })
-                    .join(' ');
+                }).join(' ');
             }
         });
 
@@ -259,9 +255,7 @@ class Watcher extends SafeEventEmitter {
             watcher.observe(element, { childList: true, subtree: true });
 
             // late load messages events
-            $(element)
-                .find('.chat-line__message')
-                .each((index, el) => emitMessage($(el)));
+            $(element).find('.chat-line__message').each((index, el) => emitMessage($(el)));
         };
 
         chatWatcher = new window.MutationObserver(mutations =>
@@ -307,8 +301,10 @@ class Watcher extends SafeEventEmitter {
         this.on('load.chat', () => observe(chatWatcher, $(CHAT_ROOM_SELECTOR)[0]));
 
         // force reload of chat on room swap
-        $('body').on('click', '.room-picker button[data-test-selector="stream-chat-room-picker-option"]', () =>
-            this.forceReloadChat()
+        $('body').on(
+            'click',
+            '.room-picker button[data-test-selector="stream-chat-room-picker-option"]',
+            () => this.forceReloadChat()
         );
     }
 
@@ -351,8 +347,7 @@ class Watcher extends SafeEventEmitter {
             if (currentChannel.id === channel.id) return;
             channel = currentChannel;
 
-            api
-                .get(`channels/${channel.name}`)
+            api.get(`channels/${channel.name}`)
                 .catch(error => ({
                     bots: [],
                     emotes: [],
