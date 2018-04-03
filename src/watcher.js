@@ -5,7 +5,7 @@ const SafeEventEmitter = require('./utils/safe-event-emitter');
 const $ = require('jquery');
 
 const CLIPS_HOSTNAME = 'clips.twitch.tv';
-const CHAT_ROOM_SELECTOR = 'div[data-test-selector="chat-room-component-layout"]';
+const CHAT_ROOM_SELECTOR = 'section[data-test-selector="chat-room-component-layout"]';
 
 let router;
 let currentPath = '';
