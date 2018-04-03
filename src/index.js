@@ -29,8 +29,10 @@
             {
                 release: process.env.GIT_REV,
                 environment: process.env.NODE_ENV,
+                captureUnhandledRejections: false,
                 ignoreErrors: [
                     'InvalidAccessError',
+                    'out of memory',
                 ],
                 whitelistUrls: [
                     /betterttv\.js/,
