@@ -5,9 +5,8 @@ const SafeEventEmitter = require('./utils/safe-event-emitter');
 const $ = require('jquery');
 
 const CLIPS_HOSTNAME = 'clips.twitch.tv';
-const CHAT_ROOM_SELECTOR = 'div[data-test-selector="chat-room-component-layout"]';
 const CANCEL_VOD_RECOMMENDATION_SELECTOR = '.recommendations-overlay .pl-rec__cancel.pl-button';
-
+const CHAT_ROOM_SELECTOR = 'section[data-test-selector="chat-room-component-layout"]';
 let router;
 let currentPath = '';
 let currentRoute = '';
