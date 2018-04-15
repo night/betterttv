@@ -1,126 +1,230 @@
-const html = require('../../utils/html');
-const twitch = require('../../utils/twitch');
+const $ = require('jquery');
+const moment = require('moment');
 const nicknames = require('../chat_nicknames');
+const twitch = require('../../utils/twitch');
+const twitchAPI = require('../../utils/twitch-api');
+const html = require('../../utils/html');
+const keyCodes = require('../../utils/keycodes');
 
-const DEFAULT_AVATAR = 'https://www-cdn.jtvnw.net/images/xarth/404_user_300x300.png';
-const channelURL = name => `https://www.twitch.tv/${encodeURIComponent(name)}`;
-
-module.exports = function moderatorCard(user, top, left) {
-    const nickname = nicknames.get(user.name);
-    const currentUser = twitch.getCurrentUser();
-
-    let realName = '';
-    if (nickname || user.display_name.toLowerCase() !== user.name) {
-        realName = `<h4 class="real-name">${html.escape(user.name)}</h4>`;
-    }
-
-    let background = '';
-    if (user.profileBanner) {
-        background = `<img class="channel_background" src="${html.escape(user.profile_banner)}" />`;
-    }
-
-    let controls = '';
-    if (currentUser && user.id !== currentUser.id) {
-        const currentUserIsOwner = twitch.getCurrentUserIsOwner();
-        const currentUserIsMod = twitch.getCurrentUserIsModerator();
-        const userIsMod = twitch.getUserIsModerator(user.name);
-        const ownerControls = currentUserIsOwner ? (
-            `<button title="Add/Remove this user as a moderator" class="button-simple dark mod-card-mod">
-                <svg height="16px" width="16px" version="1.1" viewBox="0 0 16 16" x="0px" y="0px" class="svg-add-mod">
-                    <path clip-rule="evenodd" fill-rule="evenodd" d="M15,7L1,16l4.666-7H1l14-9l-4.667,7H15z"></path>
-                </svg>
-                <svg style="display: none;" height="16px" width="16px" version="1.1" viewBox="0 0 16 16" x="0px" y="0px" class="svg-remove-mod">
-                    <path clip-rule="evenodd" fill-rule="evenodd" d="M 1.7692223,7.3226542 14.725057,7.3226542 14.725057,8.199533 1.7692223,8.199533 z M 15,0 5.4375,6.15625 10.90625,6.15625 15,0 z M 5.375,9.40625 1,16 11.25,9.40625 5.375,9.40625 z"></path>
-                </svg>
-            </button>`
-        ) : '';
-        const modControls = ((!userIsMod || currentUserIsOwner) && currentUserIsMod) ? (
-            `<span class="mod-controls">
-                <button title="!permit this user" class="permit button-simple light">
-                    <svg height="16px" width="16px" version="1.1" viewBox="0 0 16 16" x="0px" y="0px" class="svg-permit">
-                        <path clip-rule="evenodd" fill-rule="evenodd" d="M 13.71875,3.75 A 0.750075,0.750075 0 0 0 13.28125,4 L 5.71875,11.90625 3.59375,9.71875 A 0.750075,0.750075 0 1 0 2.53125,10.75 L 5.21875,13.53125 A 0.750075,0.750075 0 0 0 6.28125,13.5 L 14.34375,5.03125 A 0.750075,0.750075 0 0 0 13.71875,3.75 z M 4.15625,5.15625 C 2.1392444,5.1709094 0.53125,6.2956115 0.53125,7.6875 0.53125,8.1957367 0.75176764,8.6679042 1.125,9.0625 A 1.60016,1.60016 0 0 1 2.15625,8.25 C 2.0893446,8.0866555 2.0625,7.9078494 2.0625,7.71875 2.0625,6.9200694 2.7013192,6.25 3.5,6.25 L 7.15625,6.25 C 7.1438569,5.1585201 6.6779611,5.1379224 4.15625,5.15625 z M 9.625,5.15625 C 8.4334232,5.1999706 8.165545,5.4313901 8.15625,6.25 L 9.96875,6.25 11.03125,5.15625 C 10.471525,5.1447549 9.9897684,5.1428661 9.625,5.15625 z M 14.28125,6.40625 13.3125,7.40625 C 13.336036,7.5094042 13.34375,7.6089314 13.34375,7.71875 13.34375,8.5174307 12.67368,9.125 11.875,9.125 L 11.65625,9.125 10.65625,10.1875 C 10.841425,10.189327 10.941084,10.186143 11.15625,10.1875 13.17327,10.200222 14.78125,9.0793881 14.78125,7.6875 14.78125,7.2160918 14.606145,6.7775069 14.28125,6.40625 z M 4.40625,7.1875 C 4.0977434,7.1875 3.84375,7.4414933 3.84375,7.75 3.84375,8.0585065 4.0977434,8.3125 4.40625,8.3125 L 8,8.3125 9.0625,7.1875 4.40625,7.1875 z M 4.125,9.125 5.15625,10.1875 C 5.5748133,10.180859 5.9978157,10.155426 6.25,10.125 L 7.15625,9.1875 C 7.1572971,9.1653754 7.1553832,9.1481254 7.15625,9.125 L 4.125,9.125 z"></path>
-                    </svg>
-                </button>
-                <button data-time="1" title="Clear this user's chat" class="timeout button-simple light">1s</button>
-                <button data-time="600" title="Temporary 10 minute ban" class="timeout button-simple light">10m</button>
-                <button data-time="3600" title="Temporary 1 hour ban" class="timeout button-simple light">1h</button>
-                <button data-time="28800" title="Temporary 8 hour ban" class="timeout button-simple light">8h</button>
-                <button data-time="86400" title="Temporary 24 hour ban" class="timeout button-simple light">24h</button>
-                <button title="Permanent Ban" class="ban button-simple light">&infin;</button>
-            </span>`
-        ) : '';
-
-        controls = `
-            <div class="interface">
-                <div class="btn-wrapper">
-                    <button class="button-simple primary mod-card-follow">Follow</button>
-                    <button class="button-simple primary mod-card-friend">Friend</button>
-                    <button style="height: 30px;" title="Send user a whisper" class="button-simple dark mod-card-whisper">
-                        <svg height="16px" width="16px" version="1.1" viewBox="0 0 16 16" x="0px" y="0px" class="svg-conversations">
-                            <path clip-rule="evenodd" fill-rule="evenodd" d="M15,11H8.6L4,15v-4H2V2h13V11z"></path>
-                        </svg>
-                    </button>
-                    <button title="Add/Remove user from ignores" class="button-simple dark mod-card-ignore">
-                        <svg height="16px" width="16px" version="1.1" viewBox="0 0 16 16" x="0px" y="0px" class="svg-ignore">
-                            <path clip-rule="evenodd" fill-rule="evenodd" d="M13,11.341V16l-3.722-3.102C8.863,12.959,8.438,13,8,13c-3.866,0-7-2.462-7-5.5C1,4.462,4.134,2,8,2s7,2.462,7,5.5C15,8.996,14.234,10.35,13,11.341z M11,7H5v1h6V7z"></path>
-                        </svg>
-                        <svg style="display: none;" height="16px" width="16px" version="1.1" viewBox="0 0 16 16" x="0px" y="0px" class="svg-unignore">
-                            <path clip-rule="evenodd" fill-rule="evenodd" d="M13,11.341V16l-3.722-3.102C8.863,12.959,8.438,13,8,13c-3.866,0-7-2.462-7-5.5C1,4.462,4.134,2,8,2s7,2.462,7,5.5C15,8.996,14.234,10.35,13,11.341z"></path>
-                        </svg>
-                    </button>
-                    ${ownerControls}
-                    ${modControls}
-                </div>
-            </div>
-        `;
-    }
-
-    return `
-        <div class="bttv-mod-card ember-view moderation-card" style="top: ${top}px;left: ${left}px;">
-            <div class="close-button">
-                <svg height="16px" version="1.1" viewbox="0 0 16 16" width="16px" x="0px" y="0px" class="svg-close">
-                    <path clip-rule="evenodd" d="M13.657,3.757L9.414,8l4.243,4.242l-1.415,1.415L8,9.414l-4.243,4.243l-1.414-1.415L6.586,8L2.343,3.757l1.414-1.414L8,6.586l4.242-4.243L13.657,3.757z" fill-rule="evenodd"></path>
-                </svg>
-            </div>
-            <div class="card-header" style="background-color: #000">
-                <img class="channel_logo" src="${html.escape(user.logo || DEFAULT_AVATAR)}" />
-                <div class="drag-handle"></div>
-                ${realName}
-                <h3 class="name">
-                    <a href="${channelURL(user.name)}" target="_blank">${html.escape(nickname || user.display_name)}</a>
-                    <svg height="10px" width="10px" version="1.1" viewBox="0 0 16 16" x="0px" y="0px" class="svg-edit mod-card-edit">
-                        <path clip-rule="evenodd" fill-rule="evenodd" d="M6.414,12.414L3.586,9.586l8-8l2.828,2.828L6.414,12.414z M4.829,14H2l0,0v-2.828l0.586-0.586l2.828,2.828L4.829,14z"></path>
-                    </svg>
-                </h3>
-                <h4 class="created-at">${html.escape(`Created ${window.moment(user.created_at).format('MMM D, YYYY')}`)}</h4>
-                <div class="channel_background_cover"></div>
-                ${background}
-                <div class="channel-stats">
-                    <span class="stat">
-                        <svg height="16px" version="1.1" viewbox="1 1 16 16" width="16px" x="0px" y="0px" class="svg-glyph_views">
-                            <path clip-rule="evenodd" d="M11,13H5L1,9V8V7l4-4h6l4,4v1v1L11,13z M8,5C6.344,5,5,6.343,5,8c0,1.656,1.344,3,3,3c1.657,0,3-1.344,3-3C11,6.343,9.657,5,8,5z M8,9C7.447,9,7,8.552,7,8s0.447-1,1-1s1,0.448,1,1S8.553,9,8,9z" fill-rule="evenodd"></path>
-                        </svg>
-                        ${html.escape(user.views.toLocaleString())}
-                    </span>
-                    <span class="stat">
-                        <svg height="16px" version="1.1" viewbox="0 0 16 16" width="16px" x="0px" y="0px" class="svg-glyph_followers">
-                            <path clip-rule="evenodd" d="M8,13.5L1.5,7V4l2-2h3L8,3.5L9.5,2h3l2,2v3L8,13.5z" fill-rule="evenodd"></path>
-                        </svg>
-                        ${html.escape(user.followers.toLocaleString())}
-                    </span>
-                </div>
-            </div>
-            ${controls}
-            <br/>
-            <div class="user-messages">
-                <div class="label">
-                    <span>Chat Messages</span>
-                    <div class="triangle closed"></div>
-                </div>
-                <div class="message-list chat-messages">
-                    ${user.messages.map(m => `<div>${m.outerHTML}</div>`).join('\n')}
-                </div>
-            </div>
-        </div>
-    `;
+const Commands = {
+    BAN: '/ban',
+    UNBAN: '/unban',
+    MOD: '/mod',
+    UNMOD: '/unmod',
+    TIMEOUT: '/timeout',
+    PERMIT: '!permit',
+    IGNORE: '/ignore',
+    WHISPER: '/w'
 };
+
+const Icons = {
+    EYE: '<figure class="tw-svg"><svg class="tw-svg__asset tw-svg__asset--glyphviews tw-svg__asset--inherit" width="16px" height="16px" version="1.1" viewBox="0 0 16 16" x="0px" y="0px"><path clip-rule="evenodd" d="M11,13H5L1,9V8V7l4-4h6l4,4v1v1L11,13z M8,5C6.344,5,5,6.343,5,8c0,1.656,1.344,3,3,3c1.657,0,3-1.344,3-3C11,6.343,9.657,5,8,5z M8,9C7.447,9,7,8.552,7,8s0.447-1,1-1s1,0.448,1,1S8.553,9,8,9z" fill-rule="evenodd"></path></svg></figure>',
+    HEART: '<figure class="tw-svg"><svg class="tw-svg__asset tw-svg__asset--heart tw-svg__asset--inherit" width="16px" height="16px" version="1.1" viewBox="0 0 16 16" x="0px" y="0px"><path clip-rule="evenodd" d="M8,14L1,7V4l2-2h3l2,2l2-2h3l2,2v3L8,14z" fill-rule="evenodd"></path></svg></figure>',
+    PENCIL: '<figure class="tw-svg"><svg class="tw-svg__asset tw-svg__asset--edit tw-svg__asset--inherit" width="16px" height="16px" version="1.1" viewBox="0 0 16 16" x="0px" y="0px"><path clip-rule="evenodd" d="M6.414,12.414L3.586,9.586l8-8l2.828,2.828L6.414,12.414z M4.829,14H2l0,0v-2.828l0.586-0.586l2.828,2.828L4.829,14z" fill-rule="evenodd"></path></svg></figure>',
+    BIRTHDAY_CAKE: '<figure class="tw-svg"><svg class="tw-svg__asset tw-svg__asset--heart tw-svg__asset--inherit" width="16px" height="16px" viewBox="0 0 1792 1792"><path d="M1792 1408v384h-1792v-384q45 0 85-14t59-27.5 47-37.5q30-27 51.5-38t56.5-11q24 0 44 7t31 15 33 27q29 25 47 38t58 27 86 14q45 0 85-14.5t58-27 48-37.5q21-19 32.5-27t31-15 43.5-7q35 0 56.5 11t51.5 38q28 24 47 37.5t59 27.5 85 14 85-14 59-27.5 47-37.5q30-27 51.5-38t56.5-11q34 0 55.5 11t51.5 38q28 24 47 37.5t59 27.5 85 14zm0-320v192q-24 0-44-7t-31-15-33-27q-29-25-47-38t-58-27-85-14q-46 0-86 14t-58 27-47 38q-22 19-33 27t-31 15-44 7q-35 0-56.5-11t-51.5-38q-29-25-47-38t-58-27-86-14q-45 0-85 14.5t-58 27-48 37.5q-21 19-32.5 27t-31 15-43.5 7q-35 0-56.5-11t-51.5-38q-28-24-47-37.5t-59-27.5-85-14q-46 0-86 14t-58 27-47 38q-30 27-51.5 38t-56.5 11v-192q0-80 56-136t136-56h64v-448h256v448h256v-448h256v448h256v-448h256v448h64q80 0 136 56t56 136zm-1280-864q0 77-36 118.5t-92 41.5q-53 0-90.5-37.5t-37.5-90.5q0-29 9.5-51t23.5-34 31-28 31-31.5 23.5-44.5 9.5-67q38 0 83 74t45 150zm512 0q0 77-36 118.5t-92 41.5q-53 0-90.5-37.5t-37.5-90.5q0-29 9.5-51t23.5-34 31-28 31-31.5 23.5-44.5 9.5-67q38 0 83 74t45 150zm512 0q0 77-36 118.5t-92 41.5q-53 0-90.5-37.5t-37.5-90.5q0-29 9.5-51t23.5-34 31-28 31-31.5 23.5-44.5 9.5-67q38 0 83 74t45 150z" /></svg></figure>'
+};
+
+const MODERATOR_CARD_DISPLAY_NAME_SELECTOR = '.viewer-card__display-name';
+const MODERATOR_CARD_OVERLAY_SELECTOR = '.viewer-card__overlay';
+const MODERATOR_CARD_ACTIONS_SELECTOR = '.viewer-card__actions .tw-c-background-alt-2';
+const CHAT_INPUT_SELECTOR = 'textarea[data-a-target="chat-input"]';
+
+const moderatorActionButtonTemplate = (command, duration, tooltipText, buttonText) => `
+    <div class="tw-tooltip-wrapper tw-inline-flex">
+        <div class="bttv-moderator-card-action" data-command="${html.escape(command)}" data-duration="${html.escape(duration) || ''}">
+            <button class="tw-button__text">
+                ${html.escape(buttonText)}
+            </button>
+        </div>
+        <div class="tw-tooltip tw-tooltip--up tw-tooltip--align-center">${html.escape(tooltipText)}</div>
+    </div>
+`;
+
+const MODERATOR_ACTIONS_TEMPLATE = `
+    <span class="bttv-moderator-card-actions">
+        ${moderatorActionButtonTemplate(Commands.PERMIT, null, '!permit User', '!permit')}
+        ${moderatorActionButtonTemplate(Commands.TIMEOUT, 1, 'Purge', '1s')}
+        ${moderatorActionButtonTemplate(Commands.TIMEOUT, 600, 'Timeout 10m', '10m')}
+        ${moderatorActionButtonTemplate(Commands.TIMEOUT, 3600, 'Timeout 1hr', '1h')}
+        ${moderatorActionButtonTemplate(Commands.TIMEOUT, 8 * 3600, 'Timeout 8hr', '8h')}
+        ${moderatorActionButtonTemplate(Commands.TIMEOUT, 24 * 3600, 'Timeout 24hr', '24h')}
+    </span>
+`;
+
+const userStatsItemTemplate = (icon, value) => `
+    <div class="tw-stat tw-pd-l-1">
+        <span class="tw-stat__icon">${icon}</span>
+        <span class="tw-stat__value">${html.escape(value)}</span>
+    </div>
+`;
+
+const userStatsTemplate = (views, follows, createdAt) => `
+    <div class="bttv-moderator-card-user-stats">
+        <div class="tw-flex tw-full-width">
+            ${userStatsItemTemplate(Icons.EYE, views.toLocaleString())}
+            ${userStatsItemTemplate(Icons.HEART, follows.toLocaleString())}
+            ${userStatsItemTemplate(Icons.BIRTHDAY_CAKE, moment(createdAt).format('MMM D, YYYY'))}
+        </div>
+    </div>
+`;
+
+const userMessagesTemplate = messagesHTML => `
+    <div class="bttv-moderator-card-messages tw-c-background">
+        <div class="label">
+            <span>Chat Messages</span>
+            <div class="triangle"></div>
+        </div>
+        <div class="message-list">
+            ${messagesHTML.join('\n')}
+        </div>
+    </div>
+`;
+
+const NICKNAME_CHANGE_BUTTON_TEMPLATE = `
+    <button class="tw-button-icon tw-button-icon--overlay bttv-moderator-card-nickname-change-button">
+        <span class="tw-button-icon__icon">${Icons.PENCIL}</span>
+    </button>
+`;
+
+function getUserMessages(name) {
+    return Array.from($('.chat-line__message'))
+        .reverse()
+        .filter(el => {
+            const messageObj = twitch.getChatMessageObject(el);
+            if (!messageObj || !messageObj.user) return false;
+            return messageObj.user.userLogin === name;
+        })
+        .map(m => m.outerHTML);
+}
+
+class ModeratorCard {
+    constructor(element, user) {
+        this.$element = $(element);
+        this.user = user;
+    }
+
+    close() {
+        this.cleanup();
+        this.$element.find('.viewer-card__hide > button').click();
+    }
+
+    cleanup() {
+        $('.bttv-moderator-card-nickname-change-button').remove();
+        $('.bttv-moderator-card-user-stats').remove();
+        $('.bttv-moderator-card-actions').remove();
+        $('.bttv-moderator-card-messages').remove();
+    }
+
+    render() {
+        this.renderNicknameChangeButton();
+        this.renderUserStats();
+        this.renderModeratorActions();
+        this.renderUserMessages();
+    }
+
+    renderNicknameChangeButton() {
+        const $displayName = this.$element.find(MODERATOR_CARD_DISPLAY_NAME_SELECTOR).children().first();
+        if ($displayName.find('.bttv-moderator-card-nickname-change-button').length) return;
+
+        const $nicknameChangeButton = $(NICKNAME_CHANGE_BUTTON_TEMPLATE);
+        $nicknameChangeButton.appendTo($displayName);
+        $nicknameChangeButton.on('click', () => nicknames.set(this.user.name));
+    }
+
+    renderUserStats() {
+        const $overlay = this.$element.find(MODERATOR_CARD_OVERLAY_SELECTOR);
+        if ($overlay.find('.bttv-moderator-card-user-stats').length) return;
+
+        twitchAPI.get(`channels/${this.user.id}`)
+            .then(({views, followers, created_at: createdAt}) => userStatsTemplate(views, followers, createdAt))
+            .then(statsHTML => $(statsHTML).appendTo($overlay));
+    }
+
+    renderModeratorActions() {
+        const $moderatorActions = this.$element.find(MODERATOR_CARD_ACTIONS_SELECTOR);
+        if ($moderatorActions.find('.bttv-moderator-card-actions').length) return;
+
+        const currentUser = twitch.getCurrentUser();
+        const currentUserIsOwner = twitch.getCurrentUserIsOwner();
+        const currentUserIsModerator = twitch.getCurrentUserIsModerator();
+
+        const isCurrentUser = currentUser.name === this.user.name;
+        const isModerator = this.user.isOwner || this.user.isModerator;
+
+        const currentUserCanModerate = !isCurrentUser && (currentUserIsOwner || (currentUserIsModerator && !isModerator));
+        if (!currentUserCanModerate) return;
+
+        const $modCards = $(MODERATOR_ACTIONS_TEMPLATE);
+        $modCards.appendTo($moderatorActions);
+        $modCards.find('.bttv-moderator-card-action').on('click', ({currentTarget}) => {
+            const $element = $(currentTarget);
+            const command = $element.data('command');
+            const duration = $element.data('duration');
+            twitch.sendChatMessage(`${command} ${this.user.name}${duration ? ` ${duration}` : ''}`);
+        });
+    }
+
+    renderUserMessages() {
+        if (this.$element.find('.bttv-moderator-card-messages').length) return;
+
+        const $moderatorActions = this.$element.find('.viewer-card__actions');
+        const $messages = $(userMessagesTemplate(getUserMessages(this.user.name)));
+        $moderatorActions.after($messages);
+
+        $messages.find('.label').on('click', () => {
+            $messages.find('.triangle').toggleClass('open');
+            $messages.find('.message-list').toggle();
+        });
+    }
+
+    onKeyDown(e) {
+        if (e.ctrlKey || e.metaKey || e.shiftKey) return;
+        if ($('input, textarea, select').is(':focus')) return;
+
+        const keyCode = e.keyCode || e.which;
+        if (keyCode === keyCodes.Esc) {
+            return this.close();
+        }
+
+        if (twitch.getCurrentUserIsModerator()) {
+            let command;
+            let duration;
+            switch (keyCode) {
+                case keyCodes.T:
+                    command = Commands.TIMEOUT;
+                    break;
+                case keyCodes.P:
+                    command = Commands.TIMEOUT;
+                    duration = 1;
+                    break;
+                case keyCodes.A:
+                    command = Commands.PERMIT;
+                    break;
+                case keyCodes.U:
+                    command = Commands.UNBAN;
+                    break;
+                case keyCodes.B:
+                    command = Commands.BAN;
+                    break;
+            }
+            if (command) {
+                twitch.sendChatMessage(`${command} ${this.user.name}${duration ? ` ${duration}` : ''}`);
+                this.close();
+                return;
+            }
+        }
+
+        if (keyCode === keyCodes.I) {
+            twitch.sendChatMessage(`${Commands.IGNORE} ${this.user.name}`);
+            this.close();
+        } else if (keyCode === keyCodes.W) {
+            e.preventDefault();
+            const $chatInput = $(CHAT_INPUT_SELECTOR);
+            $chatInput.val(`${Commands.WHISPER} ${this.user.name} `);
+            $chatInput.focus();
+            this.close();
+        }
+    }
+}
+
+module.exports = ModeratorCard;

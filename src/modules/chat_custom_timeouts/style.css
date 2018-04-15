@@ -1,0 +1,40 @@
+#bttv-custom-timeout-contain {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 80px;
+  height: 200px;
+  overflow: hidden;
+
+  background: rgba(90,90,90,0.4);
+
+  z-index: 99999;
+
+  .text, .cursor {
+    position: absolute;
+    left: 0px;
+    top: 100px;
+    width: 80px;
+    height: 1px;
+    background: #f00;
+  }
+
+  .text {
+    top: 85px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    background: rgba(0,0,0,0.6);
+    cursor: default;
+    display: none;
+    color: #d3d3d3;
+  }
+
+  &:hover .text {
+    display: block;
+  }
+
+  &:hover .cursor {
+    background: #0f0;
+  }
+}

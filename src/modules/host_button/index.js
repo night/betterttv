@@ -2,9 +2,21 @@ const $ = require('jquery');
 const settings = require('../../settings');
 const watcher = require('../../watcher');
 const twitch = require('../../utils/twitch');
+const tmiApi = require('../../utils/tmi-api');
+
+const SHARE_BUTTON_SELECTOR = '.channel-info-bar__action-container .tw-mg-x-1:first';
+const HOST_BUTTON_ID = 'bttv-host-button';
 
 let $hostButton;
 let hosting = false;
+
+const buttonTemplate = `
+    <div class="tw-mg-r-1">
+        <button id="${HOST_BUTTON_ID}" class="tw-button tw-button--hollow">
+            <span class="tw-button__text">Host</span>
+        </button>
+    </div>
+`;
 
 class HostButtonModule {
     constructor() {
@@ -23,18 +35,16 @@ class HostButtonModule {
 
         const currentUser = twitch.getCurrentUser();
         const currentChannel = twitch.getCurrentChannel();
-        if (!currentUser || !currentChannel) return;
-        if (currentUser.id === currentChannel.id) return;
+        if (!currentChannel || currentUser.id === currentChannel.id) return;
+
+        $hostButton = $(buttonTemplate);
         this.embedHostButton();
         this.updateHostingState(currentUser.id, currentChannel.id);
     }
 
     embedHostButton() {
-        if ($('#bttv-host-button').length) return;
-        $hostButton = $('<button><span>Host</span></button>');
-        $hostButton.attr('id', 'bttv-host-button');
-        $hostButton.addClass('button action button--hollow mg-l-1');
-        $hostButton.insertAfter('#channel .cn-metabar__more .js-share-box');
+        if ($(`#${HOST_BUTTON_ID}`).length) return;
+        $hostButton.insertAfter(SHARE_BUTTON_SELECTOR);
         $hostButton.click(() => this.toggleHost());
     }
 
@@ -43,8 +53,8 @@ class HostButtonModule {
         const command = hosting ? 'unhost' : 'host';
         try {
             const channelName = twitch.getCurrentChannel().name;
-            const conn = twitch.getCurrentTMISession()._connections.main;
-            conn._send(`PRIVMSG #${currentUser.name} :/${command === 'host' ? `${command} ${channelName}` : command}`);
+            const rawMessage = `PRIVMSG ${currentUser.name} : /${command === 'host' ? `${command} ${channelName}` : command}`;
+            twitch.getChatServiceSocket().send(rawMessage);
             hosting = !hosting;
             this.updateHostButtonText();
             twitch.sendChatAdminMessage(`BetterTTV: We sent a /${command} to your channel.`);
@@ -56,22 +66,20 @@ class HostButtonModule {
         }
     }
 
+    updateHostingState(userId, channelId) {
+        return tmiApi.get('hosts', {qs: {host: userId}})
+            .then(({hosts}) => {
+                if (!Array.isArray(hosts) || !hosts.length) return;
+                const host = hosts[0];
+                if (!host || !host.target_id) return;
+                hosting = host.target_id.toString() === channelId;
+                this.updateHostButtonText();
+            });
+    }
+
     updateHostButtonText() {
         const text = hosting ? 'Unhost' : 'Host';
         $hostButton.find('span').text(text);
-    }
-
-    updateHostingState(userId, channelId) {
-        const tmiSession = twitch.getCurrentTMISession();
-        if (!tmiSession) return;
-
-        tmiSession._tmiApi
-            .get('/hosts', {host: userId})
-            .then(data => {
-                if (!data.hosts || !data.hosts.length) return;
-                hosting = data.hosts[0].target_id === channelId;
-                this.updateHostButtonText();
-            });
     }
 
     unload() {

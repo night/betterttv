@@ -1,0 +1,10 @@
+.pinned-cheer .pinned-cheer__bounding-box:before {
+  content: "×";
+  position: absolute;
+  color: #777;
+  cursor: pointer;
+  top: 0px;
+  right: 5px;
+  width: 8px;
+  height: 15px;
+}

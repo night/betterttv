@@ -1,161 +1,307 @@
+const $ = require('jquery');
 const Raven = require('raven-js');
+const twitchAPI = require('./twitch-api');
 
-function formatChannel(data) {
-    return {
-        id: data.get('_id'),
-        name: data.get('name') || data.get('id'),
-        displayName: data.get('display_name'),
-        game: data.get('game'),
-        views: data.get('views')
-    };
+const REACT_ROOT = '#root div';
+const CHAT_CONTAINER = 'section[data-test-selector="chat-room-component-layout"]';
+const VOD_CHAT_CONTAINER = '.qa-vod-chat';
+const CHAT_LIST = '.chat-list';
+const PLAYER = '.player';
+
+const TMIActionTypes = {
+    MESSAGE: 0,
+    MODERATION: 1,
+    MODERATION_ACTION: 2,
+    TARGETED_MODERATION_ACTION: 3,
+    AUTO_MOD: 4,
+    CONNECTED: 5,
+    DISCONNECTED: 6,
+    RECONNECT: 7,
+    HOSTING: 8,
+    UNHOST: 9,
+    HOSTED: 10,
+    SUBSCRIPTION: 11,
+    RESUBSCRIPTION: 12,
+    SUBGIFT: 13,
+    CLEAR_CHAT: 14,
+    SUBSCRIBER_ONLY_MODE: 15,
+    FOLLOWERS_ONLY_MODE: 16,
+    SLOW_MODE: 17,
+    EMOTE_ONLY_MODE: 18,
+    ROOM_MODS: 19,
+    ROOM_STATE: 20,
+    RAID: 21,
+    UNRAID: 22,
+    RITUAL: 23,
+    NOTICE: 24,
+    INFO: 25,
+    BADGES_UPDATED: 26,
+    PURCHASE: 27,
+    BITS_CHARITY: 28,
+    CRATE_GIFT: 29
+};
+
+function getReactInstance(element) {
+    for (const key in element) {
+        if (key.startsWith('__reactInternalInstance$')) {
+            return element[key];
+        }
+    }
+
+    return null;
 }
 
-function formatUser(data) {
-    return {
-        id: data.id,
-        name: data.login,
-        displayName: data.name,
-        avatar: data.logo,
-        accessToken: data.chat_oauth_token
-    };
-}
+function searchReactParents(node, predicate, maxDepth = 15, depth = 0) {
+    try {
+        if (predicate(node)) {
+            return node;
+        }
+    } catch (_) {}
 
-function lookup(...args) {
-    return window.App ? window.App.__container__.lookup(...args) : null;
+    if (!node || depth > maxDepth) {
+        return null;
+    }
+
+    const {'return': parent} = node;
+    if (parent) {
+        return searchReactParents(parent, predicate, maxDepth, depth + 1);
+    }
+
+    return null;
 }
 
 let currentUser;
-if (window.Twitch && window.Twitch.user) {
-    window.Twitch.user()
-        .then(d => formatUser(d))
-        .then(u => {
-            currentUser = u;
-            Raven.setUserContext({
-                id: u.id,
-                username: u.name
-            });
-        });
-}
-
+let currentChannel;
 const clipInfo = window.clipInfo;
 
 module.exports = {
-    getEmberContainer(...args) {
-        return lookup(...args);
+    setCurrentUser(accessToken, id, name, displayName) {
+        twitchAPI.setAccessToken(accessToken);
+
+        currentUser = {
+            id: id.toString(),
+            name,
+            displayName
+        };
+
+        Raven.setUserContext({
+            id: currentUser.id,
+            username: currentUser.name
+        });
     },
 
-    getEmberView(elementID) {
-        const obj = lookup('-view-registry:main');
-        return obj ? obj[elementID] : null;
-    },
-
-    getCurrentChannel() {
+    updateCurrentChannel() {
         let rv;
 
         if (clipInfo) {
-            return {
-                id: clipInfo.broadcaster_id,
+            rv = {
+                id: clipInfo.broadcaster_id.toString(),
                 name: clipInfo.broadcaster_login,
-                displayName: clipInfo.broadcaster_display_name
+                displayName: clipInfo.broadcaster_display_name,
+                avatar: clipInfo.broadcaster_logo
             };
         }
 
-        const channel = lookup('controller:channel');
-        if (!Ember.isNone(channel) && channel.get('model.id')) {
-            rv = channel.model;
+        const currentChat = this.getCurrentChat();
+        if (currentChat && currentChat.props && currentChat.props.channelID) {
+            const {channelID, channelLogin, channelDisplayName} = currentChat.props;
+            rv = {
+                id: channelID.toString(),
+                name: channelLogin,
+                displayName: channelDisplayName
+            };
         }
 
-        if (!rv) {
-            const user = lookup('controller:user');
-            if (!Ember.isNone(user) && user.get('model.id')) {
-                rv = user.model;
-            }
+        const currentVodChat = this.getCurrentVodChat();
+        if (currentVodChat && currentVodChat.props && currentVodChat.props.data && currentVodChat.props.data.video) {
+            const {owner: {id, login}} = currentVodChat.props.data.video;
+            rv = {
+                id: id.toString(),
+                name: login,
+                displayName: login
+            };
         }
 
-        if (!rv) {
-            const playerService = lookup('service:persistentPlayer');
-            if (!Ember.isNone(playerService) && playerService.get('playerComponent.channel.id')) {
-                rv = playerService.playerComponent.channel;
-            }
-        }
+        currentChannel = rv;
 
-        if (!rv) {
-            const chat = lookup('controller:chat');
-            if (!Ember.isNone(chat) && chat.get('currentChannelRoom.channel')) {
-                rv = chat.get('currentChannelRoom.channel');
-            }
-        }
+        return rv;
+    },
 
-        return rv ? formatChannel(rv) : null;
+    TMIActionTypes,
+
+    getReactInstance,
+
+    getCurrentChannel() {
+        return currentChannel;
     },
 
     getCurrentUser() {
         return currentUser;
     },
 
+    getConnectStore() {
+        let store;
+        try {
+            const node = searchReactParents(
+                getReactInstance($(REACT_ROOT)[0]),
+                n => n.stateNode && n.stateNode.store
+            );
+            store = node.stateNode.store;
+        } catch (_) {}
+
+        return store;
+    },
+
+    getRouter() {
+        let router;
+        try {
+            const node = searchReactParents(
+                getReactInstance($(REACT_ROOT)[0]),
+                n => n.stateNode && n.stateNode.context && n.stateNode.context.router
+            );
+            router = node.stateNode.context.router;
+        } catch (_) {}
+
+        return router;
+    },
+
+    getCurrentPlayer() {
+        let player;
+        try {
+            const node = searchReactParents(
+                getReactInstance($(PLAYER)[0]),
+                n => n.stateNode && n.stateNode.player
+            );
+            player = node.stateNode;
+        } catch (_) {}
+
+        return player;
+    },
+
     getChatController() {
-        return lookup('controller:chat');
+        let chatController;
+        try {
+            const node = searchReactParents(
+                getReactInstance($(CHAT_CONTAINER)[0]),
+                n => n.stateNode && n.stateNode.chatBuffer
+            );
+            chatController = node.stateNode;
+        } catch (_) {}
+
+        return chatController;
+    },
+
+    getChatServiceClient() {
+        let client;
+        try {
+            client = this.getChatController().chatService.client;
+        } catch (_) {}
+        return client;
+    },
+
+    getChatServiceSocket() {
+        let socket;
+        try {
+            socket = this.getChatServiceClient().connection.ws;
+        } catch (_) {}
+        return socket;
+    },
+
+    getChatScroller() {
+        let chatScroller;
+        try {
+            const node = searchReactParents(
+                getReactInstance($(CHAT_LIST)[0]),
+                n => n.stateNode && n.stateNode.props && n.stateNode.scroll
+            );
+            chatScroller = node.stateNode;
+        } catch (_) {}
+
+        return chatScroller;
     },
 
     getCurrentChat() {
-        return this.getChatController().currentRoom;
+        let currentChat;
+        try {
+            const node = searchReactParents(
+                getReactInstance($(CHAT_CONTAINER)[0]),
+                n => n.stateNode && n.stateNode.props && n.stateNode.props.onSendMessage
+            );
+            currentChat = node.stateNode;
+        } catch (_) {}
+
+        return currentChat;
     },
 
-    getCurrentTMISession() {
-        return this.getChatController().tmiSession;
+    getCurrentVodChat() {
+        let currentVodChat;
+        try {
+            const node = searchReactParents(
+                getReactInstance($(VOD_CHAT_CONTAINER)[0]),
+                n => n.stateNode && n.stateNode.props && n.stateNode.props.data && n.stateNode.props.data.video
+            );
+            currentVodChat = node.stateNode;
+        } catch (_) {}
+
+        return currentVodChat;
     },
 
-    sendChatAdminMessage(message) {
-        const currentChat = this.getCurrentChat();
-        if (!currentChat) return;
-        currentChat.addMessage({
-            from: 'jtv',
-            date: new Date(),
-            style: 'admin',
-            message
+    sendChatAdminMessage(body) {
+        const chatController = this.getChatController();
+        if (!chatController) return;
+
+        chatController.chatService.onChatNoticeEvent({
+            msgid: Date.now(),
+            body,
+            channel: `#${chatController.chatService.channelLogin}`
         });
     },
 
     sendChatMessage(message) {
         const currentChat = this.getCurrentChat();
         if (!currentChat) return;
-        currentChat.tmiRoom.sendMessage(message);
+        currentChat.props.onSendMessage(message);
     },
 
     getCurrentUserIsModerator() {
         const currentChat = this.getCurrentChat();
-        return currentChat ? currentChat.get('isModeratorOrHigher') : false;
+        if (!currentChat) return;
+        return currentChat.props.isCurrentUserModerator;
     },
 
-    getChatMessageObject(domElement) {
-        const id = domElement.getAttribute('id');
-        const view = this.getEmberView(id);
-        if (!view) return null;
+    getChatMessageObject(element) {
+        let msgObject;
+        try {
+            msgObject = getReactInstance(element).return.stateNode.props.message;
+        } catch (_) {}
 
-        let msgObject = view.msgObject;
-        if (!msgObject) return null;
-
-        if (typeof msgObject.get === 'function') {
-            const newObj = {};
-            ['from', 'date', 'deleted', 'color', 'labels', 'tags', 'message'].forEach(k => {
-                newObj[k] = msgObject.get(k);
-            });
-            msgObject = newObj;
-        }
         return msgObject;
     },
 
-    getUserIsModerator(name) {
-        const currentChat = this.getCurrentChat();
-        if (!currentChat) return false;
-        let badges = currentChat.tmiRoom.getBadges(name);
-        if (!badges) return false;
-        badges = Object.keys(badges);
-        return badges.includes('moderator') ||
-               badges.includes('broadcaster') ||
-               badges.includes('global_mod') ||
-               badges.includes('admin') ||
-               badges.includes('staff');
+    getConversationMessageObject(element) {
+        let msgObject;
+        try {
+            const node = searchReactParents(
+                getReactInstance(element),
+                n => n.stateNode && n.stateNode.props && n.stateNode.props.message
+            );
+            msgObject = node.stateNode.props.message;
+        } catch (_) {}
+
+        return msgObject;
+    },
+
+    getChatModeratorCardProps(element) {
+        let apolloComponent;
+        try {
+            const node = searchReactParents(
+                getReactInstance(element),
+                n => n.stateNode && n.stateNode.props && n.stateNode.props.data
+            );
+            apolloComponent = node.stateNode.props;
+        } catch (_) {}
+
+        return apolloComponent;
     },
 
     getUserIsModeratorFromTagsBadges(badges) {
@@ -177,13 +323,9 @@ module.exports = {
                badges.includes('staff');
     },
 
-    getUserIsIgnored(name) {
-        const tmiSession = this.getCurrentTMISession();
-        return tmiSession ? tmiSession.isIgnored(name) : false;
-    },
-
     getCurrentUserIsOwner() {
-        if (!this.getCurrentChat() || !this.getCurrentUser()) return false;
-        return this.getCurrentUser().id === this.getCurrentChannel().id;
+        const currentChat = this.getCurrentChat();
+        if (!currentChat) return false;
+        return currentChat.props.isOwnChannel || false;
     }
 };

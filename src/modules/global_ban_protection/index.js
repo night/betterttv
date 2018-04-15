@@ -1,8 +1,8 @@
 const settings = require('../../settings');
 const twitch = require('../../utils/twitch');
 
-// Regular users are allowed 20 messages in 30 seconds, mods (and higher
-// positions) 100 messages in 30 seconds, see
+// Regular users are allowed 20 messages in 30 seconds, mods and higher
+// positions 100 messages in 30 seconds, see
 // https://discuss.dev.twitch.tv/t/message-limit-for-moderators/3042/4
 const regularMsgLimit = 20;
 const modMsgLimit = 100;
@@ -13,7 +13,7 @@ class GlobalBanProtectionModule {
         settings.add({
             id: 'globalBanProtection',
             name: 'Global Ban Protection',
-            description: 'Prevent sending a message if it resulted in a global ban',
+            description: 'Prevent sending a message if it would result in a global ban',
             default: false,
         });
 

@@ -1,5 +1,6 @@
 const settings = require('../../settings');
 const watcher = require('../../watcher');
+const $ = require('jquery');
 
 class DirectoryLiveFollowingModule {
     constructor() {
@@ -12,12 +13,13 @@ class DirectoryLiveFollowingModule {
         watcher.on('load.directory.following', () => this.load());
     }
 
-    load() {
-        if (settings.get('showDirectoryLiveTab') === false) return;
-        // Using our own jQuery breaks this. Ember must not be getting events from our instance.
-        try {
-            jQuery('a[href="/directory/following/live"]').click();
-        } catch (e) {}
+    load(retries = 0) {
+        if (settings.get('showDirectoryLiveTab') === false || retries > 10) return;
+        const button = $('a[href="/directory/following/live"]');
+        if (!button.length) {
+            return setTimeout(() => this.load(retries + 1), 250);
+        }
+        button[0].click();
     }
 }
 

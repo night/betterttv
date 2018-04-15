@@ -7,6 +7,7 @@ const settings = require('../../settings');
 const storage = require('../../storage');
 const html = require('../../utils/html');
 const api = require('../../utils/api');
+const moment = require('moment');
 
 const getSettingElement = ({id}) => $(`.bttvOption-${html.escape(id)}`);
 
@@ -37,10 +38,8 @@ const settingsPanelTemplate = () => `
         </ul>
         <span id="close">&times;</span>
     </div>
-    <div id="bttvSettings" class="scroll scroll-dark" style="height:425px;">
-        <div class="tse-content options-list">
-            <h2 class="option">Here you can manage the various BetterTTV options. Click On or Off to toggle settings.</h2>
-        </div>
+    <div id="bttvSettings" class="options-list">
+        <h2 class="option">Here you can manage the various BetterTTV options. Click On or Off to toggle settings.</h2>
     </div>
     <div id="bttvAbout" style="display:none;">
         <div class="aboutHalf">
@@ -66,13 +65,12 @@ const settingsPanelTemplate = () => `
     <div id="bttvChannel" style="display:none;">
         <iframe frameborder="0" width="100%" height="425"></iframe>
     </div>
-    <div id="bttvPrivacy" class="scroll scroll-dark" style="display:none;height:425px;">
-        <div class="tse-content"></div>
+    <div id="bttvPrivacy" style="display:none;">
     </div>
-    <div id="bttvChangelog" class="scroll scroll-dark" style="display:none;height:425px;">
-        <div class="tse-content"><h1>Changelog</h1><div class="bttv-changelog-releases"></div></div>
+    <div id="bttvChangelog" style="display:none;">
+        <h1>Changelog</h1><div class="bttv-changelog-releases"></div>
     </div>
-    <div id="bttvBackup" style="display:none;height:425px;padding:25px;">
+    <div id="bttvBackup" style="display:none;">
         <h4 style="padding-bottom:10px;">Backup Settings</h4>
         <button id="bttvBackupButton" class="button primary"><span>Download</span></button>
         <h4 style="padding-top:15px;padding-bottom:10px;">Import Settings</h4>
@@ -90,7 +88,7 @@ const settingsPanelTemplate = () => `
 `;
 
 const changelogEntryTemplate = (version, publishedAt, body) => `
-    <h2>Version ${html.escape(version)} (${window.moment(publishedAt).format('MMM D, YYYY')})</h2>
+    <h2>Version ${html.escape(version)} (${moment(publishedAt).format('MMM D, YYYY')})</h2>
     <p>${body}</p>
 `;
 
@@ -126,7 +124,7 @@ function addSetting(setting) {
 
     const template = settingTemplate(setting);
     if (beforeIndex === -1) {
-        $('#bttvSettings .options-list h2.option').after(template);
+        $('#bttvSettings.options-list h2.option').after(template);
     } else {
         getSettingElement(sortedSettings[beforeIndex]).after(template);
     }
@@ -151,7 +149,7 @@ class SettingsModule {
         panel.innerHTML = settingsPanelTemplate();
         $('body').append(panel);
 
-        cdn.get('privacy.html').then(data => $('#bttvPrivacy .tse-content').html(data));
+        cdn.get('privacy.html').then(data => $('#bttvPrivacy').html(data));
 
         api.get('changelog')
             .then(({changelog}) => changelog.map(({version, publishedAt, body}) => changelogEntryTemplate(version, publishedAt, body)))
@@ -183,37 +181,23 @@ class SettingsModule {
         });
 
         settings.getSettings().forEach(setting => addSetting(setting));
-
-        // relies on Twitch jQuery.. may break
-        // this should be cleaned up
-        try {
-            jQuery('#bttvSettingsPanel .scroll').TrackpadScrollEmulator({ // eslint-disable-line new-cap
-                scrollbarHideStrategy: 'rightAndBottom'
-            });
-        } catch (e) {}
     }
 
     renderSettingsMenuOption() {
         if ($('.bttvSettingsIconDropDown').length) return;
 
-        $('.warp__drawer .warp__list .warp__item:eq(2)').before(`
-            <li class="warp__item">
-                <a class="warp__tipsy" data-tt_medium="twitch_leftnav" href="#" title="BetterTTV Settings">
-                    <figure class="warp__avatar bttvSettingsIconDropDown"></figure>
-                    <span class="drawer__item">BetterTTV Settings</span>
-                </a>
-            </li>
-        `);
-        $('.top-nav-drawer__item a[data-tt_content="settings_profile"]').parent().after(`
-            <li class="top-nav-drawer__item top-nav-drawer__item--link">
-                <a title="BetterTTV Settings" href="#" class="flex ember-view">
-                    <figure class="icon bttvSettingsIconDropDown"></figure>
-                    <span class="top-nav-drawer__label">BetterTTV Settings</span>
-                </a>
-            </li>
+        $('a[data-a-target="settings-dropdown-link"]').after(`
+            <a href="#" target="_blank" class="tw-interactable" data-a-target="bttv-settings-dropdown-link">
+                <div class="tw-c-text-alt tw-align-items-center tw-flex tw-pd-x-2 tw-pd-y-05">
+                    <div class="tw-align-items-center tw-flex tw-mg-r-1">
+                        <figure class="icon bttvSettingsIconDropDown"></figure>
+                    </div>
+                    <p>BetterTTV Settings</p>
+                </div>
+            </a>
         `);
 
-        $('.bttvSettingsIconDropDown').parent().click(this.openSettings);
+        $('.bttvSettingsIconDropDown').parent().parent().click(this.openSettings);
     }
 
     openSettings(e) {

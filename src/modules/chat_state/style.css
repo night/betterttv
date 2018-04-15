@@ -1,0 +1,43 @@
+#bttv-channel-state-contain {
+  position: absolute;
+  top: 7px;
+  right: 5px;
+  width: 150px;
+  height: 24px;
+  color: #6441a4;
+
+  svg path {
+    fill: #6441a4;
+  }
+
+  div {
+    float: right;
+    width: 26px;
+    height: 22px;
+    display: none;
+  }
+
+  .slow {
+    position: relative;
+    width: 70px;
+    text-align: right;
+
+    .slow-time {
+      position: absolute;
+      top: 8px;
+      right: 24px;
+      font-size: 9px;
+      line-height: 9px;
+    }
+  }
+}
+
+.tw-theme--dark {
+  #bttv-channel-state-contain {
+    color: #b19dd8;
+
+    svg path {
+      fill: #b19dd8;
+    }
+  }
+}

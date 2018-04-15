@@ -1,9 +1,13 @@
 const $ = require('jquery');
 const watcher = require('../../watcher');
+const twitch = require('../../utils/twitch');
 
 const CHAT_STATE_ID = 'bttv-channel-state-contain';
 const CHAT_STATE_TEMPLATE = require('./template')(CHAT_STATE_ID);
-const CHAT_HEADER_SELECTOR = '.ember-chat .chat-header:first';
+const CHAT_HEADER_SELECTOR = 'section[data-test-selector="chat-room-component-layout"] .chat-room__header';
+
+let listening = false;
+let lastStateMessage;
 
 function displaySeconds(s) {
     let date = new Date(0);
@@ -22,55 +26,66 @@ function displaySeconds(s) {
     return date.join(':');
 }
 
-class ChatCustomTimeoutsModule {
+class ChatStateModule {
     constructor() {
-        watcher.on('load.chat', () => this.load());
-        watcher.on('chat.state', state => this.updateState(state));
+        watcher.on('load', () => this.load());
+        watcher.on('load.chat', () => this.loadHTML());
+    }
+
+    loadHTML() {
+        if ($(`#${CHAT_STATE_ID}`).length) return;
+        $(CHAT_HEADER_SELECTOR).append(CHAT_STATE_TEMPLATE);
     }
 
     load() {
-        if ($(`#${CHAT_STATE_ID}`).length) return;
-        $(CHAT_HEADER_SELECTOR).append(CHAT_STATE_TEMPLATE);
+        const connectStore = twitch.getConnectStore();
+        if (!connectStore || listening) return;
 
-        $(`#${CHAT_STATE_ID}`).children().each(function() {
-            $(this).hide();
-
-            if ($(this).hasClass('slow')) {
-                jQuery(this).find('.slow-time').tipsy({
-                    gravity: jQuery.fn.tipsy.autoNS
-                });
-                jQuery(this).find('svg').tipsy({
-                    gravity: jQuery.fn.tipsy.autoNS
-                });
-            } else {
-                jQuery(this).tipsy({
-                    gravity: jQuery.fn.tipsy.autoNS
-                });
-            }
-        });
-
-        this.updateState({});
+        try {
+            connectStore.subscribe(() => {
+                try {
+                    this.updateState(connectStore);
+                } catch (_) {}
+            });
+            listening = true;
+        } catch (_) {}
     }
 
-    updateState(state) {
+    updateState(store) {
+        let {chat: {messages}} = store.getState();
+        messages = Object.values(messages)[0];
+        if (!messages) return;
+
+        let message;
+        for (let i = messages.length - 1; i >= 0; i--) {
+            if (messages[i].type !== twitch.TMIActionTypes.ROOM_STATE) continue;
+            message = messages[i];
+            break;
+        }
+        if (!message || message === lastStateMessage) return;
+
         const $stateContainer = $(`#${CHAT_STATE_ID}`);
         if (!$stateContainer.length) return;
 
-        if (state.slow) {
+        lastStateMessage = message;
+
+        const {slowMode, slowModeDuration, emoteOnly, subsOnly, r9k} = message.state;
+
+        if (slowMode) {
             $stateContainer
                 .find('.slow-time')
-                .attr('original-title', `${state.slow} seconds`)
-                .text(displaySeconds(state.slow));
+                .attr('title', `${slowModeDuration} seconds`)
+                .text(displaySeconds(slowModeDuration));
         }
-        $stateContainer.find('.slow').toggle(state.slow ? true : false);
-        $stateContainer.find('.slow-time').toggle(state.slow ? true : false);
+        $stateContainer.find('.slow').toggle(slowMode ? true : false);
+        $stateContainer.find('.slow-time').toggle(slowMode ? true : false);
 
-        $stateContainer.find('.r9k').toggle(state.r9k ? true : false);
+        $stateContainer.find('.r9k').toggle(r9k ? true : false);
 
-        $stateContainer.find('.subs-only').toggle(state.subsOnly ? true : false);
+        $stateContainer.find('.subs-only').toggle(subsOnly ? true : false);
 
-        $stateContainer.find('.emote-only').toggle(state.emoteOnly ? true : false);
+        $stateContainer.find('.emote-only').toggle(emoteOnly ? true : false);
     }
 }
 
-module.exports = new ChatCustomTimeoutsModule();
+module.exports = new ChatStateModule();

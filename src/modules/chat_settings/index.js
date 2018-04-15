@@ -4,21 +4,19 @@ const settings = require('../settings');
 const highlightBlacklistKeywords = require('../chat_highlight_blacklist_keywords');
 const chatFontSettings = require('../chat_font_settings');
 
-const CHAT_SETTINGS_SELECTOR = '.ember-chat .chat-interface .chat-settings';
-const BTTV_CHAT_SETTINGS_CLASS = 'bttvChatSettings';
+const CHAT_SETTINGS_SELECTOR = '.chat-settings__content';
+const BTTV_CHAT_SETTINGS_CLASS = 'bttv-chat-settings';
 
 const CHAT_SETTINGS_TEMPLATE = `
-<div class="${BTTV_CHAT_SETTINGS_CLASS}">
-    <div class="list-header">BetterTTV</div>
-    <div class="chat-menu-content">
-        <p><a class="setBlacklistKeywords" href="#">Set Blacklist Keywords</a></p>
-        <p><a class="setHighlightKeywords" href="#">Set Highlight Keywords</a></p>
-        <p><a class="setFontFamily" href="#">Set Font</a></p>
-        <p><a class="setFontSize" href="#">Set Font Size</a></p>
-        <p><a class="clearChat" href="#">Clear My Chat</a></p>
-        <p><a class="button-simple dark openSettings" href="#" style="display: block;margin-top: 8px;text-align: center;">BetterTTV Settings</a></p>
+    <div class="${BTTV_CHAT_SETTINGS_CLASS} tw-border-t tw-mg-t-2 tw-pd-t-2">
+        <div class="tw-mg-b-2"><p class="tw-c-text-alt-2 tw-upcase">BetterTTV</p></div>
+        <div class="tw-mg-b-1"><button class="setBlacklistKeywords">Set Blacklist Keywords</button></div>
+        <div class="tw-mg-b-1"><button class="setHighlightKeywords">Set Highlight Keywords</button></div>
+        <div class="tw-mg-b-1"><button class="setFontFamily">Set Font</button></div>
+        <div class="tw-mg-b-1"><button class="setFontSize">Set Font Size</button></div>
+        <div class="tw-mg-b-1"><button class="clearChat">Clear My Chat</button></div>
+        <button class="openSettings">BetterTTV Settings</button>
     </div>
-</div>
 `;
 
 function inIFrame() {
@@ -31,12 +29,23 @@ function inIFrame() {
 
 class ChatSettingsModule {
     constructor() {
-        watcher.on('load.chat_settings', () => this.load());
+        watcher.on('load.chat', () => this.load());
+        this.renderSettings = this.renderSettings.bind(this);
     }
 
     load() {
+        $('button[data-a-target="chat-settings"]').off('click', this.renderSettings).on('click', this.renderSettings);
+    }
+
+    renderSettings() {
         // Hide the settings when in an iframe for now
         if ($(CHAT_SETTINGS_SELECTOR).find(`.${BTTV_CHAT_SETTINGS_CLASS}`).length || inIFrame()) return;
+
+        // Twitch lazy loads settings
+        if (!$(CHAT_SETTINGS_SELECTOR).length) {
+            setTimeout(() => this.renderSettings(), 100);
+        }
+
         $(CHAT_SETTINGS_SELECTOR).append(CHAT_SETTINGS_TEMPLATE);
 
         const $settings = $(CHAT_SETTINGS_SELECTOR).find(`.${BTTV_CHAT_SETTINGS_CLASS}`);
@@ -44,7 +53,7 @@ class ChatSettingsModule {
         $settings.find('.openSettings').click(settings.openSettings);
         $settings.find('.clearChat').click(e => {
             e.preventDefault();
-            $('.chat-line').hide();
+            $('.chat-line__message').hide();
         });
 
         $settings.find('.setHighlightKeywords').click(highlightBlacklistKeywords.setHighlightKeywords);
@@ -52,9 +61,6 @@ class ChatSettingsModule {
 
         $settings.find('.setFontFamily').click(chatFontSettings.setFontFamily);
         $settings.find('.setFontSize').click(chatFontSettings.setFontSize);
-
-        // make the chat settings scrollable
-        $(CHAT_SETTINGS_SELECTOR).css('max-height', $(window).height() - 100);
     }
 }
 

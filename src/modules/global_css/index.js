@@ -1,116 +1,89 @@
 const $ = require('jquery');
 const cdn = require('../../utils/cdn');
-const css = require('../../utils/css');
 const settings = require('../../settings');
 const watcher = require('../../watcher');
 const twitch = require('../../utils/twitch');
 
-function dismissPinnedCheers() {
-    $('body').on('click', '.pinned-cheers', e => {
-        if (!e.target.classList.contains('pinned-cheers')) return;
-        if (e.offsetX < e.target.offsetWidth - 50 || e.offsetY > 26) return;
-        $('.pinned-cheers').hide();
-    });
-}
+const TWITCH_THEME_CHANGED_DISPATCH_TYPE = 'core.ui.THEME_CHANGED';
+const TwitchThemes = {
+    LIGHT: 0,
+    DARK: 1
+};
+
+let connectStore;
 
 class GlobalCSSModule {
     constructor() {
         this.globalCSS();
 
-        watcher.on('load', () => {
-            this.branding();
-            this.newBranding();
-        });
+        watcher.on('load', () => this.branding());
         this.branding();
-        this.newBranding();
-
-        settings.add({
-            id: 'leftSideChat',
-            name: 'Left Side Chat',
-            defaultValue: false,
-            description: 'Moves the chat to the left of the player'
-        });
-        settings.on('changed.leftSideChat', () => this.toggleLeftSideChat());
-        this.toggleLeftSideChat();
 
         settings.add({
             id: 'darkenedMode',
             name: 'Dark Theme',
             defaultValue: false,
-            description: 'A sleek, grey theme which will make you love the site even more'
+            description: 'Enable Twitch\'s dark theme'
         });
-        settings.on('changed.darkenedMode', value => value === true ? this.loadDark() : this.unloadDark());
-        this.loadDark();
-        dismissPinnedCheers();
+        settings.on('changed.darkenedMode', value => this.setTwitchTheme(value));
+
+        this.loadTwitchThemeObserver();
+        this.setTwitchTheme(settings.get('darkenedMode'));
+        this.dismissPinnedCheers();
     }
 
-    loadDark() {
-        if (settings.get('darkenedMode') !== true || !$('body').attr('data-page')) return;
+    setTwitchTheme(value) {
+        if (!connectStore) return;
 
-        const pageKind = $('body').data('page').split('#')[0];
-        const allowedPages = ['ember', 'message', 'chat', 'user', 'dashboards'];
+        connectStore.dispatch({
+            type: TWITCH_THEME_CHANGED_DISPATCH_TYPE,
+            theme: value === true ? TwitchThemes.DARK : TwitchThemes.LIGHT
+        });
+    }
 
-        if (allowedPages.indexOf(pageKind) !== -1) {
-            css.load('dark');
+    loadTwitchThemeObserver() {
+        connectStore = twitch.getConnectStore();
+        if (!connectStore) return;
 
-            // Messages Delete Icon Fix (Old Messages Inbox)
-            $('#main_col .messages img[src="http://www-cdn.jtvnw.net/images/xarth/g/g18_trash-00000080.png"]')
-                .attr('src', cdn.url('assets/icons/delete.png'));
-            $('#main_col .messages img[src="http://www-cdn.jtvnw.net/images/xarth/g/g16_trash-00000020.png"]')
-                .attr('src', cdn.url('assets/icons/delete.png'))
-                .attr('width', '16')
-                .attr('height', '16');
-
-            // Turn on dark bits emotes
-            const bitsService = twitch.getEmberContainer('service:bits');
-            if (bitsService) {
-                bitsService.set('bitsEmotes.isDarkChat', true);
+        connectStore.subscribe(() => {
+            const isDarkMode = connectStore.getState().ui.theme === TwitchThemes.DARK;
+            if (settings.get('darkenedMode') !== isDarkMode) {
+                settings.set('darkenedMode', isDarkMode);
             }
-        }
-    }
-
-    unloadDark() {
-        css.unload('dark');
+        });
     }
 
     globalCSS() {
-        css.load();
+        const css = document.createElement('link');
+        css.setAttribute('href', cdn.url('betterttv.css', true));
+        css.setAttribute('type', 'text/css');
+        css.setAttribute('rel', 'stylesheet');
+        $('body').append(css);
     }
 
     branding() {
-        if ($('#bttv_logo').length) return;
+        if ($('.bttv-logo').length) return;
 
         const $watermark = $('<img />');
-        $watermark.attr('id', 'bttv_logo');
+        $watermark.attr('class', 'bttv-logo');
         $watermark.attr('src', cdn.url('assets/logos/logo_icon.png'));
         $watermark.css({
             'z-index': 9000,
-            'left': '90px',
-            'top': '-10px',
-            'position': 'absolute'
-        });
-        $('.warp .warp__logo').append($watermark);
-    }
-
-    newBranding() {
-        if ($('#bttv_logo_new').length) return;
-
-        const $watermark = $('<img />');
-        $watermark.attr('id', 'bttv_logo_new');
-        $watermark.attr('src', cdn.url('assets/logos/logo_icon.png'));
-        $watermark.css({
-            'z-index': 9000,
-            'left': '35px',
-            'top': '0px',
+            'left': '-74px',
+            'top': '-18px',
             'width': '12px',
             'height': 'auto',
-            'position': 'absolute'
+            'position': 'relative'
         });
-        $('.top-nav__logo').append($watermark);
+        $('.top-nav__home-link').append($watermark);
     }
 
-    toggleLeftSideChat() {
-        $('body').toggleClass('swap-chat', settings.get('leftSideChat'));
+    dismissPinnedCheers() {
+        $('body').on('click', '.pinned-cheer', e => {
+            if (e.target !== $('.pinned-cheer .pinned-cheer__bounding-box')[0]) return;
+            if (e.target.offsetWidth - e.offsetX > 15 || e.offsetY > 15) return;
+            $('.pinned-cheer').hide();
+        });
     }
 }
 

@@ -34,10 +34,10 @@ module.exports = class Emote {
         `;
 
         return `
-            <span class="balloon-wrapper">
-                <img src="${html.escape(this.images['1x'])}" srcset="${srcset.join(', ')}" alt="${html.escape(this.code)}" class="emoticon ${providerClass} ${idClass}">
-                <div class="balloon balloon--tooltip balloon--up balloon--center mg-t-1" style="text-align: center;">${balloon}</div>
-            </span>
+            <div class="bttv-emote-tooltip-wrapper bttv-emote ${providerClass} ${idClass}">
+                <img src="${html.escape(this.images['1x'])}" srcset="${srcset.join(', ')}" alt="${html.escape(this.code)}" class="chat-line__message--emote">
+                <div class="bttv-emote-tooltip bttv-emote-tooltip--up bttv-emote-tooltip--align-center">${balloon}</div>
+            </div>
         `;
     }
 };

@@ -1,0 +1,26 @@
+.bttv-hide-conversations {
+  .whispers {
+    display: none;
+  }
+}
+
+.bttv-auto-hide-conversations {
+  .whispers {
+    .whispers-threads-box__container {
+      bottom: -30px !important;
+      transition: bottom 100ms ease-in-out;
+
+      &:hover, &.whispers-threads-box__container--open {
+        bottom: 0px !important;
+      }
+    }
+  }
+}
+
+.bttv-hide-conversations, .bttv-auto-hide-conversations {
+  .video-player--theatre {
+    .video-player__container {
+      bottom: 0rem;
+    }
+  }
+}

@@ -3,7 +3,9 @@ const watcher = require('../../watcher');
 const keyCodes = require('../../utils/keycodes');
 const twitch = require('../../utils/twitch');
 
-const CHAT_ROOM_SELECTOR = '.ember-chat .chat-room';
+const CHAT_ROOM_SELECTOR = 'section[data-test-selector="chat-room-component-layout"]';
+const CHAT_LINE_SELECTOR = '.chat-line__message';
+const CHAT_LINE_USERNAME_SELECTOR = `${CHAT_LINE_SELECTOR} .chat-author__display-name`;
 const CUSTOM_TIMEOUT_ID = 'bttv-custom-timeout-contain';
 const CUSTOM_TIMEOUT_TEMPLATE = `
     <div id="${CUSTOM_TIMEOUT_ID}">
@@ -18,24 +20,36 @@ const CUSTOM_TIMEOUT_TEMPLATE = `
         <div class="cursor"></div>
     </div>
 `;
-const ACTION_TYPES = {
+const ActionTypes = {
     CANCEL: 'cancel',
-    TIMEOUT: 'time',
+    TIMEOUT: 'timeout',
     BAN: 'ban'
 };
 
 let action;
 let user;
 
+function setReason(type) {
+    const reason = prompt(`Enter ${type} reason: (leave blank for none)`);
+    return reason || '';
+}
+
 function handleTimeoutClick(e) {
     const $customTimeout = $(`#${CUSTOM_TIMEOUT_ID}`);
-    if (!$customTimeout.length || e.which === keyCodes.DOMVKCancel || e.shiftKey) return;
+    if (!$customTimeout.length || e.which === keyCodes.DOMVKCancel) return;
 
     if ($customTimeout.is(':hover')) {
-        if (action.type === ACTION_TYPES.BAN) {
-            twitch.sendChatMessage(`/ban ${user}`);
-        } else if (action.type === ACTION_TYPES.TIMEOUT) {
-            twitch.sendChatMessage(`/timeout ${user} ${action.length}`);
+        let command;
+        let duration;
+        if (action.type === ActionTypes.BAN) {
+            command = '/ban';
+        } else if (action.type === ActionTypes.TIMEOUT) {
+            command = '/timeout';
+            duration = action.length;
+        }
+        if (command) {
+            const reason = e.shiftKey ? setReason(action.type) : '';
+            twitch.sendChatMessage(`${command} ${user}${duration ? ` ${duration}` : ''}${reason ? ` ${reason}` : ''}`);
         }
     }
 
@@ -62,25 +76,25 @@ function handleMouseMove(e) {
 
     if (amount > 200 || amount < 0 || offsetx > 80 || offsetx < 0) {
         action = {
-            type: ACTION_TYPES.CANCEL,
+            type: ActionTypes.CANCEL,
             length: 0,
             text: 'CANCEL'
         };
     } else if (amount > 20 && amount < 180) {
         action = {
-            type: ACTION_TYPES.TIMEOUT,
+            type: ActionTypes.TIMEOUT,
             length: time,
             text: humanTime
         };
     } else if (amount >= 180 && amount < 200) {
         action = {
-            type: ACTION_TYPES.BAN,
+            type: ActionTypes.BAN,
             length: 0,
             text: 'BAN'
         };
     } else if (amount > 0 && amount <= 20) {
         action = {
-            type: ACTION_TYPES.TIMEOUT,
+            type: ActionTypes.TIMEOUT,
             length: 2,
             text: 'PURGE'
         };
@@ -104,7 +118,7 @@ function openCustomTimeout($target) {
     });
 
     action = {
-        type: ACTION_TYPES.CANCEL,
+        type: ActionTypes.CANCEL,
         length: 0,
         text: 'CANCEL'
     };
@@ -117,10 +131,10 @@ function handleClick(e) {
     if (!twitch.getCurrentUserIsModerator()) return;
     e.preventDefault();
 
-    const $chatLine = $(e.currentTarget).closest('.chat-line');
+    const $chatLine = $(e.currentTarget).closest(CHAT_LINE_SELECTOR);
     const msgObject = twitch.getChatMessageObject($chatLine[0]);
     if (!msgObject) return;
-    user = msgObject.from;
+    user = msgObject.user.userLogin;
     openCustomTimeout($(e.currentTarget));
 }
 
@@ -131,8 +145,8 @@ class ChatCustomTimeoutsModule {
 
     loadClickHandler() {
         $(CHAT_ROOM_SELECTOR)
-            .off('contextmenu', '.chat-line .from', handleClick)
-            .on('contextmenu', '.chat-line .from', handleClick)
+            .off('contextmenu', CHAT_LINE_USERNAME_SELECTOR, handleClick)
+            .on('contextmenu', CHAT_LINE_USERNAME_SELECTOR, handleClick)
             .off('click', handleTimeoutClick)
             .on('click', handleTimeoutClick);
     }

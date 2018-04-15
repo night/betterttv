@@ -2,8 +2,15 @@ const settings = require('../../settings');
 const watcher = require('../../watcher');
 const twitch = require('../../utils/twitch');
 
-let ignoreNextDC = false;
 const forcedURL = window.location.search.includes('bttv_anon_chat=true');
+
+function getConnectionClient() {
+    let client;
+    try {
+        client = twitch.getChatController().chatService.client;
+    } catch (_) {}
+    return client;
+}
 
 class AnonChatModule {
     constructor() {
@@ -15,22 +22,24 @@ class AnonChatModule {
         });
 
         this.enabled = false;
-        watcher.on('load.chat_connected', () => this.load());
-        watcher.on('chat.message', ($el, msgObj) => this.onMessage($el, msgObj));
-        settings.on('changed.anonChat', () => this.load(true));
+        watcher.on('load.chat', () => this.load());
+        settings.on('changed.anonChat', () => this.load());
     }
 
     changeUser(username, message) {
-        const tmiSession = twitch.getCurrentTMISession();
-        if (!tmiSession) return;
+        const client = getConnectionClient();
+        if (!client) return;
 
-        const prodConn = tmiSession._connections.main;
-        if (!prodConn || prodConn._opts.nickname === username) return;
+        const socket = client.connection.ws;
+        if (!socket || client.configuration.username === username) return;
 
-        ignoreNextDC = true;
-        prodConn._opts.nickname = username;
+        client.configuration.username = username;
         twitch.sendChatAdminMessage(`BetterTTV: [Anon Chat] ${message}`);
-        prodConn._send('QUIT');
+        try {
+            socket.send('QUIT');
+        } catch (_) {
+            // Failed to execute 'send' on 'WebSocket': Still in CONNECTING state.
+        }
     }
 
     part() {
@@ -46,18 +55,12 @@ class AnonChatModule {
         this.enabled = false;
     }
 
-    load(force = false) {
+    load() {
+        this.enabled = false;
         if (forcedURL || settings.get('anonChat')) {
             this.part();
-        } else if (force) {
+        } else {
             this.join();
-        }
-    }
-
-    onMessage($el, {message}) {
-        if (ignoreNextDC && message.includes('unable to connect to chat')) {
-            ignoreNextDC = false;
-            $el.hide();
         }
     }
 

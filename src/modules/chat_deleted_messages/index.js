@@ -1,76 +1,27 @@
-const twitch = require('../../utils/twitch');
+const $ = require('jquery');
 const watcher = require('../../watcher');
+const twitch = require('../../utils/twitch');
 const settings = require('../../settings');
-const Raven = require('raven-js');
 
-const CHAT_EMBER = '.chat-room > div';
+const CHAT_LINE_SELECTOR = '.chat-line__message';
+const CHAT_LINE_LINK_SELECTOR = 'a.chat-line__message--link';
+const CHAT_LINE_CLIP_CARD_SELECTOR = '.chat-card__link';
+const CHAT_LINE_DELETED_CLASS = 'bttv-chat-line-deleted';
 
-let twitchClearChat;
-function onClearChat(name, tags) {
-    if (!name) {
-        twitch.sendChatAdminMessage('Chat was cleared by a moderator (Prevented by BetterTTV)');
-        return;
-    }
-
-    try {
-        $('.chat-line')
-            .each(function() {
-                const $el = $(this);
-                const view = twitch.getEmberView($el.attr('id'));
-                if (!view || !view.msgObject || !view.msgObject.tags) return;
-                if (view.msgObject.tags['user-id'] && view.msgObject.tags['user-id'] !== tags['target-user-id']) {
-                    return;
-                } else if (view.msgObject.from !== name) {
-                    return;
-                }
-
-                if (settings.get('hideDeletedMessages') === true) {
-                    $el.hide();
-                    return;
-                }
-
-                // remove the clips cards
-                $el.find('.chat-chip').remove();
-
-                const $message = $el.find('.message');
-                if ($message.hasClass('bttv-deleted')) return;
-                $message.addClass('bttv-deleted');
-                $message.find('a').each(function() {
-                    const $link = $(this);
-                    const $unlinked = $('<span />');
-                    $unlinked.text($link.attr('href'));
-                    $link.replaceWith($unlinked);
-                });
-
-                if (!settings.get('showDeletedMessages')) {
-                    const $messageClone = $message.clone();
-                    $message.addClass('bttv-click');
-                    $message.click(() => {
-                        $message.replaceWith($messageClone);
-                    });
-                    $message.text('<message deleted>');
-                }
-            });
-
-        // Remove messages in the delayed message queue
-        const chatComponent = twitch.getEmberView($(CHAT_EMBER).attr('id'));
-        if (chatComponent && chatComponent.room) {
-            const filtered = chatComponent.room.delayedMessages.filter(msg => msg.from !== name);
-            chatComponent.room.set('delayedMessages', filtered);
+function findAllUserMessages(name) {
+    return Array.from(document.querySelectorAll(CHAT_LINE_SELECTOR)).filter(node => {
+        const message = twitch.getChatMessageObject(node);
+        if (!message) {
+            return false;
         }
-
-        // this is a gross hack to show timeout messages without us having to implement them
-        const currentChat = twitch.getCurrentChat();
-        if (!currentChat) return;
-        const tmiSession = currentChat.tmiSession;
-        const sessionNick = tmiSession.nickname;
-        tmiSession.nickname = ` ${sessionNick}`;
-        twitchClearChat.call(twitchClearChat, ` ${name}`, tags);
-        tmiSession.nickname = sessionNick;
-    } catch (e) {
-        Raven.captureException(e);
-        twitchClearChat.call(twitchClearChat, ...arguments);
-    }
+        if (!$(node).is(':visible')) {
+            return false;
+        }
+        if (node.classList.contains(CHAT_LINE_DELETED_CLASS)) {
+            return false;
+        }
+        return message.user.userLogin === name;
+    });
 }
 
 class ChatDeletedMessagesModule {
@@ -87,27 +38,59 @@ class ChatDeletedMessagesModule {
             defaultValue: false,
             description: 'Completely removes timed out messages from view'
         });
-        watcher.on('load.chat', () => this.patch());
-        watcher.on('load.chat_connected', () => this.patch());
+
+        watcher.on('chat.buffer.event', event => {
+            this.handleBufferEvent(event);
+        });
     }
 
-    patch() {
-        const currentChat = twitch.getCurrentChat();
-        if (!currentChat || !currentChat.tmiRoom) return;
-        const tmiRoom = currentChat.tmiRoom;
-        const clearChatCallbacks = tmiRoom._events.clearchat;
-        if (!clearChatCallbacks || !clearChatCallbacks.length) return;
-        if (clearChatCallbacks.find(c => c && c === onClearChat)) return;
-        const defaultClearChatCallback = clearChatCallbacks.find(c => typeof c === 'function' && c !== onClearChat);
-        if (!defaultClearChatCallback || tmiRoom._bttvClearChatMonkeyPatched) return;
+    handleBufferEvent({event, preventDefault}) {
+        switch (event.type) {
+            case twitch.TMIActionTypes.CLEAR_CHAT:
+                twitch.sendChatAdminMessage('Chat was cleared by a moderator (Prevented by BetterTTV)');
+                preventDefault();
+                break;
+            case twitch.TMIActionTypes.MODERATION:
+                if (this.handleDelete(event.userLogin)) {
+                    preventDefault();
+                    // we still want to render moderation messages
+                    const chatController = twitch.getChatController();
+                    if (chatController) {
+                        chatController.chatBuffer.delayedMessageBuffer.push({
+                            event,
+                            time: Date.now(),
+                            shouldDelay: false
+                        });
+                    }
+                    // TODO: we need to handle delayed messages.. not sure of an elegant way yet
+                }
+                break;
+        }
+    }
 
-        twitchClearChat = defaultClearChatCallback;
-        delete tmiRoom._events.clearchat;
-        tmiRoom.on('clearchat', onClearChat);
-        tmiRoom._bttvClearChatMonkeyPatched = true;
-
-        if (!currentChat.roomProperties) return;
-        currentChat.set('roomProperties.hide_chat_links', false);
+    handleDelete(name) {
+        const showDeletedMessages = settings.get('showDeletedMessages');
+        const hideDeletedMessages = settings.get('hideDeletedMessages');
+        if (!hideDeletedMessages && !showDeletedMessages) {
+            return false;
+        }
+        const messages = findAllUserMessages(name);
+        messages.forEach(message => {
+            const $message = $(message);
+            if (hideDeletedMessages) {
+                $message.hide();
+            } else if (showDeletedMessages) {
+                $message.toggleClass(CHAT_LINE_DELETED_CLASS, true);
+                $message.find(CHAT_LINE_LINK_SELECTOR).each(function() {
+                    const $link = $(this);
+                    const $unlinked = $('<span />');
+                    $unlinked.text($link.attr('href'));
+                    $link.replaceWith($unlinked);
+                });
+                $message.find(CHAT_LINE_CLIP_CARD_SELECTOR).remove();
+            }
+        });
+        return true;
     }
 }
 

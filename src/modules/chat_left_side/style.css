@@ -1,0 +1,55 @@
+.bttv-swap-chat {
+    .right-column {
+        order: 1;
+    }
+    
+    .twilight-main {
+        order: 2;
+    }
+
+    .side-nav {
+        order: 3;
+    }
+
+    /* Toggle Visibility Arrows */
+    .side-nav__toggle-visibility {
+        right: unset;
+        left: -2.5rem;
+        transform: rotate(-90deg);
+    }
+
+    .side-nav--collapsed .side-nav__toggle-visibility {
+        transform: rotate(90deg);
+    }
+    
+    .right-column__toggle-visibility {
+         right: -2.5rem;
+         left: unset;
+         transform: rotate(90deg);
+    }
+
+    .right-column--collapsed .right-column__toggle-visibility {
+        transform: rotate(-90deg);
+    }
+
+    /* Friend Hover Balloon */
+    .user-card-layer__balloon {
+        left: calc(100% - 65rem) !important;
+
+        .tw-balloon__tail {
+            margin: 0 -3px 0 0;
+            left: unset;
+            right: 0;
+        }
+    }
+
+    /* Theatre Mode */
+    .persistent-player--theatre {
+        left: auto !important;
+        right: 0;
+    }
+
+    .right-column--theatre {
+        right: unset !important;
+    }
+}

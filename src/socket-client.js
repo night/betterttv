@@ -1,6 +1,7 @@
 const SafeEventEmitter = require('./utils/safe-event-emitter');
 const debug = require('./utils/debug');
 const twitch = require('./utils/twitch');
+const throttle = require('lodash.throttle');
 
 const CONNECTION_STATES = {
     DISCONNECTED: 0,
@@ -21,6 +22,8 @@ class SocketClient extends SafeEventEmitter {
         super();
 
         this.connect();
+
+        this.broadcastMe = throttle(this.broadcastMe.bind(this), 1000, {trailing: false});
     }
 
     connect() {
