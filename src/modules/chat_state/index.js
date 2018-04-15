@@ -4,7 +4,7 @@ const twitch = require('../../utils/twitch');
 
 const CHAT_STATE_ID = 'bttv-channel-state-contain';
 const CHAT_STATE_TEMPLATE = require('./template')(CHAT_STATE_ID);
-const CHAT_HEADER_SELECTOR = 'div[data-test-selector="chat-room-component-layout"] .chat-room__header';
+const CHAT_HEADER_SELECTOR = 'section[data-test-selector="chat-room-component-layout"] .chat-room__header';
 
 let listening = false;
 let lastStateMessage;
