@@ -39,7 +39,7 @@ const settingsPanelTemplate = () => `
         <span id="close">&times;</span>
     </div>
     <div id="bttvSettings" class="options-list">
-        <input type="text" placeholder = "Search settings" id = "bttvSettingsSearch" class="option">
+        <input type="text" placeholder="Search settings" id="bttvSettingsSearch" class="option">
     </div>
     <div id="bttvAbout" style="display:none;">
         <div class="aboutHalf">
