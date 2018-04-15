@@ -1,5 +1,7 @@
+const autoprefixer = require('autoprefixer');
 const browserify = require('browserify');
 const buffer = require('vinyl-buffer');
+const concat = require('gulp-concat');
 const del = require('del');
 const eslint = require('gulp-eslint');
 const fs = require('fs');
@@ -8,6 +10,9 @@ const gulp = require('gulp');
 const gulpif = require('gulp-if');
 const gzip = require('gulp-gzip');
 const header = require('gulp-header');
+const hexrgba = require('postcss-hexrgba');
+const postcss = require('gulp-postcss');
+const precss = require('precss');
 const rename = require('gulp-rename');
 const saveLicense = require('uglify-save-license');
 const server = require('./dev/server');
@@ -28,6 +33,14 @@ const LICENSE = `/** @license
 `;
 
 gulp.task(
+    'css',
+    () => gulp.src('src/**/*.css')
+        .pipe(postcss([precss, autoprefixer, hexrgba]))
+        .pipe(concat('betterttv.css'))
+        .pipe(gulp.dest('build'))
+);
+
+gulp.task(
     'cleanup',
     () => del('build/**/*')
 );
@@ -44,7 +57,7 @@ gulp.task(
     'prepare',
     ['cleanup', 'lint'],
     () => gulp.src('src/**/*')
-        .pipe(gulp.dest('build/'))
+        .pipe(gulp.dest('build'))
 );
 
 gulp.task(
@@ -57,7 +70,7 @@ gulp.task(
 
 gulp.task(
     'scripts',
-    ['license'],
+    ['license', 'css'],
     () => browserify('build/index.js', {debug: true})
         .transform('require-globify')
         .transform('babelify', {

@@ -1,0 +1,23 @@
+.bttv-hide-featured-channels {
+  .recommended-channels {
+    display: none;
+  }
+}
+
+.bttv-hide-recommended-friends {
+  .recommended-friends {
+    display: none;
+  }
+}
+
+.bttv-hide-prime-promotions {
+  .top-nav__prime {
+    display: none;
+  }
+}
+
+.bttv-hide-followed-offline {
+  .side-nav-card__link[href*="/videos/"] {
+    display: none !important;
+  }
+}

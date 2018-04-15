@@ -1,0 +1,17 @@
+.chat-line__message.bttv-split-chat-alt-bg, .vod-message.bttv-split-chat-alt-bg {
+  background-color: #dcdcdc;
+}
+
+.chat-line__message.bttv-own-msg-bg, .vod-message.bttv-own-msg-bg {
+  background-color: #dcffdc;
+}
+
+.tw-theme--dark {
+  .chat-line__message.bttv-split-chat-alt-bg, .vod-message.bttv-split-chat-alt-bg {
+    background-color: #1f1925;
+  }
+
+  .chat-line__message.bttv-own-msg-bg, .vod-message.bttv-own-msg-bg {
+    background-color: #233223;
+  }
+}

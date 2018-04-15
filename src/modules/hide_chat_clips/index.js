@@ -1,5 +1,5 @@
+const $ = require('jquery');
 const settings = require('../../settings');
-const css = require('../../utils/css');
 
 class HideChatClipsModule {
     constructor() {
@@ -9,16 +9,12 @@ class HideChatClipsModule {
             defaultValue: false,
             description: 'Hides clips embeds in chat'
         });
-        settings.on('changed.hideChatClips', value => value === true ? this.load() : this.unload());
-        if (settings.get('hideChatClips') === true) this.load();
+        settings.on('changed.hideChatClips', () => this.load());
+        this.load();
     }
 
     load() {
-        css.load('hide-chat-clips');
-    }
-
-    unload() {
-        css.unload('hide-chat-clips');
+        $('body').toggleClass('bttv-hide-chat-clips', settings.get('hideChatClips'));
     }
 }
 

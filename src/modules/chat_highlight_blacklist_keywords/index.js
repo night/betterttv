@@ -1,10 +1,10 @@
 const $ = require('jquery');
-const notificationSound = require('../notification_sound');
 const watcher = require('../../watcher');
 const settings = require('../../settings');
 const storage = require('../../storage');
 const html = require('../../utils/html');
 const twitch = require('../../utils/twitch');
+const moment = require('moment');
 const {escape: escapeRegExp} = require('../../utils/regex');
 
 const PHRASE_REGEX = /\{.+?\}/g;
@@ -18,7 +18,7 @@ const HIGHLIGHT_KEYWORD_PROMPT = `Type some highlight keywords. Messages contain
 
 Use spaces in the field to specify multiple keywords. Place {} around a set of words to form a phrase, <> inside the {} to use exact search, and () around a single word to specify a username. Wildcards (*) are supported.`;
 
-const CHAT_ROOM_SELECTOR = '.ember-chat .chat-room';
+const CHAT_LIST_SELECTOR = '.chat-list .chat-list__lines';
 const PINNED_HIGHLIGHT_ID = 'bttv-pinned-highlight';
 const PINNED_CONTAINER_ID = 'bttv-pin-container';
 const MAXIMUM_PIN_COUNT = 10;
@@ -86,7 +86,7 @@ function computeKeywords(keywords) {
     };
 }
 
-
+let loadTime = 0;
 let blacklistKeywords = [];
 let blacklistUsers = [];
 function computeBlacklistKeywords() {
@@ -140,6 +140,21 @@ function messageContainsKeyword(keywords, from, message) {
     return false;
 }
 
+function messageTextFromAST(ast) {
+    return ast.map(node => {
+        switch (node.type) {
+            case 0:
+                return node.content.trim();
+            case 1:
+                return node.content.recipient;
+            case 2:
+                return node.content.url;
+            case 3:
+                return node.content.alt;
+        }
+    }).join(' ');
+}
+
 let $pinnedHighlightsContainer;
 
 class ChatHighlightBlacklistKeywordsModule {
@@ -148,9 +163,9 @@ class ChatHighlightBlacklistKeywordsModule {
             computeBlacklistKeywords();
             computeHighlightKeywords();
             this.loadPinnedHighlights();
+            loadTime = Date.now();
         });
         watcher.on('chat.message', ($message, messageObj) => this.onMessage($message, messageObj));
-        watcher.on('conversation.message', ($message, messageObj) => this.onConverationMessage($message, messageObj));
         storage.on('changed.blacklistKeywords', computeBlacklistKeywords);
         storage.on('changed.highlightKeywords', computeHighlightKeywords);
 
@@ -178,30 +193,23 @@ class ChatHighlightBlacklistKeywordsModule {
         changeKeywords(HIGHLIGHT_KEYWORD_PROMPT, 'highlightKeywords');
     }
 
-    onMessage($message, {from, message, date, tags, style}) {
+    onMessage($message, {user, timestamp, messageParts}) {
+        const from = user.userLogin;
+        const message = messageTextFromAST(messageParts);
+        const date = new Date(timestamp);
+
         if (fromContainsKeyword(blacklistUsers, from) || messageContainsKeyword(blacklistKeywords, from, message)) {
             return this.markBlacklisted($message);
         }
 
-        // no highlights on admin messages etc.
-        if (style && style !== 'action') return;
-
         if (fromContainsKeyword(highlightUsers, from) || messageContainsKeyword(highlightKeywords, from, message)) {
             this.markHighlighted($message);
-            if (tags && !tags.historical) this.pinHighlight({from, message, date});
-        }
-    }
-
-    onConverationMessage($message, {tags: {login}, body}) {
-        if (login !== twitch.getCurrentUser().name) notificationSound.play();
-        if (fromContainsKeyword(blacklistUsers, login) || messageContainsKeyword(blacklistKeywords, login, body)) {
-            return this.markBlacklisted($message);
+            if (timestamp > loadTime) this.pinHighlight({from, message, date});
         }
     }
 
     markHighlighted($message) {
-        notificationSound.play();
-        $message.addClass('highlight');
+        $message.addClass('bttv-highlighted');
     }
 
     markBlacklisted($message) {
@@ -211,7 +219,7 @@ class ChatHighlightBlacklistKeywordsModule {
     loadPinnedHighlights() {
         if (settings.get('pinnedHighlights') === false || $(`#${PINNED_CONTAINER_ID}`).length) return;
 
-        $pinnedHighlightsContainer = $(`<div id="${PINNED_CONTAINER_ID}" />`).appendTo($(CHAT_ROOM_SELECTOR));
+        $pinnedHighlightsContainer = $(`<div id="${PINNED_CONTAINER_ID}" />`).appendTo($(CHAT_LIST_SELECTOR));
     }
 
     unloadPinnedHighlights() {
@@ -227,7 +235,7 @@ class ChatHighlightBlacklistKeywordsModule {
             $pinnedHighlightsContainer.children().first().remove();
         }
 
-        const timestamp = window.moment(date).format('hh:mm');
+        const timestamp = moment(date).format('hh:mm');
 
         const $newHighlight = $(pinnedHighlightTemplate({timestamp, from, message}));
 

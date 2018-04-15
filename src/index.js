@@ -1,8 +1,27 @@
 (() => {
     if (!String.prototype.includes || !Array.prototype.findIndex) return;
-    if (window.location.pathname.endsWith('.html')) return;
+    if (window.location.pathname.endsWith('.html') || window.location.hostname === 'player.twitch.tv') return;
+
+    if (window.Ember) {
+        const script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = 'https://legacy.betterttv.net/betterttv.js';
+        const head = document.getElementsByTagName('head')[0];
+        if (!head) return;
+        head.appendChild(script);
+        return;
+    }
 
     const Raven = require('raven-js');
+
+    /*
+
+     TODO:
+
+     - TwitchEmotes Sub Emote Tip
+     - Disable Channel Header (Twitch did not implement this yet)
+
+    */
 
     if (process.env.NODE_ENV !== 'development') {
         Raven.config(
@@ -10,49 +29,20 @@
             {
                 release: process.env.GIT_REV,
                 environment: process.env.NODE_ENV,
+                captureUnhandledRejections: false,
                 ignoreErrors: [
-                    'Blocked a frame with origin',
-                    'player-core-min',
                     'InvalidAccessError',
-                    'wrapped(betterttv)',
-                    'Access is denied.',
-                    'container.className.match is not a function',
-                    'this exception cannot be caught',
-                    'Wrong length!',
-                    'Cannot read property \'value\' of undefined',
-                    '"onJsReady"',
-                    'Can\'t execute code from a freed script',
-                    /^<anonymous> in/,
-                    /^null$/,
-                    /^undefined$/,
-                    // Users that have broken jQuery
-                    'this.dom.draggable is not a function',
-                    'Cannot read property \'autoNS\' of undefined',
-                    'Cannot read property \'autoWE\' of undefined',
-                    'tipsy is not a function',
-                    'tipsy is undefined',
-                    'draggable is not a function',
-                    'draggable is undefined',
-                    'jQuery is not a function',
-                    'unsupported pseudo: hover',
-                    // Emote Menu
-                    'Getter already exists.',
-                    'Cannot read property \'setChannelName\' of undefined',
-                    '.getTime is not a function',
-                    '`callback` must be a function.'
+                    'out of memory',
                 ],
                 whitelistUrls: [
                     /betterttv\.js/,
                     /\.betterttv\.net/
                 ],
                 shouldSendCallback: data => {
+                    if (data.message && data.message.includes('raven-js/src/raven')) return false;
                     const exception = data.exception && data.exception.values[0];
-                    if (data.message && data.message.includes('betterttv.js in wrap')) return false;
-                    if (data.message === 'out of memory') return;
-                    if (['betterttv in apply', 'wrapped(betterttv)'].contains(data.culprit)) return false;
-                    if (exception && !exception.value) return false;
-                    if (exception && ['NS_ERROR_NOT_INITIALIZED', 'NS_ERROR_OUT_OF_MEMORY', 'NS_ERROR_FAILURE'].includes(exception.type)) return true;
-                    if (data.exception && data.exception.values.length < 3) return false;
+                    if (exception && ['NS_ERROR_NOT_INITIALIZED', 'NS_ERROR_OUT_OF_MEMORY', 'NS_ERROR_FAILURE', 'NS_ERROR_FILE_CORRUPTED'].includes(exception.type)) return false;
+                    if (data.exception && data.exception.values.length < 2) return false;
                     return true;
                 }
             }

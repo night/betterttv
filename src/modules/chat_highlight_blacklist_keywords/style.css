@@ -1,0 +1,37 @@
+#bttv-pin-container {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 100%;
+
+  box-shadow: 0px 8px 8px -5px #000;
+
+  z-index: 99998;
+}
+
+#bttv-pinned-highlight {
+  padding: 2px 10px;
+
+  font-weight: bold;
+  font-size: 0.8572em;
+  color: #fff;
+
+  background-color: rgba(255, 0, 0, 0.5);
+
+  span {
+    padding-right: 5px;
+  }
+
+  .message {
+    word-break: break-word;
+  }
+
+  .close {
+    cursor: pointer;
+    fill: #fff;
+  }
+}
+
+.chat-line__message.bttv-highlighted {
+  background-color: rgba(255, 0, 0, 0.3) !important;
+}

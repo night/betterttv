@@ -1,18 +1,15 @@
 const twitch = require('../../utils/twitch');
 const watcher = require('../../watcher');
 const debug = require('../../utils/debug');
+const socketClient = require('../../socket-client');
 const Raven = require('raven-js');
 
-const anonChat = require('../chat_commands');
-const chatCommands = require('../anon_chat');
-const tabCompletion = require('../tab_completion');
+const chatTabCompletion = require('../chat_tab_completion');
+const chatCommands = require('../chat_commands');
+const anonChat = require('../anon_chat');
 const emojis = require('../emotes/emojis');
-const socketClient = require('../../socket-client');
 
-const TEXTAREA_SELECTOR = '.textarea-contain';
-const CHAT_TEXT_AREA = '.ember-chat .chat-interface textarea';
-
-const PATCHED_SENTINEL = () => {};
+const PATCHED_SENTINEL = Symbol();
 
 class SendState {
     constructor(msg) {
@@ -32,55 +29,56 @@ class SendState {
 
 let twitchSendMessage;
 const methodList = [
-    msgObj => tabCompletion.onSendMessage(msgObj),
+    msgObj => chatTabCompletion.onSendMessage(msgObj),
     msgObj => chatCommands.onSendMessage(msgObj),
     msgObj => anonChat.onSendMessage(msgObj),
-    msgObj => emojis.onSendMessage(msgObj),
+    msgObj => emojis.onSendMessage(msgObj)
 ];
 
-function bttvSendMessage() {
+function bttvSendMessage(username, messageToSend, ...args) {
     const channel = twitch.getCurrentChannel();
     if (channel) {
         socketClient.broadcastMe(channel.name);
     }
 
-    const sendState = new SendState(this.get('room.messageToSend'));
+    if (typeof messageToSend === 'string') {
+        const sendState = new SendState(messageToSend);
 
-    for (const method of methodList) {
-        try {
-            method(sendState);
-        } catch (e) {
-            Raven.captureException(e);
-            debug.log(e);
+        for (const method of methodList) {
+            try {
+                method(sendState);
+            } catch (e) {
+                Raven.captureException(e);
+                debug.log(e);
+            }
         }
+
+        if (sendState.defaultPrevented) return Promise.resolve();
+        messageToSend = sendState.message;
     }
 
-    this.set('room.messageToSend', sendState.message);
-    if (sendState.defaultPrevented) return;
-
-    twitchSendMessage.apply(this, arguments);
+    return twitchSendMessage.call(this, username, messageToSend, ...args);
 }
 
 class SendMessagePatcher {
     constructor() {
-        watcher.on('load.chat_connected', () => this.patch());
+        watcher.on('load.chat', () => this.patch());
     }
 
     patch() {
-        // Set message box limit character to 500
-        $(CHAT_TEXT_AREA).attr('maxlength', 500);
+        const client = twitch.getChatServiceClient();
+        if (!client) return;
 
-        const emberView = twitch.getEmberView($(TEXTAREA_SELECTOR).attr('id'));
-        if (!emberView) return;
+        if (
+            client._bttvSendMessagePatched === PATCHED_SENTINEL ||
+            client.sendCommand === bttvSendMessage
+        ) {
+            return;
+        }
 
-        const newTwitchSendMessage = emberView._actions.sendMessage;
-
-        // check if we've already monkeypatched
-        if (newTwitchSendMessage === bttvSendMessage || emberView._actions._bttvSendMessagePatched) return;
-
-        emberView._actions.sendMessage = bttvSendMessage;
-        emberView._actions._bttvSendMessagePatched = PATCHED_SENTINEL;
-        twitchSendMessage = newTwitchSendMessage;
+        client._bttvSendMessagePatched = PATCHED_SENTINEL;
+        twitchSendMessage = client.sendCommand;
+        client.sendCommand = bttvSendMessage;
     }
 }
 

@@ -1,0 +1,15 @@
+.bttv-chat-badge {
+  width: 18px;
+  height: 18px;
+}
+
+.chat-badge {
+  border-radius: 3px;
+}
+
+.bttv-emoji img {
+    height: auto;
+    width: 20px;
+    margin-bottom: -4px;
+    display: inline-block;
+}

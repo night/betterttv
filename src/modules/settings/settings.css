@@ -1,0 +1,234 @@
+#bttvSettingsPanel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -250px;
+  margin-left: -400px;
+  color: #d3d3d3;
+  width: 800px;
+  height: 500px;
+  z-index: 9002;
+  border-radius: 3px;
+  border: 1px solid #000000;
+  background-color: #1e1e1e;
+  box-shadow: -1px 0 0 rgba(#000000, 0.3), -2px 0 0 rgba(#000000, 0.2), -3px 0 0 rgba(#000000, 0.1),
+              1px 0 0 rgba(#000000, 0.3), 2px 0 0 rgba(#000000, 0.2), 3px 0 0 rgba(#000000, 0.1),
+              0 -1px 0 rgba(#000000, 0.3), 0 -2px 0 rgba(#000000, 0.2), 0 -3px 0 rgba(#000000, 0.1),
+              0 1px 0 rgba(#000000, 0.3), 0 2px 0 rgba(#000000, 0.2), 0 3px 0 rgba(#000000, 0.1);
+
+  h1 {
+    font-size: 20px;
+    color: #d3d3d3;
+  }
+
+  h2 {
+    font-size: 16px;
+  }
+
+  #header {
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    background-color: #282828;
+    width: 100%;
+    border-bottom: 1px solid #111111;
+    line-height: 42px;
+  }
+
+  #footer {
+    color: #777777;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    background-color: #282828;
+    bottom: 0px;
+    position: absolute;
+    width: calc(100% - 10px);
+    padding: 5px;
+    border-top: 1px solid #111111;
+    box-sizing: content-box;
+    z-index: inherit;
+
+    a {
+      color: #ff0000;
+      opacity: 0.7;
+      font-weight: bold;
+    }
+  }
+
+  #logo {
+    padding: 10px;
+    vertical-align: bottom;
+    text-shadow: 1px 1px 3px #000000;
+    font-size: 25px;
+    font-family: "Korolev-Bold","HelveticaNeue-CondensedBold","ArialNarrow-Bold","Helvetica Neue",Helvetica,Arial,sans-serif;
+  }
+
+  #close {
+    font-size: 30px;
+    vertical-align: center;
+    float: right;
+    right: 20px;
+    top: 0px;
+    position: absolute;
+    color: #ffffff;
+    text-shadow: 0 1px 0 #000000;
+    opacity: 0.2;
+    filter: alpha(opacity=20);
+
+    &:hover, &:focus {
+      color: #ffffff;
+      text-decoration: none;
+      cursor: pointer;
+      opacity: 0.4;
+      filter: alpha(opacity=40);
+    }
+  }
+
+  #bttvSettings {
+    font: 12px "Helvetica Neue",Helvetica,Arial,sans-serif;
+    overflow-y: scroll;
+    height: 425px;
+
+    div {
+      box-sizing: content-box;
+    }
+
+    h2 {
+      box-sizing: content-box;
+      margin: 0px;
+    }
+  }
+
+  #bttvSettingsSearch {
+    background: url(../assets/icons/bttv_settings_search.png) no-repeat 10px center;
+    outline: none;
+    border: none;
+    padding-left: 40px !important;
+    font-size: 14px;
+    width: 100%;
+  }
+
+  .option {
+    position: relative;
+    color: #999;
+    line-height: 30px;
+    width: calc(100% - 20px);
+    background-color: rgb(30, 30, 30);
+    border-bottom: 1px solid rgb(0, 0, 0) !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    padding-top: 3px !important;
+    padding-bottom: 2px !important;
+    box-shadow: 0px 1px 0px rgba(#ffffff, 0.04) inset !important;
+
+    a {
+      color: #d3d3d3;
+    }
+
+    &:nth-child(2n) {
+      background-color: rgb(35, 35, 35);
+    }
+  }
+
+  .nav {
+    list-style: none;
+    display: inline-block;
+    margin: 0 10px 0 0;
+    vertical-align: middle;
+
+    &> li {
+      float: left;
+      line-height: 18px;
+
+      &> a {
+        padding-bottom: 9px;
+        padding-left: 15px;
+        padding-right: 15px;
+        color: #adafae;
+        text-shadow: 0 -1px 0 rgba(#000000, 0.25);
+        text-decoration: none;
+        box-shadow: none;
+        font-family: "Korolev-Bold","HelveticaNeue-CondensedBold","ArialNarrow-Bold","Helvetica Neue",Helvetica,Arial,sans-serif;
+        font-size: 18px;
+        font-weight: normal;
+
+        &:hover {
+          border-bottom: 1px solid #ff0000;
+          color: #d3d3d3;
+        }
+      }
+
+      &.active a {
+        border-bottom: 1px solid #ff0000;
+        color: #d3d3d3;
+      }
+    }
+  }
+
+  #bttvAbout .aboutHalf {
+    width: calc(50% - 24px);
+    display: inline-block;
+    float: left;
+    background-color: rgb(35, 35, 35);
+    border-radius: 3px;
+    margin: 12px;
+    padding: 5px;
+    text-align: center;
+    height: 395px;
+
+    a {
+      color: #888888;
+    }
+
+    p {
+      text-align: left;
+      text-indent: 18px;
+    }
+
+    .bttvAboutIcon {
+      margin-top: 90px;
+    }
+  }
+
+  #bttvPrivacy {
+    padding: 25px;
+    overflow-y: scroll;
+    height: 425px;
+
+    ul, ul {
+      padding-left: 10px;
+    }
+
+    strong {
+      margin-left: -5px;
+    }
+    
+    p {
+      padding-left: 10px;
+      padding-top: 10px;
+    }
+  }
+
+  #bttvChangelog {
+    padding: 25px;
+    height: 425px;
+    overflow-y: scroll;
+
+    h2 {
+      margin-top: 20px;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+  }
+
+  #bttvBackup {
+    padding: 25px;
+    overflow-y: scroll;
+    height: 425px;
+  }
+}
+
+.bttvSettingsIconDropDown {
+    width: 18px;
+    height: 18px;
+    background: url(../assets/icons/bttv_settings.png) no-repeat 0 0px;
+}

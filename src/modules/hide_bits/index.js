@@ -1,5 +1,5 @@
 const settings = require('../../settings');
-const css = require('../../utils/css');
+const $ = require('jquery');
 
 class HideBitsModule {
     constructor() {
@@ -9,16 +9,12 @@ class HideBitsModule {
             defaultValue: false,
             description: 'Bits can be annoying. Disable \'em in chat with this (we can\'t block \'em on stream, sry)'
         });
-        settings.on('changed.hideBits', value => value === true ? this.load() : this.unload());
-        if (settings.get('hideBits') === true) this.load();
+        settings.on('changed.hideBits', () => this.load());
+        this.load();
     }
 
     load() {
-        css.load('hide-bits');
-    }
-
-    unload() {
-        css.unload('hide-bits');
+        $('body').toggleClass('bttv-hide-bits', settings.get('hideBits'));
     }
 }
 

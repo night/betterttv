@@ -1,0 +1,5 @@
+.bttv-hide-chat-clips {
+  .chat-card__link {
+    display: none !important;
+  }
+}
