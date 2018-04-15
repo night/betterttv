@@ -17,16 +17,21 @@ class GlobalBanProtectionModule {
             default: false,
         });
 
+        this.msgLimit = -1;
         this.msgTimeStamps = new Array();
-        if (twitch.getCurrentUserIsModerator()) {
-            this.msgLimit = modMsgLimit;
-        } else {
-            this.msgLimit = regularMsgLimit;
-        }
     }
 
     onSendMessage(sendState) {
         if (settings.get('globalBanProtection') === false) return;
+
+        if (this.msgLimit < 0) {
+            // Do this here for a reliable result, wasn't reliable in the constructor
+            if (twitch.getCurrentUserIsOwner() || twitch.getCurrentUserIsModerator()) {
+                this.msgLimit = modMsgLimit;
+            } else {
+                this.msgLimit = regularMsgLimit;
+            }
+        }
 
         // Clear collected time stamps older than timeLimit seconds as they are
         // no longer relevant for a global ban.
