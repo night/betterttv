@@ -361,7 +361,7 @@ class Watcher extends SafeEventEmitter {
         const observe = (watcher, element) => {
             if (!element) return;
             if (watcher) watcher.disconnect();
-            watcher.observe(element, { childList: true, subtree: true });
+            watcher.observe(element, {childList: true, subtree: true});
         };
 
         clipsChatWatcher = new window.MutationObserver(mutations =>

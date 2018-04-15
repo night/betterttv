@@ -19,13 +19,11 @@ function stepPlaybackSpeed(faster) {
 }
 
 function watchPlayerRecommendationVodsAutoplay() {
-    const player = twitch.getCurrentPlayer().player;
+    const currentPlayer = twitch.getCurrentPlayer();
 
-    if (!player) {
-        return;
-    }
+    if (!currentPlayer || !currentPlayer.player) return;
 
-    player.addEventListener('ended', () => {
+    currentPlayer.player.addEventListener('ended', () => {
         if (settings.get('disableVodAutoplay') === true) {
             watcher.waitForLoad('recommendation').then(() => {
                 $(CANCEL_VOD_RECOMMENDATION_SELECTOR).trigger('click');
@@ -96,7 +94,7 @@ class VideoPlayerModule {
         });
         settings.add({
             id: 'disableVodAutoplay',
-            name: 'Disable VOD Autoplay',
+            name: 'Disable VoD Autoplay',
             defaultValue: false,
             description: 'Disables autoplay of recommended videos'
         });
