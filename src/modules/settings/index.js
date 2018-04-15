@@ -234,11 +234,8 @@ class SettingsModule {
             return;
         }
         settings.getSettings().forEach(setting => {
-            if (setting.name.toLowerCase().includes(val) || setting.description.toLowerCase().includes(val)) {
-                $('.bttvOption-' + setting.id).css('display', 'block');
-            } else {
-                $('.bttvOption-' + setting.id).css('display', 'none');
-            }
+            const shouldShow = setting.name.toLowerCase().includes(val) || setting.description.toLowerCase().includes(val);
+            $(`.bttvOption-${setting.id}`).css('display', shouldShow ? 'block' : 'none');
         });
     }
 }
