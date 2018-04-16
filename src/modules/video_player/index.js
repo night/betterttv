@@ -58,24 +58,7 @@ function handlePlayerClick() {
     }, 250);
 }
 
-// function handleFullScreen() {
-//     let timer;
-//
-//     timer = setInterval(() => {
-//         $('.video-player--fullscreen')
-//             .toggleClass('bttv-hide-cursor-fullscreen', true);
-//     }, 3000);
-//
-//     $('body').mousemove(() => {
-//         $('.video-player--fullscreen')
-//             .toggleClass('bttv-hide-cursor-fullscreen', false);
-//         clearInterval(timer);
-//         timer = setInterval(() => {
-//             $('.video-player--fullscreen')
-//                 .toggleClass('bttv-hide-cursor-fullscreen', true);
-//         }, 3000);
-//     });
-// }
+let hideMouseTimer;
 
 class VideoPlayerModule {
     constructor() {
@@ -123,35 +106,31 @@ class VideoPlayerModule {
     }
 
     hideMouseFullscreen() {
-        // $(VIDEO_PLAYER_SELECTOR).off('click', '.qa-fullscreen-button', handleFullScreen);
-
-        // if (settings.get('hideMouseFullscreen') === true) {
-        //     // $('.video-player__container').on('mouseover', handleFullScreen());
-        //     handleFullScreen();
-        //     // $(VIDEO_PLAYER_SELECTOR).on('click', '.qa-fullscreen-button', handleFullScreen);
-        // }
-        let timer;
-
-        if (settings.get('hideMouseFullscreen') === true) {
-            timer = setInterval(() => {
-                $('.video-player--fullscreen')
-                    .toggleClass('bttv-hide-cursor-fullscreen', true);
-            }, 3000);
-
-            $('body').mousemove(() => {
-                $('.video-player--fullscreen')
-                    .toggleClass('bttv-hide-cursor-fullscreen', false);
-                clearInterval(timer);
-                timer = setInterval(() => {
-                    $('.video-player--fullscreen')
-                        .toggleClass('bttv-hide-cursor-fullscreen', true);
-                }, 3000);
-            });
-        } else {
-            clearInterval(timer);
-            // TODO remove body mousemove event
+        const showMouse = () => {
             $('.video-player--fullscreen')
                 .toggleClass('bttv-hide-cursor-fullscreen', false);
+        };
+
+        const hideMouse = () => {
+            $('.video-player--fullscreen')
+                .toggleClass('bttv-hide-cursor-fullscreen', true);
+        };
+
+        clearTimeout(hideMouseTimer);
+        $('body').off('mousemove', '.video-player--fullscreen');
+
+        if (settings.get('hideMouseFullscreen') === true) {
+            hideMouseTimer = setInterval(() => {
+                hideMouse();
+            }, 3000);
+
+            $('body').on('mousemove', '.video-player--fullscreen', () => {
+                showMouse();
+                clearTimeout(hideMouseTimer);
+                hideMouseTimer = setInterval(() => {
+                    hideMouse();
+                }, 3000);
+            });
         }
     }
 }
