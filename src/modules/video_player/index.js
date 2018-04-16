@@ -58,10 +58,30 @@ function handlePlayerClick() {
     }, 250);
 }
 
+// function handleFullScreen() {
+//     let timer;
+//
+//     timer = setInterval(() => {
+//         $('.video-player--fullscreen')
+//             .toggleClass('bttv-hide-cursor-fullscreen', true);
+//     }, 3000);
+//
+//     $('body').mousemove(() => {
+//         $('.video-player--fullscreen')
+//             .toggleClass('bttv-hide-cursor-fullscreen', false);
+//         clearInterval(timer);
+//         timer = setInterval(() => {
+//             $('.video-player--fullscreen')
+//                 .toggleClass('bttv-hide-cursor-fullscreen', true);
+//         }, 3000);
+//     });
+// }
+
 class VideoPlayerModule {
     constructor() {
         this.keybinds();
         watcher.on('load.player', () => this.clickToPause());
+        watcher.on('load.player', () => this.hideMouseFullscreen());
         settings.add({
             id: 'hidePlayerExtensions',
             name: 'Hide Twitch Extensions',
@@ -74,8 +94,15 @@ class VideoPlayerModule {
             defaultValue: false,
             description: 'Click on the twitch player to pause/resume playback'
         });
+        settings.add({
+            id: 'hideMouseFullscreen',
+            name: 'Hide Mouse in Fullscreen',
+            defaultValue: false,
+            description: 'Hides the mouse while in fullscreen view'
+        });
         settings.on('changed.hidePlayerExtensions', () => this.toggleHidePlayerExtensions());
         settings.on('changed.clickToPlay', () => this.clickToPause());
+        settings.on('changed.hideMouseFullscreen', () => this.hideMouseFullscreen());
         this.toggleHidePlayerExtensions();
     }
 
@@ -92,6 +119,39 @@ class VideoPlayerModule {
 
         if (settings.get('clickToPlay') === true) {
             $(VIDEO_PLAYER_SELECTOR).on('click', '.player-overlay.player-fullscreen-overlay', handlePlayerClick);
+        }
+    }
+
+    hideMouseFullscreen() {
+        // $(VIDEO_PLAYER_SELECTOR).off('click', '.qa-fullscreen-button', handleFullScreen);
+
+        // if (settings.get('hideMouseFullscreen') === true) {
+        //     // $('.video-player__container').on('mouseover', handleFullScreen());
+        //     handleFullScreen();
+        //     // $(VIDEO_PLAYER_SELECTOR).on('click', '.qa-fullscreen-button', handleFullScreen);
+        // }
+        let timer;
+
+        if (settings.get('hideMouseFullscreen') === true) {
+            timer = setInterval(() => {
+                $('.video-player--fullscreen')
+                    .toggleClass('bttv-hide-cursor-fullscreen', true);
+            }, 3000);
+
+            $('body').mousemove(() => {
+                $('.video-player--fullscreen')
+                    .toggleClass('bttv-hide-cursor-fullscreen', false);
+                clearInterval(timer);
+                timer = setInterval(() => {
+                    $('.video-player--fullscreen')
+                        .toggleClass('bttv-hide-cursor-fullscreen', true);
+                }, 3000);
+            });
+        } else {
+            clearInterval(timer);
+            // TODO remove body mousemove event
+            $('.video-player--fullscreen')
+                .toggleClass('bttv-hide-cursor-fullscreen', false);
         }
     }
 }
