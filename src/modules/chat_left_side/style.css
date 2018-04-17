@@ -44,7 +44,7 @@
     }
 
     /* Theatre Mode */
-    .persistent-player--theatre {
+    .persistent-player--theatre, .channel-page__video-player--theatre-mode {
         left: auto !important;
         right: 0;
     }
