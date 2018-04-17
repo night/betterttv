@@ -116,8 +116,9 @@ class VideoPlayerModule {
                 .toggleClass('bttv-hide-cursor-fullscreen', true);
         };
 
-        clearTimeout(hideMouseTimer);
         $('body').off('mousemove', '.video-player--fullscreen');
+        clearTimeout(hideMouseTimer);
+        showMouse();
 
         if (settings.get('hideMouseFullscreen') === true) {
             hideMouseTimer = setInterval(() => {
