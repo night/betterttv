@@ -69,13 +69,13 @@ class VideoPlayerModule {
             description: 'Hides the interactive overlays on top of Twitch\'s video player'
         });
         settings.add({
-            id: 'clickToPlay',
-            name: 'Click to Play/Pause Stream',
+            id: 'clickToPause',
+            name: 'Click to Pause Stream',
             defaultValue: false,
-            description: 'Click on the twitch player to pause/resume playback'
+            description: 'Click on the twitch player to pause playback'
         });
         settings.on('changed.hidePlayerExtensions', () => this.toggleHidePlayerExtensions());
-        settings.on('changed.clickToPlay', () => this.clickToPause());
+        settings.on('changed.clickToPause', () => this.clickToPause());
         this.toggleHidePlayerExtensions();
     }
 
@@ -90,7 +90,7 @@ class VideoPlayerModule {
     clickToPause() {
         $(VIDEO_PLAYER_SELECTOR).off('click', '.pl-overlay.pl-overlay__fullscreen', handlePlayerClick);
 
-        if (settings.get('clickToPlay') === true) {
+        if (settings.get('clickToPause') === true) {
             $(VIDEO_PLAYER_SELECTOR).on('click', '.pl-overlay.pl-overlay__fullscreen', handlePlayerClick);
         }
     }
