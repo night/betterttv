@@ -88,10 +88,10 @@ class VideoPlayerModule {
     }
 
     clickToPause() {
-        $(VIDEO_PLAYER_SELECTOR).off('click', '.player-overlay.player-fullscreen-overlay', handlePlayerClick);
+        $(VIDEO_PLAYER_SELECTOR).off('click', '.pl-overlay.pl-overlay__fullscreen', handlePlayerClick);
 
         if (settings.get('clickToPlay') === true) {
-            $(VIDEO_PLAYER_SELECTOR).on('click', '.player-overlay.player-fullscreen-overlay', handlePlayerClick);
+            $(VIDEO_PLAYER_SELECTOR).on('click', '.pl-overlay.pl-overlay__fullscreen', handlePlayerClick);
         }
     }
 }
