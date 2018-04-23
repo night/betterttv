@@ -58,6 +58,14 @@ function handlePlayerClick() {
     }, 250);
 }
 
+function muteAudio() {
+    $('.player-button--volume:has(.mute-button)').click();
+}
+
+function unmuteAudio() {
+    $('.player-button--volume:has(.unmute-button)').click();
+}
+
 class VideoPlayerModule {
     constructor() {
         this.keybinds();
@@ -74,9 +82,17 @@ class VideoPlayerModule {
             defaultValue: false,
             description: 'Click on the twitch player to pause/resume playback'
         });
+        settings.add({
+            id: 'muteUnfocusedTabs',
+            name: 'Mute Streams in Unfocused Tabs',
+            defaultValue: false,
+            description: 'Automatically mute/unmute streams so only focused tab has audio'
+        });
         settings.on('changed.hidePlayerExtensions', () => this.toggleHidePlayerExtensions());
         settings.on('changed.clickToPlay', () => this.clickToPause());
+        settings.on('changed.muteUnfocusedTabs', () => this.muteUnfocusedTabs());
         this.toggleHidePlayerExtensions();
+        this.muteUnfocusedTabs();
     }
 
     toggleHidePlayerExtensions() {
@@ -92,6 +108,16 @@ class VideoPlayerModule {
 
         if (settings.get('clickToPlay') === true) {
             $(VIDEO_PLAYER_SELECTOR).on('click', '.player-overlay.player-fullscreen-overlay', handlePlayerClick);
+        }
+    }
+
+    muteUnfocusedTabs() {
+        $(window).off('focus', unmuteAudio);
+        $(window).off('blur', muteAudio);
+
+        if (settings.get('muteUnfocusedTabs') === true) {
+            $(window).on('focus', unmuteAudio);
+            $(window).on('blur', muteAudio);
         }
     }
 }
