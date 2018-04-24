@@ -6,6 +6,18 @@ const twitch = require('../../utils/twitch');
 
 const VIDEO_PLAYER_SELECTOR = '.video-player .player';
 
+let hidden, visibilityChange;
+if (typeof document.hidden !== 'undefined') { // Opera 12.10 and Firefox 18 and later support
+    hidden = 'hidden';
+    visibilityChange = 'visibilitychange';
+} else if (typeof document.msHidden !== 'undefined') {
+    hidden = 'msHidden';
+    visibilityChange = 'msvisibilitychange';
+} else if (typeof document.webkitHidden !== 'undefined') {
+    hidden = 'webkitHidden';
+    visibilityChange = 'webkitvisibilitychange';
+}
+
 function stepPlaybackSpeed(faster) {
     const currentPlayer = twitch.getCurrentPlayer();
     if (!currentPlayer || !currentPlayer.props.vodID) return;
@@ -58,12 +70,12 @@ function handlePlayerClick() {
     }, 250);
 }
 
-function muteAudio() {
-    $('.player-button--volume:has(.mute-button)').click();
-}
-
-function unmuteAudio() {
-    $('.player-button--volume:has(.unmute-button)').click();
+function handleVisibilityChange() {
+    if (document[hidden]) {
+        $('.player-button--volume:has(.mute-button)').click();
+    } else {
+        $('.player-button--volume:has(.unmute-button)').click();
+    }
 }
 
 class VideoPlayerModule {
@@ -83,16 +95,16 @@ class VideoPlayerModule {
             description: 'Click on the twitch player to pause/resume playback'
         });
         settings.add({
-            id: 'muteUnfocusedTabs',
-            name: 'Mute Streams in Unfocused Tabs',
+            id: 'muteInvisibleTabs',
+            name: 'Mute Streams in Hidden Tabs',
             defaultValue: false,
-            description: 'Automatically mute/unmute streams so only focused tab has audio'
+            description: 'Automatically mute/unmute streams so only visible tabs have audio'
         });
         settings.on('changed.hidePlayerExtensions', () => this.toggleHidePlayerExtensions());
         settings.on('changed.clickToPlay', () => this.clickToPause());
-        settings.on('changed.muteUnfocusedTabs', () => this.muteUnfocusedTabs());
+        settings.on('changed.muteInvisibleTabs', () => this.muteInvisibleTabs());
         this.toggleHidePlayerExtensions();
-        this.muteUnfocusedTabs();
+        this.muteInvisibleTabs();
     }
 
     toggleHidePlayerExtensions() {
@@ -111,13 +123,11 @@ class VideoPlayerModule {
         }
     }
 
-    muteUnfocusedTabs() {
-        $(window).off('focus', unmuteAudio);
-        $(window).off('blur', muteAudio);
+    muteInvisibleTabs() {
+        $(document).off(visibilityChange, handleVisibilityChange);
 
-        if (settings.get('muteUnfocusedTabs') === true) {
-            $(window).on('focus', unmuteAudio);
-            $(window).on('blur', muteAudio);
+        if (settings.get('muteInvisibleTabs') === true) {
+            $(document).on(visibilityChange, handleVisibilityChange);
         }
     }
 }
