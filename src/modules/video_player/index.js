@@ -96,7 +96,7 @@ class VideoPlayerModule {
         });
         settings.add({
             id: 'muteInvisibleTabs',
-            name: 'Mute Streams in Hidden Tabs',
+            name: 'Mute Streams in Invisible Tabs',
             defaultValue: false,
             description: 'Automatically mute/unmute streams so only visible tabs have audio'
         });
