@@ -1,0 +1,9 @@
+.bttv-hide-theatre-whispers-panel {
+  .whispers--theatre-mode {
+    display: none;
+  }
+
+  .video-player__container {
+    bottom: 0!important;
+  }
+}
