@@ -143,13 +143,15 @@ function messageContainsKeyword(keywords, from, message) {
 function messageTextFromAST(ast) {
     return ast.map(node => {
         switch (node.type) {
-            case 0:
+            case 0: // Text
                 return node.content.trim();
-            case 1:
+            case 1: // CurrentUserHighlight
+                return node.content;
+            case 2: // Mention
                 return node.content.recipient;
-            case 2:
+            case 3: // Link
                 return node.content.url;
-            case 3:
+            case 4: // Emote
                 return node.content.alt;
         }
     }).join(' ');
