@@ -4,7 +4,7 @@ const nicknames = require('../chat_nicknames');
 const watcher = require('../../watcher');
 const colors = require('../../utils/colors');
 
-const CHAT_MESSAGE_SELECTOR = '.qa-mod-message';
+const CHAT_MESSAGE_SELECTOR = '.video-chat__message';
 const CHAT_FROM_SELECTOR = '.video-chat__message-author';
 const CHAT_USER_SELECTOR = '.chat-author__display-name,.chat-author__intl-login';
 const SCROLL_INDICATOR_SELECTOR = '.video-chat__sync-button';
