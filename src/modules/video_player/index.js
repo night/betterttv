@@ -60,6 +60,16 @@ function handlePlayerClick() {
 
 let hideMouseTimer;
 
+function hideMouse() {
+    $('.video-player--fullscreen')
+        .toggleClass('bttv-hide-cursor-fullscreen', true);
+}
+
+function showMouse() {
+    $('.video-player--fullscreen')
+        .toggleClass('bttv-hide-cursor-fullscreen', false);
+}
+
 class VideoPlayerModule {
     constructor() {
         this.keybinds();
@@ -106,16 +116,6 @@ class VideoPlayerModule {
     }
 
     hideMouseFullscreen() {
-        const showMouse = () => {
-            $('.video-player--fullscreen')
-                .toggleClass('bttv-hide-cursor-fullscreen', false);
-        };
-
-        const hideMouse = () => {
-            $('.video-player--fullscreen')
-                .toggleClass('bttv-hide-cursor-fullscreen', true);
-        };
-
         $('body').off('mousemove', '.video-player--fullscreen');
         clearTimeout(hideMouseTimer);
         showMouse();
