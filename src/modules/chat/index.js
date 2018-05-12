@@ -224,7 +224,7 @@ class ChatModule {
             $element.hide();
         }
 
-        const $modIcons = $element.find('.mod_icon');
+        const $modIcons = $element.find('.mod-icon');
         if ($modIcons.length) {
             const userIsOwner = twitch.getUserIsOwnerFromTagsBadges(user.badges);
             const userIsMod = twitch.getUserIsModeratorFromTagsBadges(user.badges);
