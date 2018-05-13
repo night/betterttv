@@ -195,6 +195,8 @@ class Watcher extends SafeEventEmitter {
                 case routes.HOMEPAGE:
                     this.waitForLoad('homepage').then(() => this.emit('load.homepage'));
                     break;
+                case routes.DASHBOARD:
+                    this.waitForLoad('chat').then(() => this.emit('load.chat'));
             }
         };
 

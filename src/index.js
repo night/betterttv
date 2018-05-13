@@ -12,6 +12,20 @@
         return;
     }
 
+    const IS_PROD = process.env.NODE_ENV !== 'development';
+
+    try {
+        if (IS_PROD && localStorage.getItem('bttv_developerMode') === 'true') {
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = `${process.env.DEV_CDN_ENDPOINT}betterttv.js`;
+            const head = document.getElementsByTagName('head')[0];
+            if (!head) return;
+            head.appendChild(script);
+            return;
+        }
+    } catch (_) {}
+
     const Raven = require('raven-js');
 
     /*
@@ -23,7 +37,7 @@
 
     */
 
-    if (process.env.NODE_ENV !== 'development') {
+    if (IS_PROD) {
         Raven.config(
             process.env.SENTRY_URL,
             {
@@ -64,7 +78,7 @@
         }).join(' ');
     }});
 
-    debug.log(`BetterTTV v${debug.version} loaded.`);
+    debug.log(`BetterTTV v${debug.version} loaded. ${process.env.NODE_ENV} @ ${process.env.GIT_REV}`);
 
     window.BetterTTV = {
         version: debug.version,

@@ -1,6 +1,5 @@
 const fs = require('fs');
 const http = require('http');
-const https = require('https');
 const path = require('path');
 const request = require('request');
 const url = require('url');
@@ -13,12 +12,7 @@ function server(req, res) {
 
     fs.exists(file, exists => {
         if (!exists) {
-            request.get({
-                url: 'https://cdn-dev.betterttv.net/' + uri,
-                headers: {
-                    'Host': 'cdn.betterttv.net'
-                }
-            }).pipe(res);
+            request.get(`${process.env.PROD_CDN_ENDPOINT}${url}`).pipe(res);
             return;
         }
 
@@ -45,12 +39,7 @@ function server(req, res) {
 }
 
 function start() {
-    https.createServer({
-        key: fs.readFileSync(path.join(__dirname, 'test-cdn.betterttv.net.key')),
-        cert: fs.readFileSync(path.join(__dirname, 'test-cdn.betterttv.net.cert'))
-    }, server).listen(443);
-
-    http.createServer(server).listen(80);
+    http.createServer(server).listen(process.env.DEV_CDN_PORT);
 }
 
 module.exports = start;

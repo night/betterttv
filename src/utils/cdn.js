@@ -1,7 +1,7 @@
 const $ = require('jquery');
 const debug = require('./debug');
 
-const CDN_ENDPOINT = 'https://cdn.betterttv.net/';
+const CDN_ENDPOINT = process.env.CDN_ENDPOINT;
 
 module.exports = {
     url(path, breakCache = false) {

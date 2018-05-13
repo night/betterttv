@@ -14,40 +14,18 @@ Getting the essentials
 Development
 ----
 
-We use gulp to concatenate all of the files and templates into one. We include a dev module that creates a server to imitate the CDN when gulp is watching.
+We use gulp to concatenate all of the files and templates into one. We include a dev module that creates a server to imitate the CDN when gulp is watching. Just run the following command from the BetterTTV directory.
 
-To use it, we must first modify the hosts file on your computer.
-
-**on *nix:**
-```
-echo "127.0.0.1 cdn.betterttv.net" | sudo tee -a /etc/hosts
-```
-
-**on Windows:**
-
-add ```127.0.0.1 cdn.betterttv.net``` to ```%SystemRoot%\system32\drivers\etc\hosts```
-
-Now just run the following command from the BetterTTV directory.
-
-**on *nix:**
-```
-sudo gulp watch
-```
-
-**on Windows you need an elevated command prompt:**
 ```
 gulp watch
 ```
 
-A webserver will start and you can visit Twitch in your browser and browse normally. Files not included in the repo are pulled from the actual server, so everything works.
+A webserver will start and you should visit Twitch in your browser. Turn on developer mode in the console with the following:
+```
+BetterTTV.settings.set('developerMode', true);
+```
 
-SSL is used to connect to the localhost webserver. The localhost webserver presents a self-signed certificate, which browsers will by default reject.
-
-For Google Chrome, you can use the ```--ignore-certificate-errors``` flag to ignore the self-signed certificate. Only run Google Chrome with this flag enabled when testing, since it will accept all certificates.
-
-For Firefox, you can add an exception to Firefox:
-
-    Firefox -> Tools -> Advanced -> Certificates -> View Certificates -> Servers -> Add Exception
+Then refresh the page and BetterTTV should be loaded from your computer.
 
 **Debug Messages:**
 

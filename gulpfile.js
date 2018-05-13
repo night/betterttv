@@ -21,12 +21,18 @@ const sourcemaps = require('gulp-sourcemaps');
 const tar = require('gulp-tar');
 const uglify = require('gulp-uglify');
 
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+const IS_PROD = process.env.NODE_ENV === 'production';
+
+process.env.DEV_CDN_PORT = 2888;
+process.env.DEV_CDN_ENDPOINT = `http://127.0.0.1:${process.env.DEV_CDN_PORT}/`;
+process.env.PROD_CDN_ENDPOINT = 'https://cdn.betterttv.net/';
+
 process.env.EXT_VER = require('./package.json').version;
 process.env.GIT_REV = git.long();
-process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 process.env.SENTRY_URL = process.env.SENTRY_URL || 'https://24dfd2854f97465da5fb14fcea77278c@sentry.io/144851';
+process.env.CDN_ENDPOINT = IS_PROD ? process.env.PROD_CDN_ENDPOINT : process.env.DEV_CDN_ENDPOINT;
 
-const IS_PROD = process.env.NODE_ENV === 'production';
 const LICENSE = `/** @license
  * ${fs.readFileSync('LICENSE').toString().replace(/\n/g, '\n * ')}
  */

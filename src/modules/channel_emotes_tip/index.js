@@ -8,7 +8,9 @@ class ChannelEmotesTipModule {
     constructor() {
         this.ids = null;
 
-        this.updateEmoteLists();
+        // TODO: this is expensive due to how large the emote sets have become
+        //
+        // this.updateEmoteLists();
         watcher.on('load.chat', () => this.checkEmoteSets());
     }
 
