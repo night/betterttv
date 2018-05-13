@@ -47,6 +47,7 @@
                 ignoreErrors: [
                     'InvalidAccessError',
                     'out of memory',
+                    'InvalidStateError'
                 ],
                 whitelistUrls: [
                     /betterttv\.js/,
