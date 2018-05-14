@@ -6,6 +6,18 @@ const twitch = require('../../utils/twitch');
 
 const VIDEO_PLAYER_SELECTOR = '.video-player .player';
 
+let hidden, visibilityChange;
+if (typeof document.hidden !== 'undefined') { // Opera 12.10 and Firefox 18 and later support
+    hidden = 'hidden';
+    visibilityChange = 'visibilitychange';
+} else if (typeof document.msHidden !== 'undefined') {
+    hidden = 'msHidden';
+    visibilityChange = 'msvisibilitychange';
+} else if (typeof document.webkitHidden !== 'undefined') {
+    hidden = 'webkitHidden';
+    visibilityChange = 'webkitvisibilitychange';
+}
+
 function stepPlaybackSpeed(faster) {
     const currentPlayer = twitch.getCurrentPlayer();
     if (!currentPlayer || !currentPlayer.props.vodID) return;
@@ -58,6 +70,14 @@ function handlePlayerClick() {
     }, 250);
 }
 
+function handleVisibilityChange() {
+    if (document[hidden]) {
+        $('.player-button--volume:has(.mute-button)').click();
+    } else {
+        $('.player-button--volume:has(.unmute-button)').click();
+    }
+}
+
 class VideoPlayerModule {
     constructor() {
         this.keybinds();
@@ -74,9 +94,17 @@ class VideoPlayerModule {
             defaultValue: false,
             description: 'Click on the twitch player to pause/resume playback'
         });
+        settings.add({
+            id: 'muteInvisibleTabs',
+            name: 'Mute Streams in Invisible Tabs',
+            defaultValue: false,
+            description: 'Automatically mute/unmute streams so only visible tabs have audio'
+        });
         settings.on('changed.hidePlayerExtensions', () => this.toggleHidePlayerExtensions());
         settings.on('changed.clickToPlay', () => this.clickToPause());
+        settings.on('changed.muteInvisibleTabs', () => this.muteInvisibleTabs());
         this.toggleHidePlayerExtensions();
+        this.muteInvisibleTabs();
     }
 
     toggleHidePlayerExtensions() {
@@ -92,6 +120,14 @@ class VideoPlayerModule {
 
         if (settings.get('clickToPlay') === true) {
             $(VIDEO_PLAYER_SELECTOR).on('click', '.pl-overlay.pl-overlay__fullscreen', handlePlayerClick);
+        }
+    }
+
+    muteInvisibleTabs() {
+        $(document).off(visibilityChange, handleVisibilityChange);
+
+        if (settings.get('muteInvisibleTabs') === true) {
+            $(document).on(visibilityChange, handleVisibilityChange);
         }
     }
 }
