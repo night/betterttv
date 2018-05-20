@@ -12,7 +12,7 @@ function server(req, res) {
 
     fs.exists(file, exists => {
         if (!exists) {
-            request.get(`${process.env.PROD_CDN_ENDPOINT}${url}`).pipe(res);
+            request.get(`${process.env.PROD_CDN_ENDPOINT}${uri}`).pipe(res);
             return;
         }
 
