@@ -1,7 +1,7 @@
-const $ = require('jquery');
 const moment = require('moment');
 const twitch = require('../../utils/twitch');
 const twitchAPI = require('../../utils/twitch-api');
+const twitchGQL = require('../../utils/twitch-gql');
 const tmiAPI = require('../../utils/tmi-api');
 const chat = require('../chat');
 const anonChat = require('../anon_chat');
@@ -53,15 +53,14 @@ function massUnban() {
 
     // some users can fail to be unbanned, so store unbanned names to prevent infinite loop
     const unbannedChatters = [];
-    let unbanCount = 0;
 
-    function unbanChatters(users, callback) {
+    function unbanChatters(users, cb) {
         const interval = setInterval(() => {
             const user = users.shift();
 
             if (!user) {
                 clearInterval(interval);
-                callback();
+                cb();
                 return;
             }
             unbannedChatters.push(user);
@@ -72,39 +71,34 @@ function massUnban() {
     function getBannedChatters() {
         twitch.sendChatAdminMessage('Fetching banned users...');
 
-        $.get('/settings/channel').then(data => {
-            const users = [];
-
-            const $chatterList = $(data).find('#banned_chatter_list');
-            if ($chatterList.length) {
-                $chatterList.find('.ban .obj').each(function() {
-                    const user = $(this).text().trim();
-                    if (users.indexOf(user) === -1 && unbannedChatters.indexOf(user) === -1) {
-                        users.push(user);
+        const fields  = {
+            query: `query Settings_ChannelChat_BannedChatters {
+                currentUser {
+                  bannedUsers {
+                    bannedUser {
+                      login
                     }
-                });
-            }
+                  }
+                }
+              }`
+        };
+
+        twitchGQL.query(fields).then(({data}) => {
+            const users = data.currentUser.bannedUsers.map(x => x.bannedUser.login).filter(x => !!x && !unbannedChatters.includes(x));
 
             if (users.length === 0) {
-                twitch.sendChatAdminMessage(`You have no more banned users. Total Unbanned Users: ${unbanCount}`);
+                twitch.sendChatAdminMessage('You have no banned users.');
                 return;
             }
 
-            unbanCount += users.length;
-
-            twitch.sendChatAdminMessage('Starting purge process in 5 seconds.');
+            twitch.sendChatAdminMessage(`Starting purge of ${users.length} users in 5 seconds.`);
             twitch.sendChatAdminMessage(`This block of users will take ${(users.length / 3).toFixed(1)} seconds to unban.`);
-
-            if (users.length > 70) {
-                twitch.sendChatAdminMessage('Twitch only provides up to 100 users at a time (some repeat), but this script will cycle through all of the blocks of users.');
-            }
-
-            setTimeout(() => (
+            setTimeout(() => {
                 unbanChatters(users, () => {
                     twitch.sendChatAdminMessage('This block of users has been purged. Checking for more..');
                     getBannedChatters();
-                })
-            ), 5000);
+                });
+            }, 5000);
         });
     }
 
