@@ -8,7 +8,7 @@ const CLIENT_ID = '6x8avioex0zt85ht6py4sq55z6avsea';
 let accessToken;
 
 function request(method, path, options = {}) {
-    const url = options.url || `${API_ENDPOINT}${path}${options.qs ? `?${querystring.stringify(options.qs)}` : ''}`
+    const url = options.url || `${API_ENDPOINT}${path}${options.qs ? `?${querystring.stringify(options.qs)}` : ''}`;
     return new Promise((resolve, reject) => {
         $.ajax({
             url,
