@@ -33,7 +33,7 @@ module.exports = {
     setAccessToken(newAccessToken) {
         accessToken = newAccessToken;
     },
-    
+
     graphqlQuery(query) {
         return request('POST', null, {
             url: GQL_ENDPOINT,
