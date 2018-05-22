@@ -1,7 +1,6 @@
 const $ = require('jquery');
 const Raven = require('raven-js');
 const twitchAPI = require('./twitch-api');
-const twitchGQL = require('./twitch-gql');
 
 const REACT_ROOT = '#root div';
 const CHAT_CONTAINER = 'section[data-test-selector="chat-room-component-layout"]';
@@ -78,7 +77,6 @@ const clipInfo = window.clipInfo;
 module.exports = {
     setCurrentUser(accessToken, id, name, displayName) {
         twitchAPI.setAccessToken(accessToken);
-        twitchGQL.setAccessToken(accessToken);
 
         currentUser = {
             id: id.toString(),
