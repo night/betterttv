@@ -37,7 +37,8 @@ module.exports = {
     graphqlQuery(query) {
         return request('POST', null, {
             url: GQL_ENDPOINT,
-            body: {query}
+            body: {query},
+            auth: true
         });
     },
 

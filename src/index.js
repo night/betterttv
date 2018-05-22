@@ -1,6 +1,7 @@
 (() => {
     if (!String.prototype.includes || !Array.prototype.findIndex) return;
-    if (window.location.pathname.endsWith('.html') || window.location.hostname === 'player.twitch.tv') return;
+    if (window.location.pathname.endsWith('.html')) return;
+    if (!['www.twitch.tv', 'canary.twitch.tv'].includes(window.location.hostname)) return;
 
     if (window.Ember) {
         const script = document.createElement('script');
@@ -47,7 +48,15 @@
                 ignoreErrors: [
                     'InvalidAccessError',
                     'out of memory',
-                    'InvalidStateError'
+                    'InvalidStateError',
+                    'QuotaExceededError',
+                    'NotFoundError',
+                    'SecurityError',
+                    'AbortError',
+                    'TypeMismatchError',
+                    'HierarchyRequestError',
+                    'IndexSizeError',
+                    /^undefined$/,
                 ],
                 whitelistUrls: [
                     /betterttv\.js/,
