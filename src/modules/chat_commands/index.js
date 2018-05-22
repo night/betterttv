@@ -1,4 +1,3 @@
-const $ = require('jquery');
 const moment = require('moment');
 const twitch = require('../../utils/twitch');
 const twitchAPI = require('../../utils/twitch-api');
@@ -72,33 +71,29 @@ function massUnban() {
     function getBannedChatters() {
         twitch.sendChatAdminMessage('Fetching banned users...');
 
-        $.get('/settings/channel').then(data => {
-            const users = [];
-
-            const $chatterList = $(data).find('#banned_chatter_list');
-            if ($chatterList.length) {
-                $chatterList.find('.ban .obj').each(function() {
-                    const user = $(this).text().trim();
-                    if (users.indexOf(user) === -1 && unbannedChatters.indexOf(user) === -1) {
-                        users.push(user);
+        const query = `
+            query Settings_ChannelChat_BannedChatters {
+                currentUser {
+                    bannedUsers {
+                        bannedUser {
+                          login
+                        }
                     }
-                });
+                }
             }
+        `;
+
+        twitchAPI.graphqlQuery(query).then(({data}) => {
+            const users = data.currentUser.bannedUsers.filter(({bannedUser: {login}}) => login && !unbannedChatters.includes(login));
 
             if (users.length === 0) {
-                twitch.sendChatAdminMessage(`You have no more banned users. Total Unbanned Users: ${unbanCount}`);
+                twitch.sendChatAdminMessage(`You have no banned users. Total Unbanned Users: ${unbanCount}`);
                 return;
             }
 
             unbanCount += users.length;
-
-            twitch.sendChatAdminMessage('Starting purge process in 5 seconds.');
+            twitch.sendChatAdminMessage(`Starting purge of ${users.length} users in 5 seconds.`);
             twitch.sendChatAdminMessage(`This block of users will take ${(users.length / 3).toFixed(1)} seconds to unban.`);
-
-            if (users.length > 70) {
-                twitch.sendChatAdminMessage('Twitch only provides up to 100 users at a time (some repeat), but this script will cycle through all of the blocks of users.');
-            }
-
             setTimeout(() => (
                 unbanChatters(users, () => {
                     twitch.sendChatAdminMessage('This block of users has been purged. Checking for more..');
