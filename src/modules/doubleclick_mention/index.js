@@ -23,6 +23,9 @@ class DoubleClickMentionModule {
     load() {
         $(CHAT_ROOM_SELECTOR).off('dblclick.mention').on('dblclick.mention', USERNAME_SELECTORS, e => {
             if (e.shiftKey || e.ctrlKey) return;
+
+            $('.viewer-card__hide').find('button').click();
+
             clearSelection();
             let user = e.target.innerText ? e.target.innerText.replace('@', '') : '';
             const $target = $(e.target);
