@@ -7,6 +7,7 @@ const $ = require('jquery');
 const CLIPS_HOSTNAME = 'clips.twitch.tv';
 const CANCEL_VOD_RECOMMENDATION_SELECTOR = '.recommendations-overlay .pl-rec__cancel.pl-button';
 const CHAT_ROOM_SELECTOR = 'section[data-test-selector="chat-room-component-layout"]';
+
 let router;
 let currentPath = '';
 let currentRoute = '';
