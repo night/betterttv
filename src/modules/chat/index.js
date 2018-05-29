@@ -94,7 +94,10 @@ class ChatModule {
                 .attr('src', cdn.url('tags/bot.png'));
         }
 
-        const $badgesContainer = $element.find('.chat-badge').closest('span');
+        let $badgesContainer = $element.find('.chat-badge').closest('span');
+        if (!$badgesContainer.length) {
+            $badgesContainer = $element.find('button.chat-line__username').prev('span');
+        }
 
         const badge = staff.get(user.name);
         if (badge) {
