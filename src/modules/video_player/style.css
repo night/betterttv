@@ -3,3 +3,9 @@
     display: none !important;
   }
 }
+
+.bttv-hide-player-cursor {
+  .video-player--fullscreen .player {
+    cursor: none;
+  }
+}

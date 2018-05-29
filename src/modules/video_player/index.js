@@ -3,6 +3,7 @@ const watcher = require('../../watcher');
 const settings = require('../../settings');
 const keyCodes = require('../../utils/keycodes');
 const twitch = require('../../utils/twitch');
+const debounce = require('lodash.debounce');
 
 const VIDEO_PLAYER_SELECTOR = '.video-player .player';
 const CANCEL_VOD_RECOMMENDATION_SELECTOR = '.recommendations-overlay .pl-rec__cancel.pl-button';
@@ -69,6 +70,10 @@ function handlePlayerClick() {
     }, 250);
 }
 
+function togglePlayerCursor(hide) {
+    $('body').toggleClass('bttv-hide-player-cursor', hide);
+}
+
 class VideoPlayerModule {
     constructor() {
         this.keybinds();
@@ -97,6 +102,7 @@ class VideoPlayerModule {
         settings.on('changed.hidePlayerExtensions', () => this.toggleHidePlayerExtensions());
         settings.on('changed.clickToPlay', () => this.clickToPause());
         this.toggleHidePlayerExtensions();
+        this.loadHidePlayerCursorFullscreen();
     }
 
     toggleHidePlayerExtensions() {
@@ -113,6 +119,14 @@ class VideoPlayerModule {
         if (settings.get('clickToPlay') === true) {
             $(VIDEO_PLAYER_SELECTOR).on('click', '.pl-overlay.pl-overlay__fullscreen', handlePlayerClick);
         }
+    }
+
+    loadHidePlayerCursorFullscreen() {
+        const hidePlayerCursor = debounce(() => togglePlayerCursor(true), 5000);
+        $('body').on('mousemove', '.video-player--fullscreen', () => {
+            togglePlayerCursor(false);
+            hidePlayerCursor();
+        });
     }
 }
 
