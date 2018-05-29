@@ -7,6 +7,10 @@ const chatFontSettings = require('../chat_font_settings');
 const CHAT_SETTINGS_SELECTOR = '.chat-settings__content';
 const BTTV_CHAT_SETTINGS_CLASS = 'bttv-chat-settings';
 
+const BETTERTTV_SETTINGS_BUTTON = !$('.twilight-minimal-root').length ? (
+    '<button class="openSettings">BetterTTV Settings</button>'
+) : '';
+
 const CHAT_SETTINGS_TEMPLATE = `
     <div class="${BTTV_CHAT_SETTINGS_CLASS} tw-border-t tw-mg-t-2 tw-pd-t-2">
         <div class="tw-mg-b-2"><p class="tw-c-text-alt-2 tw-upcase">BetterTTV</p></div>
@@ -15,7 +19,7 @@ const CHAT_SETTINGS_TEMPLATE = `
         <div class="tw-mg-b-1"><button class="setFontFamily">Set Font</button></div>
         <div class="tw-mg-b-1"><button class="setFontSize">Set Font Size</button></div>
         <div class="tw-mg-b-1"><button class="clearChat">Clear My Chat</button></div>
-        <button class="openSettings">BetterTTV Settings</button>
+        ${BETTERTTV_SETTINGS_BUTTON}
     </div>
 `;
 
