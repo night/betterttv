@@ -90,9 +90,9 @@ class VideoPlayerModule {
         });
         settings.add({
             id: 'disableVodAutoplay',
-            name: 'Disable VoD Autoplay',
+            name: 'Disable VoD Recommendation Autoplay',
             defaultValue: false,
-            description: 'Disables autoplay of recommended videos'
+            description: 'Disables autoplay of recommended videos on VoDs'
         });
         settings.on('changed.hidePlayerExtensions', () => this.toggleHidePlayerExtensions());
         settings.on('changed.clickToPlay', () => this.clickToPause());
