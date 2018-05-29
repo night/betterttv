@@ -38,7 +38,7 @@ const loadPredicates = {
     },
     player: () => !!twitch.getCurrentPlayer(),
     vod: () => twitch.updateCurrentChannel() && $('.video-chat__input textarea').length,
-    recommendation: () => $(CANCEL_VOD_RECOMMENDATION_SELECTOR).length,
+    vod_recommendation: () => $(CANCEL_VOD_RECOMMENDATION_SELECTOR).length,
     homepage: () => !!$('.front-page .carousel-player .player').length
 };
 
