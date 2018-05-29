@@ -58,10 +58,23 @@ function handlePlayerClick() {
     }, 250);
 }
 
+let hideMouseTimer;
+
+function hideMouse() {
+    $('.video-player--fullscreen')
+        .toggleClass('bttv-hide-cursor-fullscreen', true);
+}
+
+function showMouse() {
+    $('.video-player--fullscreen')
+        .toggleClass('bttv-hide-cursor-fullscreen', false);
+}
+
 class VideoPlayerModule {
     constructor() {
         this.keybinds();
         watcher.on('load.player', () => this.clickToPause());
+        watcher.on('load.player', () => this.hideMouseFullscreen());
         settings.add({
             id: 'hidePlayerExtensions',
             name: 'Hide Twitch Extensions',
@@ -74,8 +87,15 @@ class VideoPlayerModule {
             defaultValue: false,
             description: 'Click on the twitch player to pause/resume playback'
         });
+        settings.add({
+            id: 'hideMouseFullscreen',
+            name: 'Hide Mouse in Fullscreen',
+            defaultValue: false,
+            description: 'Hides the mouse while in fullscreen view'
+        });
         settings.on('changed.hidePlayerExtensions', () => this.toggleHidePlayerExtensions());
         settings.on('changed.clickToPlay', () => this.clickToPause());
+        settings.on('changed.hideMouseFullscreen', () => this.hideMouseFullscreen());
         this.toggleHidePlayerExtensions();
     }
 
@@ -92,6 +112,26 @@ class VideoPlayerModule {
 
         if (settings.get('clickToPlay') === true) {
             $(VIDEO_PLAYER_SELECTOR).on('click', '.pl-overlay.pl-overlay__fullscreen', handlePlayerClick);
+        }
+    }
+
+    hideMouseFullscreen() {
+        $('body').off('mousemove', '.video-player--fullscreen');
+        clearTimeout(hideMouseTimer);
+        showMouse();
+
+        if (settings.get('hideMouseFullscreen') === true) {
+            hideMouseTimer = setInterval(() => {
+                hideMouse();
+            }, 3000);
+
+            $('body').on('mousemove', '.video-player--fullscreen', () => {
+                showMouse();
+                clearTimeout(hideMouseTimer);
+                hideMouseTimer = setInterval(() => {
+                    hideMouse();
+                }, 3000);
+            });
         }
     }
 }

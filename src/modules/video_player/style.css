@@ -3,3 +3,7 @@
     display: none !important;
   }
 }
+
+.bttv-hide-cursor-fullscreen {
+  cursor: none;
+}
