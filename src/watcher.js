@@ -14,6 +14,7 @@ let chatWatcher;
 let vodChatWatcher;
 let clipsChatWatcher;
 let currentChatReference;
+let currentChatChannelId;
 let channel = {};
 
 const loadPredicates = {
@@ -31,7 +32,9 @@ const loadPredicates = {
         const currentChat = twitch.getCurrentChat();
 
         if (currentChat && currentChat === lastReference) return false;
+        if (currentChat && currentChat.props.channelID === currentChatChannelId) return false;
         currentChatReference = currentChat;
+        currentChatChannelId = currentChat.props.channelID;
 
         return true;
     },
@@ -339,6 +342,8 @@ class Watcher extends SafeEventEmitter {
         const updateChannel = () => {
             const currentChannel = twitch.getCurrentChannel();
             if (!currentChannel) return;
+
+            debug.log(`Channel Observer: ${currentChannel.name} (${currentChannel.id}) loaded.`);
 
             if (currentChannel.id === channel.id) return;
             channel = currentChannel;
