@@ -5,6 +5,7 @@ const keyCodes = require('../../utils/keycodes');
 const twitch = require('../../utils/twitch');
 
 const VIDEO_PLAYER_SELECTOR = '.video-player .player';
+const CANCEL_VOD_RECOMMENDATION_SELECTOR = '.recommendations-overlay .pl-rec__cancel.pl-button';
 
 function stepPlaybackSpeed(faster) {
     const currentPlayer = twitch.getCurrentPlayer();
@@ -15,6 +16,16 @@ function stepPlaybackSpeed(faster) {
     idx += faster ? 1 : -1;
     if (idx < 0 || idx >= rates.length) return;
     currentPlayer.player.setPlaybackRate(rates[idx]);
+}
+
+function watchPlayerRecommendationVodsAutoplay() {
+    const currentPlayer = twitch.getCurrentPlayer();
+    if (!currentPlayer || !currentPlayer.player) return;
+
+    currentPlayer.player.addEventListener('ended', () => {
+        if (settings.get('disableVodRecommendationAutoplay') !== true) return;
+        watcher.waitForLoad('vod_recommendation').then(() => $(CANCEL_VOD_RECOMMENDATION_SELECTOR).trigger('click'));
+    });
 }
 
 function handleKeyEvent(keypress) {
@@ -61,7 +72,10 @@ function handlePlayerClick() {
 class VideoPlayerModule {
     constructor() {
         this.keybinds();
-        watcher.on('load.player', () => this.clickToPause());
+        watcher.on('load.player', () => {
+            this.clickToPause();
+            watchPlayerRecommendationVodsAutoplay();
+        });
         settings.add({
             id: 'hidePlayerExtensions',
             name: 'Hide Twitch Extensions',
@@ -73,6 +87,12 @@ class VideoPlayerModule {
             name: 'Click to Play/Pause Stream',
             defaultValue: false,
             description: 'Click on the twitch player to pause/resume playback'
+        });
+        settings.add({
+            id: 'disableVodRecommendationAutoplay',
+            name: 'Disable VoD Recommendation Autoplay',
+            defaultValue: false,
+            description: 'Disables autoplay of recommended videos on VoDs'
         });
         settings.on('changed.hidePlayerExtensions', () => this.toggleHidePlayerExtensions());
         settings.on('changed.clickToPlay', () => this.clickToPause());
