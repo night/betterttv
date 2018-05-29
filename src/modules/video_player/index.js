@@ -20,15 +20,11 @@ function stepPlaybackSpeed(faster) {
 
 function watchPlayerRecommendationVodsAutoplay() {
     const currentPlayer = twitch.getCurrentPlayer();
-
     if (!currentPlayer || !currentPlayer.player) return;
 
     currentPlayer.player.addEventListener('ended', () => {
-        if (settings.get('disableVodAutoplay') === true) {
-            watcher.waitForLoad('vod_recommendation').then(() => {
-                $(CANCEL_VOD_RECOMMENDATION_SELECTOR).trigger('click');
-            });
-        }
+        if (settings.get('disableVodAutoplay') !== true) return;
+        watcher.waitForLoad('vod_recommendation').then(() => $(CANCEL_VOD_RECOMMENDATION_SELECTOR).trigger('click'));
     });
 }
 
