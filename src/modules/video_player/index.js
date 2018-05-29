@@ -23,7 +23,7 @@ function watchPlayerRecommendationVodsAutoplay() {
     if (!currentPlayer || !currentPlayer.player) return;
 
     currentPlayer.player.addEventListener('ended', () => {
-        if (settings.get('disableVodAutoplay') !== true) return;
+        if (settings.get('disableVodRecommendationAutoplay') !== true) return;
         watcher.waitForLoad('vod_recommendation').then(() => $(CANCEL_VOD_RECOMMENDATION_SELECTOR).trigger('click'));
     });
 }
@@ -89,7 +89,7 @@ class VideoPlayerModule {
             description: 'Click on the twitch player to pause/resume playback'
         });
         settings.add({
-            id: 'disableVodAutoplay',
+            id: 'disableVodRecommendationAutoplay',
             name: 'Disable VoD Recommendation Autoplay',
             defaultValue: false,
             description: 'Disables autoplay of recommended videos on VoDs'
