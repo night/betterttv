@@ -8,6 +8,8 @@ function newHostingHandler() {
     oldHostingHandler.call(this, ...arguments);
 }
 
+let lastPlayer;
+
 class DisableHostModeModule {
     constructor() {
         settings.add({
@@ -20,7 +22,7 @@ class DisableHostModeModule {
         watcher.on('load.chat', () => this.load());
     }
 
-    load() {
+    load(count = 0) {
         const chatController = twitch.getChatController();
         if (!chatController || !chatController.hostingHandler) return;
         if (!chatController.props || !chatController.props.onHostingChange) return;
@@ -36,6 +38,23 @@ class DisableHostModeModule {
             hostedChannelLogin: null
         });
         chatController.props.onHostingChange(null);
+
+        const currentPlayer = twitch.getCurrentPlayer();
+        if (!currentPlayer || !currentPlayer.player) {
+            if (count > 100) return;
+            // the player isn't loaded, so we need to wait for it to load before we apply this
+            setTimeout(() => this.load(count + 1), 10);
+        }
+
+        if (currentPlayer.player === lastPlayer) return;
+        lastPlayer = currentPlayer.player;
+
+        currentPlayer.player.addEventListener('playing', () => {
+            const currentChannel = twitch.getCurrentChannel();
+            if (currentPlayer.player.getChannel() === currentChannel.name) return;
+
+            chatController.props.onHostingChange(null);
+        });
     }
 }
 
