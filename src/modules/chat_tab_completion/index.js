@@ -202,7 +202,7 @@ class ChatTabcompletionModule {
 
     getTwitchEmotes() {
         try {
-            return Object.keys(twitch.getChatController().chatService.selfEmotes);
+            return Object.keys(twitch.getChatController().props.emoteSetsData.emoteMap);
         } catch (_) {
             return [];
         }

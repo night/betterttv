@@ -5,6 +5,8 @@ const personalEmotes = require('./personal-emotes');
 const emojis = require('./emojis');
 const gamewispGlobalEmotes = require('../gamewisp/global-emotes');
 const gamewispSubscriberEmotes = require('../gamewisp/subscriber-emotes');
+const frankerfacezGlobalEmotes = require('../frankerfacez/global-emotes');
+const frankerfacezChannelEmotes = require('../frankerfacez/channel-emotes');
 const settings = require('../../settings');
 
 class EmotesModule {
@@ -15,6 +17,8 @@ class EmotesModule {
             channelEmotes,
             gamewispGlobalEmotes,
             gamewispSubscriberEmotes,
+            frankerfacezGlobalEmotes,
+            frankerfacezChannelEmotes,
             emojis
         ];
 
