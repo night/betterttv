@@ -3,6 +3,7 @@ const Raven = require('raven-js');
 const twitchAPI = require('./twitch-api');
 
 const REACT_ROOT = '#root div';
+const CHANNEL_CONTAINER = '.channel-page';
 const CHAT_CONTAINER = 'section[data-test-selector="chat-room-component-layout"]';
 const VOD_CHAT_CONTAINER = '.qa-vod-chat';
 const CHAT_LIST = '.chat-list';
@@ -189,6 +190,19 @@ module.exports = {
         } catch (_) {}
 
         return chatController;
+    },
+
+    getChannelController() {
+        let channelController;
+        try {
+            const node = searchReactParents(
+                getReactInstance($(CHANNEL_CONTAINER)[0]),
+                n => n.stateNode && n.stateNode.channelIsHosting !== undefined
+            );
+            channelController = node.stateNode;
+        } catch (_) {}
+
+        return channelController;
     },
 
     getChatServiceClient() {

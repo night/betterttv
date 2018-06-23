@@ -2,10 +2,10 @@ const settings = require('../../settings');
 const watcher = require('../../watcher');
 const twitch = require('../../utils/twitch');
 
-let oldHostingHandler;
-function newHostingHandler() {
-    if (settings.get('disableHostMode')) return;
-    oldHostingHandler.call(this, ...arguments);
+let oldChannelIsHosting;
+function newChannelIsHosting() {
+    if (settings.get('disableHostMode')) return false;
+    oldChannelIsHosting.call(this, ...arguments);
 }
 
 let lastPlayer;
@@ -23,21 +23,20 @@ class DisableHostModeModule {
     }
 
     load(count = 0) {
-        const chatController = twitch.getChatController();
-        if (!chatController || !chatController.hostingHandler) return;
-        if (!chatController.props || !chatController.props.onHostingChange) return;
+        const channelController = twitch.getChannelController();
+        if (!channelController) return;
 
-        if (chatController.hostingHandler !== newHostingHandler) {
-            oldHostingHandler = chatController.hostingHandler;
-            chatController.hostingHandler = newHostingHandler;
+        if (channelController.channelIsHosting !== newChannelIsHosting) {
+            oldChannelIsHosting = channelController.channelIsHosting;
+            channelController.channelIsHosting = newChannelIsHosting;
         }
 
         if (!settings.get('disableHostMode')) return;
 
-        chatController.setState({
-            hostedChannelLogin: null
+        channelController.setState({
+            hostMode: null,
+            videoPlayerSource: channelController.props.match.params.channelName,
         });
-        chatController.props.onHostingChange(null);
 
         const currentPlayer = twitch.getCurrentPlayer();
         if (!currentPlayer || !currentPlayer.player) {
@@ -52,8 +51,12 @@ class DisableHostModeModule {
         currentPlayer.player.addEventListener('playing', () => {
             const currentChannel = twitch.getCurrentChannel();
             if (currentPlayer.player.getChannel() === currentChannel.name) return;
+            if (!settings.get('disableHostMode')) return;
 
-            chatController.props.onHostingChange(null);
+            channelController.setState({
+                hostMode: null,
+                videoPlayerSource: channelController.props.match.params.channelName
+            });
         });
     }
 }
