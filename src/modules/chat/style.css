@@ -13,3 +13,9 @@
     margin-bottom: -4px;
     display: inline-block;
 }
+
+.chat-input .tw-textarea--no-resize {
+  resize: vertical;
+  max-height: 160px;
+  min-height: 40px;
+}
