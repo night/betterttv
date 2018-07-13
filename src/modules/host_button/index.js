@@ -53,7 +53,7 @@ class HostButtonModule {
         const command = hosting ? 'unhost' : 'host';
         try {
             const channelName = twitch.getCurrentChannel().name;
-            const rawMessage = `PRIVMSG ${currentUser.name} : /${command === 'host' ? `${command} ${channelName}` : command}`;
+            const rawMessage = `PRIVMSG #${currentUser.name} :/${command === 'host' ? `${command} ${channelName}` : command}`;
             twitch.getChatServiceSocket().send(rawMessage);
             hosting = !hosting;
             this.updateHostButtonText();
