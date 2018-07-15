@@ -69,8 +69,8 @@ class GlobalCSSModule {
         $watermark.attr('src', cdn.url('assets/logos/logo_icon.png'));
         $watermark.css({
             'z-index': 9000,
-            'left': '-5px',
-            'top': '-15px',
+            'left': '-74px',
+            'top': '-18px',
             'width': '12px',
             'height': 'auto',
             'position': 'relative'
