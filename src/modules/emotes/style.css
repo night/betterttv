@@ -59,6 +59,10 @@ div.bttv-emote + .bttv-emo-567b5dc00e984428652809bd img {
   z-index: 2000;
   pointer-events: none;
   text-align: center;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 
   &.bttv-emote-tooltip--up {
     top: auto;
