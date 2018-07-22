@@ -45,12 +45,15 @@ function handleKeyEvent(keypress) {
         case keyCodes.KeyPress.Period:
             stepPlaybackSpeed(true);
             break;
+        case keyCodes.KeyPress.K:
         case keyCodes.KeyPress.k:
             $player.find('.qa-pause-play-button').click();
             break;
+        case keyCodes.KeyPress.F:
         case keyCodes.KeyPress.f:
             $player.find('.qa-fullscreen-button').click();
             break;
+        case keyCodes.KeyPress.M:
         case keyCodes.KeyPress.m:
             $player.find('.qa-control-volume').click();
             break;
