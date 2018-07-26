@@ -2,13 +2,17 @@ const settings = require('../../settings');
 const watcher = require('../../watcher');
 const twitch = require('../../utils/twitch');
 
-let oldChannelIsHosting;
-function newChannelIsHosting() {
-    if (settings.get('disableHostMode')) return false;
-    oldChannelIsHosting.call(this, ...arguments);
+let oldGetHostedChannelLogin;
+function newGetHostedChannelLogin() {
+    if (settings.get('disableHostMode')) return null;
+    oldGetHostedChannelLogin.call(this, ...arguments);
 }
 
-let lastPlayer;
+let oldHandleHostingChange;
+function newHandleHostingChange(e) {
+    if (e !== null && settings.get('disableHostMode')) return null;
+    oldHandleHostingChange.call(this, ...arguments);
+}
 
 class DisableHostModeModule {
     constructor() {
@@ -22,42 +26,23 @@ class DisableHostModeModule {
         watcher.on('load.chat', () => this.load());
     }
 
-    load(count = 0) {
+    load() {
         const channelController = twitch.getChannelController();
         if (!channelController) return;
 
-        if (channelController.channelIsHosting !== newChannelIsHosting) {
-            oldChannelIsHosting = channelController.channelIsHosting;
-            channelController.channelIsHosting = newChannelIsHosting;
+        if (channelController.getHostedChannelLogin !== newGetHostedChannelLogin) {
+            oldGetHostedChannelLogin = channelController.getHostedChannelLogin;
+            channelController.getHostedChannelLogin = newGetHostedChannelLogin;
+        }
+
+        if (channelController.handleHostingChange !== newHandleHostingChange) {
+            oldHandleHostingChange = channelController.handleHostingChange;
+            channelController.handleHostingChange = newHandleHostingChange;
         }
 
         if (!settings.get('disableHostMode')) return;
 
-        channelController.setState({
-            hostMode: null,
-            videoPlayerSource: channelController.props.match.params.channelName,
-        });
-
-        const currentPlayer = twitch.getCurrentPlayer();
-        if (!currentPlayer || !currentPlayer.player) {
-            if (count > 100) return;
-            // the player isn't loaded, so we need to wait for it to load before we apply this
-            setTimeout(() => this.load(count + 1), 10);
-        }
-
-        if (currentPlayer.player === lastPlayer) return;
-        lastPlayer = currentPlayer.player;
-
-        currentPlayer.player.addEventListener('playing', () => {
-            const currentChannel = twitch.getCurrentChannel();
-            if (currentPlayer.player.getChannel() === currentChannel.name) return;
-            if (!settings.get('disableHostMode')) return;
-
-            channelController.setState({
-                hostMode: null,
-                videoPlayerSource: channelController.props.match.params.channelName
-            });
-        });
+        channelController.handleHostingChange(null);
     }
 }
 

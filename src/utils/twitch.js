@@ -199,7 +199,7 @@ module.exports = {
         try {
             const node = searchReactParents(
                 getReactInstance($(CHANNEL_CONTAINER)[0]),
-                n => n.stateNode && n.stateNode.channelIsHosting !== undefined
+                n => n.stateNode && n.stateNode.handleHostingChange !== undefined
             );
             channelController = node.stateNode;
         } catch (_) {}
