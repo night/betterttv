@@ -54,7 +54,7 @@ class HideSidebarElementsModule {
 
     toggleAutoExpandChannels() {
         if (!settings.get('autoExpandChannels')) return;
-        $('.side-nav-show-more-toggle__button[data-a-target="side-nav-show-more-button"]').trigger('click');
+        $('.side-nav button[data-a-target="side-nav-show-more-button"]').trigger('click');
     }
 
     toggleRecommendedFriends() {
