@@ -4,7 +4,7 @@ const watcher = require('../../watcher');
 const chat = require('../chat');
 
 const CHAT_USER_SELECTOR = '.thread-message__message--user-name';
-const CHAT_MESSAGE_SELECTOR = '.thread-message__message--part,.tw-tooltip-wrapper';
+const CHAT_MESSAGE_SELECTOR = 'span[data-a-target="chat-message-text"]';
 const SCROLL_CONTAINER_SELECTOR = '.simplebar-scroll-content';
 
 function scrollOnEmoteLoad($el) {
