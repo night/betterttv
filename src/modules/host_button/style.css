@@ -1,0 +1,8 @@
+.bttv-host-button {
+  background: #efeef1 !important;
+  margin-bottom: 10px;
+}
+
+.tw-theme--dark .bttv-host-button {
+  background: #433f4a !important;
+}

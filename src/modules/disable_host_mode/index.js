@@ -14,6 +14,12 @@ function newHandleHostingChange(e) {
     oldHandleHostingChange.call(this, ...arguments);
 }
 
+let oldOnChatHostingChange;
+function newOnChatHostingChange() {
+    if (settings.get('disableHostMode')) return null;
+    oldOnChatHostingChange.call(this, ...arguments);
+}
+
 let lastPlayer;
 function configurePlayerListener(count = 0) {
     const currentPlayer = twitch.getCurrentPlayer();
@@ -32,7 +38,14 @@ function configurePlayerListener(count = 0) {
         if (!settings.get('disableHostMode')) return;
         const channelController = twitch.getChannelController();
         if (!channelController) return;
-        channelController.handleHostingChange(null);
+        if (channelController.handleHostingChange) {
+            channelController.handleHostingChange(null);
+        } else {
+            channelController.setState({
+                hostMode: null,
+                videoPlayerSource: channelController.state.channelLogin,
+            });
+        }
     });
 }
 
@@ -55,18 +68,30 @@ class DisableHostModeModule {
         if (channelController._bttvPatched) return;
         channelController._bttvPatched = true;
 
-        if (channelController.getHostedChannelLogin !== newGetHostedChannelLogin) {
+        if (channelController.getHostedChannelLogin && channelController.getHostedChannelLogin !== newGetHostedChannelLogin) {
             oldGetHostedChannelLogin = channelController.getHostedChannelLogin;
             channelController.getHostedChannelLogin = newGetHostedChannelLogin;
         }
 
-        if (channelController.handleHostingChange !== newHandleHostingChange) {
+        if (channelController.handleHostingChange && channelController.handleHostingChange !== newHandleHostingChange) {
             oldHandleHostingChange = channelController.handleHostingChange;
             channelController.handleHostingChange = newHandleHostingChange;
         }
 
+        if (channelController.onChatHostingChange && channelController.onChatHostingChange !== newOnChatHostingChange) {
+            oldOnChatHostingChange = channelController.onChatHostingChange;
+            channelController.onChatHostingChange = newOnChatHostingChange;
+        }
+
         if (settings.get('disableHostMode')) {
-            channelController.handleHostingChange(null);
+            if (channelController.handleHostingChange) {
+                channelController.handleHostingChange(null);
+            } else {
+                channelController.setState({
+                    hostMode: null,
+                    videoPlayerSource: channelController.state.channelLogin,
+                });
+            }
         }
 
         configurePlayerListener();

@@ -21,7 +21,7 @@ let channel = {};
 const loadPredicates = {
     following: () => !!$('.following__header-tabs').length,
     channel: () => {
-        const href = $('.channel-header__user-avatar img').attr('src');
+        const href = $('.channel-header__user-avatar img').attr('src') || $('h3[data-test-selector="side-nav-channel-info__name_link"] a').attr('href');
         return !!href;
     },
     chat: () => {
