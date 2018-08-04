@@ -14,6 +14,28 @@ function newHandleHostingChange(e) {
     oldHandleHostingChange.call(this, ...arguments);
 }
 
+let lastPlayer;
+function configurePlayerListener(count = 0) {
+    const currentPlayer = twitch.getCurrentPlayer();
+    if (!currentPlayer || !currentPlayer.player) {
+        if (count > 100) return;
+        // the player isn't loaded, so we need to wait for it to load before we apply this
+        setTimeout(() => configurePlayerListener(count + 1), 10);
+    }
+
+    if (currentPlayer.player === lastPlayer) return;
+    lastPlayer = currentPlayer.player;
+
+    currentPlayer.player.addEventListener('playing', () => {
+        const currentChannel = twitch.getCurrentChannel();
+        if (currentPlayer.player.getChannel() === currentChannel.name) return;
+        if (!settings.get('disableHostMode')) return;
+        const channelController = twitch.getChannelController();
+        if (!channelController) return;
+        channelController.handleHostingChange(null);
+    });
+}
+
 class DisableHostModeModule {
     constructor() {
         settings.add({
@@ -30,6 +52,9 @@ class DisableHostModeModule {
         const channelController = twitch.getChannelController();
         if (!channelController) return;
 
+        if (channelController._bttvPatched) return;
+        channelController._bttvPatched = true;
+
         if (channelController.getHostedChannelLogin !== newGetHostedChannelLogin) {
             oldGetHostedChannelLogin = channelController.getHostedChannelLogin;
             channelController.getHostedChannelLogin = newGetHostedChannelLogin;
@@ -40,9 +65,11 @@ class DisableHostModeModule {
             channelController.handleHostingChange = newHandleHostingChange;
         }
 
-        if (!settings.get('disableHostMode')) return;
+        if (settings.get('disableHostMode')) {
+            channelController.handleHostingChange(null);
+        }
 
-        channelController.handleHostingChange(null);
+        configurePlayerListener();
     }
 }
 
