@@ -4,7 +4,7 @@ const twitch = require('../../utils/twitch');
 const settings = require('../../settings');
 
 const CHAT_LINE_SELECTOR = '.chat-line__message';
-const CHAT_LINE_LINK_SELECTOR = 'a.chat-line__message--link';
+const CHAT_LINE_LINK_SELECTOR = 'a.link-fragment';
 const CHAT_LINE_CLIP_CARD_SELECTOR = '.chat-card__link';
 const CHAT_LINE_DELETED_CLASS = 'bttv-chat-line-deleted';
 

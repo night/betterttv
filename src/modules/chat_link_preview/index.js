@@ -5,7 +5,7 @@ const debounce = require('lodash.debounce');
 const settings = require('../../settings');
 
 const CHAT_LINES_SELECTOR = '.chat-list__lines';
-const CHAT_LINK_SELECTOR = '.chat-line__message--link';
+const CHAT_LINK_SELECTOR = '.link-fragment';
 const IMAGE_REGEX = new RegExp('(https?:\/\/.)([a-z\-_0-9\/\:\.\%\+]*\.(jpg|jpeg|png|gif|gifv|webm|mp4))', 'i');
 
 function tooltip($url, body) {
