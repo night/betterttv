@@ -145,7 +145,7 @@ function messageTextFromAST(ast) {
         switch (node.type) {
             case 0: // Text
                 return node.content.trim();
-            case 1: // CurrentUserHighlight
+            case 2: // CurrentUserHighlight
                 return node.content;
             case 3: // Mention
                 return node.content.recipient;
