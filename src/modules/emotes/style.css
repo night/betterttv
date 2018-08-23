@@ -108,7 +108,7 @@ div.bttv-emote + .bttv-emo-567b5dc00e984428652809bd img {
   }
 }
 
-.tw-theme--dark {
+.tw-root--theme-dark {
   .bttv-emote-tooltip {
     padding: 3px 6px;
     border-radius: 2px;
