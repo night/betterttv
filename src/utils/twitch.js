@@ -238,6 +238,19 @@ module.exports = {
         return chatScroller;
     },
 
+    getCurrentEmotes() {
+        let currentEmotes;
+        try {
+            const node = searchReactParents(
+                getReactInstance($(CHAT_CONTAINER)[0]),
+                n => n.stateNode && n.stateNode.props && n.stateNode.props.emoteSetsData && n.stateNode.props.emoteSetsData.emoteMap
+            );
+            currentEmotes = node.stateNode.props.emoteSetsData.emoteMap;
+        } catch (_) {}
+
+        return currentEmotes;
+    },
+
     getCurrentChat() {
         let currentChat;
         try {

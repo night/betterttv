@@ -5,6 +5,18 @@ const ModeratorCard = require('./moderator-card');
 
 let openModeratorCard;
 
+function getUserMessages(name) {
+    return Array.from($('.chat-line__message'))
+        .reverse()
+        .map(el => {
+            return {
+                message: twitch.getChatMessageObject(el),
+                outerHTML: el.outerHTML
+            };
+        })
+        .filter(({message}) => message && message.user && message.user.userLogin === name);
+}
+
 class ChatModeratorCardsModule {
     constructor() {
         watcher.on('chat.moderator_card.open', $element => this.onOpen($element));
@@ -16,7 +28,7 @@ class ChatModeratorCardsModule {
         const props = twitch.getChatModeratorCardProps($element[0]);
         if (!props) return;
 
-        const {sourceID, data} = props;
+        const {data} = props;
 
         let dataFetcher;
         if (data.targetUser) {
@@ -31,23 +43,6 @@ class ChatModeratorCardsModule {
             });
         }
 
-        let isOwner = false;
-        let isModerator = false;
-        if (sourceID) {
-            const connectStore = twitch.getConnectStore();
-            if (!connectStore) return;
-            const {chat: {messages}} = connectStore.getState();
-            const currentChannel = twitch.getCurrentChannel();
-            if (!currentChannel) return;
-            const channelMessages = messages[currentChannel.name];
-            if (!channelMessages) return;
-            const message = channelMessages.find(({id}) => id === sourceID);
-            if (message) {
-                isOwner = twitch.getUserIsOwnerFromTagsBadges(message.badges);
-                isModerator = twitch.getUserIsModeratorFromTagsBadges(message.badges);
-            }
-        }
-
         dataFetcher.then(targetUser => {
             if (openModeratorCard && openModeratorCard.user.id === targetUser.id) {
                 return;
@@ -55,12 +50,25 @@ class ChatModeratorCardsModule {
 
             this.onClose();
 
-            openModeratorCard = new ModeratorCard($element, {
-                id: targetUser.id,
-                name: targetUser.login,
-                isOwner,
-                isModerator
-            });
+            let isOwner = false;
+            let isModerator = false;
+            const userMessages = getUserMessages(targetUser.login);
+            if (userMessages.length) {
+                const {message} = userMessages[userMessages.length - 1];
+                isOwner = twitch.getUserIsOwnerFromTagsBadges(message.badges);
+                isModerator = twitch.getUserIsModeratorFromTagsBadges(message.badges);
+            }
+
+            openModeratorCard = new ModeratorCard(
+                $element,
+                {
+                    id: targetUser.id,
+                    name: targetUser.login,
+                    isOwner,
+                    isModerator
+                },
+                userMessages
+            );
             openModeratorCard.render();
         });
     }

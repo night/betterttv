@@ -86,21 +86,11 @@ const NICKNAME_CHANGE_BUTTON_TEMPLATE = `
     </button>
 `;
 
-function getUserMessages(name) {
-    return Array.from($('.chat-line__message'))
-        .reverse()
-        .filter(el => {
-            const messageObj = twitch.getChatMessageObject(el);
-            if (!messageObj || !messageObj.user) return false;
-            return messageObj.user.userLogin === name;
-        })
-        .map(m => m.outerHTML);
-}
-
 class ModeratorCard {
-    constructor(element, user) {
+    constructor(element, user, messages) {
         this.$element = $(element);
         this.user = user;
+        this.messages = messages;
     }
 
     close() {
@@ -168,7 +158,7 @@ class ModeratorCard {
         if (this.$element.find('.bttv-moderator-card-messages').length) return;
 
         const $moderatorActions = this.$element.find('.viewer-card__actions');
-        const $messages = $(userMessagesTemplate(getUserMessages(this.user.name)));
+        const $messages = $(userMessagesTemplate(this.messages.map(({outerHTML}) => outerHTML)));
         $moderatorActions.after($messages);
 
         $messages.find('.label').on('click', () => {
