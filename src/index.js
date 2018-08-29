@@ -1,7 +1,7 @@
 (() => {
     if (!String.prototype.includes || !Array.prototype.findIndex) return;
     if (window.location.pathname.endsWith('.html')) return;
-    if (!['www.twitch.tv', 'canary.twitch.tv'].includes(window.location.hostname)) return;
+    if (!['www.twitch.tv', 'canary.twitch.tv', 'clips.twitch.tv'].includes(window.location.hostname)) return;
 
     if (window.Ember) {
         const script = document.createElement('script');

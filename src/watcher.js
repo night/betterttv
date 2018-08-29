@@ -39,9 +39,10 @@ const loadPredicates = {
 
         return true;
     },
+    clips: () => twitch.updateCurrentChannel(),
     player: () => !!twitch.getCurrentPlayer(),
     vod: () => twitch.updateCurrentChannel() && $('.video-chat__input textarea').length,
-    vod_recommendation: () => $(CANCEL_VOD_RECOMMENDATION_SELECTOR).length,
+    vodRecommendation: () => $(CANCEL_VOD_RECOMMENDATION_SELECTOR).length,
     homepage: () => !!$('.front-page-carousel .player-video').length
 };
 
@@ -62,7 +63,7 @@ const routeKeysToPaths = {
     [routes.DIRECTORY_FOLLOWING]: /^\/directory\/following$/i,
     [routes.DIRECTORY]: /^\/directory/i,
     [routes.CHAT]: /^(\/popout)?\/[a-z0-9-_]+\/chat$/i,
-    [routes.VOD]: /^\/videos\/[0-9]+$/i,
+    [routes.VOD]: /^(\/videos\/[0-9]+|\/[a-z0-9-_]+\/clip\/[a-z0-9-_]+)$/i,
     [routes.DASHBOARD]: /^\/[a-z0-9-_]+\/dashboard/i,
     [routes.CHANNEL]: /^\/[a-z0-9-_]+/i
 };
@@ -131,9 +132,10 @@ class Watcher extends SafeEventEmitter {
     loadClips() {
         this.clipsChatObserver();
         this.channelObserver();
-        twitch.updateCurrentChannel();
-        this.emit('load.clips');
-        this.emit('load.channel');
+        this.waitForLoad('clips').then(() => {
+            this.emit('load.clips');
+            this.emit('load.channel');
+        });
     }
 
     load() {
@@ -376,7 +378,7 @@ class Watcher extends SafeEventEmitter {
                 for (const el of mutation.addedNodes) {
                     const $el = $(el);
 
-                    if ($el.hasClass('clip-chat-line')) {
+                    if ($el.hasClass('tw-mg-b-1') && $el.find('span[data-a-target="chat-message-text"]').length) {
                         this.emit('clips.message', $el);
                     }
                 }

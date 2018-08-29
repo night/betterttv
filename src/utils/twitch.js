@@ -77,7 +77,6 @@ function searchReactParents(node, predicate, maxDepth = 15, depth = 0) {
 
 let currentUser;
 let currentChannel;
-const clipInfo = window.clipInfo;
 
 module.exports = {
     setCurrentUser(accessToken, id, name, displayName) {
@@ -98,12 +97,13 @@ module.exports = {
     updateCurrentChannel() {
         let rv;
 
-        if (clipInfo) {
+        const clipsBroadcasterInfo = this.getClipsBroadcasterInfo();
+        if (clipsBroadcasterInfo) {
             rv = {
-                id: clipInfo.broadcaster_id.toString(),
-                name: clipInfo.broadcaster_login,
-                displayName: clipInfo.broadcaster_display_name,
-                avatar: clipInfo.broadcaster_logo
+                id: clipsBroadcasterInfo.id,
+                name: clipsBroadcasterInfo.login,
+                displayName: clipsBroadcasterInfo.displayName,
+                avatar: clipsBroadcasterInfo.profileImageURL
             };
         }
 
@@ -165,6 +165,19 @@ module.exports = {
                 n => n.stateNode && n.stateNode.context && n.stateNode.context.router
             );
             router = node.stateNode.context.router;
+        } catch (_) {}
+
+        return router;
+    },
+
+    getClipsBroadcasterInfo() {
+        let router;
+        try {
+            const node = searchReactParents(
+                getReactInstance($('.clips-broadcaster-info')[0]),
+                n => n.stateNode && n.stateNode.props && n.stateNode.props.data && n.stateNode.props.data.clip
+            );
+            router = node.stateNode.props.data.clip.broadcaster;
         } catch (_) {}
 
         return router;

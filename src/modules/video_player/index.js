@@ -25,7 +25,7 @@ function watchPlayerRecommendationVodsAutoplay() {
 
     currentPlayer.player.addEventListener('ended', () => {
         if (settings.get('disableVodRecommendationAutoplay') !== true) return;
-        watcher.waitForLoad('vod_recommendation').then(() => $(CANCEL_VOD_RECOMMENDATION_SELECTOR).trigger('click'));
+        watcher.waitForLoad('vodRecommendation').then(() => $(CANCEL_VOD_RECOMMENDATION_SELECTOR).trigger('click'));
     });
 }
 

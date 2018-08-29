@@ -8,10 +8,10 @@ const watcher = require('../../watcher');
 const GIF_EMOTES_SETTINGS_KEY = 'bttvGIFEmotes';
 const DARK_MODE_SETTINGS_KEY = 'darkenedMode';
 const TWITCH_DARK_MODE_SETTING_KEY = 'IS_DARK_MODE_ENABLED';
-const CHAT_MESSAGE_SELECTOR = '.clip-chat-message';
-const CHAT_USERNAME_SELECTOR = '.clip-chat-username';
-const SCROLL_INDICATOR_SELECTOR = '.view-clip__scrollButton';
-const SCROLL_CONTAINER_SELECTOR = '.view-clip__main';
+const CHAT_MESSAGE_SELECTOR = 'span[data-a-target="chat-message-text"]';
+const CHAT_USERNAME_SELECTOR = 'a span.tw-strong';
+const SCROLL_INDICATOR_SELECTOR = '.clips-chat .clips-chat__content button.tw-button--small';
+const SCROLL_CONTAINER_SELECTOR = '.clips-chat .simplebar-scroll-content';
 
 function parseColor(rgbText) {
     const rgb = ((rgbText || '').split(')')[0].split('rgb(')[1] || '').split(',');
