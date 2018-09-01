@@ -6,7 +6,6 @@ const PATCHED_SYMBOL = Symbol();
 let twitchHandleMessage;
 
 function bttvHandleMessage(message) {
-    console.log(message);
     if (message && typeof message.type === 'number') {
         let isPrevented = false;
         watcher.emit('chat.message.handler', {
@@ -24,8 +23,6 @@ function bttvHandleMessage(message) {
 function patchChatController() {
     const chatController = twitch.getChatController();
     if (!chatController) return;
-
-    console.log(chatController);
 
     const messageHandlerAPI = chatController.props.messageHandlerAPI;
     if (!messageHandlerAPI) return;

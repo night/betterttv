@@ -8,6 +8,7 @@ const CHAT_CONTAINER = 'section[data-test-selector="chat-room-component-layout"]
 const VOD_CHAT_CONTAINER = '.qa-vod-chat';
 const CHAT_LIST = '.chat-list';
 const PLAYER = '.player';
+const CLIPS_BROADCASTER_INFO = '.clips-broadcaster-info';
 
 const TMIActionTypes = {
     MESSAGE: 0,
@@ -75,6 +76,26 @@ function searchReactParents(node, predicate, maxDepth = 15, depth = 0) {
     return null;
 }
 
+function searchReactChildren(node, predicate, maxDepth = 15, depth = 0) {
+    try {
+        if (predicate(node)) {
+            return node;
+        }
+    } catch (_) {}
+
+    if (!node || depth > maxDepth) {
+        return null;
+    }
+
+    const {child, sibling} = node;
+    if (child || sibling) {
+        return searchReactChildren(child, predicate, maxDepth, depth + 1) || searchReactChildren(sibling, predicate, maxDepth, depth + 1);
+    }
+
+    return null;
+}
+
+let chatClient;
 let currentUser;
 let currentChannel;
 
@@ -174,7 +195,7 @@ module.exports = {
         let router;
         try {
             const node = searchReactParents(
-                getReactInstance($('.clips-broadcaster-info')[0]),
+                getReactInstance($(CLIPS_BROADCASTER_INFO)[0]),
                 n => n.stateNode && n.stateNode.props && n.stateNode.props.data && n.stateNode.props.data.clip
             );
             router = node.stateNode.props.data.clip.broadcaster;
@@ -224,11 +245,18 @@ module.exports = {
     },
 
     getChatServiceClient() {
-        let client;
+        if (chatClient) return chatClient;
+
         try {
-            client = this.getChatController().chatService.client;
+            const node = searchReactChildren(
+                getReactInstance($(REACT_ROOT)[0]),
+                n => n.stateNode && n.stateNode.join && n.stateNode.part && n.stateNode.client,
+                1000
+            );
+            chatClient = node.stateNode.client;
         } catch (_) {}
-        return client;
+
+        return chatClient;
     },
 
     getChatServiceSocket() {
