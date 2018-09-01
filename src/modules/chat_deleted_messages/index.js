@@ -39,30 +39,26 @@ class ChatDeletedMessagesModule {
             description: 'Completely removes timed out messages from view'
         });
 
-        watcher.on('chat.buffer.event', event => {
-            this.handleBufferEvent(event);
+        watcher.on('chat.message.handler', message => {
+            this.handleMessage(message);
         });
     }
 
-    handleBufferEvent({event, preventDefault}) {
-        switch (event.type) {
+    handleMessage({message, preventDefault}) {
+        switch (message.type) {
             case twitch.TMIActionTypes.CLEAR_CHAT:
                 twitch.sendChatAdminMessage('Chat was cleared by a moderator (Prevented by BetterTTV)');
                 preventDefault();
                 break;
             case twitch.TMIActionTypes.MODERATION:
-                if (this.handleDelete(event.userLogin)) {
+                if (this.handleDelete(message.userLogin || message.user.userLogin)) {
                     preventDefault();
                     // we still want to render moderation messages
-                    const chatController = twitch.getChatController();
-                    if (chatController) {
-                        chatController.chatBuffer.delayedMessageBuffer.push({
-                            event,
-                            time: Date.now(),
-                            shouldDelay: false
-                        });
+                    const chatBuffer = twitch.getChatBuffer();
+                    if (chatBuffer) {
+                        chatBuffer.state.messages.push(message);
+                        chatBuffer.onBufferUpdate();
                     }
-                    // TODO: we need to handle delayed messages.. not sure of an elegant way yet
                 }
                 break;
         }

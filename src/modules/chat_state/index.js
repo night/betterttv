@@ -47,9 +47,9 @@ function updateState(state, ...args) {
     }
 
     if (!state) {
-        const chatList = twitch.getChatList();
-        if (!chatList) return;
-        const messages = chatList.props.messages;
+        const chatBuffer = twitch.getChatBuffer();
+        if (!chatBuffer) return;
+        const messages = chatBuffer.state.messages;
         if (!messages) return;
 
         let message;

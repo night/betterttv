@@ -239,12 +239,12 @@ module.exports = {
         return socket;
     },
 
-    getChatList() {
+    getChatBuffer() {
         let chatList;
         try {
             const node = searchReactParents(
                 getReactInstance($(CHAT_LIST)[0]),
-                n => n.stateNode && n.stateNode.props && n.stateNode.props.messages
+                n => n.stateNode && n.stateNode.props && n.stateNode.props.messageBufferAPI
             );
             chatList = node.stateNode;
         } catch (_) {}

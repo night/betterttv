@@ -4,14 +4,6 @@ const twitch = require('../../utils/twitch');
 
 const forcedURL = window.location.search.includes('bttv_anon_chat=true');
 
-function getConnectionClient() {
-    let client;
-    try {
-        client = twitch.getChatController().chatService.client;
-    } catch (_) {}
-    return client;
-}
-
 class AnonChatModule {
     constructor() {
         settings.add({
@@ -27,7 +19,7 @@ class AnonChatModule {
     }
 
     changeUser(username, message) {
-        const client = getConnectionClient();
+        const client = twitch.getChatServiceClient();
         if (!client) return;
 
         const socket = client.connection.ws;

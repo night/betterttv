@@ -17,13 +17,13 @@ class HideChatEventsModule {
             description: 'Hides subs, re-subs, and gift subs from the chat'
         });
 
-        watcher.on('chat.buffer.event', event => {
-            this.handleBufferEvent(event);
+        watcher.on('chat.message.handler', message => {
+            this.handleMessage(message);
         });
     }
 
-    handleBufferEvent({event, preventDefault}) {
-        switch (event.type) {
+    handleMessage({message, preventDefault}) {
+        switch (message.type) {
             case twitch.TMIActionTypes.RITUAL:
                 if (settings.get('hideNewViewerGreeting')) {
                     preventDefault();
