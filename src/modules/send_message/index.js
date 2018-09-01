@@ -35,7 +35,7 @@ const methodList = [
     msgObj => emojis.onSendMessage(msgObj)
 ];
 
-function bttvSendMessage(username, messageToSend, ...args) {
+function bttvSendMessage(messageToSend, ...args) {
     const channel = twitch.getCurrentChannel();
     if (channel) {
         socketClient.broadcastMe(channel.name);
@@ -57,7 +57,7 @@ function bttvSendMessage(username, messageToSend, ...args) {
         messageToSend = sendState.message;
     }
 
-    return twitchSendMessage.call(this, username, messageToSend, ...args);
+    return twitchSendMessage.call(this, messageToSend, ...args);
 }
 
 class SendMessagePatcher {
@@ -66,19 +66,19 @@ class SendMessagePatcher {
     }
 
     patch() {
-        const client = twitch.getChatServiceClient();
-        if (!client) return;
+        const chatController = twitch.getChatController();
+        if (!chatController) return;
 
         if (
-            client._bttvSendMessagePatched === PATCHED_SENTINEL ||
-            client.sendCommand === bttvSendMessage
+            chatController._bttvSendMessagePatched === PATCHED_SENTINEL ||
+            chatController.sendMessage === bttvSendMessage
         ) {
             return;
         }
 
-        client._bttvSendMessagePatched = PATCHED_SENTINEL;
-        twitchSendMessage = client.sendCommand;
-        client.sendCommand = bttvSendMessage;
+        chatController._bttvSendMessagePatched = PATCHED_SENTINEL;
+        twitchSendMessage = chatController.sendMessage;
+        chatController.sendMessage = bttvSendMessage;
     }
 }
 

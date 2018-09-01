@@ -1,7 +1,7 @@
 #bttv-channel-state-contain {
   position: absolute;
-  top: 7px;
-  right: 5px;
+  top: 24px;
+  left: 20px;
   width: 150px;
   height: 24px;
   color: #6441a4;
@@ -11,25 +11,26 @@
   }
 
   div {
-    float: right;
-    width: 26px;
+    float: left;
     height: 22px;
     display: none;
   }
 
   .slow {
     position: relative;
-    width: 70px;
     text-align: right;
 
     .slow-time {
-      position: absolute;
-      top: 8px;
-      right: 24px;
       font-size: 9px;
-      line-height: 9px;
+      padding-top: 5px;
+      margin-right: -4px;
     }
   }
+}
+
+.bttv-chat-header-chat-state #chat-room-header-label p[data-test-selector="chat-room-header-label"] {
+  font-size: 10px;
+  margin-top: -14px;
 }
 
 .tw-root--theme-dark {

@@ -197,16 +197,17 @@ module.exports = {
     },
 
     getChatController() {
-        let chatController;
+        let chatContentComponent;
         try {
             const node = searchReactParents(
                 getReactInstance($(CHAT_CONTAINER)[0]),
-                n => n.stateNode && n.stateNode.chatBuffer
+                n => n.stateNode && n.stateNode.props && n.stateNode.props.messageHandlerAPI && n.stateNode.props.chatConnectionAPI
+
             );
-            chatController = node.stateNode;
+            chatContentComponent = node.stateNode;
         } catch (_) {}
 
-        return chatController;
+        return chatContentComponent;
     },
 
     getChannelController() {
@@ -236,6 +237,19 @@ module.exports = {
             socket = this.getChatServiceClient().connection.ws;
         } catch (_) {}
         return socket;
+    },
+
+    getChatList() {
+        let chatList;
+        try {
+            const node = searchReactParents(
+                getReactInstance($(CHAT_LIST)[0]),
+                n => n.stateNode && n.stateNode.props && n.stateNode.props.messages
+            );
+            chatList = node.stateNode;
+        } catch (_) {}
+
+        return chatList;
     },
 
     getChatScroller() {
@@ -294,10 +308,14 @@ module.exports = {
         const chatController = this.getChatController();
         if (!chatController) return;
 
-        chatController.chatService.onChatNoticeEvent({
-            msgid: Date.now(),
-            body,
-            channel: `#${chatController.chatService.channelLogin}`
+        const id = Date.now();
+
+        chatController.pushMessage({
+            type: TMIActionTypes.NOTICE,
+            id,
+            msgid: id,
+            message: body,
+            channel: `#${chatController.props.channelLogin}`
         });
     },
 
@@ -368,8 +386,7 @@ module.exports = {
     },
 
     getCurrentUserIsOwner() {
-        const currentChat = this.getCurrentChat();
-        if (!currentChat) return false;
-        return currentChat.props.isOwnChannel || false;
+        if (!currentUser || !currentChannel) return false;
+        return currentUser.id === currentChannel.id;
     }
 };

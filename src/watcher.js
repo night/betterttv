@@ -24,7 +24,7 @@ const loadPredicates = {
         const href = $('.channel-header__user-avatar img').attr('src') || $('h3[data-test-selector="side-nav-channel-info__name_link"] a').attr('href');
         return !!href;
     },
-    chat: () => {
+    chat: context => {
         if (!twitch.updateCurrentChannel()) return false;
 
         if (!$(CHAT_ROOM_SELECTOR).length) return false;
@@ -32,8 +32,20 @@ const loadPredicates = {
         const lastReference = currentChatReference;
         const currentChat = twitch.getCurrentChat();
 
-        if (currentChat && currentChat === lastReference) return false;
-        if (currentChat && currentChat.props.channelID === currentChatChannelId) return false;
+        let checkReferences = false;
+        if (context && context.forceReload) {
+            if (context.checkReferences === undefined) {
+                context.checkReferences = true;
+            }
+            checkReferences = context.checkReferences;
+            context.checkReferences = false;
+        }
+
+        if (checkReferences) {
+            if (currentChat && currentChat === lastReference) return false;
+            if (currentChat && currentChat.props.channelID === currentChatChannelId) return false;
+        }
+
         currentChatReference = currentChat;
         currentChatChannelId = currentChat.props.channelID;
 
@@ -106,7 +118,7 @@ class Watcher extends SafeEventEmitter {
         }, 25);
     }
 
-    waitForLoad(type) {
+    waitForLoad(type, context = null) {
         let timeout;
         let interval;
         const startTime = Date.now();
@@ -116,11 +128,11 @@ class Watcher extends SafeEventEmitter {
             }),
             new Promise(resolve => {
                 const loaded = loadPredicates[type];
-                if (loaded()) {
+                if (loaded(context)) {
                     resolve();
                     return;
                 }
-                interval = setInterval(() => loaded() && resolve(), 25);
+                interval = setInterval(() => loaded(context) && resolve(), 25);
             })
         ]).then(() => {
             debug.log(`waited for ${type} load: ${Date.now() - startTime}ms`);
@@ -163,7 +175,7 @@ class Watcher extends SafeEventEmitter {
 
     forceReloadChat() {
         currentChatReference = null;
-        this.waitForLoad('chat').then(() => this.emit('load.chat'));
+        this.waitForLoad('chat', {forceReload: true}).then(() => this.emit('load.chat'));
     }
 
     routeObserver() {
@@ -308,7 +320,7 @@ class Watcher extends SafeEventEmitter {
         // force reload of chat on room swap
         $('body').on(
             'click',
-            '.room-picker button[data-test-selector="stream-chat-room-picker-option"]',
+            '.room-picker button[data-test-selector="stream-chat-room-picker-option"], .room-picker button[data-test-selector="room-option-interactable"], .room-selector__header button[data-test-selector="open-room-picker-button"], .room-selector__header button[data-test-selector="close-room-picker-button"]',
             () => this.forceReloadChat()
         );
     }
@@ -345,11 +357,10 @@ class Watcher extends SafeEventEmitter {
     channelObserver() {
         const updateChannel = () => {
             const currentChannel = twitch.getCurrentChannel();
-            if (!currentChannel) return;
+            if (!currentChannel || currentChannel.id === channel.id) return;
 
             debug.log(`Channel Observer: ${currentChannel.name} (${currentChannel.id}) loaded.`);
 
-            if (currentChannel.id === channel.id) return;
             channel = currentChannel;
 
             api.get(`channels/${channel.name}`)

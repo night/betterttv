@@ -3,11 +3,13 @@ const watcher = require('../../watcher');
 const twitch = require('../../utils/twitch');
 
 const CHAT_STATE_ID = 'bttv-channel-state-contain';
+const CHAT_HAS_STATE_CLASS = 'bttv-chat-header-chat-state';
 const CHAT_STATE_TEMPLATE = require('./template')(CHAT_STATE_ID);
-const CHAT_HEADER_SELECTOR = 'section[data-test-selector="chat-room-component-layout"] .chat-room__header';
+const CHAT_HEADER_SELECTOR = '.room-selector__header';
+const CHAT_HEADER_OPEN_SELECTOR = '.room-selector__open-header-wrapper';
+const PATCHED_SENTINEL = Symbol();
 
-let listening = false;
-let lastStateMessage;
+let twitchOnRoomStateUpdated;
 
 function displaySeconds(s) {
     let date = new Date(0);
@@ -26,34 +28,28 @@ function displaySeconds(s) {
     return date.join(':');
 }
 
-class ChatStateModule {
-    constructor() {
-        watcher.on('load', () => this.load());
-        watcher.on('load.chat', () => this.loadHTML());
+function loadHTML() {
+    const $stateContainer = $(`#${CHAT_STATE_ID}`);
+    const $headerSelector = $(CHAT_HEADER_SELECTOR);
+    const $headerOpenSelector = $(CHAT_HEADER_OPEN_SELECTOR);
+    if ($headerOpenSelector.length || !$headerSelector.length || $headerSelector.find('.active-room-button').length) {
+        $stateContainer.remove();
+        $('body').toggleClass(CHAT_HAS_STATE_CLASS, false);
+        return;
+    }
+    if ($stateContainer.length) return;
+    $headerSelector.after(CHAT_STATE_TEMPLATE);
+}
+
+function updateState(state, ...args) {
+    if (state) {
+        twitchOnRoomStateUpdated(state, ...args);
     }
 
-    loadHTML() {
-        if ($(`#${CHAT_STATE_ID}`).length) return;
-        $(CHAT_HEADER_SELECTOR).append(CHAT_STATE_TEMPLATE);
-    }
-
-    load() {
-        const connectStore = twitch.getConnectStore();
-        if (!connectStore || listening) return;
-
-        try {
-            connectStore.subscribe(() => {
-                try {
-                    this.updateState(connectStore);
-                } catch (_) {}
-            });
-            listening = true;
-        } catch (_) {}
-    }
-
-    updateState(store) {
-        let {chat: {messages}} = store.getState();
-        messages = Object.values(messages)[0];
+    if (!state) {
+        const chatList = twitch.getChatList();
+        if (!chatList) return;
+        const messages = chatList.props.messages;
         if (!messages) return;
 
         let message;
@@ -62,29 +58,58 @@ class ChatStateModule {
             message = messages[i];
             break;
         }
-        if (!message || message === lastStateMessage) return;
+        if (!message) return;
 
-        const $stateContainer = $(`#${CHAT_STATE_ID}`);
-        if (!$stateContainer.length) return;
+        state = message.state;
+    }
 
-        lastStateMessage = message;
+    // always reload html in case it got removed
+    loadHTML();
 
-        const {slowMode, slowModeDuration, emoteOnly, subsOnly, r9k} = message.state;
+    const $stateContainer = $(`#${CHAT_STATE_ID}`);
+    if (!$stateContainer.length) return;
 
-        if (slowMode) {
-            $stateContainer
-                .find('.slow-time')
-                .attr('title', `${slowModeDuration} seconds`)
-                .text(displaySeconds(slowModeDuration));
+    const {slowMode, slowModeDuration, emoteOnly, subsOnly, r9k} = state;
+
+    if (slowMode) {
+        $stateContainer
+            .find('.slow-time')
+            .attr('title', `${slowModeDuration} seconds`)
+            .text(displaySeconds(slowModeDuration));
+    }
+    $stateContainer.find('.slow').toggle(slowMode ? true : false);
+    $stateContainer.find('.slow-time').toggle(slowMode ? true : false);
+
+    $stateContainer.find('.r9k').toggle(r9k ? true : false);
+
+    $stateContainer.find('.subs-only').toggle(subsOnly ? true : false);
+
+    $stateContainer.find('.emote-only').toggle(emoteOnly ? true : false);
+
+    $('body').toggleClass(CHAT_HAS_STATE_CLASS, slowMode || r9k || subsOnly || emoteOnly);
+}
+
+class ChatStateModule {
+    constructor() {
+        watcher.on('load.chat', () => this.patch());
+    }
+
+    patch() {
+        const chatController = twitch.getChatController();
+        if (!chatController) return;
+
+        updateState();
+
+        if (
+            chatController._bttvOnRoomStateUpdatedPatched === PATCHED_SENTINEL ||
+            chatController.onRoomStateUpdated === updateState
+        ) {
+            return;
         }
-        $stateContainer.find('.slow').toggle(slowMode ? true : false);
-        $stateContainer.find('.slow-time').toggle(slowMode ? true : false);
 
-        $stateContainer.find('.r9k').toggle(r9k ? true : false);
-
-        $stateContainer.find('.subs-only').toggle(subsOnly ? true : false);
-
-        $stateContainer.find('.emote-only').toggle(emoteOnly ? true : false);
+        chatController._bttvOnRoomStateUpdatedPatched = PATCHED_SENTINEL;
+        twitchOnRoomStateUpdated = chatController.onRoomStateUpdated;
+        chatController.onRoomStateUpdated = updateState;
     }
 }
 
