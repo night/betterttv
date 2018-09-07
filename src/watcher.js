@@ -35,8 +35,9 @@ const loadPredicates = {
 
         const lastReference = currentChatReference;
         const currentChat = twitch.getCurrentChat();
+        if (!currentChat) return false;
 
-        let checkReferences = false;
+        let checkReferences = true;
         if (context && context.forceReload) {
             if (context.checkReferences === undefined) {
                 context.checkReferences = true;
@@ -46,8 +47,8 @@ const loadPredicates = {
         }
 
         if (checkReferences) {
-            if (currentChat && currentChat === lastReference) return false;
-            if (currentChat && currentChat.props.channelID === currentChatChannelId) return false;
+            if (currentChat === lastReference) return false;
+            if (currentChat.props.channelID === currentChatChannelId) return false;
         }
 
         currentChatReference = currentChat;
