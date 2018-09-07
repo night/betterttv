@@ -16,12 +16,16 @@ let vodChatWatcher;
 let clipsChatWatcher;
 let currentChatReference;
 let currentChatChannelId;
+let currentChannelId;
 let channel = {};
 
 const loadPredicates = {
     following: () => !!$('.following__header-tabs').length,
     channel: () => {
         const href = $('.channel-header__user-avatar img').attr('src') || $('h3[data-test-selector="side-nav-channel-info__name_link"] a').attr('href');
+        const currentChannel = twitch.updateCurrentChannel();
+        if (!currentChannel || !currentChannel.id || (currentChannelId && currentChannelId === currentChannel.id)) return false;
+        currentChannelId = currentChannel.id;
         return !!href;
     },
     chat: context => {
@@ -357,7 +361,7 @@ class Watcher extends SafeEventEmitter {
     channelObserver() {
         const updateChannel = () => {
             const currentChannel = twitch.getCurrentChannel();
-            if (!currentChannel || currentChannel.id === channel.id) return;
+            if (!currentChannel || (channel && currentChannel.id === channel.id)) return;
 
             debug.log(`Channel Observer: ${currentChannel.name} (${currentChannel.id}) loaded.`);
 
