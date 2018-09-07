@@ -2,12 +2,9 @@ const $ = require('jquery');
 const chat = require('../chat');
 const colors = require('../../utils/colors');
 const settings = require('../../settings');
-const storage = require('../../storage');
 const watcher = require('../../watcher');
 
 const GIF_EMOTES_SETTINGS_KEY = 'bttvGIFEmotes';
-const DARK_MODE_SETTINGS_KEY = 'darkenedMode';
-const TWITCH_DARK_MODE_SETTING_KEY = 'IS_DARK_MODE_ENABLED';
 const CHAT_MESSAGE_SELECTOR = 'span[data-a-target="chat-message-text"]';
 const CHAT_USERNAME_SELECTOR = 'a span.tw-strong';
 const SCROLL_INDICATOR_SELECTOR = '.clips-chat .clips-chat__content button.tw-button--small';
@@ -43,13 +40,6 @@ class ClipsModule {
         if (settings.get(GIF_EMOTES_SETTINGS_KEY) === false) {
             settings.set(GIF_EMOTES_SETTINGS_KEY, true);
         }
-
-        settings.set(DARK_MODE_SETTINGS_KEY, storage.get(TWITCH_DARK_MODE_SETTING_KEY, null));
-
-        $(window).bind('storage', ({originalEvent: {key}}) => {
-            if (key !== TWITCH_DARK_MODE_SETTING_KEY) return;
-            settings.set(DARK_MODE_SETTINGS_KEY, storage.get(TWITCH_DARK_MODE_SETTING_KEY, null));
-        });
     }
 
     parseMessage($element) {
