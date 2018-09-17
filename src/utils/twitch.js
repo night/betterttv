@@ -251,7 +251,7 @@ module.exports = {
         try {
             const node = searchReactChildren(
                 getReactInstance($(REACT_ROOT)[0]),
-                n => n.stateNode && n.stateNode.join && n.stateNode.part && n.stateNode.client,
+                n => n.stateNode && n.stateNode.join && n.stateNode.client,
                 1000
             );
             chatClient = node.stateNode.client;
