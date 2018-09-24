@@ -95,7 +95,7 @@ class ModeratorCard {
 
     close() {
         this.cleanup();
-        this.$element.find('.viewer-card__hide > button').click();
+        $('button[data-test-selector="close-viewer-card"]').click();
     }
 
     cleanup() {
