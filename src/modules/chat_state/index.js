@@ -110,6 +110,7 @@ class ChatStateModule {
         chatController._bttvOnRoomStateUpdatedPatched = PATCHED_SENTINEL;
         twitchOnRoomStateUpdated = chatController.onRoomStateUpdated;
         chatController.onRoomStateUpdated = updateState;
+        chatController.forceUpdate();
     }
 }
 

@@ -79,6 +79,7 @@ class SendMessagePatcher {
         chatController._bttvSendMessagePatched = PATCHED_SENTINEL;
         twitchSendMessage = chatController.sendMessage;
         chatController.sendMessage = bttvSendMessage;
+        chatController.forceUpdate();
     }
 }
 
