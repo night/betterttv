@@ -65,6 +65,7 @@ function replaceTwitchEmoticonTooltip(currentChannel, $emote) {
 class ChatModule {
     constructor() {
         watcher.on('chat.message', ($element, message) => this.messageParser($element, message));
+        watcher.on('load.chat', () => $('textarea[data-test-selector="chat-input"]').attr('maxlength', '500'));
         watcher.on('channel.updated', ({bots}) => {
             channelBots = bots;
         });

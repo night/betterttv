@@ -23,6 +23,7 @@ function scrollOnEmoteLoad($el) {
 class VODChatModule {
     constructor() {
         watcher.on('vod.message', $el => this.parseMessage($el));
+        watcher.on('load.vod', () => $('textarea[data-a-target="video-chat-input"]').attr('maxlength', '500'));
     }
 
     parseMessage($element) {
