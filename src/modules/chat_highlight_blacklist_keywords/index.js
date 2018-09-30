@@ -19,6 +19,8 @@ const HIGHLIGHT_KEYWORD_PROMPT = `Type some highlight keywords. Messages contain
 Use spaces in the field to specify multiple keywords. Place {} around a set of words to form a phrase, <> inside the {} to use exact search, and () around a single word to specify a username. Wildcards (*) are supported.`;
 
 const CHAT_LIST_SELECTOR = '.chat-list .chat-list__lines';
+const VOD_CHAT_FROM_SELECTOR = '.video-chat__message-author';
+const VOD_CHAT_MESSAGE_SELECTOR = 'div[data-test-selector="comment-message-selector"]';
 const PINNED_HIGHLIGHT_ID = 'bttv-pinned-highlight';
 const PINNED_CONTAINER_ID = 'bttv-pin-container';
 const MAXIMUM_PIN_COUNT = 10;
@@ -168,6 +170,7 @@ class ChatHighlightBlacklistKeywordsModule {
             loadTime = Date.now();
         });
         watcher.on('chat.message', ($message, messageObj) => this.onMessage($message, messageObj));
+        watcher.on('vod.message', $message => this.onVODMessage($message));
         storage.on('changed.blacklistKeywords', computeBlacklistKeywords);
         storage.on('changed.highlightKeywords', computeHighlightKeywords);
 
@@ -207,6 +210,20 @@ class ChatHighlightBlacklistKeywordsModule {
         if (fromContainsKeyword(highlightUsers, from) || messageContainsKeyword(highlightKeywords, from, message)) {
             this.markHighlighted($message);
             if (timestamp > loadTime) this.pinHighlight({from, message, date});
+        }
+    }
+
+    onVODMessage($message) {
+        const $from = $message.find(VOD_CHAT_FROM_SELECTOR);
+        const from = $from.attr('href').split('?')[0].split('/').pop();
+        const message = $message.find(VOD_CHAT_MESSAGE_SELECTOR).text().replace(/^:/, '');
+
+        if (fromContainsKeyword(blacklistUsers, from) || messageContainsKeyword(blacklistKeywords, from, message)) {
+            return this.markBlacklisted($message);
+        }
+
+        if (fromContainsKeyword(highlightUsers, from) || messageContainsKeyword(highlightKeywords, from, message)) {
+            this.markHighlighted($message);
         }
     }
 
