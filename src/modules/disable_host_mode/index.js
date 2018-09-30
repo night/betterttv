@@ -83,6 +83,8 @@ class DisableHostModeModule {
             channelController.onChatHostingChange = newOnChatHostingChange;
         }
 
+        channelController.forceUpdate();
+
         if (settings.get('disableHostMode')) {
             if (channelController.handleHostingChange) {
                 channelController.handleHostingChange(null);
