@@ -67,14 +67,15 @@ class ChatModeratorCardsModule {
                     isOwner,
                     isModerator
                 },
-                userMessages
+                userMessages,
+                () => this.onClose(false)
             );
             openModeratorCard.render();
         });
     }
 
-    onClose() {
-        if (openModeratorCard) {
+    onClose(cleanup = true) {
+        if (cleanup && openModeratorCard) {
             openModeratorCard.cleanup();
         }
         openModeratorCard = null;

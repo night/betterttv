@@ -87,15 +87,17 @@ const NICKNAME_CHANGE_BUTTON_TEMPLATE = `
 `;
 
 class ModeratorCard {
-    constructor(element, user, messages) {
+    constructor(element, user, messages, onClose) {
         this.$element = $(element);
         this.user = user;
         this.messages = messages;
+        this.onClose = onClose;
     }
 
     close() {
-        this.cleanup();
         $('button[data-test-selector="close-viewer-card"]').click();
+        this.cleanup();
+        this.onClose();
     }
 
     cleanup() {
