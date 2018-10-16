@@ -1,0 +1,5 @@
+.bttv-hide-groupchat-bar {
+  .room-selector__header {
+    display: none !important;
+  }
+}
