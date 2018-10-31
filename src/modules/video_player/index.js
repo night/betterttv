@@ -36,7 +36,7 @@ function handleKeyEvent(keypress) {
     const $player = $(VIDEO_PLAYER_SELECTOR);
     if (!$player.length) return;
 
-    switch (keypress.keyCode) {
+    switch (keypress.charCode || keypress.keyCode) {
         case keyCodes.KeyPress.LessThan:
         case keyCodes.KeyPress.Comma:
             stepPlaybackSpeed(false);
@@ -45,15 +45,12 @@ function handleKeyEvent(keypress) {
         case keyCodes.KeyPress.Period:
             stepPlaybackSpeed(true);
             break;
-        case keyCodes.KeyPress.K:
         case keyCodes.KeyPress.k:
             $player.find('.qa-pause-play-button').click();
             break;
-        case keyCodes.KeyPress.F:
         case keyCodes.KeyPress.f:
             $player.find('.qa-fullscreen-button').click();
             break;
-        case keyCodes.KeyPress.M:
         case keyCodes.KeyPress.m:
             $player.find('.qa-control-volume').click();
             break;

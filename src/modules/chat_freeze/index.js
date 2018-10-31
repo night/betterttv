@@ -17,7 +17,7 @@ function setScrollState(enabled) {
 }
 
 function shouldFreeze(e) {
-    return FREEZE_KEYS.includes(e.keyCode) && $(`${CHAT_LIST_SELECTOR}:hover`).length && !document.hidden;
+    return FREEZE_KEYS.includes(e.charCode || e.keyCode) && $(`${CHAT_LIST_SELECTOR}:hover`).length && !document.hidden;
 }
 
 class ChatFreezeModule {
