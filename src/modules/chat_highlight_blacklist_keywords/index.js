@@ -163,12 +163,8 @@ let $pinnedHighlightsContainer;
 
 class ChatHighlightBlacklistKeywordsModule {
     constructor() {
-        watcher.on('load.chat', () => {
-            computeBlacklistKeywords();
-            computeHighlightKeywords();
-            this.loadPinnedHighlights();
-            loadTime = Date.now();
-        });
+        watcher.on('load.chat', () => this.loadChat());
+        watcher.on('load.vod', () => this.loadChat());
         watcher.on('chat.message', ($message, messageObj) => this.onMessage($message, messageObj));
         watcher.on('vod.message', $message => this.onVODMessage($message));
         storage.on('changed.blacklistKeywords', computeBlacklistKeywords);
@@ -188,6 +184,13 @@ class ChatHighlightBlacklistKeywordsModule {
             defaultValue: false,
             description: 'Automatically hide pinned highlights after 1 minute'
         });
+    }
+
+    loadChat() {
+        computeBlacklistKeywords();
+        computeHighlightKeywords();
+        this.loadPinnedHighlights();
+        loadTime = Date.now();
     }
 
     setBlacklistKeywords() {
