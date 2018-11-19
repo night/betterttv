@@ -52,4 +52,10 @@
     .right-column--theatre {
         right: unset !important;
     }
+
+    /* Subscriber balloons on channel page */
+    .chat-input div.tw-balloon[data-a-target="sub-balloon"] {
+        left: auto !important;
+        right: unset !important;
+    }
 }
