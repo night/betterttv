@@ -2,51 +2,16 @@ const settings = require('../../settings');
 const watcher = require('../../watcher');
 const twitch = require('../../utils/twitch');
 
-let oldGetHostedChannelLogin;
-function newGetHostedChannelLogin() {
+let oldHandleStreamChatRoomHostTargetChange;
+function newHandleStreamChatRoomHostTargetChange() {
     if (settings.get('disableHostMode')) return null;
-    return oldGetHostedChannelLogin.call(this, ...arguments);
+    return oldHandleStreamChatRoomHostTargetChange.call(this, ...arguments);
 }
 
-let oldHandleHostingChange;
-function newHandleHostingChange(e) {
-    if (e !== null && settings.get('disableHostMode')) return null;
-    return oldHandleHostingChange.call(this, ...arguments);
-}
-
-let oldOnChatHostingChange;
-function newOnChatHostingChange() {
+let oldFetchPubsubHostedChannel;
+function newFetchPubsubHostedChannel() {
     if (settings.get('disableHostMode')) return null;
-    return oldOnChatHostingChange.call(this, ...arguments);
-}
-
-let lastPlayer;
-function configurePlayerListener(count = 0) {
-    const currentPlayer = twitch.getCurrentPlayer();
-    if (!currentPlayer || !currentPlayer.player) {
-        if (count > 100) return;
-        // the player isn't loaded, so we need to wait for it to load before we apply this
-        setTimeout(() => configurePlayerListener(count + 1), 10);
-    }
-
-    if (currentPlayer.player === lastPlayer) return;
-    lastPlayer = currentPlayer.player;
-
-    currentPlayer.player.addEventListener('playing', () => {
-        const currentChannel = twitch.getCurrentChannel();
-        if (currentPlayer.player.getChannel() === currentChannel.name) return;
-        if (!settings.get('disableHostMode')) return;
-        const channelController = twitch.getChannelController();
-        if (!channelController) return;
-        if (channelController.handleHostingChange) {
-            channelController.handleHostingChange(null);
-        } else {
-            channelController.setState({
-                hostMode: null,
-                videoPlayerSource: channelController.state.channelLogin,
-            });
-        }
-    });
+    return oldFetchPubsubHostedChannel.call(this, ...arguments);
 }
 
 class DisableHostModeModule {
@@ -62,41 +27,28 @@ class DisableHostModeModule {
     }
 
     load() {
-        const channelController = twitch.getChannelController();
-        if (!channelController) return;
+        if (!settings.get('disableHostMode')) return;
 
-        if (channelController._bttvPatched) return;
-        channelController._bttvPatched = true;
+        const channelHostingContext = twitch.getChannelHostingContext();
+        if (!channelHostingContext) return;
 
-        if (channelController.getHostedChannelLogin && channelController.getHostedChannelLogin !== newGetHostedChannelLogin) {
-            oldGetHostedChannelLogin = channelController.getHostedChannelLogin;
-            channelController.getHostedChannelLogin = newGetHostedChannelLogin;
+        if (channelHostingContext._bttvPatched) return;
+        channelHostingContext._bttvPatched = true;
+
+        if (channelHostingContext.handleStreamChatRoomHostTargetChange && channelHostingContext.handleStreamChatRoomHostTargetChange !== newHandleStreamChatRoomHostTargetChange) {
+            oldHandleStreamChatRoomHostTargetChange = channelHostingContext.handleStreamChatRoomHostTargetChange;
+            channelHostingContext.handleStreamChatRoomHostTargetChange = newHandleStreamChatRoomHostTargetChange;
         }
 
-        if (channelController.handleHostingChange && channelController.handleHostingChange !== newHandleHostingChange) {
-            oldHandleHostingChange = channelController.handleHostingChange;
-            channelController.handleHostingChange = newHandleHostingChange;
+        if (channelHostingContext.fetchPubsubHostedChannel && channelHostingContext.fetchPubsubHostedChannel !== newFetchPubsubHostedChannel) {
+            oldFetchPubsubHostedChannel = channelHostingContext.fetchPubsubHostedChannel;
+            channelHostingContext.fetchPubsubHostedChannel = newFetchPubsubHostedChannel;
         }
 
-        if (channelController.onChatHostingChange && channelController.onChatHostingChange !== newOnChatHostingChange) {
-            oldOnChatHostingChange = channelController.onChatHostingChange;
-            channelController.onChatHostingChange = newOnChatHostingChange;
-        }
-
-        channelController.forceUpdate();
-
-        if (settings.get('disableHostMode')) {
-            if (channelController.handleHostingChange) {
-                channelController.handleHostingChange(null);
-            } else {
-                channelController.setState({
-                    hostMode: null,
-                    videoPlayerSource: channelController.state.channelLogin,
-                });
-            }
-        }
-
-        configurePlayerListener();
+        channelHostingContext.setState({
+            videoPlayerSource: channelHostingContext.props.match.params.channelLogin,
+            hostedChannel: null
+        });
     }
 }
 

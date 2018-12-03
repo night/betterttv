@@ -422,6 +422,21 @@ module.exports = {
         return currentUser.id === currentChannel.id;
     },
 
+    getChannelHostingContext() {
+        let channelHostingContext;
+
+        try {
+            const node = searchReactChildren(
+                getReactInstance($(REACT_ROOT)[0]),
+                n => n.stateNode && n.stateNode.handleStreamChatRoomHostTargetChange,
+                1000
+            );
+            channelHostingContext = node.stateNode;
+        } catch (_) {}
+
+        return channelHostingContext;
+    },
+
     setInputValue($inputField, msg) {
         $inputField.val(msg).focus();
         const inputField = $inputField[0];
