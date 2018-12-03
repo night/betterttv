@@ -7,19 +7,6 @@ const emotes = require('../emotes');
 
 const CHAT_INPUT_SELECTOR = '.chat-input textarea';
 const AUTOCOMPLETE_SUGGESTIONS_SELECTOR = 'div[data-a-target="autocomplete-balloon"]';
-const INPUT_EVENT = new Event('input', {bubbles: true});
-
-function setTextareaValue($inputField, msg) {
-    $inputField.val(msg);
-    const inputField = $inputField[0];
-    inputField.dispatchEvent(INPUT_EVENT);
-    const instance = twitch.getReactInstance(inputField);
-    if (!instance) return;
-    const props = instance.memoizedProps;
-    if (props && props.onChange) {
-        props.onChange({target: inputField});
-    }
-}
 
 function normalizedStartsWith(word, prefix) {
     return word && word.toLowerCase().startsWith(prefix);
@@ -129,11 +116,11 @@ class ChatTabcompletionModule {
                 e.stopImmediatePropagation();
 
                 const cursorPos = this.textSplit[0].length + this.suggestions[this.tabTries].length + cursorOffset;
-                setTextareaValue($inputField, this.textSplit[0] + this.suggestions[this.tabTries] + this.textSplit[2]);
+                twitch.setInputValue($inputField, this.textSplit[0] + this.suggestions[this.tabTries] + this.textSplit[2]);
                 $inputField[0].setSelectionRange(cursorPos, cursorPos);
             }
         } else if (keyCode === keyCodes.Esc && this.tabTries >= 0) {
-            setTextareaValue($inputField, this.textSplit.join(''));
+            twitch.setInputValue($inputField, this.textSplit.join(''));
         } else if (keyCode !== keyCodes.Shift) {
             this.tabTries = -1;
         }
@@ -144,14 +131,14 @@ class ChatTabcompletionModule {
             if ($inputField[0].selectionStart > 0) return;
             if (this.historyPos + 1 === this.messageHistory.length) return;
             const prevMsg = this.messageHistory[++this.historyPos];
-            setTextareaValue($inputField, prevMsg);
+            twitch.setInputValue($inputField, prevMsg);
             $inputField[0].setSelectionRange(0, 0);
         } else if (keyCode === keyCodes.DownArrow) {
             if ($(AUTOCOMPLETE_SUGGESTIONS_SELECTOR).length > 0) return;
             if ($inputField[0].selectionStart < $inputField.val().length) return;
             if (this.historyPos > 0) {
                 const prevMsg = this.messageHistory[--this.historyPos];
-                setTextareaValue($inputField, prevMsg);
+                twitch.setInputValue($inputField, prevMsg);
                 $inputField[0].setSelectionRange(prevMsg.length, prevMsg.length);
             } else {
                 const draft = $inputField.val().trim();
@@ -159,7 +146,7 @@ class ChatTabcompletionModule {
                     this.messageHistory.unshift(draft);
                 }
                 this.historyPos = -1;
-                setTextareaValue($inputField, '');
+                twitch.setInputValue($inputField, '');
             }
         } else if (this.historyPos >= 0) {
             this.messageHistory[this.historyPos] = $inputField.val();

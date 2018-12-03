@@ -420,5 +420,17 @@ module.exports = {
     getCurrentUserIsOwner() {
         if (!currentUser || !currentChannel) return false;
         return currentUser.id === currentChannel.id;
+    },
+
+    setInputValue($inputField, msg) {
+        $inputField.val(msg).focus();
+        const inputField = $inputField[0];
+        inputField.dispatchEvent(new Event('input', {bubbles: true}));
+        const instance = getReactInstance(inputField);
+        if (!instance) return;
+        const props = instance.memoizedProps;
+        if (props && props.onChange) {
+            props.onChange({target: inputField});
+        }
     }
 };
