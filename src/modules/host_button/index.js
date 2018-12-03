@@ -4,7 +4,7 @@ const watcher = require('../../watcher');
 const twitch = require('../../utils/twitch');
 const tmiApi = require('../../utils/tmi-api');
 
-const SHARE_BUTTON_SELECTOR = '.channel-info-bar__action-container .tw-mg-x-1:first';
+const SHARE_BUTTON_SELECTOR = 'button[data-a-target="share-button"]';
 const SUBSCRIBE_BUTTON_SELECTOR = 'div[data-test-selector="subscribe-button__balloon-layer-btn"]';
 const HOST_BUTTON_ID = 'bttv-host-button';
 
@@ -13,7 +13,7 @@ let $newHostButton;
 let hosting = false;
 
 const buttonTemplate = `
-    <div class="tw-mg-r-1">
+    <div class="tw-mg-l-1">
         <button id="${HOST_BUTTON_ID}" class="tw-button tw-button--hollow">
             <span class="tw-button__text">Host Channel</span>
         </button>
@@ -54,7 +54,9 @@ class HostButtonModule {
 
     embedHostButton() {
         if ($(`#${HOST_BUTTON_ID}`).length) return;
-        $hostButton.insertAfter(SHARE_BUTTON_SELECTOR);
+        const $shareButton = $(SHARE_BUTTON_SELECTOR).closest('[data-toggle-balloon-id]').parent('.tw-mg-x-1');
+        if (!$shareButton.length) return;
+        $hostButton.insertBefore($shareButton);
         $hostButton.click(() => this.toggleHost());
     }
 
