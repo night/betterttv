@@ -437,8 +437,11 @@ module.exports = {
         return channelHostingContext;
     },
 
-    setInputValue($inputField, msg) {
-        $inputField.val(msg).focus();
+    setInputValue($inputField, msg, focus = false) {
+        $inputField.val(msg);
+        if (focus) {
+            $inputField.focus();
+        }
         const inputField = $inputField[0];
         inputField.dispatchEvent(new Event('input', {bubbles: true}));
         const instance = getReactInstance(inputField);

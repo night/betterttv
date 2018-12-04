@@ -37,7 +37,7 @@ class DoubleClickMentionModule {
             if (!$inputField.length) return;
             const input = $inputField.val().trim();
             const output = input ? `${input} @${user} ` : `@${user}, `;
-            twitch.setInputValue($inputField, output);
+            twitch.setInputValue($inputField, output, true);
         });
     }
 }
