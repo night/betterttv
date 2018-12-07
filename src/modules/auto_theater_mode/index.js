@@ -10,6 +10,12 @@ class AutoTheaterModeModule {
             defaultValue: false,
             description: 'Automatically enables theatre mode'
         });
+        settings.add({
+            id: 'offlineTheatreMode',
+            name: 'Offline Theatre Mode',
+            defaultValue: false,
+            description: 'Disables automatic theatre mode if the channel is offline'
+        });
         watcher.on('load.player', () => this.load());
     }
 
@@ -18,6 +24,9 @@ class AutoTheaterModeModule {
 
         const player = twitch.getCurrentPlayer();
         if (!player) return;
+
+        const isLive = !!player.player.ended;
+        if (settings.get('offlineTheatreMode') === true && isLive === false) return;
 
         player.player.setTheatre(true);
     }
