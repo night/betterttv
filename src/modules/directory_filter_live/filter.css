@@ -1,0 +1,12 @@
+#bttvLiveFilterPanel {
+  float: right;
+}
+
+#bttvLiveFilterPanel label {
+  font-size: 1.6rem;
+  padding-right: 10px;
+}
+
+#bttvLiveFilterPanel select {
+  font-size: 1.6rem;
+}

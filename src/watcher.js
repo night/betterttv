@@ -204,6 +204,9 @@ class Watcher extends SafeEventEmitter {
                     if (lastRoute === routes.DIRECTORY_FOLLOWING_LIVE) break;
                     this.waitForLoad('following').then(() => this.emit('load.directory.following'));
                     break;
+                case routes.DIRECTORY_FOLLOWING_LIVE:
+                    this.waitForLoad('following').then(() => this.emit('load.directory.following.live'));
+                    break;
                 case routes.CHAT:
                     this.waitForLoad('chat').then(() => this.emit('load.chat'));
                     break;
