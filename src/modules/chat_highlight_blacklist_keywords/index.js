@@ -147,13 +147,13 @@ function messageTextFromAST(ast) {
         switch (node.type) {
             case 0: // Text
                 return node.content.trim();
-            case 2: // CurrentUserHighlight
+            case 3: // CurrentUserHighlight
                 return node.content;
-            case 3: // Mention
+            case 4: // Mention
                 return node.content.recipient;
-            case 4: // Link
+            case 5: // Link
                 return node.content.url;
-            case 5: // Emote
+            case 6: // Emote
                 return node.content.alt;
         }
     }).join(' ');
