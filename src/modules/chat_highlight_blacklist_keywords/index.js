@@ -149,11 +149,11 @@ function messageTextFromAST(ast) {
                 return node.content.trim();
             case 2: // CurrentUserHighlight
                 return node.content;
-            case 3: // Mention
+            case 2: // Mention
                 return node.content.recipient;
-            case 4: // Link
+            case 3: // Link
                 return node.content.url;
-            case 5: // Emote
+            case 4: // Emote
                 return node.content.alt;
         }
     }).join(' ');
