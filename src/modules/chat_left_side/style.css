@@ -15,21 +15,21 @@
     .side-nav__toggle-visibility {
         right: unset;
         left: -2.5rem;
-        transform: rotate(-90deg);
+        transform: rotate(-180deg);
     }
 
     .side-nav--collapsed .side-nav__toggle-visibility {
-        transform: rotate(90deg);
+        transform: rotate(180deg);
     }
     
     .right-column__toggle-visibility {
          right: -2.5rem;
          left: unset;
-         transform: rotate(90deg);
+         transform: rotate(180deg);
     }
 
     .right-column--collapsed .right-column__toggle-visibility {
-        transform: rotate(-90deg);
+        transform: rotate(-180deg);
     }
 
     /* Friend Hover Balloon */
