@@ -97,7 +97,7 @@ class ChatModule {
 
         let $badgesContainer = $element.find('.chat-badge').closest('span');
         if (!$badgesContainer.length) {
-            $badgesContainer = $element.find('button.chat-line__username').prev('span');
+            $badgesContainer = $element.find('span.chat-line__username').prev('span');
         }
 
         const badge = staff.get(user.name);
