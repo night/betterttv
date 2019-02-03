@@ -58,7 +58,8 @@ function handleKeyEvent(keypress) {
 }
 
 let clicks = 0;
-function handlePlayerClick() {
+function handlePlayerClick(e) {
+    if (e.target !== this) return;
     clicks++;
     setTimeout(() => {
         if (clicks === 1) {
@@ -114,10 +115,10 @@ class VideoPlayerModule {
     }
 
     clickToPause() {
-        $(VIDEO_PLAYER_SELECTOR).off('click', '.pl-overlay.pl-overlay__fullscreen,.player-video', handlePlayerClick);
+        $(VIDEO_PLAYER_SELECTOR).off('click', '.player-overlay.pl-overlay__fullscreen,.player-video,.js-paused-overlay', handlePlayerClick);
 
         if (settings.get('clickToPlay') === true) {
-            $(VIDEO_PLAYER_SELECTOR).on('click', '.pl-overlay.pl-overlay__fullscreen,.player-video', handlePlayerClick);
+            $(VIDEO_PLAYER_SELECTOR).on('click', '.player-overlay.pl-overlay__fullscreen,.player-video,.js-paused-overlay', handlePlayerClick);
         }
     }
 
