@@ -59,7 +59,10 @@ function handleKeyEvent(keypress) {
 
 let clicks = 0;
 function handlePlayerClick(e) {
-    if (e.target !== this) return;
+    if (e.target !== this) {
+        $('.video-player__container').focus();
+        return;
+    }
     clicks++;
     setTimeout(() => {
         if (clicks === 1) {
