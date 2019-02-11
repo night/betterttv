@@ -1,0 +1,4 @@
+.bttv-chat-direction-reversed {
+    display: flex;
+    flex-direction: column-reverse;
+}
