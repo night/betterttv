@@ -18,29 +18,14 @@ class DisableHomepageAutoplayModule {
         const currentPlayer = twitch.getCurrentPlayer();
         if (!currentPlayer) return;
 
-        let startedPlaying = false;
-        let loops = 0;
-        const interval = setInterval(() => {
-            loops++;
-            if (loops > 300) {
-                clearInterval(interval);
-                return;
-            }
-
-            if (!currentPlayer.player) return;
-
-            const paused = currentPlayer.player.isPaused();
-            const channel = currentPlayer.player.getChannel();
-            if (paused && channel && startedPlaying) {
-                clearInterval(interval);
-                return;
-            }
-
-            startedPlaying = true;
-            try {
+        const stopAutoplay = () => {
+            setTimeout(() => {
                 currentPlayer.player.pause();
-            } catch (e) {}
-        }, 100);
+            }, 0);
+            currentPlayer.player.removeEventListener('play', stopAutoplay);
+        };
+
+        currentPlayer.player.addEventListener('play', stopAutoplay);
     }
 }
 
