@@ -1,4 +1,10 @@
 .bttv-chat-direction-reversed {
-    display: flex;
-    flex-direction: column-reverse;
+    .chat-list__more-messages-placeholder {
+        display: none;
+    }
+
+    .chat-list .chat-list__lines div[role="log"] {
+        display: flex;
+        flex-direction: column-reverse;
+    }
 }
