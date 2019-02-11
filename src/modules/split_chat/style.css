@@ -1,9 +1,11 @@
-.chat-line__message.bttv-split-chat-alt-bg, .vod-message.bttv-split-chat-alt-bg {
-  background-color: #dcdcdc;
+body.bttv-split-chat-bg {
+  .chat-line__message:nth-child(2n), .vod-message:nth-child(2n) {
+    background-color: #dcdcdc;
+  }
 }
 
-.tw-root--theme-dark {
-  .chat-line__message.bttv-split-chat-alt-bg, .vod-message.bttv-split-chat-alt-bg {
+.tw-root--theme-dark.bttv-split-chat-bg {
+  .chat-line__message:nth-child(2n), .vod-message:nth-child(2n) {
     background-color: #1f1925;
   }
 }

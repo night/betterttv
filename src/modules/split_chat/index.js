@@ -1,6 +1,6 @@
+const $ = require('jquery');
+const watcher = require('../../watcher');
 const settings = require('../../settings');
-
-let alternateBackground = false;
 
 class SplitChatModule {
     constructor() {
@@ -10,15 +10,13 @@ class SplitChatModule {
             defaultValue: false,
             description: 'Easily distinguish between messages from different users in chat'
         });
+
+        watcher.on('load.chat', () => this.load());
+        settings.on('changed.splitChat', () => this.load());
     }
 
-    render($el) {
-        if (settings.get('splitChat') === false) return;
-
-        if (alternateBackground) {
-            $el.toggleClass('bttv-split-chat-alt-bg');
-        }
-        alternateBackground = !alternateBackground;
+    load() {
+        $('body').toggleClass('bttv-split-chat-bg', settings.get('splitChat'));
     }
 }
 
