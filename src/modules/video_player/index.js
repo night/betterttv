@@ -7,6 +7,7 @@ const debounce = require('lodash.debounce');
 
 const VIDEO_PLAYER_SELECTOR = '.video-player .player';
 const CANCEL_VOD_RECOMMENDATION_SELECTOR = '.recommendations-overlay .pl-rec__cancel.pl-button';
+const PLAYER_VOLUME_SELECTOR = '.player-button--volume';
 
 function stepPlaybackSpeed(faster) {
     const currentPlayer = twitch.getCurrentPlayer();
@@ -80,6 +81,18 @@ class VideoPlayerModule {
         watcher.on('load.player', () => {
             this.clickToPause();
             watchPlayerRecommendationVodsAutoplay();
+
+            const currentPlayer = twitch.getCurrentPlayer();
+            this.isMutedByUser =
+                currentPlayer &&
+                currentPlayer.player &&
+                currentPlayer.player.getMuted();
+
+            this.onVisibilityChange = this.onVisibilityChange.bind(this);
+            this.onWindowBlur = this.onWindowBlur.bind(this);
+            this.onWindowFocus = this.onWindowFocus.bind(this);
+            this.volumeClickHandler = this.volumeClickHandler.bind(this);
+            this.muteInvisibleTabs();
         });
         settings.add({
             id: 'hidePlayerExtensions',
@@ -99,8 +112,15 @@ class VideoPlayerModule {
             defaultValue: false,
             description: 'Disables autoplay of recommended videos on VoDs'
         });
+        settings.add({
+            id: 'muteInvisibleTabs',
+            name: 'Mute Streams in Invisible Tabs',
+            defaultValue: false,
+            description: 'Automatically mute/unmute streams so only visible tabs have audio'
+        });
         settings.on('changed.hidePlayerExtensions', () => this.toggleHidePlayerExtensions());
         settings.on('changed.clickToPlay', () => this.clickToPause());
+        settings.on('changed.muteInvisibleTabs', () => this.muteInvisibleTabs());
         this.toggleHidePlayerExtensions();
         this.loadHidePlayerCursorFullscreen();
     }
@@ -127,6 +147,44 @@ class VideoPlayerModule {
             togglePlayerCursor(false);
             hidePlayerCursor();
         });
+    }
+
+    volumeClickHandler() {
+        this.isMutedByUser = !this.isMutedByUser;
+    }
+
+    onWindowBlur() {
+        const currentPlayer = twitch.getCurrentPlayer();
+        if (!currentPlayer || !currentPlayer.player || !document.hidden) return;
+        currentPlayer.player.setMuted(true);
+    }
+
+    onWindowFocus() {
+        const currentPlayer = twitch.getCurrentPlayer();
+        if (!currentPlayer || !currentPlayer.player) return;
+        currentPlayer.player.setMuted(this.isMutedByUser);
+    }
+
+    onVisibilityChange() {
+        if (document.hidden) {
+            this.onWindowBlur();
+        } else {
+            this.onWindowFocus();
+        }
+    }
+
+    muteInvisibleTabs() {
+        $(document).off('visibilitychange', this.onVisibilityChange);
+        $(window).off('blur', this.onWindowBlur);
+        $(window).off('focus', this.onWindowFocus);
+        $(PLAYER_VOLUME_SELECTOR).off('click', this.volumeClickHandler);
+
+        if (settings.get('muteInvisibleTabs')) {
+            $(document).on('visibilitychange', this.onVisibilityChange);
+            $(window).on('blur', this.onWindowBlur);
+            $(window).on('focus', this.onWindowFocus);
+            $(PLAYER_VOLUME_SELECTOR).on('click', this.volumeClickHandler);
+        }
     }
 }
 
