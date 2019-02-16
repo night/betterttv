@@ -1,6 +1,7 @@
 const $ = require('jquery');
 const watcher = require('../../watcher');
 const settings = require('../../settings');
+const twitch = require('../../utils/twitch');
 
 class HideSidebarElementsModule {
     constructor() {
@@ -34,18 +35,38 @@ class HideSidebarElementsModule {
             defaultValue: false,
             description: 'Hides the "Free With Prime" section of the sidebar'
         });
+        settings.add({
+            id: 'autoRefreshFollowedChannels',
+            name: 'Auto Refresh Followed Channels List',
+            defaultValue: false,
+            description: 'Auto refreshes the Followed Channels List every 15 seconds'
+        });
         settings.on('changed.hideFeaturedChannels', () => this.toggleFeaturedChannels());
         settings.on('changed.autoExpandChannels', () => this.toggleAutoExpandChannels());
         settings.on('changed.hideRecommendedFriends', () => this.toggleRecommendedFriends());
         settings.on('changed.hideOfflineFollowedChannels', () => this.toggleOfflineFollowedChannels());
         settings.on('changed.hidePrimePromotion', () => this.togglePrimePromotions());
+        settings.on('changed.autoRefreshFollowedChannels', () => this.toggleAutoRefreshFollowedChannels());
         watcher.on('load', () => {
             this.toggleFeaturedChannels();
             this.toggleAutoExpandChannels();
             this.toggleRecommendedFriends();
             this.toggleOfflineFollowedChannels();
             this.togglePrimePromotions();
+            this.toggleAutoRefreshFollowedChannels();
         });
+    }
+
+    toggleAutoRefreshFollowedChannels() {
+        clearInterval(this.autoRefreshInterval);
+
+        if (!settings.get('autoRefreshFollowedChannels')) {
+            return;
+        }
+
+        this.autoRefreshInterval = setInterval(() => {
+            twitch.refetchQueryByName('FollowedChannels');
+        }, 15000);
     }
 
     toggleFeaturedChannels() {

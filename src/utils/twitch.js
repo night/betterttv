@@ -1,6 +1,7 @@
 const $ = require('jquery');
 const Raven = require('raven-js');
 const twitchAPI = require('./twitch-api');
+const debug = require('./debug');
 
 const REACT_ROOT = '#root div';
 const CHANNEL_CONTAINER = '.channel-page,.channel-root';
@@ -435,6 +436,30 @@ module.exports = {
         } catch (_) {}
 
         return channelHostingContext;
+    },
+
+    getSidebarClient() {
+        const $element = $('[data-a-target="side-nav-bar"]');
+        let apolloComponent;
+        try {
+            const node = searchReactParents(
+                getReactInstance($element[0]),
+                n => n.stateNode && n.stateNode && n.stateNode.client && n.stateNode.client.queryManager
+            );
+            apolloComponent = node.stateNode.client;
+        } catch (_) {}
+
+        return apolloComponent;
+    },
+
+    refetchQueryByName(queryName) {
+        try {
+            const client = this.getSidebarClient();
+
+            client.queryManager.refetchQueryByName(queryName);
+        } catch (_) {
+            debug.log(`Failed to refetch queryName : ${queryName}`);
+        }
     },
 
     setInputValue($inputField, msg, focus = false) {
