@@ -11,6 +11,7 @@ const nicknames = require('../chat_nicknames');
 const channelEmotesTip = require('../channel_emotes_tip');
 const legacySubscribers = require('../legacy_subscribers');
 const splitChat = require('../split_chat');
+const libhrc = require('libhrc');
 
 const EMOTE_STRIP_SYMBOLS_REGEX = /(^[~!@#$%\^&\*\(\)]+|[~!@#$%\^&\*\(\)]+$)/g;
 const MENTION_REGEX = /^@([a-zA-Z\d_]+)$/;
@@ -68,6 +69,13 @@ class ChatModule {
         watcher.on('load.chat', () => $('textarea[data-test-selector="chat-input"]').attr('maxlength', '500'));
         watcher.on('channel.updated', ({bots}) => {
             channelBots = bots;
+        });
+
+        settings.add({
+            id: 'compressChatMessages',
+            name: 'Compress Chat Messages',
+            defaultValue: false,
+            description: 'Compresses chat messages "message message -> message"',
         });
 
         api.get('badges').then(({types, badges}) => {
@@ -154,8 +162,18 @@ class ChatModule {
                 continue;
             }
 
-            const parts = data.split(' ');
             let modified = false;
+
+            if (settings.get('compressChatMessages')) {
+                const compressedData = libhrc.greedy_compress(data, ' ', true, ' x', '<', '>');
+
+                if (compressedData !== data) {
+                    modified = true;
+                    data = compressedData;
+                }
+            }
+
+            const parts = data.split(' ');
             for (let j = 0; j < parts.length; j++) {
                 const part = parts[j];
                 if (!part || typeof part !== 'string') {
