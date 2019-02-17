@@ -9,3 +9,9 @@
     cursor: none;
   }
 }
+
+.bttv-scroll-volume {
+  .extension-container {
+    pointer-events: auto;
+  }
+}
