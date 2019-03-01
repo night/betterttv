@@ -1,5 +1,6 @@
 .bttv-hide-featured-channels {
-  .recommended-channels {
+  .recommended-channels,
+  .side-nav .tw-flex-grow-1.tw-full-width > .tw-mg-b-2 {
     display: none;
   }
 }
