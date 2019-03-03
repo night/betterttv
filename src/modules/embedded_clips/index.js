@@ -7,7 +7,7 @@ class EmbeddedChatClips {
         settings.add({
             id: 'embeddedChatClips',
             name: 'Chat Embedded Clips',
-            defaultValue: true,
+            defaultValue: false,
             description: 'Play linked clips straight from chat'
         });
     }
