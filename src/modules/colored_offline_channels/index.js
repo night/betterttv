@@ -18,7 +18,6 @@ class ColoredOfflineChannelsModule {
     }
 
     toggleColoredOffline() {
-        console.log('triggered');
         if (settings.get('coloredOfflineChannels')) {
             $('.side-nav-card__avatar').toggleClass('side-nav-card__avatar--offline', false);
         } else {
