@@ -103,15 +103,8 @@ class VideoPlayerModule {
             defaultValue: false,
             description: 'Disables autoplay of recommended videos on VoDs'
         });
-        settings.add({
-            id: 'enableScrollVolumeControl',
-            name: 'Enable Scroll Volume Control',
-            defaultValue: true,
-            description: 'Enables volume control by scrolling over the video player'
-        });
         settings.on('changed.hidePlayerExtensions', () => this.toggleHidePlayerExtensions());
         settings.on('changed.clickToPlay', () => this.clickToPause());
-        settings.on('changed.enableScrollVolumeControl', () => this.toggleVolumeControl());
         this.toggleHidePlayerExtensions();
         this.loadHidePlayerCursorFullscreen();
         this.toggleVolumeControl();
@@ -132,13 +125,7 @@ class VideoPlayerModule {
     }
 
     toggleVolumeControl() {
-        $(VIDEO_PLAYER_SELECTOR).off('mousewheel DOMMouseScroll', this.handleScroll);
-        $('body').toggleClass('bttv-scroll-volume', settings.get('enableScrollVolumeControl'));
-
-        if (!settings.get('enableScrollVolumeControl')) {
-            return;
-        }
-
+        $('body').addClass('bttv-scroll-volume');
         $(VIDEO_PLAYER_SELECTOR).on('mousewheel DOMMouseScroll', this.handleScroll);
     }
 
