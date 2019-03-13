@@ -24,7 +24,6 @@ const VOD_CHAT_FROM_SELECTOR = '.video-chat__message-author';
 const VOD_CHAT_MESSAGE_SELECTOR = 'div[data-test-selector="comment-message-selector"]';
 const PINNED_HIGHLIGHT_ID = 'bttv-pinned-highlight';
 const PINNED_CONTAINER_ID = 'bttv-pin-container';
-const CHAT_MENTION_NOTIFICATION_ID = 'bttv_mention_notification';
 const MAXIMUM_PIN_COUNT = 10;
 const PINNED_HIGHLIGHT_TIMEOUT = 60 * 1000;
 
@@ -188,44 +187,21 @@ class ChatHighlightBlacklistKeywordsModule {
         });
 
         settings.add({
-            id: 'soundHighlight',
-            name: 'Play Sound When @Mentioned',
+            id: 'playHighlightSound',
+            name: 'Play Sound On Highlight',
             defaultValue: false,
-            description: 'Plays a `tick` sound when @mentioned in chat'
+            description: 'Plays a `tick` sound when a message is highlighted'
         });
 
-        this.username = twitch.getChatServiceClient().configuration.username.toLowerCase();
-
-        this.handleSoundHighlight = this.handleSoundHighlight.bind(this);
+        this.sound = null;
+        this.handleHighlightSound = this.handleHighlightSound.bind(this);
     }
 
-    handleSoundHighlight(messageParts = []) {
-        const isMentioned = messageParts.some(({content}) => {
-            if (typeof content === 'object' && content !== null) {
-                const {recipient = '', currentUserMentionRelation} = content;
-
-                return recipient.toLowerCase() === this.username && typeof currentUserMentionRelation !== 'undefined';
-            }
-
-            return false;
-        });
-
-        if (!isMentioned) {
-            return;
+    handleHighlightSound() {
+        if (!this.sound) {
+            this.sound = new Audio(cdn.url('assets/sounds/ts-tink.ogg'));
         }
-
-        let node = $(`#${CHAT_MENTION_NOTIFICATION_ID}`);
-
-        if (node.length) {
-            node[0].play();
-        } else {
-            node = document.createElement('audio');
-            node.hidden = 'hidden';
-            node.id = CHAT_MENTION_NOTIFICATION_ID;
-            node.autoplay = true;
-            node.src = cdn.url('assets/notification.mp3');
-            document.body.appendChild(node);
-        }
+        this.sound.play();
     }
 
     loadChat() {
@@ -248,16 +224,15 @@ class ChatHighlightBlacklistKeywordsModule {
         const message = messageTextFromAST(messageParts);
         const date = new Date(timestamp);
 
-        if (settings.get('soundHighlight')) {
-            this.handleSoundHighlight(messageParts);
-        }
-
         if (fromContainsKeyword(blacklistUsers, from) || messageContainsKeyword(blacklistKeywords, from, message)) {
             return this.markBlacklisted($message);
         }
 
         if (fromContainsKeyword(highlightUsers, from) || messageContainsKeyword(highlightKeywords, from, message)) {
             this.markHighlighted($message);
+            if (settings.get('playHighlightSound')) {
+                this.handleHighlightSound();
+            }
             if (timestamp > loadTime) this.pinHighlight({from, message, date});
         }
     }
