@@ -45,6 +45,7 @@ class HideSidebarElementsModule {
             this.toggleRecommendedFriends();
             this.toggleOfflineFollowedChannels();
             this.togglePrimePromotions();
+            this.toggleOpenOfflineChannels();
         });
     }
 
@@ -67,6 +68,18 @@ class HideSidebarElementsModule {
 
     togglePrimePromotions() {
         $('body').toggleClass('bttv-hide-prime-promotions', settings.get('hidePrimePromotion'));
+    }
+
+    toggleOpenOfflineChannels() {
+        $('body').on('click', '[data-a-target="followed-channel"]', function(e) {
+            const $card = $(this).find('.side-nav-card__title');
+            const channel = $card.attr('title');
+
+            if (typeof channel !== 'undefined') {
+                e.preventDefault();
+                location.href = `/${channel}`;
+            }
+        });
     }
 }
 
