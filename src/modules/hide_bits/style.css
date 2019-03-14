@@ -5,7 +5,7 @@
   div[data-a-target="bits-card"],
   img.chat-line__message--emote[src^="https://d3aqoihi2n8ty8.cloudfront.net/actions/"],
   img.chat-line__message--emote[src^="https://d3aqoihi2n8ty8.cloudfront.net/partner-actions/"],
-  .chat-badge[alt~="Cheer"] {
+  .chat-badge[alt~="cheer"] {
     display: none !important;
   }
 }
