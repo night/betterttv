@@ -185,7 +185,7 @@ module.exports = {
     getRouter() {
         let router;
         try {
-            const node = searchReactParents(
+            const node = searchReactChildren(
                 getReactInstance($(REACT_ROOT)[0]),
                 n => n.stateNode && n.stateNode.context && n.stateNode.context.router
             );
