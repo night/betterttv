@@ -109,13 +109,19 @@ class Watcher extends SafeEventEmitter {
             try {
                 router = twitch.getRouter();
                 const connectStore = twitch.getConnectStore();
-                if (!connectStore || !router) return;
+                if (!connectStore || !router) {
+                    debug.error('Initialization failed, missing : ', {connectStore, router});
+                    return;
+                }
                 user = connectStore.getState().session.user;
             } catch (_) {
                 return;
             }
 
-            if (!router || !user) return;
+            if (!router || !user) {
+                debug.error('Initialization failed, missing : ', {router, user});
+                return;
+            }
             clearInterval(loadInterval);
 
             twitch.setCurrentUser(user.authToken, user.id, user.login, user.displayName);
