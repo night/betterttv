@@ -7,7 +7,6 @@ const debounce = require('lodash.debounce');
 
 const VIDEO_PLAYER_SELECTOR = '.video-player .player';
 const CANCEL_VOD_RECOMMENDATION_SELECTOR = '.recommendations-overlay .pl-rec__cancel.pl-button';
-const PLAYER_VOLUME_SELECTOR = '.player-button--volume';
 
 function stepPlaybackSpeed(faster) {
     const currentPlayer = twitch.getCurrentPlayer();
@@ -79,6 +78,29 @@ function togglePlayerCursor(hide) {
     $('body').toggleClass('bttv-hide-player-cursor', hide);
 }
 
+let isMuted = false;
+
+function onWindowBlur() {
+    const currentPlayer = twitch.getCurrentPlayer();
+    if (!currentPlayer || !currentPlayer.player || !document.hidden) return;
+    isMuted = currentPlayer.player.getMuted();
+    currentPlayer.player.setMuted(true);
+}
+
+function onWindowFocus() {
+    const currentPlayer = twitch.getCurrentPlayer();
+    if (!currentPlayer || !currentPlayer.player) return;
+    currentPlayer.player.setMuted(isMuted);
+}
+
+function onVisibilityChange() {
+    if (document.hidden) {
+        onWindowBlur();
+    } else {
+        onWindowFocus();
+    }
+}
+
 class VideoPlayerModule {
     constructor() {
         this.keybinds();
@@ -87,15 +109,11 @@ class VideoPlayerModule {
             watchPlayerRecommendationVodsAutoplay();
 
             const currentPlayer = twitch.getCurrentPlayer();
-            this.isMutedByUser =
+            isMuted =
                 currentPlayer &&
                 currentPlayer.player &&
                 currentPlayer.player.getMuted();
 
-            this.onVisibilityChange = this.onVisibilityChange.bind(this);
-            this.onWindowBlur = this.onWindowBlur.bind(this);
-            this.onWindowFocus = this.onWindowFocus.bind(this);
-            this.volumeClickHandler = this.volumeClickHandler.bind(this);
             this.muteInvisibleTabs();
         });
         settings.add({
@@ -153,41 +171,11 @@ class VideoPlayerModule {
         });
     }
 
-    volumeClickHandler() {
-        this.isMutedByUser = !this.isMutedByUser;
-    }
-
-    onWindowBlur() {
-        const currentPlayer = twitch.getCurrentPlayer();
-        if (!currentPlayer || !currentPlayer.player || !document.hidden) return;
-        currentPlayer.player.setMuted(true);
-    }
-
-    onWindowFocus() {
-        const currentPlayer = twitch.getCurrentPlayer();
-        if (!currentPlayer || !currentPlayer.player) return;
-        currentPlayer.player.setMuted(this.isMutedByUser);
-    }
-
-    onVisibilityChange() {
-        if (document.hidden) {
-            this.onWindowBlur();
-        } else {
-            this.onWindowFocus();
-        }
-    }
-
     muteInvisibleTabs() {
-        $(document).off('visibilitychange', this.onVisibilityChange);
-        $(window).off('blur', this.onWindowBlur);
-        $(window).off('focus', this.onWindowFocus);
-        $(PLAYER_VOLUME_SELECTOR).off('click', this.volumeClickHandler);
+        $(document).off('visibilitychange', onVisibilityChange);
 
         if (settings.get('muteInvisibleTabs')) {
-            $(document).on('visibilitychange', this.onVisibilityChange);
-            $(window).on('blur', this.onWindowBlur);
-            $(window).on('focus', this.onWindowFocus);
-            $(PLAYER_VOLUME_SELECTOR).on('click', this.volumeClickHandler);
+            $(document).on('visibilitychange', onVisibilityChange);
         }
     }
 }
