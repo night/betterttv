@@ -32,23 +32,26 @@ const TMIActionTypes = {
     RESUBSCRIPTION: 18,
     GIFT_PAID_UPGRADE: 19,
     ANON_GIFT_PAID_UPGRADE: 20,
-    SUB_GIFT: 21,
-    ANON_SUB_GIFT: 22,
-    CLEAR_CHAT: 23,
-    ROOM_MODS: 24,
-    ROOM_STATE: 25,
-    RAID: 26,
-    UNRAID: 27,
-    RITUAL: 28,
-    NOTICE: 29,
-    INFO: 30,
-    BADGES_UPDATED: 31,
-    PURCHASE: 32,
-    BITS_CHARITY: 33,
-    CRATE_GIFT: 34,
-    REWARD_GIFT: 35,
-    SUB_MYSTERY_GIFT: 36,
-    ANON_SUB_MYSTERY_GIFT: 37
+    PRIME_PAID_UPGRADE: 21,
+    SUB_GIFT: 22,
+    ANON_SUB_GIFT: 23,
+    CLEAR_CHAT: 24,
+    ROOM_MODS: 25,
+    ROOM_STATE: 26,
+    RAID: 27,
+    UNRAID: 28,
+    RITUAL: 29,
+    NOTICE: 30,
+    INFO: 31,
+    BADGES_UPDATED: 32,
+    PURCHASE: 33,
+    BITS_CHARITY: 34,
+    CRATE_GIFT: 35,
+    REWARD_GIFT: 36,
+    SUB_MYSTERY_GIFT: 37,
+    ANON_SUB_MYSTERY_GIFT: 38,
+    FIRST_CHEER_MESSAGE: 39,
+    BITS_BADGE_TIER_MESSAGE: 40
 };
 
 function getReactInstance(element) {
@@ -185,7 +188,7 @@ module.exports = {
     getRouter() {
         let router;
         try {
-            const node = searchReactParents(
+            const node = searchReactChildren(
                 getReactInstance($(REACT_ROOT)[0]),
                 n => n.stateNode && n.stateNode.context && n.stateNode.context.router
             );
