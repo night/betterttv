@@ -1,4 +1,6 @@
 const $ = require('jquery');
+const twitch = require('../../utils/twitch');
+const debug = require('../../utils/debug');
 const settings = require('../../settings');
 const watcher = require('../../watcher');
 
@@ -32,7 +34,13 @@ class AutoLeaveRaid {
             mutations.forEach(mutation => {
                 for (const el of mutation.addedNodes) {
                     if (el.getAttribute('data-test-selector') === 'raid-banner') {
-                        $(el).find('button').click();
+                        const raidContext = twitch.getChannelRaidContext($('.room-selector').get(0));
+
+                        if (raidContext) {
+                            raidContext.handleLeaveRaid();
+                        } else {
+                            debug.log('Couldn\'t find raidContext - autoLeaveRaid module');
+                        }
                     }
                 }
             });

@@ -440,6 +440,21 @@ module.exports = {
         return channelHostingContext;
     },
 
+    getChannelRaidContext(element) {
+        let raidContext;
+
+        try {
+            const node = searchReactChildren(
+                getReactInstance(element),
+                n => n.stateNode && n.stateNode.handleLeaveRaid,
+                1000
+            );
+            raidContext = node.stateNode;
+        } catch (_) {}
+
+        return raidContext;
+    },
+
     setInputValue($inputField, msg, focus = false) {
         $inputField.val(msg);
         if (focus) {
