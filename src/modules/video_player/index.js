@@ -79,10 +79,11 @@ function togglePlayerCursor(hide) {
 }
 
 let isMuted = false;
+let isUnloading = false;
 
 function onWindowBlur() {
     const currentPlayer = twitch.getCurrentPlayer();
-    if (!currentPlayer || !currentPlayer.player || !document.hidden) return;
+    if (!currentPlayer || !currentPlayer.player || isUnloading) return;
     isMuted = currentPlayer.player.getMuted();
     currentPlayer.player.setMuted(true);
 }
@@ -101,6 +102,20 @@ function onVisibilityChange() {
     }
 }
 
+function setUnloading() {
+    isUnloading = true;
+}
+
+function muteInvisibleTabs() {
+    $(document).off('visibilitychange', onVisibilityChange);
+    $(window).off('beforeunload', setUnloading);
+
+    if (settings.get('muteInvisibleTabs')) {
+        $(document).on('visibilitychange', onVisibilityChange);
+        $(window).on('beforeunload', setUnloading);
+    }
+}
+
 class VideoPlayerModule {
     constructor() {
         this.keybinds();
@@ -114,7 +129,7 @@ class VideoPlayerModule {
                 currentPlayer.player &&
                 currentPlayer.player.getMuted();
 
-            this.muteInvisibleTabs();
+            muteInvisibleTabs();
         });
         settings.add({
             id: 'hidePlayerExtensions',
@@ -142,7 +157,7 @@ class VideoPlayerModule {
         });
         settings.on('changed.hidePlayerExtensions', () => this.toggleHidePlayerExtensions());
         settings.on('changed.clickToPlay', () => this.clickToPause());
-        settings.on('changed.muteInvisibleTabs', () => this.muteInvisibleTabs());
+        settings.on('changed.muteInvisibleTabs', muteInvisibleTabs);
         this.toggleHidePlayerExtensions();
         this.loadHidePlayerCursorFullscreen();
     }
@@ -169,14 +184,6 @@ class VideoPlayerModule {
             togglePlayerCursor(false);
             hidePlayerCursor();
         });
-    }
-
-    muteInvisibleTabs() {
-        $(document).off('visibilitychange', onVisibilityChange);
-
-        if (settings.get('muteInvisibleTabs')) {
-            $(document).on('visibilitychange', onVisibilityChange);
-        }
     }
 }
 
