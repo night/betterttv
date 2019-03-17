@@ -1,4 +1,4 @@
-const $ = require('jquery');
+const freeze = require('../chat_freeze/index.js');
 const settings = require('../../settings');
 
 class ChatNoAutoScroll {
@@ -14,7 +14,7 @@ class ChatNoAutoScroll {
     }
 
     toggleAutoScroll() {
-        $('.chat-list__lines > div:nth-child(3) > div:nth-child(1)').off();
+        freeze.setScrollState(settings.get('changed.chatNoAutoScroll'));
     }
 }
 
