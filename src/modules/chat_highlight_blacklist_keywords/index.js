@@ -159,6 +159,21 @@ function messageTextFromAST(ast) {
     }).join(' ');
 }
 
+function getVODMessageReactInstance($message) {
+    let comment;
+    const parent = twitch.getReactInstance($message.children('.tw-full-width')[0]);
+    if (!parent) {
+        return;
+    }
+    try {
+        comment = parent.pendingProps.children[0].props.context;
+    } catch (_) {
+        console.log('Failed getting context object');
+        return;
+    }
+    return comment;
+}
+
 let $pinnedHighlightsContainer;
 
 class ChatHighlightBlacklistKeywordsModule {
@@ -217,11 +232,20 @@ class ChatHighlightBlacklistKeywordsModule {
     }
 
     onVODMessage($message) {
-        const $from = $message.find(VOD_CHAT_FROM_SELECTOR);
-        const from = $from.attr('href').split('?')[0].split('/').pop();
-        const message = $message.find(VOD_CHAT_MESSAGE_SELECTOR).text().replace(/^:/, '');
+        let from;
+        let message;
+        const messageObj = getVODMessageReactInstance($message);
+        if (messageObj) {
+            from = messageObj.author.displayName;
+            message = messageTextFromAST(messageObj.comment.message.tokens);
+        } else {
+            const $from = $message.find(VOD_CHAT_FROM_SELECTOR);
+            from = $from.attr('href').split('?')[0].split('/').pop();
+            message = $message.find(VOD_CHAT_MESSAGE_SELECTOR).text().replace(/^:/, '');
+        }
 
         if (fromContainsKeyword(blacklistUsers, from) || messageContainsKeyword(blacklistKeywords, from, message)) {
+            console.log('blacklisted');
             return this.markBlacklisted($message);
         }
 
