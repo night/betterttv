@@ -62,6 +62,10 @@ function replaceTwitchEmoticonTooltip(currentChannel, $emote) {
     $emote.on('click', () => window.open(emote.channel.url, '_blank'));
 }
 
+function toggleChatEmotes() {
+    $('body').toggleClass('bttv-hide-emotes', settings.get('hideEmotes'));
+}
+
 class ChatModule {
     constructor() {
         watcher.on('chat.message', ($element, message) => this.messageParser($element, message));
@@ -69,6 +73,15 @@ class ChatModule {
         watcher.on('channel.updated', ({bots}) => {
             channelBots = bots;
         });
+
+        settings.add({
+            id: 'hideEmotes',
+            name: 'Hide Chat Emotes',
+            defaultValue: false,
+            description: 'Hides emotes in chat'
+        });
+        settings.on('changed.hideEmotes', toggleChatEmotes);
+        settings.on('load.chat', toggleChatEmotes);
 
         api.get('badges').then(({types, badges}) => {
             const staffBadges = {};

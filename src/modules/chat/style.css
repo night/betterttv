@@ -19,3 +19,9 @@
   max-height: 160px;
   min-height: 40px;
 }
+
+.bttv-hide-emotes {
+  [data-a-target="emote-name"], .bttv-emote {
+    display: none !important;
+  }
+}
