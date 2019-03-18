@@ -245,8 +245,7 @@ class ChatHighlightBlacklistKeywordsModule {
         }
 
         if (fromContainsKeyword(blacklistUsers, from) || messageContainsKeyword(blacklistKeywords, from, message)) {
-            console.log('blacklisted');
-            return this.markBlacklisted($message);
+            return this.markBlacklisted($message.parent().parent());
         }
 
         if (fromContainsKeyword(highlightUsers, from) || messageContainsKeyword(highlightKeywords, from, message)) {
