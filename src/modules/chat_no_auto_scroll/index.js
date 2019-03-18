@@ -14,7 +14,7 @@ class ChatNoAutoScroll {
     }
 
     toggleAutoScroll() {
-        freeze.setScrollState(settings.get('changed.chatNoAutoScroll'));
+        freeze.setScrollState(!settings.get('chatNoAutoScroll'));
     }
 }
 
