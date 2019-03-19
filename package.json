@@ -1,7 +1,7 @@
 {
   "name": "BetterTTV",
   "author": "Night",
-  "version": "7.2.51",
+  "version": "7.2.54",
   "description": "BetterTTV enhances Twitch with new features, emotes, and more.",
   "main": "betterttv.js",
   "scripts": {
