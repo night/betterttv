@@ -1,6 +1,6 @@
 .bttv-hide-conversations {
   .whispers {
-    display: none;
+    display: none !important;
   }
 }
 
