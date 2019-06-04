@@ -9,7 +9,7 @@ const CHAT_LINK_SELECTOR = '.link-fragment';
 const IMAGE_REGEX = new RegExp('(https?:\/\/.)([a-z\-_0-9\/\:\.\%\+]*\.(jpg|jpeg|png|gif|gifv|webm|mp4))', 'i');
 
 function tooltip($url, body) {
-    const $tooltip = $('<div />');
+    const $tooltip = $('<div />').css('display', 'block');
     $tooltip.addClass('tw-tooltip-wrapper').addClass('inline');
     $tooltip.html(`
         <div class="tw-tooltip tw-tooltip--up tw-tooltip--align-center" data-a-target="tw-tooltip-label" style="width: 250px;
