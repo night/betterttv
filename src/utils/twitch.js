@@ -188,11 +188,11 @@ module.exports = {
     getRouter() {
         let router;
         try {
-            const node = searchReactChildren(
+            const node = searchReactParents(
                 getReactInstance($(REACT_ROOT)[0]),
-                n => n.stateNode && n.stateNode.context && n.stateNode.context.router
+                n => n.stateNode && n.stateNode.props && n.stateNode.props.history && n.stateNode.props.history.listen && n.stateNode.props.history.location
             );
-            router = node.stateNode.context.router;
+            router = node.stateNode.props;
         } catch (_) {}
 
         return router;
