@@ -1,0 +1,5 @@
+.bttv-vod-chat-hide-input {
+    .video-chat__header, .video-chat__input {
+        display: none !important;
+    }
+}
