@@ -190,7 +190,7 @@ module.exports = {
         try {
             const node = searchReactParents(
                 getReactInstance($(REACT_ROOT)[0]),
-                n => n.stateNode.props && n.stateNode.props.history && n.stateNode.props.history.listen && n.stateNode.props.history.location
+                n => n.stateNode && n.stateNode.props && n.stateNode.props.history && n.stateNode.props.history.listen && n.stateNode.props.history.location
             );
             router = node.stateNode.props;
         } catch (_) {}
