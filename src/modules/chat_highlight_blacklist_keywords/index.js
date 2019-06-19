@@ -235,7 +235,7 @@ class ChatHighlightBlacklistKeywordsModule {
     }
 
     markBlacklisted($message) {
-        $message.hide();
+        $message.attr('style', 'display: none !important;');
     }
 
     loadPinnedHighlights() {

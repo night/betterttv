@@ -5,6 +5,7 @@ const watcher = require('../../watcher');
 const twitch = require('../../utils/twitch');
 
 const TWITCH_THEME_CHANGED_DISPATCH_TYPE = 'core.ui.THEME_CHANGED';
+const TWITCH_THEME_STORAGE_KEY = 'twilight.theme';
 const TwitchThemes = {
     LIGHT: 0,
     DARK: 1
@@ -35,9 +36,13 @@ class GlobalCSSModule {
     setTwitchTheme(value) {
         if (!connectStore) return;
 
+        const theme = value === true ? TwitchThemes.DARK : TwitchThemes.LIGHT;
+        try {
+            localStorage.setItem(TWITCH_THEME_STORAGE_KEY, JSON.stringify(theme));
+        } catch (_) {}
         connectStore.dispatch({
             type: TWITCH_THEME_CHANGED_DISPATCH_TYPE,
-            theme: value === true ? TwitchThemes.DARK : TwitchThemes.LIGHT
+            theme
         });
     }
 

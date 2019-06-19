@@ -5,8 +5,8 @@ const twitch = require('../../utils/twitch');
 const CHAT_STATE_ID = 'bttv-channel-state-contain';
 const CHAT_HAS_STATE_CLASS = 'bttv-chat-header-chat-state';
 const CHAT_STATE_TEMPLATE = require('./template')(CHAT_STATE_ID);
-const CHAT_HEADER_SELECTOR = '.room-selector__header';
-const CHAT_HEADER_OPEN_SELECTOR = '.room-selector__open-header-wrapper';
+const CHAT_HEADER_SELECTOR = '.rooms-header';
+const CHAT_HEADER_OPEN_SELECTOR = '.rooms-header__open-header-wrapper';
 const PATCHED_SENTINEL = Symbol();
 
 let twitchOnRoomStateUpdated;

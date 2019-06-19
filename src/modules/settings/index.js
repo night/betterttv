@@ -138,6 +138,8 @@ class SettingsModule {
             this.renderSettings();
             this.renderSettingsMenuOption();
         });
+
+        this.renderSettingsMenuOption = this.renderSettingsMenuOption.bind(this);
     }
 
     renderSettings() {
@@ -187,18 +189,30 @@ class SettingsModule {
     renderSettingsMenuOption() {
         if ($('.bttvSettingsIconDropDown').length) return;
 
-        $('a[data-a-target="settings-dropdown-link"]').after(`
-            <a href="#" target="_blank" class="tw-interactable" data-a-target="bttv-settings-dropdown-link">
-                <div class="tw-c-text-alt tw-align-items-center tw-flex tw-pd-x-2 tw-pd-y-05">
-                    <div class="tw-align-items-center tw-flex tw-mg-r-1">
-                        <figure class="icon bttvSettingsIconDropDown"></figure>
+        // twitch lazy-loads this menu now, so we must retrigger paint on click
+        $('button[data-test-selector="user-menu__toggle"]').off('click', this.renderSettingsMenuOption).on('click', this.renderSettingsMenuOption);
+
+        $('a[data-a-target="settings-dropdown-link"]').parent('div.tw-full-width.tw-relative').after(`
+            <div class="tw-full-width tw-relative">
+                <a title="BetterTTV Settings" class="tw-block tw-border-radius-medium tw-full-width tw-interactable tw-interactable--inverted tw-interactive bttvSettingsDropDown" href="#">
+                    <div class="tw-align-items-center tw-flex tw-pd-05 tw-relative">
+                        <div class="tw-align-items-center tw-flex tw-pd-r-05">
+                            <div class="tw-align-items-center tw-drop-down-menu-item-figure tw-flex">
+                                <div class="tw-align-items-center tw-icon tw-inline-flex">
+                                    <div class="tw-aspect tw-aspect--align-top">
+                                        <div class="tw-aspect__spacer" style="padding-bottom: 100%;"></div>
+                                        <figure class="icon bttvSettingsIconDropDown"></figure>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tw-flex-grow-1">BetterTTV Settings</div>
                     </div>
-                    <p>BetterTTV Settings</p>
-                </div>
-            </a>
+                </a>
+            </div>
         `);
 
-        $('.bttvSettingsIconDropDown').parent().parent().click(this.openSettings);
+        $('.bttvSettingsIconDropDown').closest('a').click(this.openSettings);
     }
 
     openSettings(e) {

@@ -58,4 +58,9 @@
         left: auto !important;
         right: unset !important;
     }
+
+    /* flips direction on squad streams */
+    .multi-stream-player-layout {
+        flex-direction: row-reverse;
+    }
 }

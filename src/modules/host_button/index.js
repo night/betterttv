@@ -5,11 +5,9 @@ const twitch = require('../../utils/twitch');
 const tmiApi = require('../../utils/tmi-api');
 
 const SHARE_BUTTON_SELECTOR = 'button[data-a-target="share-button"]';
-const SUBSCRIBE_BUTTON_SELECTOR = 'div[data-test-selector="subscribe-button__balloon-layer-btn"]';
 const HOST_BUTTON_ID = 'bttv-host-button';
 
 let $hostButton;
-let $newHostButton;
 let hosting = false;
 
 const buttonTemplate = `
@@ -18,12 +16,6 @@ const buttonTemplate = `
             <span class="tw-button__text">Host Channel</span>
         </button>
     </div>
-`;
-
-const newButtonTemplate = `
-    <button class="${HOST_BUTTON_ID} tw-interactive tw-button tw-button--full-width tw-button--text" tabindex="0">
-        <span class="tw-button__text" data-a-target="tw-button-text">Host Channel</span>
-    </button>
 `;
 
 class HostButtonModule {
@@ -46,9 +38,7 @@ class HostButtonModule {
         if (!currentChannel || currentUser.id === currentChannel.id) return;
 
         $hostButton = $(buttonTemplate);
-        $newHostButton = $(newButtonTemplate);
         this.embedHostButton();
-        this.embedNewHostButton();
         this.updateHostingState(currentUser.id, currentChannel.id);
     }
 
@@ -58,12 +48,6 @@ class HostButtonModule {
         if (!$shareButton.length) return;
         $hostButton.insertBefore($shareButton);
         $hostButton.click(() => this.toggleHost());
-    }
-
-    embedNewHostButton() {
-        if ($(`.${HOST_BUTTON_ID}`).length) return;
-        $newHostButton.insertBefore(SUBSCRIBE_BUTTON_SELECTOR);
-        $newHostButton.click(() => this.toggleHost());
     }
 
     toggleHost() {

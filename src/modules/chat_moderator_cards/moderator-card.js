@@ -159,6 +159,15 @@ class ModeratorCard {
     renderUserMessages() {
         if (this.$element.find('.bttv-moderator-card-messages').length) return;
 
+        // twitch has a built-in tool now for mods, so prefer that one.
+        const currentUser = twitch.getCurrentUser();
+        const currentUserIsOwner = twitch.getCurrentUserIsOwner();
+        const currentUserIsModerator = twitch.getCurrentUserIsModerator();
+        const isCurrentUser = currentUser.name === this.user.name;
+        const isModerator = this.user.isOwner || this.user.isModerator;
+        const currentUserCanModerate = !isCurrentUser && (currentUserIsOwner || (currentUserIsModerator && !isModerator));
+        if (currentUserCanModerate) return;
+
         const $moderatorActions = this.$element.find('.viewer-card__actions');
         const $messages = $(userMessagesTemplate(this.messages.map(({outerHTML}) => outerHTML)));
         $moderatorActions.after($messages);
