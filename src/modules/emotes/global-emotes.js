@@ -12,6 +12,7 @@ const provider = {
     displayName: 'BetterTTV Global Emotes',
     badge: cdn.url('tags/developer.png')
 };
+const urlTemplate = '//cdn.betterttv.net/emote/{{id}}/{{image}}';
 
 class GlobalEmotes extends AbstractEmotes {
     constructor() {
@@ -26,8 +27,8 @@ class GlobalEmotes extends AbstractEmotes {
 
     updateGlobalEmotes() {
         api
-            .get('emotes')
-            .then(({urlTemplate, emotes}) =>
+            .get('emotes/global')
+            .then(emotes =>
                 emotes.forEach(({id, channel, code, imageType, restrictions}) => {
                     let restrictionCallback;
                     if (restrictions && restrictions.emoticonSet) {

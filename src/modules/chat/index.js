@@ -70,16 +70,8 @@ class ChatModule {
             channelBots = bots;
         });
 
-        api.get('badges').then(({types, badges}) => {
-            const staffBadges = {};
-            types.forEach(({name, description, svg}) => {
-                staffBadges[name] = {
-                    description,
-                    svg
-                };
-            });
-
-            badges.forEach(({name, type}) => staff.set(name, staffBadges[type]));
+        api.get('badges').then(badges => {
+            badges.forEach(({name, badge: {description, svg}}) => staff.set(name, {description, svg}));
         });
     }
 

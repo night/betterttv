@@ -154,7 +154,7 @@ class SettingsModule {
         cdn.get('privacy.html').then(data => $('#bttvPrivacy').html(data));
 
         api.get('changelog')
-            .then(({changelog}) => changelog.map(({version, publishedAt, body}) => changelogEntryTemplate(version, publishedAt, body)))
+            .then(changelog => changelog.map(({version, publishedAt, body}) => changelogEntryTemplate(version, publishedAt, body)))
             .then(releases => $('#bttvChangelog .bttv-changelog-releases').html(releases.join('')));
 
         $('#bttvSettings').on('change', '.option input:radio', ({target}) => settings.set(target.name, target.value === 'true'));

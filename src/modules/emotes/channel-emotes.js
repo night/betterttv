@@ -10,6 +10,7 @@ const provider = {
     displayName: 'BetterTTV Channel Emotes',
     badge: cdn.url('tags/developer.png')
 };
+const urlTemplate = '//cdn.betterttv.net/emote/{{id}}/{{image}}';
 
 class ChannelEmotes extends AbstractEmotes {
     constructor() {
@@ -22,10 +23,10 @@ class ChannelEmotes extends AbstractEmotes {
         return provider;
     }
 
-    updateChannelEmotes({urlTemplate, emotes}) {
+    updateChannelEmotes({channelEmotes}) {
         this.emotes.clear();
 
-        emotes.forEach(({id, code, imageType, channel}) => (
+        channelEmotes.forEach(({id, code, imageType, channel}) => (
             this.emotes.set(code, new Emote({
                 id,
                 provider: this.provider,
