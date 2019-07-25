@@ -12,7 +12,6 @@ const provider = {
     displayName: 'BetterTTV Global Emotes',
     badge: cdn.url('tags/developer.png')
 };
-const urlTemplate = '//cdn.betterttv.net/emote/{{id}}/{{image}}';
 
 class GlobalEmotes extends AbstractEmotes {
     constructor() {
@@ -29,7 +28,7 @@ class GlobalEmotes extends AbstractEmotes {
         api
             .get('emotes/global')
             .then(emotes =>
-                emotes.forEach(({id, channel, code, imageType, restrictions}) => {
+                emotes.forEach(({id, code, imageType, restrictions}) => {
                     let restrictionCallback;
                     if (restrictions && restrictions.emoticonSet) {
                         restrictionCallback = (_, user) => {
@@ -41,12 +40,12 @@ class GlobalEmotes extends AbstractEmotes {
                     this.emotes.set(code, new Emote({
                         id,
                         provider: this.provider,
-                        channel: channel ? {name: channel} : undefined,
+                        channel: undefined,
                         code,
                         images: {
-                            '1x': mustacheFormat(urlTemplate, {id, image: '1x'}),
-                            '2x': mustacheFormat(urlTemplate, {id, image: '2x'}),
-                            '4x': mustacheFormat(urlTemplate, {id, image: '3x'})
+                            '1x': mustacheFormat(cdn.urlTemplate, {id, image: '1x'}),
+                            '2x': mustacheFormat(cdn.urlTemplate, {id, image: '2x'}),
+                            '4x': mustacheFormat(cdn.urlTemplate, {id, image: '3x'})
                         },
                         imageType,
                         restrictionCallback

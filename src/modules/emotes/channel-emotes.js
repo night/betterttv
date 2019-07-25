@@ -10,7 +10,6 @@ const provider = {
     displayName: 'BetterTTV Channel Emotes',
     badge: cdn.url('tags/developer.png')
 };
-const urlTemplate = '//cdn.betterttv.net/emote/{{id}}/{{image}}';
 
 class ChannelEmotes extends AbstractEmotes {
     constructor() {
@@ -23,19 +22,33 @@ class ChannelEmotes extends AbstractEmotes {
         return provider;
     }
 
-    updateChannelEmotes({channelEmotes}) {
+    updateChannelEmotes({channelEmotes, sharedEmotes}) {
         this.emotes.clear();
 
-        channelEmotes.forEach(({id, code, imageType, channel}) => (
+        channelEmotes.forEach(({id, code, imageType}) => (
             this.emotes.set(code, new Emote({
                 id,
                 provider: this.provider,
-                channel: {name: channel},
+                channel: {name: undefined},
                 code,
                 images: {
-                    '1x': mustacheFormat(urlTemplate, {id, image: '1x'}),
-                    '2x': mustacheFormat(urlTemplate, {id, image: '2x'}),
-                    '4x': mustacheFormat(urlTemplate, {id, image: '3x'})
+                    '1x': mustacheFormat(cdn.urlTemplate, {id, image: '1x'}),
+                    '2x': mustacheFormat(cdn.urlTemplate, {id, image: '2x'}),
+                    '4x': mustacheFormat(cdn.urlTemplate, {id, image: '3x'})
+                },
+                imageType
+            }))
+        ));
+        sharedEmotes.forEach(({id, code, imageType, user: {name}}) => (
+            this.emotes.set(code, new Emote({
+                id,
+                provider: this.provider,
+                channel: {name},
+                code,
+                images: {
+                    '1x': mustacheFormat(cdn.urlTemplate, {id, image: '1x'}),
+                    '2x': mustacheFormat(cdn.urlTemplate, {id, image: '2x'}),
+                    '4x': mustacheFormat(cdn.urlTemplate, {id, image: '3x'})
                 },
                 imageType
             }))

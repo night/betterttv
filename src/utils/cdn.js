@@ -2,6 +2,7 @@ const $ = require('jquery');
 const debug = require('./debug');
 
 const CDN_ENDPOINT = process.env.CDN_ENDPOINT;
+const urlTemplate = '//cdn.betterttv.net/emote/{{id}}/{{image}}';
 
 module.exports = {
     url(path, breakCache = false) {
@@ -10,5 +11,6 @@ module.exports = {
 
     get(path, options) {
         return $.get(`${CDN_ENDPOINT}${path}`, options);
-    }
+    },
+    urlTemplate: urlTemplate
 };

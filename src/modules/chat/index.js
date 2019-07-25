@@ -71,7 +71,7 @@ class ChatModule {
         });
 
         api.get('badges').then(badges => {
-            badges.forEach(({name, badge: {description, svg}}) => staff.set(name, {description, svg}));
+            badges.forEach(({name, badge}) => staff.set(name, badge));
         });
     }
 
