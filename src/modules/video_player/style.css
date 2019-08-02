@@ -1,5 +1,5 @@
 .bttv-hide-player-extensions {
-  .extension-container, .extension-taskbar {
+  .extensions-dock__layout, .extension-container, .extension-taskbar {
     display: none !important;
   }
 }
