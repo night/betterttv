@@ -32,9 +32,11 @@ class ChatInFullscreen {
         if (fsElement && this.chatFsActive) {
             $('body').addClass('fullscreen-active');
             $('.right-column .channel-root__right-column').appendTo(fsElement);
+            $('#emote-menu-for-twitch').appendTo(fsElement);
         } else {
             $('body').removeClass('fullscreen-active');
             $('.channel-root__right-column').appendTo('.right-column > .tw-block');
+            $('#emote-menu-for-twitch').appendTo('body');
         }
     }
 }
