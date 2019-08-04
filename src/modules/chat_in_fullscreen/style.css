@@ -1,0 +1,46 @@
+
+/* re-applying styles, because they get overwritten */
+.bttv-chat-in-fullscreen .player .chat-line__message,
+.bttv-chat-in-fullscreen .player .chat-line__moderation,
+.bttv-chat-in-fullscreen .player .chat-line__status {
+  padding: .5rem 2rem;
+}
+
+.bttv-chat-in-fullscreen .video-player__container .chat-line__timestamp {
+  margin-right: .5rem;
+}
+
+.bttv-chat-in-fullscreen .video-player__container .bits-leaderboard-header-first-entry {
+  padding-left: 1.4rem;
+  padding-right: 1.4rem;
+}
+
+.bttv-chat-in-fullscreen .pinned-cheer-v2-header__runner-up-entries {
+  margin: .4rem 0;
+}
+
+/* new styles */
+.bttv-chat-in-fullscreen .video-player__container .channel-root__right-column {
+  flex: 1 !important;
+  font-size: inherit;
+}
+
+.bttv-chat-in-fullscreen.fullscreen-active .video-player__container .chat-in-fs-wrap {
+  position: relative;
+}
+
+.bttv-chat-in-fullscreen.fullscreen-active .video-player__container {
+  display: flex;
+  font-size: inherit;
+}
+
+.bttv-chat-in-fullscreen.fullscreen-active .video-player__container .player-video {
+  display: flex;
+}
+
+.bttv-chat-in-fullscreen.fullscreen-active .video-player__container .player-video > video {
+  width: auto;
+  height: 100vh;
+  position: relative;
+  max-width: calc(100vw - 340px);
+}
