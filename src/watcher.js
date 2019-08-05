@@ -22,7 +22,7 @@ let currentChannelId;
 let channel = {};
 
 const loadPredicates = {
-    following: () => !!$('.following__header-tabs').length,
+    following: () => !!$('.tw-tabs div[data-test-selector="ACTIVE_TAB_INDICATOR"]').length,
     channel: () => {
         const href = $('.channel-header__user-avatar img').attr('src') || $('h3[data-test-selector="side-nav-channel-info__name_link"] a').attr('href');
         const currentChannel = twitch.updateCurrentChannel();
