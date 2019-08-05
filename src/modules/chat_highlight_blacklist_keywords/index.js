@@ -187,10 +187,10 @@ class ChatHighlightBlacklistKeywordsModule {
         });
 
         settings.add({
-            id: 'playHighlightSound',
-            name: 'Play Sound On Highlight',
-            defaultValue: false,
-            description: 'Plays a `tick` sound when a message is highlighted'
+            id: 'highlightFeedback',
+            name: 'Play Sound on Highlight/Whisper',
+            description: 'Get audio feedback for messages directed at you',
+            defaultValue: false
         });
 
         this.sound = null;
@@ -201,6 +201,8 @@ class ChatHighlightBlacklistKeywordsModule {
         if (!this.sound) {
             this.sound = new Audio(cdn.url('assets/sounds/ts-tink.ogg'));
         }
+        this.sound.pause();
+        this.sound.currentTime = 0;
         this.sound.play();
     }
 
