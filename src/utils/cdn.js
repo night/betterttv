@@ -8,7 +8,7 @@ module.exports = {
         return `${CDN_ENDPOINT}${path}${breakCache ? `?v=${debug.version}` : ''}`;
     },
 
-    emoteUrl(emoteId, version = 3) {
+    emoteUrl(emoteId, version = '3x') {
         return `${CDN_ENDPOINT}/emote/${emoteId}/${version}`;
     },
 
