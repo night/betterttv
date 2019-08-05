@@ -2,16 +2,7 @@
     if (!String.prototype.includes || !Array.prototype.findIndex) return;
     if (window.location.pathname.endsWith('.html')) return;
     if (!['www.twitch.tv', 'canary.twitch.tv', 'clips.twitch.tv'].includes(window.location.hostname)) return;
-
-    if (window.Ember) {
-        const script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = 'https://legacy.betterttv.net/betterttv.js';
-        const head = document.getElementsByTagName('head')[0];
-        if (!head) return;
-        head.appendChild(script);
-        return;
-    }
+    if (window.Ember) return;
 
     const IS_PROD = process.env.NODE_ENV !== 'development';
 
@@ -28,15 +19,6 @@
     } catch (_) {}
 
     const Raven = require('raven-js');
-
-    /*
-
-     TODO:
-
-     - TwitchEmotes Sub Emote Tip
-     - Disable Channel Header (Twitch did not implement this yet)
-
-    */
 
     if (IS_PROD) {
         Raven.config(

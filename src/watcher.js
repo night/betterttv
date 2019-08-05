@@ -384,10 +384,11 @@ class Watcher extends SafeEventEmitter {
 
             channel = currentChannel;
 
-            api.get(`channels/${channel.name}`)
+            api.get(`cached/users/twitch/${channel.id}`)
                 .catch(error => ({
                     bots: [],
-                    emotes: [],
+                    channelEmotes: [],
+                    sharedEmotes: [],
                     status: error.status || 0
                 }))
                 .then(data => this.emit('channel.updated', data));
