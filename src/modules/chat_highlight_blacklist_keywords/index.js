@@ -22,6 +22,7 @@ Use spaces in the field to specify multiple keywords. Place {} around a set of w
 const CHAT_LIST_SELECTOR = '.chat-list .chat-list__lines';
 const VOD_CHAT_FROM_SELECTOR = '.video-chat__message-author';
 const VOD_CHAT_MESSAGE_SELECTOR = 'div[data-test-selector="comment-message-selector"]';
+const VOD_CHAT_MESSAGE_EMOTE_SELECTOR = '.chat-line__message--emote';
 const PINNED_HIGHLIGHT_ID = 'bttv-pinned-highlight';
 const PINNED_CONTAINER_ID = 'bttv-pin-container';
 const MAXIMUM_PIN_COUNT = 10;
@@ -242,13 +243,15 @@ class ChatHighlightBlacklistKeywordsModule {
     onVODMessage($message) {
         const $from = $message.find(VOD_CHAT_FROM_SELECTOR);
         const from = $from.attr('href').split('?')[0].split('/').pop();
-        const message = $message.find(VOD_CHAT_MESSAGE_SELECTOR).text().replace(/^:/, '');
+        const $messageContent = $message.find(VOD_CHAT_MESSAGE_SELECTOR);
+        const emotes = Array.from($messageContent.find(VOD_CHAT_MESSAGE_EMOTE_SELECTOR)).map(emote => emote.getAttribute('alt'));
+        const messageContent = `${$messageContent.text().replace(/^:/, '')} ${emotes.join(' ')}`;
 
-        if (fromContainsKeyword(blacklistUsers, from) || messageContainsKeyword(blacklistKeywords, from, message)) {
+        if (fromContainsKeyword(blacklistUsers, from) || messageContainsKeyword(blacklistKeywords, from, messageContent)) {
             return this.markBlacklisted($message);
         }
 
-        if (fromContainsKeyword(highlightUsers, from) || messageContainsKeyword(highlightKeywords, from, message)) {
+        if (fromContainsKeyword(highlightUsers, from) || messageContainsKeyword(highlightKeywords, from, messageContent)) {
             this.markHighlighted($message);
         }
     }
