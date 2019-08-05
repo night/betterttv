@@ -29,29 +29,27 @@ function watchPlayerRecommendationVodsAutoplay() {
     });
 }
 
-function handleKeyEvent(keypress) {
-    if (keypress.ctrlKey || keypress.metaKey) return;
+function handleKeyEvent(keydown) {
+    if (keydown.ctrlKey || keydown.metaKey) return;
     if ($('input, textarea, select').is(':focus')) return;
 
     const $player = $(VIDEO_PLAYER_SELECTOR);
     if (!$player.length) return;
 
-    switch (keypress.charCode || keypress.keyCode) {
-        case keyCodes.KeyPress.LessThan:
-        case keyCodes.KeyPress.Comma:
+    switch (keydown.charCode || keydown.keyCode) {
+        case keyCodes.Comma:
             stepPlaybackSpeed(false);
             break;
-        case keyCodes.KeyPress.GreaterThan:
-        case keyCodes.KeyPress.Period:
+        case keyCodes.Period:
             stepPlaybackSpeed(true);
             break;
-        case keyCodes.KeyPress.k:
+        case keyCodes.K:
             $player.find('.qa-pause-play-button').click();
             break;
-        case keyCodes.KeyPress.f:
+        case keyCodes.F:
             $player.find('.qa-fullscreen-button').click();
             break;
-        case keyCodes.KeyPress.m:
+        case keyCodes.M:
             $player.find('.qa-control-volume').click();
             break;
     }
@@ -114,7 +112,7 @@ class VideoPlayerModule {
     }
 
     keybinds() {
-        $(document).on('keypress.playerControls', handleKeyEvent);
+        $(document).on('keydown.playerControls', handleKeyEvent);
     }
 
     clickToPause() {
