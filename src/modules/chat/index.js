@@ -8,7 +8,6 @@ const html = require('../../utils/html');
 const settings = require('../../settings');
 const emotes = require('../emotes');
 const nicknames = require('../chat_nicknames');
-const channelEmotesTip = require('../channel_emotes_tip');
 const legacySubscribers = require('../legacy_subscribers');
 const splitChat = require('../split_chat');
 
@@ -52,16 +51,6 @@ function hasNonASCII(message) {
     return false;
 }
 
-function replaceTwitchEmoticonTooltip(currentChannel, $emote) {
-    const code = $emote.attr('alt');
-    const id = ($emote.attr('src').split('emoticons/v1/')[1] || '').split('/')[0];
-    const emote = channelEmotesTip.getEmote(id, code);
-    if (!emote) return;
-    $emote.parent().find('.tw-tooltip').css('text-align', 'center').html(emote.balloon);
-    if (!currentChannel || emote.channel.name === currentChannel.name) return;
-    $emote.on('click', () => window.open(emote.channel.url, '_blank'));
-}
-
 class ChatModule {
     constructor() {
         watcher.on('chat.message', ($element, message) => this.messageParser($element, message));
@@ -70,7 +59,7 @@ class ChatModule {
             channelBots = bots;
         });
 
-        api.get('badges').then(badges => {
+        api.get('cached/badges').then(badges => {
             badges.forEach(({name, badge}) => staff.set(name, badge));
         });
     }
@@ -116,7 +105,6 @@ class ChatModule {
     }
 
     messageReplacer($message, user) {
-        const currentChannel = twitch.getCurrentChannel();
         const tokens = $message.contents();
         let cappedEmoteCount = 0;
         for (let i = 0; i < tokens.length; i++) {
@@ -127,14 +115,11 @@ class ChatModule {
                 const $emoteTooltip = $(node);
                 $emote = $emoteTooltip.find('.chat-line__message--emote');
                 if ($emote.length) {
-                    replaceTwitchEmoticonTooltip(currentChannel, $emote);
                     continue;
                 }
             }
             // chat doesn't have a wrapper element, so we grab all the inner elements
             if (node.nodeType === window.Node.ELEMENT_NODE && node.classList.contains('chat-line__message--emote')) {
-                $emote = $(node);
-                replaceTwitchEmoticonTooltip(currentChannel, $emote);
                 continue;
             }
             let data;

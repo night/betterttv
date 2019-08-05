@@ -1,5 +1,4 @@
 const api = require('../../utils/api');
-const mustacheFormat = require('../../utils/regex').mustacheFormat;
 const cdn = require('../../utils/cdn');
 const legacySubscribers = require('../legacy_subscribers');
 const watcher = require('../../watcher');
@@ -26,7 +25,7 @@ class GlobalEmotes extends AbstractEmotes {
 
     updateGlobalEmotes() {
         api
-            .get('emotes/global')
+            .get('cached/emotes/global')
             .then(emotes =>
                 emotes.forEach(({id, code, imageType, restrictions}) => {
                     let restrictionCallback;
@@ -43,9 +42,9 @@ class GlobalEmotes extends AbstractEmotes {
                         channel: undefined,
                         code,
                         images: {
-                            '1x': mustacheFormat(cdn.urlTemplate, {id, image: '1x'}),
-                            '2x': mustacheFormat(cdn.urlTemplate, {id, image: '2x'}),
-                            '4x': mustacheFormat(cdn.urlTemplate, {id, image: '3x'})
+                            '1x': cdn.emoteUrl(id, '1x'),
+                            '2x': cdn.emoteUrl(id, '2x'),
+                            '4x': cdn.emoteUrl(id, '3x')
                         },
                         imageType,
                         restrictionCallback

@@ -384,7 +384,7 @@ class Watcher extends SafeEventEmitter {
 
             channel = currentChannel;
 
-            api.get(`users/twitch/${channel.id}`)
+            api.get(`cached/users/twitch/${channel.id}`)
                 .catch(error => ({
                     bots: [],
                     channelEmotes: [],

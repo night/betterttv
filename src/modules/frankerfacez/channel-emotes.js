@@ -31,13 +31,13 @@ class FrankerFaceZChannelEmotes extends AbstractEmotes {
         if (!currentChannel) return;
 
         api
-            .get(`frankerfacez/users/twitch/${currentChannel.id}`)
+            .get(`cached/frankerfacez/users/twitch/${currentChannel.id}`)
             .then(emotes =>
-                emotes.forEach(({id, owner: {name}, code, images, imageType}) => {
+                emotes.forEach(({id, user, code, images, imageType}) => {
                     this.emotes.set(code, new Emote({
                         id,
                         provider: this.provider,
-                        name,
+                        channel: user,
                         code,
                         images,
                         imageType

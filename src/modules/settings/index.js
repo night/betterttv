@@ -89,7 +89,10 @@ const settingsPanelTemplate = () => `
 
 const changelogEntryTemplate = (version, publishedAt, body) => `
     <h2>Version ${html.escape(version)} (${moment(publishedAt).format('MMM D, YYYY')})</h2>
-    <p>${body}</p>
+    <p>${html
+        .escape(body)
+        .replace(/\r\n/g, '<br />')
+        .replace(/ #([0-9]+)/g, ' <a href="https://github.com/night/BetterTTV/issues/$1" target="_blank">#$1</a>')}</p>
 `;
 
 function getDataURLFromUpload(input, callback) {
@@ -153,7 +156,7 @@ class SettingsModule {
 
         cdn.get('privacy.html').then(data => $('#bttvPrivacy').html(data));
 
-        api.get('changelog')
+        api.get('cached/changelog')
             .then(changelog => changelog.map(({version, publishedAt, body}) => changelogEntryTemplate(version, publishedAt, body)))
             .then(releases => $('#bttvChangelog .bttv-changelog-releases').html(releases.join('')));
 

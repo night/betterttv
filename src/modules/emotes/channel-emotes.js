@@ -1,6 +1,6 @@
 const watcher = require('../../watcher');
-const mustacheFormat = require('../../utils/regex').mustacheFormat;
 const cdn = require('../../utils/cdn');
+const twitch = require('../../utils/twitch');
 
 const AbstractEmotes = require('./abstract-emotes');
 const Emote = require('./emote');
@@ -25,30 +25,19 @@ class ChannelEmotes extends AbstractEmotes {
     updateChannelEmotes({channelEmotes, sharedEmotes}) {
         this.emotes.clear();
 
-        channelEmotes.forEach(({id, code, imageType}) => (
+        const emotes = channelEmotes.concat(sharedEmotes);
+        const currentChannel = twitch.getCurrentChannel();
+
+        emotes.forEach(({id, user, code, imageType}) => (
             this.emotes.set(code, new Emote({
                 id,
                 provider: this.provider,
-                channel: {name: undefined},
+                channel: user || currentChannel,
                 code,
                 images: {
-                    '1x': mustacheFormat(cdn.urlTemplate, {id, image: '1x'}),
-                    '2x': mustacheFormat(cdn.urlTemplate, {id, image: '2x'}),
-                    '4x': mustacheFormat(cdn.urlTemplate, {id, image: '3x'})
-                },
-                imageType
-            }))
-        ));
-        sharedEmotes.forEach(({id, code, imageType, user: {name}}) => (
-            this.emotes.set(code, new Emote({
-                id,
-                provider: this.provider,
-                channel: {name},
-                code,
-                images: {
-                    '1x': mustacheFormat(cdn.urlTemplate, {id, image: '1x'}),
-                    '2x': mustacheFormat(cdn.urlTemplate, {id, image: '2x'}),
-                    '4x': mustacheFormat(cdn.urlTemplate, {id, image: '3x'})
+                    '1x': cdn.emoteUrl(id, '1x'),
+                    '2x': cdn.emoteUrl(id, '2x'),
+                    '4x': cdn.emoteUrl(id, '3x')
                 },
                 imageType
             }))
