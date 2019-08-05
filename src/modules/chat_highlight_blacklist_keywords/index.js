@@ -4,6 +4,7 @@ const settings = require('../../settings');
 const storage = require('../../storage');
 const html = require('../../utils/html');
 const twitch = require('../../utils/twitch');
+const cdn = require('../../utils/cdn');
 const moment = require('moment');
 const {escape: escapeRegExp} = require('../../utils/regex');
 
@@ -184,6 +185,25 @@ class ChatHighlightBlacklistKeywordsModule {
             defaultValue: false,
             description: 'Automatically hide pinned highlights after 1 minute'
         });
+
+        settings.add({
+            id: 'highlightFeedback',
+            name: 'Play Sound on Highlight/Whisper',
+            description: 'Get audio feedback for messages directed at you',
+            defaultValue: false
+        });
+
+        this.sound = null;
+        this.handleHighlightSound = this.handleHighlightSound.bind(this);
+    }
+
+    handleHighlightSound() {
+        if (!this.sound) {
+            this.sound = new Audio(cdn.url('assets/sounds/ts-tink.ogg'));
+        }
+        this.sound.pause();
+        this.sound.currentTime = 0;
+        this.sound.play();
     }
 
     loadChat() {
@@ -212,6 +232,9 @@ class ChatHighlightBlacklistKeywordsModule {
 
         if (fromContainsKeyword(highlightUsers, from) || messageContainsKeyword(highlightKeywords, from, message)) {
             this.markHighlighted($message);
+            if (settings.get('playHighlightSound')) {
+                this.handleHighlightSound();
+            }
             if (timestamp > loadTime) this.pinHighlight({from, message, date});
         }
     }
