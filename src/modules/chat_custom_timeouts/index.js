@@ -66,7 +66,7 @@ function handleMouseMove(e) {
     const offset = e.pageY - $customTimeout.offset().top;
     const offsetx = e.pageX - $customTimeout.offset().left;
     const amount = 224 - offset;
-    const time = Math.floor(Math.pow(1.5, (amount - 45) / 6) * 60);
+    const time = Math.floor(Math.pow(1.5, (amount - 45) / 6.5) * 60);
 
     let humanTime;
     if (Math.floor(time / 60 / 60 / 24) > 0) {
@@ -89,7 +89,7 @@ function handleMouseMove(e) {
             length: time,
             text: humanTime
         };
-    } else if (amount >= 204 && amount < 224) {
+    } else if (amount >= 204 && amount <= 224) {
         action = {
             type: ActionTypes.BAN,
             length: 0,
