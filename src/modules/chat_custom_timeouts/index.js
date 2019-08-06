@@ -66,7 +66,7 @@ function handleMouseMove(e) {
     const offset = e.pageY - $customTimeout.offset().top;
     const offsetx = e.pageX - $customTimeout.offset().left;
     const amount = 224 - offset;
-    const time = Math.floor(Math.pow(1.5, (amount - 20) / 7) * 60);
+    const time = Math.floor(Math.pow(1.5, (amount - 45) / 6.5) * 60);
 
     let humanTime;
     if (Math.floor(time / 60 / 60 / 24) > 0) {
@@ -83,19 +83,25 @@ function handleMouseMove(e) {
             length: 0,
             text: 'CANCEL'
         };
-    } else if (amount > 24 && amount < 200) {
+    } else if (amount > 45 && amount < 204) {
         action = {
             type: ActionTypes.TIMEOUT,
             length: time,
             text: humanTime
         };
-    } else if (amount >= 200 && amount < 224) {
+    } else if (amount >= 204 && amount <= 224) {
         action = {
             type: ActionTypes.BAN,
             length: 0,
             text: 'BAN'
         };
-    } else if (amount > 0 && amount <= 24) {
+    } else if (amount > 22 && amount <= 45) {
+        action = {
+            type: ActionTypes.TIMEOUT,
+            length: 1,
+            text: 'PURGE'
+        };
+    } else if (amount > 0 && amount <= 22) {
         action = {
             type: ActionTypes.DELETE,
             length: 0,
