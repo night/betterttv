@@ -9,7 +9,7 @@ module.exports = {
     },
 
     emoteUrl(emoteId, version = '3x') {
-        return `${CDN_ENDPOINT}/emote/${emoteId}/${version}`;
+        return this.url(`emote/${emoteId}/${version}`);
     },
 
     get(path, options) {
