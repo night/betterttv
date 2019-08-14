@@ -314,11 +314,8 @@ class Watcher extends SafeEventEmitter {
 
                     if ($el.hasClass('viewer-card')) {
                         this.emit('chat.moderator_card.open', $el);
-                    } else if ($el.hasClass('viewer-card-layer__draggable') && $el.find('.viewer-card').length) {
-                        const $viewerCard = $el.find('.viewer-card');
-                        if ($viewerCard.length) {
-                            this.emit('chat.moderator_card.open', $viewerCard);
-                        }
+                    } else if ($el.attr('class') === '' && $el.children('div:first').hasClass('viewer-card')) {
+                        this.emit('chat.moderator_card.open', $el.children('div:first'));
                     }
 
                     if ($el.hasClass('chat-input')) {
