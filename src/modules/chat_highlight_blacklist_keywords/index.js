@@ -233,7 +233,7 @@ class ChatHighlightBlacklistKeywordsModule {
 
         if (fromContainsKeyword(highlightUsers, from) || messageContainsKeyword(highlightKeywords, from, message)) {
             this.markHighlighted($message);
-            if (settings.get('playHighlightSound')) {
+            if (settings.get('highlightFeedback')) {
                 this.handleHighlightSound();
             }
             if (timestamp > loadTime) this.pinHighlight({from, message, date});
