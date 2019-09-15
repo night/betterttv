@@ -12,6 +12,7 @@ const gzip = require('gulp-gzip');
 const header = require('gulp-header');
 const hexrgba = require('postcss-hexrgba');
 const postcss = require('gulp-postcss');
+const postcssUrl = require('postcss-url');
 const precss = require('precss');
 const rename = require('gulp-rename');
 const saveLicense = require('uglify-save-license');
@@ -41,7 +42,12 @@ const LICENSE = `/** @license
 gulp.task(
     'css',
     () => gulp.src('src/**/*.css')
-        .pipe(postcss([precss, autoprefixer, hexrgba]))
+        .pipe(postcss([
+            precss,
+            autoprefixer,
+            hexrgba,
+            postcssUrl({url: asset => `${process.env.CDN_ENDPOINT}${asset.url}`})
+        ]))
         .pipe(concat('betterttv.css'))
         .pipe(gulp.dest('build'))
 );
@@ -61,40 +67,47 @@ gulp.task(
 
 gulp.task(
     'prepare',
-    ['cleanup', 'lint'],
-    () => gulp.src('src/**/*')
-        .pipe(gulp.dest('build'))
+    gulp.series(
+        'cleanup',
+        'lint',
+        () => gulp.src('src/**/*')
+            .pipe(gulp.dest('build'))
+    )
 );
 
 gulp.task(
     'license',
-    ['prepare'],
-    () => gulp.src('build/index.js')
-        .pipe(header(LICENSE + '\n'))
-        .pipe(gulp.dest('build'))
+    gulp.series('prepare',
+        () => gulp.src('build/index.js')
+            .pipe(header(LICENSE + '\n'))
+            .pipe(gulp.dest('build'))
+    )
 );
 
 gulp.task(
     'scripts',
-    ['license', 'css'],
-    () => browserify('build/index.js', {debug: true})
-        .transform('require-globify')
-        .transform('babelify', {
-            global: true,
-            presets: ['es2015'],
-            plugins: ['transform-runtime'],
-            ignore: /node_modules\/(?!draggy)/
-        })
-        .transform('envify')
-        .bundle()
-        .pipe(gulpif(IS_PROD, source('betterttv.unmin.js'), source('betterttv.js')))
-        .pipe(buffer())
-        .pipe(gulp.dest('build'))
-        .pipe(gulpif(IS_PROD, rename('betterttv.js')))
-        .pipe(gulpif(IS_PROD, sourcemaps.init({loadMaps: true})))
-        .pipe(gulpif(IS_PROD, uglify({output: {comments: saveLicense}})))
-        .pipe(gulpif(IS_PROD, sourcemaps.write('./')))
-        .pipe(gulpif(IS_PROD, gulp.dest('build')))
+    gulp.series(
+        'license',
+        'css',
+        () => browserify('build/index.js', {debug: true})
+            .transform('require-globify')
+            .transform('babelify', {
+                global: true,
+                presets: ['@babel/preset-env'],
+                plugins: ['@babel/plugin-transform-runtime'],
+                ignore: [/node_modules\/(?!draggy)/]
+            })
+            .transform('envify')
+            .bundle()
+            .pipe(gulpif(IS_PROD, source('betterttv.unmin.js'), source('betterttv.js')))
+            .pipe(buffer())
+            .pipe(gulp.dest('build'))
+            .pipe(gulpif(IS_PROD, rename('betterttv.js')))
+            .pipe(gulpif(IS_PROD, sourcemaps.init({loadMaps: true})))
+            .pipe(gulpif(IS_PROD, uglify({output: {comments: saveLicense}})))
+            .pipe(gulpif(IS_PROD, sourcemaps.write('./')))
+            .pipe(gulpif(IS_PROD, gulp.dest('build')))
+    )
 );
 
 gulp.task(
@@ -103,21 +116,26 @@ gulp.task(
 );
 
 gulp.task(
-    'watch',
-    ['default', 'server'],
-    () => gulp.watch('src/**/*', ['default'])
+    'default',
+    gulp.series('scripts')
 );
 
 gulp.task(
-    'default',
-    ['scripts']
+    'watch',
+    gulp.parallel(
+        'default',
+        'server',
+        () => gulp.watch('src/**/*', gulp.series('default'))
+    )
 );
 
 gulp.task(
     'dist',
-    ['scripts'],
-    () => gulp.src('build/**/*')
-        .pipe(tar('betterttv.tar'))
-        .pipe(gzip())
-        .pipe(gulp.dest('dist'))
+    gulp.series(
+        'scripts',
+        () => gulp.src('build/**/*')
+            .pipe(tar('betterttv.tar'))
+            .pipe(gzip())
+            .pipe(gulp.dest('dist'))
+    )
 );

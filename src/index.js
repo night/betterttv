@@ -6,18 +6,6 @@
 
     const IS_PROD = process.env.NODE_ENV !== 'development';
 
-    try {
-        if (IS_PROD && localStorage.getItem('bttv_developerMode') === 'true') {
-            const script = document.createElement('script');
-            script.type = 'text/javascript';
-            script.src = `${process.env.DEV_CDN_ENDPOINT}betterttv.js`;
-            const head = document.getElementsByTagName('head')[0];
-            if (!head) return;
-            head.appendChild(script);
-            return;
-        }
-    } catch (_) {}
-
     const Raven = require('raven-js');
 
     if (IS_PROD) {

@@ -1,5 +1,6 @@
 const $ = require('jquery');
 const cdn = require('../../utils/cdn');
+const extension = require('../../utils/extension');
 const settings = require('../../settings');
 const watcher = require('../../watcher');
 const twitch = require('../../utils/twitch');
@@ -60,7 +61,7 @@ class GlobalCSSModule {
 
     globalCSS() {
         const css = document.createElement('link');
-        css.setAttribute('href', cdn.url('betterttv.css', true));
+        css.setAttribute('href', extension.url('betterttv.css', true));
         css.setAttribute('type', 'text/css');
         css.setAttribute('rel', 'stylesheet');
         $('body').append(css);

@@ -1,23 +1,6 @@
 const cookies = require('cookies-js');
 const SafeEventEmitter = require('./utils/safe-event-emitter');
 
-// legacy setting parser
-const parseSetting = function(value) {
-    if (value === null) {
-        return null;
-    } else if (value === 'true') {
-        return true;
-    } else if (value === 'false') {
-        return false;
-    } else if (value === '') {
-        return '';
-    } else if (isNaN(value) === false) {
-        return parseFloat(value, 10);
-    }
-
-    return value;
-};
-
 class Storage extends SafeEventEmitter {
     constructor() {
         super();
@@ -32,34 +15,6 @@ class Storage extends SafeEventEmitter {
         } catch (e) {
             this._localStorageSupport = false;
         }
-
-        this.legacyImport();
-    }
-
-    legacyImport() {
-        if (this.get('importedV6') || !this._localStorageSupport) {
-            return;
-        }
-
-        Object.keys(window.localStorage)
-            .filter(id => id.startsWith('bttv_') || id === 'nicknames')
-            .map(id => {
-                let value = parseSetting(window.localStorage.getItem(id));
-
-                if (id === 'nicknames') {
-                    value = JSON.parse(value);
-                }
-
-                id = id.split('bttv_')[1] || id;
-
-                return {
-                    id,
-                    value
-                };
-            })
-            .forEach(setting => this.set(setting.id, setting.value));
-
-        this.set('importedV6', true);
     }
 
     getStorage() {
