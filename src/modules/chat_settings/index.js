@@ -7,19 +7,28 @@ const chatFontSettings = require('../chat_font_settings');
 const CHAT_SETTINGS_SELECTOR = '.chat-settings__content';
 const BTTV_CHAT_SETTINGS_CLASS = 'bttv-chat-settings';
 
-const BETTERTTV_SETTINGS_BUTTON = !$('.twilight-minimal-root').length ? (
-    '<button class="openSettings">BetterTTV Settings</button>'
-) : '';
-
 const CHAT_SETTINGS_TEMPLATE = `
     <div class="${BTTV_CHAT_SETTINGS_CLASS} tw-border-t tw-mg-t-2 tw-pd-t-2">
-        <div class="tw-mg-b-2"><p class="tw-c-text-alt-2 tw-upcase">BetterTTV</p></div>
-        <div class="tw-mg-b-1"><button class="setBlacklistKeywords">Set Blacklist Keywords</button></div>
-        <div class="tw-mg-b-1"><button class="setHighlightKeywords">Set Highlight Keywords</button></div>
-        <div class="tw-mg-b-1"><button class="setFontFamily">Set Font</button></div>
-        <div class="tw-mg-b-1"><button class="setFontSize">Set Font Size</button></div>
-        <div class="tw-mg-b-1"><button class="clearChat">Clear My Chat</button></div>
-        ${BETTERTTV_SETTINGS_BUTTON}
+        <div class="tw-mg-y-05 tw-pd-x-05"><p class="tw-c-text-alt-2 tw-font-size-6 tw-strong tw-upcase">BetterTTV</p></div>
+        <div class="tw-full-width tw-relative">
+            <button class="setBlacklistKeywords tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable tw-interactable--hover-enabled tw-interactable--inverted tw-interactive">Set Blacklist Keywords</button>
+        </div>
+        <div class="tw-full-width tw-relative">
+            <button class="setHighlightKeywords tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable tw-interactable--hover-enabled tw-interactable--inverted tw-interactive">Set Highlight Keywords</button>
+        </div>
+        <div class="tw-full-width tw-relative">
+            <button class="setFontFamily tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable tw-interactable--hover-enabled tw-interactable--inverted tw-interactive">Set Font</button>
+        </div>
+        <div class="tw-full-width tw-relative">
+            <button class="setFontSize tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable tw-interactable--hover-enabled tw-interactable--inverted tw-interactive">Set Font Size</button>
+        </div>
+        <div class="tw-full-width tw-relative">
+            <button class="clearChat tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable tw-interactable--hover-enabled tw-interactable--inverted tw-interactive">Clear My Chat</button>
+        </div>
+        <div class="tw-full-width tw-relative">${
+    !$('.twilight-minimal-root').length ? (
+        '<button class="openSettings tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable tw-interactable--hover-enabled tw-interactable--inverted tw-interactive">BetterTTV Settings</button>'
+    ) : ''}</div>
     </div>
 `;
 
