@@ -69,7 +69,7 @@ const userStatsTemplate = (views, follows, createdAt) => `
 `;
 
 const userMessagesTemplate = messagesHTML => `
-    <div class="bttv-moderator-card-messages tw-c-background">
+    <div class="bttv-moderator-card-messages tw-c-background-base">
         <div class="label">
             <span>Chat Messages</span>
             <div class="triangle"></div>
