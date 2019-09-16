@@ -314,7 +314,7 @@ class Watcher extends SafeEventEmitter {
 
                     if ($el.hasClass('viewer-card')) {
                         this.emit('chat.moderator_card.open', $el);
-                    } else if ($el.hasClass('viewer-card-layer__draggable') && $el.find('.viewer-card').length) {
+                    } else if ($el.hasClass('viewer-card-layer__draggable') || $el.parent().hasClass('viewer-card-layer__draggable')) {
                         const $viewerCard = $el.find('.viewer-card');
                         if ($viewerCard.length) {
                             this.emit('chat.moderator_card.open', $viewerCard);
