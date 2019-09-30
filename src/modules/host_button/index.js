@@ -44,7 +44,7 @@ class HostButtonModule {
 
     embedHostButton() {
         if ($(`#${HOST_BUTTON_ID}`).length) return;
-        const $shareButton = $(SHARE_BUTTON_SELECTOR).closest('[data-toggle-balloon-id]').parent('.tw-mg-x-1');
+        const $shareButton = $(SHARE_BUTTON_SELECTOR).closest('[data-toggle-balloon-id]').parent('.tw-mg-l-05');
         if (!$shareButton.length) return;
         $hostButton.insertBefore($shareButton);
         $hostButton.click(() => this.toggleHost());
