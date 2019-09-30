@@ -6,7 +6,7 @@ const CHAT_STATE_ID = 'bttv-channel-state-contain';
 const CHAT_STATE_TEMPLATE = require('./template')(CHAT_STATE_ID);
 const CHAT_HEADER_SELECTOR = '.rooms-header';
 const CHAT_HEADER_PRIVATE_ROOM_SELECTOR = 'svg.tw-svg__asset--unlock';
-const CHAT_SEND_BUTTON_SELECTOR = 'button[data-test-selector="chat-send-button"]';
+const CHAT_SETTINGS_BUTTON_SELECTOR = 'button[data-a-target="chat-settings"]';
 const PATCHED_SENTINEL = Symbol();
 
 let twitchOnRoomStateUpdated;
@@ -31,13 +31,13 @@ function displaySeconds(s) {
 function loadHTML() {
     const $stateContainer = $(`#${CHAT_STATE_ID}`);
     const $headerSelector = $(CHAT_HEADER_SELECTOR);
-    const $chatSendButtonSelector = $(CHAT_SEND_BUTTON_SELECTOR);
+    const $chatSettingsButtonSelector = $(CHAT_SETTINGS_BUTTON_SELECTOR);
     if (!$headerSelector.length || $headerSelector.find(CHAT_HEADER_PRIVATE_ROOM_SELECTOR).length) {
         $stateContainer.remove();
         return;
     }
     if ($stateContainer.length) return;
-    $chatSendButtonSelector.before(CHAT_STATE_TEMPLATE);
+    $chatSettingsButtonSelector.before(CHAT_STATE_TEMPLATE);
 }
 
 function updateState(state, ...args) {

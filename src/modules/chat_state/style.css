@@ -3,6 +3,7 @@
   padding-top: 5px;
   margin-right: 10px;
   color: #6441a4;
+  float: left;
 
   svg path {
     fill: #6441a4;
