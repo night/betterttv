@@ -51,8 +51,13 @@ class ChatSettingsModule {
     }
 
     renderSettings() {
+        if (inIFrame()) return;
+
+        let $settings = $(CHAT_SETTINGS_SELECTOR).find(`.${BTTV_CHAT_SETTINGS_CLASS}`);
         // Hide the settings when in an iframe for now
-        if ($(CHAT_SETTINGS_SELECTOR).find(`.${BTTV_CHAT_SETTINGS_CLASS}`).length || inIFrame()) return;
+        if ($settings.length) {
+            $settings.remove();
+        }
 
         // Twitch lazy loads settings
         if (!$(CHAT_SETTINGS_SELECTOR).length) {
@@ -61,7 +66,7 @@ class ChatSettingsModule {
 
         $(CHAT_SETTINGS_SELECTOR).append(CHAT_SETTINGS_TEMPLATE);
 
-        const $settings = $(CHAT_SETTINGS_SELECTOR).find(`.${BTTV_CHAT_SETTINGS_CLASS}`);
+        $settings = $(CHAT_SETTINGS_SELECTOR).find(`.${BTTV_CHAT_SETTINGS_CLASS}`);
 
         $settings.find('.openSettings').click(settings.openSettings);
         $settings.find('.clearChat').click(e => {

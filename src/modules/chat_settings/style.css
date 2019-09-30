@@ -1,5 +1,6 @@
 .chat-settings {
   overflow-y: scroll;
+  max-height: calc(100vh - 200px);
 
   button[data-a-target="clear-chat-button"] {
     display: none;
