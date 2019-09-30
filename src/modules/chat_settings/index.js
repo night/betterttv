@@ -11,23 +11,23 @@ const CHAT_SETTINGS_TEMPLATE = `
     <div class="${BTTV_CHAT_SETTINGS_CLASS} tw-border-t tw-mg-t-2 tw-pd-t-2">
         <div class="tw-mg-y-05 tw-pd-x-05"><p class="tw-c-text-alt-2 tw-font-size-6 tw-strong tw-upcase">BetterTTV</p></div>
         <div class="tw-full-width tw-relative">
-            <button class="setBlacklistKeywords tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable tw-interactable--hover-enabled tw-interactable--inverted tw-interactive">Set Blacklist Keywords</button>
+            <button class="setBlacklistKeywords tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable--alpha tw-interactable--hover-enabled tw-interactable tw-interactive">Set Blacklist Keywords</button>
         </div>
         <div class="tw-full-width tw-relative">
-            <button class="setHighlightKeywords tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable tw-interactable--hover-enabled tw-interactable--inverted tw-interactive">Set Highlight Keywords</button>
+            <button class="setHighlightKeywords tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable--alpha tw-interactable--hover-enabled tw-interactable tw-interactive">Set Highlight Keywords</button>
         </div>
         <div class="tw-full-width tw-relative">
-            <button class="setFontFamily tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable tw-interactable--hover-enabled tw-interactable--inverted tw-interactive">Set Font</button>
+            <button class="setFontFamily tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable--alpha tw-interactable--hover-enabled tw-interactable tw-interactive">Set Font</button>
         </div>
         <div class="tw-full-width tw-relative">
-            <button class="setFontSize tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable tw-interactable--hover-enabled tw-interactable--inverted tw-interactive">Set Font Size</button>
+            <button class="setFontSize tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable--alpha tw-interactable--hover-enabled tw-interactable tw-interactive">Set Font Size</button>
         </div>
         <div class="tw-full-width tw-relative">
-            <button class="clearChat tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable tw-interactable--hover-enabled tw-interactable--inverted tw-interactive">Clear My Chat</button>
+            <button class="clearChat tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable--alpha tw-interactable--hover-enabled tw-interactable tw-interactive">Clear My Chat</button>
         </div>
         <div class="tw-full-width tw-relative">${
     !$('.twilight-minimal-root').length ? (
-        '<button class="openSettings tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable tw-interactable--hover-enabled tw-interactable--inverted tw-interactive">BetterTTV Settings</button>'
+        '<button class="openSettings tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable--alpha tw-interactable--hover-enabled tw-interactable tw-interactive">BetterTTV Settings</button>'
     ) : ''}</div>
     </div>
 `;

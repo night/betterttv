@@ -197,7 +197,7 @@ class SettingsModule {
 
         $('a[data-a-target="settings-dropdown-link"]').parent('div.tw-full-width.tw-relative').after(`
             <div class="tw-full-width tw-relative">
-                <a title="BetterTTV Settings" class="tw-block tw-border-radius-medium tw-full-width tw-interactable tw-interactable--hover-enabled tw-interactable--inverted tw-interactive bttvSettingsDropDown" href="#">
+                <a title="BetterTTV Settings" class="tw-block tw-border-radius-medium tw-full-width tw-interactable--alpha tw-interactable--hover-enabled tw-interactable tw-interactive bttvSettingsDropDown" href="#">
                     <div class="tw-align-items-center tw-flex tw-pd-05 tw-relative">
                         <div class="tw-align-items-center tw-flex tw-pd-r-05">
                             <div class="tw-align-items-center tw-drop-down-menu-item-figure tw-flex">
