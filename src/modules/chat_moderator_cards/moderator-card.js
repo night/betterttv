@@ -26,7 +26,7 @@ const Icons = {
 
 const MODERATOR_CARD_DISPLAY_NAME_SELECTOR = '.viewer-card__display-name';
 const MODERATOR_CARD_OVERLAY_SELECTOR = '.viewer-card__overlay';
-const MODERATOR_CARD_ACTIONS_SELECTOR = '.viewer-card__actions .tw-c-background-alt-2';
+const MODERATOR_CARD_ACTIONS_SELECTOR = 'button[data-test-selector="ban-button"]';
 const CHAT_INPUT_SELECTOR = 'textarea[data-a-target="chat-input"]';
 
 const moderatorActionButtonTemplate = (command, duration, tooltipText, buttonText) => `
@@ -133,7 +133,7 @@ class ModeratorCard {
     }
 
     renderModeratorActions() {
-        const $moderatorActions = this.$element.find(MODERATOR_CARD_ACTIONS_SELECTOR);
+        const $moderatorActions = this.$element.find(MODERATOR_CARD_ACTIONS_SELECTOR).closest('.viewer-card-drag-cancel');
         if ($moderatorActions.find('.bttv-moderator-card-actions').length) return;
 
         const currentUser = twitch.getCurrentUser();
