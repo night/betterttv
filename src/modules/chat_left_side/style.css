@@ -53,9 +53,18 @@
         right: unset !important;
     }
 
+    .right-column__toggle-visibility {
+        z-index: 1000 !important;
+    }
+
     /* Subscriber balloons on channel page */
     .chat-input div.tw-balloon[data-a-target="sub-balloon"] {
         left: auto !important;
         right: unset !important;
+    }
+
+    /* flips direction on squad streams */
+    .multi-stream-player-layout {
+        flex-direction: row-reverse;
     }
 }

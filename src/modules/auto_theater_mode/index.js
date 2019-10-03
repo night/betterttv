@@ -1,3 +1,4 @@
+const $ = require('jquery');
 const twitch = require('../../utils/twitch');
 const settings = require('../../settings');
 const watcher = require('../../watcher');
@@ -19,7 +20,13 @@ class AutoTheaterModeModule {
         const player = twitch.getCurrentPlayer();
         if (!player) return;
 
-        player.player.setTheatre(true);
+        try {
+            player.setTheatre(true);
+        } catch (_) {
+            if ($('.highwind-video-player--theatre').length === 0) {
+                $('button[data-a-target="player-theatre-mode-button"]').click();
+            }
+        }
     }
 }
 

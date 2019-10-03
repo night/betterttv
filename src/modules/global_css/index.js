@@ -1,10 +1,12 @@
 const $ = require('jquery');
 const cdn = require('../../utils/cdn');
+const extension = require('../../utils/extension');
 const settings = require('../../settings');
 const watcher = require('../../watcher');
 const twitch = require('../../utils/twitch');
 
 const TWITCH_THEME_CHANGED_DISPATCH_TYPE = 'core.ui.THEME_CHANGED';
+const TWITCH_THEME_STORAGE_KEY = 'twilight.theme';
 const TwitchThemes = {
     LIGHT: 0,
     DARK: 1
@@ -35,9 +37,13 @@ class GlobalCSSModule {
     setTwitchTheme(value) {
         if (!connectStore) return;
 
+        const theme = value === true ? TwitchThemes.DARK : TwitchThemes.LIGHT;
+        try {
+            localStorage.setItem(TWITCH_THEME_STORAGE_KEY, JSON.stringify(theme));
+        } catch (_) {}
         connectStore.dispatch({
             type: TWITCH_THEME_CHANGED_DISPATCH_TYPE,
-            theme: value === true ? TwitchThemes.DARK : TwitchThemes.LIGHT
+            theme
         });
     }
 
@@ -55,7 +61,7 @@ class GlobalCSSModule {
 
     globalCSS() {
         const css = document.createElement('link');
-        css.setAttribute('href', cdn.url('betterttv.css', true));
+        css.setAttribute('href', extension.url('betterttv.css', true));
         css.setAttribute('type', 'text/css');
         css.setAttribute('rel', 'stylesheet');
         $('body').append(css);

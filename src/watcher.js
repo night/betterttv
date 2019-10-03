@@ -5,8 +5,9 @@ const SafeEventEmitter = require('./utils/safe-event-emitter');
 const $ = require('jquery');
 
 const CLIPS_HOSTNAME = 'clips.twitch.tv';
-const CANCEL_VOD_RECOMMENDATION_SELECTOR = '.recommendations-overlay .pl-rec__cancel.pl-button';
+const CANCEL_VOD_RECOMMENDATION_SELECTOR = '.recommendations-overlay .pl-rec__cancel.pl-button, .autoplay-vod__content-container button';
 const CHAT_ROOM_SELECTOR = 'section[data-test-selector="chat-room-component-layout"]';
+const CHAT_SQUAD_WRAPPER = 'div[data-test-selector="chat-wrapper"]';
 
 let router;
 let currentPath = '';
@@ -14,13 +15,14 @@ let currentRoute = '';
 let chatWatcher;
 let vodChatWatcher;
 let clipsChatWatcher;
+let squadChatWatcher;
 let currentChatReference;
 let currentChatChannelId;
 let currentChannelId;
 let channel = {};
 
 const loadPredicates = {
-    following: () => !!$('.following__header-tabs').length,
+    following: () => !!$('.tw-tabs div[data-test-selector="ACTIVE_TAB_INDICATOR"]').length,
     channel: () => {
         const href = $('.channel-header__user-avatar img').attr('src') || $('h3[data-test-selector="side-nav-channel-info__name_link"] a').attr('href');
         const currentChannel = twitch.updateCurrentChannel();
@@ -60,7 +62,7 @@ const loadPredicates = {
     player: () => !!twitch.getCurrentPlayer(),
     vod: () => twitch.updateCurrentChannel() && $('.video-chat__input textarea').length,
     vodRecommendation: () => $(CANCEL_VOD_RECOMMENDATION_SELECTOR).length,
-    homepage: () => !!$('.front-page-carousel .player-video').length
+    homepage: () => !!$('.front-page-carousel .player-video, .front-page-carousel .highwind-video-player__container').length
 };
 
 const routes = {
@@ -70,6 +72,7 @@ const routes = {
     DIRECTORY: 'DIRECTORY',
     CHAT: 'CHAT',
     CHANNEL: 'CHANNEL',
+    CHANNEL_SQUAD: 'CHANNEL_SQUAD',
     DASHBOARD: 'DASHBOARD',
     VOD: 'VOD'
 };
@@ -82,6 +85,7 @@ const routeKeysToPaths = {
     [routes.CHAT]: /^(\/popout)?\/[a-z0-9-_]+\/chat$/i,
     [routes.VOD]: /^(\/videos\/[0-9]+|\/[a-z0-9-_]+\/clip\/[a-z0-9-_]+)$/i,
     [routes.DASHBOARD]: /^\/[a-z0-9-_]+\/dashboard/i,
+    [routes.CHANNEL_SQUAD]: /^\/[a-z0-9-_]+\/squad/i,
     [routes.CHANNEL]: /^\/[a-z0-9-_]+/i
 };
 
@@ -109,13 +113,19 @@ class Watcher extends SafeEventEmitter {
             try {
                 router = twitch.getRouter();
                 const connectStore = twitch.getConnectStore();
-                if (!connectStore || !router) return;
+                if (!connectStore || !router) {
+                    debug.error('Initialization failed, missing : ', {connectStore, router});
+                    return;
+                }
                 user = connectStore.getState().session.user;
             } catch (_) {
                 return;
             }
 
-            if (!router || !user) return;
+            if (!router || !user) {
+                debug.error('Initialization failed, missing : ', {router, user});
+                return;
+            }
             clearInterval(loadInterval);
 
             twitch.setCurrentUser(user.authToken, user.id, user.login, user.displayName);
@@ -161,6 +171,7 @@ class Watcher extends SafeEventEmitter {
         this.chatObserver();
         this.vodChatObserver();
         this.routeObserver();
+        this.squadChatObserver();
 
         require('./watchers/*.js', {mode: (base, files) => {
             return files.map(module => {
@@ -211,6 +222,10 @@ class Watcher extends SafeEventEmitter {
                     this.waitForLoad('vod').then(() => this.emit('load.vod'));
                     this.waitForLoad('player').then(() => this.emit('load.player'));
                     break;
+                case routes.CHANNEL_SQUAD:
+                    this.waitForLoad('chat').then(() => this.emit('load.chat.squad')).then(() => this.emit('load.chat'));
+                    this.waitForLoad('player').then(() => this.emit('load.player'));
+                    break;
                 case routes.CHANNEL:
                     this.waitForLoad('channel').then(() => this.emit('load.channel'));
                     this.waitForLoad('chat').then(() => this.emit('load.chat'));
@@ -221,6 +236,7 @@ class Watcher extends SafeEventEmitter {
                     break;
                 case routes.DASHBOARD:
                     this.waitForLoad('chat').then(() => this.emit('load.chat'));
+                    break;
             }
         };
 
@@ -298,7 +314,7 @@ class Watcher extends SafeEventEmitter {
 
                     if ($el.hasClass('viewer-card')) {
                         this.emit('chat.moderator_card.open', $el);
-                    } else if ($el.hasClass('viewer-card-layer__draggable') && $el.find('.viewer-card').length) {
+                    } else if ($el.hasClass('viewer-card-layer__draggable') || $el.parent().hasClass('viewer-card-layer__draggable')) {
                         const $viewerCard = $el.find('.viewer-card');
                         if ($viewerCard.length) {
                             this.emit('chat.moderator_card.open', $viewerCard);
@@ -368,10 +384,11 @@ class Watcher extends SafeEventEmitter {
 
             channel = currentChannel;
 
-            api.get(`channels/${channel.name}`)
+            api.get(`cached/users/twitch/${channel.id}`)
                 .catch(error => ({
                     bots: [],
-                    emotes: [],
+                    channelEmotes: [],
+                    sharedEmotes: [],
                     status: error.status || 0
                 }))
                 .then(data => this.emit('channel.updated', data));
@@ -402,6 +419,29 @@ class Watcher extends SafeEventEmitter {
         );
 
         this.on('load.clips', () => observe(clipsChatWatcher, $('body')[0]));
+    }
+
+    squadChatObserver() {
+        let squadChatWrapper;
+
+        const observe = (watcher, element) => {
+            if (!element) return;
+            squadChatWrapper = element;
+            if (watcher) watcher.disconnect();
+            watcher.observe(element, {subtree: true, attributes: true});
+        };
+
+        squadChatWatcher = new window.MutationObserver(mutations =>
+            mutations.forEach(mutation => {
+                if (mutation.type !== 'attributes') return;
+                // stream chat changed, so force update current channel and chat
+                if (mutation.target.parentElement === squadChatWrapper) {
+                    this.forceReloadChat();
+                }
+            })
+        );
+
+        this.on('load.chat.squad', () => observe(squadChatWatcher, $(CHAT_SQUAD_WRAPPER)[0]));
     }
 }
 

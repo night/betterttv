@@ -3,10 +3,10 @@ const watcher = require('../../watcher');
 const twitch = require('../../utils/twitch');
 
 const CHAT_STATE_ID = 'bttv-channel-state-contain';
-const CHAT_HAS_STATE_CLASS = 'bttv-chat-header-chat-state';
 const CHAT_STATE_TEMPLATE = require('./template')(CHAT_STATE_ID);
-const CHAT_HEADER_SELECTOR = '.room-selector__header';
-const CHAT_HEADER_OPEN_SELECTOR = '.room-selector__open-header-wrapper';
+const CHAT_HEADER_SELECTOR = '.rooms-header';
+const CHAT_HEADER_PRIVATE_ROOM_SELECTOR = 'svg.tw-svg__asset--unlock';
+const CHAT_SETTINGS_BUTTON_SELECTOR = 'button[data-a-target="chat-settings"]';
 const PATCHED_SENTINEL = Symbol();
 
 let twitchOnRoomStateUpdated;
@@ -31,14 +31,13 @@ function displaySeconds(s) {
 function loadHTML() {
     const $stateContainer = $(`#${CHAT_STATE_ID}`);
     const $headerSelector = $(CHAT_HEADER_SELECTOR);
-    const $headerOpenSelector = $(CHAT_HEADER_OPEN_SELECTOR);
-    if ($headerOpenSelector.length || !$headerSelector.length || $headerSelector.find('.active-room-button').length) {
+    const $chatSettingsButtonSelector = $(CHAT_SETTINGS_BUTTON_SELECTOR);
+    if (!$headerSelector.length || $headerSelector.find(CHAT_HEADER_PRIVATE_ROOM_SELECTOR).length) {
         $stateContainer.remove();
-        $('body').toggleClass(CHAT_HAS_STATE_CLASS, false);
         return;
     }
     if ($stateContainer.length) return;
-    $headerSelector.after(CHAT_STATE_TEMPLATE);
+    $chatSettingsButtonSelector.before(CHAT_STATE_TEMPLATE);
 }
 
 function updateState(state, ...args) {
@@ -77,16 +76,14 @@ function updateState(state, ...args) {
             .attr('title', `${slowModeDuration} seconds`)
             .text(displaySeconds(slowModeDuration));
     }
-    $stateContainer.find('.slow').toggle(slowMode ? true : false);
-    $stateContainer.find('.slow-time').toggle(slowMode ? true : false);
+    $stateContainer.find('.slow').css({display: slowMode ? 'block' : 'none'});
+    $stateContainer.find('.slow-time').css({display: slowMode ? 'block' : 'none'});
 
-    $stateContainer.find('.r9k').toggle(r9k ? true : false);
+    $stateContainer.find('.r9k').css({display: r9k ? 'block' : 'none'});
 
-    $stateContainer.find('.subs-only').toggle(subsOnly ? true : false);
+    $stateContainer.find('.subs-only').css({display: subsOnly ? 'block' : 'none'});
 
-    $stateContainer.find('.emote-only').toggle(emoteOnly ? true : false);
-
-    $('body').toggleClass(CHAT_HAS_STATE_CLASS, slowMode || r9k || subsOnly || emoteOnly);
+    $stateContainer.find('.emote-only').css({display: emoteOnly ? 'block' : 'none'});
 }
 
 class ChatStateModule {

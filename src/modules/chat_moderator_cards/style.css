@@ -9,6 +9,14 @@
     }
 }
 
+.viewer-card__display-name h4 {
+    display: inline-block;
+}
+
+.bttv-moderator-card-actions > div {
+    position: relative;
+}
+
 .bttv-moderator-card-action {
     font-size: 1rem;
 
@@ -25,7 +33,13 @@
     background-color: rgba(0,0,0,0.6);
 }
 
+.bttv-moderator-card-nickname-change-button {
+    margin-top: -5px;
+}
+
 .bttv-moderator-card-messages {
+    border-top: 1px solid #222;
+
     .message-list {
         overflow-y: auto;
         max-height: 100px;

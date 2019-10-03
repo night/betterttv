@@ -1,10 +1,9 @@
 #bttv-channel-state-contain {
-  position: absolute;
-  top: 24px;
-  left: 20px;
-  width: 150px;
-  height: 24px;
+  position: relative;
+  padding-top: 5px;
+  margin-right: 10px;
   color: #6441a4;
+  float: left;
 
   svg path {
     fill: #6441a4;
@@ -26,11 +25,6 @@
       margin-right: -4px;
     }
   }
-}
-
-.bttv-chat-header-chat-state #chat-room-header-label p[data-test-selector="chat-room-header-label"] {
-  font-size: 10px;
-  margin-top: -14px;
 }
 
 .tw-root--theme-dark {

@@ -79,9 +79,7 @@ class ChatDeletedMessagesModule {
                 $message.toggleClass(CHAT_LINE_DELETED_CLASS, true);
                 $message.find(CHAT_LINE_LINK_SELECTOR).each(function() {
                     const $link = $(this);
-                    const $unlinked = $('<span />');
-                    $unlinked.text($link.attr('href'));
-                    $link.replaceWith($unlinked);
+                    $link.removeAttr('href');
                 });
                 $message.find(CHAT_LINE_CLIP_CARD_SELECTOR).remove();
             }

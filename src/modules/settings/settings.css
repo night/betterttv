@@ -99,7 +99,7 @@
   }
 
   #bttvSettingsSearch {
-    background: url(../assets/icons/bttv_settings_search.png) no-repeat 10px center;
+    background: url(assets/icons/bttv_settings_search.png) no-repeat 10px center;
     outline: none;
     border: none;
     padding-left: 40px !important;
@@ -227,8 +227,21 @@
   }
 }
 
-.bttvSettingsIconDropDown {
+.bttvSettingsDropDown {
+  .bttvSettingsIconDropDown {
     width: 18px;
     height: 18px;
-    background: url(../assets/icons/bttv_settings.png) no-repeat 0 0px;
+    filter: grayscale(100%) brightness(0%);
+    background: url(assets/icons/bttv_settings.png) no-repeat 0 0px;
+  }
+
+  &:hover .bttvSettingsIconDropDown {
+    filter: grayscale(100%) brightness(400%);
+  }
+}
+
+.tw-root--theme-dark {
+  .bttvSettingsIconDropDown {
+    filter: grayscale(100%) brightness(300%);
+  }
 }

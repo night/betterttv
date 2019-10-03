@@ -2,10 +2,10 @@
   .pinned-cheer,
   .pinned-cheer-v2,
   button[data-a-target="bits-button"],
-  div[data-a-target="bits-card"],
+  div[data-test-selector="channel-leaderboard-container"],
   img.chat-line__message--emote[src^="https://d3aqoihi2n8ty8.cloudfront.net/actions/"],
   img.chat-line__message--emote[src^="https://d3aqoihi2n8ty8.cloudfront.net/partner-actions/"],
-  .chat-badge[alt~="Cheer"] {
+  .chat-badge[alt~="cheer"] {
     display: none !important;
   }
 }

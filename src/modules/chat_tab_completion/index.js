@@ -130,6 +130,13 @@ class ChatTabcompletionModule {
             if ($(AUTOCOMPLETE_SUGGESTIONS_SELECTOR).length > 0) return;
             if ($inputField[0].selectionStart > 0) return;
             if (this.historyPos + 1 === this.messageHistory.length) return;
+
+            const unsentMsg = $inputField.val().trim();
+            if (this.historyPos < 0 && unsentMsg.length > 0) {
+                this.messageHistory.unshift(unsentMsg);
+                this.historyPos = 0;
+            }
+
             const prevMsg = this.messageHistory[++this.historyPos];
             twitch.setInputValue($inputField, prevMsg);
             $inputField[0].setSelectionRange(0, 0);

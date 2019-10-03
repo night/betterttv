@@ -1,11 +1,12 @@
 .bttv-hide-player-extensions {
-  .extension-container, .extension-taskbar {
+  .extensions-dock__layout, .extensions-video-overlay-size-container, .extensions-notifications, .extension-container, .extension-taskbar {
     display: none !important;
   }
 }
 
 .bttv-hide-player-cursor {
-  .video-player--fullscreen .player {
+  .video-player--fullscreen .player,
+  div[data-test-selector="highwind-video-player__video-container"] {
     cursor: none;
   }
 }
