@@ -5,28 +5,34 @@ const keyCodes = require('../../utils/keycodes');
 const twitch = require('../../utils/twitch');
 const debounce = require('lodash.debounce');
 
-const VIDEO_PLAYER_SELECTOR = '.video-player .player';
-const CANCEL_VOD_RECOMMENDATION_SELECTOR = '.recommendations-overlay .pl-rec__cancel.pl-button';
+const VIDEO_PLAYER_SELECTOR = '.video-player .player,.highwind-video-player__container';
+const CANCEL_VOD_RECOMMENDATION_SELECTOR = '.recommendations-overlay .pl-rec__cancel.pl-button, .autoplay-vod__content-container button';
 
 function stepPlaybackSpeed(faster) {
     const currentPlayer = twitch.getCurrentPlayer();
-    if (!currentPlayer || !currentPlayer.props.vodID) return;
+    if (!currentPlayer) return;
     const rates = [ 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0 ];
-    let idx = rates.indexOf(currentPlayer.player.getPlaybackRate());
+    let idx = rates.indexOf(currentPlayer.getPlaybackRate());
     if (idx === -1) return;
     idx += faster ? 1 : -1;
     if (idx < 0 || idx >= rates.length) return;
-    currentPlayer.player.setPlaybackRate(rates[idx]);
+    currentPlayer.setPlaybackRate(rates[idx]);
 }
 
 function watchPlayerRecommendationVodsAutoplay() {
     const currentPlayer = twitch.getCurrentPlayer();
-    if (!currentPlayer || !currentPlayer.player) return;
+    if (!currentPlayer) return;
 
-    currentPlayer.player.addEventListener('ended', () => {
+    const handleEndedEvent = () => {
         if (settings.get('disableVodRecommendationAutoplay') !== true) return;
         watcher.waitForLoad('vodRecommendation').then(() => $(CANCEL_VOD_RECOMMENDATION_SELECTOR).trigger('click'));
-    });
+    };
+
+    if (currentPlayer.emitter) {
+        currentPlayer.emitter.on('Ended', handleEndedEvent);
+    } else {
+        currentPlayer.addEventListener('ended', handleEndedEvent);
+    }
 }
 
 function handleKeyEvent(keydown) {
@@ -56,17 +62,16 @@ function handleKeyEvent(keydown) {
 }
 
 let clicks = 0;
-function handlePlayerClick(e) {
-    if (e.target !== this) {
-        $('.video-player__container').focus();
-        return;
-    }
+function handlePlayerClick() {
+    const currentPlayer = twitch.getCurrentPlayer();
+    if (!currentPlayer) return;
+    const paused = currentPlayer.paused;
     clicks++;
     setTimeout(() => {
         if (clicks === 1) {
-            const $player = $(VIDEO_PLAYER_SELECTOR);
-            const isPaused = $player.data('paused');
-            if (!isPaused) $player.find('.qa-pause-play-button').click();
+            if (!paused) {
+                currentPlayer.pause();
+            }
         }
         clicks = 0;
     }, 250);
@@ -116,16 +121,16 @@ class VideoPlayerModule {
     }
 
     clickToPause() {
-        $(VIDEO_PLAYER_SELECTOR).off('click', '.player-overlay.pl-overlay__fullscreen,.player-video,.tw-c-text-overlay > div,.js-paused-overlay', handlePlayerClick);
+        $(VIDEO_PLAYER_SELECTOR).off('click', '.player-overlay.pl-overlay__fullscreen,.player-video,.tw-c-text-overlay > div,.js-paused-overlay,.highwind-video-player__overlay div[data-a-target="player-overlay-click-handler"]', handlePlayerClick);
 
         if (settings.get('clickToPlay') === true) {
-            $(VIDEO_PLAYER_SELECTOR).on('click', '.player-overlay.pl-overlay__fullscreen,.player-video,.tw-c-text-overlay > div,.js-paused-overlay', handlePlayerClick);
+            $(VIDEO_PLAYER_SELECTOR).on('click', '.player-overlay.pl-overlay__fullscreen,.player-video,.tw-c-text-overlay > div,.js-paused-overlay,.highwind-video-player__overlay div[data-a-target="player-overlay-click-handler"]', handlePlayerClick);
         }
     }
 
     loadHidePlayerCursorFullscreen() {
         const hidePlayerCursor = debounce(() => togglePlayerCursor(true), 5000);
-        $('body').on('mousemove', '.video-player--fullscreen', () => {
+        $('body').on('mousemove', '.video-player--fullscreen,div[data-test-selector="highwind-video-player__video-layout"]', () => {
             togglePlayerCursor(false);
             hidePlayerCursor();
         });

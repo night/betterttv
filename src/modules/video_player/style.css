@@ -5,7 +5,8 @@
 }
 
 .bttv-hide-player-cursor {
-  .video-player--fullscreen .player {
+  .video-player--fullscreen .player,
+  div[data-test-selector="highwind-video-player__video-container"] {
     cursor: none;
   }
 }

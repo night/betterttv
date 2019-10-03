@@ -7,7 +7,7 @@ const CHANNEL_CONTAINER = '.channel-page,.channel-root';
 const CHAT_CONTAINER = 'section[data-test-selector="chat-room-component-layout"]';
 const VOD_CHAT_CONTAINER = '.qa-vod-chat';
 const CHAT_LIST = '.chat-list';
-const PLAYER = '.player';
+const PLAYER = '.player,.highwind-video-player__container';
 const CLIPS_BROADCASTER_INFO = '.clips-broadcaster-info';
 
 const TMIActionTypes = {
@@ -221,10 +221,10 @@ module.exports = {
         try {
             const node = searchReactParents(
                 getReactInstance($(PLAYER)[0]),
-                n => n.stateNode && n.stateNode.player
+                n => n.stateNode && (n.stateNode.player || n.stateNode.props.mediaPlayerInstance)
             );
-            player = node.stateNode;
-        } catch (_) {}
+            player = node.stateNode.player ? node.stateNode.player.player : node.stateNode.props.mediaPlayerInstance;
+        } catch (e) {}
 
         return player;
     },
