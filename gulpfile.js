@@ -65,25 +65,24 @@ const css = () => src('src/**/*.css')
     .pipe(dest('build'));
 
 
-const scripts = () =>
-    browserify('build/index.js', {debug: true})
-        .transform('require-globify')
-        .transform('babelify', {
-            global: true,
-            presets: ['@babel/preset-env'],
-            plugins: ['@babel/plugin-transform-runtime'],
-            ignore: [/node_modules/]
-        })
-        .transform('envify')
-        .bundle()
-        .pipe(gulpif(IS_PROD, source('betterttv.unmin.js'), source('betterttv.js')))
-        .pipe(buffer())
-        .pipe(dest('build'))
-        .pipe(gulpif(IS_PROD, rename('betterttv.js')))
-        .pipe(gulpif(IS_PROD, sourcemaps.init({loadMaps: true})))
-        .pipe(gulpif(IS_PROD, uglify({output: {comments: saveLicense}})))
-        .pipe(gulpif(IS_PROD, sourcemaps.write('./')))
-        .pipe(gulpif(IS_PROD, dest('build')));
+const scripts = () => browserify('build/index.js', {debug: true})
+    .transform('require-globify')
+    .transform('babelify', {
+        global: true,
+        presets: ['@babel/preset-env'],
+        plugins: ['@babel/plugin-transform-runtime'],
+        ignore: [/node_modules/]
+    })
+    .transform('envify')
+    .bundle()
+    .pipe(gulpif(IS_PROD, source('betterttv.unmin.js'), source('betterttv.js')))
+    .pipe(buffer())
+    .pipe(dest('build'))
+    .pipe(gulpif(IS_PROD, rename('betterttv.js')))
+    .pipe(gulpif(IS_PROD, sourcemaps.init({loadMaps: true})))
+    .pipe(gulpif(IS_PROD, uglify({output: {comments: saveLicense}})))
+    .pipe(gulpif(IS_PROD, sourcemaps.write('./')))
+    .pipe(gulpif(IS_PROD, dest('build')));
 
 const dist = () => src('build/**/*')
     .pipe(tar('betterttv.tar'))
@@ -97,11 +96,11 @@ const build = series(
     scripts
 );
 
-const dev = () => {
+const devServer = () => {
     server();
     watch('src/**/*', build);
 };
 
 exports.default = build;
 exports.dist = series(build, dist);
-exports.watch = parallel(dev, build);
+exports.watch = parallel(devServer, build);
