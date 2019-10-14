@@ -44,6 +44,7 @@
     }
 
     const debug = require('./utils/debug');
+    const watcher = require('./watcher');
 
     require('./modules/**/index.js', {mode: (base, files) => {
         return files.map(module => {
@@ -62,6 +63,9 @@
 
     window.BetterTTV = {
         version: debug.version,
-        settings: require('./settings')
+        settings: require('./settings'),
+        watcher: {
+            emitLoad: name => watcher.emit(`load.${name}`),
+        },
     };
 })();
