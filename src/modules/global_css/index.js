@@ -30,7 +30,6 @@ class GlobalCSSModule {
         settings.on('changed.darkenedMode', value => this.setTwitchTheme(value));
 
         this.loadTwitchThemeObserver();
-        this.setTwitchTheme(settings.get('darkenedMode'));
         this.dismissPinnedCheers();
     }
 
@@ -54,7 +53,7 @@ class GlobalCSSModule {
         connectStore.subscribe(() => {
             const isDarkMode = connectStore.getState().ui.theme === TwitchThemes.DARK;
             if (settings.get('darkenedMode') !== isDarkMode) {
-                settings.set('darkenedMode', isDarkMode);
+                settings.set('darkenedMode', isDarkMode, false, true);
             }
         });
     }
