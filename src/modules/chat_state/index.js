@@ -1,6 +1,7 @@
 const $ = require('jquery');
 const watcher = require('../../watcher');
 const twitch = require('../../utils/twitch');
+const settings = require('../../settings');
 
 const CHAT_STATE_ID = 'bttv-channel-state-contain';
 const CHAT_STATE_TEMPLATE = require('./template')(CHAT_STATE_ID);
@@ -29,6 +30,8 @@ function displaySeconds(s) {
 }
 
 function loadHTML() {
+    if (settings.get('chatStateIcons') === false) return;
+
     const $stateContainer = $(`#${CHAT_STATE_ID}`);
     const $headerSelector = $(CHAT_HEADER_SELECTOR);
     const $chatSettingsButtonSelector = $(CHAT_SETTINGS_BUTTON_SELECTOR);
@@ -88,7 +91,14 @@ function updateState(state, ...args) {
 
 class ChatStateModule {
     constructor() {
+        settings.add({
+            id: 'chatStateIcons',
+            name: 'Chat State Icons',
+            defaultValue: true,
+            description: 'Show icons indicating emote-only, r9k, subscriber-only, and slow mode'
+        });
         watcher.on('load.chat', () => this.patch());
+        settings.on('changed.chatStateIcons', setting => setting === true ? this.patch() : this.unload());
     }
 
     patch() {
@@ -108,6 +118,11 @@ class ChatStateModule {
         twitchOnRoomStateUpdated = chatController.onRoomStateUpdated;
         chatController.onRoomStateUpdated = updateState;
         chatController.forceUpdate();
+    }
+
+    unload() {
+        if (!$(`#${CHAT_STATE_ID}`)) return;
+        $(`#${CHAT_STATE_ID}`).remove();
     }
 }
 
