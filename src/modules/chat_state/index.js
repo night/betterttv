@@ -37,7 +37,7 @@ function loadHTML() {
         return;
     }
     if ($stateContainer.length) return;
-    $chatSettingsButtonSelector.before(CHAT_STATE_TEMPLATE);
+    $chatSettingsButtonSelector.parent().parent().before(CHAT_STATE_TEMPLATE);
 }
 
 function updateState(state, ...args) {
