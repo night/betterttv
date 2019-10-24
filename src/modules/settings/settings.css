@@ -1,4 +1,5 @@
 #bttvSettingsPanel {
+  font: 12px "Roobert","Helvetica Neue",Helvetica,Arial,sans-serif;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -8,13 +9,11 @@
   width: 800px;
   height: 500px;
   z-index: 9002;
-  border-radius: 3px;
-  border: 1px solid #000000;
-  background-color: #1e1e1e;
-  box-shadow: -1px 0 0 rgba(#000000, 0.3), -2px 0 0 rgba(#000000, 0.2), -3px 0 0 rgba(#000000, 0.1),
-              1px 0 0 rgba(#000000, 0.3), 2px 0 0 rgba(#000000, 0.2), 3px 0 0 rgba(#000000, 0.1),
-              0 -1px 0 rgba(#000000, 0.3), 0 -2px 0 rgba(#000000, 0.2), 0 -3px 0 rgba(#000000, 0.1),
-              0 1px 0 rgba(#000000, 0.3), 0 2px 0 rgba(#000000, 0.2), 0 3px 0 rgba(#000000, 0.1);
+  border-radius: 15px;
+  /* border: 1px solid #000000; */
+  background-color: #060606;
+  /* box-shadow: 0 5px 15px rgba(#ffffff, 0.1); */
+  display: flex;
 
   h1 {
     font-size: 20px;
@@ -26,48 +25,80 @@
   }
 
   #header {
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
-    background-color: #282828;
-    width: 100%;
-    border-bottom: 1px solid #111111;
-    line-height: 42px;
+    /* border-top-left-radius: 15px; */
+    /* border-bottom-left-radius: 15px; */
+    /* background-color: #000000; */
+    width: 25%;
+    height: 100%;
+    /* border-bottom: 1px solid #111111; */
+    /* line-height: 42px; */
+
+    /* ul {
+      height: 100%;
+      display: flex;
+      flex-flow: column nowrap;
+      align-items: center;
+      justify-content: center;
+    } */
+
   }
 
-  #footer {
-    color: #777777;
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px;
-    background-color: #282828;
-    bottom: 0px;
-    position: absolute;
-    width: calc(100% - 10px);
-    padding: 5px;
-    border-top: 1px solid #111111;
-    box-sizing: content-box;
-    z-index: inherit;
+  .nav {
+    list-style: none;
+    /* display: inline-block; */
+    /* margin: 0 10px 0 0; */
+    /* vertical-align: middle; */
 
-    a {
-      color: #ff0000;
-      opacity: 0.7;
-      font-weight: bold;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    top: 0;
+
+    &> li {
+      float: left;
+      line-height: 50px;
+
+      &> a {
+        padding-bottom: 9px;
+        padding-left: 15px;
+        padding-right: 15px;
+        color: #C7C7C7;
+        text-shadow: 0 -1px 0 rgba(#000000, 0.25);
+        text-decoration: none;
+        box-shadow: none;
+        /* font-family: "Korolev-Bold","HelveticaNeue-CondensedBold","ArialNarrow-Bold","Helvetica Neue",Helvetica,Arial,sans-serif; */
+        font-size: 18px;
+        font-weight: normal;
+
+        &:hover {
+          /* border-bottom: 1px solid #ff0000; */
+          color: #BE93FD;
+        }
+      }
+
+      &.active a {
+        /* border-bottom: 1px solid #ff0000; */
+        color: #BE93FD;
+      }
     }
   }
 
   #logo {
-    padding: 10px;
+    position: absolute;
+    padding: 5px 0 0 15px;
     vertical-align: bottom;
-    text-shadow: 1px 1px 3px #000000;
-    font-size: 25px;
-    font-family: "Korolev-Bold","HelveticaNeue-CondensedBold","ArialNarrow-Bold","Helvetica Neue",Helvetica,Arial,sans-serif;
+    /* text-shadow: 1px 1px 3px #575757; */
+    /* font-size: 25px; */
+    /* font-family: "Korolev-Bold","HelveticaNeue-CondensedBold","ArialNarrow-Bold","Helvetica Neue",Helvetica,Arial,sans-serif; */
   }
 
   #close {
     font-size: 30px;
     vertical-align: center;
     float: right;
-    right: 20px;
-    top: 0px;
+    right: 25px;
+    top: 10px;
     position: absolute;
     color: #ffffff;
     text-shadow: 0 1px 0 #000000;
@@ -83,10 +114,39 @@
     }
   }
 
+  #footer {
+    color: #C7C7C7;
+    /* border-bottom-left-radius: 3px; */
+    /* border-bottom-right-radius: 3px; */
+    background-color: #181818;
+    bottom: 0px;
+    position: absolute;
+    width: calc(100% - 50px);
+    padding: 5px 10px;
+    margin: 10px 15px;
+    /* border-top: 1px solid #111111; */
+    border-radius: 10px;
+    box-sizing: content-box;
+    z-index: inherit;
+
+    a {
+      color: #BE93FD;
+      /* opacity: 0.7; */
+      font-weight: bold;
+    }
+  }
+
+  #bttvSettingsPanelContent {
+    height: calc(100% - 65px);
+    background: #181818;
+    margin: 15px;
+    padding: 15px;
+    border-radius: 15px;
+  }
+
   #bttvSettings {
-    font: 12px "Helvetica Neue",Helvetica,Arial,sans-serif;
     overflow-y: scroll;
-    height: 425px;
+    height: 100%;
 
     div {
       box-sizing: content-box;
@@ -105,6 +165,7 @@
     padding-left: 40px !important;
     font-size: 14px;
     width: 100%;
+    margin-bottom: 15px;
   }
 
   .option {
@@ -126,41 +187,6 @@
 
     &:nth-child(2n) {
       background-color: rgb(35, 35, 35);
-    }
-  }
-
-  .nav {
-    list-style: none;
-    display: inline-block;
-    margin: 0 10px 0 0;
-    vertical-align: middle;
-
-    &> li {
-      float: left;
-      line-height: 18px;
-
-      &> a {
-        padding-bottom: 9px;
-        padding-left: 15px;
-        padding-right: 15px;
-        color: #adafae;
-        text-shadow: 0 -1px 0 rgba(#000000, 0.25);
-        text-decoration: none;
-        box-shadow: none;
-        font-family: "Korolev-Bold","HelveticaNeue-CondensedBold","ArialNarrow-Bold","Helvetica Neue",Helvetica,Arial,sans-serif;
-        font-size: 18px;
-        font-weight: normal;
-
-        &:hover {
-          border-bottom: 1px solid #ff0000;
-          color: #d3d3d3;
-        }
-      }
-
-      &.active a {
-        border-bottom: 1px solid #ff0000;
-        color: #d3d3d3;
-      }
     }
   }
 
