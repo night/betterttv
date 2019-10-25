@@ -11,14 +11,10 @@
   
   z-index: 9002;
   border-radius: 15px;
-  /* border: 1px solid #000000; */
   background-color: #060606;
-  /* box-shadow: 0 5px 15px rgba(#ffffff, 0.1); */
   display: flex;
   flex-flow: row nowrap;
   align-items: stretch;
-
-
 
   h1 {
     font-size: 1.5em;
@@ -54,7 +50,6 @@
       font-size: 2.5em;
       vertical-align: center;
       cursor: pointer;
-      // float: right;
       right: 25px;
       top: 10px;
       position: absolute;
@@ -62,15 +57,10 @@
       text-shadow: 0 2px 5px #000000;
       opacity: 0.4;
       transition: all 0.05s linear;
-      // filter: alpha(opacity=20);
   
       &:hover, &:focus {
-        // color: #ffffff;
-        // text-decoration: none;
-        
         opacity: 0.8;
         text-shadow: 0 2px 10px #000000;
-        // filter: alpha(opacity=40);
       }
     }
 
@@ -117,22 +107,18 @@
   */
   #footer {
     color: #C7C7C7;
-    /* border-bottom-left-radius: 3px; */
-    /* border-bottom-right-radius: 3px; */
     background-color: #181818;
     bottom: 0px;
     position: absolute;
     width: calc(100% - 50px);
     padding: 5px 10px;
     margin: 10px 15px;
-    /* border-top: 1px solid #111111; */
     border-radius: 10px;
     box-sizing: content-box;
     z-index: inherit;
 
     a {
       color: #BE93FD;
-      /* opacity: 0.7; */
       font-weight: bold;
     }
   }
@@ -180,7 +166,6 @@
   }
 
 
-
   /**
   * SETTINGS
   */
@@ -211,7 +196,7 @@
 
       display: flex;
       flex-flow: row nowrap;
- 
+
       /*
       &:nth-child(2n) {
         background-color: rgb(35, 35, 35);
@@ -239,20 +224,14 @@
   
           width: 100%;
           height: 100%;
-
         }
         
         .bttv-switch-slider:before {
-  
           position: absolute;
-  
           background-color: #fff;
-          // bottom: 4px;
           content: "";
+
           height: 1.5em;
-          // left: 4px;
-          
-          
           width: 1.5em;
   
           transition: .3s ease-out;
@@ -269,7 +248,6 @@
 
       }
       
-
       .bttvSettingText {
         display: block;
         padding-left: 15px;
@@ -287,18 +265,12 @@
 
 
 
-
-
-
-
   /**
   * CHANNEL
   */
 
 
 
-
- 
 
   /**
   * CHANGELOG
@@ -315,7 +287,7 @@
   }
 
 
-   /**
+  /**
   * PRIVACY POLICY
   */
   #bttvPrivacy {
@@ -337,8 +309,6 @@
     }
   }
 
-
-
   /**
   * BACKUP/IMPORT
   */
@@ -348,13 +318,9 @@
   }
 }
 
-
-
 .bttvSettingsIconDropDown {
   width: 18px;
   height: 18px;
   filter: grayscale(100%) brightness(500%);
   background: url(assets/icons/bttv_settings.png) no-repeat 0 0px;
 }
-
-
