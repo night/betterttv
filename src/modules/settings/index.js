@@ -12,37 +12,22 @@ const moment = require('moment');
 const getSettingElement = ({id}) => $(`.bttvOption-${html.escape(id)}`);
 
 const settingTemplate = ({id, name, description}) => `
-    <div id="option" class="option bttvOption-${html.escape(id)}">
+    <div class="option bttvOption-${html.escape(id)}">
 
-        <div class="bttv-switch">
-        
-            <input class="bttv-switch-input bttv-switch-off" type="radio" name=${html.escape(id)} value="false" id="${html.escape(id)}False" />
-            
-            
-            <label class="bttv-switch-label bttv-switch-label-off" for="${html.escape(id)}False"></label>
-            
-            
-            <input class="bttv-switch-input" type="radio" name=${html.escape(id)} value="true" id="${html.escape(id)}True" />
-            
-            
-            <label class="bttv-switch-label bttv-switch-label-on" for="${html.escape(id)}True"></label>
-            
-
-            <span class="bttv-switch-selection"></span>
-        
-        </div>
+        <label class="bttv-switch" for="bttv-switch-input-${html.escape(id)}">
+            <input type="checkbox" id="bttv-switch-input-${html.escape(id)}" name="${html.escape(id)}" />
+            <div class="bttv-switch-slider"></div>
+        </label>
 
         <div class="bttvSettingText">
             <h2 class="bttvSettingName">${html.escape(name)}</h2>
             <p class="bttvSettingDescription">${html.escape(description)}</p>
         </div
         
-    </option>
+    </div>
 `;
 
 const settingsPanelTemplate = () => `
-    
-
     <div id="header">
         <span id="logo"><img height="45px" src="${cdn.url('assets/logos/settings_logo.png')}" /></span>
         <ul class="nav">
@@ -55,16 +40,12 @@ const settingsPanelTemplate = () => `
         </ul>
         <span id="close">&times;</span>
     </div>
-    
 
     <div id="bttvSettingsPanelContent">
-
-    
-
+        
         <div id="bttvSettings" class="options-list">
             <input type="text" placeholder="Search settings" id="bttvSettingsSearch" class="option">
         </div>
-        
         
         <div id="bttvAbout" style="display:none;">
 
@@ -91,20 +72,15 @@ const settingsPanelTemplate = () => `
 
         </div>
         
-        
         <div id="bttvChannel" style="display:none;">
             <iframe frameborder="0" width="100%" height="425"></iframe>
         </div>
         
-        
-        <div id="bttvPrivacy" style="display:none;">
-        </div>
-        
+        <div id="bttvPrivacy" style="display:none;"></div>
         
         <div id="bttvChangelog" style="display:none;">
             <h1>Changelog</h1><div class="bttv-changelog-releases"></div>
         </div>
-
 
         <div id="bttvBackup" style="display:none;">
             <h4 style="padding-bottom:10px;">Backup Settings</h4>
@@ -112,13 +88,8 @@ const settingsPanelTemplate = () => `
             <h4 style="padding-top:15px;padding-bottom:10px;">Import Settings</h4>
             <input id="bttvImportInput" type="file" style="height: 25px;width: 250px;" />
         </div>
-
-
-
-
-    </div>    
-
-    
+        
+    </div> 
 
     <div id="footer">
         <span>BetterTTV &copy; <a href="https://www.nightdev.com" target="_blank">NightDev, LLC</a> ${new Date().getFullYear()}</span>
@@ -129,8 +100,6 @@ const settingsPanelTemplate = () => `
             <a href="https://discord.gg/nightdev" target="_blank">Discord</a>
         </span>
     </div>
-
-
 `;
 
 const changelogEntryTemplate = (version, publishedAt, body) => `
@@ -178,7 +147,7 @@ function addSetting(setting) {
         getSettingElement(sortedSettings[beforeIndex]).after(template);
     }
 
-    $(settings.get(setting.id) ? `#${setting.id}True` : `#${setting.id}False`).prop('checked', true);
+    $(`#bttv-switch-input-${setting.id}`).prop('checked', settings.get(setting.id) ? true : false);
 }
 
 class SettingsModule {
@@ -206,7 +175,10 @@ class SettingsModule {
             .then(changelog => changelog.map(({version, publishedAt, body}) => changelogEntryTemplate(version, publishedAt, body)))
             .then(releases => $('#bttvChangelog .bttv-changelog-releases').html(releases.join('')));
 
-        $('#bttvSettings').on('change', '.option input:radio', ({target}) => settings.set(target.name, target.value === 'true'));
+        $('#bttvSettings').on('change', '.option input:checkbox', ({target}) => {
+            settings.set(target.name, target.checked === true);
+            console.log(`CHANGED ${target.name} ${target.checked} ${target.value}`);
+        });
         $('#bttvBackupButton').click(() => this.backup());
         $('#bttvImportInput').change(({target}) => this.import(target));
         $('#bttvSettingsSearch').on('input', () => this.doSearch());
@@ -293,12 +265,12 @@ class SettingsModule {
     doSearch() {
         const val = $('#bttvSettingsSearch').val().trim().toLowerCase();
         if (val === '') {
-            $('[class^="option bttvOption-"]').css('display', 'block');
+            $('[class^="option bttvOption-"]').css('display', 'flex');
             return;
         }
         settings.getSettings().forEach(setting => {
             const shouldShow = setting.name.toLowerCase().includes(val) || setting.description.toLowerCase().includes(val);
-            $(`.bttvOption-${setting.id}`).css('display', shouldShow ? 'block' : 'none');
+            $(`.bttvOption-${setting.id}`).css('display', shouldShow ? 'flex' : 'none');
         });
     }
 }
