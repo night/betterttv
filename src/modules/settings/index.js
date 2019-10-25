@@ -15,16 +15,27 @@ const settingTemplate = ({id, name, description}) => `
     <div id="option" class="option bttvOption-${html.escape(id)}">
 
         <div class="bttv-switch">
+        
             <input class="bttv-switch-input bttv-switch-off" type="radio" name=${html.escape(id)} value="false" id="${html.escape(id)}False" />
-            <label class="bttv-switch-label bttv-switch-label-off" for="${html.escape(id)}False">Off</label>
+            
+            
+            <label class="bttv-switch-label bttv-switch-label-off" for="${html.escape(id)}False"></label>
+            
+            
             <input class="bttv-switch-input" type="radio" name=${html.escape(id)} value="true" id="${html.escape(id)}True" />
-            <label class="bttv-switch-label bttv-switch-label-on" for="${html.escape(id)}True">On</label>
+            
+            
+            <label class="bttv-switch-label bttv-switch-label-on" for="${html.escape(id)}True"></label>
+            
+
             <span class="bttv-switch-selection"></span>
+        
         </div>
 
-        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">${html.escape(name)}</span>
-
-        <span class="description"> — ${html.escape(description)}</span>
+        <div class="bttvSettingText">
+            <h2 class="bttvSettingName">${html.escape(name)}</h2>
+            <p class="bttvSettingDescription">${html.escape(description)}</p>
+        </div
         
     </option>
 `;
@@ -49,7 +60,7 @@ const settingsPanelTemplate = () => `
     <div id="bttvSettingsPanelContent">
 
     
-    
+
         <div id="bttvSettings" class="options-list">
             <input type="text" placeholder="Search settings" id="bttvSettingsSearch" class="option">
         </div>
