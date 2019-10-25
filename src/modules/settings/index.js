@@ -88,7 +88,7 @@ const settingsPanelTemplate = () => `
             <h4 style="padding-top:15px;padding-bottom:10px;">Import Settings</h4>
             <input id="bttvImportInput" type="file" style="height: 25px;width: 250px;" />
         </div>
-        
+
     </div> 
 
     <div id="footer">
@@ -175,10 +175,7 @@ class SettingsModule {
             .then(changelog => changelog.map(({version, publishedAt, body}) => changelogEntryTemplate(version, publishedAt, body)))
             .then(releases => $('#bttvChangelog .bttv-changelog-releases').html(releases.join('')));
 
-        $('#bttvSettings').on('change', '.option input:checkbox', ({target}) => {
-            settings.set(target.name, target.checked === true);
-            console.log(`CHANGED ${target.name} ${target.checked} ${target.value}`);
-        });
+        $('#bttvSettings').on('change', '.option input:checkbox', ({target}) => settings.set(target.name, target.checked === true));
         $('#bttvBackupButton').click(() => this.backup());
         $('#bttvImportInput').change(({target}) => this.import(target));
         $('#bttvSettingsSearch').on('input', () => this.doSearch());
