@@ -14,9 +14,9 @@ const getSettingElement = ({id}) => $(`.bttvOption-${html.escape(id)}`);
 const settingTemplate = ({id, name, description}) => `
     <div class="option bttvOption-${html.escape(id)}">
 
-        <label class="bttv-switch" for="bttv-switch-input-${html.escape(id)}">
-            <input type="checkbox" id="bttv-switch-input-${html.escape(id)}" name="${html.escape(id)}" />
-            <div class="bttv-switch-slider"></div>
+        <label class="bttvSwitch" for="bttvSwitchInput-${html.escape(id)}">
+            <input type="checkbox" id="bttvSwitchInput-${html.escape(id)}" name="${html.escape(id)}" />
+            <div class="bttvSwitchSlider"></div>
         </label>
 
         <div class="bttvSettingText">
@@ -29,7 +29,10 @@ const settingTemplate = ({id, name, description}) => `
 
 const settingsPanelTemplate = () => `
     <div id="header">
-        <span id="logo"><img height="45px" src="${cdn.url('assets/logos/settings_logo.png')}" /></span>
+    <span id="logo">
+        <img height="45px" src="${cdn.url('assets/logos/settings_logo.png')}" />
+        <h2><span>Better</span>TTV</h2>
+    </span>
         <ul class="nav">
             <li><a href="#bttvAbout">About</a></li>
             <li class="active"><a href="#bttvSettings">Settings</a></li>
@@ -43,8 +46,12 @@ const settingsPanelTemplate = () => `
 
     <div id="bttvSettingsPanelContent">
         
-        <div id="bttvSettings" class="options-list">
-            <input type="text" placeholder="Search settings" id="bttvSettingsSearch" class="option">
+        <div id="bttvSettings">
+            <input type="text" placeholder="Search" id="bttvSettingsSearch">
+            <div id="bttvSettingsContainer">
+                <div id="bttvSettingsContent" class="options-list"></div>
+            </div>
+
         </div>
         
         <div id="bttvAbout" style="display:none;">
@@ -141,12 +148,12 @@ function addSetting(setting) {
 
     const template = settingTemplate(setting);
     if (beforeIndex === -1) {
-        $('#bttvSettings.options-list input#bttvSettingsSearch').after(template);
+        $('#bttvSettingsContent').append(template);
     } else {
         getSettingElement(sortedSettings[beforeIndex]).after(template);
     }
 
-    $(`#bttv-switch-input-${setting.id}`).prop('checked', settings.get(setting.id) ? true : false);
+    $(`#bttvSwitchInput-${setting.id}`).prop('checked', settings.get(setting.id) ? true : false);
 }
 
 class SettingsModule {
@@ -179,7 +186,7 @@ class SettingsModule {
         $('#bttvImportInput').change(({target}) => this.import(target));
         $('#bttvSettingsSearch').on('input', () => this.doSearch());
 
-        $('#bttvSettingsPanel #close').click(() => $('#bttvSettingsPanel').hide('slow'));
+        $('#bttvSettingsPanel #close').click(() => $('#bttvSettingsPanel').hide('fast'));
         $('#bttvSettingsPanel .nav a').click(e => {
             e.preventDefault();
             const $tab = $(e.target);
@@ -196,10 +203,10 @@ class SettingsModule {
                 $(tabId).children('iframe').attr('src', 'https://manage.betterttv.net/channel');
             }
 
-            if (tabId === '#bttvAbout' || tabId === '#bttvBackup') {
-                $(tabId).parent().css('background', 'none');
-            } else {
+            if (tabId === '#bttvChannel' || tabId === '#bttvChangelog' || tabId === '#bttvPrivacy') {
                 $(tabId).parent().css('background', '#181818');
+            } else {
+                $(tabId).parent().css('background', 'none');
             }
 
             $(tabId).fadeIn();
@@ -240,7 +247,7 @@ class SettingsModule {
 
     openSettings(e) {
         e.preventDefault();
-        $('#bttvSettingsPanel').show('slow');
+        $('#bttvSettingsPanel').show('fast');
     }
 
     backup() {

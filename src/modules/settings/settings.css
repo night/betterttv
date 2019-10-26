@@ -4,9 +4,15 @@
   width: 800px;
   height: 500px;
 
-  top: calc(50vh - 250px);
-  left: calc(50vw - 400px);
+  // top: calc(50vh - 250px);
+  // left: calc(50vw - 400px);
 
+  top: 50vh;
+  left: 50vw;
+
+  margin-top: -250px;
+  margin-left: -400px;
+  
   color: #ffffff;
   
   z-index: 9002;
@@ -37,26 +43,43 @@
   * HEADER
   */
   #header {
-    width: 20%;
+    width: 22%;
     height: 100%;
 
     #logo {
       position: absolute;
-      padding: 5px 0 0 15px;
-      vertical-align: bottom;
+      top: 12px;
+      left: 15px;
+      display: flex;
+
+      h2 {
+        margin-top: 12px;
+        margin-left: 6px;
+        font-size: 1.5em;
+        font-weight: 800;
+        font-family: "Open Sans";
+        cursor: default;
+
+        span {
+          font-weight: 200;
+        }
+
+      }
+
     }
 
     #close {
       font-size: 2.5em;
-      vertical-align: center;
       cursor: pointer;
-      right: 25px;
-      top: 10px;
+      right: 11px;
+      top: 1px;
+      padding: 5px;
       position: absolute;
       color: #ffffff;
       text-shadow: 0 2px 5px #000000;
       opacity: 0.4;
       transition: all 0.05s linear;
+      line-height: 1em;
   
       &:hover, &:focus {
         opacity: 0.8;
@@ -127,11 +150,11 @@
   */
   #bttvSettingsPanelContent {
     height: calc(100% - 65px);
-    width: 100%;
-    background: #181818;
+    width: calc(78% - 30px);
+    background: none; /*changed in js dependent on page*/
     margin: 15px;
     padding: 15px;
-    border-radius: 15px;
+    border-radius: 10px 15px;
   }
 
 
@@ -148,6 +171,10 @@
 
     .aboutHalf-smaller {
       max-width: 40%;
+    }
+
+    h3 {
+      font-size: 1.05em;
     }
 
   }
@@ -192,27 +219,52 @@
   * SETTINGS
   */
   #bttvSettings {
-    overflow-y: scroll;
-    height: 100%;
+    height: calc(100% + 30px);
     display: flex;
     flex-flow: column nowrap;
-    padding-right: 10px;
+    margin: -15px -15px;
+
+    #bttvSettingsContainer {
+      display: flex;
+      flex-flow: column nowrap;
+      background: #181818;
+      border-radius: 15px;
+      padding: 10px 15px;
+      max-height: calc(100% - 65px);
+
+      #bttvSettingsContent {
+        display: flex;
+        flex-flow: column nowrap;
+        width: 100%;
+        height: 100%;
+        overflow-y: scroll;
+      }
+
+  }
 
     #bttvSettingsSearch {
       color: #ffffff;
-      background: url(assets/icons/bttv_settings_search.png) no-repeat 10px center;
       outline: none;
       border: none;
-      padding-left: 40px !important;
-      // font-size: 1em;
       width: 100%;
       margin-bottom: 15px;
+
+
+      background: #181818;
+      padding:  10px;
+      border-radius: 15px;
+      font-size: 1.7em;
+      padding-left: 15px;
+      font-weight: 200;
+      font-family: inherit;
+
+
     }
   
     .option {
       position: relative;
       line-height: 30px;
-      margin-bottom: 10px;
+      margin: 5px 0;
 
       display: flex;
       flex-flow: row nowrap;
@@ -223,7 +275,7 @@
       }
       */
 
-      .bttv-switch {
+      .bttvSwitch {
         position: relative;
         display: inline-block;
         height: 1.5em;
@@ -231,13 +283,13 @@
         border-radius: 15px;
         box-shadow: 0 0 10px rgba(#000000, 0.2);
         cursor: pointer;
-        margin: auto 5px;
+        margin: 1px 5px;
 
         input {
           display: none;
         }
 
-        .bttv-switch-slider {
+        .bttvSwitchSlider {
           background-color: #999;
           position: absolute;
           border-radius: 34px;
@@ -246,23 +298,25 @@
           height: 100%;
         }
         
-        .bttv-switch-slider:before {
+        .bttvSwitchSlider:before {
           position: absolute;
           background-color: #fff;
           content: "";
 
           height: 1.5em;
           width: 1.5em;
+
+          box-shadow: 0 0 15px rgba(#000000, 0.3);
   
           transition: .3s ease-out;
           border-radius: 50%;
         }
         
-        input:checked + .bttv-switch-slider {
+        input:checked + .bttvSwitchSlider {
           background-color: #BE93FD;
         }
         
-        input:checked + .bttv-switch-slider:before {
+        input:checked + .bttvSwitchSlider:before {
           transform: translateX(1.5em);
         }
 
@@ -275,7 +329,7 @@
         p {
           color: #C7C7C7;
         }
-  
+
       }
 
     }
@@ -288,6 +342,8 @@
   */
   #bttvChannel {
     height: 100%;
+    width: calc(100% + 20px);
+    margin-left: -10px;
   }
 
 
