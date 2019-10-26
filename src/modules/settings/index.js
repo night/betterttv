@@ -49,31 +49,27 @@ const settingsPanelTemplate = () => `
         
         <div id="bttvAbout" style="display:none;">
 
-            <div class="aboutHalf">
+            <div class="aboutHalf aboutHalf-smaller">
                 <img class="bttvAboutIcon" src="${cdn.url('assets/logos/mascot.png')}" />
                 <h1>BetterTTV v${debug.version}</h1>
-                <h2>from your friends at <a href="https://www.nightdev.com" target="_blank">NightDev</a></h2>
-                <br>
+                <h3>from your friends at <a href="https://www.nightdev.com" target="_blank">NightDev</a></h3>
             </div>
 
             <div class="aboutHalf">
-                <h1 style="margin-top: 100px;">Think this addon is awesome?</h1>
-                <br>
-                <br>
-                <h2>
-                    <a target="_blank" href="https://chrome.google.com/webstore/detail/ajopnjidmegmdimjlfnijceegpefgped">Drop a Review on the Chrome Webstore</a>
-                </h2>
-                <br>
-                <h2>or maybe</h2>
-                <br>
-                <h2><a target="_blank" href="https://manage.betterttv.net/channel">Subscribe to BetterTTV Pro</a></h2>
-                <br>
+                <h2>Think this addon is awesome?</h2>
+                <br/>
+                <h3>
+                    <strong>Drop a Review on the </strong>
+                    <a target="_blank" href="https://chrome.google.com/webstore/detail/ajopnjidmegmdimjlfnijceegpefgped">Chrome Webstore</a>
+                </h3>
+                <p>or maybe</p>
+                <h3><strong>Subscribe to </strong><a target="_blank" href="https://manage.betterttv.net/channel">BetterTTV Pro</a></h3> 
             </div>
 
         </div>
         
         <div id="bttvChannel" style="display:none;">
-            <iframe frameborder="0" width="100%" height="425"></iframe>
+            <iframe frameborder="0" width="100%" height="100%"></iframe>
         </div>
         
         <div id="bttvPrivacy" style="display:none;"></div>
@@ -83,10 +79,13 @@ const settingsPanelTemplate = () => `
         </div>
 
         <div id="bttvBackup" style="display:none;">
-            <h4 style="padding-bottom:10px;">Backup Settings</h4>
-            <button id="bttvBackupButton" class="button primary"><span>Download</span></button>
-            <h4 style="padding-top:15px;padding-bottom:10px;">Import Settings</h4>
-            <input id="bttvImportInput" type="file" style="height: 25px;width: 250px;" />
+            <button id="bttvBackupButton" class="button primary aboutHalf">
+                <svg class="tw-icon__svg" width="100%" height="100%" version="1.1" viewBox="0 0 20 20" x="0px" y="0px"><g><path d="M4 16V4H2v12h2zM13 15l-1.5-1.5L14 11H6V9h8l-2.5-2.5L13 5l5 5-5 5z"></path></g></svg>
+                <h2>Backup Settings</h2>
+            </button>
+
+            <input id="bttvImportInput" type="file" />
+            <label class="aboutHalf" for="bttvImportInput"><svg class="tw-icon__svg" width="100%" height="100%" version="1.1" viewBox="0 0 20 20" x="0px" y="0px"><g><path d="M4 16V4H2v12h2zM13 15l-1.5-1.5L14 11H6V9h8l-2.5-2.5L13 5l5 5-5 5z"></path></g></svg><h2>Import Settings</h2></label> 
         </div>
 
     </div> 
@@ -195,6 +194,12 @@ class SettingsModule {
 
             if (tabId === '#bttvChannel') {
                 $(tabId).children('iframe').attr('src', 'https://manage.betterttv.net/channel');
+            }
+
+            if (tabId === '#bttvAbout' || tabId === '#bttvBackup') {
+                $(tabId).parent().css('background', 'none');
+            } else {
+                $(tabId).parent().css('background', '#181818');
             }
 
             $(tabId).fadeIn();

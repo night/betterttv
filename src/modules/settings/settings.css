@@ -64,7 +64,6 @@
       }
     }
 
-
     .nav {
       list-style: none;
   
@@ -101,7 +100,6 @@
   }
 
 
-
   /**
   * FOOTER
   */
@@ -125,7 +123,7 @@
 
 
   /**
-  * CONTENT
+  * CONTENT DIV
   */
   #bttvSettingsPanelContent {
     height: calc(100% - 65px);
@@ -140,29 +138,53 @@
   /**
   * ABOUT
   */
-  #bttvAbout .aboutHalf {
-    width: calc(50% - 24px);
-    display: inline-block;
-    float: left;
-    background-color: rgb(35, 35, 35);
-    border-radius: 3px;
-    margin: 12px;
-    padding: 5px;
+  #bttvAbout {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    // justify-content: stretch;
+
+    height: 100%;
+
+    .aboutHalf-smaller {
+      max-width: 40%;
+    }
+
+  }
+
+  .aboutHalf {
+    background: #181818;
+    margin: 10px;
+    padding: 10px;
+    width: 100%;
+    height: 65%;
+    border-radius: 15px;
+
+    display: flex;
+    flex-flow: column nowrap;
+
+    justify-content: center;
+    align-items: center;
     text-align: center;
-    height: 395px;
+
+    img {
+      width: 60%;
+      height: auto;
+    }
+
+    h1, h2, h3, h4, p {
+      margin: 5px 0;
+    }
+
+    h3 {
+      color: #C7C7C7;
+      font-weight: 200;
+    }
 
     a {
-      color: #888888;
+      font-weight: 800;
     }
 
-    p {
-      text-align: left;
-      text-indent: 18px;
-    }
-
-    .bttvAboutIcon {
-      margin-top: 90px;
-    }
   }
 
 
@@ -170,12 +192,11 @@
   * SETTINGS
   */
   #bttvSettings {
-
     overflow-y: scroll;
     height: 100%;
     display: flex;
     flex-flow: column nowrap;
-
+    padding-right: 10px;
 
     #bttvSettingsSearch {
       color: #ffffff;
@@ -188,7 +209,6 @@
       margin-bottom: 15px;
     }
   
-
     .option {
       position: relative;
       line-height: 30px;
@@ -211,7 +231,7 @@
         border-radius: 15px;
         box-shadow: 0 0 10px rgba(#000000, 0.2);
         cursor: pointer;
-        
+        margin: auto 5px;
 
         input {
           display: none;
@@ -263,13 +283,12 @@
   }
 
 
-
-
   /**
   * CHANNEL
   */
-
-
+  #bttvChannel {
+    height: 100%;
+  }
 
 
   /**
@@ -278,11 +297,11 @@
   #bttvChangelog {
     height: 100%;
     overflow-y: scroll;
+    padding-right: 10px;
 
     h2 {
       margin-top: 20px;
       margin-bottom: 5px;
-      font-weight: bold;
     }
   }
 
@@ -293,10 +312,7 @@
   #bttvPrivacy {
     overflow-y: scroll;
     height: 100%;
-
-    h1 {
-      color: #ffffff;
-    }
+    padding-right: 10px;
 
     strong {
       font-size: 1.1em;
@@ -305,17 +321,56 @@
     
     p {
       padding-top: 10px;
-      color: #C7C7C7;
     }
   }
+
 
   /**
   * BACKUP/IMPORT
   */
   #bttvBackup {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+
     height: 100%;
-    overflow-y: scroll;
+
+    .aboutHalf {
+      cursor: pointer;
+      outline: none;
+      border: 4px solid rgba(#BE93FD, 0);
+      transition: all 0.2s ease-in-out;
+
+      &:hover {
+        border: 4px solid rgba(#BE93FD, 1);
+      }
+
+    }
+
+    svg {
+      margin-bottom: 10px;
+      fill: #ffffff;
+      width: 20px;
+      height: 20px;
+      transform: rotate(90deg);
+    }
+
+    label svg {
+      transform: rotate(270deg);
+    }
+
+    /*hide input - displaying clickable label instead*/
+    input {
+      width: 0.1px;
+      height: 0.1px;
+      opacity: 0;
+      overflow: hidden;
+      position: absolute;
+      z-index: -1;
+    }
+
   }
+
 }
 
 .bttvSettingsIconDropDown {
@@ -324,3 +379,24 @@
   filter: grayscale(100%) brightness(500%);
   background: url(assets/icons/bttv_settings.png) no-repeat 0 0px;
 }
+
+::-webkit-scrollbar {
+  width: 10px;
+  background: none;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background: rgba(#111111, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: rgba(#BE93FD, 0.3);
+
+  &:hover {
+    background: rgba(#BE93FD, 0.4);
+  }
+
+}
+
