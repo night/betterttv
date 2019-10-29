@@ -40,7 +40,16 @@ function loadHTML() {
         return;
     }
     if ($stateContainer.length) return;
-    $chatSettingsButtonSelector.parent().parent().before(CHAT_STATE_TEMPLATE);
+
+    if (
+        ($chatSettingsButtonSelector.parent().siblings('.tw-tooltip').length === 1)
+        && ($chatSettingsButtonSelector.parent().parent('.tw-tooltip-wrapper').length === 1)
+    ) {
+        $chatSettingsButtonSelector.parent().parent().before(CHAT_STATE_TEMPLATE);
+    } else {
+        // fallback to inserting directly before chat settings button if Twitch UI changes
+        $chatSettingsButtonSelector.before(CHAT_STATE_TEMPLATE);
+    }
 }
 
 function updateState(state, ...args) {
