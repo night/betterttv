@@ -38,7 +38,7 @@ function formatChatUser({user, badges}) {
 }
 
 const staff = new Map();
-const globalBots = ['nightbot', 'moobot'];
+const globalBots = ['nightbot', 'moobot', 'streamelements', 'streamlabs'];
 let channelBots = [];
 let asciiOnly = false;
 let subsOnly = false;
