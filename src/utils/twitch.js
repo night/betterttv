@@ -447,9 +447,6 @@ module.exports = {
 
     setInputValue($inputField, msg, focus = false) {
         $inputField.val(msg);
-        if (focus) {
-            $inputField.focus();
-        }
         const inputField = $inputField[0];
         inputField.dispatchEvent(new Event('input', {bubbles: true}));
         const instance = getReactInstance(inputField);
@@ -457,6 +454,9 @@ module.exports = {
         const props = instance.memoizedProps;
         if (props && props.onChange) {
             props.onChange({target: inputField});
+        }
+        if (focus) {
+            $inputField.focus();
         }
     }
 };
