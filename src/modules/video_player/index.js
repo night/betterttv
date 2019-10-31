@@ -81,6 +81,20 @@ function togglePlayerCursor(hide) {
     $('body').toggleClass('bttv-hide-player-cursor', hide);
 }
 
+function togglePiP() {
+    const videoElement = $(VIDEO_PLAYER_SELECTOR)
+        .find('video')
+        .get(0);
+
+    if (!videoElement) return;
+
+    if (document.pictureInPictureElement) {
+        document.exitPictureInPicture();
+    } else {
+        videoElement.requestPictureInPicture();
+    }
+}
+
 class VideoPlayerModule {
     constructor() {
         this.keybinds();
@@ -110,6 +124,7 @@ class VideoPlayerModule {
         settings.on('changed.clickToPlay', () => this.clickToPause());
         this.toggleHidePlayerExtensions();
         this.loadHidePlayerCursorFullscreen();
+        this.setupPiP();
     }
 
     toggleHidePlayerExtensions() {
@@ -134,6 +149,43 @@ class VideoPlayerModule {
             togglePlayerCursor(false);
             hidePlayerCursor();
         });
+    }
+
+    setupPiP() {
+        if (!document.pictureInPictureEnabled) return;
+
+        const videoElement = $(VIDEO_PLAYER_SELECTOR).find('video');
+        const pipSVG =
+            '<path d="M22 30c-1.9 1.9-2 3.3-2 34s.1 32.1 2 34c1.9 1.9 3.3 2 42 2s40.1-.1 42-2c1.9-1.9 2-3.3 2-34 0-31.6 0-31.9-2.2-34-2.1-1.9-3.3-2-42-2-38.5 0-39.9.1-41.8 2zm78 34v28H28V36h72v28z"/>';
+        const pipEnabledSVG = pipSVG + '<path d="M60 72v12h32V60H60v12z"/>';
+
+        videoElement.on('enterpictureinpicture', () => {
+            $('#bttv-pip')
+                .find('svg')
+                .html(pipSVG);
+        });
+
+        videoElement.on('leavepictureinpicture', () => {
+            $('#bttv-pip')
+                .find('svg')
+                .html(pipEnabledSVG);
+        });
+
+        const $anchor = $('.player-controls__right-control-group');
+        const $button = $anchor
+            .children()
+            .last()
+            .clone(false, false)
+            .attr('id', 'bttv-pip')
+            .on('click', togglePiP);
+        $button.find('.tw-tooltip').text('Picture in Picture');
+        $button
+            .find('svg')
+            .attr('viewBox', '0 0 128 128')
+            .attr('transform', 'scale(1.3)')
+            .attr('height', 20)
+            .html(pipEnabledSVG);
+        $button.appendTo($anchor);
     }
 }
 
