@@ -2,7 +2,7 @@ const $ = require('jquery');
 const watcher = require('../../watcher');
 
 const containerSelector = '.chat-input__buttons-container';
-const buttonSelector = '.claimable-bonus__icon';
+const claimButtonSelector = '.claimable-bonus__icon';
 
 class ChannelPoints {
     constructor() {
@@ -10,16 +10,14 @@ class ChannelPoints {
     }
 
     load() {
-        if ($(buttonSelector).length) {
-            $(buttonSelector).click();
-        }
+        $(claimButtonSelector).click();
 
         const bonusPointsObserver = new window.MutationObserver(mutations =>
             mutations.forEach(mutation => {
                 for (const el of mutation.addedNodes) {
                     const $el = $(el);
 
-                    if ($el.find(buttonSelector).length) {
+                    if ($el.find(claimButtonSelector).length || $el.hasClass('claimable-bonus__icon')) {
                         $el.click();
                     }
                 }
