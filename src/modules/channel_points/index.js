@@ -17,9 +17,7 @@ class ChannelPoints {
                 for (const el of mutation.addedNodes) {
                     const $el = $(el);
 
-                    if ($el.find(claimButtonSelector).length || $el.hasClass('claimable-bonus__icon')) {
-                        $el.click();
-                    }
+                    $el.find(claimButtonSelector).click();
                 }
             })
         );
