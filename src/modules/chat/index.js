@@ -53,6 +53,13 @@ function hasNonASCII(message) {
 
 class ChatModule {
     constructor() {
+        settings.add({
+            id: 'noChatHighlight',
+            name: 'Chat Message Highlight',
+            defaultValue: false,
+            description: 'Disable chat message highlight feature'
+        });
+        settings.on('changed.noChatHighlight', () => this.toggleChatHighlight());
         watcher.on('chat.message', ($element, message) => this.messageParser($element, message));
         watcher.on('load.chat', () => $('textarea[data-test-selector="chat-input"]').attr('maxlength', '500'));
         watcher.on('channel.updated', ({bots}) => {
@@ -62,6 +69,10 @@ class ChatModule {
         api.get('cached/badges').then(badges => {
             badges.forEach(({name, badge}) => staff.set(name, badge));
         });
+    }
+
+    toggleChatHighlight() {
+        $('body').toggleClass('bttv-no-chat-highlight', settings.get('noChatHighlight'));
     }
 
     calculateColor(color) {
