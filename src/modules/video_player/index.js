@@ -7,6 +7,25 @@ const debounce = require('lodash.debounce');
 
 const VIDEO_PLAYER_SELECTOR = '.video-player .player,.highwind-video-player__container';
 const CANCEL_VOD_RECOMMENDATION_SELECTOR = '.recommendations-overlay .pl-rec__cancel.pl-button, .autoplay-vod__content-container button';
+const BTTV_PIP_SELECTOR = '#bttv-pip';
+
+const getPiPTemplate = toggled => `
+    <div id="bttv-pip" class="tw-inline-flex tw-relative tw-tooltip-wrapper">
+        <button class="tw-align-items-center tw-align-middle tw-border-bottom-left-radius-medium tw-border-bottom-right-radius-medium tw-border-top-left-radius-medium tw-border-top-right-radius-medium tw-button-icon tw-button-icon--overlay tw-core-button tw-core-button--overlay tw-inline-flex tw-interactive tw-justify-content-center tw-overflow-hidden tw-relative" aria-label="Picture in Picture">
+            <span class="tw-button-icon__icon">
+                <div style="width: 2rem; height: 2rem;">
+                    <div class="tw-align-items-center tw-full-width tw-icon tw-icon--fill tw-inline-flex">
+                        <div class="tw-aspect tw-aspect--align-top">
+                            <div class="tw-aspect__spacer" style="padding-bottom: 100%;"></div>
+                            <svg class="tw-icon__svg" width="100%" height="100%" version="1.1" transform="scale(1.3)" viewBox="0 0 128 128" x="0px" y="0px"><path d="M22 30c-1.9 1.9-2 3.3-2 34s.1 32.1 2 34c1.9 1.9 3.3 2 42 2s40.1-.1 42-2c1.9-1.9 2-3.3 2-34 0-31.6 0-31.9-2.2-34-2.1-1.9-3.3-2-42-2-38.5 0-39.9.1-41.8 2zm78 34v28H28V36h72v28z"/>${!toggled && '<path d="M60 72v12h32V60H60v12z"/>'}</svg>
+                        </div>
+                    </div>
+                </div>
+            </span>
+        </button>
+        <div class="tw-tooltip tw-tooltip--align-right tw-tooltip--up" data-a-target="tw-tooltip-label" role="tooltip">Picture in Picture</div>
+    </div>
+`;
 
 function stepPlaybackSpeed(faster) {
     const currentPlayer = twitch.getCurrentPlayer();
@@ -155,36 +174,19 @@ class VideoPlayerModule {
         if (!document.pictureInPictureEnabled) return;
 
         const videoElement = $(VIDEO_PLAYER_SELECTOR).find('video');
-        const pipSVG =
-            '<path d="M22 30c-1.9 1.9-2 3.3-2 34s.1 32.1 2 34c1.9 1.9 3.3 2 42 2s40.1-.1 42-2c1.9-1.9 2-3.3 2-34 0-31.6 0-31.9-2.2-34-2.1-1.9-3.3-2-42-2-38.5 0-39.9.1-41.8 2zm78 34v28H28V36h72v28z"/>';
-        const pipEnabledSVG = pipSVG + '<path d="M60 72v12h32V60H60v12z"/>';
 
         videoElement.on('enterpictureinpicture', () => {
-            $('#bttv-pip')
-                .find('svg')
-                .html(pipSVG);
+            $(BTTV_PIP_SELECTOR).replaceWith(getPiPTemplate(true));
         });
 
         videoElement.on('leavepictureinpicture', () => {
-            $('#bttv-pip')
-                .find('svg')
-                .html(pipEnabledSVG);
+            $(BTTV_PIP_SELECTOR).replaceWith(getPiPTemplate(false));
         });
 
         const $anchor = $('.player-controls__right-control-group');
-        const $button = $anchor
-            .children()
-            .last()
-            .clone(false, false)
-            .attr('id', 'bttv-pip')
-            .on('click', togglePiP);
-        $button.find('.tw-tooltip').text('Picture in Picture');
-        $button
-            .find('svg')
-            .attr('viewBox', '0 0 128 128')
-            .attr('transform', 'scale(1.3)')
-            .attr('height', 20)
-            .html(pipEnabledSVG);
+        const $button = $(getPiPTemplate(false));
+
+        $anchor.on('click', BTTV_PIP_SELECTOR, togglePiP);
         $button.appendTo($anchor);
     }
 }
