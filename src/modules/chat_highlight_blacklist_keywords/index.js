@@ -161,6 +161,12 @@ function messageTextFromAST(ast) {
     }).join(' ');
 }
 
+function messageContainsText(ast) {
+    return ast.some(node => {
+        return (node.type === 0 && node.content.trim().length > 0) || node.type === 5;
+    });
+}
+
 let $pinnedHighlightsContainer;
 
 class ChatHighlightBlacklistKeywordsModule {
@@ -191,6 +197,13 @@ class ChatHighlightBlacklistKeywordsModule {
             id: 'highlightFeedback',
             name: 'Play Sound on Highlight/Whisper',
             description: 'Get audio feedback for messages directed at you',
+            defaultValue: false
+        });
+
+        settings.add({
+            id: 'hideEmoteSpam',
+            name: 'Hide Emote-only Messages',
+            description: 'Hide messages without text',
             defaultValue: false
         });
 
@@ -226,6 +239,10 @@ class ChatHighlightBlacklistKeywordsModule {
         const from = user.userLogin;
         const message = messageTextFromAST(messageParts);
         const date = new Date(timestamp);
+
+        if (settings.get('hideEmoteSpam') && !messageContainsText(messageParts)) {
+            return this.markBlacklisted($message);
+        }
 
         if (fromContainsKeyword(blacklistUsers, from) || messageContainsKeyword(blacklistKeywords, from, message)) {
             return this.markBlacklisted($message);
