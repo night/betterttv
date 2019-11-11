@@ -54,12 +54,12 @@ function hasNonASCII(message) {
 class ChatModule {
     constructor() {
         settings.add({
-            id: 'noChatHighlight',
-            name: 'Chat Message Highlight',
+            id: 'disableChannelPointsChatHighlights',
+            name: 'Channel Points Chat Message Highlight',
             defaultValue: false,
-            description: 'Disable chat message highlight feature'
+            description: 'Disable channel points chat message highlight feature'
         });
-        settings.on('changed.noChatHighlight', () => this.toggleChatHighlight());
+        settings.on('changed.disableChannelPointsChatHighlights', () => this.toggleChannelPointsChatHighlight());
         watcher.on('chat.message', ($element, message) => this.messageParser($element, message));
         watcher.on('load.chat', () => $('textarea[data-test-selector="chat-input"]').attr('maxlength', '500'));
         watcher.on('channel.updated', ({bots}) => {
@@ -71,8 +71,8 @@ class ChatModule {
         });
     }
 
-    toggleChatHighlight() {
-        $('body').toggleClass('bttv-no-chat-highlight', settings.get('noChatHighlight'));
+    toggleChannelPointsChatHighlight() {
+        $('body').toggleClass('bttv-no-channelpoints-chat-highlight', settings.get('disableChannelPointsChatHighlights'));
     }
 
     calculateColor(color) {
