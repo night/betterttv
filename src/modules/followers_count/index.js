@@ -2,11 +2,12 @@ const $ = require('jquery');
 const twitchAPI = require('../../utils/twitch-api');
 const twitch = require('../../utils/twitch');
 const watcher = require('../../watcher');
+const settings = require('../../settings');
 
 const anchorSelector = '.channel-info-bar__viewers-wrapper';
 
 const getFollowersCountHTML = followers => `
-    <div class="tw-inline-flex tw-relative tw-tooltip-wrapper" style="margin-right:.5rem">
+    <div id="bttv-followers-count" class="tw-inline-flex tw-relative tw-tooltip-wrapper" style="margin-right:.5rem">
         <div class="tw-align-items-center tw-inline-flex tw-stat">
             <div class="tw-align-items-center tw-inline-flex tw-stat__icon">
                 <div class="tw-align-items-center tw-full-width tw-icon tw-inline-flex">
@@ -23,10 +24,22 @@ const getFollowersCountHTML = followers => `
 
 class FollowersCount {
     constructor() {
+        settings.add({
+            id: 'enableFollowersCount',
+            name: 'Show Followers Count',
+            defaultValue: false,
+            description: 'Show the followers count next to the viewers/views count'
+        });
         watcher.on('load.channel', () => this.load());
+        settings.on('changed.enableFollowersCount', () => this.load());
     }
 
     load() {
+        if (!settings.get('enableFollowersCount')) {
+            $('#bttv-followers-count').remove();
+            return;
+        }
+
         const currentChannel = twitch.getCurrentChannel();
 
         twitchAPI.get(`channels/${currentChannel.id}`).then(({ followers }) => {
