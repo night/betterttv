@@ -14,7 +14,7 @@
     display: inline-block;
 }
 
-.bttv-no-channelpoints-chat-highlight .chat-line__message-body--highlighted {
+.bttv-no-channelpoints-message-highlight .chat-line__message-body--highlighted {
   background: initial !important;
   border: initial !important;
 }
