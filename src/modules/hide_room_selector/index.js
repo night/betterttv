@@ -5,9 +5,9 @@ class HideRoomSelectorModule {
     constructor() {
         settings.add({
             id: 'hideRoomSelector',
-            name: 'Hide Room Selector',
+            name: 'Hide Chat Header',
             defaultValue: false,
-            description: 'Hides the room selector header above chat'
+            description: 'Hides the room selector and viewer list button above chat'
         });
         settings.on('changed.hideRoomSelector', () => this.load());
         this.load();

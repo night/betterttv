@@ -1,5 +1,6 @@
 const $ = require('jquery');
 const cdn = require('../../utils/cdn');
+const extension = require('../../utils/extension');
 const settings = require('../../settings');
 const watcher = require('../../watcher');
 const twitch = require('../../utils/twitch');
@@ -29,7 +30,6 @@ class GlobalCSSModule {
         settings.on('changed.darkenedMode', value => this.setTwitchTheme(value));
 
         this.loadTwitchThemeObserver();
-        this.setTwitchTheme(settings.get('darkenedMode'));
         this.dismissPinnedCheers();
     }
 
@@ -53,14 +53,14 @@ class GlobalCSSModule {
         connectStore.subscribe(() => {
             const isDarkMode = connectStore.getState().ui.theme === TwitchThemes.DARK;
             if (settings.get('darkenedMode') !== isDarkMode) {
-                settings.set('darkenedMode', isDarkMode);
+                settings.set('darkenedMode', isDarkMode, false, true);
             }
         });
     }
 
     globalCSS() {
         const css = document.createElement('link');
-        css.setAttribute('href', cdn.url('betterttv.css', true));
+        css.setAttribute('href', extension.url('betterttv.css', true));
         css.setAttribute('type', 'text/css');
         css.setAttribute('rel', 'stylesheet');
         $('body').append(css);

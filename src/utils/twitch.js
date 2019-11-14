@@ -7,7 +7,7 @@ const CHANNEL_CONTAINER = '.channel-page,.channel-root';
 const CHAT_CONTAINER = 'section[data-test-selector="chat-room-component-layout"]';
 const VOD_CHAT_CONTAINER = '.qa-vod-chat';
 const CHAT_LIST = '.chat-list';
-const PLAYER = '.player';
+const PLAYER = '.player,.highwind-video-player__container';
 const CLIPS_BROADCASTER_INFO = '.clips-broadcaster-info';
 
 const TMIActionTypes = {
@@ -33,25 +33,29 @@ const TMIActionTypes = {
     GIFT_PAID_UPGRADE: 19,
     ANON_GIFT_PAID_UPGRADE: 20,
     PRIME_PAID_UPGRADE: 21,
-    SUB_GIFT: 22,
-    ANON_SUB_GIFT: 23,
-    CLEAR_CHAT: 24,
-    ROOM_MODS: 25,
-    ROOM_STATE: 26,
-    RAID: 27,
-    UNRAID: 28,
-    RITUAL: 29,
-    NOTICE: 30,
-    INFO: 31,
-    BADGES_UPDATED: 32,
-    PURCHASE: 33,
-    BITS_CHARITY: 34,
-    CRATE_GIFT: 35,
-    REWARD_GIFT: 36,
-    SUB_MYSTERY_GIFT: 37,
-    ANON_SUB_MYSTERY_GIFT: 38,
-    FIRST_CHEER_MESSAGE: 39,
-    BITS_BADGE_TIER_MESSAGE: 40
+    PRIME_COMMUNITY_GIFT_RECEIVED_EVENT: 22,
+    EXTEND_SUBSCRIPTION: 23,
+    SUB_GIFT: 24,
+    ANON_SUB_GIFT: 25,
+    CLEAR_CHAT: 26,
+    ROOM_MODS: 27,
+    ROOM_STATE: 28,
+    RAID: 29,
+    UNRAID: 30,
+    RITUAL: 31,
+    NOTICE: 32,
+    INFO: 33,
+    BADGES_UPDATED: 34,
+    PURCHASE: 35,
+    BITS_CHARITY: 36,
+    CRATE_GIFT: 37,
+    REWARD_GIFT: 38,
+    SUB_MYSTERY_GIFT: 39,
+    ANON_SUB_MYSTERY_GIFT: 40,
+    FIRST_CHEER_MESSAGE: 41,
+    BITS_BADGE_TIER_MESSAGE: 42,
+    INLINE_PRIVATE_CALLOUT: 43,
+    CHANNEL_POINTS_AWARD: 44
 };
 
 function getReactInstance(element) {
@@ -177,9 +181,10 @@ module.exports = {
         try {
             const node = searchReactParents(
                 getReactInstance($(REACT_ROOT)[0]),
-                n => n.stateNode && n.stateNode.store
+                n => n.stateNode && n.stateNode.props && n.stateNode.props.store,
+                30
             );
-            store = node.stateNode.store;
+            store = node.stateNode.props.store;
         } catch (_) {}
 
         return store;
@@ -216,10 +221,10 @@ module.exports = {
         try {
             const node = searchReactParents(
                 getReactInstance($(PLAYER)[0]),
-                n => n.stateNode && n.stateNode.player
+                n => n.stateNode && (n.stateNode.player || n.stateNode.props.mediaPlayerInstance)
             );
-            player = node.stateNode;
-        } catch (_) {}
+            player = node.stateNode.player ? node.stateNode.player.player : node.stateNode.props.mediaPlayerInstance;
+        } catch (e) {}
 
         return player;
     },
@@ -442,9 +447,6 @@ module.exports = {
 
     setInputValue($inputField, msg, focus = false) {
         $inputField.val(msg);
-        if (focus) {
-            $inputField.focus();
-        }
         const inputField = $inputField[0];
         inputField.dispatchEvent(new Event('input', {bubbles: true}));
         const instance = getReactInstance(inputField);
@@ -452,6 +454,9 @@ module.exports = {
         const props = instance.memoizedProps;
         if (props && props.onChange) {
             props.onChange({target: inputField});
+        }
+        if (focus) {
+            $inputField.focus();
         }
     }
 };

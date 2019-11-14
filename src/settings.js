@@ -40,8 +40,8 @@ class Settings extends SafeEventEmitter {
         return setting ? setting.defaultValue : null;
     }
 
-    set(id, value, emit = true) {
-        const rv = storage.set(id, value, undefined, false);
+    set(id, value, emit = true, temporary = false) {
+        const rv = storage.set(id, value, undefined, false, true, temporary);
         if (emit) this.emit(`changed.${id}`, value);
         return rv;
     }
