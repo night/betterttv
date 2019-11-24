@@ -7,7 +7,7 @@ class HideRoomSelectorModule {
             id: 'hideRoomSelector',
             name: 'Hide Chat Header',
             defaultValue: false,
-            description: 'Hides the room selector and viewer list button above chat'
+            description: 'Hides the "Stream Chat" title and viewer list button above chat'
         });
         settings.on('changed.hideRoomSelector', () => this.load());
         this.load();
