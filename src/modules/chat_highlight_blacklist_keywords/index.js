@@ -190,7 +190,7 @@ class ChatHighlightBlacklistKeywordsModule {
         settings.add({
             id: 'highlightFeedback',
             name: 'Play Sound on Highlight/Whisper',
-            description: 'Get audio feedback for messages directed at you.',
+            description: 'Play a sound for messages directed at you.',
             defaultValue: false
         });
 
