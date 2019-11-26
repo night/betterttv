@@ -18,13 +18,13 @@ class ChatTabcompletionModule {
             id: 'tabCompletionTooltip',
             name: 'Completion Tooltip',
             defaultValue: true,
-            description: 'Shows a tooltip with suggested names when using @ completion'
+            description: 'Show a tooltip with suggested names when using @ completion.'
         });
 
         settings.add({
             id: 'tabCompletionEmotePriority',
             name: 'Tab Completion Emote Priority',
-            description: 'Prioritize emotes over usernames when using tab completion',
+            description: 'Prioritize emotes over usernames when using tab completion.',
             default: false,
         });
 

@@ -8,7 +8,7 @@ class SplitChatModule {
             id: 'splitChat',
             name: 'Split Chat',
             defaultValue: false,
-            description: 'Easily distinguish between messages from different users in chat'
+            description: 'Easily distinguish between messages from different users in chat.'
         });
     }
 

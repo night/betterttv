@@ -8,25 +8,25 @@ class HideSidebarElementsModule {
             id: 'hideFeaturedChannels',
             name: 'Hide Recommended Channels',
             defaultValue: true,
-            description: 'The left sidebar is too cluttered, so you can remove recommended channels'
+            description: 'The left sidebar is too cluttered, so you can remove recommended channels.'
         });
         settings.add({
             id: 'autoExpandChannels',
             name: 'Auto Expand Followed Channels List',
             defaultValue: false,
-            description: 'Automatically clicks the "Load More" option for you'
+            description: 'Automatically clicks the "Load More" option for you.'
         });
         settings.add({
             id: 'hideRecommendedFriends',
             name: 'Hide Recommended Friends',
             defaultValue: false,
-            description: 'Hides the Recommended Friends section so you have more room for activities!'
+            description: 'Hide the Recommended Friends section so you have more room for activities!'
         });
         settings.add({
             id: 'hideOfflineFollowedChannels',
             name: 'Hide Offline Followed Channels',
             defaultValue: false,
-            description: 'Hides all offline followed channels for those who follow a ton of channels'
+            description: 'Hide all offline followed channels (for those who follow a ton of channels).'
         });
         settings.on('changed.hideFeaturedChannels', () => this.toggleFeaturedChannels());
         settings.on('changed.autoExpandChannels', () => this.toggleAutoExpandChannels());

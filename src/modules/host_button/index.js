@@ -24,7 +24,7 @@ class HostButtonModule {
             id: 'hostButton',
             name: 'Host Button',
             defaultValue: false,
-            description: 'Places a Host/Unhost button below the video player'
+            description: 'Add a Host/Unhost button below the video player.'
         });
         settings.on('changed.hostButton', value => value === true ? this.load() : this.unload());
         watcher.on('load.chat', () => this.load());

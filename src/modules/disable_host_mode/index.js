@@ -20,7 +20,7 @@ class DisableHostModeModule {
             id: 'disableHostMode',
             name: 'Disable Host Mode',
             defaultValue: false,
-            description: 'Disables hosted channels on Twitch'
+            description: 'Disable hosted channels on Twitch.'
         });
         settings.on('changed.disableHostMode', () => this.load());
         watcher.on('load.chat', () => this.load());

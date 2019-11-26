@@ -8,9 +8,9 @@ class AnonChatModule {
     constructor() {
         settings.add({
             id: 'anonChat',
-            name: 'Anon Chat',
+            name: 'Anonymous Chat',
             defaultValue: false,
-            description: 'Join channels without appearing in chat'
+            description: 'Join channels without appearing in chat.'
         });
 
         this.enabled = false;

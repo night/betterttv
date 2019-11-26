@@ -7,7 +7,7 @@ class HideChannelPointsModule {
             id: 'hideChannelPoints',
             name: 'Hide Channel Points',
             defaultValue: false,
-            description: 'Hides channel points from the chat UI to reduce clutter'
+            description: 'Hide channel points from the chat UI to reduce clutter.'
         });
         settings.on('changed.hideChannelPoints', () => this.load());
         this.load();

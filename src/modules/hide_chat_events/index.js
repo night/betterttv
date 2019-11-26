@@ -8,13 +8,13 @@ class HideChatEventsModule {
             id: 'hideNewViewerGreeting',
             name: 'Hide New Viewer Greeting',
             defaultValue: false,
-            description: 'Hides the new viewer greeting message from the chat'
+            description: 'Hide the new viewer greeting message from the chat.'
         });
         settings.add({
             id: 'hideSubscriptionNotices',
             name: 'Hide Subscription and Resubscription notices',
             defaultValue: false,
-            description: 'Hides subs, re-subs, and gift subs from the chat'
+            description: 'Hide subs, re-subs, and gift subs from the chat.'
         });
 
         watcher.on('chat.message.handler', message => {

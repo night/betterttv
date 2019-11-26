@@ -30,13 +30,13 @@ class ChatDeletedMessagesModule {
             id: 'showDeletedMessages',
             name: 'Show Deleted Messages',
             defaultValue: false,
-            description: 'Turn this on to change <message deleted> back to users\' messages.'
+            description: 'Change <message deleted> back to users\' original messages.'
         });
         settings.add({
             id: 'hideDeletedMessages',
             name: 'Remove Deleted Messages',
             defaultValue: false,
-            description: 'Completely removes timed out messages from view'
+            description: 'Completely remove timed out messages from view.'
         });
 
         watcher.on('chat.message.handler', message => {

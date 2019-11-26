@@ -92,19 +92,19 @@ class VideoPlayerModule {
             id: 'hidePlayerExtensions',
             name: 'Hide Twitch Extensions',
             defaultValue: false,
-            description: 'Hides the interactive overlays on top of Twitch\'s video player'
+            description: 'Hide the interactive overlays on top of Twitch\'s video player.'
         });
         settings.add({
             id: 'clickToPlay',
             name: 'Click to Play/Pause Stream',
             defaultValue: false,
-            description: 'Click on the twitch player to pause/resume playback'
+            description: 'Click on the twitch player to pause/resume playback.'
         });
         settings.add({
             id: 'disableVodRecommendationAutoplay',
             name: 'Disable VoD Recommendation Autoplay',
             defaultValue: false,
-            description: 'Disables autoplay of recommended videos on VoDs'
+            description: 'Disable autoplay of recommended videos on VoDs.'
         });
         settings.on('changed.hidePlayerExtensions', () => this.toggleHidePlayerExtensions());
         settings.on('changed.clickToPlay', () => this.clickToPause());
