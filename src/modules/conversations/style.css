@@ -18,7 +18,7 @@
 }
 
 .bttv-hide-conversations, .bttv-auto-hide-conversations {
-  .highwind-video-player__container--theatre {
+  .video-player--theatre .video-player__container, .highwind-video-player__container--theatre {
     bottom: 0rem;
   }
 }
