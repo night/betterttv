@@ -28,15 +28,23 @@ class HideSidebarElementsModule {
             defaultValue: false,
             description: 'Hides all offline followed channels for those who follow a ton of channels'
         });
+        settings.add({
+            id: 'autoExpandSideNav',
+            name: 'Auto Expand Side Navigation Bar',
+            defaultValue: false,
+            description: 'Automatically clicks the "Keep expanded" option for you'
+        });
         settings.on('changed.hideFeaturedChannels', () => this.toggleFeaturedChannels());
         settings.on('changed.autoExpandChannels', () => this.toggleAutoExpandChannels());
         settings.on('changed.hideRecommendedFriends', () => this.toggleRecommendedFriends());
         settings.on('changed.hideOfflineFollowedChannels', () => this.toggleOfflineFollowedChannels());
+        settings.on('changed.autoExpandSideNav', () => this.toggleAutoExpandSideNav());
         watcher.on('load', () => {
             this.toggleFeaturedChannels();
             this.toggleAutoExpandChannels();
             this.toggleRecommendedFriends();
             this.toggleOfflineFollowedChannels();
+            this.toggleAutoExpandSideNav();
         });
     }
 
@@ -55,6 +63,11 @@ class HideSidebarElementsModule {
 
     toggleOfflineFollowedChannels() {
         $('body').toggleClass('bttv-hide-followed-offline', settings.get('hideOfflineFollowedChannels'));
+    }
+
+    toggleAutoExpandSideNav() {
+        if (!settings.get('autoExpandSideNav')) return;
+        $('.side-nav button[data-a-target="side-nav-arrow"]').first().trigger('click');
     }
 }
 
