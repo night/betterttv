@@ -191,7 +191,7 @@ class ChatModule {
         }
 
         const messageStyle = $element.attr('style');
-        if (messageStyle && messageStyle.includes('color:')) {
+        if (messageStyle && /(?:^|\s+)color:/.test(messageStyle)) {
             $element.css('color', color);
         }
 
