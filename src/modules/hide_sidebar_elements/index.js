@@ -67,7 +67,7 @@ class HideSidebarElementsModule {
 
     toggleAutoExpandSideNav() {
         if (!settings.get('autoExpandSideNav')) return;
-        $('.side-nav button[data-a-target="side-nav-arrow"]').first().trigger('click');
+        $('.side-nav button[data-a-target="side-nav-arrow"][aria-label="Expand Side Nav"]').first().trigger('click');
     }
 }
 
