@@ -190,8 +190,7 @@ class ChatModule {
             $from.text(nickname);
         }
 
-        const messageStyle = $element.attr('style');
-        if (messageStyle && messageStyle.includes('color:')) {
+        if ($element[0].style.color) {
             $element.css('color', color);
         }
 
