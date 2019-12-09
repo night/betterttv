@@ -5,7 +5,7 @@ const keyCodes = require('../../utils/keycodes');
 const twitch = require('../../utils/twitch');
 const debounce = require('lodash.debounce');
 
-const VIDEO_PLAYER_SELECTOR = '.video-player .player,.highwind-video-player__container';
+const VIDEO_PLAYER_SELECTOR = '.video-player__container';
 const CANCEL_VOD_RECOMMENDATION_SELECTOR = '.recommendations-overlay .pl-rec__cancel.pl-button, .autoplay-vod__content-container button';
 
 function stepPlaybackSpeed(faster) {
@@ -121,16 +121,16 @@ class VideoPlayerModule {
     }
 
     clickToPause() {
-        $(VIDEO_PLAYER_SELECTOR).off('click', '.player-overlay.pl-overlay__fullscreen,.player-video,.tw-c-text-overlay > div,.js-paused-overlay,.highwind-video-player__overlay div[data-a-target="player-overlay-click-handler"]', handlePlayerClick);
+        $(VIDEO_PLAYER_SELECTOR).off('click', '.video-player__overlay div[data-a-target="player-overlay-click-handler"]', handlePlayerClick);
 
         if (settings.get('clickToPlay') === true) {
-            $(VIDEO_PLAYER_SELECTOR).on('click', '.player-overlay.pl-overlay__fullscreen,.player-video,.tw-c-text-overlay > div,.js-paused-overlay,.highwind-video-player__overlay div[data-a-target="player-overlay-click-handler"]', handlePlayerClick);
+            $(VIDEO_PLAYER_SELECTOR).on('click', '.video-player__overlay div[data-a-target="player-overlay-click-handler"]', handlePlayerClick);
         }
     }
 
     loadHidePlayerCursorFullscreen() {
         const hidePlayerCursor = debounce(() => togglePlayerCursor(true), 5000);
-        $('body').on('mousemove', '.video-player--fullscreen,div[data-test-selector="highwind-video-player__video-layout"]', () => {
+        $('body').on('mousemove', 'div[data-test-selector="video-player__video-layout"]', () => {
             togglePlayerCursor(false);
             hidePlayerCursor();
         });
