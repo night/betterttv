@@ -72,6 +72,7 @@ class ChatSettingsModule {
         $settings.find('.clearChat').click(e => {
             e.preventDefault();
             $('.chat-line__message').hide();
+            $('.video-chat__message-list-wrapper').find('li.tw-full-width').hide();
         });
 
         $settings.find('.setHighlightKeywords').click(highlightBlacklistKeywords.setHighlightKeywords);
