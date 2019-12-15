@@ -1,6 +1,7 @@
 .bttv-swap-chat {
     .right-column {
         order: 1;
+        margin-left: 50px;
     }
 
     .twilight-main {
@@ -32,8 +33,8 @@
     }
 
     .right-column__toggle-visibility {
-         left: 1rem;
-         transform: rotate(180deg);
+        left: 1rem;
+        transform: rotate(180deg);
     }
 
     .right-column--collapsed .right-column__toggle-visibility {
@@ -52,7 +53,8 @@
     }
 
     /* Theatre Mode */
-    .persistent-player--theatre, .channel-page__video-player--theatre-mode {
+    .persistent-player--theatre,
+    .channel-page__video-player--theatre-mode {
         left: auto !important;
         right: 0;
     }
