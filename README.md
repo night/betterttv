@@ -20,12 +20,31 @@ We use gulp to concatenate all of the files and templates into one. We include a
 gulp watch
 ```
 
-A webserver will start and you should visit Twitch in your browser. Turn on developer mode in the console with the following:
+A webserver will start and you are able to use the development version of BetterTTV on Twitch using this userscript in a script manager like TamperMonkey:
+
 ```
-BetterTTV.settings.set('developerMode', true);
+// ==UserScript==
+// @name         BetterTTV Development
+// @description  Enhances Twitch with new features, emotes, and more.
+// @namespace    http://betterttv.com/
+// @copyright    NightDev, LLC
+// @icon         https://cdn.betterttv.net/assets/logos/bttv_logo.png
+// @version      0.0.1
+// @match        https://*.twitch.tv/*
+// @grant        none
+// ==/UserScript==
+
+(function betterttv() {
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = 'http://127.0.0.1:2888/betterttv.js';
+    const head = document.getElementsByTagName('head')[0];
+    if (!head) return;
+    head.appendChild(script);
+})()
 ```
 
-Then refresh the page and BetterTTV should be loaded from your computer.
+Once installed you should disable BetterTTV's main extension so BetterTTV will only be loaded from your computer.
 
 **Debug Messages:**
 
@@ -38,7 +57,7 @@ BetterTTV.settings.set('consoleLog', true);
 
 Linting
 ---
-We use [ESLint](http://eslint.org/) to ensure a consistent code style and avoid buggy code.
+We use [ESLint](https://eslint.org/) to ensure a consistent code style and avoid buggy code.
 
 Running ```gulp``` will automatically check for any errors in the code. Please fix any errors before creating a pull request. Any warnings produced prior to your changes can be ignored.
 
@@ -48,7 +67,7 @@ If you use Sublime Text as your text editor, you can set it up to highlight any 
 
 1. Get ESLint using ```npm install eslint```
 2. Install [Sublime Package Control](https://packagecontrol.io/installation)
-3. Install [SublimeLinter](http://www.sublimelinter.com/en/latest/installation.html#installing-via-pc)
+3. Install [SublimeLinter](https://www.sublimelinter.com/en/latest/installation.html#installing-via-pc)
 4. Install [SublimeLinter-eslint](https://github.com/roadhump/SublimeLinter-eslint#linter-installation)
 
 **Live Linting with VSCode:**

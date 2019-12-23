@@ -84,9 +84,15 @@ function massUnban() {
         `;
 
         twitchAPI.graphqlQuery(query).then(({data: {currentUser: {bannedUsers}}}) => {
-            const users = bannedUsers
-                .map(({bannedUser: {login}}) => login)
-                .filter(login => login && !unbannedChatters.includes(login));
+            let users = [];
+            try {
+                users = bannedUsers
+                    .filter(({bannedUser}) => bannedUser && bannedUser.login && !unbannedChatters.includes(bannedUser.login))
+                    .map(({bannedUser: {login}}) => login);
+            } catch (_) {
+                twitch.sendChatAdminMessage('There was an error retrieving banned users.');
+                return;
+            }
 
             if (users.length === 0) {
                 twitch.sendChatAdminMessage(`You have no banned users. Total Unbanned Users: ${unbanCount}`);

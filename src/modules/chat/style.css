@@ -14,14 +14,6 @@
     display: inline-block;
 }
 
-.chat-input .tw-textarea--no-resize {
-  resize: vertical;
-  max-height: 160px;
-  min-height: 40px;
-}
-
-.bttv-hide-emotes {
-  [data-a-target="emote-name"], .bttv-emote {
-    display: none !important;
-  }
+.bttv-hide-emotes [data-a-target="emote-name"], .bttv-hide-emotes .bttv-emote {
+  display: none !important;
 }
