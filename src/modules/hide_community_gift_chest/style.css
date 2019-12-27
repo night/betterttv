@@ -1,0 +1,5 @@
+.bttv-hide-community-gift-chest {
+  .community-highlight-stack__card {
+    display: none;
+  }
+}
