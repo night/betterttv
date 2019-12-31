@@ -9,6 +9,15 @@ const html = require('../../utils/html');
 const api = require('../../utils/api');
 const moment = require('moment');
 
+let webstoreLink;
+if (navigator.userAgent.indexOf('Firefox') > -1) {
+    webstoreLink = 'https://addons.mozilla.org/en-US/firefox/addon/betterttv/';
+} else if (navigator.userAgent.indexOf('Edge') > -1) {
+    webstoreLink = 'https://www.microsoft.com/en-us/p/betterttv/9nblggh51tbk?rtc=1&activetab=pivot:overviewtab';
+} else {
+    webstoreLink = 'https://chrome.google.com/webstore/detail/betterttv/ajopnjidmegmdimjlfnijceegpefgped';
+}
+
 const getSettingElement = ({id}) => $(`.bttvOption-${html.escape(id)}`);
 
 const settingTemplate = ({id, name, description}) => `
@@ -53,7 +62,7 @@ const settingsPanelTemplate = () => `
             <br>
             <br>
             <h2>
-                <a target="_blank" href="https://chrome.google.com/webstore/detail/ajopnjidmegmdimjlfnijceegpefgped">Drop a Review on the Chrome Webstore</a>
+                <a target="_blank" href=${webstoreLink}>Drop a Review on the Webstore</a>
             </h2>
             <br>
             <h2>or maybe</h2>
