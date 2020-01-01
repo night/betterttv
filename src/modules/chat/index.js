@@ -32,7 +32,7 @@ function formatChatUser({user, badges}) {
         displayName: user.userDisplayName,
         color: user.color,
         mod: badges.hasOwnProperty('moderator'),
-        subscriber: badges.hasOwnProperty('subscriber'),
+        subscriber: badges.hasOwnProperty('subscriber') || badges.hasOwnProperty('founder'),
         badges
     };
 }
