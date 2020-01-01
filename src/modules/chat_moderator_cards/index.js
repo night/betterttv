@@ -5,18 +5,6 @@ const ModeratorCard = require('./moderator-card');
 
 let openModeratorCard;
 
-function getUserMessages(name) {
-    return Array.from($('.chat-line__message'))
-        .reverse()
-        .map(el => {
-            return {
-                message: twitch.getChatMessageObject(el),
-                outerHTML: el.outerHTML
-            };
-        })
-        .filter(({message}) => message && message.user && message.user.userLogin === name);
-}
-
 class ChatModeratorCardsModule {
     constructor() {
         watcher.on('chat.moderator_card.open', $element => this.onOpen($element));
@@ -52,7 +40,7 @@ class ChatModeratorCardsModule {
 
             let isOwner = false;
             let isModerator = false;
-            const userMessages = getUserMessages(targetUser.login);
+            const userMessages = twitch.getChatMessages(targetUser.login);
             if (userMessages.length) {
                 const {message} = userMessages[userMessages.length - 1];
                 isOwner = twitch.getUserIsOwnerFromTagsBadges(message.badges);
