@@ -6,6 +6,8 @@ const keyCodes = require('../../utils/keycodes');
 const emotes = require('../emotes');
 
 const CHAT_INPUT_SELECTOR = '.chat-input textarea';
+const WHISPERS_CONTAINER_SELECTOR = '.whispers';
+const WHISPERS_INPUT_SELECTOR = '.whispers-thread input';
 const AUTOCOMPLETE_SUGGESTIONS_SELECTOR = 'div[data-a-target="autocomplete-balloon"]';
 
 function normalizedStartsWith(word, prefix) {
@@ -65,6 +67,9 @@ class ChatTabcompletionModule {
         $(CHAT_INPUT_SELECTOR).off('keydown.tabComplete focus.tabComplete')
             .on('keydown.tabComplete', e => this.onKeydown(e))
             .on('focus.tabComplete', () => this.onFocus());
+        $(WHISPERS_CONTAINER_SELECTOR).off('keydown.tabComplete focus.tabComplete')
+            .on('keydown.tabComplete', WHISPERS_INPUT_SELECTOR, e => this.onKeydown(e))
+            .on('focus.tabComplete', WHISPERS_INPUT_SELECTOR, () => this.onFocus());
     }
 
     onFocus() {
