@@ -477,5 +477,18 @@ module.exports = {
         }
 
         return messages;
+    },
+
+    getSideNavFollowedUserLogin(element) {
+        let userLogin;
+        try {
+            const node = searchReactParents(
+                getReactInstance(element),
+                n => n.stateNode && n.stateNode.props && n.stateNode.props.offline === true && n.stateNode.props.userLogin
+            );
+            userLogin = node.stateNode.props.userLogin;
+        } catch (_) {}
+
+        return userLogin;
     }
 };
