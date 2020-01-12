@@ -81,43 +81,22 @@ function togglePlayerCursor(hide) {
     $('body').toggleClass('bttv-hide-player-cursor', hide);
 }
 
-let isMuted = false;
-let isUnloading = false;
-
-function onWindowBlur() {
-    const currentPlayer = twitch.getCurrentPlayer();
-    if (!currentPlayer || !currentPlayer.player || isUnloading) return;
-    isMuted = currentPlayer.player.getMuted();
-    currentPlayer.player.setMuted(true);
-}
-
-function onWindowFocus() {
-    const currentPlayer = twitch.getCurrentPlayer();
-    if (!currentPlayer || !currentPlayer.player) return;
-    currentPlayer.player.setMuted(isMuted);
-}
-
-function onVisibilityChange() {
-    if (document.hidden) {
-        onWindowBlur();
+let previousVolume = null;
+document.addEventListener('visibilitychange', () => {
+    if (!settings.get('muteInvisiblePlayer')) return;
+    // set raw video element volume to not edit persisted player volume state
+    const video = $(VIDEO_PLAYER_SELECTOR).find('video')[0];
+    if (!video) return;
+    if (document.visibilityState === 'visible') {
+        if (previousVolume !== null) {
+            video.volume = previousVolume;
+            previousVolume = null;
+        }
     } else {
-        onWindowFocus();
+        previousVolume = video.volume;
+        video.volume = 0;
     }
-}
-
-function setUnloading() {
-    isUnloading = true;
-}
-
-function muteInvisibleTabs() {
-    $(document).off('visibilitychange', onVisibilityChange);
-    $(window).off('beforeunload', setUnloading);
-
-    if (settings.get('muteInvisibleTabs')) {
-        $(document).on('visibilitychange', onVisibilityChange);
-        $(window).on('beforeunload', setUnloading);
-    }
-}
+});
 
 class VideoPlayerModule {
     constructor() {
@@ -125,14 +104,6 @@ class VideoPlayerModule {
         watcher.on('load.player', () => {
             this.clickToPause();
             watchPlayerRecommendationVodsAutoplay();
-
-            const currentPlayer = twitch.getCurrentPlayer();
-            isMuted =
-                currentPlayer &&
-                currentPlayer.player &&
-                currentPlayer.player.getMuted();
-
-            muteInvisibleTabs();
         });
         settings.add({
             id: 'hidePlayerExtensions',
@@ -153,14 +124,13 @@ class VideoPlayerModule {
             description: 'Disables autoplay of recommended videos on VoDs'
         });
         settings.add({
-            id: 'muteInvisibleTabs',
-            name: 'Mute Streams in Invisible Tabs',
+            id: 'muteInvisiblePlayer',
+            name: 'Mute Invisible Streams',
             defaultValue: false,
-            description: 'Automatically mute/unmute streams so only visible tabs have audio'
+            description: 'Automatically mutes/unmutes streams when you change your browser window/tab'
         });
         settings.on('changed.hidePlayerExtensions', () => this.toggleHidePlayerExtensions());
         settings.on('changed.clickToPlay', () => this.clickToPause());
-        settings.on('changed.muteInvisibleTabs', muteInvisibleTabs);
         this.toggleHidePlayerExtensions();
         this.loadHidePlayerCursorFullscreen();
     }
