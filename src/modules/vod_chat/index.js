@@ -43,8 +43,7 @@ class VODChatModule {
             const newColor = chat.calculateColor(mockUser.color);
             $username.css('color', newColor);
 
-            const messageStyle = $element.attr('style');
-            if (messageStyle && messageStyle.includes('color:')) {
+            if ($element[0].style.color) {
                 $element.css('color', newColor);
             }
         }

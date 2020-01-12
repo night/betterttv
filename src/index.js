@@ -1,7 +1,7 @@
 (() => {
     if (!String.prototype.includes || !Array.prototype.findIndex) return;
     if (window.location.pathname.endsWith('.html')) return;
-    if (!['www.twitch.tv', 'canary.twitch.tv', 'clips.twitch.tv'].includes(window.location.hostname)) return;
+    if (!['www.twitch.tv', 'canary.twitch.tv', 'clips.twitch.tv', 'dashboard.twitch.tv'].includes(window.location.hostname)) return;
     if (window.Ember) return;
 
     const IS_PROD = process.env.NODE_ENV !== 'development';
@@ -44,6 +44,7 @@
     }
 
     const debug = require('./utils/debug');
+    const watcher = require('./watcher');
 
     require('./modules/**/index.js', {mode: (base, files) => {
         return files.map(module => {
@@ -62,6 +63,9 @@
 
     window.BetterTTV = {
         version: debug.version,
-        settings: require('./settings')
+        settings: require('./settings'),
+        watcher: {
+            emitLoad: name => watcher.emit(`load.${name}`),
+        },
     };
 })();

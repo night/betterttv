@@ -62,7 +62,7 @@ const loadPredicates = {
     player: () => !!twitch.getCurrentPlayer(),
     vod: () => twitch.updateCurrentChannel() && $('.video-chat__input textarea').length,
     vodRecommendation: () => $(CANCEL_VOD_RECOMMENDATION_SELECTOR).length,
-    homepage: () => !!$('.front-page-carousel .player-video, .front-page-carousel .highwind-video-player__container').length
+    homepage: () => !!$('.front-page-carousel .video-player__container').length
 };
 
 const routes = {
@@ -84,7 +84,7 @@ const routeKeysToPaths = {
     [routes.DIRECTORY]: /^\/directory/i,
     [routes.CHAT]: /^(\/popout)?\/[a-z0-9-_]+\/chat$/i,
     [routes.VOD]: /^(\/videos\/[0-9]+|\/[a-z0-9-_]+\/clip\/[a-z0-9-_]+)$/i,
-    [routes.DASHBOARD]: /^\/[a-z0-9-_]+\/dashboard/i,
+    [routes.DASHBOARD]: /^(\/[a-z0-9-_]+\/dashboard|\/u\/[a-z0-9-_]+\/stream-manager)/i,
     [routes.CHANNEL_SQUAD]: /^\/[a-z0-9-_]+\/squad/i,
     [routes.CHANNEL]: /^\/[a-z0-9-_]+/i
 };
