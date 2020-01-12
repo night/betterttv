@@ -23,7 +23,7 @@ class SocketClient extends SafeEventEmitter {
 
         this.connect();
 
-        this.broadcastMe = throttle(this.broadcastMe.bind(this), 1000, {trailing: false});
+        this.broadcastMe = throttle(this.broadcastMe.bind(this), 1000, {leading: false});
     }
 
     connect() {

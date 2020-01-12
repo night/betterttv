@@ -1,0 +1,5 @@
+.bttv-hide-channel-points {
+  div[data-test-selector="community-points-summary"] {
+    display: none !important;
+  }
+}

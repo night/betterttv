@@ -4,6 +4,7 @@ const settings = require('../../settings');
 const storage = require('../../storage');
 const html = require('../../utils/html');
 const twitch = require('../../utils/twitch');
+const cdn = require('../../utils/cdn');
 const moment = require('moment');
 const {escape: escapeRegExp} = require('../../utils/regex');
 
@@ -21,6 +22,7 @@ Use spaces in the field to specify multiple keywords. Place {} around a set of w
 const CHAT_LIST_SELECTOR = '.chat-list .chat-list__lines';
 const VOD_CHAT_FROM_SELECTOR = '.video-chat__message-author';
 const VOD_CHAT_MESSAGE_SELECTOR = 'div[data-test-selector="comment-message-selector"]';
+const VOD_CHAT_MESSAGE_EMOTE_SELECTOR = '.chat-line__message--emote';
 const PINNED_HIGHLIGHT_ID = 'bttv-pinned-highlight';
 const PINNED_CONTAINER_ID = 'bttv-pin-container';
 const MAXIMUM_PIN_COUNT = 10;
@@ -184,6 +186,25 @@ class ChatHighlightBlacklistKeywordsModule {
             defaultValue: false,
             description: 'Automatically hide pinned highlights after 1 minute'
         });
+
+        settings.add({
+            id: 'highlightFeedback',
+            name: 'Play Sound on Highlight/Whisper',
+            description: 'Get audio feedback for messages directed at you',
+            defaultValue: false
+        });
+
+        this.sound = null;
+        this.handleHighlightSound = this.handleHighlightSound.bind(this);
+    }
+
+    handleHighlightSound() {
+        if (!this.sound) {
+            this.sound = new Audio(cdn.url('assets/sounds/ts-tink.ogg'));
+        }
+        this.sound.pause();
+        this.sound.currentTime = 0;
+        this.sound.play();
     }
 
     loadChat() {
@@ -212,6 +233,9 @@ class ChatHighlightBlacklistKeywordsModule {
 
         if (fromContainsKeyword(highlightUsers, from) || messageContainsKeyword(highlightKeywords, from, message)) {
             this.markHighlighted($message);
+            if (settings.get('highlightFeedback')) {
+                this.handleHighlightSound();
+            }
             if (timestamp > loadTime) this.pinHighlight({from, message, date});
         }
     }
@@ -219,13 +243,15 @@ class ChatHighlightBlacklistKeywordsModule {
     onVODMessage($message) {
         const $from = $message.find(VOD_CHAT_FROM_SELECTOR);
         const from = $from.attr('href').split('?')[0].split('/').pop();
-        const message = $message.find(VOD_CHAT_MESSAGE_SELECTOR).text().replace(/^:/, '');
+        const $messageContent = $message.find(VOD_CHAT_MESSAGE_SELECTOR);
+        const emotes = Array.from($messageContent.find(VOD_CHAT_MESSAGE_EMOTE_SELECTOR)).map(emote => emote.getAttribute('alt'));
+        const messageContent = `${$messageContent.text().replace(/^:/, '')} ${emotes.join(' ')}`;
 
-        if (fromContainsKeyword(blacklistUsers, from) || messageContainsKeyword(blacklistKeywords, from, message)) {
+        if (fromContainsKeyword(blacklistUsers, from) || messageContainsKeyword(blacklistKeywords, from, messageContent)) {
             return this.markBlacklisted($message);
         }
 
-        if (fromContainsKeyword(highlightUsers, from) || messageContainsKeyword(highlightKeywords, from, message)) {
+        if (fromContainsKeyword(highlightUsers, from) || messageContainsKeyword(highlightKeywords, from, messageContent)) {
             this.markHighlighted($message);
         }
     }
@@ -235,7 +261,7 @@ class ChatHighlightBlacklistKeywordsModule {
     }
 
     markBlacklisted($message) {
-        $message.hide();
+        $message.attr('style', 'display: none !important;');
     }
 
     loadPinnedHighlights() {

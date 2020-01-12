@@ -1,7 +1,7 @@
 const $ = require('jquery');
 const querystring = require('querystring');
 
-const API_ENDPOINT = 'https://api.betterttv.net/2/';
+const API_ENDPOINT = 'https://api.betterttv.net/3/';
 
 function request(method, path, options = {}) {
     return new Promise((resolve, reject) => {

@@ -8,7 +8,6 @@ const html = require('../../utils/html');
 const settings = require('../../settings');
 const emotes = require('../emotes');
 const nicknames = require('../chat_nicknames');
-const channelEmotesTip = require('../channel_emotes_tip');
 const legacySubscribers = require('../legacy_subscribers');
 const splitChat = require('../split_chat');
 
@@ -33,7 +32,7 @@ function formatChatUser({user, badges}) {
         displayName: user.userDisplayName,
         color: user.color,
         mod: badges.hasOwnProperty('moderator'),
-        subscriber: badges.hasOwnProperty('subscriber'),
+        subscriber: badges.hasOwnProperty('subscriber') || badges.hasOwnProperty('founder'),
         badges
     };
 }
@@ -52,34 +51,27 @@ function hasNonASCII(message) {
     return false;
 }
 
-function replaceTwitchEmoticonTooltip(currentChannel, $emote) {
-    const code = $emote.attr('alt');
-    const id = ($emote.attr('src').split('emoticons/v1/')[1] || '').split('/')[0];
-    const emote = channelEmotesTip.getEmote(id, code);
-    if (!emote) return;
-    $emote.parent().find('.tw-tooltip').css('text-align', 'center').html(emote.balloon);
-    if (!currentChannel || emote.channel.name === currentChannel.name) return;
-    $emote.on('click', () => window.open(emote.channel.url, '_blank'));
-}
-
 class ChatModule {
     constructor() {
         watcher.on('chat.message', ($element, message) => this.messageParser($element, message));
-        watcher.on('load.chat', () => $('textarea[data-test-selector="chat-input"]').attr('maxlength', '500'));
         watcher.on('channel.updated', ({bots}) => {
             channelBots = bots;
         });
+        watcher.on('emotes.updated', name => {
+            const messages = twitch.getChatMessages(name);
 
-        api.get('badges').then(({types, badges}) => {
-            const staffBadges = {};
-            types.forEach(({name, description, svg}) => {
-                staffBadges[name] = {
-                    description,
-                    svg
-                };
-            });
+            for (const {message, element} of messages) {
+                const user = formatChatUser(message);
+                if (!user) {
+                    continue;
+                }
 
-            badges.forEach(({name, type}) => staff.set(name, staffBadges[type]));
+                this.messageReplacer($(element), user);
+            }
+        });
+
+        api.get('cached/badges').then(badges => {
+            badges.forEach(({name, badge}) => staff.set(name, badge));
         });
     }
 
@@ -124,7 +116,6 @@ class ChatModule {
     }
 
     messageReplacer($message, user) {
-        const currentChannel = twitch.getCurrentChannel();
         const tokens = $message.contents();
         let cappedEmoteCount = 0;
         for (let i = 0; i < tokens.length; i++) {
@@ -135,14 +126,11 @@ class ChatModule {
                 const $emoteTooltip = $(node);
                 $emote = $emoteTooltip.find('.chat-line__message--emote');
                 if ($emote.length) {
-                    replaceTwitchEmoticonTooltip(currentChannel, $emote);
                     continue;
                 }
             }
             // chat doesn't have a wrapper element, so we grab all the inner elements
             if (node.nodeType === window.Node.ELEMENT_NODE && node.classList.contains('chat-line__message--emote')) {
-                $emote = $(node);
-                replaceTwitchEmoticonTooltip(currentChannel, $emote);
                 continue;
             }
             let data;
@@ -213,8 +201,7 @@ class ChatModule {
             $from.text(nickname);
         }
 
-        const messageStyle = $element.attr('style');
-        if (messageStyle && messageStyle.includes('color:')) {
+        if ($element[0].style.color) {
             $element.css('color', color);
         }
 
