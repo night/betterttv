@@ -81,6 +81,23 @@ function togglePlayerCursor(hide) {
     $('body').toggleClass('bttv-hide-player-cursor', hide);
 }
 
+let previousVolume = null;
+document.addEventListener('visibilitychange', () => {
+    if (!settings.get('muteInvisiblePlayer')) return;
+    // set raw video element volume to not edit persisted player volume state
+    const video = $(VIDEO_PLAYER_SELECTOR).find('video')[0];
+    if (!video) return;
+    if (document.visibilityState === 'visible') {
+        if (previousVolume !== null) {
+            video.volume = previousVolume;
+            previousVolume = null;
+        }
+    } else {
+        previousVolume = video.volume;
+        video.volume = 0;
+    }
+});
+
 class VideoPlayerModule {
     constructor() {
         this.keybinds();
@@ -105,6 +122,12 @@ class VideoPlayerModule {
             name: 'Disable VoD Recommendation Autoplay',
             defaultValue: false,
             description: 'Disables autoplay of recommended videos on VoDs'
+        });
+        settings.add({
+            id: 'muteInvisiblePlayer',
+            name: 'Mute Invisible Streams',
+            defaultValue: false,
+            description: 'Automatically mutes/unmutes streams when you change your browser window/tab'
         });
         settings.on('changed.hidePlayerExtensions', () => this.toggleHidePlayerExtensions());
         settings.on('changed.clickToPlay', () => this.clickToPause());
