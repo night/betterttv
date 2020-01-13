@@ -310,6 +310,11 @@ class Watcher extends SafeEventEmitter {
 
                     if ($el.hasClass('chat-line__message')) {
                         emitMessage($el);
+                    } else if ($el.children('.channel-points-reward-line, .user-notice-line')) {
+                        const channelPointsHighlight = $el.find('.chat-line__message');
+                        if (channelPointsHighlight.length > 0) {
+                            emitMessage(channelPointsHighlight);
+                        }
                     }
 
                     if ($el.hasClass('viewer-card')) {
