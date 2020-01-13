@@ -8,9 +8,7 @@ const claimButtonSelector = '.claimable-bonus__icon';
 const bonusPointsObserver = new window.MutationObserver(mutations =>
     mutations.forEach(mutation => {
         for (const el of mutation.addedNodes) {
-            const $el = $(el);
-
-            $el.find(claimButtonSelector).click();
+            $(el).find(claimButtonSelector).click();
         }
     })
 );
@@ -23,11 +21,21 @@ class ChannelPoints {
             defaultValue: false,
             description: 'Automatically claim channel bonus points'
         });
-        settings.on('changed.autoClaimBonusPoints', () => this.load());
-        watcher.on('load.channel', () => this.load());
+        settings.add({
+            id: 'hideChannelPoints',
+            name: 'Hide Channel Points',
+            defaultValue: false,
+            description: 'Hides channel points from the chat UI to reduce clutter'
+        });
+
+        settings.on('changed.hideChannelPoints', () => this.hideChannelPoints());
+        settings.on('changed.autoClaimBonusPoints', () => this.autoClaimBonusPoints());
+
+        this.autoClaimBonusPoints();
+        watcher.on('load.channel', () => this.autoClaimBonusPoints());
     }
 
-    load() {
+    autoClaimBonusPoints() {
         if (!settings.get('autoClaimBonusPoints')) {
             bonusPointsObserver.disconnect();
             return;
@@ -42,6 +50,10 @@ class ChannelPoints {
         };
 
         observe(bonusPointsObserver, $(containerSelector)[0]);
+    }
+
+    hideChannelPoints() {
+        $('body').toggleClass('bttv-hide-channel-points', settings.get('hideChannelPoints'));
     }
 }
 
