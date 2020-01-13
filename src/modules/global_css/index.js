@@ -26,7 +26,7 @@ class GlobalCSSModule {
             id: 'darkenedMode',
             name: 'Dark Theme',
             defaultValue: false,
-            description: 'Enable Twitch\'s dark theme'
+            description: 'Enables Twitch\'s dark theme'
         });
         settings.on('changed.darkenedMode', value => this.setTwitchTheme(value));
 

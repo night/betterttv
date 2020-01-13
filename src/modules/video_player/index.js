@@ -162,7 +162,7 @@ class VideoPlayerModule {
             id: 'clickToPlay',
             name: 'Click to Play/Pause Stream',
             defaultValue: false,
-            description: 'Click on the twitch player to pause/resume playback'
+            description: 'Enables clicking on the Twitch player to pause/resume playback'
         });
         settings.add({
             id: 'disableVodRecommendationAutoplay',
@@ -174,13 +174,13 @@ class VideoPlayerModule {
             id: 'muteInvisiblePlayer',
             name: 'Mute Invisible Streams',
             defaultValue: false,
-            description: 'Automatically mutes/unmutes streams when you change your browser window/tab'
+            description: 'Mutes/unmutes streams automatically when you change your browser window/tab'
         });
         settings.add({
             id: 'scrollVolumeControl',
             name: 'Scroll Volume Control',
             defaultValue: false,
-            description: 'Scroll the twitch player to change the player volume'
+            description: 'Enables scrolling the twitch player to change the player volume'
         });
         settings.on('changed.hidePlayerExtensions', () => this.toggleHidePlayerExtensions());
         settings.on('changed.clickToPlay', () => this.clickToPause());

@@ -10,7 +10,7 @@ class AnonChatModule {
             id: 'anonChat',
             name: 'Anon Chat',
             defaultValue: false,
-            description: 'Join channels without appearing in chat'
+            description: 'Joins chat anonymously without appearing in the userlist'
         });
 
         this.enabled = false;

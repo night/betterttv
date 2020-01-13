@@ -9,7 +9,7 @@ class AutoTheaterModeModule {
             id: 'autoTheatreMode',
             name: 'Automatic Theatre Mode',
             defaultValue: false,
-            description: 'Automatically enables theatre mode'
+            description: 'Enables theatre mode by default'
         });
         watcher.on('load.player', () => this.load());
     }

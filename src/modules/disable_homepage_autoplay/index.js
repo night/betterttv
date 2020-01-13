@@ -8,7 +8,7 @@ class DisableHomepageAutoplayModule {
             id: 'disableFPVideo',
             name: 'Disable Homepage Autoplay',
             defaultValue: false,
-            description: 'Disables video player autoplay on the homepage'
+            description: 'Disables autoplaying streams on the homepage'
         });
         watcher.on('load.homepage', () => this.load());
     }

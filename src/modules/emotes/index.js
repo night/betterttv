@@ -22,14 +22,14 @@ class EmotesModule {
             id: 'bttvEmotes',
             name: 'BetterTTV Emotes',
             defaultValue: true,
-            description: 'BetterTTV adds extra cool emotes for you to use.'
+            description: 'Adds extra cool emotes for you to use'
         });
 
         settings.add({
             id: 'bttvGIFEmotes',
             name: 'BetterTTV GIF Emotes',
             defaultValue: false,
-            description: 'We realize not everyone likes GIFs, but some people do.'
+            description: 'Adds animated emotes (not everyone likes GIFs, but some people do)'
         });
     }
 

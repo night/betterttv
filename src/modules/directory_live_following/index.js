@@ -8,7 +8,7 @@ class DirectoryLiveFollowingModule {
             id: 'showDirectoryLiveTab',
             name: 'Default to Live Channels',
             defaultValue: false,
-            description: 'BetterTTV can click on "Channels" for you in the Following Overview automatically'
+            description: 'Defaults to "Live" tab on the Following page'
         });
         watcher.on('load.directory.following', () => this.load());
     }
