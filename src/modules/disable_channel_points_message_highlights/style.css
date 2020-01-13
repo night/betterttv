@@ -1,0 +1,4 @@
+.bttv-disable-channel-points-message-highlights .channel-points-reward-line .chat-line__message-body--highlighted {
+  background: initial !important;
+  border: initial !important;
+}

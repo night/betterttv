@@ -53,13 +53,6 @@ function hasNonASCII(message) {
 
 class ChatModule {
     constructor() {
-        settings.add({
-            id: 'disableChannelPointsMessageHighlights',
-            name: 'Disable Channel Points Highlighted Messages',
-            defaultValue: false,
-            description: 'Disable channel points chat message highlight feature'
-        });
-        settings.on('changed.disableChannelPointsMessageHighlights', () => this.toggleChannelPointsMessageHighlight());
         watcher.on('chat.message', ($element, message) => this.messageParser($element, message));
         watcher.on('channel.updated', ({bots}) => {
             channelBots = bots;
@@ -80,10 +73,6 @@ class ChatModule {
         api.get('cached/badges').then(badges => {
             badges.forEach(({name, badge}) => staff.set(name, badge));
         });
-    }
-
-    toggleChannelPointsMessageHighlight() {
-        $('body').toggleClass('bttv-no-channelpoints-message-highlight', settings.get('disableChannelPointsMessageHighlights'));
     }
 
     calculateColor(color) {
