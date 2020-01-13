@@ -9,15 +9,6 @@ const html = require('../../utils/html');
 const api = require('../../utils/api');
 const moment = require('moment');
 
-let webstoreLink;
-if (navigator.userAgent.indexOf('Firefox') > -1) {
-    webstoreLink = 'https://addons.mozilla.org/en-US/firefox/addon/betterttv/';
-} else if (navigator.userAgent.indexOf('Edge') > -1) {
-    webstoreLink = 'https://www.microsoft.com/en-us/p/betterttv/9nblggh51tbk?rtc=1&activetab=pivot:overviewtab';
-} else {
-    webstoreLink = 'https://chrome.google.com/webstore/detail/betterttv/ajopnjidmegmdimjlfnijceegpefgped';
-}
-
 const getSettingElement = ({id}) => $(`.bttvOption-${html.escape(id)}`);
 
 const settingTemplate = ({id, name, description}) => `
@@ -54,7 +45,7 @@ const settingsPanelTemplate = () => `
         <div class="aboutHalf">
             <img class="bttvAboutIcon" src="${cdn.url('assets/logos/mascot.png')}" />
             <h1>BetterTTV v${debug.version}</h1>
-            <h2>from your friends at <a href="https://www.nightdev.com" target="_blank">NightDev</a></h2>
+            <h2>from your friends at <a href="https://nightdev.com" target="_blank">NightDev</a></h2>
             <br>
         </div>
         <div class="aboutHalf">
@@ -62,12 +53,12 @@ const settingsPanelTemplate = () => `
             <br>
             <br>
             <h2>
-                <a target="_blank" href=${webstoreLink}>Drop a Review on the Webstore</a>
+                Drop a Review on the <a target="_blank" href="https://chrome.google.com/webstore/detail/betterttv/ajopnjidmegmdimjlfnijceegpefgped">Chrome Webstore</a> or <a target="_blank" href="https://addons.mozilla.org/firefox/addon/betterttv/">Firefox Add-ons site</a>
             </h2>
             <br>
-            <h2>or maybe</h2>
+            <h2>or maybe even</h2>
             <br>
-            <h2><a target="_blank" href="https://manage.betterttv.net/channel">Subscribe to BetterTTV Pro</a></h2>
+            <h2><a target="_blank" href="https://betterttv.com/dashboard/pro">Subscribe to BetterTTV Pro</a></h2>
             <br>
         </div>
     </div>
