@@ -7,7 +7,7 @@ class DisableLocalizedNamesModule {
             id: 'disableLocalizedNames',
             name: 'Disable Localized Names',
             defaultValue: false,
-            description: 'Hide localized display names in chat.'
+            description: 'Hides localized display names in chat'
         });
         watcher.on('chat.message', $el => this.delocalizeName($el));
     }

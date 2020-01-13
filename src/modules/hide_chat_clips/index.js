@@ -7,7 +7,7 @@ class HideChatClipsModule {
             id: 'hideChatClips',
             name: 'Hide Chat Clips',
             defaultValue: false,
-            description: 'Hide clips embeds in chat.'
+            description: 'Hides clips embeds in chat'
         });
         settings.on('changed.hideChatClips', () => this.load());
         this.load();

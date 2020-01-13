@@ -12,7 +12,7 @@ class ChatDirection {
             id: 'reverseChatDirection',
             name: 'Reverse Chat Messages Direction',
             defaultValue: false,
-            description: 'New chat messages come from the top.'
+            description: 'Moves new chat messages to the top of chat'
         });
         settings.on('changed.reverseChatDirection', () => this.toggleChatDirection());
         settings.on('load.chat', () => this.toggleChatAutoScrolling());

@@ -18,7 +18,7 @@ class GlobalEmotes extends AbstractEmotes {
             id: 'ffzEmotes',
             name: 'FrankerFaceZ Emotes',
             defaultValue: true,
-            description: 'Emotes from that other extension people sometimes use.'
+            description: 'Enables emotes from that other extension people sometimes use'
         });
 
         settings.on('changed.ffzEmotes', () => this.updateGlobalEmotes());

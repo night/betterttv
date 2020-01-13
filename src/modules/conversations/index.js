@@ -20,13 +20,13 @@ class ConversationsModule {
             id: 'disableWhispers',
             name: 'Hide Whispers',
             defaultValue: false,
-            description: 'Disable Twitch whispers and hide any whispers you receive.'
+            description: 'Disables Twitch whispers and hide any whispers you receive'
         });
         settings.add({
             id: 'hideConversations',
             name: 'Hide Whispers When Inactive',
             defaultValue: false,
-            description: 'Only show whispers on mouseover or when there\'s a new message'
+            description: 'Shows whispers only on mouseover or when there\'s a new message'
         });
         settings.on('changed.disableWhispers', () => this.toggleHide());
         settings.on('changed.hideConversations', () => this.toggleAutoHide());

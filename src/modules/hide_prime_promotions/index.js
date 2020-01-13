@@ -8,7 +8,7 @@ class HidePrimePromotionsModule {
             id: 'hidePrimePromotions',
             name: 'Hide Prime Promotions',
             defaultValue: false,
-            description: 'Hide Twitch Prime loot notices, like the ones in the sidebar'
+            description: 'Hides Twitch Prime loot notices, like the ones in the sidebar'
         });
 
         settings.on('changed.hidePrimePromotions', this.togglePrimePromotions);

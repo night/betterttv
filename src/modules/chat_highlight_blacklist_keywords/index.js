@@ -176,7 +176,7 @@ class ChatHighlightBlacklistKeywordsModule {
             id: 'pinnedHighlights',
             name: 'Pin Highlighted Messages',
             defaultValue: false,
-            description: 'Pin your last ten highlighted messages above chat.'
+            description: 'Pins your last ten highlighted messages above chat'
         });
         settings.on('changed.pinnedHighlights', value => value === true ? this.loadPinnedHighlights() : this.unloadPinnedHighlights());
 
@@ -184,13 +184,13 @@ class ChatHighlightBlacklistKeywordsModule {
             id: 'timeoutHighlights',
             name: 'Timeout Pinned Highlights',
             defaultValue: false,
-            description: 'Hide pinned highlights after 1 minute.'
+            description: 'Hides pinned highlights after 1 minute'
         });
 
         settings.add({
             id: 'highlightFeedback',
-            name: 'Play Sound on Highlight/Whisper',
-            description: 'Play a sound for messages directed at you.',
+            name: 'Highlight/Whisper Notification',
+            description: 'Plays a sound for messages directed at you',
             defaultValue: false
         });
 
