@@ -1,42 +1,12 @@
 (() => {
     if (!String.prototype.includes || !Array.prototype.findIndex) return;
     if (window.location.pathname.endsWith('.html')) return;
-    if (!['www.twitch.tv', 'canary.twitch.tv', 'clips.twitch.tv'].includes(window.location.hostname)) return;
-
-    if (window.Ember) {
-        const script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = 'https://legacy.betterttv.net/betterttv.js';
-        const head = document.getElementsByTagName('head')[0];
-        if (!head) return;
-        head.appendChild(script);
-        return;
-    }
+    if (!['www.twitch.tv', 'canary.twitch.tv', 'clips.twitch.tv', 'dashboard.twitch.tv'].includes(window.location.hostname)) return;
+    if (window.Ember) return;
 
     const IS_PROD = process.env.NODE_ENV !== 'development';
 
-    try {
-        if (IS_PROD && localStorage.getItem('bttv_developerMode') === 'true') {
-            const script = document.createElement('script');
-            script.type = 'text/javascript';
-            script.src = `${process.env.DEV_CDN_ENDPOINT}betterttv.js`;
-            const head = document.getElementsByTagName('head')[0];
-            if (!head) return;
-            head.appendChild(script);
-            return;
-        }
-    } catch (_) {}
-
     const Raven = require('raven-js');
-
-    /*
-
-     TODO:
-
-     - TwitchEmotes Sub Emote Tip
-     - Disable Channel Header (Twitch did not implement this yet)
-
-    */
 
     if (IS_PROD) {
         Raven.config(
@@ -74,6 +44,7 @@
     }
 
     const debug = require('./utils/debug');
+    const watcher = require('./watcher');
 
     require('./modules/**/index.js', {mode: (base, files) => {
         return files.map(module => {
@@ -92,6 +63,9 @@
 
     window.BetterTTV = {
         version: debug.version,
-        settings: require('./settings')
+        settings: require('./settings'),
+        watcher: {
+            emitLoad: name => watcher.emit(`load.${name}`),
+        },
     };
 })();

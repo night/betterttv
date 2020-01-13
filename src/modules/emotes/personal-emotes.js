@@ -1,6 +1,5 @@
 const socketClient = require('../../socket-client');
 const watcher = require('../../watcher');
-const mustacheFormat = require('../../utils/regex').mustacheFormat;
 const twitch = require('../../utils/twitch');
 const cdn = require('../../utils/cdn');
 
@@ -94,22 +93,29 @@ class PersonalEmotes extends AbstractEmotes {
             this.emotes.set(name, personalEmotes);
         }
 
-        emotes.forEach(({id, channel, code, imageType, urlTemplate}) => {
+        let updated = false;
+        emotes.forEach(({id, channel, code, imageType}) => {
+            if (personalEmotes.has(code)) {
+                return;
+            }
             personalEmotes.set(code, new Emote({
                 id,
                 provider: this.provider,
                 channel: {name: channel},
                 code,
                 images: {
-                    '1x': mustacheFormat(urlTemplate, {id, image: '1x'}),
-                    '2x': mustacheFormat(urlTemplate, {id, image: '2x'}),
-                    '4x': mustacheFormat(urlTemplate, {id, image: '3x'})
+                    '1x': cdn.emoteUrl(id, '1x'),
+                    '2x': cdn.emoteUrl(id, '2x'),
+                    '4x': cdn.emoteUrl(id, '3x')
                 },
                 imageType
             }));
+            updated = true;
         });
 
-        watcher.emit('emotes.updated');
+        if (updated) {
+            watcher.emit('emotes.updated', name);
+        }
     }
 }
 

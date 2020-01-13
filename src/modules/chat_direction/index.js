@@ -4,6 +4,8 @@ const twitch = require('../../utils/twitch');
 
 const CHAT_LIST_SCROLL_CONTENT = '.chat-list .chat-list__lines .simplebar-scroll-content';
 
+let oldScrollToBottom;
+
 class ChatDirection {
     constructor() {
         settings.add({
@@ -21,11 +23,14 @@ class ChatDirection {
         const scroller = twitch.getChatScroller();
         const reverseChatDirection = settings.get('reverseChatDirection');
         if (!scroller) return;
-        scroller.setState({
-            isAutoScrolling: !reverseChatDirection
-        });
-        if (reverseChatDirection) {
+        if (reverseChatDirection && scroller.scroll.scrollToTop && scroller.scrollToBottom) {
+            if (oldScrollToBottom !== scroller.scroll.scrollToTop) {
+                oldScrollToBottom = scroller.scrollToBottom;
+            }
+            scroller.scrollToBottom = scroller.scroll.scrollToTop;
             $(CHAT_LIST_SCROLL_CONTENT)[0].scrollTop = 0;
+        } else if (oldScrollToBottom) {
+            scroller.scrollToBottom = oldScrollToBottom;
         }
     }
 

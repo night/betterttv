@@ -26,7 +26,7 @@ const Icons = {
 
 const MODERATOR_CARD_DISPLAY_NAME_SELECTOR = '.viewer-card__display-name';
 const MODERATOR_CARD_OVERLAY_SELECTOR = '.viewer-card__overlay';
-const MODERATOR_CARD_ACTIONS_SELECTOR = '.viewer-card__actions .tw-c-background-alt-2';
+const MODERATOR_CARD_ACTIONS_SELECTOR = 'button[data-test-selector="ban-button"]';
 const CHAT_INPUT_SELECTOR = 'textarea[data-a-target="chat-input"]';
 
 const moderatorActionButtonTemplate = (command, duration, tooltipText, buttonText) => `
@@ -69,7 +69,7 @@ const userStatsTemplate = (views, follows, createdAt) => `
 `;
 
 const userMessagesTemplate = messagesHTML => `
-    <div class="bttv-moderator-card-messages tw-c-background">
+    <div class="bttv-moderator-card-messages tw-c-background-base">
         <div class="label">
             <span>Chat Messages</span>
             <div class="triangle"></div>
@@ -133,7 +133,7 @@ class ModeratorCard {
     }
 
     renderModeratorActions() {
-        const $moderatorActions = this.$element.find(MODERATOR_CARD_ACTIONS_SELECTOR);
+        const $moderatorActions = this.$element.find(MODERATOR_CARD_ACTIONS_SELECTOR).closest('.viewer-card-drag-cancel');
         if ($moderatorActions.find('.bttv-moderator-card-actions').length) return;
 
         const currentUser = twitch.getCurrentUser();
@@ -159,7 +159,16 @@ class ModeratorCard {
     renderUserMessages() {
         if (this.$element.find('.bttv-moderator-card-messages').length) return;
 
-        const $moderatorActions = this.$element.find('.viewer-card__actions');
+        // twitch has a built-in tool now for mods, so prefer that one.
+        const currentUser = twitch.getCurrentUser();
+        const currentUserIsOwner = twitch.getCurrentUserIsOwner();
+        const currentUserIsModerator = twitch.getCurrentUserIsModerator();
+        const isCurrentUser = currentUser.name === this.user.name;
+        const isModerator = this.user.isOwner || this.user.isModerator;
+        const currentUserCanModerate = !isCurrentUser && (currentUserIsOwner || (currentUserIsModerator && !isModerator));
+        if (currentUserCanModerate) return;
+
+        const $moderatorActions = this.$element.find('div[data-test-selector="viewer-card-social-actions"]');
         const $messages = $(userMessagesTemplate(this.messages.map(({outerHTML}) => outerHTML)));
         $moderatorActions.after($messages);
 

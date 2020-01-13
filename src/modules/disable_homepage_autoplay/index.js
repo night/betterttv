@@ -20,12 +20,21 @@ class DisableHomepageAutoplayModule {
 
         const stopAutoplay = () => {
             setTimeout(() => {
-                currentPlayer.player.pause();
+                currentPlayer.pause();
             }, 0);
-            currentPlayer.player.removeEventListener('play', stopAutoplay);
+            if (currentPlayer.emitter) {
+                currentPlayer.emitter.removeListener('Playing', stopAutoplay);
+            } else {
+                currentPlayer.removeEventListener('play', stopAutoplay);
+            }
         };
 
-        currentPlayer.player.addEventListener('play', stopAutoplay);
+        if (currentPlayer.emitter) {
+            currentPlayer.pause();
+            currentPlayer.emitter.on('Playing', stopAutoplay);
+        } else {
+            currentPlayer.addEventListener('play', stopAutoplay);
+        }
     }
 }
 

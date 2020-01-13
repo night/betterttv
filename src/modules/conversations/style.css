@@ -1,6 +1,6 @@
 .bttv-hide-conversations {
   .whispers {
-    display: none;
+    display: none !important;
   }
 }
 
@@ -18,9 +18,7 @@
 }
 
 .bttv-hide-conversations, .bttv-auto-hide-conversations {
-  .video-player--theatre {
-    .video-player__container {
-      bottom: 0rem;
-    }
+  .video-player__container--theatre {
+    bottom: 0rem;
   }
 }
