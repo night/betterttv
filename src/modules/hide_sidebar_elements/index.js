@@ -1,6 +1,18 @@
 const $ = require('jquery');
 const watcher = require('../../watcher');
 const settings = require('../../settings');
+const twitch = require('../../utils/twitch');
+
+$('body').on('click', 'a.side-nav-card__link[data-a-target="followed-channel"]', e => {
+    const currentTarget = e.currentTarget;
+    const router = twitch.getRouter();
+    const userLogin = twitch.getSideNavFollowedUserLogin(currentTarget);
+    if (!userLogin || !router || !router.history) return;
+    const destination = `/${encodeURIComponent(userLogin)}`;
+    if (currentTarget.href === destination) return;
+    e.preventDefault();
+    router.history.push(destination);
+});
 
 class HideSidebarElementsModule {
     constructor() {

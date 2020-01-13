@@ -9,6 +9,7 @@ const VOD_CHAT_CONTAINER = '.qa-vod-chat';
 const CHAT_LIST = '.chat-list';
 const PLAYER = '.video-player__container';
 const CLIPS_BROADCASTER_INFO = '.clips-broadcaster-info';
+const CHAT_MESSAGE_SELECTOR = '.chat-line__message';
 
 const TMIActionTypes = {
     MESSAGE: 0,
@@ -458,5 +459,36 @@ module.exports = {
         if (focus) {
             $inputField.focus();
         }
+    },
+
+    getChatMessages(name = null) {
+        let messages = Array.from($(CHAT_MESSAGE_SELECTOR))
+            .reverse()
+            .map(element => {
+                return {
+                    element,
+                    message: this.getChatMessageObject(element),
+                    outerHTML: element.outerHTML
+                };
+            });
+
+        if (name) {
+            messages = messages.filter(({message}) => message && message.user && message.user.userLogin === name);
+        }
+
+        return messages;
+    },
+
+    getSideNavFollowedUserLogin(element) {
+        let userLogin;
+        try {
+            const node = searchReactParents(
+                getReactInstance(element),
+                n => n.stateNode && n.stateNode.props && n.stateNode.props.offline === true && n.stateNode.props.userLogin
+            );
+            userLogin = node.stateNode.props.userLogin;
+        } catch (_) {}
+
+        return userLogin;
     }
 };
