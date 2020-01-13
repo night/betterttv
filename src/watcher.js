@@ -62,7 +62,7 @@ const loadPredicates = {
     player: () => !!twitch.getCurrentPlayer(),
     vod: () => twitch.updateCurrentChannel() && $('.video-chat__input textarea').length,
     vodRecommendation: () => $(CANCEL_VOD_RECOMMENDATION_SELECTOR).length,
-    homepage: () => !!$('.front-page-carousel .player-video, .front-page-carousel .highwind-video-player__container').length
+    homepage: () => !!$('.front-page-carousel .video-player__container').length
 };
 
 const routes = {
@@ -310,6 +310,11 @@ class Watcher extends SafeEventEmitter {
 
                     if ($el.hasClass('chat-line__message')) {
                         emitMessage($el);
+                    } else if ($el.children('.channel-points-reward-line, .user-notice-line')) {
+                        const channelPointsHighlight = $el.find('.chat-line__message');
+                        if (channelPointsHighlight.length > 0) {
+                            emitMessage(channelPointsHighlight);
+                        }
                     }
 
                     if ($el.hasClass('viewer-card')) {

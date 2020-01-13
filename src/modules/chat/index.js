@@ -32,7 +32,7 @@ function formatChatUser({user, badges}) {
         displayName: user.userDisplayName,
         color: user.color,
         mod: badges.hasOwnProperty('moderator'),
-        subscriber: badges.hasOwnProperty('subscriber'),
+        subscriber: badges.hasOwnProperty('subscriber') || badges.hasOwnProperty('founder'),
         badges
     };
 }
@@ -61,9 +61,20 @@ class ChatModule {
         });
         settings.on('changed.disableChannelPointsMessageHighlights', () => this.toggleChannelPointsMessageHighlight());
         watcher.on('chat.message', ($element, message) => this.messageParser($element, message));
-        watcher.on('load.chat', () => $('textarea[data-test-selector="chat-input"]').attr('maxlength', '500'));
         watcher.on('channel.updated', ({bots}) => {
             channelBots = bots;
+        });
+        watcher.on('emotes.updated', name => {
+            const messages = twitch.getChatMessages(name);
+
+            for (const {message, element} of messages) {
+                const user = formatChatUser(message);
+                if (!user) {
+                    continue;
+                }
+
+                this.messageReplacer($(element), user);
+            }
         });
 
         api.get('cached/badges').then(badges => {
@@ -201,8 +212,7 @@ class ChatModule {
             $from.text(nickname);
         }
 
-        const messageStyle = $element.attr('style');
-        if (messageStyle && messageStyle.includes('color:')) {
+        if ($element[0].style.color) {
             $element.css('color', color);
         }
 
