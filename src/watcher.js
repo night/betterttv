@@ -62,7 +62,7 @@ const loadPredicates = {
     player: () => !!twitch.getCurrentPlayer(),
     vod: () => twitch.updateCurrentChannel() && $('.video-chat__input textarea').length,
     vodRecommendation: () => $(CANCEL_VOD_RECOMMENDATION_SELECTOR).length,
-    homepage: () => !!$('.front-page-carousel .player-video, .front-page-carousel .highwind-video-player__container').length
+    homepage: () => !!$('.front-page-carousel .video-player__container').length
 };
 
 const routes = {

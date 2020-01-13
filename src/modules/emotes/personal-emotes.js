@@ -93,7 +93,11 @@ class PersonalEmotes extends AbstractEmotes {
             this.emotes.set(name, personalEmotes);
         }
 
+        let updated = false;
         emotes.forEach(({id, channel, code, imageType}) => {
+            if (personalEmotes.has(code)) {
+                return;
+            }
             personalEmotes.set(code, new Emote({
                 id,
                 provider: this.provider,
@@ -106,9 +110,12 @@ class PersonalEmotes extends AbstractEmotes {
                 },
                 imageType
             }));
+            updated = true;
         });
 
-        watcher.emit('emotes.updated');
+        if (updated) {
+            watcher.emit('emotes.updated', name);
+        }
     }
 }
 

@@ -5,12 +5,12 @@ const keyCodes = require('../../utils/keycodes');
 const twitch = require('../../utils/twitch');
 const debounce = require('lodash.debounce');
 
-const VIDEO_PLAYER_SELECTOR = '.video-player .player,.highwind-video-player__container';
+const VIDEO_PLAYER_SELECTOR = '.video-player__container';
 const CANCEL_VOD_RECOMMENDATION_SELECTOR = '.recommendations-overlay .pl-rec__cancel.pl-button, .autoplay-vod__content-container button';
-const BTTV_PIP_SELECTOR = '#bttv-pip';
+const BTTV_PICTURE_IN_PICTURE_SELECTOR = '#bttv-picture-in-picture';
 
-const getPiPTemplate = toggled => `
-    <div id="bttv-pip" class="tw-inline-flex tw-relative tw-tooltip-wrapper">
+const getPictureInPictureTemplate = toggled => `
+    <div id="bttv-picture-in-picture" class="tw-inline-flex tw-relative tw-tooltip-wrapper">
         <button class="tw-align-items-center tw-align-middle tw-border-bottom-left-radius-medium tw-border-bottom-right-radius-medium tw-border-top-left-radius-medium tw-border-top-right-radius-medium tw-button-icon tw-button-icon--overlay tw-core-button tw-core-button--overlay tw-inline-flex tw-interactive tw-justify-content-center tw-overflow-hidden tw-relative" aria-label="Picture in Picture">
             <span class="tw-button-icon__icon">
                 <div style="width: 2rem; height: 2rem;">
@@ -96,21 +96,50 @@ function handlePlayerClick() {
     }, 250);
 }
 
+function handlePlayerScroll(event) {
+    if (!settings.get('scrollVolumeControl')) return;
+
+    const direction = event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0;
+    const delta = direction ? 0.05 : -0.05;
+
+    const currentPlayer = twitch.getCurrentPlayer();
+    if (!currentPlayer) return;
+
+    currentPlayer.setVolume(Math.min(Math.max(currentPlayer.getVolume() + delta, 0), 1));
+
+    event.preventDefault();
+    event.stopPropagation();
+}
+
 function togglePlayerCursor(hide) {
     $('body').toggleClass('bttv-hide-player-cursor', hide);
 }
 
-function togglePiP() {
-    const videoElement = $(VIDEO_PLAYER_SELECTOR)
-        .find('video')
-        .get(0);
+let previousVolume = null;
+document.addEventListener('visibilitychange', () => {
+    if (!settings.get('muteInvisiblePlayer')) return;
+    // set raw video element volume to not edit persisted player volume state
+    const video = $(VIDEO_PLAYER_SELECTOR).find('video')[0];
+    if (!video) return;
+    if (document.visibilityState === 'visible') {
+        if (previousVolume !== null) {
+            video.volume = previousVolume;
+            previousVolume = null;
+        }
+    } else if (!document.pictureInPictureElement) {
+        previousVolume = video.volume;
+        video.volume = 0;
+    }
+});
 
-    if (!videoElement) return;
+function togglePictureInPicture() {
+    const video = $(VIDEO_PLAYER_SELECTOR).find('video')[0];
+    if (!video) return;
 
     if (document.pictureInPictureElement) {
         document.exitPictureInPicture();
     } else {
-        videoElement.requestPictureInPicture();
+        video.requestPictureInPicture();
     }
 }
 
@@ -120,6 +149,8 @@ class VideoPlayerModule {
         watcher.on('load.player', () => {
             this.clickToPause();
             watchPlayerRecommendationVodsAutoplay();
+            this.loadVolumeScrollControl();
+            this.loadPictureInPicture();
         });
         settings.add({
             id: 'hidePlayerExtensions',
@@ -139,11 +170,26 @@ class VideoPlayerModule {
             defaultValue: false,
             description: 'Disables autoplay of recommended videos on VoDs'
         });
+        settings.add({
+            id: 'muteInvisiblePlayer',
+            name: 'Mute Invisible Streams',
+            defaultValue: false,
+            description: 'Automatically mutes/unmutes streams when you change your browser window/tab'
+        });
+        settings.add({
+            id: 'scrollVolumeControl',
+            name: 'Scroll Volume Control',
+            defaultValue: false,
+            description: 'Scroll the twitch player to change the player volume'
+        });
         settings.on('changed.hidePlayerExtensions', () => this.toggleHidePlayerExtensions());
         settings.on('changed.clickToPlay', () => this.clickToPause());
         this.toggleHidePlayerExtensions();
         this.loadHidePlayerCursorFullscreen();
-        this.setupPiP();
+    }
+
+    loadVolumeScrollControl() {
+        $(VIDEO_PLAYER_SELECTOR).find('div[data-a-target="player-overlay-click-handler"]').off('wheel', handlePlayerScroll).on('wheel', handlePlayerScroll);
     }
 
     toggleHidePlayerExtensions() {
@@ -155,38 +201,39 @@ class VideoPlayerModule {
     }
 
     clickToPause() {
-        $(VIDEO_PLAYER_SELECTOR).off('click', '.player-overlay.pl-overlay__fullscreen,.player-video,.tw-c-text-overlay > div,.js-paused-overlay,.highwind-video-player__overlay div[data-a-target="player-overlay-click-handler"]', handlePlayerClick);
+        $(VIDEO_PLAYER_SELECTOR).off('click', '.video-player__overlay div[data-a-target="player-overlay-click-handler"]', handlePlayerClick);
 
         if (settings.get('clickToPlay') === true) {
-            $(VIDEO_PLAYER_SELECTOR).on('click', '.player-overlay.pl-overlay__fullscreen,.player-video,.tw-c-text-overlay > div,.js-paused-overlay,.highwind-video-player__overlay div[data-a-target="player-overlay-click-handler"]', handlePlayerClick);
+            $(VIDEO_PLAYER_SELECTOR).on('click', '.video-player__overlay div[data-a-target="player-overlay-click-handler"]', handlePlayerClick);
         }
     }
 
     loadHidePlayerCursorFullscreen() {
         const hidePlayerCursor = debounce(() => togglePlayerCursor(true), 5000);
-        $('body').on('mousemove', '.video-player--fullscreen,div[data-test-selector="highwind-video-player__video-layout"]', () => {
+        $('body').on('mousemove', 'div[data-test-selector="video-player__video-layout"]', () => {
             togglePlayerCursor(false);
             hidePlayerCursor();
         });
     }
 
-    setupPiP() {
-        if (!document.pictureInPictureEnabled) return;
+    loadPictureInPicture() {
+        if (!document.pictureInPictureEnabled || $(BTTV_PICTURE_IN_PICTURE_SELECTOR).length > 0) return;
 
-        const videoElement = $(VIDEO_PLAYER_SELECTOR).find('video');
+        const video = $(VIDEO_PLAYER_SELECTOR).find('video');
+        if (video.length === 0) return;
 
-        videoElement.on('enterpictureinpicture', () => {
-            $(BTTV_PIP_SELECTOR).replaceWith(getPiPTemplate(true));
+        video.on('enterpictureinpicture', () => {
+            $(BTTV_PICTURE_IN_PICTURE_SELECTOR).replaceWith(getPictureInPictureTemplate(true));
         });
 
-        videoElement.on('leavepictureinpicture', () => {
-            $(BTTV_PIP_SELECTOR).replaceWith(getPiPTemplate(false));
+        video.on('leavepictureinpicture', () => {
+            $(BTTV_PICTURE_IN_PICTURE_SELECTOR).replaceWith(getPictureInPictureTemplate(false));
         });
 
         const $anchor = $('.player-controls__right-control-group');
-        const $button = $(getPiPTemplate(false));
+        const $button = $(getPictureInPictureTemplate(false));
 
-        $anchor.on('click', BTTV_PIP_SELECTOR, togglePiP);
+        $anchor.on('click', BTTV_PICTURE_IN_PICTURE_SELECTOR, togglePictureInPicture);
         $button.appendTo($anchor);
     }
 }
