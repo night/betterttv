@@ -18,7 +18,9 @@ class AutoTheaterModeModule {
         if (settings.get('autoTheatreMode') === false) return;
 
         const player = twitch.getCurrentPlayer();
-        if (!player) return;
+        const isLive = twitch.getChannelController().props.live;
+
+        if (!player || !isLive) return;
 
         try {
             player.setTheatre(true);
