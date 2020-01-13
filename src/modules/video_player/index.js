@@ -77,6 +77,21 @@ function handlePlayerClick() {
     }, 250);
 }
 
+function handlePlayerScroll(event) {
+    if (!settings.get('scrollVolumeControl')) return;
+
+    const direction = event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0;
+    const delta = direction ? 0.05 : -0.05;
+
+    const currentPlayer = twitch.getCurrentPlayer();
+    if (!currentPlayer) return;
+
+    currentPlayer.setVolume(Math.min(Math.max(currentPlayer.getVolume() + delta, 0), 1));
+
+    event.preventDefault();
+    event.stopPropagation();
+}
+
 function togglePlayerCursor(hide) {
     $('body').toggleClass('bttv-hide-player-cursor', hide);
 }
@@ -104,6 +119,7 @@ class VideoPlayerModule {
         watcher.on('load.player', () => {
             this.clickToPause();
             watchPlayerRecommendationVodsAutoplay();
+            this.loadVolumeScrollControl();
         });
         settings.add({
             id: 'hidePlayerExtensions',
@@ -129,10 +145,20 @@ class VideoPlayerModule {
             defaultValue: false,
             description: 'Automatically mutes/unmutes streams when you change your browser window/tab'
         });
+        settings.add({
+            id: 'scrollVolumeControl',
+            name: 'Scroll Volume Control',
+            defaultValue: false,
+            description: 'Scroll the twitch player to change the player volume'
+        });
         settings.on('changed.hidePlayerExtensions', () => this.toggleHidePlayerExtensions());
         settings.on('changed.clickToPlay', () => this.clickToPause());
         this.toggleHidePlayerExtensions();
         this.loadHidePlayerCursorFullscreen();
+    }
+
+    loadVolumeScrollControl() {
+        $(VIDEO_PLAYER_SELECTOR).find('div[data-a-target="player-overlay-click-handler"]').off('wheel', handlePlayerScroll).on('wheel', handlePlayerScroll);
     }
 
     toggleHidePlayerExtensions() {
