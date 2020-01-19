@@ -223,6 +223,9 @@ class VideoPlayerModule {
         if (video.length === 0) return;
 
         video.on('enterpictureinpicture', () => {
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            }
             $(BTTV_PICTURE_IN_PICTURE_SELECTOR).replaceWith(getPictureInPictureTemplate(true));
         });
 
@@ -230,11 +233,18 @@ class VideoPlayerModule {
             $(BTTV_PICTURE_IN_PICTURE_SELECTOR).replaceWith(getPictureInPictureTemplate(false));
         });
 
-        const $anchor = $('.player-controls__right-control-group');
+        document.addEventListener('fullscreenchange', () => {
+            if (document.pictureInPictureElement && document.fullscreenElement) {
+                document.exitPictureInPicture();
+            }
+        });
+
+        const $parentAnchor = $('.player-controls__right-control-group');
+        const $anchor = $parentAnchor.find('.settings-menu-button-component').parent();
         const $button = $(getPictureInPictureTemplate(false));
 
-        $anchor.on('click', BTTV_PICTURE_IN_PICTURE_SELECTOR, togglePictureInPicture);
-        $button.appendTo($anchor);
+        $parentAnchor.on('click', BTTV_PICTURE_IN_PICTURE_SELECTOR, togglePictureInPicture);
+        $button.insertAfter($anchor);
     }
 }
 
