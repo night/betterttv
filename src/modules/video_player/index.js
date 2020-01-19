@@ -99,8 +99,7 @@ function handlePlayerClick() {
 function handlePlayerScroll(event) {
     if (!settings.get('scrollVolumeControl')) return;
 
-    const direction = event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0;
-    const delta = direction ? 0.05 : -0.05;
+    const delta = event.originalEvent.deltaY > 0 ? -0.025 : 0.025;
 
     const currentPlayer = twitch.getCurrentPlayer();
     if (!currentPlayer) return;
