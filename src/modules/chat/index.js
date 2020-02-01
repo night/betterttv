@@ -13,7 +13,7 @@ const splitChat = require('../split_chat');
 
 const EMOTE_STRIP_SYMBOLS_REGEX = /(^[~!@#$%\^&\*\(\)]+|[~!@#$%\^&\*\(\)]+$)/g;
 const MENTION_REGEX = /^@([a-zA-Z\d_]+)$/;
-const STEAM_LOBBY_JOIN_REGEX = /^steam:\/\/joinlobby\/[0-9]*\/[0-9]*\/[0-9]*$/;
+const STEAM_LOBBY_JOIN_REGEX = /^steam:\/\/joinlobby\/d+\/d+\/d+$/;
 const EMOTES_TO_CAP = ['567b5b520e984428652809b6'];
 const MAX_EMOTES_WHEN_CAPPED = 10;
 
@@ -28,7 +28,7 @@ const mentionTemplate = name => `<span class="mentioning">@${html.escape(name)}<
 
 const steamLobbyJoinTemplate = joinLink => `<a href="${joinLink}">${joinLink}</a>`;
 
-function formatChatUser({ user, badges }) {
+function formatChatUser({user, badges}) {
     return {
         id: user.userID,
         name: user.userLogin,
@@ -57,13 +57,13 @@ function hasNonASCII(message) {
 class ChatModule {
     constructor() {
         watcher.on('chat.message', ($element, message) => this.messageParser($element, message));
-        watcher.on('channel.updated', ({ bots }) => {
+        watcher.on('channel.updated', ({bots}) => {
             channelBots = bots;
         });
         watcher.on('emotes.updated', name => {
             const messages = twitch.getChatMessages(name);
 
-            for (const { message, element } of messages) {
+            for (const {message, element} of messages) {
                 const user = formatChatUser(message);
                 if (!user) {
                     continue;
@@ -73,7 +73,7 @@ class ChatModule {
         });
 
         api.get('cached/badges').then(badges => {
-            badges.forEach(({ name, badge }) => staff.set(name, badge));
+            badges.forEach(({name, badge}) => staff.set(name, badge));
         });
     }
 
@@ -161,7 +161,7 @@ class ChatModule {
 
                 // check steam parasbility
                 const steamJoinLink = part.match(STEAM_LOBBY_JOIN_REGEX);
-                if (part.length > 0 && part.substring(0, 18) === 'steam://joinlobby/' && steamJoinLink && steamJoinLink[0]) {
+                if (steamJoinLink) {
                     parts[j] = steamLobbyJoinTemplate(steamJoinLink[0]);
                     modified = true;
                     continue;
