@@ -68,6 +68,7 @@ class ChatModule {
                 if (!user) {
                     continue;
                 }
+
                 this.messageReplacer($(element), user);
             }
         });
