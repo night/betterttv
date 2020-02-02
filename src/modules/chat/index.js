@@ -13,7 +13,7 @@ const splitChat = require('../split_chat');
 
 const EMOTE_STRIP_SYMBOLS_REGEX = /(^[~!@#$%\^&\*\(\)]+|[~!@#$%\^&\*\(\)]+$)/g;
 const MENTION_REGEX = /^@([a-zA-Z\d_]+)$/;
-const STEAM_LOBBY_JOIN_REGEX = /^steam:\/\/joinlobby\/d+\/d+\/d+$/;
+const STEAM_LOBBY_JOIN_REGEX = /^steam:\/\/joinlobby\/\d+\/\d+\/\d+$/;
 const EMOTES_TO_CAP = ['567b5b520e984428652809b6'];
 const MAX_EMOTES_WHEN_CAPPED = 10;
 
