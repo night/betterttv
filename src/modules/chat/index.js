@@ -27,7 +27,6 @@ const badgeTemplate = (url, description) => `
 const mentionTemplate = name => `<span class="mentioning">@${html.escape(name)}</span>`;
 
 const steamLobbyJoinTemplate = joinLink => `<a href="${joinLink}">${joinLink}</a>`;
-
 function formatChatUser({user, badges}) {
     return {
         id: user.userID,
@@ -160,14 +159,12 @@ class ChatModule {
                     continue;
                 }
 
-                // check steam parasbility
                 const steamJoinLink = part.match(STEAM_LOBBY_JOIN_REGEX);
                 if (steamJoinLink) {
                     parts[j] = steamLobbyJoinTemplate(steamJoinLink[0]);
                     modified = true;
                     continue;
                 }
-
                 const emote = emotes.getEligibleEmote(part, user) || emotes.getEligibleEmote(part.replace(EMOTE_STRIP_SYMBOLS_REGEX, ''), user);
                 if (emote) {
                     parts[j] = (EMOTES_TO_CAP.includes(emote.id) && ++cappedEmoteCount > MAX_EMOTES_WHEN_CAPPED) ? '' : emote.toHTML();
