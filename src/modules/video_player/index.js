@@ -131,6 +131,12 @@ document.addEventListener('visibilitychange', () => {
     }
 });
 
+document.addEventListener('fullscreenchange', () => {
+    if (document.pictureInPictureElement && document.fullscreenElement) {
+        document.exitPictureInPicture();
+    }
+});
+
 function togglePictureInPicture() {
     const video = $(VIDEO_PLAYER_SELECTOR).find('video')[0];
     if (!video) return;
@@ -222,6 +228,9 @@ class VideoPlayerModule {
         if (video.length === 0) return;
 
         video.on('enterpictureinpicture', () => {
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            }
             $(BTTV_PICTURE_IN_PICTURE_SELECTOR).replaceWith(getPictureInPictureTemplate(true));
         });
 
@@ -230,10 +239,11 @@ class VideoPlayerModule {
         });
 
         const $anchor = $('.player-controls__right-control-group');
+        const $settingsButton = $anchor.children('div').children('div.settings-menu-button-component').parent();
         const $button = $(getPictureInPictureTemplate(false));
 
         $anchor.on('click', BTTV_PICTURE_IN_PICTURE_SELECTOR, togglePictureInPicture);
-        $button.appendTo($anchor);
+        $button.insertAfter($settingsButton);
     }
 }
 
