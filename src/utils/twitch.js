@@ -222,7 +222,8 @@ module.exports = {
         try {
             const node = searchReactParents(
                 getReactInstance($(PLAYER)[0]),
-                n => n.stateNode && (n.stateNode.player || n.stateNode.props.mediaPlayerInstance)
+                n => n.stateNode && (n.stateNode.player || n.stateNode.props.mediaPlayerInstance),
+                30
             );
             player = node.stateNode.player ? node.stateNode.player.player : node.stateNode.props.mediaPlayerInstance;
         } catch (e) {}
