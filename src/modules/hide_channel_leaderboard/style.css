@@ -1,0 +1,5 @@
+.bttv-hide-channel-leaderboard {
+  .channel-leaderboard {
+    display: none !important;
+  }
+}
