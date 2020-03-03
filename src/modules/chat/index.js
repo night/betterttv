@@ -81,10 +81,7 @@ class ChatModule {
 
     customBadges($element, user) {
         if ((globalBots.includes(user.name) || channelBots.includes(user.name)) && user.mod) {
-            $element.find('img.chat-badge[alt="Moderator"]')
-                .addClass('bttv-chat-badge')
-                .attr('srcset', '')
-                .attr('src', cdn.url('tags/bot.png'));
+            $element.find('img.chat-badge[alt="Moderator"]').replaceWith(badgeTemplate(cdn.url('tags/bot.png'), 'Bot'));
         }
 
         let $badgesContainer = $element.find('.chat-badge').closest('span');
