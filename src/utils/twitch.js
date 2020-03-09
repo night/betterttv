@@ -182,10 +182,9 @@ module.exports = {
         try {
             const node = searchReactParents(
                 getReactInstance($(REACT_ROOT)[0]),
-                n => n.stateNode && n.stateNode.props && n.stateNode.props.store,
-                30
+                n => n.pendingProps && n.pendingProps.value && n.pendingProps.value.store
             );
-            store = node.stateNode.props.store;
+            store = node.pendingProps.value.store;
         } catch (_) {}
 
         return store;

@@ -23,10 +23,7 @@ class ConversationsModule {
             description: 'Disables Twitch whispers and hides any whispers you receive'
         });
         settings.on('changed.disableWhispers', () => this.toggleHide());
-        watcher.on('load', () => {
-            this.toggleHide();
-            this.toggleAutoHide();
-        });
+        watcher.on('load', () => this.toggleHide());
         watcher.on('conversation.message', ($el, message) => this.parseMessage($el, message));
     }
 
