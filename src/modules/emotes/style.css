@@ -34,6 +34,16 @@ div.bttv-emote + .bttv-emo-567b5dc00e984428652809bd img {
   margin-top: -18px;
 }
 
+/* cvHazmat, cvMask */
+div[data-test-selector="emote-button"] + span[data-a-target="chat-message-text"] span .bttv-emo-5e76d338d6581c3724c0f0b2 img,
+div.bttv-emote + .bttv-emo-5e76d338d6581c3724c0f0b2 img,
+div[data-test-selector="emote-button"] + span[data-a-target="chat-message-text"] span .bttv-emo-5e76d399d6581c3724c0f0b8 img,
+div.bttv-emote + .bttv-emo-5e76d399d6581c3724c0f0b8 img {
+  margin-left: -34px;
+  height: 34px;
+  width: 34px;
+}
+
 .bttv-emote-tooltip-wrapper {
   display: inline;
   position: relative;
