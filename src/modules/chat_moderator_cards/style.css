@@ -37,12 +37,6 @@
     margin-top: -5px;
 }
 
-.viewer-card__banner .viewer-card__display-name .tw-c-text-overlay {
-    max-width: 210px;
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
-
 .bttv-moderator-card-messages {
     border-top: 1px solid #222;
 
