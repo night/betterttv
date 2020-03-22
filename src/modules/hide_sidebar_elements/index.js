@@ -10,6 +10,10 @@ $('body').on('click', 'a.side-nav-card__link[data-a-target="followed-channel"]',
     if (!userLogin || !router || !router.history) return;
     const destination = `/${encodeURIComponent(userLogin)}`;
     if (currentTarget.href === destination) return;
+    if (e.ctrlKey || e.shiftKey || e.metaKey || e.which === 2) {
+        currentTarget.href = destination;
+        return;
+    }
     e.preventDefault();
     router.history.push(destination);
 });
