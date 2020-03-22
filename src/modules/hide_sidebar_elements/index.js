@@ -62,7 +62,11 @@ class HideSidebarElementsModule {
 
     toggleAutoExpandChannels() {
         if (!settings.get('autoExpandChannels')) return;
-        $('.side-nav button[data-a-target="side-nav-show-more-button"]').first().trigger('click');
+        setTimeout(() => {
+            const $firstChannelLink = $('a.side-nav-card__link[data-a-id="followed-channel-0"]');
+            if ($firstChannelLink.length === 0) return;
+            $('.side-nav button[data-a-target="side-nav-show-more-button"]').first().trigger('click');
+        }, 1000);
     }
 
     toggleRecommendedFriends() {
