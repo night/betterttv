@@ -112,7 +112,6 @@ function togglePictureInPicture() {
 
 class VideoPlayerModule {
     constructor() {
-        this.keybinds();
         watcher.on('load.player', () => {
             this.clickToPause();
             watchPlayerRecommendationVodsAutoplay();
