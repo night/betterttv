@@ -1,7 +1,6 @@
 const $ = require('jquery');
 const watcher = require('../../watcher');
 const settings = require('../../settings');
-const keyCodes = require('../../utils/keycodes');
 const twitch = require('../../utils/twitch');
 const debounce = require('lodash.debounce');
 
@@ -27,17 +26,6 @@ const getPictureInPictureTemplate = toggled => `
     </div>
 `;
 
-function stepPlaybackSpeed(faster) {
-    const currentPlayer = twitch.getCurrentPlayer();
-    if (!currentPlayer) return;
-    const rates = [ 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0 ];
-    let idx = rates.indexOf(currentPlayer.getPlaybackRate());
-    if (idx === -1) return;
-    idx += faster ? 1 : -1;
-    if (idx < 0 || idx >= rates.length) return;
-    currentPlayer.setPlaybackRate(rates[idx]);
-}
-
 function watchPlayerRecommendationVodsAutoplay() {
     const currentPlayer = twitch.getCurrentPlayer();
     if (!currentPlayer) return;
@@ -51,32 +39,6 @@ function watchPlayerRecommendationVodsAutoplay() {
         currentPlayer.emitter.on('Ended', handleEndedEvent);
     } else {
         currentPlayer.addEventListener('ended', handleEndedEvent);
-    }
-}
-
-function handleKeyEvent(keydown) {
-    if (keydown.ctrlKey || keydown.metaKey) return;
-    if ($('input, textarea, select').is(':focus')) return;
-
-    const $player = $(VIDEO_PLAYER_SELECTOR);
-    if (!$player.length) return;
-
-    switch (keydown.charCode || keydown.keyCode) {
-        case keyCodes.Comma:
-            stepPlaybackSpeed(false);
-            break;
-        case keyCodes.Period:
-            stepPlaybackSpeed(true);
-            break;
-        case keyCodes.K:
-            $player.find('.qa-pause-play-button').click();
-            break;
-        case keyCodes.F:
-            $player.find('.qa-fullscreen-button').click();
-            break;
-        case keyCodes.M:
-            $player.find('.qa-control-volume').click();
-            break;
     }
 }
 
@@ -199,10 +161,6 @@ class VideoPlayerModule {
 
     toggleHidePlayerExtensions() {
         $('body').toggleClass('bttv-hide-player-extensions', settings.get('hidePlayerExtensions'));
-    }
-
-    keybinds() {
-        $(document).on('keydown.playerControls', handleKeyEvent);
     }
 
     clickToPause() {
