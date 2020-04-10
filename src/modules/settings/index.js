@@ -250,6 +250,11 @@ class SettingsModule {
         $('#bttvSettingsPanel').show('fast');
     }
 
+    updateSettingToggle(settingId, value) {
+        $(`#${settingId}True`).prop('checked', value === true);
+        $(`#${settingId}False`).prop('checked', value === false);
+    }
+
     backup() {
         let rv = storage.getStorage();
 

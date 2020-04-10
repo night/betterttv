@@ -7,7 +7,7 @@ class HideBitsModule {
             id: 'hideBits',
             name: 'Hide Bits',
             defaultValue: false,
-            description: 'Bits can be annoying. Disable \'em in chat with this (we can\'t block \'em on stream, sry)'
+            description: 'Disables bits in chat (we can\'t block \'em on stream, sry)'
         });
         settings.on('changed.hideBits', () => this.load());
         this.load();

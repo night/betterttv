@@ -7,8 +7,9 @@ const CHANNEL_CONTAINER = '.channel-page,.channel-root';
 const CHAT_CONTAINER = 'section[data-test-selector="chat-room-component-layout"]';
 const VOD_CHAT_CONTAINER = '.qa-vod-chat';
 const CHAT_LIST = '.chat-list';
-const PLAYER = '.player,.highwind-video-player__container';
+const PLAYER = '.video-player__container';
 const CLIPS_BROADCASTER_INFO = '.clips-broadcaster-info';
+const CHAT_MESSAGE_SELECTOR = '.chat-line__message';
 
 const TMIActionTypes = {
     MESSAGE: 0,
@@ -181,10 +182,9 @@ module.exports = {
         try {
             const node = searchReactParents(
                 getReactInstance($(REACT_ROOT)[0]),
-                n => n.stateNode && n.stateNode.props && n.stateNode.props.store,
-                30
+                n => n.pendingProps && n.pendingProps.value && n.pendingProps.value.store
             );
-            store = node.stateNode.props.store;
+            store = node.pendingProps.value.store;
         } catch (_) {}
 
         return store;
@@ -221,7 +221,8 @@ module.exports = {
         try {
             const node = searchReactParents(
                 getReactInstance($(PLAYER)[0]),
-                n => n.stateNode && (n.stateNode.player || n.stateNode.props.mediaPlayerInstance)
+                n => n.stateNode && (n.stateNode.player || n.stateNode.props.mediaPlayerInstance),
+                30
             );
             player = node.stateNode.player ? node.stateNode.player.player : node.stateNode.props.mediaPlayerInstance;
         } catch (e) {}
@@ -447,9 +448,6 @@ module.exports = {
 
     setInputValue($inputField, msg, focus = false) {
         $inputField.val(msg);
-        if (focus) {
-            $inputField.focus();
-        }
         const inputField = $inputField[0];
         inputField.dispatchEvent(new Event('input', {bubbles: true}));
         const instance = getReactInstance(inputField);
@@ -458,5 +456,39 @@ module.exports = {
         if (props && props.onChange) {
             props.onChange({target: inputField});
         }
+        if (focus) {
+            $inputField.focus();
+        }
+    },
+
+    getChatMessages(name = null) {
+        let messages = Array.from($(CHAT_MESSAGE_SELECTOR))
+            .reverse()
+            .map(element => {
+                return {
+                    element,
+                    message: this.getChatMessageObject(element),
+                    outerHTML: element.outerHTML
+                };
+            });
+
+        if (name) {
+            messages = messages.filter(({message}) => message && message.user && message.user.userLogin === name);
+        }
+
+        return messages;
+    },
+
+    getSideNavFollowedUserLogin(element) {
+        let userLogin;
+        try {
+            const node = searchReactParents(
+                getReactInstance(element),
+                n => n.stateNode && n.stateNode.props && n.stateNode.props.offline === true && n.stateNode.props.userLogin
+            );
+            userLogin = node.stateNode.props.userLogin;
+        } catch (_) {}
+
+        return userLogin;
     }
 };

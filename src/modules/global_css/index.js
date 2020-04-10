@@ -4,6 +4,7 @@ const extension = require('../../utils/extension');
 const settings = require('../../settings');
 const watcher = require('../../watcher');
 const twitch = require('../../utils/twitch');
+const settingsModule = require('../settings');
 
 const TWITCH_THEME_CHANGED_DISPATCH_TYPE = 'core.ui.THEME_CHANGED';
 const TWITCH_THEME_STORAGE_KEY = 'twilight.theme';
@@ -25,7 +26,7 @@ class GlobalCSSModule {
             id: 'darkenedMode',
             name: 'Dark Theme',
             defaultValue: false,
-            description: 'Enable Twitch\'s dark theme'
+            description: 'Enables Twitch\'s dark theme'
         });
         settings.on('changed.darkenedMode', value => this.setTwitchTheme(value));
 
@@ -54,6 +55,7 @@ class GlobalCSSModule {
             const isDarkMode = connectStore.getState().ui.theme === TwitchThemes.DARK;
             if (settings.get('darkenedMode') !== isDarkMode) {
                 settings.set('darkenedMode', isDarkMode, false, true);
+                settingsModule.updateSettingToggle('darkenedMode', isDarkMode);
             }
         });
     }

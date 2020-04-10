@@ -7,7 +7,7 @@ class HideFriendsModule {
             id: 'hideFriends',
             name: 'Hide Friends',
             defaultValue: false,
-            description: 'Hides the friends list from the left sidebar'
+            description: 'Hides the friends list in the left sidebar'
         });
         settings.on('changed.hideFriends', () => this.toggleFriendsList());
         this.toggleFriendsList();

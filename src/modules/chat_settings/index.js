@@ -71,7 +71,7 @@ class ChatSettingsModule {
         $settings.find('.openSettings').click(settings.openSettings);
         $settings.find('.clearChat').click(e => {
             e.preventDefault();
-            $('.chat-line__message').hide();
+            $('.chat-line__message, .channel-points-reward-line, .user-notice-line').hide();
         });
 
         $settings.find('.setHighlightKeywords').click(highlightBlacklistKeywords.setHighlightKeywords);

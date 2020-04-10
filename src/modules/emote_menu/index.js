@@ -10,7 +10,7 @@ class EmoteMenuModule {
             id: 'clickTwitchEmotes',
             name: 'Emote Menu',
             defaultValue: false,
-            description: 'Get a more advanced emote menu for Twitch. (Made by Ryan Chatham)'
+            description: 'Enables a more advanced emote menu for Twitch (made by Ryan Chatham)'
         });
         settings.on('changed.clickTwitchEmotes', () => this.load());
         watcher.on('load.chat', () => this.load());

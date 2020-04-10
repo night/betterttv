@@ -2,13 +2,22 @@
     .right-column {
         order: 1;
     }
-    
+
     .twilight-main {
         order: 2;
     }
 
     .side-nav {
         order: 3;
+
+        .collapse-toggle {
+            transform: rotate(180deg);
+        }
+    }
+
+    /* Header overlap with collapseable column */
+    .channel-header .tw-sm-pd-r-4 .channel-header__left {
+        margin-left: 3.5rem;
     }
 
     /* Toggle Visibility Arrows */
@@ -21,11 +30,14 @@
     .side-nav--collapsed .side-nav__toggle-visibility {
         transform: rotate(180deg);
     }
-    
+
     .right-column__toggle-visibility {
-         right: -2.5rem;
-         left: unset;
-         transform: rotate(180deg);
+        left: 1rem;
+        transform: rotate(180deg);
+
+        .tw-tooltip {
+            display: none !important;
+        }
     }
 
     .right-column--collapsed .right-column__toggle-visibility {

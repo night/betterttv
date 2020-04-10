@@ -9,7 +9,7 @@ class AutoTheaterModeModule {
             id: 'autoTheatreMode',
             name: 'Automatic Theatre Mode',
             defaultValue: false,
-            description: 'Automatically enables theatre mode'
+            description: 'Enables theatre mode by default'
         });
         watcher.on('load.player', () => this.load());
     }
@@ -23,7 +23,7 @@ class AutoTheaterModeModule {
         try {
             player.setTheatre(true);
         } catch (_) {
-            if ($('.highwind-video-player--theatre').length === 0) {
+            if ($('.video-player--theatre').length === 0) {
                 $('button[data-a-target="player-theatre-mode-button"]').click();
             }
         }

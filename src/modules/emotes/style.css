@@ -5,33 +5,43 @@
 }
 
 /* Ice Cube */
-span[data-a-target="emote-name"] + span[data-a-target="chat-message-text"] span .bttv-emo-5849c9a4f52be01a7ee5f79d img,
+div[data-test-selector="emote-button"] + span[data-a-target="chat-message-text"] span .bttv-emo-5849c9a4f52be01a7ee5f79d img,
 div.bttv-emote + .bttv-emo-5849c9a4f52be01a7ee5f79d img {
   margin-left: -33px;
 }
 
 /* SoSnowy */
-span[data-a-target="emote-name"] + span[data-a-target="chat-message-text"] span .bttv-emo-567b5b520e984428652809b6 img,
+div[data-test-selector="emote-button"] + span[data-a-target="chat-message-text"] span .bttv-emo-567b5b520e984428652809b6 img,
 div.bttv-emote + .bttv-emo-567b5b520e984428652809b6 img {
   margin-left: -32px;
 }
 
 /* SantaHat */
-span[data-a-target="emote-name"] + span[data-a-target="chat-message-text"] span .bttv-emo-58487cc6f52be01a7ee5f205 img,
+div[data-test-selector="emote-button"] + span[data-a-target="chat-message-text"] span .bttv-emo-58487cc6f52be01a7ee5f205 img,
 div.bttv-emote + .bttv-emo-58487cc6f52be01a7ee5f205 img {
   margin-left: -34px;
   margin-top: -18px;
 }
 
 /* TopHat, CandyCane, ReinDeer */
-span[data-a-target="emote-name"] + span[data-a-target="chat-message-text"] span .bttv-emo-5849c9c8f52be01a7ee5f79e img,
+div[data-test-selector="emote-button"] + span[data-a-target="chat-message-text"] span .bttv-emo-5849c9c8f52be01a7ee5f79e img,
 div.bttv-emote + .bttv-emo-5849c9c8f52be01a7ee5f79e img,
-span[data-a-target="emote-name"] + span[data-a-target="chat-message-text"] span .bttv-emo-567b5c080e984428652809ba img,
+div[data-test-selector="emote-button"] + span[data-a-target="chat-message-text"] span .bttv-emo-567b5c080e984428652809ba img,
 div.bttv-emote + .bttv-emo-567b5c080e984428652809ba img,
-span[data-a-target="emote-name"] + span[data-a-target="chat-message-text"] span .bttv-emo-567b5dc00e984428652809bd img,
+div[data-test-selector="emote-button"] + span[data-a-target="chat-message-text"] span .bttv-emo-567b5dc00e984428652809bd img,
 div.bttv-emote + .bttv-emo-567b5dc00e984428652809bd img {
   margin-left: -31px;
   margin-top: -18px;
+}
+
+/* cvHazmat, cvMask */
+div[data-test-selector="emote-button"] + span[data-a-target="chat-message-text"] span .bttv-emo-5e76d338d6581c3724c0f0b2 img,
+div.bttv-emote + .bttv-emo-5e76d338d6581c3724c0f0b2 img,
+div[data-test-selector="emote-button"] + span[data-a-target="chat-message-text"] span .bttv-emo-5e76d399d6581c3724c0f0b8 img,
+div.bttv-emote + .bttv-emo-5e76d399d6581c3724c0f0b8 img {
+  margin-left: -34px;
+  height: 34px;
+  width: 34px;
 }
 
 .bttv-emote-tooltip-wrapper {
