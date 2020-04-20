@@ -168,7 +168,7 @@ class ModeratorCard {
         const currentUserCanModerate = !isCurrentUser && (currentUserIsOwner || (currentUserIsModerator && !isModerator));
         if (currentUserCanModerate) return;
 
-        const $moderatorActions = this.$element.find('div[data-test-selector="viewer-card-social-actions"]');
+        const $moderatorActions = this.$element.find('button[data-a-target="viewer-card-more-button"]').closest('div.tw-c-background-base');
         const $messages = $(userMessagesTemplate(this.messages.map(({outerHTML}) => outerHTML)));
         $moderatorActions.after($messages);
 
