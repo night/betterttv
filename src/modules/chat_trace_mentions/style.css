@@ -1,0 +1,20 @@
+.chat-line__message.bttv-mentioned, .vod-message.bttv-mentioned {
+    background-color: rgba(0, 255, 0, 0.3) !important;
+}
+
+.chat-line__message.bttv-mention-sender, .vod-message.bttv-mention-sender {
+    background-color: rgba(0, 255, 255, 0.3) !important;
+}
+
+.mention-fragment.bttv-trace-mention-fragment {
+    cursor: pointer;
+    font-weight: 501;
+}
+
+html:not(.tw-root--theme-dark) .mention-fragment.bttv-trace-mention-fragment {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+html.tw-root--theme-dark .mention-fragment.bttv-trace-mention-fragment {
+    background-color: rgba(255, 255, 255, 0.1);
+}
