@@ -5,16 +5,51 @@ const settings = require('../../settings');
 
 const CHAT_MESSAGE_LINE_SELECTOR = 'div.chat-line__message';
 
+const DEFAULT_SENDER_TRACE_COLOUR = 'rgb(0, 255, 255)';
+const DEFAULT_MENTIONED_TRACE_COLOUR = 'rgb(0, 255, 0) ';
+
+let currentMentionedColor = DEFAULT_MENTIONED_TRACE_COLOUR;
+let currentSenderColor = DEFAULT_SENDER_TRACE_COLOUR;
+
 function clearMarks() {
-    $(`${CHAT_MESSAGE_LINE_SELECTOR}`).removeClass('bttv-mentioned bttv-mention-sender');
+    $(`${CHAT_MESSAGE_LINE_SELECTOR}`).css('background-color', '');
 }
 
 function markMentioned(mentioned) {
-    $(`${CHAT_MESSAGE_LINE_SELECTOR}[data-bttv-sender="${mentioned}"]`).addClass('bttv-mentioned');
+    $(`${CHAT_MESSAGE_LINE_SELECTOR}[data-bttv-sender="${mentioned}"]`).css('background-color', currentMentionedColor);
 }
 
 function markSender(sender) {
-    $(`${CHAT_MESSAGE_LINE_SELECTOR}[data-bttv-sender="${sender}"]`).addClass('bttv-mention-sender');
+    $(`${CHAT_MESSAGE_LINE_SELECTOR}[data-bttv-sender="${sender}"]`).css('background-color', currentSenderColor);
+}
+
+function getUserColors(mentioned, sender) {
+    const messagesFromSender = $(`${CHAT_MESSAGE_LINE_SELECTOR}[data-bttv-sender=${sender}]`);
+    const messagesFromMentioned = $(`${CHAT_MESSAGE_LINE_SELECTOR}[data-bttv-sender=${mentioned}]`);
+
+    let senderColor = messagesFromSender.length
+        ? messagesFromSender
+            .find('.chat-author__display-name')
+            .css('color')
+        : DEFAULT_SENDER_TRACE_COLOUR;
+    let mentionedColor = messagesFromMentioned.length
+        ? messagesFromMentioned
+            .find('.chat-author__display-name')
+            .css('color')
+        : DEFAULT_MENTIONED_TRACE_COLOUR;
+
+    const senderAlpha = (senderColor === mentionedColor)
+        ? '0.15'
+        : '0.3';
+
+    senderColor = senderColor
+        .replace(')', `, ${senderAlpha})`)
+        .replace('rgb(', 'rgba(');
+    mentionedColor = mentionedColor
+        .replace(')', ', 0.3')
+        .replace('rgb(', 'rgba(');
+
+    return [mentionedColor, senderColor];
 }
 
 let currentMentioned = null;
@@ -55,8 +90,12 @@ class ChatTraceMentionsModule {
 
         if (settings.get('traceMentions')) {
             // if the sender is the mentioned or mention-sender, mark it
-            if (currentMentioned === sender) $message.addClass('bttv-mentioned');
-            if (currentSender === sender) $message.addClass('bttv-mention-sender');
+            if (currentMentioned === sender) {
+                $message.css('background-color', currentMentionedColor);
+            }
+            if (currentSender === sender) {
+                $message.css('background-color', currentSenderColor);
+            }
             if (settings.get('traceMentionsMoreVisible')) {
                 $message.find('.mention-fragment').addClass('bttv-trace-mention-fragment');
             }
@@ -73,6 +112,7 @@ class ChatTraceMentionsModule {
             const sender = $(this).parent(`${CHAT_MESSAGE_LINE_SELECTOR}`).data('bttv-sender');
             debug.log(`Clicked on a mention span for ${mention} sent by ${sender}.`);
             const mentioned = mention.replace('@', '');
+            [currentMentionedColor, currentSenderColor] = getUserColors(mentioned, sender);
             clearMarks();
             if (settings.get('traceMentions')) {
                 markMentioned(mentioned);
