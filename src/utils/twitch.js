@@ -227,7 +227,7 @@ module.exports = {
             player = node.stateNode.player ? node.stateNode.player.player : node.stateNode.props.mediaPlayerInstance;
         } catch (e) {}
 
-        return player;
+        return player.core || player;
     },
 
     getChatController() {
