@@ -45,7 +45,7 @@ div.bttv-emote + .bttv-emo-5e76d399d6581c3724c0f0b8 img {
 }
 
 .bttv-emote-tooltip-wrapper {
-  display: inline;
+  display: inline-block;
   position: relative;
 
   &:hover .bttv-emote-tooltip {
