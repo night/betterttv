@@ -3,7 +3,7 @@ const twitch = require('../../utils/twitch');
 const keycodes = require('../../utils/keycodes');
 
 const CHAT_LIST_SELECTOR = '.chat-list';
-const MESSAGES_INDICATOR_SELECTOR = '.chat-list__more-messages';
+const MESSAGES_INDICATOR_SELECTOR = '.chat-list div[data-a-target="chat-list-footer"]';
 const FREEZE_KEYS = [keycodes.Ctrl, keycodes.Meta];
 
 let keysPressed = 0;

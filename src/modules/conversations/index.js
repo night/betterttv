@@ -22,27 +22,13 @@ class ConversationsModule {
             defaultValue: false,
             description: 'Disables Twitch whispers and hides any whispers you receive'
         });
-        settings.add({
-            id: 'hideConversations',
-            name: 'Hide Whispers When Inactive',
-            defaultValue: false,
-            description: 'Shows whispers only on mouseover or when there\'s a new message'
-        });
         settings.on('changed.disableWhispers', () => this.toggleHide());
-        settings.on('changed.hideConversations', () => this.toggleAutoHide());
-        watcher.on('load', () => {
-            this.toggleHide();
-            this.toggleAutoHide();
-        });
+        watcher.on('load', () => this.toggleHide());
         watcher.on('conversation.message', ($el, message) => this.parseMessage($el, message));
     }
 
     toggleHide() {
         $('body').toggleClass('bttv-hide-conversations', settings.get('disableWhispers'));
-    }
-
-    toggleAutoHide() {
-        $('body').toggleClass('bttv-auto-hide-conversations', settings.get('hideConversations'));
     }
 
     parseMessage($element, message) {

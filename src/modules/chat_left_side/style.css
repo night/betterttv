@@ -32,8 +32,12 @@
     }
 
     .right-column__toggle-visibility {
-         left: 1rem;
-         transform: rotate(180deg);
+        left: 1rem;
+        transform: rotate(180deg);
+
+        .tw-tooltip {
+            display: none !important;
+        }
     }
 
     .right-column--collapsed .right-column__toggle-visibility {

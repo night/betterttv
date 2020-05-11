@@ -17,7 +17,7 @@ const EMOTES_TO_CAP = ['567b5b520e984428652809b6'];
 const MAX_EMOTES_WHEN_CAPPED = 10;
 
 const badgeTemplate = (url, description) => `
-    <div class="tw-tooltip-wrapper tw-inline">
+    <div class="tw-tooltip-wrapper tw-inline tw-relative">
         <img alt="Moderator" class="chat-badge bttv-chat-badge" src="${url}" alt="" srcset="" data-a-target="chat-badge">
         <div class="tw-tooltip tw-tooltip--up tw-tooltip--align-left" data-a-target="tw-tooltip-label" style="margin-bottom: 0.9rem;">${description}</div>
     </div>
@@ -81,10 +81,7 @@ class ChatModule {
 
     customBadges($element, user) {
         if ((globalBots.includes(user.name) || channelBots.includes(user.name)) && user.mod) {
-            $element.find('img.chat-badge[alt="Moderator"]')
-                .addClass('bttv-chat-badge')
-                .attr('srcset', '')
-                .attr('src', cdn.url('tags/bot.png'));
+            $element.find('img.chat-badge[alt="Moderator"]').replaceWith(badgeTemplate(cdn.url('tags/bot.png'), 'Bot'));
         }
 
         let $badgesContainer = $element.find('.chat-badge').closest('span');

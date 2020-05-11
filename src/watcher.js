@@ -273,7 +273,7 @@ class Watcher extends SafeEventEmitter {
         );
 
         const timer = setInterval(() => {
-            const element = $('.whispers')[0];
+            const element = $('.whispers-open-threads')[0];
             if (!element) return;
             clearInterval(timer);
             conversationWatcher.observe(element, {childList: true, subtree: true});
