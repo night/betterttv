@@ -110,13 +110,62 @@ function togglePictureInPicture() {
     }
 }
 
+function insertPiPButton() {
+    const $anchor = $('.player-controls__right-control-group');
+    const $settingsButton = $anchor.children('div').children('div.settings-menu-button-component').parent();
+    const $button = $(getPictureInPictureTemplate(false));
+
+    $anchor.on('click', BTTV_PICTURE_IN_PICTURE_SELECTOR, togglePictureInPicture);
+    $button.insertAfter($settingsButton);
+}
+
+function loadPictureInPicture() {
+    if (!document.pictureInPictureEnabled || $(BTTV_PICTURE_IN_PICTURE_SELECTOR).length > 0) return;
+
+    const observe = (_watcher, element) => {
+        if (!element) return;
+        if (_watcher) _watcher.disconnect();
+        _watcher.observe(element, {
+            attributes: true,
+            attributeFilter: ['data-a-player-state'],
+            attributeOldValue: true
+        });
+    };
+
+    const miniPlayerObserver = new window.MutationObserver(mutations =>
+        mutations.forEach(mutation => {
+            if (mutation.oldValue === 'mini') {
+                insertPiPButton();
+            }
+        })
+    );
+
+    observe(miniPlayerObserver, $('.persistent-player')[0]);
+
+    const video = $(VIDEO_PLAYER_SELECTOR).find('video');
+    if (video.length === 0) return;
+
+    video.on('enterpictureinpicture', () => {
+        if (document.fullscreenElement) {
+            document.exitFullscreen();
+        }
+        $(BTTV_PICTURE_IN_PICTURE_SELECTOR).replaceWith(getPictureInPictureTemplate(true));
+    });
+
+    video.on('leavepictureinpicture', () => {
+        $(BTTV_PICTURE_IN_PICTURE_SELECTOR).replaceWith(getPictureInPictureTemplate(false));
+    });
+
+    insertPiPButton();
+}
+
 class VideoPlayerModule {
     constructor() {
         watcher.on('load.player', () => {
             this.clickToPause();
             watchPlayerRecommendationVodsAutoplay();
             this.loadVolumeScrollControl();
-            this.loadPictureInPicture();
+            loadPictureInPicture();
         });
         settings.add({
             id: 'hidePlayerExtensions',
@@ -176,31 +225,6 @@ class VideoPlayerModule {
             togglePlayerCursor(false);
             hidePlayerCursor();
         });
-    }
-
-    loadPictureInPicture() {
-        if (!document.pictureInPictureEnabled || $(BTTV_PICTURE_IN_PICTURE_SELECTOR).length > 0) return;
-
-        const video = $(VIDEO_PLAYER_SELECTOR).find('video');
-        if (video.length === 0) return;
-
-        video.on('enterpictureinpicture', () => {
-            if (document.fullscreenElement) {
-                document.exitFullscreen();
-            }
-            $(BTTV_PICTURE_IN_PICTURE_SELECTOR).replaceWith(getPictureInPictureTemplate(true));
-        });
-
-        video.on('leavepictureinpicture', () => {
-            $(BTTV_PICTURE_IN_PICTURE_SELECTOR).replaceWith(getPictureInPictureTemplate(false));
-        });
-
-        const $anchor = $('.player-controls__right-control-group');
-        const $settingsButton = $anchor.children('div').children('div.settings-menu-button-component').parent();
-        const $button = $(getPictureInPictureTemplate(false));
-
-        $anchor.on('click', BTTV_PICTURE_IN_PICTURE_SELECTOR, togglePictureInPicture);
-        $button.insertAfter($settingsButton);
     }
 }
 
