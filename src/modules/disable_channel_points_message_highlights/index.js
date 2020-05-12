@@ -15,7 +15,7 @@ class DisableChannelPointsMessageHighlightsModule {
     }
 
     load() {
-        $('.chat-list__lines').toggleClass('bttv-disable-channel-points-message-highlights', settings.get('disableChannelPointsMessageHighlights'));
+        $('.chat-scrollable-area__message-container').toggleClass('bttv-disable-channel-points-message-highlights', settings.get('disableChannelPointsMessageHighlights'));
     }
 }
 
