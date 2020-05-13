@@ -11,8 +11,8 @@ let $hostButton;
 let hosting = false;
 
 const buttonTemplate = `
-    <div class="tw-mg-l-1">
-        <button id="${HOST_BUTTON_ID}" class="tw-button tw-button--hollow">
+    <div>
+        <button id="${HOST_BUTTON_ID}" class="tw-button tw-button--secondary">
             <span class="tw-button__text">Host Channel</span>
         </button>
     </div>
@@ -28,6 +28,7 @@ class HostButtonModule {
         });
         settings.on('changed.hostButton', value => value === true ? this.load() : this.unload());
         watcher.on('load.chat', () => this.load());
+        watcher.on('load.channel', () => this.load());
     }
 
     load() {
@@ -44,8 +45,9 @@ class HostButtonModule {
 
     embedHostButton() {
         if ($(`#${HOST_BUTTON_ID}`).length) return;
-        const $shareButton = $(SHARE_BUTTON_SELECTOR).closest('[data-toggle-balloon-id]').parent('.tw-mg-l-05');
+        const $shareButton = $(SHARE_BUTTON_SELECTOR).closest('[data-toggle-balloon-id]').parent('.tw-mg-l-05,.tw-mg-r-1');
         if (!$shareButton.length) return;
+        $hostButton.toggleClass('tw-mg-l-05', $shareButton.hasClass('tw-mg-l-05')).toggleClass('tw-mg-r-1', $shareButton.hasClass('tw-mg-r-1'));
         $hostButton.insertBefore($shareButton);
         $hostButton.find('button').click(() => this.toggleHost());
     }
