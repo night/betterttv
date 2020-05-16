@@ -5,31 +5,31 @@
 }
 
 /* Ice Cube */
-div[data-test-selector="emote-button"] + span[data-a-target="chat-message-text"] span .bttv-emo-5849c9a4f52be01a7ee5f79d img,
-div.bttv-emote + .bttv-emo-5849c9a4f52be01a7ee5f79d img {
+div[data-test-selector="emote-button"] + span[data-a-target="chat-message-text"] span .bttv-emo-5849c9a4f52be01a7ee5f79d,
+div.bttv-emote + .bttv-emo-5849c9a4f52be01a7ee5f79d {
   margin-left: -33px;
 }
 
 /* SoSnowy */
-div[data-test-selector="emote-button"] + span[data-a-target="chat-message-text"] span .bttv-emo-567b5b520e984428652809b6 img,
-div.bttv-emote + .bttv-emo-567b5b520e984428652809b6 img {
+div[data-test-selector="emote-button"] + span[data-a-target="chat-message-text"] span .bttv-emo-567b5b520e984428652809b6,
+div.bttv-emote + .bttv-emo-567b5b520e984428652809b6 {
   margin-left: -32px;
 }
 
 /* SantaHat */
-div[data-test-selector="emote-button"] + span[data-a-target="chat-message-text"] span .bttv-emo-58487cc6f52be01a7ee5f205 img,
-div.bttv-emote + .bttv-emo-58487cc6f52be01a7ee5f205 img {
+div[data-test-selector="emote-button"] + span[data-a-target="chat-message-text"] span .bttv-emo-58487cc6f52be01a7ee5f205,
+div.bttv-emote + .bttv-emo-58487cc6f52be01a7ee5f205 {
   margin-left: -34px;
   margin-top: -18px;
 }
 
 /* TopHat, CandyCane, ReinDeer */
-div[data-test-selector="emote-button"] + span[data-a-target="chat-message-text"] span .bttv-emo-5849c9c8f52be01a7ee5f79e img,
-div.bttv-emote + .bttv-emo-5849c9c8f52be01a7ee5f79e img,
-div[data-test-selector="emote-button"] + span[data-a-target="chat-message-text"] span .bttv-emo-567b5c080e984428652809ba img,
-div.bttv-emote + .bttv-emo-567b5c080e984428652809ba img,
-div[data-test-selector="emote-button"] + span[data-a-target="chat-message-text"] span .bttv-emo-567b5dc00e984428652809bd img,
-div.bttv-emote + .bttv-emo-567b5dc00e984428652809bd img {
+div[data-test-selector="emote-button"] + span[data-a-target="chat-message-text"] span .bttv-emo-5849c9c8f52be01a7ee5f79e,
+div.bttv-emote + .bttv-emo-5849c9c8f52be01a7ee5f79e,
+div[data-test-selector="emote-button"] + span[data-a-target="chat-message-text"] span .bttv-emo-567b5c080e984428652809ba,
+div.bttv-emote + .bttv-emo-567b5c080e984428652809ba,
+div[data-test-selector="emote-button"] + span[data-a-target="chat-message-text"] span .bttv-emo-567b5dc00e984428652809bd,
+div.bttv-emote + .bttv-emo-567b5dc00e984428652809bd {
   margin-left: -31px;
   margin-top: -18px;
 }
@@ -39,9 +39,14 @@ div[data-test-selector="emote-button"] + span[data-a-target="chat-message-text"]
 div.bttv-emote + .bttv-emo-5e76d338d6581c3724c0f0b2 img,
 div[data-test-selector="emote-button"] + span[data-a-target="chat-message-text"] span .bttv-emo-5e76d399d6581c3724c0f0b8 img,
 div.bttv-emote + .bttv-emo-5e76d399d6581c3724c0f0b8 img {
-  margin-left: -34px;
   height: 34px;
   width: 34px;
+}
+div[data-test-selector="emote-button"] + span[data-a-target="chat-message-text"] span .bttv-emo-5e76d338d6581c3724c0f0b2,
+div.bttv-emote + .bttv-emo-5e76d338d6581c3724c0f0b2,
+div[data-test-selector="emote-button"] + span[data-a-target="chat-message-text"] span .bttv-emo-5e76d399d6581c3724c0f0b8,
+div.bttv-emote + .bttv-emo-5e76d399d6581c3724c0f0b8 {
+  margin-left: -34px;
 }
 
 .bttv-emote-tooltip-wrapper {
