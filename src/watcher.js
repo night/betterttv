@@ -183,7 +183,6 @@ class Watcher extends SafeEventEmitter {
                     try {
                         require('${module}');
                     } catch (e) {
-                        Raven.captureException(e);
                         debug.error('Failed to load watcher ${module}', e.stack);
                     }
                 `;
