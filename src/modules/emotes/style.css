@@ -42,6 +42,7 @@ div.bttv-emote + .bttv-emo-5e76d399d6581c3724c0f0b8 img {
   height: 34px;
   width: 34px;
 }
+
 div[data-test-selector="emote-button"] + span[data-a-target="chat-message-text"] span .bttv-emo-5e76d338d6581c3724c0f0b2,
 div.bttv-emote + .bttv-emo-5e76d338d6581c3724c0f0b2,
 div[data-test-selector="emote-button"] + span[data-a-target="chat-message-text"] span .bttv-emo-5e76d399d6581c3724c0f0b8,
