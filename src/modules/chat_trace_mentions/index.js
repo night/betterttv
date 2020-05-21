@@ -4,28 +4,33 @@ const debug = require('../../utils/debug');
 const settings = require('../../settings');
 
 const CHAT_MESSAGE_LINE_SELECTOR = 'div.chat-line__message';
+const VOD_MESSAGE_LINE_SELECTOR = 'div.vod-message';
+const VOD_CHAT_FROM_SELECTOR = '.video-chat__message-author';
 
 const DEFAULT_SENDER_TRACE_COLOUR = 'rgb(0, 255, 255)';
 const DEFAULT_MENTIONED_TRACE_COLOUR = 'rgb(0, 255, 0) ';
 
 let currentMentionedColor = DEFAULT_MENTIONED_TRACE_COLOUR;
 let currentSenderColor = DEFAULT_SENDER_TRACE_COLOUR;
+let messageLineSelector = document.URL.match(/twitch\.tv\/videos/)
+    ? VOD_MESSAGE_LINE_SELECTOR
+    : CHAT_MESSAGE_LINE_SELECTOR;
 
 function clearMarks() {
-    $(`${CHAT_MESSAGE_LINE_SELECTOR}`).css('background-color', '');
+    $(`${messageLineSelector}`).css('background-color', '');
 }
 
 function markMentioned(mentioned) {
-    $(`${CHAT_MESSAGE_LINE_SELECTOR}[data-bttv-sender="${mentioned}"]`).css('background-color', currentMentionedColor);
+    $(`${messageLineSelector}[data-bttv-sender="${mentioned}"]`).css('background-color', currentMentionedColor);
 }
 
 function markSender(sender) {
-    $(`${CHAT_MESSAGE_LINE_SELECTOR}[data-bttv-sender="${sender}"]`).css('background-color', currentSenderColor);
+    $(`${messageLineSelector}[data-bttv-sender="${sender}"]`).css('background-color', currentSenderColor);
 }
 
 function getUserColors(mentioned, sender) {
-    const messagesFromSender = $(`${CHAT_MESSAGE_LINE_SELECTOR}[data-bttv-sender=${sender}]`);
-    const messagesFromMentioned = $(`${CHAT_MESSAGE_LINE_SELECTOR}[data-bttv-sender=${mentioned}]`);
+    const messagesFromSender = $(`${messageLineSelector}[data-bttv-sender=${sender}]`);
+    const messagesFromMentioned = $(`${messageLineSelector}[data-bttv-sender=${mentioned}]`);
 
     let senderColor = messagesFromSender.length
         ? messagesFromSender
@@ -46,7 +51,7 @@ function getUserColors(mentioned, sender) {
         .replace(')', `, ${senderAlpha})`)
         .replace('rgb(', 'rgba(');
     mentionedColor = mentionedColor
-        .replace(')', ', 0.3')
+        .replace(')', ', 0.3)')
         .replace('rgb(', 'rgba(');
 
     return [mentionedColor, senderColor];
@@ -56,7 +61,10 @@ let currentMentioned = null;
 let currentSender = null;
 class ChatTraceMentionsModule {
     constructor() {
+        watcher.on('load.chat', () => this.onChatLoad());
+        watcher.on('load.vod', () => this.onChatLoad());
         watcher.on('chat.message', ($message, messageObj) => this.onMessage($message, messageObj));
+        watcher.on('vod.message', $message => this.onVODMessage($message));
 
         settings.add({
             id: 'traceMentions',
@@ -79,6 +87,15 @@ class ChatTraceMentionsModule {
         });
         settings.on('changed.traceMentionsMoreVisible', () => this.styleMentions());
 
+        // this.listenForMentionClicks();
+        // this.listenForTextClicks();
+    }
+
+    onChatLoad() {
+        messageLineSelector = document.URL.match(/twitch\.tv\/videos/)
+            ? VOD_MESSAGE_LINE_SELECTOR
+            : CHAT_MESSAGE_LINE_SELECTOR;
+        clearMarks();
         this.listenForMentionClicks();
         this.listenForTextClicks();
     }
@@ -102,6 +119,24 @@ class ChatTraceMentionsModule {
         }
     }
 
+    onVODMessage($message) {
+        const $from = $message.find(VOD_CHAT_FROM_SELECTOR);
+        const sender = $from.attr('href').split('?')[0].split('/').pop();
+        this.dataTagSender($message, sender);
+
+        if (settings.get('traceMentions')) {
+            if (currentMentioned === sender) {
+                $message.css('background-color', currentMentionedColor);
+            }
+            if (currentSender === sender) {
+                $message.css('background-color', currentSenderColor);
+            }
+            if (settings.get('traceMentionsMoreVisible')) {
+                $message.find('.mention-fragment').addClass('bttv-trace-mention-fragment');
+            }
+        }
+    }
+
     dataTagSender($message, sender) {
         $message.attr('data-bttv-sender', sender);
     }
@@ -109,7 +144,7 @@ class ChatTraceMentionsModule {
     listenForMentionClicks() {
         $(document).on('click', '.mention-fragment', function(event) {
             const mention = $(this).text().toLowerCase();
-            const sender = $(this).parent(`${CHAT_MESSAGE_LINE_SELECTOR}`).data('bttv-sender');
+            const sender = $(this).parents(`${messageLineSelector}`).data('bttv-sender');
             debug.log(`Clicked on a mention span for ${mention} sent by ${sender}.`);
             const mentioned = mention.replace('@', '');
             [currentMentionedColor, currentSenderColor] = getUserColors(mentioned, sender);
@@ -125,7 +160,7 @@ class ChatTraceMentionsModule {
     }
 
     listenForTextClicks() {
-        $(document).on('click', `${CHAT_MESSAGE_LINE_SELECTOR}`, () => {
+        $(document).on('click', `${messageLineSelector}`, () => {
             debug.log('Clicked elsewhere in a message.');
             clearMarks();
             currentMentioned = null;
