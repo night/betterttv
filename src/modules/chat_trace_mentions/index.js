@@ -10,6 +10,8 @@ const VOD_CHAT_FROM_SELECTOR = '.video-chat__message-author';
 const DEFAULT_SENDER_TRACE_COLOUR = 'rgb(0, 255, 255)';
 const DEFAULT_MENTIONED_TRACE_COLOUR = 'rgb(0, 255, 0) ';
 
+const LOG_PREFIX = 'ChatTraceMentionsModule';
+
 let currentMentionedColor = DEFAULT_MENTIONED_TRACE_COLOUR;
 let currentSenderColor = DEFAULT_SENDER_TRACE_COLOUR;
 let messageLineSelector = document.URL.match(/twitch\.tv\/videos/)
@@ -130,7 +132,7 @@ class ChatTraceMentionsModule {
         $(document).on('click', '.mention-fragment', function(event) {
             const mention = $(this).text().toLowerCase();
             const sender = $(this).parents(`${messageLineSelector}`).data('bttv-sender');
-            debug.log(`Clicked on a mention span for ${mention} sent by ${sender}.`);
+            debug.log(`${LOG_PREFIX}: Clicked on a mention span for ${mention} sent by ${sender}.`);
             const mentioned = mention.replace('@', '');
             [currentMentionedColor, currentSenderColor] = getUserColors(mentioned, sender);
             clearMarks();
@@ -146,7 +148,7 @@ class ChatTraceMentionsModule {
 
     listenForTextClicks() {
         $(document).on('click', `${messageLineSelector}`, () => {
-            debug.log('Clicked elsewhere in a message.');
+            debug.log(`${LOG_PREFIX}: Clicked elsewhere in a message.`);
             clearMarks();
             currentMentioned = null;
             currentSender = null;
