@@ -75,11 +75,14 @@ class ChatTraceMentionsModule {
             description: 'Click on a @mention in chat to highlight messages from the mentioned and the mentioner',
         });
         settings.on('changed.traceMentions', () => {
+            debug.log(`${LOG_PREFIX}: Setting traceMentions changed and is now ${settings.get('traceMentions') ? 'ON' : 'OFF'}`);
             currentMentioned = null;
             currentSender = null;
             clearMarks();
             this.styleMentions();
         });
+
+        debug.log(`${LOG_PREFIX}: ChatTraceMentionsModule loaded`);
     }
 
     onChatLoad() {
@@ -142,6 +145,7 @@ class ChatTraceMentionsModule {
             currentSender = sender;
             event.stopPropagation();
         });
+        debug.log(`${LOG_PREFIX}: Listener attached to clicks on mention fragments`);
     }
 
     listenForTextClicks() {
@@ -151,6 +155,7 @@ class ChatTraceMentionsModule {
             currentMentioned = null;
             currentSender = null;
         });
+        debug.log(`${LOG_PREFIX}: Listener attached to clicks on message lines.`);
     }
 
     styleMentions() {
