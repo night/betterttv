@@ -86,9 +86,6 @@ class ChatTraceMentionsModule {
             description: 'Make mentions stand out more and use the \'pointer\' cursor'
         });
         settings.on('changed.traceMentionsMoreVisible', () => this.styleMentions());
-
-        // this.listenForMentionClicks();
-        // this.listenForTextClicks();
     }
 
     onChatLoad() {
