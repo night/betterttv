@@ -78,14 +78,6 @@ class ChatTraceMentionsModule {
             clearMarks();
             this.styleMentions();
         });
-
-        settings.add({
-            id: 'traceMentionsMoreVisible',
-            name: 'Trace Mentions: More Visible Mentions',
-            defaultValue: false,
-            description: 'Make mentions stand out more and use the \'pointer\' cursor'
-        });
-        settings.on('changed.traceMentionsMoreVisible', () => this.styleMentions());
     }
 
     onChatLoad() {
@@ -110,9 +102,7 @@ class ChatTraceMentionsModule {
             if (currentSender === sender) {
                 $message.css('background-color', currentSenderColor);
             }
-            if (settings.get('traceMentionsMoreVisible')) {
-                $message.find('.mention-fragment').addClass('bttv-trace-mention-fragment');
-            }
+            $message.find('.mention-fragment').addClass('bttv-trace-mention-fragment');
         }
     }
 
@@ -128,9 +118,7 @@ class ChatTraceMentionsModule {
             if (currentSender === sender) {
                 $message.css('background-color', currentSenderColor);
             }
-            if (settings.get('traceMentionsMoreVisible')) {
-                $message.find('.mention-fragment').addClass('bttv-trace-mention-fragment');
-            }
+            $message.find('.mention-fragment').addClass('bttv-trace-mention-fragment');
         }
     }
 
@@ -166,7 +154,7 @@ class ChatTraceMentionsModule {
     }
 
     styleMentions() {
-        if (settings.get('traceMentions') && settings.get('traceMentionsMoreVisible')) {
+        if (settings.get('traceMentions')) {
             // apply .bttv-trace-mention-fragment to all .mention-fragment
             $('.mention-fragment').addClass('bttv-trace-mention-fragment');
         } else {
