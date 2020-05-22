@@ -92,12 +92,10 @@ class ChatTraceMentionsModule {
     }
 
     onMessage($message, {user}) {
-        // data tag it with its sender
         const sender = user.userLogin.toLowerCase();
         this.dataTagSender($message, sender);
 
         if (settings.get('traceMentions')) {
-            // if the sender is the mentioned or mention-sender, mark it
             if (currentMentioned === sender) {
                 $message.css('background-color', currentMentionedColor);
             }
@@ -157,10 +155,8 @@ class ChatTraceMentionsModule {
 
     styleMentions() {
         if (settings.get('traceMentions')) {
-            // apply .bttv-trace-mention-fragment to all .mention-fragment
             $('.mention-fragment').addClass('bttv-trace-mention-fragment');
         } else {
-            // remove .bttv-trace-mention-fragment from all .bttv-trace-mention-fragment
             $('.mention-fragment.bttv-trace-mention-fragment').removeClass('bttv-trace-mention-fragment');
         }
     }
