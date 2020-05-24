@@ -131,29 +131,31 @@ class ChatTraceMentionsModule {
 
     listenForMentionClicks() {
         $(document).on('click', '.mention-fragment', function(event) {
-            const mention = $(this).text().toLowerCase();
-            const sender = $(this).parents(`${messageLineSelector}`).data('bttv-sender');
-            debug.log(`${LOG_PREFIX}: Clicked on a mention span for ${mention} sent by ${sender}.`);
-            const mentioned = mention.replace('@', '');
-            [currentMentionedColor, currentSenderColor] = getUserColors(mentioned, sender);
-            clearMarks();
             if (settings.get('traceMentions')) {
+                const mention = $(this).text().toLowerCase();
+                const sender = $(this).parents(`${messageLineSelector}`).data('bttv-sender');
+                debug.log(`${LOG_PREFIX}: Clicked on a mention span for ${mention} sent by ${sender}.`);
+                const mentioned = mention.replace('@', '');
+                [currentMentionedColor, currentSenderColor] = getUserColors(mentioned, sender);
+                clearMarks();
                 markMentioned(mentioned);
                 markSender(sender);
+                currentMentioned = mentioned;
+                currentSender = sender;
+                event.stopPropagation();
             }
-            currentMentioned = mentioned;
-            currentSender = sender;
-            event.stopPropagation();
         });
         debug.log(`${LOG_PREFIX}: Listener attached to clicks on mention fragments`);
     }
 
     listenForTextClicks() {
         $(document).on('click', `${messageLineSelector}`, () => {
-            debug.log(`${LOG_PREFIX}: Clicked elsewhere in a message.`);
-            clearMarks();
-            currentMentioned = null;
-            currentSender = null;
+            if (settings.get('traceMentions')) {
+                debug.log(`${LOG_PREFIX}: Clicked elsewhere in a message.`);
+                clearMarks();
+                currentMentioned = null;
+                currentSender = null;
+            }
         });
         debug.log(`${LOG_PREFIX}: Listener attached to clicks on message lines.`);
     }
