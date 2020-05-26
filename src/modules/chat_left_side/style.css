@@ -15,6 +15,24 @@
         }
     }
 
+    /* Restore channel content and player size */
+    .channel-root__right-column.channel-root__right-column--expanded:not(.channel-root__right-column--home) {
+        position: relative !important;
+        transform: none !important;
+    }
+
+    .channel-root__right-column.channel-root__right-column--home {
+        display: none !important;
+    }
+
+    .channel-root__player--with-chat {
+        width: 100% !important;
+    }
+
+    .channel-info-content {
+        width: 100% !important;
+    }
+
     /* Header overlap with collapseable column */
     .channel-header .tw-sm-pd-r-4 .channel-header__left {
         margin-left: 3.5rem;

@@ -19,5 +19,5 @@ deploy:
   file: dist/betterttv.tar.gz
   skip_cleanup: true
   on:
-    repo: night/BetterTTV
+    repo: night/betterttv
     tags: true

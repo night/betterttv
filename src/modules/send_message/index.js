@@ -2,7 +2,6 @@ const twitch = require('../../utils/twitch');
 const watcher = require('../../watcher');
 const debug = require('../../utils/debug');
 const socketClient = require('../../socket-client');
-const Raven = require('raven-js');
 
 const chatTabCompletion = require('../chat_tab_completion');
 const chatCommands = require('../chat_commands');
@@ -48,7 +47,6 @@ function bttvSendMessage(messageToSend, ...args) {
             try {
                 method(sendState);
             } catch (e) {
-                Raven.captureException(e);
                 debug.log(e);
             }
         }

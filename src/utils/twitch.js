@@ -1,5 +1,4 @@
 const $ = require('jquery');
-const Raven = require('raven-js');
 const twitchAPI = require('./twitch-api');
 
 const REACT_ROOT = '#root div';
@@ -120,11 +119,6 @@ module.exports = {
             name,
             displayName
         };
-
-        Raven.setUserContext({
-            id: currentUser.id,
-            username: currentUser.name
-        });
     },
 
     updateCurrentChannel() {
