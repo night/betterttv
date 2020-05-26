@@ -1,4 +1,5 @@
-.chat-list__lines.bttv-disable-name-colors {
+.chat-list__lines.bttv-disable-name-colors,
+.chat-scrollable-area__message-container.bttv-disable-name-colors {
   .chat-line__message, .chat-author__display-name, .chat-author__intl-login {
     color: inherit !important;
   }

@@ -1,5 +1,5 @@
 .bttv-chat-direction-reversed {
-    .chat-list .chat-list__lines div[role="log"] {
+    .chat-list .chat-list__lines div[role="log"], .chat-list .chat-scrollable-area__message-container[role="log"] {
         display: flex;
         flex-direction: column-reverse;
     }

@@ -296,7 +296,7 @@ module.exports = {
     getChatScroller() {
         let chatScroller;
         try {
-            const node = searchReactParents(
+            const node = searchReactChildren(
                 getReactInstance($(CHAT_LIST)[0]),
                 n => n.stateNode && n.stateNode.props && n.stateNode.scroll
             );
