@@ -190,6 +190,7 @@ class Watcher extends SafeEventEmitter {
         }});
 
         debug.log('Watcher started');
+        this.forceReloadChat();
     }
 
     forceReloadChat() {

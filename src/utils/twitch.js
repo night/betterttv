@@ -68,7 +68,7 @@ function getReactInstance(element) {
     return null;
 }
 
-function searchReactParents(node, predicate, maxDepth = 15, depth = 0) {
+function searchReactParents(node, predicate, maxDepth = 25, depth = 0) {
     try {
         if (predicate(node)) {
             return node;

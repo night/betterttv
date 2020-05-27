@@ -1,7 +1,7 @@
 (() => {
     if (!String.prototype.includes || !Array.prototype.findIndex) return;
     if (window.location.pathname.endsWith('.html')) return;
-    if (!['www.twitch.tv', 'canary.twitch.tv', 'clips.twitch.tv', 'dashboard.twitch.tv'].includes(window.location.hostname)) return;
+    if (!new RegExp(['/twitch', 'twitch.tv'].join('|')).test(window.location)) return;
     if (window.Ember) return;
 
     const debug = require('./utils/debug');
