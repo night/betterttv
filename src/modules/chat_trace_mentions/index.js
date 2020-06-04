@@ -12,22 +12,49 @@ const DEFAULT_MENTIONED_TRACE_COLOUR = 'rgb(0, 255, 0) ';
 
 const LOG_PREFIX = 'ChatTraceMentionsModule';
 
-let currentMentionedColor = DEFAULT_MENTIONED_TRACE_COLOUR;
-let currentSenderColor = DEFAULT_SENDER_TRACE_COLOUR;
+let currentMentionedColor;
+let currentSenderColor;
 let messageLineSelector = document.URL.match(/twitch\.tv\/videos/)
     ? VOD_MESSAGE_LINE_SELECTOR
     : CHAT_MESSAGE_LINE_SELECTOR;
+
+let currentFocusTargets = {};
 
 function clearMarks() {
     $(`${messageLineSelector}`).css('background-color', '');
 }
 
 function markMentioned(mentioned) {
-    $(`${messageLineSelector}[data-bttv-sender="${mentioned}"]`).css('background-color', currentMentionedColor);
+    $(`${messageLineSelector}[data-bttv-sender="${mentioned.toLowerCase()}"]`).css('background-color', currentMentionedColor);
 }
 
 function markSender(sender) {
-    $(`${messageLineSelector}[data-bttv-sender="${sender}"]`).css('background-color', currentSenderColor);
+    $(`${messageLineSelector}[data-bttv-sender="${sender.toLowerCase()}"]`).css('background-color', currentSenderColor);
+}
+
+function markFocus() {
+    Object.keys(currentFocusTargets).forEach(user => {
+        const color = currentFocusTargets[user];
+        $(`${messageLineSelector}[data-bttv-sender="${user.toLowerCase()}"]`).css('background-color', color);
+    });
+}
+
+function markMentioning() {
+    $(`${messageLineSelector}`).each((i, element) => {
+        const $mentions = $(element).find('.mention-fragment');
+        if ($mentions.length === 0) return;
+        const highlightColor = $(element)
+            .find('.chat-author__display-name')
+            .css('color')
+            .replace(/^rgb\(/, 'rgba(')
+            .replace(/\)$/, ', 0.3)');
+        $mentions.each((j, mention) => {
+            const mentionedUser = $(mention).text().toLowerCase().replace('@', '');
+            if (currentFocusTargets[mentionedUser]) {
+                $(element).css('background-color', highlightColor);
+            }
+        });
+    });
 }
 
 function getUserColors(mentioned, sender) {
@@ -72,7 +99,7 @@ class ChatTraceMentionsModule {
             id: 'traceMentions',
             name: 'Trace Mentions',
             defaultValue: false,
-            description: 'Click on a @mention in chat to highlight messages from the mentioned and the mentioner',
+            description: 'Click on a @mention in chat to follow a conversation, ctrl+click messages to follow the senders',
         });
         settings.on('changed.traceMentions', () => {
             debug.log(`${LOG_PREFIX}: Setting traceMentions changed and is now ${settings.get('traceMentions') ? 'ON' : 'OFF'}`);
@@ -105,6 +132,17 @@ class ChatTraceMentionsModule {
             if (currentSender === sender) {
                 $message.css('background-color', currentSenderColor);
             }
+            if (currentFocusTargets[sender]) {
+                $message.css('background-color', currentFocusTargets[sender]);
+            }
+            if (this.messageMentionsUser($message, Object.keys(currentFocusTargets))) {
+                const highlightColor = $message
+                    .find('.chat-author__display-name')
+                    .css('color')
+                    .replace(/^rgb\(/, 'rgba(')
+                    .replace(/\)$/, ', 0.3)');
+                $message.css('background-color', highlightColor);
+            }
             $message.find('.mention-fragment').addClass('bttv-trace-mention-fragment');
         }
     }
@@ -121,8 +159,34 @@ class ChatTraceMentionsModule {
             if (currentSender === sender) {
                 $message.css('background-color', currentSenderColor);
             }
+            if (currentFocusTargets[sender]) {
+                $message.css('background-color', currentFocusTargets[sender]);
+            }
+            if (this.messageMentionsUser($message, Object.keys(currentFocusTargets))) {
+                const highlightColor = $message
+                    .find('.chat-author__display-name')
+                    .css('color')
+                    .replace(/^rgb\(/, 'rgba(')
+                    .replace(/\)$/, ', 0.3)');
+                $message.css('background-color', highlightColor);
+            }
             $message.find('.mention-fragment').addClass('bttv-trace-mention-fragment');
         }
+    }
+
+    messageMentionsUser($message, usernames) {
+        if (usernames.length === 0) return false;
+        const $mentions = $message.find('.mention-fragment');
+        if ($mentions.length === 0) return false;
+        let mentionsUsername = false;
+        $mentions.each((i, mention) => {
+            const mentionedUser = $(mention).text().toLowerCase().replace('@', '');
+            if (usernames.includes(mentionedUser)) {
+                mentionsUsername = true;
+                return;
+            }
+        });
+        return mentionsUsername;
     }
 
     dataTagSender($message, sender) {
@@ -142,6 +206,7 @@ class ChatTraceMentionsModule {
                 markSender(sender);
                 currentMentioned = mentioned;
                 currentSender = sender;
+                currentFocusTargets = {};
                 event.stopPropagation();
             }
         });
@@ -149,12 +214,33 @@ class ChatTraceMentionsModule {
     }
 
     listenForTextClicks() {
-        $(document).on('click', `${messageLineSelector}`, () => {
+        $(document).on('click', `${messageLineSelector}`, function(event) {
             if (settings.get('traceMentions')) {
-                debug.log(`${LOG_PREFIX}: Clicked elsewhere in a message.`);
-                clearMarks();
-                currentMentioned = null;
-                currentSender = null;
+                if (event.ctrlKey) {
+                    const username = $(this).data('bttv-sender');
+                    debug.log(`${LOG_PREFIX}: Ctrl+clicked in a message from ${username}`);
+                    const focus = username.toLowerCase();
+                    const focusColor = $(this)
+                        .find('.chat-author__display-name')
+                        .css('color')
+                        .replace(/^rgb\(/, 'rgba(')
+                        .replace(/\)$/, ', 0.3)');
+                    if (currentFocusTargets[focus]) {
+                        delete currentFocusTargets[focus];
+                    } else {
+                        currentFocusTargets[focus] = focusColor;
+                    }
+                    clearMarks();
+                    markFocus();
+                    markMentioning(username);
+                    event.stopPropagation();
+                } else {
+                    debug.log(`${LOG_PREFIX}: Clicked elsewhere in a message.`);
+                    clearMarks();
+                    currentMentioned = null;
+                    currentSender = null;
+                    currentFocusTargets = {};
+                }
             }
         });
         debug.log(`${LOG_PREFIX}: Listener attached to clicks on message lines.`);
