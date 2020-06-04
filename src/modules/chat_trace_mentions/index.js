@@ -9,6 +9,8 @@ const VOD_CHAT_FROM_SELECTOR = '.video-chat__message-author';
 
 const LOG_PREFIX = 'ChatTraceMentionsModule';
 
+let currentMentioned = null;
+let currentSender = null;
 let currentMentionedColor;
 let currentSenderColor;
 let messageLineSelector = document.URL.match(/twitch\.tv\/videos/)
@@ -87,8 +89,6 @@ function getUserColors(mentioned, sender) {
     return [mentionedColor, senderColor];
 }
 
-let currentMentioned = null;
-let currentSender = null;
 class ChatTraceMentionsModule {
     constructor() {
         watcher.on('load.chat', () => this.onChatLoad());
