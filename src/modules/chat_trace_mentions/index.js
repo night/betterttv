@@ -7,9 +7,6 @@ const CHAT_MESSAGE_LINE_SELECTOR = 'div.chat-line__message';
 const VOD_MESSAGE_LINE_SELECTOR = 'div.vod-message';
 const VOD_CHAT_FROM_SELECTOR = '.video-chat__message-author';
 
-const DEFAULT_SENDER_TRACE_COLOUR = 'rgb(0, 255, 255)';
-const DEFAULT_MENTIONED_TRACE_COLOUR = 'rgb(0, 255, 0) ';
-
 const LOG_PREFIX = 'ChatTraceMentionsModule';
 
 let currentMentionedColor;
@@ -65,23 +62,27 @@ function getUserColors(mentioned, sender) {
         ? messagesFromSender
             .find('.chat-author__display-name')
             .css('color')
-        : DEFAULT_SENDER_TRACE_COLOUR;
+        : null;
     let mentionedColor = messagesFromMentioned.length
         ? messagesFromMentioned
             .find('.chat-author__display-name')
             .css('color')
-        : DEFAULT_MENTIONED_TRACE_COLOUR;
+        : null;
 
     const senderAlpha = (senderColor === mentionedColor)
         ? '0.15'
         : '0.3';
 
     senderColor = senderColor
-        .replace(')', `, ${senderAlpha})`)
-        .replace('rgb(', 'rgba(');
+        ? senderColor
+            .replace(')', `, ${senderAlpha})`)
+            .replace('rgb(', 'rgba(')
+        : null;
     mentionedColor = mentionedColor
-        .replace(')', ', 0.3)')
-        .replace('rgb(', 'rgba(');
+        ? mentionedColor
+            .replace(')', ', 0.3)')
+            .replace('rgb(', 'rgba(')
+        : null;
 
     return [mentionedColor, senderColor];
 }
@@ -127,9 +128,11 @@ class ChatTraceMentionsModule {
 
         if (settings.get('traceMentions')) {
             if (currentMentioned === sender) {
+                if (!currentMentionedColor) [currentMentionedColor, currentSenderColor] = getUserColors(currentMentioned, currentSender);
                 $message.css('background-color', currentMentionedColor);
             }
             if (currentSender === sender) {
+                if (!currentSenderColor) [currentMentionedColor, currentSenderColor] = getUserColors(currentMentioned, currentSender);
                 $message.css('background-color', currentSenderColor);
             }
             if (currentFocusTargets[sender]) {
@@ -154,9 +157,11 @@ class ChatTraceMentionsModule {
 
         if (settings.get('traceMentions')) {
             if (currentMentioned === sender) {
+                if (!currentMentionedColor) currentMentionedColor = getUserColors()[0];
                 $message.css('background-color', currentMentionedColor);
             }
             if (currentSender === sender) {
+                if (!currentSenderColor) currentSenderColor = getUserColors()[1];
                 $message.css('background-color', currentSenderColor);
             }
             if (currentFocusTargets[sender]) {
