@@ -7,6 +7,7 @@ const CHAT_MESSAGE_LINE_SELECTOR = 'div.chat-line__message';
 const VOD_MESSAGE_LINE_SELECTOR = 'div.vod-message';
 const VOD_CHAT_FROM_SELECTOR = '.video-chat__message-author';
 const MENTION_SELECTOR = '.mention-fragment';
+const MESSAGE_AUTHORNAME_SELECTOR = '.chat-author__display-name';
 
 const MODULE_MENTION_CSS_CLASS = 'bttv-trace-mention-fragment';
 const MODULE_MENTION_SELECTOR = `.${MODULE_MENTION_CSS_CLASS}`;
@@ -48,7 +49,7 @@ function markMentioning() {
         const $mentions = $(element).find(MENTION_SELECTOR);
         if ($mentions.length === 0) return;
         const highlightColor = $(element)
-            .find('.chat-author__display-name')
+            .find(MESSAGE_AUTHORNAME_SELECTOR)
             .css('color')
             .replace(/^rgb\(/, 'rgba(')
             .replace(/\)$/, ', 0.15)');
@@ -67,12 +68,12 @@ function getUserColors(mentioned, sender) {
 
     let senderColor = messagesFromSender.length
         ? messagesFromSender
-            .find('.chat-author__display-name')
+            .find(MESSAGE_AUTHORNAME_SELECTOR)
             .css('color')
         : null;
     let mentionedColor = messagesFromMentioned.length
         ? messagesFromMentioned
-            .find('.chat-author__display-name')
+            .find(MESSAGE_AUTHORNAME_SELECTOR)
             .css('color')
         : null;
 
@@ -144,7 +145,7 @@ class ChatTraceMentionsModule {
                 $message.css('background-color', currentFocusTargets[sender]);
             } else if (this.messageMentionsUser($message, Object.keys(currentFocusTargets))) {
                 const highlightColor = $message
-                    .find('.chat-author__display-name')
+                    .find(MESSAGE_AUTHORNAME_SELECTOR)
                     .css('color')
                     .replace(/^rgb\(/, 'rgba(')
                     .replace(/\)$/, ', 0.15)');
@@ -172,7 +173,7 @@ class ChatTraceMentionsModule {
                 $message.css('background-color', currentFocusTargets[sender]);
             } else if (this.messageMentionsUser($message, Object.keys(currentFocusTargets))) {
                 const highlightColor = $message
-                    .find('.chat-author__display-name')
+                    .find(MESSAGE_AUTHORNAME_SELECTOR)
                     .css('color')
                     .replace(/^rgb\(/, 'rgba(')
                     .replace(/\)$/, ', 0.15)');
@@ -210,7 +211,7 @@ class ChatTraceMentionsModule {
                     debug.log(`${LOG_PREFIX}: Ctrl+clicked in a message from ${username}`);
                     const focus = username.toLowerCase();
                     const focusColor = $(this)
-                        .find('.chat-author__display-name')
+                        .find(MESSAGE_AUTHORNAME_SELECTOR)
                         .css('color')
                         .replace(/^rgb\(/, 'rgba(')
                         .replace(/\)$/, ', 0.3)');
