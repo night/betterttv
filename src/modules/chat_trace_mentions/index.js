@@ -178,25 +178,6 @@ class ChatTraceMentionsModule {
         }
     }
 
-    messageMentionsUser($message, usernames) {
-        if (usernames.length === 0) return false;
-        const $mentions = $message.find('.mention-fragment');
-        if ($mentions.length === 0) return false;
-        let mentionsUsername = false;
-        $mentions.each((i, mention) => {
-            const mentionedUser = $(mention).text().toLowerCase().replace('@', '');
-            if (usernames.includes(mentionedUser)) {
-                mentionsUsername = true;
-                return;
-            }
-        });
-        return mentionsUsername;
-    }
-
-    dataTagSender($message, sender) {
-        $message.attr('data-bttv-sender', sender);
-    }
-
     listenForMentionClicks() {
         $(document).on('click', '.mention-fragment', function(event) {
             if (settings.get('traceMentions')) {
@@ -248,6 +229,25 @@ class ChatTraceMentionsModule {
             }
         });
         debug.log(`${LOG_PREFIX}: Listener attached to clicks on message lines.`);
+    }
+
+    messageMentionsUser($message, usernames) {
+        if (usernames.length === 0) return false;
+        const $mentions = $message.find('.mention-fragment');
+        if ($mentions.length === 0) return false;
+        let mentionsUsername = false;
+        $mentions.each((i, mention) => {
+            const mentionedUser = $(mention).text().toLowerCase().replace('@', '');
+            if (usernames.includes(mentionedUser)) {
+                mentionsUsername = true;
+                return;
+            }
+        });
+        return mentionsUsername;
+    }
+
+    dataTagSender($message, sender) {
+        $message.attr('data-bttv-sender', sender);
     }
 
     styleMentions() {
