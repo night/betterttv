@@ -151,7 +151,7 @@ class ChatTraceMentionsModule {
                     .replace(/\)$/, ', 0.15)');
                 $message.css('background-color', highlightColor);
             }
-            $message.find(MENTION_SELECTOR).addClass('bttv-trace-mention-fragment');
+            $message.find(MENTION_SELECTOR).addClass(MODULE_MENTION_CSS_CLASS);
         }
     }
 
@@ -179,7 +179,7 @@ class ChatTraceMentionsModule {
                     .replace(/\)$/, ', 0.15)');
                 $message.css('background-color', highlightColor);
             }
-            $message.find(MENTION_SELECTOR).addClass('bttv-trace-mention-fragment');
+            $message.find(MENTION_SELECTOR).addClass(MODULE_MENTION_CSS_CLASS);
         }
     }
 
