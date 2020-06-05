@@ -6,6 +6,10 @@ const settings = require('../../settings');
 const CHAT_MESSAGE_LINE_SELECTOR = 'div.chat-line__message';
 const VOD_MESSAGE_LINE_SELECTOR = 'div.vod-message';
 const VOD_CHAT_FROM_SELECTOR = '.video-chat__message-author';
+const MENTION_SELECTOR = '.mention-fragment';
+
+const MODULE_MENTION_CSS_CLASS = 'bttv-trace-mention-fragment';
+const MODULE_MENTION_SELECTOR = `.${MODULE_MENTION_CSS_CLASS}`;
 
 const LOG_PREFIX = 'ChatTraceMentionsModule';
 
@@ -41,7 +45,7 @@ function markFocus() {
 function markMentioning() {
     $(`${messageLineSelector}`).each((i, element) => {
         const sender = $(element).data('bttv-sender');
-        const $mentions = $(element).find('.mention-fragment');
+        const $mentions = $(element).find(MENTION_SELECTOR);
         if ($mentions.length === 0) return;
         const highlightColor = $(element)
             .find('.chat-author__display-name')
@@ -146,7 +150,7 @@ class ChatTraceMentionsModule {
                     .replace(/\)$/, ', 0.15)');
                 $message.css('background-color', highlightColor);
             }
-            $message.find('.mention-fragment').addClass('bttv-trace-mention-fragment');
+            $message.find(MENTION_SELECTOR).addClass('bttv-trace-mention-fragment');
         }
     }
 
@@ -174,12 +178,12 @@ class ChatTraceMentionsModule {
                     .replace(/\)$/, ', 0.15)');
                 $message.css('background-color', highlightColor);
             }
-            $message.find('.mention-fragment').addClass('bttv-trace-mention-fragment');
+            $message.find(MENTION_SELECTOR).addClass('bttv-trace-mention-fragment');
         }
     }
 
     listenForMentionClicks() {
-        $(document).on('click', '.mention-fragment', function(event) {
+        $(document).on('click', MENTION_SELECTOR, function(event) {
             if (settings.get('traceMentions')) {
                 const mention = $(this).text().toLowerCase();
                 const sender = $(this).parents(`${messageLineSelector}`).data('bttv-sender');
@@ -233,7 +237,7 @@ class ChatTraceMentionsModule {
 
     messageMentionsUser($message, usernames) {
         if (usernames.length === 0) return false;
-        const $mentions = $message.find('.mention-fragment');
+        const $mentions = $message.find(MENTION_SELECTOR);
         if ($mentions.length === 0) return false;
         let mentionsUsername = false;
         $mentions.each((i, mention) => {
@@ -252,9 +256,9 @@ class ChatTraceMentionsModule {
 
     styleMentions() {
         if (settings.get('traceMentions')) {
-            $('.mention-fragment').addClass('bttv-trace-mention-fragment');
+            $(MENTION_SELECTOR).addClass(MODULE_MENTION_CSS_CLASS);
         } else {
-            $('.mention-fragment.bttv-trace-mention-fragment').removeClass('bttv-trace-mention-fragment');
+            $(`${MENTION_SELECTOR}${MODULE_MENTION_SELECTOR}`).removeClass(MODULE_MENTION_CSS_CLASS);
         }
     }
 }
