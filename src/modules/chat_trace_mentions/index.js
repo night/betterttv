@@ -222,6 +222,8 @@ class ChatTraceMentionsModule {
                     clearMarks();
                     markFocus();
                     markMentioning(username);
+                    currentMentioned = null;
+                    currentSender = null;
                     event.stopPropagation();
                 } else {
                     debug.log(`${LOG_PREFIX}: Clicked elsewhere in a message.`);
