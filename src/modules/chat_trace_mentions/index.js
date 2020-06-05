@@ -40,6 +40,7 @@ function markFocus() {
 
 function markMentioning() {
     $(`${messageLineSelector}`).each((i, element) => {
+        const sender = $(element).data('bttv-sender');
         const $mentions = $(element).find('.mention-fragment');
         if ($mentions.length === 0) return;
         const highlightColor = $(element)
@@ -49,7 +50,7 @@ function markMentioning() {
             .replace(/\)$/, ', 0.15)');
         $mentions.each((j, mention) => {
             const mentionedUser = $(mention).text().toLowerCase().replace('@', '');
-            if (currentFocusTargets[mentionedUser]) {
+            if (currentFocusTargets[mentionedUser] && !currentFocusTargets[sender]) {
                 $(element).css('background-color', highlightColor);
             }
         });
@@ -137,8 +138,7 @@ class ChatTraceMentionsModule {
             }
             if (currentFocusTargets[sender]) {
                 $message.css('background-color', currentFocusTargets[sender]);
-            }
-            if (this.messageMentionsUser($message, Object.keys(currentFocusTargets))) {
+            } else if (this.messageMentionsUser($message, Object.keys(currentFocusTargets))) {
                 const highlightColor = $message
                     .find('.chat-author__display-name')
                     .css('color')
@@ -166,8 +166,7 @@ class ChatTraceMentionsModule {
             }
             if (currentFocusTargets[sender]) {
                 $message.css('background-color', currentFocusTargets[sender]);
-            }
-            if (this.messageMentionsUser($message, Object.keys(currentFocusTargets))) {
+            } else if (this.messageMentionsUser($message, Object.keys(currentFocusTargets))) {
                 const highlightColor = $message
                     .find('.chat-author__display-name')
                     .css('color')
