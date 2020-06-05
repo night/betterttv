@@ -9,10 +9,10 @@ const VOD_CHAT_FROM_SELECTOR = '.video-chat__message-author';
 const MENTION_SELECTOR = '.mention-fragment';
 const MESSAGE_AUTHORNAME_SELECTOR = '.chat-author__display-name';
 
-const MODULE_MENTION_CSS_CLASS = 'bttv-trace-mention-fragment';
+const MODULE_MENTION_CSS_CLASS = 'bttv-follow-mention-fragment';
 const MODULE_MENTION_SELECTOR = `.${MODULE_MENTION_CSS_CLASS}`;
 
-const LOG_PREFIX = 'ChatTraceMentionsModule';
+const LOG_PREFIX = 'ChatFollowConversationsModule';
 
 let currentMentioned = null;
 let currentSender = null;
@@ -95,7 +95,7 @@ function getUserColors(mentioned, sender) {
     return [mentionedColor, senderColor];
 }
 
-class ChatTraceMentionsModule {
+class ChatFollowConversationsModule {
     constructor() {
         watcher.on('load.chat', () => this.onChatLoad());
         watcher.on('load.vod', () => this.onChatLoad());
@@ -103,20 +103,20 @@ class ChatTraceMentionsModule {
         watcher.on('vod.message', $message => this.onVODMessage($message));
 
         settings.add({
-            id: 'traceMentions',
-            name: 'Trace Mentions',
+            id: 'followConversations',
+            name: 'Follow Conversations',
             defaultValue: false,
             description: 'Click on a @mention in chat to follow a conversation, ctrl+click messages to follow the senders',
         });
-        settings.on('changed.traceMentions', () => {
-            debug.log(`${LOG_PREFIX}: Setting traceMentions changed and is now ${settings.get('traceMentions') ? 'ON' : 'OFF'}`);
+        settings.on('changed.followConversations', () => {
+            debug.log(`${LOG_PREFIX}: Setting followConversations changed and is now ${settings.get('followConversations') ? 'ON' : 'OFF'}`);
             currentMentioned = null;
             currentSender = null;
             clearMarks();
             this.styleMentions();
         });
 
-        debug.log(`${LOG_PREFIX}: ChatTraceMentionsModule loaded`);
+        debug.log(`${LOG_PREFIX}: module loaded`);
     }
 
     onChatLoad() {
@@ -160,7 +160,7 @@ class ChatTraceMentionsModule {
         const sender = $from.attr('href').split('?')[0].split('/').pop();
         this.dataTagSender($message, sender);
 
-        if (settings.get('traceMentions')) {
+        if (settings.get('followConversations')) {
             if (currentMentioned === sender) {
                 if (!currentMentionedColor) currentMentionedColor = getUserColors()[0];
                 $message.css('background-color', currentMentionedColor);
@@ -185,7 +185,7 @@ class ChatTraceMentionsModule {
 
     listenForMentionClicks() {
         $(document).on('click', MENTION_SELECTOR, function(event) {
-            if (settings.get('traceMentions')) {
+            if (settings.get('followConversations')) {
                 const mention = $(this).text().toLowerCase();
                 const sender = $(this).parents(`${messageLineSelector}`).data('bttv-sender');
                 debug.log(`${LOG_PREFIX}: Clicked on a mention span for ${mention} sent by ${sender}.`);
@@ -205,7 +205,7 @@ class ChatTraceMentionsModule {
 
     listenForTextClicks() {
         $(document).on('click', `${messageLineSelector}`, function(event) {
-            if (settings.get('traceMentions')) {
+            if (settings.get('followConversations')) {
                 if (event.ctrlKey) {
                     const username = $(this).data('bttv-sender');
                     debug.log(`${LOG_PREFIX}: Ctrl+clicked in a message from ${username}`);
@@ -258,7 +258,7 @@ class ChatTraceMentionsModule {
     }
 
     styleMentions() {
-        if (settings.get('traceMentions')) {
+        if (settings.get('followConversations')) {
             $(MENTION_SELECTOR).addClass(MODULE_MENTION_CSS_CLASS);
         } else {
             $(`${MENTION_SELECTOR}${MODULE_MENTION_SELECTOR}`).removeClass(MODULE_MENTION_CSS_CLASS);
@@ -266,4 +266,4 @@ class ChatTraceMentionsModule {
     }
 }
 
-module.exports = new ChatTraceMentionsModule();
+module.exports = new ChatFollowConversationsModule();

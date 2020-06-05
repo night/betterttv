@@ -6,15 +6,15 @@
     background-color: rgba(0, 255, 255, 0.3) !important;
 }
 
-.mention-fragment.bttv-trace-mention-fragment {
+.mention-fragment.bttv-follow-mention-fragment {
     cursor: pointer;
     font-weight: 501;
 }
 
-html:not(.tw-root--theme-dark) .mention-fragment.bttv-trace-mention-fragment {
+html:not(.tw-root--theme-dark) .mention-fragment.bttv-follow-mention-fragment {
     background-color: rgba(0, 0, 0, 0.1);
 }
 
-html.tw-root--theme-dark .mention-fragment.bttv-trace-mention-fragment {
+html.tw-root--theme-dark .mention-fragment.bttv-follow-mention-fragment {
     background-color: rgba(255, 255, 255, 0.1);
 }
