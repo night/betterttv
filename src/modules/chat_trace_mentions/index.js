@@ -46,7 +46,7 @@ function markMentioning() {
             .find('.chat-author__display-name')
             .css('color')
             .replace(/^rgb\(/, 'rgba(')
-            .replace(/\)$/, ', 0.3)');
+            .replace(/\)$/, ', 0.15)');
         $mentions.each((j, mention) => {
             const mentionedUser = $(mention).text().toLowerCase().replace('@', '');
             if (currentFocusTargets[mentionedUser]) {
@@ -143,7 +143,7 @@ class ChatTraceMentionsModule {
                     .find('.chat-author__display-name')
                     .css('color')
                     .replace(/^rgb\(/, 'rgba(')
-                    .replace(/\)$/, ', 0.3)');
+                    .replace(/\)$/, ', 0.15)');
                 $message.css('background-color', highlightColor);
             }
             $message.find('.mention-fragment').addClass('bttv-trace-mention-fragment');
@@ -172,7 +172,7 @@ class ChatTraceMentionsModule {
                     .find('.chat-author__display-name')
                     .css('color')
                     .replace(/^rgb\(/, 'rgba(')
-                    .replace(/\)$/, ', 0.3)');
+                    .replace(/\)$/, ', 0.15)');
                 $message.css('background-color', highlightColor);
             }
             $message.find('.mention-fragment').addClass('bttv-trace-mention-fragment');
