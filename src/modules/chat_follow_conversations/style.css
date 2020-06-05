@@ -1,11 +1,3 @@
-.chat-line__message.bttv-mentioned, .vod-message.bttv-mentioned {
-    background-color: rgba(0, 255, 0, 0.3) !important;
-}
-
-.chat-line__message.bttv-mention-sender, .vod-message.bttv-mention-sender {
-    background-color: rgba(0, 255, 255, 0.3) !important;
-}
-
 .mention-fragment.bttv-follow-mention-fragment {
     cursor: pointer;
     font-weight: 501;
