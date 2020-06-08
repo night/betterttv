@@ -117,7 +117,7 @@ function openCustomTimeout($target, messageId) {
     if ($(`#${CUSTOM_TIMEOUT_ID}`).length) return;
 
     const $chat = $(CHAT_ROOM_SELECTOR);
-    $chat.append(CUSTOM_TIMEOUT_TEMPLATE);
+    $('body').append(CUSTOM_TIMEOUT_TEMPLATE);
 
     const $customTimeout = $(`#${CUSTOM_TIMEOUT_ID}`);
 
