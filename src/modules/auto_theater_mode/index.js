@@ -21,15 +21,16 @@ class AutoTheaterModeModule {
         if (!player) return;
 
         // new Twitch channel layout does funky stuff with the video player in the background when on home screen
-        if ($('div[data-a-player-type="channel_home_live"]').length > 0) return;
+        if ($('div[data-a-player-type="channel_home_live"]').length > 0 || $('.video-player__container--theatre').length > 0) return;
 
         try {
             player.setTheatre(true);
         } catch (_) {
-            if ($('.video-player--theatre').length === 0) {
-                $('button[data-a-target="player-theatre-mode-button"]').click();
-            }
+            $('button[data-a-target="player-theatre-mode-button"]').click();
         }
+
+        // hackfix: twitch's channel page experiment causes the player to load multiple times
+        setTimeout(() => this.load(), 1000);
     }
 }
 
