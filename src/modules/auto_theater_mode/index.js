@@ -14,8 +14,8 @@ class AutoTheaterModeModule {
         watcher.on('load.player', () => this.load());
     }
 
-    load() {
-        if (settings.get('autoTheatreMode') === false) return;
+    load(tries = 1) {
+        if (settings.get('autoTheatreMode') === false || tries > 3) return;
 
         const player = twitch.getCurrentPlayer();
         if (!player) return;
@@ -30,7 +30,7 @@ class AutoTheaterModeModule {
         }
 
         // hackfix: twitch's channel page experiment causes the player to load multiple times
-        setTimeout(() => this.load(), 1000);
+        setTimeout(() => this.load(tries + 1), 1000);
     }
 }
 
