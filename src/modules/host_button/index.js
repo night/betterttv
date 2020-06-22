@@ -43,13 +43,16 @@ class HostButtonModule {
         this.updateHostingState(currentUser.id, currentChannel.id);
     }
 
-    embedHostButton() {
-        if ($(`#${HOST_BUTTON_ID}`).length) return;
+    embedHostButton(tries = 1) {
+        if ($(`#${HOST_BUTTON_ID}`).length || tries > 3) return;
         const $shareButton = $(SHARE_BUTTON_SELECTOR).closest('[data-toggle-balloon-id]').parent('.tw-mg-l-05,.tw-mg-r-1');
         if (!$shareButton.length) return;
         $hostButton.toggleClass('tw-mg-l-05', $shareButton.hasClass('tw-mg-l-05')).toggleClass('tw-mg-r-1', $shareButton.hasClass('tw-mg-r-1'));
         $hostButton.insertBefore($shareButton);
         $hostButton.find('button').click(() => this.toggleHost());
+
+        // hackfix: twitch's channel page experiment causes the player to load multiple times
+        setTimeout(() => this.embedHostButton(tries + 1), 1000);
     }
 
     toggleHost() {
