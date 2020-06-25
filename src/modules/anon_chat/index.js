@@ -51,7 +51,7 @@ class AnonChatModule {
         this.enabled = false;
         if (forcedURL || settings.get('anonChat')) {
             this.part();
-        } else {
+        } else if (!settings.get('bannedChat')) { // If banned setting is on, user will join via event handler instead.
             this.join();
         }
     }
