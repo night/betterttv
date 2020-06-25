@@ -9,6 +9,7 @@ const CHAT_LIST = '.chat-list';
 const PLAYER = '.video-player__container';
 const CLIPS_BROADCASTER_INFO = '.clips-broadcaster-info';
 const CHAT_MESSAGE_SELECTOR = '.chat-line__message';
+const STREAM_CHAT = '.stream-chat';
 
 const TMIActionTypes = {
     MESSAGE: 0,
@@ -264,6 +265,32 @@ module.exports = {
         } catch (_) {}
 
         return chatClient;
+    },
+
+    getCurrentUserBannedStateNode() {
+        let currentUserBannedStateNode;
+        try {
+            const node = searchReactChildren(
+                getReactInstance($(STREAM_CHAT)[0]),
+                n => n.stateNode && n.stateNode.isCurrentUserBanned,
+                1000
+            );
+            currentUserBannedStateNode = node.stateNode;
+        } catch (_) {}
+        return currentUserBannedStateNode;
+    },
+
+    getUserBannedStateNode() {
+        let userBannedStateNode;
+        try {
+            const node = searchReactChildren(
+                getReactInstance($(STREAM_CHAT)[0]),
+                n => n.stateNode && n.stateNode.isUserBanned,
+                1000
+            );
+            userBannedStateNode = node.stateNode;
+        } catch (_) {}
+        return userBannedStateNode;
     },
 
     getChatServiceSocket() {
