@@ -24,6 +24,8 @@ let messageLineSelector = document.URL.match(/twitch\.tv\/videos/)
 
 let currentFocusTargets = {};
 
+let lastMessageClickSelectionType;
+
 function clearMarks() {
     $(`${messageLineSelector}`).css('background-color', '');
 }
@@ -226,7 +228,7 @@ class ChatFollowConversationsModule {
                     currentMentioned = null;
                     currentSender = null;
                     event.stopPropagation();
-                } else {
+                } else if (window.getSelection().type === 'Caret' && lastMessageClickSelectionType === 'Caret') {
                     debug.log(`${LOG_PREFIX}: Clicked elsewhere in a message.`);
                     clearMarks();
                     currentMentioned = null;
@@ -234,6 +236,7 @@ class ChatFollowConversationsModule {
                     currentFocusTargets = {};
                 }
             }
+            lastMessageClickSelectionType = window.getSelection().type;
         });
         debug.log(`${LOG_PREFIX}: Listener attached to clicks on message lines.`);
     }
