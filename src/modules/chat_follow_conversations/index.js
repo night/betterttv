@@ -108,7 +108,7 @@ class ChatFollowConversationsModule {
             id: 'followConversations',
             name: 'Follow Conversations',
             defaultValue: false,
-            description: 'Click on a @mention in chat to follow a conversation, ctrl+click messages to follow the senders',
+            description: 'Click on a @mention to follow a conversation, ctrl+click messages to follow the senders',
         });
         settings.on('changed.followConversations', () => {
             debug.log(`${LOG_PREFIX}: Setting followConversations changed and is now ${settings.get('followConversations') ? 'ON' : 'OFF'}`);
