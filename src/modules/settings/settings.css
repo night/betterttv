@@ -228,6 +228,11 @@
 }
 
 .bttvSettingsDropDown {
+  .bttvSettingsIconContainer {
+    width: 18px;
+    height: 18px;
+  }
+
   .bttvSettingsIconDropDown {
     width: 18px;
     height: 18px;
