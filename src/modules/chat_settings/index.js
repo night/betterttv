@@ -4,7 +4,7 @@ const settings = require('../settings');
 const highlightBlacklistKeywords = require('../chat_highlight_blacklist_keywords');
 const chatFontSettings = require('../chat_font_settings');
 
-const CHAT_SETTINGS_SELECTOR = '.chat-settings__content';
+const CHAT_SETTINGS_SELECTOR = '.chat-settings__content,.mod-view-balloon-layer-menu-dropdown';
 const BTTV_CHAT_SETTINGS_CLASS = 'bttv-chat-settings';
 
 const CHAT_SETTINGS_TEMPLATE = `
@@ -47,7 +47,8 @@ class ChatSettingsModule {
     }
 
     load() {
-        $('button[data-a-target="chat-settings"]').off('click', this.renderSettings).on('click', this.renderSettings);
+        $('button[data-a-target="chat-settings"],.mod-view-panel-header button[data-a-target="panel-header-menu-toggle"]')
+            .off('click', this.renderSettings).on('click', this.renderSettings);
     }
 
     renderSettings() {
