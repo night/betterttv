@@ -9,3 +9,7 @@
     cursor: none;
   }
 }
+
+#bttv-picture-in-picture svg {
+  fill: currentColor;
+}
