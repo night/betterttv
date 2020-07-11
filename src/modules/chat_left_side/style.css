@@ -7,7 +7,7 @@
         order: 2;
     }
 
-    .side-nav {
+    #sideNav, .side-nav {
         order: 3;
 
         .collapse-toggle {
