@@ -81,7 +81,7 @@ const settingsPanelTemplate = () => `
         <span style="float:right;">
             <a href="https://twitter.com/betterttv" target="_blank">Twitter</a> | 
             <a href="https://community.nightdev.com/c/betterttv" target="_blank">Forums</a> | 
-            <a href="https://github.com/night/BetterTTV/issues/new?labels=bug" target="_blank">Bug Report</a> | 
+            <a href="https://github.com/night/BetterTTV/issues" target="_blank">Bug Report</a> | 
             <a href="https://discord.gg/nightdev" target="_blank">Discord</a>
         </span>
     </div>
