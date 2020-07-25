@@ -8,7 +8,7 @@ class HideCommunityHighlightsModule {
             id: 'hideCommunityHighlights',
             name: 'Hide Community Highlights',
             defaultValue: false,
-            description: 'Hides the Community Highlights toast that appears over Twitch chat'
+            description: 'Hides the Community Highlights - Hype trains etc'
         });
 
         settings.on('changed.hideCommunityHighlights', this.toggleCommunityHighlights);
