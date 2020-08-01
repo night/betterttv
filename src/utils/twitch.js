@@ -194,6 +194,17 @@ module.exports = {
             router = node.stateNode.props;
         } catch (_) {}
 
+        if (!router) {
+            try {
+                const node = searchReactParents(
+                    getReactInstance($(REACT_ROOT)[0]),
+                    n => n.memoizedProps && n.memoizedProps && n.memoizedProps.value && n.memoizedProps.value.history && n.memoizedProps.value.history.listen && n.memoizedProps.value.history.location,
+                    20
+                );
+                router = node.memoizedProps.value;
+            } catch (_) {}
+        }
+
         return router;
     },
 
