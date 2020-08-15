@@ -38,6 +38,12 @@ class ChatDeletedMessagesModule {
             defaultValue: false,
             description: 'Completely removes timed out messages from view'
         });
+        settings.add({
+            id: 'ignoreClearChat',
+            name: 'Ignore Clear Chat',
+            defaultValue: false,
+            description: 'When a moderator uses /clear the chat will not clear'
+        });
 
         watcher.on('chat.message.handler', message => {
             this.handleMessage(message);
@@ -47,8 +53,11 @@ class ChatDeletedMessagesModule {
     handleMessage({message, preventDefault}) {
         switch (message.type) {
             case twitch.TMIActionTypes.CLEAR_CHAT:
-                twitch.sendChatAdminMessage('Chat was cleared by a moderator (Prevented by BetterTTV)');
-                preventDefault();
+                const ignoreClearChat = settings.get('ignoreClearChat');
+                if (ignoreClearChat) {
+                    twitch.sendChatAdminMessage('Chat was cleared by a moderator (Prevented by BetterTTV)');
+                    preventDefault();
+                }
                 break;
             case twitch.TMIActionTypes.MODERATION:
                 if (this.handleDelete(message.userLogin || message.user.userLogin)) {
