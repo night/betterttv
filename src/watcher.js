@@ -3,6 +3,7 @@ const debug = require('./utils/debug');
 const twitch = require('./utils/twitch');
 const SafeEventEmitter = require('./utils/safe-event-emitter');
 const $ = require('jquery');
+const domObserver = require('./observers/dom');
 
 const CLIPS_HOSTNAME = 'clips.twitch.tv';
 const CANCEL_VOD_RECOMMENDATION_SELECTOR = '.recommendations-overlay .pl-rec__cancel.pl-button, .autoplay-vod__content-container button';
@@ -12,9 +13,6 @@ const CHAT_SQUAD_WRAPPER = 'div[data-test-selector="chat-wrapper"]';
 let router;
 let currentPath = '';
 let currentRoute = '';
-let chatWatcher;
-let vodChatWatcher;
-let clipsChatWatcher;
 let squadChatWatcher;
 let currentChatReference;
 let currentChatChannelId;
@@ -248,139 +246,54 @@ class Watcher extends SafeEventEmitter {
     }
 
     conversationObserver() {
-        const emitMessage = element => {
-            const msgObject = twitch.getConversationMessageObject(element);
+        domObserver.on('.whispers-thread', (node, isConnected) => {
+            if (!isConnected) return;
+
+            this.emit('conversation.new', $(node));
+        });
+
+        domObserver.on('.thread-message__message', (node, isConnected) => {
+            if (!isConnected) return;
+
+            const msgObject = twitch.getConversationMessageObject(node);
             if (!msgObject) return;
-            this.emit('conversation.message', $(element), msgObject);
-        };
 
-        const conversationWatcher = new window.MutationObserver(mutations =>
-            mutations.forEach(mutation => {
-                for (const el of mutation.addedNodes) {
-                    const $el = $(el);
-                    if ($el.hasClass('thread-message__message')) {
-                        emitMessage($el[0]);
-                    } else {
-                        const $thread = $el.find('.whispers-thread');
-                        if ($thread.length) {
-                            this.emit('conversation.new', $thread);
-                        }
-
-                        const $messages = $el.find('.thread-message__message');
-                        for (const message of $messages) {
-                            emitMessage(message);
-                        }
-                    }
-                }
-            })
-        );
-
-        const timer = setInterval(() => {
-            const element = $('.whispers-open-threads')[0];
-            if (!element) return;
-            clearInterval(timer);
-            conversationWatcher.observe(element, {childList: true, subtree: true});
-        }, 1000);
+            this.emit('conversation.message', $(node), msgObject);
+        });
     }
 
     chatObserver() {
-        const emitMessage = $el => {
-            const msgObject = twitch.getChatMessageObject($el[0]);
+        domObserver.on('.viewer-card', (node, isConnected) => {
+            if (!isConnected) {
+                this.emit('chat.moderator_card.close');
+                return;
+            }
+
+            this.emit('chat.moderator_card.open', $(node));
+        });
+
+        domObserver.on('.chat-line__message', (node, isConnected) => {
+            if (!isConnected) return;
+
+            const msgObject = twitch.getChatMessageObject(node);
             if (!msgObject) return;
-            this.emit('chat.message', $el, msgObject);
-        };
 
-        const observe = (watcher, element) => {
-            if (!element) return;
-            if (watcher) watcher.disconnect();
-            watcher.observe(element, {childList: true, subtree: true});
+            this.emit('chat.message', $(node), msgObject);
+        });
 
-            // late load messages events
-            $(element).find('.chat-line__message').each((index, el) => emitMessage($(el)));
-        };
+        domObserver.on('.chat-input', (node, isConnected) => {
+            if (!isConnected) return;
 
-        chatWatcher = new window.MutationObserver(mutations =>
-            mutations.forEach(mutation => {
-                const target = mutation.target;
-                if (target && target.classList && target.classList.contains('viewer-card')) {
-                    const $el = $(target);
-                    this.emit('chat.moderator_card.open', $el);
-                    return;
-                }
-
-                for (const el of mutation.addedNodes) {
-                    const $el = $(el);
-
-                    if ($el.hasClass('chat-line__message')) {
-                        emitMessage($el);
-                    } else if ($el.children('.channel-points-reward-line, .user-notice-line')) {
-                        const channelPointsHighlight = $el.find('.chat-line__message');
-                        if (channelPointsHighlight.length > 0) {
-                            emitMessage(channelPointsHighlight);
-                        }
-                    }
-
-                    if ($el.hasClass('viewer-card')) {
-                        this.emit('chat.moderator_card.open', $el);
-                    } else if ($el.hasClass('viewer-card-layer__draggable') || $el.parent().hasClass('viewer-card-layer__draggable')) {
-                        const $viewerCard = $el.find('.viewer-card');
-                        if ($viewerCard.length) {
-                            this.emit('chat.moderator_card.open', $viewerCard);
-                        }
-                    }
-
-                    if ($el.hasClass('chat-input')) {
-                        this.forceReloadChat();
-                    }
-                }
-
-                for (const el of mutation.removedNodes) {
-                    const $el = $(el);
-
-                    if ($el.hasClass('viewer-card-layer__draggable')) {
-                        this.emit('chat.moderator_card.close');
-                    }
-                }
-            })
-        );
-
-        this.on('load.chat', () => observe(chatWatcher, $(CHAT_ROOM_SELECTOR)[0]));
-
-        // force reload of chat on room swap
-        $('body').on(
-            'click',
-            '.room-picker button[data-test-selector="stream-chat-room-picker-option"], .room-picker button[data-test-selector="room-option-interactable"], .room-selector__header button[data-test-selector="open-room-picker-button"], .room-selector__header button[data-test-selector="close-room-picker-button"]',
-            () => this.forceReloadChat()
-        );
+            this.forceReloadChat();
+        });
     }
 
     vodChatObserver() {
-        const emitMessage = chatContent => this.emit('vod.message', $(chatContent));
+        domObserver.on('.vod-message__content,.vod-message', (node, isConnected) => {
+            if (!isConnected) return;
 
-        const observe = (watcher, element) => {
-            if (!element) return;
-            if (watcher) watcher.disconnect();
-            watcher.observe(element, {childList: true, subtree: true});
-
-            // late load messages events
-            $(element).find('.vod-message__content,.vod-message').each((_, el) => emitMessage(el));
-        };
-
-        vodChatWatcher = new window.MutationObserver(mutations =>
-            mutations.forEach(mutation => {
-                for (const el of mutation.addedNodes) {
-                    const $el = $(el);
-
-                    const $chatContents = $el.find('.vod-message__content,.vod-message');
-
-                    for (const chatContent of $chatContents) {
-                        emitMessage(chatContent);
-                    }
-                }
-            })
-        );
-
-        this.on('load.vod', () => observe(vodChatWatcher, $('.qa-vod-chat')[0]));
+            this.emit('vod.message', $(node));
+        });
     }
 
     channelObserver() {
@@ -408,25 +321,10 @@ class Watcher extends SafeEventEmitter {
     }
 
     clipsChatObserver() {
-        const observe = (watcher, element) => {
-            if (!element) return;
-            if (watcher) watcher.disconnect();
-            watcher.observe(element, {childList: true, subtree: true});
-        };
-
-        clipsChatWatcher = new window.MutationObserver(mutations =>
-            mutations.forEach(mutation => {
-                for (const el of mutation.addedNodes) {
-                    const $el = $(el);
-
-                    if ($el.hasClass('tw-mg-b-1') && $el.find('span[data-a-target="chat-message-text"]').length) {
-                        this.emit('clips.message', $el);
-                    }
-                }
-            })
-        );
-
-        this.on('load.clips', () => observe(clipsChatWatcher, $('body')[0]));
+        domObserver.on('.tw-mg-b-1 span[data-a-target="chat-message-text"]', (node, isConnected) => {
+            if (!isConnected) return;
+            this.emit('clips.message', $(node));
+        });
     }
 
     squadChatObserver() {
