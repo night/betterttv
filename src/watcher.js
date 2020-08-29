@@ -270,7 +270,7 @@ class Watcher extends SafeEventEmitter {
             }
 
             this.emit('chat.moderator_card.open', $(node));
-        });
+        }, {attributes: true});
 
         domObserver.on('.chat-line__message', (node, isConnected) => {
             if (!isConnected) return;

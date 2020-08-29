@@ -13,20 +13,19 @@ class SafeEventEmitter extends EventEmitter {
     constructor() {
         super();
 
-        // Monkey-patch on/once to be "safer" & log errors
-        const oldOn = this.on;
-        const oldOnce = this.once;
-        this.on = (type, listener) => {
-            const callback = newListener.bind(this, listener);
-            oldOn.call(this, type, callback);
-            return () => this.off(type, callback);
-        };
-        this.once = (type, listener) => {
-            const callback = newListener.bind(this, listener);
-            oldOnce.call(this, type, callback);
-            return () => this.off(type, callback);
-        };
         this.setMaxListeners(100);
+    }
+
+    on(type, listener) {
+        const callback = newListener.bind(this, listener);
+        super.on(type, listener);
+        return () => this.off(type, callback);
+    }
+
+    once(type, listener) {
+        const callback = newListener.bind(this, listener);
+        super.once(type, listener);
+        return () => this.off(type, callback);
     }
 }
 

@@ -5,6 +5,7 @@ const IGNORED_HTML_TAGS = new Set(['BR', 'HEAD', 'LINK', 'META', 'SCRIPT', 'STYL
 let observer;
 const observedIds = Object.create(null);
 const observedClassNames = Object.create(null);
+const attributeObservers = new Map();
 
 function parseSelector(selector) {
     const partialSelectors = selector.split(',').map(s => s.trim().split(' ')[0]);
@@ -29,17 +30,44 @@ function parseSelector(selector) {
     };
 }
 
+function startAttributeObserver(observedType, emitter, node) {
+    const attributeObserver = new window.MutationObserver(
+        () => emitter.emit(observedType.selector, node, node.isConnected)
+    );
+    attributeObserver.observe(node, {attributes: true, subtree: true});
+    attributeObservers.set(observedType, attributeObserver);
+}
+
+function stopAttributeObserver(observedType) {
+    const attributeObserver = attributeObservers.get(observedType);
+    if (!attributeObserver) {
+        return;
+    }
+
+    attributeObserver.disconnect();
+    attributeObservers.delete(observedType);
+}
+
 function processObservedResults(emitter, node, results) {
     if (!results || results.length === 0) {
         return;
     }
 
-    for (const {partialSelector, selector} of results) {
+    for (const observedType of results) {
+        const {partialSelector, selector, options} = observedType;
         const foundNode = partialSelector.includes(' ') ? node.querySelector(selector) : node;
         if (!foundNode) {
             continue;
         }
-        emitter.emit(selector, node, node.isConnected);
+        const isConnected = node.isConnected;
+        if (options && options.attributes) {
+            if (isConnected) {
+                startAttributeObserver(observedType, emitter, node);
+            } else {
+                stopAttributeObserver(observedType);
+            }
+        }
+        emitter.emit(selector, node, isConnected);
     }
 }
 
@@ -72,7 +100,7 @@ class DOMObserver extends SafeEventEmitter {
         observer = new window.MutationObserver(mutations => {
             const pendingNodes = [];
             for (const {addedNodes, removedNodes} of mutations) {
-                if (!addedNodes || addedNodes.length === 0) {
+                if (!addedNodes || !removedNodes || (addedNodes.length === 0 && removedNodes.length === 0)) {
                     continue;
                 }
 
@@ -107,7 +135,7 @@ class DOMObserver extends SafeEventEmitter {
         processMutations(this, [...document.querySelectorAll('[id],[class]')]);
     }
 
-    on(selector, callback) {
+    on(selector, callback, options) {
         const parsedSelector = parseSelector(selector);
 
         for (const selectorType of Object.keys(parsedSelector)) {
@@ -115,7 +143,7 @@ class DOMObserver extends SafeEventEmitter {
 
             for (const {key, partialSelector} of parsedSelector[selectorType]) {
                 const currentObservedTypeSelectors = observedSelectorType[key];
-                const observedType = {partialSelector, selector};
+                const observedType = {partialSelector, selector, options};
                 if (!currentObservedTypeSelectors) {
                     observedSelectorType[key] = [observedType];
                     continue;
@@ -152,6 +180,8 @@ class DOMObserver extends SafeEventEmitter {
                 if (observedTypeIndex === -1) {
                     continue;
                 }
+                const observedType = currentObservedTypeSelectors[observedTypeIndex];
+                stopAttributeObserver(observedType);
                 currentObservedTypeSelectors.splice(observedTypeIndex);
                 if (currentObservedTypeSelectors.length === 0) {
                     delete observedSelectorType[key];
