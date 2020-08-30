@@ -97,4 +97,9 @@
     .multi-stream-player-layout {
         flex-direction: row-reverse;
     }
+
+    /* chat settings */
+    div[data-a-target="chat-settings-balloon"] {
+        margin-right: -25.3rem !important;
+    }
 }
