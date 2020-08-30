@@ -2,6 +2,7 @@ const $ = require('jquery');
 const watcher = require('../../watcher');
 const settings = require('../../settings');
 const twitch = require('../../utils/twitch');
+const domObserver = require('../../observers/dom');
 
 $('body').on('click', 'a.side-nav-card__link[data-a-target="followed-channel"]', e => {
     const currentTarget = e.currentTarget;
@@ -17,6 +18,8 @@ $('body').on('click', 'a.side-nav-card__link[data-a-target="followed-channel"]',
     e.preventDefault();
     router.history.push(destination);
 });
+
+let removeOfflineFollowedChannelsListener;
 
 class HideSidebarElementsModule {
     constructor() {
@@ -74,7 +77,21 @@ class HideSidebarElementsModule {
     }
 
     toggleOfflineFollowedChannels() {
-        $('body').toggleClass('bttv-hide-followed-offline', settings.get('hideOfflineFollowedChannels'));
+        if (settings.get('hideOfflineFollowedChannels')) {
+            if (removeOfflineFollowedChannelsListener) return;
+
+            removeOfflineFollowedChannelsListener = domObserver.on('.side-nav-card .side-nav-card__avatar--offline', (node, isConnected) => {
+                if (!isConnected) return;
+                $(node).addClass('bttv-hide-followed-offline');
+            }, {useParentNode: true});
+            return;
+        }
+
+        if (!removeOfflineFollowedChannelsListener) return;
+
+        removeOfflineFollowedChannelsListener();
+        removeOfflineFollowedChannelsListener = undefined;
+        $('.side-nav-card').removeClass('bttv-hide-followed-offline');
     }
 }
 

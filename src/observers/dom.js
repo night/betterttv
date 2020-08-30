@@ -138,6 +138,7 @@ class DOMObserver extends SafeEventEmitter {
     on(selector, callback, options) {
         const parsedSelector = parseSelector(selector);
 
+        const initialNodes = [];
         for (const selectorType of Object.keys(parsedSelector)) {
             const observedSelectorType = selectorType === 'ids' ? observedIds : observedClassNames;
 
@@ -149,11 +150,20 @@ class DOMObserver extends SafeEventEmitter {
                     continue;
                 }
                 currentObservedTypeSelectors.push(observedType);
+
+                if (observedSelectorType === observedIds) {
+                    const initialNode = document.getElementById(key);
+                    if (initialNode) {
+                        initialNodes.push(initialNode);
+                    }
+                } else if (observedSelectorType === observedClassNames) {
+                    initialNodes.push(...document.getElementsByClassName(key));
+                }
             }
         }
 
         // trigger dom mutations for existing elements for on page
-        processMutations(this, [...document.querySelectorAll(selector)]);
+        processMutations(this, initialNodes);
 
         return super.on(selector, callback);
     }
