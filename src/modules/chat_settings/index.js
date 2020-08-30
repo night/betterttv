@@ -4,30 +4,30 @@ const settings = require('../settings');
 const highlightBlacklistKeywords = require('../chat_highlight_blacklist_keywords');
 const chatFontSettings = require('../chat_font_settings');
 
-const CHAT_SETTINGS_SELECTOR = '.chat-settings__content,.mod-view-balloon-layer-menu-dropdown';
+const CHAT_SETTINGS_SELECTOR = '.chat-settings__content,.mod-view-balloon-layer-menu-dropdown .tw-balloon .tw-overflow-auto';
 const BTTV_CHAT_SETTINGS_CLASS = 'bttv-chat-settings';
 
 const CHAT_SETTINGS_TEMPLATE = `
     <div class="${BTTV_CHAT_SETTINGS_CLASS} tw-border-t tw-mg-t-2 tw-pd-t-2">
         <div class="tw-mg-y-05 tw-pd-x-05"><p class="tw-c-text-alt-2 tw-font-size-6 tw-strong tw-upcase">BetterTTV</p></div>
         <div class="tw-full-width tw-relative">
-            <button class="setBlacklistKeywords tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable--alpha tw-interactable--hover-enabled tw-interactable tw-interactive">Set Blacklist Keywords</button>
+            <button class="setBlacklistKeywords tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable--default tw-interactable--hover-enabled tw-interactable tw-interactive">Set Blacklist Keywords</button>
         </div>
         <div class="tw-full-width tw-relative">
-            <button class="setHighlightKeywords tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable--alpha tw-interactable--hover-enabled tw-interactable tw-interactive">Set Highlight Keywords</button>
+            <button class="setHighlightKeywords tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable--default tw-interactable--hover-enabled tw-interactable tw-interactive">Set Highlight Keywords</button>
         </div>
         <div class="tw-full-width tw-relative">
-            <button class="setFontFamily tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable--alpha tw-interactable--hover-enabled tw-interactable tw-interactive">Set Font</button>
+            <button class="setFontFamily tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable--default tw-interactable--hover-enabled tw-interactable tw-interactive">Set Font</button>
         </div>
         <div class="tw-full-width tw-relative">
-            <button class="setFontSize tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable--alpha tw-interactable--hover-enabled tw-interactable tw-interactive">Set Font Size</button>
+            <button class="setFontSize tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable--default tw-interactable--hover-enabled tw-interactable tw-interactive">Set Font Size</button>
         </div>
         <div class="tw-full-width tw-relative">
-            <button class="clearChat tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable--alpha tw-interactable--hover-enabled tw-interactable tw-interactive">Clear My Chat</button>
+            <button class="clearChat tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable--default tw-interactable--hover-enabled tw-interactable tw-interactive">Clear My Chat</button>
         </div>
         <div class="tw-full-width tw-relative">${
     !$('.twilight-minimal-root').length ? (
-        '<button class="openSettings tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable--alpha tw-interactable--hover-enabled tw-interactable tw-interactive">BetterTTV Settings</button>'
+        '<button class="openSettings tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable--default tw-interactable--hover-enabled tw-interactable tw-interactive">BetterTTV Settings</button>'
     ) : ''}</div>
     </div>
 `;
@@ -51,7 +51,7 @@ class ChatSettingsModule {
             .off('click', this.renderSettings).on('click', this.renderSettings);
     }
 
-    renderSettings() {
+    renderSettings(event) {
         if (inIFrame()) return;
 
         let $settings = $(CHAT_SETTINGS_SELECTOR).find(`.${BTTV_CHAT_SETTINGS_CLASS}`);
@@ -60,9 +60,16 @@ class ChatSettingsModule {
             $settings.remove();
         }
 
+        const $targetElement = $(event.currentTarget);
+        const invalidModViewPanel = (
+            $targetElement.attr('data-a-target') === 'panel-header-menu-toggle' &&
+            $targetElement.closest('.mosaic-window').find('.stream-chat').length === 0
+        );
+        if (invalidModViewPanel) return;
+
         // Twitch lazy loads settings
         if (!$(CHAT_SETTINGS_SELECTOR).length) {
-            setTimeout(() => this.renderSettings(), 100);
+            setTimeout(() => this.renderSettings(event), 100);
         }
 
         $(CHAT_SETTINGS_SELECTOR).append(CHAT_SETTINGS_TEMPLATE);
