@@ -239,14 +239,10 @@
     filter: grayscale(100%) brightness(0%);
     background: url(assets/icons/bttv_settings.png) no-repeat 0 0px;
   }
-
-  &:hover .bttvSettingsIconDropDown {
-    filter: grayscale(100%) brightness(400%);
-  }
 }
 
 .tw-root--theme-dark {
   .bttvSettingsIconDropDown {
-    filter: grayscale(100%) brightness(300%);
+    filter: grayscale(100%) brightness(400%);
   }
 }
