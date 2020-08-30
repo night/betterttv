@@ -242,7 +242,7 @@ class ChatHighlightBlacklistKeywordsModule {
 
     onVODMessage($message) {
         const $from = $message.find(VOD_CHAT_FROM_SELECTOR);
-        const from = $from.attr('href').split('?')[0].split('/').pop();
+        const from = ($from.attr('href') || '').split('?')[0].split('/').pop();
         const $messageContent = $message.find(VOD_CHAT_MESSAGE_SELECTOR);
         const emotes = Array.from($messageContent.find(VOD_CHAT_MESSAGE_EMOTE_SELECTOR)).map(emote => emote.getAttribute('alt'));
         const messageContent = `${$messageContent.text().replace(/^:/, '')} ${emotes.join(' ')}`;

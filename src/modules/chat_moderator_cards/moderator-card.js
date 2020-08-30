@@ -137,6 +137,8 @@ class ModeratorCard {
         if ($moderatorActions.find('.bttv-moderator-card-actions').length) return;
 
         const currentUser = twitch.getCurrentUser();
+        if (!currentUser) return;
+
         const currentUserIsOwner = twitch.getCurrentUserIsOwner();
         const currentUserIsModerator = twitch.getCurrentUserIsModerator();
 
@@ -161,6 +163,8 @@ class ModeratorCard {
 
         // twitch has a built-in tool now for mods, so prefer that one.
         const currentUser = twitch.getCurrentUser();
+        if (!currentUser) return;
+
         const currentUserIsOwner = twitch.getCurrentUserIsOwner();
         const currentUserIsModerator = twitch.getCurrentUserIsModerator();
         const isCurrentUser = currentUser.name === this.user.name;

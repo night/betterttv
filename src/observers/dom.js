@@ -8,18 +8,18 @@ const observedClassNames = Object.create(null);
 const attributeObservers = new Map();
 
 function parseSelector(selector) {
-    const partialSelectors = selector.split(',').map(s => s.trim().split(' ')[0]);
+    const partialSelectors = selector.split(',').map(s => s.trim());
     const ids = [];
     const classNames = [];
     for (const partialSelector of partialSelectors) {
         if (partialSelector.startsWith('#')) {
             ids.push({
-                key: partialSelector.split('#')[1],
+                key: partialSelector.split(' ')[0].split('#')[1],
                 partialSelector
             });
         } else if (partialSelector.startsWith('.')) {
             classNames.push({
-                key: partialSelector.split('.')[1],
+                key: partialSelector.split(' ')[0].split('.')[1],
                 partialSelector
             });
         }
@@ -59,15 +59,18 @@ function processObservedResults(emitter, node, results) {
         if (!foundNode) {
             continue;
         }
-        const isConnected = node.isConnected;
+        if (options && options.useParentNode) {
+            foundNode = node;
+        }
+        const isConnected = foundNode.isConnected;
         if (options && options.attributes) {
             if (isConnected) {
-                startAttributeObserver(observedType, emitter, node);
+                startAttributeObserver(observedType, emitter, foundNode);
             } else {
                 stopAttributeObserver(observedType);
             }
         }
-        emitter.emit(selector, node, isConnected);
+        emitter.emit(selector, foundNode, isConnected);
     }
 }
 
@@ -130,9 +133,6 @@ class DOMObserver extends SafeEventEmitter {
             processMutations(this, pendingNodes);
         });
         observer.observe(document, {childList: true, subtree: true});
-
-        // trigger dom mutations for existing elements for on load
-        processMutations(this, [...document.querySelectorAll('[id],[class]')]);
     }
 
     on(selector, callback, options) {
@@ -151,6 +151,9 @@ class DOMObserver extends SafeEventEmitter {
                 currentObservedTypeSelectors.push(observedType);
             }
         }
+
+        // trigger dom mutations for existing elements for on page
+        processMutations(this, [...document.querySelectorAll(selector)]);
 
         return super.on(selector, callback);
     }

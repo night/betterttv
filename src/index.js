@@ -4,8 +4,20 @@
     if (!['www.twitch.tv', 'canary.twitch.tv', 'clips.twitch.tv', 'dashboard.twitch.tv'].includes(window.location.hostname)) return;
     if (window.Ember) return;
 
+    const cookies = require('cookies-js');
     const debug = require('./utils/debug');
+    const twitch = require('./utils/twitch');
     const watcher = require('./watcher');
+
+    const userCookie = cookies.get('twilight-user');
+    if (userCookie) {
+        try {
+            const {authToken, id, login, displayName} = JSON.parse(userCookie);
+            twitch.setCurrentUser(authToken, id, login, displayName);
+        } catch (_) {
+            debug.log('error loading user from twilight user cookie');
+        }
+    }
 
     require('./modules/**/index.js', {mode: (base, files) => {
         return files.map(module => {
