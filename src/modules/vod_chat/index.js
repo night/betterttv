@@ -35,7 +35,7 @@ class VODChatModule {
         const color = colorRgb ? colors.getHex({r: colorRgb[1], g: colorRgb[2], b: colorRgb[3]}) : null;
 
         const mockUser = {
-            name: $from.attr('href').split('?')[0].split('/').pop(),
+            name: ($from.attr('href') || '').split('?')[0].split('/').pop(),
             color
         };
 

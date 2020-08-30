@@ -9,6 +9,7 @@ const HOST_BUTTON_ID = 'bttv-host-button';
 
 let $hostButton;
 let hosting = false;
+let currentChannelId;
 
 const buttonTemplate = `
     <div>
@@ -35,12 +36,16 @@ class HostButtonModule {
         if (settings.get('hostButton') === false) return;
 
         const currentUser = twitch.getCurrentUser();
+        if (!currentUser) return;
+
         const currentChannel = twitch.getCurrentChannel();
-        if (!currentChannel || currentUser.id === currentChannel.id) return;
+        const channelId = currentChannel && currentChannel.id;
+        if (!channelId || currentUser.id === channelId || currentChannelId === channelId) return;
+        currentChannelId = channelId;
 
         $hostButton = $(buttonTemplate);
         this.embedHostButton();
-        this.updateHostingState(currentUser.id, currentChannel.id);
+        this.updateHostingState(currentUser.id, channelId);
     }
 
     embedHostButton(tries = 1) {
@@ -57,6 +62,8 @@ class HostButtonModule {
 
     toggleHost() {
         const currentUser = twitch.getCurrentUser();
+        if (!currentUser) return;
+
         const command = hosting ? 'unhost' : 'host';
         try {
             const channelName = twitch.getCurrentChannel().name;

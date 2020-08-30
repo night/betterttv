@@ -209,16 +209,16 @@ module.exports = {
     },
 
     getClipsBroadcasterInfo() {
-        let router;
+        let broadcaster;
         try {
             const node = searchReactParents(
                 getReactInstance($(CLIPS_BROADCASTER_INFO)[0]),
                 n => n.stateNode && n.stateNode.props && n.stateNode.props.data && n.stateNode.props.data.clip
             );
-            router = node.stateNode.props.data.clip.broadcaster;
+            broadcaster = node.stateNode.props.data.clip.broadcaster;
         } catch (_) {}
 
-        return router;
+        return broadcaster;
     },
 
     getCurrentPlayer() {

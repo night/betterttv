@@ -1,6 +1,7 @@
 const $ = require('jquery');
 const watcher = require('../../watcher');
 const settings = require('../../settings');
+const domWatcher = require('../../observers/dom');
 const twitch = require('../../utils/twitch');
 const debounce = require('lodash.debounce');
 
@@ -26,20 +27,17 @@ const getPictureInPictureTemplate = toggled => `
     </div>
 `;
 
+let removeRecommendationWatcher;
 function watchPlayerRecommendationVodsAutoplay() {
-    const currentPlayer = twitch.getCurrentPlayer();
-    if (!currentPlayer) return;
-
-    const handleEndedEvent = () => {
-        if (settings.get('disableVodRecommendationAutoplay') !== true) return;
-        watcher.waitForLoad('vodRecommendation').then(() => $(CANCEL_VOD_RECOMMENDATION_SELECTOR).trigger('click'));
-    };
-
-    if (currentPlayer.emitter) {
-        currentPlayer.emitter.on('Ended', handleEndedEvent);
-    } else {
-        currentPlayer.addEventListener('ended', handleEndedEvent);
+    if (settings.get('disableVodRecommendationAutoplay') !== true) {
+        removeRecommendationWatcher && removeRecommendationWatcher();
+        return;
     }
+
+    removeRecommendationWatcher = domWatcher.on(CANCEL_VOD_RECOMMENDATION_SELECTOR, (node, isConnected) => {
+        if (!isConnected) return;
+        $(node).trigger('click');
+    });
 }
 
 let clicks = 0;
@@ -149,6 +147,7 @@ class VideoPlayerModule {
             description: 'Enables scrolling the twitch player to change the player volume'
         });
         settings.on('changed.hidePlayerExtensions', () => this.toggleHidePlayerExtensions());
+        settings.on('changed.disableVodRecommendationAutoplay', () => watchPlayerRecommendationVodsAutoplay());
         settings.on('changed.clickToPlay', () => this.clickToPause());
         this.toggleHidePlayerExtensions();
         this.loadHidePlayerCursorFullscreen();
