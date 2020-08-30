@@ -19,6 +19,7 @@ $('body').on('click', 'a.side-nav-card__link[data-a-target="followed-channel"]',
     router.history.push(destination);
 });
 
+let removeFeaturedChannelsListener;
 let removeOfflineFollowedChannelsListener;
 
 class HideSidebarElementsModule {
@@ -60,7 +61,21 @@ class HideSidebarElementsModule {
     }
 
     toggleFeaturedChannels() {
-        $('body').toggleClass('bttv-hide-featured-channels', settings.get('hideFeaturedChannels'));
+        if (settings.get('hideFeaturedChannels')) {
+            if (removeFeaturedChannelsListener) return;
+
+            removeFeaturedChannelsListener = domObserver.on('.side-nav-section a[data-test-selector="recommended-channel"]', (node, isConnected) => {
+                if (!isConnected) return;
+                $(node).addClass('bttv-hide-featured-channels');
+            }, {useParentNode: true});
+            return;
+        }
+
+        if (!removeFeaturedChannelsListener) return;
+
+        removeFeaturedChannelsListener();
+        removeFeaturedChannelsListener = undefined;
+        $('.side-nav-section').removeClass('bttv-hide-featured-channels');
     }
 
     toggleAutoExpandChannels() {
