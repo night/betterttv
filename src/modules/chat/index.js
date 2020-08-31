@@ -13,6 +13,7 @@ const splitChat = require('../split_chat');
 
 const EMOTE_STRIP_SYMBOLS_REGEX = /(^[~!@#$%\^&\*\(\)]+|[~!@#$%\^&\*\(\)]+$)/g;
 const MENTION_REGEX = /^@([a-zA-Z\d_]+)$/;
+const STEAM_LOBBY_JOIN_REGEX = /^steam:\/\/joinlobby\/\d+\/\d+\/\d+$/;
 const EMOTES_TO_CAP = ['567b5b520e984428652809b6'];
 const MAX_EMOTES_WHEN_CAPPED = 10;
 
@@ -25,6 +26,7 @@ const badgeTemplate = (url, description) => `
 
 const mentionTemplate = name => `<span class="mentioning">@${html.escape(name)}</span>`;
 
+const steamLobbyJoinTemplate = joinLink => `<a href="${joinLink}">${joinLink}</a>`;
 function formatChatUser({user, badges}) {
     return {
         id: user.userID,
@@ -154,6 +156,12 @@ class ChatModule {
                     continue;
                 }
 
+                const steamJoinLink = part.match(STEAM_LOBBY_JOIN_REGEX);
+                if (steamJoinLink) {
+                    parts[j] = steamLobbyJoinTemplate(steamJoinLink[0]);
+                    modified = true;
+                    continue;
+                }
                 const emote = emotes.getEligibleEmote(part, user) || emotes.getEligibleEmote(part.replace(EMOTE_STRIP_SYMBOLS_REGEX, ''), user);
                 if (emote) {
                     parts[j] = (EMOTES_TO_CAP.includes(emote.id) && ++cappedEmoteCount > MAX_EMOTES_WHEN_CAPPED) ? '' : emote.toHTML();
