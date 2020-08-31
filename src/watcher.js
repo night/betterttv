@@ -8,7 +8,6 @@ class Watcher extends SafeEventEmitter {
         require('./watchers/channel')(this);
 
         if (window.location.hostname === CLIPS_HOSTNAME) {
-            require('./watchers/channel')(this);
             require('./watchers/clips')(this);
         } else {
             require('./watchers/chat')(this);
