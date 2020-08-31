@@ -3,6 +3,7 @@ const settings = require('../../settings');
 const watcher = require('../../watcher');
 const twitch = require('../../utils/twitch');
 const tmiApi = require('../../utils/tmi-api');
+const domObserver = require('../../observers/dom');
 
 const SHARE_BUTTON_SELECTOR = 'button[data-a-target="share-button"]';
 const HOST_BUTTON_ID = 'bttv-host-button';
@@ -10,6 +11,7 @@ const HOST_BUTTON_ID = 'bttv-host-button';
 let $hostButton;
 let hosting = false;
 let currentChannelId;
+let removeShareButtonListener;
 
 const buttonTemplate = `
     <div>
@@ -43,21 +45,23 @@ class HostButtonModule {
         if (!channelId || currentUser.id === channelId || currentChannelId === channelId) return;
         currentChannelId = channelId;
 
-        $hostButton = $(buttonTemplate);
-        this.embedHostButton();
+        if (!$hostButton) {
+            $hostButton = $(buttonTemplate);
+        }
+        removeShareButtonListener = domObserver.on('.tw-button-icon', (node, isConnected) => {
+            if (!isConnected || node.getAttribute('data-a-target') !== 'share-button') return;
+            this.embedHostButton();
+        });
         this.updateHostingState(currentUser.id, channelId);
     }
 
-    embedHostButton(tries = 1) {
-        if ($(`#${HOST_BUTTON_ID}`).length || tries > 3) return;
-        const $shareButton = $(SHARE_BUTTON_SELECTOR).closest('[data-toggle-balloon-id]').parent('.tw-mg-l-05,.tw-mg-r-1');
+    embedHostButton() {
+        if ($(`#${HOST_BUTTON_ID}`).length) return;
+        const $shareButton = $(SHARE_BUTTON_SELECTOR).closest('[data-toggle-balloon-id]').parent('.tw-mg-r-1');
         if (!$shareButton.length) return;
-        $hostButton.toggleClass('tw-mg-l-05', $shareButton.hasClass('tw-mg-l-05')).toggleClass('tw-mg-r-1', $shareButton.hasClass('tw-mg-r-1'));
+        $hostButton.toggleClass('tw-mg-r-1', $shareButton.hasClass('tw-mg-r-1'));
         $hostButton.insertBefore($shareButton);
         $hostButton.find('button').click(() => this.toggleHost());
-
-        // hackfix: twitch's channel page experiment causes the player to load multiple times
-        setTimeout(() => this.embedHostButton(tries + 1), 1000);
     }
 
     toggleHost() {
@@ -97,8 +101,8 @@ class HostButtonModule {
     }
 
     unload() {
-        if (!$hostButton) return;
-        $hostButton.remove();
+        removeShareButtonListener && removeShareButtonListener();
+        $hostButton && $hostButton.remove();
     }
 }
 
