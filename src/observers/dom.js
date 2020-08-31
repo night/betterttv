@@ -147,9 +147,9 @@ class DOMObserver extends SafeEventEmitter {
                 const observedType = {partialSelector, selector, options};
                 if (!currentObservedTypeSelectors) {
                     observedSelectorType[key] = [observedType];
-                    continue;
+                } else {
+                    currentObservedTypeSelectors.push(observedType);
                 }
-                currentObservedTypeSelectors.push(observedType);
 
                 if (observedSelectorType === observedIds) {
                     const initialNode = document.getElementById(key);
@@ -162,10 +162,12 @@ class DOMObserver extends SafeEventEmitter {
             }
         }
 
+        const result = super.on(selector, callback);
+
         // trigger dom mutations for existing elements for on page
         processMutations(this, initialNodes);
 
-        return super.on(selector, callback);
+        return result;
     }
 
     // Note: you cannot call this directly as this is behind SafeEventEmitter
