@@ -457,10 +457,10 @@ module.exports = {
         try {
             const node = searchReactChildren(
                 getReactInstance(element),
-                n => n.stateNode && n.stateNode.handleLeaveRaid,
+                n => n.stateNode && n.stateNode.props && n.stateNode.props.hasJoined,
                 1000
             );
-            raidContext = node.stateNode;
+            raidContext = node.stateNode.props;
         } catch (_) {}
 
         return raidContext;
