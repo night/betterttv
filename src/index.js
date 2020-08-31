@@ -31,6 +31,8 @@
         }).join(' ');
     }});
 
+    watcher.setup();
+
     debug.log(`BetterTTV v${debug.version} loaded. ${process.env.NODE_ENV} @ ${process.env.GIT_REV}`);
 
     window.BetterTTV = {
