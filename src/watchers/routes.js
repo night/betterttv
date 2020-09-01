@@ -101,13 +101,20 @@ function waitForLoad(type, context = null) {
 }
 
 function getRouteFromPath(path) {
+    let route = null;
     for (const name of Object.keys(routeKeysToPaths)) {
         const regex = routeKeysToPaths[name];
         if (!regex.test(path)) continue;
-        return name;
+        route = name;
+        break;
     }
 
-    return null;
+    // twitch's embed subdomain only supports channel view
+    if (route === routes.HOMEPAGE && location.hostname === 'embed.twitch.tv') {
+        return routes.CHANNEL;
+    }
+
+    return route;
 }
 
 function onRouteChange(location) {
