@@ -13,7 +13,7 @@ const Commands = {
     UNMOD: '/unmod',
     TIMEOUT: '/timeout',
     PERMIT: '!permit',
-    IGNORE: '/ignore',
+    IGNORE: '/block',
     WHISPER: '/w'
 };
 

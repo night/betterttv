@@ -2,7 +2,6 @@ const $ = require('jquery');
 const twitchAPI = require('./twitch-api');
 
 const REACT_ROOT = '#root div';
-const CHANNEL_CONTAINER = '.channel-page,.channel-root';
 const CHAT_CONTAINER = 'section[data-test-selector="chat-room-component-layout"]';
 const VOD_CHAT_CONTAINER = '.qa-vod-chat';
 const CHAT_LIST = '.chat-list';
@@ -174,7 +173,7 @@ module.exports = {
     getConnectStore() {
         let store;
         try {
-            const node = searchReactParents(
+            const node = searchReactChildren(
                 getReactInstance($(REACT_ROOT)[0]),
                 n => n.pendingProps && n.pendingProps.value && n.pendingProps.value.store
             );
@@ -182,30 +181,6 @@ module.exports = {
         } catch (_) {}
 
         return store;
-    },
-
-    getRouter() {
-        let router;
-        try {
-            const node = searchReactParents(
-                getReactInstance($(REACT_ROOT)[0]),
-                n => n.stateNode && n.stateNode.props && n.stateNode.props.history && n.stateNode.props.history.listen && n.stateNode.props.history.location
-            );
-            router = node.stateNode.props;
-        } catch (_) {}
-
-        if (!router) {
-            try {
-                const node = searchReactParents(
-                    getReactInstance($(REACT_ROOT)[0]),
-                    n => n.memoizedProps && n.memoizedProps && n.memoizedProps.value && n.memoizedProps.value.history && n.memoizedProps.value.history.listen && n.memoizedProps.value.history.location,
-                    20
-                );
-                router = node.memoizedProps.value;
-            } catch (_) {}
-        }
-
-        return router;
     },
 
     getClipsBroadcasterInfo() {
@@ -247,19 +222,6 @@ module.exports = {
         } catch (_) {}
 
         return chatContentComponent;
-    },
-
-    getChannelController() {
-        let channelController;
-        try {
-            const node = searchReactParents(
-                getReactInstance($(CHANNEL_CONTAINER)[0]),
-                n => n.stateNode && (n.stateNode.handleHostingChange || n.stateNode.onChatHostingChange)
-            );
-            channelController = node.stateNode;
-        } catch (_) {}
-
-        return channelController;
     },
 
     getChatServiceClient() {
@@ -497,18 +459,5 @@ module.exports = {
         }
 
         return messages;
-    },
-
-    getSideNavFollowedUserLogin(element) {
-        let userLogin;
-        try {
-            const node = searchReactParents(
-                getReactInstance(element),
-                n => n.stateNode && n.stateNode.props && n.stateNode.props.offline === true && n.stateNode.props.userLogin
-            );
-            userLogin = node.stateNode.props.userLogin;
-        } catch (_) {}
-
-        return userLogin;
     }
 };
