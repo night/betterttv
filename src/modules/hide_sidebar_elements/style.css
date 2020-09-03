@@ -2,6 +2,10 @@
   display: none !important;
 }
 
+.bttv-hide-similar-channels {
+  display: none !important;
+}
+
 .bttv-hide-recommended-friends {
   .recommended-friends {
     display: none;

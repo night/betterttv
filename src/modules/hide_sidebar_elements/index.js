@@ -4,6 +4,7 @@ const settings = require('../../settings');
 const domObserver = require('../../observers/dom');
 
 let removeFeaturedChannelsListener;
+let removeSimilarChannelsListener;
 let removeOfflineFollowedChannelsListener;
 
 class HideSidebarElementsModule {
@@ -13,6 +14,12 @@ class HideSidebarElementsModule {
             name: 'Hide Recommended Channels',
             defaultValue: true,
             description: 'Removes the recommended channels in the sidebar'
+        });
+        settings.add({
+            id: 'hideSimilarChannels',
+            name: 'Hide "Viewers Also Watch" Channels',
+            defaultValue: true,
+            description: 'Removes the "<X> Viewers Also Watch" channels in the sidebar'
         });
         settings.add({
             id: 'autoExpandChannels',
@@ -33,11 +40,13 @@ class HideSidebarElementsModule {
             description: 'Removes offline followed channels in the sidebar'
         });
         settings.on('changed.hideFeaturedChannels', () => this.toggleFeaturedChannels());
+        settings.on('changed.hideSimilarChannels', () => this.toggleSimilarChannels());
         settings.on('changed.autoExpandChannels', () => this.toggleAutoExpandChannels());
         settings.on('changed.hideRecommendedFriends', () => this.toggleRecommendedFriends());
         settings.on('changed.hideOfflineFollowedChannels', () => this.toggleOfflineFollowedChannels());
         watcher.on('load', () => {
             this.toggleFeaturedChannels();
+            this.toggleSimilarChannels();
             this.toggleAutoExpandChannels();
             this.toggleRecommendedFriends();
             this.toggleOfflineFollowedChannels();
@@ -60,6 +69,24 @@ class HideSidebarElementsModule {
         removeFeaturedChannelsListener();
         removeFeaturedChannelsListener = undefined;
         $('.side-nav-section').removeClass('bttv-hide-featured-channels');
+    }
+
+    toggleSimilarChannels() {
+        if (settings.get('hideSimilarChannels')) {
+            if (removeSimilarChannelsListener) return;
+
+            removeSimilarChannelsListener = domObserver.on('.side-nav-section a[data-test-selector="similarity-channel"]', (node, isConnected) => {
+                if (!isConnected) return;
+                $(node).addClass('bttv-hide-similar-channels');
+            }, {useParentNode: true});
+            return;
+        }
+
+        if (!removeSimilarChannelsListener) return;
+
+        removeSimilarChannelsListener();
+        removeSimilarChannelsListener = undefined;
+        $('.side-nav-section').removeClass('bttv-hide-similar-channels');
     }
 
     toggleAutoExpandChannels() {
