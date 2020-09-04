@@ -1,59 +1,63 @@
 const $ = require('jquery');
 const watcher = require('../../watcher');
 const settings = require('../../settings');
+const domObserver = require('../../observers/dom');
 
-const containerSelector = '.chat-input__buttons-container';
-const claimButtonSelector = '.claimable-bonus__icon';
+const CLAIM_BUTTON_SELECTOR = '.claimable-bonus__icon';
 
-const bonusPointsObserver = new window.MutationObserver(mutations =>
-    mutations.forEach(mutation => {
-        for (const el of mutation.addedNodes) {
-            $(el).find(claimButtonSelector).click();
-        }
-    })
-);
+let channelPointsListener;
 
 class ChannelPoints {
     constructor() {
         settings.add({
             id: 'autoClaimBonusPoints',
-            name: 'Automatic Claim of Bonus Points',
+            name: 'Auto-Claim Bonus Points',
             defaultValue: false,
-            description: 'Automatically claim channel bonus points'
+            description: 'Automatically claim bonus channel points',
         });
         settings.add({
             id: 'hideChannelPoints',
             name: 'Hide Channel Points',
             defaultValue: false,
-            description: 'Hides channel points from the chat UI to reduce clutter'
+            description: 'Hides channel points from the chat UI to reduce clutter',
         });
 
-        settings.on('changed.hideChannelPoints', () => this.hideChannelPoints());
-        settings.on('changed.autoClaimBonusPoints', () => this.autoClaimBonusPoints());
+        settings.on('changed.hideChannelPoints', this.hideChannelPoints);
+        settings.on('changed.autoClaimBonusPoints', this.autoClaimBonusPoints);
 
         this.autoClaimBonusPoints();
-        watcher.on('load.channel', () => this.autoClaimBonusPoints());
+        watcher.on('load.channel', this.autoClaimBonusPoints);
     }
 
     autoClaimBonusPoints() {
-        if (!settings.get('autoClaimBonusPoints')) {
-            bonusPointsObserver.disconnect();
+        if (settings.get('autoClaimBonusPoints')) {
+            if (channelPointsListener) return;
+
+            channelPointsListener = domObserver.on(
+                CLAIM_BUTTON_SELECTOR,
+                (node, isConnected) => {
+                    if (!isConnected) return;
+                    const $node = $(node);
+
+                    $node.click();
+                },
+                { useParentNode: true }
+            );
+
             return;
         }
 
-        $(claimButtonSelector).click();
+        if (!channelPointsListener) return;
 
-        const observe = (_watcher, element) => {
-            if (!element) return;
-            if (_watcher) _watcher.disconnect();
-            _watcher.observe(element, {childList: true, subtree: true});
-        };
-
-        observe(bonusPointsObserver, $(containerSelector)[0]);
+        channelPointsListener();
+        channelPointsListener = undefined;
     }
 
     hideChannelPoints() {
-        $('body').toggleClass('bttv-hide-channel-points', settings.get('hideChannelPoints'));
+        $('body').toggleClass(
+            'bttv-hide-channel-points',
+            settings.get('hideChannelPoints')
+        );
     }
 }
 
