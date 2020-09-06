@@ -89,8 +89,8 @@ const NICKNAME_CHANGE_BUTTON_TEMPLATE = `
 `;
 
 const userGiftStatusTemplate = (gifter, giftedAt) => `
-    <div class="bttv-moderator-card-gift-status tw-flex"">
-        ${Icons.GIFT}<p class="tw-c-text-overlay tw-mg-l-05 tw-mg-t-auto">Gifted by ${gifter} ${giftedAt}</p>
+    <div class="bttv-moderator-card-gift-status tw-flex">
+        ${Icons.GIFT}<p class="tw-c-text-overlay tw-mg-l-05 tw-mg-t-auto">Gifted by ${html.escape(gifter)} ${html.escape(giftedAt)}</p>
     </div>
 `;
 
@@ -192,6 +192,7 @@ class ModeratorCard {
         if ($header.find('.bttv-moderator-card-gift-status').length) return;
 
         const currentChannel = twitch.getCurrentChannel();
+        if (!currentChannel) return;
         const query = `{
             user(id:"${this.user.id}") {
                 relationship (targetUserID: "${currentChannel.id}") {
@@ -209,8 +210,14 @@ class ModeratorCard {
         }`;
 
         twitchAPI.graphqlQuery(query).then(({data: {user: {relationship: {subscriptionBenefit}}}}) => {
-            if (!subscriptionBenefit || !subscriptionBenefit.gift.isGift) return;
-            const giftStatusHTML = userGiftStatusTemplate(subscriptionBenefit.gift.gifter.displayName, moment(subscriptionBenefit.gift.giftDate).fromNow());
+            const isGiftedSubscription = subscriptionBenefit && subscriptionBenefit.gift && subscriptionBenefit.gift.isGift && subscriptionBenefit.gift.gifter;
+            if (!isGiftedSubscription) return;
+
+            const gifterDisplayName = subscriptionBenefit.gift.gifter.displayName;
+            const giftDate = subscriptionBenefit.gift.giftDate && moment(subscriptionBenefit.gift.giftDate).fromNow();
+            if (!gifterDisplayName || !giftDate) return;
+
+            const giftStatusHTML = userGiftStatusTemplate(gifterDisplayName, giftDate);
             $(giftStatusHTML).appendTo($header);
         });
     }
