@@ -10,8 +10,8 @@ let channelPointsListener;
 class ChannelPoints {
     constructor() {
         settings.add({
-            id: 'autoClaimBonusPoints',
-            name: 'Auto-Claim Bonus Points',
+            id: 'autoClaimBonusChannelPoints',
+            name: 'Auto-Claim Bonus Channel Points',
             defaultValue: false,
             description: 'Automatically claim bonus channel points',
         });
@@ -22,14 +22,14 @@ class ChannelPoints {
             description: 'Hides channel points from the chat UI to reduce clutter',
         });
 
-        settings.on('changed.hideChannelPoints', this.hideChannelPoints);
-        settings.on('changed.autoClaimBonusPoints', this.autoClaimBonusPoints);
+        this.toggleHideChannelPoints();
+        this.toggleAutoClaimBonusPoints();
 
-        this.autoClaimBonusPoints();
+        settings.on('changed.hideChannelPoints', this.toggleHideChannelPoints);
         watcher.on('load.channel', this.autoClaimBonusPoints);
     }
 
-    autoClaimBonusPoints() {
+    toggleAutoClaimBonusPoints() {
         if (settings.get('autoClaimBonusPoints')) {
             if (channelPointsListener) return;
 
@@ -41,7 +41,7 @@ class ChannelPoints {
 
                     $node.click();
                 },
-                { useParentNode: true }
+                {useParentNode: true}
             );
 
             return;
@@ -53,7 +53,7 @@ class ChannelPoints {
         channelPointsListener = undefined;
     }
 
-    hideChannelPoints() {
+    toggleHideChannelPoints() {
         $('body').toggleClass(
             'bttv-hide-channel-points',
             settings.get('hideChannelPoints')
