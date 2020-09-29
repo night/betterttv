@@ -47,6 +47,7 @@ class HostButtonModule {
 
         if (!$hostButton) {
             $hostButton = $(buttonTemplate);
+            $hostButton.find('button').click(() => this.toggleHost());
         }
         removeShareButtonListener = domObserver.on('.tw-button-icon', (node, isConnected) => {
             if (!isConnected || node.getAttribute('data-a-target') !== 'share-button') return;
@@ -61,7 +62,6 @@ class HostButtonModule {
         if (!$shareButton.length) return;
         $hostButton.toggleClass('tw-mg-r-1', $shareButton.hasClass('tw-mg-r-1'));
         $hostButton.insertBefore($shareButton);
-        $hostButton.find('button').click(() => this.toggleHost());
     }
 
     toggleHost() {
