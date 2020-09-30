@@ -8,6 +8,7 @@ const storage = require('../../storage');
 const html = require('../../utils/html');
 const api = require('../../utils/api');
 const moment = require('moment');
+const domObserver = require('../../observers/dom');
 
 const getSettingElement = ({id}) => $(`.bttvOption-${html.escape(id)}`);
 
@@ -139,10 +140,11 @@ class SettingsModule {
     constructor() {
         watcher.on('load', () => {
             this.renderSettings();
-            this.renderSettingsMenuOption();
         });
 
-        this.renderSettingsMenuOption = this.renderSettingsMenuOption.bind(this);
+        domObserver.on('a[data-test-selector="user-menu-dropdown__settings-link"]', () => {
+            this.renderSettingsMenuOption();
+        });
     }
 
     renderSettings() {
@@ -191,9 +193,6 @@ class SettingsModule {
 
     renderSettingsMenuOption() {
         if ($('.bttvSettingsIconDropDown').length) return;
-
-        // twitch lazy-loads this menu now, so we must retrigger paint on click
-        $('button[data-test-selector="user-menu__toggle"]').off('click', this.renderSettingsMenuOption).on('click', this.renderSettingsMenuOption);
 
         $('a[data-a-target="settings-dropdown-link"]').parent('div.tw-full-width.tw-relative').after(`
             <div class="tw-full-width tw-relative">

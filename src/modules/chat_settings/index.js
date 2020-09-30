@@ -3,8 +3,12 @@ const watcher = require('../../watcher');
 const settings = require('../settings');
 const highlightBlacklistKeywords = require('../chat_highlight_blacklist_keywords');
 const chatFontSettings = require('../chat_font_settings');
+const domObserver = require('../../observers/dom');
 
-const CHAT_SETTINGS_SELECTOR = '.chat-settings__content,.mod-view-balloon-layer-menu-dropdown .tw-balloon .tw-overflow-auto';
+const CHAT_SETTINGS_SELECTOR = '.chat-settings__content';
+const MOD_VIEW_CHAT_SETTINGS_SELECTOR = 'button[data-test-selector="chat-widget-settings-switch-to-non-mod"], button[data-test-selector="chat-widget-settings-switch-to-default"]';
+const CHAT_SETTINGS_BACK_BUTTON_SELECTOR = 'button[data-test-selector="chat-settings-back-button"], button[data-test-selector="chat-widget-settings-back-button"]';
+const CHAT_SETTINGS_MOD_TOOLS_SELECTOR = 'div[data-test-selector="mod-tools"]';
 const BTTV_CHAT_SETTINGS_CLASS = 'bttv-chat-settings';
 
 const CHAT_SETTINGS_TEMPLATE = `
@@ -40,6 +44,20 @@ function inIFrame() {
     }
 }
 
+function getChatSettings() {
+    const $modViewChatSettings = $(MOD_VIEW_CHAT_SETTINGS_SELECTOR);
+    if ($modViewChatSettings.length > 0) {
+        return $modViewChatSettings.parent();
+    }
+
+    const $chatSettings = $(CHAT_SETTINGS_SELECTOR);
+    return $chatSettings;
+}
+
+function getSettings() {
+    return getChatSettings().find(`.${BTTV_CHAT_SETTINGS_CLASS}`);
+}
+
 class ChatSettingsModule {
     constructor() {
         watcher.on('load.chat', () => this.load());
@@ -47,34 +65,42 @@ class ChatSettingsModule {
     }
 
     load() {
-        $('button[data-a-target="chat-settings"],.mod-view-panel-header button[data-a-target="panel-header-menu-toggle"]')
-            .off('click', this.renderSettings).on('click', this.renderSettings);
+        domObserver.on(CHAT_SETTINGS_SELECTOR, (node, isConnected) => {
+            if (!isConnected) return;
+            this.renderSettings();
+        });
+        domObserver.on(MOD_VIEW_CHAT_SETTINGS_SELECTOR, () => {
+            this.renderSettings();
+        });
+        domObserver.on(CHAT_SETTINGS_BACK_BUTTON_SELECTOR, (node, isConnected) => {
+            if (!isConnected) {
+                this.renderSettings();
+                return;
+            }
+            getSettings().remove();
+        });
+        domObserver.on(CHAT_SETTINGS_MOD_TOOLS_SELECTOR, () => {
+            this.renderSettings();
+        });
     }
 
-    renderSettings(event) {
+    renderSettings() {
         if (inIFrame()) return;
 
-        let $settings = $(CHAT_SETTINGS_SELECTOR).find(`.${BTTV_CHAT_SETTINGS_CLASS}`);
+        let $settings = getSettings();
         // Hide the settings when in an iframe for now
         if ($settings.length) {
             $settings.remove();
         }
 
-        const $targetElement = $(event.currentTarget);
-        const invalidModViewPanel = (
-            $targetElement.attr('data-a-target') === 'panel-header-menu-toggle' &&
-            $targetElement.closest('.mosaic-window').find('.stream-chat').length === 0
-        );
-        if (invalidModViewPanel) return;
-
-        // Twitch lazy loads settings
-        if (!$(CHAT_SETTINGS_SELECTOR).length) {
-            setTimeout(() => this.renderSettings(event), 100);
+        // if within a nested menu, do not show bttv settings
+        if ($(CHAT_SETTINGS_BACK_BUTTON_SELECTOR).length > 0) {
+            return;
         }
 
-        $(CHAT_SETTINGS_SELECTOR).append(CHAT_SETTINGS_TEMPLATE);
+        getChatSettings().append(CHAT_SETTINGS_TEMPLATE);
 
-        $settings = $(CHAT_SETTINGS_SELECTOR).find(`.${BTTV_CHAT_SETTINGS_CLASS}`);
+        $settings = getSettings();
 
         $settings.find('.openSettings').click(settings.openSettings);
         $settings.find('.clearChat').click(e => {

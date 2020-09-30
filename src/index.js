@@ -1,7 +1,17 @@
 (() => {
     if (!String.prototype.includes || !Array.prototype.findIndex) return;
     if (window.location.pathname.endsWith('.html')) return;
-    if (!['www.twitch.tv', 'canary.twitch.tv', 'clips.twitch.tv', 'dashboard.twitch.tv', 'embed.twitch.tv'].includes(window.location.hostname)) return;
+    if (
+        ![
+            'www.twitch.tv',
+            'canary.twitch.tv',
+            'release.twitch.tv',
+            'clips.twitch.tv',
+            'dashboard.twitch.tv',
+            'embed.twitch.tv'
+        ].includes(window.location.hostname) &&
+        !window.location.hostname.endsWith('.release.twitch.tv')
+    ) return;
     if (window.Ember) return;
 
     const cookies = require('cookies-js');
