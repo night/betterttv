@@ -23,7 +23,7 @@ class ChannelPoints {
 
         this.loadAutoClaimBonusChannelPoints();
         this.loadHideChannelPoints();
- 
+
         settings.on('changed.autoClaimBonusChannelPoints', () => this.loadAutoClaimBonusChannelPoints());
         settings.on('changed.hideChannelPoints', () => this.loadHideChannelPoints());
     }
