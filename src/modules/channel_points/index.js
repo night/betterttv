@@ -1,5 +1,4 @@
 const $ = require('jquery');
-const watcher = require('../../watcher');
 const settings = require('../../settings');
 const domObserver = require('../../observers/dom');
 
@@ -37,9 +36,8 @@ class ChannelPoints {
                 CLAIM_BUTTON_SELECTOR,
                 (node, isConnected) => {
                     if (!isConnected) return;
-                    const $node = $(node);
 
-                    $node.click();
+                    node.click();
                 }
             );
 
