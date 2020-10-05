@@ -22,15 +22,15 @@ class ChannelPoints {
             description: 'Hides channel points from the chat UI to reduce clutter',
         });
 
-        this.loadAutoClaimBonusPoints();
+        this.loadAutoClaimBonusChannelPoints();
         this.loadHideChannelPoints();
  
-        settings.on('changed.autoClaimBonusChannelPoints', () => this.loadAutoClaimBonusPoints());
+        settings.on('changed.autoClaimBonusChannelPoints', () => this.loadAutoClaimBonusChannelPoints());
         settings.on('changed.hideChannelPoints', () => this.loadHideChannelPoints());
     }
 
-    loadAutoClaimBonusPoints() {
-        if (settings.get('autoClaimBonusPoints')) {
+    loadAutoClaimBonusChannelPoints() {
+        if (settings.get('autoClaimBonusChannelPoints')) {
             if (removeChannelPointsListener) return;
 
             removeChannelPointsListener = domObserver.on(
