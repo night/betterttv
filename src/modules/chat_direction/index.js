@@ -3,7 +3,7 @@ const settings = require('../../settings');
 const watcher = require('../../watcher');
 const twitch = require('../../utils/twitch');
 
-const CHAT_LIST_SCROLL_CONTENT = '.chat-list .chat-list__lines .simplebar-scroll-content,.chat-list .chat-scrollable-area__message-container .simplebar-scroll-content';
+const CHAT_LIST_SCROLL_CONTENT = '.chat-list .simplebar-scroll-content,.chat-list--default .simplebar-scroll-content,.chat-list--other .simplebar-scroll-content';
 
 let oldScrollToBottom;
 

@@ -44,7 +44,7 @@ class ChatEmbeddedPollModule {
         if ($poll.length && $poll.children('.frame').is(':visible')) return;
         if ($poll.length) $poll.remove();
 
-        $('.chat-list').append(pollTemplate(pollId));
+        $('.chat-list,.chat-list--default,.chat-list--other').append(pollTemplate(pollId));
 
         $poll = $('#bttv-poll-contain');
 

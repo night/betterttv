@@ -15,7 +15,7 @@ class DisableNameColorsModule {
     }
 
     load() {
-        $('.chat-list__lines,.chat-scrollable-area__message-container').toggleClass('bttv-disable-name-colors', settings.get('disableUsernameColors'));
+        $('.chat-scrollable-area__message-container').toggleClass('bttv-disable-name-colors', settings.get('disableUsernameColors'));
     }
 }
 

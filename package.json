@@ -47,7 +47,7 @@
     "request": "^2.88.2",
     "require-globify": "^1.4.1",
     "twemoji": "^13.0.1",
-    "twitch-chat-emotes": "github:night/twitch-chat-emotes#57307236b1f4cd7ae7aa8447477ec68e7e0a9e0e",
+    "twitch-chat-emotes": "github:night/twitch-chat-emotes#aa5309980a9da6ebd880a0f1915a4071ed4c6461",
     "uglify-save-license": "^0.4.1",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0"

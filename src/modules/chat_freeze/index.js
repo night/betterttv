@@ -2,7 +2,7 @@ const $ = require('jquery');
 const twitch = require('../../utils/twitch');
 const keycodes = require('../../utils/keycodes');
 
-const CHAT_LIST_SELECTOR = '.chat-list';
+const CHAT_LIST_SELECTOR = '.chat-list,.chat-list--default,.chat-list--other';
 const MESSAGES_INDICATOR_SELECTOR = '.chat-paused-footer button[data-a-target="chat-list-footer"]';
 const FREEZE_KEYS = [keycodes.Ctrl, keycodes.Meta];
 
