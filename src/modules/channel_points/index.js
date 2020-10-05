@@ -5,7 +5,7 @@ const domObserver = require('../../observers/dom');
 
 const CLAIM_BUTTON_SELECTOR = '.claimable-bonus__icon';
 
-let channelPointsListener;
+let removeChannelPointsListener;
 
 class ChannelPoints {
     constructor() {
@@ -31,9 +31,9 @@ class ChannelPoints {
 
     toggleAutoClaimBonusPoints() {
         if (settings.get('autoClaimBonusPoints')) {
-            if (channelPointsListener) return;
+            if (removeChannelPointsListener) return;
 
-            channelPointsListener = domObserver.on(
+            removeChannelPointsListener = domObserver.on(
                 CLAIM_BUTTON_SELECTOR,
                 (node, isConnected) => {
                     if (!isConnected) return;
@@ -47,10 +47,10 @@ class ChannelPoints {
             return;
         }
 
-        if (!channelPointsListener) return;
+        if (!removeChannelPointsListener) return;
 
-        channelPointsListener();
-        channelPointsListener = undefined;
+        removeChannelPointsListener();
+        removeChannelPointsListener = undefined;
     }
 
     toggleHideChannelPoints() {
