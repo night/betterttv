@@ -6,7 +6,7 @@ module.exports = watcher => {
     domObserver.on('.tw-mg-b-1', (node, isConnected) => {
         if (!isConnected || !node.parentNode.classList.contains('clips-chat-replay')) return;
         watcher.emit('clips.message', $(node));
-    }, {useParentNode: true});
+    });
 
     twitch.updateCurrentChannel();
 
