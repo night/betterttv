@@ -22,14 +22,14 @@ class ChannelPoints {
             description: 'Hides channel points from the chat UI to reduce clutter',
         });
 
-        this.toggleHideChannelPoints();
-        this.toggleAutoClaimBonusPoints();
-
-        settings.on('changed.hideChannelPoints', this.toggleHideChannelPoints);
-        watcher.on('load.channel', this.autoClaimBonusPoints);
+        this.loadAutoClaimBonusPoints();
+        this.loadHideChannelPoints();
+ 
+        settings.on('changed.autoClaimBonusChannelPoints', () => this.loadAutoClaimBonusPoints());
+        settings.on('changed.hideChannelPoints', () => this.loadHideChannelPoints());
     }
 
-    toggleAutoClaimBonusPoints() {
+    loadAutoClaimBonusPoints() {
         if (settings.get('autoClaimBonusPoints')) {
             if (removeChannelPointsListener) return;
 
@@ -52,7 +52,7 @@ class ChannelPoints {
         removeChannelPointsListener = undefined;
     }
 
-    toggleHideChannelPoints() {
+    loadHideChannelPoints() {
         $('body').toggleClass(
             'bttv-hide-channel-points',
             settings.get('hideChannelPoints')
