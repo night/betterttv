@@ -40,8 +40,7 @@ class ChannelPoints {
                     const $node = $(node);
 
                     $node.click();
-                },
-                {useParentNode: true}
+                }
             );
 
             return;
