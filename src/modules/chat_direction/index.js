@@ -35,11 +35,11 @@ class ChatDirection {
         const scroller = twitch.getChatScroller();
         const reverseChatDirection = settings.get('reverseChatDirection');
         if (!scroller) return;
-        if (reverseChatDirection && scroller.scroll.scrollToTop && scroller.scrollToBottom) {
-            if (oldScrollToBottom !== scroller.scroll.scrollToTop) {
+        if (reverseChatDirection && scroller.scrollRef.scrollToTop && scroller.scrollToBottom) {
+            if (oldScrollToBottom !== scroller.scrollRef.scrollToTop) {
                 oldScrollToBottom = scroller.scrollToBottom;
             }
-            scroller.scrollToBottom = scroller.scroll.scrollToTop;
+            scroller.scrollToBottom = scroller.scrollRef.scrollToTop;
             const scrollContent = $(CHAT_LIST_SCROLL_CONTENT);
             scrollContent.scrollTop(0);
             scrollContent.off('scroll', handleScrollEvent).on('scroll', handleScrollEvent);
