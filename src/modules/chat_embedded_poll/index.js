@@ -4,7 +4,7 @@ const twitch = require('../../utils/twitch');
 const settings = require('../../settings');
 const cdn = require('../../utils/cdn');
 
-const STRAWPOLL_REGEX = /strawpoll\.me\/([0-9]+)/g;
+const STRAWPOLL_REGEX = /strawpoll\.me\/([0-9]+)/;
 
 const pollTemplate = pollId => `
     <div id="bttv-poll-contain">
