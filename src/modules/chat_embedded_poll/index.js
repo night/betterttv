@@ -19,6 +19,9 @@ const pollTemplate = pollId => `
                       fill-rule="evenodd" />
             </svg>
         </div>
+        <div class="poll-time-bar">
+            <div></div>
+        </div>
         <iframe class="frame" src="https://www.strawpoll.me/embed_1/${pollId}"></iframe>
     </div>
 `;
@@ -82,6 +85,7 @@ class ChatEmbeddedPollModule {
         });
         $poll.children('.title').on('click', () => {
             $poll.children('.frame').show();
+            $poll.children('.poll-time-bar').remove();
             $poll.children('.title').text('Thanks!');
             $poll.css('height', '450px');
         });
