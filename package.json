@@ -40,7 +40,7 @@
     "jquery": "^3.5.1",
     "lodash.debounce": "^4.0.8",
     "lodash.throttle": "^4.1.1",
-    "moment": "^2.29.0",
+    "moment": "^2.29.1",
     "postcss-hexrgba": "^2.0.1",
     "postcss-url": "^8.0.0",
     "precss": "^4.0.0",
