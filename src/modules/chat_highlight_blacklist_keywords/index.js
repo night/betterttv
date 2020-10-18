@@ -144,6 +144,10 @@ function messageContainsKeyword(keywords, from, message) {
     return false;
 }
 
+function isReply($message) {
+    return $message.parent().hasClass('chat-input-tray__open');
+}
+
 function messageTextFromAST(ast) {
     return ast.map(node => {
         switch (node.type) {
@@ -233,6 +237,9 @@ class ChatHighlightBlacklistKeywordsModule {
 
         if (fromContainsKeyword(highlightUsers, from) || messageContainsKeyword(highlightKeywords, from, message)) {
             this.markHighlighted($message);
+
+            if (isReply($message)) return;
+
             if (settings.get('highlightFeedback')) {
                 this.handleHighlightSound();
             }
