@@ -28,7 +28,7 @@ class EmotesModule {
         settings.add({
             id: 'bttvGIFEmotes',
             name: 'BetterTTV GIF Emotes',
-            defaultValue: false,
+            defaultValue: true,
             description: 'Adds animated emotes (not everyone likes GIFs, but some people do)'
         });
     }

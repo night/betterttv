@@ -40,7 +40,7 @@ class EmoteMenuModule {
                         text: code,
                         channel: provider.displayName,
                         badge: provider.badge,
-                        url: images['2x']
+                        url: images['2x'] || images['1x']
                     };
                 })
             );

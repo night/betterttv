@@ -76,7 +76,7 @@ class ChatTabcompletionModule {
         if (e.ctrlKey) return;
 
         const $inputField = $(e.target);
-        if (keyCode === keyCodes.Tab) {
+        if (keyCode === keyCodes.Tab && $inputField.val().length > 0) {
             e.preventDefault();
 
             // First time pressing tab, split before and after the word

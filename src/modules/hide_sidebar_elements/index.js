@@ -1,22 +1,10 @@
 const $ = require('jquery');
 const watcher = require('../../watcher');
 const settings = require('../../settings');
-const twitch = require('../../utils/twitch');
+const domObserver = require('../../observers/dom');
 
-$('body').on('click', 'a.side-nav-card__link[data-a-target="followed-channel"]', e => {
-    const currentTarget = e.currentTarget;
-    const router = twitch.getRouter();
-    const userLogin = twitch.getSideNavFollowedUserLogin(currentTarget);
-    if (!userLogin || !router || !router.history) return;
-    const destination = `/${encodeURIComponent(userLogin)}`;
-    if (currentTarget.href === destination) return;
-    if (e.ctrlKey || e.shiftKey || e.metaKey || e.which === 2) {
-        currentTarget.href = destination;
-        return;
-    }
-    e.preventDefault();
-    router.history.push(destination);
-});
+let removeFeaturedChannelsListener;
+let removeOfflineFollowedChannelsListener;
 
 class HideSidebarElementsModule {
     constructor() {
@@ -57,7 +45,21 @@ class HideSidebarElementsModule {
     }
 
     toggleFeaturedChannels() {
-        $('body').toggleClass('bttv-hide-featured-channels', settings.get('hideFeaturedChannels'));
+        if (settings.get('hideFeaturedChannels')) {
+            if (removeFeaturedChannelsListener) return;
+
+            removeFeaturedChannelsListener = domObserver.on('.side-nav-section a[data-test-selector="recommended-channel"], .side-nav-section a[data-test-selector="similarity-channel"], .side-nav-section .tw-svg__asset--navchannels', (node, isConnected) => {
+                if (!isConnected) return;
+                $(node).addClass('bttv-hide-featured-channels');
+            }, {useParentNode: true});
+            return;
+        }
+
+        if (!removeFeaturedChannelsListener) return;
+
+        removeFeaturedChannelsListener();
+        removeFeaturedChannelsListener = undefined;
+        $('.side-nav-section').removeClass('bttv-hide-featured-channels');
     }
 
     toggleAutoExpandChannels() {
@@ -74,7 +76,21 @@ class HideSidebarElementsModule {
     }
 
     toggleOfflineFollowedChannels() {
-        $('body').toggleClass('bttv-hide-followed-offline', settings.get('hideOfflineFollowedChannels'));
+        if (settings.get('hideOfflineFollowedChannels')) {
+            if (removeOfflineFollowedChannelsListener) return;
+
+            removeOfflineFollowedChannelsListener = domObserver.on('.side-nav-card .side-nav-card__avatar--offline', (node, isConnected) => {
+                if (!isConnected) return;
+                $(node).addClass('bttv-hide-followed-offline');
+            }, {useParentNode: true});
+            return;
+        }
+
+        if (!removeOfflineFollowedChannelsListener) return;
+
+        removeOfflineFollowedChannelsListener();
+        removeOfflineFollowedChannelsListener = undefined;
+        $('.side-nav-card').removeClass('bttv-hide-followed-offline');
     }
 }
 

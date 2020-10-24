@@ -7,12 +7,30 @@
         order: 2;
     }
 
-    .side-nav {
+    #sideNav, .side-nav {
         order: 3;
 
         .collapse-toggle {
             transform: rotate(180deg);
         }
+    }
+
+    /* Restore channel content and player size */
+    .channel-root__right-column.channel-root__right-column--expanded:not(.channel-root__right-column--home) {
+        position: relative !important;
+        transform: none !important;
+    }
+
+    .channel-root__right-column.channel-root__right-column--home {
+        display: none !important;
+    }
+
+    .channel-root__player--with-chat {
+        width: 100% !important;
+    }
+
+    .channel-info-content {
+        width: 100% !important;
     }
 
     /* Header overlap with collapseable column */
@@ -78,5 +96,10 @@
     /* flips direction on squad streams */
     .multi-stream-player-layout {
         flex-direction: row-reverse;
+    }
+
+    /* chat settings */
+    div[data-a-target="chat-settings-balloon"] {
+        margin-right: -25.3rem !important;
     }
 }

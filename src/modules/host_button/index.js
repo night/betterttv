@@ -3,12 +3,15 @@ const settings = require('../../settings');
 const watcher = require('../../watcher');
 const twitch = require('../../utils/twitch');
 const tmiApi = require('../../utils/tmi-api');
+const domObserver = require('../../observers/dom');
 
 const SHARE_BUTTON_SELECTOR = 'button[data-a-target="share-button"]';
 const HOST_BUTTON_ID = 'bttv-host-button';
 
 let $hostButton;
 let hosting = false;
+let currentChannelId;
+let removeShareButtonListener;
 
 const buttonTemplate = `
     <div>
@@ -35,25 +38,36 @@ class HostButtonModule {
         if (settings.get('hostButton') === false) return;
 
         const currentUser = twitch.getCurrentUser();
-        const currentChannel = twitch.getCurrentChannel();
-        if (!currentChannel || currentUser.id === currentChannel.id) return;
+        if (!currentUser) return;
 
-        $hostButton = $(buttonTemplate);
-        this.embedHostButton();
-        this.updateHostingState(currentUser.id, currentChannel.id);
+        const currentChannel = twitch.getCurrentChannel();
+        const channelId = currentChannel && currentChannel.id;
+        if (!channelId || currentUser.id === channelId || currentChannelId === channelId) return;
+        currentChannelId = channelId;
+
+        if (!$hostButton) {
+            $hostButton = $(buttonTemplate);
+            $hostButton.find('button').click(() => this.toggleHost());
+        }
+        removeShareButtonListener = domObserver.on('.tw-button-icon', (node, isConnected) => {
+            if (!isConnected || node.getAttribute('data-a-target') !== 'share-button') return;
+            this.embedHostButton();
+        });
+        this.updateHostingState(currentUser.id, channelId);
     }
 
     embedHostButton() {
         if ($(`#${HOST_BUTTON_ID}`).length) return;
-        const $shareButton = $(SHARE_BUTTON_SELECTOR).closest('[data-toggle-balloon-id]').parent('.tw-mg-l-05,.tw-mg-r-1');
+        const $shareButton = $(SHARE_BUTTON_SELECTOR).closest('[data-toggle-balloon-id]').parent('.tw-mg-r-1');
         if (!$shareButton.length) return;
-        $hostButton.toggleClass('tw-mg-l-05', $shareButton.hasClass('tw-mg-l-05')).toggleClass('tw-mg-r-1', $shareButton.hasClass('tw-mg-r-1'));
+        $hostButton.toggleClass('tw-mg-r-1', $shareButton.hasClass('tw-mg-r-1'));
         $hostButton.insertBefore($shareButton);
-        $hostButton.find('button').click(() => this.toggleHost());
     }
 
     toggleHost() {
         const currentUser = twitch.getCurrentUser();
+        if (!currentUser) return;
+
         const command = hosting ? 'unhost' : 'host';
         try {
             const channelName = twitch.getCurrentChannel().name;
@@ -87,8 +101,8 @@ class HostButtonModule {
     }
 
     unload() {
-        if (!$hostButton) return;
-        $hostButton.remove();
+        removeShareButtonListener && removeShareButtonListener();
+        $hostButton && $hostButton.remove();
     }
 }
 

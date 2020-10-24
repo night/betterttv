@@ -12,7 +12,7 @@ const SCROLL_CONTAINER_SELECTOR = '.clips-chat .simplebar-scroll-content';
 
 function parseColor(rgbText) {
     const rgb = ((rgbText || '').split(')')[0].split('rgb(')[1] || '').split(',');
-    const sanitize = c => parseInt((c || '0').trim(), 10);
+    const sanitize = c => parseInt((c.trim() || '0'), 10);
     return {
         r: sanitize(rgb[0]),
         g: sanitize(rgb[1]),
@@ -44,8 +44,12 @@ class ClipsModule {
 
     parseMessage($element) {
         const $from = $element.find(CHAT_USERNAME_SELECTOR);
-        const oldColor = colors.getHex(parseColor($from.css('color')));
-        $from.attr('style', `color: ${chat.calculateColor(oldColor)}`);
+        const $colorSpan = $from.closest('a').closest('span');
+
+        if ($colorSpan.length && $colorSpan.css('color')) {
+            const oldColor = colors.getHex(parseColor($from.css('color')));
+            $colorSpan.attr('style', `color: ${chat.calculateColor(oldColor)}`);
+        }
 
         const mockUser = {name: $from.text()};
         chat.messageReplacer($element.find(CHAT_MESSAGE_SELECTOR), mockUser);

@@ -50,7 +50,7 @@ function handleTimeoutClick(e, messageId) {
         } else if (action.type === ActionTypes.DELETE) {
             twitch.sendChatMessage(`/delete ${messageId}`);
         }
-        if (command) {
+        if (command && user) {
             const reason = e.shiftKey ? setReason(action.type) : '';
             twitch.sendChatMessage(`${command} ${user}${duration ? ` ${duration}` : ''}${reason ? ` ${reason}` : ''}`);
         }
@@ -117,7 +117,7 @@ function openCustomTimeout($target, messageId) {
     if ($(`#${CUSTOM_TIMEOUT_ID}`).length) return;
 
     const $chat = $(CHAT_ROOM_SELECTOR);
-    $chat.append(CUSTOM_TIMEOUT_TEMPLATE);
+    $('body').append(CUSTOM_TIMEOUT_TEMPLATE);
 
     const $customTimeout = $(`#${CUSTOM_TIMEOUT_ID}`);
 

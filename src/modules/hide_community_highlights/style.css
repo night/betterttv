@@ -1,5 +1,3 @@
 .bttv-hide-community-highlights {
-  .community-highlight-stack__card {
-    display: none;
-  }
+  display: none;
 }

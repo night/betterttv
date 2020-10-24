@@ -2,8 +2,8 @@ const $ = require('jquery');
 const twitch = require('../../utils/twitch');
 const keycodes = require('../../utils/keycodes');
 
-const CHAT_LIST_SELECTOR = '.chat-list';
-const MESSAGES_INDICATOR_SELECTOR = '.chat-list div[data-a-target="chat-list-footer"]';
+const CHAT_LIST_SELECTOR = '.chat-list,.chat-list--default,.chat-list--other';
+const MESSAGES_INDICATOR_SELECTOR = '.chat-paused-footer button[data-a-target="chat-list-footer"]';
 const FREEZE_KEYS = [keycodes.Ctrl, keycodes.Meta];
 
 let keysPressed = 0;
@@ -11,9 +11,11 @@ let keysPressed = 0;
 function setScrollState(enabled) {
     const scroller = twitch.getChatScroller();
     if (!scroller) return;
-    scroller.setState({
-        isAutoScrolling: enabled
-    });
+    if (enabled) {
+        scroller.resume();
+    } else {
+        scroller.pause();
+    }
 }
 
 function shouldFreeze(e) {

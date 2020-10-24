@@ -1,9 +1,11 @@
+const $ = require('jquery');
 const twitch = require('../utils/twitch');
-const watcher = require('../watcher');
+const domObserver = require('../observers/dom');
 
 const PATCHED_SYMBOL = Symbol();
 
 let twitchHandleMessage;
+let watcher;
 
 function bttvHandleMessage(message) {
     if (message && typeof message.type === 'number') {
@@ -40,10 +42,32 @@ function patchChatController() {
     twitchHandleMessage = handleMessage;
 }
 
-class ChatMessageHandlerWatcher {
-    constructor() {
-        watcher.on('load.chat', () => patchChatController());
-    }
-}
+module.exports = watcher_ => {
+    watcher = watcher_;
 
-module.exports = new ChatMessageHandlerWatcher();
+    watcher.on('load.chat', () => patchChatController());
+
+    domObserver.on('.viewer-card', (node, isConnected) => {
+        if (!isConnected) {
+            watcher.emit('chat.moderator_card.close');
+            return;
+        }
+
+        watcher.emit('chat.moderator_card.open', $(node));
+    }, {attributes: true});
+
+    domObserver.on('.chat-line__message', (node, isConnected) => {
+        if (!isConnected) return;
+
+        const msgObject = twitch.getChatMessageObject(node);
+        if (!msgObject) return;
+
+        watcher.emit('chat.message', $(node), msgObject);
+    });
+
+    domObserver.on('.vod-message__content,.vod-message', (node, isConnected) => {
+        if (!isConnected) return;
+
+        watcher.emit('vod.message', $(node));
+    });
+};

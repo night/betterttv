@@ -19,7 +19,7 @@ const HIGHLIGHT_KEYWORD_PROMPT = `Type some highlight keywords. Messages contain
 
 Use spaces in the field to specify multiple keywords. Place {} around a set of words to form a phrase, <> inside the {} to use exact search, and () around a single word to specify a username. Wildcards (*) are supported.`;
 
-const CHAT_LIST_SELECTOR = '.chat-list .chat-list__lines,.chat-list .chat-scrollable-area__message-container';
+const CHAT_LIST_SELECTOR = '.chat-list .chat-scrollable-area__message-container,.chat-list--default .chat-scrollable-area__message-container,.chat-list--other .chat-scrollable-area__message-container';
 const VOD_CHAT_FROM_SELECTOR = '.video-chat__message-author';
 const VOD_CHAT_MESSAGE_SELECTOR = 'div[data-test-selector="comment-message-selector"]';
 const VOD_CHAT_MESSAGE_EMOTE_SELECTOR = '.chat-line__message--emote';
@@ -242,7 +242,7 @@ class ChatHighlightBlacklistKeywordsModule {
 
     onVODMessage($message) {
         const $from = $message.find(VOD_CHAT_FROM_SELECTOR);
-        const from = $from.attr('href').split('?')[0].split('/').pop();
+        const from = ($from.attr('href') || '').split('?')[0].split('/').pop();
         const $messageContent = $message.find(VOD_CHAT_MESSAGE_SELECTOR);
         const emotes = Array.from($messageContent.find(VOD_CHAT_MESSAGE_EMOTE_SELECTOR)).map(emote => emote.getAttribute('alt'));
         const messageContent = `${$messageContent.text().replace(/^:/, '')} ${emotes.join(' ')}`;

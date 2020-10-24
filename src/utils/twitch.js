@@ -1,12 +1,10 @@
 const $ = require('jquery');
-const Raven = require('raven-js');
 const twitchAPI = require('./twitch-api');
 
 const REACT_ROOT = '#root div';
-const CHANNEL_CONTAINER = '.channel-page,.channel-root';
 const CHAT_CONTAINER = 'section[data-test-selector="chat-room-component-layout"]';
 const VOD_CHAT_CONTAINER = '.qa-vod-chat';
-const CHAT_LIST = '.chat-list';
+const CHAT_LIST = '.chat-list,.chat-list--default,.chat-list--other';
 const PLAYER = '.video-player__container';
 const CLIPS_BROADCASTER_INFO = '.clips-broadcaster-info';
 const CHAT_MESSAGE_SELECTOR = '.chat-line__message';
@@ -120,11 +118,6 @@ module.exports = {
             name,
             displayName
         };
-
-        Raven.setUserContext({
-            id: currentUser.id,
-            username: currentUser.name
-        });
     },
 
     updateCurrentChannel() {
@@ -180,7 +173,7 @@ module.exports = {
     getConnectStore() {
         let store;
         try {
-            const node = searchReactParents(
+            const node = searchReactChildren(
                 getReactInstance($(REACT_ROOT)[0]),
                 n => n.pendingProps && n.pendingProps.value && n.pendingProps.value.store
             );
@@ -190,30 +183,17 @@ module.exports = {
         return store;
     },
 
-    getRouter() {
-        let router;
-        try {
-            const node = searchReactParents(
-                getReactInstance($(REACT_ROOT)[0]),
-                n => n.stateNode && n.stateNode.props && n.stateNode.props.history && n.stateNode.props.history.listen && n.stateNode.props.history.location
-            );
-            router = node.stateNode.props;
-        } catch (_) {}
-
-        return router;
-    },
-
     getClipsBroadcasterInfo() {
-        let router;
+        let broadcaster;
         try {
             const node = searchReactParents(
                 getReactInstance($(CLIPS_BROADCASTER_INFO)[0]),
                 n => n.stateNode && n.stateNode.props && n.stateNode.props.data && n.stateNode.props.data.clip
             );
-            router = node.stateNode.props.data.clip.broadcaster;
+            broadcaster = node.stateNode.props.data.clip.broadcaster;
         } catch (_) {}
 
-        return router;
+        return broadcaster;
     },
 
     getCurrentPlayer() {
@@ -227,7 +207,7 @@ module.exports = {
             player = node.stateNode.player ? node.stateNode.player.player : node.stateNode.props.mediaPlayerInstance;
         } catch (e) {}
 
-        return player;
+        return player && player.core ? player.core : player;
     },
 
     getChatController() {
@@ -242,19 +222,6 @@ module.exports = {
         } catch (_) {}
 
         return chatContentComponent;
-    },
-
-    getChannelController() {
-        let channelController;
-        try {
-            const node = searchReactParents(
-                getReactInstance($(CHANNEL_CONTAINER)[0]),
-                n => n.stateNode && (n.stateNode.handleHostingChange || n.stateNode.onChatHostingChange)
-            );
-            channelController = node.stateNode;
-        } catch (_) {}
-
-        return channelController;
     },
 
     getChatServiceClient() {
@@ -296,9 +263,9 @@ module.exports = {
     getChatScroller() {
         let chatScroller;
         try {
-            const node = searchReactParents(
+            const node = searchReactChildren(
                 getReactInstance($(CHAT_LIST)[0]),
-                n => n.stateNode && n.stateNode.props && n.stateNode.scroll
+                n => n.stateNode && n.stateNode.props && n.stateNode.scrollRef
             );
             chatScroller = node.stateNode;
         } catch (_) {}
@@ -431,21 +398,6 @@ module.exports = {
         return currentUser.id === currentChannel.id;
     },
 
-    getChannelHostingContext() {
-        let channelHostingContext;
-
-        try {
-            const node = searchReactChildren(
-                getReactInstance($(REACT_ROOT)[0]),
-                n => n.stateNode && n.stateNode.handleStreamChatRoomHostTargetChange,
-                1000
-            );
-            channelHostingContext = node.stateNode;
-        } catch (_) {}
-
-        return channelHostingContext;
-    },
-
     setInputValue($inputField, msg, focus = false) {
         $inputField.val(msg);
         const inputField = $inputField[0];
@@ -477,18 +429,5 @@ module.exports = {
         }
 
         return messages;
-    },
-
-    getSideNavFollowedUserLogin(element) {
-        let userLogin;
-        try {
-            const node = searchReactParents(
-                getReactInstance(element),
-                n => n.stateNode && n.stateNode.props && n.stateNode.props.offline === true && n.stateNode.props.userLogin
-            );
-            userLogin = node.stateNode.props.userLogin;
-        } catch (_) {}
-
-        return userLogin;
     }
 };

@@ -1,7 +1,5 @@
 .bttv-hide-featured-channels {
-  .recommended-channels {
-    display: none;
-  }
+  display: none !important;
 }
 
 .bttv-hide-recommended-friends {
@@ -11,7 +9,5 @@
 }
 
 .bttv-hide-followed-offline {
-  .side-nav-card__link[href*="/videos/"] {
-    display: none !important;
-  }
+  display: none !important;
 }

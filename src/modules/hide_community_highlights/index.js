@@ -1,6 +1,9 @@
 const $ = require('jquery');
 const settings = require('../../settings');
 const watcher = require('../../watcher');
+const domObserver = require('../../observers/dom');
+
+let removeCommunityHighlightsListener;
 
 class HideCommunityHighlightsModule {
     constructor() {
@@ -8,7 +11,7 @@ class HideCommunityHighlightsModule {
             id: 'hideCommunityHighlights',
             name: 'Hide Community Highlights',
             defaultValue: false,
-            description: 'Hides the Community Highlights toast that appears over Twitch chat'
+            description: 'Hides the alerts above chat for hype trains, community chest, etc.'
         });
 
         settings.on('changed.hideCommunityHighlights', this.toggleCommunityHighlights);
@@ -16,10 +19,23 @@ class HideCommunityHighlightsModule {
     }
 
     toggleCommunityHighlights() {
-        $('body').toggleClass(
-            'bttv-hide-community-highlights',
-            settings.get('hideCommunityHighlights')
-        );
+        if (settings.get('hideCommunityHighlights')) {
+            if (removeCommunityHighlightsListener) return;
+
+            removeCommunityHighlightsListener = domObserver.on('.community-highlight-stack__card', (node, isConnected) => {
+                if (!isConnected) return;
+                const $node = $(node);
+                if ($node.find('.channel-poll__more-icon').length > 0) return;
+                $node.addClass('bttv-hide-community-highlights');
+            });
+            return;
+        }
+
+        if (!removeCommunityHighlightsListener) return;
+
+        removeCommunityHighlightsListener();
+        removeCommunityHighlightsListener = undefined;
+        $('.community-highlight-stack__card').removeClass('bttv-hide-community-highlights');
     }
 }
 
