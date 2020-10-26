@@ -42,7 +42,7 @@
     "lodash.throttle": "^4.1.1",
     "moment": "^2.29.1",
     "postcss-hexrgba": "^2.0.1",
-    "postcss-url": "^8.0.0",
+    "postcss-url": "^9.0.0",
     "precss": "^4.0.0",
     "request": "^2.88.2",
     "require-globify": "^1.4.1",
