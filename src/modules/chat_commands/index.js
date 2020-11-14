@@ -15,6 +15,8 @@ const CommandHelp = {
     localasciioff: 'Usage "/localasciioff" - Turns off local ascii-only mode',
     localmod: 'Usage "/localmod" - Turns on local mod-only mode (only your chat is mod-only mode)',
     localmodoff: 'Usage "/localmodoff" - Turns off local mod-only mode',
+    localtextonly: 'Usage: "/localtextonly" - Turns on local text-only mode (only your chat is text only, no emotes)',
+    localtextonlyoff: 'Usage: "/localtextonlyoff" - Turns off local text-only mode',
     localsub: 'Usage "/localsub" - Turns on local sub-only mode (only your chat is sub-only mode)',
     localsuboff: 'Usage "/localsuboff" - Turns off local sub-only mode',
     massunban: 'Usage "/massunban" - Unbans all users in the channel (channel owner only)',
@@ -159,6 +161,12 @@ function handleCommands(message) {
             const modsOnly = !command.endsWith('off');
             chat.modsOnly(modsOnly);
             twitch.sendChatAdminMessage(`Local mods-only mode ${modsOnly ? 'enabled' : 'disabled'}.`);
+            break;
+        case 'localtextonly':
+        case 'localtextonlyoff':
+            const textOnly = !command.endsWith('off');
+            chat.textOnly(textOnly);
+            twitch.sendChatAdminMessage(`Local text-only mode ${textOnly ? 'enabled' : 'disabled'}.`);
             break;
         case 'localsub':
         case 'localsuboff':

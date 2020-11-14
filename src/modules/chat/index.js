@@ -44,12 +44,29 @@ const globalBots = ['nightbot', 'moobot'];
 let channelBots = [];
 let asciiOnly = false;
 let subsOnly = false;
+let textOnly = false;
 let modsOnly = false;
 
 function hasNonASCII(message) {
     for (let i = 0; i < message.length; i++) {
         if (message.charCodeAt(i) > 128) return true;
     }
+    return false;
+}
+
+function hasNonText(message) {
+    // TODO: How do we determine if the message is not plain text?
+    /*
+    previous PR did this in src/modules/chat_highlight_blacklist_keywords/index.js :
+
+        function (ast) {
+            return ast.some(node => {
+            return (node.type === 0 && node.content.trim().length > 0) || node.type === 5;
+            });
+        }
+
+    */
+    if (message) {}
     return false;
 }
 
@@ -110,6 +127,10 @@ class ChatModule {
         subsOnly = enabled;
     }
 
+    textOnly(enabled) {
+        textOnly = enabled;
+    }
+
     modsOnly(enabled) {
         modsOnly = enabled;
     }
@@ -120,11 +141,13 @@ class ChatModule {
         for (let i = 0; i < tokens.length; i++) {
             const node = tokens[i];
             let $emote;
+            let foundEmote;
             // non-chat renders have a wrapper element
             if (node.nodeType === window.Node.ELEMENT_NODE && node.classList.contains('tw-tooltip-wrapper')) {
                 const $emoteTooltip = $(node);
                 $emote = $emoteTooltip.find('.chat-line__message--emote');
                 if ($emote.length) {
+                    foundEmote = true;
                     continue;
                 }
             }
@@ -165,12 +188,18 @@ class ChatModule {
                 const emote = emotes.getEligibleEmote(part, user) || emotes.getEligibleEmote(part.replace(EMOTE_STRIP_SYMBOLS_REGEX, ''), user);
                 if (emote) {
                     parts[j] = (EMOTES_TO_CAP.includes(emote.id) && ++cappedEmoteCount > MAX_EMOTES_WHEN_CAPPED) ? '' : emote.toHTML();
+                    foundEmote = true;
                     modified = true;
                     continue;
                 }
 
                 // escape all non-emotes since html strings would be rendered as html
                 parts[j] = html.escape(parts[j]);
+            }
+
+            if (foundEmote && textOnly) {
+                node.parentNode.removeChild(node);
+                return;
             }
 
             if (modified) {
@@ -215,7 +244,8 @@ class ChatModule {
         if (
             (modsOnly === true && !user.mod) ||
             (subsOnly === true && !user.subscriber) ||
-            (asciiOnly === true && hasNonASCII(messageObj.message))
+            (asciiOnly === true && hasNonASCII(messageObj.message)) ||
+            (textOnly === true && hasNonText(messageObj.message))
         ) {
             $element.hide();
         }
