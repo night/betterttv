@@ -34,7 +34,7 @@
     "gulp-if": "^3.0.0",
     "gulp-postcss": "^8.0.0",
     "gulp-rename": "^2.0.0",
-    "gulp-sourcemaps": "^2.6.5",
+    "gulp-sourcemaps": "^3.0.0",
     "gulp-tar": "^3.1.0",
     "gulp-uglify": "^3.0.2",
     "jquery": "^3.5.1",
