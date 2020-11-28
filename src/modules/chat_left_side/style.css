@@ -29,6 +29,10 @@
         width: 100% !important;
     }
 
+    .channel-root--watch-chat+.persistent-player {
+        width: 100%;
+    }
+
     .channel-info-content {
         width: 100% !important;
     }
