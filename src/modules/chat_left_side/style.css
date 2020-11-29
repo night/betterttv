@@ -79,6 +79,10 @@
         right: 0;
     }
 
+    .channel-root--watch-chat + .persistent-player {
+        width: 100%;
+    }
+
     .right-column--theatre {
         right: unset !important;
     }
