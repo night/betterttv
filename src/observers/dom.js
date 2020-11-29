@@ -6,6 +6,7 @@ let observer;
 const observedIds = Object.create(null);
 const observedClassNames = Object.create(null);
 const observedTestSelectors = Object.create(null);
+const observedAriaSelectors = Object.create(null);
 const attributeObservers = new Map();
 
 function parseSelector(selector) {
@@ -13,6 +14,7 @@ function parseSelector(selector) {
     const ids = [];
     const classNames = [];
     const testSelectors = [];
+    const ariaSelectors = [];
     for (const partialSelector of partialSelectors) {
         if (partialSelector.startsWith('#')) {
             ids.push({
@@ -29,12 +31,18 @@ function parseSelector(selector) {
                 key: partialSelector.split(' ')[0].split('[data-test-selector="')[1].split('"]')[0],
                 partialSelector
             });
+        } else if (partialSelector.includes('[aria-label')) {
+            ariaSelectors.push({
+                key: partialSelector.split('[aria-label="')[1].split('"]')[0],
+                partialSelector
+            });
         }
     }
     return {
         ids,
         classNames,
-        testSelectors
+        testSelectors,
+        ariaSelectors
     };
 }
 
@@ -63,7 +71,7 @@ function processObservedResults(emitter, node, results) {
 
     for (const observedType of results) {
         const {partialSelector, selector, options} = observedType;
-        const foundNode = partialSelector.includes(' ') ? node.querySelector(selector) : node;
+        const foundNode = partialSelector.split('[')[0].includes(' ') ? node.querySelector(selector) : node;
         if (!foundNode) {
             continue;
         }
@@ -98,6 +106,12 @@ function processMutations(emitter, nodes) {
         if (typeof testSelector === 'string' && testSelector.length > 0) {
             testSelector = testSelector.trim();
             processObservedResults(emitter, node, observedTestSelectors[testSelector]);
+        }
+
+        let ariaSelector = node.getAttribute('aria-label');
+        if (typeof ariaSelector === 'string' && ariaSelector.length > 0) {
+            ariaSelector = ariaSelector.trim();
+            processObservedResults(emitter, node, observedAriaSelectors[ariaSelector]);
         }
 
         const nodeClassList = node.classList;
@@ -165,6 +179,9 @@ class DOMObserver extends SafeEventEmitter {
                 case 'testSelectors':
                     observedSelectorType = observedTestSelectors;
                     break;
+                case 'ariaSelectors':
+                    observedSelectorType = observedAriaSelectors;
+                    break;
             }
 
             for (const {key, partialSelector} of parsedSelector[selectorType]) {
@@ -217,6 +234,9 @@ class DOMObserver extends SafeEventEmitter {
                     break;
                 case 'testSelectors':
                     observedSelectorType = observedTestSelectors;
+                    break;
+                case 'ariaSelectors':
+                    observedSelectorType = observedAriaSelectors;
                     break;
             }
 
