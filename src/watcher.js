@@ -11,6 +11,7 @@ class Watcher extends SafeEventEmitter {
             require('./watchers/clips')(this);
         } else {
             require('./watchers/chat')(this);
+            require('./watchers/reward')(this);
             require('./watchers/conversations')(this);
             require('./watchers/routes')(this);
         }
