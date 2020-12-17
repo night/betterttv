@@ -10,7 +10,7 @@ const CANCEL_VOD_RECOMMENDATION_SELECTOR = '.recommendations-overlay .pl-rec__ca
 const BTTV_PICTURE_IN_PICTURE_SELECTOR = '#bttv-picture-in-picture';
 
 const getPictureInPictureTemplate = toggled => `
-    <div id="bttv-picture-in-picture" class="tw-inline-flex tw-relative tw-tooltip-wrapper">
+    <div id="bttv-picture-in-picture" class="tw-inline-flex tw-relative tw-tooltip__container">
         <button class="tw-align-items-center tw-align-middle tw-border-bottom-left-radius-medium tw-border-bottom-right-radius-medium tw-border-top-left-radius-medium tw-border-top-right-radius-medium tw-button-icon tw-button-icon--overlay tw-core-button tw-core-button--overlay tw-inline-flex tw-interactive tw-justify-content-center tw-overflow-hidden tw-relative" aria-label="Picture in Picture">
             <span class="tw-button-icon__icon">
                 <div style="width: 2rem; height: 2rem;">

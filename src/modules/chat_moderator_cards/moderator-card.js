@@ -30,7 +30,7 @@ const MODERATOR_CARD_ACTIONS_SELECTOR = 'button[data-test-selector="ban-button"]
 const CHAT_INPUT_SELECTOR = 'textarea[data-a-target="chat-input"]';
 
 const moderatorActionButtonTemplate = (command, duration, tooltipText, buttonText) => `
-    <div class="tw-tooltip-wrapper tw-inline-flex">
+    <div class="tw-tooltip__container tw-inline-flex">
         <div class="bttv-moderator-card-action" data-command="${html.escape(command)}" data-duration="${html.escape(duration) || ''}">
             <button class="tw-button__text">
                 ${html.escape(buttonText)}
