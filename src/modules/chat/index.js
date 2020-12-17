@@ -18,7 +18,7 @@ const EMOTES_TO_CAP = ['567b5b520e984428652809b6'];
 const MAX_EMOTES_WHEN_CAPPED = 10;
 
 const badgeTemplate = (url, description) => `
-    <div class="tw-tooltip-wrapper tw-inline tw-relative">
+    <div class="tw-tooltip__container tw-inline tw-relative">
         <img alt="Moderator" class="chat-badge bttv-chat-badge" src="${url}" alt="" srcset="" data-a-target="chat-badge">
         <div class="tw-tooltip tw-tooltip--up tw-tooltip--align-left" data-a-target="tw-tooltip-label" style="margin-bottom: 0.9rem;">${description}</div>
     </div>
@@ -121,7 +121,7 @@ class ChatModule {
             const node = tokens[i];
             let $emote;
             // non-chat renders have a wrapper element
-            if (node.nodeType === window.Node.ELEMENT_NODE && node.classList.contains('tw-tooltip-wrapper')) {
+            if (node.nodeType === window.Node.ELEMENT_NODE && node.classList.contains('tw-tooltip__container')) {
                 const $emoteTooltip = $(node);
                 $emote = $emoteTooltip.find('.chat-line__message--emote');
                 if ($emote.length) {
@@ -210,7 +210,7 @@ class ChatModule {
             $element.css('color', color);
         }
 
-        const $message = $element.find('span[data-a-target="chat-message-text"],div.tw-tooltip-wrapper');
+        const $message = $element.find('span[data-a-target="chat-message-text"],div.tw-tooltip__container');
 
         if (
             (modsOnly === true && !user.mod) ||
