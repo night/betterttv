@@ -1,3 +1,15 @@
+@media only screen and (min-width: 1920px) {
+  .bttv-host-button {
+    width: 160px;
+  }
+}
+
+@media only screen and (min-width: 1366px) and (max-width: 1919px) {
+  .bttv-host-button {
+    width: 130px;
+  }
+}
+
 .bttv-host-button {
   background: #efeef1 !important;
   margin-bottom: 10px;

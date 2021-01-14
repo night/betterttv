@@ -16,7 +16,7 @@ let removeShareButtonListener;
 const buttonTemplate = `
     <div>
         <button id="${HOST_BUTTON_ID}" class="tw-button tw-button--secondary">
-            <span class="tw-button__text">Host Channel</span>
+            <span class="tw-button__text">Host This Channel</span>
         </button>
     </div>
 `;
@@ -96,7 +96,7 @@ class HostButtonModule {
     }
 
     updateHostButtonText() {
-        const text = hosting ? 'Unhost Channel' : 'Host Channel';
+        const text = hosting ? 'Unhost Channel' : 'Host This Channel';
         $hostButton.find('span').text(text);
     }
 
