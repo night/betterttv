@@ -21,7 +21,7 @@
     "browserify": "^17.0.0",
     "cookies-js": "^1.2.3",
     "del": "^6.0.0",
-    "emojilib": "^2.4.0",
+    "emojilib": "^3.0.0",
     "envify": "^4.1.0",
     "git-rev-sync": "^3.0.1",
     "gulp": "^4.0.2",
