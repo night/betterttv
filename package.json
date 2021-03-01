@@ -12,7 +12,7 @@
     "url": "https://github.com/night/BetterTTV.git"
   },
   "dependencies": {
-    "@babel/core": "^7.12.17",
+    "@babel/core": "^7.13.8",
     "@babel/plugin-transform-runtime": "^7.13.8",
     "@babel/preset-env": "^7.13.8",
     "@babel/runtime": "^7.13.8",
