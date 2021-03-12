@@ -364,9 +364,10 @@ module.exports = {
     getChatModeratorCardProps(element) {
         let apolloComponent;
         try {
-            const node = searchReactParents(
+            const node = searchReactChildren(
                 getReactInstance(element),
-                n => n.stateNode && n.stateNode.props && n.stateNode.props.data
+                n => n.stateNode && n.stateNode.props && n.stateNode.props.data,
+                30
             );
             apolloComponent = node.stateNode.props;
         } catch (_) {}
