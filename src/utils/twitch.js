@@ -369,10 +369,10 @@ module.exports = {
                 n => n.stateNode && n.stateNode.props && n.stateNode.props.targetID,
                 20
             );
+            apolloComponent = node.stateNode.props;
             if (!apolloComponent.data) {
                 apolloComponent.data = {targetUser: {id: apolloComponent.targetID, login: apolloComponent.friendData.user.login}};
             }
-            apolloComponent = node.stateNode.props;
         } catch (_) {}
 
         return apolloComponent;
