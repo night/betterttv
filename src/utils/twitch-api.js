@@ -34,10 +34,14 @@ module.exports = {
         accessToken = newAccessToken;
     },
 
-    graphqlQuery(query) {
+    graphqlQuery(query, variables) {
+        const body = {query};
+        if (variables) {
+            body.variables = variables;
+        }
         return request('POST', null, {
             url: GQL_ENDPOINT,
-            body: {query},
+            body,
             auth: true
         });
     },

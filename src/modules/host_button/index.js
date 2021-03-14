@@ -2,7 +2,7 @@ const $ = require('jquery');
 const settings = require('../../settings');
 const watcher = require('../../watcher');
 const twitch = require('../../utils/twitch');
-const tmiApi = require('../../utils/tmi-api');
+const twitchAPI = require('../../utils/twitch-api');
 const domObserver = require('../../observers/dom');
 
 const SHARE_BUTTON_SELECTOR = 'button[data-a-target="share-button"]';
@@ -85,14 +85,20 @@ class HostButtonModule {
     }
 
     updateHostingState(userId, channelId) {
-        return tmiApi.get('hosts', {qs: {host: userId}})
-            .then(({hosts}) => {
-                if (!Array.isArray(hosts) || !hosts.length) return;
-                const host = hosts[0];
-                if (!host || !host.target_id) return;
-                hosting = host.target_id.toString() === channelId;
-                this.updateHostButtonText();
-            });
+        const query = `
+            query ChannelHosting {
+                currentUser {
+                    hosting {
+                        id
+                    }
+                }
+            }
+        `;
+
+        return twitchAPI.graphqlQuery(query).then(({data: {currentUser: {hosting: {id: targetId}}}}) => {
+            hosting = targetId.toString() === channelId;
+            this.updateHostButtonText();
+        });
     }
 
     updateHostButtonText() {

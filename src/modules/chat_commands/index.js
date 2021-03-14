@@ -1,7 +1,6 @@
 const moment = require('moment');
 const twitch = require('../../utils/twitch');
 const twitchAPI = require('../../utils/twitch-api');
-const tmiAPI = require('../../utils/tmi-api');
 const chat = require('../chat');
 const anonChat = require('../anon_chat');
 
@@ -179,11 +178,22 @@ function handleCommands(message) {
             command === 'join' ? anonChat.join() : anonChat.part();
             break;
 
-        case 'chatters':
-            tmiAPI.get(`group/user/${channel.name}/chatters`)
-                .then(({chatter_count: chatterCount}) => twitch.sendChatAdminMessage(`Current Chatters: ${chatterCount.toLocaleString()}`))
+        case 'chatters': {
+            const query = `
+                query ChatViewers($name: String!) {
+                    channel(name: $name) {
+                        chatters {
+                            count
+                        }
+                    }
+                }
+            `;
+
+            twitchAPI.graphqlQuery(query, {name: channel.name})
+                .then(({data: {channel: {chatters: {count}}}}) => twitch.sendChatAdminMessage(`Current Chatters: ${count.toLocaleString()}`))
                 .catch(() => twitch.sendChatAdminMessage('Could not fetch chatter count.'));
             break;
+        }
         case 'followed':
             const currentUser = twitch.getCurrentUser();
             if (!currentUser) break;
