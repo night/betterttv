@@ -6,3 +6,13 @@
     display: none;
   }
 }
+
+.bttv-chat-settings button {
+  color: inherit;
+
+  &:hover {
+    color: inherit;
+    text-decoration: none;
+    background-color: var(--color-background-interactable-hover);
+  }
+}
