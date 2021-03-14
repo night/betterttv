@@ -48,7 +48,7 @@ class HideSidebarElementsModule {
         if (settings.get('hideFeaturedChannels')) {
             if (removeFeaturedChannelsListener) return;
 
-            removeFeaturedChannelsListener = domObserver.on('.side-nav-section a[data-test-selector="recommended-channel"], .side-nav-section a[data-test-selector="similarity-channel"], .side-nav-section .tw-svg__asset--navchannels', (node, isConnected) => {
+            removeFeaturedChannelsListener = domObserver.on('.side-nav-section a[data-test-selector="recommended-channel"], .side-nav-section a[data-test-selector="similarity-channel"], .side-nav-section .tw-svg__asset--navchannels, .side-nav-section a[data-test-selector="popular-channel"]', (node, isConnected) => {
                 if (!isConnected) return;
                 $(node).addClass('bttv-hide-featured-channels');
             }, {useParentNode: true});
