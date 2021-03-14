@@ -21,7 +21,6 @@
     "browserify": "^17.0.0",
     "cookies-js": "^1.2.3",
     "del": "^6.0.0",
-    "emojilib": "^2.4.0",
     "envify": "^4.1.0",
     "git-rev-sync": "^3.0.1",
     "gulp": "^4.0.2",
@@ -32,6 +31,7 @@
     "gulp-gzip": "^1.4.2",
     "gulp-header": "^2.0.9",
     "gulp-if": "^3.0.0",
+    "gulp-json-transform": "^0.4.7",
     "gulp-postcss": "^9.0.0",
     "gulp-rename": "^2.0.0",
     "gulp-sourcemaps": "^3.0.0",
@@ -50,6 +50,7 @@
     "twemoji": "^13.0.1",
     "twitch-chat-emotes": "github:night/twitch-chat-emotes#aa5309980a9da6ebd880a0f1915a4071ed4c6461",
     "uglify-save-license": "^0.4.1",
+    "unicode-emoji-json": "^0.2.1",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0"
   },

@@ -21,6 +21,7 @@ const source = require('vinyl-source-stream');
 const sourcemaps = require('gulp-sourcemaps');
 const tar = require('gulp-tar');
 const uglify = require('gulp-uglify');
+const jsonTransform = require('gulp-json-transform');
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 const IS_PROD = process.env.NODE_ENV === 'production';
@@ -53,7 +54,6 @@ const license = () => src('build/index.js')
     .pipe(header(LICENSE + '\n'))
     .pipe(dest('build'));
 
-
 const css = () => src('src/**/*.css')
     .pipe(postcss([
         precss,
@@ -64,6 +64,18 @@ const css = () => src('src/**/*.css')
     .pipe(concat('betterttv.css'))
     .pipe(dest('build'));
 
+const emojisBySlug = () => src('node_modules/unicode-emoji-json/data-by-emoji.json')
+    .pipe(jsonTransform(emojis => {
+        const result = {};
+        for (const char of Object.keys(emojis)) {
+            const data = emojis[char];
+            data.char = char;
+            result[data.slug] = data;
+        }
+        return result;
+    }))
+    .pipe(rename('emojis-by-slug.json'))
+    .pipe(dest('build/modules/emotes'));
 
 const scripts = () => browserify('build/index.js', {debug: true})
     .transform('require-globify')
@@ -92,6 +104,7 @@ const dist = () => src('build/**/*')
 const build = series(
     parallel(cleanup, lint),
     prepare,
+    emojisBySlug,
     parallel(license, css),
     scripts
 );

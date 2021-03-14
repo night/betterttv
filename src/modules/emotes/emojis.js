@@ -1,10 +1,10 @@
-const emojilib = require('emojilib');
 const twemoji = require('twemoji');
 const blacklistedEmoji = require('../../utils/emoji-blacklist');
 const cdn = require('../../utils/cdn');
 
 const AbstractEmotes = require('./abstract-emotes');
 const Emote = require('./emote');
+const emojiBySlug = require('./emojis-by-slug.json');
 
 const provider = {
     id: 'bttv-emoji',
@@ -32,17 +32,9 @@ class Emojis extends AbstractEmotes {
     }
 
     loadEmojis() {
-        Object.keys(emojilib.lib)
-            .filter(key => {
-                const emoji = emojilib.lib[key];
-                if (!emoji || !emoji.char) return false;
-                const emojiCount = countEmojis(emoji);
-                return blacklistedEmoji.indexOf(emoji.char) === -1 &&
-                    emoji.category !== '_custom' &&
-                    emojiCount === 1;
-            })
-            .forEach((key, id) => {
-                const emoji = emojilib.lib[key];
+        Object.values(emojiBySlug)
+            .filter(emoji => blacklistedEmoji.indexOf(emoji.char) === -1 && countEmojis(emoji) === 1)
+            .forEach((emoji, index) => {
                 let url;
 
                 twemoji.parse(emoji.char, {
@@ -62,9 +54,9 @@ class Emojis extends AbstractEmotes {
 
                 if (!url) return;
 
-                const code = `:${key}:`;
+                const code = `:${emoji.slug}:`;
                 const emote = new Emote({
-                    id,
+                    id: index,
                     provider: this.provider,
                     code,
                     images: {
@@ -80,9 +72,8 @@ class Emojis extends AbstractEmotes {
     onSendMessage(sendState) {
         sendState.message = sendState.message.split(' ').map(piece => {
             if (piece.charAt(0) !== ':' || piece.charAt(piece.length - 1) !== ':') return piece;
-            const emoji = emojilib.ordered[emojilib.ordered.indexOf(piece.replace(/:/g, ''))];
-            if (!emoji || !emojilib.lib[emoji]) return piece;
-            return emojilib.lib[emoji].char;
+            const emoji = emojiBySlug[piece.replace(/:/g, '')];
+            return emoji ? emoji.char : piece;
         }).join(' ');
     }
 }
