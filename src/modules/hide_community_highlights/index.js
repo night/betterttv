@@ -26,6 +26,7 @@ class HideCommunityHighlightsModule {
                 if (!isConnected) return;
                 const $node = $(node);
                 if ($node.find('.channel-poll__more-icon').length > 0) return;
+                if ($node.find('button[data-test-selector="community-prediction-highlight-header__action-button"]')) return;
                 $node.addClass('bttv-hide-community-highlights');
             });
             return;
