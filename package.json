@@ -47,7 +47,7 @@
     "precss": "^4.0.0",
     "request": "^2.88.2",
     "require-globify": "^1.4.1",
-    "twemoji": "^13.0.1",
+    "twemoji": "^13.0.2",
     "twitch-chat-emotes": "github:night/twitch-chat-emotes#98a654dbda98c43d967145bacd67029a7a6d9a78",
     "uglify-save-license": "^0.4.1",
     "unicode-emoji-json": "^0.2.1",
