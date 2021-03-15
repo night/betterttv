@@ -91,6 +91,11 @@
         z-index: 1000 !important;
     }
 
+    /* order overrides z-index when auto on Firefox, which breaks the settings popout */
+    .right-column {
+        z-index: 3 !important;
+    }
+
     /* Subscriber balloons on channel page */
     .chat-input div.tw-balloon[data-a-target="sub-balloon"] {
         left: auto !important;
