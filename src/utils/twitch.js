@@ -361,17 +361,39 @@ module.exports = {
         return msgObject;
     },
 
-    getChatModeratorCardProps(element) {
-        let apolloComponent;
+    getChatModeratorCardUser(element) {
+        let user;
         try {
-            const node = searchReactParents(
+            const node = searchReactChildren(
                 getReactInstance(element),
-                n => n.stateNode && n.stateNode.props && n.stateNode.props.data
+                n => n.stateNode && n.stateNode.props && n.stateNode.props.targetUserID && n.stateNode.props.targetLogin,
+                20
             );
-            apolloComponent = node.stateNode.props;
+            const props = node.stateNode.props;
+            user = {
+                id: props.targetUserID,
+                login: props.targetLogin,
+                displayName: props.targetDisplayName || props.targetLogin,
+            };
         } catch (_) {}
 
-        return apolloComponent;
+        if (!user) {
+            try {
+                const node = searchReactParents(
+                    getReactInstance(element),
+                    n => n.stateNode && n.stateNode.props && n.stateNode.props.channelID && n.stateNode.props.channelLogin && n.stateNode.props.targetLogin && n.stateNode.props.channelLogin === n.stateNode.props.targetLogin,
+                    20
+                );
+                const props = node.stateNode.props;
+                user = {
+                    id: props.channelID,
+                    login: props.channelLogin,
+                    displayName: props.channelDisplayName || props.channelLogin,
+                };
+            } catch (_) {}
+        }
+
+        return user;
     },
 
     getUserIsModeratorFromTagsBadges(badges) {

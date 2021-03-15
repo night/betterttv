@@ -13,53 +13,36 @@ class ChatModeratorCardsModule {
     }
 
     onOpen($element) {
-        const props = twitch.getChatModeratorCardProps($element[0]);
-        if (!props) return;
+        const targetUser = twitch.getChatModeratorCardUser($element[0]);
+        if (!targetUser) return;
 
-        const {data} = props;
-
-        let dataFetcher;
-        if (data.targetUser) {
-            dataFetcher = Promise.resolve(data.targetUser);
-        } else {
-            dataFetcher = props.data.refetch().then(({data: {targetUser}}) => {
-                if (!targetUser) {
-                    return Promise.reject('no target user in data');
-                }
-
-                return targetUser;
-            });
+        if (openModeratorCard && openModeratorCard.user.id === targetUser.id) {
+            return;
         }
 
-        dataFetcher.then(targetUser => {
-            if (openModeratorCard && openModeratorCard.user.id === targetUser.id) {
-                return;
-            }
+        this.onClose();
 
-            this.onClose();
+        let isOwner = false;
+        let isModerator = false;
+        const userMessages = twitch.getChatMessages(targetUser.login);
+        if (userMessages.length) {
+            const {message} = userMessages[userMessages.length - 1];
+            isOwner = twitch.getUserIsOwnerFromTagsBadges(message.badges);
+            isModerator = twitch.getUserIsModeratorFromTagsBadges(message.badges);
+        }
 
-            let isOwner = false;
-            let isModerator = false;
-            const userMessages = twitch.getChatMessages(targetUser.login);
-            if (userMessages.length) {
-                const {message} = userMessages[userMessages.length - 1];
-                isOwner = twitch.getUserIsOwnerFromTagsBadges(message.badges);
-                isModerator = twitch.getUserIsModeratorFromTagsBadges(message.badges);
-            }
-
-            openModeratorCard = new ModeratorCard(
-                $element,
-                {
-                    id: targetUser.id,
-                    name: targetUser.login,
-                    isOwner,
-                    isModerator
-                },
-                userMessages,
-                () => this.onClose(false)
-            );
-            openModeratorCard.render();
-        });
+        openModeratorCard = new ModeratorCard(
+            $element,
+            {
+                id: targetUser.id,
+                name: targetUser.login,
+                isOwner,
+                isModerator
+            },
+            userMessages,
+            () => this.onClose(false)
+        );
+        openModeratorCard.render();
     }
 
     onClose(cleanup = true) {
