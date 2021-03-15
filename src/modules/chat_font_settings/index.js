@@ -27,7 +27,7 @@ function changeFontSetting(promptBody, storageID) {
 
 const styleTemplate = (fontFamily, fontSize) => `
 section[data-test-selector="chat-room-component-layout"] .chat-scrollable-area__message-container,
-.whispers .thread-message__message {
+.whispers .thread-message__message, .video-chat__message {
     font-family: ${fontFamily ? encodeFontFamily(fontFamily) : 'inherit'} !important;
     font-size: ${fontSize ? `${html.escape(fontSize)}px` : 'inherit'} !important;
     line-height: ${fontSize ? `${html.escape((+fontSize + (fontSize * 0.66)).toFixed(2))}px` : 'inherit'} !important;
