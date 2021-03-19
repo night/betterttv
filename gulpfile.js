@@ -35,6 +35,23 @@ process.env.GIT_REV = git.long();
 process.env.SENTRY_URL = process.env.SENTRY_URL || 'https://24dfd2854f97465da5fb14fcea77278c@sentry.io/144851';
 process.env.CDN_ENDPOINT = IS_PROD ? process.env.PROD_CDN_ENDPOINT : process.env.DEV_CDN_ENDPOINT;
 
+function convertEmojiToolkitCodePointToChar(codePoint) {
+    if (codePoint.includes('-')) {
+        return codePoint.split('-')
+            .map(subCodePoint => convertEmojiToolkitCodePointToChar(subCodePoint))
+            .join('');
+    }
+
+    const charCode = parseInt(codePoint, 16);
+    if (charCode >= 0x10000 && charCode <= 0x10FFFF) {
+        const high = Math.floor((charCode - 0x10000) / 0x400) + 0xD800;
+        const low = ((charCode - 0x10000) % 0x400) + 0xDC00;
+        return (String.fromCharCode(high) + String.fromCharCode(low));
+    }
+
+    return String.fromCharCode(charCode);
+}
+
 const LICENSE = `/** @license
  * ${fs.readFileSync('LICENSE').toString().replace(/\n/g, '\n * ')}
  */
@@ -64,13 +81,19 @@ const css = () => src('src/**/*.css')
     .pipe(concat('betterttv.css'))
     .pipe(dest('build'));
 
-const emojisBySlug = () => src('node_modules/unicode-emoji-json/data-by-emoji.json')
+const emojisBySlug = () => src('node_modules/emoji-toolkit/emoji.json')
     .pipe(jsonTransform(emojis => {
         const result = {};
-        for (const char of Object.keys(emojis)) {
-            const data = emojis[char];
-            data.char = char;
+        for (const emojiData of Object.values(emojis)) {
+            const char = convertEmojiToolkitCodePointToChar(emojiData.code_points.fully_qualified);
+            const data = {
+                char,
+                slug: emojiData.shortname.replace(/:/g, ''),
+            };
             result[data.slug] = data;
+            for (const alternativeShortName of emojiData.shortname_alternates) {
+                result[alternativeShortName.replace(/:/g, '')] = data;
+            }
         }
         return result;
     }))
