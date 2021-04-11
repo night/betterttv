@@ -163,7 +163,7 @@ function getHex(color) {
     return '#' + convert(color.r) + convert(color.g) + convert(color.b);
 }
 
-module.exports = {
+export default {
     rgbToHsl,
     hslToRgb,
     calculateColorBackground,

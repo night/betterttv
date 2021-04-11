@@ -1,6 +1,6 @@
-const api = require('../utils/api');
-const debug = require('../utils/debug');
-const twitch = require('../utils/twitch');
+import api from '../utils/api';
+import debug from '../utils/debug';
+import twitch from '../utils/twitch';
 
 let channel;
 let watcher;
@@ -22,7 +22,7 @@ function updateChannel() {
         .then(data => watcher.emit('channel.updated', data));
 }
 
-module.exports = watcher_ => {
+export default function (watcher_) {
     watcher = watcher_;
 
     watcher.on('load.channel', updateChannel);

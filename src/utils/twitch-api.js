@@ -1,5 +1,5 @@
-const $ = require('jquery');
-const querystring = require('querystring');
+import $ from 'jquery';
+import querystring from 'querystring';
 
 const API_ENDPOINT = 'https://api.twitch.tv/v5/';
 const GQL_ENDPOINT = 'https://gql.twitch.tv/gql';
@@ -29,7 +29,7 @@ function request(method, path, options = {}) {
     });
 }
 
-module.exports = {
+export default {
     setAccessToken(newAccessToken) {
         accessToken = newAccessToken;
     },

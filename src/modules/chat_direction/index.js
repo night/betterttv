@@ -1,7 +1,7 @@
-const $ = require('jquery');
-const settings = require('../../settings');
-const watcher = require('../../watcher');
-const twitch = require('../../utils/twitch');
+import $ from 'jquery';
+import settings from '../../settings';
+import watcher from '../../watcher';
+import twitch from '../../utils/twitch';
 
 const CHAT_LIST_SCROLL_CONTENT = '.chat-list .simplebar-scroll-content,.chat-list--default .simplebar-scroll-content,.chat-list--other .simplebar-scroll-content';
 
@@ -54,4 +54,4 @@ class ChatDirection {
     }
 }
 
-module.exports = new ChatDirection();
+export default new ChatDirection();

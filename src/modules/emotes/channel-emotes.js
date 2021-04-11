@@ -1,9 +1,9 @@
-const watcher = require('../../watcher');
-const cdn = require('../../utils/cdn');
-const twitch = require('../../utils/twitch');
+import watcher from '../../watcher';
+import cdn from '../../utils/cdn';
+import twitch from '../../utils/twitch';
 
-const AbstractEmotes = require('./abstract-emotes');
-const Emote = require('./emote');
+import AbstractEmotes from './abstract-emotes';
+import Emote from './emote';
 
 const provider = {
     id: 'bttv-channel',
@@ -47,4 +47,4 @@ class ChannelEmotes extends AbstractEmotes {
     }
 }
 
-module.exports = new ChannelEmotes();
+export default new ChannelEmotes();

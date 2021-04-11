@@ -1,11 +1,11 @@
-const twitch = require('../../utils/twitch');
-const globalEmotes = require('./global-emotes');
-const channelEmotes = require('./channel-emotes');
-const personalEmotes = require('./personal-emotes');
-const emojis = require('./emojis');
-const frankerfacezGlobalEmotes = require('../frankerfacez/global-emotes');
-const frankerfacezChannelEmotes = require('../frankerfacez/channel-emotes');
-const settings = require('../../settings');
+import twitch from '../../utils/twitch';
+import globalEmotes from './global-emotes';
+import channelEmotes from './channel-emotes';
+import personalEmotes from './personal-emotes';
+import emojis from './emojis';
+import frankerfacezGlobalEmotes from '../frankerfacez/global-emotes';
+import frankerfacezChannelEmotes from '../frankerfacez/channel-emotes';
+import settings from '../../settings';
 
 class EmotesModule {
     constructor() {
@@ -68,4 +68,4 @@ class EmotesModule {
     }
 }
 
-module.exports = new EmotesModule();
+export default new EmotesModule();

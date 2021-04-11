@@ -10,6 +10,6 @@ function escape(string) {
     return String(string).replace(/[<>"'`]/g, s => htmlEntities[s]);
 }
 
-module.exports = {
+export default {
     escape
 };

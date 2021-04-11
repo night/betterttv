@@ -1,10 +1,10 @@
-const $ = require('jquery');
-const cdn = require('../../utils/cdn');
-const extension = require('../../utils/extension');
-const settings = require('../../settings');
-const watcher = require('../../watcher');
-const twitch = require('../../utils/twitch');
-const settingsModule = require('../settings');
+import $ from 'jquery';
+import cdn from '../../utils/cdn';
+import extension from '../../utils/extension';
+import settings from '../../settings';
+import watcher from '../../watcher';
+import twitch from '../../utils/twitch';
+import settingsModule from '../settings';
 
 const TWITCH_THEME_CHANGED_DISPATCH_TYPE = 'core.ui.THEME_CHANGED';
 const TWITCH_THEME_STORAGE_KEY = 'twilight.theme';
@@ -94,4 +94,4 @@ class GlobalCSSModule {
     }
 }
 
-module.exports = new GlobalCSSModule();
+export default new GlobalCSSModule();

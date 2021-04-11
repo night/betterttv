@@ -1,8 +1,8 @@
-const $ = require('jquery');
-const chat = require('../chat');
-const colors = require('../../utils/colors');
-const settings = require('../../settings');
-const watcher = require('../../watcher');
+import $ from 'jquery';
+import chat from '../chat';
+import colors from '../../utils/colors';
+import settings from '../../settings';
+import watcher from '../../watcher';
 
 const GIF_EMOTES_SETTINGS_KEY = 'bttvGIFEmotes';
 const CHAT_MESSAGE_SELECTOR = 'span[data-a-target="chat-message-text"]';
@@ -58,4 +58,4 @@ class ClipsModule {
     }
 }
 
-module.exports = new ClipsModule();
+export default new ClipsModule();

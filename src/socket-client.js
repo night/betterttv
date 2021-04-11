@@ -1,7 +1,7 @@
-const SafeEventEmitter = require('./utils/safe-event-emitter');
-const debug = require('./utils/debug');
-const twitch = require('./utils/twitch');
-const throttle = require('lodash.throttle');
+import SafeEventEmitter from './utils/safe-event-emitter';
+import debug from './utils/debug';
+import twitch from './utils/twitch';
+import throttle from 'lodash.throttle';
 
 const CONNECTION_STATES = {
     DISCONNECTED: 0,
@@ -117,4 +117,4 @@ class SocketClient extends SafeEventEmitter {
     }
 }
 
-module.exports = new SocketClient();
+export default new SocketClient();

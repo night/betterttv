@@ -1,7 +1,7 @@
-const $ = require('jquery');
-const watcher = require('../../watcher');
-const keyCodes = require('../../utils/keycodes');
-const twitch = require('../../utils/twitch');
+import $ from 'jquery';
+import watcher from '../../watcher';
+import keyCodes from '../../utils/keycodes';
+import twitch from '../../utils/twitch';
 
 const CHAT_ROOM_SELECTOR = 'section[data-test-selector="chat-room-component-layout"]';
 const CHAT_LINE_SELECTOR = '.chat-line__message';
@@ -161,4 +161,4 @@ class ChatCustomTimeoutsModule {
     }
 }
 
-module.exports = new ChatCustomTimeoutsModule();
+export default new ChatCustomTimeoutsModule();

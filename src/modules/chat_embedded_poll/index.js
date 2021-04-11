@@ -1,6 +1,6 @@
-const $ = require('jquery');
-const watcher = require('../../watcher');
-const twitch = require('../../utils/twitch');
+import $ from 'jquery';
+import watcher from '../../watcher';
+import twitch from '../../utils/twitch';
 
 const STRAWPOLL_REGEX = /strawpoll\.me\/([0-9]+)/g;
 
@@ -70,4 +70,4 @@ class ChatEmbeddedPollModule {
     }
 }
 
-module.exports = new ChatEmbeddedPollModule();
+export default new ChatEmbeddedPollModule();

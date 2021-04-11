@@ -1,12 +1,14 @@
-const $ = require('jquery');
-const watcher = require('../../watcher');
-const settings = require('../../settings');
-const storage = require('../../storage');
-const html = require('../../utils/html');
-const twitch = require('../../utils/twitch');
-const cdn = require('../../utils/cdn');
-const moment = require('moment');
-const {escape: escapeRegExp} = require('../../utils/regex');
+import $ from 'jquery';
+import watcher from '../../watcher';
+import settings from '../../settings';
+import storage from '../../storage';
+import html from '../../utils/html';
+import twitch from '../../utils/twitch';
+import cdn from '../../utils/cdn';
+import moment from 'moment';
+import regex from '../../utils/regex';
+
+const escapeRegExp = regex.escape;
 
 const PHRASE_REGEX = /\{.+?\}/g;
 const USER_REGEX = /\(.+?\)/g;
@@ -304,4 +306,4 @@ class ChatHighlightBlacklistKeywordsModule {
     }
 }
 
-module.exports = new ChatHighlightBlacklistKeywordsModule();
+export default new ChatHighlightBlacklistKeywordsModule();

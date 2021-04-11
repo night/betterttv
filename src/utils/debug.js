@@ -1,4 +1,4 @@
-const storage = require('../storage');
+import storage from '../storage';
 
 const VERSION = process.env.EXT_VER;
 
@@ -7,7 +7,7 @@ function log(type, ...args) {
     console[type].apply(console, ['BTTV:'].concat(args));
 }
 
-module.exports = {
+export default {
     log: log.bind(this, 'log'),
     error: log.bind(this, 'error'),
     warn: log.bind(this, 'warn'),

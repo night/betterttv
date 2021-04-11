@@ -1,10 +1,10 @@
-const socketClient = require('../../socket-client');
-const watcher = require('../../watcher');
-const twitch = require('../../utils/twitch');
-const cdn = require('../../utils/cdn');
+import socketClient from '../../socket-client';
+import watcher from '../../watcher';
+import twitch from '../../utils/twitch';
+import cdn from '../../utils/cdn';
 
-const AbstractEmotes = require('./abstract-emotes');
-const Emote = require('./emote');
+import AbstractEmotes from './abstract-emotes';
+import Emote from './emote';
 
 const provider = {
     id: 'bttv-personal',
@@ -119,4 +119,4 @@ class PersonalEmotes extends AbstractEmotes {
     }
 }
 
-module.exports = new PersonalEmotes();
+export default new PersonalEmotes();

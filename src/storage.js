@@ -1,5 +1,5 @@
-const cookies = require('cookies-js');
-const SafeEventEmitter = require('./utils/safe-event-emitter');
+import cookies from 'cookies-js';
+import SafeEventEmitter from './utils/safe-event-emitter';
 
 class Storage extends SafeEventEmitter {
     constructor() {
@@ -75,4 +75,4 @@ class Storage extends SafeEventEmitter {
     }
 }
 
-module.exports = new Storage();
+export default new Storage();

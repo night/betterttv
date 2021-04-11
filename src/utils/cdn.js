@@ -1,9 +1,9 @@
-const $ = require('jquery');
-const debug = require('./debug');
+import $ from 'jquery';
+import debug from './debug';
 
 const CDN_ENDPOINT = process.env.CDN_ENDPOINT;
 
-module.exports = {
+export default {
     url(path, breakCache = false) {
         return `${CDN_ENDPOINT}${path}${breakCache ? `?v=${debug.version}` : ''}`;
     },

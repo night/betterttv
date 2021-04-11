@@ -1,5 +1,5 @@
-const socketClient = require('../../socket-client');
-const twitch = require('../../utils/twitch');
+import socketClient from '../../socket-client';
+import twitch from '../../utils/twitch';
 
 const users = new Map();
 
@@ -36,4 +36,4 @@ class LegacySubscribersModule {
     }
 }
 
-module.exports = new LegacySubscribersModule();
+export default new LegacySubscribersModule();

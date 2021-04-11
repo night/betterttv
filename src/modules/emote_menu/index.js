@@ -1,8 +1,8 @@
-const $ = require('jquery');
-const debug = require('../../utils/debug');
-const settings = require('../../settings');
-const watcher = require('../../watcher');
-const emotes = require('../emotes');
+import $ from 'jquery';
+import debug from '../../utils/debug';
+import settings from '../../settings';
+import watcher from '../../watcher';
+import emotes from '../emotes';
 
 class EmoteMenuModule {
     constructor() {
@@ -48,4 +48,4 @@ class EmoteMenuModule {
     }
 }
 
-module.exports = new EmoteMenuModule();
+export default new EmoteMenuModule();

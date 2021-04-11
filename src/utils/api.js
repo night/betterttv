@@ -1,5 +1,5 @@
-const $ = require('jquery');
-const querystring = require('querystring');
+import $ from 'jquery';
+import querystring from 'querystring';
 
 const API_ENDPOINT = 'https://api.betterttv.net/3/';
 
@@ -20,7 +20,7 @@ function request(method, path, options = {}) {
     });
 }
 
-module.exports = {
+export default {
     get(path, options) {
         return request('GET', path, options);
     },

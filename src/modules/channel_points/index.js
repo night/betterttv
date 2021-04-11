@@ -1,6 +1,6 @@
-const $ = require('jquery');
-const settings = require('../../settings');
-const domObserver = require('../../observers/dom');
+import $ from 'jquery';
+import settings from '../../settings';
+import domObserver from '../../observers/dom';
 
 const CLAIM_BUTTON_SELECTOR = '.claimable-bonus__icon';
 
@@ -58,4 +58,4 @@ class ChannelPoints {
     }
 }
 
-module.exports = new ChannelPoints();
+export default new ChannelPoints();

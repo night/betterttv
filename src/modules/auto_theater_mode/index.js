@@ -1,7 +1,8 @@
-const $ = require('jquery');
-const twitch = require('../../utils/twitch');
-const settings = require('../../settings');
-const watcher = require('../../watcher');
+import $ from 'jquery';
+import settings from '../../settings';
+import watcher from '../../watcher';
+import twitch from '../../utils/twitch';
+
 
 class AutoTheaterModeModule {
     constructor() {
@@ -34,4 +35,4 @@ class AutoTheaterModeModule {
     }
 }
 
-module.exports = new AutoTheaterModeModule();
+export default new AutoTheaterModeModule();

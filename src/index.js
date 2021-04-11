@@ -1,4 +1,11 @@
-(() => {
+import cookies from 'cookies-js';
+import debug from './utils/debug';
+import twitch from './utils/twitch';
+import watcher from './watcher';
+
+import modules from './modules/**/index.js'
+
+async function main () {
     if (!String.prototype.includes || !Array.prototype.findIndex) return;
     if (window.location.pathname.endsWith('.html')) return;
     if (
@@ -14,11 +21,6 @@
     ) return;
     if (window.Ember) return;
 
-    const cookies = require('cookies-js');
-    const debug = require('./utils/debug');
-    const twitch = require('./utils/twitch');
-    const watcher = require('./watcher');
-
     const userCookie = cookies.get('twilight-user');
     if (userCookie) {
         try {
@@ -29,27 +31,17 @@
         }
     }
 
-    require('./modules/**/index.js', {mode: (base, files) => {
-        return files.map(module => {
-            return `
-                try {
-                    require('${module}');
-                } catch (e) {
-                    debug.error('Failed to ${module}', e.stack);
-                }
-            `;
-        }).join(' ');
-    }});
-
     watcher.setup();
 
     debug.log(`BetterTTV v${debug.version} loaded. ${process.env.NODE_ENV} @ ${process.env.GIT_REV}`);
 
     window.BetterTTV = {
         version: debug.version,
-        settings: require('./settings'),
+        settings: await import('./settings'),
         watcher: {
             emitLoad: name => watcher.emit(`load.${name}`),
         },
     };
-})();
+}
+
+main(); 

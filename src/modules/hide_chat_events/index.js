@@ -1,6 +1,6 @@
-const settings = require('../../settings');
-const watcher = require('../../watcher');
-const twitch = require('../../utils/twitch');
+import settings from '../../settings';
+import watcher from '../../watcher';
+import twitch from '../../utils/twitch';
 
 class HideChatEventsModule {
     constructor() {
@@ -40,4 +40,4 @@ class HideChatEventsModule {
     }
 }
 
-module.exports = new HideChatEventsModule();
+export default new HideChatEventsModule();

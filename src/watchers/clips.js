@@ -1,8 +1,8 @@
-const $ = require('jquery');
-const twitch = require('../utils/twitch');
-const domObserver = require('../observers/dom');
+import $ from 'jquery';
+import twitch from '../utils/twitch';
+import domObserver from '../observers/dom';
 
-module.exports = watcher => {
+export default function (watcher) {
     domObserver.on('.tw-mg-b-1', (node, isConnected) => {
         if (!isConnected || !node.parentNode.classList.contains('clips-chat-replay')) return;
         watcher.emit('clips.message', $(node));

@@ -1,5 +1,5 @@
-const $ = require('jquery');
-const twitchAPI = require('./twitch-api');
+import $ from 'jquery';
+import twitchAPI from './twitch-api';
 
 const REACT_ROOT = '#root div';
 const CHAT_CONTAINER = 'section[data-test-selector="chat-room-component-layout"]';
@@ -109,7 +109,7 @@ let chatClient;
 let currentUser;
 let currentChannel;
 
-module.exports = {
+export default {
     setCurrentUser(accessToken, id, name, displayName) {
         twitchAPI.setAccessToken(accessToken);
 

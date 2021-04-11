@@ -1,10 +1,10 @@
-const api = require('../../utils/api');
-const cdn = require('../../utils/cdn');
-const legacySubscribers = require('../legacy_subscribers');
-const watcher = require('../../watcher');
+import api from '../../utils/api';
+import cdn from '../../utils/cdn';
+import legacySubscribers from '../legacy_subscribers';
+import watcher from '../../watcher';
 
-const AbstractEmotes = require('./abstract-emotes');
-const Emote = require('./emote');
+import AbstractEmotes from './abstract-emotes';
+import Emote from './emote';
 
 const provider = {
     id: 'bttv',
@@ -55,4 +55,4 @@ class GlobalEmotes extends AbstractEmotes {
     }
 }
 
-module.exports = new GlobalEmotes();
+export default new GlobalEmotes();

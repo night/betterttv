@@ -1,9 +1,8 @@
-const $ = require('jquery');
-const settings = require('../../settings');
-const watcher = require('../../watcher');
-const twitch = require('../../utils/twitch');
-const twitchAPI = require('../../utils/twitch-api');
-const domObserver = require('../../observers/dom');
+import $ from 'jquery';
+import settings from '../../settings';
+import watcher from '../../watcher';
+import twitch from '../../utils/twitch';
+import domObserver from '../../observers/dom';
 
 const SHARE_BUTTON_SELECTOR = 'button[data-a-target="share-button"]';
 const HOST_BUTTON_ID = 'bttv-host-button';
@@ -112,4 +111,4 @@ class HostButtonModule {
     }
 }
 
-module.exports = new HostButtonModule();
+export default new HostButtonModule();

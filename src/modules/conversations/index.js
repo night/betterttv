@@ -1,7 +1,7 @@
-const $ = require('jquery');
-const settings = require('../../settings');
-const watcher = require('../../watcher');
-const chat = require('../chat');
+import $ from 'jquery';
+import settings from '../../settings';
+import watcher from '../../watcher';
+import chat from '../chat';
 
 const CHAT_USER_SELECTOR = '.thread-message__message--user-name';
 const CHAT_MESSAGE_SELECTOR = 'span[data-a-target="chat-message-text"]';
@@ -50,4 +50,4 @@ class ConversationsModule {
     }
 }
 
-module.exports = new ConversationsModule();
+export default new ConversationsModule();

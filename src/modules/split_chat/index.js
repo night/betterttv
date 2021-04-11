@@ -1,4 +1,4 @@
-const settings = require('../../settings');
+import settings from '../../settings';
 
 let alternateBackground = false;
 
@@ -22,4 +22,4 @@ class SplitChatModule {
     }
 }
 
-module.exports = new SplitChatModule();
+export default new SplitChatModule();

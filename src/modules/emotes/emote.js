@@ -1,6 +1,6 @@
-const html = require('../../utils/html');
+import html from '../../utils/html';
 
-module.exports = class Emote {
+export default class Emote {
     constructor({id, provider, channel, code, images, imageType = 'png', restrictionCallback = null}) {
         this.id = id;
         this.provider = provider;

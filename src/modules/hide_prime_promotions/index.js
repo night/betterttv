@@ -1,6 +1,6 @@
-const $ = require('jquery');
-const settings = require('../../settings');
-const watcher = require('../../watcher');
+import $ from 'jquery';
+import settings from '../../settings';
+import watcher from '../../watcher';
 
 class HidePrimePromotionsModule {
     constructor() {
@@ -23,4 +23,4 @@ class HidePrimePromotionsModule {
     }
 }
 
-module.exports = new HidePrimePromotionsModule();
+export default new HidePrimePromotionsModule();

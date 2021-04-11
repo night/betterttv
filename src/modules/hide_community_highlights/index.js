@@ -1,7 +1,7 @@
-const $ = require('jquery');
-const settings = require('../../settings');
-const watcher = require('../../watcher');
-const domObserver = require('../../observers/dom');
+import $ from 'jquery';
+import settings from '../../settings';
+import watcher from '../../watcher';
+import domObserver from '../../observers/dom';
 
 let removeCommunityHighlightsListener;
 
@@ -40,4 +40,4 @@ class HideCommunityHighlightsModule {
     }
 }
 
-module.exports = new HideCommunityHighlightsModule();
+export default new HideCommunityHighlightsModule();

@@ -1,4 +1,4 @@
-const SafeEventEmitter = require('../utils/safe-event-emitter');
+import SafeEventEmitter from '../utils/safe-event-emitter';
 
 class HistoryObserver extends SafeEventEmitter {
     constructor() {
@@ -21,4 +21,5 @@ class HistoryObserver extends SafeEventEmitter {
     }
 }
 
-module.exports = new HistoryObserver();
+export default new HistoryObserver();
+

@@ -1,9 +1,9 @@
-const $ = require('jquery');
-const watcher = require('../../watcher');
-const settings = require('../../settings');
-const domWatcher = require('../../observers/dom');
-const twitch = require('../../utils/twitch');
-const debounce = require('lodash.debounce');
+import $ from 'jquery';
+import watcher from '../../watcher';
+import settings from '../../settings';
+import domWatcher from '../../observers/dom';
+import twitch from '../../utils/twitch';
+import debounce from 'lodash.debounce';
 
 const VIDEO_PLAYER_SELECTOR = '.video-player__container';
 const CANCEL_VOD_RECOMMENDATION_SELECTOR = '.recommendations-overlay .pl-rec__cancel.pl-button, .autoplay-vod__content-container button';
@@ -203,4 +203,4 @@ class VideoPlayerModule {
     }
 }
 
-module.exports = new VideoPlayerModule();
+export default new VideoPlayerModule();

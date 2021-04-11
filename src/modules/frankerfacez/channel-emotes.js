@@ -1,10 +1,10 @@
-const watcher = require('../../watcher');
-const api = require('../../utils/api');
-const twitch = require('../../utils/twitch');
-const settings = require('../../settings');
+import watcher from '../../watcher';
+import api from '../../utils/api';
+import twitch from '../../utils/twitch';
+import settings from '../../settings';
 
-const AbstractEmotes = require('../emotes/abstract-emotes');
-const Emote = require('../emotes/emote');
+import AbstractEmotes from '../emotes/abstract-emotes';
+import Emote from '../emotes/emote';
 
 const provider = {
     id: 'ffz-channel',
@@ -48,4 +48,4 @@ class FrankerFaceZChannelEmotes extends AbstractEmotes {
     }
 }
 
-module.exports = new FrankerFaceZChannelEmotes();
+export default new FrankerFaceZChannelEmotes();

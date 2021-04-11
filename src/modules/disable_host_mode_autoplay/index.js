@@ -1,7 +1,7 @@
-const settings = require('../../settings');
-const watcher = require('../../watcher');
-const twitch = require('../../utils/twitch');
-const domObserver = require('../../observers/dom');
+import settings from '../../settings';
+import watcher from '../../watcher';
+import twitch from '../../utils/twitch';
+import domObserver from '../../observers/dom';
 
 let removeHostingIndicatorListener;
 
@@ -54,4 +54,5 @@ class DisableHostModeAutoplayModule {
     }
 }
 
-module.exports = new DisableHostModeAutoplayModule();
+export default new DisableHostModeAutoplayModule();
+

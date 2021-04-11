@@ -1,9 +1,8 @@
-const $ = require('jquery');
-const watcher = require('../../watcher');
-const settings = require('../settings');
-const highlightBlacklistKeywords = require('../chat_highlight_blacklist_keywords');
-const chatFontSettings = require('../chat_font_settings');
-const domObserver = require('../../observers/dom');
+import $ from 'jquery';
+import watcher from '../../watcher';
+import settings from '../settings';
+import highlightBlacklistKeywords from '../chat_highlight_blacklist_keywords';
+import chatFontSettings from '../chat_font_settings';
 
 const CHAT_SETTINGS_SELECTOR = '.chat-settings__content';
 const MOD_VIEW_CHAT_SETTINGS_SELECTOR = 'button[data-test-selector="chat-widget-settings-switch-to-non-mod"], button[data-test-selector="chat-widget-settings-switch-to-default"]';
@@ -116,4 +115,5 @@ class ChatSettingsModule {
     }
 }
 
-module.exports = new ChatSettingsModule();
+export default new ChatSettingsModule();
+

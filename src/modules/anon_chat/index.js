@@ -1,6 +1,6 @@
-const settings = require('../../settings');
-const watcher = require('../../watcher');
-const twitch = require('../../utils/twitch');
+import settings from '../../settings';
+import watcher from '../../watcher';
+import twitch from '../../utils/twitch';
 
 const forcedURL = window.location.search.includes('bttv_anon_chat=true');
 
@@ -64,4 +64,4 @@ class AnonChatModule {
     }
 }
 
-module.exports = new AnonChatModule();
+export default new AnonChatModule();

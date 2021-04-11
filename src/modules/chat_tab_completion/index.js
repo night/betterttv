@@ -1,9 +1,9 @@
-const $ = require('jquery');
-const settings = require('../../settings');
-const watcher = require('../../watcher');
-const twitch = require('../../utils/twitch');
-const keyCodes = require('../../utils/keycodes');
-const emotes = require('../emotes');
+import $ from 'jquery';
+import settings from '../../settings';
+import watcher from '../../watcher';
+import twitch from '../../utils/twitch';
+import keyCodes from '../../utils/keycodes';
+import emotes from '../emotes';
 
 const CHAT_INPUT_SELECTOR = '.chat-input textarea';
 const AUTOCOMPLETE_SUGGESTIONS_SELECTOR = 'div[data-a-target="autocomplete-balloon"]';
@@ -204,4 +204,4 @@ class ChatTabcompletionModule {
 }
 
 
-module.exports = new ChatTabcompletionModule();
+export default new ChatTabcompletionModule();

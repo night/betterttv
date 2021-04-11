@@ -1,5 +1,5 @@
-const settings = require('../../settings');
-const watcher = require('../../watcher');
+import settings from '../../settings';
+import watcher from '../../watcher';
 
 class DisableLocalizedNamesModule {
     constructor() {
@@ -24,4 +24,4 @@ class DisableLocalizedNamesModule {
     }
 }
 
-module.exports = new DisableLocalizedNamesModule();
+export default new DisableLocalizedNamesModule();

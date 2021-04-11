@@ -1,6 +1,6 @@
-const $ = require('jquery');
-const settings = require('../../settings');
-const watcher = require('../../watcher');
+import $ from 'jquery';
+import settings from '../../settings';
+import watcher from '../../watcher';
 
 class DisableChannelPointsMessageHighlightsModule {
     constructor() {
@@ -19,4 +19,4 @@ class DisableChannelPointsMessageHighlightsModule {
     }
 }
 
-module.exports = new DisableChannelPointsMessageHighlightsModule();
+export default new DisableChannelPointsMessageHighlightsModule();

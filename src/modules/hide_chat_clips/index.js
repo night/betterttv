@@ -1,5 +1,5 @@
-const $ = require('jquery');
-const settings = require('../../settings');
+import $ from 'jquery';
+import settings from '../../settings';
 
 class HideChatClipsModule {
     constructor() {
@@ -18,4 +18,4 @@ class HideChatClipsModule {
     }
 }
 
-module.exports = new HideChatClipsModule();
+export default new HideChatClipsModule();

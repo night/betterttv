@@ -1,6 +1,6 @@
-const settings = require('../../settings');
-const watcher = require('../../watcher');
-const $ = require('jquery');
+import settings from '../../settings';
+import watcher from '../../watcher';
+import $ from 'jquery';
 
 class DirectoryLiveFollowingModule {
     constructor() {
@@ -23,4 +23,4 @@ class DirectoryLiveFollowingModule {
     }
 }
 
-module.exports = new DirectoryLiveFollowingModule();
+export default new DirectoryLiveFollowingModule();

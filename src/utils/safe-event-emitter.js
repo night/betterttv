@@ -1,4 +1,4 @@
-const EventEmitter = require('events').EventEmitter;
+import {EventEmitter} from 'events'
 
 function newListener(listener, ...args) {
     try {
@@ -29,4 +29,4 @@ class SafeEventEmitter extends EventEmitter {
     }
 }
 
-module.exports = SafeEventEmitter;
+export default SafeEventEmitter;

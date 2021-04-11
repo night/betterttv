@@ -9,7 +9,7 @@ function stripAll(haystack, needle) {
     return haystack;
 }
 
-module.exports = {
+export default {
     escape,
     stripAll
 };

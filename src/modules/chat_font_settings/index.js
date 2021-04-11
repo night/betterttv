@@ -1,7 +1,7 @@
-const $ = require('jquery');
-const watcher = require('../../watcher');
-const storage = require('../../storage');
-const html = require('../../utils/html');
+import $ from 'jquery';
+import watcher from '../../watcher';
+import storage from '../../storage';
+import html from '../../utils/html';
 
 const FONT_FAMILY_PROMPT = `Enter a font family for chat.
 
@@ -61,4 +61,4 @@ class ChatFontSettingsModule {
     }
 }
 
-module.exports = new ChatFontSettingsModule();
+export default new ChatFontSettingsModule();

@@ -1,15 +1,15 @@
-const $ = require('jquery');
-const watcher = require('../../watcher');
-const colors = require('../../utils/colors');
-const twitch = require('../../utils/twitch');
-const api = require('../../utils/api');
-const cdn = require('../../utils/cdn');
-const html = require('../../utils/html');
-const settings = require('../../settings');
-const emotes = require('../emotes');
-const nicknames = require('../chat_nicknames');
-const legacySubscribers = require('../legacy_subscribers');
-const splitChat = require('../split_chat');
+import $ from 'jquery';
+import watcher from '../../watcher';
+import colors from '../../utils/colors';
+import twitch from '../../utils/twitch';
+import api from '../../utils/api';
+import cdn from '../../utils/cdn';
+import html from '../../utils/html';
+import settings from '../../settings';
+import emotes from '../emotes';
+import nicknames from '../chat_nicknames';
+import legacySubscribers from '../legacy_subscribers';
+import splitChat from '../split_chat';
 
 const EMOTE_STRIP_SYMBOLS_REGEX = /(^[~!@#$%\^&\*\(\)]+|[~!@#$%\^&\*\(\)]+$)/g;
 const MENTION_REGEX = /^@([a-zA-Z\d_]+)$/;
@@ -236,4 +236,4 @@ class ChatModule {
     }
 }
 
-module.exports = new ChatModule();
+export default new ChatModule();

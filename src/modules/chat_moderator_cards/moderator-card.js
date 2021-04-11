@@ -1,10 +1,10 @@
-const $ = require('jquery');
-const moment = require('moment');
-const nicknames = require('../chat_nicknames');
-const twitch = require('../../utils/twitch');
-const twitchAPI = require('../../utils/twitch-api');
-const html = require('../../utils/html');
-const keyCodes = require('../../utils/keycodes');
+import $ from 'jquery';
+import moment from 'moment';
+import nicknames from '../chat_nicknames';
+import twitch from '../../utils/twitch';
+import twitchAPI from '../../utils/twitch-api';
+import html from '../../utils/html';
+import keyCodes from '../../utils/keycodes';
 
 const Commands = {
     BAN: '/ban',
@@ -232,4 +232,4 @@ class ModeratorCard {
     }
 }
 
-module.exports = ModeratorCard;
+export default ModeratorCard;

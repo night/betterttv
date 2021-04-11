@@ -1,5 +1,5 @@
-const $ = require('jquery');
-const settings = require('../../settings');
+import $ from 'jquery';
+import settings from '../../settings';
 
 class ChatLeftSide {
     constructor() {
@@ -18,4 +18,4 @@ class ChatLeftSide {
     }
 }
 
-module.exports = new ChatLeftSide();
+export default new ChatLeftSide();

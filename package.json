@@ -5,7 +5,9 @@
   "description": "BetterTTV enhances Twitch with new features, emotes, and more.",
   "main": "betterttv.js",
   "scripts": {
-    "start": "node -e 'require(\"./dev/server.js\")()'"
+    "start": "webpack serve --mode development",
+    "build": "webpack --mode development",
+    "build:prod": "webpack --mode production"
   },
   "repository": {
     "type": "git",
@@ -19,7 +21,10 @@
     "autoprefixer": "^10.2.5",
     "babelify": "^10.0.0",
     "browserify": "^17.0.0",
+    "clean-webpack-plugin": "^4.0.0-alpha.0",
     "cookies-js": "^1.2.3",
+    "copy-webpack-plugin": "^8.1.1",
+    "css-loader": "^5.2.1",
     "del": "^6.0.0",
     "emoji-toolkit": "^6.5.1",
     "envify": "^4.1.0",
@@ -52,7 +57,11 @@
     "twitch-chat-emotes": "github:night/twitch-chat-emotes#98a654dbda98c43d967145bacd67029a7a6d9a78",
     "uglify-save-license": "^0.4.1",
     "vinyl-buffer": "^1.0.1",
-    "vinyl-source-stream": "^2.0.0"
+    "vinyl-source-stream": "^2.0.0",
+    "webpack": "^5.31.2",
+    "webpack-cli": "^4.6.0",
+    "webpack-dev-server": "^3.11.2",
+    "webpack-import-glob": "^2.0.0"
   },
   "browserslist": [
     "last 1 version",

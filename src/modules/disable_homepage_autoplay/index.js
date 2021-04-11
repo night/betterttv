@@ -1,6 +1,6 @@
-const settings = require('../../settings');
-const watcher = require('../../watcher');
-const twitch = require('../../utils/twitch');
+import settings from '../../settings';
+import watcher from '../../watcher';
+import twitch from '../../utils/twitch';
 
 class DisableHomepageAutoplayModule {
     constructor() {
@@ -38,4 +38,4 @@ class DisableHomepageAutoplayModule {
     }
 }
 
-module.exports = new DisableHomepageAutoplayModule();
+export default new DisableHomepageAutoplayModule();

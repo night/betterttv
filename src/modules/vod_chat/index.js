@@ -1,8 +1,8 @@
-const $ = require('jquery');
-const chat = require('../chat');
-const nicknames = require('../chat_nicknames');
-const watcher = require('../../watcher');
-const colors = require('../../utils/colors');
+import $ from 'jquery';
+import chat from '../chat';
+import nicknames from '../chat_nicknames';
+import watcher from '../../watcher';
+import colors from '../../utils/colors';
 
 const CHAT_MESSAGE_SELECTOR = '.video-chat__message span[data-a-target="chat-message-text"]';
 const CHAT_FROM_SELECTOR = '.video-chat__message-author';
@@ -60,4 +60,4 @@ class VODChatModule {
     }
 }
 
-module.exports = new VODChatModule();
+export default new VODChatModule();

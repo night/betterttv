@@ -1,12 +1,12 @@
-const twitch = require('../../utils/twitch');
-const watcher = require('../../watcher');
-const debug = require('../../utils/debug');
-const socketClient = require('../../socket-client');
+import twitch from '../../utils/twitch';
+import watcher from '../../watcher';
+import debug from '../../utils/debug';
+import socketClient from '../../socket-client';
 
-const chatTabCompletion = require('../chat_tab_completion');
-const chatCommands = require('../chat_commands');
-const anonChat = require('../anon_chat');
-const emojis = require('../emotes/emojis');
+import chatTabCompletion from '../chat_tab_completion';
+import chatCommands from '../chat_commands';
+import anonChat from '../anon_chat';
+import emojis from '../emotes/emojis';
 
 const PATCHED_SENTINEL = Symbol();
 
@@ -81,4 +81,4 @@ class SendMessagePatcher {
     }
 }
 
-module.exports = new SendMessagePatcher();
+export default new SendMessagePatcher();

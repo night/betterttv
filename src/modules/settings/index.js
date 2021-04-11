@@ -1,14 +1,14 @@
-const $ = require('jquery');
-const cdn = require('../../utils/cdn');
-const debug = require('../../utils/debug');
-const saveAs = require('../../utils/filesaver').saveAs;
-const watcher = require('../../watcher');
-const settings = require('../../settings');
-const storage = require('../../storage');
-const html = require('../../utils/html');
-const api = require('../../utils/api');
-const moment = require('moment');
-const domObserver = require('../../observers/dom');
+import $ from 'jquery';
+import cdn from '../../utils/cdn';
+import debug from '../../utils/debug';
+// import {saveAs} from '../../utils/filesaver';
+import watcher from '../../watcher';
+import settings from '../../settings';
+import storage from '../../storage';
+import html from '../../utils/html';
+import api from '../../utils/api';
+import moment from 'moment';
+import domObserver from '../../observers/dom'
 
 const getSettingElement = ({id}) => $(`.bttvOption-${html.escape(id)}`);
 
@@ -261,4 +261,4 @@ class SettingsModule {
     }
 }
 
-module.exports = new SettingsModule();
+export default new SettingsModule();

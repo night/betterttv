@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     'LeftClick': 1,
     'DOMVKCancel': 3,
     'Backspace': 8,

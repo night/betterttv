@@ -1,4 +1,4 @@
-module.exports = class AbstractEmotes {
+export default class AbstractEmotes {
     constructor() {
         this.emotes = new Map();
 

@@ -1,9 +1,9 @@
-const api = require('../../utils/api');
-const watcher = require('../../watcher');
-const settings = require('../../settings');
+import api from '../../utils/api';
+import watcher from '../../watcher';
+import settings from '../../settings';
 
-const AbstractEmotes = require('../emotes/abstract-emotes');
-const Emote = require('../emotes/emote');
+import AbstractEmotes from '../emotes/abstract-emotes';
+import Emote from '../emotes/emote';
 
 const provider = {
     id: 'ffz-global',
@@ -53,4 +53,4 @@ class GlobalEmotes extends AbstractEmotes {
     }
 }
 
-module.exports = new GlobalEmotes();
+export default new GlobalEmotes();

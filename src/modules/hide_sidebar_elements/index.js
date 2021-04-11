@@ -1,7 +1,7 @@
-const $ = require('jquery');
-const watcher = require('../../watcher');
-const settings = require('../../settings');
-const domObserver = require('../../observers/dom');
+import $ from 'jquery';
+import watcher from '../../watcher';
+import settings from '../../settings';
+import domObserver from '../../observers/dom';
 
 let removeFeaturedChannelsListener;
 let removeOfflineFollowedChannelsListener;
@@ -94,4 +94,4 @@ class HideSidebarElementsModule {
     }
 }
 
-module.exports = new HideSidebarElementsModule();
+export default new HideSidebarElementsModule();

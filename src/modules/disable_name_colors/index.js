@@ -1,6 +1,6 @@
-const $ = require('jquery');
-const settings = require('../../settings');
-const watcher = require('../../watcher');
+import $ from 'jquery';
+import settings from '../../settings';
+import watcher from '../../watcher';
 
 class DisableNameColorsModule {
     constructor() {
@@ -19,4 +19,4 @@ class DisableNameColorsModule {
     }
 }
 
-module.exports = new DisableNameColorsModule();
+export default new DisableNameColorsModule();

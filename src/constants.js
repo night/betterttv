@@ -1,10 +1,10 @@
-exports.bots = [
+export default bots = [
     'nightbot',
     'moobot',
     'xanbot'
 ];
 
-exports.keycodes = {
+export default keycodes = {
     'LeftClick': 1,
     'Backspace': 8,
     'Tab': 9,

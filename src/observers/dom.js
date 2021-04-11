@@ -1,4 +1,4 @@
-const SafeEventEmitter = require('../utils/safe-event-emitter');
+import SafeEventEmitter from '../utils/safe-event-emitter';
 
 const IGNORED_HTML_TAGS = new Set(['BR', 'HEAD', 'LINK', 'META', 'SCRIPT', 'STYLE']);
 
@@ -242,4 +242,4 @@ class DOMObserver extends SafeEventEmitter {
     }
 }
 
-module.exports = new DOMObserver();
+export default new DOMObserver();

@@ -1,5 +1,5 @@
-const settings = require('../../settings');
-const $ = require('jquery');
+import settings from '../../settings';
+import $ from 'jquery';
 
 class HideBitsModule {
     constructor() {
@@ -18,4 +18,5 @@ class HideBitsModule {
     }
 }
 
-module.exports = new HideBitsModule();
+export default new HideBitsModule();
+

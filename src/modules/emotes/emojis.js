@@ -1,10 +1,10 @@
-const twemoji = require('twemoji');
-const blacklistedEmoji = require('../../utils/emoji-blacklist');
-const cdn = require('../../utils/cdn');
+import twemoji from 'twemoji';
+import blacklistedEmoji from '../../utils/emoji-blacklist.js';
+import cdn from '../../utils/cdn';
 
-const AbstractEmotes = require('./abstract-emotes');
-const Emote = require('./emote');
-const emojiBySlug = require('./emojis-by-slug.json');
+import AbstractEmotes from './abstract-emotes';
+import Emote from './emote';
+import emojiBySlug from './emojis-by-slug.json';
 
 const provider = {
     id: 'bttv-emoji',
@@ -78,4 +78,4 @@ class Emojis extends AbstractEmotes {
     }
 }
 
-module.exports = new Emojis();
+export default new Emojis();

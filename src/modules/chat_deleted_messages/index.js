@@ -1,7 +1,7 @@
-const $ = require('jquery');
-const watcher = require('../../watcher');
-const twitch = require('../../utils/twitch');
-const settings = require('../../settings');
+import $ from 'jquery';
+import watcher from '../../watcher';
+import twitch from '../../utils/twitch';
+import settings from '../../settings';
 
 const CHAT_LINE_SELECTOR = '.chat-line__message';
 const CHAT_LINE_LINK_SELECTOR = 'a.link-fragment';
@@ -88,4 +88,4 @@ class ChatDeletedMessagesModule {
     }
 }
 
-module.exports = new ChatDeletedMessagesModule();
+export default new ChatDeletedMessagesModule();

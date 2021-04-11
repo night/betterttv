@@ -1,8 +1,8 @@
-const $ = require('jquery');
-const twitch = require('../utils/twitch');
-const debug = require('../utils/debug');
-const domObserver = require('../observers/dom');
-const historyObserver = require('../observers/history');
+import $ from 'jquery';
+import twitch from '../utils/twitch';
+import debug from '../utils/debug';
+import domObserver from '../observers/dom';
+import historyObserver from '../observers/history';
 
 let watcher;
 let currentPath = '';
@@ -162,7 +162,7 @@ function onRouteChange(location) {
     }
 }
 
-module.exports = watcher_ => {
+export default function (watcher_) {
     watcher = watcher_;
 
     historyObserver.on('pushState', location => onRouteChange(location));

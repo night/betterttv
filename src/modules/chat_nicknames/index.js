@@ -1,4 +1,4 @@
-const storage = require('../../storage');
+import storage from '../../storage';
 
 let nicknames;
 
@@ -24,4 +24,4 @@ class ChatNicknamesModule {
     }
 }
 
-module.exports = new ChatNicknamesModule();
+export default new ChatNicknamesModule();

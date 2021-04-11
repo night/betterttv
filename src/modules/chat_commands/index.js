@@ -1,8 +1,8 @@
-const moment = require('moment');
-const twitch = require('../../utils/twitch');
-const twitchAPI = require('../../utils/twitch-api');
-const chat = require('../chat');
-const anonChat = require('../anon_chat');
+import moment from 'moment';
+import twitch from '../../utils/twitch';
+import twitchAPI from '../../utils/twitch-api';
+import chat from '../chat';
+import anonChat from '../anon_chat';
 
 const CommandHelp = {
     b: 'Usage: "/b <login> [reason]" - Shortcut for /ban',
@@ -265,4 +265,4 @@ class ChatCommandsModule {
     }
 }
 
-module.exports = new ChatCommandsModule();
+export default new ChatCommandsModule();

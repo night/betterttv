@@ -1,6 +1,6 @@
-const $ = require('jquery');
-const twitch = require('../utils/twitch');
-const domObserver = require('../observers/dom');
+import $ from 'jquery';
+import twitch from '../utils/twitch';
+import domObserver from '../observers/dom';
 
 const PATCHED_SYMBOL = Symbol();
 
@@ -42,7 +42,7 @@ function patchChatController() {
     twitchHandleMessage = handleMessage;
 }
 
-module.exports = watcher_ => {
+export default function (watcher_) {
     watcher = watcher_;
 
     watcher.on('load.chat', () => patchChatController());

@@ -1,5 +1,5 @@
-const SafeEventEmitter = require('./utils/safe-event-emitter');
-const storage = require('./storage');
+import SafeEventEmitter from './utils/safe-event-emitter';
+import storage from './storage';
 
 const settings = {};
 
@@ -47,4 +47,4 @@ class Settings extends SafeEventEmitter {
     }
 }
 
-module.exports = new Settings();
+export default new Settings();

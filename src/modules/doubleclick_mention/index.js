@@ -1,6 +1,6 @@
-const $ = require('jquery');
-const watcher = require('../../watcher');
-const twitch = require('../../utils/twitch');
+import $ from 'jquery';
+import watcher from '../../watcher';
+import twitch from '../../utils/twitch';
 
 const CHAT_ROOM_SELECTOR = '.chat-list,.chat-list--default,.chat-list--other';
 const CHAT_TEXT_AREA = '.chat-input textarea';
@@ -42,4 +42,4 @@ class DoubleClickMentionModule {
     }
 }
 
-module.exports = new DoubleClickMentionModule();
+export default new DoubleClickMentionModule();
