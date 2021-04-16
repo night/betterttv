@@ -28,7 +28,7 @@ module.exports = () => {
     return {
         devServer: {
             contentBase: path.resolve(__dirname, './build'),
-            compress: false,
+            compress: true,
             port,
             after: function (app) {
                 app.get('*', function (req, res) {
@@ -67,7 +67,7 @@ module.exports = () => {
         },
         entry: {
             betterttv: path.resolve(__dirname, './src/index.js'),
-            css: glob.sync('./src/**/*.css')
+            css: glob.sync('./src/modules/**/*.css')
         },
         output: {
             filename: '[name].js',
@@ -81,7 +81,7 @@ module.exports = () => {
                     loader: path.resolve('./dev/webpack-import-glob'),
                 },
                 {
-                    test: /\.css$/i,
+                    test: /\.css$/,
                     use: [
                         MiniCssExtractPlugin.loader,
                         "css-loader", 
