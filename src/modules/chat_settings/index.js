@@ -3,6 +3,7 @@ import watcher from '../../watcher';
 import settings from '../settings';
 import highlightBlacklistKeywords from '../chat_highlight_blacklist_keywords';
 import chatFontSettings from '../chat_font_settings';
+import domObserver from '../../observers/dom'
 
 const CHAT_SETTINGS_SELECTOR = '.chat-settings__content';
 const MOD_VIEW_CHAT_SETTINGS_SELECTOR = 'button[data-test-selector="chat-widget-settings-switch-to-non-mod"], button[data-test-selector="chat-widget-settings-switch-to-default"]';

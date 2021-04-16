@@ -2,6 +2,7 @@ import $ from 'jquery';
 import settings from '../../settings';
 import watcher from '../../watcher';
 import twitch from '../../utils/twitch';
+import twitchAPI from '../../utils/twitch-api';
 import domObserver from '../../observers/dom';
 
 const SHARE_BUTTON_SELECTOR = 'button[data-a-target="share-button"]';
@@ -94,8 +95,8 @@ class HostButtonModule {
             }
         `;
 
-        return twitchAPI.graphqlQuery(query).then(({data: {currentUser: {hosting: {id: targetId}}}}) => {
-            hosting = targetId.toString() === channelId;
+        return twitchAPI.graphqlQuery(query).then(({data: {currentUser: {hosting: newHosting}}}) => {
+            hosting = newHosting && newHosting.id.toString() === channelId;
             this.updateHostButtonText();
         });
     }

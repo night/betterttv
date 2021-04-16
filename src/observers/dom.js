@@ -63,7 +63,7 @@ function processObservedResults(emitter, node, results) {
 
     for (const observedType of results) {
         const {partialSelector, selector, options} = observedType;
-        const foundNode = partialSelector.includes(' ') ? node.querySelector(selector) : node;
+        let foundNode = partialSelector.includes(' ') ? node.querySelector(selector) : node;
         if (!foundNode) {
             continue;
         }

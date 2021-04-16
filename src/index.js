@@ -1,25 +1,14 @@
-import cookies from 'cookies-js';
-import debug from './utils/debug';
-import twitch from './utils/twitch';
-import watcher from './watcher';
 
-import modules from './modules/**/index.js'
-
-async function main () {
+async function main() {
     if (!String.prototype.includes || !Array.prototype.findIndex) return;
     if (window.location.pathname.endsWith('.html')) return;
-    if (
-        ![
-            'www.twitch.tv',
-            'canary.twitch.tv',
-            'release.twitch.tv',
-            'clips.twitch.tv',
-            'dashboard.twitch.tv',
-            'embed.twitch.tv'
-        ].includes(window.location.hostname) &&
-        !window.location.hostname.endsWith('.release.twitch.tv')
-    ) return;
+    if (!['www.twitch.tv', 'canary.twitch.tv', 'clips.twitch.tv', 'dashboard.twitch.tv', 'embed.twitch.tv'].includes(window.location.hostname)) return;
     if (window.Ember) return;
+
+    const cookies = (await import('cookies-js')).default
+    const debug = (await import('./utils/debug')).default
+    const twitch = (await import('./utils/twitch')).default
+    const watcher = (await import('./watcher')).default
 
     const userCookie = cookies.get('twilight-user');
     if (userCookie) {
@@ -31,17 +20,19 @@ async function main () {
         }
     }
 
+    import('./modules/**/index.js');
+
     watcher.setup();
 
     debug.log(`BetterTTV v${debug.version} loaded. ${process.env.NODE_ENV} @ ${process.env.GIT_REV}`);
 
     window.BetterTTV = {
         version: debug.version,
-        settings: await import('./settings'),
+        settings: (await import('./settings')).default,
         watcher: {
             emitLoad: name => watcher.emit(`load.${name}`),
         },
     };
 }
 
-main(); 
+main();
