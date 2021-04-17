@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import debug from './debug';
+import debug from './debug.js';
 
 const CDN_ENDPOINT = process.env.CDN_ENDPOINT;
 

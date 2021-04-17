@@ -1,9 +1,9 @@
 import $ from 'jquery';
-import settings from '../../settings';
-import watcher from '../../watcher';
-import twitch from '../../utils/twitch';
-import keyCodes from '../../utils/keycodes';
-import emotes from '../emotes';
+import settings from '../../settings.js';
+import watcher from '../../watcher.js';
+import twitch from '../../utils/twitch.js';
+import keyCodes from '../../utils/keycodes.js';
+import emotes from '../emotes/index.js';
 
 const CHAT_INPUT_SELECTOR = '.chat-input textarea';
 const AUTOCOMPLETE_SUGGESTIONS_SELECTOR = 'div[data-a-target="autocomplete-balloon"]';

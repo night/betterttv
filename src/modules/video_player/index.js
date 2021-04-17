@@ -1,8 +1,8 @@
 import $ from 'jquery';
-import watcher from '../../watcher';
-import settings from '../../settings';
-import domWatcher from '../../observers/dom';
-import twitch from '../../utils/twitch';
+import watcher from '../../watcher.js';
+import settings from '../../settings.js';
+import domWatcher from '../../observers/dom.js';
+import twitch from '../../utils/twitch.js';
 import debounce from 'lodash.debounce';
 
 const VIDEO_PLAYER_SELECTOR = '.video-player__container';

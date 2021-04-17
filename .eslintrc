@@ -5,6 +5,10 @@
     "jquery": true,                  // Jquery global variables
     "es6": true
   },
+
+  "parserOptions": {
+      "sourceType": "module",
+  },
   
   "globals": {},
 
@@ -12,9 +16,6 @@
 
   "rules": {
     "strict": 0,
-    "parserOptions": {
-        "sourceType": "module"
-    },
 
 /**
  * Variables

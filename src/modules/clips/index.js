@@ -1,8 +1,8 @@
 import $ from 'jquery';
-import chat from '../chat';
-import colors from '../../utils/colors';
-import settings from '../../settings';
-import watcher from '../../watcher';
+import chat from '../chat/index.js';
+import colors from '../../utils/colors.js';
+import settings from '../../settings.js';
+import watcher from '../../watcher.js';
 
 const GIF_EMOTES_SETTINGS_KEY = 'bttvGIFEmotes';
 const CHAT_MESSAGE_SELECTOR = 'span[data-a-target="chat-message-text"]';

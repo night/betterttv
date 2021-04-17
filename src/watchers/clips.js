@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import twitch from '../utils/twitch';
-import domObserver from '../observers/dom';
+import twitch from '../utils/twitch.js';
+import domObserver from '../observers/dom.js';
 
 export default function (watcher) {
     domObserver.on('.tw-mg-b-1', (node, isConnected) => {
@@ -25,4 +25,4 @@ export default function (watcher) {
         interval = undefined;
         clearTimeout(timeoutInterval);
     }, 100);
-};
+}

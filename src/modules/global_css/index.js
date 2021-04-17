@@ -1,10 +1,10 @@
 import $ from 'jquery';
-import cdn from '../../utils/cdn';
-import extension from '../../utils/extension';
-import settings from '../../settings';
-import watcher from '../../watcher';
-import twitch from '../../utils/twitch';
-import settingsModule from '../settings';
+import cdn from '../../utils/cdn.js';
+import extension from '../../utils/extension.js';
+import settings from '../../settings.js';
+import watcher from '../../watcher.js';
+import twitch from '../../utils/twitch.js';
+import settingsModule from '../settings/index.js';
 
 const TWITCH_THEME_CHANGED_DISPATCH_TYPE = 'core.ui.THEME_CHANGED';
 const TWITCH_THEME_STORAGE_KEY = 'twilight.theme';

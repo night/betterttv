@@ -1,5 +1,5 @@
-import socketClient from '../../socket-client';
-import twitch from '../../utils/twitch';
+import socketClient from '../../socket-client.js';
+import twitch from '../../utils/twitch.js';
 
 const users = new Map();
 

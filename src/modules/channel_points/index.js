@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import settings from '../../settings';
-import domObserver from '../../observers/dom';
+import settings from '../../settings.js';
+import domObserver from '../../observers/dom.js';
 
 const CLAIM_BUTTON_SELECTOR = '.claimable-bonus__icon';
 

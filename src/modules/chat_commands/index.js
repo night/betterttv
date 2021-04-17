@@ -1,8 +1,8 @@
 import moment from 'moment';
-import twitch from '../../utils/twitch';
-import twitchAPI from '../../utils/twitch-api';
-import chat from '../chat';
-import anonChat from '../anon_chat';
+import twitch from '../../utils/twitch.js';
+import twitchAPI from '../../utils/twitch-api.js';
+import chat from '../chat/index.js';
+import anonChat from '../anon_chat/index.js';
 
 const CommandHelp = {
     b: 'Usage: "/b <login> [reason]" - Shortcut for /ban',

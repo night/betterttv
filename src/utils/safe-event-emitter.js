@@ -1,4 +1,4 @@
-import {EventEmitter} from 'events'
+import {EventEmitter} from 'events';
 
 function newListener(listener, ...args) {
     try {

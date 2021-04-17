@@ -1,9 +1,9 @@
 import $ from 'jquery';
-import watcher from '../../watcher';
-import settings from '../settings';
-import highlightBlacklistKeywords from '../chat_highlight_blacklist_keywords';
-import chatFontSettings from '../chat_font_settings';
-import domObserver from '../../observers/dom'
+import watcher from '../../watcher.js';
+import settings from '../settings/index.js';
+import highlightBlacklistKeywords from '../chat_highlight_blacklist_keywords/index.js';
+import chatFontSettings from '../chat_font_settings/index.js';
+import domObserver from '../../observers/dom.js';
 
 const CHAT_SETTINGS_SELECTOR = '.chat-settings__content';
 const MOD_VIEW_CHAT_SETTINGS_SELECTOR = 'button[data-test-selector="chat-widget-settings-switch-to-non-mod"], button[data-test-selector="chat-widget-settings-switch-to-default"]';

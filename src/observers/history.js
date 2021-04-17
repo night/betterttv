@@ -1,4 +1,4 @@
-import SafeEventEmitter from '../utils/safe-event-emitter';
+import SafeEventEmitter from '../utils/safe-event-emitter.js';
 
 class HistoryObserver extends SafeEventEmitter {
     constructor() {

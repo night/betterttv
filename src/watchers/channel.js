@@ -1,6 +1,6 @@
-import api from '../utils/api';
-import debug from '../utils/debug';
-import twitch from '../utils/twitch';
+import api from '../utils/api.js';
+import debug from '../utils/debug.js';
+import twitch from '../utils/twitch.js';
 
 let channel;
 let watcher;
@@ -28,4 +28,4 @@ export default function (watcher_) {
     watcher.on('load.channel', updateChannel);
     watcher.on('load.chat', updateChannel);
     watcher.on('load.vod', updateChannel);
-};
+}

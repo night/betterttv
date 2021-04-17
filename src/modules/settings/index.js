@@ -1,14 +1,14 @@
 import $ from 'jquery';
-import cdn from '../../utils/cdn';
-import debug from '../../utils/debug';
-// import {saveAs} from '../../utils/filesaver';
-import watcher from '../../watcher';
-import settings from '../../settings';
-import storage from '../../storage';
-import html from '../../utils/html';
-import api from '../../utils/api';
+import cdn from '../../utils/cdn.js';
+import debug from '../../utils/debug.js';
+// import {saveAs} from '../../utils/filesaver.js';
+import watcher from '../../watcher.js';
+import settings from '../../settings.js';
+import storage from '../../storage.js';
+import html from '../../utils/html.js';
+import api from '../../utils/api.js';
 import moment from 'moment';
-import domObserver from '../../observers/dom'
+import domObserver from '../../observers/dom.js';
 
 const getSettingElement = ({id}) => $(`.bttvOption-${html.escape(id)}`);
 

@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import settings from '../../settings';
-import watcher from '../../watcher';
+import settings from '../../settings.js';
+import watcher from '../../watcher.js';
 
 class DisableNameColorsModule {
     constructor() {

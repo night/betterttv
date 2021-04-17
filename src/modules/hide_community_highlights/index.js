@@ -1,7 +1,7 @@
 import $ from 'jquery';
-import settings from '../../settings';
-import watcher from '../../watcher';
-import domObserver from '../../observers/dom';
+import settings from '../../settings.js';
+import watcher from '../../watcher.js';
+import domObserver from '../../observers/dom.js';
 
 let removeCommunityHighlightsListener;
 

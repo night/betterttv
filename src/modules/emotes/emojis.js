@@ -1,9 +1,9 @@
 import twemoji from 'twemoji';
 import blacklistedEmoji from '../../utils/emoji-blacklist.js';
-import cdn from '../../utils/cdn';
+import cdn from '../../utils/cdn.js';
 
-import AbstractEmotes from './abstract-emotes';
-import Emote from './emote';
+import AbstractEmotes from './abstract-emotes.js';
+import Emote from './emote.js';
 import emojiBySlug from './emojis-by-slug.json';
 
 const provider = {

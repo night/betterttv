@@ -1,9 +1,9 @@
 import $ from 'jquery';
-import settings from '../../settings';
-import watcher from '../../watcher';
-import twitch from '../../utils/twitch';
-import twitchAPI from '../../utils/twitch-api';
-import domObserver from '../../observers/dom';
+import settings from '../../settings.js';
+import watcher from '../../watcher.js';
+import twitch from '../../utils/twitch.js';
+import twitchAPI from '../../utils/twitch-api.js';
+import domObserver from '../../observers/dom.js';
 
 const SHARE_BUTTON_SELECTOR = 'button[data-a-target="share-button"]';
 const HOST_BUTTON_ID = 'bttv-host-button';

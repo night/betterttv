@@ -1,5 +1,5 @@
-import SafeEventEmitter from './utils/safe-event-emitter';
-import storage from './storage';
+import SafeEventEmitter from './utils/safe-event-emitter.js';
+import storage from './storage.js';
 
 const settings = {};
 

@@ -1,0 +1,15 @@
+{
+  "printWidth": 120,
+  "trailingComma": "es5",
+  "bracketSpacing": false,
+  "singleQuote": true,
+  "jsxBracketSameLine": true,
+  "overrides": [
+    {
+      "files": ["*.css"],
+      "options": {
+        "parser": "css"
+      }
+    }
+  ]
+}

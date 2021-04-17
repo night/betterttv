@@ -5,10 +5,10 @@ async function main() {
     if (!['www.twitch.tv', 'canary.twitch.tv', 'clips.twitch.tv', 'dashboard.twitch.tv', 'embed.twitch.tv'].includes(window.location.hostname)) return;
     if (window.Ember) return;
 
-    const cookies = (await import('cookies-js')).default
-    const debug = (await import('./utils/debug')).default
-    const twitch = (await import('./utils/twitch')).default
-    const watcher = (await import('./watcher')).default
+    const {default: cookies} = await import('cookies-js');
+    const {default: debug} = await import('./utils/debug.js');
+    const {default: twitch} = await import('./utils/twitch.js');
+    const {default: watcher} = await import('./watcher.js');
 
     const userCookie = cookies.get('twilight-user');
     if (userCookie) {
@@ -28,7 +28,7 @@ async function main() {
 
     window.BetterTTV = {
         version: debug.version,
-        settings: (await import('./settings')).default,
+        settings: (await import('./settings.js')).default,
         watcher: {
             emitLoad: name => watcher.emit(`load.${name}`),
         },

@@ -1,8 +1,8 @@
 import $ from 'jquery';
-import twitch from '../utils/twitch';
-import debug from '../utils/debug';
-import domObserver from '../observers/dom';
-import historyObserver from '../observers/history';
+import twitch from '../utils/twitch.js';
+import debug from '../utils/debug.js';
+import domObserver from '../observers/dom.js';
+import historyObserver from '../observers/history.js';
 
 let watcher;
 let currentPath = '';

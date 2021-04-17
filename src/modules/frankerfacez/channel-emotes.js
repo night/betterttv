@@ -1,10 +1,9 @@
-import watcher from '../../watcher';
-import api from '../../utils/api';
-import twitch from '../../utils/twitch';
-import settings from '../../settings';
-
-import AbstractEmotes from '../emotes/abstract-emotes';
-import Emote from '../emotes/emote';
+import watcher from '../../watcher.js';
+import api from '../../utils/api.js';
+import twitch from '../../utils/twitch.js';
+import settings from '../../settings.js';
+import AbstractEmotes from '../emotes/abstract-emotes.js';
+import Emote from '../emotes/emote.js';
 
 const provider = {
     id: 'ffz-channel',

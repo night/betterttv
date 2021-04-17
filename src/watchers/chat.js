@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import twitch from '../utils/twitch';
-import domObserver from '../observers/dom';
+import twitch from '../utils/twitch.js';
+import domObserver from '../observers/dom.js';
 
 const PATCHED_SYMBOL = Symbol();
 
@@ -70,4 +70,4 @@ export default function (watcher_) {
 
         watcher.emit('vod.message', $(node));
     });
-};
+}

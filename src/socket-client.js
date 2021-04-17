@@ -1,6 +1,6 @@
-import SafeEventEmitter from './utils/safe-event-emitter';
-import debug from './utils/debug';
-import twitch from './utils/twitch';
+import SafeEventEmitter from './utils/safe-event-emitter.js';
+import debug from './utils/debug.js';
+import twitch from './utils/twitch.js';
 import throttle from 'lodash.throttle';
 
 const CONNECTION_STATES = {

@@ -1,12 +1,11 @@
-import twitch from '../../utils/twitch';
-import watcher from '../../watcher';
-import debug from '../../utils/debug';
-import socketClient from '../../socket-client';
-
-import chatTabCompletion from '../chat_tab_completion';
-import chatCommands from '../chat_commands';
-import anonChat from '../anon_chat';
-import emojis from '../emotes/emojis';
+import twitch from '../../utils/twitch.js';
+import watcher from '../../watcher.js';
+import debug from '../../utils/debug.js';
+import socketClient from '../../socket-client.js';
+import chatTabCompletion from '../chat_tab_completion/index.js';
+import chatCommands from '../chat_commands/index.js';
+import anonChat from '../anon_chat/index.js';
+import emojis from '../emotes/emojis.js';
 
 const PATCHED_SENTINEL = Symbol();
 

@@ -1,4 +1,4 @@
-import storage from '../storage';
+import storage from '../storage.js';
 
 const VERSION = process.env.EXT_VER;
 

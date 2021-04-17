@@ -1,5 +1,5 @@
-const glob = require('glob');
 const path = require('path');
+const { glob } = require('glob');
 
 function replacer(match, quote, filename) {
     if (!glob.hasMagic(filename)) return match;
@@ -8,20 +8,19 @@ function replacer(match, quote, filename) {
         .sync(filename, {
             cwd: resourceDir
         })
-        .map((file) => {
-            const filename = quote + file + quote;
+        .map(file => {
             return `
                 try {
-                    await import(${filename});
+                    await import(${quote + file + quote});
                 } catch (e) {
                     debug.error('Failed to import ${file}', e.stack);
                 }
-            `
+            `;
         })
         .join('; ');
 }
 
-module.exports = function (source) {
+module.exports = function(source) {
     this.cacheable();
     const regex = /.?import\((['"])(.*?)\1\);?/gm;
     return source.replace(regex, replacer.bind(this));

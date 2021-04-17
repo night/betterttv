@@ -14,4 +14,4 @@ export default class AbstractEmotes {
     getEligibleEmote(code) {
         return this.emotes.get(code);
     }
-};
+}

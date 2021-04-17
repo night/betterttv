@@ -1,9 +1,9 @@
-import watcher from '../../watcher';
-import cdn from '../../utils/cdn';
-import twitch from '../../utils/twitch';
+import watcher from '../../watcher.js';
+import cdn from '../../utils/cdn.js';
+import twitch from '../../utils/twitch.js';
 
-import AbstractEmotes from './abstract-emotes';
-import Emote from './emote';
+import AbstractEmotes from './abstract-emotes.js';
+import Emote from './emote.js';
 
 const provider = {
     id: 'bttv-channel',

@@ -1,7 +1,7 @@
 import $ from 'jquery';
-import watcher from '../../watcher';
-import keyCodes from '../../utils/keycodes';
-import twitch from '../../utils/twitch';
+import watcher from '../../watcher.js';
+import keyCodes from '../../utils/keycodes.js';
+import twitch from '../../utils/twitch.js';
 
 const CHAT_ROOM_SELECTOR = 'section[data-test-selector="chat-room-component-layout"]';
 const CHAT_LINE_SELECTOR = '.chat-line__message';

@@ -1,10 +1,10 @@
 import $ from 'jquery';
 import moment from 'moment';
-import nicknames from '../chat_nicknames';
-import twitch from '../../utils/twitch';
-import twitchAPI from '../../utils/twitch-api';
-import html from '../../utils/html';
-import keyCodes from '../../utils/keycodes';
+import nicknames from '../chat_nicknames/index.js';
+import twitch from '../../utils/twitch.js';
+import twitchAPI from '../../utils/twitch-api.js';
+import html from '../../utils/html.js';
+import keyCodes from '../../utils/keycodes.js';
 
 const Commands = {
     BAN: '/ban',

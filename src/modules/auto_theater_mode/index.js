@@ -1,7 +1,7 @@
 import $ from 'jquery';
-import settings from '../../settings';
-import watcher from '../../watcher';
-import twitch from '../../utils/twitch';
+import settings from '../../settings.js';
+import watcher from '../../watcher.js';
+import twitch from '../../utils/twitch.js';
 
 
 class AutoTheaterModeModule {

@@ -1,7 +1,7 @@
 import $ from 'jquery';
-import watcher from '../../watcher';
-import storage from '../../storage';
-import html from '../../utils/html';
+import watcher from '../../watcher.js';
+import storage from '../../storage.js';
+import html from '../../utils/html.js';
 
 const FONT_FAMILY_PROMPT = `Enter a font family for chat.
 

@@ -1,8 +1,8 @@
 import $ from 'jquery';
-import chat from '../chat';
-import nicknames from '../chat_nicknames';
-import watcher from '../../watcher';
-import colors from '../../utils/colors';
+import chat from '../chat/index.js';
+import nicknames from '../chat_nicknames/index.js';
+import watcher from '../../watcher.js';
+import colors from '../../utils/colors.js';
 
 const CHAT_MESSAGE_SELECTOR = '.video-chat__message span[data-a-target="chat-message-text"]';
 const CHAT_FROM_SELECTOR = '.video-chat__message-author';

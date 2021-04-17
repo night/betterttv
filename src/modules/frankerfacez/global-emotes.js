@@ -1,9 +1,9 @@
-import api from '../../utils/api';
-import watcher from '../../watcher';
-import settings from '../../settings';
+import api from '../../utils/api.js';
+import watcher from '../../watcher.js';
+import settings from '../../settings.js';
 
-import AbstractEmotes from '../emotes/abstract-emotes';
-import Emote from '../emotes/emote';
+import AbstractEmotes from '../emotes/abstract-emotes.js';
+import Emote from '../emotes/emote.js';
 
 const provider = {
     id: 'ffz-global',

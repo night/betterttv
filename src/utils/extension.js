@@ -1,4 +1,4 @@
-import debug from './debug';
+import debug from './debug.js';
 
 export default {
     url(path, breakCache = false) {

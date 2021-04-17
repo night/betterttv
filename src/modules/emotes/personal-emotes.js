@@ -1,10 +1,9 @@
-import socketClient from '../../socket-client';
-import watcher from '../../watcher';
-import twitch from '../../utils/twitch';
-import cdn from '../../utils/cdn';
-
-import AbstractEmotes from './abstract-emotes';
-import Emote from './emote';
+import socketClient from '../../socket-client.js';
+import watcher from '../../watcher.js';
+import twitch from '../../utils/twitch.js';
+import cdn from '../../utils/cdn.js';
+import AbstractEmotes from './abstract-emotes.js';
+import Emote from './emote.js';
 
 const provider = {
     id: 'bttv-personal',

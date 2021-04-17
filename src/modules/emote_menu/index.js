@@ -1,8 +1,8 @@
 import $ from 'jquery';
-import debug from '../../utils/debug';
-import settings from '../../settings';
-import watcher from '../../watcher';
-import emotes from '../emotes';
+import debug from '../../utils/debug.js';
+import settings from '../../settings.js';
+import watcher from '../../watcher.js';
+import emotes from '../emotes/index.js';
 
 class EmoteMenuModule {
     constructor() {
@@ -16,7 +16,7 @@ class EmoteMenuModule {
         watcher.on('load.chat', () => this.load());
     }
 
-    load() {
+    async load() {
         if (window.emoteMenu) {
             if (settings.get('clickTwitchEmotes') === true) {
                 $('#emote-menu-button').show();
@@ -30,7 +30,7 @@ class EmoteMenuModule {
         if (settings.get('clickTwitchEmotes') === false) return;
 
         debug.log('Injecting Twitch Chat Emotes Script');
-        require('twitch-chat-emotes/script.min');
+        await import('twitch-chat-emotes/script.min.js');
 
         debug.log('Hooking into Twitch Chat Emotes Script');
         try { // try/catch protects against re-registered emote getters

@@ -1,7 +1,7 @@
 import $ from 'jquery';
-import watcher from '../../watcher';
-import twitch from '../../utils/twitch';
-import ModeratorCard from './moderator-card';
+import watcher from '../../watcher.js';
+import twitch from '../../utils/twitch.js';
+import ModeratorCard from './moderator-card.js';
 
 let openModeratorCard;
 

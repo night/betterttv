@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import watcher from '../../watcher';
-import twitch from '../../utils/twitch';
+import watcher from '../../watcher.js';
+import twitch from '../../utils/twitch.js';
 
 const STRAWPOLL_REGEX = /strawpoll\.me\/([0-9]+)/g;
 

@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import settings from '../../settings';
+import settings from '../../settings.js';
 
 class ChatLeftSide {
     constructor() {

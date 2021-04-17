@@ -1,4 +1,4 @@
-import html from '../../utils/html';
+import html from '../../utils/html.js';
 
 export default class Emote {
     constructor({id, provider, channel, code, images, imageType = 'png', restrictionCallback = null}) {
@@ -40,4 +40,4 @@ export default class Emote {
             </div>
         `;
     }
-};
+}

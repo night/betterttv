@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import twitchAPI from './twitch-api';
+import twitchAPI from './twitch-api.js';
 
 const REACT_ROOT = '#root div';
 const CHAT_CONTAINER = 'section[data-test-selector="chat-room-component-layout"]';

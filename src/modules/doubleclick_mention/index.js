@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import watcher from '../../watcher';
-import twitch from '../../utils/twitch';
+import watcher from '../../watcher.js';
+import twitch from '../../utils/twitch.js';
 
 const CHAT_ROOM_SELECTOR = '.chat-list,.chat-list--default,.chat-list--other';
 const CHAT_TEXT_AREA = '.chat-input textarea';

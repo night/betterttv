@@ -1,12 +1,12 @@
 import $ from 'jquery';
-import watcher from '../../watcher';
-import settings from '../../settings';
-import storage from '../../storage';
-import html from '../../utils/html';
-import twitch from '../../utils/twitch';
-import cdn from '../../utils/cdn';
+import watcher from '../../watcher.js';
+import settings from '../../settings.js';
+import storage from '../../storage.js';
+import html from '../../utils/html.js';
+import twitch from '../../utils/twitch.js';
+import cdn from '../../utils/cdn.js';
 import moment from 'moment';
-import regex from '../../utils/regex';
+import regex from '../../utils/regex.js';
 
 const escapeRegExp = regex.escape;
 

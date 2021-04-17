@@ -1,5 +1,5 @@
 import cookies from 'cookies-js';
-import SafeEventEmitter from './utils/safe-event-emitter';
+import SafeEventEmitter from './utils/safe-event-emitter.js';
 
 class Storage extends SafeEventEmitter {
     constructor() {

@@ -1,11 +1,11 @@
-import twitch from '../../utils/twitch';
-import globalEmotes from './global-emotes';
-import channelEmotes from './channel-emotes';
-import personalEmotes from './personal-emotes';
-import emojis from './emojis';
-import frankerfacezGlobalEmotes from '../frankerfacez/global-emotes';
-import frankerfacezChannelEmotes from '../frankerfacez/channel-emotes';
-import settings from '../../settings';
+import twitch from '../../utils/twitch.js';
+import globalEmotes from './global-emotes.js';
+import channelEmotes from './channel-emotes.js';
+import personalEmotes from './personal-emotes.js';
+import emojis from './emojis.js';
+import frankerfacezGlobalEmotes from '../frankerfacez/global-emotes.js';
+import frankerfacezChannelEmotes from '../frankerfacez/channel-emotes.js';
+import settings from '../../settings.js';
 
 class EmotesModule {
     constructor() {

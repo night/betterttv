@@ -1,7 +1,7 @@
 import $ from 'jquery';
-import settings from '../../settings';
-import watcher from '../../watcher';
-import chat from '../chat';
+import settings from '../../settings.js';
+import watcher from '../../watcher.js';
+import chat from '../chat/index.js';
 
 const CHAT_USER_SELECTOR = '.thread-message__message--user-name';
 const CHAT_MESSAGE_SELECTOR = 'span[data-a-target="chat-message-text"]';

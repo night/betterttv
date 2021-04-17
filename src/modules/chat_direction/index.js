@@ -1,7 +1,7 @@
 import $ from 'jquery';
-import settings from '../../settings';
-import watcher from '../../watcher';
-import twitch from '../../utils/twitch';
+import settings from '../../settings.js';
+import watcher from '../../watcher.js';
+import twitch from '../../utils/twitch.js';
 
 const CHAT_LIST_SCROLL_CONTENT = '.chat-list .simplebar-scroll-content,.chat-list--default .simplebar-scroll-content,.chat-list--other .simplebar-scroll-content';
 

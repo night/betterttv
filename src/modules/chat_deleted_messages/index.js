@@ -1,7 +1,7 @@
 import $ from 'jquery';
-import watcher from '../../watcher';
-import twitch from '../../utils/twitch';
-import settings from '../../settings';
+import watcher from '../../watcher.js';
+import twitch from '../../utils/twitch.js';
+import settings from '../../settings.js';
 
 const CHAT_LINE_SELECTOR = '.chat-line__message';
 const CHAT_LINE_LINK_SELECTOR = 'a.link-fragment';

@@ -1,7 +1,7 @@
 import $ from 'jquery';
-import watcher from '../../watcher';
-import settings from '../../settings';
-import domObserver from '../../observers/dom';
+import watcher from '../../watcher.js';
+import settings from '../../settings.js';
+import domObserver from '../../observers/dom.js';
 
 let removeFeaturedChannelsListener;
 let removeOfflineFollowedChannelsListener;
