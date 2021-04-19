@@ -92,6 +92,10 @@ const emojisBySlug = () => src('node_modules/emoji-toolkit/emoji.json')
             };
             result[data.slug] = data;
             for (const alternativeShortName of emojiData.shortname_alternates) {
+                // :tf: is a legacy betterttv global emote
+                if (alternativeShortName === ':tf:') {
+                    continue;
+                }
                 result[alternativeShortName.replace(/:/g, '')] = data;
             }
         }
