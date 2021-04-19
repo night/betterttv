@@ -42,7 +42,7 @@ function patchChatController() {
     twitchHandleMessage = handleMessage;
 }
 
-export default function (watcher_) {
+export default function(watcher_) {
     watcher = watcher_;
 
     watcher.on('load.chat', () => patchChatController());

@@ -6,8 +6,10 @@
     "es6": true
   },
 
+  "parser": "babel-eslint",
   "parserOptions": {
-      "sourceType": "module"
+    "sourceType": "module",
+    "allowImportExportEverywhere": true
   },
   
   "globals": {},

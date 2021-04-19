@@ -22,7 +22,7 @@ function updateChannel() {
         .then(data => watcher.emit('channel.updated', data));
 }
 
-export default function (watcher_) {
+export default function(watcher_) {
     watcher = watcher_;
 
     watcher.on('load.channel', updateChannel);

@@ -7,14 +7,14 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import RemovePlugin from 'remove-files-webpack-plugin';
 import fs from 'fs/promises';
 import path from 'path';
-import { createRequire } from "module";
+import { createRequire } from 'module';
 import globPkg from 'glob';
 import TerserPlugin from 'terser-webpack-plugin';
 import postcssUrl from 'postcss-url';
 import got from 'got';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 
-const git = createRequire(import.meta.url)("git-rev-sync");
+const git = createRequire(import.meta.url)('git-rev-sync');
 const { EnvironmentPlugin, optimize } = webpack;
 const { glob } = globPkg;
 
@@ -51,16 +51,15 @@ function jsonTransform(emojis) {
     return result;
 }
 
-export default async (env, argv) => {
-
-    const PROD = argv.mode === 'production'
+export default async(env, argv) => {
+    const PROD = argv.mode === 'production';
     const PORT = 2888;
     const PROD_ENDPOINT = 'https://cdn.betterttv.net/';
     const DEV_ENDPOINT = `http://127.0.0.1:${PORT}/`;
     const CDN_ENDPOINT = PROD ? PROD_ENDPOINT : DEV_ENDPOINT;
 
-    const { version } = JSON.parse(await fs.readFile('./package.json'))
-    const emotes = JSON.parse(await fs.readFile('./node_modules/emoji-toolkit/emoji.json'))
+    const { version } = JSON.parse(await fs.readFile('./package.json'));
+    const emotes = JSON.parse(await fs.readFile('./node_modules/emoji-toolkit/emoji.json'));
 
     return {
         devServer: {
@@ -68,10 +67,10 @@ export default async (env, argv) => {
             compress: true,
             port: PORT,
             after: function(app) {
-                app.get('*', async (req, res) => {
+                app.get('*', async(req, res) => {
                     got.stream(`${PROD_ENDPOINT}${req.path}`)
-                        .on('error', err => res.sendStatus(404))
-                        .pipe(res)
+                        .on('error', () => res.sendStatus(404))
+                        .pipe(res);
                 });
             },
         },
@@ -130,7 +129,7 @@ export default async (env, argv) => {
                     test: /\.css$/,
                 }),
             ],
-          },
+        },
         plugins: [
             new webpack.BannerPlugin({
                 banner: (await fs.readFile('LICENSE')).toString(),
