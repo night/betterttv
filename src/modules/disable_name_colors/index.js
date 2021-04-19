@@ -10,6 +10,12 @@ class DisableNameColorsModule {
             defaultValue: false,
             description: 'Disables username colors in chat (useful for those with color blindness)'
         });
+        settings.add({
+            id: 'readableUsernameColors',
+            name: 'Readable Name Colors',
+            defaultValue: true,
+            description: 'Makes chat usernames higher contrast (prevents hard to read names)'
+        });
         settings.on('changed.disableUsernameColors', () => this.load());
         watcher.on('load.chat', () => this.load());
     }

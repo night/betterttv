@@ -78,6 +78,10 @@ class ChatModule {
     }
 
     calculateColor(color) {
+        if (!settings.get('readableUsernameColors')) {
+            return color;
+        }
+
         return colors.calculateColor(color, settings.get('darkenedMode'));
     }
 
