@@ -11,8 +11,8 @@ class EmotesModule {
     constructor() {
         this.emoteProviders = [
             personalEmotes,
-            globalEmotes,
             channelEmotes,
+            globalEmotes,
             frankerfacezGlobalEmotes,
             frankerfacezChannelEmotes,
             emojis
