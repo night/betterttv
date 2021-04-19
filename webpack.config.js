@@ -1,4 +1,3 @@
-/* Plugins */
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import webpack from 'webpack';
 import VirtualModulesPlugin from 'webpack-virtual-modules';
