@@ -14,10 +14,11 @@ Getting the essentials
 Development
 ----
 
-We use gulp to concatenate all of the files and templates into one. We include a dev module that creates a server to imitate the CDN when gulp is watching. Just run the following command from the BetterTTV directory.
+We use webpack to concatenate all of the files and templates into one. 
+Just run the following command from the BetterTTV directory to start a dev server.
 
 ```
-gulp watch
+npm start
 ```
 
 A webserver will start and you are able to use the development version of BetterTTV on Twitch using this userscript in a script manager like TamperMonkey:
@@ -59,7 +60,7 @@ Linting
 ---
 We use [ESLint](https://eslint.org/) to ensure a consistent code style and avoid buggy code.
 
-Running ```gulp``` will automatically check for any errors in the code. Please fix any errors before creating a pull request. Any warnings produced prior to your changes can be ignored.
+Running ```npm run lint``` will automatically check for any errors in the code. Please fix any errors before creating a pull request. Any warnings produced prior to your changes can be ignored.
 
 **Live Linting with Sublime Text:**
 

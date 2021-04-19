@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import cdn from '../../utils/cdn.js';
 import debug from '../../utils/debug.js';
-// import {saveAs} from '../../utils/filesaver.js';
+import { save } from 'save-file';
 import watcher from '../../watcher.js';
 import settings from '../../settings.js';
 import storage from '../../storage.js';
@@ -228,13 +228,8 @@ class SettingsModule {
     }
 
     backup() {
-        let rv = storage.getStorage();
-
-        rv = new Blob([JSON.stringify(rv)], {
-            type: 'text/plain;charset=utf-8;'
-        });
-
-        saveAs(rv, 'bttv_settings.backup');
+        const rv = storage.getStorage();
+        save(JSON.stringify(rv), 'bttv_settings.backup');
     }
 
     import(target) {

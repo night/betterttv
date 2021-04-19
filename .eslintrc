@@ -7,7 +7,7 @@
   },
 
   "parserOptions": {
-      "sourceType": "module",
+      "sourceType": "module"
   },
   
   "globals": {},
