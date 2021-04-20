@@ -21,144 +21,144 @@ const CUSTOM_TIMEOUT_TEMPLATE = `
     </div>
 `;
 const ActionTypes = {
-    CANCEL: 'cancel',
-    TIMEOUT: 'timeout',
-    BAN: 'ban',
-    DELETE: 'delete'
+  CANCEL: 'cancel',
+  TIMEOUT: 'timeout',
+  BAN: 'ban',
+  DELETE: 'delete',
 };
 
 let action;
 let user;
 
 function setReason(type) {
-    const reason = prompt(`Enter ${type} reason: (leave blank for none)`);
-    return reason || '';
+  const reason = prompt(`Enter ${type} reason: (leave blank for none)`);
+  return reason || '';
 }
 
 function handleTimeoutClick(e, messageId) {
-    const $customTimeout = $(`#${CUSTOM_TIMEOUT_ID}`);
-    if (!$customTimeout.length || e.which === keyCodes.DOMVKCancel) return;
+  const $customTimeout = $(`#${CUSTOM_TIMEOUT_ID}`);
+  if (!$customTimeout.length || e.which === keyCodes.DOMVKCancel) return;
 
-    if ($customTimeout.is(':hover')) {
-        let command;
-        let duration;
-        if (action.type === ActionTypes.BAN) {
-            command = '/ban';
-        } else if (action.type === ActionTypes.TIMEOUT) {
-            command = '/timeout';
-            duration = action.length;
-        } else if (action.type === ActionTypes.DELETE) {
-            twitch.sendChatMessage(`/delete ${messageId}`);
-        }
-        if (command && user) {
-            const reason = e.shiftKey ? setReason(action.type) : '';
-            twitch.sendChatMessage(`${command} ${user}${duration ? ` ${duration}` : ''}${reason ? ` ${reason}` : ''}`);
-        }
+  if ($customTimeout.is(':hover')) {
+    let command;
+    let duration;
+    if (action.type === ActionTypes.BAN) {
+      command = '/ban';
+    } else if (action.type === ActionTypes.TIMEOUT) {
+      command = '/timeout';
+      duration = action.length;
+    } else if (action.type === ActionTypes.DELETE) {
+      twitch.sendChatMessage(`/delete ${messageId}`);
     }
+    if (command && user) {
+      const reason = e.shiftKey ? setReason(action.type) : '';
+      twitch.sendChatMessage(`${command} ${user}${duration ? ` ${duration}` : ''}${reason ? ` ${reason}` : ''}`);
+    }
+  }
 
-    $customTimeout.remove();
+  $customTimeout.remove();
 }
 
 function handleMouseMove(e) {
-    const $customTimeout = $(`#${CUSTOM_TIMEOUT_ID}`);
-    if (!$customTimeout.length) return;
+  const $customTimeout = $(`#${CUSTOM_TIMEOUT_ID}`);
+  if (!$customTimeout.length) return;
 
-    const offset = e.pageY - $customTimeout.offset().top;
-    const offsetx = e.pageX - $customTimeout.offset().left;
-    const amount = 224 - offset;
-    const time = Math.floor(Math.pow(1.5, (amount - 45) / 6.5) * 60);
+  const offset = e.pageY - $customTimeout.offset().top;
+  const offsetx = e.pageX - $customTimeout.offset().left;
+  const amount = 224 - offset;
+  const time = Math.floor(Math.pow(1.5, (amount - 45) / 6.5) * 60);
 
-    let humanTime;
-    if (Math.floor(time / 60 / 60 / 24) > 0) {
-        humanTime = `${Math.floor(time / 60 / 60 / 24)} Days`;
-    } else if (Math.floor(time / 60 / 60) > 0) {
-        humanTime = `${Math.floor(time / 60 / 60)} Hours`;
-    } else {
-        humanTime = `${Math.floor(time / 60)} Minutes`;
-    }
+  let humanTime;
+  if (Math.floor(time / 60 / 60 / 24) > 0) {
+    humanTime = `${Math.floor(time / 60 / 60 / 24)} Days`;
+  } else if (Math.floor(time / 60 / 60) > 0) {
+    humanTime = `${Math.floor(time / 60 / 60)} Hours`;
+  } else {
+    humanTime = `${Math.floor(time / 60)} Minutes`;
+  }
 
-    if (amount > 224 || amount < 0 || offsetx > 83 || offsetx < 0) {
-        action = {
-            type: ActionTypes.CANCEL,
-            length: 0,
-            text: 'CANCEL'
-        };
-    } else if (amount > 45 && amount < 204) {
-        action = {
-            type: ActionTypes.TIMEOUT,
-            length: time,
-            text: humanTime
-        };
-    } else if (amount >= 204 && amount <= 224) {
-        action = {
-            type: ActionTypes.BAN,
-            length: 0,
-            text: 'BAN'
-        };
-    } else if (amount > 22 && amount <= 45) {
-        action = {
-            type: ActionTypes.TIMEOUT,
-            length: 1,
-            text: 'PURGE'
-        };
-    } else if (amount > 0 && amount <= 22) {
-        action = {
-            type: ActionTypes.DELETE,
-            length: 0,
-            text: 'DELETE'
-        };
-    }
+  if (amount > 224 || amount < 0 || offsetx > 83 || offsetx < 0) {
+    action = {
+      type: ActionTypes.CANCEL,
+      length: 0,
+      text: 'CANCEL',
+    };
+  } else if (amount > 45 && amount < 204) {
+    action = {
+      type: ActionTypes.TIMEOUT,
+      length: time,
+      text: humanTime,
+    };
+  } else if (amount >= 204 && amount <= 224) {
+    action = {
+      type: ActionTypes.BAN,
+      length: 0,
+      text: 'BAN',
+    };
+  } else if (amount > 22 && amount <= 45) {
+    action = {
+      type: ActionTypes.TIMEOUT,
+      length: 1,
+      text: 'PURGE',
+    };
+  } else if (amount > 0 && amount <= 22) {
+    action = {
+      type: ActionTypes.DELETE,
+      length: 0,
+      text: 'DELETE',
+    };
+  }
 
-    $customTimeout.find('.text').text(action.text);
-    $customTimeout.find('.cursor').css('top', offset);
+  $customTimeout.find('.text').text(action.text);
+  $customTimeout.find('.cursor').css('top', offset);
 }
 
 function openCustomTimeout($target, messageId) {
-    if ($(`#${CUSTOM_TIMEOUT_ID}`).length) return;
+  if ($(`#${CUSTOM_TIMEOUT_ID}`).length) return;
 
-    const $chat = $(CHAT_ROOM_SELECTOR);
-    $('body').append(CUSTOM_TIMEOUT_TEMPLATE);
+  const $chat = $(CHAT_ROOM_SELECTOR);
+  $('body').append(CUSTOM_TIMEOUT_TEMPLATE);
 
-    const $customTimeout = $(`#${CUSTOM_TIMEOUT_ID}`);
+  const $customTimeout = $(`#${CUSTOM_TIMEOUT_ID}`);
 
-    $customTimeout.css({
-        top: $target.offset().top + ($target.height() / 2) - ($customTimeout.height() / 2),
-        left: $chat.offset().left - $customTimeout.width() + $chat.width() - 20
-    });
+  $customTimeout.css({
+    top: $target.offset().top + $target.height() / 2 - $customTimeout.height() / 2,
+    left: $chat.offset().left - $customTimeout.width() + $chat.width() - 20,
+  });
 
-    action = {
-        type: ActionTypes.CANCEL,
-        length: 0,
-        text: 'CANCEL'
-    };
+  action = {
+    type: ActionTypes.CANCEL,
+    length: 0,
+    text: 'CANCEL',
+  };
 
-    $customTimeout.on('mousemove', handleMouseMove);
-    $customTimeout.on('mousedown', e => handleTimeoutClick(e, messageId));
+  $customTimeout.on('mousemove', handleMouseMove);
+  $customTimeout.on('mousedown', (e) => handleTimeoutClick(e, messageId));
 }
 
 function handleClick(e) {
-    if (!twitch.getCurrentUserIsModerator()) return;
-    e.preventDefault();
+  if (!twitch.getCurrentUserIsModerator()) return;
+  e.preventDefault();
 
-    const $chatLine = $(e.currentTarget).closest(CHAT_LINE_SELECTOR);
-    const msgObject = twitch.getChatMessageObject($chatLine[0]);
-    if (!msgObject) return;
-    user = msgObject.user.userLogin;
-    openCustomTimeout($(e.currentTarget), msgObject.id);
+  const $chatLine = $(e.currentTarget).closest(CHAT_LINE_SELECTOR);
+  const msgObject = twitch.getChatMessageObject($chatLine[0]);
+  if (!msgObject) return;
+  user = msgObject.user.userLogin;
+  openCustomTimeout($(e.currentTarget), msgObject.id);
 }
 
 class ChatCustomTimeoutsModule {
-    constructor() {
-        watcher.on('load.chat', () => this.loadClickHandler());
-    }
+  constructor() {
+    watcher.on('load.chat', () => this.loadClickHandler());
+  }
 
-    loadClickHandler() {
-        $(CHAT_ROOM_SELECTOR)
-            .off('contextmenu', CHAT_LINE_USERNAME_SELECTOR, handleClick)
-            .on('contextmenu', CHAT_LINE_USERNAME_SELECTOR, handleClick)
-            .off('click', handleTimeoutClick)
-            .on('click', handleTimeoutClick);
-    }
+  loadClickHandler() {
+    $(CHAT_ROOM_SELECTOR)
+      .off('contextmenu', CHAT_LINE_USERNAME_SELECTOR, handleClick)
+      .on('contextmenu', CHAT_LINE_USERNAME_SELECTOR, handleClick)
+      .off('click', handleTimeoutClick)
+      .on('click', handleTimeoutClick);
+  }
 }
 
 export default new ChatCustomTimeoutsModule();

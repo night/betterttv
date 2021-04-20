@@ -1,17 +1,17 @@
 export default class AbstractEmotes {
-    constructor() {
-        this.emotes = new Map();
+  constructor() {
+    this.emotes = new Map();
 
-        if (this.provider === undefined) {
-            throw new TypeError('Must set "provider" attribute');
-        }
+    if (this.provider === undefined) {
+      throw new TypeError('Must set "provider" attribute');
     }
+  }
 
-    getEmotes() {
-        return [...this.emotes.values()];
-    }
+  getEmotes() {
+    return [...this.emotes.values()];
+  }
 
-    getEligibleEmote(code) {
-        return this.emotes.get(code);
-    }
+  getEligibleEmote(code) {
+    return this.emotes.get(code);
+  }
 }

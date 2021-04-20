@@ -6,8 +6,10 @@ import chatFontSettings from '../chat_font_settings/index.js';
 import domObserver from '../../observers/dom.js';
 
 const CHAT_SETTINGS_SELECTOR = '.chat-settings__content';
-const MOD_VIEW_CHAT_SETTINGS_SELECTOR = 'button[data-test-selector="chat-widget-settings-switch-to-non-mod"], button[data-test-selector="chat-widget-settings-switch-to-default"]';
-const CHAT_SETTINGS_BACK_BUTTON_SELECTOR = 'button[data-test-selector="chat-settings-back-button"], button[data-test-selector="chat-widget-settings-back-button"]';
+const MOD_VIEW_CHAT_SETTINGS_SELECTOR =
+  'button[data-test-selector="chat-widget-settings-switch-to-non-mod"], button[data-test-selector="chat-widget-settings-switch-to-default"]';
+const CHAT_SETTINGS_BACK_BUTTON_SELECTOR =
+  'button[data-test-selector="chat-settings-back-button"], button[data-test-selector="chat-widget-settings-back-button"]';
 const CHAT_SETTINGS_MOD_TOOLS_SELECTOR = 'div[data-test-selector="mod-tools"]';
 const BTTV_CHAT_SETTINGS_CLASS = 'bttv-chat-settings';
 
@@ -30,91 +32,91 @@ const CHAT_SETTINGS_TEMPLATE = `
             <button class="clearChat tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable--default tw-interactable--hover-enabled tw-interactable tw-interactive">Clear My Chat</button>
         </div>
         <div class="tw-full-width tw-relative">${
-    !$('.twilight-minimal-root').length ? (
-        '<button class="openSettings tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable--default tw-interactable--hover-enabled tw-interactable tw-interactive">BetterTTV Settings</button>'
-    ) : ''}</div>
+          !$('.twilight-minimal-root').length
+            ? '<button class="openSettings tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable--default tw-interactable--hover-enabled tw-interactable tw-interactive">BetterTTV Settings</button>'
+            : ''
+        }</div>
     </div>
 `;
 
 function inIFrame() {
-    try {
-        return !!window.frameElement;
-    } catch (e) {
-        return true;
-    }
+  try {
+    return !!window.frameElement;
+  } catch (e) {
+    return true;
+  }
 }
 
 function getChatSettings() {
-    const $modViewChatSettings = $(MOD_VIEW_CHAT_SETTINGS_SELECTOR);
-    if ($modViewChatSettings.length > 0) {
-        return $modViewChatSettings.parent();
-    }
+  const $modViewChatSettings = $(MOD_VIEW_CHAT_SETTINGS_SELECTOR);
+  if ($modViewChatSettings.length > 0) {
+    return $modViewChatSettings.parent();
+  }
 
-    const $chatSettings = $(CHAT_SETTINGS_SELECTOR);
-    return $chatSettings;
+  const $chatSettings = $(CHAT_SETTINGS_SELECTOR);
+  return $chatSettings;
 }
 
 function getSettings() {
-    return getChatSettings().find(`.${BTTV_CHAT_SETTINGS_CLASS}`);
+  return getChatSettings().find(`.${BTTV_CHAT_SETTINGS_CLASS}`);
 }
 
 class ChatSettingsModule {
-    constructor() {
-        watcher.on('load.chat', () => this.load());
-        this.renderSettings = this.renderSettings.bind(this);
+  constructor() {
+    watcher.on('load.chat', () => this.load());
+    this.renderSettings = this.renderSettings.bind(this);
+  }
+
+  load() {
+    domObserver.on(CHAT_SETTINGS_SELECTOR, (node, isConnected) => {
+      if (!isConnected) return;
+      this.renderSettings();
+    });
+    domObserver.on(MOD_VIEW_CHAT_SETTINGS_SELECTOR, () => {
+      this.renderSettings();
+    });
+    domObserver.on(CHAT_SETTINGS_BACK_BUTTON_SELECTOR, (node, isConnected) => {
+      if (!isConnected) {
+        this.renderSettings();
+        return;
+      }
+      getSettings().remove();
+    });
+    domObserver.on(CHAT_SETTINGS_MOD_TOOLS_SELECTOR, () => {
+      this.renderSettings();
+    });
+  }
+
+  renderSettings() {
+    if (inIFrame()) return;
+
+    let $settings = getSettings();
+    // Hide the settings when in an iframe for now
+    if ($settings.length) {
+      $settings.remove();
     }
 
-    load() {
-        domObserver.on(CHAT_SETTINGS_SELECTOR, (node, isConnected) => {
-            if (!isConnected) return;
-            this.renderSettings();
-        });
-        domObserver.on(MOD_VIEW_CHAT_SETTINGS_SELECTOR, () => {
-            this.renderSettings();
-        });
-        domObserver.on(CHAT_SETTINGS_BACK_BUTTON_SELECTOR, (node, isConnected) => {
-            if (!isConnected) {
-                this.renderSettings();
-                return;
-            }
-            getSettings().remove();
-        });
-        domObserver.on(CHAT_SETTINGS_MOD_TOOLS_SELECTOR, () => {
-            this.renderSettings();
-        });
+    // if within a nested menu, do not show bttv settings
+    if ($(CHAT_SETTINGS_BACK_BUTTON_SELECTOR).length > 0) {
+      return;
     }
 
-    renderSettings() {
-        if (inIFrame()) return;
+    getChatSettings().append(CHAT_SETTINGS_TEMPLATE);
 
-        let $settings = getSettings();
-        // Hide the settings when in an iframe for now
-        if ($settings.length) {
-            $settings.remove();
-        }
+    $settings = getSettings();
 
-        // if within a nested menu, do not show bttv settings
-        if ($(CHAT_SETTINGS_BACK_BUTTON_SELECTOR).length > 0) {
-            return;
-        }
+    $settings.find('.openSettings').click(settings.openSettings);
+    $settings.find('.clearChat').click((e) => {
+      e.preventDefault();
+      $('.chat-line__message, .channel-points-reward-line, .user-notice-line').hide();
+    });
 
-        getChatSettings().append(CHAT_SETTINGS_TEMPLATE);
+    $settings.find('.setHighlightKeywords').click(highlightBlacklistKeywords.setHighlightKeywords);
+    $settings.find('.setBlacklistKeywords').click(highlightBlacklistKeywords.setBlacklistKeywords);
 
-        $settings = getSettings();
-
-        $settings.find('.openSettings').click(settings.openSettings);
-        $settings.find('.clearChat').click(e => {
-            e.preventDefault();
-            $('.chat-line__message, .channel-points-reward-line, .user-notice-line').hide();
-        });
-
-        $settings.find('.setHighlightKeywords').click(highlightBlacklistKeywords.setHighlightKeywords);
-        $settings.find('.setBlacklistKeywords').click(highlightBlacklistKeywords.setBlacklistKeywords);
-
-        $settings.find('.setFontFamily').click(chatFontSettings.setFontFamily);
-        $settings.find('.setFontSize').click(chatFontSettings.setFontSize);
-    }
+    $settings.find('.setFontFamily').click(chatFontSettings.setFontFamily);
+    $settings.find('.setFontSize').click(chatFontSettings.setFontSize);
+  }
 }
 
 export default new ChatSettingsModule();
-

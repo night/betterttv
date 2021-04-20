@@ -1,4 +1,3 @@
-export default text => {
-    return text.replace(/[-[\]{}()+?.,\\^$|#\s]/g, '\\$&');
+export default (text) => {
+  return text.replace(/[-[\]{}()+?.,\\^$|#\s]/g, '\\$&');
 };
-

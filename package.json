@@ -30,6 +30,8 @@
     "css-minimizer-webpack-plugin": "^2.0.0",
     "emoji-toolkit": "^6.5.1",
     "eslint": "^7.24.0",
+    "eslint-config-prettier": "^8.2.0",
+    "eslint-plugin-prettier": "^3.4.0",
     "extract-text-webpack-plugin": "^3.0.2",
     "git-rev-sync": "^3.0.1",
     "glob": "^7.1.6",
