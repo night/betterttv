@@ -68,8 +68,7 @@ export default async(env, argv) => {
             port: PORT,
             after: app => {
                 app.get('*', (req, res) => {
-                    got
-                        .stream(`${PROD_ENDPOINT}${req.path}`)
+                    got.stream(`${PROD_ENDPOINT}${req.path}`)
                         .on('error', () => res.sendStatus(404))
                         .pipe(res);
                 });
