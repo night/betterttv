@@ -22,6 +22,6 @@ function replacer(match, quote, filename) {
 
 module.exports = function(source) {
     this.cacheable();
-    const regex = /.?import\((['"])(.*?)\1\);?/gm;
+    const regex = /.?await import\((['"])(.*?)\1\);?/gm;
     return source.replace(regex, replacer.bind(this));
 };

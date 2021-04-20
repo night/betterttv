@@ -29,7 +29,7 @@
         }
     }
 
-    import('./modules/**/index.js');
+    await import('./modules/**/index.js');
 
     watcher.setup();
 
