@@ -1,25 +1,18 @@
 import debug from './utils/debug.js';
 import SafeEventEmitter from './utils/safe-event-emitter.js';
 
-import channelWatcher from './watchers/channel.js';
-import clipsWatcher from './watchers/clips.js';
-import chatWatcher from './watchers/chat.js';
-import conversationWatcher from './watchers/conversations.js';
-import routesWatcher from './watchers/routes.js';
-
-
 const CLIPS_HOSTNAME = 'clips.twitch.tv';
 
 class Watcher extends SafeEventEmitter {
-    setup() {
-        channelWatcher(this);
+    async setup() {
+        (await import('./watchers/channel.js')).default(this);
 
         if (window.location.hostname === CLIPS_HOSTNAME) {
-            clipsWatcher(this);
+            (await import('./watchers/clips.js')).default(this);
         } else {
-            chatWatcher(this);
-            conversationWatcher(this);
-            routesWatcher(this);
+            (await import('./watchers/chat.js')).default(this);
+            (await import('./watchers/conversations.js')).default(this);
+            (await import('./watchers/routes.js')).default(this);
         }
 
         debug.log('Watcher started');
