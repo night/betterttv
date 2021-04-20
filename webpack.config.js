@@ -19,17 +19,16 @@ const {glob} = globPkg;
 
 function convertEmojiToolkitCodePointToChar(codePoint) {
     if (codePoint.includes('-')) {
-        return codePoint
-            .split('-')
+        return codePoint.split('-')
             .map(subCodePoint => convertEmojiToolkitCodePointToChar(subCodePoint))
             .join('');
     }
 
     const charCode = parseInt(codePoint, 16);
-    if (charCode >= 0x10000 && charCode <= 0x10ffff) {
-        const high = Math.floor((charCode - 0x10000) / 0x400) + 0xd800;
-        const low = ((charCode - 0x10000) % 0x400) + 0xdc00;
-        return String.fromCharCode(high) + String.fromCharCode(low);
+    if (charCode >= 0x10000 && charCode <= 0x10FFFF) {
+        const high = Math.floor((charCode - 0x10000) / 0x400) + 0xD800;
+        const low = ((charCode - 0x10000) % 0x400) + 0xDC00;
+        return (String.fromCharCode(high) + String.fromCharCode(low));
     }
 
     return String.fromCharCode(charCode);
@@ -45,6 +44,10 @@ function jsonTransform(emojis) {
         };
         result[data.slug] = data;
         for (const alternativeShortName of emojiData.shortname_alternates) {
+            // :tf: is a legacy betterttv global emote
+            if (alternativeShortName === ':tf:') {
+                continue;
+            }
             result[alternativeShortName.replace(/:/g, '')] = data;
         }
     }

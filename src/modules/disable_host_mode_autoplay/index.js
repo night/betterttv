@@ -38,7 +38,7 @@ class DisableHostModeAutoplayModule {
             if (removeHostingIndicatorListener) return;
 
             removeHostingIndicatorListener = domObserver.on(
-                '.tw-align-items-center a[data-a-target="hosting-ui-link"], .channel-status-info--hosting',
+                '.tw-align-items-center a[data-a-target="hosting-ui-link"], .metadata-layout__secondary-button-spacing a[data-a-target="hosting-ui-link"], .channel-status-info--hosting',
                 (node, isConnected) => {
                     if (!isConnected) return;
                     pauseVideo();
