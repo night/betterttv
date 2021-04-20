@@ -65,8 +65,8 @@ export default async(env, argv) => {
             contentBase: path.resolve('./build'),
             compress: true,
             port: PORT,
-            after: function(app) {
-                app.get('*', =(req, res) => {
+            after: app => {
+                app.get('*', (req, res) => {
                     got.stream(`${PROD_ENDPOINT}${req.path}`)
                         .on('error', () => res.sendStatus(404))
                         .pipe(res);
