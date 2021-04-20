@@ -8,9 +8,7 @@ before_script:
 script: npm run lint && npm run build:prod
 notifications:
   email: false
-cache:
-  directories:
-  - node_modules
+cache: npm
 deploy:
   provider: releases
   api_key:
