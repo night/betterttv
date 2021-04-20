@@ -1,5 +1,5 @@
 
-async function main() {
+(async() => {
     if (!String.prototype.includes || !Array.prototype.findIndex) return;
     if (window.location.pathname.endsWith('.html')) return;
     if (!['www.twitch.tv', 'canary.twitch.tv', 'clips.twitch.tv', 'dashboard.twitch.tv', 'embed.twitch.tv'].includes(window.location.hostname)) return;
@@ -33,6 +33,4 @@ async function main() {
             emitLoad: name => watcher.emit(`load.${name}`),
         },
     };
-}
-
-main();
+})();
