@@ -66,7 +66,7 @@ export default async(env, argv) => {
             compress: true,
             port: PORT,
             after: function(app) {
-                app.get('*', async(req, res) => {
+                app.get('*', =(req, res) => {
                     got.stream(`${PROD_ENDPOINT}${req.path}`)
                         .on('error', () => res.sendStatus(404))
                         .pipe(res);
