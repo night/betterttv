@@ -6,9 +6,7 @@ import html from '../../utils/html.js';
 import twitch from '../../utils/twitch.js';
 import cdn from '../../utils/cdn.js';
 import moment from 'moment';
-import regex from '../../utils/regex.js';
-
-const escapeRegExp = regex.escape;
+import escapeRegExp from '../../utils/regex.js';
 
 const PHRASE_REGEX = /\{.+?\}/g;
 const USER_REGEX = /\(.+?\)/g;

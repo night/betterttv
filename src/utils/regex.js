@@ -1,15 +1,4 @@
-function escape(text) {
+export default text => {
     return text.replace(/[-[\]{}()+?.,\\^$|#\s]/g, '\\$&');
-}
-
-function stripAll(haystack, needle) {
-    while (haystack.indexOf(needle) > -1) {
-        haystack = haystack.replace(needle, '');
-    }
-    return haystack;
-}
-
-export default {
-    escape,
-    stripAll
 };
+
