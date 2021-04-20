@@ -9,8 +9,7 @@
     "start": "webpack serve --mode development",
     "build": "webpack --mode development",
     "build:prod": "webpack --mode production",
-    "lint": "eslint '**/*.js'",
-    "pretty": "prettier --check '**/*.js'"
+    "lint": "eslint '**/*.js' && prettier --check '**/*.js'"
   },
   "repository": {
     "type": "git",

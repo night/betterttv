@@ -1,12 +1,12 @@
 const path = require('path');
-const { glob } = require('glob');
+const {glob} = require('glob');
 
 function replacer(match, quote, filename) {
     if (!glob.hasMagic(filename)) return match;
     const resourceDir = path.dirname(this.resourcePath);
     return glob
         .sync(filename, {
-            cwd: resourceDir
+            cwd: resourceDir,
         })
         .map(file => {
             return `
@@ -22,6 +22,6 @@ function replacer(match, quote, filename) {
 
 module.exports = function(source) {
     this.cacheable();
-    const regex = /.?import\((['"])(.*?)\1\);?/gm;
+    const regex = /.?await import\((['"])(.*?)\1\);?/gm;
     return source.replace(regex, replacer.bind(this));
 };

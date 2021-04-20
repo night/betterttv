@@ -1,12 +1,12 @@
-import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import webpack from 'webpack';
+import {CleanWebpackPlugin} from 'clean-webpack-plugin';
 import VirtualModulesPlugin from 'webpack-virtual-modules';
 import CopyPlugin from 'copy-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import RemovePlugin from 'remove-files-webpack-plugin';
 import fs from 'fs/promises';
 import path from 'path';
-import { createRequire } from 'module';
+import {createRequire} from 'module';
 import globPkg from 'glob';
 import TerserPlugin from 'terser-webpack-plugin';
 import postcssUrl from 'postcss-url';
@@ -14,21 +14,22 @@ import got from 'got';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 
 const git = createRequire(import.meta.url)('git-rev-sync');
-const { EnvironmentPlugin, optimize } = webpack;
-const { glob } = globPkg;
+const {EnvironmentPlugin, optimize} = webpack;
+const {glob} = globPkg;
 
 function convertEmojiToolkitCodePointToChar(codePoint) {
     if (codePoint.includes('-')) {
-        return codePoint.split('-')
+        return codePoint
+            .split('-')
             .map(subCodePoint => convertEmojiToolkitCodePointToChar(subCodePoint))
             .join('');
     }
 
     const charCode = parseInt(codePoint, 16);
-    if (charCode >= 0x10000 && charCode <= 0x10FFFF) {
-        const high = Math.floor((charCode - 0x10000) / 0x400) + 0xD800;
-        const low = ((charCode - 0x10000) % 0x400) + 0xDC00;
-        return (String.fromCharCode(high) + String.fromCharCode(low));
+    if (charCode >= 0x10000 && charCode <= 0x10ffff) {
+        const high = Math.floor((charCode - 0x10000) / 0x400) + 0xd800;
+        const low = ((charCode - 0x10000) % 0x400) + 0xdc00;
+        return String.fromCharCode(high) + String.fromCharCode(low);
     }
 
     return String.fromCharCode(charCode);
@@ -57,7 +58,7 @@ export default async(env, argv) => {
     const DEV_ENDPOINT = `http://127.0.0.1:${PORT}/`;
     const CDN_ENDPOINT = PROD ? PROD_ENDPOINT : DEV_ENDPOINT;
 
-    const { version } = JSON.parse(await fs.readFile('./package.json'));
+    const {version} = JSON.parse(await fs.readFile('./package.json'));
     const emotes = JSON.parse(await fs.readFile('./node_modules/emoji-toolkit/emoji.json'));
 
     return {
@@ -65,8 +66,8 @@ export default async(env, argv) => {
             contentBase: path.resolve('./build'),
             compress: true,
             port: PORT,
-            after: function(app) {
-                app.get('*', async(req, res) => {
+            after: app => {
+                app.get('*', (req, res) => {
                     got.stream(`${PROD_ENDPOINT}${req.path}`)
                         .on('error', () => res.sendStatus(404))
                         .pipe(res);
@@ -75,7 +76,7 @@ export default async(env, argv) => {
         },
         entry: {
             betterttv: './src/index.js',
-            css: glob.sync('./src/modules/**/*.css')
+            css: glob.sync('./src/modules/**/*.css'),
         },
         output: {
             filename: '[name].js',
@@ -115,11 +116,11 @@ export default async(env, argv) => {
                         loader: 'babel-loader',
                         options: {
                             presets: ['@babel/preset-env'],
-                            plugins: ['@babel/plugin-transform-runtime']
-                        }
-                    }
+                            plugins: ['@babel/plugin-transform-runtime'],
+                        },
+                    },
                 },
-            ]
+            ],
         },
         optimization: {
             minimize: PROD,
@@ -141,23 +142,19 @@ export default async(env, argv) => {
                 EXT_VER: version,
                 GIT_REV: git.long(),
                 SENTRY_URL: process.env.SENTRY_URL || 'https://24dfd2854f97465da5fb14fcea77278c@sentry.io/144851',
-                CDN_ENDPOINT: CDN_ENDPOINT
+                CDN_ENDPOINT: CDN_ENDPOINT,
             }),
             new optimize.LimitChunkCountPlugin({
                 maxChunks: 1,
             }),
             new CopyPlugin({
-                patterns: [
-                    { from: './src/assets', to: './assets' },
-                ],
+                patterns: [{from: './src/assets', to: './assets'}],
             }),
             new CleanWebpackPlugin(),
             new RemovePlugin({
                 after: {
-                    include: [
-                        './build/css.js',
-                    ]
-                }
+                    include: ['./build/css.js'],
+                },
             }),
             new MiniCssExtractPlugin({
                 filename: 'betterttv.css',
@@ -166,9 +163,8 @@ export default async(env, argv) => {
                 'src/modules/emotes/emojis-by-slug.json': JSON.stringify(jsonTransform(emotes)),
             }),
             new TerserPlugin({
-                extractComments: false
-            })
-        ]
+                extractComments: false,
+            }),
+        ],
     };
 };
-
