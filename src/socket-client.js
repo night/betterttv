@@ -83,8 +83,7 @@ class SocketClient extends SafeEventEmitter {
       socket = null;
     }
 
-    // eslint-disable-next-line no-restricted-properties
-    setTimeout(() => this.connect(), Math.random() * (Math.pow(2, attempts) - 1) * 30000);
+    setTimeout(() => this.connect(), Math.random() ** (2, attempts) - 1) * 30000;
   }
 
   send(name, data) {

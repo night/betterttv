@@ -35,12 +35,11 @@ function secondsToLength(s) {
   const minutes = Math.floor(s / 60) - days * 1440 - hours * 60;
   const seconds = s - days * 86400 - hours * 3600 - minutes * 60;
 
-  return `${
-    (days > 0 ? `${days} day${days === 1 ? '' : 's'}, ` : '') +
-    (hours > 0 ? `${hours} hour${hours === 1 ? '' : 's'}, ` : '') +
-    (minutes > 0 ? `${minutes} minute${minutes === 1 ? '' : 's'}, ` : '') +
-    seconds
-  } second${seconds === 1 ? '' : 's'}`;
+  return `${days > 0 ? `${days} day${days === 1 ? '' : 's'}, ` : ''} ${
+    hours > 0 ? `${hours} hour${hours === 1 ? '' : 's'}, ` : ''
+  }  ${minutes > 0 ? `${minutes} minute${minutes === 1 ? '' : 's'}, ` : ''} ${seconds} seconds${
+    seconds === 1 ? '' : 's'
+  }`;
 }
 
 function massUnban() {

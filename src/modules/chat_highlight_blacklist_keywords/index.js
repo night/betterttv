@@ -165,7 +165,7 @@ function messageTextFromAST(ast) {
         case 6: // Emote
           return node.content.alt;
         default:
-          return false;
+          return '';
       }
     })
     .join(' ');
