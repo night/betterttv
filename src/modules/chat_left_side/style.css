@@ -1,114 +1,116 @@
 .bttv-swap-chat {
-    .right-column {
-        order: 1;
+  .right-column {
+    order: 1;
+  }
+
+  .twilight-main {
+    order: 2;
+  }
+
+  #sideNav,
+  .side-nav {
+    order: 3;
+
+    .collapse-toggle {
+      transform: rotate(180deg);
     }
+  }
 
-    .twilight-main {
-        order: 2;
+  /* Restore channel content and player size */
+  .channel-root__right-column.channel-root__right-column--expanded:not(.channel-root__right-column--home) {
+    position: relative !important;
+    transform: none !important;
+  }
+
+  .channel-root__right-column.channel-root__right-column--home {
+    display: none !important;
+  }
+
+  .channel-root__player--with-chat {
+    width: 100% !important;
+  }
+
+  .channel-info-content {
+    width: 100% !important;
+  }
+
+  /* Header overlap with collapseable column */
+  .channel-header .tw-sm-pd-r-4 .channel-header__left {
+    margin-left: 3.5rem;
+  }
+
+  /* Toggle Visibility Arrows */
+  .side-nav__toggle-visibility {
+    right: unset;
+    left: -2.5rem;
+    transform: rotate(-180deg);
+  }
+
+  .side-nav--collapsed .side-nav__toggle-visibility {
+    transform: rotate(180deg);
+  }
+
+  .right-column__toggle-visibility {
+    left: 1rem;
+    transform: rotate(180deg);
+
+    .tw-tooltip {
+      display: none !important;
     }
+  }
 
-    #sideNav, .side-nav {
-        order: 3;
+  .right-column--collapsed .right-column__toggle-visibility {
+    transform: rotate(-180deg);
+  }
 
-        .collapse-toggle {
-            transform: rotate(180deg);
-        }
+  /* Friend Hover Balloon */
+  .user-card-layer__balloon {
+    left: calc(100% - 65rem) !important;
+
+    .tw-balloon__tail {
+      margin: 0 -3px 0 0;
+      left: unset;
+      right: 0;
     }
+  }
 
-    /* Restore channel content and player size */
-    .channel-root__right-column.channel-root__right-column--expanded:not(.channel-root__right-column--home) {
-        position: relative !important;
-        transform: none !important;
-    }
+  /* Theatre Mode */
+  .persistent-player--theatre,
+  .channel-page__video-player--theatre-mode {
+    left: auto !important;
+    right: 0;
+  }
 
-    .channel-root__right-column.channel-root__right-column--home {
-        display: none !important;
-    }
+  .channel-root--watch-chat + .persistent-player {
+    width: 100%;
+  }
 
-    .channel-root__player--with-chat {
-        width: 100% !important;
-    }
+  .right-column--theatre {
+    right: unset !important;
+  }
 
-    .channel-info-content {
-        width: 100% !important;
-    }
+  .right-column__toggle-visibility {
+    z-index: 1000 !important;
+  }
 
-    /* Header overlap with collapseable column */
-    .channel-header .tw-sm-pd-r-4 .channel-header__left {
-        margin-left: 3.5rem;
-    }
+  /* order overrides z-index when auto on Firefox, which breaks the settings popout */
+  .right-column {
+    z-index: 3 !important;
+  }
 
-    /* Toggle Visibility Arrows */
-    .side-nav__toggle-visibility {
-        right: unset;
-        left: -2.5rem;
-        transform: rotate(-180deg);
-    }
+  /* Subscriber balloons on channel page */
+  .chat-input div.tw-balloon[data-a-target='sub-balloon'] {
+    left: auto !important;
+    right: unset !important;
+  }
 
-    .side-nav--collapsed .side-nav__toggle-visibility {
-        transform: rotate(180deg);
-    }
+  /* flips direction on squad streams */
+  .multi-stream-player-layout {
+    flex-direction: row-reverse;
+  }
 
-    .right-column__toggle-visibility {
-        left: 1rem;
-        transform: rotate(180deg);
-
-        .tw-tooltip {
-            display: none !important;
-        }
-    }
-
-    .right-column--collapsed .right-column__toggle-visibility {
-        transform: rotate(-180deg);
-    }
-
-    /* Friend Hover Balloon */
-    .user-card-layer__balloon {
-        left: calc(100% - 65rem) !important;
-
-        .tw-balloon__tail {
-            margin: 0 -3px 0 0;
-            left: unset;
-            right: 0;
-        }
-    }
-
-    /* Theatre Mode */
-    .persistent-player--theatre, .channel-page__video-player--theatre-mode {
-        left: auto !important;
-        right: 0;
-    }
-
-    .channel-root--watch-chat + .persistent-player {
-        width: 100%;
-    }
-
-    .right-column--theatre {
-        right: unset !important;
-    }
-
-    .right-column__toggle-visibility {
-        z-index: 1000 !important;
-    }
-
-    /* order overrides z-index when auto on Firefox, which breaks the settings popout */
-    .right-column {
-        z-index: 3 !important;
-    }
-
-    /* Subscriber balloons on channel page */
-    .chat-input div.tw-balloon[data-a-target="sub-balloon"] {
-        left: auto !important;
-        right: unset !important;
-    }
-
-    /* flips direction on squad streams */
-    .multi-stream-player-layout {
-        flex-direction: row-reverse;
-    }
-
-    /* chat settings */
-    div[data-a-target="chat-settings-balloon"] {
-        margin-right: -25.3rem !important;
-    }
+  /* chat settings */
+  div[data-a-target='chat-settings-balloon'] {
+    margin-right: -25.3rem !important;
+  }
 }

@@ -32,6 +32,7 @@
   }
 }
 
-.chat-line__message.bttv-highlighted, .vod-message.bttv-highlighted {
+.chat-line__message.bttv-highlighted,
+.vod-message.bttv-highlighted {
   background-color: rgba(255, 0, 0, 0.3) !important;
 }

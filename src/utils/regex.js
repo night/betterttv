@@ -1,15 +1,4 @@
-function escape(text) {
-    return text.replace(/[-[\]{}()+?.,\\^$|#\s]/g, '\\$&');
+/* eslint-disable-next-line import/prefer-default-export */
+export function escapeRegExp(text) {
+  return text.replace(/[-[\]{}()+?.,\\^$|#\s]/g, '\\$&');
 }
-
-function stripAll(haystack, needle) {
-    while (haystack.indexOf(needle) > -1) {
-        haystack = haystack.replace(needle, '');
-    }
-    return haystack;
-}
-
-module.exports = {
-    escape,
-    stripAll
-};

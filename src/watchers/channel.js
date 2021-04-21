@@ -1,31 +1,32 @@
-const api = require('../utils/api');
-const debug = require('../utils/debug');
-const twitch = require('../utils/twitch');
+import api from '../utils/api.js';
+import debug from '../utils/debug.js';
+import twitch from '../utils/twitch.js';
 
 let channel;
 let watcher;
 function updateChannel() {
-    const currentChannel = twitch.getCurrentChannel();
-    if (!currentChannel || (channel && currentChannel.id === channel.id)) return;
+  const currentChannel = twitch.getCurrentChannel();
+  if (!currentChannel || (channel && currentChannel.id === channel.id)) return;
 
-    debug.log(`Channel Observer: ${currentChannel.name} (${currentChannel.id}) loaded.`);
+  debug.log(`Channel Observer: ${currentChannel.name} (${currentChannel.id}) loaded.`);
 
-    channel = currentChannel;
+  channel = currentChannel;
 
-    api.get(`cached/users/twitch/${channel.id}`)
-        .catch(error => ({
-            bots: [],
-            channelEmotes: [],
-            sharedEmotes: [],
-            status: error.status || 0
-        }))
-        .then(data => watcher.emit('channel.updated', data));
+  api
+    .get(`cached/users/twitch/${channel.id}`)
+    .catch((error) => ({
+      bots: [],
+      channelEmotes: [],
+      sharedEmotes: [],
+      status: error.status || 0,
+    }))
+    .then((data) => watcher.emit('channel.updated', data));
 }
 
-module.exports = watcher_ => {
-    watcher = watcher_;
+export default function channelWatcher(watcher_) {
+  watcher = watcher_;
 
-    watcher.on('load.channel', updateChannel);
-    watcher.on('load.chat', updateChannel);
-    watcher.on('load.vod', updateChannel);
-};
+  watcher.on('load.channel', updateChannel);
+  watcher.on('load.chat', updateChannel);
+  watcher.on('load.vod', updateChannel);
+}

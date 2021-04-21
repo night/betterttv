@@ -1,8 +1,8 @@
-const debug = require('./debug');
+import debug from './debug.js';
 
-module.exports = {
-    url(path, breakCache = false) {
-        const url = new URL(path, document.currentScript.src);
-        return `${url.toString()}${breakCache ? `?v=${debug.version}` : ''}`;
-    }
+export default {
+  url(path, breakCache = false) {
+    const url = new URL(path, document.currentScript.src);
+    return `${url.toString()}${breakCache ? `?v=${debug.version}` : ''}`;
+  },
 };

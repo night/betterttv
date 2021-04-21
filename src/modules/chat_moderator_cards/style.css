@@ -1,103 +1,104 @@
 .viewer-card__actions .tw-c-background-alt-2 .viewer-card-drag-cancel {
-    .tw-pd-r-1, .tw-pd-l-1 {
-        padding-right: 0px !important;
-        padding-left: 0px !important;
-    }
+  .tw-pd-r-1,
+  .tw-pd-l-1 {
+    padding-right: 0px !important;
+    padding-left: 0px !important;
+  }
 
-    .tw-mg-r-1 {
-        margin-right: 0px !important;
-    }
+  .tw-mg-r-1 {
+    margin-right: 0px !important;
+  }
 }
 
 .viewer-card__display-name h4 {
-    display: inline-block;
+  display: inline-block;
 }
 
 .bttv-moderator-card-actions > div {
-    position: relative;
+  position: relative;
 }
 
 .bttv-moderator-card-action {
-    font-size: 1rem;
+  font-size: 1rem;
 
-    .tw-button__text {
-        height: 28px;
-        padding-right: 6px;
-        padding-left: 6px;
-    }
+  .tw-button__text {
+    height: 28px;
+    padding-right: 6px;
+    padding-left: 6px;
+  }
 }
 
 .bttv-moderator-card-user-stats {
-    color: white;
-    padding-bottom: 10px;
-    background-color: rgba(0,0,0,0.6);
+  color: white;
+  padding-bottom: 10px;
+  background-color: rgba(0, 0, 0, 0.6);
 }
 
 .bttv-moderator-card-nickname-change-button {
-    margin-top: -5px;
+  margin-top: -5px;
 }
 
 .bttv-moderator-card-messages {
-    border-top: 1px solid #222;
+  border-top: 1px solid #222;
 
-    .message-list {
-        overflow-y: auto;
-        max-height: 100px;
-        width: 100%;
-        display: none;
+  .message-list {
+    overflow-y: auto;
+    max-height: 100px;
+    width: 100%;
+    display: none;
 
-        &::-webkit-scrollbar {
-            width: 5px;
-        }
-
-        &::-webkit-scrollbar-thumb {
-            border-radius: 10px;
-            box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-            background-color: #777;
-        }
-
-        .chat-line__mod-icons {
-            display: none !important;
-        }
-
-        /* Prevent Message Delete Link */
-        .chat-line__message--deleted > a {
-            pointer-events: none;
-        }
+    &::-webkit-scrollbar {
+      width: 5px;
     }
 
-    .label {
-        padding-top: 5px;
-        padding-left: 8px;
-        padding-bottom: 5px;
-        padding-right: 5px;
-        position: relative;
-        font-size: 12px;
-        font-weight: bold;
-        cursor: pointer;
-        user-select: none;
-
-        .triangle {
-            width: 0;
-            height: 0;
-            opacity: 0.5;
-            position: absolute;
-            right: 8px;
-            top: 8px;
-            border-top: 7px solid transparent;
-            border-bottom: 7px solid transparent;
-            border-left: 7px solid #6441a4;
-            transition: all 50ms ease-in;
-
-            &.open {
-                transform: rotate(90deg);
-            }
-        }
+    &::-webkit-scrollbar-thumb {
+      border-radius: 10px;
+      box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+      background-color: #777;
     }
+
+    .chat-line__mod-icons {
+      display: none !important;
+    }
+
+    /* Prevent Message Delete Link */
+    .chat-line__message--deleted > a {
+      pointer-events: none;
+    }
+  }
+
+  .label {
+    padding-top: 5px;
+    padding-left: 8px;
+    padding-bottom: 5px;
+    padding-right: 5px;
+    position: relative;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    user-select: none;
+
+    .triangle {
+      width: 0;
+      height: 0;
+      opacity: 0.5;
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      border-top: 7px solid transparent;
+      border-bottom: 7px solid transparent;
+      border-left: 7px solid #6441a4;
+      transition: all 50ms ease-in;
+
+      &.open {
+        transform: rotate(90deg);
+      }
+    }
+  }
 }
 
 .tw-root--theme-dark {
-    .bttv-moderator-card-messages .triangle {
-        border-left-color: white;
-    }
+  .bttv-moderator-card-messages .triangle {
+    border-left-color: white;
+  }
 }

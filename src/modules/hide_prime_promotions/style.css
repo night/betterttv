@@ -3,7 +3,7 @@
     display: none;
   }
 
-  [data-test-selector="test_selector_prime_tracking_button_wrapper"] [data-a-target="blue-bar"] {
+  [data-test-selector='test_selector_prime_tracking_button_wrapper'] [data-a-target='blue-bar'] {
     display: none;
   }
 }

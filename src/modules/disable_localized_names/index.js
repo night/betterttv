@@ -1,27 +1,27 @@
-const settings = require('../../settings');
-const watcher = require('../../watcher');
+import settings from '../../settings.js';
+import watcher from '../../watcher.js';
 
 class DisableLocalizedNamesModule {
-    constructor() {
-        settings.add({
-            id: 'disableLocalizedNames',
-            name: 'Disable Localized Names',
-            defaultValue: false,
-            description: 'Hides localized display names in chat'
-        });
-        watcher.on('chat.message', $el => this.delocalizeName($el));
-    }
+  constructor() {
+    settings.add({
+      id: 'disableLocalizedNames',
+      name: 'Disable Localized Names',
+      defaultValue: false,
+      description: 'Hides localized display names in chat',
+    });
+    watcher.on('chat.message', ($el) => this.delocalizeName($el));
+  }
 
-    delocalizeName($el) {
-        if (settings.get('disableLocalizedNames') === false) return;
+  delocalizeName($el) {
+    if (settings.get('disableLocalizedNames') === false) return;
 
-        const $name = $el.find('.chat-author__display-name');
-        const $login = $el.find('.chat-author__intl-login');
-        if (!$login.length) return;
+    const $name = $el.find('.chat-author__display-name');
+    const $login = $el.find('.chat-author__intl-login');
+    if (!$login.length) return;
 
-        $name.text($login.text().replace(/[\(\)]/g, '').trim());
-        $login.remove();
-    }
+    $name.text($login.text().replace(/[()]/g, '').trim());
+    $login.remove();
+  }
 }
 
-module.exports = new DisableLocalizedNamesModule();
+export default new DisableLocalizedNamesModule();

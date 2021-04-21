@@ -1,84 +1,80 @@
-const twitch = require('../../utils/twitch');
-const watcher = require('../../watcher');
-const debug = require('../../utils/debug');
-const socketClient = require('../../socket-client');
+import twitch from '../../utils/twitch.js';
+import watcher from '../../watcher.js';
+import debug from '../../utils/debug.js';
+import socketClient from '../../socket-client.js';
+import chatTabCompletion from '../chat_tab_completion/index.js';
+import chatCommands from '../chat_commands/index.js';
+import anonChat from '../anon_chat/index.js';
+import emojis from '../emotes/emojis.js';
 
-const chatTabCompletion = require('../chat_tab_completion');
-const chatCommands = require('../chat_commands');
-const anonChat = require('../anon_chat');
-const emojis = require('../emotes/emojis');
-
-const PATCHED_SENTINEL = Symbol();
+const PATCHED_SENTINEL = Symbol('patched symbol');
 
 class SendState {
-    constructor(msg) {
-        this.message = msg;
-        this.defaultPrevented = false;
-    }
+  constructor(msg) {
+    this.message = msg;
+    this.defaultPrevented = false;
+  }
 
-    get user() {
-        return twitch.getCurrentUser();
-    }
+  get user() {
+    return twitch.getCurrentUser();
+  }
 
-    preventDefault() {
-        this.defaultPrevented = true;
-        this.message = '';
-    }
+  preventDefault() {
+    this.defaultPrevented = true;
+    this.message = '';
+  }
 }
 
 let twitchSendMessage;
 const methodList = [
-    msgObj => chatTabCompletion.onSendMessage(msgObj),
-    msgObj => chatCommands.onSendMessage(msgObj),
-    msgObj => anonChat.onSendMessage(msgObj),
-    msgObj => emojis.onSendMessage(msgObj)
+  (msgObj) => chatTabCompletion.onSendMessage(msgObj),
+  (msgObj) => chatCommands.onSendMessage(msgObj),
+  (msgObj) => anonChat.onSendMessage(msgObj),
+  (msgObj) => emojis.onSendMessage(msgObj),
 ];
 
 function bttvSendMessage(messageToSend, ...args) {
-    const channel = twitch.getCurrentChannel();
-    if (channel) {
-        socketClient.broadcastMe(channel.name);
+  const channel = twitch.getCurrentChannel();
+  if (channel) {
+    socketClient.broadcastMe(channel.name);
+  }
+
+  if (typeof messageToSend === 'string') {
+    const sendState = new SendState(messageToSend);
+
+    for (const method of methodList) {
+      try {
+        method(sendState);
+      } catch (e) {
+        debug.log(e);
+      }
     }
 
-    if (typeof messageToSend === 'string') {
-        const sendState = new SendState(messageToSend);
+    if (sendState.defaultPrevented) return Promise.resolve();
+    messageToSend = sendState.message;
+  }
 
-        for (const method of methodList) {
-            try {
-                method(sendState);
-            } catch (e) {
-                debug.log(e);
-            }
-        }
-
-        if (sendState.defaultPrevented) return Promise.resolve();
-        messageToSend = sendState.message;
-    }
-
-    return twitchSendMessage.call(this, messageToSend, ...args);
+  return twitchSendMessage.call(this, messageToSend, ...args);
 }
 
 class SendMessagePatcher {
-    constructor() {
-        watcher.on('load.chat', () => this.patch());
+  constructor() {
+    watcher.on('load.chat', () => this.patch());
+  }
+
+  patch() {
+    const chatController = twitch.getChatController();
+    if (!chatController) return;
+
+    if (chatController._bttvSendMessagePatched === PATCHED_SENTINEL || chatController.sendMessage === bttvSendMessage) {
+      return;
     }
 
-    patch() {
-        const chatController = twitch.getChatController();
-        if (!chatController) return;
-
-        if (
-            chatController._bttvSendMessagePatched === PATCHED_SENTINEL ||
-            chatController.sendMessage === bttvSendMessage
-        ) {
-            return;
-        }
-
-        chatController._bttvSendMessagePatched = PATCHED_SENTINEL;
-        twitchSendMessage = chatController.sendMessage;
-        chatController.sendMessage = bttvSendMessage;
-        chatController.forceUpdate();
-    }
+    chatController._bttvSendMessagePatched = PATCHED_SENTINEL;
+    twitchSendMessage = chatController.sendMessage;
+    chatController.sendMessage = bttvSendMessage;
+    chatController.forceUpdate();
+  }
 }
 
-module.exports = new SendMessagePatcher();
+export default new SendMessagePatcher();

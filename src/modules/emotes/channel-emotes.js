@@ -1,50 +1,53 @@
-const watcher = require('../../watcher');
-const cdn = require('../../utils/cdn');
-const twitch = require('../../utils/twitch');
+import watcher from '../../watcher.js';
+import cdn from '../../utils/cdn.js';
+import twitch from '../../utils/twitch.js';
 
-const AbstractEmotes = require('./abstract-emotes');
-const Emote = require('./emote');
+import AbstractEmotes from './abstract-emotes.js';
+import Emote from './emote.js';
 
 const provider = {
-    id: 'bttv-channel',
-    displayName: 'BetterTTV Channel Emotes',
-    badge: cdn.url('tags/developer.png')
+  id: 'bttv-channel',
+  displayName: 'BetterTTV Channel Emotes',
+  badge: cdn.url('tags/developer.png'),
 };
 
 class ChannelEmotes extends AbstractEmotes {
-    constructor() {
-        super();
+  constructor() {
+    super();
 
-        watcher.on('channel.updated', d => this.updateChannelEmotes(d));
-    }
+    watcher.on('channel.updated', (d) => this.updateChannelEmotes(d));
+  }
 
-    get provider() {
-        return provider;
-    }
+  get provider() {
+    return provider;
+  }
 
-    updateChannelEmotes({channelEmotes, sharedEmotes}) {
-        this.emotes.clear();
+  updateChannelEmotes({channelEmotes, sharedEmotes}) {
+    this.emotes.clear();
 
-        const emotes = channelEmotes.concat(sharedEmotes);
-        const currentChannel = twitch.getCurrentChannel();
+    const emotes = channelEmotes.concat(sharedEmotes);
+    const currentChannel = twitch.getCurrentChannel();
 
-        emotes.forEach(({id, user, code, imageType}) => (
-            this.emotes.set(code, new Emote({
-                id,
-                provider: this.provider,
-                channel: user || currentChannel,
-                code,
-                images: {
-                    '1x': cdn.emoteUrl(id, '1x'),
-                    '2x': cdn.emoteUrl(id, '2x'),
-                    '4x': cdn.emoteUrl(id, '3x')
-                },
-                imageType
-            }))
-        ));
+    emotes.forEach(({id, user, code, imageType}) =>
+      this.emotes.set(
+        code,
+        new Emote({
+          id,
+          provider: this.provider,
+          channel: user || currentChannel,
+          code,
+          images: {
+            '1x': cdn.emoteUrl(id, '1x'),
+            '2x': cdn.emoteUrl(id, '2x'),
+            '4x': cdn.emoteUrl(id, '3x'),
+          },
+          imageType,
+        })
+      )
+    );
 
-        setTimeout(() => watcher.emit('emotes.updated'), 0);
-    }
+    setTimeout(() => watcher.emit('emotes.updated'), 0);
+  }
 }
 
-module.exports = new ChannelEmotes();
+export default new ChannelEmotes();

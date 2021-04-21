@@ -1,5 +1,5 @@
 .bttv-hide-tab-completion-tooltip {
-  .tw-balloon[data-a-target="autocomplete-balloon"] {
+  .tw-balloon[data-a-target='autocomplete-balloon'] {
     display: none !important;
   }
 }
