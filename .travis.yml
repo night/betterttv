@@ -1,10 +1,8 @@
 language: node_js
 env:
-- NODE_ENV=production
+  - NODE_ENV=production
 node_js:
-- '15.10'
-before_script:
-- which gulp || npm install -g gulp
+  - '15.10'
 script: npm run lint && npm run build:prod
 notifications:
   email: false
