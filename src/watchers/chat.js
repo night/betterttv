@@ -2,7 +2,7 @@ import $ from 'jquery';
 import twitch from '../utils/twitch.js';
 import domObserver from '../observers/dom.js';
 
-const PATCHED_SYMBOL = Symbol();
+const PATCHED_SYMBOL = Symbol('patched symbol');
 
 let twitchHandleMessage;
 let watcher;
@@ -16,17 +16,17 @@ function bttvHandleMessage(message) {
         isPrevented = true;
       },
     });
-    if (isPrevented) return;
+    if (isPrevented) return false;
   }
 
-  return twitchHandleMessage.call(this, ...arguments);
+  return twitchHandleMessage.call(this, message);
 }
 
 function patchChatController() {
   const chatController = twitch.getChatController();
   if (!chatController) return;
 
-  const messageHandlerAPI = chatController.props.messageHandlerAPI;
+  const {messageHandlerAPI} = chatController.props;
   if (!messageHandlerAPI) return;
 
   const {handleMessage} = messageHandlerAPI;
@@ -39,7 +39,7 @@ function patchChatController() {
   twitchHandleMessage = handleMessage;
 }
 
-export default function (watcher_) {
+export default (watcher_) => {
   watcher = watcher_;
 
   watcher.on('load.chat', () => patchChatController());
@@ -71,4 +71,4 @@ export default function (watcher_) {
 
     watcher.emit('vod.message', $(node));
   });
-}
+};

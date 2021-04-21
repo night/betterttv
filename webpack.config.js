@@ -147,7 +147,7 @@ export default async (env, argv) => {
         EXT_VER: version,
         GIT_REV: git.long(),
         SENTRY_URL: process.env.SENTRY_URL || 'https://24dfd2854f97465da5fb14fcea77278c@sentry.io/144851',
-        CDN_ENDPOINT: CDN_ENDPOINT,
+        CDN_ENDPOINT,
       }),
       new optimize.LimitChunkCountPlugin({
         maxChunks: 1,

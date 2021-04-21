@@ -192,8 +192,8 @@ class ModeratorCard {
   }
 
   onKeyDown(e) {
-    if (e.ctrlKey || e.metaKey || e.shiftKey) return;
-    if ($('input, textarea, select').is(':focus')) return;
+    if (e.ctrlKey || e.metaKey || e.shiftKey) return false;
+    if ($('input, textarea, select').is(':focus')) return false;
 
     const keyCode = e.keyCode || e.which;
     if (keyCode === keyCodes.Esc) {
@@ -220,11 +220,13 @@ class ModeratorCard {
         case keyCodes.B:
           command = Commands.BAN;
           break;
+        default:
+          break;
       }
       if (command) {
         twitch.sendChatMessage(`${command} ${this.user.name}${duration ? ` ${duration}` : ''}`);
         this.close();
-        return;
+        return false;
       }
     }
 
@@ -238,6 +240,7 @@ class ModeratorCard {
       $chatInput.focus();
       this.close();
     }
+    return true;
   }
 }
 

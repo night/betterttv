@@ -2,7 +2,7 @@ import $ from 'jquery';
 import twitch from '../utils/twitch.js';
 import domObserver from '../observers/dom.js';
 
-export default function (watcher) {
+export default (watcher) => {
   domObserver.on('.tw-mg-b-1', (node, isConnected) => {
     if (!isConnected || !node.parentNode.classList.contains('clips-chat-replay')) return;
     watcher.emit('clips.message', $(node));
@@ -25,4 +25,4 @@ export default function (watcher) {
     interval = undefined;
     clearTimeout(timeoutInterval);
   }, 100);
-}
+};

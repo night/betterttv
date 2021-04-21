@@ -36,6 +36,8 @@ class HideChatEventsModule {
           preventDefault();
         }
         break;
+      default:
+        break;
     }
   }
 }

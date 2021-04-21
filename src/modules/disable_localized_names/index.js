@@ -19,12 +19,7 @@ class DisableLocalizedNamesModule {
     const $login = $el.find('.chat-author__intl-login');
     if (!$login.length) return;
 
-    $name.text(
-      $login
-        .text()
-        .replace(/[\(\)]/g, '')
-        .trim()
-    );
+    $name.text($login.text().replace(/[()]/g, '').trim());
     $login.remove();
   }
 }

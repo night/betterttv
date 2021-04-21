@@ -1,10 +1,10 @@
 import {EventEmitter} from 'events';
 
-function newListener(listener, ...args) {
+async function newListener(listener, ...args) {
   try {
     listener(...args);
   } catch (e) {
-    const debug = require('./debug');
+    const {default: debug} = await import('./debug.js');
     debug.error('Failed executing listener callback', e.stack);
   }
 }

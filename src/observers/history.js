@@ -4,8 +4,8 @@ class HistoryObserver extends SafeEventEmitter {
   constructor() {
     super();
 
-    const pushState = history.pushState;
-    const replaceState = history.replaceState;
+    const {history, location, replaceState} = window;
+    const {pushState} = history;
 
     history.pushState = (...args) => {
       const state = args[0];

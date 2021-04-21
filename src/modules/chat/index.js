@@ -11,7 +11,7 @@ import nicknames from '../chat_nicknames/index.js';
 import legacySubscribers from '../legacy_subscribers/index.js';
 import splitChat from '../split_chat/index.js';
 
-const EMOTE_STRIP_SYMBOLS_REGEX = /(^[~!@#$%\^&\*\(\)]+|[~!@#$%\^&\*\(\)]+$)/g;
+const EMOTE_STRIP_SYMBOLS_REGEX = /(^[~!@#$%^&*()]+|[~!@#$%^&*()]+$)/g;
 const MENTION_REGEX = /^@([a-zA-Z\d_]+)$/;
 const STEAM_LOBBY_JOIN_REGEX = /^steam:\/\/joinlobby\/\d+\/\d+\/\d+$/;
 const EMOTES_TO_CAP = ['567b5b520e984428652809b6'];

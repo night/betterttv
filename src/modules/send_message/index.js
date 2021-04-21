@@ -7,7 +7,7 @@ import chatCommands from '../chat_commands/index.js';
 import anonChat from '../anon_chat/index.js';
 import emojis from '../emotes/emojis.js';
 
-const PATCHED_SENTINEL = Symbol();
+const PATCHED_SENTINEL = Symbol('patched symbol');
 
 class SendState {
   constructor(msg) {

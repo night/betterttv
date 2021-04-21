@@ -1,12 +1,13 @@
 import $ from 'jquery';
+import moment from 'moment';
 import watcher from '../../watcher.js';
 import settings from '../../settings.js';
 import storage from '../../storage.js';
 import html from '../../utils/html.js';
 import twitch from '../../utils/twitch.js';
 import cdn from '../../utils/cdn.js';
-import moment from 'moment';
-import escapeRegExp from '../../utils/regex.js';
+// eslint-disable-next-line import/named
+import {escapeRegExp} from '../../utils/regex.js';
 
 const PHRASE_REGEX = /\{.+?\}/g;
 const USER_REGEX = /\(.+?\)/g;
@@ -121,7 +122,7 @@ function exactMatch(keyword) {
 }
 
 function keywordRegEx(keyword) {
-  return new RegExp(`(\\s|^|@)${keyword}([!.,:';?/]|\\s|\$)`, 'i');
+  return new RegExp(`(\\s|^|@)${keyword}([!.,:';?/]|\\s|$)`, 'i');
 }
 
 function fromContainsKeyword(keywords, from) {
@@ -163,6 +164,8 @@ function messageTextFromAST(ast) {
           return node.content.url;
         case 6: // Emote
           return node.content.alt;
+        default:
+          return false;
       }
     })
     .join(' ');
@@ -243,13 +246,15 @@ class ChatHighlightBlacklistKeywordsModule {
     if (fromContainsKeyword(highlightUsers, from) || messageContainsKeyword(highlightKeywords, from, message)) {
       this.markHighlighted($message);
 
-      if (isReply($message)) return;
+      if (isReply($message)) return false;
 
       if (settings.get('highlightFeedback')) {
         this.handleHighlightSound();
       }
       if (timestamp > loadTime) this.pinHighlight({from, message, date});
     }
+
+    return false;
   }
 
   onVODMessage($message) {
@@ -266,8 +271,10 @@ class ChatHighlightBlacklistKeywordsModule {
     }
 
     if (fromContainsKeyword(highlightUsers, from) || messageContainsKeyword(highlightKeywords, from, messageContent)) {
-      this.markHighlighted($message);
+      return this.markHighlighted($message);
     }
+
+    return false;
   }
 
   markHighlighted($message) {
@@ -285,9 +292,9 @@ class ChatHighlightBlacklistKeywordsModule {
   }
 
   unloadPinnedHighlights() {
-    if (!$pinnedHighlightsContainer) return;
-
+    if (!$pinnedHighlightsContainer) return false;
     $pinnedHighlightsContainer.remove();
+    return true;
   }
 
   pinHighlight({from, message, date}) {

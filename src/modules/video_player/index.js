@@ -1,9 +1,9 @@
 import $ from 'jquery';
+import debounce from 'lodash.debounce';
 import watcher from '../../watcher.js';
 import settings from '../../settings.js';
 import domWatcher from '../../observers/dom.js';
 import twitch from '../../utils/twitch.js';
-import debounce from 'lodash.debounce';
 
 const VIDEO_PLAYER_SELECTOR = '.video-player__container';
 const CANCEL_VOD_RECOMMENDATION_SELECTOR =
@@ -47,7 +47,7 @@ let clicks = 0;
 function handlePlayerClick() {
   const currentPlayer = twitch.getCurrentPlayer();
   if (!currentPlayer) return;
-  const paused = currentPlayer.paused;
+  const {paused} = currentPlayer;
   clicks++;
   setTimeout(() => {
     if (clicks === 1) {

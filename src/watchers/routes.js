@@ -111,7 +111,7 @@ function getRouteFromPath(path) {
   }
 
   // twitch's embed subdomain only supports channel view
-  if (route === routes.HOMEPAGE && location.hostname === 'embed.twitch.tv') {
+  if (route === routes.HOMEPAGE && window.location.hostname === 'embed.twitch.tv') {
     return routes.CHANNEL;
   }
 
@@ -160,16 +160,18 @@ function onRouteChange(location) {
     case routes.DASHBOARD:
       waitForLoad('chat').then(() => watcher.emit('load.chat'));
       break;
+    default:
+      break;
   }
 }
 
-export default function (watcher_) {
+export default (watcher_) => {
   watcher = watcher_;
 
   historyObserver.on('pushState', (location) => onRouteChange(location));
   historyObserver.on('replaceState', (location) => onRouteChange(location));
   historyObserver.on('popState', (location) => onRouteChange(location));
-  onRouteChange(location);
+  onRouteChange(window.location);
 
   // force reload chat when the input gets recreated (popout open/close)
   domObserver.on('.chat-input', (node, isConnected) => {
@@ -184,4 +186,4 @@ export default function (watcher_) {
     if (!isConnected) return;
     waitForLoad('player').then(() => watcher.emit('load.player'));
   });
-}
+};

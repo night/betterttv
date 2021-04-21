@@ -344,7 +344,9 @@ export default {
 
   getCurrentUserIsModerator() {
     const currentChat = this.getCurrentChat();
-    if (!currentChat) return;
+    if (!currentChat) {
+      return false;
+    }
     return currentChat.props.isCurrentUserModerator;
   },
 
@@ -378,7 +380,7 @@ export default {
         (n) => n.stateNode && n.stateNode.props && n.stateNode.props.targetUserID && n.stateNode.props.targetLogin,
         20
       );
-      const props = node.stateNode.props;
+      const {props} = node.stateNode;
       user = {
         id: props.targetUserID,
         login: props.targetLogin,
@@ -399,7 +401,7 @@ export default {
             n.stateNode.props.channelLogin === n.stateNode.props.targetLogin,
           20
         );
-        const props = node.stateNode.props;
+        const {props} = node.stateNode;
         user = {
           id: props.channelID,
           login: props.channelLogin,
@@ -457,13 +459,11 @@ export default {
   getChatMessages(name = null) {
     let messages = Array.from($(CHAT_MESSAGE_SELECTOR))
       .reverse()
-      .map((element) => {
-        return {
-          element,
-          message: this.getChatMessageObject(element),
-          outerHTML: element.outerHTML,
-        };
-      });
+      .map((element) => ({
+        element,
+        message: this.getChatMessageObject(element),
+        outerHTML: element.outerHTML,
+      }));
 
     if (name) {
       messages = messages.filter(({message}) => message && message.user && message.user.userLogin === name);

@@ -36,14 +36,12 @@ class EmoteMenuModule {
     try {
       // try/catch protects against re-registered emote getters
       window.emoteMenu.registerEmoteGetter('BetterTTV', () =>
-        emotes.getEmotes(['bttv-emoji']).map(({code, images, provider}) => {
-          return {
-            text: code,
-            channel: provider.displayName,
-            badge: provider.badge,
-            url: images['2x'] || images['1x'],
-          };
-        })
+        emotes.getEmotes(['bttv-emoji']).map(({code, images, provider}) => ({
+          text: code,
+          channel: provider.displayName,
+          badge: provider.badge,
+          url: images['2x'] || images['1x'],
+        }))
       );
     } catch (e) {}
   }

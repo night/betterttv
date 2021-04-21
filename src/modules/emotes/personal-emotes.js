@@ -41,10 +41,10 @@ class PersonalEmotes extends AbstractEmotes {
   }
 
   getEligibleEmote(code, user) {
-    if (!user) return;
+    if (!user) return false;
 
     const emotes = this.emotes.get(user.name);
-    if (!emotes) return;
+    if (!emotes) return false;
 
     return emotes.get(code);
   }
@@ -53,7 +53,7 @@ class PersonalEmotes extends AbstractEmotes {
     const currentChannel = twitch.getCurrentChannel();
     if (!currentChannel) return;
 
-    const name = currentChannel.name;
+    const {name} = currentChannel;
 
     if (name !== joinedChannel) {
       socketClient.partChannel(joinedChannel);

@@ -67,9 +67,11 @@ class Storage extends SafeEventEmitter {
 
     value = JSON.stringify(value);
 
-    return this._localStorageSupport
-      ? window.localStorage.setItem(storageId, value)
-      : cookies.set(storageId, value, {expires: Infinity});
+    if (this._localStorageSupport) {
+      window.localStorage.setItem(storageId, value);
+    } else {
+      cookies.set(storageId, value, {expires: Infinity});
+    }
   }
 }
 

@@ -4,10 +4,6 @@ import storage from './storage.js';
 const settings = {};
 
 class Settings extends SafeEventEmitter {
-  constructor() {
-    super();
-  }
-
   add({id, name, description, defaultValue}) {
     if (id in settings) {
       throw new Error(`${id} is already a defined setting.`);
@@ -24,14 +20,10 @@ class Settings extends SafeEventEmitter {
   }
 
   getSettings() {
-    return Object.values(settings).map((setting) =>
-      Object.assign(
-        {
-          value: this.get(setting.id),
-        },
-        setting
-      )
-    );
+    return Object.values(settings).map((setting) => ({
+      value: this.get(setting.id),
+      ...setting,
+    }));
   }
 
   get(id) {

@@ -1,5 +1,5 @@
-import settings from '../../settings.js';
 import $ from 'jquery';
+import settings from '../../settings.js';
 
 class HideBitsModule {
   constructor() {

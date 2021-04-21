@@ -1,6 +1,6 @@
+import $ from 'jquery';
 import settings from '../../settings.js';
 import watcher from '../../watcher.js';
-import $ from 'jquery';
 
 class DirectoryLiveFollowingModule {
   constructor() {
@@ -14,12 +14,13 @@ class DirectoryLiveFollowingModule {
   }
 
   load(retries = 0) {
-    if (settings.get('showDirectoryLiveTab') === false || retries > 10) return;
+    if (settings.get('showDirectoryLiveTab') === false || retries > 10) return false;
     const button = $('a[href="/directory/following/live"]');
     if (!button.length) {
       return setTimeout(() => this.load(retries + 1), 250);
     }
     button[0].click();
+    return true;
   }
 }
 

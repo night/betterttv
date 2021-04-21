@@ -35,6 +35,8 @@ function rgbToHsl(r, g, b) {
     case b:
       h = Math.min(Math.max(0, (r - g) / d + 4), 6);
       break;
+    default:
+      break;
   }
   h /= 6;
 
@@ -121,7 +123,7 @@ function calculateColorReplacement(color, background) {
   b = rgb[2].toString(16);
 
   // note to self: .toString(16) does NOT zero-pad
-  return '#' + ('00' + r).substr(r.length) + ('00' + g).substr(g.length) + ('00' + b).substr(b.length);
+  return `#${`00${r}`.substr(r.length)}${`00${g}`.substr(g.length)}${`00${b}`.substr(b.length)}`;
 }
 
 const colorCache = new Map();
@@ -165,8 +167,8 @@ function getRgb(color) {
 
 function getHex(color) {
   // Convert RGB object to HEX String
-  const convert = (c) => ('0' + parseInt(c, 10).toString(16)).slice(-2);
-  return '#' + convert(color.r) + convert(color.g) + convert(color.b);
+  const convert = (c) => `0${parseInt(c, 10).toString(16)}`.slice(-2);
+  return `#${convert(color.r)}${convert(color.g)}${convert(color.b)}`;
 }
 
 export default {

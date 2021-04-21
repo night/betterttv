@@ -7,6 +7,14 @@ const CLIENT_ID = '6x8avioex0zt85ht6py4sq55z6avsea';
 
 let accessToken;
 
+class HTTPError extends Error {
+  constructor(statusCode, data) {
+    super(`HTTPError: ${statusCode} received`);
+    this.status = statusCode;
+    this.data = data;
+  }
+}
+
 function request(method, path, options = {}) {
   const url = options.url || `${API_ENDPOINT}${path}${options.qs ? `?${querystring.stringify(options.qs)}` : ''}`;
   return new Promise((resolve, reject) => {
@@ -21,11 +29,7 @@ function request(method, path, options = {}) {
       },
       timeout: 30000,
       success: (data) => resolve(data),
-      error: ({status, responseJSON}) =>
-        reject({
-          status,
-          data: responseJSON,
-        }),
+      error: ({status, responseJSON}) => reject(new HTTPError(status, responseJSON)),
     });
   });
 }

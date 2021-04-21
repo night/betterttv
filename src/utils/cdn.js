@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import debug from './debug.js';
 
-const CDN_ENDPOINT = process.env.CDN_ENDPOINT;
+const {CDN_ENDPOINT} = process.env;
 
 export default {
   url(path, breakCache = false) {

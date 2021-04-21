@@ -1,7 +1,7 @@
+import throttle from 'lodash.throttle';
 import SafeEventEmitter from './utils/safe-event-emitter.js';
 import debug from './utils/debug.js';
 import twitch from './utils/twitch.js';
-import throttle from 'lodash.throttle';
 
 const CONNECTION_STATES = {
   DISCONNECTED: 0,
@@ -45,6 +45,7 @@ class SocketClient extends SafeEventEmitter {
       }
     };
 
+    // eslint-disable-next-line no-multi-assign
     socket.onerror = socket.onclose = () => {
       if (state === CONNECTION_STATES.DISCONNECTED) return;
 
@@ -81,6 +82,7 @@ class SocketClient extends SafeEventEmitter {
       socket = null;
     }
 
+    // eslint-disable-next-line no-restricted-properties
     setTimeout(() => this.connect(), Math.random() * (Math.pow(2, attempts) - 1) * 30000);
   }
 

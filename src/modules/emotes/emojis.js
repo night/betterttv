@@ -4,6 +4,8 @@ import cdn from '../../utils/cdn.js';
 
 import AbstractEmotes from './abstract-emotes.js';
 import Emote from './emote.js';
+// file gets created during bundle
+// eslint-disable-next-line import/no-unresolved
 import emojiBySlug from './emojis-by-slug.json';
 
 const provider = {
@@ -44,6 +46,8 @@ class Emojis extends AbstractEmotes {
               case 'ae': // ®
               case '2122': // ™
                 return false;
+              default:
+                break;
             }
 
             url = ''.concat(options.base, options.size, '/', icon, options.ext);

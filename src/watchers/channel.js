@@ -23,10 +23,10 @@ function updateChannel() {
     .then((data) => watcher.emit('channel.updated', data));
 }
 
-export default function (watcher_) {
+export default (watcher_) => {
   watcher = watcher_;
 
   watcher.on('load.channel', updateChannel);
   watcher.on('load.chat', updateChannel);
   watcher.on('load.vod', updateChannel);
-}
+};

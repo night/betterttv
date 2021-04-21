@@ -70,7 +70,7 @@ function processObservedResults(emitter, node, results) {
     if (options && options.useParentNode) {
       foundNode = node;
     }
-    const isConnected = foundNode.isConnected;
+    const {isConnected} = foundNode;
     if (options && options.attributes) {
       if (isConnected) {
         startAttributeObserver(observedType, emitter, foundNode);
@@ -165,6 +165,8 @@ class DOMObserver extends SafeEventEmitter {
         case 'testSelectors':
           observedSelectorType = observedTestSelectors;
           break;
+        default:
+          break;
       }
 
       for (const {key, partialSelector} of parsedSelector[selectorType]) {
@@ -217,6 +219,8 @@ class DOMObserver extends SafeEventEmitter {
           break;
         case 'testSelectors':
           observedSelectorType = observedTestSelectors;
+          break;
+        default:
           break;
       }
 

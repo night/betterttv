@@ -35,14 +35,12 @@ function secondsToLength(s) {
   const minutes = Math.floor(s / 60) - days * 1440 - hours * 60;
   const seconds = s - days * 86400 - hours * 3600 - minutes * 60;
 
-  return (
-    (days > 0 ? days + ' day' + (days === 1 ? '' : 's') + ', ' : '') +
-    (hours > 0 ? hours + ' hour' + (hours === 1 ? '' : 's') + ', ' : '') +
-    (minutes > 0 ? minutes + ' minute' + (minutes === 1 ? '' : 's') + ', ' : '') +
-    seconds +
-    ' second' +
-    (seconds === 1 ? '' : 's')
-  );
+  return `${
+    (days > 0 ? `${days} day${days === 1 ? '' : 's'}, ` : '') +
+    (hours > 0 ? `${hours} hour${hours === 1 ? '' : 's'}, ` : '') +
+    (minutes > 0 ? `${minutes} minute${minutes === 1 ? '' : 's'}, ` : '') +
+    seconds
+  } second${seconds === 1 ? '' : 's'}`;
 }
 
 function massUnban() {
@@ -259,7 +257,8 @@ function handleCommands(message) {
       if (subCommand && commandNames.includes(subCommand)) {
         twitch.sendChatAdminMessage(CommandHelp[subCommand]);
         return false;
-      } else if (!subCommand) {
+      }
+      if (!subCommand) {
         twitch.sendChatAdminMessage(
           `BetterTTV Chat Commands: (Use "/help <command>" for more info on a command) /${commandNames.join(' /')}`
         );
@@ -274,8 +273,6 @@ function handleCommands(message) {
 }
 
 class ChatCommandsModule {
-  constructor() {}
-
   onSendMessage(sendState) {
     const result = handleCommands(sendState.message);
     if (result === false) {

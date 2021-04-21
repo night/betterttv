@@ -2,6 +2,13 @@ import $ from 'jquery';
 import querystring from 'querystring';
 
 const API_ENDPOINT = 'https://api.betterttv.net/3/';
+class HTTPError extends Error {
+  constructor(statusCode, data) {
+    super(`HTTPError: ${statusCode} received`);
+    this.status = statusCode;
+    this.data = data;
+  }
+}
 
 function request(method, path, options = {}) {
   return new Promise((resolve, reject) => {
@@ -12,11 +19,7 @@ function request(method, path, options = {}) {
       data: options.body ? JSON.stringify(options.body) : undefined,
       timeout: 30000,
       success: (data) => resolve(data),
-      error: ({status, responseJSON}) =>
-        reject({
-          status,
-          data: responseJSON,
-        }),
+      error: ({status, responseJSON}) => reject(new HTTPError(status, responseJSON)),
     });
   });
 }
