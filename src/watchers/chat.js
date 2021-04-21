@@ -39,7 +39,7 @@ function patchChatController() {
   twitchHandleMessage = handleMessage;
 }
 
-export default (watcher_) => {
+export default function chatWatcher(watcher_) {
   watcher = watcher_;
 
   watcher.on('load.chat', () => patchChatController());
@@ -71,4 +71,4 @@ export default (watcher_) => {
 
     watcher.emit('vod.message', $(node));
   });
-};
+}

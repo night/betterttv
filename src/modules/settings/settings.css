@@ -12,9 +12,9 @@
   border: 1px solid #000000;
   background-color: #1e1e1e;
   box-shadow: -1px 0 0 rgba(#000000, 0.3), -2px 0 0 rgba(#000000, 0.2), -3px 0 0 rgba(#000000, 0.1),
-              1px 0 0 rgba(#000000, 0.3), 2px 0 0 rgba(#000000, 0.2), 3px 0 0 rgba(#000000, 0.1),
-              0 -1px 0 rgba(#000000, 0.3), 0 -2px 0 rgba(#000000, 0.2), 0 -3px 0 rgba(#000000, 0.1),
-              0 1px 0 rgba(#000000, 0.3), 0 2px 0 rgba(#000000, 0.2), 0 3px 0 rgba(#000000, 0.1);
+    1px 0 0 rgba(#000000, 0.3), 2px 0 0 rgba(#000000, 0.2), 3px 0 0 rgba(#000000, 0.1), 0 -1px 0 rgba(#000000, 0.3),
+    0 -2px 0 rgba(#000000, 0.2), 0 -3px 0 rgba(#000000, 0.1), 0 1px 0 rgba(#000000, 0.3), 0 2px 0 rgba(#000000, 0.2),
+    0 3px 0 rgba(#000000, 0.1);
 
   h1 {
     font-size: 20px;
@@ -59,7 +59,8 @@
     vertical-align: bottom;
     text-shadow: 1px 1px 3px #000000;
     font-size: 25px;
-    font-family: "Korolev-Bold","HelveticaNeue-CondensedBold","ArialNarrow-Bold","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-family: 'Korolev-Bold', 'HelveticaNeue-CondensedBold', 'ArialNarrow-Bold', 'Helvetica Neue', Helvetica, Arial,
+      sans-serif;
   }
 
   #close {
@@ -74,7 +75,8 @@
     opacity: 0.2;
     filter: alpha(opacity=20);
 
-    &:hover, &:focus {
+    &:hover,
+    &:focus {
       color: #ffffff;
       text-decoration: none;
       cursor: pointer;
@@ -84,7 +86,7 @@
   }
 
   #bttvSettings {
-    font: 12px "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font: 12px 'Helvetica Neue', Helvetica, Arial, sans-serif;
     overflow-y: scroll;
     height: 425px;
 
@@ -135,11 +137,11 @@
     margin: 0 10px 0 0;
     vertical-align: middle;
 
-    &> li {
+    & > li {
       float: left;
       line-height: 18px;
 
-      &> a {
+      & > a {
         padding-bottom: 9px;
         padding-left: 15px;
         padding-right: 15px;
@@ -147,7 +149,8 @@
         text-shadow: 0 -1px 0 rgba(#000000, 0.25);
         text-decoration: none;
         box-shadow: none;
-        font-family: "Korolev-Bold","HelveticaNeue-CondensedBold","ArialNarrow-Bold","Helvetica Neue",Helvetica,Arial,sans-serif;
+        font-family: 'Korolev-Bold', 'HelveticaNeue-CondensedBold', 'ArialNarrow-Bold', 'Helvetica Neue', Helvetica,
+          Arial, sans-serif;
         font-size: 18px;
         font-weight: normal;
 
@@ -194,14 +197,15 @@
     overflow-y: scroll;
     height: 425px;
 
-    ul, ul {
+    ul,
+    ul {
       padding-left: 10px;
     }
 
     strong {
       margin-left: -5px;
     }
-    
+
     p {
       padding-left: 10px;
       padding-top: 10px;

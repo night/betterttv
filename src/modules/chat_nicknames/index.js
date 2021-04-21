@@ -9,7 +9,7 @@ class ChatNicknamesModule {
 
   set(name) {
     let nickname = prompt(`Enter the updated nickname for ${name} (Leave blank to reset)`, nicknames[name] || name);
-    if (nickname === null) return false;
+    if (nickname === null) return null;
 
     nickname = nickname.trim();
     nicknames[name] = nickname;

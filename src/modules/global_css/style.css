@@ -1,5 +1,5 @@
 .pinned-cheer .pinned-cheer__bounding-box:before {
-  content: "×";
+  content: '×';
   position: absolute;
   color: #777;
   cursor: pointer;

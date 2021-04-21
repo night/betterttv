@@ -165,7 +165,7 @@ function onRouteChange(location) {
   }
 }
 
-export default (watcher_) => {
+export default function routesWatcher(watcher_) {
   watcher = watcher_;
 
   historyObserver.on('pushState', (location) => onRouteChange(location));
@@ -186,4 +186,4 @@ export default (watcher_) => {
     if (!isConnected) return;
     waitForLoad('player').then(() => watcher.emit('load.player'));
   });
-};
+}

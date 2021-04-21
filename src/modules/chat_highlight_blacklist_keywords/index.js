@@ -6,7 +6,6 @@ import storage from '../../storage.js';
 import html from '../../utils/html.js';
 import twitch from '../../utils/twitch.js';
 import cdn from '../../utils/cdn.js';
-// eslint-disable-next-line import/named
 import {escapeRegExp} from '../../utils/regex.js';
 
 const PHRASE_REGEX = /\{.+?\}/g;

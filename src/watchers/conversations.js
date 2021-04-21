@@ -2,7 +2,7 @@ import $ from 'jquery';
 import twitch from '../utils/twitch.js';
 import domObserver from '../observers/dom.js';
 
-export default (watcher) => {
+export default function conversationsWatcher(watcher) {
   domObserver.on('.whispers-thread', (node, isConnected) => {
     if (!isConnected) return;
 
@@ -17,4 +17,4 @@ export default (watcher) => {
 
     watcher.emit('conversation.message', $(node), msgObject);
   });
-};
+}

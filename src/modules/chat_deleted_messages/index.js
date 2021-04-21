@@ -79,7 +79,7 @@ class ChatDeletedMessagesModule {
         $message.hide();
       } else if (showDeletedMessages) {
         $message.toggleClass(CHAT_LINE_DELETED_CLASS, true);
-        $message.find(CHAT_LINE_LINK_SELECTOR).each(() => {
+        $message.find(CHAT_LINE_LINK_SELECTOR).each(function func() {
           const $link = $(this);
           $link.removeAttr('href');
         });

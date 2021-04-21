@@ -33,8 +33,10 @@ function formatChatUser({user, badges}) {
     name: user.userLogin,
     displayName: user.userDisplayName,
     color: user.color,
-    mod: badges.hasOwnProperty('moderator'),
-    subscriber: badges.hasOwnProperty('subscriber') || badges.hasOwnProperty('founder'),
+    mod: Object.prototype.hasOwnProperty.call(badges, 'moderator'),
+    subscriber:
+      Object.prototype.hasOwnProperty.call(badges, 'subscriber') ||
+      Object.prototype.hasOwnProperty.call(badges, 'founder'),
     badges,
   };
 }
