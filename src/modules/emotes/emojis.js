@@ -4,7 +4,6 @@ import cdn from '../../utils/cdn.js';
 
 import AbstractEmotes from './abstract-emotes.js';
 import Emote from './emote.js';
-// file gets created during bundle
 // eslint-disable-next-line import/no-unresolved
 import emojiBySlug from './emojis-by-slug.json';
 
