@@ -83,7 +83,7 @@ class SocketClient extends SafeEventEmitter {
       socket = null;
     }
 
-    setTimeout(() => this.connect(), Math.random() ** (2, attempts) - 1) * 30000;
+    setTimeout(() => this.connect(), Math.random() ** ((2, attempts) - 1) * 30000);
   }
 
   send(name, data) {
