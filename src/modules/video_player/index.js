@@ -33,7 +33,7 @@ const getPictureInPictureTemplate = (toggled) => `
 let removeRecommendationWatcher;
 function watchPlayerRecommendationVodsAutoplay() {
   if (settings.get('disableVodRecommendationAutoplay') !== true) {
-    removeRecommendationWatcher && removeRecommendationWatcher();
+    if (removeRecommendationWatcher) removeRecommendationWatcher();
     return;
   }
 

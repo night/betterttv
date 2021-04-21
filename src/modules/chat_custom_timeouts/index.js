@@ -31,6 +31,7 @@ let action;
 let user;
 
 function setReason(type) {
+  /* eslint-disable no-alert */
   const reason = prompt(`Enter ${type} reason: (leave blank for none)`);
   return reason || '';
 }
@@ -66,7 +67,7 @@ function handleMouseMove(e) {
   const offset = e.pageY - $customTimeout.offset().top;
   const offsetx = e.pageX - $customTimeout.offset().left;
   const amount = 224 - offset;
-  const time = Math.floor(Math.pow(1.5, (amount - 45) / 6.5) * 60);
+  const time = Math.floor(1.5 ** ((amount - 45) / 6.5) * 60);
 
   let humanTime;
   if (Math.floor(time / 60 / 60 / 24) > 0) {

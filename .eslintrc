@@ -23,12 +23,6 @@
     "class-methods-use-this": "off",
     "no-plusplus": "off",
     "no-empty": "off",
-    "max-classes-per-file": "off",
-    "import/prefer-default-export": "off",
-    "no-unused-expressions": "off",
-    "no-alert": "off",
-    "no-restricted-properties": "off",
-    "no-case-declarations": "off",
-    "import/no-unresolved": "off"
+    "max-classes-per-file": "off"
   }
 }

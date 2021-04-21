@@ -53,6 +53,7 @@ function changeKeywords(promptBody, storageID) {
   if (storageID === 'highlightKeywords') {
     storageKeywords = defaultHighlightKeywords(storageKeywords);
   }
+  /* eslint-disable no-alert */
   let keywords = prompt(promptBody, storageKeywords || '');
   if (keywords !== null) {
     keywords = keywords.trim().replace(REPEATING_SPACE_REGEX, ' ');
@@ -239,21 +240,20 @@ class ChatHighlightBlacklistKeywordsModule {
     const date = new Date(timestamp);
 
     if (fromContainsKeyword(blacklistUsers, from) || messageContainsKeyword(blacklistKeywords, from, message)) {
-      return this.markBlacklisted($message);
+      this.markBlacklisted($message);
+      return;
     }
 
     if (fromContainsKeyword(highlightUsers, from) || messageContainsKeyword(highlightKeywords, from, message)) {
       this.markHighlighted($message);
 
-      if (isReply($message)) return false;
+      if (isReply($message)) return;
 
       if (settings.get('highlightFeedback')) {
         this.handleHighlightSound();
       }
       if (timestamp > loadTime) this.pinHighlight({from, message, date});
     }
-
-    return false;
   }
 
   onVODMessage($message) {
@@ -266,14 +266,13 @@ class ChatHighlightBlacklistKeywordsModule {
     const messageContent = `${$messageContent.text().replace(/^:/, '')} ${emotes.join(' ')}`;
 
     if (fromContainsKeyword(blacklistUsers, from) || messageContainsKeyword(blacklistKeywords, from, messageContent)) {
-      return this.markBlacklisted($message);
+      this.markBlacklisted($message);
+      return;
     }
 
     if (fromContainsKeyword(highlightUsers, from) || messageContainsKeyword(highlightKeywords, from, messageContent)) {
-      return this.markHighlighted($message);
+      this.markHighlighted($message);
     }
-
-    return false;
   }
 
   markHighlighted($message) {

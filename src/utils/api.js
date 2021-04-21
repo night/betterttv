@@ -1,14 +1,8 @@
 import $ from 'jquery';
 import querystring from 'querystring';
+import HTTPError from './http-error.js';
 
 const API_ENDPOINT = 'https://api.betterttv.net/3/';
-class HTTPError extends Error {
-  constructor(statusCode, data) {
-    super(`HTTPError: ${statusCode} received`);
-    this.status = statusCode;
-    this.data = data;
-  }
-}
 
 function request(method, path, options = {}) {
   return new Promise((resolve, reject) => {

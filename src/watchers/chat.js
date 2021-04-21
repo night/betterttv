@@ -7,7 +7,7 @@ const PATCHED_SYMBOL = Symbol('patched symbol');
 let twitchHandleMessage;
 let watcher;
 
-function bttvHandleMessage(message) {
+function bttvHandleMessage(...message) {
   if (message && typeof message.type === 'number') {
     let isPrevented = false;
     watcher.emit('chat.message.handler', {
@@ -16,10 +16,10 @@ function bttvHandleMessage(message) {
         isPrevented = true;
       },
     });
-    if (isPrevented) return false;
+    if (isPrevented) return null;
   }
 
-  return twitchHandleMessage.call(this, message);
+  return twitchHandleMessage.call(this, ...message);
 }
 
 function patchChatController() {

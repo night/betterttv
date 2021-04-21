@@ -146,11 +146,12 @@ function handleCommands(message) {
     case 't':
       return `/timeout ${messageParts.join(' ')}`;
     case 'u':
-    case 'unban':
+    case 'unban': {
       const user = messageParts.shift() || '';
       if (user !== 'all') {
         return `/unban ${user}`;
       }
+    }
     case 'massunban': // eslint-disable-line no-fallthrough
     case 'unbanall':
       massUnban();
@@ -158,24 +159,26 @@ function handleCommands(message) {
 
     // filtering
     case 'localascii':
-    case 'localasciioff':
+    case 'localasciioff': {
       const asciiOnly = !command.endsWith('off');
       chat.asciiOnly(asciiOnly);
       twitch.sendChatAdminMessage(`Local ascii-only mode ${asciiOnly ? 'enabled' : 'disabled'}.`);
       break;
+    }
     case 'localmod':
-    case 'localmodoff':
+    case 'localmodoff': {
       const modsOnly = !command.endsWith('off');
       chat.modsOnly(modsOnly);
       twitch.sendChatAdminMessage(`Local mods-only mode ${modsOnly ? 'enabled' : 'disabled'}.`);
       break;
+    }
     case 'localsub':
-    case 'localsuboff':
+    case 'localsuboff': {
       const subsOnly = !command.endsWith('off');
       chat.subsOnly(subsOnly);
       twitch.sendChatAdminMessage(`Local subs-only mode ${subsOnly ? 'enabled' : 'disabled'}.`);
       break;
-
+    }
     // fun
     case 'shrug':
       return `${messageParts.join(' ')} ¯\\_(ツ)_/¯`;
@@ -185,7 +188,11 @@ function handleCommands(message) {
     // misc
     case 'join':
     case 'part':
-      command === 'join' ? anonChat.join() : anonChat.part();
+      if (command === 'join') {
+        anonChat.join();
+      } else {
+        anonChat.part();
+      }
       break;
 
     case 'chatters': {
@@ -207,7 +214,7 @@ function handleCommands(message) {
         .catch(() => twitch.sendChatAdminMessage('Could not fetch chatter count.'));
       break;
     }
-    case 'followed':
+    case 'followed': {
       const currentUser = twitch.getCurrentUser();
       if (!currentUser) break;
       twitchAPI
@@ -220,6 +227,7 @@ function handleCommands(message) {
         })
         .catch(() => twitch.sendChatAdminMessage(`You do not follow ${channel.displayName}.`));
       break;
+    }
     case 'follows':
       twitchAPI
         .get(`channels/${channel.id}`)
@@ -235,7 +243,7 @@ function handleCommands(message) {
         })
         .catch(() => twitch.sendChatAdminMessage('Could not fetch stream.'));
       break;
-    case 'uptime':
+    case 'uptime': {
       twitchAPI
         .get(`streams/${channel.id}`)
         .then(({stream}) => {
@@ -250,8 +258,9 @@ function handleCommands(message) {
         })
         .catch(() => twitch.sendChatAdminMessage('Could not fetch stream.'));
       break;
+    }
 
-    case 'help':
+    case 'help': {
       const commandNames = Object.keys(CommandHelp);
       const subCommand = messageParts.length && messageParts[0].replace(/^\//, '').toLowerCase();
       if (subCommand && commandNames.includes(subCommand)) {
@@ -264,6 +273,7 @@ function handleCommands(message) {
         );
       }
       return true;
+    }
 
     default:
       return true;

@@ -45,8 +45,7 @@ class SocketClient extends SafeEventEmitter {
       }
     };
 
-    // eslint-disable-next-line no-multi-assign
-    socket.onerror = socket.onclose = () => {
+    socket.onclose = () => {
       if (state === CONNECTION_STATES.DISCONNECTED) return;
 
       debug.log('SocketClient: Disconnected from server');
@@ -54,6 +53,8 @@ class SocketClient extends SafeEventEmitter {
       attempts++;
       this.reconnect();
     };
+
+    socket.onerror = socket.onclose;
 
     socket.onmessage = ({data}) => {
       let evt;

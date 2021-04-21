@@ -113,8 +113,8 @@ class HostButtonModule {
   }
 
   unload() {
-    removeShareButtonListener && removeShareButtonListener();
-    $hostButton && $hostButton.remove();
+    if (removeShareButtonListener) removeShareButtonListener();
+    if ($hostButton) $hostButton.remove();
   }
 }
 

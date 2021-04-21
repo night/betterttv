@@ -41,10 +41,10 @@ class PersonalEmotes extends AbstractEmotes {
   }
 
   getEligibleEmote(code, user) {
-    if (!user) return false;
+    if (!user) return null;
 
     const emotes = this.emotes.get(user.name);
-    if (!emotes) return false;
+    if (!emotes) return null;
 
     return emotes.get(code);
   }

@@ -8,6 +8,7 @@ class ChatNicknamesModule {
   }
 
   set(name) {
+    /* eslint-disable no-alert */
     let nickname = prompt(`Enter the updated nickname for ${name} (Leave blank to reset)`, nicknames[name] || name);
     if (nickname === null) return null;
 
