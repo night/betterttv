@@ -31,7 +31,7 @@ let action;
 let user;
 
 function setReason(type) {
-  /* eslint-disable no-alert */
+  /* eslint-disable-next-line no-alert */
   const reason = prompt(`Enter ${type} reason: (leave blank for none)`);
   return reason || '';
 }

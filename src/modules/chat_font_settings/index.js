@@ -18,7 +18,7 @@ function encodeFontFamily(fontFamily) {
 }
 
 function changeFontSetting(promptBody, storageID) {
-  /* eslint-disable no-alert */
+  /* eslint-disable-next-line no-alert */
   let keywords = prompt(promptBody, storage.get(storageID) || '');
   if (keywords !== null) {
     keywords = keywords.trim();
