@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import watcher from '../../watcher.js';
 import settings from '../../settings.js';
 import storage from '../../storage.js';
@@ -302,7 +302,7 @@ class ChatHighlightBlacklistKeywordsModule {
       $pinnedHighlightsContainer.children().first().remove();
     }
 
-    const timestamp = moment(date).format('hh:mm');
+    const timestamp = dayjs(date).format('hh:mm');
 
     const $newHighlight = $(pinnedHighlightTemplate({timestamp, from, message}));
 

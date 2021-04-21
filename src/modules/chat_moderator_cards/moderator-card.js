@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import nicknames from '../chat_nicknames/index.js';
 import twitch from '../../utils/twitch.js';
 import twitchAPI from '../../utils/twitch-api.js';
@@ -69,7 +69,7 @@ const userStatsTemplate = (views, follows, createdAt) => `
         <div class="tw-flex tw-full-width">
             ${userStatsItemTemplate(Icons.EYE, views.toLocaleString())}
             ${userStatsItemTemplate(Icons.HEART, follows.toLocaleString())}
-            ${userStatsItemTemplate(Icons.BIRTHDAY_CAKE, moment(createdAt).format('MMM D, YYYY'))}
+            ${userStatsItemTemplate(Icons.BIRTHDAY_CAKE, dayjs(createdAt).format('MMM D, YYYY'))}
         </div>
     </div>
 `;

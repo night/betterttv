@@ -1,4 +1,4 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
 import twitch from '../../utils/twitch.js';
 import twitchAPI from '../../utils/twitch-api.js';
 import chat from '../chat/index.js';
@@ -219,7 +219,7 @@ function handleCommands(message) {
       twitchAPI
         .get(`users/${currentUser.id}/follows/channels/${channel.id}`)
         .then(({created_at: createdAt}) => {
-          const since = moment(createdAt);
+          const since = dayjs(createdAt);
           twitch.sendChatAdminMessage(
             `You followed ${channel.displayName} ${since.fromNow()} (${since.format('LLL')})`
           );

@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import {save} from 'save-file';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import cdn from '../../utils/cdn.js';
 import debug from '../../utils/debug.js';
 import watcher from '../../watcher.js';
@@ -93,7 +93,7 @@ const settingsPanelTemplate = () => `
 `;
 
 const changelogEntryTemplate = (version, publishedAt, body) => `
-    <h2>Version ${html.escape(version)} (${moment(publishedAt).format('MMM D, YYYY')})</h2>
+    <h2>Version ${html.escape(version)} (${dayjs(publishedAt).format('MMM D, YYYY')})</h2>
     <p>${html
       .escape(body)
       .replace(/\r\n/g, '<br />')
