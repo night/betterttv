@@ -29,7 +29,6 @@
     "no-alert": "off",
     "no-restricted-properties": "off",
     "no-case-declarations": "off",
-    "no-prototype-builtins": "off",
     "import/no-unresolved": "off"
   }
 }
