@@ -1,6 +1,7 @@
 language: node_js
 env:
   - NODE_ENV=production
+  - secure: C6eH/gGsrU3QZVrz4OJAcTHY+2LMfEySqSucFrC7kEqpbC+/NyVt2LLCIyP2NvrH7+8aWC61r0hXQNo0Q4WC7aJzxRTufvL/DF6OAVCZ8lhOH+n/lrTPu5R3sepicGo9R9A4IvKoUuX7ji4u2jP5ekNc3JKmZlOoK19r7uXAb4E=
 node_js:
   - '15.10'
 script: npm run lint && npm run build:prod

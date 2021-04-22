@@ -12,6 +12,7 @@ import TerserPlugin from 'terser-webpack-plugin';
 import postcssUrl from 'postcss-url';
 import got from 'got';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
+import SentryWebpackPlugin from '@sentry/webpack-plugin';
 
 const git = createRequire(import.meta.url)('git-rev-sync');
 const {EnvironmentPlugin, optimize} = webpack;
@@ -135,6 +136,7 @@ export default async (env, argv) => {
         }),
       ],
     },
+    devtool: PROD ? 'hidden-source-map' : 'eval',
     plugins: [
       new webpack.BannerPlugin({
         banner: (await fs.readFile('LICENSE')).toString(),
@@ -146,7 +148,8 @@ export default async (env, argv) => {
         PROD_CDN_ENDPOINT: PROD_ENDPOINT,
         EXT_VER: version,
         GIT_REV: git.long(),
-        SENTRY_URL: process.env.SENTRY_URL || 'https://24dfd2854f97465da5fb14fcea77278c@sentry.io/144851',
+        SENTRY_URL:
+          process.env.SENTRY_URL || 'https://b289038a9b004560bcb58396066ee847@o23210.ingest.sentry.io/5730387',
         CDN_ENDPOINT,
       }),
       new optimize.LimitChunkCountPlugin({
@@ -158,7 +161,7 @@ export default async (env, argv) => {
       new CleanWebpackPlugin(),
       new RemovePlugin({
         after: {
-          include: ['./build/css.js'],
+          include: ['./build/css.js', './build/css.js.map'],
         },
       }),
       new MiniCssExtractPlugin({
@@ -170,6 +173,18 @@ export default async (env, argv) => {
       new TerserPlugin({
         extractComments: false,
       }),
+      ...(PROD
+        ? [
+            new SentryWebpackPlugin({
+              authToken: process.env.SENTRY_AUTH_TOKEN,
+              release: git.long(),
+              org: 'nightdev',
+              project: 'betterttv-api',
+              include: './build',
+              ignore: ['dev', 'node_modules', 'webpack.config.js'],
+            }),
+          ]
+        : []),
     ],
   };
 };

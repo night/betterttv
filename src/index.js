@@ -15,6 +15,33 @@
     return;
   if (window.Ember) return;
 
+  const Sentry = await import('@sentry/browser');
+
+  Sentry.init({
+    release: process.env.GIT_REV,
+    environment: process.env.NODE_ENV,
+    dsn: process.env.SENTRY_URL,
+    allowUrls: [/betterttv\.js/, /\.betterttv\.net/],
+    ignoreErrors: [
+      'InvalidAccessError',
+      'out of memory',
+      'InvalidStateError',
+      'QuotaExceededError',
+      'NotFoundError',
+      'SecurityError',
+      'AbortError',
+      'TypeMismatchError',
+      'HierarchyRequestError',
+      'IndexSizeError',
+      /^undefined$/,
+    ],
+    integrations: [
+      new Sentry.Integrations.GlobalHandlers({
+        onunhandledrejection: false,
+      }),
+    ],
+  });
+
   const {default: cookies} = await import('cookies-js');
   const {default: debug} = await import('./utils/debug.js');
   const {default: twitch} = await import('./utils/twitch.js');
