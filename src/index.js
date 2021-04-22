@@ -15,6 +15,10 @@
     return;
   if (window.Ember) return;
 
+  // some people have multiple versions of BetterTTV, for whatever reason
+  if (window.BetterTTV || window.__betterttv) return;
+  window.__betterttv = true;
+
   const Sentry = await import('@sentry/browser');
   const {Dedupe: DedupeIntegration} = await import('@sentry/integrations');
 
