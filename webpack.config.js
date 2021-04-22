@@ -179,7 +179,7 @@ export default async (env, argv) => {
               authToken: process.env.SENTRY_AUTH_TOKEN,
               release: git.long(),
               org: 'nightdev',
-              project: 'betterttv-api',
+              project: 'betterttv-extension',
               include: './build',
               ignore: ['dev', 'node_modules', 'webpack.config.js'],
             }),
