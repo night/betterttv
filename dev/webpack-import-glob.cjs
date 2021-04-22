@@ -8,19 +8,19 @@ function replacer(match, quote, filename) {
     .sync(filename, {
       cwd: resourceDir,
     })
-    .map((file) => {
-      return `
-                try {
-                    await import(${quote + file + quote});
-                } catch (e) {
-                    debug.error('Failed to import ${file}', e.stack);
-                }
-            `;
-    })
+    .map(
+      (file) => `
+          try {
+              await import(${quote + file + quote});
+          } catch (e) {
+              debug.error('Failed to import ${file}', e.stack);
+          }
+      `
+    )
     .join('; ');
 }
 
-module.exports = function (source) {
+module.exports = function importGlob(source) {
   this.cacheable();
   const regex = /.?await import\((['"])(.*?)\1\);?/gm;
   return source.replace(regex, replacer.bind(this));
