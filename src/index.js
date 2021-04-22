@@ -16,12 +16,12 @@
   if (window.Ember) return;
 
   const Sentry = await import('@sentry/browser');
+  const {Dedupe: DedupeIntegration} = await import('@sentry/integrations');
 
   Sentry.init({
     release: process.env.GIT_REV,
     environment: process.env.NODE_ENV,
     dsn: process.env.SENTRY_URL,
-    allowUrls: [/betterttv\.js/, /\.betterttv\.net/],
     ignoreErrors: [
       'InvalidAccessError',
       'out of memory',
@@ -35,12 +35,18 @@
       'IndexSizeError',
       /^undefined$/,
       `Unexpected token '<'`,
+      'prompt() is and will not be supported.',
+      'ChunkLoadError',
+      'Loading CSS chunk',
+      'Failed to fetch',
     ],
-    ignoreUrls: [/\/sites\/twitch-twilight\//, /avalon\.js/, /avalon\.[a-zA-Z0-9]+\.js/],
+    allowUrls: [/betterttv\.js/, /\.betterttv\.net/],
+    denyUrls: [/static\.twitchcdn\.net\/assets/, /avalon\.js/, /avalon\.[a-zA-Z0-9]+\.js/, /script\.js/],
     integrations: [
       new Sentry.Integrations.GlobalHandlers({
         onunhandledrejection: false,
       }),
+      new DedupeIntegration(),
     ],
   });
 
