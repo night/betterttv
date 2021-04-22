@@ -23,11 +23,16 @@ const badgeTemplate = (url, description) => `
         <div class="tw-tooltip tw-tooltip--up tw-tooltip--align-left" data-a-target="tw-tooltip-label" style="margin-bottom: 0.9rem;">${description}</div>
     </div>
 `;
-
 const mentionTemplate = (name) => `<span class="mentioning">@${html.escape(name)}</span>`;
-
 const steamLobbyJoinTemplate = (joinLink) => `<a href="${joinLink}">${joinLink}</a>`;
-function formatChatUser({user, badges}) {
+
+function formatChatUser(message) {
+  if (message == null) {
+    return null;
+  }
+
+  const {user, badges} = message;
+
   return {
     id: user.userID,
     name: user.userLogin,
@@ -55,6 +60,10 @@ function hasNonASCII(message) {
   return false;
 }
 
+function getMessagePartsFromMessageElement($message) {
+  return $message.find('span[data-a-target="chat-message-text"],div.tw-tooltip__container');
+}
+
 class ChatModule {
   constructor() {
     watcher.on('chat.message', ($element, message) => this.messageParser($element, message));
@@ -70,7 +79,7 @@ class ChatModule {
           continue;
         }
 
-        this.messageReplacer($(element), user);
+        this.messageReplacer(getMessagePartsFromMessageElement($(element)), user);
       }
     });
 
@@ -219,8 +228,6 @@ class ChatModule {
       $element.css('color', color);
     }
 
-    const $message = $element.find('span[data-a-target="chat-message-text"],div.tw-tooltip__container');
-
     if (
       (modsOnly === true && !user.mod) ||
       (subsOnly === true && !user.subscriber) ||
@@ -239,7 +246,7 @@ class ChatModule {
       }
     }
 
-    this.messageReplacer($message, user);
+    this.messageReplacer(getMessagePartsFromMessageElement($element), user);
 
     $element[0].__bttvParsed = true;
   }
