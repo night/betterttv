@@ -2,7 +2,7 @@ import $ from 'jquery';
 import twitch from '../utils/twitch.js';
 import domObserver from '../observers/dom.js';
 
-const PATCHED_SYMBOL = Symbol('patched symbol');
+const PATCHED_SENTINEL = Symbol('patched symbol');
 
 let twitchHandleMessage;
 let watcher;
@@ -30,12 +30,12 @@ function patchChatController() {
   if (!messageHandlerAPI) return;
 
   const {handleMessage} = messageHandlerAPI;
-  if (messageHandlerAPI._bttvMessageHandlerPatched === PATCHED_SYMBOL || handleMessage === bttvHandleMessage) {
+  if (chatController._bttvMessageHandlerPatched === PATCHED_SENTINEL || handleMessage === bttvHandleMessage) {
     return;
   }
 
   messageHandlerAPI.handleMessage = bttvHandleMessage;
-  messageHandlerAPI._bttvMessageHandlerPatched = PATCHED_SYMBOL;
+  chatController._bttvMessageHandlerPatched = PATCHED_SENTINEL;
   twitchHandleMessage = handleMessage;
 }
 
