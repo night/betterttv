@@ -96,6 +96,17 @@ export default async (env, argv) => {
           loader: path.resolve('./dev/webpack-import-glob.cjs'),
         },
         {
+          test: /\.svg$/,
+          use: [
+            {
+              loader: 'svg-sprite-loader',
+              options: {
+                symbolId: 'icon-[name]',
+              },
+            },
+          ],
+        },
+        {
           test: /(\.less|\.css)$/,
           use: [
             MiniCssExtractPlugin.loader,

@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 
 import Modal from 'rsuite/lib/Modal/index.js';
 import Icon from 'rsuite/lib/Icon/index.js';
+import close from '../../../assets/icons/close-solid.svg';
 
 import Sidenav from './sidenav.js';
 import Home from '../pages/home.js';
@@ -22,7 +23,7 @@ function BTTVPopout({open, setOpen}) {
         <Modal.Body>
           <Icon
             className="bttv-popout-quit-out"
-            icon="close"
+            icon={close}
             style={{cursor: 'pointer'}}
             onClick={() => setOpen(false)}
           />

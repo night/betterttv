@@ -7,7 +7,9 @@ import InputGroup from 'rsuite/lib/InputGroup/index.js';
 import Icon from 'rsuite/lib/Icon/index.js';
 import AutoComplete from 'rsuite/lib/AutoComplete/index.js';
 
-import settings from './settings.json';
+import enhance from '../../../assets/icons/search-solid.svg';
+// import fakeSettings from './settings.json';
+import settings from '../../../settings.js';
 
 /*
 const categories = [
@@ -17,11 +19,20 @@ const categories = [
 ];
 */
 
-const auto = settings.map((setting) => setting.name);
+const auto = settings.getSettings().map((setting) => setting.name);
+
+const settingComponents = settings
+  .getSettings()
+  .sort((a, b) => a.name.localeCompare(b.name))
+  .map((setting, index) => createSetting(setting, index));
 
 function Settings() {
-  const [, setSearch] = useState('');
-  const settingsData = settings.map((setting, index) => createSetting(setting, index));
+  const [search, setSearch] = useState('');
+  const searchedComponents = settingComponents.filter(
+    ({props}) =>
+      props.setting.name.toLowerCase().includes(search.toLowerCase()) ||
+      props.setting.description.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div className="bttv-settings-page">
@@ -33,15 +44,15 @@ function Settings() {
         <br />
         <SearchBar setSearch={setSearch} />
       </Panel>
-      <PanelGroup className="bttv-settings-panel">{settingsData}</PanelGroup>
+      <PanelGroup className="bttv-settings-panel">{searchedComponents}</PanelGroup>
     </div>
   );
 }
 
 function createSetting(props, index) {
   return (
-    <Panel header={props.name} eventKey={index}>
-      <Setting props={props} />
+    <Panel header={props.name} setting={props} eventKey={index} key={index}>
+      <Setting setting={props} />
     </Panel>
   );
 }
@@ -52,7 +63,7 @@ function SearchBar({setSearch}) {
       <InputGroup>
         <AutoComplete data={auto} onChange={(value) => setSearch(value)} />
         <InputGroup.Addon>
-          <Icon icon="search" />
+          <Icon icon={enhance} />
         </InputGroup.Addon>
       </InputGroup>
     </div>

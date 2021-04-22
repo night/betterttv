@@ -9,35 +9,35 @@ import Slider from 'rsuite/lib/Slider/index.js';
 import Radio from 'rsuite/lib/Radio/index.js';
 import RadioGroup from 'rsuite/lib/RadioGroup/index.js';
 import FormGroup from 'rsuite/lib/FormGroup/index.js';
+import settings from '../../../settings.js';
 
-function Setting({props}) {
-  const {description} = props;
+function Setting({setting}) {
+  const {description} = setting;
   return (
     <div>
       <p>{description}</p>
       <br />
-      {getSetting(props)}
+      {getSetting(setting)}
     </div>
   );
 }
 
-function getSetting(props) {
-  console.log(props);
-  const {type, options, data: d, headers, enabled, selected: s} = props;
-  const [data, setData] = useState(d);
-  const [enable, setEnabled] = useState(enabled);
-  const [selected, setSelect] = useState(s);
+function getSetting(setting) {
+  const {type = 0} = setting;
+  const [value, setValue] = useState(settings.get(setting.id));
 
   useEffect(() => {
-    console.log('Shoot an update for setting');
-  }, [data, enable, selected]);
+    if (settings.get(setting.id) === value) return;
+    settings.set(setting.id, value);
+    settings.emit(`changed.${setting.id}`, value);
+  }, [value]);
 
   switch (type) {
     case 0:
-      return <Toggle defaultChecked={enable} onChange={(state) => setEnabled(state)} />;
+      return <Toggle defaultChecked={value} onChange={(state) => setValue(state)} />;
     case 1:
       const items = options.map((option, index) => (
-        <Dropdown.Item key={index} onSelect={() => setSelect(index)}>
+        <Dropdown.Item key={index} onSelect={() => setValue(index)}>
           {option}
         </Dropdown.Item>
       ));
@@ -58,7 +58,7 @@ function getSetting(props) {
       );
     case 2:
       const items2 = options.map((option, index) => (
-        <Checkbox key={index} defaultChecked={selected.includes(index)}>
+        <Checkbox key={index} defaultChecked={selected.includes(index)} onSelect={() => setValue(index)}>
           {option}
         </Checkbox>
       ));
@@ -72,7 +72,12 @@ function getSetting(props) {
     case 4:
       return (
         <div>
-          <Slider min={data.min} max={data.max} defaultValue={data.current} progress></Slider>
+          <Slider
+            min={data.min}
+            max={data.max}
+            defaultValue={data.current}
+            progress
+            onChange={(value) => setValue(value)}></Slider>
         </div>
       );
     case 5:
@@ -82,10 +87,10 @@ function getSetting(props) {
             name="radioList"
             defaultValue={selected}
             onChange={(value) => {
-              setSelect(value);
+              setValue(value);
             }}>
             {options.map((option, index) => (
-              <Radio key={index} value={index} onChange={() => setSelect(index)}>
+              <Radio key={index} value={index}>
                 {option}
               </Radio>
             ))}

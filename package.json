@@ -61,6 +61,7 @@
     "remove-files-webpack-plugin": "^1.4.4",
     "rsuite": "^4.9.3",
     "save-file": "^2.3.1",
+    "svg-sprite-loader": "^6.0.5",
     "terser-webpack-plugin": "^5.1.1",
     "twemoji": "^13.0.2",
     "twitch-chat-emotes": "github:night/twitch-chat-emotes#98a654dbda98c43d967145bacd67029a7a6d9a78",
