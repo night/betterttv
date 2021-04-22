@@ -25,6 +25,7 @@ function scrollOnEmoteLoad($el) {
   if (indicator) return;
   $el.find('img').on('load', () => {
     const $scrollContainer = $(SCROLL_CONTAINER_SELECTOR);
+    if ($scrollContainer.length === 0) return;
     $scrollContainer.scrollTop($scrollContainer[0].scrollHeight);
   });
 }

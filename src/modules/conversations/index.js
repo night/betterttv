@@ -10,6 +10,7 @@ const SCROLL_CONTAINER_SELECTOR = '.simplebar-scroll-content';
 function scrollOnEmoteLoad($el) {
   $el.find('img.bttv').on('load', () => {
     const $scrollContainer = $el.closest(SCROLL_CONTAINER_SELECTOR);
+    if ($scrollContainer.length === 0) return;
     $scrollContainer.scrollTop($scrollContainer[0].scrollHeight);
   });
 }
