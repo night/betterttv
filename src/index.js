@@ -21,7 +21,7 @@
     release: process.env.GIT_REV,
     environment: process.env.NODE_ENV,
     dsn: process.env.SENTRY_URL,
-    allowUrls: [/betterttv\.js/, /\.betterttv\.net/],
+    allowUrls: ['betterttv.js', '.betterttv.net'],
     ignoreErrors: [
       'InvalidAccessError',
       'out of memory',
@@ -34,7 +34,9 @@
       'HierarchyRequestError',
       'IndexSizeError',
       /^undefined$/,
+      `Unexpected token '<'`,
     ],
+    ignoreUrls: ['/sites/twitch-twilight/', 'avalon.js', /avalon\.[a-zA-Z0-9]+\.js/],
     integrations: [
       new Sentry.Integrations.GlobalHandlers({
         onunhandledrejection: false,
