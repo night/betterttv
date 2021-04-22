@@ -12,7 +12,7 @@
     "allowImportExportEverywhere": true
   },
   "extends": ["airbnb", "prettier"],
-  "plugins": ["prettier"],
+  "plugins": ["@babel/plugin-syntax-jsx", "prettier"],
   "rules": {
     "prettier/prettier": ["error"],
     "import/extensions": ["error", "ignorePackages"],

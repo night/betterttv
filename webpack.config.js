@@ -12,6 +12,7 @@ import TerserPlugin from 'terser-webpack-plugin';
 import postcssUrl from 'postcss-url';
 import got from 'got';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
+import multipleThemesCompile from 'webpack-multiple-themes-compile';
 
 const git = createRequire(import.meta.url)('git-rev-sync');
 const {EnvironmentPlugin, optimize} = webpack;
@@ -81,7 +82,7 @@ export default async (env, argv) => {
     },
     entry: {
       betterttv: './src/index.js',
-      css: glob.sync('./src/modules/**/*.css'),
+      css: glob.sync('./src/modules/**/*.@(css|less)'),
     },
     output: {
       filename: '[name].js',
@@ -95,7 +96,7 @@ export default async (env, argv) => {
           loader: path.resolve('./dev/webpack-import-glob.cjs'),
         },
         {
-          test: /\.css$/,
+          test: /(\.less|\.css)$/,
           use: [
             MiniCssExtractPlugin.loader,
             'css-loader',
@@ -112,6 +113,15 @@ export default async (env, argv) => {
                 },
               },
             },
+            {
+              loader: 'less-loader',
+              options: {
+                lessOptions: {
+                  javascriptEnabled: true,
+                  modifyVars: {'@reset-import': false},
+                },
+              },
+            },
           ],
         },
         {
@@ -120,7 +130,7 @@ export default async (env, argv) => {
           use: {
             loader: 'babel-loader',
             options: {
-              presets: ['@babel/preset-env'],
+              presets: ['@babel/preset-env', '@babel/preset-react'],
               plugins: ['@babel/plugin-transform-runtime'],
             },
           },
@@ -139,6 +149,9 @@ export default async (env, argv) => {
       new webpack.BannerPlugin({
         banner: (await fs.readFile('LICENSE')).toString(),
         entryOnly: true,
+      }),
+      new webpack.DefinePlugin({
+        __RSUITE_CLASSNAME_PREFIX__: JSON.stringify('rs-'),
       }),
       new EnvironmentPlugin({
         DEV_CDN_PORT: PORT,

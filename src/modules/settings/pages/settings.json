@@ -1,0 +1,70 @@
+[
+ {
+    "enabled": true,
+    "type": 0,
+    "name": "Host Button",
+    "description": "Embeds a host button below the video player."
+ },
+ {
+    "enabled": false,
+    "type": 1,
+    "name": "Auto-Claim Channel Points",
+    "description": "Auto claims channel points.",
+    "options": ["🌊 Wave", "🍎 Apple", "🎣 Fishing"],
+    "selected": 1
+ },
+ {
+    "enabled": false,
+    "type": 2,
+    "name": "Checkbox",
+    "description": "A checkbox for checkboxing.",
+    "options": ["🌊 Wave", "🍎 Apple", "🎣 Fishing"],
+    "selected": [0, 1]
+ },
+ {
+    "enabled": true,
+    "type": 3,
+    "name": "Banned Words",
+    "description": "Automatically remove banned words from twitch chat.",
+    "headers": ["Word", "Scope"],
+    "data": [
+    {
+      "id": 1,
+      "Word": "🐳 Whale",
+      "Count": 200,
+      "Scope": "Everywhere"
+    },
+    {
+      "id": 2,
+      "Word": "👋 Wave",
+      "Count": 964,
+      "Scope": "Some places"
+    },
+    {
+      "id": 3,
+      "Word": "🥒 Cucumber",
+      "Count": 123,
+      "Scope": "No-where"
+    }
+   ]
+ },
+ {
+  "enabled": true,
+  "type": 4,
+  "name": "Slider Setting",
+  "description": "A slider for sliding.",
+  "data": {
+    "max": 100,
+    "min": 0,
+    "current": 50
+  }
+ },
+ {
+  "enabled": true,
+  "type": 5,
+  "name": "Radio Select",
+  "description": "a radio select for selecting.",
+  "options": ["🌊 Wave", "🍎 Apple", "🎣 Fishing"],
+  "selected": 0
+ }
+]

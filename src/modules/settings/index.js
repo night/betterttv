@@ -1,6 +1,8 @@
 import $ from 'jquery';
 import {save} from 'save-file';
 import moment from 'moment';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import cdn from '../../utils/cdn.js';
 import debug from '../../utils/debug.js';
 import watcher from '../../watcher.js';
@@ -9,6 +11,7 @@ import storage from '../../storage.js';
 import html from '../../utils/html.js';
 import api from '../../utils/api.js';
 import domObserver from '../../observers/dom.js';
+import App from './App.js';
 
 const getSettingElement = ({id}) => $(`.bttvOption-${html.escape(id)}`);
 
@@ -156,48 +159,9 @@ class SettingsModule {
 
     const panel = document.createElement('div');
     panel.setAttribute('id', 'bttvSettingsPanel');
-    panel.style.display = 'none';
-    panel.innerHTML = settingsPanelTemplate();
     $('body').append(panel);
 
-    cdn.get('privacy.html').then((data) => $('#bttvPrivacy').html(data));
-
-    api
-      .get('cached/changelog')
-      .then((changelog) =>
-        changelog.map(({version, publishedAt, body}) => changelogEntryTemplate(version, publishedAt, body))
-      )
-      .then((releases) => $('#bttvChangelog .bttv-changelog-releases').html(releases.join('')));
-
-    $('#bttvSettings').on('change', '.option input:radio', ({target}) =>
-      settings.set(target.name, target.value === 'true')
-    );
-    $('#bttvBackupButton').click(() => this.backup());
-    $('#bttvImportInput').change(({target}) => this.import(target));
-    $('#bttvSettingsSearch').on('input', () => this.doSearch());
-
-    $('#bttvSettingsPanel #close').click(() => $('#bttvSettingsPanel').hide('slow'));
-    $('#bttvSettingsPanel .nav a').click((e) => {
-      e.preventDefault();
-      const $tab = $(e.target);
-      const tabId = $tab.attr('href');
-
-      $('#bttvSettingsPanel .nav a').each((index, el) => {
-        const $el = $(el);
-        const currentTabId = $el.attr('href');
-        $(currentTabId).hide();
-        $el.parent('li').removeClass('active');
-      });
-
-      if (tabId === '#bttvChannel') {
-        $(tabId).children('iframe').attr('src', 'https://manage.betterttv.net/channel');
-      }
-
-      $(tabId).fadeIn();
-      $tab.parent('li').addClass('active');
-    });
-
-    settings.getSettings().forEach((setting) => addSetting(setting));
+    ReactDOM.render(<App />, document.getElementById('bttvSettingsPanel'));
   }
 
   renderSettingsMenuOption() {

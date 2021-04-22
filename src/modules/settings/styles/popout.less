@@ -1,0 +1,64 @@
+@ns: rs-;
+
+.@{ns}modal-dialog,
+.@{ns}modal-content,
+.@{ns}modal {
+  width: 800px;
+  height: 500px;
+  margin-top: 10%;
+}
+
+@media screen and (max-width: 769px) {
+  .@{ns}modal-dialog,
+  .@{ns}modal-content,
+  .@{ns}modal {
+    min-width: 300;
+    width: 100%;
+    height: 500px;
+    margin-top: 10%;
+  }
+}
+
+.@{ns}modal-content,
+.@{ns}model-body {
+  margin: 0;
+  padding: 0;
+}
+
+.@{ns}panel {
+  overflow: unset;
+}
+
+.bttv-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 90px;
+  margin-right: 50px;
+}
+
+.bttv-popout-quit-out {
+  position: fixed;
+  top: 25px;
+  right: 25px;
+}
+
+.bttv-icon-text {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-right: 10px;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #191c23;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #191c23;
+}
