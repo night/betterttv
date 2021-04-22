@@ -50,6 +50,9 @@
       new Sentry.Integrations.GlobalHandlers({
         onunhandledrejection: false,
       }),
+      new Sentry.Integrations.TryCatch({
+        requestAnimationFrame: false,
+      }),
       new DedupeIntegration(),
     ],
   });
