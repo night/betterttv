@@ -1,15 +1,11 @@
 import $ from 'jquery';
 import {save} from 'save-file';
-import moment from 'moment';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import cdn from '../../utils/cdn.js';
-import debug from '../../utils/debug.js';
 import watcher from '../../watcher.js';
 import settings from '../../settings.js';
 import storage from '../../storage.js';
 import html from '../../utils/html.js';
-import api from '../../utils/api.js';
 import domObserver from '../../observers/dom.js';
 import App from './App.js';
 
