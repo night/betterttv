@@ -13,6 +13,7 @@ import postcssUrl from 'postcss-url';
 import got from 'got';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 import SentryWebpackPlugin from '@sentry/webpack-plugin';
+import FileManagerPlugin from 'filemanager-webpack-plugin';
 
 const git = createRequire(import.meta.url)('git-rev-sync');
 const {EnvironmentPlugin, optimize} = webpack;
@@ -182,6 +183,22 @@ export default async (env, argv) => {
               project: 'betterttv-extension',
               include: './build',
               ignore: ['dev', 'node_modules', 'webpack.config.js'],
+            }),
+            new FileManagerPlugin({
+              events: {
+                onEnd: {
+                  archive: [
+                    {
+                      source: 'build',
+                      destination: './build/betterttv.tar.gz',
+                      format: 'tar',
+                      options: {
+                        gzip: true,
+                      },
+                    },
+                  ],
+                },
+              },
             }),
           ]
         : []),
