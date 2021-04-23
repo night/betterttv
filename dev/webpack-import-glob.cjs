@@ -10,11 +10,11 @@ function replacer(match, quote, filename) {
     })
     .map(
       (file) => `
-          try {
-            await import(${quote + file + quote});
-          } catch (e) {
-            debug.error('Failed to import ${file}', e.stack);
-          }
+        try {
+          await import(${quote + file + quote});
+        } catch (e) {
+          debug.error('Failed to import ${file}', e.stack);
+        }
       `
     )
     .join('; ');
