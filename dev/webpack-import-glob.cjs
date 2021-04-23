@@ -17,7 +17,7 @@ function replacer(match, quote, filename) {
         }
       `
     )
-    .join('; ');
+    .join('');
 }
 
 module.exports = function importGlob(source) {
