@@ -173,7 +173,7 @@ export default async (env, argv) => {
       new TerserPlugin({
         extractComments: false,
       }),
-      ...(PROD
+      ...(process.env.TRAVIS_TAG
         ? [
             new SentryWebpackPlugin({
               authToken: process.env.SENTRY_AUTH_TOKEN,

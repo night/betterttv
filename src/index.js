@@ -43,6 +43,7 @@
       'ChunkLoadError',
       'Loading CSS chunk',
       'Failed to fetch',
+      'NetworkError',
     ],
     allowUrls: [/betterttv\.js/, /\.betterttv\.net/],
     denyUrls: [/static\.twitchcdn\.net\/assets/, /avalon\.js/, /avalon\.[a-zA-Z0-9]+\.js/, /script\.js/],
