@@ -11,9 +11,9 @@ function replacer(match, quote, filename) {
     .map(
       (file) => `
           try {
-              await import(${quote + file + quote});
+            await import(${quote + file + quote});
           } catch (e) {
-              debug.error('Failed to import ${file}', e.stack);
+            debug.error('Failed to import ${file}', e.stack);
           }
       `
     )

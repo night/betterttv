@@ -1,4 +1,4 @@
-(async () => {
+(async (currentScript) => {
   if (!String.prototype.includes || !Array.prototype.findIndex) return;
   if (window.location.pathname.endsWith('.html')) return;
   if (
@@ -18,6 +18,9 @@
   // some people have multiple versions of BetterTTV, for whatever reason
   if (window.BetterTTV || window.__betterttv) return;
   window.__betterttv = true;
+
+  const {default: extension} = await import('./utils/extension.js');
+  extension.setCurrentScript(currentScript);
 
   const Sentry = await import('@sentry/browser');
   const {Dedupe: DedupeIntegration} = await import('@sentry/integrations');
@@ -86,4 +89,4 @@
       emitLoad: (name) => watcher.emit(`load.${name}`),
     },
   };
-})();
+})(document.currentScript);
