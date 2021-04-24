@@ -16,6 +16,7 @@ class ChatTabcompletionModule {
   constructor() {
     settings.add({
       id: 'tabCompletionTooltip',
+      categories: ['chat'],
       name: 'Completion Tooltip',
       defaultValue: true,
       description: 'Shows a tooltip with suggested names when using @ completion',
@@ -23,6 +24,7 @@ class ChatTabcompletionModule {
 
     settings.add({
       id: 'tabCompletionEmotePriority',
+      categories: ['chat'],
       name: 'Tab Completion Emote Priority',
       description: 'Prioritizes emotes over usernames when using tab completion',
       default: false,

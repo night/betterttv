@@ -13,9 +13,11 @@ import _settings from '../../../settings.js';
 
 const auto = _settings.getSettings().map((setting) => setting.name);
 
-function Settings() {
+function Settings({category}) {
   const [search, setSearch] = useState('');
   const [settings, setSettings] = useState([]);
+
+  console.log(props);
 
   useEffect(() => {
     setSettings(
@@ -33,7 +35,7 @@ function Settings() {
             props.setting.name.toLowerCase().includes(search.toLowerCase()) ||
             props.setting.description.toLowerCase().includes(search.toLowerCase())
         )
-      : settings;
+      : settings.filter(({props}) => props.categories.includes(category));
 
   return (
     <div className="bttv-popout-page">

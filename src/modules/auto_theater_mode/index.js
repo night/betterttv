@@ -7,6 +7,7 @@ class AutoTheaterModeModule {
   constructor() {
     settings.add({
       id: 'autoTheatreMode',
+      categories: ['misc'],
       name: 'Automatic Theatre Mode',
       defaultValue: false,
       description: 'Enables theatre mode by default',

@@ -21,12 +21,6 @@ function BTTVPopout({open, setOpen}) {
     <div>
       <Modal show={open} onHide={() => setOpen(false)}>
         <Modal.Body>
-          <Icon
-            className="bttv-popout-quit-out"
-            icon={close}
-            style={{cursor: 'pointer'}}
-            onClick={() => setOpen(false)}
-          />
           <Sidenav page={page} setPage={setPage} setOpen={setOpen} />
           <div className="bttv-page">{renderPage(page)}</div>
         </Modal.Body>
@@ -40,8 +34,12 @@ function renderPage(page) {
     case '0':
       return <Home />;
     case '1':
-      return <Settings />;
+      return <Settings category={'UI'} />;
     case '2':
+      return <Settings category={'chat'} />;
+    case '3':
+      return <Settings category={'misc'} />;
+    case '5':
       return <Changelog />;
     default:
       return <Home />;

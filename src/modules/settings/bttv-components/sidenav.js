@@ -6,6 +6,8 @@ import Icon from 'rsuite/lib/Icon/index.js';
 import home from '../../../assets/icons/home-solid.svg';
 import box from '../../../assets/icons/box-solid.svg';
 import cog from '../../../assets/icons/cog-solid.svg';
+import comment from '../../../assets/icons/comment-solid.svg';
+import flask from '../../../assets/icons/flask-solid.svg';
 import dashboard from '../../../assets/icons/columns-solid.svg';
 
 function BTTVSidenav({page, setPage, setOpen}) {
@@ -14,7 +16,7 @@ function BTTVSidenav({page, setPage, setOpen}) {
       <Sidenav
         activeKey={page}
         onSelect={(newPage) => {
-          if (newPage === '3') return;
+          if (newPage === '4') return;
           setPage(newPage || page);
         }}
         expanded={false}>
@@ -26,14 +28,20 @@ function BTTVSidenav({page, setPage, setOpen}) {
             <Nav.Item eventKey="1" icon={<Icon icon={cog} />}>
               <p>Settings</p>
             </Nav.Item>
-            <Nav.Item eventKey="2" icon={<Icon icon={box} />}>
-              <p>Changelog</p>
+            <Nav.Item eventKey="2" icon={<Icon icon={comment} />}>
+              <p>Chat</p>
+            </Nav.Item>
+            <Nav.Item eventKey="3" icon={<Icon icon={flask} />}>
+              <p>Miscellaneous</p>
             </Nav.Item>
             <Nav.Item
-              eventKey="3"
+              eventKey="4"
               icon={<Icon icon={dashboard} />}
               onSelect={() => window.open('https://betterttv.com/dashboard/emotes')}>
-              <p>Dashboard</p>
+              <p>Emote Dashboard</p>
+            </Nav.Item>
+            <Nav.Item eventKey="5" icon={<Icon icon={box} />}>
+              <p>Changelog</p>
             </Nav.Item>
           </Nav>
         </Sidenav.Body>

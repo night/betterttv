@@ -25,6 +25,7 @@ class DisableHostModeAutoplayModule {
   constructor() {
     settings.add({
       id: 'disableHostMode',
+      categories: ['ui'],
       name: 'Disable Host Mode Autoplay',
       defaultValue: false,
       description: 'Disables autoplay during channel hosting',

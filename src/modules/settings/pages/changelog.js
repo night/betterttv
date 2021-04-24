@@ -49,11 +49,10 @@ function changelog() {
     );
 
   const logs = changelog.map(({body, version, publishedAt}, index) => (
-    <Panel key={index} style={{marginLeft: 0}}>
-      <h5>
-        {version} • {dayjs(publishedAt).format('MMM D, YYYY')}
-      </h5>
-      <br />
+    <Panel
+      header={'Version ' + version + ' • ' + dayjs(publishedAt).format('MMM D, YYYY')}
+      key={index}
+      style={{marginLeft: 0}}>
       <p>{body}</p>
     </Panel>
   ));

@@ -5,6 +5,7 @@ class ChatLeftSide {
   constructor() {
     settings.add({
       id: 'leftSideChat',
+      categories: ['chat'],
       name: 'Left Side Chat',
       defaultValue: false,
       description: 'Moves chat to the left of the player',

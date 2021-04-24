@@ -18,6 +18,7 @@ class ConversationsModule {
   constructor() {
     settings.add({
       id: 'disableWhispers',
+      categories: ['misc'],
       name: 'Hide Whispers',
       defaultValue: false,
       description: 'Disables Twitch whispers and hides any whispers you receive',
