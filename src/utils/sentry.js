@@ -27,6 +27,7 @@ const ignoreErrors = [
   'BetterJsPop',
   'Name Collision for Module',
   /^NS_/,
+  'GraphQL error',
 ];
 
 Sentry.init({
