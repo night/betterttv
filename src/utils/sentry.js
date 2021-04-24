@@ -47,6 +47,11 @@ Sentry.init({
     new Dedupe(),
   ],
   beforeSend: (event) => {
+    // only collect errors on production releases
+    if (process.env.NODE_ENV !== 'production') {
+      return null;
+    }
+
     const {exception} = event;
     const exceptionValue = exception != null && exception.values != null && event.exception.values[0];
     if (exceptionValue != null) {
