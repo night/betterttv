@@ -31,7 +31,12 @@ function formatChatUser(message) {
     return null;
   }
 
-  const {user, badges} = message;
+  const {user} = message;
+
+  let {badges} = message;
+  if (badges == null) {
+    badges = {};
+  }
 
   return {
     id: user.userID,
