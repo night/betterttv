@@ -10,28 +10,28 @@ class HideSidebarElementsModule {
   constructor() {
     settings.add({
       id: 'hideFeaturedChannels',
-      categories: ['ui'],
+      category: 'ui',
       name: 'Hide Recommended Channels',
       defaultValue: true,
       description: 'Removes the recommended channels in the sidebar',
     });
     settings.add({
       id: 'autoExpandChannels',
-      categories: ['ui'],
+      category: 'ui',
       name: 'Auto Expand Followed Channels List',
       defaultValue: false,
       description: 'Clicks the "Load More" followed channels button in the sidebar for you',
     });
     settings.add({
       id: 'hideRecommendedFriends',
-      categories: ['ui'],
+      category: 'ui',
       name: 'Hide Recommended Friends',
       defaultValue: false,
       description: 'Removes the recommended friends section in the sidebar',
     });
     settings.add({
       id: 'hideOfflineFollowedChannels',
-      categories: ['ui'],
+      category: 'ui',
       name: 'Hide Offline Followed Channels',
       defaultValue: false,
       description: 'Removes offline followed channels in the sidebar',

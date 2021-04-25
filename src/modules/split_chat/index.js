@@ -6,7 +6,7 @@ class SplitChatModule {
   constructor() {
     settings.add({
       id: 'splitChat',
-      categories: ['chat'],
+      category: 'chat',
       name: 'Split Chat',
       defaultValue: false,
       description: 'Alternates backgrounds between messages in chat to improve readability',

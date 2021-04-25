@@ -6,7 +6,7 @@ class HidePrimePromotionsModule {
   constructor() {
     settings.add({
       id: 'hidePrimePromotions',
-      categories: ['ui'],
+      category: 'ui',
       name: 'Hide Prime Promotions',
       defaultValue: false,
       description: 'Hides Prime Gaming loot notices, like the ones in the sidebar',

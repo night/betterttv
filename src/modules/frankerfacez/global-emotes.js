@@ -16,7 +16,7 @@ class GlobalEmotes extends AbstractEmotes {
 
     settings.add({
       id: 'ffzEmotes',
-      categories: ['chat'],
+      category: 'chat',
       name: 'FrankerFaceZ Emotes',
       defaultValue: true,
       description: 'Enables emotes from that other extension people sometimes use',

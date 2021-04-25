@@ -9,66 +9,6 @@ import html from '../../utils/html.js';
 import domObserver from '../../observers/dom.js';
 import App from './App.js';
 
-const getSettingElement = ({id}) => $(`.bttvOption-${html.escape(id)}`);
-
-const settingTemplate = ({id, name, description}) => `
-    <div id="option" class="option bttvOption-${html.escape(id)}">
-        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">${html.escape(name)}</span>
-        <span class="description"> — ${html.escape(description)}</span>
-        <div class="bttv-switch">
-            <input class="bttv-switch-input bttv-switch-off" type="radio" name=${html.escape(
-              id
-            )} value="false" id="${html.escape(id)}False" />
-            <label class="bttv-switch-label bttv-switch-label-off" for="${html.escape(id)}False">Off</label>
-            <input class="bttv-switch-input" type="radio" name=${html.escape(id)} value="true" id="${html.escape(
-  id
-)}True" />
-            <label class="bttv-switch-label bttv-switch-label-on" for="${html.escape(id)}True">On</label>
-            <span class="bttv-switch-selection"></span>
-        </div>
-    </option>
-`;
-
-function getDataURLFromUpload(input, callback) {
-  const reader = new FileReader();
-  reader.onload = ({target}) => callback(target.result);
-  const file = input.files[0];
-  if (!file) {
-    callback(null);
-    return;
-  }
-  reader.readAsText(file);
-}
-
-function isJSON(string) {
-  try {
-    JSON.parse(string);
-  } catch (e) {
-    return false;
-  }
-  return true;
-}
-
-const renderedSettings = {};
-
-function addSetting(setting) {
-  if (renderedSettings[setting.id]) return;
-  renderedSettings[setting.id] = setting;
-
-  const sortedSettings = Object.values(renderedSettings);
-  sortedSettings.sort((a, b) => a.name.localeCompare(b.name));
-  const beforeIndex = sortedSettings.findIndex((s) => s.id === setting.id) - 1;
-
-  const template = settingTemplate(setting);
-  if (beforeIndex === -1) {
-    $('#bttvSettings.options-list input#bttvSettingsSearch').after(template);
-  } else {
-    getSettingElement(sortedSettings[beforeIndex]).after(template);
-  }
-
-  $(settings.get(setting.id) ? `#${setting.id}True` : `#${setting.id}False`).prop('checked', true);
-}
-
 class SettingsModule {
   constructor() {
     watcher.on('load', () => {
@@ -124,34 +64,6 @@ class SettingsModule {
   updateSettingToggle(settingId, value) {
     $(`#${settingId}True`).prop('checked', value === true);
     $(`#${settingId}False`).prop('checked', value === false);
-  }
-
-  backup() {
-    const rv = storage.getStorage();
-    save(JSON.stringify(rv), 'bttv_settings.backup');
-  }
-
-  import(target) {
-    getDataURLFromUpload(target, (data) => {
-      if (!isJSON(data)) return;
-
-      const settingsToImport = JSON.parse(data);
-      Object.keys(settingsToImport).forEach((s) => settings.set(s.split('bttv_')[1], settingsToImport[s]));
-
-      setTimeout(() => window.location.reload(), 1000);
-    });
-  }
-
-  doSearch() {
-    const val = $('#bttvSettingsSearch').val().trim().toLowerCase();
-    if (val === '') {
-      $('[class^="option bttvOption-"]').css('display', 'block');
-      return;
-    }
-    settings.getSettings().forEach((setting) => {
-      const shouldShow = setting.name.toLowerCase().includes(val) || setting.description.toLowerCase().includes(val);
-      $(`.bttvOption-${setting.id}`).css('display', shouldShow ? 'block' : 'none');
-    });
   }
 }
 

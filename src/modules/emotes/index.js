@@ -20,7 +20,7 @@ class EmotesModule {
 
     settings.add({
       id: 'bttvEmotes',
-      categories: ['chat'],
+      category: 'chat',
       name: 'BetterTTV Emotes',
       defaultValue: true,
       description: 'Adds extra cool emotes for you to use',
@@ -28,7 +28,7 @@ class EmotesModule {
 
     settings.add({
       id: 'bttvGIFEmotes',
-      categories: ['chat'],
+      category: 'chat',
       name: 'BetterTTV GIF Emotes',
       defaultValue: true,
       description: 'Adds animated emotes (not everyone likes GIFs, but some people do)',

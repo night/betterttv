@@ -14,7 +14,7 @@ import settings from '../../../settings.js';
 function Setting({setting}) {
   const {description} = setting;
   return (
-    <div>
+    <div className="bttv-setting">
       <p>{description}</p>
       <br />
       {getSetting(setting)}

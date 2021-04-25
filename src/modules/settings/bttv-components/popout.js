@@ -1,9 +1,5 @@
 import React, {useState} from 'react';
-
 import Modal from 'rsuite/lib/Modal/index.js';
-import Icon from 'rsuite/lib/Icon/index.js';
-import close from '../../../assets/icons/close-solid.svg';
-
 import Sidenav from './sidenav.js';
 import Home from '../pages/home.js';
 import Settings from '../pages/settings.js';
@@ -34,11 +30,11 @@ function renderPage(page) {
     case '0':
       return <Home />;
     case '1':
-      return <Settings category={'UI'} />;
+      return <Settings header={'UI'} category={'ui'} />;
     case '2':
-      return <Settings category={'chat'} />;
+      return <Settings header={'Chat'} category={'chat'} />;
     case '3':
-      return <Settings category={'misc'} />;
+      return <Settings header={'Miscellaneous'} category={'misc'} />;
     case '5':
       return <Changelog />;
     default:

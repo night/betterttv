@@ -8,7 +8,7 @@ class AnonChatModule {
   constructor() {
     settings.add({
       id: 'anonChat',
-      categories: ['chat'],
+      category: 'chat',
       name: 'Anon Chat',
       defaultValue: false,
       description: 'Joins chat anonymously without appearing in the userlist',
