@@ -46,7 +46,7 @@
     "lodash.debounce": "^4.0.8",
     "lodash.throttle": "^4.1.1",
     "mini-css-extract-plugin": "^1.4.1",
-    "postcss": "^8.2.12",
+    "postcss": "^8.2.13",
     "postcss-hexrgba": "^2.0.1",
     "postcss-loader": "^5.2.0",
     "postcss-url": "^10.1.3",
