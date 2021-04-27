@@ -4,7 +4,7 @@ import storage from './storage.js';
 const settings = {};
 
 class Settings extends SafeEventEmitter {
-  add({id, category, name, description, defaultValue}) {
+  add({id, name, type = 0, options = {}, category, description, defaultValue}) {
     if (id in settings) {
       throw new Error(`${id} is already a defined setting.`);
     }
@@ -12,6 +12,8 @@ class Settings extends SafeEventEmitter {
     settings[id] = {
       id,
       name,
+      type,
+      options,
       category,
       description,
       defaultValue,
@@ -38,8 +40,9 @@ class Settings extends SafeEventEmitter {
   }
 
   set(id, value, emit = true, temporary = false) {
+    const prev = this.get(id);
     const rv = storage.set(id, value, undefined, false, true, temporary);
-    if (emit) this.emit(`changed.${id}`, value);
+    if (emit) this.emit(`changed.${id}`, value, prev);
     return rv;
   }
 }

@@ -42,7 +42,7 @@ function changelog() {
 
   if (error)
     return (
-      <Panel className="bttv-popout-page">
+      <Panel>
         <h4>Something went wrong!</h4>
         <p>Failed to load changelog.</p>
       </Panel>
@@ -50,7 +50,7 @@ function changelog() {
 
   const logs = changelog.map(({body, version, publishedAt}, index) => (
     <Panel key={index} style={{marginLeft: 0}}>
-      <Divider></Divider>
+      <Divider />
       <h4>{'Version ' + version + ' • ' + dayjs(publishedAt).format('MMM D, YYYY')}</h4>
       <p>{body}</p>
     </Panel>

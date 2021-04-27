@@ -13,18 +13,7 @@ const provider = {
 class GlobalEmotes extends AbstractEmotes {
   constructor() {
     super();
-
-    settings.add({
-      id: 'ffzEmotes',
-      category: 'chat',
-      name: 'FrankerFaceZ Emotes',
-      defaultValue: true,
-      description: 'Enables emotes from that other extension people sometimes use',
-    });
-
     settings.on('changed.ffzEmotes', () => this.updateGlobalEmotes());
-
-    this.updateGlobalEmotes();
   }
 
   get provider() {
@@ -34,7 +23,7 @@ class GlobalEmotes extends AbstractEmotes {
   updateGlobalEmotes() {
     this.emotes.clear();
 
-    if (!settings.get('ffzEmotes')) return;
+    if (!settings.get('emotes').includes(2)) return;
 
     api
       .get('cached/frankerfacez/emotes/global')

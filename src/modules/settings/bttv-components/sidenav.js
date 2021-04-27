@@ -12,7 +12,7 @@ import dashboard from '../../../assets/icons/columns-solid.svg';
 import discord from '../../../assets/icons/social/discord.svg';
 import twitter from '../../../assets/icons/social/twitter.svg';
 
-function BTTVSidenav({page, setPage, setOpen}) {
+function BTTVSidenav({page, setPage}) {
   return (
     <div className="bttv-sidenav">
       <Sidenav

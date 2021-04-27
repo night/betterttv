@@ -80,7 +80,7 @@ class ChatModule {
   }
 
   calculateColor(color) {
-    if (!settings.get('readableUsernameColors')) {
+    if (!settings.get('chatUsernames').includes(1)) {
       return color;
     }
 

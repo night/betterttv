@@ -1,19 +1,13 @@
 import $ from 'jquery';
-import {save} from 'save-file';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import watcher from '../../watcher.js';
-import settings from '../../settings.js';
-import storage from '../../storage.js';
-import html from '../../utils/html.js';
+import BTTVWindow from './bttv-components/popout.js';
 import domObserver from '../../observers/dom.js';
-import App from './App.js';
 
 class SettingsModule {
   constructor() {
-    watcher.on('load', () => {
-      this.renderSettings();
-    });
+    this.renderSettings();
 
     domObserver.on('a[data-test-selector="user-menu-dropdown__settings-link"]', () => {
       this.renderSettingsMenuOption();
@@ -27,7 +21,10 @@ class SettingsModule {
     panel.setAttribute('id', 'bttvSettingsPanel');
     $('body').append(panel);
 
-    ReactDOM.render(<App />, document.getElementById('bttvSettingsPanel'));
+    ReactDOM.render(
+      <BTTVWindow open={false} setOpen={this.openSettings} />,
+      document.getElementById('bttvSettingsPanel')
+    );
   }
 
   renderSettingsMenuOption() {
@@ -58,12 +55,7 @@ class SettingsModule {
 
   openSettings(e) {
     e.preventDefault();
-    $('#bttvSettingsPanel').show('slow');
-  }
-
-  updateSettingToggle(settingId, value) {
-    $(`#${settingId}True`).prop('checked', value === true);
-    $(`#${settingId}False`).prop('checked', value === false);
+    ReactDOM.render(<BTTVWindow open={true} />, document.getElementById('bttvSettingsPanel'));
   }
 }
 

@@ -5,51 +5,45 @@ import domObserver from '../../observers/dom.js';
 
 let removeFeaturedChannelsListener;
 let removeOfflineFollowedChannelsListener;
-
 class HideSidebarElementsModule {
   constructor() {
     settings.add({
-      id: 'hideFeaturedChannels',
+      id: 'hideSidebarElements',
+      type: 2,
+      options: {
+        choices: [
+          'Recommended Channels',
+          'Auto-expand Featured Channels',
+          'Friend Recommendations',
+          'Offline Followed Channels',
+          'Friends List',
+        ],
+      },
       category: 'ui',
-      name: 'Hide Recommended Channels',
-      defaultValue: true,
-      description: 'Removes the recommended channels in the sidebar',
+      name: 'Sidebar',
+      defaultValue: [0, 2, 3, 4],
+      description: 'Edit/remove elements of the left sidebar',
     });
-    settings.add({
-      id: 'autoExpandChannels',
-      category: 'ui',
-      name: 'Auto Expand Followed Channels List',
-      defaultValue: false,
-      description: 'Clicks the "Load More" followed channels button in the sidebar for you',
+
+    settings.on('changed.hideSidebarElements', (newValues, prevValues) => {
+      this.toggleElements(newValues);
     });
-    settings.add({
-      id: 'hideRecommendedFriends',
-      category: 'ui',
-      name: 'Hide Recommended Friends',
-      defaultValue: false,
-      description: 'Removes the recommended friends section in the sidebar',
-    });
-    settings.add({
-      id: 'hideOfflineFollowedChannels',
-      category: 'ui',
-      name: 'Hide Offline Followed Channels',
-      defaultValue: false,
-      description: 'Removes offline followed channels in the sidebar',
-    });
-    settings.on('changed.hideFeaturedChannels', () => this.toggleFeaturedChannels());
-    settings.on('changed.autoExpandChannels', () => this.toggleAutoExpandChannels());
-    settings.on('changed.hideRecommendedFriends', () => this.toggleRecommendedFriends());
-    settings.on('changed.hideOfflineFollowedChannels', () => this.toggleOfflineFollowedChannels());
+
     watcher.on('load', () => {
-      this.toggleFeaturedChannels();
-      this.toggleAutoExpandChannels();
-      this.toggleRecommendedFriends();
-      this.toggleOfflineFollowedChannels();
+      this.toggleElements(settings.get('hideSidebarElements'));
     });
   }
 
-  toggleFeaturedChannels() {
-    if (settings.get('hideFeaturedChannels')) {
+  toggleElements(values) {
+    this.showFeaturedChannels(values.includes(0));
+    this.autoExpandChannels(values.includes(1));
+    this.showRecommendedFriends(values.includes(2));
+    this.showOfflineFollowedChannels(values.includes(3));
+    this.showFriendsList(values.includes(4));
+  }
+
+  showFeaturedChannels(show) {
+    if (!show) {
       if (removeFeaturedChannelsListener) return;
 
       removeFeaturedChannelsListener = domObserver.on(
@@ -70,8 +64,9 @@ class HideSidebarElementsModule {
     $('.side-nav-section').removeClass('bttv-hide-featured-channels');
   }
 
-  toggleAutoExpandChannels() {
-    if (!settings.get('autoExpandChannels')) return;
+  autoExpandChannels(auto) {
+    console.log(auto);
+    if (!auto) return;
     setTimeout(() => {
       const $firstChannelLink = $('a.side-nav-card__link[data-a-id="followed-channel-0"]');
       if ($firstChannelLink.length === 0) return;
@@ -79,12 +74,12 @@ class HideSidebarElementsModule {
     }, 1000);
   }
 
-  toggleRecommendedFriends() {
-    $('body').toggleClass('bttv-hide-recommended-friends', settings.get('hideRecommendedFriends'));
+  showRecommendedFriends(show) {
+    $('body').toggleClass('bttv-hide-recommended-friends', !show);
   }
 
-  toggleOfflineFollowedChannels() {
-    if (settings.get('hideOfflineFollowedChannels')) {
+  showOfflineFollowedChannels(show) {
+    if (!show) {
       if (removeOfflineFollowedChannelsListener) return;
 
       removeOfflineFollowedChannelsListener = domObserver.on(
@@ -103,6 +98,10 @@ class HideSidebarElementsModule {
     removeOfflineFollowedChannelsListener();
     removeOfflineFollowedChannelsListener = undefined;
     $('.side-nav-card').removeClass('bttv-hide-followed-offline');
+  }
+
+  showFriendsList(show) {
+    $('body').toggleClass('bttv-hide-friends', !show);
   }
 }
 

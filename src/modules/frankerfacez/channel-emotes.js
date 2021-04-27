@@ -24,7 +24,7 @@ class FrankerFaceZChannelEmotes extends AbstractEmotes {
   updateChannelEmotes() {
     this.emotes.clear();
 
-    if (!settings.get('ffzEmotes')) return;
+    if (!settings.get('emotes').includes(2)) return;
 
     const currentChannel = twitch.getCurrentChannel();
     if (!currentChannel) return;

@@ -1,3 +1,7 @@
+.bttv-hide-chat-replies .chat-line__reply-icon {
+  display: none !important;
+}
+
 .bttv-hide-bits {
   .pinned-cheer,
   .pinned-cheer-v2,
@@ -8,4 +12,14 @@
   .chat-badge[alt~="cheer"] {
     display: none !important;
   }
+}
+
+.bttv-hide-chat-clips {
+  .chat-card__link {
+    display: none !important;
+  }
+}
+
+.bttv-hide-community-highlights {
+  display: none;
 }

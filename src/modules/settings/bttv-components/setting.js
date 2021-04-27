@@ -5,6 +5,7 @@ import Dropdown from 'rsuite/lib/Dropdown/index.js';
 import IconButton from 'rsuite/lib/IconButton/index.js';
 import Icon from 'rsuite/lib/Icon/index.js';
 import Checkbox from 'rsuite/lib/Checkbox/index.js';
+import CheckboxGroup from 'rsuite/lib/CheckboxGroup/index.js';
 import Slider from 'rsuite/lib/Slider/index.js';
 import Radio from 'rsuite/lib/Radio/index.js';
 import RadioGroup from 'rsuite/lib/RadioGroup/index.js';
@@ -22,14 +23,12 @@ function Setting({setting}) {
   );
 }
 
-function getSetting(setting) {
-  const {type = 0} = setting;
-  const [value, setValue] = useState(settings.get(setting.id));
+function getSetting({id, type, options}) {
+  const [value, setValue] = useState(settings.get(id));
 
   useEffect(() => {
-    if (settings.get(setting.id) === value) return;
-    settings.set(setting.id, value);
-    settings.emit(`changed.${setting.id}`, value);
+    if (settings.get(id) === value) return;
+    settings.set(id, value);
   }, [value]);
 
   switch (type) {
@@ -56,19 +55,27 @@ function getSetting(setting) {
           {items}
         </Dropdown>
       );
-    case 2:
-      const items2 = options.map((option, index) => (
-        <Checkbox key={index} defaultChecked={selected.includes(index)} onSelect={() => setValue(index)}>
-          {option}
-        </Checkbox>
-      ));
-      return <div>{items2}</div>;
-    case 3:
+    case 2: {
+      const items = options.choices.map((option, index) => {
+        return (
+          <Checkbox key={index} value={index}>
+            {option}
+          </Checkbox>
+        );
+      });
       return (
-        <div>
-          <EditTable headers={headers} data={data} setData={setData} />
-        </div>
+        <CheckboxGroup
+          value={value}
+          onChange={(value) => {
+            setValue(value);
+          }}>
+          {items}
+        </CheckboxGroup>
       );
+    }
+
+    case 3:
+      return <EditTable options={options} setData={setValue} data={value} />;
     case 4:
       return (
         <div>
@@ -85,11 +92,11 @@ function getSetting(setting) {
         <FormGroup controlId="radioList">
           <RadioGroup
             name="radioList"
-            defaultValue={selected}
+            defaultValue={value}
             onChange={(value) => {
               setValue(value);
             }}>
-            {options.map((option, index) => (
+            {options.choices.map((option, index) => (
               <Radio key={index} value={index}>
                 {option}
               </Radio>

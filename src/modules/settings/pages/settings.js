@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import Setting from '../bttv-components/setting.js';
 
 import Panel from 'rsuite/lib/Panel/index.js';
-import PanelGroup from 'rsuite/lib/PanelGroup/index.js';
 import InputGroup from 'rsuite/lib/InputGroup/index.js';
 import Icon from 'rsuite/lib/Icon/index.js';
 import AutoComplete from 'rsuite/lib/AutoComplete/index.js';
@@ -39,12 +38,19 @@ function Settings({header, category}) {
   return (
     <div>
       <Panel>
-        <h4>{header} Settings</h4>
+        <h4>{header}</h4>
         <p>Here you can enhance your experience on Twitch with our wide range of settings.</p>
         <br />
         <SearchBar setSearch={setSearch} />
       </Panel>
-      {searchedSettings.length > 0 && searchedSettings}
+      {searchedSettings.length > 0 ? (
+        searchedSettings
+      ) : (
+        <Panel>
+          <Divider />
+          No results
+        </Panel>
+      )}
     </div>
   );
 }
@@ -53,7 +59,7 @@ function createSetting(props, index) {
   return (
     <Panel setting={props} eventKey={index} key={index}>
       <Divider />
-      <h4>{props.name}</h4>
+      <h5>{props.name}</h5>
       <Setting setting={props} />
     </Panel>
   );

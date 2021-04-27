@@ -8,17 +8,6 @@
   margin-top: 10%;
 }
 
-@media screen and (max-width: 769px) {
-  .@{ns}modal-dialog,
-  .@{ns}modal-content,
-  .@{ns}modal {
-    min-width: 300;
-    width: 100%;
-    height: 500px;
-    margin-top: 10%;
-  }
-}
-
 .@{ns}modal-content,
 .@{ns}model-body {
   margin: 0;
@@ -33,9 +22,9 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin-top: 30px;
-  margin-left: 92px;
-  margin-right: 36px;
+  margin-top: 36px;
+  margin-left: 72px;
+  margin-right: 16px;
 }
 
 .bttv-icon-text {
@@ -43,19 +32,6 @@
   align-items: center;
   justify-content: space-between;
   margin-right: 10px;
-}
-
-.footer {
-  columns: 3 auto;
-}
-
-.footer a {
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.footer-panel {
-  padding-top: 0px;
 }
 
 ::-webkit-scrollbar {
@@ -69,4 +45,54 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: #191c23;
+}
+
+@media screen and (max-width: 769px) {
+  .@{ns}modal {
+    width: 95%;
+  }
+
+  .@{ns}modal-content,
+  .@{ns}modal-dialog {
+    width: 100%;
+  }
+}
+
+#bttvSettingsPanel {
+  #logo {
+    padding: 10px;
+    vertical-align: bottom;
+    text-shadow: 1px 1px 3px #000000;
+    font-size: 25px;
+    font-family: 'Korolev-Bold', 'HelveticaNeue-CondensedBold', 'ArialNarrow-Bold', 'Helvetica Neue', Helvetica, Arial,
+      sans-serif;
+  }
+}
+
+.bttvSettingsDropDown {
+  color: inherit;
+
+  &:hover {
+    color: inherit;
+    text-decoration: none;
+    background-color: var(--color-background-interactable-hover);
+  }
+
+  .bttvSettingsIconContainer {
+    width: 18px;
+    height: 18px;
+  }
+
+  .bttvSettingsIconDropDown {
+    width: 18px;
+    height: 18px;
+    filter: grayscale(100%) brightness(0%);
+    background: url(assets/icons/bttv_settings.png) no-repeat 0 0px;
+  }
+}
+
+.tw-root--theme-dark {
+  .bttvSettingsIconDropDown {
+    filter: grayscale(100%) brightness(400%);
+  }
 }
