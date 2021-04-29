@@ -147,7 +147,7 @@ function messageContainsKeyword(keywords, from, message) {
 }
 
 function isReply($message) {
-  return $message.parent().hasClass('chat-input-tray__open');
+  return $message.closest('.chat-input-tray__open').length > 0;
 }
 
 function messageTextFromAST(ast) {
