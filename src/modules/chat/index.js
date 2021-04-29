@@ -75,7 +75,7 @@ class ChatModule {
       id: 'colorMeCommand',
       name: 'Colored /me Command',
       defaultValue: false,
-      description: 'Restores original color to the /me command',
+      description: 'Restores original color and font style to the /me command',
     });
     watcher.on('chat.message', ($element, message) => this.messageParser($element, message));
     watcher.on('channel.updated', ({bots}) => {
