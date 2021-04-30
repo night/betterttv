@@ -32,11 +32,11 @@ function renderPage(page) {
     case '0':
       return <Home />;
     case '1':
-      return <Settings header={'Directory'} category={'ui'} />;
+      return <Settings header={'Directory Settings'} category={'ui'} />;
     case '2':
-      return <Settings header={'Chat'} category={'chat'} />;
+      return <Settings header={'Chat Settings'} category={'chat'} />;
     case '3':
-      return <Settings header={'Channel'} category={'misc'} />;
+      return <Settings header={'Channel Settings'} category={'misc'} />;
     case '5':
       return <Changelog />;
     default:

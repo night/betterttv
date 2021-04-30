@@ -5,6 +5,7 @@ import api from '../../../utils/api.js';
 import debug from '../../../utils/debug.js';
 import Panel from 'rsuite/lib/Panel/index.js';
 import Divider from 'rsuite/lib/Divider/index.js';
+import Header from '../bttv-components/header.js';
 
 function changelog() {
   const [req, setReq] = useState({
@@ -43,8 +44,7 @@ function changelog() {
   if (error)
     return (
       <Panel>
-        <h4>Something went wrong!</h4>
-        <p>Failed to load changelog.</p>
+        <Header heading={'Something went wrong'} description={'Failed to load changelog.'} />
       </Panel>
     );
 
@@ -52,15 +52,22 @@ function changelog() {
     <Panel key={index} style={{marginLeft: 0}}>
       <Divider />
       <h4>{'Version ' + version + ' • ' + dayjs(publishedAt).format('MMM D, YYYY')}</h4>
-      <p>{body}</p>
+      <br />
+      <p
+        className="bttv-muted-text"
+        dangerouslySetInnerHTML={{
+          __html: body
+            .replace(/\r\n/g, '<br />')
+            .replace(/ #([0-9]+)/g, ' <a href="https://github.com/night/BetterTTV/issues/$1" target="_blank">#$1</a>'),
+        }}
+      />
     </Panel>
   ));
 
   return (
     <div className="bttv-popout-page">
       <Panel>
-        <h4>Changelog</h4>
-        <p>A list of recent updates and patches to Betterttv.</p>
+        <Header heading={'Changelog'} description={'A list of recent updates and patches to Betterttv.'} />
       </Panel>
       {logs}
     </div>

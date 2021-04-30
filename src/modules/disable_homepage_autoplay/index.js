@@ -6,7 +6,6 @@ class DisableHomepageAutoplayModule {
   constructor() {
     settings.add({
       id: 'disableFPVideo',
-      category: 'chat',
       name: 'Disable Homepage Autoplay',
       defaultValue: false,
       description: 'Disables autoplaying streams on the homepage',

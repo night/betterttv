@@ -27,14 +27,14 @@ function BTTVSidenav({page, setPage}) {
             <Nav.Item eventKey="0" icon={<Icon icon={home} />}>
               <p>BetterTTV</p>
             </Nav.Item>
-            <Nav.Item eventKey="1" icon={<Icon icon={cog} />}>
-              <p>Interface Settings</p>
-            </Nav.Item>
             <Nav.Item eventKey="2" icon={<Icon icon={comment} />}>
               <p>Chat Settings</p>
             </Nav.Item>
             <Nav.Item eventKey="3" icon={<Icon icon={flask} />}>
-              <p>Miscellaneous Settings</p>
+              <p>Channel Settings</p>
+            </Nav.Item>
+            <Nav.Item eventKey="1" icon={<Icon icon={cog} />}>
+              <p>Directory Settings</p>
             </Nav.Item>
             <Nav.Item
               eventKey="4"

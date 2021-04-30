@@ -10,6 +10,7 @@ const SCROLL_CONTAINER_SELECTOR = '.simplebar-scroll-content';
 function scrollOnEmoteLoad($el) {
   $el.find('img.bttv').on('load', () => {
     const $scrollContainer = $el.closest(SCROLL_CONTAINER_SELECTOR);
+    if ($scrollContainer.length === 0) return;
     $scrollContainer.scrollTop($scrollContainer[0].scrollHeight);
   });
 }
@@ -18,7 +19,6 @@ class ConversationsModule {
   constructor() {
     settings.add({
       id: 'disableWhispers',
-      category: 'misc',
       name: 'Hide Whispers',
       defaultValue: false,
       description: 'Disables Twitch whispers and hides any whispers you receive',

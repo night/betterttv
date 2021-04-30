@@ -16,7 +16,7 @@ function Setting({setting}) {
   const {description} = setting;
   return (
     <div className="bttv-setting">
-      <p>{description}</p>
+      <p className="bttv-muted-text">{description}</p>
       <br />
       {getSetting(setting)}
     </div>
@@ -73,7 +73,6 @@ function getSetting({id, type, options}) {
         </CheckboxGroup>
       );
     }
-
     case 3:
       return <EditTable options={options} setData={setValue} data={value} />;
     case 4:

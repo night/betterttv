@@ -1,0 +1,6 @@
+.bttv-disable-channel-points-message-highlights
+  div[data-test-selector='user-notice-line']
+  .chat-line__message-body--highlighted {
+  background: initial !important;
+  border: initial !important;
+}

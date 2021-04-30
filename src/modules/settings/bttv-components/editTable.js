@@ -1,13 +1,11 @@
 /* eslint-disable indent */
-import React from 'react';
+import React, {useRef, useEffect} from 'react';
 import Table from 'rsuite/lib/Table/index.js';
 import Button from 'rsuite/lib/Button/index.js';
 import Icon from 'rsuite/lib/Icon/index.js';
 import Dropdown from 'rsuite/lib/Dropdown/index.js';
 import Popover from 'rsuite/lib/Popover/index.js';
 import Whisper from 'rsuite/lib/Whisper/index.js';
-
-import check from '../../../assets/icons/check-square-solid.svg';
 import minus from '../../../assets/icons/minus-square-solid.svg';
 
 let tableBody;
@@ -57,67 +55,76 @@ class CustomWhisper extends React.Component {
   }
 }
 
+function useOutsideAlerter(ref, onClick, rowData) {
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (ref.current && !ref.current.contains(event.target)) {
+        onClick('edit', rowData.id);
+        document.removeEventListener('mousedown', handleClickOutside);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+  }, [ref]);
+}
+
 const EditCell = ({rowData, dataKey, onChange, onMouseOver, onMouseLeave, onClick, ...props}) => {
-  const editing = rowData.status === 'EDIT';
+  switch (rowData.status) {
+    case 'HOVERING':
+      return (
+        <Cell
+          {...props}
+          className={'table-content-editing'}
+          onMouseLeave={() => onMouseLeave && onMouseLeave('hovering', rowData.id)}>
+          <input
+            className="rs-input"
+            style={{top: 7, height: 30, opacity: 0.5}}
+            defaultValue={rowData[dataKey]}
+            onClick={() => {
+              onClick && onClick('edit', rowData.id);
+            }}
+          />
+        </Cell>
+      );
 
-  if (rowData.status === 'HOVERING')
-    return (
-      <Cell {...props} className={'table-content-editing'}>
-        <input
-          className="rs-input"
-          style={{top: 7, height: 30, opacity: 0.5}}
-          defaultValue={rowData[dataKey]}
-          onMouseLeave={() => onMouseLeave && onMouseLeave('hovering', rowData.id)}
-          onClick={() => {
-            onClick && onClick('edit', rowData.id);
-          }}
-        />
-      </Cell>
-    );
+    case 'EDIT':
+      const wrapperRef = useRef(null);
+      useOutsideAlerter(wrapperRef, onClick, rowData);
+      return (
+        <Cell {...props} className={'table-content-editing'}>
+          <input
+            ref={wrapperRef}
+            className="rs-input"
+            style={{top: 7, height: 30}}
+            defaultValue={rowData[dataKey]}
+            onChange={(event) => {
+              onChange && onChange(rowData.id, dataKey, event.target.value);
+            }}
+          />
+        </Cell>
+      );
 
-  return (
-    <Cell {...props} className={editing ? 'table-content-editing' : ''}>
-      {editing ? (
-        <input
-          className="rs-input"
-          style={{top: 7, height: 30}}
-          defaultValue={rowData[dataKey]}
-          onChange={(event) => {
-            onChange && onChange(rowData.id, dataKey, event.target.value);
-          }}
-        />
-      ) : (
-        <span
-          className="table-content-edit-span"
-          style={{width: '100%'}}
-          onMouseOver={() => onMouseOver && onMouseOver('hovering', rowData.id)}>
-          {rowData[dataKey]}
-        </span>
-      )}
-    </Cell>
-  );
+    default:
+      return (
+        <Cell {...props} onMouseOver={() => onMouseOver && onMouseOver('hovering', rowData.id)}>
+          <span className="table-content-edit-span" style={{width: '100%'}}>
+            {rowData[dataKey]}
+          </span>
+        </Cell>
+      );
+  }
 };
 
 const ActionCell = ({rowData, dataKey, onClick, ...props}) => {
   return (
     <Cell {...props} style={{padding: '6px 0'}}>
-      {rowData.status === 'EDIT' ? (
-        <Button
-          appearance="link"
-          onClick={() => {
-            onClick && onClick('edit', rowData.id);
-          }}>
-          <Icon icon={check} />
-        </Button>
-      ) : (
-        <Button
-          appearance="link"
-          onClick={() => {
-            onClick && onClick('delete', rowData.id);
-          }}>
-          <Icon icon={minus} />
-        </Button>
-      )}
+      <Button
+        style={{float: 'right', marginRight: 10}}
+        appearance="link"
+        onClick={() => {
+          onClick && onClick('delete', rowData.id);
+        }}>
+        <Icon icon={minus} />
+      </Button>
     </Cell>
   );
 };
@@ -148,8 +155,16 @@ function editTable({options, setData, data}) {
     setData(nextData);
   };
 
+  const nextId = () => {
+    let newId = 0;
+    for (let i = 0; data.find((item) => item.id === i) !== undefined; i++) {
+      newId = i + 1;
+    }
+    return newId;
+  };
+
   const addRow = () => {
-    const newRow = {id: data.length + 2, status: 'EDIT'};
+    const newRow = {id: nextId(), status: 'EDIT'};
     for (const header of options.headers) {
       switch (header.type) {
         case 'string':
@@ -168,41 +183,39 @@ function editTable({options, setData, data}) {
 
   return (
     <div>
-      <Table
-        data={data}
-        bordered
-        autoHeight
-        style={{borderRadius: 10}}
-        height={46}
-        showHeader={false}
-        renderEmpty={() => null}>
+      <Table data={data} autoHeight style={{borderRadius: 10}} height={46} showHeader={false} renderEmpty={() => null}>
         {options.headers.map((key, index) => {
-          if (key.type === 'string')
-            return (
-              <Column flexGrow={1} align="left" key={index}>
-                <HeaderCell>{key.name}</HeaderCell>
-                <EditCell
-                  dataKey={key.name}
-                  onChange={handleChange}
-                  onMouseOver={(type, id) => handleHoveringState(id)}
-                  onMouseLeave={(type, id) => handleHoveringState(id)}
-                  onClick={(type, id) => handleEditState(id)}
-                />
-              </Column>
-            );
+          switch (key.type) {
+            case 'string':
+              return (
+                <Column flexGrow={1} align="left" key={index}>
+                  <HeaderCell>{key.name}</HeaderCell>
+                  <EditCell
+                    dataKey={key.name}
+                    onChange={handleChange}
+                    onMouseOver={(type, id) => handleHoveringState(id)}
+                    onMouseLeave={(type, id) => handleHoveringState(id)}
+                    onClick={(type, id) => handleEditState(id)}
+                  />
+                </Column>
+              );
 
-          return (
-            <Column flexGrow={1} style={{padding: 4}} key={index}>
-              <HeaderCell />
-              <Cell>
-                {(rowData) => (
-                  <CustomWhisper dataKey={key.name} rowData={rowData} options={key.options} onChange={handleChange}>
-                    <Button appearance="subtle">{key.options[rowData[key.name]]}</Button>
-                  </CustomWhisper>
-                )}
-              </Cell>
-            </Column>
-          );
+            case 'dropdown':
+              return (
+                <Column flexGrow={1} style={{padding: 4}} key={index}>
+                  <HeaderCell />
+                  <Cell>
+                    {(rowData) => (
+                      <CustomWhisper dataKey={key.name} rowData={rowData} options={key.options} onChange={handleChange}>
+                        <Button appearance="subtle">{key.options[rowData[key.name]]}</Button>
+                      </CustomWhisper>
+                    )}
+                  </Cell>
+                </Column>
+              );
+            default:
+              break;
+          }
         })}
 
         <Column flexGrow={1}>
@@ -210,20 +223,13 @@ function editTable({options, setData, data}) {
           <ActionCell
             dataKey="id"
             onClick={(type, id) => {
-              switch (type) {
-                case 'delete':
-                  handleDeleteState(id);
-                  break;
-                case 'edit':
-                  handleEditState(id);
-                  break;
-              }
+              handleDeleteState(id);
             }}
           />
         </Column>
       </Table>
       <br />
-      <Button appearance="primary" active onClick={addRow}>
+      <Button appearance="default" onClick={addRow}>
         Add Row
       </Button>
     </div>

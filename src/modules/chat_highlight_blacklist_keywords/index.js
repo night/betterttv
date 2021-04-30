@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import watcher from '../../watcher.js';
 import settings from '../../settings.js';
 import storage from '../../storage.js';
@@ -48,6 +48,19 @@ function defaultHighlightKeywords(value) {
   return currentUser ? currentUser.name : '';
 }
 
+function changeKeywords(promptBody, storageID) {
+  let storageKeywords = storage.get(storageID);
+  if (storageID === 'highlightKeywords') {
+    storageKeywords = defaultHighlightKeywords(storageKeywords);
+  }
+  /* eslint-disable no-alert */
+  let keywords = prompt(promptBody, storageKeywords || '');
+  if (keywords !== null) {
+    keywords = keywords.trim().replace(REPEATING_SPACE_REGEX, ' ');
+    storage.set(storageID, keywords);
+  }
+}
+
 function computeKeywords(keywords) {
   const computedKeywords = [];
   const computedUsers = [];
@@ -83,10 +96,7 @@ let loadTime = 0;
 let blacklistKeywords = [];
 let blacklistUsers = [];
 function computeBlacklistKeywords() {
-  let keywords = settings
-    .get('highlightKeywords')
-    .filter((obj) => obj.status === null)
-    .map((obj) => obj.keyword);
+  let keywords = storage.get('blacklistKeywords');
   if (typeof keywords !== 'string') keywords = '';
 
   const {computedKeywords, computedUsers} = computeKeywords(keywords);
@@ -97,13 +107,7 @@ function computeBlacklistKeywords() {
 let highlightKeywords = [];
 let highlightUsers = [];
 function computeHighlightKeywords() {
-  const keywords = defaultHighlightKeywords(
-    settings
-      .get('highlightKeywords')
-      .filter((obj) => obj.status === null)
-      .map((obj) => obj.keyword)
-  );
-  console.log(keywords);
+  const keywords = defaultHighlightKeywords(storage.get('highlightKeywords'));
   const {computedKeywords, computedUsers} = computeKeywords(keywords);
   highlightKeywords = computedKeywords;
   highlightUsers = computedUsers;
@@ -175,52 +179,11 @@ class ChatHighlightBlacklistKeywordsModule {
     watcher.on('load.vod', () => this.loadChat());
     watcher.on('chat.message', ($message, messageObj) => this.onMessage($message, messageObj));
     watcher.on('vod.message', ($message) => this.onVODMessage($message));
-    settings.on('changed.blacklistKeywords', computeBlacklistKeywords);
-    settings.on('changed.highlightKeywords', computeHighlightKeywords);
-
-    settings.add({
-      id: 'blacklistKeywords',
-      type: 3,
-      options: {
-        headers: [
-          {
-            name: 'keyword',
-            type: 'string',
-          },
-          {
-            name: 'type',
-            type: 'dropdown',
-            options: ['Message', 'Username'],
-            defaultOption: 0,
-          },
-        ],
-      },
-      category: 'chat',
-      name: 'Blacklist Keywords',
-      defaultValue: [],
-      description: 'Remove keywords from your chat',
-    });
-
-    settings.add({
-      id: 'highlightKeywords',
-      type: 3,
-      options: {
-        headers: [
-          {
-            name: 'keyword',
-            type: 'string',
-          },
-        ],
-      },
-      category: 'chat',
-      name: 'Highlight Keywords',
-      defaultValue: [],
-      description: 'Highlight keywords in your chat',
-    });
+    storage.on('changed.blacklistKeywords', computeBlacklistKeywords);
+    storage.on('changed.highlightKeywords', computeHighlightKeywords);
 
     settings.add({
       id: 'pinnedHighlights',
-      category: 'chat',
       name: 'Pin Highlighted Messages',
       defaultValue: false,
       description: 'Pins your last ten highlighted messages above chat',
@@ -231,7 +194,6 @@ class ChatHighlightBlacklistKeywordsModule {
 
     settings.add({
       id: 'timeoutHighlights',
-      category: 'chat',
       name: 'Timeout Pinned Highlights',
       defaultValue: false,
       description: 'Hides pinned highlights after 1 minute',
@@ -239,7 +201,6 @@ class ChatHighlightBlacklistKeywordsModule {
 
     settings.add({
       id: 'highlightFeedback',
-      category: 'chat',
       name: 'Highlight/Whisper Notification',
       description: 'Plays a sound for messages directed at you',
       defaultValue: false,
@@ -263,6 +224,14 @@ class ChatHighlightBlacklistKeywordsModule {
     computeHighlightKeywords();
     this.loadPinnedHighlights();
     loadTime = Date.now();
+  }
+
+  setBlacklistKeywords() {
+    changeKeywords(BLACKLIST_KEYWORD_PROMPT, 'blacklistKeywords');
+  }
+
+  setHighlightKeywords() {
+    changeKeywords(HIGHLIGHT_KEYWORD_PROMPT, 'highlightKeywords');
   }
 
   onMessage($message, {user, timestamp, messageParts}) {
@@ -333,7 +302,7 @@ class ChatHighlightBlacklistKeywordsModule {
       $pinnedHighlightsContainer.children().first().remove();
     }
 
-    const timestamp = moment(date).format('hh:mm');
+    const timestamp = dayjs(date).format('hh:mm');
 
     const $newHighlight = $(pinnedHighlightTemplate({timestamp, from, message}));
 

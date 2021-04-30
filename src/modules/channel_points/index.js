@@ -9,32 +9,27 @@ let removeChannelPointsListener;
 class ChannelPoints {
   constructor() {
     settings.add({
-      id: 'channelPoints',
-      category: 'misc',
-      type: 2,
-      options: {
-        choices: ['Channel Points Enabled', 'Auto-Claim Channel Points', 'Highlighted Messages'],
-      },
-      name: 'Channel Points',
-      defaultValue: [0, 2],
-      description: 'Modify/remove channel point features',
+      id: 'autoClaimBonusChannelPoints',
+      name: 'Auto-Claim Bonus Channel Points',
+      defaultValue: false,
+      description: 'Automatically claim bonus channel points',
+    });
+    settings.add({
+      id: 'hideChannelPoints',
+      name: 'Hide Channel Points',
+      defaultValue: false,
+      description: 'Hides channel points from the chat UI to reduce clutter',
     });
 
-    settings.on('changed.channelPoints', (newValues, prevValues) => {
-      this.toggleElements(newValues);
-    });
+    this.loadAutoClaimBonusChannelPoints();
+    this.loadHideChannelPoints();
 
-    this.toggleElements(settings.get('channelPoints'));
+    settings.on('changed.autoClaimBonusChannelPoints', () => this.loadAutoClaimBonusChannelPoints());
+    settings.on('changed.hideChannelPoints', () => this.loadHideChannelPoints());
   }
 
-  toggleElements(values) {
-    this.showChannelPoints(values.includes(0));
-    this.autoClaimBonusChannelPoints(values.includes(1));
-    this.showChannelPointMessageHighlights(values.includes(2));
-  }
-
-  autoClaimBonusChannelPoints(enable) {
-    if (enable) {
+  loadAutoClaimBonusChannelPoints() {
+    if (settings.get('autoClaimBonusChannelPoints')) {
       if (removeChannelPointsListener) return;
 
       removeChannelPointsListener = domObserver.on(CLAIM_BUTTON_SELECTOR, (node, isConnected) => {
@@ -52,15 +47,8 @@ class ChannelPoints {
     removeChannelPointsListener = undefined;
   }
 
-  showChannelPoints(enable) {
-    $('body').toggleClass('bttv-hide-channel-points', !enable);
-  }
-
-  showChannelPointMessageHighlights(enable) {
-    $('.chat-scrollable-area__message-container').toggleClass(
-      'bttv-disable-channel-points-message-highlights',
-      !enable
-    );
+  loadHideChannelPoints() {
+    $('body').toggleClass('bttv-hide-channel-points', settings.get('hideChannelPoints'));
   }
 }
 

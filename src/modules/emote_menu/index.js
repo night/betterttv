@@ -8,7 +8,6 @@ class EmoteMenuModule {
   constructor() {
     settings.add({
       id: 'clickTwitchEmotes',
-      category: 'chat',
       name: 'BetterTTV Emote Menu',
       defaultValue: false,
       description: 'Enables a more advanced emote menu for Twitch (made by Ryan Chatham)',

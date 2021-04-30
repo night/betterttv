@@ -27,15 +27,16 @@ function findAllUserMessages(name) {
 class ChatDeletedMessagesModule {
   constructor() {
     settings.add({
-      id: 'deletedMessages',
-      type: 5,
-      category: 'chat',
-      options: {
-        choices: ['Default', 'Remove <message deleted>', 'Keep Original Message'],
-      },
-      name: 'Deleted Messages',
-      defaultValue: 0,
-      description: 'What should happen when a message is deleted',
+      id: 'showDeletedMessages',
+      name: 'Show Deleted Messages',
+      defaultValue: false,
+      description: "Changes <message deleted> back to users' original messages",
+    });
+    settings.add({
+      id: 'hideDeletedMessages',
+      name: 'Remove Deleted Messages',
+      defaultValue: false,
+      description: 'Completely removes timed out messages from view',
     });
 
     watcher.on('chat.message.handler', (message) => {
@@ -66,14 +67,17 @@ class ChatDeletedMessagesModule {
   }
 
   handleDelete(name) {
-    const value = settings.get('deletedMessages');
-    if (value === 0) return;
+    const showDeletedMessages = settings.get('showDeletedMessages');
+    const hideDeletedMessages = settings.get('hideDeletedMessages');
+    if (!hideDeletedMessages && !showDeletedMessages) {
+      return false;
+    }
     const messages = findAllUserMessages(name);
     messages.forEach((message) => {
       const $message = $(message);
-      if (value === 1) {
+      if (hideDeletedMessages) {
         $message.hide();
-      } else {
+      } else if (showDeletedMessages) {
         $message.toggleClass(CHAT_LINE_DELETED_CLASS, true);
         /* eslint-disable-next-line func-names */
         $message.find(CHAT_LINE_LINK_SELECTOR).each(function () {
