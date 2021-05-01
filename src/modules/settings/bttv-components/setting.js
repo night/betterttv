@@ -11,6 +11,7 @@ import Radio from 'rsuite/lib/Radio/index.js';
 import RadioGroup from 'rsuite/lib/RadioGroup/index.js';
 import FormGroup from 'rsuite/lib/FormGroup/index.js';
 import settings from '../../../settings.js';
+import debug from '../../../utils/debug.js';
 
 function Setting({setting}) {
   const {description} = setting;
@@ -23,8 +24,8 @@ function Setting({setting}) {
   );
 }
 
-function getSetting({id, type, options}) {
-  const [value, setValue] = useState(settings.get(id));
+function getSetting({id, type, options, defaultValue}) {
+  const [value, setValue] = useState(settings.get(id) || defaultValue);
 
   useEffect(() => {
     if (settings.get(id) === value) return;
@@ -77,14 +78,13 @@ function getSetting({id, type, options}) {
       return <EditTable options={options} setData={setValue} data={value} />;
     case 4:
       return (
-        <div>
-          <Slider
-            min={data.min}
-            max={data.max}
-            defaultValue={data.current}
-            progress
-            onChange={(value) => setValue(value)}></Slider>
-        </div>
+        <Slider
+          min={options.min}
+          max={options.max}
+          defaultValue={options.current}
+          progress
+          onChange={(value) => setValue(value)}
+        />
       );
     case 5:
       return (
@@ -104,7 +104,7 @@ function getSetting({id, type, options}) {
         </FormGroup>
       );
     default:
-      throw new Error(`${type} is an unknown setting type.`);
+      debug.log(`${type} is an unknown setting type.`);
   }
 }
 

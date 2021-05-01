@@ -1,14 +1,11 @@
 import $ from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import watcher from '../../watcher.js';
 import BTTVWindow from './bttv-components/popout.js';
 import domObserver from '../../observers/dom.js';
-
 class SettingsModule {
   constructor() {
     this.renderSettings();
-
     domObserver.on('a[data-test-selector="user-menu-dropdown__settings-link"]', () => {
       this.renderSettingsMenuOption();
     });

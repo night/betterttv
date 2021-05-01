@@ -5,9 +5,9 @@ import Icon from 'rsuite/lib/Icon/index.js';
 
 import home from '../../../assets/icons/home-solid.svg';
 import box from '../../../assets/icons/box-solid.svg';
-import cog from '../../../assets/icons/cog-solid.svg';
+import house from '../../../assets/icons/house-solid.svg';
 import comment from '../../../assets/icons/comment-solid.svg';
-import flask from '../../../assets/icons/flask-solid.svg';
+import compass from '../../../assets/icons/compass-solid.svg';
 import dashboard from '../../../assets/icons/columns-solid.svg';
 import discord from '../../../assets/icons/social/discord.svg';
 import twitter from '../../../assets/icons/social/twitter.svg';
@@ -18,7 +18,7 @@ function BTTVSidenav({page, setPage}) {
       <Sidenav
         activeKey={page}
         onSelect={(newPage) => {
-          if (['4', '6', '7'].includes(newPage)) return;
+          if (['0', '4', '6', '7'].includes(newPage)) return;
           setPage(newPage || page);
         }}
         expanded={false}>
@@ -27,14 +27,14 @@ function BTTVSidenav({page, setPage}) {
             <Nav.Item eventKey="0" icon={<Icon icon={home} />}>
               <p>BetterTTV</p>
             </Nav.Item>
-            <Nav.Item eventKey="2" icon={<Icon icon={comment} />}>
+            <Nav.Item eventKey="1" icon={<Icon icon={comment} />}>
               <p>Chat Settings</p>
             </Nav.Item>
-            <Nav.Item eventKey="3" icon={<Icon icon={flask} />}>
-              <p>Channel Settings</p>
-            </Nav.Item>
-            <Nav.Item eventKey="1" icon={<Icon icon={cog} />}>
+            <Nav.Item eventKey="2" icon={<Icon icon={compass} />}>
               <p>Directory Settings</p>
+            </Nav.Item>
+            <Nav.Item eventKey="3" icon={<Icon icon={house} />}>
+              <p>Channel Settings</p>
             </Nav.Item>
             <Nav.Item
               eventKey="4"

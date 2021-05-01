@@ -183,7 +183,13 @@ function editTable({options, setData, data}) {
 
   return (
     <div>
-      <Table data={data} autoHeight style={{borderRadius: 10}} height={46} showHeader={false} renderEmpty={() => null}>
+      <Table
+        rowHeight={46}
+        data={data}
+        autoHeight
+        style={{borderRadius: 5}}
+        showHeader={false}
+        renderEmpty={() => null}>
         {options.headers.map((key, index) => {
           switch (key.type) {
             case 'string':
@@ -229,7 +235,7 @@ function editTable({options, setData, data}) {
         </Column>
       </Table>
       <br />
-      <Button appearance="default" onClick={addRow}>
+      <Button appearance="ghost" onClick={addRow}>
         Add Row
       </Button>
     </div>

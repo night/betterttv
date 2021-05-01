@@ -10,6 +10,7 @@ import Header from '../bttv-components/header.js';
 
 import enhance from '../../../assets/icons/search-solid.svg';
 import _settings from '../../../settings.js';
+import bake from '../bttv-components/bake.js';
 // import fakeSettings from './settings.json';
 
 const auto = _settings.getSettings().map((setting) => setting.name);
@@ -24,8 +25,7 @@ function Settings({header, category}) {
 
   useEffect(() => {
     setSettings(
-      _settings
-        .getSettings()
+      bake(_settings.getSettings())
         .sort((a, b) => a.name.localeCompare(b.name))
         .map((setting, index) => createSetting(setting, index))
     );
@@ -39,7 +39,8 @@ function Settings({header, category}) {
             props.setting.description.toLowerCase().includes(search.toLowerCase()) ||
             JSON.stringify(props.setting.options).toLowerCase().includes(search.toLowerCase())
         )
-      : settings.filter(({props}) => props.setting.category === category);
+      : settings;
+  // : settings.filter(({props}) => props.setting.category === category);
 
   return (
     <div>
@@ -63,12 +64,12 @@ function Settings({header, category}) {
   );
 }
 
-function createSetting(props, index) {
+function createSetting(setting, index) {
   return (
-    <Panel setting={props} eventKey={index} key={index}>
+    <Panel setting={setting} eventKey={index} key={index}>
       <Divider />
-      <h4>{props.name}</h4>
-      <Setting setting={props} />
+      <h4>{setting.name}</h4>
+      <Setting setting={setting} />
     </Panel>
   );
 }
