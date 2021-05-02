@@ -24,6 +24,7 @@ class GlobalCSSModule {
 
     settings.add({
       id: 'darkenedMode',
+      category: 'channel',
       name: 'Dark Theme',
       defaultValue: false,
       description: "Enables Twitch's dark theme",

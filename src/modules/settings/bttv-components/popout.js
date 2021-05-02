@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import Modal from 'rsuite/lib/Modal/index.js';
 import Sidenav from './sidenav.js';
-import Home from '../pages/home.js';
+import About from '../pages/about.js';
 import Settings from '../pages/settings.js';
 import Changelog from '../pages/changelog.js';
 
@@ -29,18 +29,16 @@ function BTTVPopout(props) {
 
 function renderPage(page) {
   switch (page) {
-    case '0':
-      return <Home />;
-    case '1':
+    case 1:
       return <Settings header={'Chat Settings'} category={'chat'} />;
-    case '2':
+    case 2:
       return <Settings header={'Directory Settings'} category={'directory'} />;
-    case '3':
+    case 3:
       return <Settings header={'Channel Settings'} category={'channel'} />;
-    case '5':
+    case 5:
       return <Changelog />;
     default:
-      return <Home />;
+      return <About />;
   }
 }
 

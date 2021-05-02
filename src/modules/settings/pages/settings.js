@@ -5,9 +5,8 @@ import Panel from 'rsuite/lib/Panel/index.js';
 import InputGroup from 'rsuite/lib/InputGroup/index.js';
 import Icon from 'rsuite/lib/Icon/index.js';
 import AutoComplete from 'rsuite/lib/AutoComplete/index.js';
-import Divider from 'rsuite/lib/Divider/index.js';
+import PanelGroup from 'rsuite/lib/PanelGroup/index.js';
 import Header from '../bttv-components/header.js';
-
 import enhance from '../../../assets/icons/search-solid.svg';
 import _settings from '../../../settings.js';
 import bake from '../bttv-components/bake.js';
@@ -39,11 +38,10 @@ function Settings({header, category}) {
             props.setting.description.toLowerCase().includes(search.toLowerCase()) ||
             JSON.stringify(props.setting.options).toLowerCase().includes(search.toLowerCase())
         )
-      : settings;
-  // : settings.filter(({props}) => props.setting.category === category);
+      : settings.filter(({props}) => props.setting.category === category);
 
   return (
-    <div>
+    <PanelGroup>
       <Panel>
         <Header
           heading={header}
@@ -52,23 +50,14 @@ function Settings({header, category}) {
         <br />
         <SearchBar search={search} setSearch={setSearch} />
       </Panel>
-      {searchedSettings.length > 0 ? (
-        searchedSettings
-      ) : (
-        <Panel>
-          <Divider />
-          No results
-        </Panel>
-      )}
-    </div>
+      {searchedSettings.length > 0 ? searchedSettings : <Panel>No results</Panel>}
+    </PanelGroup>
   );
 }
 
 function createSetting(setting, index) {
   return (
-    <Panel setting={setting} eventKey={index} key={index}>
-      <Divider />
-      <h4>{setting.name}</h4>
+    <Panel header={setting.name} setting={setting} eventKey={index} key={index}>
       <Setting setting={setting} />
     </Panel>
   );

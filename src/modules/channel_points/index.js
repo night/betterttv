@@ -10,12 +10,14 @@ class ChannelPoints {
   constructor() {
     settings.add({
       id: 'autoClaimBonusChannelPoints',
+      category: 'chat',
       name: 'Auto-Claim Bonus Channel Points',
       defaultValue: false,
       description: 'Automatically claim bonus channel points',
     });
     settings.add({
       id: 'hideChannelPoints',
+      category: 'chat',
       name: 'Hide Channel Points',
       defaultValue: false,
       description: 'Hides channel points from the chat UI to reduce clutter',

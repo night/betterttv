@@ -121,30 +121,35 @@ class VideoPlayerModule {
     });
     settings.add({
       id: 'hidePlayerExtensions',
+      category: 'channel',
       name: 'Hide Twitch Extensions',
       defaultValue: false,
       description: "Hides the interactive overlays on top of Twitch's video player",
     });
     settings.add({
       id: 'clickToPlay',
+      category: 'channel',
       name: 'Click to Play/Pause Stream',
       defaultValue: false,
       description: 'Enables clicking on the Twitch player to pause/resume playback',
     });
     settings.add({
       id: 'disableVodRecommendationAutoplay',
+      category: 'channel',
       name: 'Disable VoD Recommendation Autoplay',
       defaultValue: false,
       description: 'Disables autoplay of recommended videos on VoDs',
     });
     settings.add({
       id: 'muteInvisiblePlayer',
+      category: 'channel',
       name: 'Mute Invisible Streams',
       defaultValue: false,
       description: 'Mutes/unmutes streams automatically when you change your browser window/tab',
     });
     settings.add({
       id: 'scrollVolumeControl',
+      category: 'channel',
       name: 'Scroll Volume Control',
       defaultValue: false,
       description: 'Enables scrolling the twitch player to change the player volume',

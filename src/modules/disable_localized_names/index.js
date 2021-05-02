@@ -5,6 +5,7 @@ class DisableLocalizedNamesModule {
   constructor() {
     settings.add({
       id: 'disableLocalizedNames',
+      category: 'chat',
       name: 'Disable Localized Names',
       defaultValue: false,
       description: 'Hides localized display names in chat',

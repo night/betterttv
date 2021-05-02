@@ -25,6 +25,7 @@ class HostButtonModule {
   constructor() {
     settings.add({
       id: 'hostButton',
+      category: 'channel',
       name: 'Host Button',
       defaultValue: false,
       description: 'Adds a Host/Unhost button below the video player',

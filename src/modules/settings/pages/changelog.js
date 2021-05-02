@@ -4,8 +4,8 @@ import Loader from 'rsuite/lib/Loader/index.js';
 import api from '../../../utils/api.js';
 import debug from '../../../utils/debug.js';
 import Panel from 'rsuite/lib/Panel/index.js';
-import Divider from 'rsuite/lib/Divider/index.js';
 import Header from '../bttv-components/header.js';
+import PanelGroup from 'rsuite/lib/PanelGroup/index.js';
 
 function changelog() {
   const [req, setReq] = useState({
@@ -49,10 +49,10 @@ function changelog() {
     );
 
   const logs = changelog.map(({body, version, publishedAt}, index) => (
-    <Panel key={index} style={{marginLeft: 0}}>
-      <Divider />
-      <h4>{'Version ' + version + ' • ' + dayjs(publishedAt).format('MMM D, YYYY')}</h4>
-      <br />
+    <Panel
+      header={'Version ' + version + ' • ' + dayjs(publishedAt).format('MMM D, YYYY')}
+      key={index}
+      style={{marginLeft: 0}}>
       <p
         className="bttv-muted-text"
         dangerouslySetInnerHTML={{
@@ -65,12 +65,12 @@ function changelog() {
   ));
 
   return (
-    <div className="bttv-popout-page">
+    <PanelGroup className="bttv-popout-page">
       <Panel>
         <Header heading={'Changelog'} description={'A list of recent updates and patches to Betterttv.'} />
       </Panel>
       {logs}
-    </div>
+    </PanelGroup>
   );
 }
 

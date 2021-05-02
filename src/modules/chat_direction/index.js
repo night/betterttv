@@ -23,6 +23,7 @@ class ChatDirection {
   constructor() {
     settings.add({
       id: 'reverseChatDirection',
+      category: 'chat',
       name: 'Reverse Chat Messages Direction',
       defaultValue: false,
       description: 'Moves new chat messages to the top of chat',

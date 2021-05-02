@@ -6,12 +6,14 @@ class DisableNameColorsModule {
   constructor() {
     settings.add({
       id: 'disableUsernameColors',
+      category: 'chat',
       name: 'Disable Name Colors',
       defaultValue: false,
       description: 'Disables username colors in chat (useful for those with color blindness)',
     });
     settings.add({
       id: 'readableUsernameColors',
+      category: 'chat',
       name: 'Readable Name Colors',
       defaultValue: true,
       description: 'Makes chat usernames higher contrast (prevents hard to read names)',

@@ -5,6 +5,7 @@ class HideChatClipsModule {
   constructor() {
     settings.add({
       id: 'hideChatClips',
+      category: 'chat',
       name: 'Hide Chat Clips',
       defaultValue: false,
       description: 'Hides clips embeds in chat',

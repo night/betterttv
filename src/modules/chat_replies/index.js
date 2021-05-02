@@ -5,6 +5,7 @@ class ChatRepliesModule {
   constructor() {
     settings.add({
       id: 'hideChatReplies',
+      category: 'chat',
       name: 'Hide Chat Replies',
       defaultValue: false,
       description: 'Hides the click to reply button in chat',

@@ -1,4 +1,4 @@
-@ns: rs-;
+@ns: bttv-rs-;
 
 .@{ns}modal-dialog,
 .@{ns}modal-content,
@@ -14,17 +14,13 @@
   padding: 0;
 }
 
-.@{ns}panel {
-  overflow: unset;
-}
-
 .bttv-page {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin-top: 36px;
-  margin-left: 72px;
+  margin-top: 16px;
   margin-right: 16px;
+  margin-left: 72px;
 }
 
 .bttv-icon-text {
@@ -34,18 +30,44 @@
   margin-right: 10px;
 }
 
-.rs-modal-body::-webkit-scrollbar {
+.bttv-muted-text {
+  opacity: 0.8;
+}
+
+.bttv-settings-upload::-webkit-file-upload-button {
+  visibility: hidden;
+}
+
+.bttv-settings-upload::before {
+  content: 'Import backup...';
+}
+
+.bttv-settings-backup {
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.@{ns}modal-body::-webkit-scrollbar {
   border-radius: 6px;
   width: 5px;
 }
 
-.rs-modal-body::-webkit-scrollbar-thumb {
+.@{ns}modal-body::-webkit-scrollbar-thumb {
   background: #191c23;
   border-radius: 5px;
 }
 
-.rs-modal-body::-webkit-scrollbar-thumb:hover {
+.@{ns}modal-body::-webkit-scrollbar-thumb:hover {
   background: #191c23;
+}
+
+.footer {
+  column-count: 3;
+  a {
+    cursor: pointer;
+  }
 }
 
 @media screen and (max-width: 769px) {

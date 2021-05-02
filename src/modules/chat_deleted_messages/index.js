@@ -28,12 +28,14 @@ class ChatDeletedMessagesModule {
   constructor() {
     settings.add({
       id: 'showDeletedMessages',
+      category: 'chat',
       name: 'Show Deleted Messages',
       defaultValue: false,
       description: "Changes <message deleted> back to users' original messages",
     });
     settings.add({
       id: 'hideDeletedMessages',
+      category: 'chat',
       name: 'Remove Deleted Messages',
       defaultValue: false,
       description: 'Completely removes timed out messages from view',

@@ -146,6 +146,7 @@ class ChatHighlightBlacklistKeywordsModule {
 
     settings.add({
       id: 'pinnedHighlights',
+      category: 'chat',
       name: 'Pin Highlighted Messages',
       defaultValue: false,
       description: 'Pins your last ten highlighted messages above chat',
@@ -156,6 +157,7 @@ class ChatHighlightBlacklistKeywordsModule {
 
     settings.add({
       id: 'timeoutHighlights',
+      category: 'chat',
       name: 'Timeout Pinned Highlights',
       defaultValue: false,
       description: 'Hides pinned highlights after 1 minute',
@@ -163,6 +165,7 @@ class ChatHighlightBlacklistKeywordsModule {
 
     settings.add({
       id: 'highlightFeedback',
+      category: 'chat',
       name: 'Highlight/Whisper Notification',
       description: 'Plays a sound for messages directed at you',
       defaultValue: false,

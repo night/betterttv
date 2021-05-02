@@ -12,7 +12,8 @@ import TerserPlugin from 'terser-webpack-plugin';
 import postcssUrl from 'postcss-url';
 import got from 'got';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
-import multipleThemesCompile from 'webpack-multiple-themes-compile';
+
+global.__RSUITE_CLASSNAME_PREFIX__ = 'bttv-rs-';
 
 const git = createRequire(import.meta.url)('git-rev-sync');
 const {EnvironmentPlugin, optimize} = webpack;
@@ -162,7 +163,7 @@ export default async (env, argv) => {
         entryOnly: true,
       }),
       new webpack.DefinePlugin({
-        __RSUITE_CLASSNAME_PREFIX__: JSON.stringify('rs-'),
+        __RSUITE_CLASSNAME_PREFIX__: JSON.stringify('bttv-rs-'),
       }),
       new EnvironmentPlugin({
         DEV_CDN_PORT: PORT,

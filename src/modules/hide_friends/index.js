@@ -5,6 +5,7 @@ class HideFriendsModule {
   constructor() {
     settings.add({
       id: 'hideFriends',
+      category: 'directory',
       name: 'Hide Friends',
       defaultValue: false,
       description: 'Hides the friends list in the left sidebar',

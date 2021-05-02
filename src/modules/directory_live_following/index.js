@@ -6,6 +6,7 @@ class DirectoryLiveFollowingModule {
   constructor() {
     settings.add({
       id: 'showDirectoryLiveTab',
+      category: 'directory',
       name: 'Default to Live Channels',
       defaultValue: false,
       description: 'Defaults to "Live" tab on the Following page',

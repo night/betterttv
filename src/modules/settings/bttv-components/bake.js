@@ -4,7 +4,7 @@ import {defaultHighlightKeywords, computeKeywords} from '../../../utils/keywords
 
 const listeners = [];
 
-function radioBake({id, name, description, settings}) {
+function radioBake({id, category, name, description, settings}) {
   if (!listeners.includes(id)) {
     listeners.push(id);
     _settings.on(`changed.${id}`, (value) => {
@@ -15,7 +15,7 @@ function radioBake({id, name, description, settings}) {
     });
   }
 
-  const defaultValue = settings
+  const _defaultValue = settings
     .map((setting, index) => {
       return _settings.get(setting.id) || setting.id === 'default' ? index : false;
     })
@@ -25,15 +25,16 @@ function radioBake({id, name, description, settings}) {
     type: 5,
     id,
     name,
+    category,
     description,
     options: {
       choices: settings.map((setting) => setting.name),
     },
-    defaultValue: defaultValue[defaultValue.length - 1],
+    _defaultValue: _defaultValue[_defaultValue.length - 1],
   };
 }
 
-function checkboxBake({id, name, description, settings}) {
+function checkboxBake({id, category, name, description, settings}) {
   if (!listeners.includes(id)) {
     listeners.push(id);
     _settings.on(`changed.${id}`, (values, prev) => {
@@ -47,7 +48,7 @@ function checkboxBake({id, name, description, settings}) {
     });
   }
 
-  const defaultValue = settings
+  const _defaultValue = settings
     .map((setting, index) => {
       const enabled = _settings.get(setting.id);
       if (setting.invert) return enabled ? false : index;
@@ -59,15 +60,16 @@ function checkboxBake({id, name, description, settings}) {
     type: 2,
     id,
     name,
+    category,
     description,
     options: {
       choices: settings.map((setting) => setting.name),
     },
-    defaultValue,
+    _defaultValue,
   };
 }
 
-function keywordTableBake({id, name, description, options}) {
+function keywordTableBake({id, name, category, description, options}) {
   let keywords = storage.get(id);
   if (id === 'highlightKeywords') defaultHighlightKeywords(keywords);
   if (typeof keywords !== 'string') keywords = '';
@@ -81,16 +83,16 @@ function keywordTableBake({id, name, description, options}) {
 
   const encrypt = (values) => {
     return values
-      .map((value) => {
-        switch (value.type) {
+      .map(({keyword, type}) => {
+        switch (type) {
           case 0:
-            return `{${value.keyword}}`;
+            return `{${keyword}}`;
           case 1:
-            return `{${value.keyword}*}`;
+            return `{${keyword}*}`;
           case 2:
-            return `{<${value.keyword}>}`;
+            return `{<${keyword}>}`;
           case 3:
-            return `(${value.keyword})`;
+            return `(${keyword})`;
         }
       })
       .join(' ');
@@ -99,9 +101,12 @@ function keywordTableBake({id, name, description, options}) {
   const decrypt = (value) => {
     const {computedKeywords, computedUsers} = computeKeywords(value);
     let index = 0;
-    const data = [
-      ...computedKeywords.map((keyword) => {
+
+    const keywordString = computedKeywords
+      .map((keyword) => {
         switch (true) {
+          case keyword.length === 0:
+            return false;
           case /\*/g.test(keyword):
             return {
               id: index++,
@@ -121,15 +126,18 @@ function keywordTableBake({id, name, description, options}) {
               type: 0,
             };
         }
-      }),
-      ...computedUsers.map((user) => {
-        return {
-          id: index++,
-          keyword: user,
-          type: 3,
-        };
-      }),
-    ];
+      })
+      .filter((string) => string !== false);
+
+    const usersString = computedUsers.map((user) => {
+      return {
+        id: index++,
+        keyword: user,
+        type: 3,
+      };
+    });
+
+    const data = keywordString.concat(usersString);
     _settings.set(`_${id}`, data);
     return data;
   };
@@ -138,9 +146,10 @@ function keywordTableBake({id, name, description, options}) {
     type: 3,
     id: `_${id}`,
     name,
+    category,
     description,
     options,
-    defaultValue: decrypt(keywords),
+    _defaultValue: decrypt(keywords),
   };
 }
 
@@ -156,6 +165,7 @@ export default function (settings) {
           visited.push('emotes');
           return checkboxBake({
             id: 'emotes',
+            category: 'chat',
             name: 'Emotes',
             description: 'Add more emotes to chat.',
             settings: [
@@ -173,6 +183,7 @@ export default function (settings) {
           visited.push('sidebar');
           return checkboxBake({
             id: 'sidebar',
+            category: 'directory',
             name: 'Sidebar',
             description: 'Edit/modify the left sidebar.',
             settings: [
@@ -193,6 +204,7 @@ export default function (settings) {
           visited.push('chat');
           return checkboxBake({
             id: 'chat',
+            category: 'chat',
             name: 'Chat',
             description: 'Edit/modify chat features.',
             settings: [
@@ -211,6 +223,7 @@ export default function (settings) {
           visited.push('usernames');
           return checkboxBake({
             id: 'usernames',
+            category: 'chat',
             name: 'Usernames',
             description: 'Edit/modify chat usernames.',
             settings: [
@@ -226,6 +239,7 @@ export default function (settings) {
           visited.push('channelPoints');
           return checkboxBake({
             id: 'channelPoints',
+            category: 'chat',
             name: 'Channel Points',
             description: 'Edit/modify channel point features.',
             settings: [
@@ -241,12 +255,13 @@ export default function (settings) {
           visited.push('autoplay');
           return checkboxBake({
             id: 'autoplay',
+            category: 'directory',
             name: 'Autoplay',
             description: 'Disable players from autoplaying.',
             settings: [
               {id: 'disableFPVideo', name: 'Front-page', invert: true},
               {id: 'disableHostMode', name: 'Host-mode', invert: true},
-              {id: 'disableVodRecommendationAutoplay', name: 'VOD Recommenation', invert: true},
+              {id: 'disableVodRecommendationAutoplay', name: 'VOD Recommendations', invert: true},
             ],
           });
         case 'hideDeletedMessages':
@@ -255,6 +270,7 @@ export default function (settings) {
           visited.push('deletedMessages');
           return radioBake({
             id: 'deletedMessages',
+            category: 'chat',
             name: 'Deleted Messages',
             description: 'How should deleted messages be handled.',
             settings: [
@@ -268,6 +284,7 @@ export default function (settings) {
           visited.push('chatPosition');
           return radioBake({
             id: 'chatPosition',
+            category: 'chat',
             name: 'Chat Position',
             description: 'Change the chat placement.',
             settings: [
@@ -286,6 +303,7 @@ export default function (settings) {
     newSettings.push(
       keywordTableBake({
         id: 'blacklistKeywords',
+        category: 'chat',
         name: 'Blacklist Keywords',
         description: 'Blacklist users or words from your chat.',
         options: {
@@ -311,6 +329,7 @@ export default function (settings) {
     newSettings.push(
       keywordTableBake({
         id: 'highlightKeywords',
+        category: 'chat',
         name: 'Highlight Keywords',
         description: 'Highlight words in your chat.',
         options: {

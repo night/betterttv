@@ -1,4 +1,3 @@
-/* eslint-disable indent */
 import React, {useRef, useEffect} from 'react';
 import Table from 'rsuite/lib/Table/index.js';
 import Button from 'rsuite/lib/Button/index.js';
@@ -76,7 +75,7 @@ const EditCell = ({rowData, dataKey, onChange, onMouseOver, onMouseLeave, onClic
           className={'table-content-editing'}
           onMouseLeave={() => onMouseLeave && onMouseLeave('hovering', rowData.id)}>
           <input
-            className="rs-input"
+            className="bttv-rs-input"
             style={{top: 7, height: 30, opacity: 0.5}}
             defaultValue={rowData[dataKey]}
             onClick={() => {
@@ -93,7 +92,7 @@ const EditCell = ({rowData, dataKey, onChange, onMouseOver, onMouseLeave, onClic
         <Cell {...props} className={'table-content-editing'}>
           <input
             ref={wrapperRef}
-            className="rs-input"
+            className="bttv-rs-input"
             style={{top: 7, height: 30}}
             defaultValue={rowData[dataKey]}
             onChange={(event) => {
@@ -185,6 +184,7 @@ function editTable({options, setData, data}) {
     <div>
       <Table
         rowHeight={46}
+        height={46}
         data={data}
         autoHeight
         style={{borderRadius: 5}}

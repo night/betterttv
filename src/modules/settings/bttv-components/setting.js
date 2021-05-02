@@ -1,5 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import EditTable from './editTable.js';
+import settings from '../../../settings.js';
+import debug from '../../../utils/debug.js';
+
 import Toggle from 'rsuite/lib/Toggle/index.js';
 import Dropdown from 'rsuite/lib/Dropdown/index.js';
 import IconButton from 'rsuite/lib/IconButton/index.js';
@@ -10,8 +13,6 @@ import Slider from 'rsuite/lib/Slider/index.js';
 import Radio from 'rsuite/lib/Radio/index.js';
 import RadioGroup from 'rsuite/lib/RadioGroup/index.js';
 import FormGroup from 'rsuite/lib/FormGroup/index.js';
-import settings from '../../../settings.js';
-import debug from '../../../utils/debug.js';
 
 function Setting({setting}) {
   const {description} = setting;
@@ -24,8 +25,8 @@ function Setting({setting}) {
   );
 }
 
-function getSetting({id, type, options, defaultValue}) {
-  const [value, setValue] = useState(settings.get(id) || defaultValue);
+function getSetting({id, type, options, _defaultValue}) {
+  const [value, setValue] = useState(_defaultValue || settings.get(id));
 
   useEffect(() => {
     if (settings.get(id) === value) return;

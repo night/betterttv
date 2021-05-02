@@ -6,6 +6,7 @@ class DisableChannelPointsMessageHighlightsModule {
   constructor() {
     settings.add({
       id: 'disableChannelPointsMessageHighlights',
+      category: 'chat',
       name: 'Disable Channel Points Message Highlights',
       defaultValue: false,
       description: 'Disables highlighting of the "Highlight my message" messages',
