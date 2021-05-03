@@ -85,10 +85,6 @@
     width: 100%;
   }
 
-  .right-column--theatre {
-    right: unset !important;
-  }
-
   .right-column__toggle-visibility {
     z-index: 1000 !important;
   }
@@ -96,6 +92,11 @@
   /* order overrides z-index when auto on Firefox, which breaks the settings popout */
   .right-column {
     z-index: 3 !important;
+
+    &.right-column--theatre {
+      z-index: 3000 !important;
+      right: unset !important;
+    }
   }
 
   /* Subscriber balloons on channel page */
