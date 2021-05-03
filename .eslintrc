@@ -7,15 +7,20 @@
   },
   "parser": "@babel/eslint-parser",
   "parserOptions": {
+    "ecmaVersion": 2020,
     "sourceType": "module",
     "requireConfigFile": false,
-    "allowImportExportEverywhere": true
+    "allowImportExportEverywhere": true,
+    "babelOptions": {
+      "presets": ["@babel/preset-react"]
+    }
   },
   "extends": ["airbnb", "prettier"],
-  "plugins": ["@babel/plugin-syntax-jsx", "prettier"],
+  "plugins": ["prettier"],
   "rules": {
     "prettier/prettier": ["error"],
     "import/extensions": ["error", "ignorePackages"],
+    "react/jsx-filename-extension": [1, {"extensions": [".js", ".jsx"]}],
     "no-param-reassign": "off",
     "no-underscore-dangle": "off",
     "no-continue": "off",

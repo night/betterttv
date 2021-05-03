@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import Modal from 'rsuite/lib/Modal/index.js';
-import Sidenav from './sidenav.js';
-import About from '../pages/about.js';
-import Settings from '../pages/settings.js';
-import Changelog from '../pages/changelog.js';
+import Sidenav from './sidenav.jsx';
+import About from '../pages/about.jsx';
+import Settings from '../pages/settings.jsx';
+import Changelog from '../pages/changelog.jsx';
 
 function BTTVPopout(props) {
   const [page, setPage] = useState(1);
@@ -19,7 +19,7 @@ function BTTVPopout(props) {
       onHide={() => {
         setOpen(false);
       }}>
-      <Modal.Body>
+      <Modal.Body style={{maxHeight: 500}}>
         <Sidenav page={page} setPage={setPage} />
         <div className="bttv-page">{renderPage(page)}</div>
       </Modal.Body>

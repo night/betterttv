@@ -2,7 +2,7 @@ import React from 'react';
 import Panel from 'rsuite/lib/Panel/index.js';
 import Icon from 'rsuite/lib/Icon/index.js';
 import InputGroup from 'rsuite/lib/InputGroup/index.js';
-import Header from '../bttv-components/header.js';
+import Header from '../bttv-components/header.jsx';
 import settings from '../../../settings.js';
 import storage from '../../../storage.js';
 import Button from 'rsuite/lib/Button/index.js';

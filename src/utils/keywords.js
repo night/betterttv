@@ -1,3 +1,5 @@
+import twitch from './twitch.js';
+
 const PHRASE_REGEX = /\{.+?\}/g;
 const USER_REGEX = /\(.+?\)/g;
 

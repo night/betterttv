@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import EditTable from './editTable.js';
+import EditTable from './editTable.jsx';
 import settings from '../../../settings.js';
 import debug from '../../../utils/debug.js';
 

@@ -4,6 +4,7 @@
   "bracketSpacing": false,
   "singleQuote": true,
   "jsxBracketSameLine": true,
+  "endOfLine":"auto",
   "overrides": [
     {
       "files": ["*.css"],

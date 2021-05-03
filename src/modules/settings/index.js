@@ -1,8 +1,9 @@
 import $ from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import BTTVWindow from './bttv-components/popout.js';
+import BTTVWindow from './bttv-components/popout.jsx';
 import domObserver from '../../observers/dom.js';
+
 class SettingsModule {
   constructor() {
     this.renderSettings();
@@ -52,7 +53,7 @@ class SettingsModule {
 
   openSettings(e) {
     e.preventDefault();
-    ReactDOM.render(<BTTVWindow open={true} />, document.getElementById('bttvSettingsPanel'));
+    ReactDOM.render(<BTTVWindow open />, document.getElementById('bttvSettingsPanel'));
   }
 }
 

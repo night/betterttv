@@ -16,9 +16,7 @@ function radioBake({id, category, name, description, settings}) {
   }
 
   const _defaultValue = settings
-    .map((setting, index) => {
-      return _settings.get(setting.id) || setting.id === 'default' ? index : false;
-    })
+    .map((setting, index) => (_settings.get(setting.id) || setting.id === 'default' ? index : false))
     .filter((setting) => setting !== false);
 
   return {
@@ -74,15 +72,8 @@ function keywordTableBake({id, name, category, description, options}) {
   if (id === 'highlightKeywords') defaultHighlightKeywords(keywords);
   if (typeof keywords !== 'string') keywords = '';
 
-  if (!listeners.includes(id)) {
-    listeners.push(id);
-    _settings.on(`changed._${id}`, (values) => {
-      storage.set(id, encrypt(values.filter((value) => value.status !== 'EDIT')));
-    });
-  }
-
-  const encrypt = (values) => {
-    return values
+  const encrypt = (values) =>
+    values
       .map(({keyword, type}) => {
         switch (type) {
           case 0:
@@ -93,10 +84,11 @@ function keywordTableBake({id, name, category, description, options}) {
             return `{<${keyword}>}`;
           case 3:
             return `(${keyword})`;
+          default:
+            return '';
         }
       })
       .join(' ');
-  };
 
   const decrypt = (value) => {
     const {computedKeywords, computedUsers} = computeKeywords(value);
@@ -129,18 +121,23 @@ function keywordTableBake({id, name, category, description, options}) {
       })
       .filter((string) => string !== false);
 
-    const usersString = computedUsers.map((user) => {
-      return {
-        id: index++,
-        keyword: user,
-        type: 3,
-      };
-    });
+    const usersString = computedUsers.map((user) => ({
+      id: index++,
+      keyword: user,
+      type: 3,
+    }));
 
     const data = keywordString.concat(usersString);
     _settings.set(`_${id}`, data);
     return data;
   };
+
+  if (!listeners.includes(id)) {
+    listeners.push(id);
+    _settings.on(`changed._${id}`, (values) => {
+      storage.set(id, encrypt(values.filter((value) => value.status !== 'EDIT')));
+    });
+  }
 
   return {
     type: 3,
@@ -153,7 +150,7 @@ function keywordTableBake({id, name, category, description, options}) {
   };
 }
 
-export default function (settings) {
+export default function bake(settings) {
   const visited = [];
   const newSettings = settings
     .map((setting) => {
