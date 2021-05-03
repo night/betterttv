@@ -1,8 +1,9 @@
 import React from 'react';
+import cdn from '../../../utils/cdn.js';
+
+import Icon from 'rsuite/lib/Icon/index.js';
 import Sidenav from 'rsuite/lib/Sidenav/index.js';
 import Nav from 'rsuite/lib/Nav/index.js';
-import Icon from 'rsuite/lib/Icon/index.js';
-import cdn from '../../../utils/cdn.js';
 
 import box from '../../../assets/icons/box-solid.svg';
 import house from '../../../assets/icons/house-solid.svg';

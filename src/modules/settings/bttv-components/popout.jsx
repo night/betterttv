@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import Modal from 'rsuite/lib/Modal/index.js';
 import Sidenav from './sidenav.jsx';
 import About from '../pages/about.jsx';
 import Settings from '../pages/settings.jsx';
 import Changelog from '../pages/changelog.jsx';
+import Modal from 'rsuite/lib/Modal/index.js';
 
 function BTTVPopout(props) {
   const [page, setPage] = useState(1);

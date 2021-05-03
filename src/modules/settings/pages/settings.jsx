@@ -1,15 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import Setting from '../bttv-components/setting.jsx';
+import enhance from '../../../assets/icons/search-solid.svg';
+import _settings from '../../../settings.js';
+import bake from '../bttv-components/bake.js';
 
+import Setting from '../bttv-components/setting.jsx';
+import Header from '../bttv-components/header.jsx';
 import Panel from 'rsuite/lib/Panel/index.js';
 import InputGroup from 'rsuite/lib/InputGroup/index.js';
 import Icon from 'rsuite/lib/Icon/index.js';
 import AutoComplete from 'rsuite/lib/AutoComplete/index.js';
 import PanelGroup from 'rsuite/lib/PanelGroup/index.js';
-import Header from '../bttv-components/header.jsx';
-import enhance from '../../../assets/icons/search-solid.svg';
-import _settings from '../../../settings.js';
-import bake from '../bttv-components/bake.js';
 
 const auto = _settings.getSettings().map((setting) => setting.name);
 

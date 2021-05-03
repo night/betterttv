@@ -1,11 +1,12 @@
 import React, {useRef, useEffect} from 'react';
+import minus from '../../../assets/icons/minus-square-solid.svg';
+
 import Table from 'rsuite/lib/Table/index.js';
 import Button from 'rsuite/lib/Button/index.js';
 import Icon from 'rsuite/lib/Icon/index.js';
 import Dropdown from 'rsuite/lib/Dropdown/index.js';
 import Popover from 'rsuite/lib/Popover/index.js';
 import Whisper from 'rsuite/lib/Whisper/index.js';
-import minus from '../../../assets/icons/minus-square-solid.svg';
 
 let tableBody;
 const {Column, HeaderCell, Cell} = Table;
@@ -31,7 +32,7 @@ class CustomWhisper extends React.Component {
     super(props);
     this.handleSelectMenu = this.handleSelectMenu.bind(this);
   }
-  handleSelectMenu(eventKey, event) {
+  handleSelectMenu(eventKey) {
     const {onChange, rowData, dataKey} = this.props;
     onChange(rowData.id, dataKey, eventKey);
     this.trigger.hide();

@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import dayjs from 'dayjs';
-import Loader from 'rsuite/lib/Loader/index.js';
 import api from '../../../utils/api.js';
 import debug from '../../../utils/debug.js';
-import Panel from 'rsuite/lib/Panel/index.js';
 import Header from '../bttv-components/header.jsx';
+
+import Loader from 'rsuite/lib/Loader/index.js';
+import Panel from 'rsuite/lib/Panel/index.js';
 import PanelGroup from 'rsuite/lib/PanelGroup/index.js';
 
 function changelog() {

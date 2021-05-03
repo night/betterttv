@@ -1,17 +1,18 @@
 import React from 'react';
-import Panel from 'rsuite/lib/Panel/index.js';
-import Icon from 'rsuite/lib/Icon/index.js';
-import InputGroup from 'rsuite/lib/InputGroup/index.js';
-import Header from '../bttv-components/header.jsx';
 import settings from '../../../settings.js';
 import storage from '../../../storage.js';
-import Button from 'rsuite/lib/Button/index.js';
-import IconButton from 'rsuite/lib/IconButton/index.js';
-import Input from 'rsuite/lib/Input/index.js';
 import {save} from 'save-file';
 import download from '../../../assets/icons/download-solid.svg';
-import PanelGroup from 'rsuite/lib/PanelGroup/index.js';
 import debug from '../../../utils/debug.js';
+
+import Header from '../bttv-components/header.jsx';
+import Button from 'rsuite/lib/Button/index.js';
+import IconButton from 'rsuite/lib/IconButton/index.js';
+import PanelGroup from 'rsuite/lib/PanelGroup/index.js';
+import InputGroup from 'rsuite/lib/InputGroup/index.js';
+import Panel from 'rsuite/lib/Panel/index.js';
+import Icon from 'rsuite/lib/Icon/index.js';
+import Input from 'rsuite/lib/Input/index.js';
 
 function backupFile() {
   const rv = storage.getStorage();
