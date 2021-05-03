@@ -268,7 +268,6 @@ class ChatHighlightBlacklistKeywordsModule {
     const date = new Date(timestamp);
     const fromBadges = Array.isArray(badges) ? badges.map((b) => b.id) : Object.keys(badges);
 
-    console.log(fromBadges);
     if (
       globalBots.includes(from) ||
       (channelBots.includes(from) && Object.prototype.hasOwnProperty.call(badges, 'moderator'))
