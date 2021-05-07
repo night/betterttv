@@ -4,6 +4,11 @@ import twitchAPI from '../../utils/twitch-api.js';
 import chat from '../chat/index.js';
 import anonChat from '../anon_chat/index.js';
 
+import relativeTime from 'dayjs/plugin/relativeTime.js';
+import localizedFormat from 'dayjs/plugin/localizedFormat.js';
+dayjs.extend(relativeTime);
+dayjs.extend(localizedFormat);
+
 const CommandHelp = {
   b: 'Usage: "/b <login> [reason]" - Shortcut for /ban',
   chatters: 'Usage: "/chatters" - Retrieces the number of chatters in the chat',
