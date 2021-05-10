@@ -32,7 +32,7 @@
     "css-minimizer-webpack-plugin": "^2.0.0",
     "dayjs": "^1.10.4",
     "emoji-toolkit": "^6.5.1",
-    "eslint": "^7.25.0",
+    "eslint": "^7.26.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
