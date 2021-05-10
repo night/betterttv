@@ -45,7 +45,11 @@ const pinnedHighlightTemplate = ({timestamp, from, message}) => `
     </div>
 `;
 
-const textFragmentTemplate = (emoteName) => `<span class="text-fragment" data-a-target="chat-message-text" style="background-color: rgba(255,255,0,0.2);">${emoteName}</span>`;
+const textFragmentTemplate = (emoteName) => `
+  <span class="text-fragment" data-a-target="chat-message-text" style="background-color: rgba(255,255,0,0.2);">
+    ${emoteName}
+  </span>
+`;
 
 function defaultHighlightKeywords(value) {
   if (typeof value === 'string') return value;
@@ -244,10 +248,12 @@ class ChatHighlightBlacklistKeywordsModule {
   }
 
   nativeEmoteScrubber(ele, emotesToScrub) {
-    const emotes = $(ele[0]).find("[data-test-selector=chat-line-message-body]:first").find("[data-test-selector=emote-button]");
-    $(emotes).each(function(_, emote) {
-      const emoteName = $(emote).find("img")[0].alt;
-      if (emotesToScrub.includes(emote_name)) {
+    const emotes = $(ele[0])
+      .find('[data-test-selector=chat-line-message-body]:first')
+      .find('[data-test-selector=emote-button]');
+    $(emotes).each((_, emote) => {
+      const emoteName = $(emote).find('img')[0].alt;
+      if (emotesToScrub.includes(emoteName)) {
         emote.replaceWith($(textFragmentTemplate(emoteName))[0]);
       }
     });
