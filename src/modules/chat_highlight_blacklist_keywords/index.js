@@ -15,6 +15,9 @@ const REPEATING_SPACE_REGEX = /\s\s+/g;
 const BLACKLIST_KEYWORD_PROMPT = `Type some blacklist keywords. Messages containing keywords will be filtered from your chat.
 
 Use spaces in the field to specify multiple keywords. Place {} around a set of words to form a phrase, <> inside the {} to use exact search, and () around a single word to specify a username. Wildcards (*) are supported.`;
+const HIDE_EMOTE_PROMPT = `Type some native twitch emotes. These emotes will be hidden in your chat.
+
+Use spaces in the field to specify multiple keywords.`;
 const HIGHLIGHT_KEYWORD_PROMPT = `Type some highlight keywords. Messages containing keywords will turn red to get your attention.
 
 Use spaces in the field to specify multiple keywords. Place {} around a set of words to form a phrase, <> inside the {} to use exact search, and () around a single word to specify a username. Wildcards (*) are supported.`;
@@ -41,6 +44,8 @@ const pinnedHighlightTemplate = ({timestamp, from, message}) => `
         <span class="message">${html.escape(message)}</span>
     </div>
 `;
+
+const textFragmentTemplate = (emoteName) => `<span class="text-fragment" data-a-target="chat-message-text" style="background-color: rgba(255,255,0,0.2);">${emoteName}</span>`;
 
 function defaultHighlightKeywords(value) {
   if (typeof value === 'string') return value;
@@ -234,10 +239,26 @@ class ChatHighlightBlacklistKeywordsModule {
     changeKeywords(HIGHLIGHT_KEYWORD_PROMPT, 'highlightKeywords');
   }
 
+  setHiddenEmotes() {
+    changeKeywords(HIDE_EMOTE_PROMPT, 'hiddenEmotes');
+  }
+
+  nativeEmoteScrubber(ele, emotesToScrub) {
+    const emotes = $(ele[0]).find("[data-test-selector=chat-line-message-body]:first").find("[data-test-selector=emote-button]");
+    $(emotes).each(function(_, emote) {
+      const emoteName = $(emote).find("img")[0].alt;
+      if (emotesToScrub.includes(emote_name)) {
+        emote.replaceWith($(textFragmentTemplate(emoteName))[0]);
+      }
+    });
+  }
+
   onMessage($message, {user, timestamp, messageParts}) {
     const from = user.userLogin;
     const message = messageTextFromAST(messageParts);
     const date = new Date(timestamp);
+
+    this.nativeEmoteScrubber($message, (settings.get('hiddenEmotes') || '').split(' '));
 
     if (fromContainsKeyword(blacklistUsers, from) || messageContainsKeyword(blacklistKeywords, from, message)) {
       this.markBlacklisted($message);
