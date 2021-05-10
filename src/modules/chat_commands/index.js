@@ -207,8 +207,14 @@ function handleCommands(message) {
 
       twitchAPI
         .graphqlQuery(query, {name: channel.name})
-        .then(({data: {channel: {chatters: {count}}}}) =>
-          twitch.sendChatAdminMessage(`Current Chatters: ${count.toLocaleString()}`)
+        .then(
+          ({
+            data: {
+              channel: {
+                chatters: {count},
+              },
+            },
+          }) => twitch.sendChatAdminMessage(`Current Chatters: ${count.toLocaleString()}`)
         )
         .catch(() => twitch.sendChatAdminMessage('Could not fetch chatter count.'));
       break;
