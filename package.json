@@ -29,7 +29,7 @@
     "cookies-js": "^1.2.3",
     "copy-webpack-plugin": "^8.1.1",
     "css-loader": "^5.2.2",
-    "css-minimizer-webpack-plugin": "^2.0.0",
+    "css-minimizer-webpack-plugin": "^3.0.0",
     "dayjs": "^1.10.4",
     "emoji-toolkit": "^6.5.1",
     "eslint": "^7.26.0",
