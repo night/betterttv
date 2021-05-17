@@ -8,3 +8,92 @@
   width: 8px;
   height: 15px;
 }
+
+.bttv-tooltip-wrapper {
+  display: inline-block;
+  position: relative;
+
+  &:hover .bttv-tooltip {
+    display: block;
+  }
+}
+
+.bttv-tooltip {
+  padding: 3px 6px;
+  border-radius: 4px;
+  background: #0e0c13;
+  color: #fff;
+  display: none;
+  position: absolute;
+  left: 0;
+  padding: 0.5rem;
+  font-size: 1.3rem;
+  font-weight: bold;
+  line-height: 1;
+  text-align: left;
+  white-space: nowrap;
+  z-index: 2000;
+  pointer-events: none;
+  text-align: center;
+  user-select: none;
+
+  &.bttv-tooltip--up {
+    top: auto;
+    bottom: 100%;
+    left: 0;
+    margin-bottom: 6px;
+
+    &.bttv-tooltip--align-center {
+      left: 50%;
+      transform: translateX(-50%);
+
+      &:after {
+        left: 50%;
+        margin-left: -3px;
+      }
+    }
+
+    &:after {
+      border-radius: 0 0 2px;
+      top: 100%;
+      left: 6px;
+      margin-top: -3px;
+    }
+  }
+
+  &:before {
+    top: -6px;
+    left: -6px;
+    width: calc(100% + 12px);
+    height: calc(100% + 12px);
+    z-index: -1;
+  }
+
+  &:after {
+    background: #0e0c13;
+    width: 6px;
+    height: 6px;
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+    z-index: -1;
+  }
+
+  &:after,
+  &:before {
+    position: absolute;
+    content: '';
+  }
+}
+
+.tw-root--theme-dark {
+  .bttv-tooltip {
+    padding: 3px 6px;
+    border-radius: 2px;
+    background: #fff;
+    color: #0e0c13;
+
+    &:after {
+      background: #fff;
+    }
+  }
+}

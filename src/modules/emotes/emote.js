@@ -34,11 +34,11 @@ export default class Emote {
         `;
 
     return `
-            <div class="bttv-emote-tooltip-wrapper bttv-emote ${providerClass} ${idClass}">
+            <div class="bttv-tooltip-wrapper bttv-emote ${providerClass} ${idClass}">
                 <img src="${html.escape(this.images['1x'])}" srcset="${srcset.join(', ')}" alt="${html.escape(
       this.code
     )}" class="chat-line__message--emote">
-                <div class="bttv-emote-tooltip bttv-emote-tooltip--up bttv-emote-tooltip--align-center">${balloon}</div>
+                <div class="bttv-tooltip bttv-tooltip--up bttv-tooltip--align-center">${balloon}</div>
             </div>
         `;
   }
