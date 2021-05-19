@@ -11,12 +11,12 @@ let currentChatReference;
 let currentChatChannelId;
 
 const loadPredicates = {
-  following: () => !!$('.tw-tabs div[data-test-selector="ACTIVE_TAB_INDICATOR"]').length,
+  following: () => !!$('ul[role="tablist"] div[data-test-selector="ACTIVE_TAB_INDICATOR"]').length,
   channel: () => {
     const href =
       $('.channel-header__user-avatar img').attr('src') ||
       $('h3[data-test-selector="side-nav-channel-info__name_link"] a').attr('href') ||
-      $('.channel-info-content img.tw-image-avatar').attr('src');
+      $('.channel-info-content a figure img').attr('src');
     return !!href && !!twitch.updateCurrentChannel();
   },
   chat: (context) => {

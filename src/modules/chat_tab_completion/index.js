@@ -15,13 +15,6 @@ function normalizedStartsWith(word, prefix) {
 class ChatTabcompletionModule {
   constructor() {
     settings.add({
-      id: 'tabCompletionTooltip',
-      name: 'Completion Tooltip',
-      defaultValue: true,
-      description: 'Shows a tooltip with suggested names when using @ completion',
-    });
-
-    settings.add({
       id: 'tabCompletionEmotePriority',
       name: 'Tab Completion Emote Priority',
       description: 'Prioritizes emotes over usernames when using tab completion',
@@ -30,12 +23,7 @@ class ChatTabcompletionModule {
 
     watcher.on('chat.message', ($el, messageObj) => this.storeUser(messageObj));
     watcher.on('load.chat', () => this.resetChannelData());
-    settings.on('changed.tabCompletionTooltip', () => this.loadTabCompletionTooltip());
     this.load();
-  }
-
-  loadTabCompletionTooltip() {
-    $('body').toggleClass('bttv-hide-tab-completion-tooltip', !settings.get('tabCompletionTooltip'));
   }
 
   load() {
@@ -45,8 +33,6 @@ class ChatTabcompletionModule {
     this.userList = new Set();
     this.messageHistory = [];
     this.historyPos = -1;
-
-    this.loadTabCompletionTooltip();
   }
 
   storeUser({user: {userDisplayName, userLogin}}) {

@@ -34,11 +34,6 @@
     width: 100% !important;
   }
 
-  /* Header overlap with collapseable column */
-  .channel-header .tw-sm-pd-r-4 .channel-header__left {
-    margin-left: 3.5rem;
-  }
-
   /* Toggle Visibility Arrows */
   .side-nav__toggle-visibility {
     right: unset;
@@ -54,24 +49,13 @@
     left: 1rem;
     transform: rotate(180deg);
 
-    .tw-tooltip {
+    div[role="tooltip"] {
       display: none !important;
     }
   }
 
   .right-column--collapsed .right-column__toggle-visibility {
     transform: rotate(-180deg);
-  }
-
-  /* Friend Hover Balloon */
-  .user-card-layer__balloon {
-    left: calc(100% - 65rem) !important;
-
-    .tw-balloon__tail {
-      margin: 0 -3px 0 0;
-      left: unset;
-      right: 0;
-    }
   }
 
   /* Theatre Mode */
@@ -97,12 +81,6 @@
       z-index: 3000 !important;
       right: unset !important;
     }
-  }
-
-  /* Subscriber balloons on channel page */
-  .chat-input div.tw-balloon[data-a-target='sub-balloon'] {
-    left: auto !important;
-    right: unset !important;
   }
 
   /* flips direction on squad streams */

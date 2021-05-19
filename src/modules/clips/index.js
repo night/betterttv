@@ -6,8 +6,8 @@ import watcher from '../../watcher.js';
 
 const GIF_EMOTES_SETTINGS_KEY = 'bttvGIFEmotes';
 const CHAT_MESSAGE_SELECTOR = 'span[data-a-target="chat-message-text"]';
-const CHAT_USERNAME_SELECTOR = 'a span.tw-strong';
-const SCROLL_INDICATOR_SELECTOR = '.clips-chat .clips-chat__content button.tw-button--small';
+const CHAT_USERNAME_SELECTOR = 'a[href$="/clips"] span';
+const SCROLL_INDICATOR_SELECTOR = '.clips-chat .clips-chat__content button';
 const SCROLL_CONTAINER_SELECTOR = '.clips-chat .simplebar-scroll-content';
 
 function parseColor(rgbText) {

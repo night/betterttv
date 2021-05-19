@@ -18,7 +18,7 @@ const EMOTES_TO_CAP = ['567b5b520e984428652809b6'];
 const MAX_EMOTES_WHEN_CAPPED = 10;
 
 const badgeTemplate = (url, description) => `
-    <div class="bttv-tooltip-wrapper tw-inline tw-relative">
+    <div class="bttv-tooltip-wrapper bttv-chat-badge-container">
         <img alt="Moderator" class="chat-badge bttv-chat-badge" src="${url}" alt="" srcset="" data-a-target="chat-badge">
         <div class="bttv-tooltip bttv-tooltip--up" style="margin-bottom: 0.9rem;">${description}</div>
     </div>
@@ -66,7 +66,7 @@ function hasNonASCII(message) {
 }
 
 function getMessagePartsFromMessageElement($message) {
-  return $message.find('span[data-a-target="chat-message-text"],div.tw-tooltip__container');
+  return $message.find('span[data-a-target="chat-message-text"]');
 }
 
 class ChatModule {
@@ -139,19 +139,7 @@ class ChatModule {
     let cappedEmoteCount = 0;
     for (let i = 0; i < tokens.length; i++) {
       const node = tokens[i];
-      let $emote;
-      // non-chat renders have a wrapper element
-      if (node.nodeType === window.Node.ELEMENT_NODE && node.classList.contains('tw-tooltip__container')) {
-        const $emoteTooltip = $(node);
-        $emote = $emoteTooltip.find('.chat-line__message--emote');
-        if ($emote.length) {
-          continue;
-        }
-      }
-      // chat doesn't have a wrapper element, so we grab all the inner elements
-      if (node.nodeType === window.Node.ELEMENT_NODE && node.classList.contains('chat-line__message--emote')) {
-        continue;
-      }
+
       let data;
       if (node.nodeType === window.Node.ELEMENT_NODE && node.nodeName === 'SPAN') {
         data = $(node).text();
