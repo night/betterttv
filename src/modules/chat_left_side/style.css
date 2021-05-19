@@ -49,7 +49,7 @@
     left: 1rem;
     transform: rotate(180deg);
 
-    div[role="tooltip"] {
+    div[role='tooltip'] {
       display: none !important;
     }
   }
