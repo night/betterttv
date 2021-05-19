@@ -49,10 +49,13 @@ class HostButtonModule {
       $hostButton = $(buttonTemplate);
       $hostButton.find('button').click(() => this.toggleHost());
     }
-    removeShareButtonListener = domObserver.on(`div[data-test-selector="toggle-balloon-wrapper__mouse-enter-detector"] ${SHARE_BUTTON_SELECTOR}, .channel-info-content ${SHARE_BUTTON_SELECTOR}`, (node, isConnected) => {
-      if (!isConnected || node.getAttribute('data-a-target') !== 'share-button') return;
-      this.embedHostButton();
-    });
+    removeShareButtonListener = domObserver.on(
+      `div[data-test-selector="toggle-balloon-wrapper__mouse-enter-detector"] ${SHARE_BUTTON_SELECTOR}, .channel-info-content ${SHARE_BUTTON_SELECTOR}`,
+      (node, isConnected) => {
+        if (!isConnected || node.getAttribute('data-a-target') !== 'share-button') return;
+        this.embedHostButton();
+      }
+    );
     this.updateHostingState(currentUser.id, channelId);
   }
 
