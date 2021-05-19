@@ -49,7 +49,7 @@ class HostButtonModule {
       $hostButton = $(buttonTemplate);
       $hostButton.find('button').click(() => this.toggleHost());
     }
-    removeShareButtonListener = domObserver.on('.tw-button-icon', (node, isConnected) => {
+    removeShareButtonListener = domObserver.on(`div[data-test-selector="toggle-balloon-wrapper__mouse-enter-detector"] ${SHARE_BUTTON_SELECTOR}, .channel-info-content ${SHARE_BUTTON_SELECTOR}`, (node, isConnected) => {
       if (!isConnected || node.getAttribute('data-a-target') !== 'share-button') return;
       this.embedHostButton();
     });
@@ -58,9 +58,8 @@ class HostButtonModule {
 
   embedHostButton() {
     if ($(`#${HOST_BUTTON_ID}`).length) return;
-    const $shareButton = $(SHARE_BUTTON_SELECTOR).closest('[data-toggle-balloon-id]').parent('.tw-mg-r-1');
+    const $shareButton = $(SHARE_BUTTON_SELECTOR).closest('[data-toggle-balloon-id]');
     if (!$shareButton.length) return;
-    $hostButton.toggleClass('tw-mg-r-1', $shareButton.hasClass('tw-mg-r-1'));
     $hostButton.insertBefore($shareButton);
   }
 
@@ -115,6 +114,7 @@ class HostButtonModule {
   unload() {
     if (removeShareButtonListener) removeShareButtonListener();
     if ($hostButton) $hostButton.remove();
+    currentChannelId = null;
   }
 }
 
