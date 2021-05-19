@@ -13,3 +13,8 @@
   margin-bottom: -4px;
   display: inline-block;
 }
+
+.bttv-chat-badge-container {
+  position: relative !important;
+  display: inline !important;
+}
