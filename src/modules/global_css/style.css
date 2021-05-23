@@ -23,7 +23,6 @@
   user-select: none;
   white-space: nowrap;
   margin-bottom: 6px;
-  inset: auto 0px 100% auto;
 
   &.bttv-tooltip--up {
     top: auto;
