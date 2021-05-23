@@ -13,10 +13,10 @@
   padding-top: 2rem !important;
 
   .settingHeader {
-    margin-top: .5rem !important;
-    margin-bottom: .5rem !important;
-    padding-left: .5rem !important;
-    padding-right: .5rem !important;
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
 
     p {
       font-size: var(--font-size-6) !important;
@@ -36,7 +36,7 @@
     border-radius: var(--border-radius-medium);
     display: block;
     width: 100%;
-    padding: .5rem !important;
+    padding: 0.5rem !important;
 
     &:hover {
       color: inherit;

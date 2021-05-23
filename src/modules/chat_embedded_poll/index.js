@@ -5,20 +5,20 @@ import twitch from '../../utils/twitch.js';
 const STRAWPOLL_REGEX = /strawpoll\.me\/([0-9]+)/g;
 
 const pollTemplate = (pollId) => `
-    <div id="bttv-poll-contain">
-        <div class="title">
-            New poll available! 
-            <span style="text-decoration: underline;">Vote now!</span>
-        </div>
-        <div class="close">
-            <svg class="svg-close" height="16px" version="1.1" viewbox="0 0 16 16" width="16px" x="0px" y="0px">
-                <path clip-rule="evenodd"
-                      d="M13.657,3.757L9.414,8l4.243,4.242l-1.415,1.415L8,9.414l-4.243,4.243l-1.414-1.415L6.586,8L2.343,3.757l1.414-1.414L8,6.586l4.242-4.243L13.657,3.757z"
-                      fill-rule="evenodd" />
-            </svg>
-        </div>
-        <iframe class="frame" src="https://www.strawpoll.me/embed_1/${pollId}"></iframe>
+  <div id="bttv-poll-contain">
+    <div class="title">
+      New poll available! 
+      <span style="text-decoration: underline;">Vote now!</span>
     </div>
+    <div class="close">
+      <svg class="svg-close" height="16px" version="1.1" viewbox="0 0 16 16" width="16px" x="0px" y="0px">
+        <path clip-rule="evenodd"
+          d="M13.657,3.757L9.414,8l4.243,4.242l-1.415,1.415L8,9.414l-4.243,4.243l-1.414-1.415L6.586,8L2.343,3.757l1.414-1.414L8,6.586l4.242-4.243L13.657,3.757z"
+          fill-rule="evenodd" />
+      </svg>
+    </div>
+    <iframe class="frame" src="https://www.strawpoll.me/embed_1/${pollId}"></iframe>
+  </div>
 `;
 
 let frameTimeout = null;

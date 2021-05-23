@@ -14,27 +14,27 @@ const CHAT_SETTINGS_MOD_TOOLS_SELECTOR = 'div[data-test-selector="mod-tools"]';
 const BTTV_CHAT_SETTINGS_CLASS = 'bttv-chat-settings';
 
 const CHAT_SETTINGS_TEMPLATE = `
-    <div class="${BTTV_CHAT_SETTINGS_CLASS}">
-        <div class="settingHeader"><p>BetterTTV</p></div>
-        <div class="settingRow">
-          <button borderradius="border-radius-medium" class="settingButton setBlacklistKeywords">Set Blacklist Keywords</button>
-        </div>
-        <div class="settingRow">
-          <button borderradius="border-radius-medium" class="settingButton setHighlightKeywords">Set Highlight Keywords</button>
-        </div>
-        <div class="settingRow">
-          <button borderradius="border-radius-medium" class="settingButton setFontFamily">Set Font</button>
-        </div>
-        <div class="settingRow">
-          <button borderradius="border-radius-medium" class="settingButton setFontSize">Set Font Size</button>
-        </div>
-        <div class="settingRow">
-          <button borderradius="border-radius-medium" class="settingButton clearChat">Clear My Chat</button>
-        </div>
-        <div class="settingRow">
-          <button borderradius="border-radius-medium" class="settingButton openSettings">BetterTTV Settings</button>
-        </div>
+  <div class="${BTTV_CHAT_SETTINGS_CLASS}">
+    <div class="settingHeader"><p>BetterTTV</p></div>
+    <div class="settingRow">
+      <button borderradius="border-radius-medium" class="settingButton setBlacklistKeywords">Set Blacklist Keywords</button>
     </div>
+    <div class="settingRow">
+      <button borderradius="border-radius-medium" class="settingButton setHighlightKeywords">Set Highlight Keywords</button>
+    </div>
+    <div class="settingRow">
+      <button borderradius="border-radius-medium" class="settingButton setFontFamily">Set Font</button>
+    </div>
+    <div class="settingRow">
+      <button borderradius="border-radius-medium" class="settingButton setFontSize">Set Font Size</button>
+    </div>
+    <div class="settingRow">
+      <button borderradius="border-radius-medium" class="settingButton clearChat">Clear My Chat</button>
+    </div>
+    <div class="settingRow">
+      <button borderradius="border-radius-medium" class="settingButton openSettings">BetterTTV Settings</button>
+    </div>
+  </div>
 `;
 
 function inIFrame() {

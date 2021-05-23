@@ -18,10 +18,10 @@ const EMOTES_TO_CAP = ['567b5b520e984428652809b6'];
 const MAX_EMOTES_WHEN_CAPPED = 10;
 
 const badgeTemplate = (url, description) => `
-    <div class="bttv-tooltip-wrapper bttv-chat-badge-container">
-        <img alt="Moderator" class="chat-badge bttv-chat-badge" src="${url}" alt="" srcset="" data-a-target="chat-badge">
-        <div class="bttv-tooltip bttv-tooltip--up" style="margin-bottom: 0.9rem;">${description}</div>
-    </div>
+  <div class="bttv-tooltip-wrapper bttv-chat-badge-container">
+    <img alt="Moderator" class="chat-badge bttv-chat-badge" src="${url}" alt="" srcset="" data-a-target="chat-badge">
+    <div class="bttv-tooltip bttv-tooltip--up" style="margin-bottom: 0.9rem;">${description}</div>
+  </div>
 `;
 const mentionTemplate = (name) => `<span class="mentioning">@${html.escape(name)}</span>`;
 const steamLobbyJoinTemplate = (joinLink) => `<a href="${joinLink}">${joinLink}</a>`;

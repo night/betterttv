@@ -33,62 +33,60 @@ const MODERATOR_CARD_ACTIONS_SELECTOR = 'button[data-test-selector="ban-button"]
 const CHAT_INPUT_SELECTOR = 'textarea[data-a-target="chat-input"]';
 
 const moderatorActionButtonTemplate = (command, duration, tooltipText, buttonText) => `
-    <div class="bttv-tooltip-wrapper tw-inline-flex">
-        <div class="bttv-moderator-card-action" data-command="${html.escape(command)}" data-duration="${
+  <div class="bttv-tooltip-wrapper tw-inline-flex">
+    <div class="bttv-moderator-card-action" data-command="${html.escape(command)}" data-duration="${
   html.escape(duration) || ''
 }">
-            <button class="tw-button__text">
-                ${html.escape(buttonText)}
-            </button>
-        </div>
-        <div class="bttv-tooltip bttv-tooltip--up bttv-tooltip--align-center">${html.escape(tooltipText)}</div>
+      <button class="tw-button__text">${html.escape(buttonText)}</button>
     </div>
+    <div class="bttv-tooltip bttv-tooltip--up bttv-tooltip--align-center">${html.escape(tooltipText)}</div>
+  </div>
 `;
 
 const MODERATOR_ACTIONS_TEMPLATE = `
-    <span class="bttv-moderator-card-actions">
-        ${moderatorActionButtonTemplate(Commands.PERMIT, null, '!permit User', '!permit')}
-        ${moderatorActionButtonTemplate(Commands.TIMEOUT, 1, 'Purge', '1s')}
-        ${moderatorActionButtonTemplate(Commands.TIMEOUT, 600, 'Timeout 10m', '10m')}
-        ${moderatorActionButtonTemplate(Commands.TIMEOUT, 3600, 'Timeout 1hr', '1h')}
-        ${moderatorActionButtonTemplate(Commands.TIMEOUT, 8 * 3600, 'Timeout 8hr', '8h')}
-        ${moderatorActionButtonTemplate(Commands.TIMEOUT, 24 * 3600, 'Timeout 24hr', '24h')}
-    </span>
+  <span class="bttv-moderator-card-actions">
+    ${moderatorActionButtonTemplate(Commands.PERMIT, null, '!permit User', '!permit')}
+    ${moderatorActionButtonTemplate(Commands.TIMEOUT, 1, 'Purge', '1s')}
+    ${moderatorActionButtonTemplate(Commands.TIMEOUT, 600, 'Timeout 10m', '10m')}
+    ${moderatorActionButtonTemplate(Commands.TIMEOUT, 3600, 'Timeout 1hr', '1h')}
+    ${moderatorActionButtonTemplate(Commands.TIMEOUT, 8 * 3600, 'Timeout 8hr', '8h')}
+    ${moderatorActionButtonTemplate(Commands.TIMEOUT, 24 * 3600, 'Timeout 24hr', '24h')}
+  </span>
 `;
 
 const userStatsItemTemplate = (icon, value) => `
-    <div class="tw-align-items-center tw-inline-flex tw-stat tw-pd-l-1">
-        <div class="tw-align-items-center tw-inline-flex tw-stat__icon tw-mg-r-1">${icon}</div>
-        <div class="tw-stat__value">${html.escape(value)}</div>
-    </div>
+  <div class="tw-align-items-center tw-inline-flex tw-stat tw-pd-l-1">
+    <div class="tw-align-items-center tw-inline-flex tw-stat__icon tw-mg-r-1">${icon}</div>
+    <div class="tw-stat__value">${html.escape(value)}</div>
+  </div>
 `;
 
 const userStatsTemplate = (views, follows, createdAt) => `
-    <div class="bttv-moderator-card-user-stats">
-        <div class="tw-flex tw-full-width">
-            ${userStatsItemTemplate(Icons.EYE, views.toLocaleString())}
-            ${userStatsItemTemplate(Icons.HEART, follows.toLocaleString())}
-            ${userStatsItemTemplate(Icons.BIRTHDAY_CAKE, dayjs(createdAt).format('MMM D, YYYY'))}
-        </div>
+  <div class="bttv-moderator-card-user-stats">
+    <div class="tw-flex tw-full-width">
+      ${userStatsItemTemplate(Icons.EYE, views.toLocaleString())}
+      ${userStatsItemTemplate(Icons.HEART, follows.toLocaleString())}
+      ${userStatsItemTemplate(Icons.BIRTHDAY_CAKE, dayjs(createdAt).format('MMM D, YYYY'))}
     </div>
+  </div>
 `;
 
 const userMessagesTemplate = (messagesHTML) => `
-    <div class="bttv-moderator-card-messages tw-c-background-base">
-        <div class="label">
-            <span>Chat Messages</span>
-            <div class="triangle"></div>
-        </div>
-        <div class="message-list">
-            ${messagesHTML.join('\n')}
-        </div>
+  <div class="bttv-moderator-card-messages tw-c-background-base">
+    <div class="label">
+      <span>Chat Messages</span>
+      <div class="triangle"></div>
     </div>
+    <div class="message-list">
+      ${messagesHTML.join('\n')}
+    </div>
+  </div>
 `;
 
 const NICKNAME_CHANGE_BUTTON_TEMPLATE = `
-    <button class="tw-button-icon tw-button-icon--overlay bttv-moderator-card-nickname-change-button">
-        <span class="tw-button-icon__icon">${Icons.PENCIL}</span>
-    </button>
+  <button class="tw-button-icon tw-button-icon--overlay bttv-moderator-card-nickname-change-button">
+    <span class="tw-button-icon__icon">${Icons.PENCIL}</span>
+  </button>
 `;
 
 class ModeratorCard {

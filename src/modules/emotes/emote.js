@@ -28,18 +28,18 @@ export default class Emote {
     const idClass = `${html.escape(this.provider.id)}-emo-${html.escape(this.id)}`;
 
     const balloon = `
-            ${html.escape(this.code)}<br>
-            ${this.channel ? `Channel: ${html.escape(this.channel.displayName || this.channel.name)}<br>` : ''}
-            ${html.escape(this.provider.displayName)}
-        `;
+      ${html.escape(this.code)}<br>
+      ${this.channel ? `Channel: ${html.escape(this.channel.displayName || this.channel.name)}<br>` : ''}
+      ${html.escape(this.provider.displayName)}
+    `;
 
     return `
-            <div class="bttv-tooltip-wrapper bttv-emote ${providerClass} ${idClass}">
-                <img src="${html.escape(this.images['1x'])}" srcset="${srcset.join(', ')}" alt="${html.escape(
+      <div class="bttv-tooltip-wrapper bttv-emote ${providerClass} ${idClass}">
+        <img src="${html.escape(this.images['1x'])}" srcset="${srcset.join(', ')}" alt="${html.escape(
       this.code
-    )}" class="chat-line__message--emote">
-                <div class="bttv-tooltip bttv-tooltip--up bttv-tooltip--align-center">${balloon}</div>
-            </div>
-        `;
+    )}" class="chat-line__message--emote" />
+        <div class="bttv-tooltip bttv-tooltip--up bttv-tooltip--align-center">${balloon}</div>
+      </div>
+    `;
   }
 }

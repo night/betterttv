@@ -13,91 +13,89 @@ import domObserver from '../../observers/dom.js';
 const getSettingElement = ({id}) => $(`.bttvOption-${html.escape(id)}`);
 
 const settingTemplate = ({id, name, description}) => `
-    <div id="option" class="option bttvOption-${html.escape(id)}">
-        <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">${html.escape(name)}</span>
-        <span class="description"> — ${html.escape(description)}</span>
-        <div class="bttv-switch">
-            <input class="bttv-switch-input bttv-switch-off" type="radio" name=${html.escape(
-              id
-            )} value="false" id="${html.escape(id)}False" />
-            <label class="bttv-switch-label bttv-switch-label-off" for="${html.escape(id)}False">Off</label>
-            <input class="bttv-switch-input" type="radio" name=${html.escape(id)} value="true" id="${html.escape(
-  id
-)}True" />
-            <label class="bttv-switch-label bttv-switch-label-on" for="${html.escape(id)}True">On</label>
-            <span class="bttv-switch-selection"></span>
-        </div>
-    </option>
+  <div id="option" class="option bttvOption-${html.escape(id)}">
+    <span style="font-weight:bold;font-size:14px;color:#D3D3D3;">${html.escape(name)}</span>
+    <span class="description"> — ${html.escape(description)}</span>
+    <div class="bttv-switch">
+      <input class="bttv-switch-input bttv-switch-off" type="radio" name=${html.escape(
+        id
+      )} value="false" id="${html.escape(id)}False" />
+      <label class="bttv-switch-label bttv-switch-label-off" for="${html.escape(id)}False">Off</label>
+      <input class="bttv-switch-input" type="radio" name=${html.escape(id)} value="true" id="${html.escape(id)}True" />
+      <label class="bttv-switch-label bttv-switch-label-on" for="${html.escape(id)}True">On</label>
+      <span class="bttv-switch-selection"></span>
+    </div>
+  </div>
 `;
 
 const settingsPanelTemplate = () => `
-    <div id="header">
-        <span id="logo"><img height="45px" src="${cdn.url('assets/logos/settings_logo.png')}" /></span>
-        <ul class="nav">
-            <li><a href="#bttvAbout">About</a></li>
-            <li class="active"><a href="#bttvSettings">Settings</a></li>
-            <li><a href="#bttvChannel">Channel</a></li>
-            <li><a href="#bttvChangelog">Changelog</a></li>
-            <li><a href="#bttvPrivacy">Privacy Policy</a></li>
-            <li><a href="#bttvBackup">Backup/Import</a></li>
-        </ul>
-        <span id="close">&times;</span>
+  <div id="header">
+    <span id="logo"><img height="45px" src="${cdn.url('assets/logos/settings_logo.png')}" /></span>
+    <ul class="nav">
+      <li><a href="#bttvAbout">About</a></li>
+      <li class="active"><a href="#bttvSettings">Settings</a></li>
+      <li><a href="#bttvChannel">Channel</a></li>
+      <li><a href="#bttvChangelog">Changelog</a></li>
+      <li><a href="#bttvPrivacy">Privacy Policy</a></li>
+      <li><a href="#bttvBackup">Backup/Import</a></li>
+    </ul>
+    <span id="close">&times;</span>
+  </div>
+  <div id="bttvSettings" class="options-list">
+    <input type="text" placeholder="Search settings" id="bttvSettingsSearch" class="option">
+  </div>
+  <div id="bttvAbout" style="display:none;">
+    <div class="aboutHalf">
+      <img class="bttvAboutIcon" src="${cdn.url('assets/logos/mascot.png')}" />
+      <h1>BetterTTV v${debug.version}</h1>
+      <h2>from your friends at <a href="https://nightdev.com" target="_blank">NightDev</a></h2>
+      <br>
     </div>
-    <div id="bttvSettings" class="options-list">
-        <input type="text" placeholder="Search settings" id="bttvSettingsSearch" class="option">
+    <div class="aboutHalf">
+      <h1 style="margin-top: 100px;">Think this addon is awesome?</h1>
+      <br>
+      <br>
+      <h2>
+        Drop a Review on the <a target="_blank" href="https://chrome.google.com/webstore/detail/betterttv/ajopnjidmegmdimjlfnijceegpefgped">Chrome Webstore</a> or <a target="_blank" href="https://addons.mozilla.org/firefox/addon/betterttv/">Firefox Add-ons site</a>
+      </h2>
+      <br>
+      <h2>or maybe even</h2>
+      <br>
+      <h2><a target="_blank" href="https://betterttv.com/dashboard/pro">Subscribe to BetterTTV Pro</a></h2>
+      <br>
     </div>
-    <div id="bttvAbout" style="display:none;">
-        <div class="aboutHalf">
-            <img class="bttvAboutIcon" src="${cdn.url('assets/logos/mascot.png')}" />
-            <h1>BetterTTV v${debug.version}</h1>
-            <h2>from your friends at <a href="https://nightdev.com" target="_blank">NightDev</a></h2>
-            <br>
-        </div>
-        <div class="aboutHalf">
-            <h1 style="margin-top: 100px;">Think this addon is awesome?</h1>
-            <br>
-            <br>
-            <h2>
-                Drop a Review on the <a target="_blank" href="https://chrome.google.com/webstore/detail/betterttv/ajopnjidmegmdimjlfnijceegpefgped">Chrome Webstore</a> or <a target="_blank" href="https://addons.mozilla.org/firefox/addon/betterttv/">Firefox Add-ons site</a>
-            </h2>
-            <br>
-            <h2>or maybe even</h2>
-            <br>
-            <h2><a target="_blank" href="https://betterttv.com/dashboard/pro">Subscribe to BetterTTV Pro</a></h2>
-            <br>
-        </div>
-    </div>
-    <div id="bttvChannel" style="display:none;">
-        <iframe frameborder="0" width="100%" height="425"></iframe>
-    </div>
-    <div id="bttvPrivacy" style="display:none;">
-    </div>
-    <div id="bttvChangelog" style="display:none;">
-        <h1>Changelog</h1><div class="bttv-changelog-releases"></div>
-    </div>
-    <div id="bttvBackup" style="display:none;">
-        <h4 style="padding-bottom:10px;">Backup Settings</h4>
-        <button id="bttvBackupButton" class="button primary"><span>Download</span></button>
-        <h4 style="padding-top:15px;padding-bottom:10px;">Import Settings</h4>
-        <input id="bttvImportInput" type="file" style="height: 25px;width: 250px;" />
-    </div>
-    <div id="footer">
-        <span>BetterTTV &copy; <a href="https://www.nightdev.com" target="_blank">NightDev, LLC</a> ${new Date().getFullYear()}</span>
-        <span style="float:right;">
-            <a href="https://twitter.com/betterttv" target="_blank">Twitter</a> | 
-            <a href="https://community.nightdev.com/c/betterttv" target="_blank">Forums</a> | 
-            <a href="https://github.com/night/BetterTTV/issues" target="_blank">Bug Report</a> | 
-            <a href="https://discord.gg/nightdev" target="_blank">Discord</a>
-        </span>
-    </div>
+  </div>
+  <div id="bttvChannel" style="display:none;">
+    <iframe frameborder="0" width="100%" height="425"></iframe>
+  </div>
+  <div id="bttvPrivacy" style="display:none;">
+  </div>
+  <div id="bttvChangelog" style="display:none;">
+    <h1>Changelog</h1><div class="bttv-changelog-releases"></div>
+  </div>
+  <div id="bttvBackup" style="display:none;">
+    <h4 style="padding-bottom:10px;">Backup Settings</h4>
+    <button id="bttvBackupButton" class="button primary"><span>Download</span></button>
+    <h4 style="padding-top:15px;padding-bottom:10px;">Import Settings</h4>
+    <input id="bttvImportInput" type="file" style="height: 25px;width: 250px;" />
+  </div>
+  <div id="footer">
+    <span>BetterTTV &copy; <a href="https://www.nightdev.com" target="_blank">NightDev, LLC</a> ${new Date().getFullYear()}</span>
+    <span style="float:right;">
+      <a href="https://twitter.com/betterttv" target="_blank">Twitter</a> | 
+      <a href="https://community.nightdev.com/c/betterttv" target="_blank">Forums</a> | 
+      <a href="https://github.com/night/BetterTTV/issues" target="_blank">Bug Report</a> | 
+      <a href="https://discord.gg/nightdev" target="_blank">Discord</a>
+    </span>
+  </div>
 `;
 
 const changelogEntryTemplate = (version, publishedAt, body) => `
-    <h2>Version ${html.escape(version)} (${dayjs(publishedAt).format('MMM D, YYYY')})</h2>
-    <p>${html
-      .escape(body)
-      .replace(/\r\n/g, '<br />')
-      .replace(/ #([0-9]+)/g, ' <a href="https://github.com/night/BetterTTV/issues/$1" target="_blank">#$1</a>')}</p>
+  <h2>Version ${html.escape(version)} (${dayjs(publishedAt).format('MMM D, YYYY')})</h2>
+  <p>${html
+    .escape(body)
+    .replace(/\r\n/g, '<br />')
+    .replace(/ #([0-9]+)/g, ' <a href="https://github.com/night/BetterTTV/issues/$1" target="_blank">#$1</a>')}</p>
 `;
 
 function getDataURLFromUpload(input, callback) {

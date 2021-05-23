@@ -30,16 +30,16 @@ const MAXIMUM_PIN_COUNT = 10;
 const PINNED_HIGHLIGHT_TIMEOUT = 60 * 1000;
 
 const pinnedHighlightTemplate = ({timestamp, from, message}) => `
-    <div id="${PINNED_HIGHLIGHT_ID}">
-        <span class="close">
-            <svg class="svg-close" height="8px" version="1.1" viewBox="0 0 16 16" width="8px" x="0px" y="0px">
-                <path clip-rule="evenodd" d="M13.657,3.757L9.414,8l4.243,4.242l-1.415,1.415L8,9.414l-4.243,4.243l-1.414-1.415L6.586,8L2.343,3.757l1.414-1.414L8,6.586l4.242-4.243L13.657,3.757z" fill-rule="evenodd"></path>
-            </svg>
-        </span>
-        <span class="time">${timestamp}</span>
-        <span class="display-name">${html.escape(from)}</span>
-        <span class="message">${html.escape(message)}</span>
-    </div>
+  <div id="${PINNED_HIGHLIGHT_ID}">
+    <span class="close">
+      <svg class="svg-close" height="8px" version="1.1" viewBox="0 0 16 16" width="8px" x="0px" y="0px">
+        <path clip-rule="evenodd" d="M13.657,3.757L9.414,8l4.243,4.242l-1.415,1.415L8,9.414l-4.243,4.243l-1.414-1.415L6.586,8L2.343,3.757l1.414-1.414L8,6.586l4.242-4.243L13.657,3.757z" fill-rule="evenodd"></path>
+      </svg>
+    </span>
+    <span class="time">${timestamp}</span>
+    <span class="display-name">${html.escape(from)}</span>
+    <span class="message">${html.escape(message)}</span>
+  </div>
 `;
 
 function defaultHighlightKeywords(value) {
