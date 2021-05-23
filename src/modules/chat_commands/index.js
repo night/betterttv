@@ -1,8 +1,11 @@
 import dayjs from 'dayjs';
+import relativeTime from 'dayjs/esm/plugin/relativeTime/index.js';
 import twitch from '../../utils/twitch.js';
 import twitchAPI from '../../utils/twitch-api.js';
 import chat from '../chat/index.js';
 import anonChat from '../anon_chat/index.js';
+
+dayjs.extend(relativeTime);
 
 const CommandHelp = {
   b: 'Usage: "/b <login> [reason]" - Shortcut for /ban',
@@ -227,7 +230,7 @@ function handleCommands(message) {
         .then(({created_at: createdAt}) => {
           const since = dayjs(createdAt);
           twitch.sendChatAdminMessage(
-            `You followed ${channel.displayName} ${since.fromNow()} (${since.format('LLL')})`
+            `You followed ${channel.displayName} ${since.fromNow()} (${since.toDate().toLocaleString()})`
           );
         })
         .catch(() => twitch.sendChatAdminMessage(`You do not follow ${channel.displayName}.`));
