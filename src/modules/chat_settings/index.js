@@ -14,26 +14,28 @@ const CHAT_SETTINGS_MOD_TOOLS_SELECTOR = 'div[data-test-selector="mod-tools"]';
 const BTTV_CHAT_SETTINGS_CLASS = 'bttv-chat-settings';
 
 const CHAT_SETTINGS_TEMPLATE = `
-    <div class="${BTTV_CHAT_SETTINGS_CLASS} tw-border-t tw-mg-t-2 tw-pd-t-2">
-        <div class="tw-mg-y-05 tw-pd-x-05"><p class="tw-c-text-alt-2 tw-font-size-6 tw-strong tw-upcase">BetterTTV</p></div>
-        <div class="tw-full-width tw-relative">
-            <button class="setBlacklistKeywords tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable--default tw-interactable--hover-enabled tw-interactable tw-interactive">Set Blacklist Keywords</button>
+    <div class="${BTTV_CHAT_SETTINGS_CLASS} bttv-chat-settings-container">
+        <div class="bttv-chat-settings-header-container">
+          <p class="bttv-chat-settings-header-text">BetterTTV</p>
         </div>
-        <div class="tw-full-width tw-relative">
-            <button class="setHighlightKeywords tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable--default tw-interactable--hover-enabled tw-interactable tw-interactive">Set Highlight Keywords</button>
+        <div class="bttv-chat-setting">
+            <button class="setBlacklistKeywords bttv-chat-setting-button tw-interactable--default tw-interactable--hover-enabled tw-interactable tw-interactive">Set Blacklist Keywords</button>
         </div>
-        <div class="tw-full-width tw-relative">
-            <button class="setFontFamily tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable--default tw-interactable--hover-enabled tw-interactable tw-interactive">Set Font</button>
+        <div class="bttv-chat-setting">
+            <button class="setHighlightKeywords bttv-chat-setting-button tw-interactable--default tw-interactable--hover-enabled tw-interactable tw-interactive">Set Highlight Keywords</button>
         </div>
-        <div class="tw-full-width tw-relative">
-            <button class="setFontSize tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable--default tw-interactable--hover-enabled tw-interactable tw-interactive">Set Font Size</button>
+        <div class="bttv-chat-setting">
+            <button class="setFontFamily bttv-chat-setting-button tw-interactable--default tw-interactable--hover-enabled tw-interactable tw-interactive">Set Font</button>
         </div>
-        <div class="tw-full-width tw-relative">
-            <button class="clearChat tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable--default tw-interactable--hover-enabled tw-interactable tw-interactive">Clear My Chat</button>
+        <div class="bttv-chat-setting">
+            <button class="setFontSize bttv-chat-setting-button tw-interactable--default tw-interactable--hover-enabled tw-interactable tw-interactive">Set Font Size</button>
         </div>
-        <div class="tw-full-width tw-relative">${
+        <div class="bttv-chat-setting">
+            <button class="clearChat bttv-chat-setting-button tw-interactable--default tw-interactable--hover-enabled tw-interactable tw-interactive">Clear My Chat</button>
+        </div>
+        <div class="bttv-chat-setting">${
           !$('.twilight-minimal-root').length
-            ? '<button class="openSettings tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable--default tw-interactable--hover-enabled tw-interactable tw-interactive">BetterTTV Settings</button>'
+            ? '<button class="openSettings bttv-chat-setting-button tw-interactable--default tw-interactable--hover-enabled tw-interactable tw-interactive">BetterTTV Settings</button>'
             : ''
         }</div>
     </div>

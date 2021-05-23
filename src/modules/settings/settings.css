@@ -240,9 +240,12 @@
     background-color: var(--color-background-interactable-hover);
   }
 
+  /* tw-align-items-center  tw-inline-flex */
   .bttvSettingsIconContainer {
     width: 18px;
     height: 18px;
+    align-items: center !important;
+    display: inline-flex !important;
   }
 
   .bttvSettingsIconDropDown {
@@ -255,4 +258,44 @@
 
 .dark-theme .bttvSettingsIconDropDown {
   filter: grayscale(100%) brightness(400%);
+}
+
+/* tw-full-width tw-relative */
+.bttv-settings-container {
+  width: 100% !important;
+  position: relative !important;
+
+  /* tw-block tw-border-radius-medium tw-full-width */
+  .bttv-settings-header {
+    display: block !important;
+    border-radius: 0.4rem !important;
+    border-radius: var(--border-radius-medium) !important;
+    width: 100% !important;
+
+    /* tw-align-items-center tw-flex tw-pd-05 tw-relative */
+    .bttv-settings-items {
+      align-items: center !important;
+      flex-grow: 0 !important;
+      padding: 0.5rem !important;
+      position: relative !important;
+
+      /* tw-align-items-center tw-flex tw-flex-shrink-0 tw-pd-r-05 */
+      .bttv-settings-items-div {
+        align-items: center !important;
+        flex-grow: 0 !important;
+        flex-shrink: 0 !important;
+        padding-right: 0.5rem !important;
+
+        /* tw-align-items-center tw-flex */
+        .bttv-settings-items-div-div {
+          align-items: center !important;
+          display: flex !important;
+        }
+      }
+    }
+  }
+}
+
+.bttv-settings-text {
+  flex-grow: 1 !important;
 }

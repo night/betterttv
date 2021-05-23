@@ -18,7 +18,8 @@ const Commands = {
 };
 
 const Icons = {
-  EYE: '<figure class="tw-svg"><svg class="tw-svg__asset tw-svg__asset--glyphviews tw-svg__asset--inherit" width="16px" height="16px" version="1.1" viewBox="0 0 16 16" x="0px" y="0px" fill="white"><path clip-rule="evenodd" d="M11,13H5L1,9V8V7l4-4h6l4,4v1v1L11,13z M8,5C6.344,5,5,6.343,5,8c0,1.656,1.344,3,3,3c1.657,0,3-1.344,3-3C11,6.343,9.657,5,8,5z M8,9C7.447,9,7,8.552,7,8s0.447-1,1-1s1,0.448,1,1S8.553,9,8,9z" fill-rule="evenodd"></path></svg></figure>',
+  EYE:
+    '<figure class="tw-svg"><svg class="tw-svg__asset tw-svg__asset--glyphviews tw-svg__asset--inherit" width="16px" height="16px" version="1.1" viewBox="0 0 16 16" x="0px" y="0px" fill="white"><path clip-rule="evenodd" d="M11,13H5L1,9V8V7l4-4h6l4,4v1v1L11,13z M8,5C6.344,5,5,6.343,5,8c0,1.656,1.344,3,3,3c1.657,0,3-1.344,3-3C11,6.343,9.657,5,8,5z M8,9C7.447,9,7,8.552,7,8s0.447-1,1-1s1,0.448,1,1S8.553,9,8,9z" fill-rule="evenodd"></path></svg></figure>',
   HEART:
     '<figure class="tw-svg"><svg class="tw-svg__asset tw-svg__asset--heart tw-svg__asset--inherit" width="16px" height="16px" version="1.1" viewBox="0 0 16 16" x="0px" y="0px" fill="white"><path clip-rule="evenodd" d="M8,14L1,7V4l2-2h3l2,2l2-2h3l2,2v3L8,14z" fill-rule="evenodd"></path></svg></figure>',
   PENCIL:
@@ -37,7 +38,7 @@ const moderatorActionButtonTemplate = (command, duration, tooltipText, buttonTex
         <div class="bttv-moderator-card-action" data-command="${html.escape(command)}" data-duration="${
   html.escape(duration) || ''
 }">
-            <button class="tw-button__text">
+            <button class="bttv-button-text">
                 ${html.escape(buttonText)}
             </button>
         </div>
@@ -57,15 +58,15 @@ const MODERATOR_ACTIONS_TEMPLATE = `
 `;
 
 const userStatsItemTemplate = (icon, value) => `
-    <div class="tw-align-items-center tw-inline-flex tw-stat tw-pd-l-1">
-        <div class="tw-align-items-center tw-inline-flex tw-stat__icon tw-mg-r-1">${icon}</div>
+    <div class="bttv-user-stats-item-container tw-stat">
+        <div class="bttv-user-stats-item-container-icon tw-stat__icon">${icon}</div>
         <div class="tw-stat__value">${html.escape(value)}</div>
     </div>
 `;
 
 const userStatsTemplate = (views, follows, createdAt) => `
     <div class="bttv-moderator-card-user-stats">
-        <div class="tw-flex tw-full-width">
+        <div class="bttv-moderator-card-user-stats-icons">
             ${userStatsItemTemplate(Icons.EYE, views.toLocaleString())}
             ${userStatsItemTemplate(Icons.HEART, follows.toLocaleString())}
             ${userStatsItemTemplate(Icons.BIRTHDAY_CAKE, dayjs(createdAt).format('MMM D, YYYY'))}
@@ -74,7 +75,7 @@ const userStatsTemplate = (views, follows, createdAt) => `
 `;
 
 const userMessagesTemplate = (messagesHTML) => `
-    <div class="bttv-moderator-card-messages tw-c-background-base">
+    <div class="bttv-moderator-card-messages">
         <div class="label">
             <span>Chat Messages</span>
             <div class="triangle"></div>
@@ -86,7 +87,7 @@ const userMessagesTemplate = (messagesHTML) => `
 `;
 
 const NICKNAME_CHANGE_BUTTON_TEMPLATE = `
-    <button class="tw-button-icon tw-button-icon--overlay bttv-moderator-card-nickname-change-button">
+    <button class="bttv-nickname-button bttv-moderator-card-nickname-change-button">
         <span class="tw-button-icon__icon">${Icons.PENCIL}</span>
     </button>
 `;

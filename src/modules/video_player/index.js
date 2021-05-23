@@ -11,18 +11,18 @@ const CANCEL_VOD_RECOMMENDATION_SELECTOR =
 const BTTV_PICTURE_IN_PICTURE_SELECTOR = '#bttv-picture-in-picture';
 
 const getPictureInPictureTemplate = (toggled) => `
-    <div id="bttv-picture-in-picture" class="tw-inline-flex tw-relative bttv-tooltip-wrapper">
-        <button class="tw-align-items-center tw-align-middle tw-border-bottom-left-radius-medium tw-border-bottom-right-radius-medium tw-border-top-left-radius-medium tw-border-top-right-radius-medium tw-button-icon tw-button-icon--overlay tw-core-button tw-core-button--overlay tw-inline-flex tw-interactive tw-justify-content-center tw-overflow-hidden tw-relative" aria-label="Picture in Picture">
-            <span class="tw-button-icon__icon">
-                <div style="width: 2rem; height: 2rem;">
-                    <div class="tw-align-items-center tw-full-width tw-icon tw-icon--fill tw-inline-flex">
-                        <div class="tw-aspect tw-aspect--align-top">
-                            <div class="tw-aspect__spacer"></div>
-                            <svg class="tw-icon__svg" width="100%" height="100%" version="1.1" transform="scale(1.3)" viewBox="0 0 128 128" x="0px" y="0px"><path d="M22 30c-1.9 1.9-2 3.3-2 34s.1 32.1 2 34c1.9 1.9 3.3 2 42 2s40.1-.1 42-2c1.9-1.9 2-3.3 2-34 0-31.6 0-31.9-2.2-34-2.1-1.9-3.3-2-42-2-38.5 0-39.9.1-41.8 2zm78 34v28H28V36h72v28z"/>${
-                              !toggled && '<path d="M60 72v12h32V60H60v12z"/>'
-                            }</svg>
-                        </div>
-                    </div>
+    <div id="bttv-picture-in-picture" class="bttv-picture-in-picture-container bttv-tooltip-wrapper">
+        <button class="bttv-picture-in-picture-button" aria-label="Picture in Picture">
+            <span class="bttv-picture-in-picture-button-icon">
+                  <div class="bttv-picture-in-picture-button-flex">
+                    <div style="width: 2rem; height: 2rem;">
+                      <div class="tw-aspect tw-aspect--align-top">
+                          <div class="tw-aspect__spacer"></div>
+                          <svg class="tw-icon__svg" width="100%" height="100%" version="1.1" transform="scale(1.3)" viewBox="0 0 128 128" x="0px" y="0px"><path d="M22 30c-1.9 1.9-2 3.3-2 34s.1 32.1 2 34c1.9 1.9 3.3 2 42 2s40.1-.1 42-2c1.9-1.9 2-3.3 2-34 0-31.6 0-31.9-2.2-34-2.1-1.9-3.3-2-42-2-38.5 0-39.9.1-41.8 2zm78 34v28H28V36h72v28z"/>${
+                            !toggled && '<path d="M60 72v12h32V60H60v12z"/>'
+                          }</svg>
+                      </div>
+                  </div>
                 </div>
             </span>
         </button>

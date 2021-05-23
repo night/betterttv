@@ -16,3 +16,44 @@
     background-color: var(--color-background-interactable-hover);
   }
 }
+
+/*tw-border-t tw-mg-t-2 tw-pd-t-2*/
+.bttv-chat-settings-container {
+  border-top: 1px solid hsla(0, 0%, 100%, 0.1) !important;
+  border-top: var(--border-width-default) solid var(--color-border-base) !important;
+  margin-top: 2rem !important;
+  padding-top: 2rem !important;
+
+  /* tw-mg-y-05 tw-pd-x-05 */
+  .bttv-chat-settings-header-container {
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+
+    /* tw-c-text-alt-2 tw-font-size-6 tw-strong tw-upcase */
+    .bttv-chat-settings-header-text {
+      color: #adadb8 !important;
+      color: var(--color-text-alt-2) !important;
+      font-size: 1.3rem !important;
+      font-size: var(--font-size-6) !important;
+      font-weight: 600 !important;
+      text-transform: uppercase !important;
+    }
+  }
+
+  /* tw-full-width tw-relative */
+  .bttv-chat-setting {
+    width: 100% !important;
+    position: relative !important;
+
+    /* tw-pd-05 tw-block tw-border-radius-medium tw-full-width */
+    .bttv-chat-setting-button {
+      padding: 0.5rem !important;
+      display: block !important;
+      border-radius: 0.4rem !important;
+      border-radius: var(--border-radius-medium) !important;
+      width: 100% !important;
+    }
+  }
+}

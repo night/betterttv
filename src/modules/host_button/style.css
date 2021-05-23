@@ -1,3 +1,44 @@
 #bttv-host-button {
   margin-right: 1rem !important;
 }
+
+/*tw-button bttv-host-button */
+.bttv-host-button {
+  border-radius: 0.4rem;
+  border-radius: var(--border-radius-medium);
+  background-clip: padding-box;
+  background-color: hsla(0, 0%, 100%, 0.15);
+  background-color: var(--color-background-button-secondary-default);
+  color: #efeff1;
+  color: var(--color-text-button-secondary);
+  height: 3rem;
+  height: var(--button-size-default);
+  position: relative;
+  justify-content: center;
+  font-size: 1.3rem;
+  font-size: var(--font-size-6);
+  line-height: 2rem;
+  vertical-align: middle;
+  user-select: none;
+}
+
+.bttv-host-button[data-focus-visible-added],
+.tw-root--hover .bttv-host-button:hover:not(.tw-button--disabled) {
+  background-color: hsla(0, 0%, 100%, 0.2);
+  background-color: var(--color-background-button-secondary-hover);
+}
+
+.bttv-host-button:active:not(.tw-button--disabled),
+.bttv-host-button:hover:active:not(.tw-button--disabled) {
+  background-color: hsla(0, 0%, 100%, 0.15);
+  background-color: var(--color-background-button-secondary-active);
+  box-shadow: 0 0 6px 0 #772ce8;
+  box-shadow: var(--shadow-button-active);
+}
+
+.bttv-host-button-text {
+  position: relative;
+  padding: 0.5rem 1rem;
+  padding: var(--button-padding-y) var(--button-padding-x);
+  text-align: center;
+}

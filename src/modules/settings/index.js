@@ -204,12 +204,12 @@ class SettingsModule {
     if ($('.bttvSettingsIconDropDown').length) return;
 
     $('a[data-a-target="settings-dropdown-link"]').parent('div.tw-full-width.tw-relative').after(`
-            <div class="tw-full-width tw-relative">
-                <a title="BetterTTV Settings" class="tw-block tw-border-radius-medium tw-full-width tw-interactable--default tw-interactable--hover-enabled tw-interactable tw-interactive bttvSettingsDropDown" href="#">
-                    <div class="tw-align-items-center tw-flex tw-pd-05 tw-relative">
-                        <div class="tw-align-items-center tw-flex tw-flex-shrink-0 tw-pd-r-05">
-                            <div class="tw-align-items-center tw-drop-down-menu-item-figure tw-flex">
-                                <div class="bttvSettingsIconContainer tw-align-items-center tw-icon tw-inline-flex">
+            <div class="bttv-settings-container">
+                <a title="BetterTTV Settings" class="bttv-settings-header tw-interactable--default tw-interactable--hover-enabled tw-interactable tw-interactive bttvSettingsDropDown" href="#">
+                    <div class="bttv-settings-items">
+                        <div class="bttv-settings-items-div">
+                            <div class="bttv-settings-items-div-div tw-drop-down-menu-item-figure">
+                                <div class="bttvSettingsIconContainer tw-icon">
                                     <div class="tw-aspect tw-aspect--align-top">
                                         <div class="tw-aspect__spacer"></div>
                                         <figure class="icon bttvSettingsIconDropDown"></figure>
@@ -217,7 +217,7 @@ class SettingsModule {
                                 </div>
                             </div>
                         </div>
-                        <div class="tw-flex-grow-1">BetterTTV Settings</div>
+                        <div class="bttv-settings-text">BetterTTV Settings</div>
                     </div>
                 </a>
             </div>

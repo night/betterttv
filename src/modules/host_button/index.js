@@ -15,8 +15,8 @@ let removeShareButtonListener;
 
 const buttonTemplate = `
     <div>
-        <button id="${HOST_BUTTON_ID}" class="tw-button tw-button--secondary">
-            <span class="tw-button__text">Host Channel</span>
+        <button id="${HOST_BUTTON_ID}" class="bttv-host-button">
+            <span class="bttv-host-button-text">Host Channel</span>
         </button>
     </div>
 `;

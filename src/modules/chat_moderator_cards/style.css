@@ -21,10 +21,14 @@
 .bttv-moderator-card-action {
   font-size: 1rem;
 
-  .tw-button__text {
+  .bttv-button-text {
     height: 28px;
     padding-right: 6px;
     padding-left: 6px;
+    position: relative;
+    padding: 0.5rem 1rem;
+    padding: var(--button-padding-y) var(--button-padding-x);
+    text-align: center;
   }
 }
 
@@ -32,6 +36,11 @@
   color: white;
   padding-bottom: 10px;
   background-color: rgba(0, 0, 0, 0.6);
+
+  .bttv-moderator-card-user-stats-icons {
+    display: flex !important;
+    width: 100% !important;
+  }
 }
 
 .bttv-moderator-card-nickname-change-button {
@@ -40,6 +49,8 @@
 
 .bttv-moderator-card-messages {
   border-top: 1px solid #222;
+  background-color: #18181b !important;
+  background-color: var(--color-background-base) !important;
 
   .message-list {
     overflow-y: auto;
@@ -99,4 +110,36 @@
 
 .dark-theme .bttv-moderator-card-messages .triangle {
   border-left-color: white;
+}
+
+.bttv-user-stats-item-container {
+  align-items: center !important;
+  display: inline-flex !important;
+  padding-left: 1rem !important;
+
+  .bttv-user-stats-item-container-icon {
+    align-items: center !important;
+    display: inline-flex !important;
+    margin-right: 1rem !important;
+  }
+}
+
+/* bttv-nickname-button bttv-nickname-button--overlay bttv-moderator-card-nickname-change-button */
+.bttv-nickname-button {
+  border-radius: 0.4rem;
+  border-radius: var(--border-radius-medium);
+  background-color: transparent;
+  background-color: var(--color-background-button-text-default);
+  color: #efeff1;
+  color: var(--color-fill-button-icon);
+  height: 3rem;
+  height: var(--button-size-default);
+  width: 3rem;
+  width: var(--button-size-default);
+  justify-content: center;
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  display: inline-flex;
+  align-items: center;
 }
