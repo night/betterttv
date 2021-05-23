@@ -17,7 +17,7 @@
   font-size: var(--font-size-6);
   font-weight: var(--font-weight-semibold);
   line-height: var(--line-height-heading);
-  text-align: left;
+  text-align: center;
   z-index: var(--z-index-balloon);
   pointer-events: none;
   user-select: none;
