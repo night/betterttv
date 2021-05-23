@@ -14,6 +14,42 @@
   }
 }
 
-#bttv-picture-in-picture svg {
-  fill: currentColor;
+#bttv-picture-in-picture {
+  display: inline-flex !important;
+
+  button {
+    position: relative;
+    vertical-align: middle;
+    overflow: hidden;
+    text-decoration: none;
+    white-space: nowrap;
+    font-weight: var(--font-weight-semibold);
+    border-radius: var(--border-radius-medium);
+    font-size: var(--button-text-default);
+    display: inline-flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    user-select: none;
+    height: var(--button-size-default);
+    width: var(--button-size-default);
+    border: var(--border-width-default) solid transparent;
+    background-color: var(--color-background-button-icon-overlay-default);
+    color: var(--color-text-button-overlay);
+
+    &:hover {
+      color: var(--color-text-button-overlay-hover);
+      background-color: var(--color-background-button-icon-overlay-hover);
+    }
+
+    div {
+      width: 2rem;
+      height: 2rem;
+    }
+  }
+
+  svg {
+    fill: currentColor;
+  }
 }
