@@ -34,6 +34,6 @@ jobs:
         if: ${{ startsWith(github.ref, 'refs/tags/') }}
         uses: ncipollo/release-action@v1
         with:
-          artifact: build/betterttv.tar.gz
+          artifacts: build/betterttv.tar.gz
           artifactContentType: application/gzip
           token: ${{ secrets.GITHUB_TOKEN }}
