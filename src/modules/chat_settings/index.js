@@ -14,28 +14,26 @@ const CHAT_SETTINGS_MOD_TOOLS_SELECTOR = 'div[data-test-selector="mod-tools"]';
 const BTTV_CHAT_SETTINGS_CLASS = 'bttv-chat-settings';
 
 const CHAT_SETTINGS_TEMPLATE = `
-    <div class="${BTTV_CHAT_SETTINGS_CLASS} tw-border-t tw-mg-t-2 tw-pd-t-2">
-        <div class="tw-mg-y-05 tw-pd-x-05"><p class="tw-c-text-alt-2 tw-font-size-6 tw-strong tw-upcase">BetterTTV</p></div>
-        <div class="tw-full-width tw-relative">
-            <button class="setBlacklistKeywords tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable--default tw-interactable--hover-enabled tw-interactable tw-interactive">Set Blacklist Keywords</button>
+    <div class="${BTTV_CHAT_SETTINGS_CLASS}">
+        <div class="settingHeader"><p>BetterTTV</p></div>
+        <div class="settingRow">
+          <button borderradius="border-radius-medium" class="settingButton setBlacklistKeywords">Set Blacklist Keywords</button>
         </div>
-        <div class="tw-full-width tw-relative">
-            <button class="setHighlightKeywords tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable--default tw-interactable--hover-enabled tw-interactable tw-interactive">Set Highlight Keywords</button>
+        <div class="settingRow">
+          <button borderradius="border-radius-medium" class="settingButton setHighlightKeywords">Set Highlight Keywords</button>
         </div>
-        <div class="tw-full-width tw-relative">
-            <button class="setFontFamily tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable--default tw-interactable--hover-enabled tw-interactable tw-interactive">Set Font</button>
+        <div class="settingRow">
+          <button borderradius="border-radius-medium" class="settingButton setFontFamily">Set Font</button>
         </div>
-        <div class="tw-full-width tw-relative">
-            <button class="setFontSize tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable--default tw-interactable--hover-enabled tw-interactable tw-interactive">Set Font Size</button>
+        <div class="settingRow">
+          <button borderradius="border-radius-medium" class="settingButton setFontSize">Set Font Size</button>
         </div>
-        <div class="tw-full-width tw-relative">
-            <button class="clearChat tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable--default tw-interactable--hover-enabled tw-interactable tw-interactive">Clear My Chat</button>
+        <div class="settingRow">
+          <button borderradius="border-radius-medium" class="settingButton clearChat">Clear My Chat</button>
         </div>
-        <div class="tw-full-width tw-relative">${
-          !$('.twilight-minimal-root').length
-            ? '<button class="openSettings tw-pd-05 tw-block tw-border-radius-medium tw-full-width tw-interactable--default tw-interactable--hover-enabled tw-interactable tw-interactive">BetterTTV Settings</button>'
-            : ''
-        }</div>
+        <div class="settingRow">
+          <button borderradius="border-radius-medium" class="settingButton openSettings">BetterTTV Settings</button>
+        </div>
     </div>
 `;
 

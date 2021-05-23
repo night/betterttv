@@ -7,12 +7,41 @@
   }
 }
 
-.bttv-chat-settings button {
-  color: inherit;
+.bttv-chat-settings {
+  border-top: var(--border-width-default) solid var(--color-border-base) !important;
+  margin-top: 2rem !important;
+  padding-top: 2rem !important;
 
-  &:hover {
+  .settingHeader {
+    margin-top: .5rem !important;
+    margin-bottom: .5rem !important;
+    padding-left: .5rem !important;
+    padding-right: .5rem !important;
+
+    p {
+      font-size: var(--font-size-6) !important;
+      color: var(--color-text-alt-2) !important;
+      text-transform: uppercase !important;
+      font-weight: 600 !important;
+    }
+  }
+
+  .settingRow {
+    position: relative !important;
+    width: 100% !important;
+  }
+
+  .settingButton {
     color: inherit;
-    text-decoration: none;
-    background-color: var(--color-background-interactable-hover);
+    border-radius: var(--border-radius-medium);
+    display: block;
+    width: 100%;
+    padding: .5rem !important;
+
+    &:hover {
+      color: inherit;
+      text-decoration: none;
+      background-color: var(--color-background-interactable-hover);
+    }
   }
 }
