@@ -5,7 +5,7 @@ import twitch from '../../utils/twitch.js';
 import twitchAPI from '../../utils/twitch-api.js';
 import domObserver from '../../observers/dom.js';
 
-const SHARE_BUTTON_SELECTOR = 'button[data-a-target="share-button"]';
+const FOLLOW_BUTTON_CONTAINER_SELECTOR = '.follow-btn__notification-toggle-container';
 const HOST_BUTTON_ID = 'bttv-host-button';
 
 let $hostButton;
@@ -14,11 +14,11 @@ let currentChannelId;
 let removeShareButtonListener;
 
 const buttonTemplate = `
-    <div>
-        <button id="${HOST_BUTTON_ID}" class="tw-button tw-button--secondary">
-            <span class="tw-button__text">Host Channel</span>
-        </button>
-    </div>
+  <div class="bttvHostButtonWrapper">
+    <button id="${HOST_BUTTON_ID}">
+      <span class="buttonText">Host Channel</span>
+    </button>
+  </div>
 `;
 
 class HostButtonModule {
@@ -50,9 +50,9 @@ class HostButtonModule {
       $hostButton.find('button').click(() => this.toggleHost());
     }
     removeShareButtonListener = domObserver.on(
-      `div[data-test-selector="toggle-balloon-wrapper__mouse-enter-detector"] ${SHARE_BUTTON_SELECTOR}, .channel-info-content ${SHARE_BUTTON_SELECTOR}`,
+      `.channel-info-content ${FOLLOW_BUTTON_CONTAINER_SELECTOR}, ${FOLLOW_BUTTON_CONTAINER_SELECTOR}`,
       (node, isConnected) => {
-        if (!isConnected || node.getAttribute('data-a-target') !== 'share-button') return;
+        if (!isConnected) return;
         this.embedHostButton();
       }
     );
@@ -61,9 +61,13 @@ class HostButtonModule {
 
   embedHostButton() {
     if ($(`#${HOST_BUTTON_ID}`).length) return;
-    const $shareButton = $(SHARE_BUTTON_SELECTOR).closest('[data-toggle-balloon-id]');
-    if (!$shareButton.length) return;
-    $hostButton.insertBefore($shareButton);
+    const $followButtonContainer = $(FOLLOW_BUTTON_CONTAINER_SELECTOR);
+    if (!$followButtonContainer.length) return;
+    if ($followButtonContainer.hasClass('follow-btn__notification-toggle-container--visible')) {
+      $hostButton.insertAfter($followButtonContainer);
+    } else {
+      $hostButton.insertBefore($followButtonContainer);
+    }
   }
 
   toggleHost() {
