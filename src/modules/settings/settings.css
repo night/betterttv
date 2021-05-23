@@ -303,6 +303,8 @@
   }
 }
 
-.dark-theme .bttvSettingsIconDropDown {
-  filter: grayscale(100%) brightness(400%);
+.tw-root--theme-dark {
+  .bttvSettingsIconDropDown {
+    filter: grayscale(100%) brightness(400%);
+  }
 }

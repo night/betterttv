@@ -118,6 +118,8 @@
   }
 }
 
-.dark-theme .bttv-moderator-card-messages .triangle {
-  border-left-color: white;
+.tw-root--theme-dark {
+  .bttv-moderator-card-messages .triangle {
+    border-left-color: white;
+  }
 }
