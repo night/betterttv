@@ -31,7 +31,6 @@ class GlobalCSSModule {
     settings.on('changed.darkenedMode', (value) => this.setTwitchTheme(value));
 
     this.loadTwitchThemeObserver();
-    this.dismissPinnedCheers();
   }
 
   setTwitchTheme(value) {
@@ -83,14 +82,6 @@ class GlobalCSSModule {
       position: 'relative',
     });
     $('.top-nav__home-link').append($watermark);
-  }
-
-  dismissPinnedCheers() {
-    $('body').on('click', '.pinned-cheer', (e) => {
-      if (e.target !== $('.pinned-cheer .pinned-cheer__bounding-box')[0]) return;
-      if (e.target.offsetWidth - e.offsetX > 15 || e.offsetY > 15) return;
-      $('.pinned-cheer').hide();
-    });
   }
 }
 
