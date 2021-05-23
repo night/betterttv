@@ -5,7 +5,7 @@ import settings from '../../settings.js';
 
 const CHAT_LINE_SELECTOR = '.chat-line__message';
 const CHAT_LINE_LINK_SELECTOR = 'a.link-fragment';
-const CHAT_LINE_CLIP_CARD_SELECTOR = '.chat-card__link';
+const CHAT_LINE_CLIP_CARD_SELECTOR = '.chat-card';
 const CHAT_LINE_DELETED_CLASS = 'bttv-chat-line-deleted';
 
 function findAllUserMessages(name) {
