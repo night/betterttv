@@ -10,7 +10,7 @@ jobs:
     steps:
       - name: Extract tag name
         if: ${{ startsWith(github.ref, 'refs/tags/') }}
-        run: echo "TRAVIS_TAG=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
+        run: echo "GITHUB_TAG=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
       - uses: actions/checkout@v2
       - name: Use Node.js 15.x
         uses: actions/setup-node@v1

@@ -174,7 +174,7 @@ export default async (env, argv) => {
       new TerserPlugin({
         extractComments: false,
       }),
-      ...(process.env.TRAVIS_TAG
+      ...(process.env.TRAVIS_TAG || process.env.GITHUB_TAG
         ? [
             new SentryWebpackPlugin({
               authToken: process.env.SENTRY_AUTH_TOKEN,
