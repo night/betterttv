@@ -203,25 +203,23 @@ class SettingsModule {
   renderSettingsMenuOption() {
     if ($('.bttvSettingsIconDropDown').length) return;
 
-    $('a[data-a-target="settings-dropdown-link"]').parent('div.tw-full-width.tw-relative').after(`
-            <div class="tw-full-width tw-relative">
-                <a title="BetterTTV Settings" class="tw-block tw-border-radius-medium tw-full-width tw-interactable--default tw-interactable--hover-enabled tw-interactable tw-interactive bttvSettingsDropDown" href="#">
-                    <div class="tw-align-items-center tw-flex tw-pd-05 tw-relative">
-                        <div class="tw-align-items-center tw-flex tw-flex-shrink-0 tw-pd-r-05">
-                            <div class="tw-align-items-center tw-drop-down-menu-item-figure tw-flex">
-                                <div class="bttvSettingsIconContainer tw-align-items-center tw-icon tw-inline-flex">
-                                    <div class="tw-aspect tw-aspect--align-top">
-                                        <div class="tw-aspect__spacer"></div>
-                                        <figure class="icon bttvSettingsIconDropDown"></figure>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="tw-flex-grow-1">BetterTTV Settings</div>
-                    </div>
-                </a>
+    $('a[data-a-target="settings-dropdown-link"]').parent('div').after(`
+      <div class="bttvSettingsDropDownWrapper">
+        <a borderradius="border-radius-medium" class="bttvSettingsDropDown" data-a-target="betterttv-settings-dropdown-link" data-test-selector="user-menu-dropdown__betterttv-settings-link" href="#">
+          <div class="dropdownContainer">
+            <div class="dropdownIcon">
+              <div class="dropdownIconContainer">
+                <div class="dropdownIconAspect">
+                  <div class="dropdownIconSpacer"></div>
+                  <figure class="bttvSettingsIconDropDown"></figure>
+                </div>
+              </div>
             </div>
-        `);
+            <div class="dropdownLabel">BetterTTV Settings</div>
+          </div>
+        </a>
+      </div>
+    `);
 
     $('.bttvSettingsIconDropDown').closest('a').click(this.openSettings);
   }
