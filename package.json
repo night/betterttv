@@ -20,7 +20,7 @@
     "@babel/plugin-transform-runtime": "^7.14.3",
     "@babel/preset-env": "^7.14.2",
     "@babel/runtime": "^7.14.0",
-    "@sentry/browser": "^6.4.0",
+    "@sentry/browser": "^6.4.1",
     "@sentry/integrations": "^6.4.0",
     "@sentry/webpack-plugin": "^1.15.1",
     "autoprefixer": "^10.2.5",
