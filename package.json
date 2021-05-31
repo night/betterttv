@@ -55,7 +55,7 @@
     "remove-files-webpack-plugin": "^1.4.4",
     "save-file": "^2.3.1",
     "terser-webpack-plugin": "^5.1.2",
-    "twemoji": "^13.0.2",
+    "twemoji": "^13.1.0",
     "twitch-chat-emotes": "github:night/twitch-chat-emotes#74e0d51bea55fe89085540b890a8f3e3c57d708f",
     "virtual-module-webpack-plugin": "^0.4.1",
     "webpack": "^5.37.1",
