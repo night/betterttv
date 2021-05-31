@@ -28,7 +28,7 @@
     "clean-webpack-plugin": "^4.0.0-alpha.0",
     "cookies-js": "^1.2.3",
     "copy-webpack-plugin": "^9.0.0",
-    "css-loader": "^5.2.5",
+    "css-loader": "^5.2.6",
     "css-minimizer-webpack-plugin": "^3.0.0",
     "dayjs": "^1.10.4",
     "emoji-toolkit": "^6.5.1",
