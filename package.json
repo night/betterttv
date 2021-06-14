@@ -19,7 +19,7 @@
     "@babel/eslint-parser": "^7.14.4",
     "@babel/plugin-transform-runtime": "^7.14.3",
     "@babel/preset-env": "^7.14.4",
-    "@babel/runtime": "^7.14.0",
+    "@babel/runtime": "^7.14.5",
     "@sentry/browser": "^6.5.1",
     "@sentry/integrations": "^6.5.1",
     "@sentry/webpack-plugin": "^1.15.1",
