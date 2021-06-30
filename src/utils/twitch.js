@@ -372,6 +372,23 @@ export default {
     return msgObject;
   },
 
+  getConversationThreadId(element) {
+    let conversationThreadId;
+    try {
+      const node = searchReactParents(
+        getReactInstance(element),
+        (n) =>
+          (n.stateNode && n.stateNode.props && n.stateNode.props.threadID) ||
+          (n.memoizedProps && n.memoizedProps.whisperThreadID)
+      );
+      conversationThreadId =
+        (node.stateNode && node.stateNode.props && node.stateNode.props.threadID) ||
+        (node.memoizedProps && node.memoizedProps.whisperThreadID);
+    } catch (_) {}
+
+    return conversationThreadId || null;
+  },
+
   getChatModeratorCardUser(element) {
     let user;
     try {

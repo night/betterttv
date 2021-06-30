@@ -13,18 +13,14 @@ const provider = {
 
 let joinedChannel;
 
-function getThreadId($el) {
-  return $el.attr('data-a-target').split('-').pop();
-}
-
 class PersonalEmotes extends AbstractEmotes {
   constructor() {
     super();
 
     socketClient.on('lookup_user', (s) => this.updatePersonalEmotes(s));
     watcher.on('load.chat', () => this.joinChannel());
-    watcher.on('conversation.new', ($el) => this.joinConversation($el));
-    watcher.on('conversation.message', ($el, msgObject) => this.broadcastMeConversation($el, msgObject));
+    watcher.on('conversation.new', (threadId) => this.joinConversation(threadId));
+    watcher.on('conversation.message', (threadId, $el, msgObject) => this.broadcastMeConversation(threadId, msgObject));
   }
 
   get provider() {
@@ -63,22 +59,18 @@ class PersonalEmotes extends AbstractEmotes {
     socketClient.joinChannel(name);
   }
 
-  joinConversation($el) {
+  joinConversation(threadId) {
+    if (!threadId) return;
+
     const user = twitch.getCurrentUser();
     if (!user) return;
-
-    const threadId = getThreadId($el);
-    if (!threadId) return;
 
     socketClient.joinChannel(threadId);
   }
 
-  broadcastMeConversation($el, msgObject) {
+  broadcastMeConversation(threadId, msgObject) {
     const user = twitch.getCurrentUser();
-    if (!user || !msgObject.from || msgObject.from.id !== user.id) return;
-
-    const threadId = getThreadId($el.closest('.whispers-thread'));
-    if (!threadId) return;
+    if (!user || !msgObject.from || msgObject.from.id !== user.id || !threadId) return;
 
     socketClient.broadcastMe(threadId);
   }

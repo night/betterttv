@@ -25,7 +25,7 @@ class ConversationsModule {
     });
     settings.on('changed.disableWhispers', () => this.toggleHide());
     watcher.on('load', () => this.toggleHide());
-    watcher.on('conversation.message', ($el, message) => this.parseMessage($el, message));
+    watcher.on('conversation.message', (threadId, $el, message) => this.parseMessage($el, message));
   }
 
   toggleHide() {
