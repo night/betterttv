@@ -56,7 +56,7 @@
     "save-file": "^2.3.1",
     "terser-webpack-plugin": "^5.1.4",
     "twemoji": "^13.1.0",
-    "twitch-chat-emotes": "github:night/twitch-chat-emotes#74e0d51bea55fe89085540b890a8f3e3c57d708f",
+    "twitch-chat-emotes": "github:night/twitch-chat-emotes#2c4cfa5fe0c59bfd1d22f2582c5fe44272d1a466",
     "virtual-module-webpack-plugin": "^0.4.1",
     "webpack": "^5.40.0",
     "webpack-cli": "^4.7.2",
