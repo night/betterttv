@@ -5,7 +5,7 @@ import twitch from '../../utils/twitch.js';
 import twitchAPI from '../../utils/twitch-api.js';
 import domObserver from '../../observers/dom.js';
 
-const FOLLOW_BUTTON_CONTAINER_SELECTOR = '.follow-btn__notification-toggle-container';
+const FOLLOW_BUTTON_CONTAINER_SELECTOR = 'button[data-test-selector="follow-button"],button[data-test-selector="unfollow-button"]';
 const HOST_BUTTON_ID = 'bttv-host-button';
 
 let $hostButton;
@@ -61,13 +61,9 @@ class HostButtonModule {
 
   embedHostButton() {
     if ($(`#${HOST_BUTTON_ID}`).length) return;
-    const $followButtonContainer = $(FOLLOW_BUTTON_CONTAINER_SELECTOR);
+    const $followButtonContainer = $(FOLLOW_BUTTON_CONTAINER_SELECTOR).closest('div[data-target="channel-header-right"]');
     if (!$followButtonContainer.length) return;
-    if ($followButtonContainer.hasClass('follow-btn__notification-toggle-container--visible')) {
-      $hostButton.insertAfter($followButtonContainer);
-    } else {
-      $hostButton.insertBefore($followButtonContainer);
-    }
+    $hostButton.appendTo($followButtonContainer);
   }
 
   toggleHost() {
