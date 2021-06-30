@@ -78,7 +78,7 @@
     z-index: 3 !important;
 
     &.right-column--theatre {
-      z-index: 3000 !important;
+      z-index: 3001 !important;
       right: unset !important;
     }
   }
