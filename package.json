@@ -58,7 +58,7 @@
     "twemoji": "^13.1.0",
     "twitch-chat-emotes": "github:night/twitch-chat-emotes#2c4cfa5fe0c59bfd1d22f2582c5fe44272d1a466",
     "virtual-module-webpack-plugin": "^0.4.1",
-    "webpack": "^5.42.1",
+    "webpack": "^5.44.0",
     "webpack-cli": "^4.7.2",
     "webpack-dev-server": "^3.11.2",
     "webpack-virtual-modules": "^0.4.3"
