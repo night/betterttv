@@ -22,7 +22,7 @@
     "@babel/runtime": "^7.14.6",
     "@sentry/browser": "^6.8.0",
     "@sentry/integrations": "^6.9.0",
-    "@sentry/webpack-plugin": "^1.15.1",
+    "@sentry/webpack-plugin": "^1.16.0",
     "autoprefixer": "^10.3.0",
     "babel-loader": "^8.2.2",
     "clean-webpack-plugin": "^4.0.0-alpha.0",
