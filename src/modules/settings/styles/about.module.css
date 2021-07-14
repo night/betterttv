@@ -1,0 +1,23 @@
+.socials {
+  column-count: 3;
+
+  a {
+    cursor: pointer;
+  }
+}
+
+.buttons {
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  .button {
+    width: 100%;
+  }
+}
+
+.largeBlurb {
+  font-size: 22px;
+  margin-right: 56px;
+}

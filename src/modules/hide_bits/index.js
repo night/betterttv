@@ -1,20 +1,16 @@
 import $ from 'jquery';
+import {ChatFlags, SettingIds} from '../../constants.js';
 import settings from '../../settings.js';
+import {hasFlag} from '../../utils/flags.js';
 
 class HideBitsModule {
   constructor() {
-    settings.add({
-      id: 'hideBits',
-      name: 'Hide Bits',
-      defaultValue: false,
-      description: "Disables bits in chat (we can't block 'em on stream, sry)",
-    });
-    settings.on('changed.hideBits', () => this.load());
+    settings.on(`changed.${SettingIds.CHAT}`, () => this.load());
     this.load();
   }
 
   load() {
-    $('body').toggleClass('bttv-hide-bits', settings.get('hideBits'));
+    $('body').toggleClass('bttv-hide-bits', !hasFlag(settings.get(SettingIds.CHAT), ChatFlags.BITS));
   }
 }
 

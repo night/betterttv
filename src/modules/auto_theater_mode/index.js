@@ -2,20 +2,15 @@ import $ from 'jquery';
 import settings from '../../settings.js';
 import watcher from '../../watcher.js';
 import twitch from '../../utils/twitch.js';
+import {SettingIds} from '../../constants.js';
 
 class AutoTheaterModeModule {
   constructor() {
-    settings.add({
-      id: 'autoTheatreMode',
-      name: 'Automatic Theatre Mode',
-      defaultValue: false,
-      description: 'Enables theatre mode by default',
-    });
     watcher.on('load.player', () => this.load());
   }
 
   load(tries = 1) {
-    if (settings.get('autoTheatreMode') === false || tries > 3) return;
+    if (settings.get(SettingIds.AUTO_THEATRE_MODE) === false || tries > 3) return;
 
     const player = twitch.getCurrentPlayer();
     if (!player) return;

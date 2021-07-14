@@ -6,6 +6,8 @@ import emojis from './emojis.js';
 import frankerfacezGlobalEmotes from '../frankerfacez/global-emotes.js';
 import frankerfacezChannelEmotes from '../frankerfacez/channel-emotes.js';
 import settings from '../../settings.js';
+import {EmoteTypeFlags, SettingIds} from '../../constants.js';
+import {hasFlag} from '../../utils/flags.js';
 
 class EmotesModule {
   constructor() {
@@ -17,20 +19,6 @@ class EmotesModule {
       frankerfacezChannelEmotes,
       emojis,
     ];
-
-    settings.add({
-      id: 'bttvEmotes',
-      name: 'BetterTTV Emotes',
-      defaultValue: true,
-      description: 'Adds extra cool emotes for you to use',
-    });
-
-    settings.add({
-      id: 'bttvGIFEmotes',
-      name: 'BetterTTV GIF Emotes',
-      defaultValue: true,
-      description: 'Adds animated emotes (not everyone likes GIFs, but some people do)',
-    });
   }
 
   getEmotes(providerFilter = []) {
@@ -41,8 +29,9 @@ class EmotesModule {
       emotes = emotes.concat(
         provider.getEmotes(currentUser).filter((emote) => {
           if (!emote.isUsable(null, currentUser)) return false;
-          if (emote.imageType === 'gif' && settings.get('bttvGIFEmotes') === false) return false;
-          if (emote.provider.id.startsWith('bttv') && settings.get('bttvEmotes') === false) return false;
+          const flags = settings.get(SettingIds.EMOTES);
+          if (emote.imageType === 'gif' && !hasFlag(flags, EmoteTypeFlags.BTTV_GIF_EMOTES)) return false;
+          if (emote.provider.id.startsWith('bttv') && !hasFlag(flags, EmoteTypeFlags.BTTV_EMOTES)) return false;
           return true;
         })
       );
@@ -58,8 +47,10 @@ class EmotesModule {
       const provider = this.emoteProviders[i];
       const emote = provider.getEligibleEmote(code, user);
       if (!emote || !emote.isUsable(channel, user)) continue;
-      if (emote.imageType === 'gif' && settings.get('bttvGIFEmotes') === false) continue;
-      if (emote.provider.id.startsWith('bttv') && settings.get('bttvEmotes') === false) continue;
+      if (emote.imageType === 'gif' && !hasFlag(settings.get(SettingIds.EMOTES), EmoteTypeFlags.BTTV_GIF_EMOTES))
+        continue;
+      if (emote.provider.id.startsWith('bttv') && !hasFlag(settings.get(SettingIds.EMOTES), EmoteTypeFlags.BTTV_EMOTES))
+        continue;
       return emote;
     }
 

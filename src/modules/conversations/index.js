@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import {SettingIds} from '../../constants.js';
 import settings from '../../settings.js';
 import watcher from '../../watcher.js';
 import chat from '../chat/index.js';
@@ -17,19 +18,13 @@ function scrollOnEmoteLoad($el) {
 
 class ConversationsModule {
   constructor() {
-    settings.add({
-      id: 'disableWhispers',
-      name: 'Hide Whispers',
-      defaultValue: false,
-      description: 'Disables Twitch whispers and hides any whispers you receive',
-    });
-    settings.on('changed.disableWhispers', () => this.toggleHide());
+    settings.on(`changed.${SettingIds.WHISPERS}`, () => this.toggleHide());
     watcher.on('load', () => this.toggleHide());
     watcher.on('conversation.message', (threadId, $el, message) => this.parseMessage($el, message));
   }
 
   toggleHide() {
-    $('body').toggleClass('bttv-hide-conversations', settings.get('disableWhispers'));
+    $('body').toggleClass('bttv-hide-conversations', !settings.get(SettingIds.WHISPERS));
   }
 
   parseMessage($element, message) {

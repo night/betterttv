@@ -1,0 +1,70 @@
+.description {
+  color: #cccccc;
+}
+
+.header {
+  position: absolute;
+  width: calc(100% - 56px - 5px);
+  margin-left: 56px;
+  top: 0;
+  z-index: 10;
+  overflow: hidden;
+
+  .flexHeader {
+    display: flex;
+    column-gap: 10px;
+    padding: 10px;
+    background-color: #292d33;
+  }
+
+  .closeButton {
+    padding: 10px;
+    float: right;
+  }
+}
+
+.setting {
+  display: flex;
+  flex-direction: column;
+  row-gap: 16px;
+}
+
+.content {
+  overflow: hidden;
+  max-height: 500px;
+  margin-left: 56px;
+  overflow: auto;
+}
+
+.center {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.divider {
+  padding-top: 50px;
+}
+
+.content::-webkit-scrollbar {
+  border-radius: 6px;
+  width: 5px;
+}
+
+.content::-webkit-scrollbar-thumb {
+  background: #191c23;
+  border-radius: 5px;
+}
+
+.content::-webkit-scrollbar-thumb:hover {
+  background: #191c23;
+}
+
+.toggle {
+  display: flex;
+  vertical-align: middle;
+  align-items: center;
+  justify-content: space-between;
+}

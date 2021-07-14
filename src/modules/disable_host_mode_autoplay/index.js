@@ -2,6 +2,8 @@ import settings from '../../settings.js';
 import watcher from '../../watcher.js';
 import twitch from '../../utils/twitch.js';
 import domObserver from '../../observers/dom.js';
+import {AutoPlayFlags, SettingIds} from '../../constants.js';
+import {hasFlag} from '../../utils/flags.js';
 
 let removeHostingIndicatorListener;
 
@@ -23,18 +25,12 @@ function pauseVideo() {
 
 class DisableHostModeAutoplayModule {
   constructor() {
-    settings.add({
-      id: 'disableHostMode',
-      name: 'Disable Host Mode Autoplay',
-      defaultValue: false,
-      description: 'Disables autoplay during channel hosting',
-    });
-    settings.on('changed.disableHostMode', () => this.load());
+    settings.on(`changed.${SettingIds.AUTO_PLAY}`, () => this.load());
     watcher.on('load', () => this.load());
   }
 
   load() {
-    if (settings.get('disableHostMode')) {
+    if (!hasFlag(settings.get(SettingIds.AUTO_PLAY), AutoPlayFlags.HOST_MODE)) {
       if (removeHostingIndicatorListener) return;
 
       removeHostingIndicatorListener = domObserver.on(

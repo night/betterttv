@@ -1,20 +1,16 @@
 import $ from 'jquery';
+import {SettingIds, SidebarFlags} from '../../constants.js';
 import settings from '../../settings.js';
+import {hasFlag} from '../../utils/flags.js';
 
 class HideFriendsModule {
   constructor() {
-    settings.add({
-      id: 'hideFriends',
-      name: 'Hide Friends',
-      defaultValue: false,
-      description: 'Hides the friends list in the left sidebar',
-    });
-    settings.on('changed.hideFriends', () => this.toggleFriendsList());
+    settings.on(`changed.${SettingIds.SIDEBAR}`, () => this.toggleFriendsList());
     this.toggleFriendsList();
   }
 
   toggleFriendsList() {
-    $('body').toggleClass('bttv-hide-friends', settings.get('hideFriends'));
+    $('body').toggleClass('bttv-hide-friends', !hasFlag(settings.get(SettingIds.SIDEBAR), SidebarFlags.FRIENDS));
   }
 }
 

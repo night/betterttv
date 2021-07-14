@@ -1,0 +1,32 @@
+.logo {
+  width: 56px;
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+}
+
+.bottom {
+  margin-top: 144px;
+}
+
+.sidenav {
+  position: fixed;
+  height: 500px;
+  margin: 0;
+  padding: 0;
+  border-radius: 5px 0px 0px 4px;
+  transition: width 0.35s ease-in-out;
+  overflow: hidden;
+  z-index: 6;
+}
+
+.nav ul {
+  display: flex;
+  flex-direction: column;
+}
+
+.nav {
+  border-radius: 5px;
+}

@@ -1,21 +1,15 @@
 import settings from '../../settings.js';
 import watcher from '../../watcher.js';
 import twitch from '../../utils/twitch.js';
+import {SettingIds} from '../../constants.js';
 
 const forcedURL = window.location.search.includes('bttv_anon_chat=true');
 
 class AnonChatModule {
   constructor() {
-    settings.add({
-      id: 'anonChat',
-      name: 'Anon Chat',
-      defaultValue: false,
-      description: 'Joins chat anonymously without appearing in the userlist',
-    });
-
     this.enabled = false;
     watcher.on('load.chat', () => this.load());
-    settings.on('changed.anonChat', () => this.load());
+    settings.on(`changed.${SettingIds.ANON_CHAT}`, () => this.load());
   }
 
   changeUser(username, message) {
@@ -49,7 +43,7 @@ class AnonChatModule {
 
   load() {
     this.enabled = false;
-    if (forcedURL || settings.get('anonChat')) {
+    if (forcedURL || settings.get(SettingIds.ANON_CHAT)) {
       this.part();
     } else {
       this.join();

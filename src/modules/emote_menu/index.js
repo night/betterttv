@@ -3,22 +3,17 @@ import debug from '../../utils/debug.js';
 import settings from '../../settings.js';
 import watcher from '../../watcher.js';
 import emotes from '../emotes/index.js';
+import {SettingIds} from '../../constants.js';
 
 class EmoteMenuModule {
   constructor() {
-    settings.add({
-      id: 'clickTwitchEmotes',
-      name: 'BetterTTV Emote Menu',
-      defaultValue: false,
-      description: 'Enables a more advanced emote menu for Twitch (made by Ryan Chatham)',
-    });
-    settings.on('changed.clickTwitchEmotes', () => this.load());
+    settings.on(`changed.${SettingIds.CLICK_TWITCH_EMOTES}`, () => this.load());
     watcher.on('load.chat', () => this.load());
   }
 
   async load() {
     if (window.emoteMenu) {
-      if (settings.get('clickTwitchEmotes') === true) {
+      if (settings.get(SettingIds.CLICK_TWITCH_EMOTES) === true) {
         $('#emote-menu-button').show();
       } else {
         $('#emote-menu-button').hide();
@@ -27,7 +22,7 @@ class EmoteMenuModule {
     }
 
     // Inject the emote menu if option is enabled.
-    if (settings.get('clickTwitchEmotes') === false) return;
+    if (settings.get(SettingIds.CLICK_TWITCH_EMOTES) === false) return;
 
     debug.log('Injecting Twitch Chat Emotes Script');
     await import('twitch-chat-emotes/script.min.js');

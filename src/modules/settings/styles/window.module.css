@@ -1,0 +1,14 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 56px;
+  padding-right: 27px;
+}
+
+.closeButton {
+  position: absolute;
+  padding: 10px;
+  right: 0px;
+  z-index: 5;
+}

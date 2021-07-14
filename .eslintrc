@@ -9,13 +9,18 @@
   "parserOptions": {
     "sourceType": "module",
     "requireConfigFile": false,
-    "allowImportExportEverywhere": true
+    "allowImportExportEverywhere": true,
+    "babelOptions": {
+      "presets": ["@babel/preset-react"]
+    }
   },
   "extends": ["airbnb", "prettier"],
   "plugins": ["prettier"],
   "rules": {
     "prettier/prettier": ["error"],
     "import/extensions": ["error", "ignorePackages"],
+    "react/prop-types": "off",
+    "react/jsx-props-no-spreading": "off",
     "no-param-reassign": "off",
     "no-underscore-dangle": "off",
     "no-continue": "off",
@@ -23,6 +28,7 @@
     "class-methods-use-this": "off",
     "no-plusplus": "off",
     "no-empty": "off",
-    "max-classes-per-file": "off"
+    "max-classes-per-file": "off",
+    "no-bitwise": "off"
   }
 }

@@ -1,22 +1,16 @@
 import $ from 'jquery';
+import {SettingIds} from '../../constants.js';
 import settings from '../../settings.js';
 import watcher from '../../watcher.js';
 
 class HidePrimePromotionsModule {
   constructor() {
-    settings.add({
-      id: 'hidePrimePromotions',
-      name: 'Hide Prime Promotions',
-      defaultValue: false,
-      description: 'Hides Prime Gaming loot notices, like the ones in the sidebar',
-    });
-
-    settings.on('changed.hidePrimePromotions', this.togglePrimePromotions);
+    settings.on(`changed.${SettingIds.PRIME_PROMOTIONS}`, this.togglePrimePromotions);
     watcher.on('load', this.togglePrimePromotions);
   }
 
   togglePrimePromotions() {
-    $('body').toggleClass('bttv-hide-prime-promotions', settings.get('hidePrimePromotions'));
+    $('body').toggleClass('bttv-hide-prime-promotions', !settings.get(SettingIds.PRIME_PROMOTIONS));
   }
 }
 

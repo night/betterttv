@@ -4,6 +4,7 @@ import watcher from '../../watcher.js';
 import twitch from '../../utils/twitch.js';
 import twitchAPI from '../../utils/twitch-api.js';
 import domObserver from '../../observers/dom.js';
+import {SettingIds} from '../../constants.js';
 
 const FOLLOW_BUTTON_CONTAINER_SELECTOR =
   'button[data-test-selector="follow-button"],button[data-test-selector="unfollow-button"]';
@@ -24,19 +25,13 @@ const buttonTemplate = `
 
 class HostButtonModule {
   constructor() {
-    settings.add({
-      id: 'hostButton',
-      name: 'Host Button',
-      defaultValue: false,
-      description: 'Adds a Host/Unhost button below the video player',
-    });
-    settings.on('changed.hostButton', (value) => (value === true ? this.load() : this.unload()));
+    settings.on(`changed.${SettingIds.HOST_BUTTON}`, (value) => (value === true ? this.load() : this.unload()));
     watcher.on('load.chat', () => this.load());
     watcher.on('load.channel', () => this.load());
   }
 
   load() {
-    if (settings.get('hostButton') === false) return;
+    if (settings.get(SettingIds.HOST_BUTTON) === false) return;
 
     const currentUser = twitch.getCurrentUser();
     if (!currentUser) return;
