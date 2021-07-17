@@ -72,6 +72,7 @@ export default async (env, argv) => {
       contentBase: path.resolve('./build'),
       compress: true,
       port: PORT,
+      writeToDisk: true,
       after: (app) => {
         app.get('*', (req, res) => {
           got
@@ -82,8 +83,10 @@ export default async (env, argv) => {
       },
     },
     entry: {
-      betterttv: './src/index.js',
-      css: glob.sync('./src/modules/**/*.css'),
+      betterttv: [
+        ...glob.sync('./src/modules/**/*.@(css|less)').filter((filename) => !filename.endsWith('.module.css')),
+        './src/index.js',
+      ],
     },
     output: {
       filename: '[name].js',
@@ -97,7 +100,18 @@ export default async (env, argv) => {
           loader: path.resolve('./dev/webpack-import-glob.cjs'),
         },
         {
-          test: /\.css$/,
+          test: /\.svg$/,
+          use: [
+            {
+              loader: 'svg-sprite-loader',
+              options: {
+                symbolId: 'icon-[name]',
+              },
+            },
+          ],
+        },
+        {
+          test: /(\.less|\.css)$/,
           use: [
             MiniCssExtractPlugin.loader,
             'css-loader',
@@ -106,7 +120,9 @@ export default async (env, argv) => {
               options: {
                 postcssOptions: {
                   plugins: [
-                    postcssUrl({url: (asset) => `${CDN_ENDPOINT}${asset.url}`}),
+                    postcssUrl({
+                      url: (asset) => (asset.url.startsWith(CDN_ENDPOINT) ? asset.url : `${CDN_ENDPOINT}${asset.url}`),
+                    }),
                     'postcss-hexrgba',
                     'autoprefixer',
                     'precss',
@@ -114,16 +130,32 @@ export default async (env, argv) => {
                 },
               },
             },
+            {
+              loader: 'less-loader',
+              options: {
+                lessOptions: {
+                  javascriptEnabled: true,
+                  modifyVars: {'@reset-import': false},
+                },
+              },
+            },
+            {
+              loader: 'string-replace-loader',
+              options: {
+                search: 'FONT-PATH-PLACEHOLDER',
+                replace: `${CDN_ENDPOINT}assets/fonts`,
+              },
+            },
           ],
         },
         {
-          test: /\.m?js$/,
+          test: /\.m?(js|jsx)$/,
           exclude: /(node_modules)/,
           use: {
             loader: 'babel-loader',
             options: {
-              presets: ['@babel/preset-env'],
-              plugins: ['@babel/plugin-transform-runtime'],
+              presets: ['@babel/react', '@babel/preset-env'],
+              plugins: ['wildcard', '@babel/plugin-transform-runtime'],
             },
           },
         },
@@ -143,6 +175,9 @@ export default async (env, argv) => {
         banner: (await fs.readFile('LICENSE')).toString(),
         entryOnly: true,
       }),
+      new webpack.DefinePlugin({
+        __RSUITE_CLASSNAME_PREFIX__: JSON.stringify('bttv-rs-'),
+      }),
       new EnvironmentPlugin({
         DEV_CDN_PORT: PORT,
         DEV_CDN_ENDPOINT: DEV_ENDPOINT,
@@ -157,7 +192,10 @@ export default async (env, argv) => {
         maxChunks: 1,
       }),
       new CopyPlugin({
-        patterns: [{from: './src/assets', to: './assets'}],
+        patterns: [
+          {from: 'src/assets', to: './assets'},
+          {from: './node_modules/rsuite/src/styles/fonts', to: './assets/fonts'},
+        ],
       }),
       new CleanWebpackPlugin(),
       new RemovePlugin({
@@ -166,7 +204,7 @@ export default async (env, argv) => {
         },
       }),
       new MiniCssExtractPlugin({
-        filename: 'betterttv.css',
+        filename: '[name].css',
       }),
       new VirtualModulesPlugin({
         'src/modules/emotes/emojis-by-slug.json': JSON.stringify(jsonTransform(emotes)),

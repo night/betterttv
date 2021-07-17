@@ -1,0 +1,59 @@
+.input .bttv-rs-input {
+  margin-left: 6px;
+  position: absolute;
+  left: 0;
+  top: 5px;
+  width: 100%;
+  margin-right: 6px;
+}
+
+.action {
+  float: right;
+  margin-right: 10px;
+}
+
+.actionCell {
+  padding: 6px 0;
+}
+
+.dropdown {
+  padding: 5px;
+}
+
+.text {
+  margin-top: 12px;
+  margin-left: 18px;
+  font-size: 14px;
+}
+
+.tableContentEditing {
+  margin-left: 6px;
+  position: absolute;
+  left: 0px;
+  width: 95%;
+  top: 7px;
+  height: 30px;
+}
+
+.tableContentHovering {
+  margin-left: 6px;
+  position: absolute;
+  left: 0px;
+  width: 95%;
+  top: 7px;
+  height: 30px;
+  opacity: 0.5;
+}
+
+.button {
+  width: 25%;
+  min-width: 150px;
+}
+
+.table {
+  border-radius: 5px;
+}
+
+.header div {
+  margin-left: 4px;
+}

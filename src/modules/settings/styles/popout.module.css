@@ -1,0 +1,47 @@
+.default {
+  position: relative;
+  background-color: #292d33;
+  height: 100vh;
+  z-index: 10;
+
+  .header {
+    display: flex;
+    background-color: #1a1d24;
+    align-items: center;
+    padding: 10px;
+    column-gap: 10px;
+    filter: drop-shadow(0 0.2rem 0.25rem rgba(0, 0, 0, 0.2));
+
+    .search {
+      flex-grow: 4;
+    }
+
+    .logo {
+      width: 56px;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 5px;
+      -webkit-transform: scaleX(-1);
+      transform: scaleX(-1);
+    }
+  }
+
+  .settings {
+    height: calc(100vh - 76px);
+    overflow: auto;
+  }
+
+  .settings::-webkit-scrollbar {
+    border-radius: 6px;
+    width: 5px;
+  }
+
+  .settings::-webkit-scrollbar-thumb {
+    background: #191c23;
+    border-radius: 5px;
+  }
+
+  .settings::-webkit-scrollbar-thumb:hover {
+    background: #191c23;
+  }
+}

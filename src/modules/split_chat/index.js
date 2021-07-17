@@ -1,19 +1,11 @@
+import {SettingIds} from '../../constants.js';
 import settings from '../../settings.js';
 
 let alternateBackground = false;
 
 class SplitChatModule {
-  constructor() {
-    settings.add({
-      id: 'splitChat',
-      name: 'Split Chat',
-      defaultValue: false,
-      description: 'Alternates backgrounds between messages in chat to improve readability',
-    });
-  }
-
   render($el) {
-    if (settings.get('splitChat') === false) return;
+    if (settings.get(SettingIds.SPLIT_CHAT) === false) return;
 
     if (alternateBackground) {
       $el.toggleClass('bttv-split-chat-alt-bg');

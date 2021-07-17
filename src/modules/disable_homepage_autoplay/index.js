@@ -1,20 +1,16 @@
 import settings from '../../settings.js';
 import watcher from '../../watcher.js';
 import twitch from '../../utils/twitch.js';
+import {AutoPlayFlags, SettingIds} from '../../constants.js';
+import {hasFlag} from '../../utils/flags.js';
 
 class DisableHomepageAutoplayModule {
   constructor() {
-    settings.add({
-      id: 'disableFPVideo',
-      name: 'Disable Homepage Autoplay',
-      defaultValue: false,
-      description: 'Disables autoplaying streams on the homepage',
-    });
     watcher.on('load.homepage', () => this.load());
   }
 
   load() {
-    if (settings.get('disableFPVideo') === false) return;
+    if (hasFlag(settings.get(SettingIds.AUTO_PLAY), AutoPlayFlags.FP_VIDEO)) return;
     const currentPlayer = twitch.getCurrentPlayer();
     if (!currentPlayer) return;
 

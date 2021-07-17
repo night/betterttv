@@ -1,20 +1,16 @@
 import $ from 'jquery';
+import {ChatFlags, SettingIds} from '../../constants.js';
 import settings from '../../settings.js';
+import {hasFlag} from '../../utils/flags.js';
 
 class HideChatClipsModule {
   constructor() {
-    settings.add({
-      id: 'hideChatClips',
-      name: 'Hide Chat Clips',
-      defaultValue: false,
-      description: 'Hides clips embeds in chat',
-    });
-    settings.on('changed.hideChatClips', () => this.load());
+    settings.on(`changed.${SettingIds.CHAT}`, () => this.load());
     this.load();
   }
 
   load() {
-    $('body').toggleClass('bttv-hide-chat-clips', settings.get('hideChatClips'));
+    $('body').toggleClass('bttv-hide-chat-clips', !hasFlag(settings.get(SettingIds.CHAT), ChatFlags.CHAT_CLIPS));
   }
 }
 

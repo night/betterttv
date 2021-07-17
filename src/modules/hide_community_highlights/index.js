@@ -2,24 +2,19 @@ import $ from 'jquery';
 import settings from '../../settings.js';
 import watcher from '../../watcher.js';
 import domObserver from '../../observers/dom.js';
+import {ChatFlags, SettingIds} from '../../constants.js';
+import {hasFlag} from '../../utils/flags.js';
 
 let removeCommunityHighlightsListener;
 
 class HideCommunityHighlightsModule {
   constructor() {
-    settings.add({
-      id: 'hideCommunityHighlights',
-      name: 'Hide Community Highlights',
-      defaultValue: false,
-      description: 'Hides the alerts above chat for hype trains, community chest, etc.',
-    });
-
-    settings.on('changed.hideCommunityHighlights', this.toggleCommunityHighlights);
+    settings.on(`changed.${SettingIds.CHAT}`, this.toggleCommunityHighlights);
     watcher.on('load', this.toggleCommunityHighlights);
   }
 
   toggleCommunityHighlights() {
-    if (settings.get('hideCommunityHighlights')) {
+    if (!hasFlag(settings.get(SettingIds.CHAT), ChatFlags.COMMUNITY_HIGHLIGHTS)) {
       if (removeCommunityHighlightsListener) return;
 
       removeCommunityHighlightsListener = domObserver.on('.community-highlight-stack__card', (node, isConnected) => {

@@ -1,20 +1,16 @@
 import $ from 'jquery';
+import {ChatFlags, SettingIds} from '../../constants.js';
 import settings from '../../settings.js';
+import {hasFlag} from '../../utils/flags.js';
 
 class ChatRepliesModule {
   constructor() {
-    settings.add({
-      id: 'hideChatReplies',
-      name: 'Hide Chat Replies',
-      defaultValue: false,
-      description: 'Hides the click to reply button in chat',
-    });
-    settings.on('changed.hideChatReplies', this.toggleChatReplies);
+    settings.on(`changed.${SettingIds.CHAT}`, this.toggleChatReplies);
     this.toggleChatReplies();
   }
 
   toggleChatReplies() {
-    $('body').toggleClass('bttv-hide-chat-replies', settings.get('hideChatReplies'));
+    $('body').toggleClass('bttv-hide-chat-replies', !hasFlag(settings.get(SettingIds.CHAT), ChatFlags.CHAT_REPLIES));
   }
 }
 

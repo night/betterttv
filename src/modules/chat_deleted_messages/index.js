@@ -2,6 +2,7 @@ import $ from 'jquery';
 import watcher from '../../watcher.js';
 import twitch from '../../utils/twitch.js';
 import settings from '../../settings.js';
+import {DeletedMessageTypes, SettingIds} from '../../constants.js';
 
 const CHAT_LINE_SELECTOR = '.chat-line__message';
 const CHAT_LINE_LINK_SELECTOR = 'a.link-fragment';
@@ -26,19 +27,6 @@ function findAllUserMessages(name) {
 
 class ChatDeletedMessagesModule {
   constructor() {
-    settings.add({
-      id: 'showDeletedMessages',
-      name: 'Show Deleted Messages',
-      defaultValue: false,
-      description: "Changes <message deleted> back to users' original messages",
-    });
-    settings.add({
-      id: 'hideDeletedMessages',
-      name: 'Remove Deleted Messages',
-      defaultValue: false,
-      description: 'Completely removes timed out messages from view',
-    });
-
     watcher.on('chat.message.handler', (message) => {
       this.handleMessage(message);
     });
@@ -67,8 +55,9 @@ class ChatDeletedMessagesModule {
   }
 
   handleDelete(name) {
-    const showDeletedMessages = settings.get('showDeletedMessages');
-    const hideDeletedMessages = settings.get('hideDeletedMessages');
+    const deletedMessages = settings.get(SettingIds.DELETED_MESSAGES);
+    const showDeletedMessages = deletedMessages === DeletedMessageTypes.SHOW;
+    const hideDeletedMessages = deletedMessages === DeletedMessageTypes.HIDE;
     if (!hideDeletedMessages && !showDeletedMessages) {
       return false;
     }

@@ -4,6 +4,8 @@ import watcher from '../../watcher.js';
 import settings from '../../settings.js';
 import domWatcher from '../../observers/dom.js';
 import twitch from '../../utils/twitch.js';
+import {AutoPlayFlags, SettingIds} from '../../constants.js';
+import {hasFlag} from '../../utils/flags.js';
 
 const VIDEO_PLAYER_SELECTOR = '.video-player__container';
 const CANCEL_VOD_RECOMMENDATION_SELECTOR =
@@ -26,7 +28,7 @@ const getPictureInPictureTemplate = (toggled) => `
 
 let removeRecommendationWatcher;
 function watchPlayerRecommendationVodsAutoplay() {
-  if (settings.get('disableVodRecommendationAutoplay') !== true) {
+  if (hasFlag(settings.get(SettingIds.AUTO_PLAY), AutoPlayFlags.VOD_RECOMMENDATION_AUTOPLAY)) {
     if (removeRecommendationWatcher) removeRecommendationWatcher();
     return;
   }
@@ -54,7 +56,7 @@ function handlePlayerClick() {
 }
 
 function handlePlayerScroll(event) {
-  if (!settings.get('scrollVolumeControl')) return;
+  if (!settings.get(SettingIds.SCROLL_VOLUME_CONTROL)) return;
 
   const delta = event.originalEvent.deltaY > 0 ? -0.025 : 0.025;
 
@@ -73,7 +75,7 @@ function togglePlayerCursor(hide) {
 
 let previousVolume = null;
 document.addEventListener('visibilitychange', () => {
-  if (!settings.get('muteInvisiblePlayer')) return;
+  if (!settings.get(SettingIds.MUTE_INVISIBLE_PLAYER)) return;
   // set raw video element volume to not edit persisted player volume state
   const video = $(VIDEO_PLAYER_SELECTOR).find('video')[0];
   if (!video) return;
@@ -113,39 +115,9 @@ class VideoPlayerModule {
       this.loadVolumeScrollControl();
       this.loadPictureInPicture();
     });
-    settings.add({
-      id: 'hidePlayerExtensions',
-      name: 'Hide Twitch Extensions',
-      defaultValue: false,
-      description: "Hides the interactive overlays on top of Twitch's video player",
-    });
-    settings.add({
-      id: 'clickToPlay',
-      name: 'Click to Play/Pause Stream',
-      defaultValue: false,
-      description: 'Enables clicking on the Twitch player to pause/resume playback',
-    });
-    settings.add({
-      id: 'disableVodRecommendationAutoplay',
-      name: 'Disable VoD Recommendation Autoplay',
-      defaultValue: false,
-      description: 'Disables autoplay of recommended videos on VoDs',
-    });
-    settings.add({
-      id: 'muteInvisiblePlayer',
-      name: 'Mute Invisible Streams',
-      defaultValue: false,
-      description: 'Mutes/unmutes streams automatically when you change your browser window/tab',
-    });
-    settings.add({
-      id: 'scrollVolumeControl',
-      name: 'Scroll Volume Control',
-      defaultValue: false,
-      description: 'Enables scrolling the twitch player to change the player volume',
-    });
-    settings.on('changed.hidePlayerExtensions', () => this.toggleHidePlayerExtensions());
-    settings.on('changed.disableVodRecommendationAutoplay', () => watchPlayerRecommendationVodsAutoplay());
-    settings.on('changed.clickToPlay', () => this.clickToPause());
+    settings.on(`changed.${SettingIds.PLAYER_EXTENSIONS}`, () => this.toggleHidePlayerExtensions());
+    settings.on(`changed.${SettingIds.VOD_RECOMMENDATION_AUTOPLAY}`, () => watchPlayerRecommendationVodsAutoplay());
+    settings.on(`changed.${SettingIds.CLICK_TO_PLAY}`, () => this.clickToPause());
     this.toggleHidePlayerExtensions();
     this.loadHidePlayerCursorFullscreen();
   }
@@ -158,7 +130,7 @@ class VideoPlayerModule {
   }
 
   toggleHidePlayerExtensions() {
-    $('body').toggleClass('bttv-hide-player-extensions', settings.get('hidePlayerExtensions'));
+    $('body').toggleClass('bttv-hide-player-extensions', !settings.get(SettingIds.PLAYER_EXTENSIONS));
   }
 
   clickToPause() {
@@ -168,7 +140,7 @@ class VideoPlayerModule {
       handlePlayerClick
     );
 
-    if (settings.get('clickToPlay') === true) {
+    if (settings.get(SettingIds.CLICK_TO_PLAY) === true) {
       $(VIDEO_PLAYER_SELECTOR).on(
         'click',
         '.video-player__overlay div[data-a-target="player-overlay-click-handler"]',

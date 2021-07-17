@@ -4,7 +4,7 @@ import extension from '../../utils/extension.js';
 import settings from '../../settings.js';
 import watcher from '../../watcher.js';
 import twitch from '../../utils/twitch.js';
-import settingsModule from '../settings/index.js';
+import {SettingIds} from '../../constants.js';
 
 const TWITCH_THEME_CHANGED_DISPATCH_TYPE = 'core.ui.THEME_CHANGED';
 const TWITCH_THEME_STORAGE_KEY = 'twilight.theme';
@@ -21,14 +21,7 @@ class GlobalCSSModule {
 
     watcher.on('load', () => this.branding());
     this.branding();
-
-    settings.add({
-      id: 'darkenedMode',
-      name: 'Dark Theme',
-      defaultValue: false,
-      description: "Enables Twitch's dark theme",
-    });
-    settings.on('changed.darkenedMode', (value) => this.setTwitchTheme(value));
+    settings.on(`changed.${SettingIds.DARKENED_MODE}`, (value) => this.setTwitchTheme(value));
 
     this.loadTwitchThemeObserver();
   }
@@ -52,9 +45,8 @@ class GlobalCSSModule {
 
     connectStore.subscribe(() => {
       const isDarkMode = connectStore.getState().ui.theme === TwitchThemes.DARK;
-      if (settings.get('darkenedMode') !== isDarkMode) {
+      if (settings.get(SettingIds.DARKENED_MODE) !== isDarkMode) {
         settings.set('darkenedMode', isDarkMode, false, true);
-        settingsModule.updateSettingToggle('darkenedMode', isDarkMode);
       }
     });
   }

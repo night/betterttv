@@ -2,15 +2,12 @@ import $ from 'jquery';
 import dayjs from 'dayjs';
 import watcher from '../../watcher.js';
 import settings from '../../settings.js';
-import storage from '../../storage.js';
 import html from '../../utils/html.js';
 import twitch from '../../utils/twitch.js';
 import cdn from '../../utils/cdn.js';
 import {escapeRegExp} from '../../utils/regex.js';
-
-const PHRASE_REGEX = /\{.+?\}/g;
-const USER_REGEX = /\(.+?\)/g;
-const REPEATING_SPACE_REGEX = /\s\s+/g;
+import {computeKeywords} from '../../utils/keywords.js';
+import {SettingIds} from '../../constants.js';
 
 const BLACKLIST_KEYWORD_PROMPT = `Type some blacklist keywords. Messages containing keywords will be filtered from your chat.
 
@@ -42,63 +39,20 @@ const pinnedHighlightTemplate = ({timestamp, from, message}) => `
   </div>
 `;
 
-function defaultHighlightKeywords(value) {
-  if (typeof value === 'string') return value;
-  const currentUser = twitch.getCurrentUser();
-  return currentUser ? currentUser.name : '';
-}
-
 function changeKeywords(promptBody, storageID) {
-  let storageKeywords = storage.get(storageID);
-  if (storageID === 'highlightKeywords') {
-    storageKeywords = defaultHighlightKeywords(storageKeywords);
-  }
-  /* eslint-disable no-alert */
-  let keywords = prompt(promptBody, storageKeywords || '');
-  if (keywords !== null) {
-    keywords = keywords.trim().replace(REPEATING_SPACE_REGEX, ' ');
-    storage.set(storageID, keywords);
-  }
-}
-
-function computeKeywords(keywords) {
-  const computedKeywords = [];
-  const computedUsers = [];
-
-  const phrases = keywords.match(PHRASE_REGEX);
-  if (phrases) {
-    phrases.forEach((phrase) => {
-      keywords = keywords.replace(phrase, '');
-      computedKeywords.push(phrase.slice(1, -1).trim());
-    });
-  }
-
-  const users = keywords.match(USER_REGEX);
-  if (users) {
-    users.forEach((user) => {
-      keywords = keywords.replace(user, '');
-      computedUsers.push(user.slice(1, -1).trim());
-    });
-  }
-
-  keywords.split(' ').forEach((keyword) => {
-    if (!keyword) return;
-    computedKeywords.push(keyword);
-  });
-
-  return {
-    computedKeywords,
-    computedUsers,
-  };
+  // eslint-disable-next-line no-alert
+  alert(
+    `${
+      storageID === 'highlightKeywords' ? 'Highlight keywords' : 'Blacklist keywords'
+    } has been moved to the settings menu, please navigate there to update your keywords.`
+  );
 }
 
 let loadTime = 0;
 let blacklistKeywords = [];
 let blacklistUsers = [];
 function computeBlacklistKeywords() {
-  let keywords = storage.get('blacklistKeywords');
-  if (typeof keywords !== 'string') keywords = '';
-
+  const keywords = settings.get(SettingIds.BLACKLIST_KEYWORDS);
   const {computedKeywords, computedUsers} = computeKeywords(keywords);
   blacklistKeywords = computedKeywords;
   blacklistUsers = computedUsers;
@@ -107,7 +61,7 @@ function computeBlacklistKeywords() {
 let highlightKeywords = [];
 let highlightUsers = [];
 function computeHighlightKeywords() {
-  const keywords = defaultHighlightKeywords(storage.get('highlightKeywords'));
+  const keywords = settings.get(SettingIds.HIGHLIGHT_KEYWORDS);
   const {computedKeywords, computedUsers} = computeKeywords(keywords);
   highlightKeywords = computedKeywords;
   highlightUsers = computedUsers;
@@ -179,32 +133,11 @@ class ChatHighlightBlacklistKeywordsModule {
     watcher.on('load.vod', () => this.loadChat());
     watcher.on('chat.message', ($message, messageObj) => this.onMessage($message, messageObj));
     watcher.on('vod.message', ($message) => this.onVODMessage($message));
-    storage.on('changed.blacklistKeywords', computeBlacklistKeywords);
-    storage.on('changed.highlightKeywords', computeHighlightKeywords);
-
-    settings.add({
-      id: 'pinnedHighlights',
-      name: 'Pin Highlighted Messages',
-      defaultValue: false,
-      description: 'Pins your last ten highlighted messages above chat',
-    });
-    settings.on('changed.pinnedHighlights', (value) =>
+    settings.on(`changed.${SettingIds.BLACKLIST_KEYWORDS}`, computeBlacklistKeywords);
+    settings.on(`changed.${SettingIds.HIGHLIGHT_KEYWORDS}`, computeHighlightKeywords);
+    settings.on(`changed.${SettingIds.PINNED_HIGHLIGHTS}`, (value) =>
       value === true ? this.loadPinnedHighlights() : this.unloadPinnedHighlights()
     );
-
-    settings.add({
-      id: 'timeoutHighlights',
-      name: 'Timeout Pinned Highlights',
-      defaultValue: false,
-      description: 'Hides pinned highlights after 1 minute',
-    });
-
-    settings.add({
-      id: 'highlightFeedback',
-      name: 'Highlight/Whisper Notification',
-      description: 'Plays a sound for messages directed at you',
-      defaultValue: false,
-    });
 
     this.sound = null;
     this.handleHighlightSound = this.handleHighlightSound.bind(this);
@@ -249,7 +182,7 @@ class ChatHighlightBlacklistKeywordsModule {
 
       if (isReply($message)) return;
 
-      if (settings.get('highlightFeedback')) {
+      if (settings.get(SettingIds.HIGHLIGHT_FEEDBACK)) {
         this.handleHighlightSound();
       }
       if (timestamp > loadTime) this.pinHighlight({from, message, date});
@@ -284,7 +217,7 @@ class ChatHighlightBlacklistKeywordsModule {
   }
 
   loadPinnedHighlights() {
-    if (settings.get('pinnedHighlights') === false || $(`#${PINNED_CONTAINER_ID}`).length) return;
+    if (settings.get(SettingIds.PINNED_HIGHLIGHTS) === false || $(`#${PINNED_CONTAINER_ID}`).length) return;
 
     $pinnedHighlightsContainer = $(`<div id="${PINNED_CONTAINER_ID}" />`).appendTo($(CHAT_LIST_SELECTOR));
   }
@@ -296,7 +229,7 @@ class ChatHighlightBlacklistKeywordsModule {
   }
 
   pinHighlight({from, message, date}) {
-    if (settings.get('pinnedHighlights') === false || !$pinnedHighlightsContainer) return;
+    if (settings.get(SettingIds.PINNED_HIGHLIGHTS) === false || !$pinnedHighlightsContainer) return;
 
     if ($pinnedHighlightsContainer.children().length + 1 > MAXIMUM_PIN_COUNT) {
       $pinnedHighlightsContainer.children().first().remove();
@@ -310,7 +243,7 @@ class ChatHighlightBlacklistKeywordsModule {
 
     $pinnedHighlightsContainer.append($newHighlight);
 
-    if (settings.get('timeoutHighlights') === true) {
+    if (settings.get(SettingIds.TIMEOUT_HIGHLIGHTS) === true) {
       setTimeout(() => $newHighlight.remove(), PINNED_HIGHLIGHT_TIMEOUT);
     }
   }

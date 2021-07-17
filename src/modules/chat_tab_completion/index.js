@@ -4,6 +4,7 @@ import watcher from '../../watcher.js';
 import twitch from '../../utils/twitch.js';
 import keyCodes from '../../utils/keycodes.js';
 import emotes from '../emotes/index.js';
+import {SettingIds} from '../../constants.js';
 
 const CHAT_INPUT_SELECTOR = '.chat-input textarea';
 const AUTOCOMPLETE_SUGGESTIONS_SELECTOR = 'div[data-a-target="autocomplete-balloon"]';
@@ -14,13 +15,6 @@ function normalizedStartsWith(word, prefix) {
 
 class ChatTabcompletionModule {
   constructor() {
-    settings.add({
-      id: 'tabCompletionEmotePriority',
-      name: 'Tab Completion Emote Priority',
-      description: 'Prioritizes emotes over usernames when using tab completion',
-      default: false,
-    });
-
     watcher.on('chat.message', ($el, messageObj) => this.storeUser(messageObj));
     watcher.on('load.chat', () => this.resetChannelData());
     this.load();
@@ -83,7 +77,7 @@ class ChatTabcompletionModule {
         this.suggestions = this.getSuggestions(this.textSplit[1], includeUsers, includeEmotes);
       }
 
-      if (settings.get('tabCompletionTooltip') && this.textSplit[0].slice(-1) === '@') {
+      if (settings.get(SettingIds.TAB_COMPLETION_TOOLTIP) && this.textSplit[0].slice(-1) === '@') {
         return;
       }
 
@@ -172,7 +166,7 @@ class ChatTabcompletionModule {
       userList.sort();
     }
 
-    if (settings.get('tabCompletionEmotePriority') === true) {
+    if (settings.get(SettingIds.TAB_COMPLETION_EMOTE_PRIORITY) === true) {
       return [...emoteList, ...userList];
     }
     return [...userList, ...emoteList];

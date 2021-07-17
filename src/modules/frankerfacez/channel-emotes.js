@@ -4,6 +4,8 @@ import twitch from '../../utils/twitch.js';
 import settings from '../../settings.js';
 import AbstractEmotes from '../emotes/abstract-emotes.js';
 import Emote from '../emotes/emote.js';
+import {EmoteTypeFlags, SettingIds} from '../../constants.js';
+import {hasFlag} from '../../utils/flags.js';
 
 const provider = {
   id: 'ffz-channel',
@@ -24,7 +26,7 @@ class FrankerFaceZChannelEmotes extends AbstractEmotes {
   updateChannelEmotes() {
     this.emotes.clear();
 
-    if (!settings.get('ffzEmotes')) return;
+    if (!hasFlag(settings.get(SettingIds.EMOTES), EmoteTypeFlags.FFZ_EMOTES)) return;
 
     const currentChannel = twitch.getCurrentChannel();
     if (!currentChannel) return;

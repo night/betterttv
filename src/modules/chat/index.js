@@ -10,6 +10,8 @@ import emotes from '../emotes/index.js';
 import nicknames from '../chat_nicknames/index.js';
 import legacySubscribers from '../legacy_subscribers/index.js';
 import splitChat from '../split_chat/index.js';
+import {SettingIds, UsernameFlags} from '../../constants.js';
+import {hasFlag} from '../../utils/flags.js';
 
 const EMOTE_STRIP_SYMBOLS_REGEX = /(^[~!@#$%^&*()]+|[~!@#$%^&*()]+$)/g;
 const MENTION_REGEX = /^@([a-zA-Z\d_]+)$/;
@@ -94,11 +96,11 @@ class ChatModule {
   }
 
   calculateColor(color) {
-    if (!settings.get('readableUsernameColors')) {
+    if (!hasFlag(settings.get(SettingIds.USERNAMES), UsernameFlags.READABLE)) {
       return color;
     }
 
-    return colors.calculateColor(color, settings.get('darkenedMode'));
+    return colors.calculateColor(color, settings.get(SettingIds.DARKENED_MODE));
   }
 
   customBadges($element, user) {
@@ -205,7 +207,7 @@ class ChatModule {
     const $from = $element.find('.chat-author__display-name,.chat-author__intl-login');
     $from.css('color', color);
 
-    if (legacySubscribers.hasGlow(user.name) && settings.get('darkenedMode') === true) {
+    if (legacySubscribers.hasGlow(user.name) && settings.get(SettingIds.DARKENED_MODE) === true) {
       const rgbColor = colors.getRgb(color);
       $from.css('text-shadow', `0 0 20px rgba(${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b}, 0.8)`);
     }

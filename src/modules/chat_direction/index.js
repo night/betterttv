@@ -2,6 +2,7 @@ import $ from 'jquery';
 import settings from '../../settings.js';
 import watcher from '../../watcher.js';
 import twitch from '../../utils/twitch.js';
+import {SettingIds} from '../../constants.js';
 
 const CHAT_LIST_SCROLL_CONTENT =
   '.chat-list .simplebar-scroll-content,.chat-list--default .simplebar-scroll-content,.chat-list--other .simplebar-scroll-content';
@@ -21,20 +22,14 @@ function handleScrollEvent(event) {
 
 class ChatDirection {
   constructor() {
-    settings.add({
-      id: 'reverseChatDirection',
-      name: 'Reverse Chat Messages Direction',
-      defaultValue: false,
-      description: 'Moves new chat messages to the top of chat',
-    });
-    settings.on('changed.reverseChatDirection', () => this.toggleChatDirection());
+    settings.on(`changed.${SettingIds.REVERSE_CHAT_DIRECTION}`, () => this.toggleChatDirection());
     watcher.on('load.chat', () => this.toggleChatAutoScrolling());
     this.toggleChatDirection();
   }
 
   toggleChatAutoScrolling() {
     const scroller = twitch.getChatScroller();
-    const reverseChatDirection = settings.get('reverseChatDirection');
+    const reverseChatDirection = settings.get(SettingIds.REVERSE_CHAT_DIRECTION);
     if (!scroller) return;
     if (reverseChatDirection && scroller.scrollRef.scrollToTop && scroller.scrollToBottom) {
       if (oldScrollToBottom !== scroller.scrollRef.scrollToTop) {
@@ -50,7 +45,7 @@ class ChatDirection {
   }
 
   toggleChatDirection() {
-    $('body').toggleClass('bttv-chat-direction-reversed', settings.get('reverseChatDirection'));
+    $('body').toggleClass('bttv-chat-direction-reversed', settings.get(SettingIds.REVERSE_CHAT_DIRECTION));
     this.toggleChatAutoScrolling();
   }
 }

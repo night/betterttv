@@ -4,6 +4,8 @@ import settings from '../../settings.js';
 
 import AbstractEmotes from '../emotes/abstract-emotes.js';
 import Emote from '../emotes/emote.js';
+import {EmoteTypeFlags, SettingIds} from '../../constants.js';
+import {hasFlag} from '../../utils/flags.js';
 
 const provider = {
   id: 'ffz-global',
@@ -14,14 +16,7 @@ class GlobalEmotes extends AbstractEmotes {
   constructor() {
     super();
 
-    settings.add({
-      id: 'ffzEmotes',
-      name: 'FrankerFaceZ Emotes',
-      defaultValue: true,
-      description: 'Enables emotes from that other extension people sometimes use',
-    });
-
-    settings.on('changed.ffzEmotes', () => this.updateGlobalEmotes());
+    settings.on(`changed.${SettingIds.EMOTES}`, () => this.updateGlobalEmotes());
 
     this.updateGlobalEmotes();
   }
@@ -33,7 +28,7 @@ class GlobalEmotes extends AbstractEmotes {
   updateGlobalEmotes() {
     this.emotes.clear();
 
-    if (!settings.get('ffzEmotes')) return;
+    if (hasFlag(settings.get(SettingIds.EMOTES), EmoteTypeFlags.FFZ_EMOTES)) return;
 
     api
       .get('cached/frankerfacez/emotes/global')
