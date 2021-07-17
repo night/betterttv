@@ -1,10 +1,10 @@
 import React, {useState} from 'react';
 import PanelGroup from 'rsuite/lib/PanelGroup/index.js';
+import classNames from 'classnames';
 import {Settings, Search} from '../components/Settings.jsx';
 import {CategoryTypes} from '../../../constants.js';
 import styles from '../styles/header.module.css';
 import CloseButton from '../components/CloseButton.jsx';
-import classNames from 'classnames';
 
 function ChannelSettings({onHide}) {
   const [search, setSearch] = useState('');
