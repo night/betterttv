@@ -72,7 +72,7 @@ export function deserializeLegacy(settingId) {
 
       const defaultValue = DefaultValues[settingId];
 
-      friends = friends == null ? hasFlag(defaultValue, SettingIds.FRIENDS) : !friends;
+      friends = friends == null ? hasFlag(defaultValue, SidebarFlags.FRIENDS) : !friends;
 
       featuredChannels =
         featuredChannels == null ? hasFlag(defaultValue, SidebarFlags.FEATURED_CHANNELS) : !featuredChannels;
