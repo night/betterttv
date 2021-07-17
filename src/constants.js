@@ -1,4 +1,5 @@
-import {defaultHighlightKeywords, Types} from './utils/keywords.js';
+import {Types} from './utils/keywords.js';
+import twitch from './utils/twitch.js';
 
 export const SettingIds = {
   ANON_CHAT: 'anonChat',
@@ -196,14 +197,17 @@ export const DefaultValues = {
   [SettingIds.MUTE_INVISIBLE_PLAYER]: false,
   [SettingIds.SCROLL_VOLUME_CONTROL]: false,
   [SettingIds.BLACKLIST_KEYWORDS]: {},
-  [SettingIds.HIGHLIGHT_KEYWORDS]: {
-    0: {
-      id: 0,
-      type: Types.MESSAGE,
-      status: null,
-      keyword: defaultHighlightKeywords(),
-    },
-  },
+  [SettingIds.HIGHLIGHT_KEYWORDS]:
+    twitch.getCurrentUser() !== null
+      ? {
+          0: {
+            id: 0,
+            type: Types.MESSAGE,
+            status: null,
+            keyword: twitch.getCurrentUser().name,
+          },
+        }
+      : {},
   [SettingIds.SIDEBAR]:
     SidebarFlags.FRIENDS |
     SidebarFlags.OFFLINE_FOLLOWED_CHANNELS |

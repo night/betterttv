@@ -19,7 +19,7 @@ function ChannelPointsModule() {
           onChange={(value) => setChannelPoints(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}>
           <Checkbox key="channelPoints" value={ChannelPointsFlags.CHANNEL_POINTS}>
             <p>Channel Points</p>
-            <p className={styles.description}>Hides channel points from the chat UI to reduce clutter</p>
+            <p className={styles.description}>Show channel point related features</p>
           </Checkbox>
           <Checkbox key="autoClaim" value={ChannelPointsFlags.AUTO_CLAIM}>
             <p>Auto-claim Bonus Channel Points</p>
@@ -27,7 +27,7 @@ function ChannelPointsModule() {
           </Checkbox>
           <Checkbox key="messageHighlights" value={ChannelPointsFlags.MESSAGE_HIGHLIGHTS}>
             <p>Message Highlight Rewards</p>
-            <p className={styles.description}>Disable or enable channel point highlighted messages</p>
+            <p className={styles.description}>Show channel point highlighted messages</p>
           </Checkbox>
         </CheckboxGroup>
       </div>
