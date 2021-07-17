@@ -39,6 +39,7 @@
     }
   }
 
+  // eslint-disable-next-line import/no-unresolved
   await import('./modules/**/index.js');
 
   watcher.setup();
