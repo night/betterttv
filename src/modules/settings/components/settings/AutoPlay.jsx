@@ -38,6 +38,6 @@ function AutoplayModule() {
 export default registerComponent(AutoplayModule, {
   settingId: SettingIds.AUTO_PLAY,
   name: 'Auto Play',
-  category: CategoryTypes.CHANNEL,
+  category: CategoryTypes.DIRECTORY,
   keywords: ['auto', 'play'],
 });

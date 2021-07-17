@@ -17,7 +17,11 @@ export function Settings({search, category}) {
     search.length === 0
       ? settings.filter((setting) => setting.category === category).map((setting) => setting.render())
       : settings
-          .filter((setting) => setting.keywords.join(' ').includes(search.toLowerCase()))
+          .filter(
+            (setting) =>
+              setting.keywords.join(' ').includes(search.toLowerCase()) ||
+              setting.name.toLowerCase().includes(search.toLowerCase())
+          )
           .map((setting) => setting.render());
 
   return searchedSettings.length === 0 ? <Panel header="No more results..." /> : searchedSettings;
