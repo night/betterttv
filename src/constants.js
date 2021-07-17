@@ -198,7 +198,7 @@ export const DefaultValues = {
   [SettingIds.SCROLL_VOLUME_CONTROL]: false,
   [SettingIds.BLACKLIST_KEYWORDS]: {},
   [SettingIds.HIGHLIGHT_KEYWORDS]:
-    twitch.getCurrentUser() !== null
+    twitch.getCurrentUser() != null
       ? {
           0: {
             id: 0,
