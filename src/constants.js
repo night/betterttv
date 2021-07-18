@@ -152,6 +152,8 @@ export const PageTypes = {
   ABOUT: 5,
 };
 
+const currentUser = twitch.getCurrentUser();
+
 export const DefaultValues = {
   [SettingIds.ANON_CHAT]: false,
   [SettingIds.AUTO_THEATRE_MODE]: false,
@@ -198,13 +200,13 @@ export const DefaultValues = {
   [SettingIds.SCROLL_VOLUME_CONTROL]: false,
   [SettingIds.BLACKLIST_KEYWORDS]: {},
   [SettingIds.HIGHLIGHT_KEYWORDS]:
-    twitch.getCurrentUser() != null
+    currentUser != null
       ? {
           0: {
             id: 0,
             type: Types.MESSAGE,
             status: null,
-            keyword: twitch.getCurrentUser().name,
+            keyword: currentUser.name,
           },
         }
       : {},
