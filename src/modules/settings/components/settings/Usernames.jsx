@@ -19,15 +19,17 @@ function UsernamesModule() {
           onChange={(value) => setUsernames(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}>
           <Checkbox key="localized" value={UsernameFlags.LOCALIZED}>
             <p>Localized Usernames</p>
-            <p className={styles.description}>Show localized display names in chat</p>
+            <p className={styles.description}>Show localized display names in the chat window</p>
           </Checkbox>
           <Checkbox key="usernameColors" value={UsernameFlags.COLORS}>
             <p>Username Colors</p>
-            <p className={styles.description}>Enable username colors in chat</p>
+            <p className={styles.description}>Show username colors in the chat window</p>
           </Checkbox>
           <Checkbox key="readableColors" value={UsernameFlags.READABLE}>
             <p>Readable Colors</p>
-            <p className={styles.description}>Makes chat usernames higher contrast</p>
+            <p className={styles.description}>
+              Show username colors with higher contrast (prevents hard to read names)
+            </p>
           </Checkbox>
         </CheckboxGroup>
       </div>
