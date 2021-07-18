@@ -1,6 +1,3 @@
-import {Types} from './utils/keywords.js';
-import twitch from './utils/twitch.js';
-
 export const SettingIds = {
   ANON_CHAT: 'anonChat',
   AUTO_THEATRE_MODE: 'autoTheatreMode',
@@ -152,8 +149,6 @@ export const PageTypes = {
   ABOUT: 5,
 };
 
-const currentUser = twitch.getCurrentUser();
-
 export const DefaultValues = {
   [SettingIds.ANON_CHAT]: false,
   [SettingIds.AUTO_THEATRE_MODE]: false,
@@ -199,17 +194,7 @@ export const DefaultValues = {
   [SettingIds.MUTE_INVISIBLE_PLAYER]: false,
   [SettingIds.SCROLL_VOLUME_CONTROL]: false,
   [SettingIds.BLACKLIST_KEYWORDS]: {},
-  [SettingIds.HIGHLIGHT_KEYWORDS]:
-    currentUser != null
-      ? {
-          0: {
-            id: 0,
-            type: Types.MESSAGE,
-            status: null,
-            keyword: currentUser.name,
-          },
-        }
-      : {},
+  [SettingIds.HIGHLIGHT_KEYWORDS]: {},
   [SettingIds.SIDEBAR]:
     SidebarFlags.FRIENDS |
     SidebarFlags.OFFLINE_FOLLOWED_CHANNELS |
