@@ -4,21 +4,24 @@
 
 .header {
   position: absolute;
-  width: calc(100% - 56px - 5px);
-  margin-left: 56px;
+  right: 14px;
+  left: 56px;
   top: 0;
   z-index: 10;
   overflow: hidden;
+  pointer-events: none;
 
   .flexHeader {
+    pointer-events: all;
     display: flex;
     column-gap: 10px;
-    padding: 10px;
+    padding: 10px 0 10px 10px;
     background-color: #292d33;
   }
 
   .closeButton {
-    padding: 10px;
+    pointer-events: all;
+    padding: 10px 0 10px 10px;
     float: right;
   }
 }
@@ -34,6 +37,8 @@
   max-height: 500px;
   margin-left: 56px;
   overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #191c23 transparent;
 }
 
 .center {
