@@ -2,6 +2,12 @@
   color: #cccccc;
 }
 
+.closeButton {
+  position: absolute;
+  margin-left: calc(100% - 56px - 8px);
+  padding: 10px;
+}
+
 .header {
   position: absolute;
   width: calc(100% - 56px - 8px);
@@ -15,11 +21,6 @@
     column-gap: 10px;
     padding: 10px;
     background-color: #292d33;
-  }
-
-  .closeButton {
-    padding: 10px;
-    float: right;
   }
 }
 
