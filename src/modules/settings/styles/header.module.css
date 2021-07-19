@@ -4,7 +4,7 @@
 
 .header {
   position: absolute;
-  width: calc(100% - 56px - 5px);
+  width: calc(100% - 56px - 8px);
   margin-left: 56px;
   top: 0;
   z-index: 10;
@@ -34,6 +34,7 @@
   max-height: 500px;
   margin-left: 56px;
   overflow: auto;
+  scrollbar-width: thin;
 }
 
 .center {
