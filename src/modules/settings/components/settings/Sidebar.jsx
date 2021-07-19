@@ -19,19 +19,19 @@ function SidebarComponent() {
           onChange={(value) => setSidebar(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}>
           <Checkbox key="friends" value={SidebarFlags.FRIENDS}>
             <p>Friends List</p>
-            <p className={styles.description}>Hides the friends list in the left sidebar</p>
+            <p className={styles.description}>Show friends in the sidebar</p>
           </Checkbox>
           <Checkbox key="featuredChannels" value={SidebarFlags.FEATURED_CHANNELS}>
             <p>Featured Channels</p>
-            <p className={styles.description}>Removes the recommended channels in the sidebar</p>
+            <p className={styles.description}>Show recommended channels in the sidebar</p>
           </Checkbox>
           <Checkbox key="recommendedFriends" value={SidebarFlags.RECOMMENDED_FRIENDS}>
             <p>Recommended Friends</p>
-            <p className={styles.description}>Removes the recommended friends section in the sidebar</p>
+            <p className={styles.description}>Show recommended friends in the sidebar</p>
           </Checkbox>
           <Checkbox key="hideOfflineFollowedChannels" value={SidebarFlags.OFFLINE_FOLLOWED_CHANNELS}>
             <p>Offline Followed Channels</p>
-            <p className={styles.description}>Removes offline followed channels in the sidebar</p>
+            <p className={styles.description}>Show offline followed channels in the sidebar</p>
           </Checkbox>
           <Checkbox key="autoExpandChannels" value={SidebarFlags.AUTO_EXPAND_CHANNELS}>
             <p>Auto-Expand Channels</p>

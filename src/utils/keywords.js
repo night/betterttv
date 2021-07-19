@@ -1,5 +1,3 @@
-import twitch from './twitch.js';
-
 const PHRASE_REGEX = /\{.+?\}/g;
 const USER_REGEX = /\(.+?\)/g;
 
@@ -9,12 +7,6 @@ export const Types = {
   EXACT: 2,
   USER: 3,
 };
-
-export function defaultHighlightKeywords(value) {
-  if (typeof value === 'string') return value;
-  const currentUser = twitch.getCurrentUser();
-  return currentUser ? currentUser.name : '';
-}
 
 export function computeKeywords(keywords) {
   const computedKeywords = [];

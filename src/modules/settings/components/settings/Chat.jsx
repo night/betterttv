@@ -19,27 +19,27 @@ function ChatModule() {
           onChange={(value) => setChat(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}>
           <Checkbox key="chatReplies" value={ChatFlags.CHAT_REPLIES}>
             <p>Chat Replies</p>
-            <p className={styles.description}>Hides the click to reply button in chat</p>
+            <p className={styles.description}>Show the click to reply button in chat</p>
           </Checkbox>
           <Checkbox key="bits" value={ChatFlags.BITS}>
             <p>Bits</p>
-            <p className={styles.description}>Disables bits in chat</p>
+            <p className={styles.description}>Show bits in the chat window</p>
           </Checkbox>
           <Checkbox key="chatClips" value={ChatFlags.CHAT_CLIPS}>
             <p>Chat Clips</p>
-            <p className={styles.description}>Hides clips embeds in chat</p>
+            <p className={styles.description}>Show clip embeds in the chat window</p>
           </Checkbox>
           <Checkbox key="viewerGreetings" value={ChatFlags.VIEWER_GREETING}>
             <p>Viewer Greetings</p>
-            <p className={styles.description}>Hides the new viewer greeting message from the chat</p>
+            <p className={styles.description}>Show new viewer greetings in the chat window</p>
           </Checkbox>
           <Checkbox key="subscriptionNotices" value={ChatFlags.SUB_NOTICE}>
             <p>Subscription Notices</p>
-            <p className={styles.description}>Hides subs, re-subs, and gift subs from the chat</p>
+            <p className={styles.description}>Show subs, re-subs, and gift subs notices in the chat window</p>
           </Checkbox>
           <Checkbox key="communityHighlights" value={ChatFlags.COMMUNITY_HIGHLIGHTS}>
             <p>Community Highlights</p>
-            <p className={styles.description}>Hides the alerts above chat for hype trains, community chest, etc.</p>
+            <p className={styles.description}>Show alerts above chat window for hype trains, community chest, etc.</p>
           </Checkbox>
         </CheckboxGroup>
       </div>

@@ -6,8 +6,9 @@ import html from '../../utils/html.js';
 import twitch from '../../utils/twitch.js';
 import cdn from '../../utils/cdn.js';
 import {escapeRegExp} from '../../utils/regex.js';
-import {computeKeywords} from '../../utils/keywords.js';
+import {computeKeywords, Types} from '../../utils/keywords.js';
 import {SettingIds} from '../../constants.js';
+import storage from '../../storage.js';
 
 const BLACKLIST_KEYWORD_PROMPT = `Type some blacklist keywords. Messages containing keywords will be filtered from your chat.
 
@@ -129,6 +130,7 @@ let $pinnedHighlightsContainer;
 
 class ChatHighlightBlacklistKeywordsModule {
   constructor() {
+    watcher.on('load', () => this.updateDefaultHighlightKeywords());
     watcher.on('load.chat', () => this.loadChat());
     watcher.on('load.vod', () => this.loadChat());
     watcher.on('chat.message', ($message, messageObj) => this.onMessage($message, messageObj));
@@ -141,6 +143,22 @@ class ChatHighlightBlacklistKeywordsModule {
 
     this.sound = null;
     this.handleHighlightSound = this.handleHighlightSound.bind(this);
+  }
+
+  updateDefaultHighlightKeywords() {
+    const value = settings.get(SettingIds.HIGHLIGHT_KEYWORDS);
+    if (Object.keys(value).length > 0) return;
+    const user = twitch.getCurrentUser();
+    if (user == null) return;
+
+    settings.set(SettingIds.HIGHLIGHT_KEYWORDS, {
+      0: {
+        id: 0,
+        type: Types.MESSAGE,
+        status: null,
+        keyword: user.name,
+      },
+    });
   }
 
   handleHighlightSound() {
