@@ -4,9 +4,9 @@
 
 .header {
   position: absolute;
-  width: calc(100% - 56px - 8px);
-  margin-left: 56px;
   top: 0;
+  left: 56px;
+  right: 5px;
   z-index: 10;
   overflow: hidden;
   pointer-events: none;
@@ -15,7 +15,7 @@
     pointer-events: all;
     display: flex;
     column-gap: 10px;
-    padding: 10px;
+    padding: 10px 0 10px 10px;
     background-color: #292d33;
   }
 
