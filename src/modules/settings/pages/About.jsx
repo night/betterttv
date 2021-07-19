@@ -70,18 +70,25 @@ function About({onHide}) {
 
   return (
     <>
-      <div className={header.header}>
-        <CloseButton onHide={onHide} className={header.closeButton} />
-      </div>
       <div className={header.content}>
         <PanelGroup>
           <Panel className={styles.largeBlurb}>
             Drop a Review on the{' '}
-            <a href="https://chrome.google.com/webstore/detail/betterttv/ajopnjidmegmdimjlfnijceegpefgped">
+            <a
+              target="_blank"
+              rel="noreferrer"
+              href="https://chrome.google.com/webstore/detail/betterttv/ajopnjidmegmdimjlfnijceegpefgped">
               Chrome Webstore
             </a>{' '}
-            or <a href="https://addons.mozilla.org/firefox/addon/betterttv/">Firefox Add-ons</a> site or maybe even
-            Subscribe to <a href="https://betterttv.com/dashboard/pro">BetterTTV Pro</a>!
+            or{' '}
+            <a target="_blank" rel="noreferrer" href="https://addons.mozilla.org/firefox/addon/betterttv/">
+              Firefox Add-ons
+            </a>{' '}
+            site or maybe even Subscribe to{' '}
+            <a target="_blank" rel="noreferrer" href="https://betterttv.com/dashboard/pro">
+              BetterTTV Pro
+            </a>
+            !
           </Panel>
           <Panel>
             <div className={styles.socials}>
@@ -90,16 +97,24 @@ function About({onHide}) {
                   <p>EXPLORE</p>
                 </li>
                 <li>
-                  <a href="https://betterttv.com/">Home</a>
+                  <a target="_blank" rel="noreferrer" href="https://betterttv.com/">
+                    Home
+                  </a>
                 </li>
                 <li>
-                  <a href="https://github.com/night/betterttv/issues">Report Bugs</a>
+                  <a target="_blank" rel="noreferrer" href="https://github.com/night/betterttv/issues">
+                    Report Bugs
+                  </a>
                 </li>
                 <li>
-                  <a href="https://github.com/night/betterttv/issues">Submit Ideas</a>
+                  <a target="_blank" rel="noreferrer" href="https://github.com/night/betterttv/issues">
+                    Submit Ideas
+                  </a>
                 </li>
                 <li>
-                  <a href="https://nightdev.com/">Other Products</a>
+                  <a target="_blank" rel="noreferrer" href="https://nightdev.com/">
+                    Other Products
+                  </a>
                 </li>
               </ul>
               <ul>
@@ -107,16 +122,24 @@ function About({onHide}) {
                   <p>COMMUNITY</p>
                 </li>
                 <li>
-                  <a href="https://discord.gg/nightdev">Discord</a>
+                  <a target="_blank" rel="noreferrer" href="https://discord.gg/nightdev">
+                    Discord
+                  </a>
                 </li>
                 <li>
-                  <a href="https://twitter.com/betterttv">Twitter</a>
+                  <a target="_blank" rel="noreferrer" href="https://twitter.com/betterttv">
+                    Twitter
+                  </a>
                 </li>
                 <li>
-                  <a href="https://community.nightdev.com/c/betterttv">Forums</a>
+                  <a target="_blank" rel="noreferrer" href="https://community.nightdev.com/c/betterttv">
+                    Forums
+                  </a>
                 </li>
                 <li>
-                  <a href="https://www.nightdev.com/contact">Email Us</a>
+                  <a target="_blank" rel="noreferrer" href="https://www.nightdev.com/contact">
+                    Email Us
+                  </a>
                 </li>
               </ul>
               <ul>
@@ -124,10 +147,14 @@ function About({onHide}) {
                   <p>LEGAL</p>
                 </li>
                 <li>
-                  <a href="https://betterttv.com/terms">Terms of Service</a>
+                  <a target="_blank" rel="noreferrer" href="https://betterttv.com/terms">
+                    Terms of Service
+                  </a>
                 </li>
                 <li>
-                  <a href="https://betterttv.com/privacy">Privacy Policy</a>
+                  <a target="_blank" rel="noreferrer" href="https://betterttv.com/privacy">
+                    Privacy Policy
+                  </a>
                 </li>
               </ul>
             </div>
@@ -179,6 +206,9 @@ function About({onHide}) {
             <p className={header.description}>{`Version ${debug.version}`}</p>
           </Panel>
         </PanelGroup>
+      </div>
+      <div className={header.header}>
+        <CloseButton onHide={onHide} className={header.closeButton} />
       </div>
     </>
   );

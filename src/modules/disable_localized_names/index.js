@@ -9,7 +9,7 @@ class DisableLocalizedNamesModule {
   }
 
   delocalizeName($el) {
-    if (!hasFlag(settings.get(SettingIds.USERNAMES), UsernameFlags.LOCALIZED)) return;
+    if (hasFlag(settings.get(SettingIds.USERNAMES), UsernameFlags.LOCALIZED)) return;
 
     const $name = $el.find('.chat-author__display-name');
     const $login = $el.find('.chat-author__intl-login');

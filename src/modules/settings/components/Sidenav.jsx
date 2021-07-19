@@ -51,6 +51,8 @@ function BTTVSidenav({value, onChange}) {
           </Nav.Item>
           <Nav.Item
             href="https://betterttv.com/dashboard/emotes"
+            target="_blank"
+            rel="noreferrer"
             icon={
               <Icon>
                 <FontAwesomeIcon icon={faColumns} />
