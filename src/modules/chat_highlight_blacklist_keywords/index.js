@@ -8,7 +8,6 @@ import cdn from '../../utils/cdn.js';
 import {escapeRegExp} from '../../utils/regex.js';
 import {computeKeywords, Types} from '../../utils/keywords.js';
 import {SettingIds} from '../../constants.js';
-import storage from '../../storage.js';
 
 const BLACKLIST_KEYWORD_PROMPT = `Type some blacklist keywords. Messages containing keywords will be filtered from your chat.
 
