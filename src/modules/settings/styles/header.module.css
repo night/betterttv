@@ -4,9 +4,9 @@
 
 .header {
   position: absolute;
-  top: 0;
+  right: 14px;
   left: 56px;
-  right: 5px;
+  top: 0;
   z-index: 10;
   overflow: hidden;
   pointer-events: none;
@@ -21,7 +21,7 @@
 
   .closeButton {
     pointer-events: all;
-    padding: 10px;
+    padding: 10px 0 10px 10px;
     float: right;
   }
 }
@@ -38,6 +38,7 @@
   margin-left: 56px;
   overflow: auto;
   scrollbar-width: thin;
+  scrollbar-color: #191c23 transparent;
 }
 
 .center {

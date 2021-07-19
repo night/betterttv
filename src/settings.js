@@ -8,11 +8,15 @@ let settings = {};
 class Settings extends SafeEventEmitter {
   constructor() {
     super();
-    if (storage.get('settings') === null) {
-      this.importLegacySettings();
-      return;
-    }
     settings = storage.get('settings');
+
+    if (settings != null && settings.version == null) {
+      settings = null;
+    }
+
+    if (settings === null) {
+      this.importLegacySettings();
+    }
   }
 
   get(id) {
@@ -21,7 +25,7 @@ class Settings extends SafeEventEmitter {
 
   // eslint-disable-next-line no-unused-vars
   set(id, value, emit = true, temp = false) {
-    const updatedSettings = {...settings, [id]: value};
+    const updatedSettings = {...settings, [id]: value, version: process.env.EXT_VER};
     storage.set('settings', updatedSettings);
     settings = updatedSettings;
 
