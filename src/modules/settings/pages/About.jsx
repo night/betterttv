@@ -70,7 +70,9 @@ function About({onHide}) {
 
   return (
     <>
-      <CloseButton onHide={onHide} className={header.closeButton} />
+      <div className={header.header}>
+        <CloseButton onHide={onHide} className={header.closeButton} />
+      </div>
       <div className={header.content}>
         <PanelGroup>
           <Panel className={styles.largeBlurb}>
