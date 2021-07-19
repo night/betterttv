@@ -82,9 +82,6 @@ function changelogPage({onHide}) {
 
   return (
     <>
-      <div className={styles.header}>
-        <CloseButton onHide={onHide} className={styles.closeButton} />
-      </div>
       <div className={styles.content}>
         <PanelGroup>
           <Panel header={<h3>Changelogs</h3>}>
@@ -92,6 +89,9 @@ function changelogPage({onHide}) {
           </Panel>
           {logs}
         </PanelGroup>
+      </div>
+      <div className={styles.header}>
+        <CloseButton onHide={onHide} className={styles.closeButton} />
       </div>
     </>
   );
