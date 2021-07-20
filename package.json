@@ -67,6 +67,8 @@
     "prettier": "^2.3.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-lazy-load": "^3.1.13",
+    "react-lazyload": "^3.2.0",
     "react-string-replace": "^0.4.4",
     "remove-files-webpack-plugin": "^1.4.5",
     "rsuite": "^4.10.2",
