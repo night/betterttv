@@ -1,0 +1,36 @@
+.emotes {
+  display: grid;
+  grid-template-columns: repeat(7, 36px);
+  justify-content: center;
+  grid-gap: 0px;
+
+  .button {
+    width: 36px;
+    height: 36px;
+    position: relative;
+    border-radius: 5px;
+
+    img {
+      max-height: 100%;
+      width: 85%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      -webkit-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  .button:hover {
+    background-color: #6a6a6c;
+  }
+
+  .button:focus {
+    background-color: #616163;
+  }
+}
+
+.divider {
+  margin: 0px;
+}

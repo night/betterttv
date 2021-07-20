@@ -1,0 +1,45 @@
+.divider {
+  margin: 0px;
+}
+
+.header {
+  display: flex;
+  column-gap: 7.5px;
+  padding: 7.5px;
+}
+
+.content {
+  display: flex;
+  height: calc(360px - 52px);
+}
+
+.sidebar {
+  width: 48px;
+  height: calc(360px - 52px);
+  overflow-y: scroll;
+}
+
+.sidebar::-webkit-scrollbar {
+  display: none;
+}
+
+.emojis {
+  width: calc(100% - 48px);
+  padding: 0 10px 0 10px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.emojis::-webkit-scrollbar {
+  border-radius: 6px;
+  width: 5px;
+}
+
+.emojis::-webkit-scrollbar-thumb {
+  background: #191c23;
+  border-radius: 5px;
+}
+
+.emojis::-webkit-scrollbar-thumb:hover {
+  background: #191c23;
+}

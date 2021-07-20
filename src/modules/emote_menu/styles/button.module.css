@@ -1,0 +1,39 @@
+.button {
+  text-size-adjust: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  border: none;
+  text-align: inherit;
+  background: 0 0;
+  font: inherit;
+  position: relative;
+  vertical-align: middle;
+  overflow: hidden;
+  text-decoration: none;
+  white-space: nowrap;
+  display: inline-flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  user-select: none;
+  height: var(--button-size-default);
+  width: var(--button-size-default);
+  border-radius: var(--border-radius-medium);
+  background-color: var(--color-background-button-text-default);
+  color: var(--color-fill-button-icon);
+}
+
+.button:hover {
+  background-color: #6a6a6c;
+}
+
+.button:focus {
+  background-color: #616163;
+}
+
+.popover {
+  width: 320px;
+  height: 360px;
+}

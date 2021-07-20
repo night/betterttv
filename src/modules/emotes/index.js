@@ -56,6 +56,17 @@ class EmotesModule {
 
     return null;
   }
+
+  getCategorizedEmotes() {
+    return {
+      'Personal Emotes': personalEmotes,
+      'Channel Emotes': channelEmotes,
+      'Global Emotes': globalEmotes,
+      'FFZ Global Emotes': frankerfacezGlobalEmotes,
+      'FFZ Channel Emotes': frankerfacezChannelEmotes,
+      Emojis: emojis,
+    };
+  }
 }
 
 export default new EmotesModule();
