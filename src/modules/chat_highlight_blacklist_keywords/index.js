@@ -148,16 +148,20 @@ class ChatHighlightBlacklistKeywordsModule {
     const value = settings.get(SettingIds.HIGHLIGHT_KEYWORDS);
     if (value != null) return;
     const user = twitch.getCurrentUser();
-    if (user == null) return;
 
-    settings.set(SettingIds.HIGHLIGHT_KEYWORDS, {
-      0: {
-        id: 0,
-        type: Types.MESSAGE,
-        status: null,
-        keyword: user.name,
-      },
-    });
+    settings.set(
+      SettingIds.HIGHLIGHT_KEYWORDS,
+      user != null
+        ? {
+            0: {
+              id: 0,
+              type: Types.MESSAGE,
+              status: null,
+              keyword: user.name,
+            },
+          }
+        : {}
+    );
   }
 
   handleHighlightSound() {
