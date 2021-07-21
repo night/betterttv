@@ -27,7 +27,7 @@ function Page(props) {
   }
 }
 
-const validateModal = () => window.innerWidth < 600;
+const validateModal = () => window.innerWidth < 600 && window.location.pathname.endsWith('/chat');
 
 function Window({setHandleOpen}) {
   const [page, setPage] = useState(PageTypes.CHAT_SETTINGS);
