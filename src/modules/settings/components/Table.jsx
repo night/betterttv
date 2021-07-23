@@ -12,8 +12,8 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faTimes} from '@fortawesome/free-solid-svg-icons/faTimes';
 import {faPlus} from '@fortawesome/free-solid-svg-icons/faPlus';
 
-import styles from '../styles/table.module.css';
 import classNames from 'classnames';
+import styles from '../styles/table.module.css';
 
 const {Column, HeaderCell, Cell} = Table;
 
@@ -30,9 +30,9 @@ export const Types = {
 function Menu({onSelect, options}) {
   return (
     <Dropdown.Menu onSelect={onSelect}>
-      {options.map((option, index) => (
-        <Dropdown.Item key={option} eventKey={index}>
-          {option}
+      {options.map((option) => (
+        <Dropdown.Item key={option.value} eventKey={option.value}>
+          {option.name}
         </Dropdown.Item>
       ))}
     </Dropdown.Menu>
@@ -220,7 +220,9 @@ function EditTable({options, setValue, value, ...props}) {
                           rowData={rowData}
                           options={key.options}
                           onChange={handleChange}>
-                          <Button appearance="subtle">{key.options[rowData[key.name]]}</Button>
+                          <Button appearance="subtle">
+                            {key.options.find((option) => option.value === rowData.type).name}
+                          </Button>
                         </CustomWhisper>
                       )}
                     </Cell>

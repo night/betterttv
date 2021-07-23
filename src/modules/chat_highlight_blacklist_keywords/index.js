@@ -6,7 +6,7 @@ import html from '../../utils/html.js';
 import twitch from '../../utils/twitch.js';
 import cdn from '../../utils/cdn.js';
 import {escapeRegExp} from '../../utils/regex.js';
-import {computeKeywords, Types} from '../../utils/keywords.js';
+import {computeKeywords, KeywordTypes} from '../../utils/keywords.js';
 import {SettingIds} from '../../constants.js';
 
 const BLACKLIST_KEYWORD_PROMPT = `Type some blacklist keywords. Messages containing keywords will be filtered from your chat.
@@ -129,7 +129,7 @@ let $pinnedHighlightsContainer;
 
 class ChatHighlightBlacklistKeywordsModule {
   constructor() {
-    watcher.on('load', () => this.updateDefaultHighlightKeywords());
+    watcher.on('load', () => this.validateKeywords());
     watcher.on('load.chat', () => this.loadChat());
     watcher.on('load.vod', () => this.loadChat());
     watcher.on('chat.message', ($message, messageObj) => this.onMessage($message, messageObj));
@@ -144,8 +144,65 @@ class ChatHighlightBlacklistKeywordsModule {
     this.handleHighlightSound = this.handleHighlightSound.bind(this);
   }
 
-  updateDefaultHighlightKeywords() {
-    const value = settings.get(SettingIds.HIGHLIGHT_KEYWORDS);
+  validateKeywords() {
+    const highlightKeywordsValue = settings.get(SettingIds.HIGHLIGHT_KEYWORDS);
+    const blacklistKeywordsValue = settings.get(SettingIds.BLACKLIST_KEYWORDS);
+
+    this.updateDefaultHighlightKeywords(highlightKeywords);
+
+    let shouldUpdateHighlightKeywords = false;
+    let shouldUpdateBlacklistKeywords = false;
+
+    const validatedHighlightKeywordsValue = Object.fromEntries(
+      Object.entries(highlightKeywordsValue)
+        .map(([key, value]) => {
+          switch (value.type) {
+            case KeywordTypes.EXACT:
+              shouldUpdateHighlightKeywords = true;
+              return [key, {...value, keyword: `<${value.keyword}>`, type: KeywordTypes.MESSAGE}];
+            case KeywordTypes.WILDCARD:
+              shouldUpdateHighlightKeywords = true;
+              return [key, {...value, type: KeywordTypes.MESSAGE}];
+            default:
+              return [key, value];
+          }
+        })
+        .filter(([, {keyword}]) => keyword.replace(/(\*|<|>)/g, '').trim())
+    );
+
+    const validatedBlacklistKeywordsValue = Object.fromEntries(
+      Object.entries(blacklistKeywordsValue)
+        .map(([key, value]) => {
+          switch (value.type) {
+            case KeywordTypes.EXACT:
+              shouldUpdateBlacklistKeywords = true;
+              return [key, {...value, keyword: `<${value.keyword}>`, type: KeywordTypes.MESSAGE}];
+            case KeywordTypes.WILDCARD:
+              shouldUpdateBlacklistKeywords = true;
+              return [key, {...value, type: KeywordTypes.MESSAGE}];
+            default:
+              return [key, value];
+          }
+        })
+        .filter(([, {keyword}]) => keyword.replace(/(\*|<|>)/g, '').trim())
+    );
+
+    if (
+      shouldUpdateHighlightKeywords ||
+      Object.values(highlightKeywordsValue).length !== Object.values(validatedHighlightKeywordsValue).length
+    ) {
+      settings.set(SettingIds.HIGHLIGHT_KEYWORDS, validatedHighlightKeywordsValue);
+    }
+
+    if (
+      shouldUpdateBlacklistKeywords ||
+      !Object.values(blacklistKeywordsValue).length !== Object.values(validatedBlacklistKeywordsValue).length
+    ) {
+      settings.set(SettingIds.BLACKLIST_KEYWORDS, validatedBlacklistKeywordsValue);
+    }
+  }
+
+  updateDefaultHighlightKeywords(value) {
     if (value != null) return;
     const user = twitch.getCurrentUser();
 
@@ -155,7 +212,7 @@ class ChatHighlightBlacklistKeywordsModule {
         ? {
             0: {
               id: 0,
-              type: Types.MESSAGE,
+              type: KeywordTypes.MESSAGE,
               status: null,
               keyword: user.name,
             },
