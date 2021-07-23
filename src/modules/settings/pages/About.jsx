@@ -55,6 +55,7 @@ function About({onHide}) {
       const settingsToImport = isJSON(data);
       if (!settingsToImport) return;
       Object.keys(settingsToImport).forEach((s) => storage.set(s.split('bttv_')[1], settingsToImport[s]));
+      if (!Object.keys(settingsToImport).includes('bttv_settings')) settings.importLegacySettings();
       setTimeout(() => window.location.reload(), 1000);
     });
   }
