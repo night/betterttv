@@ -4,7 +4,7 @@ import Emote from './Emote.jsx';
 import {useEmotesState} from './Store.jsx';
 import styles from '../styles/emotes.module.css';
 
-export default function EmotesComponent({search, ...restProps}) {
+export default function EmotesComponent({onChange, search, ...restProps}) {
   const [emotes] = useEmotesState();
 
   return (
@@ -12,7 +12,9 @@ export default function EmotesComponent({search, ...restProps}) {
       {Object.entries(emotes).map(([key, value]) => {
         const subEmotes = Array.from(value.emotes);
         if (subEmotes.length === 0) return null;
-        const emotesComponents = subEmotes.map(([id, emote]) => <Emote id={id} data={emote} />);
+        const emotesComponents = subEmotes.map(([id, emote]) => (
+          <Emote id={id} data={emote} onClick={() => onChange(emote)} />
+        ));
         if (emotesComponents.every((component) => component == null)) return null;
 
         return (

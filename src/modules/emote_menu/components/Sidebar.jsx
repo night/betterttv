@@ -1,7 +1,7 @@
 import React from 'react';
 import Nav from 'rsuite/lib/Nav/index.js';
 
-const emojis = ['🚀', '🎥', '🌞', '🎉', '🍌', '🍍', '🍎', '😛', '🚀', '🎥', '🌞', '🎉', '🍌', '🍍', '🍎', '😛'];
+const emojis = ['🚀', '🎥', '🌞', '🎉', '🍌', '🍍', '🍎'];
 
 export default function Sidebar({...restProps}) {
   return (
