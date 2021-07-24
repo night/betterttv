@@ -61,7 +61,7 @@ function computeBlacklistKeywords() {
 let highlightKeywords = [];
 let highlightUsers = [];
 function computeHighlightKeywords() {
-  const keywords = settings.get(SettingIds.HIGHLIGHT_KEYWORDS);
+  const keywords = settings.get(SettingIds.HIGHLIGHT_KEYWORDS) || {};
   const {computedKeywords, computedUsers} = computeKeywords(keywords);
   highlightKeywords = computedKeywords;
   highlightUsers = computedUsers;
@@ -145,10 +145,10 @@ class ChatHighlightBlacklistKeywordsModule {
   }
 
   validateKeywords() {
-    const highlightKeywordsValue = settings.get(SettingIds.HIGHLIGHT_KEYWORDS);
+    let highlightKeywordsValue = settings.get(SettingIds.HIGHLIGHT_KEYWORDS);
     const blacklistKeywordsValue = settings.get(SettingIds.BLACKLIST_KEYWORDS);
 
-    this.updateDefaultHighlightKeywords(highlightKeywords);
+    highlightKeywordsValue = this.updateDefaultHighlightKeywords(highlightKeywords) || {};
 
     for (const keywordsValue of [highlightKeywordsValue, blacklistKeywordsValue]) {
       let updated = false;
@@ -175,22 +175,21 @@ class ChatHighlightBlacklistKeywordsModule {
   }
 
   updateDefaultHighlightKeywords(value) {
-    if (value != null) return;
+    if (value != null) return null;
     const user = twitch.getCurrentUser();
+    if (user === null) return null;
 
-    settings.set(
-      SettingIds.HIGHLIGHT_KEYWORDS,
-      user != null
-        ? {
-            0: {
-              id: 0,
-              type: KeywordTypes.MESSAGE,
-              status: null,
-              keyword: user.name,
-            },
-          }
-        : {}
-    );
+    const newHighlightKeywords = {
+      0: {
+        id: 0,
+        type: KeywordTypes.MESSAGE,
+        status: null,
+        keyword: user.name,
+      },
+    };
+
+    settings.set(SettingIds.HIGHLIGHT_KEYWORDS, newHighlightKeywords);
+    return newHighlightKeywords;
   }
 
   handleHighlightSound() {

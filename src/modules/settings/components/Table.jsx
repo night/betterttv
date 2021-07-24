@@ -137,7 +137,7 @@ function EditTable({options, setValue, value, ...props}) {
   useEffect(() => {
     // why we do this: https://github.com/rsuite/rsuite/issues/1543
     setTimeout(() => {
-      setData(value);
+      setData(value || {});
       setLoading(false);
     }, 500);
   }, []);
