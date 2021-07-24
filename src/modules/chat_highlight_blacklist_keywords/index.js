@@ -129,7 +129,7 @@ let $pinnedHighlightsContainer;
 
 class ChatHighlightBlacklistKeywordsModule {
   constructor() {
-    watcher.on('load', () => this.validateKeywords());
+    watcher.on('load', () => this.readRepairKeywords());
     watcher.on('load.chat', () => this.loadChat());
     watcher.on('load.vod', () => this.loadChat());
     watcher.on('chat.message', ($message, messageObj) => this.onMessage($message, messageObj));
@@ -144,7 +144,7 @@ class ChatHighlightBlacklistKeywordsModule {
     this.handleHighlightSound = this.handleHighlightSound.bind(this);
   }
 
-  validateKeywords() {
+  readRepairKeywords() {
     let highlightKeywordsValue = settings.get(SettingIds.HIGHLIGHT_KEYWORDS);
     const blacklistKeywordsValue = settings.get(SettingIds.BLACKLIST_KEYWORDS);
 
