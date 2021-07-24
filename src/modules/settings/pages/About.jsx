@@ -53,9 +53,18 @@ function About({onHide}) {
 
     getDataURLFromUpload(target, (data) => {
       const settingsToImport = isJSON(data);
-      if (!settingsToImport) return;
-      Object.keys(settingsToImport).forEach((s) => storage.set(s.split('bttv_')[1], settingsToImport[s]));
-      if (!Object.keys(settingsToImport).includes('bttv_settings')) settings.importLegacySettings();
+      const keysToImport = Object.keys(settingsToImport);
+      let importLegacy = true;
+      for (const key of keysToImport) {
+        const nonPrefixedKey = key.split('bttv_')[1];
+        storage.set(nonPrefixedKey, settingsToImport[key]);
+        if (nonPrefixedKey === 'settings') {
+          importLegacy = false;
+        }
+      }
+      if (importLegacy) {
+        settings.importLegacySettings();
+      }
       setTimeout(() => window.location.reload(), 1000);
     });
   }
