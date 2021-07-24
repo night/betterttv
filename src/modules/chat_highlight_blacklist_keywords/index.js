@@ -150,55 +150,27 @@ class ChatHighlightBlacklistKeywordsModule {
 
     this.updateDefaultHighlightKeywords(highlightKeywords);
 
-    let shouldUpdateHighlightKeywords = false;
-    let shouldUpdateBlacklistKeywords = false;
+    for (const keywordsValue of [highlightKeywordsValue, blacklistKeywordsValue]) {
+      let updated = false;
 
-    const validatedHighlightKeywordsValue = Object.fromEntries(
-      Object.entries(highlightKeywordsValue)
-        .map(([key, value]) => {
-          switch (value.type) {
-            case KeywordTypes.EXACT:
-              shouldUpdateHighlightKeywords = true;
-              return [key, {...value, keyword: `<${value.keyword}>`, type: KeywordTypes.MESSAGE}];
-            case KeywordTypes.WILDCARD:
-              shouldUpdateHighlightKeywords = true;
-              return [key, {...value, type: KeywordTypes.MESSAGE}];
-            default:
-              return [key, value];
-          }
-        })
-        .filter(([, {keyword}]) => keyword.replace(/(\*|<|>)/g, '').trim())
-    );
+      for (const value of Object.values(keywordsValue)) {
+        if (![KeywordTypes.EXACT, KeywordTypes.WILDCARD].includes(value.type)) {
+          continue;
+        }
 
-    const validatedBlacklistKeywordsValue = Object.fromEntries(
-      Object.entries(blacklistKeywordsValue)
-        .map(([key, value]) => {
-          switch (value.type) {
-            case KeywordTypes.EXACT:
-              shouldUpdateBlacklistKeywords = true;
-              return [key, {...value, keyword: `<${value.keyword}>`, type: KeywordTypes.MESSAGE}];
-            case KeywordTypes.WILDCARD:
-              shouldUpdateBlacklistKeywords = true;
-              return [key, {...value, type: KeywordTypes.MESSAGE}];
-            default:
-              return [key, value];
-          }
-        })
-        .filter(([, {keyword}]) => keyword.replace(/(\*|<|>)/g, '').trim())
-    );
+        if (value.type === KeywordTypes.EXACT) {
+          value.keyword = `<${value.keyword}>`;
+        }
+        value.type = KeywordTypes.MESSAGE;
+        updated = true;
+      }
 
-    if (
-      shouldUpdateHighlightKeywords ||
-      Object.values(highlightKeywordsValue).length !== Object.values(validatedHighlightKeywordsValue).length
-    ) {
-      settings.set(SettingIds.HIGHLIGHT_KEYWORDS, validatedHighlightKeywordsValue);
-    }
-
-    if (
-      shouldUpdateBlacklistKeywords ||
-      !Object.values(blacklistKeywordsValue).length !== Object.values(validatedBlacklistKeywordsValue).length
-    ) {
-      settings.set(SettingIds.BLACKLIST_KEYWORDS, validatedBlacklistKeywordsValue);
+      if (updated) {
+        settings.set(
+          keywordsValue === highlightKeywordsValue ? SettingIds.HIGHLIGHT_KEYWORDS : SettingIds.BLACKLIST_KEYWORDS,
+          keywordsValue
+        );
+      }
     }
   }
 
