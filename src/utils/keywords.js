@@ -35,8 +35,8 @@ export function computeKeywords(keywords) {
 
 export function deserializeKeywords(values) {
   return Object.values(values)
+    .filter(({keyword}) => /\S/.test(keyword))
     .map(({keyword, type}) => {
-      if (keyword.length === 0) return '';
       switch (type) {
         case KeywordTypes.EXACT:
         case KeywordTypes.WILDCARD:
@@ -78,27 +78,17 @@ export function serializeKeywords(keywords) {
 
   let index = 0;
 
-  const keywordString = computedKeywords
-    .map((keyword) =>
-      keyword.length === 0
-        ? false
-        : {
-            id: index++,
-            keyword,
-            type: KeywordTypes.MESSAGE,
-          }
-    )
-    .filter((string) => string !== false);
+  const keywordArray = computedKeywords
+    .filter((keyword) => /\S/.test(keyword))
+    .map((keyword) => ({id: index++, keyword, type: KeywordTypes.MESSAGE}));
 
-  const usersString = computedUsers.map((user) => ({
-    id: index++,
-    keyword: user,
-    type: KeywordTypes.USER,
-  }));
+  const usersArray = computedUsers
+    .filter((user) => /\S/.test(user))
+    .map((user) => ({id: index++, keyword: user, type: KeywordTypes.USER}));
 
   const data = {};
 
-  for (const keyword of [...keywordString, ...usersString]) {
+  for (const keyword of [...keywordArray, ...usersArray]) {
     data[keyword.id] = keyword;
   }
 
