@@ -1,4 +1,4 @@
-.chat-scrollable-area__message-container.bttv-disable-name-colors {
+.bttv-disable-name-colors .chat-scrollable-area__message-container {
   .chat-line__message,
   .chat-author__display-name,
   .chat-author__intl-login {
