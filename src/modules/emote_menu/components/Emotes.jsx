@@ -4,7 +4,7 @@ import Emote from './Emote.jsx';
 import {useEmotesState} from './Store.jsx';
 import styles from '../styles/emotes.module.css';
 
-export default function EmotesComponent({onChange, search, ...restProps}) {
+function EmotesComponent({onChange, search, ...restProps}) {
   const [emotes] = useEmotesState();
 
   return (
@@ -27,3 +27,5 @@ export default function EmotesComponent({onChange, search, ...restProps}) {
     </div>
   );
 }
+
+export default React.memo(EmotesComponent);
