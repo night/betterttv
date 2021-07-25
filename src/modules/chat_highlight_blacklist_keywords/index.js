@@ -6,7 +6,7 @@ import html from '../../utils/html.js';
 import twitch from '../../utils/twitch.js';
 import cdn from '../../utils/cdn.js';
 import {escapeRegExp} from '../../utils/regex.js';
-import {computeKeywords, Types} from '../../utils/keywords.js';
+import {computeKeywords, KeywordTypes} from '../../utils/keywords.js';
 import {SettingIds} from '../../constants.js';
 
 const BLACKLIST_KEYWORD_PROMPT = `Type some blacklist keywords. Messages containing keywords will be filtered from your chat.
@@ -61,7 +61,7 @@ function computeBlacklistKeywords() {
 let highlightKeywords = [];
 let highlightUsers = [];
 function computeHighlightKeywords() {
-  const keywords = settings.get(SettingIds.HIGHLIGHT_KEYWORDS);
+  const keywords = settings.get(SettingIds.HIGHLIGHT_KEYWORDS) || {};
   const {computedKeywords, computedUsers} = computeKeywords(keywords);
   highlightKeywords = computedKeywords;
   highlightUsers = computedUsers;
@@ -129,7 +129,10 @@ let $pinnedHighlightsContainer;
 
 class ChatHighlightBlacklistKeywordsModule {
   constructor() {
-    watcher.on('load', () => this.updateDefaultHighlightKeywords());
+    watcher.on('load', () => {
+      this.updateDefaultHighlightKeywords();
+      this.readRepairKeywords();
+    });
     watcher.on('load.chat', () => this.loadChat());
     watcher.on('load.vod', () => this.loadChat());
     watcher.on('chat.message', ($message, messageObj) => this.onMessage($message, messageObj));
@@ -144,16 +147,44 @@ class ChatHighlightBlacklistKeywordsModule {
     this.handleHighlightSound = this.handleHighlightSound.bind(this);
   }
 
+  readRepairKeywords() {
+    const highlightKeywordsValue = settings.get(SettingIds.HIGHLIGHT_KEYWORDS) || {};
+    const blacklistKeywordsValue = settings.get(SettingIds.BLACKLIST_KEYWORDS);
+
+    for (const keywordsValue of [highlightKeywordsValue, blacklistKeywordsValue]) {
+      let updated = false;
+
+      for (const value of Object.values(keywordsValue)) {
+        if (![KeywordTypes.EXACT, KeywordTypes.WILDCARD].includes(value.type)) {
+          continue;
+        }
+
+        if (value.type === KeywordTypes.EXACT) {
+          value.keyword = `<${value.keyword}>`;
+        }
+        value.type = KeywordTypes.MESSAGE;
+        updated = true;
+      }
+
+      if (updated) {
+        settings.set(
+          keywordsValue === highlightKeywordsValue ? SettingIds.HIGHLIGHT_KEYWORDS : SettingIds.BLACKLIST_KEYWORDS,
+          keywordsValue
+        );
+      }
+    }
+  }
+
   updateDefaultHighlightKeywords() {
     const value = settings.get(SettingIds.HIGHLIGHT_KEYWORDS);
-    if (Object.keys(value).length > 0) return;
+    if (value != null) return;
     const user = twitch.getCurrentUser();
     if (user == null) return;
 
     settings.set(SettingIds.HIGHLIGHT_KEYWORDS, {
       0: {
         id: 0,
-        type: Types.MESSAGE,
+        type: KeywordTypes.MESSAGE,
         status: null,
         keyword: user.name,
       },
