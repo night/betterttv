@@ -13,6 +13,10 @@ export function computeKeywords(keywords) {
   const computedUsers = [];
 
   for (const {keyword, type} of Object.values(keywords)) {
+    if (keyword.trim().length === 0) {
+      continue;
+    }
+
     switch (type) {
       case KeywordTypes.EXACT:
       case KeywordTypes.WILDCARD:
