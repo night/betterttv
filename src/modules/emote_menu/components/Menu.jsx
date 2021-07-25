@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import Divider from 'rsuite/lib/Divider/index.js';
 import styles from '../styles/menu.module.css';
-import {Emotes} from './Emotes.jsx';
+import Emotes from './Emotes.jsx';
 import Header from './Header.jsx';
 import Preview from './Preview.jsx';
 import Sidebar from './Sidebar.jsx';
