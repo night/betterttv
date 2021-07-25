@@ -129,7 +129,10 @@ let $pinnedHighlightsContainer;
 
 class ChatHighlightBlacklistKeywordsModule {
   constructor() {
-    watcher.on('load', () => this.readRepairKeywords());
+    watcher.on('load', () => {
+      this.updateDefaultHighlightKeywords();
+      this.readRepairKeywords();
+    });
     watcher.on('load.chat', () => this.loadChat());
     watcher.on('load.vod', () => this.loadChat());
     watcher.on('chat.message', ($message, messageObj) => this.onMessage($message, messageObj));
@@ -145,10 +148,8 @@ class ChatHighlightBlacklistKeywordsModule {
   }
 
   readRepairKeywords() {
-    let highlightKeywordsValue = settings.get(SettingIds.HIGHLIGHT_KEYWORDS);
+    const highlightKeywordsValue = settings.get(SettingIds.HIGHLIGHT_KEYWORDS) || {};
     const blacklistKeywordsValue = settings.get(SettingIds.BLACKLIST_KEYWORDS);
-
-    highlightKeywordsValue = this.updateDefaultHighlightKeywords(highlightKeywords) || {};
 
     for (const keywordsValue of [highlightKeywordsValue, blacklistKeywordsValue]) {
       let updated = false;
@@ -174,22 +175,20 @@ class ChatHighlightBlacklistKeywordsModule {
     }
   }
 
-  updateDefaultHighlightKeywords(value) {
-    if (value != null) return null;
+  updateDefaultHighlightKeywords() {
+    const value = settings.get(SettingIds.HIGHLIGHT_KEYWORDS);
+    if (value != null) return;
     const user = twitch.getCurrentUser();
-    if (user == null) return null;
+    if (user == null) return;
 
-    const newHighlightKeywords = {
+    settings.set(SettingIds.HIGHLIGHT_KEYWORDS, {
       0: {
         id: 0,
         type: KeywordTypes.MESSAGE,
         status: null,
         keyword: user.name,
       },
-    };
-
-    settings.set(SettingIds.HIGHLIGHT_KEYWORDS, newHighlightKeywords);
-    return newHighlightKeywords;
+    });
   }
 
   handleHighlightSound() {
