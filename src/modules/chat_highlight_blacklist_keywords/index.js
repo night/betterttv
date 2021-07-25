@@ -177,7 +177,7 @@ class ChatHighlightBlacklistKeywordsModule {
   updateDefaultHighlightKeywords(value) {
     if (value != null) return null;
     const user = twitch.getCurrentUser();
-    if (user === null) return null;
+    if (user == null) return null;
 
     const newHighlightKeywords = {
       0: {
