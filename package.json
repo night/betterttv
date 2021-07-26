@@ -70,6 +70,7 @@
     "react-lazy-load": "^3.1.13",
     "react-lazyload": "^3.2.0",
     "react-string-replace": "^0.4.4",
+    "react-virtualized": "^9.22.3",
     "remove-files-webpack-plugin": "^1.4.5",
     "rsuite": "^4.10.2",
     "save-file": "^2.3.1",

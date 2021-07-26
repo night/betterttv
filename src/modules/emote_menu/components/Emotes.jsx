@@ -1,29 +1,28 @@
 import React from 'react';
-import Divider from 'rsuite/lib/Divider/index.js';
+import {MultiGrid} from 'react-virtualized';
+import emotes from '../grid.js';
 import Emote from './Emote.jsx';
-import {useEmotesState} from './Store.jsx';
-import styles from '../styles/emotes.module.css';
+
+const COL_COUNT = 6;
 
 function EmotesComponent({onChange, search, ...restProps}) {
-  const [emotes] = useEmotesState();
+  function cellRenderer({columnIndex, rowIndex, key, style}) {
+    const [code, emote] = emotes.getEmoteAtIndex(columnIndex * COL_COUNT + rowIndex);
+    return <Emote key={key} code={code} data={emote} style={style} />;
+  }
 
   return (
     <div {...restProps}>
-      {Object.entries(emotes).map(([key, value]) => {
-        const subEmotes = Array.from(value.emotes);
-        if (subEmotes.length === 0) return null;
-        const emotesComponents = subEmotes.map(([id, emote]) => (
-          <Emote id={id} data={emote} onClick={() => onChange(emote)} />
-        ));
-        if (emotesComponents.every((component) => component == null)) return null;
-
-        return (
-          <>
-            <Divider className={styles.divider}>{key}</Divider>
-            <div className={styles.emotes}>{emotesComponents}</div>
-          </>
-        );
-      })}
+      <MultiGrid
+        cellRenderer={cellRenderer}
+        columnWidth={30}
+        rowHeight={30}
+        columnCount={COL_COUNT}
+        rowCount={Math.floor(emotes.length / COL_COUNT)}
+        fixedRowCount={1}
+        height={308}
+        width={272}
+      />
     </div>
   );
 }

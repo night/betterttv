@@ -2,12 +2,12 @@ import React from 'react';
 import LazyLoad from 'react-lazy-load';
 import styles from '../styles/emotes.module.css';
 
-export default function Emote({id, data, onClick}) {
+export default function Emote({code, data, onClick, ...restProps}) {
   if (!data?.images) return null;
   return (
-    <button type="button" className={styles.button} key={id} onClick={onClick}>
+    <button {...restProps} type="button" className={styles.button} onClick={onClick}>
       <LazyLoad offsetBottom={100}>
-        <img alt={id} src={data.images['1x']} />
+        <img alt={code} src={data.images['1x']} />
       </LazyLoad>
     </button>
   );
