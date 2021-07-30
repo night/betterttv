@@ -6,22 +6,22 @@ import Emote from './Emote.jsx';
 
 const grid = new EmotesGrid();
 
-export default function EmotesComponent({onChange, search, ...restProps}) {
-  function renderRow({style, index}) {
+export default function EmotesComponent({onChange}) {
+  function renderRow({key, style, index}) {
     const row = grid.getRow(index);
 
     if (grid.isHeader(index)) {
       return (
-        <div style={style} className={styles.header}>
+        <div key={key} style={style} className={styles.header}>
           {row.displayName}
         </div>
       );
     }
 
     return (
-      <div style={style}>
-        {row.map(([code, emote]) => (
-          <Emote data={emote} code={code} />
+      <div key={key} style={style} className={styles.row}>
+        {row.map((emote) => (
+          <Emote emote={emote} onMouseOver={() => onChange(emote)} />
         ))}
       </div>
     );
@@ -30,7 +30,7 @@ export default function EmotesComponent({onChange, search, ...restProps}) {
   return (
     <VirtualizedList
       stickyRows={grid.headers}
-      rowHeight={30}
+      rowHeight={36}
       windowHeight={308}
       totalRows={grid.totalRows}
       renderRow={renderRow}
