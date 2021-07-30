@@ -58,8 +58,9 @@ export default function VirtualizedList({totalRows, rowHeight, renderRow, window
   return (
     <div {...restProps} style={{height: windowHeight, overflowY: 'scroll'}} ref={wrapperRef}>
       <div style={{position: 'relative', height: listHeight}}>
-        {data.rows.map((value) => renderRow({index: value, style: style(value, rowHeight)}))}
-        {data.header != null && renderRow({index: data.header, style: headerStyle(rowHeight)})}
+        {data.rows.map((value) => renderRow({key: `row-${value}`, index: value, style: style(value, rowHeight)}))}
+        {data.header != null &&
+          renderRow({key: `row-${data.header}`, index: data.header, style: headerStyle(rowHeight)})}
       </div>
     </div>
   );

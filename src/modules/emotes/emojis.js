@@ -1,6 +1,7 @@
 import twemoji from 'twemoji';
 import blacklistedEmoji from '../../utils/emoji-blacklist.js';
 import cdn from '../../utils/cdn.js';
+import Icons from '../emote_menu/components/Icons.jsx';
 
 import AbstractEmotes from './abstract-emotes.js';
 import Emote from './emote.js';
@@ -12,6 +13,7 @@ const provider = {
   id: 'bttv-emoji',
   displayName: 'BetterTTV Emojis',
   badge: cdn.url('tags/developer.png'),
+  icon: Icons.STAR,
 };
 
 function countEmojis(emoji) {

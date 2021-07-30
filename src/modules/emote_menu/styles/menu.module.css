@@ -14,7 +14,7 @@
 }
 
 .sidebar {
-  width: 48px;
+  width: 54px;
   height: calc(360px - 52px);
   overflow-y: scroll;
 }
@@ -24,7 +24,7 @@
 }
 
 .emojis {
-  width: calc(100% - 48px);
+  width: calc(100% - 54px);
   padding: 0 10px 0 10px;
   overflow-y: scroll;
   overflow-x: hidden;
@@ -42,4 +42,34 @@
 
 .emojis::-webkit-scrollbar-thumb:hover {
   background: #191c23;
+}
+
+.preview {
+  display: flex;
+  height: 58px;
+  justify-content: space-between;
+  padding: 10px;
+
+  .content {
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
+    height: 100%;
+    img {
+      height: 100%;
+    }
+
+    .emoji {
+      width: 38px;
+      height: 38px;
+    }
+
+    .placeholder {
+      width: 100%;
+      height: 100%;
+      background-color: #292d33;
+      filter: brightness(85%);
+      border-radius: 5px;
+    }
+  }
 }

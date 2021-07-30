@@ -21,7 +21,7 @@ export default function EmoteMenu({triggerRef}) {
         <Emotes search={search} className={styles.emojis} onChange={(newEmote) => setEmote(newEmote)} />
       </div>
       <Divider className={styles.divider} />
-      <Preview emote={emote} />
+      <Preview value={emote} className={styles.preview} />
     </>
   );
 }
