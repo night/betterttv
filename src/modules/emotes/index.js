@@ -61,19 +61,8 @@ class EmotesModule {
     return this.emoteProviders.reduce((accumulator, {emotes}) => accumulator + emotes.size, 0);
   }
 
-  getEmoteAtIndex(index) {
-    let tempIndex = 0;
-
-    for (const {emotes} of this.emoteProviders) {
-      if (index > tempIndex + emotes.size) {
-        tempIndex += emotes.size;
-        continue;
-      }
-
-      return Array.from(emotes)[index - tempIndex];
-    }
-
-    return null;
+  getAllEmotes() {
+    return this.emoteProviders;
   }
 }
 

@@ -1,30 +1,40 @@
 import React from 'react';
-import {MultiGrid} from 'react-virtualized';
-import emotes from '../grid.js';
+import VirtualizedList from './VirtualizedList.jsx';
+import EmotesGrid from '../grid.js';
+import styles from '../styles/emotes.module.css';
 import Emote from './Emote.jsx';
 
-const COL_COUNT = 6;
+const grid = new EmotesGrid();
 
-function EmotesComponent({onChange, search, ...restProps}) {
-  function cellRenderer({columnIndex, rowIndex, key, style}) {
-    const [code, emote] = emotes.getEmoteAtIndex(columnIndex * COL_COUNT + rowIndex);
-    return <Emote key={key} code={code} data={emote} style={style} />;
+export default function EmotesComponent({onChange, search, ...restProps}) {
+  function renderRow({style, index}) {
+    const row = grid.getRow(index);
+
+    if (grid.isHeader(index)) {
+      return (
+        <div style={style} className={styles.header}>
+          {row.displayName}
+        </div>
+      );
+    }
+
+    return (
+      <div style={style}>
+        {row.map(([code, emote]) => (
+          <Emote data={emote} code={code} />
+        ))}
+      </div>
+    );
   }
 
   return (
-    <div {...restProps}>
-      <MultiGrid
-        cellRenderer={cellRenderer}
-        columnWidth={30}
-        rowHeight={30}
-        columnCount={COL_COUNT}
-        rowCount={Math.floor(emotes.length / COL_COUNT)}
-        fixedRowCount={1}
-        height={308}
-        width={272}
-      />
-    </div>
+    <VirtualizedList
+      stickyRows={grid.headers}
+      rowHeight={30}
+      windowHeight={308}
+      totalRows={grid.totalRows}
+      renderRow={renderRow}
+      className={styles.emotes}
+    />
   );
 }
-
-export default React.memo(EmotesComponent);

@@ -1,6 +1,7 @@
 .emotes {
   width: 100%;
   height: auto;
+  overflow-y: scroll;
 }
 
 .divider {
@@ -31,4 +32,18 @@
 
 .button:focus {
   background-color: #616163;
+}
+
+.header {
+  width: 100%;
+  height: 30px;
+  text-align: center;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  background-color: #616163;
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
