@@ -8,6 +8,7 @@ class EmotesGrid extends SafeEventEmitter {
   constructor() {
     super();
 
+    this.focus = null;
     this.headers = [];
     this.rows = [];
     this.providers = [];
@@ -56,6 +57,11 @@ class EmotesGrid extends SafeEventEmitter {
 
   getHeaders() {
     return Object.values(this.headers);
+  }
+
+  setFocus(rowIndex, scrollTo = false) {
+    this.focus = rowIndex;
+    this.emit('focus.change', scrollTo);
   }
 
   isHeader(index) {
