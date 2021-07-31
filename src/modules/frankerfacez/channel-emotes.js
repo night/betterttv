@@ -6,10 +6,12 @@ import AbstractEmotes from '../emotes/abstract-emotes.js';
 import Emote from '../emotes/emote.js';
 import {EmoteTypeFlags, SettingIds} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
+import Icons from '../emote_menu/components/Icons.jsx';
 
 const provider = {
   id: 'ffz-channel',
   displayName: 'FrankerFaceZ Channel Emotes',
+  icon: Icons.SMILE,
 };
 
 class FrankerFaceZChannelEmotes extends AbstractEmotes {

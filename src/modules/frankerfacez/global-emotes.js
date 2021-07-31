@@ -6,10 +6,12 @@ import AbstractEmotes from '../emotes/abstract-emotes.js';
 import Emote from '../emotes/emote.js';
 import {EmoteTypeFlags, SettingIds} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
+import Icons from '../emote_menu/components/Icons.jsx';
 
 const provider = {
   id: 'ffz-global',
   displayName: 'FrankerFaceZ Global Emotes',
+  icon: Icons.SMILE,
 };
 
 class GlobalEmotes extends AbstractEmotes {

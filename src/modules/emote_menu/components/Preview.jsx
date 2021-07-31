@@ -28,7 +28,7 @@ export default function Preview({value, ...restProps}) {
     <div {...restProps} key={code}>
       <div className={styles.content}>
         <div className={styles.emoji}>
-          <img alt={emote.name} src={emote.images['1x']} />
+          <img alt={emote.name} src={emote.images['3x'] || emote.images['2x'] || emote.images['1x']} />
         </div>
         <div>
           <p>{code}</p>

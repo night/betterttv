@@ -13,7 +13,7 @@ const provider = {
   id: 'bttv-emoji',
   displayName: 'BetterTTV Emojis',
   badge: cdn.url('tags/developer.png'),
-  icon: Icons.STAR,
+  icon: Icons.SMILE,
 };
 
 function countEmojis(emoji) {

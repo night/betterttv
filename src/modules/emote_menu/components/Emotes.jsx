@@ -1,40 +1,42 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import VirtualizedList from './VirtualizedList.jsx';
-import EmotesGrid from '../grid.js';
+import grid from '../grid.js';
 import styles from '../styles/emotes.module.css';
 import Emote from './Emote.jsx';
 
-const grid = new EmotesGrid();
-
-export default function EmotesComponent({onChange}) {
-  function renderRow({key, style, index}) {
-    const row = grid.getRow(index);
-
-    if (grid.isHeader(index)) {
-      return (
+export default function EmotesComponent({onSelect, onFocus}) {
+  const renderRow = useCallback(
+    ({key, style, index}) => {
+      const row = grid.getRow(index);
+      return grid.isHeader(index) ? (
         <div key={key} style={style} className={styles.header}>
           {row.displayName}
         </div>
+      ) : (
+        <div key={key} style={style} className={styles.row}>
+          {row.map((emote) => (
+            <Emote emote={emote} onMouseOver={() => onSelect(emote)} />
+          ))}
+        </div>
       );
-    }
+    },
+    [onSelect]
+  );
 
-    return (
-      <div key={key} style={style} className={styles.row}>
-        {row.map((emote) => (
-          <Emote emote={emote} onMouseOver={() => onChange(emote)} />
-        ))}
-      </div>
-    );
-  }
+  const headerChange = useCallback((index) => {
+    const header = grid.headers[index];
+    if (header) onFocus(header.id);
+  });
 
   return (
     <VirtualizedList
-      stickyRows={grid.headers}
+      stickyRows={Object.keys(grid.headers)}
       rowHeight={36}
       windowHeight={308}
       totalRows={grid.totalRows}
       renderRow={renderRow}
       className={styles.emotes}
+      onHeaderChange={headerChange}
     />
   );
 }
