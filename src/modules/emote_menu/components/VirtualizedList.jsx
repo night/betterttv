@@ -14,15 +14,10 @@ const headerStyle = (rowHeight) => ({
   width: '100%',
 });
 
-export default function VirtualizedList({
-  totalRows,
-  rowHeight,
-  renderRow,
-  windowHeight,
-  stickyRows = [],
-  onHeaderChange = () => {},
-  ...restProps
-}) {
+function VirtualizedList(
+  {totalRows, rowHeight, renderRow, windowHeight, stickyRows = [], onHeaderChange = () => {}, ...restProps},
+  ref = null
+) {
   const listHeight = useMemo(() => rowHeight * totalRows, [totalRows, rowHeight]);
   const headers = useMemo(() => stickyRows.sort((a, b) => b - a), [stickyRows]);
 
@@ -35,7 +30,7 @@ export default function VirtualizedList({
     onHeaderChange(data.header);
   }, [data.header]);
 
-  const wrapperRef = useRef(null);
+  const wrapperRef = ref || useRef(null);
 
   const isInViewport = useCallback(() => {
     const {scrollTop} = wrapperRef.current;
@@ -77,3 +72,5 @@ export default function VirtualizedList({
     </div>
   );
 }
+
+export default React.forwardRef(VirtualizedList);
