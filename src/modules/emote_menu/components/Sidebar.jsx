@@ -1,32 +1,29 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import Nav from 'rsuite/lib/Nav/index.js';
 import Icon from 'rsuite/lib/Icon/index.js';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faStar} from '@fortawesome/free-solid-svg-icons/faStar';
-import {faSmile} from '@fortawesome/free-solid-svg-icons/faSmile';
+import grid from '../grid.js';
 
-export default function Sidebar({...restProps}) {
+export default function Sidebar({value, onChange, ...restProps}) {
+  const [providers, setProviders] = useState(grid.getHeaders());
+
+  useEffect(() => {
+    function callback() {
+      setProviders(grid.getHeaders());
+    }
+
+    grid.on('loaded', callback);
+
+    return () => {
+      grid.off('loaded', callback);
+    };
+  }, []);
+
   return (
     <div {...restProps}>
-      <Nav vertical appearance="subtle">
-        <Nav.Item
-          key="emojis"
-          eventKey="emojis"
-          icon={
-            <Icon>
-              <FontAwesomeIcon icon={faStar} />
-            </Icon>
-          }
-        />
-        <Nav.Item
-          key="emojis"
-          eventKey="emojis"
-          icon={
-            <Icon>
-              <FontAwesomeIcon icon={faSmile} />
-            </Icon>
-          }
-        />
+      <Nav vertical appearance="subtle" onSelect={onChange} activeKey={value}>
+        {providers.map(({icon, id}) => (
+          <Nav.Item key={id} eventKey={id} icon={<Icon>{icon()}</Icon>} />
+        ))}
       </Nav>
     </div>
   );

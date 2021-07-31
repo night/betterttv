@@ -4,11 +4,13 @@ import twitch from '../../utils/twitch.js';
 
 import AbstractEmotes from './abstract-emotes.js';
 import Emote from './emote.js';
+import Icons from '../emote_menu/components/Icons.jsx';
 
 const provider = {
   id: 'bttv-channel',
   displayName: 'BetterTTV Channel Emotes',
   badge: cdn.url('tags/developer.png'),
+  icon: Icons.BETTERTTV,
 };
 
 class ChannelEmotes extends AbstractEmotes {

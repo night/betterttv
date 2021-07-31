@@ -14,7 +14,15 @@ const headerStyle = (rowHeight) => ({
   width: '100%',
 });
 
-export default function VirtualizedList({totalRows, rowHeight, renderRow, windowHeight, stickyRows, ...restProps}) {
+export default function VirtualizedList({
+  totalRows,
+  rowHeight,
+  renderRow,
+  windowHeight,
+  stickyRows = [],
+  onHeaderChange = () => {},
+  ...restProps
+}) {
   const listHeight = useMemo(() => rowHeight * totalRows, [totalRows, rowHeight]);
   const headers = useMemo(() => stickyRows.sort((a, b) => b - a), [stickyRows]);
 
@@ -22,6 +30,10 @@ export default function VirtualizedList({totalRows, rowHeight, renderRow, window
     header: null,
     rows: [],
   });
+
+  useEffect(() => {
+    onHeaderChange(data.header);
+  }, [data.header]);
 
   const wrapperRef = useRef(null);
 

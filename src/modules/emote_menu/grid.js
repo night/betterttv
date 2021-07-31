@@ -1,21 +1,30 @@
+import SafeEventEmitter from '../../utils/safe-event-emitter.js';
 import watcher from '../../watcher.js';
 import emotes from '../emotes/index.js';
 
 const COLOUMN_COUNT = 7;
 
-export default class EmotesGrid {
+class EmotesGrid extends SafeEventEmitter {
   constructor() {
+    super();
+
     this.headers = [];
     this.rows = [];
+    this.providers = [];
+
     this.totalCols = COLOUMN_COUNT;
-    this.totalRows = Math.ceil(emotes.length / this.totalCols);
-    this.loadEmotes();
+
+    watcher.on('channel.updated', () => {
+      this.loadEmotes();
+    });
+  }
+
+  get totalRows() {
+    return this.rows.length;
   }
 
   loadEmotes() {
-    let index = 0;
-
-    this.headers = [];
+    this.headers = {};
     this.rows = [];
 
     for (const provider of emotes.getAllEmotes()) {
@@ -23,28 +32,35 @@ export default class EmotesGrid {
         continue;
       }
 
+      this.headers[this.totalRows] = provider.provider;
       this.rows.push(provider.provider);
-      this.headers.push(index);
-      index++;
 
       const emotesIter = provider.emotes[Symbol.iterator]();
+      const totalRows = Math.ceil(provider.emotes.size / COLOUMN_COUNT);
 
-      for (let i = 0; i < this.totalRows; i++) {
+      for (let i = 0; i < totalRows; i++) {
         const row = [];
         for (let k = 0; k < this.totalCols; k++) {
           row.push(emotesIter.next().value);
         }
         this.rows.push(row);
-        index++;
       }
     }
+
+    this.emit('loaded');
   }
 
   getRow(index) {
     return this.rows[index];
   }
 
+  getHeaders() {
+    return Object.values(this.headers);
+  }
+
   isHeader(index) {
-    return this.headers.includes(index);
+    return index in this.headers;
   }
 }
+
+export default new EmotesGrid();

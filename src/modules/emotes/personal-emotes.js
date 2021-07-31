@@ -4,11 +4,13 @@ import twitch from '../../utils/twitch.js';
 import cdn from '../../utils/cdn.js';
 import AbstractEmotes from './abstract-emotes.js';
 import Emote from './emote.js';
+import Icons from '../emote_menu/components/Icons.jsx';
 
 const provider = {
   id: 'bttv-personal',
   displayName: 'BetterTTV Personal Emotes',
   badge: cdn.url('tags/developer.png'),
+  icon: Icons.SMILE,
 };
 
 let joinedChannel;
