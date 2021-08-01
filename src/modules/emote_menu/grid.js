@@ -1,6 +1,6 @@
 import SafeEventEmitter from '../../utils/safe-event-emitter.js';
 import watcher from '../../watcher.js';
-import emotes from '../emotes/index.js';
+import categories from './stores/emoji-categories.js';
 
 const COLOUMN_COUNT = 7;
 
@@ -28,7 +28,7 @@ class EmotesGrid extends SafeEventEmitter {
     this.headers = {};
     this.rows = [];
 
-    for (const provider of emotes.getAllEmotes()) {
+    for (const provider of categories) {
       if (provider.emotes.size === 0) {
         continue;
       }
@@ -36,17 +36,18 @@ class EmotesGrid extends SafeEventEmitter {
       this.headers[this.totalRows] = provider.provider;
       this.rows.push(provider.provider);
 
-      const emotesIter = provider.emotes[Symbol.iterator]();
-      const totalRows = Math.ceil(provider.emotes.size / COLOUMN_COUNT);
+      const totalRows = Math.ceil(provider.emotes.length / COLOUMN_COUNT);
 
       for (let i = 0; i < totalRows; i++) {
         const row = [];
         for (let k = 0; k < this.totalCols; k++) {
-          row.push(emotesIter.next().value);
+          row.push(provider.emotes[i * COLOUMN_COUNT + k]);
         }
         this.rows.push(row);
       }
     }
+
+    console.log(this.rows);
 
     this.emit('loaded');
   }

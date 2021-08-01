@@ -5,8 +5,8 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faStar} from '@fortawesome/free-solid-svg-icons/faStar';
 import styles from '../styles/menu.module.css';
 
-export default function PreviewEmote({value, ...restProps}) {
-  if (!value) {
+export default function PreviewEmote({emote, ...restProps}) {
+  if (!emote) {
     return (
       <div {...restProps} key="placeholder">
         <div className={styles.content}>
@@ -22,16 +22,14 @@ export default function PreviewEmote({value, ...restProps}) {
     );
   }
 
-  const [code, emote] = value;
-
   return (
-    <div {...restProps} key={code}>
+    <div {...restProps} key={emote.code}>
       <div className={styles.content}>
         <div className={styles.emoji}>
           <img alt={emote.name} src={emote.images['3x'] || emote.images['2x'] || emote.images['1x']} />
         </div>
         <div>
-          <p>{code}</p>
+          <p>{emote.code}</p>
           <p>
             from <b>{emote.provider.displayName}</b>
           </p>

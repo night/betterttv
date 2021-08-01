@@ -65,7 +65,7 @@ function SearchedEmotes({search, onSelect, onClick}) {
       return (
         <div key={key} style={style} className={styles.row}>
           {row.map((emote) => (
-            <Emote emote={emote} onClick={() => onClick(emote)} onMouseOver={() => onSelect(emote)} />
+            <Emote emote={emote} onClick={() => onClick(emote)} onFocus={() => onSelect(emote)} />
           ))}
         </div>
       );
