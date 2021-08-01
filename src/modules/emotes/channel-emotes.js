@@ -10,7 +10,7 @@ const provider = {
   id: 'bttv-channel',
   displayName: 'BetterTTV Channel Emotes',
   badge: cdn.url('tags/developer.png'),
-  icon: Icons.BETTERTTV,
+  icon: Icons.THUMBS_UP,
 };
 
 class ChannelEmotes extends AbstractEmotes {

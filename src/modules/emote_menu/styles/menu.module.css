@@ -17,6 +17,7 @@
   width: 54px;
   height: calc(360px - 52px);
   overflow-y: scroll;
+  background-color: #191c23;
 }
 
 .sidebar::-webkit-scrollbar {

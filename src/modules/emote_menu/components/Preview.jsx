@@ -5,7 +5,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faStar} from '@fortawesome/free-solid-svg-icons/faStar';
 import styles from '../styles/menu.module.css';
 
-export default function Preview({value, ...restProps}) {
+export default function PreviewEmote({value, ...restProps}) {
   if (!value) {
     return (
       <div {...restProps} key="placeholder">

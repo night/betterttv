@@ -10,7 +10,7 @@ const provider = {
   id: 'bttv',
   displayName: 'BetterTTV Global Emotes',
   badge: cdn.url('tags/developer.png'),
-  icon: Icons.BETTERTTV,
+  icon: Icons.THUMBS_UP,
 };
 
 class GlobalEmotes extends AbstractEmotes {

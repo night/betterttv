@@ -1,5 +1,5 @@
 import React, {useRef} from 'react';
-import {faIcons} from '@fortawesome/free-solid-svg-icons/faIcons';
+import {faSmile} from '@fortawesome/free-solid-svg-icons/faSmile';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Whisper from 'rsuite/lib/Whisper/index.js';
 import Popover from 'rsuite/lib/Popover/index.js';
@@ -20,7 +20,7 @@ export default function Button() {
       }
       triggerRef={triggerRef}>
       <button type="button" className={styles.button}>
-        <FontAwesomeIcon icon={faIcons} />
+        <FontAwesomeIcon icon={faSmile} />
       </button>
     </Whisper>
   );

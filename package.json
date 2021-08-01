@@ -48,6 +48,7 @@
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-react": "^7.24.0",
     "filemanager-webpack-plugin": "^6.1.4",
+    "fuse.js": "^6.4.6",
     "git-rev-sync": "^3.0.1",
     "glob": "^7.1.7",
     "got": "^11.8.2",
