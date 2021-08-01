@@ -37,43 +37,24 @@ function convertEmojiToolkitCodePointToChar(codePoint) {
   return String.fromCharCode(charCode);
 }
 
-function transformEmojiData(emojiData) {
-  const transformedResult = {};
-  const char = convertEmojiToolkitCodePointToChar(emojiData.code_points.fully_qualified);
-  const data = {
-    char,
-    slug: emojiData.shortname.replace(/:/g, ''),
-  };
-  transformedResult[data.slug] = data;
-  for (const alternativeShortName of emojiData.shortname_alternates) {
-    // :tf: is a legacy betterttv global emote
-    if (alternativeShortName === ':tf:') {
-      continue;
-    }
-    transformedResult[alternativeShortName.replace(/:/g, '')] = data;
-  }
-  return transformedResult;
-}
-
 function jsonTransform(emojis) {
-  let result = {};
+  const result = {};
   for (const emojiData of Object.values(emojis)) {
-    result = {...result, ...transformEmojiData(emojiData)};
+    const char = convertEmojiToolkitCodePointToChar(emojiData.code_points.fully_qualified);
+    const data = {
+      char,
+      slug: emojiData.shortname.replace(/:/g, ''),
+    };
+    result[data.slug] = data;
+    for (const alternativeShortName of emojiData.shortname_alternates) {
+      // :tf: is a legacy betterttv global emote
+      if (alternativeShortName === ':tf:') {
+        continue;
+      }
+      result[alternativeShortName.replace(/:/g, '')] = data;
+    }
   }
   return result;
-}
-
-function categorizeEmojis(emojis) {
-  const categorizedEmojis = {};
-
-  for (const emojiData of Object.values(emojis)) {
-    categorizedEmojis[emojiData.category] = {
-      ...categorizedEmojis[emojiData.category],
-      ...transformEmojiData(emojiData),
-    };
-  }
-
-  return categorizedEmojis;
 }
 
 export default async (env, argv) => {
@@ -227,7 +208,6 @@ export default async (env, argv) => {
       }),
       new VirtualModulesPlugin({
         'src/modules/emotes/emojis-by-slug.json': JSON.stringify(jsonTransform(emotes)),
-        'src/modules/emotes/emojis-by-category.json': JSON.stringify(categorizeEmojis(emotes)),
       }),
       new TerserPlugin({
         extractComments: false,
