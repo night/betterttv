@@ -4,7 +4,6 @@
 
 .header {
   display: flex;
-  column-gap: 7.5px;
   padding: 7.5px;
 }
 

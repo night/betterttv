@@ -41,7 +41,7 @@ export default function EmoteMenu({triggerRef}) {
         />
       </div>
       <Divider className={styles.divider} />
-      <Preview value={emote} className={styles.preview} />
+      <Preview emote={emote} className={styles.preview} />
     </>
   );
 }

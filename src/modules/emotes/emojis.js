@@ -24,7 +24,7 @@ function countEmojis(emoji) {
   return count;
 }
 
-class Emojis extends AbstractEmotes {
+export class Emojis extends AbstractEmotes {
   constructor() {
     super();
 
@@ -70,7 +70,7 @@ class Emojis extends AbstractEmotes {
           },
         });
 
-        // this.emotes.set(emoji.char, emote);
+        this.emotes.set(emoji.char, emote);
         this.emotes.set(code, emote);
       });
   }
