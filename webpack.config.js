@@ -227,7 +227,7 @@ export default async (env, argv) => {
       }),
       new VirtualModulesPlugin({
         'src/modules/emotes/emojis-by-slug.json': JSON.stringify(jsonTransform(emotes)),
-        'src/modules/emote_menu/stores/emojis-by-category.json': JSON.stringify(categorizeEmojis(emotes)),
+        'src/modules/emotes/emojis-by-category.json': JSON.stringify(categorizeEmojis(emotes)),
       }),
       new TerserPlugin({
         extractComments: false,
