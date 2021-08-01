@@ -11,7 +11,7 @@ import Icons from '../emote_menu/components/Icons.jsx';
 const provider = {
   id: 'ffz-global',
   displayName: 'FrankerFaceZ Global Emotes',
-  icon: Icons.SMILE,
+  icon: Icons.DOG,
 };
 
 class GlobalEmotes extends AbstractEmotes {

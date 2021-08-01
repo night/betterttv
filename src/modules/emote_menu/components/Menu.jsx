@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Divider from 'rsuite/lib/Divider/index.js';
 import grid from '../grid.js';
 import styles from '../styles/menu.module.css';
@@ -17,6 +17,10 @@ export default function EmoteMenu({triggerRef}) {
 
   const onHide = () => triggerRef.current.close();
 
+  useEffect(() => setSearch(''), [focus]);
+
+  function handleClick(newEmote) {}
+
   return (
     <>
       <Header value={search} onChange={(newValue) => setSearch(newValue)} className={styles.header} onHide={onHide} />
@@ -33,6 +37,7 @@ export default function EmoteMenu({triggerRef}) {
           focus={focus}
           onSelect={(newEmote) => setEmote(newEmote)}
           onFocus={(eventKey) => setFocus({eventKey, scrollTo: false})}
+          onClick={(newEmote) => handleClick(newEmote)}
         />
       </div>
       <Divider className={styles.divider} />

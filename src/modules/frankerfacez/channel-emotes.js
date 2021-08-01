@@ -11,7 +11,7 @@ import Icons from '../emote_menu/components/Icons.jsx';
 const provider = {
   id: 'ffz-channel',
   displayName: 'FrankerFaceZ Channel Emotes',
-  icon: Icons.SMILE,
+  icon: Icons.DOG,
 };
 
 class FrankerFaceZChannelEmotes extends AbstractEmotes {
