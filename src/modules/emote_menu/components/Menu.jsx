@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import Divider from 'rsuite/lib/Divider/index.js';
-import grid from '../grid.js';
+import emoteStore from '../stores/index.js';
 import styles from '../styles/menu.module.css';
 import Emotes from './Emotes.jsx';
 import Header from './Header.jsx';
@@ -11,7 +11,7 @@ export default function EmoteMenu({triggerRef}) {
   const [search, setSearch] = useState('');
   const [emote, setEmote] = useState(null);
   const [focus, setFocus] = useState({
-    eventKey: grid.getHeaders()[0].id,
+    eventKey: emoteStore.getHeaders()[0].id,
     scrollTo: false,
   });
 

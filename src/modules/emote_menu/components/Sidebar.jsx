@@ -1,20 +1,20 @@
 import React, {useState, useEffect} from 'react';
 import Nav from 'rsuite/lib/Nav/index.js';
 import Icon from 'rsuite/lib/Icon/index.js';
-import grid from '../grid.js';
+import emoteStore from '../stores/index.js';
 
 export default function Sidebar({focus, onChange, ...restProps}) {
-  const [providers, setProviders] = useState(grid.getHeaders());
+  const [providers, setProviders] = useState(emoteStore.getHeaders());
 
   useEffect(() => {
     function callback() {
-      setProviders(grid.getHeaders());
+      setProviders(emoteStore.getHeaders());
     }
 
-    grid.on('loaded', callback);
+    emoteStore.on('loaded', callback);
 
     return () => {
-      grid.off('loaded', callback);
+      emoteStore.off('loaded', callback);
     };
   }, []);
 

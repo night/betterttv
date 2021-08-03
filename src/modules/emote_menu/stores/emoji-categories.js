@@ -1,88 +1,10 @@
 import twemoji from 'twemoji';
-import cdn from '../../../utils/cdn.js';
 import emojiBlacklist from '../../../utils/emoji-blacklist.js';
 import Emote from '../../emotes/emote.js';
 import Icons from '../components/Icons.jsx';
 // file gets created during bundle
 // eslint-disable-next-line import/no-unresolved
 import emojiByCategory from './emojis-by-category.json';
-
-console.log(emojiByCategory);
-
-const emojiCategories = [
-  {
-    provider: {
-      id: 'bttv-emoji-people',
-      displayName: 'People',
-      badge: cdn.url('tags/developer.png'),
-      icon: Icons.PEOPLE,
-    },
-    emotes: emojiByCategory.people,
-  },
-  {
-    provider: {
-      id: 'bttv-emoji-nature',
-      displayName: 'Nature',
-      badge: cdn.url('tags/developer.png'),
-      icon: Icons.LEAF,
-    },
-    emotes: emojiByCategory.nature,
-  },
-  {
-    provider: {
-      id: 'bttv-emoji-food',
-      displayName: 'Foods',
-      badge: cdn.url('tags/developer.png'),
-      icon: Icons.ICE_CREAM,
-    },
-    emotes: emojiByCategory.food,
-  },
-  {
-    provider: {
-      id: 'bttv-emoji-activity',
-      displayName: 'Activities',
-      badge: cdn.url('tags/developer.png'),
-      icon: Icons.BASKET_BALL,
-    },
-    emotes: emojiByCategory.activity,
-  },
-  {
-    provider: {
-      id: 'bttv-emoji-travel',
-      displayName: 'Travel',
-      badge: cdn.url('tags/developer.png'),
-      icon: Icons.PLANE,
-    },
-    emotes: emojiByCategory.travel,
-  },
-  {
-    provider: {
-      id: 'bttv-emoji-objects',
-      displayName: 'Objects',
-      badge: cdn.url('tags/developer.png'),
-      icon: Icons.BOX,
-    },
-    emotes: emojiByCategory.objects,
-  },
-  {
-    provider: {
-      id: 'bttv-emoji-symbols',
-      displayName: 'Symbols',
-      badge: cdn.url('tags/developer.png'),
-      icon: Icons.HEART,
-    },
-    emotes: emojiByCategory.symbols,
-  },
-  {
-    provider: {
-      id: 'bttv-emoji-flags',
-      displayName: 'Flags',
-      badge: cdn.url('tags/developer.png'),
-      icon: Icons.FLAG,
-    },
-    emotes: emojiByCategory.flags,
-  },
-];
 
 function countEmojis(emoji) {
   let count = 0;
@@ -130,6 +52,73 @@ function parseEmotes(emojiBySlug, provider) {
     })
     .filter((emote) => emote);
 }
+
+const emojiCategories = [
+  {
+    provider: {
+      id: 'bttv-emoji-people',
+      displayName: 'People',
+      icon: Icons.PEOPLE,
+    },
+    emotes: emojiByCategory.people,
+  },
+  {
+    provider: {
+      id: 'bttv-emoji-nature',
+      displayName: 'Nature',
+      icon: Icons.LEAF,
+    },
+    emotes: emojiByCategory.nature,
+  },
+  {
+    provider: {
+      id: 'bttv-emoji-food',
+      displayName: 'Foods',
+      icon: Icons.ICE_CREAM,
+    },
+    emotes: emojiByCategory.food,
+  },
+  {
+    provider: {
+      id: 'bttv-emoji-activity',
+      displayName: 'Activities',
+      icon: Icons.BASKET_BALL,
+    },
+    emotes: emojiByCategory.activity,
+  },
+  {
+    provider: {
+      id: 'bttv-emoji-travel',
+      displayName: 'Travel',
+      icon: Icons.PLANE,
+    },
+    emotes: emojiByCategory.travel,
+  },
+  {
+    provider: {
+      id: 'bttv-emoji-objects',
+      displayName: 'Objects',
+      icon: Icons.BOX,
+    },
+    emotes: emojiByCategory.objects,
+  },
+  {
+    provider: {
+      id: 'bttv-emoji-symbols',
+      displayName: 'Symbols',
+      icon: Icons.HEART,
+    },
+    emotes: emojiByCategory.symbols,
+  },
+  {
+    provider: {
+      id: 'bttv-emoji-flags',
+      displayName: 'Flags',
+      icon: Icons.FLAG,
+    },
+    emotes: emojiByCategory.flags,
+  },
+];
 
 const categories = emojiCategories.map(({provider, emotes}) => ({provider, emotes: parseEmotes(emotes, provider)}));
 

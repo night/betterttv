@@ -57,6 +57,20 @@ function jsonTransform(emojis) {
   return result;
 }
 
+function jsonTransformCategories(emojis) {
+  const result = {};
+  for (const emojiData of Object.values(emojis)) {
+    const char = convertEmojiToolkitCodePointToChar(emojiData.code_points.fully_qualified);
+    const data = {
+      char,
+      slug: emojiData.shortname.replace(/:/g, ''),
+    };
+
+    result[emojiData.category] = {...result[emojiData.category], [data.slug]: data};
+  }
+  return result;
+}
+
 export default async (env, argv) => {
   const PROD = argv.mode === 'production';
   const PORT = 2888;
@@ -208,6 +222,7 @@ export default async (env, argv) => {
       }),
       new VirtualModulesPlugin({
         'src/modules/emotes/emojis-by-slug.json': JSON.stringify(jsonTransform(emotes)),
+        'src/modules/emote_menu/stores/emojis-by-category.json': JSON.stringify(jsonTransformCategories(emotes)),
       }),
       new TerserPlugin({
         extractComments: false,
