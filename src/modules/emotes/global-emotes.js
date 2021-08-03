@@ -4,13 +4,11 @@ import legacySubscribers from '../legacy_subscribers/index.js';
 import watcher from '../../watcher.js';
 import AbstractEmotes from './abstract-emotes.js';
 import Emote from './emote.js';
-import Icons from '../emote_menu/components/Icons.jsx';
 
 const provider = {
   id: 'bttv',
   displayName: 'BetterTTV Global Emotes',
   badge: cdn.url('tags/developer.png'),
-  icon: Icons.THUMBS_UP,
 };
 
 class GlobalEmotes extends AbstractEmotes {
