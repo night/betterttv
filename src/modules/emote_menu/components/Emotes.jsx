@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useRef} from 'react';
 import VirtualizedList from './VirtualizedList.jsx';
-import grid from '../grid.js';
+import emoteStore from '../stores/index.js';
 import styles from '../styles/emotes.module.css';
 import Emote from './Emote.jsx';
 import EmoteSearch from '../search.js';
@@ -14,8 +14,8 @@ function Emotes({onClick, onSelect, focus, onFocus}) {
 
   const renderRow = useCallback(
     ({key, style, index}) => {
-      const row = grid.getRow(index);
-      return grid.isHeader(index) ? (
+      const row = emoteStore.getRow(index);
+      return emoteStore.isHeader(index) ? (
         <div key={key} style={style} className={styles.header}>
           {row.displayName}
         </div>
@@ -31,22 +31,22 @@ function Emotes({onClick, onSelect, focus, onFocus}) {
   );
 
   const headerChange = useCallback((index) => {
-    const header = grid.headers[index];
+    const header = emoteStore.headers[index];
     if (header) onFocus(header.id);
   });
 
   useEffect(() => {
     if (!focus.scrollTo) return;
-    const index = Object.keys(grid.headers).find((key) => grid.headers[key].id === focus.eventKey);
+    const index = Object.keys(emoteStore.headers).find((key) => emoteStore.headers[key].id === focus.eventKey);
     if (index) wrapperRef.current.scrollTo(0, index * ROW_HEIGHT);
   }, [focus]);
 
   return (
     <VirtualizedList
-      stickyRows={Object.keys(grid.headers)}
+      stickyRows={Object.keys(emoteStore.headers)}
       rowHeight={ROW_HEIGHT}
       windowHeight={WINDOW_HEIGHT}
-      totalRows={grid.totalRows}
+      totalRows={emoteStore.totalRows}
       renderRow={renderRow}
       className={styles.emotes}
       onHeaderChange={headerChange}
@@ -77,7 +77,7 @@ function SearchedEmotes({search, onSelect, onClick}) {
     <VirtualizedList
       rowHeight={ROW_HEIGHT}
       windowHeight={WINDOW_HEIGHT}
-      totalRows={Math.ceil(emotes.length / grid.totalCols)}
+      totalRows={Math.ceil(emotes.length / emoteStore.totalCols)}
       renderRow={renderRow}
       className={styles.emotes}
     />
