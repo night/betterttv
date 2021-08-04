@@ -1,9 +1,8 @@
-import React, {useCallback, useEffect, useRef} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef} from 'react';
 import VirtualizedList from './VirtualizedList.jsx';
 import emoteStore from '../stores/index.js';
 import styles from '../styles/emotes.module.css';
 import Emote from './Emote.jsx';
-import EmoteSearch from '../search.js';
 
 const ROW_HEIGHT = 36;
 const WINDOW_HEIGHT = 308;
@@ -30,42 +29,45 @@ function Emotes({onClick, onSelect, focus, onFocus}) {
     [onSelect, onClick]
   );
 
-  const headerChange = useCallback((index) => {
-    const header = emoteStore.headers[index];
-    if (header) onFocus(header.id);
+  const handleHeaderChange = useCallback((index) => {
+    const header = emoteStore.getRow(index);
+    if (header != null) {
+      onFocus(header.id);
+    }
   });
 
   useEffect(() => {
     if (!focus.scrollTo) return;
-    const index = Object.keys(emoteStore.headers).find((key) => emoteStore.headers[key].id === focus.eventKey);
-    if (index) wrapperRef.current.scrollTo(0, index * ROW_HEIGHT);
+    const index = emoteStore.getHeaderIndexById(focus.eventKey);
+    if (index) {
+      wrapperRef.current.scrollTo(0, index * ROW_HEIGHT);
+    }
   }, [focus]);
 
   return (
     <VirtualizedList
-      stickyRows={Object.keys(emoteStore.headers)}
+      stickyRows={emoteStore.headers}
       rowHeight={ROW_HEIGHT}
       windowHeight={WINDOW_HEIGHT}
       totalRows={emoteStore.totalRows}
       renderRow={renderRow}
-      className={styles.emotes}
-      onHeaderChange={headerChange}
+      className={styles.emotesContainer}
+      onHeaderChange={handleHeaderChange}
       ref={wrapperRef}
     />
   );
 }
 
 function SearchedEmotes({search, onSelect, onClick}) {
-  const emotes = EmoteSearch.search.search(search);
+  const emotes = useMemo(() => emoteStore.search(search), [search]);
 
   const renderRow = useCallback(
     ({key, style, index}) => {
-      const row = emotes.slice(index * TOTAL_COLS, (index + 1) * TOTAL_COLS).map(({item}) => [item.code, item]);
-
+      const row = emotes.slice(index * TOTAL_COLS, (index + 1) * TOTAL_COLS);
       return (
         <div key={key} style={style} className={styles.row}>
-          {row.map((emote) => (
-            <Emote emote={emote} onClick={() => onClick(emote)} onFocus={() => onSelect(emote)} />
+          {row.map(({item}) => (
+            <Emote emote={item} onClick={() => onClick(item)} onFocus={() => onSelect(item)} />
           ))}
         </div>
       );
@@ -77,9 +79,9 @@ function SearchedEmotes({search, onSelect, onClick}) {
     <VirtualizedList
       rowHeight={ROW_HEIGHT}
       windowHeight={WINDOW_HEIGHT}
-      totalRows={Math.ceil(emotes.length / emoteStore.totalCols)}
+      totalRows={Math.ceil(emotes.length / TOTAL_COLS)}
       renderRow={renderRow}
-      className={styles.emotes}
+      className={styles.emotesContainer}
     />
   );
 }

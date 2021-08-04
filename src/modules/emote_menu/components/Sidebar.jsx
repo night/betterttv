@@ -4,11 +4,11 @@ import Icon from 'rsuite/lib/Icon/index.js';
 import emoteStore from '../stores/index.js';
 
 export default function Sidebar({focus, onChange, ...restProps}) {
-  const [providers, setProviders] = useState(emoteStore.getHeaders());
+  const [providers, setProviders] = useState(emoteStore.providers);
 
   useEffect(() => {
     function callback() {
-      setProviders(emoteStore.getHeaders());
+      setProviders(emoteStore.providers);
     }
 
     emoteStore.on('loaded', callback);
@@ -21,8 +21,8 @@ export default function Sidebar({focus, onChange, ...restProps}) {
   return (
     <div {...restProps}>
       <Nav vertical appearance="subtle" onSelect={onChange} activeKey={focus.eventKey}>
-        {providers.map(({icon, id}) => (
-          <Nav.Item key={id} eventKey={id} icon={<Icon>{icon()}</Icon>} />
+        {providers.map(({provider}) => (
+          <Nav.Item key={provider.id} eventKey={provider.id} icon={<Icon>{provider.icon()}</Icon>} />
         ))}
       </Nav>
     </div>

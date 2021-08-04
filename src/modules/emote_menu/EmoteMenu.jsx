@@ -7,7 +7,7 @@ import {SettingIds} from '../../constants.js';
 import EmoteMenu from './components/Button.jsx';
 import domObserver from '../../observers/dom.js';
 
-const EMOTE_PICKER_BUTTON_SELECTOR = "button[data-a-target='emote-picker-button']";
+const EMOTE_PICKER_BUTTON_SELECTOR = 'button[data-a-target="emote-picker-button"]';
 const CHAT_INPUT_ICONS_SELECTOR = '.chat-input__input-icons';
 const BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR = '#bttvEmoteMenuContainer';
 

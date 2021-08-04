@@ -1,21 +1,21 @@
-.emotes {
+.emotesContainer {
   width: 100%;
   height: auto;
   overflow-y: scroll;
   overflow-x: hidden;
 }
 
-.emotes::-webkit-scrollbar {
+.emotesContainer::-webkit-scrollbar {
   border-radius: 6px;
   width: 5px;
 }
 
-.emotes::-webkit-scrollbar-thumb {
+.emotesContainer::-webkit-scrollbar-thumb {
   background: #191c23;
   border-radius: 5px;
 }
 
-.emotes::-webkit-scrollbar-thumb:hover {
+.emotesContainer::-webkit-scrollbar-thumb:hover {
   background: #191c23;
 }
 
@@ -23,7 +23,7 @@
   margin: 0px;
 }
 
-.button {
+.emote {
   width: 36px;
   height: 36px;
   position: relative;
@@ -49,11 +49,11 @@
   }
 }
 
-.button:hover {
+.emote:hover {
   background-color: #6a6a6c;
 }
 
-.button:focus {
+.emote:focus {
   background-color: #616163;
 }
 
@@ -61,7 +61,6 @@
   width: 100%;
   height: 30px;
   text-align: center;
-  position: -webkit-sticky;
   position: sticky;
   top: 0;
   background-color: #292d33;

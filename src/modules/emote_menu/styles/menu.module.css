@@ -4,7 +4,7 @@
 
 .header {
   display: flex;
-  padding: 7.5px;
+  padding: 8px;
 }
 
 .content {
@@ -17,6 +17,7 @@
   height: calc(360px - 52px);
   overflow-y: scroll;
   background-color: #191c23;
+  scrollbar-width: none;
 }
 
 .sidebar::-webkit-scrollbar {
@@ -28,6 +29,8 @@
   padding: 0 10px 0 10px;
   overflow-y: scroll;
   overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #191c23 transparent;
 }
 
 .emojis::-webkit-scrollbar {

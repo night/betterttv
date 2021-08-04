@@ -22,7 +22,7 @@ function countEmojis(emoji) {
   return count;
 }
 
-export class Emojis extends AbstractEmotes {
+class Emojis extends AbstractEmotes {
   constructor() {
     super();
 
@@ -33,7 +33,13 @@ export class Emojis extends AbstractEmotes {
     return provider;
   }
 
+  getEmotesByCategory() {
+    return this.emotesByCategory;
+  }
+
   loadEmojis() {
+    this.emotesByCategory = {};
+
     Object.values(emojiBySlug)
       .filter((emoji) => blacklistedEmoji.indexOf(emoji.char) === -1 && countEmojis(emoji) === 1)
       .forEach((emoji, index) => {
@@ -67,6 +73,15 @@ export class Emojis extends AbstractEmotes {
             '1x': url,
           },
         });
+
+        if (!emoji.isAlternative) {
+          // eslint-disable-next-line no-prototype-builtins
+          if (this.emotesByCategory.hasOwnProperty(emoji.category)) {
+            this.emotesByCategory[emoji.category].push(emote);
+          } else {
+            this.emotesByCategory[emoji.category] = [];
+          }
+        }
 
         this.emotes.set(emoji.char, emote);
         this.emotes.set(code, emote);

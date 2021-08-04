@@ -1,3 +1,4 @@
+import Fuse from 'fuse.js';
 import SafeEventEmitter from '../../../utils/safe-event-emitter.js';
 import watcher from '../../../watcher.js';
 import emojiCategories from './emoji-categories.js';
@@ -16,6 +17,11 @@ function chunkArray(array, size) {
   return [array.slice(0, size), ...chunkArray(array.slice(size), size)];
 }
 
+const fuse = new Fuse([], {
+  keys: ['code'],
+  threshold: 0.25,
+});
+
 class EmoteStore extends SafeEventEmitter {
   constructor() {
     super();
@@ -23,10 +29,6 @@ class EmoteStore extends SafeEventEmitter {
       this.loadProviders();
       this.loadEmotes();
     });
-  }
-
-  get totalRows() {
-    return this.rows.length;
   }
 
   loadProviders() {
@@ -51,20 +53,34 @@ class EmoteStore extends SafeEventEmitter {
     ];
   }
 
+  search(search) {
+    return fuse.search(search);
+  }
+
   loadEmotes() {
-    this.headers = {};
     this.rows = [];
+    this.headers = [];
+    this.emotes = [];
 
-    for (const provider of this.providers) {
-      if (provider.emotes.length === 0) {
-        continue;
-      }
+    for (const {provider, emotes} of this.providers) {
+      if (emotes.length === 0) continue;
 
-      this.headers[this.totalRows] = provider.provider;
-      this.rows = [...this.rows, provider.provider, ...chunkArray(provider.emotes, COLOUMN_COUNT)];
+      this.headers.push(this.rows.length);
+      this.emotes = this.emotes.concat(emotes);
+      this.rows = this.rows.concat([provider, ...chunkArray(emotes, COLOUMN_COUNT)]);
     }
 
+    fuse.setCollection(this.getEmotes());
+
     this.emit('loaded');
+  }
+
+  get totalRows() {
+    return this.rows.length;
+  }
+
+  getEmotes() {
+    return this.emotes;
   }
 
   getRow(index) {
@@ -72,11 +88,19 @@ class EmoteStore extends SafeEventEmitter {
   }
 
   getHeaders() {
-    return Object.values(this.headers);
+    return this.headers;
+  }
+
+  getHeader(index) {
+    return this.getRow(this.getHeaders()[index]);
+  }
+
+  getHeaderIndexById(id) {
+    return this.getHeaders().find((header) => this.getRow(header)?.id === id);
   }
 
   isHeader(index) {
-    return index in this.headers;
+    return this.getHeaders().includes(index);
   }
 }
 

@@ -19,7 +19,6 @@ function VirtualizedList(
   ref = null
 ) {
   const listHeight = useMemo(() => rowHeight * totalRows, [totalRows, rowHeight]);
-  const headers = useMemo(() => stickyRows.sort((a, b) => b - a), [stickyRows]);
 
   const [data, setData] = useState({
     header: null,
@@ -45,20 +44,17 @@ function VirtualizedList(
       rowsVisible.push(i);
     }
 
-    const newHeader = headers != null ? headers.filter((value) => value < startIndex + 1)[0] : null;
-
     setData({
-      header: newHeader,
+      header: stickyRows.length > 0 ? stickyRows.reduce((a, b) => (startIndex >= b ? b : a), stickyRows[0]) : null,
       rows: rowsVisible,
     });
   }, [totalRows, rowHeight, windowHeight]);
 
   useEffect(() => {
-    const isInViewportListener = isInViewport;
-    wrapperRef.current.addEventListener('scroll', isInViewportListener, false);
+    wrapperRef.current.addEventListener('scroll', isInViewport, false);
     isInViewport();
     return () => {
-      wrapperRef.current.removeEventListener('scroll', isInViewportListener, false);
+      wrapperRef.current.removeEventListener('scroll', isInViewport, false);
     };
   }, [isInViewport]);
 
@@ -66,8 +62,9 @@ function VirtualizedList(
     <div {...restProps} style={{height: windowHeight, overflowY: 'scroll'}} ref={wrapperRef}>
       <div style={{position: 'relative', height: listHeight}}>
         {data.rows.map((value) => renderRow({key: `row-${value}`, index: value, style: style(value, rowHeight)}))}
-        {data.header != null &&
-          renderRow({key: `row-${data.header}`, index: data.header, style: headerStyle(rowHeight)})}
+        {data.header != null
+          ? renderRow({key: `row-${data.header}`, index: data.header, style: headerStyle(rowHeight)})
+          : null}
       </div>
     </div>
   );

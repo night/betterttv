@@ -1,59 +1,9 @@
-import twemoji from 'twemoji';
-import emojiBlacklist from '../../../utils/emoji-blacklist.js';
-import Emote from '../../emotes/emote.js';
 import Icons from '../components/Icons.jsx';
-// file gets created during bundle
-// eslint-disable-next-line import/no-unresolved
-import emojiByCategory from './emojis-by-category.json';
+import emoji from '../../emotes/emojis.js';
 
-function countEmojis(emoji) {
-  let count = 0;
-  twemoji.parse(emoji.char, (d) => {
-    count += d.split('-').length;
-  });
-  return count;
-}
+const emojiByCategory = emoji.getEmotesByCategory();
 
-function parseEmotes(emojiBySlug, provider) {
-  return Object.values(emojiBySlug)
-    .filter((emoji) => emojiBlacklist.indexOf(emoji.char) === -1 && countEmojis(emoji) === 1)
-    .map((emoji, index) => {
-      let url;
-
-      twemoji.parse(emoji.char, {
-        callback: (icon, options) => {
-          switch (icon) {
-            case 'a9': // ©
-            case 'ae': // ®
-            case '2122': // ™
-              return false;
-            default:
-              break;
-          }
-
-          url = ''.concat(options.base, options.size, '/', icon, options.ext);
-
-          return false;
-        },
-      });
-
-      if (!url) return false;
-
-      const code = `:${emoji.slug}:`;
-
-      return new Emote({
-        id: index,
-        provider,
-        code,
-        images: {
-          '1x': url,
-        },
-      });
-    })
-    .filter((emote) => emote);
-}
-
-const emojiCategories = [
+export default [
   {
     provider: {
       id: 'bttv-emoji-people',
@@ -119,7 +69,3 @@ const emojiCategories = [
     emotes: emojiByCategory.flags,
   },
 ];
-
-const categories = emojiCategories.map(({provider, emotes}) => ({provider, emotes: parseEmotes(emotes, provider)}));
-
-export default categories;

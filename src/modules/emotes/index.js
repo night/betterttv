@@ -56,14 +56,6 @@ class EmotesModule {
 
     return null;
   }
-
-  get length() {
-    return this.emoteProviders.reduce((accumulator, {emotes}) => accumulator + emotes.size, 0);
-  }
-
-  getAllEmotes() {
-    return this.emoteProviders;
-  }
 }
 
 export default new EmotesModule();

@@ -10,8 +10,9 @@ import Sidebar from './Sidebar.jsx';
 export default function EmoteMenu({triggerRef}) {
   const [search, setSearch] = useState('');
   const [emote, setEmote] = useState(null);
+
   const [focus, setFocus] = useState({
-    eventKey: emoteStore.getHeaders()[0].id,
+    eventKey: emoteStore.getHeader(0).id,
     scrollTo: false,
   });
 
