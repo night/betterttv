@@ -7,7 +7,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faSearch} from '@fortawesome/free-solid-svg-icons/faSearch';
 import {faTimes} from '@fortawesome/free-solid-svg-icons/faTimes';
 
-export default function Header({value, onChange, onHide, ...restProps}) {
+function Header({value, onChange, onHide, ...restProps}) {
   return (
     <div {...restProps}>
       <InputGroup inside>
@@ -30,3 +30,5 @@ export default function Header({value, onChange, onHide, ...restProps}) {
     </div>
   );
 }
+
+export default React.memo(Header, ({value: a}, {value: b}) => a === b);

@@ -19,7 +19,7 @@ export default function EmoteMenu({triggerRef}) {
   });
 
   const [focus, setFocus] = useState({
-    eventKey: emoteStore.getHeader(0).id,
+    eventKey: null,
     scrollTo: false,
   });
 

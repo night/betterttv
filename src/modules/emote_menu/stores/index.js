@@ -8,6 +8,7 @@ import ffzChannelEmotes from '../../frankerfacez/channel-emotes.js';
 import ffzGlobalEmotes from '../../frankerfacez/global-emotes.js';
 import Icons from '../components/Icons.jsx';
 import emoteStorage from './emote-storage.js';
+import twitchEmotes from './twitch-emotes.js';
 
 const COLOUMN_COUNT = 7;
 
@@ -28,7 +29,6 @@ class EmoteStore extends SafeEventEmitter {
     super();
 
     this.emotes = new Map();
-    this.allProviders = [];
 
     watcher.on('channel.updated', () => {
       this.loadProviders();
@@ -56,6 +56,7 @@ class EmoteStore extends SafeEventEmitter {
         },
         emotes: [...ffzChannelEmotes.getEmotes(), ...ffzGlobalEmotes.getEmotes()],
       },
+      ...twitchEmotes.getSets(),
       ...emojiCategories,
     ];
   }
@@ -93,9 +94,8 @@ class EmoteStore extends SafeEventEmitter {
   createRows() {
     this.rows = [];
     this.headers = [];
-    this.allProviders = [...this.conditionalProviders, ...this.providers];
 
-    for (const {provider, emotes} of this.allProviders) {
+    for (const {provider, emotes} of [...this.conditionalProviders, ...this.providers]) {
       if (emotes.length === 0) continue;
 
       this.headers.push(this.rows.length);
@@ -141,7 +141,7 @@ class EmoteStore extends SafeEventEmitter {
   }
 
   getProviders() {
-    return this.allProviders;
+    return this.headers.map((id) => this.getRow(id));
   }
 
   getEmotes() {

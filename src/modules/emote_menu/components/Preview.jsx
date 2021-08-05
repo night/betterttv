@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from '../styles/menu.module.css';
 
-export default function PreviewEmote({emote, ...restProps}) {
+function PreviewEmote({emote, ...restProps}) {
   if (!emote) {
     return (
       <div {...restProps} key="placeholder">
@@ -34,3 +34,5 @@ export default function PreviewEmote({emote, ...restProps}) {
     </div>
   );
 }
+
+export default React.memo(PreviewEmote, ({emote: a}, {emote: b}) => a === b);

@@ -72,7 +72,7 @@ function Emotes({onClick, onHover, focus, onFocus}) {
   );
 }
 
-function SearchedEmotes({search, onSelect, onClick}) {
+function SearchedEmotes({search, onHover, onClick}) {
   const emotes = useMemo(() => emoteStore.search(search), [search]);
 
   const renderRow = useCallback(
@@ -81,12 +81,12 @@ function SearchedEmotes({search, onSelect, onClick}) {
       return (
         <div key={key} style={style} className={styles.row}>
           {row.map(({item}) => (
-            <Emote emote={item} onClick={() => onClick(item)} />
+            <Emote key={item.code} emote={item} onClick={() => onClick(item)} onMouseOver={() => onHover(item)} />
           ))}
         </div>
       );
     },
-    [onSelect, onClick]
+    [onHover, onClick]
   );
 
   return (
