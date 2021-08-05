@@ -7,6 +7,7 @@ import globalEmotes from '../../emotes/global-emotes.js';
 import ffzChannelEmotes from '../../frankerfacez/channel-emotes.js';
 import ffzGlobalEmotes from '../../frankerfacez/global-emotes.js';
 import Icons from '../components/Icons.jsx';
+import recentEmotes from './recent-emotes.js';
 
 const COLOUMN_COUNT = 7;
 
@@ -25,9 +26,13 @@ const fuse = new Fuse([], {
 class EmoteStore extends SafeEventEmitter {
   constructor() {
     super();
+
+    this.emotes = new Map();
+
     watcher.on('channel.updated', () => {
       this.loadProviders();
       this.loadEmotes();
+      this.createRows();
     });
   }
 
@@ -58,21 +63,45 @@ class EmoteStore extends SafeEventEmitter {
   }
 
   loadEmotes() {
+    this.emotes.clear();
+
+    for (const {emotes} of this.providers) {
+      for (const emote of emotes) {
+        this.emotes.set(emote.id, emote);
+      }
+    }
+
+    fuse.setCollection(this.getEmotes());
+
+    this.loadRecentEmotes();
+  }
+
+  createRows() {
     this.rows = [];
     this.headers = [];
-    this.emotes = [];
 
     for (const {provider, emotes} of this.providers) {
       if (emotes.length === 0) continue;
 
       this.headers.push(this.rows.length);
-      this.emotes = this.emotes.concat(emotes);
       this.rows = this.rows.concat([provider, ...chunkArray(emotes, COLOUMN_COUNT)]);
     }
+  }
 
-    fuse.setCollection(this.getEmotes());
+  loadRecentEmotes() {
+    const emotes = recentEmotes
+      .getEmoteIds()
+      .map((id) => this.emotes.get(id))
+      .filter((emote) => emote != null);
 
-    this.emit('loaded');
+    this.providers.unshift({
+      provider: {
+        id: 'recents',
+        displayName: 'Recently Used',
+        icon: Icons.CLOCK,
+      },
+      emotes,
+    });
   }
 
   get totalRows() {
@@ -80,7 +109,7 @@ class EmoteStore extends SafeEventEmitter {
   }
 
   getEmotes() {
-    return this.emotes;
+    return [...this.emotes.values()];
   }
 
   getRow(index) {

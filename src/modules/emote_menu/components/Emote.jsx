@@ -8,7 +8,7 @@ export default function Emote({emote, ...restProps}) {
   return (
     <button key={emote.code} {...restProps} type="button" className={styles.emote}>
       <img
-        src={emote.images['2x']}
+        src={emote.images['1x']}
         style={!loaded ? {visibility: 'hidden'} : {}}
         alt={emote.code}
         onLoad={() => setLoaded(true)}

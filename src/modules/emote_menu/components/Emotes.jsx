@@ -8,7 +8,7 @@ const ROW_HEIGHT = 36;
 const WINDOW_HEIGHT = 308;
 const TOTAL_COLS = 7;
 
-function Emotes({onClick, onSelect, focus, onFocus}) {
+function Emotes({onClick, onHover, focus, onFocus}) {
   const wrapperRef = useRef(null);
 
   const renderRow = useCallback(
@@ -21,12 +21,12 @@ function Emotes({onClick, onSelect, focus, onFocus}) {
       ) : (
         <div key={key} style={style} className={styles.row}>
           {row.map((emote) => (
-            <Emote emote={emote} onClick={() => onClick(emote)} onMouseOver={() => onSelect(emote)} />
+            <Emote key={emote.code} emote={emote} onClick={() => onClick(emote)} onMouseOver={() => onHover(emote)} />
           ))}
         </div>
       );
     },
-    [onSelect, onClick]
+    [onHover, onClick]
   );
 
   const handleHeaderChange = useCallback((index) => {
@@ -39,7 +39,7 @@ function Emotes({onClick, onSelect, focus, onFocus}) {
   useEffect(() => {
     if (!focus.scrollTo) return;
     const index = emoteStore.getHeaderIndexById(focus.eventKey);
-    if (index) {
+    if (index != null) {
       wrapperRef.current.scrollTo(0, index * ROW_HEIGHT);
     }
   }, [focus]);
@@ -67,7 +67,7 @@ function SearchedEmotes({search, onSelect, onClick}) {
       return (
         <div key={key} style={style} className={styles.row}>
           {row.map(({item}) => (
-            <Emote emote={item} onClick={() => onClick(item)} onFocus={() => onSelect(item)} />
+            <Emote emote={item} onClick={() => onClick(item)} />
           ))}
         </div>
       );

@@ -1,8 +1,4 @@
 import React from 'react';
-import IconButton from 'rsuite/lib/Button/index.js';
-import Icon from 'rsuite/lib/Icon/index.js';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faStar} from '@fortawesome/free-solid-svg-icons/faStar';
 import styles from '../styles/menu.module.css';
 
 export default function PreviewEmote({emote, ...restProps}) {
@@ -35,11 +31,6 @@ export default function PreviewEmote({emote, ...restProps}) {
           </p>
         </div>
       </div>
-      <IconButton appearance="subtle">
-        <Icon>
-          <FontAwesomeIcon icon={faStar} />
-        </Icon>
-      </IconButton>
     </div>
   );
 }

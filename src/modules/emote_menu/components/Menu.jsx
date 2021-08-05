@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import Divider from 'rsuite/lib/Divider/index.js';
 import emoteStore from '../stores/index.js';
+import recentEmotes from '../stores/recent-emotes.js';
 import styles from '../styles/menu.module.css';
 import Emotes from './Emotes.jsx';
 import Header from './Header.jsx';
@@ -20,7 +21,9 @@ export default function EmoteMenu({triggerRef}) {
 
   useEffect(() => setSearch(''), [focus]);
 
-  function handleClick(newEmote) {}
+  function handleClick(newEmote) {
+    recentEmotes.incrementEmote(newEmote);
+  }
 
   return (
     <>
@@ -36,7 +39,7 @@ export default function EmoteMenu({triggerRef}) {
           search={search}
           className={styles.emojis}
           focus={focus}
-          onSelect={(newEmote) => setEmote(newEmote)}
+          onHover={(newEmote) => setEmote(newEmote)}
           onFocus={(eventKey) => setFocus({eventKey, scrollTo: false})}
           onClick={(newEmote) => handleClick(newEmote)}
         />

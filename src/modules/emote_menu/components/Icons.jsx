@@ -12,6 +12,7 @@ import {faPlane} from '@fortawesome/free-solid-svg-icons/faPlane';
 import {faBox} from '@fortawesome/free-solid-svg-icons/faBox';
 import {faHeart} from '@fortawesome/free-solid-svg-icons/faHeart';
 import {faFlag} from '@fortawesome/free-solid-svg-icons/faFlag';
+import {faClock} from '@fortawesome/free-solid-svg-icons/faClock';
 
 export default {
   STAR: () => <FontAwesomeIcon icon={faStar} />,
@@ -26,4 +27,5 @@ export default {
   BOX: () => <FontAwesomeIcon icon={faBox} />,
   HEART: () => <FontAwesomeIcon icon={faHeart} />,
   FLAG: () => <FontAwesomeIcon icon={faFlag} />,
+  CLOCK: () => <FontAwesomeIcon icon={faClock} />,
 };
