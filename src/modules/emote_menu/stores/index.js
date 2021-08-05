@@ -7,7 +7,7 @@ import globalEmotes from '../../emotes/global-emotes.js';
 import ffzChannelEmotes from '../../frankerfacez/channel-emotes.js';
 import ffzGlobalEmotes from '../../frankerfacez/global-emotes.js';
 import Icons from '../components/Icons.jsx';
-import recentEmotes from './recent-emotes.js';
+import emoteStorage from './emote-storage.js';
 
 const COLOUMN_COUNT = 7;
 
@@ -28,10 +28,12 @@ class EmoteStore extends SafeEventEmitter {
     super();
 
     this.emotes = new Map();
+    this.allProviders = [];
 
     watcher.on('channel.updated', () => {
       this.loadProviders();
       this.loadEmotes();
+      this.loadConditionalEmotes();
       this.createRows();
     });
   }
@@ -62,50 +64,84 @@ class EmoteStore extends SafeEventEmitter {
     return fuse.search(search);
   }
 
+  incrementEmote(emote) {
+    emoteStorage.incrementEmote(emote);
+
+    this.loadConditionalEmotes();
+    this.createRows();
+  }
+
+  toggleFavorite(emote) {
+    emoteStorage.toggleFavorite(emote);
+
+    this.loadConditionalEmotes();
+    this.createRows();
+  }
+
   loadEmotes() {
     this.emotes.clear();
 
     for (const {emotes} of this.providers) {
       for (const emote of emotes) {
-        this.emotes.set(emote.id, emote);
+        this.emotes.set(String(emote.id), emote);
       }
     }
 
     fuse.setCollection(this.getEmotes());
-
-    this.loadRecentEmotes();
   }
 
   createRows() {
     this.rows = [];
     this.headers = [];
+    this.allProviders = [...this.conditionalProviders, ...this.providers];
 
-    for (const {provider, emotes} of this.providers) {
+    for (const {provider, emotes} of this.allProviders) {
       if (emotes.length === 0) continue;
 
       this.headers.push(this.rows.length);
       this.rows = this.rows.concat([provider, ...chunkArray(emotes, COLOUMN_COUNT)]);
     }
+
+    this.emit('updated');
   }
 
-  loadRecentEmotes() {
-    const emotes = recentEmotes
-      .getEmoteIds()
+  loadConditionalEmotes() {
+    const recents = emoteStorage
+      .getRecents()
       .map((id) => this.emotes.get(id))
       .filter((emote) => emote != null);
 
-    this.providers.unshift({
-      provider: {
-        id: 'recents',
-        displayName: 'Recently Used',
-        icon: Icons.CLOCK,
+    const favorites = emoteStorage
+      .getFavorites()
+      .map((id) => this.emotes.get(id))
+      .filter((emote) => emote != null);
+
+    this.conditionalProviders = [
+      {
+        provider: {
+          id: 'favorites',
+          displayName: 'Favorites',
+          icon: Icons.STAR,
+        },
+        emotes: favorites,
       },
-      emotes,
-    });
+      {
+        provider: {
+          id: 'recents',
+          displayName: 'Recently Used',
+          icon: Icons.CLOCK,
+        },
+        emotes: recents,
+      },
+    ];
   }
 
   get totalRows() {
     return this.rows.length;
+  }
+
+  getProviders() {
+    return this.allProviders;
   }
 
   getEmotes() {

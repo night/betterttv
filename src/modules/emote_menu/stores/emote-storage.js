@@ -31,31 +31,51 @@ function calcScore(totalUses, recentUses) {
   return Math.floor((totalUses * frecency) / recentUses.length);
 }
 
-class RecentEmotes {
+class EmoteStorage {
   constructor() {
     this.emoteStore = storage.get('emotes');
     this.ids = [];
 
     if (this.emoteStore == null) {
-      this.emoteStore = {};
+      this.emoteStore = {
+        usageHistory: {},
+        favorites: [],
+      };
     }
 
     this.updateAllScores();
   }
 
   updateAllScores() {
-    for (const [id, {totalUses, recentUses}] of Object.entries(this.emoteStore)) {
-      this.emoteStore[id].score = calcScore(totalUses, recentUses);
+    for (const [id, {totalUses, recentUses}] of Object.entries(this.emoteStore.usageHistory)) {
+      this.emoteStore.usageHistory[id].score = calcScore(totalUses, recentUses);
     }
 
     this.updateIds();
   }
 
+  toggleFavorite(emote) {
+    let {id} = emote;
+    id = String(id);
+
+    this.emoteStore.favorites = this.emoteStore.favorites.includes(id)
+      ? this.emoteStore.favorites.filter((favoriteId) => favoriteId !== id)
+      : [...this.emoteStore.favorites, id];
+
+    storage.set('emotes', this.emoteStore);
+  }
+
+  getFavorites() {
+    return this.emoteStore.favorites;
+  }
+
   incrementEmote(emote) {
-    const {id} = emote;
+    let {id} = emote;
+    id = String(id);
+
     // eslint-disable-next-line no-prototype-builtins
     if (this.emoteStore.hasOwnProperty(id)) {
-      const {totalUses, recentUses} = this.emoteStore[id];
+      const {totalUses, recentUses} = this.emoteStore.usageHistory[id];
 
       const newTotalUses = totalUses + 1;
       const newRecentUses = [Date.now(), ...recentUses];
@@ -64,13 +84,13 @@ class RecentEmotes {
         newRecentUses.pop();
       }
 
-      this.emoteStore[id] = {
+      this.emoteStore.usageHistory[id] = {
         totalUses: totalUses + 1,
         recentUses: newRecentUses,
         score: calcScore(newTotalUses, newRecentUses),
       };
     } else {
-      this.emoteStore[id] = {
+      this.emoteStore.usageHistory[id] = {
         recentUses: [Date.now()],
         totalUses: 1,
         score: calcScore(1, [Date.now()]),
@@ -83,14 +103,14 @@ class RecentEmotes {
   }
 
   updateIds() {
-    this.ids = Object.entries(this.emoteStore)
+    this.ids = Object.entries(this.emoteStore.usageHistory)
       .sort(([, {score: a}], [, {score: b}]) => b - a)
       .map(([id]) => id);
   }
 
-  getEmoteIds() {
+  getRecents() {
     return this.ids;
   }
 }
 
-export default new RecentEmotes();
+export default new EmoteStorage();

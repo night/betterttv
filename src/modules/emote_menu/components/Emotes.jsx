@@ -1,4 +1,5 @@
-import React, {useCallback, useEffect, useMemo, useRef} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import Icon from 'rsuite/lib/Icon/index.js';
 import VirtualizedList from './VirtualizedList.jsx';
 import emoteStore from '../stores/index.js';
 import styles from '../styles/emotes.module.css';
@@ -10,12 +11,14 @@ const TOTAL_COLS = 7;
 
 function Emotes({onClick, onHover, focus, onFocus}) {
   const wrapperRef = useRef(null);
+  const [, setUpdated] = useState(false);
 
   const renderRow = useCallback(
     ({key, style, index}) => {
       const row = emoteStore.getRow(index);
       return emoteStore.isHeader(index) ? (
         <div key={key} style={style} className={styles.header}>
+          <Icon>{row.icon()}</Icon>
           {row.displayName}
         </div>
       ) : (
@@ -35,6 +38,17 @@ function Emotes({onClick, onHover, focus, onFocus}) {
       onFocus(header.id);
     }
   });
+
+  useEffect(() => {
+    function callback() {
+      setUpdated((prev) => !prev);
+    }
+    emoteStore.on('updated', callback);
+
+    return () => {
+      emoteStore.off('updated', callback);
+    };
+  }, []);
 
   useEffect(() => {
     if (!focus.scrollTo) return;

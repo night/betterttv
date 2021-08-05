@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import Divider from 'rsuite/lib/Divider/index.js';
 import emoteStore from '../stores/index.js';
-import recentEmotes from '../stores/recent-emotes.js';
 import styles from '../styles/menu.module.css';
 import Emotes from './Emotes.jsx';
 import Header from './Header.jsx';
@@ -9,21 +8,49 @@ import Preview from './Preview.jsx';
 import Sidebar from './Sidebar.jsx';
 
 export default function EmoteMenu({triggerRef}) {
+  const onHide = () => triggerRef.current.close();
+
   const [search, setSearch] = useState('');
-  const [emote, setEmote] = useState(null);
+  const [preview, setPreview] = useState(null);
+
+  const [keys, setKeys] = useState({
+    shift: false,
+    alt: false,
+  });
 
   const [focus, setFocus] = useState({
     eventKey: emoteStore.getHeader(0).id,
     scrollTo: false,
   });
 
-  const onHide = () => triggerRef.current.close();
-
-  useEffect(() => setSearch(''), [focus]);
-
-  function handleClick(newEmote) {
-    recentEmotes.incrementEmote(newEmote);
+  function handleClick(emote) {
+    switch (true) {
+      case keys.shift:
+        emoteStore.incrementEmote(emote);
+        break;
+      case keys.alt:
+        emoteStore.toggleFavorite(emote);
+        break;
+      default:
+        emoteStore.incrementEmote(emote);
+        onHide();
+    }
   }
+
+  useEffect(() => {
+    function callback(e) {
+      setKeys({
+        shift: e.shiftKey,
+        alt: e.altKey,
+      });
+    }
+
+    window.addEventListener('mousemove', callback);
+
+    return () => {
+      window.removeEventListener('mousemove', callback);
+    };
+  }, []);
 
   return (
     <>
@@ -32,20 +59,20 @@ export default function EmoteMenu({triggerRef}) {
       <div className={styles.content}>
         <Sidebar
           focus={focus}
-          onChange={(eventKey) => setFocus({eventKey, scrollTo: true})}
           className={styles.sidebar}
+          onChange={(eventKey) => setFocus({eventKey, scrollTo: true})}
         />
         <Emotes
           search={search}
-          className={styles.emojis}
           focus={focus}
-          onHover={(newEmote) => setEmote(newEmote)}
+          className={styles.emojis}
+          onHover={(emote) => setPreview(emote)}
+          onClick={(emote) => handleClick(emote)}
           onFocus={(eventKey) => setFocus({eventKey, scrollTo: false})}
-          onClick={(newEmote) => handleClick(newEmote)}
         />
       </div>
       <Divider className={styles.divider} />
-      <Preview emote={emote} className={styles.preview} />
+      <Preview emote={preview} className={styles.preview} />
     </>
   );
 }

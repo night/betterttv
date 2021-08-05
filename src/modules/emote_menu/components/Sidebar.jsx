@@ -4,11 +4,11 @@ import Icon from 'rsuite/lib/Icon/index.js';
 import emoteStore from '../stores/index.js';
 
 export default function Sidebar({focus, onChange, ...restProps}) {
-  const [providers, setProviders] = useState(emoteStore.providers);
+  const [providers, setProviders] = useState(emoteStore.getProviders());
 
   useEffect(() => {
     function callback() {
-      setProviders(emoteStore.providers);
+      setProviders(emoteStore.getProviders());
     }
 
     emoteStore.on('loaded', callback);
