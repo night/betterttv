@@ -16,6 +16,8 @@
 
 #bttv-picture-in-picture {
   display: inline-flex !important;
+  max-width:  30px;
+  max-height: 30px;
 
   button {
     position: relative;
