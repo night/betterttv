@@ -38,8 +38,9 @@ class TwitchEmotes {
       const tempSets = {};
       const {data} = await twitchApi.graphqlQuery(EMOTE_SET_QUERY);
 
-      for (const {id, owner, emotes: channelEmotes} of data.currentUser.emoteSets) {
+      for (const {owner, emotes: channelEmotes} of data.currentUser.emoteSets) {
         const displayName = owner?.displayName || 'Twitch';
+        const id = owner != null ? owner.id : 'twitch';
 
         const provider = {
           id,
@@ -64,12 +65,12 @@ class TwitchEmotes {
 
         // twitch seperates emotes by tier, so we merge them into one set
         // eslint-disable-next-line no-prototype-builtins
-        if (tempSets.hasOwnProperty(owner.id)) {
-          tempSets[owner.id].emotes = tempSets[owner.id].emotes.concat(emotes);
+        if (tempSets.hasOwnProperty(id)) {
+          tempSets[id].emotes = tempSets[id].emotes.concat(emotes);
           continue;
         }
 
-        tempSets[owner.id] = {provider, emotes};
+        tempSets[id] = {provider, emotes};
       }
 
       this.sets = Object.values(tempSets);

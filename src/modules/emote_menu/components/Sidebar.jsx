@@ -3,8 +3,8 @@ import Nav from 'rsuite/lib/Nav/index.js';
 import Icon from 'rsuite/lib/Icon/index.js';
 import emoteStore from '../stores/index.js';
 
-const ITEM_HEIGHT = 36;
-const SIDEBAR_HEIGHT = 308;
+const ITEM_HEIGHT = 42;
+const SIDEBAR_HEIGHT = 314;
 
 function Sidebar({focus, onChange, ...restProps}) {
   const containerRef = useRef(null);
@@ -28,11 +28,19 @@ function Sidebar({focus, onChange, ...restProps}) {
     const top = containerRef.current.scrollTop;
     const bottom = top + SIDEBAR_HEIGHT;
     const index = providers.findIndex((provider) => provider.id === focus.eventKey);
-    const depth = (index + 2) * ITEM_HEIGHT;
+    const depth = (index + 1) * ITEM_HEIGHT;
 
     if (depth > bottom) {
       containerRef.current.scrollTo({
-        top: depth,
+        top: depth - SIDEBAR_HEIGHT,
+        left: 0,
+        behavior: 'smooth',
+      });
+    }
+
+    if (top > depth - ITEM_HEIGHT) {
+      containerRef.current.scrollTo({
+        top: depth - ITEM_HEIGHT,
         left: 0,
         behavior: 'smooth',
       });
