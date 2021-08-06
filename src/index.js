@@ -15,6 +15,14 @@
     return;
   if (window.Ember) return;
 
+  // prevent loads in source-less iframes
+  try {
+    const {frameElement} = window;
+    if (frameElement != null && (frameElement.src == null || frameElement.src === '')) {
+      return;
+    }
+  } catch (e) {}
+
   // some people have multiple versions of BetterTTV, for whatever reason
   if (window.BetterTTV || window.__betterttv) return;
   window.__betterttv = true;
