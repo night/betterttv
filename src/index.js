@@ -32,6 +32,9 @@
   const {default: extension} = await import('./utils/extension.js');
   extension.setCurrentScript(currentScript);
 
+  const {default: globalCSS} = await import('./modules/global_css/index.js');
+  const globalCSSLoadPromise = globalCSS.loadGlobalCSS();
+
   const {default: cookies} = await import('cookies-js');
   const {default: debug} = await import('./utils/debug.js');
   const {default: twitch} = await import('./utils/twitch.js');
@@ -46,6 +49,9 @@
       debug.log('error loading user from twilight user cookie');
     }
   }
+
+  // wait until styles load to prevent flashing
+  await globalCSSLoadPromise();
 
   // eslint-disable-next-line import/no-unresolved
   await import('./modules/**/index.js');

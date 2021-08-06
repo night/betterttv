@@ -17,8 +17,6 @@ let connectStore;
 
 class GlobalCSSModule {
   constructor() {
-    this.globalCSS();
-
     watcher.on('load', () => this.branding());
     this.branding();
     settings.on(`changed.${SettingIds.DARKENED_MODE}`, (value) => this.setTwitchTheme(value));
@@ -51,12 +49,15 @@ class GlobalCSSModule {
     });
   }
 
-  globalCSS() {
-    const css = document.createElement('link');
-    css.setAttribute('href', extension.url('betterttv.css', true));
-    css.setAttribute('type', 'text/css');
-    css.setAttribute('rel', 'stylesheet');
-    $('body').append(css);
+  loadGlobalCSS() {
+    return new Promise((resolve) => {
+      const css = document.createElement('link');
+      css.setAttribute('href', extension.url('betterttv.css', true));
+      css.setAttribute('type', 'text/css');
+      css.setAttribute('rel', 'stylesheet');
+      css.addEventListener('load', () => resolve());
+      $('body').append(css);
+    });
   }
 
   branding() {
