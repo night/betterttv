@@ -51,7 +51,7 @@
   }
 
   // wait until styles load to prevent flashing
-  await globalCSSLoadPromise();
+  await globalCSSLoadPromise;
 
   // eslint-disable-next-line import/no-unresolved
   await import('./modules/**/index.js');
