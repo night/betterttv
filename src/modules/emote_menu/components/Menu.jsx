@@ -46,8 +46,10 @@ export default function EmoteMenu({triggerRef}) {
     }
 
     window.addEventListener('mousemove', callback);
+    window.addEventListener('keydown', callback);
 
     return () => {
+      window.removeEventListener('keydown', callback);
       window.removeEventListener('mousemove', callback);
     };
   }, []);

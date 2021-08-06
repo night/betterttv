@@ -13,7 +13,7 @@ const EMOTE_SET_QUERY = `
 					},
 					id,
 					owner {
-                        id,
+            id,
 						displayName
 					}
 				}
@@ -64,12 +64,12 @@ class TwitchEmotes {
 
         // twitch seperates emotes by tier, so we merge them into one set
         // eslint-disable-next-line no-prototype-builtins
-        if (tempSets.hasOwnProperty(displayName)) {
-          tempSets[displayName].emotes = tempSets[displayName].emotes.concat(emotes);
+        if (tempSets.hasOwnProperty(owner.id)) {
+          tempSets[owner.id].emotes = tempSets[owner.id].emotes.concat(emotes);
           continue;
         }
 
-        tempSets[displayName] = {provider, emotes};
+        tempSets[owner.id] = {provider, emotes};
       }
 
       this.sets = Object.values(tempSets);
