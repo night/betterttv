@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import Divider from 'rsuite/lib/Divider/index.js';
 import emoteStore from '../stores/index.js';
 import styles from '../styles/menu.module.css';
@@ -7,50 +7,53 @@ import Header from './Header.jsx';
 import Preview from './Preview.jsx';
 import Sidebar from './Sidebar.jsx';
 
-export default function EmoteMenu({triggerRef}) {
-  const onHide = () => triggerRef.current.close();
+export default function EmoteMenu({triggerRef, appendText}) {
+  const onHide = useCallback(() => triggerRef.current.close(), [triggerRef]);
 
   const [search, setSearch] = useState('');
   const [preview, setPreview] = useState(null);
 
-  const [keys, setKeys] = useState({
-    shift: false,
-    alt: false,
-  });
-
-  const [focus, setFocus] = useState({
+  const [section, setSection] = useState({
     eventKey: null,
     scrollTo: false,
   });
 
-  function handleClick(emote) {
+  useEffect(() => setSearch(''), [section]);
+
+  const handleClick = useCallback((emote) => {
+    const keys = emoteStore.getKeys();
     switch (true) {
       case keys.shift:
+        appendText(emote.code);
         emoteStore.incrementEmote(emote);
         break;
       case keys.alt:
         emoteStore.toggleFavorite(emote);
         break;
       default:
-        emoteStore.incrementEmote(emote);
+        appendText(emote.code);
         onHide();
+        emoteStore.incrementEmote(emote);
     }
-  }
+  }, []);
 
   useEffect(() => {
-    function callback(e) {
-      setKeys({
+    function buttonPressCallback(e) {
+      const keys = emoteStore.getKeys();
+      if (keys.shift === e.shiftKey && keys.alt === e.altKey) return;
+
+      emoteStore.setKeys({
         shift: e.shiftKey,
         alt: e.altKey,
       });
     }
 
-    window.addEventListener('mousemove', callback);
-    window.addEventListener('keydown', callback);
+    window.addEventListener('mousemove', buttonPressCallback, false);
+    window.addEventListener('keydown', buttonPressCallback, false);
 
     return () => {
-      window.removeEventListener('keydown', callback);
-      window.removeEventListener('mousemove', callback);
+      window.removeEventListener('mousemove', buttonPressCallback, false);
+      window.removeEventListener('keydown', buttonPressCallback, false);
     };
   }, []);
 
@@ -60,17 +63,17 @@ export default function EmoteMenu({triggerRef}) {
       <Divider className={styles.divider} />
       <div className={styles.content}>
         <Sidebar
-          focus={focus}
+          section={section}
           className={styles.sidebar}
-          onChange={(eventKey) => setFocus({eventKey, scrollTo: true})}
+          onChange={(eventKey) => setSection({eventKey, scrollTo: true})}
         />
         <Emotes
           search={search}
-          focus={focus}
+          section={section}
           className={styles.emojis}
-          onHover={(emote) => setPreview(emote)}
-          onClick={(emote) => handleClick(emote)}
-          onFocus={(eventKey) => setFocus({eventKey, scrollTo: false})}
+          onHover={setPreview}
+          onClick={handleClick}
+          onSection={(eventKey) => setSection({eventKey, scrollTo: false})}
         />
       </div>
       <Divider className={styles.divider} />

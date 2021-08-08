@@ -4,19 +4,17 @@ const style = (index, rowHeight) => ({
   position: 'absolute',
   top: `${index * rowHeight}px`,
   height: `${rowHeight}px`,
-  width: '100%',
 });
 
 const headerStyle = (rowHeight) => ({
   position: 'sticky',
   top: '0px',
   height: `${rowHeight}px`,
-  width: '100%',
 });
 
 function VirtualizedList(
   {totalRows, rowHeight, renderRow, windowHeight, stickyRows = [], onHeaderChange = () => {}, ...restProps},
-  ref = null
+  ref
 ) {
   const listHeight = useMemo(() => rowHeight * totalRows, [totalRows, rowHeight]);
 
@@ -54,7 +52,7 @@ function VirtualizedList(
     wrapperRef.current.addEventListener('scroll', isInViewport, false);
     isInViewport();
     return () => {
-      wrapperRef.current.removeEventListener('scroll', isInViewport, false);
+      if (wrapperRef.current) wrapperRef.current.removeEventListener('scroll', isInViewport, false);
     };
   }, [isInViewport]);
 

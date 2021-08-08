@@ -13,7 +13,7 @@
 }
 
 .sidebar {
-  width: 54px;
+  width: 52px;
   height: calc(360px - 52px);
   overflow-y: scroll;
   background-color: #191c23;

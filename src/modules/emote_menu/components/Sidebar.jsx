@@ -1,12 +1,11 @@
 import React, {useState, useEffect, useRef} from 'react';
 import Nav from 'rsuite/lib/Nav/index.js';
-import Icon from 'rsuite/lib/Icon/index.js';
 import emoteStore from '../stores/index.js';
 
 const ITEM_HEIGHT = 42;
 const SIDEBAR_HEIGHT = 314;
 
-function Sidebar({focus, onChange, ...restProps}) {
+export default function Sidebar({section, onChange, ...restProps}) {
   const containerRef = useRef(null);
   const [providers, setProviders] = useState(emoteStore.getProviders());
 
@@ -23,11 +22,11 @@ function Sidebar({focus, onChange, ...restProps}) {
   }, []);
 
   useEffect(() => {
-    if (focus.eventKey == null) return;
+    if (section.eventKey == null) return;
 
     const top = containerRef.current.scrollTop;
     const bottom = top + SIDEBAR_HEIGHT;
-    const index = providers.findIndex((provider) => provider.id === focus.eventKey);
+    const index = providers.findIndex((provider) => provider.id === section.eventKey);
     const depth = (index + 1) * ITEM_HEIGHT;
 
     if (depth > bottom) {
@@ -36,6 +35,8 @@ function Sidebar({focus, onChange, ...restProps}) {
         left: 0,
         behavior: 'smooth',
       });
+
+      return;
     }
 
     if (top > depth - ITEM_HEIGHT) {
@@ -45,17 +46,15 @@ function Sidebar({focus, onChange, ...restProps}) {
         behavior: 'smooth',
       });
     }
-  }, [focus]);
+  }, [section]);
 
   return (
     <div {...restProps} ref={containerRef}>
-      <Nav vertical appearance="subtle" onSelect={onChange} activeKey={focus.eventKey}>
+      <Nav vertical appearance="subtle" onSelect={onChange} activeKey={section.eventKey}>
         {providers.map((provider) => (
-          <Nav.Item key={provider.id} eventKey={provider.id} icon={<Icon>{provider.icon()}</Icon>} />
+          <Nav.Item key={provider.id} eventKey={provider.id} icon={provider.icon} />
         ))}
       </Nav>
     </div>
   );
 }
-
-export default React.memo(Sidebar, ({focus: a}, {focus: b}) => a === b);

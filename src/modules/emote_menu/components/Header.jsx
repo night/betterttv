@@ -16,7 +16,7 @@ function Header({value, onChange, onHide, ...restProps}) {
             <FontAwesomeIcon icon={faSearch} />
           </Icon>
         </InputGroup.Addon>
-        <Input placeholder="Search for Emotes" value={value} onChange={onChange} />
+        <Input placeholder="Search for Emotes" value={value} onChange={onChange} maxLength="20" />
       </InputGroup>
       <IconButton
         icon={

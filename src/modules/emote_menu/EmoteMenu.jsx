@@ -10,6 +10,7 @@ import domObserver from '../../observers/dom.js';
 const EMOTE_PICKER_BUTTON_SELECTOR = 'button[data-a-target="emote-picker-button"]';
 const CHAT_INPUT_ICONS_SELECTOR = '.chat-input__input-icons';
 const BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR = '#bttvEmoteMenuContainer';
+const CHAT_TEXT_AREA = 'textarea[data-a-target="chat-input"]';
 
 class EmoteMenuModule {
   constructor() {
@@ -25,7 +26,14 @@ class EmoteMenuModule {
     const panel = document.createElement('div');
     panel.setAttribute('id', 'bttvEmoteMenuContainer');
     $(CHAT_INPUT_ICONS_SELECTOR).append(panel);
-    ReactDOM.render(<EmoteMenu />, panel);
+    ReactDOM.render(<EmoteMenu appendText={this.appendText} />, panel);
+  }
+
+  appendText(string) {
+    const textArea = $(CHAT_TEXT_AREA);
+    textArea.val(`${textArea.val()} ${string}`);
+    textArea.text(`${textArea.text()} ${string}`);
+    textArea.html(`${textArea.html()} ${string}`);
   }
 
   async load() {

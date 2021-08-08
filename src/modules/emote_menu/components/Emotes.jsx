@@ -9,7 +9,7 @@ const ROW_HEIGHT = 36;
 const WINDOW_HEIGHT = 308;
 const TOTAL_COLS = 7;
 
-function Emotes({onClick, onHover, focus, onFocus}) {
+function Emotes({onClick, onHover, section, onSection}) {
   const wrapperRef = useRef(null);
   const [, setUpdated] = useState(false);
 
@@ -18,7 +18,7 @@ function Emotes({onClick, onHover, focus, onFocus}) {
       const row = emoteStore.getRow(index);
       return emoteStore.isHeader(index) ? (
         <div key={key} style={style} className={styles.header}>
-          <Icon>{row.icon()}</Icon>
+          <Icon>{row.icon}</Icon>
           {row.displayName}
         </div>
       ) : (
@@ -35,7 +35,7 @@ function Emotes({onClick, onHover, focus, onFocus}) {
   const handleHeaderChange = useCallback((index) => {
     const header = emoteStore.getRow(index);
     if (header != null) {
-      onFocus(header.id);
+      onSection(header.id);
     }
   });
 
@@ -51,12 +51,12 @@ function Emotes({onClick, onHover, focus, onFocus}) {
   }, []);
 
   useEffect(() => {
-    if (!focus.scrollTo) return;
-    const index = emoteStore.getHeaderIndexById(focus.eventKey);
+    if (!section.scrollTo) return;
+    const index = emoteStore.getHeaderIndexById(section.eventKey);
     if (index != null) {
       wrapperRef.current.scrollTo(0, index * ROW_HEIGHT);
     }
-  }, [focus]);
+  }, [section]);
 
   return (
     <VirtualizedList
@@ -88,6 +88,14 @@ function SearchedEmotes({search, onHover, onClick}) {
     },
     [onHover, onClick]
   );
+
+  if (emotes.length === 0) {
+    return (
+      <div className={styles.header}>
+        <p>No results for {search}...</p>
+      </div>
+    );
+  }
 
   return (
     <VirtualizedList

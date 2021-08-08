@@ -29,6 +29,7 @@ class EmoteStore extends SafeEventEmitter {
     super();
 
     this.emotes = new Map();
+    this.keys = {};
 
     watcher.on('channel.updated', () => {
       this.loadProviders();
@@ -65,11 +66,16 @@ class EmoteStore extends SafeEventEmitter {
     return fuse.search(search);
   }
 
+  getKeys() {
+    return this.keys;
+  }
+
+  setKeys(newKeys) {
+    this.keys = newKeys;
+  }
+
   incrementEmote(emote) {
     emoteStorage.incrementEmote(emote);
-
-    this.loadConditionalEmotes();
-    this.createRows();
   }
 
   toggleFavorite(emote) {
@@ -141,7 +147,7 @@ class EmoteStore extends SafeEventEmitter {
   }
 
   getProviders() {
-    return this.headers.map((id) => this.getRow(id));
+    return this.getHeaders().map((id) => this.getRow(id));
   }
 
   getEmotes() {
@@ -153,6 +159,7 @@ class EmoteStore extends SafeEventEmitter {
   }
 
   getHeaders() {
+    console.log(this.headers);
     return this.headers;
   }
 

@@ -15,6 +15,7 @@ const EMOTE_SET_QUERY = `
 					owner {
             id,
 						displayName
+            profileImageURL(width: 300)
 					}
 				}
 			}
@@ -39,13 +40,16 @@ class TwitchEmotes {
       const {data} = await twitchApi.graphqlQuery(EMOTE_SET_QUERY);
 
       for (const {owner, emotes: channelEmotes} of data.currentUser.emoteSets) {
-        const displayName = owner?.displayName || 'Twitch';
-        const id = owner != null ? owner.id : 'twitch';
+        const isTwitchEmoteSet = owner != null;
+
+        const displayName = isTwitchEmoteSet ? owner.displayName : 'Twitch';
+        const id = isTwitchEmoteSet ? owner.id : 'twitch';
+        const icon = isTwitchEmoteSet ? Icons.IMAGE(owner.profileImageURL, displayName) : Icons.STAR;
 
         const provider = {
           id,
           displayName,
-          icon: Icons.PEOPLE,
+          icon,
         };
 
         const emotes = channelEmotes.map(
@@ -75,7 +79,7 @@ class TwitchEmotes {
 
       this.sets = Object.values(tempSets);
     } catch (e) {
-      debug.log('failed to load twitch emotes', e);
+      debug.error('[Emote Menu] Failed to load twitch emotes, ', e);
       this.sets = [];
     }
   }

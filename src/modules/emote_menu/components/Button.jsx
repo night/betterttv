@@ -6,7 +6,7 @@ import Popover from 'rsuite/lib/Popover/index.js';
 import EmoteMenu from './Menu.jsx';
 import styles from '../styles/button.module.css';
 
-export default function Button() {
+export default function Button({appendText}) {
   const triggerRef = useRef(null);
 
   return (
@@ -15,7 +15,7 @@ export default function Button() {
       placement="topEnd"
       speaker={
         <Popover className={styles.popover} full>
-          <EmoteMenu triggerRef={triggerRef} />
+          <EmoteMenu triggerRef={triggerRef} appendText={appendText} />
         </Popover>
       }
       triggerRef={triggerRef}>
