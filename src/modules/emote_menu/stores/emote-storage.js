@@ -44,14 +44,13 @@ class EmoteStorage {
     }
 
     this.updateAllScores();
+    this.updateIds();
   }
 
   updateAllScores() {
     for (const [id, {totalUses, recentUses}] of Object.entries(this.emoteStore.usageHistory)) {
       this.emoteStore.usageHistory[id].score = calcScore(totalUses, recentUses);
     }
-
-    this.updateIds();
   }
 
   toggleFavorite(emote) {
@@ -69,12 +68,16 @@ class EmoteStorage {
     return this.emoteStore.favorites;
   }
 
+  isFavorite(id) {
+    return this.emoteStore.favorites.includes(id);
+  }
+
   incrementEmote(emote) {
     let {id} = emote;
     id = String(id);
 
     // eslint-disable-next-line no-prototype-builtins
-    if (this.emoteStore.hasOwnProperty(id)) {
+    if (this.emoteStore.usageHistory.hasOwnProperty(id)) {
       const {totalUses, recentUses} = this.emoteStore.usageHistory[id];
 
       const newTotalUses = totalUses + 1;

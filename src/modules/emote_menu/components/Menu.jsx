@@ -7,11 +7,14 @@ import Header from './Header.jsx';
 import Preview from './Preview.jsx';
 import Sidebar from './Sidebar.jsx';
 
+let alt = false;
+let shift = false;
+
 export default function EmoteMenu({triggerRef, appendText}) {
   const onHide = useCallback(() => triggerRef.current.close(), [triggerRef]);
 
   const [search, setSearch] = useState('');
-  const [preview, setPreview] = useState(null);
+  const [preview, setPreview] = useState(emoteStore.getEmotes()[0]);
 
   const [section, setSection] = useState({
     eventKey: null,
@@ -21,14 +24,13 @@ export default function EmoteMenu({triggerRef, appendText}) {
   useEffect(() => setSearch(''), [section]);
 
   const handleClick = useCallback((emote) => {
-    const keys = emoteStore.getKeys();
     switch (true) {
-      case keys.shift:
+      case alt:
+        emoteStore.toggleFavorite(emote);
+        break;
+      case shift:
         appendText(emote.code);
         emoteStore.incrementEmote(emote);
-        break;
-      case keys.alt:
-        emoteStore.toggleFavorite(emote);
         break;
       default:
         appendText(emote.code);
@@ -38,46 +40,41 @@ export default function EmoteMenu({triggerRef, appendText}) {
   }, []);
 
   useEffect(() => {
-    function buttonPressCallback(e) {
-      const keys = emoteStore.getKeys();
-      if (keys.shift === e.shiftKey && keys.alt === e.altKey) return;
-
-      emoteStore.setKeys({
-        shift: e.shiftKey,
-        alt: e.altKey,
-      });
+    function buttonPressCallback(event) {
+      alt = event.altKey;
+      shift = event.shiftKey;
     }
 
-    window.addEventListener('mousemove', buttonPressCallback, false);
     window.addEventListener('keydown', buttonPressCallback, false);
+    window.addEventListener('keyup', buttonPressCallback, false);
 
     return () => {
-      window.removeEventListener('mousemove', buttonPressCallback, false);
       window.removeEventListener('keydown', buttonPressCallback, false);
+      window.removeEventListener('keyup', buttonPressCallback, false);
     };
   }, []);
 
   return (
     <>
-      <Header value={search} onChange={(newValue) => setSearch(newValue)} className={styles.header} onHide={onHide} />
+      <Header className={styles.header} value={search} onChange={setSearch} onHide={onHide} />
       <Divider className={styles.divider} />
       <div className={styles.content}>
         <Sidebar
-          section={section}
           className={styles.sidebar}
+          section={section}
           onChange={(eventKey) => setSection({eventKey, scrollTo: true})}
         />
         <Emotes
+          className={styles.emojis}
           search={search}
           section={section}
-          className={styles.emojis}
           onHover={setPreview}
           onClick={handleClick}
           onSection={(eventKey) => setSection({eventKey, scrollTo: false})}
         />
       </div>
       <Divider className={styles.divider} />
-      <Preview emote={preview} className={styles.preview} />
+      <Preview className={styles.preview} emote={preview} />
     </>
   );
 }

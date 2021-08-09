@@ -9,6 +9,7 @@ import ffzGlobalEmotes from '../../frankerfacez/global-emotes.js';
 import Icons from '../components/Icons.jsx';
 import emoteStorage from './emote-storage.js';
 import twitchEmotes from './twitch-emotes.js';
+import cdn from '../../../utils/cdn.js';
 
 const COLOUMN_COUNT = 7;
 
@@ -29,7 +30,6 @@ class EmoteStore extends SafeEventEmitter {
     super();
 
     this.emotes = new Map();
-    this.keys = {};
 
     watcher.on('channel.updated', () => {
       this.loadProviders();
@@ -45,7 +45,7 @@ class EmoteStore extends SafeEventEmitter {
         provider: {
           id: 'bttv',
           displayName: 'BetterTTV',
-          icon: Icons.THUMBS_UP,
+          icon: Icons.IMAGE(cdn.url('/assets/logos/mascot.png'), 'BetterTTV'),
         },
         emotes: [...channelEmotes.getEmotes(), ...globalEmotes.getEmotes()],
       },
@@ -53,7 +53,7 @@ class EmoteStore extends SafeEventEmitter {
         provider: {
           id: 'ffz',
           displayName: 'FrankerFaceZ',
-          icon: Icons.DOG,
+          icon: Icons.IMAGE(cdn.url('/assets/logos/ffz_logo.png'), 'BetterTTV'),
         },
         emotes: [...ffzChannelEmotes.getEmotes(), ...ffzGlobalEmotes.getEmotes()],
       },
@@ -64,14 +64,6 @@ class EmoteStore extends SafeEventEmitter {
 
   search(search) {
     return fuse.search(search);
-  }
-
-  getKeys() {
-    return this.keys;
-  }
-
-  setKeys(newKeys) {
-    this.keys = newKeys;
   }
 
   incrementEmote(emote) {
@@ -134,7 +126,7 @@ class EmoteStore extends SafeEventEmitter {
       {
         provider: {
           id: 'recents',
-          displayName: 'Recently Used',
+          displayName: 'Frequently Used',
           icon: Icons.CLOCK,
         },
         emotes: recents,
@@ -159,7 +151,6 @@ class EmoteStore extends SafeEventEmitter {
   }
 
   getHeaders() {
-    console.log(this.headers);
     return this.headers;
   }
 

@@ -1,5 +1,6 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import Icon from 'rsuite/lib/Icon/index.js';
+import Button from 'rsuite/lib/Button/index.js';
 import VirtualizedList from './VirtualizedList.jsx';
 import emoteStore from '../stores/index.js';
 import styles from '../styles/emotes.module.css';
@@ -91,8 +92,15 @@ function SearchedEmotes({search, onHover, onClick}) {
 
   if (emotes.length === 0) {
     return (
-      <div className={styles.header}>
-        <p>No results for {search}...</p>
+      <div className={styles.empty}>
+        <p>We could not find any results...</p>
+        <Button
+          appearance="primary"
+          target="_blank"
+          rel="noreferrer"
+          href={`https://betterttv.com/emotes/shared/search?query=${search}`}>
+          Search Shared Emotes
+        </Button>
       </div>
     );
   }

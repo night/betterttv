@@ -58,7 +58,7 @@ function VirtualizedList(
 
   return (
     <div {...restProps} style={{height: windowHeight, overflowY: 'scroll'}} ref={wrapperRef}>
-      <div style={{position: 'relative', height: listHeight}}>
+      <div style={{position: 'relative', height: listHeight, width: '100%'}}>
         {data.rows.map((value) => renderRow({key: `row-${value}`, index: value, style: style(value, rowHeight)}))}
         {data.header != null
           ? renderRow({key: `row-${data.header}`, index: data.header, style: headerStyle(rowHeight)})
