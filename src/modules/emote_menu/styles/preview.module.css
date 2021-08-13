@@ -1,0 +1,28 @@
+.preview {
+  display: flex;
+  height: 58px;
+  justify-content: space-between;
+  padding: 8px;
+  align-items: center;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+  height: 100%;
+}
+
+.emoteImage {
+  height: 100%;
+  border-radius: 4px;
+}
+
+.emoji {
+  width: 38px;
+  height: 38px;
+}
+
+.emoteCode {
+  font-weight: 800;
+}

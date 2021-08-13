@@ -1,16 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-
-const style = (index, rowHeight) => ({
-  position: 'absolute',
-  top: `${index * rowHeight}px`,
-  height: `${rowHeight}px`,
-});
-
-const headerStyle = (rowHeight) => ({
-  position: 'sticky',
-  top: '0px',
-  height: `${rowHeight}px`,
-});
+import styles from '../styles/list.module.css';
 
 function VirtualizedList(
   {totalRows, rowHeight, renderRow, windowHeight, stickyRows = [], onHeaderChange = () => {}, ...restProps},
@@ -59,9 +48,24 @@ function VirtualizedList(
   return (
     <div {...restProps} style={{height: windowHeight, overflowY: 'scroll'}} ref={wrapperRef}>
       <div style={{position: 'relative', height: listHeight, width: '100%'}}>
-        {data.rows.map((value) => renderRow({key: `row-${value}`, index: value, style: style(value, rowHeight)}))}
+        {data.rows.map((value) =>
+          renderRow({
+            key: `row-${value}`,
+            index: value,
+            style: {
+              top: `${value * rowHeight}px`,
+              height: `${rowHeight}px`,
+            },
+            className: styles.row,
+          })
+        )}
         {data.header != null
-          ? renderRow({key: `row-${data.header}`, index: data.header, style: headerStyle(rowHeight)})
+          ? renderRow({
+              key: `row-${data.header}`,
+              index: data.header,
+              style: {height: `${rowHeight}px`},
+              className: styles.header,
+            })
           : null}
       </div>
     </div>

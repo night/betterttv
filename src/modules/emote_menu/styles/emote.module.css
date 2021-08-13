@@ -1,0 +1,29 @@
+.emote {
+  width: 36px;
+  height: 36px;
+  position: relative;
+  border-radius: 5px;
+}
+
+.emoteImage {
+  max-height: 100%;
+  width: 85%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.emote:hover {
+  background-color: #5a5a5c;
+}
+
+.emote:focus {
+  background-color: #464647;
+}
+
+.emote:focus-visible {
+  outline: 0px;
+}

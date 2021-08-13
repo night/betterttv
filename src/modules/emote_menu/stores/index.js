@@ -139,7 +139,7 @@ class EmoteStore extends SafeEventEmitter {
   }
 
   getProviders() {
-    return this.getHeaders().map((id) => this.getRow(id));
+    return this.headers.map((id) => this.row[id]);
   }
 
   getEmotes() {
@@ -155,15 +155,15 @@ class EmoteStore extends SafeEventEmitter {
   }
 
   getHeader(index) {
-    return this.getRow(this.getHeaders()[index]);
+    return this.rows[this.headers[index]];
   }
 
   getHeaderIndexById(id) {
-    return this.getHeaders().find((header) => this.getRow(header)?.id === id);
+    return this.headers.find((header) => this.rows[header]?.id === id);
   }
 
   isHeader(index) {
-    return this.getHeaders().includes(index);
+    return this.headers.includes(index);
   }
 }
 

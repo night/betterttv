@@ -3,15 +3,19 @@ import Icon from 'rsuite/lib/Icon/index.js';
 import IconButton from 'rsuite/lib/IconButton/index.js';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faStar} from '@fortawesome/free-solid-svg-icons/faStar';
-import styles from '../styles/menu.module.css';
+import styles from '../styles/preview.module.css';
 import emoteStorage from '../stores/emote-storage.js';
 
-function PreviewEmote({emote, ...restProps}) {
+function PreviewEmote({emote}) {
   return (
-    <div {...restProps} key={emote.code}>
+    <div className={styles.preview} key={emote.code}>
       <div className={styles.content}>
         <div className={styles.emoji}>
-          <img alt={emote.name} src={emote.images['3x'] || emote.images['2x'] || emote.images['1x']} />
+          <img
+            alt={emote.name}
+            className={styles.emoteImage}
+            src={emote.images['3x'] || emote.images['2x'] || emote.images['1x']}
+          />
         </div>
         <div>
           <div className={styles.emoteCode}>{emote.code}</div>
@@ -20,7 +24,7 @@ function PreviewEmote({emote, ...restProps}) {
           </p>
         </div>
       </div>
-      {emoteStorage.isFavorite(emote.id) && (
+      {emoteStorage.isFavorite(emote.id) ? (
         <IconButton
           icon={
             <Icon>
@@ -28,7 +32,7 @@ function PreviewEmote({emote, ...restProps}) {
             </Icon>
           }
         />
-      )}
+      ) : null}
     </div>
   );
 }

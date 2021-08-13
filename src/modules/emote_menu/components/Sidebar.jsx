@@ -1,11 +1,12 @@
 import React, {useState, useEffect, useRef} from 'react';
 import Nav from 'rsuite/lib/Nav/index.js';
 import emoteStore from '../stores/index.js';
+import styles from '../styles/sidebar.module.css';
 
 const ITEM_HEIGHT = 42;
 const SIDEBAR_HEIGHT = 314;
 
-export default function Sidebar({section, onChange, ...restProps}) {
+export default function Sidebar({section, onChange}) {
   const containerRef = useRef(null);
   const [providers, setProviders] = useState(emoteStore.getProviders());
 
@@ -49,7 +50,7 @@ export default function Sidebar({section, onChange, ...restProps}) {
   }, [section]);
 
   return (
-    <div {...restProps} ref={containerRef}>
+    <div className={styles.sidebar} ref={containerRef}>
       <Nav vertical appearance="subtle" onSelect={onChange} activeKey={section.eventKey}>
         {providers.map((provider) => (
           <Nav.Item key={provider.id} eventKey={provider.id} icon={provider.icon} />

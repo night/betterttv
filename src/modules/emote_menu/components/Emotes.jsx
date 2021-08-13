@@ -1,6 +1,7 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import Icon from 'rsuite/lib/Icon/index.js';
 import Button from 'rsuite/lib/Button/index.js';
+import classNames from 'classnames';
 import VirtualizedList from './VirtualizedList.jsx';
 import emoteStore from '../stores/index.js';
 import styles from '../styles/emotes.module.css';
@@ -15,15 +16,15 @@ function Emotes({onClick, onHover, section, onSection}) {
   const [, setUpdated] = useState(false);
 
   const renderRow = useCallback(
-    ({key, style, index}) => {
+    ({key, style, index, className}) => {
       const row = emoteStore.getRow(index);
       return emoteStore.isHeader(index) ? (
-        <div key={key} style={style} className={styles.header}>
+        <div key={key} style={style} className={classNames(className, styles.header)}>
           <Icon>{row.icon}</Icon>
           {row.displayName}
         </div>
       ) : (
-        <div key={key} style={style} className={styles.row}>
+        <div key={key} style={style} className={classNames(className, styles.row)}>
           {row.map((emote) => (
             <Emote key={emote.code} emote={emote} onClick={() => onClick(emote)} onMouseOver={() => onHover(emote)} />
           ))}
@@ -77,10 +78,10 @@ function SearchedEmotes({search, onHover, onClick}) {
   const emotes = useMemo(() => emoteStore.search(search), [search]);
 
   const renderRow = useCallback(
-    ({key, style, index}) => {
+    ({key, style, index, className}) => {
       const row = emotes.slice(index * TOTAL_COLS, (index + 1) * TOTAL_COLS);
       return (
-        <div key={key} style={style} className={styles.row}>
+        <div key={key} style={style} className={classNames(className, styles.row)}>
           {row.map(({item}) => (
             <Emote key={item.code} emote={item} onClick={() => onClick(item)} onMouseOver={() => onHover(item)} />
           ))}
