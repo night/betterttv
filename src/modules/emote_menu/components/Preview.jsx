@@ -7,6 +7,7 @@ import styles from '../styles/preview.module.css';
 import emoteStorage from '../stores/emote-storage.js';
 
 function PreviewEmote({emote}) {
+  if (!emote) return null;
   return (
     <div className={styles.preview} key={emote.code}>
       <div className={styles.content}>
@@ -19,12 +20,10 @@ function PreviewEmote({emote}) {
         </div>
         <div>
           <div className={styles.emoteCode}>{emote.code}</div>
-          <p>
-            from <b>{emote.provider.displayName}</b>
-          </p>
+          <div>from {emote.provider.displayName}</div>
         </div>
       </div>
-      {emoteStorage.isFavorite(emote.id) ? (
+      {emoteStorage.getFavorites().includes(emote.id) ? (
         <IconButton
           icon={
             <Icon>

@@ -6,3 +6,12 @@
 .row {
   position: absolute;
 }
+
+.list {
+  overflow-y: scroll;
+}
+
+.rows {
+  width: 100%;
+  position: relative;
+}

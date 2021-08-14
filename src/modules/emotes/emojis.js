@@ -76,10 +76,13 @@ class Emojis extends AbstractEmotes {
 
         if (!emoji.isAlternative) {
           // eslint-disable-next-line no-prototype-builtins
-          if (this.emotesByCategory.hasOwnProperty(emoji.category)) {
-            this.emotesByCategory[emoji.category].push(emote);
+          let categoryEmotes = this.emotesByCategory[emoji.category];
+
+          if (categoryEmotes == null) {
+            categoryEmotes = [];
+            this.emotesByCategory[emoji.category] = categoryEmotes;
           } else {
-            this.emotesByCategory[emoji.category] = [];
+            categoryEmotes.push(emote);
           }
         }
 

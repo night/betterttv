@@ -1,6 +1,6 @@
 import storage from '../../../storage.js';
 
-const HOUR = 60 * 60 * 60 * 1000;
+const HOUR = 60 * 60 * 1000;
 const DAY = 24 * HOUR;
 
 const MAX_TIMESTAMPS = 100;
@@ -26,9 +26,15 @@ function timestampToScore(timestamp) {
   }
 }
 
-function calcScore(totalUses, recentUses) {
+function calcScore({totalUses, recentUses}) {
   const frecency = recentUses.reduce((a, b) => a + timestampToScore(b), 0);
   return Math.floor((totalUses * frecency) / recentUses.length);
+}
+
+function sortHistory(history) {
+  return Object.entries(history)
+    .sort(([, {score: a}], [, {score: b}]) => b - a)
+    .map(([id]) => id);
 }
 
 class EmoteStorage {
@@ -43,14 +49,40 @@ class EmoteStorage {
       };
     }
 
-    this.updateAllScores();
-    this.updateIds();
+    for (const [id, emote] of Object.entries(this.emoteStore.usageHistory)) {
+      this.emoteStore.usageHistory[id].score = calcScore(emote);
+    }
+
+    this.ids = sortHistory(this.emoteStore.usageHistory);
   }
 
-  updateAllScores() {
-    for (const [id, {totalUses, recentUses}] of Object.entries(this.emoteStore.usageHistory)) {
-      this.emoteStore.usageHistory[id].score = calcScore(totalUses, recentUses);
+  trackHistory(emote) {
+    let {id} = emote;
+    id = String(id);
+
+    // eslint-disable-next-line no-prototype-builtins
+    const emoteHistory = this.emoteStore.usageHistory[id];
+
+    if (emoteHistory != null) {
+      emoteHistory.totalUses++;
+      emoteHistory.recentUses.push(Date.now());
+
+      if (emoteHistory.recentUses.length >= MAX_TIMESTAMPS) {
+        emoteHistory.recentUses.shift();
+      }
+
+      emoteHistory.score = calcScore(emoteHistory);
+      this.emoteStore.usageHistory[id] = emoteHistory;
+    } else {
+      this.emoteStore.usageHistory[id] = {
+        recentUses: [Date.now()],
+        totalUses: 1,
+        score: calcScore(1, [Date.now()]),
+      };
     }
+
+    this.ids = sortHistory(this.emoteStore.usageHistory);
+    storage.set('emotes', this.emoteStore);
   }
 
   toggleFavorite(emote) {
@@ -68,50 +100,7 @@ class EmoteStorage {
     return this.emoteStore.favorites;
   }
 
-  isFavorite(id) {
-    return this.emoteStore.favorites.includes(id);
-  }
-
-  incrementEmote(emote) {
-    let {id} = emote;
-    id = String(id);
-
-    // eslint-disable-next-line no-prototype-builtins
-    if (this.emoteStore.usageHistory.hasOwnProperty(id)) {
-      const {totalUses, recentUses} = this.emoteStore.usageHistory[id];
-
-      const newTotalUses = totalUses + 1;
-      const newRecentUses = [Date.now(), ...recentUses];
-
-      if (newRecentUses.length >= MAX_TIMESTAMPS) {
-        newRecentUses.pop();
-      }
-
-      this.emoteStore.usageHistory[id] = {
-        totalUses: totalUses + 1,
-        recentUses: newRecentUses,
-        score: calcScore(newTotalUses, newRecentUses),
-      };
-    } else {
-      this.emoteStore.usageHistory[id] = {
-        recentUses: [Date.now()],
-        totalUses: 1,
-        score: calcScore(1, [Date.now()]),
-      };
-    }
-
-    this.updateIds();
-
-    storage.set('emotes', this.emoteStore);
-  }
-
-  updateIds() {
-    this.ids = Object.entries(this.emoteStore.usageHistory)
-      .sort(([, {score: a}], [, {score: b}]) => b - a)
-      .map(([id]) => id);
-  }
-
-  getRecents() {
+  getFrecents() {
     return this.ids;
   }
 }

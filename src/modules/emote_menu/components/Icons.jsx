@@ -13,6 +13,8 @@ import {faBox} from '@fortawesome/free-solid-svg-icons/faBox';
 import {faHeart} from '@fortawesome/free-solid-svg-icons/faHeart';
 import {faFlag} from '@fortawesome/free-solid-svg-icons/faFlag';
 import {faClock} from '@fortawesome/free-solid-svg-icons/faClock';
+import {faUnlock} from '@fortawesome/free-solid-svg-icons/faUnlock';
+import {faCrown} from '@fortawesome/free-solid-svg-icons/faCrown';
 import styles from '../styles/emotes.module.css';
 
 export default {
@@ -29,5 +31,7 @@ export default {
   HEART: <FontAwesomeIcon icon={faHeart} />,
   FLAG: <FontAwesomeIcon icon={faFlag} />,
   CLOCK: <FontAwesomeIcon icon={faClock} />,
+  UNLOCK: <FontAwesomeIcon icon={faUnlock} />,
+  CROWN: <FontAwesomeIcon icon={faCrown} />,
   IMAGE: (src, alt) => <img src={src} alt={alt} className={styles.icon} />,
 };

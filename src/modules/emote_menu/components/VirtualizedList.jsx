@@ -1,8 +1,9 @@
+import classNames from 'classnames';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import styles from '../styles/list.module.css';
 
 function VirtualizedList(
-  {totalRows, rowHeight, renderRow, windowHeight, stickyRows = [], onHeaderChange = () => {}, ...restProps},
+  {className, totalRows, rowHeight, renderRow, windowHeight, stickyRows = [], onHeaderChange = () => {}},
   ref
 ) {
   const listHeight = useMemo(() => rowHeight * totalRows, [totalRows, rowHeight]);
@@ -46,8 +47,8 @@ function VirtualizedList(
   }, [isInViewport]);
 
   return (
-    <div {...restProps} style={{height: windowHeight, overflowY: 'scroll'}} ref={wrapperRef}>
-      <div style={{position: 'relative', height: listHeight, width: '100%'}}>
+    <div className={classNames(styles.list, className)} style={{height: windowHeight}} ref={wrapperRef}>
+      <div className={styles.rows} style={{height: listHeight}}>
         {data.rows.map((value) =>
           renderRow({
             key: `row-${value}`,

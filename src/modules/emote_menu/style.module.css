@@ -1,4 +1,4 @@
-#bttvEmoteMenuContainer {
+.emoteMenuContainer {
   text-size-adjust: 100%;
   color: var(--color-text-base) !important;
   box-sizing: border-box;

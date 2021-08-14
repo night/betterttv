@@ -25,7 +25,6 @@
 }
 
 .header {
-  width: 100%;
   background-color: #292d33;
   z-index: 3000;
   display: flex;
@@ -54,4 +53,27 @@
   width: 100%;
   flex-direction: column;
   row-gap: 8px;
+}
+
+.emotesContainer {
+  width: 100%;
+  padding: 0 10px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #191c23 transparent;
+}
+
+.emotesContainer::-webkit-scrollbar {
+  border-radius: 6px;
+  width: 5px;
+}
+
+.emotesContainer::-webkit-scrollbar-thumb {
+  background: #191c23;
+  border-radius: 5px;
+}
+
+.emotesContainer::-webkit-scrollbar-thumb:hover {
+  background: #191c23;
 }

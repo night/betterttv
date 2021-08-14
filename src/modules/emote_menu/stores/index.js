@@ -53,7 +53,7 @@ class EmoteStore extends SafeEventEmitter {
         provider: {
           id: 'ffz',
           displayName: 'FrankerFaceZ',
-          icon: Icons.IMAGE(cdn.url('/assets/logos/ffz_logo.png'), 'BetterTTV'),
+          icon: Icons.IMAGE(cdn.url('/assets/logos/ffz_logo.png'), 'FrankerFaceZ'),
         },
         emotes: [...ffzChannelEmotes.getEmotes(), ...ffzGlobalEmotes.getEmotes()],
       },
@@ -66,8 +66,8 @@ class EmoteStore extends SafeEventEmitter {
     return fuse.search(search);
   }
 
-  incrementEmote(emote) {
-    emoteStorage.incrementEmote(emote);
+  trackHistory(emote) {
+    emoteStorage.trackHistory(emote);
   }
 
   toggleFavorite(emote) {
@@ -83,10 +83,9 @@ class EmoteStore extends SafeEventEmitter {
     for (const {emotes} of this.providers) {
       for (const emote of emotes) {
         this.emotes.set(String(emote.id), emote);
+        fuse.add(emote);
       }
     }
-
-    fuse.setCollection(this.getEmotes());
   }
 
   createRows() {
@@ -105,7 +104,7 @@ class EmoteStore extends SafeEventEmitter {
 
   loadConditionalEmotes() {
     const recents = emoteStorage
-      .getRecents()
+      .getFrecents()
       .map((id) => this.emotes.get(id))
       .filter((emote) => emote != null);
 
@@ -139,11 +138,7 @@ class EmoteStore extends SafeEventEmitter {
   }
 
   getProviders() {
-    return this.headers.map((id) => this.row[id]);
-  }
-
-  getEmotes() {
-    return [...this.emotes.values()];
+    return this.headers.map((id) => this.rows[id]);
   }
 
   getRow(index) {

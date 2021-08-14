@@ -14,7 +14,7 @@ export default function EmoteMenu({triggerRef, appendText}) {
   const onHide = useCallback(() => triggerRef.current.close(), [triggerRef]);
 
   const [search, setSearch] = useState('');
-  const [preview, setPreview] = useState(emoteStore.getEmotes()[0]);
+  const [preview, setPreview] = useState(null);
 
   const [section, setSection] = useState({
     eventKey: null,
@@ -30,12 +30,12 @@ export default function EmoteMenu({triggerRef, appendText}) {
         break;
       case shift:
         appendText(emote.code);
-        emoteStore.incrementEmote(emote);
+        emoteStore.trackHistory(emote);
         break;
       default:
         appendText(emote.code);
         onHide();
-        emoteStore.incrementEmote(emote);
+        emoteStore.trackHistory(emote);
     }
   }, []);
 
