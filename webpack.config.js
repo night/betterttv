@@ -46,7 +46,6 @@ function jsonTransform(emojis) {
       char,
       slug: emojiData.shortname.replace(/:/g, ''),
       category: emojiData.category,
-      isAlternative: false,
     };
 
     result[data.slug] = data;
@@ -56,7 +55,7 @@ function jsonTransform(emojis) {
       if (alternativeShortName === ':tf:') {
         continue;
       }
-      result[alternativeShortName.replace(/:/g, '')] = {...data, isAlternative: true};
+      result[alternativeShortName.replace(/:/g, '')] = data;
     }
   }
 

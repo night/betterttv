@@ -28,18 +28,20 @@ const fuse = new Fuse([], {
 class EmoteStore extends SafeEventEmitter {
   constructor() {
     super();
+    this.constants = new Map(); // non-channel dependent emotes
 
-    this.emotes = new Map();
+    for (const {emotes} of [...twitchEmotes.getEmoteSets(), ...emojiCategories]) {
+      emotes.forEach((emote) => this.constants.set(String(emote.id), emote));
+    }
 
     watcher.on('channel.updated', () => {
-      this.loadProviders();
-      this.loadEmotes();
+      this.load();
       this.loadConditionalEmotes();
       this.createRows();
     });
   }
 
-  loadProviders() {
+  load() {
     this.providers = [
       {
         provider: {
@@ -57,42 +59,54 @@ class EmoteStore extends SafeEventEmitter {
         },
         emotes: [...ffzChannelEmotes.getEmotes(), ...ffzGlobalEmotes.getEmotes()],
       },
-      ...twitchEmotes.getSets(),
-      ...emojiCategories,
     ];
-  }
 
-  search(search) {
-    return fuse.search(search);
-  }
-
-  trackHistory(emote) {
-    emoteStorage.trackHistory(emote);
-  }
-
-  toggleFavorite(emote) {
-    emoteStorage.toggleFavorite(emote);
-
-    this.loadConditionalEmotes();
-    this.createRows();
-  }
-
-  loadEmotes() {
-    this.emotes.clear();
+    this.emotes = this.constants;
 
     for (const {emotes} of this.providers) {
-      for (const emote of emotes) {
-        this.emotes.set(String(emote.id), emote);
-        fuse.add(emote);
-      }
+      emotes.forEach((emote) => this.emotes.set(String(emote.id), emote));
     }
+
+    fuse.setCollection([...this.emotes.values()]);
+  }
+
+  loadConditionalEmotes() {
+    this.conditionalProviders = [
+      {
+        provider: {
+          id: 'favorites',
+          displayName: 'Favorites',
+          icon: Icons.STAR,
+        },
+        emotes: emoteStorage
+          .getFavorites()
+          .map((id) => this.emotes.get(id))
+          .filter((emote) => emote != null),
+      },
+      {
+        provider: {
+          id: 'recents',
+          displayName: 'Frequently Used',
+          icon: Icons.CLOCK,
+        },
+        emotes: emoteStorage
+          .getFrecents()
+          .map((id) => this.emotes.get(id))
+          .filter((emote) => emote != null),
+      },
+    ];
   }
 
   createRows() {
     this.rows = [];
     this.headers = [];
 
-    for (const {provider, emotes} of [...this.conditionalProviders, ...this.providers]) {
+    for (const {provider, emotes} of [
+      ...this.conditionalProviders,
+      ...this.providers,
+      ...twitchEmotes.getEmoteSets(),
+      ...emojiCategories,
+    ]) {
       if (emotes.length === 0) continue;
 
       this.headers.push(this.rows.length);
@@ -102,35 +116,19 @@ class EmoteStore extends SafeEventEmitter {
     this.emit('updated');
   }
 
-  loadConditionalEmotes() {
-    const recents = emoteStorage
-      .getFrecents()
-      .map((id) => this.emotes.get(id))
-      .filter((emote) => emote != null);
+  toggleFavorite(emote) {
+    emoteStorage.setFavorite(emote, !emoteStorage.getFavorites().includes(emote.id));
 
-    const favorites = emoteStorage
-      .getFavorites()
-      .map((id) => this.emotes.get(id))
-      .filter((emote) => emote != null);
+    this.loadConditionalEmotes();
+    this.createRows();
+  }
 
-    this.conditionalProviders = [
-      {
-        provider: {
-          id: 'favorites',
-          displayName: 'Favorites',
-          icon: Icons.STAR,
-        },
-        emotes: favorites,
-      },
-      {
-        provider: {
-          id: 'recents',
-          displayName: 'Frequently Used',
-          icon: Icons.CLOCK,
-        },
-        emotes: recents,
-      },
-    ];
+  search(search) {
+    return fuse.search(search);
+  }
+
+  trackHistory(emote) {
+    emoteStorage.trackHistory(emote);
   }
 
   get totalRows() {

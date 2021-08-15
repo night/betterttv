@@ -5,6 +5,12 @@ const DAY = 24 * HOUR;
 
 const MAX_TIMESTAMPS = 100;
 
+function sortHistory(history) {
+  return Object.entries(history)
+    .sort(([, {score: a}], [, {score: b}]) => b - a)
+    .map(([id]) => id);
+}
+
 function timestampToScore(timestamp) {
   const diff = Date.now() - timestamp;
 
@@ -31,16 +37,10 @@ function calcScore({totalUses, recentUses}) {
   return Math.floor((totalUses * frecency) / recentUses.length);
 }
 
-function sortHistory(history) {
-  return Object.entries(history)
-    .sort(([, {score: a}], [, {score: b}]) => b - a)
-    .map(([id]) => id);
-}
-
 class EmoteStorage {
   constructor() {
     this.emoteStore = storage.get('emotes');
-    this.ids = [];
+    this.frecentIds = [];
 
     if (this.emoteStore == null) {
       this.emoteStore = {
@@ -53,7 +53,7 @@ class EmoteStorage {
       this.emoteStore.usageHistory[id].score = calcScore(emote);
     }
 
-    this.ids = sortHistory(this.emoteStore.usageHistory);
+    this.frecentIds = sortHistory(this.emoteStore.usageHistory);
   }
 
   trackHistory(emote) {
@@ -81,17 +81,19 @@ class EmoteStorage {
       };
     }
 
-    this.ids = sortHistory(this.emoteStore.usageHistory);
+    this.frecentIds = sortHistory(this.emoteStore.usageHistory);
     storage.set('emotes', this.emoteStore);
   }
 
-  toggleFavorite(emote) {
+  setFavorite(emote, bool) {
     let {id} = emote;
     id = String(id);
 
-    this.emoteStore.favorites = this.emoteStore.favorites.includes(id)
-      ? this.emoteStore.favorites.filter((favoriteId) => favoriteId !== id)
-      : [...this.emoteStore.favorites, id];
+    if (bool) {
+      this.emoteStore.favorites.push(id);
+    } else {
+      this.emoteStore.favorites = this.emoteStore.favorites.filter((favoriteId) => favoriteId !== id);
+    }
 
     storage.set('emotes', this.emoteStore);
   }
@@ -101,7 +103,7 @@ class EmoteStorage {
   }
 
   getFrecents() {
-    return this.ids;
+    return this.frecentIds;
   }
 }
 

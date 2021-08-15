@@ -24,78 +24,51 @@ query UserEmotes {
 
 const TWITCH_EMOTE_CDN = (id, size) => `https://static-cdn.jtvnw.net/emoticons/v2/${id}/default/dark/${size}`;
 
-const forcedSetsToChannels = {
+const forcedProvidersToChannels = {
   0: {
-    provider: {
-      id: 0,
-      displayName: 'Twitch Global',
-      icon: Icons.PEOPLE,
-    },
-    emotes: [],
+    id: 0,
+    displayName: 'Twitch Global',
+    icon: Icons.PEOPLE,
   },
   33: {
-    provider: {
-      id: 33,
-      displayName: 'Twitch Turbo',
-      icon: Icons.PEOPLE,
-    },
-    emotes: [],
+    id: 33,
+    displayName: 'Twitch Turbo',
+    icon: Icons.PEOPLE,
   },
   42: {
-    provider: {
-      id: 42,
-      displayName: 'Twitch Turbo',
-      icon: Icons.PEOPLE,
-    },
-    emotes: [],
+    id: 42,
+    displayName: 'Twitch Turbo',
+    icon: Icons.PEOPLE,
   },
   457: {
-    provider: {
-      id: 457,
-      displayName: 'Twitch Turbo',
-      icon: Icons.PEOPLE,
-    },
-    emotes: [],
+    id: 457,
+    displayName: 'Twitch Turbo',
+    icon: Icons.PEOPLE,
   },
   793: {
-    provider: {
-      id: 793,
-      displayName: 'Twitch Turbo',
-      icon: Icons.PEOPLE,
-    },
-    emotes: [],
+    id: 793,
+    displayName: 'Twitch Turbo',
+    icon: Icons.PEOPLE,
   },
   19151: {
-    provider: {
-      id: 19151,
-      displayName: 'Twitch Prime',
-      icon: Icons.CROWN,
-    },
-    emotes: [],
+    id: 19151,
+    displayName: 'Twitch Prime',
+    icon: Icons.CROWN,
   },
   19194: {
-    provider: {
-      id: 19194,
-      displayName: 'Twitch Prime',
-      icon: Icons.CROWN,
-    },
-    emotes: [],
+    id: 19194,
+    displayName: 'Twitch Prime',
+    icon: Icons.CROWN,
   },
   301592777: {
-    provider: {
-      id: 301592777,
-      displayName: 'Unlocked',
-      icon: Icons.UNLOCK,
-    },
-    emotes: [],
+    id: 301592777,
+    displayName: 'Unlocked',
+    icon: Icons.UNLOCK,
   },
   300374282: {
-    provider: {
-      id: 300374282,
-      displayName: 'Unlocked',
-      icon: Icons.UNLOCK,
-    },
-    emotes: [],
+    id: 300374282,
+    displayName: 'Unlocked',
+    icon: Icons.UNLOCK,
   },
 };
 
@@ -105,7 +78,7 @@ class TwitchEmotes {
     this.loadEmotes();
   }
 
-  getSets() {
+  getEmoteSets() {
     return this.sets;
   }
 
@@ -115,9 +88,9 @@ class TwitchEmotes {
       const {data} = await twitchApi.graphqlQuery(EMOTE_SET_QUERY);
 
       for (const {owner, id, emotes: channelEmotes} of data.currentUser.emoteSets) {
-        let provider = forcedSetsToChannels[id];
+        let provider = forcedProvidersToChannels[id];
 
-        if (provider != null) {
+        if (provider == null) {
           provider = {
             id: owner?.id,
             displayName: owner?.displayName,
