@@ -18,7 +18,7 @@ function Emotes({onClick, onHover, section, onSection}) {
   const renderRow = useCallback(
     ({key, style, index, className}) => {
       const row = emoteStore.getRow(index);
-      return emoteStore.isHeader(index) ? (
+      return emoteStore.getHeaders().includes(index) ? (
         <div key={key} style={style} className={classNames(className, styles.header)}>
           <Icon>{row.icon}</Icon>
           {row.displayName}
@@ -65,7 +65,7 @@ function Emotes({onClick, onHover, section, onSection}) {
       stickyRows={emoteStore.headers}
       rowHeight={ROW_HEIGHT}
       windowHeight={WINDOW_HEIGHT}
-      totalRows={emoteStore.totalRows}
+      totalRows={emoteStore.totalRows()}
       renderRow={renderRow}
       className={styles.emotesContainer}
       onHeaderChange={handleHeaderChange}

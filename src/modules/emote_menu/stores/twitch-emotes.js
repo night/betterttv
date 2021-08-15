@@ -79,16 +79,12 @@ class TwitchEmotes {
     this.loadEmotes();
   }
 
-  getEmoteSets() {
-    return this.sets;
-  }
-
   async loadEmotes() {
     try {
       const tempSets = {};
       const {data} = await twitchApi.graphqlQuery(EMOTE_SET_QUERY);
 
-      for (const {owner, id, emotes: channelEmotes} of data.currentUser.emoteSets) {
+      for (const {owner, id, emotes} of data.currentUser.emoteSets) {
         let provider = forcedProvidersToChannels[id];
 
         if (provider == null) {
@@ -99,7 +95,7 @@ class TwitchEmotes {
           };
         }
 
-        const emotes = channelEmotes.map(({id: emoteId, token: emoteToken}) => {
+        const providerEmotes = emotes.map(({id: emoteId, token: emoteToken}) => {
           let newToken;
 
           try {
@@ -124,17 +120,21 @@ class TwitchEmotes {
         // twitch seperates emotes by tier, so we merge them into one set
         // eslint-disable-next-line no-prototype-builtins
         if (tempSets.hasOwnProperty(provider.id)) {
-          tempSets[provider.id].emotes = [...tempSets[provider.id]?.emotes, ...emotes];
+          tempSets[provider.id].emotes = [...tempSets[provider.id]?.emotes, ...providerEmotes];
           continue;
         }
 
-        tempSets[provider.id] = {provider, emotes};
+        tempSets[provider.id] = {provider, emotes: providerEmotes};
       }
 
       this.sets = Object.values(tempSets);
     } catch (e) {
       debug.error('failed to fetch twitch', e);
     }
+  }
+
+  getEmoteSets() {
+    return this.sets;
   }
 }
 

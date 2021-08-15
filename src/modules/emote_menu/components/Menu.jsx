@@ -14,7 +14,7 @@ export default function EmoteMenu({triggerRef, appendText}) {
   const onHide = useCallback(() => triggerRef.current.close(), [triggerRef]);
 
   const [search, setSearch] = useState('');
-  const [preview, setPreview] = useState(null);
+  const [preview, setPreview] = useState(emoteStore.getDefaultEmote());
 
   const [section, setSection] = useState({
     eventKey: null,

@@ -7,7 +7,6 @@ import styles from '../styles/preview.module.css';
 import emoteStorage from '../stores/emote-storage.js';
 
 function PreviewEmote({emote}) {
-  if (!emote) return null;
   return (
     <div className={styles.preview} key={emote.code}>
       <div className={styles.content}>

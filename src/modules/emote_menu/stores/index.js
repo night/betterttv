@@ -29,6 +29,7 @@ class EmoteStore extends SafeEventEmitter {
   constructor() {
     super();
     this.constants = new Map(); // non-channel dependent emotes
+    this.defaultEmote = null;
 
     for (const {emotes} of [...twitchEmotes.getEmoteSets(), ...emojiCategories]) {
       emotes.forEach((emote) => this.constants.set(String(emote.id), emote));
@@ -67,7 +68,9 @@ class EmoteStore extends SafeEventEmitter {
       emotes.forEach((emote) => this.emotes.set(String(emote.id), emote));
     }
 
-    fuse.setCollection([...this.emotes.values()]);
+    const collection = [...this.emotes.values()];
+    this.defaultEmote = collection[Math.floor(collection.length * Math.random())];
+    fuse.setCollection(collection);
   }
 
   loadDependableEmotes() {
@@ -123,24 +126,28 @@ class EmoteStore extends SafeEventEmitter {
     this.createRows();
   }
 
-  search(search) {
-    return fuse.search(search);
-  }
-
   trackHistory(emote) {
     emoteStorage.trackHistory(emote);
   }
 
-  get totalRows() {
+  getDefaultEmote() {
+    return this.defaultEmote;
+  }
+
+  search(search) {
+    return fuse.search(search);
+  }
+
+  getRow(index) {
+    return this.rows[index];
+  }
+
+  totalRows() {
     return this.rows.length;
   }
 
   getProviders() {
     return this.headers.map((id) => this.rows[id]);
-  }
-
-  getRow(index) {
-    return this.rows[index];
   }
 
   getHeaders() {
@@ -153,10 +160,6 @@ class EmoteStore extends SafeEventEmitter {
 
   getHeaderIndexById(id) {
     return this.headers.find((header) => this.rows[header]?.id === id);
-  }
-
-  isHeader(index) {
-    return this.headers.includes(index);
   }
 }
 
