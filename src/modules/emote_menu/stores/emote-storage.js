@@ -61,9 +61,10 @@ class EmoteStorage {
     id = String(id);
 
     // eslint-disable-next-line no-prototype-builtins
-    const emoteHistory = this.emoteStore.usageHistory[id];
+    let emoteHistory = this.emoteStore.usageHistory[id];
 
     if (emoteHistory != null) {
+      emoteHistory = {};
       emoteHistory.totalUses++;
       emoteHistory.recentUses.push(Date.now());
 
@@ -77,7 +78,7 @@ class EmoteStorage {
       this.emoteStore.usageHistory[id] = {
         recentUses: [Date.now()],
         totalUses: 1,
-        score: calcScore(1, [Date.now()]),
+        score: calcScore({recentUses: [Date.now()], totalUses: 1}),
       };
     }
 

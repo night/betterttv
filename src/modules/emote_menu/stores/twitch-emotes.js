@@ -29,7 +29,7 @@ const forcedProvidersToChannels = {
   0: {
     id: 0,
     displayName: 'Twitch Global',
-    icon: Icons.PEOPLE,
+    icon: Icons.TWITCH,
   },
   33: {
     id: 33,
@@ -54,12 +54,12 @@ const forcedProvidersToChannels = {
   19151: {
     id: 19151,
     displayName: 'Twitch Prime',
-    icon: Icons.CROWN,
+    icon: Icons.TWITCH_GAMING,
   },
   19194: {
     id: 19194,
     displayName: 'Twitch Prime',
-    icon: Icons.CROWN,
+    icon: Icons.TWITCH_GAMING,
   },
   301592777: {
     id: 301592777,
