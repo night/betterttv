@@ -1,6 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import Icon from 'rsuite/lib/Icon/index.js';
-import Button from 'rsuite/lib/Button/index.js';
 import classNames from 'classnames';
 import VirtualizedList from './VirtualizedList.jsx';
 import emoteStore from '../stores/index.js';
@@ -95,13 +94,6 @@ function SearchedEmotes({search, onHover, onClick}) {
     return (
       <div className={styles.empty}>
         <p>We could not find any results...</p>
-        <Button
-          appearance="primary"
-          target="_blank"
-          rel="noreferrer"
-          href={`https://betterttv.com/emotes/shared/search?query=${search}`}>
-          Search Shared Emotes
-        </Button>
       </div>
     );
   }
