@@ -36,7 +36,7 @@ class EmoteStore extends SafeEventEmitter {
 
     watcher.on('channel.updated', () => {
       this.load();
-      this.loadConditionalEmotes();
+      this.loadDependableEmotes();
       this.createRows();
     });
   }
@@ -70,7 +70,7 @@ class EmoteStore extends SafeEventEmitter {
     fuse.setCollection([...this.emotes.values()]);
   }
 
-  loadConditionalEmotes() {
+  loadDependableEmotes() {
     this.conditionalProviders = [
       {
         provider: {
@@ -119,7 +119,7 @@ class EmoteStore extends SafeEventEmitter {
   toggleFavorite(emote) {
     emoteStorage.setFavorite(emote, !emoteStorage.getFavorites().includes(emote.id));
 
-    this.loadConditionalEmotes();
+    this.loadDependableEmotes();
     this.createRows();
   }
 

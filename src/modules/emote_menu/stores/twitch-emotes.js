@@ -2,6 +2,7 @@ import twitchApi from '../../../utils/twitch-api.js';
 import Emote from '../../emotes/emote.js';
 import Icons from '../components/Icons.jsx';
 import debug from '../../../utils/debug.js';
+import {getEmoteFromRegEx} from '../../../utils/regex.js';
 
 const EMOTE_SET_QUERY = `
 query UserEmotes {
@@ -98,20 +99,27 @@ class TwitchEmotes {
           };
         }
 
-        const emotes = channelEmotes.map(
-          ({id: emoteId, token}) =>
-            new Emote({
-              id: emoteId,
-              provider,
-              channel: owner?.displayName,
-              code: token,
-              images: {
-                '1x': TWITCH_EMOTE_CDN(emoteId, '1.0'),
-                '2x': TWITCH_EMOTE_CDN(emoteId, '2.0'),
-                '4x': TWITCH_EMOTE_CDN(emoteId, '3.0'),
-              },
-            })
-        );
+        const emotes = channelEmotes.map(({id: emoteId, token: emoteToken}) => {
+          let newToken;
+
+          try {
+            newToken = getEmoteFromRegEx(emoteToken);
+          } catch (e) {
+            newToken = emoteToken;
+          }
+
+          return new Emote({
+            id: emoteId,
+            provider,
+            channel: owner?.displayName,
+            code: newToken,
+            images: {
+              '1x': TWITCH_EMOTE_CDN(emoteId, '1.0'),
+              '2x': TWITCH_EMOTE_CDN(emoteId, '2.0'),
+              '4x': TWITCH_EMOTE_CDN(emoteId, '3.0'),
+            },
+          });
+        });
 
         // twitch seperates emotes by tier, so we merge them into one set
         // eslint-disable-next-line no-prototype-builtins
