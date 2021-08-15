@@ -71,7 +71,7 @@ class EmoteStore extends SafeEventEmitter {
   }
 
   loadDependableEmotes() {
-    this.conditionalProviders = [
+    this.dependableProviders = [
       {
         provider: {
           id: 'favorites',
@@ -102,7 +102,7 @@ class EmoteStore extends SafeEventEmitter {
     this.headers = [];
 
     for (const {provider, emotes} of [
-      ...this.conditionalProviders,
+      ...this.dependableProviders,
       ...this.providers,
       ...twitchEmotes.getEmoteSets(),
       ...emojiCategories,
