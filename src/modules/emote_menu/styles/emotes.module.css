@@ -39,13 +39,6 @@
   width: 100%;
 }
 
-.icon {
-  width: 20px;
-  display: flex;
-  justify-content: center;
-  border-radius: 4px;
-}
-
 .empty {
   display: flex;
   margin-top: 16px;

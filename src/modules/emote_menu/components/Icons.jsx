@@ -15,7 +15,7 @@ import {faFlag} from '@fortawesome/free-solid-svg-icons/faFlag';
 import {faClock} from '@fortawesome/free-solid-svg-icons/faClock';
 import {faUnlock} from '@fortawesome/free-solid-svg-icons/faUnlock';
 import {faCrown} from '@fortawesome/free-solid-svg-icons/faCrown';
-import styles from '../styles/emotes.module.css';
+import styles from '../styles/icons.module.css';
 
 export default {
   STAR: <FontAwesomeIcon icon={faStar} />,
