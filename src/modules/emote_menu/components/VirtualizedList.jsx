@@ -44,10 +44,13 @@ function VirtualizedList(
       return false;
     });
 
+    const isAbsolute = startIndex >= next - 1;
+
     setData({
       header: {
         current,
-        top: startIndex > next - 2 ? (next - 1) * rowHeight - scrollTop : 0,
+        top: !isAbsolute ? 0 : (next - 1) * rowHeight,
+        position: !isAbsolute ? 'sticky' : 'absolute',
       },
       rows: rowsVisible,
     });
@@ -79,7 +82,11 @@ function VirtualizedList(
           ? renderRow({
               key: `row-${data.header.current}`,
               index: data.header.current,
-              style: {height: `${rowHeight}px`, top: `${data.header.top}px`},
+              style: {
+                height: `${rowHeight}px`,
+                top: `${data.header.top}px`,
+                position: data.header.position,
+              },
               className: styles.header,
             })
           : null}
