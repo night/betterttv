@@ -35,52 +35,39 @@ function getForcedProviderToChannels(key) {
       };
     case 33:
       return {
-        id: 33,
+        id: 'turbo',
         displayName: 'Twitch Turbo',
         icon: Icons.PEOPLE,
       };
     case 42:
       return {
-        id: 42,
+        id: 'turbo',
         displayName: 'Twitch Turbo',
         icon: Icons.PEOPLE,
       };
-
     case 457:
       return {
-        id: 457,
+        id: 'turbo',
         displayName: 'Twitch Turbo',
         icon: Icons.PEOPLE,
       };
     case 793:
       return {
-        id: 793,
+        id: 'turbo',
         displayName: 'Twitch Turbo',
         icon: Icons.PEOPLE,
       };
     case 19151:
       return {
-        id: 19151,
+        id: 'prime',
         displayName: 'Twitch Prime',
         icon: Icons.TWITCH_GAMING,
       };
     case 19194:
       return {
-        id: 19194,
+        id: 'prime',
         displayName: 'Twitch Prime',
         icon: Icons.TWITCH_GAMING,
-      };
-    case 301592777:
-      return {
-        id: 301592777,
-        displayName: 'Unlocked',
-        icon: Icons.UNLOCK,
-      };
-    case 300374282:
-      return {
-        id: 300374282,
-        displayName: 'Unlocked',
-        icon: Icons.UNLOCK,
       };
     default:
       return {
