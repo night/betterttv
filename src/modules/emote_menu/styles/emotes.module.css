@@ -70,3 +70,9 @@
 .emotesContainer::-webkit-scrollbar-thumb:hover {
   background: #191c23;
 }
+
+.headerText {
+  font-weight: 600;
+  font-size: 11px;
+  opacity: 0.8;
+}

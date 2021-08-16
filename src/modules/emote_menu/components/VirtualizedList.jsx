@@ -32,8 +32,23 @@ function VirtualizedList(
       rowsVisible.push(i);
     }
 
+    let current = 0;
+    let next = 0;
+
+    next = stickyRows.find((a) => {
+      if (a > startIndex) {
+        return true;
+      }
+
+      current = a;
+      return false;
+    });
+
     setData({
-      header: stickyRows.length > 0 ? stickyRows.reduce((a, b) => (startIndex >= b ? b : a), stickyRows[0]) : null,
+      header: {
+        current,
+        top: startIndex > next - 2 ? (next - 1) * rowHeight - scrollTop : 0,
+      },
       rows: rowsVisible,
     });
   }, [totalRows, rowHeight, windowHeight]);
@@ -62,9 +77,9 @@ function VirtualizedList(
         )}
         {data.header != null
           ? renderRow({
-              key: `row-${data.header}`,
-              index: data.header,
-              style: {height: `${rowHeight}px`},
+              key: `row-${data.header.current}`,
+              index: data.header.current,
+              style: {height: `${rowHeight}px`, top: `${data.header.top}px`},
               className: styles.header,
             })
           : null}

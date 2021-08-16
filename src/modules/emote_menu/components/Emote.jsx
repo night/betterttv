@@ -7,7 +7,7 @@ export default function Emote({emote, ...restProps}) {
       <img
         className={styles.emoteImage}
         srcSet={`${emote.images['1x']} 1x, ${emote.images['2x']} 2x, ${emote.images['3x']} 4x`}
-        src={emote.images['2x']}
+        src={emote.images['1x']}
         alt={emote.code}
       />
     </button>

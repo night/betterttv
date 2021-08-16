@@ -8,7 +8,7 @@ import emoteStorage from './emote-storage.js';
 import twitchEmotes from './twitch-emotes.js';
 import cdn from '../../../utils/cdn.js';
 
-const COLOUMN_COUNT = 7;
+export const COLOUM_COUNT = window.location.pathname.endsWith('/chat') ? 7 : 9;
 
 function chunkArray(array, size) {
   if (array.length <= size) {
@@ -27,6 +27,7 @@ class EmoteStore extends SafeEventEmitter {
     super();
     this.constants = new Map(); // non-channel dependent emotes
     this.defaultEmote = null;
+    this.colsCount = COLOUM_COUNT;
 
     for (const {emotes: constantEmotes} of [...twitchEmotes.getEmoteSets(), ...emojiCategories]) {
       constantEmotes.forEach((emote) => this.constants.set(String(emote.id), emote));
@@ -66,7 +67,7 @@ class EmoteStore extends SafeEventEmitter {
     }
 
     const collection = [...this.emotes.values()];
-    this.defaultEmote = collection[Math.floor(collection.length * Math.random())];
+    [this.defaultEmote] = collection;
     fuse.setCollection(collection);
   }
 
@@ -97,6 +98,11 @@ class EmoteStore extends SafeEventEmitter {
     ];
   }
 
+  setCols(cols) {
+    this.colsCount = cols;
+    this.createRows();
+  }
+
   createRows() {
     this.rows = [];
     this.headers = [];
@@ -110,7 +116,7 @@ class EmoteStore extends SafeEventEmitter {
       if (providerEmotes.length === 0) continue;
 
       this.headers.push(this.rows.length);
-      this.rows = this.rows.concat([provider, ...chunkArray(providerEmotes, COLOUMN_COUNT)]);
+      this.rows = this.rows.concat([provider, ...chunkArray(providerEmotes, this.colsCount)]);
     }
 
     this.emit('updated');

@@ -4,3 +4,8 @@
   justify-content: center;
   border-radius: 4px;
 }
+
+.iconContainer {
+  height: 20px;
+  width: 20px;
+}

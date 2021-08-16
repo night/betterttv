@@ -56,7 +56,13 @@ export default function EmoteMenu({triggerRef, appendText}) {
 
   return (
     <>
-      <Header className={styles.header} value={search} onChange={setSearch} onHide={onHide} />
+      <Header
+        className={styles.header}
+        value={search}
+        onChange={setSearch}
+        onHide={onHide}
+        placeholder={preview.code}
+      />
       <Divider className={styles.divider} />
       <div className={styles.content}>
         <Sidebar

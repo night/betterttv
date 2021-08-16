@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import Icon from 'rsuite/lib/Icon/index.js';
 import classNames from 'classnames';
 import VirtualizedList from './VirtualizedList.jsx';
-import emoteStore from '../stores/index.js';
+import emoteStore, {COLOUM_COUNT} from '../stores/index.js';
 import styles from '../styles/emotes.module.css';
 import Emote from './Emote.jsx';
 
@@ -20,7 +20,7 @@ function Emotes({onClick, onHover, section, onSection}) {
       return emoteStore.getHeaders().includes(index) ? (
         <div key={key} style={style} className={classNames(className, styles.header)}>
           <Icon>{row.icon}</Icon>
-          {row.displayName}
+          <div className={styles.headerText}>{row.displayName.toUpperCase()}</div>
         </div>
       ) : (
         <div key={key} style={style} className={classNames(className, styles.row)}>
@@ -33,8 +33,8 @@ function Emotes({onClick, onHover, section, onSection}) {
     [onHover, onClick]
   );
 
-  const handleHeaderChange = useCallback((index) => {
-    const header = emoteStore.getRow(index);
+  const handleHeaderChange = useCallback((row) => {
+    const header = emoteStore.getRow(row?.current);
     if (header != null) {
       onSection(header.id);
     }
@@ -78,7 +78,7 @@ function SearchedEmotes({search, onHover, onClick}) {
 
   const renderRow = useCallback(
     ({key, style, index, className}) => {
-      const row = emotes.slice(index * TOTAL_COLS, (index + 1) * TOTAL_COLS);
+      const row = emotes.slice(index * COLOUM_COUNT, (index + 1) * COLOUM_COUNT);
       return (
         <div key={key} style={style} className={classNames(className, styles.row)}>
           {row.map(({item}) => (

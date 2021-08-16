@@ -20,7 +20,10 @@ export default function Button({appendText}) {
       trigger="click"
       placement="topEnd"
       speaker={
-        <Popover className={styles.popover} full>
+        <Popover
+          className={styles.popover}
+          style={{width: window.location.pathname.endsWith('/chat') ? 320 : 380}}
+          full>
           <EmoteMenu triggerRef={triggerRef} appendText={appendText} />
         </Popover>
       }
