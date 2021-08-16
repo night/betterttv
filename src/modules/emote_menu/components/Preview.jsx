@@ -14,7 +14,8 @@ function PreviewEmote({emote}) {
           <img
             alt={emote.name}
             className={styles.emoteImage}
-            src={emote.images['3x'] || emote.images['2x'] || emote.images['1x']}
+            srcSet={`${emote.images['1x']} 1x, ${emote.images['2x']} 2x, ${emote.images['3x']} 4x`}
+            src={emote.images['2x']}
           />
         </div>
         <div>

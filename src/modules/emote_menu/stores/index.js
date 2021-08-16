@@ -2,10 +2,7 @@ import Fuse from 'fuse.js';
 import SafeEventEmitter from '../../../utils/safe-event-emitter.js';
 import watcher from '../../../watcher.js';
 import emojiCategories from './emoji-categories.js';
-import channelEmotes from '../../emotes/channel-emotes.js';
-import globalEmotes from '../../emotes/global-emotes.js';
-import ffzChannelEmotes from '../../frankerfacez/channel-emotes.js';
-import ffzGlobalEmotes from '../../frankerfacez/global-emotes.js';
+import emotes from '../../emotes/index.js';
 import Icons from '../components/Icons.jsx';
 import emoteStorage from './emote-storage.js';
 import twitchEmotes from './twitch-emotes.js';
@@ -31,8 +28,8 @@ class EmoteStore extends SafeEventEmitter {
     this.constants = new Map(); // non-channel dependent emotes
     this.defaultEmote = null;
 
-    for (const {emotes} of [...twitchEmotes.getEmoteSets(), ...emojiCategories]) {
-      emotes.forEach((emote) => this.constants.set(String(emote.id), emote));
+    for (const {emotes: constantEmotes} of [...twitchEmotes.getEmoteSets(), ...emojiCategories]) {
+      constantEmotes.forEach((emote) => this.constants.set(String(emote.id), emote));
     }
 
     watcher.on('channel.updated', () => {
@@ -50,7 +47,7 @@ class EmoteStore extends SafeEventEmitter {
           displayName: 'BetterTTV',
           icon: Icons.IMAGE(cdn.url('/assets/logos/mascot.png'), 'BetterTTV'),
         },
-        emotes: [...channelEmotes.getEmotes(), ...globalEmotes.getEmotes()],
+        emotes: emotes.getEmotes(['ffz-channel', 'ffz-global', 'bttv-emoji']),
       },
       {
         provider: {
@@ -58,14 +55,14 @@ class EmoteStore extends SafeEventEmitter {
           displayName: 'FrankerFaceZ',
           icon: Icons.IMAGE(cdn.url('/assets/logos/ffz_logo.png'), 'FrankerFaceZ'),
         },
-        emotes: [...ffzChannelEmotes.getEmotes(), ...ffzGlobalEmotes.getEmotes()],
+        emotes: emotes.getEmotes(['bttv-channel', 'bttv-personal', 'bttv', 'bttv-emoji']),
       },
     ];
 
     this.emotes = this.constants;
 
-    for (const {emotes} of this.providers) {
-      emotes.forEach((emote) => this.emotes.set(String(emote.id), emote));
+    for (const {emotes: providerEmotes} of this.providers) {
+      providerEmotes.forEach((emote) => this.emotes.set(String(emote.id), emote));
     }
 
     const collection = [...this.emotes.values()];
@@ -104,23 +101,23 @@ class EmoteStore extends SafeEventEmitter {
     this.rows = [];
     this.headers = [];
 
-    for (const {provider, emotes} of [
+    for (const {provider, emotes: providerEmotes} of [
       ...this.dependableProviders,
       ...this.providers,
       ...twitchEmotes.getEmoteSets(),
       ...emojiCategories,
     ]) {
-      if (emotes.length === 0) continue;
+      if (providerEmotes.length === 0) continue;
 
       this.headers.push(this.rows.length);
-      this.rows = this.rows.concat([provider, ...chunkArray(emotes, COLOUMN_COUNT)]);
+      this.rows = this.rows.concat([provider, ...chunkArray(providerEmotes, COLOUMN_COUNT)]);
     }
 
     this.emit('updated');
   }
 
   toggleFavorite(emote) {
-    emoteStorage.setFavorite(emote, !emoteStorage.getFavorites().includes(emote.id));
+    emoteStorage.setFavorite(emote, !emoteStorage.getFavorites().includes(String(emote.id)));
 
     this.loadDependableEmotes();
     this.createRows();
