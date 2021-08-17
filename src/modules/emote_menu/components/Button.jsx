@@ -4,6 +4,7 @@ import Popover from 'rsuite/lib/Popover/index.js';
 import classNames from 'classnames';
 import EmoteMenu from './Menu.jsx';
 import styles from '../styles/button.module.css';
+import emoteStore from '../stores/index.js';
 
 const widthStyle = window.location.pathname.endsWith('/chat') ? styles.smallPopover : styles.bigPopover;
 
@@ -11,7 +12,9 @@ export default function Button({appendToChat, setHandleOpen}) {
   const triggerRef = useRef(null);
 
   useEffect(() => {
-    setHandleOpen(() => triggerRef.current.open());
+    emoteStore.once('updated', () => {
+      setHandleOpen(() => triggerRef.current.open());
+    });
   }, []);
 
   return (
@@ -24,7 +27,7 @@ export default function Button({appendToChat, setHandleOpen}) {
         </Popover>
       }
       triggerRef={triggerRef}>
-      <span className={styles.placeholderButton} />
+      <span />
     </Whisper>
   );
 }
