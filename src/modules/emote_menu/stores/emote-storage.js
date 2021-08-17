@@ -49,6 +49,8 @@ class EmoteStorage {
       };
     }
 
+    this.favorites = new Set(this.emoteStore.favorites);
+
     for (const [id, emote] of Object.entries(this.emoteStore.usageHistory)) {
       this.emoteStore.usageHistory[id].score = calcScore(emote);
     }
@@ -60,27 +62,24 @@ class EmoteStorage {
     let {id} = emote;
     id = String(id);
 
-    // eslint-disable-next-line no-prototype-builtins
     let emoteHistory = this.emoteStore.usageHistory[id];
 
-    if (emoteHistory != null) {
-      emoteHistory = {};
-      emoteHistory.totalUses++;
-      emoteHistory.recentUses.push(Date.now());
-
-      if (emoteHistory.recentUses.length >= MAX_TIMESTAMPS) {
-        emoteHistory.recentUses.shift();
-      }
-
-      emoteHistory.score = calcScore(emoteHistory);
-      this.emoteStore.usageHistory[id] = emoteHistory;
-    } else {
-      this.emoteStore.usageHistory[id] = {
-        recentUses: [Date.now()],
-        totalUses: 1,
-        score: calcScore({recentUses: [Date.now()], totalUses: 1}),
+    if (emoteHistory == null) {
+      emoteHistory = {
+        recentUses: [],
+        totalUses: 0,
+        score: 0,
       };
     }
+
+    emoteHistory.totalUses++;
+    emoteHistory.recentUses.push(Date.now());
+    if (emoteHistory.recentUses.length > MAX_TIMESTAMPS) {
+      emoteHistory.recentUses.shift();
+    }
+    emoteHistory.score = calcScore(emoteHistory);
+
+    this.emoteStore.usageHistory[id] = emoteHistory;
 
     this.frecentIds = sortHistory(this.emoteStore.usageHistory);
     storage.set('emotes', this.emoteStore);
@@ -91,16 +90,21 @@ class EmoteStorage {
     id = String(id);
 
     if (bool) {
-      this.emoteStore.favorites.push(id);
+      this.favorites.add(id);
     } else {
-      this.emoteStore.favorites = this.emoteStore.favorites.filter((favoriteId) => favoriteId !== id);
+      this.favorites.delete(id);
     }
+  }
 
-    storage.set('emotes', this.emoteStore);
+  save() {
+    storage.set('emotes', {
+      usageHistory: this.emoteStore.usageHistory,
+      favorites: Array.from(this.favorites),
+    });
   }
 
   getFavorites() {
-    return this.emoteStore.favorites;
+    return this.favorites;
   }
 
   getFrecents() {

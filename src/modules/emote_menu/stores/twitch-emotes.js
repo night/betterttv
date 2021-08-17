@@ -28,51 +28,51 @@ const TWITCH_EMOTE_CDN = (id, size) => `https://static-cdn.jtvnw.net/emoticons/v
 
 function getForcedProviderToChannels(key) {
   switch (key) {
-    case 0:
+    case '0':
       return {
-        id: 0,
+        id: 'twitch-global',
         displayName: 'Twitch Global',
         icon: Icons.TWITCH,
       };
-    case 33:
+    case '33':
       return {
-        id: 'turbo',
+        id: 'twitch-turbo',
         displayName: 'Twitch Turbo',
         icon: Icons.PEOPLE,
       };
-    case 42:
+    case '42':
       return {
-        id: 'turbo',
+        id: 'twitch-turbo',
         displayName: 'Twitch Turbo',
         icon: Icons.PEOPLE,
       };
-    case 457:
+    case '457':
       return {
-        id: 'turbo',
+        id: 'twitch-turbo',
         displayName: 'Twitch Turbo',
         icon: Icons.PEOPLE,
       };
-    case 793:
+    case '793':
       return {
-        id: 'turbo',
+        id: 'twitch-turbo',
         displayName: 'Twitch Turbo',
         icon: Icons.PEOPLE,
       };
-    case 19151:
+    case '19151':
       return {
-        id: 'prime',
-        displayName: 'Twitch Prime',
+        id: 'twitch-gaming',
+        displayName: 'Twitch Gaming',
         icon: Icons.TWITCH_GAMING,
       };
-    case 19194:
+    case '19194':
       return {
-        id: 'prime',
-        displayName: 'Twitch Prime',
+        id: 'twitch-gaming',
+        displayName: 'Twitch Gaming',
         icon: Icons.TWITCH_GAMING,
       };
     default:
       return {
-        id: -1,
+        id: 'unlocked',
         displayName: 'Unlocked',
         icon: Icons.UNLOCK,
       };
@@ -89,9 +89,9 @@ export async function loadTwitchEmotes() {
 
       if (provider.id === -1 && owner != null) {
         provider = {
-          id: owner?.id,
-          displayName: owner?.displayName,
-          icon: Icons.IMAGE(owner?.profileImageURL, owner?.displayName),
+          id: owner.id,
+          displayName: owner.displayName,
+          icon: Icons.IMAGE(owner.profileImageURL, owner.displayName),
         };
       }
 

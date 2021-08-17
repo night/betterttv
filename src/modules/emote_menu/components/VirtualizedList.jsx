@@ -60,7 +60,10 @@ function VirtualizedList(
     wrapperRef.current.addEventListener('scroll', isInViewport, false);
     isInViewport();
     return () => {
-      if (wrapperRef.current) wrapperRef.current.removeEventListener('scroll', isInViewport, false);
+      if (wrapperRef.current == null) {
+        return;
+      }
+      wrapperRef.current.removeEventListener('scroll', isInViewport, false);
     };
   }, [isInViewport]);
 

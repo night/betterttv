@@ -1,25 +1,3 @@
-.emotesContainer {
-  width: 100%;
-  overflow-x: hidden;
-  display: flex;
-  justify-content: center;
-  padding: 0px 8px;
-}
-
-.emotesContainer::-webkit-scrollbar {
-  border-radius: 8px;
-  width: 4px;
-}
-
-.emotesContainer::-webkit-scrollbar-thumb {
-  background: #191c23;
-  border-radius: 8px;
-}
-
-.emotesContainer::-webkit-scrollbar-thumb:hover {
-  background: #191c23;
-}
-
 .divider {
   margin: 0px;
 }
@@ -50,7 +28,7 @@
 
 .emotesContainer {
   width: 100%;
-  padding: 0 10px;
+  padding: 0 8px;
   overflow-y: scroll;
   overflow-x: hidden;
   scrollbar-width: thin;
@@ -58,13 +36,13 @@
 }
 
 .emotesContainer::-webkit-scrollbar {
-  border-radius: 6px;
-  width: 5px;
+  border-radius: 4px;
+  width: 4px;
 }
 
 .emotesContainer::-webkit-scrollbar-thumb {
   background: #191c23;
-  border-radius: 5px;
+  border-radius: 4px;
 }
 
 .emotesContainer::-webkit-scrollbar-thumb:hover {

@@ -25,7 +25,7 @@ function PreviewEmote({emote}) {
           <div>from {emote.provider.displayName}</div>
         </div>
       </div>
-      {emoteStorage.getFavorites().includes(emote.id) ? (
+      {emoteStorage.getFavorites().has(emote.id) ? (
         <IconButton
           icon={
             <Icon>

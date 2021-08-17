@@ -2,13 +2,13 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import Icon from 'rsuite/lib/Icon/index.js';
 import classNames from 'classnames';
 import VirtualizedList from './VirtualizedList.jsx';
-import emoteStore, {COLOUM_COUNT} from '../stores/index.js';
+import emoteStore, {COLUMN_COUNT} from '../stores/index.js';
 import styles from '../styles/emotes.module.css';
 import Emote from './Emote.jsx';
 
 const ROW_HEIGHT = 36;
 const WINDOW_HEIGHT = 308;
-const TOTAL_COLS = 7;
+const TOTAL_COLUMNS = 7;
 
 function Emotes({onClick, onHover, section, onSection}) {
   const wrapperRef = useRef(null);
@@ -78,7 +78,7 @@ function SearchedEmotes({search, onHover, onClick}) {
 
   const renderRow = useCallback(
     ({key, style, index, className}) => {
-      const row = emotes.slice(index * COLOUM_COUNT, (index + 1) * COLOUM_COUNT);
+      const row = emotes.slice(index * COLUMN_COUNT, (index + 1) * COLUMN_COUNT);
       return (
         <div key={key} style={style} className={classNames(className, styles.row)}>
           {row.map(({item}) => (
@@ -102,7 +102,7 @@ function SearchedEmotes({search, onHover, onClick}) {
     <VirtualizedList
       rowHeight={ROW_HEIGHT}
       windowHeight={WINDOW_HEIGHT}
-      totalRows={Math.ceil(emotes.length / TOTAL_COLS)}
+      totalRows={Math.ceil(emotes.length / TOTAL_COLUMNS)}
       renderRow={renderRow}
       className={styles.emotesContainer}
     />

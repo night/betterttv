@@ -24,19 +24,19 @@ export default function EmoteMenu({triggerRef, appendText}) {
   useEffect(() => setSearch(''), [section]);
 
   const handleClick = useCallback((emote) => {
-    switch (true) {
-      case alt:
-        emoteStore.toggleFavorite(emote);
-        break;
-      case shift:
-        appendText(emote.code);
-        emoteStore.trackHistory(emote);
-        break;
-      default:
-        appendText(emote.code);
-        onHide();
-        emoteStore.trackHistory(emote);
+    if (alt) {
+      emoteStore.toggleFavorite(emote);
+      return;
     }
+
+    appendText(emote.code);
+    emoteStore.trackHistory(emote);
+
+    if (!shift) {
+      return;
+    }
+
+    onHide();
   }, []);
 
   useEffect(() => {

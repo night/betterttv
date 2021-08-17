@@ -81,9 +81,8 @@ class Emojis extends AbstractEmotes {
           if (categoryEmotes == null) {
             categoryEmotes = [];
             this.emotesByCategory[emoji.category] = categoryEmotes;
-          } else {
-            categoryEmotes.push(emote);
           }
+          categoryEmotes.push(emote);
         }
 
         this.emotes.set(emoji.char, emote);

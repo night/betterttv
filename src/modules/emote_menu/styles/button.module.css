@@ -34,7 +34,14 @@
 }
 
 .popover {
-  width: 380px;
   height: 420px;
   margin-left: 6px;
+}
+
+.bigPopover {
+  width: 380px;
+}
+
+.smallPopover {
+  width: 320px;
 }

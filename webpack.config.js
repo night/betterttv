@@ -46,7 +46,6 @@ function jsonTransform(emojis) {
       char,
       slug: emojiData.shortname.replace(/:/g, ''),
       category: emojiData.category,
-      isAlternative: false,
     };
 
     result[data.slug] = data;

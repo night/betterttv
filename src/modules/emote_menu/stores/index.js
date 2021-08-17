@@ -8,7 +8,7 @@ import emoteStorage from './emote-storage.js';
 import {loadTwitchEmotes} from './twitch-emotes.js';
 import cdn from '../../../utils/cdn.js';
 
-export const COLOUM_COUNT = window.location.pathname.endsWith('/chat') ? 7 : 9;
+export const COLUMN_COUNT = window.location.pathname.endsWith('/chat') ? 7 : 9;
 
 function chunkArray(array, size) {
   if (array.length <= size) {
@@ -25,11 +25,12 @@ const fuse = new Fuse([], {
 class EmoteStore extends SafeEventEmitter {
   constructor() {
     super();
-    this.colsCount = COLOUM_COUNT;
+    this.colsCount = COLUMN_COUNT;
+    this.providers = [];
 
     watcher.on('channel.updated', async () => {
       await this.loadConstants();
-      this.load();
+      this.loadExtensionEmotes();
       this.loadDependableEmotes();
       this.createRows();
     });
@@ -48,7 +49,7 @@ class EmoteStore extends SafeEventEmitter {
     }
   }
 
-  load() {
+  loadExtensionEmotes() {
     this.providers = [
       {
         provider: {
@@ -87,8 +88,7 @@ class EmoteStore extends SafeEventEmitter {
           displayName: 'Favorites',
           icon: Icons.STAR,
         },
-        emotes: emoteStorage
-          .getFavorites()
+        emotes: Array.from(emoteStorage.getFavorites())
           .map((id) => this.emotes.get(id))
           .filter((emote) => emote != null),
       },
@@ -104,11 +104,6 @@ class EmoteStore extends SafeEventEmitter {
           .filter((emote) => emote != null),
       },
     ];
-  }
-
-  setCols(cols) {
-    this.colsCount = cols;
-    this.createRows();
   }
 
   createRows() {
@@ -130,7 +125,7 @@ class EmoteStore extends SafeEventEmitter {
   }
 
   toggleFavorite(emote) {
-    emoteStorage.setFavorite(emote, !emoteStorage.getFavorites().includes(String(emote.id)));
+    emoteStorage.setFavorite(emote, !emoteStorage.getFavorites().has(String(emote.id)));
 
     this.loadDependableEmotes();
     this.createRows();
