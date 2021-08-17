@@ -27,26 +27,10 @@
 }
 
 .emotesContainer {
+  composes: scroll from './scrollbar.module.css';
   width: 100%;
   padding: 0 8px;
-  overflow-y: scroll;
   overflow-x: hidden;
-  scrollbar-width: thin;
-  scrollbar-color: #191c23 transparent;
-}
-
-.emotesContainer::-webkit-scrollbar {
-  border-radius: 4px;
-  width: 4px;
-}
-
-.emotesContainer::-webkit-scrollbar-thumb {
-  background: #191c23;
-  border-radius: 4px;
-}
-
-.emotesContainer::-webkit-scrollbar-thumb:hover {
-  background: #191c23;
 }
 
 .headerText {
