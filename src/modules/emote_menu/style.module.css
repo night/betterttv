@@ -10,4 +10,5 @@
   vertical-align: baseline;
   position: relative !important;
   display: inline;
+  top: -8px;
 }

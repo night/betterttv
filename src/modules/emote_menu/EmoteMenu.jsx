@@ -36,36 +36,37 @@ class SafeEmoteMenu extends React.Component {
 
 class EmoteMenuModule {
   constructor() {
-    settings.on(`changed.${SettingIds.CLICK_TWITCH_EMOTES}`, () => this.embedEmoteMenu());
     domObserver.on(CHAT_INPUT_ICONS_SELECTOR, () => this.embedEmoteMenu());
+    settings.on(`changed.${SettingIds.CLICK_TWITCH_EMOTES}`, () => this.embedEmoteMenu());
   }
 
   embedEmoteMenu() {
+    if (settings.get(SettingIds.CLICK_TWITCH_EMOTES)) {
+      this.load();
+      return;
+    }
+
+    this.unload();
+  }
+
+  load() {
     const container = $(BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
-    const clickTwitchEmotes = settings.get(SettingIds.CLICK_TWITCH_EMOTES);
+    $(EMOTE_PICKER_BUTTON_SELECTOR).on('click', clickCallback);
 
-    if (clickTwitchEmotes) {
-      $(EMOTE_PICKER_BUTTON_SELECTOR).on('click', clickCallback);
-
-      if (!container.length) {
-        const panel = document.createElement('div');
-        panel.setAttribute('id', 'bttvEmoteMenuContainer');
-        panel.classList.add(styles.emoteMenuContainer);
-        $(CHAT_INPUT_ICONS_SELECTOR).append(panel);
-        ReactDOM.render(
-          <SafeEmoteMenu onError={this.hide} appendToChat={this.appendToChat} setHandleOpen={setHandleOpen} />,
-          panel
-        );
-      }
+    if (!container.length) {
+      const panel = document.createElement('div');
+      panel.setAttribute('id', 'bttvEmoteMenuContainer');
+      panel.classList.add(styles.emoteMenuContainer);
+      $(CHAT_INPUT_ICONS_SELECTOR).append(panel);
+      ReactDOM.render(
+        <SafeEmoteMenu onError={this.unload} appendToChat={this.appendToChat} setHandleOpen={setHandleOpen} />,
+        panel
+      );
     }
+  }
 
-    if (!clickTwitchEmotes) {
-      $(EMOTE_PICKER_BUTTON_SELECTOR).off('click', clickCallback);
-
-      if (container.length && !clickTwitchEmotes) {
-        this.hide();
-      }
-    }
+  unload() {
+    $(EMOTE_PICKER_BUTTON_SELECTOR).off('click', clickCallback);
   }
 
   appendToChat(text) {
@@ -95,16 +96,6 @@ class EmoteMenuModule {
     element.focus();
     selectionEnd = element.selectionStart + text.length;
     element.setSelectionRange(selectionEnd, selectionEnd);
-  }
-
-  hide() {
-    $(EMOTE_PICKER_BUTTON_SELECTOR).show();
-    $(BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR).hide();
-  }
-
-  show() {
-    $(EMOTE_PICKER_BUTTON_SELECTOR).hide();
-    $(BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR).show();
   }
 }
 
