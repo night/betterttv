@@ -6,6 +6,8 @@ import styles from '../styles/sidebar.module.css';
 const ITEM_HEIGHT = 42;
 const SIDEBAR_HEIGHT = 314;
 
+let timer;
+
 export default function Sidebar({section, onChange}) {
   const containerRef = useRef(null);
   const [providers, setProviders] = useState(emoteStore.getProviders());
@@ -25,28 +27,32 @@ export default function Sidebar({section, onChange}) {
   useEffect(() => {
     if (section.eventKey == null) return;
 
-    const top = containerRef.current.scrollTop;
-    const bottom = top + SIDEBAR_HEIGHT;
-    const index = providers.findIndex((provider) => provider.id === section.eventKey);
-    const depth = (index + 1) * ITEM_HEIGHT;
+    clearTimeout(timer);
 
-    if (depth > bottom) {
-      containerRef.current.scrollTo({
-        top: depth - SIDEBAR_HEIGHT,
-        left: 0,
-        behavior: 'smooth',
-      });
+    timer = setTimeout(() => {
+      const top = containerRef.current.scrollTop;
+      const bottom = top + SIDEBAR_HEIGHT;
+      const index = providers.findIndex((provider) => provider.id === section.eventKey);
+      const depth = (index + 1) * ITEM_HEIGHT;
 
-      return;
-    }
+      if (depth > bottom) {
+        containerRef.current.scrollTo({
+          top: depth - SIDEBAR_HEIGHT,
+          left: 0,
+          behavior: 'smooth',
+        });
 
-    if (top > depth - ITEM_HEIGHT) {
-      containerRef.current.scrollTo({
-        top: depth - ITEM_HEIGHT,
-        left: 0,
-        behavior: 'smooth',
-      });
-    }
+        return;
+      }
+
+      if (top > depth - ITEM_HEIGHT) {
+        containerRef.current.scrollTo({
+          top: depth - ITEM_HEIGHT,
+          left: 0,
+          behavior: 'smooth',
+        });
+      }
+    }, 300);
   }, [section]);
 
   return (

@@ -1,3 +1,4 @@
+/* eslint-disable import/prefer-default-export */
 import twitchApi from '../../../utils/twitch-api.js';
 import Emote from '../../emotes/emote.js';
 import Icons from '../components/Icons.jsx';
@@ -78,69 +79,57 @@ function getForcedProviderToChannels(key) {
   }
 }
 
-class TwitchEmotes {
-  constructor() {
-    this.sets = [];
-    this.loadEmotes();
-  }
+export async function loadTwitchEmotes() {
+  try {
+    const tempSets = {};
+    const {data} = await twitchApi.graphqlQuery(EMOTE_SET_QUERY);
 
-  async loadEmotes() {
-    try {
-      const tempSets = {};
-      const {data} = await twitchApi.graphqlQuery(EMOTE_SET_QUERY);
+    for (const {owner, id, emotes} of data.currentUser.emoteSets) {
+      let provider = getForcedProviderToChannels(id);
 
-      for (const {owner, id, emotes} of data.currentUser.emoteSets) {
-        let provider = getForcedProviderToChannels(id);
-
-        if (provider.id === -1 && owner != null) {
-          provider = {
-            id: owner?.id,
-            displayName: owner?.displayName,
-            icon: Icons.IMAGE(owner?.profileImageURL, owner?.displayName),
-          };
-        }
-
-        const providerEmotes = emotes.map(({id: emoteId, token: emoteToken}) => {
-          let newToken;
-
-          try {
-            newToken = getEmoteFromRegEx(emoteToken);
-          } catch (e) {
-            newToken = emoteToken;
-          }
-
-          return new Emote({
-            id: emoteId,
-            provider,
-            channel: owner?.displayName,
-            code: newToken,
-            images: {
-              '1x': TWITCH_EMOTE_CDN(emoteId, '1.0'),
-              '2x': TWITCH_EMOTE_CDN(emoteId, '2.0'),
-              '4x': TWITCH_EMOTE_CDN(emoteId, '3.0'),
-            },
-          });
-        });
-
-        // twitch seperates emotes by tier, so we merge them into one set
-        // eslint-disable-next-line no-prototype-builtins
-        if (tempSets.hasOwnProperty(provider.id)) {
-          tempSets[provider.id].emotes = [...tempSets[provider.id]?.emotes, ...providerEmotes];
-          continue;
-        }
-
-        tempSets[provider.id] = {provider, emotes: providerEmotes};
+      if (provider.id === -1 && owner != null) {
+        provider = {
+          id: owner?.id,
+          displayName: owner?.displayName,
+          icon: Icons.IMAGE(owner?.profileImageURL, owner?.displayName),
+        };
       }
 
-      this.sets = Object.values(tempSets);
-    } catch (e) {
-      debug.error('failed to fetch twitch', e);
-    }
-  }
+      const providerEmotes = emotes.map(({id: emoteId, token: emoteToken}) => {
+        let newToken;
 
-  getEmoteSets() {
-    return this.sets;
+        try {
+          newToken = getEmoteFromRegEx(emoteToken);
+        } catch (e) {
+          newToken = emoteToken;
+        }
+
+        return new Emote({
+          id: emoteId,
+          provider,
+          channel: owner?.displayName,
+          code: newToken,
+          images: {
+            '1x': TWITCH_EMOTE_CDN(emoteId, '1.0'),
+            '2x': TWITCH_EMOTE_CDN(emoteId, '2.0'),
+            '4x': TWITCH_EMOTE_CDN(emoteId, '3.0'),
+          },
+        });
+      });
+
+      // twitch seperates emotes by tier, so we merge them into one set
+      // eslint-disable-next-line no-prototype-builtins
+      if (tempSets.hasOwnProperty(provider.id)) {
+        tempSets[provider.id].emotes = [...tempSets[provider.id]?.emotes, ...providerEmotes];
+        continue;
+      }
+
+      tempSets[provider.id] = {provider, emotes: providerEmotes};
+    }
+
+    return Object.values(tempSets);
+  } catch (e) {
+    debug.error('failed to fetch twitch', e);
+    return [];
   }
 }
-
-export default new TwitchEmotes();

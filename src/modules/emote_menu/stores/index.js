@@ -5,7 +5,7 @@ import emojiCategories from './emoji-categories.js';
 import emotes from '../../emotes/index.js';
 import Icons from '../components/Icons.jsx';
 import emoteStorage from './emote-storage.js';
-import twitchEmotes from './twitch-emotes.js';
+import {loadTwitchEmotes} from './twitch-emotes.js';
 import cdn from '../../../utils/cdn.js';
 
 export const COLOUM_COUNT = window.location.pathname.endsWith('/chat') ? 7 : 9;
@@ -25,19 +25,27 @@ const fuse = new Fuse([], {
 class EmoteStore extends SafeEventEmitter {
   constructor() {
     super();
-    this.constants = new Map(); // non-channel dependent emotes
-    this.defaultEmote = null;
     this.colsCount = COLOUM_COUNT;
 
-    for (const {emotes: constantEmotes} of [...twitchEmotes.getEmoteSets(), ...emojiCategories]) {
-      constantEmotes.forEach((emote) => this.constants.set(String(emote.id), emote));
-    }
-
-    watcher.on('channel.updated', () => {
+    watcher.on('channel.updated', async () => {
+      await this.loadConstants();
       this.load();
       this.loadDependableEmotes();
       this.createRows();
     });
+  }
+
+  async loadConstants() {
+    if (this.constantProviders != null) return; // constants already been loaded
+
+    this.constants = new Map(); // non-channel dependent emotes
+
+    const twitchEmotes = await loadTwitchEmotes();
+    this.constantProviders = [...twitchEmotes, ...emojiCategories];
+
+    for (const {emotes: constantEmotes} of this.constantProviders) {
+      constantEmotes.forEach((emote) => this.constants.set(String(emote.id), emote));
+    }
   }
 
   load() {
@@ -110,8 +118,7 @@ class EmoteStore extends SafeEventEmitter {
     for (const {provider, emotes: providerEmotes} of [
       ...this.dependableProviders,
       ...this.providers,
-      ...twitchEmotes.getEmoteSets(),
-      ...emojiCategories,
+      ...this.constantProviders,
     ]) {
       if (providerEmotes.length === 0) continue;
 
