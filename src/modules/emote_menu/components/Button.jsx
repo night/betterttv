@@ -1,21 +1,17 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {faSmile} from '@fortawesome/free-solid-svg-icons/faSmile';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import React, {useEffect, useRef} from 'react';
 import Whisper from 'rsuite/lib/Whisper/index.js';
 import Popover from 'rsuite/lib/Popover/index.js';
 import classNames from 'classnames';
 import EmoteMenu from './Menu.jsx';
 import styles from '../styles/button.module.css';
-import emoteStore from '../stores/index.js';
 
-const widthStyle = window.location.pathname.endsWith('/chat') ? styles.bigPopover : styles.smallPopover;
+const widthStyle = window.location.pathname.endsWith('/chat') ? styles.smallPopover : styles.bigPopover;
 
-export default function Button({appendText}) {
+export default function Button({appendToChat, setHandleOpen}) {
   const triggerRef = useRef(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    emoteStore.once('updated', () => setLoading(false));
+    setHandleOpen(() => triggerRef.current.open());
   }, []);
 
   return (
@@ -24,13 +20,11 @@ export default function Button({appendText}) {
       placement="topEnd"
       speaker={
         <Popover className={classNames(styles.popover, widthStyle)} full>
-          <EmoteMenu triggerRef={triggerRef} appendText={appendText} />
+          <EmoteMenu triggerRef={triggerRef} appendToChat={appendToChat} />
         </Popover>
       }
       triggerRef={triggerRef}>
-      <button type="button" className={styles.button} disabled={loading}>
-        <FontAwesomeIcon icon={faSmile} />
-      </button>
+      <span className={styles.placeholderButton} />
     </Whisper>
   );
 }

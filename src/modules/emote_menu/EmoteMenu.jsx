@@ -13,20 +13,24 @@ const CHAT_INPUT_ICONS_SELECTOR = '.chat-input__input-icons';
 const BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR = '#bttvEmoteMenuContainer';
 const CHAT_TEXT_AREA = 'textarea[data-a-target="chat-input"]';
 
-class SafeEmoteMenu extends React.Component {
-  componentDidMount() {
-    const {onMount} = this.props;
-    onMount();
-  }
+let handleOpen;
+function setHandleOpen(newHandleOpen) {
+  handleOpen = newHandleOpen;
+}
 
+function clickCallback(e) {
+  e.stopImmediatePropagation();
+  handleOpen();
+}
+
+class SafeEmoteMenu extends React.Component {
   componentDidCatch(error, info) {
     const {onError} = this.props;
     onError(error, info);
   }
 
   render() {
-    const {appendToChat} = this.props;
-    return <EmoteMenu appendText={appendToChat} />;
+    return <EmoteMenu {...this.props} />;
   }
 }
 
@@ -40,19 +44,27 @@ class EmoteMenuModule {
     const container = $(BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
     const clickTwitchEmotes = settings.get(SettingIds.CLICK_TWITCH_EMOTES);
 
-    if (!container.length && clickTwitchEmotes) {
-      const panel = document.createElement('div');
-      panel.setAttribute('id', 'bttvEmoteMenuContainer');
-      panel.classList.add(styles.emoteMenuContainer);
-      $(CHAT_INPUT_ICONS_SELECTOR).append(panel);
-      ReactDOM.render(
-        <SafeEmoteMenu onError={this.hide} onMount={this.show} appendToChat={this.appendToChat} />,
-        panel
-      );
+    if (clickTwitchEmotes) {
+      $(EMOTE_PICKER_BUTTON_SELECTOR).on('click', clickCallback);
+
+      if (!container.length) {
+        const panel = document.createElement('div');
+        panel.setAttribute('id', 'bttvEmoteMenuContainer');
+        panel.classList.add(styles.emoteMenuContainer);
+        $(CHAT_INPUT_ICONS_SELECTOR).append(panel);
+        ReactDOM.render(
+          <SafeEmoteMenu onError={this.hide} appendToChat={this.appendToChat} setHandleOpen={setHandleOpen} />,
+          panel
+        );
+      }
     }
 
-    if (container.length && !clickTwitchEmotes) {
-      this.hide();
+    if (!clickTwitchEmotes) {
+      $(EMOTE_PICKER_BUTTON_SELECTOR).off('click', clickCallback);
+
+      if (container.length && !clickTwitchEmotes) {
+        this.hide();
+      }
     }
   }
 

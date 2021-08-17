@@ -44,13 +44,13 @@ function VirtualizedList(
       return false;
     });
 
-    const isAbsolute = startIndex >= next - 1;
+    const isSticky = startIndex < next - 1;
 
     setData({
       header: {
         current,
-        top: !isAbsolute ? 0 : (next - 1) * rowHeight,
-        position: !isAbsolute ? 'sticky' : 'absolute',
+        top: isSticky ? 0 : (next - 1) * rowHeight,
+        position: isSticky ? 'sticky' : 'absolute',
       },
       rows: rowsVisible,
     });

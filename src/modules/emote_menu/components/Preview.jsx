@@ -38,4 +38,4 @@ function PreviewEmote({emote}) {
   );
 }
 
-export default React.memo(PreviewEmote, ({emote: a}, {emote: b}) => a === b);
+export default React.memo(PreviewEmote, (oldProps, newProps) => oldProps.emote.id === newProps.emote.id);

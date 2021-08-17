@@ -25,7 +25,7 @@ function Emotes({onClick, onHover, section, onSection}) {
       ) : (
         <div key={key} style={style} className={classNames(className, styles.row)}>
           {row.map((emote) => (
-            <Emote key={emote.code} emote={emote} onClick={() => onClick(emote)} onMouseOver={() => onHover(emote)} />
+            <Emote emote={emote} onClick={onClick} onMouseOver={onHover} />
           ))}
         </div>
       );
@@ -82,7 +82,7 @@ function SearchedEmotes({search, onHover, onClick}) {
       return (
         <div key={key} style={style} className={classNames(className, styles.row)}>
           {row.map(({item}) => (
-            <Emote key={item.code} emote={item} onClick={() => onClick(item)} onMouseOver={() => onHover(item)} />
+            <Emote emote={item} onClick={onClick} onMouseOver={onHover} />
           ))}
         </div>
       );

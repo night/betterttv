@@ -72,7 +72,7 @@ function getForcedProviderToChannels(key) {
       };
     default:
       return {
-        id: 'unlocked',
+        id: -1,
         displayName: 'Unlocked',
         icon: Icons.UNLOCK,
       };

@@ -10,7 +10,7 @@ import Sidebar from './Sidebar.jsx';
 let alt = false;
 let shift = false;
 
-export default function EmoteMenu({triggerRef, appendText}) {
+export default function EmoteMenu({triggerRef, appendToChat}) {
   const onHide = useCallback(() => triggerRef.current.close(), [triggerRef]);
 
   const [search, setSearch] = useState('');
@@ -29,7 +29,7 @@ export default function EmoteMenu({triggerRef, appendText}) {
       return;
     }
 
-    appendText(emote.code);
+    appendToChat(emote.code);
     emoteStore.trackHistory(emote);
 
     if (!shift) {

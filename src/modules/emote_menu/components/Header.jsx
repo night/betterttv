@@ -7,7 +7,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faSearch} from '@fortawesome/free-solid-svg-icons/faSearch';
 import {faTimes} from '@fortawesome/free-solid-svg-icons/faTimes';
 
-export default function Header({value, onChange, onHide, placeholder, ...restProps}) {
+function Header({value, onChange, onHide, placeholder, ...restProps}) {
   const ref = useRef(null);
 
   useEffect(() => {
@@ -22,13 +22,7 @@ export default function Header({value, onChange, onHide, placeholder, ...restPro
             <FontAwesomeIcon icon={faSearch} />
           </Icon>
         </InputGroup.Addon>
-        <Input
-          placeholder={placeholder || 'Search for Emotes'}
-          value={value}
-          onChange={onChange}
-          maxLength="20"
-          inputRef={ref}
-        />
+        <Input placeholder={placeholder} value={value} onChange={onChange} maxLength="20" inputRef={ref} />
       </InputGroup>
       <IconButton
         icon={
@@ -42,3 +36,8 @@ export default function Header({value, onChange, onHide, placeholder, ...restPro
     </div>
   );
 }
+
+export default React.memo(
+  Header,
+  (oldProps, newProps) => oldProps.placeholder === newProps.placeholder && newProps.value === oldProps.value
+);
