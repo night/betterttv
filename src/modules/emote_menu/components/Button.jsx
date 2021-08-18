@@ -1,21 +1,15 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useRef} from 'react';
 import Whisper from 'rsuite/lib/Whisper/index.js';
 import Popover from 'rsuite/lib/Popover/index.js';
 import classNames from 'classnames';
+import parse from 'html-react-parser';
 import EmoteMenu from './Menu.jsx';
 import styles from '../styles/button.module.css';
-import emoteStore from '../stores/index.js';
 
 const widthStyle = window.location.pathname.endsWith('/chat') ? styles.smallPopover : styles.bigPopover;
 
-export default function Button({appendToChat, setHandleOpen}) {
+export default function Button({appendToChat, button}) {
   const triggerRef = useRef(null);
-
-  useEffect(() => {
-    emoteStore.once('updated', () => {
-      setHandleOpen(() => triggerRef.current.open());
-    });
-  }, []);
 
   return (
     <Whisper
@@ -27,7 +21,7 @@ export default function Button({appendToChat, setHandleOpen}) {
         </Popover>
       }
       triggerRef={triggerRef}>
-      <span />
+      {parse(button)}
     </Whisper>
   );
 }

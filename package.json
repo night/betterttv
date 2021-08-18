@@ -52,6 +52,7 @@
     "git-rev-sync": "^3.0.1",
     "glob": "^7.1.7",
     "got": "^11.8.2",
+    "html-react-parser": "^1.2.8",
     "import-glob-loader": "^1.1.0",
     "jquery": "^3.6.0",
     "json-loader": "^0.5.7",

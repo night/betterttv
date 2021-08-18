@@ -20,6 +20,7 @@ function chunkArray(array, size) {
 const fuse = new Fuse([], {
   keys: ['code'],
   shouldSort: true,
+  threshold: 0.3,
 });
 
 class EmoteStore extends SafeEventEmitter {

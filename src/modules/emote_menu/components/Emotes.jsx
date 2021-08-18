@@ -87,7 +87,7 @@ function SearchedEmotes({search, onHover, onClick}) {
         </div>
       );
     },
-    [onHover, onClick]
+    [emotes]
   );
 
   if (emotes.length === 0) {
