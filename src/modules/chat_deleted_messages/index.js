@@ -36,15 +36,11 @@ class ChatDeletedMessagesModule {
     // const chatClear = settings.get(SettingIds.CLEAR_CHAT);
     const deletedMessages = settings.get(SettingIds.DELETED_MESSAGES);
     const showDeletedMessages = deletedMessages === DeletedMessageTypes.SHOW;
-    const hideDeletedMessages = deletedMessages === DeletedMessageTypes.HIDE;
     switch (message.type) {
       case twitch.TMIActionTypes.CLEAR_CHAT:
-        
         if (showDeletedMessages) {
           twitch.sendChatAdminMessage('Chat was cleared by a moderator (Prevented by BetterTTV)');
           preventDefault();
-        } else {
-          console.log("clearing chat")
         }
         break;
       case twitch.TMIActionTypes.MODERATION:
