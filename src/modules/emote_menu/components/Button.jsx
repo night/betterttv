@@ -8,11 +8,15 @@ import emoteStore from '../stores/index.js';
 
 export default function Button({appendToChat, button}) {
   const triggerRef = useRef(null);
-
   const [trigger, setTrigger] = useState('none');
 
   useEffect(() => {
-    emoteStore.once('updated', () => {
+    if (emoteStore.isLoaded()) {
+      setTrigger('click');
+      return;
+    }
+
+    emoteStore.once('loaded', () => {
       setTrigger('click');
     });
   }, []);

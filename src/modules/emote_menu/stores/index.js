@@ -8,7 +8,7 @@ import emoteStorage from './emote-storage.js';
 import {loadTwitchEmotes} from './twitch-emotes.js';
 import cdn from '../../../utils/cdn.js';
 
-export const COLUMN_COUNT = window.location.pathname.endsWith('/chat') ? 7 : 9;
+export const validateTotalColumns = () => (window.innerWidth <= 400 ? 7 : 9);
 
 function chunkArray(array, size) {
   if (array.length <= size) {
@@ -26,32 +26,36 @@ const fuse = new Fuse([], {
 class EmoteStore extends SafeEventEmitter {
   constructor() {
     super();
-    this.colsCount = COLUMN_COUNT;
-    this.providers = [];
+
+    this.totalCols = null;
+
+    this.providers = {
+      dependable: [], // emote dependent emotes
+      extension: [], // channel dependent emotes
+      fixed: [], // emotes that wont change
+    };
 
     watcher.on('channel.updated', async () => {
-      await this.loadConstants();
+      await this.loadFixedEmotes();
       this.loadExtensionEmotes();
       this.loadDependableEmotes();
       this.createRows();
     });
   }
 
-  async loadConstants() {
-    if (this.constantProviders != null) return; // constants already been loaded
-
-    this.constants = new Map(); // non-channel dependent emotes
-
+  async loadFixedEmotes() {
+    if (this.providers.fixed.length > 0) return; // constants already been loaded
+    this.constants = new Map();
     const twitchEmotes = await loadTwitchEmotes();
-    this.constantProviders = [...twitchEmotes, ...emojiCategories];
+    this.providers.fixed = twitchEmotes.concat(emojiCategories);
 
-    for (const {emotes: constantEmotes} of this.constantProviders) {
-      constantEmotes.forEach((emote) => this.constants.set(String(emote.id), emote));
+    for (const {emotes: fixedEmotes} of this.providers.fixed) {
+      fixedEmotes.forEach((emote) => this.constants.set(String(emote.id), emote));
     }
   }
 
   loadExtensionEmotes() {
-    this.providers = [
+    this.providers.extension = [
       {
         provider: {
           id: 'bttv',
@@ -72,7 +76,7 @@ class EmoteStore extends SafeEventEmitter {
 
     this.emotes = this.constants;
 
-    for (const {emotes: providerEmotes} of this.providers) {
+    for (const {emotes: providerEmotes} of this.providers.extension) {
       providerEmotes.forEach((emote) => this.emotes.set(String(emote.id), emote));
     }
 
@@ -82,7 +86,7 @@ class EmoteStore extends SafeEventEmitter {
   }
 
   loadDependableEmotes() {
-    this.dependableProviders = [
+    this.providers.dependable = [
       {
         provider: {
           id: 'favorites',
@@ -108,32 +112,31 @@ class EmoteStore extends SafeEventEmitter {
   }
 
   createRows() {
+    this.totalCols = validateTotalColumns();
     this.rows = [];
     this.headers = [];
 
-    for (const {provider, emotes: providerEmotes} of [
-      ...this.dependableProviders,
-      ...this.providers,
-      ...this.constantProviders,
-    ]) {
-      if (providerEmotes.length === 0) continue;
+    for (const providers of Object.values(this.providers)) {
+      for (const {provider, emotes: providerEmotes} of providers) {
+        if (providerEmotes.length === 0) continue;
 
-      this.headers.push(this.rows.length);
-      this.rows = this.rows.concat([provider, ...chunkArray(providerEmotes, this.colsCount)]);
+        this.headers.push(this.rows.length);
+        this.rows = this.rows.concat([provider, ...chunkArray(providerEmotes, this.totalCols)]);
+      }
     }
 
-    this.emit('updated');
+    this.loaded = true;
+    this.emit('loaded');
+  }
+
+  isLoaded() {
+    return this.loaded;
   }
 
   toggleFavorite(emote) {
     emoteStorage.setFavorite(emote, !emoteStorage.getFavorites().has(String(emote.id)));
 
     this.loadDependableEmotes();
-    this.createRows();
-  }
-
-  setCols(cols) {
-    this.colsCount = cols;
     this.createRows();
   }
 
