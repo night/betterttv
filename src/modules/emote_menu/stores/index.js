@@ -132,6 +132,11 @@ class EmoteStore extends SafeEventEmitter {
     this.createRows();
   }
 
+  setCols(cols) {
+    this.colsCount = cols;
+    this.createRows();
+  }
+
   trackHistory(emote) {
     emoteStorage.trackHistory(emote);
   }

@@ -1,22 +1,28 @@
-import React, {useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Whisper from 'rsuite/lib/Whisper/index.js';
 import Popover from 'rsuite/lib/Popover/index.js';
-import classNames from 'classnames';
 import parse from 'html-react-parser';
 import EmoteMenu from './Menu.jsx';
 import styles from '../styles/button.module.css';
-
-const widthStyle = window.location.pathname.endsWith('/chat') ? styles.smallPopover : styles.bigPopover;
+import emoteStore from '../stores/index.js';
 
 export default function Button({appendToChat, button}) {
   const triggerRef = useRef(null);
 
+  const [trigger, setTrigger] = useState('none');
+
+  useEffect(() => {
+    emoteStore.once('updated', () => {
+      setTrigger('click');
+    });
+  }, []);
+
   return (
     <Whisper
-      trigger="click"
+      trigger={trigger}
       placement="topEnd"
       speaker={
-        <Popover className={classNames(styles.popover, widthStyle)} full>
+        <Popover className={styles.popover} full>
           <EmoteMenu triggerRef={triggerRef} appendToChat={appendToChat} />
         </Popover>
       }

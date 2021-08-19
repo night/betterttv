@@ -1,12 +1,11 @@
 .popover {
   height: 420px;
   margin-left: 6px;
+  width: 390px;
 }
 
-.bigPopover {
-  width: 380px;
-}
-
-.smallPopover {
-  width: 320px;
+@media only screen and (max-width: 400px) {
+  .popover {
+    width: 320px;
+  }
 }

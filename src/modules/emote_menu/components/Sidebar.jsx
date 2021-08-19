@@ -52,7 +52,7 @@ export default function Sidebar({section, onChange}) {
           behavior: 'smooth',
         });
       }
-    }, 300);
+    }, 100);
   }, [section]);
 
   return (

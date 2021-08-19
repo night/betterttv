@@ -2,17 +2,22 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import Icon from 'rsuite/lib/Icon/index.js';
 import classNames from 'classnames';
 import VirtualizedList from './VirtualizedList.jsx';
-import emoteStore, {COLUMN_COUNT} from '../stores/index.js';
+import emoteStore from '../stores/index.js';
 import styles from '../styles/emotes.module.css';
 import Emote from './Emote.jsx';
 
 const ROW_HEIGHT = 36;
 const WINDOW_HEIGHT = 308;
-const TOTAL_COLUMNS = 7;
 
-function Emotes({onClick, onHover, section, onSection}) {
+const validateTotalColumns = () => (window.innerWidth <= 400 ? 7 : 9);
+
+function Emotes({onClick, onHover, section, onSection, totalCols}) {
   const wrapperRef = useRef(null);
   const [, setUpdated] = useState(false);
+
+  useEffect(() => {
+    emoteStore.setCols(totalCols);
+  }, [totalCols]);
 
   const renderRow = useCallback(
     ({key, style, index, className}) => {
@@ -30,7 +35,7 @@ function Emotes({onClick, onHover, section, onSection}) {
         </div>
       );
     },
-    [onHover, onClick]
+    [onHover, onClick, totalCols]
   );
 
   const handleHeaderChange = useCallback((row) => {
@@ -73,12 +78,12 @@ function Emotes({onClick, onHover, section, onSection}) {
   );
 }
 
-function SearchedEmotes({search, onHover, onClick}) {
+function SearchedEmotes({search, onHover, onClick, totalCols}) {
   const emotes = useMemo(() => emoteStore.search(search), [search]);
 
   const renderRow = useCallback(
     ({key, style, index, className}) => {
-      const row = emotes.slice(index * COLUMN_COUNT, (index + 1) * COLUMN_COUNT);
+      const row = emotes.slice(index * totalCols, (index + 1) * totalCols);
       return (
         <div key={key} style={style} className={classNames(className, styles.row)}>
           {row.map(({item}) => (
@@ -87,7 +92,7 @@ function SearchedEmotes({search, onHover, onClick}) {
         </div>
       );
     },
-    [emotes]
+    [emotes, totalCols]
   );
 
   if (emotes.length === 0) {
@@ -102,13 +107,31 @@ function SearchedEmotes({search, onHover, onClick}) {
     <VirtualizedList
       rowHeight={ROW_HEIGHT}
       windowHeight={WINDOW_HEIGHT}
-      totalRows={Math.ceil(emotes.length / TOTAL_COLUMNS)}
+      totalRows={Math.ceil(emotes.length / totalCols)}
       renderRow={renderRow}
-      className={styles.emotesContainer}
+      className={classNames(styles.emotesContainer, styles.searched)}
     />
   );
 }
 
 export default function renderEmotes({search, ...restProps}) {
-  return search.length > 0 ? <SearchedEmotes search={search} {...restProps} /> : <Emotes {...restProps} />;
+  const [cols, setCols] = useState(validateTotalColumns());
+
+  useEffect(() => {
+    function callback() {
+      setCols(validateTotalColumns());
+    }
+
+    window.addEventListener('resize', callback);
+
+    return () => {
+      window.removeEventListener('resize', callback);
+    };
+  }, []);
+
+  return search.length > 0 ? (
+    <SearchedEmotes search={search} {...restProps} totalCols={cols} />
+  ) : (
+    <Emotes {...restProps} totalCols={cols} />
+  );
 }
