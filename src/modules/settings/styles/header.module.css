@@ -34,7 +34,7 @@
 
 .content {
   composes: scroll from '../../emote_menu/styles/scrollbar.module.css';
-  overflow: hidden;
+  overflow-y: scroll;
   max-height: 500px;
   margin-left: 56px;
 }

@@ -87,13 +87,14 @@ function SearchedEmotes({search, onHover, onClick, setPreview}) {
         </div>
       );
     },
-    [emotes, emoteStore.totalCols]
+    [emotes]
   );
 
   if (emotes.length === 0) {
     return (
       <div className={styles.empty}>
         <p>We could not find any results...</p>
+        <div className={styles.tip}>TIP: Hold ALT to favorite an emote!</div>
       </div>
     );
   }

@@ -24,6 +24,10 @@ class SafeEmoteMenu extends React.Component {
     onError(error, info);
   }
 
+  static getDerivedStateFromError() {
+    return null;
+  }
+
   render() {
     return <EmoteMenu {...this.props} />;
   }

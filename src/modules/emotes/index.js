@@ -32,6 +32,7 @@ class EmotesModule {
           const flags = settings.get(SettingIds.EMOTES);
           if (emote.imageType === 'gif' && !hasFlag(flags, EmoteTypeFlags.BTTV_GIF_EMOTES)) return false;
           if (emote.provider.id.startsWith('bttv') && !hasFlag(flags, EmoteTypeFlags.BTTV_EMOTES)) return false;
+          if (emote.provider.id.startsWith('ffz') && !hasFlag(flags, EmoteTypeFlags.FFZ_EMOTES)) return false;
           return true;
         })
       );

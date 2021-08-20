@@ -44,14 +44,24 @@ function VirtualizedList(
       return false;
     });
 
-    const isSticky = startIndex < next - 1;
+    const isStuck = startIndex < next - 1;
+
+    // current: the header that's closest to the top
+    // position: once another header hits the current header it'll become absolute and be "pushed" up
+    // rows: the rows that are visible in the viewport
 
     setData({
-      header: {
-        current,
-        top: isSticky ? 0 : (next - 1) * rowHeight,
-        position: isSticky ? 'sticky' : 'absolute',
-      },
+      header: isStuck
+        ? {
+            current,
+            top: 0,
+            position: 'sticky',
+          }
+        : {
+            current,
+            top: (next - 1) * rowHeight,
+            position: 'absolute',
+          },
       rows: rowsVisible,
     });
   }, [totalRows, rowHeight, windowHeight]);

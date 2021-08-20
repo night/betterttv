@@ -7,8 +7,10 @@ import Icons from '../components/Icons.jsx';
 import emoteStorage from './emote-storage.js';
 import {loadTwitchEmotes} from './twitch-emotes.js';
 import cdn from '../../../utils/cdn.js';
+import settings from '../../../settings.js';
+import {SettingIds} from '../../../constants.js';
 
-export const validateTotalColumns = () => (window.innerWidth <= 400 ? 7 : 9);
+const validateTotalColumns = () => (window.innerWidth <= 400 ? 7 : 9);
 
 function chunkArray(array, size) {
   if (array.length <= size) {
@@ -37,6 +39,18 @@ class EmoteStore extends SafeEventEmitter {
 
     watcher.on('channel.updated', async () => {
       await this.loadFixedEmotes();
+      this.loadExtensionEmotes();
+      this.loadDependableEmotes();
+      this.createRows();
+    });
+
+    window.addEventListener('resize', () => {
+      if (validateTotalColumns() !== this.totalCols) {
+        this.createRows();
+      }
+    });
+
+    settings.on(`changed.${SettingIds.EMOTES}`, () => {
       this.loadExtensionEmotes();
       this.loadDependableEmotes();
       this.createRows();
@@ -74,7 +88,7 @@ class EmoteStore extends SafeEventEmitter {
       },
     ];
 
-    this.emotes = this.constants;
+    this.emotes = new Map(this.constants);
 
     for (const {emotes: providerEmotes} of this.providers.extension) {
       providerEmotes.forEach((emote) => this.emotes.set(String(emote.id), emote));
