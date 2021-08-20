@@ -73,7 +73,7 @@ function Emotes({onClick, onHover, section, onSection}) {
   );
 }
 
-function SearchedEmotes({search, onHover, onClick}) {
+function SearchedEmotes({search, onHover, onClick, setPreview}) {
   const emotes = useMemo(() => emoteStore.search(search), [search]);
 
   const renderRow = useCallback(
@@ -97,6 +97,8 @@ function SearchedEmotes({search, onHover, onClick}) {
       </div>
     );
   }
+
+  setPreview(emotes[0].item);
 
   return (
     <VirtualizedList

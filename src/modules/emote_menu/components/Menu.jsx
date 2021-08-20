@@ -11,8 +11,6 @@ let alt = false;
 let shift = false;
 
 export default function EmoteMenu({triggerRef, appendToChat}) {
-  const onHide = useCallback(() => triggerRef.current.close(), [triggerRef]);
-
   const [search, setSearch] = useState('');
   const [preview, setPreview] = useState(emoteStore.getDefaultEmote());
 
@@ -21,7 +19,7 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
     scrollTo: false,
   });
 
-  useEffect(() => setSearch(''), [section]);
+  const onHide = useCallback(() => triggerRef.current.close(), [triggerRef]);
 
   const handleClick = useCallback((emote) => {
     if (alt) {
@@ -39,6 +37,8 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
     onHide();
   }, []);
 
+  useEffect(() => setSearch(''), [section]);
+
   useEffect(() => {
     function buttonPressCallback(event) {
       alt = event.altKey;
@@ -53,6 +53,23 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
       window.removeEventListener('keyup', buttonPressCallback, false);
     };
   }, []);
+
+  useEffect(() => {
+    function handleEnterCallback(event) {
+      if (event.keyCode === 13) {
+        event.preventDefault();
+        appendToChat(preview.code);
+        emoteStore.trackHistory(preview);
+        onHide();
+      }
+    }
+
+    window.addEventListener('keydown', handleEnterCallback, false);
+
+    return () => {
+      window.removeEventListener('keydown', handleEnterCallback, false);
+    };
+  }, [preview]);
 
   return (
     <>
@@ -76,6 +93,7 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
           section={section}
           onHover={setPreview}
           onClick={handleClick}
+          setPreview={setPreview}
           onSection={(eventKey) => setSection({eventKey, scrollTo: false})}
         />
       </div>
