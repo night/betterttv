@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useRef} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import Icon from 'rsuite/lib/Icon/index.js';
 import classNames from 'classnames';
 import VirtualizedList from './VirtualizedList.jsx';
@@ -11,6 +11,19 @@ const WINDOW_HEIGHT = 308;
 
 function Emotes({onClick, onHover, section, onSection}) {
   const wrapperRef = useRef(null);
+  const [, setUpdated] = useState(false);
+
+  useEffect(() => {
+    function callback() {
+      setUpdated((prev) => !prev);
+    }
+
+    emoteStore.on('loaded', callback);
+
+    return () => {
+      emoteStore.off('loaded', callback);
+    };
+  }, []);
 
   const renderRow = useCallback(
     ({key, style, index, className}) => {
@@ -28,7 +41,7 @@ function Emotes({onClick, onHover, section, onSection}) {
         </div>
       );
     },
-    [onHover, onClick, emoteStore.totalCols]
+    [onHover, onClick]
   );
 
   const handleHeaderChange = useCallback((row) => {
