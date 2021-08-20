@@ -23,6 +23,7 @@ export const SettingIds = {
   MUTE_INVISIBLE_PLAYER: 'muteInvisiblePlayer',
   SCROLL_VOLUME_CONTROL: 'scrollVolumeControl',
   DELETED_MESSAGES: 'deletedMessages',
+  CLEAR_BEHAVIOR: 'clearChatBehavior',
   BLACKLIST_KEYWORDS: 'blacklistKeywords',
   HIGHLIGHT_KEYWORDS: 'highlightKeywords',
   SIDEBAR: 'sidebar',
