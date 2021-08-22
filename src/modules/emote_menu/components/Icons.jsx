@@ -11,6 +11,7 @@ import {faBasketballBall} from '@fortawesome/free-solid-svg-icons/faBasketballBa
 import {faPlane} from '@fortawesome/free-solid-svg-icons/faPlane';
 import {faBox} from '@fortawesome/free-solid-svg-icons/faBox';
 import {faHeart} from '@fortawesome/free-solid-svg-icons/faHeart';
+import {faHeartBroken} from '@fortawesome/free-solid-svg-icons/faHeartBroken';
 import {faFlag} from '@fortawesome/free-solid-svg-icons/faFlag';
 import {faClock} from '@fortawesome/free-solid-svg-icons/faClock';
 import {faUnlock} from '@fortawesome/free-solid-svg-icons/faUnlock';
@@ -53,6 +54,7 @@ export default {
   PLANE: <FontAwesomeIcon icon={faPlane} />,
   BOX: <FontAwesomeIcon icon={faBox} />,
   HEART: <FontAwesomeIcon icon={faHeart} />,
+  HEART_BROKEN: <FontAwesomeIcon icon={faHeartBroken} />,
   FLAG: <FontAwesomeIcon icon={faFlag} />,
   CLOCK: <FontAwesomeIcon icon={faClock} />,
   UNLOCK: <FontAwesomeIcon icon={faUnlock} />,

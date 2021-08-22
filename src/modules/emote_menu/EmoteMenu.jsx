@@ -76,8 +76,13 @@ class EmoteMenuModule {
   }
 
   show() {
-    $(BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR).show();
-    $(EMOTE_PICKER_BUTTON_SELECTOR).hide();
+    const bttvEmotePicker = $(BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
+
+    if (bttvEmotePicker.length) {
+      bttvEmotePicker.show();
+      const emotePicker = $(EMOTE_PICKER_BUTTON_SELECTOR);
+      emotePicker.hide();
+    }
   }
 
   appendToChat(text) {

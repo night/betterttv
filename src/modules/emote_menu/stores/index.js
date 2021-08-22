@@ -10,6 +10,8 @@ import cdn from '../../../utils/cdn.js';
 import settings from '../../../settings.js';
 import {SettingIds} from '../../../constants.js';
 
+const MAXIMUM_VISIBLE_FREQUENTLY_USED = 27;
+
 const validateTotalColumns = () => (window.innerWidth <= 400 ? 7 : 9);
 
 function chunkArray(array, size) {
@@ -120,7 +122,8 @@ class EmoteStore extends SafeEventEmitter {
         emotes: emoteStorage
           .getFrecents()
           .map((id) => this.emotes.get(id))
-          .filter((emote) => emote != null),
+          .filter((emote) => emote != null)
+          .slice(0, MAXIMUM_VISIBLE_FREQUENTLY_USED),
       },
     ];
   }

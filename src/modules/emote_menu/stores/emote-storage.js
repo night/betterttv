@@ -82,7 +82,8 @@ class EmoteStorage {
     this.emoteStore.usageHistory[id] = emoteHistory;
 
     this.frecentIds = sortHistory(this.emoteStore.usageHistory);
-    storage.set('emotes', this.emoteStore);
+
+    this.save();
   }
 
   setFavorite(emote, bool) {
@@ -94,6 +95,8 @@ class EmoteStorage {
     } else {
       this.favorites.delete(id);
     }
+
+    this.save();
   }
 
   save() {

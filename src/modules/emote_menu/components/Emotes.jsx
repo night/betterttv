@@ -5,6 +5,7 @@ import VirtualizedList from './VirtualizedList.jsx';
 import emoteStore from '../stores/index.js';
 import styles from '../styles/emotes.module.css';
 import Emote from './Emote.jsx';
+import Icons from './Icons.jsx';
 
 const ROW_HEIGHT = 36;
 const WINDOW_HEIGHT = 308;
@@ -93,8 +94,8 @@ function SearchedEmotes({search, onHover, onClick, setPreview}) {
   if (emotes.length === 0) {
     return (
       <div className={styles.empty}>
-        <p>We could not find any results...</p>
-        <div className={styles.tip}>TIP: Hold ALT to favorite an emote!</div>
+        {Icons.HEART_BROKEN}
+        <p>No results...</p>
       </div>
     );
   }
