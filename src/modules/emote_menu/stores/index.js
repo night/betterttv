@@ -31,7 +31,10 @@ class EmoteStore extends SafeEventEmitter {
   constructor() {
     super();
 
-    this.totalCols = null;
+    this.rows = [];
+    this.headers = [];
+
+    this.totalCols = validateTotalColumns();
 
     this.providers = {
       dependable: [], // emote dependent emotes
@@ -47,7 +50,9 @@ class EmoteStore extends SafeEventEmitter {
     });
 
     window.addEventListener('resize', () => {
-      if (validateTotalColumns() !== this.totalCols) {
+      const newTotalRows = validateTotalColumns();
+      if (newTotalRows !== this.totalCols) {
+        this.totalCols = newTotalRows;
         this.createRows();
       }
     });
@@ -61,12 +66,12 @@ class EmoteStore extends SafeEventEmitter {
 
   async loadFixedEmotes() {
     if (this.providers.fixed.length > 0) return; // constants already been loaded
-    this.constants = new Map();
+    this.fixed = new Map();
     const twitchEmotes = await loadTwitchEmotes();
     this.providers.fixed = twitchEmotes.concat(emojiCategories);
 
     for (const {emotes: fixedEmotes} of this.providers.fixed) {
-      fixedEmotes.forEach((emote) => this.constants.set(String(emote.id), emote));
+      fixedEmotes.forEach((emote) => this.fixed.set(String(emote.id), emote));
     }
   }
 
@@ -90,7 +95,7 @@ class EmoteStore extends SafeEventEmitter {
       },
     ];
 
-    this.emotes = new Map(this.constants);
+    this.emotes = new Map(this.fixed);
 
     for (const {emotes: providerEmotes} of this.providers.extension) {
       providerEmotes.forEach((emote) => this.emotes.set(String(emote.id), emote));
@@ -99,6 +104,14 @@ class EmoteStore extends SafeEventEmitter {
     const collection = [...this.emotes.values()];
     [this.defaultEmote] = collection;
     fuse.setCollection(collection);
+  }
+
+  getDefaultEmote() {
+    return this.defaultEmote;
+  }
+
+  search(search) {
+    return fuse.search(search);
   }
 
   loadDependableEmotes() {
@@ -129,7 +142,6 @@ class EmoteStore extends SafeEventEmitter {
   }
 
   createRows() {
-    this.totalCols = validateTotalColumns();
     this.rows = [];
     this.headers = [];
 
@@ -146,6 +158,22 @@ class EmoteStore extends SafeEventEmitter {
     this.emit('loaded');
   }
 
+  getRow(index) {
+    return this.rows[index];
+  }
+
+  totalRows() {
+    return this.rows.length;
+  }
+
+  getProviders() {
+    return this.headers.map((id) => this.rows[id]);
+  }
+
+  getProviderIndexById(id) {
+    return this.headers.find((header) => this.rows[header]?.id === id);
+  }
+
   isLoaded() {
     return this.loaded;
   }
@@ -159,38 +187,6 @@ class EmoteStore extends SafeEventEmitter {
 
   trackHistory(emote) {
     emoteStorage.trackHistory(emote);
-  }
-
-  getDefaultEmote() {
-    return this.defaultEmote;
-  }
-
-  search(search) {
-    return fuse.search(search);
-  }
-
-  getRow(index) {
-    return this.rows[index];
-  }
-
-  totalRows() {
-    return this.rows.length;
-  }
-
-  getProviders() {
-    return this.headers.map((id) => this.rows[id]);
-  }
-
-  getHeaders() {
-    return this.headers;
-  }
-
-  getHeader(index) {
-    return this.rows[this.headers[index]];
-  }
-
-  getHeaderIndexById(id) {
-    return this.headers.find((header) => this.rows[header]?.id === id);
   }
 }
 

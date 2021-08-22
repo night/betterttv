@@ -29,7 +29,7 @@ function Emotes({onClick, onHover, section, onSection}) {
   const renderRow = useCallback(
     ({key, style, index, className}) => {
       const row = emoteStore.getRow(index);
-      return emoteStore.getHeaders().includes(index) ? (
+      return emoteStore.headers.includes(index) ? (
         <div key={key} style={style} className={classNames(className, styles.header)}>
           <Icon>{row.icon}</Icon>
           <div className={styles.headerText}>{row.displayName.toUpperCase()}</div>
@@ -54,7 +54,7 @@ function Emotes({onClick, onHover, section, onSection}) {
 
   useEffect(() => {
     if (!section.scrollTo) return;
-    const index = emoteStore.getHeaderIndexById(section.eventKey);
+    const index = emoteStore.getProviderIndexById(section.eventKey);
     if (index != null) {
       wrapperRef.current.scrollTo(0, index * ROW_HEIGHT);
     }
