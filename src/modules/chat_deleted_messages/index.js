@@ -35,8 +35,10 @@ class ChatDeletedMessagesModule {
   handleMessage({message, preventDefault}) {
     switch (message.type) {
       case twitch.TMIActionTypes.CLEAR_CHAT:
-        twitch.sendChatAdminMessage('Chat was cleared by a moderator (Prevented by BetterTTV)');
-        preventDefault();
+        if (settings.get(SettingIds.CLEAR_BEHAVIOR) === true) {
+          twitch.sendChatAdminMessage('Chat was cleared by a moderator (Prevented by BetterTTV)');
+          preventDefault();
+        }
         break;
       case twitch.TMIActionTypes.MODERATION:
         if (this.handleDelete(message.userLogin || message.user.userLogin)) {
