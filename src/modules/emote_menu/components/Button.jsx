@@ -1,29 +1,28 @@
-import React, {useEffect, useRef, useState} from 'react';
+/* eslint-disable jsx-a11y/control-has-associated-label */
+import React, {useEffect, useRef} from 'react';
 import Whisper from 'rsuite/lib/Whisper/index.js';
 import Popover from 'rsuite/lib/Popover/index.js';
-import parse from 'html-react-parser';
 import EmoteMenu from './Menu.jsx';
 import styles from '../styles/button.module.css';
 import emoteStore from '../stores/index.js';
 
-export default function Button({appendToChat, button}) {
+export default function Button({appendToChat, setPopoverOpen}) {
   const triggerRef = useRef(null);
-  const [trigger, setTrigger] = useState('none');
 
   useEffect(() => {
     if (emoteStore.isLoaded()) {
-      setTrigger('click');
-      return;
+      setPopoverOpen(triggerRef);
     }
 
     emoteStore.once('loaded', () => {
-      setTrigger('click');
+      setPopoverOpen(triggerRef);
     });
   }, []);
 
   return (
     <Whisper
-      trigger={trigger}
+      enterable
+      trigger="focus"
       placement="topEnd"
       speaker={
         <Popover className={styles.popover} full>
@@ -31,7 +30,7 @@ export default function Button({appendToChat, button}) {
         </Popover>
       }
       triggerRef={triggerRef}>
-      {parse(button)}
+      <span />
     </Whisper>
   );
 }

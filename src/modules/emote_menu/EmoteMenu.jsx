@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import settings from '../../settings.js';
@@ -12,6 +11,17 @@ const EMOTE_PICKER_BUTTON_SELECTOR = 'button[data-a-target="emote-picker-button"
 const CHAT_INPUT_ICONS_SELECTOR = '.chat-input__input-icons';
 const BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR = 'button[data-a-target="bttv-emote-picker-button"]';
 const CHAT_TEXT_AREA = 'textarea[data-a-target="chat-input"]';
+
+let togglePopover;
+function setPopoverOpen({current}) {
+  togglePopover = (isOpen = current.state.isOverlayShown) => {
+    if (isOpen) {
+      current.close();
+    } else {
+      current.open();
+    }
+  };
+}
 
 class SafeEmoteMenu extends React.Component {
   componentDidMount() {
@@ -40,53 +50,62 @@ class EmoteMenuModule {
   }
 
   load() {
-    const container = $(BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
+    const container = document.querySelector(BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
     const clickTwitchEmotes = settings.get(SettingIds.CLICK_TWITCH_EMOTES);
 
-    if (!container.length && clickTwitchEmotes) {
-      const panel = document.createElement('div');
-      panel.classList.add(styles.emoteMenuContainer);
-      $(CHAT_INPUT_ICONS_SELECTOR).append(panel);
-      const buttonContainer = $(EMOTE_PICKER_BUTTON_SELECTOR).parent().clone();
-      buttonContainer.children().attr('data-a-target', 'bttv-emote-picker-button');
+    if (container == null && clickTwitchEmotes) {
+      const popover = document.createElement('div');
+      popover.classList.add(styles.emoteMenuContainer);
+      const chatInputIcons = document.querySelector(CHAT_INPUT_ICONS_SELECTOR);
+      const buttonContainer = document.querySelector(EMOTE_PICKER_BUTTON_SELECTOR).parentElement.cloneNode(true);
+      const button = buttonContainer.childNodes[0];
+      button.setAttribute('data-a-target', 'bttv-emote-picker-button');
+      button.addEventListener('click', () => togglePopover());
+
+      chatInputIcons.appendChild(buttonContainer);
+      chatInputIcons.appendChild(popover);
 
       ReactDOM.render(
         <SafeEmoteMenu
           onError={this.hide}
           onMount={this.show}
           appendToChat={this.appendToChat}
-          button={buttonContainer.html()}
+          setPopoverOpen={setPopoverOpen}
         />,
-        panel
+        popover
       );
     }
 
-    if (container.length) {
+    if (container != null) {
       if (clickTwitchEmotes) {
         this.show();
       } else {
         this.hide();
+        togglePopover(true);
       }
     }
   }
 
   hide() {
-    $(BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR).hide();
-    $(EMOTE_PICKER_BUTTON_SELECTOR).show();
+    const bttvEmotePicker = document.querySelector(BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
+    const emotePicker = document.querySelector(EMOTE_PICKER_BUTTON_SELECTOR);
+
+    emotePicker.style.display = 'inline-flex';
+    bttvEmotePicker.style.display = 'none';
   }
 
   show() {
-    const bttvEmotePicker = $(BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
+    const bttvEmotePicker = document.querySelector(BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
 
-    if (bttvEmotePicker.length) {
-      bttvEmotePicker.show();
-      const emotePicker = $(EMOTE_PICKER_BUTTON_SELECTOR);
-      emotePicker.hide();
+    if (bttvEmotePicker != null) {
+      bttvEmotePicker.style.display = 'inline-flex';
+      const emotePicker = document.querySelector(EMOTE_PICKER_BUTTON_SELECTOR);
+      emotePicker.style.display = 'none';
     }
   }
 
   appendToChat(text) {
-    const element = $(CHAT_TEXT_AREA).get(0);
+    const element = document.querySelector(CHAT_TEXT_AREA);
 
     let selectionEnd = element.selectionStart + text.length;
     const currentValue = element.value;
