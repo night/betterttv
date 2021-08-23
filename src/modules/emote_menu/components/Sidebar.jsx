@@ -46,7 +46,7 @@ export default function Sidebar({section, onChange}) {
 
       if (depth + ITEM_HEIGHT > top + SIDEBAR_HEIGHT) {
         containerRef.current.scrollTo({
-          top: depth - SIDEBAR_HEIGHT + ITEM_HEIGHT,
+          top: depth - SIDEBAR_HEIGHT + 36,
           left: 0,
           behavior: 'smooth',
         });

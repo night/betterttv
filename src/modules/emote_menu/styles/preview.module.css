@@ -1,6 +1,6 @@
 .preview {
   display: flex;
-  height: 58px;
+  height: 60px;
   justify-content: space-between;
   padding: 8px;
   align-items: center;
@@ -14,13 +14,15 @@
 }
 
 .emoteImage {
-  height: 100%;
-  border-radius: 4px;
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
 }
 
 .emoji {
-  width: 38px;
-  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .emoteCode {
