@@ -8,7 +8,7 @@ import Emote from './Emote.jsx';
 import Icons from './Icons.jsx';
 
 const ROW_HEIGHT = 36;
-const WINDOW_HEIGHT = 308;
+const WINDOW_HEIGHT = 300;
 
 function Emotes({onClick, onHover, section, onSection}) {
   const wrapperRef = useRef(null);

@@ -56,8 +56,10 @@ function jsonTransform(emojis) {
         continue;
       }
 
-      data.isAlternative = true;
-      result[alternativeShortName.replace(/:/g, '')] = data;
+      result[alternativeShortName.replace(/:/g, '')] = {
+        ...data,
+        isAlternative: true,
+      };
     }
   }
 

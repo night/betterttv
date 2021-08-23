@@ -4,7 +4,7 @@ import emoteStore from '../stores/index.js';
 import styles from '../styles/sidebar.module.css';
 
 const ITEM_HEIGHT = 42;
-const SIDEBAR_HEIGHT = 314;
+const SIDEBAR_HEIGHT = 300;
 
 let timer;
 
@@ -31,13 +31,12 @@ export default function Sidebar({section, onChange}) {
 
     timer = setTimeout(() => {
       const top = containerRef.current.scrollTop;
-      const bottom = top + SIDEBAR_HEIGHT;
       const index = providers.findIndex((provider) => provider.id === section.eventKey);
-      const depth = (index + 1) * ITEM_HEIGHT;
+      const depth = index * ITEM_HEIGHT;
 
-      if (depth > bottom) {
+      if (depth < top) {
         containerRef.current.scrollTo({
-          top: depth - SIDEBAR_HEIGHT,
+          top: depth,
           left: 0,
           behavior: 'smooth',
         });
@@ -45,9 +44,9 @@ export default function Sidebar({section, onChange}) {
         return;
       }
 
-      if (top > depth - ITEM_HEIGHT) {
+      if (depth + ITEM_HEIGHT > top + SIDEBAR_HEIGHT) {
         containerRef.current.scrollTo({
-          top: depth - ITEM_HEIGHT,
+          top: depth - SIDEBAR_HEIGHT + ITEM_HEIGHT,
           left: 0,
           behavior: 'smooth',
         });

@@ -5,6 +5,8 @@ import Icons from '../components/Icons.jsx';
 import debug from '../../../utils/debug.js';
 import {getEmoteFromRegEx} from '../../../utils/regex.js';
 import emotesCategoryIds from './emote-categories.js';
+import settings from '../../../settings.js';
+import {SettingIds} from '../../../constants.js';
 
 const EMOTE_SET_QUERY = `
 query UserEmotes {
@@ -25,7 +27,8 @@ query UserEmotes {
 }
 `;
 
-const TWITCH_EMOTE_CDN = (id, size) => `https://static-cdn.jtvnw.net/emoticons/v2/${id}/default/dark/${size}`;
+const TWITCH_EMOTE_CDN = (id, size, isDark = true) =>
+  `https://static-cdn.jtvnw.net/emoticons/v2/${id}/default/${isDark ? 'dark' : 'light'}/${size}`;
 
 function getForcedProviderToChannels(key) {
   switch (key) {
@@ -87,6 +90,7 @@ export async function loadTwitchEmotes() {
     return data;
   }
 
+  const isDark = settings.get(SettingIds.DARKENED_MODE);
   const tempSets = {};
 
   for (const {owner, id, emotes} of data.currentUser.emoteSets) {
@@ -97,6 +101,14 @@ export async function loadTwitchEmotes() {
         id: `${emotesCategoryIds.TWITCH}-${owner.id}`,
         displayName: owner.displayName,
         icon: Icons.IMAGE(owner.profileImageURL, owner.displayName),
+      };
+    }
+
+    if (provider == null && owner == null) {
+      provider = {
+        id: `${emotesCategoryIds.TWITCH}-unlocked`,
+        displayName: 'Unlocked',
+        icon: Icons.UNLOCK,
       };
     }
 
@@ -115,9 +127,9 @@ export async function loadTwitchEmotes() {
         channel: owner?.displayName,
         code: newToken,
         images: {
-          '1x': TWITCH_EMOTE_CDN(emoteId, '1.0'),
-          '2x': TWITCH_EMOTE_CDN(emoteId, '2.0'),
-          '4x': TWITCH_EMOTE_CDN(emoteId, '3.0'),
+          '1x': TWITCH_EMOTE_CDN(emoteId, '1.0', isDark),
+          '2x': TWITCH_EMOTE_CDN(emoteId, '2.0', isDark),
+          '4x': TWITCH_EMOTE_CDN(emoteId, '3.0', isDark),
         },
       });
     });
