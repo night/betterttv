@@ -22,7 +22,7 @@ export default function Button({appendToChat, setPopoverOpen}) {
   return (
     <Whisper
       enterable
-      trigger="focus"
+      trigger="none"
       placement="topEnd"
       speaker={
         <Popover className={styles.popover} full>

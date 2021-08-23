@@ -41,6 +41,12 @@ class EmotesModule {
     return emotes;
   }
 
+  getEmotesByProviders(providerFilter = []) {
+    return this.getEmotes(
+      this.emoteProviders.map(({provider}) => provider.id).filter((providerId) => !providerFilter.includes(providerId))
+    );
+  }
+
   getEligibleEmote(code, user) {
     const channel = twitch.getCurrentChannel();
 

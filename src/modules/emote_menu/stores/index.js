@@ -83,7 +83,7 @@ class EmoteStore extends SafeEventEmitter {
           displayName: 'BetterTTV',
           icon: Icons.IMAGE(cdn.url('/assets/logos/mascot.png'), 'BetterTTV'),
         },
-        emotes: emotes.getEmotes(['ffz-channel', 'ffz-global', 'bttv-emoji']),
+        emotes: emotes.getEmotesByProviders(['bttv-channel', 'bttv-personal', 'bttv']),
       },
       {
         provider: {
@@ -91,7 +91,7 @@ class EmoteStore extends SafeEventEmitter {
           displayName: 'FrankerFaceZ',
           icon: Icons.IMAGE(cdn.url('/assets/logos/ffz_logo.png'), 'FrankerFaceZ'),
         },
-        emotes: emotes.getEmotes(['bttv-channel', 'bttv-personal', 'bttv', 'bttv-emoji']),
+        emotes: emotes.getEmotesByProviders(['ffz-channel', 'ffz-global']),
       },
     ];
 
