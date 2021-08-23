@@ -1,12 +1,13 @@
 import Icons from '../components/Icons.jsx';
 import emoji from '../../emotes/emojis.js';
+import emotesCategoryIds from './emote-categories.js';
 
 const emojiByCategory = emoji.getEmotesByCategory();
 
 export default [
   {
     provider: {
-      id: 'bttv-emoji-people',
+      id: emotesCategoryIds.EMOJI_PEOPLE,
       displayName: 'People',
       icon: Icons.PEOPLE,
     },
@@ -14,7 +15,7 @@ export default [
   },
   {
     provider: {
-      id: 'bttv-emoji-nature',
+      id: emotesCategoryIds.EMOJI_NATURE,
       displayName: 'Nature',
       icon: Icons.LEAF,
     },
@@ -22,7 +23,7 @@ export default [
   },
   {
     provider: {
-      id: 'bttv-emoji-food',
+      id: emotesCategoryIds.EMOJI_FOODS,
       displayName: 'Foods',
       icon: Icons.ICE_CREAM,
     },
@@ -30,7 +31,7 @@ export default [
   },
   {
     provider: {
-      id: 'bttv-emoji-activity',
+      id: emotesCategoryIds.EMOJI_ACTIVITIES,
       displayName: 'Activities',
       icon: Icons.BASKET_BALL,
     },
@@ -38,7 +39,7 @@ export default [
   },
   {
     provider: {
-      id: 'bttv-emoji-travel',
+      id: emotesCategoryIds.EMOJI_TRAVEL,
       displayName: 'Travel',
       icon: Icons.PLANE,
     },
@@ -46,7 +47,7 @@ export default [
   },
   {
     provider: {
-      id: 'bttv-emoji-objects',
+      id: emotesCategoryIds.EMOJI_OBJECTS,
       displayName: 'Objects',
       icon: Icons.BOX,
     },
@@ -54,7 +55,7 @@ export default [
   },
   {
     provider: {
-      id: 'bttv-emoji-symbols',
+      id: emotesCategoryIds.EMOJI_SYMBOLS,
       displayName: 'Symbols',
       icon: Icons.HEART,
     },
@@ -62,7 +63,7 @@ export default [
   },
   {
     provider: {
-      id: 'bttv-emoji-flags',
+      id: emotesCategoryIds.EMOJI_FLAGS,
       displayName: 'Flags',
       icon: Icons.FLAG,
     },

@@ -9,6 +9,7 @@ import {loadTwitchEmotes} from './twitch-emotes.js';
 import cdn from '../../../utils/cdn.js';
 import settings from '../../../settings.js';
 import {SettingIds} from '../../../constants.js';
+import emotesCategoryIds from './emote-categories.js';
 
 const MAXIMUM_VISIBLE_FREQUENTLY_USED = 27;
 
@@ -27,6 +28,8 @@ const fuse = new Fuse([], {
   threshold: 0.3,
 });
 
+const fixed = new Map();
+
 class EmoteStore extends SafeEventEmitter {
   constructor() {
     super();
@@ -36,11 +39,16 @@ class EmoteStore extends SafeEventEmitter {
 
     this.totalCols = validateTotalColumns();
 
-    this.providers = {
-      dependable: [], // emote dependent emotes
-      extension: [], // channel dependent emotes
-      fixed: [], // emotes that wont change
-    };
+    this.emotes = new Map();
+
+    this.defaultEmote = null;
+
+    this.loaded = false;
+
+    this.categories = {};
+    this.categories.dependable = [];
+    this.categories.extension = [];
+    this.categories.fixed = [];
 
     watcher.on('channel.updated', async () => {
       await this.loadFixedEmotes();
@@ -65,21 +73,20 @@ class EmoteStore extends SafeEventEmitter {
   }
 
   async loadFixedEmotes() {
-    if (this.providers.fixed.length > 0) return; // constants already been loaded
-    this.fixed = new Map();
+    fixed.clear();
     const twitchEmotes = await loadTwitchEmotes();
-    this.providers.fixed = twitchEmotes.concat(emojiCategories);
+    this.categories.fixed = twitchEmotes.concat(emojiCategories);
 
-    for (const {emotes: fixedEmotes} of this.providers.fixed) {
-      fixedEmotes.forEach((emote) => this.fixed.set(String(emote.id), emote));
+    for (const {emotes: fixedEmotes} of this.categories.fixed) {
+      fixedEmotes.forEach((emote) => fixed.set(String(emote.id), emote));
     }
   }
 
   loadExtensionEmotes() {
-    this.providers.extension = [
+    this.categories.extension = [
       {
         provider: {
-          id: 'bttv',
+          id: emotesCategoryIds.BETTERTTV,
           displayName: 'BetterTTV',
           icon: Icons.IMAGE(cdn.url('/assets/logos/mascot.png'), 'BetterTTV'),
         },
@@ -87,7 +94,7 @@ class EmoteStore extends SafeEventEmitter {
       },
       {
         provider: {
-          id: 'ffz',
+          id: emotesCategoryIds.FRANKERFACEZ,
           displayName: 'FrankerFaceZ',
           icon: Icons.IMAGE(cdn.url('/assets/logos/ffz_logo.png'), 'FrankerFaceZ'),
         },
@@ -95,19 +102,16 @@ class EmoteStore extends SafeEventEmitter {
       },
     ];
 
-    this.emotes = new Map(this.fixed);
+    this.emotes = new Map(fixed);
 
-    for (const {emotes: providerEmotes} of this.providers.extension) {
+    for (const {emotes: providerEmotes} of this.categories.extension) {
       providerEmotes.forEach((emote) => this.emotes.set(String(emote.id), emote));
     }
 
     const collection = [...this.emotes.values()];
-    [this.defaultEmote] = collection;
+    // eslint-disable-next-line prefer-destructuring
+    this.defaultEmote = collection[0];
     fuse.setCollection(collection);
-  }
-
-  getDefaultEmote() {
-    return this.defaultEmote;
   }
 
   search(search) {
@@ -115,10 +119,10 @@ class EmoteStore extends SafeEventEmitter {
   }
 
   loadDependableEmotes() {
-    this.providers.dependable = [
+    this.categories.dependable = [
       {
         provider: {
-          id: 'favorites',
+          id: emotesCategoryIds.FAVORITES,
           displayName: 'Favorites',
           icon: Icons.STAR,
         },
@@ -128,7 +132,7 @@ class EmoteStore extends SafeEventEmitter {
       },
       {
         provider: {
-          id: 'recents',
+          id: emotesCategoryIds.FRECENTS,
           displayName: 'Frequently Used',
           icon: Icons.CLOCK,
         },
@@ -145,8 +149,8 @@ class EmoteStore extends SafeEventEmitter {
     this.rows = [];
     this.headers = [];
 
-    for (const providers of Object.values(this.providers)) {
-      for (const {provider, emotes: providerEmotes} of providers) {
+    for (const category of Object.values(this.categories)) {
+      for (const {provider, emotes: providerEmotes} of category) {
         if (providerEmotes.length === 0) continue;
 
         this.headers.push(this.rows.length);

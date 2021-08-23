@@ -12,7 +12,7 @@ let shift = false;
 
 export default function EmoteMenu({triggerRef, appendToChat}) {
   const [search, setSearch] = useState('');
-  const [preview, setPreview] = useState(emoteStore.getDefaultEmote());
+  const [preview, setPreview] = useState(emoteStore.defaultEmote);
 
   const [section, setSection] = useState({
     eventKey: null,

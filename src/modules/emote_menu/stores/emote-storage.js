@@ -4,6 +4,7 @@ const HOUR = 60 * 60 * 1000;
 const DAY = 24 * HOUR;
 
 const MAX_TIMESTAMPS = 100;
+const PURGE_SCORE = 40;
 
 function sortHistory(history) {
   return Object.entries(history)
@@ -52,7 +53,13 @@ class EmoteStorage {
     this.favorites = new Set(this.emoteStore.favorites);
 
     for (const [id, emote] of Object.entries(this.emoteStore.usageHistory)) {
-      this.emoteStore.usageHistory[id].score = calcScore(emote);
+      const score = calcScore(emote);
+
+      if (score <= PURGE_SCORE) {
+        delete this.emoteStore.usageHistory[id];
+      } else {
+        this.emoteStore.usageHistory[id].score = score;
+      }
     }
 
     this.frecentIds = sortHistory(this.emoteStore.usageHistory);
