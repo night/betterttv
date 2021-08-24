@@ -7,6 +7,7 @@ import {getEmoteFromRegEx} from '../../../utils/regex.js';
 import emotesCategoryIds from './emote-categories.js';
 import settings from '../../../settings.js';
 import {SettingIds} from '../../../constants.js';
+import twitch from '../../../utils/twitch.js';
 
 const EMOTE_SET_QUERY = `
 query UserEmotes {
@@ -82,11 +83,15 @@ function getForcedProviderToChannels(key) {
 export async function loadTwitchEmotes() {
   let data = [];
 
+  if (twitch.getCurrentUser() == null) {
+    return [];
+  }
+
   try {
     const res = await twitchApi.graphqlQuery(EMOTE_SET_QUERY);
     data = res.data;
   } catch (e) {
-    debug.error('failed to fetch twitch', e);
+    debug.log('failed to fetch twitch emotes', e);
     return data;
   }
 

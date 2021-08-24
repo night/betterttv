@@ -14,8 +14,8 @@ const CHAT_TEXT_AREA = 'textarea[data-a-target="chat-input"]';
 
 let togglePopover;
 function setPopoverOpen({current}) {
-  togglePopover = (isOpen = current.state.isOverlayShown) => {
-    if (isOpen) {
+  togglePopover = () => {
+    if (current.state.isOverlayShown) {
       current.close();
     } else {
       current.open();
@@ -81,7 +81,6 @@ class EmoteMenuModule {
         this.show();
       } else {
         this.hide();
-        togglePopover(true);
       }
     }
   }
@@ -98,7 +97,7 @@ class EmoteMenuModule {
     const bttvEmotePicker = document.querySelector(BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
 
     if (bttvEmotePicker != null) {
-      bttvEmotePicker.style.display = 'inline-flex';
+      bttvEmotePicker.style.display = 'fixed';
       const emotePicker = document.querySelector(EMOTE_PICKER_BUTTON_SELECTOR);
       emotePicker.style.display = 'none';
     }
@@ -134,4 +133,4 @@ class EmoteMenuModule {
   }
 }
 
-export default new EmoteMenuModule();
+export default EmoteMenuModule();

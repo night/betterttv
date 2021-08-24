@@ -21,8 +21,7 @@ export default function Button({appendToChat, setPopoverOpen}) {
 
   return (
     <Whisper
-      enterable
-      trigger="none"
+      trigger="active"
       placement="topEnd"
       speaker={
         <Popover className={styles.popover} full>
@@ -30,7 +29,7 @@ export default function Button({appendToChat, setPopoverOpen}) {
         </Popover>
       }
       triggerRef={triggerRef}>
-      <span />
+      <div className={styles.placeholder} />
     </Whisper>
   );
 }

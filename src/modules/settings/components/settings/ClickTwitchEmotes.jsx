@@ -11,7 +11,7 @@ function ClickTwitchEmotes() {
   return (
     <Panel header="Emote Menu">
       <div className={styles.toggle}>
-        <p className={styles.description}>Enables a more advanced emote menu for Twitch (made by Ryan Chatham)</p>
+        <p className={styles.description}>Enables a more advanced emote menu for Twitch</p>
         <Toggle checked={value} onChange={(state) => setValue(state)} />
       </div>
     </Panel>
