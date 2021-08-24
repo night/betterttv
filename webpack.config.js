@@ -69,11 +69,14 @@ export default async (env, argv) => {
 
   return {
     devServer: {
-      contentBase: path.resolve('./build'),
-      compress: true,
       port: PORT,
-      writeToDisk: true,
-      after: (app) => {
+      devMiddleware: {
+        writeToDisk: true,
+      },
+      static: {
+        directory: path.resolve('./build'),
+      },
+      onAfterSetupMiddleware: ({app}) => {
         app.get('*', (req, res) => {
           got
             .stream(`${PROD_ENDPOINT}${req.path}`)
