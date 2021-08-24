@@ -78,7 +78,7 @@
     "virtual-module-webpack-plugin": "^0.4.1",
     "webpack": "^5.51.1",
     "webpack-cli": "^4.8.0",
-    "webpack-dev-server": "^3.11.2",
+    "webpack-dev-server": "^4.0.0",
     "webpack-virtual-modules": "^0.4.3"
   },
   "browserslist": [
