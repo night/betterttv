@@ -5,7 +5,7 @@ import {SettingIds} from '../../constants.js';
 import EmoteMenu from './components/Button.jsx';
 import domObserver from '../../observers/dom.js';
 import styles from './style.module.css';
-import {getReactInstance} from '../../utils/twitch.js';
+import twitch, {getReactInstance} from '../../utils/twitch.js';
 
 const EMOTE_PICKER_BUTTON_SELECTOR = 'button[data-a-target="emote-picker-button"]';
 const CHAT_INPUT_ICONS_SELECTOR = '.chat-input__input-icons';
@@ -43,13 +43,15 @@ class SafeEmoteMenu extends React.Component {
   }
 }
 
-class EmoteMenuModule {
+export default class EmoteMenuModule {
   constructor() {
     domObserver.on(CHAT_INPUT_ICONS_SELECTOR, () => this.load());
     settings.on(`changed.${SettingIds.CLICK_TWITCH_EMOTES}`, () => this.load());
   }
 
   load() {
+    if (twitch.getCurrentUser() == null) return;
+
     const container = document.querySelector(BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
     const clickTwitchEmotes = settings.get(SettingIds.CLICK_TWITCH_EMOTES);
 
@@ -97,7 +99,7 @@ class EmoteMenuModule {
     const bttvEmotePicker = document.querySelector(BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
 
     if (bttvEmotePicker != null) {
-      bttvEmotePicker.style.display = 'fixed';
+      bttvEmotePicker.style.display = 'inline-flex';
       const emotePicker = document.querySelector(EMOTE_PICKER_BUTTON_SELECTOR);
       emotePicker.style.display = 'none';
     }
@@ -132,5 +134,3 @@ class EmoteMenuModule {
     element.setSelectionRange(selectionEnd, selectionEnd);
   }
 }
-
-export default EmoteMenuModule();

@@ -1,4 +1,4 @@
 .emoteMenuContainer {
-  display: inline-block !important;
+  display: inline-flex !important;
   position: relative !important;
 }
