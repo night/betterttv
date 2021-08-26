@@ -1,7 +1,7 @@
 export const SettingIds = {
   ANON_CHAT: 'anonChat',
   AUTO_THEATRE_MODE: 'autoTheatreMode',
-  AUTO_LEAVE_RAIDS: 'autoLeaveRaids',
+  AUTO_JOIN_RAIDS: 'autoJoinRaids',
   CHANNEL_POINTS: 'channelPoints',
   SPLIT_CHAT: 'splitChat',
   REVERSE_CHAT_DIRECTION: 'reverseChatDirection',

@@ -5,22 +5,22 @@ import {registerComponent, useStorageState} from '../Store.jsx';
 import {SettingIds, CategoryTypes} from '../../../../constants.js';
 import styles from '../../styles/header.module.css';
 
-function AutoLeaveRaids() {
-  const [value, setValue] = useStorageState(SettingIds.AUTO_LEAVE_RAIDS);
+function AutoJoinRaids() {
+  const [value, setValue] = useStorageState(SettingIds.AUTO_JOIN_RAIDS);
 
   return (
-    <Panel header="Auto Leave Raids">
+    <Panel header="Auto Join Raids">
       <div className={styles.toggle}>
-        <p className={styles.description}>Raids will be opt-in only</p>
+        <p className={styles.description}>Untoggle to be opted out of raids.</p>
         <Toggle checked={value} onChange={(state) => setValue(state)} />
       </div>
     </Panel>
   );
 }
 
-export default registerComponent(AutoLeaveRaids, {
-  settingId: SettingIds.AUTO_LEAVE_RAIDS,
-  name: 'Auto Leave Raids',
+export default registerComponent(AutoJoinRaids, {
+  settingId: SettingIds.AUTO_JOIN_RAIDS,
+  name: 'Auto Join Raids',
   category: CategoryTypes.CHAT,
-  keywords: ['auto', 'leave', 'raids'],
+  keywords: ['auto', 'join', 'raids'],
 });

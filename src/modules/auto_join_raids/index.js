@@ -8,14 +8,14 @@ const RAID_BANNER_SELECTOR = '[data-test-selector="raid-banner"]';
 
 let raidListener;
 
-class AutoLeaveRaidsModule {
+class AutoJoinRaidsModule {
   constructor() {
     watcher.on('load.chat', () => this.load());
-    settings.on(`changed.${SettingIds.AUTO_LEAVE_RAIDS}`, () => this.load());
+    settings.on(`changed.${SettingIds.AUTO_JOIN_RAIDS}`, () => this.load());
   }
 
   load() {
-    if (settings.get(SettingIds.AUTO_LEAVE_RAIDS)) {
+    if (!settings.get(SettingIds.AUTO_JOIN_RAIDS)) {
       if (raidListener) return;
 
       raidListener = domObserver.on(RAID_BANNER_SELECTOR, (node, isConnected) => this.handleLeave(node, isConnected));
@@ -32,7 +32,7 @@ class AutoLeaveRaidsModule {
   handleLeave(node, isConnected) {
     if (!isConnected) return;
 
-    if (settings.get(SettingIds.AUTO_LEAVE_RAIDS)) {
+    if (!settings.get(SettingIds.AUTO_JOIN_RAIDS)) {
       const leaveButton = $(node).find('button > div:contains("Leave")');
 
       if (leaveButton.length) {
@@ -42,4 +42,4 @@ class AutoLeaveRaidsModule {
   }
 }
 
-export default new AutoLeaveRaidsModule();
+export default new AutoJoinRaidsModule();
