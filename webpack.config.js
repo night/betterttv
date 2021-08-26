@@ -69,11 +69,14 @@ export default async (env, argv) => {
 
   return {
     devServer: {
-      contentBase: path.resolve('./build'),
-      compress: true,
       port: PORT,
-      writeToDisk: true,
-      after: (app) => {
+      devMiddleware: {
+        writeToDisk: true,
+      },
+      static: {
+        directory: path.resolve('./build'),
+      },
+      onAfterSetupMiddleware: ({app}) => {
         app.get('*', (req, res) => {
           got
             .stream(`${PROD_ENDPOINT}${req.path}`)
@@ -187,6 +190,7 @@ export default async (env, argv) => {
         SENTRY_URL:
           process.env.SENTRY_URL || 'https://b289038a9b004560bcb58396066ee847@o23210.ingest.sentry.io/5730387',
         CDN_ENDPOINT,
+        RUN_ENV: '', // rsuite run environment breaks prod when not defined
       }),
       new optimize.LimitChunkCountPlugin({
         maxChunks: 1,

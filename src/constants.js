@@ -197,7 +197,7 @@ export const DefaultValues = {
   [SettingIds.MUTE_INVISIBLE_PLAYER]: false,
   [SettingIds.SCROLL_VOLUME_CONTROL]: false,
   [SettingIds.BLACKLIST_KEYWORDS]: {},
-  [SettingIds.HIGHLIGHT_KEYWORDS]: {},
+  [SettingIds.HIGHLIGHT_KEYWORDS]: null,
   [SettingIds.SIDEBAR]:
     SidebarFlags.FRIENDS |
     SidebarFlags.OFFLINE_FOLLOWED_CHANNELS |
@@ -212,6 +212,6 @@ export const DefaultValues = {
     ChatFlags.SUB_NOTICE |
     ChatFlags.VIEWER_GREETING,
   [SettingIds.AUTO_PLAY]: AutoPlayFlags.FP_VIDEO | AutoPlayFlags.HOST_MODE | AutoPlayFlags.VOD_RECOMMENDATION_AUTOPLAY,
-  [SettingIds.USERNAMES]: UsernameFlags.COLORS | UsernameFlags.LOCALIZED,
+  [SettingIds.USERNAMES]: UsernameFlags.COLORS | UsernameFlags.LOCALIZED | UsernameFlags.READABLE,
   [SettingIds.CHANNEL_POINTS]: ChannelPointsFlags.CHANNEL_POINTS | ChannelPointsFlags.MESSAGE_HIGHLIGHTS,
 };

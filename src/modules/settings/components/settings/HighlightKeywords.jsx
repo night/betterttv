@@ -1,6 +1,7 @@
 import React from 'react';
 import Panel from 'rsuite/lib/Panel/index.js';
 import Table, {Types} from '../Table.jsx';
+import {KeywordTypes} from '../../../../utils/keywords.js';
 import {registerComponent, useStorageState} from '../Store.jsx';
 import {CategoryTypes, SettingIds} from '../../../../constants.js';
 import styles from '../../styles/header.module.css';
@@ -19,7 +20,16 @@ function HighlightKeywords() {
               name: 'type',
               header: 'Type',
               type: Types.DROPDOWN,
-              options: ['Message', 'Wildcard', 'Exact', 'Username'],
+              options: [
+                {
+                  name: 'Message',
+                  value: KeywordTypes.MESSAGE,
+                },
+                {
+                  name: 'Username',
+                  value: KeywordTypes.USER,
+                },
+              ],
               defaultOption: 0,
             },
             {

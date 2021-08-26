@@ -11,7 +11,7 @@ class DisableNameColorsModule {
   }
 
   load() {
-    $('.chat-scrollable-area__message-container').toggleClass(
+    $('body').toggleClass(
       'bttv-disable-name-colors',
       !hasFlag(settings.get(SettingIds.USERNAMES), UsernameFlags.COLORS)
     );

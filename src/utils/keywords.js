@@ -1,10 +1,10 @@
 const PHRASE_REGEX = /\{.+?\}/g;
 const USER_REGEX = /\(.+?\)/g;
 
-export const Types = {
+export const KeywordTypes = {
   MESSAGE: 0,
-  WILDCARD: 1,
-  EXACT: 2,
+  WILDCARD: 1, // legacy type
+  EXACT: 2, // legacy type
   USER: 3,
 };
 
@@ -13,17 +13,17 @@ export function computeKeywords(keywords) {
   const computedUsers = [];
 
   for (const {keyword, type} of Object.values(keywords)) {
+    if (keyword.trim().length === 0) {
+      continue;
+    }
+
     switch (type) {
-      case Types.MESSAGE:
+      case KeywordTypes.EXACT:
+      case KeywordTypes.WILDCARD:
+      case KeywordTypes.MESSAGE:
         computedKeywords.push(`${keyword}`);
         break;
-      case Types.WILDCARD:
-        computedKeywords.push(`${keyword}*`);
-        break;
-      case Types.EXACT:
-        computedKeywords.push(`<${keyword}>`);
-        break;
-      case Types.USER:
+      case KeywordTypes.USER:
         computedUsers.push(`${keyword}`);
         break;
       default:
@@ -39,16 +39,14 @@ export function computeKeywords(keywords) {
 
 export function deserializeKeywords(values) {
   return Object.values(values)
+    .filter(({keyword}) => /\S/.test(keyword))
     .map(({keyword, type}) => {
-      if (keyword.length === 0) return '';
       switch (type) {
-        case Types.MESSAGE:
+        case KeywordTypes.EXACT:
+        case KeywordTypes.WILDCARD:
+        case KeywordTypes.MESSAGE:
           return `{${keyword}}`;
-        case Types.WILDCARD:
-          return `{${keyword}*}`;
-        case Types.EXACT:
-          return `{<${keyword}>}`;
-        case Types.USER:
+        case KeywordTypes.USER:
           return `(${keyword})`;
         default:
           return '';
@@ -84,42 +82,17 @@ export function serializeKeywords(keywords) {
 
   let index = 0;
 
-  const keywordString = computedKeywords
-    .map((keyword) => {
-      switch (true) {
-        case keyword.length === 0:
-          return false;
-        case /\*/g.test(keyword):
-          return {
-            id: index++,
-            type: Types.WILDCARD,
-            keyword: keyword.replace('*', ''),
-          };
-        case /^<(.*)>$/g.test(keyword):
-          return {
-            id: index++,
-            type: Types.EXACT,
-            keyword: keyword.replace(/(<|>)/g, ''),
-          };
-        default:
-          return {
-            id: index++,
-            keyword,
-            type: Types.MESSAGE,
-          };
-      }
-    })
-    .filter((string) => string !== false);
+  const keywordArray = computedKeywords
+    .filter((keyword) => /\S/.test(keyword))
+    .map((keyword) => ({id: index++, keyword, type: KeywordTypes.MESSAGE}));
 
-  const usersString = computedUsers.map((user) => ({
-    id: index++,
-    keyword: user,
-    type: Types.USER,
-  }));
+  const usersArray = computedUsers
+    .filter((user) => /\S/.test(user))
+    .map((user) => ({id: index++, keyword: user, type: KeywordTypes.USER}));
 
   const data = {};
 
-  for (const keyword of [...keywordString, ...usersString]) {
+  for (const keyword of [...keywordArray, ...usersArray]) {
     data[keyword.id] = keyword;
   }
 

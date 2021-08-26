@@ -15,6 +15,14 @@
     return;
   if (window.Ember) return;
 
+  // prevent loads in source-less iframes
+  try {
+    const {frameElement} = window;
+    if (frameElement != null && (frameElement.src == null || frameElement.src === '')) {
+      return;
+    }
+  } catch (e) {}
+
   // some people have multiple versions of BetterTTV, for whatever reason
   if (window.BetterTTV || window.__betterttv) return;
   window.__betterttv = true;
@@ -23,6 +31,9 @@
 
   const {default: extension} = await import('./utils/extension.js');
   extension.setCurrentScript(currentScript);
+
+  const {default: globalCSS} = await import('./modules/global_css/index.js');
+  const globalCSSLoadPromise = globalCSS.loadGlobalCSS();
 
   const {default: cookies} = await import('cookies-js');
   const {default: debug} = await import('./utils/debug.js');
@@ -38,6 +49,9 @@
       debug.log('error loading user from twilight user cookie');
     }
   }
+
+  // wait until styles load to prevent flashing
+  await globalCSSLoadPromise;
 
   // eslint-disable-next-line import/no-unresolved
   await import('./modules/**/index.js');

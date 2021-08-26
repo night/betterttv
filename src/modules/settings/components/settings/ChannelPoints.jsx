@@ -38,6 +38,6 @@ function ChannelPointsModule() {
 export default registerComponent(ChannelPointsModule, {
   settingId: SettingIds.CHANNEL_POINTS,
   name: 'Channel Points',
-  category: CategoryTypes.CHANNEL,
+  category: CategoryTypes.CHAT,
   keywords: ['channel', 'points', 'auto', 'claim'],
 });

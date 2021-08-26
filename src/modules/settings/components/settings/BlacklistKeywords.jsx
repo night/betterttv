@@ -4,6 +4,7 @@ import Table, {Types} from '../Table.jsx';
 import {registerComponent, useStorageState} from '../Store.jsx';
 import {SettingIds, CategoryTypes} from '../../../../constants.js';
 import styles from '../../styles/header.module.css';
+import {KeywordTypes} from '../../../../utils/keywords.js';
 
 function BlacklistKeywords() {
   const [value, setValue] = useStorageState(SettingIds.BLACKLIST_KEYWORDS);
@@ -19,7 +20,16 @@ function BlacklistKeywords() {
               name: 'type',
               header: 'Type',
               type: Types.DROPDOWN,
-              options: ['Message', 'Wildcard', 'Exact', 'Username'],
+              options: [
+                {
+                  name: 'Message',
+                  value: KeywordTypes.MESSAGE,
+                },
+                {
+                  name: 'Username',
+                  value: KeywordTypes.USER,
+                },
+              ],
               defaultOption: 0,
             },
             {

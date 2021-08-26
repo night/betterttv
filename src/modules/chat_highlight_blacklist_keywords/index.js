@@ -6,7 +6,7 @@ import html from '../../utils/html.js';
 import twitch from '../../utils/twitch.js';
 import cdn from '../../utils/cdn.js';
 import {escapeRegExp} from '../../utils/regex.js';
-import {computeKeywords, Types} from '../../utils/keywords.js';
+import {computeKeywords, KeywordTypes} from '../../utils/keywords.js';
 import {SettingIds} from '../../constants.js';
 
 const BLACKLIST_KEYWORD_PROMPT = `Type some blacklist keywords. Messages containing keywords will be filtered from your chat.
@@ -61,10 +61,64 @@ function computeBlacklistKeywords() {
 let highlightKeywords = [];
 let highlightUsers = [];
 function computeHighlightKeywords() {
-  const keywords = settings.get(SettingIds.HIGHLIGHT_KEYWORDS);
+  const keywords = settings.get(SettingIds.HIGHLIGHT_KEYWORDS) || {};
   const {computedKeywords, computedUsers} = computeKeywords(keywords);
   highlightKeywords = computedKeywords;
   highlightUsers = computedUsers;
+}
+
+function readRepairKeywords() {
+  const highlightKeywordsValue = settings.get(SettingIds.HIGHLIGHT_KEYWORDS);
+  const blacklistKeywordsValue = settings.get(SettingIds.BLACKLIST_KEYWORDS);
+
+  for (const keywordsValue of [highlightKeywordsValue, blacklistKeywordsValue]) {
+    if (keywordsValue == null) {
+      continue;
+    }
+
+    let updated = false;
+    const keysToPrune = [];
+
+    for (const value of Object.values(keywordsValue)) {
+      if (value.keyword == null || value.keyword.trim().length === 0) {
+        keysToPrune.push(value.id);
+        continue;
+      }
+      if (![KeywordTypes.EXACT, KeywordTypes.WILDCARD].includes(value.type)) {
+        continue;
+      }
+
+      if (value.type === KeywordTypes.EXACT) {
+        value.keyword = `<${value.keyword}>`;
+      }
+      value.type = KeywordTypes.MESSAGE;
+      updated = true;
+    }
+
+    for (const key of keysToPrune) {
+      delete keywordsValue[key];
+      updated = true;
+    }
+
+    if (updated) {
+      settings.set(
+        keywordsValue === highlightKeywordsValue ? SettingIds.HIGHLIGHT_KEYWORDS : SettingIds.BLACKLIST_KEYWORDS,
+        keywordsValue
+      );
+    }
+  }
+
+  const user = twitch.getCurrentUser();
+  if (highlightKeywordsValue == null && user != null) {
+    settings.set(SettingIds.HIGHLIGHT_KEYWORDS, {
+      0: {
+        id: 0,
+        type: KeywordTypes.MESSAGE,
+        status: null,
+        keyword: user.name,
+      },
+    });
+  }
 }
 
 function wildcard(keyword) {
@@ -129,7 +183,7 @@ let $pinnedHighlightsContainer;
 
 class ChatHighlightBlacklistKeywordsModule {
   constructor() {
-    watcher.on('load', () => this.updateDefaultHighlightKeywords());
+    watcher.on('load', () => readRepairKeywords());
     watcher.on('load.chat', () => this.loadChat());
     watcher.on('load.vod', () => this.loadChat());
     watcher.on('chat.message', ($message, messageObj) => this.onMessage($message, messageObj));
@@ -144,22 +198,6 @@ class ChatHighlightBlacklistKeywordsModule {
     this.handleHighlightSound = this.handleHighlightSound.bind(this);
   }
 
-  updateDefaultHighlightKeywords() {
-    const value = settings.get(SettingIds.HIGHLIGHT_KEYWORDS);
-    if (Object.keys(value).length > 0) return;
-    const user = twitch.getCurrentUser();
-    if (user == null) return;
-
-    settings.set(SettingIds.HIGHLIGHT_KEYWORDS, {
-      0: {
-        id: 0,
-        type: Types.MESSAGE,
-        status: null,
-        keyword: user.name,
-      },
-    });
-  }
-
   handleHighlightSound() {
     if (!this.sound) {
       this.sound = new Audio(cdn.url('assets/sounds/ts-tink.ogg'));
@@ -170,6 +208,7 @@ class ChatHighlightBlacklistKeywordsModule {
   }
 
   loadChat() {
+    readRepairKeywords();
     computeBlacklistKeywords();
     computeHighlightKeywords();
     this.loadPinnedHighlights();
