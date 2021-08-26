@@ -36,7 +36,6 @@ export const SettingIds = {
 export const LegacySettingIds = {
   ANON_CHAT: 'anonChat',
   AUTO_THEATRE_MODE: 'autoTheatreMode',
-  AUTO_LEAVE_RAIDS: 'autoLeaveRaids',
   AUTO_CLAIM_BONUS_CHANNEL_POINTS: 'autoClaimBonusChannelPoints',
   HIDE_CHANNEL_POINTS: 'hideChannelPoints',
   FFZ_EMOTES: 'ffzEmotes',
