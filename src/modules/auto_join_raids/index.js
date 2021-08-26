@@ -12,10 +12,16 @@ class AutoJoinRaidsModule {
 
   constructor() {
     watcher.on('load.chat', () => this.load());
+    settings.on(`changed.${SettingIds.AUTO_JOIN_RAIDS}`, () => this.load());
   }
 
   load() {
-    if (!this.raidListener) {
+    const autoJoin = settings.get(SettingIds.AUTO_JOIN_RAIDS);
+
+    if (autoJoin && this.raidListener) {
+      this.raidListener();
+      this.raidListener = null;
+    } else if (!autoJoin && !this.raidListener) {
       this.raidListener = domObserver.on(RAID_BANNER_SELECTOR, () => this.handleRaid());
     }
   }
