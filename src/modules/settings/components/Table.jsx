@@ -213,13 +213,18 @@ function EditTable({options, setValue, value, ...props}) {
 
   function handlePaste(event, id, dataKey) {
     const paste = (event.clipboardData || window.clipboardData).getData('text');
-    const words = paste.split('\n');
-    if (words.length <= 1) return;
+    const lines = paste
+      .split('\n')
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0);
+
+    if (lines.length <= 1) return;
+
     handleDeleteState(id);
 
-    for (const word of words) {
+    for (const line of lines) {
       const row = createRow();
-      row[dataKey] = word;
+      row[dataKey] = line;
       data[row.id] = row;
     }
 
