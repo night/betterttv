@@ -35,7 +35,7 @@ function getDataURLFromUpload(input, callback) {
     callback(null);
     return;
   }
-  reader.readAsText(file, 'ISO-8859-1');
+  reader.readAsText(file);
 }
 
 function backupFile() {
