@@ -78,12 +78,8 @@ function EditCell({rowData, dataKey, onChange, onMouseOver, onMouseLeave, onClic
         onClick(rowData.id);
       }
     }
-
     document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   useEffect(() => {
