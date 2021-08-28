@@ -51,7 +51,6 @@
 .@{ns}modal {
   width: 800px;
   height: 500px;
-  margin-top: 10%;
 
   * {
     box-sizing: border-box;
@@ -61,6 +60,16 @@
   *::after {
     box-sizing: border-box;
   }
+}
+
+.@{ns}modal {
+  margin: 0;
+}
+
+.@{ns}modal-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .@{ns}modal-content {
