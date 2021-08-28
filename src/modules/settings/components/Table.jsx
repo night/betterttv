@@ -205,7 +205,7 @@ function EditTable({options, setValue, value, ...props}) {
     return row;
   }
 
-  function addEmptyRow() {
+  function handleAddEmptyRow() {
     const newRow = createRow();
     data[newRow.id] = newRow;
     setData({...data});
@@ -282,7 +282,7 @@ function EditTable({options, setValue, value, ...props}) {
       )}
       <IconButton
         appearance="primary"
-        onClick={addEmptyRow}
+        onClick={handleAddEmptyRow}
         loading={loading}
         className={styles.button}
         icon={
