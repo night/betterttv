@@ -79,18 +79,21 @@ function EditCell({rowData, dataKey, onChange, onMouseOver, onMouseLeave, onClic
       }
     }
 
-    function handlePasteCallback(event) {
-      onPaste(event, rowData.id, dataKey);
-    }
-
-    wrapperRef.current.addEventListener('paste', handlePasteCallback);
     document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
-      wrapperRef.current.removeEventListener('paste', handlePasteCallback);
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    function handlePasteCallback(event) {
+      onPaste(event, rowData.id, dataKey);
+    }
+    const currentWrapperRef = wrapperRef.current;
+    currentWrapperRef.addEventListener('paste', handlePasteCallback);
+    return () => currentWrapperRef.removeEventListener('paste', handlePasteCallback);
+  }, [wrapperRef.current]);
 
   return (
     <Cell {...props}>
