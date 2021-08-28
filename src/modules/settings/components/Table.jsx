@@ -81,7 +81,7 @@ function useOutsideAlerter(ref, onClick, rowData) {
   }, [ref]);
 }
 
-function EditCell({rowData, dataKey, onChange, onMouseOver, onMouseLeave, onClick, ...props}) {
+function EditCell({rowData, dataKey, onChange, onMouseOver, onMouseLeave, onClick, onPaste, ...props}) {
   switch (rowData.status) {
     case Status.HOVERING:
       return (
@@ -97,6 +97,17 @@ function EditCell({rowData, dataKey, onChange, onMouseOver, onMouseLeave, onClic
     case Status.EDIT: {
       const wrapperRef = useRef(null);
       useOutsideAlerter(wrapperRef, onClick, rowData);
+
+      useEffect(() => {
+        const pasteCallback = (event) => onPaste(event, rowData.id, dataKey);
+
+        wrapperRef.current.addEventListener('paste', pasteCallback);
+
+        return () => {
+          wrapperRef.current.removeEventListener('paste', pasteCallback);
+        };
+      }, []);
+
       return (
         <Cell {...props}>
           <input
@@ -171,22 +182,47 @@ function EditTable({options, setValue, value, ...props}) {
     return parseInt(Object.keys(data)[Object.keys(data).length - 1], 10) + 1 || 0;
   }
 
-  function addRow() {
+  function createRow() {
     const id = nextId();
-    const newRow = {id, status: Status.EDIT};
-    for (const header of options) {
-      switch (header.type) {
+    const row = {};
+
+    row.id = id;
+    row.status = Status.EDIT;
+
+    for (const option of options) {
+      switch (option.type) {
         case Types.STRING:
-          newRow[header.name] = '';
+          row[option.name] = '';
           break;
         case Types.DROPDOWN:
-          newRow[header.name] = header.defaultOption;
+          row[option.name] = option.defaultOption;
           break;
         default:
           break;
       }
     }
-    data[id] = newRow;
+
+    return row;
+  }
+
+  function addEmptyRow() {
+    const newRow = createRow();
+    data[newRow.id] = newRow;
+    setData({...data});
+  }
+
+  function handlePaste(event, id, dataKey) {
+    const paste = (event.clipboardData || window.clipboardData).getData('text');
+    const words = paste.split('\n');
+    if (words.length <= 1) return;
+    handleDeleteState(id);
+
+    for (const word of words) {
+      const row = createRow();
+      row[dataKey] = word;
+      data[row.id] = row;
+    }
+
     setData({...data});
   }
 
@@ -206,6 +242,7 @@ function EditTable({options, setValue, value, ...props}) {
                       onMouseOver={handleHoveringState}
                       onMouseLeave={handleHoveringState}
                       onClick={handleEditState}
+                      onPaste={handlePaste}
                     />
                   </Column>
                 );
@@ -240,7 +277,7 @@ function EditTable({options, setValue, value, ...props}) {
       )}
       <IconButton
         appearance="primary"
-        onClick={addRow}
+        onClick={addEmptyRow}
         loading={loading}
         className={styles.button}
         icon={
