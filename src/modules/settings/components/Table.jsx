@@ -69,23 +69,48 @@ function CustomWhisper(props) {
   );
 }
 
-function useOutsideAlerter(ref, onClick, rowData) {
+function EditCell({rowData, dataKey, onChange, onMouseOver, onMouseLeave, onClick, onPaste, ...props}) {
+  const wrapperRef = useRef(null);
+
   useEffect(() => {
     function handleClickOutside(event) {
-      if (ref.current && !ref.current.contains(event.target)) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
         onClick(rowData.id);
         document.removeEventListener('mousedown', handleClickOutside);
       }
     }
+
+    function handlePasteCallback(event) {
+      onPaste(event, rowData.id, dataKey);
+    }
+
+    wrapperRef.current.addEventListener('paste', handlePasteCallback);
     document.addEventListener('mousedown', handleClickOutside);
-  }, [ref]);
+
+    return () => {
+      wrapperRef.current.removeEventListener('paste', handlePasteCallback);
+    };
+  }, []);
+
+  return (
+    <Cell {...props}>
+      <input
+        ref={wrapperRef}
+        className={classNames({'bttv-rs-input': true}, styles.tableContentEditing)}
+        defaultValue={rowData[dataKey]}
+        onChange={(event) => onChange(rowData.id, dataKey, event.target.value)}
+      />
+    </Cell>
+  );
 }
 
-function EditCell({rowData, dataKey, onChange, onMouseOver, onMouseLeave, onClick, onPaste, ...props}) {
+function CustomCell(props) {
+  const {rowData, dataKey, onChange, onMouseOver, onMouseLeave, onClick, onPaste, ...restProps} = props;
+
   switch (rowData.status) {
     case Status.HOVERING:
       return (
-        <Cell {...props} onMouseLeave={() => onMouseLeave && onMouseLeave(rowData.id)}>
+        <Cell {...restProps} onMouseLeave={() => onMouseLeave && onMouseLeave(rowData.id)}>
           <input
             className={classNames({'bttv-rs-input': true}, styles.tableContentHovering)}
             defaultValue={rowData[dataKey]}
@@ -95,34 +120,12 @@ function EditCell({rowData, dataKey, onChange, onMouseOver, onMouseLeave, onClic
       );
 
     case Status.EDIT: {
-      const wrapperRef = useRef(null);
-      useOutsideAlerter(wrapperRef, onClick, rowData);
-
-      useEffect(() => {
-        const pasteCallback = (event) => onPaste(event, rowData.id, dataKey);
-
-        wrapperRef.current.addEventListener('paste', pasteCallback);
-
-        return () => {
-          wrapperRef.current.removeEventListener('paste', pasteCallback);
-        };
-      }, []);
-
-      return (
-        <Cell {...props}>
-          <input
-            ref={wrapperRef}
-            className={classNames({'bttv-rs-input': true}, styles.tableContentEditing)}
-            defaultValue={rowData[dataKey]}
-            onChange={(event) => onChange(rowData.id, dataKey, event.target.value)}
-          />
-        </Cell>
-      );
+      return <EditCell {...props} />;
     }
 
     default:
       return (
-        <Cell {...props} onMouseOver={() => onMouseOver && onMouseOver(rowData.id)}>
+        <Cell {...restProps} onMouseOver={() => onMouseOver && onMouseOver(rowData.id)}>
           <p className={styles.text}>{rowData[dataKey]}</p>
         </Cell>
       );
@@ -241,7 +244,7 @@ function EditTable({options, setValue, value, ...props}) {
                 return (
                   <Column flexGrow={1} align="left" key={key.name}>
                     <HeaderCell className={styles.header}>{key.header}</HeaderCell>
-                    <EditCell
+                    <CustomCell
                       dataKey={key.name}
                       onChange={handleChange}
                       onMouseOver={handleHoveringState}
