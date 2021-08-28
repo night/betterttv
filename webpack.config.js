@@ -70,11 +70,18 @@ export default async (env, argv) => {
   return {
     devServer: {
       port: PORT,
+      allowedHosts: ['127.0.0.1', '.twitch.tv'],
       devMiddleware: {
         writeToDisk: true,
       },
       static: {
         directory: path.resolve('./build'),
+      },
+      client: {
+        webSocketURL: {
+          hostname: '127.0.0.1',
+          protocol: 'ws',
+        },
       },
       onAfterSetupMiddleware: ({app}) => {
         app.get('*', (req, res) => {
