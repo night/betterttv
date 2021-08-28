@@ -76,7 +76,6 @@ function EditCell({rowData, dataKey, onChange, onMouseOver, onMouseLeave, onClic
     function handleClickOutside(event) {
       if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
         onClick(rowData.id);
-        document.removeEventListener('mousedown', handleClickOutside);
       }
     }
 
@@ -89,6 +88,7 @@ function EditCell({rowData, dataKey, onChange, onMouseOver, onMouseLeave, onClic
 
     return () => {
       wrapperRef.current.removeEventListener('paste', handlePasteCallback);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
