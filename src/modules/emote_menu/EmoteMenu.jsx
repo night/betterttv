@@ -9,7 +9,7 @@ import twitch, {getReactInstance} from '../../utils/twitch.js';
 
 const EMOTE_PICKER_BUTTON_SELECTOR = 'button[data-a-target="emote-picker-button"]';
 const CHAT_INPUT_ICONS_SELECTOR = '.chat-input__input-icons';
-const BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR = 'button[data-a-target="bttv-emote-picker-button"]';
+const BTTV_EMOTE_PICKER_BUTTON_SELECTOR = 'button[data-a-target="bttv-emote-picker-button"]';
 const CHAT_TEXT_AREA = 'textarea[data-a-target="chat-input"]';
 
 let togglePopover;
@@ -52,7 +52,7 @@ export default class EmoteMenuModule {
   load() {
     if (twitch.getCurrentUser() == null) return;
 
-    const container = document.querySelector(BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
+    const container = document.querySelector(BTTV_EMOTE_PICKER_BUTTON_SELECTOR);
     const clickTwitchEmotes = settings.get(SettingIds.CLICK_TWITCH_EMOTES);
 
     if (container == null && clickTwitchEmotes) {
@@ -88,7 +88,7 @@ export default class EmoteMenuModule {
   }
 
   hide() {
-    const bttvEmotePicker = document.querySelector(BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
+    const bttvEmotePicker = document.querySelector(BTTV_EMOTE_PICKER_BUTTON_SELECTOR);
     const emotePicker = document.querySelector(EMOTE_PICKER_BUTTON_SELECTOR);
 
     emotePicker.style.display = 'inline-flex';
@@ -96,7 +96,7 @@ export default class EmoteMenuModule {
   }
 
   show() {
-    const bttvEmotePicker = document.querySelector(BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
+    const bttvEmotePicker = document.querySelector(BTTV_EMOTE_PICKER_BUTTON_SELECTOR);
 
     if (bttvEmotePicker != null) {
       bttvEmotePicker.style.display = 'inline-flex';
