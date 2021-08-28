@@ -24,7 +24,7 @@ class ChannelPoints {
       if (removeChannelPointsListener) return;
 
       removeChannelPointsListener = domObserver.on(CLAIM_BUTTON_SELECTOR, (node, isConnected) => {
-        if (!isConnected) return;
+        if (!isConnected || node.className.includes('ScCoreButtonDestructive')) return;
 
         node.click();
       });
