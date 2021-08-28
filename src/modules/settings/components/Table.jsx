@@ -187,10 +187,7 @@ function EditTable({options, setValue, value, ...props}) {
 
   function createRow() {
     const id = nextId();
-    const row = {};
-
-    row.id = id;
-    row.status = Status.EDIT;
+    const row = {id, status: Status.EDIT};
 
     for (const option of options) {
       switch (option.type) {
