@@ -34,9 +34,9 @@ class DisableHostModeAutoplayModule {
       if (removeHostingIndicatorListener) return;
 
       removeHostingIndicatorListener = domObserver.on(
-        '.metadata-layout__secondary-button-spacing a[data-a-target="hosting-ui-link"], .channel-status-info--hosting',
+        '.metadata-layout__secondary-button-spacing a[data-a-target="hosting-ui-link"], .channel-status-info--hosting, .player-controls__left-control-group',
         (node, isConnected) => {
-          if (!isConnected) return;
+          if (!isConnected || document.querySelector('a[data-a-target="hosting-indicator"]') == null) return;
           pauseVideo();
         }
       );
