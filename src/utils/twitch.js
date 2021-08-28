@@ -57,7 +57,7 @@ const TMIActionTypes = {
   CHANNEL_POINTS_AWARD: 44,
 };
 
-function getReactInstance(element) {
+export function getReactInstance(element) {
   for (const key in element) {
     if (key.startsWith('__reactInternalInstance$')) {
       return element[key];

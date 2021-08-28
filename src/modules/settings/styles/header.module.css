@@ -33,12 +33,10 @@
 }
 
 .content {
-  overflow: hidden;
+  composes: scroll from '../../emote_menu/styles/scrollbar.module.css';
+  overflow-y: scroll;
   max-height: 500px;
   margin-left: 56px;
-  overflow: auto;
-  scrollbar-width: thin;
-  scrollbar-color: #191c23 transparent;
 }
 
 .center {
@@ -51,20 +49,6 @@
 
 .divider {
   padding-top: 50px;
-}
-
-.content::-webkit-scrollbar {
-  border-radius: 6px;
-  width: 5px;
-}
-
-.content::-webkit-scrollbar-thumb {
-  background: #191c23;
-  border-radius: 5px;
-}
-
-.content::-webkit-scrollbar-thumb:hover {
-  background: #191c23;
 }
 
 .toggle {

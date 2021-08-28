@@ -39,21 +39,30 @@ function convertEmojiToolkitCodePointToChar(codePoint) {
 
 function jsonTransform(emojis) {
   const result = {};
+
   for (const emojiData of Object.values(emojis)) {
     const char = convertEmojiToolkitCodePointToChar(emojiData.code_points.fully_qualified);
     const data = {
       char,
       slug: emojiData.shortname.replace(/:/g, ''),
+      category: emojiData.category,
     };
+
     result[data.slug] = data;
+
     for (const alternativeShortName of emojiData.shortname_alternates) {
       // :tf: is a legacy betterttv global emote
       if (alternativeShortName === ':tf:') {
         continue;
       }
-      result[alternativeShortName.replace(/:/g, '')] = data;
+
+      result[alternativeShortName.replace(/:/g, '')] = {
+        ...data,
+        isAlternative: true,
+      };
     }
   }
+
   return result;
 }
 

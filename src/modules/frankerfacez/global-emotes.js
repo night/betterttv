@@ -28,7 +28,7 @@ class GlobalEmotes extends AbstractEmotes {
   updateGlobalEmotes() {
     this.emotes.clear();
 
-    if (hasFlag(settings.get(SettingIds.EMOTES), EmoteTypeFlags.FFZ_EMOTES)) return;
+    if (!hasFlag(settings.get(SettingIds.EMOTES), EmoteTypeFlags.FFZ_EMOTES)) return;
 
     api
       .get('cached/frankerfacez/emotes/global')

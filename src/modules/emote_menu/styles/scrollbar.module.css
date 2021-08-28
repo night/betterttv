@@ -1,0 +1,19 @@
+.scroll {
+  overflow-y: scroll;
+  scrollbar-width: thin;
+  scrollbar-color: #191c23 transparent;
+}
+
+.scroll::-webkit-scrollbar {
+  border-radius: 4px;
+  width: 4px;
+}
+
+.scroll::-webkit-scrollbar-thumb {
+  background: #191c23;
+  border-radius: 4px;
+}
+
+.scroll::-webkit-scrollbar-thumb:hover {
+  background: #191c23;
+}

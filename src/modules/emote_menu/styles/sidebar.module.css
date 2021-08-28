@@ -1,0 +1,11 @@
+.sidebar {
+  width: 52px;
+  height: 100%;
+  overflow-y: scroll;
+  background-color: #191c23;
+  scrollbar-width: none;
+}
+
+.sidebar::-webkit-scrollbar {
+  display: none;
+}
