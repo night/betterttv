@@ -1,6 +1,7 @@
 export const SettingIds = {
   ANON_CHAT: 'anonChat',
   AUTO_THEATRE_MODE: 'autoTheatreMode',
+  AUTO_JOIN_RAIDS: 'autoJoinRaids',
   CHANNEL_POINTS: 'channelPoints',
   SPLIT_CHAT: 'splitChat',
   REVERSE_CHAT_DIRECTION: 'reverseChatDirection',
@@ -152,6 +153,7 @@ export const PageTypes = {
 export const DefaultValues = {
   [SettingIds.ANON_CHAT]: false,
   [SettingIds.AUTO_THEATRE_MODE]: false,
+  [SettingIds.AUTO_JOIN_RAIDS]: true,
   [SettingIds.AUTO_CLAIM_BONUS_CHANNEL_POINTS]: false,
   [SettingIds.FFZ_EMOTES]: true,
   [SettingIds.BTTV_EMOTES]: true,
