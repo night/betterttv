@@ -4,9 +4,8 @@ import Emote from '../../emotes/emote.js';
 import Icons from '../components/Icons.jsx';
 import debug from '../../../utils/debug.js';
 import {getEmoteFromRegEx} from '../../../utils/regex.js';
-import emotesCategoryIds from './emote-categories.js';
 import settings from '../../../settings.js';
-import {SettingIds} from '../../../constants.js';
+import {SettingIds, emotesCategoryIds} from '../../../constants.js';
 
 const EMOTE_SET_QUERY = `
 query UserEmotes {

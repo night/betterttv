@@ -1,6 +1,6 @@
 import Icons from '../components/Icons.jsx';
 import emoji from '../../emotes/emojis.js';
-import emotesCategoryIds from './emote-categories.js';
+import {emotesCategoryIds} from '../../../constants.js';
 
 const emojiByCategory = emoji.getEmotesByCategory();
 

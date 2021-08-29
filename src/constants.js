@@ -149,6 +149,22 @@ export const PageTypes = {
   ABOUT: 5,
 };
 
+export const emotesCategoryIds = {
+  BETTERTTV: 'bttv',
+  FRANKERFACEZ: 'ffz',
+  TWITCH: 'twitch',
+  EMOJI_PEOPLE: 'emoji-people',
+  EMOJI_NATURE: 'emoji-nature',
+  EMOJI_FOODS: 'emoji-foods',
+  EMOJI_ACTIVITIES: 'emoji-activities',
+  EMOJI_TRAVEL: 'emoji-travel',
+  EMOJI_OBJECTS: 'emoji-objects',
+  EMOJI_SYMBOLS: 'emoji-symbols',
+  EMOJI_FLAGS: 'emoji-flags',
+  FAVORITES: 'favorites',
+  FRECENTS: 'frecents',
+};
+
 export const DefaultValues = {
   [SettingIds.ANON_CHAT]: false,
   [SettingIds.AUTO_THEATRE_MODE]: false,

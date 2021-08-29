@@ -8,8 +8,7 @@ import emoteStorage from './emote-storage.js';
 import {loadTwitchEmotes} from './twitch-emotes.js';
 import cdn from '../../../utils/cdn.js';
 import settings from '../../../settings.js';
-import {SettingIds} from '../../../constants.js';
-import emotesCategoryIds from './emote-categories.js';
+import {SettingIds, emotesCategoryIds} from '../../../constants.js';
 
 const MAXIMUM_VISIBLE_FREQUENTLY_USED = 27;
 
