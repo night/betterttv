@@ -10,7 +10,7 @@
     "postinstall": "node ./dev/post-install.js",
     "build": "webpack --mode development",
     "build:prod": "webpack --mode production",
-    "lint": "eslint \"**/*.js\" && prettier --check \"**/*.js\" && prettier --check \"**/*.css\""
+    "lint": "eslint . && prettier --check ."
   },
   "repository": {
     "type": "git",
