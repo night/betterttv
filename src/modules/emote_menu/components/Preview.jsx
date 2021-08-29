@@ -6,7 +6,9 @@ import {faStar} from '@fortawesome/free-solid-svg-icons/faStar';
 import styles from '../styles/preview.module.css';
 import emoteStorage from '../stores/emote-storage.js';
 
-function PreviewEmote({emote}) {
+export default function PreviewEmote({emote}) {
+  if (emote == null) return null;
+
   return (
     <div className={styles.preview} key={emote.code}>
       <div className={styles.content}>
@@ -37,5 +39,3 @@ function PreviewEmote({emote}) {
     </div>
   );
 }
-
-export default React.memo(PreviewEmote, (oldProps, newProps) => oldProps.emote.id === newProps.emote.id);

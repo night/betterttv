@@ -16,9 +16,8 @@
   transform: translate(-50%, -50%);
 }
 
-.emote:hover {
+.active {
   background-color: #5a5a5c;
-  transition: 0.15s ease-out 0.05s;
 }
 
 .emote:focus {

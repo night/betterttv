@@ -10,21 +10,75 @@ import Icons from './Icons.jsx';
 const ROW_HEIGHT = 36;
 const WINDOW_HEIGHT = 300;
 
-function Emotes({onClick, onHover, section, onSection}) {
+function Emotes({onClick, section, onSection, arrows, setSelected, selected}) {
   const wrapperRef = useRef(null);
-  const [, setUpdated] = useState(false);
+  const [cords, setCords] = useState({row: 0, col: 0});
 
   useEffect(() => {
-    function callback() {
-      setUpdated((prev) => !prev);
+    let {row, col} = cords;
+
+    switch (true) {
+      case arrows.top: {
+        row = emoteStore.headers.includes(row - 1) ? row - 2 : row - 1;
+        const newRow = emoteStore.getRow(row);
+        if (newRow != null && col > newRow.length - 1) {
+          col = newRow.length - 1;
+        }
+        break;
+      }
+      case arrows.down: {
+        row = emoteStore.headers.includes(row + 1) ? row + 2 : row + 1;
+        const newRow = emoteStore.getRow(row);
+        if (newRow != null && col > newRow.length - 1) {
+          col = newRow.length - 1;
+        }
+        break;
+      }
+      case arrows.left: {
+        col -= 1;
+        if (col < 0) {
+          row = emoteStore.headers.includes(row - 1) ? row - 2 : row - 1;
+          const newRow = emoteStore.getRow(row);
+          col = newRow != null ? newRow.length - 1 : col;
+        }
+        break;
+      }
+      case arrows.right: {
+        col += 1;
+        if (col > emoteStore.getRow(row).length - 1) {
+          row = emoteStore.headers.includes(row + 1) ? row + 2 : row + 1;
+          const newRow = emoteStore.getRow(row);
+          col = newRow != null ? 0 : col;
+        }
+        break;
+      }
+      default:
+        return;
     }
 
-    emoteStore.on('loaded', callback);
+    // Scroll if arrow keys go out of bounds
 
-    return () => {
-      emoteStore.off('loaded', callback);
-    };
-  }, []);
+    if (row >= 0 && row < emoteStore.rows.length) {
+      setCords({row, col});
+
+      const depth = row * ROW_HEIGHT;
+      const {scrollTop} = wrapperRef.current;
+
+      if (depth <= scrollTop + ROW_HEIGHT) {
+        wrapperRef.current.scrollTo(0, depth - ROW_HEIGHT);
+      }
+
+      if (depth + ROW_HEIGHT > scrollTop + WINDOW_HEIGHT) {
+        wrapperRef.current.scrollTo(0, depth + ROW_HEIGHT - WINDOW_HEIGHT);
+      }
+    }
+  }, [arrows]);
+
+  useEffect(() => {
+    const {row, col} = cords;
+    const emote = emoteStore.getRow(row)[col];
+    setSelected(emote);
+  }, [cords]);
 
   const renderRow = useCallback(
     ({key, style, index, className}) => {
@@ -36,13 +90,18 @@ function Emotes({onClick, onHover, section, onSection}) {
         </div>
       ) : (
         <div key={key} style={style} className={classNames(className, styles.row)}>
-          {row.map((emote) => (
-            <Emote emote={emote} onClick={onClick} onMouseOver={onHover} />
+          {row.map((emote, col) => (
+            <Emote
+              active={selected != null && selected.id === emote.id}
+              emote={emote}
+              onClick={onClick}
+              onMouseOver={() => setCords({row: index, col})}
+            />
           ))}
         </div>
       );
     },
-    [onHover, onClick]
+    [onClick, selected]
   );
 
   const handleHeaderChange = useCallback((row) => {
@@ -65,7 +124,7 @@ function Emotes({onClick, onHover, section, onSection}) {
       stickyRows={emoteStore.headers}
       rowHeight={ROW_HEIGHT}
       windowHeight={WINDOW_HEIGHT}
-      totalRows={emoteStore.totalRows()}
+      totalRows={emoteStore.rows.length}
       renderRow={renderRow}
       className={styles.emotesContainer}
       onHeaderChange={handleHeaderChange}
@@ -74,12 +133,12 @@ function Emotes({onClick, onHover, section, onSection}) {
   );
 }
 
-function SearchedEmotes({search, onHover, onClick, setPreview}) {
+function SearchedEmotes({search, onClick, setSelected, selected}) {
   const emotes = useMemo(() => emoteStore.search(search), [search]);
 
   useEffect(() => {
     if (emotes.length > 0) {
-      setPreview(emotes[0].item);
+      setSelected(emotes[0].item);
     }
   }, [emotes]);
 
@@ -89,12 +148,17 @@ function SearchedEmotes({search, onHover, onClick, setPreview}) {
       return (
         <div key={key} style={style} className={classNames(className, styles.row)}>
           {row.map(({item}) => (
-            <Emote emote={item} onClick={onClick} onMouseOver={onHover} />
+            <Emote
+              emote={item}
+              onClick={onClick}
+              onMouseOver={setSelected}
+              active={selected != null && selected.id === item.id}
+            />
           ))}
         </div>
       );
     },
-    [emotes]
+    [emotes, selected]
   );
 
   if (emotes.length === 0) {

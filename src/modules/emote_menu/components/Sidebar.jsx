@@ -17,10 +17,10 @@ export default function Sidebar({section, onChange}) {
       setProviders(emoteStore.getProviders());
     }
 
-    emoteStore.on('loaded', callback);
+    emoteStore.on('updated', callback);
 
     return () => {
-      emoteStore.off('loaded', callback);
+      emoteStore.off('updated', callback);
     };
   }, []);
 

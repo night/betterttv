@@ -10,9 +10,7 @@ import cdn from '../../../utils/cdn.js';
 import settings from '../../../settings.js';
 import {SettingIds, emotesCategoryIds} from '../../../constants.js';
 
-const MAXIMUM_VISIBLE_FREQUENTLY_USED = 27;
-
-const validateTotalColumns = () => (window.innerWidth <= 400 ? 7 : 9);
+const computeTotalColumns = () => (window.innerWidth <= 400 ? 7 : 9);
 
 function chunkArray(array, size) {
   if (array.length <= size) {
@@ -21,13 +19,26 @@ function chunkArray(array, size) {
   return [array.slice(0, size), ...chunkArray(array.slice(size), size)];
 }
 
+function createCategory(id, displayName, icon, emotes = []) {
+  return {
+    provider: {
+      id,
+      displayName,
+      icon,
+    },
+    emotes,
+  };
+}
+
 const fuse = new Fuse([], {
   keys: ['code'],
   shouldSort: true,
   threshold: 0.3,
 });
 
-const fixed = new Map();
+let emoteProviderCategories = [];
+let twitchCategories = [];
+let totalCols = computeTotalColumns();
 
 class EmoteStore extends SafeEventEmitter {
   constructor() {
@@ -36,137 +47,70 @@ class EmoteStore extends SafeEventEmitter {
     this.rows = [];
     this.headers = [];
 
-    this.totalCols = validateTotalColumns();
-
-    this.emotes = new Map();
-
-    this.defaultEmote = null;
-
-    this.loaded = false;
-
+    this.dirty = true;
     this.categories = {};
-    this.categories.dependable = [];
-    this.categories.extension = [];
-    this.categories.fixed = [];
 
     watcher.on('channel.updated', async () => {
-      await this.loadFixedEmotes();
-      this.loadExtensionEmotes();
-      this.loadDependableEmotes();
-      this.createRows();
+      twitchCategories = await loadTwitchEmotes();
+      this.markDirty(false);
     });
+
+    watcher.on('emotes.updated', () => this.updateEmoteProviders());
+    settings.on(`changed.${SettingIds.EMOTES}`, () => this.updateEmoteProviders());
 
     window.addEventListener('resize', () => {
-      const newTotalRows = validateTotalColumns();
-      if (newTotalRows !== this.totalCols) {
-        this.totalCols = newTotalRows;
-        this.createRows();
-      }
-    });
-
-    settings.on(`changed.${SettingIds.EMOTES}`, () => {
-      this.loadExtensionEmotes();
-      this.loadDependableEmotes();
-      this.createRows();
+      totalCols = computeTotalColumns();
+      this.markDirty(false);
     });
   }
 
-  async loadFixedEmotes() {
-    fixed.clear();
-    const twitchEmotes = await loadTwitchEmotes();
-    this.categories.fixed = twitchEmotes.concat(emojiCategories);
-
-    for (const {emotes: fixedEmotes} of this.categories.fixed) {
-      fixedEmotes.forEach((emote) => fixed.set(String(emote.id), emote));
-    }
-  }
-
-  loadExtensionEmotes() {
-    this.categories.extension = [
-      {
-        provider: {
-          id: emotesCategoryIds.BETTERTTV,
-          displayName: 'BetterTTV',
-          icon: Icons.IMAGE(cdn.url('/assets/logos/mascot.png'), 'BetterTTV'),
-        },
-        emotes: emotes.getEmotesByProviders(['bttv-channel', 'bttv-personal', 'bttv']),
-      },
-      {
-        provider: {
-          id: emotesCategoryIds.FRANKERFACEZ,
-          displayName: 'FrankerFaceZ',
-          icon: Icons.IMAGE(cdn.url('/assets/logos/ffz_logo.png'), 'FrankerFaceZ'),
-        },
-        emotes: emotes.getEmotesByProviders(['ffz-channel', 'ffz-global']),
-      },
+  updateEmoteProviders() {
+    emoteProviderCategories = [
+      createCategory(
+        emotesCategoryIds.BETTERTTV,
+        'BetterTTV',
+        Icons.IMAGE(cdn.url('/assets/logos/mascot.png'), 'BetterTTV'),
+        emotes.getEmotesByProviders(['bttv-channel', 'bttv-personal', 'bttv'])
+      ),
+      createCategory(
+        emotesCategoryIds.FRANKERFACEZ,
+        'FrankerFaceZ',
+        Icons.IMAGE(cdn.url('/assets/logos/ffz_logo.png'), 'FrankerFaceZ'),
+        emotes.getEmotesByProviders(['ffz-channel', 'ffz-global'])
+      ),
     ];
-
-    this.emotes = new Map(fixed);
-
-    for (const {emotes: providerEmotes} of this.categories.extension) {
-      providerEmotes.forEach((emote) => this.emotes.set(String(emote.id), emote));
-    }
-
-    const collection = [...this.emotes.values()];
-    // eslint-disable-next-line prefer-destructuring
-    this.defaultEmote = collection[0];
-    fuse.setCollection(collection);
+    this.markDirty(false);
   }
 
   search(search) {
     return fuse.search(search);
   }
 
-  loadDependableEmotes() {
-    this.categories.dependable = [
-      {
-        provider: {
-          id: emotesCategoryIds.FAVORITES,
-          displayName: 'Favorites',
-          icon: Icons.STAR,
-        },
-        emotes: Array.from(emoteStorage.getFavorites())
-          .map((id) => this.emotes.get(id))
-          .filter((emote) => emote != null),
-      },
-      {
-        provider: {
-          id: emotesCategoryIds.FRECENTS,
-          displayName: 'Frequently Used',
-          icon: Icons.CLOCK,
-        },
-        emotes: emoteStorage
-          .getFrecents()
-          .map((id) => this.emotes.get(id))
-          .filter((emote) => emote != null)
-          .slice(0, MAXIMUM_VISIBLE_FREQUENTLY_USED),
-      },
-    ];
-  }
-
-  createRows() {
+  updateEmotes() {
     this.rows = [];
     this.headers = [];
 
-    for (const category of Object.values(this.categories)) {
-      for (const {provider, emotes: providerEmotes} of category) {
-        if (providerEmotes.length === 0) continue;
+    const categories = [...emoteProviderCategories, ...twitchCategories, ...emojiCategories];
 
-        this.headers.push(this.rows.length);
-        this.rows = this.rows.concat([provider, ...chunkArray(providerEmotes, this.totalCols)]);
+    const collection = [];
+
+    for (const category of categories) {
+      if (category.emotes.length === 0) {
+        continue;
       }
+
+      this.headers.push(this.rows.length);
+      this.rows.push(category.provider, ...chunkArray(category.emotes, totalCols));
+      collection.push(...category.emotes);
     }
 
-    this.loaded = true;
-    this.emit('loaded');
+    fuse.setCollection(collection);
+    this.dirty = false;
+    this.emit('updated');
   }
 
   getRow(index) {
     return this.rows[index];
-  }
-
-  totalRows() {
-    return this.rows.length;
   }
 
   getProviders() {
@@ -177,19 +121,30 @@ class EmoteStore extends SafeEventEmitter {
     return this.headers.find((header) => this.rows[header]?.id === id);
   }
 
+  markDirty(forceUpdate = false) {
+    this.dirty = true;
+    if (forceUpdate) {
+      this.updateEmotes();
+    } else {
+      this.emit('dirty');
+    }
+  }
+
   isLoaded() {
-    return this.loaded;
+    if (this.dirty) {
+      this.updateEmotes();
+    }
+    return !this.dirty;
   }
 
   toggleFavorite(emote) {
     emoteStorage.setFavorite(emote, !emoteStorage.getFavorites().has(String(emote.id)));
-
-    this.loadDependableEmotes();
-    this.createRows();
+    this.markDirty(true);
   }
 
-  trackHistory(emote) {
+  trackHistory(emote, forceUpdate = false) {
     emoteStorage.trackHistory(emote);
+    this.markDirty(forceUpdate);
   }
 }
 
