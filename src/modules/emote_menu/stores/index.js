@@ -19,14 +19,14 @@ function chunkArray(array, size) {
   return [array.slice(0, size), ...chunkArray(array.slice(size), size)];
 }
 
-function createCategory(id, displayName, icon, emotes = []) {
+function createCategory(id, displayName, icon, categoryEmotes = []) {
   return {
     provider: {
       id,
       displayName,
       icon,
     },
-    emotes,
+    emotes: categoryEmotes,
   };
 }
 
@@ -83,7 +83,8 @@ class EmoteStore extends SafeEventEmitter {
   }
 
   search(search) {
-    return fuse.search(search);
+    const results = fuse.search(search);
+    return results.length > 0 ? chunkArray(results, totalCols) : [];
   }
 
   updateEmotes() {

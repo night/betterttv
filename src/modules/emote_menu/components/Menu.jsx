@@ -121,7 +121,7 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
 
   return (
     <>
-      <Header className={styles.header} value={search} onChange={setSearch} onHide={onHide} placeholder="placeholder" />
+      <Header className={styles.header} value={search} onChange={setSearch} onHide={onHide} selected={selected} />
       <Divider className={styles.divider} />
       <div className={styles.content}>
         <Sidebar

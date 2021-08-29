@@ -10,7 +10,12 @@ import Icons from './Icons.jsx';
 const ROW_HEIGHT = 36;
 const WINDOW_HEIGHT = 300;
 
-function Emotes({onClick, section, onSection, arrows, setSelected, selected}) {
+const ModeTypes = {
+  MOUSE: 0,
+  ARROW_KEYS: 1,
+};
+
+function Emotes({onClick, section, onSection, arrows, setSelected, selected, mode}) {
   const wrapperRef = useRef(null);
   const [cords, setCords] = useState({row: 0, col: 0});
 
@@ -95,13 +100,17 @@ function Emotes({onClick, section, onSection, arrows, setSelected, selected}) {
               active={selected != null && selected.id === emote.id}
               emote={emote}
               onClick={onClick}
-              onMouseOver={() => setCords({row: index, col})}
+              onMouseOver={() => {
+                if (mode === ModeTypes.MOUSE) {
+                  setCords({row: index, col});
+                }
+              }}
             />
           ))}
         </div>
       );
     },
-    [onClick, selected]
+    [onClick, selected, mode]
   );
 
   const handleHeaderChange = useCallback((row) => {
@@ -133,32 +142,106 @@ function Emotes({onClick, section, onSection, arrows, setSelected, selected}) {
   );
 }
 
-function SearchedEmotes({search, onClick, setSelected, selected}) {
+function SearchedEmotes({search, onClick, setSelected, selected, arrows, mode}) {
+  const wrapperRef = useRef(null);
   const emotes = useMemo(() => emoteStore.search(search), [search]);
+
+  const [cords, setCords] = useState({row: 0, col: 0});
 
   useEffect(() => {
     if (emotes.length > 0) {
-      setSelected(emotes[0].item);
+      setSelected(emotes[0][0]?.item);
     }
   }, [emotes]);
 
+  useEffect(() => {
+    const {row, col} = cords;
+    const emote = emotes[row][col].item;
+    setSelected(emote);
+  }, [cords]);
+
+  useEffect(() => {
+    let {row, col} = cords;
+
+    switch (true) {
+      case arrows.top: {
+        row -= 1;
+        const newRow = emotes[row];
+        if (newRow != null && col > newRow.length - 1) {
+          col = newRow.length - 1;
+        }
+        break;
+      }
+      case arrows.down: {
+        row += 1;
+        const newRow = emotes[row];
+        if (newRow != null && col > newRow.length - 1) {
+          col = newRow.length - 1;
+        }
+        break;
+      }
+      case arrows.left: {
+        col -= 1;
+        if (col < 0) {
+          row -= 1;
+          const newRow = emotes[row];
+          col = newRow != null ? newRow.length - 1 : col;
+        }
+        break;
+      }
+      case arrows.right: {
+        col += 1;
+        if (col > emotes[row].length - 1) {
+          row += 1;
+          const newRow = emotes[row];
+          col = newRow != null ? 0 : col;
+        }
+        break;
+      }
+      default:
+        return;
+    }
+
+    // Scroll if arrow keys go out of bounds
+
+    if (row >= 0 && row < emotes.length) {
+      setCords({row, col});
+
+      const depth = row * ROW_HEIGHT;
+      const {scrollTop} = wrapperRef.current;
+
+      if (depth <= scrollTop + ROW_HEIGHT) {
+        wrapperRef.current.scrollTo(0, depth - ROW_HEIGHT);
+      }
+
+      if (depth + ROW_HEIGHT > scrollTop + WINDOW_HEIGHT) {
+        wrapperRef.current.scrollTo(0, depth + ROW_HEIGHT - WINDOW_HEIGHT);
+      }
+    }
+  }, [arrows]);
+
   const renderRow = useCallback(
     ({key, style, index, className}) => {
-      const row = emotes.slice(index * emoteStore.totalCols, (index + 1) * emoteStore.totalCols);
+      const row = emotes[index];
+      if (row == null) return null;
       return (
         <div key={key} style={style} className={classNames(className, styles.row)}>
-          {row.map(({item}) => (
+          {row.map(({item}, col) => (
             <Emote
               emote={item}
               onClick={onClick}
-              onMouseOver={setSelected}
+              onMouseOver={() => {
+                if (mode === ModeTypes.MOUSE) {
+                  setCords({row: index, col});
+                }
+              }}
               active={selected != null && selected.id === item.id}
             />
           ))}
         </div>
       );
     },
-    [emotes, selected]
+    [emotes, selected, mode]
   );
 
   if (emotes.length === 0) {
@@ -172,15 +255,35 @@ function SearchedEmotes({search, onClick, setSelected, selected}) {
 
   return (
     <VirtualizedList
+      ref={wrapperRef}
       rowHeight={ROW_HEIGHT}
       windowHeight={WINDOW_HEIGHT}
-      totalRows={Math.ceil(emotes.length / emoteStore.totalCols)}
+      totalRows={emotes.length}
       renderRow={renderRow}
       className={classNames(styles.emotesContainer, styles.searched)}
     />
   );
 }
 
-export default function renderEmotes({search, ...restProps}) {
-  return search.length > 0 ? <SearchedEmotes search={search} {...restProps} /> : <Emotes {...restProps} />;
+export default function renderEmotes(props) {
+  const {search, arrows} = props;
+  const [mode, setMode] = useState(ModeTypes.MOUSE);
+
+  useEffect(() => {
+    setMode(ModeTypes.ARROW_KEYS);
+  }, [arrows]);
+
+  useEffect(() => {
+    function callback() {
+      setMode(ModeTypes.MOUSE);
+    }
+
+    window.addEventListener('mousemove', callback);
+
+    return () => {
+      window.removeEventListener('mousemove', callback);
+    };
+  });
+
+  return search.length > 0 ? <SearchedEmotes mode={mode} {...props} /> : <Emotes mode={mode} {...props} />;
 }
