@@ -10,18 +10,19 @@ import {ModeTypes} from '../../../constants.js';
 
 const ROW_HEIGHT = 36;
 const WINDOW_HEIGHT = 300;
+const OFFSET = 8;
 
-let mode = ModeTypes.MOUSE;
+let navigationMode = ModeTypes.MOUSE;
 
 function Emotes({onClick, section, onSection, arrows, setSelected, selected}) {
   const wrapperRef = useRef(null);
   const [cords, setCords] = useState({row: 0, col: 0});
 
-  function handleMouseOver(row, col) {
-    if (mode === ModeTypes.MOUSE) {
+  const handleMouseOver = useCallback((row, col) => {
+    if (navigationMode === ModeTypes.MOUSE) {
       setCords({row, col});
     }
-  }
+  }, []);
 
   useEffect(() => {
     let {row, col} = cords;
@@ -78,7 +79,7 @@ function Emotes({onClick, section, onSection, arrows, setSelected, selected}) {
       }
 
       if (depth + ROW_HEIGHT > scrollTop + WINDOW_HEIGHT) {
-        wrapperRef.current.scrollTo(0, depth + ROW_HEIGHT - WINDOW_HEIGHT);
+        wrapperRef.current.scrollTo(0, depth + ROW_HEIGHT - WINDOW_HEIGHT + OFFSET);
       }
     }
   }, [arrows]);
@@ -88,6 +89,25 @@ function Emotes({onClick, section, onSection, arrows, setSelected, selected}) {
     const emote = emoteStore.getRow(row)[col];
     setSelected(emote);
   }, [cords]);
+
+  useEffect(() => {
+    function defaultEmoteCallback() {
+      if (selected != null) return;
+      for (let i = 0; i < emoteStore.rows.length; i++) {
+        if (emoteStore.headers.includes(i)) continue;
+        setCords({row: i, col: 0});
+        break;
+      }
+    }
+
+    defaultEmoteCallback();
+
+    emoteStore.on('updated', defaultEmoteCallback);
+
+    return () => {
+      emoteStore.off('updated', defaultEmoteCallback);
+    };
+  }, [selected]);
 
   const renderRow = useCallback(
     ({key, style, index, className}) => {
@@ -110,7 +130,7 @@ function Emotes({onClick, section, onSection, arrows, setSelected, selected}) {
         </div>
       );
     },
-    [onClick, selected, mode]
+    [onClick, selected]
   );
 
   const handleHeaderChange = useCallback((row) => {
@@ -148,11 +168,11 @@ function SearchedEmotes({search, onClick, setSelected, selected, arrows}) {
 
   const [cords, setCords] = useState({row: 0, col: 0});
 
-  function handleMouseOver(row, col) {
-    if (mode === ModeTypes.MOUSE) {
+  const handleMouseOver = useCallback((row, col) => {
+    if (navigationMode === ModeTypes.MOUSE) {
       setCords({row, col});
     }
-  }
+  }, []);
 
   useEffect(() => {
     if (emotes.length > 0) {
@@ -216,12 +236,12 @@ function SearchedEmotes({search, onClick, setSelected, selected, arrows}) {
       const depth = row * ROW_HEIGHT;
       const {scrollTop} = wrapperRef.current;
 
-      if (depth <= scrollTop + ROW_HEIGHT) {
-        wrapperRef.current.scrollTo(0, depth - ROW_HEIGHT);
+      if (depth < scrollTop + ROW_HEIGHT) {
+        wrapperRef.current.scrollTo(0, depth);
       }
 
       if (depth + ROW_HEIGHT > scrollTop + WINDOW_HEIGHT) {
-        wrapperRef.current.scrollTo(0, depth + ROW_HEIGHT - WINDOW_HEIGHT);
+        wrapperRef.current.scrollTo(0, depth + ROW_HEIGHT - WINDOW_HEIGHT + OFFSET);
       }
     }
   }, [arrows]);
@@ -236,14 +256,14 @@ function SearchedEmotes({search, onClick, setSelected, selected, arrows}) {
             <Emote
               emote={item}
               onClick={onClick}
-              onMouseOver={() => handleMouseOver(row, col)}
+              onMouseOver={() => handleMouseOver(index, col)}
               active={selected != null && selected.id === item.id}
             />
           ))}
         </div>
       );
     },
-    [emotes, selected, mode]
+    [emotes, selected]
   );
 
   if (emotes.length === 0) {
@@ -271,12 +291,12 @@ export default function renderEmotes(props) {
   const {search, arrows} = props;
 
   useEffect(() => {
-    mode = ModeTypes.ARROW_KEYS;
+    navigationMode = ModeTypes.ARROW_KEYS;
   }, [arrows]);
 
   useEffect(() => {
     function callback() {
-      mode = ModeTypes.MOUSE;
+      navigationMode = ModeTypes.MOUSE;
     }
 
     window.addEventListener('mousemove', callback);
@@ -286,5 +306,5 @@ export default function renderEmotes(props) {
     };
   });
 
-  return search.length > 0 ? <SearchedEmotes mode={mode} {...props} /> : <Emotes mode={mode} {...props} />;
+  return search.length > 0 ? <SearchedEmotes {...props} /> : <Emotes {...props} />;
 }
