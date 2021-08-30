@@ -149,6 +149,11 @@ export const PageTypes = {
   ABOUT: 5,
 };
 
+export const ModeTypes = {
+  MOUSE: 0,
+  ARROW_KEYS: 1,
+};
+
 export const emotesCategoryIds = {
   BETTERTTV: 'bttv',
   FRANKERFACEZ: 'ffz',

@@ -6,18 +6,22 @@ import emoteStore from '../stores/index.js';
 import styles from '../styles/emotes.module.css';
 import Emote from './Emote.jsx';
 import Icons from './Icons.jsx';
+import {ModeTypes} from '../../../constants.js';
 
 const ROW_HEIGHT = 36;
 const WINDOW_HEIGHT = 300;
 
-const ModeTypes = {
-  MOUSE: 0,
-  ARROW_KEYS: 1,
-};
+let mode = ModeTypes.MOUSE;
 
-function Emotes({onClick, section, onSection, arrows, setSelected, selected, mode}) {
+function Emotes({onClick, section, onSection, arrows, setSelected, selected}) {
   const wrapperRef = useRef(null);
   const [cords, setCords] = useState({row: 0, col: 0});
+
+  function handleMouseOver(row, col) {
+    if (mode === ModeTypes.MOUSE) {
+      setCords({row, col});
+    }
+  }
 
   useEffect(() => {
     let {row, col} = cords;
@@ -100,11 +104,7 @@ function Emotes({onClick, section, onSection, arrows, setSelected, selected, mod
               active={selected != null && selected.id === emote.id}
               emote={emote}
               onClick={onClick}
-              onMouseOver={() => {
-                if (mode === ModeTypes.MOUSE) {
-                  setCords({row: index, col});
-                }
-              }}
+              onMouseOver={() => handleMouseOver(index, col)}
             />
           ))}
         </div>
@@ -142,11 +142,17 @@ function Emotes({onClick, section, onSection, arrows, setSelected, selected, mod
   );
 }
 
-function SearchedEmotes({search, onClick, setSelected, selected, arrows, mode}) {
+function SearchedEmotes({search, onClick, setSelected, selected, arrows}) {
   const wrapperRef = useRef(null);
   const emotes = useMemo(() => emoteStore.search(search), [search]);
 
   const [cords, setCords] = useState({row: 0, col: 0});
+
+  function handleMouseOver(row, col) {
+    if (mode === ModeTypes.MOUSE) {
+      setCords({row, col});
+    }
+  }
 
   useEffect(() => {
     if (emotes.length > 0) {
@@ -230,11 +236,7 @@ function SearchedEmotes({search, onClick, setSelected, selected, arrows, mode}) 
             <Emote
               emote={item}
               onClick={onClick}
-              onMouseOver={() => {
-                if (mode === ModeTypes.MOUSE) {
-                  setCords({row: index, col});
-                }
-              }}
+              onMouseOver={() => handleMouseOver(row, col)}
               active={selected != null && selected.id === item.id}
             />
           ))}
@@ -267,15 +269,14 @@ function SearchedEmotes({search, onClick, setSelected, selected, arrows, mode}) 
 
 export default function renderEmotes(props) {
   const {search, arrows} = props;
-  const [mode, setMode] = useState(ModeTypes.MOUSE);
 
   useEffect(() => {
-    setMode(ModeTypes.ARROW_KEYS);
+    mode = ModeTypes.ARROW_KEYS;
   }, [arrows]);
 
   useEffect(() => {
     function callback() {
-      setMode(ModeTypes.MOUSE);
+      mode = ModeTypes.MOUSE;
     }
 
     window.addEventListener('mousemove', callback);
