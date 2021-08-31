@@ -21,7 +21,7 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
     scrollTo: false,
   });
 
-  const [arrows, setArrows] = useState({
+  const [arrowKeys, setArrowKeys] = useState({
     top: false,
     down: false,
     right: false,
@@ -61,7 +61,7 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
         event.keyCode === keycodes.RightArrow ||
         event.keyCode === keycodes.LeftArrow
       ) {
-        setArrows({
+        setArrowKeys({
           top: event.keyCode === keycodes.UpArrow,
           down: event.keyCode === keycodes.DownArrow,
           right: event.keyCode === keycodes.RightArrow,
@@ -104,11 +104,7 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
     function handleEnterCallback(event) {
       if (event.keyCode === keycodes.Enter) {
         event.preventDefault();
-        appendToChat(selected.code);
-        emoteStore.trackHistory(selected);
-        if (!shiftKeyPressed) {
-          onHide();
-        }
+        handleClick(selected);
       }
     }
 
@@ -127,6 +123,7 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
         <Sidebar
           className={styles.sidebar}
           section={section}
+          providers={emoteStore.getProviders()}
           onChange={(eventKey) => setSection({eventKey, scrollTo: true})}
         />
         <Emotes
@@ -134,8 +131,7 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
           search={search}
           section={section}
           onClick={handleClick}
-          arrows={arrows}
-          selected={selected}
+          arrowKeys={arrowKeys}
           setSelected={setSelected}
           onSection={(eventKey) => setSection({eventKey, scrollTo: false})}
         />

@@ -6,17 +6,23 @@ import EmoteMenu from './Menu.jsx';
 import styles from '../styles/button.module.css';
 import emoteStore from '../stores/index.js';
 
+let loaded = false;
+
 export default function Button({appendToChat, setPopoverOpen}) {
   const triggerRef = useRef(null);
 
   useEffect(() => {
-    if (emoteStore.isLoaded()) {
+    const callback = () => {
       setPopoverOpen(triggerRef);
+      loaded = true;
+    };
+
+    if (loaded || emoteStore.isLoaded()) {
+      callback();
+      return;
     }
 
-    emoteStore.once('loaded', () => {
-      setPopoverOpen(triggerRef);
-    });
+    emoteStore.once('updated', callback);
   }, []);
 
   return (

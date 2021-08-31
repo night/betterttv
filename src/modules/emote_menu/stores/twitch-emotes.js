@@ -6,6 +6,7 @@ import debug from '../../../utils/debug.js';
 import {getEmoteFromRegEx} from '../../../utils/regex.js';
 import settings from '../../../settings.js';
 import {SettingIds, emotesCategoryIds} from '../../../constants.js';
+import twitch from '../../../utils/twitch.js';
 
 const EMOTE_SET_QUERY = `
 query UserEmotes {
@@ -143,5 +144,9 @@ export async function loadTwitchEmotes() {
     tempSets[provider.id] = {provider, emotes: providerEmotes};
   }
 
-  return Object.values(tempSets);
+  const current = twitch.getCurrentChannel();
+
+  return Object.values(tempSets).sort((set) =>
+    `${emotesCategoryIds.TWITCH}-${current.id}` === set.provider.id ? -1 : 1
+  );
 }

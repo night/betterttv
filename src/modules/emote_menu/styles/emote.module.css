@@ -27,3 +27,14 @@
 .emote:focus-visible {
   outline: 0px;
 }
+
+.hidden {
+  display: none;
+}
+
+.placeholder {
+  background-color: #23262b;
+  width: 90%;
+  height: 90%;
+  border-radius: 8px;
+}

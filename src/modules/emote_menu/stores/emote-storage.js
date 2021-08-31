@@ -1,15 +1,21 @@
 import storage from '../../../storage.js';
+import SafeEventEmitter from '../../../utils/safe-event-emitter.js';
 
 const HOUR = 60 * 60 * 1000;
 const DAY = 24 * HOUR;
 
 const MAX_TIMESTAMPS = 100;
-const PURGE_SCORE = 40;
+const MAX_FRECENTS = 250;
 
-function sortHistory(history) {
-  return Object.entries(history)
+function sortHistory(history, limit) {
+  const sortedHistory = new Set();
+
+  Object.entries(history)
     .sort(([, {score: a}], [, {score: b}]) => b - a)
-    .map(([id]) => id);
+    .slice(0, limit)
+    .forEach(([id]) => sortedHistory.add(id));
+
+  return sortedHistory;
 }
 
 function timestampToScore(timestamp) {
@@ -38,10 +44,10 @@ function calcScore({totalUses, recentUses}) {
   return Math.floor((totalUses * frecency) / recentUses.length);
 }
 
-class EmoteStorage {
+class EmoteStorage extends SafeEventEmitter {
   constructor() {
+    super();
     this.emoteStore = storage.get('emotes');
-    this.frecentIds = [];
 
     if (this.emoteStore == null) {
       this.emoteStore = {
@@ -50,19 +56,12 @@ class EmoteStorage {
       };
     }
 
-    this.favorites = new Set(this.emoteStore.favorites);
-
     for (const [id, emote] of Object.entries(this.emoteStore.usageHistory)) {
-      const score = calcScore(emote);
-
-      if (score <= PURGE_SCORE) {
-        delete this.emoteStore.usageHistory[id];
-      } else {
-        this.emoteStore.usageHistory[id].score = score;
-      }
+      this.emoteStore.usageHistory[id].score = calcScore(emote);
     }
 
-    this.frecentIds = sortHistory(this.emoteStore.usageHistory);
+    this.favorites = new Set(this.emoteStore.favorites);
+    this.updateFrecents();
   }
 
   trackHistory(emote) {
@@ -88,9 +87,12 @@ class EmoteStorage {
 
     this.emoteStore.usageHistory[id] = emoteHistory;
 
-    this.frecentIds = sortHistory(this.emoteStore.usageHistory);
-
+    this.updateFrecents();
     this.save();
+  }
+
+  updateFrecents() {
+    this.frecents = sortHistory(this.emoteStore.usageHistory, MAX_FRECENTS);
   }
 
   setFavorite(emote, bool) {
@@ -111,14 +113,8 @@ class EmoteStorage {
       usageHistory: this.emoteStore.usageHistory,
       favorites: Array.from(this.favorites),
     });
-  }
 
-  getFavorites() {
-    return this.favorites;
-  }
-
-  getFrecents() {
-    return this.frecentIds;
+    this.emit('save');
   }
 }
 

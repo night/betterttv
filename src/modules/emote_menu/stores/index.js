@@ -10,6 +10,8 @@ import cdn from '../../../utils/cdn.js';
 import settings from '../../../settings.js';
 import {SettingIds, emotesCategoryIds} from '../../../constants.js';
 
+const MAX_FRECENTS = 54;
+
 const computeTotalColumns = () => (window.innerWidth <= 400 ? 7 : 9);
 
 function chunkArray(array, size) {
@@ -50,10 +52,8 @@ class EmoteStore extends SafeEventEmitter {
     this.dirty = true;
     this.categories = {};
 
-    watcher.on('channel.updated', async () => {
-      twitchCategories = await loadTwitchEmotes();
-      this.markDirty(false);
-    });
+    watcher.on('channel.updated', () => this.updateTwitchProviders());
+    settings.on(`changed.${SettingIds.DARKENED_MODE}`, () => this.updateTwitchProviders());
 
     watcher.on('emotes.updated', () => this.updateEmoteProviders());
     settings.on(`changed.${SettingIds.EMOTES}`, () => this.updateEmoteProviders());
@@ -64,13 +64,24 @@ class EmoteStore extends SafeEventEmitter {
     });
   }
 
+  async updateTwitchProviders() {
+    twitchCategories = await loadTwitchEmotes();
+    this.markDirty(false);
+  }
+
   updateEmoteProviders() {
     emoteProviderCategories = [
       createCategory(
         emotesCategoryIds.BETTERTTV,
         'BetterTTV',
         Icons.IMAGE(cdn.url('/assets/logos/mascot.png'), 'BetterTTV'),
-        emotes.getEmotesByProviders(['bttv-channel', 'bttv-personal', 'bttv'])
+        emotes.getEmotesByProviders(['bttv-channel', 'bttv'])
+      ),
+      createCategory(
+        emotesCategoryIds.BETTERTTV_PERSONAL,
+        'BetterTTV Personal',
+        Icons.IMAGE(cdn.url('/assets/logos/mascot.png'), 'BetterTTV'),
+        emotes.getEmotesByProviders(['bttv-personal'])
       ),
       createCategory(
         emotesCategoryIds.FRANKERFACEZ,
@@ -91,7 +102,34 @@ class EmoteStore extends SafeEventEmitter {
     this.rows = [];
     this.headers = [];
 
-    const categories = [...emoteProviderCategories, ...twitchCategories, ...emojiCategories];
+    const availableEmotes = new Map();
+
+    for (const {emotes: categoryEmotes} of [...emoteProviderCategories, ...twitchCategories, ...emojiCategories]) {
+      categoryEmotes.forEach((emote) => availableEmotes.set(String(emote.id), emote));
+    }
+
+    const categories = [
+      createCategory(
+        'favorites',
+        'Favorites',
+        Icons.STAR,
+        Array.from(emoteStorage.favorites)
+          .map((id) => availableEmotes.get(id))
+          .filter((emote) => emote != null)
+      ),
+      createCategory(
+        'frecents',
+        'Frequently Used',
+        Icons.CLOCK,
+        Array.from(emoteStorage.frecents)
+          .splice(0, MAX_FRECENTS)
+          .map((id) => availableEmotes.get(id))
+          .filter((emote) => emote != null)
+      ),
+      ...emoteProviderCategories,
+      ...twitchCategories,
+      ...emojiCategories,
+    ];
 
     const collection = [];
 
@@ -138,9 +176,9 @@ class EmoteStore extends SafeEventEmitter {
     return !this.dirty;
   }
 
-  toggleFavorite(emote) {
-    emoteStorage.setFavorite(emote, !emoteStorage.getFavorites().has(String(emote.id)));
-    this.markDirty(true);
+  toggleFavorite(emote, forceUpdate = false) {
+    emoteStorage.setFavorite(emote, !emoteStorage.favorites.has(String(emote.id)));
+    this.markDirty(forceUpdate);
   }
 
   trackHistory(emote, forceUpdate = false) {

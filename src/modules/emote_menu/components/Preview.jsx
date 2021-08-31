@@ -1,13 +1,30 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Icon from 'rsuite/lib/Icon/index.js';
 import IconButton from 'rsuite/lib/IconButton/index.js';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faStar} from '@fortawesome/free-solid-svg-icons/faStar';
 import styles from '../styles/preview.module.css';
 import emoteStorage from '../stores/emote-storage.js';
+import {createSrcSet} from '../../../utils/image.js';
 
-export default function PreviewEmote({emote}) {
+function PreviewEmote({emote}) {
   if (emote == null) return null;
+
+  const [favorite, setFavorite] = useState(emoteStorage.favorites.has(emote.id));
+
+  useEffect(() => {
+    function callback() {
+      setFavorite(emoteStorage.favorites.has(emote.id));
+    }
+
+    callback();
+
+    emoteStorage.on('save', callback);
+
+    return () => {
+      emoteStorage.off('save', callback);
+    };
+  }, [emote]);
 
   return (
     <div className={styles.preview} key={emote.code}>
@@ -16,9 +33,7 @@ export default function PreviewEmote({emote}) {
           <img
             alt={emote.name}
             className={styles.emoteImage}
-            srcSet={`${emote.images['2x'] || emote.images['1x']} 1x, ${emote.images['2x']} 2x, ${
-              emote.images['3x']
-            } 4x`}
+            srcSet={createSrcSet(emote.images)}
             src={emote.images['2x']}
           />
         </div>
@@ -27,8 +42,9 @@ export default function PreviewEmote({emote}) {
           <div>from {emote.provider.displayName}</div>
         </div>
       </div>
-      {emoteStorage.getFavorites().has(emote.id) ? (
+      {favorite ? (
         <IconButton
+          onClick={() => emoteStorage.setFavorite(emote, false)}
           icon={
             <Icon>
               <FontAwesomeIcon icon={faStar} />
@@ -39,3 +55,5 @@ export default function PreviewEmote({emote}) {
     </div>
   );
 }
+
+export default React.memo(PreviewEmote, (oldProps, newProps) => oldProps.emote?.id === newProps.emote?.id);

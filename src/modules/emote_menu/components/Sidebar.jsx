@@ -1,6 +1,5 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useEffect, useRef} from 'react';
 import Nav from 'rsuite/lib/Nav/index.js';
-import emoteStore from '../stores/index.js';
 import styles from '../styles/sidebar.module.css';
 
 const ITEM_HEIGHT = 42;
@@ -8,21 +7,8 @@ const SIDEBAR_HEIGHT = 300;
 
 let timer;
 
-export default function Sidebar({section, onChange}) {
+export default function Sidebar({section, onChange, providers}) {
   const containerRef = useRef(null);
-  const [providers, setProviders] = useState(emoteStore.getProviders());
-
-  useEffect(() => {
-    function callback() {
-      setProviders(emoteStore.getProviders());
-    }
-
-    emoteStore.on('updated', callback);
-
-    return () => {
-      emoteStore.off('updated', callback);
-    };
-  }, []);
 
   useEffect(() => {
     if (section.eventKey == null) return;

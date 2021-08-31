@@ -1,9 +1,13 @@
 import classNames from 'classnames';
-import React from 'react';
+import React, {useState} from 'react';
+import {createSrcSet} from '../../../utils/image.js';
 import styles from '../styles/emote.module.css';
 
 function Emote({emote, onClick, onMouseOver, active}) {
+  const [loaded, setLoaded] = useState(false);
+
   const classnames = active ? classNames(styles.emote, styles.active) : styles.emote;
+  const imageClassnames = !loaded ? classNames(styles.emoteImage, styles.hidden) : styles.emoteImage;
 
   return (
     <button
@@ -14,11 +18,13 @@ function Emote({emote, onClick, onMouseOver, active}) {
       type="button"
       className={classnames}>
       <img
-        className={styles.emoteImage}
-        srcSet={`${emote.images['1x']} 1x, ${emote.images['2x']} 2x, ${emote.images['3x']} 4x`}
+        className={imageClassnames}
+        srcSet={createSrcSet(emote.images)}
         src={emote.images['1x']}
         alt={emote.code}
+        onLoad={() => setLoaded(true)}
       />
+      {!loaded ? <div className={classNames(styles.emoteImage, styles.placeholder)} /> : null}
     </button>
   );
 }
