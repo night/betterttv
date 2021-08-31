@@ -14,7 +14,7 @@ const BTTV_EMOTE_PICKER_BUTTON_SELECTOR = 'button[data-a-target="bttv-emote-pick
 const CHAT_TEXT_AREA = 'textarea[data-a-target="chat-input"]';
 
 // For legacy button
-const LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONATINER_SELECTOR =
+const LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR =
   'div[data-a-target="legacy-bttv-emote-picker-button-container"]';
 const CHAT_SETTINGS_BUTTON_SELECTOR = '.chat-input button[data-a-target="chat-settings"]';
 const CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR = '.chat-input div[data-test-selector="chat-input-buttons-container"]';
@@ -148,7 +148,7 @@ export default class EmoteMenuModule {
   loadLegacyButton() {
     if (twitch.getCurrentUser() == null) return;
 
-    const legacyContainer = document.querySelector(LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONATINER_SELECTOR);
+    const legacyContainer = document.querySelector(LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
     const clickTwitchEmotes = settings.get(SettingIds.CLICK_TWITCH_EMOTES);
 
     if (clickTwitchEmotes && legacyContainer == null) {
