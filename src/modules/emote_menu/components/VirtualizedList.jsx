@@ -13,9 +13,7 @@ function VirtualizedList(
     rows: [],
   });
 
-  useEffect(() => {
-    onHeaderChange(data.header);
-  }, [data.header]);
+  useEffect(() => onHeaderChange(data.header), [data.header]);
 
   const wrapperRef = ref || useRef(null);
 
@@ -64,7 +62,7 @@ function VirtualizedList(
           },
       rows: rowsVisible,
     });
-  }, [totalRows, rowHeight, windowHeight]);
+  }, [totalRows, rowHeight, windowHeight, stickyRows]);
 
   useEffect(() => {
     wrapperRef.current.addEventListener('scroll', isInViewport, false);
@@ -77,32 +75,44 @@ function VirtualizedList(
     };
   }, [isInViewport]);
 
+  const rows = useMemo(
+    () =>
+      data.rows.map((value) =>
+        renderRow({
+          key: `row-${value}`,
+          index: value,
+          style: {
+            top: `${value * rowHeight}px`,
+            height: `${rowHeight}px`,
+          },
+          className: styles.row,
+        })
+      ),
+    [data.rows, renderRow]
+  );
+
+  const header = useMemo(
+    () =>
+      data.header != null
+        ? renderRow({
+            key: `row-${data.header.current}`,
+            index: data.header.current,
+            style: {
+              height: `${rowHeight}px`,
+              top: `${data.header.top}px`,
+              position: data.header.position,
+            },
+            className: styles.header,
+          })
+        : null,
+    [data.header]
+  );
+
   return (
     <div className={classNames(styles.list, className)} style={{height: windowHeight}} ref={wrapperRef}>
       <div className={styles.rows} style={{height: listHeight}}>
-        {data.rows.map((value) =>
-          renderRow({
-            key: `row-${value}`,
-            index: value,
-            style: {
-              top: `${value * rowHeight}px`,
-              height: `${rowHeight}px`,
-            },
-            className: styles.row,
-          })
-        )}
-        {data.header != null
-          ? renderRow({
-              key: `row-${data.header.current}`,
-              index: data.header.current,
-              style: {
-                height: `${rowHeight}px`,
-                top: `${data.header.top}px`,
-                position: data.header.position,
-              },
-              className: styles.header,
-            })
-          : null}
+        {rows}
+        {header}
       </div>
     </div>
   );
