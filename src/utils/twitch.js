@@ -3,7 +3,7 @@ import twitchAPI from './twitch-api.js';
 
 const REACT_ROOT = '#root div';
 const CHAT_CONTAINER = 'section[data-test-selector="chat-room-component-layout"]';
-const VOD_CHAT_CONTAINER = '.qa-vod-chat';
+const VOD_CHAT_CONTAINER = '.qa-vod-chat,.va-vod-chat';
 const CHAT_LIST = '.chat-list,.chat-list--default,.chat-list--other';
 const PLAYER = '.video-player__container';
 const CLIPS_BROADCASTER_INFO = '.clips-broadcaster-info';

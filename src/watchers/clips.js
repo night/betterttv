@@ -3,8 +3,8 @@ import twitch from '../utils/twitch.js';
 import domObserver from '../observers/dom.js';
 
 export default function clipsWatcher(watcher) {
-  domObserver.on('.gbrRBA', (node, isConnected) => {
-    if (!isConnected || !node.parentNode.classList.contains('clips-chat-replay')) return;
+  domObserver.on('.tw-animation', (node, isConnected) => {
+    if (!isConnected || !node.parentNode?.parentNode?.classList.contains('clips-chat-replay')) return;
     watcher.emit('clips.message', $(node));
   });
 

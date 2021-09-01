@@ -1,7 +1,7 @@
 {
   "name": "BetterTTV",
   "author": "Night",
-  "version": "7.3.5",
+  "version": "7.3.6",
   "description": "BetterTTV enhances Twitch with new features, emotes, and more.",
   "main": "betterttv.js",
   "type": "module",
@@ -10,7 +10,7 @@
     "postinstall": "node ./dev/post-install.js",
     "build": "webpack --mode development",
     "build:prod": "webpack --mode production",
-    "lint": "eslint \"**/*.js\" && prettier --check \"**/*.js\" && prettier --check \"**/*.css\""
+    "lint": "eslint . && prettier --check ."
   },
   "repository": {
     "type": "git",
@@ -29,7 +29,7 @@
     "@sentry/browser": "^6.11.0",
     "@sentry/integrations": "^6.11.0",
     "@sentry/webpack-plugin": "^1.17.1",
-    "autoprefixer": "^10.3.2",
+    "autoprefixer": "^10.3.3",
     "babel-loader": "^8.2.2",
     "babel-plugin-wildcard": "^7.0.0",
     "classnames": "^2.3.1",
@@ -43,10 +43,11 @@
     "eslint": "^7.32.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-import": "^2.24.1",
+    "eslint-plugin-import": "^2.24.2",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-prettier": "^3.4.1",
-    "eslint-plugin-react": "^7.24.0",
+    "eslint-plugin-react": "^7.25.1",
+    "file-saver": "^2.0.5",
     "filemanager-webpack-plugin": "^6.1.6",
     "fuse.js": "^6.4.6",
     "git-rev-sync": "^3.0.1",
@@ -71,7 +72,6 @@
     "react-string-replace": "^0.4.4",
     "remove-files-webpack-plugin": "^1.4.5",
     "rsuite": "^4.10.2",
-    "save-file": "^2.3.1",
     "string-replace-loader": "^3.0.2",
     "terser-webpack-plugin": "^5.1.4",
     "twemoji": "^13.1.0",

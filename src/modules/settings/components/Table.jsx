@@ -69,23 +69,47 @@ function CustomWhisper(props) {
   );
 }
 
-function useOutsideAlerter(ref, onClick, rowData) {
+function EditCell({rowData, dataKey, onChange, onMouseOver, onMouseLeave, onClick, onPaste, ...props}) {
+  const wrapperRef = useRef(null);
+
   useEffect(() => {
     function handleClickOutside(event) {
-      if (ref.current && !ref.current.contains(event.target)) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
         onClick(rowData.id);
-        document.removeEventListener('mousedown', handleClickOutside);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
-  }, [ref]);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    function handlePasteCallback(event) {
+      onPaste(event, rowData.id, dataKey);
+    }
+    const currentWrapperRef = wrapperRef.current;
+    currentWrapperRef.addEventListener('paste', handlePasteCallback);
+    return () => currentWrapperRef.removeEventListener('paste', handlePasteCallback);
+  }, [wrapperRef.current]);
+
+  return (
+    <Cell {...props}>
+      <input
+        ref={wrapperRef}
+        className={classNames({'bttv-rs-input': true}, styles.tableContentEditing)}
+        defaultValue={rowData[dataKey]}
+        onChange={(event) => onChange(rowData.id, dataKey, event.target.value)}
+      />
+    </Cell>
+  );
 }
 
-function EditCell({rowData, dataKey, onChange, onMouseOver, onMouseLeave, onClick, ...props}) {
+function CustomCell(props) {
+  const {rowData, dataKey, onChange, onMouseOver, onMouseLeave, onClick, onPaste, ...restProps} = props;
+
   switch (rowData.status) {
     case Status.HOVERING:
       return (
-        <Cell {...props} onMouseLeave={() => onMouseLeave && onMouseLeave(rowData.id)}>
+        <Cell {...restProps} onMouseLeave={() => onMouseLeave && onMouseLeave(rowData.id)}>
           <input
             className={classNames({'bttv-rs-input': true}, styles.tableContentHovering)}
             defaultValue={rowData[dataKey]}
@@ -95,23 +119,12 @@ function EditCell({rowData, dataKey, onChange, onMouseOver, onMouseLeave, onClic
       );
 
     case Status.EDIT: {
-      const wrapperRef = useRef(null);
-      useOutsideAlerter(wrapperRef, onClick, rowData);
-      return (
-        <Cell {...props}>
-          <input
-            ref={wrapperRef}
-            className={classNames({'bttv-rs-input': true}, styles.tableContentEditing)}
-            defaultValue={rowData[dataKey]}
-            onChange={(event) => onChange(rowData.id, dataKey, event.target.value)}
-          />
-        </Cell>
-      );
+      return <EditCell {...props} />;
     }
 
     default:
       return (
-        <Cell {...props} onMouseOver={() => onMouseOver && onMouseOver(rowData.id)}>
+        <Cell {...restProps} onMouseOver={() => onMouseOver && onMouseOver(rowData.id)}>
           <p className={styles.text}>{rowData[dataKey]}</p>
         </Cell>
       );
@@ -171,22 +184,49 @@ function EditTable({options, setValue, value, ...props}) {
     return parseInt(Object.keys(data)[Object.keys(data).length - 1], 10) + 1 || 0;
   }
 
-  function addRow() {
+  function createRow() {
     const id = nextId();
-    const newRow = {id, status: Status.EDIT};
-    for (const header of options) {
-      switch (header.type) {
+    const row = {id, status: Status.EDIT};
+
+    for (const option of options) {
+      switch (option.type) {
         case Types.STRING:
-          newRow[header.name] = '';
+          row[option.name] = '';
           break;
         case Types.DROPDOWN:
-          newRow[header.name] = header.defaultOption;
+          row[option.name] = option.defaultOption;
           break;
         default:
           break;
       }
     }
-    data[id] = newRow;
+
+    return row;
+  }
+
+  function handleAddEmptyRow() {
+    const newRow = createRow();
+    data[newRow.id] = newRow;
+    setData({...data});
+  }
+
+  function handlePaste(event, id, dataKey) {
+    const paste = (event.clipboardData || window.clipboardData).getData('text');
+    const lines = paste
+      .split('\n')
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0);
+
+    if (lines.length <= 1) return;
+
+    handleDeleteState(id);
+
+    for (const line of lines) {
+      const row = createRow();
+      row[dataKey] = line;
+      data[row.id] = row;
+    }
+
     setData({...data});
   }
 
@@ -200,12 +240,13 @@ function EditTable({options, setValue, value, ...props}) {
                 return (
                   <Column flexGrow={1} align="left" key={key.name}>
                     <HeaderCell className={styles.header}>{key.header}</HeaderCell>
-                    <EditCell
+                    <CustomCell
                       dataKey={key.name}
                       onChange={handleChange}
                       onMouseOver={handleHoveringState}
                       onMouseLeave={handleHoveringState}
                       onClick={handleEditState}
+                      onPaste={handlePaste}
                     />
                   </Column>
                 );
@@ -240,7 +281,7 @@ function EditTable({options, setValue, value, ...props}) {
       )}
       <IconButton
         appearance="primary"
-        onClick={addRow}
+        onClick={handleAddEmptyRow}
         loading={loading}
         className={styles.button}
         icon={

@@ -11,7 +11,7 @@ class DisableChannelPointsMessageHighlightsModule {
   }
 
   load() {
-    $('.chat-scrollable-area__message-container').toggleClass(
+    $('body').toggleClass(
       'bttv-disable-channel-points-message-highlights',
       !hasFlag(settings.get(SettingIds.CHANNEL_POINTS), ChannelPointsFlags.MESSAGE_HIGHLIGHTS)
     );

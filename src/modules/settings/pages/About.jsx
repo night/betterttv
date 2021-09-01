@@ -1,5 +1,5 @@
 import React, {useRef, useState} from 'react';
-import {save} from 'save-file';
+import {saveAs} from 'file-saver';
 
 import IconButton from 'rsuite/lib/IconButton/index.js';
 import PanelGroup from 'rsuite/lib/PanelGroup/index.js';
@@ -27,20 +27,22 @@ function isJSON(string) {
   return json;
 }
 
-function getDataURLFromUpload(input, callback) {
-  const reader = new FileReader();
-  reader.onload = ({target}) => callback(target.result);
-  const file = input.files[0];
-  if (!file) {
-    callback(null);
-    return;
-  }
-  reader.readAsText(file);
+function getDataURLFromUpload(input) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = ({target}) => resolve(target.result);
+    const file = input.files[0];
+    if (!file) {
+      resolve(null);
+      return;
+    }
+    reader.readAsText(file);
+  });
 }
 
 function backupFile() {
   const rv = storage.getStorage();
-  save(JSON.stringify(rv), 'bttv_settings.backup');
+  saveAs(new Blob([JSON.stringify(rv)], {type: 'application/json;charset=utf-8'}), 'bttv_settings.backup');
 }
 
 function About({onHide}) {
@@ -48,25 +50,28 @@ function About({onHide}) {
   const [importing, setImporting] = useState(false);
   const [resetting, setResetting] = useState(false);
 
-  function importFile(target) {
+  async function importFile(target) {
     setImporting(true);
 
-    getDataURLFromUpload(target, (data) => {
-      const settingsToImport = isJSON(data);
-      const keysToImport = Object.keys(settingsToImport);
-      let importLegacy = true;
-      for (const key of keysToImport) {
-        const nonPrefixedKey = key.split('bttv_')[1];
-        storage.set(nonPrefixedKey, settingsToImport[key]);
-        if (nonPrefixedKey === 'settings') {
-          importLegacy = false;
-        }
+    const data = await getDataURLFromUpload(target);
+    if (data == null) {
+      return;
+    }
+
+    const settingsToImport = isJSON(data);
+    const keysToImport = Object.keys(settingsToImport);
+    let importLegacy = true;
+    for (const key of keysToImport) {
+      const nonPrefixedKey = key.split('bttv_')[1];
+      storage.set(nonPrefixedKey, settingsToImport[key]);
+      if (nonPrefixedKey === 'settings') {
+        importLegacy = false;
       }
-      if (importLegacy) {
-        settings.importLegacySettings();
-      }
-      setTimeout(() => window.location.reload(), 1000);
-    });
+    }
+    if (importLegacy) {
+      settings.importLegacySettings();
+    }
+    setTimeout(() => window.location.reload(), 1000);
   }
 
   function resetDefault() {
