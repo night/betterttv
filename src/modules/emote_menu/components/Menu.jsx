@@ -127,7 +127,7 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
           onChange={(eventKey) => setSection({eventKey, scrollTo: true})}
         />
         <Emotes
-          className={styles.emojis}
+          className={styles.emotes}
           search={search}
           section={section}
           onClick={handleClick}
