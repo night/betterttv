@@ -50,6 +50,10 @@ class Emojis extends AbstractEmotes {
                 break;
             }
 
+            if (icon.length === 0) {
+              return false;
+            }
+
             url = ''.concat(options.base, options.size, '/', icon, options.ext);
 
             return false;
