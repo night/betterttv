@@ -41,6 +41,10 @@ class Emojis extends AbstractEmotes {
 
         twemoji.parse(emoji.char, {
           callback: (icon, options) => {
+            if (icon.length === 0) {
+              return false;
+            }
+
             switch (icon) {
               case 'a9': // ©
               case 'ae': // ®
@@ -48,10 +52,6 @@ class Emojis extends AbstractEmotes {
                 return false;
               default:
                 break;
-            }
-
-            if (icon.length === 0) {
-              return false;
             }
 
             url = ''.concat(options.base, options.size, '/', icon, options.ext);
