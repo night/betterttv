@@ -61,9 +61,5 @@ export default {
   CROWN: <FontAwesomeIcon icon={faCrown} />,
   TWITCH: <FontAwesomeIcon icon={twitchLogo} />,
   TWITCH_GAMING: <FontAwesomeIcon icon={twitchGamingLogo} />,
-  IMAGE: (src, alt) => (
-    <div className={styles.iconContainer}>
-      <img src={src} alt={alt} className={styles.icon} />
-    </div>
-  ),
+  IMAGE: (src, alt) => <img src={src} alt={alt} className={styles.icon} />,
 };
