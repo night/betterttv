@@ -31,7 +31,7 @@ function Emote({emote, onClick, onMouseOver, active}) {
         className={classNames(styles.emoteImage, loadingRef.current ? styles.placeholder : null)}
         srcSet={createSrcSet(emote.images)}
         src={emote.images['1x']}
-        alt={emote.code}
+        alt={loadingRef.current ? '' : emote.code}
         onLoad={loadingRef.current ? handleLoad : undefined}
       />
     </button>
