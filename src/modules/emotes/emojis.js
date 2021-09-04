@@ -41,6 +41,10 @@ class Emojis extends AbstractEmotes {
 
         twemoji.parse(emoji.char, {
           callback: (icon, options) => {
+            if (icon.length === 0) {
+              return false;
+            }
+
             switch (icon) {
               case 'a9': // ©
               case 'ae': // ®
