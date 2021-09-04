@@ -1,40 +1,29 @@
 .emote {
-  width: 36px;
-  height: 36px;
   position: relative;
   border-radius: 4px;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+
+  &:focus {
+    background-color: #464647;
+  }
+
+  &:focus-visible {
+    outline: 0px;
+  }
 }
 
 .emoteImage {
-  max-height: 100%;
-  padding: 2px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
 }
 
 .active {
   background-color: #5a5a5c;
 }
 
-.emote:focus {
-  background-color: #464647;
-}
-
-.emote:focus-visible {
-  outline: 0px;
-}
-
-.hidden {
-  display: none;
-}
-
 .placeholder {
   background-color: #23262b;
-  width: 90%;
-  height: 90%;
-  border-radius: 8px;
 }
