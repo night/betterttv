@@ -9,6 +9,8 @@
   align-items: center;
   justify-content: left;
   column-gap: 8px;
+  position: sticky;
+  top: 0;
 }
 
 .row {

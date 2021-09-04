@@ -123,8 +123,8 @@ function Emotes({onClick, section, onSection, arrowKeys, setSelected, selected})
     [cords]
   );
 
-  const handleHeaderChange = useCallback((row) => {
-    const header = emoteStore.getRow(row?.current);
+  const handleHeaderChange = useCallback((rowIndex) => {
+    const header = emoteStore.getRow(rowIndex);
     if (header != null) {
       onSection(header.id);
     }

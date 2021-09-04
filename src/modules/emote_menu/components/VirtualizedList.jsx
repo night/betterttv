@@ -9,11 +9,12 @@ function VirtualizedList(
   const listHeight = useMemo(() => rowHeight * totalRows, [totalRows, rowHeight]);
 
   const [data, setData] = useState({
-    header: null,
+    top: 0,
     rows: [],
+    headerIndex: null,
   });
 
-  useEffect(() => onHeaderChange(data.header), [data.header]);
+  useEffect(() => onHeaderChange(data.headerIndex), [data.headerIndex]);
 
   const wrapperRef = ref || useRef(null);
 
@@ -24,54 +25,40 @@ function VirtualizedList(
     const startIndex = Math.floor(scrollTop / rowHeight);
     const endIndex = Math.min(totalRows - 1, Math.floor(scrollBottom / rowHeight));
 
+    let stickyRowIndex;
+    for (const rowIndex of stickyRows) {
+      if (rowIndex > startIndex) {
+        break;
+      }
+      stickyRowIndex = rowIndex;
+    }
+
     const rowsVisible = [];
+    const hasAdditionalStickyRow = stickyRowIndex < startIndex;
+    if (hasAdditionalStickyRow) {
+      rowsVisible.push(stickyRowIndex);
+    }
 
     for (let i = startIndex; i <= endIndex; i++) {
       rowsVisible.push(i);
     }
 
-    let current = 0;
-    let next = 0;
-
-    next = stickyRows.find((a) => {
-      if (a > startIndex) {
-        return true;
-      }
-
-      current = a;
-      return false;
-    });
-
-    const isStuck = startIndex < next - 1;
-
-    // current: the header that's closest to the top
-    // position: once another header hits the current header it'll become absolute and be "pushed" up
-    // rows: the rows that are visible in the viewport
-
+    const indexOffset = hasAdditionalStickyRow ? startIndex - 1 : startIndex;
     setData({
-      header: isStuck
-        ? {
-            current,
-            top: 0,
-            position: 'sticky',
-          }
-        : {
-            current,
-            top: (next - 1) * rowHeight,
-            position: 'absolute',
-          },
       rows: rowsVisible,
+      top: indexOffset * rowHeight,
+      headerIndex: stickyRowIndex,
     });
   }, [totalRows, rowHeight, windowHeight, stickyRows]);
 
   useEffect(() => {
-    wrapperRef.current.addEventListener('scroll', isInViewport, false);
+    wrapperRef.current.addEventListener('scroll', isInViewport);
     isInViewport();
     return () => {
       if (wrapperRef.current == null) {
         return;
       }
-      wrapperRef.current.removeEventListener('scroll', isInViewport, false);
+      wrapperRef.current.removeEventListener('scroll', isInViewport);
     };
   }, [isInViewport]);
 
@@ -82,7 +69,6 @@ function VirtualizedList(
           key: `row-${value}`,
           index: value,
           style: {
-            top: `${value * rowHeight}px`,
             height: `${rowHeight}px`,
           },
           className: styles.row,
@@ -91,29 +77,12 @@ function VirtualizedList(
     [data.rows, renderRow]
   );
 
-  const header = useMemo(
-    () =>
-      data.header != null
-        ? renderRow({
-            key: `row-${data.header.current}`,
-            index: data.header.current,
-            style: {
-              height: `${rowHeight}px`,
-              top: `${data.header.top}px`,
-              position: data.header.position,
-            },
-            className: styles.header,
-          })
-        : null,
-    [data.header]
-  );
-
   return (
     <div className={classNames(styles.list, className)} style={{height: windowHeight}} ref={wrapperRef}>
-      <div className={styles.rows} style={{height: listHeight}}>
+      <div className={styles.rows} style={{top: data.top}}>
         {rows}
-        {header}
       </div>
+      <div className={styles.ghostRows} style={{height: listHeight}} />
     </div>
   );
 }
