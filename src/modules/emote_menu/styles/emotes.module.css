@@ -9,6 +9,8 @@
   align-items: center;
   justify-content: left;
   column-gap: 8px;
+  position: sticky;
+  top: 0;
 }
 
 .row {
@@ -35,6 +37,13 @@
 
 .searched {
   padding-top: 8px;
+}
+
+.headerIcon {
+  display: flex;
+  width: 20px;
+  height: 20px;
+  align-items: center;
 }
 
 .headerText {

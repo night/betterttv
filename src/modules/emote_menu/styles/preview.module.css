@@ -1,6 +1,5 @@
 .preview {
   display: flex;
-  height: 60px;
   justify-content: space-between;
   padding: 8px;
   align-items: center;

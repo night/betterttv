@@ -104,7 +104,7 @@ function Emotes({onClick, section, onSection, arrowKeys, setSelected, selected})
       const row = emoteStore.getRow(index);
       return emoteStore.headers.includes(index) ? (
         <div key={key} style={style} className={classNames(className, styles.header)}>
-          <Icon>{row.icon}</Icon>
+          <Icon className={styles.headerIcon}>{row.icon}</Icon>
           <div className={styles.headerText}>{row.displayName.toUpperCase()}</div>
         </div>
       ) : (
@@ -123,8 +123,8 @@ function Emotes({onClick, section, onSection, arrowKeys, setSelected, selected})
     [cords]
   );
 
-  const handleHeaderChange = useCallback((row) => {
-    const header = emoteStore.getRow(row?.current);
+  const handleHeaderChange = useCallback((rowIndex) => {
+    const header = emoteStore.getRow(rowIndex);
     if (header != null) {
       onSection(header.id);
     }
