@@ -10,20 +10,20 @@ import twitch from '../../../utils/twitch.js';
 
 const EMOTE_SET_QUERY = `
 query UserEmotes {
-  currentUser {
-    emoteSets {
-      emotes {
-        id,
-        token
-      },
-      id,
-      owner {
-        id,
-        displayName
-        profileImageURL(width: 300)
-      }
+    currentUser {
+        emoteSets {
+            emotes {
+                id,
+                token
+            },
+            id,
+            owner {
+                id,
+                displayName
+                profileImageURL(width: 300)
+            }
+        }
     }
-  }
 }
 `;
 
