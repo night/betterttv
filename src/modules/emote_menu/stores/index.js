@@ -9,6 +9,7 @@ import {loadTwitchEmotes} from './twitch-emotes.js';
 import cdn from '../../../utils/cdn.js';
 import settings from '../../../settings.js';
 import {SettingIds, emotesCategoryIds} from '../../../constants.js';
+import twitch from '../../../utils/twitch.js';
 
 const MAX_FRECENTS = 54;
 
@@ -69,7 +70,9 @@ class EmoteStore extends SafeEventEmitter {
     this.markDirty(false);
   }
 
-  updateEmoteProviders() {
+  async updateEmoteProviders() {
+    const currentUser = await twitch.getCurrentProfile();
+
     emoteProviderCategories = [
       createCategory(
         emotesCategoryIds.BETTERTTV,
@@ -80,7 +83,7 @@ class EmoteStore extends SafeEventEmitter {
       createCategory(
         emotesCategoryIds.BETTERTTV_PERSONAL,
         'BetterTTV Personal',
-        Icons.IMAGE(cdn.url('/assets/logos/mascot.png'), 'BetterTTV'),
+        Icons.IMAGE(currentUser?.logo == null ? cdn.url('/assets/logos/mascot.png') : currentUser.logo, 'BetterTTV'),
         emotes.getEmotesByProviders(['bttv-personal'])
       ),
       createCategory(

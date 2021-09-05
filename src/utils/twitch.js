@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import twitchAPI from './twitch-api.js';
+import debug from './debug.js';
 
 const REACT_ROOT = '#root div';
 const CHAT_CONTAINER = 'section[data-test-selector="chat-room-component-layout"]';
@@ -110,6 +111,7 @@ function searchReactChildren(node, predicate, maxDepth = 15, depth = 0) {
 
 let chatClient;
 let currentUser;
+let currentProfile;
 let currentChannel;
 
 export default {
@@ -121,6 +123,20 @@ export default {
       name,
       displayName,
     };
+  },
+
+  async getCurrentProfile() {
+    if (currentProfile != null) {
+      return currentProfile;
+    }
+
+    try {
+      const res = await twitchAPI.get(`users?login=${currentUser.displayName}`);
+      return res.users[0];
+    } catch (e) {
+      debug.log('failed to fetch twitch user profile', e);
+      return null;
+    }
   },
 
   updateCurrentChannel() {
