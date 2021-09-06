@@ -121,14 +121,14 @@ export default class EmoteMenuModule {
 
     let selectionEnd = element.selectionStart + text.length;
     const currentValue = element.value;
-    const beforeText = currentValue.substring(0, element.selectionStart);
-    const afterText = currentValue.substring(element.selectionEnd, currentValue.length);
+    const prefixText = currentValue.substring(0, element.selectionStart);
+    let suffixText = currentValue.substring(element.selectionEnd, currentValue.length - 1);
 
-    if (beforeText !== '' && beforeText.substr(-1) !== ' ') {
-      text = ` ${text}`;
+    if (suffixText.length === 0) {
+      suffixText = ' ';
     }
 
-    text = `${beforeText + text} ${afterText}`;
+    text = `${prefixText}${text}${suffixText}`;
     element.value = text;
     element.dispatchEvent(new Event('input', {bubbles: true}));
 
