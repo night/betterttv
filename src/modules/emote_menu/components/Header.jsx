@@ -26,7 +26,6 @@ function Header({value, onChange, onHide, selected, ...restProps}) {
           placeholder={selected == null ? 'Search for Emotes' : selected.code}
           value={value}
           onChange={onChange}
-          maxLength="20"
           inputRef={ref}
         />
       </InputGroup>
