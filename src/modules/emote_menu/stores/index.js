@@ -105,35 +105,10 @@ class EmoteStore extends SafeEventEmitter {
     this.rows = [];
     this.headers = [];
 
-    const availableEmotes = new Map();
+    const frecents = createCategory(emotesCategoryIds.FRECENTS, 'Frequently Used', Icons.CLOCK, []);
+    const favorites = createCategory(emotesCategoryIds.FAVORITES, 'Favorites', Icons.STAR, []);
 
-    for (const {emotes: categoryEmotes} of [...emoteProviderCategories, ...twitchCategories, ...emojiCategories]) {
-      categoryEmotes.forEach((emote) => availableEmotes.set(String(emote.id), emote));
-    }
-
-    const categories = [
-      createCategory(
-        'favorites',
-        'Favorites',
-        Icons.STAR,
-        Array.from(emoteStorage.favorites)
-          .map((id) => availableEmotes.get(id))
-          .filter((emote) => emote != null)
-      ),
-      createCategory(
-        'frecents',
-        'Frequently Used',
-        Icons.CLOCK,
-        Array.from(emoteStorage.frecents)
-          .splice(0, MAX_FRECENTS)
-          .map((id) => availableEmotes.get(id))
-          .filter((emote) => emote != null)
-      ),
-      ...emoteProviderCategories,
-      ...twitchCategories,
-      ...emojiCategories,
-    ];
-
+    const categories = [...emoteProviderCategories, ...twitchCategories, ...emojiCategories];
     const collection = [];
 
     for (const category of categories) {
@@ -141,9 +116,33 @@ class EmoteStore extends SafeEventEmitter {
         continue;
       }
 
+      for (const emote of category.emotes) {
+        if (emoteStorage.favorites.has(String(emote.id))) {
+          favorites.emotes.push(emote);
+        }
+
+        if (emoteStorage.frecents.has(String(emote.id))) {
+          frecents.emotes.push(emote);
+        }
+      }
+
       this.headers.push(this.rows.length);
       this.rows.push(category.provider, ...chunkArray(category.emotes, totalCols));
       collection.push(...category.emotes);
+    }
+
+    if (frecents.emotes.length > 0) {
+      const frecentsChunked = chunkArray(frecents.emotes.splice(0, MAX_FRECENTS), totalCols);
+      this.rows.unshift(frecents.provider, ...frecentsChunked);
+      this.headers = this.headers.map((index) => index + frecentsChunked.length + 1);
+      this.headers.unshift(0);
+    }
+
+    if (favorites.emotes.length > 0) {
+      const favoritesChunked = chunkArray(favorites.emotes, totalCols);
+      this.rows.unshift(favorites.provider, ...favoritesChunked);
+      this.headers = this.headers.map((index) => index + favoritesChunked.length + 1);
+      this.headers.unshift(0);
     }
 
     fuse.setCollection(collection);
