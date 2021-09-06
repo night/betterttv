@@ -8,8 +8,5 @@
   filter: grayscale(100%);
   opacity: 0.9;
   float: left;
-
-  svg {
-    width: 100% !important;
-  }
+  background-image: url(assets/icons/legacy_smile.svg) !important;
 }
