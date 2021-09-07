@@ -2,3 +2,7 @@
   display: inline-flex !important;
   position: relative !important;
 }
+
+.hidden {
+  display: none !important;
+}

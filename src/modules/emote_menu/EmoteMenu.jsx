@@ -80,7 +80,7 @@ export default class EmoteMenuModule {
 
       ReactDOM.render(
         <SafeEmoteMenu
-          onError={this.hide}
+          onError={() => this.show(false)}
           onMount={this.show}
           appendToChat={this.appendToChat}
           setPopoverOpen={setPopoverOpen}
@@ -90,29 +90,17 @@ export default class EmoteMenuModule {
     }
 
     if (container != null) {
-      if (clickTwitchEmotes) {
-        this.show();
-      } else {
-        this.hide();
-      }
+      this.show(clickTwitchEmotes);
     }
   }
 
-  hide() {
-    const bttvEmotePicker = document.querySelector(BTTV_EMOTE_PICKER_BUTTON_SELECTOR);
-    const emotePicker = document.querySelector(EMOTE_PICKER_BUTTON_SELECTOR);
-
-    emotePicker.style.display = 'inline-flex';
-    bttvEmotePicker.style.display = 'none';
-  }
-
-  show() {
+  show(visible = true) {
     const bttvEmotePicker = document.querySelector(BTTV_EMOTE_PICKER_BUTTON_SELECTOR);
 
     if (bttvEmotePicker != null) {
-      bttvEmotePicker.style.display = 'inline-flex';
+      bttvEmotePicker.classList.toggle(styles.hidden, !visible);
       const emotePicker = document.querySelector(EMOTE_PICKER_BUTTON_SELECTOR);
-      emotePicker.style.display = 'none';
+      emotePicker.classList.toggle(styles.hidden, visible);
     }
   }
 
@@ -164,11 +152,7 @@ export default class EmoteMenuModule {
     }
 
     if (legacyContainer != null) {
-      if (clickTwitchEmotes) {
-        legacyContainer.style.display = 'block';
-      } else {
-        legacyContainer.style.display = 'none';
-      }
+      legacyContainer.classList.toggle(styles.hidden, !clickTwitchEmotes);
     }
   }
 }
