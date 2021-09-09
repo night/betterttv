@@ -40,5 +40,8 @@ function Emote({emote, onClick, onMouseOver, active}) {
 
 export default React.memo(
   Emote,
-  (oldProps, newProps) => oldProps.emote.id === newProps.emote.id && oldProps.active === newProps.active
+  (oldProps, newProps) =>
+    oldProps.emote.id === newProps.emote.id &&
+    oldProps.active === newProps.active &&
+    oldProps.onClick === newProps.onClick
 );

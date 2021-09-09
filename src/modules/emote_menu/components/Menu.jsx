@@ -8,13 +8,13 @@ import Header from './Header.jsx';
 import Preview from './Preview.jsx';
 import Sidebar from './Sidebar.jsx';
 
-let altKeyPressed = false;
-let shiftKeyPressed = false;
-
 export default function EmoteMenu({triggerRef, appendToChat}) {
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState(null);
   const [, setUpdated] = useState(false);
+
+  const [altPressed, setAltPressed] = useState(false);
+  const [shiftPressed, setShiftPressed] = useState(false);
 
   const [section, setSection] = useState({
     eventKey: null,
@@ -30,31 +30,44 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
 
   const onHide = useCallback(() => triggerRef.current.close(), [triggerRef]);
 
-  const handleClick = useCallback((emote) => {
-    if (altKeyPressed) {
-      emoteStore.toggleFavorite(emote);
-      return;
-    }
+  const handleClick = useCallback(
+    (emote) => {
+      if (altPressed) {
+        emoteStore.toggleFavorite(emote);
+        return;
+      }
 
-    appendToChat(emote.code);
-    emoteStore.trackHistory(emote);
+      appendToChat(emote.code);
+      emoteStore.trackHistory(emote);
 
-    if (shiftKeyPressed) {
-      return;
-    }
+      if (shiftPressed) {
+        return;
+      }
 
-    onHide();
-  }, []);
+      onHide();
+    },
+    [altPressed, shiftPressed]
+  );
 
   useEffect(() => setSearch(''), [section]);
 
+  const handleKeyDownCallback = useCallback(
+    (event) => {
+      if (event.keyCode === keycodes.Enter) {
+        event.preventDefault();
+        handleClick(selected);
+      }
+    },
+    [selected]
+  );
+
   useEffect(() => {
     function buttonPressCallback(event) {
-      altKeyPressed = event.altKey;
-      shiftKeyPressed = event.shiftKey;
+      setAltPressed(event.altKey);
+      setShiftPressed(event.shiftKey);
     }
 
-    function arrowPressCallback(event) {
+    function handleArrowKeys(event) {
       if (
         event.keyCode === keycodes.UpArrow ||
         event.keyCode === keycodes.DownArrow ||
@@ -72,13 +85,17 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
       }
     }
 
-    window.addEventListener('keydown', buttonPressCallback, false);
-    window.addEventListener('keydown', arrowPressCallback, false);
+    function callback(event) {
+      buttonPressCallback(event);
+      handleArrowKeys(event);
+      handleKeyDownCallback(event);
+    }
+
+    window.addEventListener('keydown', callback, false);
     window.addEventListener('keyup', buttonPressCallback, false);
 
     return () => {
-      window.removeEventListener('keydown', buttonPressCallback, false);
-      window.removeEventListener('keydown', arrowPressCallback, false);
+      window.removeEventListener('keydown', callback, false);
       window.removeEventListener('keyup', buttonPressCallback, false);
     };
   }, []);
@@ -99,21 +116,6 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
       emoteStore.off('dirty', callback);
     };
   }, []);
-
-  useEffect(() => {
-    function handleEnterCallback(event) {
-      if (event.keyCode === keycodes.Enter) {
-        event.preventDefault();
-        handleClick(selected);
-      }
-    }
-
-    window.addEventListener('keydown', handleEnterCallback, false);
-
-    return () => {
-      window.removeEventListener('keydown', handleEnterCallback, false);
-    };
-  }, [selected]);
 
   return (
     <>

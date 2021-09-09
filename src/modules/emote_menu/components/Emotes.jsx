@@ -134,7 +134,7 @@ const Emotes = React.forwardRef(
           </div>
         );
       },
-      [cords]
+      [cords, onClick]
     );
 
     const handleHeaderChange = useCallback((rowIndex) => {
@@ -208,7 +208,7 @@ const SearchedEmotes = React.forwardRef(({search, onClick, cords, setCords, setR
         </div>
       );
     },
-    [emotes, cords]
+    [emotes, cords, onClick]
   );
 
   if (emotes.length === 0) {
