@@ -132,6 +132,7 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
           section={section}
           onClick={handleClick}
           arrowKeys={arrowKeys}
+          rows={emoteStore.rows}
           setSelected={setSelected}
           onSection={(eventKey) => setSection({eventKey, scrollTo: false})}
         />

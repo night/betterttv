@@ -8,14 +8,11 @@ const MAX_TIMESTAMPS = 100;
 const MAX_FRECENTS = 250;
 
 function sortHistory(history, limit) {
-  const sortedHistory = new Set();
-
-  Object.entries(history)
-    .sort(([, {score: a}], [, {score: b}]) => b - a)
-    .slice(0, limit)
-    .forEach(([id]) => sortedHistory.add(id));
-
-  return sortedHistory;
+  return Object.fromEntries(
+    Object.entries(history)
+      .sort(([, {score: a}], [, {score: b}]) => b - a)
+      .slice(0, limit)
+  );
 }
 
 function timestampToScore(timestamp) {
@@ -92,7 +89,10 @@ class EmoteStorage extends SafeEventEmitter {
   }
 
   updateFrecents() {
-    this.frecents = sortHistory(this.emoteStore.usageHistory, MAX_FRECENTS);
+    this.emoteStore.usageHistory = sortHistory(this.emoteStore.usageHistory, MAX_FRECENTS);
+    this.frecents = new Set(Object.keys(this.emoteStore.usageHistory));
+
+    this.save();
   }
 
   setFavorite(emote, bool) {

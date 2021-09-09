@@ -98,7 +98,12 @@ class EmoteStore extends SafeEventEmitter {
 
   search(search) {
     const results = fuse.search(search);
-    return results.length > 0 ? chunkArray(results, totalCols) : [];
+
+    if (results.length === 0) {
+      return [];
+    }
+
+    return chunkArray(results, totalCols);
   }
 
   updateEmotes() {
@@ -127,7 +132,8 @@ class EmoteStore extends SafeEventEmitter {
       }
 
       this.headers.push(this.rows.length);
-      this.rows.push(category.provider, ...chunkArray(category.emotes, totalCols));
+      const chunkedEmotes = chunkArray(category.emotes, totalCols);
+      this.rows.push(category.provider, ...chunkedEmotes);
       collection.push(...category.emotes);
     }
 

@@ -10,244 +10,199 @@ import {NavigationModeTypes} from '../../../constants.js';
 
 const ROW_HEIGHT = 36;
 const WINDOW_HEIGHT = 300;
-const OFFSET = 4;
+const MAX_COLUMN_COUNT = 6;
 
 let navigationMode = NavigationModeTypes.MOUSE;
 
-function Emotes({onClick, section, onSection, arrowKeys, setSelected, selected}) {
-  const wrapperRef = useRef(null);
-  const [cords, setCords] = useState({row: 0, col: 0});
+function travelUp(rowColumnCounts, {x, y}, numBlocks = 1) {
+  let newY = Math.max(0, y - numBlocks);
+  let newYColumnCount = rowColumnCounts[newY];
 
-  const handleMouseOver = useCallback((row, col) => {
-    if (navigationMode === NavigationModeTypes.MOUSE) {
-      setCords({row, col});
-    }
-  }, []);
-
-  useEffect(() => {
-    let {row, col} = cords;
-
-    switch (true) {
-      case arrowKeys.top: {
-        row = emoteStore.headers.includes(row - 1) ? row - 2 : row - 1;
-        const newRow = emoteStore.getRow(row);
-        if (newRow != null && col > newRow.length - 1) {
-          col = newRow.length - 1;
-        }
-        break;
-      }
-      case arrowKeys.down: {
-        row = emoteStore.headers.includes(row + 1) ? row + 2 : row + 1;
-        const newRow = emoteStore.getRow(row);
-        if (newRow != null && col > newRow.length - 1) {
-          col = newRow.length - 1;
-        }
-        break;
-      }
-      case arrowKeys.left: {
-        col -= 1;
-        if (col < 0) {
-          row = emoteStore.headers.includes(row - 1) ? row - 2 : row - 1;
-          const newRow = emoteStore.getRow(row);
-          col = newRow != null ? newRow.length - 1 : col;
-        }
-        break;
-      }
-      case arrowKeys.right: {
-        col += 1;
-        if (col > emoteStore.getRow(row).length - 1) {
-          row = emoteStore.headers.includes(row + 1) ? row + 2 : row + 1;
-          const newRow = emoteStore.getRow(row);
-          col = newRow != null ? 0 : col;
-        }
-        break;
-      }
-      default:
-        return;
+  // if we've reached a row without columns, we want to travel upwards again
+  if (newYColumnCount === 0) {
+    if (newY > 0) {
+      return travelUp(rowColumnCounts, {x, y}, numBlocks + 1);
     }
 
-    // Scroll if arrow keys go out of bounds
+    // if we've reached the top, we have nowhere else to go.. the existing Y must be the first
+    newY = y;
+    newYColumnCount = rowColumnCounts[y];
+  }
 
-    if (row >= 0 && row < emoteStore.rows.length) {
-      setCords({row, col});
-
-      const depth = row * ROW_HEIGHT;
-      const {scrollTop} = wrapperRef.current;
-
-      if (depth <= scrollTop + ROW_HEIGHT) {
-        wrapperRef.current.scrollTo(0, depth - ROW_HEIGHT);
-      }
-
-      if (depth + ROW_HEIGHT > scrollTop + WINDOW_HEIGHT) {
-        wrapperRef.current.scrollTo(0, depth + ROW_HEIGHT - WINDOW_HEIGHT + OFFSET);
-      }
-    }
-  }, [arrowKeys]);
-
-  useEffect(() => {
-    const {row, col} = cords;
-    const emote = emoteStore.getRow(row)[col];
-    setSelected(emote);
-  }, [cords]);
-
-  useEffect(() => {
-    if (selected != null) return;
-    for (let i = 0; i < emoteStore.rows.length; i++) {
-      if (emoteStore.headers.includes(i)) continue;
-      setCords({row: i, col: 0});
-      break;
-    }
-  }, [selected]);
-
-  const renderRow = useCallback(
-    ({key, style, index, className}) => {
-      const row = emoteStore.getRow(index);
-      return emoteStore.headers.includes(index) ? (
-        <div key={key} style={style} className={classNames(className, styles.header)}>
-          <Icon className={styles.headerIcon}>{row.icon}</Icon>
-          <div className={styles.headerText}>{row.displayName.toUpperCase()}</div>
-        </div>
-      ) : (
-        <div key={key} style={style} className={classNames(className, styles.row)}>
-          {row.map((emote, col) => (
-            <Emote
-              active={index === cords.row && col === cords.col}
-              emote={emote}
-              onClick={onClick}
-              onMouseOver={() => handleMouseOver(index, col)}
-            />
-          ))}
-        </div>
-      );
-    },
-    [cords]
-  );
-
-  const handleHeaderChange = useCallback((rowIndex) => {
-    const header = emoteStore.getRow(rowIndex);
-    if (header != null) {
-      onSection(header.id);
-    }
-  });
-
-  useEffect(() => {
-    if (!section.scrollTo) return;
-    const index = emoteStore.getProviderIndexById(section.eventKey);
-    if (index != null) {
-      wrapperRef.current.scrollTo(0, index * ROW_HEIGHT);
-    }
-  }, [section]);
-
-  return (
-    <VirtualizedList
-      stickyRows={emoteStore.headers}
-      rowHeight={ROW_HEIGHT}
-      windowHeight={WINDOW_HEIGHT}
-      totalRows={emoteStore.rows.length}
-      renderRow={renderRow}
-      className={styles.emotesContainer}
-      onHeaderChange={handleHeaderChange}
-      ref={wrapperRef}
-    />
-  );
+  return {
+    x: Math.min(newYColumnCount - 1, x),
+    y: newY,
+  };
 }
 
-function SearchedEmotes({search, onClick, setSelected, arrowKeys}) {
-  const wrapperRef = useRef(null);
+function travelDown(rowColumnCounts, {x, y}, numBlocks = 1) {
+  const maxY = rowColumnCounts.length - 1;
+  let newY = Math.min(y + numBlocks, maxY);
+  let newYColumnCount = rowColumnCounts[newY];
+
+  // if we've reached a row without columns, we want to travel downwards again
+  if (newYColumnCount === 0) {
+    if (newY < maxY) {
+      return travelDown(rowColumnCounts, {x, y}, numBlocks + 1);
+    }
+
+    // if we've reached the bottom, we have nowhere else to go.. the existing Y must be the last
+    newY = y;
+    newYColumnCount = rowColumnCounts[y];
+  }
+
+  return {
+    x: Math.min(newYColumnCount - 1, x),
+    y: newY,
+  };
+}
+
+function travelLeft(rowColumnCounts, {x, y}) {
+  // if it's the first in the row, we want to wrap around
+  if (x === 0) {
+    const {x: newX, y: newY} = travelUp(rowColumnCounts, {x: MAX_COLUMN_COUNT, y});
+    // if y did not decrease, we must be at the start and this is the left-most
+    if (newY >= y) {
+      return {x, y};
+    }
+    return {x: newX, y: newY};
+  }
+
+  return {x: x - 1, y};
+}
+
+function travelRight(rowColumnCounts, {x, y}) {
+  // if it's the last in the row, we want to wrap around
+  if (x === rowColumnCounts[y] - 1) {
+    const {x: newX, y: newY} = travelDown(rowColumnCounts, {x: 0, y});
+    // if y did not increase, we must be at the end and this is the right-most
+    if (newY <= y) {
+      return {x, y};
+    }
+    return {x: newX, y: newY};
+  }
+
+  return {x: x + 1, y};
+}
+
+const Emotes = React.forwardRef(
+  ({onClick, section, onSection, setCords, cords, setRowColumnCounts, rows, setSelected}, ref) => {
+    const handleMouseOver = useCallback((newCords) => {
+      if (navigationMode === NavigationModeTypes.MOUSE) {
+        setCords(newCords);
+      }
+    }, []);
+
+    useEffect(() => {
+      const rowColumnCounts = [];
+
+      for (const row of rows) {
+        rowColumnCounts.push(!Array.isArray(row) ? 0 : row.length);
+      }
+      setRowColumnCounts(rowColumnCounts);
+    }, [rows]);
+
+    useEffect(() => setSelected(rows[cords.y][cords.x]), [cords]);
+
+    useEffect(() => {
+      for (const row of rows) {
+        if (Array.isArray(row)) {
+          setSelected(row[0]);
+          break;
+        }
+      }
+    }, []);
+
+    const renderRow = useCallback(
+      ({key, style, index: y, className}) => {
+        const row = emoteStore.getRow(y);
+        return emoteStore.headers.includes(y) ? (
+          <div key={key} style={style} className={classNames(className, styles.header)}>
+            <Icon className={styles.headerIcon}>{row.icon}</Icon>
+            <div className={styles.headerText}>{row.displayName.toUpperCase()}</div>
+          </div>
+        ) : (
+          <div key={key} style={style} className={classNames(className, styles.row)}>
+            {row.map((emote, x) => (
+              <Emote
+                active={y === cords.y && x === cords.x}
+                emote={emote}
+                onClick={onClick}
+                onMouseOver={() => handleMouseOver({x, y})}
+              />
+            ))}
+          </div>
+        );
+      },
+      [cords]
+    );
+
+    const handleHeaderChange = useCallback((rowIndex) => {
+      const header = emoteStore.getRow(rowIndex);
+      if (header != null) {
+        onSection(header.id);
+      }
+    });
+
+    useEffect(() => {
+      if (!section.scrollTo) return;
+      const index = emoteStore.getProviderIndexById(section.eventKey);
+      if (index != null) {
+        ref.current.scrollTo(0, index * ROW_HEIGHT);
+      }
+    }, [section]);
+
+    return (
+      <VirtualizedList
+        stickyRows={emoteStore.headers}
+        rowHeight={ROW_HEIGHT}
+        windowHeight={WINDOW_HEIGHT}
+        totalRows={emoteStore.rows.length}
+        renderRow={renderRow}
+        className={styles.emotesContainer}
+        onHeaderChange={handleHeaderChange}
+        ref={ref}
+      />
+    );
+  }
+);
+
+const SearchedEmotes = React.forwardRef(({search, onClick, cords, setCords, setRowColumnCounts, setSelected}, ref) => {
   const emotes = useMemo(() => emoteStore.search(search), [search]);
 
-  const [cords, setCords] = useState({row: 0, col: 0});
-
-  const handleMouseOver = useCallback((row, col) => {
+  const handleMouseOver = useCallback((newCords) => {
     if (navigationMode === NavigationModeTypes.MOUSE) {
-      setCords({row, col});
+      setCords(newCords);
     }
   }, []);
 
   useEffect(() => {
-    if (emotes.length > 0) {
-      setSelected(emotes[0][0]?.item);
+    const rowColumnCounts = [];
+    let foundFirstEmote = false;
+
+    for (const row of emotes) {
+      rowColumnCounts.push(!Array.isArray(row) ? 0 : row.length);
+
+      if (Array.isArray(row) && !foundFirstEmote) {
+        setSelected(row[0].item);
+        foundFirstEmote = true;
+      }
     }
+    setRowColumnCounts(rowColumnCounts);
   }, [emotes]);
 
-  useEffect(() => {
-    const {row, col} = cords;
-    const emote = emotes[row][col].item;
-    setSelected(emote);
-  }, [cords]);
-
-  useEffect(() => {
-    let {row, col} = cords;
-
-    switch (true) {
-      case arrowKeys.top: {
-        row -= 1;
-        const newRow = emotes[row];
-        if (newRow != null && col > newRow.length - 1) {
-          col = newRow.length - 1;
-        }
-        break;
-      }
-      case arrowKeys.down: {
-        row += 1;
-        const newRow = emotes[row];
-        if (newRow != null && col > newRow.length - 1) {
-          col = newRow.length - 1;
-        }
-        break;
-      }
-      case arrowKeys.left: {
-        col -= 1;
-        if (col < 0) {
-          row -= 1;
-          const newRow = emotes[row];
-          col = newRow != null ? newRow.length - 1 : col;
-        }
-        break;
-      }
-      case arrowKeys.right: {
-        col += 1;
-        if (col > emotes[row].length - 1) {
-          row += 1;
-          const newRow = emotes[row];
-          col = newRow != null ? 0 : col;
-        }
-        break;
-      }
-      default:
-        return;
-    }
-
-    // Scroll if arrow keys go out of bounds
-
-    if (row >= 0 && row < emotes.length) {
-      setCords({row, col});
-
-      const depth = row * ROW_HEIGHT;
-      const {scrollTop} = wrapperRef.current;
-
-      if (depth < scrollTop + ROW_HEIGHT) {
-        wrapperRef.current.scrollTo(0, depth);
-      }
-
-      if (depth + ROW_HEIGHT > scrollTop + WINDOW_HEIGHT) {
-        wrapperRef.current.scrollTo(0, depth + ROW_HEIGHT - WINDOW_HEIGHT + OFFSET);
-      }
-    }
-  }, [arrowKeys]);
-
   const renderRow = useCallback(
-    ({key, style, index, className}) => {
-      const row = emotes[index];
+    ({key, style, index: y, className}) => {
+      const row = emotes[y];
       if (row == null) return null;
       return (
         <div key={key} style={style} className={classNames(className, styles.row)}>
-          {row.map(({item}, col) => (
+          {row.map(({item}, x) => (
             <Emote
               emote={item}
               onClick={onClick}
-              onMouseOver={() => handleMouseOver(index, col)}
-              active={index === cords.row && col === cords.col}
+              onMouseOver={() => handleMouseOver({x, y})}
+              active={x === cords.x && y === cords.y}
             />
           ))}
         </div>
@@ -267,22 +222,26 @@ function SearchedEmotes({search, onClick, setSelected, arrowKeys}) {
 
   return (
     <VirtualizedList
-      ref={wrapperRef}
+      ref={ref}
       rowHeight={ROW_HEIGHT}
       windowHeight={WINDOW_HEIGHT}
       totalRows={emotes.length}
       renderRow={renderRow}
       className={classNames(styles.emotesContainer, styles.searched)}
+      stickyRows={[]}
     />
   );
-}
+});
 
 export default function renderEmotes(props) {
   const {search, arrowKeys} = props;
 
-  useEffect(() => {
-    navigationMode = NavigationModeTypes.ARROW_KEYS;
-  }, [arrowKeys]);
+  const [cords, setCords] = useState({x: 0, y: 0});
+  const [rowColumnCounts, setRowColumnCounts] = useState([]);
+
+  const wrapperRef = useRef(null);
+
+  const isSearch = search.length > 0;
 
   useEffect(() => {
     function callback() {
@@ -294,7 +253,53 @@ export default function renderEmotes(props) {
     return () => {
       window.removeEventListener('mousemove', callback);
     };
-  });
+  }, []);
 
-  return search.length > 0 ? <SearchedEmotes {...props} /> : <Emotes {...props} />;
+  useEffect(() => {
+    navigationMode = NavigationModeTypes.ARROW_KEYS;
+
+    let newCords = null;
+
+    switch (true) {
+      case arrowKeys.top:
+        newCords = travelUp(rowColumnCounts, cords);
+        break;
+      case arrowKeys.down:
+        newCords = travelDown(rowColumnCounts, cords);
+        break;
+      case arrowKeys.right:
+        newCords = travelRight(rowColumnCounts, cords);
+        break;
+      case arrowKeys.left:
+        newCords = travelLeft(rowColumnCounts, cords);
+        break;
+      default:
+        return;
+    }
+
+    const depth = newCords.y * ROW_HEIGHT;
+    const {scrollTop} = wrapperRef.current;
+
+    if (depth < scrollTop + ROW_HEIGHT) {
+      wrapperRef.current.scrollTo(0, isSearch ? depth : depth - ROW_HEIGHT);
+    }
+
+    if (depth + ROW_HEIGHT >= scrollTop + WINDOW_HEIGHT) {
+      wrapperRef.current.scrollTo(0, depth + ROW_HEIGHT - WINDOW_HEIGHT);
+    }
+
+    setCords(newCords);
+  }, [arrowKeys]);
+
+  return isSearch ? (
+    <SearchedEmotes
+      ref={wrapperRef}
+      setRowColumnCounts={setRowColumnCounts}
+      cords={cords}
+      setCords={setCords}
+      {...props}
+    />
+  ) : (
+    <Emotes ref={wrapperRef} setRowColumnCounts={setRowColumnCounts} cords={cords} setCords={setCords} {...props} />
+  );
 }
