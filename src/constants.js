@@ -154,6 +154,9 @@ export const NavigationModeTypes = {
   ARROW_KEYS: 1,
 };
 
+export const RowHeight = 36;
+export const WindowHeight = 300;
+
 export const emotesCategoryIds = {
   BETTERTTV: 'bttv',
   BETTERTTV_PERSONAL: 'bttv-personal',

@@ -6,10 +6,8 @@ import emoteStore from '../stores/index.js';
 import styles from '../styles/emotes.module.css';
 import Emote from './Emote.jsx';
 import Icons from './Icons.jsx';
-import {NavigationModeTypes} from '../../../constants.js';
+import {NavigationModeTypes, RowHeight, WindowHeight} from '../../../constants.js';
 
-const ROW_HEIGHT = 36;
-const WINDOW_HEIGHT = 300;
 const MAX_COLUMN_COUNT = 6;
 
 let navigationMode = NavigationModeTypes.MOUSE;
@@ -148,15 +146,15 @@ const Emotes = React.forwardRef(
       if (!section.scrollTo) return;
       const index = emoteStore.getProviderIndexById(section.eventKey);
       if (index != null) {
-        ref.current.scrollTo(0, index * ROW_HEIGHT);
+        ref.current.scrollTo(0, index * RowHeight);
       }
     }, [section]);
 
     return (
       <VirtualizedList
         stickyRows={emoteStore.headers}
-        rowHeight={ROW_HEIGHT}
-        windowHeight={WINDOW_HEIGHT}
+        rowHeight={RowHeight}
+        windowHeight={WindowHeight}
         totalRows={emoteStore.rows.length}
         renderRow={renderRow}
         className={styles.emotesContainer}
@@ -223,8 +221,8 @@ const SearchedEmotes = React.forwardRef(({search, onClick, cords, setCords, setR
   return (
     <VirtualizedList
       ref={ref}
-      rowHeight={ROW_HEIGHT}
-      windowHeight={WINDOW_HEIGHT}
+      rowHeight={RowHeight}
+      windowHeight={WindowHeight}
       totalRows={emotes.length}
       renderRow={renderRow}
       className={classNames(styles.emotesContainer, styles.searched)}
@@ -277,15 +275,15 @@ export default function renderEmotes(props) {
         return;
     }
 
-    const depth = newCords.y * ROW_HEIGHT;
+    const depth = newCords.y * RowHeight;
     const {scrollTop} = wrapperRef.current;
 
-    if (depth < scrollTop + ROW_HEIGHT) {
-      wrapperRef.current.scrollTo(0, isSearch ? depth : depth - ROW_HEIGHT);
+    if (depth < scrollTop + RowHeight) {
+      wrapperRef.current.scrollTo(0, isSearch ? depth : depth - RowHeight);
     }
 
-    if (depth + ROW_HEIGHT >= scrollTop + WINDOW_HEIGHT) {
-      wrapperRef.current.scrollTo(0, depth + ROW_HEIGHT - WINDOW_HEIGHT);
+    if (depth + RowHeight >= scrollTop + WindowHeight) {
+      wrapperRef.current.scrollTo(0, depth + RowHeight - WindowHeight);
     }
 
     setCords(newCords);

@@ -1,9 +1,9 @@
 import React, {useEffect, useRef} from 'react';
 import Nav from 'rsuite/lib/Nav/index.js';
+import {RowHeight, WindowHeight} from '../../../constants.js';
 import styles from '../styles/sidebar.module.css';
 
 const ITEM_HEIGHT = 42;
-const SIDEBAR_HEIGHT = 300;
 
 let timer;
 
@@ -20,23 +20,22 @@ export default function Sidebar({section, onChange, providers}) {
       const index = providers.findIndex((provider) => provider.id === section.eventKey);
       const depth = index * ITEM_HEIGHT;
 
+      let newTop;
       if (depth < top) {
-        containerRef.current.scrollTo({
-          top: depth,
-          left: 0,
-          behavior: 'smooth',
-        });
-
+        newTop = depth;
+      }
+      if (depth + ITEM_HEIGHT > top + WindowHeight) {
+        newTop = depth - WindowHeight + RowHeight;
+      }
+      if (newTop == null) {
         return;
       }
 
-      if (depth + ITEM_HEIGHT > top + SIDEBAR_HEIGHT) {
-        containerRef.current.scrollTo({
-          top: depth - SIDEBAR_HEIGHT + 36,
-          left: 0,
-          behavior: 'smooth',
-        });
-      }
+      containerRef.current.scrollTo({
+        top: depth,
+        left: 0,
+        behavior: 'smooth',
+      });
     }, 100);
   }, [section]);
 
