@@ -20,7 +20,7 @@ class YouTubeModule {
     }
   }
 
-  parseMessage(element, messageObj) {
+  parseMessage(element) {
     const from = element.querySelector(CHAT_USERNAME_SELECTOR);
     const mockUser = {name: from.textContent};
     chat.messageReplacer($(element.querySelector(CHAT_MESSAGE_SELECTOR)), mockUser);
