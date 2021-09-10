@@ -146,7 +146,7 @@ const Emotes = React.forwardRef(
       if (!section.scrollTo) return;
       const index = emoteStore.getProviderIndexById(section.eventKey);
       if (index != null) {
-        ref.current.scrollTo(0, index * RowHeight);
+        ref.current.scrollTo(0, index * RowHeight + 1); // + 1 to be inside the section
       }
     }, [section]);
 

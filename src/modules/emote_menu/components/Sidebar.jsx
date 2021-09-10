@@ -1,5 +1,7 @@
 import React, {useEffect, useRef} from 'react';
 import Nav from 'rsuite/lib/Nav/index.js';
+import Whisper from 'rsuite/lib/Whisper/index.js';
+import Tooltip from 'rsuite/lib/Tooltip/index.js';
 import {RowHeight, WindowHeight} from '../../../constants.js';
 import styles from '../styles/sidebar.module.css';
 
@@ -41,9 +43,17 @@ export default function Sidebar({section, onChange, providers}) {
 
   return (
     <div className={styles.sidebar} ref={containerRef}>
-      <Nav vertical appearance="subtle" onSelect={onChange} activeKey={section.eventKey}>
+      <Nav vertical appearance="subtle">
         {providers.map((provider) => (
-          <Nav.Item key={provider.id} eventKey={provider.id} icon={provider.icon} />
+          <Whisper
+            key={provider.id}
+            placement="left"
+            trigger="hover"
+            delay={200}
+            speaker={<Tooltip>{provider.displayName}</Tooltip>}
+            onClick={() => onChange(provider.id)}>
+            <Nav.Item active={provider.id === section.eventKey} icon={provider.icon} />
+          </Whisper>
         ))}
       </Nav>
     </div>
