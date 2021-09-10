@@ -1,4 +1,3 @@
-import twitch from '../../utils/twitch.js';
 import globalEmotes from './global-emotes.js';
 import channelEmotes from './channel-emotes.js';
 import personalEmotes from './personal-emotes.js';
@@ -8,6 +7,8 @@ import frankerfacezChannelEmotes from '../frankerfacez/channel-emotes.js';
 import settings from '../../settings.js';
 import {EmoteTypeFlags, SettingIds} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
+import {getCurrentUser} from '../../utils/user.js';
+import {getCurrentChannel} from '../../utils/channel.js';
 
 class EmotesModule {
   constructor() {
@@ -25,7 +26,7 @@ class EmotesModule {
     let emotes = [];
     for (const provider of this.emoteProviders) {
       if (providerFilter.includes(provider.provider.id)) continue;
-      const currentUser = twitch.getCurrentUser();
+      const currentUser = getCurrentUser();
       emotes = emotes.concat(
         provider.getEmotes(currentUser).filter((emote) => {
           if (!emote.isUsable(null, currentUser)) return false;
@@ -41,7 +42,7 @@ class EmotesModule {
   }
 
   getEligibleEmote(code, user) {
-    const channel = twitch.getCurrentChannel();
+    const channel = getCurrentChannel();
 
     for (let i = 0; i < this.emoteProviders.length; i++) {
       const provider = this.emoteProviders[i];

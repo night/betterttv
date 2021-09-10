@@ -9,16 +9,16 @@
 
 .bttv-tooltip {
   padding: 3px 6px;
-  border-radius: var(--border-radius-medium);
+  border-radius: 0.4rem;
   background-color: var(--color-background-tooltip);
   color: var(--color-text-tooltip);
   display: none;
   position: absolute;
-  font-size: var(--font-size-6);
-  font-weight: var(--font-weight-semibold);
-  line-height: var(--line-height-heading);
+  font-size: 1.3rem;
+  font-weight: 600;
+  line-height: 1.2;
   text-align: center;
-  z-index: var(--z-index-balloon);
+  z-index: 2000;
   pointer-events: none;
   user-select: none;
   white-space: nowrap;
@@ -53,7 +53,7 @@
     left: -6px;
     width: calc(100% + 12px);
     height: calc(100% + 12px);
-    z-index: var(--z-index-below);
+    z-index: -1;
   }
 
   &:after {
@@ -61,7 +61,7 @@
     width: 6px;
     height: 6px;
     transform: rotate(45deg);
-    z-index: var(--z-index-below);
+    z-index: -1;
   }
 
   &:after,

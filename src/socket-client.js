@@ -1,7 +1,7 @@
 import throttle from 'lodash.throttle';
 import SafeEventEmitter from './utils/safe-event-emitter.js';
 import debug from './utils/debug.js';
-import twitch from './utils/twitch.js';
+import {getCurrentUser} from './utils/user.js';
 
 const CONNECTION_STATES = {
   DISCONNECTED: 0,
@@ -16,6 +16,10 @@ let state = CONNECTION_STATES.DISCONNECTED;
 let attempts = 1;
 
 const joinedChannels = [];
+
+function makeSocketChannel(provider, providerId) {
+  return `${provider}:${providerId}`;
+}
 
 class SocketClient extends SafeEventEmitter {
   constructor() {
@@ -41,7 +45,10 @@ class SocketClient extends SafeEventEmitter {
       attempts = 1;
 
       if (joinedChannels.length) {
-        joinedChannels.forEach((c) => this.joinChannel(c));
+        joinedChannels.forEach((socketChannel) => {
+          const [provider, providerId] = socketChannel.split(':');
+          this.joinChannel(provider, providerId);
+        });
       }
     };
 
@@ -97,24 +104,35 @@ class SocketClient extends SafeEventEmitter {
     );
   }
 
-  joinChannel(name) {
-    if (!joinedChannels.includes(name)) {
-      joinedChannels.push(name);
+  joinChannel(provider, providerId) {
+    const socketChannel = makeSocketChannel(provider, providerId);
+    if (!joinedChannels.includes(socketChannel)) {
+      joinedChannels.push(socketChannel);
     }
-    this.send('join_channel', {name});
-    this.broadcastMe(name);
+    this.send('join_channel', {name: socketChannel});
+    this.broadcastMe(provider, providerId);
   }
 
-  partChannel(name) {
-    if (!joinedChannels.includes(name)) return;
-    joinedChannels.splice(joinedChannels.indexOf(name), 1);
-    this.send('part_channel', {name});
+  partChannel(provider, providerId) {
+    const socketChannel = makeSocketChannel(provider, providerId);
+    if (!joinedChannels.includes(socketChannel)) return;
+    joinedChannels.splice(joinedChannels.indexOf(socketChannel), 1);
+    this.send('part_channel', {name: socketChannel});
   }
 
-  broadcastMe(channelName, name) {
-    const currentUser = twitch.getCurrentUser();
-    if (!currentUser) return;
-    this.send('broadcast_me', {name: name || currentUser.name, channel: channelName});
+  broadcastMe(provider, providerChannelId, providerUserId) {
+    if (providerUserId == null) {
+      const currentUser = getCurrentUser();
+      if (currentUser == null) {
+        return;
+      }
+      providerUserId = currentUser.id;
+    }
+    this.send('broadcast_me', {
+      provider,
+      providerId: providerUserId,
+      channel: makeSocketChannel(provider, providerChannelId),
+    });
   }
 }
 

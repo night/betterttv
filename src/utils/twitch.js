@@ -1,5 +1,8 @@
 import $ from 'jquery';
+import cookies from 'cookies-js';
 import twitchAPI from './twitch-api.js';
+import {getCurrentUser, setCurrentUser} from './user.js';
+import {getCurrentChannel, setCurrentChannel} from './channel.js';
 
 const REACT_ROOT = '#root div';
 const CHAT_CONTAINER = 'section[data-test-selector="chat-room-component-layout"]';
@@ -109,18 +112,25 @@ function searchReactChildren(node, predicate, maxDepth = 15, depth = 0) {
 }
 
 let chatClient;
-let currentUser;
-let currentChannel;
+
+const userCookie = cookies.get('twilight-user');
+if (userCookie) {
+  try {
+    const {authToken, id, login, displayName} = JSON.parse(userCookie);
+    setCurrentUser(authToken, id, login, displayName);
+  } catch (_) {}
+}
 
 export default {
   setCurrentUser(accessToken, id, name, displayName) {
     twitchAPI.setAccessToken(accessToken);
 
-    currentUser = {
+    setCurrentUser({
+      provider: 'twitch',
       id: id.toString(),
       name,
       displayName,
-    };
+    });
   },
 
   updateCurrentChannel() {
@@ -158,7 +168,9 @@ export default {
       };
     }
 
-    currentChannel = rv;
+    if (rv != null) {
+      setCurrentChannel({provider: 'twitch', ...rv});
+    }
 
     return rv;
   },
@@ -166,14 +178,6 @@ export default {
   TMIActionTypes,
 
   getReactInstance,
-
-  getCurrentChannel() {
-    return currentChannel;
-  },
-
-  getCurrentUser() {
-    return currentUser;
-  },
 
   getConnectStore() {
     let store;
@@ -454,6 +458,8 @@ export default {
   },
 
   getCurrentUserIsOwner() {
+    const currentUser = getCurrentUser();
+    const currentChannel = getCurrentChannel();
     if (!currentUser || !currentChannel) return false;
     return currentUser.id === currentChannel.id;
   },

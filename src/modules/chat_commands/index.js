@@ -4,6 +4,8 @@ import twitch from '../../utils/twitch.js';
 import twitchAPI from '../../utils/twitch-api.js';
 import chat from '../chat/index.js';
 import anonChat from '../anon_chat/index.js';
+import {getCurrentUser} from '../../utils/user.js';
+import {getCurrentChannel} from '../../utils/channel.js';
 
 dayjs.extend(relativeTime);
 
@@ -46,8 +48,8 @@ function secondsToLength(s) {
 }
 
 function massUnban() {
-  const currentUser = twitch.getCurrentUser();
-  const currentChannel = twitch.getCurrentChannel();
+  const currentUser = getCurrentUser();
+  const currentChannel = getCurrentChannel();
   if (!currentUser || currentUser.id !== currentChannel.id) {
     twitch.sendChatAdminMessage('You must be the channel owner to use this command.');
     return;
@@ -132,7 +134,7 @@ function handleCommands(message) {
   if (!command || command.charAt(0) !== '/') return true;
   command = command.slice(1);
 
-  const channel = twitch.getCurrentChannel();
+  const channel = getCurrentChannel();
 
   switch (command) {
     // moderation command shortcuts
@@ -223,7 +225,7 @@ function handleCommands(message) {
       break;
     }
     case 'followed': {
-      const currentUser = twitch.getCurrentUser();
+      const currentUser = getCurrentUser();
       if (!currentUser) break;
       twitchAPI
         .get(`users/${currentUser.id}/follows/channels/${channel.id}`)

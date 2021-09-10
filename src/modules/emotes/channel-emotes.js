@@ -1,6 +1,6 @@
 import watcher from '../../watcher.js';
 import cdn from '../../utils/cdn.js';
-import twitch from '../../utils/twitch.js';
+import {getCurrentChannel} from '../../utils/channel.js';
 
 import AbstractEmotes from './abstract-emotes.js';
 import Emote from './emote.js';
@@ -26,7 +26,7 @@ class ChannelEmotes extends AbstractEmotes {
     this.emotes.clear();
 
     const emotes = channelEmotes.concat(sharedEmotes);
-    const currentChannel = twitch.getCurrentChannel();
+    const currentChannel = getCurrentChannel();
 
     emotes.forEach(({id, user, code, imageType}) =>
       this.emotes.set(

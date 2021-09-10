@@ -5,6 +5,8 @@ import twitch from '../../utils/twitch.js';
 import twitchAPI from '../../utils/twitch-api.js';
 import domObserver from '../../observers/dom.js';
 import {SettingIds} from '../../constants.js';
+import {getCurrentUser} from '../../utils/user.js';
+import {getCurrentChannel} from '../../utils/channel.js';
 
 const FOLLOW_BUTTON_CONTAINER_SELECTOR =
   'button[data-test-selector="follow-button"],button[data-test-selector="unfollow-button"]';
@@ -33,10 +35,10 @@ class HostButtonModule {
   load() {
     if (settings.get(SettingIds.HOST_BUTTON) === false) return;
 
-    const currentUser = twitch.getCurrentUser();
+    const currentUser = getCurrentUser();
     if (!currentUser) return;
 
-    const currentChannel = twitch.getCurrentChannel();
+    const currentChannel = getCurrentChannel();
     const channelId = currentChannel && currentChannel.id;
     if (!channelId || currentUser.id === channelId || currentChannelId === channelId) return;
     currentChannelId = channelId;
@@ -65,12 +67,12 @@ class HostButtonModule {
   }
 
   toggleHost() {
-    const currentUser = twitch.getCurrentUser();
+    const currentUser = getCurrentUser();
     if (!currentUser) return;
 
     const command = hosting ? 'unhost' : 'host';
     try {
-      const channelName = twitch.getCurrentChannel().name;
+      const channelName = getCurrentChannel().name;
       const rawMessage = `PRIVMSG #${currentUser.name} :/${command === 'host' ? `${command} ${channelName}` : command}`;
       twitch.getChatServiceSocket().send(rawMessage);
       hosting = !hosting;

@@ -2,6 +2,7 @@ import settings from '../../settings.js';
 import watcher from '../../watcher.js';
 import twitch from '../../utils/twitch.js';
 import {SettingIds} from '../../constants.js';
+import {getCurrentUser} from '../../utils/user.js';
 
 const forcedURL = window.location.search.includes('bttv_anon_chat=true');
 
@@ -34,7 +35,7 @@ class AnonChatModule {
   }
 
   join() {
-    const currentUser = twitch.getCurrentUser();
+    const currentUser = getCurrentUser();
     if (!currentUser) return;
 
     this.changeUser(currentUser.name, 'Logging you into chat...');

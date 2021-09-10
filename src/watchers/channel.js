@@ -1,11 +1,11 @@
 import api from '../utils/api.js';
 import debug from '../utils/debug.js';
-import twitch from '../utils/twitch.js';
+import {getCurrentChannel} from '../utils/channel.js';
 
 let channel;
 let watcher;
 function updateChannel() {
-  const currentChannel = twitch.getCurrentChannel();
+  const currentChannel = getCurrentChannel();
   if (!currentChannel || (channel && currentChannel.id === channel.id)) return;
 
   debug.log(`Channel Observer: ${currentChannel.name} (${currentChannel.id}) loaded.`);
@@ -13,7 +13,7 @@ function updateChannel() {
   channel = currentChannel;
 
   api
-    .get(`cached/users/twitch/${channel.id}`)
+    .get(`cached/users/${channel.provider}/${channel.id}`)
     .catch((error) => ({
       bots: [],
       channelEmotes: [],

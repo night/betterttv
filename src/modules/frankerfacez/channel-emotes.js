@@ -1,11 +1,11 @@
 import watcher from '../../watcher.js';
 import api from '../../utils/api.js';
-import twitch from '../../utils/twitch.js';
 import settings from '../../settings.js';
 import AbstractEmotes from '../emotes/abstract-emotes.js';
 import Emote from '../emotes/emote.js';
 import {EmoteTypeFlags, SettingIds} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
+import {getCurrentChannel} from '../../utils/channel.js';
 
 const provider = {
   id: 'ffz-channel',
@@ -28,11 +28,11 @@ class FrankerFaceZChannelEmotes extends AbstractEmotes {
 
     if (!hasFlag(settings.get(SettingIds.EMOTES), EmoteTypeFlags.FFZ_EMOTES)) return;
 
-    const currentChannel = twitch.getCurrentChannel();
+    const currentChannel = getCurrentChannel();
     if (!currentChannel) return;
 
     api
-      .get(`cached/frankerfacez/users/twitch/${currentChannel.id}`)
+      .get(`cached/frankerfacez/users/${currentChannel.provider}/${currentChannel.id}`)
       .then((emotes) =>
         emotes.forEach(({id, user, code, images, imageType}) => {
           this.emotes.set(

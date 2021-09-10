@@ -5,6 +5,7 @@ import twitch from '../../utils/twitch.js';
 import twitchAPI from '../../utils/twitch-api.js';
 import html from '../../utils/html.js';
 import keyCodes from '../../utils/keycodes.js';
+import {getCurrentUser} from '../../utils/user.js';
 
 const Commands = {
   BAN: '/ban',
@@ -138,7 +139,7 @@ class ModeratorCard {
     const $moderatorActions = this.$element.find(MODERATOR_CARD_ACTIONS_SELECTOR).closest('.viewer-card-drag-cancel');
     if ($moderatorActions.find('.bttv-moderator-card-actions').length) return;
 
-    const currentUser = twitch.getCurrentUser();
+    const currentUser = getCurrentUser();
     if (!currentUser) return;
 
     const currentUserIsOwner = twitch.getCurrentUserIsOwner();
@@ -164,7 +165,7 @@ class ModeratorCard {
     if (this.$element.find('.bttv-moderator-card-messages').length) return;
 
     // twitch has a built-in tool now for mods, so prefer that one.
-    const currentUser = twitch.getCurrentUser();
+    const currentUser = getCurrentUser();
     if (!currentUser) return;
 
     const currentUserIsOwner = twitch.getCurrentUserIsOwner();
