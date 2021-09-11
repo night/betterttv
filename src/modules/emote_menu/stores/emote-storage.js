@@ -57,6 +57,7 @@ class EmoteStorage extends SafeEventEmitter {
       this.emoteStore.usageHistory[id].score = calcScore(emote);
     }
 
+    this.frecents = new Set();
     this.favorites = new Set(this.emoteStore.favorites);
     this.updateFrecents();
   }
