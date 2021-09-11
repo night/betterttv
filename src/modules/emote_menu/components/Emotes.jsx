@@ -7,6 +7,7 @@ import styles from '../styles/emotes.module.css';
 import Emote from './Emote.jsx';
 import Icons from './Icons.jsx';
 import {NavigationModeTypes, RowHeight, WindowHeight} from '../../../constants.js';
+import keycodes from '../../../utils/keycodes.js';
 
 const MAX_COLUMN_COUNT = 6;
 
@@ -81,6 +82,32 @@ function travelRight(rowColumnCounts, {x, y}) {
   }
 
   return {x: x + 1, y};
+}
+
+function travelBottom(rowColumnCounts, {x}) {
+  const newY = rowColumnCounts.length - 1;
+  const newYColumnCount = rowColumnCounts[newY];
+
+  return {
+    x: Math.min(newYColumnCount - 1, x),
+    y: newY,
+  };
+}
+
+function travelTop(rowColumnCounts, {x}) {
+  let newY = 0;
+  let newYColumnCount = rowColumnCounts[0];
+
+  if (newYColumnCount === 0) {
+    const {y} = travelDown(rowColumnCounts, {x, y: 0});
+    newYColumnCount = rowColumnCounts[y];
+    newY = y;
+  }
+
+  return {
+    x: Math.min(newYColumnCount - 1, x),
+    y: newY,
+  };
 }
 
 const Emotes = React.forwardRef(
@@ -231,11 +258,60 @@ const SearchedEmotes = React.forwardRef(({search, onClick, cords, setCords, setR
   );
 });
 
-export default function renderEmotes(props) {
-  const {search, arrowKeys} = props;
-
+function useGridKeyboardNavigation(setKeyPressCallback, rowColumnCounts) {
   const [cords, setCords] = useState({x: 0, y: 0});
+
+  function handleKeyPress(event) {
+    navigationMode = NavigationModeTypes.ARROW_KEYS;
+
+    let newCords = null;
+
+    switch (event.keyCode) {
+      case keycodes['8numpad']:
+      case keycodes.UpArrow:
+        newCords = travelUp(rowColumnCounts, cords);
+        event.preventDefault();
+        break;
+      case keycodes['2numpad']:
+      case keycodes.DownArrow:
+        newCords = travelDown(rowColumnCounts, cords);
+        event.preventDefault();
+        break;
+      case keycodes['6numpad']:
+      case keycodes.RightArrow:
+        newCords = travelRight(rowColumnCounts, cords);
+        event.preventDefault();
+        break;
+      case keycodes['4numpad']:
+      case keycodes.LeftArrow:
+        newCords = travelLeft(rowColumnCounts, cords);
+        event.preventDefault();
+        break;
+      case keycodes.End:
+        newCords = travelBottom(rowColumnCounts, cords);
+        event.preventDefault();
+        break;
+      case keycodes.Home:
+        newCords = travelTop(rowColumnCounts, cords);
+        event.preventDefault();
+        break;
+      default:
+        return;
+    }
+
+    setCords(newCords);
+  }
+
+  useEffect(() => setKeyPressCallback(handleKeyPress));
+
+  return [cords, setCords];
+}
+
+export default function renderEmotes(props) {
+  const {search, setKeyPressCallback} = props;
+
   const [rowColumnCounts, setRowColumnCounts] = useState([]);
+  const [cords, setCords] = useGridKeyboardNavigation(setKeyPressCallback, rowColumnCounts);
 
   const wrapperRef = useRef(null);
 
@@ -254,28 +330,11 @@ export default function renderEmotes(props) {
   }, []);
 
   useEffect(() => {
-    navigationMode = NavigationModeTypes.ARROW_KEYS;
-
-    let newCords = null;
-
-    switch (true) {
-      case arrowKeys.top:
-        newCords = travelUp(rowColumnCounts, cords);
-        break;
-      case arrowKeys.down:
-        newCords = travelDown(rowColumnCounts, cords);
-        break;
-      case arrowKeys.right:
-        newCords = travelRight(rowColumnCounts, cords);
-        break;
-      case arrowKeys.left:
-        newCords = travelLeft(rowColumnCounts, cords);
-        break;
-      default:
-        return;
+    if (navigationMode !== NavigationModeTypes.ARROW_KEYS) {
+      return;
     }
 
-    const depth = newCords.y * RowHeight;
+    const depth = cords.y * RowHeight;
     const {scrollTop} = wrapperRef.current;
 
     if (depth < scrollTop + RowHeight) {
@@ -285,9 +344,7 @@ export default function renderEmotes(props) {
     if (depth + RowHeight >= scrollTop + WindowHeight) {
       wrapperRef.current.scrollTo(0, depth + RowHeight - WindowHeight);
     }
-
-    setCords(newCords);
-  }, [arrowKeys]);
+  }, [cords]);
 
   return isSearch ? (
     <SearchedEmotes

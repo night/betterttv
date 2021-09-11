@@ -8,6 +8,11 @@ import Header from './Header.jsx';
 import Preview from './Preview.jsx';
 import Sidebar from './Sidebar.jsx';
 
+let keyPressCallback;
+function setKeyPressCallback(newKeyPressCallback) {
+  keyPressCallback = newKeyPressCallback;
+}
+
 export default function EmoteMenu({triggerRef, appendToChat}) {
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState(null);
@@ -19,13 +24,6 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
   const [section, setSection] = useState({
     eventKey: null,
     scrollTo: false,
-  });
-
-  const [arrowKeys, setArrowKeys] = useState({
-    top: false,
-    down: false,
-    right: false,
-    left: false,
   });
 
   const onHide = useCallback(() => triggerRef.current.close(), [triggerRef]);
@@ -67,28 +65,10 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
       setShiftPressed(event.shiftKey);
     }
 
-    function handleArrowKeys(event) {
-      if (
-        event.keyCode === keycodes.UpArrow ||
-        event.keyCode === keycodes.DownArrow ||
-        event.keyCode === keycodes.RightArrow ||
-        event.keyCode === keycodes.LeftArrow
-      ) {
-        setArrowKeys({
-          top: event.keyCode === keycodes.UpArrow,
-          down: event.keyCode === keycodes.DownArrow,
-          right: event.keyCode === keycodes.RightArrow,
-          left: event.keyCode === keycodes.LeftArrow,
-        });
-
-        event.preventDefault(); // prevent scrolling
-      }
-    }
-
     function callback(event) {
       buttonPressCallback(event);
-      handleArrowKeys(event);
       handleKeyDownCallback(event);
+      keyPressCallback(event);
     }
 
     window.addEventListener('keydown', callback, false);
@@ -133,7 +113,7 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
           search={search}
           section={section}
           onClick={handleClick}
-          arrowKeys={arrowKeys}
+          setKeyPressCallback={setKeyPressCallback}
           rows={emoteStore.rows}
           setSelected={setSelected}
           onSection={(eventKey) => setSection({eventKey, scrollTo: false})}
