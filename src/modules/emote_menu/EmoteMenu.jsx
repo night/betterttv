@@ -6,7 +6,8 @@ import EmoteMenu from './components/Button.jsx';
 import LegacyButton from './components/LegacyButton.jsx';
 import domObserver from '../../observers/dom.js';
 import styles from './style.module.css';
-import twitch, {getReactInstance} from '../../utils/twitch.js';
+import {getReactInstance} from '../../utils/twitch.js';
+import {getCurrentUser} from '../../utils/user.js';
 
 const EMOTE_PICKER_BUTTON_SELECTOR = 'button[data-a-target="emote-picker-button"]';
 const CHAT_INPUT_ICONS_SELECTOR = '.chat-input__input-icons';
@@ -61,7 +62,7 @@ export default class EmoteMenuModule {
   }
 
   load() {
-    if (twitch.getCurrentUser() == null) return;
+    if (getCurrentUser() == null) return;
 
     const container = document.querySelector(BTTV_EMOTE_PICKER_BUTTON_SELECTOR);
     const clickTwitchEmotes = settings.get(SettingIds.CLICK_TWITCH_EMOTES);
@@ -134,7 +135,7 @@ export default class EmoteMenuModule {
   }
 
   loadLegacyButton() {
-    if (twitch.getCurrentUser() == null) return;
+    if (getCurrentUser() == null) return;
 
     const legacyContainer = document.querySelector(LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
     const clickTwitchEmotes = settings.get(SettingIds.CLICK_TWITCH_EMOTES);
