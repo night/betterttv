@@ -10,6 +10,13 @@ const PLAYER = '.video-player__container';
 const CLIPS_BROADCASTER_INFO = '.clips-broadcaster-info';
 const CHAT_MESSAGE_SELECTOR = '.chat-line__message';
 
+const PROFILE_IMAGE_GQL_QUERY = `
+query {
+    currentUser {
+        profileImageURL(width: 300)
+      }
+}`;
+
 const TMIActionTypes = {
   MESSAGE: 0,
   EXTENSION_MESSAGE: 1,
@@ -108,13 +115,6 @@ function searchReactChildren(node, predicate, maxDepth = 15, depth = 0) {
 
   return null;
 }
-
-const PROFILE_IMAGE_GQL_QUERY = `
-query {
-  currentUser {
-    profileImageURL(width: 300)
-  }
-}`;
 
 let chatClient;
 let currentUser;
