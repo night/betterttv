@@ -8,10 +8,10 @@ import {faSearch} from '@fortawesome/free-solid-svg-icons/faSearch';
 import {faTimes} from '@fortawesome/free-solid-svg-icons/faTimes';
 
 function Header({value, onChange, onHide, selected, ...restProps}) {
-  const ref = useRef(null);
+  const searchInputRef = useRef(null);
 
   useEffect(() => {
-    ref.current.focus();
+    searchInputRef.current.focus();
   }, []);
 
   return (
@@ -26,7 +26,7 @@ function Header({value, onChange, onHide, selected, ...restProps}) {
           placeholder={selected == null ? 'Search for Emotes' : selected.code}
           value={value}
           onChange={onChange}
-          inputRef={ref}
+          inputRef={searchInputRef}
         />
       </InputGroup>
       <IconButton

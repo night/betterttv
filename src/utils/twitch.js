@@ -14,7 +14,7 @@ const PROFILE_IMAGE_GQL_QUERY = `
 query {
     currentUser {
         profileImageURL(width: 300)
-      }
+    }
 }`;
 
 const TMIActionTypes = {
