@@ -69,7 +69,7 @@ export default function youtubeWatcher(watcher) {
   }
 
   domObserver.on(
-    '#message,#content-text,.bttv-message-container',
+    '#message,.bttv-message-container',
     (node, isConnected) => {
       // youtube sometimes re-renders lines, which may remove our content span
       if (node.className !== 'bttv-message-container' && !isConnected) {
@@ -84,9 +84,6 @@ export default function youtubeWatcher(watcher) {
 
   watcher.on('emotes.updated', () => {
     for (const node of document.querySelectorAll('span#message')) {
-      processMessageNode(node);
-    }
-    for (const node of document.querySelectorAll('yt-formatted-string#content-text')) {
       processMessageNode(node);
     }
   });
