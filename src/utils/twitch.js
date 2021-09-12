@@ -109,9 +109,16 @@ function searchReactChildren(node, predicate, maxDepth = 15, depth = 0) {
   return null;
 }
 
+const PROFILE_IMAGE_GQL_QUERY = `
+query {
+  currentUser {
+    profileImageURL(width: 300)
+  }
+}`;
+
 let chatClient;
 let currentUser;
-let currentProfile;
+let currentProfilePicture;
 let currentChannel;
 
 export default {
@@ -125,14 +132,15 @@ export default {
     };
   },
 
-  async getCurrentProfile() {
-    if (currentProfile != null) {
-      return currentProfile;
+  async getCurrentProfilePicture() {
+    if (currentProfilePicture != null) {
+      return currentProfilePicture;
     }
 
     try {
-      const res = await twitchAPI.get(`users?login=${currentUser.displayName}`);
-      return res.users[0];
+      const {data} = await twitchAPI.graphqlQuery(PROFILE_IMAGE_GQL_QUERY);
+      currentProfilePicture = data.currentUser.profileImageURL;
+      return currentProfilePicture;
     } catch (e) {
       debug.log('failed to fetch twitch user profile', e);
       return null;
