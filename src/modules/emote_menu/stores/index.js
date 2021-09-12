@@ -10,6 +10,7 @@ import cdn from '../../../utils/cdn.js';
 import settings from '../../../settings.js';
 import {SettingIds, emotesCategoryIds} from '../../../constants.js';
 import twitch from '../../../utils/twitch.js';
+import {getEmoteIdFromProvider} from '../../../utils/emotes.js';
 
 const MAX_FRECENTS = 54;
 
@@ -122,11 +123,13 @@ class EmoteStore extends SafeEventEmitter {
       }
 
       for (const emote of category.emotes) {
-        if (emoteStorage.favorites.has(String(emote.id))) {
+        const id = getEmoteIdFromProvider(emote.id, category.provider.id);
+
+        if (emoteStorage.favorites.has(id)) {
           favorites.emotes.push(emote);
         }
 
-        if (emoteStorage.frecents.has(String(emote.id))) {
+        if (emoteStorage.frecents.has(id)) {
           frecents.emotes.push(emote);
         }
       }
@@ -185,7 +188,8 @@ class EmoteStore extends SafeEventEmitter {
   }
 
   toggleFavorite(emote, forceUpdate = false) {
-    emoteStorage.setFavorite(emote, !emoteStorage.favorites.has(String(emote.id)));
+    const id = getEmoteIdFromProvider(emote.id, emote.provider.id);
+    emoteStorage.setFavorite(emote, !emoteStorage.favorites.has(id));
     this.markDirty(forceUpdate);
   }
 

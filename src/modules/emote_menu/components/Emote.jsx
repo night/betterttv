@@ -20,7 +20,7 @@ function Emote({emote, onClick, onMouseOver, active}) {
 
   return (
     <button
-      key={emote.provider.id + emote.id}
+      key={`${emote.provider.id}${emote.id}`}
       onClick={() => onClick(emote)}
       onMouseOver={() => onMouseOver(emote)}
       onFocus={() => onMouseOver(emote)}

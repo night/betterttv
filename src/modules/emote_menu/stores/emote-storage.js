@@ -1,4 +1,5 @@
 import storage from '../../../storage.js';
+import {getEmoteIdFromProvider} from '../../../utils/emotes.js';
 import SafeEventEmitter from '../../../utils/safe-event-emitter.js';
 
 const HOUR = 60 * 60 * 1000;
@@ -63,8 +64,7 @@ class EmoteStorage extends SafeEventEmitter {
   }
 
   trackHistory(emote) {
-    let {id} = emote;
-    id = String(id);
+    const id = getEmoteIdFromProvider(emote.id, emote.provider.id);
 
     let emoteHistory = this.emoteStore.usageHistory[id];
 
@@ -97,8 +97,7 @@ class EmoteStorage extends SafeEventEmitter {
   }
 
   setFavorite(emote, bool) {
-    let {id} = emote;
-    id = String(id);
+    const id = getEmoteIdFromProvider(emote.id, emote.provider.id);
 
     if (bool) {
       this.favorites.add(id);
