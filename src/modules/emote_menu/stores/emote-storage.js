@@ -64,9 +64,15 @@ class EmoteStorage extends SafeEventEmitter {
   }
 
   trackHistory(emote) {
-    const id = getEmoteIdFromProvider(emote.id, emote.provider.id);
+    let emoteCanonicalId = null;
 
-    let emoteHistory = this.emoteStore.usageHistory[id];
+    try {
+      emoteCanonicalId = getEmoteIdFromProvider(emote.id, emote.provider.id);
+    } catch (e) {
+      emoteCanonicalId = emote.id;
+    }
+
+    let emoteHistory = this.emoteStore.usageHistory[emoteCanonicalId];
 
     if (emoteHistory == null) {
       emoteHistory = {
@@ -83,7 +89,7 @@ class EmoteStorage extends SafeEventEmitter {
     }
     emoteHistory.score = calcScore(emoteHistory);
 
-    this.emoteStore.usageHistory[id] = emoteHistory;
+    this.emoteStore.usageHistory[emoteCanonicalId] = emoteHistory;
 
     this.updateFrecents();
     this.save();
@@ -96,13 +102,11 @@ class EmoteStorage extends SafeEventEmitter {
     this.save();
   }
 
-  setFavorite(emote, bool) {
-    const id = getEmoteIdFromProvider(emote.id, emote.provider.id);
-
+  setFavorite(emoteCanonicalId, bool) {
     if (bool) {
-      this.favorites.add(id);
+      this.favorites.add(emoteCanonicalId);
     } else {
-      this.favorites.delete(id);
+      this.favorites.delete(emoteCanonicalId);
     }
 
     this.save();

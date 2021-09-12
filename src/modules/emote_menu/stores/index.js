@@ -123,13 +123,13 @@ class EmoteStore extends SafeEventEmitter {
       }
 
       for (const emote of category.emotes) {
-        const id = getEmoteIdFromProvider(emote.id, category.provider.id);
+        const emoteCanonicalId = getEmoteIdFromProvider(emote.id, category.provider.id);
 
-        if (emoteStorage.favorites.has(id)) {
+        if (emoteStorage.favorites.has(emoteCanonicalId)) {
           favorites.emotes.push(emote);
         }
 
-        if (emoteStorage.frecents.has(id)) {
+        if (emoteStorage.frecents.has(emoteCanonicalId)) {
           frecents.emotes.push(emote);
         }
       }
@@ -188,8 +188,15 @@ class EmoteStore extends SafeEventEmitter {
   }
 
   toggleFavorite(emote, forceUpdate = false) {
-    const id = getEmoteIdFromProvider(emote.id, emote.provider.id);
-    emoteStorage.setFavorite(emote, !emoteStorage.favorites.has(id));
+    let emoteCanonicalId = null;
+
+    try {
+      emoteCanonicalId = getEmoteIdFromProvider(emote.id, emote.provider.id);
+    } catch (e) {
+      emoteCanonicalId = emote.id;
+    }
+
+    emoteStorage.setFavorite(emoteCanonicalId, !emoteStorage.favorites.has(emoteCanonicalId));
     this.markDirty(forceUpdate);
   }
 
