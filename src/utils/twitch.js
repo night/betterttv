@@ -120,9 +120,7 @@ function searchReactChildren(node, predicate, maxDepth = 15, depth = 0) {
 }
 
 let chatClient;
-let currentUser;
 let currentProfilePicture;
-let currentChannel;
 
 const userCookie = cookies.get('twilight-user');
 if (userCookie) {
