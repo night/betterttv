@@ -9,6 +9,8 @@
       'clips.twitch.tv',
       'dashboard.twitch.tv',
       'embed.twitch.tv',
+      'www.youtube.com',
+      'studio.youtube.com',
     ].includes(window.location.hostname) &&
     !window.location.hostname.endsWith('.release.twitch.tv')
   )
@@ -35,20 +37,8 @@
   const {default: globalCSS} = await import('./modules/global_css/index.js');
   const globalCSSLoadPromise = globalCSS.loadGlobalCSS();
 
-  const {default: cookies} = await import('cookies-js');
   const {default: debug} = await import('./utils/debug.js');
-  const {default: twitch} = await import('./utils/twitch.js');
   const {default: watcher} = await import('./watcher.js');
-
-  const userCookie = cookies.get('twilight-user');
-  if (userCookie) {
-    try {
-      const {authToken, id, login, displayName} = JSON.parse(userCookie);
-      twitch.setCurrentUser(authToken, id, login, displayName);
-    } catch (_) {
-      debug.log('error loading user from twilight user cookie');
-    }
-  }
 
   // wait until styles load to prevent flashing
   await globalCSSLoadPromise;

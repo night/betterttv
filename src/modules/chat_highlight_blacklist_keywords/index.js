@@ -3,11 +3,11 @@ import dayjs from 'dayjs';
 import watcher from '../../watcher.js';
 import settings from '../../settings.js';
 import html from '../../utils/html.js';
-import twitch from '../../utils/twitch.js';
 import cdn from '../../utils/cdn.js';
 import {escapeRegExp} from '../../utils/regex.js';
 import {computeKeywords, KeywordTypes} from '../../utils/keywords.js';
 import {SettingIds} from '../../constants.js';
+import {getCurrentUser} from '../../utils/user.js';
 
 const BLACKLIST_KEYWORD_PROMPT = `Type some blacklist keywords. Messages containing keywords will be filtered from your chat.
 
@@ -108,7 +108,7 @@ function readRepairKeywords() {
     }
   }
 
-  const user = twitch.getCurrentUser();
+  const user = getCurrentUser();
   if (highlightKeywordsValue == null && user != null) {
     settings.set(SettingIds.HIGHLIGHT_KEYWORDS, {
       0: {
@@ -147,7 +147,7 @@ function messageContainsKeyword(keywords, from, message) {
     keyword = wildcard(keyword);
     keyword = exactMatch(keyword);
 
-    const currentUser = twitch.getCurrentUser();
+    const currentUser = getCurrentUser();
     const filterCurrentUser = (currentUser && from !== currentUser.name) || !currentUser;
     if (filterCurrentUser && keywordRegEx(keyword).test(message)) return true;
   }

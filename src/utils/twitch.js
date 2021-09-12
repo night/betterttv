@@ -1,6 +1,9 @@
 import $ from 'jquery';
+import cookies from 'cookies-js';
 import twitchAPI from './twitch-api.js';
 import debug from './debug.js';
+import {getCurrentUser, setCurrentUser} from './user.js';
+import {getCurrentChannel, setCurrentChannel} from './channel.js';
 
 const REACT_ROOT = '#root div';
 const CHAT_CONTAINER = 'section[data-test-selector="chat-room-component-layout"]';
@@ -121,17 +124,21 @@ let currentUser;
 let currentProfilePicture;
 let currentChannel;
 
-export default {
-  setCurrentUser(accessToken, id, name, displayName) {
-    twitchAPI.setAccessToken(accessToken);
-
-    currentUser = {
+const userCookie = cookies.get('twilight-user');
+if (userCookie) {
+  try {
+    const {authToken, id, login, displayName} = JSON.parse(userCookie);
+    twitchAPI.setAccessToken(authToken);
+    setCurrentUser({
+      provider: 'twitch',
       id: id.toString(),
-      name,
+      name: login,
       displayName,
-    };
-  },
+    });
+  } catch (_) {}
+}
 
+export default {
   async getCurrentUserProfilePicture() {
     if (currentProfilePicture != null) {
       return currentProfilePicture;
@@ -182,7 +189,9 @@ export default {
       };
     }
 
-    currentChannel = rv;
+    if (rv != null) {
+      setCurrentChannel({provider: 'twitch', ...rv});
+    }
 
     return rv;
   },
@@ -190,14 +199,6 @@ export default {
   TMIActionTypes,
 
   getReactInstance,
-
-  getCurrentChannel() {
-    return currentChannel;
-  },
-
-  getCurrentUser() {
-    return currentUser;
-  },
 
   getConnectStore() {
     let store;
@@ -478,6 +479,8 @@ export default {
   },
 
   getCurrentUserIsOwner() {
+    const currentUser = getCurrentUser();
+    const currentChannel = getCurrentChannel();
     if (!currentUser || !currentChannel) return false;
     return currentUser.id === currentChannel.id;
   },

@@ -79,7 +79,7 @@ export default async (env, argv) => {
   return {
     devServer: {
       port: PORT,
-      allowedHosts: ['127.0.0.1', '.twitch.tv'],
+      allowedHosts: ['127.0.0.1', '.twitch.tv', '.youtube.com'],
       devMiddleware: {
         writeToDisk: true,
       },

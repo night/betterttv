@@ -1,0 +1,18 @@
+#message.yt-live-chat-text-message-renderer,
+yt-live-chat-text-message-renderer {
+  overflow-y: visible;
+  contain: none;
+}
+
+yt-live-chat-text-message-renderer .bttv-tooltip {
+  background-color: var(--yt-live-chat-vem-background-color);
+  color: var(--yt-live-chat-primary-text-color);
+
+  &:after {
+    background-color: var(--yt-live-chat-vem-background-color);
+  }
+}
+
+ytd-comment-renderer .bttv-message-container {
+  white-space: normal;
+}

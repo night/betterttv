@@ -6,6 +6,8 @@ import chatTabCompletion from '../chat_tab_completion/index.js';
 import chatCommands from '../chat_commands/index.js';
 import anonChat from '../anon_chat/index.js';
 import emojis from '../emotes/emojis.js';
+import {getCurrentUser} from '../../utils/user.js';
+import {getCurrentChannel} from '../../utils/channel.js';
 
 const PATCHED_SENTINEL = Symbol('patched symbol');
 
@@ -16,7 +18,7 @@ class SendState {
   }
 
   get user() {
-    return twitch.getCurrentUser();
+    return getCurrentUser();
   }
 
   preventDefault() {
@@ -34,9 +36,9 @@ const methodList = [
 ];
 
 function bttvSendMessage(messageToSend, ...args) {
-  const channel = twitch.getCurrentChannel();
+  const channel = getCurrentChannel();
   if (channel) {
-    socketClient.broadcastMe(channel.name);
+    socketClient.broadcastMe(channel.provider, channel.id);
   }
 
   if (typeof messageToSend === 'string') {

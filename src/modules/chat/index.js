@@ -12,6 +12,7 @@ import legacySubscribers from '../legacy_subscribers/index.js';
 import splitChat from '../split_chat/index.js';
 import {SettingIds, UsernameFlags} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
+import {getCurrentChannel} from '../../utils/channel.js';
 
 const EMOTE_STRIP_SYMBOLS_REGEX = /(^[~!@#$%^&*()]+|[~!@#$%^&*()]+$)/g;
 const MENTION_REGEX = /^@([a-zA-Z\d_]+)$/;
@@ -118,7 +119,7 @@ class ChatModule {
       $badgesContainer.append(badgeTemplate(badge.svg, badge.description));
     }
 
-    const currentChannel = twitch.getCurrentChannel();
+    const currentChannel = getCurrentChannel();
     if (currentChannel && currentChannel.name === 'night' && legacySubscribers.hasSubscription(user.name)) {
       $badgesContainer.append(badgeTemplate(cdn.url('tags/subscriber.png'), 'Subscriber'));
     }
@@ -189,6 +190,7 @@ class ChatModule {
       if (modified) {
         // TODO: find a better way to do this (this seems most performant tho, only a single mutation vs multiple)
         const span = document.createElement('span');
+        span.className = 'bttv-message-container';
         span.innerHTML = parts.join(' ');
         node.parentNode.replaceChild(span, node);
       }

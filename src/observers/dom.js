@@ -56,7 +56,7 @@ function stopAttributeObserver(observedType) {
   attributeObservers.delete(observedType);
 }
 
-function processObservedResults(emitter, node, results) {
+function processObservedResults(emitter, target, node, results) {
   if (!results || results.length === 0) {
     return;
   }
@@ -69,6 +69,9 @@ function processObservedResults(emitter, node, results) {
     }
     if (options && options.useParentNode) {
       foundNode = node;
+    }
+    if (options && options.useTargetNode) {
+      foundNode = target;
     }
     const {isConnected} = foundNode;
     if (options && options.attributes) {
@@ -87,24 +90,24 @@ function processMutations(emitter, nodes) {
     return;
   }
 
-  for (const node of nodes) {
+  for (const [target, node] of nodes) {
     let nodeId = node.id;
     if (typeof nodeId === 'string' && nodeId.length > 0) {
       nodeId = nodeId.trim();
-      processObservedResults(emitter, node, observedIds[nodeId]);
+      processObservedResults(emitter, target, node, observedIds[nodeId]);
     }
 
     let testSelector = node.getAttribute('data-test-selector');
     if (typeof testSelector === 'string' && testSelector.length > 0) {
       testSelector = testSelector.trim();
-      processObservedResults(emitter, node, observedTestSelectors[testSelector]);
+      processObservedResults(emitter, target, node, observedTestSelectors[testSelector]);
     }
 
     const nodeClassList = node.classList;
     if (nodeClassList && nodeClassList.length > 0) {
       for (let className of nodeClassList) {
         className = className.trim();
-        processObservedResults(emitter, node, observedClassNames[className]);
+        processObservedResults(emitter, target, node, observedClassNames[className]);
       }
     }
   }
@@ -116,7 +119,8 @@ class DOMObserver extends SafeEventEmitter {
 
     observer = new window.MutationObserver((mutations) => {
       const pendingNodes = [];
-      for (const {addedNodes, removedNodes} of mutations) {
+
+      for (const {addedNodes, removedNodes, target} of mutations) {
         if (!addedNodes || !removedNodes || (addedNodes.length === 0 && removedNodes.length === 0)) {
           continue;
         }
@@ -128,13 +132,13 @@ class DOMObserver extends SafeEventEmitter {
               continue;
             }
 
-            pendingNodes.push(node);
+            pendingNodes.push([target, node]);
             if (node.childElementCount === 0) {
               continue;
             }
 
             for (const childNode of node.querySelectorAll('[id],[class]')) {
-              pendingNodes.push(childNode);
+              pendingNodes.push([target, childNode]);
             }
           }
         }
@@ -179,10 +183,7 @@ class DOMObserver extends SafeEventEmitter {
         }
 
         if (observedSelectorType === observedIds) {
-          const initialNode = document.getElementById(key);
-          if (initialNode) {
-            initialNodes.push(initialNode);
-          }
+          initialNodes.push(...document.querySelectorAll(`#${key}`));
         } else if (observedSelectorType === observedClassNames) {
           initialNodes.push(...document.getElementsByClassName(key));
         }
@@ -192,7 +193,10 @@ class DOMObserver extends SafeEventEmitter {
     const result = super.on(selector, callback);
 
     // trigger dom mutations for existing elements for on page
-    processMutations(this, initialNodes);
+    processMutations(
+      this,
+      initialNodes.map((node) => [node.parentElement, node])
+    );
 
     return result;
   }

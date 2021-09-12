@@ -1,9 +1,10 @@
 import socketClient from '../../socket-client.js';
 import watcher from '../../watcher.js';
-import twitch from '../../utils/twitch.js';
 import cdn from '../../utils/cdn.js';
 import AbstractEmotes from './abstract-emotes.js';
 import Emote from './emote.js';
+import {getCurrentUser} from '../../utils/user.js';
+import {getCurrentChannel} from '../../utils/channel.js';
 
 const provider = {
   id: 'bttv-personal',
@@ -19,6 +20,7 @@ class PersonalEmotes extends AbstractEmotes {
 
     socketClient.on('lookup_user', (s) => this.updatePersonalEmotes(s));
     watcher.on('load.chat', () => this.joinChannel());
+    watcher.on('load.youtube', () => this.joinChannel());
     watcher.on('conversation.new', (threadId) => this.joinConversation(threadId));
     watcher.on('conversation.message', (threadId, $el, msgObject) => this.broadcastMeConversation(threadId, msgObject));
   }
@@ -46,33 +48,31 @@ class PersonalEmotes extends AbstractEmotes {
   }
 
   joinChannel() {
-    const currentChannel = twitch.getCurrentChannel();
+    const currentChannel = getCurrentChannel();
     if (!currentChannel) return;
 
-    const {name} = currentChannel;
-
-    if (name !== joinedChannel) {
-      socketClient.partChannel(joinedChannel);
+    if (currentChannel !== joinedChannel) {
+      socketClient.partChannel(currentChannel.provider, currentChannel.id);
     }
 
-    joinedChannel = name;
-    socketClient.joinChannel(name);
+    joinedChannel = currentChannel;
+    socketClient.joinChannel(currentChannel.provider, currentChannel.id);
   }
 
   joinConversation(threadId) {
     if (!threadId) return;
 
-    const user = twitch.getCurrentUser();
+    const user = getCurrentUser();
     if (!user) return;
 
-    socketClient.joinChannel(threadId);
+    socketClient.joinChannel('twitch', threadId);
   }
 
   broadcastMeConversation(threadId, msgObject) {
-    const user = twitch.getCurrentUser();
+    const user = getCurrentUser();
     if (!user || !msgObject.from || msgObject.from.id !== user.id || !threadId) return;
 
-    socketClient.broadcastMe(threadId);
+    socketClient.broadcastMe('twitch', threadId);
   }
 
   updatePersonalEmotes({name, pro, emotes}) {

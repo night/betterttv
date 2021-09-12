@@ -54,7 +54,15 @@ function Window({setHandleOpen}) {
 
   return (
     <Modal show={open} onHide={() => setOpen(false)}>
-      <Sidenav value={page} onChange={(value) => setPage(value)} />
+      <Sidenav
+        value={page}
+        onChange={(value) => {
+          if (value == null) {
+            return;
+          }
+          setPage(value);
+        }}
+      />
       <Page page={page} onHide={() => setOpen(false)} />
     </Modal>
   );
