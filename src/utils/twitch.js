@@ -117,22 +117,17 @@ const userCookie = cookies.get('twilight-user');
 if (userCookie) {
   try {
     const {authToken, id, login, displayName} = JSON.parse(userCookie);
-    setCurrentUser(authToken, id, login, displayName);
+    twitchAPI.setAccessToken(authToken);
+    setCurrentUser({
+      provider: 'twitch',
+      id: id.toString(),
+      name: login,
+      displayName,
+    });
   } catch (_) {}
 }
 
 export default {
-  setCurrentUser(accessToken, id, name, displayName) {
-    twitchAPI.setAccessToken(accessToken);
-
-    setCurrentUser({
-      provider: 'twitch',
-      id: id.toString(),
-      name,
-      displayName,
-    });
-  },
-
   updateCurrentChannel() {
     let rv;
 
