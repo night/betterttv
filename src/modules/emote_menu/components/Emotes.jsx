@@ -261,48 +261,51 @@ const SearchedEmotes = React.forwardRef(({search, onClick, cords, setCords, setR
 function useGridKeyboardNavigation(setKeyPressCallback, rowColumnCounts) {
   const [cords, setCords] = useState({x: 0, y: 0});
 
-  function handleKeyPress(event) {
-    navigationMode = NavigationModeTypes.ARROW_KEYS;
+  const handleKeyPress = useCallback(
+    (event) => {
+      navigationMode = NavigationModeTypes.ARROW_KEYS;
 
-    let newCords = null;
+      let newCords = null;
 
-    switch (event.keyCode) {
-      case keycodes['8numpad']:
-      case keycodes.UpArrow:
-        newCords = travelUp(rowColumnCounts, cords);
-        event.preventDefault();
-        break;
-      case keycodes['2numpad']:
-      case keycodes.DownArrow:
-        newCords = travelDown(rowColumnCounts, cords);
-        event.preventDefault();
-        break;
-      case keycodes['6numpad']:
-      case keycodes.RightArrow:
-        newCords = travelRight(rowColumnCounts, cords);
-        event.preventDefault();
-        break;
-      case keycodes['4numpad']:
-      case keycodes.LeftArrow:
-        newCords = travelLeft(rowColumnCounts, cords);
-        event.preventDefault();
-        break;
-      case keycodes.End:
-        newCords = travelBottom(rowColumnCounts, cords);
-        event.preventDefault();
-        break;
-      case keycodes.Home:
-        newCords = travelTop(rowColumnCounts, cords);
-        event.preventDefault();
-        break;
-      default:
-        return;
-    }
+      switch (event.keyCode) {
+        case keycodes['8numpad']:
+        case keycodes.UpArrow:
+          newCords = travelUp(rowColumnCounts, cords);
+          event.preventDefault();
+          break;
+        case keycodes['2numpad']:
+        case keycodes.DownArrow:
+          newCords = travelDown(rowColumnCounts, cords);
+          event.preventDefault();
+          break;
+        case keycodes['6numpad']:
+        case keycodes.RightArrow:
+          newCords = travelRight(rowColumnCounts, cords);
+          event.preventDefault();
+          break;
+        case keycodes['4numpad']:
+        case keycodes.LeftArrow:
+          newCords = travelLeft(rowColumnCounts, cords);
+          event.preventDefault();
+          break;
+        case keycodes.End:
+          newCords = travelBottom(rowColumnCounts, cords);
+          event.preventDefault();
+          break;
+        case keycodes.Home:
+          newCords = travelTop(rowColumnCounts, cords);
+          event.preventDefault();
+          break;
+        default:
+          return;
+      }
 
-    setCords(newCords);
-  }
+      setCords(newCords);
+    },
+    [cords, rowColumnCounts]
+  );
 
-  useEffect(() => setKeyPressCallback(handleKeyPress));
+  useEffect(() => setKeyPressCallback(handleKeyPress), [handleKeyPress]);
 
   return [cords, setCords];
 }
