@@ -132,7 +132,7 @@ export default {
     };
   },
 
-  async getCurrentProfilePicture() {
+  async getCurrentUserProfilePicture() {
     if (currentProfilePicture != null) {
       return currentProfilePicture;
     }
