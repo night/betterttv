@@ -2,7 +2,6 @@ import React, {useEffect, useRef} from 'react';
 import Nav from 'rsuite/lib/Nav/index.js';
 import Whisper from 'rsuite/lib/Whisper/index.js';
 import Tooltip from 'rsuite/lib/Tooltip/index.js';
-import {throttle} from 'throttle-debounce';
 import {RowHeight, WindowHeight} from '../../../constants.js';
 import styles from '../styles/sidebar.module.css';
 
@@ -11,7 +10,7 @@ const ITEM_HEIGHT = 42;
 export default function Sidebar({section, onChange, providers}) {
   const containerRef = useRef(null);
 
-  const throttleFunc = throttle(1000, () => {
+  function throttleFunc() {
     if (section.eventKey == null) return;
 
     const top = containerRef.current.scrollTop;
@@ -34,7 +33,7 @@ export default function Sidebar({section, onChange, providers}) {
       left: 0,
       behavior: 'smooth',
     });
-  });
+  }
 
   useEffect(() => throttleFunc(), [section]);
 

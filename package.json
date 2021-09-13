@@ -74,7 +74,6 @@
     "rsuite": "^4.10.2",
     "string-replace-loader": "^3.0.2",
     "terser-webpack-plugin": "^5.2.3",
-    "throttle-debounce": "^3.0.1",
     "twemoji": "^13.1.0",
     "virtual-module-webpack-plugin": "^0.4.1",
     "webpack": "^5.52.0",
