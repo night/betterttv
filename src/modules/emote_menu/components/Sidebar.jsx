@@ -10,7 +10,7 @@ const ITEM_HEIGHT = 42;
 export default function Sidebar({section, onChange, providers}) {
   const containerRef = useRef(null);
 
-  function throttleFunc() {
+  useEffect(() => {
     if (section.eventKey == null) return;
 
     const top = containerRef.current.scrollTop;
@@ -33,9 +33,7 @@ export default function Sidebar({section, onChange, providers}) {
       left: 0,
       behavior: 'smooth',
     });
-  }
-
-  useEffect(() => throttleFunc(), [section]);
+  }, [section]);
 
   return (
     <div className={styles.sidebar} ref={containerRef}>
