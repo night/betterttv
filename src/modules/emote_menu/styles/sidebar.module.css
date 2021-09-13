@@ -9,3 +9,7 @@
 .sidebar::-webkit-scrollbar {
   display: none;
 }
+
+.active {
+  background-color: #23262b;
+}
