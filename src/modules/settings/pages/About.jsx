@@ -92,7 +92,8 @@ function About({onHide}) {
             <a
               target="_blank"
               rel="noreferrer"
-              href="https://chrome.google.com/webstore/detail/betterttv/ajopnjidmegmdimjlfnijceegpefgped">
+              href="https://chrome.google.com/webstore/detail/betterttv/ajopnjidmegmdimjlfnijceegpefgped"
+            >
               Chrome Webstore
             </a>{' '}
             or{' '}
@@ -185,7 +186,8 @@ function About({onHide}) {
                   <Icon>
                     <FontAwesomeIcon icon={faDownload} />
                   </Icon>
-                }>
+                }
+              >
                 Backup Settings
               </IconButton>
               <input type="file" hidden ref={fileImport} onChange={({target}) => importFile(target)} />
@@ -199,7 +201,8 @@ function About({onHide}) {
                   <Icon>
                     <FontAwesomeIcon icon={faUpload} />
                   </Icon>
-                }>
+                }
+              >
                 Import Settings
               </IconButton>
               <IconButton
@@ -212,7 +215,8 @@ function About({onHide}) {
                 loading={resetting}
                 disabled={importing}
                 color="red"
-                onClick={resetDefault}>
+                onClick={resetDefault}
+              >
                 Reset to Default
               </IconButton>
             </div>
