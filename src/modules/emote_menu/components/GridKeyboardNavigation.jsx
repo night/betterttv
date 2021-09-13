@@ -73,12 +73,26 @@ function travelRight(rowColumnCounts, {x, y}, maxColumnCount) {
   return {x: x + 1, y};
 }
 
-function travelBottom(rowColumnCounts, {x}) {
+function travelEnd(rowColumnCounts, {x, y}, maxColumnCount) {
   const newY = rowColumnCounts.length - 1;
   const newYColumnCount = rowColumnCounts[newY];
 
+  // if the end has no columns, travel up from the end instead
+  if (newYColumnCount === 0) {
+    const {x: proposedX, y: proposedY} = travelUp(rowColumnCounts, {x: maxColumnCount, y: newY});
+    // if y didn't actually changed, original coords get returned
+    if (proposedY >= newY) {
+      return {x, y};
+    }
+
+    return {
+      x: proposedX,
+      y: proposedY,
+    };
+  }
+
   return {
-    x: Math.min(newYColumnCount - 1, x),
+    x: newYColumnCount - 1,
     y: newY,
   };
 }
@@ -109,8 +123,6 @@ export default function useGridKeyboardNavigation(
 
   const handleKeyPress = useCallback(
     (event) => {
-      setNavigationMode(NavigationModeTypes.ARROW_KEYS);
-
       let newCords = null;
 
       switch (event.keyCode) {
@@ -135,7 +147,7 @@ export default function useGridKeyboardNavigation(
           event.preventDefault();
           break;
         case keycodes.End:
-          newCords = travelBottom(rowColumnCounts, cords, maxColumnCount);
+          newCords = travelEnd(rowColumnCounts, cords, maxColumnCount);
           event.preventDefault();
           break;
         case keycodes.Home:
@@ -145,6 +157,8 @@ export default function useGridKeyboardNavigation(
         default:
           return;
       }
+
+      setNavigationMode(NavigationModeTypes.ARROW_KEYS);
 
       setCords(newCords);
     },
