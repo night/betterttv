@@ -72,7 +72,7 @@
     "remove-files-webpack-plugin": "^1.4.5",
     "rsuite": "^4.10.2",
     "string-replace-loader": "^3.0.2",
-    "terser-webpack-plugin": "^5.2.3",
+    "terser-webpack-plugin": "^5.2.4",
     "twemoji": "^13.1.0",
     "twitch-chat-emotes": "github:night/twitch-chat-emotes#2c4cfa5fe0c59bfd1d22f2582c5fe44272d1a466",
     "virtual-module-webpack-plugin": "^0.4.1",
