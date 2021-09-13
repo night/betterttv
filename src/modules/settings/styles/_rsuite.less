@@ -105,6 +105,15 @@
   z-index: 3150;
 }
 
+.@{ns}popover[class*='placement-top'] > .@{ns}popover-arrow::after {
+  margin-left: -3px;
+}
+
+.@{ns}tooltip.placement-right-end .@{ns}tooltip-arrow,
+.@{ns}tooltip.placement-left-end .@{ns}tooltip-arrow {
+  bottom: 3px;
+}
+
 @media screen and (max-width: 769px) {
   .@{ns}modal {
     width: 95%;
