@@ -48,7 +48,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.25.1",
     "file-saver": "^2.0.5",
-    "filemanager-webpack-plugin": "^6.1.6",
+    "filemanager-webpack-plugin": "^6.1.7",
     "git-rev-sync": "^3.0.1",
     "glob": "^7.1.7",
     "got": "^11.8.2",
