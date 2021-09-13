@@ -170,7 +170,12 @@ export default function renderEmotes(props) {
 
   const [rowColumnCounts, setRowColumnCounts] = useState([]);
   const [navigationMode, setNavigationMode] = useState(NavigationModeTypes.MOUSE);
-  const [cords, setCords] = useGridKeyboardNavigation(setKeyPressCallback, rowColumnCounts, setNavigationMode);
+  const [cords, setCords] = useGridKeyboardNavigation(
+    setKeyPressCallback,
+    rowColumnCounts,
+    setNavigationMode,
+    emoteStore.totalCols
+  );
 
   const wrapperRef = useRef(null);
 

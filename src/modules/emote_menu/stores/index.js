@@ -42,7 +42,6 @@ const fuse = new Fuse([], {
 
 let emoteProviderCategories = [];
 let twitchCategories = [];
-let totalCols = computeTotalColumns();
 
 class EmoteStore extends SafeEventEmitter {
   constructor() {
@@ -54,6 +53,8 @@ class EmoteStore extends SafeEventEmitter {
     this.dirty = true;
     this.categories = {};
 
+    this.totalCols = computeTotalColumns();
+
     watcher.on('channel.updated', () => this.updateTwitchProviders());
     settings.on(`changed.${SettingIds.DARKENED_MODE}`, () => this.updateTwitchProviders());
 
@@ -61,7 +62,7 @@ class EmoteStore extends SafeEventEmitter {
     settings.on(`changed.${SettingIds.EMOTES}`, () => this.updateEmoteProviders());
 
     window.addEventListener('resize', () => {
-      totalCols = computeTotalColumns();
+      this.totalCols = computeTotalColumns();
       this.markDirty(false);
     });
   }
@@ -104,7 +105,7 @@ class EmoteStore extends SafeEventEmitter {
       return [];
     }
 
-    return chunkArray(results, totalCols);
+    return chunkArray(results, this.totalCols);
   }
 
   updateEmotes() {
@@ -135,20 +136,20 @@ class EmoteStore extends SafeEventEmitter {
       }
 
       this.headers.push(this.rows.length);
-      const chunkedEmotes = chunkArray(category.emotes, totalCols);
+      const chunkedEmotes = chunkArray(category.emotes, this.totalCols);
       this.rows.push(category.provider, ...chunkedEmotes);
       collection.push(...category.emotes);
     }
 
     if (frecents.emotes.length > 0) {
-      const frecentsChunked = chunkArray(frecents.emotes.splice(0, MAX_FRECENTS), totalCols);
+      const frecentsChunked = chunkArray(frecents.emotes.splice(0, MAX_FRECENTS), this.totalCols);
       this.rows.unshift(frecents.provider, ...frecentsChunked);
       this.headers = this.headers.map((index) => index + frecentsChunked.length + 1);
       this.headers.unshift(0);
     }
 
     if (favorites.emotes.length > 0) {
-      const favoritesChunked = chunkArray(favorites.emotes, totalCols);
+      const favoritesChunked = chunkArray(favorites.emotes, this.totalCols);
       this.rows.unshift(favorites.provider, ...favoritesChunked);
       this.headers = this.headers.map((index) => index + favoritesChunked.length + 1);
       this.headers.unshift(0);

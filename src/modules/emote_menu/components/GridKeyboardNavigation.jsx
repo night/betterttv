@@ -2,16 +2,14 @@ import {useCallback, useEffect, useState} from 'react';
 import {NavigationModeTypes} from '../../../constants.js';
 import keycodes from '../../../utils/keycodes.js';
 
-const MAX_COLUMN_COUNT = 6;
-
-function travelUp(rowColumnCounts, {x, y}, numBlocks = 1) {
+function travelUp(rowColumnCounts, {x, y}, maxColumnCount, numBlocks = 1) {
   let newY = Math.max(0, y - numBlocks);
   let newYColumnCount = rowColumnCounts[newY];
 
   // if we've reached a row without columns, we want to travel upwards again
   if (newYColumnCount === 0) {
     if (newY > 0) {
-      return travelUp(rowColumnCounts, {x, y}, numBlocks + 1);
+      return travelUp(rowColumnCounts, {x, y}, maxColumnCount, numBlocks + 1);
     }
 
     // if we've reached the top, we have nowhere else to go.. the existing Y must be the first
@@ -25,7 +23,7 @@ function travelUp(rowColumnCounts, {x, y}, numBlocks = 1) {
   };
 }
 
-function travelDown(rowColumnCounts, {x, y}, numBlocks = 1) {
+function travelDown(rowColumnCounts, {x, y}, maxColumnCount, numBlocks = 1) {
   const maxY = rowColumnCounts.length - 1;
   let newY = Math.min(y + numBlocks, maxY);
   let newYColumnCount = rowColumnCounts[newY];
@@ -33,7 +31,7 @@ function travelDown(rowColumnCounts, {x, y}, numBlocks = 1) {
   // if we've reached a row without columns, we want to travel downwards again
   if (newYColumnCount === 0) {
     if (newY < maxY) {
-      return travelDown(rowColumnCounts, {x, y}, numBlocks + 1);
+      return travelDown(rowColumnCounts, {x, y}, maxColumnCount, numBlocks + 1);
     }
 
     // if we've reached the bottom, we have nowhere else to go.. the existing Y must be the last
@@ -47,10 +45,10 @@ function travelDown(rowColumnCounts, {x, y}, numBlocks = 1) {
   };
 }
 
-function travelLeft(rowColumnCounts, {x, y}) {
+function travelLeft(rowColumnCounts, {x, y}, maxColumnCount) {
   // if it's the first in the row, we want to wrap around
   if (x === 0) {
-    const {x: newX, y: newY} = travelUp(rowColumnCounts, {x: MAX_COLUMN_COUNT, y});
+    const {x: newX, y: newY} = travelUp(rowColumnCounts, {x: maxColumnCount, y});
     // if y did not decrease, we must be at the start and this is the left-most
     if (newY >= y) {
       return {x, y};
@@ -61,10 +59,10 @@ function travelLeft(rowColumnCounts, {x, y}) {
   return {x: x - 1, y};
 }
 
-function travelRight(rowColumnCounts, {x, y}) {
+function travelRight(rowColumnCounts, {x, y}, maxColumnCount) {
   // if it's the last in the row, we want to wrap around
   if (x === rowColumnCounts[y] - 1) {
-    const {x: newX, y: newY} = travelDown(rowColumnCounts, {x: 0, y});
+    const {x: newX, y: newY} = travelDown(rowColumnCounts, {x: 0, y}, maxColumnCount);
     // if y did not increase, we must be at the end and this is the right-most
     if (newY <= y) {
       return {x, y};
@@ -85,12 +83,12 @@ function travelBottom(rowColumnCounts, {x}) {
   };
 }
 
-function travelTop(rowColumnCounts, {x}) {
+function travelTop(rowColumnCounts, {x}, maxColumnCount) {
   let newY = 0;
   let newYColumnCount = rowColumnCounts[0];
 
   if (newYColumnCount === 0) {
-    const {y} = travelDown(rowColumnCounts, {x, y: 0});
+    const {y} = travelDown(rowColumnCounts, {x, y: 0}, maxColumnCount);
     newYColumnCount = rowColumnCounts[y];
     newY = y;
   }
@@ -101,7 +99,12 @@ function travelTop(rowColumnCounts, {x}) {
   };
 }
 
-export default function useGridKeyboardNavigation(setKeyPressCallback, rowColumnCounts, setNavigationMode) {
+export default function useGridKeyboardNavigation(
+  setKeyPressCallback,
+  rowColumnCounts,
+  setNavigationMode,
+  maxColumnCount
+) {
   const [cords, setCords] = useState({x: 0, y: 0});
 
   const handleKeyPress = useCallback(
@@ -113,30 +116,30 @@ export default function useGridKeyboardNavigation(setKeyPressCallback, rowColumn
       switch (event.keyCode) {
         case keycodes['8numpad']:
         case keycodes.UpArrow:
-          newCords = travelUp(rowColumnCounts, cords);
+          newCords = travelUp(rowColumnCounts, cords, maxColumnCount);
           event.preventDefault();
           break;
         case keycodes['2numpad']:
         case keycodes.DownArrow:
-          newCords = travelDown(rowColumnCounts, cords);
+          newCords = travelDown(rowColumnCounts, cords, maxColumnCount);
           event.preventDefault();
           break;
         case keycodes['6numpad']:
         case keycodes.RightArrow:
-          newCords = travelRight(rowColumnCounts, cords);
+          newCords = travelRight(rowColumnCounts, cords, maxColumnCount);
           event.preventDefault();
           break;
         case keycodes['4numpad']:
         case keycodes.LeftArrow:
-          newCords = travelLeft(rowColumnCounts, cords);
+          newCords = travelLeft(rowColumnCounts, cords, maxColumnCount);
           event.preventDefault();
           break;
         case keycodes.End:
-          newCords = travelBottom(rowColumnCounts, cords);
+          newCords = travelBottom(rowColumnCounts, cords, maxColumnCount);
           event.preventDefault();
           break;
         case keycodes.Home:
-          newCords = travelTop(rowColumnCounts, cords);
+          newCords = travelTop(rowColumnCounts, cords, maxColumnCount);
           event.preventDefault();
           break;
         default:
