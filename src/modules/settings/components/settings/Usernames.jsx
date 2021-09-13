@@ -16,7 +16,8 @@ function UsernamesModule() {
         <p className={styles.description}>Edit or modify chat usernames</p>
         <CheckboxGroup
           value={Object.values(UsernameFlags).filter((value) => hasFlag(usernames, value))}
-          onChange={(value) => setUsernames(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}>
+          onChange={(value) => setUsernames(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}
+        >
           <Checkbox key="localized" value={UsernameFlags.LOCALIZED}>
             <p>Localized Usernames</p>
             <p className={styles.description}>Show localized display names in the chat window</p>
