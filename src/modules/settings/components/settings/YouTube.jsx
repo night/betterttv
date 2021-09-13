@@ -4,20 +4,56 @@ import Toggle from 'rsuite/lib/Toggle/index.js';
 import {registerComponent} from '../Store.jsx';
 import {CategoryTypes} from '../../../../constants.js';
 import styles from '../../styles/header.module.css';
-import extension from '../../../../utils/extension';
+import extension from '../../../../utils/extension.js';
 
 const EXTENSION_URL = new URL(extension.url(''));
 const HAS_LOCAL_EXTENSION_DATA = EXTENSION_URL.protocol.includes('extension');
 const EXTENSION_ID = EXTENSION_URL.host;
 
+function sendExtensionCommand(commandData, callback = undefined) {
+  if (window.chrome?.runtime != null) {
+    window.chrome.runtime.sendMessage(EXTENSION_ID, commandData, callback);
+    return;
+  }
+
+  if (callback != null) {
+    const handleMessageEvent = (event) => {
+      if (event.origin !== window.origin) {
+        return;
+      }
+
+      try {
+        const parsedData = JSON.parse(event.data);
+        if (parsedData.extensionId !== EXTENSION_ID || parsedData.type !== 'BETTERTTV_EXTENSION_COMMAND_RESPONSE') {
+          return;
+        }
+
+        window.removeEventListener('message', handleMessageEvent);
+
+        callback(parsedData.data);
+      } catch (_) {}
+    };
+    window.addEventListener('message', handleMessageEvent, false);
+  }
+
+  window.postMessage(
+    JSON.stringify({
+      extensionId: EXTENSION_ID,
+      type: 'BETTERTTV_EXTENSION_COMMAND',
+      data: commandData,
+    }),
+    window.origin
+  );
+}
+
 function checkYouTubePermission() {
   return new Promise((resolve) => {
-    window.chrome.runtime.sendMessage(EXTENSION_ID, {type: 'CHECK_YOUTUBE_PERMISSION'}, (granted) => resolve(granted));
+    sendExtensionCommand({type: 'CHECK_YOUTUBE_PERMISSION'}, (granted) => resolve(granted));
   });
 }
 
 function requestYouTubePermission() {
-  window.chrome.runtime.sendMessage(EXTENSION_ID, {type: 'REQUEST_YOUTUBE_PERMISSION'});
+  sendExtensionCommand({type: 'REQUEST_YOUTUBE_PERMISSION'});
 }
 
 function YouTube() {
