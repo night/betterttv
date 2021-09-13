@@ -188,13 +188,7 @@ class EmoteStore extends SafeEventEmitter {
   }
 
   toggleFavorite(emote, forceUpdate = false) {
-    let emoteCanonicalId = null;
-
-    try {
-      emoteCanonicalId = getEmoteIdFromProvider(emote.id, emote.provider.id);
-    } catch (e) {
-      emoteCanonicalId = emote.id;
-    }
+    const emoteCanonicalId = getEmoteIdFromProvider(emote.id, emote.provider.id);
 
     emoteStorage.setFavorite(emoteCanonicalId, !emoteStorage.favorites.has(emoteCanonicalId));
     this.markDirty(forceUpdate);

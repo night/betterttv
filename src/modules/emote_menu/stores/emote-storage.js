@@ -64,13 +64,7 @@ class EmoteStorage extends SafeEventEmitter {
   }
 
   trackHistory(emote) {
-    let emoteCanonicalId = null;
-
-    try {
-      emoteCanonicalId = getEmoteIdFromProvider(emote.id, emote.provider.id);
-    } catch (e) {
-      emoteCanonicalId = emote.id;
-    }
+    const emoteCanonicalId = getEmoteIdFromProvider(emote.id, emote.provider.id);
 
     let emoteHistory = this.emoteStore.usageHistory[emoteCanonicalId];
 
