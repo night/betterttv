@@ -33,7 +33,7 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
         return;
       }
 
-      appendToChat(emote.code);
+      appendToChat(emote.code, !shiftPressed);
       emoteStore.trackHistory(emote);
 
       if (shiftPressed) {
