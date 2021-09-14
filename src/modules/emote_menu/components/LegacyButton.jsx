@@ -10,7 +10,7 @@ export default function LegacyButton() {
       trigger="click"
       placement="auto"
       speaker={
-        <Tooltip>
+        <Tooltip className={styles.tooltip}>
           This button has moved! Click the other :) button in the chat box to access BetterTTV&apos;s emote menu.
         </Tooltip>
       }>

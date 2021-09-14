@@ -3,7 +3,7 @@ import React from 'react';
 import {createSrcSet} from '../../../utils/image.js';
 import styles from '../styles/emote.module.css';
 
-export default function Emote({key, emote, onClick, onMouseOver, active}) {
+export default function Emote({emote, onClick, onMouseOver, active}) {
   const imageRef = React.useRef(null);
   const loadingRef = React.useRef(true);
 
@@ -20,7 +20,6 @@ export default function Emote({key, emote, onClick, onMouseOver, active}) {
 
   return (
     <button
-      key={key}
       onClick={() => onClick(emote)}
       onMouseOver={() => onMouseOver(emote)}
       onFocus={() => onMouseOver(emote)}
