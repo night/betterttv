@@ -17,10 +17,8 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState(null);
   const [, setUpdated] = useState(false);
-
   const [altPressed, setAltPressed] = useState(false);
   const [shiftPressed, setShiftPressed] = useState(false);
-
   const [section, setSection] = useState({
     eventKey: null,
     scrollTo: false,
@@ -47,18 +45,6 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
     [altPressed, shiftPressed]
   );
 
-  useEffect(() => setSearch(''), [section]);
-
-  const handleKeyDownCallback = useCallback(
-    (event) => {
-      if (event.keyCode === keycodes.Enter) {
-        event.preventDefault();
-        handleClick(selected);
-      }
-    },
-    [selected]
-  );
-
   useEffect(() => {
     function buttonPressCallback(event) {
       setAltPressed(event.altKey);
@@ -67,8 +53,14 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
 
     function callback(event) {
       buttonPressCallback(event);
-      handleKeyDownCallback(event);
-      keyPressCallback(event);
+
+      if (event.keyCode === keycodes.Enter) {
+        event.preventDefault();
+        handleClick(selected);
+        return;
+      }
+
+      keyPressCallback(event, shiftPressed);
     }
 
     window.addEventListener('keydown', callback, false);
@@ -78,7 +70,7 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
       window.removeEventListener('keydown', callback, false);
       window.removeEventListener('keyup', buttonPressCallback, false);
     };
-  }, []);
+  }, [selected, shiftPressed]);
 
   useEffect(() => {
     const callback = () => {
@@ -96,6 +88,8 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
       emoteStore.off('dirty', callback);
     };
   }, []);
+
+  useEffect(() => setSearch(''), [section]);
 
   return (
     <>

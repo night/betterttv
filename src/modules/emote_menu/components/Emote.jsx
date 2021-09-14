@@ -3,7 +3,7 @@ import React from 'react';
 import {createSrcSet} from '../../../utils/image.js';
 import styles from '../styles/emote.module.css';
 
-function Emote({emote, onClick, onMouseOver, active}) {
+export default function Emote({emote, onClick, onMouseOver, active}) {
   const imageRef = React.useRef(null);
   const loadingRef = React.useRef(true);
 
@@ -37,11 +37,3 @@ function Emote({emote, onClick, onMouseOver, active}) {
     </button>
   );
 }
-
-export default React.memo(
-  Emote,
-  (oldProps, newProps) =>
-    oldProps.emote.id === newProps.emote.id &&
-    oldProps.active === newProps.active &&
-    oldProps.onClick === newProps.onClick
-);

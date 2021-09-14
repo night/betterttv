@@ -11,15 +11,6 @@ import useGridKeyboardNavigation from './GridKeyboardNavigation.jsx';
 
 const Emotes = React.forwardRef(
   ({onClick, section, onSection, setCords, cords, setRowColumnCounts, rows, setSelected, navigationMode}, ref) => {
-    const handleMouseOver = useCallback(
-      (newCords) => {
-        if (navigationMode === NavigationModeTypes.MOUSE) {
-          setCords(newCords);
-        }
-      },
-      [navigationMode]
-    );
-
     useEffect(() => {
       const rowColumnCounts = [];
 
@@ -55,13 +46,17 @@ const Emotes = React.forwardRef(
                 active={y === cords.y && x === cords.x}
                 emote={emote}
                 onClick={onClick}
-                onMouseOver={() => handleMouseOver({x, y})}
+                onMouseOver={() => {
+                  if (navigationMode === NavigationModeTypes.MOUSE) {
+                    setCords({x, y});
+                  }
+                }}
               />
             ))}
           </div>
         );
       },
-      [cords, onClick]
+      [cords, onClick, navigationMode]
     );
 
     const handleHeaderChange = useCallback((rowIndex) => {

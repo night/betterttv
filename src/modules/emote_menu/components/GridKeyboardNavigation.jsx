@@ -130,7 +130,7 @@ export default function useGridKeyboardNavigation(
   const [cords, setCords] = useState({x: 0, y: 0});
 
   const handleKeyPress = useCallback(
-    (event) => {
+    (event, shift) => {
       let newCords = null;
 
       switch (event.keyCode) {
@@ -156,6 +156,12 @@ export default function useGridKeyboardNavigation(
           break;
         case keycodes.Home:
           newCords = travelHome(rowColumnCounts, cords, maxColumnCount);
+          event.preventDefault();
+          break;
+        case keycodes.Tab:
+          newCords = shift
+            ? travelLeft(rowColumnCounts, cords, maxColumnCount)
+            : travelRight(rowColumnCounts, cords, maxColumnCount);
           event.preventDefault();
           break;
         default:
