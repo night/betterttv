@@ -16,7 +16,8 @@ function EmotesModule() {
         <p className={styles.description}>Adds more emotes to your chat</p>
         <CheckboxGroup
           value={Object.values(EmoteTypeFlags).filter((value) => hasFlag(emotes, value))}
-          onChange={(value) => setEmotes(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}>
+          onChange={(value) => setEmotes(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}
+        >
           <Checkbox key="bttvEmotes" value={EmoteTypeFlags.BTTV_EMOTES}>
             <p>BetterTTV Emotes</p>
             <p className={styles.description}>Adds extra cool emotes for you to use</p>

@@ -15,7 +15,6 @@ import {hasFlag} from '../../utils/flags.js';
 import {getCurrentChannel} from '../../utils/channel.js';
 
 const EMOTE_STRIP_SYMBOLS_REGEX = /(^[~!@#$%^&*()]+|[~!@#$%^&*()]+$)/g;
-const MENTION_REGEX = /^@([a-zA-Z\d_]+)$/;
 const STEAM_LOBBY_JOIN_REGEX = /^steam:\/\/joinlobby\/\d+\/\d+\/\d+$/;
 const EMOTES_TO_CAP = ['567b5b520e984428652809b6'];
 const MAX_EMOTES_WHEN_CAPPED = 10;
@@ -26,7 +25,6 @@ const badgeTemplate = (url, description) => `
     <div class="bttv-tooltip bttv-tooltip--up" style="margin-bottom: 0.9rem;">${description}</div>
   </div>
 `;
-const mentionTemplate = (name) => `<span class="mentioning">@${html.escape(name)}</span>`;
 const steamLobbyJoinTemplate = (joinLink) => `<a href="${joinLink}">${joinLink}</a>`;
 
 function formatChatUser(message) {
@@ -157,13 +155,6 @@ class ChatModule {
       for (let j = 0; j < parts.length; j++) {
         const part = parts[j];
         if (!part || typeof part !== 'string') {
-          continue;
-        }
-
-        const mention = part.match(MENTION_REGEX);
-        if (part.length > 2 && part.charAt(0) === '@' && mention && mention[1]) {
-          parts[j] = mentionTemplate(mention[1]);
-          modified = true;
           continue;
         }
 

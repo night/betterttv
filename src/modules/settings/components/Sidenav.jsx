@@ -28,7 +28,8 @@ function BTTVSidenav({value, onChange}) {
               <Icon>
                 <FontAwesomeIcon icon={faCommentAlt} />
               </Icon>
-            }>
+            }
+          >
             <p>Chat Settings</p>
           </Nav.Item>
           <Nav.Item
@@ -37,7 +38,8 @@ function BTTVSidenav({value, onChange}) {
               <Icon>
                 <FontAwesomeIcon icon={faCompass} />
               </Icon>
-            }>
+            }
+          >
             <p>Directory Settings</p>
           </Nav.Item>
           <Nav.Item
@@ -46,7 +48,8 @@ function BTTVSidenav({value, onChange}) {
               <Icon>
                 <FontAwesomeIcon icon={faHouseUser} />
               </Icon>
-            }>
+            }
+          >
             <p>Channel Settings</p>
           </Nav.Item>
           <Nav.Item
@@ -57,7 +60,8 @@ function BTTVSidenav({value, onChange}) {
               <Icon>
                 <FontAwesomeIcon icon={faColumns} />
               </Icon>
-            }>
+            }
+          >
             <p>Emote Dashboard</p>
           </Nav.Item>
           <Nav.Item
@@ -66,7 +70,8 @@ function BTTVSidenav({value, onChange}) {
               <Icon>
                 <FontAwesomeIcon icon={faBox} />
               </Icon>
-            }>
+            }
+          >
             <p>Changelog</p>
           </Nav.Item>
         </Nav>
@@ -77,7 +82,8 @@ function BTTVSidenav({value, onChange}) {
               <Icon>
                 <FontAwesomeIcon icon={faInfoCircle} />
               </Icon>
-            }>
+            }
+          >
             <p>About</p>
           </Nav.Item>
         </Nav>
