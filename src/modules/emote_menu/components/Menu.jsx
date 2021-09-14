@@ -82,11 +82,8 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
 
     callback();
 
-    emoteStore.on('dirty', callback);
-
-    return () => {
-      emoteStore.off('dirty', callback);
-    };
+    const cleanup = emoteStore.on('dirty', callback);
+    return () => cleanup();
   }, []);
 
   useEffect(() => setSearch(''), [section]);

@@ -20,13 +20,17 @@ class SafeEventEmitter extends EventEmitter {
   on(type, listener) {
     const callback = newListener.bind(this, listener);
     super.on(type, callback);
-    return () => this.off(type, callback);
+    return () => super.off(type, callback);
   }
 
   once(type, listener) {
     const callback = newListener.bind(this, listener);
     super.once(type, callback);
-    return () => this.off(type, callback);
+    return () => super.off(type, callback);
+  }
+
+  off() {
+    throw new Error('.off cannot be called directly. you must use the returned cleanup function from .on/.once');
   }
 }
 
