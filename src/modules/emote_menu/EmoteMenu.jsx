@@ -105,7 +105,7 @@ export default class EmoteMenuModule {
     }
   }
 
-  appendToChat(text) {
+  appendToChat(text, shouldFocus = true) {
     const element = document.querySelector(CHAT_TEXT_AREA);
 
     let selectionEnd = element.selectionStart + text.length;
@@ -129,7 +129,9 @@ export default class EmoteMenuModule {
       }
     }
 
-    element.focus();
+    if (shouldFocus) {
+      element.focus();
+    }
     selectionEnd = element.selectionStart + text.length;
     element.setSelectionRange(selectionEnd, selectionEnd);
   }
