@@ -1,4 +1,5 @@
 /* eslint-disable import/prefer-default-export */
+import uniqby from 'lodash.uniqby';
 import twitchApi from '../../../utils/twitch-api.js';
 import Emote from '../../emotes/emote.js';
 import Icons from '../components/Icons.jsx';
@@ -137,16 +138,17 @@ export async function loadTwitchEmotes() {
     // twitch seperates emotes by tier, so we merge them into one set
     // eslint-disable-next-line no-prototype-builtins
     if (tempSets.hasOwnProperty(provider.id)) {
-      tempSets[provider.id].emotes = [...tempSets[provider.id]?.emotes, ...providerEmotes];
+      tempSets[provider.id].emotes = uniqby([...tempSets[provider.id]?.emotes, ...providerEmotes], 'id');
       continue;
     }
 
-    tempSets[provider.id] = {provider, emotes: providerEmotes};
+    tempSets[provider.id] = {provider, emotes: uniqby(providerEmotes, 'id')};
   }
 
-  const current = getCurrentChannel();
+  const currentChannel = getCurrentChannel();
 
+  // sort current channel to the top of the sets
   return Object.values(tempSets).sort((set) =>
-    `${emotesCategoryIds.TWITCH}-${current.id}` === set.provider.id ? -1 : 1
+    `${emotesCategoryIds.TWITCH}-${currentChannel.id}` === set.provider.id ? -1 : 1
   );
 }
