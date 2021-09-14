@@ -79,7 +79,7 @@ function travelEnd(rowColumnCounts, {x, y}, maxColumnCount) {
 
   // if the end has no columns, travel up from the end instead
   if (newYColumnCount === 0) {
-    const {x: proposedX, y: proposedY} = travelUp(rowColumnCounts, {x: maxColumnCount, y: newY});
+    const {x: proposedX, y: proposedY} = travelUp(rowColumnCounts, {x: maxColumnCount, y: newY}, maxColumnCount);
     // if y didn't actually changed, original coords get returned
     if (proposedY >= newY) {
       return {x, y};
@@ -97,18 +97,26 @@ function travelEnd(rowColumnCounts, {x, y}, maxColumnCount) {
   };
 }
 
-function travelTop(rowColumnCounts, {x}, maxColumnCount) {
-  let newY = 0;
-  let newYColumnCount = rowColumnCounts[0];
+function travelHome(rowColumnCounts, {x, y}, maxColumnCount) {
+  const newY = 0;
+  const newYColumnCount = rowColumnCounts[0];
 
+  // if the home has no columns, travel down from the home instead
   if (newYColumnCount === 0) {
-    const {y} = travelDown(rowColumnCounts, {x, y: 0}, maxColumnCount);
-    newYColumnCount = rowColumnCounts[y];
-    newY = y;
+    const {x: proposedX, y: proposedY} = travelDown(rowColumnCounts, {x: 0, y: newY}, maxColumnCount);
+    // if y didn't actually change, original coords get returned
+    if (proposedY <= newY) {
+      return {x, y};
+    }
+
+    return {
+      x: proposedX,
+      y: proposedY,
+    };
   }
 
   return {
-    x: Math.min(newYColumnCount - 1, x),
+    x: 0,
     y: newY,
   };
 }
@@ -151,7 +159,7 @@ export default function useGridKeyboardNavigation(
           event.preventDefault();
           break;
         case keycodes.Home:
-          newCords = travelTop(rowColumnCounts, cords, maxColumnCount);
+          newCords = travelHome(rowColumnCounts, cords, maxColumnCount);
           event.preventDefault();
           break;
         default:
