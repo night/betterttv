@@ -134,22 +134,18 @@ export default function useGridKeyboardNavigation(
       let newCords = null;
 
       switch (event.keyCode) {
-        case keycodes['8numpad']:
         case keycodes.UpArrow:
           newCords = travelUp(rowColumnCounts, cords, maxColumnCount);
           event.preventDefault();
           break;
-        case keycodes['2numpad']:
         case keycodes.DownArrow:
           newCords = travelDown(rowColumnCounts, cords, maxColumnCount);
           event.preventDefault();
           break;
-        case keycodes['6numpad']:
         case keycodes.RightArrow:
           newCords = travelRight(rowColumnCounts, cords, maxColumnCount);
           event.preventDefault();
           break;
-        case keycodes['4numpad']:
         case keycodes.LeftArrow:
           newCords = travelLeft(rowColumnCounts, cords, maxColumnCount);
           event.preventDefault();
