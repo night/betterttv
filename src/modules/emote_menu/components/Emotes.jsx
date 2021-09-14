@@ -43,7 +43,7 @@ const Emotes = React.forwardRef(
           <div key={key} style={style} className={classNames(className, styles.row)}>
             {row.map((emote, x) => (
               <Emote
-                key={emote.id}
+                key={`${emote.provider.id}${emote.id}`}
                 active={y === cords.y && x === cords.x}
                 emote={emote}
                 onClick={onClick}
@@ -126,7 +126,7 @@ const SearchedEmotes = React.forwardRef(
           <div key={key} style={style} className={classNames(className, styles.row)}>
             {row.map(({item}, x) => (
               <Emote
-                key={item.id}
+                key={`${item.provider.id}${item.id}`}
                 emote={item}
                 onClick={onClick}
                 onMouseOver={() => handleMouseOver({x, y})}
