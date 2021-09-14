@@ -34,7 +34,8 @@ export default function Button({appendToChat, setPopoverOpen}) {
           <EmoteMenu triggerRef={triggerRef} appendToChat={appendToChat} />
         </Popover>
       }
-      triggerRef={triggerRef}>
+      triggerRef={triggerRef}
+    >
       <div className={styles.placeholder} />
     </Whisper>
   );

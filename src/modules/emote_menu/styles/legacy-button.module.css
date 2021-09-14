@@ -13,7 +13,7 @@
 }
 
 .tooltip {
-  div[class$="-tooltip-arrow"] {
+  div[class$='-tooltip-arrow'] {
     display: none !important;
   }
 }

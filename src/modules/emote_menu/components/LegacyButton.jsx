@@ -13,7 +13,8 @@ export default function LegacyButton() {
         <Tooltip className={styles.tooltip}>
           This button has moved! Click the other :) button in the chat box to access BetterTTV&apos;s emote menu.
         </Tooltip>
-      }>
+      }
+    >
       <button type="button" className={styles.button} />
     </Whisper>
   );

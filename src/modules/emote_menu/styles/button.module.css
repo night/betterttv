@@ -3,7 +3,7 @@
   margin-left: 6px;
   width: 390px;
 
-  div[class$="-popover-arrow"] {
+  div[class$='-popover-arrow'] {
     display: none !important;
   }
 }

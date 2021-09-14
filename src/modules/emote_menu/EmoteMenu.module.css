@@ -4,7 +4,7 @@
 }
 
 .hideDefaultEmoteMenuButton {
-  button[data-a-target="emote-picker-button"] {
+  button[data-a-target='emote-picker-button'] {
     display: none !important;
   }
 }
