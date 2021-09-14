@@ -133,7 +133,15 @@ export default async (env, argv) => {
           test: /(\.less|\.css)$/,
           use: [
             MiniCssExtractPlugin.loader,
-            'css-loader',
+            {
+              loader: 'css-loader',
+              options: {
+                modules: {
+                  auto: true,
+                  localIdentName: '[name]__[local]-[hash:base64:5]',
+                },
+              },
+            },
             {
               loader: 'postcss-loader',
               options: {
