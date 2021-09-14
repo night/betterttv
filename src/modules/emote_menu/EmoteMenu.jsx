@@ -155,7 +155,7 @@ export default class EmoteMenuModule {
     }
 
     if (legacyContainer != null) {
-      legacyContainer.classList.toggle(styles.hidden, !clickTwitchEmotes);
+      legacyContainer.classList.toggle(styles.hideEmoteMenuButton, !clickTwitchEmotes);
     }
   }
 }
