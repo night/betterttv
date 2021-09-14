@@ -1,6 +1,5 @@
 import storage from '../../../storage.js';
 import {getEmoteIdFromProvider} from '../../../utils/emotes.js';
-import SafeEventEmitter from '../../../utils/safe-event-emitter.js';
 
 const HOUR = 60 * 60 * 1000;
 const DAY = 24 * HOUR;
@@ -42,9 +41,8 @@ function calcScore({totalUses, recentUses}) {
   return Math.floor((totalUses * frecency) / recentUses.length);
 }
 
-class EmoteStorage extends SafeEventEmitter {
+class EmoteStorage {
   constructor() {
-    super();
     this.emoteStore = storage.get('emotes');
 
     if (this.emoteStore == null) {
@@ -111,8 +109,6 @@ class EmoteStorage extends SafeEventEmitter {
       usageHistory: this.emoteStore.usageHistory,
       favorites: Array.from(this.favorites),
     });
-
-    this.emit('save');
   }
 }
 
