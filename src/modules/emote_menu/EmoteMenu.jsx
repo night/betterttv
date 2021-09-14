@@ -101,7 +101,7 @@ export default class EmoteMenuModule {
     if (bttvEmotePicker != null) {
       bttvEmotePicker.classList.toggle(styles.hidden, !visible);
       const emotePicker = document.querySelector(EMOTE_PICKER_BUTTON_SELECTOR);
-      emotePicker.classList.toggle(styles.hidden, visible);
+      emotePicker.parentElement.classList.toggle(styles.hidden, visible);
     }
   }
 
