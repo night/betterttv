@@ -1,0 +1,14 @@
+.container {
+  display: inline-flex !important;
+  position: relative !important;
+}
+
+.hideDefaultEmoteMenuButton {
+  button[data-a-target="emote-picker-button"] {
+    display: none !important;
+  }
+}
+
+.hideEmoteMenuButton {
+  display: none;
+}

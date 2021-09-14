@@ -1,0 +1,57 @@
+.divider {
+  margin: 0px;
+}
+
+.header {
+  background-color: #292d33;
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  column-gap: 8px;
+  position: sticky;
+  top: 0;
+}
+
+.row {
+  display: flex;
+  justify-content: left;
+  width: 100%;
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  flex-direction: column;
+  row-gap: 8px;
+  justify-content: center;
+}
+
+.emotesContainer {
+  composes: scroll from './scrollbar.module.css';
+  width: 100%;
+  padding: 0 8px;
+  overflow-x: hidden;
+}
+
+.searched {
+  padding-top: 8px;
+}
+
+.headerIcon {
+  display: flex;
+  width: 20px;
+  height: 20px;
+  align-items: center;
+
+  svg {
+    width: 100% !important;
+  }
+}
+
+.headerText {
+  font-weight: 600;
+  font-size: 11px;
+  opacity: 0.8;
+}

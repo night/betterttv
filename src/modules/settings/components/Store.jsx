@@ -18,11 +18,8 @@ export function useStorageState(settingId) {
       setValue(newValue);
     }
 
-    settings.on(`changed.${settingId}`, callback);
-
-    return () => {
-      settings.off(`changed.${settingId}`, callback);
-    };
+    const cleanup = settings.on(`changed.${settingId}`, callback);
+    return () => cleanup();
   }, []);
 
   function setSetting(newValue) {

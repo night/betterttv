@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import cookies from 'cookies-js';
 import twitchAPI from './twitch-api.js';
+import debug from './debug.js';
 import {getCurrentUser, setCurrentUser} from './user.js';
 import {getCurrentChannel, setCurrentChannel} from './channel.js';
 
@@ -11,6 +12,13 @@ const CHAT_LIST = '.chat-list,.chat-list--default,.chat-list--other';
 const PLAYER = '.video-player__container';
 const CLIPS_BROADCASTER_INFO = '.clips-broadcaster-info';
 const CHAT_MESSAGE_SELECTOR = '.chat-line__message';
+
+const PROFILE_IMAGE_GQL_QUERY = `
+query {
+    currentUser {
+        profileImageURL(width: 300)
+    }
+}`;
 
 const TMIActionTypes = {
   MESSAGE: 0,
@@ -60,7 +68,7 @@ const TMIActionTypes = {
   CHANNEL_POINTS_AWARD: 44,
 };
 
-function getReactInstance(element) {
+export function getReactInstance(element) {
   for (const key in element) {
     if (key.startsWith('__reactInternalInstance$')) {
       return element[key];
@@ -112,6 +120,7 @@ function searchReactChildren(node, predicate, maxDepth = 15, depth = 0) {
 }
 
 let chatClient;
+let currentProfilePicture;
 
 const userCookie = cookies.get('twilight-user');
 if (userCookie) {
@@ -128,6 +137,21 @@ if (userCookie) {
 }
 
 export default {
+  async getCurrentUserProfilePicture() {
+    if (currentProfilePicture != null) {
+      return currentProfilePicture;
+    }
+
+    try {
+      const {data} = await twitchAPI.graphqlQuery(PROFILE_IMAGE_GQL_QUERY);
+      currentProfilePicture = data.currentUser.profileImageURL;
+      return currentProfilePicture;
+    } catch (e) {
+      debug.log('failed to fetch twitch user profile', e);
+      return null;
+    }
+  },
+
   updateCurrentChannel() {
     let rv;
 

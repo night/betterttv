@@ -1,0 +1,19 @@
+.divider {
+  margin: 0px;
+}
+
+.header {
+  display: flex;
+  padding: 8px;
+  column-gap: 4px;
+}
+
+.content {
+  display: flex;
+  height: 300px;
+}
+
+.emotes {
+  width: 100%;
+  padding: 0 8px;
+}

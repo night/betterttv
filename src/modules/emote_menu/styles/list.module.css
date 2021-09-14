@@ -1,0 +1,13 @@
+.list {
+  overflow-y: scroll;
+  position: relative;
+}
+
+.rows {
+  width: 100%;
+  position: absolute;
+}
+
+.ghostRows {
+  visibility: hidden;
+}

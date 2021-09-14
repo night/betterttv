@@ -1,0 +1,29 @@
+.emote {
+  position: relative;
+  border-radius: 4px;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+
+  &:focus {
+    background-color: #464647;
+  }
+
+  &:focus-visible {
+    outline: 0px;
+  }
+}
+
+.emoteImage {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.active {
+  background-color: #5a5a5c;
+}
+
+.placeholder {
+  background-color: #23262b;
+}

@@ -33,7 +33,13 @@ class Emojis extends AbstractEmotes {
     return provider;
   }
 
+  getEmotesByCategory() {
+    return this.emotesByCategory;
+  }
+
   loadEmojis() {
+    this.emotesByCategory = {};
+
     Object.values(emojiBySlug)
       .filter((emoji) => blacklistedEmoji.indexOf(emoji.char) === -1 && countEmojis(emoji) === 1)
       .forEach((emoji, index) => {
@@ -71,6 +77,17 @@ class Emojis extends AbstractEmotes {
             '1x': url,
           },
         });
+
+        if (!emoji.isAlternative) {
+          // eslint-disable-next-line no-prototype-builtins
+          let categoryEmotes = this.emotesByCategory[emoji.category];
+
+          if (categoryEmotes == null) {
+            categoryEmotes = [];
+            this.emotesByCategory[emoji.category] = categoryEmotes;
+          }
+          categoryEmotes.push(emote);
+        }
 
         this.emotes.set(emoji.char, emote);
         this.emotes.set(code, emote);

@@ -1,0 +1,29 @@
+.preview {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px;
+  align-items: center;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+  height: 100%;
+}
+
+.emoteImage {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+}
+
+.emoji {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emoteCode {
+  font-weight: 800;
+}
