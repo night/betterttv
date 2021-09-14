@@ -5,7 +5,7 @@ import {SettingIds} from '../../constants.js';
 import EmoteMenu from './components/Button.jsx';
 import LegacyButton from './components/LegacyButton.jsx';
 import domObserver from '../../observers/dom.js';
-import styles from './style.module.css';
+import styles from './EmoteMenu.module.css';
 import {getReactInstance} from '../../utils/twitch.js';
 import {getCurrentUser} from '../../utils/user.js';
 
@@ -69,7 +69,7 @@ export default class EmoteMenuModule {
 
     if (container == null && clickTwitchEmotes) {
       const popover = document.createElement('div');
-      popover.classList.add(styles.emoteMenuContainer);
+      popover.classList.add(styles.container);
       const chatInputIcons = document.querySelector(CHAT_INPUT_ICONS_SELECTOR);
       const buttonContainer = document.querySelector(EMOTE_PICKER_BUTTON_SELECTOR).parentElement.cloneNode(true);
       const button = buttonContainer.childNodes[0];
@@ -99,9 +99,9 @@ export default class EmoteMenuModule {
     const bttvEmotePicker = document.querySelector(BTTV_EMOTE_PICKER_BUTTON_SELECTOR);
 
     if (bttvEmotePicker != null) {
-      bttvEmotePicker.classList.toggle(styles.hidden, !visible);
+      bttvEmotePicker.classList.toggle(styles.hideEmoteMenuButton, !visible);
       const emotePicker = document.querySelector(EMOTE_PICKER_BUTTON_SELECTOR);
-      emotePicker.parentElement.classList.toggle(styles.hidden, visible);
+      emotePicker.parentElement.classList.toggle(styles.hideDefaultEmoteMenuButton, visible);
     }
   }
 

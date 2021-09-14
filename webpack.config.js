@@ -138,7 +138,7 @@ export default async (env, argv) => {
               options: {
                 modules: {
                   auto: true,
-                  localIdentName: '[name]__[local]-[hash:base64:5]',
+                  localIdentName: 'bttv-[name]__[local]-[hash:base64:5]',
                 },
               },
             },
