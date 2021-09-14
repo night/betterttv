@@ -199,6 +199,11 @@ class EmoteStore extends SafeEventEmitter {
     emoteStorage.trackHistory(emote);
     this.markDirty(forceUpdate);
   }
+
+  hasFavorite(emote) {
+    const emoteCanonicalId = getEmoteIdFromProvider(emote.id, emote.provider.id);
+    return emoteStorage.favorites.has(emoteCanonicalId);
+  }
 }
 
 export default new EmoteStore();

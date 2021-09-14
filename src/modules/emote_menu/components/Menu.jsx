@@ -114,7 +114,11 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
         />
       </div>
       <Divider className={styles.divider} />
-      <Preview className={styles.preview} emote={selected} />
+      <Preview
+        className={styles.preview}
+        emote={selected}
+        isFavorite={selected == null ? false : emoteStore.hasFavorite(selected)}
+      />
     </>
   );
 }
