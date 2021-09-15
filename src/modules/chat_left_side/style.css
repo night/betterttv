@@ -7,6 +7,10 @@
     order: 2;
   }
 
+  .bttv-rs-popover {
+    left: 5px !important;
+  }
+
   #sideNav,
   .side-nav {
     order: 3;
