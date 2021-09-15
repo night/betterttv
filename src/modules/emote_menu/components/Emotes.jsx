@@ -10,7 +10,7 @@ import {NavigationModeTypes, RowHeight, WindowHeight} from '../../../constants.j
 import useGridKeyboardNavigation from './GridKeyboardNavigation.jsx';
 
 const Emotes = React.forwardRef(
-  ({onClick, section, onSection, setCords, cords, setRowColumnCounts, rows, setSelected, navigationMode}, ref) => {
+  ({onClick, section, onSection, setCoords, coords, setRowColumnCounts, rows, setSelected, navigationMode}, ref) => {
     useEffect(() => {
       const rowColumnCounts = [];
 
@@ -20,7 +20,7 @@ const Emotes = React.forwardRef(
       setRowColumnCounts(rowColumnCounts);
     }, [rows]);
 
-    useEffect(() => setSelected(rows[cords.y][cords.x]), [cords]);
+    useEffect(() => setSelected(rows[coords.y][coords.x]), [coords]);
 
     useEffect(() => {
       for (const row of rows) {
@@ -44,12 +44,12 @@ const Emotes = React.forwardRef(
             {row.map((emote, x) => (
               <Emote
                 key={`${emote.provider.id}-${emote.id}`}
-                active={y === cords.y && x === cords.x}
+                active={y === coords.y && x === coords.x}
                 emote={emote}
                 onClick={onClick}
                 onMouseOver={() => {
                   if (navigationMode === NavigationModeTypes.MOUSE) {
-                    setCords({x, y});
+                    setCoords({x, y});
                   }
                 }}
               />
@@ -57,7 +57,7 @@ const Emotes = React.forwardRef(
           </div>
         );
       },
-      [cords, onClick, navigationMode]
+      [coords, onClick, navigationMode]
     );
 
     const handleHeaderChange = useCallback((rowIndex) => {
@@ -91,27 +91,29 @@ const Emotes = React.forwardRef(
 );
 
 const SearchedEmotes = React.forwardRef(
-  ({search, onClick, cords, setCords, setRowColumnCounts, setSelected, navigationMode}, ref) => {
+  ({search, onClick, coords, setCoords, setRowColumnCounts, setSelected, navigationMode}, ref) => {
     const emotes = useMemo(() => emoteStore.search(search), [search]);
 
     const handleMouseOver = useCallback(
-      (newCords) => {
+      (newCoords) => {
         if (navigationMode === NavigationModeTypes.MOUSE) {
-          setCords(newCords);
+          setCoords(newCoords);
         }
       },
       [navigationMode]
     );
 
+    useEffect(() => setSelected(emotes[coords.y][coords.x].item), [coords]);
+
     useEffect(() => {
       const rowColumnCounts = [];
       let foundFirstEmote = false;
 
-      for (const row of emotes) {
+      for (const [y, row] of emotes.entries()) {
         rowColumnCounts.push(!Array.isArray(row) ? 0 : row.length);
 
         if (Array.isArray(row) && !foundFirstEmote) {
-          setSelected(row[0].item);
+          setCoords({y, x: 0});
           foundFirstEmote = true;
         }
       }
@@ -130,13 +132,13 @@ const SearchedEmotes = React.forwardRef(
                 emote={item}
                 onClick={onClick}
                 onMouseOver={() => handleMouseOver({x, y})}
-                active={x === cords.x && y === cords.y}
+                active={x === coords.x && y === coords.y}
               />
             ))}
           </div>
         );
       },
-      [emotes, cords, onClick]
+      [emotes, coords, onClick]
     );
 
     if (emotes.length === 0) {
@@ -167,7 +169,7 @@ export default function renderEmotes(props) {
 
   const [rowColumnCounts, setRowColumnCounts] = useState([]);
   const [navigationMode, setNavigationMode] = useState(NavigationModeTypes.MOUSE);
-  const [cords, setCords] = useGridKeyboardNavigation(
+  const [coords, setCoords] = useGridKeyboardNavigation(
     setKeyPressCallback,
     rowColumnCounts,
     setNavigationMode,
@@ -195,7 +197,7 @@ export default function renderEmotes(props) {
       return;
     }
 
-    const depth = cords.y * RowHeight;
+    const depth = coords.y * RowHeight;
     const {scrollTop} = wrapperRef.current;
 
     if (depth < scrollTop + RowHeight) {
@@ -205,15 +207,15 @@ export default function renderEmotes(props) {
     if (depth + RowHeight >= scrollTop + WindowHeight) {
       wrapperRef.current.scrollTo(0, depth + RowHeight - WindowHeight);
     }
-  }, [cords]);
+  }, [coords]);
 
   return isSearch ? (
     <SearchedEmotes
       ref={wrapperRef}
       setRowColumnCounts={setRowColumnCounts}
       navigationMode={navigationMode}
-      cords={cords}
-      setCords={setCords}
+      coords={coords}
+      setCoords={setCoords}
       {...props}
     />
   ) : (
@@ -221,8 +223,8 @@ export default function renderEmotes(props) {
       ref={wrapperRef}
       setRowColumnCounts={setRowColumnCounts}
       navigationMode={navigationMode}
-      cords={cords}
-      setCords={setCords}
+      coords={coords}
+      setCoords={setCoords}
       {...props}
     />
   );
