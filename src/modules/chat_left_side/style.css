@@ -7,8 +7,8 @@
     order: 2;
   }
 
-  [data-a-target='bttv-emote-menu'] {
-    left: 5px !important;
+  div[data-a-target='bttv-emote-menu'] {
+    left: 2855px !important;
   }
 
   #sideNav,
