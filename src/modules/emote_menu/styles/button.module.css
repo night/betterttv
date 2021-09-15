@@ -1,6 +1,7 @@
 .popover {
   height: 412px;
-  margin-left: 6px;
+  margin-top: -28px !important;
+  margin-left: 8px !important;
   width: 390px;
 
   div[class$='-popover-arrow'] {
@@ -11,6 +12,13 @@
 @media only screen and (max-width: 400px) {
   .popover {
     width: 320px;
+  }
+}
+
+@media only screen and (max-width: 510px) {
+  .popover {
+    margin-top: -12px !important;
+    margin-left: 6px !important;
   }
 }
 

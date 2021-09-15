@@ -28,7 +28,7 @@ export default function Button({appendToChat, setPopoverOpen}) {
   return (
     <Whisper
       trigger="active"
-      placement="topEnd"
+      placement="auto"
       speaker={
         <Popover className={styles.popover} full>
           <EmoteMenu triggerRef={triggerRef} appendToChat={appendToChat} />
