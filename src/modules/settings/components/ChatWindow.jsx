@@ -6,7 +6,7 @@ import {CategoryTypes} from '../../../constants.js';
 import cdn from '../../../utils/cdn.js';
 import CloseButton from './CloseButton.jsx';
 
-export default function ChatModal({show, onHide}) {
+export default function ChatWindow({show, onHide}) {
   const [search, setSearch] = useState('');
 
   if (!show) return null;
@@ -20,11 +20,9 @@ export default function ChatModal({show, onHide}) {
         </div>
         <CloseButton onHide={onHide} />
       </div>
-      <div className={styles.settings}>
-        <PanelGroup>
-          <Settings search={search} category={CategoryTypes.CHAT} />
-        </PanelGroup>
-      </div>
+      <PanelGroup className={styles.chatWindowContent}>
+        <Settings search={search} category={CategoryTypes.CHAT} />
+      </PanelGroup>
     </div>
   );
 }

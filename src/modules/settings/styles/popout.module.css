@@ -26,3 +26,8 @@
     }
   }
 }
+
+.chatWindowContent {
+  composes: scroll from '../../emote_menu/styles/scrollbar.module.css';
+  height: calc(100% - 76px);
+}
