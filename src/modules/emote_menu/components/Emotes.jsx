@@ -103,15 +103,17 @@ const SearchedEmotes = React.forwardRef(
       [navigationMode]
     );
 
+    useEffect(() => setSelected(emotes[cords.y][cords.x].item), [cords]);
+
     useEffect(() => {
       const rowColumnCounts = [];
       let foundFirstEmote = false;
 
-      for (const row of emotes) {
+      for (const [y, row] of emotes.entries()) {
         rowColumnCounts.push(!Array.isArray(row) ? 0 : row.length);
 
         if (Array.isArray(row) && !foundFirstEmote) {
-          setSelected(row[0].item);
+          setCords({y, x: 0});
           foundFirstEmote = true;
         }
       }
