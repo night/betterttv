@@ -30,12 +30,11 @@ export default function Button({appendToChat, setPopoverOpen}) {
       trigger="active"
       placement="topEnd"
       speaker={
-        <Popover className={styles.popover} full>
+        <Popover data-a-target="bttv-emote-menu" className={styles.popover} full>
           <EmoteMenu triggerRef={triggerRef} appendToChat={appendToChat} />
         </Popover>
       }
-      triggerRef={triggerRef}
-    >
+      triggerRef={triggerRef}>
       <div className={styles.placeholder} />
     </Whisper>
   );

@@ -7,7 +7,7 @@
     order: 2;
   }
 
-  .bttv-rs-popover {
+  [data-a-target='bttv-emote-menu'] {
     left: 5px !important;
   }
 
