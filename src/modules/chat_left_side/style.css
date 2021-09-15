@@ -89,7 +89,7 @@
   }
 
   /* chat settings */
-  div[data-a-target='chat-settings-balloon'] {
+  .channel-root__right-column div[data-a-target='chat-settings-balloon'] {
     margin-right: -25.3rem !important;
   }
 }
