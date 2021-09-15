@@ -127,41 +127,41 @@ export default function useGridKeyboardNavigation(
   setNavigationMode,
   maxColumnCount
 ) {
-  const [cords, setCords] = useState({x: 0, y: 0});
+  const [coords, setCoords] = useState({x: 0, y: 0});
 
   const handleKeyPress = useCallback(
     (event, shift) => {
-      let newCords = null;
+      let newCoords = null;
 
       switch (event.keyCode) {
         case keycodes.UpArrow:
-          newCords = travelUp(rowColumnCounts, cords, maxColumnCount);
+          newCoords = travelUp(rowColumnCounts, coords, maxColumnCount);
           event.preventDefault();
           break;
         case keycodes.DownArrow:
-          newCords = travelDown(rowColumnCounts, cords, maxColumnCount);
+          newCoords = travelDown(rowColumnCounts, coords, maxColumnCount);
           event.preventDefault();
           break;
         case keycodes.RightArrow:
-          newCords = travelRight(rowColumnCounts, cords, maxColumnCount);
+          newCoords = travelRight(rowColumnCounts, coords, maxColumnCount);
           event.preventDefault();
           break;
         case keycodes.LeftArrow:
-          newCords = travelLeft(rowColumnCounts, cords, maxColumnCount);
+          newCoords = travelLeft(rowColumnCounts, coords, maxColumnCount);
           event.preventDefault();
           break;
         case keycodes.End:
-          newCords = travelEnd(rowColumnCounts, cords, maxColumnCount);
+          newCoords = travelEnd(rowColumnCounts, coords, maxColumnCount);
           event.preventDefault();
           break;
         case keycodes.Home:
-          newCords = travelHome(rowColumnCounts, cords, maxColumnCount);
+          newCoords = travelHome(rowColumnCounts, coords, maxColumnCount);
           event.preventDefault();
           break;
         case keycodes.Tab:
-          newCords = shift
-            ? travelLeft(rowColumnCounts, cords, maxColumnCount)
-            : travelRight(rowColumnCounts, cords, maxColumnCount);
+          newCoords = shift
+            ? travelLeft(rowColumnCounts, coords, maxColumnCount)
+            : travelRight(rowColumnCounts, coords, maxColumnCount);
           event.preventDefault();
           break;
         default:
@@ -170,12 +170,12 @@ export default function useGridKeyboardNavigation(
 
       setNavigationMode(NavigationModeTypes.ARROW_KEYS);
 
-      setCords(newCords);
+      setCoords(newCoords);
     },
-    [cords, rowColumnCounts]
+    [coords, rowColumnCounts]
   );
 
   useEffect(() => setKeyPressCallback(handleKeyPress), [handleKeyPress]);
 
-  return [cords, setCords];
+  return [coords, setCoords];
 }
