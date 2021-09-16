@@ -103,7 +103,13 @@ const SearchedEmotes = React.forwardRef(
       [navigationMode]
     );
 
-    useEffect(() => setSelected(emotes[coords.y][coords.x].item), [coords]);
+    useEffect(() => {
+      const item = emotes?.[coords.y]?.[coords.x]?.item;
+      if (item == null) {
+        return;
+      }
+      setSelected(item);
+    }, [coords]);
 
     useEffect(() => {
       const rowColumnCounts = [];
