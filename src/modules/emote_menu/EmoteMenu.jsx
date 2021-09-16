@@ -2,16 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import settings from '../../settings.js';
 import {SettingIds} from '../../constants.js';
-import EmoteMenu from './components/Button.jsx';
-import LegacyButton from './components/LegacyButton.jsx';
+import EmoteMenuButton from './components/LegacyButton.jsx';
 import domObserver from '../../observers/dom.js';
 import styles from './EmoteMenu.module.css';
 import {getReactInstance} from '../../utils/twitch.js';
 import {getCurrentUser} from '../../utils/user.js';
 
-const EMOTE_PICKER_BUTTON_SELECTOR = 'button[data-a-target="emote-picker-button"]';
-const CHAT_INPUT_ICONS_SELECTOR = '.chat-input__input-icons';
-const BTTV_EMOTE_PICKER_BUTTON_SELECTOR = 'button[data-a-target="bttv-emote-picker-button"]';
 const CHAT_TEXT_AREA = 'textarea[data-a-target="chat-input"]';
 
 // For legacy button
@@ -31,7 +27,7 @@ function setPopoverOpen({current}) {
   };
 }
 
-class SafeEmoteMenu extends React.Component {
+class SafeEmoteMenuButton extends React.Component {
   componentDidMount() {
     const {onMount} = this.props;
     onMount();
@@ -47,62 +43,55 @@ class SafeEmoteMenu extends React.Component {
   }
 
   render() {
-    return <EmoteMenu {...this.props} />;
+    return <EmoteMenuButton {...this.props} />;
   }
 }
 
 export default class EmoteMenuModule {
   constructor() {
-    domObserver.on(CHAT_INPUT_ICONS_SELECTOR, () => this.load());
     domObserver.on(CHAT_SETTINGS_BUTTON_SELECTOR, () => this.loadLegacyButton());
-    settings.on(`changed.${SettingIds.CLICK_TWITCH_EMOTES}`, () => {
-      this.load();
-      this.loadLegacyButton();
-    });
+    settings.on(`changed.${SettingIds.CLICK_TWITCH_EMOTES}`, () => this.loadLegacyButton());
   }
 
-  load() {
+  loadLegacyButton() {
     if (getCurrentUser() == null) return;
 
-    const container = document.querySelector(BTTV_EMOTE_PICKER_BUTTON_SELECTOR);
+    const legacyContainer = document.querySelector(LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
     const clickTwitchEmotes = settings.get(SettingIds.CLICK_TWITCH_EMOTES);
 
-    if (container == null && clickTwitchEmotes) {
-      const popover = document.createElement('div');
-      popover.classList.add(styles.container);
-      const chatInputIcons = document.querySelector(CHAT_INPUT_ICONS_SELECTOR);
-      const buttonContainer = document.querySelector(EMOTE_PICKER_BUTTON_SELECTOR).parentElement.cloneNode(true);
-      const button = buttonContainer.childNodes[0];
-      button.setAttribute('data-a-target', 'bttv-emote-picker-button');
-      button.addEventListener('click', () => togglePopover());
+    if (clickTwitchEmotes && legacyContainer == null) {
+      const container = document
+        .querySelector(CHAT_SETTINGS_BUTTON_SELECTOR)
+        .closest(CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR).lastChild;
 
-      chatInputIcons.appendChild(buttonContainer);
-      chatInputIcons.appendChild(popover);
+      const buttonContainer = document.createElement('div');
+      buttonContainer.setAttribute('data-a-target', 'legacy-bttv-emote-picker-button-container');
+      container.insertBefore(buttonContainer, container.lastChild);
 
       ReactDOM.render(
-        <SafeEmoteMenu
+        <SafeEmoteMenuButton
           onError={() => this.show(false)}
-          onMount={this.show}
+          onMount={() => this.show(true)}
+          onClick={() => togglePopover()}
           appendToChat={this.appendToChat}
           setPopoverOpen={setPopoverOpen}
         />,
-        popover
+        buttonContainer
       );
     }
 
-    if (container != null) {
-      this.show(clickTwitchEmotes);
-    }
+    this.show(true);
   }
 
-  show(visible = true) {
-    const bttvEmotePicker = document.querySelector(BTTV_EMOTE_PICKER_BUTTON_SELECTOR);
+  show(visible) {
+    const legacyContainer = document.querySelector(LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
+    const clickTwitchEmotes = settings.get(SettingIds.CLICK_TWITCH_EMOTES);
 
-    if (bttvEmotePicker != null) {
-      bttvEmotePicker.classList.toggle(styles.hideEmoteMenuButton, !visible);
-      const emotePicker = document.querySelector(EMOTE_PICKER_BUTTON_SELECTOR);
-      emotePicker.parentElement.classList.toggle(styles.hideDefaultEmoteMenuButton, visible);
+    if (legacyContainer == null) {
+      return;
     }
+
+    legacyContainer.classList.toggle(styles.hideEmoteMenuButton, !visible || !clickTwitchEmotes);
   }
 
   appendToChat(text, shouldFocus = true) {
@@ -134,28 +123,5 @@ export default class EmoteMenuModule {
     }
     selectionEnd = element.selectionStart + text.length;
     element.setSelectionRange(selectionEnd, selectionEnd);
-  }
-
-  loadLegacyButton() {
-    if (getCurrentUser() == null) return;
-
-    const legacyContainer = document.querySelector(LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
-    const clickTwitchEmotes = settings.get(SettingIds.CLICK_TWITCH_EMOTES);
-
-    if (clickTwitchEmotes && legacyContainer == null) {
-      const container = document
-        .querySelector(CHAT_SETTINGS_BUTTON_SELECTOR)
-        .closest(CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR).lastChild;
-
-      const buttonContainer = document.createElement('div');
-      buttonContainer.setAttribute('data-a-target', 'legacy-bttv-emote-picker-button-container');
-      container.insertBefore(buttonContainer, container.lastChild);
-
-      ReactDOM.render(<LegacyButton />, buttonContainer);
-    }
-
-    if (legacyContainer != null) {
-      legacyContainer.classList.toggle(styles.hideEmoteMenuButton, !clickTwitchEmotes);
-    }
   }
 }

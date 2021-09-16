@@ -12,8 +12,27 @@
   background-image: url(assets/icons/legacy_smile.svg) !important;
 }
 
-.tooltip {
-  div[class$='-tooltip-arrow'] {
+.popover {
+  height: 412px;
+  margin-top: -80px !important;
+  margin-left: 82px !important;
+  width: 390px;
+  color: #efeff1;
+
+  div[class$='-popover-arrow'] {
     display: none !important;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .popover {
+    width: 320px;
+  }
+}
+
+@media only screen and (max-width: 510px) {
+  .popover {
+    margin-top: -58px !important;
+    margin-left: 60px !important;
   }
 }
