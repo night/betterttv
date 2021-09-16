@@ -33,10 +33,23 @@ export default {
   },
 
   graphqlQuery(query, variables) {
-    const body = {query};
-    if (variables) {
-      body.variables = variables;
+    if (accessToken == null) {
+      return Promise.reject(new Error('unset accessToken'));
     }
+
+    let body;
+    if (Array.isArray(query)) {
+      body = query;
+      if (variables) {
+        throw new Error('variables cannot be specified with array of queries');
+      }
+    } else {
+      body = {query};
+      if (variables) {
+        body.variables = variables;
+      }
+    }
+
     return request('POST', null, {
       url: GQL_ENDPOINT,
       body,

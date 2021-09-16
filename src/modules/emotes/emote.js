@@ -1,7 +1,7 @@
 import html from '../../utils/html.js';
 
 export default class Emote {
-  constructor({id, provider, channel, code, images, imageType = 'png', restrictionCallback = null}) {
+  constructor({id, provider, channel, code, images, imageType = 'png', restrictionCallback = null, metadata = null}) {
     this.id = id;
     this.provider = provider;
     this.channel = channel;
@@ -9,6 +9,7 @@ export default class Emote {
     this.restrictionCallback = restrictionCallback;
     this.images = images;
     this.imageType = imageType;
+    this.metadata = metadata;
   }
 
   isUsable(channel, user) {

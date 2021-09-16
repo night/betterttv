@@ -1,5 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import uniqby from 'lodash.uniqby';
+import sortby from 'lodash.sortby';
 import twitchApi from '../../../utils/twitch-api.js';
 import Emote from '../../emotes/emote.js';
 import Icons from '../components/Icons.jsx';
@@ -9,23 +10,26 @@ import settings from '../../../settings.js';
 import {SettingIds, emotesCategoryIds} from '../../../constants.js';
 import {getCurrentChannel} from '../../../utils/channel.js';
 
-const EMOTE_SET_QUERY = `
-query UserEmotes {
-    currentUser {
-        emoteSets {
-            emotes {
-                id,
-                token
-            },
+const AVAILABLE_EMOTES_FOR_CHANNEL_QUERY = `
+  query AvailableEmotesForChannel($channelID: ID!) {
+    channel(id: $channelID) {
+      self {
+        availableEmoteSets {
+          emotes {
             id,
-            owner {
-                id,
-                displayName
-                profileImageURL(width: 300)
-            }
+            token,
+            type
+          },
+          id,
+          owner {
+            id,
+            displayName,
+            profileImageURL(width: 300)
+          }
         }
+      }
     }
-}
+  }
 `;
 
 const TWITCH_EMOTE_CDN = (id, size, isDark = true) =>
@@ -83,9 +87,16 @@ function getForcedProviderToChannels(key) {
 export async function loadTwitchEmotes() {
   let data = [];
 
+  const currentChannel = getCurrentChannel();
+  if (currentChannel == null || currentChannel.provider !== 'twitch') {
+    return [];
+  }
+
   try {
-    const res = await twitchApi.graphqlQuery(EMOTE_SET_QUERY);
-    data = res.data;
+    const [availableEmotesResponse] = await twitchApi.graphqlQuery([
+      {query: AVAILABLE_EMOTES_FOR_CHANNEL_QUERY, variables: {channelID: currentChannel.id}},
+    ]);
+    data = availableEmotesResponse.data;
   } catch (e) {
     debug.log('failed to fetch twitch emotes', e);
     return data;
@@ -94,7 +105,7 @@ export async function loadTwitchEmotes() {
   const isDark = settings.get(SettingIds.DARKENED_MODE);
   const tempSets = {};
 
-  for (const {owner, id, emotes} of data.currentUser.emoteSets) {
+  for (const {owner, id, emotes} of data.channel.self.availableEmoteSets) {
     let provider = getForcedProviderToChannels(id);
 
     if (provider == null && owner != null) {
@@ -113,7 +124,7 @@ export async function loadTwitchEmotes() {
       };
     }
 
-    const providerEmotes = emotes.map(({id: emoteId, token: emoteToken}) => {
+    const providerEmotes = emotes.map(({id: emoteId, token: emoteToken, type}) => {
       let newToken;
 
       try {
@@ -132,6 +143,7 @@ export async function loadTwitchEmotes() {
           '2x': TWITCH_EMOTE_CDN(emoteId, '2.0', isDark),
           '4x': TWITCH_EMOTE_CDN(emoteId, '3.0', isDark),
         },
+        metadata: {type},
       });
     });
 
@@ -145,10 +157,20 @@ export async function loadTwitchEmotes() {
     tempSets[provider.id] = {provider, emotes: uniqby(providerEmotes, 'id')};
   }
 
-  const currentChannel = getCurrentChannel();
-
-  // sort current channel to the top of the sets
-  return Object.values(tempSets).sort((set) =>
-    `${emotesCategoryIds.TWITCH}-${currentChannel.id}` === set.provider.id ? -1 : 1
-  );
+  return sortby(Object.values(tempSets), [
+    // sort current channel to the top of the sets
+    (set) => (`${emotesCategoryIds.TWITCH}-${currentChannel.id}` === set.provider.id ? -1 : 1),
+    // paid subscription emotes and limited emotes (one time subs) seem more important
+    (set) => {
+      switch (set.emotes?.[0].metadata?.type) {
+        case 'SUBSCRIPTIONS':
+        case 'LIMITED_TIME':
+          return -1;
+        default:
+          return 1;
+      }
+    },
+    // do a final sort for alphabetical order
+    (set) => set.provider.displayName.toLowerCase(),
+  ]);
 }
