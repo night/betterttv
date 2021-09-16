@@ -3,6 +3,7 @@
   margin-top: -28px !important;
   margin-left: 8px !important;
   width: 390px;
+  color: #efeff1;
 
   div[class$='-popover-arrow'] {
     display: none !important;
