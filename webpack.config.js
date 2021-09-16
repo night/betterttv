@@ -210,7 +210,7 @@ export default async (env, argv) => {
         DEV_CDN_ENDPOINT: DEV_ENDPOINT,
         PROD_CDN_ENDPOINT: PROD_ENDPOINT,
         EXT_VER: version,
-        GIT_REV: git.long(),
+        GIT_REV: process.env.GIT_REV || git.long(),
         SENTRY_URL:
           process.env.SENTRY_URL || 'https://b289038a9b004560bcb58396066ee847@o23210.ingest.sentry.io/5730387',
         CDN_ENDPOINT,
