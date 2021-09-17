@@ -73,8 +73,10 @@ class EmoteStore extends SafeEventEmitter {
   }
 
   async updateEmoteProviders() {
-    const profilePicture = await twitch.getCurrentUserProfilePicture();
-    const channelPicture = await twitch.getCurrentChannelProfilePicture();
+    const [profilePicture, channelPicture] = await Promise.all([
+      twitch.getCurrentUserProfilePicture(),
+      twitch.getCurrentChannelProfilePicture(),
+    ]);
 
     emoteProviderCategories = [
       createCategory(
