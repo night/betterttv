@@ -11,7 +11,7 @@ const MIN_TIMES_SEE_TOOLTIP = 3; // if the user has seen tooltip 5 times, stop s
 function calcMostValuableTooltip(tooltips) {
   return tooltips
     .filter((tooltip) => !tooltip.learnt && tooltip.timesSeen < MIN_TIMES_SEE_TOOLTIP)
-    .sort((a, b) => b.timesSeen - a.timesSeen)[0];
+    .sort((a, b) => a.timesSeen - b.timesSeen)[0];
 }
 
 function getTooltipText(id) {
