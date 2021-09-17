@@ -38,6 +38,7 @@ export const LegacySettingIds = {
   AUTO_CLAIM_BONUS_CHANNEL_POINTS: 'autoClaimBonusChannelPoints',
   HIDE_CHANNEL_POINTS: 'hideChannelPoints',
   FFZ_EMOTES: 'ffzEmotes',
+  '7TV_EMOTES': '7tvEmotes',
   BTTV_EMOTES: 'bttvEmotes',
   BTTV_GIF_EMOTES: 'bttvGIFEmotes',
   SPLIT_CHAT: 'splitChat',
@@ -112,6 +113,7 @@ export const EmoteTypeFlags = {
   BTTV_EMOTES: 1 << 0,
   BTTV_GIF_EMOTES: 1 << 1,
   FFZ_EMOTES: 1 << 2,
+  '7TV_EMOTES': 1 << 3,
 };
 
 export const ChatFlags = {
@@ -161,6 +163,7 @@ export const emotesCategoryIds = {
   BETTERTTV: 'bttv',
   BETTERTTV_PERSONAL: 'bttv-personal',
   FRANKERFACEZ: 'ffz',
+  '7TV': '7tv',
   TWITCH: 'twitch',
   EMOJI_PEOPLE: 'emoji-people',
   EMOJI_NATURE: 'emoji-nature',
