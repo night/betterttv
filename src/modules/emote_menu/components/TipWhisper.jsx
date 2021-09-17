@@ -50,7 +50,7 @@ export default function TipWhisper({children}) {
   return (
     <Whisper
       triggerRef={triggerRef}
-      trigger="hover"
+      trigger="active"
       placement="topEnd"
       delayShow={6000}
       onOpen={() => tips.seenTip(tooltip?.id)}
