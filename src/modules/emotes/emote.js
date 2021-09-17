@@ -21,6 +21,9 @@ export default class Emote {
     if (this.images['2x']) {
       srcset.push(`${html.escape(this.images['2x'])} 2x`);
     }
+    if (this.images['3x']) {
+      srcset.push(`${html.escape(this.images['3x'])} 3x`);
+    }
     if (this.images['4x']) {
       srcset.push(`${html.escape(this.images['4x'])} 4x`);
     }
