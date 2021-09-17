@@ -94,6 +94,12 @@ class EmoteStore extends SafeEventEmitter {
         Icons.IMAGE(cdn.url('/assets/logos/ffz_logo.png'), 'FrankerFaceZ'),
         emotes.getEmotesByProviders(['ffz-channel', 'ffz-global'])
       ),
+      createCategory(
+        emotesCategoryIds['7TV'],
+        '7TV',
+        Icons.IMAGE(cdn.url('/assets/logos/7tv_logo.png'), '7TV'),
+        emotes.getEmotesByProviders(['7tv-channel', '7tv-global'])
+      ),
     ];
     this.markDirty(false);
   }
