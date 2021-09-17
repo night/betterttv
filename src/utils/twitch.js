@@ -20,6 +20,14 @@ query {
     }
 }`;
 
+const PROFILE_IMAGE_BY_ID_GQL_QUERY = `
+query GetUserProfilePicture($userId: ID!) {
+  user(id: $userId) {
+    profileImageURL(width: 300)
+  }
+}
+`;
+
 const TMIActionTypes = {
   MESSAGE: 0,
   EXTENSION_MESSAGE: 1,
@@ -146,6 +154,18 @@ export default {
       const {data} = await twitchAPI.graphqlQuery(PROFILE_IMAGE_GQL_QUERY);
       currentProfilePicture = data.currentUser.profileImageURL;
       return currentProfilePicture;
+    } catch (e) {
+      debug.log('failed to fetch twitch user profile', e);
+      return null;
+    }
+  },
+
+  async getCurrentChannelProfilePicture() {
+    const currentChannel = getCurrentChannel();
+
+    try {
+      const {data} = await twitchAPI.graphqlQuery(PROFILE_IMAGE_BY_ID_GQL_QUERY, {userId: currentChannel.id});
+      return data.user.profileImageURL;
     } catch (e) {
       debug.log('failed to fetch twitch user profile', e);
       return null;

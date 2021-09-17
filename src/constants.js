@@ -158,7 +158,8 @@ export const RowHeight = 36;
 export const WindowHeight = 300;
 
 export const emotesCategoryIds = {
-  BETTERTTV: 'bttv',
+  BETTERTTV_GLOBAL: 'bttv-global',
+  BETTERTTV_CHANNEL: 'bttv-channel',
   BETTERTTV_PERSONAL: 'bttv-personal',
   FRANKERFACEZ: 'ffz',
   TWITCH: 'twitch',

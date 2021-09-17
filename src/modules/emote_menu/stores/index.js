@@ -74,13 +74,20 @@ class EmoteStore extends SafeEventEmitter {
 
   async updateEmoteProviders() {
     const profilePicture = await twitch.getCurrentUserProfilePicture();
+    const channelPicture = await twitch.getCurrentChannelProfilePicture();
 
     emoteProviderCategories = [
       createCategory(
-        emotesCategoryIds.BETTERTTV,
-        'BetterTTV',
+        emotesCategoryIds.BETTERTTV_CHANNEL,
+        'BetterTTV Channel',
+        Icons.IMAGE(channelPicture == null ? cdn.url('/assets/logos/mascot.png') : channelPicture, 'BetterTTV'),
+        emotes.getEmotesByProviders(['bttv-channel'])
+      ),
+      createCategory(
+        emotesCategoryIds.BETTERTTV_GLOBAL,
+        'BetterTTV Global',
         Icons.IMAGE(cdn.url('/assets/logos/mascot.png'), 'BetterTTV'),
-        emotes.getEmotesByProviders(['bttv-channel', 'bttv'])
+        emotes.getEmotesByProviders(['bttv'])
       ),
       createCategory(
         emotesCategoryIds.BETTERTTV_PERSONAL,
