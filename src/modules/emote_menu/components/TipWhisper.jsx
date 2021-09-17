@@ -58,7 +58,8 @@ export default function TipWhisper({children}) {
         <Tooltip>
           {Icons.BULB}: {getTooltipText(tooltip?.id)}
         </Tooltip>
-      }>
+      }
+    >
       {children}
     </Whisper>
   );
