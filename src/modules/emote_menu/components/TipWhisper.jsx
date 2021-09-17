@@ -7,6 +7,7 @@ import {tipIds} from '../../../constants.js';
 
 const DELAY_SHOW_TOOLTIP = 10000;
 const MIN_TIMES_SEE_TOOLTIP = 3; // if the user has seen tooltip 5 times, stop showing them it
+const RANDOM_DONT_SHOW_TOOLTIP = 0.5;
 
 function calcMostValuableTooltip(tooltips) {
   return tooltips
@@ -36,7 +37,7 @@ export default function TipWhisper({children}) {
     ]);
 
     // we either don't show the tooltip cause there is none or randomly don't as to avoid being obnoxious
-    if (mostValuableTooltip == null && Math.random() < 0.3) {
+    if (mostValuableTooltip == null && Math.random() < RANDOM_DONT_SHOW_TOOLTIP) {
       return;
     }
 
