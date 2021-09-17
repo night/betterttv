@@ -96,10 +96,16 @@ class EmoteStore extends SafeEventEmitter {
         emotes.getEmotesByProviders(['bttv-personal'])
       ),
       createCategory(
-        emotesCategoryIds.FRANKERFACEZ,
-        'FrankerFaceZ',
+        emotesCategoryIds.FRANKERFACEZ_CHANNEL,
+        'FrankerFaceZ Channel',
+        Icons.IMAGE(channelPicture == null ? cdn.url('/assets/logos/ffz_logo.png') : channelPicture, 'FrankerFaceZ'),
+        emotes.getEmotesByProviders(['ffz-channel'])
+      ),
+      createCategory(
+        emotesCategoryIds.FRANKERFACEZ_GLOBAL,
+        'FrankerFaceZ Global',
         Icons.IMAGE(cdn.url('/assets/logos/ffz_logo.png'), 'FrankerFaceZ'),
-        emotes.getEmotesByProviders(['ffz-channel', 'ffz-global'])
+        emotes.getEmotesByProviders(['ffz-global'])
       ),
     ];
     this.markDirty(false);
