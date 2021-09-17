@@ -1,6 +1,7 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import Icon from 'rsuite/lib/Icon/index.js';
 import classNames from 'classnames';
+import throttle from 'lodash.throttle';
 import VirtualizedList from './VirtualizedList.jsx';
 import emoteStore from '../stores/index.js';
 import styles from '../styles/emotes.module.css';
@@ -10,7 +11,10 @@ import {NavigationModeTypes, RowHeight, WindowHeight} from '../../../constants.j
 import useGridKeyboardNavigation from './GridKeyboardNavigation.jsx';
 
 const Emotes = React.forwardRef(
-  ({onClick, section, onSection, setCoords, coords, setRowColumnCounts, rows, setSelected, navigationMode}, ref) => {
+  (
+    {onClick, section, onSection, setCoords, coords, setRowColumnCounts, rows, setSelected, navigationMode, pixelRatio},
+    ref
+  ) => {
     useEffect(() => {
       const rowColumnCounts = [];
 
@@ -45,6 +49,7 @@ const Emotes = React.forwardRef(
               <Emote
                 key={`${emote.provider.id}-${emote.id}`}
                 active={y === coords.y && x === coords.x}
+                pixelRatio={pixelRatio}
                 emote={emote}
                 onClick={onClick}
                 onMouseOver={() => {
@@ -57,7 +62,7 @@ const Emotes = React.forwardRef(
           </div>
         );
       },
-      [coords, onClick, navigationMode]
+      [coords, onClick, navigationMode, pixelRatio]
     );
 
     const handleHeaderChange = useCallback((rowIndex) => {
@@ -91,7 +96,7 @@ const Emotes = React.forwardRef(
 );
 
 const SearchedEmotes = React.forwardRef(
-  ({search, onClick, coords, setCoords, setRowColumnCounts, setSelected, navigationMode}, ref) => {
+  ({search, onClick, coords, setCoords, setRowColumnCounts, setSelected, navigationMode, pixelRatio}, ref) => {
     const emotes = useMemo(() => emoteStore.search(search), [search]);
 
     const handleMouseOver = useCallback(
@@ -135,6 +140,7 @@ const SearchedEmotes = React.forwardRef(
             {row.map(({item}, x) => (
               <Emote
                 key={`${item.provider.id}${item.id}`}
+                pixelRatio={pixelRatio}
                 emote={item}
                 onClick={onClick}
                 onMouseOver={() => handleMouseOver({x, y})}
@@ -144,7 +150,7 @@ const SearchedEmotes = React.forwardRef(
           </div>
         );
       },
-      [emotes, coords, onClick]
+      [emotes, coords, onClick, pixelRatio]
     );
 
     if (emotes.length === 0) {
@@ -175,6 +181,7 @@ export default function renderEmotes(props) {
 
   const [rowColumnCounts, setRowColumnCounts] = useState([]);
   const [navigationMode, setNavigationMode] = useState(NavigationModeTypes.MOUSE);
+  const [pixelRatio, setPixelRatio] = useState(window.devicePixelRatio);
   const [coords, setCoords] = useGridKeyboardNavigation(
     setKeyPressCallback,
     rowColumnCounts,
@@ -191,10 +198,14 @@ export default function renderEmotes(props) {
       setNavigationMode(NavigationModeTypes.MOUSE);
     }
 
+    const throttleCallback = throttle(() => setPixelRatio(window.devicePixelRatio), 1000);
+
     window.addEventListener('mousemove', callback);
+    window.addEventListener('resize', throttleCallback);
 
     return () => {
       window.removeEventListener('mousemove', callback);
+      window.removeEventListener('resize', throttleCallback);
     };
   }, []);
 
@@ -218,6 +229,7 @@ export default function renderEmotes(props) {
   return isSearch ? (
     <SearchedEmotes
       ref={wrapperRef}
+      pixelRatio={pixelRatio}
       setRowColumnCounts={setRowColumnCounts}
       navigationMode={navigationMode}
       coords={coords}
@@ -227,6 +239,7 @@ export default function renderEmotes(props) {
   ) : (
     <Emotes
       ref={wrapperRef}
+      pixelRatio={pixelRatio}
       setRowColumnCounts={setRowColumnCounts}
       navigationMode={navigationMode}
       coords={coords}
