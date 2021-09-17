@@ -30,6 +30,10 @@ function EmotesModule() {
             <p>FrankerFaceZ Emotes</p>
             <p className={styles.description}>Enables emotes from that other extension people sometimes use</p>
           </Checkbox>
+          <Checkbox key="7tvEmotes" value={EmoteTypeFlags['7TV_EMOTES']}>
+            <p>7TV Emotes</p>
+            <p className={styles.description}>Enables emotes from that other extension people sometimes use</p>
+          </Checkbox>
         </CheckboxGroup>
       </div>
     </Panel>
@@ -40,5 +44,5 @@ export default registerComponent(EmotesModule, {
   settingId: SettingIds.EMOTES,
   name: 'Emotes',
   category: CategoryTypes.CHAT,
-  keywords: ['bttv', 'ffz', 'betterttv', 'frankerfacez', 'animated', 'gif', 'images', 'emotes'],
+  keywords: ['bttv', 'ffz', '7tv', 'betterttv', 'frankerfacez', 'seventv', 'animated', 'gif', 'images', 'emotes'],
 });

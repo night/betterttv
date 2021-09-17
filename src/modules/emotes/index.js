@@ -4,6 +4,8 @@ import personalEmotes from './personal-emotes.js';
 import emojis from './emojis.js';
 import frankerfacezGlobalEmotes from '../frankerfacez/global-emotes.js';
 import frankerfacezChannelEmotes from '../frankerfacez/channel-emotes.js';
+import sevenTvGlobalEmotes from '../7tv/global-emotes.js';
+import sevenTvChannelEmotes from '../7tv/channel-emotes.js';
 import settings from '../../settings.js';
 import {EmoteTypeFlags, SettingIds} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
@@ -18,6 +20,8 @@ class EmotesModule {
       globalEmotes,
       frankerfacezGlobalEmotes,
       frankerfacezChannelEmotes,
+      sevenTvGlobalEmotes,
+      sevenTvChannelEmotes,
       emojis,
     ];
   }
@@ -34,6 +38,7 @@ class EmotesModule {
           if (emote.imageType === 'gif' && !hasFlag(flags, EmoteTypeFlags.BTTV_GIF_EMOTES)) return false;
           if (emote.provider.id.startsWith('bttv') && !hasFlag(flags, EmoteTypeFlags.BTTV_EMOTES)) return false;
           if (emote.provider.id.startsWith('ffz') && !hasFlag(flags, EmoteTypeFlags.FFZ_EMOTES)) return false;
+          if (emote.provider.id.startsWith('7tv') && !hasFlag(flags, EmoteTypeFlags['7TV_EMOTES'])) return false;
           return true;
         })
       );

@@ -12,6 +12,8 @@ export function getEmoteIdFromProvider(emoteId, providerId) {
       return `${emotesCategoryIds.BETTERTTV}-${emoteId}`;
     case providerId.startsWith('ffz'):
       return `${emotesCategoryIds.FRANKERFACEZ}-${emoteId}`;
+    case providerId.startsWith('7tv'):
+      return `${emotesCategoryIds['7TV']}-${emoteId}`;
     default:
   }
 

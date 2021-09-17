@@ -102,18 +102,21 @@ export function deserializeLegacy(settingId) {
       let bttvEmotes = storage.get(LegacySettingIds.BTTV_EMOTES);
       let bttvGif = storage.get(LegacySettingIds.BTTV_GIF_EMOTES);
       let ffzEmotes = storage.get(LegacySettingIds.FFZ_EMOTES);
+      let sevenTvEmotes = storage.get(LegacySettingIds['7TV_EMOTES']);
 
       const defaultValue = DefaultValues[settingId];
 
       if (bttvEmotes == null) bttvEmotes = hasFlag(defaultValue, EmoteTypeFlags.BTTV_EMOTES);
       if (bttvGif == null) bttvGif = hasFlag(defaultValue, EmoteTypeFlags.BTTV_GIF_EMOTES);
       if (ffzEmotes == null) ffzEmotes = hasFlag(defaultValue, EmoteTypeFlags.FFZ_EMOTES);
+      if (sevenTvEmotes == null) sevenTvEmotes = hasFlag(defaultValue, EmoteTypeFlags['7TV_EMOTES']);
 
       let flags = 0;
 
       flags = setFlag(flags, EmoteTypeFlags.BTTV_EMOTES, bttvEmotes);
       flags = setFlag(flags, EmoteTypeFlags.BTTV_GIF_EMOTES, bttvGif);
       flags = setFlag(flags, EmoteTypeFlags.FFZ_EMOTES, ffzEmotes);
+      flags = setFlag(flags, EmoteTypeFlags['7TV_EMOTES'], sevenTvEmotes);
 
       value = flags;
       break;
@@ -294,6 +297,10 @@ export function updateLegacySetting(settingId, value) {
       storage.set(LegacySettingIds.BTTV_EMOTES, hasFlag(value, EmoteTypeFlags.BTTV_EMOTES));
       storage.set(LegacySettingIds.BTTV_GIF_EMOTES, hasFlag(value, EmoteTypeFlags.BTTV_GIF_EMOTES));
       storage.set(LegacySettingIds.FFZ_EMOTES, hasFlag(value, EmoteTypeFlags.FFZ_EMOTES) === EmoteTypeFlags.FFZ_EMOTES);
+      storage.set(
+        LegacySettingIds['7TV_EMOTES'],
+        hasFlag(value, EmoteTypeFlags['7TV_EMOTES']) === EmoteTypeFlags['7TV_EMOTES']
+      );
       return null;
     case SettingIds.CHAT:
       storage.set(LegacySettingIds.HIDE_BITS, !hasFlag(value, ChatFlags.BITS));
