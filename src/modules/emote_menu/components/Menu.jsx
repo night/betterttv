@@ -1,12 +1,15 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import Divider from 'rsuite/lib/Divider/index.js';
+import {tipIds} from '../../../constants.js';
 import keycodes from '../../../utils/keycodes.js';
+import tips from '../../../utils/tips.js';
 import emoteStore from '../stores/index.js';
 import styles from '../styles/menu.module.css';
 import Emotes from './Emotes.jsx';
 import Header from './Header.jsx';
 import Preview from './Preview.jsx';
 import Sidebar from './Sidebar.jsx';
+import TipWhisper from './TipWhisper.jsx';
 
 let keyPressCallback;
 function setKeyPressCallback(newKeyPressCallback) {
@@ -29,6 +32,7 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
   const handleClick = useCallback(
     (emote) => {
       if (altPressed) {
+        tips.learnTip(tipIds.EMOTE_MENU_ALT_FAVORITE_EMOTE);
         emoteStore.toggleFavorite(emote);
         return;
       }
@@ -37,6 +41,7 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
       emoteStore.trackHistory(emote);
 
       if (shiftPressed) {
+        tips.learnTip(tipIds.EMOTE_MENU_SHIFT_MULTIPLE_EMOTES);
         return;
       }
 
@@ -90,7 +95,9 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
 
   return (
     <>
-      <Header className={styles.header} value={search} onChange={setSearch} onHide={onHide} selected={selected} />
+      <TipWhisper>
+        <Header className={styles.header} value={search} onChange={setSearch} onHide={onHide} selected={selected} />
+      </TipWhisper>
       <Divider className={styles.divider} />
       <div className={styles.content}>
         <Sidebar

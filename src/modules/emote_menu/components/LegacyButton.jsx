@@ -34,8 +34,7 @@ export default function LegacyButton({appendToChat, setPopoverOpen, onClick}) {
           <EmoteMenu triggerRef={triggerRef} appendToChat={appendToChat} />
         </Popover>
       }
-      triggerRef={triggerRef}
-    >
+      triggerRef={triggerRef}>
       <button type="button" className={styles.button} />
     </Whisper>
   );

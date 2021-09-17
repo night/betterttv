@@ -16,6 +16,7 @@ import {faFlag} from '@fortawesome/free-solid-svg-icons/faFlag';
 import {faClock} from '@fortawesome/free-solid-svg-icons/faClock';
 import {faUnlock} from '@fortawesome/free-solid-svg-icons/faUnlock';
 import {faCrown} from '@fortawesome/free-solid-svg-icons/faCrown';
+import {faLightbulb} from '@fortawesome/free-solid-svg-icons/faLightbulb';
 import styles from '../styles/icons.module.css';
 
 const twitchLogo = {
@@ -68,6 +69,7 @@ export default {
   CLOCK: <FontAwesomeIcon icon={faClock} />,
   UNLOCK: <FontAwesomeIcon icon={faUnlock} />,
   CROWN: <FontAwesomeIcon icon={faCrown} />,
+  BULB: <FontAwesomeIcon icon={faLightbulb} />,
   TWITCH: <FontAwesomeIcon icon={twitchLogo} />,
   TWITCH_GAMING: <FontAwesomeIcon icon={twitchGamingLogo} />,
   IMAGE: (brandSrc, alt, src = null) =>
