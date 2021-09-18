@@ -194,7 +194,7 @@ export async function loadTwitchEmotes() {
     (set) => (`${emotesCategoryIds.TWITCH}-${currentChannel.id}` === set.provider.id ? -1 : 1),
     // paid subscription emotes and limited emotes (one time subs) seem more important
     (set) => {
-      switch (set.emotes?.[0].metadata?.type) {
+      switch (set.emotes?.[0]?.metadata?.type) {
         case 'SUBSCRIPTIONS':
         case 'LIMITED_TIME':
           return -1;
