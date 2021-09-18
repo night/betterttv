@@ -27,3 +27,16 @@
 .placeholder {
   background-color: #23262b;
 }
+
+.locked {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.emoteImageLocked {
+  opacity: 0.5;
+}

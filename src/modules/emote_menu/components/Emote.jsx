@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import React from 'react';
 import {createSrcSet} from '../../../utils/image.js';
 import styles from '../styles/emote.module.css';
+import Icons from './Icons.jsx';
 
 export default function Emote({emote, onClick, onMouseOver, active}) {
   const imageRef = React.useRef(null);
@@ -18,8 +19,11 @@ export default function Emote({emote, onClick, onMouseOver, active}) {
     });
   }
 
+  const locked = emote.metadata?.locked || false;
+
   return (
     <button
+      disabled={locked}
       onClick={() => onClick(emote)}
       onMouseOver={() => onMouseOver(emote)}
       onFocus={() => onMouseOver(emote)}
@@ -28,12 +32,17 @@ export default function Emote({emote, onClick, onMouseOver, active}) {
     >
       <img
         ref={imageRef}
-        className={classNames(styles.emoteImage, loadingRef.current ? styles.placeholder : null)}
+        className={classNames(
+          styles.emoteImage,
+          loadingRef.current ? styles.placeholder : null,
+          locked ? styles.emoteImageLocked : null
+        )}
         srcSet={createSrcSet(emote.images)}
         src={emote.images['1x']}
         alt={loadingRef.current ? '' : emote.code}
         onLoad={loadingRef.current ? handleLoad : undefined}
       />
+      {locked ? <div className={styles.locked}>{Icons.UNLOCK}</div> : null}
     </button>
   );
 }

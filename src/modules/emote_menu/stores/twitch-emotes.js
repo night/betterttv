@@ -12,6 +12,18 @@ import {getCurrentChannel} from '../../../utils/channel.js';
 
 const AVAILABLE_EMOTES_FOR_CHANNEL_QUERY = `
   query AvailableEmotesForChannel($channelID: ID!) {
+    user(id: $channelID) {
+      id,
+      displayName,
+      profileImageURL(width: 300)
+      subscriptionProducts {
+        emotes {
+          id,
+          token,
+          type
+        }
+      }
+    }
     channel(id: $channelID) {
       self {
         availableEmoteSets {
@@ -96,6 +108,7 @@ export async function loadTwitchEmotes() {
     const [availableEmotesResponse] = await twitchApi.graphqlQuery([
       {query: AVAILABLE_EMOTES_FOR_CHANNEL_QUERY, variables: {channelID: currentChannel.id}},
     ]);
+
     data = availableEmotesResponse.data;
   } catch (e) {
     debug.log('failed to fetch twitch emotes', e);
@@ -105,7 +118,23 @@ export async function loadTwitchEmotes() {
   const isDark = settings.get(SettingIds.DARKENED_MODE);
   const tempSets = {};
 
-  for (const {owner, id, emotes} of data.channel.self.availableEmoteSets) {
+  const {user} = data;
+  const concatSubscriptionProducts = [];
+
+  for (const set of data.user.subscriptionProducts) {
+    for (const emote of set.emotes) {
+      emote.locked = true;
+      concatSubscriptionProducts.push(emote);
+    }
+  }
+
+  const subscriptionProducts = {
+    id: user.id,
+    owner: user,
+    emotes: concatSubscriptionProducts,
+  };
+
+  for (const {owner, id, emotes} of [...data.channel.self.availableEmoteSets, subscriptionProducts]) {
     let provider = getForcedProviderToChannels(id);
 
     if (provider == null && owner != null) {
@@ -124,7 +153,7 @@ export async function loadTwitchEmotes() {
       };
     }
 
-    const providerEmotes = emotes.map(({id: emoteId, token: emoteToken, type}) => {
+    const providerEmotes = emotes.map(({id: emoteId, token: emoteToken, type, locked = false}) => {
       let newToken;
 
       try {
@@ -143,7 +172,10 @@ export async function loadTwitchEmotes() {
           '2x': TWITCH_EMOTE_CDN(emoteId, '2.0', isDark),
           '4x': TWITCH_EMOTE_CDN(emoteId, '3.0', isDark),
         },
-        metadata: {type},
+        metadata: {
+          type,
+          locked,
+        },
       });
     });
 
