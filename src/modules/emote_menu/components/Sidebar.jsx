@@ -41,16 +41,14 @@ export default function Sidebar({section, onChange, providers}) {
       <Nav vertical appearance="subtle">
         {providers.map((provider) => {
           const isActive = provider.id === section.eventKey;
-
           return (
             <Whisper
               key={provider.id}
-              placement="left"
+              placement="right"
               trigger="hover"
               delay={200}
               speaker={<Tooltip>{provider.displayName}</Tooltip>}
-              onClick={() => onChange(provider.id)}
-            >
+              onClick={() => onChange(provider.id)}>
               <Nav.Item active={isActive} icon={provider.icon} className={classNames({[styles.active]: isActive})} />
             </Whisper>
           );

@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import settings from '../../settings.js';
-import {SettingIds} from '../../constants.js';
-import EmoteMenuButton from './components/LegacyButton.jsx';
-import domObserver from '../../observers/dom.js';
+import settings from '../../../settings.js';
+import {SettingIds} from '../../../constants.js';
+import domObserver from '../../../observers/dom.js';
 import styles from './EmoteMenu.module.css';
-import {getReactInstance} from '../../utils/twitch.js';
-import {getCurrentUser} from '../../utils/user.js';
+import {getReactInstance} from '../../../utils/twitch.js';
+import {getCurrentUser} from '../../../utils/user.js';
+import SafeEmoteMenuButton from '../components/SafeEmoteMenu.jsx';
 
 const CHAT_TEXT_AREA = 'textarea[data-a-target="chat-input"]';
 
@@ -25,26 +25,6 @@ function setPopoverOpen({current}) {
       current.open();
     }
   };
-}
-
-class SafeEmoteMenuButton extends React.Component {
-  componentDidMount() {
-    const {onMount} = this.props;
-    onMount();
-  }
-
-  componentDidCatch(error, info) {
-    const {onError} = this.props;
-    onError(error, info);
-  }
-
-  static getDerivedStateFromError() {
-    return null;
-  }
-
-  render() {
-    return <EmoteMenuButton {...this.props} />;
-  }
 }
 
 export default class EmoteMenuModule {
@@ -70,6 +50,7 @@ export default class EmoteMenuModule {
 
       ReactDOM.render(
         <SafeEmoteMenuButton
+          classnames={styles.popover}
           onError={() => this.show(false)}
           onMount={() => this.show(true)}
           onClick={() => togglePopover()}

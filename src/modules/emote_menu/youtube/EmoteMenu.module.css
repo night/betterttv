@@ -1,0 +1,43 @@
+.container {
+  display: inline-flex !important;
+  position: relative !important;
+}
+
+.hideDefaultEmoteMenuButton {
+  button[data-a-target='emote-picker-button'] {
+    display: none !important;
+  }
+}
+
+.hideEmoteMenuButton {
+  display: none;
+}
+
+.emotePickerButtonContainer {
+  padding: 8px;
+}
+
+.popover {
+  height: 412px;
+  margin-top: -100px !important;
+  margin-left: -27px !important;
+  width: 390px;
+  color: #efeff1;
+
+  div[class$='-popover-arrow'] {
+    display: none !important;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .popover {
+    width: 320px;
+  }
+}
+
+@media only screen and (max-width: 510px) {
+  .popover {
+    margin-top: -78px !important;
+    margin-left: -65px !important;
+  }
+}

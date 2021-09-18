@@ -6,7 +6,7 @@ import EmoteMenu from './Menu.jsx';
 import emoteStore from '../stores/index.js';
 import styles from '../styles/legacy-button.module.css';
 
-export default function LegacyButton({appendToChat, setPopoverOpen, onClick}) {
+export default function LegacyButton({appendToChat, setPopoverOpen, onClick, classnames}) {
   const triggerRef = useRef(null);
   const [loaded, setLoaded] = useState(false);
 
@@ -30,7 +30,7 @@ export default function LegacyButton({appendToChat, setPopoverOpen, onClick}) {
       placement="auto"
       onClick={onClick}
       speaker={
-        <Popover className={styles.popover} full>
+        <Popover className={classnames} full>
           <EmoteMenu triggerRef={triggerRef} appendToChat={appendToChat} />
         </Popover>
       }

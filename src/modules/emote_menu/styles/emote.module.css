@@ -1,4 +1,5 @@
 .emote {
+  all: unset;
   position: relative;
   border-radius: 4px;
   padding: 2px;
@@ -12,6 +13,10 @@
   &:focus-visible {
     outline: 0px;
   }
+}
+
+.emote:hover {
+  cursor: pointer;
 }
 
 .emoteImage {
