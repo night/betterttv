@@ -48,22 +48,33 @@ class SafeEmoteMenuButton extends React.Component {
 
 export default class EmoteMenuModule {
   constructor() {
-    domObserver.on(CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR, () => this.loadLegacyButton());
+    domObserver.on(CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR, (node, isConnected) => {
+      if (!isConnected) {
+        return;
+      }
+
+      this.loadLegacyButton();
+    });
     settings.on(`changed.${SettingIds.CLICK_TWITCH_EMOTES}`, () => this.loadLegacyButton());
   }
 
   loadLegacyButton() {
-    if (getCurrentUser() == null) return;
+    if (getCurrentUser() == null) {
+      return;
+    }
 
     const legacyContainer = document.querySelector(LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
     const clickTwitchEmotes = settings.get(SettingIds.CLICK_TWITCH_EMOTES);
 
     if (clickTwitchEmotes && legacyContainer == null) {
-      const container = document.querySelector(CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR).lastChild;
-
+      const container = document.querySelector(CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR);
+      if (container == null) {
+        return;
+      }
+      const rightContainer = container.lastChild;
       const buttonContainer = document.createElement('div');
       buttonContainer.setAttribute('data-a-target', 'legacy-bttv-emote-picker-button-container');
-      container.insertBefore(buttonContainer, container.lastChild);
+      rightContainer.insertBefore(buttonContainer, rightContainer.lastChild);
 
       ReactDOM.render(
         <SafeEmoteMenuButton
