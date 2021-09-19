@@ -7,6 +7,7 @@ import domObserver from '../../observers/dom.js';
 import styles from './EmoteMenu.module.css';
 import {getReactInstance} from '../../utils/twitch.js';
 import {getCurrentUser} from '../../utils/user.js';
+import watcher from '../../watcher.js';
 
 const CHAT_TEXT_AREA = 'textarea[data-a-target="chat-input"]';
 
@@ -55,6 +56,7 @@ export default class EmoteMenuModule {
 
       this.loadLegacyButton();
     });
+    watcher.on('load.chat', () => this.loadLegacyButton());
     settings.on(`changed.${SettingIds.CLICK_TWITCH_EMOTES}`, () => this.loadLegacyButton());
   }
 
