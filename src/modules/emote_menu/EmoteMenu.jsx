@@ -13,7 +13,6 @@ const CHAT_TEXT_AREA = 'textarea[data-a-target="chat-input"]';
 // For legacy button
 const LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR =
   'div[data-a-target="legacy-bttv-emote-picker-button-container"]';
-const CHAT_SETTINGS_BUTTON_SELECTOR = '.chat-input button[data-a-target="chat-settings"]';
 const CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR = '.chat-input div[data-test-selector="chat-input-buttons-container"]';
 
 let togglePopover;
@@ -49,7 +48,7 @@ class SafeEmoteMenuButton extends React.Component {
 
 export default class EmoteMenuModule {
   constructor() {
-    domObserver.on(CHAT_SETTINGS_BUTTON_SELECTOR, () => this.loadLegacyButton());
+    domObserver.on(CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR, () => this.loadLegacyButton());
     settings.on(`changed.${SettingIds.CLICK_TWITCH_EMOTES}`, () => this.loadLegacyButton());
   }
 
@@ -60,9 +59,7 @@ export default class EmoteMenuModule {
     const clickTwitchEmotes = settings.get(SettingIds.CLICK_TWITCH_EMOTES);
 
     if (clickTwitchEmotes && legacyContainer == null) {
-      const container = document
-        .querySelector(CHAT_SETTINGS_BUTTON_SELECTOR)
-        .closest(CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR).lastChild;
+      const container = document.querySelector(CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR).lastChild;
 
       const buttonContainer = document.createElement('div');
       buttonContainer.setAttribute('data-a-target', 'legacy-bttv-emote-picker-button-container');
