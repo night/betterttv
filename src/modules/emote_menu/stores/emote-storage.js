@@ -1,4 +1,4 @@
-import {defaultFrequentEmotes} from '../../../constants.js';
+import {DEFAULT_FREQUENT_EMOTES} from '../../../constants.js';
 import storage from '../../../storage.js';
 import {getEmoteIdFromProvider} from '../../../utils/emotes.js';
 
@@ -48,7 +48,7 @@ class EmoteStorage {
 
     if (this.emoteStore == null) {
       this.emoteStore = {
-        usageHistory: defaultFrequentEmotes,
+        usageHistory: DEFAULT_FREQUENT_EMOTES,
         favorites: [],
       };
     }

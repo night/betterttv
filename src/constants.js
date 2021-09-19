@@ -174,7 +174,7 @@ export const emotesCategoryIds = {
   FRECENTS: 'frecents',
 };
 
-export const defaultFrequentEmotes = {
+export const DEFAULT_FREQUENT_EMOTES = {
   'twitch-global-25': {recentUses: [Date.now()], totalUses: 1, score: 100}, // Kappa
   'twitch-global-305954156': {recentUses: [Date.now()], totalUses: 1, score: 100}, // PogChamp
   'bttv-566c9f6365dbbdab32ec0532': {recentUses: [Date.now()], totalUses: 1, score: 100}, // ConcernDoge
