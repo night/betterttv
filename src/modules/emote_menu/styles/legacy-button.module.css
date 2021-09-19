@@ -15,7 +15,7 @@
 .popover {
   height: 412px;
   margin-top: -80px !important;
-  margin-left: 82px !important;
+  margin-left: 80px !important;
   width: 390px;
   color: #efeff1;
 
@@ -32,7 +32,7 @@
 
 @media only screen and (max-width: 510px) {
   .popover {
-    margin-top: -58px !important;
+    margin-top: -60px !important;
     margin-left: 60px !important;
   }
 }
