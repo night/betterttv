@@ -50,7 +50,7 @@ export default class EmoteMenuModule {
 
       ReactDOM.render(
         <SafeEmoteMenuButton
-          classnames={styles.popover}
+          classname={styles.popover}
           onError={() => this.show(false)}
           onMount={() => this.show(true)}
           onClick={() => togglePopover()}
