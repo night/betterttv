@@ -200,8 +200,8 @@ export const DEFAULT_FREQUENT_EMOTES = {
 };
 
 export const tipIds = {
-  EMOTE_MENU_ALT_FAVORITE_EMOTE: 'clickAltToFavoriteEmote',
-  EMOTE_MENU_SHIFT_MULTIPLE_EMOTES: 'holdShiftToSelectMultipleEmotes',
+  EMOTE_MENU_ALT_FAVORITE_EMOTE: 'emoteMenuFavorite',
+  EMOTE_MENU_SHIFT_MULTIPLE_EMOTES: 'emoteMenuPreventClose',
 };
 
 export const DefaultValues = {

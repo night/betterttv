@@ -17,3 +17,13 @@
   width: 100%;
   padding: 0 8px;
 }
+
+.tip {
+  height: 24px;
+  background-color: #23262b;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  column-gap: 8px;
+  padding-left: 8px;
+}
