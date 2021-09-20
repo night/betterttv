@@ -17,6 +17,7 @@ const AVAILABLE_EMOTES_FOR_CHANNEL_QUERY = `
       displayName,
       profileImageURL(width: 300)
       subscriptionProducts {
+        id,
         emotes {
           id,
           token,
@@ -119,22 +120,16 @@ export async function loadTwitchEmotes() {
   const tempSets = {};
 
   const {user} = data;
-  const concatSubscriptionProducts = [];
 
-  for (const set of data.user.subscriptionProducts) {
-    for (const emote of set.emotes) {
-      emote.locked = true;
-      concatSubscriptionProducts.push(emote);
-    }
-  }
+  const subscriptionSets = user.subscriptionProducts
+    .filter(({id}) => id != null)
+    .map(({id, emotes}) => ({
+      id,
+      owner: user,
+      emotes: emotes.map((emote) => ({...emote, locked: true})),
+    }));
 
-  const subscriptionProducts = {
-    id: user.id,
-    owner: user,
-    emotes: concatSubscriptionProducts,
-  };
-
-  for (const {owner, id, emotes} of [...data.channel.self.availableEmoteSets, subscriptionProducts]) {
+  for (const {owner, id, emotes} of [...data.channel.self.availableEmoteSets, ...subscriptionSets]) {
     let provider = getForcedProviderToChannels(id);
 
     if (provider == null && owner != null) {
