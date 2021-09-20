@@ -15,6 +15,7 @@ import {faHeartBroken} from '@fortawesome/free-solid-svg-icons/faHeartBroken';
 import {faFlag} from '@fortawesome/free-solid-svg-icons/faFlag';
 import {faClock} from '@fortawesome/free-solid-svg-icons/faClock';
 import {faUnlock} from '@fortawesome/free-solid-svg-icons/faUnlock';
+import {faLock} from '@fortawesome/free-solid-svg-icons/faLock';
 import {faCrown} from '@fortawesome/free-solid-svg-icons/faCrown';
 import styles from '../styles/icons.module.css';
 
@@ -58,6 +59,7 @@ export default {
   FLAG: <FontAwesomeIcon icon={faFlag} />,
   CLOCK: <FontAwesomeIcon icon={faClock} />,
   UNLOCK: <FontAwesomeIcon icon={faUnlock} />,
+  LOCK: <FontAwesomeIcon icon={faLock} />,
   CROWN: <FontAwesomeIcon icon={faCrown} />,
   TWITCH: <FontAwesomeIcon icon={twitchLogo} />,
   TWITCH_GAMING: <FontAwesomeIcon icon={twitchGamingLogo} />,

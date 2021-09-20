@@ -42,7 +42,7 @@ export default function Emote({emote, onClick, onMouseOver, active}) {
         alt={loadingRef.current ? '' : emote.code}
         onLoad={loadingRef.current ? handleLoad : undefined}
       />
-      {locked ? <div className={styles.locked}>{Icons.UNLOCK}</div> : null}
+      {locked ? <div className={styles.locked}>{Icons.LOCK}</div> : null}
     </button>
   );
 }
