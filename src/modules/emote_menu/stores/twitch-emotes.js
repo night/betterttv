@@ -1,13 +1,13 @@
 /* eslint-disable import/prefer-default-export */
-import uniqby from 'lodash.uniqby';
-import sortby from 'lodash.sortby';
+import uniqBy from 'lodash.uniqby';
+import sortBy from 'lodash.sortby';
 import twitchApi from '../../../utils/twitch-api.js';
 import Emote from '../../emotes/emote.js';
 import Icons from '../components/Icons.jsx';
 import debug from '../../../utils/debug.js';
 import {getEmoteFromRegEx} from '../../../utils/regex.js';
 import settings from '../../../settings.js';
-import {SettingIds, emotesCategoryIds} from '../../../constants.js';
+import {SettingIds, EmoteCategories, EmoteProviders} from '../../../constants.js';
 import {getCurrentChannel} from '../../../utils/channel.js';
 
 const AVAILABLE_EMOTES_FOR_CHANNEL_QUERY = `
@@ -35,52 +35,49 @@ const AVAILABLE_EMOTES_FOR_CHANNEL_QUERY = `
 const TWITCH_EMOTE_CDN = (id, size, isDark = true) =>
   `https://static-cdn.jtvnw.net/emoticons/v2/${id}/default/${isDark ? 'dark' : 'light'}/${size}`;
 
-function getForcedProviderToChannels(key) {
-  switch (key) {
+function getCategoryForSet(setId, owner) {
+  switch (setId) {
     case '0':
       return {
-        id: `${emotesCategoryIds.TWITCH}-global`,
+        id: EmoteCategories.TWITCH_GLOBAL,
+        provider: EmoteProviders.TWITCH,
         displayName: 'Twitch Global',
         icon: Icons.TWITCH,
       };
     case '33':
-      return {
-        id: `${emotesCategoryIds.TWITCH}-turbo`,
-        displayName: 'Twitch Turbo',
-        icon: Icons.PEOPLE,
-      };
     case '42':
-      return {
-        id: `${emotesCategoryIds.TWITCH}-turbo`,
-        displayName: 'Twitch Turbo',
-        icon: Icons.PEOPLE,
-      };
     case '457':
-      return {
-        id: `${emotesCategoryIds.TWITCH}-turbo`,
-        displayName: 'Twitch Turbo',
-        icon: Icons.PEOPLE,
-      };
     case '793':
       return {
-        id: `${emotesCategoryIds.TWITCH}-turbo`,
+        id: EmoteCategories.TWITCH_TURBO,
+        provider: EmoteProviders.TWITCH,
         displayName: 'Twitch Turbo',
         icon: Icons.PEOPLE,
       };
     case '19151':
-      return {
-        id: `${emotesCategoryIds.TWITCH}-twitch-gaming`,
-        displayName: 'Twitch Gaming',
-        icon: Icons.TWITCH_GAMING,
-      };
     case '19194':
       return {
-        id: `${emotesCategoryIds.TWITCH}-twitch-gaming`,
+        id: EmoteCategories.TWITCH_GAMING,
+        provider: EmoteProviders.TWITCH,
         displayName: 'Twitch Gaming',
         icon: Icons.TWITCH_GAMING,
       };
     default:
-      return null;
+      if (owner != null) {
+        return {
+          id: EmoteCategories.TWITCH_CHANNEL(owner.id),
+          provider: EmoteProviders.TWITCH,
+          displayName: owner.displayName,
+          icon: Icons.IMAGE(owner.profileImageURL, owner.displayName),
+        };
+      }
+
+      return {
+        id: EmoteCategories.TWITCH_UNLOCKED,
+        provider: EmoteProviders.TWITCH,
+        displayName: 'Unlocked',
+        icon: Icons.UNLOCK,
+      };
   }
 }
 
@@ -103,28 +100,11 @@ export async function loadTwitchEmotes() {
   }
 
   const isDark = settings.get(SettingIds.DARKENED_MODE);
-  const tempSets = {};
+  const tempCategories = {};
 
-  for (const {owner, id, emotes} of data.channel.self.availableEmoteSets) {
-    let provider = getForcedProviderToChannels(id);
-
-    if (provider == null && owner != null) {
-      provider = {
-        id: `${emotesCategoryIds.TWITCH}-${owner.id}`,
-        displayName: owner.displayName,
-        icon: Icons.IMAGE(owner.profileImageURL, owner.displayName),
-      };
-    }
-
-    if (provider == null && owner == null) {
-      provider = {
-        id: `${emotesCategoryIds.TWITCH}-unlocked`,
-        displayName: 'Unlocked',
-        icon: Icons.UNLOCK,
-      };
-    }
-
-    const providerEmotes = emotes.map(({id: emoteId, token: emoteToken, type}) => {
+  for (const {owner, id: setId, emotes} of data.channel.self.availableEmoteSets) {
+    const category = getCategoryForSet(setId, owner);
+    const categoryEmotes = emotes.map(({id: emoteId, token: emoteToken, type}) => {
       let newToken;
 
       try {
@@ -135,7 +115,7 @@ export async function loadTwitchEmotes() {
 
       return new Emote({
         id: emoteId,
-        provider,
+        category,
         channel: owner?.displayName,
         code: newToken,
         images: {
@@ -149,28 +129,20 @@ export async function loadTwitchEmotes() {
 
     // twitch seperates emotes by tier, so we merge them into one set
     // eslint-disable-next-line no-prototype-builtins
-    if (tempSets.hasOwnProperty(provider.id)) {
-      tempSets[provider.id].emotes = uniqby([...tempSets[provider.id]?.emotes, ...providerEmotes], 'id');
+    if (tempCategories.hasOwnProperty(category.id)) {
+      tempCategories[category.id].emotes = uniqBy([...tempCategories[category.id]?.emotes, ...categoryEmotes], 'id');
       continue;
     }
 
-    tempSets[provider.id] = {provider, emotes: uniqby(providerEmotes, 'id')};
+    tempCategories[category.id] = {category, emotes: uniqBy(categoryEmotes, 'id')};
   }
 
-  return sortby(Object.values(tempSets), [
-    // sort current channel to the top of the sets
-    (set) => (`${emotesCategoryIds.TWITCH}-${currentChannel.id}` === set.provider.id ? -1 : 1),
+  return sortBy(Object.values(tempCategories), [
+    // sort current channel to the top of the categories
+    ({category}) => (EmoteCategories.TWITCH_CHANNEL(currentChannel.id) === category.id ? -1 : 1),
     // paid subscription emotes and limited emotes (one time subs) seem more important
-    (set) => {
-      switch (set.emotes?.[0].metadata?.type) {
-        case 'SUBSCRIPTIONS':
-        case 'LIMITED_TIME':
-          return -1;
-        default:
-          return 1;
-      }
-    },
+    ({emotes}) => (emotes?.some(({metadata}) => ['SUBSCRIPTIONS', 'LIMITED_TIME'].includes(metadata?.type)) ? -1 : 1),
     // do a final sort for alphabetical order
-    (set) => set.provider.displayName.toLowerCase(),
+    ({category}) => category.displayName.toLowerCase(),
   ]);
 }

@@ -1,5 +1,4 @@
 import storage from '../../../storage.js';
-import {getEmoteIdFromProvider} from '../../../utils/emotes.js';
 
 const HOUR = 60 * 60 * 1000;
 const DAY = 24 * HOUR;
@@ -62,8 +61,7 @@ class EmoteStorage {
   }
 
   trackHistory(emote) {
-    const emoteCanonicalId = getEmoteIdFromProvider(emote.id, emote.provider.id);
-
+    const emoteCanonicalId = emote.canonicalId;
     let emoteHistory = this.emoteStore.usageHistory[emoteCanonicalId];
 
     if (emoteHistory == null) {

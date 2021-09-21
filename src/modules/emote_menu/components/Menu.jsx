@@ -96,7 +96,7 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
         <Sidebar
           className={styles.sidebar}
           section={section}
-          providers={emoteStore.getProviders()}
+          categories={emoteStore.getCategories()}
           onChange={(eventKey) => setSection({eventKey, scrollTo: true})}
         />
         <Emotes

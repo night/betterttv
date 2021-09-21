@@ -43,7 +43,7 @@ const Emotes = React.forwardRef(
           <div key={key} style={style} className={classNames(className, styles.row)}>
             {row.map((emote, x) => (
               <Emote
-                key={`${emote.provider.id}-${emote.id}`}
+                key={`${emote.category.id}-${emote.id}`}
                 active={y === coords.y && x === coords.x}
                 emote={emote}
                 onClick={onClick}
@@ -69,7 +69,7 @@ const Emotes = React.forwardRef(
 
     useEffect(() => {
       if (!section.scrollTo) return;
-      const index = emoteStore.getProviderIndexById(section.eventKey);
+      const index = emoteStore.getCategoryIndexById(section.eventKey);
       if (index != null) {
         ref.current.scrollTo(0, index * RowHeight + 1); // + 1 to be inside the section
       }
@@ -134,7 +134,7 @@ const SearchedEmotes = React.forwardRef(
           <div key={key} style={style} className={classNames(className, styles.row)}>
             {row.map(({item}, x) => (
               <Emote
-                key={`${item.provider.id}${item.id}`}
+                key={`${item.category.id}${item.id}`}
                 emote={item}
                 onClick={onClick}
                 onMouseOver={() => handleMouseOver({x, y})}

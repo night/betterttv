@@ -1,4 +1,5 @@
 import Fuse from 'fuse.js';
+import uniqBy from 'lodash.uniqby';
 import SafeEventEmitter from '../../../utils/safe-event-emitter.js';
 import watcher from '../../../watcher.js';
 import emojiCategories from './emoji-categories.js';
@@ -8,9 +9,8 @@ import emoteStorage from './emote-storage.js';
 import {loadTwitchEmotes} from './twitch-emotes.js';
 import cdn from '../../../utils/cdn.js';
 import settings from '../../../settings.js';
-import {SettingIds, emotesCategoryIds} from '../../../constants.js';
+import {SettingIds, EmoteProviders, EmoteCategories} from '../../../constants.js';
 import twitch from '../../../utils/twitch.js';
-import {getEmoteIdFromProvider} from '../../../utils/emotes.js';
 
 const MAX_FRECENTS = 54;
 
@@ -23,10 +23,11 @@ function chunkArray(array, size) {
   return [array.slice(0, size), ...chunkArray(array.slice(size), size)];
 }
 
-function createCategory(id, displayName, icon, categoryEmotes = []) {
+function createCategory(id, provider, displayName, icon, categoryEmotes = []) {
   return {
-    provider: {
+    category: {
       id,
+      provider,
       displayName,
       icon,
     },
@@ -40,7 +41,7 @@ const fuse = new Fuse([], {
   threshold: 0.3,
 });
 
-let emoteProviderCategories = [];
+let providerCategories = [];
 let twitchCategories = [];
 
 class EmoteStore extends SafeEventEmitter {
@@ -58,8 +59,8 @@ class EmoteStore extends SafeEventEmitter {
     watcher.on('channel.updated', () => this.updateTwitchProviders());
     settings.on(`changed.${SettingIds.DARKENED_MODE}`, () => this.updateTwitchProviders());
 
-    watcher.on('emotes.updated', () => this.updateEmoteProviders());
-    settings.on(`changed.${SettingIds.EMOTES}`, () => this.updateEmoteProviders());
+    watcher.on('emotes.updated', () => this.updateProviders());
+    settings.on(`changed.${SettingIds.EMOTES}`, () => this.updateProviders());
 
     window.addEventListener('resize', () => {
       this.totalCols = computeTotalColumns();
@@ -72,27 +73,30 @@ class EmoteStore extends SafeEventEmitter {
     this.markDirty(false);
   }
 
-  async updateEmoteProviders() {
+  async updateProviders() {
     const profilePicture = await twitch.getCurrentUserProfilePicture();
 
-    emoteProviderCategories = [
+    providerCategories = [
       createCategory(
-        emotesCategoryIds.BETTERTTV,
+        EmoteCategories.BETTERTTV_CHANNEL,
+        EmoteProviders.BETTERTTV,
         'BetterTTV',
         Icons.IMAGE(cdn.url('/assets/logos/mascot.png'), 'BetterTTV'),
-        emotes.getEmotesByProviders(['bttv-channel', 'bttv'])
+        emotes.getEmotesByCategories([EmoteCategories.BETTERTTV_CHANNEL, EmoteCategories.BETTERTTV_GLOBAL])
       ),
       createCategory(
-        emotesCategoryIds.BETTERTTV_PERSONAL,
+        EmoteCategories.BETTERTTV_PERSONAL,
+        EmoteProviders.BETTERTTV,
         'BetterTTV Personal',
         Icons.IMAGE(profilePicture == null ? cdn.url('/assets/logos/mascot.png') : profilePicture, 'BetterTTV'),
-        emotes.getEmotesByProviders(['bttv-personal'])
+        emotes.getEmotesByCategories([EmoteCategories.BETTERTTV_PERSONAL])
       ),
       createCategory(
-        emotesCategoryIds.FRANKERFACEZ,
+        EmoteCategories.FRANKERFACEZ_CHANNEL,
+        EmoteProviders.FRANKERFACEZ,
         'FrankerFaceZ',
         Icons.IMAGE(cdn.url('/assets/logos/ffz_logo.png'), 'FrankerFaceZ'),
-        emotes.getEmotesByProviders(['ffz-channel', 'ffz-global'])
+        emotes.getEmotesByCategories([EmoteCategories.FRANKERFACEZ_CHANNEL, EmoteCategories.FRANKERFACEZ_GLOBAL])
       ),
     ];
     this.markDirty(false);
@@ -112,10 +116,10 @@ class EmoteStore extends SafeEventEmitter {
     this.rows = [];
     this.headers = [];
 
-    const frecents = createCategory(emotesCategoryIds.FRECENTS, 'Frequently Used', Icons.CLOCK, []);
-    const favorites = createCategory(emotesCategoryIds.FAVORITES, 'Favorites', Icons.STAR, []);
+    const frecents = createCategory(EmoteCategories.FRECENTS, null, 'Frequently Used', Icons.CLOCK, []);
+    const favorites = createCategory(EmoteCategories.FAVORITES, null, 'Favorites', Icons.STAR, []);
 
-    const categories = [...emoteProviderCategories, ...twitchCategories, ...emojiCategories];
+    const categories = [...providerCategories, ...twitchCategories, ...emojiCategories];
     const collection = [];
 
     for (const category of categories) {
@@ -124,8 +128,7 @@ class EmoteStore extends SafeEventEmitter {
       }
 
       for (const emote of category.emotes) {
-        const emoteCanonicalId = getEmoteIdFromProvider(emote.id, category.provider.id);
-
+        const emoteCanonicalId = emote.canonicalId;
         if (emoteStorage.favorites.has(emoteCanonicalId)) {
           favorites.emotes.push(emote);
         }
@@ -137,20 +140,22 @@ class EmoteStore extends SafeEventEmitter {
 
       this.headers.push(this.rows.length);
       const chunkedEmotes = chunkArray(category.emotes, this.totalCols);
-      this.rows.push(category.provider, ...chunkedEmotes);
+      this.rows.push(category.category, ...chunkedEmotes);
       collection.push(...category.emotes);
     }
 
     if (frecents.emotes.length > 0) {
+      frecents.emotes = uniqBy(frecents.emotes, (emote) => emote.canonicalId);
       const frecentsChunked = chunkArray(frecents.emotes.splice(0, MAX_FRECENTS), this.totalCols);
-      this.rows.unshift(frecents.provider, ...frecentsChunked);
+      this.rows.unshift(frecents.category, ...frecentsChunked);
       this.headers = this.headers.map((index) => index + frecentsChunked.length + 1);
       this.headers.unshift(0);
     }
 
     if (favorites.emotes.length > 0) {
+      favorites.emotes = uniqBy(favorites.emotes, (emote) => emote.canonicalId);
       const favoritesChunked = chunkArray(favorites.emotes, this.totalCols);
-      this.rows.unshift(favorites.provider, ...favoritesChunked);
+      this.rows.unshift(favorites.category, ...favoritesChunked);
       this.headers = this.headers.map((index) => index + favoritesChunked.length + 1);
       this.headers.unshift(0);
     }
@@ -164,11 +169,11 @@ class EmoteStore extends SafeEventEmitter {
     return this.rows[index];
   }
 
-  getProviders() {
+  getCategories() {
     return this.headers.map((id) => this.rows[id]);
   }
 
-  getProviderIndexById(id) {
+  getCategoryIndexById(id) {
     return this.headers.find((header) => this.rows[header]?.id === id);
   }
 
@@ -189,8 +194,7 @@ class EmoteStore extends SafeEventEmitter {
   }
 
   toggleFavorite(emote, forceUpdate = false) {
-    const emoteCanonicalId = getEmoteIdFromProvider(emote.id, emote.provider.id);
-
+    const emoteCanonicalId = emote.canonicalId;
     emoteStorage.setFavorite(emoteCanonicalId, !emoteStorage.favorites.has(emoteCanonicalId));
     this.markDirty(forceUpdate);
   }
@@ -201,8 +205,7 @@ class EmoteStore extends SafeEventEmitter {
   }
 
   hasFavorite(emote) {
-    const emoteCanonicalId = getEmoteIdFromProvider(emote.id, emote.provider.id);
-    return emoteStorage.favorites.has(emoteCanonicalId);
+    return emoteStorage.favorites.has(emote.canonicalId);
   }
 }
 

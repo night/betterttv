@@ -22,7 +22,7 @@ export default function PreviewEmote({emote, isFavorite}) {
         </div>
         <div>
           <div className={styles.emoteCode}>{emote.code}</div>
-          <div>from {emote.provider.displayName}</div>
+          <div>from {emote.category.displayName}</div>
         </div>
       </div>
       {isFavorite ? (

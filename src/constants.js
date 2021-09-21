@@ -157,11 +157,19 @@ export const NavigationModeTypes = {
 export const RowHeight = 36;
 export const WindowHeight = 300;
 
-export const emotesCategoryIds = {
+export const EmoteProviders = {
   BETTERTTV: 'bttv',
-  BETTERTTV_PERSONAL: 'bttv-personal',
   FRANKERFACEZ: 'ffz',
   TWITCH: 'twitch',
+};
+
+export const EmoteCategories = {
+  BETTERTTV_GLOBAL: 'bttv-global',
+  BETTERTTV_CHANNEL: 'bttv-channel',
+  BETTERTTV_PERSONAL: 'bttv-personal',
+  BETTERTTV_EMOJI: 'bttv-emoji',
+  FRANKERFACEZ_GLOBAL: 'ffz-global',
+  FRANKERFACEZ_CHANNEL: 'ffz-channel',
   EMOJI_PEOPLE: 'emoji-people',
   EMOJI_NATURE: 'emoji-nature',
   EMOJI_FOODS: 'emoji-foods',
@@ -172,6 +180,11 @@ export const emotesCategoryIds = {
   EMOJI_FLAGS: 'emoji-flags',
   FAVORITES: 'favorites',
   FRECENTS: 'frecents',
+  TWITCH_GLOBAL: 'twitch-global',
+  TWITCH_GAMING: 'twitch-gaming',
+  TWITCH_TURBO: 'twitch-turbo',
+  TWITCH_UNLOCKED: 'twitch-unlocked',
+  TWITCH_CHANNEL: (channelId) => `twitch-${channelId}`,
 };
 
 export const DefaultValues = {
