@@ -1,5 +1,6 @@
 import Fuse from 'fuse.js';
 import uniqBy from 'lodash.uniqby';
+import sortBy from 'lodash.sortby';
 import SafeEventEmitter from '../../../utils/safe-event-emitter.js';
 import watcher from '../../../watcher.js';
 import emojiCategories from './emoji-categories.js';
@@ -129,11 +130,10 @@ class EmoteStore extends SafeEventEmitter {
 
       for (const emote of category.emotes) {
         const emoteCanonicalId = emote.canonicalId;
-        if (emoteStorage.favorites.has(emoteCanonicalId)) {
+        if (emoteStorage.favorites.includes(emoteCanonicalId)) {
           favorites.emotes.push(emote);
         }
-
-        if (emoteStorage.frecents.has(emoteCanonicalId)) {
+        if (emoteStorage.frecents.includes(emoteCanonicalId)) {
           frecents.emotes.push(emote);
         }
       }
@@ -145,7 +145,10 @@ class EmoteStore extends SafeEventEmitter {
     }
 
     if (frecents.emotes.length > 0) {
-      frecents.emotes = uniqBy(frecents.emotes, (emote) => emote.canonicalId);
+      frecents.emotes = sortBy(
+        uniqBy(frecents.emotes, (emote) => emote.canonicalId),
+        (emote) => emoteStorage.frecents.indexOf(emote.canonicalId)
+      );
       const frecentsChunked = chunkArray(frecents.emotes.splice(0, MAX_FRECENTS), this.totalCols);
       this.rows.unshift(frecents.category, ...frecentsChunked);
       this.headers = this.headers.map((index) => index + frecentsChunked.length + 1);
@@ -153,7 +156,10 @@ class EmoteStore extends SafeEventEmitter {
     }
 
     if (favorites.emotes.length > 0) {
-      favorites.emotes = uniqBy(favorites.emotes, (emote) => emote.canonicalId);
+      favorites.emotes = sortBy(
+        uniqBy(favorites.emotes, (emote) => emote.canonicalId),
+        (emote) => emoteStorage.favorites.indexOf(emote.canonicalId)
+      );
       const favoritesChunked = chunkArray(favorites.emotes, this.totalCols);
       this.rows.unshift(favorites.category, ...favoritesChunked);
       this.headers = this.headers.map((index) => index + favoritesChunked.length + 1);
@@ -195,7 +201,7 @@ class EmoteStore extends SafeEventEmitter {
 
   toggleFavorite(emote, forceUpdate = false) {
     const emoteCanonicalId = emote.canonicalId;
-    emoteStorage.setFavorite(emoteCanonicalId, !emoteStorage.favorites.has(emoteCanonicalId));
+    emoteStorage.setFavorite(emoteCanonicalId, !emoteStorage.favorites.includes(emoteCanonicalId));
     this.markDirty(forceUpdate);
   }
 
@@ -205,7 +211,7 @@ class EmoteStore extends SafeEventEmitter {
   }
 
   hasFavorite(emote) {
-    return emoteStorage.favorites.has(emote.canonicalId);
+    return emoteStorage.favorites.includes(emote.canonicalId);
   }
 }
 

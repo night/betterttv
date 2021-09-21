@@ -6,14 +6,6 @@ const DAY = 24 * HOUR;
 const MAX_TIMESTAMPS = 100;
 const MAX_FRECENTS = 250;
 
-function sortHistory(history, limit) {
-  return Object.fromEntries(
-    Object.entries(history)
-      .sort(([, {score: a}], [, {score: b}]) => b - a)
-      .slice(0, limit)
-  );
-}
-
 function timestampToScore(timestamp) {
   const diff = Date.now() - timestamp;
 
@@ -35,7 +27,7 @@ function timestampToScore(timestamp) {
   }
 }
 
-function calcScore({totalUses, recentUses}) {
+function computeScore({totalUses, recentUses}) {
   const frecency = recentUses.reduce((a, b) => a + timestampToScore(b), 0);
   return Math.floor((totalUses * frecency) / recentUses.length);
 }
@@ -51,13 +43,10 @@ class EmoteStorage {
       };
     }
 
-    for (const [id, emote] of Object.entries(this.emoteStore.usageHistory)) {
-      this.emoteStore.usageHistory[id].score = calcScore(emote);
-    }
+    this.frecents = [];
+    this.favorites = this.emoteStore.favorites;
 
-    this.frecents = new Set();
-    this.favorites = new Set(this.emoteStore.favorites);
-    this.updateFrecents();
+    this.updateFrecents(true);
   }
 
   trackHistory(emote) {
@@ -77,26 +66,36 @@ class EmoteStorage {
     if (emoteHistory.recentUses.length > MAX_TIMESTAMPS) {
       emoteHistory.recentUses.shift();
     }
-    emoteHistory.score = calcScore(emoteHistory);
+    emoteHistory.score = computeScore(emoteHistory);
 
     this.emoteStore.usageHistory[emoteCanonicalId] = emoteHistory;
 
     this.updateFrecents();
+  }
+
+  updateFrecents(updateScores = false) {
+    if (updateScores) {
+      for (const emoteHistory of Object.values(this.emoteStore.usageHistory)) {
+        emoteHistory.score = computeScore(emoteHistory);
+      }
+    }
+
+    const sortedTrimmedUsageHistory = Object.entries(this.emoteStore.usageHistory)
+      .sort(([, {score: a}], [, {score: b}]) => b - a)
+      .slice(0, MAX_FRECENTS);
+
+    this.frecents = sortedTrimmedUsageHistory.map(([emoteCanonicalId]) => emoteCanonicalId);
+    this.emoteStore.usageHistory = Object.fromEntries(sortedTrimmedUsageHistory);
+
     this.save();
   }
 
-  updateFrecents() {
-    this.emoteStore.usageHistory = sortHistory(this.emoteStore.usageHistory, MAX_FRECENTS);
-    this.frecents = new Set(Object.keys(this.emoteStore.usageHistory));
-
-    this.save();
-  }
-
-  setFavorite(emoteCanonicalId, bool) {
-    if (bool) {
-      this.favorites.add(emoteCanonicalId);
-    } else {
-      this.favorites.delete(emoteCanonicalId);
+  setFavorite(emoteCanonicalId, enabled) {
+    const favoriteIndex = this.favorites.indexOf(emoteCanonicalId);
+    if (enabled && favoriteIndex === -1) {
+      this.favorites.push(emoteCanonicalId);
+    } else if (!enabled && favoriteIndex > -1) {
+      this.favorites.splice(favoriteIndex, 1);
     }
 
     this.save();
@@ -105,7 +104,7 @@ class EmoteStorage {
   save() {
     storage.set('emotes', {
       usageHistory: this.emoteStore.usageHistory,
-      favorites: Array.from(this.favorites),
+      favorites: this.favorites,
     });
   }
 }
