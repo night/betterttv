@@ -13,7 +13,7 @@ import settings from '../../../settings.js';
 import {SettingIds, EmoteProviders, EmoteCategories} from '../../../constants.js';
 import twitch from '../../../utils/twitch.js';
 
-const MAX_FRECENTS = 54;
+const MAX_FRECENTS = 36;
 
 const computeTotalColumns = () => (window.innerWidth <= 400 ? 7 : 9);
 
@@ -148,8 +148,8 @@ class EmoteStore extends SafeEventEmitter {
       frecents.emotes = sortBy(
         uniqBy(frecents.emotes, (emote) => emote.canonicalId),
         (emote) => emoteStorage.frecents.indexOf(emote.canonicalId)
-      );
-      const frecentsChunked = chunkArray(frecents.emotes.splice(0, MAX_FRECENTS), this.totalCols);
+      ).slice(0, MAX_FRECENTS);
+      const frecentsChunked = chunkArray(frecents.emotes, this.totalCols);
       this.rows.unshift(frecents.category, ...frecentsChunked);
       this.headers = this.headers.map((index) => index + frecentsChunked.length + 1);
       this.headers.unshift(0);
