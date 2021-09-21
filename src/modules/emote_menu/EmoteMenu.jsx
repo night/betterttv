@@ -107,13 +107,18 @@ export default class EmoteMenuModule {
   appendToChat(text, shouldFocus = true) {
     const element = document.querySelector(CHAT_TEXT_AREA);
 
-    let selectionEnd = element.selectionStart + text.length;
-    const currentValue = element.value;
-    const prefixText = currentValue.substring(0, element.selectionStart);
-    let suffixText = currentValue.substring(element.selectionEnd, currentValue.length - 1);
+    const {value: currentValue, selectionStart} = element;
+    let prefixText = currentValue.substring(0, element.selectionStart);
+    let suffixText = currentValue.substring(element.selectionEnd, currentValue.length);
 
-    if (suffixText.length === 0) {
-      suffixText = ' ';
+    // suffix the prefix with a space if it needs one
+    if (prefixText.length > 0 && !prefixText.endsWith(' ')) {
+      prefixText += ' ';
+    }
+
+    // prefix the suffix with a space if it needs one
+    if (!suffixText.startsWith(' ')) {
+      suffixText = ` ${suffixText}`;
     }
 
     text = `${prefixText}${text}${suffixText}`;
@@ -131,7 +136,8 @@ export default class EmoteMenuModule {
     if (shouldFocus) {
       element.focus();
     }
-    selectionEnd = element.selectionStart + text.length;
+
+    const selectionEnd = selectionStart + text.length;
     element.setSelectionRange(selectionEnd, selectionEnd);
   }
 }
