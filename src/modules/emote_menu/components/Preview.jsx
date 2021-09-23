@@ -16,8 +16,8 @@ export default function PreviewEmote({emote, isFavorite}) {
           <img
             alt={emote.name}
             className={styles.emoteImage}
-            srcSet={createSrcSet(emote.images)}
-            src={emote.images['2x']}
+            srcSet={createSrcSet(emote.images, ['2x', '4x'])}
+            src={emote.images['2x'] || emote.images['1x']}
           />
         </div>
         <div>
