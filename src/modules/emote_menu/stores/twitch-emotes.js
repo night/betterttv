@@ -127,14 +127,13 @@ export async function loadTwitchEmotes() {
       });
     });
 
-    // twitch seperates emotes by tier, so we merge them into one set
-    // eslint-disable-next-line no-prototype-builtins
-    if (tempCategories.hasOwnProperty(category.id)) {
-      tempCategories[category.id].emotes = uniqBy([...tempCategories[category.id]?.emotes, ...categoryEmotes], 'id');
-      continue;
-    }
-
-    tempCategories[category.id] = {category, emotes: uniqBy(categoryEmotes, 'id')};
+    tempCategories[category.id] = {
+      category,
+      // twitch seperates emotes by tier, so we merge them into one set
+      emotes: sortBy(uniqBy([...(tempCategories[category.id]?.emotes || []), ...categoryEmotes], 'id'), ({code}) =>
+        code.toLowerCase()
+      ),
+    };
   }
 
   return sortBy(Object.values(tempCategories), [

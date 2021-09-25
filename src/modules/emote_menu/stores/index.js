@@ -32,7 +32,7 @@ function createCategory(id, provider, displayName, icon, categoryEmotes = []) {
       displayName,
       icon,
     },
-    emotes: categoryEmotes,
+    emotes: sortBy(categoryEmotes, ({code}) => code.toLowerCase()),
   };
 }
 
