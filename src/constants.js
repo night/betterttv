@@ -175,14 +175,15 @@ export const emotesCategoryIds = {
 };
 
 export const DEFAULT_FREQUENT_EMOTES = {
-  'twitch-global-25': {recentUses: [Date.now()], totalUses: 1, score: 100}, // Kappa
-  'twitch-global-305954156': {recentUses: [Date.now()], totalUses: 1, score: 100}, // PogChamp
-  'bttv-566c9f6365dbbdab32ec0532': {recentUses: [Date.now()], totalUses: 1, score: 100}, // ConcernDoge
+  'twitch-305954156': {recentUses: [Date.now()], totalUses: 1, score: 100}, // PogChamp
+  'twitch-120232': {recentUses: [Date.now()], totalUses: 1, score: 100}, // TriHard
+  'twitch-425618': {recentUses: [Date.now()], totalUses: 1, score: 100}, // LUL
+  'bttv-566ca06065dbbdab32ec054e': {recentUses: [Date.now()], totalUses: 1, score: 100}, // NaM
   'bttv-566ca38765dbbdab32ec0560': {recentUses: [Date.now()], totalUses: 1, score: 100}, // SourPls
-  'bttv-55028cd2135896936880fdd7': {recentUses: [Date.now()], totalUses: 1, score: 100}, // D:
+  'bttv-566c9fc265dbbdab32ec053b': {recentUses: [Date.now()], totalUses: 1, score: 100}, // FeelsBadMan
   'bttv-566c9fde65dbbdab32ec053e': {recentUses: [Date.now()], totalUses: 1, score: 100}, // FeelsGoodMan
   'bttv-56e9f494fff3cc5c35e5287e': {recentUses: [Date.now()], totalUses: 1, score: 100}, // monkaS
-  'bttv-56f5be00d48006ba34f530a4': {recentUses: [Date.now()], totalUses: 1, score: 100}, // VapeNation
+  'bttv-555981336ba1901877765555': {recentUses: [Date.now()], totalUses: 1, score: 100}, // haHAA
 };
 
 export const DefaultValues = {
