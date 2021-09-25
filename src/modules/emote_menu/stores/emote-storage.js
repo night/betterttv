@@ -1,3 +1,4 @@
+import {DEFAULT_FREQUENT_EMOTES} from '../../../constants.js';
 import storage from '../../../storage.js';
 
 const HOUR = 60 * 60 * 1000;
@@ -38,7 +39,7 @@ class EmoteStorage {
 
     if (this.emoteStore == null) {
       this.emoteStore = {
-        usageHistory: {},
+        usageHistory: DEFAULT_FREQUENT_EMOTES,
         favorites: [],
       };
     }
