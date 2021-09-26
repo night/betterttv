@@ -11,6 +11,7 @@ import settings from '../../../settings.js';
 import {SettingIds, emotesCategoryIds} from '../../../constants.js';
 import twitch from '../../../utils/twitch.js';
 import {getEmoteIdFromProvider} from '../../../utils/emotes.js';
+import {loadYoutubeEmotes} from './youtube-emotes.js';
 
 const MAX_FRECENTS = 54;
 
@@ -41,7 +42,7 @@ const fuse = new Fuse([], {
 });
 
 let emoteProviderCategories = [];
-let twitchCategories = [];
+let siteCategories = [];
 
 class EmoteStore extends SafeEventEmitter {
   constructor() {
@@ -55,8 +56,8 @@ class EmoteStore extends SafeEventEmitter {
 
     this.totalCols = computeTotalColumns();
 
-    watcher.on('channel.updated', () => this.updateTwitchProviders());
-    settings.on(`changed.${SettingIds.DARKENED_MODE}`, () => this.updateTwitchProviders());
+    watcher.on('channel.updated', () => this.updateSiteProviders());
+    settings.on(`changed.${SettingIds.DARKENED_MODE}`, () => this.updateSiteProviders());
 
     watcher.on('emotes.updated', () => this.updateEmoteProviders());
     settings.on(`changed.${SettingIds.EMOTES}`, () => this.updateEmoteProviders());
@@ -67,8 +68,16 @@ class EmoteStore extends SafeEventEmitter {
     });
   }
 
-  async updateTwitchProviders() {
-    twitchCategories = await loadTwitchEmotes();
+  async updateSiteProviders() {
+    switch (window.location.hostname) {
+      case 'www.youtube.com':
+        siteCategories = loadYoutubeEmotes();
+        break;
+      default:
+      case 'www.twitch.tv':
+        siteCategories = await loadTwitchEmotes();
+        break;
+    }
     this.markDirty(false);
   }
 
@@ -115,7 +124,7 @@ class EmoteStore extends SafeEventEmitter {
     const frecents = createCategory(emotesCategoryIds.FRECENTS, 'Frequently Used', Icons.CLOCK, []);
     const favorites = createCategory(emotesCategoryIds.FAVORITES, 'Favorites', Icons.STAR, []);
 
-    const categories = [...emoteProviderCategories, ...twitchCategories, ...emojiCategories];
+    const categories = [...emoteProviderCategories, ...siteCategories, ...emojiCategories];
     const collection = [];
 
     for (const category of categories) {

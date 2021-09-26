@@ -162,6 +162,7 @@ export const emotesCategoryIds = {
   BETTERTTV_PERSONAL: 'bttv-personal',
   FRANKERFACEZ: 'ffz',
   TWITCH: 'twitch',
+  YOUTUBE: 'youtube',
   EMOJI_PEOPLE: 'emoji-people',
   EMOJI_NATURE: 'emoji-nature',
   EMOJI_FOODS: 'emoji-foods',

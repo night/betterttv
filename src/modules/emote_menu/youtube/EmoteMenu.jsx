@@ -41,7 +41,7 @@ export default class EmoteMenuModule {
       const buttonContainer = document.createElement('div');
       buttonContainer.classList.add(styles.emotePickerButtonContainer);
       buttonContainer.setAttribute('data-a-target', 'legacy-bttv-emote-picker-button-container');
-      chatButtonsContainer.insertBefore(buttonContainer, chatButtonsContainer.lastChild);
+      chatButtonsContainer.appendChild(buttonContainer);
 
       ReactDOM.render(
         <SafeEmoteMenuButton
