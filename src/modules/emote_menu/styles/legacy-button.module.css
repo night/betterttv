@@ -13,12 +13,10 @@
 }
 
 .popover {
-  height: 436px;
   margin-top: -80px !important;
   margin-left: 80px !important;
   width: 390px;
   color: #efeff1;
-  overflow: hidden;
 
   div[class$='-popover-arrow'] {
     display: none !important;

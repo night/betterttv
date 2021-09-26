@@ -1,59 +1,58 @@
-import React, {useEffect, useState} from 'react';
-import {tipIds} from '../../../constants.js';
+import React from 'react';
+import {Divider, Button} from 'rsuite';
+import {EmoteMenuTips} from '../../../constants.js';
 import storage from '../../../storage.js';
+import emoteStorage from '../stores/emote-storage.js';
 import Icons from './Icons.jsx';
+import styles from './Tip.module.css';
 
-function calcMostValuableTooltip(tooltips) {
-  return tooltips.filter((tooltip) => !tooltip.learnt).sort((a, b) => a.timesSeen - b.timesSeen)[0];
+const tips = {};
+for (const tipStorageKey of Object.values(EmoteMenuTips)) {
+  tips[tipStorageKey] = storage.get(tipStorageKey) || false;
 }
 
-function getTooltipText(id) {
-  switch (id) {
-    case tipIds.EMOTE_MENU_ALT_FAVORITE_EMOTE:
-      return 'Hold alt and click on an emote to favorite it.';
-    case tipIds.EMOTE_MENU_SHIFT_MULTIPLE_EMOTES:
-      return 'Hold shift to select multiple emotes.';
-    default:
-      return null;
+function getTipToDisplay() {
+  if (!tips[EmoteMenuTips.EMOTE_MENU_PREVENT_CLOSE]) {
+    return [EmoteMenuTips.EMOTE_MENU_PREVENT_CLOSE, 'Hold Shift to Select Multiple Emotes'];
   }
+
+  if (!tips[EmoteMenuTips.EMOTE_MENU_FAVORITE_EMOTE] && emoteStorage.favorites.length === 0) {
+    return [EmoteMenuTips.EMOTE_MENU_FAVORITE_EMOTE, 'Hold Alt and Click on an Emote to Favorite it'];
+  }
+
+  return [];
 }
 
-export default function Tip({classname}) {
-  const [tip, setTip] = useState(null);
+export function markTipAsSeen(tipStorageKey) {
+  tips[tipStorageKey] = true;
+  storage.set(tipStorageKey, true);
+}
 
-  useEffect(() => {
-    let shiftMultipleEmotes = storage.get(tipIds.EMOTE_MENU_SHIFT_MULTIPLE_EMOTES);
-    let altFavoriteEmote = storage.get(tipIds.EMOTE_MENU_ALT_FAVORITE_EMOTE);
-
-    if (shiftMultipleEmotes == null) {
-      shiftMultipleEmotes = {
-        id: tipIds.EMOTE_MENU_SHIFT_MULTIPLE_EMOTES,
-        timesSeen: 0,
-        learnt: false,
-      };
-    }
-
-    if (altFavoriteEmote == null) {
-      altFavoriteEmote = {
-        id: tipIds.EMOTE_MENU_ALT_FAVORITE_EMOTE,
-        timesSeen: 0,
-        learnt: false,
-      };
-    }
-
-    const mostValuableTip = calcMostValuableTooltip([shiftMultipleEmotes, altFavoriteEmote]);
-    setTip(mostValuableTip);
-
-    storage.set(mostValuableTip.id, {
-      ...mostValuableTip,
-      timesSeen: (mostValuableTip.timesSeen += 1),
-    });
-  }, []);
+export default function Tip() {
+  const [[tipStorageKey, tipDisplayText], setTipToDisplay] = React.useState(getTipToDisplay());
+  if (tipStorageKey == null) {
+    return null;
+  }
 
   return (
-    <div className={classname}>
-      <span>{Icons.BULB}</span>
-      <div>{getTooltipText(tip.id)}</div>
-    </div>
+    <>
+      <Divider className={styles.divider} />
+      <div className={styles.tip}>
+        <span>{Icons.BULB}</span>
+        <div className={styles.tipDisplayText}>
+          <strong>Pro Tip:</strong> {tipDisplayText}
+        </div>
+        <Button
+          className={styles.closeButton}
+          appearance="link"
+          size="xs"
+          onClick={() => {
+            setTipToDisplay([]);
+            markTipAsSeen(tipStorageKey);
+          }}>
+          Hide
+        </Button>
+      </div>
+    </>
   );
 }
