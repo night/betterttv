@@ -9,7 +9,7 @@ import Icons from '../components/Icons.jsx';
 import emoteStorage from './emote-storage.js';
 import {loadTwitchEmotes} from './twitch-emotes.js';
 import cdn from '../../../utils/cdn.js';
-import { getCurrentChannel } from '../../../utils/channel.js';
+import {getCurrentChannel} from '../../../utils/channel.js';
 import settings from '../../../settings.js';
 import {SettingIds, EmoteProviders, EmoteCategories} from '../../../constants.js';
 import twitch from '../../../utils/twitch.js';
@@ -103,7 +103,7 @@ class EmoteStore extends SafeEventEmitter {
         EmoteProviders.BETTERTTV,
         'BetterTTV Personal',
         Icons.IMAGE(cdn.url('/assets/logos/mascot.png'), 'BetterTTV', currentUserProfilePicture),
-        betterttvPersonalEmotes,
+        betterttvPersonalEmotes
       ),
       createCategory(
         EmoteCategories.BETTERTTV_GLOBAL,
