@@ -4,3 +4,17 @@
   object-fit: contain;
   border-radius: 4px;
 }
+
+.brandedImage {
+  position: relative;
+}
+
+.brandIcon {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 12px;
+  height: 12px;
+  object-fit: contain;
+  border-radius: 2px;
+}

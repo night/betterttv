@@ -9,6 +9,7 @@ import Icons from '../components/Icons.jsx';
 import emoteStorage from './emote-storage.js';
 import {loadTwitchEmotes} from './twitch-emotes.js';
 import cdn from '../../../utils/cdn.js';
+import { getCurrentChannel } from '../../../utils/channel.js';
 import settings from '../../../settings.js';
 import {SettingIds, EmoteProviders, EmoteCategories} from '../../../constants.js';
 import twitch from '../../../utils/twitch.js';
@@ -75,29 +76,55 @@ class EmoteStore extends SafeEventEmitter {
   }
 
   async updateProviders() {
-    const profilePicture = await twitch.getCurrentUserProfilePicture();
+    const currentChannel = getCurrentChannel();
+    const betterttvChannelEmotes = emotes.getEmotesByCategories([EmoteCategories.BETTERTTV_CHANNEL]);
+    const frankerfacezChannelEmotes = emotes.getEmotesByCategories([EmoteCategories.FRANKERFACEZ_CHANNEL]);
+    let currentChannelProfilePicture;
+    if (currentChannel != null && (betterttvChannelEmotes.length > 0 || frankerfacezChannelEmotes.length > 0)) {
+      currentChannelProfilePicture = await twitch.getUserProfilePicture(currentChannel.id);
+    }
+
+    const betterttvPersonalEmotes = emotes.getEmotesByCategories([EmoteCategories.BETTERTTV_PERSONAL]);
+    let currentUserProfilePicture;
+    if (betterttvPersonalEmotes.length > 0) {
+      currentUserProfilePicture = await twitch.getUserProfilePicture();
+    }
 
     providerCategories = [
       createCategory(
         EmoteCategories.BETTERTTV_CHANNEL,
         EmoteProviders.BETTERTTV,
-        'BetterTTV',
-        Icons.IMAGE(cdn.url('/assets/logos/mascot.png'), 'BetterTTV'),
-        emotes.getEmotesByCategories([EmoteCategories.BETTERTTV_CHANNEL, EmoteCategories.BETTERTTV_GLOBAL])
+        'BetterTTV Channel',
+        Icons.IMAGE(cdn.url('/assets/logos/mascot.png'), 'BetterTTV', currentChannelProfilePicture),
+        betterttvChannelEmotes
       ),
       createCategory(
         EmoteCategories.BETTERTTV_PERSONAL,
         EmoteProviders.BETTERTTV,
         'BetterTTV Personal',
-        Icons.IMAGE(profilePicture == null ? cdn.url('/assets/logos/mascot.png') : profilePicture, 'BetterTTV'),
-        emotes.getEmotesByCategories([EmoteCategories.BETTERTTV_PERSONAL])
+        Icons.IMAGE(cdn.url('/assets/logos/mascot.png'), 'BetterTTV', currentUserProfilePicture),
+        betterttvPersonalEmotes,
+      ),
+      createCategory(
+        EmoteCategories.BETTERTTV_GLOBAL,
+        EmoteProviders.BETTERTTV,
+        'BetterTTV Global',
+        Icons.IMAGE(cdn.url('/assets/logos/mascot.png'), 'BetterTTV'),
+        emotes.getEmotesByCategories([EmoteCategories.BETTERTTV_GLOBAL])
       ),
       createCategory(
         EmoteCategories.FRANKERFACEZ_CHANNEL,
         EmoteProviders.FRANKERFACEZ,
-        'FrankerFaceZ',
+        'FrankerFaceZ Channel',
+        Icons.IMAGE(cdn.url('/assets/logos/ffz_logo.png'), 'FrankerFaceZ', currentChannelProfilePicture),
+        frankerfacezChannelEmotes
+      ),
+      createCategory(
+        EmoteCategories.FRANKERFACEZ_GLOBAL,
+        EmoteProviders.FRANKERFACEZ,
+        'FrankerFaceZ Global',
         Icons.IMAGE(cdn.url('/assets/logos/ffz_logo.png'), 'FrankerFaceZ'),
-        emotes.getEmotesByCategories([EmoteCategories.FRANKERFACEZ_CHANNEL, EmoteCategories.FRANKERFACEZ_GLOBAL])
+        emotes.getEmotesByCategories([EmoteCategories.FRANKERFACEZ_GLOBAL])
       ),
     ];
     this.markDirty(false);

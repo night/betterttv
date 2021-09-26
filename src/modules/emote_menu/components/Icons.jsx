@@ -42,6 +42,15 @@ const twitchGamingLogo = {
   ],
 };
 
+function BrandedImage({src, alt, brandSrc}) {
+  return (
+    <div className={styles.brandedImage}>
+      <img src={src} alt={alt} className={styles.icon} />
+      <img src={brandSrc} alt="" className={styles.brandIcon} />
+    </div>
+  );
+}
+
 export default {
   STAR: <FontAwesomeIcon icon={faStar} />,
   SMILE: <FontAwesomeIcon icon={faSmile} />,
@@ -61,5 +70,10 @@ export default {
   CROWN: <FontAwesomeIcon icon={faCrown} />,
   TWITCH: <FontAwesomeIcon icon={twitchLogo} />,
   TWITCH_GAMING: <FontAwesomeIcon icon={twitchGamingLogo} />,
-  IMAGE: (src, alt) => <img src={src} alt={alt} className={styles.icon} />,
+  IMAGE: (brandSrc, alt, src = null) =>
+    src != null ? (
+      <BrandedImage src={src} alt={alt} brandSrc={brandSrc} />
+    ) : (
+      <img src={brandSrc} alt={alt} className={styles.icon} />
+    ),
 };
