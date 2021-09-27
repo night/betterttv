@@ -28,11 +28,7 @@ export default function LegacyButton({appendToChat, setPopoverOpen, onClick}) {
   }, []);
 
   function handleSetTip(show) {
-    if (show && hasTip) {
-      return;
-    }
-
-    if (!show && !hasTip) {
+    if ((show && hasTip) || (!show && !hasTip)) {
       return;
     }
 
