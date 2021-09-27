@@ -1,5 +1,6 @@
-import React from 'react';
-import {Divider, Button} from 'rsuite';
+import React, {useState, useEffect} from 'react';
+import Divider from 'rsuite/lib/Divider/index.js';
+import Button from 'rsuite/lib/Button/index.js';
 import {EmoteMenuTips} from '../../../constants.js';
 import storage from '../../../storage.js';
 import emoteStorage from '../stores/emote-storage.js';
@@ -28,8 +29,13 @@ export function markTipAsSeen(tipStorageKey) {
   storage.set(tipStorageKey, true);
 }
 
-export default function Tip() {
-  const [[tipStorageKey, tipDisplayText], setTipToDisplay] = React.useState(getTipToDisplay());
+export default function Tip({onSetTip}) {
+  const [[tipStorageKey, tipDisplayText], setTipToDisplay] = useState(getTipToDisplay());
+
+  useEffect(() => {
+    onSetTip(tipStorageKey != null);
+  }, [tipStorageKey]);
+
   if (tipStorageKey == null) {
     return null;
   }
@@ -47,8 +53,8 @@ export default function Tip() {
           appearance="link"
           size="xs"
           onClick={() => {
-            setTipToDisplay([]);
             markTipAsSeen(tipStorageKey);
+            setTipToDisplay([]);
           }}>
           Hide
         </Button>

@@ -15,7 +15,7 @@ function setKeyPressCallback(newKeyPressCallback) {
   keyPressCallback = newKeyPressCallback;
 }
 
-export default function EmoteMenu({triggerRef, appendToChat}) {
+export default function EmoteMenu({triggerRef, appendToChat, onSetTip}) {
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState(null);
   const [, setUpdated] = useState(false);
@@ -32,6 +32,7 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
     (emote) => {
       if (altPressed) {
         emoteStore.toggleFavorite(emote);
+        markTipAsSeen(EmoteMenuTips.EMOTE_MENU_FAVORITE_EMOTE);
         return;
       }
 
@@ -119,7 +120,7 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
         emote={selected}
         isFavorite={selected == null ? false : emoteStore.hasFavorite(selected)}
       />
-      <Tip classname={styles.tip} />
+      <Tip classname={styles.tip} onSetTip={onSetTip} />
     </>
   );
 }
