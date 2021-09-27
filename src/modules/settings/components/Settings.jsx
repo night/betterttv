@@ -1,10 +1,9 @@
 import React from 'react';
 // eslint-disable-next-line import/extensions, import/no-unresolved
 import './settings/*';
-import Panel from 'rsuite/lib/Panel/index.js';
-import Icon from 'rsuite/lib/Icon/index.js';
-import InputGroup from 'rsuite/lib/InputGroup/index.js';
-import AutoComplete from 'rsuite/lib/AutoComplete/index.js';
+import Panel from 'rsuite/Panel';
+import InputGroup from 'rsuite/InputGroup';
+import AutoComplete from 'rsuite/AutoComplete';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faSearch} from '@fortawesome/free-solid-svg-icons/faSearch';
 
@@ -45,9 +44,7 @@ export function Search(props) {
         placeholder={placeholder}
       />
       <InputGroup.Addon>
-        <Icon>
-          <FontAwesomeIcon icon={faSearch} />
-        </Icon>
+        <FontAwesomeIcon icon={faSearch} />
       </InputGroup.Addon>
     </InputGroup>
   );

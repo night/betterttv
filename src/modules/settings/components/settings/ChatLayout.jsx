@@ -1,8 +1,8 @@
 import React from 'react';
-import Panel from 'rsuite/lib/Panel/index.js';
-import Radio from 'rsuite/lib/Radio/index.js';
-import RadioGroup from 'rsuite/lib/RadioGroup/index.js';
-import FormGroup from 'rsuite/lib/FormGroup/index.js';
+import Panel from 'rsuite/Panel';
+import Radio from 'rsuite/Radio';
+import RadioGroup from 'rsuite/RadioGroup';
+import FormGroup from 'rsuite/FormGroup';
 import {registerComponent, useStorageState} from '../Store.jsx';
 import {CategoryTypes, SettingIds, ChatLayoutTypes} from '../../../../constants.js';
 import styles from '../../styles/header.module.css';

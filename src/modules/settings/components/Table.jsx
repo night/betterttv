@@ -1,12 +1,11 @@
 import React, {useRef, useEffect, useState} from 'react';
 
-import Table from 'rsuite/lib/Table/index.js';
-import Button from 'rsuite/lib/Button/index.js';
-import IconButton from 'rsuite/lib/IconButton/index.js';
-import Icon from 'rsuite/lib/Icon/index.js';
-import Dropdown from 'rsuite/lib/Dropdown/index.js';
-import Popover from 'rsuite/lib/Popover/index.js';
-import Whisper from 'rsuite/lib/Whisper/index.js';
+import Table from 'rsuite/Table';
+import Button from 'rsuite/Button';
+import IconButton from 'rsuite/IconButton';
+import Dropdown from 'rsuite/Dropdown';
+import Popover from 'rsuite/Popover';
+import Whisper from 'rsuite/Whisper';
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faTimes} from '@fortawesome/free-solid-svg-icons/faTimes';
@@ -63,8 +62,7 @@ function CustomWhisper(props) {
       placement="autoVerticalStart"
       trigger="click"
       triggerRef={trigger}
-      speaker={<MenuPopover options={options} onSelect={handleSelectMenu} />}
-    >
+      speaker={<MenuPopover options={options} onSelect={handleSelectMenu} />}>
       {children}
     </Whisper>
   );
@@ -136,9 +134,7 @@ function ActionCell({rowData, dataKey, onClick, ...props}) {
   return (
     <Cell {...props} className={styles.actionCell}>
       <Button className={styles.action} appearance="link" onClick={() => onClick(rowData.id)}>
-        <Icon>
-          <FontAwesomeIcon icon={faTimes} />
-        </Icon>
+        <FontAwesomeIcon icon={faTimes} />
       </Button>
     </Cell>
   );
@@ -261,8 +257,7 @@ function EditTable({options, setValue, value, ...props}) {
                           dataKey={key.name}
                           rowData={rowData}
                           options={key.options}
-                          onChange={handleChange}
-                        >
+                          onChange={handleChange}>
                           <Button appearance="subtle">
                             {key.options.find((option) => option.value === rowData.type).name}
                           </Button>
@@ -286,12 +281,7 @@ function EditTable({options, setValue, value, ...props}) {
         onClick={handleAddEmptyRow}
         loading={loading}
         className={styles.button}
-        icon={
-          <Icon>
-            <FontAwesomeIcon icon={faPlus} />
-          </Icon>
-        }
-      >
+        icon={<FontAwesomeIcon icon={faPlus} />}>
         Add New
       </IconButton>
     </>

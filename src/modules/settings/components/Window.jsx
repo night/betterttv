@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import Modal from 'rsuite/lib/Modal/index.js';
+import Modal from 'rsuite/Modal';
 import Sidenav from './Sidenav.jsx';
 import About from '../pages/About.jsx';
 import ChatSettings from '../pages/ChatSettings.jsx';

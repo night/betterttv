@@ -1,7 +1,7 @@
 import React from 'react';
-import Panel from 'rsuite/lib/Panel/index.js';
-import Checkbox from 'rsuite/lib/Checkbox/index.js';
-import CheckboxGroup from 'rsuite/lib/CheckboxGroup/index.js';
+import Panel from 'rsuite/Panel';
+import Checkbox from 'rsuite/Checkbox';
+import CheckboxGroup from 'rsuite/CheckboxGroup';
 import {registerComponent, useStorageState} from '../Store.jsx';
 import {CategoryTypes, SettingIds, UsernameFlags} from '../../../../constants.js';
 import styles from '../../styles/header.module.css';
@@ -9,15 +9,13 @@ import {hasFlag} from '../../../../utils/flags.js';
 
 function UsernamesModule() {
   const [usernames, setUsernames] = useStorageState(SettingIds.USERNAMES);
-
   return (
     <Panel header="Usernames">
       <div className={styles.setting}>
         <p className={styles.description}>Edit or modify chat usernames</p>
         <CheckboxGroup
           value={Object.values(UsernameFlags).filter((value) => hasFlag(usernames, value))}
-          onChange={(value) => setUsernames(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}
-        >
+          onChange={(value) => setUsernames(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}>
           <Checkbox key="localized" value={UsernameFlags.LOCALIZED}>
             <p>Localized Usernames</p>
             <p className={styles.description}>Show localized display names in the chat window</p>

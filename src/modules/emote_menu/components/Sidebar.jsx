@@ -1,7 +1,7 @@
 import React, {useEffect, useRef} from 'react';
-import Nav from 'rsuite/lib/Nav/index.js';
-import Whisper from 'rsuite/lib/Whisper/index.js';
-import Tooltip from 'rsuite/lib/Tooltip/index.js';
+import Nav from 'rsuite/Nav';
+import Whisper from 'rsuite/Whisper';
+import Tooltip from 'rsuite/Tooltip';
 import classNames from 'classnames';
 import {RowHeight, WindowHeight} from '../../../constants.js';
 import styles from '../styles/sidebar.module.css';
@@ -49,8 +49,7 @@ export default function Sidebar({section, onChange, categories}) {
               trigger="hover"
               delay={200}
               speaker={<Tooltip>{category.displayName}</Tooltip>}
-              onClick={() => onChange(category.id)}
-            >
+              onClick={() => onChange(category.id)}>
               <Nav.Item active={isActive} icon={category.icon} className={classNames({[styles.active]: isActive})} />
             </Whisper>
           );

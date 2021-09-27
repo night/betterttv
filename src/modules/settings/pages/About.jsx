@@ -1,10 +1,9 @@
 import React, {useRef, useState} from 'react';
 import {saveAs} from 'file-saver';
 
-import IconButton from 'rsuite/lib/IconButton/index.js';
-import PanelGroup from 'rsuite/lib/PanelGroup/index.js';
-import Panel from 'rsuite/lib/Panel/index.js';
-import Icon from 'rsuite/lib/Icon/index.js';
+import IconButton from 'rsuite/IconButton';
+import PanelGroup from 'rsuite/PanelGroup';
+import Panel from 'rsuite/Panel';
 import {faUpload} from '@fortawesome/free-solid-svg-icons/faUpload';
 import {faRedo} from '@fortawesome/free-solid-svg-icons/faRedo';
 import {faDownload} from '@fortawesome/free-solid-svg-icons/faDownload';
@@ -92,8 +91,7 @@ function About({onHide}) {
             <a
               target="_blank"
               rel="noreferrer"
-              href="https://chrome.google.com/webstore/detail/betterttv/ajopnjidmegmdimjlfnijceegpefgped"
-            >
+              href="https://chrome.google.com/webstore/detail/betterttv/ajopnjidmegmdimjlfnijceegpefgped">
               Chrome Webstore
             </a>{' '}
             or{' '}
@@ -182,12 +180,7 @@ function About({onHide}) {
                 appearance="primary"
                 onClick={backupFile}
                 disabled={resetting}
-                icon={
-                  <Icon>
-                    <FontAwesomeIcon icon={faDownload} />
-                  </Icon>
-                }
-              >
+                icon={<FontAwesomeIcon icon={faDownload} />}>
                 Backup Settings
               </IconButton>
               <input type="file" hidden ref={fileImport} onChange={({target}) => importFile(target)} />
@@ -197,26 +190,16 @@ function About({onHide}) {
                 onClick={() => fileImport.current.click()}
                 disabled={resetting}
                 loading={importing}
-                icon={
-                  <Icon>
-                    <FontAwesomeIcon icon={faUpload} />
-                  </Icon>
-                }
-              >
+                icon={<FontAwesomeIcon icon={faUpload} />}>
                 Import Settings
               </IconButton>
               <IconButton
-                icon={
-                  <Icon>
-                    <FontAwesomeIcon icon={faRedo} />
-                  </Icon>
-                }
+                icon={<FontAwesomeIcon icon={faRedo} />}
                 className={styles.button}
                 loading={resetting}
                 disabled={importing}
                 color="red"
-                onClick={resetDefault}
-              >
+                onClick={resetDefault}>
                 Reset to Default
               </IconButton>
             </div>

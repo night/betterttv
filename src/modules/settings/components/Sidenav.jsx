@@ -1,8 +1,7 @@
 import React from 'react';
 
-import Icon from 'rsuite/lib/Icon/index.js';
-import Sidenav from 'rsuite/lib/Sidenav/index.js';
-import Nav from 'rsuite/lib/Nav/index.js';
+import Sidenav from 'rsuite/Sidenav';
+import Nav from 'rsuite/Nav';
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faBox} from '@fortawesome/free-solid-svg-icons/faBox';
@@ -22,68 +21,28 @@ function BTTVSidenav({value, onChange}) {
       <Sidenav.Body>
         <img alt="BetterTTV Logo" src={cdn.url('/assets/logos/mascot.png')} className={styles.logo} />
         <Nav className={styles.nav}>
-          <Nav.Item
-            eventKey={PageTypes.CHAT_SETTINGS}
-            icon={
-              <Icon>
-                <FontAwesomeIcon icon={faCommentAlt} />
-              </Icon>
-            }
-          >
+          <Nav.Item eventKey={PageTypes.CHAT_SETTINGS} icon={<FontAwesomeIcon icon={faCommentAlt} />}>
             <p>Chat Settings</p>
           </Nav.Item>
-          <Nav.Item
-            eventKey={PageTypes.DIRECTORY_SETTINGS}
-            icon={
-              <Icon>
-                <FontAwesomeIcon icon={faCompass} />
-              </Icon>
-            }
-          >
+          <Nav.Item eventKey={PageTypes.DIRECTORY_SETTINGS} icon={<FontAwesomeIcon icon={faCompass} />}>
             <p>Directory Settings</p>
           </Nav.Item>
-          <Nav.Item
-            eventKey={PageTypes.CHANNEL_SETTINGS}
-            icon={
-              <Icon>
-                <FontAwesomeIcon icon={faHouseUser} />
-              </Icon>
-            }
-          >
+          <Nav.Item eventKey={PageTypes.CHANNEL_SETTINGS} icon={<FontAwesomeIcon icon={faHouseUser} />}>
             <p>Channel Settings</p>
           </Nav.Item>
           <Nav.Item
             href="https://betterttv.com/dashboard/emotes"
             target="_blank"
             rel="noreferrer"
-            icon={
-              <Icon>
-                <FontAwesomeIcon icon={faColumns} />
-              </Icon>
-            }
-          >
+            icon={<FontAwesomeIcon icon={faColumns} />}>
             <p>Emote Dashboard</p>
           </Nav.Item>
-          <Nav.Item
-            eventKey={PageTypes.CHANGELOG}
-            icon={
-              <Icon>
-                <FontAwesomeIcon icon={faBox} />
-              </Icon>
-            }
-          >
+          <Nav.Item eventKey={PageTypes.CHANGELOG} icon={<FontAwesomeIcon icon={faBox} />}>
             <p>Changelog</p>
           </Nav.Item>
         </Nav>
         <Nav pullRight className={styles.bottom}>
-          <Nav.Item
-            eventKey={PageTypes.ABOUT}
-            icon={
-              <Icon>
-                <FontAwesomeIcon icon={faInfoCircle} />
-              </Icon>
-            }
-          >
+          <Nav.Item eventKey={PageTypes.ABOUT} icon={<FontAwesomeIcon icon={faInfoCircle} />}>
             <p>About</p>
           </Nav.Item>
         </Nav>

@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import Divider from 'rsuite/lib/Divider/index.js';
+import Divider from 'rsuite/Divider';
 import keycodes from '../../../utils/keycodes.js';
 import {EmoteMenuTips} from '../../../constants.js';
 import emoteStore from '../stores/index.js';

@@ -1,7 +1,7 @@
 import React from 'react';
-import Panel from 'rsuite/lib/Panel/index.js';
-import Checkbox from 'rsuite/lib/Checkbox/index.js';
-import CheckboxGroup from 'rsuite/lib/CheckboxGroup/index.js';
+import Panel from 'rsuite/Panel';
+import Checkbox from 'rsuite/Checkbox';
+import CheckboxGroup from 'rsuite/CheckboxGroup';
 import {registerComponent, useStorageState} from '../Store.jsx';
 import {CategoryTypes, SettingIds, EmoteTypeFlags} from '../../../../constants.js';
 import styles from '../../styles/header.module.css';
@@ -16,8 +16,7 @@ function EmotesModule() {
         <p className={styles.description}>Adds more emotes to your chat</p>
         <CheckboxGroup
           value={Object.values(EmoteTypeFlags).filter((value) => hasFlag(emotes, value))}
-          onChange={(value) => setEmotes(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}
-        >
+          onChange={(value) => setEmotes(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}>
           <Checkbox key="bttvEmotes" value={EmoteTypeFlags.BTTV_EMOTES}>
             <p>BetterTTV Emotes</p>
             <p className={styles.description}>Adds extra cool emotes for you to use</p>

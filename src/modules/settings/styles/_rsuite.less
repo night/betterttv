@@ -1,42 +1,45 @@
-@theme: 'dark'; //set to "default" for light theme
+@import '~rsuite/styles/index.less';
 
-@import '~rsuite/lib/Animation/styles/themes/@{theme}';
-@import '~rsuite/lib/AutoComplete/styles/themes/@{theme}';
-@import '~rsuite/lib/Button/styles/themes/@{theme}';
-@import '~rsuite/lib/ButtonGroup/styles/themes/@{theme}';
-@import '~rsuite/lib/Checkbox/styles/themes/@{theme}';
-@import '~rsuite/lib/CheckboxGroup/styles/themes/@{theme}';
-@import '~rsuite/lib/CheckPicker/styles/themes/@{theme}';
-@import '~rsuite/lib/Divider/styles/themes/@{theme}';
-@import '~rsuite/lib/Dropdown/styles/themes/@{theme}';
-@import '~rsuite/lib/Footer/styles/themes/@{theme}';
-@import '~rsuite/lib/FormGroup/styles/themes/@{theme}';
-@import '~rsuite/lib/Icon/styles/themes/@{theme}';
-@import '~rsuite/lib/IconButton/styles/themes/@{theme}';
-@import '~rsuite/lib/Input/styles/themes/@{theme}';
-@import '~rsuite/lib/InputGroup/styles/themes/@{theme}';
-@import '~rsuite/lib/InputPicker/styles/themes/@{theme}';
-@import '~rsuite/lib/Loader/styles/themes/@{theme}';
-@import '~rsuite/lib/Modal/styles/themes/@{theme}';
-@import '~rsuite/lib/Nav/styles/themes/@{theme}';
-@import '~rsuite/lib/Navbar/styles/themes/@{theme}';
-@import '~rsuite/lib/Panel/styles/themes/@{theme}';
-@import '~rsuite/lib/PanelGroup/styles/themes/@{theme}';
-@import '~rsuite/lib/Placeholder/styles/themes/@{theme}';
-@import '~rsuite/lib/Popover/styles/themes/@{theme}';
-@import '~rsuite/lib/Radio/styles/themes/@{theme}';
-@import '~rsuite/lib/Sidenav/styles/themes/@{theme}';
-@import '~rsuite/lib/Slider/styles/themes/@{theme}';
-@import '~rsuite/lib/Table/styles/themes/@{theme}';
-@import '~rsuite/lib/Toggle/styles/themes/@{theme}';
-@import '~rsuite/lib/Tooltip/styles/themes/@{theme}';
+// @import '~rsuite/Animation/styles/index';
+// @import '~rsuite/AutoComplete/styles/index';
+// @import '~rsuite/Button/styles/index';
+// @import '~rsuite/ButtonGroup/styles/index';
+// @import '~rsuite/Checkbox/styles/index';
+// @import '~rsuite/CheckboxGroup/styles/index';
+// @import '~rsuite/CheckPicker/styles/index';
+// @import '~rsuite/Divider/styles/index';
+// @import '~rsuite/Dropdown/styles/index';
+// @import '~rsuite/Footer/styles/index';
+// @import '~rsuite/FormGroup/styles/index';
+// @import '~rsuite/IconButton/styles/index';
+// @import '~rsuite/Input/styles/index';
+// @import '~rsuite/InputGroup/styles/index';
+// @import '~rsuite/InputPicker/styles/index';
+// @import '~rsuite/Loader/styles/index';
+// @import '~rsuite/Modal/styles/index';
+// @import '~rsuite/Nav/styles/index';
+// @import '~rsuite/Navbar/styles/index';
+// @import '~rsuite/Panel/styles/index';
+// @import '~rsuite/PanelGroup/styles/index';
+// @import '~rsuite/Placeholder/styles/index';
+// @import '~rsuite/Popover/styles/index';
+// @import '~rsuite/Radio/styles/index';
+// @import '~rsuite/Sidenav/styles/index';
+// @import '~rsuite/Slider/styles/index';
+// @import '~rsuite/Table/styles/index';
 
 @ns: bttv-rs-;
 @base-color: #9146ff;
 @reset-import: false;
 @body-bg: false;
 @text-color: false;
-@icon-font-path: 'FONT-PATH-PLACEHOLDER';
+// @icon-font-path: 'FONT-PATH-PLACEHOLDER';
+
+// Enable dark mode
+@enable-dark-mode: true;
+
+// Enable high contrast mode
+@enable-high-contrast: true;
 
 .@{ns}icon.fill-colour use {
   fill: currentColor;

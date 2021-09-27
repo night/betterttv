@@ -1,7 +1,7 @@
 import React from 'react';
-import Panel from 'rsuite/lib/Panel/index.js';
-import Checkbox from 'rsuite/lib/Checkbox/index.js';
-import CheckboxGroup from 'rsuite/lib/CheckboxGroup/index.js';
+import Panel from 'rsuite/Panel';
+import Checkbox from 'rsuite/Checkbox';
+import CheckboxGroup from 'rsuite/CheckboxGroup';
 import {registerComponent, useStorageState} from '../Store.jsx';
 import {CategoryTypes, SettingIds, ChatFlags} from '../../../../constants.js';
 import styles from '../../styles/header.module.css';
@@ -16,8 +16,7 @@ function ChatModule() {
         <p className={styles.description}>Edit or modify chat features</p>
         <CheckboxGroup
           value={Object.values(ChatFlags).filter((value) => hasFlag(chat, value))}
-          onChange={(value) => setChat(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}
-        >
+          onChange={(value) => setChat(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}>
           <Checkbox key="chatReplies" value={ChatFlags.CHAT_REPLIES}>
             <p>Chat Replies</p>
             <p className={styles.description}>Show the click to reply button in chat</p>

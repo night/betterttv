@@ -222,7 +222,7 @@ export default async (env, argv) => {
       new CopyPlugin({
         patterns: [
           {from: 'src/assets', to: './assets'},
-          {from: './node_modules/rsuite/src/styles/fonts', to: './assets/fonts'},
+          // {from: './node_modules/rsuite/src/styles/fonts', to: './assets/fonts'},
         ],
       }),
       new CleanWebpackPlugin(),

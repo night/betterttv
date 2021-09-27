@@ -1,6 +1,5 @@
 import React from 'react';
-import Icon from 'rsuite/lib/Icon/index.js';
-import IconButton from 'rsuite/lib/IconButton/index.js';
+import IconButton from 'rsuite/IconButton';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faStar} from '@fortawesome/free-solid-svg-icons/faStar';
 import styles from '../styles/preview.module.css';
@@ -25,15 +24,7 @@ export default function PreviewEmote({emote, isFavorite}) {
           <div>from {emote.category.displayName}</div>
         </div>
       </div>
-      {isFavorite ? (
-        <IconButton
-          icon={
-            <Icon>
-              <FontAwesomeIcon icon={faStar} />
-            </Icon>
-          }
-        />
-      ) : null}
+      {isFavorite ? <IconButton icon={<FontAwesomeIcon icon={faStar} />} /> : null}
     </div>
   );
 }

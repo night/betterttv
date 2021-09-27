@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import PanelGroup from 'rsuite/lib/PanelGroup/index.js';
+import PanelGroup from 'rsuite/PanelGroup';
 import styles from '../styles/popout.module.css';
 import {Settings, Search} from './Settings.jsx';
 import {CategoryTypes} from '../../../constants.js';

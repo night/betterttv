@@ -1,8 +1,9 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import React, {useState, useRef, useEffect} from 'react';
 import classNames from 'classnames';
-import Whisper from 'rsuite/lib/Whisper/index.js';
-import Popover from 'rsuite/lib/Popover/index.js';
+import Whisper from 'rsuite/Whisper';
+import Popover from 'rsuite/Popover';
+import CustomProvider from 'rsuite/CustomProvider';
 import EmoteMenu from './Menu.jsx';
 import {hasTipToDisplay} from './Tip.jsx';
 import emoteStore from '../stores/index.js';
@@ -48,18 +49,19 @@ export default function LegacyButton({appendToChat, setPopoverOpen, onClick}) {
   }, [hasTip]);
 
   return (
-    <Whisper
-      trigger="active"
-      placement="auto"
-      onClick={onClick}
-      speaker={
-        <Popover className={classNames(styles.popover, hasTip ? styles.withTip : null)} full>
-          <EmoteMenu triggerRef={triggerRef} appendToChat={appendToChat} onSetTip={(show) => handleSetTip(show)} />
-        </Popover>
-      }
-      triggerRef={triggerRef}
-    >
-      <button type="button" className={styles.button} />
-    </Whisper>
+    <CustomProvider theme="dark">
+      <Whisper
+        trigger="active"
+        placement="auto"
+        onClick={onClick}
+        speaker={
+          <Popover className={classNames(styles.popover, hasTip ? styles.withTip : null)} full>
+            <EmoteMenu triggerRef={triggerRef} appendToChat={appendToChat} onSetTip={(show) => handleSetTip(show)} />
+          </Popover>
+        }
+        triggerRef={triggerRef}>
+        <button type="button" className={styles.button} />
+      </Whisper>
+    </CustomProvider>
   );
 }

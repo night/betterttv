@@ -1,8 +1,7 @@
 import React, {useEffect, useRef} from 'react';
-import Icon from 'rsuite/lib/Icon/index.js';
-import InputGroup from 'rsuite/lib/InputGroup/index.js';
-import Input from 'rsuite/lib/Input/index.js';
-import IconButton from 'rsuite/lib/IconButton/index.js';
+import InputGroup from 'rsuite/InputGroup';
+import Input from 'rsuite/Input';
+import IconButton from 'rsuite/IconButton';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faSearch} from '@fortawesome/free-solid-svg-icons/faSearch';
 import {faTimes} from '@fortawesome/free-solid-svg-icons/faTimes';
@@ -18,9 +17,7 @@ function Header({value, onChange, onHide, selected, ...restProps}) {
     <div {...restProps}>
       <InputGroup inside>
         <InputGroup.Addon>
-          <Icon>
-            <FontAwesomeIcon icon={faSearch} />
-          </Icon>
+          <FontAwesomeIcon icon={faSearch} />
         </InputGroup.Addon>
         <Input
           placeholder={selected == null ? 'Search for Emotes' : selected.code}
@@ -29,15 +26,7 @@ function Header({value, onChange, onHide, selected, ...restProps}) {
           inputRef={searchInputRef}
         />
       </InputGroup>
-      <IconButton
-        icon={
-          <Icon>
-            <FontAwesomeIcon icon={faTimes} />
-          </Icon>
-        }
-        appearance="subtle"
-        onClick={onHide}
-      />
+      <IconButton icon={<FontAwesomeIcon icon={faTimes} />} appearance="subtle" onClick={onHide} />
     </div>
   );
 }
