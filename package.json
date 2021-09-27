@@ -51,7 +51,7 @@
     "filemanager-webpack-plugin": "^6.1.7",
     "fuse.js": "^6.4.6",
     "git-rev-sync": "^3.0.1",
-    "glob": "^7.1.7",
+    "glob": "^7.2.0",
     "got": "^11.8.2",
     "import-glob-loader": "^1.1.0",
     "jquery": "^3.6.0",
