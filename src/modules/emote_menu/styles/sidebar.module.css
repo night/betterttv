@@ -4,10 +4,21 @@
   overflow-y: scroll;
   background-color: #191c23;
   scrollbar-width: none;
+
+  a {
+    display: flex;
+    justify-content: center;
+  }
 }
 
 .sidebar::-webkit-scrollbar {
   display: none;
+}
+
+.navItem {
+  display: flex !important;
+  height: 36px;
+  align-items: center;
 }
 
 .active {

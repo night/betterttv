@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import Modal from 'rsuite/Modal';
+import CustomProvider from 'rsuite/CustomProvider';
 import Sidenav from './Sidenav.jsx';
 import About from '../pages/About.jsx';
 import ChatSettings from '../pages/ChatSettings.jsx';
@@ -55,18 +56,20 @@ function Window({setHandleOpen}) {
   }
 
   return (
-    <Modal show={open} onHide={() => setOpen(false)}>
-      <Sidenav
-        value={page}
-        onChange={(value) => {
-          if (value == null) {
-            return;
-          }
-          setPage(value);
-        }}
-      />
-      <Page page={page} onHide={() => setOpen(false)} />
-    </Modal>
+    <CustomProvider theme="dark">
+      <Modal open={open} onClose={() => setOpen(false)}>
+        <Sidenav
+          value={page}
+          onChange={(value) => {
+            if (value == null) {
+              return;
+            }
+            setPage(value);
+          }}
+        />
+        <Page page={page} onHide={() => setOpen(false)} />
+      </Modal>
+    </CustomProvider>
   );
 }
 

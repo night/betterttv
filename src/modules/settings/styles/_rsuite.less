@@ -28,7 +28,6 @@
 // @import '~rsuite/Slider/styles/index';
 // @import '~rsuite/Table/styles/index';
 
-@ns: bttv-rs-;
 @base-color: #9146ff;
 @reset-import: false;
 @body-bg: false;
@@ -41,17 +40,17 @@
 // Enable high contrast mode
 @enable-high-contrast: true;
 
-.@{ns}icon.fill-colour use {
+.rs-icon.fill-colour use {
   fill: currentColor;
 }
 
-.@{ns}panel-heading {
+.rs-panel-heading {
   padding-bottom: 0px;
 }
 
-.@{ns}modal-dialog,
-.@{ns}modal-content,
-.@{ns}modal {
+.rs-modal-dialog,
+.rs-modal-content,
+.rs-modal {
   width: 800px;
   height: 500px;
 
@@ -65,67 +64,72 @@
   }
 }
 
-.@{ns}modal {
+.rs-modal {
   margin: 0;
 }
 
-.@{ns}modal-wrapper {
+.rs-modal-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.@{ns}modal-content {
+.rs-modal-content {
   overflow: hidden;
   margin: 0;
   padding: 0;
 }
 
-.@{ns}table-cell-content {
+.rs-table-cell-content {
   padding: 0px;
 }
 
-.@{ns}divider-horizontal.@{ns}divider-with-text {
+.rs-divider-horizontal.rs-divider-with-text {
   margin: 20px;
 }
 
-.@{ns}radio-checker,
-.@{ns}checkbox-checker {
+.rs-radio-checker,
+.rs-checkbox-checker {
   vertical-align: middle;
   padding-top: 0px;
   padding-bottom: 15px;
 }
 
-.@{ns}modal-wrapper {
+.rs-modal-wrapper {
   z-index: 3100;
 }
 
-.@{ns}popover {
+.rs-popover {
   z-index: 3100;
 }
 
-.@{ns}tooltip {
+.rs-tooltip {
   z-index: 3150;
 }
 
 @media screen and (max-width: 769px) {
-  .@{ns}modal {
+  .rs-modal {
     width: 95%;
   }
 
-  .@{ns}modal-content,
-  .@{ns}modal-dialog {
+  .rs-modal-content,
+  .rs-modal-dialog {
     width: 100%;
   }
 }
 
-.@{ns}nav-item-content {
-  svg {
-    width: 100% !important;
-  }
-}
-
-.@{ns}popover {
+.rs-popover {
   -webkit-transform: unset !important;
   transform: unset !important;
+}
+
+.rs-btn-icon {
+  display: flex;
+  justify-content: center;
+  column-gap: 12px;
+  align-items: center;
+}
+
+.rs-btn-icon-with-text.rs-btn.rs-btn-icon-placement-left {
+  padding: 8px 20px;
 }

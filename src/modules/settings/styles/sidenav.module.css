@@ -15,11 +15,20 @@
   position: fixed;
   height: 500px;
   margin: 0;
-  padding: 0;
   border-radius: 5px 0px 0px 4px;
   transition: width 0.35s ease-in-out;
   overflow: hidden;
   z-index: 6;
+
+  a {
+    padding-left: 0px !important;
+    display: flex;
+    justify-content: center;
+
+    p {
+      display: none;
+    }
+  }
 }
 
 .nav ul {
