@@ -7,7 +7,6 @@ import styles from './EmoteMenu.module.css';
 
 const CHAT_BUTTONS_CONTAINER_SELECTOR = 'yt-live-chat-message-input-renderer > #container > #buttons';
 const INPUT_BOX_SELECTOR = 'yt-live-chat-text-input-field-renderer > #input';
-const INPUT_BOX_LABEL_SELECTOR = 'yt-live-chat-text-input-field-renderer > #label';
 const LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR =
   'div[data-a-target="legacy-bttv-emote-picker-button-container"]';
 
@@ -69,15 +68,11 @@ export default class EmoteMenuModule {
 
   appendToChat(text, shouldFocus = true) {
     const element = document.querySelector(INPUT_BOX_SELECTOR);
-    const label = document.querySelector(INPUT_BOX_LABEL_SELECTOR);
-
-    // element.selectionStart returns null?
-
     const currentValue = element.textContent;
     text = `${currentValue} ${text}`;
 
-    label.textContent = '';
     element.textContent = text;
+    element.dispatchEvent(new Event('input', {bubbles: true}));
 
     if (shouldFocus) {
       element.focus();

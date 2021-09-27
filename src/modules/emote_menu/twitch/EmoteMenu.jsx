@@ -45,6 +45,7 @@ export default class EmoteMenuModule {
         .closest(CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR).lastChild;
 
       const buttonContainer = document.createElement('div');
+      buttonContainer.classList.add(styles.emotePickerButtonContainer);
       buttonContainer.setAttribute('data-a-target', 'legacy-bttv-emote-picker-button-container');
       container.insertBefore(buttonContainer, container.lastChild);
 

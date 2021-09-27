@@ -13,6 +13,10 @@
   display: none;
 }
 
+.emotePickerButtonContainer {
+  padding: 5px;
+}
+
 .popover {
   height: 412px;
   margin-top: -80px !important;
