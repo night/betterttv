@@ -18,10 +18,15 @@
   margin-left: 80px !important;
   width: 390px;
   color: #efeff1;
+  overflow: hidden;
 
   div[class$='-popover-arrow'] {
     display: none !important;
   }
+}
+
+.withTip {
+  height: 438px;
 }
 
 @media only screen and (max-width: 400px) {

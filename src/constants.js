@@ -199,6 +199,11 @@ export const DEFAULT_FREQUENT_EMOTES = {
   'bttv-555981336ba1901877765555': {recentUses: [Date.now()], totalUses: 1, score: 100}, // haHAA
 };
 
+export const EmoteMenuTips = {
+  EMOTE_MENU_FAVORITE_EMOTE: 'emoteMenuTipClosedFavoriteEmote',
+  EMOTE_MENU_PREVENT_CLOSE: 'emoteMenuTipClosedPreventClose',
+};
+
 export const DefaultValues = {
   [SettingIds.ANON_CHAT]: false,
   [SettingIds.AUTO_THEATRE_MODE]: false,

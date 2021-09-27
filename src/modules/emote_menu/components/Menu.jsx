@@ -1,19 +1,21 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import Divider from 'rsuite/lib/Divider/index.js';
 import keycodes from '../../../utils/keycodes.js';
+import {EmoteMenuTips} from '../../../constants.js';
 import emoteStore from '../stores/index.js';
 import styles from '../styles/menu.module.css';
 import Emotes from './Emotes.jsx';
 import Header from './Header.jsx';
 import Preview from './Preview.jsx';
 import Sidebar from './Sidebar.jsx';
+import Tip, {markTipAsSeen} from './Tip.jsx';
 
 let keyPressCallback;
 function setKeyPressCallback(newKeyPressCallback) {
   keyPressCallback = newKeyPressCallback;
 }
 
-export default function EmoteMenu({triggerRef, appendToChat}) {
+export default function EmoteMenu({triggerRef, appendToChat, onSetTip}) {
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState(null);
   const [, setUpdated] = useState(false);
@@ -30,6 +32,7 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
     (emote) => {
       if (altPressed) {
         emoteStore.toggleFavorite(emote);
+        markTipAsSeen(EmoteMenuTips.EMOTE_MENU_FAVORITE_EMOTE);
         return;
       }
 
@@ -37,6 +40,7 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
       emoteStore.trackHistory(emote);
 
       if (shiftPressed) {
+        markTipAsSeen(EmoteMenuTips.EMOTE_MENU_PREVENT_CLOSE);
         return;
       }
 
@@ -116,6 +120,7 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
         emote={selected}
         isFavorite={selected == null ? false : emoteStore.hasFavorite(selected)}
       />
+      <Tip classname={styles.tip} onSetTip={onSetTip} />
     </>
   );
 }
