@@ -18,7 +18,7 @@ function getTipToDisplay() {
   }
 
   if (!tips[EmoteMenuTips.EMOTE_MENU_FAVORITE_EMOTE] && emoteStorage.favorites.length === 0) {
-    return [EmoteMenuTips.EMOTE_MENU_FAVORITE_EMOTE, 'Hold Alt and Click on an Emote to Favorite it'];
+    return [EmoteMenuTips.EMOTE_MENU_FAVORITE_EMOTE, 'Alt + Click Emotes to Favorite them'];
   }
 
   return [];
