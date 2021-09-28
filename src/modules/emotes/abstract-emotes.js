@@ -2,8 +2,8 @@ export default class AbstractEmotes {
   constructor() {
     this.emotes = new Map();
 
-    if (this.provider === undefined) {
-      throw new TypeError('Must set "provider" attribute');
+    if (this.category === undefined) {
+      throw new TypeError('Must set "category" attribute');
     }
   }
 

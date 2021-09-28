@@ -9,85 +9,77 @@ import debug from '../../../utils/debug.js';
 import styles from '../styles/header.module.css';
 import CloseButton from '../components/CloseButton.jsx';
 
-function changelogPage({onHide}) {
-  const [req, setReq] = useState({
+const EXTENSION_VERSION = process.env.EXT_VER;
+
+function Changelog({onHide}) {
+  const [{loading, changelogEntries}, setRequestState] = useState({
     loading: true,
-    error: false,
-    changelog: null,
+    changelogEntries: null,
   });
 
   useEffect(() => {
     api
       .get('cached/changelog')
-      .then((res) => {
-        setReq({
+      .then((body) => {
+        setRequestState({
           loading: false,
-          changelog: res,
+          changelogEntries: body,
         });
       })
       .catch((err) => {
         debug.log(`Failed to load changelog: ${err}`);
-        setReq({
+        setRequestState({
           loading: false,
-          error: true,
+          changelogEntries: null,
         });
       });
   }, []);
 
-  const {loading, changelog, error} = req;
+  let renderedChangelogEntries = null;
 
-  if (loading)
-    return (
-      <>
-        <div className={styles.center}>
-          <Panel>
-            <Loader content="Loading Changelog..." />
+  if (loading) {
+    renderedChangelogEntries = (
+      <div className={styles.center}>
+        <Loader content="Loading Changelog..." />
+      </div>
+    );
+  } else if (changelogEntries == null) {
+    renderedChangelogEntries = <div className={styles.center}>Failed to load Changelog.</div>;
+  } else {
+    const versionIndex = changelogEntries.findIndex(({version}) => version === EXTENSION_VERSION) || 0;
+
+    renderedChangelogEntries = changelogEntries
+      .filter((_, index) => index >= versionIndex)
+      .map(({body, version, publishedAt}) => {
+        let keyCount = 0;
+        let formattedBody = reactStringReplace(body, / #([0-9]+)/g, (match) => (
+          <React.Fragment key={`${version}-issue-${match}-${keyCount++}`}>
+            {' '}
+            <a href={`https://github.com/night/BetterTTV/issues/${match}`} target="_blank" rel="noreferrer">
+              #{match}
+            </a>
+          </React.Fragment>
+        ));
+        formattedBody = reactStringReplace(formattedBody, /(\r\n)/g, (match) => (
+          <br key={`${version}-line-${match}-${keyCount++}`} />
+        ));
+
+        return (
+          <Panel header={`Version ${version} • ${dayjs(publishedAt).format('MMM D, YYYY')}`} key={version}>
+            <p>{formattedBody}</p>
           </Panel>
-        </div>
-        <div className={styles.header}>
-          <CloseButton onHide={onHide} className={styles.closeButton} />
-        </div>
-      </>
-    );
-
-  if (error)
-    return (
-      <>
-        <Panel header={<h3>Something went Wrong.</h3>}>
-          <p className={styles.description}>Failed to load changelog.</p>
-        </Panel>
-        <div className={styles.header}>
-          <CloseButton onHide={onHide} className={styles.closeButton} />
-        </div>
-      </>
-    );
-
-  const logs = changelog.map(({body, version, publishedAt}) => {
-    let text = reactStringReplace(body, /\r\n/g, () => <br />);
-    text = reactStringReplace(text, / #([0-9]+)/g, (match) => (
-      <>
-        <span> </span>
-        <a href={`https://github.com/night/BetterTTV/issues/${match}`} target="_blank" rel="noreferrer">
-          #{match}
-        </a>
-      </>
-    ));
-
-    return (
-      <Panel header={`Version ${version} • ${dayjs(publishedAt).format('MMM D, YYYY')}`} key={version}>
-        <p>{text}</p>
-      </Panel>
-    );
-  });
+        );
+      });
+  }
 
   return (
     <>
       <div className={styles.content}>
         <PanelGroup>
-          <Panel header={<h3>Changelogs</h3>}>
-            <p className={styles.description}>A list of recent updates and patches to Betterttv.</p>
+          <Panel header={<h3>Changelog</h3>}>
+            <p className={styles.description}>A list of recent updates and patches to BetterTTV.</p>
           </Panel>
-          {logs}
+          {renderedChangelogEntries}
         </PanelGroup>
       </div>
       <div className={styles.header}>
@@ -97,4 +89,4 @@ function changelogPage({onHide}) {
   );
 }
 
-export default changelogPage;
+export default Changelog;

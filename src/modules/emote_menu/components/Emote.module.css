@@ -2,7 +2,7 @@
   all: unset;
   position: relative;
   border-radius: 4px;
-  padding: 2px;
+  padding: 4px;
   display: flex;
   align-items: center;
 
@@ -20,8 +20,8 @@
 }
 
 .emoteImage {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   object-fit: contain;
 }
 

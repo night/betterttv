@@ -18,19 +18,8 @@ import {faUnlock} from '@fortawesome/free-solid-svg-icons/faUnlock';
 import {faCrown} from '@fortawesome/free-solid-svg-icons/faCrown';
 import {faYoutube} from '@fortawesome/free-brands-svg-icons/faYoutube';
 import {faTwitch} from '@fortawesome/free-brands-svg-icons/faTwitch';
-import styles from '../styles/icons.module.css';
-
-const twitchLogo = {
-  prefix: 'custom',
-  iconName: 'twitch',
-  icon: [
-    512,
-    422,
-    [],
-    null,
-    'M391.17,103.47H352.54v109.7h38.63ZM285,103H246.37V212.75H285ZM120.83,0,24.31,91.42V420.58H140.14V512l96.53-91.42h77.25L487.69,256V0ZM449.07,237.75l-77.22,73.12H294.61l-67.6,64v-64H140.14V36.58H449.07Z',
-  ],
-};
+import {faLightbulb} from '@fortawesome/free-solid-svg-icons/faLightbulb';
+import styles from './Icons.module.css';
 
 const twitchGamingLogo = {
   prefix: 'custom',
@@ -43,6 +32,15 @@ const twitchGamingLogo = {
     'M2.68,22.71V89.22s-.25,4.13,5.55,4.13h114.5s4.44.35,4.44-4.21V21.72l-26,27L64.92,13,30,48.7Z',
   ],
 };
+
+function BrandedImage({src, alt, brandSrc}) {
+  return (
+    <div className={styles.brandedImage}>
+      <img src={src} alt={alt} className={styles.icon} />
+      <img src={brandSrc} alt="" className={styles.brandIcon} />
+    </div>
+  );
+}
 
 export default {
   STAR: <FontAwesomeIcon icon={faStar} />,
@@ -61,8 +59,14 @@ export default {
   CLOCK: <FontAwesomeIcon icon={faClock} />,
   UNLOCK: <FontAwesomeIcon icon={faUnlock} />,
   CROWN: <FontAwesomeIcon icon={faCrown} />,
+  BULB: <FontAwesomeIcon icon={faLightbulb} />,
   TWITCH: <FontAwesomeIcon icon={faTwitch} />,
-  TWITCH_GAMING: <FontAwesomeIcon icon={twitchGamingLogo} />,
   YOUTUBE: <FontAwesomeIcon icon={faYoutube} />,
-  IMAGE: (src, alt) => <img src={src} alt={alt} className={styles.icon} />,
+  TWITCH_GAMING: <FontAwesomeIcon icon={twitchGamingLogo} />,
+  IMAGE: (brandSrc, alt, src = null) =>
+    src != null ? (
+      <BrandedImage src={src} alt={alt} brandSrc={brandSrc} />
+    ) : (
+      <img src={brandSrc} alt={alt} className={styles.icon} />
+    ),
 };

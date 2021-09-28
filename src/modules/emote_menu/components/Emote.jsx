@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React from 'react';
 import {createSrcSet} from '../../../utils/image.js';
-import styles from '../styles/emote.module.css';
+import styles from './Emote.module.css';
 
 export default function Emote({emote, onClick, onMouseOver, active}) {
   const imageRef = React.useRef(null);
