@@ -33,26 +33,26 @@ function computeScore({totalUses, recentUses}) {
   return Math.floor((totalUses * frecency) / recentUses.length);
 }
 
-class EmoteStorage {
+class EmoteMenuStore {
   constructor() {
-    this.emoteStore = storage.get('emotes');
+    this.emoteMenuStore = storage.get('emotes');
 
-    if (this.emoteStore == null) {
-      this.emoteStore = {
+    if (this.emoteMenuStore == null) {
+      this.emoteMenuStore = {
         usageHistory: DEFAULT_FREQUENT_EMOTES,
         favorites: [],
       };
     }
 
     this.frecents = [];
-    this.favorites = this.emoteStore.favorites;
+    this.favorites = this.emoteMenuStore.favorites;
 
     this.updateFrecents(true);
   }
 
   trackHistory(emote) {
     const emoteCanonicalId = emote.canonicalId;
-    let emoteHistory = this.emoteStore.usageHistory[emoteCanonicalId];
+    let emoteHistory = this.emoteMenuStore.usageHistory[emoteCanonicalId];
 
     if (emoteHistory == null) {
       emoteHistory = {
@@ -69,24 +69,24 @@ class EmoteStorage {
     }
     emoteHistory.score = computeScore(emoteHistory);
 
-    this.emoteStore.usageHistory[emoteCanonicalId] = emoteHistory;
+    this.emoteMenuStore.usageHistory[emoteCanonicalId] = emoteHistory;
 
     this.updateFrecents();
   }
 
   updateFrecents(updateScores = false) {
     if (updateScores) {
-      for (const emoteHistory of Object.values(this.emoteStore.usageHistory)) {
+      for (const emoteHistory of Object.values(this.emoteMenuStore.usageHistory)) {
         emoteHistory.score = computeScore(emoteHistory);
       }
     }
 
-    const sortedTrimmedUsageHistory = Object.entries(this.emoteStore.usageHistory)
+    const sortedTrimmedUsageHistory = Object.entries(this.emoteMenuStore.usageHistory)
       .sort(([, {score: a}], [, {score: b}]) => b - a)
       .slice(0, MAX_FRECENTS);
 
     this.frecents = sortedTrimmedUsageHistory.map(([emoteCanonicalId]) => emoteCanonicalId);
-    this.emoteStore.usageHistory = Object.fromEntries(sortedTrimmedUsageHistory);
+    this.emoteMenuStore.usageHistory = Object.fromEntries(sortedTrimmedUsageHistory);
 
     this.save();
   }
@@ -104,10 +104,10 @@ class EmoteStorage {
 
   save() {
     storage.set('emotes', {
-      usageHistory: this.emoteStore.usageHistory,
+      usageHistory: this.emoteMenuStore.usageHistory,
       favorites: this.favorites,
     });
   }
 }
 
-export default new EmoteStorage();
+export default new EmoteMenuStore();

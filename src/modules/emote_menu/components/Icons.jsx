@@ -17,7 +17,7 @@ import {faClock} from '@fortawesome/free-solid-svg-icons/faClock';
 import {faUnlock} from '@fortawesome/free-solid-svg-icons/faUnlock';
 import {faCrown} from '@fortawesome/free-solid-svg-icons/faCrown';
 import {faLightbulb} from '@fortawesome/free-solid-svg-icons/faLightbulb';
-import styles from '../styles/icons.module.css';
+import styles from './Icons.module.css';
 
 const twitchLogo = {
   prefix: 'custom',

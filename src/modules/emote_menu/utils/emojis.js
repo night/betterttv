@@ -1,10 +1,10 @@
+/* eslint-disable import/prefer-default-export */
 import Icons from '../components/Icons.jsx';
 import emoji from '../../emotes/emojis.js';
 import {EmoteCategories, EmoteProviders} from '../../../constants.js';
 
 const emojiByCategory = emoji.getEmotesByCategory();
-
-export default [
+const emojiCategories = [
   {
     category: {
       id: EmoteCategories.EMOJI_PEOPLE,
@@ -78,3 +78,7 @@ export default [
     emotes: emojiByCategory.flags,
   },
 ];
+
+export function getEmojiCategories() {
+  return emojiCategories;
+}

@@ -2,14 +2,14 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import Icon from 'rsuite/lib/Icon/index.js';
 import classNames from 'classnames';
 import VirtualizedList from './VirtualizedList.jsx';
-import emoteStore from '../stores/index.js';
-import styles from '../styles/emotes.module.css';
+import emoteMenuViewStore from '../stores/emote-menu-view-store.js';
+import styles from './Emotes.module.css';
 import Emote from './Emote.jsx';
 import Icons from './Icons.jsx';
 import {NavigationModeTypes, RowHeight, WindowHeight} from '../../../constants.js';
-import useGridKeyboardNavigation from './GridKeyboardNavigation.jsx';
+import useGridKeyboardNavigation from '../hooks/GridKeyboardNavigation.jsx';
 
-const Emotes = React.forwardRef(
+const BrowseEmotes = React.forwardRef(
   ({onClick, section, onSection, setCoords, coords, setRowColumnCounts, rows, setSelected, navigationMode}, ref) => {
     useEffect(() => {
       const rowColumnCounts = [];
@@ -33,8 +33,8 @@ const Emotes = React.forwardRef(
 
     const renderRow = useCallback(
       ({key, style, index: y, className}) => {
-        const row = emoteStore.getRow(y);
-        return emoteStore.headers.includes(y) ? (
+        const row = emoteMenuViewStore.getRow(y);
+        return emoteMenuViewStore.headers.includes(y) ? (
           <div key={key} style={style} className={classNames(className, styles.header)}>
             <Icon className={styles.headerIcon}>{row.icon}</Icon>
             <div className={styles.headerText}>{row.displayName.toUpperCase()}</div>
@@ -61,7 +61,7 @@ const Emotes = React.forwardRef(
     );
 
     const handleHeaderChange = useCallback((rowIndex) => {
-      const header = emoteStore.getRow(rowIndex);
+      const header = emoteMenuViewStore.getRow(rowIndex);
       if (header != null) {
         onSection(header.id);
       }
@@ -69,7 +69,7 @@ const Emotes = React.forwardRef(
 
     useEffect(() => {
       if (!section.scrollTo) return;
-      const index = emoteStore.getCategoryIndexById(section.eventKey);
+      const index = emoteMenuViewStore.getCategoryIndexById(section.eventKey);
       if (index != null) {
         ref.current.scrollTo(0, index * RowHeight + 1); // + 1 to be inside the section
       }
@@ -77,10 +77,10 @@ const Emotes = React.forwardRef(
 
     return (
       <VirtualizedList
-        stickyRows={emoteStore.headers}
+        stickyRows={emoteMenuViewStore.headers}
         rowHeight={RowHeight}
         windowHeight={WindowHeight}
-        totalRows={emoteStore.rows.length}
+        totalRows={emoteMenuViewStore.rows.length}
         renderRow={renderRow}
         className={styles.emotesContainer}
         onHeaderChange={handleHeaderChange}
@@ -90,9 +90,9 @@ const Emotes = React.forwardRef(
   }
 );
 
-const SearchedEmotes = React.forwardRef(
+const SearchEmotes = React.forwardRef(
   ({search, onClick, coords, setCoords, setRowColumnCounts, setSelected, navigationMode}, ref) => {
-    const emotes = useMemo(() => emoteStore.search(search), [search]);
+    const emotes = useMemo(() => emoteMenuViewStore.search(search), [search]);
 
     const handleMouseOver = useCallback(
       (newCoords) => {
@@ -170,7 +170,7 @@ const SearchedEmotes = React.forwardRef(
   }
 );
 
-export default function renderEmotes(props) {
+export default function Emotes(props) {
   const {search, setKeyPressCallback} = props;
 
   const [rowColumnCounts, setRowColumnCounts] = useState([]);
@@ -179,7 +179,7 @@ export default function renderEmotes(props) {
     setKeyPressCallback,
     rowColumnCounts,
     setNavigationMode,
-    emoteStore.totalCols
+    emoteMenuViewStore.totalCols
   );
 
   const wrapperRef = useRef(null);
@@ -216,7 +216,7 @@ export default function renderEmotes(props) {
   }, [coords]);
 
   return isSearch ? (
-    <SearchedEmotes
+    <SearchEmotes
       ref={wrapperRef}
       setRowColumnCounts={setRowColumnCounts}
       navigationMode={navigationMode}
@@ -225,7 +225,7 @@ export default function renderEmotes(props) {
       {...props}
     />
   ) : (
-    <Emotes
+    <BrowseEmotes
       ref={wrapperRef}
       setRowColumnCounts={setRowColumnCounts}
       navigationMode={navigationMode}

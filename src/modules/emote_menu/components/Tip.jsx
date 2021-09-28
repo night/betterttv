@@ -3,7 +3,7 @@ import Divider from 'rsuite/lib/Divider/index.js';
 import Button from 'rsuite/lib/Button/index.js';
 import {EmoteMenuTips} from '../../../constants.js';
 import storage from '../../../storage.js';
-import emoteStorage from '../stores/emote-storage.js';
+import emoteMenuStore from '../stores/emote-menu-store.js';
 import Icons from './Icons.jsx';
 import styles from './Tip.module.css';
 
@@ -17,7 +17,7 @@ function getTipToDisplay() {
     return [EmoteMenuTips.EMOTE_MENU_PREVENT_CLOSE, 'Hold Shift to Select Multiple Emotes'];
   }
 
-  if (!tips[EmoteMenuTips.EMOTE_MENU_FAVORITE_EMOTE] && emoteStorage.favorites.length === 0) {
+  if (!tips[EmoteMenuTips.EMOTE_MENU_FAVORITE_EMOTE] && emoteMenuStore.favorites.length === 0) {
     return [EmoteMenuTips.EMOTE_MENU_FAVORITE_EMOTE, 'Alt + Click Emotes to Favorite them'];
   }
 

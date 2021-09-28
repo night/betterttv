@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import styles from '../styles/list.module.css';
+import styles from './VirtualizedList.module.css';
 
 function VirtualizedList(
   {className, totalRows, rowHeight, renderRow, windowHeight, stickyRows = [], onHeaderChange = () => {}},
@@ -71,7 +71,6 @@ function VirtualizedList(
           style: {
             height: `${rowHeight}px`,
           },
-          className: styles.row,
         })
       ),
     [data.rows, renderRow]

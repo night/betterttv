@@ -7,7 +7,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faSearch} from '@fortawesome/free-solid-svg-icons/faSearch';
 import {faTimes} from '@fortawesome/free-solid-svg-icons/faTimes';
 
-function Header({value, onChange, onHide, selected, ...restProps}) {
+function Header({value, onChange, onHide, selected, ...props}) {
   const searchInputRef = useRef(null);
 
   useEffect(() => {
@@ -15,7 +15,7 @@ function Header({value, onChange, onHide, selected, ...restProps}) {
   }, []);
 
   return (
-    <div {...restProps}>
+    <div {...props}>
       <InputGroup inside>
         <InputGroup.Addon>
           <Icon>

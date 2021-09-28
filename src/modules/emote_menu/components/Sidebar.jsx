@@ -4,7 +4,7 @@ import Whisper from 'rsuite/lib/Whisper/index.js';
 import Tooltip from 'rsuite/lib/Tooltip/index.js';
 import classNames from 'classnames';
 import {RowHeight, WindowHeight} from '../../../constants.js';
-import styles from '../styles/sidebar.module.css';
+import styles from './Sidebar.module.css';
 
 const ITEM_HEIGHT = 42;
 

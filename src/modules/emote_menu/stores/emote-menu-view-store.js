@@ -3,11 +3,11 @@ import uniqBy from 'lodash.uniqby';
 import sortBy from 'lodash.sortby';
 import SafeEventEmitter from '../../../utils/safe-event-emitter.js';
 import watcher from '../../../watcher.js';
-import emojiCategories from './emoji-categories.js';
+import {getEmojiCategories} from '../utils/emojis.js';
 import emotes from '../../emotes/index.js';
 import Icons from '../components/Icons.jsx';
-import emoteStorage from './emote-storage.js';
-import {loadTwitchEmotes} from './twitch-emotes.js';
+import emoteStorage from './emote-menu-store.js';
+import {loadTwitchEmotes} from '../utils/twitch-emotes.js';
 import cdn from '../../../utils/cdn.js';
 import {getCurrentChannel} from '../../../utils/channel.js';
 import settings from '../../../settings.js';
@@ -46,7 +46,7 @@ const fuse = new Fuse([], {
 let providerCategories = [];
 let twitchCategories = [];
 
-class EmoteStore extends SafeEventEmitter {
+class EmoteMenuViewStore extends SafeEventEmitter {
   constructor() {
     super();
 
@@ -147,7 +147,7 @@ class EmoteStore extends SafeEventEmitter {
     const frecents = createCategory(EmoteCategories.FRECENTS, null, 'Frequently Used', Icons.CLOCK, []);
     const favorites = createCategory(EmoteCategories.FAVORITES, null, 'Favorites', Icons.STAR, []);
 
-    const categories = [...providerCategories, ...twitchCategories, ...emojiCategories];
+    const categories = [...providerCategories, ...twitchCategories, ...getEmojiCategories()];
     const collection = [];
 
     for (const category of categories) {
@@ -242,4 +242,4 @@ class EmoteStore extends SafeEventEmitter {
   }
 }
 
-export default new EmoteStore();
+export default new EmoteMenuViewStore();
