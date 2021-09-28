@@ -30,6 +30,7 @@ export function loadYoutubeEmotes() {
         },
         metadata: {
           locked: emote.isLocked,
+          youtube: true,
         },
       })
   );

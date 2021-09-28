@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import settings from '../../../settings.js';
-import {SettingIds} from '../../../constants.js';
+import {emotesCategoryIds, SettingIds} from '../../../constants.js';
 import SafeEmoteMenuButton from '../components/SafeEmoteMenu.jsx';
 import styles from './EmoteMenu.module.css';
 
@@ -40,7 +40,7 @@ export default class EmoteMenuModule {
       const buttonContainer = document.createElement('div');
       buttonContainer.classList.add(styles.emotePickerButtonContainer);
       buttonContainer.setAttribute('data-a-target', 'legacy-bttv-emote-picker-button-container');
-      chatButtonsContainer.appendChild(buttonContainer);
+      chatButtonsContainer.prepend(buttonContainer);
 
       ReactDOM.render(
         <SafeEmoteMenuButton
@@ -66,12 +66,23 @@ export default class EmoteMenuModule {
     legacyContainer.classList.toggle(styles.hideEmoteMenuButton, !visible);
   }
 
-  appendToChat(text, shouldFocus = true) {
+  appendToChat(emote, shouldFocus = true) {
     const element = document.querySelector(INPUT_BOX_SELECTOR);
-    const currentValue = element.textContent;
-    text = `${currentValue} ${text}`;
+    let text = emote.code;
 
-    element.textContent = text;
+    if (!emote.id.startsWith(emotesCategoryIds.YOUTUBE)) {
+      const currentValue = element.textContent;
+      text = `${currentValue} ${text}`;
+      element.textContent = text;
+    } else {
+      const img = document.createElement('img');
+      img.className = 'emoji yt-formatted-string style-scope yt-live-chat-text-input-field-renderer';
+      img.src = emote.images['1x'];
+      img.alt = emote.code;
+      img.setAttribute('data-emoji-id', emote.id.replace(`${emotesCategoryIds.YOUTUBE}-`, ''));
+      element.appendChild(img);
+    }
+
     element.dispatchEvent(new Event('input', {bubbles: true}));
 
     if (shouldFocus) {

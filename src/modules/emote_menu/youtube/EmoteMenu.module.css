@@ -23,6 +23,7 @@
   margin-left: -27px !important;
   width: 390px;
   color: #efeff1;
+  left: 0px;
 
   div[class$='-popover-arrow'] {
     display: none !important;
@@ -38,6 +39,6 @@
 @media only screen and (max-width: 510px) {
   .popover {
     margin-top: -78px !important;
-    margin-left: -65px !important;
+    margin-left: -0px !important;
   }
 }

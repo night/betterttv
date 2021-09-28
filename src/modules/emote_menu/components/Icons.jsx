@@ -16,6 +16,8 @@ import {faFlag} from '@fortawesome/free-solid-svg-icons/faFlag';
 import {faClock} from '@fortawesome/free-solid-svg-icons/faClock';
 import {faUnlock} from '@fortawesome/free-solid-svg-icons/faUnlock';
 import {faCrown} from '@fortawesome/free-solid-svg-icons/faCrown';
+import {faYoutube} from '@fortawesome/free-brands-svg-icons/faYoutube';
+import {faTwitch} from '@fortawesome/free-brands-svg-icons/faTwitch';
 import styles from '../styles/icons.module.css';
 
 const twitchLogo = {
@@ -42,18 +44,6 @@ const twitchGamingLogo = {
   ],
 };
 
-const youtubeLogo = {
-  prefix: 'custom',
-  iconName: 'youtube',
-  icon: [
-    475,
-    475,
-    [],
-    null,
-    'M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z',
-  ],
-};
-
 export default {
   STAR: <FontAwesomeIcon icon={faStar} />,
   SMILE: <FontAwesomeIcon icon={faSmile} />,
@@ -71,8 +61,8 @@ export default {
   CLOCK: <FontAwesomeIcon icon={faClock} />,
   UNLOCK: <FontAwesomeIcon icon={faUnlock} />,
   CROWN: <FontAwesomeIcon icon={faCrown} />,
-  TWITCH: <FontAwesomeIcon icon={twitchLogo} />,
+  TWITCH: <FontAwesomeIcon icon={faTwitch} />,
   TWITCH_GAMING: <FontAwesomeIcon icon={twitchGamingLogo} />,
-  YOUTUBE: <FontAwesomeIcon icon={youtubeLogo} />,
+  YOUTUBE: <FontAwesomeIcon icon={faYoutube} />,
   IMAGE: (src, alt) => <img src={src} alt={alt} className={styles.icon} />,
 };

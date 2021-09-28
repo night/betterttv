@@ -76,7 +76,7 @@ export default class EmoteMenuModule {
     legacyContainer.classList.toggle(styles.hideEmoteMenuButton, !visible || !clickTwitchEmotes);
   }
 
-  appendToChat(text, shouldFocus = true) {
+  appendToChat({code: text}, shouldFocus = true) {
     const element = document.querySelector(CHAT_TEXT_AREA);
 
     let selectionEnd = element.selectionStart + text.length;
