@@ -8,7 +8,8 @@ import DirectorySettings from '../pages/DirectorySettings.jsx';
 import ChannelSettings from '../pages/ChannelSettings.jsx';
 import Changelog from '../pages/Changelog.jsx';
 import ChatWindow from './ChatWindow.jsx';
-import {PageTypes} from '../../../constants.js';
+import settings from '../../../settings.js';
+import {PageTypes, SettingIds} from '../../../constants.js';
 
 function Page(props) {
   const {page, ...restProps} = props;
@@ -35,7 +36,20 @@ function isWindowSmallStandaloneChat() {
 function Window({setHandleOpen}) {
   const [page, setPage] = useState(PageTypes.CHAT_SETTINGS);
   const [open, setOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState(settings.get(SettingIds.DARKENED_MODE));
   const [isSmallStandaloneChat, setStandaloneChat] = useState(isWindowSmallStandaloneChat());
+
+  useEffect(() => {
+    function themeCallback() {
+      setDarkMode(settings.get(SettingIds.DARKENED_MODE));
+    }
+
+    settings.on(`changed.${SettingIds.DARKENED_MODE}`, themeCallback);
+
+    return () => {
+      settings.off(`changed.${SettingIds.DARKENED_MODE}`, themeCallback);
+    };
+  }, []);
 
   useEffect(() => {
     setHandleOpen(setOpen);
@@ -56,7 +70,7 @@ function Window({setHandleOpen}) {
   }
 
   return (
-    <CustomProvider theme="dark">
+    <CustomProvider theme={darkMode ? 'dark' : 'light'}>
       <Modal open={open} onClose={() => setOpen(false)}>
         <Sidenav
           value={page}

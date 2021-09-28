@@ -21,9 +21,9 @@
 }
 
 .active {
-  background-color: #5a5a5c;
+  background-color: var(--rs-state-hover-bg);
 }
 
 .placeholder {
-  background-color: #23262b;
+  background-color: var(--rs-input-bg);
 }

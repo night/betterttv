@@ -1,5 +1,5 @@
 .description {
-  color: #cccccc;
+  color: var(--rs-text-secondary);
 }
 
 .header {
@@ -16,7 +16,7 @@
     display: flex;
     column-gap: 10px;
     padding: 10px 0 10px 10px;
-    background-color: #292d33;
+    background-color: var(--rs-bg-overlay);
   }
 
   .closeButton {

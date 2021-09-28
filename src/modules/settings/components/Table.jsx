@@ -94,7 +94,7 @@ function EditCell({rowData, dataKey, onChange, onMouseOver, onMouseLeave, onClic
     <Cell {...props}>
       <input
         ref={wrapperRef}
-        className={classNames({'bttv-rs-input': true}, styles.tableContentEditing)}
+        className={classNames({'rs-input': true}, styles.tableContentEditing)}
         defaultValue={rowData[dataKey]}
         onChange={(event) => onChange(rowData.id, dataKey, event.target.value)}
       />
@@ -110,7 +110,7 @@ function CustomCell(props) {
       return (
         <Cell {...restProps} onMouseLeave={() => onMouseLeave && onMouseLeave(rowData.id)}>
           <input
-            className={classNames({'bttv-rs-input': true}, styles.tableContentHovering)}
+            className={classNames({'rs-input': true}, styles.tableContentHovering)}
             defaultValue={rowData[dataKey]}
             onClick={() => onClick(rowData.id)}
           />

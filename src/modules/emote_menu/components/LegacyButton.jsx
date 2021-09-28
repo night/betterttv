@@ -8,6 +8,8 @@ import EmoteMenu from './Menu.jsx';
 import {hasTipToDisplay} from './Tip.jsx';
 import emoteStore from '../stores/index.js';
 import styles from '../styles/legacy-button.module.css';
+import settings from '../../../settings.js';
+import {SettingIds} from '../../../constants.js';
 
 export default function LegacyButton({appendToChat, setPopoverOpen, onClick}) {
   const triggerRef = useRef(null);
@@ -49,7 +51,7 @@ export default function LegacyButton({appendToChat, setPopoverOpen, onClick}) {
   }, [hasTip]);
 
   return (
-    <CustomProvider theme="dark">
+    <CustomProvider theme={settings.get(SettingIds.DARKENED_MODE) ? 'dark' : 'light'}>
       <Whisper
         trigger="active"
         placement="auto"

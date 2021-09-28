@@ -2,7 +2,7 @@
   width: 52px;
   height: 100%;
   overflow-y: scroll;
-  background-color: #191c23;
+  background-color: var(--rs-input-bg);
   scrollbar-width: none;
 
   a {
@@ -19,8 +19,4 @@
   display: flex !important;
   height: 36px;
   align-items: center;
-}
-
-.active {
-  background-color: #23262b;
 }
