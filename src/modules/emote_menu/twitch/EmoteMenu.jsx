@@ -7,6 +7,7 @@ import styles from './EmoteMenu.module.css';
 import {getReactInstance} from '../../../utils/twitch.js';
 import {getCurrentUser} from '../../../utils/user.js';
 import watcher from '../../../watcher.js';
+import SafeEmoteMenuButton from '../components/SafeEmoteMenu.jsx';
 
 const CHAT_TEXT_AREA = 'textarea[data-a-target="chat-input"]';
 

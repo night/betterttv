@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import settings from '../../../settings.js';
-import {emotesCategoryIds, SettingIds} from '../../../constants.js';
+import {EmoteProviders, SettingIds} from '../../../constants.js';
 import SafeEmoteMenuButton from '../components/SafeEmoteMenu.jsx';
 import styles from './EmoteMenu.module.css';
 
@@ -19,6 +19,15 @@ function setPopoverOpen({current}) {
       current.open();
     }
   };
+}
+
+function createYoutubeInputEmoji(emote) {
+  const img = document.createElement('img');
+  img.className = 'emoji yt-formatted-string style-scope yt-live-chat-text-input-field-renderer';
+  img.src = emote.images['1x'];
+  img.alt = emote.code;
+  img.setAttribute('data-emoji-id', emote.id.replace(`${EmoteProviders.YOUTUBE}-`, ''));
+  return img;
 }
 
 export default class EmoteMenuModule {
@@ -47,7 +56,10 @@ export default class EmoteMenuModule {
           classname={styles.popover}
           onError={() => this.show(false)}
           onMount={() => this.show(true)}
-          onClick={() => togglePopover()}
+          onClick={() => {
+            togglePopover();
+            this.focusChat();
+          }}
           appendToChat={this.appendToChat}
           setPopoverOpen={setPopoverOpen}
         />,
@@ -66,27 +78,31 @@ export default class EmoteMenuModule {
     legacyContainer.classList.toggle(styles.hideEmoteMenuButton, !visible);
   }
 
-  appendToChat(emote, shouldFocus = true) {
+  focusChat() {
     const element = document.querySelector(INPUT_BOX_SELECTOR);
-    let text = emote.code;
+    element.focus();
+  }
 
-    if (!emote.id.startsWith(emotesCategoryIds.YOUTUBE)) {
-      const currentValue = element.textContent;
-      text = `${currentValue} ${text}`;
-      element.textContent = text;
+  appendToChat(emote) {
+    const element = document.querySelector(INPUT_BOX_SELECTOR);
+
+    if (!emote.id.startsWith(EmoteProviders.YOUTUBE)) {
+      element.innerHTML += `${emote.code} `;
     } else {
-      const img = document.createElement('img');
-      img.className = 'emoji yt-formatted-string style-scope yt-live-chat-text-input-field-renderer';
-      img.src = emote.images['1x'];
-      img.alt = emote.code;
-      img.setAttribute('data-emoji-id', emote.id.replace(`${emotesCategoryIds.YOUTUBE}-`, ''));
-      element.appendChild(img);
+      const node = createYoutubeInputEmoji(emote);
+      element.appendChild(node);
     }
+
+    const range = document.createRange();
+    const sel = window.getSelection();
+
+    range.setStart(element.lastChild, element.innerHTML.length);
+    range.collapse(true);
+
+    sel.removeAllRanges();
+    sel.addRange(range);
 
     element.dispatchEvent(new Event('input', {bubbles: true}));
-
-    if (shouldFocus) {
-      element.focus();
-    }
+    element.focus();
   }
 }

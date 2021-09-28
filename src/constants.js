@@ -162,6 +162,15 @@ export const EmoteProviders = {
   FRANKERFACEZ: 'ffz',
   TWITCH: 'twitch',
   YOUTUBE: 'youtube',
+};
+
+export const EmoteCategories = {
+  BETTERTTV_GLOBAL: 'bttv-global',
+  BETTERTTV_CHANNEL: 'bttv-channel',
+  BETTERTTV_PERSONAL: 'bttv-personal',
+  BETTERTTV_EMOJI: 'bttv-emoji',
+  FRANKERFACEZ_GLOBAL: 'ffz-global',
+  FRANKERFACEZ_CHANNEL: 'ffz-channel',
   EMOJI_PEOPLE: 'emoji-people',
   EMOJI_NATURE: 'emoji-nature',
   EMOJI_FOODS: 'emoji-foods',
@@ -172,6 +181,7 @@ export const EmoteProviders = {
   EMOJI_FLAGS: 'emoji-flags',
   FAVORITES: 'favorites',
   FRECENTS: 'frecents',
+  YOUTUBE: 'youtube',
   TWITCH_GLOBAL: 'twitch-global',
   TWITCH_GAMING: 'twitch-gaming',
   TWITCH_TURBO: 'twitch-turbo',

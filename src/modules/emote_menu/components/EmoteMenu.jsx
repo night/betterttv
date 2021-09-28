@@ -36,7 +36,7 @@ export default function EmoteMenu({triggerRef, appendToChat, onSetTip}) {
         return;
       }
 
-      appendToChat(emote.code, !shiftPressed);
+      appendToChat(emote, !shiftPressed);
       emoteMenuViewStore.trackHistory(emote);
 
       if (shiftPressed) {

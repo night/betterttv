@@ -1,9 +1,10 @@
-import {emotesCategoryIds} from '../../../constants.js';
+import {EmoteCategories, EmoteProviders} from '../../../constants.js';
 import Emote from '../../emotes/emote.js';
 import Icons from '../components/Icons.jsx';
 
-const provider = {
-  id: `${emotesCategoryIds.YOUTUBE}`,
+const category = {
+  id: EmoteCategories.YOUTUBE,
+  provider: EmoteProviders.YOUTUBE,
   displayName: 'Youtube',
   icon: Icons.YOUTUBE,
 };
@@ -20,8 +21,8 @@ export function loadYoutubeEmotes() {
   const providerEmotes = emotes.map(
     (emote) =>
       new Emote({
-        id: `${emotesCategoryIds.YOUTUBE}-${emote.emojiId}`,
-        provider,
+        id: `${EmoteProviders.YOUTUBE}-${emote.emojiId}`,
+        category,
         channel: 'Youtube',
         code: findShortestEmoteCode(emote.searchTerms),
         images: {
@@ -30,14 +31,13 @@ export function loadYoutubeEmotes() {
         },
         metadata: {
           locked: emote.isLocked,
-          youtube: true,
         },
       })
   );
 
   return [
     {
-      provider,
+      category,
       emotes: providerEmotes,
     },
   ];
