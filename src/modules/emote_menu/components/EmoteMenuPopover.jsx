@@ -4,7 +4,9 @@ import Popover from 'rsuite/lib/Popover/index.js';
 import EmoteMenu from './EmoteMenu.jsx';
 import styles from './EmoteMenuPopover.module.css';
 
-export default function EmoteMenuPopover({triggerRef, appendToChat, className, ...props}) {
+const TOP_PADDING = 2;
+
+export default function EmoteMenuPopover({triggerRef, appendToChat, className, style, htmlElementRef, ...props}) {
   const [hasTip, setTip] = useState(false);
 
   function handleSetTip(show) {
@@ -15,21 +17,61 @@ export default function EmoteMenuPopover({triggerRef, appendToChat, className, .
     setTip(show);
   }
 
-  useEffect(() => {
-    // TODO: we should not have logic like this in the parent
-    // instead, we should have the popout position be computed on open to the top of the chat input
-    // and then automatically reposition when changes like this (or the chat input grows) happen
-    const popoverElement = document.getElementsByClassName(styles.popover)[0];
-    if (popoverElement != null) {
-      const currentTop = parseInt(popoverElement.style.top, 10);
-      const newTop = hasTip ? currentTop - 26 : currentTop + 26;
-      popoverElement.style.top = `${newTop}px`;
+  function repositionPopover() {
+    const popoverElement = htmlElementRef.current;
+    if (popoverElement == null) {
+      return;
     }
-  }, [hasTip]);
+
+    const chatTextArea = document.querySelector('textarea[data-a-target="chat-input"]');
+    if (chatTextArea == null) {
+      return;
+    }
+
+    const {x, y} = chatTextArea.getBoundingClientRect();
+    const rightX = x + chatTextArea.offsetWidth;
+
+    const popoverTop = `${y - popoverElement.offsetHeight - TOP_PADDING}px`;
+    const wantedPopoverLeft = rightX - popoverElement.offsetWidth;
+    const popoverLeft = `${wantedPopoverLeft < 0 ? x : wantedPopoverLeft}px`;
+
+    if (popoverTop !== popoverElement.style.top) {
+      popoverElement.style.top = popoverTop;
+    }
+    if (popoverLeft !== popoverElement.style.left) {
+      popoverElement.style.left = popoverLeft;
+    }
+  }
+
+  useEffect(() => {
+    repositionPopover();
+  }, [htmlElementRef, style, hasTip]);
+
+  useEffect(() => {
+    function handleResize() {
+      repositionPopover();
+    }
+
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
-    <Popover className={classNames(className, styles.popover, hasTip ? styles.withTip : null)} full {...props}>
-      <EmoteMenu triggerRef={triggerRef} appendToChat={appendToChat} onSetTip={(show) => handleSetTip(show)} />
+    <Popover
+      className={classNames(className, styles.popover, hasTip ? styles.withTip : null)}
+      full
+      htmlElementRef={htmlElementRef}
+      {...props}>
+      <EmoteMenu
+        triggerRef={triggerRef}
+        appendToChat={(...args) => {
+          const result = appendToChat(...args);
+          repositionPopover();
+          return result;
+        }}
+        onSetTip={(show) => handleSetTip(show)}
+      />
     </Popover>
   );
 }
