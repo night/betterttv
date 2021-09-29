@@ -202,6 +202,7 @@ export const DEFAULT_FREQUENT_EMOTES = {
 export const EmoteMenuTips = {
   EMOTE_MENU_FAVORITE_EMOTE: 'emoteMenuTipClosedFavoriteEmote',
   EMOTE_MENU_PREVENT_CLOSE: 'emoteMenuTipClosedPreventClose',
+  EMOTE_MENU_HOTKEY: 'emoteMenuTipClosedHotkey',
 };
 
 export const DefaultValues = {

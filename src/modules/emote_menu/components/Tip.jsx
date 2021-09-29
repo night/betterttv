@@ -21,6 +21,10 @@ function getTipToDisplay() {
     return [EmoteMenuTips.EMOTE_MENU_FAVORITE_EMOTE, 'Alt + Click Emotes to Favorite them'];
   }
 
+  if (!tips[EmoteMenuTips.EMOTE_MENU_HOTKEY]) {
+    return [EmoteMenuTips.EMOTE_MENU_HOTKEY, 'Press Alt + E to Toggle Emote Menu'];
+  }
+
   return [];
 }
 
