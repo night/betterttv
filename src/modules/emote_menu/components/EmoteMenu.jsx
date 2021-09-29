@@ -1,19 +1,21 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import Divider from 'rsuite/lib/Divider/index.js';
 import keycodes from '../../../utils/keycodes.js';
-import emoteStore from '../stores/index.js';
-import styles from '../styles/menu.module.css';
+import {EmoteMenuTips} from '../../../constants.js';
+import emoteMenuViewStore from '../stores/emote-menu-view-store.js';
+import styles from './EmoteMenu.module.css';
 import Emotes from './Emotes.jsx';
 import Header from './Header.jsx';
 import Preview from './Preview.jsx';
 import Sidebar from './Sidebar.jsx';
+import Tip, {markTipAsSeen} from './Tip.jsx';
 
 let keyPressCallback;
 function setKeyPressCallback(newKeyPressCallback) {
   keyPressCallback = newKeyPressCallback;
 }
 
-export default function EmoteMenu({triggerRef, appendToChat}) {
+export default function EmoteMenu({triggerRef, appendToChat, onSetTip}) {
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState(null);
   const [, setUpdated] = useState(false);
@@ -29,14 +31,16 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
   const handleClick = useCallback(
     (emote) => {
       if (altPressed) {
-        emoteStore.toggleFavorite(emote);
+        emoteMenuViewStore.toggleFavorite(emote);
+        markTipAsSeen(EmoteMenuTips.EMOTE_MENU_FAVORITE_EMOTE);
         return;
       }
 
       appendToChat(emote.code, !shiftPressed);
-      emoteStore.trackHistory(emote);
+      emoteMenuViewStore.trackHistory(emote);
 
       if (shiftPressed) {
+        markTipAsSeen(EmoteMenuTips.EMOTE_MENU_PREVENT_CLOSE);
         return;
       }
 
@@ -74,15 +78,15 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
 
   useEffect(() => {
     const callback = () => {
-      if (!emoteStore.isLoaded()) return;
-      emoteStore.once('updated', () => {
+      if (!emoteMenuViewStore.isLoaded()) return;
+      emoteMenuViewStore.once('updated', () => {
         setUpdated((prev) => !prev);
       });
     };
 
     callback();
 
-    const cleanup = emoteStore.on('dirty', callback);
+    const cleanup = emoteMenuViewStore.on('dirty', callback);
     return () => cleanup();
   }, []);
 
@@ -96,7 +100,7 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
         <Sidebar
           className={styles.sidebar}
           section={section}
-          providers={emoteStore.getProviders()}
+          categories={emoteMenuViewStore.getCategories()}
           onChange={(eventKey) => setSection({eventKey, scrollTo: true})}
         />
         <Emotes
@@ -105,7 +109,7 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
           section={section}
           onClick={handleClick}
           setKeyPressCallback={setKeyPressCallback}
-          rows={emoteStore.rows}
+          rows={emoteMenuViewStore.rows}
           setSelected={setSelected}
           onSection={(eventKey) => setSection({eventKey, scrollTo: false})}
         />
@@ -114,8 +118,9 @@ export default function EmoteMenu({triggerRef, appendToChat}) {
       <Preview
         className={styles.preview}
         emote={selected}
-        isFavorite={selected == null ? false : emoteStore.hasFavorite(selected)}
+        isFavorite={selected == null ? false : emoteMenuViewStore.hasFavorite(selected)}
       />
+      <Tip classname={styles.tip} onSetTip={onSetTip} />
     </>
   );
 }

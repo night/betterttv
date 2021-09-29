@@ -13,12 +13,13 @@ const PLAYER = '.video-player__container';
 const CLIPS_BROADCASTER_INFO = '.clips-broadcaster-info';
 const CHAT_MESSAGE_SELECTOR = '.chat-line__message';
 
-const PROFILE_IMAGE_GQL_QUERY = `
-query {
-    currentUser {
-        profileImageURL(width: 300)
+const USER_PROFILE_IMAGE_GQL_QUERY = `
+  query GetUserProfilePicture($userId: ID!) {
+    user(id: $userId) {
+      profileImageURL(width: 300)
     }
-}`;
+  }
+`;
 
 const TMIActionTypes = {
   MESSAGE: 0,
@@ -120,7 +121,7 @@ function searchReactChildren(node, predicate, maxDepth = 15, depth = 0) {
 }
 
 let chatClient;
-let currentProfilePicture;
+const profilePicturesByUserId = {};
 
 const userCookie = cookies.get('twilight-user');
 if (userCookie) {
@@ -137,19 +138,31 @@ if (userCookie) {
 }
 
 export default {
-  async getCurrentUserProfilePicture() {
-    if (currentProfilePicture != null) {
-      return currentProfilePicture;
+  async getUserProfilePicture(userId = null) {
+    if (userId == null) {
+      userId = getCurrentUser()?.id;
+    }
+
+    if (userId == null) {
+      return null;
+    }
+
+    let profilePicture = profilePicturesByUserId[userId];
+    if (profilePicture != null) {
+      return profilePicture;
     }
 
     try {
-      const {data} = await twitchAPI.graphqlQuery(PROFILE_IMAGE_GQL_QUERY);
-      currentProfilePicture = data.currentUser.profileImageURL;
-      return currentProfilePicture;
+      const {data} = await twitchAPI.graphqlQuery(USER_PROFILE_IMAGE_GQL_QUERY, {userId});
+      profilePicture = data.user.profileImageURL;
     } catch (e) {
       debug.log('failed to fetch twitch user profile', e);
       return null;
     }
+
+    profilePicturesByUserId[userId] = profilePicture;
+
+    return profilePicture;
   },
 
   updateCurrentChannel() {

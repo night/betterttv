@@ -1,8 +1,8 @@
 import classNames from 'classnames';
 import React from 'react';
 import {createSrcSet} from '../../../utils/image.js';
-import styles from '../styles/emote.module.css';
 import Icons from './Icons.jsx';
+import styles from './Emote.module.css';
 
 export default function Emote({emote, onClick, onMouseOver, active}) {
   const imageRef = React.useRef(null);
@@ -28,8 +28,7 @@ export default function Emote({emote, onClick, onMouseOver, active}) {
       onMouseOver={() => onMouseOver(emote)}
       onFocus={() => onMouseOver(emote)}
       type="button"
-      className={classNames(styles.emote, active ? styles.active : null)}
-    >
+      className={classNames(styles.emote, active ? styles.active : null)}>
       <img
         ref={imageRef}
         className={classNames(

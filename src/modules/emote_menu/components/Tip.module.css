@@ -1,0 +1,20 @@
+.divider {
+  margin: 0;
+}
+
+.tip {
+  background-color: #23262b;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 4px 8px;
+}
+
+.tipDisplayText {
+  padding: 0 8px;
+  flex-grow: 1;
+}
+
+.closeButton {
+  padding: 0;
+}
