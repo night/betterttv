@@ -3,7 +3,7 @@
   "trailingComma": "es5",
   "bracketSpacing": false,
   "singleQuote": true,
-  "jsxBracketSameLine": true,
+  "bracketSameLine": true,
   "overrides": [
     {
       "files": ["*.css"],

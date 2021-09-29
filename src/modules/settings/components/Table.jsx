@@ -63,8 +63,7 @@ function CustomWhisper(props) {
       placement="autoVerticalStart"
       trigger="click"
       triggerRef={trigger}
-      speaker={<MenuPopover options={options} onSelect={handleSelectMenu} />}
-    >
+      speaker={<MenuPopover options={options} onSelect={handleSelectMenu} />}>
       {children}
     </Whisper>
   );
@@ -261,8 +260,7 @@ function EditTable({options, setValue, value, ...props}) {
                           dataKey={key.name}
                           rowData={rowData}
                           options={key.options}
-                          onChange={handleChange}
-                        >
+                          onChange={handleChange}>
                           <Button appearance="subtle">
                             {key.options.find((option) => option.value === rowData.type).name}
                           </Button>
@@ -290,8 +288,7 @@ function EditTable({options, setValue, value, ...props}) {
           <Icon>
             <FontAwesomeIcon icon={faPlus} />
           </Icon>
-        }
-      >
+        }>
         Add New
       </IconButton>
     </>

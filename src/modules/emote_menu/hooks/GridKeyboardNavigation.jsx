@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useState} from 'react';
 import {NavigationModeTypes} from '../../../constants.js';
-import keycodes from '../../../utils/keycodes.js';
+import keyCodes from '../../../utils/keycodes.js';
 
 function travelUp(rowColumnCounts, {x, y}, maxColumnCount, numBlocks = 1) {
   let newY = Math.max(0, y - numBlocks);
@@ -133,32 +133,32 @@ export default function useGridKeyboardNavigation(
     (event, shift) => {
       let newCoords = null;
 
-      switch (event.keyCode) {
-        case keycodes.UpArrow:
+      switch (event.code) {
+        case keyCodes.ArrowUp:
           newCoords = travelUp(rowColumnCounts, coords, maxColumnCount);
           event.preventDefault();
           break;
-        case keycodes.DownArrow:
+        case keyCodes.ArrowDown:
           newCoords = travelDown(rowColumnCounts, coords, maxColumnCount);
           event.preventDefault();
           break;
-        case keycodes.RightArrow:
+        case keyCodes.ArrowRight:
           newCoords = travelRight(rowColumnCounts, coords, maxColumnCount);
           event.preventDefault();
           break;
-        case keycodes.LeftArrow:
+        case keyCodes.ArrowLeft:
           newCoords = travelLeft(rowColumnCounts, coords, maxColumnCount);
           event.preventDefault();
           break;
-        case keycodes.End:
+        case keyCodes.End:
           newCoords = travelEnd(rowColumnCounts, coords, maxColumnCount);
           event.preventDefault();
           break;
-        case keycodes.Home:
+        case keyCodes.Home:
           newCoords = travelHome(rowColumnCounts, coords, maxColumnCount);
           event.preventDefault();
           break;
-        case keycodes.Tab:
+        case keyCodes.Tab:
           newCoords = shift
             ? travelLeft(rowColumnCounts, coords, maxColumnCount)
             : travelRight(rowColumnCounts, coords, maxColumnCount);
