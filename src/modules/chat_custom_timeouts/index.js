@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import watcher from '../../watcher.js';
-import keyCodes from '../../utils/keycodes.js';
+import mouseButtons from '../../utils/mousebuttons.js';
 import twitch from '../../utils/twitch.js';
 
 const CHAT_ROOM_SELECTOR = 'section[data-test-selector="chat-room-component-layout"]';
@@ -38,7 +38,7 @@ function setReason(type) {
 
 function handleTimeoutClick(e, messageId) {
   const $customTimeout = $(`#${CUSTOM_TIMEOUT_ID}`);
-  if (!$customTimeout.length || e.which === keyCodes.DOMVKCancel) return;
+  if (!$customTimeout.length || e.button === mouseButtons.RightClick) return;
 
   if ($customTimeout.is(':hover')) {
     let command;

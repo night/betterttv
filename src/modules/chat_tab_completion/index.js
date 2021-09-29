@@ -53,7 +53,7 @@ class ChatTabcompletionModule {
   }
 
   onKeydown(e, includeUsers = true) {
-    const keyCode = e.keyCode || e.which;
+    const keyCode = e.code;
     if (e.ctrlKey) return;
 
     const $inputField = $(e.target);
@@ -100,14 +100,14 @@ class ChatTabcompletionModule {
         twitch.setInputValue($inputField, this.textSplit[0] + this.suggestions[this.tabTries] + this.textSplit[2]);
         $inputField[0].setSelectionRange(cursorPos, cursorPos);
       }
-    } else if (keyCode === keyCodes.Esc && this.tabTries >= 0) {
+    } else if (keyCode === keyCodes.Escape && this.tabTries >= 0) {
       twitch.setInputValue($inputField, this.textSplit.join(''));
-    } else if (keyCode !== keyCodes.Shift) {
+    } else if (![keyCodes.ShiftLeft, keyCodes.ShiftRight].includes(keyCode)) {
       this.tabTries = -1;
     }
 
     // Message history
-    if (keyCode === keyCodes.UpArrow) {
+    if (keyCode === keyCodes.ArrowUp) {
       if ($(AUTOCOMPLETE_SUGGESTIONS_SELECTOR).length > 0) return;
       if ($inputField[0].selectionStart > 0) return;
       if (this.historyPos + 1 === this.messageHistory.length) return;
@@ -121,7 +121,7 @@ class ChatTabcompletionModule {
       const prevMsg = this.messageHistory[++this.historyPos];
       twitch.setInputValue($inputField, prevMsg);
       $inputField[0].setSelectionRange(0, 0);
-    } else if (keyCode === keyCodes.DownArrow) {
+    } else if (keyCode === keyCodes.ArrowDown) {
       if ($(AUTOCOMPLETE_SUGGESTIONS_SELECTOR).length > 0) return;
       if ($inputField[0].selectionStart < $inputField.val().length) return;
       if (this.historyPos > 0) {
