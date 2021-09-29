@@ -29,8 +29,7 @@ export default function LegacyButton({appendToChat, setPopoverOpen, onClick}) {
       placement="auto"
       onClick={onClick}
       speaker={<EmoteMenuPopover triggerRef={triggerRef} appendToChat={appendToChat} />}
-      triggerRef={triggerRef}
-    >
+      triggerRef={triggerRef}>
       <button type="button" className={styles.button} />
     </Whisper>
   );

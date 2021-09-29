@@ -16,8 +16,7 @@ function SidebarComponent() {
         <p className={styles.description}>Edit or modify the left sidebar</p>
         <CheckboxGroup
           value={Object.values(SidebarFlags).filter((value) => hasFlag(sidebar, value))}
-          onChange={(value) => setSidebar(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}
-        >
+          onChange={(value) => setSidebar(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}>
           <Checkbox key="friends" value={SidebarFlags.FRIENDS}>
             <p>Friends List</p>
             <p className={styles.description}>Show friends in the sidebar</p>

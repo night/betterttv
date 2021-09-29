@@ -49,8 +49,7 @@ export default function Sidebar({section, onChange, categories}) {
               trigger="hover"
               delay={200}
               speaker={<Tooltip>{category.displayName}</Tooltip>}
-              onClick={() => onChange(category.id)}
-            >
+              onClick={() => onChange(category.id)}>
               <Nav.Item active={isActive} icon={category.icon} className={classNames({[styles.active]: isActive})} />
             </Whisper>
           );

@@ -55,8 +55,7 @@ export default function Tip({onSetTip}) {
           onClick={() => {
             markTipAsSeen(tipStorageKey);
             setTipToDisplay([]);
-          }}
-        >
+          }}>
           Hide
         </Button>
       </div>
