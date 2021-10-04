@@ -50,6 +50,8 @@ export default function EmoteMenuPopover({triggerRef, appendToChat, className, s
   useEffect(() => {
     function handleResize() {
       repositionPopover();
+      // Twitch animates chat moving on zoom changes
+      setTimeout(repositionPopover, 500);
     }
 
     window.addEventListener('resize', handleResize);
