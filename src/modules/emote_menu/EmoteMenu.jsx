@@ -47,6 +47,8 @@ class SafeEmoteMenuButton extends React.Component {
   }
 }
 
+let mountedNode;
+
 export default class EmoteMenuModule {
   constructor() {
     domObserver.on(CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR, (node, isConnected) => {
@@ -78,6 +80,10 @@ export default class EmoteMenuModule {
       buttonContainer.setAttribute('data-a-target', 'legacy-bttv-emote-picker-button-container');
       rightContainer.insertBefore(buttonContainer, rightContainer.lastChild);
 
+      if (mountedNode != null) {
+        ReactDOM.unmountComponentAtNode(mountedNode);
+      }
+
       ReactDOM.render(
         <SafeEmoteMenuButton
           onError={() => this.show(false)}
@@ -88,6 +94,7 @@ export default class EmoteMenuModule {
         />,
         buttonContainer
       );
+      mountedNode = buttonContainer;
     }
 
     this.show(true);

@@ -9,6 +9,8 @@ function setHandleOpen(newHandleOpen) {
   handleOpen = newHandleOpen;
 }
 
+let mountedNode;
+
 export default class SettingsModule {
   constructor() {
     this.renderSettings();
@@ -22,7 +24,11 @@ export default class SettingsModule {
     const panel = document.createElement('div');
     panel.setAttribute('id', 'bttvSettingsPanel');
     $('body').append(panel);
+    if (mountedNode != null) {
+      ReactDOM.unmountComponentAtNode(mountedNode);
+    }
     ReactDOM.render(<Modal setHandleOpen={setHandleOpen} />, panel);
+    mountedNode = panel;
   }
 
   renderSettingsMenuOption() {
