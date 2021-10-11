@@ -10,13 +10,6 @@ import {PlatformTypes, SettingIds} from '../../constants.js';
 import {getCurrentUser} from '../../utils/user.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
 
-const BLACKLIST_KEYWORD_PROMPT = `Type some blacklist keywords. Messages containing keywords will be filtered from your chat.
-
-Use spaces in the field to specify multiple keywords. Place {} around a set of words to form a phrase, <> inside the {} to use exact search, and () around a single word to specify a username. Wildcards (*) are supported.`;
-const HIGHLIGHT_KEYWORD_PROMPT = `Type some highlight keywords. Messages containing keywords will turn red to get your attention.
-
-Use spaces in the field to specify multiple keywords. Place {} around a set of words to form a phrase, <> inside the {} to use exact search, and () around a single word to specify a username. Wildcards (*) are supported.`;
-
 const CHAT_LIST_SELECTOR =
   '.chat-list .chat-scrollable-area__message-container,.chat-list--default .chat-scrollable-area__message-container,.chat-list--other .chat-scrollable-area__message-container';
 const VOD_CHAT_FROM_SELECTOR = '.video-chat__message-author';
@@ -39,15 +32,6 @@ const pinnedHighlightTemplate = ({timestamp, from, message}) => `
     <span class="message">${html.escape(message)}</span>
   </div>
 `;
-
-function changeKeywords(promptBody, storageID) {
-  // eslint-disable-next-line no-alert
-  alert(
-    `${
-      storageID === 'highlightKeywords' ? 'Highlight keywords' : 'Blacklist keywords'
-    } has been moved to the settings menu, please navigate there to update your keywords.`
-  );
-}
 
 let loadTime = 0;
 let blacklistKeywords = [];
@@ -214,14 +198,6 @@ class ChatHighlightBlacklistKeywordsModule {
     computeHighlightKeywords();
     this.loadPinnedHighlights();
     loadTime = Date.now();
-  }
-
-  setBlacklistKeywords() {
-    changeKeywords(BLACKLIST_KEYWORD_PROMPT, 'blacklistKeywords');
-  }
-
-  setHighlightKeywords() {
-    changeKeywords(HIGHLIGHT_KEYWORD_PROMPT, 'highlightKeywords');
   }
 
   onMessage($message, {user, timestamp, messageParts}) {
