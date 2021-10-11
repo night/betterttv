@@ -268,3 +268,9 @@ export const DefaultValues = {
   [SettingIds.USERNAMES]: UsernameFlags.COLORS | UsernameFlags.LOCALIZED | UsernameFlags.READABLE,
   [SettingIds.CHANNEL_POINTS]: ChannelPointsFlags.CHANNEL_POINTS | ChannelPointsFlags.MESSAGE_HIGHLIGHTS,
 };
+
+export const PlatformTypes = {
+  TWITCH: 1,
+  TWITCH_CLIPS: 2,
+  YOUTUBE: 3,
+};
