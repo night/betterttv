@@ -16,7 +16,8 @@ import {faFlag} from '@fortawesome/free-solid-svg-icons/faFlag';
 import {faClock} from '@fortawesome/free-solid-svg-icons/faClock';
 import {faUnlock} from '@fortawesome/free-solid-svg-icons/faUnlock';
 import {faCrown} from '@fortawesome/free-solid-svg-icons/faCrown';
-import styles from '../styles/icons.module.css';
+import {faLightbulb} from '@fortawesome/free-solid-svg-icons/faLightbulb';
+import styles from './Icons.module.css';
 
 const twitchLogo = {
   prefix: 'custom',
@@ -42,6 +43,15 @@ const twitchGamingLogo = {
   ],
 };
 
+function BrandedImage({src, alt, brandSrc}) {
+  return (
+    <div className={styles.brandedImage}>
+      <img src={src} alt={alt} className={styles.icon} />
+      <img src={brandSrc} alt="" className={styles.brandIcon} />
+    </div>
+  );
+}
+
 export default {
   STAR: <FontAwesomeIcon icon={faStar} />,
   SMILE: <FontAwesomeIcon icon={faSmile} />,
@@ -59,7 +69,13 @@ export default {
   CLOCK: <FontAwesomeIcon icon={faClock} />,
   UNLOCK: <FontAwesomeIcon icon={faUnlock} />,
   CROWN: <FontAwesomeIcon icon={faCrown} />,
+  BULB: <FontAwesomeIcon icon={faLightbulb} />,
   TWITCH: <FontAwesomeIcon icon={twitchLogo} />,
   TWITCH_GAMING: <FontAwesomeIcon icon={twitchGamingLogo} />,
-  IMAGE: (src, alt) => <img src={src} alt={alt} className={styles.icon} />,
+  IMAGE: (brandSrc, alt, src = null) =>
+    src != null ? (
+      <BrandedImage src={src} alt={alt} brandSrc={brandSrc} />
+    ) : (
+      <img src={brandSrc} alt={alt} className={styles.icon} />
+    ),
 };

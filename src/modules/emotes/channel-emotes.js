@@ -4,11 +4,12 @@ import {getCurrentChannel} from '../../utils/channel.js';
 
 import AbstractEmotes from './abstract-emotes.js';
 import Emote from './emote.js';
+import {EmoteCategories, EmoteProviders} from '../../constants.js';
 
-const provider = {
-  id: 'bttv-channel',
+const category = {
+  id: EmoteCategories.BETTERTTV_CHANNEL,
+  provider: EmoteProviders.BETTERTTV,
   displayName: 'BetterTTV Channel Emotes',
-  badge: cdn.url('tags/developer.png'),
 };
 
 class ChannelEmotes extends AbstractEmotes {
@@ -18,8 +19,8 @@ class ChannelEmotes extends AbstractEmotes {
     watcher.on('channel.updated', (d) => this.updateChannelEmotes(d));
   }
 
-  get provider() {
-    return provider;
+  get category() {
+    return category;
   }
 
   updateChannelEmotes({channelEmotes, sharedEmotes}) {
@@ -33,7 +34,7 @@ class ChannelEmotes extends AbstractEmotes {
         code,
         new Emote({
           id,
-          provider: this.provider,
+          category: this.category,
           channel: user || currentChannel,
           code,
           images: {

@@ -4,11 +4,12 @@ import settings from '../../settings.js';
 
 import AbstractEmotes from '../emotes/abstract-emotes.js';
 import Emote from '../emotes/emote.js';
-import {EmoteTypeFlags, SettingIds} from '../../constants.js';
+import {EmoteCategories, EmoteProviders, EmoteTypeFlags, SettingIds} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
 
-const provider = {
-  id: 'ffz-global',
+const category = {
+  id: EmoteCategories.FRANKERFACEZ_GLOBAL,
+  provider: EmoteProviders.FRANKERFACEZ,
   displayName: 'FrankerFaceZ Global Emotes',
 };
 
@@ -21,8 +22,8 @@ class GlobalEmotes extends AbstractEmotes {
     this.updateGlobalEmotes();
   }
 
-  get provider() {
-    return provider;
+  get category() {
+    return category;
   }
 
   updateGlobalEmotes() {
@@ -38,7 +39,7 @@ class GlobalEmotes extends AbstractEmotes {
             code,
             new Emote({
               id,
-              provider: this.provider,
+              category: this.category,
               channel: user,
               code,
               images,

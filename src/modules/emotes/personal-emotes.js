@@ -5,11 +5,12 @@ import AbstractEmotes from './abstract-emotes.js';
 import Emote from './emote.js';
 import {getCurrentUser} from '../../utils/user.js';
 import {getCurrentChannel} from '../../utils/channel.js';
+import {EmoteCategories, EmoteProviders} from '../../constants.js';
 
-const provider = {
-  id: 'bttv-personal',
+const category = {
+  id: EmoteCategories.BETTERTTV_PERSONAL,
+  provider: EmoteProviders.BETTERTTV,
   displayName: 'BetterTTV Personal Emotes',
-  badge: cdn.url('tags/developer.png'),
 };
 
 let joinedChannel;
@@ -25,8 +26,8 @@ class PersonalEmotes extends AbstractEmotes {
     watcher.on('conversation.message', (threadId, $el, msgObject) => this.broadcastMeConversation(threadId, msgObject));
   }
 
-  get provider() {
-    return provider;
+  get category() {
+    return category;
   }
 
   getEmotes(user) {
@@ -93,7 +94,7 @@ class PersonalEmotes extends AbstractEmotes {
         code,
         new Emote({
           id,
-          provider: this.provider,
+          category: this.category,
           channel: {name: channel},
           code,
           images: {

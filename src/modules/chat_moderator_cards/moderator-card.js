@@ -97,7 +97,7 @@ class ModeratorCard {
   }
 
   close() {
-    $('button[data-test-selector="close-viewer-card"]').click();
+    $('button[data-test-selector="close-viewer-card-button"]').click();
     this.cleanup();
     this.onClose();
   }
@@ -191,8 +191,8 @@ class ModeratorCard {
     if (e.ctrlKey || e.metaKey || e.shiftKey) return false;
     if ($('input, textarea, select').is(':focus')) return false;
 
-    const keyCode = e.keyCode || e.which;
-    if (keyCode === keyCodes.Esc) {
+    const keyCode = e.code;
+    if (keyCode === keyCodes.Escape) {
       return this.close();
     }
 

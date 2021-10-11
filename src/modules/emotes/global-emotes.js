@@ -4,11 +4,12 @@ import legacySubscribers from '../legacy_subscribers/index.js';
 import watcher from '../../watcher.js';
 import AbstractEmotes from './abstract-emotes.js';
 import Emote from './emote.js';
+import {EmoteCategories, EmoteProviders} from '../../constants.js';
 
-const provider = {
-  id: 'bttv',
+const category = {
+  id: EmoteCategories.BETTERTTV_GLOBAL,
+  provider: EmoteProviders.BETTERTTV,
   displayName: 'BetterTTV Global Emotes',
-  badge: cdn.url('tags/developer.png'),
 };
 
 class GlobalEmotes extends AbstractEmotes {
@@ -18,8 +19,8 @@ class GlobalEmotes extends AbstractEmotes {
     this.updateGlobalEmotes();
   }
 
-  get provider() {
-    return provider;
+  get category() {
+    return category;
   }
 
   updateGlobalEmotes() {
@@ -39,7 +40,7 @@ class GlobalEmotes extends AbstractEmotes {
             code,
             new Emote({
               id,
-              provider: this.provider,
+              category: this.category,
               channel: undefined,
               code,
               images: {

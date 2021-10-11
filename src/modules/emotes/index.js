@@ -5,14 +5,14 @@ import emojis from './emojis.js';
 import frankerfacezGlobalEmotes from '../frankerfacez/global-emotes.js';
 import frankerfacezChannelEmotes from '../frankerfacez/channel-emotes.js';
 import settings from '../../settings.js';
-import {EmoteTypeFlags, SettingIds} from '../../constants.js';
+import {EmoteProviders, EmoteTypeFlags, SettingIds} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
 import {getCurrentUser} from '../../utils/user.js';
 import {getCurrentChannel} from '../../utils/channel.js';
 
 class EmotesModule {
   constructor() {
-    this.emoteProviders = [
+    this.emoteCategories = [
       personalEmotes,
       channelEmotes,
       globalEmotes,
@@ -22,18 +22,30 @@ class EmotesModule {
     ];
   }
 
-  getEmotes(providerFilter = []) {
+  getEmotes(categoryFilter = []) {
     let emotes = [];
-    for (const provider of this.emoteProviders) {
-      if (providerFilter.includes(provider.provider.id)) continue;
+    const emotesSettingValue = settings.get(SettingIds.EMOTES);
+
+    for (const category of this.emoteCategories) {
+      if (categoryFilter.includes(category.category.id)) {
+        continue;
+      }
+      const categoryProvider = category.category.provider;
+      if (categoryProvider === EmoteProviders.BETTERTTV && !hasFlag(emotesSettingValue, EmoteTypeFlags.BTTV_EMOTES)) {
+        continue;
+      }
+      if (categoryProvider === EmoteProviders.FRANKERFACEZ && !hasFlag(emotesSettingValue, EmoteTypeFlags.FFZ_EMOTES)) {
+        continue;
+      }
       const currentUser = getCurrentUser();
       emotes = emotes.concat(
-        provider.getEmotes(currentUser).filter((emote) => {
-          if (!emote.isUsable(null, currentUser)) return false;
-          const flags = settings.get(SettingIds.EMOTES);
-          if (emote.imageType === 'gif' && !hasFlag(flags, EmoteTypeFlags.BTTV_GIF_EMOTES)) return false;
-          if (emote.provider.id.startsWith('bttv') && !hasFlag(flags, EmoteTypeFlags.BTTV_EMOTES)) return false;
-          if (emote.provider.id.startsWith('ffz') && !hasFlag(flags, EmoteTypeFlags.FFZ_EMOTES)) return false;
+        category.getEmotes(currentUser).filter((emote) => {
+          if (!emote.isUsable(null, currentUser)) {
+            return false;
+          }
+          if (emote.imageType === 'gif' && !hasFlag(emotesSettingValue, EmoteTypeFlags.BTTV_GIF_EMOTES)) {
+            return false;
+          }
           return true;
         })
       );
@@ -42,23 +54,32 @@ class EmotesModule {
     return emotes;
   }
 
-  getEmotesByProviders(providerFilter = []) {
+  getEmotesByCategories(categoryFilter = []) {
     return this.getEmotes(
-      this.emoteProviders.map(({provider}) => provider.id).filter((providerId) => !providerFilter.includes(providerId))
+      this.emoteCategories.map(({category: {id}}) => id).filter((categoryId) => !categoryFilter.includes(categoryId))
     );
   }
 
   getEligibleEmote(code, user) {
     const channel = getCurrentChannel();
+    const emotesSettingValue = settings.get(SettingIds.EMOTES);
 
-    for (let i = 0; i < this.emoteProviders.length; i++) {
-      const provider = this.emoteProviders[i];
-      const emote = provider.getEligibleEmote(code, user);
-      if (!emote || !emote.isUsable(channel, user)) continue;
-      if (emote.imageType === 'gif' && !hasFlag(settings.get(SettingIds.EMOTES), EmoteTypeFlags.BTTV_GIF_EMOTES))
+    for (let i = 0; i < this.emoteCategories.length; i++) {
+      const category = this.emoteCategories[i];
+      const categoryProvider = category.category.provider;
+      if (categoryProvider === EmoteProviders.BETTERTTV && !hasFlag(emotesSettingValue, EmoteTypeFlags.BTTV_EMOTES)) {
         continue;
-      if (emote.provider.id.startsWith('bttv') && !hasFlag(settings.get(SettingIds.EMOTES), EmoteTypeFlags.BTTV_EMOTES))
+      }
+      if (categoryProvider === EmoteProviders.FRANKERFACEZ && !hasFlag(emotesSettingValue, EmoteTypeFlags.FFZ_EMOTES)) {
         continue;
+      }
+      const emote = category.getEligibleEmote(code, user);
+      if (!emote || !emote.isUsable(channel, user)) {
+        continue;
+      }
+      if (emote.imageType === 'gif' && !hasFlag(emotesSettingValue, EmoteTypeFlags.BTTV_GIF_EMOTES)) {
+        continue;
+      }
       return emote;
     }
 
