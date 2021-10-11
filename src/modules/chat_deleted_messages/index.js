@@ -2,7 +2,8 @@ import $ from 'jquery';
 import watcher from '../../watcher.js';
 import twitch from '../../utils/twitch.js';
 import settings from '../../settings.js';
-import {DeletedMessageTypes, SettingIds} from '../../constants.js';
+import {DeletedMessageTypes, PlatformTypes, SettingIds} from '../../constants.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 
 const CHAT_LINE_SELECTOR = '.chat-line__message';
 const CHAT_LINE_LINK_SELECTOR = 'a.link-fragment';
@@ -80,4 +81,4 @@ class ChatDeletedMessagesModule {
   }
 }
 
-export default new ChatDeletedMessagesModule();
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new ChatDeletedMessagesModule()]);

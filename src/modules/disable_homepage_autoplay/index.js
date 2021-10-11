@@ -1,8 +1,9 @@
 import settings from '../../settings.js';
 import watcher from '../../watcher.js';
 import twitch from '../../utils/twitch.js';
-import {AutoPlayFlags, SettingIds} from '../../constants.js';
+import {AutoPlayFlags, PlatformTypes, SettingIds} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 
 class DisableHomepageAutoplayModule {
   constructor() {
@@ -34,4 +35,4 @@ class DisableHomepageAutoplayModule {
   }
 }
 
-export default new DisableHomepageAutoplayModule();
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new DisableHomepageAutoplayModule()]);

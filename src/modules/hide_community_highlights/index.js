@@ -2,8 +2,9 @@ import $ from 'jquery';
 import settings from '../../settings.js';
 import watcher from '../../watcher.js';
 import domObserver from '../../observers/dom.js';
-import {ChatFlags, SettingIds} from '../../constants.js';
+import {ChatFlags, PlatformTypes, SettingIds} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 
 let removeCommunityHighlightsListener;
 
@@ -36,4 +37,4 @@ class HideCommunityHighlightsModule {
   }
 }
 
-export default new HideCommunityHighlightsModule();
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new HideCommunityHighlightsModule()]);

@@ -6,8 +6,9 @@ import html from '../../utils/html.js';
 import cdn from '../../utils/cdn.js';
 import {escapeRegExp} from '../../utils/regex.js';
 import {computeKeywords, KeywordTypes} from '../../utils/keywords.js';
-import {SettingIds} from '../../constants.js';
+import {PlatformTypes, SettingIds} from '../../constants.js';
 import {getCurrentUser} from '../../utils/user.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 
 const BLACKLIST_KEYWORD_PROMPT = `Type some blacklist keywords. Messages containing keywords will be filtered from your chat.
 
@@ -305,4 +306,4 @@ class ChatHighlightBlacklistKeywordsModule {
   }
 }
 
-export default new ChatHighlightBlacklistKeywordsModule();
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new ChatHighlightBlacklistKeywordsModule()]);

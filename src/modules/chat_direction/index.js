@@ -2,7 +2,8 @@ import $ from 'jquery';
 import settings from '../../settings.js';
 import watcher from '../../watcher.js';
 import twitch from '../../utils/twitch.js';
-import {SettingIds} from '../../constants.js';
+import {PlatformTypes, SettingIds} from '../../constants.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 
 const CHAT_LIST_SCROLL_CONTENT =
   '.chat-list .simplebar-scroll-content,.chat-list--default .simplebar-scroll-content,.chat-list--other .simplebar-scroll-content';
@@ -50,4 +51,4 @@ class ChatDirection {
   }
 }
 
-export default new ChatDirection();
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new ChatDirection()]);

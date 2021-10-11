@@ -1,6 +1,8 @@
 import $ from 'jquery';
 import watcher from '../../watcher.js';
 import twitch from '../../utils/twitch.js';
+import {PlatformTypes} from '../../constants.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 
 const STRAWPOLL_REGEX = /strawpoll\.me\/([0-9]+)/g;
 
@@ -70,4 +72,4 @@ class ChatEmbeddedPollModule {
   }
 }
 
-export default new ChatEmbeddedPollModule();
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new ChatEmbeddedPollModule()]);

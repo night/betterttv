@@ -1,7 +1,8 @@
 import $ from 'jquery';
-import {ChannelPointsFlags, SettingIds} from '../../constants.js';
+import {ChannelPointsFlags, PlatformTypes, SettingIds} from '../../constants.js';
 import settings from '../../settings.js';
 import {hasFlag} from '../../utils/flags.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 import watcher from '../../watcher.js';
 
 class DisableChannelPointsMessageHighlightsModule {
@@ -18,4 +19,4 @@ class DisableChannelPointsMessageHighlightsModule {
   }
 }
 
-export default new DisableChannelPointsMessageHighlightsModule();
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new DisableChannelPointsMessageHighlightsModule()]);

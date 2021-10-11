@@ -1,6 +1,7 @@
 import $ from 'jquery';
-import {SettingIds} from '../../constants.js';
+import {PlatformTypes, SettingIds} from '../../constants.js';
 import settings from '../../settings.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 import watcher from '../../watcher.js';
 
 class DirectoryLiveFollowingModule {
@@ -19,4 +20,4 @@ class DirectoryLiveFollowingModule {
   }
 }
 
-export default new DirectoryLiveFollowingModule();
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new DirectoryLiveFollowingModule()]);

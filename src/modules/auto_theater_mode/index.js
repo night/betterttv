@@ -2,7 +2,8 @@ import $ from 'jquery';
 import settings from '../../settings.js';
 import watcher from '../../watcher.js';
 import twitch from '../../utils/twitch.js';
-import {SettingIds} from '../../constants.js';
+import {PlatformTypes, SettingIds} from '../../constants.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 
 class AutoTheaterModeModule {
   constructor() {
@@ -33,4 +34,4 @@ class AutoTheaterModeModule {
   }
 }
 
-export default new AutoTheaterModeModule();
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new AutoTheaterModeModule()]);

@@ -1,8 +1,9 @@
 import settings from '../../settings.js';
 import watcher from '../../watcher.js';
 import twitch from '../../utils/twitch.js';
-import {ChatFlags, SettingIds} from '../../constants.js';
+import {ChatFlags, PlatformTypes, SettingIds} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 
 class HideChatEventsModule {
   constructor() {
@@ -31,4 +32,4 @@ class HideChatEventsModule {
   }
 }
 
-export default new HideChatEventsModule();
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new HideChatEventsModule()]);

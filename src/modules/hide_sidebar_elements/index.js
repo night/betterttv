@@ -2,8 +2,9 @@ import $ from 'jquery';
 import watcher from '../../watcher.js';
 import settings from '../../settings.js';
 import domObserver from '../../observers/dom.js';
-import {SettingIds, SidebarFlags} from '../../constants.js';
+import {PlatformTypes, SettingIds, SidebarFlags} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 
 let removeFeaturedChannelsListener;
 let removeOfflineFollowedChannelsListener;
@@ -85,4 +86,4 @@ class HideSidebarElementsModule {
   }
 }
 
-export default new HideSidebarElementsModule();
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new HideSidebarElementsModule()]);

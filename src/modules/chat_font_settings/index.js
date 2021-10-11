@@ -2,6 +2,8 @@ import $ from 'jquery';
 import watcher from '../../watcher.js';
 import storage from '../../storage.js';
 import html from '../../utils/html.js';
+import {PlatformTypes} from '../../constants.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 
 const FONT_FAMILY_PROMPT = `Enter a font family for chat.
 
@@ -62,4 +64,4 @@ class ChatFontSettingsModule {
   }
 }
 
-export default new ChatFontSettingsModule();
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new ChatFontSettingsModule()]);

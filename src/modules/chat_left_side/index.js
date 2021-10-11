@@ -1,6 +1,7 @@
 import $ from 'jquery';
-import {ChatLayoutTypes, SettingIds} from '../../constants.js';
+import {ChatLayoutTypes, PlatformTypes, SettingIds} from '../../constants.js';
 import settings from '../../settings.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 
 class ChatLeftSide {
   constructor() {
@@ -13,4 +14,4 @@ class ChatLeftSide {
   }
 }
 
-export default new ChatLeftSide();
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new ChatLeftSide()]);

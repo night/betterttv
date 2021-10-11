@@ -1,7 +1,8 @@
 import $ from 'jquery';
-import {ChatFlags, SettingIds} from '../../constants.js';
+import {ChatFlags, PlatformTypes, SettingIds} from '../../constants.js';
 import settings from '../../settings.js';
 import {hasFlag} from '../../utils/flags.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 
 class HideBitsModule {
   constructor() {
@@ -14,4 +15,4 @@ class HideBitsModule {
   }
 }
 
-export default new HideBitsModule();
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new HideBitsModule()]);
