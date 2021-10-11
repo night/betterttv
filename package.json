@@ -27,7 +27,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.15",
     "@sentry/browser": "^6.13.3",
-    "@sentry/integrations": "^6.13.2",
+    "@sentry/integrations": "^6.13.3",
     "@sentry/webpack-plugin": "^1.17.3",
     "autoprefixer": "^10.3.7",
     "babel-loader": "^8.2.2",
