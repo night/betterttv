@@ -1,8 +1,9 @@
 import $ from 'jquery';
 import settings from '../../settings.js';
 import domObserver from '../../observers/dom.js';
-import {SettingIds, ChannelPointsFlags} from '../../constants.js';
+import {SettingIds, ChannelPointsFlags, PlatformTypes} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 
 const CLAIM_BUTTON_SELECTOR = '.claimable-bonus__icon';
 
@@ -46,4 +47,4 @@ class ChannelPoints {
   }
 }
 
-export default new ChannelPoints();
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new ChannelPoints()]);

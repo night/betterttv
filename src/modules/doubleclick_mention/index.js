@@ -1,6 +1,8 @@
 import $ from 'jquery';
 import watcher from '../../watcher.js';
 import twitch from '../../utils/twitch.js';
+import {PlatformTypes} from '../../constants.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 
 const CHAT_ROOM_SELECTOR = '.chat-list,.chat-list--default,.chat-list--other';
 const CHAT_TEXT_AREA = '.chat-input textarea';
@@ -45,4 +47,4 @@ class DoubleClickMentionModule {
   }
 }
 
-export default new DoubleClickMentionModule();
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new DoubleClickMentionModule()]);

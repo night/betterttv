@@ -4,6 +4,8 @@ import settings from '../settings/index.js';
 import highlightBlacklistKeywords from '../chat_highlight_blacklist_keywords/index.js';
 import chatFontSettings from '../chat_font_settings/index.js';
 import domObserver from '../../observers/dom.js';
+import {PlatformTypes} from '../../constants.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 
 const CHAT_SETTINGS_SELECTOR = '.chat-settings__content';
 const MOD_VIEW_CHAT_SETTINGS_SELECTOR =
@@ -117,4 +119,4 @@ class ChatSettingsModule {
   }
 }
 
-export default new ChatSettingsModule();
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new ChatSettingsModule()]);

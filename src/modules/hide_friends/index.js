@@ -1,7 +1,8 @@
 import $ from 'jquery';
-import {SettingIds, SidebarFlags} from '../../constants.js';
+import {PlatformTypes, SettingIds, SidebarFlags} from '../../constants.js';
 import settings from '../../settings.js';
 import {hasFlag} from '../../utils/flags.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 
 class HideFriendsModule {
   constructor() {
@@ -14,4 +15,4 @@ class HideFriendsModule {
   }
 }
 
-export default new HideFriendsModule();
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new HideFriendsModule()]);

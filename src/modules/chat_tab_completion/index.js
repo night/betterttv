@@ -4,7 +4,8 @@ import watcher from '../../watcher.js';
 import twitch from '../../utils/twitch.js';
 import keyCodes from '../../utils/keycodes.js';
 import emotes from '../emotes/index.js';
-import {SettingIds} from '../../constants.js';
+import {PlatformTypes, SettingIds} from '../../constants.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 
 const CHAT_INPUT_SELECTOR = '.chat-input textarea';
 const AUTOCOMPLETE_SUGGESTIONS_SELECTOR = 'div[data-a-target="autocomplete-balloon"]';
@@ -181,4 +182,4 @@ class ChatTabcompletionModule {
   }
 }
 
-export default new ChatTabcompletionModule();
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new ChatTabcompletionModule()]);

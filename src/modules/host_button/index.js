@@ -4,9 +4,10 @@ import watcher from '../../watcher.js';
 import twitch from '../../utils/twitch.js';
 import twitchAPI from '../../utils/twitch-api.js';
 import domObserver from '../../observers/dom.js';
-import {SettingIds} from '../../constants.js';
+import {PlatformTypes, SettingIds} from '../../constants.js';
 import {getCurrentUser} from '../../utils/user.js';
 import {getCurrentChannel} from '../../utils/channel.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 
 const FOLLOW_BUTTON_CONTAINER_SELECTOR =
   'button[data-test-selector="follow-button"],button[data-test-selector="unfollow-button"]';
@@ -121,4 +122,4 @@ class HostButtonModule {
   }
 }
 
-export default new HostButtonModule();
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new HostButtonModule()]);

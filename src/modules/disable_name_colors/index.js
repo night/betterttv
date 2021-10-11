@@ -1,7 +1,8 @@
 import $ from 'jquery';
-import {SettingIds, UsernameFlags} from '../../constants.js';
+import {PlatformTypes, SettingIds, UsernameFlags} from '../../constants.js';
 import settings from '../../settings.js';
 import {hasFlag} from '../../utils/flags.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 import watcher from '../../watcher.js';
 
 class DisableNameColorsModule {
@@ -18,4 +19,4 @@ class DisableNameColorsModule {
   }
 }
 
-export default new DisableNameColorsModule();
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new DisableNameColorsModule()]);

@@ -1,8 +1,9 @@
 import settings from '../../settings.js';
 import watcher from '../../watcher.js';
 import twitch from '../../utils/twitch.js';
-import {SettingIds} from '../../constants.js';
+import {PlatformTypes, SettingIds} from '../../constants.js';
 import {getCurrentUser} from '../../utils/user.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 
 const forcedURL = window.location.search.includes('bttv_anon_chat=true');
 
@@ -61,4 +62,4 @@ class AnonChatModule {
   }
 }
 
-export default new AnonChatModule();
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new AnonChatModule()]);

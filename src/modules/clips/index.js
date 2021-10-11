@@ -3,6 +3,8 @@ import chat from '../chat/index.js';
 import colors from '../../utils/colors.js';
 import settings from '../../settings.js';
 import watcher from '../../watcher.js';
+import {PlatformTypes} from '../../constants.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 
 const GIF_EMOTES_SETTINGS_KEY = 'bttvGIFEmotes';
 const CHAT_MESSAGE_SELECTOR = 'span[data-a-target="chat-message-text"]';
@@ -59,4 +61,4 @@ class ClipsModule {
   }
 }
 
-export default new ClipsModule();
+export default loadModuleForPlatforms([PlatformTypes.TWITCH_CLIPS, () => new ClipsModule()]);

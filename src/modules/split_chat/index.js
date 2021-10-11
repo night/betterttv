@@ -1,5 +1,6 @@
-import {SettingIds} from '../../constants.js';
+import {PlatformTypes, SettingIds} from '../../constants.js';
 import settings from '../../settings.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 
 let alternateBackground = false;
 
@@ -14,4 +15,4 @@ class SplitChatModule {
   }
 }
 
-export default new SplitChatModule();
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new SplitChatModule()]);

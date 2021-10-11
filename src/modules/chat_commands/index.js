@@ -6,6 +6,8 @@ import chat from '../chat/index.js';
 import anonChat from '../anon_chat/index.js';
 import {getCurrentUser} from '../../utils/user.js';
 import {getCurrentChannel} from '../../utils/channel.js';
+import {PlatformTypes} from '../../constants.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 
 dayjs.extend(relativeTime);
 
@@ -305,4 +307,4 @@ class ChatCommandsModule {
   }
 }
 
-export default new ChatCommandsModule();
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new ChatCommandsModule()]);

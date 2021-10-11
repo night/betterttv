@@ -2,8 +2,9 @@ import settings from '../../settings.js';
 import watcher from '../../watcher.js';
 import twitch from '../../utils/twitch.js';
 import domObserver from '../../observers/dom.js';
-import {AutoPlayFlags, SettingIds} from '../../constants.js';
+import {AutoPlayFlags, PlatformTypes, SettingIds} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 
 let removeHostingIndicatorListener;
 
@@ -50,4 +51,4 @@ class DisableHostModeAutoplayModule {
   }
 }
 
-export default new DisableHostModeAutoplayModule();
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new DisableHostModeAutoplayModule()]);

@@ -1,6 +1,7 @@
-import {SettingIds, UsernameFlags} from '../../constants.js';
+import {PlatformTypes, SettingIds, UsernameFlags} from '../../constants.js';
 import settings from '../../settings.js';
 import {hasFlag} from '../../utils/flags.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 import watcher from '../../watcher.js';
 
 class DisableLocalizedNamesModule {
@@ -20,4 +21,4 @@ class DisableLocalizedNamesModule {
   }
 }
 
-export default new DisableLocalizedNamesModule();
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new DisableLocalizedNamesModule()]);

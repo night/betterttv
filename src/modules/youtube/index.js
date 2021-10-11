@@ -2,6 +2,8 @@ import $ from 'jquery';
 import chat from '../chat/index.js';
 import settings from '../../settings.js';
 import watcher from '../../watcher.js';
+import {PlatformTypes} from '../../constants.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 
 const GIF_EMOTES_SETTINGS_KEY = 'bttvGIFEmotes';
 const CHAT_MESSAGE_SELECTOR = '#content #message,#content #content-text';
@@ -27,4 +29,4 @@ class YouTubeModule {
   }
 }
 
-export default new YouTubeModule();
+export default loadModuleForPlatforms([PlatformTypes.YOUTUBE, () => new YouTubeModule()]);

@@ -8,6 +8,8 @@ import anonChat from '../anon_chat/index.js';
 import emojis from '../emotes/emojis.js';
 import {getCurrentUser} from '../../utils/user.js';
 import {getCurrentChannel} from '../../utils/channel.js';
+import {PlatformTypes} from '../../constants.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 
 const PATCHED_SENTINEL = Symbol('patched symbol');
 
@@ -79,4 +81,4 @@ class SendMessagePatcher {
   }
 }
 
-export default new SendMessagePatcher();
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new SendMessagePatcher()]);

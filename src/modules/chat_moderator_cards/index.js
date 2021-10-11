@@ -2,6 +2,8 @@ import $ from 'jquery';
 import watcher from '../../watcher.js';
 import twitch from '../../utils/twitch.js';
 import ModeratorCard from './moderator-card.js';
+import {PlatformTypes} from '../../constants.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 
 let openModeratorCard;
 
@@ -58,4 +60,4 @@ class ChatModeratorCardsModule {
   }
 }
 
-export default new ChatModeratorCardsModule();
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new ChatModeratorCardsModule()]);

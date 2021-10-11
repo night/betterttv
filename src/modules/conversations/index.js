@@ -1,6 +1,7 @@
 import $ from 'jquery';
-import {SettingIds} from '../../constants.js';
+import {PlatformTypes, SettingIds} from '../../constants.js';
 import settings from '../../settings.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 import watcher from '../../watcher.js';
 import chat from '../chat/index.js';
 
@@ -46,4 +47,4 @@ class ConversationsModule {
   }
 }
 
-export default new ConversationsModule();
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new ConversationsModule()]);

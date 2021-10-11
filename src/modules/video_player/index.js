@@ -4,8 +4,9 @@ import watcher from '../../watcher.js';
 import settings from '../../settings.js';
 import domWatcher from '../../observers/dom.js';
 import twitch from '../../utils/twitch.js';
-import {AutoPlayFlags, SettingIds} from '../../constants.js';
+import {AutoPlayFlags, PlatformTypes, SettingIds} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 
 const VIDEO_PLAYER_SELECTOR = '.video-player__container';
 const CANCEL_VOD_RECOMMENDATION_SELECTOR =
@@ -183,4 +184,4 @@ class VideoPlayerModule {
   }
 }
 
-export default new VideoPlayerModule();
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new VideoPlayerModule()]);

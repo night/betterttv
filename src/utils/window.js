@@ -1,21 +1,25 @@
 import {PlatformTypes} from '../constants.js';
 
+let platform;
+
 export function getPlatform() {
+  if (platform != null) {
+    return platform;
+  }
+
   const {hostname} = window.location;
 
   if (hostname.endsWith('.youtube.com')) {
-    return PlatformTypes.YOUTUBE;
+    platform = PlatformTypes.YOUTUBE;
+  } else if (hostname === 'clips.twitch.tv') {
+    platform = PlatformTypes.TWITCH_CLIPS;
+  } else if (hostname.endsWith('.twitch.tv')) {
+    platform = PlatformTypes.TWITCH;
+  } else {
+    throw new Error('unsupported platform');
   }
 
-  if (hostname === 'clips.twitch.tv') {
-    return PlatformTypes.TWITCH_CLIPS;
-  }
-
-  if (hostname.endsWith('.twitch.tv')) {
-    return PlatformTypes.TWITCH;
-  }
-
-  throw new Error('unsupported platform');
+  return platform;
 }
 
 export function isFrame() {
