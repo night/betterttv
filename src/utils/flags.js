@@ -10,5 +10,5 @@ export function setFlag(flags, flag, value) {
 }
 
 export function getChangedFlags(oldFlags, newFlags) {
-  return (oldFlags & ~newFlags) | (newFlags & ~oldFlags)
+  return (oldFlags & ~newFlags) | (newFlags & ~oldFlags);
 }
