@@ -28,7 +28,7 @@
     "@fortawesome/react-fontawesome": "^0.1.15",
     "@sentry/browser": "^6.13.2",
     "@sentry/integrations": "^6.13.2",
-    "@sentry/webpack-plugin": "^1.17.1",
+    "@sentry/webpack-plugin": "^1.17.3",
     "autoprefixer": "^10.3.6",
     "babel-loader": "^8.2.2",
     "babel-plugin-wildcard": "^7.0.0",
