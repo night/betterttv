@@ -1,11 +1,11 @@
-import {emotesCategoryIds} from '../../../constants.js';
+import {EmoteCategories} from '../../../constants.js';
 import Emote from '../../emotes/emote.js';
 import Icons from '../components/Icons.jsx';
 
 /* eslint-disable import/prefer-default-export */
 export function loadYoutubeEmotes() {
   const provider = {
-    id: `${emotesCategoryIds.YOUTUBE}`,
+    id: `${EmoteCategories.YOU}`,
     displayName: 'Youtube',
     icon: Icons.UNLOCK,
   };

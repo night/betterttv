@@ -6,8 +6,8 @@ import domObserver from '../../../observers/dom.js';
 import styles from './EmoteMenu.module.css';
 import {getReactInstance} from '../../../utils/twitch.js';
 import {getCurrentUser} from '../../../utils/user.js';
-import SafeEmoteMenuButton from '../components/SafeEmoteMenu.jsx';
 import watcher from '../../../watcher.js';
+import SafeEmoteMenuButton from '../components/SafeEmoteMenu.jsx';
 
 const CHAT_TEXT_AREA = 'textarea[data-a-target="chat-input"]';
 
@@ -57,6 +57,7 @@ export default class EmoteMenuModule {
       }
       const rightContainer = container.lastChild;
       const buttonContainer = document.createElement('div');
+      buttonContainer.classList.add(styles.emotePickerButtonContainer);
       buttonContainer.setAttribute('data-a-target', 'legacy-bttv-emote-picker-button-container');
       rightContainer.insertBefore(buttonContainer, rightContainer.lastChild);
 
@@ -92,7 +93,7 @@ export default class EmoteMenuModule {
     legacyContainer.classList.toggle(styles.hideEmoteMenuButton, !visible || !clickTwitchEmotes);
   }
 
-  appendToChat(text, shouldFocus = true) {
+  appendToChat({code: text}, shouldFocus = true) {
     const element = document.querySelector(CHAT_TEXT_AREA);
 
     const {value: currentValue, selectionStart} = element;

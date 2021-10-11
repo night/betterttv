@@ -9,7 +9,6 @@
   filter: grayscale(100%);
   opacity: 0.9;
   float: left;
-  margin: 5px;
   background-image: url(assets/icons/legacy_smile.svg) !important;
 }
 

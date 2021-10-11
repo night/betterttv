@@ -161,6 +161,7 @@ export const EmoteProviders = {
   BETTERTTV: 'bttv',
   FRANKERFACEZ: 'ffz',
   TWITCH: 'twitch',
+  YOUTUBE: 'youtube',
 };
 
 export const EmoteCategories = {
