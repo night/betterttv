@@ -19,7 +19,4 @@ class DisableChannelPointsMessageHighlightsModule {
   }
 }
 
-export default loadModuleForPlatforms([
-  PlatformTypes.TWITCH,
-  () => new DisableChannelPointsMessageHighlightsModule(),
-]);
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new DisableChannelPointsMessageHighlightsModule()]);
