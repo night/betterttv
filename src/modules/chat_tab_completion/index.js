@@ -4,8 +4,9 @@ import watcher from '../../watcher.js';
 import twitch from '../../utils/twitch.js';
 import keyCodes from '../../utils/keycodes.js';
 import emotes from '../emotes/index.js';
-import {PlatformTypes, SettingIds} from '../../constants.js';
+import {ChatFlags, PlatformTypes, SettingIds} from '../../constants.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
+import {hasFlag} from '../../utils/flags.js';
 
 const CHAT_INPUT_SELECTOR = '.chat-input textarea';
 const AUTOCOMPLETE_SUGGESTIONS_SELECTOR = 'div[data-a-target="autocomplete-balloon"]';
@@ -108,37 +109,39 @@ class ChatTabcompletionModule {
     }
 
     // Message history
-    if (keyCode === keyCodes.ArrowUp) {
-      if ($(AUTOCOMPLETE_SUGGESTIONS_SELECTOR).length > 0) return;
-      if ($inputField[0].selectionStart > 0) return;
-      if (this.historyPos + 1 === this.messageHistory.length) return;
+    if (hasFlag(settings.get(SettingIds.CHAT), ChatFlags.CHAT_MESSAGE_HISTORY)) {
+      if (keyCode === keyCodes.ArrowUp) {
+        if ($(AUTOCOMPLETE_SUGGESTIONS_SELECTOR).length > 0) return;
+        if ($inputField[0].selectionStart > 0) return;
+        if (this.historyPos + 1 === this.messageHistory.length) return;
 
-      const unsentMsg = $inputField.val().trim();
-      if (this.historyPos < 0 && unsentMsg.length > 0) {
-        this.messageHistory.unshift(unsentMsg);
-        this.historyPos = 0;
-      }
-
-      const prevMsg = this.messageHistory[++this.historyPos];
-      twitch.setInputValue($inputField, prevMsg);
-      $inputField[0].setSelectionRange(0, 0);
-    } else if (keyCode === keyCodes.ArrowDown) {
-      if ($(AUTOCOMPLETE_SUGGESTIONS_SELECTOR).length > 0) return;
-      if ($inputField[0].selectionStart < $inputField.val().length) return;
-      if (this.historyPos > 0) {
-        const prevMsg = this.messageHistory[--this.historyPos];
-        twitch.setInputValue($inputField, prevMsg);
-        $inputField[0].setSelectionRange(prevMsg.length, prevMsg.length);
-      } else {
-        const draft = $inputField.val().trim();
-        if (this.historyPos < 0 && draft.length > 0) {
-          this.messageHistory.unshift(draft);
+        const unsentMsg = $inputField.val().trim();
+        if (this.historyPos < 0 && unsentMsg.length > 0) {
+          this.messageHistory.unshift(unsentMsg);
+          this.historyPos = 0;
         }
-        this.historyPos = -1;
-        twitch.setInputValue($inputField, '');
+
+        const prevMsg = this.messageHistory[++this.historyPos];
+        twitch.setInputValue($inputField, prevMsg);
+        $inputField[0].setSelectionRange(0, 0);
+      } else if (keyCode === keyCodes.ArrowDown) {
+        if ($(AUTOCOMPLETE_SUGGESTIONS_SELECTOR).length > 0) return;
+        if ($inputField[0].selectionStart < $inputField.val().length) return;
+        if (this.historyPos > 0) {
+          const prevMsg = this.messageHistory[--this.historyPos];
+          twitch.setInputValue($inputField, prevMsg);
+          $inputField[0].setSelectionRange(prevMsg.length, prevMsg.length);
+        } else {
+          const draft = $inputField.val().trim();
+          if (this.historyPos < 0 && draft.length > 0) {
+            this.messageHistory.unshift(draft);
+          }
+          this.historyPos = -1;
+          twitch.setInputValue($inputField, '');
+        }
+      } else if (this.historyPos >= 0) {
+        this.messageHistory[this.historyPos] = $inputField.val();
       }
-    } else if (this.historyPos >= 0) {
-      this.messageHistory[this.historyPos] = $inputField.val();
     }
   }
 

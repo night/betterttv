@@ -17,6 +17,10 @@ function ChatModule() {
         <CheckboxGroup
           value={Object.values(ChatFlags).filter((value) => hasFlag(chat, value))}
           onChange={(value) => setChat(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}>
+          <Checkbox key="chatMessageHistory" value={ChatFlags.CHAT_MESSAGE_HISTORY}>
+            <p>Chat Message History</p>
+            <p className={styles.description}>Restore what you previously typed by pressing up/down arrow in chat</p>
+          </Checkbox>
           <Checkbox key="chatReplies" value={ChatFlags.CHAT_REPLIES}>
             <p>Chat Replies</p>
             <p className={styles.description}>Show the click to reply button in chat</p>

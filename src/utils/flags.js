@@ -8,3 +8,7 @@ export function setFlag(flags, flag, value) {
   }
   return flags & ~flag;
 }
+
+export function getChangedFlags(oldFlags, newFlags) {
+  return (oldFlags & ~newFlags) | (newFlags & ~oldFlags);
+}
