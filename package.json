@@ -62,7 +62,7 @@
     "lodash.sortby": "^4.7.0",
     "lodash.throttle": "^4.1.1",
     "lodash.uniqby": "^4.7.0",
-    "mini-css-extract-plugin": "^2.3.0",
+    "mini-css-extract-plugin": "^2.4.2",
     "postcss": "^8.3.8",
     "postcss-hexrgba": "^2.0.1",
     "postcss-loader": "^6.1.1",
