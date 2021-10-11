@@ -1,3 +1,5 @@
+/* eslint-disable import/prefer-default-export */
+
 import {
   AutoPlayFlags,
   ChannelPointsFlags,
@@ -13,7 +15,7 @@ import {
 } from '../constants.js';
 import storage from '../storage.js';
 import {hasFlag, setFlag} from './flags.js';
-import {deserializeKeywords, serializeKeywords} from './keywords.js';
+import {serializeKeywords} from './keywords.js';
 
 export function deserializeLegacy(settingId) {
   let value = null;
@@ -236,95 +238,4 @@ export function deserializeLegacy(settingId) {
   }
 
   return [settingId, value == null ? DefaultValues[settingId] : value];
-}
-
-export function updateLegacySetting(settingId, value) {
-  switch (settingId) {
-    case SettingIds.CHAT_REPLIES:
-      return storage.set(LegacySettingIds.HIDE_CHAT_REPLIES, !value);
-    case SettingIds.WHISPERS:
-      return storage.set(LegacySettingIds.DISABLE_WHISPERS, !value);
-    case SettingIds.CHANNEL_POINTS_MESSAGE_HIGHLIGHTS:
-      return storage.set(LegacySettingIds.DISABLE_CHANNEL_POINTS_MESSAGE_HIGHLIGHTS, !value);
-    case SettingIds.FP_VIDEO:
-      return storage.set(LegacySettingIds.DISABLE_FP_VIDEO, !value);
-    case SettingIds.HOST_MODE:
-      return storage.set(LegacySettingIds.DISABLE_HOST_MODE, !value);
-    case SettingIds.LOCALIZED_NAMES:
-      return storage.set(LegacySettingIds.DISABLE_LOCALIZED_NAMES, !value);
-    case SettingIds.USERNAME_COLORS:
-      return storage.set(LegacySettingIds.DISABLE_USERNAME_COLORS, !value);
-    case SettingIds.BITS:
-      return storage.set(LegacySettingIds.HIDE_BITS, !value);
-    case SettingIds.CHAT_CLIPS:
-      return storage.set(LegacySettingIds.HIDE_CHAT_CLIPS, !value);
-    case SettingIds.NEW_VIEWER_GREETING:
-      return storage.set(LegacySettingIds.HIDE_NEW_VIEWER_GREETING, !value);
-    case SettingIds.SUBSCRIPTION_NOTICES:
-      return storage.set(LegacySettingIds.HIDE_SUBSCRIPTION_NOTICES, !value);
-    case SettingIds.COMMUNITY_HIGHLIGHTS:
-      return storage.set(LegacySettingIds.HIDE_COMMUNITY_HIGHLIGHTS, !value);
-    case SettingIds.PRIME_PROMOTIONS:
-      return storage.set(LegacySettingIds.HIDE_PRIME_PROMOTIONS, !value);
-    case SettingIds.PLAYER_EXTENSIONS:
-      return storage.set(LegacySettingIds.HIDE_PLAYER_EXTENSIONS, !value);
-    case SettingIds.VOD_RECOMMENDATION_AUTOPLAY:
-      return storage.set(LegacySettingIds.DISABLE_VOD_RECOMMENDATION_AUTOPLAY, !value);
-    case SettingIds.BLACKLIST_KEYWORDS:
-      return storage.set(LegacySettingIds.BLACKLIST_KEYWORDS, deserializeKeywords(value));
-    case SettingIds.HIGHLIGHT_KEYWORDS:
-      return storage.set(LegacySettingIds.HIGHLIGHT_KEYWORDS, deserializeKeywords(value));
-    case SettingIds.CHAT_LAYOUT:
-      return storage.set(LegacySettingIds.LEFT_SIDE_CHAT, value === ChatLayoutTypes.LEFT);
-    case SettingIds.DELETED_MESSAGES:
-      storage.set(LegacySettingIds.HIDE_DELETED_MESSAGES, value === DeletedMessageTypes.HIDE);
-      storage.set(LegacySettingIds.SHOW_DELETED_MESSAGES, value === DeletedMessageTypes.SHOW);
-      return null;
-    case SettingIds.SIDEBAR:
-      storage.set(LegacySettingIds.HIDE_FRIENDS, !hasFlag(value, SidebarFlags.FRIENDS));
-      storage.set(LegacySettingIds.HIDE_FEATURED_CHANNELS, !hasFlag(value, SidebarFlags.FEATURED_CHANNELS));
-      storage.set(LegacySettingIds.HIDE_RECOMMENDED_FRIENDS, !hasFlag(value, SidebarFlags.RECOMMENDED_FRIENDS));
-      storage.set(
-        LegacySettingIds.HIDE_OFFLINE_FOLLOWED_CHANNELS,
-        !hasFlag(value, SidebarFlags.OFFLINE_FOLLOWED_CHANNELS)
-      );
-      storage.set(LegacySettingIds.AUTO_EXPAND_CHANNELS, hasFlag(value, SidebarFlags.AUTO_EXPAND_CHANNELS));
-      return null;
-    case SettingIds.EMOTES:
-      storage.set(LegacySettingIds.BTTV_EMOTES, hasFlag(value, EmoteTypeFlags.BTTV_EMOTES));
-      storage.set(LegacySettingIds.BTTV_GIF_EMOTES, hasFlag(value, EmoteTypeFlags.BTTV_GIF_EMOTES));
-      storage.set(LegacySettingIds.FFZ_EMOTES, hasFlag(value, EmoteTypeFlags.FFZ_EMOTES) === EmoteTypeFlags.FFZ_EMOTES);
-      return null;
-    case SettingIds.CHAT:
-      storage.set(LegacySettingIds.HIDE_BITS, !hasFlag(value, ChatFlags.BITS));
-      storage.set(LegacySettingIds.HIDE_CHAT_CLIPS, !hasFlag(value, ChatFlags.CHAT_CLIPS));
-      storage.set(LegacySettingIds.HIDE_CHAT_REPLIES, !hasFlag(value, ChatFlags.CHAT_REPLIES));
-      storage.set(LegacySettingIds.HIDE_COMMUNITY_HIGHLIGHTS, !hasFlag(value, ChatFlags.COMMUNITY_HIGHLIGHTS));
-      storage.set(LegacySettingIds.HIDE_SUBSCRIPTION_NOTICES, !hasFlag(value, ChatFlags.SUB_NOTICE));
-      storage.set(LegacySettingIds.HIDE_NEW_VIEWER_GREETING, !hasFlag(value, ChatFlags.VIEWER_GREETING));
-      return null;
-    case SettingIds.CHANNEL_POINTS:
-      storage.set(LegacySettingIds.HIDE_CHANNEL_POINTS, !hasFlag(value, ChannelPointsFlags.CHANNEL_POINTS));
-      storage.set(LegacySettingIds.AUTO_CLAIM_BONUS_CHANNEL_POINTS, hasFlag(value, ChannelPointsFlags.AUTO_CLAIM));
-      storage.set(
-        LegacySettingIds.DISABLE_CHANNEL_POINTS_MESSAGE_HIGHLIGHTS,
-        hasFlag(value, ChannelPointsFlags.MESSAGE_HIGHLIGHTS)
-      );
-      return null;
-    case SettingIds.AUTO_PLAY:
-      storage.set(LegacySettingIds.DISABLE_FP_VIDEO, !hasFlag(value, AutoPlayFlags.FP_VIDEO));
-      storage.set(LegacySettingIds.DISABLE_HOST_MODE, !hasFlag(value, AutoPlayFlags.HOST_MODE));
-      storage.set(
-        LegacySettingIds.DISABLE_VOD_RECOMMENDATION_AUTOPLAY,
-        !hasFlag(value, AutoPlayFlags.VOD_RECOMMENDATION_AUTOPLAY)
-      );
-      return null;
-    case SettingIds.USERNAMES:
-      storage.set(LegacySettingIds.READABLE_USERNAME_COLORS, !hasFlag(value, UsernameFlags.COLORS));
-      storage.set(LegacySettingIds.DISABLE_LOCALIZED_NAMES, !hasFlag(value, UsernameFlags.LOCALIZED));
-      storage.set(LegacySettingIds.READABLE_USERNAME_COLORS, hasFlag(value, UsernameFlags.READABLE));
-      return null;
-    default:
-      return storage.set(settingId, value);
-  }
 }

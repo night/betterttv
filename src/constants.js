@@ -121,6 +121,7 @@ export const ChatFlags = {
   VIEWER_GREETING: 1 << 3,
   SUB_NOTICE: 1 << 4,
   COMMUNITY_HIGHLIGHTS: 1 << 5,
+  CHAT_MESSAGE_HISTORY: 1 << 6,
 };
 
 export const ChannelPointsFlags = {
@@ -251,23 +252,40 @@ export const DefaultValues = {
   [SettingIds.SCROLL_VOLUME_CONTROL]: false,
   [SettingIds.BLACKLIST_KEYWORDS]: {},
   [SettingIds.HIGHLIGHT_KEYWORDS]: null,
-  [SettingIds.SIDEBAR]:
+  [SettingIds.SIDEBAR]: [
     SidebarFlags.FRIENDS |
-    SidebarFlags.OFFLINE_FOLLOWED_CHANNELS |
-    SidebarFlags.FEATURED_CHANNELS |
-    SidebarFlags.RECOMMENDED_FRIENDS,
-  [SettingIds.EMOTES]: EmoteTypeFlags.BTTV_EMOTES | EmoteTypeFlags.BTTV_GIF_EMOTES | EmoteTypeFlags.FFZ_EMOTES,
-  [SettingIds.CHAT]:
+      SidebarFlags.OFFLINE_FOLLOWED_CHANNELS |
+      SidebarFlags.FEATURED_CHANNELS |
+      SidebarFlags.RECOMMENDED_FRIENDS,
+    0,
+  ],
+  [SettingIds.EMOTES]: [EmoteTypeFlags.BTTV_EMOTES | EmoteTypeFlags.BTTV_GIF_EMOTES | EmoteTypeFlags.FFZ_EMOTES, 0],
+  [SettingIds.CHAT]: [
     ChatFlags.BITS |
-    ChatFlags.CHAT_CLIPS |
-    ChatFlags.CHAT_REPLIES |
-    ChatFlags.COMMUNITY_HIGHLIGHTS |
-    ChatFlags.SUB_NOTICE |
-    ChatFlags.VIEWER_GREETING,
-  [SettingIds.AUTO_PLAY]: AutoPlayFlags.FP_VIDEO | AutoPlayFlags.HOST_MODE | AutoPlayFlags.VOD_RECOMMENDATION_AUTOPLAY,
-  [SettingIds.USERNAMES]: UsernameFlags.COLORS | UsernameFlags.LOCALIZED | UsernameFlags.READABLE,
-  [SettingIds.CHANNEL_POINTS]: ChannelPointsFlags.CHANNEL_POINTS | ChannelPointsFlags.MESSAGE_HIGHLIGHTS,
+      ChatFlags.CHAT_CLIPS |
+      ChatFlags.CHAT_REPLIES |
+      ChatFlags.COMMUNITY_HIGHLIGHTS |
+      ChatFlags.SUB_NOTICE |
+      ChatFlags.VIEWER_GREETING |
+      ChatFlags.CHAT_MESSAGE_HISTORY,
+    0,
+  ],
+  [SettingIds.AUTO_PLAY]: [
+    AutoPlayFlags.FP_VIDEO | AutoPlayFlags.HOST_MODE | AutoPlayFlags.VOD_RECOMMENDATION_AUTOPLAY,
+    0,
+  ],
+  [SettingIds.USERNAMES]: [UsernameFlags.COLORS | UsernameFlags.LOCALIZED | UsernameFlags.READABLE, 0],
+  [SettingIds.CHANNEL_POINTS]: [ChannelPointsFlags.CHANNEL_POINTS | ChannelPointsFlags.MESSAGE_HIGHLIGHTS, 0],
 };
+
+export const FlagSettings = [
+  SettingIds.SIDEBAR,
+  SettingIds.EMOTES,
+  SettingIds.CHAT,
+  SettingIds.AUTO_PLAY,
+  SettingIds.USERNAMES,
+  SettingIds.CHANNEL_POINTS,
+];
 
 export const PlatformTypes = {
   TWITCH: 1,
