@@ -11,14 +11,16 @@
 /* TODO: find a way to use CSS variables instead (maybe in v5?) */
 :global {
   .bttv-rs-popover {
-    font-family: "Helvetica Neue", Helvetica, Arial;
+    font-family: 'Helvetica Neue', Helvetica, Arial;
   }
 
   .bttv-rs-nav .bttv-rs-nav-item-active > .bttv-rs-nav-item-content {
-    color: rgba(255, 255, 255, 1.0);
+    color: rgba(255, 255, 255, 1);
 
-    &:hover, &:active, &:focus {
-      color: rgba(255, 255, 255, 1.0);
+    &:hover,
+    &:active,
+    &:focus {
+      color: rgba(255, 255, 255, 1);
     }
   }
 
@@ -27,7 +29,9 @@
   }
 
   .bttv-rs-input-group.bttv-rs-input-group-inside {
-    input:active, input:focus, input:hover {
+    input:active,
+    input:focus,
+    input:hover {
       border-color: rgba(255, 255, 255, 0.5);
     }
   }
@@ -36,7 +40,7 @@
     color: rgba(255, 255, 255, 0.8);
 
     &:hover {
-      color: rgba(255, 255, 255, 1.0)
+      color: rgba(255, 255, 255, 1);
     }
   }
 
