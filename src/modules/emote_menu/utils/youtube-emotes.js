@@ -73,10 +73,10 @@ export async function loadYouTubeEmotes() {
   }
 
   const tempCategories = {};
-  for (const categoryId of Object.keys(categoryEmojis)) {
-    const categoryName = categoryNames[categoryId] || DEFAULT_CATEGORY_NAME;
-    const category = getCategoryForChannelId(categoryId, categoryName);
-    const categoryEmotes = categoryEmojis[categoryId].map(
+  for (const channelId of Object.keys(categoryEmojis)) {
+    const categoryName = categoryNames[channelId] || DEFAULT_CATEGORY_NAME;
+    const category = getCategoryForChannelId(channelId, categoryName);
+    const categoryEmotes = categoryEmojis[channelId].map(
       ({emojiId: emoteId, image, shortcuts}) =>
         new Emote({
           id: emoteId,
