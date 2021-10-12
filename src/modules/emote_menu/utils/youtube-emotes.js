@@ -18,13 +18,15 @@ function getCategoryForChannelId(channelId, categoryName) {
         displayName: 'YouTube Global',
         icon: Icons.YOUTUBE,
       };
-    default:
+    default: {
+      const currentChannel = getCurrentChannel();
       return {
         id: EmoteCategories.YOUTUBE_CHANNEL(channelId),
         provider: EmoteProviders.YOUTUBE,
         displayName: categoryName,
-        icon: Icons.UNLOCK,
+        icon: currentChannel?.id === channelId ? Icons.IMAGE(currentChannel.avatar, categoryName) : Icons.UNLOCK,
       };
+    }
   }
 }
 
