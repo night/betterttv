@@ -516,7 +516,7 @@ export default {
     }
   },
 
-  getChatMessages(name = null) {
+  getChatMessages(providerId = null) {
     let messages = Array.from($(CHAT_MESSAGE_SELECTOR))
       .reverse()
       .map((element) => ({
@@ -525,8 +525,8 @@ export default {
         outerHTML: element.outerHTML,
       }));
 
-    if (name) {
-      messages = messages.filter(({message}) => message && message.user && message.user.userLogin === name);
+    if (providerId) {
+      messages = messages.filter(({message}) => message && message.user && message.user.userID === providerId);
     }
 
     return messages;
