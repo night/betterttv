@@ -22,8 +22,15 @@ class PersonalEmotes extends AbstractEmotes {
     socketClient.on('lookup_user', (s) => this.updatePersonalEmotes(s));
     watcher.on('load.chat', () => this.joinChannel());
     watcher.on('load.youtube', () => this.joinChannel());
+    watcher.on('load.user', () => this.broadcastMe());
     watcher.on('conversation.new', (threadId) => this.joinConversation(threadId));
     watcher.on('conversation.message', (threadId, $el, msgObject) => this.broadcastMeConversation(threadId, msgObject));
+    watcher.on('youtube.message', (element, {data}) => {
+      if (data.authorExternalChannelId !== getCurrentUser()?.id) {
+        return;
+      }
+      this.broadcastMe();
+    });
   }
 
   get category() {
@@ -73,6 +80,15 @@ class PersonalEmotes extends AbstractEmotes {
     if (!user) return;
 
     socketClient.joinChannel('twitch', threadId);
+  }
+
+  broadcastMe() {
+    const currentChannel = getCurrentChannel();
+    if (!currentChannel) {
+      return;
+    }
+
+    socketClient.broadcastMe(currentChannel.provider, currentChannel.id);
   }
 
   broadcastMeConversation(threadId, msgObject) {

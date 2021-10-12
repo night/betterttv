@@ -21,6 +21,7 @@ export default function youtubeWatcher(watcher) {
         displayName: user.authorName.simpleText,
         avatar: (userThumbnails[1] || userThumbnails[0]).url,
       });
+      watcher.emit('load.user');
     } catch (_) {}
   }
 
