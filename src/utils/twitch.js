@@ -139,8 +139,13 @@ if (userCookie) {
 
 export default {
   async getUserProfilePicture(userId = null) {
+    const currentUser = getCurrentUser();
+    if (currentUser == null || currentUser.provider !== 'twitch') {
+      return null;
+    }
+
     if (userId == null) {
-      userId = getCurrentUser()?.id;
+      userId = currentUser.id;
     }
 
     if (userId == null) {

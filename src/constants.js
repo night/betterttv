@@ -162,6 +162,7 @@ export const EmoteProviders = {
   BETTERTTV: 'bttv',
   FRANKERFACEZ: 'ffz',
   TWITCH: 'twitch',
+  YOUTUBE: 'youtube',
 };
 
 export const EmoteCategories = {
@@ -186,6 +187,8 @@ export const EmoteCategories = {
   TWITCH_TURBO: 'twitch-turbo',
   TWITCH_UNLOCKED: 'twitch-unlocked',
   TWITCH_CHANNEL: (channelId) => `twitch-${channelId}`,
+  YOUTUBE_GLOBAL: 'youtube-global',
+  YOUTUBE_CHANNEL: (channelId) => `youtube-${channelId}`,
 };
 
 export const DEFAULT_FREQUENT_EMOTES = {

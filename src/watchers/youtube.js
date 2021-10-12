@@ -3,8 +3,32 @@ import {setCurrentUser} from '../utils/user.js';
 import {setCurrentChannel} from '../utils/channel.js';
 
 export default function youtubeWatcher(watcher) {
+  function updateUser() {
+    const inputRenderer = document.getElementsByTagName('yt-live-chat-message-input-renderer')[0];
+    if (inputRenderer == null) {
+      return;
+    }
+
+    try {
+      const user =
+        inputRenderer.__data.data.sendButton.buttonRenderer.serviceEndpoint.sendLiveChatMessageEndpoint.actions[0]
+          .addLiveChatTextMessageFromTemplateAction.template.liveChatTextMessageRenderer;
+      setCurrentUser({
+        provider: 'youtube',
+        id: user.authorExternalChannelId,
+        name: user.authorExternalChannelId,
+        displayName: user.authorName.simpleText,
+      });
+    } catch (_) {}
+  }
+
   let channelId;
   function updateChannel({data}) {
+    // optimization: channel ids cannot change without page refresh
+    if (channelId != null) {
+      return;
+    }
+
     const metaChannelId = document.querySelector('meta[itemprop="channelId"]');
     let newChannelId = channelId;
     if (metaChannelId != null) {
@@ -26,27 +50,9 @@ export default function youtubeWatcher(watcher) {
 
     channelId = newChannelId;
     setCurrentChannel({provider: 'youtube', id: channelId});
+    updateUser();
     watcher.emit('load.youtube');
     watcher.emit('load.channel');
-  }
-
-  function updateUser() {
-    const inputRenderer = document.getElementsByTagName('yt-live-chat-message-input-renderer')[0];
-    if (inputRenderer == null) {
-      return;
-    }
-
-    try {
-      const user =
-        inputRenderer.__data.data.sendButton.buttonRenderer.serviceEndpoint.sendLiveChatMessageEndpoint.actions[0]
-          .addLiveChatTextMessageFromTemplateAction.template.liveChatTextMessageRenderer;
-      setCurrentUser({
-        provider: 'youtube',
-        id: user.authorExternalChannelId,
-        name: user.authorExternalChannelId,
-        displayName: user.authorName.simpleText,
-      });
-    } catch (_) {}
   }
 
   function processMessageNode(node) {
@@ -87,6 +93,4 @@ export default function youtubeWatcher(watcher) {
       processMessageNode(node);
     }
   });
-
-  updateUser();
 }
