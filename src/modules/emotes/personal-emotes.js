@@ -50,10 +50,16 @@ class PersonalEmotes extends AbstractEmotes {
 
   joinChannel() {
     const currentChannel = getCurrentChannel();
-    if (!currentChannel) return;
+    if (!currentChannel) {
+      return;
+    }
 
-    if (currentChannel !== joinedChannel) {
-      socketClient.partChannel(currentChannel.provider, currentChannel.id);
+    if (joinedChannel != null && currentChannel.id === joinedChannel.id) {
+      return;
+    }
+
+    if (joinedChannel != null) {
+      socketClient.partChannel(joinedChannel.provider, joinedChannel.id);
     }
 
     joinedChannel = currentChannel;
