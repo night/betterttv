@@ -59,7 +59,7 @@ export default class EmoteMenuModule {
       this.loadLegacyButton();
     });
     watcher.on('load.chat', () => this.loadLegacyButton());
-    settings.on(`changed.${SettingIds.CLICK_TWITCH_EMOTES}`, () => this.loadLegacyButton());
+    settings.on(`changed.${SettingIds.EMOTE_MENU}`, () => this.loadLegacyButton());
   }
 
   loadLegacyButton() {
@@ -68,9 +68,9 @@ export default class EmoteMenuModule {
     }
 
     const legacyContainer = document.querySelector(LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
-    const clickTwitchEmotes = settings.get(SettingIds.CLICK_TWITCH_EMOTES);
+    const emoteMenuEnabled = settings.get(SettingIds.EMOTE_MENU);
 
-    if (clickTwitchEmotes && legacyContainer == null) {
+    if (emoteMenuEnabled && legacyContainer == null) {
       const container = document.querySelector(CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR);
       if (container == null) {
         return;
@@ -102,13 +102,13 @@ export default class EmoteMenuModule {
 
   show(visible) {
     const legacyContainer = document.querySelector(LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
-    const clickTwitchEmotes = settings.get(SettingIds.CLICK_TWITCH_EMOTES);
+    const emoteMenuEnabled = settings.get(SettingIds.EMOTE_MENU);
 
     if (legacyContainer == null) {
       return;
     }
 
-    legacyContainer.classList.toggle(styles.hideEmoteMenuButton, !visible || !clickTwitchEmotes);
+    legacyContainer.classList.toggle(styles.hideEmoteMenuButton, !visible || !emoteMenuEnabled);
   }
 
   appendToChat(text, shouldFocus = true) {

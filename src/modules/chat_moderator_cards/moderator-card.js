@@ -191,7 +191,7 @@ class ModeratorCard {
     if (e.ctrlKey || e.metaKey || e.shiftKey) return false;
     if ($('input, textarea, select').is(':focus')) return false;
 
-    const keyCode = e.code;
+    const keyCode = e.key;
     if (keyCode === keyCodes.Escape) {
       return this.close();
     }

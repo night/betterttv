@@ -1,6 +1,7 @@
 import {PlatformTypes} from '../constants.js';
 
 let platform;
+let navigatorPlatform;
 
 export function getPlatform() {
   if (platform != null) {
@@ -20,6 +21,15 @@ export function getPlatform() {
   }
 
   return platform;
+}
+
+export function isMac() {
+  if (navigatorPlatform != null) {
+    return navigatorPlatform;
+  }
+
+  navigatorPlatform = navigator.platform.toLowerCase().startsWith('mac');
+  return navigatorPlatform;
 }
 
 export function isFrame() {

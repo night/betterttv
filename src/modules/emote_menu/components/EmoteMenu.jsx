@@ -58,7 +58,7 @@ export default function EmoteMenu({triggerRef, appendToChat, onSetTip}) {
     function callback(event) {
       buttonPressCallback(event);
 
-      if (event.code === keycodes.Enter) {
+      if (event.key === keycodes.Enter) {
         event.preventDefault();
         handleClick(selected);
         return;

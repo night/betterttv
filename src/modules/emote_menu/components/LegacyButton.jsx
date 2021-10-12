@@ -6,6 +6,7 @@ import {markTipAsSeen} from './Tip.jsx';
 import {EmoteMenuTips} from '../../../constants.js';
 import emoteMenuViewStore from '../stores/emote-menu-view-store.js';
 import keyCodes from '../../../utils/keycodes.js';
+import {isMac} from '../../../utils/window.js';
 import styles from './LegacyButton.module.css';
 
 export default function LegacyButton({appendToChat, setPopoverOpen, onClick}) {
@@ -28,7 +29,9 @@ export default function LegacyButton({appendToChat, setPopoverOpen, onClick}) {
 
   useEffect(() => {
     function handleKeyDown(event) {
-      if (!event.altKey || event.code !== keyCodes.E) {
+      const isPressed =
+        (event.altKey && event.key === keyCodes.E) || (isMac() && event.ctrlKey && event.key === keyCodes.E);
+      if (!isPressed) {
         return;
       }
 

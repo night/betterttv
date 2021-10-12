@@ -133,7 +133,7 @@ export default function useGridKeyboardNavigation(
     (event, shift) => {
       let newCoords = null;
 
-      switch (event.code) {
+      switch (event.key) {
         case keyCodes.ArrowUp:
           newCoords = travelUp(rowColumnCounts, coords, maxColumnCount);
           event.preventDefault();

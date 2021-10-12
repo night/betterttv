@@ -55,7 +55,7 @@ class ChatTabcompletionModule {
   }
 
   onKeydown(e, includeUsers = true) {
-    const keyCode = e.code;
+    const keyCode = e.key;
     if (e.ctrlKey) return;
 
     const $inputField = $(e.target);
@@ -104,7 +104,7 @@ class ChatTabcompletionModule {
       }
     } else if (keyCode === keyCodes.Escape && this.tabTries >= 0) {
       twitch.setInputValue($inputField, this.textSplit.join(''));
-    } else if (![keyCodes.ShiftLeft, keyCodes.ShiftRight].includes(keyCode)) {
+    } else if (keyCode !== keyCodes.Shift) {
       this.tabTries = -1;
     }
 
