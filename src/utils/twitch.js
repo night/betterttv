@@ -139,8 +139,13 @@ if (userCookie) {
 
 export default {
   async getUserProfilePicture(userId = null) {
+    const currentUser = getCurrentUser();
+    if (currentUser == null || currentUser.provider !== 'twitch') {
+      return null;
+    }
+
     if (userId == null) {
-      userId = getCurrentUser()?.id;
+      userId = currentUser.id;
     }
 
     if (userId == null) {
@@ -511,7 +516,7 @@ export default {
     }
   },
 
-  getChatMessages(name = null) {
+  getChatMessages(providerId = null) {
     let messages = Array.from($(CHAT_MESSAGE_SELECTOR))
       .reverse()
       .map((element) => ({
@@ -520,8 +525,8 @@ export default {
         outerHTML: element.outerHTML,
       }));
 
-    if (name) {
-      messages = messages.filter(({message}) => message && message.user && message.user.userLogin === name);
+    if (providerId) {
+      messages = messages.filter(({message}) => message && message.user && message.user.userID === providerId);
     }
 
     return messages;

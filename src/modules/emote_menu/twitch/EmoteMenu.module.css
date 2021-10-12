@@ -12,3 +12,12 @@
 .hideEmoteMenuButton {
   display: none;
 }
+
+.button {
+  border-radius: var(--border-radius-medium);
+
+  &:hover {
+    background-color: var(--color-background-button-text-hover);
+    color: var(--color-fill-button-icon-hover);
+  }
+}

@@ -1,11 +1,12 @@
 let currentChannel;
 
-export function setCurrentChannel({provider, id, name, displayName}) {
+export function setCurrentChannel({provider, id, name, displayName, avatar}) {
   currentChannel = {
     provider,
     id: id.toString(),
     name,
     displayName,
+    avatar,
   };
 }
 

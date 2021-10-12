@@ -8,11 +8,14 @@ import emotes from '../../emotes/index.js';
 import Icons from '../components/Icons.jsx';
 import emoteStorage from './emote-menu-store.js';
 import {loadTwitchEmotes} from '../utils/twitch-emotes.js';
+import {loadYouTubeEmotes} from '../utils/youtube-emotes.js';
 import cdn from '../../../utils/cdn.js';
 import {getCurrentChannel} from '../../../utils/channel.js';
 import settings from '../../../settings.js';
-import {SettingIds, EmoteProviders, EmoteCategories} from '../../../constants.js';
+import {SettingIds, EmoteProviders, EmoteCategories, PlatformTypes} from '../../../constants.js';
 import twitch from '../../../utils/twitch.js';
+import {getPlatform} from '../../../utils/window.js';
+import {getCurrentUser} from '../../../utils/user.js';
 
 const MAX_FRECENTS = 36;
 
@@ -44,7 +47,7 @@ const fuse = new Fuse([], {
 });
 
 let providerCategories = [];
-let twitchCategories = [];
+let platformCategories = [];
 
 class EmoteMenuViewStore extends SafeEventEmitter {
   constructor() {
@@ -58,8 +61,8 @@ class EmoteMenuViewStore extends SafeEventEmitter {
 
     this.totalCols = computeTotalColumns();
 
-    watcher.on('channel.updated', () => this.updateTwitchProviders());
-    settings.on(`changed.${SettingIds.DARKENED_MODE}`, () => this.updateTwitchProviders());
+    watcher.on('channel.updated', () => this.updatePlatformProviders());
+    settings.on(`changed.${SettingIds.DARKENED_MODE}`, () => this.updatePlatformProviders());
 
     watcher.on('emotes.updated', () => this.updateProviders());
     settings.on(`changed.${SettingIds.EMOTES}`, () => this.updateProviders());
@@ -70,8 +73,8 @@ class EmoteMenuViewStore extends SafeEventEmitter {
     });
   }
 
-  async updateTwitchProviders() {
-    twitchCategories = await loadTwitchEmotes();
+  async updatePlatformProviders() {
+    platformCategories = getPlatform() === PlatformTypes.YOUTUBE ? await loadYouTubeEmotes() : await loadTwitchEmotes();
     this.markDirty(false);
   }
 
@@ -79,14 +82,19 @@ class EmoteMenuViewStore extends SafeEventEmitter {
     const currentChannel = getCurrentChannel();
     const betterttvChannelEmotes = emotes.getEmotesByCategories([EmoteCategories.BETTERTTV_CHANNEL]);
     const frankerfacezChannelEmotes = emotes.getEmotesByCategories([EmoteCategories.FRANKERFACEZ_CHANNEL]);
-    let currentChannelProfilePicture;
-    if (currentChannel != null && (betterttvChannelEmotes.length > 0 || frankerfacezChannelEmotes.length > 0)) {
+    let currentChannelProfilePicture = currentChannel?.avatar;
+    if (
+      getPlatform() === PlatformTypes.TWITCH &&
+      currentChannel != null &&
+      (betterttvChannelEmotes.length > 0 || frankerfacezChannelEmotes.length > 0)
+    ) {
       currentChannelProfilePicture = await twitch.getUserProfilePicture(currentChannel.id);
     }
 
+    const currentUser = getCurrentUser();
     const betterttvPersonalEmotes = emotes.getEmotesByCategories([EmoteCategories.BETTERTTV_PERSONAL]);
-    let currentUserProfilePicture;
-    if (betterttvPersonalEmotes.length > 0) {
+    let currentUserProfilePicture = currentUser?.avatar;
+    if (getPlatform() === PlatformTypes.TWITCH && betterttvPersonalEmotes.length > 0) {
       currentUserProfilePicture = await twitch.getUserProfilePicture();
     }
 
@@ -147,7 +155,7 @@ class EmoteMenuViewStore extends SafeEventEmitter {
     const frecents = createCategory(EmoteCategories.FRECENTS, null, 'Frequently Used', Icons.CLOCK, []);
     const favorites = createCategory(EmoteCategories.FAVORITES, null, 'Favorites', Icons.STAR, []);
 
-    const categories = [...providerCategories, ...twitchCategories, ...getEmojiCategories()];
+    const categories = [...providerCategories, ...platformCategories, ...getEmojiCategories()];
     const collection = [];
 
     for (const category of categories) {

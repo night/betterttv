@@ -6,7 +6,15 @@ import styles from './EmoteMenuPopover.module.css';
 
 const TOP_PADDING = 2;
 
-export default function EmoteMenuPopover({triggerRef, appendToChat, className, style, htmlElementRef, ...props}) {
+export default function EmoteMenuPopover({
+  triggerRef,
+  appendToChat,
+  className,
+  style,
+  htmlElementRef,
+  boundingQuerySelector,
+  ...props
+}) {
   const [hasTip, setTip] = useState(false);
 
   function handleSetTip(show) {
@@ -23,7 +31,7 @@ export default function EmoteMenuPopover({triggerRef, appendToChat, className, s
       return;
     }
 
-    const chatTextArea = document.querySelector('textarea[data-a-target="chat-input"]');
+    const chatTextArea = document.querySelector(boundingQuerySelector);
     if (chatTextArea == null) {
       return;
     }

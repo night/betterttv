@@ -1,0 +1,50 @@
+.button {
+  background-color: initial;
+  background-size: 20px;
+  border: none;
+}
+
+.hideEmoteMenuButton {
+  display: none;
+}
+
+/* TODO: find a way to use CSS variables instead (maybe in v5?) */
+:global {
+  .bttv-rs-popover {
+    font-family: 'Helvetica Neue', Helvetica, Arial;
+  }
+
+  .bttv-rs-nav .bttv-rs-nav-item-active > .bttv-rs-nav-item-content {
+    color: rgba(255, 255, 255, 1);
+
+    &:hover,
+    &:active,
+    &:focus {
+      color: rgba(255, 255, 255, 1);
+    }
+  }
+
+  .bttv-rs-nav-subtle.bttv-rs-nav-vertical .bttv-rs-nav-item > .bttv-rs-nav-item-content::before {
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+
+  .bttv-rs-input-group.bttv-rs-input-group-inside {
+    input:active,
+    input:focus,
+    input:hover {
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+  }
+
+  .bttv-rs-btn-link {
+    color: rgba(255, 255, 255, 0.8);
+
+    &:hover {
+      color: rgba(255, 255, 255, 1);
+    }
+  }
+
+  .bttv-rs-nav-item > .bttv-rs-nav-item-content {
+    text-overflow: unset;
+  }
+}

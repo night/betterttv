@@ -1,13 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import settings from '../../settings.js';
-import {SettingIds} from '../../constants.js';
-import EmoteMenuButton from './components/LegacyButton.jsx';
-import domObserver from '../../observers/dom.js';
+import settings from '../../../settings.js';
+import {SettingIds} from '../../../constants.js';
+import EmoteMenuButton from '../components/LegacyButton.jsx';
+import domObserver from '../../../observers/dom.js';
 import styles from './EmoteMenu.module.css';
-import {getReactInstance} from '../../utils/twitch.js';
-import {getCurrentUser} from '../../utils/user.js';
-import watcher from '../../watcher.js';
+import {getReactInstance} from '../../../utils/twitch.js';
+import {getCurrentUser} from '../../../utils/user.js';
+import watcher from '../../../watcher.js';
 
 const CHAT_TEXT_AREA = 'textarea[data-a-target="chat-input"]';
 
@@ -91,6 +91,8 @@ export default class EmoteMenuModule {
           onClick={() => togglePopover()}
           appendToChat={this.appendToChat}
           setPopoverOpen={setPopoverOpen}
+          className={styles.button}
+          boundingQuerySelector={'textarea[data-a-target="chat-input"]'}
         />,
         buttonContainer
       );
@@ -111,7 +113,7 @@ export default class EmoteMenuModule {
     legacyContainer.classList.toggle(styles.hideEmoteMenuButton, !visible || !emoteMenuEnabled);
   }
 
-  appendToChat(text, shouldFocus = true) {
+  appendToChat({code: text}, shouldFocus = true) {
     const element = document.querySelector(CHAT_TEXT_AREA);
 
     const {value: currentValue, selectionStart} = element;

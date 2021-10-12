@@ -22,8 +22,15 @@ class PersonalEmotes extends AbstractEmotes {
     socketClient.on('lookup_user', (s) => this.updatePersonalEmotes(s));
     watcher.on('load.chat', () => this.joinChannel());
     watcher.on('load.youtube', () => this.joinChannel());
+    watcher.on('load.user', () => this.broadcastMe());
     watcher.on('conversation.new', (threadId) => this.joinConversation(threadId));
     watcher.on('conversation.message', (threadId, $el, msgObject) => this.broadcastMeConversation(threadId, msgObject));
+    watcher.on('youtube.message', (element, {data}) => {
+      if (data.authorExternalChannelId !== getCurrentUser()?.id) {
+        return;
+      }
+      this.broadcastMe();
+    });
   }
 
   get category() {
@@ -33,7 +40,7 @@ class PersonalEmotes extends AbstractEmotes {
   getEmotes(user) {
     if (!user) return [];
 
-    const emotes = this.emotes.get(user.name);
+    const emotes = this.emotes.get(user.id);
     if (!emotes) return [];
 
     return [...emotes.values()];
@@ -42,7 +49,7 @@ class PersonalEmotes extends AbstractEmotes {
   getEligibleEmote(code, user) {
     if (!user) return null;
 
-    const emotes = this.emotes.get(user.name);
+    const emotes = this.emotes.get(user.id);
     if (!emotes) return null;
 
     return emotes.get(code);
@@ -75,6 +82,15 @@ class PersonalEmotes extends AbstractEmotes {
     socketClient.joinChannel('twitch', threadId);
   }
 
+  broadcastMe() {
+    const currentChannel = getCurrentChannel();
+    if (!currentChannel) {
+      return;
+    }
+
+    socketClient.broadcastMe(currentChannel.provider, currentChannel.id);
+  }
+
   broadcastMeConversation(threadId, msgObject) {
     const user = getCurrentUser();
     if (!user || !msgObject.from || msgObject.from.id !== user.id || !threadId) return;
@@ -82,13 +98,13 @@ class PersonalEmotes extends AbstractEmotes {
     socketClient.broadcastMe('twitch', threadId);
   }
 
-  updatePersonalEmotes({name, pro, emotes}) {
+  updatePersonalEmotes({providerId, pro, emotes}) {
     if (!pro) return;
 
-    let personalEmotes = this.emotes.get(name);
+    let personalEmotes = this.emotes.get(providerId);
     if (!personalEmotes) {
       personalEmotes = new Map();
-      this.emotes.set(name, personalEmotes);
+      this.emotes.set(providerId, personalEmotes);
     }
 
     let updated = false;
@@ -115,7 +131,7 @@ class PersonalEmotes extends AbstractEmotes {
     });
 
     if (updated) {
-      watcher.emit('emotes.updated', name);
+      watcher.emit('emotes.updated', providerId);
     }
   }
 }

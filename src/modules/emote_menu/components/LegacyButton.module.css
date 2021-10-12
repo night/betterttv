@@ -9,11 +9,5 @@
   opacity: 0.9;
   float: left;
   padding: 15px;
-  border-radius: var(--border-radius-medium);
   background-image: url(assets/icons/legacy_smile.svg) !important;
-
-  &:hover {
-    background-color: var(--color-background-button-text-hover);
-    color: var(--color-fill-button-icon-hover);
-  }
 }

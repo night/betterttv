@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import React, {useState, useRef, useEffect} from 'react';
+import classNames from 'classnames';
 import Whisper from 'rsuite/lib/Whisper/index.js';
 import EmoteMenuPopover from './EmoteMenuPopover.jsx';
 import {markTipAsSeen} from './Tip.jsx';
@@ -9,7 +10,7 @@ import keyCodes from '../../../utils/keycodes.js';
 import {isMac} from '../../../utils/window.js';
 import styles from './LegacyButton.module.css';
 
-export default function LegacyButton({appendToChat, setPopoverOpen, onClick}) {
+export default function LegacyButton({appendToChat, setPopoverOpen, onClick, className, boundingQuerySelector}) {
   const triggerRef = useRef(null);
   const [loaded, setLoaded] = useState(false);
 
@@ -51,9 +52,15 @@ export default function LegacyButton({appendToChat, setPopoverOpen, onClick}) {
       trigger="active"
       placement="auto"
       onClick={onClick}
-      speaker={<EmoteMenuPopover triggerRef={triggerRef} appendToChat={appendToChat} />}
+      speaker={
+        <EmoteMenuPopover
+          triggerRef={triggerRef}
+          appendToChat={appendToChat}
+          boundingQuerySelector={boundingQuerySelector}
+        />
+      }
       triggerRef={triggerRef}>
-      <button type="button" className={styles.button} />
+      <button type="button" className={classNames(styles.button, className)} />
     </Whisper>
   );
 }
