@@ -6,7 +6,9 @@ import Icons from '../components/Icons.jsx';
 import {EmoteCategories, EmoteProviders} from '../../../constants.js';
 import {getCurrentChannel} from '../../../utils/channel.js';
 
-function getCategoryForChannelId(channelId) {
+const DEFAULT_CATEGORY_NAME = 'Unknown';
+
+function getCategoryForChannelId(channelId, categoryName) {
   switch (channelId) {
     case 'UCkszU2WH9gy1mb0dV-11UJg':
     case 'UCzC5CNksIBaiT-NdMJjJNOQ':
@@ -14,14 +16,14 @@ function getCategoryForChannelId(channelId) {
         id: EmoteCategories.YOUTUBE_GLOBAL,
         provider: EmoteProviders.YOUTUBE,
         displayName: 'YouTube Global',
-        icon: Icons.TWITCH, // TODO: ???
+        icon: Icons.YOUTUBE,
       };
     default:
       return {
         id: EmoteCategories.YOUTUBE_CHANNEL(channelId),
         provider: EmoteProviders.YOUTUBE,
-        displayName: 'Unknown Channel', // TODO: ???
-        icon: Icons.TWITCH, // TODO: ???
+        displayName: categoryName,
+        icon: Icons.UNLOCK,
       };
   }
 }
@@ -32,37 +34,53 @@ export async function loadYouTubeEmotes() {
     return [];
   }
 
-  const customEmotes = window.ytInitialData?.continuationContents?.liveChatContinuation?.emojis;
-  if (customEmotes == null) {
+  const liveChatContinuation = window.ytInitialData?.continuationContents?.liveChatContinuation;
+  const youtubeCustomEmojis = liveChatContinuation?.emojis;
+  const youtubeEmojiCategories = liveChatContinuation?.actionPanel?.liveChatMessageInputRenderer?.pickers?.find(
+    (picker) => picker.emojiPickerRenderer != null
+  )?.emojiPickerRenderer?.categories;
+
+  if (youtubeCustomEmojis == null) {
     return [];
   }
 
-  const categories = {};
-  for (const emote of customEmotes) {
+  const categoryNames = {};
+  if (youtubeEmojiCategories != null) {
+    for (const {emojiPickerCategoryRenderer, emojiPickerUpsellCategoryRenderer} of youtubeEmojiCategories) {
+      const categoryRenderer = emojiPickerCategoryRenderer || emojiPickerUpsellCategoryRenderer;
+      if (categoryRenderer == null) {
+        continue;
+      }
+      categoryNames[categoryRenderer.categoryId] = categoryRenderer.title?.simpleText;
+    }
+  }
+
+  const categoryEmojis = {};
+  for (const emoji of youtubeCustomEmojis) {
     // TODO: support locked emotes
-    if (emote.isLocked) {
+    if (emoji.isLocked) {
       continue;
     }
-    const channelId = emote.emojiId.split('/')[0];
-    let category = categories[channelId];
+    const channelId = emoji.emojiId.split('/')[0];
+    let category = categoryEmojis[channelId];
     if (category == null) {
       category = [];
-      categories[channelId] = category;
+      categoryEmojis[channelId] = category;
     }
-    category.push(emote);
+    category.push(emoji);
   }
 
   const tempCategories = {};
-
-  for (const channelId of Object.keys(categories)) {
-    const category = getCategoryForChannelId(channelId);
-    const categoryEmotes = categories[channelId].map(
+  for (const categoryId of Object.keys(categoryEmojis)) {
+    const categoryName = categoryNames[categoryId] || DEFAULT_CATEGORY_NAME;
+    const category = getCategoryForChannelId(categoryId, categoryName);
+    const categoryEmotes = categoryEmojis[categoryId].map(
       ({emojiId: emoteId, image, shortcuts}) =>
         new Emote({
           id: emoteId,
           category,
-          channel: 'Unknown Channel', // TODO: ???
-          code: shortcuts[0],
+          channel: categoryName,
+          code: shortcuts.find((shortcut) => !shortcut.startsWith(':_')) || shortcuts[0],
           images: {
             '1x': (image.thumbnails[1] || image.thumbnails[0]).url,
           },

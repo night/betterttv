@@ -15,6 +15,7 @@ import settings from '../../../settings.js';
 import {SettingIds, EmoteProviders, EmoteCategories, PlatformTypes} from '../../../constants.js';
 import twitch from '../../../utils/twitch.js';
 import {getPlatform} from '../../../utils/window.js';
+import {getCurrentUser} from '../../../utils/user.js';
 
 const MAX_FRECENTS = 36;
 
@@ -81,14 +82,19 @@ class EmoteMenuViewStore extends SafeEventEmitter {
     const currentChannel = getCurrentChannel();
     const betterttvChannelEmotes = emotes.getEmotesByCategories([EmoteCategories.BETTERTTV_CHANNEL]);
     const frankerfacezChannelEmotes = emotes.getEmotesByCategories([EmoteCategories.FRANKERFACEZ_CHANNEL]);
-    let currentChannelProfilePicture;
-    if (currentChannel != null && (betterttvChannelEmotes.length > 0 || frankerfacezChannelEmotes.length > 0)) {
+    let currentChannelProfilePicture = currentChannel?.avatar;
+    if (
+      getPlatform() === PlatformTypes.TWITCH &&
+      currentChannel != null &&
+      (betterttvChannelEmotes.length > 0 || frankerfacezChannelEmotes.length > 0)
+    ) {
       currentChannelProfilePicture = await twitch.getUserProfilePicture(currentChannel.id);
     }
 
+    const currentUser = getCurrentUser();
     const betterttvPersonalEmotes = emotes.getEmotesByCategories([EmoteCategories.BETTERTTV_PERSONAL]);
-    let currentUserProfilePicture;
-    if (betterttvPersonalEmotes.length > 0) {
+    let currentUserProfilePicture = currentUser?.avatar;
+    if (getPlatform() === PlatformTypes.TWITCH && betterttvPersonalEmotes.length > 0) {
       currentUserProfilePicture = await twitch.getUserProfilePicture();
     }
 

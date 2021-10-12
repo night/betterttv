@@ -13,27 +13,20 @@ export default function youtubeWatcher(watcher) {
       const user =
         inputRenderer.__data.data.sendButton.buttonRenderer.serviceEndpoint.sendLiveChatMessageEndpoint.actions[0]
           .addLiveChatTextMessageFromTemplateAction.template.liveChatTextMessageRenderer;
+      const userThumbnails = user.authorPhoto.thumbnails;
       setCurrentUser({
         provider: 'youtube',
         id: user.authorExternalChannelId,
         name: user.authorExternalChannelId,
         displayName: user.authorName.simpleText,
+        avatar: (userThumbnails[1] || userThumbnails[0]).url,
       });
     } catch (_) {}
   }
 
   let channelId;
   function updateChannel({data}) {
-    // optimization: channel ids cannot change without page refresh
-    if (channelId != null) {
-      return;
-    }
-
-    const metaChannelId = document.querySelector('meta[itemprop="channelId"]');
     let newChannelId = channelId;
-    if (metaChannelId != null) {
-      newChannelId = metaChannelId.getAttribute('content');
-    }
 
     const liveChatItemContextMenuEndpointParams = data.contextMenuEndpoint?.liveChatItemContextMenuEndpoint?.params;
     if (liveChatItemContextMenuEndpointParams != null) {
@@ -44,7 +37,14 @@ export default function youtubeWatcher(watcher) {
       newChannelId = decodedParams.split("*'\n\u0018")[1].split('\u0012\u000b')[0];
     }
 
-    if (newChannelId === channelId) {
+    if (newChannelId == null) {
+      const metaChannelId = document.querySelector('meta[itemprop="channelId"]');
+      if (metaChannelId != null) {
+        newChannelId = metaChannelId.getAttribute('content');
+      }
+    }
+
+    if (newChannelId == null || newChannelId === channelId) {
       return;
     }
 
@@ -87,6 +87,8 @@ export default function youtubeWatcher(watcher) {
       useTargetNode: true,
     }
   );
+
+  domObserver.on('#live-chat-message-input', () => updateUser());
 
   watcher.on('emotes.updated', () => {
     for (const node of document.querySelectorAll('span#message')) {

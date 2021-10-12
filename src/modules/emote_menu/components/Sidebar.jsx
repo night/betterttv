@@ -45,7 +45,7 @@ export default function Sidebar({section, onChange, categories}) {
           return (
             <Whisper
               key={category.id}
-              placement="left"
+              placement="right"
               trigger="hover"
               delay={200}
               speaker={<Tooltip>{category.displayName}</Tooltip>}

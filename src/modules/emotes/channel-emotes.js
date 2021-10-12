@@ -1,6 +1,6 @@
 import watcher from '../../watcher.js';
 import cdn from '../../utils/cdn.js';
-import {getCurrentChannel} from '../../utils/channel.js';
+import {getCurrentChannel, setCurrentChannel} from '../../utils/channel.js';
 
 import AbstractEmotes from './abstract-emotes.js';
 import Emote from './emote.js';
@@ -23,11 +23,14 @@ class ChannelEmotes extends AbstractEmotes {
     return category;
   }
 
-  updateChannelEmotes({channelEmotes, sharedEmotes}) {
+  updateChannelEmotes({avatar, channelEmotes, sharedEmotes}) {
     this.emotes.clear();
 
     const emotes = channelEmotes.concat(sharedEmotes);
+
     const currentChannel = getCurrentChannel();
+    const updatedChannel = {...currentChannel, avatar};
+    setCurrentChannel(updatedChannel);
 
     emotes.forEach(({id, user, code, imageType}) =>
       this.emotes.set(
@@ -35,7 +38,7 @@ class ChannelEmotes extends AbstractEmotes {
         new Emote({
           id,
           category: this.category,
-          channel: user || currentChannel,
+          channel: user || updatedChannel,
           code,
           images: {
             '1x': cdn.emoteUrl(id, '1x'),
