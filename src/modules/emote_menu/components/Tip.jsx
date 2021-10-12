@@ -3,6 +3,7 @@ import Divider from 'rsuite/lib/Divider/index.js';
 import Button from 'rsuite/lib/Button/index.js';
 import {EmoteMenuTips} from '../../../constants.js';
 import storage from '../../../storage.js';
+import {isMac} from '../../../utils/window.js';
 import emoteMenuStore from '../stores/emote-menu-store.js';
 import Icons from './Icons.jsx';
 import styles from './Tip.module.css';
@@ -18,11 +19,14 @@ function getTipToDisplay() {
   }
 
   if (!tips[EmoteMenuTips.EMOTE_MENU_FAVORITE_EMOTE] && emoteMenuStore.favorites.length === 0) {
-    return [EmoteMenuTips.EMOTE_MENU_FAVORITE_EMOTE, 'Alt + Click Emotes to Favorite them'];
+    return [
+      EmoteMenuTips.EMOTE_MENU_FAVORITE_EMOTE,
+      `${isMac() ? 'Option + Click' : 'Alt + Click'} Emotes to Favorite`,
+    ];
   }
 
   if (!tips[EmoteMenuTips.EMOTE_MENU_HOTKEY]) {
-    return [EmoteMenuTips.EMOTE_MENU_HOTKEY, 'Press Alt + E to Toggle Emote Menu'];
+    return [EmoteMenuTips.EMOTE_MENU_HOTKEY, `${isMac() ? 'Control + E' : 'Alt + E'} to Toggle Emote Menu`];
   }
 
   return [];
