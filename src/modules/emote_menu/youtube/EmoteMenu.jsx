@@ -21,7 +21,7 @@ function setPopoverOpen({current}) {
   togglePopover = () => {
     if (current.state.isOverlayShown) {
       current.close();
-    } else {
+    } else if (document.querySelector(LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR) != null) {
       current.open();
     }
   };
