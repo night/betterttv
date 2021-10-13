@@ -24,7 +24,10 @@ function getCategoryForChannelId(channelId, categoryName) {
         id: EmoteCategories.YOUTUBE_CHANNEL(channelId),
         provider: EmoteProviders.YOUTUBE,
         displayName: categoryName,
-        icon: currentChannel?.id === channelId ? Icons.IMAGE(currentChannel.avatar, categoryName) : Icons.UNLOCK,
+        icon:
+          currentChannel?.id === channelId && currentChannel?.avatar != null
+            ? Icons.IMAGE(currentChannel.avatar, categoryName)
+            : Icons.UNLOCK,
       };
     }
   }
