@@ -48,12 +48,16 @@ function MenuPopover({options, onSelect, ...rest}) {
 }
 
 function CustomWhisper(props) {
-  const trigger = useRef(null);
+  const triggerRef = useRef(null);
 
   function handleSelectMenu(eventKey) {
     const {onChange, rowData, dataKey} = props;
     onChange(rowData.id, dataKey, eventKey);
-    trigger.current.hide();
+
+    const currentTriggerRef = triggerRef.current;
+    if (currentTriggerRef != null) {
+      currentTriggerRef.hide();
+    }
   }
 
   const {children, options} = props;
@@ -62,7 +66,7 @@ function CustomWhisper(props) {
     <Whisper
       placement="autoVerticalStart"
       trigger="click"
-      triggerRef={trigger}
+      triggerRef={triggerRef}
       speaker={<MenuPopover options={options} onSelect={handleSelectMenu} />}>
       {children}
     </Whisper>
@@ -74,9 +78,11 @@ function EditCell({rowData, dataKey, onChange, onMouseOver, onMouseLeave, onClic
 
   useEffect(() => {
     function handleClickOutside(event) {
-      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
-        onClick(rowData.id);
+      const currentWrapperRef = wrapperRef.current;
+      if (currentWrapperRef == null || currentWrapperRef.contains(event.target)) {
+        return;
       }
+      onClick(rowData.id);
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -87,6 +93,9 @@ function EditCell({rowData, dataKey, onChange, onMouseOver, onMouseLeave, onClic
       onPaste(event, rowData.id, dataKey);
     }
     const currentWrapperRef = wrapperRef.current;
+    if (currentWrapperRef == null) {
+      return null;
+    }
     currentWrapperRef.addEventListener('paste', handlePasteCallback);
     return () => currentWrapperRef.removeEventListener('paste', handlePasteCallback);
   }, [wrapperRef.current]);

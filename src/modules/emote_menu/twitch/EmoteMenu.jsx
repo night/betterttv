@@ -17,12 +17,15 @@ const LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR =
 const CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR = '.chat-input div[data-test-selector="chat-input-buttons-container"]';
 
 let togglePopover;
-function setPopoverOpen({current}) {
+function setPopoverOpen({current: currentRef}) {
+  if (currentRef == null) {
+    return;
+  }
   togglePopover = () => {
-    if (current.state.isOverlayShown) {
-      current.close();
+    if (currentRef.state.isOverlayShown) {
+      currentRef.close();
     } else if (document.querySelector(LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR) != null) {
-      current.open();
+      currentRef.open();
     }
   };
 }

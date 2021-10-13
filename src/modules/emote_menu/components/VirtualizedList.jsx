@@ -19,7 +19,11 @@ function VirtualizedList(
   const wrapperRef = ref || useRef(null);
 
   const isInViewport = useCallback(() => {
-    const {scrollTop} = wrapperRef.current;
+    const currentWrapperRef = wrapperRef.current;
+    if (currentWrapperRef == null) {
+      return;
+    }
+    const {scrollTop} = currentWrapperRef;
     const scrollBottom = scrollTop + windowHeight;
 
     const startIndex = Math.floor(scrollTop / rowHeight);
@@ -52,13 +56,14 @@ function VirtualizedList(
   }, [totalRows, rowHeight, windowHeight, stickyRows]);
 
   useEffect(() => {
-    wrapperRef.current.addEventListener('scroll', isInViewport);
+    const currentWrapperRef = wrapperRef.current;
+    if (currentWrapperRef == null) {
+      return null;
+    }
+    currentWrapperRef.addEventListener('scroll', isInViewport);
     isInViewport();
     return () => {
-      if (wrapperRef.current == null) {
-        return;
-      }
-      wrapperRef.current.removeEventListener('scroll', isInViewport);
+      currentWrapperRef.removeEventListener('scroll', isInViewport);
     };
   }, [isInViewport]);
 

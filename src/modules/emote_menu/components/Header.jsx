@@ -11,7 +11,11 @@ function Header({value, onChange, onHide, selected, ...props}) {
   const searchInputRef = useRef(null);
 
   useEffect(() => {
-    searchInputRef.current.focus();
+    const currentSearchInputRef = searchInputRef.current;
+    if (currentSearchInputRef == null) {
+      return;
+    }
+    currentSearchInputRef.focus();
   }, []);
 
   return (

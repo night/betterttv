@@ -68,10 +68,13 @@ const BrowseEmotes = React.forwardRef(
     });
 
     useEffect(() => {
-      if (!section.scrollTo) return;
+      const currentRef = ref.current;
+      if (!section.scrollTo || currentRef == null) {
+        return;
+      }
       const index = emoteMenuViewStore.getCategoryIndexById(section.eventKey);
       if (index != null) {
-        ref.current.scrollTo(0, index * RowHeight + 1); // + 1 to be inside the section
+        currentRef.scrollTo(0, index * RowHeight + 1); // + 1 to be inside the section
       }
     }, [section]);
 
@@ -199,19 +202,20 @@ export default function Emotes(props) {
   }, []);
 
   useEffect(() => {
-    if (navigationMode !== NavigationModeTypes.ARROW_KEYS) {
+    const currentRef = wrapperRef.current;
+    if (navigationMode !== NavigationModeTypes.ARROW_KEYS || currentRef == null) {
       return;
     }
 
     const depth = coords.y * RowHeight;
-    const {scrollTop} = wrapperRef.current;
+    const {scrollTop} = currentRef;
 
     if (depth < scrollTop + RowHeight) {
-      wrapperRef.current.scrollTo(0, isSearch ? depth : depth - RowHeight);
+      currentRef.scrollTo(0, isSearch ? depth : depth - RowHeight);
     }
 
     if (depth + RowHeight >= scrollTop + WindowHeight) {
-      wrapperRef.current.scrollTo(0, depth + RowHeight - WindowHeight);
+      currentRef.scrollTo(0, depth + RowHeight - WindowHeight);
     }
   }, [coords]);
 

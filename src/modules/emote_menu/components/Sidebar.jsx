@@ -12,9 +12,10 @@ export default function Sidebar({section, onChange, categories}) {
   const containerRef = useRef(null);
 
   useEffect(() => {
-    if (section.eventKey == null) return;
+    const currentRef = containerRef.current;
+    if (section.eventKey == null || currentRef == null) return;
 
-    const top = containerRef.current.scrollTop;
+    const top = currentRef.scrollTop;
     const index = categories.findIndex((category) => category.id === section.eventKey);
     const depth = index * ITEM_HEIGHT;
 
@@ -29,7 +30,7 @@ export default function Sidebar({section, onChange, categories}) {
       return;
     }
 
-    containerRef.current.scrollTo({
+    currentRef.scrollTo({
       top: newTop,
       left: 0,
       behavior: 'smooth',

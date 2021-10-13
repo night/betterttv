@@ -17,12 +17,15 @@ const CHAT_BUTTON_CONTAINER_SELECTOR = '#picker-buttons';
 const NATIVE_EMOTE_MENU_BUTTON_CONTAINER_SELECTOR = '.yt-live-chat-icon-toggle-button-renderer';
 
 let togglePopover;
-function setPopoverOpen({current}) {
+function setPopoverOpen({current: currentRef}) {
   togglePopover = () => {
-    if (current.state.isOverlayShown) {
-      current.close();
+    if (currentRef == null) {
+      return;
+    }
+    if (currentRef.state.isOverlayShown) {
+      currentRef.close();
     } else if (document.querySelector(LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR) != null) {
-      current.open();
+      currentRef.open();
     }
   };
 }

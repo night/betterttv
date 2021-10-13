@@ -9,12 +9,13 @@ export default function Emote({emote, onClick, onMouseOver, active}) {
 
   function handleLoad() {
     window.requestAnimationFrame(() => {
-      if (imageRef.current == null) {
+      const currentImageRef = imageRef.current;
+      if (currentImageRef == null) {
         return;
       }
 
       loadingRef.current = false;
-      imageRef.current.classList.remove(styles.placeholder);
+      currentImageRef.classList.remove(styles.placeholder);
     });
   }
 

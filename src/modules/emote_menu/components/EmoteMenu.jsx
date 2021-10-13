@@ -26,7 +26,13 @@ export default function EmoteMenu({triggerRef, appendToChat, onSetTip}) {
     scrollTo: false,
   });
 
-  const onHide = useCallback(() => triggerRef.current.close(), [triggerRef]);
+  const onHide = useCallback(() => {
+    const currentTriggerRef = triggerRef.current;
+    if (currentTriggerRef == null) {
+      return;
+    }
+    currentTriggerRef.close();
+  }, [triggerRef]);
 
   const handleClick = useCallback(
     (emote) => {

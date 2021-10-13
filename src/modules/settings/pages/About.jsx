@@ -46,7 +46,7 @@ function backupFile() {
 }
 
 function About({onHide}) {
-  const fileImport = useRef(null);
+  const fileImportRef = useRef(null);
   const [importing, setImporting] = useState(false);
   const [resetting, setResetting] = useState(false);
 
@@ -188,11 +188,17 @@ function About({onHide}) {
                 }>
                 Backup Settings
               </IconButton>
-              <input type="file" hidden ref={fileImport} onChange={({target}) => importFile(target)} />
+              <input type="file" hidden ref={fileImportRef} onChange={({target}) => importFile(target)} />
               <IconButton
                 className={styles.button}
                 appearance="primary"
-                onClick={() => fileImport.current.click()}
+                onClick={() => {
+                  const currentFileImportRef = fileImportRef.current;
+                  if (currentFileImportRef == null) {
+                    return;
+                  }
+                  currentFileImportRef.click();
+                }}
                 disabled={resetting}
                 loading={importing}
                 icon={
