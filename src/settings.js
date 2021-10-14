@@ -15,11 +15,13 @@ class Settings extends SafeEventEmitter {
       settings = null;
     }
 
+    const {version} = settings;
+
     if (settings === null) {
       this.importLegacySettings();
     }
 
-    this.upgradeFlags();
+    this.upgradeFlags(version);
   }
 
   get(id) {
@@ -51,10 +53,16 @@ class Settings extends SafeEventEmitter {
     return value;
   }
 
-  upgradeFlags() {
+  upgradeFlags(version) {
     for (const flagSettingId of FlagSettings) {
       const defaultValue = DefaultValues[flagSettingId];
       const defaultFlags = defaultValue[0];
+
+      let inferredDefaultFlags = defaultFlags;
+      // temporarily handle changed flags predating the upgrade system
+      if (flagSettingId === SettingIds.CHAT) {
+        inferredDefaultFlags = setFlag(inferredDefaultFlags, ChatFlags.CHAT_MESSAGE_HISTORY, false);
+      }
 
       // load defaults if somehow the data is null-y
       const oldValue = settings[flagSettingId];
@@ -64,17 +72,25 @@ class Settings extends SafeEventEmitter {
 
       // upgrade flags stored without changedBits
       else if (typeof oldValue === 'number') {
-        let inferredDefaultFlags = defaultFlags;
-        // temporarily handle changed flags predating the upgrade system
-        if (flagSettingId === SettingIds.CHAT) {
-          inferredDefaultFlags = setFlag(inferredDefaultFlags, ChatFlags.CHAT_MESSAGE_HISTORY, false);
-        }
-
         this.set(flagSettingId, [oldValue, getChangedFlags(inferredDefaultFlags, oldValue)]);
       }
 
+      let [oldFlags, oldChangedBits] = settings[flagSettingId];
+
+      // fix flags which were improperly defaulted in 7.4.11
+      if (
+        version === '7.4.11' &&
+        ((oldFlags === 0 && oldChangedBits === defaultFlags) ||
+          (flagSettingId === SettingIds.CHAT &&
+            oldFlags === ChatFlags.CHAT_MESSAGE_HISTORY &&
+            (oldChangedBits === defaultFlags || oldChangedBits === inferredDefaultFlags)))
+      ) {
+        oldFlags = defaultFlags;
+        oldChangedBits = 0;
+        this.set(flagSettingId, defaultValue);
+      }
+
       // upgrade flags where default bits changed
-      const [oldFlags, oldChangedBits] = settings[flagSettingId];
       const flagsToAdd = setFlag(defaultFlags, oldChangedBits, false);
       if (flagsToAdd > 0) {
         this.set(flagSettingId, setFlag(oldFlags, flagsToAdd, true));

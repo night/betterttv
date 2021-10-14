@@ -72,7 +72,7 @@ export function deserializeLegacy(settingId) {
       let offlineFollowedChannels = storage.get(LegacySettingIds.HIDE_OFFLINE_FOLLOWED_CHANNELS);
       let autoExpand = storage.get(LegacySettingIds.AUTO_EXPAND_CHANNELS);
 
-      const defaultValue = DefaultValues[settingId];
+      const defaultValue = DefaultValues[settingId][0];
 
       friends = friends == null ? hasFlag(defaultValue, SidebarFlags.FRIENDS) : !friends;
 
@@ -105,7 +105,7 @@ export function deserializeLegacy(settingId) {
       let bttvGif = storage.get(LegacySettingIds.BTTV_GIF_EMOTES);
       let ffzEmotes = storage.get(LegacySettingIds.FFZ_EMOTES);
 
-      const defaultValue = DefaultValues[settingId];
+      const defaultValue = DefaultValues[settingId][0];
 
       if (bttvEmotes == null) bttvEmotes = hasFlag(defaultValue, EmoteTypeFlags.BTTV_EMOTES);
       if (bttvGif == null) bttvGif = hasFlag(defaultValue, EmoteTypeFlags.BTTV_GIF_EMOTES);
@@ -128,7 +128,7 @@ export function deserializeLegacy(settingId) {
       let subNotice = storage.get(LegacySettingIds.HIDE_SUBSCRIPTION_NOTICES);
       let communityHighlight = storage.get(LegacySettingIds.HIDE_COMMUNITY_HIGHLIGHTS);
 
-      const defaultValue = DefaultValues[settingId];
+      const defaultValue = DefaultValues[settingId][0];
 
       chatReplies = chatReplies == null ? hasFlag(defaultValue, ChatFlags.CHAT_REPLIES) : !chatReplies;
       bits = bits == null ? hasFlag(defaultValue, ChatFlags.BITS) : !bits;
@@ -155,7 +155,7 @@ export function deserializeLegacy(settingId) {
       let autoClaim = storage.get(LegacySettingIds.AUTO_CLAIM_BONUS_CHANNEL_POINTS);
       let messageHighlights = storage.get(LegacySettingIds.DISABLE_CHANNEL_POINTS_MESSAGE_HIGHLIGHTS);
 
-      const defaultValue = DefaultValues[settingId];
+      const defaultValue = DefaultValues[settingId][0];
 
       channelPoints = channelPoints == null ? hasFlag(defaultValue, ChannelPointsFlags.CHANNEL_POINTS) : !channelPoints;
       if (autoClaim == null) autoClaim = hasFlag(defaultValue, ChannelPointsFlags.AUTO_CLAIM);
@@ -176,7 +176,7 @@ export function deserializeLegacy(settingId) {
       let hostMode = storage.get(LegacySettingIds.DISABLE_HOST_MODE);
       let vodAutoplay = storage.get(LegacySettingIds.DISABLE_VOD_RECOMMENDATION_AUTOPLAY);
 
-      const defaultValue = DefaultValues[settingId];
+      const defaultValue = DefaultValues[settingId][0];
 
       fpVideo = fpVideo == null ? hasFlag(defaultValue, AutoPlayFlags.FP_VIDEO) : !fpVideo;
       hostMode = hostMode == null ? hasFlag(defaultValue, AutoPlayFlags.HOST_MODE) : !hostMode;
@@ -197,7 +197,7 @@ export function deserializeLegacy(settingId) {
       let localizedNames = storage.get(LegacySettingIds.DISABLE_LOCALIZED_NAMES);
       let readableColors = storage.get(LegacySettingIds.READABLE_USERNAME_COLORS);
 
-      const defaultValue = DefaultValues[settingId];
+      const defaultValue = DefaultValues[settingId][0];
 
       usernameColors = usernameColors == null ? hasFlag(defaultValue, UsernameFlags.COLORS) : !usernameColors;
       localizedNames = localizedNames == null ? hasFlag(defaultValue, UsernameFlags.LOCALIZED) : !localizedNames;
