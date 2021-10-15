@@ -15,13 +15,13 @@ class Settings extends SafeEventEmitter {
       settings = null;
     }
 
-    const {version} = settings;
+    const storedVersion = settings?.version;
 
     if (settings === null) {
       this.importLegacySettings();
     }
 
-    this.upgradeFlags(version);
+    this.upgradeFlags(storedVersion);
   }
 
   get(id) {
