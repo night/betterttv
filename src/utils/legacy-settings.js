@@ -5,15 +5,14 @@ import {
   ChannelPointsFlags,
   ChatFlags,
   ChatLayoutTypes,
-  DefaultValues,
+  SettingDefaultValues,
   DeletedMessageTypes,
   EmoteTypeFlags,
   SettingIds,
   SidebarFlags,
   UsernameFlags,
-  FlagSettings,
 } from '../constants.js';
-import {setFlag, getChangedFlags} from './flags.js';
+import {setFlag} from './flags.js';
 import {serializeKeywords} from './keywords.js';
 
 const LegacySettingIds = {
@@ -142,7 +141,15 @@ function deserializeSettingForLegacy(data, settingId) {
       flags = setFlag(flags, SidebarFlags.FEATURED_CHANNELS, !hideFeaturedChannels);
       flags = setFlag(flags, SidebarFlags.RECOMMENDED_FRIENDS, !hideRecommendedFriends);
       flags = setFlag(flags, SidebarFlags.OFFLINE_FOLLOWED_CHANNELS, !hideOfflineFollowedChannels);
-      return setFlag(flags, SidebarFlags.AUTO_EXPAND_CHANNELS, autoExpand);
+      flags = setFlag(flags, SidebarFlags.AUTO_EXPAND_CHANNELS, autoExpand);
+      return [
+        flags,
+        SidebarFlags.FRIENDS |
+          SidebarFlags.FEATURED_CHANNELS |
+          SidebarFlags.RECOMMENDED_FRIENDS |
+          SidebarFlags.OFFLINE_FOLLOWED_CHANNELS |
+          SidebarFlags.AUTO_EXPAND_CHANNELS,
+      ];
     }
     case SettingIds.EMOTES: {
       const bttvEmotes = data[LegacySettingIds.BTTV_EMOTES];
@@ -151,7 +158,8 @@ function deserializeSettingForLegacy(data, settingId) {
 
       let flags = setFlag(0, EmoteTypeFlags.BTTV_EMOTES, bttvEmotes != null ? bttvEmotes : true);
       flags = setFlag(flags, EmoteTypeFlags.BTTV_GIF_EMOTES, bttvGifEmotes != null ? bttvGifEmotes : true);
-      return setFlag(flags, EmoteTypeFlags.FFZ_EMOTES, ffzEmotes != null ? ffzEmotes : true);
+      flags = setFlag(flags, EmoteTypeFlags.FFZ_EMOTES, ffzEmotes != null ? ffzEmotes : true);
+      return [flags, EmoteTypeFlags.BTTV_EMOTES | EmoteTypeFlags.BTTV_GIF_EMOTES | EmoteTypeFlags.FFZ_EMOTES];
     }
     case SettingIds.CHAT: {
       const hideChatReplies = data[LegacySettingIds.HIDE_CHAT_REPLIES] || false;
@@ -166,7 +174,16 @@ function deserializeSettingForLegacy(data, settingId) {
       flags = setFlag(flags, ChatFlags.CHAT_CLIPS, !hideChatClips);
       flags = setFlag(flags, ChatFlags.VIEWER_GREETING, !hideNewViewerGreeting);
       flags = setFlag(flags, ChatFlags.SUB_NOTICE, !hideSubscriptionNotices);
-      return setFlag(flags, ChatFlags.COMMUNITY_HIGHLIGHTS, !hideCommunityHighlights);
+      flags = setFlag(flags, ChatFlags.COMMUNITY_HIGHLIGHTS, !hideCommunityHighlights);
+      return [
+        flags,
+        ChatFlags.CHAT_REPLIES |
+          ChatFlags.BITS |
+          ChatFlags.CHAT_CLIPS |
+          ChatFlags.VIEWER_GREETING |
+          ChatFlags.SUB_NOTICE |
+          ChatFlags.COMMUNITY_HIGHLIGHTS,
+      ];
     }
     case SettingIds.CHANNEL_POINTS: {
       const hideChannelPoints = data[LegacySettingIds.HIDE_CHANNEL_POINTS] || false;
@@ -176,7 +193,11 @@ function deserializeSettingForLegacy(data, settingId) {
 
       let flags = setFlag(0, ChannelPointsFlags.CHANNEL_POINTS, !hideChannelPoints);
       flags = setFlag(flags, ChannelPointsFlags.AUTO_CLAIM, autoClaimBonusChannelPoints);
-      return setFlag(flags, ChannelPointsFlags.MESSAGE_HIGHLIGHTS, !disableChannelPointsMessageHighlights);
+      flags = setFlag(flags, ChannelPointsFlags.MESSAGE_HIGHLIGHTS, !disableChannelPointsMessageHighlights);
+      return [
+        flags,
+        ChannelPointsFlags.CHANNEL_POINTS | ChannelPointsFlags.AUTO_CLAIM | ChannelPointsFlags.MESSAGE_HIGHLIGHTS,
+      ];
     }
     case SettingIds.AUTO_PLAY: {
       const disableFrontPageVideo = data[LegacySettingIds.DISABLE_FP_VIDEO] || false;
@@ -185,7 +206,8 @@ function deserializeSettingForLegacy(data, settingId) {
 
       let flags = setFlag(0, AutoPlayFlags.FP_VIDEO, !disableFrontPageVideo);
       flags = setFlag(flags, AutoPlayFlags.HOST_MODE, !disableHostMode);
-      return setFlag(flags, AutoPlayFlags.VOD_RECOMMENDATION_AUTOPLAY, !disableVodRecommendationAutoplay);
+      flags = setFlag(flags, AutoPlayFlags.VOD_RECOMMENDATION_AUTOPLAY, !disableVodRecommendationAutoplay);
+      return [flags, AutoPlayFlags.FP_VIDEO | AutoPlayFlags.HOST_MODE | AutoPlayFlags.VOD_RECOMMENDATION_AUTOPLAY];
     }
     case SettingIds.USERNAMES: {
       const disableUsernameColors = data[LegacySettingIds.DISABLE_USERNAME_COLORS] || false;
@@ -194,7 +216,8 @@ function deserializeSettingForLegacy(data, settingId) {
 
       let flags = setFlag(0, UsernameFlags.COLORS, !disableUsernameColors);
       flags = setFlag(flags, UsernameFlags.LOCALIZED, !disableLocalizedNames);
-      return setFlag(flags, UsernameFlags.READABLE, readableUsernameColors != null ? readableUsernameColors : true);
+      flags = setFlag(flags, UsernameFlags.READABLE, readableUsernameColors != null ? readableUsernameColors : true);
+      return [flags, UsernameFlags.COLORS | UsernameFlags.LOCALIZED | UsernameFlags.READABLE];
     }
     case SettingIds.CHAT_LAYOUT: {
       return data[LegacySettingIds.LEFT_SIDE_CHAT] === true ? ChatLayoutTypes.LEFT : ChatLayoutTypes.RIGHT;
@@ -224,7 +247,7 @@ function deserializeSettingForLegacy(data, settingId) {
 }
 
 export function loadLegacySettings(data) {
-  const settings = {...DefaultValues};
+  const settings = {...SettingDefaultValues};
 
   for (const settingId of Object.values(SettingIds)) {
     const storedValue = deserializeSettingForLegacy(data, settingId);
@@ -232,15 +255,7 @@ export function loadLegacySettings(data) {
       continue;
     }
 
-    if (FlagSettings.includes(settingId)) {
-      const [oldFlags, oldChangedBits] = settings[settingId];
-      settings[settingId] = [
-        setFlag(oldFlags, storedValue, true),
-        oldChangedBits | getChangedFlags(oldFlags, storedValue),
-      ];
-    } else {
-      settings[settingId] = storedValue;
-    }
+    settings[settingId] = storedValue;
   }
 
   return settings;

@@ -9,13 +9,12 @@ import {faUpload} from '@fortawesome/free-solid-svg-icons/faUpload';
 import {faRedo} from '@fortawesome/free-solid-svg-icons/faRedo';
 import {faDownload} from '@fortawesome/free-solid-svg-icons/faDownload';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import settings, {SETTINGS_STORAGE_KEY} from '../../../settings.js';
+import {SETTINGS_STORAGE_KEY} from '../../../settings.js';
 import storage from '../../../storage.js';
 import debug from '../../../utils/debug.js';
 import {loadLegacySettings} from '../../../utils/legacy-settings.js';
 import header from '../styles/header.module.css';
 import styles from '../styles/about.module.css';
-import {DefaultValues, SettingIds} from '../../../constants.js';
 import CloseButton from '../components/CloseButton.jsx';
 
 function loadJSON(string) {
@@ -60,25 +59,24 @@ function About({onHide}) {
     }
 
     let importLegacy = true;
+    const sanitizedData = {};
     for (const key of Object.keys(data)) {
       const nonPrefixedKey = key.split('bttv_')[1];
       storage.set(nonPrefixedKey, data[key]);
+      sanitizedData[nonPrefixedKey] = data[key];
       if (nonPrefixedKey === SETTINGS_STORAGE_KEY) {
         importLegacy = false;
       }
     }
     if (importLegacy) {
-      storage.set(SETTINGS_STORAGE_KEY, loadLegacySettings(data));
+      storage.set(SETTINGS_STORAGE_KEY, loadLegacySettings(sanitizedData));
     }
     setTimeout(() => window.location.reload(), 1000);
   }
 
   function resetDefault() {
     setResetting(true);
-
-    for (const id of Object.values(SettingIds)) {
-      settings.set(id, DefaultValues[id]);
-    }
+    storage.set(SETTINGS_STORAGE_KEY, null);
     setTimeout(() => window.location.reload(), 1000);
   }
 

@@ -1,6 +1,6 @@
 import SafeEventEmitter from './utils/safe-event-emitter.js';
 import storage from './storage.js';
-import {SettingIds, FlagSettings, DefaultValues, ChatFlags} from './constants.js';
+import {SettingIds, FlagSettings, SettingDefaultValues, ChatFlags} from './constants.js';
 import {getChangedFlags, setFlag} from './utils/flags.js';
 
 export const SETTINGS_STORAGE_KEY = 'settings';
@@ -11,18 +11,13 @@ class Settings extends SafeEventEmitter {
     super();
     settings = storage.get(SETTINGS_STORAGE_KEY);
 
-    if (settings != null && settings.version == null) {
-      settings = null;
-    }
-
-    const storedVersion = settings?.version;
-
-    if (settings === null) {
-      settings = {...DefaultValues};
+    if (settings == null || (settings != null && settings.version == null)) {
+      const oldSettings = settings != null ? settings : SettingDefaultValues;
+      settings = {...oldSettings, version: process.env.EXT_VER};
       storage.set(SETTINGS_STORAGE_KEY, settings);
     }
 
-    this.upgradeFlags(storedVersion);
+    this.upgradeFlags(settings.version);
   }
 
   get(id) {
@@ -56,7 +51,7 @@ class Settings extends SafeEventEmitter {
 
   upgradeFlags(version) {
     for (const flagSettingId of FlagSettings) {
-      const defaultValue = DefaultValues[flagSettingId];
+      const defaultValue = SettingDefaultValues[flagSettingId];
       const defaultFlags = defaultValue[0];
 
       let inferredDefaultFlags = defaultFlags;
