@@ -1,15 +1,15 @@
 import SafeEventEmitter from './utils/safe-event-emitter.js';
 import storage from './storage.js';
 import {SettingIds, FlagSettings, DefaultValues, ChatFlags} from './constants.js';
-import {deserializeLegacy} from './utils/legacy-settings.js';
 import {getChangedFlags, setFlag} from './utils/flags.js';
 
+export const SETTINGS_STORAGE_KEY = 'settings';
 let settings = {};
 
 class Settings extends SafeEventEmitter {
   constructor() {
     super();
-    settings = storage.get('settings');
+    settings = storage.get(SETTINGS_STORAGE_KEY);
 
     if (settings != null && settings.version == null) {
       settings = null;
@@ -18,7 +18,8 @@ class Settings extends SafeEventEmitter {
     const storedVersion = settings?.version;
 
     if (settings === null) {
-      this.importLegacySettings();
+      settings = {...DefaultValues};
+      storage.set(SETTINGS_STORAGE_KEY, settings);
     }
 
     this.upgradeFlags(storedVersion);
@@ -46,7 +47,7 @@ class Settings extends SafeEventEmitter {
     }
 
     const updatedSettings = {...settings, [id]: storageValue, version: process.env.EXT_VER};
-    storage.set('settings', updatedSettings);
+    storage.set(SETTINGS_STORAGE_KEY, updatedSettings);
     settings = updatedSettings;
 
     if (emit) this.emit(`changed.${id}`, value);
@@ -96,17 +97,6 @@ class Settings extends SafeEventEmitter {
         this.set(flagSettingId, setFlag(oldFlags, flagsToAdd, true));
       }
     }
-  }
-
-  importLegacySettings() {
-    const updatedSettings = {};
-    for (const id of Object.values(SettingIds)) {
-      const [settingId, serializedValue] = deserializeLegacy(id);
-      updatedSettings[settingId] = serializedValue;
-    }
-
-    storage.set('settings', updatedSettings);
-    settings = updatedSettings;
   }
 }
 

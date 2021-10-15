@@ -9,15 +9,16 @@ import {faUpload} from '@fortawesome/free-solid-svg-icons/faUpload';
 import {faRedo} from '@fortawesome/free-solid-svg-icons/faRedo';
 import {faDownload} from '@fortawesome/free-solid-svg-icons/faDownload';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import settings from '../../../settings.js';
+import settings, {SETTINGS_STORAGE_KEY} from '../../../settings.js';
 import storage from '../../../storage.js';
 import debug from '../../../utils/debug.js';
+import {loadLegacySettings} from '../../../utils/legacy-settings.js';
 import header from '../styles/header.module.css';
 import styles from '../styles/about.module.css';
 import {DefaultValues, SettingIds} from '../../../constants.js';
 import CloseButton from '../components/CloseButton.jsx';
 
-function isJSON(string) {
+function loadJSON(string) {
   let json = null;
   try {
     json = JSON.parse(string);
@@ -53,23 +54,21 @@ function About({onHide}) {
   async function importFile(target) {
     setImporting(true);
 
-    const data = await getDataURLFromUpload(target);
+    const data = loadJSON(await getDataURLFromUpload(target));
     if (data == null) {
       return;
     }
 
-    const settingsToImport = isJSON(data);
-    const keysToImport = Object.keys(settingsToImport);
     let importLegacy = true;
-    for (const key of keysToImport) {
+    for (const key of Object.keys(data)) {
       const nonPrefixedKey = key.split('bttv_')[1];
-      storage.set(nonPrefixedKey, settingsToImport[key]);
-      if (nonPrefixedKey === 'settings') {
+      storage.set(nonPrefixedKey, data[key]);
+      if (nonPrefixedKey === SETTINGS_STORAGE_KEY) {
         importLegacy = false;
       }
     }
     if (importLegacy) {
-      settings.importLegacySettings();
+      storage.set(SETTINGS_STORAGE_KEY, loadLegacySettings(data));
     }
     setTimeout(() => window.location.reload(), 1000);
   }
