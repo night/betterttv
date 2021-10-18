@@ -1,10 +1,7 @@
 import cookies from 'cookies-js';
-import SafeEventEmitter from './utils/safe-event-emitter.js';
 
-class Storage extends SafeEventEmitter {
+class Storage {
   constructor() {
-    super();
-
     this._cache = {};
     this._prefix = 'bttv_';
     this._localStorageSupport = true;
@@ -49,7 +46,7 @@ class Storage extends SafeEventEmitter {
     }
   }
 
-  set(id, value, prefix = this._prefix, emit = true, cache = true, temporary = false) {
+  set(id, value, prefix = this._prefix, cache = true, temporary = false) {
     let storageId = id;
     if (prefix) {
       storageId = prefix + id;
@@ -57,10 +54,6 @@ class Storage extends SafeEventEmitter {
 
     if (cache || temporary) {
       this._cache[storageId] = value;
-    }
-
-    if (emit) {
-      this.emit(`changed.${id}`, value);
     }
 
     if (temporary) return;

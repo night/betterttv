@@ -1,11 +1,10 @@
 import {EventEmitter} from 'events';
+import debug from './debug.js';
 
-async function newListener(listener, ...args) {
+function newListener(listener, ...args) {
   try {
     listener(...args);
   } catch (e) {
-    // eslint-disable-next-line import/no-cycle
-    const {default: debug} = await import('./debug.js');
     debug.error('Failed executing listener callback', e.stack);
   }
 }
