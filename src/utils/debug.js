@@ -1,8 +1,9 @@
+import storage from '../storage.js';
+
 const VERSION = process.env.EXT_VER;
 const {console} = window;
 
-async function log(type, ...args) {
-  const {default: storage} = await import('../storage.js');
+function log(type, ...args) {
   if (!console || !storage.get('consoleLog')) return;
   console[type].apply(console, ['BTTV:', ...args]);
 }

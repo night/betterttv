@@ -19,15 +19,6 @@ function encodeFontFamily(fontFamily) {
   return GENERIC_FONT_FAMILIES.includes(fontFamily) ? fontFamily : `"${html.escape(fontFamily)}", sans-serif`;
 }
 
-function changeFontSetting(promptBody, storageID) {
-  /* eslint-disable-next-line no-alert */
-  let keywords = prompt(promptBody, storage.get(storageID) || '');
-  if (keywords !== null) {
-    keywords = keywords.trim();
-    storage.set(storageID, keywords);
-  }
-}
-
 const styleTemplate = (fontFamily, fontSize) => `
 section[data-test-selector="chat-room-component-layout"] .chat-scrollable-area__message-container,
 .whispers .thread-message__message, .video-chat__message {
@@ -48,11 +39,19 @@ function updateFontSettings() {
   $fontSettings.html(template);
 }
 
+function changeFontSetting(promptBody, storageID) {
+  /* eslint-disable-next-line no-alert */
+  let keywords = prompt(promptBody, storage.get(storageID) || '');
+  if (keywords !== null) {
+    keywords = keywords.trim();
+    storage.set(storageID, keywords);
+    updateFontSettings();
+  }
+}
+
 class ChatFontSettingsModule {
   constructor() {
     watcher.on('load', updateFontSettings);
-    storage.on('changed.chatFontFamily', updateFontSettings);
-    storage.on('changed.chatFontSize', updateFontSettings);
   }
 
   setFontFamily() {
