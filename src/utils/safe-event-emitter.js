@@ -1,7 +1,7 @@
 import {EventEmitter} from 'events';
 import debug from './debug.js';
 
-async function newListener(listener, ...args) {
+function newListener(listener, ...args) {
   try {
     listener(...args);
   } catch (e) {
