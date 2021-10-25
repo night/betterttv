@@ -26,7 +26,7 @@ class ChatModeratorCardsModule {
 
     let isOwner = false;
     let isModerator = false;
-    const userMessages = twitch.getChatMessages(targetUser.login);
+    const userMessages = twitch.getChatMessages(targetUser.id);
     if (userMessages.length) {
       const {message} = userMessages[userMessages.length - 1];
       isOwner = twitch.getUserIsOwnerFromTagsBadges(message.badges);
