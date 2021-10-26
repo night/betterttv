@@ -1,5 +1,5 @@
 import React from 'react';
-import Panel from 'rsuite/lib/Panel/index.js';
+import Panel from 'rsuite/Panel';
 import Table, {Types} from '../Table.jsx';
 import {KeywordTypes} from '../../../../utils/keywords.js';
 import {registerComponent, useStorageState} from '../Store.jsx';

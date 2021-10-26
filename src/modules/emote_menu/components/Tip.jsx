@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
-import Divider from 'rsuite/lib/Divider/index.js';
-import Button from 'rsuite/lib/Button/index.js';
+import Divider from 'rsuite/Divider';
+import Button from 'rsuite/Button';
 import {EmoteMenuTips} from '../../../constants.js';
 import storage from '../../../storage.js';
 import {isMac} from '../../../utils/window.js';

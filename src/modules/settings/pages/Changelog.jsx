@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import dayjs from 'dayjs';
-import PanelGroup from 'rsuite/lib/PanelGroup/index.js';
-import Panel from 'rsuite/lib/Panel/index.js';
-import Loader from 'rsuite/lib/Loader/index.js';
+import PanelGroup from 'rsuite/PanelGroup';
+import Panel from 'rsuite/Panel';
+import Loader from 'rsuite/Loader';
 import reactStringReplace from 'react-string-replace';
 import api from '../../../utils/api.js';
 import debug from '../../../utils/debug.js';
