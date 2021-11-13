@@ -15,6 +15,7 @@ import got from 'got';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 import SentryWebpackPlugin from '@sentry/webpack-plugin';
 import FileManagerPlugin from 'filemanager-webpack-plugin';
+import PrefixerPlugin from './dev/prefixer-plugin.js';
 
 const git = createRequire(import.meta.url)('git-rev-sync');
 const {EnvironmentPlugin, optimize} = webpack;
@@ -239,6 +240,10 @@ export default async (env, argv) => {
       }),
       new VirtualModulesPlugin({
         'src/modules/emotes/emojis-by-slug.json': JSON.stringify(jsonTransform(emotes)),
+      }),
+      new PrefixerPlugin({
+        replaceClassnamePrefixRegex: 'rs-',
+        newClassnamePrefix: 'bttv-rs-',
       }),
       new TerserPlugin({
         extractComments: false,
