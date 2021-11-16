@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@babel/core": "^7.16.0",
-    "@babel/eslint-parser": "^7.16.0",
+    "@babel/eslint-parser": "^7.16.3",
     "@babel/plugin-transform-runtime": "^7.16.0",
     "@babel/preset-env": "^7.16.0",
     "@babel/preset-react": "^7.16.0",
@@ -76,7 +76,7 @@
     "remove-files-webpack-plugin": "^1.4.5",
     "rsuite": "^4.10.3",
     "string-replace-loader": "^3.0.2",
-    "terser-webpack-plugin": "^5.2.4",
+    "terser-webpack-plugin": "^5.2.5",
     "twemoji": "^13.1.0",
     "virtual-module-webpack-plugin": "^0.4.1",
     "webpack": "^5.62.1",
