@@ -36,7 +36,7 @@
     "classnames": "^2.3.1",
     "clean-webpack-plugin": "^4.0.0",
     "cookies-js": "^1.2.3",
-    "copy-webpack-plugin": "^9.1.0",
+    "copy-webpack-plugin": "^10.0.0",
     "css-loader": "^6.5.1",
     "css-minimizer-webpack-plugin": "^3.1.4",
     "dayjs": "^1.10.7",
