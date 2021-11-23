@@ -12,6 +12,7 @@ const CHAT_LIST = '.chat-list,.chat-list--default,.chat-list--other';
 const PLAYER = '.video-player__container';
 const CLIPS_BROADCASTER_INFO = '.clips-broadcaster-info';
 const CHAT_MESSAGE_SELECTOR = '.chat-line__message';
+const CHAT_INPUT = 'textarea[data-a-target="chat-input"], div[data-a-target="chat-input"]';
 
 const USER_PROFILE_IMAGE_GQL_QUERY = `
   query GetUserProfilePicture($userId: ID!) {
@@ -136,6 +137,12 @@ if (userCookie) {
     });
   } catch (_) {}
 }
+
+export const SelectionTypes = {
+  START: 1,
+  MIDDLE: 2,
+  END: 3,
+};
 
 export default {
   async getUserProfilePicture(userId = null) {
@@ -501,19 +508,131 @@ export default {
     return currentUser.id === currentChannel.id;
   },
 
-  setInputValue($inputField, msg, focus = false) {
-    $inputField.val(msg);
-    const inputField = $inputField[0];
-    inputField.dispatchEvent(new Event('input', {bubbles: true}));
-    const instance = getReactInstance(inputField);
-    if (!instance) return;
-    const props = instance.memoizedProps;
-    if (props && props.onChange) {
-      props.onChange({target: inputField});
+  getChatInput(element = null) {
+    let chatInput;
+    try {
+      chatInput = searchReactParents(
+        getReactInstance(element || $(CHAT_INPUT)[0]),
+        (n) => n.memoizedProps && n.memoizedProps.componentType != null && n.memoizedProps.value != null
+      );
+    } catch (_) {}
+
+    return chatInput;
+  },
+
+  getChatInputEditor(element = null) {
+    let chatInputEditor;
+    try {
+      chatInputEditor = searchReactParents(
+        getReactInstance(element || $(CHAT_INPUT)[0]),
+        (n) => n.stateNode?.state?.slateEditor != null
+      );
+    } catch (_) {}
+
+    return chatInputEditor?.stateNode;
+  },
+
+  getChatInputValue() {
+    const element = $(CHAT_INPUT)[0];
+
+    // deprecated
+    const {value: currentValue} = element;
+    if (currentValue != null) {
+      return currentValue;
     }
-    if (focus) {
-      $inputField.focus();
+
+    const chatInput = this.getChatInput(element);
+    if (chatInput == null) {
+      return null;
     }
+
+    return chatInput.memoizedProps.value;
+  },
+
+  setChatInputValue(text, shouldFocus = true) {
+    const element = $(CHAT_INPUT)[0];
+
+    // deprecated
+    const {value: currentValue, selectionStart} = element;
+    if (currentValue != null) {
+      element.value = text;
+      element.dispatchEvent(new Event('input', {bubbles: true}));
+
+      const instance = getReactInstance(element);
+      if (instance) {
+        const props = instance.memoizedProps;
+        if (props && props.onChange) {
+          props.onChange({target: element});
+        }
+      }
+
+      const selectionEnd = selectionStart + text.length;
+      element.setSelectionRange(selectionEnd, selectionEnd);
+
+      if (shouldFocus) {
+        element.focus();
+      }
+      return;
+    }
+
+    const chatInput = this.getChatInput(element);
+    if (chatInput == null) {
+      return;
+    }
+
+    chatInput.memoizedProps.value = text;
+    chatInput.memoizedProps.setInputValue(text);
+    chatInput.memoizedProps.onValueUpdate(text);
+
+    if (shouldFocus) {
+      const chatInputEditor = this.getChatInputEditor(element);
+      if (chatInputEditor != null) {
+        chatInputEditor.focus();
+        chatInputEditor.setSelectionRange(text.length);
+      }
+    }
+  },
+
+  getChatInputSelection() {
+    const element = $(CHAT_INPUT)[0];
+
+    // deprecated
+    const {value: currentValue, selectionStart} = element;
+    if (currentValue != null) {
+      if (selectionStart === 0) {
+        return SelectionTypes.START;
+      }
+      if (selectionStart < currentValue.length) {
+        return SelectionTypes.MIDDLE;
+      }
+      return SelectionTypes.END;
+    }
+
+    const chatInputEditor = this.getChatInputEditor(element)?.state?.slateEditor;
+    if (chatInputEditor == null || chatInputEditor.selection == null) {
+      return SelectionTypes.MIDDLE;
+    }
+
+    const {focus} = chatInputEditor.selection;
+    if (focus == null) {
+      return SelectionTypes.MIDDLE;
+    }
+
+    const [childIndex, childPartIndex] = focus.path;
+    if (childIndex === 0 && childPartIndex === 0 && focus.offset === 0) {
+      return SelectionTypes.START;
+    }
+
+    const maxChildIndex = chatInputEditor.children.length - 1;
+    const maxChildPartIndex = chatInputEditor.children[maxChildIndex].children.length - 1;
+    const maxChildPart = chatInputEditor.children[maxChildIndex].children[maxChildPartIndex];
+    const maxChildPartOffset =
+      maxChildPart.children != null ? maxChildPart.children.length - 1 : (maxChildPart.text || '').length;
+    if (childIndex === maxChildIndex && childPartIndex === maxChildPartIndex && focus.offset === maxChildPartOffset) {
+      return SelectionTypes.END;
+    }
+
+    return SelectionTypes.MIDDLE;
   },
 
   getChatMessages(providerId = null) {
