@@ -5,11 +5,11 @@ import {SettingIds} from '../../../constants.js';
 import EmoteMenuButton from '../components/LegacyButton.jsx';
 import domObserver from '../../../observers/dom.js';
 import styles from './EmoteMenu.module.css';
-import {getReactInstance} from '../../../utils/twitch.js';
+import twitch from '../../../utils/twitch.js';
 import {getCurrentUser} from '../../../utils/user.js';
 import watcher from '../../../watcher.js';
 
-const CHAT_TEXT_AREA = 'textarea[data-a-target="chat-input"]';
+const CHAT_TEXT_AREA = 'textarea[data-a-target="chat-input"], div[data-a-target="chat-input"]';
 
 // For legacy button
 const LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR =
@@ -95,7 +95,7 @@ export default class EmoteMenuModule {
           appendToChat={this.appendToChat}
           setPopoverOpen={setPopoverOpen}
           className={styles.button}
-          boundingQuerySelector={'textarea[data-a-target="chat-input"]'}
+          boundingQuerySelector={CHAT_TEXT_AREA}
         />,
         buttonContainer
       );
@@ -117,39 +117,13 @@ export default class EmoteMenuModule {
   }
 
   appendToChat({code: text}, shouldFocus = true) {
-    const element = document.querySelector(CHAT_TEXT_AREA);
-
-    const {value: currentValue, selectionStart} = element;
-    let prefixText = currentValue.substring(0, element.selectionStart);
-    let suffixText = currentValue.substring(element.selectionEnd, currentValue.length);
+    let prefixText = twitch.getChatInputValue();
 
     // suffix the prefix with a space if it needs one
     if (prefixText.length > 0 && !prefixText.endsWith(' ')) {
       prefixText += ' ';
     }
 
-    // prefix the suffix with a space if it needs one
-    if (!suffixText.startsWith(' ')) {
-      suffixText = ` ${suffixText}`;
-    }
-
-    text = `${prefixText}${text}${suffixText}`;
-    element.value = text;
-    element.dispatchEvent(new Event('input', {bubbles: true}));
-
-    const instance = getReactInstance(element);
-    if (instance) {
-      const props = instance.memoizedProps;
-      if (props && props.onChange) {
-        props.onChange({target: element});
-      }
-    }
-
-    if (shouldFocus) {
-      element.focus();
-    }
-
-    const selectionEnd = selectionStart + text.length;
-    element.setSelectionRange(selectionEnd, selectionEnd);
+    twitch.setChatInputValue(`${prefixText}${text} `, shouldFocus);
   }
 }
