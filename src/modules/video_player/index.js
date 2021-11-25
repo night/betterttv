@@ -80,14 +80,13 @@ document.addEventListener('visibilitychange', () => {
   // set raw video element volume to not edit persisted player volume state
   const video = $(VIDEO_PLAYER_SELECTOR).find('video')[0];
   if (!video) return;
-  if (document.visibilityState === 'visible') {
-    if (previousVolume !== null) {
-      video.volume = previousVolume;
-      previousVolume = null;
-    }
-  } else if (!document.pictureInPictureElement) {
+  if (document.visibilityState === 'visible' && previousVolume !== null) {
+    video.volume = previousVolume;
+    video.muted = false;
+    previousVolume = null;
+  } else if (!document.pictureInPictureElement && !video.muted) {
     previousVolume = video.volume;
-    video.volume = 0;
+    video.muted = true;
   }
 });
 
