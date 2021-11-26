@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import settings from '../../settings.js';
 import watcher from '../../watcher.js';
 import twitch from '../../utils/twitch.js';
@@ -5,15 +6,26 @@ import {AutoPlayFlags, PlatformTypes, SettingIds} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
 
-class DisableHomepageAutoplayModule {
+class HomepageModule {
   constructor() {
-    watcher.on('load.homepage', () => this.load());
+    watcher.on('load.homepage', () => {
+      this.toggleAutoPlay();
+    });
+
+    settings.on(`changed.${SettingIds.SHOW_HOMEPAGE_CAROUSEL}`, () => this.toggleCarousel());
+    this.toggleCarousel();
   }
 
-  load() {
-    if (hasFlag(settings.get(SettingIds.AUTO_PLAY), AutoPlayFlags.FP_VIDEO)) return;
+  toggleCarousel() {
+    $('body').toggleClass('bttv-hide-homepage-carousel', !settings.get(SettingIds.SHOW_HOMEPAGE_CAROUSEL));
+  }
+
+  toggleAutoPlay() {
+    if (hasFlag(settings.get(SettingIds.AUTO_PLAY), AutoPlayFlags.FP_VIDEO) && settings.get(SettingIds.SHOW_HOMEPAGE_CAROUSEL)) return;
     const currentPlayer = twitch.getCurrentPlayer();
     if (!currentPlayer) return;
+
+    currentPlayer.setMuted(true);
 
     const stopAutoplay = () => {
       setTimeout(() => {
@@ -35,4 +47,4 @@ class DisableHomepageAutoplayModule {
   }
 }
 
-export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new DisableHomepageAutoplayModule()]);
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new HomepageModule()]);

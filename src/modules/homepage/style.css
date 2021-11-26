@@ -1,0 +1,5 @@
+.bttv-hide-homepage-carousel {
+  .front-page-carousel {
+    display: none;
+  }
+}

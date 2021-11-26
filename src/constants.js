@@ -30,6 +30,7 @@ export const SettingIds = {
   CHAT: 'chat',
   AUTO_PLAY: 'autoPlay',
   USERNAMES: 'usernames',
+  SHOW_HOMEPAGE_CAROUSEL: 'showHomepageCarousel'
 };
 
 export const CategoryTypes = {
@@ -184,6 +185,7 @@ export const SettingDefaultValues = {
   [SettingIds.SCROLL_VOLUME_CONTROL]: false,
   [SettingIds.BLACKLIST_KEYWORDS]: {},
   [SettingIds.HIGHLIGHT_KEYWORDS]: null,
+  [SettingIds.SHOW_HOMEPAGE_CAROUSEL]: true,
   [SettingIds.SIDEBAR]: [
     SidebarFlags.FRIENDS |
       SidebarFlags.OFFLINE_FOLLOWED_CHANNELS |
