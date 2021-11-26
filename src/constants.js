@@ -12,6 +12,7 @@ export const SettingIds = {
   TAB_COMPLETION_EMOTE_PRIORITY: 'tabCompletionEmotePriority',
   WHISPERS: 'whispers',
   SHOW_DIRECTORY_LIVE_TAB: 'showDirectoryLiveTab',
+  ALWAYS_SOURCE_QUALITY: 'alwaysSourceQuality',
   CHANNEL_POINTS_MESSAGE_HIGHLIGHTS: 'channelPointsMessageHighlights',
   EMOTE_MENU: 'clickTwitchEmotes',
   DARKENED_MODE: 'darkenedMode',
@@ -182,6 +183,7 @@ export const SettingDefaultValues = {
   [SettingIds.CLICK_TO_PLAY]: false,
   [SettingIds.MUTE_INVISIBLE_PLAYER]: false,
   [SettingIds.SCROLL_VOLUME_CONTROL]: false,
+  [SettingIds.ALWAYS_SOURCE_QUALITY]: false,
   [SettingIds.BLACKLIST_KEYWORDS]: {},
   [SettingIds.HIGHLIGHT_KEYWORDS]: null,
   [SettingIds.SIDEBAR]: [

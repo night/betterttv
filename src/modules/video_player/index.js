@@ -2,11 +2,14 @@ import $ from 'jquery';
 import debounce from 'lodash.debounce';
 import watcher from '../../watcher.js';
 import settings from '../../settings.js';
+import storage from '../../storage.js';
 import domWatcher from '../../observers/dom.js';
 import twitch from '../../utils/twitch.js';
 import {AutoPlayFlags, PlatformTypes, SettingIds} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
+
+const TWITCH_VIDEO_QUALITY_STORAGE_KEY = 'video-quality';
 
 const VIDEO_PLAYER_SELECTOR = '.video-player__container';
 const CANCEL_VOD_RECOMMENDATION_SELECTOR =
@@ -119,8 +122,30 @@ class VideoPlayerModule {
     settings.on(`changed.${SettingIds.PLAYER_EXTENSIONS}`, () => this.toggleHidePlayerExtensions());
     settings.on(`changed.${SettingIds.VOD_RECOMMENDATION_AUTOPLAY}`, () => watchPlayerRecommendationVodsAutoplay());
     settings.on(`changed.${SettingIds.CLICK_TO_PLAY}`, () => this.clickToPause());
+    settings.on(`changed.${SettingIds.ALWAYS_SOURCE_QUALITY}`, () => this.setAlwaysSourceQuality());
+    this.setAlwaysSourceQuality();
     this.toggleHidePlayerExtensions();
     this.loadHidePlayerCursorFullscreen();
+  }
+
+  setAlwaysSourceQuality() {
+    if (settings.get(SettingIds.ALWAYS_SOURCE_QUALITY)) {
+      storage.set(TWITCH_VIDEO_QUALITY_STORAGE_KEY, {default: 'chunked'}, '');
+
+      const currentPlayer = twitch.getCurrentPlayer();
+
+      if (!currentPlayer) return;
+
+      // We identify the source quality as the one with the highest bitrate
+      const sourceQuality = currentPlayer.getQualities().reduce((acc, curr) => {
+        return acc.bitrate > curr.bitrate ? acc : curr;
+      }, {});
+
+      const currentQuality = currentPlayer.getQuality();
+      if (currentQuality?.name === sourceQuality?.name) return;
+
+      currentPlayer.setQuality(sourceQuality);
+    }
   }
 
   loadVolumeScrollControl() {
