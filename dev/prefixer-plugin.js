@@ -1,4 +1,5 @@
 import webpack from 'webpack';
+import {escapeRegExp} from '../src/utils/regex.js';
 
 const {Compilation, sources} = webpack;
 
@@ -29,17 +30,30 @@ export default class PrefixerPlugin {
 
             switch (true) {
               case /.+\.css.*$/.test(pathname):
-                classnameRegex = new RegExp(`(?<=(--)|[.])${replaceClassnamePrefixRegex}`, 'g');
+                classnameRegex = new RegExp(`(\\.|--)(${escapeRegExp(replaceClassnamePrefixRegex)})(,|-|{|\\s)`, 'gm');
                 break;
               case /.+\.js.*$/.test(pathname):
-                classnameRegex = new RegExp(`(?<=^|[']|[ ])${replaceClassnamePrefixRegex}`, 'gm');
+                classnameRegex = new RegExp(
+                  `(\\.|'|\`|")(${escapeRegExp(replaceClassnamePrefixRegex)})(-|'|"|\`|\\s)`,
+                  'gm'
+                );
                 break;
               default:
                 continue;
             }
 
             const rawSource = source.source();
-            const newSource = rawSource.replace(classnameRegex, newClassnamePrefix);
+            const newSource = rawSource.replace(classnameRegex, (match, p1, _p2, p3) => {
+              if (
+                (p1 === "'" && (p3 === '"' || p3 === '`')) ||
+                (p1 === '`' && (p3 === "'" || p3 === '"')) ||
+                (p1 === '"' && (p3 === "'" || p3 === '`'))
+              ) {
+                return match;
+              }
+
+              return `${p1}${newClassnamePrefix}${p3}`;
+            });
 
             compilation.updateAsset(pathname, new sources.RawSource(newSource));
           }
