@@ -29,10 +29,10 @@ export default class PrefixerPlugin {
             let classnameRegex;
 
             switch (true) {
-              case /.+\.css.*$/.test(pathname):
+              case pathname.endsWith('.css'):
                 classnameRegex = new RegExp(`(\\.|--)(${escapeRegExp(replaceClassnamePrefixRegex)})(,|-|{|\\s)`, 'gm');
                 break;
-              case /.+\.js.*$/.test(pathname):
+              case pathname.endsWith('.js'):
                 classnameRegex = new RegExp(
                   `(\\.|'|\`|")(${escapeRegExp(replaceClassnamePrefixRegex)})(-|'|"|\`|\\s)`,
                   'gm'
@@ -44,11 +44,7 @@ export default class PrefixerPlugin {
 
             const rawSource = source.source();
             const newSource = rawSource.replace(classnameRegex, (match, p1, _p2, p3) => {
-              if (
-                (p1 === "'" && (p3 === '"' || p3 === '`')) ||
-                (p1 === '`' && (p3 === "'" || p3 === '"')) ||
-                (p1 === '"' && (p3 === "'" || p3 === '`'))
-              ) {
+              if (["'", '"', '`'].includes(p1) && p1 !== p3 && p3 !== '-' && /\s/.test(p3)) {
                 return match;
               }
 
