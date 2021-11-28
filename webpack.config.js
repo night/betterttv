@@ -240,8 +240,8 @@ export default async (env, argv) => {
         'src/modules/emotes/emojis-by-slug.json': JSON.stringify(jsonTransform(emotes)),
       }),
       new PrefixerPlugin({
-        replaceClassnamePrefixRegex: 'rs-',
-        newClassnamePrefix: 'bttv-rs-',
+        replaceClassnamePrefixRegex: 'rs',
+        newClassnamePrefix: 'bttv-rs',
       }),
       new TerserPlugin({
         extractComments: false,

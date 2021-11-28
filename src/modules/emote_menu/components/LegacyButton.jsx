@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useCallback} from 'react';
 import classNames from 'classnames';
 import Whisper from 'rsuite/Whisper';
 import EmoteMenuPopover from './EmoteMenuPopover.jsx';
@@ -12,7 +12,13 @@ import styles from './LegacyButton.module.css';
 
 export default function LegacyButton({appendToChat, className, boundingQuerySelector}) {
   const [loaded, setLoaded] = useState(false);
+  const [whisperOpen, setWhisperOpen] = useState(false);
   const whisperRef = useRef(null);
+
+  const toggleWhisper = useCallback(whisperOpen ? () => whisperRef.current.close() : () => whisperRef.current.open(), [
+    whisperOpen,
+    whisperRef,
+  ]);
 
   useEffect(() => {
     const callback = () => {
@@ -39,23 +45,24 @@ export default function LegacyButton({appendToChat, className, boundingQuerySele
 
       markTipAsSeen(EmoteMenuTips.EMOTE_MENU_HOTKEY);
 
-      // note v5 removes whisper open state in reference (implement toggle with hooks?)
-      whisperRef.current.open();
+      toggleWhisper();
     }
 
     window.addEventListener('keydown', handleKeyDown);
 
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [toggleWhisper]);
 
   return (
     <Whisper
       ref={whisperRef}
+      onOpen={() => setWhisperOpen(true)}
+      onClose={() => setWhisperOpen(false)}
       trigger="click"
       placement={false} // this throws a warning but is nessecary to stop rsuite from auto-respositioning
       speaker={
         <EmoteMenuPopover
-          whisperRef={whisperRef}
+          toggleWhisper={toggleWhisper}
           appendToChat={appendToChat}
           boundingQuerySelector={boundingQuerySelector}
         />
