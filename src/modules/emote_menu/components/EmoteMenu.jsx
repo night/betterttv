@@ -15,7 +15,7 @@ function setKeyPressCallback(newKeyPressCallback) {
   keyPressCallback = newKeyPressCallback;
 }
 
-export default function EmoteMenu({whisperRef, appendToChat, onSetTip}) {
+export default function EmoteMenu({toggleWhisper, appendToChat, onSetTip}) {
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState(null);
   const [, setUpdated] = useState(false);
@@ -25,8 +25,6 @@ export default function EmoteMenu({whisperRef, appendToChat, onSetTip}) {
     eventKey: null,
     scrollTo: false,
   });
-
-  const onHide = useCallback(() => whisperRef.current.close(), [whisperRef]);
 
   const handleClick = useCallback(
     (emote) => {
@@ -44,7 +42,7 @@ export default function EmoteMenu({whisperRef, appendToChat, onSetTip}) {
         return;
       }
 
-      onHide();
+      toggleWhisper();
     },
     [altPressed, shiftPressed]
   );
@@ -94,7 +92,13 @@ export default function EmoteMenu({whisperRef, appendToChat, onSetTip}) {
 
   return (
     <>
-      <Header className={styles.header} value={search} onChange={setSearch} onHide={onHide} selected={selected} />
+      <Header
+        className={styles.header}
+        value={search}
+        onChange={setSearch}
+        toggleWhisper={toggleWhisper}
+        selected={selected}
+      />
       <Divider className={styles.divider} />
       <div className={styles.content}>
         <Sidebar

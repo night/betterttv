@@ -8,7 +8,7 @@ import styles from './EmoteMenuPopover.module.css';
 const TOP_PADDING = 2;
 
 const EmoteMenuPopover = React.forwardRef(
-  ({whisperRef, appendToChat, className, style, boundingQuerySelector, ...props}, ref) => {
+  ({toggleWhisper, appendToChat, className, style, boundingQuerySelector, whisperOpen, ...props}, ref) => {
     const [hasTip, setTip] = useState(false);
     const localRef = useRef(null);
 
@@ -70,7 +70,7 @@ const EmoteMenuPopover = React.forwardRef(
           className={classNames(className, styles.popover, hasTip ? styles.withTip : null)}
           full>
           <EmoteMenu
-            whisperRef={whisperRef}
+            toggleWhisper={toggleWhisper}
             appendToChat={(...args) => {
               const result = appendToChat(...args);
               repositionPopover();
