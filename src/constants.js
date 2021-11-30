@@ -162,6 +162,7 @@ export const SettingDefaultValues = {
   [SettingIds.DELETED_MESSAGES]: DeletedMessageTypes.DEFAULT,
   [SettingIds.REVERSE_CHAT_DIRECTION]: false,
   [SettingIds.PINNED_HIGHLIGHTS]: false,
+  [SettingIds.NUMBER_OF_PINNED_HIGHLIGHTS]: 10,
   [SettingIds.TIMEOUT_HIGHLIGHTS]: true,
   [SettingIds.HIGHLIGHT_FEEDBACK]: false,
   [SettingIds.CHAT_LAYOUT]: ChatLayoutTypes.RIGHT,

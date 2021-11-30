@@ -65,3 +65,15 @@
   align-items: center;
   justify-content: space-between;
 }
+
+.input {
+  display: flex;
+  flex-flow: row nowrap;
+  vertical-align: middle;
+  align-items: center;
+  gap: 1em;
+}
+
+.inputNumber {
+  width: 60px;
+}
