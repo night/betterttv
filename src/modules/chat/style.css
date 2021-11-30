@@ -18,3 +18,7 @@
   position: relative !important;
   display: inline !important;
 }
+
+.bttv-chat-message-read {
+  opacity: 0.4;
+}

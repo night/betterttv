@@ -18,6 +18,8 @@ const EMOTE_STRIP_SYMBOLS_REGEX = /(^[~!@#$%^&*()]+|[~!@#$%^&*()]+$)/g;
 const STEAM_LOBBY_JOIN_REGEX = /^steam:\/\/joinlobby\/\d+\/\d+\/\d+$/;
 const EMOTES_TO_CAP = ['567b5b520e984428652809b6'];
 const MAX_EMOTES_WHEN_CAPPED = 10;
+const CHAT_MESSAGE_SELECTOR = '.chat-line__message';
+const CHAT_LIST = '.chat-list,.chat-list--default,.chat-list--other';
 
 const badgeTemplate = (url, description) => `
   <div class="bttv-tooltip-wrapper bttv-chat-badge-container">
@@ -70,6 +72,10 @@ function getMessagePartsFromMessageElement($message) {
   return $message.find('span[data-a-target="chat-message-text"]');
 }
 
+function markMessagesAsRead() {
+  $(CHAT_MESSAGE_SELECTOR).addClass('bttv-chat-message-read');
+}
+
 class ChatModule {
   constructor() {
     watcher.on('chat.message', ($element, message) => this.messageParser($element, message));
@@ -92,6 +98,17 @@ class ChatModule {
     api.get('cached/badges').then((badges) => {
       badges.forEach(({name, badge}) => staff.set(name, badge));
     });
+
+    settings.on(`changed.${SettingIds.MARK_CHAT_AS_READ}`, () => this.toggleMarkChatAsRead());
+    this.toggleMarkChatAsRead();
+  }
+
+  toggleMarkChatAsRead() {
+    if (settings.get(SettingIds.MARK_CHAT_AS_READ) === true) {
+      $(CHAT_LIST).on('dblclick', markMessagesAsRead);
+    } else {
+      $(CHAT_LIST).off('dblclick', markMessagesAsRead);
+    }
   }
 
   calculateColor(color) {
