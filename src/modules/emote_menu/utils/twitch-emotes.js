@@ -1,6 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import uniqBy from 'lodash.uniqby';
 import sortBy from 'lodash.sortby';
+import flatten from 'lodash.flatten';
 import twitchApi from '../../../utils/twitch-api.js';
 import Emote from '../../emotes/emote.js';
 import Icons from '../components/Icons.jsx';
