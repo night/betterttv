@@ -65,10 +65,6 @@ export async function loadYouTubeEmotes() {
 
   const categoryEmojis = {};
   for (const emoji of youtubeCustomEmojis) {
-    // TODO: support locked emotes
-    if (emoji.isLocked) {
-      continue;
-    }
     const channelId = emoji.emojiId.split('/')[0];
     let category = categoryEmojis[channelId];
     if (category == null) {
@@ -83,12 +79,15 @@ export async function loadYouTubeEmotes() {
     const categoryName = categoryNames[channelId] || DEFAULT_CATEGORY_NAME;
     const category = getCategoryForChannelId(channelId, categoryName);
     const categoryEmotes = categoryEmojis[channelId].map(
-      ({emojiId: emoteId, image, shortcuts}) =>
+      ({emojiId: emoteId, image, shortcuts, isLocked = false}) =>
         new Emote({
           id: emoteId,
           category,
           channel: categoryName,
           code: shortcuts.find((shortcut) => !shortcut.startsWith(':_')) || shortcuts[0],
+          metadata: {
+            locked: isLocked,
+          },
           images: {
             '1x': (image.thumbnails[1] || image.thumbnails[0]).url,
           },

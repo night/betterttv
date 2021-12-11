@@ -135,6 +135,7 @@ export const EmoteCategories = {
   TWITCH_CHANNEL: (channelId) => `twitch-${channelId}`,
   YOUTUBE_GLOBAL: 'youtube-global',
   YOUTUBE_CHANNEL: (channelId) => `youtube-${channelId}`,
+  UNAVAILABLE_CHANNEL_EMOTES: 'unavailable-channel-emotes',
 };
 
 export const DEFAULT_FREQUENT_EMOTES = {

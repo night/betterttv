@@ -19,3 +19,20 @@
 .active {
   background-color: var(--bttv-rs-state-hover-bg);
 }
+
+.placeholder {
+  background-color: var(--bttv-rs-bg-card);
+}
+
+.locked {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.emoteImageLocked {
+  opacity: 0.5;
+}

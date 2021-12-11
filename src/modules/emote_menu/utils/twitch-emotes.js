@@ -1,6 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import uniqBy from 'lodash.uniqby';
 import sortBy from 'lodash.sortby';
+import flatten from 'lodash.flatten';
 import twitchApi from '../../../utils/twitch-api.js';
 import Emote from '../../emotes/emote.js';
 import Icons from '../components/Icons.jsx';
@@ -12,6 +13,19 @@ import {getCurrentChannel} from '../../../utils/channel.js';
 
 const AVAILABLE_EMOTES_FOR_CHANNEL_QUERY = `
   query AvailableEmotesForChannel($channelID: ID!) {
+    user(id: $channelID) {
+      id,
+      displayName,
+      profileImageURL(width: 300)
+      subscriptionProducts {
+        id,
+        emotes {
+          id,
+          token,
+          type
+        }
+      }
+    }
     channel(id: $channelID) {
       self {
         availableEmoteSets {
@@ -102,9 +116,34 @@ export async function loadTwitchEmotes() {
   const isDark = settings.get(SettingIds.DARKENED_MODE);
   const tempCategories = {};
 
-  for (const {owner, id: setId, emotes} of data.channel.self.availableEmoteSets) {
+  // so we don't rely on uniqBy https://github.com/night/betterttv/pull/4849#discussion_r711787270
+  const emoteSets = data.channel.self.availableEmoteSets;
+
+  const availableChannelEmotes = flatten(
+    data.channel.self.availableEmoteSets
+      .filter(({owner}) => owner?.id === data.user.id)
+      .map((channel) => channel.emotes)
+  );
+
+  const unavailableChannelEmotes = flatten(data.user.subscriptionProducts.map(({emotes}) => emotes))
+    .filter(({id}) => availableChannelEmotes.find(({id: emoteId}) => emoteId === id) == null)
+    .map((emote) => ({...emote, locked: true}));
+
+  if (unavailableChannelEmotes.length > 0) {
+    emoteSets.push({
+      emotes: unavailableChannelEmotes,
+      id: EmoteCategories.UNAVAILABLE_CHANNEL_EMOTES,
+      owner: {
+        displayName: data.user.displayName,
+        id: data.user.id,
+        profileImageURL: data.user.profileImageURL,
+      },
+    });
+  }
+
+  for (const {owner, id: setId, emotes} of emoteSets) {
     const category = getCategoryForSet(setId, owner);
-    const categoryEmotes = emotes.map(({id: emoteId, token: emoteToken, type}) => {
+    const categoryEmotes = emotes.map(({id: emoteId, token: emoteToken, type, locked = false}) => {
       let newToken;
 
       try {
@@ -123,7 +162,10 @@ export async function loadTwitchEmotes() {
           '2x': TWITCH_EMOTE_CDN(emoteId, '2.0', isDark),
           '4x': TWITCH_EMOTE_CDN(emoteId, '3.0', isDark),
         },
-        metadata: {type},
+        metadata: {
+          type,
+          locked,
+        },
       });
     });
 
