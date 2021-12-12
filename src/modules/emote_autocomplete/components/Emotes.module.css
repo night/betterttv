@@ -1,0 +1,6 @@
+.emotes {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 4px;
+}

@@ -66,6 +66,7 @@
     "lodash.uniqby": "^4.7.0",
     "mini-css-extract-plugin": "^2.5.3",
     "postcss": "^8.4.6",
+    "lodash.flatten": "^4.4.0",
     "postcss-hexrgba": "^2.0.1",
     "postcss-loader": "^6.2.1",
     "postcss-url": "^10.1.3",

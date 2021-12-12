@@ -1,0 +1,45 @@
+.emote {
+  position: relative;
+  border-radius: 4px;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  background-color: initial;
+  border: none;
+}
+
+.emoteImage {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+.active {
+  background-color: #5a5a5c;
+}
+
+.placeholder {
+  background-color: #23262b;
+}
+
+.emoteRow {
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.emoteInfo {
+  display: flex;
+  column-gap: 8px;
+  align-items: center;
+}
+
+.categoryInfo {
+  margin: 4px;
+}
+
+.emoteRowSelected {
+  background-color: #5a5a5c;
+}
