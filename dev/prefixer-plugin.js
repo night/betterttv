@@ -28,18 +28,15 @@ export default class PrefixerPlugin {
             const {replaceClassnamePrefixRegex, newClassnamePrefix} = this.options;
             let classnameRegex;
 
-            switch (true) {
-              case pathname.endsWith('.css'):
-                classnameRegex = new RegExp(`(\\.|--)(${escapeRegExp(replaceClassnamePrefixRegex)})(,|-|{|\\s)`, 'gm');
-                break;
-              case pathname.endsWith('.js'):
-                classnameRegex = new RegExp(
-                  `(\\.|'|\`|")(${escapeRegExp(replaceClassnamePrefixRegex)})(-|'|"|\`|\\s)`,
-                  'gm'
-                );
-                break;
-              default:
-                continue;
+            if (pathname.endsWith('.css')) {
+              classnameRegex = new RegExp(`(\\.|--)(${escapeRegExp(replaceClassnamePrefixRegex)})(,|-|{|\\s)`, 'gm');
+            } else if (pathname.endsWith('.js')) {
+              classnameRegex = new RegExp(
+                `(\\.|'|\`|")(${escapeRegExp(replaceClassnamePrefixRegex)})(-|'|"|\`|\\s)`,
+                'gm'
+              );
+            } else {
+              continue;
             }
 
             const rawSource = source.source();

@@ -7,7 +7,7 @@ import InputGroup from 'rsuite/InputGroup';
 import AutoComplete from 'rsuite/AutoComplete';
 import * as faSearch from '@fortawesome/free-solid-svg-icons/faSearch';
 import {Components} from './Store.jsx';
-import FontAwesomeSvgIcon from '../../emote_menu/components/FontAwesomeSvgIcon.jsx';
+import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.jsx';
 
 const settings = Object.values(Components).sort((a, b) => a.name.localeCompare(b.name));
 

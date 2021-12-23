@@ -14,7 +14,7 @@ import * as faCommentAlt from '@fortawesome/free-solid-svg-icons/faCommentAlt';
 import cdn from '../../../utils/cdn.js';
 import styles from '../styles/sidenav.module.css';
 import {PageTypes} from '../../../constants.js';
-import FontAwesomeSvgIcon from '../../emote_menu/components/FontAwesomeSvgIcon.jsx';
+import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.jsx';
 
 function BTTVSidenav({value, onChange}) {
   return (

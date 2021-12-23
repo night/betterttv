@@ -4,7 +4,7 @@ import IconButton from 'rsuite/IconButton';
 import * as faStar from '@fortawesome/free-solid-svg-icons/faStar';
 import styles from './Preview.module.css';
 import {createSrcSet} from '../../../utils/image.js';
-import FontAwesomeSvgIcon from './FontAwesomeSvgIcon.jsx';
+import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.jsx';
 
 export default function Preview({emote, isFavorite}) {
   if (emote == null) return null;

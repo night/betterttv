@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import {RowHeight, WindowHeight} from '../../../constants.js';
 import styles from './Sidebar.module.css';
 
-const ITEM_HEIGHT = 38;
+const ITEM_HEIGHT = 44;
 
 export default function Sidebar({section, onChange, categories}) {
   const containerRef = useRef(null);
@@ -53,7 +53,7 @@ export default function Sidebar({section, onChange, categories}) {
               onClick={() => onChange(category.id)}>
               <Nav.Item
                 active={isActive}
-                icon={category.icon}
+                icon={<div className={styles.navItemContent}>{category.icon}</div>}
                 className={classNames({[styles.active]: isActive, [styles.navItem]: true})}
               />
             </Whisper>
