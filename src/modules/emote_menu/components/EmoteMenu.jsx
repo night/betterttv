@@ -44,7 +44,7 @@ export default function EmoteMenu({toggleWhisper, appendToChat, onSetTip}) {
 
       toggleWhisper();
     },
-    [altPressed, shiftPressed]
+    [altPressed, shiftPressed, toggleWhisper]
   );
 
   useEffect(() => {

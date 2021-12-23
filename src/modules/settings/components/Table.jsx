@@ -13,7 +13,7 @@ import * as faPlus from '@fortawesome/free-solid-svg-icons/faPlus';
 
 import classNames from 'classnames';
 import styles from '../styles/table.module.css';
-import FontAwesomeSvgIcon from '../../emote_menu/components/FontAwesomeSvgIcon.jsx';
+import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.jsx';
 
 const {Column, HeaderCell, Cell} = Table;
 

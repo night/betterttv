@@ -5,7 +5,7 @@ import Input from 'rsuite/Input';
 import IconButton from 'rsuite/IconButton';
 import * as faSearch from '@fortawesome/free-solid-svg-icons/faSearch';
 import * as faTimes from '@fortawesome/free-solid-svg-icons/faTimes';
-import FontAwesomeSvgIcon from './FontAwesomeSvgIcon.jsx';
+import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.jsx';
 
 function Header({value, onChange, toggleWhisper, selected, ...props}) {
   const searchInputRef = useRef(null);

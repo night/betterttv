@@ -15,7 +15,7 @@ import {loadLegacySettings} from '../../../utils/legacy-settings.js';
 import header from '../styles/header.module.css';
 import styles from '../styles/about.module.css';
 import CloseButton from '../components/CloseButton.jsx';
-import FontAwesomeSvgIcon from '../../emote_menu/components/FontAwesomeSvgIcon.jsx';
+import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.jsx';
 
 function loadJSON(string) {
   let json = null;
@@ -203,7 +203,7 @@ function About({onHide}) {
                 loading={resetting}
                 disabled={importing}
                 color="red"
-                onClick={resetDefault}>
+                onClick={() => resetDefault()}>
                 Reset to Default
               </IconButton>
             </div>

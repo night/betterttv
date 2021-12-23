@@ -19,6 +19,14 @@
   width: 100%;
 }
 
+.navItemContent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+}
+
 .navItem {
-  height: 38px;
+  padding: 12px 12px !important;
 }

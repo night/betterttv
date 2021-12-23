@@ -17,7 +17,7 @@ import * as faLightbulb from '@fortawesome/free-solid-svg-icons/faLightbulb';
 import * as faTwitch from '@fortawesome/free-brands-svg-icons/faTwitch';
 import * as faYoutube from '@fortawesome/free-brands-svg-icons/faYoutube';
 import styles from './Icons.module.css';
-import FontAwesomeSvgIcon from './FontAwesomeSvgIcon.jsx';
+import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.jsx';
 
 const twitchGamingLogo = {
   prefix: 'custom',
