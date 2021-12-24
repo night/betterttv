@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import Divider from 'rsuite/Divider';
 import keycodes from '../../../utils/keycodes.js';
 import {EmoteMenuTips} from '../../../constants.js';
-import emoteMenuViewStore, {CategoryPositions} from '../stores/emote-menu-view-store.js';
+import emoteMenuViewStore, {CategoryPositions} from '../../../common/stores/emote-menu-view-store.js';
 import styles from './EmoteMenu.module.css';
 import Emotes from './Emotes.jsx';
 import Header from './Header.jsx';

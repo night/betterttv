@@ -1,6 +1,7 @@
 import React, {useEffect, useMemo, useState} from 'react';
+import {Button} from 'rsuite';
 import useChatInput from '../hooks/ChatInput.jsx';
-import Emote from './Emote.jsx';
+import Emote from '../../../common/components/Emote.jsx';
 import styles from './Emotes.module.css';
 
 const DEFAULT_SELECTED_EMOTE = 0;
@@ -19,6 +20,8 @@ function calcMaxHeight() {
   return canShow;
 }
 
+const shortenName = (displayName) => displayName.split(' ')[0];
+
 export default function Emotes({chatInputElement, repositionPopover}) {
   const [emotes] = useChatInput(chatInputElement);
   const [selectedEmote, setSelectedEmote] = useState(DEFAULT_SELECTED_EMOTE);
@@ -36,7 +39,13 @@ export default function Emotes({chatInputElement, repositionPopover}) {
   return (
     <div className={styles.emotes}>
       {shortEmotes.map((emote, index) => (
-        <Emote emote={emote} selected={index === selectedEmote} onHover={() => setSelectedEmote(index)} />
+        <Button key={emote.id} active={index === selectedEmote} className={styles.emoteContainer}>
+          <div className={styles.emote}>
+            <Emote emote={emote} />
+            <div className={styles.emoteCode}>{emote.code}</div>
+          </div>
+          <div className={styles.categoryName}>{shortenName(emote.category.displayName)}</div>
+        </Button>
       ))}
     </div>
   );

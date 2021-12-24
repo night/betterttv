@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import Popover from 'rsuite/lib/Popover/index.js';
 import styles from './AutocompletePopover.module.css';
 import Emotes from './Emotes.jsx';
+import repositionPopover from '../../../utils/popover.js';
 
 const TOP_PADDING = 2;
 
@@ -16,39 +17,17 @@ export default function AutocompletePopover({
   chatInputElement,
   ...props
 }) {
-  function repositionPopover() {
-    const popoverElement = htmlElementRef.current;
-    if (popoverElement == null) {
-      return;
-    }
-
-    const chatTextArea = document.querySelector(boundingQuerySelector);
-    if (chatTextArea == null) {
-      return;
-    }
-
-    const {x, y} = chatTextArea.getBoundingClientRect();
-
-    const popoverTop = `${y - popoverElement.offsetHeight - TOP_PADDING}px`;
-    const popoverLeft = `${x}px`;
-
-    if (popoverTop !== popoverElement.style.top) {
-      popoverElement.style.top = popoverTop;
-    }
-    if (popoverLeft !== popoverElement.style.left) {
-      popoverElement.style.left = popoverLeft;
-    }
-  }
+  const reposition = () => repositionPopover(htmlElementRef, boundingQuerySelector, TOP_PADDING);
 
   useEffect(() => {
-    repositionPopover();
+    reposition();
   }, [htmlElementRef, style]);
 
   useEffect(() => {
     function handleResize() {
-      repositionPopover();
+      reposition();
       // Twitch animates chat moving on zoom changes
-      setTimeout(repositionPopover, 500);
+      setTimeout(reposition, 500);
     }
 
     window.addEventListener('resize', handleResize);
@@ -58,7 +37,7 @@ export default function AutocompletePopover({
 
   return (
     <Popover className={classNames(className, styles.popover)} full htmlElementRef={htmlElementRef} {...props}>
-      <Emotes chatInputElement={chatInputElement} repositionPopover={() => repositionPopover()} />
+      <Emotes chatInputElement={chatInputElement} repositionPopover={() => reposition()} />
     </Popover>
   );
 }

@@ -5,11 +5,15 @@ import {Popover} from 'rsuite';
 import EmoteMenu from './EmoteMenu.jsx';
 import styles from './EmoteMenuPopover.module.css';
 import ThemeProvider from '../../../common/components/ThemeProvider.jsx';
+import repositionPopover from '../../../utils/popover.js';
 
 const TOP_PADDING = 2;
 
 const EmoteMenuPopover = React.forwardRef(
-  ({toggleWhisper, appendToChat, className, style, boundingQuerySelector, whisperOpen, ...props}, ref) => {
+  (
+    {toggleWhisper, appendToChat, className, style, boundingQuerySelector, htmlElementRef, whisperOpen, ...props},
+    ref
+  ) => {
     const [hasTip, setTip] = useState(false);
     const localRef = useRef(null);
 
@@ -21,41 +25,17 @@ const EmoteMenuPopover = React.forwardRef(
       setTip(show);
     }
 
-    function repositionPopover() {
-      const popoverElement = localRef.current;
-      if (popoverElement == null) {
-        return;
-      }
-
-      const chatTextArea = document.querySelector(boundingQuerySelector);
-      if (chatTextArea == null) {
-        return;
-      }
-
-      const {x, y} = chatTextArea.getBoundingClientRect();
-      const rightX = x + chatTextArea.offsetWidth;
-
-      const popoverTop = `${y - popoverElement.offsetHeight - TOP_PADDING}px`;
-      const wantedPopoverLeft = rightX - popoverElement.offsetWidth;
-      const popoverLeft = `${wantedPopoverLeft < 0 ? x : wantedPopoverLeft}px`;
-
-      if (popoverTop !== popoverElement.style.top) {
-        popoverElement.style.top = popoverTop;
-      }
-      if (popoverLeft !== popoverElement.style.left) {
-        popoverElement.style.left = popoverLeft;
-      }
-    }
+    const reposition = () => repositionPopover(htmlElementRef, boundingQuerySelector, TOP_PADDING);
 
     useEffect(() => {
-      repositionPopover();
-    }, [ref, style, hasTip]);
+      reposition();
+    }, [htmlElementRef, style, hasTip]);
 
     useEffect(() => {
       function handleResize() {
-        repositionPopover();
+        reposition();
         // Twitch animates chat moving on zoom changes
-        setTimeout(repositionPopover, 500);
+        setTimeout(reposition, 500);
       }
 
       window.addEventListener('resize', handleResize);

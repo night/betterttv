@@ -1,5 +1,6 @@
 import {useEffect, useState} from 'react';
-import emoteSearchStore from '../stores/emote-search-store.js';
+import emoteSearchStore from '../../../common/stores/emote-menu-view-store.js';
+import twitch from '../../../utils/twitch.js';
 
 const DEFAULT_EMOTES = [];
 
@@ -17,7 +18,11 @@ function findFocusedWord(parts = [], selectionStart = 0) {
 }
 
 function handleChatInput(chatInputElement) {
-  const {value, selectionStart} = chatInputElement;
+  const value = twitch.getChatInputValue();
+  const selectionStart = twitch.getChatInputSelection();
+
+  console.log(selectionStart);
+
   const parts = value.split(' ');
   const focusedWord = findFocusedWord(parts, selectionStart);
   const matches = value.match(/(?:^|\s):[^(?::|\s)]{1,}/g);
@@ -42,8 +47,8 @@ export default function useChatInput(chatInputElement) {
 
   useEffect(() => {
     function keydownCallback() {
-      const newEmotes = handleChatInput(chatInputElement);
-      setEmotes(newEmotes);
+      const searchedEmotes = handleChatInput();
+      setEmotes(searchedEmotes);
     }
 
     chatInputElement.addEventListener('keydown', keydownCallback);
