@@ -4,7 +4,7 @@ import settings from '../../../settings.js';
 import {EmoteProviders, SettingIds} from '../../../constants.js';
 import EmoteMenuButton from '../components/LegacyButton.jsx';
 import domObserver from '../../../observers/dom.js';
-import styles from './EmoteMenu.module.less';
+import styles from './EmoteMenu.module.css';
 import {getCurrentUser} from '../../../utils/user.js';
 import watcher from '../../../watcher.js';
 
