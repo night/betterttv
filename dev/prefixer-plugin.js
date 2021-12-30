@@ -35,7 +35,9 @@ export default class PrefixerPlugin {
                 `(\\.|'|\`|")(${escapeRegExp(replaceClassnamePrefixRegex)})(-|'|"|\`|\\s)`,
                 'gm'
               );
-            } else {
+            }
+
+            if (classnameRegex == null) {
               continue;
             }
 
