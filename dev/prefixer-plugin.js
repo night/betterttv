@@ -5,7 +5,7 @@ const {Compilation, sources} = webpack;
 
 export default class PrefixerPlugin {
   constructor(options = {}) {
-    if (options.replaceClassnamePrefixRegex == null) {
+    if (options.oldClassNamePrefix == null) {
       throw new Error('PrefixerPlugin: replaceClassnamePrefixRegex option is required');
     }
 
