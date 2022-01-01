@@ -44,9 +44,13 @@ function SidebarComponent() {
   );
 }
 
-export default registerComponent(SidebarComponent, {
-  settingId: SettingIds.SIDEBAR,
-  name: 'Sidebar',
-  category: CategoryTypes.DIRECTORY,
-  keywords: ['sidebar', 'friends'],
-});
+loadModuleForPlatforms([
+  PlatformTypes.TWITCH,
+  () =>
+    registerComponent(SidebarComponent, {
+      settingId: SettingIds.SIDEBAR,
+      name: 'Sidebar',
+      category: CategoryTypes.DIRECTORY,
+      keywords: ['sidebar', 'friends'],
+    }),
+]);

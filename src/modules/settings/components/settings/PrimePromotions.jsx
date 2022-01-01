@@ -19,9 +19,13 @@ function HidePrimePromotions() {
   );
 }
 
-export default registerComponent(HidePrimePromotions, {
-  settingId: SettingIds.PRIME_PROMOTIONS,
-  name: 'Prime Promotions',
-  category: CategoryTypes.CHANNEL,
-  keywords: ['ad', 'prime', 'promotions', 'block'],
-});
+loadModuleForPlatforms([
+  PlatformTypes.TWITCH,
+  () =>
+    registerComponent(HidePrimePromotions, {
+      settingId: SettingIds.PRIME_PROMOTIONS,
+      name: 'Prime Promotions',
+      category: CategoryTypes.CHANNEL,
+      keywords: ['ad', 'prime', 'promotions', 'block'],
+    }),
+]);

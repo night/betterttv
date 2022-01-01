@@ -19,9 +19,13 @@ function TimeoutHighlights() {
   );
 }
 
-export default registerComponent(TimeoutHighlights, {
-  settingId: SettingIds.TIMEOUT_HIGHLIGHTS,
-  name: 'Timeout Highlights',
-  category: CategoryTypes.CHAT,
-  keywords: ['time', 'out', 'highlights'],
-});
+loadModuleForPlatforms([
+  PlatformTypes.TWITCH,
+  () =>
+    registerComponent(TimeoutHighlights, {
+      settingId: SettingIds.TIMEOUT_HIGHLIGHTS,
+      name: 'Timeout Highlights',
+      category: CategoryTypes.CHAT,
+      keywords: ['time', 'out', 'highlights'],
+    }),
+]);

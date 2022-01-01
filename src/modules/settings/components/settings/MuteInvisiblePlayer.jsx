@@ -21,9 +21,13 @@ function MuteInvisiblePlayer() {
   );
 }
 
-export default registerComponent(MuteInvisiblePlayer, {
-  settingId: SettingIds.MUTE_INVISIBLE_PLAYER,
-  name: 'Mute Invisible Player',
-  category: CategoryTypes.CHANNEL,
-  keywords: ['mute', 'invisible', 'player', 'video'],
-});
+loadModuleForPlatforms([
+  PlatformTypes.TWITCH,
+  () =>
+    registerComponent(MuteInvisiblePlayer, {
+      settingId: SettingIds.MUTE_INVISIBLE_PLAYER,
+      name: 'Mute Invisible Player',
+      category: CategoryTypes.CHANNEL,
+      keywords: ['mute', 'invisible', 'player', 'video'],
+    }),
+]);

@@ -19,9 +19,13 @@ function ShowDirectoryLiveTab() {
   );
 }
 
-export default registerComponent(ShowDirectoryLiveTab, {
-  settingId: SettingIds.SHOW_DIRECTORY_LIVE_TAB,
-  name: 'Directory Live Tab',
-  category: CategoryTypes.DIRECTORY,
-  keywords: ['live', 'tab'],
-});
+loadModuleForPlatforms([
+  PlatformTypes.TWITCH,
+  () =>
+    registerComponent(ShowDirectoryLiveTab, {
+      settingId: SettingIds.SHOW_DIRECTORY_LIVE_TAB,
+      name: 'Directory Live Tab',
+      category: CategoryTypes.DIRECTORY,
+      keywords: ['live', 'tab'],
+    }),
+]);

@@ -19,9 +19,13 @@ function HostButton() {
   );
 }
 
-export default registerComponent(HostButton, {
-  settingId: SettingIds.HOST_BUTTON,
-  name: 'Host Button',
-  category: CategoryTypes.CHANNEL,
-  keywords: ['host', 'button'],
-});
+loadModuleForPlatforms([
+  PlatformTypes.TWITCH,
+  () =>
+    registerComponent(HostButton, {
+      settingId: SettingIds.HOST_BUTTON,
+      name: 'Host Button',
+      category: CategoryTypes.CHANNEL,
+      keywords: ['host', 'button'],
+    }),
+]);

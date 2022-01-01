@@ -19,9 +19,13 @@ function HighlightFeedback() {
   );
 }
 
-export default registerComponent(HighlightFeedback, {
-  settingId: SettingIds.HIGHLIGHT_FEEDBACK,
-  name: 'Highlight Feedback',
-  category: CategoryTypes.CHAT,
-  keywords: ['highlight', 'feedback'],
-});
+loadModuleForPlatforms([
+  PlatformTypes.TWITCH,
+  () =>
+    registerComponent(HighlightFeedback, {
+      settingId: SettingIds.HIGHLIGHT_FEEDBACK,
+      name: 'Highlight Feedback',
+      category: CategoryTypes.CHAT,
+      keywords: ['highlight', 'feedback'],
+    }),
+]);

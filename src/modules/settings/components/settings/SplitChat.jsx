@@ -19,9 +19,13 @@ function SplitChat() {
   );
 }
 
-export default registerComponent(SplitChat, {
-  settingId: SettingIds.SPLIT_CHAT,
-  name: 'Split Chat',
-  category: CategoryTypes.CHAT,
-  keywords: ['split', 'chat'],
-});
+loadModuleForPlatforms([
+  PlatformTypes.TWITCH,
+  () =>
+    registerComponent(SplitChat, {
+      settingId: SettingIds.SPLIT_CHAT,
+      name: 'Split Chat',
+      category: CategoryTypes.CHAT,
+      keywords: ['split', 'chat'],
+    }),
+]);

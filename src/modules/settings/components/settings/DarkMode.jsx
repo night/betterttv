@@ -19,9 +19,13 @@ function DarkMode() {
   );
 }
 
-export default registerComponent(DarkMode, {
-  settingId: SettingIds.DARKENED_MODE,
-  name: 'Dark Mode',
-  category: CategoryTypes.CHANNEL,
-  keywords: ['dark', 'mode', 'light', 'theme', 'white', 'black'],
-});
+loadModuleForPlatforms([
+  PlatformTypes.TWITCH,
+  () =>
+    registerComponent(DarkMode, {
+      settingId: SettingIds.DARKENED_MODE,
+      name: 'Dark Mode',
+      category: CategoryTypes.CHANNEL,
+      keywords: ['dark', 'mode', 'light', 'theme', 'white', 'black'],
+    }),
+]);

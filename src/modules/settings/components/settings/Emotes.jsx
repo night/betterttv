@@ -36,9 +36,25 @@ function EmotesModule() {
   );
 }
 
-export default registerComponent(EmotesModule, {
-  settingId: SettingIds.EMOTES,
-  name: 'Emotes',
-  category: CategoryTypes.CHAT,
-  keywords: ['bttv', 'ffz', 'betterttv', 'frankerfacez', 'animated', 'gif', 'images', 'emotes'],
-});
+loadModuleForPlatforms(
+  [
+    PlatformTypes.TWITCH,
+    () =>
+      registerComponent(EmotesModule, {
+        settingId: SettingIds.EMOTES,
+        name: 'Emotes',
+        category: CategoryTypes.CHAT,
+        keywords: ['bttv', 'ffz', 'betterttv', 'frankerfacez', 'animated', 'gif', 'images', 'emotes'],
+      }),
+  ],
+  [
+    PlatformTypes.YOUTUBE,
+    () =>
+      registerComponent(EmotesModule, {
+        settingId: SettingIds.EMOTES,
+        name: 'Emotes',
+        category: CategoryTypes.CHAT,
+        keywords: ['bttv', 'ffz', 'betterttv', 'frankerfacez', 'animated', 'gif', 'images', 'emotes'],
+      }),
+  ]
+);

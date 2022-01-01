@@ -19,9 +19,13 @@ function ReverseChatDirection() {
   );
 }
 
-export default registerComponent(ReverseChatDirection, {
-  settingId: SettingIds.REVERSE_CHAT_DIRECTION,
-  name: 'Chat Direction',
-  category: CategoryTypes.CHAT,
-  keywords: ['chat', 'direction', 'up', 'down', 'reverse'],
-});
+loadModuleForPlatforms([
+  PlatformTypes.TWITCH,
+  () =>
+    registerComponent(ReverseChatDirection, {
+      settingId: SettingIds.REVERSE_CHAT_DIRECTION,
+      name: 'Chat Direction',
+      category: CategoryTypes.CHAT,
+      keywords: ['chat', 'direction', 'up', 'down', 'reverse'],
+    }),
+]);

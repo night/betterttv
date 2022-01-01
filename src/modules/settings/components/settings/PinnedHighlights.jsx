@@ -19,9 +19,13 @@ function PinnedHighlights() {
   );
 }
 
-export default registerComponent(PinnedHighlights, {
-  settingId: SettingIds.PINNED_HIGHLIGHTS,
-  name: 'Pinned Highlights',
-  category: CategoryTypes.CHAT,
-  keywords: ['pinned', 'highlights'],
-});
+loadModuleForPlatforms([
+  PlatformTypes.TWITCH,
+  () =>
+    registerComponent(PinnedHighlights, {
+      settingId: SettingIds.PINNED_HIGHLIGHTS,
+      name: 'Pinned Highlights',
+      category: CategoryTypes.CHAT,
+      keywords: ['pinned', 'highlights'],
+    }),
+]);

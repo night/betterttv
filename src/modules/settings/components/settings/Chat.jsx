@@ -52,9 +52,13 @@ function ChatModule() {
   );
 }
 
-export default registerComponent(ChatModule, {
-  settingId: SettingIds.CHAT,
-  name: 'Chat',
-  category: CategoryTypes.CHAT,
-  keywords: ['bits', 'highlights', 'community', 'chat', 'replies', 'clips', 'subs', 'subscriptions'],
-});
+loadModuleForPlatforms([
+  PlatformTypes.TWITCH,
+  () =>
+    registerComponent(ChatModule, {
+      settingId: SettingIds.CHAT,
+      name: 'Chat',
+      category: CategoryTypes.CHAT,
+      keywords: ['bits', 'highlights', 'community', 'chat', 'replies', 'clips', 'subs', 'subscriptions'],
+    }),
+]);

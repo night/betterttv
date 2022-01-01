@@ -38,9 +38,13 @@ function UsernamesModule() {
   );
 }
 
-export default registerComponent(UsernamesModule, {
-  settingId: SettingIds.USERNAMES,
-  name: 'Chat Usernames',
-  category: CategoryTypes.CHAT,
-  keywords: ['color', 'username', 'accessibility', 'readability'],
-});
+loadModuleForPlatforms([
+  PlatformTypes.TWITCH,
+  () =>
+    registerComponent(UsernamesModule, {
+      settingId: SettingIds.USERNAMES,
+      name: 'Chat Usernames',
+      category: CategoryTypes.CHAT,
+      keywords: ['color', 'username', 'accessibility', 'readability'],
+    }),
+]);

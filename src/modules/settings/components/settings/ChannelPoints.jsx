@@ -36,9 +36,13 @@ function ChannelPointsModule() {
   );
 }
 
-export default registerComponent(ChannelPointsModule, {
-  settingId: SettingIds.CHANNEL_POINTS,
-  name: 'Channel Points',
-  category: CategoryTypes.CHAT,
-  keywords: ['channel', 'points', 'auto', 'claim'],
-});
+loadModuleForPlatforms([
+  PlatformTypes.TWITCH,
+  () =>
+    registerComponent(ChannelPointsModule, {
+      settingId: SettingIds.CHANNEL_POINTS,
+      name: 'Channel Points',
+      category: CategoryTypes.CHAT,
+      keywords: ['channel', 'points', 'auto', 'claim'],
+    }),
+]);

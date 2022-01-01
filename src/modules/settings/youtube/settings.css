@@ -1,0 +1,88 @@
+#bttvSettingsPanel {
+  #logo {
+    padding: 10px;
+    vertical-align: bottom;
+    text-shadow: 1px 1px 3px #000000;
+    font-size: 25px;
+    font-family: 'Korolev-Bold', 'HelveticaNeue-CondensedBold', 'ArialNarrow-Bold', 'Helvetica Neue', Helvetica, Arial,
+      sans-serif;
+  }
+}
+
+.bttvSettingsDropDownWrapper {
+  position: relative !important;
+  width: 100% !important;
+}
+
+.bttvSettingsDropDown {
+  border-radius: var(--border-radius-medium);
+  display: block;
+  width: 100%;
+  color: inherit;
+
+  .dropdownContainer {
+    display: flex !important;
+    -webkit-box-align: center !important;
+    align-items: center !important;
+    position: relative !important;
+    padding: 0.5rem !important;
+
+    .dropdownIcon {
+      display: flex !important;
+      -webkit-box-align: center !important;
+      align-items: center !important;
+      padding-right: 0.5rem !important;
+      flex-shrink: 0 !important;
+
+      .dropdownIconContainer {
+        display: inline-flex;
+        -webkit-box-align: center;
+        align-items: center;
+        width: 18px;
+        height: 18px;
+      }
+
+      .dropdownIconAspect {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+
+        .dropdownIconSpacer {
+          padding-bottom: 100%;
+        }
+
+        > :not(.dropdownIconSpacer) {
+          position: absolute;
+          left: 0px;
+          width: 100%;
+          min-height: 100%;
+          top: 0px;
+        }
+      }
+    }
+
+    .dropdownLabel {
+      -webkit-box-flex: 1 !important;
+      flex-grow: 1 !important;
+    }
+  }
+
+  &:hover {
+    color: inherit;
+    text-decoration: none;
+    background-color: var(--color-background-interactable-hover);
+  }
+
+  .bttvSettingsIconDropDown {
+    width: 18px;
+    height: 18px;
+    filter: grayscale(100%) brightness(0%);
+    background: url(assets/icons/bttv_settings.png) no-repeat 0 0px;
+  }
+}
+
+.tw-root--theme-dark {
+  .bttvSettingsIconDropDown {
+    filter: grayscale(100%) brightness(400%);
+  }
+}

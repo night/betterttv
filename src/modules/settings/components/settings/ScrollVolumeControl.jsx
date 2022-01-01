@@ -19,9 +19,13 @@ function ScrollVolumeControl() {
   );
 }
 
-export default registerComponent(ScrollVolumeControl, {
-  settingId: SettingIds.SCROLL_VOLUME_CONTROL,
-  name: 'Scroll Volume Control',
-  category: CategoryTypes.CHAT,
-  keywords: ['volume', 'control', 'scroll'],
-});
+loadModuleForPlatforms([
+  PlatformTypes.TWITCH,
+  () =>
+    registerComponent(ScrollVolumeControl, {
+      settingId: SettingIds.SCROLL_VOLUME_CONTROL,
+      name: 'Scroll Volume Control',
+      category: CategoryTypes.CHAT,
+      keywords: ['volume', 'control', 'scroll'],
+    }),
+]);

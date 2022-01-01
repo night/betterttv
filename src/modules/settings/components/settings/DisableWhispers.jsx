@@ -19,9 +19,13 @@ function DisableWhispers() {
   );
 }
 
-export default registerComponent(DisableWhispers, {
-  settingId: SettingIds.WHISPERS,
-  name: 'Whispers',
-  category: CategoryTypes.CHAT,
-  keywords: ['whispers', 'direct', 'messages'],
-});
+loadModuleForPlatforms([
+  PlatformTypes.TWITCH,
+  () =>
+    registerComponent(DisableWhispers, {
+      settingId: SettingIds.WHISPERS,
+      name: 'Whispers',
+      category: CategoryTypes.CHAT,
+      keywords: ['whispers', 'direct', 'messages'],
+    }),
+]);

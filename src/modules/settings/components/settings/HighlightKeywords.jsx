@@ -49,9 +49,13 @@ function HighlightKeywords() {
   );
 }
 
-export default registerComponent(HighlightKeywords, {
-  settingId: SettingIds.HIGHLIGHT_KEYWORDS,
-  name: 'Highlight Keywords',
-  category: CategoryTypes.CHAT,
-  keywords: ['keywords', 'highlight'],
-});
+loadModuleForPlatforms([
+  PlatformTypes.TWITCH,
+  () =>
+    registerComponent(HighlightKeywords, {
+      settingId: SettingIds.HIGHLIGHT_KEYWORDS,
+      name: 'Highlight Keywords',
+      category: CategoryTypes.CHAT,
+      keywords: ['keywords', 'highlight'],
+    }),
+]);

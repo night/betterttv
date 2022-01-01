@@ -19,9 +19,13 @@ function HidePlayerExtensions() {
   );
 }
 
-export default registerComponent(HidePlayerExtensions, {
-  settingId: SettingIds.PLAYER_EXTENSIONS,
-  name: 'Player Extensions',
-  category: CategoryTypes.CHANNEL,
-  keywords: ['player', 'extensions', 'addons'],
-});
+loadModuleForPlatforms([
+  PlatformTypes.TWITCH,
+  () =>
+    registerComponent(HidePlayerExtensions, {
+      settingId: SettingIds.PLAYER_EXTENSIONS,
+      name: 'Player Extensions',
+      category: CategoryTypes.CHANNEL,
+      keywords: ['player', 'extensions', 'addons'],
+    }),
+]);

@@ -19,9 +19,13 @@ function ClickToPlay() {
   );
 }
 
-export default registerComponent(ClickToPlay, {
-  settingId: SettingIds.CLICK_TO_PLAY,
-  name: 'Click to Play',
-  category: CategoryTypes.CHANNEL,
-  keywords: ['click', 'play', 'player'],
-});
+loadModuleForPlatforms([
+  PlatformTypes.TWITCH,
+  () =>
+    registerComponent(ClickToPlay, {
+      settingId: SettingIds.CLICK_TO_PLAY,
+      name: 'Click to Play',
+      category: CategoryTypes.CHANNEL,
+      keywords: ['click', 'play', 'player'],
+    }),
+]);

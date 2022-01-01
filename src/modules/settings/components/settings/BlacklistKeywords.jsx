@@ -48,9 +48,13 @@ function BlacklistKeywords() {
   );
 }
 
-export default registerComponent(BlacklistKeywords, {
-  settingId: SettingIds.BLACKLIST_KEYWORDS,
-  name: 'Blacklist Keywords',
-  category: CategoryTypes.CHAT,
-  keywords: ['black', 'list', 'keywords', 'banned', 'remove', 'hide'],
-});
+loadModuleForPlatforms([
+  PlatformTypes.TWITCH,
+  () =>
+    registerComponent(BlacklistKeywords, {
+      settingId: SettingIds.BLACKLIST_KEYWORDS,
+      name: 'Blacklist Keywords',
+      category: CategoryTypes.CHAT,
+      keywords: ['black', 'list', 'keywords', 'banned', 'remove', 'hide'],
+    }),
+]);

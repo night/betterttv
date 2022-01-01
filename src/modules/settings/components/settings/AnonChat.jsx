@@ -19,9 +19,13 @@ function AnonChat() {
   );
 }
 
-export default registerComponent(AnonChat, {
-  settingId: SettingIds.ANON_CHAT,
-  name: 'Anon Chat',
-  category: CategoryTypes.CHAT,
-  keywords: ['anon', 'chat'],
-});
+loadModuleForPlatforms([
+  PlatformTypes.TWITCH,
+  () =>
+    registerComponent(AnonChat, {
+      settingId: SettingIds.ANON_CHAT,
+      name: 'Anon Chat',
+      category: CategoryTypes.CHAT,
+      keywords: ['anon', 'chat'],
+    }),
+]);

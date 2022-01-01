@@ -36,9 +36,13 @@ function ChatLayout() {
   );
 }
 
-export default registerComponent(ChatLayout, {
-  settingId: SettingIds.CHAT_LAYOUT,
-  name: 'Chat Layout',
-  category: CategoryTypes.CHAT,
-  keywords: ['chat', 'layout', 'position', 'placement', 'left', 'right'],
-});
+loadModuleForPlatforms([
+  PlatformTypes.TWITCH,
+  () =>
+    registerComponent(ChatLayout, {
+      settingId: SettingIds.CHAT_LAYOUT,
+      name: 'Chat Layout',
+      category: CategoryTypes.CHAT,
+      keywords: ['chat', 'layout', 'position', 'placement', 'left', 'right'],
+    }),
+]);

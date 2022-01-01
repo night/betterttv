@@ -19,9 +19,25 @@ function EmoteMenu() {
   );
 }
 
-export default registerComponent(EmoteMenu, {
-  settingId: SettingIds.EMOTE_MENU,
-  name: 'Emote Menu',
-  category: CategoryTypes.CHAT,
-  keywords: ['twitch', 'emotes', 'popup'],
-});
+loadModuleForPlatforms(
+  [
+    PlatformTypes.TWITCH,
+    () =>
+      registerComponent(EmoteMenu, {
+        settingId: SettingIds.EMOTE_MENU,
+        name: 'Emote Menu',
+        category: CategoryTypes.CHAT,
+        keywords: ['twitch', 'emotes', 'popup'],
+      }),
+  ],
+  [
+    PlatformTypes.YOUTUBE,
+    () =>
+      registerComponent(EmoteMenu, {
+        settingId: SettingIds.EMOTE_MENU,
+        name: 'Emote Menu',
+        category: CategoryTypes.CHAT,
+        keywords: ['twitch', 'emotes', 'popup'],
+      }),
+  ]
+);

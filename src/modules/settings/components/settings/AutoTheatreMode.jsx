@@ -19,9 +19,13 @@ function AutoTheatreMode() {
   );
 }
 
-export default registerComponent(AutoTheatreMode, {
-  settingId: SettingIds.AUTO_THEATRE_MODE,
-  name: 'Auto Theatre Mode',
-  category: CategoryTypes.CHANNEL,
-  keywords: ['auto', 'theatre', 'mode'],
-});
+loadModuleForPlatforms([
+  PlatformTypes.TWITCH,
+  () =>
+    registerComponent(AutoTheatreMode, {
+      settingId: SettingIds.AUTO_THEATRE_MODE,
+      name: 'Auto Theatre Mode',
+      category: CategoryTypes.CHANNEL,
+      keywords: ['auto', 'theatre', 'mode'],
+    }),
+]);

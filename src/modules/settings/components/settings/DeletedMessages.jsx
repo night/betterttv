@@ -42,9 +42,13 @@ function DeletedMessagesModule() {
   );
 }
 
-export default registerComponent(DeletedMessagesModule, {
-  settingId: SettingIds.DELETED_MESSAGES,
-  name: 'Deleted Messages',
-  category: CategoryTypes.CHAT,
-  keywords: ['messages', 'deleted'],
-});
+loadModuleForPlatforms([
+  PlatformTypes.TWITCH,
+  () =>
+    registerComponent(DeletedMessagesModule, {
+      settingId: SettingIds.DELETED_MESSAGES,
+      name: 'Deleted Messages',
+      category: CategoryTypes.CHAT,
+      keywords: ['messages', 'deleted'],
+    }),
+]);

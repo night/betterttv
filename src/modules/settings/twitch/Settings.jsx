@@ -1,8 +1,8 @@
 import $ from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Modal from './components/Window.jsx';
-import domObserver from '../../observers/dom.js';
+import Modal from '../components/Window.jsx';
+import domObserver from '../../../observers/dom.js';
 
 let handleOpen;
 function setHandleOpen(newHandleOpen) {

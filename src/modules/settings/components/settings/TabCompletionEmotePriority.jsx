@@ -19,9 +19,13 @@ function TabCompletionEmotePriority() {
   );
 }
 
-export default registerComponent(TabCompletionEmotePriority, {
-  settingId: SettingIds.TAB_COMPLETION_EMOTE_PRIORITY,
-  name: 'Tab Completion Emote Priority',
-  category: CategoryTypes.CHAT,
-  keywords: ['tab', 'completion', 'emote', 'priority'],
-});
+loadModuleForPlatforms([
+  PlatformTypes.TWITCH,
+  () =>
+    registerComponent(TabCompletionEmotePriority, {
+      settingId: SettingIds.TAB_COMPLETION_EMOTE_PRIORITY,
+      name: 'Tab Completion Emote Priority',
+      category: CategoryTypes.CHAT,
+      keywords: ['tab', 'completion', 'emote', 'priority'],
+    }),
+]);
