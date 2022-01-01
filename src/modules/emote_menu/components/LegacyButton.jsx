@@ -59,7 +59,7 @@ export default function LegacyButton({appendToChat, className, boundingQuerySele
       onOpen={() => setWhisperOpen(true)}
       onClose={() => setWhisperOpen(false)}
       trigger="click"
-      placement={false} // this throws a warning but is nessecary to stop rsuite from auto-respositioning
+      placement={false} // this throws a warning but is necessary to stop rsuite from auto-respositioning
       speaker={
         <EmoteMenuPopover
           toggleWhisper={toggleWhisper}
