@@ -22,6 +22,7 @@
 
 .headerIcon {
   display: flex;
+  width: 20px;
   align-items: center;
 
   svg {
