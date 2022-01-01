@@ -27,8 +27,8 @@ export const Types = {
   DROPDOWN: 2,
 };
 
-const MenuPopover = React.forwardRef(({options, onSelect, ...rest}, ref) => (
-  <Popover {...rest} ref={ref} full>
+const MenuPopover = React.forwardRef(({options, onSelect, ...props}, ref) => (
+  <Popover {...props} ref={ref} full>
     <Dropdown.Menu onSelect={onSelect}>
       {options.map((option) => (
         <Dropdown.Item key={option.value} eventKey={option.value}>

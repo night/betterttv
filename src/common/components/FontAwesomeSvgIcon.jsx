@@ -1,8 +1,8 @@
 import React from 'react';
 
-export default function FontAwesomeSvgIcon({fontAwesomeIcon: {width, height, svgPathData}, ...rest}) {
+export default function FontAwesomeSvgIcon({fontAwesomeIcon: {width, height, svgPathData}, ...restProps}) {
   return (
-    <svg {...rest} viewBox={`0 0 ${width} ${height}`} fill="currentColor">
+    <svg {...restProps} viewBox={`0 0 ${width} ${height}`} fill="currentColor">
       <path d={svgPathData} />
     </svg>
   );
