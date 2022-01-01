@@ -168,13 +168,6 @@ export default async (env, argv) => {
                 },
               },
             },
-            // {
-            //   loader: 'string-replace-loader',
-            //   options: {
-            //     search: 'FONT-PATH-PLACEHOLDER',
-            //     replace: `${CDN_ENDPOINT}assets/fonts`,
-            //   },
-            // },
           ],
         },
         {
