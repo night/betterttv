@@ -30,12 +30,15 @@ function Page(props) {
 }
 
 function isWindowSmallStandaloneChat() {
-  return window.innerWidth < 600 && window.location.pathname.endsWith('/chat');
+  return (
+    (window.innerWidth < 600 && window.location.pathname.endsWith('/chat')) ||
+    window.location.pathname.endsWith('/live_chat')
+  );
 }
 
 function Window({setHandleOpen}) {
   const [page, setPage] = useState(PageTypes.CHAT_SETTINGS);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [isSmallStandaloneChat, setStandaloneChat] = useState(isWindowSmallStandaloneChat());
 
   useEffect(() => {
