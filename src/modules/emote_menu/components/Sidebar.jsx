@@ -54,7 +54,7 @@ export default function Sidebar({section, onChange, categories}) {
               <Nav.Item
                 active={isActive}
                 icon={<div className={styles.navItemContent}>{category.icon}</div>}
-                className={classNames({[styles.active]: isActive, [styles.navItem]: true})}
+                className={classNames(styles.navItem, {[styles.active]: isActive})}
               />
             </Whisper>
           );
