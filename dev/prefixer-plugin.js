@@ -25,16 +25,13 @@ export default class PrefixerPlugin {
         },
         (assets) => {
           for (const [pathname, source] of Object.entries(assets)) {
-            const {replaceClassnamePrefixRegex, newClassnamePrefix} = this.options;
+            const {oldClassNamePrefix, newClassnamePrefix} = this.options;
             let classnameRegex;
 
             if (pathname.endsWith('.css')) {
-              classnameRegex = new RegExp(`(\\.|--)(${escapeRegExp(replaceClassnamePrefixRegex)})(,|-|{|\\s)`, 'gm');
+              classnameRegex = new RegExp(`(\\.|--)(${escapeRegExp(oldClassNamePrefix)})(,|-|{|\\s)`, 'gm');
             } else if (pathname.endsWith('.js')) {
-              classnameRegex = new RegExp(
-                `(\\.|'|\`|")(${escapeRegExp(replaceClassnamePrefixRegex)})(-|'|"|\`|\\s)`,
-                'gm'
-              );
+              classnameRegex = new RegExp(`(\\.|'|\`|")(${escapeRegExp(oldClassNamePrefix)})(-|'|"|\`|\\s)`, 'gm');
             }
 
             if (classnameRegex == null) {
