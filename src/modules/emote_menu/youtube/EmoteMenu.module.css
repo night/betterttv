@@ -31,12 +31,6 @@
 
     .bttv-rs-nav-item.bttv-rs-nav-item-active {
       color: rgba(255, 255, 255, 1);
-
-      /* &:hover,
-      &:active,
-      &:focus {
-        color: rgba(255, 255, 255, 1);
-      } */
     }
 
     .bttv-rs-input-group:not(.bttv-rs-input-group-disabled):hover,
