@@ -48,7 +48,7 @@ function BTTVSidenav({value, onChange}) {
             <p>Changelog</p>
           </Nav.Item>
         </Nav>
-        <Nav pullRight className={styles.bottom}>
+        <Nav pullRight activeKey={value} onSelect={onChange} className={styles.bottom}>
           <Nav.Item eventKey={PageTypes.ABOUT} icon={<Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faInfoCircle} />}>
             <p>About</p>
           </Nav.Item>
