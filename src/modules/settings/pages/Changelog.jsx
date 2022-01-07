@@ -11,7 +11,7 @@ import CloseButton from '../components/CloseButton.jsx';
 
 const EXTENSION_VERSION = process.env.EXT_VER;
 
-function Changelog({onHide}) {
+function Changelog({onClose}) {
   const [{loading, changelogEntries}, setRequestState] = useState({
     loading: true,
     changelogEntries: null,
@@ -83,7 +83,7 @@ function Changelog({onHide}) {
         </PanelGroup>
       </div>
       <div className={styles.header}>
-        <CloseButton onHide={onHide} className={styles.closeButton} />
+        <CloseButton onClose={onClose} className={styles.closeButton} />
       </div>
     </>
   );

@@ -34,7 +34,7 @@ function Header({value, onChange, toggleWhisper, selected, ...props}) {
       <IconButton
         icon={<Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faTimes} />}
         appearance="subtle"
-        onClick={() => toggleWhisper()}
+        onClick={toggleWhisper}
       />
     </div>
   );
@@ -42,5 +42,8 @@ function Header({value, onChange, toggleWhisper, selected, ...props}) {
 
 export default React.memo(
   Header,
-  (oldProps, newProps) => oldProps.selected === newProps.selected && newProps.value === oldProps.value
+  (oldProps, newProps) =>
+    oldProps.selected === newProps.selected &&
+    newProps.value === oldProps.value &&
+    newProps.toggleWhisper === oldProps.toggleWhisper
 );

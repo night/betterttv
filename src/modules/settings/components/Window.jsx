@@ -52,7 +52,7 @@ function Window({setHandleOpen}) {
   }, []);
 
   if (isSmallStandaloneChat) {
-    return <ChatWindow show={open} onHide={() => setOpen(false)} />;
+    return <ChatWindow open={open} onClose={() => setOpen(false)} />;
   }
 
   return (
@@ -67,7 +67,7 @@ function Window({setHandleOpen}) {
             setPage(value);
           }}
         />
-        <Page page={page} onHide={() => setOpen(false)} />
+        <Page page={page} onClose={() => setOpen(false)} />
       </Modal>
     </CustomProvider>
   );
