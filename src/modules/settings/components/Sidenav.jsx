@@ -18,10 +18,10 @@ import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.js
 
 function BTTVSidenav({value, onChange}) {
   return (
-    <Sidenav className={styles.sidenav} activeKey={value} onSelect={onChange} expanded={false}>
+    <Sidenav className={styles.sidenav} expanded={false}>
       <Sidenav.Body>
         <img alt="BetterTTV Logo" src={cdn.url('/assets/logos/mascot.png')} className={styles.logo} />
-        <Nav className={styles.nav}>
+        <Nav activeKey={value} onSelect={onChange} className={styles.nav}>
           <Nav.Item
             eventKey={PageTypes.CHAT_SETTINGS}
             icon={<Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faCommentAlt} />}>
