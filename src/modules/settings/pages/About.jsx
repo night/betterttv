@@ -45,7 +45,7 @@ function backupFile() {
   saveAs(new Blob([JSON.stringify(rv)], {type: 'application/json;charset=utf-8'}), 'bttv_settings.backup');
 }
 
-function About({onHide}) {
+function About({onClose}) {
   const fileImportRef = useRef(null);
   const [importing, setImporting] = useState(false);
   const [resetting, setResetting] = useState(false);
@@ -214,7 +214,7 @@ function About({onHide}) {
         </PanelGroup>
       </div>
       <div className={header.header}>
-        <CloseButton onHide={onHide} className={header.closeButton} />
+        <CloseButton onClose={onClose} className={header.closeButton} />
       </div>
     </>
   );

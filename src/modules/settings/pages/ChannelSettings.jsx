@@ -6,7 +6,7 @@ import {CategoryTypes} from '../../../constants.js';
 import styles from '../styles/header.module.css';
 import CloseButton from '../components/CloseButton.jsx';
 
-function ChannelSettings({onHide}) {
+function ChannelSettings({onClose}) {
   const [search, setSearch] = useState('');
 
   return (
@@ -21,7 +21,7 @@ function ChannelSettings({onHide}) {
             placeholder="Search Channel Settings..."
             onChange={(newValue) => setSearch(newValue)}
           />
-          <CloseButton onHide={onHide} />
+          <CloseButton onClose={onClose} />
         </div>
       </div>
     </>

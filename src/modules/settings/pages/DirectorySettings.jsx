@@ -6,7 +6,7 @@ import {CategoryTypes} from '../../../constants.js';
 import styles from '../styles/header.module.css';
 import CloseButton from '../components/CloseButton.jsx';
 
-function DirectorySettings({onHide}) {
+function DirectorySettings({onClose}) {
   const [search, setSearch] = useState('');
 
   return (
@@ -21,7 +21,7 @@ function DirectorySettings({onHide}) {
             placeholder="Search Directory Settings..."
             onChange={(newValue) => setSearch(newValue)}
           />
-          <CloseButton onHide={onHide} />
+          <CloseButton onClose={onClose} />
         </div>
       </div>
     </>
