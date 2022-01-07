@@ -11,7 +11,7 @@ export default function CloseButton(props) {
     <div {...restProps}>
       <IconButton
         icon={<Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faTimes} />}
-        onClick={() => onClose()}
+        onClick={onClose}
         appearance="subtle"
       />
     </div>
