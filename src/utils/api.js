@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import querystring from 'querystring';
 import HTTPError from './http-error.js';
 
 const API_ENDPOINT = 'https://api.betterttv.net/3/';
@@ -7,7 +6,7 @@ const API_ENDPOINT = 'https://api.betterttv.net/3/';
 function request(method, path, options = {}) {
   return new Promise((resolve, reject) => {
     $.ajax({
-      url: `${API_ENDPOINT}${path}${options.qs ? `?${querystring.stringify(options.qs)}` : ''}`,
+      url: `${API_ENDPOINT}${path}${options.qs ? `?${new URLSearchParams(options.qs).toString()}` : ''}`,
       method,
       dataType: options.dataType || 'json',
       data: options.body ? JSON.stringify(options.body) : undefined,
