@@ -1,87 +1,87 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import classNames from 'classnames';
-import Popover from 'rsuite/lib/Popover/index.js';
+import mergeRefs from 'react-merge-refs';
+import {CustomProvider, Popover} from 'rsuite';
 import EmoteMenu from './EmoteMenu.jsx';
 import styles from './EmoteMenuPopover.module.css';
 
 const TOP_PADDING = 2;
 
-export default function EmoteMenuPopover({
-  triggerRef,
-  appendToChat,
-  className,
-  style,
-  htmlElementRef,
-  boundingQuerySelector,
-  ...props
-}) {
-  const [hasTip, setTip] = useState(false);
+const EmoteMenuPopover = React.forwardRef(
+  ({toggleWhisper, appendToChat, className, style, boundingQuerySelector, whisperOpen, ...props}, ref) => {
+    const [hasTip, setTip] = useState(false);
+    const localRef = useRef(null);
 
-  function handleSetTip(show) {
-    if ((show && hasTip) || (!show && !hasTip)) {
-      return;
+    function handleSetTip(show) {
+      if ((show && hasTip) || (!show && !hasTip)) {
+        return;
+      }
+
+      setTip(show);
     }
 
-    setTip(show);
-  }
+    function repositionPopover() {
+      const popoverElement = localRef.current;
+      if (popoverElement == null) {
+        return;
+      }
 
-  function repositionPopover() {
-    const popoverElement = htmlElementRef.current;
-    if (popoverElement == null) {
-      return;
+      const chatTextArea = document.querySelector(boundingQuerySelector);
+      if (chatTextArea == null) {
+        return;
+      }
+
+      const {x, y} = chatTextArea.getBoundingClientRect();
+      const rightX = x + chatTextArea.offsetWidth;
+
+      const popoverTop = `${y - popoverElement.offsetHeight - TOP_PADDING}px`;
+      const wantedPopoverLeft = rightX - popoverElement.offsetWidth;
+      const popoverLeft = `${wantedPopoverLeft < 0 ? x : wantedPopoverLeft}px`;
+
+      if (popoverTop !== popoverElement.style.top) {
+        popoverElement.style.top = popoverTop;
+      }
+      if (popoverLeft !== popoverElement.style.left) {
+        popoverElement.style.left = popoverLeft;
+      }
     }
 
-    const chatTextArea = document.querySelector(boundingQuerySelector);
-    if (chatTextArea == null) {
-      return;
-    }
-
-    const {x, y} = chatTextArea.getBoundingClientRect();
-    const rightX = x + chatTextArea.offsetWidth;
-
-    const popoverTop = `${y - popoverElement.offsetHeight - TOP_PADDING}px`;
-    const wantedPopoverLeft = rightX - popoverElement.offsetWidth;
-    const popoverLeft = `${wantedPopoverLeft < 0 ? x : wantedPopoverLeft}px`;
-
-    if (popoverTop !== popoverElement.style.top) {
-      popoverElement.style.top = popoverTop;
-    }
-    if (popoverLeft !== popoverElement.style.left) {
-      popoverElement.style.left = popoverLeft;
-    }
-  }
-
-  useEffect(() => {
-    repositionPopover();
-  }, [htmlElementRef, style, hasTip]);
-
-  useEffect(() => {
-    function handleResize() {
+    useEffect(() => {
       repositionPopover();
-      // Twitch animates chat moving on zoom changes
-      setTimeout(repositionPopover, 500);
-    }
+    }, [ref, style, hasTip]);
 
-    window.addEventListener('resize', handleResize);
+    useEffect(() => {
+      function handleResize() {
+        repositionPopover();
+        // Twitch animates chat moving on zoom changes
+        setTimeout(repositionPopover, 500);
+      }
 
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+      window.addEventListener('resize', handleResize);
 
-  return (
-    <Popover
-      className={classNames(className, styles.popover, hasTip ? styles.withTip : null)}
-      full
-      htmlElementRef={htmlElementRef}
-      {...props}>
-      <EmoteMenu
-        triggerRef={triggerRef}
-        appendToChat={(...args) => {
-          const result = appendToChat(...args);
-          repositionPopover();
-          return result;
-        }}
-        onSetTip={(show) => handleSetTip(show)}
-      />
-    </Popover>
-  );
-}
+      return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    return (
+      <CustomProvider theme="dark">
+        <Popover
+          {...props}
+          ref={mergeRefs([localRef, ref])}
+          className={classNames(className, styles.popover, hasTip ? styles.withTip : null)}
+          full>
+          <EmoteMenu
+            toggleWhisper={toggleWhisper}
+            appendToChat={(...args) => {
+              const result = appendToChat(...args);
+              repositionPopover();
+              return result;
+            }}
+            onSetTip={(show) => handleSetTip(show)}
+          />
+        </Popover>
+      </CustomProvider>
+    );
+  }
+);
+
+export default EmoteMenuPopover;

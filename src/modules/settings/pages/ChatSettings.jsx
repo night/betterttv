@@ -1,12 +1,12 @@
 import React, {useState} from 'react';
-import PanelGroup from 'rsuite/lib/PanelGroup/index.js';
+import PanelGroup from 'rsuite/PanelGroup';
 import classNames from 'classnames';
 import {Settings, Search} from '../components/Settings.jsx';
 import {CategoryTypes} from '../../../constants.js';
 import styles from '../styles/header.module.css';
 import CloseButton from '../components/CloseButton.jsx';
 
-function ChatSettings({onHide}) {
+function ChatSettings({onClose}) {
   const [search, setSearch] = useState('');
 
   return (
@@ -17,7 +17,7 @@ function ChatSettings({onHide}) {
       <div className={styles.header}>
         <div className={styles.flexHeader}>
           <Search value={search} placeholder="Search Chat Settings..." onChange={(newValue) => setSearch(newValue)} />
-          <CloseButton onHide={onHide} />
+          <CloseButton onClose={onClose} />
         </div>
       </div>
     </>
