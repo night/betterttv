@@ -22,13 +22,10 @@ import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.js
 const twitchGamingLogo = {
   prefix: 'custom',
   iconName: 'twitch',
-  icon: [
-    132,
-    102,
-    [],
-    null,
-    'M2.68,22.71V89.22s-.25,4.13,5.55,4.13h114.5s4.44.35,4.44-4.21V21.72l-26,27L64.92,13,30,48.7Z',
-  ],
+  svgPathData: 'M2.68,22.71V89.22s-.25,4.13,5.55,4.13h114.5s4.44.35,4.44-4.21V21.72l-26,27L64.92,13,30,48.7Z',
+  width: 132,
+  height: 102,
+  ligatures: [],
 };
 
 function BrandedImage({src, alt, brandSrc}) {
