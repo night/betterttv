@@ -11,7 +11,7 @@ writeFileSync(NORMALIZE_PATH, '');
 const OLD_CLASSNAME_PREFIX = 'rs';
 const NEW_CLASSNAME_PREFIX = 'bttv-rs';
 const files = glob
-  .sync('node_modules/*rsuite*/**/*!(.d).+(js|ts|tsx|less|css)')
+  .sync('node_modules/*rsuite*/**/*.+(js|ts|tsx|less|css)')
   .filter((pathname) => !pathname.endsWith('.d.ts'));
 for (const pathname of files) {
   const data = readFileSync(pathname).toString();
