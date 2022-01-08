@@ -1,12 +1,12 @@
 import React, {useState} from 'react';
-import PanelGroup from 'rsuite/lib/PanelGroup/index.js';
+import PanelGroup from 'rsuite/PanelGroup';
 import classNames from 'classnames';
 import {Settings, Search} from '../components/Settings.jsx';
 import {CategoryTypes} from '../../../constants.js';
 import styles from '../styles/header.module.css';
 import CloseButton from '../components/CloseButton.jsx';
 
-function ChannelSettings({onHide}) {
+function ChannelSettings({onClose}) {
   const [search, setSearch] = useState('');
 
   return (
@@ -21,7 +21,7 @@ function ChannelSettings({onHide}) {
             placeholder="Search Channel Settings..."
             onChange={(newValue) => setSearch(newValue)}
           />
-          <CloseButton onHide={onHide} />
+          <CloseButton onClose={onClose} />
         </div>
       </div>
     </>

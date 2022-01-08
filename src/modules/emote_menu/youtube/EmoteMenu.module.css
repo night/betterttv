@@ -15,8 +15,12 @@
       font-family: 'Helvetica Neue', Helvetica, Arial;
     }
 
-    .bttv-rs-nav .bttv-rs-nav-item-active > .bttv-rs-nav-item-content {
-      color: rgba(255, 255, 255, 1);
+    .bttv-rs-nav-subtle .bttv-rs-nav-item.bttv-rs-nav-item-active::before {
+      background-color: rgba(255, 255, 255, 1);
+    }
+
+    .bttv-rs-nav-subtle .bttv-rs-nav-item {
+      color: rgba(255, 255, 255, 0.5);
 
       &:hover,
       &:active,
@@ -25,16 +29,20 @@
       }
     }
 
-    .bttv-rs-nav-subtle.bttv-rs-nav-vertical .bttv-rs-nav-item > .bttv-rs-nav-item-content::before {
-      background-color: rgba(255, 255, 255, 0.5);
+    .bttv-rs-nav-item.bttv-rs-nav-item-active {
+      color: rgba(255, 255, 255, 1);
     }
 
-    .bttv-rs-input-group.bttv-rs-input-group-inside {
-      input:active,
-      input:focus,
-      input:hover {
-        border-color: rgba(255, 255, 255, 0.5);
-      }
+    .bttv-rs-input-group:not(.bttv-rs-input-group-disabled):hover,
+    .bttv-rs-input-group:not(.bttv-rs-input-group-disabled).bttv-rs-input-group-focus,
+    .bttv-rs-input-group:focus-within {
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .bttv-rs-input-group:not(.bttv-rs-input-group-disabled).bttv-rs-input-group-focus,
+    .bttv-rs-input-group:focus-within,
+    .bttv-rs-input:focus {
+      box-shadow: 0 0 3px rgba(255, 255, 255, 0.5);
     }
 
     .bttv-rs-btn-link {

@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useEffect, useRef, useCallback} from 'react';
 import classNames from 'classnames';
-import Whisper from 'rsuite/lib/Whisper/index.js';
+import Whisper from 'rsuite/Whisper';
 import EmoteMenuPopover from './EmoteMenuPopover.jsx';
 import {markTipAsSeen} from './Tip.jsx';
 import {EmoteMenuTips} from '../../../constants.js';
@@ -10,13 +10,18 @@ import keyCodes from '../../../utils/keycodes.js';
 import {isMac} from '../../../utils/window.js';
 import styles from './LegacyButton.module.css';
 
-export default function LegacyButton({appendToChat, setPopoverOpen, onClick, className, boundingQuerySelector}) {
-  const triggerRef = useRef(null);
+export default function LegacyButton({appendToChat, className, boundingQuerySelector}) {
   const [loaded, setLoaded] = useState(false);
+  const [whisperOpen, setWhisperOpen] = useState(false);
+  const whisperRef = useRef(null);
+
+  const toggleWhisper = useCallback(whisperOpen ? () => whisperRef.current.close() : () => whisperRef.current.open(), [
+    whisperOpen,
+    whisperRef,
+  ]);
 
   useEffect(() => {
     const callback = () => {
-      setPopoverOpen(triggerRef);
       setLoaded(true);
     };
 
@@ -39,27 +44,29 @@ export default function LegacyButton({appendToChat, setPopoverOpen, onClick, cla
       event.preventDefault();
 
       markTipAsSeen(EmoteMenuTips.EMOTE_MENU_HOTKEY);
-      onClick();
+
+      toggleWhisper();
     }
 
     window.addEventListener('keydown', handleKeyDown);
 
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [toggleWhisper]);
 
   return (
     <Whisper
-      trigger="active"
-      placement="auto"
-      onClick={onClick}
+      ref={whisperRef}
+      onOpen={() => setWhisperOpen(true)}
+      onClose={() => setWhisperOpen(false)}
+      trigger="click"
+      placement={null} // this throws a warning but is necessary to stop rsuite from auto-respositioning
       speaker={
         <EmoteMenuPopover
-          triggerRef={triggerRef}
+          toggleWhisper={toggleWhisper}
           appendToChat={appendToChat}
           boundingQuerySelector={boundingQuerySelector}
         />
-      }
-      triggerRef={triggerRef}>
+      }>
       <button type="button" className={classNames(styles.button, className)} />
     </Whisper>
   );

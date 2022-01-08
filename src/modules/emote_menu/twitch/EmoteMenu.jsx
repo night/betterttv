@@ -5,9 +5,9 @@ import {SettingIds} from '../../../constants.js';
 import EmoteMenuButton from '../components/LegacyButton.jsx';
 import domObserver from '../../../observers/dom.js';
 import styles from './EmoteMenu.module.css';
-import twitch from '../../../utils/twitch.js';
 import {getCurrentUser} from '../../../utils/user.js';
 import watcher from '../../../watcher.js';
+import twitch from '../../../utils/twitch.js';
 
 const CHAT_TEXT_AREA = 'textarea[data-a-target="chat-input"], div[data-a-target="chat-input"]';
 
@@ -15,20 +15,6 @@ const CHAT_TEXT_AREA = 'textarea[data-a-target="chat-input"], div[data-a-target=
 const LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR =
   'div[data-a-target="legacy-bttv-emote-picker-button-container"]';
 const CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR = '.chat-input div[data-test-selector="chat-input-buttons-container"]';
-
-let togglePopover;
-function setPopoverOpen({current: currentRef}) {
-  if (currentRef == null) {
-    return;
-  }
-  togglePopover = () => {
-    if (currentRef.state.isOverlayShown) {
-      currentRef.close();
-    } else if (document.querySelector(LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR) != null) {
-      currentRef.open();
-    }
-  };
-}
 
 class SafeEmoteMenuButton extends React.Component {
   componentDidMount() {
@@ -91,9 +77,7 @@ export default class EmoteMenuModule {
         <SafeEmoteMenuButton
           onError={() => this.show(false)}
           onMount={() => this.show(true)}
-          onClick={() => togglePopover()}
           appendToChat={this.appendToChat}
-          setPopoverOpen={setPopoverOpen}
           className={styles.button}
           boundingQuerySelector={CHAT_TEXT_AREA}
         />,

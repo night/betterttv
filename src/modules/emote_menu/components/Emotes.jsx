@@ -1,5 +1,4 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import Icon from 'rsuite/lib/Icon/index.js';
 import classNames from 'classnames';
 import VirtualizedList from './VirtualizedList.jsx';
 import emoteMenuViewStore from '../stores/emote-menu-view-store.js';
@@ -36,7 +35,7 @@ const BrowseEmotes = React.forwardRef(
         const row = emoteMenuViewStore.getRow(y);
         return emoteMenuViewStore.headers.includes(y) ? (
           <div key={key} style={style} className={classNames(className, styles.header)}>
-            <Icon className={styles.headerIcon}>{row.icon}</Icon>
+            {row.icon}
             <div className={styles.headerText}>{row.displayName.toUpperCase()}</div>
           </div>
         ) : (

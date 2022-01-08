@@ -13,3 +13,20 @@
 .active {
   background-color: #23262b;
 }
+
+.navItem svg {
+  margin: 0 !important;
+  width: 100%;
+}
+
+.navItemContent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+}
+
+.navItem {
+  padding: 12px !important;
+}

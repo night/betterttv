@@ -1,10 +1,10 @@
 import React from 'react';
-import Icon from 'rsuite/lib/Icon/index.js';
-import IconButton from 'rsuite/lib/IconButton/index.js';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faStar} from '@fortawesome/free-solid-svg-icons/faStar';
+import {Icon} from '@rsuite/icons';
+import IconButton from 'rsuite/IconButton';
+import * as faStar from '@fortawesome/free-solid-svg-icons/faStar';
 import styles from './Preview.module.css';
 import {createSrcSet} from '../../../utils/image.js';
+import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.jsx';
 
 export default function Preview({emote, isFavorite}) {
   if (emote == null) return null;
@@ -25,15 +25,7 @@ export default function Preview({emote, isFavorite}) {
           <div>from {emote.category.displayName}</div>
         </div>
       </div>
-      {isFavorite ? (
-        <IconButton
-          icon={
-            <Icon>
-              <FontAwesomeIcon icon={faStar} />
-            </Icon>
-          }
-        />
-      ) : null}
+      {isFavorite ? <IconButton icon={<Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faStar} />} /> : null}
     </div>
   );
 }

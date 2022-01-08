@@ -1,14 +1,13 @@
 import React from 'react';
 // eslint-disable-next-line import/extensions, import/no-unresolved
 import './settings/*';
-import Panel from 'rsuite/lib/Panel/index.js';
-import Icon from 'rsuite/lib/Icon/index.js';
-import InputGroup from 'rsuite/lib/InputGroup/index.js';
-import AutoComplete from 'rsuite/lib/AutoComplete/index.js';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faSearch} from '@fortawesome/free-solid-svg-icons/faSearch';
-
+import Panel from 'rsuite/Panel';
+import {Icon} from '@rsuite/icons';
+import InputGroup from 'rsuite/InputGroup';
+import AutoComplete from 'rsuite/AutoComplete';
+import * as faSearch from '@fortawesome/free-solid-svg-icons/faSearch';
 import {Components} from './Store.jsx';
+import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.jsx';
 
 const settings = Object.values(Components).sort((a, b) => a.name.localeCompare(b.name));
 
@@ -45,9 +44,7 @@ export function Search(props) {
         placeholder={placeholder}
       />
       <InputGroup.Addon>
-        <Icon>
-          <FontAwesomeIcon icon={faSearch} />
-        </Icon>
+        <Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faSearch} />
       </InputGroup.Addon>
     </InputGroup>
   );

@@ -15,6 +15,7 @@ import got from 'got';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 import SentryWebpackPlugin from '@sentry/webpack-plugin';
 import FileManagerPlugin from 'filemanager-webpack-plugin';
+import PrefixerPlugin from './dev/prefixer-plugin.js';
 
 const git = createRequire(import.meta.url)('git-rev-sync');
 const {EnvironmentPlugin, optimize} = webpack;
@@ -169,13 +170,6 @@ export default async (env, argv) => {
                 },
               },
             },
-            {
-              loader: 'string-replace-loader',
-              options: {
-                search: 'FONT-PATH-PLACEHOLDER',
-                replace: `${CDN_ENDPOINT}assets/fonts`,
-              },
-            },
           ],
         },
         {
@@ -225,7 +219,7 @@ export default async (env, argv) => {
       new CopyPlugin({
         patterns: [
           {from: 'src/assets', to: './assets'},
-          {from: './node_modules/rsuite/src/styles/fonts', to: './assets/fonts'},
+          // {from: './node_modules/rsuite/src/styles/fonts', to: './assets/fonts'},
         ],
       }),
       new CleanWebpackPlugin(),
@@ -239,6 +233,10 @@ export default async (env, argv) => {
       }),
       new VirtualModulesPlugin({
         'src/modules/emotes/emojis-by-slug.json': JSON.stringify(jsonTransform(emotes)),
+      }),
+      new PrefixerPlugin({
+        oldClassNamePrefix: 'rs',
+        newClassnamePrefix: 'bttv-rs',
       }),
       new TerserPlugin({
         extractComments: false,

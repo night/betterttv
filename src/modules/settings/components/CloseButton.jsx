@@ -1,21 +1,17 @@
 import React from 'react';
-import Icon from 'rsuite/lib/Icon/index.js';
-import IconButton from 'rsuite/lib/IconButton/index.js';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faTimes} from '@fortawesome/free-solid-svg-icons/faTimes';
+import {Icon} from '@rsuite/icons';
+import IconButton from 'rsuite/IconButton';
+import * as faTimes from '@fortawesome/free-solid-svg-icons/faTimes';
+import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.jsx';
 
 export default function CloseButton(props) {
-  const {onHide, ...restProps} = props;
+  const {onClose, ...restProps} = props;
 
   return (
     <div {...restProps}>
       <IconButton
-        icon={
-          <Icon>
-            <FontAwesomeIcon icon={faTimes} />
-          </Icon>
-        }
-        onClick={onHide}
+        icon={<Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faTimes} />}
+        onClick={onClose}
         appearance="subtle"
       />
     </div>

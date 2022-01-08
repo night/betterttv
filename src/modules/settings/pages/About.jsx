@@ -1,14 +1,13 @@
 import React, {useRef, useState} from 'react';
 import {saveAs} from 'file-saver';
 
-import IconButton from 'rsuite/lib/IconButton/index.js';
-import PanelGroup from 'rsuite/lib/PanelGroup/index.js';
-import Panel from 'rsuite/lib/Panel/index.js';
-import Icon from 'rsuite/lib/Icon/index.js';
-import {faUpload} from '@fortawesome/free-solid-svg-icons/faUpload';
-import {faRedo} from '@fortawesome/free-solid-svg-icons/faRedo';
-import {faDownload} from '@fortawesome/free-solid-svg-icons/faDownload';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import IconButton from 'rsuite/IconButton';
+import PanelGroup from 'rsuite/PanelGroup';
+import Panel from 'rsuite/Panel';
+import {Icon} from '@rsuite/icons';
+import * as faUpload from '@fortawesome/free-solid-svg-icons/faUpload';
+import * as faRedo from '@fortawesome/free-solid-svg-icons/faRedo';
+import * as faDownload from '@fortawesome/free-solid-svg-icons/faDownload';
 import {SETTINGS_STORAGE_KEY} from '../../../settings.js';
 import storage from '../../../storage.js';
 import debug from '../../../utils/debug.js';
@@ -16,6 +15,7 @@ import {loadLegacySettings} from '../../../utils/legacy-settings.js';
 import header from '../styles/header.module.css';
 import styles from '../styles/about.module.css';
 import CloseButton from '../components/CloseButton.jsx';
+import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.jsx';
 
 function loadJSON(string) {
   let json = null;
@@ -45,7 +45,7 @@ function backupFile() {
   saveAs(new Blob([JSON.stringify(rv)], {type: 'application/json;charset=utf-8'}), 'bttv_settings.backup');
 }
 
-function About({onHide}) {
+function About({onClose}) {
   const fileImportRef = useRef(null);
   const [importing, setImporting] = useState(false);
   const [resetting, setResetting] = useState(false);
@@ -178,11 +178,7 @@ function About({onHide}) {
                 appearance="primary"
                 onClick={backupFile}
                 disabled={resetting}
-                icon={
-                  <Icon>
-                    <FontAwesomeIcon icon={faDownload} />
-                  </Icon>
-                }>
+                icon={<Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faDownload} />}>
                 Backup Settings
               </IconButton>
               <input type="file" hidden ref={fileImportRef} onChange={({target}) => importFile(target)} />
@@ -198,24 +194,16 @@ function About({onHide}) {
                 }}
                 disabled={resetting}
                 loading={importing}
-                icon={
-                  <Icon>
-                    <FontAwesomeIcon icon={faUpload} />
-                  </Icon>
-                }>
+                icon={<Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faUpload} />}>
                 Import Settings
               </IconButton>
               <IconButton
-                icon={
-                  <Icon>
-                    <FontAwesomeIcon icon={faRedo} />
-                  </Icon>
-                }
+                icon={<Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faRedo} />}
                 className={styles.button}
                 loading={resetting}
                 disabled={importing}
                 color="red"
-                onClick={resetDefault}>
+                onClick={() => resetDefault()}>
                 Reset to Default
               </IconButton>
             </div>
@@ -226,7 +214,7 @@ function About({onHide}) {
         </PanelGroup>
       </div>
       <div className={header.header}>
-        <CloseButton onHide={onHide} className={header.closeButton} />
+        <CloseButton onClose={onClose} className={header.closeButton} />
       </div>
     </>
   );

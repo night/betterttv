@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import Divider from 'rsuite/lib/Divider/index.js';
+import Divider from 'rsuite/Divider';
 import keycodes from '../../../utils/keycodes.js';
 import {EmoteMenuTips} from '../../../constants.js';
 import emoteMenuViewStore from '../stores/emote-menu-view-store.js';
@@ -15,7 +15,7 @@ function setKeyPressCallback(newKeyPressCallback) {
   keyPressCallback = newKeyPressCallback;
 }
 
-export default function EmoteMenu({triggerRef, appendToChat, onSetTip}) {
+export default function EmoteMenu({toggleWhisper, appendToChat, onSetTip}) {
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState(null);
   const [, setUpdated] = useState(false);
@@ -25,14 +25,6 @@ export default function EmoteMenu({triggerRef, appendToChat, onSetTip}) {
     eventKey: null,
     scrollTo: false,
   });
-
-  const onHide = useCallback(() => {
-    const currentTriggerRef = triggerRef.current;
-    if (currentTriggerRef == null) {
-      return;
-    }
-    currentTriggerRef.close();
-  }, [triggerRef]);
 
   const handleClick = useCallback(
     (emote) => {
@@ -50,9 +42,9 @@ export default function EmoteMenu({triggerRef, appendToChat, onSetTip}) {
         return;
       }
 
-      onHide();
+      toggleWhisper();
     },
-    [altPressed, shiftPressed]
+    [altPressed, shiftPressed, toggleWhisper]
   );
 
   useEffect(() => {
@@ -100,7 +92,13 @@ export default function EmoteMenu({triggerRef, appendToChat, onSetTip}) {
 
   return (
     <>
-      <Header className={styles.header} value={search} onChange={setSearch} onHide={onHide} selected={selected} />
+      <Header
+        className={styles.header}
+        value={search}
+        onChange={setSearch}
+        toggleWhisper={toggleWhisper}
+        selected={selected}
+      />
       <Divider className={styles.divider} />
       <div className={styles.content}>
         <Sidebar
