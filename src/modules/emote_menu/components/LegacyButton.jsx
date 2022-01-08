@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import classNames from 'classnames';
-import Whisper from 'rsuite/lib/Whisper/index.js';
+import Whisper from 'rsuite/Whisper';
 import EmoteMenuPopover from './EmoteMenuPopover.jsx';
 import {markTipAsSeen} from './Tip.jsx';
 import {EmoteMenuTips} from '../../../constants.js';
@@ -10,13 +10,12 @@ import keyCodes from '../../../utils/keycodes.js';
 import {isMac} from '../../../utils/window.js';
 import styles from './LegacyButton.module.css';
 
-export default function LegacyButton({appendToChat, setPopoverOpen, onClick, className, boundingQuerySelector}) {
-  const triggerRef = useRef(null);
+export default function LegacyButton({appendToChat, className, boundingQuerySelector}) {
   const [loaded, setLoaded] = useState(false);
+  const whisperRef = useRef(null);
 
   useEffect(() => {
     const callback = () => {
-      setPopoverOpen(triggerRef);
       setLoaded(true);
     };
 
@@ -39,7 +38,9 @@ export default function LegacyButton({appendToChat, setPopoverOpen, onClick, cla
       event.preventDefault();
 
       markTipAsSeen(EmoteMenuTips.EMOTE_MENU_HOTKEY);
-      onClick();
+
+      // note v5 removes whisper open state in reference (implement toggle with hooks?)
+      whisperRef.current.open();
     }
 
     window.addEventListener('keydown', handleKeyDown);
@@ -49,17 +50,16 @@ export default function LegacyButton({appendToChat, setPopoverOpen, onClick, cla
 
   return (
     <Whisper
-      trigger="active"
-      placement="auto"
-      onClick={onClick}
+      ref={whisperRef}
+      trigger="click"
+      placement={false} // this throws a warning but is nessecary to stop rsuite from auto-respositioning
       speaker={
         <EmoteMenuPopover
-          triggerRef={triggerRef}
+          whisperRef={whisperRef}
           appendToChat={appendToChat}
           boundingQuerySelector={boundingQuerySelector}
         />
-      }
-      triggerRef={triggerRef}>
+      }>
       <button type="button" className={classNames(styles.button, className)} />
     </Whisper>
   );

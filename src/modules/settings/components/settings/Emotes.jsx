@@ -1,7 +1,7 @@
 import React from 'react';
-import Panel from 'rsuite/lib/Panel/index.js';
-import Checkbox from 'rsuite/lib/Checkbox/index.js';
-import CheckboxGroup from 'rsuite/lib/CheckboxGroup/index.js';
+import Panel from 'rsuite/Panel';
+import Checkbox from 'rsuite/Checkbox';
+import CheckboxGroup from 'rsuite/CheckboxGroup';
 import {registerComponent, useStorageState} from '../Store.jsx';
 import {CategoryTypes, SettingIds, EmoteTypeFlags} from '../../../../constants.js';
 import styles from '../../styles/header.module.css';

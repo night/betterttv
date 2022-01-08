@@ -13,3 +13,12 @@
 .active {
   background-color: #23262b;
 }
+
+.navItem svg {
+  margin: 0 !important;
+  width: 100%;
+}
+
+.navItem {
+  height: 38px;
+}
