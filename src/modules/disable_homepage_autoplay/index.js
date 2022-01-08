@@ -15,9 +15,14 @@ class DisableHomepageAutoplayModule {
     const currentPlayer = twitch.getCurrentPlayer();
     if (!currentPlayer) return;
 
+    const prevMuted = currentPlayer.isMuted();
+
+    currentPlayer.setMuted(true);
+
     const stopAutoplay = () => {
       setTimeout(() => {
         currentPlayer.pause();
+        currentPlayer.setMuted(prevMuted);
       }, 0);
       if (currentPlayer.emitter) {
         currentPlayer.emitter.removeListener('Playing', stopAutoplay);
