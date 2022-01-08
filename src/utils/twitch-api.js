@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import querystring from 'querystring';
 import HTTPError from './http-error.js';
 
 const API_ENDPOINT = 'https://api.twitch.tv/v5/';
@@ -9,7 +8,8 @@ const CLIENT_ID = '6x8avioex0zt85ht6py4sq55z6avsea';
 let accessToken;
 
 function request(method, path, options = {}) {
-  const url = options.url || `${API_ENDPOINT}${path}${options.qs ? `?${querystring.stringify(options.qs)}` : ''}`;
+  const url =
+    options.url || `${API_ENDPOINT}${path}${options.qs ? `?${new URLSearchParams(options.qs).toString()}` : ''}`;
   return new Promise((resolve, reject) => {
     $.ajax({
       url,

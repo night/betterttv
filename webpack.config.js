@@ -93,13 +93,15 @@ export default async (env, argv) => {
           protocol: 'ws',
         },
       },
-      onAfterSetupMiddleware: ({app}) => {
-        app.get('*', (req, res) => {
+      setupMiddlewares: (middlewares) => {
+        middlewares.push((req, res) =>
           got
             .stream(`${PROD_ENDPOINT}${req.path}`)
             .on('error', () => res.sendStatus(404))
-            .pipe(res);
-        });
+            .pipe(res)
+        );
+
+        return middlewares;
       },
     },
     entry: {
