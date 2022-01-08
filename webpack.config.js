@@ -212,9 +212,7 @@ export default async (env, argv) => {
         maxChunks: 1,
       }),
       new CopyPlugin({
-        patterns: [
-          {from: 'src/assets', to: './assets'},
-        ],
+        patterns: [{from: 'src/assets', to: './assets'}],
       }),
       new CleanWebpackPlugin(),
       new RemovePlugin({
