@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Modal from '../components/Window.jsx';
@@ -28,10 +27,10 @@ export default class SettingsModule {
   }
 
   renderSettings() {
-    if ($('#bttvSettings').length) return;
+    if (document.getElementById('bttvSettings') != null) return;
     const panel = document.createElement('div');
     panel.setAttribute('id', 'bttvSettingsPanel');
-    $('body').append(panel);
+    document.querySelector('body').append(panel);
     if (mountedNode != null) {
       ReactDOM.unmountComponentAtNode(mountedNode);
     }
@@ -55,15 +54,7 @@ export default class SettingsModule {
         ReactDOM.unmountComponentAtNode(mountedNode);
       }
 
-      ReactDOM.render(
-        <Button
-          onClick={() => {
-            console.log('here');
-            handleOpen(true);
-          }}
-        />,
-        buttonContainer
-      );
+      ReactDOM.render(<Button onClick={this.openSettings} />, buttonContainer);
 
       mountedNode = buttonContainer;
     }
