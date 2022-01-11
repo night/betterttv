@@ -38,7 +38,7 @@ function isWindowSmallStandaloneChat() {
 
 function Window({setHandleOpen}) {
   const [page, setPage] = useState(PageTypes.CHAT_SETTINGS);
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const [isSmallStandaloneChat, setStandaloneChat] = useState(isWindowSmallStandaloneChat());
 
   useEffect(() => {

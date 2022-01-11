@@ -1,0 +1,23 @@
+.button {
+  width: 290px;
+  height: 40px;
+  border: none;
+  display: flex;
+  align-items: center;
+  background: none;
+  color: var(--yt-compact-link-color, var(--yt-spec-text-primary));
+  font-family: 'Roboto', 'Arial', sans-serif;
+  font-size: 1.4rem;
+  line-height: 2rem;
+  font-weight: 400;
+  padding: 0px 36px 0px 16px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: var(--yt-spec-badge-chip-background);
+}
+
+.button:focus {
+  background-color: var(--paper-item-focused-background-color);
+}

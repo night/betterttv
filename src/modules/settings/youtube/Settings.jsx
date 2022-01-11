@@ -3,9 +3,11 @@ import ReactDOM from 'react-dom';
 import Modal from '../components/Window.jsx';
 import domObserver from '../../../observers/dom.js';
 import Button from './Button.jsx';
+import DropdownButton from './DropdownButton.jsx';
 
 const CHAT_BUTTON_CONTAINER_SELECTOR = '#picker-buttons';
 const BTTV_BUTTON_CONTAINER_SELECTOR = 'div[data-a-target="bttv-settings-button-container"]';
+const BTTV_DROPDOWN_BUTTON_CONTAINER_SELECTOR = 'div[data-a-target="bttv-dropdown-button-container"]';
 
 let handleOpen;
 function setHandleOpen(newHandleOpen) {
@@ -13,16 +15,18 @@ function setHandleOpen(newHandleOpen) {
 }
 
 let mountedNode;
+let mountedDropdownButton;
 
 export default class SettingsModule {
   constructor() {
     this.renderSettings();
-    domObserver.on(CHAT_BUTTON_CONTAINER_SELECTOR, (node, isConnected) => {
+
+    domObserver.on('#items', (node, isConnected) => {
       if (!isConnected) {
         return;
       }
 
-      this.loadButton();
+      this.loadDropdownButton();
     });
   }
 
@@ -38,29 +42,31 @@ export default class SettingsModule {
     mountedNode = panel;
   }
 
-  loadButton() {
-    const bttvContainer = document.querySelector(BTTV_BUTTON_CONTAINER_SELECTOR);
+  loadDropdownButton() {
+    const dropdownButton = document.querySelector(BTTV_DROPDOWN_BUTTON_CONTAINER_SELECTOR);
 
-    if (bttvContainer == null) {
-      const nativeButtonContainer = document.querySelector(CHAT_BUTTON_CONTAINER_SELECTOR);
-      if (nativeButtonContainer == null) {
+    if (dropdownButton == null || dropdownButton.hasAttribute('hidden')) {
+      const items = document.querySelector('ytd-popup-container #sections #items');
+
+      if (items == null) {
         return;
       }
-      const buttonContainer = document.createElement('div');
-      buttonContainer.setAttribute('data-a-target', 'bttv-button-container');
-      nativeButtonContainer.insertBefore(buttonContainer, nativeButtonContainer.firstChild);
 
-      if (mountedNode != null) {
-        ReactDOM.unmountComponentAtNode(mountedNode);
+      const dropdownButtonContainer = document.createElement('div');
+      dropdownButtonContainer.setAttribute('data-a-target', 'bttv-dropdown-button-container');
+      items.appendChild(dropdownButtonContainer);
+
+      if (mountedDropdownButton != null) {
+        ReactDOM.unmountComponentAtNode(mountedDropdownButton);
       }
 
-      ReactDOM.render(<Button onClick={this.openSettings} />, buttonContainer);
-
-      mountedNode = buttonContainer;
+      ReactDOM.render(<DropdownButton onClick={this.openSettings} />, dropdownButtonContainer);
+      mountedDropdownButton = dropdownButtonContainer;
     }
   }
 
   openSettings(e) {
+    console.log('here');
     e.preventDefault();
     handleOpen(true);
   }
