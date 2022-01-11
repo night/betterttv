@@ -14,7 +14,7 @@ function ChatModule() {
   return (
     <Panel header="Chat">
       <div className={styles.setting}>
-        <p className={styles.description}>Edit or modify chat features</p>
+        <p>Edit or modify chat features</p>
         <CheckboxGroup
           value={Object.values(ChatFlags).filter((value) => hasFlag(chat, value))}
           onChange={(value) => setChat(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}>

@@ -14,7 +14,7 @@ function ChatLayout() {
   return (
     <Panel header="Chat Layout">
       <div className={styles.setting}>
-        <p className={styles.description}>Change the chat placement.</p>
+        <p>Change the chat placement.</p>
         <FormGroup controlId="radioList">
           <RadioGroup name="radioList" value={value} onChange={(state) => setValue(state)}>
             <Radio key="right" value={ChatLayoutTypes.RIGHT}>

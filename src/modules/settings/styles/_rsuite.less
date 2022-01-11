@@ -19,6 +19,19 @@
 .@{ns}modal {
   width: 800px;
   height: 500px;
+  color: var(--bttv-rs-text-primary);
+  font-size: 1.3rem;
+  line-height: 1.5;
+
+  p {
+    font-size: 1.3rem;
+    line-height: 1.5;
+  }
+
+  a {
+    color: var(--color-text-link);
+    text-decoration: none;
+  }
 
   * {
     box-sizing: border-box;
@@ -63,6 +76,10 @@
 
 .@{ns}modal-wrapper {
   z-index: 3100;
+}
+
+.@{ns}modal-backdrop {
+  z-index: 3000;
 }
 
 .@{ns}popover {

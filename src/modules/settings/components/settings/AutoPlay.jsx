@@ -14,7 +14,7 @@ function AutoplayModule() {
   return (
     <Panel header="Auto Play" className={styles.setting}>
       <div className={styles.setting}>
-        <p className={styles.description}>Control Auto Play on various Twitch video players.</p>
+        <p>Control Auto Play on various Twitch video players.</p>
         <CheckboxGroup
           value={Object.values(AutoPlayFlags).filter((value) => hasFlag(autoplay, value))}
           onChange={(value) => setAutoplay(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}>

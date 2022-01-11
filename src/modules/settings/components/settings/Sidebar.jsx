@@ -14,7 +14,7 @@ function SidebarComponent() {
   return (
     <Panel header="Sidebar">
       <div className={styles.setting}>
-        <p className={styles.description}>Edit or modify the left sidebar</p>
+        <p>Edit or modify the left sidebar</p>
         <CheckboxGroup
           value={Object.values(SidebarFlags).filter((value) => hasFlag(sidebar, value))}
           onChange={(value) => setSidebar(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}>

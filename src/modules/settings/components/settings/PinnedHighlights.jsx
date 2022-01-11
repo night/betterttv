@@ -12,7 +12,7 @@ function PinnedHighlights() {
   return (
     <Panel header="Pinned Highlights">
       <div className={styles.toggle}>
-        <p className={styles.description}>Pins your last ten highlighted messages above chat</p>
+        <p>Pins your last ten highlighted messages above chat</p>
         <Toggle checked={value} onChange={(state) => setValue(state)} />
       </div>
     </Panel>

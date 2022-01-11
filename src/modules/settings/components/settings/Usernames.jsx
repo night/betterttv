@@ -1,4 +1,4 @@
-import React from 'react';
+ximport React from 'react';
 import Panel from 'rsuite/Panel';
 import Checkbox from 'rsuite/Checkbox';
 import CheckboxGroup from 'rsuite/CheckboxGroup';
@@ -14,7 +14,7 @@ function UsernamesModule() {
   return (
     <Panel header="Usernames">
       <div className={styles.setting}>
-        <p className={styles.description}>Edit or modify chat usernames</p>
+        <p>Edit or modify chat usernames</p>
         <CheckboxGroup
           value={Object.values(UsernameFlags).filter((value) => hasFlag(usernames, value))}
           onChange={(value) => setUsernames(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}>

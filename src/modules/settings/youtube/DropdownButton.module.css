@@ -9,7 +9,7 @@
   font-family: 'Roboto', 'Arial', sans-serif;
   font-size: 1.4rem;
   line-height: 2rem;
-  font-weight: 400;
+  font-weight: 100;
   padding: 0px 36px 0px 16px;
   cursor: pointer;
 }
@@ -20,4 +20,10 @@
 
 .button:focus {
   background-color: var(--paper-item-focused-background-color);
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 16px;
 }

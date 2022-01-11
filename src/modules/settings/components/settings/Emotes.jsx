@@ -14,7 +14,7 @@ function EmotesModule() {
   return (
     <Panel header="Emotes">
       <div className={styles.setting}>
-        <p className={styles.description}>Adds more emotes to your chat</p>
+        <p>Adds more emotes to your chat</p>
         <CheckboxGroup
           value={Object.values(EmoteTypeFlags).filter((value) => hasFlag(emotes, value))}
           onChange={(value) => setEmotes(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}>
