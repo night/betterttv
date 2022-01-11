@@ -1,7 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import uniqBy from 'lodash.uniqby';
 import sortBy from 'lodash.sortby';
-import flatten from 'lodash.flatten';
 import twitchApi from '../../../utils/twitch-api.js';
 import Emote from '../../emotes/emote.js';
 import Icons from '../components/Icons.jsx';
@@ -23,6 +22,11 @@ const AVAILABLE_EMOTES_FOR_CHANNEL_QUERY = `
           id,
           token,
           type
+        }
+        owner {
+          id,
+          displayName,
+          profileImageURL(width: 300)
         }
       }
     }
@@ -116,32 +120,16 @@ export async function loadTwitchEmotes() {
   const isDark = settings.get(SettingIds.DARKENED_MODE);
   const tempCategories = {};
 
-  // so we don't rely on uniqBy https://github.com/night/betterttv/pull/4849#discussion_r711787270
-  const emoteSets = data.channel.self.availableEmoteSets;
+  const subscriptionProducts = data.user.subscriptionProducts.map(({emotes, ...rest}) => ({
+    ...rest,
+    emotes: emotes.map((emote) => ({
+      ...emote,
+      locked: true,
+    })),
+  }));
 
-  const availableChannelEmotes = flatten(
-    data.channel.self.availableEmoteSets
-      .filter(({owner}) => owner?.id === data.user.id)
-      .map((channel) => channel.emotes)
-  );
-
-  const unavailableChannelEmotes = flatten(data.user.subscriptionProducts.map(({emotes}) => emotes))
-    .filter(({id}) => availableChannelEmotes.find(({id: emoteId}) => emoteId === id) == null)
-    .map((emote) => ({...emote, locked: true}));
-
-  if (unavailableChannelEmotes.length > 0) {
-    emoteSets.push({
-      emotes: unavailableChannelEmotes,
-      id: EmoteCategories.UNAVAILABLE_CHANNEL_EMOTES,
-      owner: {
-        displayName: data.user.displayName,
-        id: data.user.id,
-        profileImageURL: data.user.profileImageURL,
-      },
-    });
-  }
-
-  for (const {owner, id: setId, emotes} of emoteSets) {
+  // this order of availableEmotes before subscriptionProducts is nessecary for uniqBy
+  for (const {owner, id: setId, emotes} of [...data.channel.self.availableEmoteSets, ...subscriptionProducts]) {
     const category = getCategoryForSet(setId, owner);
     const categoryEmotes = emotes.map(({id: emoteId, token: emoteToken, type, locked = false}) => {
       let newToken;
@@ -172,6 +160,7 @@ export async function loadTwitchEmotes() {
     tempCategories[category.id] = {
       category,
       // twitch seperates emotes by tier, so we merge them into one set
+      // uniqBy also priortises the available emotes over the locked emotes here
       emotes: sortBy(uniqBy([...(tempCategories[category.id]?.emotes || []), ...categoryEmotes], 'id'), ({code}) =>
         code.toLowerCase()
       ),
