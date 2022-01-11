@@ -35,7 +35,7 @@ export default class SettingsModule {
   }
 
   renderSettings() {
-    const bttvPanel = document.getElementById('bttvSettings');
+    const bttvPanel = document.getElementById('bttvSettingsPanel');
 
     if (bttvPanel == null) {
       const panel = document.createElement('div');
@@ -52,6 +52,8 @@ export default class SettingsModule {
   }
 
   loadDropdownButton() {
+    if (menuItemsListener != null) return;
+
     // wait for the menu to finish loading...
     menuItemsListener = domObserver.on(ITEMS_SELECTOR, (node, isConnected) => {
       if (!isConnected) {
@@ -75,22 +77,27 @@ export default class SettingsModule {
           ReactDOM.unmountComponentAtNode(mountedDropdownButton);
         }
 
-        ReactDOM.render(<DropdownButton onClick={() => handleOpen(true)} />, dropdownButtonContainer);
+        ReactDOM.render(
+          <DropdownButton
+            onClick={() => {
+              handleOpen(true);
+
+              // close the dropdown menu when the modal is opened
+              const avatarButton = document.querySelector(AVATAR_BUTTON_SELECTOR);
+
+              if (avatarButton != null) {
+                avatarButton.click();
+              }
+            }}
+          />,
+          dropdownButtonContainer
+        );
+
         mountedDropdownButton = dropdownButtonContainer;
       }
 
       menuItemsListener();
       menuItemsListener = null;
     });
-
-    // if the user closes the dropdown before it's finished loading we must remove the listener
-    setTimeout(() => {
-      if (menuItemsListener == null) {
-        return;
-      }
-
-      menuItemsListener();
-      menuItemsListener = null;
-    }, 3000);
   }
 }

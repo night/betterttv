@@ -19,36 +19,38 @@ import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.js
 function BTTVSidenav({value, onChange}) {
   return (
     <Sidenav className={styles.sidenav} expanded={false}>
-      <Sidenav.Body>
-        <img alt="BetterTTV Logo" src={cdn.url('/assets/logos/mascot.png')} className={styles.logo} />
-        <Nav activeKey={value} onSelect={onChange} className={styles.nav}>
-          <Nav.Item
-            eventKey={PageTypes.CHAT_SETTINGS}
-            icon={<Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faCommentAlt} />}>
-            <p>Chat Settings</p>
-          </Nav.Item>
-          <Nav.Item
-            eventKey={PageTypes.DIRECTORY_SETTINGS}
-            icon={<Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faCompass} />}>
-            <p>Directory Settings</p>
-          </Nav.Item>
-          <Nav.Item
-            eventKey={PageTypes.CHANNEL_SETTINGS}
-            icon={<Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faHouseUser} />}>
-            <p>Channel Settings</p>
-          </Nav.Item>
-          <Nav.Item
-            href="https://betterttv.com/dashboard/emotes"
-            target="_blank"
-            rel="noreferrer"
-            icon={<Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faColumns} />}>
-            <p>Emote Dashboard</p>
-          </Nav.Item>
-          <Nav.Item eventKey={PageTypes.CHANGELOG} icon={<Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faBox} />}>
-            <p>Changelog</p>
-          </Nav.Item>
-        </Nav>
-        <Nav pullRight activeKey={value} onSelect={onChange} className={styles.bottom}>
+      <Sidenav.Body className={styles.body}>
+        <div>
+          <img alt="BetterTTV Logo" src={cdn.url('/assets/logos/mascot.png')} className={styles.logo} />
+          <Nav activeKey={value} onSelect={onChange} className={styles.nav}>
+            <Nav.Item
+              eventKey={PageTypes.CHAT_SETTINGS}
+              icon={<Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faCommentAlt} />}>
+              <p>Chat Settings</p>
+            </Nav.Item>
+            <Nav.Item
+              eventKey={PageTypes.DIRECTORY_SETTINGS}
+              icon={<Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faCompass} />}>
+              <p>Directory Settings</p>
+            </Nav.Item>
+            <Nav.Item
+              eventKey={PageTypes.CHANNEL_SETTINGS}
+              icon={<Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faHouseUser} />}>
+              <p>Channel Settings</p>
+            </Nav.Item>
+            <Nav.Item
+              href="https://betterttv.com/dashboard/emotes"
+              target="_blank"
+              rel="noreferrer"
+              icon={<Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faColumns} />}>
+              <p>Emote Dashboard</p>
+            </Nav.Item>
+            <Nav.Item eventKey={PageTypes.CHANGELOG} icon={<Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faBox} />}>
+              <p>Changelog</p>
+            </Nav.Item>
+          </Nav>
+        </div>
+        <Nav pullRight activeKey={value} onSelect={onChange}>
           <Nav.Item eventKey={PageTypes.ABOUT} icon={<Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faInfoCircle} />}>
             <p>About</p>
           </Nav.Item>
