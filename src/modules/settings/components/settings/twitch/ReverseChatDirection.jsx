@@ -18,6 +18,7 @@ function ReverseChatDirection() {
     </Panel>
   );
 }
+
 registerComponent(ReverseChatDirection, {
   settingId: SettingIds.REVERSE_CHAT_DIRECTION,
   name: 'Chat Direction',

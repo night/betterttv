@@ -18,6 +18,7 @@ function ClickToPlay() {
     </Panel>
   );
 }
+
 registerComponent(ClickToPlay, {
   settingId: SettingIds.CLICK_TO_PLAY,
   name: 'Click to Play',

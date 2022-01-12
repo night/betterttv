@@ -18,6 +18,7 @@ function DisableWhispers() {
     </Panel>
   );
 }
+
 registerComponent(DisableWhispers, {
   settingId: SettingIds.WHISPERS,
   name: 'Whispers',

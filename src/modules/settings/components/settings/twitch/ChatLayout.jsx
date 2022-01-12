@@ -35,6 +35,7 @@ function ChatLayout() {
     </Panel>
   );
 }
+
 registerComponent(ChatLayout, {
   settingId: SettingIds.CHAT_LAYOUT,
   name: 'Chat Layout',

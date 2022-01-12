@@ -18,6 +18,7 @@ function DarkMode() {
     </Panel>
   );
 }
+
 registerComponent(DarkMode, {
   settingId: SettingIds.DARKENED_MODE,
   name: 'Dark Mode',

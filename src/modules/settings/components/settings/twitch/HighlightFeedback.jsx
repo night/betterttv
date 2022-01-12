@@ -18,6 +18,7 @@ function HighlightFeedback() {
     </Panel>
   );
 }
+
 registerComponent(HighlightFeedback, {
   settingId: SettingIds.HIGHLIGHT_FEEDBACK,
   name: 'Highlight Feedback',

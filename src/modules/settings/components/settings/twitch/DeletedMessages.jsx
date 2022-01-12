@@ -41,6 +41,7 @@ function DeletedMessagesModule() {
     </Panel>
   );
 }
+
 registerComponent(DeletedMessagesModule, {
   settingId: SettingIds.DELETED_MESSAGES,
   name: 'Deleted Messages',
