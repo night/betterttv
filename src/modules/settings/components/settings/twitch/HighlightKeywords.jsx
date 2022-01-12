@@ -1,19 +1,19 @@
 import React from 'react';
 import Panel from 'rsuite/Panel';
-import Table, {Types} from '../Table.jsx';
-import {registerComponent} from '../Store.jsx';
-import {SettingIds, CategoryTypes} from '../../../../constants.js';
-import styles from '../../styles/header.module.css';
-import {KeywordTypes} from '../../../../utils/keywords.js';
-import useStorageState from '../../../../common/hooks/StorageState.jsx';
+import Table, {Types} from '../../Table.jsx';
+import {KeywordTypes} from '../../../../../utils/keywords.js';
+import {registerComponent} from '../../Store.jsx';
+import {CategoryTypes, SettingIds} from '../../../../../constants.js';
+import styles from '../../../styles/header.module.css';
+import useStorageState from '../../../../../common/hooks/StorageState.jsx';
 
-function BlacklistKeywords() {
-  const [value, setValue] = useStorageState(SettingIds.BLACKLIST_KEYWORDS);
+function HighlightKeywords() {
+  const [value, setValue] = useStorageState(SettingIds.HIGHLIGHT_KEYWORDS);
 
   return (
-    <Panel header="Blacklist Keywords">
+    <Panel header="Highlight Keywords">
       <div className={styles.setting}>
-        <p>Removes certain words, phrases or users from your chat.</p>
+        <p>Highlight certain words, phrases or users in your chat.</p>
         <Table
           autoHeight
           options={[
@@ -41,6 +41,7 @@ function BlacklistKeywords() {
           ]}
           setValue={setValue}
           value={value}
+          style={{borderRadius: 5}}
           renderEmpty={() => null}
         />
       </div>
@@ -48,13 +49,9 @@ function BlacklistKeywords() {
   );
 }
 
-loadModuleForPlatforms([
-  PlatformTypes.TWITCH,
-  () =>
-    registerComponent(BlacklistKeywords, {
-      settingId: SettingIds.BLACKLIST_KEYWORDS,
-      name: 'Blacklist Keywords',
-      category: CategoryTypes.CHAT,
-      keywords: ['black', 'list', 'keywords', 'banned', 'remove', 'hide'],
-    }),
-]);
+registerComponent(HighlightKeywords, {
+  settingId: SettingIds.HIGHLIGHT_KEYWORDS,
+  name: 'Highlight Keywords',
+  category: CategoryTypes.CHAT,
+  keywords: ['keywords', 'highlight'],
+});

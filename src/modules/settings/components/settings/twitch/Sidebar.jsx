@@ -2,11 +2,11 @@ import React from 'react';
 import Panel from 'rsuite/Panel';
 import Checkbox from 'rsuite/Checkbox';
 import CheckboxGroup from 'rsuite/CheckboxGroup';
-import {registerComponent} from '../Store.jsx';
-import {CategoryTypes, SettingIds, SidebarFlags} from '../../../../constants.js';
-import styles from '../../styles/header.module.css';
-import {hasFlag} from '../../../../utils/flags.js';
-import useStorageState from '../../../../common/hooks/StorageState.jsx';
+import {registerComponent} from '../../Store.jsx';
+import {CategoryTypes, SettingIds, SidebarFlags} from '../../../../../constants.js';
+import styles from '../../../styles/header.module.css';
+import {hasFlag} from '../../../../../utils/flags.js';
+import useStorageState from '../../../../../common/hooks/StorageState.jsx';
 
 function SidebarComponent() {
   const [sidebar, setSidebar] = useStorageState(SettingIds.SIDEBAR);
@@ -44,13 +44,9 @@ function SidebarComponent() {
   );
 }
 
-loadModuleForPlatforms([
-  PlatformTypes.TWITCH,
-  () =>
-    registerComponent(SidebarComponent, {
-      settingId: SettingIds.SIDEBAR,
-      name: 'Sidebar',
-      category: CategoryTypes.DIRECTORY,
-      keywords: ['sidebar', 'friends'],
-    }),
-]);
+registerComponent(SidebarComponent, {
+  settingId: SettingIds.SIDEBAR,
+  name: 'Sidebar',
+  category: CategoryTypes.DIRECTORY,
+  keywords: ['sidebar', 'friends'],
+});

@@ -3,10 +3,10 @@ import Panel from 'rsuite/Panel';
 import Radio from 'rsuite/Radio';
 import RadioGroup from 'rsuite/RadioGroup';
 import FormGroup from 'rsuite/FormGroup';
-import {registerComponent} from '../Store.jsx';
-import {CategoryTypes, SettingIds, ChatLayoutTypes} from '../../../../constants.js';
-import styles from '../../styles/header.module.css';
-import useStorageState from '../../../../common/hooks/StorageState.jsx';
+import {registerComponent} from '../../Store.jsx';
+import {CategoryTypes, SettingIds, ChatLayoutTypes} from '../../../../../constants.js';
+import styles from '../../../styles/header.module.css';
+import useStorageState from '../../../../../common/hooks/StorageState.jsx';
 
 function ChatLayout() {
   const [value, setValue] = useStorageState(SettingIds.CHAT_LAYOUT);
@@ -35,14 +35,9 @@ function ChatLayout() {
     </Panel>
   );
 }
-
-loadModuleForPlatforms([
-  PlatformTypes.TWITCH,
-  () =>
-    registerComponent(ChatLayout, {
-      settingId: SettingIds.CHAT_LAYOUT,
-      name: 'Chat Layout',
-      category: CategoryTypes.CHAT,
-      keywords: ['chat', 'layout', 'position', 'placement', 'left', 'right'],
-    }),
-]);
+registerComponent(ChatLayout, {
+  settingId: SettingIds.CHAT_LAYOUT,
+  name: 'Chat Layout',
+  category: CategoryTypes.CHAT,
+  keywords: ['chat', 'layout', 'position', 'placement', 'left', 'right'],
+});

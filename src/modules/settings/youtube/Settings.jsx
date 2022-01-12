@@ -3,11 +3,15 @@ import ReactDOM from 'react-dom';
 import Modal from '../components/Window.jsx';
 import domObserver from '../../../observers/dom.js';
 import DropdownButton from './DropdownButton.jsx';
+import styles from './DropdownButton.module.css';
 
 const BTTV_DROPDOWN_BUTTON_CONTAINER_SELECTOR = 'div[data-a-target="bttv-dropdown-button-container"]';
 const DROPDOWN_MENU_ITEMS_SELECTOR = 'ytd-popup-container #sections #items';
 const ITEMS_SELECTOR = '#items';
 const AVATAR_BUTTON_SELECTOR = '#avatar-btn';
+
+const CHAT_SETTINGS_DROPDOWN_ITEMS_SELECTOR = '#contentWrapper #items';
+const BTTV_CHAT_DROPDOWN_BUTTON_CONTAINER_SELECTOR = 'div[data-a-target="bttv-chat-dropdown-button-container"]';
 
 let handleOpen;
 function setHandleOpen(newHandleOpen) {
@@ -16,21 +20,29 @@ function setHandleOpen(newHandleOpen) {
 
 let mountedPanel;
 let mountedDropdownButton;
+let mountedChatDropdownButton;
 
-let avatarListenerAttached = false;
 let menuItemsListener = null;
 
 export default class SettingsModule {
   constructor() {
     this.renderSettings();
 
-    domObserver.on(AVATAR_BUTTON_SELECTOR, (node, isConnected) => {
-      if (!isConnected || avatarListenerAttached) {
+    // TODO: re-enable this when we have settings like theatre mode...
+    // domObserver.once(AVATAR_BUTTON_SELECTOR, (node, isConnected) => {
+    //   if (!isConnected) {
+    //     return;
+    //   }
+
+    //   node.addEventListener('click', this.loadDropdownButton);
+    // });
+
+    domObserver.on(CHAT_SETTINGS_DROPDOWN_ITEMS_SELECTOR, (node, isConnected) => {
+      if (!isConnected) {
         return;
       }
 
-      avatarListenerAttached = true;
-      node.addEventListener('click', this.loadDropdownButton);
+      this.loadChatAppMenuButton();
     });
   }
 
@@ -40,7 +52,13 @@ export default class SettingsModule {
     if (bttvPanel == null) {
       const panel = document.createElement('div');
       panel.setAttribute('id', 'bttvSettingsPanel');
-      document.querySelector('body').append(panel);
+      const chatApp = document.querySelector('#chat');
+
+      if (chatApp == null) {
+        return;
+      }
+
+      chatApp.append(panel);
 
       if (mountedPanel != null) {
         ReactDOM.unmountComponentAtNode(mountedPanel);
@@ -48,6 +66,45 @@ export default class SettingsModule {
 
       ReactDOM.render(<Modal setHandleOpen={setHandleOpen} />, panel);
       mountedPanel = panel;
+    }
+  }
+
+  loadChatAppMenuButton() {
+    const buttonContainer = document.querySelector(BTTV_CHAT_DROPDOWN_BUTTON_CONTAINER_SELECTOR);
+
+    if (buttonContainer == null) {
+      const itemsContainer = document.querySelector(CHAT_SETTINGS_DROPDOWN_ITEMS_SELECTOR).parentElement;
+
+      if (itemsContainer == null) {
+        return;
+      }
+
+      const dropdownButtonContainer = document.createElement('div');
+      dropdownButtonContainer.classList.add(styles.chatAppDropdownButton);
+      dropdownButtonContainer.setAttribute('data-a-target', 'bttv-chat-dropdown-button-container');
+      itemsContainer.appendChild(dropdownButtonContainer);
+
+      if (mountedChatDropdownButton != null) {
+        ReactDOM.unmountComponentAtNode(mountedChatDropdownButton);
+      }
+
+      ReactDOM.render(
+        <DropdownButton
+          onClick={() => {
+            handleOpen(true);
+
+            // close the dropdown menu when the modal is opened
+            const menuButton = document.querySelector('#overflow #button');
+
+            if (menuButton != null) {
+              menuButton.click();
+            }
+          }}
+        />,
+        dropdownButtonContainer
+      );
+
+      mountedChatDropdownButton = dropdownButtonContainer;
     }
   }
 
@@ -60,10 +117,13 @@ export default class SettingsModule {
         return;
       }
 
+      menuItemsListener();
+      menuItemsListener = null;
+
       const dropdownButton = document.querySelector(BTTV_DROPDOWN_BUTTON_CONTAINER_SELECTOR);
 
       if (dropdownButton == null || dropdownButton.hasAttribute('hidden')) {
-        const items = document.querySelector(DROPDOWN_MENU_ITEMS_SELECTOR);
+        const items = document.querySelectorAll(DROPDOWN_MENU_ITEMS_SELECTOR)[1];
 
         if (items == null) {
           return;
@@ -95,9 +155,6 @@ export default class SettingsModule {
 
         mountedDropdownButton = dropdownButtonContainer;
       }
-
-      menuItemsListener();
-      menuItemsListener = null;
     });
   }
 }

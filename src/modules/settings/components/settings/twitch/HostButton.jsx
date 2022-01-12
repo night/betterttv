@@ -1,10 +1,11 @@
 import React from 'react';
 import Panel from 'rsuite/Panel';
 import Toggle from 'rsuite/Toggle';
-import {registerComponent} from '../Store.jsx';
-import {CategoryTypes, SettingIds} from '../../../../constants.js';
-import styles from '../../styles/header.module.css';
-import useStorageState from '../../../../common/hooks/StorageState.jsx';
+import {registerComponent} from '../../Store.jsx';
+import {CategoryTypes, PlatformTypes, SettingIds} from '../../../../../constants.js';
+import styles from '../../../styles/header.module.css';
+import {loadModuleForPlatforms} from '../../../../../utils/modules.js';
+import useStorageState from '../../../../../common/hooks/StorageState.jsx';
 
 function HostButton() {
   const [value, setValue] = useStorageState(SettingIds.HOST_BUTTON);

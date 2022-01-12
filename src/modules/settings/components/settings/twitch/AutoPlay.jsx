@@ -2,11 +2,11 @@ import React from 'react';
 import Panel from 'rsuite/Panel';
 import Checkbox from 'rsuite/Checkbox';
 import CheckboxGroup from 'rsuite/CheckboxGroup';
-import {registerComponent} from '../Store.jsx';
-import {SettingIds, CategoryTypes, AutoPlayFlags} from '../../../../constants.js';
-import styles from '../../styles/header.module.css';
-import {hasFlag} from '../../../../utils/flags.js';
-import useStorageState from '../../../../common/hooks/StorageState.jsx';
+import {registerComponent} from '../../Store.jsx';
+import {SettingIds, CategoryTypes, AutoPlayFlags} from '../../../../../constants.js';
+import styles from '../../../styles/header.module.css';
+import {hasFlag} from '../../../../../utils/flags.js';
+import useStorageState from '../../../../../common/hooks/StorageState.jsx';
 
 function AutoplayModule() {
   const [autoplay, setAutoplay] = useStorageState(SettingIds.AUTO_PLAY);
@@ -36,13 +36,9 @@ function AutoplayModule() {
   );
 }
 
-loadModuleForPlatforms([
-  PlatformTypes.TWITCH,
-  () =>
-    registerComponent(AutoplayModule, {
-      settingId: SettingIds.AUTO_PLAY,
-      name: 'Auto Play',
-      category: CategoryTypes.CHANNEL,
-      keywords: ['auto', 'play'],
-    }),
-]);
+registerComponent(AutoplayModule, {
+  settingId: SettingIds.AUTO_PLAY,
+  name: 'Auto Play',
+  category: CategoryTypes.CHANNEL,
+  keywords: ['auto', 'play'],
+});

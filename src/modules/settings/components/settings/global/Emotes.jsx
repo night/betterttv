@@ -2,11 +2,11 @@ import React from 'react';
 import Panel from 'rsuite/Panel';
 import Checkbox from 'rsuite/Checkbox';
 import CheckboxGroup from 'rsuite/CheckboxGroup';
-import {registerComponent} from '../Store.jsx';
-import {CategoryTypes, SettingIds, EmoteTypeFlags} from '../../../../constants.js';
-import styles from '../../styles/header.module.css';
-import {hasFlag} from '../../../../utils/flags.js';
-import useStorageState from '../../../../common/hooks/StorageState.jsx';
+import {registerComponent} from '../../Store.jsx';
+import {CategoryTypes, SettingIds, EmoteTypeFlags} from '../../../../../constants.js';
+import styles from '../../../styles/header.module.css';
+import {hasFlag} from '../../../../../utils/flags.js';
+import useStorageState from '../../../../../common/hooks/StorageState.jsx';
 
 function EmotesModule() {
   const [emotes, setEmotes] = useStorageState(SettingIds.EMOTES);
@@ -36,25 +36,9 @@ function EmotesModule() {
   );
 }
 
-loadModuleForPlatforms(
-  [
-    PlatformTypes.TWITCH,
-    () =>
-      registerComponent(EmotesModule, {
-        settingId: SettingIds.EMOTES,
-        name: 'Emotes',
-        category: CategoryTypes.CHAT,
-        keywords: ['bttv', 'ffz', 'betterttv', 'frankerfacez', 'animated', 'gif', 'images', 'emotes'],
-      }),
-  ],
-  [
-    PlatformTypes.YOUTUBE,
-    () =>
-      registerComponent(EmotesModule, {
-        settingId: SettingIds.EMOTES,
-        name: 'Emotes',
-        category: CategoryTypes.CHAT,
-        keywords: ['bttv', 'ffz', 'betterttv', 'frankerfacez', 'animated', 'gif', 'images', 'emotes'],
-      }),
-  ]
-);
+registerComponent(EmotesModule, {
+  settingId: SettingIds.EMOTES,
+  name: 'Emotes',
+  category: CategoryTypes.CHAT,
+  keywords: ['bttv', 'ffz', 'betterttv', 'frankerfacez', 'animated', 'gif', 'images', 'emotes'],
+});

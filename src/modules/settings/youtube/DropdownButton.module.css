@@ -27,3 +27,12 @@
   height: 24px;
   margin-right: 16px;
 }
+
+.chatAppDropdownButton {
+  position: relative;
+  bottom: 8px;
+
+  button {
+    height: 36px;
+  }
+}

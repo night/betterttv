@@ -57,9 +57,10 @@ export default class EmoteMenuModule {
     }
 
     const legacyContainer = document.querySelector(LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
+    const emoteMenuEnabled = settings.get(SettingIds.EMOTE_MENU);
 
     // TODO: take into account emote menu setting in the future
-    if (legacyContainer == null) {
+    if (legacyContainer == null && emoteMenuEnabled) {
       const nativeButtonContainer = document.querySelector(CHAT_BUTTON_CONTAINER_SELECTOR);
       if (nativeButtonContainer == null) {
         return;
@@ -90,15 +91,16 @@ export default class EmoteMenuModule {
   }
 
   show(visible) {
-    // TODO: take into account emote menu setting in the future
+    const emoteMenuEnabled = settings.get(SettingIds.EMOTE_MENU);
+
     const nativeContainer = document.querySelector(NATIVE_EMOTE_MENU_BUTTON_CONTAINER_SELECTOR);
     if (nativeContainer != null) {
-      nativeContainer.classList.toggle(styles.hideEmoteMenuButton, visible);
+      nativeContainer.classList.toggle(styles.hideEmoteMenuButton, visible || emoteMenuEnabled);
     }
 
     const legacyContainer = document.querySelector(LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
     if (legacyContainer != null) {
-      legacyContainer.classList.toggle(styles.hideEmoteMenuButton, !visible);
+      legacyContainer.classList.toggle(styles.hideEmoteMenuButton, !visible || !emoteMenuEnabled);
     }
   }
 

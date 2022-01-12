@@ -1,12 +1,12 @@
-ximport React from 'react';
+import React from 'react';
 import Panel from 'rsuite/Panel';
 import Checkbox from 'rsuite/Checkbox';
 import CheckboxGroup from 'rsuite/CheckboxGroup';
-import {registerComponent} from '../Store.jsx';
-import {CategoryTypes, SettingIds, UsernameFlags} from '../../../../constants.js';
-import styles from '../../styles/header.module.css';
-import {hasFlag} from '../../../../utils/flags.js';
-import useStorageState from '../../../../common/hooks/StorageState.jsx';
+import {registerComponent} from '../../Store.jsx';
+import {CategoryTypes, SettingIds, UsernameFlags} from '../../../../../constants.js';
+import styles from '../../../styles/header.module.css';
+import {hasFlag} from '../../../../../utils/flags.js';
+import useStorageState from '../../../../../common/hooks/StorageState.jsx';
 
 function UsernamesModule() {
   const [usernames, setUsernames] = useStorageState(SettingIds.USERNAMES);
@@ -38,13 +38,9 @@ function UsernamesModule() {
   );
 }
 
-loadModuleForPlatforms([
-  PlatformTypes.TWITCH,
-  () =>
-    registerComponent(UsernamesModule, {
-      settingId: SettingIds.USERNAMES,
-      name: 'Chat Usernames',
-      category: CategoryTypes.CHAT,
-      keywords: ['color', 'username', 'accessibility', 'readability'],
-    }),
-]);
+registerComponent(UsernamesModule, {
+  settingId: SettingIds.USERNAMES,
+  name: 'Chat Usernames',
+  category: CategoryTypes.CHAT,
+  keywords: ['color', 'username', 'accessibility', 'readability'],
+});
