@@ -6,6 +6,7 @@ export default function EmoteWhisper({boundingQuerySelector, chatInputElement}) 
   return (
     <Whisper
       open
+      placement={null}
       speaker={
         <AutocompletePopover chatInputElement={chatInputElement} boundingQuerySelector={boundingQuerySelector} />
       }>

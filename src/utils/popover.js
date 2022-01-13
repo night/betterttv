@@ -1,10 +1,12 @@
 export default function repositionPopover(htmlElementRef, boundingQuerySelector, topPadding) {
   const popoverElement = htmlElementRef.current;
+  console.log(popoverElement);
   if (popoverElement == null) {
     return;
   }
 
   const chatTextArea = document.querySelector(boundingQuerySelector);
+  console.log(chatTextArea, 'chat');
   if (chatTextArea == null) {
     return;
   }

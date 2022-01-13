@@ -5,7 +5,7 @@ import EmoteWhisper from '../components/EmoteWhisper.jsx';
 
 let mountedNode;
 
-const CHAT_TEXT_AREA = 'textarea[data-a-target="chat-input"]';
+const CHAT_TEXT_AREA = 'textarea[data-a-target="chat-input"], div[data-a-target="chat-input"]';
 const EMOTE_AUTOCOMPLETE_CONTAINER_SELECTOR = 'div[data-a-target="emote-autocomplete-container-selector"]';
 
 export default class TwitchEmoteAutocomplete {
@@ -31,7 +31,7 @@ export default class TwitchEmoteAutocomplete {
       }
 
       ReactDOM.render(
-        <EmoteWhisper boundingQuerySelector={'textarea[data-a-target="chat-input"]'} chatInputElement={element} />,
+        <EmoteWhisper boundingQuerySelector={CHAT_TEXT_AREA} chatInputElement={element} />,
         whisperContainer
       );
 
