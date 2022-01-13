@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import classNames from 'classnames';
-import Popover from 'rsuite/lib/Popover/index.js';
+import Popover from 'rsuite/Popover';
 import styles from './AutocompletePopover.module.css';
 import Emotes from './Emotes.jsx';
 import repositionPopover from '../../../utils/popover.js';

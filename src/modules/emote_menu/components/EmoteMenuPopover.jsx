@@ -10,10 +10,7 @@ import repositionPopover from '../../../utils/popover.js';
 const TOP_PADDING = 2;
 
 const EmoteMenuPopover = React.forwardRef(
-  (
-    {toggleWhisper, appendToChat, className, style, boundingQuerySelector, htmlElementRef, whisperOpen, ...props},
-    ref
-  ) => {
+  ({toggleWhisper, appendToChat, className, style, boundingQuerySelector, whisperOpen, ...props}, ref) => {
     const [hasTip, setTip] = useState(false);
     const localRef = useRef(null);
 
@@ -25,11 +22,11 @@ const EmoteMenuPopover = React.forwardRef(
       setTip(show);
     }
 
-    const reposition = () => repositionPopover(htmlElementRef, boundingQuerySelector, TOP_PADDING);
+    const reposition = () => repositionPopover(localRef, boundingQuerySelector, TOP_PADDING);
 
     useEffect(() => {
       reposition();
-    }, [htmlElementRef, style, hasTip]);
+    }, [localRef, style, hasTip]);
 
     useEffect(() => {
       function handleResize() {
