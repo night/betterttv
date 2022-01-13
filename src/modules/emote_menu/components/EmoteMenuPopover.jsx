@@ -6,6 +6,7 @@ import EmoteMenu from './EmoteMenu.jsx';
 import styles from './EmoteMenuPopover.module.css';
 import ThemeProvider from '../../../common/components/ThemeProvider.jsx';
 import repositionPopover from '../../../utils/popover.js';
+import useResize from '../../../common/hooks/useResize.js';
 
 const TOP_PADDING = 2;
 
@@ -24,21 +25,8 @@ const EmoteMenuPopover = React.forwardRef(
 
     const reposition = () => repositionPopover(localRef, boundingQuerySelector, TOP_PADDING);
 
-    useEffect(() => {
-      reposition();
-    }, [localRef, style, hasTip]);
-
-    useEffect(() => {
-      function handleResize() {
-        reposition();
-        // Twitch animates chat moving on zoom changes
-        setTimeout(reposition, 500);
-      }
-
-      window.addEventListener('resize', handleResize);
-
-      return () => window.removeEventListener('resize', handleResize);
-    }, []);
+    useEffect(() => reposition(), [localRef, style, hasTip]);
+    useResize(reposition);
 
     return (
       <ThemeProvider>

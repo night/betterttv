@@ -3,7 +3,7 @@ import React from 'react';
 import {createSrcSet} from '../../utils/image.js';
 import styles from './Emote.module.css';
 
-export default function Emote({emote, onClick, onMouseOver, active}) {
+export default function Emote({emote, onClick, onMouseOver, active, isButton = true}) {
   const imageRef = React.useRef(null);
   const loadingRef = React.useRef(true);
 
@@ -19,6 +19,21 @@ export default function Emote({emote, onClick, onMouseOver, active}) {
     });
   }
 
+  const Image = (
+    <img
+      ref={imageRef}
+      className={classNames(styles.emoteImage, loadingRef.current ? styles.placeholder : null)}
+      srcSet={createSrcSet(emote.images)}
+      src={emote.images['1x']}
+      alt={loadingRef.current ? '' : emote.code}
+      onLoad={loadingRef.current ? handleLoad : undefined}
+    />
+  );
+
+  if (!isButton) {
+    return <div className={classNames(styles.emote, active ? styles.active : null)}>{Image}</div>;
+  }
+
   return (
     <button
       onClick={() => onClick(emote)}
@@ -26,14 +41,7 @@ export default function Emote({emote, onClick, onMouseOver, active}) {
       onFocus={() => onMouseOver(emote)}
       type="button"
       className={classNames(styles.emote, active ? styles.active : null)}>
-      <img
-        ref={imageRef}
-        className={classNames(styles.emoteImage, loadingRef.current ? styles.placeholder : null)}
-        srcSet={createSrcSet(emote.images)}
-        src={emote.images['1x']}
-        alt={loadingRef.current ? '' : emote.code}
-        onLoad={loadingRef.current ? handleLoad : undefined}
-      />
+      {Image}
     </button>
   );
 }

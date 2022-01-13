@@ -17,17 +17,15 @@ function findFocusedWord(parts = [], selectionStart = 0) {
   return null;
 }
 
-function handleChatInput(chatInputElement) {
+function handleChatInput() {
   const value = twitch.getChatInputValue();
   const selectionStart = twitch.getChatInputSelection();
-
-  console.log(selectionStart);
 
   const parts = value.split(' ');
   const focusedWord = findFocusedWord(parts, selectionStart);
   const matches = value.match(/(?:^|\s):[^(?::|\s)]{1,}/g);
 
-  if (matches == null) {
+  if (matches == null || focusedWord == null) {
     return DEFAULT_EMOTES;
   }
 

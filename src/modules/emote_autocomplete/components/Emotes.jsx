@@ -39,9 +39,14 @@ export default function Emotes({chatInputElement, repositionPopover}) {
   return (
     <div className={styles.emotes}>
       {shortEmotes.map((emote, index) => (
-        <Button key={emote.id} active={index === selectedEmote} className={styles.emoteContainer}>
+        <Button
+          key={emote.id}
+          active={index === selectedEmote}
+          onMouseOver={() => setSelectedEmote(index)}
+          appearance="subtle"
+          className={styles.emoteContainer}>
           <div className={styles.emote}>
-            <Emote emote={emote} />
+            <Emote emote={emote} isButton={false} />
             <div className={styles.emoteCode}>{emote.code}</div>
           </div>
           <div className={styles.categoryName}>{shortenName(emote.category.displayName)}</div>

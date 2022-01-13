@@ -2,15 +2,18 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {getCurrentUser} from '../../../utils/user.js';
 import EmoteWhisper from '../components/EmoteWhisper.jsx';
+import domObserver from '../../../observers/dom.js';
 
 let mountedNode;
 
 const CHAT_TEXT_AREA = 'textarea[data-a-target="chat-input"], div[data-a-target="chat-input"]';
-const EMOTE_AUTOCOMPLETE_CONTAINER_SELECTOR = 'div[data-a-target="emote-autocomplete-container-selector"]';
+const EMOTE_AUTOCOMPLETE_CONTAINER_SELECTOR = 'div[data-a-target="bttv-autocomplete-matches-container"]';
+const TWITCH_AUTOCOMPLETE_CONTAINER_SELECTOR = 'div[data-test-selector="autocomplete-matches-container"]';
 
-export default class TwitchEmoteAutocomplete {
+export default class EmoteAutocomplete {
   constructor() {
     this.load();
+    this.unloadTwitchAutocomplete();
   }
 
   load() {
@@ -23,7 +26,7 @@ export default class TwitchEmoteAutocomplete {
 
     if (emoteAutcompletContainer == null) {
       const whisperContainer = document.createElement('div');
-      whisperContainer.setAttribute('data-a-target', 'emote-autocomplete-container-selector');
+      whisperContainer.setAttribute('data-a-target', 'bttv-autocomplete-matches-container');
       document.body.appendChild(whisperContainer);
 
       if (mountedNode != null) {
@@ -37,5 +40,15 @@ export default class TwitchEmoteAutocomplete {
 
       mountedNode = whisperContainer;
     }
+  }
+
+  unloadTwitchAutocomplete() {
+    domObserver.on(TWITCH_AUTOCOMPLETE_CONTAINER_SELECTOR, (node, isConnected) => {
+      if (!isConnected) {
+        return;
+      }
+
+      node.remove();
+    });
   }
 }
