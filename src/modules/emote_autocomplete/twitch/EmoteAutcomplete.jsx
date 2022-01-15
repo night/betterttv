@@ -32,11 +32,11 @@ export default class EmoteAutocomplete {
       return;
     }
 
-    const element = document.querySelector(CHAT_TEXT_AREA);
     const emoteAutcompletContainer = document.querySelector(EMOTE_AUTOCOMPLETE_CONTAINER_SELECTOR);
     const emoteAutocomplete = settings.get(SettingIds.EMOTE_AUTOCOMPLETE);
 
     if (emoteAutcompletContainer == null && emoteAutocomplete) {
+      const element = document.querySelector(CHAT_TEXT_AREA);
       const whisperContainer = document.createElement('div');
       whisperContainer.setAttribute('data-a-target', 'bttv-autocomplete-matches-container');
       document.body.appendChild(whisperContainer);
@@ -71,11 +71,11 @@ export default class EmoteAutocomplete {
     autocompleteContainer.classList.toggle(styles.hideEmoteAutocomplete, !emoteMenuEnabled);
   }
 
-  autocomplete(string) {
+  autocomplete({code}) {
     const currentValue = twitch.getChatInputValue();
     const parts = currentValue.split(' ');
     parts.pop();
-    parts.push(string);
+    parts.push(code);
     twitch.setChatInputValue(parts.join(' '), true);
   }
 
@@ -95,7 +95,7 @@ export default class EmoteAutocomplete {
       }
 
       if (isEmoteAutocompletable()) {
-        node.remove();
+        node.parentElement.remove();
       }
     });
   }

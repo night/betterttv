@@ -7,7 +7,7 @@ import useRowNavigation from '../hooks/RowKeyboardNavigation.jsx';
 import {isEmoteAutocompletable} from '../../../utils/autocomplete.js';
 import keyCodes from '../../../utils/keycodes.js';
 
-const MAX_EMOTES_SHOWN = 10;
+const MAX_EMOTES_SHOWN = 5;
 const EMOTE_ROW_HEIGHT = 36;
 const BOTTOM_OFFSET = 120; // height of everything below the chat window
 
@@ -23,46 +23,39 @@ function calcMaxHeight() {
 
 const shortenName = (displayName) => displayName.split(' ')[0];
 
-let chatInputCallback;
-function setChatInputCallback(callback) {
-  chatInputCallback = callback;
-}
-
 let navigationCallback;
 function setNavigationCallback(callback) {
   navigationCallback = callback;
 }
 
 export default function Emotes({chatInputElement, repositionPopover, autocomplete}) {
-  const [emotes, setEmotes] = useChatInput(setChatInputCallback);
+  const [emotes, setEmotes] = useChatInput(chatInputElement);
   const shortEmotes = useMemo(() => emotes.slice(0, calcMaxHeight()), [emotes]);
   const [selected, setSelected] = useRowNavigation(setNavigationCallback, shortEmotes.length);
 
   useEffect(() => repositionPopover(), [emotes]);
 
-  function handleAutcomplete({code}) {
+  function handleAutcomplete(emote) {
     setEmotes([]);
-    autocomplete(code);
+    autocomplete(emote);
   }
 
   useEffect(() => {
     function keydownCallback(event) {
       if (!isEmoteAutocompletable()) {
-        setEmotes([]);
+        if (shortEmotes.length > 0) {
+          setEmotes([]);
+        }
+
         return;
       }
 
-      switch (event.key) {
-        case keyCodes.Enter:
-        case keyCodes.Tab:
-          event.stopImmediatePropagation();
-          handleAutcomplete(shortEmotes[selected]);
-          return;
-        default:
-          break;
+      if (event.key === keyCodes.Enter || event.key === keyCodes.Tab) {
+        event.stopImmediatePropagation();
+        handleAutcomplete(shortEmotes[selected]);
+        return;
       }
 
-      chatInputCallback(event);
       navigationCallback(event);
     }
 
@@ -71,7 +64,7 @@ export default function Emotes({chatInputElement, repositionPopover, autocomplet
     return () => {
       chatInputElement.removeEventListener('keydown', keydownCallback);
     };
-  }, [chatInputCallback, navigationCallback, shortEmotes, selected]);
+  }, [navigationCallback, shortEmotes, selected]);
 
   if (shortEmotes.length === 0) {
     return null;

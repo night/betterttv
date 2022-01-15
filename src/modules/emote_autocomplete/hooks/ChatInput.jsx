@@ -14,20 +14,26 @@ function handleChatInput() {
   return [];
 }
 
-export default function useChatInput(setKeyDownCallback) {
+export default function useChatInput(chatInputElement) {
   const [emotes, setEmotes] = useState([]);
 
-  function keydownCallback() {
-    const updateEmotes = () => setEmotes(handleChatInput());
+  useEffect(() => {
+    function keydownCallback() {
+      const updateEmotes = () => setEmotes(handleChatInput());
 
-    if (!emoteMenuViewStore.isLoaded()) {
-      emoteMenuViewStore.once('updated', updateEmotes);
+      if (!emoteMenuViewStore.isLoaded()) {
+        emoteMenuViewStore.once('updated', updateEmotes);
+      }
+
+      updateEmotes();
     }
 
-    updateEmotes();
-  }
+    chatInputElement.addEventListener('input', keydownCallback);
 
-  useEffect(() => setKeyDownCallback(keydownCallback), []);
+    return () => {
+      chatInputElement.removeEventListener('input', chatInputElement);
+    };
+  }, []);
 
   return [emotes, setEmotes];
 }

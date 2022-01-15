@@ -41,7 +41,7 @@ export default function useRowNavigation(setKeyDownCallback, rowCount = 0) {
     }
   }
 
-  useEffect(() => setKeyDownCallback(keydownCallback), [rowCount, selected]);
+  setKeyDownCallback(keydownCallback);
   useEffect(() => setSelected(DEFAULT_SELECT), [rowCount]);
 
   return [selected, setSelected];
