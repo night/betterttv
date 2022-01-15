@@ -7,6 +7,7 @@ import emotes from '../emotes/index.js';
 import {ChatFlags, PlatformTypes, SettingIds} from '../../constants.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
 import {hasFlag} from '../../utils/flags.js';
+import {isEmoteAutocompletable} from '../../utils/autocomplete.js';
 
 const CHAT_INPUT_SELECTOR = 'textarea[data-a-target="chat-input"], div[data-a-target="chat-input"]';
 const AUTOCOMPLETE_SUGGESTIONS_SELECTOR = 'div[data-a-target="autocomplete-balloon"]';
@@ -55,6 +56,10 @@ class ChatTabcompletionModule {
   }
 
   onKeydown(e, includeUsers = true) {
+    if (isEmoteAutocompletable() && settings.get(SettingIds.EMOTE_AUTOCOMPLETE)) {
+      return;
+    }
+
     const keyCode = e.key;
     if (e.ctrlKey) return;
 

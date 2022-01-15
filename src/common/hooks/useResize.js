@@ -1,12 +1,14 @@
 import {useEffect} from 'react';
 
-export default function useResize(reposition) {
+export default function useResize(callback) {
   useEffect(() => {
     function handleResize() {
-      reposition();
+      callback();
       // Twitch animates chat moving on zoom changes
-      setTimeout(reposition, 500);
+      setTimeout(callback, 500);
     }
+
+    callback();
 
     window.addEventListener('resize', handleResize);
 

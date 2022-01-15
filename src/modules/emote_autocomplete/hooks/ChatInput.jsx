@@ -1,60 +1,33 @@
 import {useEffect, useState} from 'react';
-import emoteSearchStore from '../../../common/stores/emote-menu-view-store.js';
-import twitch from '../../../utils/twitch.js';
-
-const DEFAULT_EMOTES = [];
-
-function findFocusedWord(parts = [], selectionStart = 0) {
-  let total = 0;
-
-  for (const part of parts) {
-    if (selectionStart > total && selectionStart <= total + part.length) {
-      return part;
-    }
-    total += part.length + 1;
-  }
-
-  return null;
-}
+import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js';
+import {getAutocompletable} from '../../../utils/autocomplete.js';
 
 function handleChatInput() {
-  const value = twitch.getChatInputValue();
-  const selectionStart = twitch.getChatInputSelection();
+  const focusedWord = getAutocompletable();
 
-  const parts = value.split(' ');
-  const focusedWord = findFocusedWord(parts, selectionStart);
-  const matches = value.match(/(?:^|\s):[^(?::|\s)]{1,}/g);
-
-  if (matches == null || focusedWord == null) {
-    return DEFAULT_EMOTES;
-  }
-
-  const strippedFocusedWord = focusedWord.replace(/\s|:/g, '');
-  const strippedMatches = matches.map((match) => match.replace(/\s|:/g, ''));
-
-  if (strippedMatches.includes(strippedFocusedWord)) {
-    const foundEmotes = emoteSearchStore.search(strippedFocusedWord);
+  if (focusedWord != null) {
+    const strippedFocusedWord = focusedWord.replace(/\s|:/g, '');
+    const foundEmotes = emoteMenuViewStore.search(strippedFocusedWord);
     return foundEmotes.map((emote) => emote.item);
   }
 
-  return DEFAULT_EMOTES;
+  return [];
 }
 
-export default function useChatInput(chatInputElement) {
-  const [emotes, setEmotes] = useState(DEFAULT_EMOTES);
+export default function useChatInput(setKeyDownCallback) {
+  const [emotes, setEmotes] = useState([]);
 
-  useEffect(() => {
-    function keydownCallback() {
-      const searchedEmotes = handleChatInput();
-      setEmotes(searchedEmotes);
+  function keydownCallback() {
+    const updateEmotes = () => setEmotes(handleChatInput());
+
+    if (!emoteMenuViewStore.isLoaded()) {
+      emoteMenuViewStore.once('updated', updateEmotes);
     }
 
-    chatInputElement.addEventListener('keydown', keydownCallback);
+    updateEmotes();
+  }
 
-    return () => {
-      chatInputElement.removeEventListener('keydown', keydownCallback);
-    };
-  }, []);
+  useEffect(() => setKeyDownCallback(keydownCallback), []);
 
   return [emotes, setEmotes];
 }

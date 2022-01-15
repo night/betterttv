@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import classNames from 'classnames';
 import Popover from 'rsuite/Popover';
 import mergeRefs from 'react-merge-refs';
@@ -8,18 +8,37 @@ import repositionPopover from '../../../utils/popover.js';
 import useResize from '../../../common/hooks/useResize.js';
 
 const TOP_PADDING = 2;
+const DEFAULT_POPOVER_WIDTH = 300;
 
 const EmoteMenuPopover = React.forwardRef(
-  ({triggerRef, appendToChat, className, style, boundingQuerySelector, chatInputElement, ...props}, ref) => {
+  (
+    {triggerRef, appendToChat, className, style, boundingQuerySelector, chatInputElement, autocomplete, ...props},
+    ref
+  ) => {
     const localRef = useRef(null);
-    const reposition = () => repositionPopover(localRef, boundingQuerySelector, TOP_PADDING);
+    const [popoverWidth, setPopoverWidth] = useState(DEFAULT_POPOVER_WIDTH);
 
+    const reposition = () => repositionPopover(localRef, boundingQuerySelector, TOP_PADDING);
     useEffect(() => reposition(), [localRef, style]);
-    useResize(reposition);
+
+    useResize(() => {
+      const {width} = chatInputElement.getBoundingClientRect();
+      setPopoverWidth(width);
+      reposition();
+    });
 
     return (
-      <Popover className={classNames(className, styles.popover)} full ref={mergeRefs([localRef, ref])} {...props}>
-        <Emotes chatInputElement={chatInputElement} repositionPopover={() => reposition()} />
+      <Popover
+        full
+        className={classNames(className, styles.popover)}
+        style={{width: popoverWidth}}
+        ref={mergeRefs([localRef, ref])}
+        {...props}>
+        <Emotes
+          chatInputElement={chatInputElement}
+          repositionPopover={() => reposition()}
+          autocomplete={autocomplete}
+        />
       </Popover>
     );
   }
