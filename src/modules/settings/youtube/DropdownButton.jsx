@@ -2,7 +2,7 @@ import * as faCog from '@fortawesome/free-solid-svg-icons/faCog';
 import {Icon} from '@rsuite/icons';
 import React from 'react';
 import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.jsx';
-import styles from './DropdownButton.module.css';
+import styles from './Settings.module.css';
 
 export default function DropdownButton(props) {
   return (

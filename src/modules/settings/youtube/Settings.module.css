@@ -1,0 +1,82 @@
+.button {
+  width: 290px;
+  height: 100%;
+  max-height: 40px;
+  border: none;
+  display: flex;
+  align-items: center;
+  background: none;
+  color: var(--yt-compact-link-color, var(--yt-spec-text-primary));
+  font-family: 'Roboto', 'Arial', sans-serif;
+  font-size: 1.4rem;
+  line-height: 2rem;
+  font-weight: 100;
+  padding: 0px 36px 0px 16px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: var(--yt-spec-badge-chip-background);
+}
+
+.button:focus {
+  background-color: var(--paper-item-focused-background-color);
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 16px;
+}
+
+.chatAppDropdownButton {
+  position: relative;
+  bottom: 10px;
+  height: 36px;
+}
+
+/* TODO: swap to chakra :) */
+:global {
+  .bttv-youtube {
+    #bttvSettingsPanel {
+      font-family: 'Helvetica Neue', Helvetica, Arial;
+    }
+
+    .bttv-rs-toggle-checked .bttv-rs-toggle-presentation {
+      background-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .bttv-rs-sidenav-default .bttv-rs-sidenav-item.bttv-rs-sidenav-item-active,
+    .bttv-rs-sidenav-default .bttv-rs-dropdown-item.bttv-rs-dropdown-item-active,
+    .bttv-rs-sidenav-default .bttv-rs-dropdown.bttv-rs-dropdown-selected-within .bttv-rs-dropdown-toggle-icon {
+      color: rgba(255, 255, 255, 1);
+    }
+  }
+
+  .bttv-rs-btn-primary,
+  .bttv-rs-btn-icon-with-text.bttv-rs-btn-primary > .bttv-rs-icon {
+    background-color: rgba(255, 255, 255, 0.8);
+    color: rgba(100, 100, 100, 1);
+  }
+
+  .bttv-rs-btn-primary:active,
+  .bttv-rs-btn-primary:hover,
+  .bttv-rs-btn-primary:focus .bttv-rs-btn-primary.bttv-rs-btn-active,
+  .bttv-rs-btn-icon-with-text.bttv-rs-btn-primary:hover > .bttv-rs-icon,
+  .bttv-rs-btn-icon-with-text.bttv-rs-btn-primary:focus > .bttv-rs-icon {
+    background-color: rgba(255, 255, 255, 1);
+    color: rgba(100, 100, 100, 1);
+  }
+
+  .bttv-rs-checkbox-checked .bttv-rs-checkbox-wrapper .bttv-rs-checkbox-inner::before,
+  .bttv-rs-checkbox-indeterminate .bttv-rs-checkbox-wrapper .bttv-rs-checkbox-inner::before {
+    background-color: rgba(255, 255, 255, 1);
+    border-color: rgba(255, 255, 255, 1);
+  }
+
+  .bttv-rs-auto-complete-item:hover,
+  .bttv-rs-auto-complete-item:focus,
+  .bttv-rs-auto-complete-item-focus {
+    background-color: rgba(255, 255, 255, 0.8);
+  }
+}

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import Modal from '../components/Window.jsx';
 import domObserver from '../../../observers/dom.js';
 import DropdownButton from './DropdownButton.jsx';
-import styles from './DropdownButton.module.css';
+import styles from './Settings.module.css';
 
 const BTTV_DROPDOWN_BUTTON_CONTAINER_SELECTOR = 'div[data-a-target="bttv-dropdown-button-container"]';
 const DROPDOWN_MENU_ITEMS_SELECTOR = 'ytd-popup-container #sections #items';
