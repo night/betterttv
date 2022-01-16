@@ -24,13 +24,12 @@ let mountedChatDropdownButton;
 
 let menuItemsListener = null;
 
-console.log('hello');
 export default class SettingsModule {
   constructor() {
     this.renderSettings();
 
     // TODO: re-enable this when we have settings like theatre mode...
-    // domObserver.once(AVATAR_BUTTON_SELECTOR, (node, isConnected) => {
+    // domObserver.on(AVATAR_BUTTON_SELECTOR, (node, isConnected) => {
     //   if (!isConnected) {
     //     return;
     //   }
@@ -43,7 +42,7 @@ export default class SettingsModule {
         return;
       }
 
-      this.loadChatAppMenuButton();
+      this.loadChatAppMenuButton(node);
     });
   }
 
@@ -70,11 +69,11 @@ export default class SettingsModule {
     }
   }
 
-  loadChatAppMenuButton() {
+  loadChatAppMenuButton(node) {
     const buttonContainer = document.querySelector(BTTV_CHAT_DROPDOWN_BUTTON_CONTAINER_SELECTOR);
 
     if (buttonContainer == null) {
-      const itemsContainer = document.querySelector(CHAT_SETTINGS_DROPDOWN_ITEMS_SELECTOR).parentElement;
+      const itemsContainer = node.parentElement;
 
       if (itemsContainer == null) {
         return;

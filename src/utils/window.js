@@ -47,7 +47,3 @@ export function isPopout() {
     return true;
   }
 }
-
-export function isExternalWindow() {
-  return window.location.pathname.endsWith('/chat') || window.location.pathname.endsWith('/live_chat');
-}
