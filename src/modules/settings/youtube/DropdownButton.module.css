@@ -1,6 +1,7 @@
 .button {
   width: 290px;
-  height: 40px;
+  height: 100%;
+  max-height: 40px;
   border: none;
   display: flex;
   align-items: center;
@@ -30,9 +31,6 @@
 
 .chatAppDropdownButton {
   position: relative;
-  bottom: 8px;
-
-  button {
-    height: 36px;
-  }
+  bottom: 10px;
+  height: 36px;
 }
