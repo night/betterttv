@@ -24,6 +24,7 @@ let mountedChatDropdownButton;
 
 let menuItemsListener = null;
 
+console.log('hello');
 export default class SettingsModule {
   constructor() {
     this.renderSettings();
