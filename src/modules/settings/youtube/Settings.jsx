@@ -11,6 +11,7 @@ const ITEMS_SELECTOR = '#items';
 const AVATAR_BUTTON_SELECTOR = '#avatar-btn';
 
 const CHAT_SETTINGS_DROPDOWN_ITEMS_SELECTOR = '#contentWrapper #items';
+const CHAT_SETTINGS_MENU_BUTTON_SELECTOR = '#overflow #button';
 const BTTV_CHAT_DROPDOWN_BUTTON_CONTAINER_SELECTOR = 'div[data-a-target="bttv-chat-dropdown-button-container"]';
 
 let handleOpen;
@@ -94,7 +95,7 @@ export default class SettingsModule {
             handleOpen(true);
 
             // close the dropdown menu when the modal is opened
-            const menuButton = document.querySelector('#overflow #button');
+            const menuButton = document.querySelector(CHAT_SETTINGS_MENU_BUTTON_SELECTOR);
 
             if (menuButton != null) {
               menuButton.click();
