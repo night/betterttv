@@ -36,6 +36,10 @@
   row-gap: 16px;
 }
 
+.description {
+  color: var(--bttv-rs-text-secondary);
+}
+
 .content {
   composes: scroll from '../../emote_menu/styles/Scrollbar.module.css';
   overflow-y: scroll;

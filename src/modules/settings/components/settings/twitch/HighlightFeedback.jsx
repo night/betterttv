@@ -12,7 +12,7 @@ function HighlightFeedback() {
   return (
     <Panel header="Highlight Feedback">
       <div className={styles.toggle}>
-        <p>Plays a sound for messages directed at you</p>
+        <p className={styles.description}>Plays a sound for messages directed at you</p>
         <Toggle checked={value} onChange={(state) => setValue(state)} />
       </div>
     </Panel>

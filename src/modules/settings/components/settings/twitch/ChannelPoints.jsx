@@ -14,7 +14,7 @@ function ChannelPointsModule() {
   return (
     <Panel header="Channel Points">
       <div className={styles.setting}>
-        <p>Edit or modify the channel points</p>
+        <p className={styles.description}>Edit or modify the channel points</p>
         <CheckboxGroup
           value={Object.values(ChannelPointsFlags).filter((value) => hasFlag(channelPoints, value))}
           onChange={(value) => setChannelPoints(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}>

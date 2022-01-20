@@ -14,7 +14,7 @@ function DeletedMessagesModule() {
   return (
     <Panel header="Deleted Messages">
       <div className={styles.setting}>
-        <p>How should deleted messages be handled.</p>
+        <p className={styles.description}>How should deleted messages be handled.</p>
         <FormGroup controlId="radioList">
           <RadioGroup name="radioList" value={value} onChange={(state) => setValue(state)}>
             <Radio key="default" value={DeletedMessageTypes.DEFAULT}>

@@ -12,7 +12,7 @@ function HostButton() {
   return (
     <Panel header="Host Button">
       <div className={styles.toggle}>
-        <p>Adds a Host/Unhost button below the video player</p>
+        <p className={styles.description}>Adds a Host/Unhost button below the video player</p>
         <Toggle checked={value} onChange={(state) => setValue(state)} />
       </div>
     </Panel>

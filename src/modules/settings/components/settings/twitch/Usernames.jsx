@@ -14,7 +14,7 @@ function UsernamesModule() {
   return (
     <Panel header="Usernames">
       <div className={styles.setting}>
-        <p>Edit or modify chat usernames</p>
+        <p className={styles.description}>Edit or modify chat usernames</p>
         <CheckboxGroup
           value={Object.values(UsernameFlags).filter((value) => hasFlag(usernames, value))}
           onChange={(value) => setUsernames(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}>
