@@ -9,7 +9,7 @@ import Changelog from '../pages/Changelog.jsx';
 import ChatWindow from './ChatWindow.jsx';
 import {PageTypes} from '../../../constants.js';
 import ThemeProvider from '../../../common/components/ThemeProvider.jsx';
-import {isExternalWindow} from '../../../utils/window.js';
+import {isStandaloneWindow} from '../../../utils/window.js';
 
 function Page(props) {
   const {page, ...restProps} = props;
@@ -30,7 +30,7 @@ function Page(props) {
 }
 
 function isWindowSmallStandaloneChat() {
-  return window.innerWidth < 600 && isExternalWindow();
+  return window.innerWidth < 600 && isStandaloneWindow();
 }
 
 function Window({setHandleOpen}) {

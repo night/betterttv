@@ -47,3 +47,17 @@ export function isPopout() {
     return true;
   }
 }
+
+export function isStandaloneWindow() {
+  const currentPlatform = getPlatform();
+
+  if (currentPlatform === PlatformTypes.TWITCH) {
+    return window.location.pathname.endsWith('/chat');
+  }
+
+  if (currentPlatform === PlatformTypes.YOUTUBE) {
+    return window.location.pathname.endsWith('/live_chat');
+  }
+
+  return false;
+}
