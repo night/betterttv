@@ -78,5 +78,11 @@
     .bttv-rs-auto-complete-item-focus {
       background-color: rgba(255, 255, 255, 0.8);
     }
+
+    .bttv-rs-modal-dialog a,
+    .bttv-rs-modal-content a,
+    .bttv-rs-modal a {
+      color: rgba(255, 255, 255, 1);
+    }
   }
 }
