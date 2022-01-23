@@ -86,21 +86,17 @@ export default class EmoteMenuModule {
 
       mountedNode = buttonContainer;
     }
-
-    this.show(true);
   }
 
   show(visible) {
-    const emoteMenuEnabled = settings.get(SettingIds.EMOTE_MENU);
-
     const nativeContainer = document.querySelector(NATIVE_EMOTE_MENU_BUTTON_CONTAINER_SELECTOR);
     if (nativeContainer != null) {
-      nativeContainer.classList.toggle(styles.hideEmoteMenuButton, visible && emoteMenuEnabled);
+      nativeContainer.classList.toggle(styles.hideEmoteMenuButton, visible);
     }
 
     const legacyContainer = document.querySelector(LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
     if (legacyContainer != null) {
-      legacyContainer.classList.toggle(styles.hideEmoteMenuButton, !visible || !emoteMenuEnabled);
+      legacyContainer.classList.toggle(styles.hideEmoteMenuButton, !visible);
     }
   }
 
