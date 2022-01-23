@@ -46,10 +46,12 @@
       background-color: rgba(255, 255, 255, 0.5);
     }
 
-    .bttv-rs-sidenav-default .bttv-rs-sidenav-item.bttv-rs-sidenav-item-active,
-    .bttv-rs-sidenav-default .bttv-rs-dropdown-item.bttv-rs-dropdown-item-active,
-    .bttv-rs-sidenav-default .bttv-rs-dropdown.bttv-rs-dropdown-selected-within .bttv-rs-dropdown-toggle-icon {
-      color: rgb(255, 255, 255);
+    .bttv-rs-sidenav-default {
+      .bttv-rs-sidenav-item.bttv-rs-sidenav-item-active,
+      .bttv-rs-dropdown-item.bttv-rs-dropdown-item-active,
+      .bttv-rs-dropdown.bttv-rs-dropdown-selected-within .bttv-rs-dropdown-toggle-icon {
+        color: rgb(255, 255, 255);
+      }
     }
 
     .bttv-rs-btn-primary,
