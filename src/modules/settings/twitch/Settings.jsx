@@ -1,5 +1,9 @@
 import $ from 'jquery';
 import React from 'react';
+// eslint-disable-next-line import/no-unresolved, import/extensions
+import '../components/settings/twitch/*';
+// eslint-disable-next-line import/no-unresolved, import/extensions
+import '../components/settings/global/*';
 import ReactDOM from 'react-dom';
 import Modal from '../components/Window.jsx';
 import domObserver from '../../../observers/dom.js';

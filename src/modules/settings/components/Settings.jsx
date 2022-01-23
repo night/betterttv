@@ -5,33 +5,10 @@ import InputGroup from 'rsuite/InputGroup';
 import AutoComplete from 'rsuite/AutoComplete';
 import * as faSearch from '@fortawesome/free-solid-svg-icons/faSearch';
 import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.jsx';
-import {loadModuleForPlatforms} from '../../../utils/modules.js';
-import {PlatformTypes} from '../../../constants.js';
 
 let settings = [];
 
 (async () => {
-  await loadModuleForPlatforms(
-    [
-      PlatformTypes.TWITCH,
-      async () => {
-        // eslint-disable-next-line import/no-unresolved
-        await import('./settings/global/*.jsx');
-        // eslint-disable-next-line import/no-unresolved
-        await import('./settings/twitch/*.jsx');
-      },
-    ],
-    [
-      PlatformTypes.YOUTUBE,
-      async () => {
-        // eslint-disable-next-line import/no-unresolved
-        await import('./settings/global/*.jsx');
-        // eslint-disable-next-line import/no-unresolved
-        await import('./settings/youtube/*.jsx');
-      },
-    ]
-  );
-
   const {Components} = await import('./Store.jsx');
   settings = Object.values(Components).sort((a, b) => a.name.localeCompare(b.name));
 })();
