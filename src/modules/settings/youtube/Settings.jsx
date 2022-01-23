@@ -1,13 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-// eslint-disable-next-line import/no-unresolved, import/extensions
-import '../components/settings/youtube/*';
-// eslint-disable-next-line import/no-unresolved, import/extensions
-import '../components/settings/global/*';
 import Modal from '../components/Window.jsx';
 import domObserver from '../../../observers/dom.js';
 import DropdownButton from './DropdownButton.jsx';
 import styles from './Settings.module.css';
+import {importStoreCallback} from '../components/Settings.jsx';
 
 const BTTV_DROPDOWN_BUTTON_CONTAINER_SELECTOR = 'div[data-a-target="bttv-dropdown-button-container"]';
 const DROPDOWN_MENU_ITEMS_SELECTOR = 'ytd-popup-container #sections #items';
@@ -31,7 +28,7 @@ let menuItemsListener = null;
 
 export default class SettingsModule {
   constructor() {
-    this.renderSettings();
+    this.load();
 
     // TODO: re-enable this when we have settings like theatre mode...
     // domObserver.on(AVATAR_BUTTON_SELECTOR, (node, isConnected) => {
@@ -49,6 +46,15 @@ export default class SettingsModule {
 
       this.loadChatAppMenuButton(node);
     });
+  }
+
+  async load() {
+    // eslint-disable-next-line import/no-unresolved
+    await import('../components/settings/global/*.jsx');
+    // eslint-disable-next-line import/no-unresolved
+    await import('../components/settings/youtube/*.jsx');
+    await importStoreCallback();
+    this.renderSettings();
   }
 
   renderSettings() {

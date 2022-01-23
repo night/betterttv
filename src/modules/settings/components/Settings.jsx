@@ -8,10 +8,10 @@ import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.js
 
 let settings = [];
 
-(async () => {
+export async function importStoreCallback() {
   const {Components} = await import('./Store.jsx');
   settings = Object.values(Components).sort((a, b) => a.name.localeCompare(b.name));
-})();
+}
 
 export function Settings({search, category}) {
   const searchedSettings =

@@ -1,12 +1,9 @@
 import $ from 'jquery';
 import React from 'react';
-// eslint-disable-next-line import/no-unresolved, import/extensions
-import '../components/settings/twitch/*';
-// eslint-disable-next-line import/no-unresolved, import/extensions
-import '../components/settings/global/*';
 import ReactDOM from 'react-dom';
 import Modal from '../components/Window.jsx';
 import domObserver from '../../../observers/dom.js';
+import {importStoreCallback} from '../components/Settings.jsx';
 
 let handleOpen;
 function setHandleOpen(newHandleOpen) {
@@ -17,10 +14,19 @@ let mountedNode;
 
 export default class SettingsModule {
   constructor() {
-    this.renderSettings();
+    this.load();
     domObserver.on('a[data-test-selector="user-menu-dropdown__settings-link"]', () => {
       this.renderSettingsMenuOption();
     });
+  }
+
+  async load() {
+    // eslint-disable-next-line import/no-unresolved
+    await import('../components/settings/global/*.jsx');
+    // eslint-disable-next-line import/no-unresolved
+    await import('../components/settings/twitch/*.jsx');
+    await importStoreCallback();
+    this.renderSettings();
   }
 
   renderSettings() {
