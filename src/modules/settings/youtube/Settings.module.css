@@ -35,7 +35,6 @@
   height: 36px;
 }
 
-/* TODO: swap to chakra :) */
 :global {
   .bttv-youtube {
     #bttvSettingsPanel {
@@ -62,7 +61,7 @@
 
     .bttv-rs-btn-primary:active,
     .bttv-rs-btn-primary:hover,
-    .bttv-rs-btn-primary:focus .bttv-rs-btn-primary.bttv-rs-btn-active,
+    .bttv-rs-btn-primary:focus,
     .bttv-rs-btn-icon-with-text.bttv-rs-btn-primary:hover > .bttv-rs-icon,
     .bttv-rs-btn-icon-with-text.bttv-rs-btn-primary:focus > .bttv-rs-icon {
       background-color: rgb(255, 255, 255);
