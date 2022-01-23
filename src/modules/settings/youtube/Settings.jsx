@@ -6,7 +6,7 @@ import DropdownButton from './DropdownButton.jsx';
 import styles from './Settings.module.css';
 import {importStoreCallback} from '../components/Settings.jsx';
 
-const CHAT_SETTINGS_DROPDOWN_ITEMS_SELECTOR = '#contentWrapper #items';
+const CHAT_SETTINGS_DROPDOWN_ITEMS_SELECTOR = '.yt-live-chat-app #contentWrapper [slot="dropdown-content"] #items';
 const CHAT_SETTINGS_MENU_BUTTON_SELECTOR = '#overflow #button';
 const BTTV_CHAT_DROPDOWN_BUTTON_CONTAINER_SELECTOR = 'div[data-a-target="bttv-chat-dropdown-button-container"]';
 
