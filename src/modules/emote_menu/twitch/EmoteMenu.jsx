@@ -85,19 +85,16 @@ export default class EmoteMenuModule {
       );
       mountedNode = buttonContainer;
     }
-
-    this.show(true);
   }
 
   show(visible) {
     const legacyContainer = document.querySelector(LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
-    const emoteMenuEnabled = settings.get(SettingIds.EMOTE_MENU);
 
     if (legacyContainer == null) {
       return;
     }
 
-    legacyContainer.classList.toggle(styles.hideEmoteMenuButton, !visible || !emoteMenuEnabled);
+    legacyContainer.classList.toggle(styles.hideEmoteMenuButton, visible);
   }
 
   appendToChat({code: text}, shouldFocus = true) {
