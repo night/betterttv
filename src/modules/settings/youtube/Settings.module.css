@@ -37,8 +37,12 @@
 
 :global {
   .bttv-youtube {
-    #bttvSettingsPanel {
+    #bttvSettingsPanel,
+    .bttv-rs-modal-wrapper {
       font-family: 'Helvetica Neue', Helvetica, Arial;
+      color: var(--bttv-rs-text-primary);
+      font-size: 1.3rem;
+      line-height: 1.5;
     }
 
     .bttv-rs-toggle-checked .bttv-rs-toggle-presentation {
