@@ -12,7 +12,7 @@ export default function ChatWindow({open, onClose}) {
   if (!open) return null;
 
   return (
-    <div className={styles.default}>
+    <div className={styles.standaloneChatWindow}>
       <div className={styles.header}>
         <img alt="BetterTTV Logo" src={cdn.url('/assets/logos/mascot.png')} className={styles.logo} />
         <div className={styles.search}>

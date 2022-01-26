@@ -46,13 +46,7 @@ export default class SettingsModule {
     if (bttvPanel == null) {
       const panel = document.createElement('div');
       panel.setAttribute('id', 'bttvSettingsPanel');
-      const chatApp = document.querySelector('#chat');
-
-      if (chatApp == null) {
-        return;
-      }
-
-      chatApp.append(panel);
+      document.querySelector('body').append(panel);
 
       if (mountedPanel != null) {
         ReactDOM.unmountComponentAtNode(mountedPanel);
