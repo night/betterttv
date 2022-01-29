@@ -81,7 +81,7 @@ export default function Emotes({chatInputElement, repositionPopover, autocomplet
           appearance="subtle"
           className={styles.emoteContainer}>
           <div className={styles.emote}>
-            <Emote emote={emote} isButton={false} />
+            <Emote emote={emote} />
             <div className={styles.emoteCode}>{emote.code}</div>
           </div>
           <div className={styles.categoryName}>{shortenName(emote.category.displayName)}</div>
