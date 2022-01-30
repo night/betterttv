@@ -5,6 +5,7 @@ import watcher from '../../watcher.js';
 import colors from '../../utils/colors.js';
 import {PlatformTypes} from '../../constants.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
+import splitChat from '../split_chat/index.js';
 
 const CHAT_MESSAGE_SELECTOR = '.video-chat__message span[data-a-target="chat-message-text"]';
 const CHAT_FROM_SELECTOR = '.video-chat__message-author';
@@ -55,6 +56,8 @@ class VODChatModule {
     if (nickname) {
       $username.text(nickname);
     }
+
+    splitChat.render($element);
 
     const $message = $element.find(CHAT_MESSAGE_SELECTOR);
     chat.messageReplacer($message, mockUser);
