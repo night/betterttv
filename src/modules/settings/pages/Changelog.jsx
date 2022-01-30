@@ -66,7 +66,7 @@ function Changelog({onClose}) {
 
         return (
           <Panel header={`Version ${version} • ${dayjs(publishedAt).format('MMM D, YYYY')}`} key={version}>
-            <p>{formattedBody}</p>
+            <p className={styles.description}>{formattedBody}</p>
           </Panel>
         );
       });

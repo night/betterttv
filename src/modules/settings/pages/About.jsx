@@ -106,7 +106,7 @@ function About({onClose}) {
             <div className={styles.socials}>
               <ul>
                 <li>
-                  <p>EXPLORE</p>
+                  <p className={header.heading}>EXPLORE</p>
                 </li>
                 <li>
                   <a target="_blank" rel="noreferrer" href="https://betterttv.com/">
@@ -131,7 +131,7 @@ function About({onClose}) {
               </ul>
               <ul>
                 <li>
-                  <p>COMMUNITY</p>
+                  <p className={header.heading}>COMMUNITY</p>
                 </li>
                 <li>
                   <a target="_blank" rel="noreferrer" href="https://discord.gg/nightdev">
@@ -156,7 +156,7 @@ function About({onClose}) {
               </ul>
               <ul>
                 <li>
-                  <p>LEGAL</p>
+                  <p className={header.heading}>LEGAL</p>
                 </li>
                 <li>
                   <a target="_blank" rel="noreferrer" href="https://betterttv.com/terms">

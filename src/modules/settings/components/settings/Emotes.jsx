@@ -18,15 +18,15 @@ function EmotesModule() {
           value={Object.values(EmoteTypeFlags).filter((value) => hasFlag(emotes, value))}
           onChange={(value) => setEmotes(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}>
           <Checkbox key="bttvEmotes" value={EmoteTypeFlags.BTTV_EMOTES}>
-            <p>BetterTTV Emotes</p>
+            <p className={styles.heading}>BetterTTV Emotes</p>
             <p className={styles.description}>Adds extra cool emotes for you to use</p>
           </Checkbox>
           <Checkbox key="bttvGifEmotes" value={EmoteTypeFlags.BTTV_GIF_EMOTES}>
-            <p>BetterTTV Animated Emotes</p>
+            <p className={styles.heading}>BetterTTV Animated Emotes</p>
             <p className={styles.description}>Adds animated emotes (not everyone likes GIFs, but some people do)</p>
           </Checkbox>
           <Checkbox key="ffzEmotes" value={EmoteTypeFlags.FFZ_EMOTES}>
-            <p>FrankerFaceZ Emotes</p>
+            <p className={styles.heading}>FrankerFaceZ Emotes</p>
             <p className={styles.description}>Enables emotes from that other extension people sometimes use</p>
           </Checkbox>
         </CheckboxGroup>

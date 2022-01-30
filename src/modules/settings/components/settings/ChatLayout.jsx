@@ -18,13 +18,13 @@ function ChatLayout() {
           <RadioGroup name="radioList" value={value} onChange={(state) => setValue(state)}>
             <Radio key="right" value={ChatLayoutTypes.RIGHT}>
               <div>
-                <p>Right</p>
+                <p className={styles.heading}>Right</p>
                 <p className={styles.description}>Moves the chat to the right of the player.</p>
               </div>
             </Radio>
             <Radio key="left" value={ChatLayoutTypes.LEFT}>
               <div>
-                <p>Left</p>
+                <p className={styles.heading}>Left</p>
                 <p className={styles.description}>Moves the chat to the left of the player.</p>
               </div>
             </Radio>
