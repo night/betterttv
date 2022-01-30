@@ -1,26 +1,41 @@
 .button {
-  width: 290px;
-  height: 100%;
-  max-height: 40px;
-  border: none;
   display: flex;
   align-items: center;
-  background: none;
-  color: var(--yt-compact-link-color, var(--yt-spec-text-primary));
+  padding: 0px 36px 0px 16px;
+  cursor: pointer;
+  min-height: 36px;
+
+  &:hover {
+    background-color: var(--yt-spec-badge-chip-background);
+  }
+
+  &:focus {
+    background-color: var(--paper-item-focused-background-color);
+  }
+}
+
+.buttonLabel {
+  color: var(--yt-spec-text-primary);
+  white-space: nowrap;
   font-family: 'Roboto', 'Arial', sans-serif;
   font-size: 1.4rem;
   line-height: 2rem;
-  font-weight: 100;
-  padding: 0px 36px 0px 16px;
-  cursor: pointer;
+  font-weight: 400;
+  -webkit-font-smoothing: var(--paper-font-subhead_-_-webkit-font-smoothing);
 }
 
-.button:hover {
-  background-color: var(--yt-spec-badge-chip-background);
+.buttonIcon {
+  margin-right: 16px;
+  width: 24px;
+  height: 24px;
+  flex: none;
+  filter: grayscale(100%) brightness(0%);
+  background: url(assets/icons/bttv_settings.png) no-repeat 0 0px;
+  background-size: cover;
 }
 
-.button:focus {
-  background-color: var(--paper-item-focused-background-color);
+html[dark] .buttonIcon {
+  filter: grayscale(100%) brightness(400%);
 }
 
 .icon {
