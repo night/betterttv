@@ -1,5 +1,17 @@
 import {PlatformTypes} from '../../constants.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
-import SettingsModule from './Settings.jsx';
+import TwitchSettingsModule from './twitch/Settings.jsx';
+import YoutubeSettingModule from './youtube/Settings.jsx';
 
-export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new SettingsModule()]);
+const settings = {
+  openSettings: () => {},
+};
+
+loadModuleForPlatforms(
+  [PlatformTypes.TWITCH, async () => new TwitchSettingsModule()],
+  [PlatformTypes.YOUTUBE, async () => new YoutubeSettingModule()]
+).then((resolvedSettings) => {
+  settings.openSettings = resolvedSettings.openSettings;
+});
+
+export default settings;

@@ -29,6 +29,7 @@
     "no-plusplus": "off",
     "no-empty": "off",
     "max-classes-per-file": "off",
-    "no-bitwise": "off"
+    "no-bitwise": "off",
+    "react/function-component-definition": "off"
   }
 }

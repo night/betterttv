@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import Modal from 'rsuite/Modal';
-import {CustomProvider} from 'rsuite';
 import Sidenav from './Sidenav.jsx';
 import About from '../pages/About.jsx';
 import ChatSettings from '../pages/ChatSettings.jsx';
@@ -10,6 +9,7 @@ import Changelog from '../pages/Changelog.jsx';
 import ChatWindow from './ChatWindow.jsx';
 import {PageTypes} from '../../../constants.js';
 import ThemeProvider from '../../../common/components/ThemeProvider.jsx';
+import {isStandaloneWindow} from '../../../utils/window.js';
 
 function Page(props) {
   const {page, ...restProps} = props;
@@ -30,7 +30,7 @@ function Page(props) {
 }
 
 function isWindowSmallStandaloneChat() {
-  return window.innerWidth < 600 && window.location.pathname.endsWith('/chat');
+  return window.innerWidth < 600 && isStandaloneWindow();
 }
 
 function Window({setHandleOpen}) {

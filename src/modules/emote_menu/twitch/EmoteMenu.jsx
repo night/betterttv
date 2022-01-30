@@ -37,6 +37,7 @@ class SafeEmoteMenuButton extends React.Component {
 }
 
 let mountedNode;
+let isMounted = false;
 
 export default class EmoteMenuModule {
   constructor() {
@@ -71,12 +72,16 @@ export default class EmoteMenuModule {
 
       if (mountedNode != null) {
         ReactDOM.unmountComponentAtNode(mountedNode);
+        isMounted = false;
       }
 
       ReactDOM.render(
         <SafeEmoteMenuButton
           onError={() => this.show(false)}
-          onMount={() => this.show(true)}
+          onMount={() => {
+            this.show(true);
+            isMounted = true;
+          }}
           appendToChat={this.appendToChat}
           className={styles.button}
           boundingQuerySelector={CHAT_TEXT_AREA}
@@ -86,18 +91,19 @@ export default class EmoteMenuModule {
       mountedNode = buttonContainer;
     }
 
-    this.show(true);
+    if (isMounted) {
+      this.show(emoteMenuEnabled);
+    }
   }
 
   show(visible) {
     const legacyContainer = document.querySelector(LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
-    const emoteMenuEnabled = settings.get(SettingIds.EMOTE_MENU);
 
     if (legacyContainer == null) {
       return;
     }
 
-    legacyContainer.classList.toggle(styles.hideEmoteMenuButton, !visible || !emoteMenuEnabled);
+    legacyContainer.classList.toggle(styles.hideEmoteMenuButton, !visible);
   }
 
   appendToChat({code: text}, shouldFocus = true) {

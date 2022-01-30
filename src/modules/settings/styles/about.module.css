@@ -1,6 +1,10 @@
 .socials {
   column-count: 3;
 
+  ul {
+    list-style-type: none;
+  }
+
   a {
     cursor: pointer;
   }

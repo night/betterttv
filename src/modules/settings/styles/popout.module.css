@@ -1,12 +1,15 @@
-.default {
-  position: relative;
-  background-color: #292d33;
-  height: 100vh;
+.standaloneChatWindow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: var(--bttv-rs-bg-overlay);
   z-index: 10;
 
   .header {
     display: flex;
-    background-color: #1a1d24;
+    background-color: var(--bttv-rs-bg-well);
     align-items: center;
     padding: 10px;
     column-gap: 10px;
@@ -14,15 +17,21 @@
 
     .search {
       flex-grow: 4;
+
+      input {
+        box-sizing: border-box;
+      }
     }
 
     .logo {
-      width: 56px;
+      box-sizing: unset;
+      width: 36px;
+      height: 36px;
       padding: 10px;
       margin-top: 5px;
       margin-bottom: 5px;
-      -webkit-transform: scaleX(-1);
       transform: scaleX(-1);
+      object-fit: contain;
     }
   }
 }

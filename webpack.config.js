@@ -117,7 +117,7 @@ export default async (env, argv) => {
     module: {
       rules: [
         {
-          test: /\.js$/,
+          test: /\.(js|jsx)$/,
           enforce: 'pre',
           loader: path.resolve('./dev/webpack-import-glob.cjs'),
         },

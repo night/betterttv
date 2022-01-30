@@ -16,7 +16,7 @@
     }
 
     .bttv-rs-nav-subtle .bttv-rs-nav-item.bttv-rs-nav-item-active::before {
-      background-color: rgba(255, 255, 255, 1);
+      background-color: rgb(255, 255, 255);
     }
 
     .bttv-rs-nav-subtle .bttv-rs-nav-item {
@@ -25,12 +25,12 @@
       &:hover,
       &:active,
       &:focus {
-        color: rgba(255, 255, 255, 1);
+        color: rgb(255, 255, 255);
       }
     }
 
     .bttv-rs-nav-item.bttv-rs-nav-item-active {
-      color: rgba(255, 255, 255, 1);
+      color: rgb(255, 255, 255);
     }
 
     .bttv-rs-input-group:not(.bttv-rs-input-group-disabled):hover,
@@ -49,7 +49,7 @@
       color: rgba(255, 255, 255, 0.8);
 
       &:hover {
-        color: rgba(255, 255, 255, 1);
+        color: rgb(255, 255, 255);
       }
     }
 

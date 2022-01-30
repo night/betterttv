@@ -7,8 +7,11 @@
   transform: scaleX(-1);
 }
 
-.bottom {
-  margin-top: 144px;
+.body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
 }
 
 .sidenav {

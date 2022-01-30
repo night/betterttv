@@ -37,6 +37,7 @@ class SafeEmoteMenuButton extends React.Component {
 }
 
 let mountedNode;
+let isMounted = false;
 
 export default class EmoteMenuModule {
   constructor() {
@@ -57,9 +58,10 @@ export default class EmoteMenuModule {
     }
 
     const legacyContainer = document.querySelector(LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
+    const emoteMenuEnabled = settings.get(SettingIds.EMOTE_MENU);
 
     // TODO: take into account emote menu setting in the future
-    if (legacyContainer == null) {
+    if (legacyContainer == null && emoteMenuEnabled) {
       const nativeButtonContainer = document.querySelector(CHAT_BUTTON_CONTAINER_SELECTOR);
       if (nativeButtonContainer == null) {
         return;
@@ -70,12 +72,16 @@ export default class EmoteMenuModule {
 
       if (mountedNode != null) {
         ReactDOM.unmountComponentAtNode(mountedNode);
+        isMounted = false;
       }
 
       ReactDOM.render(
         <SafeEmoteMenuButton
           onError={() => this.show(false)}
-          onMount={() => this.show(true)}
+          onMount={() => {
+            this.show(true);
+            isMounted = true;
+          }}
           appendToChat={this.appendToChat}
           className={styles.button}
           boundingQuerySelector="#live-chat-message-input"
@@ -86,11 +92,12 @@ export default class EmoteMenuModule {
       mountedNode = buttonContainer;
     }
 
-    this.show(true);
+    if (isMounted) {
+      this.show(emoteMenuEnabled);
+    }
   }
 
   show(visible) {
-    // TODO: take into account emote menu setting in the future
     const nativeContainer = document.querySelector(NATIVE_EMOTE_MENU_BUTTON_CONTAINER_SELECTOR);
     if (nativeContainer != null) {
       nativeContainer.classList.toggle(styles.hideEmoteMenuButton, visible);

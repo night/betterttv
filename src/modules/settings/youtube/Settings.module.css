@@ -1,0 +1,114 @@
+.button {
+  display: flex;
+  align-items: center;
+  padding: 0px 36px 0px 16px;
+  cursor: pointer;
+  min-height: 36px;
+
+  &:hover {
+    background-color: var(--yt-spec-badge-chip-background);
+  }
+
+  &:focus {
+    background-color: var(--paper-item-focused-background-color);
+  }
+}
+
+.buttonLabel {
+  color: var(--yt-spec-text-primary);
+  white-space: nowrap;
+  font-family: 'Roboto', 'Arial', sans-serif;
+  font-size: 1.4rem;
+  line-height: 2rem;
+  font-weight: 400;
+  -webkit-font-smoothing: var(--paper-font-subhead_-_-webkit-font-smoothing);
+}
+
+.buttonIcon {
+  margin-right: 16px;
+  width: 24px;
+  height: 24px;
+  flex: none;
+  filter: grayscale(100%) brightness(0%);
+  background: url(assets/icons/bttv_settings.png) no-repeat 0 0px;
+  background-size: cover;
+}
+
+html[dark] .buttonIcon {
+  filter: grayscale(100%) brightness(400%);
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 16px;
+}
+
+.chatAppDropdownButton {
+  position: relative;
+  bottom: 10px;
+  height: 36px;
+}
+
+:global {
+  .bttv-youtube {
+    #bttvSettingsPanel,
+    .bttv-rs-modal-wrapper {
+      font-family: 'Helvetica Neue', Helvetica, Arial;
+      color: var(--bttv-rs-text-primary);
+      font-size: 1.3rem;
+      line-height: 1.5;
+    }
+
+    .bttv-rs-toggle-checked .bttv-rs-toggle-presentation {
+      background-color: var(--paper-toggle-button-checked-button-color);
+    }
+
+    .bttv-rs-sidenav-default {
+      .bttv-rs-sidenav-item.bttv-rs-sidenav-item-active,
+      .bttv-rs-dropdown-item.bttv-rs-dropdown-item-active,
+      .bttv-rs-dropdown.bttv-rs-dropdown-selected-within .bttv-rs-dropdown-toggle-icon {
+        color: rgb(255, 255, 255);
+      }
+    }
+
+    .bttv-rs-btn-primary,
+    .bttv-rs-btn-icon-with-text.bttv-rs-btn-primary > .bttv-rs-icon {
+      background-color: var(--yt-spec-call-to-action);
+      color: rgb(255, 255, 255);
+    }
+
+    .bttv-rs-btn-primary:active,
+    .bttv-rs-btn-primary:hover,
+    .bttv-rs-btn-primary:focus,
+    .bttv-rs-btn-icon-with-text.bttv-rs-btn-primary:hover > .bttv-rs-icon,
+    .bttv-rs-btn-icon-with-text.bttv-rs-btn-primary:focus > .bttv-rs-icon {
+      background-color: var(--yt-spec-call-to-action);
+      color: rgb(255, 255, 255);
+    }
+
+    .bttv-rs-checkbox-checked .bttv-rs-checkbox-wrapper .bttv-rs-checkbox-inner::before,
+    .bttv-rs-checkbox-indeterminate .bttv-rs-checkbox-wrapper .bttv-rs-checkbox-inner::before {
+      background-color: var(--paper-checkbox-checked-color);
+      border-color: var(--paper-checkbox-checked-color);
+    }
+
+    .bttv-rs-checkbox label:hover .bttv-rs-checkbox-inner::before {
+      border-color: var(--paper-checkbox-checked-color);
+    }
+
+    .bttv-rs-auto-complete-item:hover,
+    .bttv-rs-auto-complete-item:focus,
+    .bttv-rs-auto-complete-item-focus {
+      background-color: rgba(255, 255, 255, 0.8);
+    }
+
+    .bttv-rs-modal a {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .bttv-rs-panel a {
+      color: var(--yt-spec-call-to-action);
+    }
+  }
+}
