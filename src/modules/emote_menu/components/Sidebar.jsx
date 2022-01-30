@@ -3,7 +3,7 @@ import Nav from 'rsuite/Nav';
 import Whisper from 'rsuite/Whisper';
 import Tooltip from 'rsuite/Tooltip';
 import classNames from 'classnames';
-import {RowHeight, WindowHeight} from '../../../constants.js';
+import {WindowHeight} from '../../../constants.js';
 import styles from './Sidebar.module.css';
 
 const ITEM_HEIGHT = 44;
@@ -24,7 +24,7 @@ export default function Sidebar({section, onChange, categories}) {
       newTop = depth;
     }
     if (depth + ITEM_HEIGHT > top + WindowHeight) {
-      newTop = depth - WindowHeight + RowHeight;
+      newTop = depth - WindowHeight + ITEM_HEIGHT;
     }
     if (newTop == null) {
       return;
