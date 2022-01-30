@@ -11,7 +11,7 @@ import {getCurrentUser} from '../../utils/user.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
 
 const CHAT_LIST_SELECTOR =
-  '.chat-list .chat-scrollable-area__message-container,.chat-list--default .chat-scrollable-area__message-container,.chat-list--other .chat-scrollable-area__message-container';
+  '.chat-list .chat-scrollable-area__message-container,.chat-list--default .chat-scrollable-area__message-container,.chat-list--other .chat-scrollable-area__message-container,.video-chat div[data-test-selector="video-chat-message-list-wrapper"]';
 const VOD_CHAT_FROM_SELECTOR = '.video-chat__message-author';
 const VOD_CHAT_MESSAGE_SELECTOR = 'div[data-test-selector="comment-message-selector"]';
 const VOD_CHAT_MESSAGE_EMOTE_SELECTOR = '.chat-line__message--emote';
@@ -218,7 +218,10 @@ class ChatHighlightBlacklistKeywordsModule {
       if (settings.get(SettingIds.HIGHLIGHT_FEEDBACK)) {
         this.handleHighlightSound();
       }
-      if (timestamp > loadTime) this.pinHighlight({from, message, date});
+
+      if (timestamp > loadTime) {
+        this.pinHighlight({from, message, date});
+      }
     }
   }
 
@@ -238,6 +241,12 @@ class ChatHighlightBlacklistKeywordsModule {
 
     if (fromContainsKeyword(highlightUsers, from) || messageContainsKeyword(highlightKeywords, from, messageContent)) {
       this.markHighlighted($message);
+
+      if (settings.get(SettingIds.HIGHLIGHT_FEEDBACK)) {
+        this.handleHighlightSound();
+      }
+
+      this.pinHighlight({from, message: messageContent, date: new Date()});
     }
   }
 
