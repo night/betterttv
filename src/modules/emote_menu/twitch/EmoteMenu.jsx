@@ -94,7 +94,7 @@ export default class EmoteMenuModule {
       return;
     }
 
-    legacyContainer.classList.toggle(styles.hideEmoteMenuButton, visible);
+    legacyContainer.classList.toggle(styles.hideEmoteMenuButton, !visible);
   }
 
   appendToChat({code: text}, shouldFocus = true) {
