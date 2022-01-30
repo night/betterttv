@@ -1,9 +1,10 @@
 import React from 'react';
 import Panel from 'rsuite/Panel';
 import Toggle from 'rsuite/Toggle';
-import {registerComponent, useStorageState} from '../Store.jsx';
+import {registerComponent} from '../Store.jsx';
 import {CategoryTypes, SettingIds} from '../../../../constants.js';
 import styles from '../../styles/header.module.css';
+import useStorageState from '../../../../common/hooks/StorageState.jsx';
 
 function SplitChat() {
   const [value, setValue] = useStorageState(SettingIds.SPLIT_CHAT);

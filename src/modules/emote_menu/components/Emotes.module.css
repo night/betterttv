@@ -10,7 +10,8 @@
 }
 
 .header {
-  background-color: #292d33;
+  background-color: var(--bttv-rs-bg-overlay);
+  color: var(--bttv-rs-text-heading);
   z-index: 3000;
   display: flex;
   align-items: center;

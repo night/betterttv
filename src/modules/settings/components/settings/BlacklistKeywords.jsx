@@ -1,10 +1,11 @@
 import React from 'react';
 import Panel from 'rsuite/Panel';
 import Table, {Types} from '../Table.jsx';
-import {registerComponent, useStorageState} from '../Store.jsx';
+import {registerComponent} from '../Store.jsx';
 import {SettingIds, CategoryTypes} from '../../../../constants.js';
 import styles from '../../styles/header.module.css';
 import {KeywordTypes} from '../../../../utils/keywords.js';
+import useStorageState from '../../../../common/hooks/StorageState.jsx';
 
 function BlacklistKeywords() {
   const [value, setValue] = useStorageState(SettingIds.BLACKLIST_KEYWORDS);
