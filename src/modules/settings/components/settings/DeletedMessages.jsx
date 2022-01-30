@@ -18,19 +18,19 @@ function DeletedMessagesModule() {
           <RadioGroup name="radioList" value={value} onChange={(state) => setValue(state)}>
             <Radio key="default" value={DeletedMessageTypes.DEFAULT}>
               <div>
-                <p>Default</p>
+                <p className={styles.heading}>Default</p>
                 <p className={styles.description}>Do what twitch normally does.</p>
               </div>
             </Radio>
             <Radio key="hideDeletedMessages" value={DeletedMessageTypes.HIDE}>
               <div>
-                <p>Hide Deleted Messages</p>
+                <p className={styles.heading}>Hide Deleted Messages</p>
                 <p className={styles.description}>Completely removes timed out messages from view.</p>
               </div>
             </Radio>
             <Radio key="showDeletedMessages" value={DeletedMessageTypes.SHOW}>
               <div>
-                <p>Show Deleted Messages</p>
+                <p className={styles.heading}>Show Deleted Messages</p>
                 <p className={styles.description}>{"Changes <message deleted> back to users' original messages."}</p>
               </div>
             </Radio>

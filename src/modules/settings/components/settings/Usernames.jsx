@@ -18,15 +18,15 @@ function UsernamesModule() {
           value={Object.values(UsernameFlags).filter((value) => hasFlag(usernames, value))}
           onChange={(value) => setUsernames(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}>
           <Checkbox key="localized" value={UsernameFlags.LOCALIZED}>
-            <p>Localized Usernames</p>
+            <p className={styles.heading}>Localized Usernames</p>
             <p className={styles.description}>Show localized display names in the chat window</p>
           </Checkbox>
           <Checkbox key="usernameColors" value={UsernameFlags.COLORS}>
-            <p>Username Colors</p>
+            <p className={styles.heading}>Username Colors</p>
             <p className={styles.description}>Show username colors in the chat window</p>
           </Checkbox>
           <Checkbox key="readableColors" value={UsernameFlags.READABLE}>
-            <p>Readable Colors</p>
+            <p className={styles.heading}>Readable Colors</p>
             <p className={styles.description}>
               Show username colors with higher contrast (prevents hard to read names)
             </p>

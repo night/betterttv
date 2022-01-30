@@ -20,4 +20,5 @@
 .largeBlurb {
   font-size: 22px;
   margin-right: 56px;
+  color: var(--bttv-rs-text-heading);
 }

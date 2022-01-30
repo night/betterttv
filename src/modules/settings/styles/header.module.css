@@ -1,5 +1,9 @@
+.heading {
+  color: var(--bttv-rs-text-heading);
+}
+
 .description {
-  color: #cccccc;
+  color: var(--bttv-rs-text-tertiary);
 }
 
 .header {

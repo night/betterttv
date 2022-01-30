@@ -52,7 +52,11 @@ function Window({setHandleOpen}) {
   }, []);
 
   if (isSmallStandaloneChat) {
-    return <ChatWindow open={open} onClose={() => setOpen(false)} />;
+    return (
+      <CustomProvider theme="dark">
+        <ChatWindow open={open} onClose={() => setOpen(false)} />
+      </CustomProvider>
+    );
   }
 
   return (
