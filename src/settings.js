@@ -62,9 +62,9 @@ class Settings extends SafeEventEmitter {
 
     const storageSettings = {...updatedSettings};
     for (const key of Object.keys(storageSettings)) {
-      const value = storageSettings[key];
-      if (value instanceof TempValue) {
-        storageSettings[key] = value.storedValue;
+      const currentValue = storageSettings[key];
+      if (currentValue instanceof TempValue) {
+        storageSettings[key] = currentValue.storedValue;
       }
     }
     storage.set(SETTINGS_STORAGE_KEY, storageSettings);
