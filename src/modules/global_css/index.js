@@ -20,7 +20,10 @@ class GlobalCSSModule {
   constructor() {
     watcher.on('load', () => this.branding());
     this.branding();
-    settings.on(`changed.${SettingIds.DARKENED_MODE}`, (value) => this.setTwitchTheme(value));
+    settings.on(`changed.${SettingIds.DARKENED_MODE}`, (value, temporary) => {
+      if (temporary) return;
+      this.setTwitchTheme(value);
+    });
 
     this.loadTwitchThemeObserver();
   }
@@ -45,7 +48,7 @@ class GlobalCSSModule {
     connectStore.subscribe(() => {
       const isDarkMode = connectStore.getState().ui.theme === TwitchThemes.DARK;
       if (settings.get(SettingIds.DARKENED_MODE) !== isDarkMode) {
-        settings.set('darkenedMode', isDarkMode, false, true);
+        settings.set(SettingIds.DARKENED_MODE, isDarkMode, true);
       }
     });
   }

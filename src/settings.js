@@ -6,6 +6,13 @@ import {getChangedFlags, setFlag} from './utils/flags.js';
 export const SETTINGS_STORAGE_KEY = 'settings';
 let settings = {};
 
+class TempValue {
+  constructor(value, storedValue) {
+    this.currentValue = value;
+    this.storedValue = storedValue;
+  }
+}
+
 class Settings extends SafeEventEmitter {
   constructor() {
     super();
@@ -28,11 +35,15 @@ class Settings extends SafeEventEmitter {
       return value[0];
     }
 
+    // temp values only return the current value during page sessions
+    if (value instanceof TempValue) {
+      return value.currentValue;
+    }
+
     return value;
   }
 
-  // eslint-disable-next-line no-unused-vars
-  set(id, value, emit = true, temp = false) {
+  set(id, value, temporary = false) {
     let storageValue = value;
 
     // we store flags as a tuple of [value, changedBits]
@@ -41,11 +52,25 @@ class Settings extends SafeEventEmitter {
       storageValue = [storageValue, oldChangedBits | getChangedFlags(oldFlags, storageValue)];
     }
 
+    // temp values return the new value during page sessions and persist the prior stored value
+    if (temporary === true) {
+      storageValue = new TempValue(storageValue, settings[id]);
+    }
+
     const updatedSettings = {...settings, [id]: storageValue, version: process.env.EXT_VER};
-    storage.set(SETTINGS_STORAGE_KEY, updatedSettings);
     settings = updatedSettings;
 
-    if (emit) this.emit(`changed.${id}`, value);
+    const storageSettings = {...updatedSettings};
+    for (const key of Object.keys(storageSettings)) {
+      const value = storageSettings[key];
+      if (value instanceof TempValue) {
+        storageSettings[key] = value.storedValue;
+      }
+    }
+    storage.set(SETTINGS_STORAGE_KEY, storageSettings);
+
+    this.emit(`changed.${id}`, value, temporary);
+
     return value;
   }
 

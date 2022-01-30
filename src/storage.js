@@ -46,17 +46,13 @@ class Storage {
     }
   }
 
-  set(id, value, prefix = this._prefix, cache = true, temporary = false) {
+  set(id, value, prefix = this._prefix) {
     let storageId = id;
     if (prefix) {
       storageId = prefix + id;
     }
 
-    if (cache || temporary) {
-      this._cache[storageId] = value;
-    }
-
-    if (temporary) return;
+    this._cache[storageId] = value;
 
     value = JSON.stringify(value);
 
