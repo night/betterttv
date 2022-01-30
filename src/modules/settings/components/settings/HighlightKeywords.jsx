@@ -2,9 +2,10 @@ import React from 'react';
 import Panel from 'rsuite/Panel';
 import Table, {Types} from '../Table.jsx';
 import {KeywordTypes} from '../../../../utils/keywords.js';
-import {registerComponent, useStorageState} from '../Store.jsx';
+import {registerComponent} from '../Store.jsx';
 import {CategoryTypes, SettingIds} from '../../../../constants.js';
 import styles from '../../styles/header.module.css';
+import useStorageState from '../../../../common/hooks/StorageState.jsx';
 
 function HighlightKeywords() {
   const [value, setValue] = useStorageState(SettingIds.HIGHLIGHT_KEYWORDS);

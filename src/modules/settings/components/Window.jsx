@@ -9,6 +9,7 @@ import ChannelSettings from '../pages/ChannelSettings.jsx';
 import Changelog from '../pages/Changelog.jsx';
 import ChatWindow from './ChatWindow.jsx';
 import {PageTypes} from '../../../constants.js';
+import ThemeProvider from '../../../common/components/ThemeProvider.jsx';
 
 function Page(props) {
   const {page, ...restProps} = props;
@@ -53,14 +54,14 @@ function Window({setHandleOpen}) {
 
   if (isSmallStandaloneChat) {
     return (
-      <CustomProvider theme="dark">
+      <ThemeProvider>
         <ChatWindow open={open} onClose={() => setOpen(false)} />
-      </CustomProvider>
+      </ThemeProvider>
     );
   }
 
   return (
-    <CustomProvider theme="dark">
+    <ThemeProvider>
       <Modal open={open} onClose={() => setOpen(false)}>
         <Sidenav
           value={page}
@@ -73,7 +74,7 @@ function Window({setHandleOpen}) {
         />
         <Page page={page} onClose={() => setOpen(false)} />
       </Modal>
-    </CustomProvider>
+    </ThemeProvider>
   );
 }
 

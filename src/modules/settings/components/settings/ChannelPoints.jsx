@@ -2,10 +2,11 @@ import React from 'react';
 import Panel from 'rsuite/Panel';
 import Checkbox from 'rsuite/Checkbox';
 import CheckboxGroup from 'rsuite/CheckboxGroup';
-import {registerComponent, useStorageState} from '../Store.jsx';
+import {registerComponent} from '../Store.jsx';
 import {SettingIds, CategoryTypes, ChannelPointsFlags} from '../../../../constants.js';
 import styles from '../../styles/header.module.css';
 import {hasFlag} from '../../../../utils/flags.js';
+import useStorageState from '../../../../common/hooks/StorageState.jsx';
 
 function ChannelPointsModule() {
   const [channelPoints, setChannelPoints] = useStorageState(SettingIds.CHANNEL_POINTS);
