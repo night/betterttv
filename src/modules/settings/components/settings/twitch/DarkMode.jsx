@@ -22,6 +22,6 @@ function DarkMode() {
 registerComponent(DarkMode, {
   settingId: SettingIds.DARKENED_MODE,
   name: 'Dark Mode',
-  category: CategoryTypes.CHAT,
+  category: CategoryTypes.CHANNEL,
   keywords: ['dark', 'mode', 'light', 'theme', 'white', 'black'],
 });
