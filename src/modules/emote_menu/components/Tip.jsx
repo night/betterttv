@@ -15,7 +15,7 @@ for (const tipStorageKey of Object.values(EmoteMenuTips)) {
 
 function getTipToDisplay() {
   if (!tips[EmoteMenuTips.EMOTE_MENU_PREVENT_CLOSE]) {
-    return [EmoteMenuTips.EMOTE_MENU_PREVENT_CLOSE, 'Hold Shift to Select Multiple Emotes'];
+    return [EmoteMenuTips.EMOTE_MENU_PREVENT_CLOSE, 'Hold Shift to Select Many Emotes'];
   }
 
   if (!tips[EmoteMenuTips.EMOTE_MENU_FAVORITE_EMOTE] && emoteMenuStore.favorites.length === 0) {
