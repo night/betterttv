@@ -46,7 +46,7 @@
     }
 
     .bttv-rs-toggle-checked .bttv-rs-toggle-presentation {
-      background-color: rgba(255, 255, 255, 0.5);
+      background-color: var(--paper-toggle-button-checked-button-color);
     }
 
     .bttv-rs-sidenav-default {
@@ -59,8 +59,8 @@
 
     .bttv-rs-btn-primary,
     .bttv-rs-btn-icon-with-text.bttv-rs-btn-primary > .bttv-rs-icon {
-      background-color: rgba(255, 255, 255, 0.8);
-      color: rgb(100, 100, 100);
+      background-color: var(--yt-spec-call-to-action);
+      color: rgb(255, 255, 255);
     }
 
     .bttv-rs-btn-primary:active,
@@ -68,14 +68,18 @@
     .bttv-rs-btn-primary:focus,
     .bttv-rs-btn-icon-with-text.bttv-rs-btn-primary:hover > .bttv-rs-icon,
     .bttv-rs-btn-icon-with-text.bttv-rs-btn-primary:focus > .bttv-rs-icon {
-      background-color: rgb(255, 255, 255);
-      color: rgb(100, 100, 100);
+      background-color: var(--yt-spec-call-to-action);
+      color: rgb(255, 255, 255);
     }
 
     .bttv-rs-checkbox-checked .bttv-rs-checkbox-wrapper .bttv-rs-checkbox-inner::before,
     .bttv-rs-checkbox-indeterminate .bttv-rs-checkbox-wrapper .bttv-rs-checkbox-inner::before {
-      background-color: rgb(255, 255, 255);
-      border-color: rgb(255, 255, 255);
+      background-color: var(--paper-checkbox-checked-color);
+      border-color: var(--paper-checkbox-checked-color);
+    }
+
+    .bttv-rs-checkbox label:hover .bttv-rs-checkbox-inner::before {
+      border-color: var(--paper-checkbox-checked-color);
     }
 
     .bttv-rs-auto-complete-item:hover,
@@ -84,10 +88,12 @@
       background-color: rgba(255, 255, 255, 0.8);
     }
 
-    .bttv-rs-modal-dialog a,
-    .bttv-rs-modal-content a,
     .bttv-rs-modal a {
       color: rgba(255, 255, 255, 0.5);
+    }
+
+    .bttv-rs-panel a {
+      color: var(--yt-spec-call-to-action);
     }
   }
 }
