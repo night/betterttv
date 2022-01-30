@@ -3,7 +3,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Modal from '../components/Window.jsx';
 import domObserver from '../../../observers/dom.js';
-import {importStoreCallback} from '../components/Settings.jsx';
 
 let handleOpen;
 function setHandleOpen(newHandleOpen) {
@@ -25,7 +24,6 @@ export default class SettingsModule {
     await import('../components/settings/global/*.jsx');
     // eslint-disable-next-line import/no-unresolved
     await import('../components/settings/twitch/*.jsx');
-    await importStoreCallback();
     this.renderSettings();
   }
 

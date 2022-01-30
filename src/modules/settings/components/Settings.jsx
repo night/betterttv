@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import Panel from 'rsuite/Panel';
 import {Icon} from '@rsuite/icons';
 import InputGroup from 'rsuite/InputGroup';
@@ -6,14 +6,29 @@ import AutoComplete from 'rsuite/AutoComplete';
 import * as faSearch from '@fortawesome/free-solid-svg-icons/faSearch';
 import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.jsx';
 
-let settings = [];
+let cachedSettings = null;
 
-export async function importStoreCallback() {
-  const {Components} = await import('./Store.jsx');
-  settings = Object.values(Components).sort((a, b) => a.name.localeCompare(b.name));
+function useSettingsState() {
+  const [settings, setSettings] = useState([]);
+
+  useEffect(async () => {
+    if (cachedSettings != null) {
+      setSettings(cachedSettings);
+      return;
+    }
+
+    const {Components} = await import('./Store.jsx');
+    cachedSettings = Object.values(Components).sort((a, b) => a.name.localeCompare(b.name));
+
+    setSettings(cachedSettings);
+  }, []);
+
+  return [settings, setSettings];
 }
 
 export function Settings({search, category}) {
+  const [settings] = useSettingsState();
+
   const searchedSettings =
     search.length === 0
       ? settings.filter((setting) => setting.category === category).map((setting) => setting.render())
@@ -30,6 +45,7 @@ export function Settings({search, category}) {
 
 export function Search(props) {
   const {value, onChange, placeholder, ...restProps} = props;
+  const [settings] = useSettingsState();
 
   const auto = settings
     .filter((setting) => setting.keywords.join(' ').includes(value.toLowerCase()))

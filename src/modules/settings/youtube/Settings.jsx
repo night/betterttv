@@ -4,7 +4,6 @@ import Modal from '../components/Window.jsx';
 import domObserver from '../../../observers/dom.js';
 import DropdownButton from './DropdownButton.jsx';
 import styles from './Settings.module.css';
-import {importStoreCallback} from '../components/Settings.jsx';
 
 const CHAT_SETTINGS_DROPDOWN_ITEMS_SELECTOR = '.yt-live-chat-app #contentWrapper [slot="dropdown-content"] #items';
 const CHAT_SETTINGS_MENU_BUTTON_SELECTOR = '#overflow #button';
@@ -36,7 +35,6 @@ export default class SettingsModule {
     await import('../components/settings/global/*.jsx');
     // eslint-disable-next-line import/no-unresolved
     await import('../components/settings/youtube/*.jsx');
-    await importStoreCallback();
     this.renderSettings();
   }
 
