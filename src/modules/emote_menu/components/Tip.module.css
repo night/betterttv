@@ -3,7 +3,8 @@
 }
 
 .tip {
-  background-color: #23262b;
+  background-color: var(--bttv-rs-bg-well);
+  color: var(--bttv-rs-text-heading);
   display: flex;
   flex-direction: row;
   align-items: center;
