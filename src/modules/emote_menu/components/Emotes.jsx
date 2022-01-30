@@ -35,7 +35,7 @@ const BrowseEmotes = React.forwardRef(
         const row = emoteMenuViewStore.getRow(y);
         return emoteMenuViewStore.headers.includes(y) ? (
           <div key={key} style={style} className={classNames(className, styles.header)}>
-            {row.icon}
+            <div className={styles.headerIcon}>{row.icon}</div>
             <div className={styles.headerText}>{row.displayName.toUpperCase()}</div>
           </div>
         ) : (
