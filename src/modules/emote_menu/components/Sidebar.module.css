@@ -12,7 +12,7 @@
 }
 
 .active {
-  background-color: var(--bttv-rs-bg-overlay);
+  background-color: var(--bttv-rs-bg-card);
 }
 
 .navItem svg {
