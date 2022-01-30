@@ -15,15 +15,15 @@
   display: flex;
   align-items: center;
   justify-content: left;
-  column-gap: 8px;
   position: sticky;
   top: 0;
 }
 
 .headerIcon {
   display: flex;
-  width: 20px;
+  width: 36px;
   align-items: center;
+  justify-content: center;
 
   svg {
     width: 100% !important;
