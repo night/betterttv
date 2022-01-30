@@ -3,6 +3,7 @@
   justify-content: space-between;
   padding: 8px;
   align-items: center;
+  color: var(--bttv-rs-text-heading);
 }
 
 .content {

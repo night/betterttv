@@ -3,9 +3,10 @@ import Panel from 'rsuite/Panel';
 import Radio from 'rsuite/Radio';
 import RadioGroup from 'rsuite/RadioGroup';
 import FormGroup from 'rsuite/FormGroup';
-import {registerComponent, useStorageState} from '../Store.jsx';
+import {registerComponent} from '../Store.jsx';
 import {CategoryTypes, SettingIds, DeletedMessageTypes} from '../../../../constants.js';
 import styles from '../../styles/header.module.css';
+import useStorageState from '../../../../common/hooks/StorageState.jsx';
 
 function DeletedMessagesModule() {
   const [value, setValue] = useStorageState(SettingIds.DELETED_MESSAGES);

@@ -23,9 +23,9 @@
 }
 
 .active {
-  background-color: #5a5a5c;
+  background-color: var(--bttv-rs-state-hover-bg);
 }
 
 .placeholder {
-  background-color: #23262b;
+  background-color: var(--bttv-rs-bg-card);
 }

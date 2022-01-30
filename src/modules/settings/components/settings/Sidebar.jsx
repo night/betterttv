@@ -2,10 +2,11 @@ import React from 'react';
 import Panel from 'rsuite/Panel';
 import Checkbox from 'rsuite/Checkbox';
 import CheckboxGroup from 'rsuite/CheckboxGroup';
-import {registerComponent, useStorageState} from '../Store.jsx';
+import {registerComponent} from '../Store.jsx';
 import {CategoryTypes, SettingIds, SidebarFlags} from '../../../../constants.js';
 import styles from '../../styles/header.module.css';
 import {hasFlag} from '../../../../utils/flags.js';
+import useStorageState from '../../../../common/hooks/StorageState.jsx';
 
 function SidebarComponent() {
   const [sidebar, setSidebar] = useStorageState(SettingIds.SIDEBAR);

@@ -1,9 +1,10 @@
 import React, {useEffect, useRef, useState} from 'react';
 import classNames from 'classnames';
 import mergeRefs from 'react-merge-refs';
-import {CustomProvider, Popover} from 'rsuite';
+import {Popover} from 'rsuite';
 import EmoteMenu from './EmoteMenu.jsx';
 import styles from './EmoteMenuPopover.module.css';
+import ThemeProvider from '../../../common/components/ThemeProvider.jsx';
 
 const TOP_PADDING = 2;
 
@@ -63,7 +64,7 @@ const EmoteMenuPopover = React.forwardRef(
     }, []);
 
     return (
-      <CustomProvider theme="dark">
+      <ThemeProvider>
         <Popover
           {...props}
           ref={mergeRefs([localRef, ref])}
@@ -79,7 +80,7 @@ const EmoteMenuPopover = React.forwardRef(
             onSetTip={(show) => handleSetTip(show)}
           />
         </Popover>
-      </CustomProvider>
+      </ThemeProvider>
     );
   }
 );
