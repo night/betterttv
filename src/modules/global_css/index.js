@@ -45,7 +45,7 @@ class GlobalCSSModule {
     connectStore.subscribe(() => {
       const isDarkMode = connectStore.getState().ui.theme === TwitchThemes.DARK;
       if (settings.get(SettingIds.DARKENED_MODE) !== isDarkMode) {
-        settings.set('darkenedMode', isDarkMode, false, true);
+        settings.set(SettingIds.DARKENED_MODE, isDarkMode, true, true);
       }
     });
   }
