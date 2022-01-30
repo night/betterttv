@@ -40,8 +40,10 @@ export async function loadYouTubeEmotes() {
   }
 
   const liveChatContinuation = window.ytInitialData?.continuationContents?.liveChatContinuation;
-  const youtubeCustomEmojis = liveChatContinuation?.emojis;
-  const youtubeEmojiCategories = liveChatContinuation?.actionPanel?.liveChatMessageInputRenderer?.pickers?.find(
+  const liveChatRenderer = window.ytInitialData?.contents?.liveChatRenderer;
+  const liveChat = liveChatContinuation || liveChatRenderer;
+  const youtubeCustomEmojis = liveChat?.emojis;
+  const youtubeEmojiCategories = liveChat?.actionPanel?.liveChatMessageInputRenderer?.pickers?.find(
     (picker) => picker.emojiPickerRenderer != null
   )?.emojiPickerRenderer?.categories;
 
