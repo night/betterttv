@@ -77,7 +77,7 @@ function Changelog({onClose}) {
       <div className={styles.content}>
         <PanelGroup>
           <Panel header={<h3>Changelog</h3>}>
-            <p>A list of recent updates and patches to BetterTTV.</p>
+            <p className={styles.description}>A list of recent updates and patches to BetterTTV.</p>
           </Panel>
           {renderedChangelogEntries}
         </PanelGroup>
