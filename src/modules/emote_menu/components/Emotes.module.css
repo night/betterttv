@@ -53,4 +53,5 @@
   flex-direction: column;
   row-gap: 8px;
   justify-content: center;
+  color: var(--bttv-rs-text-heading);
 }
