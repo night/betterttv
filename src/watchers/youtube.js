@@ -30,7 +30,9 @@ export default function youtubeWatcher(watcher) {
     let newChannelId = channelId;
 
     const liveChatItemContextMenuEndpointParams = data?.contextMenuEndpoint?.liveChatItemContextMenuEndpoint?.params;
-    const sendLiveChatMessageEndpointParams = data?.actionPanel?.liveChatMessageInputRenderer?.sendButton?.buttonRenderer?.serviceEndpoint?.sendLiveChatMessageEndpoint?.params;
+    const sendLiveChatMessageEndpointParams =
+      data?.actionPanel?.liveChatMessageInputRenderer?.sendButton?.buttonRenderer?.serviceEndpoint
+        ?.sendLiveChatMessageEndpoint?.params;
     const endpointParams = liveChatItemContextMenuEndpointParams || sendLiveChatMessageEndpointParams;
     if (endpointParams != null) {
       const decodedParams = atob(decodeURIComponent(atob(endpointParams)));
