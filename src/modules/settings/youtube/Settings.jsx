@@ -6,7 +6,8 @@ import DropdownButton from './DropdownButton.jsx';
 import styles from './Settings.module.css';
 
 const CHAT_SETTINGS_DROPDOWN_CONTAINER_SELECTOR = 'tp-yt-iron-dropdown';
-const CHAT_SETTINGS_DROPDOWN_ITEMS_SELECTOR = '.ytd-menu-popup-renderer,.ytls-menu-popup-renderer';
+const CHAT_SETTINGS_DROPDOWN_ITEMS_SELECTOR = 'tp-yt-paper-listbox';
+const CHAT_SETTINGS_DROPDOWN_ITEM_SELECTOR = '.ytd-menu-popup-renderer,.ytls-menu-popup-renderer';
 const CHAT_SETTINGS_MENU_BUTTON_SELECTOR = '#overflow.yt-live-chat-header-renderer';
 const BTTV_CHAT_DROPDOWN_BUTTON_CONTAINER_SELECTOR = 'div[data-a-target="bttv-chat-dropdown-button-container"]';
 
@@ -22,7 +23,7 @@ export default class SettingsModule {
   constructor() {
     this.load();
 
-    domObserver.on(CHAT_SETTINGS_DROPDOWN_ITEMS_SELECTOR, (node, isConnected) => {
+    domObserver.on(CHAT_SETTINGS_DROPDOWN_ITEM_SELECTOR, (node, isConnected) => {
       if (!isConnected) {
         return;
       }
@@ -68,8 +69,7 @@ export default class SettingsModule {
     const buttonContainer = document.querySelector(BTTV_CHAT_DROPDOWN_BUTTON_CONTAINER_SELECTOR);
 
     if (buttonContainer == null) {
-      const itemsContainer = node.parentElement;
-
+      const itemsContainer = node.closest(CHAT_SETTINGS_DROPDOWN_ITEMS_SELECTOR);
       if (itemsContainer == null) {
         return;
       }
