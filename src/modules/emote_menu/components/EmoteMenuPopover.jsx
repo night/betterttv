@@ -6,7 +6,7 @@ import EmoteMenu from './EmoteMenu.jsx';
 import styles from './EmoteMenuPopover.module.css';
 import ThemeProvider from '../../../common/components/ThemeProvider.jsx';
 import repositionPopover from '../../../utils/popover.js';
-import useResize from '../../../common/hooks/useResize.js';
+import useResize from '../../../common/hooks/Resize.jsx';
 
 const TOP_PADDING = 2;
 

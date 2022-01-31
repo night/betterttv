@@ -5,7 +5,7 @@ import mergeRefs from 'react-merge-refs';
 import styles from './AutocompletePopover.module.css';
 import Emotes from './Emotes.jsx';
 import repositionPopover from '../../../utils/popover.js';
-import useResize from '../../../common/hooks/useResize.js';
+import useResize from '../../../common/hooks/Resize.jsx';
 
 const TOP_PADDING = 2;
 const DEFAULT_POPOVER_WIDTH = 300;
