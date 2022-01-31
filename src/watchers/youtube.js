@@ -33,7 +33,7 @@ export default function youtubeWatcher(watcher) {
     const sendLiveChatMessageEndpointParams = data?.actionPanel?.liveChatMessageInputRenderer?.sendButton?.buttonRenderer?.serviceEndpoint?.sendLiveChatMessageEndpoint?.params;
     const endpointParams = liveChatItemContextMenuEndpointParams || sendLiveChatMessageEndpointParams;
     if (endpointParams != null) {
-      const decodedParams = atob(decodeURIComponent(atob(liveChatItemContextMenuEndpointParams)));
+      const decodedParams = atob(decodeURIComponent(atob(endpointParams)));
       // this is proto but we don't know the schema and we don't wanna import a proto lib to decode this
       // this is "probably" going to work ok.
       // eslint-disable-next-line prefer-destructuring
