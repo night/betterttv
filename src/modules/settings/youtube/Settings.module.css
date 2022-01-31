@@ -6,12 +6,13 @@
   min-height: 36px;
 
   &:hover {
-    background-color: var(--yt-spec-badge-chip-background);
+    background-color: var(--yt-spec-10-percent-layer);
   }
+}
 
-  &:focus {
-    background-color: var(--paper-item-focused-background-color);
-  }
+/* youtube studio dropdown popups use different color for hover */
+ytls-menu-popup-renderer .button:hover {
+  background-color: var(--yt-spec-white-1-alpha-20);
 }
 
 .buttonLabel {
@@ -45,6 +46,7 @@ html[dark] .buttonIcon {
 }
 
 .chatAppDropdownButton {
+  background-color: var(--paper-listbox-background-color, var(--primary-background-color));
   position: relative;
   bottom: 10px;
   height: 36px;
@@ -110,5 +112,10 @@ html[dark] .buttonIcon {
     .bttv-rs-panel a {
       color: var(--yt-spec-call-to-action);
     }
+  }
+
+  /* fixes youtube's chat menu dropdown font size */
+  tp-yt-paper-item.ytls-menu-service-item-renderer {
+    font-size: 1.4rem;
   }
 }
