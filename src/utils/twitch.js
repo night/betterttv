@@ -5,7 +5,7 @@ import debug from './debug.js';
 import {getCurrentUser, setCurrentUser} from './user.js';
 import {getCurrentChannel, setCurrentChannel} from './channel.js';
 
-const REACT_ROOT = '#root div';
+const REACT_ROOT = '#root';
 const CHAT_CONTAINER = 'section[data-test-selector="chat-room-component-layout"]';
 const VOD_CHAT_CONTAINER = '.qa-vod-chat,.va-vod-chat';
 const CHAT_LIST = '.chat-list,.chat-list--default,.chat-list--other';
@@ -73,6 +73,16 @@ const TMIActionTypes = {
 export function getReactInstance(element) {
   for (const key in element) {
     if (key.startsWith('__reactInternalInstance$')) {
+      return element[key];
+    }
+  }
+
+  return null;
+}
+
+function getReactRoot(element) {
+  for (const key in element) {
+    if (key.startsWith('_reactRootContainer')) {
       return element[key];
     }
   }
@@ -227,7 +237,7 @@ export default {
     let store;
     try {
       const node = searchReactChildren(
-        getReactInstance($(REACT_ROOT)[0]),
+        getReactRoot($(REACT_ROOT)[0])._internalRoot.current,
         (n) => n.pendingProps && n.pendingProps.value && n.pendingProps.value.store
       );
       store = node.pendingProps.value.store;
@@ -282,7 +292,7 @@ export default {
 
     try {
       const node = searchReactChildren(
-        getReactInstance($(REACT_ROOT)[0]),
+        getReactRoot($(REACT_ROOT)[0])._internalRoot.current,
         (n) => n.stateNode && n.stateNode.join && n.stateNode.client,
         1000
       );
