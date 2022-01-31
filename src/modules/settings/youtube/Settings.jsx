@@ -5,8 +5,9 @@ import domObserver from '../../../observers/dom.js';
 import DropdownButton from './DropdownButton.jsx';
 import styles from './Settings.module.css';
 
-const CHAT_SETTINGS_DROPDOWN_ITEMS_SELECTOR = '.yt-live-chat-app #contentWrapper [slot="dropdown-content"] #items';
-const CHAT_SETTINGS_MENU_BUTTON_SELECTOR = '#overflow #button';
+const CHAT_SETTINGS_DROPDOWN_CONTAINER_SELECTOR = 'tp-yt-iron-dropdown';
+const CHAT_SETTINGS_DROPDOWN_ITEMS_SELECTOR = '.ytd-menu-popup-renderer,.ytls-menu-popup-renderer';
+const CHAT_SETTINGS_MENU_BUTTON_SELECTOR = '#overflow.yt-live-chat-header-renderer';
 const BTTV_CHAT_DROPDOWN_BUTTON_CONTAINER_SELECTOR = 'div[data-a-target="bttv-chat-dropdown-button-container"]';
 
 let handleOpen;
@@ -23,6 +24,14 @@ export default class SettingsModule {
 
     domObserver.on(CHAT_SETTINGS_DROPDOWN_ITEMS_SELECTOR, (node, isConnected) => {
       if (!isConnected) {
+        return;
+      }
+
+      const closestDropdownContainer = node.closest(CHAT_SETTINGS_DROPDOWN_CONTAINER_SELECTOR);
+      if (
+        closestDropdownContainer == null ||
+        closestDropdownContainer.__data.positionTarget !== document.querySelector(CHAT_SETTINGS_MENU_BUTTON_SELECTOR)
+      ) {
         return;
       }
 
@@ -66,7 +75,6 @@ export default class SettingsModule {
       }
 
       const dropdownButtonContainer = document.createElement('div');
-      dropdownButtonContainer.classList.add(styles.chatAppDropdownButton);
       dropdownButtonContainer.setAttribute('data-a-target', 'bttv-chat-dropdown-button-container');
       itemsContainer.appendChild(dropdownButtonContainer);
 
@@ -81,7 +89,6 @@ export default class SettingsModule {
 
             // close the dropdown menu when the modal is opened
             const menuButton = document.querySelector(CHAT_SETTINGS_MENU_BUTTON_SELECTOR);
-
             if (menuButton != null) {
               menuButton.click();
             }

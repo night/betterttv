@@ -45,13 +45,6 @@ html[dark] .buttonIcon {
   margin-right: 16px;
 }
 
-.chatAppDropdownButton {
-  background-color: var(--paper-listbox-background-color, var(--primary-background-color));
-  position: relative;
-  bottom: 10px;
-  height: 36px;
-}
-
 :global {
   .bttv-youtube {
     #bttvSettingsPanel,
