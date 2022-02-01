@@ -1,65 +1,43 @@
-import React, {useEffect, useRef} from 'react';
-import Nav from 'rsuite/Nav';
-import Whisper from 'rsuite/Whisper';
-import Tooltip from 'rsuite/Tooltip';
+import React, {useRef} from 'react';
 import classNames from 'classnames';
-import {WindowHeight} from '../../../constants.js';
+import {DragDropContext, Draggable, Droppable} from 'react-beautiful-dnd';
+import mergeRefs from 'react-merge-refs';
 import styles from './Sidebar.module.css';
-
-const ITEM_HEIGHT = 44;
+import useAutoScroll from '../hooks/AutoScroll.jsx';
 
 export default function Sidebar({section, onChange, categories}) {
   const containerRef = useRef(null);
-
-  useEffect(() => {
-    const currentRef = containerRef.current;
-    if (section.eventKey == null || currentRef == null) return;
-
-    const top = currentRef.scrollTop;
-    const index = categories.findIndex((category) => category.id === section.eventKey);
-    const depth = index * ITEM_HEIGHT;
-
-    let newTop;
-    if (depth < top) {
-      newTop = depth;
-    }
-    if (depth + ITEM_HEIGHT > top + WindowHeight) {
-      newTop = depth - WindowHeight + ITEM_HEIGHT;
-    }
-    if (newTop == null) {
-      return;
-    }
-
-    currentRef.scrollTo({
-      top: newTop,
-      left: 0,
-      behavior: 'smooth',
-    });
-  }, [section]);
+  useAutoScroll(section, containerRef, categories);
 
   return (
-    <div className={styles.sidebar} ref={containerRef}>
-      <Nav vertical appearance="subtle">
-        {categories.map((category) => {
-          const isActive = category.id === section.eventKey;
+    <DragDropContext onDragEnd={() => console.log('stopped dragging')}>
+      <Droppable droppableId="droppable">
+        {(provided) => (
+          <div
+            {...provided.droppableProps}
+            ref={mergeRefs([provided.innerRef, containerRef])}
+            className={styles.sidebar}>
+            {categories.map((category, index) => {
+              const isActive = category.id === section.eventKey;
 
-          return (
-            <Whisper
-              key={category.id}
-              placement="right"
-              trigger="hover"
-              delay={200}
-              speaker={<Tooltip>{category.displayName}</Tooltip>}
-              onClick={() => onChange(category.id)}>
-              <Nav.Item
-                active={isActive}
-                icon={<div className={styles.navItemContent}>{category.icon}</div>}
-                className={classNames(styles.navItem, {[styles.active]: isActive})}
-              />
-            </Whisper>
-          );
-        })}
-      </Nav>
-    </div>
+              return (
+                <Draggable key={category.id} draggableId={category.id} index={index}>
+                  {(providedItem) => (
+                    <div
+                      ref={providedItem.innerRef}
+                      {...providedItem.draggableProps}
+                      {...providedItem.dragHandleProps}
+                      style={providedItem.draggableProps.style}
+                      className={classNames(styles.navItem, {[styles.active]: isActive})}>
+                      {category.icon}
+                    </div>
+                  )}
+                </Draggable>
+              );
+            })}
+          </div>
+        )}
+      </Droppable>
+    </DragDropContext>
   );
 }

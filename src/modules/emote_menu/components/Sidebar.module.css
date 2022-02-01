@@ -30,4 +30,6 @@
 
 .navItem {
   padding: 12px !important;
+  top: auto !important;
+  left: auto !important;
 }
