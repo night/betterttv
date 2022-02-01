@@ -1,8 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {getCurrentUser} from '../../../utils/user.js';
 import EmoteWhisper from '../components/EmoteWhisper.jsx';
-import twitch from '../../../utils/twitch.js';
 import styles from './EmoteAutocomplete.module.css';
 
 let mountedNode;
@@ -19,11 +17,9 @@ export default class EmoteAutocomplete {
 
   load() {
     const emoteAutcompleteContainer = document.querySelector(EMOTE_AUTOCOMPLETE_CONTAINER_SELECTOR);
-    console.log(emoteAutcompleteContainer);
 
     // TODO: update when we merge settings menu for youtube
     if (emoteAutcompleteContainer == null) {
-      console.log('here');
       const element = document.querySelector(CHAT_TEXT_AREA);
       const whisperContainer = document.createElement('div');
       whisperContainer.setAttribute('data-a-target', 'bttv-autocomplete-matches-container');

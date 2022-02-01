@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import {getCurrentUser} from '../../../utils/user.js';
 import EmoteWhisper from '../components/EmoteWhisper.jsx';
 import domObserver from '../../../observers/dom.js';
-import {isEmoteAutocompletable} from '../../../utils/autocomplete.js';
 import settings from '../../../settings.js';
 import {SettingIds} from '../../../constants.js';
 import twitch from '../../../utils/twitch.js';
@@ -37,6 +36,7 @@ export default class EmoteAutocomplete {
 
     if (emoteAutcompletContainer == null && emoteAutocomplete) {
       const element = document.querySelector(CHAT_TEXT_AREA);
+      console.log(element);
       const whisperContainer = document.createElement('div');
       whisperContainer.setAttribute('data-a-target', 'bttv-autocomplete-matches-container');
       document.body.appendChild(whisperContainer);
@@ -77,6 +77,7 @@ export default class EmoteAutocomplete {
     parts.pop();
     parts.push(code);
     twitch.setChatInputValue(parts.join(' '), true);
+    console.log(twitch.getChatInputValue());
   }
 
   unloadTwitchAutocomplete() {
@@ -94,9 +95,7 @@ export default class EmoteAutocomplete {
         return;
       }
 
-      if (isEmoteAutocompletable()) {
-        node.parentElement.remove();
-      }
+      node.remove();
     });
   }
 }

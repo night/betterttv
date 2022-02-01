@@ -42,6 +42,7 @@ export default function Emotes({chatInputElement, repositionPopover, autocomplet
 
   useEffect(() => {
     function keydownCallback(event) {
+      console.log(event);
       if (!isEmoteAutocompletable()) {
         if (shortEmotes.length > 0) {
           setEmotes([]);
@@ -59,12 +60,12 @@ export default function Emotes({chatInputElement, repositionPopover, autocomplet
       navigationCallback(event);
     }
 
-    chatInputElement.addEventListener('keydown', keydownCallback);
+    window.addEventListener('keydown', keydownCallback, true);
 
     return () => {
-      chatInputElement.removeEventListener('keydown', keydownCallback);
+      window.removeEventListener('keydown', keydownCallback, true);
     };
-  }, [navigationCallback, shortEmotes, selected]);
+  }, [shortEmotes, selected]);
 
   if (shortEmotes.length === 0) {
     return null;
