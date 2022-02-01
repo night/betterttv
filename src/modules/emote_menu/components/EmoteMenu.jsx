@@ -104,8 +104,8 @@ export default function EmoteMenu({toggleWhisper, appendToChat, onSetTip}) {
         <Sidebar
           className={styles.sidebar}
           section={section}
-          categories={emoteMenuViewStore.getCategories()}
           onChange={(eventKey) => setSection({eventKey, scrollTo: true})}
+          categories={emoteMenuViewStore.getCategories()}
         />
         <Emotes
           className={styles.emotes}

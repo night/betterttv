@@ -12,10 +12,17 @@ import {loadYouTubeEmotes} from '../utils/youtube-emotes.js';
 import cdn from '../../../utils/cdn.js';
 import {getCurrentChannel} from '../../../utils/channel.js';
 import settings from '../../../settings.js';
-import {SettingIds, EmoteProviders, EmoteCategories, PlatformTypes} from '../../../constants.js';
+import {
+  SettingIds,
+  EmoteProviders,
+  EmoteCategories,
+  PlatformTypes,
+  EmoteCategoriesOrderStorageKey,
+} from '../../../constants.js';
 import twitch from '../../../utils/twitch.js';
 import {getPlatform} from '../../../utils/window.js';
 import {getCurrentUser} from '../../../utils/user.js';
+import storage from '../../../storage.js';
 
 const MAX_FRECENTS = 36;
 
@@ -38,6 +45,19 @@ function createCategory(id, provider, displayName, icon, categoryEmotes = []) {
     },
     emotes: sortBy(categoryEmotes, ({code}) => code.toLowerCase()),
   };
+}
+
+let categoryOrder = storage.get(EmoteCategoriesOrderStorageKey);
+
+function organizeCategories(categories) {
+  if (categoryOrder == null) {
+    categoryOrder = categories.map(({category}) => category.id);
+    storage.set(EmoteCategoriesOrderStorageKey, categoryOrder);
+
+    return categories;
+  }
+
+  return categories.sort((a, b) => categoryOrder.indexOf(a.category.id) - categoryOrder.indexOf(b.category.id));
 }
 
 const fuse = new Fuse([], {
@@ -155,7 +175,7 @@ class EmoteMenuViewStore extends SafeEventEmitter {
     const frecents = createCategory(EmoteCategories.FRECENTS, null, 'Frequently Used', Icons.CLOCK, []);
     const favorites = createCategory(EmoteCategories.FAVORITES, null, 'Favorites', Icons.STAR, []);
 
-    const categories = [...providerCategories, ...platformCategories, ...getEmojiCategories()];
+    const categories = organizeCategories([...providerCategories, ...platformCategories, ...getEmojiCategories()]);
     const collection = [];
 
     for (const category of categories) {
@@ -204,6 +224,13 @@ class EmoteMenuViewStore extends SafeEventEmitter {
     fuse.setCollection(collection);
     this.dirty = false;
     this.emit('updated');
+  }
+
+  setCategoryOrder(categories) {
+    categoryOrder = categories.map(({id}) => id);
+    storage.set(EmoteCategoriesOrderStorageKey, categoryOrder);
+
+    this.markDirty();
   }
 
   getRow(index) {

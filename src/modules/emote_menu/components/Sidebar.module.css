@@ -12,7 +12,7 @@
 }
 
 .active {
-  background-color: var(--bttv-rs-bg-card);
+  background-color: var(--bttv-rs-bg-card) !important;
 }
 
 .navItem svg {
@@ -26,6 +26,11 @@
   align-items: center;
   width: 20px;
   height: 20px;
+}
+
+.dragging {
+  background-color: var(--bttv-rs-bg-well);
+  border-radius: 8px;
 }
 
 .navItem {

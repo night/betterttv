@@ -224,3 +224,5 @@ export const PlatformTypes = {
   TWITCH_CLIPS: 2,
   YOUTUBE: 3,
 };
+
+export const EmoteCategoriesOrderStorageKey = 'emote-categories-order';
