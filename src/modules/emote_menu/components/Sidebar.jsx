@@ -77,35 +77,32 @@ export default function Sidebar({section, onClick, categories: initialCategories
             className={styles.sidebar}
             {...provided.droppableProps}
             ref={mergeRefs([provided.innerRef, containerRef])}>
-            {categories.map((category, index) => {
-              const isActive = category.id === section.eventKey;
-              return (
-                <Draggable
-                  key={category.id}
-                  draggableId={category.id}
-                  index={index}
-                  isDragDisabled={DISABLED_DRAGGABLE_CATEGORIES.includes(category.id)}>
-                  {renderDraggable((providedItem, snapshotItem) => (
-                    <div
-                      tabIndex={index}
-                      role="button"
-                      ref={providedItem.innerRef}
-                      {...providedItem.draggableProps}
-                      {...providedItem.dragHandleProps}
-                      style={providedItem.draggableProps.style}
-                      onClick={() => onClick(category.id)}
-                      onKeyDown={() => onClick(category.id)}
-                      className={classNames(styles.navItem, {
-                        [styles.dragging]: snapshotItem.isDragging,
-                        [styles.active]: isActive,
-                      })}>
-                      {category.icon}
-                    </div>
-                  ))}
-                </Draggable>
-              );
-            })}
-            {provided.placeholder}
+            {categories.map((category, index) => (
+              <Draggable
+                key={category.id}
+                draggableId={category.id}
+                index={index}
+                isDragDisabled={DISABLED_DRAGGABLE_CATEGORIES.includes(category.id)}>
+                {renderDraggable((providedItem, snapshotItem) => (
+                  <div
+                    tabIndex={index}
+                    role="button"
+                    ref={providedItem.innerRef}
+                    {...providedItem.draggableProps}
+                    {...providedItem.dragHandleProps}
+                    style={providedItem.draggableProps.style}
+                    onClick={() => onClick(category.id)}
+                    onKeyDown={() => onClick(category.id)}
+                    className={classNames(styles.navItem, {
+                      [styles.dragging]: snapshotItem.isDragging,
+                      [styles.active]: category.id === section.eventKey,
+                    })}>
+                    {category.icon}
+                  </div>
+                ))}
+              </Draggable>
+            ))}
+            ){provided.placeholder}
           </div>
         )}
       </Droppable>
