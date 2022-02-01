@@ -13,6 +13,7 @@
 
 .active {
   background-color: var(--bttv-rs-bg-card) !important;
+  border-right: 2px solid var(--bttv-rs-navs-selected) !important;
 }
 
 .navItem svg {
@@ -30,10 +31,10 @@
 
 .dragging {
   background-color: var(--bttv-rs-bg-well);
-  border-radius: 8px;
 }
 
 .navItem {
+  border-right: 2px solid var(--bttv-rs-divider-border);
   padding: 12px !important;
   cursor: pointer;
 }
