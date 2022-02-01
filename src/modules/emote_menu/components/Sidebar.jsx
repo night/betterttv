@@ -34,7 +34,7 @@ function useDraggableInPortal() {
     };
 }
 
-export default function Sidebar({section, categories: initialCategories}) {
+export default function Sidebar({section, onClick, categories: initialCategories}) {
   const containerRef = useRef(null);
   const [categories, setCategories] = useState(initialCategories);
 
@@ -44,13 +44,23 @@ export default function Sidebar({section, categories: initialCategories}) {
 
   useAutoScroll(section, containerRef, categories);
 
+  function handleClick(category) {
+    onClick(category.id);
+  }
+
   const handleReorder = useCallback(
     (oldDest, newDest) => {
+      if (oldDest === newDest) {
+        return;
+      }
+
       const result = [...categories];
       const [removed] = result.splice(oldDest, 1);
       result.splice(newDest, 0, removed);
 
       setCategories(result);
+
+      emoteMenuViewStore.once('updated', () => onClick(section.eventKey));
       emoteMenuViewStore.setCategoryOrder(result);
     },
     [categories]
@@ -74,10 +84,14 @@ export default function Sidebar({section, categories: initialCategories}) {
                   isDragDisabled={DISABLED_DRAGGABLE_CATEGORIES.includes(category.id)}>
                   {renderDraggable((providedItem, snapshotItem) => (
                     <div
+                      tabIndex={index}
+                      role="button"
                       ref={providedItem.innerRef}
                       {...providedItem.draggableProps}
                       {...providedItem.dragHandleProps}
                       style={providedItem.draggableProps.style}
+                      onClick={() => handleClick(category)}
+                      onKeyDown={() => handleClick(category)}
                       className={classNames(styles.navItem, {
                         [styles.dragging]: snapshotItem.isDragging,
                         [styles.active]: isActive,
