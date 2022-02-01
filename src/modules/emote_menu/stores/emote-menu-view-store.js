@@ -175,7 +175,7 @@ class EmoteMenuViewStore extends SafeEventEmitter {
     const frecents = createCategory(EmoteCategories.FRECENTS, null, 'Frequently Used', Icons.CLOCK, []);
     const favorites = createCategory(EmoteCategories.FAVORITES, null, 'Favorites', Icons.STAR, []);
 
-    const categories = organizeCategories([...providerCategories, ...platformCategories, ...getEmojiCategories()]);
+    const categories = [...organizeCategories([...providerCategories, ...platformCategories]), ...getEmojiCategories()];
     const collection = [];
 
     for (const category of categories) {

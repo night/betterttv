@@ -8,7 +8,18 @@ import useAutoScroll from '../hooks/AutoScroll.jsx';
 import emoteMenuViewStore from '../stores/emote-menu-view-store.js';
 import {EmoteCategories} from '../../../constants.js';
 
-const DISABLED_DRAGGABLE_CATEGORIES = [EmoteCategories.FAVORITES, EmoteCategories.FRECENTS];
+const DISABLED_DRAGGABLE_CATEGORIES = [
+  EmoteCategories.FAVORITES,
+  EmoteCategories.FRECENTS,
+  EmoteCategories.EMOJI_FLAGS,
+  EmoteCategories.EMOJI_ACTIVITIES,
+  EmoteCategories.EMOJI_FOODS,
+  EmoteCategories.EMOJI_NATURE,
+  EmoteCategories.EMOJI_OBJECTS,
+  EmoteCategories.EMOJI_TRAVEL,
+  EmoteCategories.EMOJI_SYMBOLS,
+  EmoteCategories.EMOJI_PEOPLE,
+];
 
 // https://github.com/atlassian/react-beautiful-dnd/issues/128#issuecomment-669083882
 function useDraggableInPortal() {
