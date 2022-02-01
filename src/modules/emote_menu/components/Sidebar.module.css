@@ -35,6 +35,12 @@
 
 .navItem {
   padding: 12px !important;
-  top: auto !important;
-  left: auto !important;
+}
+
+.portal {
+  position: 'absolute';
+  pointerevents: 'none';
+  top: '0';
+  width: '100%';
+  height: '100%';
 }
