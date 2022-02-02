@@ -25,6 +25,7 @@ import {getCurrentUser} from '../../../utils/user.js';
 import storage from '../../../storage.js';
 
 const MAX_FRECENTS = 36;
+const STATIC_CATEGORIES = [EmoteCategories.FAVORITES, EmoteCategories.FRECENTS];
 
 const computeTotalColumns = () => (window.innerWidth <= 400 ? 7 : 9);
 
@@ -175,7 +176,7 @@ class EmoteMenuViewStore extends SafeEventEmitter {
     const frecents = createCategory(EmoteCategories.FRECENTS, null, 'Frequently Used', Icons.CLOCK, []);
     const favorites = createCategory(EmoteCategories.FAVORITES, null, 'Favorites', Icons.STAR, []);
 
-    const categories = [...organizeCategories([...providerCategories, ...platformCategories]), ...getEmojiCategories()];
+    const categories = organizeCategories([...providerCategories, ...platformCategories, ...getEmojiCategories()]);
     const collection = [];
 
     for (const category of categories) {
@@ -229,7 +230,6 @@ class EmoteMenuViewStore extends SafeEventEmitter {
   setCategoryOrder(categories) {
     categoryOrder = categories.map(({id}) => id);
     storage.set(EmoteCategoriesOrderStorageKey, categoryOrder);
-
     this.markDirty();
   }
 
@@ -237,8 +237,14 @@ class EmoteMenuViewStore extends SafeEventEmitter {
     return this.rows[index];
   }
 
-  getCategories() {
-    return this.headers.map((id) => this.rows[id]);
+  getCategories(isStatic = false) {
+    const categories = this.headers.map((id) => this.rows[id]);
+
+    if (isStatic) {
+      return categories.filter(({id}) => STATIC_CATEGORIES.includes(id));
+    }
+
+    return categories.filter(({id}) => !STATIC_CATEGORIES.includes(id));
   }
 
   getCategoryIndexById(id) {
