@@ -3,7 +3,7 @@ import uniqBy from 'lodash.uniqby';
 import sortBy from 'lodash.sortby';
 import SafeEventEmitter from '../../../utils/safe-event-emitter.js';
 import watcher from '../../../watcher.js';
-import {getEmojiCategories} from '../utils/emojis.js';
+import {getEmojiCategories, isEmojiCategory} from '../utils/emojis.js';
 import emotes from '../../emotes/index.js';
 import Icons from '../components/Icons.jsx';
 import emoteStorage from './emote-menu-store.js';
@@ -52,13 +52,19 @@ let categoryOrder = storage.get(EmoteCategoriesOrderStorageKey);
 
 function organizeCategories(categories) {
   if (categoryOrder == null) {
-    categoryOrder = categories.map(({category}) => category.id);
+    categoryOrder = {};
     storage.set(EmoteCategoriesOrderStorageKey, categoryOrder);
-
-    return categories;
   }
 
-  return categories.sort((a, b) => categoryOrder.indexOf(a.category.id) - categoryOrder.indexOf(b.category.id));
+  for (const {category} of categories) {
+    if (categoryOrder[category.id] != null) {
+      continue;
+    }
+
+    categoryOrder[category.id] = isEmojiCategory(category.id) ? -1 : 0;
+  }
+
+  return categories.sort((a, b) => categoryOrder[b.category.id] - categoryOrder[a.category.id]);
 }
 
 const fuse = new Fuse([], {
@@ -227,10 +233,47 @@ class EmoteMenuViewStore extends SafeEventEmitter {
     this.emit('updated');
   }
 
-  setCategoryOrder(categories) {
-    categoryOrder = categories.map(({id}) => id);
-    storage.set(EmoteCategoriesOrderStorageKey, categoryOrder);
+  setCategoryOrder(categories, x, y) {
+    const start = Math.min(x, y);
+    const end = Math.max(x, y);
+
+    // Find the first occurance of iteration in categories
+    const iterStart = categories.findIndex(
+      (v, i, a) =>
+        categoryOrder[v.id] != null && categoryOrder[v.id] === categoryOrder[a[Math.min(i + 1, a.length - 1)].id] + 1
+    );
+
+    // Compare if the start swap and first occurance of iteration and choose the lowest
+    const startIndex = iterStart !== -1 ? Math.min(start, iterStart) : start;
+
+    // The index we should stop decrementing iterDistance
+    const endIndex =
+      categoryOrder[categories[startIndex].id] == null
+        ? end
+        : Math.max(end, categoryOrder[categories[startIndex].id] + startIndex - 1);
+
+    // Acts like an index when decrementing
+    let iterDistance = Math.abs(endIndex - startIndex) + 1;
+
+    for (let i = 0; i < categories.length; i += 1) {
+      const {id} = categories[i];
+
+      if (i < startIndex) {
+        categoryOrder[id] = iterDistance + 1;
+        continue;
+      }
+
+      if (i > endIndex) {
+        categoryOrder[id] = Math.min(categoryOrder[id], 0);
+        continue;
+      }
+
+      categoryOrder[id] = iterDistance;
+      iterDistance -= 1;
+    }
+
     this.markDirty();
+    storage.set(EmoteCategoriesOrderStorageKey, categoryOrder);
   }
 
   getRow(index) {
@@ -238,7 +281,7 @@ class EmoteMenuViewStore extends SafeEventEmitter {
   }
 
   getCategories(isStatic = false) {
-    const categories = this.headers.map((id) => this.rows[id]);
+    const categories = this.headers.map((index) => this.rows[index]);
 
     if (isStatic) {
       return categories.filter(({id}) => STATIC_CATEGORIES.includes(id));
