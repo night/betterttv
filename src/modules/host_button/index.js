@@ -89,14 +89,14 @@ class HostButtonModule {
 
   updateHostingState(userId, channelId) {
     const query = `
-            query ChannelHosting {
-                currentUser {
-                    hosting {
-                        id
-                    }
-                }
-            }
-        `;
+      query ChannelHosting {
+        currentUser {
+          hosting {
+            id
+          }
+        }
+      }
+    `;
 
     return twitchAPI.graphqlQuery(query).then(
       ({

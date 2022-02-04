@@ -203,14 +203,14 @@ function handleCommands(message) {
 
     case 'chatters': {
       const query = `
-                query ChatViewers($name: String!) {
-                    channel(name: $name) {
-                        chatters {
-                            count
-                        }
-                    }
-                }
-            `;
+        query GetChannelChattersCount($name: String!) {
+          channel(name: $name) {
+            chatters {
+              count
+            }
+          }
+        }
+      `;
 
       twitchAPI
         .graphqlQuery(query, {name: channel.name})
@@ -229,45 +229,118 @@ function handleCommands(message) {
     case 'followed': {
       const currentUser = getCurrentUser();
       if (!currentUser) break;
+      const query = `
+        query GetFollowingChannel($userId: ID!) {
+          user(id: $userId) {
+            self {
+              follower {
+                followedAt
+              }
+            }
+          }
+        }
+      `;
+
       twitchAPI
-        .get(`users/${currentUser.id}/follows/channels/${channel.id}`)
-        .then(({created_at: createdAt}) => {
-          const since = dayjs(createdAt);
-          twitch.sendChatAdminMessage(
-            `You followed ${channel.displayName} ${since.fromNow()} (${since.toDate().toLocaleString()})`
-          );
-        })
+        .graphqlQuery(query, {userId: channel.id})
+        .then(
+          ({
+            data: {
+              user: {
+                self: {
+                  follower: {followedAt},
+                },
+              },
+            },
+          }) => {
+            const since = dayjs(followedAt);
+            twitch.sendChatAdminMessage(
+              `You followed ${channel.displayName} ${since.fromNow()} (${since.toDate().toLocaleString()})`
+            );
+          }
+        )
         .catch(() => twitch.sendChatAdminMessage(`You do not follow ${channel.displayName}.`));
       break;
     }
-    case 'follows':
+    case 'follows': {
+      const query = `
+        query GetChannelFollowerCount($userId: ID!) {
+          user(id: $userId) {
+            followers(first: 1) {
+              totalCount
+            }
+          }
+        }
+      `;
+
       twitchAPI
-        .get(`channels/${channel.id}`)
-        .then(({followers}) => twitch.sendChatAdminMessage(`Current Followers: ${followers.toLocaleString()}`))
+        .graphqlQuery(query, {userId: channel.id})
+        .then(
+          ({
+            data: {
+              user: {
+                followers: {totalCount},
+              },
+            },
+          }) => twitch.sendChatAdminMessage(`Current Followers: ${totalCount.toLocaleString()}`)
+        )
         .catch(() => twitch.sendChatAdminMessage('Could not fetch follower count.'));
       break;
-    case 'viewers':
+    }
+    case 'viewers': {
+      const query = `
+        query GetChannelStreamViewersCount($userId: ID!) {
+          user(id: $userId) {
+            stream {
+              viewersCount
+            }
+          }
+        }
+      `;
+
       twitchAPI
-        .get(`streams/${channel.id}`)
-        .then(({stream}) => {
-          const viewers = stream ? stream.viewers : 0;
-          twitch.sendChatAdminMessage(`Current Viewers: ${viewers.toLocaleString()}`);
-        })
+        .graphqlQuery(query, {userId: channel.id})
+        .then(
+          ({
+            data: {
+              user: {
+                stream: {viewersCount},
+              },
+            },
+          }) => twitch.sendChatAdminMessage(`Current Viewers: ${viewersCount.toLocaleString()}`)
+        )
         .catch(() => twitch.sendChatAdminMessage('Could not fetch stream.'));
       break;
+    }
     case 'uptime': {
-      twitchAPI
-        .get(`streams/${channel.id}`)
-        .then(({stream}) => {
-          const startedTime = stream ? new Date(stream.created_at) : null;
-          if (!startedTime) {
-            twitch.sendChatAdminMessage('Stream is not live');
-            return;
+      const query = `
+        query GetChannelStreamCreatedAt($userId: ID!) {
+          user(id: $userId) {
+            stream {
+              createdAt
+            }
           }
+        }
+      `;
 
-          const secondsSince = Math.round((Date.now() - startedTime.getTime()) / 1000);
-          twitch.sendChatAdminMessage(`Current Uptime: ${secondsToLength(secondsSince)}`);
-        })
+      twitchAPI
+        .graphqlQuery(query, {userId: channel.id})
+        .then(
+          ({
+            data: {
+              user: {stream},
+            },
+          }) => {
+            const startedTime = stream != null ? new Date(stream.createdAt) : null;
+            if (!startedTime) {
+              twitch.sendChatAdminMessage('Stream is not live');
+              return;
+            }
+
+            const secondsSince = Math.round((Date.now() - startedTime.getTime()) / 1000);
+            twitch.sendChatAdminMessage(`Current Uptime: ${secondsToLength(secondsSince)}`);
+          }
+        )
         .catch(() => twitch.sendChatAdminMessage('Could not fetch stream.'));
       break;
     }

@@ -128,9 +128,27 @@ class ModeratorCard {
     const $overlay = this.$element.find(MODERATOR_CARD_OVERLAY_SELECTOR);
     if ($overlay.find('.bttv-moderator-card-user-stats').length) return;
 
+    const query = `
+      query GetChannel($userId: ID!) {
+        user(id: $userId) {
+          createdAt,
+          profileViewCount,
+          followers(first: 1) {
+            totalCount
+          }
+        }
+      }
+    `;
+
     twitchAPI
-      .get(`channels/${this.user.id}`)
-      .then(({views, followers, created_at: createdAt}) => userStatsTemplate(views, followers, createdAt))
+      .graphqlQuery(query, {userId: this.user.id})
+      .then(
+        ({
+          data: {
+            user: {profileViewCount, followers, createdAt},
+          },
+        }) => userStatsTemplate(profileViewCount, followers.totalCount, createdAt)
+      )
       .then((statsHTML) => $(statsHTML).appendTo($overlay));
   }
 
