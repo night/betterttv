@@ -54,7 +54,7 @@ export default function Sidebar({section, onClick, staticCategories, categories:
         onClick(removed.id);
       });
 
-      emoteMenuViewStore.setCategoryOrder(result, oldDest, newDest);
+      emoteMenuViewStore.setCategoryOrder(result);
     },
     [categories]
   );
@@ -63,7 +63,6 @@ export default function Sidebar({section, onClick, staticCategories, categories:
     <div className={styles.sidebar} ref={containerRef}>
       {staticCategories.map((category, index) => (
         <div
-          key={category.id}
           tabIndex={index}
           role="button"
           onClick={() => onClick(category.id)}
@@ -82,7 +81,7 @@ export default function Sidebar({section, onClick, staticCategories, categories:
                 <Draggable key={category.id} draggableId={category.id} index={index}>
                   {renderDraggable((providedItem, snapshotItem) => (
                     <div
-                      tabIndex={index + staticCategories.length}
+                      tabIndex={index}
                       role="button"
                       ref={providedItem.innerRef}
                       {...providedItem.draggableProps}
