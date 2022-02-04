@@ -5,12 +5,13 @@
 }
 
 .content {
-  width: 48px;
   height: 100%;
   overflow-y: scroll;
   background-color: var(--bttv-rs-bg-well);
   color: var(--bttv-rs-text-heading);
   scrollbar-width: none;
+  height: 300px;
+  width: 48px;
 }
 
 .content::-webkit-scrollbar {
@@ -65,10 +66,14 @@
 
 .emojiButton {
   background-color: var(--bttv-rs-bg-card);
+  width: 48px;
+  height: 48px;
 }
 
 .divider {
   margin: 0px;
+  height: 1px;
+  width: 48px;
 }
 
 .hidden {
