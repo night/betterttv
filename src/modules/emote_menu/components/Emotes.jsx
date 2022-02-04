@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import VirtualizedList from './VirtualizedList.jsx';
 import emoteMenuViewStore from '../stores/emote-menu-view-store.js';
 import styles from './Emotes.module.css';
-import Emote from './Emote.jsx';
+import EmoteButton from './EmoteButton.jsx';
 import Icons from './Icons.jsx';
 import {NavigationModeTypes, RowHeight, WindowHeight} from '../../../constants.js';
 import useGridKeyboardNavigation from '../hooks/GridKeyboardNavigation.jsx';
@@ -41,7 +41,7 @@ const BrowseEmotes = React.forwardRef(
         ) : (
           <div key={key} style={style} className={classNames(className, styles.row)}>
             {row.map((emote, x) => (
-              <Emote
+              <EmoteButton
                 key={`${emote.category.id}-${emote.id}`}
                 active={y === coords.y && x === coords.x}
                 emote={emote}
@@ -135,7 +135,7 @@ const SearchEmotes = React.forwardRef(
         return (
           <div key={key} style={style} className={classNames(className, styles.row)}>
             {row.map(({item}, x) => (
-              <Emote
+              <EmoteButton
                 key={`${item.category.id}${item.id}`}
                 emote={item}
                 onClick={onClick}

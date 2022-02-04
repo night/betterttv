@@ -16,16 +16,6 @@
   }
 }
 
-.emoteImage {
-  width: 28px;
-  height: 28px;
-  object-fit: contain;
-}
-
 .active {
   background-color: var(--bttv-rs-state-hover-bg);
-}
-
-.placeholder {
-  background-color: var(--bttv-rs-bg-card);
 }

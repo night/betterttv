@@ -27,23 +27,29 @@
   width: 100%;
 }
 
-.navItemContent {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 22px;
-  height: 22px;
-}
-
 .dragging {
   background-color: var(--bttv-rs-bg-well);
   border-radius: 4px;
+  color: var(--bttv-rs-text-heading);
+  display: flex;
 }
 
 .navItem {
   /* border-right: 2px solid var(--bttv-rs-divider-border); */
   padding: 14px !important;
   cursor: pointer;
+  box-sizing: border-box;
+  height: 48px;
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
 }
 
 .portal {

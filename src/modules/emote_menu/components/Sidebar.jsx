@@ -4,11 +4,12 @@ import classNames from 'classnames';
 import {DragDropContext, Draggable, Droppable} from 'react-beautiful-dnd';
 import {createPortal} from 'react-dom';
 import {Divider} from 'rsuite';
-import twemoji from 'twemoji';
 import styles from './Sidebar.module.css';
 import useAutoScroll from '../hooks/AutoScroll.jsx';
 import emoteMenuViewStore from '../stores/emote-menu-view-store.js';
 import {BOTTOM_FIXED_CATEGORIES, ITEM_HEIGHT, TOP_FIXED_CATEGORIES} from '../../../constants.js';
+import emojis from '../../emotes/emojis.js';
+import Emote from '../../../common/components/Emote.jsx';
 
 // https://github.com/atlassian/react-beautiful-dnd/issues/128#issuecomment-669083882
 function useDraggableInPortal() {
@@ -37,7 +38,6 @@ function useDraggableInPortal() {
 export default function Sidebar({section, onClick, categories: initialCategories}) {
   const containerRef = useRef(null);
   const [categories, setCategories] = useState(initialCategories);
-  const emojiRef = useRef(null);
 
   const renderDraggable = useDraggableInPortal();
   useEffect(() => setCategories(initialCategories), [initialCategories]);
@@ -45,17 +45,6 @@ export default function Sidebar({section, onClick, categories: initialCategories
   useAutoScroll(section, containerRef, categories);
 
   const [hovering, setHovering] = useState(false);
-
-  useEffect(() => {
-    if (emojiRef.current == null) {
-      return;
-    }
-
-    twemoji.parse(emojiRef.current, {
-      folder: 'svg',
-      ext: '.svg',
-    });
-  }, [emojiRef]);
 
   const [topCategories, middleCategories, bottomCategories] = useMemo(() => {
     const top = [];
@@ -155,20 +144,18 @@ export default function Sidebar({section, onClick, categories: initialCategories
         {createCategories(bottomCategories)}
       </div>
       <Divider className={styles.divider} />
-      <div ref={emojiRef}>
-        <div
-          role="button"
-          onMouseEnter={() => setHovering(true)}
-          className={classNames(styles.navItem, styles.emojiButton, {[styles.hidden]: hovering})}>
-          😃
-        </div>
-        <div
-          role="button"
-          onClick={() => handleEmojiClick()}
-          onMouseLeave={() => setHovering(false)}
-          className={classNames(styles.navItem, styles.emojiButton, {[styles.hidden]: !hovering})}>
-          💩
-        </div>
+      <div
+        role="button"
+        onMouseEnter={() => setHovering(true)}
+        className={classNames(styles.navItem, styles.emojiButton, {[styles.hidden]: hovering})}>
+        <Emote emote={emojis.getEligibleEmote('😃')} />
+      </div>
+      <div
+        role="button"
+        onClick={() => handleEmojiClick()}
+        onMouseLeave={() => setHovering(false)}
+        className={classNames(styles.navItem, styles.emojiButton, {[styles.hidden]: !hovering})}>
+        <Emote emote={emojis.getEligibleEmote('💩')} />
       </div>
     </div>
   );
