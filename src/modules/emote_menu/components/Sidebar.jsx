@@ -1,10 +1,14 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+/* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/interactive-supports-focus */
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import classNames from 'classnames';
 import {DragDropContext, Draggable, Droppable} from 'react-beautiful-dnd';
 import {createPortal} from 'react-dom';
+import {Divider} from 'rsuite';
+import twemoji from 'twemoji';
 import styles from './Sidebar.module.css';
 import useAutoScroll from '../hooks/AutoScroll.jsx';
 import emoteMenuViewStore from '../stores/emote-menu-view-store.js';
+import {BOTTOM_FIXED_CATEGORIES, ITEM_HEIGHT, TOP_FIXED_CATEGORIES} from '../../../constants.js';
 
 // https://github.com/atlassian/react-beautiful-dnd/issues/128#issuecomment-669083882
 function useDraggableInPortal() {
@@ -30,13 +34,59 @@ function useDraggableInPortal() {
     };
 }
 
-export default function Sidebar({section, onClick, staticCategories, categories: initialCategories}) {
+export default function Sidebar({section, onClick, categories: initialCategories}) {
   const containerRef = useRef(null);
   const [categories, setCategories] = useState(initialCategories);
+  const emojiRef = useRef(null);
 
   const renderDraggable = useDraggableInPortal();
   useEffect(() => setCategories(initialCategories), [initialCategories]);
-  useAutoScroll(section, containerRef, [...staticCategories, ...categories]);
+
+  useAutoScroll(section, containerRef, categories);
+
+  const [hovering, setHovering] = useState(false);
+
+  useEffect(() => {
+    if (emojiRef.current == null) {
+      return;
+    }
+
+    twemoji.parse(emojiRef.current, {
+      folder: 'svg',
+      ext: '.svg',
+    });
+  }, [emojiRef]);
+
+  const [topCategories, middleCategories, bottomCategories] = useMemo(() => {
+    const top = [];
+    const middle = [];
+    const bottom = [];
+
+    for (const category of categories) {
+      if (TOP_FIXED_CATEGORIES.includes(category.id)) {
+        top.push(category);
+        continue;
+      }
+
+      if (BOTTOM_FIXED_CATEGORIES.includes(category.id)) {
+        bottom.push(category);
+        continue;
+      }
+
+      middle.push(category);
+    }
+
+    return [top, middle, bottom];
+  }, [categories]);
+
+  const handleEmojiClick = useCallback(() => {
+    containerRef.current.scrollTo({
+      top: (topCategories.length + middleCategories.length) * ITEM_HEIGHT,
+      left: 0,
+    });
+
+    onClick(bottomCategories[0].id);
+  }, [containerRef, topCategories, middleCategories, bottomCategories]);
 
   const handleReorder = useCallback(
     (oldDest, newDest) => {
@@ -44,65 +94,82 @@ export default function Sidebar({section, onClick, staticCategories, categories:
         return;
       }
 
-      const result = [...categories];
+      const result = [...middleCategories];
       const [removed] = result.splice(oldDest, 1);
       result.splice(newDest, 0, removed);
 
-      setCategories(result);
-
-      emoteMenuViewStore.once('updated', () => {
-        onClick(removed.id);
-      });
-
+      setCategories([...topCategories, ...result, ...bottomCategories]);
       emoteMenuViewStore.setCategoryOrder(result);
     },
     [categories]
   );
 
+  function createCategories(arr) {
+    return arr.map((category) => (
+      <div
+        key={category.id}
+        role="button"
+        onClick={() => onClick(category.id)}
+        onKeyDown={() => onClick(category.id)}
+        className={classNames(styles.navItem, {
+          [styles.active]: category.id === section.eventKey,
+        })}>
+        {category.icon}
+      </div>
+    ));
+  }
+
   return (
-    <div className={styles.sidebar} ref={containerRef}>
-      {staticCategories.map((category, index) => (
+    <div className={styles.sidebar}>
+      <div className={styles.content} ref={containerRef}>
+        {createCategories(topCategories)}
+        <DragDropContext onDragEnd={({source, destination}) => handleReorder(source.index, destination.index)}>
+          <Droppable droppableId="droppable" type="list" direction="vertical">
+            {(provided) => (
+              <div {...provided.droppableProps} ref={provided.innerRef}>
+                {middleCategories.map((category, index) => (
+                  <Draggable key={category.id} draggableId={category.id} index={index}>
+                    {renderDraggable((providedItem, snapshotItem) => (
+                      <div
+                        role="button"
+                        ref={providedItem.innerRef}
+                        {...providedItem.draggableProps}
+                        {...providedItem.dragHandleProps}
+                        style={providedItem.draggableProps.style}
+                        onClick={() => onClick(category.id)}
+                        onKeyDown={() => onClick(category.id)}
+                        className={classNames(styles.navItem, {
+                          [styles.dragging]: snapshotItem.isDragging,
+                          [styles.active]: category.id === section.eventKey,
+                        })}>
+                        {category.icon}
+                      </div>
+                    ))}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+        {createCategories(bottomCategories)}
+      </div>
+      <Divider className={styles.divider} />
+      <div ref={emojiRef}>
         <div
-          tabIndex={index}
           role="button"
-          onClick={() => onClick(category.id)}
-          onKeyDown={() => onClick(category.id)}
-          className={classNames(styles.navItem, {
-            [styles.active]: category.id === section.eventKey,
-          })}>
-          {category.icon}
+          onMouseEnter={() => setHovering(true)}
+          className={classNames(styles.navItem, styles.emojiButton, {[styles.hidden]: hovering})}>
+          😃
         </div>
-      ))}
-      <DragDropContext onDragEnd={({source, destination}) => handleReorder(source.index, destination.index)}>
-        <Droppable droppableId="droppable" type="list" direction="vertical">
-          {(provided) => (
-            <div {...provided.droppableProps} ref={provided.innerRef}>
-              {categories.map((category, index) => (
-                <Draggable key={category.id} draggableId={category.id} index={index}>
-                  {renderDraggable((providedItem, snapshotItem) => (
-                    <div
-                      tabIndex={index}
-                      role="button"
-                      ref={providedItem.innerRef}
-                      {...providedItem.draggableProps}
-                      {...providedItem.dragHandleProps}
-                      style={providedItem.draggableProps.style}
-                      onClick={() => onClick(category.id)}
-                      onKeyDown={() => onClick(category.id)}
-                      className={classNames(styles.navItem, {
-                        [styles.dragging]: snapshotItem.isDragging,
-                        [styles.active]: category.id === section.eventKey,
-                      })}>
-                      {category.icon}
-                    </div>
-                  ))}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
+        <div
+          role="button"
+          onClick={() => handleEmojiClick()}
+          onMouseLeave={() => setHovering(false)}
+          className={classNames(styles.navItem, styles.emojiButton, {[styles.hidden]: !hovering})}>
+          💩
+        </div>
+      </div>
     </div>
   );
 }

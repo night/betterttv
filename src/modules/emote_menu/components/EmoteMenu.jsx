@@ -104,27 +104,38 @@ export default function EmoteMenu({toggleWhisper, appendToChat, onSetTip}) {
         <Sidebar
           className={styles.sidebar}
           section={section}
-          onClick={(eventKey) => setSection({eventKey, scrollTo: true})}
+          onClick={(eventKey) =>
+            setSection({
+              eventKey,
+              scrollTo: true,
+            })
+          }
           categories={emoteMenuViewStore.getCategories()}
-          staticCategories={emoteMenuViewStore.getCategories(true)}
         />
-        <Emotes
-          className={styles.emotes}
-          search={search}
-          section={section}
-          onClick={handleClick}
-          setKeyPressCallback={setKeyPressCallback}
-          rows={emoteMenuViewStore.rows}
-          setSelected={setSelected}
-          onSection={(eventKey) => setSection({eventKey, scrollTo: false})}
-        />
+        <div className={styles.subContent}>
+          <Emotes
+            className={styles.emotes}
+            search={search}
+            section={section}
+            onClick={handleClick}
+            setKeyPressCallback={setKeyPressCallback}
+            rows={emoteMenuViewStore.rows}
+            setSelected={setSelected}
+            onSection={(eventKey) =>
+              setSection({
+                eventKey,
+                scrollTo: false,
+              })
+            }
+          />
+          <Divider className={styles.divider} />
+          <Preview
+            className={styles.preview}
+            emote={selected}
+            isFavorite={selected == null ? false : emoteMenuViewStore.hasFavorite(selected)}
+          />
+        </div>
       </div>
-      <Divider className={styles.divider} />
-      <Preview
-        className={styles.preview}
-        emote={selected}
-        isFavorite={selected == null ? false : emoteMenuViewStore.hasFavorite(selected)}
-      />
       <Tip classname={styles.tip} onSetTip={onSetTip} />
     </>
   );

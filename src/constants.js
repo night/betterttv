@@ -225,4 +225,19 @@ export const PlatformTypes = {
   YOUTUBE: 3,
 };
 
+export const ITEM_HEIGHT = 48;
+
+export const TOP_FIXED_CATEGORIES = [EmoteCategories.FAVORITES, EmoteCategories.FRECENTS];
+
+export const BOTTOM_FIXED_CATEGORIES = [
+  EmoteCategories.EMOJI_ACTIVITIES,
+  EmoteCategories.EMOJI_FLAGS,
+  EmoteCategories.EMOJI_FOODS,
+  EmoteCategories.EMOJI_NATURE,
+  EmoteCategories.EMOJI_OBJECTS,
+  EmoteCategories.EMOJI_PEOPLE,
+  EmoteCategories.EMOJI_SYMBOLS,
+  EmoteCategories.EMOJI_TRAVEL,
+];
+
 export const EmoteCategoriesOrderStorageKey = 'emote-categories-order';

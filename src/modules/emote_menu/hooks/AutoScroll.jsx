@@ -1,7 +1,5 @@
 import {useEffect} from 'react';
-import {WindowHeight} from '../../../constants.js';
-
-const ITEM_HEIGHT = 44;
+import {ITEM_HEIGHT, WindowHeight} from '../../../constants.js';
 
 export default function useAutoScroll(section, containerRef, categories) {
   useEffect(() => {

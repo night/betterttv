@@ -10,7 +10,11 @@
 
 .content {
   display: flex;
+}
+
+.subContent {
   height: 300px;
+  width: 100%;
 }
 
 .emotes {

@@ -1,5 +1,11 @@
 .sidebar {
-  width: 52px;
+  display: flex;
+  flex-direction: column;
+  height: 349px;
+}
+
+.content {
+  width: 48px;
   height: 100%;
   overflow-y: scroll;
   background-color: var(--bttv-rs-bg-well);
@@ -7,13 +13,13 @@
   scrollbar-width: none;
 }
 
-.sidebar::-webkit-scrollbar {
+.content::-webkit-scrollbar {
   display: none;
 }
 
 .active {
   background-color: var(--bttv-rs-bg-card) !important;
-  border-right: 2px solid var(--bttv-rs-navs-selected) !important;
+  /* border-right: 2px solid var(--bttv-rs-navs-selected) !important; */
 }
 
 .navItem svg {
@@ -25,17 +31,18 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
 }
 
 .dragging {
   background-color: var(--bttv-rs-bg-well);
+  border-radius: 4px;
 }
 
 .navItem {
-  border-right: 2px solid var(--bttv-rs-divider-border);
-  padding: 12px !important;
+  /* border-right: 2px solid var(--bttv-rs-divider-border); */
+  padding: 14px !important;
   cursor: pointer;
 }
 
@@ -48,4 +55,16 @@
 
 .static {
   transform: none !important;
+}
+
+.emojiButton {
+  background-color: var(--bttv-rs-bg-card);
+}
+
+.divider {
+  margin: 0px;
+}
+
+.hidden {
+  display: none;
 }
