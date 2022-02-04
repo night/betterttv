@@ -82,3 +82,7 @@ const emojiCategories = [
 export function getEmojiCategories() {
   return emojiCategories;
 }
+
+export function isEmojiCategory(id) {
+  return emojiCategories.map((set) => set.category.id).includes(id);
+}

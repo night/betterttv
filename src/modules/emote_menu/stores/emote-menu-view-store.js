@@ -53,15 +53,15 @@ let categoryOrder = storage.get(EmoteCategoriesOrderStorageKey);
 function organizeCategories(categories) {
   if (categoryOrder == null) {
     categoryOrder = {};
+    storage.set(EmoteCategoriesOrderStorageKey, categoryOrder);
   }
 
-  // set defaults
   for (const {category} of categories) {
     if (categoryOrder[category.id] != null) {
       continue;
     }
 
-    categoryOrder[category.id] = 0;
+    categoryOrder[category.id] = isEmojiCategory(category.id) ? -1 : 0;
   }
 
   return categories.sort((a, b) => categoryOrder[b.category.id] - categoryOrder[a.category.id]);
@@ -234,32 +234,42 @@ class EmoteMenuViewStore extends SafeEventEmitter {
   }
 
   setCategoryOrder(categories, x, y) {
-    // The first occurrence of iteration
-    const iterStart = categories.findIndex((v, i, a) => categoryOrder[v.id] > categoryOrder[a[i + 1]?.id]);
+    const start = Math.min(x, y);
+    const end = Math.max(x, y);
 
-    // The last occurrence of iteration
-    const [iterEnd] = categories.reduce(
-      ([a, k], b, i) => (categoryOrder[a.id] < categoryOrder[b.id] ? [categoryOrder[b.id], i] : [a, k]),
-      [0, 0]
+    // Find the first occurance of iteration in categories
+    const iterStart = categories.findIndex(
+      (v, i, a) =>
+        categoryOrder[v.id] != null && categoryOrder[v.id] === categoryOrder[a[Math.min(i + 1, a.length - 1)].id] + 1
     );
 
-    const start = iterStart !== -1 ? Math.min(iterStart, x, y) : Math.min(x, y);
-    const end = Math.max(iterEnd, x, y);
-    let i = Math.abs(end - start) + 2;
+    // Compare if the start swap and first occurance of iteration and choose the lowest
+    const startIndex = iterStart !== -1 ? Math.min(start, iterStart) : start;
 
-    for (const [index, {id}] of categories.entries()) {
-      if (index < start) {
-        categoryOrder[id] = i;
+    // The index we should stop decrementing iterDistance
+    const endIndex =
+      categoryOrder[categories[startIndex].id] == null
+        ? end
+        : Math.max(end, categoryOrder[categories[startIndex].id] + startIndex - 1);
+
+    // Acts like an index when decrementing
+    let iterDistance = Math.abs(endIndex - startIndex) + 1;
+
+    for (let i = 0; i < categories.length; i += 1) {
+      const {id} = categories[i];
+
+      if (i < startIndex) {
+        categoryOrder[id] = iterDistance + 1;
         continue;
       }
 
-      if (index > end) {
-        categoryOrder[id] = 0;
+      if (i > endIndex) {
+        categoryOrder[id] = Math.min(categoryOrder[id], 0);
         continue;
       }
 
-      i -= 1;
-      categoryOrder[id] = i;
+      categoryOrder[id] = iterDistance;
+      iterDistance -= 1;
     }
 
     this.markDirty();

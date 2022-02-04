@@ -49,6 +49,11 @@ export default function Sidebar({section, onClick, staticCategories, categories:
       result.splice(newDest, 0, removed);
 
       setCategories(result);
+
+      emoteMenuViewStore.once('updated', () => {
+        onClick(removed.id);
+      });
+
       emoteMenuViewStore.setCategoryOrder(result, oldDest, newDest);
     },
     [categories]
