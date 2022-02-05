@@ -161,8 +161,9 @@ export async function loadTwitchEmotes() {
       category,
       // twitch seperates emotes by tier, so we merge them into one set
       // uniqBy also priortises the available emotes over the locked emotes here
-      emotes: sortBy(uniqBy([...(tempCategories[category.id]?.emotes || []), ...categoryEmotes], 'id'), ({code}) =>
-        code.toLowerCase()
+      emotes: sortBy(
+        uniqBy([...(tempCategories[category.id]?.emotes || []), ...categoryEmotes], 'id'),
+        ({code, metadata}) => [metadata.locked, code.toLowerCase()]
       ),
     };
   }

@@ -15,10 +15,15 @@ export default function LegacyButton({appendToChat, className, boundingQuerySele
   const [whisperOpen, setWhisperOpen] = useState(false);
   const whisperRef = useRef(null);
 
-  const toggleWhisper = useCallback(whisperOpen ? () => whisperRef.current.close() : () => whisperRef.current.open(), [
-    whisperOpen,
-    whisperRef,
-  ]);
+  const toggleWhisper = useCallback(() => {
+    if (whisperOpen) {
+      whisperRef.current.close();
+      return;
+    }
+
+    whisperRef.current.open();
+    emoteMenuViewStore.markDirty();
+  }, [whisperOpen, whisperRef]);
 
   useEffect(() => {
     const callback = () => {

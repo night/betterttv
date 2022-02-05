@@ -97,8 +97,10 @@ export async function loadYouTubeEmotes() {
     tempCategories[category.id] = {
       category,
       // twitch seperates emotes by tier, so we merge them into one set
-      emotes: sortBy(uniqBy([...(tempCategories[category.id]?.emotes || []), ...categoryEmotes], 'id'), ({code}) =>
-        code.toLowerCase()
+      // note: sortBy accepts booleans, not necessary to convert to int
+      emotes: sortBy(
+        uniqBy([...(tempCategories[category.id]?.emotes || []), ...categoryEmotes], 'id'),
+        ({code, metadata}) => [metadata.locked, code.toLowerCase()]
       ),
     };
   }
