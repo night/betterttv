@@ -51,9 +51,7 @@ let categoryOrder = storage.get(EmoteCategoriesOrderStorageKey);
 
 function organizeCategories(categories) {
   if (categoryOrder == null) {
-    categoryOrder = categories.map(({category}) => category.id);
-    storage.set(EmoteCategoriesOrderStorageKey, categoryOrder);
-
+    categoryOrder = {};
     return categories;
   }
 
