@@ -148,14 +148,14 @@ export default function Sidebar({section, onClick, categories: initialCategories
         role="button"
         onMouseEnter={() => setHovering(true)}
         className={classNames(styles.navItem, styles.emojiButton, {[styles.hidden]: hovering})}>
-        <Emote emote={emojis.getEligibleEmote('😃')} />
+        <Emote emote={emojis.getEligibleEmote('\ud83d\ude03')} />
       </div>
       <div
         role="button"
         onClick={() => handleEmojiClick()}
         onMouseLeave={() => setHovering(false)}
         className={classNames(styles.navItem, styles.emojiButton, {[styles.hidden]: !hovering})}>
-        <Emote emote={emojis.getEligibleEmote('💩')} />
+        <Emote emote={emojis.getEligibleEmote('\ud83d\udca9')} />
       </div>
     </div>
   );

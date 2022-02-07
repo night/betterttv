@@ -8,11 +8,11 @@
   column-gap: 4px;
 }
 
-.content {
+.contentContainer {
   display: flex;
 }
 
-.subContent {
+.content {
   height: 300px;
   width: 100%;
 }

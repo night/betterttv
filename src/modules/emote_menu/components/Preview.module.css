@@ -2,10 +2,9 @@
   box-sizing: border-box;
   display: flex;
   justify-content: space-between;
-  padding: 8px 6px;
+  padding: 4px 8px;
   align-items: center;
   color: var(--bttv-rs-text-heading);
-  height: 48px;
 }
 
 .content {

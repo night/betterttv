@@ -100,19 +100,14 @@ export default function EmoteMenu({toggleWhisper, appendToChat, onSetTip}) {
         selected={selected}
       />
       <Divider className={styles.divider} />
-      <div className={styles.content}>
+      <div className={styles.contentContainer}>
         <Sidebar
           className={styles.sidebar}
           section={section}
-          onClick={(eventKey) =>
-            setSection({
-              eventKey,
-              scrollTo: true,
-            })
-          }
+          onClick={(eventKey) => setSection({eventKey, scrollTo: true})}
           categories={emoteMenuViewStore.getCategories()}
         />
-        <div className={styles.subContent}>
+        <div className={styles.content}>
           <Emotes
             className={styles.emotes}
             search={search}
@@ -121,19 +116,10 @@ export default function EmoteMenu({toggleWhisper, appendToChat, onSetTip}) {
             setKeyPressCallback={setKeyPressCallback}
             rows={emoteMenuViewStore.rows}
             setSelected={setSelected}
-            onSection={(eventKey) =>
-              setSection({
-                eventKey,
-                scrollTo: false,
-              })
-            }
+            onSection={(eventKey) => setSection({eventKey, scrollTo: false})}
           />
           <Divider className={styles.divider} />
-          <Preview
-            className={styles.preview}
-            emote={selected}
-            isFavorite={selected == null ? false : emoteMenuViewStore.hasFavorite(selected)}
-          />
+          <Preview emote={selected} isFavorite={selected == null ? false : emoteMenuViewStore.hasFavorite(selected)} />
         </div>
       </div>
       <Tip classname={styles.tip} onSetTip={onSetTip} />
