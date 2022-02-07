@@ -183,21 +183,17 @@ class EmoteMenuViewStore extends SafeEventEmitter {
     const frecents = createCategory(EmoteCategories.FRECENTS, null, 'Frequently Used', Icons.CLOCK, []);
     const favorites = createCategory(EmoteCategories.FAVORITES, null, 'Favorites', Icons.STAR, []);
 
-    const categories = organizeCategories([...providerCategories, ...platformCategories]);
+    const categories = organizeCategories([...providerCategories, ...platformCategories]).filter(
+      (category) => category.emotes.length > 0
+    );
     const emojiCategories = getEmojiCategories();
     const collection = [];
 
     topCategories = [];
-    middleCategories = [];
-    bottomCategories = [];
-
-    bottomCategories.push(...emojiCategories.map(({category}) => category));
+    middleCategories = [...categories.map(({category}) => category)];
+    bottomCategories = [...emojiCategories.map(({category}) => category)];
 
     for (const category of [...categories, ...emojiCategories]) {
-      if (category.emotes.length === 0) {
-        continue;
-      }
-
       for (const emote of category.emotes) {
         const emoteCanonicalId = emote.canonicalId;
         if (emoteStorage.favorites.includes(emoteCanonicalId)) {
@@ -210,7 +206,6 @@ class EmoteMenuViewStore extends SafeEventEmitter {
 
       this.headers.push(this.rows.length);
       const chunkedEmotes = chunkArray(category.emotes, this.totalCols);
-      middleCategories.push(category.category);
       this.rows.push(category.category, ...chunkedEmotes);
       collection.push(...category.emotes);
     }

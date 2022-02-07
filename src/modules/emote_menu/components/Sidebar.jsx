@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/interactive-supports-focus */
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState, useMemo} from 'react';
 import classNames from 'classnames';
 import {DragDropContext, Draggable, Droppable} from 'react-beautiful-dnd';
 import {createPortal} from 'react-dom';
@@ -7,7 +7,7 @@ import {Divider} from 'rsuite';
 import styles from './Sidebar.module.css';
 import useAutoScroll from '../hooks/AutoScroll.jsx';
 import emoteMenuViewStore from '../stores/emote-menu-view-store.js';
-import {ITEM_HEIGHT} from '../../../constants.js';
+import {ITEM_HEIGHT, WindowHeight} from '../../../constants.js';
 import emojis from '../../emotes/emojis.js';
 import Emote from '../../../common/components/Emote.jsx';
 
@@ -39,6 +39,12 @@ export default function Sidebar({section, onClick, categories}) {
   const containerRef = useRef(null);
   const [middleCategories, setMiddleCategories] = useState(categories.middle);
   const [hovering, setHovering] = useState(false);
+  const [emojiButtonHidden, setEmojiButtonHidden] = useState(false);
+
+  const bottomDepth = useMemo(
+    () => (categories.top.length + middleCategories.length) * ITEM_HEIGHT,
+    [categories.top, middleCategories]
+  );
 
   const renderDraggable = useDraggableInPortal();
   useEffect(() => setMiddleCategories(categories.middle), [categories.middle]);
@@ -46,12 +52,10 @@ export default function Sidebar({section, onClick, categories}) {
 
   const handleEmojiClick = useCallback(() => {
     containerRef.current.scrollTo({
-      top: (categories.top.length + middleCategories.length) * ITEM_HEIGHT,
+      top: bottomDepth,
       left: 0,
     });
-
-    onClick(categories.bottom[0].id);
-  }, [containerRef, categories, middleCategories]);
+  }, [containerRef, bottomDepth]);
 
   const handleReorder = useCallback(
     (oldDest, newDest) => {
@@ -68,6 +72,25 @@ export default function Sidebar({section, onClick, categories}) {
     },
     [categories]
   );
+
+  useEffect(() => {
+    function handleScroll() {
+      const top = containerRef.current.scrollTop;
+
+      const isHidden = top + WindowHeight > bottomDepth;
+      if (isHidden === emojiButtonHidden) {
+        return;
+      }
+
+      setEmojiButtonHidden(isHidden);
+    }
+
+    containerRef.current.addEventListener('scroll', handleScroll);
+
+    return () => {
+      containerRef.current.removeEventListener('scroll', handleScroll);
+    };
+  }, [containerRef, emojiButtonHidden, bottomDepth]);
 
   function createCategories(arr) {
     return arr.map((category) => (
@@ -86,7 +109,12 @@ export default function Sidebar({section, onClick, categories}) {
 
   return (
     <div className={styles.sidebar}>
-      <div className={styles.content} ref={containerRef}>
+      <div
+        className={classNames(styles.content, {
+          [styles.emojiButtonHidden]: emojiButtonHidden,
+          [styles.emojiButtonVisible]: !emojiButtonHidden,
+        })}
+        ref={containerRef}>
         {createCategories(categories.top)}
         <DragDropContext onDragEnd={({source, destination}) => handleReorder(source.index, destination.index)}>
           <Droppable droppableId="droppable" type="list" direction="vertical">

@@ -8,8 +8,18 @@
   background-color: var(--bttv-rs-bg-well);
   color: var(--bttv-rs-text-heading);
   scrollbar-width: none;
-  height: 300px;
+
   width: 48px;
+}
+
+.emojiButtonHidden {
+  height: 349px;
+  transition: 0.15s ease-out;
+}
+
+.emojiButtonVisible {
+  height: 300px;
+  transition: 0.15s ease-out;
 }
 
 .content::-webkit-scrollbar {
