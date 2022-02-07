@@ -12,7 +12,7 @@ export default function Preview({emote, isFavorite}) {
   return (
     <div className={styles.preview} key={emote.code}>
       <div className={styles.content}>
-        <Emote emote={emote} />
+        <Emote className={styles.emoteImage} emote={emote} />
         <div>
           <div className={styles.emoteCode}>{emote.code}</div>
           <div>from {emote.category.displayName}</div>
