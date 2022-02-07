@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/interactive-supports-focus */
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import classNames from 'classnames';
 import {DragDropContext, Draggable, Droppable} from 'react-beautiful-dnd';
 import {createPortal} from 'react-dom';
@@ -7,7 +7,7 @@ import {Divider} from 'rsuite';
 import styles from './Sidebar.module.css';
 import useAutoScroll from '../hooks/AutoScroll.jsx';
 import emoteMenuViewStore from '../stores/emote-menu-view-store.js';
-import {BOTTOM_FIXED_CATEGORIES, ITEM_HEIGHT, TOP_FIXED_CATEGORIES} from '../../../constants.js';
+import {ITEM_HEIGHT} from '../../../constants.js';
 import emojis from '../../emotes/emojis.js';
 import Emote from '../../../common/components/Emote.jsx';
 
@@ -35,47 +35,23 @@ function useDraggableInPortal() {
     };
 }
 
-export default function Sidebar({section, onClick, categories: initialCategories}) {
+export default function Sidebar({section, onClick, categories}) {
   const containerRef = useRef(null);
-  const [categories, setCategories] = useState(initialCategories);
-
-  const renderDraggable = useDraggableInPortal();
-  useEffect(() => setCategories(initialCategories), [initialCategories]);
-
-  useAutoScroll(section, containerRef, categories);
-
+  const [middleCategories, setMiddleCategories] = useState(categories.middle);
   const [hovering, setHovering] = useState(false);
 
-  const [topCategories, middleCategories, bottomCategories] = useMemo(() => {
-    const top = [];
-    const middle = [];
-    const bottom = [];
-
-    for (const category of categories) {
-      if (TOP_FIXED_CATEGORIES.includes(category.id)) {
-        top.push(category);
-        continue;
-      }
-
-      if (BOTTOM_FIXED_CATEGORIES.includes(category.id)) {
-        bottom.push(category);
-        continue;
-      }
-
-      middle.push(category);
-    }
-
-    return [top, middle, bottom];
-  }, [categories]);
+  const renderDraggable = useDraggableInPortal();
+  useEffect(() => setMiddleCategories(categories.middle), [categories.middle]);
+  useAutoScroll(section, containerRef, [...categories.top, ...middleCategories, ...categories.bottom]);
 
   const handleEmojiClick = useCallback(() => {
     containerRef.current.scrollTo({
-      top: (topCategories.length + middleCategories.length) * ITEM_HEIGHT,
+      top: (categories.top.length + middleCategories.length) * ITEM_HEIGHT,
       left: 0,
     });
 
-    onClick(bottomCategories[0].id);
-  }, [containerRef, topCategories, middleCategories, bottomCategories]);
+    onClick(categories.bottom[0].id);
+  }, [containerRef, categories, middleCategories]);
 
   const handleReorder = useCallback(
     (oldDest, newDest) => {
@@ -87,7 +63,7 @@ export default function Sidebar({section, onClick, categories: initialCategories
       const [removed] = result.splice(oldDest, 1);
       result.splice(newDest, 0, removed);
 
-      setCategories([...topCategories, ...result, ...bottomCategories]);
+      setMiddleCategories(result);
       emoteMenuViewStore.setCategoryOrder(result);
     },
     [categories]
@@ -111,7 +87,7 @@ export default function Sidebar({section, onClick, categories: initialCategories
   return (
     <div className={styles.sidebar}>
       <div className={styles.content} ref={containerRef}>
-        {createCategories(topCategories)}
+        {createCategories(categories.top)}
         <DragDropContext onDragEnd={({source, destination}) => handleReorder(source.index, destination.index)}>
           <Droppable droppableId="droppable" type="list" direction="vertical">
             {(provided) => (
@@ -141,7 +117,7 @@ export default function Sidebar({section, onClick, categories: initialCategories
             )}
           </Droppable>
         </DragDropContext>
-        {createCategories(bottomCategories)}
+        {createCategories(categories.bottom)}
       </div>
       <Divider className={styles.divider} />
       <div

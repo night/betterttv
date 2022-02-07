@@ -69,6 +69,16 @@ const fuse = new Fuse([], {
 let providerCategories = [];
 let platformCategories = [];
 
+export const CategoryPositions = {
+  BOTTOM: 0,
+  MIDDLE: 1,
+  TOP: 2,
+};
+
+let topCategories = [];
+let middleCategories = [];
+let bottomCategories = [];
+
 class EmoteMenuViewStore extends SafeEventEmitter {
   constructor() {
     super();
@@ -175,10 +185,17 @@ class EmoteMenuViewStore extends SafeEventEmitter {
     const frecents = createCategory(EmoteCategories.FRECENTS, null, 'Frequently Used', Icons.CLOCK, []);
     const favorites = createCategory(EmoteCategories.FAVORITES, null, 'Favorites', Icons.STAR, []);
 
-    const categories = [...organizeCategories([...providerCategories, ...platformCategories]), ...getEmojiCategories()];
+    const categories = organizeCategories([...providerCategories, ...platformCategories]);
+    const emojiCategories = getEmojiCategories();
     const collection = [];
 
-    for (const category of categories) {
+    topCategories = [];
+    middleCategories = [];
+    bottomCategories = [];
+
+    bottomCategories.push(...emojiCategories.map(({category}) => category));
+
+    for (const category of [...categories, ...emojiCategories]) {
       if (category.emotes.length === 0) {
         continue;
       }
@@ -195,11 +212,13 @@ class EmoteMenuViewStore extends SafeEventEmitter {
 
       this.headers.push(this.rows.length);
       const chunkedEmotes = chunkArray(category.emotes, this.totalCols);
+      middleCategories.push(category.category);
       this.rows.push(category.category, ...chunkedEmotes);
       collection.push(...category.emotes);
     }
 
     if (frecents.emotes.length > 0) {
+      topCategories.push(frecents.category);
       frecents.emotes = sortBy(
         uniqBy(frecents.emotes, (emote) => emote.canonicalId),
         (emote) => emoteStorage.frecents.indexOf(emote.canonicalId)
@@ -211,6 +230,7 @@ class EmoteMenuViewStore extends SafeEventEmitter {
     }
 
     if (favorites.emotes.length > 0) {
+      topCategories.push(frecents.category);
       favorites.emotes = sortBy(
         uniqBy(favorites.emotes, (emote) => emote.canonicalId),
         (emote) => emoteStorage.favorites.indexOf(emote.canonicalId)
@@ -236,8 +256,17 @@ class EmoteMenuViewStore extends SafeEventEmitter {
     return this.rows[index];
   }
 
-  getCategories() {
-    return this.headers.map((id) => this.rows[id]);
+  getCategories(type) {
+    switch (type) {
+      case CategoryPositions.BOTTOM:
+        return bottomCategories;
+      case CategoryPositions.TOP:
+        return topCategories;
+      case CategoryPositions.MIDDLE:
+        return middleCategories;
+      default:
+        return [];
+    }
   }
 
   getCategoryIndexById(id) {
