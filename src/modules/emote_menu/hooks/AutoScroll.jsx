@@ -22,5 +22,5 @@ export default function useAutoScroll(section, containerRef, categories, windowH
     }
 
     currentRef.scrollTo({top: newTop, left: 0, behavior: 'smooth'});
-  }, [section, windowHeight]);
+  }, [section]);
 }

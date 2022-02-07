@@ -183,15 +183,15 @@ class EmoteMenuViewStore extends SafeEventEmitter {
     const frecents = createCategory(EmoteCategories.FRECENTS, null, 'Frequently Used', Icons.CLOCK, []);
     const favorites = createCategory(EmoteCategories.FAVORITES, null, 'Favorites', Icons.STAR, []);
 
-    const categories = organizeCategories([...providerCategories, ...platformCategories]).filter(
-      (category) => category.emotes.length > 0
-    );
-    const emojiCategories = getEmojiCategories();
     const collection = [];
+    const emojiCategories = getEmojiCategories();
+    const categories = organizeCategories(
+      [...providerCategories, ...platformCategories].filter((category) => category.emotes.length > 0)
+    );
 
     topCategories = [];
-    middleCategories = [...categories.map(({category}) => category)];
-    bottomCategories = [...emojiCategories.map(({category}) => category)];
+    middleCategories = categories.map(({category}) => category);
+    bottomCategories = emojiCategories.map(({category}) => category);
 
     for (const category of [...categories, ...emojiCategories]) {
       for (const emote of category.emotes) {
