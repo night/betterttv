@@ -18,7 +18,7 @@ function useDraggableInPortal() {
   useEffect(() => {
     const div = document.createElement('div');
     div.classList.add(styles.portal);
-    self.elt = div;
+    self.aBetterName = div;
     document.body.appendChild(div);
     return () => {
       document.body.removeChild(div);
@@ -29,7 +29,7 @@ function useDraggableInPortal() {
     (provided, ...args) => {
       const element = render(provided, ...args);
       if (provided.draggableProps.style.position === 'fixed') {
-        return createPortal(element, self.elt);
+        return createPortal(element, self.aBetterName);
       }
       return element;
     };
