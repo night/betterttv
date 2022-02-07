@@ -48,7 +48,13 @@ export default function Sidebar({section, onClick, categories}) {
 
   const renderDraggable = useDraggableInPortal();
   useEffect(() => setMiddleCategories(categories.middle), [categories.middle]);
-  useAutoScroll(section, containerRef, [...categories.top, ...middleCategories, ...categories.bottom]);
+
+  useAutoScroll(
+    section,
+    containerRef,
+    [...categories.top, ...middleCategories, ...categories.bottom],
+    emojiButtonHidden ? WindowHeight + 49 : WindowHeight // 1px (divider) + 48px (emojiButton) = 49px
+  );
 
   const handleEmojiClick = useCallback(() => {
     containerRef.current.scrollTo({

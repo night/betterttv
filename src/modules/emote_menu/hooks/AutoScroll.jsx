@@ -1,7 +1,7 @@
 import {useEffect} from 'react';
-import {ITEM_HEIGHT, WindowHeight} from '../../../constants.js';
+import {ITEM_HEIGHT} from '../../../constants.js';
 
-export default function useAutoScroll(section, containerRef, categories) {
+export default function useAutoScroll(section, containerRef, categories, windowHeight) {
   useEffect(() => {
     const currentRef = containerRef.current;
     if (section.eventKey == null || currentRef == null) return;
@@ -14,13 +14,13 @@ export default function useAutoScroll(section, containerRef, categories) {
     if (depth < top) {
       newTop = depth;
     }
-    if (depth + ITEM_HEIGHT > top + WindowHeight) {
-      newTop = depth - WindowHeight + ITEM_HEIGHT;
+    if (depth + ITEM_HEIGHT > top + windowHeight) {
+      newTop = depth - windowHeight + ITEM_HEIGHT;
     }
     if (newTop == null) {
       return;
     }
 
     currentRef.scrollTo({top: newTop, left: 0, behavior: 'smooth'});
-  }, [section]);
+  }, [section, windowHeight]);
 }
