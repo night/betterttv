@@ -24,11 +24,11 @@
     "@babel/preset-react": "^7.16.7",
     "@babel/runtime": "^7.16.7",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
-    "@fortawesome/free-brands-svg-icons": "^5.15.4",
+    "@fortawesome/free-brands-svg-icons": "^6.0.0",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.17",
     "@rsuite/icons": "^1.0.2",
-    "@sentry/browser": "^6.17.3",
+    "@sentry/browser": "^6.17.4",
     "@sentry/integrations": "^6.17.3",
     "@sentry/webpack-plugin": "^1.18.4",
     "autoprefixer": "^10.4.2",
@@ -83,7 +83,7 @@
     "virtual-module-webpack-plugin": "^0.4.1",
     "webpack": "^5.67.0",
     "webpack-cli": "^4.9.2",
-    "webpack-dev-server": "^4.7.3",
+    "webpack-dev-server": "^4.7.4",
     "webpack-virtual-modules": "^0.4.3"
   },
   "browserslist": [
