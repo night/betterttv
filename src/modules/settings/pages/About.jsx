@@ -16,6 +16,8 @@ import header from '../styles/header.module.css';
 import styles from './About.module.css';
 import CloseButton from '../components/CloseButton.jsx';
 import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.jsx';
+import {Button} from 'rsuite';
+import twitch from '../../../utils/twitch.js';
 
 function loadJSON(string) {
   let json = null;
@@ -84,6 +86,8 @@ function About({onClose}) {
     <>
       <div className={header.content}>
         <PanelGroup>
+          <Button onClick={() => console.log(twitch.isSubscribedCurrentChannel())}>Click</Button>
+
           <Panel className={styles.largeBlurb}>
             Drop a Review on the{' '}
             <a

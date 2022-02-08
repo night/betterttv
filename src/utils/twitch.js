@@ -246,6 +246,32 @@ export default {
     return store;
   },
 
+  isFollowingCurrentChannel() {
+    try {
+      const node = searchReactParents(
+        getReactInstance(document.querySelector('div[data-target="channel-header-right"]')),
+        (n) => n?.pendingProps?.isFollowing != null
+      );
+
+      return node.pendingProps.isFollowing;
+    } catch (_) {}
+
+    return null;
+  },
+
+  isSubscribedCurrentChannel() {
+    try {
+      const dom = document.querySelector('div[data-target="sub-modal"]');
+      console.log(dom);
+      const node = searchReactParents(getReactInstance(dom), (n) => n?.pendingProps?.isSubscribed != null);
+      console.log(node);
+
+      return node.pendingProps.isSubscribed;
+    } catch (_) {}
+
+    return null;
+  },
+
   getClipsBroadcasterInfo() {
     let broadcaster;
     try {
