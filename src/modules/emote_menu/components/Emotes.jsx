@@ -5,7 +5,7 @@ import emoteMenuViewStore from '../stores/emote-menu-view-store.js';
 import styles from './Emotes.module.css';
 import EmoteButton from './EmoteButton.jsx';
 import Icons from './Icons.jsx';
-import {NavigationModeTypes, RowHeight, WindowHeight} from '../../../constants.js';
+import {NavigationModeTypes, ROW_HEIGHT, WINDOW_HEIGHT} from '../../../constants.js';
 import useGridKeyboardNavigation from '../hooks/GridKeyboardNavigation.jsx';
 
 const BrowseEmotes = React.forwardRef(
@@ -73,15 +73,15 @@ const BrowseEmotes = React.forwardRef(
       }
       const index = emoteMenuViewStore.getCategoryIndexById(section.eventKey);
       if (index != null) {
-        currentRef.scrollTo(0, index * RowHeight + 1); // + 1 to be inside the section
+        currentRef.scrollTo(0, index * ROW_HEIGHT + 1); // + 1 to be inside the section
       }
     }, [section]);
 
     return (
       <VirtualizedList
         stickyRows={emoteMenuViewStore.headers}
-        rowHeight={RowHeight}
-        windowHeight={WindowHeight}
+        rowHeight={ROW_HEIGHT}
+        windowHeight={WINDOW_HEIGHT}
         totalRows={emoteMenuViewStore.rows.length}
         renderRow={renderRow}
         className={styles.emotesContainer}
@@ -161,8 +161,8 @@ const SearchEmotes = React.forwardRef(
     return (
       <VirtualizedList
         ref={ref}
-        rowHeight={RowHeight}
-        windowHeight={WindowHeight}
+        rowHeight={ROW_HEIGHT}
+        windowHeight={WINDOW_HEIGHT}
         totalRows={emotes.length}
         renderRow={renderRow}
         className={classNames(styles.emotesContainer, styles.searched)}
@@ -206,15 +206,15 @@ export default function Emotes(props) {
       return;
     }
 
-    const depth = coords.y * RowHeight;
+    const depth = coords.y * ROW_HEIGHT;
     const {scrollTop} = currentRef;
 
-    if (depth < scrollTop + RowHeight) {
-      currentRef.scrollTo(0, isSearch ? depth : depth - RowHeight);
+    if (depth < scrollTop + ROW_HEIGHT) {
+      currentRef.scrollTo(0, isSearch ? depth : depth - ROW_HEIGHT);
     }
 
-    if (depth + RowHeight >= scrollTop + WindowHeight) {
-      currentRef.scrollTo(0, depth + RowHeight - WindowHeight);
+    if (depth + ROW_HEIGHT >= scrollTop + WINDOW_HEIGHT) {
+      currentRef.scrollTo(0, depth + ROW_HEIGHT - WINDOW_HEIGHT);
     }
   }, [coords]);
 

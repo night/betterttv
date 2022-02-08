@@ -7,7 +7,7 @@ import {Divider} from 'rsuite';
 import styles from './Sidebar.module.css';
 import useAutoScroll from '../hooks/AutoScroll.jsx';
 import emoteMenuViewStore from '../stores/emote-menu-view-store.js';
-import {ITEM_HEIGHT, WindowHeight} from '../../../constants.js';
+import {ITEM_HEIGHT, WINDOW_HEIGHT} from '../../../constants.js';
 import emojis from '../../emotes/emojis.js';
 import Emote from '../../../common/components/Emote.jsx';
 
@@ -53,7 +53,7 @@ export default function Sidebar({section, onClick, categories}) {
     section,
     containerRef,
     [...categories.top, ...middleCategories, ...categories.bottom],
-    emojiButtonHidden ? WindowHeight + 49 : WindowHeight // 1px (divider) + 48px (emojiButton) = 49px
+    emojiButtonHidden ? WINDOW_HEIGHT + 49 : WINDOW_HEIGHT // 1px (divider) + 48px (emojiButton) = 49px
   );
 
   const handleEmojiClick = useCallback(() => {
@@ -81,9 +81,13 @@ export default function Sidebar({section, onClick, categories}) {
 
   useEffect(() => {
     function handleScroll() {
+      if (containerRef.current == null) {
+        return;
+      }
+
       const top = containerRef.current.scrollTop;
 
-      const isHidden = top + WindowHeight > bottomDepth;
+      const isHidden = top + WINDOW_HEIGHT > bottomDepth;
       if (isHidden === emojiButtonHidden) {
         return;
       }
