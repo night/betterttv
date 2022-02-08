@@ -22,7 +22,7 @@ export default function Emote({emote, className}) {
   return (
     <img
       ref={imageRef}
-      className={classNames(className || styles.emoteImage, loadingRef.current ? styles.placeholder : null)}
+      className={classNames(styles.emoteImage, loadingRef.current ? styles.placeholder : null, className)}
       srcSet={createSrcSet(emote.images)}
       src={emote.images['1x']}
       alt={loadingRef.current ? '' : emote.code}

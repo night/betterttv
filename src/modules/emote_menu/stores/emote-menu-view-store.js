@@ -223,7 +223,7 @@ class EmoteMenuViewStore extends SafeEventEmitter {
     }
 
     if (favorites.emotes.length > 0) {
-      topCategories.push(frecents.category);
+      topCategories.push(favorites.category);
       favorites.emotes = sortBy(
         uniqBy(favorites.emotes, (emote) => emote.canonicalId),
         (emote) => emoteStorage.favorites.indexOf(emote.canonicalId)
