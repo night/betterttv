@@ -9,7 +9,21 @@ import {NavigationModeTypes, EMOTE_MENU_GRID_ROW_HEIGHT, EMOTE_MENU_GRID_HEIGHT}
 import useGridKeyboardNavigation from '../hooks/GridKeyboardNavigation.jsx';
 
 const BrowseEmotes = React.forwardRef(
-  ({onClick, section, onSection, setCoords, coords, setRowColumnCounts, rows, setSelected, navigationMode}, ref) => {
+  (
+    {
+      onClick,
+      section,
+      onSection,
+      setCoords,
+      coords,
+      setRowColumnCounts,
+      rows,
+      setSelected,
+      navigationMode,
+      currentEmoteSetIds,
+    },
+    ref
+  ) => {
     useEffect(() => {
       const rowColumnCounts = [];
 
@@ -46,6 +60,7 @@ const BrowseEmotes = React.forwardRef(
                 active={y === coords.y && x === coords.x}
                 emote={emote}
                 onClick={onClick}
+                currentEmoteSetIds={currentEmoteSetIds}
                 onMouseOver={() => {
                   if (navigationMode === NavigationModeTypes.MOUSE) {
                     setCoords({x, y});
@@ -93,7 +108,7 @@ const BrowseEmotes = React.forwardRef(
 );
 
 const SearchEmotes = React.forwardRef(
-  ({search, onClick, coords, setCoords, setRowColumnCounts, setSelected, navigationMode}, ref) => {
+  ({search, onClick, coords, setCoords, setRowColumnCounts, setSelected, navigationMode, currentEmoteSetIds}, ref) => {
     const emotes = useMemo(() => emoteMenuViewStore.search(search), [search]);
 
     const handleMouseOver = useCallback(
@@ -140,6 +155,7 @@ const SearchEmotes = React.forwardRef(
                 emote={item}
                 onClick={onClick}
                 onMouseOver={() => handleMouseOver({x, y})}
+                currentEmoteSetIds={currentEmoteSetIds}
                 active={x === coords.x && y === coords.y}
               />
             ))}
@@ -173,7 +189,7 @@ const SearchEmotes = React.forwardRef(
 );
 
 export default function Emotes(props) {
-  const {search, setKeyPressCallback} = props;
+  const {search, setKeyPressCallback, currentEmoteSetIds} = props;
 
   const [rowColumnCounts, setRowColumnCounts] = useState([]);
   const [navigationMode, setNavigationMode] = useState(NavigationModeTypes.MOUSE);
@@ -222,6 +238,7 @@ export default function Emotes(props) {
     <SearchEmotes
       ref={wrapperRef}
       setRowColumnCounts={setRowColumnCounts}
+      currentEmoteSetIds={currentEmoteSetIds}
       navigationMode={navigationMode}
       coords={coords}
       setCoords={setCoords}
@@ -231,6 +248,7 @@ export default function Emotes(props) {
     <BrowseEmotes
       ref={wrapperRef}
       setRowColumnCounts={setRowColumnCounts}
+      currentEmoteSetIds={currentEmoteSetIds}
       navigationMode={navigationMode}
       coords={coords}
       setCoords={setCoords}

@@ -9,6 +9,7 @@ import {getEmoteFromRegEx} from '../../../utils/regex.js';
 import settings from '../../../settings.js';
 import {SettingIds, EmoteCategories, EmoteProviders} from '../../../constants.js';
 import {getCurrentChannel} from '../../../utils/channel.js';
+import twitch from '../../../utils/twitch.js';
 
 const AVAILABLE_EMOTES_FOR_CHANNEL_QUERY = `
   query AvailableEmotesForChannel($channelID: ID!) {
@@ -18,6 +19,7 @@ const AVAILABLE_EMOTES_FOR_CHANNEL_QUERY = `
       profileImageURL(width: 300)
       subscriptionProducts {
         id,
+        tier,
         emotes {
           id,
           token,
@@ -108,10 +110,14 @@ export async function loadTwitchEmotes() {
   }
 
   try {
-    const [availableEmotesResponse] = await twitchApi.graphqlQuery([
-      {query: AVAILABLE_EMOTES_FOR_CHANNEL_QUERY, variables: {channelID: currentChannel.id}},
+    [{data}] = await twitchApi.graphqlQuery([
+      {
+        query: AVAILABLE_EMOTES_FOR_CHANNEL_QUERY,
+        variables: {
+          channelID: currentChannel.id,
+        },
+      },
     ]);
-    data = availableEmotesResponse.data;
   } catch (e) {
     debug.log('failed to fetch twitch emotes', e);
     return data;
@@ -120,24 +126,39 @@ export async function loadTwitchEmotes() {
   const isDark = settings.get(SettingIds.DARKENED_MODE);
   const tempCategories = {};
 
-  const subscriptionProducts = data.user.subscriptionProducts.map(({emotes, ...rest}) => ({
+  const subscriptionProducts = data.user.subscriptionProducts.map(({emotes, tier, ...rest}) => ({
     ...rest,
     emotes: emotes.map((emote) => ({
       ...emote,
-      locked: true,
+      tier,
     })),
   }));
 
-  // this order of availableEmotes before subscriptionProducts is nessecary for uniqBy
-  for (const {owner, id: setId, emotes} of [...data.channel.self.availableEmoteSets, ...subscriptionProducts]) {
+  const currentEmoteIdsSet = twitch.createCurrentEmoteIdsSet();
+
+  for (const {owner, id: setId, emotes} of [...subscriptionProducts, ...data.channel.self.availableEmoteSets]) {
     const category = getCategoryForSet(setId, owner);
-    const categoryEmotes = emotes.map(({id: emoteId, token: emoteToken, type, locked = false}) => {
+    const categoryEmotes = emotes.map((emote) => {
+      const {id: emoteId, token: emoteToken, type} = emote;
       let newToken;
 
       try {
         newToken = getEmoteFromRegEx(emoteToken);
       } catch (e) {
         newToken = emoteToken;
+      }
+
+      let predicate = () => false;
+      if (['SUBSCRIPTIONS', 'FOLLOWER'].includes(type)) {
+        predicate = (currentEmoteSetIds) => {
+          if (currentEmoteSetIds == null) {
+            // worst case scenario user sees emotes they don't have
+            // it may be wise to wait until we have currentEmoteSetIds before showing the menu
+            return false;
+          }
+
+          return !currentEmoteSetIds.has(setId);
+        };
       }
 
       return new Emote({
@@ -152,7 +173,7 @@ export async function loadTwitchEmotes() {
         },
         metadata: {
           type,
-          locked,
+          isLocked: predicate,
         },
       });
     });
@@ -163,7 +184,7 @@ export async function loadTwitchEmotes() {
       // uniqBy also priortises the available emotes over the locked emotes here
       emotes: sortBy(
         uniqBy([...(tempCategories[category.id]?.emotes || []), ...categoryEmotes], 'id'),
-        ({code, metadata}) => [metadata.locked, code.toLowerCase()]
+        ({code, metadata}) => [metadata.isLocked(currentEmoteIdsSet), code.toLowerCase()]
       ),
     };
   }

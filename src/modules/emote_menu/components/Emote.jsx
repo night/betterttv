@@ -1,10 +1,9 @@
 import classNames from 'classnames';
-import React from 'react';
+import React, {useMemo} from 'react';
 import {createSrcSet} from '../../../utils/image.js';
 import styles from './Emote.module.css';
-import Icons from './Icons.jsx';
 
-export default function Emote({emote, onClick, onMouseOver, active}) {
+export default function Emote({emote, onClick, onMouseOver, active, currentEmoteSetIds}) {
   const imageRef = React.useRef(null);
   const loadingRef = React.useRef(true);
 
@@ -20,7 +19,10 @@ export default function Emote({emote, onClick, onMouseOver, active}) {
     });
   }
 
-  const locked = emote.metadata != null ? emote.metadata.locked : false;
+  const locked = useMemo(
+    () => (emote.metadata != null ? emote.metadata.isLocked(currentEmoteSetIds) : false),
+    [currentEmoteSetIds]
+  );
 
   return (
     <button
@@ -42,7 +44,6 @@ export default function Emote({emote, onClick, onMouseOver, active}) {
         alt={loadingRef.current ? '' : emote.code}
         onLoad={loadingRef.current ? handleLoad : undefined}
       />
-      {locked ? <div className={styles.locked}>{Icons.LOCK}</div> : null}
     </button>
   );
 }
