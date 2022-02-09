@@ -80,7 +80,8 @@ class ChatSettingsModule {
   }
 
   renderSettings() {
-    if (inIFrame()) return;
+    // We want settings in iFrame when using a TV-App
+    if (inIFrame() && !window.parent.location.hostname.endsWith("lg.tv.twitch.tv")) return;
 
     let $settings = getSettings();
     // Hide the settings when in an iframe for now
