@@ -356,6 +356,7 @@ export default {
   createCurrentEmoteIdsSet() {
     const set = new Set();
     const emoteSets = this.getCurrentEmotes()?.emoteSets;
+    console.log(emoteSets);
 
     if (emoteSets == null) {
       return null;

@@ -26,7 +26,7 @@ export default function Emote({emote, onClick, onMouseOver, active, currentEmote
 
   return (
     <button
-      onClick={() => onClick(emote)}
+      onClick={() => onClick(emote, locked)}
       onMouseOver={() => onMouseOver(emote)}
       onFocus={() => onMouseOver(emote)}
       type="button"
@@ -34,11 +34,10 @@ export default function Emote({emote, onClick, onMouseOver, active, currentEmote
       className={classNames(styles.emote, active ? styles.active : null)}>
       <img
         ref={imageRef}
-        className={classNames(
-          styles.emoteImage,
-          loadingRef.current ? styles.placeholder : null,
-          locked ? styles.emoteImageLocked : null
-        )}
+        className={classNames(styles.emoteImage, {
+          [styles.placeholder]: loadingRef.current,
+          [styles.emoteImageLocked]: locked,
+        })}
         srcSet={createSrcSet(emote.images)}
         src={emote.images['1x']}
         alt={loadingRef.current ? '' : emote.code}

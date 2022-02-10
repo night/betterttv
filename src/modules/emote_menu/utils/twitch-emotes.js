@@ -19,7 +19,6 @@ const AVAILABLE_EMOTES_FOR_CHANNEL_QUERY = `
       profileImageURL(width: 300)
       subscriptionProducts {
         id,
-        tier,
         emotes {
           id,
           token,

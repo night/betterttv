@@ -28,8 +28,8 @@ export default function EmoteMenu({toggleWhisper, appendToChat, onSetTip}) {
   });
 
   const handleClick = useCallback(
-    (emote) => {
-      if (emote?.metadata?.locked) {
+    (emote, locked = false) => {
+      if (locked) {
         return;
       }
 
