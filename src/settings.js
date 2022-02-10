@@ -25,13 +25,6 @@ class Settings extends SafeEventEmitter {
     }
 
     this.upgradeFlags(settings.version);
-
-    // temporarily upgrade old installs to use the emote menu setting
-    // new default moving forward is false
-    // TODO: remove for 7.4.20 and higher
-    if (settings.version !== '7.4.19') {
-      this.set(SettingIds.EMOTE_MENU, true);
-    }
   }
 
   get(id) {
