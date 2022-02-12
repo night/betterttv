@@ -1,0 +1,9 @@
+.previewContainer {
+  margin-bottom: 4px;
+  margin-top: 4px;
+  border-radius: 4px;
+}
+
+.placeholder {
+  background-color: var(--bttv-rs-bg-card);
+}
