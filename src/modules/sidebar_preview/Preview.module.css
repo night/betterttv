@@ -1,9 +1,14 @@
 .previewContainer {
   margin-bottom: 4px;
   margin-top: 4px;
-  border-radius: 4px;
+
+  img {
+    border-radius: 4px;
+  }
+
+  background-color: var(--bttv-rs-bg-card);
 }
 
 .placeholder {
-  background-color: var(--bttv-rs-bg-card);
+  display: none;
 }
