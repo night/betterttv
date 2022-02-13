@@ -30,7 +30,6 @@ export const SettingIds = {
   CHAT: 'chat',
   AUTO_PLAY: 'autoPlay',
   USERNAMES: 'usernames',
-  STREAM_PREVIEW: 'streamPreview',
 };
 
 export const CategoryTypes = {
@@ -185,7 +184,6 @@ export const SettingDefaultValues = {
   [SettingIds.SCROLL_VOLUME_CONTROL]: false,
   [SettingIds.BLACKLIST_KEYWORDS]: {},
   [SettingIds.HIGHLIGHT_KEYWORDS]: null,
-  [SettingIds.STREAM_PREVIEW]: false,
   [SettingIds.SIDEBAR]: [
     SidebarFlags.FRIENDS |
       SidebarFlags.OFFLINE_FOLLOWED_CHANNELS |
