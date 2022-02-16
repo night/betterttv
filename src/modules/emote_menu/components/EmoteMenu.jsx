@@ -27,14 +27,14 @@ export default function EmoteMenu({toggleWhisper, appendToChat, onSetTip}) {
   });
 
   const handleClick = useCallback(
-    (emote, locked = false) => {
-      if (locked) {
-        return;
-      }
-
+    (emote) => {
       if (altPressed) {
         emoteMenuViewStore.toggleFavorite(emote);
         markTipAsSeen(EmoteMenuTips.EMOTE_MENU_FAVORITE_EMOTE);
+        return;
+      }
+
+      if (emote.metadata && emote.metadata.isLocked()) {
         return;
       }
 

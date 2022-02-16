@@ -172,7 +172,6 @@ export async function loadTwitchEmotes() {
 
       let predicate = () => false;
       if (['SUBSCRIPTIONS', 'FOLLOWER'].includes(type)) {
-        if (type === 'FOLLOWER') console.log(setId);
         // eslint-disable-next-line react/function-component-definition
         predicate = () => {
           const currentSets = twitch.getCurrentEmotes()?.emoteSets;
@@ -180,8 +179,6 @@ export async function loadTwitchEmotes() {
           if (currentSets == null) {
             return locked; // twitch's emote set hasn't loaded yet so we supply default locked
           }
-
-          console.log(currentSets.length);
 
           return currentSets.find(({id}) => id === setId) == null;
         };
