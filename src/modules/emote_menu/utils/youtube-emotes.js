@@ -79,14 +79,14 @@ export async function loadYouTubeEmotes() {
     const categoryName = categoryNames[channelId] || DEFAULT_CATEGORY_NAME;
     const category = getCategoryForChannelId(channelId, categoryName);
     const categoryEmotes = categoryEmojis[channelId].map(
-      ({emojiId: emoteId, image, shortcuts, isLocked = false}) =>
+      ({emojiId: emoteId, image, shortcuts}) =>
         new Emote({
           id: emoteId,
           category,
           channel: categoryName,
           code: shortcuts.find((shortcut) => !shortcut.startsWith(':_')) || shortcuts[0],
           metadata: {
-            locked: isLocked,
+            isLocked: () => youtubeCustomEmojis.find(({emojiId}) => emojiId === emoteId).isLocked,
           },
           images: {
             '1x': (image.thumbnails[1] || image.thumbnails[0]).url,
@@ -100,7 +100,7 @@ export async function loadYouTubeEmotes() {
       // note: sortBy accepts booleans, not necessary to convert to int
       emotes: sortBy(
         uniqBy([...(tempCategories[category.id]?.emotes || []), ...categoryEmotes], 'id'),
-        ({code, metadata}) => [metadata.locked, code.toLowerCase()]
+        ({code, metadata}) => [metadata.isLocked(), code.toLowerCase()]
       ),
     };
   }

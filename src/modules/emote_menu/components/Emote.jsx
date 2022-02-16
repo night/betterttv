@@ -3,7 +3,7 @@ import React, {useMemo} from 'react';
 import {createSrcSet} from '../../../utils/image.js';
 import styles from './Emote.module.css';
 
-export default function Emote({emote, onClick, onMouseOver, active, currentEmoteSetIds}) {
+export default function Emote({emote, onClick, onMouseOver, active}) {
   const imageRef = React.useRef(null);
   const loadingRef = React.useRef(true);
 
@@ -19,10 +19,7 @@ export default function Emote({emote, onClick, onMouseOver, active, currentEmote
     });
   }
 
-  const locked = useMemo(
-    () => (emote.metadata != null ? emote.metadata.isLocked(currentEmoteSetIds) : false),
-    [currentEmoteSetIds]
-  );
+  const locked = useMemo(() => (emote.metadata != null ? emote.metadata.isLocked() : false), []);
 
   return (
     <button

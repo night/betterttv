@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState, useMemo} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import Divider from 'rsuite/Divider';
 import keycodes from '../../../utils/keycodes.js';
 import {EmoteMenuTips} from '../../../constants.js';
@@ -9,7 +9,6 @@ import Header from './Header.jsx';
 import Preview from './Preview.jsx';
 import Sidebar from './Sidebar.jsx';
 import Tip, {markTipAsSeen} from './Tip.jsx';
-import twitch from '../../../utils/twitch.js';
 
 let keyPressCallback;
 function setKeyPressCallback(newKeyPressCallback) {
@@ -19,7 +18,7 @@ function setKeyPressCallback(newKeyPressCallback) {
 export default function EmoteMenu({toggleWhisper, appendToChat, onSetTip}) {
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState(null);
-  const [update, setUpdated] = useState(false);
+  const [, setUpdated] = useState(false);
   const [altPressed, setAltPressed] = useState(false);
   const [shiftPressed, setShiftPressed] = useState(false);
   const [section, setSection] = useState({
@@ -94,7 +93,6 @@ export default function EmoteMenu({toggleWhisper, appendToChat, onSetTip}) {
   }, []);
 
   useEffect(() => setSearch(''), [section]);
-  const currentEmoteSetIds = useMemo(() => twitch.createCurrentEmoteIdsSet(), [update]);
 
   return (
     <>

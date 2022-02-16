@@ -32,14 +32,27 @@ const AVAILABLE_EMOTES_FOR_CHANNEL_QUERY = `
       }
     }
     channel(id: $channelID) {
+      localEmoteSets {
+        id,
+        emotes {
+          id,
+          token,
+          type
+        },
+        owner {
+          id,
+          displayName,
+          profileImageURL(width: 300)
+        }
+      },
       self {
         availableEmoteSets {
+          id,
           emotes {
             id,
             token,
             type
           },
-          id,
           owner {
             id,
             displayName,
@@ -125,20 +138,30 @@ export async function loadTwitchEmotes() {
   const isDark = settings.get(SettingIds.DARKENED_MODE);
   const tempCategories = {};
 
-  const subscriptionProducts = data.user.subscriptionProducts.map(({emotes, tier, ...rest}) => ({
+  const subscriptionProducts = data.user.subscriptionProducts.map(({emotes, ...rest}) => ({
     ...rest,
     emotes: emotes.map((emote) => ({
       ...emote,
-      tier,
+      locked: true,
     })),
   }));
 
-  const currentEmoteIdsSet = twitch.createCurrentEmoteIdsSet();
+  const localEmoteSets = data.channel.localEmoteSets.map(({emotes, ...rest}) => ({
+    ...rest,
+    emotes: emotes.map((emote) => ({
+      ...emote,
+      locked: true,
+    })),
+  }));
 
-  for (const {owner, id: setId, emotes} of [...subscriptionProducts, ...data.channel.self.availableEmoteSets]) {
+  for (const {owner, id: setId, emotes} of [
+    ...data.channel.self.availableEmoteSets,
+    ...subscriptionProducts,
+    ...localEmoteSets,
+  ]) {
     const category = getCategoryForSet(setId, owner);
     const categoryEmotes = emotes.map((emote) => {
-      const {id: emoteId, token: emoteToken, type} = emote;
+      const {id: emoteId, token: emoteToken, type, locked = false} = emote;
       let newToken;
 
       try {
@@ -149,14 +172,18 @@ export async function loadTwitchEmotes() {
 
       let predicate = () => false;
       if (['SUBSCRIPTIONS', 'FOLLOWER'].includes(type)) {
-        predicate = (currentEmoteSetIds) => {
-          if (currentEmoteSetIds == null) {
-            // worst case scenario user sees emotes they don't have
-            // it may be wise to wait until we have currentEmoteSetIds before showing the menu
-            return false;
+        if (type === 'FOLLOWER') console.log(setId);
+        // eslint-disable-next-line react/function-component-definition
+        predicate = () => {
+          const currentSets = twitch.getCurrentEmotes()?.emoteSets;
+
+          if (currentSets == null) {
+            return locked; // twitch's emote set hasn't loaded yet so we supply default locked
           }
 
-          return !currentEmoteSetIds.has(setId);
+          console.log(currentSets.length);
+
+          return currentSets.find(({id}) => id === setId) == null;
         };
       }
 
@@ -183,7 +210,7 @@ export async function loadTwitchEmotes() {
       // uniqBy also priortises the available emotes over the locked emotes here
       emotes: sortBy(
         uniqBy([...(tempCategories[category.id]?.emotes || []), ...categoryEmotes], 'id'),
-        ({code, metadata}) => [metadata.isLocked(currentEmoteIdsSet), code.toLowerCase()]
+        ({code, metadata}) => [metadata.isLocked(), code.toLowerCase()]
       ),
     };
   }

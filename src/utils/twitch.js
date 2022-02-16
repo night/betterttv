@@ -338,6 +338,11 @@ export default {
 
   getCurrentEmotes() {
     let currentEmotes;
+
+    if (currentEmotes != null) {
+      return currentEmotes;
+    }
+
     try {
       const node = searchReactParents(
         getReactInstance($(CHAT_CONTAINER)[0]),
@@ -351,22 +356,6 @@ export default {
     } catch (_) {}
 
     return currentEmotes;
-  },
-
-  createCurrentEmoteIdsSet() {
-    const set = new Set();
-    const emoteSets = this.getCurrentEmotes()?.emoteSets;
-    console.log(emoteSets);
-
-    if (emoteSets == null) {
-      return null;
-    }
-
-    for (const {id} of emoteSets) {
-      set.add(id);
-    }
-
-    return set;
   },
 
   getCurrentChat() {

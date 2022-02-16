@@ -4,11 +4,11 @@ import Icons from './Icons.jsx';
 import emoteMenuViewStore from '../stores/emote-menu-view-store.js';
 import Emote from '../../../common/components/Emote.jsx';
 
-export default function Preview({emote, currentEmoteSetIds}) {
+export default function Preview({emote}) {
   if (emote == null) return null;
 
   let icon = null;
-  if (emote.metadata && emote.metadata.isLocked(currentEmoteSetIds)) {
+  if (emote.metadata && emote.metadata.isLocked()) {
     icon = Icons.UNLOCK;
   }
   if (icon == null && emoteMenuViewStore.hasFavorite(emote)) {
