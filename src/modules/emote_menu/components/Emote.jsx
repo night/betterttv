@@ -19,7 +19,7 @@ export default function Emote({emote, onClick, onMouseOver, active}) {
     });
   }
 
-  const locked = useMemo(() => (emote.metadata != null ? emote.metadata.isLocked() : false), []);
+  const locked = emote.metadata != null && emote.metadata.isLocked();
 
   return (
     <button
