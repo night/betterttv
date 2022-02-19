@@ -4,12 +4,12 @@ import settings from '../../settings.js';
 const node = document.querySelector('html');
 
 function updateTheme() {
-  if (!node.isConnected) {
+  const isDarkMode = node.getAttribute('dark') != null;
+  if (!node.isConnected || settings.get(SettingIds.DARKENED_MODE) === isDarkMode) {
     return;
   }
 
-  const darkMode = node.getAttribute('dark') != null;
-  settings.set(SettingIds.DARKENED_MODE, darkMode, true);
+  settings.set(SettingIds.DARKENED_MODE, isDarkMode, true);
 }
 
 updateTheme();
