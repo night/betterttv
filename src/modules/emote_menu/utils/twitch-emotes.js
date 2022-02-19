@@ -113,6 +113,16 @@ function getCategoryForSet(setId, owner) {
   }
 }
 
+function isLocked(setId, locked) {
+  const currentSets = twitch.getCurrentEmotes()?.emoteSets;
+
+  if (currentSets == null) {
+    return locked; // twitch's emote set hasn't loaded yet so we supply default locked
+  }
+
+  return currentSets.find(({id}) => id === setId) == null;
+}
+
 export async function loadTwitchEmotes() {
   let data = [];
 
@@ -138,26 +148,23 @@ export async function loadTwitchEmotes() {
   const isDark = settings.get(SettingIds.DARKENED_MODE);
   const tempCategories = {};
 
-  const subscriptionProducts = data.user.subscriptionProducts.map(({emotes, ...rest}) => ({
-    ...rest,
-    emotes: emotes.map((emote) => ({
-      ...emote,
-      locked: true,
-    })),
-  }));
+  const channelProducts = [...data.user.subscriptionProducts, ...data.channel.localEmoteSets].map(
+    ({id: setId, emotes, ...rest}) => {
+      const locked = data.channel.self.availableEmoteSets.find(({id}) => id === setId) == null;
+      console.log(locked, emotes);
 
-  const localEmoteSets = data.channel.localEmoteSets.map(({emotes, ...rest}) => ({
-    ...rest,
-    emotes: emotes.map((emote) => ({
-      ...emote,
-      locked: true,
-    })),
-  }));
+      return {
+        ...rest,
+        id: setId,
+        product: true,
+        emotes: emotes.map((emote) => ({...emote, locked})),
+      };
+    }
+  );
 
-  for (const {owner, id: setId, emotes} of [
+  for (const {owner, id: setId, emotes, product = false} of [
+    ...channelProducts,
     ...data.channel.self.availableEmoteSets,
-    ...subscriptionProducts,
-    ...localEmoteSets,
   ]) {
     const category = getCategoryForSet(setId, owner);
     const categoryEmotes = emotes.map((emote) => {
@@ -171,17 +178,8 @@ export async function loadTwitchEmotes() {
       }
 
       let predicate = () => false;
-      if (['SUBSCRIPTIONS', 'FOLLOWER'].includes(type)) {
-        // eslint-disable-next-line react/function-component-definition
-        predicate = () => {
-          const currentSets = twitch.getCurrentEmotes()?.emoteSets;
-
-          if (currentSets == null) {
-            return locked; // twitch's emote set hasn't loaded yet so we supply default locked
-          }
-
-          return currentSets.find(({id}) => id === setId) == null;
-        };
+      if (product) {
+        predicate = isLocked.bind(this, setId, locked);
       }
 
       return new Emote({
