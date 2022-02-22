@@ -104,9 +104,6 @@ export const NavigationModeTypes = {
   ARROW_KEYS: 1,
 };
 
-export const ROW_HEIGHT = 36;
-export const WINDOW_HEIGHT = 300;
-
 export const EmoteProviders = {
   BETTERTTV: 'bttv',
   FRANKERFACEZ: 'ffz',
@@ -225,6 +222,8 @@ export const PlatformTypes = {
   YOUTUBE: 3,
 };
 
-export const ITEM_HEIGHT = 48;
+export const EMOTE_MENU_SIDEBAR_ROW_HEIGHT = 36;
+export const EMOTE_MENU_GRID_ROW_HEIGHT = 36;
+export const EMOTE_MENU_GRID_HEIGHT = 300;
 
-export const EmoteCategoriesOrderStorageKey = 'emote-categories-order';
+export const EMOTE_CATEGORIES_ORDER_STORAGE_KEY = 'emote-categories-order';

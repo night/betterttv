@@ -1,5 +1,5 @@
 import {useEffect} from 'react';
-import {ITEM_HEIGHT} from '../../../constants.js';
+import {EMOTE_MENU_SIDEBAR_ROW_HEIGHT} from '../../../constants.js';
 
 export default function useAutoScroll(section, containerRef, categories, windowHeight) {
   useEffect(() => {
@@ -8,14 +8,14 @@ export default function useAutoScroll(section, containerRef, categories, windowH
 
     const top = currentRef.scrollTop;
     const index = categories.findIndex((category) => category.id === section.eventKey);
-    const depth = index * ITEM_HEIGHT;
+    const depth = index * EMOTE_MENU_SIDEBAR_ROW_HEIGHT;
 
     let newTop;
     if (depth < top) {
       newTop = depth;
     }
-    if (depth + ITEM_HEIGHT > top + windowHeight) {
-      newTop = depth - windowHeight + ITEM_HEIGHT;
+    if (depth + EMOTE_MENU_SIDEBAR_ROW_HEIGHT > top + windowHeight) {
+      newTop = depth - windowHeight + EMOTE_MENU_SIDEBAR_ROW_HEIGHT;
     }
     if (newTop == null) {
       return;

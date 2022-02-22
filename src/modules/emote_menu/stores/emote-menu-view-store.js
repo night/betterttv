@@ -17,7 +17,7 @@ import {
   EmoteProviders,
   EmoteCategories,
   PlatformTypes,
-  EmoteCategoriesOrderStorageKey,
+  EMOTE_CATEGORIES_ORDER_STORAGE_KEY,
 } from '../../../constants.js';
 import twitch from '../../../utils/twitch.js';
 import {getPlatform} from '../../../utils/window.js';
@@ -47,11 +47,10 @@ function createCategory(id, provider, displayName, icon, categoryEmotes = []) {
   };
 }
 
-let categoryOrder = storage.get(EmoteCategoriesOrderStorageKey);
+let categoryOrder = storage.get(EMOTE_CATEGORIES_ORDER_STORAGE_KEY) ?? [];
 
 function organizeCategories(categories) {
   if (categoryOrder == null) {
-    categoryOrder = [];
     return categories;
   }
 
@@ -211,7 +210,7 @@ class EmoteMenuViewStore extends SafeEventEmitter {
     }
 
     if (frecents.emotes.length > 0) {
-      topCategories.push(frecents.category);
+      topCategories.unshift(frecents.category);
       frecents.emotes = sortBy(
         uniqBy(frecents.emotes, (emote) => emote.canonicalId),
         (emote) => emoteStorage.frecents.indexOf(emote.canonicalId)
@@ -223,7 +222,7 @@ class EmoteMenuViewStore extends SafeEventEmitter {
     }
 
     if (favorites.emotes.length > 0) {
-      topCategories.push(favorites.category);
+      topCategories.unshift(favorites.category);
       favorites.emotes = sortBy(
         uniqBy(favorites.emotes, (emote) => emote.canonicalId),
         (emote) => emoteStorage.favorites.indexOf(emote.canonicalId)
@@ -241,7 +240,7 @@ class EmoteMenuViewStore extends SafeEventEmitter {
 
   setCategoryOrder(categories) {
     categoryOrder = categories.map(({id}) => id);
-    storage.set(EmoteCategoriesOrderStorageKey, categoryOrder);
+    storage.set(EMOTE_CATEGORIES_ORDER_STORAGE_KEY, categoryOrder);
     this.markDirty();
   }
 
@@ -258,7 +257,7 @@ class EmoteMenuViewStore extends SafeEventEmitter {
       case CategoryPositions.MIDDLE:
         return middleCategories;
       default:
-        return [];
+        throw new Error('getCategories() requires a type');
     }
   }
 

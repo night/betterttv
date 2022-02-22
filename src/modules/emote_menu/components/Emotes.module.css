@@ -27,6 +27,8 @@
   margin-right: 4px;
   align-items: center;
   justify-content: center;
+  padding: 4px;
+  box-sizing: border-box;
 
   svg {
     width: 100% !important;

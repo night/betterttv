@@ -1,6 +1,11 @@
 .sidebar {
+  position: relative;
   display: flex;
   flex-direction: column;
+  height: 349px;
+  overflow: hidden;
+  width: 48px;
+  min-width: 48px;
 }
 
 .content {
@@ -11,23 +16,26 @@
   width: 48px;
 }
 
-.emojiButtonHidden {
-  height: 349px;
-  transition: 0.15s ease-out;
-}
-
-.emojiButtonVisible {
-  height: 300px;
-  transition: 0.15s ease-out;
-}
-
 .content::-webkit-scrollbar {
   display: none;
 }
 
 .active {
-  background-color: var(--bttv-rs-bg-card) !important;
-  /* border-right: 2px solid var(--bttv-rs-navs-selected) !important; */
+  background-color: var(--bttv-rs-bg-card);
+  border-right: 2px solid var(--bttv-rs-navs-selected);
+  padding-right: 10px !important;
+}
+
+:global(.bttv-youtube) {
+  .active {
+    border-right: 2px solid var(--yt-spec-call-to-action);
+  }
+}
+
+:global(html[dark] .bttv-youtube) {
+  .active {
+    border-right: 2px solid rgb(255, 255, 255);
+  }
 }
 
 .navItem svg {
@@ -36,18 +44,19 @@
 }
 
 .dragging {
-  background-color: var(--bttv-rs-bg-well);
   border-radius: 4px;
   color: var(--bttv-rs-text-heading);
   display: flex;
+  background-color: unset !important;
+  border-right: unset !important;
+  padding: 6px 12px !important;
 }
 
 .navItem {
-  /* border-right: 2px solid var(--bttv-rs-divider-border); */
-  padding: 14px !important;
+  padding: 6px 12px;
   cursor: pointer;
   box-sizing: border-box;
-  height: 48px;
+  height: 36px;
   width: 100%;
 
   display: flex;
@@ -72,15 +81,25 @@
 }
 
 .emojiButton {
-  background-color: var(--bttv-rs-bg-card);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--bttv-rs-bg-well);
   width: 48px;
-  height: 48px;
+  height: 49px;
+  position: absolute;
+  cursor: pointer;
+  padding: 12px;
 }
 
-.divider {
-  margin: 0px;
-  height: 1px;
-  width: 48px;
+.emojiButtonHidden {
+  bottom: -49px;
+  transition: 0.2s ease-in-out;
+}
+
+.emojiButtonVisible {
+  bottom: 0;
+  transition: 0.2s ease-in-out;
 }
 
 .hidden {

@@ -3,11 +3,10 @@ import React, {useCallback, useEffect, useRef, useState, useMemo} from 'react';
 import classNames from 'classnames';
 import {DragDropContext, Draggable, Droppable} from 'react-beautiful-dnd';
 import {createPortal} from 'react-dom';
-import {Divider} from 'rsuite';
 import styles from './Sidebar.module.css';
 import useAutoScroll from '../hooks/AutoScroll.jsx';
 import emoteMenuViewStore from '../stores/emote-menu-view-store.js';
-import {ITEM_HEIGHT, WINDOW_HEIGHT} from '../../../constants.js';
+import {EMOTE_MENU_SIDEBAR_ROW_HEIGHT, EMOTE_MENU_GRID_HEIGHT} from '../../../constants.js';
 import emojis from '../../emotes/emojis.js';
 import Emote from '../../../common/components/Emote.jsx';
 
@@ -18,7 +17,7 @@ function useDraggableInPortal() {
   useEffect(() => {
     const div = document.createElement('div');
     div.classList.add(styles.portal);
-    self.aBetterName = div;
+    self.divElement = div;
     document.body.appendChild(div);
     return () => {
       document.body.removeChild(div);
@@ -29,7 +28,7 @@ function useDraggableInPortal() {
     (provided, ...args) => {
       const element = render(provided, ...args);
       if (provided.draggableProps.style.position === 'fixed') {
-        return createPortal(element, self.aBetterName);
+        return createPortal(element, self.divElement);
       }
       return element;
     };
@@ -42,7 +41,7 @@ export default function Sidebar({section, onClick, categories}) {
   const [emojiButtonHidden, setEmojiButtonHidden] = useState(false);
 
   const bottomDepth = useMemo(
-    () => (categories.top.length + middleCategories.length) * ITEM_HEIGHT,
+    () => (categories.top.length + middleCategories.length) * EMOTE_MENU_SIDEBAR_ROW_HEIGHT,
     [categories.top, middleCategories]
   );
 
@@ -53,7 +52,7 @@ export default function Sidebar({section, onClick, categories}) {
     section,
     containerRef,
     [...categories.top, ...middleCategories, ...categories.bottom],
-    emojiButtonHidden ? WINDOW_HEIGHT + 49 : WINDOW_HEIGHT // 1px (divider) + 48px (emojiButton) = 49px
+    emojiButtonHidden ? EMOTE_MENU_GRID_HEIGHT + 49 : EMOTE_MENU_GRID_HEIGHT // 1px (divider) + 48px (emojiButton) = 49px
   );
 
   const handleEmojiClick = useCallback(() => {
@@ -79,28 +78,22 @@ export default function Sidebar({section, onClick, categories}) {
     [categories]
   );
 
-  useEffect(() => {
-    function handleScroll() {
-      if (containerRef.current == null) {
-        return;
-      }
-
-      const top = containerRef.current.scrollTop;
-
-      const isHidden = top + WINDOW_HEIGHT > bottomDepth;
-      if (isHidden === emojiButtonHidden) {
-        return;
-      }
-
-      setEmojiButtonHidden(isHidden);
+  function handleScroll() {
+    if (containerRef.current == null) {
+      return;
     }
 
-    containerRef.current.addEventListener('scroll', handleScroll);
+    const top = containerRef.current.scrollTop;
 
-    return () => {
-      containerRef.current.removeEventListener('scroll', handleScroll);
-    };
-  }, [containerRef, emojiButtonHidden, bottomDepth]);
+    const isHidden = top + EMOTE_MENU_GRID_HEIGHT > bottomDepth;
+    if (isHidden === emojiButtonHidden) {
+      return;
+    }
+
+    setEmojiButtonHidden(isHidden);
+  }
+
+  useEffect(() => handleScroll(), [bottomDepth]);
 
   function createCategories(arr) {
     return arr.map((category) => (
@@ -119,12 +112,7 @@ export default function Sidebar({section, onClick, categories}) {
 
   return (
     <div className={styles.sidebar}>
-      <div
-        className={classNames(styles.content, {
-          [styles.emojiButtonHidden]: emojiButtonHidden,
-          [styles.emojiButtonVisible]: !emojiButtonHidden,
-        })}
-        ref={containerRef}>
+      <div className={styles.content} ref={containerRef} onScroll={handleScroll}>
         {createCategories(categories.top)}
         <DragDropContext onDragEnd={({source, destination}) => handleReorder(source.index, destination.index)}>
           <Droppable droppableId="droppable" type="list" direction="vertical">
@@ -157,19 +145,17 @@ export default function Sidebar({section, onClick, categories}) {
         </DragDropContext>
         {createCategories(categories.bottom)}
       </div>
-      <Divider className={styles.divider} />
       <div
         role="button"
-        onMouseEnter={() => setHovering(true)}
-        className={classNames(styles.navItem, styles.emojiButton, {[styles.hidden]: hovering})}>
-        <Emote emote={emojis.getEligibleEmote('\ud83d\ude03')} />
-      </div>
-      <div
-        role="button"
-        onClick={() => handleEmojiClick()}
+        onMouseOver={() => setHovering(true)}
+        onFocus={() => setHovering(true)}
         onMouseLeave={() => setHovering(false)}
-        className={classNames(styles.navItem, styles.emojiButton, {[styles.hidden]: !hovering})}>
-        <Emote emote={emojis.getEligibleEmote('\ud83d\udca9')} />
+        onClick={() => handleEmojiClick()}
+        className={classNames(styles.emojiButton, {
+          [styles.emojiButtonHidden]: emojiButtonHidden,
+          [styles.emojiButtonVisible]: !emojiButtonHidden,
+        })}>
+        <Emote emote={hovering ? emojis.getEligibleEmote('\ud83d\udca9') : emojis.getEligibleEmote('\ud83d\ude03')} />
       </div>
     </div>
   );
