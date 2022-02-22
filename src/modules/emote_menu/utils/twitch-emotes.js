@@ -148,13 +148,14 @@ export async function loadTwitchEmotes() {
   const isDark = settings.get(SettingIds.DARKENED_MODE);
   const tempCategories = {};
 
-  const channelProducts = [...data.user.subscriptionProducts, ...data.channel.localEmoteSets].map(
-    ({id, emoteSetID, ...rest}) => ({
-      id: id || emoteSetID,
-      ...rest,
-      product: true,
-    })
-  );
+  const subscriptionProducts = data.user.subscriptionProducts ?? [];
+  const localEmoteSets = data.channel.localEmoteSets ?? [];
+
+  const channelProducts = [...subscriptionProducts, ...localEmoteSets].map(({id, emoteSetID, ...rest}) => ({
+    id: id || emoteSetID,
+    ...rest,
+    product: true,
+  }));
 
   for (const {owner, id: setId, emotes, product = false} of [
     ...channelProducts,
