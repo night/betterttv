@@ -18,7 +18,7 @@ const AVAILABLE_EMOTES_FOR_CHANNEL_QUERY = `
       displayName,
       profileImageURL(width: 300)
       subscriptionProducts {
-        id,
+        emoteSetID,
         emotes {
           id,
           token,
@@ -149,17 +149,11 @@ export async function loadTwitchEmotes() {
   const tempCategories = {};
 
   const channelProducts = [...data.user.subscriptionProducts, ...data.channel.localEmoteSets].map(
-    ({id: setId, emotes, ...rest}) => {
-      const locked = data.channel.self.availableEmoteSets.find(({id}) => id === setId) == null;
-      console.log(locked, emotes);
-
-      return {
-        ...rest,
-        id: setId,
-        product: true,
-        emotes: emotes.map((emote) => ({...emote, locked})),
-      };
-    }
+    ({id, emoteSetID, ...rest}) => ({
+      id: id || emoteSetID,
+      ...rest,
+      product: true,
+    })
   );
 
   for (const {owner, id: setId, emotes, product = false} of [
@@ -167,8 +161,10 @@ export async function loadTwitchEmotes() {
     ...data.channel.self.availableEmoteSets,
   ]) {
     const category = getCategoryForSet(setId, owner);
+    const locked = product && data.channel.self.availableEmoteSets.find(({id}) => id === setId) == null;
+
     const categoryEmotes = emotes.map((emote) => {
-      const {id: emoteId, token: emoteToken, type, locked = false} = emote;
+      const {id: emoteId, token: emoteToken, type} = emote;
       let newToken;
 
       try {
