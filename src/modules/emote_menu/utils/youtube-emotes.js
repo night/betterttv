@@ -34,10 +34,7 @@ function getCategoryForChannelId(channelId, categoryName) {
 }
 
 function getLiveChat() {
-  const liveChatContinuation = window.ytInitialData?.continuationContents?.liveChatContinuation;
-  const liveChatRenderer = window.ytInitialData?.contents?.liveChatRenderer;
-  const liveChatRendererData = document.getElementsByTagName('yt-live-chat-renderer')[0]?.__data?.data;
-  return liveChatContinuation || liveChatRenderer || liveChatRendererData;
+  return document.getElementsByTagName('yt-live-chat-renderer')[0]?.__data?.data;
 }
 
 function isLocked(emoteId) {
@@ -52,7 +49,9 @@ export async function loadYouTubeEmotes() {
     return [];
   }
 
-  const liveChat = getLiveChat();
+  const liveChatContinuation = window.ytInitialData?.continuationContents?.liveChatContinuation;
+  const liveChatRenderer = window.ytInitialData?.contents?.liveChatRenderer;
+  const liveChat = getLiveChat() || liveChatContinuation || liveChatRenderer;
   const youtubeCustomEmojis = liveChat?.emojis;
   const youtubeEmojiCategories = liveChat?.actionPanel?.liveChatMessageInputRenderer?.pickers?.find(
     (picker) => picker.emojiPickerRenderer != null
@@ -96,7 +95,7 @@ export async function loadYouTubeEmotes() {
           channel: categoryName,
           code: shortcuts.find((shortcut) => !shortcut.startsWith(':_')) || shortcuts[0],
           metadata: {
-            isLocked: () => isLocked.bind(this, emoteId),
+            isLocked: isLocked.bind(this, emoteId),
           },
           images: {
             '1x': (image.thumbnails[1] || image.thumbnails[0]).url,

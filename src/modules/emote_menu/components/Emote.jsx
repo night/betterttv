@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, {useMemo} from 'react';
+import React from 'react';
 import {createSrcSet} from '../../../utils/image.js';
 import styles from './Emote.module.css';
 
