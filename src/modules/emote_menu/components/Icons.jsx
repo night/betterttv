@@ -13,6 +13,7 @@ import * as faHeartBroken from '@fortawesome/free-solid-svg-icons/faHeartBroken'
 import * as faFlag from '@fortawesome/free-solid-svg-icons/faFlag';
 import * as faClock from '@fortawesome/free-solid-svg-icons/faClock';
 import * as faUnlock from '@fortawesome/free-solid-svg-icons/faUnlock';
+import * as faLock from '@fortawesome/free-solid-svg-icons/faLock';
 import * as faLightbulb from '@fortawesome/free-solid-svg-icons/faLightbulb';
 import * as faTwitch from '@fortawesome/free-brands-svg-icons/faTwitch';
 import * as faYoutube from '@fortawesome/free-brands-svg-icons/faYoutube';
@@ -51,6 +52,7 @@ export default {
   FLAG: <Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faFlag} />,
   CLOCK: <Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faClock} />,
   UNLOCK: <Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faUnlock} />,
+  LOCK: <Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faLock} />,
   BULB: <Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faLightbulb} />,
   TWITCH: <Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faTwitch} />,
   TWITCH_GAMING: <Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={twitchGamingLogo} />,

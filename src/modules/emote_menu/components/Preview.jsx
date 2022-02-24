@@ -9,7 +9,7 @@ export default function Preview({emote}) {
 
   let icon = null;
   if (emote.metadata != null && emote.metadata.isLocked()) {
-    icon = Icons.UNLOCK;
+    icon = Icons.LOCK;
   } else if (emoteMenuViewStore.hasFavorite(emote)) {
     icon = Icons.STAR;
   }
