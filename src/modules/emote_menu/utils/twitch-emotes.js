@@ -113,11 +113,11 @@ function getCategoryForSet(setId, owner) {
   }
 }
 
-function isLocked(setId, locked) {
+function isLocked(setId, defaultValue) {
   const currentSets = twitch.getCurrentEmotes()?.emoteSets;
 
   if (currentSets == null) {
-    return locked; // twitch's emote set hasn't loaded yet so we supply default locked
+    return defaultValue; // twitch's emote set hasn't loaded yet so we supply default locked
   }
 
   return currentSets.find(({id}) => id === setId) == null;
