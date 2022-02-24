@@ -152,7 +152,7 @@ export async function loadTwitchEmotes() {
   const localEmoteSets = data.channel.localEmoteSets ?? [];
 
   const channelProducts = [...subscriptionProducts, ...localEmoteSets].map(({id, emoteSetID, ...rest}) => ({
-    id: id || emoteSetID,
+    id: emoteSetID == null ? id : emoteSetID,
     ...rest,
     product: true,
   }));

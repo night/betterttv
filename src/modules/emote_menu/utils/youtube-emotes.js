@@ -33,16 +33,26 @@ function getCategoryForChannelId(channelId, categoryName) {
   }
 }
 
+function getLiveChat() {
+  const liveChatContinuation = window.ytInitialData?.continuationContents?.liveChatContinuation;
+  const liveChatRenderer = window.ytInitialData?.contents?.liveChatRenderer;
+  const liveChatRendererData = document.getElementsByTagName('yt-live-chat-renderer')[0]?.__data?.data;
+  return liveChatContinuation || liveChatRenderer || liveChatRendererData;
+}
+
+function isLocked(emoteId) {
+  const liveChat = getLiveChat();
+  const youtubeCustomEmojis = liveChat?.emojis;
+  return youtubeCustomEmojis.find(({emojiId}) => emojiId === emoteId).isLocked;
+}
+
 export async function loadYouTubeEmotes() {
   const currentChannel = getCurrentChannel();
   if (currentChannel == null || currentChannel.provider !== 'youtube') {
     return [];
   }
 
-  const liveChatContinuation = window.ytInitialData?.continuationContents?.liveChatContinuation;
-  const liveChatRenderer = window.ytInitialData?.contents?.liveChatRenderer;
-  const liveChatRendererData = document.getElementsByTagName('yt-live-chat-renderer')[0]?.__data?.data;
-  const liveChat = liveChatContinuation || liveChatRenderer || liveChatRendererData;
+  const liveChat = getLiveChat();
   const youtubeCustomEmojis = liveChat?.emojis;
   const youtubeEmojiCategories = liveChat?.actionPanel?.liveChatMessageInputRenderer?.pickers?.find(
     (picker) => picker.emojiPickerRenderer != null
@@ -86,7 +96,7 @@ export async function loadYouTubeEmotes() {
           channel: categoryName,
           code: shortcuts.find((shortcut) => !shortcut.startsWith(':_')) || shortcuts[0],
           metadata: {
-            isLocked: () => youtubeCustomEmojis.find(({emojiId}) => emojiId === emoteId).isLocked,
+            isLocked: () => isLocked.bind(this, emoteId),
           },
           images: {
             '1x': (image.thumbnails[1] || image.thumbnails[0]).url,
