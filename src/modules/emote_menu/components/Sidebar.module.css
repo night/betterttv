@@ -20,36 +20,23 @@
   display: none;
 }
 
-.active {
-  background-color: var(--bttv-rs-bg-card);
-  border-right: 2px solid var(--bttv-rs-navs-selected);
-  padding-right: 10px !important;
-}
-
 :global(.bttv-youtube) {
   .active {
     border-right: 2px solid var(--yt-spec-call-to-action);
+    color: var(--yt-spec-call-to-action);
   }
 }
 
 :global(html[dark] .bttv-youtube) {
   .active {
     border-right: 2px solid rgb(255, 255, 255);
+    color: rgb(255, 255, 255);
   }
 }
 
 .navItem svg {
   margin: 0 !important;
   width: 100%;
-}
-
-.dragging {
-  border-radius: 4px;
-  color: var(--bttv-rs-text-heading);
-  display: flex;
-  background-color: unset !important;
-  border-right: unset !important;
-  padding: 6px 12px !important;
 }
 
 .navItem {
@@ -67,6 +54,22 @@
     width: 14px;
     height: 14px;
   }
+}
+
+.active {
+  background-color: var(--bttv-rs-bg-card);
+  border-right: 2px solid var(--bttv-rs-navs-selected);
+  padding-right: 10px;
+  color: var(--bttv-rs-navs-selected);
+}
+
+.dragging {
+  border-radius: 4px;
+  color: var(--bttv-rs-text-heading);
+  display: flex;
+  background-color: unset;
+  border-right: unset;
+  padding: 6px 12px;
 }
 
 .portal {
