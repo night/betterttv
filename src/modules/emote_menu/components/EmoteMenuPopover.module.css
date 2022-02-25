@@ -1,5 +1,5 @@
 .popover {
-  height: 410px;
+  height: 402px;
   width: 390px;
   color: #efeff1;
   overflow: hidden;
@@ -11,7 +11,7 @@
 }
 
 .withTip {
-  height: 438px;
+  height: 430px;
 }
 
 @media only screen and (max-width: 400px) {

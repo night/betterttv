@@ -3,9 +3,9 @@ import classNames from 'classnames';
 import VirtualizedList from './VirtualizedList.jsx';
 import emoteMenuViewStore from '../stores/emote-menu-view-store.js';
 import styles from './Emotes.module.css';
-import Emote from './Emote.jsx';
+import EmoteButton from './EmoteButton.jsx';
 import Icons from './Icons.jsx';
-import {NavigationModeTypes, RowHeight, WindowHeight} from '../../../constants.js';
+import {NavigationModeTypes, EMOTE_MENU_GRID_ROW_HEIGHT, EMOTE_MENU_GRID_HEIGHT} from '../../../constants.js';
 import useGridKeyboardNavigation from '../hooks/GridKeyboardNavigation.jsx';
 
 const BrowseEmotes = React.forwardRef(
@@ -41,7 +41,7 @@ const BrowseEmotes = React.forwardRef(
         ) : (
           <div key={key} style={style} className={classNames(className, styles.row)}>
             {row.map((emote, x) => (
-              <Emote
+              <EmoteButton
                 key={`${emote.category.id}-${emote.id}`}
                 active={y === coords.y && x === coords.x}
                 emote={emote}
@@ -73,15 +73,15 @@ const BrowseEmotes = React.forwardRef(
       }
       const index = emoteMenuViewStore.getCategoryIndexById(section.eventKey);
       if (index != null) {
-        currentRef.scrollTo(0, index * RowHeight + 1); // + 1 to be inside the section
+        currentRef.scrollTo(0, index * EMOTE_MENU_GRID_ROW_HEIGHT + 1); // + 1 to be inside the section
       }
     }, [section]);
 
     return (
       <VirtualizedList
         stickyRows={emoteMenuViewStore.headers}
-        rowHeight={RowHeight}
-        windowHeight={WindowHeight}
+        rowHeight={EMOTE_MENU_GRID_ROW_HEIGHT}
+        windowHeight={EMOTE_MENU_GRID_HEIGHT}
         totalRows={emoteMenuViewStore.rows.length}
         renderRow={renderRow}
         className={styles.emotesContainer}
@@ -135,7 +135,7 @@ const SearchEmotes = React.forwardRef(
         return (
           <div key={key} style={style} className={classNames(className, styles.row)}>
             {row.map(({item}, x) => (
-              <Emote
+              <EmoteButton
                 key={`${item.category.id}${item.id}`}
                 emote={item}
                 onClick={onClick}
@@ -161,8 +161,8 @@ const SearchEmotes = React.forwardRef(
     return (
       <VirtualizedList
         ref={ref}
-        rowHeight={RowHeight}
-        windowHeight={WindowHeight}
+        rowHeight={EMOTE_MENU_GRID_ROW_HEIGHT}
+        windowHeight={EMOTE_MENU_GRID_HEIGHT}
         totalRows={emotes.length}
         renderRow={renderRow}
         className={classNames(styles.emotesContainer, styles.searched)}
@@ -206,15 +206,15 @@ export default function Emotes(props) {
       return;
     }
 
-    const depth = coords.y * RowHeight;
+    const depth = coords.y * EMOTE_MENU_GRID_ROW_HEIGHT;
     const {scrollTop} = currentRef;
 
-    if (depth < scrollTop + RowHeight) {
-      currentRef.scrollTo(0, isSearch ? depth : depth - RowHeight);
+    if (depth < scrollTop + EMOTE_MENU_GRID_ROW_HEIGHT) {
+      currentRef.scrollTo(0, isSearch ? depth : depth - EMOTE_MENU_GRID_ROW_HEIGHT);
     }
 
-    if (depth + RowHeight >= scrollTop + WindowHeight) {
-      currentRef.scrollTo(0, depth + RowHeight - WindowHeight);
+    if (depth + EMOTE_MENU_GRID_ROW_HEIGHT >= scrollTop + EMOTE_MENU_GRID_HEIGHT) {
+      currentRef.scrollTo(0, depth + EMOTE_MENU_GRID_ROW_HEIGHT - EMOTE_MENU_GRID_HEIGHT);
     }
   }, [coords]);
 

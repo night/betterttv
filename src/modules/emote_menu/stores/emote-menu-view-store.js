@@ -12,10 +12,17 @@ import {loadYouTubeEmotes} from '../utils/youtube-emotes.js';
 import cdn from '../../../utils/cdn.js';
 import {getCurrentChannel} from '../../../utils/channel.js';
 import settings from '../../../settings.js';
-import {SettingIds, EmoteProviders, EmoteCategories, PlatformTypes} from '../../../constants.js';
+import {
+  SettingIds,
+  EmoteProviders,
+  EmoteCategories,
+  PlatformTypes,
+  EMOTE_CATEGORIES_ORDER_STORAGE_KEY,
+} from '../../../constants.js';
 import twitch from '../../../utils/twitch.js';
 import {getPlatform} from '../../../utils/window.js';
 import {getCurrentUser} from '../../../utils/user.js';
+import storage from '../../../storage.js';
 
 const MAX_FRECENTS = 36;
 
@@ -40,6 +47,16 @@ function createCategory(id, provider, displayName, icon, categoryEmotes = []) {
   };
 }
 
+let categoryOrder = storage.get(EMOTE_CATEGORIES_ORDER_STORAGE_KEY) ?? [];
+
+function organizeCategories(categories) {
+  if (categoryOrder == null) {
+    return categories;
+  }
+
+  return categories.sort((a, b) => categoryOrder.indexOf(a.category.id) - categoryOrder.indexOf(b.category.id));
+}
+
 const fuse = new Fuse([], {
   keys: ['code'],
   shouldSort: true,
@@ -48,6 +65,16 @@ const fuse = new Fuse([], {
 
 let providerCategories = [];
 let platformCategories = [];
+
+export const CategoryPositions = {
+  BOTTOM: 0,
+  MIDDLE: 1,
+  TOP: 2,
+};
+
+let topCategories = [];
+let middleCategories = [];
+let bottomCategories = [];
 
 class EmoteMenuViewStore extends SafeEventEmitter {
   constructor() {
@@ -155,14 +182,17 @@ class EmoteMenuViewStore extends SafeEventEmitter {
     const frecents = createCategory(EmoteCategories.FRECENTS, null, 'Frequently Used', Icons.CLOCK, []);
     const favorites = createCategory(EmoteCategories.FAVORITES, null, 'Favorites', Icons.STAR, []);
 
-    const categories = [...providerCategories, ...platformCategories, ...getEmojiCategories()];
     const collection = [];
+    const emojiCategories = getEmojiCategories();
+    const categories = organizeCategories(
+      [...providerCategories, ...platformCategories].filter((category) => category.emotes.length > 0)
+    );
 
-    for (const category of categories) {
-      if (category.emotes.length === 0) {
-        continue;
-      }
+    topCategories = [];
+    middleCategories = categories.map(({category}) => category);
+    bottomCategories = emojiCategories.map(({category}) => category);
 
+    for (const category of [...categories, ...emojiCategories]) {
       for (const emote of category.emotes) {
         const emoteCanonicalId = emote.canonicalId;
         if (emoteStorage.favorites.includes(emoteCanonicalId)) {
@@ -180,6 +210,7 @@ class EmoteMenuViewStore extends SafeEventEmitter {
     }
 
     if (frecents.emotes.length > 0) {
+      topCategories.unshift(frecents.category);
       frecents.emotes = sortBy(
         uniqBy(frecents.emotes, (emote) => emote.canonicalId),
         (emote) => emoteStorage.frecents.indexOf(emote.canonicalId)
@@ -191,6 +222,7 @@ class EmoteMenuViewStore extends SafeEventEmitter {
     }
 
     if (favorites.emotes.length > 0) {
+      topCategories.unshift(favorites.category);
       favorites.emotes = sortBy(
         uniqBy(favorites.emotes, (emote) => emote.canonicalId),
         (emote) => emoteStorage.favorites.indexOf(emote.canonicalId)
@@ -206,12 +238,27 @@ class EmoteMenuViewStore extends SafeEventEmitter {
     this.emit('updated');
   }
 
+  setCategoryOrder(categories) {
+    categoryOrder = categories.map(({id}) => id);
+    storage.set(EMOTE_CATEGORIES_ORDER_STORAGE_KEY, categoryOrder);
+    this.markDirty();
+  }
+
   getRow(index) {
     return this.rows[index];
   }
 
-  getCategories() {
-    return this.headers.map((id) => this.rows[id]);
+  getCategories(type) {
+    switch (type) {
+      case CategoryPositions.BOTTOM:
+        return bottomCategories;
+      case CategoryPositions.TOP:
+        return topCategories;
+      case CategoryPositions.MIDDLE:
+        return middleCategories;
+      default:
+        throw new Error('getCategories() requires a type');
+    }
   }
 
   getCategoryIndexById(id) {

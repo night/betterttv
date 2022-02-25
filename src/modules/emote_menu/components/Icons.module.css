@@ -1,12 +1,12 @@
 .icon {
-  width: 20px;
-  height: 20px;
   object-fit: contain;
-  border-radius: 4px;
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
-.brandedImage {
-  position: relative;
+.iconBorderRadius {
+  border-radius: 4px;
 }
 
 .brandIcon {

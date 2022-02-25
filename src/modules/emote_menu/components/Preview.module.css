@@ -1,7 +1,8 @@
 .preview {
+  box-sizing: border-box;
   display: flex;
   justify-content: space-between;
-  padding: 8px;
+  padding: 4px 8px;
   align-items: center;
   color: var(--bttv-rs-text-heading);
 }

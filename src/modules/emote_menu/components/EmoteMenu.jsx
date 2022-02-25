@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import Divider from 'rsuite/Divider';
 import keycodes from '../../../utils/keycodes.js';
 import {EmoteMenuTips} from '../../../constants.js';
-import emoteMenuViewStore from '../stores/emote-menu-view-store.js';
+import emoteMenuViewStore, {CategoryPositions} from '../stores/emote-menu-view-store.js';
 import styles from './EmoteMenu.module.css';
 import Emotes from './Emotes.jsx';
 import Header from './Header.jsx';
@@ -100,30 +100,32 @@ export default function EmoteMenu({toggleWhisper, appendToChat, onSetTip}) {
         selected={selected}
       />
       <Divider className={styles.divider} />
-      <div className={styles.content}>
+      <div className={styles.contentContainer}>
         <Sidebar
           className={styles.sidebar}
           section={section}
-          categories={emoteMenuViewStore.getCategories()}
-          onChange={(eventKey) => setSection({eventKey, scrollTo: true})}
+          onClick={(eventKey) => setSection({eventKey, scrollTo: true})}
+          categories={{
+            top: emoteMenuViewStore.getCategories(CategoryPositions.TOP),
+            middle: emoteMenuViewStore.getCategories(CategoryPositions.MIDDLE),
+            bottom: emoteMenuViewStore.getCategories(CategoryPositions.BOTTOM),
+          }}
         />
-        <Emotes
-          className={styles.emotes}
-          search={search}
-          section={section}
-          onClick={handleClick}
-          setKeyPressCallback={setKeyPressCallback}
-          rows={emoteMenuViewStore.rows}
-          setSelected={setSelected}
-          onSection={(eventKey) => setSection({eventKey, scrollTo: false})}
-        />
+        <div className={styles.content}>
+          <Emotes
+            className={styles.emotes}
+            search={search}
+            section={section}
+            onClick={handleClick}
+            setKeyPressCallback={setKeyPressCallback}
+            rows={emoteMenuViewStore.rows}
+            setSelected={setSelected}
+            onSection={(eventKey) => setSection({eventKey, scrollTo: false})}
+          />
+          <Divider className={styles.divider} />
+          <Preview emote={selected} isFavorite={selected == null ? false : emoteMenuViewStore.hasFavorite(selected)} />
+        </div>
       </div>
-      <Divider className={styles.divider} />
-      <Preview
-        className={styles.preview}
-        emote={selected}
-        isFavorite={selected == null ? false : emoteMenuViewStore.hasFavorite(selected)}
-      />
       <Tip classname={styles.tip} onSetTip={onSetTip} />
     </>
   );
