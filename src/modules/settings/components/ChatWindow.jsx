@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import PanelGroup from 'rsuite/PanelGroup';
-import styles from '../styles/popout.module.css';
+import styles from './ChatWindow.module.css';
 import {Settings, Search} from './Settings.jsx';
 import {CategoryTypes} from '../../../constants.js';
 import cdn from '../../../utils/cdn.js';
