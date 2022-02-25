@@ -8,7 +8,6 @@ export default function EmoteButton({emote, onClick, onMouseOver, active}) {
 
   return (
     <button
-      disabled={locked}
       onClick={() => onClick(emote)}
       onMouseOver={() => onMouseOver(emote)}
       onFocus={() => onMouseOver(emote)}
