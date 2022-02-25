@@ -4,7 +4,7 @@ import Emote from '../../../common/components/Emote.jsx';
 import styles from './EmoteButton.module.css';
 
 export default function EmoteButton({emote, onClick, onMouseOver, active}) {
-  const locked = emote.metadata != null ? emote.metadata.locked : false;
+  const locked = emote.metadata != null ? emote.metadata.isLocked() : false;
 
   return (
     <button
@@ -14,7 +14,7 @@ export default function EmoteButton({emote, onClick, onMouseOver, active}) {
       onFocus={() => onMouseOver(emote)}
       type="button"
       className={classNames(styles.emote, active ? styles.active : null)}>
-      <Emote emote={emote} disabled={locked} />
+      <Emote emote={emote} locked={locked} />
     </button>
   );
 }
