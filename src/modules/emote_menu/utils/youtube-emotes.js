@@ -33,6 +33,16 @@ function getCategoryForChannelId(channelId, categoryName) {
   }
 }
 
+function getLiveChat() {
+  return document.getElementsByTagName('yt-live-chat-renderer')[0]?.__data?.data;
+}
+
+function isLocked(emoteId) {
+  const liveChat = getLiveChat();
+  const youtubeCustomEmojis = liveChat?.emojis;
+  return youtubeCustomEmojis.find(({emojiId}) => emojiId === emoteId).isLocked;
+}
+
 export async function loadYouTubeEmotes() {
   const currentChannel = getCurrentChannel();
   if (currentChannel == null || currentChannel.provider !== 'youtube') {
@@ -41,8 +51,7 @@ export async function loadYouTubeEmotes() {
 
   const liveChatContinuation = window.ytInitialData?.continuationContents?.liveChatContinuation;
   const liveChatRenderer = window.ytInitialData?.contents?.liveChatRenderer;
-  const liveChatRendererData = document.getElementsByTagName('yt-live-chat-renderer')[0]?.__data?.data;
-  const liveChat = liveChatContinuation || liveChatRenderer || liveChatRendererData;
+  const liveChat = getLiveChat() || liveChatContinuation || liveChatRenderer;
   const youtubeCustomEmojis = liveChat?.emojis;
   const youtubeEmojiCategories = liveChat?.actionPanel?.liveChatMessageInputRenderer?.pickers?.find(
     (picker) => picker.emojiPickerRenderer != null
@@ -65,10 +74,6 @@ export async function loadYouTubeEmotes() {
 
   const categoryEmojis = {};
   for (const emoji of youtubeCustomEmojis) {
-    // TODO: support locked emotes
-    if (emoji.isLocked) {
-      continue;
-    }
     const channelId = emoji.emojiId.split('/')[0];
     let category = categoryEmojis[channelId];
     if (category == null) {
@@ -89,6 +94,9 @@ export async function loadYouTubeEmotes() {
           category,
           channel: categoryName,
           code: shortcuts.find((shortcut) => !shortcut.startsWith(':_')) || shortcuts[0],
+          metadata: {
+            isLocked: isLocked.bind(this, emoteId),
+          },
           images: {
             '1x': (image.thumbnails[1] || image.thumbnails[0]).url,
           },
@@ -98,8 +106,10 @@ export async function loadYouTubeEmotes() {
     tempCategories[category.id] = {
       category,
       // twitch seperates emotes by tier, so we merge them into one set
-      emotes: sortBy(uniqBy([...(tempCategories[category.id]?.emotes || []), ...categoryEmotes], 'id'), ({code}) =>
-        code.toLowerCase()
+      // note: sortBy accepts booleans, not necessary to convert to int
+      emotes: sortBy(
+        uniqBy([...(tempCategories[category.id]?.emotes || []), ...categoryEmotes], 'id'),
+        ({code, metadata}) => [metadata.isLocked(), code.toLowerCase()]
       ),
     };
   }

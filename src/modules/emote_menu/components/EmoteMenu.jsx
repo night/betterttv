@@ -34,6 +34,10 @@ export default function EmoteMenu({toggleWhisper, appendToChat, onSetTip}) {
         return;
       }
 
+      if (emote.metadata && emote.metadata.isLocked()) {
+        return;
+      }
+
       appendToChat(emote, !shiftPressed);
       emoteMenuViewStore.trackHistory(emote);
 

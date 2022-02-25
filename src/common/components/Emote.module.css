@@ -7,3 +7,7 @@
 .placeholder {
   background-color: var(--bttv-rs-bg-card);
 }
+
+.emoteImageLocked {
+  opacity: 0.5;
+}

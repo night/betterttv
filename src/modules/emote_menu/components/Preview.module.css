@@ -29,3 +29,7 @@
 .emoteCode {
   font-weight: 800;
 }
+
+.emoteStatusIcon {
+  padding: 10px;
+}

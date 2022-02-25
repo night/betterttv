@@ -1,13 +1,18 @@
 import React from 'react';
-import {Icon} from '@rsuite/icons';
-import IconButton from 'rsuite/IconButton';
-import * as faStar from '@fortawesome/free-solid-svg-icons/faStar';
 import styles from './Preview.module.css';
-import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.jsx';
+import Icons from './Icons.jsx';
+import emoteMenuViewStore from '../stores/emote-menu-view-store.js';
 import Emote from '../../../common/components/Emote.jsx';
 
-export default function Preview({emote, isFavorite}) {
+export default function Preview({emote}) {
   if (emote == null) return null;
+
+  let icon = null;
+  if (emote.metadata != null && emote.metadata.isLocked()) {
+    icon = Icons.LOCK;
+  } else if (emoteMenuViewStore.hasFavorite(emote)) {
+    icon = Icons.STAR;
+  }
 
   return (
     <div className={styles.preview} key={emote.code}>
@@ -18,7 +23,7 @@ export default function Preview({emote, isFavorite}) {
           <div>from {emote.category.displayName}</div>
         </div>
       </div>
-      {isFavorite ? <IconButton icon={<Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faStar} />} /> : null}
+      <div className={styles.emoteStatusIcon}>{icon}</div>
     </div>
   );
 }
