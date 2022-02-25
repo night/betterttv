@@ -57,8 +57,8 @@ export default {
   YOUTUBE: <Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faYoutube} />,
   IMAGE: (brandSrc, alt, src = null) =>
     src != null ? (
-      <BrandedImage src={src} alt={alt} brandSrc={brandSrc} />
+      <BrandedImage src={src} alt="" brandSrc={brandSrc} />
     ) : (
-      <img src={brandSrc} alt={alt} className={classNames(styles.icon, styles.iconBorderRadius)} />
+      <img src={brandSrc} alt="" className={classNames(styles.icon, styles.iconBorderRadius)} />
     ),
 };
