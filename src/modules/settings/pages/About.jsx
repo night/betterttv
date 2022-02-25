@@ -13,7 +13,7 @@ import storage from '../../../storage.js';
 import debug from '../../../utils/debug.js';
 import {loadLegacySettings} from '../../../utils/legacy-settings.js';
 import header from '../styles/header.module.css';
-import styles from '../styles/about.module.css';
+import styles from './About.module.css';
 import CloseButton from '../components/CloseButton.jsx';
 import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.jsx';
 
