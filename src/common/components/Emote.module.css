@@ -4,10 +4,6 @@
   object-fit: contain;
 }
 
-.active {
-  background-color: var(--bttv-rs-state-hover-bg);
-}
-
 .placeholder {
   background-color: var(--bttv-rs-bg-card);
 }
