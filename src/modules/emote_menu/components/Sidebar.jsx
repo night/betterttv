@@ -5,7 +5,7 @@ import {DragDropContext, Draggable, Droppable} from 'react-beautiful-dnd';
 import {createPortal} from 'react-dom';
 import styles from './Sidebar.module.css';
 import useAutoScroll from '../hooks/AutoScroll.jsx';
-import emoteMenuViewStore from '../stores/emote-menu-view-store.js';
+import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js';
 import {EMOTE_MENU_SIDEBAR_ROW_HEIGHT, EMOTE_MENU_GRID_HEIGHT} from '../../../constants.js';
 import emojis from '../../emotes/emojis.js';
 import Emote from '../../../common/components/Emote.jsx';

@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './Preview.module.css';
 import Icons from './Icons.jsx';
-import emoteMenuViewStore from '../stores/emote-menu-view-store.js';
+import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js';
 import Emote from '../../../common/components/Emote.jsx';
 
 export default function Preview({emote}) {
