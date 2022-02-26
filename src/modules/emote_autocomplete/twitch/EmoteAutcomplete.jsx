@@ -36,7 +36,6 @@ export default class EmoteAutocomplete {
 
     if (emoteAutcompletContainer == null && emoteAutocomplete) {
       const element = document.querySelector(CHAT_TEXT_AREA);
-      console.log(element);
       const whisperContainer = document.createElement('div');
       whisperContainer.setAttribute('data-a-target', 'bttv-autocomplete-matches-container');
       document.body.appendChild(whisperContainer);
@@ -77,7 +76,6 @@ export default class EmoteAutocomplete {
     parts.pop();
     parts.push(code);
     twitch.setChatInputValue(parts.join(' '), true);
-    console.log(twitch.getChatInputValue());
   }
 
   unloadTwitchAutocomplete() {

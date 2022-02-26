@@ -18,9 +18,10 @@ export default function useChatInput(chatInputElement) {
   const [emotes, setEmotes] = useState([]);
 
   useEffect(() => {
-    function keydownCallback() {
-      const updateEmotes = () => setEmotes(handleChatInput());
+    function inputCallback(event) {
+      event.stopPropagation();
 
+      const updateEmotes = () => setEmotes(handleChatInput());
       if (!emoteMenuViewStore.isLoaded()) {
         emoteMenuViewStore.once('updated', updateEmotes);
       }
@@ -28,7 +29,7 @@ export default function useChatInput(chatInputElement) {
       updateEmotes();
     }
 
-    chatInputElement.addEventListener('input', keydownCallback);
+    chatInputElement.addEventListener('input', inputCallback);
 
     return () => {
       chatInputElement.removeEventListener('input', chatInputElement);

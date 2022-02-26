@@ -7,7 +7,7 @@ import useRowNavigation from '../hooks/RowKeyboardNavigation.jsx';
 import {isEmoteAutocompletable} from '../../../utils/autocomplete.js';
 import keyCodes from '../../../utils/keycodes.js';
 
-const MAX_EMOTES_SHOWN = 5;
+const MAX_EMOTES_SHOWN = 8;
 const EMOTE_ROW_HEIGHT = 36;
 const BOTTOM_OFFSET = 120; // height of everything below the chat window
 
@@ -33,7 +33,7 @@ export default function Emotes({chatInputElement, repositionPopover, autocomplet
   const shortEmotes = useMemo(() => emotes.slice(0, calcMaxHeight()), [emotes]);
   const [selected, setSelected] = useRowNavigation(setNavigationCallback, shortEmotes.length);
 
-  useEffect(() => repositionPopover(), [emotes]);
+  useEffect(() => repositionPopover(), [shortEmotes.length]);
 
   function handleAutcomplete(emote) {
     setEmotes([]);
@@ -42,17 +42,14 @@ export default function Emotes({chatInputElement, repositionPopover, autocomplet
 
   useEffect(() => {
     function keydownCallback(event) {
-      console.log(event);
-      if (!isEmoteAutocompletable()) {
-        if (shortEmotes.length > 0) {
-          setEmotes([]);
-        }
+      event.stopPropagation();
 
+      if (!isEmoteAutocompletable()) {
         return;
       }
 
       if (event.key === keyCodes.Enter || event.key === keyCodes.Tab) {
-        event.stopImmediatePropagation();
+        event.preventDefault();
         handleAutcomplete(shortEmotes[selected]);
         return;
       }
