@@ -1,5 +1,6 @@
 import React, {useEffect, useMemo} from 'react';
 import {Button} from 'rsuite';
+import {List, WindowScroller} from 'react-virtualized';
 import useChatInput from '../hooks/ChatInput.jsx';
 import Emote from '../../../common/components/Emote.jsx';
 import styles from './Emotes.module.css';
@@ -21,19 +22,35 @@ function calcMaxHeight() {
   return canShow;
 }
 
-const shortenName = (displayName) => displayName.split(' ')[0];
-
 let navigationCallback;
 function setNavigationCallback(callback) {
   navigationCallback = callback;
 }
 
+function renderRow(emote, key, style, index, selected, setSelected, handleAutcomplete) {
+  return (
+    <Button
+      key={key}
+      style={style}
+      active={index === selected}
+      onMouseOver={() => setSelected(index)}
+      onClick={() => handleAutcomplete(emote)}
+      appearance="subtle"
+      className={styles.emoteContainer}>
+      <div className={styles.emote}>
+        <Emote emote={emote} />
+        <div className={styles.emoteCode}>{emote.code}</div>
+      </div>
+      <div className={styles.categoryName}>{emote.category.displayName}</div>
+    </Button>
+  );
+}
+
 export default function Emotes({chatInputElement, repositionPopover, autocomplete}) {
   const [emotes, setEmotes] = useChatInput(chatInputElement);
-  const shortEmotes = useMemo(() => emotes.slice(0, calcMaxHeight()), [emotes]);
-  const [selected, setSelected] = useRowNavigation(setNavigationCallback, shortEmotes.length);
+  const [selected, setSelected] = useRowNavigation(setNavigationCallback, emotes.length);
 
-  useEffect(() => repositionPopover(), [shortEmotes.length]);
+  useEffect(() => repositionPopover(), [emotes.length]);
 
   function handleAutcomplete(emote) {
     setEmotes([]);
@@ -50,7 +67,7 @@ export default function Emotes({chatInputElement, repositionPopover, autocomplet
 
       if (event.key === keyCodes.Enter || event.key === keyCodes.Tab) {
         event.preventDefault();
-        handleAutcomplete(shortEmotes[selected]);
+        handleAutcomplete(emotes[selected]);
         return;
       }
 
@@ -62,29 +79,23 @@ export default function Emotes({chatInputElement, repositionPopover, autocomplet
     return () => {
       window.removeEventListener('keydown', keydownCallback, true);
     };
-  }, [shortEmotes, selected]);
+  }, [emotes, selected]);
 
-  if (shortEmotes.length === 0) {
+  if (emotes.length === 0) {
     return null;
   }
 
   return (
     <div className={styles.emotes}>
-      {shortEmotes.map((emote, index) => (
-        <Button
-          key={emote.id}
-          active={index === selected}
-          onMouseOver={() => setSelected(index)}
-          onClick={() => handleAutcomplete(emote)}
-          appearance="subtle"
-          className={styles.emoteContainer}>
-          <div className={styles.emote}>
-            <Emote emote={emote} />
-            <div className={styles.emoteCode}>{emote.code}</div>
-          </div>
-          <div className={styles.categoryName}>{shortenName(emote.category.displayName)}</div>
-        </Button>
-      ))}
+      <List
+        width={500}
+        height={300}
+        rowHeight={30}
+        rowRenderer={({index, key, style}) =>
+          renderRow(emotes[index], key, style, index, selected, setSelected, handleAutcomplete)
+        }
+        rowCount={emotes.length}
+      />
     </div>
   );
 }
