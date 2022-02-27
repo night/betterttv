@@ -1,49 +1,35 @@
-import React, {useEffect, useMemo} from 'react';
-import {Button} from 'rsuite';
-import {List, WindowScroller} from 'react-virtualized';
+import React, {useEffect} from 'react';
+import {AutoSizer, List} from 'react-virtualized';
 import useChatInput from '../hooks/ChatInput.jsx';
-import Emote from '../../../common/components/Emote.jsx';
 import styles from './Emotes.module.css';
 import useRowNavigation from '../hooks/RowKeyboardNavigation.jsx';
 import {isEmoteAutocompletable} from '../../../utils/autocomplete.js';
 import keyCodes from '../../../utils/keycodes.js';
+import renderRow from './EmoteRow.jsx';
+import EmotesHeader from './EmotesHeader.jsx';
+import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js';
 
 const MAX_EMOTES_SHOWN = 8;
-const EMOTE_ROW_HEIGHT = 36;
+const EMOTE_ROW_HEIGHT = 32;
 const BOTTOM_OFFSET = 120; // height of everything below the chat window
 
-function calcMaxHeight() {
-  const canShow = (window.innerHeight - BOTTOM_OFFSET) / EMOTE_ROW_HEIGHT;
+function calcMaxHeight(length) {
+  let currentHeight = length * EMOTE_ROW_HEIGHT;
 
-  if (canShow >= MAX_EMOTES_SHOWN) {
-    return MAX_EMOTES_SHOWN;
+  if (length > MAX_EMOTES_SHOWN) {
+    currentHeight = MAX_EMOTES_SHOWN * EMOTE_ROW_HEIGHT;
   }
 
-  return canShow;
+  if (currentHeight > window.innerHeight - BOTTOM_OFFSET) {
+    currentHeight = window.innerHeight - BOTTOM_OFFSET;
+  }
+
+  return currentHeight;
 }
 
 let navigationCallback;
 function setNavigationCallback(callback) {
   navigationCallback = callback;
-}
-
-function renderRow(emote, key, style, index, selected, setSelected, handleAutcomplete) {
-  return (
-    <Button
-      key={key}
-      style={style}
-      active={index === selected}
-      onMouseOver={() => setSelected(index)}
-      onClick={() => handleAutcomplete(emote)}
-      appearance="subtle"
-      className={styles.emoteContainer}>
-      <div className={styles.emote}>
-        <Emote emote={emote} />
-        <div className={styles.emoteCode}>{emote.code}</div>
-      </div>
-      <div className={styles.categoryName}>{emote.category.displayName}</div>
-    </Button>
-  );
 }
 
 export default function Emotes({chatInputElement, repositionPopover, autocomplete}) {
@@ -52,14 +38,15 @@ export default function Emotes({chatInputElement, repositionPopover, autocomplet
 
   useEffect(() => repositionPopover(), [emotes.length]);
 
-  function handleAutcomplete(emote) {
+  function handleAutocomplete(emote) {
     setEmotes([]);
+    emoteMenuViewStore.trackHistory(emotes);
     autocomplete(emote);
   }
 
   useEffect(() => {
     function keydownCallback(event) {
-      event.stopPropagation();
+      // event.stopPropagation();
 
       if (!isEmoteAutocompletable()) {
         return;
@@ -67,7 +54,7 @@ export default function Emotes({chatInputElement, repositionPopover, autocomplet
 
       if (event.key === keyCodes.Enter || event.key === keyCodes.Tab) {
         event.preventDefault();
-        handleAutcomplete(emotes[selected]);
+        handleAutocomplete(emotes[selected]);
         return;
       }
 
@@ -87,15 +74,27 @@ export default function Emotes({chatInputElement, repositionPopover, autocomplet
 
   return (
     <div className={styles.emotes}>
-      <List
-        width={500}
-        height={300}
-        rowHeight={30}
-        rowRenderer={({index, key, style}) =>
-          renderRow(emotes[index], key, style, index, selected, setSelected, handleAutcomplete)
-        }
-        rowCount={emotes.length}
-      />
+      <EmotesHeader />
+      <AutoSizer disableHeight>
+        {({width}) => (
+          <List
+            scrollToIndex={selected}
+            width={width}
+            height={calcMaxHeight(emotes.length)}
+            rowHeight={EMOTE_ROW_HEIGHT}
+            rowRenderer={(args) =>
+              renderRow({
+                emote: emotes[args.index],
+                selected,
+                setSelected,
+                handleAutocomplete,
+                ...args,
+              })
+            }
+            rowCount={emotes.length}
+          />
+        )}
+      </AutoSizer>
     </div>
   );
 }

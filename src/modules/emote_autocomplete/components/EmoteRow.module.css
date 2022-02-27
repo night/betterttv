@@ -1,0 +1,27 @@
+.emoteContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px;
+  font-size: 12px;
+  transition: none;
+}
+
+.emote {
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+}
+
+.emoteCode {
+  padding: 4px;
+}
+
+.categoryName {
+  padding: 4px;
+  opacity: 0.8;
+}
+
+.active {
+  background-color: var(--bttv-rs-btn-default-bg) !important;
+}

@@ -3,25 +3,5 @@
   flex-direction: column;
   gap: 4px;
   margin: 4px;
-}
-
-.emoteContainer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 4px;
-}
-
-.emote {
-  display: flex;
-  align-items: center;
-}
-
-.emoteCode {
-  padding: 4px;
-}
-
-.categoryName {
-  padding: 4px;
-  opacity: 0.8;
+  height: auto;
 }

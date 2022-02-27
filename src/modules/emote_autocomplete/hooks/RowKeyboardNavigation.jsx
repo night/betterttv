@@ -28,6 +28,14 @@ export default function useRowNavigation(setKeyDownCallback, rowCount = 0) {
 
   function keydownCallback(event) {
     switch (event.key) {
+      case keyCodes.End:
+        event.preventDefault();
+        setSelected(rowCount);
+        break;
+      case keyCodes.Home:
+        event.preventDefault();
+        setSelected(0);
+        break;
       case keyCodes.ArrowUp:
         event.preventDefault();
         setSelected(travelUp(selected, rowCount));
