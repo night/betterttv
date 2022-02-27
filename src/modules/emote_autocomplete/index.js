@@ -1,7 +1,7 @@
 import {PlatformTypes} from '../../constants.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
-import TwitchEmoteAutocomplete from './twitch/EmoteAutcomplete.jsx';
-import YoutubeEmoteAutocomplete from './youtube/EmoteAutcomplete.jsx';
+import TwitchEmoteAutocomplete from './twitch/EmoteAutocomplete.jsx';
+import YoutubeEmoteAutocomplete from './youtube/EmoteAutocomplete.jsx';
 
 export default loadModuleForPlatforms(
   [PlatformTypes.TWITCH, () => new TwitchEmoteAutocomplete()],
