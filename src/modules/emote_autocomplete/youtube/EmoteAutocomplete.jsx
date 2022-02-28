@@ -4,13 +4,11 @@ import {EmoteProviders, SettingIds} from '../../../constants.js';
 import settings from '../../../settings.js';
 import {createYoutubeEmojiNode} from '../../../utils/youtube.js';
 import EmoteWhisper from '../components/EmoteWhisper.jsx';
-import styles from './EmoteAutocomplete.module.css';
 
 let mountedNode;
 
 const CHAT_TEXT_AREA = 'div#input[contenteditable]';
 const EMOTE_AUTOCOMPLETE_CONTAINER_SELECTOR = 'div[data-a-target="bttv-autocomplete-matches-container"]';
-const YOUTUBE_AUTOCOMPLETE_CONTAINER_SELECTOR = 'yt-live-chat-text-input-field-renderer #dropdown';
 
 function findFocusedWord(value, selectionStart = 0) {
   const subString = value.substring(0, selectionStart);
@@ -26,14 +24,14 @@ function findFocusedWord(value, selectionStart = 0) {
 export default class EmoteAutocomplete {
   constructor() {
     this.load();
-    this.unloadNativeAutocomplete();
+    settings.on(`changed.${SettingIds.EMOTE_AUTOCOMPLETE}`, () => this.load());
   }
 
   load() {
     const emoteAutcompleteContainer = document.querySelector(EMOTE_AUTOCOMPLETE_CONTAINER_SELECTOR);
+    const emoteAutocomplete = settings.get(SettingIds.EMOTE_AUTOCOMPLETE);
 
-    // TODO: update when we merge settings menu for youtube
-    if (emoteAutcompleteContainer == null) {
+    if (emoteAutcompleteContainer == null && emoteAutocomplete) {
       const element = document.querySelector(CHAT_TEXT_AREA);
       const whisperContainer = document.createElement('div');
       whisperContainer.setAttribute('data-a-target', 'bttv-autocomplete-matches-container');
@@ -61,6 +59,14 @@ export default class EmoteAutocomplete {
     }
 
     this.show();
+  }
+
+  show() {
+    const emoteMenuEnabled = settings.get(SettingIds.EMOTE_AUTOCOMPLETE);
+
+    if (!emoteMenuEnabled && mountedNode != null) {
+      ReactDOM.unmountComponentAtNode(mountedNode);
+    }
   }
 
   isEnabled() {
@@ -126,10 +132,5 @@ export default class EmoteAutocomplete {
     }
 
     return value;
-  }
-
-  unloadNativeAutocomplete() {
-    const dropdown = document.querySelector(YOUTUBE_AUTOCOMPLETE_CONTAINER_SELECTOR);
-    dropdown.classList.toggle(styles.hideNativeAutocomplete, true);
   }
 }

@@ -5,7 +5,6 @@ import EmoteWhisper from '../components/EmoteWhisper.jsx';
 import settings from '../../../settings.js';
 import {SettingIds} from '../../../constants.js';
 import twitch, {SelectionTypes} from '../../../utils/twitch.js';
-import styles from './EmoteAutocomplete.module.css';
 
 let mountedNode;
 
@@ -53,14 +52,11 @@ export default class EmoteAutocomplete {
   }
 
   show() {
-    const autocompleteContainer = document.querySelector(EMOTE_AUTOCOMPLETE_CONTAINER_SELECTOR);
     const emoteMenuEnabled = settings.get(SettingIds.EMOTE_AUTOCOMPLETE);
 
-    if (autocompleteContainer == null) {
-      return;
+    if (!emoteMenuEnabled && mountedNode != null) {
+      ReactDOM.unmountComponentAtNode(mountedNode);
     }
-
-    autocompleteContainer.classList.toggle(styles.hideEmoteAutocomplete, !emoteMenuEnabled);
   }
 
   isEnabled() {
