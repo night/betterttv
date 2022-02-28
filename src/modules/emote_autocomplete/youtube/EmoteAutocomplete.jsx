@@ -127,7 +127,7 @@ export default class EmoteAutocomplete {
     }
 
     const {value} = findFocusedWord(anchorNode.data, anchorOffset);
-    if (value == null || !/^(:(.*[a-z]){2,})/.test(value) || value.endsWith(':')) {
+    if (value == null || !/^(:(.*[a-zA-Z0-9]){2,})/.test(value) || value.endsWith(':')) {
       return null;
     }
 
