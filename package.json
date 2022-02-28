@@ -30,7 +30,7 @@
     "@rsuite/icons": "^1.0.2",
     "@sentry/browser": "^6.17.9",
     "@sentry/integrations": "^6.17.9",
-    "@sentry/webpack-plugin": "^1.18.7",
+    "@sentry/webpack-plugin": "^1.18.8",
     "autoprefixer": "^10.4.2",
     "babel-loader": "^8.2.3",
     "babel-plugin-wildcard": "^7.0.0",
