@@ -1,40 +1,48 @@
 import {useEffect, useState} from 'react';
 import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js';
-import {getAutocompletable} from '../../../utils/autocomplete.js';
 
-function handleChatInput() {
-  const focusedWord = getAutocompletable();
-
-  if (focusedWord != null) {
-    const strippedFocusedWord = focusedWord.replace(/\s|:/g, '');
-    const foundEmotes = emoteMenuViewStore.search(strippedFocusedWord);
-    return foundEmotes.map((emote) => emote.item);
+function handleChatInput(focusedWord) {
+  if (focusedWord == null) {
+    return [];
   }
 
-  return [];
+  const strippedFocusedWord = focusedWord.replace(/\s|:/g, '');
+  const foundEmotes = emoteMenuViewStore.search(strippedFocusedWord);
+
+  return foundEmotes.map((emote) => emote.item);
 }
 
-export default function useChatInput(chatInputElement) {
+export default function useChatInput(chatInputElement, getAutocomplete) {
   const [emotes, setEmotes] = useState([]);
 
   useEffect(() => {
     function inputCallback(event) {
-      event.stopPropagation();
+      const value = getAutocomplete();
 
-      const updateEmotes = () => setEmotes(handleChatInput());
-      if (!emoteMenuViewStore.isLoaded()) {
-        emoteMenuViewStore.once('updated', updateEmotes);
+      if (value == null) {
+        return;
       }
 
-      updateEmotes();
+      event.stopPropagation();
+      setEmotes(handleChatInput(value));
     }
 
+    function dirtyCallback() {
+      if (!emoteMenuViewStore.isLoaded()) {
+        emoteMenuViewStore.once('updated', () => {
+          setEmotes(handleChatInput(getAutocomplete()));
+        });
+      }
+    }
+
+    const cleanup = emoteMenuViewStore.on('dirty', dirtyCallback);
     chatInputElement.addEventListener('input', inputCallback);
 
     return () => {
+      cleanup();
       chatInputElement.removeEventListener('input', chatInputElement);
     };
-  }, []);
+  }, [getAutocomplete]);
 
   return [emotes, setEmotes];
 }

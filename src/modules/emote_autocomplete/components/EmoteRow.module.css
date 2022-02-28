@@ -17,11 +17,6 @@
   padding: 4px;
 }
 
-.categoryName {
-  padding: 4px;
-  opacity: 0.8;
-}
-
 .active {
   background-color: var(--bttv-rs-btn-default-bg) !important;
 }

@@ -3,7 +3,7 @@ import {Whisper} from 'rsuite';
 import ThemeProvider from '../../../common/components/ThemeProvider.jsx';
 import AutocompletePopover from './AutocompletePopover.jsx';
 
-export default function EmoteWhisper({boundingQuerySelector, chatInputElement, autocomplete}) {
+export default function EmoteWhisper({boundingQuerySelector, chatInputElement, onComplete, getAutocomplete}) {
   return (
     <ThemeProvider>
       <Whisper
@@ -13,7 +13,8 @@ export default function EmoteWhisper({boundingQuerySelector, chatInputElement, a
           <AutocompletePopover
             chatInputElement={chatInputElement}
             boundingQuerySelector={boundingQuerySelector}
-            autocomplete={autocomplete}
+            getAutocomplete={getAutocomplete}
+            onComplete={onComplete}
           />
         }>
         <span />

@@ -12,7 +12,17 @@ const DEFAULT_POPOVER_WIDTH = 300;
 
 const EmoteMenuPopover = React.forwardRef(
   (
-    {triggerRef, appendToChat, className, style, boundingQuerySelector, chatInputElement, autocomplete, ...props},
+    {
+      triggerRef,
+      appendToChat,
+      className,
+      style,
+      boundingQuerySelector,
+      chatInputElement,
+      onComplete,
+      getAutocomplete,
+      ...props
+    },
     ref
   ) => {
     const localRef = useRef(null);
@@ -37,7 +47,8 @@ const EmoteMenuPopover = React.forwardRef(
         <Emotes
           chatInputElement={chatInputElement}
           repositionPopover={() => reposition()}
-          autocomplete={autocomplete}
+          onComplete={onComplete}
+          getAutocomplete={getAutocomplete}
         />
       </Popover>
     );

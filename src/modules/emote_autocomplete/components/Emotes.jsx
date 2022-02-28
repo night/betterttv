@@ -3,7 +3,6 @@ import {AutoSizer, List} from 'react-virtualized';
 import useChatInput from '../hooks/ChatInput.jsx';
 import styles from './Emotes.module.css';
 import useRowNavigation from '../hooks/RowKeyboardNavigation.jsx';
-import {isEmoteAutocompletable} from '../../../utils/autocomplete.js';
 import keyCodes from '../../../utils/keycodes.js';
 import renderRow from './EmoteRow.jsx';
 import EmotesHeader from './EmotesHeader.jsx';
@@ -32,8 +31,8 @@ function setNavigationCallback(callback) {
   navigationCallback = callback;
 }
 
-export default function Emotes({chatInputElement, repositionPopover, autocomplete}) {
-  const [emotes, setEmotes] = useChatInput(chatInputElement);
+export default function Emotes({chatInputElement, repositionPopover, onComplete, getAutocomplete}) {
+  const [emotes, setEmotes] = useChatInput(chatInputElement, getAutocomplete);
   const [selected, setSelected] = useRowNavigation(setNavigationCallback, emotes.length);
 
   useEffect(() => repositionPopover(), [emotes.length]);
@@ -41,18 +40,18 @@ export default function Emotes({chatInputElement, repositionPopover, autocomplet
   function handleAutocomplete(emote) {
     setEmotes([]);
     emoteMenuViewStore.trackHistory(emotes);
-    autocomplete(emote);
+    onComplete(emote);
   }
 
   useEffect(() => {
     function keydownCallback(event) {
-      // event.stopPropagation();
-
-      if (!isEmoteAutocompletable()) {
+      if (getAutocomplete() == null) {
+        setEmotes([]);
         return;
       }
 
       if (event.key === keyCodes.Enter || event.key === keyCodes.Tab) {
+        event.stopPropagation();
         event.preventDefault();
         handleAutocomplete(emotes[selected]);
         return;
@@ -74,7 +73,7 @@ export default function Emotes({chatInputElement, repositionPopover, autocomplet
 
   return (
     <div className={styles.emotes}>
-      <EmotesHeader />
+      <EmotesHeader getAutocomplete={getAutocomplete} />
       <AutoSizer disableHeight>
         {({width}) => (
           <List

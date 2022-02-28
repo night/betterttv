@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {EmoteProviders, SettingIds} from '../../../constants.js';
+import settings from '../../../settings.js';
 import EmoteWhisper from '../components/EmoteWhisper.jsx';
 import styles from './EmoteAutocomplete.module.css';
 
@@ -8,6 +10,26 @@ let mountedNode;
 const CHAT_TEXT_AREA = 'div#input[contenteditable]';
 const EMOTE_AUTOCOMPLETE_CONTAINER_SELECTOR = 'div[data-a-target="bttv-autocomplete-matches-container"]';
 const YOUTUBE_AUTOCOMPLETE_CONTAINER_SELECTOR = 'yt-live-chat-text-input-field-renderer #dropdown';
+
+function findFocusedWord(value, selectionStart = 0) {
+  const subString = value.substring(0, selectionStart);
+  const focusedWord = subString.split(/\s+/).at(-1);
+
+  return {
+    value: focusedWord,
+    start: subString.length - focusedWord.length,
+    end: selectionStart,
+  };
+}
+
+function createYoutubeEmojiNode(emote) {
+  const newNode = document.createElement('img');
+  newNode.className = 'emoji yt-formatted-string style-scope yt-live-chat-text-input-field-renderer';
+  newNode.src = emote.images['1x'];
+  newNode.alt = emote.code;
+  newNode.setAttribute('data-emoji-id', emote.id);
+  return newNode;
+}
 
 export default class EmoteAutocomplete {
   constructor() {
@@ -37,7 +59,8 @@ export default class EmoteAutocomplete {
         <EmoteWhisper
           boundingQuerySelector={CHAT_TEXT_AREA}
           chatInputElement={element}
-          autocomplete={this.autocomplete}
+          onComplete={this.autocomplete}
+          getAutocomplete={this.getAutocomplete}
         />,
         whisperContainer
       );
@@ -48,16 +71,73 @@ export default class EmoteAutocomplete {
     this.show();
   }
 
+  isEnabled() {
+    return settings.get(SettingIds.EMOTE_AUTOCOMPLETE) && this.getAutocomplete() != null;
+  }
+
   autocomplete(emote) {
-    console.log(emote);
+    const {anchorNode, anchorOffset} = document.getSelection();
+
+    if (anchorNode.nodeType !== Node.TEXT_NODE) {
+      return;
+    }
+
+    const {data} = anchorNode;
+    const {start, end} = findFocusedWord(data, anchorOffset);
+
+    const prefix = data.substring(0, start);
+    const suffix = data.substring(end, data.length);
+
+    const range = document.createRange();
+    if (emote.category.provider === EmoteProviders.YOUTUBE) {
+      const node = createYoutubeEmojiNode(emote);
+      anchorNode.replaceWith(node);
+
+      if (prefix.length > 0) {
+        const textNode = document.createTextNode(prefix);
+        node.parentElement.insertBefore(textNode, node);
+      }
+
+      if (suffix.length > 0) {
+        const textNode = document.createTextNode(suffix);
+        node.parentElement.insertBefore(textNode, node.nextSibling);
+      }
+
+      range.setStartAfter(node);
+      range.setEndAfter(node);
+    } else {
+      anchorNode.textContent = `${prefix}${emote.code}${suffix}`;
+      const endSelection = prefix.length + emote.code.length;
+
+      range.setEnd(anchorNode, endSelection);
+      range.setStart(anchorNode, endSelection);
+    }
+
+    const element = document.querySelector(CHAT_TEXT_AREA);
+    element.dispatchEvent(new Event('input', {bubbles: true}));
+    element.focus();
+
+    const selection = document.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+  }
+
+  getAutocomplete() {
+    const {anchorNode, anchorOffset} = document.getSelection();
+    if (anchorNode.nodeType !== Node.TEXT_NODE) {
+      return null;
+    }
+
+    const {value} = findFocusedWord(anchorNode.data, anchorOffset);
+    if (value == null || !/^(:(.*[a-z]){2,})/.test(value) || value.endsWith(':')) {
+      return null;
+    }
+
+    return value;
   }
 
   unloadNativeAutocomplete() {
     const dropdown = document.querySelector(YOUTUBE_AUTOCOMPLETE_CONTAINER_SELECTOR);
-
-    // TODO: update when we merge settings menu for youtube
-    if (dropdown != null) {
-      dropdown.classList.toggle(styles.hideNativeAutocomplete, true);
-    }
+    dropdown.classList.toggle(styles.hideNativeAutocomplete, true);
   }
 }

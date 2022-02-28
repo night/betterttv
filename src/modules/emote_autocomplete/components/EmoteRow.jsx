@@ -17,7 +17,7 @@ export default function renderRow({emote, key, style, index, selected, setSelect
         <Emote emote={emote} />
         <div className={styles.emoteCode}>{emote.code}</div>
       </div>
-      <div className={styles.categoryName}>{emote.category.displayName}</div>
+      <div>{emote.category.displayName}</div>
     </Button>
   );
 }
