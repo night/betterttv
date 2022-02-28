@@ -60,7 +60,7 @@ function organizeCategories(categories) {
 const fuse = new Fuse([], {
   keys: ['code'],
   shouldSort: true,
-  threshold: 0.1,
+  threshold: 0.3,
 });
 
 let providerCategories = [];
