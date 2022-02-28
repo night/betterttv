@@ -97,6 +97,7 @@ export default function Emotes({chatInputElement, repositionPopover, onComplete,
       <AutoSizer disableHeight>
         {({width}) => (
           <List
+            className={styles.scrollContainer}
             scrollToIndex={selected}
             width={width}
             height={calcMaxHeight(emotes.length)}
