@@ -85,6 +85,7 @@ export default class EmoteAutocomplete {
       return null;
     }
 
+    twitch.setChatInputValue(value, false, false);
     return focusedWord;
   }
 }

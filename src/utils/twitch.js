@@ -564,14 +564,17 @@ export default {
     return chatInput.memoizedProps.value;
   },
 
-  setChatInputValue(text, shouldFocus = true) {
+  setChatInputValue(text, shouldFocus = true, dispatch = true) {
     const element = $(CHAT_INPUT)[0];
 
     // deprecated
     const {value: currentValue, selectionStart} = element;
     if (currentValue != null) {
       element.value = text;
-      element.dispatchEvent(new Event('input', {bubbles: true}));
+
+      if (dispatch) {
+        element.dispatchEvent(new Event('input', {bubbles: true}));
+      }
 
       const instance = getReactInstance(element);
       if (instance) {
