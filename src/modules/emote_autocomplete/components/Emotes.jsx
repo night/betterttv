@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {AutoSizer, List} from 'react-virtualized';
 import useChatInput from '../hooks/ChatInput.jsx';
 import styles from './Emotes.module.css';
@@ -34,6 +34,8 @@ function setNavigationCallback(callback) {
 export default function Emotes({chatInputElement, repositionPopover, onComplete, getAutocomplete}) {
   const [emotes, setEmotes] = useChatInput(chatInputElement, getAutocomplete);
   const [selected, setSelected] = useRowNavigation(setNavigationCallback, emotes.length);
+  const [open, setOpen] = useState(true);
+  const localRef = useRef(null);
 
   useEffect(() => repositionPopover(), [emotes.length]);
 
@@ -44,11 +46,29 @@ export default function Emotes({chatInputElement, repositionPopover, onComplete,
   }
 
   useEffect(() => {
+    function handleOutsideClick(event) {
+      if (localRef.current == null) {
+        return;
+      }
+
+      setOpen(localRef.current.contains(event.target));
+    }
+
+    window.addEventListener('mousedown', handleOutsideClick);
+
+    return () => {
+      window.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, [localRef.current, setOpen]);
+
+  useEffect(() => {
     function keydownCallback(event) {
       if (getAutocomplete() == null) {
         setEmotes([]);
         return;
       }
+
+      setOpen(true);
 
       if (event.key === keyCodes.Enter || event.key === keyCodes.Tab) {
         event.stopPropagation();
@@ -67,12 +87,12 @@ export default function Emotes({chatInputElement, repositionPopover, onComplete,
     };
   }, [emotes, selected]);
 
-  if (emotes.length === 0) {
+  if (!open || emotes.length === 0) {
     return null;
   }
 
   return (
-    <div className={styles.emotes}>
+    <div className={styles.emotes} ref={localRef}>
       <EmotesHeader getAutocomplete={getAutocomplete} />
       <AutoSizer disableHeight>
         {({width}) => (

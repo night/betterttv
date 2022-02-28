@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {EmoteProviders, SettingIds} from '../../../constants.js';
 import settings from '../../../settings.js';
+import {createYoutubeEmojiNode} from '../../../utils/youtube.js';
 import EmoteWhisper from '../components/EmoteWhisper.jsx';
 import styles from './EmoteAutocomplete.module.css';
 
@@ -20,15 +21,6 @@ function findFocusedWord(value, selectionStart = 0) {
     start: subString.length - focusedWord.length,
     end: selectionStart,
   };
-}
-
-function createYoutubeEmojiNode(emote) {
-  const newNode = document.createElement('img');
-  newNode.className = 'emoji yt-formatted-string style-scope yt-live-chat-text-input-field-renderer';
-  newNode.src = emote.images['1x'];
-  newNode.alt = emote.code;
-  newNode.setAttribute('data-emoji-id', emote.id);
-  return newNode;
 }
 
 export default class EmoteAutocomplete {

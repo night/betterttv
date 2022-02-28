@@ -23,8 +23,8 @@ export default function useChatInput(chatInputElement, getAutocomplete) {
         return;
       }
 
-      event.stopPropagation();
       setEmotes(handleChatInput(value));
+      event.stopPropagation();
     }
 
     function dirtyCallback() {
@@ -42,7 +42,7 @@ export default function useChatInput(chatInputElement, getAutocomplete) {
       cleanup();
       chatInputElement.removeEventListener('input', chatInputElement);
     };
-  }, [getAutocomplete]);
+  }, [getAutocomplete, chatInputElement]);
 
   return [emotes, setEmotes];
 }
