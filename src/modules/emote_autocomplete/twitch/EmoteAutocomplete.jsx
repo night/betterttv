@@ -81,7 +81,7 @@ export default class EmoteAutocomplete {
     }
 
     const focusedWord = value.split(/\s+/).at(-1);
-    if (focusedWord == null || !/^(:(.*[a-z]){2,})/.test(focusedWord) || focusedWord.endsWith(':')) {
+    if (focusedWord == null || !/^(:(.*[a-zA-Z0-9]){2,})/.test(focusedWord) || focusedWord.endsWith(':')) {
       return null;
     }
 

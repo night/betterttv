@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import keyCodes from '../../../utils/keycodes.js';
 
 const DEFAULT_SELECT = 0;
@@ -26,7 +26,7 @@ function travelDown(currentSelection, rowCount) {
 export default function useRowNavigation(setKeyDownCallback, rowCount = 0) {
   const [selected, setSelected] = useState(DEFAULT_SELECT);
 
-  function keydownCallback(event) {
+  setKeyDownCallback((event) => {
     switch (event.key) {
       case keyCodes.End:
         event.preventDefault();
@@ -45,12 +45,9 @@ export default function useRowNavigation(setKeyDownCallback, rowCount = 0) {
         setSelected(travelDown(selected, rowCount));
         break;
       default:
-        break;
+        setSelected(DEFAULT_SELECT);
     }
-  }
-
-  setKeyDownCallback(keydownCallback);
-  useEffect(() => setSelected(DEFAULT_SELECT), [rowCount]);
+  });
 
   return [selected, setSelected];
 }
