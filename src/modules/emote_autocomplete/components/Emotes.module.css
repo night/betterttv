@@ -5,3 +5,7 @@
   margin: 4px;
   height: auto;
 }
+
+.scrollContainer {
+  composes: scroll from '../../emote_menu/styles/Scrollbar.module.css';
+}
