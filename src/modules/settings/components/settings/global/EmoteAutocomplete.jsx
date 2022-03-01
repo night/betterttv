@@ -12,7 +12,7 @@ function EmoteAutocomplete() {
   return (
     <Panel header="Emote Autocomplete">
       <div className={styles.toggle}>
-        <p className={styles.description}>Typing : will attempt to autocomplete your emote</p>
+        <p className={styles.description}>Typing : before text will attempt to autocomplete your emote</p>
         <Toggle checked={value} onChange={(state) => setValue(state)} />
       </div>
     </Panel>
