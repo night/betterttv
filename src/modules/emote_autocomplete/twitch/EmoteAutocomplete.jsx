@@ -67,7 +67,7 @@ export default class EmoteAutocomplete {
     const currentValue = twitch.getChatInputValue();
 
     const lastSpaceIndex = currentValue.lastIndexOf(' ');
-    const newValue = `${currentValue.substring(0, lastSpaceIndex)} ${code}`;
+    const newValue = lastSpaceIndex < 0 ? code : `${currentValue.substring(0, lastSpaceIndex)} ${code}`;
 
     twitch.setChatInputValue(newValue, true);
   }
