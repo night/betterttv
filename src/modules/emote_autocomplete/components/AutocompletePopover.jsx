@@ -8,7 +8,6 @@ import repositionPopover from '../../../utils/popover.js';
 import useResize from '../../../common/hooks/Resize.jsx';
 
 const TOP_PADDING = 2;
-const DEFAULT_POPOVER_WIDTH = 300;
 
 const EmoteMenuPopover = React.forwardRef(
   (
@@ -26,7 +25,11 @@ const EmoteMenuPopover = React.forwardRef(
     ref
   ) => {
     const localRef = useRef(null);
-    const [popoverWidth, setPopoverWidth] = useState(DEFAULT_POPOVER_WIDTH);
+
+    const [popoverWidth, setPopoverWidth] = useState(() => {
+      const {width} = chatInputElement.getBoundingClientRect();
+      return width;
+    });
 
     const reposition = () => repositionPopover(localRef, boundingQuerySelector, TOP_PADDING);
     useEffect(() => reposition(), [localRef, style]);
