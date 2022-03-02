@@ -137,7 +137,7 @@ export default function Emotes({chatInputElement, repositionPopover, onComplete,
 
   return (
     <div className={styles.emotes} ref={localRef}>
-      <EmotesHeader getChatInputPartialEmote={getChatInputPartialEmote} />
+      <EmotesHeader chatInputPartialEmote={chatInputPartialEmote} />
       {shortMatches.map((emote, index) => (
         <EmoteRow
           index={index}
