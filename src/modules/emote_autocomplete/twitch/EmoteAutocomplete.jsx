@@ -39,7 +39,7 @@ export default class EmoteAutocomplete {
         <EmoteWhisper
           boundingQuerySelector={CHAT_TEXT_AREA}
           chatInputElement={element}
-          onComplete={this.autocomplete}
+          onComplete={this.replaceChatInputPartialEmote}
           getChatInputPartialEmote={this.getChatInputPartialEmote}
         />,
         whisperContainer
@@ -63,7 +63,7 @@ export default class EmoteAutocomplete {
     return settings.get(SettingIds.EMOTE_AUTOCOMPLETE) && this.getChatInputPartialEmote() != null;
   }
 
-  autocomplete({code}) {
+  replaceChatInputPartialEmote({code}) {
     const currentValue = twitch.getChatInputValue();
 
     const lastSpaceIndex = currentValue.lastIndexOf(' ');
