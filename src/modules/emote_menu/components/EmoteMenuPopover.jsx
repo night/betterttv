@@ -1,14 +1,11 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import classNames from 'classnames';
 import mergeRefs from 'react-merge-refs';
 import {Popover} from 'rsuite';
 import EmoteMenu from './EmoteMenu.jsx';
 import styles from './EmoteMenuPopover.module.css';
 import ThemeProvider from '../../../common/components/ThemeProvider.jsx';
-import repositionPopover from '../../../utils/popover.js';
-import useResize from '../../../common/hooks/Resize.jsx';
-
-const TOP_PADDING = 2;
+import useAutoPositionPopover from '../hooks/AutoRepositionPopover.jsx';
 
 const EmoteMenuPopover = React.forwardRef(
   ({toggleWhisper, appendToChat, className, style, boundingQuerySelector, whisperOpen, ...props}, ref) => {
@@ -23,10 +20,7 @@ const EmoteMenuPopover = React.forwardRef(
       setTip(show);
     }
 
-    const reposition = () => repositionPopover(localRef, boundingQuerySelector, TOP_PADDING);
-
-    useEffect(() => reposition(), [localRef, style, hasTip]);
-    useResize(reposition);
+    useAutoPositionPopover(localRef, boundingQuerySelector, [localRef, style, hasTip]);
 
     return (
       <ThemeProvider>
@@ -37,11 +31,7 @@ const EmoteMenuPopover = React.forwardRef(
           full>
           <EmoteMenu
             toggleWhisper={toggleWhisper}
-            appendToChat={(...args) => {
-              const result = appendToChat(...args);
-              repositionPopover();
-              return result;
-            }}
+            appendToChat={(...args) => appendToChat(...args)}
             onSetTip={(show) => handleSetTip(show)}
           />
         </Popover>
