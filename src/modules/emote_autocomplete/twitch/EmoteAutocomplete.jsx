@@ -48,13 +48,7 @@ export default class EmoteAutocomplete {
       mountedNode = whisperContainer;
     }
 
-    this.show();
-  }
-
-  show() {
-    const emoteMenuEnabled = settings.get(SettingIds.EMOTE_AUTOCOMPLETE);
-
-    if (!emoteMenuEnabled && mountedNode != null) {
+    if (!emoteAutocomplete && emoteAutcompleteContainer != null) {
       ReactDOM.unmountComponentAtNode(mountedNode);
     }
   }
