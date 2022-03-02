@@ -1,17 +1,19 @@
 import {useEffect} from 'react';
+import debounce from 'lodash.debounce';
 
 export default function useResize(callback) {
   useEffect(() => {
     function handleResize() {
       callback();
       // Twitch animates chat moving on zoom changes
-      setTimeout(callback, 500);
+      setTimeout(() => callback(), 500);
     }
 
     callback();
 
-    window.addEventListener('resize', handleResize);
+    const requestResize = debounce(() => requestAnimationFrame(handleResize), 250);
 
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener('resize', requestResize);
+    return () => window.removeEventListener('resize', requestResize);
   }, []);
 }
