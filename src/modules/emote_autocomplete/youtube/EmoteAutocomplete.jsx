@@ -69,7 +69,7 @@ export default class EmoteAutocomplete {
     }
   }
 
-  isEnabled() {
+  isActive() {
     return settings.get(SettingIds.EMOTE_AUTOCOMPLETE) && this.getChatInputPartialEmote() != null;
   }
 

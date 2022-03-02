@@ -56,7 +56,7 @@ class ChatTabcompletionModule {
   }
 
   onKeydown(e, includeUsers = true) {
-    if (emoteAutocomplete.isEnabled()) {
+    if (emoteAutocomplete.isActive()) {
       return;
     }
 
