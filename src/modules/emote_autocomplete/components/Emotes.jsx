@@ -1,28 +1,29 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {AutoSizer, List} from 'react-virtualized';
-import useChatInput from '../hooks/ChatInput.jsx';
-import styles from './Emotes.module.css';
+import React, {useEffect, useRef, useState, useMemo} from 'react';
 import keyCodes from '../../../utils/keycodes.js';
-import renderRow from './EmoteRow.jsx';
-import EmotesHeader from './EmotesHeader.jsx';
 import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js';
+import useChatInputPartialEmote from '../hooks/ChatInputPartialEmote.jsx';
+import useEmoteMenuViewStore from '../../../common/hooks/EmoteMenuViewStore.jsx';
+import EmoteRow from './EmoteRow.jsx';
+import EmotesHeader from './EmotesHeader.jsx';
+import styles from './Emotes.module.css';
 
 const MAX_EMOTES_SHOWN = 8;
 const EMOTE_ROW_HEIGHT = 32;
 const BOTTOM_OFFSET = 120; // height of everything below the chat window
 
-function calcMaxHeight(length) {
-  let currentHeight = length * EMOTE_ROW_HEIGHT;
+function calcMaxVisibleEmotes(length) {
+  let currentMax = length * EMOTE_ROW_HEIGHT;
 
   if (length > MAX_EMOTES_SHOWN) {
-    currentHeight = MAX_EMOTES_SHOWN * EMOTE_ROW_HEIGHT;
+    currentMax = MAX_EMOTES_SHOWN;
   }
 
-  if (currentHeight > window.innerHeight - BOTTOM_OFFSET) {
-    currentHeight = window.innerHeight - BOTTOM_OFFSET;
+  const maxVisibleEmotesInViewport = Math.floor((window.innerHeight - BOTTOM_OFFSET) / EMOTE_ROW_HEIGHT);
+  if (currentMax > maxVisibleEmotesInViewport) {
+    return maxVisibleEmotesInViewport;
   }
 
-  return currentHeight;
+  return currentMax;
 }
 
 function travelUp(currentSelection, rowCount) {
@@ -46,16 +47,28 @@ function travelDown(currentSelection, rowCount) {
 }
 
 export default function Emotes({chatInputElement, repositionPopover, onComplete, getAutocomplete}) {
-  const [emotes, setEmotes] = useChatInput(chatInputElement, getAutocomplete);
+  const [chatInputPartialEmote] = useChatInputPartialEmote(chatInputElement, getAutocomplete);
+  const [matches, setMatches] = useState([]);
+  const shortMatches = useMemo(() => matches.slice(0, calcMaxVisibleEmotes(matches.length)), [matches]);
+
+  function computeMatches() {
+    const searchedEmotes = emoteMenuViewStore.search(chatInputPartialEmote);
+    setMatches(searchedEmotes.map(({item}) => item));
+  }
+
+  useEmoteMenuViewStore(computeMatches);
+  useEffect(computeMatches, [chatInputPartialEmote]);
+
   const [selected, setSelected] = useState(0);
   const [open, setOpen] = useState(true);
+
   const localRef = useRef(null);
 
-  useEffect(() => repositionPopover(), [emotes.length]);
+  useEffect(() => repositionPopover(), [matches.length]);
 
   function handleAutocomplete(emote) {
-    setEmotes([]);
-    emoteMenuViewStore.trackHistory(emotes);
+    setMatches([]);
+    emoteMenuViewStore.trackHistory(emote);
     onComplete(emote);
   }
 
@@ -78,7 +91,7 @@ export default function Emotes({chatInputElement, repositionPopover, onComplete,
   useEffect(() => {
     function keydownCallback(event) {
       if (getAutocomplete() == null) {
-        setEmotes([]);
+        setMatches([]);
         return;
       }
 
@@ -87,11 +100,11 @@ export default function Emotes({chatInputElement, repositionPopover, onComplete,
         case keyCodes.Tab:
           event.preventDefault();
           event.stopPropagation();
-          handleAutocomplete(emotes[selected]);
+          handleAutocomplete(matches[selected]);
           break;
         case keyCodes.End:
           event.preventDefault();
-          setSelected(emotes.length);
+          setSelected(matches.length);
           break;
         case keyCodes.Home:
           event.preventDefault();
@@ -99,11 +112,11 @@ export default function Emotes({chatInputElement, repositionPopover, onComplete,
           break;
         case keyCodes.ArrowUp:
           event.preventDefault();
-          setSelected(travelUp(selected, emotes.length));
+          setSelected(travelUp(selected, matches.length));
           break;
         case keyCodes.ArrowDown:
           event.preventDefault();
-          setSelected(travelDown(selected, emotes.length));
+          setSelected(travelDown(selected, matches.length));
           break;
         default:
           setOpen(true);
@@ -116,36 +129,24 @@ export default function Emotes({chatInputElement, repositionPopover, onComplete,
     return () => {
       window.removeEventListener('keydown', keydownCallback, true);
     };
-  }, [emotes, selected]);
+  }, [matches, selected]);
 
-  if (!open || emotes.length === 0) {
+  if (!open || matches.length === 0) {
     return null;
   }
 
   return (
     <div className={styles.emotes} ref={localRef}>
       <EmotesHeader getAutocomplete={getAutocomplete} />
-      <AutoSizer disableHeight>
-        {({width}) => (
-          <List
-            className={styles.scrollContainer}
-            scrollToIndex={selected}
-            width={width}
-            height={calcMaxHeight(emotes.length)}
-            rowHeight={EMOTE_ROW_HEIGHT}
-            rowRenderer={(args) =>
-              renderRow({
-                emote: emotes[args.index],
-                selected,
-                setSelected,
-                handleAutocomplete,
-                ...args,
-              })
-            }
-            rowCount={emotes.length}
-          />
-        )}
-      </AutoSizer>
+      {shortMatches.map((emote, index) => (
+        <EmoteRow
+          index={index}
+          emote={emote}
+          handleAutocomplete={(newEmote) => handleAutocomplete(newEmote)}
+          active={selected === index}
+          setSelected={(newEmote) => setSelected(newEmote)}
+        />
+      ))}
     </div>
   );
 }

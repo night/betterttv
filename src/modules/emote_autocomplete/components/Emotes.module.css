@@ -6,6 +6,6 @@
   height: auto;
 }
 
-.scrollContainer {
+/* .scrollContainer {
   composes: scroll from '../../emote_menu/styles/Scrollbar.module.css';
-}
+} */

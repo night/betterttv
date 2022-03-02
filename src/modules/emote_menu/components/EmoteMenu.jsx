@@ -1,5 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import Divider from 'rsuite/Divider';
+import useEmoteMenuViewStore from '../../../common/hooks/EmoteMenuViewStore.jsx';
 import keycodes from '../../../utils/keycodes.js';
 import {EmoteMenuTips} from '../../../constants.js';
 import emoteMenuViewStore, {CategoryPositions} from '../../../common/stores/emote-menu-view-store.js';
@@ -78,20 +79,7 @@ export default function EmoteMenu({toggleWhisper, appendToChat, onSetTip}) {
     };
   }, [selected, shiftPressed]);
 
-  useEffect(() => {
-    const callback = () => {
-      if (!emoteMenuViewStore.isLoaded()) return;
-      emoteMenuViewStore.once('updated', () => {
-        setUpdated((prev) => !prev);
-      });
-    };
-
-    callback();
-
-    const cleanup = emoteMenuViewStore.on('dirty', callback);
-    return () => cleanup();
-  }, []);
-
+  useEmoteMenuViewStore(() => setUpdated((prev) => !prev));
   useEffect(() => setSearch(''), [section]);
 
   return (

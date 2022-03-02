@@ -4,15 +4,14 @@ import {Button} from 'rsuite';
 import Emote from '../../../common/components/Emote.jsx';
 import styles from './EmoteRow.module.css';
 
-export default function renderRow({emote, key, style, index, selected, setSelected, handleAutocomplete}) {
+export default function EmoteRow({index, emote, active, setSelected, handleAutocomplete}) {
   return (
     <Button
-      key={key}
-      style={style}
+      key={emote.id}
       onMouseOver={() => setSelected(index)}
       onClick={() => handleAutocomplete(emote)}
       appearance="subtle"
-      className={classNames(styles.emoteContainer, {[styles.active]: index === selected})}>
+      className={classNames(styles.emoteContainer, {[styles.active]: active})}>
       <div className={styles.emote}>
         <Emote emote={emote} />
         <div className={styles.emoteCode}>{emote.code}</div>
