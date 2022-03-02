@@ -8,12 +8,12 @@ function handleChatInput(focusedWord) {
   return focusedWord.replace(/\s|:/g, '');
 }
 
-export default function useChatInputPartialEmote(chatInputElement, getAutocomplete) {
+export default function useChatInputPartialEmote(chatInputElement, getChatInputPartialEmote) {
   const [partialInput, setPartialInput] = useState('');
 
   useEffect(() => {
     function inputCallback(event) {
-      const value = getAutocomplete();
+      const value = getChatInputPartialEmote();
 
       if (value == null) {
         return;
@@ -28,7 +28,7 @@ export default function useChatInputPartialEmote(chatInputElement, getAutocomple
     return () => {
       chatInputElement.removeEventListener('input', chatInputElement);
     };
-  }, [getAutocomplete, chatInputElement]);
+  }, [getChatInputPartialEmote, chatInputElement]);
 
   return [partialInput, setPartialInput];
 }

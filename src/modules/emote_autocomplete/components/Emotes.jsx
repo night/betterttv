@@ -46,8 +46,8 @@ function travelDown(currentSelection, rowCount) {
   return newSelection;
 }
 
-export default function Emotes({chatInputElement, repositionPopover, onComplete, getAutocomplete}) {
-  const [chatInputPartialEmote] = useChatInputPartialEmote(chatInputElement, getAutocomplete);
+export default function Emotes({chatInputElement, repositionPopover, onComplete, getChatInputPartialEmote}) {
+  const [chatInputPartialEmote] = useChatInputPartialEmote(chatInputElement, getChatInputPartialEmote);
   const [matches, setMatches] = useState([]);
   const shortMatches = useMemo(() => matches.slice(0, calcMaxVisibleEmotes(matches.length)), [matches]);
 
@@ -90,7 +90,7 @@ export default function Emotes({chatInputElement, repositionPopover, onComplete,
 
   useEffect(() => {
     function keydownCallback(event) {
-      if (getAutocomplete() == null) {
+      if (getChatInputPartialEmote() == null) {
         setMatches([]);
         return;
       }
@@ -137,7 +137,7 @@ export default function Emotes({chatInputElement, repositionPopover, onComplete,
 
   return (
     <div className={styles.emotes} ref={localRef}>
-      <EmotesHeader getAutocomplete={getAutocomplete} />
+      <EmotesHeader getChatInputPartialEmote={getChatInputPartialEmote} />
       {shortMatches.map((emote, index) => (
         <EmoteRow
           index={index}

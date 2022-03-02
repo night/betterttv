@@ -50,7 +50,7 @@ export default class EmoteAutocomplete {
           boundingQuerySelector={CHAT_TEXT_AREA}
           chatInputElement={element}
           onComplete={this.autocomplete}
-          getAutocomplete={this.getAutocomplete}
+          getChatInputPartialEmote={this.getChatInputPartialEmote}
         />,
         whisperContainer
       );
@@ -70,7 +70,7 @@ export default class EmoteAutocomplete {
   }
 
   isEnabled() {
-    return settings.get(SettingIds.EMOTE_AUTOCOMPLETE) && this.getAutocomplete() != null;
+    return settings.get(SettingIds.EMOTE_AUTOCOMPLETE) && this.getChatInputPartialEmote() != null;
   }
 
   autocomplete(emote) {
@@ -120,7 +120,7 @@ export default class EmoteAutocomplete {
     selection.addRange(range);
   }
 
-  getAutocomplete() {
+  getChatInputPartialEmote() {
     const {anchorNode, anchorOffset} = document.getSelection();
     if (anchorNode.nodeType !== Node.TEXT_NODE) {
       return null;

@@ -1,8 +1,8 @@
 import React from 'react';
 import styles from './EmotesHeader.module.css';
 
-export default function EmotesHeader({getAutocomplete}) {
-  const autocomplete = getAutocomplete();
+export default function EmotesHeader({getChatInputPartialEmote}) {
+  const autocomplete = getChatInputPartialEmote();
 
   return (
     <div className={styles.header}>

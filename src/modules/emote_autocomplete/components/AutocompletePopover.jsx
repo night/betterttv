@@ -20,7 +20,7 @@ const EmoteMenuPopover = React.forwardRef(
       boundingQuerySelector,
       chatInputElement,
       onComplete,
-      getAutocomplete,
+      getChatInputPartialEmote,
       ...props
     },
     ref
@@ -48,7 +48,7 @@ const EmoteMenuPopover = React.forwardRef(
           chatInputElement={chatInputElement}
           repositionPopover={() => reposition()}
           onComplete={onComplete}
-          getAutocomplete={getAutocomplete}
+          getChatInputPartialEmote={getChatInputPartialEmote}
         />
       </Popover>
     );

@@ -40,7 +40,7 @@ export default class EmoteAutocomplete {
           boundingQuerySelector={CHAT_TEXT_AREA}
           chatInputElement={element}
           onComplete={this.autocomplete}
-          getAutocomplete={this.getAutocomplete}
+          getChatInputPartialEmote={this.getChatInputPartialEmote}
         />,
         whisperContainer
       );
@@ -60,7 +60,7 @@ export default class EmoteAutocomplete {
   }
 
   isEnabled() {
-    return settings.get(SettingIds.EMOTE_AUTOCOMPLETE) && this.getAutocomplete() != null;
+    return settings.get(SettingIds.EMOTE_AUTOCOMPLETE) && this.getChatInputPartialEmote() != null;
   }
 
   autocomplete({code}) {
@@ -72,7 +72,7 @@ export default class EmoteAutocomplete {
     twitch.setChatInputValue(newValue, true);
   }
 
-  getAutocomplete() {
+  getChatInputPartialEmote() {
     const value = twitch.getChatInputValue();
     const selection = twitch.getChatInputSelection();
 
