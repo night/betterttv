@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState, useMemo} from 'react';
+import React, {useEffect, useRef, useState, useMemo, useCallback} from 'react';
 import keyCodes from '../../../utils/keycodes.js';
 import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js';
 import useChatInputPartialEmote from '../hooks/ChatInputPartialEmote.jsx';
@@ -63,10 +63,10 @@ export default function Emotes({chatInputElement, repositionPopover, onComplete,
     [matches]
   );
 
-  function computeMatches() {
+  const computeMatches = useCallback(() => {
     const searchedEmotes = emoteMenuViewStore.search(chatInputPartialEmote);
     setMatches(searchedEmotes.map(({item}) => item));
-  }
+  }, [chatInputPartialEmote]);
 
   useEmoteMenuViewStore(computeMatches);
   useEffect(computeMatches, [chatInputPartialEmote]);
