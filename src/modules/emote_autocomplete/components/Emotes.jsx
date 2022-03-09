@@ -9,16 +9,25 @@ import styles from './Emotes.module.css';
 
 const MAX_EMOTES_SHOWN = 8;
 const EMOTE_ROW_HEIGHT = 32;
-const BOTTOM_OFFSET = 120; // height of everything below the chat window
 
-function calcMaxVisibleEmotes(length) {
+function getOffset(el) {
+  const rect = el.getBoundingClientRect();
+  return {
+    left: rect.left + window.scrollX,
+    top: rect.top + window.scrollY,
+  };
+}
+
+function calcMaxVisibleEmotes(length, chatInputElement) {
+  const bottomOffset = window.innerHeight - getOffset(chatInputElement).top;
+
   let currentMax = length * EMOTE_ROW_HEIGHT;
 
   if (length > MAX_EMOTES_SHOWN) {
     currentMax = MAX_EMOTES_SHOWN;
   }
 
-  const maxVisibleEmotesInViewport = Math.floor((window.innerHeight - BOTTOM_OFFSET) / EMOTE_ROW_HEIGHT);
+  const maxVisibleEmotesInViewport = Math.floor((window.innerHeight - bottomOffset) / EMOTE_ROW_HEIGHT);
   if (currentMax > maxVisibleEmotesInViewport) {
     return maxVisibleEmotesInViewport;
   }
@@ -49,7 +58,10 @@ function travelDown(currentSelection, rowCount) {
 export default function Emotes({chatInputElement, repositionPopover, onComplete, getChatInputPartialEmote}) {
   const [chatInputPartialEmote] = useChatInputPartialEmote(chatInputElement, getChatInputPartialEmote);
   const [matches, setMatches] = useState([]);
-  const shortMatches = useMemo(() => matches.slice(0, calcMaxVisibleEmotes(matches.length)), [matches]);
+  const shortMatches = useMemo(
+    () => matches.slice(0, calcMaxVisibleEmotes(matches.length, chatInputElement)),
+    [matches]
+  );
 
   function computeMatches() {
     const searchedEmotes = emoteMenuViewStore.search(chatInputPartialEmote);
