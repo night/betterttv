@@ -82,7 +82,7 @@
     "terser-webpack-plugin": "^5.3.1",
     "twemoji": "^13.1.0",
     "virtual-module-webpack-plugin": "^0.4.1",
-    "webpack": "^5.69.1",
+    "webpack": "^5.70.0",
     "webpack-cli": "^4.9.2",
     "webpack-dev-server": "^4.7.4",
     "webpack-virtual-modules": "^0.4.3"
