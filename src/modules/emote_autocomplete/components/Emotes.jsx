@@ -136,12 +136,12 @@ export default function Emotes({chatInputElement, repositionPopover, onComplete,
       }
     }
 
-    window.addEventListener('keydown', keydownCallback, true);
+    chatInputElement.addEventListener('keydown', keydownCallback, true);
 
     return () => {
-      window.removeEventListener('keydown', keydownCallback, true);
+      chatInputElement.removeEventListener('keydown', keydownCallback, true);
     };
-  }, [matches, selected]);
+  }, [matches, selected, chatInputElement]);
 
   if (!open || matches.length === 0) {
     return null;
