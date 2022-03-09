@@ -31,7 +31,10 @@ const EmoteMenuPopover = React.forwardRef(
       return width;
     });
 
-    const reposition = () => repositionPopover(localRef, boundingQuerySelector, TOP_PADDING);
+    function reposition() {
+      repositionPopover(localRef, boundingQuerySelector, TOP_PADDING);
+    }
+
     useEffect(() => reposition(), [localRef, style]);
 
     useResize(() => {
