@@ -26,7 +26,7 @@ export default function useChatInputPartialEmote(chatInputElement, getChatInputP
     chatInputElement.addEventListener('input', inputCallback);
 
     return () => {
-      chatInputElement.removeEventListener('input', chatInputElement);
+      chatInputElement.removeEventListener('input', inputCallback);
     };
   }, [getChatInputPartialEmote, chatInputElement]);
 
