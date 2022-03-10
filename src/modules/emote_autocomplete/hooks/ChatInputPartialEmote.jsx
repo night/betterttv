@@ -30,5 +30,5 @@ export default function useChatInputPartialEmote(chatInputElement, getChatInputP
     };
   }, [getChatInputPartialEmote, chatInputElement]);
 
-  return [partialInput, setPartialInput];
+  return partialInput;
 }

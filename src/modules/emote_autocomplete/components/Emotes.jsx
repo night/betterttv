@@ -41,7 +41,7 @@ function travelDown(currentSelection, rowCount) {
 }
 
 export default function Emotes({chatInputElement, repositionPopover, onComplete, getChatInputPartialEmote}) {
-  const [chatInputPartialEmote] = useChatInputPartialEmote(chatInputElement, getChatInputPartialEmote);
+  const chatInputPartialEmote = useChatInputPartialEmote(chatInputElement, getChatInputPartialEmote);
   const [matches, setMatches] = useState([]);
   const shortMatches = useMemo(() => matches.slice(0, calcMaxVisibleEmotes(matches.length)), [matches]);
 
