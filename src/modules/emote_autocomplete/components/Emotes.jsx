@@ -134,6 +134,7 @@ export default function Emotes({chatInputElement, repositionPopover, onComplete,
       <EmotesHeader chatInputPartialEmote={chatInputPartialEmote} />
       {shortMatches.map((emote, index) => (
         <EmoteRow
+          key={emote.id}
           index={index}
           emote={emote}
           handleAutocomplete={(newEmote) => handleAutocomplete(newEmote)}

@@ -5,15 +5,24 @@ import EmoteWhisper from '../components/EmoteWhisper.jsx';
 import settings from '../../../settings.js';
 import {SettingIds} from '../../../constants.js';
 import twitch, {SelectionTypes} from '../../../utils/twitch.js';
+import dom from '../../../observers/dom.js';
 
 let mountedNode;
 
-const CHAT_TEXT_AREA = 'textarea[data-a-target="chat-input"], div[data-a-target="chat-input"]';
+const CHAT_TEXT_AREA = 'textarea[data-a-target="chat-input"], div[data-test-selector="chat-input"]';
 const EMOTE_AUTOCOMPLETE_CONTAINER_SELECTOR = 'div[data-a-target="bttv-autocomplete-matches-container"]';
+const PARTIAL_EMOTE_REGEX = /:([a-z0-9-_.:]+?)(:|$)/i;
 
 export default class EmoteAutocomplete {
   constructor() {
     this.load();
+    dom.on(CHAT_TEXT_AREA, (node, isConnected) => {
+      if (!isConnected) {
+        return;
+      }
+
+      this.load();
+    });
     settings.on(`changed.${SettingIds.EMOTE_AUTOCOMPLETE}`, () => this.load());
   }
 
@@ -27,6 +36,11 @@ export default class EmoteAutocomplete {
 
     if (emoteAutcompleteContainer == null && emoteAutocomplete) {
       const element = document.querySelector(CHAT_TEXT_AREA);
+
+      if (element == null) {
+        return;
+      }
+
       const whisperContainer = document.createElement('div');
       whisperContainer.setAttribute('data-a-target', 'bttv-autocomplete-matches-container');
       document.body.appendChild(whisperContainer);
@@ -59,9 +73,7 @@ export default class EmoteAutocomplete {
 
   replaceChatInputPartialEmote({code}) {
     const currentValue = twitch.getChatInputValue();
-
-    const lastSpaceIndex = currentValue.lastIndexOf(' ');
-    const newValue = lastSpaceIndex < 0 ? code : `${currentValue.substring(0, lastSpaceIndex)} ${code}`;
+    const newValue = currentValue.replace(PARTIAL_EMOTE_REGEX, code);
 
     twitch.setChatInputValue(newValue, true);
   }
@@ -74,11 +86,18 @@ export default class EmoteAutocomplete {
       return null;
     }
 
-    const focusedWord = value.split(/\s+/).at(-1);
-    if (focusedWord == null || !/^(:(.*[a-zA-Z0-9]){2,})/.test(focusedWord) || focusedWord.endsWith(':')) {
+    const lastWord = value.split(/\s+/).at(-1);
+    const partialEmote = lastWord.match(PARTIAL_EMOTE_REGEX);
+
+    if (partialEmote == null) {
       return null;
     }
 
-    return focusedWord;
+    const [match, partial, isComplete] = partialEmote;
+    if (isComplete.length > 0 || !match.startsWith(':')) {
+      return null;
+    }
+
+    return partial;
   }
 }

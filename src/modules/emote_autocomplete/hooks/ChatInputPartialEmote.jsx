@@ -1,13 +1,5 @@
 import {useEffect, useState} from 'react';
 
-function handleChatInput(focusedWord) {
-  if (focusedWord == null) {
-    return '';
-  }
-
-  return focusedWord.replace(/\s|:/g, '');
-}
-
 export default function useChatInputPartialEmote(chatInputElement, getChatInputPartialEmote) {
   const [partialInput, setPartialInput] = useState('');
 
@@ -16,10 +8,11 @@ export default function useChatInputPartialEmote(chatInputElement, getChatInputP
       const value = getChatInputPartialEmote();
 
       if (value == null) {
+        setPartialInput('');
         return;
       }
 
-      setPartialInput(handleChatInput(value));
+      setPartialInput(value);
       event.stopPropagation();
     }
 

@@ -26,10 +26,7 @@ const EmoteMenuPopover = React.forwardRef(
   ) => {
     const localRef = useRef(null);
 
-    const [popoverWidth, setPopoverWidth] = useState(() => {
-      const {width} = chatInputElement.getBoundingClientRect();
-      return width;
-    });
+    const [popoverWidth, setPopoverWidth] = useState(300);
 
     function reposition() {
       repositionPopover(localRef, boundingQuerySelector, TOP_PADDING);
