@@ -77,7 +77,7 @@
     "react-merge-refs": "^1.1.0",
     "react-string-replace": "^0.4.4",
     "remove-files-webpack-plugin": "^1.5.0",
-    "rsuite": "^5.6.4",
+    "rsuite": "^5.6.5",
     "string-replace-loader": "^3.1.0",
     "terser-webpack-plugin": "^5.3.1",
     "twemoji": "^14.0.0",
