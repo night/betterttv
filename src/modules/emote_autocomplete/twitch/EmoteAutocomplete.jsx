@@ -1,103 +1,142 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import {getCurrentUser} from '../../../utils/user.js';
-import EmoteWhisper from '../components/EmoteWhisper.jsx';
-import settings from '../../../settings.js';
-import {SettingIds} from '../../../constants.js';
-import twitch, {SelectionTypes} from '../../../utils/twitch.js';
+import twitch from '../../../utils/twitch.js';
+import watcher from '../../../watcher.js';
+import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js';
 import dom from '../../../observers/dom.js';
+import emotes from '../../emotes/index.js';
+import {createSrcSet} from '../../../utils/image.js';
+import {SettingIds} from '../../../constants.js';
+import settings from '../../../settings.js';
 
-let mountedNode;
+const EMOTE_SET_CODE_PREFIX = '__bttv-';
+const AUTOCOMPLETE_MATCH_IMAGE_QUERY = 'div[data-test-selector="autocomplete-match-list-matches"] img';
 
-const CHAT_TEXT_AREA = 'textarea[data-a-target="chat-input"], div[data-test-selector="chat-input"]';
-const EMOTE_AUTOCOMPLETE_CONTAINER_SELECTOR = 'div[data-a-target="bttv-autocomplete-matches-container"]';
-const PARTIAL_EMOTE_REGEX = /:([a-z0-9-_.:]+?)(:|$)/i;
+function seralizeCode(code) {
+  return `${EMOTE_SET_CODE_PREFIX}${code}`;
+}
 
+function deseralizeCode(code) {
+  if (!code.startsWith(EMOTE_SET_CODE_PREFIX)) {
+    return null;
+  }
+
+  return code.replace(EMOTE_SET_CODE_PREFIX, '');
+}
+
+function createTwitchEmoteSet({category, emotes: categoryEmotes}) {
+  return {
+    __typename: 'EmoteSet',
+    emotes: categoryEmotes.map(({code}) => ({
+      __typename: 'Emote',
+      id: seralizeCode(code),
+      modifiers: null,
+      setID: category.id,
+      token: code,
+    })),
+    id: category.id,
+  };
+}
+
+let cleanup = null;
 export default class EmoteAutocomplete {
   constructor() {
-    this.load();
-    dom.on(CHAT_TEXT_AREA, (node, isConnected) => {
-      if (!isConnected) {
-        return;
-      }
-
-      this.load();
-    });
+    watcher.on('load.chat', () => this.load());
     settings.on(`changed.${SettingIds.EMOTE_AUTOCOMPLETE}`, () => this.load());
   }
 
-  load() {
-    if (getCurrentUser() == null) {
+  // on chat load, add emotes to twitch's autocomplete emote provider
+  // on autocomplete match render, replace image source of betterttv emotes with bttv cdn links
+
+  patchEmoteImage(image, isConnected) {
+    if (!isConnected) {
       return;
     }
 
-    const emoteAutcompleteContainer = document.querySelector(EMOTE_AUTOCOMPLETE_CONTAINER_SELECTOR);
-    const emoteAutocomplete = settings.get(SettingIds.EMOTE_AUTOCOMPLETE);
-
-    if (emoteAutcompleteContainer == null && emoteAutocomplete) {
-      const element = document.querySelector(CHAT_TEXT_AREA);
-
-      if (element == null) {
-        return;
-      }
-
-      const whisperContainer = document.createElement('div');
-      whisperContainer.setAttribute('data-a-target', 'bttv-autocomplete-matches-container');
-      document.body.appendChild(whisperContainer);
-
-      if (mountedNode != null) {
-        ReactDOM.unmountComponentAtNode(mountedNode);
-      }
-
-      ReactDOM.render(
-        <EmoteWhisper
-          boundingQuerySelector={CHAT_TEXT_AREA}
-          chatInputElement={element}
-          onComplete={this.replaceChatInputPartialEmote}
-          getChatInputPartialEmote={this.getChatInputPartialEmote}
-        />,
-        whisperContainer
-      );
-
-      mountedNode = whisperContainer;
+    const match = String(image.srcset).match(/v2\/(.*?)\/default/);
+    const deseralizedCode = deseralizeCode(match[1]);
+    if (deseralizedCode == null) {
+      return;
     }
 
-    if (!emoteAutocomplete && emoteAutcompleteContainer != null) {
-      ReactDOM.unmountComponentAtNode(mountedNode);
+    const emote = emotes.getEligibleEmote(deseralizedCode);
+    if (emote == null) {
+      return;
     }
+
+    image.srcset = createSrcSet(emote.images);
+  }
+
+  async injectEmoteSets() {
+    const autocompleteProviders = await twitch.getAutocompleteProviders();
+    if (autocompleteProviders == null) {
+      return;
+    }
+
+    const autocompleteEmoteProvider = autocompleteProviders.find(({autocompleteType}) => autocompleteType === 'emote');
+    const emoteCategories = emoteMenuViewStore.getProvidersCategories();
+
+    for (const category of emoteCategories) {
+      if (category.emotes.length === 0) {
+        continue;
+      }
+
+      const emoteSet = createTwitchEmoteSet(category);
+      const index = autocompleteEmoteProvider.props.emotes.findIndex(({id}) => id === category.id);
+
+      if (index === -1) {
+        autocompleteEmoteProvider.props.emotes.push(emoteSet);
+      } else {
+        autocompleteEmoteProvider.props.emotes[index] = emoteSet;
+      }
+    }
+  }
+
+  async unload() {
+    cleanup();
+    cleanup = null;
+
+    const autocompleteProviders = await twitch.getAutocompleteProviders();
+    if (autocompleteProviders == null) {
+      return;
+    }
+
+    const autocompleteEmoteProvider = autocompleteProviders.find(({autocompleteType}) => autocompleteType === 'emote');
+    const emoteCategories = emoteMenuViewStore.getProvidersCategories().map(({category}) => category.id);
+
+    autocompleteEmoteProvider.props.emotes = autocompleteEmoteProvider.props.emotes.filter(
+      ({id}) => !emoteCategories.includes(id)
+    );
+  }
+
+  load() {
+    if (cleanup != null) {
+      if (!settings.get(SettingIds.EMOTE_AUTOCOMPLETE)) {
+        console.log(settings.get(SettingIds.EMOTE_AUTOCOMPLETE));
+        this.unload();
+      }
+
+      return;
+    }
+
+    const dirtyCallback = () => {
+      if (!emoteMenuViewStore.isLoaded()) {
+        emoteMenuViewStore.once('updated', () => this.injectEmoteSets());
+      } else {
+        this.injectEmoteSets();
+      }
+    };
+
+    dirtyCallback();
+
+    const storeCallbackCleanup = emoteMenuViewStore.on('dirty', dirtyCallback);
+    const patchImageCallbackCleanup = dom.on(AUTOCOMPLETE_MATCH_IMAGE_QUERY, this.patchEmoteImage);
+
+    cleanup = () => {
+      storeCallbackCleanup();
+      patchImageCallbackCleanup();
+    };
   }
 
   isActive() {
-    return settings.get(SettingIds.EMOTE_AUTOCOMPLETE) && this.getChatInputPartialEmote() != null;
-  }
-
-  replaceChatInputPartialEmote({code}) {
-    const currentValue = twitch.getChatInputValue();
-    const newValue = currentValue.replace(PARTIAL_EMOTE_REGEX, code);
-
-    twitch.setChatInputValue(newValue, true);
-  }
-
-  getChatInputPartialEmote() {
-    const value = twitch.getChatInputValue();
-    const selection = twitch.getChatInputSelection();
-
-    if (selection !== SelectionTypes.END || value.endsWith(' ')) {
-      return null;
-    }
-
-    const lastWord = value.split(/\s+/).at(-1);
-    const partialEmote = lastWord.match(PARTIAL_EMOTE_REGEX);
-
-    if (partialEmote == null) {
-      return null;
-    }
-
-    const [match, partial, isComplete] = partialEmote;
-    if (isComplete.length > 0 || !match.startsWith(':')) {
-      return null;
-    }
-
-    return partial;
+    return false;
   }
 }

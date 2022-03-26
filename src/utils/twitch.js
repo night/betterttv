@@ -246,6 +246,20 @@ export default {
     return store;
   },
 
+  getAutocompleteProviders() {
+    let providers;
+    try {
+      const node = searchReactParents(
+        getReactInstance($('.chat-wysiwyg-input__editor')[0]),
+        (n) => n?.stateNode?.providers != null,
+        20
+      );
+      providers = node.stateNode.providers;
+    } catch (_) {}
+
+    return providers;
+  },
+
   getClipsBroadcasterInfo() {
     let broadcaster;
     try {
