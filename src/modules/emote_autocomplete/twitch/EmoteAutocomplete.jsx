@@ -110,7 +110,6 @@ export default class EmoteAutocomplete {
   load() {
     if (cleanup != null) {
       if (!settings.get(SettingIds.EMOTE_AUTOCOMPLETE)) {
-        console.log(settings.get(SettingIds.EMOTE_AUTOCOMPLETE));
         this.unload();
       }
 
