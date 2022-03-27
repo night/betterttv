@@ -52,29 +52,35 @@ Sentry.init({
       return null;
     }
 
-    const {exception} = event;
-    const exceptionValue = exception != null && exception.values != null && event.exception.values[0];
+    const exceptionValue = event.exception?.values?.[0];
+    const stacktrace = exceptionValue?.stacktrace;
+
+    // exceptions without a stacktrace are non-actionable
+    if (stacktrace == null) {
+      return null;
+    }
+
+    // find the first in-app stack frame to filter source of the error
+    const frame = stacktrace.frames?.reverse().find(({in_app: inApp}) => !!inApp);
+
+    // filter event if there are no app frames
+    if (frame == null) {
+      return null;
+    }
+
+    const {filename, abs_path: absPath} = frame;
+    // exceptions with an anonymous stacktrace are non-actionable
+    if (filename == null || filename === '<anonymous>') {
+      return null;
+    }
+    // exceptions originating from twitch websites are non-actionable
+    if (absPath != null && /^https:\/\/(?:clips\.|dashboard\.|www\.)?twitch\.tv/.test(absPath)) {
+      return null;
+    }
+
+    // for whatever reason, ignoreErrors does not work for errors caught by other sentry users
+    // let's just filter them ourselves too
     if (exceptionValue != null) {
-      // exceptions without a stacktrace are non-actionable
-      if (exceptionValue.stacktrace == null) {
-        return null;
-      }
-
-      const {frames} = exceptionValue.stacktrace;
-      if (frames != null && frames[0] != null) {
-        const {filename, abs_path: absPath} = frames[0];
-        // exceptions with an anonymous stacktrace are non-actionable
-        if (filename == null || filename === '<anonymous>') {
-          return null;
-        }
-        // exceptions originating from twitch websites are non-actionable
-        if (absPath != null && /^https:\/\/(?:clips\.|dashboard\.|www\.)?twitch\.tv/.test(absPath)) {
-          return null;
-        }
-      }
-
-      // for whatever reason, ignoreErrors does not work for errors caught by other sentry users
-      // let's just filter them ourselves too
       const exceptionString = `${exceptionValue.type} ${exceptionValue.value}`;
       for (const ignoreError of ignoreErrors) {
         if (typeof ignoreError === 'string' && exceptionString.toLowerCase().includes(ignoreError.toLowerCase())) {
@@ -85,6 +91,7 @@ Sentry.init({
         }
       }
     }
+
     return event;
   },
 });
