@@ -6,9 +6,10 @@ import emotes from '../../emotes/index.js';
 import {createSrcSet} from '../../../utils/image.js';
 import {SettingIds} from '../../../constants.js';
 import settings from '../../../settings.js';
+import './styles.module.css';
 
 const EMOTE_SET_CODE_PREFIX = '__bttv-';
-const AUTOCOMPLETE_MATCH_IMAGE_QUERY = 'div[data-test-selector="autocomplete-match-list-matches"] img';
+const AUTOCOMPLETE_MATCH_IMAGE_QUERY = '.emote-autocomplete-provider__image';
 
 function seralizeCode(code) {
   return `${EMOTE_SET_CODE_PREFIX}${code}`;
@@ -22,11 +23,16 @@ function deseralizeCode(code) {
   return code.replace(EMOTE_SET_CODE_PREFIX, '');
 }
 
+function getAutocompleteEmoteProvider() {
+  const autocompleteNode = twitch.getAutocompleteProviders();
+  const autocompleteProviders = autocompleteNode.stateNode.providers;
+
+  return autocompleteProviders.find(({autocompleteType}) => autocompleteType === 'emote');
+}
+
 function createTwitchEmoteSet({category, emotes: categoryEmotes}) {
   return {
-    __typename: 'EmoteSet',
     emotes: categoryEmotes.map(({code}) => ({
-      __typename: 'Emote',
       id: seralizeCode(code),
       modifiers: null,
       setID: category.id,
@@ -63,15 +69,11 @@ export default class EmoteAutocomplete {
     }
 
     image.srcset = createSrcSet(emote.images);
+    image.src = emote.images['1x'];
   }
 
   async injectEmoteSets() {
-    const autocompleteProviders = await twitch.getAutocompleteProviders();
-    if (autocompleteProviders == null) {
-      return;
-    }
-
-    const autocompleteEmoteProvider = autocompleteProviders.find(({autocompleteType}) => autocompleteType === 'emote');
+    const autocompleteEmoteProvider = getAutocompleteEmoteProvider();
     const emoteCategories = emoteMenuViewStore.getProvidersCategories();
 
     for (const category of emoteCategories) {
@@ -80,7 +82,7 @@ export default class EmoteAutocomplete {
       }
 
       const emoteSet = createTwitchEmoteSet(category);
-      const index = autocompleteEmoteProvider.props.emotes.findIndex(({id}) => id === category.id);
+      const index = autocompleteEmoteProvider.props.emotes.findIndex(({id}) => id === category.category.id);
 
       if (index === -1) {
         autocompleteEmoteProvider.props.emotes.push(emoteSet);
@@ -88,18 +90,15 @@ export default class EmoteAutocomplete {
         autocompleteEmoteProvider.props.emotes[index] = emoteSet;
       }
     }
+
+    autocompleteEmoteProvider.forceUpdate();
   }
 
   async unload() {
     cleanup();
     cleanup = null;
 
-    const autocompleteProviders = await twitch.getAutocompleteProviders();
-    if (autocompleteProviders == null) {
-      return;
-    }
-
-    const autocompleteEmoteProvider = autocompleteProviders.find(({autocompleteType}) => autocompleteType === 'emote');
+    const autocompleteEmoteProvider = getAutocompleteEmoteProvider();
     const emoteCategories = emoteMenuViewStore.getProvidersCategories().map(({category}) => category.id);
 
     autocompleteEmoteProvider.props.emotes = autocompleteEmoteProvider.props.emotes.filter(
@@ -115,6 +114,19 @@ export default class EmoteAutocomplete {
 
       return;
     }
+
+    const emoteAutocompleteProvider = getAutocompleteEmoteProvider();
+    const oldComponentDidUpdate = emoteAutocompleteProvider.componentDidUpdate;
+
+    emoteAutocompleteProvider.componentDidUpdate = function componentDidUpdate(prevProps) {
+      if (prevProps.emotes !== this.props.emotes) {
+        this.injectEmoteSets();
+      }
+
+      if (oldComponentDidUpdate != null) {
+        oldComponentDidUpdate.call(this, ...prevProps);
+      }
+    };
 
     const dirtyCallback = () => {
       if (!emoteMenuViewStore.isLoaded()) {
@@ -132,6 +144,7 @@ export default class EmoteAutocomplete {
     cleanup = () => {
       storeCallbackCleanup();
       patchImageCallbackCleanup();
+      emoteAutocompleteProvider.componentDidUpdate = oldComponentDidUpdate;
     };
   }
 

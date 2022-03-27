@@ -1,0 +1,5 @@
+:global {
+  .emote-autocomplete-provider__image[srcset*='/__bttv-'] {
+    display: none;
+  }
+}
