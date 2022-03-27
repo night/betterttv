@@ -67,8 +67,8 @@ class ChatTabcompletionModule {
         const caretPos = chatInputValue.length;
         const text = chatInputValue;
 
-        const start = (/[:()\w]+$/.exec(text.substr(0, caretPos)) || {index: caretPos}).index;
-        const end = caretPos + (/^\w+/.exec(text.substr(caretPos)) || [''])[0].length;
+        const start = (/[:()\w]+$/.exec(text.slice(0, caretPos)) || {index: caretPos}).index;
+        const end = caretPos + (/^\w+/.exec(text.slice(caretPos)) || [''])[0].length;
         this.textSplit = [text.substring(0, start), text.substring(start, end), text.substring(end + 1)];
 
         // If there are no words in front of the caret, exit
