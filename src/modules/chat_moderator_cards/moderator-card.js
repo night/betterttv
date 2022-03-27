@@ -206,7 +206,7 @@ class ModeratorCard {
 
   onKeyDown(e) {
     if (e.ctrlKey || e.metaKey || e.shiftKey) return false;
-    if ($('input, textarea, select').is(':focus')) return false;
+    if ($('input, textarea, select, div[data-a-target="chat-input"]').is(':focus')) return false;
 
     const keyCode = e.key;
     if (keyCode === keyCodes.Escape) {
