@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import settings from '../../settings.js';
 import watcher from '../../watcher.js';
+import twitch from '../../utils/twitch.js';
 import domObserver from '../../observers/dom.js';
 import {ChatFlags, PlatformTypes, SettingIds} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
@@ -21,7 +22,8 @@ class HideCommunityHighlightsModule {
       removeCommunityHighlightsListener = domObserver.on('.community-highlight-stack__card', (node, isConnected) => {
         if (!isConnected) return;
         const $node = $(node);
-        if ($node.find('.channel-poll__more-icon').length > 0) return;
+        const communityHighlight = twitch.getCommunityHighlight();
+        if (communityHighlight?.event?.type === 'poll') return;
         if ($node.find('button[data-test-selector="community-prediction-highlight-header__action-button"]').length > 0)
           return;
         $node.addClass('bttv-hide-community-highlights');

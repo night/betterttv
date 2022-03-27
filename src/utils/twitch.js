@@ -13,6 +13,7 @@ const PLAYER = '.video-player__container';
 const CLIPS_BROADCASTER_INFO = '.clips-broadcaster-info';
 const CHAT_MESSAGE_SELECTOR = '.chat-line__message';
 const CHAT_INPUT = 'textarea[data-a-target="chat-input"], div[data-a-target="chat-input"]';
+const COMMUNITY_HIGHLIGHT = '.community-highlight';
 
 const USER_PROFILE_IMAGE_GQL_QUERY = `
   query GetUserProfilePicture($userId: ID!) {
@@ -664,5 +665,18 @@ export default {
     }
 
     return messages;
+  },
+
+  getCommunityHighlight() {
+    let highlight;
+    try {
+      const node = searchReactParents(
+        getReactInstance($(COMMUNITY_HIGHLIGHT)[0]),
+        (n) => n.memoizedProps?.highlight?.event != null
+      );
+      highlight = node.memoizedProps.highlight;
+    } catch (e) {}
+
+    return highlight;
   },
 };
