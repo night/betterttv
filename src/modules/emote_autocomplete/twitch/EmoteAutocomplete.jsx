@@ -42,6 +42,31 @@ function createTwitchEmoteSet({category, emotes: categoryEmotes}) {
   };
 }
 
+async function injectEmoteSets() {
+  const autocompleteEmoteProvider = getAutocompleteEmoteProvider();
+  const emoteCategories = emoteMenuViewStore.getProvidersCategories();
+
+  for (const category of emoteCategories) {
+    if (category.emotes.length === 0) {
+      continue;
+    }
+
+    const emoteSet = createTwitchEmoteSet(category);
+    const index = autocompleteEmoteProvider.props.emotes.findIndex(({id}) => id === category.category.id);
+
+    if (index === -1) {
+      autocompleteEmoteProvider.props.emotes.push(emoteSet);
+    } else {
+      autocompleteEmoteProvider.props.emotes[index] = emoteSet;
+    }
+  }
+
+  autocompleteEmoteProvider.forceUpdate();
+
+  const autocompleteNode = twitch.getAutocompleteProviders();
+  autocompleteNode.stateNode.forceUpdate();
+}
+
 let cleanup = null;
 export default class EmoteAutocomplete {
   constructor() {
@@ -72,28 +97,6 @@ export default class EmoteAutocomplete {
     image.src = emote.images['1x'];
   }
 
-  async injectEmoteSets() {
-    const autocompleteEmoteProvider = getAutocompleteEmoteProvider();
-    const emoteCategories = emoteMenuViewStore.getProvidersCategories();
-
-    for (const category of emoteCategories) {
-      if (category.emotes.length === 0) {
-        continue;
-      }
-
-      const emoteSet = createTwitchEmoteSet(category);
-      const index = autocompleteEmoteProvider.props.emotes.findIndex(({id}) => id === category.category.id);
-
-      if (index === -1) {
-        autocompleteEmoteProvider.props.emotes.push(emoteSet);
-      } else {
-        autocompleteEmoteProvider.props.emotes[index] = emoteSet;
-      }
-    }
-
-    autocompleteEmoteProvider.forceUpdate();
-  }
-
   async unload() {
     cleanup();
     cleanup = null;
@@ -119,8 +122,9 @@ export default class EmoteAutocomplete {
     const oldComponentDidUpdate = emoteAutocompleteProvider.componentDidUpdate;
 
     emoteAutocompleteProvider.componentDidUpdate = function componentDidUpdate(prevProps) {
+      console.log(prevProps, this.props);
       if (prevProps.emotes !== this.props.emotes) {
-        this.injectEmoteSets();
+        injectEmoteSets();
       }
 
       if (oldComponentDidUpdate != null) {
@@ -130,9 +134,9 @@ export default class EmoteAutocomplete {
 
     const dirtyCallback = () => {
       if (!emoteMenuViewStore.isLoaded()) {
-        emoteMenuViewStore.once('updated', () => this.injectEmoteSets());
+        emoteMenuViewStore.once('updated', () => injectEmoteSets());
       } else {
-        this.injectEmoteSets();
+        injectEmoteSets();
       }
     };
 
