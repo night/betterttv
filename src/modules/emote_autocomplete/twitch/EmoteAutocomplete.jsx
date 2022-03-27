@@ -9,7 +9,7 @@ import settings from '../../../settings.js';
 import './styles.module.css';
 
 const EMOTE_SET_CODE_PREFIX = '__bttv-';
-const AUTOCOMPLETE_MATCH_IMAGE_QUERY = '.emote-autocomplete-provider__image';
+const AUTOCOMPLETE_MATCH_IMAGE_QUERY = '.emote-autocomplete-provider__image, .chat-line__message--emote';
 
 function seralizeCode(code) {
   return `${EMOTE_SET_CODE_PREFIX}${code}`;
@@ -25,8 +25,11 @@ function deseralizeCode(code) {
 
 function getAutocompleteEmoteProvider() {
   const autocompleteNode = twitch.getAutocompleteProviders();
-  const autocompleteProviders = autocompleteNode.stateNode.providers;
+  if (autocompleteNode == null) {
+    return null;
+  }
 
+  const autocompleteProviders = autocompleteNode.stateNode.providers;
   return autocompleteProviders.find(({autocompleteType}) => autocompleteType === 'emote');
 }
 
@@ -44,8 +47,11 @@ function createTwitchEmoteSet({category, emotes: categoryEmotes}) {
 
 async function injectEmoteSets() {
   const autocompleteEmoteProvider = getAutocompleteEmoteProvider();
-  const emoteCategories = emoteMenuViewStore.getProvidersCategories();
+  if (autocompleteEmoteProvider == null) {
+    return;
+  }
 
+  const emoteCategories = emoteMenuViewStore.getProvidersCategories();
   for (const category of emoteCategories) {
     if (category.emotes.length === 0) {
       continue;
@@ -70,7 +76,7 @@ async function injectEmoteSets() {
 let cleanup = null;
 export default class EmoteAutocomplete {
   constructor() {
-    watcher.on('load.chat', () => this.load());
+    watcher.on('channel.updated', () => this.load());
     settings.on(`changed.${SettingIds.EMOTE_AUTOCOMPLETE}`, () => this.load());
   }
 
@@ -97,13 +103,16 @@ export default class EmoteAutocomplete {
     image.src = emote.images['1x'];
   }
 
-  async unload() {
+  unload() {
     cleanup();
     cleanup = null;
 
     const autocompleteEmoteProvider = getAutocompleteEmoteProvider();
-    const emoteCategories = emoteMenuViewStore.getProvidersCategories().map(({category}) => category.id);
+    if (autocompleteEmoteProvider == null) {
+      return;
+    }
 
+    const emoteCategories = emoteMenuViewStore.getProvidersCategories().map(({category}) => category.id);
     autocompleteEmoteProvider.props.emotes = autocompleteEmoteProvider.props.emotes.filter(
       ({id}) => !emoteCategories.includes(id)
     );
@@ -111,18 +120,20 @@ export default class EmoteAutocomplete {
 
   load() {
     if (cleanup != null) {
-      if (!settings.get(SettingIds.EMOTE_AUTOCOMPLETE)) {
-        this.unload();
-      }
+      this.unload();
+    }
 
+    if (!settings.get(SettingIds.EMOTE_AUTOCOMPLETE)) {
       return;
     }
 
     const emoteAutocompleteProvider = getAutocompleteEmoteProvider();
-    const oldComponentDidUpdate = emoteAutocompleteProvider.componentDidUpdate;
+    if (emoteAutocompleteProvider == null) {
+      return;
+    }
 
+    const oldComponentDidUpdate = emoteAutocompleteProvider.componentDidUpdate;
     emoteAutocompleteProvider.componentDidUpdate = function componentDidUpdate(prevProps) {
-      console.log(prevProps, this.props);
       if (prevProps.emotes !== this.props.emotes) {
         injectEmoteSets();
       }
