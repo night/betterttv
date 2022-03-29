@@ -11,8 +11,6 @@ export default function useResize(callback) {
 
     const requestResize = debounce(() => requestAnimationFrame(handleResize), 250);
 
-    requestResize();
-
     window.addEventListener('resize', requestResize);
     return () => window.removeEventListener('resize', requestResize);
   }, []);

@@ -10,7 +10,7 @@ export default function useEmoteMenuViewStore(callback) {
       }
     }
 
-    dirtyCallback();
+    callback();
 
     const cleanup = emoteMenuViewStore.on('dirty', dirtyCallback);
 
