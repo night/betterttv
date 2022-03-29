@@ -247,7 +247,7 @@ export default {
     return store;
   },
 
-  getAutocompleteProviders() {
+  getAutocompleteStateNode() {
     let node;
     try {
       node = searchReactParents(

@@ -24,7 +24,7 @@ function deseralizeCode(code) {
 }
 
 function getAutocompleteEmoteProvider() {
-  const autocompleteNode = twitch.getAutocompleteProviders();
+  const autocompleteNode = twitch.getAutocompleteStateNode();
   if (autocompleteNode == null) {
     return null;
   }
@@ -69,7 +69,7 @@ async function injectEmoteSets() {
 
   autocompleteEmoteProvider.forceUpdate();
 
-  const autocompleteNode = twitch.getAutocompleteProviders();
+  const autocompleteNode = twitch.getAutocompleteStateNode();
   autocompleteNode.stateNode.forceUpdate();
 }
 
