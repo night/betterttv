@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import classNames from 'classnames';
 import Popover from 'rsuite/Popover';
 import mergeRefs from 'react-merge-refs';
@@ -25,8 +25,7 @@ const EmoteMenuPopover = React.forwardRef(
     ref
   ) => {
     const localRef = useRef(null);
-
-    const [popoverWidth, setPopoverWidth] = useState(300);
+    const [popoverWidth, setPopoverWidth] = useState(null);
 
     function reposition() {
       repositionPopover(localRef, boundingQuerySelector, TOP_PADDING);
@@ -34,11 +33,14 @@ const EmoteMenuPopover = React.forwardRef(
 
     useEffect(() => reposition(), [localRef, style]);
 
-    useResize(() => {
+    const callback = useCallback(() => {
       const {width} = chatInputElement.getBoundingClientRect();
       setPopoverWidth(width);
       reposition();
-    });
+    }, [setPopoverWidth, reposition, chatInputElement]);
+
+    useResize(callback);
+    useEffect(() => callback(), []);
 
     return (
       <Popover
