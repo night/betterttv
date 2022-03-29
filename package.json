@@ -62,7 +62,6 @@
     "less-loader": "^10.2.0",
     "lodash.chunk": "^4.2.0",
     "lodash.debounce": "^4.0.8",
-    "lodash.flatten": "^4.4.0",
     "lodash.sortby": "^4.7.0",
     "lodash.throttle": "^4.1.1",
     "lodash.uniqby": "^4.7.0",
