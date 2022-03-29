@@ -3,5 +3,3 @@ build
 dist
 .DS_Store
 .vscode
-./package-lock.json
-.gitignore
