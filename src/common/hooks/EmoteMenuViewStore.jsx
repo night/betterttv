@@ -1,17 +1,24 @@
 import {useEffect} from 'react';
 import emoteMenuViewStore from '../stores/emote-menu-view-store.js';
 
+let emoteMenuViewStoreCleanup;
 export default function useEmoteMenuViewStore(callback) {
   useEffect(() => {
     function dirtyCallback() {
       if (!emoteMenuViewStore.isLoaded()) {
-        emoteMenuViewStore.once('updated', () => callback());
+        emoteMenuViewStoreCleanup = emoteMenuViewStore.once('updated', () => callback());
       }
     }
 
     dirtyCallback();
 
     const cleanup = emoteMenuViewStore.on('dirty', dirtyCallback);
-    return () => cleanup();
+
+    return () => {
+      cleanup();
+      if (emoteMenuViewStoreCleanup != null) {
+        emoteMenuViewStoreCleanup();
+      }
+    };
   }, [callback]);
 }
