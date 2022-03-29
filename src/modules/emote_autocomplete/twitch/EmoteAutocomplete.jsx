@@ -4,11 +4,12 @@ import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js'
 import dom from '../../../observers/dom.js';
 import emotes from '../../emotes/index.js';
 import {createSrcSet} from '../../../utils/image.js';
-import {SettingIds} from '../../../constants.js';
+import {EmoteCategories, SettingIds} from '../../../constants.js';
 import settings from '../../../settings.js';
 import './styles.module.css';
 
-const EMOTE_SET_CODE_PREFIX = '__bttv-';
+const EMOTE_SET_CODE_PREFIX = '__BTTV__';
+const CUSTOM_SET_ID = 'BETTERTTV_EMOTES';
 const AUTOCOMPLETE_MATCH_IMAGE_QUERY = '.emote-autocomplete-provider__image, .chat-line__message--emote';
 
 function seralizeCode(code) {
@@ -33,15 +34,15 @@ function getAutocompleteEmoteProvider() {
   return autocompleteProviders.find(({autocompleteType}) => autocompleteType === 'emote');
 }
 
-function createTwitchEmoteSet({category, emotes: categoryEmotes}) {
+function createTwitchEmoteSet(allEmotes) {
   return {
-    emotes: categoryEmotes.map(({code}) => ({
+    emotes: allEmotes.map(({code}) => ({
       id: seralizeCode(code),
       modifiers: null,
-      setID: category.id,
+      setID: CUSTOM_SET_ID,
       token: code,
     })),
-    id: category.id,
+    id: CUSTOM_SET_ID,
   };
 }
 
@@ -51,26 +52,24 @@ async function injectEmoteSets() {
     return;
   }
 
-  const emoteCategories = emoteMenuViewStore.getProvidersCategories();
-  for (const category of emoteCategories) {
-    if (category.emotes.length === 0) {
-      continue;
-    }
+  const allEmotes = emotes.getEmotesByCategories([
+    EmoteCategories.BETTERTTV_CHANNEL,
+    EmoteCategories.BETTERTTV_GLOBAL,
+    EmoteCategories.BETTERTTV_PERSONAL,
+    EmoteCategories.FRANKERFACEZ_CHANNEL,
+    EmoteCategories.FRANKERFACEZ_GLOBAL,
+  ]);
 
-    const emoteSet = createTwitchEmoteSet(category);
-    const index = autocompleteEmoteProvider.props.emotes.findIndex(({id}) => id === category.category.id);
+  const emoteSet = createTwitchEmoteSet(allEmotes);
+  const index = autocompleteEmoteProvider.props.emotes.findIndex(({id}) => id === CUSTOM_SET_ID);
 
-    if (index === -1) {
-      autocompleteEmoteProvider.props.emotes.push(emoteSet);
-    } else {
-      autocompleteEmoteProvider.props.emotes[index] = emoteSet;
-    }
+  if (index === -1) {
+    autocompleteEmoteProvider.props.emotes.push(emoteSet);
+  } else {
+    autocompleteEmoteProvider.props.emotes[index] = emoteSet;
   }
 
   autocompleteEmoteProvider.forceUpdate();
-
-  const autocompleteNode = twitch.getAutocompleteStateNode();
-  autocompleteNode.stateNode.forceUpdate();
 }
 
 let cleanup = null;
@@ -112,10 +111,11 @@ export default class EmoteAutocomplete {
       return;
     }
 
-    const emoteCategories = emoteMenuViewStore.getProvidersCategories().map(({category}) => category.id);
     autocompleteEmoteProvider.props.emotes = autocompleteEmoteProvider.props.emotes.filter(
-      ({id}) => !emoteCategories.includes(id)
+      ({id}) => id !== CUSTOM_SET_ID
     );
+
+    autocompleteEmoteProvider.forceUpdate();
   }
 
   load() {
