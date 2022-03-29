@@ -62,6 +62,8 @@ async function injectEmoteSets() {
     return;
   }
 
+  const autocompleteEmotes = autocompleteEmoteProvider.props.emotes;
+
   const allEmotes = emotes.getEmotesByCategories([
     EmoteCategories.BETTERTTV_CHANNEL,
     EmoteCategories.BETTERTTV_GLOBAL,
@@ -71,12 +73,12 @@ async function injectEmoteSets() {
   ]);
 
   const emoteSet = createTwitchEmoteSet(allEmotes);
-  const index = autocompleteEmoteProvider.props.emotes.findIndex(({id}) => id === CUSTOM_SET_ID);
+  const index = autocompleteEmotes.findIndex(({id}) => id === CUSTOM_SET_ID);
 
   if (index === -1) {
-    autocompleteEmoteProvider.props.emotes.push(emoteSet);
+    autocompleteEmotes.push(emoteSet);
   } else {
-    autocompleteEmoteProvider.props.emotes[index] = emoteSet;
+    autocompleteEmotes[index] = emoteSet;
   }
 
   autocompleteEmoteProvider.forceUpdate();
