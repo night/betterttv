@@ -8,20 +8,30 @@ import {EmoteCategories, SettingIds} from '../../../constants.js';
 import settings from '../../../settings.js';
 import './styles.module.css';
 
-const EMOTE_SET_CODE_PREFIX = '__BTTV__';
+const EMOTE_ID_BETTERTTV_PREFIX = '__BTTV__';
 const CUSTOM_SET_ID = 'BETTERTTV_EMOTES';
 const AUTOCOMPLETE_MATCH_IMAGE_QUERY = '.emote-autocomplete-provider__image, .chat-line__message--emote';
 
-function seralizeCode(code) {
-  return `${EMOTE_SET_CODE_PREFIX}${code}`;
+function serializeEmoteId(emote) {
+  const data = `${emote.category.provider}-${emote.id}-${emote.code}`;
+  return `${EMOTE_ID_BETTERTTV_PREFIX}${encodeURIComponent(btoa(data))}`;
 }
 
-function deseralizeCode(code) {
-  if (!code.startsWith(EMOTE_SET_CODE_PREFIX)) {
+function deserializeEmoteFromURL(url) {
+  const emoteData = url.split(EMOTE_ID_BETTERTTV_PREFIX)[1]?.split('/')[0];
+  if (emoteData == null) {
     return null;
   }
-
-  return code.replace(EMOTE_SET_CODE_PREFIX, '');
+  try {
+    const [emoteProvider, emoteId, emoteCode] = atob(decodeURIComponent(emoteData)).split('-');
+    return {
+      provider: emoteProvider,
+      id: emoteId,
+      code: emoteCode,
+    };
+  } catch (_) {
+    return null;
+  }
 }
 
 function getAutocompleteEmoteProvider() {
@@ -36,11 +46,11 @@ function getAutocompleteEmoteProvider() {
 
 function createTwitchEmoteSet(allEmotes) {
   return {
-    emotes: allEmotes.map(({code}) => ({
-      id: seralizeCode(code),
+    emotes: allEmotes.map((emote) => ({
+      id: serializeEmoteId(emote),
       modifiers: null,
       setID: CUSTOM_SET_ID,
-      token: code,
+      token: emote.code,
     })),
     id: CUSTOM_SET_ID,
   };
@@ -87,13 +97,14 @@ export default class EmoteAutocomplete {
       return;
     }
 
-    const match = String(image.srcset).match(/v2\/(.*?)\/default/);
-    const deseralizedCode = deseralizeCode(match[1]);
-    if (deseralizedCode == null) {
+    const url = String(image.srcset);
+    const deseralizedEmote = deserializeEmoteFromURL(url);
+
+    if (deseralizedEmote == null) {
       return;
     }
 
-    const emote = emotes.getEligibleEmote(deseralizedCode);
+    const emote = emotes.getEligibleEmote(deseralizedEmote.code);
     if (emote == null) {
       return;
     }
