@@ -13,6 +13,7 @@ const PLAYER = '.video-player__container';
 const CLIPS_BROADCASTER_INFO = '.clips-broadcaster-info';
 const CHAT_MESSAGE_SELECTOR = '.chat-line__message';
 const CHAT_INPUT = 'textarea[data-a-target="chat-input"], div[data-a-target="chat-input"]';
+const CHAT_WYSIWYG_INPUT_EDITOR = '.chat-wysiwyg-input__editor';
 
 const USER_PROFILE_IMAGE_GQL_QUERY = `
   query GetUserProfilePicture($userId: ID!) {
@@ -250,7 +251,7 @@ export default {
     let node;
     try {
       node = searchReactParents(
-        getReactInstance($('.chat-wysiwyg-input__editor')[0]),
+        getReactInstance($(CHAT_WYSIWYG_INPUT_EDITOR)[0]),
         (n) => n?.stateNode?.providers != null,
         20
       );
