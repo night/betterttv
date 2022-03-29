@@ -9,7 +9,8 @@ let settings = {};
 class TempValue {
   constructor(value, storedValue) {
     this.currentValue = value;
-    this.storedValue = storedValue;
+    // if storedValue is already a TempValue, retrieve its storedValue
+    this.storedValue = storedValue instanceof TempValue ? storedValue.storedValue : storedValue;
   }
 }
 
