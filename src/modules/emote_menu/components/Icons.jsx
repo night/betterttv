@@ -32,8 +32,8 @@ const twitchGamingLogo = {
 
 function BrandedImage({src, alt, brandSrc}) {
   return (
-    <div className={styles.icon}>
-      <img src={src} alt={alt} className={styles.iconBorderRadius} />
+    <div className={styles.brandedImage}>
+      <img src={src} alt={alt} className={styles.icon} />
       <img src={brandSrc} alt="" className={styles.brandIcon} />
     </div>
   );
