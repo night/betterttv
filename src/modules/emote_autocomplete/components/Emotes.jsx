@@ -85,11 +85,11 @@ export default function Emotes({chatInputElement, repositionPopover, onComplete,
         case keyCodes.Tab:
           event.preventDefault();
           event.stopPropagation();
-          handleAutocomplete(matches[selected]);
+          handleAutocomplete(shortMatches[selected]);
           break;
         case keyCodes.End:
           event.preventDefault();
-          setSelected(matches.length);
+          setSelected(shortMatches.length);
           break;
         case keyCodes.Home:
           event.preventDefault();
@@ -97,11 +97,11 @@ export default function Emotes({chatInputElement, repositionPopover, onComplete,
           break;
         case keyCodes.ArrowUp:
           event.preventDefault();
-          setSelected(travelUp(selected, matches.length));
+          setSelected((prevSelected) => travelUp(prevSelected, shortMatches.length));
           break;
         case keyCodes.ArrowDown:
           event.preventDefault();
-          setSelected(travelDown(selected, matches.length));
+          setSelected((prevSelected) => travelDown(prevSelected, shortMatches.length));
           break;
         default:
           setOpen(true);
@@ -114,9 +114,9 @@ export default function Emotes({chatInputElement, repositionPopover, onComplete,
     return () => {
       chatInputElement.removeEventListener('keydown', keydownCallback, true);
     };
-  }, [matches, selected, chatInputElement]);
+  }, [shortMatches, selected, chatInputElement]);
 
-  if (!open || matches.length === 0) {
+  if (!open || shortMatches.length === 0) {
     return null;
   }
 
