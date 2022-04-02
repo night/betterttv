@@ -1,8 +1,9 @@
 import {useEffect} from 'react';
 import emoteMenuViewStore from '../stores/emote-menu-view-store.js';
 
-let emoteMenuViewStoreCleanup;
 export default function useEmoteMenuViewStore(callback) {
+  let emoteMenuViewStoreCleanup;
+
   useEffect(() => {
     function dirtyCallback() {
       if (!emoteMenuViewStore.isLoaded()) {
