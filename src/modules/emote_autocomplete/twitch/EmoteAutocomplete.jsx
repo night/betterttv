@@ -85,6 +85,9 @@ function injectEmoteSets() {
 }
 
 let cleanup = null;
+let storeDirtyCallbackCleanup = null;
+let storeUpdatedCallbackCleanup = null;
+let patchImageCallbackCleanup = null;
 export default class EmoteAutocomplete {
   constructor() {
     watcher.on('channel.updated', () => this.load());
@@ -129,11 +132,11 @@ export default class EmoteAutocomplete {
   }
 
   load() {
-    if (cleanup != null) {
-      this.unload();
-    }
+    if (storeDirtyCallbackCleanup != null && storeUpdatedCallbackCleanup != null && patchImageCallbackCleanup != null) {
+      if (!settings.get(SettingIds.EMOTE_AUTOCOMPLETE)) {
+        this.unload();
+      }
 
-    if (!settings.get(SettingIds.EMOTE_AUTOCOMPLETE)) {
       return;
     }
 
@@ -160,9 +163,17 @@ export default class EmoteAutocomplete {
 
     injectEmoteSets();
 
-    const storeDirtyCallbackCleanup = emoteMenuViewStore.on('dirty', emoteMenuViewStore.isLoaded);
-    const storeUpdatedCallbackCleanup = emoteMenuViewStore.on('updated', injectEmoteSets);
-    const patchImageCallbackCleanup = dom.on(AUTOCOMPLETE_MATCH_IMAGE_QUERY, this.patchEmoteImage);
+    if (storeDirtyCallbackCleanup == null) {
+      storeDirtyCallbackCleanup = emoteMenuViewStore.on('dirty', emoteMenuViewStore.isLoaded);
+    }
+
+    if (storeUpdatedCallbackCleanup == null) {
+      storeUpdatedCallbackCleanup = emoteMenuViewStore.on('updated', injectEmoteSets);
+    }
+
+    if (patchImageCallbackCleanup == null) {
+      patchImageCallbackCleanup = dom.on(AUTOCOMPLETE_MATCH_IMAGE_QUERY, this.patchEmoteImage);
+    }
 
     cleanup = () => {
       storeDirtyCallbackCleanup();
