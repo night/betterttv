@@ -10,6 +10,8 @@ export default function useEmoteMenuViewStoreUpdated(shouldUpdate, handleUpdate)
       emoteMenuViewStore.updateEmotes();
     }
 
+    handleDirty();
+
     const removeUpdatedListener = emoteMenuViewStore.on('updated', handleUpdate);
     const removeDirtyListener = emoteMenuViewStore.on('dirty', handleDirty);
     return () => {

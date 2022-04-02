@@ -139,10 +139,11 @@ export default class EmoteAutocomplete {
       emoteAutocompleteProvider.forceUpdate();
     }
 
+    emoteMenuViewStore.updateEmotes();
     injectEmoteSets();
 
     if (storeDirtyCallbackCleanup == null) {
-      storeDirtyCallbackCleanup = emoteMenuViewStore.on('dirty', emoteMenuViewStore.isLoaded);
+      storeDirtyCallbackCleanup = emoteMenuViewStore.on('dirty', emoteMenuViewStore.updateEmotes);
     }
 
     if (storeUpdatedCallbackCleanup == null) {
