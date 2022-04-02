@@ -151,13 +151,13 @@ export default class EmoteAutocomplete {
 
     emoteAutocompleteProvider.componentDidUpdate = componentDidUpdate;
 
-    const dirtyCallback = () => {
+    function dirtyCallback() {
       if (!emoteMenuViewStore.isLoaded()) {
         emoteMenuViewStore.once('updated', () => injectEmoteSets());
       } else {
         injectEmoteSets();
       }
-    };
+    }
 
     dirtyCallback();
 
