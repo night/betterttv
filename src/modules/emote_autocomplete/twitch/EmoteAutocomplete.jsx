@@ -88,6 +88,7 @@ let cleanup = null;
 let storeDirtyCallbackCleanup = null;
 let storeUpdatedCallbackCleanup = null;
 let patchImageCallbackCleanup = null;
+let twitchComponentDidUpdate = null;
 export default class EmoteAutocomplete {
   constructor() {
     watcher.on('channel.updated', () => this.load());
@@ -116,10 +117,12 @@ export default class EmoteAutocomplete {
   }
 
   unload() {
-    if (cleanup != null) {
-      cleanup();
-      cleanup = null;
+    if (cleanup == null) {
+      return;
     }
+
+    cleanup();
+    cleanup = null;
 
     const autocompleteEmoteProvider = getAutocompleteEmoteProvider();
     if (autocompleteEmoteProvider == null) {
@@ -132,34 +135,34 @@ export default class EmoteAutocomplete {
   }
 
   load() {
-    if (storeDirtyCallbackCleanup != null && storeUpdatedCallbackCleanup != null && patchImageCallbackCleanup != null) {
-      if (!settings.get(SettingIds.EMOTE_AUTOCOMPLETE)) {
-        this.unload();
-      }
-
+    if (!settings.get(SettingIds.EMOTE_AUTOCOMPLETE)) {
+      this.unload();
       return;
     }
 
     const emoteAutocompleteProvider = getAutocompleteEmoteProvider();
-    if (emoteAutocompleteProvider == null || emoteAutocompleteProvider.__bttvAutocompletePatched === PATCHED_SENTINEL) {
+    if (emoteAutocompleteProvider == null) {
       return;
     }
 
-    emoteAutocompleteProvider.__bttvAutocompletePatched = PATCHED_SENTINEL;
-    const twitchComponentDidUpdate = emoteAutocompleteProvider.componentDidUpdate;
+    if (emoteAutocompleteProvider.__bttvAutocompletePatched !== PATCHED_SENTINEL) {
+      emoteAutocompleteProvider.__bttvAutocompletePatched = PATCHED_SENTINEL;
+      twitchComponentDidUpdate = emoteAutocompleteProvider.componentDidUpdate;
 
-    function bttvComponentDidUpdate(prevProps) {
-      if (prevProps.emotes !== this.props.emotes) {
-        injectEmoteSets();
+      // eslint-disable-next-line no-inner-declarations
+      function bttvComponentDidUpdate(prevProps) {
+        if (prevProps.emotes !== this.props.emotes) {
+          injectEmoteSets();
+        }
+
+        if (twitchComponentDidUpdate != null) {
+          twitchComponentDidUpdate.call(this, ...prevProps);
+        }
       }
 
-      if (twitchComponentDidUpdate != null) {
-        twitchComponentDidUpdate.call(this, ...prevProps);
-      }
+      emoteAutocompleteProvider.componentDidUpdate = bttvComponentDidUpdate;
+      emoteAutocompleteProvider.forceUpdate();
     }
-
-    emoteAutocompleteProvider.componentDidUpdate = bttvComponentDidUpdate;
-    emoteAutocompleteProvider.forceUpdate();
 
     injectEmoteSets();
 
