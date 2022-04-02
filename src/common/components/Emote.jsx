@@ -1,5 +1,7 @@
 import classNames from 'classnames';
 import React from 'react';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faLock} from '@fortawesome/free-solid-svg-icons/faLock';
 import {createSrcSet} from '../../utils/image.js';
 import styles from './Emote.module.css';
 
@@ -19,7 +21,7 @@ export default function Emote({emote, className, locked}) {
     });
   }
 
-  return (
+  const image = (
     <img
       ref={imageRef}
       className={classNames(className, styles.emoteImage, {
@@ -32,4 +34,15 @@ export default function Emote({emote, className, locked}) {
       onLoad={loadingRef.current ? handleLoad : undefined}
     />
   );
+
+  if (locked) {
+    return (
+      <div className={styles.lockedEmote}>
+        {image}
+        <FontAwesomeIcon icon={faLock} className={styles.lock} />
+      </div>
+    );
+  }
+
+  return image;
 }
