@@ -54,7 +54,14 @@ function organizeCategories(categories) {
     return categories;
   }
 
-  return categories.sort((a, b) => categoryOrder.indexOf(a.category.id) - categoryOrder.indexOf(b.category.id));
+  return categories.sort((a, b) => {
+    const aIndex = categoryOrder.indexOf(a.category.id);
+    const bIndex = categoryOrder.indexOf(b.category.id);
+    if (aIndex === -1 || bIndex === -1) {
+      return 0;
+    }
+    return aIndex - bIndex;
+  });
 }
 
 const fuse = new Fuse([], {
