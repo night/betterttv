@@ -27,20 +27,14 @@ const EmoteMenuPopover = React.forwardRef(
     const localRef = useRef(null);
     const [popoverWidth, setPopoverWidth] = useState(null);
 
-    function reposition() {
-      repositionPopover(localRef, boundingQuerySelector, TOP_PADDING);
-    }
-
-    useEffect(() => reposition(), [localRef, style]);
-
-    const callback = useCallback(() => {
+    const reposition = useCallback(() => {
       const {width} = chatInputElement.getBoundingClientRect();
       setPopoverWidth(width);
-      reposition();
-    }, [setPopoverWidth, reposition, chatInputElement]);
+      repositionPopover(localRef, boundingQuerySelector, TOP_PADDING);
+    }, [setPopoverWidth, chatInputElement]);
 
-    useResize(callback);
-    useEffect(() => callback(), []);
+    useResize(reposition);
+    useEffect(reposition, [reposition, localRef, style]);
 
     return (
       <Popover
