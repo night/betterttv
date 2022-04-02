@@ -2,12 +2,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 2px;
   transition: none;
   border-radius: 2px;
   font-size: 14px;
-  padding-right: 8px;
+
+  padding: 4px;
   padding-left: 8px;
+  padding-right: 8px;
 }
 
 .emote {
