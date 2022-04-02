@@ -91,9 +91,6 @@ export default class EmoteAutocomplete {
     settings.on(`changed.${SettingIds.EMOTE_AUTOCOMPLETE}`, () => this.load());
   }
 
-  // on chat load, add emotes to twitch's autocomplete emote provider
-  // on autocomplete match render, replace image source of betterttv emotes with bttv cdn links
-
   patchEmoteImage(image, isConnected) {
     if (!isConnected) {
       return;
