@@ -80,8 +80,6 @@ async function injectEmoteSets() {
   } else {
     autocompleteEmotes[index] = emoteSet;
   }
-
-  autocompleteEmoteProvider.forceUpdate();
 }
 
 let cleanup = null;
@@ -124,8 +122,6 @@ export default class EmoteAutocomplete {
     autocompleteEmoteProvider.props.emotes = autocompleteEmoteProvider.props.emotes.filter(
       ({id}) => id !== CUSTOM_SET_ID
     );
-
-    autocompleteEmoteProvider.forceUpdate();
   }
 
   load() {
