@@ -6,7 +6,7 @@ import emotes from '../../emotes/index.js';
 import {createSrcSet} from '../../../utils/image.js';
 import {EmoteCategories, SettingIds} from '../../../constants.js';
 import settings from '../../../settings.js';
-import './styles.module.css';
+import './EmoteAutocomplete.module.css';
 
 const EMOTE_ID_BETTERTTV_PREFIX = '__BTTV__';
 const CUSTOM_SET_ID = 'BETTERTTV_EMOTES';
