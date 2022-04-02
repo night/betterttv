@@ -4,8 +4,7 @@ import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js'
 import dom from '../../../observers/dom.js';
 import emotes from '../../emotes/index.js';
 import {createSrcSet} from '../../../utils/image.js';
-import {EmoteCategories, SettingIds} from '../../../constants.js';
-import settings from '../../../settings.js';
+import {EmoteCategories} from '../../../constants.js';
 import './EmoteAutocomplete.module.css';
 
 const EMOTE_ID_BETTERTTV_PREFIX = '__BTTV__';
@@ -84,7 +83,6 @@ function injectEmoteSets() {
   }
 }
 
-let cleanup = null;
 let storeDirtyCallbackCleanup = null;
 let storeUpdatedCallbackCleanup = null;
 let patchImageCallbackCleanup = null;
@@ -92,7 +90,7 @@ let twitchComponentDidUpdate = null;
 export default class EmoteAutocomplete {
   constructor() {
     watcher.on('channel.updated', () => this.load());
-    settings.on(`changed.${SettingIds.EMOTE_AUTOCOMPLETE}`, () => this.load());
+    this.load();
   }
 
   patchEmoteImage(image, isConnected) {
@@ -116,30 +114,7 @@ export default class EmoteAutocomplete {
     image.src = emote.images['1x'];
   }
 
-  unload() {
-    if (cleanup == null) {
-      return;
-    }
-
-    cleanup();
-    cleanup = null;
-
-    const autocompleteEmoteProvider = getAutocompleteEmoteProvider();
-    if (autocompleteEmoteProvider == null) {
-      return;
-    }
-
-    autocompleteEmoteProvider.props.emotes = autocompleteEmoteProvider.props.emotes.filter(
-      ({id}) => id !== CUSTOM_SET_ID
-    );
-  }
-
   load() {
-    if (!settings.get(SettingIds.EMOTE_AUTOCOMPLETE)) {
-      this.unload();
-      return;
-    }
-
     const emoteAutocompleteProvider = getAutocompleteEmoteProvider();
     if (emoteAutocompleteProvider == null) {
       return;
@@ -177,17 +152,6 @@ export default class EmoteAutocomplete {
     if (patchImageCallbackCleanup == null) {
       patchImageCallbackCleanup = dom.on(AUTOCOMPLETE_MATCH_IMAGE_QUERY, this.patchEmoteImage);
     }
-
-    cleanup = () => {
-      storeDirtyCallbackCleanup();
-      storeUpdatedCallbackCleanup();
-      patchImageCallbackCleanup();
-
-      if (emoteAutocompleteProvider.__bttvAutocompletePatched === PATCHED_SENTINEL) {
-        emoteAutocompleteProvider.componentDidUpdate = twitchComponentDidUpdate;
-        emoteAutocompleteProvider.forceUpdate();
-      }
-    };
   }
 
   isActive() {
