@@ -20,7 +20,7 @@ const EmoteMenuPopover = React.forwardRef(
       setTip(show);
     }
 
-    useAutoPositionPopover(localRef, boundingQuerySelector, [localRef, style, hasTip]);
+    useAutoPositionPopover(localRef, boundingQuerySelector, style, hasTip);
 
     return (
       <ThemeProvider>
