@@ -1,5 +1,6 @@
 :global {
-  .emote-autocomplete-provider__image[srcset*='/__bttv-'] {
+  .emote-autocomplete-provider__image[srcset*='/__BTTV__'],
+  .chat-line__message--emote[srcset*='/__BTTV__'] {
     display: none;
   }
 }
