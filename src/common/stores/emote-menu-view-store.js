@@ -174,6 +174,10 @@ class EmoteMenuViewStore extends SafeEventEmitter {
   }
 
   updateEmotes() {
+    if (!this.dirty) {
+      return;
+    }
+
     this.rows = [];
     this.headers = [];
 

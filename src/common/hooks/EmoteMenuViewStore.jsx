@@ -1,25 +1,20 @@
 import {useEffect} from 'react';
 import emoteMenuViewStore from '../stores/emote-menu-view-store.js';
 
-export default function useEmoteMenuViewStore(callback) {
-  let emoteMenuViewStoreCleanup;
-
+export default function useEmoteMenuViewStoreUpdated(shouldUpdate, handleUpdate) {
   useEffect(() => {
-    function dirtyCallback() {
-      if (!emoteMenuViewStore.isLoaded()) {
-        emoteMenuViewStoreCleanup = emoteMenuViewStore.once('updated', () => callback());
+    function handleDirty() {
+      if (!shouldUpdate) {
+        return;
       }
+      emoteMenuViewStore.updateEmotes();
     }
 
-    dirtyCallback();
-
-    const cleanup = emoteMenuViewStore.on('dirty', dirtyCallback);
-
+    const removeUpdatedListener = emoteMenuViewStore.on('updated', handleUpdate);
+    const removeDirtyListener = emoteMenuViewStore.on('dirty', handleDirty);
     return () => {
-      cleanup();
-      if (emoteMenuViewStoreCleanup != null) {
-        emoteMenuViewStoreCleanup();
-      }
+      removeUpdatedListener();
+      removeDirtyListener();
     };
-  }, [callback]);
+  }, [shouldUpdate, handleUpdate]);
 }
