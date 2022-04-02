@@ -111,8 +111,10 @@ export default class EmoteAutocomplete {
   }
 
   unload() {
-    cleanup();
-    cleanup = null;
+    if (cleanup != null) {
+      cleanup();
+      cleanup = null;
+    }
 
     const autocompleteEmoteProvider = getAutocompleteEmoteProvider();
     if (autocompleteEmoteProvider == null) {
