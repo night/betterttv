@@ -14,7 +14,7 @@ export default function EmoteRow({index, emote, active, setSelected, handleAutoc
       className={classNames(styles.emoteContainer, {[styles.active]: active})}>
       <div className={styles.emote}>
         <Emote emote={emote} />
-        <div className={styles.emoteCode}>{emote.code}</div>
+        <div>{emote.code}</div>
       </div>
       <div>{emote.category.displayName}</div>
     </Button>
