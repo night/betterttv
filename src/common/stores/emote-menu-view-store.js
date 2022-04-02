@@ -165,10 +165,6 @@ class EmoteMenuViewStore extends SafeEventEmitter {
     this.markDirty(false);
   }
 
-  getProvidersCategories() {
-    return providerCategories;
-  }
-
   search(search) {
     return fuse.search(search);
   }
