@@ -35,10 +35,10 @@ export default class EmoteAutocomplete {
       const element = document.querySelector(CHAT_TEXT_AREA);
       const whisperContainer = document.createElement('div');
       whisperContainer.setAttribute('data-a-target', 'bttv-autocomplete-matches-container');
-      const chatApp = document.querySelector('#chat');
+      const chatElement = document.querySelector('#chat');
 
-      if (chatApp != null) {
-        chatApp.appendChild(whisperContainer);
+      if (chatElement != null) {
+        chatElement.appendChild(whisperContainer);
       }
 
       if (mountedNode != null) {
