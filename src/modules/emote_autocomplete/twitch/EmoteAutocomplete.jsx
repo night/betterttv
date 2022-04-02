@@ -158,6 +158,8 @@ export default class EmoteAutocomplete {
     emoteAutocompleteProvider.componentDidUpdate = bttvComponentDidUpdate;
     emoteAutocompleteProvider.forceUpdate();
 
+    injectEmoteSets();
+
     const storeDirtyCallbackCleanup = emoteMenuViewStore.on('dirty', emoteMenuViewStore.isLoaded);
     const storeUpdatedCallbackCleanup = emoteMenuViewStore.on('updated', injectEmoteSets);
     const patchImageCallbackCleanup = dom.on(AUTOCOMPLETE_MATCH_IMAGE_QUERY, this.patchEmoteImage);
