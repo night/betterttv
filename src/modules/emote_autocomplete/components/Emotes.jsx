@@ -68,11 +68,13 @@ export default function Emotes({chatInputElement, repositionPopover, onComplete,
 
   useEffect(() => {
     function handleOutsideClick(event) {
-      if (localRef.current == null) {
+      const {current} = localRef;
+
+      if (current == null) {
         return;
       }
 
-      setOpen(localRef.current.contains(event.target));
+      setOpen(current.contains(event.target));
     }
 
     window.addEventListener('mousedown', handleOutsideClick);
