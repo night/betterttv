@@ -12,6 +12,8 @@ const EMOTE_ID_BETTERTTV_PREFIX = '__BTTV__';
 const CUSTOM_SET_ID = 'BETTERTTV_EMOTES';
 const AUTOCOMPLETE_MATCH_IMAGE_QUERY = '.emote-autocomplete-provider__image, .chat-line__message--emote';
 
+const PATCHED_SENTINEL = Symbol('patched symbol');
+
 function serializeEmoteId(emote) {
   const data = `${emote.category.provider}-${emote.id}-${emote.code}`;
   return `${EMOTE_ID_BETTERTTV_PREFIX}${encodeURIComponent(btoa(data))}`;
@@ -56,7 +58,7 @@ function createTwitchEmoteSet(allEmotes) {
   };
 }
 
-async function injectEmoteSets() {
+function injectEmoteSets() {
   const autocompleteEmoteProvider = getAutocompleteEmoteProvider();
   if (autocompleteEmoteProvider == null) {
     return;
@@ -136,33 +138,39 @@ export default class EmoteAutocomplete {
     }
 
     const emoteAutocompleteProvider = getAutocompleteEmoteProvider();
-    if (emoteAutocompleteProvider == null) {
+    if (emoteAutocompleteProvider == null || emoteAutocompleteProvider.__bttvAutocompletePatched === PATCHED_SENTINEL) {
       return;
     }
 
-    const oldComponentDidUpdate = emoteAutocompleteProvider.componentDidUpdate;
-    function componentDidUpdate(prevProps) {
+    emoteAutocompleteProvider.__bttvAutocompletePatched = PATCHED_SENTINEL;
+    const twitchComponentDidUpdate = emoteAutocompleteProvider.componentDidUpdate;
+
+    function bttvComponentDidUpdate(prevProps) {
       if (prevProps.emotes !== this.props.emotes) {
         injectEmoteSets();
       }
 
-      if (oldComponentDidUpdate != null) {
-        oldComponentDidUpdate.call(this, ...prevProps);
+      if (twitchComponentDidUpdate != null) {
+        twitchComponentDidUpdate.call(this, ...prevProps);
       }
     }
 
-    emoteAutocompleteProvider.componentDidUpdate = componentDidUpdate;
+    emoteAutocompleteProvider.componentDidUpdate = bttvComponentDidUpdate;
+    emoteAutocompleteProvider.forceUpdate();
 
     const storeDirtyCallbackCleanup = emoteMenuViewStore.on('dirty', emoteMenuViewStore.isLoaded);
     const storeUpdatedCallbackCleanup = emoteMenuViewStore.on('updated', injectEmoteSets);
-
     const patchImageCallbackCleanup = dom.on(AUTOCOMPLETE_MATCH_IMAGE_QUERY, this.patchEmoteImage);
 
     cleanup = () => {
       storeDirtyCallbackCleanup();
       storeUpdatedCallbackCleanup();
       patchImageCallbackCleanup();
-      emoteAutocompleteProvider.componentDidUpdate = oldComponentDidUpdate;
+
+      if (emoteAutocompleteProvider.__bttvAutocompletePatched === PATCHED_SENTINEL) {
+        emoteAutocompleteProvider.componentDidUpdate = twitchComponentDidUpdate;
+        emoteAutocompleteProvider.forceUpdate();
+      }
     };
   }
 
