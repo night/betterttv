@@ -4,6 +4,7 @@ import {EmoteProviders, SettingIds} from '../../../constants.js';
 import settings from '../../../settings.js';
 import {createYoutubeEmojiNode} from '../../../utils/youtube.js';
 import EmoteWhisper from '../components/EmoteWhisper.jsx';
+import styles from './EmoteAutocomplete.module.css';
 
 let mountedNode;
 
@@ -19,6 +20,30 @@ function findFocusedWord(value, selectionStart = 0) {
     start: subString.length - focusedWord.length,
     end: selectionStart,
   };
+}
+
+function getChatInputPartialEmote() {
+  const {anchorNode, anchorOffset} = document.getSelection();
+  if (anchorNode.nodeType !== Node.TEXT_NODE) {
+    return null;
+  }
+
+  const {value} = findFocusedWord(anchorNode.data, anchorOffset);
+  if (value == null || !/^(:(.*[a-zA-Z0-9]){2,})/.test(value) || value.endsWith(':')) {
+    return null;
+  }
+
+  return value;
+}
+
+function toggleNativeAutocomplete(partialInput) {
+  const nativeAutocomplete = document.querySelector('yt-live-chat-text-input-field-renderer > tp-yt-iron-dropdown');
+
+  if (nativeAutocomplete == null) {
+    return;
+  }
+
+  nativeAutocomplete.classList.toggle(styles.hideNativeAutocomplete, partialInput != null);
 }
 
 export default class EmoteAutocomplete {
@@ -115,16 +140,8 @@ export default class EmoteAutocomplete {
   }
 
   getChatInputPartialEmote() {
-    const {anchorNode, anchorOffset} = document.getSelection();
-    if (anchorNode.nodeType !== Node.TEXT_NODE) {
-      return null;
-    }
-
-    const {value} = findFocusedWord(anchorNode.data, anchorOffset);
-    if (value == null || !/^(:(.*[a-zA-Z0-9]){2,})/.test(value) || value.endsWith(':')) {
-      return null;
-    }
-
-    return value;
+    const partialInput = getChatInputPartialEmote();
+    toggleNativeAutocomplete(partialInput);
+    return partialInput;
   }
 }
