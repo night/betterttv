@@ -153,21 +153,14 @@ export default class EmoteAutocomplete {
 
     emoteAutocompleteProvider.componentDidUpdate = componentDidUpdate;
 
-    function dirtyCallback() {
-      if (!emoteMenuViewStore.isLoaded()) {
-        emoteMenuViewStore.once('updated', () => injectEmoteSets());
-      } else {
-        injectEmoteSets();
-      }
-    }
+    const storeDirtyCallbackCleanup = emoteMenuViewStore.on('dirty', emoteMenuViewStore.isLoaded);
+    const storeUpdatedCallbackCleanup = emoteMenuViewStore.on('updated', injectEmoteSets);
 
-    dirtyCallback();
-
-    const storeCallbackCleanup = emoteMenuViewStore.on('dirty', dirtyCallback);
     const patchImageCallbackCleanup = dom.on(AUTOCOMPLETE_MATCH_IMAGE_QUERY, this.patchEmoteImage);
 
     cleanup = () => {
-      storeCallbackCleanup();
+      storeDirtyCallbackCleanup();
+      storeUpdatedCallbackCleanup();
       patchImageCallbackCleanup();
       emoteAutocompleteProvider.componentDidUpdate = oldComponentDidUpdate;
     };
