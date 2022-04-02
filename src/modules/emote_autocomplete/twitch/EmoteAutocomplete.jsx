@@ -139,7 +139,7 @@ export default class EmoteAutocomplete {
     }
 
     const oldComponentDidUpdate = emoteAutocompleteProvider.componentDidUpdate;
-    emoteAutocompleteProvider.componentDidUpdate = function componentDidUpdate(prevProps) {
+    function componentDidUpdate(prevProps) {
       if (prevProps.emotes !== this.props.emotes) {
         injectEmoteSets();
       }
@@ -147,7 +147,9 @@ export default class EmoteAutocomplete {
       if (oldComponentDidUpdate != null) {
         oldComponentDidUpdate.call(this, ...prevProps);
       }
-    };
+    }
+
+    emoteAutocompleteProvider.componentDidUpdate = componentDidUpdate;
 
     const dirtyCallback = () => {
       if (!emoteMenuViewStore.isLoaded()) {
