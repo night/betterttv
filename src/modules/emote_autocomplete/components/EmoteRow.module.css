@@ -1,20 +1,21 @@
-.emoteContainer {
+.emoteRow {
   display: flex;
   justify-content: space-between;
   align-items: center;
   transition: none;
   border-radius: 2px;
   font-size: 14px;
+  padding: 8px;
+}
 
-  padding: 4px;
-  padding-left: 8px;
-  padding-right: 8px;
+.emoteInfoContainer {
+  display: flex;
+  align-items: center;
+  color: var(--bttv-rs-btn-default-active-text);
 }
 
 .emote {
-  display: flex;
-  align-items: center;
-  column-gap: 8px;
+  margin-right: 8px;
 }
 
 .active {

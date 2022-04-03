@@ -11,9 +11,9 @@ export default function EmoteRow({index, emote, active, setSelected, handleAutoc
       onMouseOver={() => setSelected(index)}
       onClick={() => handleAutocomplete(emote)}
       appearance="subtle"
-      className={classNames(styles.emoteContainer, {[styles.active]: active})}>
-      <div className={styles.emote}>
-        <Emote emote={emote} />
+      className={classNames(styles.emoteRow, {[styles.active]: active})}>
+      <div className={styles.emoteInfoContainer}>
+        <Emote className={styles.emote} emote={emote} />
         <div>{emote.code}</div>
       </div>
       <div>{emote.category.displayName}</div>
