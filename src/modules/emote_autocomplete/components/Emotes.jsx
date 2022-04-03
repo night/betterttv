@@ -39,7 +39,7 @@ export default function Emotes({chatInputElement, repositionPopover, onComplete,
     setMatches(searchedEmotes.map(({item}) => item));
   }, [chatInputPartialEmote]);
 
-  useEmoteMenuViewStoreUpdated(true, computeMatches);
+  useEmoteMenuViewStoreUpdated(false, computeMatches);
   useEffect(computeMatches, [chatInputPartialEmote]);
 
   const [selected, setSelected] = useState(0);
