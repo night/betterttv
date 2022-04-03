@@ -5,6 +5,6 @@
 .header {
   font-size: 14px;
   font-weight: 500;
-  padding: 8px;
+  padding-bottom: 6px;
   color: var(--bttv-rs-btn-default-active-text);
 }

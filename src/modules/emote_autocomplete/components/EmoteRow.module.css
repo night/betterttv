@@ -21,3 +21,8 @@
 .active {
   background-color: var(--bttv-rs-btn-default-bg) !important;
 }
+
+.categoryName {
+  color: var(--bttv-rs-text-tertiary);
+  font-size: 12px;
+}
