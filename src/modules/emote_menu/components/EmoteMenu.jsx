@@ -1,6 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import Divider from 'rsuite/Divider';
-import useEmoteMenuViewStore from '../../../common/hooks/EmoteMenuViewStore.jsx';
 import keycodes from '../../../utils/keycodes.js';
 import {EmoteMenuTips} from '../../../constants.js';
 import emoteMenuViewStore, {CategoryPositions} from '../../../common/stores/emote-menu-view-store.js';
@@ -10,6 +9,7 @@ import Header from './Header.jsx';
 import Preview from './Preview.jsx';
 import Sidebar from './Sidebar.jsx';
 import Tip, {markTipAsSeen} from './Tip.jsx';
+import useEmoteMenuViewStoreUpdated from '../../../common/hooks/EmoteMenuViewStore.jsx';
 
 let keyPressCallback;
 function setKeyPressCallback(newKeyPressCallback) {
@@ -79,7 +79,7 @@ export default function EmoteMenu({toggleWhisper, appendToChat, onSetTip}) {
     };
   }, [selected, shiftPressed]);
 
-  useEmoteMenuViewStore(() => setUpdated((prev) => !prev));
+  useEmoteMenuViewStoreUpdated(true, () => setUpdated((prev) => !prev));
   useEffect(() => setSearch(''), [section]);
 
   return (

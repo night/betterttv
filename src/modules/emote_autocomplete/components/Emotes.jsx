@@ -2,10 +2,10 @@ import React, {useEffect, useRef, useState, useMemo, useCallback} from 'react';
 import keyCodes from '../../../utils/keycodes.js';
 import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js';
 import useChatInputPartialEmote from '../hooks/ChatInputPartialEmote.jsx';
-import useEmoteMenuViewStore from '../../../common/hooks/EmoteMenuViewStore.jsx';
 import EmoteRow from './EmoteRow.jsx';
 import EmotesHeader from './EmotesHeader.jsx';
 import styles from './Emotes.module.css';
+import useEmoteMenuViewStoreUpdated from '../../../common/hooks/EmoteMenuViewStore.jsx';
 
 const MAX_EMOTES_SHOWN = 8;
 
@@ -39,7 +39,7 @@ export default function Emotes({chatInputElement, repositionPopover, onComplete,
     setMatches(searchedEmotes.map(({item}) => item));
   }, [chatInputPartialEmote]);
 
-  useEmoteMenuViewStore(computeMatches);
+  useEmoteMenuViewStoreUpdated(true, computeMatches);
   useEffect(computeMatches, [chatInputPartialEmote]);
 
   const [selected, setSelected] = useState(0);
