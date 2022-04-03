@@ -110,7 +110,6 @@ export default class EmoteAutocomplete {
     this.load();
     watcher.on('channel.updated', () => this.load());
 
-    emoteMenuViewStore.on('dirty', emoteMenuViewStore.updateEmotes);
     emoteMenuViewStore.on('updated', injectEmoteSets);
     dom.on(AUTOCOMPLETE_MATCH_IMAGE_QUERY, patchEmoteImage);
   }
