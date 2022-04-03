@@ -83,35 +83,36 @@ function injectEmoteSets() {
   }
 }
 
-let storeDirtyCallbackCleanup = null;
-let storeUpdatedCallbackCleanup = null;
-let patchImageCallbackCleanup = null;
+function patchEmoteImage(image, isConnected) {
+  if (!isConnected) {
+    return;
+  }
+
+  const url = String(image.srcset);
+  const deseralizedEmote = deserializeEmoteFromURL(url);
+
+  if (deseralizedEmote == null) {
+    return;
+  }
+
+  const emote = emotes.getEligibleEmote(deseralizedEmote.code);
+  if (emote == null) {
+    return;
+  }
+
+  image.srcset = createSrcSet(emote.images);
+  image.src = emote.images['1x'];
+}
+
 let twitchComponentDidUpdate = null;
 export default class EmoteAutocomplete {
   constructor() {
-    watcher.on('channel.updated', () => this.load());
     this.load();
-  }
+    watcher.on('channel.updated', () => this.load());
 
-  patchEmoteImage(image, isConnected) {
-    if (!isConnected) {
-      return;
-    }
-
-    const url = String(image.srcset);
-    const deseralizedEmote = deserializeEmoteFromURL(url);
-
-    if (deseralizedEmote == null) {
-      return;
-    }
-
-    const emote = emotes.getEligibleEmote(deseralizedEmote.code);
-    if (emote == null) {
-      return;
-    }
-
-    image.srcset = createSrcSet(emote.images);
-    image.src = emote.images['1x'];
+    emoteMenuViewStore.on('dirty', emoteMenuViewStore.updateEmotes);
+    emoteMenuViewStore.on('updated', injectEmoteSets);
+    dom.on(AUTOCOMPLETE_MATCH_IMAGE_QUERY, patchEmoteImage);
   }
 
   load() {
@@ -141,21 +142,5 @@ export default class EmoteAutocomplete {
 
     emoteMenuViewStore.updateEmotes();
     injectEmoteSets();
-
-    if (storeDirtyCallbackCleanup == null) {
-      storeDirtyCallbackCleanup = emoteMenuViewStore.on('dirty', emoteMenuViewStore.updateEmotes);
-    }
-
-    if (storeUpdatedCallbackCleanup == null) {
-      storeUpdatedCallbackCleanup = emoteMenuViewStore.on('updated', injectEmoteSets);
-    }
-
-    if (patchImageCallbackCleanup == null) {
-      patchImageCallbackCleanup = dom.on(AUTOCOMPLETE_MATCH_IMAGE_QUERY, this.patchEmoteImage);
-    }
-  }
-
-  isActive() {
-    return false;
   }
 }

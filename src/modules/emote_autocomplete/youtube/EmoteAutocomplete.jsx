@@ -88,10 +88,6 @@ export default class EmoteAutocomplete {
     }
   }
 
-  isActive() {
-    return settings.get(SettingIds.EMOTE_AUTOCOMPLETE) && this.getChatInputPartialEmote() != null;
-  }
-
   replaceChatInputPartialEmote(emote) {
     const {anchorNode, anchorOffset} = document.getSelection();
 
