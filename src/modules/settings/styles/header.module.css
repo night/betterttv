@@ -64,5 +64,5 @@
   vertical-align: middle;
   align-items: center;
   justify-content: space-between;
-  column-gap: 5%;
+  margin-left: 4px;
 }
