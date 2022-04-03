@@ -1,6 +1,5 @@
 import twitch from '../../../utils/twitch.js';
 import watcher from '../../../watcher.js';
-import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js';
 import dom from '../../../observers/dom.js';
 import emotes from '../../emotes/index.js';
 import {createSrcSet} from '../../../utils/image.js';
@@ -10,7 +9,6 @@ import './EmoteAutocomplete.module.css';
 const EMOTE_ID_BETTERTTV_PREFIX = '__BTTV__';
 const CUSTOM_SET_ID = 'BETTERTTV_EMOTES';
 const AUTOCOMPLETE_MATCH_IMAGE_QUERY = '.emote-autocomplete-provider__image, .chat-line__message--emote';
-const NATIVE_AUTOCOMPLETE_QUERY = 'div[data-test-selector="autocomplete-matches-container"]';
 
 const PATCHED_SENTINEL = Symbol('patched symbol');
 
@@ -110,9 +108,7 @@ export default class EmoteAutocomplete {
   constructor() {
     this.load();
     watcher.on('channel.updated', () => this.load());
-
-    emoteMenuViewStore.on('updated', () => injectEmoteSets());
-    dom.on(NATIVE_AUTOCOMPLETE_QUERY, () => emoteMenuViewStore.isLoaded());
+    watcher.on('emotes.updated', () => injectEmoteSets());
     dom.on(AUTOCOMPLETE_MATCH_IMAGE_QUERY, patchEmoteImage);
   }
 
@@ -141,7 +137,6 @@ export default class EmoteAutocomplete {
       emoteAutocompleteProvider.forceUpdate();
     }
 
-    emoteMenuViewStore.updateEmotes();
     injectEmoteSets();
   }
 }
