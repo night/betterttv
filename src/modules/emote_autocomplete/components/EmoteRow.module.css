@@ -16,6 +16,8 @@
 
 .emote {
   margin-right: 8px;
+  width: 24px;
+  height: 24px;
 }
 
 .active {
@@ -25,4 +27,10 @@
 .categoryName {
   color: var(--bttv-rs-text-tertiary);
   font-size: 12px;
+}
+
+@media only screen and (max-width: 450px) {
+  .categoryName {
+    display: none;
+  }
 }
