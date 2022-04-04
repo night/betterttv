@@ -1,7 +1,8 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import classNames from 'classnames';
+import chunk from 'lodash.chunk';
 import VirtualizedList from './VirtualizedList.jsx';
-import emoteMenuViewStore from '../stores/emote-menu-view-store.js';
+import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js';
 import styles from './Emotes.module.css';
 import EmoteButton from './EmoteButton.jsx';
 import Icons from './Icons.jsx';
@@ -94,7 +95,10 @@ const BrowseEmotes = React.forwardRef(
 
 const SearchEmotes = React.forwardRef(
   ({search, onClick, coords, setCoords, setRowColumnCounts, setSelected, navigationMode}, ref) => {
-    const emotes = useMemo(() => emoteMenuViewStore.search(search), [search]);
+    const emotes = useMemo(
+      () => chunk(emoteMenuViewStore.search(search), emoteMenuViewStore.totalCols),
+      [search, emoteMenuViewStore.totalCols]
+    );
 
     const handleMouseOver = useCallback(
       (newCoords) => {

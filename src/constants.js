@@ -20,6 +20,7 @@ export const SettingIds = {
   HOST_BUTTON: 'hostButton',
   PLAYER_EXTENSIONS: 'playerExtensions',
   CLICK_TO_PLAY: 'clickToPlay',
+  EMOTE_AUTOCOMPLETE: 'emoteAutocomplete',
   MUTE_INVISIBLE_PLAYER: 'muteInvisiblePlayer',
   SCROLL_VOLUME_CONTROL: 'scrollVolumeControl',
   DELETED_MESSAGES: 'deletedMessages',
@@ -179,6 +180,7 @@ export const SettingDefaultValues = {
   [SettingIds.CLICK_TO_PLAY]: false,
   [SettingIds.MUTE_INVISIBLE_PLAYER]: false,
   [SettingIds.SCROLL_VOLUME_CONTROL]: false,
+  [SettingIds.EMOTE_AUTOCOMPLETE]: true,
   [SettingIds.BLACKLIST_KEYWORDS]: {},
   [SettingIds.HIGHLIGHT_KEYWORDS]: null,
   [SettingIds.SIDEBAR]: [

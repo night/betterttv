@@ -1,28 +1,28 @@
 import Fuse from 'fuse.js';
 import uniqBy from 'lodash.uniqby';
 import sortBy from 'lodash.sortby';
-import SafeEventEmitter from '../../../utils/safe-event-emitter.js';
-import watcher from '../../../watcher.js';
-import {getEmojiCategories} from '../utils/emojis.js';
-import emotes from '../../emotes/index.js';
-import Icons from '../components/Icons.jsx';
-import emoteStorage from './emote-menu-store.js';
-import {loadTwitchEmotes} from '../utils/twitch-emotes.js';
-import {loadYouTubeEmotes} from '../utils/youtube-emotes.js';
-import cdn from '../../../utils/cdn.js';
-import {getCurrentChannel} from '../../../utils/channel.js';
-import settings from '../../../settings.js';
+import SafeEventEmitter from '../../utils/safe-event-emitter.js';
+import watcher from '../../watcher.js';
+import {getEmojiCategories} from '../../modules/emote_menu/utils/emojis.js';
+import emotes from '../../modules/emotes/index.js';
+import Icons from '../../modules/emote_menu/components/Icons.jsx';
+import emoteStorage from '../../modules/emote_menu/stores/emote-menu-store.js';
+import {loadTwitchEmotes} from '../../modules/emote_menu/utils/twitch-emotes.js';
+import {loadYouTubeEmotes} from '../../modules/emote_menu/utils/youtube-emotes.js';
+import cdn from '../../utils/cdn.js';
+import {getCurrentChannel} from '../../utils/channel.js';
+import settings from '../../settings.js';
 import {
   SettingIds,
   EmoteProviders,
   EmoteCategories,
   PlatformTypes,
   EMOTE_CATEGORIES_ORDER_STORAGE_KEY,
-} from '../../../constants.js';
-import twitch from '../../../utils/twitch.js';
-import {getPlatform} from '../../../utils/window.js';
-import {getCurrentUser} from '../../../utils/user.js';
-import storage from '../../../storage.js';
+} from '../../constants.js';
+import twitch from '../../utils/twitch.js';
+import {getPlatform} from '../../utils/window.js';
+import {getCurrentUser} from '../../utils/user.js';
+import storage from '../../storage.js';
 
 const MAX_FRECENTS = 36;
 
@@ -173,16 +173,14 @@ class EmoteMenuViewStore extends SafeEventEmitter {
   }
 
   search(search) {
-    const results = fuse.search(search);
-
-    if (results.length === 0) {
-      return [];
-    }
-
-    return chunkArray(results, this.totalCols);
+    return fuse.search(search);
   }
 
   updateEmotes() {
+    if (!this.dirty) {
+      return;
+    }
+
     this.rows = [];
     this.headers = [];
 

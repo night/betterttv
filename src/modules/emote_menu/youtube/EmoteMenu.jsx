@@ -7,6 +7,7 @@ import domObserver from '../../../observers/dom.js';
 import styles from './EmoteMenu.module.css';
 import {getCurrentUser} from '../../../utils/user.js';
 import watcher from '../../../watcher.js';
+import {createYoutubeEmojiNode} from '../../../utils/youtube.js';
 
 const CHAT_TEXT_AREA = 'div#input[contenteditable]';
 
@@ -120,11 +121,7 @@ export default class EmoteMenuModule {
 
     let newNode;
     if (emote.category.provider === EmoteProviders.YOUTUBE) {
-      newNode = document.createElement('img');
-      newNode.className = 'emoji yt-formatted-string style-scope yt-live-chat-text-input-field-renderer';
-      newNode.src = emote.images['1x'];
-      newNode.alt = emote.code;
-      newNode.setAttribute('data-emoji-id', emote.id);
+      newNode = createYoutubeEmojiNode(emote);
     } else {
       newNode = document.createTextNode(`${prefixSuffixText}${emote.code}`);
       prefixSuffixText = '';

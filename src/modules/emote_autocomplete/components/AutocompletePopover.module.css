@@ -1,0 +1,16 @@
+.popover {
+  height: auto;
+  width: 300px;
+  overflow: hidden;
+  margin: 0 !important;
+
+  div[class$='-popover-arrow'] {
+    display: none !important;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .popover {
+    width: 320px;
+  }
+}
