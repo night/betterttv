@@ -9,6 +9,8 @@ export default function useAutoPositionPopover(localRef, boundingQuerySelector, 
     repositionPopover(localRef, boundingQuerySelector, TOP_PADDING);
   }
 
-  useEffect(reposition, [localRef, style, hasTip]);
+  useEffect(() => {
+    reposition();
+  }, [localRef, style, hasTip]);
   useResize(reposition);
 }

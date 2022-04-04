@@ -8,26 +8,29 @@ import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.js
 
 let cachedSettings = null;
 
+async function loadSettings() {
+  if (cachedSettings != null) {
+    return cachedSettings;
+  }
+
+  const {Components} = await import('./Store.jsx');
+  cachedSettings = Object.values(Components).sort((a, b) => a.name.localeCompare(b.name));
+
+  return cachedSettings;
+}
+
 function useSettingsState() {
   const [settings, setSettings] = useState([]);
 
-  useEffect(async () => {
-    if (cachedSettings != null) {
-      setSettings(cachedSettings);
-      return;
-    }
-
-    const {Components} = await import('./Store.jsx');
-    cachedSettings = Object.values(Components).sort((a, b) => a.name.localeCompare(b.name));
-
-    setSettings(cachedSettings);
+  useEffect(() => {
+    loadSettings().then(setSettings);
   }, []);
 
-  return [settings, setSettings];
+  return settings;
 }
 
 export function Settings({search, category}) {
-  const [settings] = useSettingsState();
+  const settings = useSettingsState();
 
   const searchedSettings =
     search.length === 0
@@ -45,7 +48,7 @@ export function Settings({search, category}) {
 
 export function Search(props) {
   const {value, onChange, placeholder, ...restProps} = props;
-  const [settings] = useSettingsState();
+  const settings = useSettingsState();
 
   const auto = settings
     .filter((setting) => setting.keywords.join(' ').includes(value.toLowerCase()))

@@ -39,7 +39,9 @@ export default function Emotes({chatInputElement, repositionPopover, onComplete,
     setMatches(searchedEmotes.map(({item}) => item));
   }, [chatInputPartialEmote]);
 
-  useEffect(computeMatches, [chatInputPartialEmote]);
+  useEffect(() => {
+    computeMatches();
+  }, [chatInputPartialEmote]);
 
   const [selected, setSelected] = useState(0);
   const [open, setOpen] = useState(true);
@@ -48,7 +50,9 @@ export default function Emotes({chatInputElement, repositionPopover, onComplete,
 
   const localRef = useRef(null);
 
-  useEffect(() => repositionPopover(), [matches.length]);
+  useEffect(() => {
+    repositionPopover();
+  }, [matches.length]);
 
   function handleAutocomplete(emote) {
     setMatches([]);

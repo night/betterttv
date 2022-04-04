@@ -46,7 +46,9 @@ export default function Sidebar({section, onClick, categories}) {
   );
 
   const renderDraggable = useDraggableInPortal();
-  useEffect(() => setMiddleCategories(categories.middle), [categories.middle]);
+  useEffect(() => {
+    setMiddleCategories(categories.middle);
+  }, [categories.middle]);
 
   useAutoScroll(
     section,
@@ -93,7 +95,9 @@ export default function Sidebar({section, onClick, categories}) {
     setEmojiButtonHidden(isHidden);
   }
 
-  useEffect(() => handleScroll(), [bottomDepth]);
+  useEffect(() => {
+    handleScroll();
+  }, [bottomDepth]);
 
   function createCategories(arr) {
     return arr.map((category) => (

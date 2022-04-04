@@ -80,7 +80,9 @@ export default function EmoteMenu({toggleWhisper, appendToChat, onSetTip}) {
   }, [selected, shiftPressed]);
 
   useEmoteMenuViewStoreUpdated(true, () => setUpdated((prev) => !prev));
-  useEffect(() => setSearch(''), [section]);
+  useEffect(() => {
+    setSearch('');
+  }, [section]);
 
   return (
     <>

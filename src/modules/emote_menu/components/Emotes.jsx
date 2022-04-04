@@ -20,7 +20,9 @@ const BrowseEmotes = React.forwardRef(
       setRowColumnCounts(rowColumnCounts);
     }, [rows]);
 
-    useEffect(() => setSelected(rows[coords.y][coords.x]), [coords]);
+    useEffect(() => {
+      setSelected(rows[coords.y][coords.x]);
+    }, [coords]);
 
     useEffect(() => {
       for (const row of rows) {
