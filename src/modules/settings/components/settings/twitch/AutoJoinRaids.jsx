@@ -1,9 +1,10 @@
 import React from 'react';
 import Panel from 'rsuite/lib/Panel/index.js';
 import Toggle from 'rsuite/lib/Toggle/index.js';
-import {registerComponent, useStorageState} from '../Store.jsx';
-import {SettingIds, CategoryTypes} from '../../../../constants.js';
-import styles from '../../styles/header.module.css';
+import {registerComponent} from '../../Store.jsx';
+import {SettingIds, CategoryTypes} from '../../../../../constants.js';
+import styles from '../../../styles/header.module.css';
+import useStorageState from '../../../../../common/hooks/StorageState.jsx';
 
 function AutoJoinRaids() {
   const [value, setValue] = useStorageState(SettingIds.AUTO_JOIN_RAIDS);
@@ -11,7 +12,7 @@ function AutoJoinRaids() {
   return (
     <Panel header="Auto Join Raids">
       <div className={styles.toggle}>
-        <p className={styles.description}>Untoggle to be opted out of raids.</p>
+        <p className={styles.description}>Joins raids automatically.</p>
         <Toggle checked={value} onChange={(state) => setValue(state)} />
       </div>
     </Panel>
