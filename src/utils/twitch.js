@@ -13,6 +13,8 @@ const PLAYER = '.video-player__container';
 const CLIPS_BROADCASTER_INFO = '.clips-broadcaster-info';
 const CHAT_MESSAGE_SELECTOR = '.chat-line__message';
 const CHAT_INPUT = 'textarea[data-a-target="chat-input"], div[data-a-target="chat-input"]';
+const CHAT_WYSIWYG_INPUT_EDITOR = '.chat-wysiwyg-input__editor';
+const COMMUNITY_HIGHLIGHT = '.community-highlight';
 
 const USER_PROFILE_IMAGE_GQL_QUERY = `
   query GetUserProfilePicture($userId: ID!) {
@@ -246,6 +248,19 @@ export default {
     return store;
   },
 
+  getAutocompleteStateNode() {
+    let node;
+    try {
+      node = searchReactParents(
+        getReactInstance($(CHAT_WYSIWYG_INPUT_EDITOR)[0]),
+        (n) => n?.stateNode?.providers != null,
+        30
+      );
+    } catch (_) {}
+
+    return node;
+  },
+
   getClipsBroadcasterInfo() {
     let broadcaster;
     try {
@@ -338,6 +353,11 @@ export default {
 
   getCurrentEmotes() {
     let currentEmotes;
+
+    if (currentEmotes != null) {
+      return currentEmotes;
+    }
+
     try {
       const node = searchReactParents(
         getReactInstance($(CHAT_CONTAINER)[0]),
@@ -347,7 +367,7 @@ export default {
           n.stateNode.props.emoteSetsData &&
           n.stateNode.props.emoteSetsData.emoteMap
       );
-      currentEmotes = node.stateNode.props.emoteSetsData.emoteMap;
+      currentEmotes = node.stateNode.props.emoteSetsData;
     } catch (_) {}
 
     return currentEmotes;
@@ -659,5 +679,18 @@ export default {
     }
 
     return messages;
+  },
+
+  getCommunityHighlight() {
+    let highlight;
+    try {
+      const node = searchReactParents(
+        getReactInstance($(COMMUNITY_HIGHLIGHT)[0]),
+        (n) => n.memoizedProps?.highlight?.event != null
+      );
+      highlight = node.memoizedProps.highlight;
+    } catch (e) {}
+
+    return highlight;
   },
 };

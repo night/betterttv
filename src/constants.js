@@ -20,6 +20,7 @@ export const SettingIds = {
   HOST_BUTTON: 'hostButton',
   PLAYER_EXTENSIONS: 'playerExtensions',
   CLICK_TO_PLAY: 'clickToPlay',
+  EMOTE_AUTOCOMPLETE: 'emoteAutocomplete',
   MUTE_INVISIBLE_PLAYER: 'muteInvisiblePlayer',
   SCROLL_VOLUME_CONTROL: 'scrollVolumeControl',
   DELETED_MESSAGES: 'deletedMessages',
@@ -104,9 +105,6 @@ export const NavigationModeTypes = {
   ARROW_KEYS: 1,
 };
 
-export const RowHeight = 36;
-export const WindowHeight = 300;
-
 export const EmoteProviders = {
   BETTERTTV: 'bttv',
   FRANKERFACEZ: 'ffz',
@@ -182,6 +180,7 @@ export const SettingDefaultValues = {
   [SettingIds.CLICK_TO_PLAY]: false,
   [SettingIds.MUTE_INVISIBLE_PLAYER]: false,
   [SettingIds.SCROLL_VOLUME_CONTROL]: false,
+  [SettingIds.EMOTE_AUTOCOMPLETE]: true,
   [SettingIds.BLACKLIST_KEYWORDS]: {},
   [SettingIds.HIGHLIGHT_KEYWORDS]: null,
   [SettingIds.SIDEBAR]: [
@@ -224,3 +223,9 @@ export const PlatformTypes = {
   TWITCH_CLIPS: 2,
   YOUTUBE: 3,
 };
+
+export const EMOTE_MENU_SIDEBAR_ROW_HEIGHT = 36;
+export const EMOTE_MENU_GRID_ROW_HEIGHT = 36;
+export const EMOTE_MENU_GRID_HEIGHT = 300;
+
+export const EMOTE_CATEGORIES_ORDER_STORAGE_KEY = 'emote-categories-order';

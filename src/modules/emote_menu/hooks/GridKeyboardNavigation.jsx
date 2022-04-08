@@ -175,7 +175,9 @@ export default function useGridKeyboardNavigation(
     [coords, rowColumnCounts]
   );
 
-  useEffect(() => setKeyPressCallback(handleKeyPress), [handleKeyPress]);
+  useEffect(() => {
+    setKeyPressCallback(handleKeyPress);
+  }, [handleKeyPress]);
 
   return [coords, setCoords];
 }

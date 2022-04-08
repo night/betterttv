@@ -13,9 +13,11 @@ import * as faHeartBroken from '@fortawesome/free-solid-svg-icons/faHeartBroken'
 import * as faFlag from '@fortawesome/free-solid-svg-icons/faFlag';
 import * as faClock from '@fortawesome/free-solid-svg-icons/faClock';
 import * as faUnlock from '@fortawesome/free-solid-svg-icons/faUnlock';
+import * as faLock from '@fortawesome/free-solid-svg-icons/faLock';
 import * as faLightbulb from '@fortawesome/free-solid-svg-icons/faLightbulb';
 import * as faTwitch from '@fortawesome/free-brands-svg-icons/faTwitch';
 import * as faYoutube from '@fortawesome/free-brands-svg-icons/faYoutube';
+import classNames from 'classnames';
 import styles from './Icons.module.css';
 import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.jsx';
 
@@ -30,8 +32,8 @@ const twitchGamingLogo = {
 
 function BrandedImage({src, alt, brandSrc}) {
   return (
-    <div className={styles.brandedImage}>
-      <img src={src} alt={alt} className={styles.icon} />
+    <div className={styles.icon}>
+      <img src={src} alt={alt} className={classNames(styles.icon, styles.iconBorderRadius)} />
       <img src={brandSrc} alt="" className={styles.brandIcon} />
     </div>
   );
@@ -50,14 +52,15 @@ export default {
   FLAG: <Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faFlag} />,
   CLOCK: <Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faClock} />,
   UNLOCK: <Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faUnlock} />,
+  LOCK: <Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faLock} />,
   BULB: <Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faLightbulb} />,
   TWITCH: <Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faTwitch} />,
   TWITCH_GAMING: <Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={twitchGamingLogo} />,
   YOUTUBE: <Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faYoutube} />,
   IMAGE: (brandSrc, alt, src = null) =>
     src != null ? (
-      <BrandedImage src={src} alt={alt} brandSrc={brandSrc} />
+      <BrandedImage src={src} alt="" brandSrc={brandSrc} />
     ) : (
-      <img src={brandSrc} alt={alt} className={styles.icon} />
+      <img src={brandSrc} alt="" className={classNames(styles.icon, styles.iconBorderRadius)} />
     ),
 };

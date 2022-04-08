@@ -89,9 +89,9 @@ function calculateColorBackground(color) {
     color = color[0] + color[0] + color[1] + color[1] + color[2] + color[2];
   }
 
-  const r = parseInt(color.substr(0, 2), 16);
-  const g = parseInt(color.substr(2, 2), 16);
-  const b = parseInt(color.substr(4, 2), 16);
+  const r = parseInt(color.slice(0, 2), 16);
+  const g = parseInt(color.slice(2, 4), 16);
+  const b = parseInt(color.slice(4, 6), 16);
   const yiq = (r * 299 + g * 587 + b * 114) / 1000;
   return yiq >= 128 ? 'dark' : 'light';
 }
@@ -108,9 +108,9 @@ function calculateColorReplacement(color, background) {
     color = color[0] + color[0] + color[1] + color[1] + color[2] + color[2];
   }
 
-  let r = parseInt(color.substr(0, 2), 16);
-  let g = parseInt(color.substr(2, 2), 16);
-  let b = parseInt(color.substr(4, 2), 16);
+  let r = parseInt(color.slice(0, 2), 16);
+  let g = parseInt(color.slice(2, 4), 16);
+  let b = parseInt(color.slice(4, 6), 16);
   const hsl = rgbToHsl(r, g, b);
 
   // more thoroughly lightens dark colors, with no problems at black
@@ -123,7 +123,7 @@ function calculateColorReplacement(color, background) {
   b = rgb[2].toString(16);
 
   // note to self: .toString(16) does NOT zero-pad
-  return `#${`00${r}`.substr(r.length)}${`00${g}`.substr(g.length)}${`00${b}`.substr(b.length)}`;
+  return `#${`00${r}`.slice(r.length)}${`00${g}`.slice(g.length)}${`00${b}`.slice(b.length)}`;
 }
 
 const colorCache = new Map();

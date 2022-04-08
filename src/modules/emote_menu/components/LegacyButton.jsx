@@ -5,7 +5,7 @@ import Whisper from 'rsuite/Whisper';
 import EmoteMenuPopover from './EmoteMenuPopover.jsx';
 import {markTipAsSeen} from './Tip.jsx';
 import {EmoteMenuTips} from '../../../constants.js';
-import emoteMenuViewStore from '../stores/emote-menu-view-store.js';
+import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js';
 import keyCodes from '../../../utils/keycodes.js';
 import {isMac} from '../../../utils/window.js';
 import styles from './LegacyButton.module.css';

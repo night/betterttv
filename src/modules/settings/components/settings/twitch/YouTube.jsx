@@ -60,12 +60,13 @@ function YouTube() {
   const [loading, setLoading] = React.useState(true);
   const [value, setValue] = React.useState(false);
 
-  useEffect(async () => {
-    try {
-      const granted = await checkYouTubePermission();
-      setValue(granted);
-      setLoading(false);
-    } catch (_) {}
+  useEffect(() => {
+    checkYouTubePermission
+      .then((granted) => {
+        setValue(granted);
+        setLoading(false);
+      })
+      .catch(() => {});
   }, []);
 
   function requestPermission() {

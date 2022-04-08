@@ -1,21 +1,28 @@
 import Fuse from 'fuse.js';
 import uniqBy from 'lodash.uniqby';
 import sortBy from 'lodash.sortby';
-import SafeEventEmitter from '../../../utils/safe-event-emitter.js';
-import watcher from '../../../watcher.js';
-import {getEmojiCategories} from '../utils/emojis.js';
-import emotes from '../../emotes/index.js';
-import Icons from '../components/Icons.jsx';
-import emoteStorage from './emote-menu-store.js';
-import {loadTwitchEmotes} from '../utils/twitch-emotes.js';
-import {loadYouTubeEmotes} from '../utils/youtube-emotes.js';
-import cdn from '../../../utils/cdn.js';
-import {getCurrentChannel} from '../../../utils/channel.js';
-import settings from '../../../settings.js';
-import {SettingIds, EmoteProviders, EmoteCategories, PlatformTypes} from '../../../constants.js';
-import twitch from '../../../utils/twitch.js';
-import {getPlatform} from '../../../utils/window.js';
-import {getCurrentUser} from '../../../utils/user.js';
+import SafeEventEmitter from '../../utils/safe-event-emitter.js';
+import watcher from '../../watcher.js';
+import {getEmojiCategories} from '../../modules/emote_menu/utils/emojis.js';
+import emotes from '../../modules/emotes/index.js';
+import Icons from '../../modules/emote_menu/components/Icons.jsx';
+import emoteStorage from '../../modules/emote_menu/stores/emote-menu-store.js';
+import {loadTwitchEmotes} from '../../modules/emote_menu/utils/twitch-emotes.js';
+import {loadYouTubeEmotes} from '../../modules/emote_menu/utils/youtube-emotes.js';
+import cdn from '../../utils/cdn.js';
+import {getCurrentChannel} from '../../utils/channel.js';
+import settings from '../../settings.js';
+import {
+  SettingIds,
+  EmoteProviders,
+  EmoteCategories,
+  PlatformTypes,
+  EMOTE_CATEGORIES_ORDER_STORAGE_KEY,
+} from '../../constants.js';
+import twitch from '../../utils/twitch.js';
+import {getPlatform} from '../../utils/window.js';
+import {getCurrentUser} from '../../utils/user.js';
+import storage from '../../storage.js';
 
 const MAX_FRECENTS = 36;
 
@@ -40,6 +47,23 @@ function createCategory(id, provider, displayName, icon, categoryEmotes = []) {
   };
 }
 
+let categoryOrder = storage.get(EMOTE_CATEGORIES_ORDER_STORAGE_KEY) ?? [];
+
+function organizeCategories(categories) {
+  if (categoryOrder == null) {
+    return categories;
+  }
+
+  return categories.sort((a, b) => {
+    const aIndex = categoryOrder.indexOf(a.category.id);
+    const bIndex = categoryOrder.indexOf(b.category.id);
+    if (aIndex === -1 || bIndex === -1) {
+      return 0;
+    }
+    return aIndex - bIndex;
+  });
+}
+
 const fuse = new Fuse([], {
   keys: ['code'],
   shouldSort: true,
@@ -48,6 +72,16 @@ const fuse = new Fuse([], {
 
 let providerCategories = [];
 let platformCategories = [];
+
+export const CategoryPositions = {
+  BOTTOM: 0,
+  MIDDLE: 1,
+  TOP: 2,
+};
+
+let topCategories = [];
+let middleCategories = [];
+let bottomCategories = [];
 
 class EmoteMenuViewStore extends SafeEventEmitter {
   constructor() {
@@ -139,30 +173,31 @@ class EmoteMenuViewStore extends SafeEventEmitter {
   }
 
   search(search) {
-    const results = fuse.search(search);
-
-    if (results.length === 0) {
-      return [];
-    }
-
-    return chunkArray(results, this.totalCols);
+    return fuse.search(search);
   }
 
   updateEmotes() {
+    if (!this.dirty) {
+      return;
+    }
+
     this.rows = [];
     this.headers = [];
 
     const frecents = createCategory(EmoteCategories.FRECENTS, null, 'Frequently Used', Icons.CLOCK, []);
     const favorites = createCategory(EmoteCategories.FAVORITES, null, 'Favorites', Icons.STAR, []);
 
-    const categories = [...providerCategories, ...platformCategories, ...getEmojiCategories()];
     const collection = [];
+    const emojiCategories = getEmojiCategories();
+    const categories = organizeCategories(
+      [...providerCategories, ...platformCategories].filter((category) => category.emotes.length > 0)
+    );
 
-    for (const category of categories) {
-      if (category.emotes.length === 0) {
-        continue;
-      }
+    topCategories = [];
+    middleCategories = categories.map(({category}) => category);
+    bottomCategories = emojiCategories.map(({category}) => category);
 
+    for (const category of [...categories, ...emojiCategories]) {
       for (const emote of category.emotes) {
         const emoteCanonicalId = emote.canonicalId;
         if (emoteStorage.favorites.includes(emoteCanonicalId)) {
@@ -180,6 +215,7 @@ class EmoteMenuViewStore extends SafeEventEmitter {
     }
 
     if (frecents.emotes.length > 0) {
+      topCategories.unshift(frecents.category);
       frecents.emotes = sortBy(
         uniqBy(frecents.emotes, (emote) => emote.canonicalId),
         (emote) => emoteStorage.frecents.indexOf(emote.canonicalId)
@@ -191,6 +227,7 @@ class EmoteMenuViewStore extends SafeEventEmitter {
     }
 
     if (favorites.emotes.length > 0) {
+      topCategories.unshift(favorites.category);
       favorites.emotes = sortBy(
         uniqBy(favorites.emotes, (emote) => emote.canonicalId),
         (emote) => emoteStorage.favorites.indexOf(emote.canonicalId)
@@ -206,12 +243,27 @@ class EmoteMenuViewStore extends SafeEventEmitter {
     this.emit('updated');
   }
 
+  setCategoryOrder(categories) {
+    categoryOrder = categories.map(({id}) => id);
+    storage.set(EMOTE_CATEGORIES_ORDER_STORAGE_KEY, categoryOrder);
+    this.markDirty();
+  }
+
   getRow(index) {
     return this.rows[index];
   }
 
-  getCategories() {
-    return this.headers.map((id) => this.rows[id]);
+  getCategories(type) {
+    switch (type) {
+      case CategoryPositions.BOTTOM:
+        return bottomCategories;
+      case CategoryPositions.TOP:
+        return topCategories;
+      case CategoryPositions.MIDDLE:
+        return middleCategories;
+      default:
+        throw new Error('getCategories() requires a type');
+    }
   }
 
   getCategoryIndexById(id) {

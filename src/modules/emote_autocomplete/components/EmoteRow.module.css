@@ -1,0 +1,36 @@
+.emoteRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: none;
+  border-radius: 2px;
+  font-size: 14px;
+  padding: 8px;
+}
+
+.emoteInfoContainer {
+  display: flex;
+  align-items: center;
+  color: var(--bttv-rs-btn-default-active-text);
+}
+
+.emote {
+  margin-right: 8px;
+  width: 24px;
+  height: 24px;
+}
+
+.active {
+  background-color: var(--bttv-rs-btn-default-bg) !important;
+}
+
+.categoryName {
+  color: var(--bttv-rs-text-tertiary);
+  font-size: 12px;
+}
+
+@media only screen and (max-width: 450px) {
+  .categoryName {
+    display: none;
+  }
+}

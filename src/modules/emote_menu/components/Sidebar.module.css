@@ -1,18 +1,23 @@
 .sidebar {
-  width: 52px;
-  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 349px;
+  overflow: hidden;
+  width: 48px;
+  min-width: 48px;
+}
+
+.content {
   overflow-y: scroll;
   background-color: var(--bttv-rs-bg-well);
   color: var(--bttv-rs-text-heading);
   scrollbar-width: none;
+  width: 48px;
 }
 
-.sidebar::-webkit-scrollbar {
+.content::-webkit-scrollbar {
   display: none;
-}
-
-.active {
-  background-color: var(--bttv-rs-bg-card);
 }
 
 .navItem svg {
@@ -20,14 +25,88 @@
   width: 100%;
 }
 
-.navItemContent {
+.navItem {
+  padding: 6px 12px;
+  cursor: pointer;
+  box-sizing: border-box;
+  height: 36px;
+  width: 100%;
+
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 20px;
-  height: 20px;
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
 }
 
-.navItem {
-  padding: 12px !important;
+.active {
+  background-color: var(--bttv-rs-bg-card);
+  border-right: 2px solid var(--bttv-rs-navs-selected);
+  padding-right: 10px;
+  color: var(--bttv-rs-navs-selected);
+}
+
+:global(.bttv-youtube) {
+  .active {
+    border-right: 2px solid var(--yt-spec-call-to-action);
+    color: var(--yt-spec-call-to-action);
+  }
+}
+
+:global(html[dark] .bttv-youtube) {
+  .active {
+    border-right: 2px solid rgb(255, 255, 255);
+    color: rgb(255, 255, 255);
+  }
+}
+
+.dragging {
+  border-radius: 4px;
+  display: flex;
+  background-color: unset;
+  padding: 6px 12px;
+  /* necessary !important to overwrite :global */
+  color: var(--bttv-rs-text-heading) !important;
+  border-right: none !important;
+}
+
+.portal {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.static {
+  transform: none !important;
+}
+
+.emojiButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--bttv-rs-bg-well);
+  width: 48px;
+  height: 49px;
+  position: absolute;
+  cursor: pointer;
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+.emojiButtonHidden {
+  bottom: -49px;
+  transition: 0.2s ease-in-out;
+}
+
+.emojiButtonVisible {
+  bottom: 0;
+  transition: 0.2s ease-in-out;
+}
+
+.hidden {
+  display: none;
 }

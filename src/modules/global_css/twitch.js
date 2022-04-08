@@ -35,8 +35,10 @@ settings.on(`changed.${SettingIds.DARKENED_MODE}`, (value, temporary) => {
 
   connectStore.subscribe(() => {
     const isDarkMode = connectStore.getState().ui.theme === TwitchThemes.DARK;
-    if (settings.get(SettingIds.DARKENED_MODE) !== isDarkMode) {
-      settings.set(SettingIds.DARKENED_MODE, isDarkMode, true);
+    if (settings.get(SettingIds.DARKENED_MODE) === isDarkMode) {
+      return;
     }
+
+    settings.set(SettingIds.DARKENED_MODE, isDarkMode, true);
   });
 })();

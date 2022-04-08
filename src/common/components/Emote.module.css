@@ -1,0 +1,28 @@
+.emoteImage {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.placeholder {
+  background-color: var(--bttv-rs-bg-card);
+}
+
+.emoteImageLocked {
+  opacity: 0.4;
+}
+
+.lockedEmote {
+  position: relative;
+  width: 28px;
+  height: 28px;
+}
+
+.lock {
+  position: absolute;
+  bottom: 1px;
+  right: 1px;
+  width: 10px;
+  height: 10px;
+  color: var(--bttv-rs-text-heading);
+}

@@ -14,7 +14,9 @@ function VirtualizedList(
     headerIndex: null,
   });
 
-  useEffect(() => onHeaderChange(data.headerIndex), [data.headerIndex]);
+  useEffect(() => {
+    onHeaderChange(data.headerIndex);
+  }, [data.headerIndex]);
 
   const wrapperRef = ref || useRef(null);
 
