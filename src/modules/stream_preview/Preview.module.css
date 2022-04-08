@@ -4,11 +4,8 @@
 
   img {
     border-radius: 4px;
+    max-width: 190px;
   }
 
   background-color: var(--bttv-rs-bg-card);
-}
-
-.placeholder {
-  display: none;
 }

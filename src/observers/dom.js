@@ -46,7 +46,15 @@ function startAttributeObserver(observedType, emitter, node) {
   attributeObservers.set(observedType, attributeObserver);
 }
 
-function stopAttributeObserver(observedType) {
+function startCharacterDataObserver(observedType, emitter, node) {
+  const attributeObserver = new window.MutationObserver(() =>
+    emitter.emit(observedType.selector, node, node.isConnected)
+  );
+  attributeObserver.observe(node, {characterData: true, subtree: true});
+  attributeObservers.set(observedType, attributeObserver);
+}
+
+function stopObserver(observedType) {
   const attributeObserver = attributeObservers.get(observedType);
   if (!attributeObserver) {
     return;
@@ -78,7 +86,14 @@ function processObservedResults(emitter, target, node, results) {
       if (isConnected) {
         startAttributeObserver(observedType, emitter, foundNode);
       } else {
-        stopAttributeObserver(observedType);
+        stopObserver(observedType);
+      }
+    }
+    if (options && options.characterData) {
+      if (isConnected) {
+        startCharacterDataObserver(observedType, emitter, foundNode);
+      } else {
+        stopObserver(observedType);
       }
     }
     emitter.emit(selector, foundNode, isConnected);
@@ -240,7 +255,7 @@ class DOMObserver extends SafeEventEmitter {
           continue;
         }
         const observedType = currentObservedTypeSelectors[observedTypeIndex];
-        stopAttributeObserver(observedType);
+        stopObserver(observedType);
         currentObservedTypeSelectors.splice(observedTypeIndex);
         if (currentObservedTypeSelectors.length === 0) {
           delete observedSelectorType[key];

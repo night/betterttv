@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Preview from './Preview.jsx';
 import {PlatformTypes} from '../../constants.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
 import dom from '../../observers/dom.js';
-import StreamPreview from './Preview.jsx';
 
 const PREVIEW_SELECTOR = 'bttv-stream-preview';
 const TOOLTIP_SELECTOR = '.online-side-nav-channel-tooltip__body';
@@ -15,38 +15,32 @@ function usernameCallback(newSetUsername) {
   setUsername = newSetUsername;
 }
 
-const tooltipObserver = new MutationObserver((_, observer) => {
-  const hoveredElement = document.querySelector(HOVERED_SIDEBAR_SELECTOR);
-
-  if (hoveredElement == null) {
-    observer.disconnect();
+function patchStreamTooltip(node, isConnected) {
+  if (!isConnected) {
+    return;
   }
 
-  const user = hoveredElement.getAttribute('href').split('/')[1];
-  setUsername(user);
-});
+  const hoveredNode = document.querySelector(HOVERED_SIDEBAR_SELECTOR);
+  if (hoveredNode == null) {
+    return;
+  }
+
+  const username = hoveredNode.getAttribute('href').split('/')[1];
+
+  if (document.getElementById(PREVIEW_SELECTOR) != null) {
+    setUsername(username);
+    return;
+  }
+
+  const panel = document.createElement('div');
+  panel.setAttribute('id', PREVIEW_SELECTOR);
+  ReactDOM.render(<Preview username={username} usernameCallback={usernameCallback} />, panel);
+  node.prepend(panel);
+}
 
 class StreamPeview {
   constructor() {
-    dom.on(TOOLTIP_SELECTOR, (node, isConnected) => {
-      if (!isConnected || document.getElementById(PREVIEW_SELECTOR) != null) {
-        return;
-      }
-
-      const hoveredElement = document.querySelector(HOVERED_SIDEBAR_SELECTOR);
-      const user = hoveredElement.getAttribute('href').split('/')[1];
-      const panel = document.createElement('div');
-      panel.setAttribute('id', PREVIEW_SELECTOR);
-      ReactDOM.render(<StreamPreview username={user} usernameCallback={usernameCallback} />, panel);
-      node.prepend(panel);
-
-      tooltipObserver.observe(node, {
-        characterData: true,
-        attributes: false,
-        childList: false,
-        subtree: true,
-      });
-    });
+    dom.on(TOOLTIP_SELECTOR, patchStreamTooltip, {characterData: true});
   }
 }
 
