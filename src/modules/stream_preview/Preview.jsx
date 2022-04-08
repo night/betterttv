@@ -2,7 +2,7 @@ import React, {useEffect, useMemo, useState} from 'react';
 import styles from './Preview.module.css';
 
 function createPreviewImageURL(user) {
-  return `https://static-cdn.jtvnw.net/previews-ttv/live_user_${user}-220x124.jpg`;
+  return `https://static-cdn.jtvnw.net/previews-ttv/live_user_${user}-320x180.jpg`;
 }
 
 export default function StreamPreview({username: defaultUsername, usernameCallback: setUsernameCallback}) {
