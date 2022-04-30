@@ -109,7 +109,10 @@ export default class EmoteAutocomplete {
     this.load();
     watcher.on('channel.updated', () => this.load());
     watcher.on('emotes.updated', () => injectEmoteSets());
-    dom.on(AUTOCOMPLETE_MATCH_IMAGE_QUERY, patchEmoteImage);
+    dom.on(AUTOCOMPLETE_MATCH_IMAGE_QUERY, patchEmoteImage, {
+      attributes: true,
+      attributeFilter: ['src', 'srcset'],
+    });
   }
 
   load() {
