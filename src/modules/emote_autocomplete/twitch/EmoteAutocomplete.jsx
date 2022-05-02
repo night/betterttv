@@ -87,7 +87,7 @@ function patchEmoteImage(image, isConnected) {
     return;
   }
 
-  const url = String(image.srcset);
+  const url = String(image.srcset || image.src);
   const deseralizedEmote = deserializeEmoteFromURL(url);
 
   if (deseralizedEmote == null) {
