@@ -31,7 +31,7 @@
     "@sentry/browser": "^6.19.6",
     "@sentry/integrations": "^6.19.7",
     "@sentry/webpack-plugin": "^1.18.9",
-    "autoprefixer": "^10.4.5",
+    "autoprefixer": "^10.4.7",
     "babel-loader": "^8.2.5",
     "babel-plugin-wildcard": "^7.0.0",
     "classnames": "^2.3.1",
