@@ -29,9 +29,32 @@ settings.on(`changed.${SettingIds.DARKENED_MODE}`, (value, temporary) => {
   setTwitchTheme(value);
 });
 
+function systemMatchTwitchTheme() {
+  // Will only match the system theme if the browser is also configured to match the system theme
+  if (!settings.get(SettingIds.AUTO_THEME_MODE)) return;
+  if (!connectStore) return;
+
+  const twitchIsDarkMode = connectStore.getState().ui.theme === TwitchThemes.DARK;
+  const systemIsDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if (systemIsDarkMode ^ twitchIsDarkMode) {
+    setTwitchTheme(!twitchIsDarkMode);
+  }
+}
+
+settings.on(`changed.${SettingIds.AUTO_THEME_MODE}`, (value, temporary) => {
+  if (temporary) return;
+  if (value) systemMatchTwitchTheme();
+});
+
 (() => {
   connectStore = twitch.getConnectStore();
   if (!connectStore) return;
+
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    systemMatchTwitchTheme();
+  });
+
+  systemMatchTwitchTheme();
 
   connectStore.subscribe(() => {
     const isDarkMode = connectStore.getState().ui.theme === TwitchThemes.DARK;

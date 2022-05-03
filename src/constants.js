@@ -15,6 +15,7 @@ export const SettingIds = {
   SHOW_DIRECTORY_LIVE_TAB: 'showDirectoryLiveTab',
   CHANNEL_POINTS_MESSAGE_HIGHLIGHTS: 'channelPointsMessageHighlights',
   EMOTE_MENU: 'clickTwitchEmotes',
+  AUTO_THEME_MODE: 'autoThemeMode',
   DARKENED_MODE: 'darkenedMode',
   PRIME_PROMOTIONS: 'primePromotions',
   // HOST_BUTTON: 'hostButton', REMOVED, FOR REFERENCE ONLY
@@ -173,6 +174,7 @@ export const SettingDefaultValues = {
   [SettingIds.SHOW_DIRECTORY_LIVE_TAB]: false,
   [SettingIds.CHANNEL_POINTS_MESSAGE_HIGHLIGHTS]: true,
   [SettingIds.EMOTE_MENU]: false,
+  [SettingIds.AUTO_THEME_MODE]: false,
   [SettingIds.DARKENED_MODE]: false,
   [SettingIds.PRIME_PROMOTIONS]: true,
   [SettingIds.PLAYER_EXTENSIONS]: true,
