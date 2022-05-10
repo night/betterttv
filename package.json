@@ -76,7 +76,7 @@
     "react-beautiful-dnd": "^13.1.0",
     "react-dom": "^18.1.0",
     "react-merge-refs": "^1.1.0",
-    "react-string-replace": "^1.0.0",
+    "react-string-replace": "^1.1.0",
     "remove-files-webpack-plugin": "^1.5.0",
     "rsuite": "^5.11.0",
     "string-replace-loader": "^3.1.0",
