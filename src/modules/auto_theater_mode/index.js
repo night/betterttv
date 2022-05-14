@@ -26,7 +26,7 @@ class AutoTheaterModeModule {
     try {
       player.setTheatre(true);
     } catch (_) {
-      $('button[data-a-target="player-theatre-mode-button"]').click();
+      $('button[data-a-target="player-theatre-mode-button"]').first().trigger('click');
     }
 
     // hackfix: twitch's channel page experiment causes the player to load multiple times
