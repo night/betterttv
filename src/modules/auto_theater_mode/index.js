@@ -26,7 +26,13 @@ class AutoTheaterModeModule {
     try {
       player.setTheatre(true);
     } catch (_) {
-      $('button[data-a-target="player-theatre-mode-button"]').first().trigger('click');
+      const button = document.querySelector(
+        '.video-player__default-player button[data-a-target="player-theatre-mode-button"]'
+      );
+
+      if (button != null) {
+        button.click();
+      }
     }
 
     // hackfix: twitch's channel page experiment causes the player to load multiple times
