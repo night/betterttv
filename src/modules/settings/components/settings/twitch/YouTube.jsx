@@ -61,7 +61,7 @@ function YouTube() {
   const [value, setValue] = React.useState(false);
 
   useEffect(() => {
-    checkYouTubePermission
+    checkYouTubePermission()
       .then((granted) => {
         setValue(granted);
         setLoading(false);
