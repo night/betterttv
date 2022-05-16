@@ -1,36 +1,25 @@
-import $ from 'jquery';
 import settings from '../../settings.js';
 import watcher from '../../watcher.js';
 import twitch from '../../utils/twitch.js';
 import {PlatformTypes, SettingIds} from '../../constants.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
 
+const TWITCH_THEATER_MODE_CHANGED_DISPATCH_TYPE = 'core.ui.THEATRE_ENABLED';
+
 class AutoTheaterModeModule {
   constructor() {
     watcher.on('load.player', () => this.load());
   }
 
-  load(tries = 1) {
-    if (settings.get(SettingIds.AUTO_THEATRE_MODE) === false || tries > 3) return;
+  load() {
+    if (settings.get(SettingIds.AUTO_THEATRE_MODE) === false) return;
 
-    const player = twitch.getCurrentPlayer();
-    if (!player) return;
+    const connectStore = twitch.getConnectStore();
+    if (!connectStore) return;
 
-    // new Twitch channel layout does funky stuff with the video player in the background when on home screen
-    if (
-      $('div[data-a-player-type="channel_home_live"]').length > 0 ||
-      $('.video-player__container--theatre').length > 0
-    )
-      return;
-
-    try {
-      player.setTheatre(true);
-    } catch (_) {
-      $('button[data-a-target="player-theatre-mode-button"]').click();
-    }
-
-    // hackfix: twitch's channel page experiment causes the player to load multiple times
-    setTimeout(() => this.load(tries + 1), 1000);
+    connectStore.dispatch({
+      type: TWITCH_THEATER_MODE_CHANGED_DISPATCH_TYPE,
+    });
   }
 }
 
