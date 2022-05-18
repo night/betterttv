@@ -28,6 +28,7 @@ const ignoreErrors = [
   'Name Collision for Module',
   /^NS_/,
   'GraphQL error',
+  'mergeOptions is not a function',
 ];
 
 Sentry.init({
