@@ -15,7 +15,7 @@ class AutoTheaterModeModule {
     if (settings.get(SettingIds.AUTO_THEATRE_MODE) === false) return;
 
     const connectStore = twitch.getConnectStore();
-    if (!connectStore) return;
+    if (!connectStore || document.querySelector('.channel-root.channel-root--live.channel-root--watch') == null) return;
 
     connectStore.dispatch({
       type: TWITCH_THEATER_MODE_CHANGED_DISPATCH_TYPE,
