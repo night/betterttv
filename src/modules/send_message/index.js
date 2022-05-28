@@ -68,15 +68,11 @@ class SendMessagePatcher {
 
   patch() {
     const chatController = twitch.getChatController();
-    if (!chatController) return;
-
-    if (chatController._bttvSendMessagePatched === PATCHED_SENTINEL || chatController.sendMessage === bttvSendMessage) {
-      return;
-    }
+    if (chatController?.props?.chatConnectionAPI?.sendMessage == null) return;
 
     chatController._bttvSendMessagePatched = PATCHED_SENTINEL;
-    twitchSendMessage = chatController.sendMessage;
-    chatController.sendMessage = bttvSendMessage;
+    twitchSendMessage = chatController.props.chatConnectionAPI.sendMessage;
+    chatController.props.chatConnectionAPI.sendMessage = bttvSendMessage;
     chatController.forceUpdate();
   }
 }
