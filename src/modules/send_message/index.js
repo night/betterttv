@@ -71,13 +71,13 @@ class SendMessagePatcher {
     if (chatController?.props?.chatConnectionAPI?.sendMessage == null) return;
 
     if (
-      chatController._bttvSendMessagePatched === PATCHED_SENTINEL ||
+      chatController.props.chatConnectionAPI._bttvSendMessagePatched === PATCHED_SENTINEL ||
       chatController.props.chatConnectionAPI.sendMessage === bttvSendMessage
     ) {
       return;
     }
 
-    chatController._bttvSendMessagePatched = PATCHED_SENTINEL;
+    chatController.props.chatConnectionAPI._bttvSendMessagePatched = PATCHED_SENTINEL;
     twitchSendMessage = chatController.props.chatConnectionAPI.sendMessage;
     chatController.props.chatConnectionAPI.sendMessage = bttvSendMessage;
     chatController.forceUpdate();
