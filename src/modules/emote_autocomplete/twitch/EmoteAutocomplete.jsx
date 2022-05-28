@@ -1,4 +1,5 @@
 import twitch from '../../../utils/twitch.js';
+import {getCurrentUser} from '../../../utils/user.js';
 import watcher from '../../../watcher.js';
 import dom from '../../../observers/dom.js';
 import emotes from '../../emotes/index.js';
@@ -94,7 +95,7 @@ function patchEmoteImage(image, isConnected) {
     return;
   }
 
-  const emote = emotes.getEligibleEmote(deseralizedEmote.code);
+  const emote = emotes.getEligibleEmote(deseralizedEmote.code, getCurrentUser());
   if (emote == null) {
     return;
   }
