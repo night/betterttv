@@ -54,7 +54,7 @@
     "fuse.js": "^6.6.2",
     "git-rev-sync": "^3.0.2",
     "glob": "^8.0.3",
-    "got": "^12.0.4",
+    "got": "^12.1.0",
     "import-glob-loader": "^1.1.0",
     "jquery": "^3.6.0",
     "json-loader": "^0.5.7",
