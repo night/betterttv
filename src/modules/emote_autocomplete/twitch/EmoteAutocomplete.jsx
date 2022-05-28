@@ -99,8 +99,13 @@ function patchEmoteImage(image, isConnected) {
     return;
   }
 
-  image.srcset = createSrcSet(emote.images);
-  image.src = emote.images['1x'];
+  if (image.srcset) {
+    image.srcset = createSrcSet(emote.images);
+  }
+
+  if (image.src) {
+    image.src = emote.images['1x'];
+  }
 }
 
 let twitchComponentDidUpdate = null;
