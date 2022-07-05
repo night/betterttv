@@ -26,6 +26,7 @@ export const SettingIds = {
   DELETED_MESSAGES: 'deletedMessages',
   BLACKLIST_KEYWORDS: 'blacklistKeywords',
   HIGHLIGHT_KEYWORDS: 'highlightKeywords',
+  SHADOW_BAN_DETECTOR: 'shadowBanDetector',
   SIDEBAR: 'sidebar',
   EMOTES: 'emotes',
   CHAT: 'chat',
@@ -183,6 +184,7 @@ export const SettingDefaultValues = {
   [SettingIds.EMOTE_AUTOCOMPLETE]: true,
   [SettingIds.BLACKLIST_KEYWORDS]: {},
   [SettingIds.HIGHLIGHT_KEYWORDS]: null,
+  [SettingIds.SHADOW_BAN_DETECTOR]: true,
   [SettingIds.SIDEBAR]: [
     SidebarFlags.FRIENDS |
       SidebarFlags.OFFLINE_FOLLOWED_CHANNELS |
