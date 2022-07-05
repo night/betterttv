@@ -184,7 +184,7 @@ export const SettingDefaultValues = {
   [SettingIds.EMOTE_AUTOCOMPLETE]: true,
   [SettingIds.BLACKLIST_KEYWORDS]: {},
   [SettingIds.HIGHLIGHT_KEYWORDS]: null,
-  [SettingIds.SHADOW_BAN_DETECTOR]: true,
+  [SettingIds.SHADOW_BAN_DETECTOR]: false,
   [SettingIds.SIDEBAR]: [
     SidebarFlags.FRIENDS |
       SidebarFlags.OFFLINE_FOLLOWED_CHANNELS |
