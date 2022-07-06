@@ -28,7 +28,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@rsuite/icons": "^1.0.2",
-    "@sentry/browser": "^7.3.0",
+    "@sentry/browser": "^7.5.0",
     "@sentry/integrations": "^7.4.1",
     "@sentry/webpack-plugin": "^1.18.9",
     "autoprefixer": "^10.4.7",
