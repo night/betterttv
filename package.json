@@ -29,7 +29,7 @@
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@rsuite/icons": "^1.0.2",
     "@sentry/browser": "^7.5.0",
-    "@sentry/integrations": "^7.5.0",
+    "@sentry/integrations": "^7.6.0",
     "@sentry/webpack-plugin": "^1.18.9",
     "autoprefixer": "^10.4.7",
     "babel-loader": "^8.2.5",
