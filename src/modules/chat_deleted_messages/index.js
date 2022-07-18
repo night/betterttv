@@ -10,7 +10,7 @@ const CHAT_LINE_LINK_SELECTOR = 'a.link-fragment';
 const CHAT_LINE_CLIP_CARD_SELECTOR = '.chat-card';
 const CHAT_LINE_DELETED_CLASS = 'bttv-chat-line-deleted';
 
-function findAllUserMessages(name) {
+function findAllUserMessages(name, targetMessageId) {
   return Array.from(document.querySelectorAll(CHAT_LINE_SELECTOR)).filter((node) => {
     const message = twitch.getChatMessageObject(node);
     if (!message) {
@@ -22,7 +22,7 @@ function findAllUserMessages(name) {
     if (node.classList.contains(CHAT_LINE_DELETED_CLASS)) {
       return false;
     }
-    return message.user.userLogin === name;
+    return message.user.userLogin === name && (!targetMessageId || targetMessageId === message.id);
   });
 }
 
@@ -40,7 +40,7 @@ class ChatDeletedMessagesModule {
         preventDefault();
         break;
       case twitch.TMIActionTypes.MODERATION:
-        if (this.handleDelete(message.userLogin || message.user.userLogin)) {
+        if (this.handleDelete(message.userLogin || message.user.userLogin, message.targetMessageID)) {
           preventDefault();
           // we still want to render moderation messages
           const chatBuffer = twitch.getChatBuffer();
@@ -55,14 +55,14 @@ class ChatDeletedMessagesModule {
     }
   }
 
-  handleDelete(name) {
+  handleDelete(name, targetMessageId) {
     const deletedMessages = settings.get(SettingIds.DELETED_MESSAGES);
     const showDeletedMessages = deletedMessages === DeletedMessageTypes.SHOW;
     const hideDeletedMessages = deletedMessages === DeletedMessageTypes.HIDE;
     if (!hideDeletedMessages && !showDeletedMessages) {
       return false;
     }
-    const messages = findAllUserMessages(name);
+    const messages = findAllUserMessages(name, targetMessageId);
     messages.forEach((message) => {
       const $message = $(message);
       if (hideDeletedMessages) {
