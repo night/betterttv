@@ -11,7 +11,7 @@ class AutoTheaterModeModule {
     watcher.on('load.player', () => this.load());
   }
 
-  load() {
+  load(reload = true) {
     if (settings.get(SettingIds.AUTO_THEATRE_MODE) === false) return;
 
     const connectStore = twitch.getConnectStore();
@@ -20,6 +20,11 @@ class AutoTheaterModeModule {
     connectStore.dispatch({
       type: TWITCH_THEATER_MODE_CHANGED_DISPATCH_TYPE,
     });
+
+    // reload once in case the player was reloaded somehow
+    if (reload) {
+      setTimeout(() => this.load(false), 1000);
+    }
   }
 }
 
