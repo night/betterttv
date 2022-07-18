@@ -1,6 +1,6 @@
 import React, {useRef, useState} from 'react';
 import classNames from 'classnames';
-import mergeRefs from 'react-merge-refs';
+import {mergeRefs} from 'react-merge-refs';
 import {Popover} from 'rsuite';
 import EmoteMenu from './EmoteMenu.jsx';
 import styles from './EmoteMenuPopover.module.css';

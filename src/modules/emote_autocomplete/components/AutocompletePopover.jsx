@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import classNames from 'classnames';
 import Popover from 'rsuite/Popover';
-import mergeRefs from 'react-merge-refs';
+import {mergeRefs} from 'react-merge-refs';
 import styles from './AutocompletePopover.module.css';
 import Emotes from './Emotes.jsx';
 import repositionPopover from '../../../utils/popover.js';
@@ -9,7 +9,7 @@ import useResize from '../../../common/hooks/Resize.jsx';
 
 const TOP_PADDING = 2;
 
-const EmoteMenuPopover = React.forwardRef(
+const AutocompletePopover = React.forwardRef(
   (
     {
       triggerRef,
@@ -56,4 +56,4 @@ const EmoteMenuPopover = React.forwardRef(
   }
 );
 
-export default EmoteMenuPopover;
+export default AutocompletePopover;
