@@ -1,6 +1,6 @@
 # BetterTTV
 
-[![Build Status](https://github.com/night/betterttv/actions/workflows/ci.yml/badge.svg)](https://github.com/night/betterttv/actions/workflows/ci.yml) [![Dependencies Status](https://david-dm.org/night/BetterTTV/status.svg)](https://david-dm.org/night/BetterTTV) [![Discord](https://img.shields.io/discord/229471495087194112?color=%237289DA&label=discord)](https://discord.gg/nightdev)
+[![Build Status](https://github.com/night/betterttv/actions/workflows/ci.yml/badge.svg)](https://github.com/night/betterttv/actions/workflows/ci.yml) [![Discord](https://img.shields.io/discord/229471495087194112?color=%237289DA&label=discord)](https://discord.gg/nightdev)
 
 # Building BetterTTV
 
