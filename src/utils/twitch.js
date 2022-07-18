@@ -9,7 +9,7 @@ const REACT_ROOT = '#root';
 const CHAT_CONTAINER = 'section[data-test-selector="chat-room-component-layout"]';
 const VOD_CHAT_CONTAINER = '.qa-vod-chat,.va-vod-chat';
 const CHAT_LIST = '.chat-list,.chat-list--default,.chat-list--other';
-const PLAYER = '.video-player__container';
+const PLAYER = 'div[data-a-target="player-overlay-click-handler"]';
 const CLIPS_BROADCASTER_INFO = '.clips-broadcaster-info';
 const CHAT_MESSAGE_SELECTOR = '.chat-line__message';
 const CHAT_INPUT = 'textarea[data-a-target="chat-input"], div[data-a-target="chat-input"]';
@@ -279,13 +279,13 @@ export default {
     try {
       const node = searchReactParents(
         getReactInstance($(PLAYER)[0]),
-        (n) => n.stateNode && (n.stateNode.player || n.stateNode.props.mediaPlayerInstance),
+        (n) => n.memoizedProps?.mediaPlayerInstance?.core != null,
         30
       );
-      player = node.stateNode.player ? node.stateNode.player.player : node.stateNode.props.mediaPlayerInstance;
+      player = node.memoizedProps.mediaPlayerInstance.core;
     } catch (e) {}
 
-    return player && player.core ? player.core : player;
+    return player;
   },
 
   getChatController() {
