@@ -30,6 +30,7 @@ class ShadowBanDetector {
     if (message.isHistorical) return;
     if (message.user.userID !== getCurrentUser().id) return;
     if ($message[0].classList.contains('reply-list-item')) return;
+    if ($message[0].parentElement.parentElement.classList.contains('announcement-line')) return;
 
     this.messagesToCheck.push(new CachedMessage($message, message));
     $message.toggleClass(CHAT_LINE_DELETED_CLASS, true);
