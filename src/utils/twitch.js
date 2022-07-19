@@ -294,7 +294,8 @@ export default {
       const node = searchReactParents(
         getReactInstance($(CHAT_CONTAINER)[0]),
         (n) =>
-          n.stateNode && n.stateNode.props && n.stateNode.props.messageHandlerAPI && n.stateNode.props.chatConnectionAPI
+          n.stateNode && n.stateNode.props && n.stateNode.props.messageHandlerAPI && n.stateNode.props.chatConnectionAPI,
+        100
       );
       chatContentComponent = node.stateNode;
     } catch (_) {}
