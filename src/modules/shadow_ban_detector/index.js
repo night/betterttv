@@ -7,24 +7,58 @@ import {getCurrentUser} from '../../utils/user.js';
 
 const CHAT_LINE_DELETED_CLASS = 'bttv-chat-line-deleted';
 
+class CachedMessage {
+  constructor($message, message) {
+    this.node = $message;
+    this.content = (message.reply ? `@${message.reply.parentDisplayName} ` : '') + message.messageBody.trim();
+    this.parentId = message.reply?.parentMsgId;
+  }
+}
+
 class ShadowBanDetector {
   constructor() {
     this.isLoaded = false;
     watcher.on('load.chat', () => this.load());
-    watcher.on('chat.message', ($message, message) => this.handleMessage($message, message));
+    watcher.on('chat.message', ($message, message) => this.handleOutMessage($message, message));
     settings.on(`changed.${SettingIds.SHADOW_BAN_DETECTOR}`, () =>
       settings.get(SettingIds.SHADOW_BAN_DETECTOR) ? this.load() : this.unload()
     );
   }
 
-  handleMessage($message, message) {
-    if (!this.isLoaded) {
+  handleOutMessage($message, message) {
+    if (!this.isLoaded) return;
+    if (message.isHistorical) return;
+    if (message.user.userID !== getCurrentUser().id) return;
+    if ($message[0].classList.contains('reply-list-item')) return;
+
+    this.messagesToCheck.push(new CachedMessage($message, message));
+    $message.toggleClass(CHAT_LINE_DELETED_CLASS, true);
+  }
+
+  handleInMessage(type, data) {
+    if (type !== 'message') {
       return;
     }
 
-    if (!message.isHistorical && message.user.userID === getCurrentUser().id) {
-      this.messagesToCheck.push([$message, message.messageBody.trim()]);
-      $message.toggleClass(CHAT_LINE_DELETED_CLASS, true);
+    // Extract actual message
+    const sub = data.substring(data.indexOf('tmi.twitch.tv'));
+    const msg = sub.substring(sub.indexOf(':') + 1).trim();
+
+    const pairs = data.split(';');
+    const getElement = (str) => pairs.find((elem) => elem.startsWith(`${str}=`))?.split('=')[1];
+
+    const id = getElement('user-id');
+    const parentId = getElement('reply-parent-msg-id');
+
+    if (getCurrentUser().id === id) {
+      for (let i = this.messagesToCheck.length - 1; i >= 0; i--) {
+        const message = this.messagesToCheck[i];
+        if (msg === message.content && parentId === message.parentId) {
+          this.messagesToCheck.splice(i, 1);
+          message.node.toggleClass(CHAT_LINE_DELETED_CLASS, false);
+          return;
+        }
+      }
     }
   }
 
@@ -43,31 +77,7 @@ class ShadowBanDetector {
     this.socket.onclose = () => (this.isLoaded ? setTimeout(() => this.connect(), 1000) : null);
     this.socket.onerror = () => this.socket.close();
 
-    this.socket.onmessage = ({type, data}) => {
-      if (type !== 'message') {
-        return;
-      }
-
-      // Extract actual message
-      const sub = data.substring(data.indexOf('tmi.twitch.tv'));
-      const msg = sub.substring(sub.indexOf(':') + 1).trim();
-
-      const id = data
-        .split(';')
-        .find((elem) => elem.startsWith('user-id='))
-        ?.split('=')[1];
-
-      if (getCurrentUser().id === id) {
-        for (let i = this.messagesToCheck.length - 1; i >= 0; i--) {
-          const [$message, message] = this.messagesToCheck[i];
-          if (msg === message) {
-            this.messagesToCheck.splice(i, 1);
-            $message.toggleClass(CHAT_LINE_DELETED_CLASS, false);
-            return;
-          }
-        }
-      }
-    };
+    this.socket.onmessage = ({type, data}) => this.handleInMessage(type, data);
 
     this.socket.onopen = () => {
       this.socket.send('CAP REQ :twitch.tv/tags twitch.tv/commands');
