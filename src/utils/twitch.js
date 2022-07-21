@@ -361,11 +361,8 @@ export default {
     try {
       const node = searchReactParents(
         getReactInstance($(CHAT_CONTAINER)[0]),
-        (n) =>
-          n.stateNode &&
-          n.stateNode.props &&
-          n.stateNode.props.emoteSetsData &&
-          n.stateNode.props.emoteSetsData.emoteMap
+        (n) => n.stateNode?.props?.emoteSetsData?.emoteMap,
+        25
       );
       currentEmotes = node.stateNode.props.emoteSetsData;
     } catch (_) {}
