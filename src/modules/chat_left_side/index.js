@@ -10,14 +10,13 @@ class ChatLeftSide {
   }
 
   toggleLeftSideChat() {
-    const isEnabled = settings.get(SettingIds.CHAT_LAYOUT) === ChatLayoutTypes.LEFT;
-    $('body').toggleClass('bttv-swap-chat', isEnabled);
+    $('body').toggleClass('bttv-swap-chat', settings.get(SettingIds.CHAT_LAYOUT) === ChatLayoutTypes.LEFT);
 
     // TODO: replace this eventually when :has exists in CSS
     const sideNav = $('.side-nav').parent();
     const main = $('.twilight-main');
     if (sideNav.parent()[0] === main.parent()[0]) {
-      sideNav.css({order: isEnabled ? 3 : 'unset'});
+      sideNav.addClass('bttv-side-nav');
     }
   }
 }
