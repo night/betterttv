@@ -4,10 +4,10 @@ import domObserver from '../observers/dom.js';
 
 const PATCHED_SENTINEL = Symbol('patched symbol');
 
-let twitchHandleMessage;
+const twitchHandleMessages = {};
 let watcher;
 
-function bttvHandleMessage(message, ...args) {
+function bttvHandleMessage(channelId, message, ...args) {
   if (message && typeof message.type === 'number') {
     let isPrevented = false;
     watcher.emit('chat.message.handler', {
@@ -19,24 +19,29 @@ function bttvHandleMessage(message, ...args) {
     if (isPrevented) return null;
   }
 
-  return twitchHandleMessage.call(this, message, ...args);
+  return twitchHandleMessages[channelId].twitchHandleMessage.call(this, message, ...args);
 }
 
 function patchChatController() {
   const chatController = twitch.getChatController();
   if (!chatController) return;
 
-  const {messageHandlerAPI} = chatController.props;
+  const {messageHandlerAPI, channelID} = chatController.props;
   if (!messageHandlerAPI) return;
 
-  const {handleMessage} = messageHandlerAPI;
-  if (chatController._bttvMessageHandlerPatched === PATCHED_SENTINEL || handleMessage === bttvHandleMessage) {
+  const {handleMessage: twitchHandleMessage} = messageHandlerAPI;
+  const channelBttvHandleMessage =
+    twitchHandleMessages[channelID]?.bttvHandleMessage ?? bttvHandleMessage.bind(messageHandlerAPI, channelID);
+  if (
+    chatController._bttvMessageHandlerPatched === PATCHED_SENTINEL ||
+    twitchHandleMessage === channelBttvHandleMessage
+  ) {
     return;
   }
 
-  messageHandlerAPI.handleMessage = bttvHandleMessage;
+  messageHandlerAPI.handleMessage = channelBttvHandleMessage;
   chatController._bttvMessageHandlerPatched = PATCHED_SENTINEL;
-  twitchHandleMessage = handleMessage;
+  twitchHandleMessages[channelID] = {twitchHandleMessage, bttvHandleMessage: channelBttvHandleMessage};
 }
 
 export default function chatWatcher(watcher_) {
