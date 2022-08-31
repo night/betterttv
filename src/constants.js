@@ -173,7 +173,6 @@ export const SettingDefaultValues = {
   [SettingIds.EMOTE_MENU]: false,
   [SettingIds.DARKENED_MODE]: false,
   [SettingIds.PRIME_PROMOTIONS]: true,
-  [SettingIds.HOST_BUTTON]: false,
   [SettingIds.PLAYER_EXTENSIONS]: true,
   [SettingIds.CLICK_TO_PLAY]: false,
   [SettingIds.MUTE_INVISIBLE_PLAYER]: false,
