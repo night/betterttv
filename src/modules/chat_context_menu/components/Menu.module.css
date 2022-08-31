@@ -1,0 +1,21 @@
+.popover {
+  padding: 2px;
+  min-width: 160px;
+
+  .buttons {
+    display: flex;
+    flex-direction: column;
+
+    button {
+      text-align: left;
+    }
+  }
+
+  .heading {
+    padding: 2px 8px;
+  }
+
+  .divider {
+    margin: 2px 0px;
+  }
+}

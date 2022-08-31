@@ -93,7 +93,7 @@ function getReactRoot(element) {
   return null;
 }
 
-function searchReactParents(node, predicate, maxDepth = 15, depth = 0) {
+export function searchReactParents(node, predicate, maxDepth = 15, depth = 0) {
   try {
     if (predicate(node)) {
       return node;
