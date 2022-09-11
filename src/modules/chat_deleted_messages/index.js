@@ -62,24 +62,30 @@ class ChatDeletedMessagesModule {
 
   handleDelete(name, targetMessageId) {
     const deletedMessages = settings.get(SettingIds.DELETED_MESSAGES);
-    const showDeletedMessages = deletedMessages === DeletedMessageTypes.SHOW;
-    const hideDeletedMessages = deletedMessages === DeletedMessageTypes.HIDE;
-    if (!hideDeletedMessages && !showDeletedMessages) {
+    if (deletedMessages !== DeletedMessageTypes.HIDE
+        && deletedMessages !== DeletedMessageTypes.SHOW
+        && deletedMessages !== DeletedMessageTypes.HIGHLIGHT) {
       return false;
     }
     const messages = findAllUserMessages(name, targetMessageId);
     messages.forEach((message) => {
       const $message = $(message);
-      if (hideDeletedMessages) {
-        $message.hide();
-      } else if (showDeletedMessages) {
-        $message.toggleClass(CHAT_LINE_DELETED_CLASS, true);
-        /* eslint-disable-next-line func-names */
-        $message.find(CHAT_LINE_LINK_SELECTOR).each(function () {
-          const $link = $(this);
-          $link.removeAttr('href');
-        });
-        $message.find(CHAT_LINE_CLIP_CARD_SELECTOR).remove();
+      switch (deletedMessages) {
+        case DeletedMessageTypes.HIDE:
+          $message.hide();
+          break;
+        case DeletedMessageTypes.HIGHLIGHT:
+          $message.css('background-color', '#dc2626');
+        case DeletedMessageTypes.SHOW:
+          $message.toggleClass(CHAT_LINE_DELETED_CLASS, true);
+          /* eslint-disable-next-line func-names */
+          $message.find(CHAT_LINE_LINK_SELECTOR).each(function () {
+            const $link = $(this);
+            $link.removeAttr('href');
+          });
+          $message.find(CHAT_LINE_CLIP_CARD_SELECTOR).remove();
+        default:
+          break;
       }
     });
     return true;
