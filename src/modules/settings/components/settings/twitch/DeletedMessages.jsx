@@ -40,7 +40,9 @@ function DeletedMessagesModule() {
             <Radio key="highlightDeletedMessages" value={DeletedMessageTypes.HIGHLIGHT}>
               <div>
                 <p className={styles.heading}>Highlight Deleted Messages</p>
-                <p className={styles.description}>{"Changes <message deleted> back to users' original messages and highlights them."}</p>
+                <p className={styles.description}>
+                  {"Changes <message deleted> back to users' original messages and highlights them."}
+                </p>
               </div>
             </Radio>
           </RadioGroup>

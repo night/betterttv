@@ -62,9 +62,11 @@ class ChatDeletedMessagesModule {
 
   handleDelete(name, targetMessageId) {
     const deletedMessages = settings.get(SettingIds.DELETED_MESSAGES);
-    if (deletedMessages !== DeletedMessageTypes.HIDE
-        && deletedMessages !== DeletedMessageTypes.SHOW
-        && deletedMessages !== DeletedMessageTypes.HIGHLIGHT) {
+    if (
+      deletedMessages !== DeletedMessageTypes.HIDE &&
+      deletedMessages !== DeletedMessageTypes.SHOW &&
+      deletedMessages !== DeletedMessageTypes.HIGHLIGHT
+    ) {
       return false;
     }
     const messages = findAllUserMessages(name, targetMessageId);
@@ -76,6 +78,7 @@ class ChatDeletedMessagesModule {
           break;
         case DeletedMessageTypes.HIGHLIGHT:
           $message.css('background-color', '#dc2626');
+        // eslint-disable-next-line no-fallthrough
         case DeletedMessageTypes.SHOW:
           $message.toggleClass(CHAT_LINE_DELETED_CLASS, true);
           /* eslint-disable-next-line func-names */
@@ -84,6 +87,7 @@ class ChatDeletedMessagesModule {
             $link.removeAttr('href');
           });
           $message.find(CHAT_LINE_CLIP_CARD_SELECTOR).remove();
+          break;
         default:
           break;
       }
