@@ -73,7 +73,7 @@
     "precss": "^4.0.0",
     "prettier": "^2.7.1",
     "react": "^18.2.0",
-    "react-beautiful-dnd": "^13.1.0",
+    "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.2.0",
     "react-merge-refs": "^2.0.1",
     "react-string-replace": "^1.1.0",
