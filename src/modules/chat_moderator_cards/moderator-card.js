@@ -1,8 +1,8 @@
 import $ from 'jquery';
 import dayjs from 'dayjs';
+import gql from 'graphql-tag';
 import nicknames from '../chat_nicknames/index.js';
 import twitch from '../../utils/twitch.js';
-import twitchAPI from '../../utils/twitch-api.js';
 import html from '../../utils/html.js';
 import keyCodes from '../../utils/keycodes.js';
 import {getCurrentUser} from '../../utils/user.js';
@@ -128,11 +128,11 @@ class ModeratorCard {
     const $overlay = this.$element.find(MODERATOR_CARD_OVERLAY_SELECTOR);
     if ($overlay.find('.bttv-moderator-card-user-stats').length) return;
 
-    const query = `
+    const query = gql`
       query GetChannel($userId: ID!) {
         user(id: $userId) {
-          createdAt,
-          profileViewCount,
+          createdAt
+          profileViewCount
           followers(first: 1) {
             totalCount
           }
@@ -140,7 +140,7 @@ class ModeratorCard {
       }
     `;
 
-    twitchAPI
+    twitch
       .graphqlQuery(query, {userId: this.user.id})
       .then(
         ({

@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
+import gql from 'graphql-tag';
 import relativeTime from 'dayjs/esm/plugin/relativeTime/index.js';
 import twitch from '../../utils/twitch.js';
-import twitchAPI from '../../utils/twitch-api.js';
 import chat from '../chat/index.js';
 import anonChat from '../anon_chat/index.js';
 import {getCurrentUser} from '../../utils/user.js';
@@ -44,7 +44,7 @@ function secondsToLength(s) {
 
   return `${days > 0 ? `${days} day${days === 1 ? '' : 's'}, ` : ''} ${
     hours > 0 ? `${hours} hour${hours === 1 ? '' : 's'}, ` : ''
-  }  ${minutes > 0 ? `${minutes} minute${minutes === 1 ? '' : 's'}, ` : ''} ${seconds} seconds${
+  }  ${minutes > 0 ? `${minutes} minute${minutes === 1 ? '' : 's'}, ` : ''} ${seconds} second${
     seconds === 1 ? '' : 's'
   }`;
 }
@@ -78,19 +78,19 @@ function massUnban() {
   function getBannedChatters() {
     twitch.sendChatAdminMessage('Fetching banned users...');
 
-    const query = `
-            query Settings_ChannelChat_BannedChatters {
-                currentUser {
-                    bannedUsers {
-                        bannedUser {
-                            login
-                        }
-                    }
-                }
+    const query = gql`
+      query Settings_ChannelChat_BannedChatters {
+        currentUser {
+          bannedUsers {
+            bannedUser {
+              login
             }
-        `;
+          }
+        }
+      }
+    `;
 
-    twitchAPI.graphqlQuery(query).then(
+    twitch.graphqlQuery(query).then(
       ({
         data: {
           currentUser: {bannedUsers},
@@ -202,7 +202,7 @@ function handleCommands(message) {
       break;
 
     case 'chatters': {
-      const query = `
+      const query = gql`
         query GetChannelChattersCount($name: String!) {
           channel(name: $name) {
             chatters {
@@ -212,7 +212,7 @@ function handleCommands(message) {
         }
       `;
 
-      twitchAPI
+      twitch
         .graphqlQuery(query, {name: channel.name})
         .then(
           ({
@@ -229,7 +229,7 @@ function handleCommands(message) {
     case 'followed': {
       const currentUser = getCurrentUser();
       if (!currentUser) break;
-      const query = `
+      const query = gql`
         query GetFollowingChannel($userId: ID!) {
           user(id: $userId) {
             self {
@@ -241,7 +241,7 @@ function handleCommands(message) {
         }
       `;
 
-      twitchAPI
+      twitch
         .graphqlQuery(query, {userId: channel.id})
         .then(
           ({
@@ -263,7 +263,7 @@ function handleCommands(message) {
       break;
     }
     case 'follows': {
-      const query = `
+      const query = gql`
         query GetChannelFollowerCount($userId: ID!) {
           user(id: $userId) {
             followers(first: 1) {
@@ -273,7 +273,7 @@ function handleCommands(message) {
         }
       `;
 
-      twitchAPI
+      twitch
         .graphqlQuery(query, {userId: channel.id})
         .then(
           ({
@@ -288,7 +288,7 @@ function handleCommands(message) {
       break;
     }
     case 'viewers': {
-      const query = `
+      const query = gql`
         query GetChannelStreamViewersCount($userId: ID!) {
           user(id: $userId) {
             stream {
@@ -298,7 +298,7 @@ function handleCommands(message) {
         }
       `;
 
-      twitchAPI
+      twitch
         .graphqlQuery(query, {userId: channel.id})
         .then(
           ({
@@ -313,7 +313,7 @@ function handleCommands(message) {
       break;
     }
     case 'uptime': {
-      const query = `
+      const query = gql`
         query GetChannelStreamCreatedAt($userId: ID!) {
           user(id: $userId) {
             stream {
@@ -323,7 +323,7 @@ function handleCommands(message) {
         }
       `;
 
-      twitchAPI
+      twitch
         .graphqlQuery(query, {userId: channel.id})
         .then(
           ({

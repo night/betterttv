@@ -1,7 +1,8 @@
 /* eslint-disable import/prefer-default-export */
 import uniqBy from 'lodash.uniqby';
 import sortBy from 'lodash.sortby';
-import twitchApi from '../../../utils/twitch-api.js';
+import gql from 'graphql-tag';
+import twitch from '../../../utils/twitch.js';
 import Emote from '../../emotes/emote.js';
 import Icons from '../components/Icons.jsx';
 import debug from '../../../utils/debug.js';
@@ -9,53 +10,52 @@ import {getEmoteFromRegEx} from '../../../utils/regex.js';
 import settings from '../../../settings.js';
 import {SettingIds, EmoteCategories, EmoteProviders} from '../../../constants.js';
 import {getCurrentChannel} from '../../../utils/channel.js';
-import twitch from '../../../utils/twitch.js';
 
-const AVAILABLE_EMOTES_FOR_CHANNEL_QUERY = `
+const AVAILABLE_EMOTES_FOR_CHANNEL_QUERY = gql`
   query AvailableEmotesForChannel($channelID: ID!) {
     user(id: $channelID) {
-      id,
-      displayName,
+      id
+      displayName
       profileImageURL(width: 300)
       subscriptionProducts {
-        emoteSetID,
+        emoteSetID
         emotes {
-          id,
-          token,
+          id
+          token
           type
         }
         owner {
-          id,
-          displayName,
+          id
+          displayName
           profileImageURL(width: 300)
         }
       }
     }
     channel(id: $channelID) {
       localEmoteSets {
-        id,
+        id
         emotes {
-          id,
-          token,
+          id
+          token
           type
-        },
+        }
         owner {
-          id,
-          displayName,
+          id
+          displayName
           profileImageURL(width: 300)
         }
-      },
+      }
       self {
         availableEmoteSets {
-          id,
+          id
           emotes {
-            id,
-            token,
+            id
+            token
             type
-          },
+          }
           owner {
-            id,
-            displayName,
+            id
+            displayName
             profileImageURL(width: 300)
           }
         }
@@ -132,14 +132,10 @@ export async function loadTwitchEmotes() {
   }
 
   try {
-    [{data}] = await twitchApi.graphqlQuery([
-      {
-        query: AVAILABLE_EMOTES_FOR_CHANNEL_QUERY,
-        variables: {
-          channelID: currentChannel.id,
-        },
-      },
-    ]);
+    const result = await twitch.graphqlQuery(AVAILABLE_EMOTES_FOR_CHANNEL_QUERY, {
+      channelID: currentChannel.id,
+    });
+    data = result.data;
   } catch (e) {
     debug.log('failed to fetch twitch emotes', e);
     return data;

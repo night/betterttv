@@ -1,8 +1,8 @@
 import $ from 'jquery';
+import gql from 'graphql-tag';
 import settings from '../../settings.js';
 import watcher from '../../watcher.js';
 import twitch from '../../utils/twitch.js';
-import twitchAPI from '../../utils/twitch-api.js';
 import domObserver from '../../observers/dom.js';
 import {PlatformTypes, SettingIds} from '../../constants.js';
 import {getCurrentUser} from '../../utils/user.js';
@@ -88,7 +88,7 @@ class HostButtonModule {
   }
 
   updateHostingState(userId, channelId) {
-    const query = `
+    const query = gql`
       query ChannelHosting {
         currentUser {
           hosting {
@@ -98,7 +98,7 @@ class HostButtonModule {
       }
     `;
 
-    return twitchAPI.graphqlQuery(query).then(
+    return twitch.graphqlQuery(query).then(
       ({
         data: {
           currentUser: {hosting: newHosting},
