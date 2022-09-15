@@ -1,4 +1,4 @@
-import socketClient from '../../socket-client.js';
+import socketClient, {EventNames} from '../../socket-client.js';
 import twitch from '../../utils/twitch.js';
 
 const users = new Map();
@@ -21,8 +21,8 @@ function newSubscriber({user}) {
 
 class LegacySubscribersModule {
   constructor() {
-    socketClient.on('lookup_user', (d) => updateSubscription(d));
-    socketClient.on('new_subscriber', (d) => newSubscriber(d));
+    socketClient.on(EventNames.LOOKUP_USER, (d) => updateSubscription(d));
+    socketClient.on(EventNames.NEW_SUBSCRIBER, (d) => newSubscriber(d));
   }
 
   hasGlow(name) {
