@@ -9,6 +9,7 @@ import {EmoteProviders, EmoteTypeFlags, SettingIds} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
 import {getCurrentUser} from '../../utils/user.js';
 import {getCurrentChannel} from '../../utils/channel.js';
+import './socket.js';
 
 class EmotesModule {
   constructor() {

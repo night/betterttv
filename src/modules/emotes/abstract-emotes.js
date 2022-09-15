@@ -14,4 +14,8 @@ export default class AbstractEmotes {
   getEligibleEmote(code) {
     return this.emotes.get(code);
   }
+
+  getEligibleEmoteById(emoteId) {
+    return this.getEmotes().find(({id}) => id === emoteId);
+  }
 }

@@ -15,12 +15,34 @@ const category = {
 class ChannelEmotes extends AbstractEmotes {
   constructor() {
     super();
-
+    this._updatedChannel = null;
     watcher.on('channel.updated', (d) => this.updateChannelEmotes(d));
   }
 
   get category() {
     return category;
+  }
+
+  setChannelEmote({id, user, imageType, code}) {
+    this.emotes.set(
+      code,
+      new Emote({
+        id,
+        category: this.category,
+        channel: user || this._updatedChannel,
+        code,
+        images: {
+          '1x': cdn.emoteUrl(id, '1x'),
+          '2x': cdn.emoteUrl(id, '2x'),
+          '4x': cdn.emoteUrl(id, '3x'),
+        },
+        imageType,
+      })
+    );
+  }
+
+  deleteChannelEmote(code) {
+    this.emotes.delete(code);
   }
 
   updateChannelEmotes({avatar, channelEmotes, sharedEmotes}) {
@@ -29,26 +51,10 @@ class ChannelEmotes extends AbstractEmotes {
     const emotes = channelEmotes.concat(sharedEmotes);
 
     const currentChannel = getCurrentChannel();
-    const updatedChannel = {...currentChannel, avatar};
-    setCurrentChannel(updatedChannel);
+    this._updatedChannel = {...currentChannel, avatar};
+    setCurrentChannel(this._updatedChannel);
 
-    emotes.forEach(({id, user, code, imageType}) =>
-      this.emotes.set(
-        code,
-        new Emote({
-          id,
-          category: this.category,
-          channel: user || updatedChannel,
-          code,
-          images: {
-            '1x': cdn.emoteUrl(id, '1x'),
-            '2x': cdn.emoteUrl(id, '2x'),
-            '4x': cdn.emoteUrl(id, '3x'),
-          },
-          imageType,
-        })
-      )
-    );
+    emotes.forEach((emote) => this.setChannelEmote(emote));
 
     setTimeout(() => watcher.emit('emotes.updated'), 0);
   }
