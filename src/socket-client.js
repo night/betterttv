@@ -9,7 +9,15 @@ const CONNECTION_STATES = {
   CONNECTED: 2,
 };
 
-const WEBSOCKET_ENDPOINT = 'wss://sockets.betterttv.net/ws';
+export const EventNames = {
+  LOOKUP_USER: 'lookup_user',
+  NEW_SUBSCRIBER: 'new_subscriber',
+  EMOTE_CREATE: 'emote_create',
+  EMOTE_DELETE: 'emote_delete',
+  EMOTE_UPDATE: 'emote_update',
+};
+
+const WEBSOCKET_ENDPOINT = 'ws://localhost:8000/ws';
 
 let socket;
 let state = CONNECTION_STATES.DISCONNECTED;
