@@ -52,12 +52,12 @@ socketClient.on(EventNames.EMOTE_UPDATE, ({channel, mutatedFields, ...payload}) 
   }
 });
 
-socketClient.on(EventNames.EMOTE_DELETE, ({channel, ...payload}) => {
+socketClient.on(EventNames.EMOTE_DELETE, ({channel, emoteId}) => {
   if (!validateChannelDestination(channel)) {
     return;
   }
 
-  const emote = channelEmotes.getEligibleEmoteById(payload.emote.id);
+  const emote = channelEmotes.getEligibleEmoteById(emoteId);
 
   if (emote == null) {
     return;
