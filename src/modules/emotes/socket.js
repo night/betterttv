@@ -30,12 +30,12 @@ socketClient.on(EventNames.EMOTE_CREATE, ({channel, emote}) => {
   twitch.sendChatAdminMessage(`Emote: "${emote.code}" has been added.`);
 });
 
-socketClient.on(EventNames.EMOTE_UPDATE, ({channel, emoteId, mutatedFields}) => {
+socketClient.on(EventNames.EMOTE_UPDATE, ({channel, mutatedFields, ...payload}) => {
   if (!validateChannelDestination(channel)) {
     return;
   }
 
-  const emote = channelEmotes.getEligibleEmoteById(emoteId);
+  const emote = channelEmotes.getEligibleEmoteById(payload.emote.id);
 
   if (emote == null) {
     return;
@@ -52,12 +52,12 @@ socketClient.on(EventNames.EMOTE_UPDATE, ({channel, emoteId, mutatedFields}) => 
   }
 });
 
-socketClient.on(EventNames.EMOTE_DELETE, ({channel, emoteId}) => {
+socketClient.on(EventNames.EMOTE_DELETE, ({channel, ...payload}) => {
   if (!validateChannelDestination(channel)) {
     return;
   }
 
-  const emote = channelEmotes.getEligibleEmoteById(emoteId);
+  const emote = channelEmotes.getEligibleEmoteById(payload.emote.id);
 
   if (emote == null) {
     return;
