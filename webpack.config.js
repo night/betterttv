@@ -238,6 +238,7 @@ export default async (env, argv) => {
               project: 'betterttv-extension',
               include: './build',
               ignore: ['dev', 'node_modules', 'webpack.config.js'],
+              dryRun: process.env.GITHUB_TAG == null,
             }),
           ]
         : []),
