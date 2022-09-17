@@ -45,11 +45,7 @@ socketClient.on(EventNames.EMOTE_UPDATE, ({channel, ...payload}) => {
   channelEmotes.setChannelEmote({...emote, ...payload.emote});
 
   watcher.emit('emotes.updated');
-
-  for (const [key, value] of Object.entries(payload.emote)) {
-    // TODO: have specific messages for different mutated fields
-    twitch.sendChatAdminMessage(`Emote: "${emote[key]}" renamed to "${value}".`);
-  }
+  twitch.sendChatAdminMessage(`Emote: "${emote.code}" renamed to "${payload.emote.code}".`);
 });
 
 socketClient.on(EventNames.EMOTE_DELETE, ({channel, emoteId}) => {
