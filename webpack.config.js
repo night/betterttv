@@ -229,16 +229,20 @@ export default async (env, argv) => {
       new TerserPlugin({
         extractComments: false,
       }),
-      ...(process.env.GITHUB_TAG
+      ...(process.env.GITHUB_TAG || process.env.GIT_REV
         ? [
             new SentryWebpackPlugin({
               authToken: process.env.SENTRY_AUTH_TOKEN,
-              release: git.long(),
+              release: process.env.GIT_REV || git.long(),
               org: 'nightdev',
               project: 'betterttv-extension',
               include: './build',
               ignore: ['dev', 'node_modules', 'webpack.config.js'],
             }),
+          ]
+        : []),
+      ...(process.env.GITHUB_TAG
+        ? [
             new FileManagerPlugin({
               events: {
                 onEnd: {
