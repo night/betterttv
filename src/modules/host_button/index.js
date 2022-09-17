@@ -89,8 +89,9 @@ class HostButtonModule {
 
   updateHostingState(userId, channelId) {
     const query = gql`
-      query ChannelHosting {
+      query BTTVChannelHosting {
         currentUser {
+          id
           hosting {
             id
           }

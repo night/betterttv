@@ -79,10 +79,12 @@ function massUnban() {
     twitch.sendChatAdminMessage('Fetching banned users...');
 
     const query = gql`
-      query Settings_ChannelChat_BannedChatters {
+      query BTTVGetBannedChatters {
         currentUser {
+          id
           bannedUsers {
             bannedUser {
+              id
               login
             }
           }
@@ -203,8 +205,9 @@ function handleCommands(message) {
 
     case 'chatters': {
       const query = gql`
-        query GetChannelChattersCount($name: String!) {
+        query BTTVGetChannelChattersCount($name: String!) {
           channel(name: $name) {
+            id
             chatters {
               count
             }
@@ -230,8 +233,9 @@ function handleCommands(message) {
       const currentUser = getCurrentUser();
       if (!currentUser) break;
       const query = gql`
-        query GetFollowingChannel($userId: ID!) {
+        query BTTVGetFollowingChannel($userId: ID!) {
           user(id: $userId) {
+            id
             self {
               follower {
                 followedAt
@@ -264,8 +268,9 @@ function handleCommands(message) {
     }
     case 'follows': {
       const query = gql`
-        query GetChannelFollowerCount($userId: ID!) {
+        query BTTVGetChannelFollowerCount($userId: ID!) {
           user(id: $userId) {
+            id
             followers(first: 1) {
               totalCount
             }
@@ -289,9 +294,11 @@ function handleCommands(message) {
     }
     case 'viewers': {
       const query = gql`
-        query GetChannelStreamViewersCount($userId: ID!) {
+        query BTTVGetChannelStreamViewersCount($userId: ID!) {
           user(id: $userId) {
+            id
             stream {
+              id
               viewersCount
             }
           }
@@ -314,9 +321,11 @@ function handleCommands(message) {
     }
     case 'uptime': {
       const query = gql`
-        query GetChannelStreamCreatedAt($userId: ID!) {
+        query BTTVGetChannelStreamCreatedAt($userId: ID!) {
           user(id: $userId) {
+            id
             stream {
+              id
               createdAt
             }
           }

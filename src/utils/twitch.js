@@ -17,8 +17,9 @@ const CHAT_WYSIWYG_INPUT_EDITOR = '.chat-wysiwyg-input__editor';
 const COMMUNITY_HIGHLIGHT = '.community-highlight';
 
 const USER_PROFILE_IMAGE_GQL_QUERY = gql`
-  query GetUserProfilePicture($userId: ID!) {
+  query BTTVGetUserProfilePicture($userId: ID!) {
     user(id: $userId) {
+      id
       profileImageURL(width: 300)
     }
   }

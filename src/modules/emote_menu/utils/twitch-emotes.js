@@ -12,12 +12,13 @@ import {SettingIds, EmoteCategories, EmoteProviders} from '../../../constants.js
 import {getCurrentChannel} from '../../../utils/channel.js';
 
 const AVAILABLE_EMOTES_FOR_CHANNEL_QUERY = gql`
-  query AvailableEmotesForChannel($channelID: ID!) {
+  query BTTVAvailableEmotesForChannel($channelID: ID!) {
     user(id: $channelID) {
       id
       displayName
       profileImageURL(width: 300)
       subscriptionProducts {
+        id
         emoteSetID
         emotes {
           id

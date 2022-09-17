@@ -129,8 +129,9 @@ class ModeratorCard {
     if ($overlay.find('.bttv-moderator-card-user-stats').length) return;
 
     const query = gql`
-      query GetChannel($userId: ID!) {
+      query BTTVGetChannel($userId: ID!) {
         user(id: $userId) {
+          id
           createdAt
           profileViewCount
           followers(first: 1) {
