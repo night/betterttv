@@ -17,7 +17,7 @@ export const EventNames = {
   EMOTE_UPDATE: 'emote_update',
 };
 
-const WEBSOCKET_ENDPOINT = 'ws://localhost:8000/ws';
+const WEBSOCKET_ENDPOINT = 'wss://sockets.betterttv.net/ws';
 
 let socket;
 let state = CONNECTION_STATES.DISCONNECTED;
