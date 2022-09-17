@@ -4,7 +4,7 @@ import twitch from '../../utils/twitch.js';
 import watcher from '../../watcher.js';
 import channelEmotes from './channel-emotes.js';
 
-function validateChannelDestination(channel) {
+function validChannelDestination(channel) {
   const currentChannel = getCurrentChannel();
   const [provider, providerId] = channel.split(':');
 
@@ -20,7 +20,7 @@ function validateChannelDestination(channel) {
 }
 
 socketClient.on(EventNames.EMOTE_CREATE, ({channel, emote}) => {
-  if (!validateChannelDestination(channel)) {
+  if (!validChannelDestination(channel)) {
     return;
   }
 
@@ -30,8 +30,8 @@ socketClient.on(EventNames.EMOTE_CREATE, ({channel, emote}) => {
   twitch.sendChatAdminMessage(`Emote: "${emote.code}" has been added.`);
 });
 
-socketClient.on(EventNames.EMOTE_UPDATE, ({channel, mutatedFields, ...payload}) => {
-  if (!validateChannelDestination(channel)) {
+socketClient.on(EventNames.EMOTE_UPDATE, ({channel, ...payload}) => {
+  if (!validChannelDestination(channel)) {
     return;
   }
 
@@ -42,18 +42,18 @@ socketClient.on(EventNames.EMOTE_UPDATE, ({channel, mutatedFields, ...payload}) 
   }
 
   channelEmotes.deleteChannelEmote(emote.code);
-  channelEmotes.setChannelEmote({...emote, ...mutatedFields});
+  channelEmotes.setChannelEmote({...emote, ...payload.emote});
 
   watcher.emit('emotes.updated');
 
-  for (const [key, value] of Object.entries(mutatedFields)) {
+  for (const [key, value] of Object.entries(payload.emote)) {
     // TODO: have specific messages for different mutated fields
     twitch.sendChatAdminMessage(`Emote: "${emote[key]}" renamed to "${value}".`);
   }
 });
 
 socketClient.on(EventNames.EMOTE_DELETE, ({channel, emoteId}) => {
-  if (!validateChannelDestination(channel)) {
+  if (!validChannelDestination(channel)) {
     return;
   }
 
