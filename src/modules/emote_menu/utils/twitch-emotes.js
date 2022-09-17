@@ -33,6 +33,7 @@ const AVAILABLE_EMOTES_FOR_CHANNEL_QUERY = gql`
       }
     }
     channel(id: $channelID) {
+      id
       localEmoteSets {
         id
         emotes {
