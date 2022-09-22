@@ -24,7 +24,7 @@ socketClient.on(EventNames.EMOTE_CREATE, ({channel, emote}) => {
     return;
   }
 
-  channelEmotes.setChannelEmote(emote);
+  channelEmotes.upsertChannelEmote(emote);
 
   watcher.emit('emotes.updated');
   twitch.sendChatAdminMessage(`Emote: "${emote.code}" has been added.`);
@@ -41,8 +41,8 @@ socketClient.on(EventNames.EMOTE_UPDATE, ({channel, ...payload}) => {
     return;
   }
 
-  channelEmotes.deleteChannelEmote(emote.code);
-  channelEmotes.setChannelEmote({...emote, ...payload.emote});
+  channelEmotes.emotes.delete(emote.code);
+  channelEmotes.upsertChannelEmote({...emote, ...payload.emote});
 
   watcher.emit('emotes.updated');
   twitch.sendChatAdminMessage(`Emote: "${emote.code}" renamed to "${payload.emote.code}".`);
@@ -59,7 +59,7 @@ socketClient.on(EventNames.EMOTE_DELETE, ({channel, emoteId}) => {
     return;
   }
 
-  channelEmotes.deleteChannelEmote(emote.code);
+  channelEmotes.emotes.delete(emote.code);
 
   watcher.emit('emotes.updated');
   twitch.sendChatAdminMessage(`Emote: "${emote.code}" has been removed.`);

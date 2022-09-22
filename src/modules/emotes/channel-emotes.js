@@ -23,7 +23,7 @@ class ChannelEmotes extends AbstractEmotes {
     return category;
   }
 
-  setChannelEmote({id, user, imageType, code}) {
+  upsertChannelEmote({id, user, imageType, code}) {
     this.emotes.set(
       code,
       new Emote({
@@ -39,10 +39,6 @@ class ChannelEmotes extends AbstractEmotes {
         imageType,
       })
     );
-  }
-
-  deleteChannelEmote(code) {
-    this.emotes.delete(code);
   }
 
   updateChannelEmotes({avatar, channelEmotes, sharedEmotes}) {
