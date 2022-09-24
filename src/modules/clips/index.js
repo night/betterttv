@@ -12,16 +12,6 @@ const CHAT_USERNAME_SELECTOR = 'a[href$="/clips"] span';
 const SCROLL_INDICATOR_SELECTOR = '.clips-chat .clips-chat__content button';
 const SCROLL_CONTAINER_SELECTOR = '.clips-chat .simplebar-scroll-content';
 
-function parseColor(rgbText) {
-  const rgb = ((rgbText || '').split(')')[0].split('rgb(')[1] || '').split(',');
-  const sanitize = (c) => parseInt(c.trim() || '0', 10);
-  return {
-    r: sanitize(rgb[0]),
-    g: sanitize(rgb[1]),
-    b: sanitize(rgb[2]),
-  };
-}
-
 function scrollOnEmoteLoad($el) {
   const indicator = $(SCROLL_INDICATOR_SELECTOR).length > 0;
   if (indicator) return;
@@ -50,7 +40,7 @@ class ClipsModule {
     const $colorSpan = $from.closest('a').closest('span');
 
     if ($colorSpan.length && $colorSpan.css('color')) {
-      const oldColor = colors.getHex(parseColor($from.css('color')));
+      const oldColor = colors.getHex(colors.getRgb($from.css('color')));
       $colorSpan.attr('style', `color: ${chat.calculateColor(oldColor)}`);
     }
 

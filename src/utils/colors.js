@@ -150,19 +150,29 @@ function calculateColor(color, darkenedMode) {
 }
 
 function getRgb(color) {
-  // Convert HEX to RGB
-  const regex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(color);
-  return regex
-    ? {
-        r: parseInt(regex[1], 16),
-        g: parseInt(regex[2], 16),
-        b: parseInt(regex[3], 16),
-      }
-    : {
-        r: 0,
-        g: 0,
-        b: 0,
-      };
+  const hexRegex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(color);
+  if (hexRegex != null) {
+    return {
+      r: parseInt(hexRegex[1], 16),
+      g: parseInt(hexRegex[2], 16),
+      b: parseInt(hexRegex[3], 16),
+    };
+  }
+
+  const rgbRegex = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/i.exec(color);
+  if (rgbRegex != null) {
+    return {
+      r: parseInt(rgbRegex[1], 10),
+      g: parseInt(rgbRegex[2], 10),
+      b: parseInt(rgbRegex[3], 10),
+    };
+  }
+
+  return {
+    r: 0,
+    g: 0,
+    b: 0,
+  };
 }
 
 function getHex(color) {

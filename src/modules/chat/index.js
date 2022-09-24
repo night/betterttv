@@ -196,9 +196,18 @@ class ChatModule {
     const user = formatChatUser(messageObj);
     if (!user) return;
 
-    const color = this.calculateColor(user.color);
     const $from = $element.find('.chat-author__display-name,.chat-author__intl-login');
-    $from.css('color', color);
+    let color;
+    if (hasFlag(settings.get(SettingIds.USERNAMES), UsernameFlags.READABLE)) {
+      color = this.calculateColor(user.color);
+
+      $from.css('color', color);
+      if ($element[0].style.color) {
+        $element.css('color', color);
+      }
+    } else {
+      color = $from.css('color');
+    }
 
     if (legacySubscribers.hasGlow(user.name) && settings.get(SettingIds.DARKENED_MODE) === true) {
       const rgbColor = colors.getRgb(color);
@@ -210,10 +219,6 @@ class ChatModule {
     const nickname = nicknames.get(user.name);
     if (nickname) {
       $from.text(nickname);
-    }
-
-    if ($element[0].style.color) {
-      $element.css('color', color);
     }
 
     if (
