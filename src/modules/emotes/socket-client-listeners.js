@@ -1,4 +1,4 @@
-import socketClient, {EventNames} from '../../socket-client.js';
+import socketClient, {deserializeSocketChannel, EventNames} from '../../socket-client.js';
 import {getCurrentChannel} from '../../utils/channel.js';
 import twitch from '../../utils/twitch.js';
 import watcher from '../../watcher.js';
@@ -6,17 +6,8 @@ import channelEmotes from './channel-emotes.js';
 
 function validChannelDestination(channel) {
   const currentChannel = getCurrentChannel();
-  const [provider, providerId] = channel.split(':');
-
-  if (currentChannel.id !== providerId) {
-    return false;
-  }
-
-  if (currentChannel.provider !== provider) {
-    return false;
-  }
-
-  return true;
+  const [provider, providerId] = deserializeSocketChannel(channel);
+  return currentChannel.id === providerId && currentChannel.provider === provider;
 }
 
 socketClient.on(EventNames.EMOTE_CREATE, ({channel, emote}) => {
@@ -36,7 +27,6 @@ socketClient.on(EventNames.EMOTE_UPDATE, ({channel, ...payload}) => {
   }
 
   const emote = channelEmotes.getEligibleEmoteById(payload.emote.id);
-
   if (emote == null) {
     return;
   }
@@ -45,7 +35,6 @@ socketClient.on(EventNames.EMOTE_UPDATE, ({channel, ...payload}) => {
   channelEmotes.upsertChannelEmote({...emote, ...payload.emote});
 
   watcher.emit('emotes.updated');
-  twitch.sendChatAdminMessage(`Emote: "${emote.code}" renamed to "${payload.emote.code}".`);
 });
 
 socketClient.on(EventNames.EMOTE_DELETE, ({channel, emoteId}) => {

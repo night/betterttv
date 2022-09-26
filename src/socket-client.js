@@ -29,6 +29,10 @@ function makeSocketChannel(provider, providerId) {
   return `${provider}:${providerId}`;
 }
 
+export function deserializeSocketChannel(channel) {
+  return channel.split(':');
+}
+
 class SocketClient extends SafeEventEmitter {
   constructor() {
     super();
