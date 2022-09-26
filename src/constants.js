@@ -229,3 +229,5 @@ export const EMOTE_MENU_GRID_ROW_HEIGHT = 36;
 export const EMOTE_MENU_GRID_HEIGHT = 300;
 
 export const EMOTE_CATEGORIES_ORDER_STORAGE_KEY = 'emote-categories-order';
+
+export const PARSE_ADMIN_MESSAGE_PREFIX = '__BTTV__PARSE__';

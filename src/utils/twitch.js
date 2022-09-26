@@ -4,6 +4,7 @@ import gql from 'graphql-tag';
 import debug from './debug.js';
 import {getCurrentUser, setCurrentUser} from './user.js';
 import {getCurrentChannel, setCurrentChannel} from './channel.js';
+import {PARSE_ADMIN_MESSAGE_PREFIX} from '../constants.js';
 
 const REACT_ROOT = '#root';
 const CHAT_CONTAINER = 'section[data-test-selector="chat-room-component-layout"]';
@@ -409,11 +410,15 @@ export default {
     return currentVodChat;
   },
 
-  sendChatAdminMessage(body) {
+  sendChatAdminMessage(body, parse = false) {
     const chatController = this.getChatController();
     if (!chatController) return;
 
     const id = Date.now();
+
+    if (parse) {
+      body = `${PARSE_ADMIN_MESSAGE_PREFIX}${body}`;
+    }
 
     chatController.pushMessage({
       type: TMIActionTypes.NOTICE,
