@@ -51,7 +51,7 @@ class ChannelEmotes extends AbstractEmotes {
     currentChannel = {...updatedChannel, avatar};
     setCurrentChannel(currentChannel);
 
-    emotes.forEach((emote) => this.setChannelEmote(emote));
+    emotes.forEach((emote) => this.upsertChannelEmote(emote));
 
     setTimeout(() => watcher.emit('emotes.updated'), 0);
   }
