@@ -18,7 +18,7 @@ socketClient.on(EventNames.EMOTE_CREATE, ({channel, emote}) => {
   channelEmotes.upsertChannelEmote(emote);
 
   watcher.emit('emotes.updated');
-  twitch.sendChatAdminMessage(`${emote.code} has been added`, true);
+  twitch.sendChatAdminMessage(`BetterTTV: The emote ${emote.code} has been added`, true);
 });
 
 socketClient.on(EventNames.EMOTE_UPDATE, ({channel, ...payload}) => {
@@ -43,7 +43,6 @@ socketClient.on(EventNames.EMOTE_DELETE, ({channel, emoteId}) => {
   }
 
   const emote = channelEmotes.getEligibleEmoteById(emoteId);
-
   if (emote == null) {
     return;
   }
@@ -51,5 +50,5 @@ socketClient.on(EventNames.EMOTE_DELETE, ({channel, emoteId}) => {
   channelEmotes.emotes.delete(emote.code);
 
   watcher.emit('emotes.updated');
-  twitch.sendChatAdminMessage(`${emote.code} has been removed`, true);
+  twitch.sendChatAdminMessage(`BetterTTV: The emote ${emote.code} has been removed`, true);
 });

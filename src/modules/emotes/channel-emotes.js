@@ -12,8 +12,6 @@ const category = {
   displayName: 'BetterTTV Channel Emotes',
 };
 
-let currentChannel = null;
-
 class ChannelEmotes extends AbstractEmotes {
   constructor() {
     super();
@@ -30,7 +28,7 @@ class ChannelEmotes extends AbstractEmotes {
       new Emote({
         id,
         category: this.category,
-        channel: user || currentChannel,
+        channel: user || getCurrentChannel(),
         code,
         images: {
           '1x': cdn.emoteUrl(id, '1x'),
@@ -48,8 +46,7 @@ class ChannelEmotes extends AbstractEmotes {
     const emotes = channelEmotes.concat(sharedEmotes);
 
     const updatedChannel = getCurrentChannel();
-    currentChannel = {...updatedChannel, avatar};
-    setCurrentChannel(currentChannel);
+    setCurrentChannel({...updatedChannel, avatar});
 
     emotes.forEach((emote) => this.upsertChannelEmote(emote));
 
