@@ -15,6 +15,7 @@ const category = {
 class ChannelEmotes extends AbstractEmotes {
   constructor() {
     super();
+
     watcher.on('channel.updated', (d) => this.updateChannelEmotes(d));
   }
 
