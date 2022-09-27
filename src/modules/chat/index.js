@@ -155,8 +155,8 @@ class ChatModule {
         continue;
       }
 
-      let modified = false;
       const parts = data.split(' ');
+      let modified = false;
       for (let j = 0; j < parts.length; j++) {
         const part = parts[j];
         if (!part || typeof part !== 'string') {
