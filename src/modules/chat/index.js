@@ -10,7 +10,7 @@ import emotes from '../emotes/index.js';
 import nicknames from '../chat_nicknames/index.js';
 import legacySubscribers from '../legacy_subscribers/index.js';
 import splitChat from '../split_chat/index.js';
-import {PARSE_ADMIN_MESSAGE_PREFIX, SettingIds, UsernameFlags} from '../../constants.js';
+import {SettingIds, UsernameFlags} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
 import {getCurrentChannel} from '../../utils/channel.js';
 
@@ -73,7 +73,11 @@ function getMessagePartsFromMessageElement($message) {
 class ChatModule {
   constructor() {
     watcher.on('chat.message', ($element, message) => this.messageParser($element, message));
-    watcher.on('chat.status', ($element) => this.messageReplacer($element));
+    watcher.on('chat.status', ($element, message) => {
+      if (message?.renderEmotes === true) {
+        this.messageReplacer($element);
+      }
+    });
     watcher.on('channel.updated', ({bots}) => {
       channelBots = bots;
     });
@@ -152,16 +156,6 @@ class ChatModule {
       }
 
       let modified = false;
-
-      if (user == null) {
-        if (!data.startsWith(PARSE_ADMIN_MESSAGE_PREFIX)) {
-          return;
-        }
-
-        data = data.replace(PARSE_ADMIN_MESSAGE_PREFIX, '');
-        modified = true;
-      }
-
       const parts = data.split(' ');
       for (let j = 0; j < parts.length; j++) {
         const part = parts[j];

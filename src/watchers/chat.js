@@ -74,7 +74,10 @@ export default function chatWatcher(watcher_) {
   domObserver.on('.chat-line__status', (node, isConnected) => {
     if (!isConnected) return;
 
-    watcher.emit('chat.status', $(node));
+    const msgObject = twitch.getChatMessageObject(node);
+    if (!msgObject) return;
+
+    watcher.emit('chat.status', $(node), msgObject);
   });
 
   domObserver.on('.vod-message__content,.vod-message', (node, isConnected) => {
