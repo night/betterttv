@@ -442,7 +442,7 @@ export default {
   getChatMessageObject(element) {
     let msgObject;
     try {
-      const reactNode = searchReactParents(getReactInstance(element), (n) => n?.pendingProps?.message != null);
+      const reactNode = searchReactParents(getReactInstance(element), (n) => n?.pendingProps?.message != null, 5);
       msgObject = reactNode.pendingProps.message;
     } catch (_) {}
 
