@@ -10,6 +10,7 @@ const CHAT_LINE_LINK_SELECTOR = 'a.link-fragment';
 const CHAT_LINE_CLIP_CARD_SELECTOR = '.chat-card';
 const CHAT_LINE_DELETED_CLASS = 'bttv-chat-line-deleted';
 
+
 function findAllUserMessages(name, targetMessageId) {
   return Array.from(document.querySelectorAll(CHAT_LINE_SELECTOR)).filter((node) => {
     const message = twitch.getChatMessageObject(node);
@@ -77,9 +78,10 @@ class ChatDeletedMessagesModule {
           $message.hide();
           break;
         case DeletedMessageTypes.HIGHLIGHT:
-          $message.css('background-color', '#dc2626');
-        // eslint-disable-next-line no-fallthrough
         case DeletedMessageTypes.SHOW:
+          if (deletedMessages === DeletedMessageTypes.HIGHLIGHT) {
+            $message.addClass('bttv-highlighted');
+          }
           $message.toggleClass(CHAT_LINE_DELETED_CLASS, true);
           /* eslint-disable-next-line func-names */
           $message.find(CHAT_LINE_LINK_SELECTOR).each(function () {
