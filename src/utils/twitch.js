@@ -421,7 +421,7 @@ export default {
       msgid: id,
       message: body,
       channel: `#${chatController.props.channelLogin}`,
-      renderEmotes,
+      renderBetterTTVEmotes: renderEmotes,
     });
   },
 
