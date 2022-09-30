@@ -201,6 +201,10 @@ class ChatHighlightBlacklistKeywordsModule {
   }
 
   onMessage($message, {user, timestamp, messageParts}) {
+    if (user == null) {
+      return;
+    }
+
     const from = user.userLogin;
     const message = messageTextFromAST(messageParts);
     const date = new Date(timestamp);
