@@ -33,6 +33,9 @@ function formatChatUser(message) {
   }
 
   const {user} = message;
+  if (user == null) {
+    return null;
+  }
 
   let {badges} = message;
   if (badges == null) {
@@ -73,6 +76,12 @@ function getMessagePartsFromMessageElement($message) {
 class ChatModule {
   constructor() {
     watcher.on('chat.message', ($element, message) => this.messageParser($element, message));
+    watcher.on('chat.status', ($element, message) => {
+      if (message?.renderBetterTTVEmotes !== true) {
+        return;
+      }
+      this.messageReplacer($element, null, true);
+    });
     watcher.on('channel.updated', ({bots}) => {
       channelBots = bots;
     });
@@ -135,7 +144,7 @@ class ChatModule {
     modsOnly = enabled;
   }
 
-  messageReplacer($message, user) {
+  messageReplacer($message, user, exact = false) {
     const tokens = $message.contents();
     let cappedEmoteCount = 0;
     for (let i = 0; i < tokens.length; i++) {
@@ -166,7 +175,7 @@ class ChatModule {
         }
         const emote =
           emotes.getEligibleEmote(part, user) ||
-          emotes.getEligibleEmote(part.replace(EMOTE_STRIP_SYMBOLS_REGEX, ''), user);
+          (!exact ? emotes.getEligibleEmote(part.replace(EMOTE_STRIP_SYMBOLS_REGEX, ''), user) : null);
         if (emote) {
           parts[j] =
             EMOTES_TO_CAP.includes(emote.id) && ++cappedEmoteCount > MAX_EMOTES_WHEN_CAPPED ? '' : emote.toHTML();

@@ -9,6 +9,14 @@ const CONNECTION_STATES = {
   CONNECTED: 2,
 };
 
+export const EventNames = {
+  LOOKUP_USER: 'lookup_user',
+  NEW_SUBSCRIBER: 'new_subscriber',
+  EMOTE_CREATE: 'emote_create',
+  EMOTE_DELETE: 'emote_delete',
+  EMOTE_UPDATE: 'emote_update',
+};
+
 const WEBSOCKET_ENDPOINT = 'wss://sockets.betterttv.net/ws';
 
 let socket;
@@ -19,6 +27,10 @@ const joinedChannels = [];
 
 function makeSocketChannel(provider, providerId) {
   return `${provider}:${providerId}`;
+}
+
+export function deserializeSocketChannel(channel) {
+  return channel.split(':');
 }
 
 class SocketClient extends SafeEventEmitter {

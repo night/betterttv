@@ -31,7 +31,11 @@ class ChatTabcompletionModule {
     this.historyPos = -1;
   }
 
-  storeUser({user: {userDisplayName, userLogin}}) {
+  storeUser({user: messageUser}) {
+    if (messageUser == null) {
+      return;
+    }
+    const {userDisplayName, userLogin} = messageUser;
     const user = userDisplayName && userDisplayName.toLowerCase() === userLogin ? userDisplayName : userLogin;
     this.userList.add(user);
   }

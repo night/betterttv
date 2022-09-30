@@ -1,4 +1,4 @@
-import socketClient from '../../socket-client.js';
+import socketClient, {EventNames} from '../../socket-client.js';
 import watcher from '../../watcher.js';
 import cdn from '../../utils/cdn.js';
 import AbstractEmotes from './abstract-emotes.js';
@@ -19,7 +19,7 @@ class PersonalEmotes extends AbstractEmotes {
   constructor() {
     super();
 
-    socketClient.on('lookup_user', (s) => this.updatePersonalEmotes(s));
+    socketClient.on(EventNames.LOOKUP_USER, (s) => this.updatePersonalEmotes(s));
     watcher.on('load.chat', () => this.joinChannel());
     watcher.on('load.youtube', () => this.joinChannel());
     watcher.on('load.user', () => this.broadcastMe());

@@ -409,7 +409,7 @@ export default {
     return currentVodChat;
   },
 
-  sendChatAdminMessage(body) {
+  sendChatAdminMessage(body, renderEmotes = false) {
     const chatController = this.getChatController();
     if (!chatController) return;
 
@@ -421,6 +421,7 @@ export default {
       msgid: id,
       message: body,
       channel: `#${chatController.props.channelLogin}`,
+      renderBetterTTVEmotes: renderEmotes,
     });
   },
 
@@ -441,7 +442,8 @@ export default {
   getChatMessageObject(element) {
     let msgObject;
     try {
-      msgObject = getReactInstance(element).return.stateNode.props.message;
+      const reactNode = searchReactParents(getReactInstance(element), (n) => n?.pendingProps?.message != null, 5);
+      msgObject = reactNode.pendingProps.message;
     } catch (_) {}
 
     return msgObject;

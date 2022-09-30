@@ -23,32 +23,33 @@ class ChannelEmotes extends AbstractEmotes {
     return category;
   }
 
+  upsertChannelEmote({id, user, imageType, code}) {
+    this.emotes.set(
+      code,
+      new Emote({
+        id,
+        category: this.category,
+        channel: user || getCurrentChannel(),
+        code,
+        images: {
+          '1x': cdn.emoteUrl(id, '1x'),
+          '2x': cdn.emoteUrl(id, '2x'),
+          '4x': cdn.emoteUrl(id, '3x'),
+        },
+        imageType,
+      })
+    );
+  }
+
   updateChannelEmotes({avatar, channelEmotes, sharedEmotes}) {
     this.emotes.clear();
 
     const emotes = channelEmotes.concat(sharedEmotes);
 
-    const currentChannel = getCurrentChannel();
-    const updatedChannel = {...currentChannel, avatar};
-    setCurrentChannel(updatedChannel);
+    const updatedChannel = getCurrentChannel();
+    setCurrentChannel({...updatedChannel, avatar});
 
-    emotes.forEach(({id, user, code, imageType}) =>
-      this.emotes.set(
-        code,
-        new Emote({
-          id,
-          category: this.category,
-          channel: user || updatedChannel,
-          code,
-          images: {
-            '1x': cdn.emoteUrl(id, '1x'),
-            '2x': cdn.emoteUrl(id, '2x'),
-            '4x': cdn.emoteUrl(id, '3x'),
-          },
-          imageType,
-        })
-      )
-    );
+    emotes.forEach((emote) => this.upsertChannelEmote(emote));
 
     setTimeout(() => watcher.emit('emotes.updated'), 0);
   }
