@@ -30,7 +30,8 @@ const Icons = {
 
 const MODERATOR_CARD_DISPLAY_NAME_SELECTOR = '.viewer-card-header__display-name h4';
 const MODERATOR_CARD_OVERLAY_SELECTOR = '.viewer-card-header__overlay';
-const MODERATOR_CARD_ACTIONS_SELECTOR = 'button[aria-label~="Ban"]';
+const MODERATOR_CARD_ACTIONS_SELECTOR =
+  'button svg path[d="M2 10a8 8 0 1116 0 8 8 0 01-16 0zm8 6a6 6 0 01-4.904-9.458l8.362 8.362A5.972 5.972 0 0110 16zm4.878-2.505a6 6 0 00-8.372-8.372l8.372 8.372z"]';
 
 const moderatorActionButtonTemplate = (command, duration, tooltipText, buttonText) => `
   <div class="bttv-tooltip-wrapper">
