@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import {createRoot} from 'react-dom/client';
 import settings from '../../../settings.js';
 import {EmoteProviders, SettingIds} from '../../../constants.js';
 import EmoteMenuButton from '../components/LegacyButton.jsx';
@@ -37,7 +37,7 @@ class SafeEmoteMenuButton extends React.Component {
   }
 }
 
-let mountedNode;
+let mountedRoot;
 let isMounted = false;
 
 export default class EmoteMenuModule {
@@ -71,12 +71,13 @@ export default class EmoteMenuModule {
       buttonContainer.setAttribute('data-a-target', 'legacy-bttv-emote-picker-button-container');
       nativeButtonContainer.insertBefore(buttonContainer, nativeButtonContainer.firstChild);
 
-      if (mountedNode != null) {
-        ReactDOM.unmountComponentAtNode(mountedNode);
+      if (mountedRoot != null) {
+        mountedRoot.unmount();
         isMounted = false;
       }
 
-      ReactDOM.render(
+      mountedRoot = createRoot(buttonContainer);
+      mountedRoot.render(
         <SafeEmoteMenuButton
           onError={() => this.show(false)}
           onMount={() => {
@@ -86,11 +87,8 @@ export default class EmoteMenuModule {
           appendToChat={this.appendToChat}
           className={styles.button}
           boundingQuerySelector="#live-chat-message-input"
-        />,
-        buttonContainer
+        />
       );
-
-      mountedNode = buttonContainer;
     }
 
     if (isMounted) {

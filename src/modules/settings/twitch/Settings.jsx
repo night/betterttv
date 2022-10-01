@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import {createRoot} from 'react-dom/client';
 import Modal from '../components/Window.jsx';
 import domObserver from '../../../observers/dom.js';
 
@@ -9,7 +9,7 @@ function setHandleOpen(newHandleOpen) {
   handleOpen = newHandleOpen;
 }
 
-let mountedNode;
+let mountedRoot;
 
 export default class SettingsModule {
   constructor() {
@@ -32,11 +32,11 @@ export default class SettingsModule {
     const panel = document.createElement('div');
     panel.setAttribute('id', 'bttvSettingsPanel');
     $('body').append(panel);
-    if (mountedNode != null) {
-      ReactDOM.unmountComponentAtNode(mountedNode);
+    if (mountedRoot != null) {
+      mountedRoot.unmount();
     }
-    ReactDOM.render(<Modal setHandleOpen={setHandleOpen} />, panel);
-    mountedNode = panel;
+    mountedRoot = createRoot(panel);
+    mountedRoot.render(<Modal setHandleOpen={setHandleOpen} />);
   }
 
   renderSettingsMenuOption() {

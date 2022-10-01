@@ -1,12 +1,12 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import {createRoot} from 'react-dom/client';
 import {EmoteProviders, SettingIds} from '../../../constants.js';
 import settings from '../../../settings.js';
 import {createYoutubeEmojiNode} from '../../../utils/youtube.js';
 import EmoteWhisper from '../components/EmoteWhisper.jsx';
 import styles from './EmoteAutocomplete.module.css';
 
-let mountedNode;
+let mountedRoot;
 
 const CHAT_TEXT_AREA = 'div#input[contenteditable]';
 const EMOTE_AUTOCOMPLETE_CONTAINER_SELECTOR = 'div[data-a-target="bttv-autocomplete-matches-container"]';
@@ -66,25 +66,23 @@ export default class EmoteAutocomplete {
         chatElement.appendChild(whisperContainer);
       }
 
-      if (mountedNode != null) {
-        ReactDOM.unmountComponentAtNode(mountedNode);
+      if (mountedRoot != null) {
+        mountedRoot.unmount();
       }
 
-      ReactDOM.render(
+      mountedRoot = createRoot(whisperContainer);
+      mountedRoot.render(
         <EmoteWhisper
           boundingQuerySelector={CHAT_TEXT_AREA}
           chatInputElement={element}
           onComplete={this.replaceChatInputPartialEmote}
           getChatInputPartialEmote={this.getChatInputPartialEmote}
-        />,
-        whisperContainer
+        />
       );
-
-      mountedNode = whisperContainer;
     }
 
     if (!emoteAutocomplete && emoteAutcompleteContainer != null) {
-      ReactDOM.unmountComponentAtNode(mountedNode);
+      mountedRoot?.unmount();
     }
   }
 

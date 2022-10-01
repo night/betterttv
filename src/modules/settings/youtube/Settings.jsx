@@ -1,9 +1,9 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import {createRoot} from 'react-dom/client';
 import Modal from '../components/Window.jsx';
 import domObserver from '../../../observers/dom.js';
 import DropdownButton from './DropdownButton.jsx';
-import styles from './Settings.module.css';
+import './Settings.module.css';
 
 const CHAT_SETTINGS_DROPDOWN_CONTAINER_SELECTOR = 'tp-yt-iron-dropdown';
 const CHAT_SETTINGS_DROPDOWN_ITEMS_SELECTOR = 'tp-yt-paper-listbox';
@@ -16,8 +16,8 @@ function setHandleOpen(newHandleOpen) {
   handleOpen = newHandleOpen;
 }
 
-let mountedPanel;
-let mountedChatDropdownButton;
+let mountedPanelRoot;
+let mountedChatDropdownButtonRoot;
 
 export default class SettingsModule {
   constructor() {
@@ -56,12 +56,12 @@ export default class SettingsModule {
       panel.setAttribute('id', 'bttvSettingsPanel');
       document.querySelector('body').append(panel);
 
-      if (mountedPanel != null) {
-        ReactDOM.unmountComponentAtNode(mountedPanel);
+      if (mountedPanelRoot != null) {
+        mountedPanelRoot.unmount();
       }
 
-      ReactDOM.render(<Modal setHandleOpen={setHandleOpen} />, panel);
-      mountedPanel = panel;
+      mountedPanelRoot = createRoot(panel);
+      mountedPanelRoot.render(<Modal setHandleOpen={setHandleOpen} />);
     }
   }
 
@@ -78,11 +78,12 @@ export default class SettingsModule {
       dropdownButtonContainer.setAttribute('data-a-target', 'bttv-chat-dropdown-button-container');
       itemsContainer.appendChild(dropdownButtonContainer);
 
-      if (mountedChatDropdownButton != null) {
-        ReactDOM.unmountComponentAtNode(mountedChatDropdownButton);
+      if (mountedChatDropdownButtonRoot != null) {
+        mountedChatDropdownButtonRoot.unmount();
       }
 
-      ReactDOM.render(
+      mountedChatDropdownButtonRoot = createRoot(dropdownButtonContainer);
+      mountedChatDropdownButtonRoot.render(
         <DropdownButton
           onClick={() => {
             handleOpen(true);
@@ -93,11 +94,8 @@ export default class SettingsModule {
               menuButton.click();
             }
           }}
-        />,
-        dropdownButtonContainer
+        />
       );
-
-      mountedChatDropdownButton = dropdownButtonContainer;
     }
   }
 }
