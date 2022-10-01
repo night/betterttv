@@ -49,11 +49,9 @@ const LegacySettingIds = {
   HIDE_NEW_VIEWER_GREETING: 'hideNewViewerGreeting',
   HIDE_SUBSCRIPTION_NOTICES: 'hideSubscriptionNotices',
   HIDE_COMMUNITY_HIGHLIGHTS: 'hideCommunityHighlights',
-  HIDE_FRIENDS: 'hideFriends',
   HIDE_PRIME_PROMOTIONS: 'hidePrimePromotions',
   HIDE_FEATURED_CHANNELS: 'hideFeaturedChannels',
   AUTO_EXPAND_CHANNELS: 'autoExpandChannels',
-  HIDE_RECOMMENDED_FRIENDS: 'hideRecommendedFriends',
   HIDE_OFFLINE_FOLLOWED_CHANNELS: 'hideOfflineFollowedChannels',
   HOST_BUTTON: 'hostButton',
   HIDE_PLAYER_EXTENSIONS: 'hidePlayerExtensions',
@@ -131,24 +129,16 @@ function deserializeSettingForLegacy(data, settingId) {
     case SettingIds.VOD_RECOMMENDATION_AUTOPLAY:
       return !data[LegacySettingIds.DISABLE_VOD_RECOMMENDATION_AUTOPLAY];
     case SettingIds.SIDEBAR: {
-      const hideFriends = data[LegacySettingIds.HIDE_FRIENDS] || false;
       const hideFeaturedChannels = data[LegacySettingIds.HIDE_FEATURED_CHANNELS] || false;
-      const hideRecommendedFriends = data[LegacySettingIds.HIDE_RECOMMENDED_FRIENDS] || false;
       const hideOfflineFollowedChannels = data[LegacySettingIds.HIDE_OFFLINE_FOLLOWED_CHANNELS] || false;
       const autoExpand = data[LegacySettingIds.AUTO_EXPAND_CHANNELS] || false;
 
-      let flags = setFlag(0, SidebarFlags.FRIENDS, !hideFriends);
-      flags = setFlag(flags, SidebarFlags.FEATURED_CHANNELS, !hideFeaturedChannels);
-      flags = setFlag(flags, SidebarFlags.RECOMMENDED_FRIENDS, !hideRecommendedFriends);
+      let flags = setFlag(flags, SidebarFlags.FEATURED_CHANNELS, !hideFeaturedChannels);
       flags = setFlag(flags, SidebarFlags.OFFLINE_FOLLOWED_CHANNELS, !hideOfflineFollowedChannels);
       flags = setFlag(flags, SidebarFlags.AUTO_EXPAND_CHANNELS, autoExpand);
       return [
         flags,
-        SidebarFlags.FRIENDS |
-          SidebarFlags.FEATURED_CHANNELS |
-          SidebarFlags.RECOMMENDED_FRIENDS |
-          SidebarFlags.OFFLINE_FOLLOWED_CHANNELS |
-          SidebarFlags.AUTO_EXPAND_CHANNELS,
+        SidebarFlags.FEATURED_CHANNELS | SidebarFlags.OFFLINE_FOLLOWED_CHANNELS | SidebarFlags.AUTO_EXPAND_CHANNELS,
       ];
     }
     case SettingIds.EMOTES: {

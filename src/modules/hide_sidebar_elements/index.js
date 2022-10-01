@@ -14,13 +14,11 @@ class HideSidebarElementsModule {
     settings.on(`changed.${SettingIds.SIDEBAR}`, () => {
       this.toggleFeaturedChannels();
       this.toggleAutoExpandChannels();
-      this.toggleRecommendedFriends();
       this.toggleOfflineFollowedChannels();
     });
     watcher.on('load', () => {
       this.toggleFeaturedChannels();
       this.toggleAutoExpandChannels();
-      this.toggleRecommendedFriends();
       this.toggleOfflineFollowedChannels();
     });
   }
@@ -54,13 +52,6 @@ class HideSidebarElementsModule {
       if ($firstChannelLink.length === 0) return;
       $('.side-nav button[data-a-target="side-nav-show-more-button"]').first().trigger('click');
     }, 1000);
-  }
-
-  toggleRecommendedFriends() {
-    $('body').toggleClass(
-      'bttv-hide-recommended-friends',
-      !hasFlag(settings.get(SettingIds.SIDEBAR), SidebarFlags.RECOMMENDED_FRIENDS)
-    );
   }
 
   toggleOfflineFollowedChannels() {

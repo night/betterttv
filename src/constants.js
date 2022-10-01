@@ -15,7 +15,6 @@ export const SettingIds = {
   CHANNEL_POINTS_MESSAGE_HIGHLIGHTS: 'channelPointsMessageHighlights',
   EMOTE_MENU: 'clickTwitchEmotes',
   DARKENED_MODE: 'darkenedMode',
-  FRIENDS: 'friends',
   PRIME_PROMOTIONS: 'primePromotions',
   HOST_BUTTON: 'hostButton',
   PLAYER_EXTENSIONS: 'playerExtensions',
@@ -51,9 +50,9 @@ export const DeletedMessageTypes = {
 };
 
 export const SidebarFlags = {
-  FRIENDS: 1 << 0,
+  // 1 << 0: FRIENDS,
   FEATURED_CHANNELS: 1 << 1,
-  RECOMMENDED_FRIENDS: 1 << 2,
+  // 1 << 2: RECOMMENDED_FRIENDS,
   OFFLINE_FOLLOWED_CHANNELS: 1 << 3,
   AUTO_EXPAND_CHANNELS: 1 << 4,
 };
@@ -173,7 +172,6 @@ export const SettingDefaultValues = {
   [SettingIds.CHANNEL_POINTS_MESSAGE_HIGHLIGHTS]: true,
   [SettingIds.EMOTE_MENU]: false,
   [SettingIds.DARKENED_MODE]: false,
-  [SettingIds.FRIENDS]: true,
   [SettingIds.PRIME_PROMOTIONS]: true,
   [SettingIds.HOST_BUTTON]: false,
   [SettingIds.PLAYER_EXTENSIONS]: true,
@@ -183,13 +181,7 @@ export const SettingDefaultValues = {
   [SettingIds.EMOTE_AUTOCOMPLETE]: true,
   [SettingIds.BLACKLIST_KEYWORDS]: {},
   [SettingIds.HIGHLIGHT_KEYWORDS]: null,
-  [SettingIds.SIDEBAR]: [
-    SidebarFlags.FRIENDS |
-      SidebarFlags.OFFLINE_FOLLOWED_CHANNELS |
-      SidebarFlags.FEATURED_CHANNELS |
-      SidebarFlags.RECOMMENDED_FRIENDS,
-    0,
-  ],
+  [SettingIds.SIDEBAR]: [SidebarFlags.OFFLINE_FOLLOWED_CHANNELS | SidebarFlags.FEATURED_CHANNELS, 0],
   [SettingIds.EMOTES]: [EmoteTypeFlags.BTTV_EMOTES | EmoteTypeFlags.BTTV_GIF_EMOTES | EmoteTypeFlags.FFZ_EMOTES, 0],
   [SettingIds.CHAT]: [
     ChatFlags.BITS |
