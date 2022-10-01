@@ -133,7 +133,7 @@ function deserializeSettingForLegacy(data, settingId) {
       const hideOfflineFollowedChannels = data[LegacySettingIds.HIDE_OFFLINE_FOLLOWED_CHANNELS] || false;
       const autoExpand = data[LegacySettingIds.AUTO_EXPAND_CHANNELS] || false;
 
-      let flags = setFlag(flags, SidebarFlags.FEATURED_CHANNELS, !hideFeaturedChannels);
+      let flags = setFlag(0, SidebarFlags.FEATURED_CHANNELS, !hideFeaturedChannels);
       flags = setFlag(flags, SidebarFlags.OFFLINE_FOLLOWED_CHANNELS, !hideOfflineFollowedChannels);
       flags = setFlag(flags, SidebarFlags.AUTO_EXPAND_CHANNELS, autoExpand);
       return [
