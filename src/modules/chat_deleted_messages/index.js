@@ -39,8 +39,10 @@ class ChatDeletedMessagesModule {
         twitch.sendChatAdminMessage('Chat was cleared by a moderator (Prevented by BetterTTV)');
         preventDefault();
         break;
-      case twitch.TMIActionTypes.MODERATION:
-        if (this.handleDelete(message.userLogin || message.user.userLogin, message.targetMessageID)) {
+      case twitch.TMIActionTypes.MODERATION: {
+        const userLogin = message.userLogin || message.user.userLogin;
+        const targetMessageId = message.targetMessageID;
+        if (this.handleDelete(userLogin, targetMessageId)) {
           preventDefault();
           // we still want to render moderation messages
           const chatBuffer = twitch.getChatBuffer();
@@ -48,8 +50,11 @@ class ChatDeletedMessagesModule {
             chatBuffer.state.messages.push(message);
             chatBuffer.onBufferUpdate();
           }
+          // if messages are still in the buffer they might still render
+          setTimeout(() => this.handleDelete(userLogin, targetMessageId), 250);
         }
         break;
+      }
       default:
         break;
     }
