@@ -5,4 +5,18 @@
     display: flex;
     flex-direction: column-reverse;
   }
+
+  /* 
+    Vods don't use the normal chat component but a static UL which
+    lists the chat messages. Therefore it requires different handling
+  */
+  .video-chat__message-list-wrapper > div,
+  .video-chat__message-list-wrapper > div > ul {
+    flex-direction: column-reverse !important;
+    justify-content: flex-end !important;
+  }
+
+  .video-chat__message-list-wrapper > div > ul {
+    flex-wrap: nowrap !important;
+  }
 }
