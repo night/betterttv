@@ -145,7 +145,7 @@ function ActionCell({rowData, dataKey, onClick, ...props}) {
 }
 
 function EditTable({options, setValue, value, ...props}) {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -153,36 +153,40 @@ function EditTable({options, setValue, value, ...props}) {
     setTimeout(() => {
       setData(value || {});
       setLoading(false);
-    }, 500);
+    }, 300);
   }, []);
 
-  useEffect(() => {
-    if (loading) return;
-    setValue(data);
-  }, [data]);
+  function handleUpdateData() {
+    const newData = {...data};
+    setData(newData);
+    setValue(newData);
+  }
 
   function handleChange(id, key, newValue) {
     data[id][key] = newValue;
-    setData({...data});
+    handleUpdateData();
   }
 
-  function handleDeleteState(id) {
+  function handleDeleteState(id, update = true) {
     delete data[id];
-    setData({...data});
+    if (update) {
+      handleUpdateData();
+    }
   }
 
   function handleHoveringState(id) {
     data[id].status = data[id].status ? null : Status.HOVERING;
-    setData({...data});
+    handleUpdateData();
   }
 
   function handleEditState(id) {
     data[id].status = data[id].status !== Status.EDIT ? Status.EDIT : null;
-    setData({...data});
+    handleUpdateData();
   }
 
   function nextId() {
-    return parseInt(Object.keys(data)[Object.keys(data).length - 1], 10) + 1 || 0;
+    const dataKeys = Object.keys(data);
+    return parseInt(dataKeys[dataKeys.length - 1], 10) + 1 || 0;
   }
 
   function createRow() {
@@ -208,7 +212,7 @@ function EditTable({options, setValue, value, ...props}) {
   function handleAddEmptyRow() {
     const newRow = createRow();
     data[newRow.id] = newRow;
-    setData({...data});
+    handleUpdateData();
   }
 
   function handlePaste(event, id, dataKey) {
@@ -220,7 +224,7 @@ function EditTable({options, setValue, value, ...props}) {
 
     if (lines.length <= 1) return;
 
-    handleDeleteState(id);
+    handleDeleteState(id, false);
 
     for (const line of lines) {
       const row = createRow();
@@ -228,13 +232,15 @@ function EditTable({options, setValue, value, ...props}) {
       data[row.id] = row;
     }
 
-    setData({...data});
+    handleUpdateData();
   }
+
+  const dataValues = Object.values(data);
 
   return (
     <>
-      {Object.values(data).length > 0 && (
-        <Table data={Object.values(data)} {...props} loading={loading} className={styles.table}>
+      {dataValues.length > 0 ? (
+        <Table data={dataValues} {...props} loading={loading} className={styles.table}>
           {options.map((key) => {
             switch (key.type) {
               case Types.STRING:
@@ -279,7 +285,7 @@ function EditTable({options, setValue, value, ...props}) {
             <ActionCell dataKey="id" onClick={(...args) => handleDeleteState(...args)} />
           </Column>
         </Table>
-      )}
+      ) : null}
       <IconButton
         appearance="primary"
         onClick={() => handleAddEmptyRow()}
