@@ -53,7 +53,7 @@ const LegacySettingIds = {
   HIDE_FEATURED_CHANNELS: 'hideFeaturedChannels',
   AUTO_EXPAND_CHANNELS: 'autoExpandChannels',
   HIDE_OFFLINE_FOLLOWED_CHANNELS: 'hideOfflineFollowedChannels',
-  HOST_BUTTON: 'hostButton',
+  HOST_BUTTON: 'hostButton', // REMOVED, FOR REFERENCE ONLY
   HIDE_PLAYER_EXTENSIONS: 'hidePlayerExtensions',
   CLICK_TO_PLAY: 'clickToPlay',
   DISABLE_VOD_RECOMMENDATION_AUTOPLAY: 'disableVodRecommendationAutoplay',
