@@ -10,7 +10,6 @@ const CHAT_LINE_LINK_SELECTOR = 'a.link-fragment';
 const CHAT_LINE_CLIP_CARD_SELECTOR = '.chat-card';
 const CHAT_LINE_DELETED_CLASS = 'bttv-chat-line-deleted';
 
-
 function findAllUserMessages(name, targetMessageId) {
   return Array.from(document.querySelectorAll(CHAT_LINE_SELECTOR)).filter((node) => {
     const message = twitch.getChatMessageObject(node);
