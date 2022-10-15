@@ -9,6 +9,7 @@ const REACT_ROOT = '#root';
 const CHAT_CONTAINER = 'section[data-test-selector="chat-room-component-layout"]';
 const VOD_CHAT_CONTAINER = '.qa-vod-chat,.va-vod-chat';
 const CHAT_LIST = '.chat-list,.chat-list--default,.chat-list--other';
+const VOD_CHAT_LIST = '.chat-shell';
 const PLAYER = 'div[data-a-target="player-overlay-click-handler"]';
 const CLIPS_BROADCASTER_INFO = '.clips-broadcaster-info';
 const CHAT_MESSAGE_SELECTOR = '.chat-line__message';
@@ -357,6 +358,20 @@ export default {
       const node = searchReactChildren(
         getReactInstance($(CHAT_LIST)[0]),
         (n) => n.stateNode && n.stateNode.props && n.stateNode.scrollRef
+      );
+      chatScroller = node.stateNode;
+    } catch (_) {}
+
+    return chatScroller;
+  },
+
+  getVodChatScroller() {
+    let chatScroller;
+    try {
+      const node = searchReactChildren(
+        getReactInstance($(VOD_CHAT_LIST)[0]),
+        (n) => n.stateNode && n.stateNode.atBottom,
+        30
       );
       chatScroller = node.stateNode;
     } catch (_) {}
