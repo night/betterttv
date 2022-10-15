@@ -22,7 +22,7 @@ function findAllUserMessages(name, targetMessageId) {
     if (node.classList.contains(CHAT_LINE_DELETED_CLASS)) {
       return false;
     }
-    return message.user.userLogin === name && (!targetMessageId || targetMessageId === message.id);
+    return message.user?.userLogin === name && (!targetMessageId || targetMessageId === message.id);
   });
 }
 
