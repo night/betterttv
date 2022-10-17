@@ -54,7 +54,7 @@
     "fuse.js": "6.6.2",
     "git-rev-sync": "3.0.2",
     "glob": "8.0.3",
-    "got": "12.5.1",
+    "got": "12.5.2",
     "graphql-tag": "2.12.6",
     "import-glob-loader": "1.1.0",
     "jquery": "3.6.1",
