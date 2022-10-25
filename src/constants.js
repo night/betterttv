@@ -16,7 +16,7 @@ export const SettingIds = {
   EMOTE_MENU: 'clickTwitchEmotes',
   DARKENED_MODE: 'darkenedMode',
   PRIME_PROMOTIONS: 'primePromotions',
-  HOST_BUTTON: 'hostButton',
+  // HOST_BUTTON: 'hostButton', REMOVED, FOR REFERENCE ONLY
   PLAYER_EXTENSIONS: 'playerExtensions',
   CLICK_TO_PLAY: 'clickToPlay',
   EMOTE_AUTOCOMPLETE: 'emoteAutocomplete',
