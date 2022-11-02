@@ -16,7 +16,7 @@ export const SettingIds = {
   EMOTE_MENU: 'clickTwitchEmotes',
   DARKENED_MODE: 'darkenedMode',
   PRIME_PROMOTIONS: 'primePromotions',
-  HOST_BUTTON: 'hostButton',
+  // HOST_BUTTON: 'hostButton', REMOVED, FOR REFERENCE ONLY
   PLAYER_EXTENSIONS: 'playerExtensions',
   CLICK_TO_PLAY: 'clickToPlay',
   EMOTE_AUTOCOMPLETE: 'emoteAutocomplete',
@@ -173,7 +173,6 @@ export const SettingDefaultValues = {
   [SettingIds.EMOTE_MENU]: false,
   [SettingIds.DARKENED_MODE]: false,
   [SettingIds.PRIME_PROMOTIONS]: true,
-  [SettingIds.HOST_BUTTON]: false,
   [SettingIds.PLAYER_EXTENSIONS]: true,
   [SettingIds.CLICK_TO_PLAY]: false,
   [SettingIds.MUTE_INVISIBLE_PLAYER]: false,

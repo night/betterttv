@@ -53,7 +53,6 @@ const LegacySettingIds = {
   HIDE_FEATURED_CHANNELS: 'hideFeaturedChannels',
   AUTO_EXPAND_CHANNELS: 'autoExpandChannels',
   HIDE_OFFLINE_FOLLOWED_CHANNELS: 'hideOfflineFollowedChannels',
-  HOST_BUTTON: 'hostButton',
   HIDE_PLAYER_EXTENSIONS: 'hidePlayerExtensions',
   CLICK_TO_PLAY: 'clickToPlay',
   DISABLE_VOD_RECOMMENDATION_AUTOPLAY: 'disableVodRecommendationAutoplay',
@@ -90,8 +89,6 @@ function deserializeSettingForLegacy(data, settingId) {
       return !!data[LegacySettingIds.EMOTE_MENU];
     case SettingIds.DARKENED_MODE:
       return !!data[LegacySettingIds.DARKENED_MODE];
-    case SettingIds.HOST_BUTTON:
-      return !!data[LegacySettingIds.HOST_BUTTON];
     case SettingIds.CLICK_TO_PLAY:
       return !!data[LegacySettingIds.CLICK_TO_PLAY];
     case SettingIds.MUTE_INVISIBLE_PLAYER:
