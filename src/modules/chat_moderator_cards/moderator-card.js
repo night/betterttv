@@ -62,9 +62,8 @@ const userStatsItemTemplate = (icon, value) => `
   </div>
 `;
 
-const userStatsTemplate = (views, follows, createdAt) => `
+const userStatsTemplate = (follows, createdAt) => `
   <div class="bttv-moderator-card-user-stats">
-    ${userStatsItemTemplate(Icons.EYE, views.toLocaleString())}
     ${userStatsItemTemplate(Icons.HEART, follows.toLocaleString())}
     ${userStatsItemTemplate(Icons.BIRTHDAY_CAKE, dayjs(createdAt).format('MMM D, YYYY'))}
   </div>
@@ -134,7 +133,6 @@ class ModeratorCard {
         user(id: $userId) {
           id
           createdAt
-          profileViewCount
           followers(first: 1) {
             totalCount
           }
@@ -147,9 +145,9 @@ class ModeratorCard {
       .then(
         ({
           data: {
-            user: {profileViewCount, followers, createdAt},
+            user: {followers, createdAt},
           },
-        }) => userStatsTemplate(profileViewCount, followers.totalCount, createdAt)
+        }) => userStatsTemplate(followers.totalCount, createdAt)
       )
       .then((statsHTML) => $(statsHTML).appendTo($overlay));
   }
