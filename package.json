@@ -67,7 +67,7 @@
     "lodash.throttle": "4.1.1",
     "lodash.uniqby": "4.7.0",
     "mini-css-extract-plugin": "2.7.1",
-    "postcss": "8.4.19",
+    "postcss": "8.4.20",
     "postcss-hexrgba": "2.1.0",
     "postcss-loader": "7.0.2",
     "postcss-url": "10.1.3",
