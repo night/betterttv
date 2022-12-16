@@ -70,6 +70,7 @@ const fuse = new Fuse([], {
   threshold: 0.3,
 });
 
+const registeredProviderCategories = [];
 let providerCategories = [];
 let platformCategories = [];
 
@@ -112,7 +113,12 @@ class EmoteMenuViewStore extends SafeEventEmitter {
     this.markDirty(false);
   }
 
-  async updateProviders() {
+  async registerProvider(provider) {
+    registeredProviderCategories.push(provider);
+    this.updateProviders(true);
+  }
+
+  async updateProviders(forceUpdate = false) {
     const currentChannel = getCurrentChannel();
     const betterttvChannelEmotes = emotes.getEmotesByCategories([EmoteCategories.BETTERTTV_CHANNEL]);
     const frankerfacezChannelEmotes = emotes.getEmotesByCategories([EmoteCategories.FRANKERFACEZ_CHANNEL]);
@@ -169,7 +175,26 @@ class EmoteMenuViewStore extends SafeEventEmitter {
         emotes.getEmotesByCategories([EmoteCategories.FRANKERFACEZ_GLOBAL])
       ),
     ];
-    this.markDirty(false);
+
+    for (const provider of registeredProviderCategories) {
+      if (provider?.channel != null && provider?.channel !== currentChannel?.id) {
+        continue;
+      }
+
+      const category = createCategory(
+        provider.id,
+        provider.provider,
+        provider.displayName,
+        provider.channel == null
+          ? Icons.IMAGE(provider.icon.src, provider.icon.alt)
+          : Icons.IMAGE(provider.icon.src, provider.icon.alt, currentChannelProfilePicture),
+        provider.emotes
+      );
+
+      providerCategories.push(category);
+    }
+
+    this.markDirty(forceUpdate);
   }
 
   search(search) {
