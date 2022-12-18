@@ -70,9 +70,10 @@ const fuse = new Fuse([], {
   threshold: 0.3,
 });
 
-const registeredProviderCategories = [];
 let providerCategories = [];
 let platformCategories = [];
+
+const registeredProviderCategories = [];
 
 export const CategoryPositions = {
   BOTTOM: 0,
@@ -113,12 +114,17 @@ class EmoteMenuViewStore extends SafeEventEmitter {
     this.markDirty(false);
   }
 
-  async registerProvider(provider) {
-    registeredProviderCategories.push(provider);
-    this.updateProviders(true);
+  async upsertRegisteredProviderCategory(provider) {
+    registeredProviderCategories[provider.id] = provider;
+    this.updateProviders();
   }
 
-  async updateProviders(forceUpdate = false) {
+  async deleteRegisteredProviderCategory({id}) {
+    delete registeredProviderCategories[id];
+    this.updateProviders();
+  }
+
+  async updateProviders() {
     const currentChannel = getCurrentChannel();
     const betterttvChannelEmotes = emotes.getEmotesByCategories([EmoteCategories.BETTERTTV_CHANNEL]);
     const frankerfacezChannelEmotes = emotes.getEmotesByCategories([EmoteCategories.FRANKERFACEZ_CHANNEL]);
@@ -176,11 +182,10 @@ class EmoteMenuViewStore extends SafeEventEmitter {
       ),
     ];
 
-    for (const provider of registeredProviderCategories) {
+    for (const provider of Object.values(registeredProviderCategories)) {
       if (provider?.channel != null && provider?.channel !== currentChannel?.id) {
         continue;
       }
-
       const category = createCategory(
         provider.id,
         provider.provider,
@@ -190,11 +195,10 @@ class EmoteMenuViewStore extends SafeEventEmitter {
           : Icons.IMAGE(provider.icon.src, provider.icon.alt, currentChannelProfilePicture),
         provider.emotes
       );
-
       providerCategories.push(category);
     }
 
-    this.markDirty(forceUpdate);
+    this.markDirty(false);
   }
 
   search(search) {
