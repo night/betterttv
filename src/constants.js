@@ -50,6 +50,7 @@ export const DeletedMessageTypes = {
   DEFAULT: 0,
   SHOW: 1,
   HIDE: 2,
+  HIGHLIGHT: 3,
 };
 
 export const SidebarFlags = {
