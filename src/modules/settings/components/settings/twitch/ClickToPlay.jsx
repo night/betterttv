@@ -12,7 +12,7 @@ function ClickToPlay() {
   return (
     <Panel header="Click to Play">
       <div className={styles.settingRow}>
-        <p className={styles.settingDescription}>Enables clicking on the Twitch player to pause/resume playback</p>
+        <p className={styles.settingDescription}>Enable clicking on the Twitch player to pause/resume playback</p>
         <Toggle checked={value} onChange={(state) => setValue(state)} />
       </div>
     </Panel>

@@ -6,22 +6,22 @@ import {SettingIds, CategoryTypes} from '../../../../../constants.js';
 import styles from '../../../styles/header.module.css';
 import useStorageState from '../../../../../common/hooks/StorageState.jsx';
 
-function AutoTheatreMode() {
-  const [value, setValue] = useStorageState(SettingIds.AUTO_THEATRE_MODE);
+function AutoJoinRaids() {
+  const [value, setValue] = useStorageState(SettingIds.AUTO_JOIN_RAIDS);
 
   return (
-    <Panel header="Auto Theatre Mode">
+    <Panel header="Auto Join Raids">
       <div className={styles.settingRow}>
-        <p className={styles.settingDescription}>Enable theatre mode automatically</p>
+        <p className={styles.settingDescription}>Join raids automatically</p>
         <Toggle checked={value} onChange={(state) => setValue(state)} />
       </div>
     </Panel>
   );
 }
 
-registerComponent(AutoTheatreMode, {
-  settingId: SettingIds.AUTO_THEATRE_MODE,
-  name: 'Auto Theatre Mode',
+export default registerComponent(AutoJoinRaids, {
+  settingId: SettingIds.AUTO_JOIN_RAIDS,
+  name: 'Auto Join Raids',
   category: CategoryTypes.CHANNEL,
-  keywords: ['auto', 'theatre', 'mode'],
+  keywords: ['auto', 'join', 'raids'],
 });

@@ -14,7 +14,7 @@ function PinnedHighlights() {
   return (
     <Panel header="Pinned Highlights">
       <div className={styles.settingRow}>
-        <p className={styles.settingDescription}>Pins your highlighted messages above chat</p>
+        <p className={styles.settingDescription}>Pin your highlighted messages above chat</p>
         <Toggle checked={value} onChange={setValue} />
       </div>
       <div className={styles.settingRow}>
