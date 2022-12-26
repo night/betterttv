@@ -12,7 +12,7 @@ function AnonChat() {
   return (
     <Panel header="Anon Chat">
       <div className={styles.settingRow}>
-        <p className={styles.settingDescription}>Joins chat anonymously without appearing in the userlist</p>
+        <p className={styles.settingDescription}>Join chat anonymously without appearing in the userlist</p>
         <Toggle checked={value} onChange={(state) => setValue(state)} />
       </div>
     </Panel>

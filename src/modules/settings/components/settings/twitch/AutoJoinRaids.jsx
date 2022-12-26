@@ -11,8 +11,8 @@ function AutoJoinRaids() {
 
   return (
     <Panel header="Auto Join Raids">
-      <div className={styles.settingToggle}>
-        <p className={styles.settingDescription}>Joins raids automatically</p>
+      <div className={styles.settingRow}>
+        <p className={styles.settingDescription}>Join raids automatically</p>
         <Toggle checked={value} onChange={(state) => setValue(state)} />
       </div>
     </Panel>

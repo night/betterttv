@@ -12,7 +12,7 @@ function ReverseChatDirection() {
   return (
     <Panel header="Reverse Chat Direction">
       <div className={styles.settingRow}>
-        <p className={styles.settingDescription}>Moves new chat messages to the top of chat</p>
+        <p className={styles.settingDescription}>Move new chat messages to the top of chat</p>
         <Toggle checked={value} onChange={(state) => setValue(state)} />
       </div>
     </Panel>

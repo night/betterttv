@@ -12,7 +12,7 @@ function ScrollVolumeControl() {
   return (
     <Panel header="Scroll Volume Control">
       <div className={styles.settingRow}>
-        <p className={styles.settingDescription}>Enables scrolling the twitch player to change the player volume</p>
+        <p className={styles.settingDescription}>Enable scrolling the Twitch player to change the player volume</p>
         <Toggle checked={value} onChange={(state) => setValue(state)} />
       </div>
     </Panel>

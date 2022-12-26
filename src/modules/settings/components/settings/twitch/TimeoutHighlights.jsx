@@ -12,7 +12,7 @@ function TimeoutHighlights() {
   return (
     <Panel header="Timeout Highlights">
       <div className={styles.settingRow}>
-        <p className={styles.settingDescription}>Hides pinned highlights after 1 minute</p>
+        <p className={styles.settingDescription}>Hide pinned highlights after 1 minute</p>
         <Toggle checked={value} onChange={(state) => setValue(state)} />
       </div>
     </Panel>
