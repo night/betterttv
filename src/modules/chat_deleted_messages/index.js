@@ -4,6 +4,7 @@ import twitch from '../../utils/twitch.js';
 import settings from '../../settings.js';
 import {DeletedMessageTypes, PlatformTypes, SettingIds} from '../../constants.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
+import ChatHighlightBlacklistKeywords from '../chat_highlight_blacklist_keywords/index.js';
 
 const CHAT_LINE_SELECTOR = '.chat-line__message';
 const CHAT_LINE_LINK_SELECTOR = 'a.link-fragment';
@@ -70,6 +71,7 @@ class ChatDeletedMessagesModule {
     const messages = findAllUserMessages(name, targetMessageId);
     messages.forEach((message) => {
       const $message = $(message);
+      // eslint-disable-next-line default-case
       switch (deletedMessages) {
         case DeletedMessageTypes.HIDE:
           $message.hide();
@@ -77,7 +79,7 @@ class ChatDeletedMessagesModule {
         case DeletedMessageTypes.HIGHLIGHT:
         case DeletedMessageTypes.SHOW:
           if (deletedMessages === DeletedMessageTypes.HIGHLIGHT) {
-            $message.addClass('bttv-highlighted');
+            ChatHighlightBlacklistKeywords.markHighlighted($message);
           }
           $message.toggleClass(CHAT_LINE_DELETED_CLASS, true);
           /* eslint-disable-next-line func-names */
