@@ -1,6 +1,6 @@
 import React from 'react';
-import Panel from 'rsuite/lib/Panel/index.js';
-import Toggle from 'rsuite/lib/Toggle/index.js';
+import Panel from 'rsuite/Panel';
+import Toggle from 'rsuite/Toggle';
 import {registerComponent} from '../../Store.jsx';
 import {SettingIds, CategoryTypes} from '../../../../../constants.js';
 import styles from '../../../styles/header.module.css';
@@ -11,8 +11,8 @@ function AutoJoinRaids() {
 
   return (
     <Panel header="Auto Join Raids">
-      <div className={styles.toggle}>
-        <p className={styles.description}>Joins raids automatically.</p>
+      <div className={styles.settingToggle}>
+        <p className={styles.settingDescription}>Joins raids automatically</p>
         <Toggle checked={value} onChange={(state) => setValue(state)} />
       </div>
     </Panel>
@@ -22,6 +22,6 @@ function AutoJoinRaids() {
 export default registerComponent(AutoJoinRaids, {
   settingId: SettingIds.AUTO_JOIN_RAIDS,
   name: 'Auto Join Raids',
-  category: CategoryTypes.CHAT,
+  category: CategoryTypes.CHANNEL,
   keywords: ['auto', 'join', 'raids'],
 });
