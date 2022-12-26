@@ -15,7 +15,8 @@
 
 .bttv-moderator-card-user-stats {
   color: white;
-  padding-bottom: 10px;
+  padding-top: 8px;
+  padding-bottom: 8px;
   background-color: rgba(0, 0, 0, 0.6);
   display: flex !important;
   width: 100% !important;
