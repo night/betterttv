@@ -7,12 +7,14 @@ import styles from '../../../styles/header.module.css';
 import useStorageState from '../../../../../common/hooks/StorageState.jsx';
 
 function ScrollVolumeControl() {
-  const [value, setValue] = useStorageState(SettingIds.SCROLL_VOLUME_CONTROL);
+  const [value, setValue] = useStorageState(SettingIds.SCROLL_PLAYER_CONTROLS);
 
   return (
-    <Panel header="Scroll Volume Control">
+    <Panel header="Scroll Player Controls">
       <div className={styles.settingRow}>
-        <p className={styles.settingDescription}>Enable scrolling the Twitch player to change the player volume</p>
+        <p className={styles.settingDescription}>
+          Enable scrolling the Twitch player to change the player volume. Hold ALT when scrolling to seek.
+        </p>
         <Toggle checked={value} onChange={(state) => setValue(state)} />
       </div>
     </Panel>
@@ -20,8 +22,8 @@ function ScrollVolumeControl() {
 }
 
 registerComponent(ScrollVolumeControl, {
-  settingId: SettingIds.SCROLL_VOLUME_CONTROL,
-  name: 'Scroll Volume Control',
-  category: CategoryTypes.CHAT,
-  keywords: ['volume', 'control', 'scroll'],
+  settingId: SettingIds.SCROLL_PLAYER_CONTROLS,
+  name: 'Scroll Player Controls',
+  category: CategoryTypes.CHANNEL,
+  keywords: ['volume', 'seek', 'control', 'scroll'],
 });

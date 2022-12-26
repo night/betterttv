@@ -59,15 +59,11 @@ function handlePlayerClick() {
 }
 
 function maybeSeek(event) {
-  if (!settings.get(SettingIds.SCROLL_VIDEO_SEEK)) return;
-  // Non-Alt scrolling controls volume
-  if (!event.altKey) return;
-
   // Default seek time is 2 seconds for VODs
   const delta = event.originalEvent.deltaY > 0 ? -2 : 2;
 
   const currentPlayer = twitch.getCurrentPlayer();
-  if (!currentPlayer) return;
+  if (!currentPlayer || currentPlayer.getDuration() === Infinity) return;
 
   currentPlayer.seekTo(currentPlayer.getPosition() + delta);
 
@@ -76,14 +72,12 @@ function maybeSeek(event) {
 }
 
 function maybeControlVolume(event) {
-  if (!settings.get(SettingIds.SCROLL_VOLUME_CONTROL)) return;
-  // Alt scrolling controls video seeking
-  if (event.altKey) return;
-
   const delta = event.originalEvent.deltaY > 0 ? -0.025 : 0.025;
 
   const currentPlayer = twitch.getCurrentPlayer();
   if (!currentPlayer) return;
+
+  console.log(currentPlayer);
 
   currentPlayer.setVolume(Math.min(Math.max(currentPlayer.getVolume() + delta, 0), 1));
 
@@ -91,12 +85,15 @@ function maybeControlVolume(event) {
   event.stopPropagation();
 }
 
-const scrollCallbacks = [];
-
 function handlePlayerScroll(event) {
-  scrollCallbacks.forEach(
-      (scrollCb) => scrollCb(event)
-  );
+  if (!settings.get(SettingIds.SCROLL_PLAYER_CONTROLS)) return;
+
+  // Alt scrolling controls video seeking
+  if (event.altKey) {
+    maybeSeek(event);
+  } else {
+    maybeControlVolume(event);
+  }
 }
 
 function togglePlayerCursor(hide) {
@@ -139,18 +136,10 @@ function togglePictureInPicture() {
 
 class VideoPlayerModule {
   constructor() {
-    watcher.on('load.vod', () => {
-      this.loadScrollControl();
-      scrollCallbacks.push(maybeSeek);
-    });
-
     watcher.on('load.player', () => {
       this.clickToPause();
       watchPlayerRecommendationVodsAutoplay();
-
       this.loadScrollControl();
-      scrollCallbacks.push(maybeControlVolume);
-
       this.loadPictureInPicture();
     });
     settings.on(`changed.${SettingIds.PLAYER_EXTENSIONS}`, () => this.toggleHidePlayerExtensions());
