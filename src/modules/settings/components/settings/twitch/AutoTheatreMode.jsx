@@ -11,8 +11,8 @@ function AutoTheatreMode() {
 
   return (
     <Panel header="Auto Theatre Mode">
-      <div className={styles.toggle}>
-        <p className={styles.description}>Enables theatre mode by default</p>
+      <div className={styles.settingRow}>
+        <p className={styles.settingDescription}>Enables theatre mode by default</p>
         <Toggle checked={value} onChange={(state) => setValue(state)} />
       </div>
     </Panel>

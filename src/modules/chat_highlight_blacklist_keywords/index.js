@@ -17,7 +17,6 @@ const VOD_CHAT_MESSAGE_SELECTOR = 'div[data-test-selector="comment-message-selec
 const VOD_CHAT_MESSAGE_EMOTE_SELECTOR = '.chat-line__message--emote';
 const PINNED_HIGHLIGHT_ID = 'bttv-pinned-highlight';
 const PINNED_CONTAINER_ID = 'bttv-pin-container';
-const MAXIMUM_PIN_COUNT = 10;
 const PINNED_HIGHLIGHT_TIMEOUT = 60 * 1000;
 
 const pinnedHighlightTemplate = ({timestamp, from, message}) => `
@@ -277,7 +276,7 @@ class ChatHighlightBlacklistKeywordsModule {
   pinHighlight({from, message, date}) {
     if (settings.get(SettingIds.PINNED_HIGHLIGHTS) === false || !$pinnedHighlightsContainer) return;
 
-    if ($pinnedHighlightsContainer.children().length + 1 > MAXIMUM_PIN_COUNT) {
+    if ($pinnedHighlightsContainer.children().length + 1 > settings.get(SettingIds.MAX_PINNED_HIGHLIGHTS)) {
       $pinnedHighlightsContainer.children().first().remove();
     }
 

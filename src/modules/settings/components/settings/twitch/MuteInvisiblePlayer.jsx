@@ -11,8 +11,8 @@ function MuteInvisiblePlayer() {
 
   return (
     <Panel header="Mute Invisible Player">
-      <div className={styles.toggle}>
-        <p className={styles.description}>
+      <div className={styles.settingRow}>
+        <p className={styles.settingDescription}>
           Mutes/unmutes streams automatically when you change your browser window/tab
         </p>
         <Toggle checked={value} onChange={(state) => setValue(state)} />

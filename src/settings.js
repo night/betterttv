@@ -17,11 +17,13 @@ class TempValue {
 class Settings extends SafeEventEmitter {
   constructor() {
     super();
-    settings = storage.get(SETTINGS_STORAGE_KEY);
 
-    if (settings == null || (settings != null && settings.version == null)) {
-      const oldSettings = settings != null ? settings : SettingDefaultValues;
-      settings = {...oldSettings, version: process.env.EXT_VER};
+    const defaultSettings = {...SettingDefaultValues};
+    const oldSettings = storage.get(SETTINGS_STORAGE_KEY);
+    settings = {...defaultSettings, ...oldSettings};
+
+    if (oldSettings == null || (oldSettings != null && oldSettings.version == null)) {
+      settings = {...settings, version: process.env.EXT_VER};
       storage.set(SETTINGS_STORAGE_KEY, settings);
     }
 

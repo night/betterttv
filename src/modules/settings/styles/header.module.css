@@ -36,7 +36,7 @@
   row-gap: 16px;
 }
 
-.description {
+.settingDescription {
   color: var(--bttv-rs-text-secondary);
 }
 
@@ -59,9 +59,17 @@
   padding-top: 50px;
 }
 
-.toggle {
+.settingRow {
   display: flex;
   vertical-align: middle;
   align-items: center;
   justify-content: space-between;
+
+  + .settingRow {
+    margin-top: 8px;
+  }
+}
+
+.settingInputNumber {
+  width: 72px;
 }

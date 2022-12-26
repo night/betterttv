@@ -14,25 +14,27 @@ function DeletedMessagesModule() {
   return (
     <Panel header="Deleted Messages">
       <div className={styles.setting}>
-        <p className={styles.description}>How should deleted messages be handled.</p>
+        <p className={styles.settingDescription}>How should deleted messages be handled.</p>
         <FormGroup controlId="radioList">
           <RadioGroup name="radioList" value={value} onChange={(state) => setValue(state)}>
             <Radio key="default" value={DeletedMessageTypes.DEFAULT}>
               <div>
                 <p className={styles.heading}>Default</p>
-                <p className={styles.description}>Do what twitch normally does.</p>
+                <p className={styles.settingDescription}>Do what twitch normally does.</p>
               </div>
             </Radio>
             <Radio key="hideDeletedMessages" value={DeletedMessageTypes.HIDE}>
               <div>
                 <p className={styles.heading}>Hide Deleted Messages</p>
-                <p className={styles.description}>Completely removes timed out messages from view.</p>
+                <p className={styles.settingDescription}>Completely removes timed out messages from view.</p>
               </div>
             </Radio>
             <Radio key="showDeletedMessages" value={DeletedMessageTypes.SHOW}>
               <div>
                 <p className={styles.heading}>Show Deleted Messages</p>
-                <p className={styles.description}>{"Changes <message deleted> back to users' original messages."}</p>
+                <p className={styles.settingDescription}>
+                  {"Changes <message deleted> back to users' original messages."}
+                </p>
               </div>
             </Radio>
           </RadioGroup>

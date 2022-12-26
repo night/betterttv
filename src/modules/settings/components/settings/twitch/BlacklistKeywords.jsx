@@ -13,7 +13,7 @@ function BlacklistKeywords() {
   return (
     <Panel header="Blacklist Keywords">
       <div className={styles.setting}>
-        <p className={styles.description}>Removes certain words, phrases or users from your chat.</p>
+        <p className={styles.settingDescription}>Removes certain words, phrases or users from your chat.</p>
         <Table
           autoHeight
           options={[

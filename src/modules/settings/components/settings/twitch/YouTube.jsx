@@ -92,8 +92,8 @@ function YouTube() {
 
   return (
     <Panel header="YouTube (beta)">
-      <div className={styles.toggle}>
-        <p className={styles.description}>Shows BetterTTV emotes on YouTube Live Chat</p>
+      <div className={styles.settingRow}>
+        <p className={styles.settingDescription}>Shows BetterTTV emotes on YouTube Live Chat</p>
         <Toggle disabled={loading || value} checked={value} onChange={() => requestPermission()} />
       </div>
     </Panel>

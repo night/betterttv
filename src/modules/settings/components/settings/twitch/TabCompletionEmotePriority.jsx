@@ -11,8 +11,8 @@ function TabCompletionEmotePriority() {
 
   return (
     <Panel header="Tab Completion Emote Priority">
-      <div className={styles.toggle}>
-        <p className={styles.description}>Prioritizes emotes over usernames when using tab completion</p>
+      <div className={styles.settingRow}>
+        <p className={styles.settingDescription}>Prioritizes emotes over usernames when using tab completion</p>
         <Toggle checked={value} onChange={(state) => setValue(state)} />
       </div>
     </Panel>
