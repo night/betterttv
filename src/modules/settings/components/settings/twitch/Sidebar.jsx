@@ -28,7 +28,9 @@ function SidebarComponent() {
           </Checkbox>
           <Checkbox key="autoExpandChannels" value={SidebarFlags.AUTO_EXPAND_CHANNELS}>
             <p className={styles.heading}>Auto-Expand Channels</p>
-            <p className={styles.settingDescription}>Clicks the Load More followed channels button in the sidebar for you</p>
+            <p className={styles.settingDescription}>
+              Clicks the Load More followed channels button in the sidebar for you
+            </p>
           </Checkbox>
         </CheckboxGroup>
       </div>

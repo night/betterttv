@@ -12,7 +12,9 @@ function SplitChat() {
   return (
     <Panel header="Split Chat">
       <div className={styles.settingRow}>
-        <p className={styles.settingDescription}>Alternates backgrounds between messages in chat to improve readability</p>
+        <p className={styles.settingDescription}>
+          Alternates backgrounds between messages in chat to improve readability
+        </p>
         <Toggle checked={value} onChange={(state) => setValue(state)} />
       </div>
     </Panel>

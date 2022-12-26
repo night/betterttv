@@ -32,7 +32,9 @@ function DeletedMessagesModule() {
             <Radio key="showDeletedMessages" value={DeletedMessageTypes.SHOW}>
               <div>
                 <p className={styles.heading}>Show Deleted Messages</p>
-                <p className={styles.settingDescription}>{"Changes <message deleted> back to users' original messages."}</p>
+                <p className={styles.settingDescription}>
+                  {"Changes <message deleted> back to users' original messages."}
+                </p>
               </div>
             </Radio>
           </RadioGroup>

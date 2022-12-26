@@ -24,7 +24,9 @@ function EmotesModule() {
           </Checkbox>
           <Checkbox key="bttvGifEmotes" value={EmoteTypeFlags.BTTV_GIF_EMOTES}>
             <p className={styles.heading}>BetterTTV Animated Emotes</p>
-            <p className={styles.settingDescription}>Adds animated emotes (not everyone likes GIFs, but some people do)</p>
+            <p className={styles.settingDescription}>
+              Adds animated emotes (not everyone likes GIFs, but some people do)
+            </p>
           </Checkbox>
           <Checkbox key="ffzEmotes" value={EmoteTypeFlags.FFZ_EMOTES}>
             <p className={styles.heading}>FrankerFaceZ Emotes</p>

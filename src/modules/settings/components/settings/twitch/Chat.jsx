@@ -20,7 +20,9 @@ function ChatModule() {
           onChange={(value) => setChat(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}>
           <Checkbox key="chatMessageHistory" value={ChatFlags.CHAT_MESSAGE_HISTORY}>
             <p className={styles.heading}>Chat Message History</p>
-            <p className={styles.settingDescription}>Restore what you previously typed by pressing up/down arrow in chat</p>
+            <p className={styles.settingDescription}>
+              Restore what you previously typed by pressing up/down arrow in chat
+            </p>
           </Checkbox>
           <Checkbox key="chatReplies" value={ChatFlags.CHAT_REPLIES}>
             <p className={styles.heading}>Chat Replies</p>
@@ -44,7 +46,9 @@ function ChatModule() {
           </Checkbox>
           <Checkbox key="communityHighlights" value={ChatFlags.COMMUNITY_HIGHLIGHTS}>
             <p className={styles.heading}>Community Highlights</p>
-            <p className={styles.settingDescription}>Show alerts above chat window for hype trains, community chest, etc.</p>
+            <p className={styles.settingDescription}>
+              Show alerts above chat window for hype trains, community chest, etc.
+            </p>
           </Checkbox>
         </CheckboxGroup>
       </div>
