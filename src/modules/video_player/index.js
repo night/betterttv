@@ -28,6 +28,7 @@ const getPictureInPictureTemplate = (toggled) => `
 `;
 
 let removeRecommendationWatcher;
+
 function watchPlayerRecommendationVodsAutoplay() {
   if (hasFlag(settings.get(SettingIds.AUTO_PLAY), AutoPlayFlags.VOD_RECOMMENDATION_AUTOPLAY)) {
     if (removeRecommendationWatcher) removeRecommendationWatcher();
@@ -41,6 +42,7 @@ function watchPlayerRecommendationVodsAutoplay() {
 }
 
 let clicks = 0;
+
 function handlePlayerClick() {
   const currentPlayer = twitch.getCurrentPlayer();
   if (!currentPlayer) return;
@@ -56,9 +58,20 @@ function handlePlayerClick() {
   }, 250);
 }
 
-function handlePlayerScroll(event) {
-  if (!settings.get(SettingIds.SCROLL_VOLUME_CONTROL)) return;
+function maybeSeek(event) {
+  // Default seek time is 2 seconds for VODs
+  const delta = event.originalEvent.deltaY > 0 ? -2 : 2;
 
+  const currentPlayer = twitch.getCurrentPlayer();
+  if (!currentPlayer || currentPlayer.getDuration() === Infinity) return;
+
+  currentPlayer.seekTo(currentPlayer.getPosition() + delta);
+
+  event.preventDefault();
+  event.stopPropagation();
+}
+
+function maybeControlVolume(event) {
   const delta = event.originalEvent.deltaY > 0 ? -0.025 : 0.025;
 
   const currentPlayer = twitch.getCurrentPlayer();
@@ -68,6 +81,17 @@ function handlePlayerScroll(event) {
 
   event.preventDefault();
   event.stopPropagation();
+}
+
+function handlePlayerScroll(event) {
+  if (!settings.get(SettingIds.SCROLL_PLAYER_CONTROLS)) return;
+
+  // Alt scrolling controls video seeking
+  if (event.altKey) {
+    maybeSeek(event);
+  } else {
+    maybeControlVolume(event);
+  }
 }
 
 function togglePlayerCursor(hide) {
@@ -113,7 +137,7 @@ class VideoPlayerModule {
     watcher.on('load.player', () => {
       this.clickToPause();
       watchPlayerRecommendationVodsAutoplay();
-      this.loadVolumeScrollControl();
+      this.loadScrollControl();
       this.loadPictureInPicture();
     });
     settings.on(`changed.${SettingIds.PLAYER_EXTENSIONS}`, () => this.toggleHidePlayerExtensions());
@@ -123,7 +147,7 @@ class VideoPlayerModule {
     this.loadHidePlayerCursorFullscreen();
   }
 
-  loadVolumeScrollControl() {
+  loadScrollControl() {
     $(VIDEO_PLAYER_SELECTOR)
       .find('div[data-a-target="player-overlay-click-handler"]')
       .off('wheel', handlePlayerScroll)
