@@ -183,7 +183,6 @@ export const SettingDefaultValues = {
   [SettingIds.PLAYER_EXTENSIONS]: true,
   [SettingIds.CLICK_TO_PLAY]: false,
   [SettingIds.MUTE_INVISIBLE_PLAYER]: false,
-  [SettingIds.SCROLL_VIDEO_SEEK]: false,
   [SettingIds.SCROLL_PLAYER_CONTROLS]: false,
   [SettingIds.EMOTE_AUTOCOMPLETE]: true,
   [SettingIds.BLACKLIST_KEYWORDS]: {},
