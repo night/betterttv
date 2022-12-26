@@ -161,6 +161,7 @@ export const EmoteMenuTips = {
 export const SettingDefaultValues = {
   [SettingIds.ANON_CHAT]: false,
   [SettingIds.AUTO_THEATRE_MODE]: false,
+  [SettingIds.AUTO_JOIN_RAIDS]: true,
   [SettingIds.SPLIT_CHAT]: false,
   [SettingIds.DELETED_MESSAGES]: DeletedMessageTypes.DEFAULT,
   [SettingIds.REVERSE_CHAT_DIRECTION]: false,
