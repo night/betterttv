@@ -77,8 +77,6 @@ function maybeControlVolume(event) {
   const currentPlayer = twitch.getCurrentPlayer();
   if (!currentPlayer) return;
 
-  console.log(currentPlayer);
-
   currentPlayer.setVolume(Math.min(Math.max(currentPlayer.getVolume() + delta, 0), 1));
 
   event.preventDefault();
