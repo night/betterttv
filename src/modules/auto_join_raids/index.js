@@ -25,7 +25,7 @@ class AutoJoinRaidsModule {
   }
 
   leaveRaid() {
-    const leaveButton = document.querySelector(`${RAID_LEAVE_BUTTON_SELECTOR}`);
+    const leaveButton = document.querySelector(RAID_LEAVE_BUTTON_SELECTOR);
     if (leaveButton == null) {
       return;
     }
