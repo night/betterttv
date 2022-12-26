@@ -14,21 +14,21 @@ function ChannelPointsModule() {
   return (
     <Panel header="Channel Points">
       <div className={styles.setting}>
-        <p className={styles.description}>Edit or modify the channel points</p>
+        <p className={styles.settingDescription}>Edit or modify the channel points</p>
         <CheckboxGroup
           value={Object.values(ChannelPointsFlags).filter((value) => hasFlag(channelPoints, value))}
           onChange={(value) => setChannelPoints(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}>
           <Checkbox key="channelPoints" value={ChannelPointsFlags.CHANNEL_POINTS}>
             <p className={styles.heading}>Channel Points</p>
-            <p className={styles.description}>Show channel points in the chat window</p>
+            <p className={styles.settingDescription}>Show channel points in the chat window</p>
           </Checkbox>
           <Checkbox key="autoClaim" value={ChannelPointsFlags.AUTO_CLAIM}>
             <p className={styles.heading}>Auto-claim Bonus Channel Points</p>
-            <p className={styles.description}>Automatically claim bonus channel points</p>
+            <p className={styles.settingDescription}>Automatically claim bonus channel points</p>
           </Checkbox>
           <Checkbox key="messageHighlights" value={ChannelPointsFlags.MESSAGE_HIGHLIGHTS}>
             <p className={styles.heading}>Message Highlight Rewards</p>
-            <p className={styles.description}>Show channel point highlighted messages in the chat window</p>
+            <p className={styles.settingDescription}>Show channel point highlighted messages in the chat window</p>
           </Checkbox>
         </CheckboxGroup>
       </div>

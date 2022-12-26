@@ -276,7 +276,7 @@ class ChatHighlightBlacklistKeywordsModule {
   pinHighlight({from, message, date}) {
     if (settings.get(SettingIds.PINNED_HIGHLIGHTS) === false || !$pinnedHighlightsContainer) return;
 
-    if ($pinnedHighlightsContainer.children().length + 1 > settings.get(SettingIds.NUMBER_OF_PINNED_HIGHLIGHTS)) {
+    if ($pinnedHighlightsContainer.children().length + 1 > settings.get(SettingIds.MAX_PINNED_HIGHLIGHTS)) {
       $pinnedHighlightsContainer.children().first().remove();
     }
 

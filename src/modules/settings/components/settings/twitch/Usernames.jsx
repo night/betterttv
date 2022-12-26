@@ -14,21 +14,21 @@ function UsernamesModule() {
   return (
     <Panel header="Usernames">
       <div className={styles.setting}>
-        <p className={styles.description}>Edit or modify chat usernames</p>
+        <p className={styles.settingDescription}>Edit or modify chat usernames</p>
         <CheckboxGroup
           value={Object.values(UsernameFlags).filter((value) => hasFlag(usernames, value))}
           onChange={(value) => setUsernames(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}>
           <Checkbox key="localized" value={UsernameFlags.LOCALIZED}>
             <p className={styles.heading}>Localized Usernames</p>
-            <p className={styles.description}>Show localized display names in the chat window</p>
+            <p className={styles.settingDescription}>Show localized display names in the chat window</p>
           </Checkbox>
           <Checkbox key="usernameColors" value={UsernameFlags.COLORS}>
             <p className={styles.heading}>Username Colors</p>
-            <p className={styles.description}>Show username colors in the chat window</p>
+            <p className={styles.settingDescription}>Show username colors in the chat window</p>
           </Checkbox>
           <Checkbox key="readableColors" value={UsernameFlags.READABLE}>
             <p className={styles.heading}>Readable Colors</p>
-            <p className={styles.description}>
+            <p className={styles.settingDescription}>
               Show username colors with higher contrast (prevents hard to read names)
             </p>
           </Checkbox>

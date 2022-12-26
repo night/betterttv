@@ -13,7 +13,7 @@ function HighlightKeywords() {
   return (
     <Panel header="Highlight Keywords">
       <div className={styles.setting}>
-        <p className={styles.description}>Highlight certain words, phrases or users in your chat.</p>
+        <p className={styles.settingDescription}>Highlight certain words, phrases or users in your chat.</p>
         <Table
           autoHeight
           options={[

@@ -11,8 +11,8 @@ function EmoteMenu() {
 
   return (
     <Panel header="Emote Menu">
-      <div className={styles.toggle}>
-        <p className={styles.description}>Enables a more advanced emote menu for chat</p>
+      <div className={styles.settingRow}>
+        <p className={styles.settingDescription}>Enables a more advanced emote menu for chat</p>
         <Toggle checked={emoteMenuValue} onChange={(state) => setEmoteMenuValue(state)} />
       </div>
     </Panel>

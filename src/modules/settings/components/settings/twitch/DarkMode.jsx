@@ -11,8 +11,8 @@ function DarkMode() {
 
   return (
     <Panel header="Dark Mode">
-      <div className={styles.toggle}>
-        <p className={styles.description}>Enables dark theme</p>
+      <div className={styles.settingRow}>
+        <p className={styles.settingDescription}>Enables dark theme</p>
         <Toggle checked={value} onChange={(state) => setValue(state)} />
       </div>
     </Panel>

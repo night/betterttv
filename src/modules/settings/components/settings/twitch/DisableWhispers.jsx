@@ -11,8 +11,8 @@ function DisableWhispers() {
 
   return (
     <Panel header="Whispers">
-      <div className={styles.toggle}>
-        <p className={styles.description}>Enable Twitch whispers and show any whispers you receive</p>
+      <div className={styles.settingRow}>
+        <p className={styles.settingDescription}>Enable Twitch whispers and show any whispers you receive</p>
         <Toggle checked={value} onChange={(state) => setValue(state)} />
       </div>
     </Panel>

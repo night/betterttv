@@ -11,8 +11,8 @@ function HidePrimePromotions() {
 
   return (
     <Panel header="Prime Promotions">
-      <div className={styles.toggle}>
-        <p className={styles.description}>Show Prime Gaming loot notices, like the ones in the sidebar</p>
+      <div className={styles.settingRow}>
+        <p className={styles.settingDescription}>Show Prime Gaming loot notices, like the ones in the sidebar</p>
         <Toggle checked={value} onChange={(state) => setValue(state)} />
       </div>
     </Panel>

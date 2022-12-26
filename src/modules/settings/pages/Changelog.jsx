@@ -66,7 +66,7 @@ function Changelog({onClose}) {
 
         return (
           <Panel header={`Version ${version} • ${dayjs(publishedAt).format('MMM D, YYYY')}`} key={version}>
-            <p className={styles.description}>{formattedBody}</p>
+            <p className={styles.settingDescription}>{formattedBody}</p>
           </Panel>
         );
       });
@@ -77,7 +77,7 @@ function Changelog({onClose}) {
       <div className={styles.content}>
         <PanelGroup>
           <Panel header={<h3>Changelog</h3>}>
-            <p className={styles.description}>A list of recent updates and patches to BetterTTV.</p>
+            <p className={styles.settingDescription}>A list of recent updates and patches to BetterTTV.</p>
           </Panel>
           {renderedChangelogEntries}
         </PanelGroup>

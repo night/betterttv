@@ -11,8 +11,8 @@ function HidePlayerExtensions() {
 
   return (
     <Panel header="Player Extensions">
-      <div className={styles.toggle}>
-        <p className={styles.description}>Show the interactive overlays on top of Twitch&apos;s video player</p>
+      <div className={styles.settingRow}>
+        <p className={styles.settingDescription}>Show the interactive overlays on top of Twitch&apos;s video player</p>
         <Toggle checked={value} onChange={(state) => setValue(state)} />
       </div>
     </Panel>

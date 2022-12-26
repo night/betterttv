@@ -11,8 +11,8 @@ function ShowDirectoryLiveTab() {
 
   return (
     <Panel header="Show Directory Live Tab">
-      <div className={styles.toggle}>
-        <p className={styles.description}>Defaults to Live tab on the Following page</p>
+      <div className={styles.settingRow}>
+        <p className={styles.settingDescription}>Defaults to Live tab on the Following page</p>
         <Toggle checked={value} onChange={(state) => setValue(state)} />
       </div>
     </Panel>
