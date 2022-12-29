@@ -5,6 +5,7 @@ import InputGroup from 'rsuite/InputGroup';
 import AutoComplete from 'rsuite/AutoComplete';
 import * as faSearch from '@fortawesome/free-solid-svg-icons/faSearch';
 import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.jsx';
+import formatMessage from '../../../i18n/index.js';
 
 let cachedSettings = null;
 
@@ -43,7 +44,11 @@ export function Settings({search, category}) {
           )
           .map((setting) => setting.render());
 
-  return searchedSettings.length === 0 ? <Panel header="No more results..." /> : searchedSettings;
+  return searchedSettings.length === 0 ? (
+    <Panel header={formatMessage({defaultMessage: 'No more results...'})} />
+  ) : (
+    searchedSettings
+  );
 }
 
 export function Search(props) {

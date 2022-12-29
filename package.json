@@ -10,7 +10,8 @@
     "postinstall": "node ./dev/post-install.js",
     "build": "webpack --mode development",
     "build:prod": "webpack --mode production",
-    "lint": "eslint . && prettier --check ."
+    "lint": "eslint . && prettier --check .",
+    "extract-i18n": "formatjs extract 'src/**/*.{js,jsx}' --out-file build/i18n/messages/en.json --id-interpolation-pattern '[sha512:contenthash:base64:6]' --preserve-whitespace && formatjs compile build/i18n/messages/en.json --out-file build/i18n/messages/en.json"
   },
   "repository": {
     "type": "git",
@@ -23,6 +24,8 @@
     "@babel/preset-env": "7.20.2",
     "@babel/preset-react": "7.18.6",
     "@babel/runtime": "7.20.7",
+    "@formatjs/cli": "^5.1.12",
+    "@formatjs/intl": "^2.6.3",
     "@fortawesome/fontawesome-svg-core": "6.2.1",
     "@fortawesome/free-brands-svg-icons": "6.2.1",
     "@fortawesome/free-solid-svg-icons": "6.2.1",
@@ -33,6 +36,7 @@
     "@sentry/webpack-plugin": "1.20.0",
     "autoprefixer": "10.4.13",
     "babel-loader": "9.1.0",
+    "babel-plugin-formatjs": "^10.3.35",
     "babel-plugin-wildcard": "7.0.0",
     "classnames": "2.3.2",
     "clean-webpack-plugin": "4.0.0",

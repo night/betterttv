@@ -178,7 +178,17 @@ export default async (env, argv) => {
             loader: 'babel-loader',
             options: {
               presets: ['@babel/react', '@babel/preset-env'],
-              plugins: ['wildcard', '@babel/plugin-transform-runtime'],
+              plugins: [
+                'wildcard',
+                '@babel/plugin-transform-runtime',
+                [
+                  'formatjs',
+                  {
+                    idInterpolationPattern: '[sha512:contenthash:base64:6]',
+                    ast: true,
+                  },
+                ],
+              ],
             },
           },
         },

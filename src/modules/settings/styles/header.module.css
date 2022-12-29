@@ -2,6 +2,10 @@
   color: var(--bttv-rs-text-heading);
 }
 
+.upper {
+  text-transform: uppercase;
+}
+
 .description {
   color: var(--bttv-rs-text-secondary);
 }

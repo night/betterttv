@@ -3,6 +3,7 @@ import styles from './Preview.module.css';
 import Icons from './Icons.jsx';
 import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js';
 import Emote from '../../../common/components/Emote.jsx';
+import formatMessage from '../../../i18n/index.js';
 
 export default function Preview({emote}) {
   if (emote == null) return null;
@@ -20,7 +21,7 @@ export default function Preview({emote}) {
         <Emote className={styles.emoteImage} emote={emote} />
         <div>
           <div className={styles.emoteCode}>{emote.code}</div>
-          <div>from {emote.category.displayName}</div>
+          <div>{formatMessage({defaultMessage: 'from {name}'}, {name: emote.category.displayName})}</div>
         </div>
       </div>
       <div className={styles.emoteStatusIcon}>{icon}</div>

@@ -5,14 +5,19 @@ import {registerComponent} from '../../Store.jsx';
 import {CategoryTypes, SettingIds} from '../../../../../constants.js';
 import styles from '../../../styles/header.module.css';
 import useStorageState from '../../../../../common/hooks/StorageState.jsx';
+import formatMessage from '../../../../../i18n/index.js';
+
+const SETTING_NAME = formatMessage({defaultMessage: 'Tab Completion Emote Priority'});
 
 function TabCompletionEmotePriority() {
   const [value, setValue] = useStorageState(SettingIds.TAB_COMPLETION_EMOTE_PRIORITY);
 
   return (
-    <Panel header="Tab Completion Emote Priority">
+    <Panel header={SETTING_NAME}>
       <div className={styles.settingRow}>
-        <p className={styles.settingDescription}>Prioritize emotes over usernames when using tab completion</p>
+        <p className={styles.settingDescription}>
+          {formatMessage({defaultMessage: 'Prioritize emotes over usernames when using tab completion'})}
+        </p>
         <Toggle checked={value} onChange={(state) => setValue(state)} />
       </div>
     </Panel>
@@ -21,7 +26,7 @@ function TabCompletionEmotePriority() {
 
 registerComponent(TabCompletionEmotePriority, {
   settingId: SettingIds.TAB_COMPLETION_EMOTE_PRIORITY,
-  name: 'Tab Completion Emote Priority',
+  name: SETTING_NAME,
   category: CategoryTypes.CHAT,
   keywords: ['tab', 'completion', 'emote', 'priority'],
 });

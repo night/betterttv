@@ -5,14 +5,19 @@ import {registerComponent} from '../../Store.jsx';
 import {CategoryTypes, SettingIds} from '../../../../../constants.js';
 import styles from '../../../styles/header.module.css';
 import useStorageState from '../../../../../common/hooks/StorageState.jsx';
+import formatMessage from '../../../../../i18n/index.js';
+
+const SETTING_NAME = formatMessage({defaultMessage: 'Prime Promotions'});
 
 function HidePrimePromotions() {
   const [value, setValue] = useStorageState(SettingIds.PRIME_PROMOTIONS);
 
   return (
-    <Panel header="Prime Promotions">
+    <Panel header={SETTING_NAME}>
       <div className={styles.settingRow}>
-        <p className={styles.settingDescription}>Show Prime Gaming loot notices, like the ones in the sidebar</p>
+        <p className={styles.settingDescription}>
+          {formatMessage({defaultMessage: 'Show Prime Gaming loot notices, like the ones in the sidebar'})}
+        </p>
         <Toggle checked={value} onChange={(state) => setValue(state)} />
       </div>
     </Panel>
@@ -21,7 +26,7 @@ function HidePrimePromotions() {
 
 registerComponent(HidePrimePromotions, {
   settingId: SettingIds.PRIME_PROMOTIONS,
-  name: 'Prime Promotions',
+  name: SETTING_NAME,
   category: CategoryTypes.CHANNEL,
   keywords: ['ad', 'prime', 'promotions', 'block'],
 });

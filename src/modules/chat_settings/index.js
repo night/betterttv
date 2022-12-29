@@ -1,10 +1,12 @@
 import $ from 'jquery';
 import watcher from '../../watcher.js';
+import html from '../../utils/html.js';
 import settings from '../settings/index.js';
 import chatFontSettings from '../chat_font_settings/index.js';
 import domObserver from '../../observers/dom.js';
 import {PlatformTypes} from '../../constants.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
+import formatMessage from '../../i18n/index.js';
 
 const CHAT_SETTINGS_SELECTOR = '.chat-settings__content';
 const MOD_VIEW_CHAT_SETTINGS_SELECTOR =
@@ -16,18 +18,26 @@ const BTTV_CHAT_SETTINGS_CLASS = 'bttv-chat-settings';
 
 const CHAT_SETTINGS_TEMPLATE = `
   <div class="${BTTV_CHAT_SETTINGS_CLASS}">
-    <div class="settingHeader"><p>BetterTTV</p></div>
+    <div class="settingHeader"><p>${html.escape(formatMessage({defaultMessage: 'BetterTTV'}))}</p></div>
     <div class="settingRow">
-      <button borderradius="border-radius-medium" class="settingButton setFontFamily">Set Font</button>
+      <button borderradius="border-radius-medium" class="settingButton setFontFamily">${html.escape(
+        formatMessage({defaultMessage: 'Set Font'})
+      )}</button>
     </div>
     <div class="settingRow">
-      <button borderradius="border-radius-medium" class="settingButton setFontSize">Set Font Size</button>
+      <button borderradius="border-radius-medium" class="settingButton setFontSize">${html.escape(
+        formatMessage({defaultMessage: 'Set Font Size'})
+      )}</button>
     </div>
     <div class="settingRow">
-      <button borderradius="border-radius-medium" class="settingButton clearChat">Clear My Chat</button>
+      <button borderradius="border-radius-medium" class="settingButton clearChat">${html.escape(
+        formatMessage({defaultMessage: 'Clear My Chat'})
+      )}</button>
     </div>
     <div class="settingRow">
-      <button borderradius="border-radius-medium" class="settingButton openSettings">BetterTTV Settings</button>
+      <button borderradius="border-radius-medium" class="settingButton openSettings">${html.escape(
+        formatMessage({defaultMessage: 'BetterTTV Settings'})
+      )}</button>
     </div>
   </div>
 `;

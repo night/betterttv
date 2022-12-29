@@ -5,6 +5,7 @@ import settings from '../../settings.js';
 import {DeletedMessageTypes, PlatformTypes, SettingIds} from '../../constants.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
 import ChatHighlightBlacklistKeywords from '../chat_highlight_blacklist_keywords/index.js';
+import formatMessage from '../../i18n/index.js';
 
 const CHAT_LINE_SELECTOR = '.chat-line__message';
 const CHAT_LINE_LINK_SELECTOR = 'a.link-fragment';
@@ -37,7 +38,9 @@ class ChatDeletedMessagesModule {
   handleMessage({message, preventDefault}) {
     switch (message.type) {
       case twitch.TMIActionTypes.CLEAR_CHAT:
-        twitch.sendChatAdminMessage('Chat was cleared by a moderator (Prevented by BetterTTV)');
+        twitch.sendChatAdminMessage(
+          formatMessage({defaultMessage: 'Chat was cleared by a moderator (Prevented by BetterTTV)'})
+        );
         preventDefault();
         break;
       case twitch.TMIActionTypes.MODERATION: {

@@ -5,14 +5,19 @@ import {registerComponent} from '../../Store.jsx';
 import {CategoryTypes, SettingIds} from '../../../../../constants.js';
 import styles from '../../../styles/header.module.css';
 import useStorageState from '../../../../../common/hooks/StorageState.jsx';
+import formatMessage from '../../../../../i18n/index.js';
+
+const SETTING_NAME = formatMessage({defaultMessage: 'Highlight Feedback'});
 
 function HighlightFeedback() {
   const [value, setValue] = useStorageState(SettingIds.HIGHLIGHT_FEEDBACK);
 
   return (
-    <Panel header="Highlight Feedback">
+    <Panel header={SETTING_NAME}>
       <div className={styles.settingRow}>
-        <p className={styles.settingDescription}>Play a sound for messages directed at you</p>
+        <p className={styles.settingDescription}>
+          {formatMessage({defaultMessage: 'Play a sound for messages directed at you'})}
+        </p>
         <Toggle checked={value} onChange={(state) => setValue(state)} />
       </div>
     </Panel>
@@ -21,7 +26,7 @@ function HighlightFeedback() {
 
 registerComponent(HighlightFeedback, {
   settingId: SettingIds.HIGHLIGHT_FEEDBACK,
-  name: 'Highlight Feedback',
+  name: SETTING_NAME,
   category: CategoryTypes.CHAT,
   keywords: ['highlight', 'feedback'],
 });

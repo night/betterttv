@@ -14,6 +14,7 @@ import * as faPlus from '@fortawesome/free-solid-svg-icons/faPlus';
 import classNames from 'classnames';
 import styles from '../styles/table.module.css';
 import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.jsx';
+import formatMessage from '../../../i18n/index.js';
 
 const {Column, HeaderCell, Cell} = Table;
 
@@ -292,7 +293,7 @@ function EditTable({options, setValue, value, ...props}) {
         loading={loading}
         className={styles.button}
         icon={<Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faPlus} />}>
-        Add New
+        {formatMessage({defaultMessage: 'Add New'})}
       </IconButton>
     </>
   );
