@@ -78,6 +78,7 @@ function getMessagePartsFromMessageElement($message) {
 class ChatModule {
   constructor() {
     watcher.on('chat.message', ($element, message) => this.messageParser($element, message));
+    watcher.on('chat.notice_message', ($element, message) => this.noticeMessageParser($element, message));
     watcher.on('chat.pinned_message', ($element) => this.pinnedMessageParser($element));
     watcher.on('chat.status', ($element, message) => {
       if (message?.renderBetterTTVEmotes !== true) {
@@ -254,6 +255,21 @@ class ChatModule {
     this.messageReplacer(getMessagePartsFromMessageElement($element), user);
 
     $element[0].__bttvParsed = true;
+  }
+
+  noticeMessageParser($element, message) {
+    const chatterNames = [...$element.find('.chatter-name span span, .chatter-name span')];
+    for (const chatterName of chatterNames) {
+      // skip non-text elements
+      if (chatterName.childElementCount > 0) {
+        continue;
+      }
+      // TODO: this doesn't handle apac names or display names with spaces. prob ok for now.
+      const nickname = nicknames.get(chatterName.innerText.toLowerCase());
+      if (nickname) {
+        chatterName.innerText = nickname;
+      }
+    }
   }
 
   pinnedMessageParser($element) {
