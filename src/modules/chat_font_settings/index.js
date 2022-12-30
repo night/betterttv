@@ -4,13 +4,18 @@ import storage from '../../storage.js';
 import html from '../../utils/html.js';
 import {PlatformTypes} from '../../constants.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
+import formatMessage from '../../i18n/index.js';
 
-const FONT_FAMILY_PROMPT = `Enter a font family for chat.
+const FONT_FAMILY_PROMPT = formatMessage({
+  defaultMessage: `Enter a font family for chat.
 
-Try "monospace" or "Comic Sans MS", or leave the field blank to use the default.`;
-const FONT_SIZE_PROMPT = `Enter a font size for chat.
+Try "monospace" or "Comic Sans MS", or leave the field blank to use the default.`,
+});
+const FONT_SIZE_PROMPT = formatMessage({
+  defaultMessage: `Enter a font size for chat.
 
-Leave the field blank to use the default.`;
+Leave the field blank to use the default.`,
+});
 
 const STYLE_ID = 'bttv-font-size';
 const GENERIC_FONT_FAMILIES = ['serif', 'sans-serif', 'monospace', 'cursive', 'fantasy', 'system-ui'];

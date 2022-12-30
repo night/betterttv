@@ -31,6 +31,9 @@
 
   await import('./utils/sentry.js');
 
+  const {load: loadI18n} = await import('./i18n/index.js');
+  await loadI18n();
+
   const {default: extension} = await import('./utils/extension.js');
   extension.setCurrentScript(currentScript);
 

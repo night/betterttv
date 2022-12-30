@@ -1,5 +1,6 @@
 import React, {useRef, useState} from 'react';
 import {saveAs} from 'file-saver';
+import classNames from 'classnames';
 
 import IconButton from 'rsuite/IconButton';
 import PanelGroup from 'rsuite/PanelGroup';
@@ -16,6 +17,7 @@ import header from '../styles/header.module.css';
 import styles from '../styles/about.module.css';
 import CloseButton from '../components/CloseButton.jsx';
 import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.jsx';
+import formatMessage from '../../../i18n/index.js';
 
 function loadJSON(string) {
   let json = null;
@@ -85,93 +87,110 @@ function About({onClose}) {
       <div className={header.content}>
         <PanelGroup>
           <Panel className={styles.largeBlurb}>
-            Drop a Review on the{' '}
-            <a
-              target="_blank"
-              rel="noreferrer"
-              href="https://chrome.google.com/webstore/detail/betterttv/ajopnjidmegmdimjlfnijceegpefgped">
-              Chrome Webstore
-            </a>{' '}
-            or{' '}
-            <a target="_blank" rel="noreferrer" href="https://addons.mozilla.org/firefox/addon/betterttv/">
-              Firefox Add-ons
-            </a>{' '}
-            site or maybe even Subscribe to{' '}
-            <a target="_blank" rel="noreferrer" href="https://betterttv.com/dashboard/pro">
-              BetterTTV Pro
-            </a>
-            !
+            {formatMessage(
+              {
+                defaultMessage:
+                  'Drop a Review on the <chromeReviewLink>Chrome Webstore</chromeReviewLink> or <firefoxReviewLink>Firefox Add-ons</firefoxReviewLink> site or maybe even Subscribe to <proLink>BetterTTV Pro</proLink>!',
+              },
+              {
+                // eslint-disable-next-line react/no-unstable-nested-components
+                chromeReviewLink: (children) => (
+                  <a
+                    target="_blank"
+                    rel="noreferrer"
+                    href="https://chrome.google.com/webstore/detail/betterttv/ajopnjidmegmdimjlfnijceegpefgped">
+                    {children}
+                  </a>
+                ),
+                // eslint-disable-next-line react/no-unstable-nested-components
+                firefoxReviewLink: (children) => (
+                  <a target="_blank" rel="noreferrer" href="https://addons.mozilla.org/firefox/addon/betterttv/">
+                    {children}
+                  </a>
+                ),
+                // eslint-disable-next-line react/no-unstable-nested-components
+                proLink: (children) => (
+                  <a target="_blank" rel="noreferrer" href="https://betterttv.com/dashboard/pro">
+                    {children}
+                  </a>
+                ),
+              }
+            )}
           </Panel>
           <Panel>
             <div className={styles.socials}>
               <ul>
                 <li>
-                  <p className={header.heading}>EXPLORE</p>
+                  <p className={classNames(header.heading, header.upper)}>
+                    {formatMessage({defaultMessage: 'Explore'})}
+                  </p>
                 </li>
                 <li>
                   <a target="_blank" rel="noreferrer" href="https://betterttv.com/">
-                    Home
+                    {formatMessage({defaultMessage: 'Home'})}
                   </a>
                 </li>
                 <li>
                   <a target="_blank" rel="noreferrer" href="https://github.com/night/betterttv/issues">
-                    Report Bugs
+                    {formatMessage({defaultMessage: 'Report Bugs'})}
                   </a>
                 </li>
                 <li>
                   <a target="_blank" rel="noreferrer" href="https://github.com/night/betterttv/issues">
-                    Submit Ideas
+                    {formatMessage({defaultMessage: 'Submit Ideas'})}
                   </a>
                 </li>
                 <li>
                   <a target="_blank" rel="noreferrer" href="https://nightdev.com/">
-                    Other Products
+                    {formatMessage({defaultMessage: 'Other Products'})}
                   </a>
                 </li>
               </ul>
               <ul>
                 <li>
-                  <p className={header.heading}>COMMUNITY</p>
+                  <p className={classNames(header.heading, header.upper)}>
+                    {formatMessage({defaultMessage: 'Community'})}
+                  </p>
                 </li>
                 <li>
                   <a target="_blank" rel="noreferrer" href="https://discord.gg/nightdev">
-                    Discord
+                    {formatMessage({defaultMessage: 'Discord'})}
                   </a>
                 </li>
                 <li>
                   <a target="_blank" rel="noreferrer" href="https://twitter.com/betterttv">
-                    Twitter
+                    {formatMessage({defaultMessage: 'Twitter'})}
                   </a>
                 </li>
                 <li>
                   <a target="_blank" rel="noreferrer" href="https://community.nightdev.com/c/betterttv">
-                    Forums
+                    {formatMessage({defaultMessage: 'Forums'})}
                   </a>
                 </li>
                 <li>
                   <a target="_blank" rel="noreferrer" href="https://www.nightdev.com/contact">
-                    Email Us
+                    {formatMessage({defaultMessage: 'Email Us'})}
                   </a>
                 </li>
               </ul>
               <ul>
                 <li>
-                  <p className={header.heading}>LEGAL</p>
+                  <p className={classNames(header.heading, header.upper)}>{formatMessage({defaultMessage: 'Legal'})}</p>
                 </li>
                 <li>
                   <a target="_blank" rel="noreferrer" href="https://betterttv.com/terms">
-                    Terms of Service
+                    {formatMessage({defaultMessage: 'Terms of Service'})}
                   </a>
                 </li>
                 <li>
                   <a target="_blank" rel="noreferrer" href="https://betterttv.com/privacy">
-                    Privacy Policy
+                    {formatMessage({defaultMessage: 'Privacy Policy'})}
                   </a>
                 </li>
               </ul>
             </div>
           </Panel>
-          <Panel header="Settings">
+          <Panel header={formatMessage({defaultMessage: 'Settings'})}>
             <div className={styles.buttons}>
               <IconButton
                 className={styles.button}
@@ -209,7 +228,9 @@ function About({onClose}) {
             </div>
           </Panel>
           <Panel>
-            <p className={header.description}>{`Version ${debug.version}`}</p>
+            <p className={header.description}>
+              {formatMessage({defaultMessage: 'Version {version}}'}, {version: debug.version})}
+            </p>
           </Panel>
         </PanelGroup>
       </div>

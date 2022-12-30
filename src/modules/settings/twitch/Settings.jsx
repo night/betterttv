@@ -3,6 +3,8 @@ import React from 'react';
 import {createRoot} from 'react-dom/client';
 import Modal from '../components/Window.jsx';
 import domObserver from '../../../observers/dom.js';
+import html from '../../../utils/html.js';
+import formatMessage from '../../../i18n/index.js';
 
 let handleOpen;
 function setHandleOpen(newHandleOpen) {
@@ -54,7 +56,7 @@ export default class SettingsModule {
                 </div>
               </div>
             </div>
-            <div class="dropdownLabel">BetterTTV Settings</div>
+            <div class="dropdownLabel">${html.escape(formatMessage({defaultMessage: 'BetterTTV Settings'}))}</div>
           </div>
         </a>
       </div>

@@ -6,6 +6,7 @@ import IconButton from 'rsuite/IconButton';
 import * as faSearch from '@fortawesome/free-solid-svg-icons/faSearch';
 import * as faTimes from '@fortawesome/free-solid-svg-icons/faTimes';
 import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.jsx';
+import formatMessage from '../../../i18n/index.js';
 
 function Header({value, onChange, toggleWhisper, selected, ...props}) {
   const searchInputRef = useRef(null);
@@ -25,7 +26,7 @@ function Header({value, onChange, toggleWhisper, selected, ...props}) {
           <Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faSearch} />
         </InputGroup.Addon>
         <Input
-          placeholder={selected == null ? 'Search for Emotes' : selected.code}
+          placeholder={selected == null ? formatMessage({defaultMessage: 'Search for Emotes'}) : selected.code}
           value={value}
           onChange={onChange}
           inputRef={searchInputRef}

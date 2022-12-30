@@ -5,6 +5,7 @@ import {Settings, Search} from './Settings.jsx';
 import {CategoryTypes} from '../../../constants.js';
 import cdn from '../../../utils/cdn.js';
 import CloseButton from './CloseButton.jsx';
+import formatMessage from '../../../i18n/index.js';
 
 export default function ChatWindow({open, onClose}) {
   const [search, setSearch] = useState('');
@@ -14,9 +15,13 @@ export default function ChatWindow({open, onClose}) {
   return (
     <div className={styles.standaloneChatWindow}>
       <div className={styles.header}>
-        <img alt="BetterTTV Logo" src={cdn.url('/assets/logos/mascot.png')} className={styles.logo} />
+        <img alt="" src={cdn.url('/assets/logos/mascot.png')} className={styles.logo} />
         <div className={styles.search}>
-          <Search placeholder="Chat Settings..." value={search} onChange={setSearch} />
+          <Search
+            placeholder={formatMessage({defaultMessage: 'Chat Settings...'})}
+            value={search}
+            onChange={setSearch}
+          />
         </div>
         <CloseButton onClose={onClose} />
       </div>

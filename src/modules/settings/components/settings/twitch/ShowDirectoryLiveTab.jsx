@@ -5,14 +5,19 @@ import {registerComponent} from '../../Store.jsx';
 import {CategoryTypes, SettingIds} from '../../../../../constants.js';
 import styles from '../../../styles/header.module.css';
 import useStorageState from '../../../../../common/hooks/StorageState.jsx';
+import formatMessage from '../../../../../i18n/index.js';
+
+const SETTING_NAME = formatMessage({defaultMessage: 'Show Directory Live Tab'});
 
 function ShowDirectoryLiveTab() {
   const [value, setValue] = useStorageState(SettingIds.SHOW_DIRECTORY_LIVE_TAB);
 
   return (
-    <Panel header="Show Directory Live Tab">
+    <Panel header={SETTING_NAME}>
       <div className={styles.settingRow}>
-        <p className={styles.settingDescription}>Swap to Live tab on the Following page automatically</p>
+        <p className={styles.settingDescription}>
+          {formatMessage({defaultMessage: 'Swap to Live tab on the Following page automatically'})}
+        </p>
         <Toggle checked={value} onChange={(state) => setValue(state)} />
       </div>
     </Panel>
@@ -21,7 +26,7 @@ function ShowDirectoryLiveTab() {
 
 registerComponent(ShowDirectoryLiveTab, {
   settingId: SettingIds.SHOW_DIRECTORY_LIVE_TAB,
-  name: 'Directory Live Tab',
+  name: SETTING_NAME,
   category: CategoryTypes.DIRECTORY,
   keywords: ['live', 'tab'],
 });

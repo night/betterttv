@@ -8,32 +8,43 @@ import {getCurrentUser} from '../../utils/user.js';
 import {getCurrentChannel} from '../../utils/channel.js';
 import {PlatformTypes} from '../../constants.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
+import formatMessage from '../../i18n/index.js';
 
 dayjs.extend(relativeTime);
 
 const CommandHelp = {
-  b: 'Usage: "/b <login> [reason]" - Shortcut for /ban',
-  chatters: 'Usage: "/chatters" - Retrieces the number of chatters in the chat',
-  followed: 'Usage: "/followed" - Tells you for how long you have been following a channel',
-  follows: 'Usage: "/follows" - Retrieves the number of followers for the channel',
-  join: 'Usage: "/join" - Temporarily join a chat (anon chat)',
-  localascii: 'Usage "/localascii" - Turns on local ascii-only mode (only your chat is ascii-only mode)',
-  localasciioff: 'Usage "/localasciioff" - Turns off local ascii-only mode',
-  localmod: 'Usage "/localmod" - Turns on local mod-only mode (only your chat is mod-only mode)',
-  localmodoff: 'Usage "/localmodoff" - Turns off local mod-only mode',
-  localsub: 'Usage "/localsub" - Turns on local sub-only mode (only your chat is sub-only mode)',
-  localsuboff: 'Usage "/localsuboff" - Turns off local sub-only mode',
-  massunban: 'Usage "/massunban" - Unbans all users in the channel (channel owner only)',
-  p: 'Usage "/p <login> [reason]" - Shortcut for /purge',
-  part: 'Usage: "/part" - Temporarily leave a chat (anon chat)',
-  purge: 'Usage "/purge <login> [reason]" - Purges a user\'s chat',
-  shrug: 'Usage "/shrug" - Appends your chat line with a shrug face',
-  sub: 'Usage "/sub" - Shortcut for /subscribers',
-  suboff: 'Usage "/suboff" - Shortcut for /subscribersoff',
-  t: 'Usage "/t <login> [duration] [reason]" - Shortcut for /timeout',
-  u: 'Usage "/u <login>" - Shortcut for /unban',
-  uptime: 'Usage "/uptime" - Retrieves the amount of time the channel has been live',
-  viewers: 'Usage "/viewers" - Retrieves the number of viewers watching the channel',
+  b: formatMessage({defaultMessage: `Usage: "/b '<'login'>' [reason]" - Shortcut for /ban`}),
+  chatters: formatMessage({defaultMessage: 'Usage: "/chatters" - Retrieces the number of chatters in the chat'}),
+  followed: formatMessage({
+    defaultMessage: 'Usage: "/followed" - Tells you for how long you have been following a channel',
+  }),
+  follows: formatMessage({defaultMessage: 'Usage: "/follows" - Retrieves the number of followers for the channel'}),
+  join: formatMessage({defaultMessage: 'Usage: "/join" - Temporarily join a chat (anon chat)'}),
+  localascii: formatMessage({
+    defaultMessage: 'Usage "/localascii" - Turns on local ascii-only mode (only your chat is ascii-only mode)',
+  }),
+  localasciioff: formatMessage({defaultMessage: 'Usage "/localasciioff" - Turns off local ascii-only mode'}),
+  localmod: formatMessage({
+    defaultMessage: 'Usage "/localmod" - Turns on local mod-only mode (only your chat is mod-only mode)',
+  }),
+  localmodoff: formatMessage({defaultMessage: 'Usage "/localmodoff" - Turns off local mod-only mode'}),
+  localsub: formatMessage({
+    defaultMessage: 'Usage "/localsub" - Turns on local sub-only mode (only your chat is sub-only mode)',
+  }),
+  localsuboff: formatMessage({defaultMessage: 'Usage "/localsuboff" - Turns off local sub-only mode'}),
+  massunban: formatMessage({
+    defaultMessage: 'Usage "/massunban" - Unbans all users in the channel (channel owner only)',
+  }),
+  p: formatMessage({defaultMessage: `Usage "/p '<'login'>' [reason]" - Shortcut for /purge`}),
+  part: formatMessage({defaultMessage: 'Usage: "/part" - Temporarily leave a chat (anon chat)'}),
+  purge: formatMessage({defaultMessage: `Usage "/purge '<'login'>' [reason]" - Purges a user's chat`}),
+  shrug: formatMessage({defaultMessage: 'Usage "/shrug" - Appends your chat line with a shrug face'}),
+  sub: formatMessage({defaultMessage: 'Usage "/sub" - Shortcut for /subscribers'}),
+  suboff: formatMessage({defaultMessage: 'Usage "/suboff" - Shortcut for /subscribersoff'}),
+  t: formatMessage({defaultMessage: `Usage "/t '<'login'>' [duration] [reason]" - Shortcut for /timeout`}),
+  u: formatMessage({defaultMessage: `Usage "/u '<'login'>'" - Shortcut for /unban`}),
+  uptime: formatMessage({defaultMessage: 'Usage "/uptime" - Retrieves the amount of time the channel has been live'}),
+  viewers: formatMessage({defaultMessage: 'Usage "/viewers" - Retrieves the number of viewers watching the channel'}),
 };
 
 function secondsToLength(s) {
@@ -53,7 +64,7 @@ function massUnban() {
   const currentUser = getCurrentUser();
   const currentChannel = getCurrentChannel();
   if (!currentUser || currentUser.id !== currentChannel.id) {
-    twitch.sendChatAdminMessage('You must be the channel owner to use this command.');
+    twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'You must be the channel owner to use this command.'}));
     return;
   }
 
@@ -76,7 +87,7 @@ function massUnban() {
   }
 
   function getBannedChatters() {
-    twitch.sendChatAdminMessage('Fetching banned users...');
+    twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Fetching banned users...'}));
 
     const query = gql`
       query BTTVGetBannedChatters {
@@ -104,22 +115,41 @@ function massUnban() {
             .filter(({bannedUser}) => bannedUser && bannedUser.login && !unbannedChatters.includes(bannedUser.login))
             .map(({bannedUser: {login}}) => login);
         } catch (_) {
-          twitch.sendChatAdminMessage('There was an error retrieving banned users.');
+          twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'There was an error retrieving banned users.'}));
           return;
         }
 
         if (users.length === 0) {
-          twitch.sendChatAdminMessage(`You have no banned users. Total Unbanned Users: ${unbanCount}`);
+          twitch.sendChatAdminMessage(
+            formatMessage(
+              {defaultMessage: 'You have no banned users. Total Unbanned Users: {unbanCount, number}'},
+              {unbanCount}
+            )
+          );
           return;
         }
 
         unbanCount += users.length;
-        twitch.sendChatAdminMessage(`Starting purge of ${users.length} users in 5 seconds.`);
-        twitch.sendChatAdminMessage(`This block of users will take ${(users.length / 3).toFixed(1)} seconds to unban.`);
+        twitch.sendChatAdminMessage(
+          formatMessage(
+            {defaultMessage: 'Starting purge of {userCount, number} users in 5 seconds.'},
+            {userCount: users.length}
+          )
+        );
+        twitch.sendChatAdminMessage(
+          formatMessage(
+            {
+              defaultMessage: `This block of users will take {duration, number} seconds to unban.`,
+            },
+            {duration: Number((users.length / 3).toFixed(1))}
+          )
+        );
         setTimeout(
           () =>
             unbanChatters(users, () => {
-              twitch.sendChatAdminMessage('This block of users has been purged. Checking for more..');
+              twitch.sendChatAdminMessage(
+                formatMessage({defaultMessage: 'This block of users has been purged. Checking for more..'})
+              );
               getBannedChatters();
             }),
           5000
@@ -224,9 +254,9 @@ function handleCommands(message) {
                 chatters: {count},
               },
             },
-          }) => twitch.sendChatAdminMessage(`Current Chatters: ${count.toLocaleString()}`)
+          }) => twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Current Chatters: {count}'}, {count}))
         )
-        .catch(() => twitch.sendChatAdminMessage('Could not fetch chatter count.'));
+        .catch(() => twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Could not fetch chatter count.'})));
       break;
     }
     case 'followed': {
@@ -259,11 +289,24 @@ function handleCommands(message) {
           }) => {
             const since = dayjs(followedAt);
             twitch.sendChatAdminMessage(
-              `You followed ${channel.displayName} ${since.fromNow()} (${since.toDate().toLocaleString()})`
+              formatMessage(
+                {
+                  defaultMessage: 'You followed {name} {duration} ({date, date, medium})',
+                },
+                {
+                  name: channel.displayName,
+                  duration: since.fromNow(), // TODO: localize this
+                  date: since.toDate(),
+                }
+              )
             );
           }
         )
-        .catch(() => twitch.sendChatAdminMessage(`You do not follow ${channel.displayName}.`));
+        .catch(() =>
+          twitch.sendChatAdminMessage(
+            formatMessage({defaultMessage: 'You do not follow {name}.'}, {name: channel.displayName})
+          )
+        );
       break;
     }
     case 'follows': {
@@ -287,9 +330,12 @@ function handleCommands(message) {
                 followers: {totalCount},
               },
             },
-          }) => twitch.sendChatAdminMessage(`Current Followers: ${totalCount.toLocaleString()}`)
+          }) =>
+            twitch.sendChatAdminMessage(
+              formatMessage({defaultMessage: 'Current Followers: {totalCount, number}'}, {totalCount})
+            )
         )
-        .catch(() => twitch.sendChatAdminMessage('Could not fetch follower count.'));
+        .catch(() => twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Could not fetch follower count.'})));
       break;
     }
     case 'viewers': {
@@ -314,9 +360,12 @@ function handleCommands(message) {
                 stream: {viewersCount},
               },
             },
-          }) => twitch.sendChatAdminMessage(`Current Viewers: ${viewersCount.toLocaleString()}`)
+          }) =>
+            twitch.sendChatAdminMessage(
+              formatMessage({defaultMessage: 'Current Viewers: {viewersCount, number}'}, {viewersCount})
+            )
         )
-        .catch(() => twitch.sendChatAdminMessage('Could not fetch stream.'));
+        .catch(() => twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Could not fetch stream.'})));
       break;
     }
     case 'uptime': {
@@ -342,15 +391,17 @@ function handleCommands(message) {
           }) => {
             const startedTime = stream != null ? new Date(stream.createdAt) : null;
             if (!startedTime) {
-              twitch.sendChatAdminMessage('Stream is not live');
+              twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Stream is not live'}));
               return;
             }
 
             const secondsSince = Math.round((Date.now() - startedTime.getTime()) / 1000);
-            twitch.sendChatAdminMessage(`Current Uptime: ${secondsToLength(secondsSince)}`);
+            twitch.sendChatAdminMessage(
+              formatMessage({defaultMessage: 'Current Uptime: {duration}'}, {duration: secondsToLength(secondsSince)})
+            );
           }
         )
-        .catch(() => twitch.sendChatAdminMessage('Could not fetch stream.'));
+        .catch(() => twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Could not fetch stream.'})));
       break;
     }
 
@@ -363,7 +414,12 @@ function handleCommands(message) {
       }
       if (!subCommand) {
         twitch.sendChatAdminMessage(
-          `BetterTTV Chat Commands: (Use "/help <command>" for more info on a command) /${commandNames.join(' /')}`
+          formatMessage(
+            {
+              defaultMessage: `BetterTTV Chat Commands: (Use "/help '<'command'>'" for more info on a command) {commandNames}`,
+            },
+            {commandNames: `/${commandNames.join(' /')}`}
+          )
         );
       }
       return true;

@@ -5,10 +5,12 @@ import {registerComponent} from '../../Store.jsx';
 import {CategoryTypes} from '../../../../../constants.js';
 import styles from '../../../styles/header.module.css';
 import extension from '../../../../../utils/extension.js';
+import formatMessage from '../../../../../i18n/index.js';
 
 const EXTENSION_URL = new URL(extension.url(''));
 const HAS_LOCAL_EXTENSION_DATA = EXTENSION_URL.protocol.includes('extension');
 const EXTENSION_ID = EXTENSION_URL.host;
+const SETTING_NAME = formatMessage({defaultMessage: 'YouTube (beta)'});
 
 function sendExtensionCommand(commandData, callback = undefined) {
   if (window.chrome?.runtime != null) {
@@ -91,9 +93,11 @@ function YouTube() {
   }
 
   return (
-    <Panel header="YouTube (beta)">
+    <Panel header={SETTING_NAME}>
       <div className={styles.settingRow}>
-        <p className={styles.settingDescription}>Show BetterTTV emotes on YouTube Live Chat</p>
+        <p className={styles.settingDescription}>
+          {formatMessage({defaultMessage: 'Show BetterTTV emotes on YouTube Live Chat'})}
+        </p>
         <Toggle disabled={loading || value} checked={value} onChange={() => requestPermission()} />
       </div>
     </Panel>
@@ -107,7 +111,7 @@ function maybeRegisterComponent() {
 
   return registerComponent(YouTube, {
     settingId: 'youtube',
-    name: 'YouTube (beta)',
+    name: SETTING_NAME,
     category: CategoryTypes.CHAT,
     keywords: ['youtube'],
   });

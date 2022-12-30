@@ -4,6 +4,7 @@ import mouseButtons from '../../utils/mousebuttons.js';
 import twitch from '../../utils/twitch.js';
 import {PlatformTypes} from '../../constants.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
+import formatMessage from '../../i18n/index.js';
 
 const CHAT_ROOM_SELECTOR = 'section[data-test-selector="chat-room-component-layout"]';
 const CHAT_LINE_SELECTOR = '.chat-line__message';
@@ -34,7 +35,7 @@ let user;
 
 function setReason(type) {
   /* eslint-disable-next-line no-alert */
-  const reason = prompt(`Enter ${type} reason: (leave blank for none)`);
+  const reason = prompt(formatMessage({defaultMessage: 'Enter {type} reason: (leave blank for none)'}, {type}));
   return reason || '';
 }
 
@@ -73,18 +74,27 @@ function handleMouseMove(e) {
 
   let humanTime;
   if (Math.floor(time / 60 / 60 / 24) > 0) {
-    humanTime = `${Math.floor(time / 60 / 60 / 24)} Days`;
+    humanTime = formatMessage(
+      {defaultMessage: `{days, plural, one {# Day} other {# Days}}`},
+      {days: Math.floor(time / 60 / 60 / 24)}
+    );
   } else if (Math.floor(time / 60 / 60) > 0) {
-    humanTime = `${Math.floor(time / 60 / 60)} Hours`;
+    humanTime = formatMessage(
+      {defaultMessage: `{hours, plural, one {# Hour} other {# Hours}}`},
+      {hours: Math.floor(time / 60 / 60)}
+    );
   } else {
-    humanTime = `${Math.floor(time / 60)} Minutes`;
+    humanTime = formatMessage(
+      {defaultMessage: `{mins, plural, one {# Minute} other {# Minutes}}`},
+      {mins: Math.floor(time / 60)}
+    );
   }
 
   if (amount > 224 || amount < 0 || offsetx > 83 || offsetx < 0) {
     action = {
       type: ActionTypes.CANCEL,
       length: 0,
-      text: 'CANCEL',
+      text: formatMessage({defaultMessage: 'CANCEL'}),
     };
   } else if (amount > 45 && amount < 204) {
     action = {
@@ -96,19 +106,19 @@ function handleMouseMove(e) {
     action = {
       type: ActionTypes.BAN,
       length: 0,
-      text: 'BAN',
+      text: formatMessage({defaultMessage: 'BAN'}),
     };
   } else if (amount > 22 && amount <= 45) {
     action = {
       type: ActionTypes.TIMEOUT,
       length: 1,
-      text: 'PURGE',
+      text: formatMessage({defaultMessage: 'PURGE'}),
     };
   } else if (amount > 0 && amount <= 22) {
     action = {
       type: ActionTypes.DELETE,
       length: 0,
-      text: 'DELETE',
+      text: formatMessage({defaultMessage: 'DELETE'}),
     };
   }
 
@@ -132,7 +142,7 @@ function openCustomTimeout($target, messageId) {
   action = {
     type: ActionTypes.CANCEL,
     length: 0,
-    text: 'CANCEL',
+    text: formatMessage({defaultMessage: 'CANCEL'}),
   };
 
   $customTimeout.on('mousemove', handleMouseMove);

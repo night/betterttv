@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import dayjs from 'dayjs';
 import PanelGroup from 'rsuite/PanelGroup';
 import Panel from 'rsuite/Panel';
 import Loader from 'rsuite/Loader';
@@ -8,6 +7,7 @@ import api from '../../../utils/api.js';
 import debug from '../../../utils/debug.js';
 import styles from '../styles/header.module.css';
 import CloseButton from '../components/CloseButton.jsx';
+import formatMessage from '../../../i18n/index.js';
 
 const EXTENSION_VERSION = process.env.EXT_VER;
 
@@ -40,7 +40,7 @@ function Changelog({onClose}) {
   if (loading) {
     renderedChangelogEntries = (
       <div className={styles.center}>
-        <Loader content="Loading Changelog..." />
+        <Loader content={formatMessage({defaultMessage: 'Loading Changelog...'})} />
       </div>
     );
   } else if (changelogEntries == null) {
@@ -65,7 +65,12 @@ function Changelog({onClose}) {
         ));
 
         return (
-          <Panel header={`Version ${version} • ${dayjs(publishedAt).format('MMM D, YYYY')}`} key={version}>
+          <Panel
+            header={formatMessage(
+              {defaultMessage: 'Version {version} • {publishedAt, date, medium}'},
+              {version, publishedAt}
+            )}
+            key={version}>
             <p className={styles.settingDescription}>{formattedBody}</p>
           </Panel>
         );
@@ -76,8 +81,10 @@ function Changelog({onClose}) {
     <>
       <div className={styles.content}>
         <PanelGroup>
-          <Panel header={<h3>Changelog</h3>}>
-            <p className={styles.settingDescription}>A list of recent updates and patches to BetterTTV.</p>
+          <Panel header={<h3>{formatMessage({defaultMessage: 'Changelog'})}</h3>}>
+            <p className={styles.settingDescription}>
+              {formatMessage({defaultMessage: 'A list of recent updates and patches to BetterTTV.'})}
+            </p>
           </Panel>
           {renderedChangelogEntries}
         </PanelGroup>

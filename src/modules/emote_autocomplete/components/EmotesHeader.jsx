@@ -1,5 +1,10 @@
 import React, {useMemo} from 'react';
 import styles from './EmotesHeader.module.css';
+import formatMessage from '../../../i18n/index.js';
+
+function MatchesHeader(children) {
+  return <span className={styles.matches}>{children}</span>;
+}
 
 export default function EmotesHeader({chatInputPartialEmote}) {
   const partialInput = useMemo(
@@ -9,8 +14,10 @@ export default function EmotesHeader({chatInputPartialEmote}) {
 
   return (
     <div className={styles.header}>
-      <span className={styles.matches}>Matches for </span>
-      {partialInput}
+      {formatMessage(
+        {defaultMessage: '<matches>Matches for</matches> {partialInput}'},
+        {matches: MatchesHeader, partialInput}
+      )}
     </div>
   );
 }

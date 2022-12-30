@@ -7,6 +7,7 @@ import html from '../../utils/html.js';
 import keyCodes from '../../utils/keycodes.js';
 import {getCurrentUser} from '../../utils/user.js';
 import {getCurrentChannel} from '../../utils/channel.js';
+import formatMessage from '../../i18n/index.js';
 
 const Commands = {
   BAN: '/ban',
@@ -59,18 +60,27 @@ const MODERATOR_ACTIONS_TEMPLATE = `
 
 const userStatsItemTemplate = (icon, iconTitle, value, valueTitle) => `
   <div class="userStat">
-    <div class="statIcon" title="${iconTitle}">${icon}</div>
-    <div${valueTitle != null ? ` title="${valueTitle}"` : ''}>${html.escape(value)}</div>
+    <div class="statIcon" title="${html.escape(iconTitle)}">${icon}</div>
+    <div${valueTitle != null ? ` title="${html.escape(valueTitle)}"` : ''}>${html.escape(value)}</div>
   </div>
 `;
 
 const userStatsTemplate = (follows, createdAt, giftedBy, giftedAt) => `
   <div class="bttv-moderator-card-user-stats">
-    ${userStatsItemTemplate(Icons.HEART, 'Followers', follows.toLocaleString())}
-    ${userStatsItemTemplate(Icons.BIRTHDAY_CAKE, 'Account Creation Date', dayjs(createdAt).format('MMM D, YYYY'))}
+    ${userStatsItemTemplate(Icons.HEART, formatMessage({defaultMessage: 'Followers'}), follows.toLocaleString())}
+    ${userStatsItemTemplate(
+      Icons.BIRTHDAY_CAKE,
+      formatMessage({defaultMessage: 'Account Creation Date'}),
+      dayjs(createdAt).format('MMM D, YYYY')
+    )}
     ${
       giftedAt != null
-        ? userStatsItemTemplate(Icons.GIFT, 'Subscription Gifted By', giftedBy, dayjs(giftedAt).format('MMM D, YYYY'))
+        ? userStatsItemTemplate(
+            Icons.GIFT,
+            formatMessage({defaultMessage: 'Subscription Gifted By'}),
+            giftedBy,
+            dayjs(giftedAt).format('MMM D, YYYY')
+          )
         : ''
     }
   </div>
@@ -79,7 +89,7 @@ const userStatsTemplate = (follows, createdAt, giftedBy, giftedAt) => `
 const userMessagesTemplate = (messagesHTML) => `
   <div class="bttv-moderator-card-messages">
     <div class="label">
-      <span>Chat Messages</span>
+      <span>${formatMessage({defaultMessage: 'Chat Messages'})}</span>
       <div class="triangle"></div>
     </div>
     <div class="message-list">
