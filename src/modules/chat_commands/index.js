@@ -37,7 +37,7 @@ const CommandHelp = {
   }),
   p: formatMessage({defaultMessage: `Usage "/p '<'login'>' [reason]" - Shortcut for /purge`}),
   part: formatMessage({defaultMessage: 'Usage: "/part" - Temporarily leave a chat (anon chat)'}),
-  purge: formatMessage({defaultMessage: `Usage "/purge '<'login'>' [reason]" - Purges a user\'s chat`}),
+  purge: formatMessage({defaultMessage: `Usage "/purge '<'login'>' [reason]" - Purges a user's chat`}),
   shrug: formatMessage({defaultMessage: 'Usage "/shrug" - Appends your chat line with a shrug face'}),
   sub: formatMessage({defaultMessage: 'Usage "/sub" - Shortcut for /subscribers'}),
   suboff: formatMessage({defaultMessage: 'Usage "/suboff" - Shortcut for /subscribersoff'}),
