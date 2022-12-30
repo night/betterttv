@@ -229,7 +229,7 @@ function About({onClose}) {
           </Panel>
           <Panel>
             <p className={header.description}>
-              {formatMessage({defaultMessage: 'Version {version}}'}, {version: debug.version})}
+              {formatMessage({defaultMessage: 'Version {version}'}, {version: debug.version})}
             </p>
           </Panel>
         </PanelGroup>
