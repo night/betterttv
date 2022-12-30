@@ -21,7 +21,7 @@ function Theme() {
       </div>
       <div className={styles.settingRow}>
         <p className={styles.settingDescription}>
-          {formatMessage({defaultMessage: 'Automatically set dark theme from your system&apos;s theme'})}
+          {formatMessage({defaultMessage: "Automatically set dark theme from your system's theme"})}
         </p>
         <Toggle checked={autoThemeValue} onChange={(state) => setAutoThemeValue(state)} />
       </div>
