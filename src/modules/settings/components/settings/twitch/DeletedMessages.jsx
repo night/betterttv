@@ -26,7 +26,7 @@ function DeletedMessagesModule() {
               <div>
                 <p className={styles.heading}>{formatMessage({defaultMessage: 'Default'})}</p>
                 <p className={styles.settingDescription}>
-                  {formatMessage({defaultMessage: 'Do what twitch normally does.'})}
+                  {formatMessage({defaultMessage: 'Do what Twitch normally does.'})}
                 </p>
               </div>
             </Radio>
