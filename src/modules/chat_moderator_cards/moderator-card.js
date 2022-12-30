@@ -203,11 +203,16 @@ class ModeratorCard {
 
     const $modCards = $(MODERATOR_ACTIONS_TEMPLATE);
     $modCards.appendTo($moderatorActions);
-    $modCards.find('.bttv-moderator-card-action').on('click', ({currentTarget}) => {
+    $modCards.find('.bttv-moderator-card-action').on('click', ({currentTarget, shiftKey}) => {
       const $element = $(currentTarget);
       const command = $element.data('command');
       const duration = $element.data('duration');
-      twitch.sendChatMessage(`${command} ${this.user.name}${duration ? ` ${duration}` : ''}`);
+      const commandText = `${command} ${this.user.name}${duration ? ` ${duration}` : ''}`;
+      if (shiftKey) {
+        twitch.setChatInputValue(`${commandText} `);
+      } else {
+        twitch.sendChatMessage(commandText);
+      }
     });
   }
 
@@ -236,7 +241,7 @@ class ModeratorCard {
   }
 
   onKeyDown(e) {
-    if (e.ctrlKey || e.metaKey || e.shiftKey) return false;
+    if (e.ctrlKey || e.metaKey) return false;
     if ($('input, textarea, select, div[data-a-target="chat-input"]').is(':focus')) return false;
 
     const keyCode = e.key;
@@ -247,7 +252,7 @@ class ModeratorCard {
     if (twitch.getCurrentUserIsModerator()) {
       let command;
       let duration;
-      switch (keyCode) {
+      switch (keyCode.toLowerCase()) {
         case keyCodes.T:
           command = Commands.TIMEOUT;
           break;
@@ -268,10 +273,20 @@ class ModeratorCard {
           break;
       }
       if (command) {
-        twitch.sendChatMessage(`${command} ${this.user.name}${duration ? ` ${duration}` : ''}`);
+        const commandText = `${command} ${this.user.name}${duration ? ` ${duration}` : ''}`;
+        if (e.shiftKey) {
+          e.preventDefault();
+          twitch.setChatInputValue(`${commandText} `);
+        } else {
+          twitch.sendChatMessage(commandText);
+        }
         this.close();
         return false;
       }
+    }
+
+    if (e.shiftKey) {
+      return false;
     }
 
     if (keyCode === keyCodes.I) {
