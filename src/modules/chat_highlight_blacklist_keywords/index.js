@@ -324,6 +324,14 @@ class ChatHighlightBlacklistKeywordsModule {
   pinHighlight({from, message, date}) {
     if (settings.get(SettingIds.PINNED_HIGHLIGHTS) === false || !$pinnedHighlightsContainer) return;
 
+    // we need to dynamically change the top of this card due to community highlight visibility
+    const $communityHighlightsCard = $('.community-highlight-stack__card');
+    if ($communityHighlightsCard.length > 0) {
+      $pinnedHighlightsContainer.css('top', $communityHighlightsCard.outerHeight());
+    } else {
+      $pinnedHighlightsContainer.css('top', 0);
+    }
+
     if ($pinnedHighlightsContainer.children().length + 1 > settings.get(SettingIds.MAX_PINNED_HIGHLIGHTS)) {
       $pinnedHighlightsContainer.children().first().remove();
     }
