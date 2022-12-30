@@ -16,7 +16,7 @@ let mountedRoot;
 export default class SettingsModule {
   constructor() {
     this.load();
-    domObserver.on('a[data-test-selector="user-menu-dropdown__settings-link"]', () => {
+    domObserver.on('a[data-test-selector="user-menu-dropdown__settings-link"],.tw-drop-down-menu-item-figure', () => {
       this.renderSettingsMenuOption();
     });
   }
@@ -44,7 +44,8 @@ export default class SettingsModule {
   renderSettingsMenuOption() {
     if ($('.bttvSettingsIconDropDown').length) return;
 
-    $('a[data-a-target="settings-dropdown-link"]').parent('div').after(`
+    $('a[data-a-target="settings-dropdown-link"],a[href="https://www.twitch.tv/settings/profile"]').parent('div')
+      .after(`
       <div class="bttvSettingsDropDownWrapper">
         <a borderradius="border-radius-medium" class="bttvSettingsDropDown" data-a-target="betterttv-settings-dropdown-link" data-test-selector="user-menu-dropdown__betterttv-settings-link" href="#">
           <div class="dropdownContainer">

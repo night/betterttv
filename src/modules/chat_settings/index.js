@@ -10,7 +10,7 @@ import formatMessage from '../../i18n/index.js';
 
 const CHAT_SETTINGS_SELECTOR = '.chat-settings__content';
 const MOD_VIEW_CHAT_SETTINGS_SELECTOR =
-  'button[data-test-selector="chat-widget-settings-switch-to-non-mod"], button[data-test-selector="chat-widget-settings-switch-to-default"]';
+  'button[data-test-selector="deleted-message-display-setting-item-click-target"], button[data-test-selector="chat-filter-item-click-target"]';
 const CHAT_SETTINGS_BACK_BUTTON_SELECTOR =
   'button[data-test-selector="chat-settings-back-button"], button[data-test-selector="chat-widget-settings-back-button"]';
 const CHAT_SETTINGS_MOD_TOOLS_SELECTOR = 'div[data-test-selector="mod-tools"]';
@@ -53,7 +53,7 @@ function inIFrame() {
 function getChatSettings() {
   const $modViewChatSettings = $(MOD_VIEW_CHAT_SETTINGS_SELECTOR);
   if ($modViewChatSettings.length > 0) {
-    return $modViewChatSettings.parent();
+    return $modViewChatSettings.parent().parent();
   }
 
   const $chatSettings = $(CHAT_SETTINGS_SELECTOR);
