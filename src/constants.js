@@ -85,7 +85,7 @@ export const ChannelPointsFlags = {
 
 export const AutoPlayFlags = {
   FP_VIDEO: 1 << 0,
-  HOST_MODE: 1 << 1,
+  // HOST_MODE: 1 << 1,
   VOD_RECOMMENDATION_AUTOPLAY: 1 << 2,
 };
 

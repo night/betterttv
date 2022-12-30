@@ -29,12 +29,6 @@ function AutoplayModule() {
               {formatMessage({defaultMessage: 'Enable auto play for homepage video player'})}
             </p>
           </Checkbox>
-          <Checkbox key="hostPlayer" value={AutoPlayFlags.HOST_MODE}>
-            <p className={styles.heading}>{formatMessage({defaultMessage: 'Host-mode Player'})}</p>
-            <p className={styles.settingDescription}>
-              {formatMessage({defaultMessage: 'Enable auto play for channel hosting video player'})}
-            </p>
-          </Checkbox>
           <Checkbox key="vodPlayer" value={AutoPlayFlags.VOD_RECOMMENDATION_AUTOPLAY}>
             <p className={styles.heading}>{formatMessage({defaultMessage: 'VOD Player'})}</p>
             <p className={styles.settingDescription}>
