@@ -18,3 +18,21 @@
   position: relative !important;
   display: inline !important;
 }
+
+.bttv-emote-modifier-wide img {
+  width: 112px;
+  height: 28px;
+  object-fit: fill;
+}
+
+.bttv-emote-modifier-flip-horizontal img {
+  transform: scaleX(-1);
+}
+
+.bttv-emote-modifier-flip-vertical img {
+  transform: scaleY(-1);
+}
+
+.bttv-emote-modifier-zero-space {
+  margin-left: -4px;
+}

@@ -24,7 +24,7 @@ export default class Emote {
     return `${provider}-${this.id}`;
   }
 
-  toHTML() {
+  toHTML(modifier, className) {
     const srcset = [];
     if (this.images['2x']) {
       srcset.push(`${html.escape(this.images['2x'])} 2x`);
@@ -44,10 +44,12 @@ export default class Emote {
     `;
 
     return `
-      <div class="bttv-tooltip-wrapper bttv-emote ${categoryClass} ${idClass}">
-        <img src="${html.escape(this.images['1x'])}" srcset="${srcset.join(', ')}" alt="${html.escape(
-      this.code
-    )}" class="chat-line__message--emote bttv-emote-image" />
+      <div class="bttv-tooltip-wrapper bttv-emote ${categoryClass} ${idClass}${
+      className != null ? ` ${className}` : ''
+    }">
+        <img src="${html.escape(this.images['1x'])}" srcset="${srcset.join(', ')}" alt="${
+      modifier ? `${html.escape(modifier)} ` : ''
+    }${html.escape(this.code)}" class="chat-line__message--emote bttv-emote-image" />
         <div class="bttv-tooltip bttv-tooltip--up bttv-tooltip--align-center">${balloon}</div>
       </div>
     `;
