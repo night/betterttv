@@ -86,7 +86,7 @@ function getMessagePartsFromMessageElement($message) {
 class ChatModule {
   constructor() {
     watcher.on('chat.message', ($element, message) => this.messageParser($element, message));
-    watcher.on('chat.notice_message', ($element, message) => this.noticeMessageParser($element, message));
+    watcher.on('chat.notice_message', ($element) => this.noticeMessageParser($element));
     watcher.on('chat.pinned_message', ($element) => this.pinnedMessageParser($element));
     watcher.on('chat.status', ($element, message) => {
       if (message?.renderBetterTTVEmotes !== true) {
@@ -280,7 +280,7 @@ class ChatModule {
     $element[0].__bttvParsed = true;
   }
 
-  noticeMessageParser($element, message) {
+  noticeMessageParser($element) {
     const chatterNames = [...$element.find('.chatter-name span span, .chatter-name span')];
     for (const chatterName of chatterNames) {
       // skip non-text elements
