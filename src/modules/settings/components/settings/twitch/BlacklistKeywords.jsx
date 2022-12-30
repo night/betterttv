@@ -35,6 +35,10 @@ function BlacklistKeywords() {
                   name: formatMessage({defaultMessage: 'Username'}),
                   value: KeywordTypes.USER,
                 },
+                {
+                  name: formatMessage({defaultMessage: 'Badge'}),
+                  value: KeywordTypes.BADGE,
+                },
               ],
               defaultOption: 0,
             },
