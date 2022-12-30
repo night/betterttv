@@ -85,4 +85,10 @@ export default function chatWatcher(watcher_) {
 
     watcher.emit('vod.message', $(node));
   });
+
+  domObserver.on('.pinned-chat__message', (node, isConnected) => {
+    if (!isConnected) return;
+
+    watcher.emit('chat.pinned_message', $(node));
+  });
 }

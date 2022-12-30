@@ -78,6 +78,7 @@ function getMessagePartsFromMessageElement($message) {
 class ChatModule {
   constructor() {
     watcher.on('chat.message', ($element, message) => this.messageParser($element, message));
+    watcher.on('chat.pinned_message', ($element) => this.pinnedMessageParser($element));
     watcher.on('chat.status', ($element, message) => {
       if (message?.renderBetterTTVEmotes !== true) {
         return;
@@ -253,6 +254,10 @@ class ChatModule {
     this.messageReplacer(getMessagePartsFromMessageElement($element), user);
 
     $element[0].__bttvParsed = true;
+  }
+
+  pinnedMessageParser($element) {
+    this.messageReplacer(getMessagePartsFromMessageElement($element), null);
   }
 }
 
