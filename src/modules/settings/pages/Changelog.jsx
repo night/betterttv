@@ -68,7 +68,7 @@ function Changelog({onClose}) {
           <Panel
             header={formatMessage(
               {defaultMessage: 'Version {version} • {publishedAt, date, medium}'},
-              {version, publishedAt}
+              {version, publishedAt: new Date(publishedAt)}
             )}
             key={version}>
             <p className={styles.settingDescription}>{formattedBody}</p>

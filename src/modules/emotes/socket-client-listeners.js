@@ -3,6 +3,7 @@ import {getCurrentChannel} from '../../utils/channel.js';
 import twitch from '../../utils/twitch.js';
 import watcher from '../../watcher.js';
 import channelEmotes from './channel-emotes.js';
+import formatMessage from '../../i18n/index.js';
 
 function validChannelDestination(channel) {
   const currentChannel = getCurrentChannel();
@@ -19,7 +20,10 @@ socketClient.on(EventNames.EMOTE_CREATE, ({channel, emote}) => {
 
   watcher.emit('emotes.updated');
   twitch.sendChatAdminMessage(
-    `BetterTTV Emotes: ${emote.code} \u200B \u200B${emote.code}\u200B has been added to chat`,
+    formatMessage(
+      {defaultMessage: 'BetterTTV Emotes: {emoteCode} has been added to chat'},
+      {emoteCode: `${emote.code} \u200B \u200B${emote.code}\u200B`}
+    ),
     true
   );
 });
@@ -53,5 +57,11 @@ socketClient.on(EventNames.EMOTE_DELETE, ({channel, emoteId}) => {
   channelEmotes.emotes.delete(emote.code);
 
   watcher.emit('emotes.updated');
-  twitch.sendChatAdminMessage(`BetterTTV Emotes: \u200B${emote.code}\u200B has been removed from chat`, true);
+  twitch.sendChatAdminMessage(
+    formatMessage(
+      {defaultMessage: 'BetterTTV Emotes: {emoteCode} has been removed from chat'},
+      {emoteCode: `\u200B${emote.code}\u200B`}
+    ),
+    true
+  );
 });

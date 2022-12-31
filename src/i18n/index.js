@@ -1,12 +1,15 @@
 import {createIntl, createIntlCache} from '@formatjs/intl';
 
 const DEFAULT_LOCALE = 'en';
-const SUPPORTED_LOCALES = [DEFAULT_LOCALE];
+const SUPPORTED_LOCALES = [DEFAULT_LOCALE, 'ru-RU'];
 
 let browserLocale = Array.isArray(navigator.languages) ? navigator.languages[0] : null;
 browserLocale = browserLocale || navigator.language || navigator.browserLanguage || navigator.userLanguage;
-// eslint-disable-next-line prefer-destructuring
-browserLocale = browserLocale.split('-')[0].split('_')[0];
+browserLocale = browserLocale.replace('_', '-');
+if (!SUPPORTED_LOCALES.includes(browserLocale)) {
+  // eslint-disable-next-line prefer-destructuring
+  browserLocale = browserLocale.split('-')[0];
+}
 if (!SUPPORTED_LOCALES.includes(browserLocale)) {
   browserLocale = DEFAULT_LOCALE;
 }

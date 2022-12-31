@@ -198,7 +198,7 @@ function About({onClose}) {
                 onClick={backupFile}
                 disabled={resetting}
                 icon={<Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faDownload} />}>
-                Backup Settings
+                {formatMessage({defaultMessage: 'Backup Settings'})}
               </IconButton>
               <input type="file" hidden ref={fileImportRef} onChange={({target}) => importFile(target)} />
               <IconButton
@@ -214,7 +214,7 @@ function About({onClose}) {
                 disabled={resetting}
                 loading={importing}
                 icon={<Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faUpload} />}>
-                Import Settings
+                {formatMessage({defaultMessage: 'Import Settings'})}
               </IconButton>
               <IconButton
                 icon={<Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faRedo} />}
@@ -223,7 +223,7 @@ function About({onClose}) {
                 disabled={importing}
                 color="red"
                 onClick={() => resetDefault()}>
-                Reset to Default
+                {formatMessage({defaultMessage: 'Reset to Default'})}
               </IconButton>
             </div>
           </Panel>
