@@ -193,7 +193,8 @@ class ChatHighlightBlacklistKeywordsModule {
     watcher.on('load', () => readRepairKeywords());
     watcher.on('load.chat', () => this.loadChat());
     watcher.on('load.vod', () => this.loadChat());
-    watcher.on('chat.message', ($message, messageObj) => this.onMessage($message, messageObj));
+    watcher.on('chat.message', ($message, messageObj) => this.onMessage($message, messageObj, false));
+    watcher.on('chat.notice_message', ($message, messageObj) => this.onMessage($message, messageObj, true));
     watcher.on('vod.message', ($message) => this.onVODMessage($message));
     settings.on(`changed.${SettingIds.BLACKLIST_KEYWORDS}`, computeBlacklistKeywords);
     settings.on(`changed.${SettingIds.HIGHLIGHT_KEYWORDS}`, computeHighlightKeywords);
@@ -222,14 +223,14 @@ class ChatHighlightBlacklistKeywordsModule {
     loadTime = Date.now();
   }
 
-  onMessage($message, messageObj) {
-    const {user, timestamp, messageParts, reply} = messageObj;
-    if (user == null) {
+  onMessage($message, messageObj, notice) {
+    const {user, login, timestamp, messageParts, reply} = messageObj;
+    if (user == null && login == null) {
       return;
     }
 
-    const from = user.userLogin;
-    const message = messageTextFromAST(messageParts);
+    const from = login ?? user.userLogin;
+    const message = notice ? $message.text() : messageTextFromAST(messageParts);
     const date = new Date(timestamp);
     const badges = [...$message.find(CHAT_BADGE_SELECTOR)].map((badge) => badge.getAttribute('alt') || '');
 
