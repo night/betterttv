@@ -1,6 +1,7 @@
 import Fuse from 'fuse.js';
 import uniqBy from 'lodash.uniqby';
 import sortBy from 'lodash.sortby';
+import {v4 as uuidv4} from 'uuid';
 import SafeEventEmitter from '../../utils/safe-event-emitter.js';
 import watcher from '../../watcher.js';
 import {getEmojiCategories} from '../../modules/emote_menu/utils/emojis.js';
@@ -73,7 +74,8 @@ const fuse = new Fuse([], {
 let providerCategories = [];
 let platformCategories = [];
 
-const registeredProviderCategories = [];
+const registeredProviders = {};
+const registeredProviderCategories = {};
 
 export const CategoryPositions = {
   BOTTOM: 0,
@@ -114,12 +116,22 @@ class EmoteMenuViewStore extends SafeEventEmitter {
     this.markDirty(false);
   }
 
-  async upsertRegisteredProviderCategory(provider) {
-    registeredProviderCategories[provider.id] = provider;
+  registerProvider(provider) {
+    const registeredProviderId = uuidv4();
+    registeredProviders[registeredProviderId] = provider;
+    return registeredProviderId;
+  }
+
+  getRegisteredProvider(providerId) {
+    return registeredProviders[providerId];
+  }
+
+  upsertRegisteredProviderCategory(categoryId, category) {
+    registeredProviderCategories[categoryId] = category;
     this.updateProviders();
   }
 
-  async deleteRegisteredProviderCategory({id}) {
+  deleteRegisteredProviderCategory({id}) {
     delete registeredProviderCategories[id];
     this.updateProviders();
   }
@@ -182,18 +194,22 @@ class EmoteMenuViewStore extends SafeEventEmitter {
       ),
     ];
 
-    for (const provider of Object.values(registeredProviderCategories)) {
-      if (provider?.channel != null && provider?.channel !== currentChannel?.id) {
+    for (const [registeredCategoryId, registeredCategory] of Object.entries(registeredProviderCategories)) {
+      if (registeredCategory?.channelId != null && registeredCategory?.channelId !== currentChannel?.id) {
+        continue;
+      }
+      const provider = this.getRegisteredProvider(registeredCategory.providerId);
+      if (provider == null) {
         continue;
       }
       const category = createCategory(
-        provider.id,
-        provider.provider,
-        provider.displayName,
-        provider.channel == null
-          ? Icons.IMAGE(provider.icon.src, provider.icon.alt)
-          : Icons.IMAGE(provider.icon.src, provider.icon.alt, currentChannelProfilePicture),
-        provider.emotes
+        registeredCategoryId,
+        registeredCategory.providerId,
+        `${provider.displayName} ${registeredCategory.channelId == null ? 'Global' : 'Channel'}`,
+        registeredCategory.channelId == null
+          ? Icons.IMAGE(provider.iconSrc, registeredCategoryId)
+          : Icons.IMAGE(provider.iconSrc, registeredCategoryId, currentChannelProfilePicture),
+        registeredCategory.emotes
       );
       providerCategories.push(category);
     }
