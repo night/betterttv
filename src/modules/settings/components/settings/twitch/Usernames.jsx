@@ -41,6 +41,12 @@ function UsernamesModule() {
               })}
             </p>
           </Checkbox>
+          <Checkbox key="badges" value={UsernameFlags.BADGES}>
+            <p className={styles.heading}>{formatMessage({defaultMessage: 'Badges'})}</p>
+            <p className={styles.settingDescription}>
+              {formatMessage({defaultMessage: 'Show chat badges next to usernames'})}
+            </p>
+          </Checkbox>
         </CheckboxGroup>
       </div>
     </Panel>

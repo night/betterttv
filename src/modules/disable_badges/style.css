@@ -1,0 +1,5 @@
+.bttv-disable-badges .chat-scrollable-area__message-container {
+  button[data-a-target="chat-badge"] {
+    display: none;
+  }
+}

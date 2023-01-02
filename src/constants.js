@@ -93,6 +93,7 @@ export const UsernameFlags = {
   READABLE: 1 << 0,
   COLORS: 1 << 1,
   LOCALIZED: 1 << 2,
+  BADGES: 1 << 3,
 };
 
 export const PageTypes = {
@@ -203,7 +204,10 @@ export const SettingDefaultValues = {
     AutoPlayFlags.FP_VIDEO | AutoPlayFlags.HOST_MODE | AutoPlayFlags.VOD_RECOMMENDATION_AUTOPLAY,
     0,
   ],
-  [SettingIds.USERNAMES]: [UsernameFlags.COLORS | UsernameFlags.LOCALIZED | UsernameFlags.READABLE, 0],
+  [SettingIds.USERNAMES]: [
+    UsernameFlags.COLORS | UsernameFlags.LOCALIZED | UsernameFlags.READABLE | UsernameFlags.BADGES,
+    0,
+  ],
   [SettingIds.CHANNEL_POINTS]: [ChannelPointsFlags.CHANNEL_POINTS | ChannelPointsFlags.MESSAGE_HIGHLIGHTS, 0],
 };
 
