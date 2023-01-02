@@ -13,52 +13,6 @@ function serializeProvider({providerId, global = true}) {
   };
 }
 
-function upsertCategory({id, displayName, providerId, emotes: providerEmotes = [], channelId = null}) {
-  if (providerEmotes.length == null || providerEmotes.length === 0) {
-    throw new Error('Emotes must be an array of emotes');
-  }
-
-  const parsedEmotes = providerEmotes.map((emote) => {
-    if (emote.id == null || emote.id.length === 0 || typeof emote.id !== 'string') {
-      throw new Error('Emote ID must be a non-empty string');
-    }
-
-    if (emote.code == null || emote.code.length === 0 || typeof emote.code !== 'string') {
-      throw new Error('Emote code must be a non-empty string');
-    }
-
-    if (emote.images['1x'] == null || emote.images['1x'].length === 0) {
-      throw new Error('Emote must have a 1x image');
-    }
-
-    if (emote.images['2x'] == null || emote.images['2x'].length === 0) {
-      throw new Error('Emote must have a 2x image');
-    }
-
-    if (emote.images['4x'] == null || emote.images['4x'].length === 0) {
-      throw new Error('Emote must have a 4x image');
-    }
-
-    return new Emote({
-      id: `${id}-${emote.id}`,
-      category: {
-        id,
-        displayName,
-        provider: providerId,
-      },
-      channel: channelId,
-      code: emote.code,
-      images: {
-        '1x': new URL(emote.images['1x']).toString(),
-        '2x': new URL(emote.images['2x']).toString(),
-        '4x': new URL(emote.images['4x']).toString(),
-      },
-    });
-  });
-
-  emoteMenuViewStore.upsertRegisteredProviderCategory(id, {providerId, emotes: parsedEmotes, displayName, channelId});
-}
-
 export default {
   registerProvider({displayName, iconSrc}) {
     if (displayName == null || displayName.length === 0 || typeof displayName !== 'string') {
@@ -70,24 +24,55 @@ export default {
     return emoteMenuViewStore.registerProvider({displayName, iconSrc: new URL(iconSrc).toString()});
   },
 
-  upsertGlobalCategory({providerId, emotes}) {
-    upsertCategory({providerId, emotes, ...serializeProvider({providerId, global: true})});
-  },
-
-  upsertChannelCategory({providerId, emotes, channelId}) {
-    if (channelId == null || channelId.length === 0 || typeof channelId !== 'string') {
-      throw new Error('Channel ID must be a non-empty string');
+  upsertCategory({providerId, emotes: providerEmotes = [], channelId = null}) {
+    const {id, displayName} = serializeProvider({providerId, global: channelId == null});
+    if (providerEmotes.length == null || providerEmotes.length === 0 || !Array.isArray(providerEmotes)) {
+      throw new Error('Emotes must be an array of emotes');
     }
-    upsertCategory({providerId, emotes, channelId, ...serializeProvider({providerId, global: false})});
+
+    const parsedEmotes = providerEmotes.map((emote) => {
+      if (emote.id == null || emote.id.length === 0 || typeof emote.id !== 'string') {
+        throw new Error('Emote ID must be a non-empty string');
+      }
+
+      if (emote.code == null || emote.code.length === 0 || typeof emote.code !== 'string') {
+        throw new Error('Emote code must be a non-empty string');
+      }
+
+      if (emote.images['1x'] == null || emote.images['1x'].length === 0) {
+        throw new Error('Emote must have a 1x image');
+      }
+
+      if (emote.images['2x'] == null || emote.images['2x'].length === 0) {
+        throw new Error('Emote must have a 2x image');
+      }
+
+      if (emote.images['4x'] == null || emote.images['4x'].length === 0) {
+        throw new Error('Emote must have a 4x image');
+      }
+
+      return new Emote({
+        id: `${id}-${emote.id}`,
+        category: {
+          id,
+          displayName,
+          provider: providerId,
+        },
+        channel: channelId,
+        code: emote.code,
+        images: {
+          '1x': new URL(emote.images['1x']).toString(),
+          '2x': new URL(emote.images['2x']).toString(),
+          '4x': new URL(emote.images['4x']).toString(),
+        },
+      });
+    });
+
+    emoteMenuViewStore.upsertRegisteredProviderCategory(id, {providerId, emotes: parsedEmotes, displayName, channelId});
   },
 
-  deleteGlobalCategory({providerId}) {
-    const category = serializeProvider({providerId, global: true});
-    emoteMenuViewStore.deleteRegisteredProviderCategory({id: category.id});
-  },
-
-  deleteChannelCategory({providerId}) {
-    const category = serializeProvider({providerId, global: false});
+  deleteCategory({providerId, channelId}) {
+    const category = serializeProvider({providerId, global: channelId == null});
     emoteMenuViewStore.deleteRegisteredProviderCategory({id: category.id});
   },
 };
