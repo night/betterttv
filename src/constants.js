@@ -87,6 +87,7 @@ export const AutoPlayFlags = {
   FP_VIDEO: 1 << 0,
   // HOST_MODE: 1 << 1,
   VOD_RECOMMENDATION_AUTOPLAY: 1 << 2,
+  OFFLINE_CHANNEL_VIDEO: 1 << 3,
 };
 
 export const UsernameFlags = {
@@ -201,7 +202,7 @@ export const SettingDefaultValues = {
     0,
   ],
   [SettingIds.AUTO_PLAY]: [
-    AutoPlayFlags.FP_VIDEO | AutoPlayFlags.HOST_MODE | AutoPlayFlags.VOD_RECOMMENDATION_AUTOPLAY,
+    AutoPlayFlags.FP_VIDEO | AutoPlayFlags.VOD_RECOMMENDATION_AUTOPLAY | AutoPlayFlags.OFFLINE_CHANNEL_VIDEO,
     0,
   ],
   [SettingIds.USERNAMES]: [

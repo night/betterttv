@@ -29,6 +29,14 @@ function AutoplayModule() {
               {formatMessage({defaultMessage: 'Enable auto play for homepage video player'})}
             </p>
           </Checkbox>
+          <Checkbox key="offlineChannelPlayer" value={AutoPlayFlags.OFFLINE_CHANNEL_VIDEO}>
+            <p className={styles.heading}>{formatMessage({defaultMessage: 'Offline Channel Player'})}</p>
+            <p className={styles.settingDescription}>
+              {formatMessage({
+                defaultMessage: 'Enable auto play of the welcome video or last stream on offline channels',
+              })}
+            </p>
+          </Checkbox>
           <Checkbox key="vodPlayer" value={AutoPlayFlags.VOD_RECOMMENDATION_AUTOPLAY}>
             <p className={styles.heading}>{formatMessage({defaultMessage: 'VOD Player'})}</p>
             <p className={styles.settingDescription}>

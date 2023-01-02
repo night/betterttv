@@ -10,7 +10,7 @@ const CHAT_CONTAINER = 'section[data-test-selector="chat-room-component-layout"]
 const VOD_CHAT_CONTAINER = '.qa-vod-chat,.va-vod-chat';
 const CHAT_LIST = '.chat-list,.chat-list--default,.chat-list--other';
 const VOD_CHAT_LIST = '.chat-shell';
-const PLAYER = 'div[data-a-target="player-overlay-click-handler"]';
+const PLAYER = 'div[data-a-target="player-overlay-click-handler"],.video-player';
 const CLIPS_BROADCASTER_INFO = '.clips-broadcaster-info';
 const CHAT_MESSAGE_SELECTOR = '.chat-line__message';
 const CHAT_INPUT = 'textarea[data-a-target="chat-input"], div[data-a-target="chat-input"]';
