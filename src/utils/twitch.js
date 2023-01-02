@@ -721,6 +721,16 @@ export default {
     return highlight;
   },
 
+  getSidebarSection(element) {
+    let sidebarSection;
+    try {
+      const node = searchReactParents(getReactInstance($(element)[0]), (n) => n.memoizedProps?.section != null);
+      sidebarSection = node.memoizedProps.section;
+    } catch (e) {}
+
+    return sidebarSection;
+  },
+
   graphqlQuery(query, variables) {
     const client = this.getApolloClient();
     if (client == null) {

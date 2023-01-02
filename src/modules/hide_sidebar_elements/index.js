@@ -5,6 +5,7 @@ import domObserver from '../../observers/dom.js';
 import {PlatformTypes, SettingIds, SidebarFlags} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
+import twitch from '../../utils/twitch.js';
 
 let removeFeaturedChannelsListener;
 let removeOfflineFollowedChannelsListener;
@@ -28,9 +29,14 @@ class HideSidebarElementsModule {
       if (removeFeaturedChannelsListener) return;
 
       removeFeaturedChannelsListener = domObserver.on(
-        '.side-nav-section a[data-test-selector="recommended-channel"], .side-nav-section a[data-test-selector="similarity-channel"], .side-nav-section a[data-test-selector="popular-channel"]',
+        '.side-nav-section a[data-test-selector="recommended-channel"], .side-nav-section a[data-test-selector="similarity-channel"], .side-nav-section a[data-test-selector="popular-channel"], .side-nav-card[data-test-selector="side-nav-card-collapsed"]',
         (node, isConnected) => {
           if (!isConnected) return;
+
+          const sidebarSection = twitch.getSidebarSection(node);
+          if (!['SIMILAR_SECTION', 'RECOMMENDED_SECTION', 'POPULAR_SECTION'].includes(sidebarSection?.type)) {
+            return;
+          }
           $(node).addClass('bttv-hide-featured-channels');
         },
         {useParentNode: true}
