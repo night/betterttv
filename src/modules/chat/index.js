@@ -260,7 +260,8 @@ class ChatModule {
     if (
       (modsOnly === true && !user.mod) ||
       (subsOnly === true && !user.subscriber) ||
-      (asciiOnly === true && hasNonASCII(messageObj.message))
+      (asciiOnly === true &&
+        (hasNonASCII(messageObj.messageBody) || messageObj.messageParts?.some((part) => part.type === 6)))
     ) {
       $element.hide();
     }
