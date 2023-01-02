@@ -136,7 +136,7 @@ function About({onClose}) {
                   </a>
                 </li>
                 <li>
-                  <a target="_blank" rel="noreferrer" href="https://github.com/night/betterttv/issues">
+                  <a target="_blank" rel="noreferrer" href="https://github.com/night/betterttv/discussions">
                     {formatMessage({defaultMessage: 'Submit Ideas'})}
                   </a>
                 </li>
