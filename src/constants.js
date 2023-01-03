@@ -3,6 +3,7 @@ export const SettingIds = {
   AUTO_THEATRE_MODE: 'autoTheatreMode',
   AUTO_JOIN_RAIDS: 'autoJoinRaids',
   AUTO_MOD_VIEW: 'autoModView',
+  AUTO_CLAIM: 'autoClaim',
   CHANNEL_POINTS: 'channelPoints',
   SPLIT_CHAT: 'splitChat',
   REVERSE_CHAT_DIRECTION: 'reverseChatDirection',
@@ -96,6 +97,11 @@ export const UsernameFlags = {
   COLORS: 1 << 1,
   LOCALIZED: 1 << 2,
   BADGES: 1 << 3,
+};
+
+export const AutoClaimFlags = {
+  DROPS: 1 << 0,
+  MOMENTS: 1 << 1,
 };
 
 export const PageTypes = {
@@ -212,6 +218,7 @@ export const SettingDefaultValues = {
     0,
   ],
   [SettingIds.CHANNEL_POINTS]: [ChannelPointsFlags.CHANNEL_POINTS | ChannelPointsFlags.MESSAGE_HIGHLIGHTS, 0],
+  [SettingIds.AUTO_CLAIM]: [0, 0],
 };
 
 export const FlagSettings = [
@@ -221,6 +228,7 @@ export const FlagSettings = [
   SettingIds.AUTO_PLAY,
   SettingIds.USERNAMES,
   SettingIds.CHANNEL_POINTS,
+  SettingIds.AUTO_CLAIM,
 ];
 
 export const PlatformTypes = {
