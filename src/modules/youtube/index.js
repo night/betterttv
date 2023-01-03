@@ -2,23 +2,23 @@ import $ from 'jquery';
 import chat from '../chat/index.js';
 import settings from '../../settings.js';
 import watcher from '../../watcher.js';
-import {PlatformTypes} from '../../constants.js';
+import {PlatformTypes, SettingIds} from '../../constants.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
 
-const GIF_EMOTES_SETTINGS_KEY = 'bttvGIFEmotes';
 const CHAT_MESSAGE_SELECTOR = '#content #message,#content #content-text';
 const CHAT_USERNAME_SELECTOR = '.yt-live-chat-author-chip,#author-text';
 
 class YouTubeModule {
   constructor() {
     watcher.on('load.youtube', () => this.load());
+    settings.on(`changed.${SettingIds.AUTO_LIVE_CHAT_VIEW}`, () => this.load());
     watcher.on('youtube.message', (el, messageObj) => this.parseMessage(el, messageObj));
   }
 
   load() {
-    // force enable GIF emotes since clips does not have real settings
-    if (settings.get(GIF_EMOTES_SETTINGS_KEY) === false) {
-      settings.set(GIF_EMOTES_SETTINGS_KEY, true);
+    if (settings.get(SettingIds.AUTO_LIVE_CHAT_VIEW)) {
+      document.querySelector('#live-chat-view-selector-sub-menu #trigger')?.click();
+      document.querySelector('#live-chat-view-selector-sub-menu #dropdown a:nth-child(2)')?.click();
     }
   }
 

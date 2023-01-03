@@ -1,12 +1,10 @@
 import $ from 'jquery';
 import chat from '../chat/index.js';
 import colors from '../../utils/colors.js';
-import settings from '../../settings.js';
 import watcher from '../../watcher.js';
 import {PlatformTypes} from '../../constants.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
 
-const GIF_EMOTES_SETTINGS_KEY = 'bttvGIFEmotes';
 const CHAT_MESSAGE_SELECTOR = 'span[data-a-target="chat-message-text"]';
 const CHAT_USERNAME_SELECTOR = 'a[href$="/clips"] span';
 const SCROLL_INDICATOR_SELECTOR = '.clips-chat .clips-chat__content button';
@@ -24,15 +22,7 @@ function scrollOnEmoteLoad($el) {
 
 class ClipsModule {
   constructor() {
-    watcher.on('load.clips', () => this.load());
     watcher.on('clips.message', ($el) => this.parseMessage($el));
-  }
-
-  load() {
-    // force enable GIF emotes since clips does not have real settings
-    if (settings.get(GIF_EMOTES_SETTINGS_KEY) === false) {
-      settings.set(GIF_EMOTES_SETTINGS_KEY, true);
-    }
   }
 
   parseMessage($element) {

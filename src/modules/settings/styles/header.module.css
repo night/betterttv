@@ -42,6 +42,7 @@
 
 .settingDescription {
   color: var(--bttv-rs-text-secondary);
+  margin-right: 8px;
 }
 
 .content {

@@ -35,6 +35,7 @@ export const SettingIds = {
   CHAT: 'chat',
   AUTO_PLAY: 'autoPlay',
   USERNAMES: 'usernames',
+  AUTO_LIVE_CHAT_VIEW: 'autoLiveChatView',
 };
 
 export const CategoryTypes = {
@@ -219,6 +220,7 @@ export const SettingDefaultValues = {
   ],
   [SettingIds.CHANNEL_POINTS]: [ChannelPointsFlags.CHANNEL_POINTS | ChannelPointsFlags.MESSAGE_HIGHLIGHTS, 0],
   [SettingIds.AUTO_CLAIM]: [0, 0],
+  [SettingIds.LIVE_CHAT_VIEW]: false,
 };
 
 export const FlagSettings = [
