@@ -23,7 +23,12 @@ class AutoModViewModule {
       modViewButtonListener = undefined;
     } else if (autoModView && modViewButtonListener == null) {
       modViewButtonListener = domObserver.on(MOD_VIEW_BUTTON_SELECTOR, (node, isConnected) => {
-        if (!isConnected || noReload || referringPath.startsWith('/moderator/')) {
+        if (
+          !isConnected ||
+          noReload ||
+          referringPath.startsWith('/moderator/') ||
+          window.location.pathname.startsWith('/moderator/')
+        ) {
           return;
         }
         node.click();
