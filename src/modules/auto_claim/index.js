@@ -19,11 +19,11 @@ function handleClaim(node) {
     eligibleEventTypes.push('drop');
   }
   if (hasFlag(autoClaim, AutoClaimFlags.MOMENTS)) {
-    eligibleEventTypes.push('moment');
+    eligibleEventTypes.push('community-moment');
   }
 
   const event = twitch.getPrivateCalloutEvent(node);
-  if (event == null || !['drop', 'community-moment'].includes(event.type)) {
+  if (event == null || !eligibleEventTypes.includes(event.type)) {
     return;
   }
 
