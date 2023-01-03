@@ -3,12 +3,13 @@ import {createRoot} from 'react-dom/client';
 import {EmoteProviders, SettingIds} from '../../../constants.js';
 import settings from '../../../settings.js';
 import {createYoutubeEmojiNode} from '../../../utils/youtube.js';
+import domObserver from '../../../observers/dom.js';
 import EmoteWhisper from '../components/EmoteWhisper.jsx';
 import styles from './EmoteAutocomplete.module.css';
 
 let mountedRoot;
 
-const CHAT_TEXT_AREA = 'div#input[contenteditable]';
+const CHAT_TEXT_AREA = '.yt-live-chat-text-input-field-renderer[contenteditable]';
 const EMOTE_AUTOCOMPLETE_CONTAINER_SELECTOR = 'div[data-a-target="bttv-autocomplete-matches-container"]';
 
 function findFocusedWord(value, selectionStart = 0) {
@@ -48,29 +49,31 @@ function toggleNativeAutocomplete(partialInput) {
 
 export default class EmoteAutocomplete {
   constructor() {
-    this.load();
+    domObserver.on('.yt-live-chat-text-input-field-renderer', () => this.load());
     settings.on(`changed.${SettingIds.EMOTE_AUTOCOMPLETE}`, () => this.load());
   }
 
   load() {
-    const emoteAutcompleteContainer = document.querySelector(EMOTE_AUTOCOMPLETE_CONTAINER_SELECTOR);
+    let emoteAutocompleteMatchesContainer = document.querySelector(EMOTE_AUTOCOMPLETE_CONTAINER_SELECTOR);
     const emoteAutocomplete = settings.get(SettingIds.EMOTE_AUTOCOMPLETE);
+    const element = document.querySelector(CHAT_TEXT_AREA);
 
-    if (emoteAutcompleteContainer == null && emoteAutocomplete) {
-      const element = document.querySelector(CHAT_TEXT_AREA);
-      const whisperContainer = document.createElement('div');
-      whisperContainer.setAttribute('data-a-target', 'bttv-autocomplete-matches-container');
-      const chatElement = document.querySelector('#chat');
+    if (emoteAutocomplete && element != null) {
+      if (emoteAutocompleteMatchesContainer == null) {
+        emoteAutocompleteMatchesContainer = document.createElement('div');
+        emoteAutocompleteMatchesContainer.setAttribute('data-a-target', 'bttv-autocomplete-matches-container');
 
-      if (chatElement != null) {
-        chatElement.appendChild(whisperContainer);
+        const chatElement = document.querySelector('#chat');
+        if (chatElement != null) {
+          chatElement.appendChild(emoteAutocompleteMatchesContainer);
+        }
       }
 
       if (mountedRoot != null) {
         mountedRoot.unmount();
       }
 
-      mountedRoot = createRoot(whisperContainer);
+      mountedRoot = createRoot(emoteAutocompleteMatchesContainer);
       mountedRoot.render(
         <EmoteWhisper
           boundingQuerySelector={CHAT_TEXT_AREA}
@@ -81,7 +84,7 @@ export default class EmoteAutocomplete {
       );
     }
 
-    if (!emoteAutocomplete && emoteAutcompleteContainer != null) {
+    if (!emoteAutocomplete && emoteAutocompleteMatchesContainer != null) {
       mountedRoot?.unmount();
     }
   }

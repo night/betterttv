@@ -4,7 +4,7 @@ export default function useChatInputPartialEmote(chatInputElement, getChatInputP
   const [partialInput, setPartialInput] = useState('');
 
   useEffect(() => {
-    function inputCallback(event) {
+    function handleInput(event) {
       const value = getChatInputPartialEmote();
 
       if (value == null) {
@@ -16,10 +16,10 @@ export default function useChatInputPartialEmote(chatInputElement, getChatInputP
       event.stopPropagation();
     }
 
-    chatInputElement.addEventListener('input', inputCallback);
+    chatInputElement.addEventListener('input', handleInput);
 
     return () => {
-      chatInputElement.removeEventListener('input', inputCallback);
+      chatInputElement.removeEventListener('input', handleInput);
     };
   }, [getChatInputPartialEmote, chatInputElement]);
 
