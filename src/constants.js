@@ -6,6 +6,7 @@ export const SettingIds = {
   AUTO_CLAIM: 'autoClaim',
   CHANNEL_POINTS: 'channelPoints',
   SPLIT_CHAT: 'splitChat',
+  SPLIT_CHAT_COLOR: 'splitChatColor',
   REVERSE_CHAT_DIRECTION: 'reverseChatDirection',
   PINNED_HIGHLIGHTS: 'pinnedHighlights',
   MAX_PINNED_HIGHLIGHTS: 'maxPinnedHighlights',
