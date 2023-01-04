@@ -9,7 +9,13 @@
 
 .action {
   float: right;
-  margin-right: 10px;
+  margin-right: 4px;
+  padding-right: 8px;
+  padding-left: 4px;
+
+  & + .action {
+    padding-right: 4px;
+  }
 }
 
 .actionCell {
@@ -50,8 +56,35 @@
   min-width: 150px;
 }
 
+.container {
+  border-radius: 4px;
+  position: relative;
+}
+
+.additionalSettingsDarken {
+  opacity: 0.3;
+}
+
 .table {
-  border-radius: 5px;
+  margin-bottom: 8px;
+}
+
+.additionalSettings {
+  background-color: var(--bttv-rs-sidenav-default-bg);
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  border-radius: 4px;
+  z-index: 2;
+  padding: 16px;
+  max-height: 240px;
+}
+
+.additionalSettingsClose {
+  position: absolute;
+  top: 8px;
+  right: 8px;
 }
 
 .header div {

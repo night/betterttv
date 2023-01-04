@@ -1,0 +1,57 @@
+.container {
+  position: relative;
+  z-index: 10;
+
+  :global {
+    .react-colorful {
+      width: 80px;
+      height: 80px;
+    }
+
+    .react-colorful__hue {
+      height: 12px;
+    }
+  }
+}
+
+.swatchContainer {
+  display: flex;
+  flex-direction: row;
+  border-radius: 4px;
+  padding: 2px;
+}
+
+.swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  margin-right: 4px;
+}
+
+.hexInput {
+  color: var(--bttv-rs-text-primary);
+  background-color: var(--bttv-rs-input-bg);
+  border: 1px solid var(--bttv-rs-border-primary);
+  padding: 2px 8px;
+  font-size: 14px;
+  line-height: 1.43;
+  border-radius: 4px;
+  width: 72px;
+
+  &:hover {
+    border-color: var(--bttv-rs-input-focus-border);
+  }
+
+  &:focus {
+    border-color: var(--bttv-rs-input-focus-border);
+    outline: 3px solid var(--bttv-rs-color-focus-ring);
+  }
+}
+
+.popout {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  border-radius: 4px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}

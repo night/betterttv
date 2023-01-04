@@ -1,4 +1,5 @@
 import React, {useRef, useEffect, useState} from 'react';
+import classNames from 'classnames';
 
 import Table from 'rsuite/Table';
 import Button from 'rsuite/Button';
@@ -10,8 +11,9 @@ import Whisper from 'rsuite/Whisper';
 
 import * as faTimes from '@fortawesome/free-solid-svg-icons/faTimes';
 import * as faPlus from '@fortawesome/free-solid-svg-icons/faPlus';
+import * as faGear from '@fortawesome/free-solid-svg-icons/faGear';
 
-import classNames from 'classnames';
+import CloseButton from './CloseButton.jsx';
 import styles from '../styles/table.module.css';
 import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.jsx';
 import formatMessage from '../../../i18n/index.js';
@@ -135,19 +137,25 @@ function CustomCell(props) {
   }
 }
 
-function ActionCell({rowData, dataKey, onClick, ...props}) {
+function ActionCell({rowData, dataKey, onDelete, onToggleAdditionalSettings, hasAdditionalSettings, ...props}) {
   return (
     <Cell {...props} className={styles.actionCell}>
-      <Button className={styles.action} appearance="link" onClick={() => onClick(rowData.id)}>
+      <Button className={styles.action} appearance="link" onClick={() => onDelete(rowData.id)}>
         <Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faTimes} />
       </Button>
+      {hasAdditionalSettings ? (
+        <Button className={styles.action} appearance="link" onClick={() => onToggleAdditionalSettings(rowData.id)}>
+          <Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faGear} />
+        </Button>
+      ) : null}
     </Cell>
   );
 }
 
-function EditTable({options, setValue, value, ...props}) {
+function EditTable({options, setValue, value, renderAdditionalSettings, ...props}) {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(true);
+  const [additionalSettingsRowId, setAdditionalSettingsRowId] = useState(null);
 
   useEffect(() => {
     // why we do this: https://github.com/rsuite/rsuite/issues/1543
@@ -181,6 +189,9 @@ function EditTable({options, setValue, value, ...props}) {
   }
 
   function handleEditState(id) {
+    if (id == null || data[id] == null) {
+      return;
+    }
     data[id].status = data[id].status !== Status.EDIT ? Status.EDIT : null;
     handleUpdateData();
   }
@@ -236,12 +247,23 @@ function EditTable({options, setValue, value, ...props}) {
     handleUpdateData();
   }
 
+  function handleToggleAdditionalSettings(rowId) {
+    setAdditionalSettingsRowId(additionalSettingsRowId === rowId ? null : rowId);
+  }
+
   const dataValues = Object.values(data);
 
   return (
-    <>
+    <div className={styles.container}>
       {dataValues.length > 0 ? (
-        <Table data={dataValues} {...props} loading={loading} className={styles.table}>
+        <Table
+          data={dataValues}
+          {...props}
+          loading={loading}
+          className={classNames(
+            styles.table,
+            additionalSettingsRowId != null ? styles.additionalSettingsDarken : null
+          )}>
           {options.map((key) => {
             switch (key.type) {
               case Types.STRING:
@@ -283,7 +305,12 @@ function EditTable({options, setValue, value, ...props}) {
           })}
           <Column>
             <HeaderCell />
-            <ActionCell dataKey="id" onClick={(...args) => handleDeleteState(...args)} />
+            <ActionCell
+              hasAdditionalSettings={renderAdditionalSettings != null}
+              dataKey="id"
+              onDelete={(rowId) => handleDeleteState(rowId)}
+              onToggleAdditionalSettings={(rowId) => handleToggleAdditionalSettings(rowId)}
+            />
           </Column>
         </Table>
       ) : null}
@@ -291,11 +318,20 @@ function EditTable({options, setValue, value, ...props}) {
         appearance="primary"
         onClick={() => handleAddEmptyRow()}
         loading={loading}
-        className={styles.button}
+        className={classNames(styles.button, additionalSettingsRowId != null ? styles.additionalSettingsDarken : null)}
         icon={<Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faPlus} />}>
         {formatMessage({defaultMessage: 'Add New'})}
       </IconButton>
-    </>
+      {renderAdditionalSettings != null && additionalSettingsRowId != null ? (
+        <div className={styles.additionalSettings}>
+          <CloseButton
+            className={styles.additionalSettingsClose}
+            onClose={() => handleToggleAdditionalSettings(additionalSettingsRowId)}
+          />
+          {renderAdditionalSettings(additionalSettingsRowId, data[additionalSettingsRowId])}
+        </div>
+      ) : null}
+    </div>
   );
 }
 

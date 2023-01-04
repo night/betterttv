@@ -1,5 +1,6 @@
 import React from 'react';
 import Panel from 'rsuite/Panel';
+import TagInput from 'rsuite/TagInput';
 import Table, {Types} from '../../Table.jsx';
 import {registerComponent} from '../../Store.jsx';
 import {SettingIds, CategoryTypes} from '../../../../../constants.js';
@@ -9,6 +10,24 @@ import useStorageState from '../../../../../common/hooks/StorageState.jsx';
 import formatMessage from '../../../../../i18n/index.js';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Blacklist Keywords'});
+
+function AdditionalSettings({channels, onChannelsChange}) {
+  channels = channels || [];
+
+  return (
+    <div>
+      <div className={styles.settingTitle}>{formatMessage({defaultMessage: 'Advanced Settings'})}</div>
+      <div className={styles.settingRow}>
+        <div className={styles.settingDescription}>{formatMessage({defaultMessage: 'Enabled Channels'})}</div>
+        <TagInput
+          value={channels}
+          className={styles.settingTagInput}
+          onChange={(newChannels) => onChannelsChange(newChannels)}
+        />
+      </div>
+    </div>
+  );
+}
 
 function BlacklistKeywords() {
   const [value, setValue] = useStorageState(SettingIds.BLACKLIST_KEYWORDS);
@@ -51,6 +70,15 @@ function BlacklistKeywords() {
           setValue={setValue}
           value={value}
           renderEmpty={() => null}
+          renderAdditionalSettings={(rowId, rowData) => (
+            <AdditionalSettings
+              channels={rowData.channels}
+              onChannelsChange={(channels) => {
+                value[rowData.id].channels = channels;
+                setValue({...value});
+              }}
+            />
+          )}
         />
       </div>
     </Panel>

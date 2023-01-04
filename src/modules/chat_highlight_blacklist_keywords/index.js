@@ -5,11 +5,13 @@ import watcher from '../../watcher.js';
 import settings from '../../settings.js';
 import html from '../../utils/html.js';
 import cdn from '../../utils/cdn.js';
+import colors from '../../utils/colors.js';
 import {escapeRegExp} from '../../utils/regex.js';
 import {computeKeywords, KeywordTypes} from '../../utils/keywords.js';
 import {PlatformTypes, SettingIds} from '../../constants.js';
 import {getCurrentUser} from '../../utils/user.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
+import {getCurrentChannel} from '../../utils/channel.js';
 
 const CHAT_LIST_SELECTOR =
   '.chat-list .chat-scrollable-area__message-container,.chat-list--default .chat-scrollable-area__message-container,.chat-list--other .chat-scrollable-area__message-container,.video-chat div[data-test-selector="video-chat-message-list-wrapper"]';
@@ -137,25 +139,39 @@ function keywordRegEx(keyword) {
   return new RegExp(`(\\s|^|@)${keyword}([!.,:';?/]|\\s|$)`, 'i');
 }
 
-function fieldContainsKeyword(keywords, from, field) {
+function fieldContainsKeyword(keywords, from, field, onColorChange) {
   const currentUser = getCurrentUser();
   if (currentUser != null && currentUser.name === from) {
     return false;
   }
 
-  for (let keyword of keywords) {
+  const channel = getCurrentChannel();
+
+  for (const {keyword, channels, color} of keywords) {
+    if (channels != null && channels.length > 0 && channel != null && !channels.includes(channel.name)) {
+      continue;
+    }
+
     const regexKeyword = extractRegex(keyword);
     if (regexKeyword != null) {
-      return regexKeyword.test(field);
+      if (!regexKeyword.test(field)) {
+        continue;
+      }
+    } else {
+      let mutatedKeyword = escapeRegExp(keyword);
+      mutatedKeyword = wildcard(mutatedKeyword);
+      mutatedKeyword = exactMatch(mutatedKeyword);
+
+      if (!keywordRegEx(mutatedKeyword).test(field)) {
+        continue;
+      }
     }
 
-    keyword = escapeRegExp(keyword);
-    keyword = wildcard(keyword);
-    keyword = exactMatch(keyword);
-
-    if (keywordRegEx(keyword).test(field)) {
-      return true;
+    if (color != null && onColorChange != null) {
+      onColorChange(color);
     }
+
+    return true;
   }
 
   return false;
@@ -234,6 +250,11 @@ class ChatHighlightBlacklistKeywordsModule {
     const date = new Date(timestamp);
     const badges = [...$message.find(CHAT_BADGE_SELECTOR)].map((badge) => badge.getAttribute('alt') || '');
 
+    let color;
+    function handleColorChange(newColor) {
+      color = newColor;
+    }
+
     if (
       badges.some((value) => fieldContainsKeyword(blacklistBadges, from, value)) ||
       fieldContainsKeyword(blacklistUsers, from, from) ||
@@ -247,14 +268,14 @@ class ChatHighlightBlacklistKeywordsModule {
     }
 
     if (
-      badges.some((value) => fieldContainsKeyword(highlightBadges, from, value)) ||
-      fieldContainsKeyword(highlightUsers, from, from) ||
-      fieldContainsKeyword(highlightKeywords, from, message) ||
+      badges.some((value) => fieldContainsKeyword(highlightBadges, from, value, handleColorChange)) ||
+      fieldContainsKeyword(highlightUsers, from, from, handleColorChange) ||
+      fieldContainsKeyword(highlightKeywords, from, message, handleColorChange) ||
       (reply != null &&
-        (fieldContainsKeyword(highlightUsers, from, reply.parentUserLogin) ||
-          fieldContainsKeyword(highlightKeywords, from, reply.parentMessageBody)))
+        (fieldContainsKeyword(highlightUsers, from, reply.parentUserLogin, handleColorChange) ||
+          fieldContainsKeyword(highlightKeywords, from, reply.parentMessageBody, handleColorChange)))
     ) {
-      this.markHighlighted($message);
+      this.markHighlighted($message, color);
 
       if (isReply($message)) return;
 
@@ -278,6 +299,11 @@ class ChatHighlightBlacklistKeywordsModule {
     const messageContent = `${$messageContent.text().replace(/^:/, '')} ${emotes.join(' ')}`;
     const badges = [...$message.find(CHAT_BADGE_SELECTOR)].map((badge) => badge.getAttribute('alt') || '');
 
+    let color;
+    function handleColorChange(newColor) {
+      color = newColor;
+    }
+
     if (
       badges.some((value) => fieldContainsKeyword(blacklistBadges, from, value)) ||
       fieldContainsKeyword(blacklistUsers, from, from) ||
@@ -288,11 +314,11 @@ class ChatHighlightBlacklistKeywordsModule {
     }
 
     if (
-      badges.some((value) => fieldContainsKeyword(highlightBadges, from, value)) ||
-      fieldContainsKeyword(highlightUsers, from, from) ||
-      fieldContainsKeyword(highlightKeywords, from, messageContent)
+      badges.some((value) => fieldContainsKeyword(highlightBadges, from, value, handleColorChange)) ||
+      fieldContainsKeyword(highlightUsers, from, from, handleColorChange) ||
+      fieldContainsKeyword(highlightKeywords, from, messageContent, handleColorChange)
     ) {
-      this.markHighlighted($message);
+      this.markHighlighted($message, color);
 
       if (settings.get(SettingIds.HIGHLIGHT_FEEDBACK)) {
         this.handleHighlightSound();
@@ -302,8 +328,15 @@ class ChatHighlightBlacklistKeywordsModule {
     }
   }
 
-  markHighlighted($message) {
+  markHighlighted($message, color = undefined) {
     $message.addClass('bttv-highlighted');
+
+    if (color == null) {
+      color = '#ff0000';
+    }
+
+    const {r, g, b} = colors.getRgb(color);
+    $message.css({'background-color': `rgba(${r}, ${g}, ${b}, 0.3)`});
   }
 
   markBlacklisted($message) {

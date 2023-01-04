@@ -78,3 +78,20 @@
 .settingInputNumber {
   width: 72px;
 }
+
+.settingTitle {
+  color: var(--bttv-rs-text-heading);
+  font-size: 20px;
+}
+
+.settingTagInput {
+  width: 300px;
+
+  input {
+    color: var(--bttv-rs-text-primary);
+  }
+}
+
+.panelWithOverflow {
+  overflow: visible;
+}

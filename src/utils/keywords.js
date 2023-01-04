@@ -14,7 +14,8 @@ export function computeKeywords(keywords) {
   const computedUsers = [];
   const computedBadges = [];
 
-  for (const {keyword, type} of Object.values(keywords)) {
+  for (const keywordRecord of Object.values(keywords)) {
+    const {keyword, type} = keywordRecord;
     if (keyword.trim().length === 0) {
       continue;
     }
@@ -23,13 +24,13 @@ export function computeKeywords(keywords) {
       case KeywordTypes.EXACT:
       case KeywordTypes.WILDCARD:
       case KeywordTypes.MESSAGE:
-        computedKeywords.push(keyword);
+        computedKeywords.push(keywordRecord);
         break;
       case KeywordTypes.USER:
-        computedUsers.push(keyword);
+        computedUsers.push(keywordRecord);
         break;
       case KeywordTypes.BADGE:
-        computedBadges.push(keyword);
+        computedBadges.push(keywordRecord);
         break;
       default:
         break;
