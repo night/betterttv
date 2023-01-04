@@ -174,7 +174,7 @@ export default function routesWatcher(watcher_) {
   onRouteChange(window.location);
 
   // force reload chat when the input gets recreated (popout open/close)
-  domObserver.on('.chat-input', (node, isConnected) => {
+  domObserver.on('.chat-input,[data-test-selector="chat-input"]', (node, isConnected) => {
     if (!isConnected) return;
 
     twitch.updateCurrentChannel();
