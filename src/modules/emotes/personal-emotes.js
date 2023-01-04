@@ -6,11 +6,12 @@ import Emote from './emote.js';
 import {getCurrentUser} from '../../utils/user.js';
 import {getCurrentChannel} from '../../utils/channel.js';
 import {EmoteCategories, EmoteProviders} from '../../constants.js';
+import formatMessage from '../../i18n/index.js';
 
 const category = {
   id: EmoteCategories.BETTERTTV_PERSONAL,
   provider: EmoteProviders.BETTERTTV,
-  displayName: 'BetterTTV Personal Emotes',
+  displayName: formatMessage({defaultMessage: 'BetterTTV Personal Emotes'}),
 };
 
 let joinedChannel;

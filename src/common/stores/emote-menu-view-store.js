@@ -23,6 +23,7 @@ import twitch from '../../utils/twitch.js';
 import {getPlatform} from '../../utils/window.js';
 import {getCurrentUser} from '../../utils/user.js';
 import storage from '../../storage.js';
+import formatMessage from '../../i18n/index.js';
 
 const MAX_FRECENTS = 36;
 
@@ -136,35 +137,35 @@ class EmoteMenuViewStore extends SafeEventEmitter {
       createCategory(
         EmoteCategories.BETTERTTV_CHANNEL,
         EmoteProviders.BETTERTTV,
-        'BetterTTV Channel',
+        formatMessage({defaultMessage: 'BetterTTV Channel'}),
         Icons.IMAGE(cdn.url('/assets/logos/mascot.png'), 'BetterTTV', currentChannelProfilePicture),
         betterttvChannelEmotes
       ),
       createCategory(
         EmoteCategories.BETTERTTV_PERSONAL,
         EmoteProviders.BETTERTTV,
-        'BetterTTV Personal',
+        formatMessage({defaultMessage: 'BetterTTV Personal'}),
         Icons.IMAGE(cdn.url('/assets/logos/mascot.png'), 'BetterTTV', currentUserProfilePicture),
         betterttvPersonalEmotes
       ),
       createCategory(
         EmoteCategories.BETTERTTV_GLOBAL,
         EmoteProviders.BETTERTTV,
-        'BetterTTV Global',
+        formatMessage({defaultMessage: 'BetterTTV Global'}),
         Icons.IMAGE(cdn.url('/assets/logos/mascot.png'), 'BetterTTV'),
         emotes.getEmotesByCategories([EmoteCategories.BETTERTTV_GLOBAL])
       ),
       createCategory(
         EmoteCategories.FRANKERFACEZ_CHANNEL,
         EmoteProviders.FRANKERFACEZ,
-        'FrankerFaceZ Channel',
+        formatMessage({defaultMessage: 'FrankerFaceZ Channel'}),
         Icons.IMAGE(cdn.url('/assets/logos/ffz_logo.png'), 'FrankerFaceZ', currentChannelProfilePicture),
         frankerfacezChannelEmotes
       ),
       createCategory(
         EmoteCategories.FRANKERFACEZ_GLOBAL,
         EmoteProviders.FRANKERFACEZ,
-        'FrankerFaceZ Global',
+        formatMessage({defaultMessage: 'FrankerFaceZ Global'}),
         Icons.IMAGE(cdn.url('/assets/logos/ffz_logo.png'), 'FrankerFaceZ'),
         emotes.getEmotesByCategories([EmoteCategories.FRANKERFACEZ_GLOBAL])
       ),
@@ -184,8 +185,20 @@ class EmoteMenuViewStore extends SafeEventEmitter {
     this.rows = [];
     this.headers = [];
 
-    const frecents = createCategory(EmoteCategories.FRECENTS, null, 'Frequently Used', Icons.CLOCK, []);
-    const favorites = createCategory(EmoteCategories.FAVORITES, null, 'Favorites', Icons.STAR, []);
+    const frecents = createCategory(
+      EmoteCategories.FRECENTS,
+      null,
+      formatMessage({defaultMessage: 'Frequently Used'}),
+      Icons.CLOCK,
+      []
+    );
+    const favorites = createCategory(
+      EmoteCategories.FAVORITES,
+      null,
+      formatMessage({defaultMessage: 'Favorites'}),
+      Icons.STAR,
+      []
+    );
 
     const collection = [];
     const emojiCategories = getEmojiCategories();

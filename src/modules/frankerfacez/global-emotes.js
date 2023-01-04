@@ -6,11 +6,12 @@ import AbstractEmotes from '../emotes/abstract-emotes.js';
 import Emote from '../emotes/emote.js';
 import {EmoteCategories, EmoteProviders, EmoteTypeFlags, SettingIds} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
+import formatMessage from '../../i18n/index.js';
 
 const category = {
   id: EmoteCategories.FRANKERFACEZ_GLOBAL,
   provider: EmoteProviders.FRANKERFACEZ,
-  displayName: 'FrankerFaceZ Global Emotes',
+  displayName: formatMessage({defaultMessage: 'FrankerFaceZ Global Emotes'}),
 };
 
 class GlobalEmotes extends AbstractEmotes {

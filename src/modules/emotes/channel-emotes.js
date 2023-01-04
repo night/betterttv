@@ -5,11 +5,12 @@ import {getCurrentChannel, setCurrentChannel} from '../../utils/channel.js';
 import AbstractEmotes from './abstract-emotes.js';
 import Emote from './emote.js';
 import {EmoteCategories, EmoteProviders} from '../../constants.js';
+import formatMessage from '../../i18n/index.js';
 
 const category = {
   id: EmoteCategories.BETTERTTV_CHANNEL,
   provider: EmoteProviders.BETTERTTV,
-  displayName: 'BetterTTV Channel Emotes',
+  displayName: formatMessage({defaultMessage: 'BetterTTV Channel Emotes'}),
 };
 
 class ChannelEmotes extends AbstractEmotes {

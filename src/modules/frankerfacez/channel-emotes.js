@@ -6,11 +6,12 @@ import Emote from '../emotes/emote.js';
 import {EmoteCategories, EmoteProviders, EmoteTypeFlags, SettingIds} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
 import {getCurrentChannel} from '../../utils/channel.js';
+import formatMessage from '../../i18n/index.js';
 
 const category = {
   id: EmoteCategories.FRANKERFACEZ_CHANNEL,
   provider: EmoteProviders.FRANKERFACEZ,
-  displayName: 'FrankerFaceZ Channel Emotes',
+  displayName: formatMessage({defaultMessage: 'FrankerFaceZ Channel Emotes'}),
 };
 
 class FrankerFaceZChannelEmotes extends AbstractEmotes {

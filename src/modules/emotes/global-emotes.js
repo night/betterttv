@@ -5,11 +5,12 @@ import watcher from '../../watcher.js';
 import AbstractEmotes from './abstract-emotes.js';
 import Emote from './emote.js';
 import {EmoteCategories, EmoteProviders} from '../../constants.js';
+import formatMessage from '../../i18n/index.js';
 
 const category = {
   id: EmoteCategories.BETTERTTV_GLOBAL,
   provider: EmoteProviders.BETTERTTV,
-  displayName: 'BetterTTV Global Emotes',
+  displayName: formatMessage({defaultMessage: 'BetterTTV Global Emotes'}),
 };
 
 class GlobalEmotes extends AbstractEmotes {

@@ -4,6 +4,7 @@ import blacklistedEmoji from '../../utils/emoji-blacklist.js';
 import AbstractEmotes from './abstract-emotes.js';
 import Emote from './emote.js';
 import {EmoteCategories, EmoteProviders} from '../../constants.js';
+import formatMessage from '../../i18n/index.js';
 
 // file gets created during bundle
 // eslint-disable-next-line import/no-unresolved
@@ -12,7 +13,7 @@ import emojiBySlug from './emojis-by-slug.json';
 const category = {
   id: EmoteCategories.BETTERTTV_EMOJI,
   provider: EmoteProviders.BETTERTTV,
-  displayName: 'BetterTTV Emojis',
+  displayName: formatMessage({defaultMessage: 'BetterTTV Emojis'}),
 };
 
 function countEmojis(emoji) {
