@@ -1,3 +1,4 @@
+import formatMessage from '../../i18n/index.js';
 import Emote from '../../modules/emotes/emote.js';
 import emoteMenuViewStore from '../stores/emote-menu-view-store.js';
 
@@ -8,8 +9,12 @@ function serializeProvider({providerId, global = true}) {
   }
   const {displayName} = provider;
   return {
-    id: (global ? `${displayName}-channel` : `${displayName}-global`).toLowerCase(),
-    displayName: global ? `${displayName} Channel Emotes` : `${displayName} Global Emotes`,
+    id: global
+      ? formatMessage('{providerId}-global', {providerId})
+      : formatMessage('{providerId}-channel', {providerId}),
+    displayName: global
+      ? formatMessage('{displayName} Global Emotes', {displayName})
+      : formatMessage('{displayName} Channel Emotes', {displayName}),
   };
 }
 
@@ -73,6 +78,6 @@ export default {
 
   deleteCategory({providerId, channelId}) {
     const category = serializeProvider({providerId, global: channelId == null});
-    emoteMenuViewStore.deleteRegisteredProviderCategory({id: category.id});
+    emoteMenuViewStore.deleteRegisteredProviderCategory(category.id);
   },
 };

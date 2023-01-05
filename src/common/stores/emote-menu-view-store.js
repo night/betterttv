@@ -127,11 +127,11 @@ class EmoteMenuViewStore extends SafeEventEmitter {
   }
 
   upsertRegisteredProviderCategory(categoryId, category) {
-    registeredProviderCategories[categoryId] = category;
+    registeredProviderCategories[categoryId] = {id: categoryId, ...category};
     this.updateProviders();
   }
 
-  deleteRegisteredProviderCategory({id}) {
+  deleteRegisteredProviderCategory(id) {
     delete registeredProviderCategories[id];
     this.updateProviders();
   }
@@ -207,8 +207,8 @@ class EmoteMenuViewStore extends SafeEventEmitter {
         registeredCategory.providerId,
         `${provider.displayName} ${registeredCategory.channelId == null ? 'Global' : 'Channel'}`,
         registeredCategory.channelId == null
-          ? Icons.IMAGE(provider.iconSrc, registeredCategoryId)
-          : Icons.IMAGE(provider.iconSrc, registeredCategoryId, currentChannelProfilePicture),
+          ? Icons.IMAGE(provider.iconSrc, provider.displayName)
+          : Icons.IMAGE(provider.iconSrc, provider.displayName, currentChannelProfilePicture),
         registeredCategory.emotes
       );
       providerCategories.push(category);
