@@ -9,12 +9,10 @@ function serializeProvider({providerId, global = true}) {
   }
   const {displayName} = provider;
   return {
-    id: global
-      ? formatMessage('{providerId}-global', {providerId})
-      : formatMessage('{providerId}-channel', {providerId}),
+    id: global ? `${providerId}-global` : `${providerId}-channel`,
     displayName: global
-      ? formatMessage('{displayName} Global Emotes', {displayName})
-      : formatMessage('{displayName} Channel Emotes', {displayName}),
+      ? formatMessage({defaultMessage: '{displayName} Global Emotes'}, {displayName})
+      : formatMessage({defaultMessage: '{displayName} Channel Emotes'}, {displayName}),
   };
 }
 
