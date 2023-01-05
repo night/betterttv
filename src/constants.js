@@ -1,10 +1,12 @@
 export const SettingIds = {
   ANON_CHAT: 'anonChat',
   AUTO_THEATRE_MODE: 'autoTheatreMode',
+  AUTO_JOIN_RAIDS: 'autoJoinRaids',
   CHANNEL_POINTS: 'channelPoints',
   SPLIT_CHAT: 'splitChat',
   REVERSE_CHAT_DIRECTION: 'reverseChatDirection',
   PINNED_HIGHLIGHTS: 'pinnedHighlights',
+  MAX_PINNED_HIGHLIGHTS: 'maxPinnedHighlights',
   TIMEOUT_HIGHLIGHTS: 'timeoutHighlights',
   HIGHLIGHT_FEEDBACK: 'highlightFeedback',
   CHAT_LAYOUT: 'chatLayout',
@@ -14,6 +16,7 @@ export const SettingIds = {
   SHOW_DIRECTORY_LIVE_TAB: 'showDirectoryLiveTab',
   CHANNEL_POINTS_MESSAGE_HIGHLIGHTS: 'channelPointsMessageHighlights',
   EMOTE_MENU: 'clickTwitchEmotes',
+  AUTO_THEME_MODE: 'autoThemeMode',
   DARKENED_MODE: 'darkenedMode',
   PRIME_PROMOTIONS: 'primePromotions',
   // HOST_BUTTON: 'hostButton', REMOVED, FOR REFERENCE ONLY
@@ -21,7 +24,7 @@ export const SettingIds = {
   CLICK_TO_PLAY: 'clickToPlay',
   EMOTE_AUTOCOMPLETE: 'emoteAutocomplete',
   MUTE_INVISIBLE_PLAYER: 'muteInvisiblePlayer',
-  SCROLL_VOLUME_CONTROL: 'scrollVolumeControl',
+  SCROLL_PLAYER_CONTROLS: 'scrollVolumeControl',
   DELETED_MESSAGES: 'deletedMessages',
   BLACKLIST_KEYWORDS: 'blacklistKeywords',
   HIGHLIGHT_KEYWORDS: 'highlightKeywords',
@@ -47,6 +50,7 @@ export const DeletedMessageTypes = {
   DEFAULT: 0,
   SHOW: 1,
   HIDE: 2,
+  HIGHLIGHT: 3,
 };
 
 export const SidebarFlags = {
@@ -81,14 +85,16 @@ export const ChannelPointsFlags = {
 
 export const AutoPlayFlags = {
   FP_VIDEO: 1 << 0,
-  HOST_MODE: 1 << 1,
+  // HOST_MODE: 1 << 1,
   VOD_RECOMMENDATION_AUTOPLAY: 1 << 2,
+  OFFLINE_CHANNEL_VIDEO: 1 << 3,
 };
 
 export const UsernameFlags = {
   READABLE: 1 << 0,
   COLORS: 1 << 1,
   LOCALIZED: 1 << 2,
+  BADGES: 1 << 3,
 };
 
 export const PageTypes = {
@@ -158,10 +164,12 @@ export const EmoteMenuTips = {
 export const SettingDefaultValues = {
   [SettingIds.ANON_CHAT]: false,
   [SettingIds.AUTO_THEATRE_MODE]: false,
+  [SettingIds.AUTO_JOIN_RAIDS]: true,
   [SettingIds.SPLIT_CHAT]: false,
   [SettingIds.DELETED_MESSAGES]: DeletedMessageTypes.DEFAULT,
   [SettingIds.REVERSE_CHAT_DIRECTION]: false,
   [SettingIds.PINNED_HIGHLIGHTS]: false,
+  [SettingIds.MAX_PINNED_HIGHLIGHTS]: 10,
   [SettingIds.TIMEOUT_HIGHLIGHTS]: true,
   [SettingIds.HIGHLIGHT_FEEDBACK]: false,
   [SettingIds.CHAT_LAYOUT]: ChatLayoutTypes.RIGHT,
@@ -171,12 +179,13 @@ export const SettingDefaultValues = {
   [SettingIds.SHOW_DIRECTORY_LIVE_TAB]: false,
   [SettingIds.CHANNEL_POINTS_MESSAGE_HIGHLIGHTS]: true,
   [SettingIds.EMOTE_MENU]: false,
+  [SettingIds.AUTO_THEME_MODE]: false,
   [SettingIds.DARKENED_MODE]: false,
   [SettingIds.PRIME_PROMOTIONS]: true,
   [SettingIds.PLAYER_EXTENSIONS]: true,
   [SettingIds.CLICK_TO_PLAY]: false,
   [SettingIds.MUTE_INVISIBLE_PLAYER]: false,
-  [SettingIds.SCROLL_VOLUME_CONTROL]: false,
+  [SettingIds.SCROLL_PLAYER_CONTROLS]: false,
   [SettingIds.EMOTE_AUTOCOMPLETE]: true,
   [SettingIds.BLACKLIST_KEYWORDS]: {},
   [SettingIds.HIGHLIGHT_KEYWORDS]: null,
@@ -193,10 +202,13 @@ export const SettingDefaultValues = {
     0,
   ],
   [SettingIds.AUTO_PLAY]: [
-    AutoPlayFlags.FP_VIDEO | AutoPlayFlags.HOST_MODE | AutoPlayFlags.VOD_RECOMMENDATION_AUTOPLAY,
+    AutoPlayFlags.FP_VIDEO | AutoPlayFlags.VOD_RECOMMENDATION_AUTOPLAY | AutoPlayFlags.OFFLINE_CHANNEL_VIDEO,
     0,
   ],
-  [SettingIds.USERNAMES]: [UsernameFlags.COLORS | UsernameFlags.LOCALIZED | UsernameFlags.READABLE, 0],
+  [SettingIds.USERNAMES]: [
+    UsernameFlags.COLORS | UsernameFlags.LOCALIZED | UsernameFlags.READABLE | UsernameFlags.BADGES,
+    0,
+  ],
   [SettingIds.CHANNEL_POINTS]: [ChannelPointsFlags.CHANNEL_POINTS | ChannelPointsFlags.MESSAGE_HIGHLIGHTS, 0],
 };
 

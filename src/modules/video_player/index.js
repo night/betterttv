@@ -4,9 +4,11 @@ import watcher from '../../watcher.js';
 import settings from '../../settings.js';
 import domWatcher from '../../observers/dom.js';
 import twitch from '../../utils/twitch.js';
+import html from '../../utils/html.js';
 import {AutoPlayFlags, PlatformTypes, SettingIds} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
+import formatMessage from '../../i18n/index.js';
 
 const VIDEO_PLAYER_SELECTOR = '.video-player__container';
 const CANCEL_VOD_RECOMMENDATION_SELECTOR =
@@ -15,7 +17,7 @@ const BTTV_PICTURE_IN_PICTURE_SELECTOR = '#bttv-picture-in-picture';
 
 const getPictureInPictureTemplate = (toggled) => `
   <div id="bttv-picture-in-picture" class="bttv-picture-in-picture-wrapper bttv-tooltip-wrapper">
-    <button aria-label="Picture in Picture">
+    <button aria-label="${html.escape(formatMessage({defaultMessage: 'Picture in Picture'}))}">
       <div>
         <svg width="100%" height="100%" version="1.1" transform="scale(1.3)" viewBox="0 0 128 128" x="0px" y="0px">
           <path d="M22 30c-1.9 1.9-2 3.3-2 34s.1 32.1 2 34c1.9 1.9 3.3 2 42 2s40.1-.1 42-2c1.9-1.9 2-3.3 2-34 0-31.6 0-31.9-2.2-34-2.1-1.9-3.3-2-42-2-38.5 0-39.9.1-41.8 2zm78 34v28H28V36h72v28z"/>
@@ -23,11 +25,14 @@ const getPictureInPictureTemplate = (toggled) => `
         </svg>
       </div>
     </button>
-    <div class="bttv-tooltip bttv-tooltip--align-center bttv-tooltip--up" role="tooltip">Picture in Picture</div>
+    <div class="bttv-tooltip bttv-tooltip--align-center bttv-tooltip--up" role="tooltip">${html.escape(
+      formatMessage({defaultMessage: 'Picture in Picture'})
+    )}</div>
   </div>
 `;
 
 let removeRecommendationWatcher;
+
 function watchPlayerRecommendationVodsAutoplay() {
   if (hasFlag(settings.get(SettingIds.AUTO_PLAY), AutoPlayFlags.VOD_RECOMMENDATION_AUTOPLAY)) {
     if (removeRecommendationWatcher) removeRecommendationWatcher();
@@ -41,6 +46,7 @@ function watchPlayerRecommendationVodsAutoplay() {
 }
 
 let clicks = 0;
+
 function handlePlayerClick() {
   const currentPlayer = twitch.getCurrentPlayer();
   if (!currentPlayer) return;
@@ -56,9 +62,20 @@ function handlePlayerClick() {
   }, 250);
 }
 
-function handlePlayerScroll(event) {
-  if (!settings.get(SettingIds.SCROLL_VOLUME_CONTROL)) return;
+function maybeSeek(event) {
+  // Default seek time is 2 seconds for VODs
+  const delta = event.originalEvent.deltaY > 0 ? -2 : 2;
 
+  const currentPlayer = twitch.getCurrentPlayer();
+  if (!currentPlayer || currentPlayer.getDuration() === Infinity) return;
+
+  currentPlayer.seekTo(currentPlayer.getPosition() + delta);
+
+  event.preventDefault();
+  event.stopPropagation();
+}
+
+function maybeControlVolume(event) {
   const delta = event.originalEvent.deltaY > 0 ? -0.025 : 0.025;
 
   const currentPlayer = twitch.getCurrentPlayer();
@@ -68,6 +85,17 @@ function handlePlayerScroll(event) {
 
   event.preventDefault();
   event.stopPropagation();
+}
+
+function handlePlayerScroll(event) {
+  if (!settings.get(SettingIds.SCROLL_PLAYER_CONTROLS)) return;
+
+  // Alt scrolling controls video seeking
+  if (event.altKey) {
+    maybeSeek(event);
+  } else {
+    maybeControlVolume(event);
+  }
 }
 
 function togglePlayerCursor(hide) {
@@ -113,7 +141,7 @@ class VideoPlayerModule {
     watcher.on('load.player', () => {
       this.clickToPause();
       watchPlayerRecommendationVodsAutoplay();
-      this.loadVolumeScrollControl();
+      this.loadScrollControl();
       this.loadPictureInPicture();
     });
     settings.on(`changed.${SettingIds.PLAYER_EXTENSIONS}`, () => this.toggleHidePlayerExtensions());
@@ -123,7 +151,7 @@ class VideoPlayerModule {
     this.loadHidePlayerCursorFullscreen();
   }
 
-  loadVolumeScrollControl() {
+  loadScrollControl() {
     $(VIDEO_PLAYER_SELECTOR)
       .find('div[data-a-target="player-overlay-click-handler"]')
       .off('wheel', handlePlayerScroll)

@@ -19,10 +19,20 @@ const STEAM_LOBBY_JOIN_REGEX = /^steam:\/\/joinlobby\/\d+\/\d+\/\d+$/;
 const EMOTES_TO_CAP = ['567b5b520e984428652809b6'];
 const MAX_EMOTES_WHEN_CAPPED = 10;
 
+const EMOTE_MODIFIERS = {
+  'w!': 'bttv-emote-modifier-wide',
+  'h!': 'bttv-emote-modifier-flip-horizontal',
+  'v!': 'bttv-emote-modifier-flip-vertical',
+  'z!': 'bttv-emote-modifier-zero-space',
+};
+const EMOTE_MODIFIERS_LIST = Object.keys(EMOTE_MODIFIERS);
+
 const badgeTemplate = (url, description) => `
   <div class="bttv-tooltip-wrapper bttv-chat-badge-container">
-    <img alt="Moderator" class="chat-badge bttv-chat-badge" src="${url}" alt="" srcset="" data-a-target="chat-badge">
-    <div class="bttv-tooltip bttv-tooltip--up" style="margin-bottom: 0.9rem;">${description}</div>
+    <img alt="${html.escape(description)}" class="chat-badge bttv-chat-badge" src="${html.escape(
+  url
+)}" alt="" srcset="" data-a-target="chat-badge">
+    <div class="bttv-tooltip bttv-tooltip--up" style="margin-bottom: 0.9rem;">${html.escape(description)}</div>
   </div>
 `;
 const steamLobbyJoinTemplate = (joinLink) => `<a href="${joinLink}">${joinLink}</a>`;
@@ -76,6 +86,8 @@ function getMessagePartsFromMessageElement($message) {
 class ChatModule {
   constructor() {
     watcher.on('chat.message', ($element, message) => this.messageParser($element, message));
+    watcher.on('chat.notice_message', ($element) => this.noticeMessageParser($element));
+    watcher.on('chat.pinned_message', ($element) => this.pinnedMessageParser($element));
     watcher.on('chat.status', ($element, message) => {
       if (message?.renderBetterTTVEmotes !== true) {
         return;
@@ -147,6 +159,7 @@ class ChatModule {
   messageReplacer($message, user, exact = false) {
     const tokens = $message.contents();
     let cappedEmoteCount = 0;
+    let nextNodeModifier;
     for (let i = 0; i < tokens.length; i++) {
       const node = tokens[i];
 
@@ -167,18 +180,32 @@ class ChatModule {
           continue;
         }
 
+        if (EMOTE_MODIFIERS_LIST.includes(part) && parts[j + 1] != null) {
+          parts[j] = '';
+          nextNodeModifier = part;
+          modified = true;
+          continue;
+        }
+
         const steamJoinLink = part.match(STEAM_LOBBY_JOIN_REGEX);
         if (steamJoinLink) {
           parts[j] = steamLobbyJoinTemplate(steamJoinLink[0]);
           modified = true;
           continue;
         }
+
         const emote =
           emotes.getEligibleEmote(part, user) ||
           (!exact ? emotes.getEligibleEmote(part.replace(EMOTE_STRIP_SYMBOLS_REGEX, ''), user) : null);
+        const modifier = nextNodeModifier;
+        if (modifier != null) {
+          nextNodeModifier = null;
+        }
         if (emote) {
           parts[j] =
-            EMOTES_TO_CAP.includes(emote.id) && ++cappedEmoteCount > MAX_EMOTES_WHEN_CAPPED ? '' : emote.toHTML();
+            EMOTES_TO_CAP.includes(emote.id) && ++cappedEmoteCount > MAX_EMOTES_WHEN_CAPPED
+              ? ''
+              : emote.toHTML(modifier, modifier != null ? EMOTE_MODIFIERS[modifier] : null);
           modified = true;
           continue;
         }
@@ -233,7 +260,8 @@ class ChatModule {
     if (
       (modsOnly === true && !user.mod) ||
       (subsOnly === true && !user.subscriber) ||
-      (asciiOnly === true && hasNonASCII(messageObj.message))
+      (asciiOnly === true &&
+        (hasNonASCII(messageObj.messageBody) || messageObj.messageParts?.some((part) => part.type === 6)))
     ) {
       $element.hide();
     }
@@ -251,6 +279,25 @@ class ChatModule {
     this.messageReplacer(getMessagePartsFromMessageElement($element), user);
 
     $element[0].__bttvParsed = true;
+  }
+
+  noticeMessageParser($element) {
+    const chatterNames = [...$element.find('.chatter-name span span, .chatter-name span')];
+    for (const chatterName of chatterNames) {
+      // skip non-text elements
+      if (chatterName.childElementCount > 0) {
+        continue;
+      }
+      // TODO: this doesn't handle apac names or display names with spaces. prob ok for now.
+      const nickname = nicknames.get(chatterName.innerText.toLowerCase());
+      if (nickname) {
+        chatterName.innerText = nickname;
+      }
+    }
+  }
+
+  pinnedMessageParser($element) {
+    this.messageReplacer(getMessagePartsFromMessageElement($element), null);
   }
 }
 

@@ -1,14 +1,16 @@
 import $ from 'jquery';
 import watcher from '../../watcher.js';
+import html from '../../utils/html.js';
 import settings from '../settings/index.js';
 import chatFontSettings from '../chat_font_settings/index.js';
 import domObserver from '../../observers/dom.js';
 import {PlatformTypes} from '../../constants.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
+import formatMessage from '../../i18n/index.js';
 
 const CHAT_SETTINGS_SELECTOR = '.chat-settings__content';
 const MOD_VIEW_CHAT_SETTINGS_SELECTOR =
-  'button[data-test-selector="chat-widget-settings-switch-to-non-mod"], button[data-test-selector="chat-widget-settings-switch-to-default"]';
+  'button[data-test-selector="deleted-message-display-setting-item-click-target"], button[data-test-selector="chat-filter-item-click-target"]';
 const CHAT_SETTINGS_BACK_BUTTON_SELECTOR =
   'button[data-test-selector="chat-settings-back-button"], button[data-test-selector="chat-widget-settings-back-button"]';
 const CHAT_SETTINGS_MOD_TOOLS_SELECTOR = 'div[data-test-selector="mod-tools"]';
@@ -16,18 +18,26 @@ const BTTV_CHAT_SETTINGS_CLASS = 'bttv-chat-settings';
 
 const CHAT_SETTINGS_TEMPLATE = `
   <div class="${BTTV_CHAT_SETTINGS_CLASS}">
-    <div class="settingHeader"><p>BetterTTV</p></div>
+    <div class="settingHeader"><p>${html.escape(formatMessage({defaultMessage: 'BetterTTV'}))}</p></div>
     <div class="settingRow">
-      <button borderradius="border-radius-medium" class="settingButton setFontFamily">Set Font</button>
+      <button borderradius="border-radius-medium" class="settingButton setFontFamily">${html.escape(
+        formatMessage({defaultMessage: 'Set Font'})
+      )}</button>
     </div>
     <div class="settingRow">
-      <button borderradius="border-radius-medium" class="settingButton setFontSize">Set Font Size</button>
+      <button borderradius="border-radius-medium" class="settingButton setFontSize">${html.escape(
+        formatMessage({defaultMessage: 'Set Font Size'})
+      )}</button>
     </div>
     <div class="settingRow">
-      <button borderradius="border-radius-medium" class="settingButton clearChat">Clear My Chat</button>
+      <button borderradius="border-radius-medium" class="settingButton clearChat">${html.escape(
+        formatMessage({defaultMessage: 'Clear My Chat'})
+      )}</button>
     </div>
     <div class="settingRow">
-      <button borderradius="border-radius-medium" class="settingButton openSettings">BetterTTV Settings</button>
+      <button borderradius="border-radius-medium" class="settingButton openSettings">${html.escape(
+        formatMessage({defaultMessage: 'BetterTTV Settings'})
+      )}</button>
     </div>
   </div>
 `;
@@ -43,7 +53,7 @@ function inIFrame() {
 function getChatSettings() {
   const $modViewChatSettings = $(MOD_VIEW_CHAT_SETTINGS_SELECTOR);
   if ($modViewChatSettings.length > 0) {
-    return $modViewChatSettings.parent();
+    return $modViewChatSettings.parent().parent();
   }
 
   const $chatSettings = $(CHAT_SETTINGS_SELECTOR);

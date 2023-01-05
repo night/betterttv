@@ -5,6 +5,7 @@ import {Settings, Search} from '../components/Settings.jsx';
 import {CategoryTypes} from '../../../constants.js';
 import styles from '../styles/header.module.css';
 import CloseButton from '../components/CloseButton.jsx';
+import formatMessage from '../../../i18n/index.js';
 
 function ChannelSettings({onClose}) {
   const [search, setSearch] = useState('');
@@ -18,7 +19,7 @@ function ChannelSettings({onClose}) {
         <div className={styles.flexHeader}>
           <Search
             value={search}
-            placeholder="Search Channel Settings..."
+            placeholder={formatMessage({defaultMessage: 'Search Channel Settings...'})}
             onChange={(newValue) => setSearch(newValue)}
           />
           <CloseButton onClose={onClose} />

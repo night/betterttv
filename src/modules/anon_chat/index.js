@@ -4,6 +4,7 @@ import twitch from '../../utils/twitch.js';
 import {PlatformTypes, SettingIds} from '../../constants.js';
 import {getCurrentUser} from '../../utils/user.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
+import formatMessage from '../../i18n/index.js';
 
 const forcedURL = window.location.search.includes('bttv_anon_chat=true');
 
@@ -14,7 +15,7 @@ class AnonChatModule {
     settings.on(`changed.${SettingIds.ANON_CHAT}`, () => this.load());
   }
 
-  changeUser(username, message) {
+  changeUser(username, logout) {
     const client = twitch.getChatServiceClient();
     if (!client) return;
 
@@ -22,7 +23,11 @@ class AnonChatModule {
     if (!socket || client.configuration.username === username) return;
 
     client.configuration.username = username;
-    twitch.sendChatAdminMessage(`BetterTTV: [Anon Chat] ${message}`);
+    twitch.sendChatAdminMessage(
+      logout
+        ? formatMessage({defaultMessage: 'BetterTTV: [Anon Chat] Logging you out of chat...'})
+        : formatMessage({defaultMessage: 'BetterTTV: [Anon Chat] Logging you into chat...'})
+    );
     try {
       socket.send('QUIT');
     } catch (_) {
@@ -31,7 +36,7 @@ class AnonChatModule {
   }
 
   part() {
-    this.changeUser('justinfan12345', 'Logging you out of chat...');
+    this.changeUser('justinfan12345', true);
     this.enabled = true;
   }
 
@@ -39,7 +44,7 @@ class AnonChatModule {
     const currentUser = getCurrentUser();
     if (!currentUser) return;
 
-    this.changeUser(currentUser.name, 'Logging you into chat...');
+    this.changeUser(currentUser.name, false);
     this.enabled = false;
   }
 
@@ -55,7 +60,10 @@ class AnonChatModule {
   onSendMessage(sendState) {
     if (this.enabled && !sendState.message.startsWith('/join')) {
       twitch.sendChatAdminMessage(
-        "You can't send messages when Anon Chat is enabled. Type /join or disable Anon Chat in options."
+        formatMessage({
+          defaultMessage:
+            "You can't send messages when Anon Chat is enabled. Type /join or disable Anon Chat in options.",
+        })
       );
       sendState.preventDefault();
     }

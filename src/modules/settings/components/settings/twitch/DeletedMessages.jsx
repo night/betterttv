@@ -7,32 +7,54 @@ import {registerComponent} from '../../Store.jsx';
 import {CategoryTypes, SettingIds, DeletedMessageTypes} from '../../../../../constants.js';
 import styles from '../../../styles/header.module.css';
 import useStorageState from '../../../../../common/hooks/StorageState.jsx';
+import formatMessage from '../../../../../i18n/index.js';
+
+const SETTING_NAME = formatMessage({defaultMessage: 'Deleted Messages'});
 
 function DeletedMessagesModule() {
   const [value, setValue] = useStorageState(SettingIds.DELETED_MESSAGES);
 
   return (
-    <Panel header="Deleted Messages">
+    <Panel header={SETTING_NAME}>
       <div className={styles.setting}>
-        <p className={styles.description}>How should deleted messages be handled.</p>
+        <p className={styles.settingDescription}>
+          {formatMessage({defaultMessage: 'How should deleted messages be handled.'})}
+        </p>
         <FormGroup controlId="radioList">
           <RadioGroup name="radioList" value={value} onChange={(state) => setValue(state)}>
             <Radio key="default" value={DeletedMessageTypes.DEFAULT}>
               <div>
-                <p className={styles.heading}>Default</p>
-                <p className={styles.description}>Do what twitch normally does.</p>
+                <p className={styles.heading}>{formatMessage({defaultMessage: 'Default'})}</p>
+                <p className={styles.settingDescription}>
+                  {formatMessage({defaultMessage: 'Do what Twitch normally does.'})}
+                </p>
               </div>
             </Radio>
             <Radio key="hideDeletedMessages" value={DeletedMessageTypes.HIDE}>
               <div>
-                <p className={styles.heading}>Hide Deleted Messages</p>
-                <p className={styles.description}>Completely removes timed out messages from view.</p>
+                <p className={styles.heading}>{formatMessage({defaultMessage: 'Hide Deleted Messages'})}</p>
+                <p className={styles.settingDescription}>
+                  {formatMessage({defaultMessage: 'Completely removes timed out messages from view.'})}
+                </p>
               </div>
             </Radio>
             <Radio key="showDeletedMessages" value={DeletedMessageTypes.SHOW}>
               <div>
-                <p className={styles.heading}>Show Deleted Messages</p>
-                <p className={styles.description}>{"Changes <message deleted> back to users' original messages."}</p>
+                <p className={styles.heading}>{formatMessage({defaultMessage: 'Show Deleted Messages'})}</p>
+                <p className={styles.settingDescription}>
+                  {formatMessage({defaultMessage: "Changes '<'message deleted'>' back to users' original messages."})}
+                </p>
+              </div>
+            </Radio>
+            <Radio key="highlightDeletedMessages" value={DeletedMessageTypes.HIGHLIGHT}>
+              <div>
+                <p className={styles.heading}>{formatMessage({defaultMessage: 'Highlight Deleted Messages'})}</p>
+                <p className={styles.description}>
+                  {formatMessage({
+                    defaultMessage:
+                      "Changes '<'message deleted'>' back to users' original messages and highlights them.",
+                  })}
+                </p>
               </div>
             </Radio>
           </RadioGroup>
@@ -44,7 +66,7 @@ function DeletedMessagesModule() {
 
 registerComponent(DeletedMessagesModule, {
   settingId: SettingIds.DELETED_MESSAGES,
-  name: 'Deleted Messages',
+  name: SETTING_NAME,
   category: CategoryTypes.CHAT,
   keywords: ['messages', 'deleted'],
 });

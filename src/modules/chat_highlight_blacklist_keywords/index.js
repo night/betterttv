@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import dayjs from 'dayjs';
+import isSafeRegex from 'safe-regex2';
 import watcher from '../../watcher.js';
 import settings from '../../settings.js';
 import html from '../../utils/html.js';
@@ -12,13 +13,14 @@ import {loadModuleForPlatforms} from '../../utils/modules.js';
 
 const CHAT_LIST_SELECTOR =
   '.chat-list .chat-scrollable-area__message-container,.chat-list--default .chat-scrollable-area__message-container,.chat-list--other .chat-scrollable-area__message-container,.video-chat div[data-test-selector="video-chat-message-list-wrapper"]';
+const CHAT_BADGE_SELECTOR = '.chat-badge';
 const VOD_CHAT_FROM_SELECTOR = '.video-chat__message-author';
 const VOD_CHAT_MESSAGE_SELECTOR = 'div[data-test-selector="comment-message-selector"]';
 const VOD_CHAT_MESSAGE_EMOTE_SELECTOR = '.chat-line__message--emote';
 const PINNED_HIGHLIGHT_ID = 'bttv-pinned-highlight';
 const PINNED_CONTAINER_ID = 'bttv-pin-container';
-const MAXIMUM_PIN_COUNT = 10;
 const PINNED_HIGHLIGHT_TIMEOUT = 60 * 1000;
+const REGEX_KEYWORD_REGEX = /^~\/(.*)\/([a-z]+)?$/;
 
 const pinnedHighlightTemplate = ({timestamp, from, message}) => `
   <div id="${PINNED_HIGHLIGHT_ID}">
@@ -36,20 +38,24 @@ const pinnedHighlightTemplate = ({timestamp, from, message}) => `
 let loadTime = 0;
 let blacklistKeywords = [];
 let blacklistUsers = [];
+let blacklistBadges = [];
 function computeBlacklistKeywords() {
   const keywords = settings.get(SettingIds.BLACKLIST_KEYWORDS);
-  const {computedKeywords, computedUsers} = computeKeywords(keywords);
+  const {computedKeywords, computedUsers, computedBadges} = computeKeywords(keywords);
   blacklistKeywords = computedKeywords;
   blacklistUsers = computedUsers;
+  blacklistBadges = computedBadges;
 }
 
 let highlightKeywords = [];
 let highlightUsers = [];
+let highlightBadges = [];
 function computeHighlightKeywords() {
   const keywords = settings.get(SettingIds.HIGHLIGHT_KEYWORDS) || {};
-  const {computedKeywords, computedUsers} = computeKeywords(keywords);
+  const {computedKeywords, computedUsers, computedBadges} = computeKeywords(keywords);
   highlightKeywords = computedKeywords;
   highlightUsers = computedUsers;
+  highlightBadges = computedBadges;
 }
 
 function readRepairKeywords() {
@@ -114,28 +120,44 @@ function exactMatch(keyword) {
   return keyword.replace(/^<(.*)>$/g, '^$1$$');
 }
 
+function extractRegex(keyword) {
+  const matches = REGEX_KEYWORD_REGEX.exec(keyword);
+  if (matches == null || !isSafeRegex(matches[1])) {
+    return null;
+  }
+
+  try {
+    return new RegExp(matches[1], matches[2]);
+  } catch (_) {}
+
+  return null;
+}
+
 function keywordRegEx(keyword) {
   return new RegExp(`(\\s|^|@)${keyword}([!.,:';?/]|\\s|$)`, 'i');
 }
 
-function fromContainsKeyword(keywords, from) {
-  for (const user of keywords) {
-    if (user.toLowerCase() !== from) continue;
-    return true;
+function fieldContainsKeyword(keywords, from, field) {
+  const currentUser = getCurrentUser();
+  if (currentUser != null && currentUser.name === from) {
+    return false;
   }
-  return false;
-}
 
-function messageContainsKeyword(keywords, from, message) {
   for (let keyword of keywords) {
+    const regexKeyword = extractRegex(keyword);
+    if (regexKeyword != null) {
+      return regexKeyword.test(field);
+    }
+
     keyword = escapeRegExp(keyword);
     keyword = wildcard(keyword);
     keyword = exactMatch(keyword);
 
-    const currentUser = getCurrentUser();
-    const filterCurrentUser = (currentUser && from !== currentUser.name) || !currentUser;
-    if (filterCurrentUser && keywordRegEx(keyword).test(message)) return true;
+    if (keywordRegEx(keyword).test(field)) {
+      return true;
+    }
   }
+
   return false;
 }
 
@@ -150,9 +172,9 @@ function messageTextFromAST(ast) {
         case 0: // Text
           return node.content.trim();
         case 3: // CurrentUserHighlight
-          return node.content;
+          return `@${node.content}`;
         case 4: // Mention
-          return node.content.recipient;
+          return `@${node.content.recipient}`;
         case 5: // Link
           return node.content.url;
         case 6: // Emote
@@ -171,7 +193,8 @@ class ChatHighlightBlacklistKeywordsModule {
     watcher.on('load', () => readRepairKeywords());
     watcher.on('load.chat', () => this.loadChat());
     watcher.on('load.vod', () => this.loadChat());
-    watcher.on('chat.message', ($message, messageObj) => this.onMessage($message, messageObj));
+    watcher.on('chat.message', ($message, messageObj) => this.onMessage($message, messageObj, false));
+    watcher.on('chat.notice_message', ($message, messageObj) => this.onMessage($message, messageObj, true));
     watcher.on('vod.message', ($message) => this.onVODMessage($message));
     settings.on(`changed.${SettingIds.BLACKLIST_KEYWORDS}`, computeBlacklistKeywords);
     settings.on(`changed.${SettingIds.HIGHLIGHT_KEYWORDS}`, computeHighlightKeywords);
@@ -200,21 +223,37 @@ class ChatHighlightBlacklistKeywordsModule {
     loadTime = Date.now();
   }
 
-  onMessage($message, {user, timestamp, messageParts}) {
-    if (user == null) {
+  onMessage($message, messageObj, notice) {
+    const {user, login, timestamp, messageParts, reply} = messageObj;
+    if (user == null && login == null) {
       return;
     }
 
-    const from = user.userLogin;
-    const message = messageTextFromAST(messageParts);
+    const from = login ?? user.userLogin;
+    const message = notice ? $message.text() : messageTextFromAST(messageParts);
     const date = new Date(timestamp);
+    const badges = [...$message.find(CHAT_BADGE_SELECTOR)].map((badge) => badge.getAttribute('alt') || '');
 
-    if (fromContainsKeyword(blacklistUsers, from) || messageContainsKeyword(blacklistKeywords, from, message)) {
+    if (
+      badges.some((value) => fieldContainsKeyword(blacklistBadges, from, value)) ||
+      fieldContainsKeyword(blacklistUsers, from, from) ||
+      fieldContainsKeyword(blacklistKeywords, from, message) ||
+      (reply != null &&
+        (fieldContainsKeyword(blacklistUsers, from, reply.parentUserLogin) ||
+          fieldContainsKeyword(blacklistKeywords, from, reply.parentMessageBody)))
+    ) {
       this.markBlacklisted($message);
       return;
     }
 
-    if (fromContainsKeyword(highlightUsers, from) || messageContainsKeyword(highlightKeywords, from, message)) {
+    if (
+      badges.some((value) => fieldContainsKeyword(highlightBadges, from, value)) ||
+      fieldContainsKeyword(highlightUsers, from, from) ||
+      fieldContainsKeyword(highlightKeywords, from, message) ||
+      (reply != null &&
+        (fieldContainsKeyword(highlightUsers, from, reply.parentUserLogin) ||
+          fieldContainsKeyword(highlightKeywords, from, reply.parentMessageBody)))
+    ) {
       this.markHighlighted($message);
 
       if (isReply($message)) return;
@@ -237,13 +276,22 @@ class ChatHighlightBlacklistKeywordsModule {
       emote.getAttribute('alt')
     );
     const messageContent = `${$messageContent.text().replace(/^:/, '')} ${emotes.join(' ')}`;
+    const badges = [...$message.find(CHAT_BADGE_SELECTOR)].map((badge) => badge.getAttribute('alt') || '');
 
-    if (fromContainsKeyword(blacklistUsers, from) || messageContainsKeyword(blacklistKeywords, from, messageContent)) {
+    if (
+      badges.some((value) => fieldContainsKeyword(blacklistBadges, from, value)) ||
+      fieldContainsKeyword(blacklistUsers, from, from) ||
+      fieldContainsKeyword(blacklistKeywords, from, messageContent)
+    ) {
       this.markBlacklisted($message);
       return;
     }
 
-    if (fromContainsKeyword(highlightUsers, from) || messageContainsKeyword(highlightKeywords, from, messageContent)) {
+    if (
+      badges.some((value) => fieldContainsKeyword(highlightBadges, from, value)) ||
+      fieldContainsKeyword(highlightUsers, from, from) ||
+      fieldContainsKeyword(highlightKeywords, from, messageContent)
+    ) {
       this.markHighlighted($message);
 
       if (settings.get(SettingIds.HIGHLIGHT_FEEDBACK)) {
@@ -277,7 +325,15 @@ class ChatHighlightBlacklistKeywordsModule {
   pinHighlight({from, message, date}) {
     if (settings.get(SettingIds.PINNED_HIGHLIGHTS) === false || !$pinnedHighlightsContainer) return;
 
-    if ($pinnedHighlightsContainer.children().length + 1 > MAXIMUM_PIN_COUNT) {
+    // we need to dynamically change the top of this card due to community highlight visibility
+    const $communityHighlightsCard = $('.community-highlight-stack__card');
+    if ($communityHighlightsCard.length > 0) {
+      $pinnedHighlightsContainer.css('top', $communityHighlightsCard.outerHeight());
+    } else {
+      $pinnedHighlightsContainer.css('top', 0);
+    }
+
+    if ($pinnedHighlightsContainer.children().length + 1 > settings.get(SettingIds.MAX_PINNED_HIGHLIGHTS)) {
       $pinnedHighlightsContainer.children().first().remove();
     }
 

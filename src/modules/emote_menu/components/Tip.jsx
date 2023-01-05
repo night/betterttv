@@ -7,6 +7,7 @@ import {isMac} from '../../../utils/window.js';
 import emoteMenuStore from '../stores/emote-menu-store.js';
 import Icons from './Icons.jsx';
 import styles from './Tip.module.css';
+import formatMessage from '../../../i18n/index.js';
 
 const tips = {};
 for (const tipStorageKey of Object.values(EmoteMenuTips)) {
@@ -15,18 +16,28 @@ for (const tipStorageKey of Object.values(EmoteMenuTips)) {
 
 function getTipToDisplay() {
   if (!tips[EmoteMenuTips.EMOTE_MENU_PREVENT_CLOSE]) {
-    return [EmoteMenuTips.EMOTE_MENU_PREVENT_CLOSE, 'Hold Shift to Select Many Emotes'];
+    return [
+      EmoteMenuTips.EMOTE_MENU_PREVENT_CLOSE,
+      formatMessage({defaultMessage: 'Hold Shift to Select Many Emotes'}),
+    ];
   }
 
   if (!tips[EmoteMenuTips.EMOTE_MENU_FAVORITE_EMOTE] && emoteMenuStore.favorites.length === 0) {
     return [
       EmoteMenuTips.EMOTE_MENU_FAVORITE_EMOTE,
-      `${isMac() ? 'Option + Click' : 'Alt + Click'} Emotes to Favorite`,
+      isMac()
+        ? formatMessage({defaultMessage: 'Option + Click Emotes to Favorite'})
+        : formatMessage({defaultMessage: 'Alt + Click Emotes to Favorite'}),
     ];
   }
 
   if (!tips[EmoteMenuTips.EMOTE_MENU_HOTKEY]) {
-    return [EmoteMenuTips.EMOTE_MENU_HOTKEY, `${isMac() ? 'Control + E' : 'Alt + E'} to Toggle Emote Menu`];
+    return [
+      EmoteMenuTips.EMOTE_MENU_HOTKEY,
+      isMac()
+        ? formatMessage({defaultMessage: 'Control + E to Toggle Emote Menu'})
+        : formatMessage({defaultMessage: 'Alt + E to Toggle Emote Menu'}),
+    ];
   }
 
   return [];
@@ -35,6 +46,10 @@ function getTipToDisplay() {
 export function markTipAsSeen(tipStorageKey) {
   tips[tipStorageKey] = true;
   storage.set(tipStorageKey, true);
+}
+
+function Strong(children) {
+  return <strong>{children}</strong>;
 }
 
 export default function Tip({onSetTip}) {
@@ -54,7 +69,10 @@ export default function Tip({onSetTip}) {
       <div className={styles.tip}>
         <span>{Icons.BULB}</span>
         <div className={styles.tipDisplayText}>
-          <strong>Pro Tip:</strong> {tipDisplayText}
+          {formatMessage(
+            {defaultMessage: '<strong>Pro Tip:</strong> {tipDisplayText}'},
+            {strong: Strong, tipDisplayText}
+          )}
         </div>
         <Button
           className={styles.closeButton}
@@ -64,7 +82,7 @@ export default function Tip({onSetTip}) {
             markTipAsSeen(tipStorageKey);
             setTipToDisplay([]);
           }}>
-          Hide
+          {formatMessage({defaultMessage: 'Hide'})}
         </Button>
       </div>
     </>

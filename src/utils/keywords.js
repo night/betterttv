@@ -6,11 +6,13 @@ export const KeywordTypes = {
   WILDCARD: 1, // legacy type
   EXACT: 2, // legacy type
   USER: 3,
+  BADGE: 4,
 };
 
 export function computeKeywords(keywords) {
   const computedKeywords = [];
   const computedUsers = [];
+  const computedBadges = [];
 
   for (const {keyword, type} of Object.values(keywords)) {
     if (keyword.trim().length === 0) {
@@ -21,10 +23,13 @@ export function computeKeywords(keywords) {
       case KeywordTypes.EXACT:
       case KeywordTypes.WILDCARD:
       case KeywordTypes.MESSAGE:
-        computedKeywords.push(`${keyword}`);
+        computedKeywords.push(keyword);
         break;
       case KeywordTypes.USER:
-        computedUsers.push(`${keyword}`);
+        computedUsers.push(keyword);
+        break;
+      case KeywordTypes.BADGE:
+        computedBadges.push(keyword);
         break;
       default:
         break;
@@ -34,25 +39,8 @@ export function computeKeywords(keywords) {
   return {
     computedKeywords,
     computedUsers,
+    computedBadges,
   };
-}
-
-export function deserializeKeywords(values) {
-  return Object.values(values)
-    .filter(({keyword}) => /\S/.test(keyword))
-    .map(({keyword, type}) => {
-      switch (type) {
-        case KeywordTypes.EXACT:
-        case KeywordTypes.WILDCARD:
-        case KeywordTypes.MESSAGE:
-          return `{${keyword}}`;
-        case KeywordTypes.USER:
-          return `(${keyword})`;
-        default:
-          return '';
-      }
-    })
-    .join(' ');
 }
 
 export function serializeKeywords(keywords) {

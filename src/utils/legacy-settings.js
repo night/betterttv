@@ -93,7 +93,7 @@ function deserializeSettingForLegacy(data, settingId) {
       return !!data[LegacySettingIds.CLICK_TO_PLAY];
     case SettingIds.MUTE_INVISIBLE_PLAYER:
       return !!data[LegacySettingIds.MUTE_INVISIBLE_PLAYER];
-    case SettingIds.SCROLL_VOLUME_CONTROL:
+    case SettingIds.SCROLL_PLAYER_CONTROLS:
       return !!data[LegacySettingIds.SCROLL_VOLUME_CONTROL];
     case SettingIds.CHAT_REPLIES:
       return !data[LegacySettingIds.HIDE_CHAT_REPLIES];

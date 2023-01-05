@@ -4,6 +4,8 @@ import twitch from '../../utils/twitch.js';
 import settings from '../../settings.js';
 import {DeletedMessageTypes, PlatformTypes, SettingIds} from '../../constants.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
+import ChatHighlightBlacklistKeywords from '../chat_highlight_blacklist_keywords/index.js';
+import formatMessage from '../../i18n/index.js';
 
 const CHAT_LINE_SELECTOR = '.chat-line__message';
 const CHAT_LINE_LINK_SELECTOR = 'a.link-fragment';
@@ -36,7 +38,9 @@ class ChatDeletedMessagesModule {
   handleMessage({message, preventDefault}) {
     switch (message.type) {
       case twitch.TMIActionTypes.CLEAR_CHAT:
-        twitch.sendChatAdminMessage('Chat was cleared by a moderator (Prevented by BetterTTV)');
+        twitch.sendChatAdminMessage(
+          formatMessage({defaultMessage: 'Chat was cleared by a moderator (Prevented by BetterTTV)'})
+        );
         preventDefault();
         break;
       case twitch.TMIActionTypes.MODERATION: {
@@ -62,24 +66,32 @@ class ChatDeletedMessagesModule {
 
   handleDelete(name, targetMessageId) {
     const deletedMessages = settings.get(SettingIds.DELETED_MESSAGES);
-    const showDeletedMessages = deletedMessages === DeletedMessageTypes.SHOW;
-    const hideDeletedMessages = deletedMessages === DeletedMessageTypes.HIDE;
-    if (!hideDeletedMessages && !showDeletedMessages) {
+    if (
+      ![DeletedMessageTypes.HIDE, DeletedMessageTypes.SHOW, DeletedMessageTypes.HIGHLIGHT].includes(deletedMessages)
+    ) {
       return false;
     }
     const messages = findAllUserMessages(name, targetMessageId);
     messages.forEach((message) => {
       const $message = $(message);
-      if (hideDeletedMessages) {
-        $message.hide();
-      } else if (showDeletedMessages) {
-        $message.toggleClass(CHAT_LINE_DELETED_CLASS, true);
-        /* eslint-disable-next-line func-names */
-        $message.find(CHAT_LINE_LINK_SELECTOR).each(function () {
-          const $link = $(this);
-          $link.removeAttr('href');
-        });
-        $message.find(CHAT_LINE_CLIP_CARD_SELECTOR).remove();
+      // eslint-disable-next-line default-case
+      switch (deletedMessages) {
+        case DeletedMessageTypes.HIDE:
+          $message.hide();
+          break;
+        case DeletedMessageTypes.HIGHLIGHT:
+        case DeletedMessageTypes.SHOW:
+          if (deletedMessages === DeletedMessageTypes.HIGHLIGHT) {
+            ChatHighlightBlacklistKeywords.markHighlighted($message);
+          }
+          $message.toggleClass(CHAT_LINE_DELETED_CLASS, true);
+          /* eslint-disable-next-line func-names */
+          $message.find(CHAT_LINE_LINK_SELECTOR).each(function () {
+            const $link = $(this);
+            $link.removeAttr('href');
+          });
+          $message.find(CHAT_LINE_CLIP_CARD_SELECTOR).remove();
+          break;
       }
     });
     return true;
