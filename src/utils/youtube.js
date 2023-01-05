@@ -73,5 +73,3 @@ export async function sendEphemeralMessage(message) {
     YoutubeMessageListener = watcher.on('youtube.message', () => unmountExpiredEphemeralMessage());
   }
 }
-
-window.sendChat = sendEphemeralMessage;
