@@ -56,6 +56,7 @@
   window.BetterTTV = {
     version: debug.version,
     settings: (await import('./settings.js')).default,
+    emoteMenu: (await import('./common/api/emote-menu.js')).default,
     watcher: {
       emitLoad: (name) => watcher.emit(`load.${name}`),
     },

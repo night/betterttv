@@ -1,6 +1,7 @@
 import Fuse from 'fuse.js';
 import uniqBy from 'lodash.uniqby';
 import sortBy from 'lodash.sortby';
+import {v4 as uuidv4} from 'uuid';
 import SafeEventEmitter from '../../utils/safe-event-emitter.js';
 import watcher from '../../watcher.js';
 import {getEmojiCategories} from '../../modules/emote_menu/utils/emojis.js';
@@ -74,6 +75,9 @@ const fuse = new Fuse([], {
 let providerCategories = [];
 let platformCategories = [];
 
+const registeredProviders = {};
+const registeredProviderCategories = {};
+
 export const CategoryPositions = {
   BOTTOM: 0,
   MIDDLE: 1,
@@ -111,6 +115,26 @@ class EmoteMenuViewStore extends SafeEventEmitter {
   async updatePlatformProviders() {
     platformCategories = getPlatform() === PlatformTypes.YOUTUBE ? await loadYouTubeEmotes() : await loadTwitchEmotes();
     this.markDirty(false);
+  }
+
+  registerProvider(provider) {
+    const registeredProviderId = uuidv4();
+    registeredProviders[registeredProviderId] = provider;
+    return registeredProviderId;
+  }
+
+  getRegisteredProvider(providerId) {
+    return registeredProviders[providerId];
+  }
+
+  upsertRegisteredProviderCategory({id, ...category}) {
+    registeredProviderCategories[id] = {id, ...category};
+    this.updateProviders();
+  }
+
+  deleteRegisteredProviderCategory(id) {
+    delete registeredProviderCategories[id];
+    this.updateProviders();
   }
 
   async updateProviders() {
@@ -170,6 +194,29 @@ class EmoteMenuViewStore extends SafeEventEmitter {
         emotes.getEmotesByCategories([EmoteCategories.FRANKERFACEZ_GLOBAL])
       ),
     ];
+
+    for (const [registeredCategoryId, registeredCategory] of Object.entries(registeredProviderCategories)) {
+      if (registeredCategory?.channelId != null && registeredCategory?.channelId !== currentChannel?.id) {
+        continue;
+      }
+      const provider = this.getRegisteredProvider(registeredCategory.providerId);
+      if (provider == null) {
+        continue;
+      }
+      const category = createCategory(
+        registeredCategoryId,
+        registeredCategory.providerId,
+        registeredCategory.channelId == null
+          ? formatMessage({defaultMessage: '{displayName} Global'}, {displayName: provider.displayName})
+          : formatMessage({defaultMessage: '{displayName} Channel'}, {displayName: provider.displayName}),
+        registeredCategory.channelId == null
+          ? Icons.IMAGE(provider.iconSrc, provider.displayName)
+          : Icons.IMAGE(provider.iconSrc, provider.displayName, currentChannelProfilePicture),
+        registeredCategory.emotes
+      );
+      providerCategories.push(category);
+    }
+
     this.markDirty(false);
   }
 
