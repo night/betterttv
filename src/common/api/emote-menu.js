@@ -71,7 +71,7 @@ export default {
       });
     });
 
-    emoteMenuViewStore.upsertRegisteredProviderCategory(id, {providerId, emotes: parsedEmotes, displayName, channelId});
+    emoteMenuViewStore.upsertRegisteredProviderCategory({id, providerId, emotes: parsedEmotes, displayName, channelId});
   },
 
   deleteCategory({providerId, channelId}) {

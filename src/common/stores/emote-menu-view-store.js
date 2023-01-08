@@ -24,6 +24,7 @@ import twitch from '../../utils/twitch.js';
 import {getPlatform} from '../../utils/window.js';
 import {getCurrentUser} from '../../utils/user.js';
 import storage from '../../storage.js';
+import formatMessage from '../../i18n/index.js';
 
 const MAX_FRECENTS = 36;
 
@@ -126,8 +127,8 @@ class EmoteMenuViewStore extends SafeEventEmitter {
     return registeredProviders[providerId];
   }
 
-  upsertRegisteredProviderCategory(categoryId, category) {
-    registeredProviderCategories[categoryId] = {id: categoryId, ...category};
+  upsertRegisteredProviderCategory({id, ...category}) {
+    registeredProviderCategories[id] = {id, ...category};
     this.updateProviders();
   }
 
@@ -205,7 +206,9 @@ class EmoteMenuViewStore extends SafeEventEmitter {
       const category = createCategory(
         registeredCategoryId,
         registeredCategory.providerId,
-        `${provider.displayName} ${registeredCategory.channelId == null ? 'Global' : 'Channel'}`,
+        registeredCategory.channelId == null
+          ? formatMessage({defaultMessage: '{displayName} Global'}, {displayName: provider.displayName})
+          : formatMessage({defaultMessage: '{displayName} Channel'}, {displayName: provider.displayName}),
         registeredCategory.channelId == null
           ? Icons.IMAGE(provider.iconSrc, provider.displayName)
           : Icons.IMAGE(provider.iconSrc, provider.displayName, currentChannelProfilePicture),
