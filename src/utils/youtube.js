@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import watcher from '../watcher.js';
@@ -18,31 +17,29 @@ export function getLiveChat() {
   return document.getElementsByTagName('yt-live-chat-renderer')[0]?.__data?.data;
 }
 
-const MAX_EPHMERAL_MESSAGE_DEPTH = 100;
-let YoutubeMessageListener = null;
+const MAX_EPHEMERAL_MESSAGE_DEPTH = 10;
+let youtubeMessageListener = null;
+let renderedEphemeralMessages = [];
 function unmountExpiredEphemeralMessage() {
-  const chatItems = document.querySelector(CHAT_ITEMS_SELECTOR);
-  if (chatItems == null) {
+  const chatItemsContainer = document.querySelector(CHAT_ITEMS_SELECTOR);
+  if (chatItemsContainer == null) {
     return;
   }
-  const visibleItems = chatItems?.__dataHost?.__data?.visibleItems;
-  if (visibleItems == null || visibleItems.length < MAX_EPHMERAL_MESSAGE_DEPTH) {
+  const chatItems = Array.from(chatItemsContainer.children);
+  if (chatItems == null || chatItems.length < MAX_EPHEMERAL_MESSAGE_DEPTH) {
     return;
   }
-  let hasEphemeralMessage = false;
-  chatItems.__dataHost.__data.visibleItems = visibleItems.filter((item, index, items) => {
-    if (item.bttvMessageRenderer != null) {
-      if (index < items.length - MAX_EPHMERAL_MESSAGE_DEPTH) {
-        item.bttvMessageRenderer.node.unmount();
-        return false;
-      }
-      hasEphemeralMessage = true;
+  renderedEphemeralMessages = renderedEphemeralMessages.filter((message) => {
+    const index = chatItems.indexOf(message);
+    if (index < chatItems.length - MAX_EPHEMERAL_MESSAGE_DEPTH) {
+      message.remove();
+      return false;
     }
     return true;
   });
-  if (!hasEphemeralMessage) {
-    YoutubeMessageListener?.();
-    YoutubeMessageListener = null;
+  if (renderedEphemeralMessages.length === 0 && youtubeMessageListener != null) {
+    youtubeMessageListener?.();
+    youtubeMessageListener = null;
   }
 }
 
@@ -65,11 +62,14 @@ export async function sendEphemeralMessage(message) {
   /* eslint-disable-next-line react/jsx-filename-extension, react/react-in-jsx-scope */
   root.render(<YoutubeEphemeralMessage message={message} />);
   // Forces youtube to append following messages after the ephemeral message
-  visibleItems.push({bttvMessageRenderer: {node: root}});
+  visibleItems.push({bttvMessageRenderer: {}});
+  renderedEphemeralMessages.push(bttvMessageContainer);
   items.appendChild(bttvMessageContainer);
 
   unmountExpiredEphemeralMessage();
-  if (YoutubeMessageListener == null) {
-    YoutubeMessageListener = watcher.on('youtube.message', () => unmountExpiredEphemeralMessage());
+  if (youtubeMessageListener == null) {
+    youtubeMessageListener = watcher.on('youtube.message', () => unmountExpiredEphemeralMessage());
   }
 }
+
+window.sendChat = sendEphemeralMessage;
