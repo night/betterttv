@@ -47,7 +47,8 @@ class Emojis extends AbstractEmotes {
         let url;
 
         twemoji.parse(emoji.char, {
-          folder: 'svg',
+          base: process.env.CDN_ENDPOINT,
+          folder: 'assets/emoji',
           ext: '.svg',
           callback: (icon, options) => {
             if (icon.length === 0) {
