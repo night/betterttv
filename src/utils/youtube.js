@@ -17,26 +17,27 @@ export function getLiveChat() {
   return document.getElementsByTagName('yt-live-chat-renderer')[0]?.__data?.data;
 }
 
-const MAX_EPHEMERAL_MESSAGE_DEPTH = 10;
+const MAX_EPHEMERAL_MESSAGE_DEPTH = 50;
 let youtubeMessageListener = null;
 let renderedEphemeralMessages = [];
 function unmountExpiredEphemeralMessage() {
-  const chatItemsContainer = document.querySelector(CHAT_ITEMS_SELECTOR);
-  if (chatItemsContainer == null) {
-    return;
-  }
-  const chatItems = Array.from(chatItemsContainer.children);
-  if (chatItems == null || chatItems.length < MAX_EPHEMERAL_MESSAGE_DEPTH) {
-    return;
-  }
-  renderedEphemeralMessages = renderedEphemeralMessages.filter((message) => {
+  const chatItems = Array.from(document.querySelector(CHAT_ITEMS_SELECTOR)?.children ?? []);
+  const maxIndex = chatItems.length - MAX_EPHEMERAL_MESSAGE_DEPTH;
+  const messagesToKeep = renderedEphemeralMessages.filter(({message}) => {
     const index = chatItems.indexOf(message);
-    if (index < chatItems.length - MAX_EPHEMERAL_MESSAGE_DEPTH) {
-      message.remove();
-      return false;
-    }
-    return true;
+    return index >= maxIndex;
   });
+
+  for (const renderedMessage of renderedEphemeralMessages) {
+    if (messagesToKeep.includes(renderedMessage)) {
+      continue;
+    }
+    const {message, messageRoot} = renderedMessage;
+    messageRoot.unmount();
+    message.remove();
+  }
+
+  renderedEphemeralMessages = messagesToKeep;
   if (renderedEphemeralMessages.length === 0 && youtubeMessageListener != null) {
     youtubeMessageListener?.();
     youtubeMessageListener = null;
@@ -63,7 +64,7 @@ export async function sendEphemeralMessage(message) {
   root.render(<YoutubeEphemeralMessage message={message} />);
   // Forces youtube to append following messages after the ephemeral message
   visibleItems.push({bttvMessageRenderer: {}});
-  renderedEphemeralMessages.push(bttvMessageContainer);
+  renderedEphemeralMessages.push({message: bttvMessageContainer, messageRoot: root});
   items.appendChild(bttvMessageContainer);
 
   unmountExpiredEphemeralMessage();
@@ -71,5 +72,3 @@ export async function sendEphemeralMessage(message) {
     youtubeMessageListener = watcher.on('youtube.message', () => unmountExpiredEphemeralMessage());
   }
 }
-
-window.sendChat = sendEphemeralMessage;
