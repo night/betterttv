@@ -1,0 +1,10 @@
+.message {
+  display: flex;
+  align-items: center;
+  padding: 8px 24px;
+
+  .mascot {
+    width: 24px;
+    margin-right: 16px;
+  }
+}

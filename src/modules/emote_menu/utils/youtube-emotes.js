@@ -5,6 +5,7 @@ import Emote from '../../emotes/emote.js';
 import Icons from '../components/Icons.jsx';
 import {EmoteCategories, EmoteProviders} from '../../../constants.js';
 import {getCurrentChannel} from '../../../utils/channel.js';
+import {getLiveChat} from '../../../utils/youtube.js';
 
 const DEFAULT_CATEGORY_NAME = 'Unknown';
 
@@ -31,10 +32,6 @@ function getCategoryForChannelId(channelId, categoryName) {
       };
     }
   }
-}
-
-function getLiveChat() {
-  return document.getElementsByTagName('yt-live-chat-renderer')[0]?.__data?.data;
 }
 
 function isLocked(emoteId) {
