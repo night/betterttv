@@ -24,8 +24,7 @@ export default function emoteSocketListeners(sendMessage) {
       formatMessage(
         {defaultMessage: 'BetterTTV Emotes: {emoteCode} has been added to chat'},
         {emoteCode: `${emote.code} \u200B \u200B${emote.code}\u200B`}
-      ),
-      true
+      )
     );
   });
 
@@ -62,8 +61,7 @@ export default function emoteSocketListeners(sendMessage) {
       formatMessage(
         {defaultMessage: 'BetterTTV Emotes: {emoteCode} has been removed from chat'},
         {emoteCode: `\u200B${emote.code}\u200B`}
-      ),
-      true
+      )
     );
   });
 }

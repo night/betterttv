@@ -7,14 +7,14 @@ loadModuleForPlatforms(
     PlatformTypes.TWITCH,
     async () => {
       const {default: twitch} = await import('../../utils/twitch.js');
-      return emoteSocketListeners(twitch.sendChatAdminMessage);
+      return emoteSocketListeners((message) => twitch.sendChatAdminMessage(message, true));
     },
   ],
   [
     PlatformTypes.YOUTUBE,
     async () => {
-      const {default: youtube} = await import('../../utils/youtube.js');
-      return emoteSocketListeners(youtube.sendChatAdminMessage);
+      const {sendEphemeralMessage} = await import('../../utils/youtube.js');
+      return emoteSocketListeners(sendEphemeralMessage);
     },
   ]
 );
