@@ -1,3 +1,4 @@
+import cookies from 'cookies-js';
 import {createIntl, createIntlCache} from '@formatjs/intl';
 
 const DEFAULT_LOCALE = 'en';
@@ -11,18 +12,33 @@ if (!SUPPORTED_LOCALES.includes(browserLocale)) {
   browserLocale = browserLocale.split('-')[0];
 }
 if (!SUPPORTED_LOCALES.includes(browserLocale)) {
-  browserLocale = DEFAULT_LOCALE;
+  browserLocale =
+    SUPPORTED_LOCALES.find((supportedLocale) => supportedLocale.startsWith(browserLocale)) ?? DEFAULT_LOCALE;
 }
 
 let intl;
 const cache = createIntlCache();
 
+function getSiteLocale() {
+  let locale = cookies.get('language') ?? cookies.get('PREF')?.split('hl=')[1]?.split('&')[0];
+  locale = locale.replace('_', '-');
+  if (!SUPPORTED_LOCALES.includes(locale)) {
+    // eslint-disable-next-line prefer-destructuring
+    locale = locale.split('-')[0];
+  }
+  if (!SUPPORTED_LOCALES.includes(locale)) {
+    locale = SUPPORTED_LOCALES.find((supportedLocale) => supportedLocale.startsWith(locale)) ?? null;
+  }
+  return locale;
+}
+
 export async function load() {
-  const messages = browserLocale !== DEFAULT_LOCALE ? (await import(`./messages/${browserLocale}.json`)).default : {};
+  const locale = getSiteLocale() ?? browserLocale;
+  const messages = locale !== DEFAULT_LOCALE ? (await import(`./messages/${locale}.json`)).default : {};
 
   intl = createIntl(
     {
-      locale: browserLocale,
+      locale,
       defaultLocale: DEFAULT_LOCALE,
       messages,
     },
