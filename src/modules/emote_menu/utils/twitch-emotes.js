@@ -24,6 +24,7 @@ const AVAILABLE_EMOTES_FOR_CHANNEL_QUERY = gql`
           id
           token
           type
+          assetType
         }
         owner {
           id
@@ -40,6 +41,7 @@ const AVAILABLE_EMOTES_FOR_CHANNEL_QUERY = gql`
           id
           token
           type
+          assetType
         }
         owner {
           id
@@ -54,6 +56,7 @@ const AVAILABLE_EMOTES_FOR_CHANNEL_QUERY = gql`
             id
             token
             type
+            assetType
           }
           owner {
             id
@@ -66,8 +69,10 @@ const AVAILABLE_EMOTES_FOR_CHANNEL_QUERY = gql`
   }
 `;
 
-const TWITCH_EMOTE_CDN = (id, size, isDark = true) =>
-  `https://static-cdn.jtvnw.net/emoticons/v2/${id}/default/${isDark ? 'dark' : 'light'}/${size}`;
+const TWITCH_EMOTE_CDN = (id, size, isDark = true, static_ = false) =>
+  `https://static-cdn.jtvnw.net/emoticons/v2/${id}/${static_ ? 'static' : 'default'}/${
+    isDark ? 'dark' : 'light'
+  }/${size}`;
 
 function getCategoryForSet(setId, owner) {
   switch (setId) {
@@ -163,7 +168,7 @@ export async function loadTwitchEmotes() {
     const locked = product && data.channel.self.availableEmoteSets.find(({id}) => id === setId) == null;
 
     const categoryEmotes = emotes.map((emote) => {
-      const {id: emoteId, token: emoteToken, type} = emote;
+      const {id: emoteId, token: emoteToken, type, assetType} = emote;
       let newToken;
 
       try {
@@ -177,6 +182,8 @@ export async function loadTwitchEmotes() {
         predicate = isLocked.bind(this, setId, locked);
       }
 
+      const animated = assetType === 'ANIMATED';
+
       return new Emote({
         id: emoteId,
         category,
@@ -186,7 +193,11 @@ export async function loadTwitchEmotes() {
           '1x': TWITCH_EMOTE_CDN(emoteId, '1.0', isDark),
           '2x': TWITCH_EMOTE_CDN(emoteId, '2.0', isDark),
           '4x': TWITCH_EMOTE_CDN(emoteId, '3.0', isDark),
+          '1x_static': animated ? TWITCH_EMOTE_CDN(emoteId, '1.0', isDark, true) : undefined,
+          '2x_static': animated ? TWITCH_EMOTE_CDN(emoteId, '2.0', isDark, true) : undefined,
+          '4x_static': animated ? TWITCH_EMOTE_CDN(emoteId, '3.0', isDark, true) : undefined,
         },
+        animated,
         metadata: {
           type,
           isLocked: predicate,

@@ -85,6 +85,38 @@ function getMessagePartsFromMessageElement($message) {
 
 class ChatModule {
   constructor() {
+    watcher.on('load', () => {
+      $('body').on(
+        'mouseenter mouseleave',
+        '.bttv-animated-static-emote,.chat-line__message,.vod-message,.pinned-chat__message,.thread-message__message',
+        ({currentTarget, type}) => {
+          if (currentTarget == null) {
+            return;
+          }
+
+          const messageEmotes = currentTarget.querySelectorAll('.bttv-animated-static-emote img');
+          for (const emote of messageEmotes) {
+            const staticSrc = emote.__bttvStaticSrc ?? emote.src;
+            const staticSrcSet = emote.__bttvStaticSrcSet ?? emote.srcset;
+            const animatedSrc = emote.getAttribute('data-bttv-animated-src');
+            const animatedSrcSet = emote.getAttribute('data-bttv-animated-srcset');
+            if (!animatedSrc || !animatedSrcSet) {
+              return;
+            }
+
+            if (type === 'mouseleave') {
+              emote.src = staticSrc;
+              emote.srcset = staticSrcSet;
+            } else if (type === 'mouseenter') {
+              emote.__bttvStaticSrc = staticSrc;
+              emote.__bttvStaticSrcSet = staticSrcSet;
+              emote.src = animatedSrc;
+              emote.srcset = animatedSrcSet;
+            }
+          }
+        }
+      );
+    });
     watcher.on('chat.message', ($element, message) => this.messageParser($element, message));
     watcher.on('chat.notice_message', ($element) => this.noticeMessageParser($element));
     watcher.on('chat.pinned_message', ($element) => this.pinnedMessageParser($element));

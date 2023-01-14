@@ -1,13 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import watcher from '../watcher.js';
+import {createSrc, createSrcSet} from './image.js';
 
 const CHAT_ITEMS_SELECTOR = '.yt-live-chat-item-list-renderer > #items';
 
+/* eslint-disable import/prefer-default-export */
 export function createYoutubeEmojiNode(emote) {
   const newNode = document.createElement('img');
   newNode.className = 'emoji yt-formatted-string style-scope yt-live-chat-text-input-field-renderer';
-  newNode.src = emote.images['1x'];
+  newNode.src = createSrc(emote.images);
+  newNode.srcset = createSrcSet(emote.images);
   newNode.alt = emote.code;
   newNode.setAttribute('data-emoji-id', emote.id);
   return newNode;

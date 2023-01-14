@@ -35,7 +35,7 @@ class GlobalEmotes extends AbstractEmotes {
     api
       .get('cached/frankerfacez/emotes/global')
       .then((emotes) =>
-        emotes.forEach(({id, user, code, images, imageType}) => {
+        emotes.forEach(({id, user, code, images, animated}) => {
           this.emotes.set(
             code,
             new Emote({
@@ -44,7 +44,7 @@ class GlobalEmotes extends AbstractEmotes {
               channel: user,
               code,
               images,
-              imageType,
+              animated,
             })
           );
         })

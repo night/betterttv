@@ -42,6 +42,10 @@ export default {
         throw new Error('Emote code must be a non-empty string');
       }
 
+      if (emote.animated !== true && emote.animated !== false) {
+        throw new Error('Emote animated must be a boolean');
+      }
+
       if (emote.images['1x'] == null || emote.images['1x'].length === 0) {
         throw new Error('Emote must have a 1x image');
       }
@@ -54,6 +58,18 @@ export default {
         throw new Error('Emote must have a 4x image');
       }
 
+      if (emote.animated && (emote.images['1x_static'] == null || emote.images['1x_static'].length === 0)) {
+        throw new Error('Emote must have a 1x_static image');
+      }
+
+      if (emote.animated && (emote.images['2x_static'] == null || emote.images['2x_static'].length === 0)) {
+        throw new Error('Emote must have a 2x_static image');
+      }
+
+      if (emote.animated && (emote.images['4x_static'] == null || emote.images['4x_static'].length === 0)) {
+        throw new Error('Emote must have a 4x_static image');
+      }
+
       return new Emote({
         id: `${id}-${emote.id}`,
         category: {
@@ -63,10 +79,14 @@ export default {
         },
         channel: channelId,
         code: emote.code,
+        animated: emote.animated,
         images: {
           '1x': new URL(emote.images['1x']).toString(),
           '2x': new URL(emote.images['2x']).toString(),
           '4x': new URL(emote.images['4x']).toString(),
+          '1x_static': new URL(emote.images['1x_static']).toString(),
+          '2x_static': new URL(emote.images['2x_static']).toString(),
+          '4x_static': new URL(emote.images['4x_static']).toString(),
         },
       });
     });

@@ -1,0 +1,12 @@
+.modal {
+  width: 800px;
+  height: 500px;
+}
+
+.modalContent {
+  > div {
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+  }
+}

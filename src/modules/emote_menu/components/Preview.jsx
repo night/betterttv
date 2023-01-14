@@ -18,7 +18,7 @@ export default function Preview({emote}) {
   return (
     <div className={styles.preview} key={emote.code}>
       <div className={styles.content}>
-        <Emote className={styles.emoteImage} emote={emote} />
+        <Emote className={styles.emoteImage} emote={emote} sizes={['2x', '4x']} animating />
         <div>
           <div className={styles.emoteCode}>{emote.code}</div>
           <div>{formatMessage({defaultMessage: 'from {name}'}, {name: emote.category.displayName})}</div>

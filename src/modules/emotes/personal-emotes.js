@@ -109,7 +109,7 @@ class PersonalEmotes extends AbstractEmotes {
     }
 
     let updated = false;
-    emotes.forEach(({id, channel, code, imageType}) => {
+    emotes.forEach(({id, channel, code, animated}) => {
       if (personalEmotes.has(code)) {
         return;
       }
@@ -124,8 +124,11 @@ class PersonalEmotes extends AbstractEmotes {
             '1x': cdn.emoteUrl(id, '1x'),
             '2x': cdn.emoteUrl(id, '2x'),
             '4x': cdn.emoteUrl(id, '3x'),
+            '1x_static': animated ? cdn.emoteUrl(id, '1x', true) : undefined,
+            '2x_static': animated ? cdn.emoteUrl(id, '2x', true) : undefined,
+            '4x_static': animated ? cdn.emoteUrl(id, '3x', true) : undefined,
           },
-          imageType,
+          animated,
         })
       );
       updated = true;

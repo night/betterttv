@@ -4,6 +4,7 @@ import personalEmotes from './personal-emotes.js';
 import emojis from './emojis.js';
 import frankerfacezGlobalEmotes from '../frankerfacez/global-emotes.js';
 import frankerfacezChannelEmotes from '../frankerfacez/channel-emotes.js';
+import seventvChannelEmotes from '../seventv/channel-emotes.js';
 import settings from '../../settings.js';
 import {EmoteProviders, EmoteTypeFlags, SettingIds} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
@@ -18,6 +19,7 @@ class EmotesModule {
       globalEmotes,
       frankerfacezGlobalEmotes,
       frankerfacezChannelEmotes,
+      seventvChannelEmotes,
       emojis,
     ];
   }
@@ -37,13 +39,13 @@ class EmotesModule {
       if (categoryProvider === EmoteProviders.FRANKERFACEZ && !hasFlag(emotesSettingValue, EmoteTypeFlags.FFZ_EMOTES)) {
         continue;
       }
+      if (categoryProvider === EmoteProviders.SEVENTV && !hasFlag(emotesSettingValue, EmoteTypeFlags.SEVENTV_EMOTES)) {
+        continue;
+      }
       const currentUser = getCurrentUser();
       emotes = emotes.concat(
         category.getEmotes(currentUser).filter((emote) => {
           if (!emote.isUsable(null, currentUser)) {
-            return false;
-          }
-          if (emote.imageType === 'gif' && !hasFlag(emotesSettingValue, EmoteTypeFlags.BTTV_GIF_EMOTES)) {
             return false;
           }
           return true;
@@ -73,11 +75,11 @@ class EmotesModule {
       if (categoryProvider === EmoteProviders.FRANKERFACEZ && !hasFlag(emotesSettingValue, EmoteTypeFlags.FFZ_EMOTES)) {
         continue;
       }
-      const emote = category.getEligibleEmote(code, user);
-      if (!emote || !emote.isUsable(channel, user)) {
+      if (categoryProvider === EmoteProviders.SEVENTV && !hasFlag(emotesSettingValue, EmoteTypeFlags.SEVENTV_EMOTES)) {
         continue;
       }
-      if (emote.imageType === 'gif' && !hasFlag(emotesSettingValue, EmoteTypeFlags.BTTV_GIF_EMOTES)) {
+      const emote = category.getEligibleEmote(code, user);
+      if (!emote || !emote.isUsable(channel, user)) {
         continue;
       }
       return emote;

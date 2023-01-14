@@ -97,3 +97,8 @@ img.emoji.yt-live-chat-text-message-renderer + .bttv-message-container .bttv-glo
   vertical-align: middle;
   margin: -0.5rem 0;
 }
+
+.bttv-emote.seventv-channel img {
+  max-height: 28px;
+  width: auto;
+}

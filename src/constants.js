@@ -67,8 +67,10 @@ export const SidebarFlags = {
 
 export const EmoteTypeFlags = {
   BTTV_EMOTES: 1 << 0,
-  BTTV_GIF_EMOTES: 1 << 1,
+  ANIMATED_EMOTES: 1 << 1,
   FFZ_EMOTES: 1 << 2,
+  ANIMATED_PERSONAL_EMOTES: 1 << 3,
+  SEVENTV_EMOTES: 1 << 4,
 };
 
 export const ChatFlags = {
@@ -124,6 +126,7 @@ export const EmoteProviders = {
   FRANKERFACEZ: 'ffz',
   TWITCH: 'twitch',
   YOUTUBE: 'youtube',
+  SEVENTV: 'seventv',
 };
 
 export const EmoteCategories = {
@@ -150,6 +153,7 @@ export const EmoteCategories = {
   TWITCH_CHANNEL: (channelId) => `twitch-${channelId}`,
   YOUTUBE_GLOBAL: 'youtube-global',
   YOUTUBE_CHANNEL: (channelId) => `youtube-${channelId}`,
+  SEVENTV_CHANNEL: 'seventv-channel',
 };
 
 export const DEFAULT_FREQUENT_EMOTES = {
@@ -200,7 +204,7 @@ export const SettingDefaultValues = {
   [SettingIds.BLACKLIST_KEYWORDS]: {},
   [SettingIds.HIGHLIGHT_KEYWORDS]: null,
   [SettingIds.SIDEBAR]: [SidebarFlags.OFFLINE_FOLLOWED_CHANNELS | SidebarFlags.FEATURED_CHANNELS, 0],
-  [SettingIds.EMOTES]: [EmoteTypeFlags.BTTV_EMOTES | EmoteTypeFlags.BTTV_GIF_EMOTES | EmoteTypeFlags.FFZ_EMOTES, 0],
+  [SettingIds.EMOTES]: [EmoteTypeFlags.BTTV_EMOTES | EmoteTypeFlags.ANIMATED_EMOTES | EmoteTypeFlags.FFZ_EMOTES, 0],
   [SettingIds.CHAT]: [
     ChatFlags.BITS |
       ChatFlags.CHAT_CLIPS |

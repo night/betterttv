@@ -10,6 +10,7 @@ import ChatWindow from './ChatWindow.jsx';
 import {PageTypes} from '../../../constants.js';
 import ThemeProvider from '../../../common/components/ThemeProvider.jsx';
 import {isStandaloneWindow} from '../../../utils/window.js';
+import styles from './Window.module.css';
 
 function Page(props) {
   const {page, ...restProps} = props;
@@ -62,7 +63,7 @@ function Window({setHandleOpen}) {
 
   return (
     <ThemeProvider>
-      <Modal open={open} onClose={() => setOpen(false)}>
+      <Modal open={open} onClose={() => setOpen(false)} className={styles.modal} dialogClassName={styles.modalContent}>
         <Sidenav
           value={page}
           onChange={(value) => {

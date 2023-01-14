@@ -24,7 +24,7 @@ class ChannelEmotes extends AbstractEmotes {
     return category;
   }
 
-  upsertChannelEmote({id, user, imageType, code}) {
+  upsertChannelEmote({id, user, animated, code}) {
     this.emotes.set(
       code,
       new Emote({
@@ -36,8 +36,11 @@ class ChannelEmotes extends AbstractEmotes {
           '1x': cdn.emoteUrl(id, '1x'),
           '2x': cdn.emoteUrl(id, '2x'),
           '4x': cdn.emoteUrl(id, '3x'),
+          '1x_static': animated ? cdn.emoteUrl(id, '1x', true) : undefined,
+          '2x_static': animated ? cdn.emoteUrl(id, '2x', true) : undefined,
+          '4x_static': animated ? cdn.emoteUrl(id, '3x', true) : undefined,
         },
-        imageType,
+        animated,
       })
     );
   }

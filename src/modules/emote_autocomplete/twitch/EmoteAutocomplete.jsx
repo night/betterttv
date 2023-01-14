@@ -3,7 +3,7 @@ import {getCurrentUser} from '../../../utils/user.js';
 import watcher from '../../../watcher.js';
 import dom from '../../../observers/dom.js';
 import emotes from '../../emotes/index.js';
-import {createSrcSet} from '../../../utils/image.js';
+import {createSrcSet, createSrc} from '../../../utils/image.js';
 import {EmoteCategories} from '../../../constants.js';
 import './EmoteAutocomplete.module.css';
 
@@ -71,6 +71,7 @@ function injectEmoteSets() {
     EmoteCategories.BETTERTTV_PERSONAL,
     EmoteCategories.FRANKERFACEZ_CHANNEL,
     EmoteCategories.FRANKERFACEZ_GLOBAL,
+    EmoteCategories.SEVENTV_CHANNEL,
   ]);
 
   const emoteSet = createTwitchEmoteSet(allEmotes);
@@ -105,7 +106,7 @@ function patchEmoteImage(image, isConnected) {
   }
 
   if (image.src) {
-    image.src = emote.images['1x'];
+    image.src = createSrc(emote.images);
   }
 }
 
