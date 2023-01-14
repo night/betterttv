@@ -1,7 +1,7 @@
 .bttv-chat-direction-reversed {
-  .chat-list .chat-scrollable-area__message-container[role='log'],
-  .chat-list--default .chat-scrollable-area__message-container[role='log'],
-  .chat-list--other .chat-scrollable-area__message-container[role='log'] {
+  .chat-list .chat-scrollable-area__message-container[data-test-selector="chat-scrollable-area__message-container"],
+  .chat-list--default .chat-scrollable-area__message-container[data-test-selector="chat-scrollable-area__message-container"],
+  .chat-list--other .chat-scrollable-area__message-container[data-test-selector="chat-scrollable-area__message-container"] {
     display: flex;
     flex-direction: column-reverse;
   }
