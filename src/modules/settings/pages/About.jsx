@@ -127,7 +127,7 @@ function About({onClose}) {
                 </li>
                 <li>
                   <a target="_blank" rel="noreferrer" href="https://betterttv.com/">
-                    {formatMessage({defaultMessage: 'Home'})}
+                    {formatMessage({defaultMessage: 'Website'})}
                   </a>
                 </li>
                 <li>
@@ -141,8 +141,8 @@ function About({onClose}) {
                   </a>
                 </li>
                 <li>
-                  <a target="_blank" rel="noreferrer" href="https://nightdev.com/">
-                    {formatMessage({defaultMessage: 'Other Products'})}
+                  <a target="_blank" rel="noreferrer" href="https://crowdin.com/project/betterttv">
+                    {formatMessage({defaultMessage: 'Submit Translations'})}
                   </a>
                 </li>
               </ul>
