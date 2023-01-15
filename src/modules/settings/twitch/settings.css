@@ -78,7 +78,7 @@
     width: 16px;
     height: 16px;
     filter: grayscale(100%) brightness(0%);
-    background: url(assets/logos/mascot.svg) no-repeat 0 0px;
+    background: url(assets/logos/logo.svg) no-repeat 0 0px;
     opacity: 0.9;
   }
 }

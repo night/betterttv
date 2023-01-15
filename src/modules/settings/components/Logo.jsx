@@ -10,7 +10,7 @@ export default function Logo() {
         className={styles.logo}
         whileHover={{scale: 1.2, rotate: 45, borderRadius: '100%'}}
         whileTap={{scale: 0.8}}>
-        <img alt="" src={cdn.url('/assets/logos/mascot.svg')} />
+        <img alt="" src={cdn.url('/assets/logos/logo.svg')} />
       </motion.div>
     </div>
   );

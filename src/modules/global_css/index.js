@@ -1,16 +1,11 @@
 import $ from 'jquery';
-import cdn from '../../utils/cdn.js';
 import extension from '../../utils/extension.js';
-import watcher from '../../watcher.js';
 import {PlatformTypes} from '../../constants.js';
 import {getPlatform} from '../../utils/window.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
 
 class GlobalCSSModule {
   constructor() {
-    watcher.on('load', () => this.branding());
-    this.branding();
-
     loadModuleForPlatforms(
       [PlatformTypes.TWITCH, () => import('./twitch.js')],
       [PlatformTypes.YOUTUBE, () => import('./youtube.js')]
@@ -32,23 +27,6 @@ class GlobalCSSModule {
       css.addEventListener('load', () => resolve());
       $('body').append(css);
     });
-  }
-
-  branding() {
-    if ($('.bttv-logo').length) return;
-
-    const $watermark = $('<img />');
-    $watermark.attr('class', 'bttv-logo');
-    $watermark.attr('src', cdn.url('assets/logos/logo_icon.png'));
-    $watermark.css({
-      'z-index': 9000,
-      left: '-74px',
-      top: '-18px',
-      width: '12px',
-      height: 'auto',
-      position: 'relative',
-    });
-    $('.top-nav__home-link').append($watermark);
   }
 }
 
