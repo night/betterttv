@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Feature request
+    url: https://github.com/night/betterttv/discussions
+    about: Create a feature request to help us improve
