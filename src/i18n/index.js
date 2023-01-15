@@ -21,6 +21,9 @@ const cache = createIntlCache();
 
 function getSiteLocale() {
   let locale = cookies.get('language') ?? cookies.get('PREF')?.split('hl=')[1]?.split('&')[0];
+  if (locale == null) {
+    return locale;
+  }
   locale = locale.replace('_', '-');
   if (!SUPPORTED_LOCALES.includes(locale)) {
     // eslint-disable-next-line prefer-destructuring
