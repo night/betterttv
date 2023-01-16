@@ -1,3 +1,7 @@
+:root {
+  --brand-color: #d50014;
+}
+
 .bttv-tooltip-wrapper {
   display: inline-block;
   position: relative;

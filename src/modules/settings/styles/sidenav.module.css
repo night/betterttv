@@ -1,10 +1,12 @@
-.logo {
-  width: 56px;
-  padding: 10px;
-  margin-top: 5px;
-  margin-bottom: 5px;
-  -webkit-transform: scaleX(-1);
-  transform: scaleX(-1);
+.logoContainer {
+  margin: 14px;
+  color: var(--brand-color);
+
+  .logo {
+    width: 28px;
+    height: 28px;
+    overflow: hidden;
+  }
 }
 
 .body {

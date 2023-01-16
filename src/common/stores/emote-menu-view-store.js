@@ -162,21 +162,21 @@ class EmoteMenuViewStore extends SafeEventEmitter {
         EmoteCategories.BETTERTTV_CHANNEL,
         EmoteProviders.BETTERTTV,
         formatMessage({defaultMessage: 'BetterTTV Channel'}),
-        Icons.IMAGE(cdn.url('/assets/logos/mascot.png'), 'BetterTTV', currentChannelProfilePicture),
+        Icons.IMAGE(cdn.url('/assets/logos/emote_menu_logo.svg'), 'BetterTTV', currentChannelProfilePicture),
         betterttvChannelEmotes
       ),
       createCategory(
         EmoteCategories.BETTERTTV_PERSONAL,
         EmoteProviders.BETTERTTV,
         formatMessage({defaultMessage: 'BetterTTV Personal'}),
-        Icons.IMAGE(cdn.url('/assets/logos/mascot.png'), 'BetterTTV', currentUserProfilePicture),
+        Icons.IMAGE(cdn.url('/assets/logos/emote_menu_logo.svg'), 'BetterTTV', currentUserProfilePicture),
         betterttvPersonalEmotes
       ),
       createCategory(
         EmoteCategories.BETTERTTV_GLOBAL,
         EmoteProviders.BETTERTTV,
         formatMessage({defaultMessage: 'BetterTTV Global'}),
-        Icons.IMAGE(cdn.url('/assets/logos/mascot.png'), 'BetterTTV'),
+        Icons.IMAGE(cdn.url('/assets/logos/emote_menu_logo.svg'), 'BetterTTV'),
         emotes.getEmotesByCategories([EmoteCategories.BETTERTTV_GLOBAL])
       ),
       createCategory(

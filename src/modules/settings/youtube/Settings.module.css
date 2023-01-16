@@ -18,21 +18,29 @@ ytls-menu-popup-renderer .button:hover {
 .buttonLabel {
   color: var(--yt-spec-text-primary);
   white-space: nowrap;
-  font-family: 'Roboto', 'Arial', sans-serif;
+  font-family: sans-serif;
   font-size: 1.4rem;
   line-height: 2rem;
-  font-weight: 400;
+  font-weight: 100;
   -webkit-font-smoothing: var(--paper-font-subhead_-_-webkit-font-smoothing);
 }
 
-.buttonIcon {
+.buttonIconContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-right: 16px;
   width: 24px;
   height: 24px;
-  flex: none;
-  filter: grayscale(100%) brightness(0%);
-  background: url(assets/icons/bttv_settings.png) no-repeat 0 0px;
-  background-size: cover;
+
+  .buttonIcon {
+    width: 20px;
+    height: 20px;
+    flex: none;
+    filter: grayscale(100%) brightness(0%);
+    background: url(assets/logos/logo.svg) no-repeat 0 0px;
+    background-size: cover;
+  }
 }
 
 html[dark] .buttonIcon {

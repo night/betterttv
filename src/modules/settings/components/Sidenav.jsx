@@ -11,18 +11,18 @@ import * as faColumns from '@fortawesome/free-solid-svg-icons/faColumns';
 import * as faInfoCircle from '@fortawesome/free-solid-svg-icons/faInfoCircle';
 import * as faCommentAlt from '@fortawesome/free-solid-svg-icons/faCommentAlt';
 
-import cdn from '../../../utils/cdn.js';
 import styles from '../styles/sidenav.module.css';
 import {PageTypes} from '../../../constants.js';
 import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.jsx';
 import formatMessage from '../../../i18n/index.js';
+import AnimatedLogo from './AnimatedLogo.jsx';
 
 function BTTVSidenav({value, onChange}) {
   return (
     <Sidenav className={styles.sidenav} expanded={false}>
       <Sidenav.Body className={styles.body}>
         <div>
-          <img alt="" src={cdn.url('/assets/logos/mascot.png')} className={styles.logo} />
+          <AnimatedLogo />
           <Nav activeKey={value} onSelect={onChange} className={styles.nav}>
             <Nav.Item
               eventKey={PageTypes.CHAT_SETTINGS}
