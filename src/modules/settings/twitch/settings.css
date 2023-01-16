@@ -75,10 +75,9 @@
   }
 
   .bttvSettingsIconDropDown {
-    width: 16px;
-    height: 16px;
     filter: grayscale(100%) brightness(0%);
     background: url(assets/logos/logo.svg) no-repeat 0 0px;
+    background-size: 16px 16px;
     opacity: 0.9;
   }
 }

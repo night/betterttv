@@ -1,5 +1,6 @@
 .logoContainer {
   margin: 14px;
+  color: var(--brand-color);
 
   .logo {
     width: 28px;

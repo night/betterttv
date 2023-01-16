@@ -5,7 +5,7 @@ import {Settings, Search} from './Settings.jsx';
 import {CategoryTypes} from '../../../constants.js';
 import CloseButton from './CloseButton.jsx';
 import formatMessage from '../../../i18n/index.js';
-import Logo from './Logo.jsx';
+import AnimatedLogo from './AnimatedLogo.jsx';
 
 export default function ChatWindow({open, onClose}) {
   const [search, setSearch] = useState('');
@@ -15,7 +15,7 @@ export default function ChatWindow({open, onClose}) {
   return (
     <div className={styles.standaloneChatWindow}>
       <div className={styles.header}>
-        <Logo />
+        <AnimatedLogo />
         <div className={styles.search}>
           <Search
             placeholder={formatMessage({defaultMessage: 'Chat Settings...'})}

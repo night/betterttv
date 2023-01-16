@@ -15,14 +15,14 @@ import styles from '../styles/sidenav.module.css';
 import {PageTypes} from '../../../constants.js';
 import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.jsx';
 import formatMessage from '../../../i18n/index.js';
-import Logo from './Logo.jsx';
+import AnimatedLogo from './AnimatedLogo.jsx';
 
 function BTTVSidenav({value, onChange}) {
   return (
     <Sidenav className={styles.sidenav} expanded={false}>
       <Sidenav.Body className={styles.body}>
         <div>
-          <Logo />
+          <AnimatedLogo />
           <Nav activeKey={value} onSelect={onChange} className={styles.nav}>
             <Nav.Item
               eventKey={PageTypes.CHAT_SETTINGS}
