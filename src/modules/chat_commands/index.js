@@ -1,4 +1,4 @@
-import {DateTime, Duration} from 'luxon';
+import {DateTime} from 'luxon';
 import gql from 'graphql-tag';
 import twitch from '../../utils/twitch.js';
 import chat from '../chat/index.js';
@@ -302,7 +302,11 @@ function handleCommands(message) {
             );
           }
         )
-        .catch((err) => console.log(err));
+        .catch(() =>
+          twitch.sendChatAdminMessage(
+            formatMessage({defaultMessage: 'You do not follow {name}.'}, {name: channel.displayName})
+          )
+        );
       break;
     }
     case 'follows': {
@@ -397,7 +401,7 @@ function handleCommands(message) {
             );
           }
         )
-        .catch((err) => console.log(err));
+        .catch(() => twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Could not fetch stream.'})));
       break;
     }
 
