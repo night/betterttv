@@ -1,11 +1,12 @@
 import watcher from '../../watcher.js';
 import settings from '../../settings.js';
 import domObserver from '../../observers/dom.js';
-import {SettingIds} from '../../constants.js';
+import {PlatformTypes, SettingIds} from '../../constants.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 
 const MOD_VIEW_BUTTON_SELECTOR = '[data-test-selector="mod-view-link"]';
 const noReload = window.location.search.includes('no-reload');
-const referringPath = new URL(document.referrer).pathname;
+const referringPath = document.referrer ? new URL(document.referrer).pathname : null;
 
 let modViewButtonListener;
 
@@ -37,4 +38,4 @@ class AutoModViewModule {
   }
 }
 
-export default new AutoModViewModule();
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new AutoModViewModule()]);

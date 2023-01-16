@@ -2,9 +2,10 @@ import debounce from 'lodash.debounce';
 import watcher from '../../watcher.js';
 import settings from '../../settings.js';
 import domObserver from '../../observers/dom.js';
-import {AutoClaimFlags, SettingIds} from '../../constants.js';
+import {AutoClaimFlags, PlatformTypes, SettingIds} from '../../constants.js';
 import twitch from '../../utils/twitch.js';
 import {hasFlag} from '../../utils/flags.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 
 const AUTO_CLAIM_SELECTOR = '.chat-private-callout__header-segment';
 const AUTO_CLAIM_BUTTON_SELECTOR = `${AUTO_CLAIM_SELECTOR} button[class*="ScCoreButtonPrimary"]`;
@@ -61,4 +62,4 @@ class AutoClaimModule {
   }
 }
 
-export default new AutoClaimModule();
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new AutoClaimModule()]);

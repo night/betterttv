@@ -1,7 +1,8 @@
 import watcher from '../../watcher.js';
 import settings from '../../settings.js';
 import domObserver from '../../observers/dom.js';
-import {SettingIds} from '../../constants.js';
+import {PlatformTypes, SettingIds} from '../../constants.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
 
 const RAID_BANNER_SELECTOR = '[data-test-selector="raid-banner"]';
 const RAID_LEAVE_BUTTON_SELECTOR = `${RAID_BANNER_SELECTOR} button[class*="ScCoreButtonSecondary"]`;
@@ -34,4 +35,4 @@ class AutoJoinRaidsModule {
   }
 }
 
-export default new AutoJoinRaidsModule();
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new AutoJoinRaidsModule()]);

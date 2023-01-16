@@ -25,7 +25,7 @@ function EmoteAutoLiveChatView() {
 }
 
 export default registerComponent(EmoteAutoLiveChatView, {
-  settingId: SettingIds.LIVE_CHAT_VIEW,
+  settingId: SettingIds.AUTO_LIVE_CHAT_VIEW,
   name: SETTING_NAME,
   category: CategoryTypes.CHAT,
   keywords: ['auto', 'live', 'chat', 'view'],

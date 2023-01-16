@@ -89,32 +89,7 @@ class ChatModule {
       $('body').on(
         'mouseenter mouseleave',
         '.bttv-animated-static-emote,.chat-line__message,.vod-message,.pinned-chat__message,.thread-message__message',
-        ({currentTarget, type}) => {
-          if (currentTarget == null) {
-            return;
-          }
-
-          const messageEmotes = currentTarget.querySelectorAll('.bttv-animated-static-emote img');
-          for (const emote of messageEmotes) {
-            const staticSrc = emote.__bttvStaticSrc ?? emote.src;
-            const staticSrcSet = emote.__bttvStaticSrcSet ?? emote.srcset;
-            const animatedSrc = emote.getAttribute('data-bttv-animated-src');
-            const animatedSrcSet = emote.getAttribute('data-bttv-animated-srcset');
-            if (!animatedSrc || !animatedSrcSet) {
-              return;
-            }
-
-            if (type === 'mouseleave') {
-              emote.src = staticSrc;
-              emote.srcset = staticSrcSet;
-            } else if (type === 'mouseenter') {
-              emote.__bttvStaticSrc = staticSrc;
-              emote.__bttvStaticSrcSet = staticSrcSet;
-              emote.src = animatedSrc;
-              emote.srcset = animatedSrcSet;
-            }
-          }
-        }
+        this.handleEmoteMouseEvent
       );
     });
     watcher.on('chat.message', ($element, message) => this.messageParser($element, message));
@@ -145,6 +120,33 @@ class ChatModule {
     api.get('cached/badges').then((badges) => {
       badges.forEach(({name, badge}) => staff.set(name, badge));
     });
+  }
+
+  handleEmoteMouseEvent({currentTarget, type}) {
+    if (currentTarget == null) {
+      return;
+    }
+
+    const messageEmotes = currentTarget.querySelectorAll('.bttv-animated-static-emote img');
+    for (const emote of messageEmotes) {
+      const staticSrc = emote.__bttvStaticSrc ?? emote.src;
+      const staticSrcSet = emote.__bttvStaticSrcSet ?? emote.srcset;
+      const animatedSrc = emote.getAttribute('data-bttv-animated-src');
+      const animatedSrcSet = emote.getAttribute('data-bttv-animated-srcset');
+      if (!animatedSrc || !animatedSrcSet) {
+        return;
+      }
+
+      if (type === 'mouseleave') {
+        emote.src = staticSrc;
+        emote.srcset = staticSrcSet;
+      } else if (type === 'mouseenter') {
+        emote.__bttvStaticSrc = staticSrc;
+        emote.__bttvStaticSrcSet = staticSrcSet;
+        emote.src = animatedSrc;
+        emote.srcset = animatedSrcSet;
+      }
+    }
   }
 
   calculateColor(color) {
@@ -191,7 +193,6 @@ class ChatModule {
   messageReplacer($message, user, exact = false) {
     const tokens = $message.contents();
     let cappedEmoteCount = 0;
-    let nextNodeModifier;
     for (let i = 0; i < tokens.length; i++) {
       const node = tokens[i];
 
@@ -212,13 +213,6 @@ class ChatModule {
           continue;
         }
 
-        if (EMOTE_MODIFIERS_LIST.includes(part) && parts[j + 1] != null) {
-          parts[j] = '';
-          nextNodeModifier = part;
-          modified = true;
-          continue;
-        }
-
         const steamJoinLink = part.match(STEAM_LOBBY_JOIN_REGEX);
         if (steamJoinLink) {
           parts[j] = steamLobbyJoinTemplate(steamJoinLink[0]);
@@ -229,11 +223,13 @@ class ChatModule {
         const emote =
           emotes.getEligibleEmote(part, user) ||
           (!exact ? emotes.getEligibleEmote(part.replace(EMOTE_STRIP_SYMBOLS_REGEX, ''), user) : null);
-        const modifier = nextNodeModifier;
-        if (modifier != null) {
-          nextNodeModifier = null;
-        }
         if (emote) {
+          let modifier;
+          const previousPart = parts[j - 1] ?? '';
+          if (EMOTE_MODIFIERS_LIST.includes(previousPart)) {
+            parts[j - 1] = '';
+            modifier = previousPart;
+          }
           parts[j] =
             EMOTES_TO_CAP.includes(emote.id) && ++cappedEmoteCount > MAX_EMOTES_WHEN_CAPPED
               ? ''
