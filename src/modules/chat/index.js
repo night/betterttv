@@ -8,11 +8,12 @@ import html from '../../utils/html.js';
 import settings from '../../settings.js';
 import emotes from '../emotes/index.js';
 import nicknames from '../chat_nicknames/index.js';
-import legacySubscribers from '../legacy_subscribers/index.js';
+import subscribers from '../subscribers/index.js';
 import splitChat from '../split_chat/index.js';
 import {SettingIds, UsernameFlags} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
 import {getCurrentChannel} from '../../utils/channel.js';
+import formatMessage from '../../i18n/index.js';
 
 const EMOTE_STRIP_SYMBOLS_REGEX = /(^[~!@#$%^&*()]+|[~!@#$%^&*()]+$)/g;
 const STEAM_LOBBY_JOIN_REGEX = /^steam:\/\/joinlobby\/\d+\/\d+\/\d+$/;
@@ -157,25 +158,35 @@ class ChatModule {
     return colors.calculateColor(color, settings.get(SettingIds.DARKENED_MODE));
   }
 
-  customBadges($element, user) {
-    if ((globalBots.includes(user.name) || channelBots.includes(user.name)) && user.mod) {
-      $element.find('img.chat-badge[alt="Moderator"]').replaceWith(badgeTemplate(cdn.url('tags/bot.png'), 'Bot'));
-    }
+  customBadges(user) {
+    const badges = [];
 
-    let $badgesContainer = $element.find('.chat-badge').closest('span');
-    if (!$badgesContainer.length) {
-      $badgesContainer = $element.find('span.chat-line__username').prev('span');
-    }
-
-    const badge = staff.get(user.name);
-    if (badge) {
-      $badgesContainer.append(badgeTemplate(badge.svg, badge.description));
+    const staffBadge = staff.get(user.name);
+    if (staffBadge) {
+      badges.push(badgeTemplate(staffBadge.svg, staffBadge.description));
     }
 
     const currentChannel = getCurrentChannel();
-    if (currentChannel && currentChannel.name === 'night' && legacySubscribers.hasSubscription(user.name)) {
-      $badgesContainer.append(badgeTemplate(cdn.url('tags/subscriber.png'), 'Subscriber'));
+    if (currentChannel && currentChannel.name === 'night' && subscribers.hasLegacySubscription(user.id)) {
+      badges.push(badgeTemplate(cdn.url('tags/subscriber.png'), 'Subscriber'));
     }
+
+    const subscriberBadge = subscribers.getSubscriptionBadge(user.id);
+    if (subscriberBadge?.url != null) {
+      badges.push(
+        badgeTemplate(
+          subscriberBadge.url,
+          subscriberBadge.startedAt
+            ? formatMessage(
+                {defaultMessage: 'BetterTTV Pro since {date, date, medium}'},
+                {date: new Date(subscriberBadge.startedAt)}
+              )
+            : formatMessage({defaultMessage: 'BetterTTV Pro Subscriber'})
+        )
+      );
+    }
+
+    return badges;
   }
 
   asciiOnly(enabled) {
@@ -273,12 +284,26 @@ class ChatModule {
       color = $from.css('color');
     }
 
-    if (legacySubscribers.hasGlow(user.name) && settings.get(SettingIds.DARKENED_MODE) === true) {
+    if (subscribers.hasGlow(user.id) && settings.get(SettingIds.DARKENED_MODE) === true) {
       const rgbColor = colors.getRgb(color);
       $from.css('text-shadow', `0 0 20px rgba(${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b}, 0.8)`);
     }
 
-    this.customBadges($element, user);
+    if ((globalBots.includes(user.name) || channelBots.includes(user.name)) && user.mod) {
+      $element.find('img.chat-badge[alt="Moderator"]').replaceWith(badgeTemplate(cdn.url('tags/bot.png'), 'Bot'));
+    }
+
+    let $badgesContainer = $element.find('.chat-badge').closest('span');
+    if (!$badgesContainer.length) {
+      $badgesContainer = $element.find('span.chat-line__username').prev('span');
+    }
+
+    const customBadges = this.customBadges(user);
+    if ($badgesContainer.length > 0 && customBadges.length > 0) {
+      for (const badge of customBadges) {
+        $badgesContainer.append(badge);
+      }
+    }
 
     const nickname = nicknames.get(user.name);
     if (nickname) {

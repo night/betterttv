@@ -7,7 +7,7 @@ import {loadModuleForPlatforms} from '../../utils/modules.js';
 import {hasFlag} from '../../utils/flags.js';
 
 const CHAT_MESSAGE_SELECTOR = '#content #message,#content #content-text';
-const CHAT_USERNAME_SELECTOR = '.yt-live-chat-author-chip,#author-text';
+const CHAT_BADGES_CONTAINER_SELECTOR = '#chat-badges';
 
 class YouTubeModule {
   constructor() {
@@ -24,8 +24,12 @@ class YouTubeModule {
   }
 
   parseMessage(element) {
-    const from = element.querySelector(CHAT_USERNAME_SELECTOR);
-    const mockUser = {name: from.textContent};
+    const message = element.__data?.data;
+    const mockUser = {
+      id: message?.authorExternalChannelId,
+      name: message?.authorExternalChannelId,
+      displayName: message?.authorName?.simpleText,
+    };
 
     const emotesSettingValue = settings.get(SettingIds.EMOTES);
     const handleAnimatedEmotes =
@@ -34,6 +38,14 @@ class YouTubeModule {
     if (handleAnimatedEmotes) {
       element.addEventListener('mouseenter', chat.handleEmoteMouseEvent);
       element.addEventListener('mouseleave', chat.handleEmoteMouseEvent);
+    }
+
+    const customBadges = chat.customBadges(mockUser);
+    const badgesContainer = element.querySelector(CHAT_BADGES_CONTAINER_SELECTOR);
+    if (customBadges.length > 0 && badgesContainer != null) {
+      for (const badge of customBadges) {
+        $(badgesContainer).after(badge);
+      }
     }
 
     chat.messageReplacer($(element.querySelector(CHAT_MESSAGE_SELECTOR)), mockUser);

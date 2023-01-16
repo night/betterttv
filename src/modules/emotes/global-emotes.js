@@ -1,6 +1,6 @@
 import api from '../../utils/api.js';
 import cdn from '../../utils/cdn.js';
-import legacySubscribers from '../legacy_subscribers/index.js';
+import subscribers from '../subscribers/index.js';
 import watcher from '../../watcher.js';
 import AbstractEmotes from './abstract-emotes.js';
 import Emote from './emote.js';
@@ -33,7 +33,7 @@ class GlobalEmotes extends AbstractEmotes {
           if (restrictions && restrictions.emoticonSet) {
             restrictionCallback = (_, user) => {
               if (restrictions.emoticonSet !== 'night') return false;
-              return user ? legacySubscribers.hasSubscription(user.name) : false;
+              return user ? subscribers.hasLegacySubscription(user.name) : false;
             };
           }
 
