@@ -290,7 +290,9 @@ class ChatModule {
     }
 
     if ((globalBots.includes(user.name) || channelBots.includes(user.name)) && user.mod) {
-      $element.find('img.chat-badge[alt="Moderator"]').replaceWith(badgeTemplate(cdn.url('tags/bot.png'), 'Bot'));
+      $element
+        .find('img.chat-badge[alt="Moderator"]')
+        .replaceWith(badgeTemplate(cdn.url('tags/bot.png'), formatMessage({defaultMessage: 'Bot'})));
     }
 
     let $badgesContainer = $element.find('.chat-badge').closest('span');
