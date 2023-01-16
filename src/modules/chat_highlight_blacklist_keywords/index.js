@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import dayjs from 'dayjs';
+import {DateTime} from 'luxon';
 import isSafeRegex from 'safe-regex2';
 import watcher from '../../watcher.js';
 import settings from '../../settings.js';
@@ -370,7 +370,7 @@ class ChatHighlightBlacklistKeywordsModule {
       $pinnedHighlightsContainer.children().first().remove();
     }
 
-    const timestamp = dayjs(date).format('hh:mm');
+    const timestamp = DateTime.fromJSDate(new Date(date)).toFormat('hh:mm');
 
     const $newHighlight = $(pinnedHighlightTemplate({timestamp, from, message}));
 

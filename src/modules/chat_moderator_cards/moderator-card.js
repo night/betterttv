@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import dayjs from 'dayjs';
+import {DateTime} from 'luxon';
 import gql from 'graphql-tag';
 import nicknames from '../chat_nicknames/index.js';
 import twitch from '../../utils/twitch.js';
@@ -71,7 +71,7 @@ const userStatsTemplate = (follows, createdAt, giftedBy, giftedAt) => `
     ${userStatsItemTemplate(
       Icons.BIRTHDAY_CAKE,
       formatMessage({defaultMessage: 'Account Creation Date'}),
-      dayjs(createdAt).format('MMM D, YYYY')
+      DateTime.fromJSDate(new Date(createdAt)).toFormat('LLL dd, yyyy')
     )}
     ${
       giftedAt != null
@@ -79,7 +79,7 @@ const userStatsTemplate = (follows, createdAt, giftedBy, giftedAt) => `
             Icons.GIFT,
             formatMessage({defaultMessage: 'Subscription Gifted By'}),
             giftedBy,
-            dayjs(giftedAt).format('MMM D, YYYY')
+            DateTime.fromJSDate(new Date(giftedAt)).toFormat('LLL dd, yyyy')
           )
         : ''
     }

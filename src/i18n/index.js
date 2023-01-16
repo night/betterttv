@@ -1,7 +1,8 @@
 import cookies from 'cookies-js';
 import {createIntl, createIntlCache} from '@formatjs/intl';
+import {Settings} from 'luxon';
 
-const DEFAULT_LOCALE = 'en';
+const DEFAULT_LOCALE = 'ru-RU';
 const SUPPORTED_LOCALES = [DEFAULT_LOCALE, 'ru-RU'];
 
 let browserLocale = Array.isArray(navigator.languages) ? navigator.languages[0] : null;
@@ -47,6 +48,8 @@ export async function load() {
     },
     cache
   );
+
+  Settings.defaultLocale = locale;
 }
 
 // eslint-disable-next-line import/prefer-default-export

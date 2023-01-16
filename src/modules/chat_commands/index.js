@@ -1,6 +1,5 @@
-import dayjs from 'dayjs';
+import {DateTime, Duration} from 'luxon';
 import gql from 'graphql-tag';
-import relativeTime from 'dayjs/esm/plugin/relativeTime/index.js';
 import twitch from '../../utils/twitch.js';
 import chat from '../chat/index.js';
 import anonChat from '../anon_chat/index.js';
@@ -9,8 +8,6 @@ import {getCurrentChannel} from '../../utils/channel.js';
 import {PlatformTypes} from '../../constants.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
 import formatMessage from '../../i18n/index.js';
-
-dayjs.extend(relativeTime);
 
 const CommandHelp = {
   b: formatMessage({defaultMessage: `Usage: "/b '<'login'>' [reason]" - Shortcut for /ban`}),
@@ -53,11 +50,13 @@ function secondsToLength(s) {
   const minutes = Math.floor(s / 60) - days * 1440 - hours * 60;
   const seconds = s - days * 86400 - hours * 3600 - minutes * 60;
 
-  return `${days > 0 ? `${days} day${days === 1 ? '' : 's'}, ` : ''} ${
-    hours > 0 ? `${hours} hour${hours === 1 ? '' : 's'}, ` : ''
-  }  ${minutes > 0 ? `${minutes} minute${minutes === 1 ? '' : 's'}, ` : ''} ${seconds} second${
-    seconds === 1 ? '' : 's'
-  }`;
+  return formatMessage(
+    {
+      defaultMessage:
+        '{days, plural, =0 {} one {# day, } other {# days, }}{hours, plural, =0 {} one {# hour, } other {# hours, }}{minutes, plural, =0 {} one {# minute, } other {# minutes, }}{seconds, plural, one {# second} other {# seconds}}',
+    },
+    {days, hours, minutes, seconds}
+  );
 }
 
 function massUnban() {
@@ -287,7 +286,6 @@ function handleCommands(message) {
               },
             },
           }) => {
-            const since = dayjs(followedAt);
             twitch.sendChatAdminMessage(
               formatMessage(
                 {
@@ -295,18 +293,16 @@ function handleCommands(message) {
                 },
                 {
                   name: channel.displayName,
-                  duration: since.fromNow(), // TODO: localize this
-                  date: since.toDate(),
+                  duration: DateTime.now()
+                    .minus(DateTime.now().diff(DateTime.fromISO(followedAt)))
+                    .toRelative(),
+                  date: new Date(followedAt),
                 }
               )
             );
           }
         )
-        .catch(() =>
-          twitch.sendChatAdminMessage(
-            formatMessage({defaultMessage: 'You do not follow {name}.'}, {name: channel.displayName})
-          )
-        );
+        .catch((err) => console.log(err));
       break;
     }
     case 'follows': {
@@ -401,7 +397,7 @@ function handleCommands(message) {
             );
           }
         )
-        .catch(() => twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Could not fetch stream.'})));
+        .catch((err) => console.log(err));
       break;
     }
 
