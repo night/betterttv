@@ -2,7 +2,7 @@ import cookies from 'cookies-js';
 import {createIntl, createIntlCache} from '@formatjs/intl';
 import {Settings} from 'luxon';
 
-const DEFAULT_LOCALE = 'ru-RU';
+const DEFAULT_LOCALE = 'en';
 const SUPPORTED_LOCALES = [DEFAULT_LOCALE, 'ru-RU'];
 
 let browserLocale = Array.isArray(navigator.languages) ? navigator.languages[0] : null;
