@@ -203,12 +203,11 @@ class VideoPlayerModule {
       $(BTTV_PICTURE_IN_PICTURE_SELECTOR).replaceWith(getPictureInPictureTemplate(false));
     });
 
-    const $anchor = $('.player-controls__right-control-group');
-    const $settingsButton = $anchor.children('div').children('div.settings-menu-button-component').parent();
+    const $anchor = $('.player-controls__right-control-group .resize-detector');
     const $button = $(getPictureInPictureTemplate(false));
 
     $anchor.on('click', BTTV_PICTURE_IN_PICTURE_SELECTOR, togglePictureInPicture);
-    $button.insertAfter($settingsButton);
+    $button.insertAfter($anchor);
   }
 }
 
