@@ -15,7 +15,7 @@ function AutoplayModule() {
   const [autoplay, setAutoplay] = useStorageState(SettingIds.AUTO_PLAY);
 
   return (
-    <Panel header={SETTING_NAME} className={styles.setting}>
+    <Panel header={SETTING_NAME}>
       <div className={styles.setting}>
         <p className={styles.settingDescription}>
           {formatMessage({defaultMessage: 'Control Auto Play on various Twitch video players.'})}
