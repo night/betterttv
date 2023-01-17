@@ -30,7 +30,7 @@ function ChatModule() {
           <Checkbox key="chatReplies" value={ChatFlags.CHAT_REPLIES}>
             <p className={styles.heading}>{formatMessage({defaultMessage: 'Chat Replies'})}</p>
             <p className={styles.settingDescription}>
-              {formatMessage({defaultMessage: 'Show the click to reply button in chat'})}
+              {formatMessage({defaultMessage: 'Show the reply button in chat'})}
             </p>
           </Checkbox>
           <Checkbox key="bits" value={ChatFlags.BITS}>
