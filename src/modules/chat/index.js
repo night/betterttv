@@ -302,6 +302,7 @@ class ChatModule {
 
     const customBadges = this.customBadges(user);
     if ($badgesContainer.length > 0 && customBadges.length > 0) {
+      $badgesContainer.css('display', 'inline-flex');
       for (const badge of customBadges) {
         $badgesContainer.append(badge);
       }
