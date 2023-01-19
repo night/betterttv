@@ -159,6 +159,15 @@ function getRgb(color) {
     };
   }
 
+  const hex3Regex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i.exec(color);
+  if (hex3Regex != null) {
+    return {
+      r: parseInt(hex3Regex[1] + hex3Regex[1], 16),
+      g: parseInt(hex3Regex[2] + hex3Regex[2], 16),
+      b: parseInt(hex3Regex[3] + hex3Regex[3], 16),
+    };
+  }
+
   const rgbRegex = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/i.exec(color);
   if (rgbRegex != null) {
     return {
