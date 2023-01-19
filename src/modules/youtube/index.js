@@ -42,7 +42,11 @@ class YouTubeModule {
 
     const customBadges = chat.customBadges(mockUser);
     const badgesContainer = element.querySelector(CHAT_BADGES_CONTAINER_SELECTOR);
-    if (customBadges.length > 0 && badgesContainer != null) {
+    if (
+      customBadges.length > 0 &&
+      badgesContainer != null &&
+      badgesContainer.parentElement.querySelector('.bttv-chat-badge-container') == null
+    ) {
       for (const badge of customBadges) {
         $(badgesContainer).after(badge);
       }
