@@ -102,7 +102,7 @@ class ChatDirection {
       scrollContent.removeEventListener('scroll', handleVodScrollEvent);
 
       if (scroller.props.isScrollingSynced) {
-        scrollContent.scrollTop = scrollContent[0].scrollHeight;
+        scrollContent.scrollTop = scrollContent.scrollHeight;
       }
     }
   }
