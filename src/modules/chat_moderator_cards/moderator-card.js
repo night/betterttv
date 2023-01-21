@@ -178,6 +178,7 @@ function createUserMessages(messages) {
 
   const header = document.createElement('div');
   header.classList.add('label');
+  container.appendChild(header);
 
   const headerText = document.createElement('span');
   headerText.innerText = formatMessage({defaultMessage: 'Chat Messages'});
@@ -190,7 +191,7 @@ function createUserMessages(messages) {
   const messageList = document.createElement('div');
   messageList.classList.add('message-list');
   for (const {element} of messages) {
-    messageList.appendChild(element.cloneNode());
+    messageList.appendChild(element.cloneNode(true));
   }
   container.appendChild(messageList);
 
@@ -357,7 +358,7 @@ class ModeratorCard {
       if (collapse.classList.contains('open')) {
         messageList.style.display = 'block';
       } else {
-        messageList.style.display = 'hidden';
+        messageList.style.display = 'none';
       }
     });
   }
