@@ -84,6 +84,6 @@
 
 .tw-root--theme-dark {
   .bttvSettingsIconDropDown {
-    filter: grayscale(100%) brightness(400%);
+    filter: grayscale(100%) brightness(500%);
   }
 }
