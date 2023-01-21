@@ -19,6 +19,7 @@ class FrankerFaceZChannelEmotes extends AbstractEmotes {
     super();
 
     watcher.on('channel.updated', () => this.updateChannelEmotes());
+    settings.on(`changed.${SettingIds.EMOTES}`, () => this.updateChannelEmotes());
   }
 
   get category() {
