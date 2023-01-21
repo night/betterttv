@@ -10,7 +10,10 @@ class HideChatClipsModule {
   }
 
   load() {
-    document.body.classList.toggle('bttv-hide-chat-clips', !hasFlag(settings.get(SettingIds.CHAT), ChatFlags.CHAT_CLIPS));
+    document.body.classList.toggle(
+      'bttv-hide-chat-clips',
+      !hasFlag(settings.get(SettingIds.CHAT), ChatFlags.CHAT_CLIPS)
+    );
   }
 }
 

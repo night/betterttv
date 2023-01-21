@@ -10,7 +10,10 @@ class ChatRepliesModule {
   }
 
   toggleChatReplies() {
-    document.body.classList.toggle('bttv-hide-chat-replies', !hasFlag(settings.get(SettingIds.CHAT), ChatFlags.CHAT_REPLIES));
+    document.body.classList.toggle(
+      'bttv-hide-chat-replies',
+      !hasFlag(settings.get(SettingIds.CHAT), ChatFlags.CHAT_REPLIES)
+    );
   }
 }
 
