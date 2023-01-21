@@ -5,6 +5,7 @@ import {DeletedMessageTypes, PlatformTypes, SettingIds} from '../../constants.js
 import {loadModuleForPlatforms} from '../../utils/modules.js';
 import ChatHighlightBlacklistKeywords from '../chat_highlight_blacklist_keywords/index.js';
 import formatMessage from '../../i18n/index.js';
+import domObserver from '../../observers/dom.js';
 
 const CHAT_LINE_SELECTOR = '.chat-line__message';
 const CHAT_LINE_LINK_SELECTOR = 'a.link-fragment';
@@ -35,6 +36,20 @@ class ChatDeletedMessagesModule {
   constructor() {
     watcher.on('chat.message.handler', (message) => {
       this.handleMessage(message);
+    });
+    domObserver.on('.chat-line__message--deleted-notice', (node, isConnected) => {
+      if (!isConnected) return;
+
+      const messageRenderer = twitch.getChatMessageRenderer(node);
+      if (messageRenderer == null) {
+        return;
+      }
+
+      messageRenderer.props.isDeleted = false;
+      messageRenderer.forceUpdate(() => {
+        const {message} = messageRenderer.props;
+        this.handleDelete(message.user.userLogin, message.id);
+      });
     });
   }
 

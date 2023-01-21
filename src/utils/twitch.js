@@ -453,6 +453,20 @@ export default {
     return currentChat.props.isCurrentUserModerator;
   },
 
+  getChatMessageRenderer(element) {
+    let renderer;
+    try {
+      const reactNode = searchReactParents(
+        getReactInstance(element),
+        (n) => n?.stateNode?.renderMessageBody != null,
+        10
+      );
+      renderer = reactNode.stateNode;
+    } catch (_) {}
+
+    return renderer;
+  },
+
   getChatMessageObject(element) {
     let msgObject;
     try {
