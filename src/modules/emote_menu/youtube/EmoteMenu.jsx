@@ -115,7 +115,7 @@ export default class EmoteMenuModule {
     const prefixText = element.textContent.toString();
     let prefixSuffixText =
       prefixText.length > 0 && !prefixText.endsWith(' ') && !prefixText.endsWith('\xa0') ? ' ' : '';
-    const suffixPrefixHTML = '&nbsp;';
+    const suffixPrefixNode = document.createTextNode('\u00A0');
 
     let newNode;
     if (emote.category.provider === EmoteProviders.YOUTUBE) {
@@ -129,7 +129,7 @@ export default class EmoteMenuModule {
       element.appendChild(document.createTextNode(prefixSuffixText));
     }
     element.appendChild(newNode);
-    element.innerHTML += suffixPrefixHTML;
+    element.appendChild(suffixPrefixNode);
 
     element.dispatchEvent(new Event('input', {bubbles: true}));
 
