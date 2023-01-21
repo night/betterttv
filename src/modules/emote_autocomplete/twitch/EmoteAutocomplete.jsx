@@ -4,8 +4,10 @@ import watcher from '../../../watcher.js';
 import dom from '../../../observers/dom.js';
 import emotes from '../../emotes/index.js';
 import {createSrcSet, createSrc} from '../../../utils/image.js';
-import {EmoteCategories} from '../../../constants.js';
+import {EmoteCategories, EmoteTypeFlags, SettingIds} from '../../../constants.js';
 import './EmoteAutocomplete.module.css';
+import settings from '../../../settings.js';
+import {hasFlag} from '../../../utils/flags.js';
 
 const EMOTE_ID_BETTERTTV_PREFIX = '__BTTV__';
 const CUSTOM_SET_ID = 'BETTERTTV_EMOTES';
@@ -101,12 +103,25 @@ function patchEmoteImage(image, isConnected) {
     return;
   }
 
-  if (image.srcset) {
-    image.srcset = createSrcSet(emote.images);
-  }
+  const emotesSettingValue = settings.get(SettingIds.EMOTES);
+  const showAnimatedEmotes =
+    emote.category.id === EmoteCategories.BETTERTTV_PERSONAL
+      ? hasFlag(emotesSettingValue, EmoteTypeFlags.ANIMATED_PERSONAL_EMOTES)
+      : hasFlag(emotesSettingValue, EmoteTypeFlags.ANIMATED_EMOTES);
+  const shouldRenderStatic = emote.animated && !showAnimatedEmotes;
 
-  if (image.src) {
-    image.src = createSrc(emote.images);
+  image.srcset = createSrcSet(emote.images, shouldRenderStatic);
+  image.src = createSrc(emote.images, shouldRenderStatic);
+
+  if (shouldRenderStatic) {
+    image.addEventListener('mouseenter', () => {
+      image.srcset = createSrcSet(emote.images, false);
+      image.src = createSrc(emote.images, false);
+    });
+    image.addEventListener('mouseleave', () => {
+      image.srcset = createSrcSet(emote.images, true);
+      image.src = createSrc(emote.images, true);
+    });
   }
 }
 
