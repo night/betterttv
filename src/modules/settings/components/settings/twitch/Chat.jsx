@@ -60,7 +60,9 @@ function ChatModule() {
           <Checkbox key="communityHighlights" value={ChatFlags.COMMUNITY_HIGHLIGHTS}>
             <p className={styles.heading}>{formatMessage({defaultMessage: 'Community Highlights'})}</p>
             <p className={styles.settingDescription}>
-              {formatMessage({defaultMessage: 'Show alerts above chat window for hype trains, community chest, etc.'})}
+              {formatMessage({
+                defaultMessage: 'Show alerts above chat window for hype trains, drops, pinned messages, etc.',
+              })}
             </p>
           </Checkbox>
         </CheckboxGroup>
