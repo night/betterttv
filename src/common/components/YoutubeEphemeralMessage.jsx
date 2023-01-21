@@ -15,7 +15,7 @@ export default function YoutubeEphemeralMessage({message}) {
 
   return (
     <div className={styles.message}>
-      <img className={styles.mascot} alt="BetterTTV Logo" src={cdn.url('/assets/logos/mascot.png')} />
+      <img className={styles.mascot} alt="BetterTTV Logo" src={cdn.url('assets/logos/emote_menu_logo.svg')} />
       <div ref={messageRef}>{message}</div>
     </div>
   );
