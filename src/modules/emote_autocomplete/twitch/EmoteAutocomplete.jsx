@@ -110,17 +110,29 @@ function patchEmoteImage(image, isConnected) {
       : hasFlag(emotesSettingValue, EmoteTypeFlags.ANIMATED_EMOTES);
   const shouldRenderStatic = emote.animated && !showAnimatedEmotes;
 
-  image.srcset = createSrcSet(emote.images, shouldRenderStatic);
-  image.src = createSrc(emote.images, shouldRenderStatic);
+  if (image.srcset) {
+    image.srcset = createSrcSet(emote.images, shouldRenderStatic);
+  }
+  if (image.src) {
+    image.src = createSrc(emote.images, shouldRenderStatic);
+  }
 
   if (shouldRenderStatic) {
     image.addEventListener('mouseenter', () => {
-      image.srcset = createSrcSet(emote.images, false);
-      image.src = createSrc(emote.images, false);
+      if (image.srcset) {
+        image.srcset = createSrcSet(emote.images, false);
+      }
+      if (image.src) {
+        image.src = createSrc(emote.images, false);
+      }
     });
     image.addEventListener('mouseleave', () => {
-      image.srcset = createSrcSet(emote.images, true);
-      image.src = createSrc(emote.images, true);
+      if (image.srcset) {
+        image.srcset = createSrcSet(emote.images, true);
+      }
+      if (image.src) {
+        image.src = createSrc(emote.images, true);
+      }
     });
   }
 }
