@@ -171,7 +171,8 @@ function keywordRegEx(keyword) {
 
 function fieldContainsKeyword(keywords, from, field, onColorChange) {
   const currentUser = getCurrentUser();
-  if (currentUser != null && currentUser.name === from) {
+  // onColorChange here is used to detect highlighting
+  if (currentUser != null && currentUser.name === from && onColorChange == null) {
     return false;
   }
 
