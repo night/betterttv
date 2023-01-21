@@ -722,10 +722,7 @@ export default {
   getSidebarSection(element) {
     let sidebarSection;
     try {
-      const node = searchReactParents(
-        getReactInstance(document.querySelector(element)),
-        (n) => n.memoizedProps?.section != null
-      );
+      const node = searchReactParents(getReactInstance(element), (n) => n.memoizedProps?.section != null);
       sidebarSection = node.memoizedProps.section;
     } catch (e) {}
 
@@ -735,10 +732,7 @@ export default {
   getPrivateCalloutEvent(element) {
     let privateCalloutEvent;
     try {
-      const node = searchReactParents(
-        getReactInstance(document.querySelector(element)),
-        (n) => n.memoizedProps?.event != null
-      );
+      const node = searchReactParents(getReactInstance(element), (n) => n.memoizedProps?.event != null);
       privateCalloutEvent = node.memoizedProps.event;
     } catch (e) {}
 
