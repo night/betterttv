@@ -23,8 +23,6 @@ class YouTubeModule {
   }
 
   parseMessage(element) {
-    if (element.__bttvParsed) return;
-
     const message = element.__data?.data;
     const mockUser = {
       id: message?.authorExternalChannelId,
@@ -46,7 +44,7 @@ class YouTubeModule {
     if (
       customBadges.length > 0 &&
       badgesContainer != null &&
-      badgesContainer.querySelector(customBadges[0].className) == null
+      element.getElementsByClassName(customBadges[0].className)[0] == null
     ) {
       for (const badge of customBadges) {
         badgesContainer.after(badge);
@@ -54,8 +52,6 @@ class YouTubeModule {
     }
 
     chat.messageReplacer(element.querySelector(CHAT_MESSAGE_SELECTOR), mockUser);
-
-    element.__bttvParsed = true;
   }
 }
 
