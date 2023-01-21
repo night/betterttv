@@ -1,4 +1,3 @@
-import {on} from 'delegated-events';
 import watcher from '../../watcher.js';
 import colors from '../../utils/colors.js';
 import twitch from '../../utils/twitch.js';
@@ -9,7 +8,7 @@ import emotes from '../emotes/index.js';
 import nicknames from '../chat_nicknames/index.js';
 import subscribers from '../subscribers/index.js';
 import splitChat from '../split_chat/index.js';
-import {SettingIds, UsernameFlags} from '../../constants.js';
+import {EmoteTypeFlags, SettingIds, UsernameFlags} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
 import {getCurrentChannel} from '../../utils/channel.js';
 import formatMessage from '../../i18n/index.js';
@@ -18,8 +17,10 @@ const EMOTE_STRIP_SYMBOLS_REGEX = /(^[~!@#$%^&*()]+|[~!@#$%^&*()]+$)/g;
 const STEAM_LOBBY_JOIN_REGEX = /^steam:\/\/joinlobby\/\d+\/\d+\/\d+$/;
 const EMOTES_TO_CAP = ['567b5b520e984428652809b6'];
 const MAX_EMOTES_WHEN_CAPPED = 10;
+const EMOTE_SELECTOR =
+  '.bttv-animated-static-emote, .chat-line__message, .vod-message, .pinned-chat__message, .thread-message__message';
 const EMOTE_HOVER_SELECTOR =
-  '.bttv-animated-static-emote,.chat-line__message,.vod-message,.pinned-chat__message,.thread-message__message';
+  '.bttv-animated-static-emote:hover, .chat-line__message:hover, .vod-message:hover, .pinned-chat__message:hover, .thread-message__message:hover';
 
 const EMOTE_MODIFIERS = {
   'w!': 'bttv-emote-modifier-wide',
@@ -89,6 +90,7 @@ let channelBots = [];
 let asciiOnly = false;
 let subsOnly = false;
 let modsOnly = false;
+let currentMoveTarget = null;
 
 function hasNonASCII(message) {
   for (let i = 0; i < message.length; i++) {
@@ -103,10 +105,8 @@ function getMessagePartsFromMessageElement(message) {
 
 class ChatModule {
   constructor() {
-    watcher.on('load', () => {
-      on('mouseenter', EMOTE_HOVER_SELECTOR, this.handleEmoteMouseEvent);
-      on('mouseleave', EMOTE_HOVER_SELECTOR, this.handleEmoteMouseEvent);
-    });
+    watcher.on('load', () => this.loadEmoteMouseHandler());
+    settings.on(`changed.${SettingIds.EMOTES}`, () => this.loadEmoteMouseHandler());
     watcher.on('chat.message', (element, message) => this.messageParser(element, message));
     watcher.on('chat.notice_message', (element) => this.noticeMessageParser(element));
     watcher.on('chat.pinned_message', (element) => this.pinnedMessageParser(element));
@@ -137,27 +137,56 @@ class ChatModule {
     });
   }
 
-  handleEmoteMouseEvent({currentTarget, type}) {
-    if (currentTarget == null) {
+  loadEmoteMouseHandler() {
+    const emotesSettingValue = settings.get(SettingIds.EMOTES);
+    const handleAnimatedEmotes =
+      !hasFlag(emotesSettingValue, EmoteTypeFlags.ANIMATED_PERSONAL_EMOTES) ||
+      !hasFlag(emotesSettingValue, EmoteTypeFlags.ANIMATED_EMOTES);
+
+    if (handleAnimatedEmotes) {
+      document.addEventListener('mousemove', this.handleEmoteMouseEvent);
+    } else {
+      document.removeEventListener('mousemove', this.handleEmoteMouseEvent);
+    }
+  }
+
+  handleEmoteMouseEvent({target}) {
+    const currentTargets = [];
+    if (currentMoveTarget !== target) {
+      const closestTarget = target.closest(EMOTE_SELECTOR);
+      if (closestTarget != null) {
+        currentTargets.push(closestTarget);
+      }
+      const closestCurrentMoveTarget = currentMoveTarget?.closest(EMOTE_SELECTOR);
+      if (closestCurrentMoveTarget != null) {
+        currentTargets.push(closestCurrentMoveTarget);
+      }
+    }
+    currentMoveTarget = target;
+
+    if (currentTargets.length === 0) {
       return;
     }
 
-    const messageEmotes = currentTarget.querySelectorAll('.bttv-animated-static-emote img');
-    for (const emote of messageEmotes) {
-      const staticSrc = emote.__bttvStaticSrc ?? emote.src;
-      const staticSrcSet = emote.__bttvStaticSrcSet ?? emote.srcset;
-      const animatedSrc = emote.__bttvAnimatedSrc;
-      const animatedSrcSet = emote.__bttvAnimatedSrcSet;
-      if (!animatedSrc || !animatedSrcSet) {
-        return;
-      }
+    for (const currentTarget of currentTargets) {
+      const isHovering = currentTarget.matches(EMOTE_HOVER_SELECTOR);
+      const messageEmotes = currentTarget.querySelectorAll('.bttv-animated-static-emote img');
+      for (const emote of messageEmotes) {
+        const staticSrc = emote.__bttvStaticSrc ?? emote.src;
+        const staticSrcSet = emote.__bttvStaticSrcSet ?? emote.srcset;
+        const animatedSrc = emote.__bttvAnimatedSrc;
+        const animatedSrcSet = emote.__bttvAnimatedSrcSet;
+        if (!animatedSrc || !animatedSrcSet) {
+          return;
+        }
 
-      if (type === 'mouseleave') {
-        emote.src = staticSrc;
-        emote.srcset = staticSrcSet;
-      } else if (type === 'mouseenter') {
-        emote.src = animatedSrc;
-        emote.srcset = animatedSrcSet;
+        if (!isHovering) {
+          emote.src = staticSrc;
+          emote.srcset = staticSrcSet;
+        } else {
+          emote.src = animatedSrc;
+          emote.srcset = animatedSrcSet;
+        }
       }
     }
   }

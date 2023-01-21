@@ -35,8 +35,7 @@ class YouTubeModule {
       !hasFlag(emotesSettingValue, EmoteTypeFlags.ANIMATED_PERSONAL_EMOTES) ||
       !hasFlag(emotesSettingValue, EmoteTypeFlags.ANIMATED_EMOTES);
     if (handleAnimatedEmotes) {
-      element.addEventListener('mouseenter', chat.handleEmoteMouseEvent);
-      element.addEventListener('mouseleave', chat.handleEmoteMouseEvent);
+      element.addEventListener('mousemove', chat.handleEmoteMouseEvent);
     }
 
     const customBadges = chat.customBadges(mockUser);
