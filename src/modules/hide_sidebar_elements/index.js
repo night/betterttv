@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import watcher from '../../watcher.js';
 import settings from '../../settings.js';
 import domObserver from '../../observers/dom.js';
@@ -37,7 +36,7 @@ class HideSidebarElementsModule {
           if (!['SIMILAR_SECTION', 'RECOMMENDED_SECTION', 'POPULAR_SECTION'].includes(sidebarSection?.type)) {
             return;
           }
-          $(node).addClass('bttv-hide-featured-channels');
+          node.classList.add('bttv-hide-featured-channels');
         },
         {useParentNode: true}
       );
@@ -48,15 +47,15 @@ class HideSidebarElementsModule {
 
     removeFeaturedChannelsListener();
     removeFeaturedChannelsListener = undefined;
-    $('.side-nav-section').removeClass('bttv-hide-featured-channels');
+    document.querySelector('.side-nav-section')?.classList.add('bttv-hide-featured-channels');
   }
 
   toggleAutoExpandChannels() {
     if (!hasFlag(settings.get(SettingIds.SIDEBAR), SidebarFlags.AUTO_EXPAND_CHANNELS)) return;
     setTimeout(() => {
-      const $firstChannelLink = $('a.side-nav-card__link[data-a-id="followed-channel-0"]');
-      if ($firstChannelLink.length === 0) return;
-      $('.side-nav button[data-a-target="side-nav-show-more-button"]').first().trigger('click');
+      const firstChannelLink = document.querySelector('a.side-nav-card__link[data-a-id="followed-channel-0"]');
+      if (firstChannelLink == null) return;
+      document.querySelector('.side-nav button[data-a-target="side-nav-show-more-button"]')?.click();
     }, 1000);
   }
 
@@ -68,7 +67,7 @@ class HideSidebarElementsModule {
         '.side-nav-card .side-nav-card__avatar--offline',
         (node, isConnected) => {
           if (!isConnected) return;
-          $(node).addClass('bttv-hide-followed-offline');
+          node.classList.add('bttv-hide-followed-offline');
         },
         {useParentNode: true}
       );
@@ -79,7 +78,7 @@ class HideSidebarElementsModule {
 
     removeOfflineFollowedChannelsListener();
     removeOfflineFollowedChannelsListener = undefined;
-    $('.side-nav-card').removeClass('bttv-hide-followed-offline');
+    document.querySelector('.side-nav-card')?.classList.remove('bttv-hide-followed-offline');
   }
 }
 

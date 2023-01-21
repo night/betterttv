@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import twitch from '../utils/twitch.js';
 import domObserver from '../observers/dom.js';
 
@@ -18,10 +17,9 @@ export default function conversationsWatcher(watcher) {
     const msgObject = twitch.getConversationMessageObject(node);
     if (!msgObject) return;
 
-    const $node = $(node);
-    const threadID = twitch.getConversationThreadId($node.closest('.whispers-thread,.whispers__messages')[0]);
+    const threadID = twitch.getConversationThreadId(node.closest('.whispers-thread,.whispers__messages'));
     if (!threadID) return;
 
-    watcher.emit('conversation.message', threadID, $node, msgObject);
+    watcher.emit('conversation.message', threadID, node, msgObject);
   });
 }

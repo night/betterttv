@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import {ChatFlags, PlatformTypes, SettingIds} from '../../constants.js';
 import settings from '../../settings.js';
 import {hasFlag} from '../../utils/flags.js';
@@ -11,7 +10,10 @@ class HideChatClipsModule {
   }
 
   load() {
-    $('body').toggleClass('bttv-hide-chat-clips', !hasFlag(settings.get(SettingIds.CHAT), ChatFlags.CHAT_CLIPS));
+    document.body.classList.toggle(
+      'bttv-hide-chat-clips',
+      !hasFlag(settings.get(SettingIds.CHAT), ChatFlags.CHAT_CLIPS)
+    );
   }
 }
 

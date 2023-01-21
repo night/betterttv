@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import chat from '../chat/index.js';
 import colors from '../../utils/colors.js';
 import watcher from '../../watcher.js';
@@ -10,34 +9,37 @@ const CHAT_USERNAME_SELECTOR = 'a[href$="/clips"] span';
 const SCROLL_INDICATOR_SELECTOR = '.clips-chat .clips-chat__content button';
 const SCROLL_CONTAINER_SELECTOR = '.clips-chat .simplebar-scroll-content';
 
-function scrollOnEmoteLoad($el) {
-  const indicator = $(SCROLL_INDICATOR_SELECTOR).length > 0;
+function scrollOnEmoteLoad(el) {
+  const indicator = document.querySelector(SCROLL_INDICATOR_SELECTOR) != null;
   if (indicator) return;
-  $el.find('img').on('load', () => {
-    const $scrollContainer = $(SCROLL_CONTAINER_SELECTOR);
-    if ($scrollContainer.length === 0) return;
-    $scrollContainer.scrollTop($scrollContainer[0].scrollHeight);
+
+  el.querySelectorAll('img').forEach((image) => {
+    image.addEventListener('load', () => {
+      const scrollContainer = document.querySelector(SCROLL_CONTAINER_SELECTOR);
+      if (scrollContainer == null) return;
+      scrollContainer.scrollTop = scrollContainer.scrollHeight;
+    });
   });
 }
 
 class ClipsModule {
   constructor() {
-    watcher.on('clips.message', ($el) => this.parseMessage($el));
+    watcher.on('clips.message', (el) => this.parseMessage(el));
   }
 
-  parseMessage($element) {
-    const $from = $element.find(CHAT_USERNAME_SELECTOR);
-    const $colorSpan = $from.closest('a').closest('span');
+  parseMessage(element) {
+    const from = element.querySelector(CHAT_USERNAME_SELECTOR);
+    const colorSpan = from?.closest('a')?.closest('span');
 
-    if ($colorSpan.length && $colorSpan.css('color')) {
-      const oldColor = colors.getHex(colors.getRgb($from.css('color')));
-      $colorSpan.attr('style', `color: ${chat.calculateColor(oldColor)}`);
+    if (colorSpan != null && colorSpan.style.color) {
+      const oldColor = colors.getHex(colors.getRgb(colorSpan.style.color));
+      colorSpan.style.color = chat.calculateColor(oldColor);
     }
 
-    const mockUser = {name: $from.text()};
-    chat.messageReplacer($element.find(CHAT_MESSAGE_SELECTOR), mockUser);
+    const mockUser = {name: from.textContent};
+    chat.messageReplacer(element.querySelector(CHAT_MESSAGE_SELECTOR), mockUser);
 
-    scrollOnEmoteLoad($element);
+    scrollOnEmoteLoad(element);
   }
 }
 

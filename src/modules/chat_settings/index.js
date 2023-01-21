@@ -1,6 +1,4 @@
-import $ from 'jquery';
 import watcher from '../../watcher.js';
-import html from '../../utils/html.js';
 import settings from '../settings/index.js';
 import chatFontSettings from '../chat_font_settings/index.js';
 import domObserver from '../../observers/dom.js';
@@ -16,31 +14,41 @@ const CHAT_SETTINGS_BACK_BUTTON_SELECTOR =
 const CHAT_SETTINGS_MOD_TOOLS_SELECTOR = 'div[data-test-selector="mod-tools"]';
 const BTTV_CHAT_SETTINGS_CLASS = 'bttv-chat-settings';
 
-const CHAT_SETTINGS_TEMPLATE = `
-  <div class="${BTTV_CHAT_SETTINGS_CLASS}">
-    <div class="settingHeader"><p>${html.escape(formatMessage({defaultMessage: 'BetterTTV'}))}</p></div>
-    <div class="settingRow">
-      <button borderradius="border-radius-medium" class="settingButton setFontFamily">${html.escape(
-        formatMessage({defaultMessage: 'Set Font'})
-      )}</button>
-    </div>
-    <div class="settingRow">
-      <button borderradius="border-radius-medium" class="settingButton setFontSize">${html.escape(
-        formatMessage({defaultMessage: 'Set Font Size'})
-      )}</button>
-    </div>
-    <div class="settingRow">
-      <button borderradius="border-radius-medium" class="settingButton clearChat">${html.escape(
-        formatMessage({defaultMessage: 'Clear My Chat'})
-      )}</button>
-    </div>
-    <div class="settingRow">
-      <button borderradius="border-radius-medium" class="settingButton openSettings">${html.escape(
-        formatMessage({defaultMessage: 'BetterTTV Settings'})
-      )}</button>
-    </div>
-  </div>
-`;
+function createRow(className, label, onClick) {
+  const container = document.createElement('div');
+  container.classList.add('settingRow');
+
+  const button = document.createElement('button');
+  button.classList.add('settingButton', className);
+  button.setAttribute('borderradius', 'border-radius-medium');
+  button.innerText = label;
+  button.addEventListener('click', onClick);
+  container.appendChild(button);
+
+  return container;
+}
+
+function createSettings(onFontFamilyClick, onFontSizeClick, onClearChatClick, onSettingsClick) {
+  const container = document.createElement('div');
+  container.classList.add(BTTV_CHAT_SETTINGS_CLASS);
+
+  const headerContainer = document.createElement('div');
+  headerContainer.classList.add('settingHeader');
+  container.appendChild(headerContainer);
+
+  const header = document.createElement('p');
+  header.innerText = formatMessage({defaultMessage: 'BetterTTV'});
+  headerContainer.appendChild(header);
+
+  container.appendChild(createRow('setFontFamily', formatMessage({defaultMessage: 'Set Font'}), onFontFamilyClick));
+  container.appendChild(createRow('setFontSize', formatMessage({defaultMessage: 'Set Font Size'}), onFontSizeClick));
+  container.appendChild(createRow('clearChat', formatMessage({defaultMessage: 'Clear My Chat'}), onClearChatClick));
+  container.appendChild(
+    createRow('openSettings', formatMessage({defaultMessage: 'BetterTTV Settings'}), onSettingsClick)
+  );
+
+  return container;
+}
 
 function inIFrame() {
   try {
@@ -51,17 +59,16 @@ function inIFrame() {
 }
 
 function getChatSettings() {
-  const $modViewChatSettings = $(MOD_VIEW_CHAT_SETTINGS_SELECTOR);
-  if ($modViewChatSettings.length > 0) {
-    return $modViewChatSettings.parent().parent();
+  const modViewChatSettings = document.querySelector(MOD_VIEW_CHAT_SETTINGS_SELECTOR);
+  if (modViewChatSettings != null) {
+    return modViewChatSettings.parentElement.parentElement;
   }
 
-  const $chatSettings = $(CHAT_SETTINGS_SELECTOR);
-  return $chatSettings;
+  return document.querySelector(CHAT_SETTINGS_SELECTOR);
 }
 
-function getSettings() {
-  return getChatSettings().find(`.${BTTV_CHAT_SETTINGS_CLASS}`);
+function getBetterTTVChatSettings() {
+  return getChatSettings()?.querySelector(`.${BTTV_CHAT_SETTINGS_CLASS}`);
 }
 
 class ChatSettingsModule {
@@ -82,7 +89,7 @@ class ChatSettingsModule {
         this.renderSettings();
         return;
       }
-      getSettings().remove();
+      getBetterTTVChatSettings()?.remove();
     });
     domObserver.on(CHAT_SETTINGS_MOD_TOOLS_SELECTOR, () => {
       this.renderSettings();
@@ -92,29 +99,33 @@ class ChatSettingsModule {
   renderSettings() {
     if (inIFrame()) return;
 
-    let $settings = getSettings();
+    const betterttvChatSettings = getBetterTTVChatSettings();
     // Hide the settings when in an iframe for now
-    if ($settings.length) {
-      $settings.remove();
+    if (betterttvChatSettings != null) {
+      betterttvChatSettings.remove();
     }
 
     // if within a nested menu, do not show bttv settings
-    if ($(CHAT_SETTINGS_BACK_BUTTON_SELECTOR).length > 0) {
+    if (document.querySelector(CHAT_SETTINGS_BACK_BUTTON_SELECTOR) != null) {
       return;
     }
 
-    getChatSettings().append(CHAT_SETTINGS_TEMPLATE);
-
-    $settings = getSettings();
-
-    $settings.find('.openSettings').click(settings.openSettings);
-    $settings.find('.clearChat').click((e) => {
-      e.preventDefault();
-      $('.chat-line__message, .channel-points-reward-line, .user-notice-line').hide();
-    });
-
-    $settings.find('.setFontFamily').click(chatFontSettings.setFontFamily);
-    $settings.find('.setFontSize').click(chatFontSettings.setFontSize);
+    getChatSettings()?.appendChild(
+      createSettings(
+        chatFontSettings.setFontFamily,
+        chatFontSettings.setFontSize,
+        (e) => {
+          e.preventDefault();
+          const messages = document.querySelectorAll(
+            '.chat-line__message, .channel-points-reward-line, .user-notice-line'
+          );
+          for (const message of messages) {
+            message.style.display = 'none';
+          }
+        },
+        settings.openSettings
+      )
+    );
   }
 }
 

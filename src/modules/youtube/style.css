@@ -16,7 +16,3 @@ yt-live-chat-text-message-renderer .bttv-chat-badge-container {
   align-self: center;
   margin-left: 4px;
 }
-
-ytd-comment-renderer .bttv-message-container {
-  white-space: normal;
-}

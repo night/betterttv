@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import settings from '../../settings.js';
 import watcher from '../../watcher.js';
 import twitch from '../../utils/twitch.js';
@@ -18,7 +17,10 @@ function handleScrollEvent(event) {
     const scroller = twitch.getChatScroller();
     if (scroller && scroller.state && scroller.state.isAutoScrolling === false) {
       // hackfix: auto scrolling wont resume when at top
-      $(CHAT_LIST_SCROLL_CONTENT).scrollTop(50);
+      const scrollContent = document.querySelector(CHAT_LIST_SCROLL_CONTENT);
+      if (scrollContent != null) {
+        scrollContent.scrollTop = 50;
+      }
       scroller.resume();
     }
   }
@@ -30,8 +32,10 @@ function handleVodScrollEvent() {
   // Chat doesn't automatically stay scrolled to the top when new messages are added
   // so we manually scroll to the top if sync is enabled
   if (scroller.props.isScrollingSynced) {
-    const scrollContent = $(VOD_CHAT_LIST_SCROLL_CONTENT);
-    scrollContent.scrollTop(0);
+    const scrollContent = document.querySelector(VOD_CHAT_LIST_SCROLL_CONTENT);
+    if (scrollContent != null) {
+      scrollContent.scrollTop = 0;
+    }
   }
 }
 
@@ -57,9 +61,12 @@ class ChatDirection {
         oldScrollToBottom = scroller.scrollToBottom;
       }
       scroller.scrollToBottom = scroller.bttvScrollToTop;
-      const scrollContent = $(CHAT_LIST_SCROLL_CONTENT);
-      scrollContent.scrollTop(0);
-      scrollContent.off('scroll', handleScrollEvent).on('scroll', handleScrollEvent);
+      const scrollContent = document.querySelector(CHAT_LIST_SCROLL_CONTENT);
+      if (scrollContent != null) {
+        scrollContent.scrollTop = 0;
+        scrollContent.removeEventListener('scroll', handleScrollEvent);
+        scrollContent.addEventListener('scroll', handleScrollEvent);
+      }
     } else if (oldScrollToBottom) {
       scroller.scrollToBottom = oldScrollToBottom;
     }
@@ -70,12 +77,16 @@ class ChatDirection {
     const reverseChatDirection = settings.get(SettingIds.REVERSE_CHAT_DIRECTION);
     if (!scroller) return;
 
-    const scrollContent = $(VOD_CHAT_LIST_SCROLL_CONTENT);
+    const scrollContent = document.querySelector(VOD_CHAT_LIST_SCROLL_CONTENT);
+    if (scrollContent == null) {
+      return;
+    }
+
     if (reverseChatDirection) {
       if (scroller.bttvAtBottom == null) {
         // When we're not at the bottom it shows the "auto scroll" message,
         // but when we're reversing chat direction we should check if we're at the top
-        scroller.bttvAtBottom = () => scrollContent.scrollTop() <= 1;
+        scroller.bttvAtBottom = () => scrollContent.scrollTop <= 1;
       }
 
       if (oldAtBottom !== scroller.bttvAtBottom) {
@@ -83,20 +94,21 @@ class ChatDirection {
       }
       scroller.atBottom = scroller.bttvAtBottom;
 
-      scrollContent.scrollTop(0);
-      scrollContent.off('scroll', handleVodScrollEvent).on('scroll', handleVodScrollEvent);
+      scrollContent.scrollTop = 0;
+      scrollContent.removeEventListener('scroll', handleVodScrollEvent);
+      scrollContent.addEventListener('scroll', handleVodScrollEvent);
     } else if (oldAtBottom) {
       scroller.atBottom = oldAtBottom;
-      scrollContent.off('scroll', handleVodScrollEvent);
+      scrollContent.removeEventListener('scroll', handleVodScrollEvent);
 
       if (scroller.props.isScrollingSynced) {
-        scrollContent.scrollTop(scrollContent[0].scrollHeight);
+        scrollContent.scrollTop = scrollContent.scrollHeight;
       }
     }
   }
 
   toggleChatDirection() {
-    $('body').toggleClass('bttv-chat-direction-reversed', settings.get(SettingIds.REVERSE_CHAT_DIRECTION));
+    document.body.classList.toggle('bttv-chat-direction-reversed', settings.get(SettingIds.REVERSE_CHAT_DIRECTION));
     this.toggleChatAutoScrolling();
     this.toggleVodChatAutoScrolling();
   }

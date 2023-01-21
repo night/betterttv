@@ -1,19 +1,27 @@
-import $ from 'jquery';
 import HTTPError from './http-error.js';
 
 const API_ENDPOINT = 'https://api.betterttv.net/3/';
 
 function request(method, path, options = {}) {
-  return new Promise((resolve, reject) => {
-    $.ajax({
-      url: `${API_ENDPOINT}${path}${options.qs ? `?${new URLSearchParams(options.qs).toString()}` : ''}`,
-      method,
-      dataType: options.dataType || 'json',
-      data: options.body ? JSON.stringify(options.body) : undefined,
-      timeout: 30000,
-      success: (data) => resolve(data),
-      error: ({status, responseJSON}) => reject(new HTTPError(status, responseJSON)),
-    });
+  const {searchParams} = options;
+  delete options.searchParams;
+
+  return fetch(`${API_ENDPOINT}${path}${searchParams ? `?${new URLSearchParams(searchParams).toString()}` : ''}`, {
+    method,
+    ...options,
+  }).then(async (response) => {
+    if (response.ok) {
+      return response.json();
+    }
+
+    let responseJSON;
+    try {
+      responseJSON = await response.json();
+    } catch (err) {
+      throw new HTTPError(response.status, null);
+    }
+
+    throw new HTTPError(response.status, responseJSON);
   });
 }
 

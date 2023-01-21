@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import twitch from '../utils/twitch.js';
 import debug from '../utils/debug.js';
 import domObserver from '../observers/dom.js';
@@ -11,18 +10,18 @@ let currentChatReference;
 let currentChatChannelId;
 
 const loadPredicates = {
-  following: () => !!$('ul[role="tablist"] div[data-test-selector="ACTIVE_TAB_INDICATOR"]').length,
+  following: () => document.querySelector('ul[role="tablist"] div[data-test-selector="ACTIVE_TAB_INDICATOR"]') != null,
   channel: () => {
     const href =
-      $('.channel-header__user-avatar img').attr('src') ||
-      $('h3[data-test-selector="side-nav-channel-info__name_link"] a').attr('href') ||
-      $('.channel-info-content a figure img').attr('src');
+      document.querySelector('.channel-header__user-avatar img')?.getAttribute('src') ||
+      document.querySelector('h3[data-test-selector="side-nav-channel-info__name_link"] a')?.getAttribute('href') ||
+      document.querySelector('.channel-info-content a figure img')?.getAttribute('src');
     return !!href && !!twitch.updateCurrentChannel();
   },
   chat: (context) => {
     if (!twitch.updateCurrentChannel()) return false;
 
-    if (!$('section[data-test-selector="chat-room-component-layout"]').length) return false;
+    if (document.querySelector('section[data-test-selector="chat-room-component-layout"]') == null) return false;
 
     const lastReference = currentChatReference;
     const currentChat = twitch.getCurrentChat();
@@ -49,7 +48,7 @@ const loadPredicates = {
   },
   player: () => !!twitch.getCurrentPlayer(),
   vod: () => !!twitch.updateCurrentChannel(),
-  homepage: () => !!$('.front-page-carousel .video-player__container').length,
+  homepage: () => document.querySelector('.front-page-carousel .video-player__container') != null,
 };
 
 const routes = {

@@ -37,6 +37,7 @@
     border: var(--border-width-default) solid transparent;
     background-color: var(--color-background-button-icon-overlay-default);
     color: var(--color-text-button-overlay);
+    padding: 4px;
 
     &:hover {
       color: var(--color-text-button-overlay-hover);

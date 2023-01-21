@@ -1,7 +1,5 @@
-import $ from 'jquery';
 import watcher from '../../watcher.js';
 import storage from '../../storage.js';
-import html from '../../utils/html.js';
 import {PlatformTypes} from '../../constants.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
 import formatMessage from '../../i18n/index.js';
@@ -20,28 +18,29 @@ Leave the field blank to use the default.`,
 const STYLE_ID = 'bttv-font-size';
 const GENERIC_FONT_FAMILIES = ['serif', 'sans-serif', 'monospace', 'cursive', 'fantasy', 'system-ui'];
 
-function encodeFontFamily(fontFamily) {
-  return GENERIC_FONT_FAMILIES.includes(fontFamily) ? fontFamily : `"${html.escape(fontFamily)}", sans-serif`;
+function formatFontFamily(fontFamily) {
+  return GENERIC_FONT_FAMILIES.includes(fontFamily) ? fontFamily : `"${fontFamily}", sans-serif`;
 }
 
 const styleTemplate = (fontFamily, fontSize) => `
 section[data-test-selector="chat-room-component-layout"] .chat-scrollable-area__message-container,
 .whispers .thread-message__message, .video-chat__message {
-    font-family: ${fontFamily ? encodeFontFamily(fontFamily) : 'inherit'} !important;
-    font-size: ${fontSize ? `${html.escape(fontSize)}px` : 'inherit'} !important;
-    line-height: ${fontSize ? `${html.escape((+fontSize + fontSize * 0.66).toFixed(2))}px` : 'inherit'} !important;
+    font-family: ${fontFamily ? formatFontFamily(fontFamily) : 'inherit'} !important;
+    font-size: ${fontSize ? `${fontSize}px` : 'inherit'} !important;
+    line-height: ${fontSize ? `${(+fontSize + fontSize * 0.66).toFixed(2)}px` : 'inherit'} !important;
 }
 `;
 
-let $fontSettings;
+let fontSettings;
 
 function updateFontSettings() {
-  if (!$fontSettings) {
-    $fontSettings = $(`<style id="${STYLE_ID}" />`).appendTo('body');
+  if (fontSettings == null) {
+    fontSettings = document.createElement('style');
+    fontSettings.id = STYLE_ID;
+    document.body.appendChild(fontSettings);
   }
 
-  const template = styleTemplate(storage.get('chatFontFamily'), storage.get('chatFontSize'));
-  $fontSettings.html(template);
+  fontSettings.innerText = styleTemplate(storage.get('chatFontFamily'), storage.get('chatFontSize'));
 }
 
 function changeFontSetting(promptBody, storageID) {

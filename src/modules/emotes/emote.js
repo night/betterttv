@@ -1,4 +1,3 @@
-import html from '../../utils/html.js';
 import {createSrc, createSrcSet} from '../../utils/image.js';
 import formatMessage from '../../i18n/index.js';
 import settings from '../../settings.js';
@@ -29,45 +28,47 @@ export default class Emote {
     return `${provider}-${this.id}`;
   }
 
-  toHTML(modifier, className) {
-    const categoryClass = html.escape(this.category.id);
-    const idClass = `${html.escape(this.category.id)}-emo-${html.escape(this.id)}`;
+  render(modifier, className) {
+    const categoryClass = this.category.id;
+    const idClass = `${this.category.id}-emo-${this.id}`;
     const channelName = this.channel && (this.channel.displayName || this.channel.name);
 
-    const balloon = `
-      ${html.escape(this.code)}<br>
-      ${
-        channelName
-          ? `${html.escape(formatMessage({defaultMessage: 'Channel: {channelName}'}, {channelName}))}<br>`
-          : ''
-      }
-      ${html.escape(this.category.displayName)}
-    `;
-
-    let animatedSources = '';
     const emotesSettingValue = settings.get(SettingIds.EMOTES);
     const showAnimatedEmotes =
       this.category.id === EmoteCategories.BETTERTTV_PERSONAL
         ? hasFlag(emotesSettingValue, EmoteTypeFlags.ANIMATED_PERSONAL_EMOTES)
         : hasFlag(emotesSettingValue, EmoteTypeFlags.ANIMATED_EMOTES);
     const shouldRenderStatic = this.animated && !showAnimatedEmotes;
+
+    const container = document.createElement('div');
+    container.classList.add('bttv-tooltip-wrapper', 'bttv-emote', categoryClass, idClass);
+    if (className != null) {
+      container.classList.add(className);
+    }
     if (shouldRenderStatic) {
-      animatedSources = ` data-bttv-animated-src="${html.escape(
-        createSrc(this.images)
-      )}" data-bttv-animated-srcset="${html.escape(createSrcSet(this.images))}"`;
+      container.classList.add('bttv-animated-static-emote');
     }
 
-    return `
-      <div class="bttv-tooltip-wrapper bttv-emote ${categoryClass} ${idClass}${
-      className != null ? ` ${className}` : ''
-    }${shouldRenderStatic ? ' bttv-animated-static-emote' : ''}">
-        <img src="${html.escape(createSrc(this.images, shouldRenderStatic))}" srcset="${html.escape(
-      createSrcSet(this.images, shouldRenderStatic)
-    )}" alt="${modifier ? `${html.escape(modifier)} ` : ''}${html.escape(
-      this.code
-    )}" class="chat-line__message--emote bttv-emote-image"${animatedSources} />
-        <div class="bttv-tooltip bttv-tooltip--up bttv-tooltip--align-center">${balloon}</div>
-      </div>
-    `;
+    const image = new Image();
+    image.classList.add('chat-line__message--emote', 'bttv-emote-image');
+    image.src = createSrc(this.images, shouldRenderStatic);
+    image.srcset = createSrcSet(this.images, shouldRenderStatic);
+    image.alt = `${modifier ? `${modifier} ` : ''}${this.code}`;
+    if (shouldRenderStatic) {
+      image.__bttvStaticSrc = image.src;
+      image.__bttvStaticSrcSet = image.srcset;
+      image.__bttvAnimatedSrc = createSrc(this.images);
+      image.__bttvAnimatedSrcSet = createSrcSet(this.images);
+    }
+    container.appendChild(image);
+
+    const tooltip = document.createElement('div');
+    tooltip.classList.add('bttv-tooltip', 'bttv-tooltip--up', 'bttv-tooltip--align-center');
+    tooltip.textContent = `${this.code}\n${
+      channelName ? `${formatMessage({defaultMessage: 'Channel: {channelName}'}, {channelName})}\n` : ''
+    }${this.category.displayName}`;
+    container.appendChild(tooltip);
+
+    return container;
   }
 }

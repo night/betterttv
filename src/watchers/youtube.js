@@ -71,19 +71,15 @@ export default function youtubeWatcher(watcher) {
     if (node == null) {
       return;
     }
-    // prevent reprocessing messages
-    if (node.querySelector('.bttv-message-container')) {
-      return;
-    }
     updateChannel(node.__data);
     watcher.emit('youtube.message', node, node.__data);
   }
 
   domObserver.on(
-    '#message,.bttv-message-container',
+    '#message,.bttv-emote',
     (node, isConnected) => {
       // youtube sometimes re-renders lines, which may remove our content span
-      if (node.className !== 'bttv-message-container' && !isConnected) {
+      if (node.className !== 'bttv-emote' && !isConnected) {
         return;
       }
       processMessageNode(node);

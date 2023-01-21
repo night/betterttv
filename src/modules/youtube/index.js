@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import chat from '../chat/index.js';
 import settings from '../../settings.js';
 import watcher from '../../watcher.js';
@@ -36,19 +35,22 @@ class YouTubeModule {
       !hasFlag(emotesSettingValue, EmoteTypeFlags.ANIMATED_PERSONAL_EMOTES) ||
       !hasFlag(emotesSettingValue, EmoteTypeFlags.ANIMATED_EMOTES);
     if (handleAnimatedEmotes) {
-      element.addEventListener('mouseenter', chat.handleEmoteMouseEvent);
-      element.addEventListener('mouseleave', chat.handleEmoteMouseEvent);
+      element.addEventListener('mousemove', chat.handleEmoteMouseEvent);
     }
 
     const customBadges = chat.customBadges(mockUser);
     const badgesContainer = element.querySelector(CHAT_BADGES_CONTAINER_SELECTOR);
-    if (customBadges.length > 0 && badgesContainer != null) {
+    if (
+      customBadges.length > 0 &&
+      badgesContainer != null &&
+      element.getElementsByClassName(customBadges[0].className)[0] == null
+    ) {
       for (const badge of customBadges) {
-        $(badgesContainer).after(badge);
+        badgesContainer.after(badge);
       }
     }
 
-    chat.messageReplacer($(element.querySelector(CHAT_MESSAGE_SELECTOR)), mockUser);
+    chat.messageReplacer(element.querySelector(CHAT_MESSAGE_SELECTOR), mockUser);
   }
 }
 

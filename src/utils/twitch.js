@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import cookies from 'cookies-js';
 import gql from 'graphql-tag';
 import debug from './debug.js';
@@ -240,7 +239,7 @@ export default {
     let store;
     try {
       const node = searchReactChildren(
-        getReactRoot($(REACT_ROOT)[0])._internalRoot.current,
+        getReactRoot(document.querySelector(REACT_ROOT))._internalRoot.current,
         (n) => n.pendingProps && n.pendingProps.value && n.pendingProps.value.store
       );
       store = node.pendingProps.value.store;
@@ -253,7 +252,7 @@ export default {
     let client;
     try {
       const node = searchReactChildren(
-        getReactRoot($(REACT_ROOT)[0])._internalRoot.current,
+        getReactRoot(document.querySelector(REACT_ROOT))._internalRoot.current,
         (n) => n.pendingProps?.value?.client
       );
       client = node.pendingProps.value.client;
@@ -266,7 +265,7 @@ export default {
     let node;
     try {
       node = searchReactParents(
-        getReactInstance($(CHAT_WYSIWYG_INPUT_EDITOR)[0]),
+        getReactInstance(document.querySelector(CHAT_WYSIWYG_INPUT_EDITOR)),
         (n) => n?.stateNode?.providers != null,
         30
       );
@@ -279,7 +278,7 @@ export default {
     let broadcaster;
     try {
       const node = searchReactParents(
-        getReactInstance($(CLIPS_BROADCASTER_INFO)[0]),
+        getReactInstance(document.querySelector(CLIPS_BROADCASTER_INFO)),
         (n) => n.stateNode && n.stateNode.props && n.stateNode.props.data && n.stateNode.props.data.clip
       );
       broadcaster = node.stateNode.props.data.clip.broadcaster;
@@ -292,7 +291,7 @@ export default {
     let player;
     try {
       const node = searchReactParents(
-        getReactInstance($(PLAYER)[0]),
+        getReactInstance(document.querySelector(PLAYER)),
         (n) => n.memoizedProps?.mediaPlayerInstance?.core != null,
         30
       );
@@ -306,7 +305,7 @@ export default {
     let chatContentComponent;
     try {
       const node = searchReactParents(
-        getReactInstance($(CHAT_CONTAINER)[0]),
+        getReactInstance(document.querySelector(CHAT_CONTAINER)),
         (n) => n.stateNode?.props?.chatConnectionAPI,
         25
       );
@@ -321,7 +320,7 @@ export default {
 
     try {
       const node = searchReactChildren(
-        getReactRoot($(REACT_ROOT)[0])._internalRoot.current,
+        getReactRoot(document.querySelector(REACT_ROOT))._internalRoot.current,
         (n) => n.stateNode && n.stateNode.join && n.stateNode.client,
         1000
       );
@@ -343,7 +342,7 @@ export default {
     let chatList;
     try {
       const node = searchReactParents(
-        getReactInstance($(CHAT_LIST)[0]),
+        getReactInstance(document.querySelector(CHAT_LIST)),
         (n) => n.stateNode && n.stateNode.props && n.stateNode.props.messageBufferAPI
       );
       chatList = node.stateNode;
@@ -356,7 +355,7 @@ export default {
     let chatScroller;
     try {
       const node = searchReactChildren(
-        getReactInstance($(CHAT_LIST)[0]),
+        getReactInstance(document.querySelector(CHAT_LIST)),
         (n) => n.stateNode && n.stateNode.props && n.stateNode.scrollRef
       );
       chatScroller = node.stateNode;
@@ -369,7 +368,7 @@ export default {
     let chatScroller;
     try {
       const node = searchReactChildren(
-        getReactInstance($(VOD_CHAT_LIST)[0]),
+        getReactInstance(document.querySelector(VOD_CHAT_LIST)),
         (n) => n.stateNode && n.stateNode.atBottom,
         30
       );
@@ -388,7 +387,7 @@ export default {
 
     try {
       const node = searchReactParents(
-        getReactInstance($(CHAT_CONTAINER)[0]),
+        getReactInstance(document.querySelector(CHAT_CONTAINER)),
         (n) => n.stateNode?.props?.emoteSetsData?.emoteMap,
         25
       );
@@ -402,7 +401,7 @@ export default {
     let currentChat;
     try {
       const node = searchReactParents(
-        getReactInstance($(CHAT_CONTAINER)[0]),
+        getReactInstance(document.querySelector(CHAT_CONTAINER)),
         (n) => n.stateNode && n.stateNode.props && n.stateNode.props.onSendMessage
       );
       currentChat = node.stateNode;
@@ -415,7 +414,7 @@ export default {
     let currentVodChat;
     try {
       const node = searchReactParents(
-        getReactInstance($(VOD_CHAT_CONTAINER)[0]),
+        getReactInstance(document.querySelector(VOD_CHAT_CONTAINER)),
         (n) => n.stateNode && n.stateNode.props && n.stateNode.props.data && n.stateNode.props.data.video
       );
       currentVodChat = node.stateNode;
@@ -569,7 +568,7 @@ export default {
     let chatInput;
     try {
       chatInput = searchReactParents(
-        getReactInstance(element || $(CHAT_INPUT)[0]),
+        getReactInstance(element || document.querySelector(CHAT_INPUT)),
         (n) => n.memoizedProps && n.memoizedProps.componentType != null && n.memoizedProps.value != null
       );
     } catch (_) {}
@@ -581,7 +580,7 @@ export default {
     let chatInputEditor;
     try {
       chatInputEditor = searchReactParents(
-        getReactInstance(element || $(CHAT_INPUT)[0]),
+        getReactInstance(element || document.querySelector(CHAT_INPUT)),
         (n) => n.stateNode?.state?.slateEditor != null
       );
     } catch (_) {}
@@ -590,7 +589,7 @@ export default {
   },
 
   getChatInputValue() {
-    const element = $(CHAT_INPUT)[0];
+    const element = document.querySelector(CHAT_INPUT);
 
     // deprecated
     const {value: currentValue} = element;
@@ -607,7 +606,7 @@ export default {
   },
 
   setChatInputValue(text, shouldFocus = true) {
-    const element = $(CHAT_INPUT)[0];
+    const element = document.querySelector(CHAT_INPUT);
 
     // deprecated
     const {value: currentValue, selectionStart} = element;
@@ -651,7 +650,7 @@ export default {
   },
 
   getChatInputSelection() {
-    const element = $(CHAT_INPUT)[0];
+    const element = document.querySelector(CHAT_INPUT);
 
     // deprecated
     const {value: currentValue, selectionStart} = element;
@@ -693,12 +692,11 @@ export default {
   },
 
   getChatMessages(providerId = null) {
-    let messages = Array.from($(CHAT_MESSAGE_SELECTOR))
+    let messages = Array.from(document.querySelectorAll(CHAT_MESSAGE_SELECTOR))
       .reverse()
       .map((element) => ({
         element,
         message: this.getChatMessageObject(element),
-        outerHTML: element.outerHTML,
       }));
 
     if (providerId) {
@@ -712,7 +710,7 @@ export default {
     let highlight;
     try {
       const node = searchReactParents(
-        getReactInstance($(COMMUNITY_HIGHLIGHT)[0]),
+        getReactInstance(document.querySelector(COMMUNITY_HIGHLIGHT)),
         (n) => n.memoizedProps?.highlight?.event != null
       );
       highlight = node.memoizedProps.highlight;
@@ -724,7 +722,7 @@ export default {
   getSidebarSection(element) {
     let sidebarSection;
     try {
-      const node = searchReactParents(getReactInstance($(element)[0]), (n) => n.memoizedProps?.section != null);
+      const node = searchReactParents(getReactInstance(element), (n) => n.memoizedProps?.section != null);
       sidebarSection = node.memoizedProps.section;
     } catch (e) {}
 
@@ -734,7 +732,7 @@ export default {
   getPrivateCalloutEvent(element) {
     let privateCalloutEvent;
     try {
-      const node = searchReactParents(getReactInstance($(element)[0]), (n) => n.memoizedProps?.event != null);
+      const node = searchReactParents(getReactInstance(element), (n) => n.memoizedProps?.event != null);
       privateCalloutEvent = node.memoizedProps.event;
     } catch (e) {}
 

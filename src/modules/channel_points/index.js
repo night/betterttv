@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import settings from '../../settings.js';
 import domObserver from '../../observers/dom.js';
 import {SettingIds, ChannelPointsFlags, PlatformTypes} from '../../constants.js';
@@ -40,7 +39,7 @@ class ChannelPoints {
   }
 
   loadHideChannelPoints() {
-    $('body').toggleClass(
+    document.body.classList.toggle(
       'bttv-hide-channel-points',
       !hasFlag(settings.get(SettingIds.CHANNEL_POINTS), ChannelPointsFlags.CHANNEL_POINTS)
     );

@@ -1,16 +1,14 @@
-import $ from 'jquery';
 import watcher from '../../watcher.js';
 import colors from '../../utils/colors.js';
 import twitch from '../../utils/twitch.js';
 import api from '../../utils/api.js';
 import cdn from '../../utils/cdn.js';
-import html from '../../utils/html.js';
 import settings from '../../settings.js';
 import emotes from '../emotes/index.js';
 import nicknames from '../chat_nicknames/index.js';
 import subscribers from '../subscribers/index.js';
 import splitChat from '../split_chat/index.js';
-import {SettingIds, UsernameFlags} from '../../constants.js';
+import {EmoteTypeFlags, SettingIds, UsernameFlags} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
 import {getCurrentChannel} from '../../utils/channel.js';
 import formatMessage from '../../i18n/index.js';
@@ -19,6 +17,10 @@ const EMOTE_STRIP_SYMBOLS_REGEX = /(^[~!@#$%^&*()]+|[~!@#$%^&*()]+$)/g;
 const STEAM_LOBBY_JOIN_REGEX = /^steam:\/\/joinlobby\/\d+\/\d+\/\d+$/;
 const EMOTES_TO_CAP = ['567b5b520e984428652809b6'];
 const MAX_EMOTES_WHEN_CAPPED = 10;
+const EMOTE_SELECTOR =
+  '.bttv-animated-static-emote, .chat-line__message, .vod-message, .pinned-chat__message, .thread-message__message';
+const EMOTE_HOVER_SELECTOR =
+  '.bttv-animated-static-emote:hover, .chat-line__message:hover, .vod-message:hover, .pinned-chat__message:hover, .thread-message__message:hover';
 
 const EMOTE_MODIFIERS = {
   'w!': 'bttv-emote-modifier-wide',
@@ -28,15 +30,31 @@ const EMOTE_MODIFIERS = {
 };
 const EMOTE_MODIFIERS_LIST = Object.keys(EMOTE_MODIFIERS);
 
-const badgeTemplate = (url, description) => `
-  <div class="bttv-tooltip-wrapper bttv-chat-badge-container">
-    <img alt="${html.escape(description)}" class="chat-badge bttv-chat-badge" src="${html.escape(
-  url
-)}" alt="" srcset="" data-a-target="chat-badge">
-    <div class="bttv-tooltip bttv-tooltip--up" style="margin-bottom: 0.9rem;">${html.escape(description)}</div>
-  </div>
-`;
-const steamLobbyJoinTemplate = (joinLink) => `<a href="${joinLink}">${joinLink}</a>`;
+const badgeTemplate = (url, description) => {
+  const badgeContainer = document.createElement('div');
+  badgeContainer.classList.add('bttv-tooltip-wrapper', 'bttv-chat-badge-container');
+
+  const image = new Image();
+  image.src = url;
+  image.alt = description;
+  image.classList.add('chat-badge', 'bttv-chat-badge');
+  image.setAttribute('data-a-target', 'chat-badge');
+  badgeContainer.appendChild(image);
+
+  const tooltip = document.createElement('div');
+  tooltip.classList.add('bttv-tooltip', 'bttv-tooltip--up');
+  tooltip.style.marginBottom = '0.9rem';
+  tooltip.innerText = description;
+  badgeContainer.appendChild(tooltip);
+
+  return badgeContainer;
+};
+const steamLobbyJoinTemplate = (joinLink) => {
+  const anchor = document.createElement('a');
+  anchor.href = joinLink;
+  anchor.innerText = joinLink;
+  return anchor;
+};
 
 function formatChatUser(message) {
   if (message == null) {
@@ -72,6 +90,7 @@ let channelBots = [];
 let asciiOnly = false;
 let subsOnly = false;
 let modsOnly = false;
+let currentMoveTarget = null;
 
 function hasNonASCII(message) {
   for (let i = 0; i < message.length; i++) {
@@ -80,27 +99,22 @@ function hasNonASCII(message) {
   return false;
 }
 
-function getMessagePartsFromMessageElement($message) {
-  return $message.find('span[data-a-target="chat-message-text"]');
+function getMessagePartsFromMessageElement(message) {
+  return message.querySelectorAll('span[data-a-target="chat-message-text"]');
 }
 
 class ChatModule {
   constructor() {
-    watcher.on('load', () => {
-      $('body').on(
-        'mouseenter mouseleave',
-        '.bttv-animated-static-emote,.chat-line__message,.vod-message,.pinned-chat__message,.thread-message__message',
-        this.handleEmoteMouseEvent
-      );
-    });
-    watcher.on('chat.message', ($element, message) => this.messageParser($element, message));
-    watcher.on('chat.notice_message', ($element) => this.noticeMessageParser($element));
-    watcher.on('chat.pinned_message', ($element) => this.pinnedMessageParser($element));
-    watcher.on('chat.status', ($element, message) => {
+    watcher.on('load', () => this.loadEmoteMouseHandler());
+    settings.on(`changed.${SettingIds.EMOTES}`, () => this.loadEmoteMouseHandler());
+    watcher.on('chat.message', (element, message) => this.messageParser(element, message));
+    watcher.on('chat.notice_message', (element) => this.noticeMessageParser(element));
+    watcher.on('chat.pinned_message', (element) => this.pinnedMessageParser(element));
+    watcher.on('chat.status', (element, message) => {
       if (message?.renderBetterTTVEmotes !== true) {
         return;
       }
-      this.messageReplacer($element, null, true);
+      this.messageReplacer(element, null, true);
     });
     watcher.on('channel.updated', ({bots}) => {
       channelBots = bots;
@@ -114,7 +128,7 @@ class ChatModule {
           continue;
         }
 
-        this.messageReplacer(getMessagePartsFromMessageElement($(element)), user);
+        this.messageReplacer(getMessagePartsFromMessageElement(element), user);
       }
     });
 
@@ -123,29 +137,56 @@ class ChatModule {
     });
   }
 
-  handleEmoteMouseEvent({currentTarget, type}) {
-    if (currentTarget == null) {
+  loadEmoteMouseHandler() {
+    const emotesSettingValue = settings.get(SettingIds.EMOTES);
+    const handleAnimatedEmotes =
+      !hasFlag(emotesSettingValue, EmoteTypeFlags.ANIMATED_PERSONAL_EMOTES) ||
+      !hasFlag(emotesSettingValue, EmoteTypeFlags.ANIMATED_EMOTES);
+
+    if (handleAnimatedEmotes) {
+      document.addEventListener('mousemove', this.handleEmoteMouseEvent);
+    } else {
+      document.removeEventListener('mousemove', this.handleEmoteMouseEvent);
+    }
+  }
+
+  handleEmoteMouseEvent({target}) {
+    const currentTargets = [];
+    if (currentMoveTarget !== target) {
+      const closestTarget = target.closest(EMOTE_SELECTOR);
+      if (closestTarget != null) {
+        currentTargets.push(closestTarget);
+      }
+      const closestCurrentMoveTarget = currentMoveTarget?.closest(EMOTE_SELECTOR);
+      if (closestCurrentMoveTarget != null) {
+        currentTargets.push(closestCurrentMoveTarget);
+      }
+    }
+    currentMoveTarget = target;
+
+    if (currentTargets.length === 0) {
       return;
     }
 
-    const messageEmotes = currentTarget.querySelectorAll('.bttv-animated-static-emote img');
-    for (const emote of messageEmotes) {
-      const staticSrc = emote.__bttvStaticSrc ?? emote.src;
-      const staticSrcSet = emote.__bttvStaticSrcSet ?? emote.srcset;
-      const animatedSrc = emote.getAttribute('data-bttv-animated-src');
-      const animatedSrcSet = emote.getAttribute('data-bttv-animated-srcset');
-      if (!animatedSrc || !animatedSrcSet) {
-        return;
-      }
+    for (const currentTarget of currentTargets) {
+      const isHovering = currentTarget.matches(EMOTE_HOVER_SELECTOR);
+      const messageEmotes = currentTarget.querySelectorAll('.bttv-animated-static-emote img');
+      for (const emote of messageEmotes) {
+        const staticSrc = emote.__bttvStaticSrc ?? emote.src;
+        const staticSrcSet = emote.__bttvStaticSrcSet ?? emote.srcset;
+        const animatedSrc = emote.__bttvAnimatedSrc;
+        const animatedSrcSet = emote.__bttvAnimatedSrcSet;
+        if (!animatedSrc || !animatedSrcSet) {
+          return;
+        }
 
-      if (type === 'mouseleave') {
-        emote.src = staticSrc;
-        emote.srcset = staticSrcSet;
-      } else if (type === 'mouseenter') {
-        emote.__bttvStaticSrc = staticSrc;
-        emote.__bttvStaticSrcSet = staticSrcSet;
-        emote.src = animatedSrc;
-        emote.srcset = animatedSrcSet;
+        if (!isHovering) {
+          emote.src = staticSrc;
+          emote.srcset = staticSrcSet;
+        } else {
+          emote.src = animatedSrc;
+          emote.srcset = animatedSrcSet;
+        }
       }
     }
   }
@@ -201,15 +242,27 @@ class ChatModule {
     modsOnly = enabled;
   }
 
-  messageReplacer($message, user, exact = false) {
-    const tokens = $message.contents();
+  messageReplacer(nodes, user, exact = false) {
+    let tokens = [];
+    if (
+      NodeList.prototype.isPrototypeOf.call(NodeList.prototype, nodes) ||
+      HTMLCollection.prototype.isPrototypeOf.call(HTMLCollection.prototype, nodes)
+    ) {
+      for (const node of nodes) {
+        tokens.push(...node.childNodes);
+      }
+    } else {
+      const node = nodes[0] ?? nodes;
+      tokens = node.childNodes ?? [];
+    }
+
     let cappedEmoteCount = 0;
     for (let i = 0; i < tokens.length; i++) {
       const node = tokens[i];
 
       let data;
       if (node.nodeType === window.Node.ELEMENT_NODE && node.nodeName === 'SPAN') {
-        data = $(node).text();
+        data = node.innerText;
       } else if (node.nodeType === window.Node.TEXT_NODE) {
         data = node.data;
       } else {
@@ -220,7 +273,7 @@ class ChatModule {
       let modified = false;
       for (let j = 0; j < parts.length; j++) {
         const part = parts[j];
-        if (!part || typeof part !== 'string') {
+        if (part == null || typeof part !== 'string') {
           continue;
         }
 
@@ -238,78 +291,88 @@ class ChatModule {
           let modifier;
           const previousPart = parts[j - 1] ?? '';
           if (EMOTE_MODIFIERS_LIST.includes(previousPart)) {
-            parts[j - 1] = '';
+            parts[j - 1] = null;
             modifier = previousPart;
           }
           parts[j] =
             EMOTES_TO_CAP.includes(emote.id) && ++cappedEmoteCount > MAX_EMOTES_WHEN_CAPPED
-              ? ''
-              : emote.toHTML(modifier, modifier != null ? EMOTE_MODIFIERS[modifier] : null);
+              ? null
+              : emote.render(modifier, modifier != null ? EMOTE_MODIFIERS[modifier] : null);
           modified = true;
           continue;
         }
-
-        // escape all non-emotes since html strings would be rendered as html
-        parts[j] = html.escape(parts[j]);
       }
 
       if (modified) {
-        // TODO: find a better way to do this (this seems most performant tho, only a single mutation vs multiple)
-        const span = document.createElement('span');
-        span.className = 'bttv-message-container';
-        span.innerHTML = parts.join(' ');
-        node.parentNode.replaceChild(span, node);
+        const fragment = document.createDocumentFragment();
+        for (let partIndex = 0; partIndex < parts.length; partIndex++) {
+          let part = parts[partIndex];
+          if (part == null) {
+            continue;
+          }
+          if (part.nodeType == null) {
+            part = document.createTextNode(part);
+          }
+          fragment.appendChild(part);
+          if (partIndex < parts.length - 1) {
+            fragment.appendChild(document.createTextNode(' '));
+          }
+        }
+        node.parentNode.replaceChild(fragment, node);
       }
     }
   }
 
-  messageParser($element, messageObj) {
-    if ($element[0].__bttvParsed) return;
+  messageParser(element, messageObj) {
+    if (element.__bttvParsed) return;
 
-    splitChat.render($element);
+    splitChat.render(element);
 
     const user = formatChatUser(messageObj);
     if (!user) return;
 
-    const $from = $element.find('.chat-author__display-name,.chat-author__intl-login');
+    const from = element.querySelector('.chat-author__display-name,.chat-author__intl-login');
     let color;
     if (hasFlag(settings.get(SettingIds.USERNAMES), UsernameFlags.READABLE)) {
       color = this.calculateColor(user.color);
 
-      $from.css('color', color);
-      if ($element[0].style.color) {
-        $element.css('color', color);
+      from.style.color = color;
+      if (element.style.color) {
+        element.style.color = color;
       }
     } else {
-      color = $from.css('color');
+      color = from.style.color;
     }
 
     if (subscribers.hasGlow(user.id) && settings.get(SettingIds.DARKENED_MODE) === true) {
       const rgbColor = colors.getRgb(color);
-      $from.css('text-shadow', `0 0 20px rgba(${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b}, 0.8)`);
+      from.style.textShadow = `0 0 20px rgba(${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b}, 0.8)`;
     }
 
     if ((globalBots.includes(user.name) || channelBots.includes(user.name)) && user.mod) {
-      $element
-        .find('img.chat-badge[alt="Moderator"]')
-        .replaceWith(badgeTemplate(cdn.url('tags/bot.png'), formatMessage({defaultMessage: 'Bot'})));
+      element
+        .querySelector('img.chat-badge[alt="Moderator"]')
+        ?.replaceWith(badgeTemplate(cdn.url('tags/bot.png'), formatMessage({defaultMessage: 'Bot'})));
     }
 
-    let $badgesContainer = $element.find('.chat-badge').closest('span');
-    if (!$badgesContainer.length) {
-      $badgesContainer = $element.find('span.chat-line__username').prev('span');
+    let badgesContainer = element.querySelector('.chat-badge')?.closest('span');
+    if (badgesContainer == null) {
+      badgesContainer = element.querySelector('span.chat-line__username').previousSibling;
+      if (badgesContainer.nodeName !== 'SPAN') {
+        badgesContainer = null;
+      }
     }
 
     const customBadges = this.customBadges(user);
-    if ($badgesContainer.length > 0 && customBadges.length > 0) {
+    if (badgesContainer != null && customBadges.length > 0) {
       for (const badge of customBadges) {
-        $badgesContainer.append(badge);
+        badgesContainer.appendChild(badge);
       }
     }
 
     const nickname = nicknames.get(user.name);
     if (nickname) {
-      $from.text(nickname);
+      from.innerText = nickname;
     }
 
     if (
@@ -318,26 +381,16 @@ class ChatModule {
       (asciiOnly === true &&
         (hasNonASCII(messageObj.messageBody) || messageObj.messageParts?.some((part) => part.type === 6)))
     ) {
-      $element.hide();
+      element.style.display = 'none';
     }
 
-    const $modIcons = $element.find('.mod-icon');
-    if ($modIcons.length) {
-      const userIsOwner = twitch.getUserIsOwnerFromTagsBadges(user.badges);
-      const userIsMod = twitch.getUserIsModeratorFromTagsBadges(user.badges);
-      const currentUserIsOwner = twitch.getCurrentUserIsOwner();
-      if ((userIsMod && !currentUserIsOwner) || userIsOwner) {
-        $modIcons.remove();
-      }
-    }
+    this.messageReplacer(getMessagePartsFromMessageElement(element), user);
 
-    this.messageReplacer(getMessagePartsFromMessageElement($element), user);
-
-    $element[0].__bttvParsed = true;
+    element.__bttvParsed = true;
   }
 
-  noticeMessageParser($element) {
-    const chatterNames = [...$element.find('.chatter-name span span, .chatter-name span')];
+  noticeMessageParser(element) {
+    const chatterNames = [...element.querySelectorAll('.chatter-name span span, .chatter-name span')];
     for (const chatterName of chatterNames) {
       // skip non-text elements
       if (chatterName.childElementCount > 0) {
@@ -351,8 +404,8 @@ class ChatModule {
     }
   }
 
-  pinnedMessageParser($element) {
-    this.messageReplacer(getMessagePartsFromMessageElement($element), null);
+  pinnedMessageParser(element) {
+    this.messageReplacer(getMessagePartsFromMessageElement(element), null);
   }
 }
 

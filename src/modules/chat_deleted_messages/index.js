@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import watcher from '../../watcher.js';
 import twitch from '../../utils/twitch.js';
 import settings from '../../settings.js';
@@ -12,13 +11,17 @@ const CHAT_LINE_LINK_SELECTOR = 'a.link-fragment';
 const CHAT_LINE_CLIP_CARD_SELECTOR = '.chat-card';
 const CHAT_LINE_DELETED_CLASS = 'bttv-chat-line-deleted';
 
+function isVisible(node) {
+  return !!(node.offsetWidth || node.offsetHeight || node.getClientRects().length);
+}
+
 function findAllUserMessages(name, targetMessageId) {
   return Array.from(document.querySelectorAll(CHAT_LINE_SELECTOR)).filter((node) => {
     const message = twitch.getChatMessageObject(node);
     if (!message) {
       return false;
     }
-    if (!$(node).is(':visible')) {
+    if (!isVisible(node)) {
       return false;
     }
     if (node.classList.contains(CHAT_LINE_DELETED_CLASS)) {
@@ -73,24 +76,22 @@ class ChatDeletedMessagesModule {
     }
     const messages = findAllUserMessages(name, targetMessageId);
     messages.forEach((message) => {
-      const $message = $(message);
       // eslint-disable-next-line default-case
       switch (deletedMessages) {
         case DeletedMessageTypes.HIDE:
-          $message.hide();
+          message.style.display = 'none';
           break;
         case DeletedMessageTypes.HIGHLIGHT:
         case DeletedMessageTypes.SHOW:
           if (deletedMessages === DeletedMessageTypes.HIGHLIGHT) {
-            ChatHighlightBlacklistKeywords.markHighlighted($message);
+            ChatHighlightBlacklistKeywords.markHighlighted(message);
           }
-          $message.toggleClass(CHAT_LINE_DELETED_CLASS, true);
+          message.classList.toggle(CHAT_LINE_DELETED_CLASS, true);
           /* eslint-disable-next-line func-names */
-          $message.find(CHAT_LINE_LINK_SELECTOR).each(function () {
-            const $link = $(this);
-            $link.removeAttr('href');
+          message.querySelectorAll(CHAT_LINE_LINK_SELECTOR).forEach((node) => {
+            node.removeAttribute('href');
           });
-          $message.find(CHAT_LINE_CLIP_CARD_SELECTOR).remove();
+          message.querySelector(CHAT_LINE_CLIP_CARD_SELECTOR)?.remove();
           break;
       }
     });
