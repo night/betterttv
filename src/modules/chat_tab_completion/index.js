@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import settings from '../../settings.js';
 import watcher from '../../watcher.js';
 import twitch, {SelectionTypes} from '../../utils/twitch.js';
@@ -17,7 +16,7 @@ function normalizedStartsWith(word, prefix) {
 
 class ChatTabcompletionModule {
   constructor() {
-    watcher.on('chat.message', ($el, messageObj) => this.storeUser(messageObj));
+    watcher.on('chat.message', (el, messageObj) => this.storeUser(messageObj));
     watcher.on('load.chat', () => this.resetChannelData());
     this.load();
   }
@@ -48,17 +47,22 @@ class ChatTabcompletionModule {
 
   resetChannelData() {
     this.userList = new Set();
-    $(CHAT_INPUT_SELECTOR)
-      .off('keydown.tabComplete focus.tabComplete')
-      .on('keydown.tabComplete', (e) => this.onKeydown(e))
-      .on('focus.tabComplete', () => this.onFocus());
+    const chatInputSelector = document.querySelector(CHAT_INPUT_SELECTOR);
+    if (chatInputSelector == null) {
+      return;
+    }
+
+    chatInputSelector.removeEventListener('keydown', this.onKeydown);
+    chatInputSelector.removeEventListener('focus', this.onFocus);
+    chatInputSelector.addEventListener('keydown', this.onKeydown);
+    chatInputSelector.addEventListener('focus', this.onFocus);
   }
 
-  onFocus() {
+  onFocus = () => {
     this.tabTries = -1;
-  }
+  };
 
-  onKeydown(e, includeUsers = true) {
+  onKeydown = (e, includeUsers = true) => {
     const keyCode = e.key;
     if (e.ctrlKey) return;
 
@@ -111,7 +115,7 @@ class ChatTabcompletionModule {
     // Message history
     if (hasFlag(settings.get(SettingIds.CHAT), ChatFlags.CHAT_MESSAGE_HISTORY)) {
       if (keyCode === keyCodes.ArrowUp) {
-        if ($(AUTOCOMPLETE_SUGGESTIONS_SELECTOR).length > 0) return;
+        if (document.querySelector(AUTOCOMPLETE_SUGGESTIONS_SELECTOR) != null) return;
         if (twitch.getChatInputSelection() !== SelectionTypes.START) return;
         if (this.historyPos + 1 === this.messageHistory.length) return;
 
@@ -124,7 +128,7 @@ class ChatTabcompletionModule {
         const prevMsg = this.messageHistory[++this.historyPos];
         twitch.setChatInputValue(prevMsg);
       } else if (keyCode === keyCodes.ArrowDown) {
-        if ($(AUTOCOMPLETE_SUGGESTIONS_SELECTOR).length > 0) return;
+        if (document.querySelector(AUTOCOMPLETE_SUGGESTIONS_SELECTOR) != null) return;
         if (twitch.getChatInputSelection() !== SelectionTypes.END) return;
         if (this.historyPos > 0) {
           const prevMsg = this.messageHistory[--this.historyPos];
@@ -141,7 +145,7 @@ class ChatTabcompletionModule {
         this.messageHistory[this.historyPos] = chatInputValue;
       }
     }
-  }
+  };
 
   getSuggestions(prefix, includeUsers = true, includeEmotes = true) {
     let userList = [];

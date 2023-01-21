@@ -6,18 +6,18 @@ import watcher from '../../watcher.js';
 
 class DisableLocalizedNamesModule {
   constructor() {
-    watcher.on('chat.message', ($el) => this.delocalizeName($el));
+    watcher.on('chat.message', (el) => this.delocalizeName(el));
   }
 
-  delocalizeName($el) {
+  delocalizeName(el) {
     if (hasFlag(settings.get(SettingIds.USERNAMES), UsernameFlags.LOCALIZED)) return;
 
-    const $name = $el.find('.chat-author__display-name');
-    const $login = $el.find('.chat-author__intl-login');
-    if (!$login.length) return;
+    const name = el.querySelector('.chat-author__display-name');
+    const login = el.querySelector('.chat-author__intl-login');
+    if (login == null) return;
 
-    $name.text($login.text().replace(/[()]/g, '').trim());
-    $login.remove();
+    name.innerText = login.textContent.replace(/[()]/g, '').trim();
+    login.remove();
   }
 }
 

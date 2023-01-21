@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import {ChannelPointsFlags, PlatformTypes, SettingIds} from '../../constants.js';
 import settings from '../../settings.js';
 import {hasFlag} from '../../utils/flags.js';
@@ -12,7 +11,7 @@ class DisableChannelPointsMessageHighlightsModule {
   }
 
   load() {
-    $('body').toggleClass(
+    document.body.classList.toggle(
       'bttv-disable-channel-points-message-highlights',
       !hasFlag(settings.get(SettingIds.CHANNEL_POINTS), ChannelPointsFlags.MESSAGE_HIGHLIGHTS)
     );

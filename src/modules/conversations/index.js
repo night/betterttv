@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import {PlatformTypes, SettingIds} from '../../constants.js';
 import settings from '../../settings.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
@@ -9,11 +8,13 @@ const CHAT_USER_SELECTOR = '.thread-message__message--user-name';
 const CHAT_MESSAGE_SELECTOR = 'span[data-a-target="chat-message-text"]';
 const SCROLL_CONTAINER_SELECTOR = '.simplebar-scroll-content';
 
-function scrollOnEmoteLoad($el) {
-  $el.find('img.bttv').on('load', () => {
-    const $scrollContainer = $el.closest(SCROLL_CONTAINER_SELECTOR);
-    if ($scrollContainer.length === 0) return;
-    $scrollContainer.scrollTop($scrollContainer[0].scrollHeight);
+function scrollOnEmoteLoad(el) {
+  el.querySelectorAll('img').forEach((image) => {
+    image.addEventListener('load', () => {
+      const scrollContainer = image.closest(SCROLL_CONTAINER_SELECTOR);
+      if (scrollContainer == null) return;
+      scrollContainer.scrollTop = scrollContainer.scrollHeight;
+    });
   });
 }
 
@@ -21,15 +22,14 @@ class ConversationsModule {
   constructor() {
     settings.on(`changed.${SettingIds.WHISPERS}`, () => this.toggleHide());
     watcher.on('load', () => this.toggleHide());
-    watcher.on('conversation.message', (threadId, $el, message) => this.parseMessage($el, message));
+    watcher.on('conversation.message', (threadId, el, message) => this.parseMessage(el, message));
   }
 
   toggleHide() {
-    $('body').toggleClass('bttv-hide-conversations', !settings.get(SettingIds.WHISPERS));
+    document.body.classList.toggle('bttv-hide-conversations', !settings.get(SettingIds.WHISPERS));
   }
 
-  parseMessage($element, message) {
-    const $from = $element.find(CHAT_USER_SELECTOR);
+  parseMessage(element, message) {
     if (!message.from) return;
     const {id, login: name, displayName, chatColor: color} = message.from;
     const mockUser = {
@@ -38,12 +38,15 @@ class ConversationsModule {
       displayName,
       color,
     };
-    $from.css('color', chat.calculateColor(mockUser.color));
 
-    const $message = $element.find(CHAT_MESSAGE_SELECTOR);
-    chat.messageReplacer($message, mockUser);
+    const from = element.querySelector(CHAT_USER_SELECTOR);
+    if (from != null) {
+      from.style.color = chat.calculateColor(mockUser.color);
+    }
 
-    scrollOnEmoteLoad($element);
+    chat.messageReplacer(element.querySelectorAll(CHAT_MESSAGE_SELECTOR), mockUser);
+
+    scrollOnEmoteLoad(element);
   }
 }
 

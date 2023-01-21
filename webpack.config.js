@@ -155,7 +155,6 @@ export default async (env, argv) => {
                     }),
                     'postcss-hexrgba',
                     'autoprefixer',
-                    'precss',
                   ],
                 },
               },

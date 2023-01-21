@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import {ChatFlags, PlatformTypes, SettingIds} from '../../constants.js';
 import settings from '../../settings.js';
 import {hasFlag} from '../../utils/flags.js';
@@ -11,7 +10,7 @@ class HideBitsModule {
   }
 
   load() {
-    $('body').toggleClass('bttv-hide-bits', !hasFlag(settings.get(SettingIds.CHAT), ChatFlags.BITS));
+    document.body.classList.toggle('bttv-hide-bits', !hasFlag(settings.get(SettingIds.CHAT), ChatFlags.BITS));
   }
 }
 

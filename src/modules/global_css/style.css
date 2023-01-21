@@ -25,7 +25,7 @@
   z-index: 2000;
   pointer-events: none;
   user-select: none;
-  white-space: nowrap;
+  white-space: pre;
   margin-bottom: 6px;
 
   &.bttv-tooltip--up {

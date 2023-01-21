@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import twitch from '../utils/twitch.js';
 import domObserver from '../observers/dom.js';
 
@@ -57,7 +56,7 @@ export default function chatWatcher(watcher_) {
         return;
       }
 
-      watcher.emit('chat.moderator_card.open', $(node));
+      watcher.emit('chat.moderator_card.open', node);
     },
     {attributes: true}
   );
@@ -68,7 +67,7 @@ export default function chatWatcher(watcher_) {
     const msgObject = twitch.getChatMessageObject(node);
     if (!msgObject) return;
 
-    watcher.emit('chat.message', $(node), msgObject);
+    watcher.emit('chat.message', node, msgObject);
   });
 
   domObserver.on('[data-test-selector="user-notice-line"]', (node, isConnected) => {
@@ -77,7 +76,7 @@ export default function chatWatcher(watcher_) {
     const msgObject = twitch.getChatMessageObject(node);
     if (!msgObject) return;
 
-    watcher.emit('chat.notice_message', $(node), msgObject);
+    watcher.emit('chat.notice_message', node, msgObject);
   });
 
   domObserver.on('.chat-line__status', (node, isConnected) => {
@@ -86,18 +85,18 @@ export default function chatWatcher(watcher_) {
     const msgObject = twitch.getChatMessageObject(node);
     if (!msgObject) return;
 
-    watcher.emit('chat.status', $(node), msgObject);
+    watcher.emit('chat.status', node, msgObject);
   });
 
   domObserver.on('.vod-message__content,.vod-message', (node, isConnected) => {
     if (!isConnected) return;
 
-    watcher.emit('vod.message', $(node));
+    watcher.emit('vod.message', node);
   });
 
   domObserver.on('.pinned-chat__message', (node, isConnected) => {
     if (!isConnected) return;
 
-    watcher.emit('chat.pinned_message', $(node));
+    watcher.emit('chat.pinned_message', node);
   });
 }

@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import {PlatformTypes, SettingIds, UsernameFlags} from '../../constants.js';
 import settings from '../../settings.js';
 import {hasFlag} from '../../utils/flags.js';
@@ -12,7 +11,7 @@ class DisableNameColorsModule {
   }
 
   load() {
-    $('body').toggleClass(
+    document.body.classList.toggle(
       'bttv-disable-name-colors',
       !hasFlag(settings.get(SettingIds.USERNAMES), UsernameFlags.COLORS)
     );

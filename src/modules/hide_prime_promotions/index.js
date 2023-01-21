@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import {PlatformTypes, SettingIds} from '../../constants.js';
 import settings from '../../settings.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
@@ -11,7 +10,7 @@ class HidePrimePromotionsModule {
   }
 
   togglePrimePromotions() {
-    $('body').toggleClass('bttv-hide-prime-promotions', !settings.get(SettingIds.PRIME_PROMOTIONS));
+    document.body.classList.toggle('bttv-hide-prime-promotions', !settings.get(SettingIds.PRIME_PROMOTIONS));
   }
 }
 

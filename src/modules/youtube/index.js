@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import chat from '../chat/index.js';
 import settings from '../../settings.js';
 import watcher from '../../watcher.js';
@@ -24,6 +23,8 @@ class YouTubeModule {
   }
 
   parseMessage(element) {
+    if (element.__bttvParsed) return;
+
     const message = element.__data?.data;
     const mockUser = {
       id: message?.authorExternalChannelId,
@@ -42,13 +43,19 @@ class YouTubeModule {
 
     const customBadges = chat.customBadges(mockUser);
     const badgesContainer = element.querySelector(CHAT_BADGES_CONTAINER_SELECTOR);
-    if (customBadges.length > 0 && badgesContainer != null) {
+    if (
+      customBadges.length > 0 &&
+      badgesContainer != null &&
+      badgesContainer.querySelector(customBadges[0].className) == null
+    ) {
       for (const badge of customBadges) {
-        $(badgesContainer).after(badge);
+        badgesContainer.after(badge);
       }
     }
 
-    chat.messageReplacer($(element.querySelector(CHAT_MESSAGE_SELECTOR)), mockUser);
+    chat.messageReplacer(element.querySelector(CHAT_MESSAGE_SELECTOR), mockUser);
+
+    element.__bttvParsed = true;
   }
 }
 

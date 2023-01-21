@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import settings from '../../settings.js';
 import watcher from '../../watcher.js';
 import twitch from '../../utils/twitch.js';
@@ -21,12 +20,17 @@ class HideCommunityHighlightsModule {
 
       removeCommunityHighlightsListener = domObserver.on('.community-highlight-stack__card', (node, isConnected) => {
         if (!isConnected) return;
-        const $node = $(node);
+
         const communityHighlight = twitch.getCommunityHighlight();
-        if (communityHighlight?.event?.type === 'poll') return;
-        if ($node.find('button[data-test-selector="community-prediction-highlight-header__action-button"]').length > 0)
+        if (
+          communityHighlight?.event?.type === 'poll' ||
+          node.querySelector('button[data-test-selector="community-prediction-highlight-header__action-button"]') !=
+            null
+        ) {
           return;
-        $node.addClass('bttv-hide-community-highlights');
+        }
+
+        node.classList.add('bttv-hide-community-highlights');
       });
       return;
     }
@@ -35,7 +39,7 @@ class HideCommunityHighlightsModule {
 
     removeCommunityHighlightsListener();
     removeCommunityHighlightsListener = undefined;
-    $('.community-highlight-stack__card').removeClass('bttv-hide-community-highlights');
+    document.querySelector('.community-highlight-stack__card')?.classList.remove('bttv-hide-community-highlights');
   }
 }
 

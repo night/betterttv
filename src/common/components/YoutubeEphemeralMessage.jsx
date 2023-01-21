@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import React from 'react';
 import chat from '../../modules/chat/index.js';
 import cdn from '../../utils/cdn.js';
@@ -11,7 +10,7 @@ export default function YoutubeEphemeralMessage({message}) {
     if (messageRef?.current == null) {
       return;
     }
-    chat.messageReplacer($(messageRef.current), null, true);
+    chat.messageReplacer(messageRef.current, null, true);
   }, [messageRef]);
 
   return (

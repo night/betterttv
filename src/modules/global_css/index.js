@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import extension from '../../utils/extension.js';
 import {PlatformTypes} from '../../constants.js';
 import {getPlatform} from '../../utils/window.js';
@@ -16,7 +15,7 @@ class GlobalCSSModule {
     // TODO: this is a crazy hack to enable youtube-specific rsuite overrides
     // we should find a better way
     if (getPlatform() === PlatformTypes.YOUTUBE) {
-      $('body').toggleClass('bttv-youtube', true);
+      document.body.classList.toggle('bttv-youtube', true);
     }
 
     return new Promise((resolve) => {
@@ -25,7 +24,7 @@ class GlobalCSSModule {
       css.setAttribute('type', 'text/css');
       css.setAttribute('rel', 'stylesheet');
       css.addEventListener('load', () => resolve());
-      $('body').append(css);
+      document.body.appendChild(css);
     });
   }
 }

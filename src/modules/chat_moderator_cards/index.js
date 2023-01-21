@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import watcher from '../../watcher.js';
 import twitch from '../../utils/twitch.js';
 import ModeratorCard from './moderator-card.js';
@@ -9,13 +8,13 @@ let openModeratorCard;
 
 class ChatModeratorCardsModule {
   constructor() {
-    watcher.on('chat.moderator_card.open', ($element) => this.onOpen($element));
+    watcher.on('chat.moderator_card.open', (element) => this.onOpen(element));
     watcher.on('chat.moderator_card.close', () => this.onClose());
-    $('body').on('keydown.modCard', (e) => this.onKeyDown(e));
+    document.body.addEventListener('keydown', (e) => this.onKeyDown(e));
   }
 
-  onOpen($element) {
-    const targetUser = twitch.getChatModeratorCardUser($element[0]);
+  onOpen(element) {
+    const targetUser = twitch.getChatModeratorCardUser(element);
     if (!targetUser) return;
 
     if (openModeratorCard && openModeratorCard.user.id === targetUser.id) {
@@ -34,7 +33,7 @@ class ChatModeratorCardsModule {
     }
 
     openModeratorCard = new ModeratorCard(
-      $element,
+      element,
       {
         id: targetUser.id,
         name: targetUser.login,
