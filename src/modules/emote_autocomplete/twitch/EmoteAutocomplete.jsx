@@ -8,6 +8,7 @@ import {EmoteCategories, EmoteTypeFlags, SettingIds} from '../../../constants.js
 import './EmoteAutocomplete.module.css';
 import settings from '../../../settings.js';
 import {hasFlag} from '../../../utils/flags.js';
+import chat from '../../chat/index.js';
 
 const EMOTE_ID_BETTERTTV_PREFIX = '__BTTV__';
 const CUSTOM_SET_ID = 'BETTERTTV_EMOTES';
@@ -95,6 +96,25 @@ function patchEmoteImage(image, isConnected) {
   const deseralizedEmote = deserializeEmoteFromURL(url);
 
   if (deseralizedEmote == null) {
+    return;
+  }
+
+  const imageButton = image.closest('div[data-test-selector="emote-button"]');
+  const imageButtonMessage = imageButton?.closest('.chat-line__message');
+  const imageButtonMessageObject = imageButtonMessage != null ? twitch.getChatMessageObject(imageButtonMessage) : null;
+  if (imageButtonMessage != null && imageButtonMessageObject?.user != null) {
+    const span = document.createElement('span');
+    span.appendChild(document.createTextNode(image.alt));
+    imageButton.replaceWith(span);
+    chat.messageReplacer(
+      imageButton,
+      {
+        id: imageButtonMessageObject.user.userID,
+        name: imageButtonMessageObject.user.userLogin,
+        displayName: imageButtonMessageObject.user.userDisplayName,
+      },
+      true
+    );
     return;
   }
 
