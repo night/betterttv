@@ -107,11 +107,17 @@ function patchEmoteImage(image, isConnected) {
     const {previousSibling} = imageButton;
     if (previousSibling != null && previousSibling.matches('span[data-a-target="chat-message-text"]')) {
       span = previousSibling;
+      imageButton.remove();
     } else {
       span = document.createElement('span');
+      imageButton.replaceWith(span);
     }
-    span.appendChild(document.createTextNode(image.alt));
-    imageButton.replaceWith(span);
+    const {lastChild} = span;
+    if (lastChild != null && lastChild.nodeType === 3) {
+      lastChild.innerText += image.alt;
+    } else {
+      span.appendChild(document.createTextNode(image.alt));
+    }
     chat.messageReplacer(
       span,
       {
