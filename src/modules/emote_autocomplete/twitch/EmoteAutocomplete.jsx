@@ -59,13 +59,9 @@ function createTwitchEmoteSet(allEmotes) {
   };
 }
 
-function injectEmoteSets() {
-  const autocompleteEmoteProvider = getAutocompleteEmoteProvider();
-  if (autocompleteEmoteProvider == null) {
-    return;
-  }
-
-  const autocompleteEmotes = autocompleteEmoteProvider.props.emotes;
+function injectEmoteSets(node, mutate = false) {
+  const autocompleteEmotes = mutate ? node.props.emotes : [...node.props.emotes];
+  node.props.emotes = autocompleteEmotes;
 
   const allEmotes = emotes.getEmotesByCategories([
     EmoteCategories.BETTERTTV_CHANNEL,
@@ -137,12 +133,13 @@ function patchEmoteImage(image, isConnected) {
   }
 }
 
-let twitchComponentDidUpdate = null;
+let twitchAutocompleteComponentDidUpdate = null;
+let twitchEditorComponentDidUpdate = null;
 export default class EmoteAutocomplete {
   constructor() {
     this.load();
     watcher.on('channel.updated', () => this.load());
-    watcher.on('emotes.updated', () => injectEmoteSets());
+    watcher.on('emotes.updated', () => this.load());
     dom.on(AUTOCOMPLETE_MATCH_IMAGE_QUERY, patchEmoteImage, {
       attributes: true,
       attributeFilter: ['src', 'srcset'],
@@ -151,29 +148,48 @@ export default class EmoteAutocomplete {
 
   load() {
     const emoteAutocompleteProvider = getAutocompleteEmoteProvider();
-    if (emoteAutocompleteProvider == null) {
-      return;
-    }
-
-    if (emoteAutocompleteProvider.__bttvAutocompletePatched !== PATCHED_SENTINEL) {
+    if (emoteAutocompleteProvider != null && emoteAutocompleteProvider.__bttvAutocompletePatched !== PATCHED_SENTINEL) {
       emoteAutocompleteProvider.__bttvAutocompletePatched = PATCHED_SENTINEL;
-      twitchComponentDidUpdate = emoteAutocompleteProvider.componentDidUpdate;
+      twitchAutocompleteComponentDidUpdate = emoteAutocompleteProvider.componentDidUpdate;
 
       // eslint-disable-next-line no-inner-declarations
       function bttvComponentDidUpdate(prevProps) {
         if (prevProps.emotes !== this.props.emotes) {
-          injectEmoteSets();
+          injectEmoteSets(emoteAutocompleteProvider);
         }
 
-        if (twitchComponentDidUpdate != null) {
-          twitchComponentDidUpdate.call(this, ...prevProps);
+        if (twitchAutocompleteComponentDidUpdate != null) {
+          twitchAutocompleteComponentDidUpdate.call(this, ...prevProps);
         }
       }
 
       emoteAutocompleteProvider.componentDidUpdate = bttvComponentDidUpdate;
       emoteAutocompleteProvider.forceUpdate();
+    } else if (emoteAutocompleteProvider != null) {
+      injectEmoteSets(emoteAutocompleteProvider);
     }
 
-    injectEmoteSets();
+    const chatInputEditor = twitch.getChatInputEditor();
+    if (chatInputEditor != null && chatInputEditor.__bttvAutocompletePatched !== PATCHED_SENTINEL) {
+      chatInputEditor.__bttvAutocompletePatched = PATCHED_SENTINEL;
+      twitchEditorComponentDidUpdate = chatInputEditor.componentDidUpdate;
+
+      // eslint-disable-next-line no-inner-declarations
+      function bttvComponentDidUpdate(prevProps) {
+        if (prevProps.emotes !== this.props.emotes) {
+          injectEmoteSets(chatInputEditor, true);
+          this.forceUpdate();
+        }
+
+        if (twitchEditorComponentDidUpdate != null) {
+          twitchEditorComponentDidUpdate.call(this, ...prevProps);
+        }
+      }
+
+      chatInputEditor.componentDidUpdate = bttvComponentDidUpdate;
+      chatInputEditor.forceUpdate();
+    } else if (chatInputEditor != null) {
+      injectEmoteSets(chatInputEditor, true);
+    }
   }
 }
