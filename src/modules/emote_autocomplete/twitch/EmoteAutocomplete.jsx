@@ -8,6 +8,7 @@ import {EmoteCategories, EmoteTypeFlags, SettingIds} from '../../../constants.js
 import './EmoteAutocomplete.module.css';
 import settings from '../../../settings.js';
 import {hasFlag} from '../../../utils/flags.js';
+import chat from '../../chat/index.js';
 
 const EMOTE_ID_BETTERTTV_PREFIX = '__BTTV__';
 const CUSTOM_SET_ID = 'BETTERTTV_EMOTES';
@@ -95,6 +96,37 @@ function patchEmoteImage(image, isConnected) {
   const deseralizedEmote = deserializeEmoteFromURL(url);
 
   if (deseralizedEmote == null) {
+    return;
+  }
+
+  const imageButton = image.closest('div[data-test-selector="emote-button"]');
+  const imageButtonMessage = imageButton?.closest('.chat-line__message');
+  const imageButtonMessageObject = imageButtonMessage != null ? twitch.getChatMessageObject(imageButtonMessage) : null;
+  if (imageButtonMessage != null && imageButtonMessageObject?.user != null) {
+    let span;
+    const {previousSibling} = imageButton;
+    if (previousSibling != null && previousSibling.matches('span[data-a-target="chat-message-text"]')) {
+      span = previousSibling;
+      imageButton.remove();
+    } else {
+      span = document.createElement('span');
+      imageButton.replaceWith(span);
+    }
+    const {lastChild} = span;
+    if (lastChild != null && lastChild.nodeType === 3) {
+      lastChild.textContent += image.alt;
+    } else {
+      span.appendChild(document.createTextNode(image.alt));
+    }
+    chat.messageReplacer(
+      span,
+      {
+        id: imageButtonMessageObject.user.userID,
+        name: imageButtonMessageObject.user.userLogin,
+        displayName: imageButtonMessageObject.user.userDisplayName,
+      },
+      true
+    );
     return;
   }
 
