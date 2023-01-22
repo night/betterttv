@@ -1,11 +1,10 @@
 import settings from '../../settings.js';
 import watcher from '../../watcher.js';
 import twitch from '../../utils/twitch.js';
-import {ANON_CHAT_WHITELISTED_CHANNELS_STORAGE_KEY, PlatformTypes, SettingIds} from '../../constants.js';
+import {PlatformTypes, SettingIds} from '../../constants.js';
 import {getCurrentUser} from '../../utils/user.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
 import formatMessage from '../../i18n/index.js';
-import {getCurrentChannel} from '../../utils/channel.js';
 
 const forcedURL = window.location.search.includes('bttv_anon_chat=true');
 
@@ -51,10 +50,13 @@ class AnonChatModule {
 
   load() {
     this.enabled = false;
-    let whitelistedChannels = settings.get(ANON_CHAT_WHITELISTED_CHANNELS_STORAGE_KEY);
-    whitelistedChannels = whitelistedChannels != null ? whitelistedChannels.map((user) => user.toLowerCase()) : [];
+    const whitelistedChannels = settings.get(SettingIds.ANON_CHAT_WHITELISTED_CHANNELS);
     const currentChannelName = twitch.getCurrentChat()?.props?.channelLogin;
-    if (forcedURL || (settings.get(SettingIds.ANON_CHAT) && !whitelistedChannels.includes(currentChannelName))) {
+    if (
+      forcedURL ||
+      (settings.get(SettingIds.ANON_CHAT) &&
+        !whitelistedChannels.map((user) => user.toLowerCase()).includes(currentChannelName))
+    ) {
       this.part();
     } else {
       this.join();
