@@ -252,8 +252,7 @@ class ChatModule {
         tokens.push(...node.childNodes);
       }
     } else {
-      const node = nodes[0] ?? nodes;
-      tokens = node.childNodes ?? [];
+      tokens = nodes.childNodes ?? [];
     }
 
     let cappedEmoteCount = 0;
