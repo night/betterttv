@@ -249,3 +249,5 @@ export const EMOTE_MENU_GRID_ROW_HEIGHT = 36;
 export const EMOTE_MENU_GRID_HEIGHT = 300;
 
 export const EMOTE_CATEGORIES_ORDER_STORAGE_KEY = 'emote-categories-order';
+
+export const ANON_CHAT_WHITELISTED_CHANNELS_STORAGE_KEY = 'anon-chat-whitelisted-channels';
