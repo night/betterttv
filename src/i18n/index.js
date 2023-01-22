@@ -3,7 +3,24 @@ import {createIntl, createIntlCache} from '@formatjs/intl';
 import {Settings} from 'luxon';
 
 const DEFAULT_LOCALE = 'en';
-const SUPPORTED_LOCALES = [DEFAULT_LOCALE, 'ru-RU'];
+const SUPPORTED_LOCALES = [
+  DEFAULT_LOCALE,
+  'de-DE',
+  'es-ES',
+  'fr-FR',
+  'hu-HU',
+  'it-IT',
+  'ja-JP',
+  'ko-KR',
+  'nl-NL',
+  'no-NO',
+  'pl-PL',
+  'pt-BR',
+  'pt-PT',
+  'ru-RU',
+  'tr-TR',
+  'uk-UA',
+];
 
 let browserLocale = Array.isArray(navigator.languages) ? navigator.languages[0] : null;
 browserLocale = browserLocale || navigator.language || navigator.browserLanguage || navigator.userLanguage;
