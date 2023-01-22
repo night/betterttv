@@ -103,7 +103,13 @@ function patchEmoteImage(image, isConnected) {
   const imageButtonMessage = imageButton?.closest('.chat-line__message');
   const imageButtonMessageObject = imageButtonMessage != null ? twitch.getChatMessageObject(imageButtonMessage) : null;
   if (imageButtonMessage != null && imageButtonMessageObject?.user != null) {
-    const span = document.createElement('span');
+    let span;
+    const {previousSibling} = imageButton;
+    if (previousSibling != null && previousSibling.matches('span[data-a-target="chat-message-text"]')) {
+      span = previousSibling;
+    } else {
+      span = document.createElement('span');
+    }
     span.appendChild(document.createTextNode(image.alt));
     imageButton.replaceWith(span);
     chat.messageReplacer(
