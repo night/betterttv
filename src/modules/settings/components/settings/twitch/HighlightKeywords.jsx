@@ -29,6 +29,7 @@ function AdditionalSettings({color, onColorChange, channels, onChannelsChange}) 
           value={channels}
           className={styles.settingTagInput}
           onChange={(newChannels) => onChannelsChange(newChannels)}
+          placeholder="username, etc.."
         />
       </div>
     </div>

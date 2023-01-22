@@ -50,7 +50,13 @@ class AnonChatModule {
 
   load() {
     this.enabled = false;
-    if (forcedURL || settings.get(SettingIds.ANON_CHAT)) {
+    const whitelistedChannels = settings.get(SettingIds.ANON_CHAT_WHITELISTED_CHANNELS);
+    const currentChannelName = twitch.getCurrentChat()?.props?.channelLogin;
+    if (
+      forcedURL ||
+      (settings.get(SettingIds.ANON_CHAT) &&
+        !whitelistedChannels.map((user) => user.toLowerCase()).includes(currentChannelName))
+    ) {
       this.part();
     } else {
       this.join();

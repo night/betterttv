@@ -1,5 +1,6 @@
 export const SettingIds = {
   ANON_CHAT: 'anonChat',
+  ANON_CHAT_WHITELISTED_CHANNELS: 'anonChatWhitelistedChannels',
   AUTO_THEATRE_MODE: 'autoTheatreMode',
   AUTO_JOIN_RAIDS: 'autoJoinRaids',
   AUTO_MOD_VIEW: 'autoModView',
@@ -176,6 +177,7 @@ export const EmoteMenuTips = {
 
 export const SettingDefaultValues = {
   [SettingIds.ANON_CHAT]: false,
+  [SettingIds.ANON_CHAT_WHITELISTED_CHANNELS]: [],
   [SettingIds.AUTO_THEATRE_MODE]: false,
   [SettingIds.AUTO_JOIN_RAIDS]: true,
   [SettingIds.AUTO_MOD_VIEW]: false,

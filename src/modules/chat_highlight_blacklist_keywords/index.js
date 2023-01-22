@@ -179,7 +179,12 @@ function fieldContainsKeyword(keywords, from, field, onColorChange) {
   const channel = getCurrentChannel();
 
   for (const {keyword, channels, color} of keywords) {
-    if (channels != null && channels.length > 0 && channel != null && !channels.includes(channel.name)) {
+    if (
+      channels != null &&
+      channels.length > 0 &&
+      channel != null &&
+      !channels.map((_channel) => _channel.toLowerCase()).includes(channel.name)
+    ) {
       continue;
     }
 
