@@ -24,9 +24,14 @@ function AnonChat() {
       </div>
       <div className={styles.settingRow}>
         <p className={styles.settingDescription}>
-          {formatMessage({defaultMessage: 'Whitelist certain channels to bypass Anon Chat'})}
+          {formatMessage({defaultMessage: 'Whitelist channels that bypass Anon Chat'})}
         </p>
-        <TagInput value={channels} className={styles.settingTagInput} onChange={(newValue) => setChannels(newValue)} />
+        <TagInput
+          value={channels}
+          className={styles.settingTagInput}
+          onChange={(newValue) => setChannels(newValue)}
+          placeholder="username, etc.."
+        />
       </div>
     </Panel>
   );
