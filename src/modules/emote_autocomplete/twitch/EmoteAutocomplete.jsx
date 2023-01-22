@@ -107,7 +107,7 @@ function patchEmoteImage(image, isConnected) {
     span.appendChild(document.createTextNode(image.alt));
     imageButton.replaceWith(span);
     chat.messageReplacer(
-      imageButton,
+      span,
       {
         id: imageButtonMessageObject.user.userID,
         name: imageButtonMessageObject.user.userLogin,
