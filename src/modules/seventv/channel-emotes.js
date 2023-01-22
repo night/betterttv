@@ -77,6 +77,10 @@ class SevenTVChannelEmotes extends AbstractEmotes {
     )
       .then((response) => response.json())
       .then(({emote_set: {emotes}}) => {
+        if (emotes == null) {
+          return;
+        }
+
         for (const {
           id,
           name: code,
