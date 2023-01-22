@@ -114,7 +114,7 @@ function patchEmoteImage(image, isConnected) {
     }
     const {lastChild} = span;
     if (lastChild != null && lastChild.nodeType === 3) {
-      lastChild.innerText += image.alt;
+      lastChild.textContent += image.alt;
     } else {
       span.appendChild(document.createTextNode(image.alt));
     }
