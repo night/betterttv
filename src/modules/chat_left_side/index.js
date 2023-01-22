@@ -14,7 +14,7 @@ class ChatLeftSide {
     // TODO: replace this eventually when :has exists in CSS
     const sideNav = document.querySelector('.side-nav').parentElement;
     const main = document.querySelector('.twilight-main');
-    if (sideNav.parentElement === main.parentElement) {
+    if (sideNav != null && main != null && sideNav.parentElement === main.parentElement) {
       sideNav.classList.add('bttv-side-nav');
     }
   }
