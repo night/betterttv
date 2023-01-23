@@ -251,3 +251,10 @@ export const EMOTE_MENU_GRID_ROW_HEIGHT = 36;
 export const EMOTE_MENU_GRID_HEIGHT = 300;
 
 export const EMOTE_CATEGORIES_ORDER_STORAGE_KEY = 'emote-categories-order';
+
+export const BadgeTypes = {
+  DEVELOPER: 1,
+  SUPPORT_VOLUNTEER: 2,
+  EMOTE_APPROVER: 3,
+  TRANSLATOR: 4,
+};

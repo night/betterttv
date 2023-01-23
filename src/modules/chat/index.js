@@ -8,7 +8,7 @@ import emotes from '../emotes/index.js';
 import nicknames from '../chat_nicknames/index.js';
 import subscribers from '../subscribers/index.js';
 import splitChat from '../split_chat/index.js';
-import {EmoteTypeFlags, SettingIds, UsernameFlags, PlatformTypes} from '../../constants.js';
+import {EmoteTypeFlags, SettingIds, UsernameFlags, PlatformTypes, BadgeTypes} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
 import {getCurrentChannel} from '../../utils/channel.js';
 import formatMessage from '../../i18n/index.js';
@@ -85,7 +85,13 @@ function formatChatUser(message) {
   };
 }
 
-const staff = new Map();
+const badgeUsers = new Map();
+const badgeDescriptions = {
+  [BadgeTypes.DEVELOPER]: formatMessage({defaultMessage: 'NightDev Developer'}),
+  [BadgeTypes.SUPPORT_VOLUNTEER]: formatMessage({defaultMessage: 'NightDev Support Volunteer'}),
+  [BadgeTypes.EMOTE_APPROVER]: formatMessage({defaultMessage: 'BetterTTV Emote Approver'}),
+  [BadgeTypes.TRANSLATOR]: formatMessage({defaultMessage: 'BetterTTV Translator'}),
+};
 const globalBots = ['nightbot', 'moobot'];
 let channelBots = [];
 let asciiOnly = false;
@@ -134,7 +140,7 @@ class ChatModule {
     });
 
     api.get(`cached/badges/${getPlatform() === PlatformTypes.YOUTUBE ? 'youtube' : 'twitch'}`).then((badges) => {
-      badges.forEach(({name, badge}) => staff.set(name, badge));
+      badges.forEach(({providerId, badge}) => badgeUsers.set(providerId, badge));
     });
   }
 
@@ -203,9 +209,9 @@ class ChatModule {
   customBadges(user) {
     const badges = [];
 
-    const staffBadge = staff.get(user.name);
-    if (staffBadge) {
-      badges.push(badgeTemplate(staffBadge.svg, staffBadge.description));
+    const badge = badgeUsers.get(user.id);
+    if (badge) {
+      badges.push(badgeTemplate(badge.svg, badgeDescriptions[badge.type] ?? badge.description));
     }
 
     const currentChannel = getCurrentChannel();
