@@ -8,10 +8,11 @@ import emotes from '../emotes/index.js';
 import nicknames from '../chat_nicknames/index.js';
 import subscribers from '../subscribers/index.js';
 import splitChat from '../split_chat/index.js';
-import {EmoteTypeFlags, SettingIds, UsernameFlags} from '../../constants.js';
+import {EmoteTypeFlags, SettingIds, UsernameFlags, PlatformTypes} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
 import {getCurrentChannel} from '../../utils/channel.js';
 import formatMessage from '../../i18n/index.js';
+import {getPlatform} from '../../utils/window.js';
 
 const EMOTE_STRIP_SYMBOLS_REGEX = /(^[~!@#$%^&*()]+|[~!@#$%^&*()]+$)/g;
 const STEAM_LOBBY_JOIN_REGEX = /^steam:\/\/joinlobby\/\d+\/\d+\/\d+$/;
@@ -132,7 +133,7 @@ class ChatModule {
       }
     });
 
-    api.get('cached/badges').then((badges) => {
+    api.get(`cached/badges/${getPlatform() === PlatformTypes.YOUTUBE ? 'youtube' : 'twitch'}`).then((badges) => {
       badges.forEach(({name, badge}) => staff.set(name, badge));
     });
   }
