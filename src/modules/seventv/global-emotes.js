@@ -74,7 +74,6 @@ class SevenTVGlobalEmotes extends AbstractEmotes {
   }
 
   handleEventSourceUpdate(event) {
-    console.log("fired.");
     const {emote_id: id, name: code, action, emote} = JSON.parse(event.data);
 
     let message;
