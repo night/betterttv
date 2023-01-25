@@ -160,7 +160,7 @@ class ChatModule {
   handleEmoteMouseEvent({target}) {
     const currentTargets = [];
     if (currentMoveTarget !== target) {
-      const closestTarget = target.closest(EMOTE_SELECTOR);
+      const closestTarget = target?.closest(EMOTE_SELECTOR);
       if (closestTarget != null) {
         currentTargets.push(closestTarget);
       }
