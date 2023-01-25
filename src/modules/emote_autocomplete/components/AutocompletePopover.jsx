@@ -28,6 +28,9 @@ const AutocompletePopover = React.forwardRef(
     const [popoverWidth, setPopoverWidth] = useState(null);
 
     const reposition = useCallback(() => {
+      if (chatInputElement == null) {
+        return;
+      }
       const {width} = chatInputElement.getBoundingClientRect();
       setPopoverWidth(width);
       repositionPopover(localRef, boundingQuerySelector, TOP_PADDING);
