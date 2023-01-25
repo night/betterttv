@@ -37,7 +37,13 @@ Sentry.init({
   dsn: process.env.SENTRY_URL,
   ignoreErrors,
   allowUrls: [/betterttv\.js/, /\.betterttv\.net/, /\/betterttv\//i],
-  denyUrls: [/static\.twitchcdn\.net\/assets/, /avalon\.js/, /avalon\.[a-zA-Z0-9]+\.js/, /script\.js/],
+  denyUrls: [
+    /static\.twitchcdn\.net\/assets/,
+    /avalon\.js/,
+    /avalon\.[a-zA-Z0-9]+\.js/,
+    /script\.js/,
+    /www.youtube.com\/s\/desktop\//,
+  ],
   integrations: [
     new Sentry.Integrations.GlobalHandlers({
       onunhandledrejection: false,
