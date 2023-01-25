@@ -22,7 +22,7 @@ function AutoplayModule() {
         </p>
         <CheckboxGroup
           value={Object.values(AutoPlayFlags).filter((value) => hasFlag(autoplay, value))}
-          onChange={(value) => setAutoplay(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}>
+          onChange={(value) => setAutoplay(value.reduce((a, b) => a | b, 0))}>
           <Checkbox key="fpPlayer" value={AutoPlayFlags.FP_VIDEO}>
             <p className={styles.heading}>{formatMessage({defaultMessage: 'Front-page Player'})}</p>
             <p className={styles.settingDescription}>

@@ -27,8 +27,9 @@ function AutoClaim() {
         <CheckboxGroup
           value={groupValue}
           onChange={(value) => {
-            const newAutoClaimValue =
-              value.length > 0 ? value.filter((item) => item !== CHANNEL_POINTS_BONUSES).reduce((a, b) => a | b) : 0;
+            const newAutoClaimValue = value
+              .filter((item) => item !== CHANNEL_POINTS_BONUSES)
+              .reduce((a, b) => a | b, 0);
             const isChannelPointsBonusesEnabled = value.includes(CHANNEL_POINTS_BONUSES);
             setAutoClaim(newAutoClaimValue);
             setChannelPoints(setFlag(channelPoints, ChannelPointsFlags.AUTO_CLAIM, isChannelPointsBonusesEnabled));

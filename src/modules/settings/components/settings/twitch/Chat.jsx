@@ -20,7 +20,7 @@ function ChatModule() {
         <p className={styles.settingDescription}>{formatMessage({defaultMessage: 'Edit or modify chat features'})}</p>
         <CheckboxGroup
           value={Object.values(ChatFlags).filter((value) => hasFlag(chat, value))}
-          onChange={(value) => setChat(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}>
+          onChange={(value) => setChat(value.reduce((a, b) => a | b, 0))}>
           <Checkbox key="chatMessageHistory" value={ChatFlags.CHAT_MESSAGE_HISTORY}>
             <p className={styles.heading}>{formatMessage({defaultMessage: 'Chat Message History'})}</p>
             <p className={styles.settingDescription}>

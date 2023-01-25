@@ -20,7 +20,7 @@ function UsernamesModule() {
         <p className={styles.settingDescription}>{formatMessage({defaultMessage: 'Edit or modify chat usernames'})}</p>
         <CheckboxGroup
           value={Object.values(UsernameFlags).filter((value) => hasFlag(usernames, value))}
-          onChange={(value) => setUsernames(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}>
+          onChange={(value) => setUsernames(value.reduce((a, b) => a | b, 0))}>
           <Checkbox key="localized" value={UsernameFlags.LOCALIZED}>
             <p className={styles.heading}>{formatMessage({defaultMessage: 'Localized Usernames'})}</p>
             <p className={styles.settingDescription}>

@@ -61,7 +61,7 @@ function EmotesModule() {
         <p className={styles.settingDescription}>{formatMessage({defaultMessage: 'Adds more emotes to your chat'})}</p>
         <CheckboxGroup
           value={Object.values(EmoteTypeFlags).filter((value) => hasFlag(emotes, value))}
-          onChange={(value) => setEmotes(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}>
+          onChange={(value) => setEmotes(value.reduce((a, b) => a | b, 0))}>
           <Checkbox key="bttvAnimatedEmotes" value={EmoteTypeFlags.ANIMATED_EMOTES}>
             <p className={styles.heading}>{formatMessage({defaultMessage: 'Animated Emotes'})}</p>
             <p className={styles.settingDescription}>

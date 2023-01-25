@@ -22,7 +22,7 @@ function ChannelPointsModule() {
         </p>
         <CheckboxGroup
           value={Object.values(ChannelPointsFlags).filter((value) => hasFlag(channelPoints, value))}
-          onChange={(value) => setChannelPoints(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}>
+          onChange={(value) => setChannelPoints(value.reduce((a, b) => a | b, 0))}>
           <Checkbox key="channelPoints" value={ChannelPointsFlags.CHANNEL_POINTS}>
             <p className={styles.heading}>{formatMessage({defaultMessage: 'Channel Points'})}</p>
             <p className={styles.settingDescription}>

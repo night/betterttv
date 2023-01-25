@@ -22,7 +22,7 @@ function SidebarComponent() {
         </p>
         <CheckboxGroup
           value={Object.values(SidebarFlags).filter((value) => hasFlag(sidebar, value))}
-          onChange={(value) => setSidebar(value.length > 0 ? value.reduce((a, b) => a | b) : 0)}>
+          onChange={(value) => setSidebar(value.reduce((a, b) => a | b, 0))}>
           <Checkbox key="featuredChannels" value={SidebarFlags.FEATURED_CHANNELS}>
             <p className={styles.heading}>{formatMessage({defaultMessage: 'Featured Channels'})}</p>
             <p className={styles.settingDescription}>
