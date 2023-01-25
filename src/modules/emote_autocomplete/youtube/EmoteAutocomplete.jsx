@@ -14,7 +14,8 @@ const EMOTE_AUTOCOMPLETE_CONTAINER_SELECTOR = 'div[data-a-target="bttv-autocompl
 
 function findFocusedWord(value, selectionStart = 0) {
   const subString = value.substring(0, selectionStart);
-  const focusedWord = subString.split(/\s+/).at(-1);
+  const focusedWords = subString.split(/\s+/);
+  const focusedWord = focusedWords[focusedWords.length - 1];
 
   return {
     value: focusedWord,
