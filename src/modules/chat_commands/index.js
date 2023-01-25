@@ -11,7 +11,7 @@ import formatMessage from '../../i18n/index.js';
 
 const CommandHelp = {
   b: formatMessage({defaultMessage: `Usage: "/b '<'login'>' [reason]" - Shortcut for /ban`}),
-  chatters: formatMessage({defaultMessage: 'Usage: "/chatters" - Retrieces the number of chatters in the chat'}),
+  chatters: formatMessage({defaultMessage: 'Usage: "/chatters" - Retrieves the number of chatters in the chat'}),
   followed: formatMessage({
     defaultMessage: 'Usage: "/followed" - Tells you for how long you have been following a channel',
   }),
