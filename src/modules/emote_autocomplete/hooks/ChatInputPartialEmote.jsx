@@ -16,10 +16,10 @@ export default function useChatInputPartialEmote(chatInputElement, getChatInputP
       event.stopPropagation();
     }
 
-    chatInputElement.addEventListener('input', handleInput);
+    chatInputElement?.addEventListener('input', handleInput);
 
     return () => {
-      chatInputElement.removeEventListener('input', handleInput);
+      chatInputElement?.removeEventListener('input', handleInput);
     };
   }, [getChatInputPartialEmote, chatInputElement]);
 
