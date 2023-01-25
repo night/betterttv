@@ -118,7 +118,13 @@ export default function Sidebar({section, onClick, categories}) {
     <div className={styles.sidebar}>
       <div className={styles.content} ref={containerRef} onScroll={handleScroll}>
         {createCategories(categories.top)}
-        <DragDropContext onDragEnd={({source, destination}) => handleReorder(source.index, destination.index)}>
+        <DragDropContext
+          onDragEnd={({source, destination}) => {
+            if (source == null || destination == null) {
+              return;
+            }
+            handleReorder(source.index, destination.index);
+          }}>
           <Droppable droppableId="droppable" type="list" direction="vertical">
             {(provided) => (
               <div {...provided.droppableProps} ref={provided.innerRef}>
