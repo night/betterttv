@@ -1,8 +1,8 @@
-import ReconnectingEventSource from 'reconnecting-eventsource';
+// import ReconnectingEventSource from 'reconnecting-eventsource';
 import watcher from '../../watcher.js';
 import settings from '../../settings.js';
 import AbstractEmotes from '../emotes/abstract-emotes.js';
-import {createEmote, isUnlisted} from './utils.js';
+import {createEmote} from './utils.js';
 import {EmoteCategories, EmoteProviders, EmoteTypeFlags, SettingIds} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
 import formatMessage from '../../i18n/index.js';
@@ -62,27 +62,20 @@ class SevenTVGlobalEmotes extends AbstractEmotes {
       })
       .then(() => watcher.emit('emotes.updated'));
 
-    // TODO figure this out.
     /*
+    TODO: I was unable to get anything out of this but maybe someone else is able to.
     eventSource = new ReconnectingEventSource(
-      `https://events.7tv.app/v1/emote-sets/62cdd34e72a832540de95857`
-    );
-    eventSource.addEventListener('update', (event) => this.handleEventSourceUpdate(event));
+      `https://events.7tv.io/v3@emote_set.update<object_id=62cdd34e72a832540de95857>`
+    );  // https://github.com/SevenTV/EventAPI#inline-event-subscriptions-eventstream
+    eventSource.addEventListener('message', (event) => this.handleEventSourceUpdate(event));
+
 
     window.testUpdate = (event) => this.handleEventSourceUpdate(event);
   }
 
   handleEventSourceUpdate(event) {
-    const {channel: channelName, emote_id: id, name: code, action, emote} = JSON.parse(event.data);
-
-    const currentChannel = getCurrentChannel();
-    if (!currentChannel) {
-      return;
-    }
-
-    if (channelName !== currentChannel.name) {
-      return;
-    }
+    console.log("fired.");
+    const {emote_id: id, name: code, action, emote} = JSON.parse(event.data);
 
     let message;
     switch (action) {
@@ -94,7 +87,7 @@ class SevenTVGlobalEmotes extends AbstractEmotes {
         this.emotes.set(code, createEmote(id, code, emote.animated, emote.owner));
 
         message = formatMessage(
-          {defaultMessage: '7TV Emotes: {emoteCode} has been added to chat'},
+          {defaultMessage: '7TV Emotes: {emoteCode} has been added to the global Emotes'},
           {emoteCode: `${code} \u200B \u200B${code}\u200B`}
         );
         break;
@@ -123,7 +116,7 @@ class SevenTVGlobalEmotes extends AbstractEmotes {
         this.emotes.delete(existingEmote.code);
 
         message = formatMessage(
-          {defaultMessage: '7TV Emotes: {emoteCode} has been removed from chat'},
+          {defaultMessage: '7TV Emotes: {emoteCode} has been removed from the global Emotes'},
           {emoteCode: `\u200B${existingEmote.code}\u200B`}
         );
         break;
