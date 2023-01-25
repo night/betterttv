@@ -25,7 +25,7 @@ function findFocusedWord(value, selectionStart = 0) {
 
 function getChatInputPartialEmote() {
   const {anchorNode, anchorOffset} = document.getSelection();
-  if (anchorNode.nodeType !== Node.TEXT_NODE) {
+  if (anchorNode?.nodeType !== Node.TEXT_NODE) {
     return null;
   }
 
@@ -92,7 +92,7 @@ export default class EmoteAutocomplete {
   replaceChatInputPartialEmote(emote) {
     const {anchorNode, anchorOffset} = document.getSelection();
 
-    if (anchorNode.nodeType !== Node.TEXT_NODE) {
+    if (anchorNode?.nodeType !== Node.TEXT_NODE) {
       return;
     }
 
