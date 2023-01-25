@@ -92,6 +92,6 @@ export default class SettingsModule {
 
   openSettings(e) {
     e.preventDefault();
-    handleOpen(true);
+    handleOpen?.(true);
   }
 }

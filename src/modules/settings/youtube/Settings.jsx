@@ -86,7 +86,7 @@ export default class SettingsModule {
       mountedChatDropdownButtonRoot.render(
         <DropdownButton
           onClick={() => {
-            handleOpen(true);
+            handleOpen?.(true);
 
             // close the dropdown menu when the modal is opened
             const menuButton = document.querySelector(CHAT_SETTINGS_MENU_BUTTON_SELECTOR);
