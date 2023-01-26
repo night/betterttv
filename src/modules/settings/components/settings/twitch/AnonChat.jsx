@@ -30,7 +30,7 @@ function AnonChat() {
           value={channels}
           className={styles.settingTagInput}
           onChange={(newValue) => setChannels(newValue)}
-          placeholder="username, etc.."
+          placeholder={formatMessage({defaultMessage: 'username, etc..'})}
         />
       </div>
     </Panel>
