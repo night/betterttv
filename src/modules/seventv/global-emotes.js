@@ -13,7 +13,7 @@ import formatMessage from '../../i18n/index.js';
 // TODO emotes category
 
 const category = {
-  id: EmoteCategories.SEVENTV_CHANNEL,
+  id: EmoteCategories.SEVENTV_GLOBAL,
   provider: EmoteProviders.SEVENTV,
   displayName: formatMessage({defaultMessage: '7TV Global Emotes'}),
 };
