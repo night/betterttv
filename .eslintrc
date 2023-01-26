@@ -17,10 +17,7 @@
   "plugins": ["prettier"],
   "rules": {
     "prettier/prettier": [
-      "error",
-      {
-        "endOfLine": "auto"
-      }
+      "error"
     ],
     "import/extensions": ["error", "ignorePackages"],
     "react/prop-types": "off",
