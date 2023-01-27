@@ -6,9 +6,6 @@ import {EmoteCategories, EmoteProviders, EmoteTypeFlags, SettingIds} from '../..
 import {hasFlag} from '../../utils/flags.js';
 import formatMessage from '../../i18n/index.js';
 
-// 7TV global emotes can be found here: https://7tv.app/emote-sets/62cdd34e72a832540de95857
-// they seem to be clean.
-
 const category = {
   id: EmoteCategories.SEVENTV_GLOBAL,
   provider: EmoteProviders.SEVENTV,
