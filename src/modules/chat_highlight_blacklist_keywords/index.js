@@ -376,7 +376,7 @@ class ChatHighlightBlacklistKeywordsModule {
   }
 
   markBlacklisted(message) {
-    message.style.display = 'none';
+    message.style.setProperty('display', 'none', 'important');
   }
 
   loadPinnedHighlights() {
