@@ -12,13 +12,10 @@ const category = {
   displayName: formatMessage({defaultMessage: '7TV Global Emotes'}),
 };
 
-let eventSource;
-
 class SevenTVGlobalEmotes extends AbstractEmotes {
   constructor() {
     super();
 
-    watcher.on('channel.updated', () => this.updateGlobalEmotes());
     settings.on(`changed.${SettingIds.EMOTES}`, () => this.updateGlobalEmotes());
   }
 
@@ -27,11 +24,6 @@ class SevenTVGlobalEmotes extends AbstractEmotes {
   }
 
   updateGlobalEmotes() {
-    if (eventSource != null) {
-      try {
-        eventSource.close();
-      } catch (_) {}
-    }
 
     this.emotes.clear();
 
