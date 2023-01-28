@@ -64,10 +64,10 @@ class SevenTVChannelEmotes extends AbstractEmotes {
         }
       })
       .then(() => watcher.emit('emotes.updated'));
+
     eventSource = new ReconnectingEventSource(
       `https://events.7tv.app/v1/channel-emotes?channel=${encodeURIComponent(currentChannel.name)}`
     );
-
     eventSource.addEventListener('update', (event) => this.handleEventSourceUpdate(event));
 
     window.testUpdate = (event) => this.handleEventSourceUpdate(event);
