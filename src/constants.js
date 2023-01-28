@@ -154,8 +154,8 @@ export const EmoteCategories = {
   TWITCH_CHANNEL: (channelId) => `twitch-${channelId}`,
   YOUTUBE_GLOBAL: 'youtube-global',
   YOUTUBE_CHANNEL: (channelId) => `youtube-${channelId}`,
-  SEVENTV_CHANNEL: 'seventv-channel',
   SEVENTV_GLOBAL: 'seventv-global',
+  SEVENTV_CHANNEL: 'seventv-channel',
 };
 
 export const DEFAULT_FREQUENT_EMOTES = {
