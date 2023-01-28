@@ -1,4 +1,4 @@
-# <img src="src/logos/assets/logo.svg" height="40" style="margin-bottom: -1px;"> BetterTTV
+# <img src="src/logos/assets/logos/logo.svg" height="40" style="margin-bottom: -1px;"> BetterTTV
 
 [![Build Status](https://github.com/night/betterttv/actions/workflows/ci.yml/badge.svg)](https://github.com/night/betterttv/actions/workflows/ci.yml) [![Discord](https://img.shields.io/discord/229471495087194112?color=5865F2&label=discord)](https://discord.gg/nightdev) [![Crowdin](https://badges.crowdin.net/betterttv/localized.svg)](https://crowdin.com/project/betterttv)
 
