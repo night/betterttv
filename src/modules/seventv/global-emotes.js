@@ -17,6 +17,8 @@ class SevenTVGlobalEmotes extends AbstractEmotes {
     super();
 
     settings.on(`changed.${SettingIds.EMOTES}`, () => this.updateGlobalEmotes());
+
+    this.updateGlobalEmotes();
   }
 
   get category() {
@@ -24,7 +26,6 @@ class SevenTVGlobalEmotes extends AbstractEmotes {
   }
 
   updateGlobalEmotes() {
-
     this.emotes.clear();
 
     if (!hasFlag(settings.get(SettingIds.EMOTES), EmoteTypeFlags.SEVENTV_EMOTES)) return;

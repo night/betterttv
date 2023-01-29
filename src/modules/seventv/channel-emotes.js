@@ -46,7 +46,8 @@ class SevenTVChannelEmotes extends AbstractEmotes {
       `https://7tv.io/v3/users/${encodeURIComponent(currentChannel.provider)}/${encodeURIComponent(currentChannel.id)}`
     )
       .then((response) => response.json())
-      .then(({emote_set: {emotes}}) => {
+      .then(({emote_set: emoteSet}) => {
+        const {emotes} = emoteSet ?? {};
         if (emotes == null) {
           return;
         }
