@@ -200,6 +200,13 @@ class EmoteMenuViewStore extends SafeEventEmitter {
         Icons.IMAGE(cdn.url('/assets/logos/7tv_logo.png'), '7TV', currentChannelProfilePicture),
         emotes.getEmotesByCategories([EmoteCategories.SEVENTV_CHANNEL])
       ),
+      createCategory(
+        EmoteCategories.SEVENTV_GLOBAL,
+        EmoteProviders.SEVENTV,
+        formatMessage({defaultMessage: '7TV Global'}),
+        Icons.IMAGE(cdn.url('/assets/logos/7tv_logo.png'), '7TV'),
+        emotes.getEmotesByCategories([EmoteCategories.SEVENTV_GLOBAL])
+      ),
     ];
 
     for (const [registeredCategoryId, registeredCategory] of Object.entries(registeredProviderCategories)) {

@@ -75,6 +75,7 @@ function injectEmoteSets() {
     EmoteCategories.FRANKERFACEZ_CHANNEL,
     EmoteCategories.FRANKERFACEZ_GLOBAL,
     EmoteCategories.SEVENTV_CHANNEL,
+    EmoteCategories.SEVENTV_GLOBAL,
   ]);
 
   const emoteSet = createTwitchEmoteSet(allEmotes);

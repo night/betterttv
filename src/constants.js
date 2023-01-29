@@ -154,6 +154,7 @@ export const EmoteCategories = {
   TWITCH_CHANNEL: (channelId) => `twitch-${channelId}`,
   YOUTUBE_GLOBAL: 'youtube-global',
   YOUTUBE_CHANNEL: (channelId) => `youtube-${channelId}`,
+  SEVENTV_GLOBAL: 'seventv-global',
   SEVENTV_CHANNEL: 'seventv-channel',
 };
 

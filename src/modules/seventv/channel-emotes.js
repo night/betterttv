@@ -2,7 +2,7 @@ import ReconnectingEventSource from 'reconnecting-eventsource';
 import watcher from '../../watcher.js';
 import settings from '../../settings.js';
 import AbstractEmotes from '../emotes/abstract-emotes.js';
-import Emote from '../emotes/emote.js';
+import {createEmote, isUnlisted} from './utils.js';
 import {EmoteCategories, EmoteProviders, EmoteTypeFlags, SettingIds} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
 import {getCurrentChannel} from '../../utils/channel.js';
@@ -13,36 +13,6 @@ const category = {
   provider: EmoteProviders.SEVENTV,
   displayName: formatMessage({defaultMessage: '7TV Channel Emotes'}),
 };
-
-function emoteUrl(id, version, static_ = false) {
-  return `https://cdn.7tv.app/emote/${encodeURIComponent(id)}/${version}${static_ ? '_static' : ''}.webp`;
-}
-
-function createEmote(id, code, animated, owner) {
-  return new Emote({
-    id,
-    category,
-    channel: {
-      id: owner.id,
-      name: owner.username ?? owner.login,
-      displayName: owner.display_name,
-    },
-    code,
-    animated,
-    images: {
-      '1x': emoteUrl(id, '1x'),
-      '2x': emoteUrl(id, '2x'),
-      '4x': emoteUrl(id, '4x'),
-      '1x_static': animated ? emoteUrl(id, '1x', true) : undefined,
-      '2x_static': animated ? emoteUrl(id, '2x', true) : undefined,
-      '4x_static': animated ? emoteUrl(id, '4x', true) : undefined,
-    },
-  });
-}
-
-function isUnlisted(visibility) {
-  return hasFlag(visibility, 1 << 2) || hasFlag(visibility, 1 << 8);
-}
 
 let eventSource;
 
@@ -76,7 +46,8 @@ class SevenTVChannelEmotes extends AbstractEmotes {
       `https://7tv.io/v3/users/${encodeURIComponent(currentChannel.provider)}/${encodeURIComponent(currentChannel.id)}`
     )
       .then((response) => response.json())
-      .then(({emote_set: {emotes}}) => {
+      .then(({emote_set: emoteSet}) => {
+        const {emotes} = emoteSet ?? {};
         if (emotes == null) {
           return;
         }
@@ -90,7 +61,7 @@ class SevenTVChannelEmotes extends AbstractEmotes {
             continue;
           }
 
-          this.emotes.set(code, createEmote(id, code, animated, owner));
+          this.emotes.set(code, createEmote(id, code, animated, owner, category));
         }
       })
       .then(() => watcher.emit('emotes.updated'));
@@ -122,7 +93,7 @@ class SevenTVChannelEmotes extends AbstractEmotes {
           return;
         }
 
-        this.emotes.set(code, createEmote(id, code, emote.animated, emote.owner));
+        this.emotes.set(code, createEmote(id, code, emote.animated, emote.owner, category));
 
         message = formatMessage(
           {defaultMessage: '7TV Emotes: {emoteCode} has been added to chat'},
@@ -142,7 +113,7 @@ class SevenTVChannelEmotes extends AbstractEmotes {
           return;
         }
 
-        this.emotes.set(code, createEmote(id, code, emote.animated, emote.owner));
+        this.emotes.set(code, createEmote(id, code, emote.animated, emote.owner, category));
         break;
       }
       case 'REMOVE': {
