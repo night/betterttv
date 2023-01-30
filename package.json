@@ -55,7 +55,7 @@
     "eslint-plugin-react": "7.32.1",
     "file-saver": "2.0.5",
     "filemanager-webpack-plugin": "8.0.0",
-    "framer-motion": "^8.5.2",
+    "framer-motion": "^8.5.4",
     "fuse.js": "6.6.2",
     "git-rev-sync": "3.0.2",
     "glob": "8.1.0",
