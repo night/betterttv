@@ -36,7 +36,7 @@
     "@sentry/webpack-plugin": "1.20.0",
     "autoprefixer": "10.4.13",
     "babel-loader": "9.1.2",
-    "babel-plugin-formatjs": "^10.3.35",
+    "babel-plugin-formatjs": "^10.3.36",
     "babel-plugin-wildcard": "7.0.0",
     "classnames": "2.3.2",
     "clean-webpack-plugin": "4.0.0",
