@@ -5,6 +5,7 @@ import {Settings} from 'luxon';
 const DEFAULT_LOCALE = 'en';
 const SUPPORTED_LOCALES = [
   DEFAULT_LOCALE,
+  'cs-CZ',
   'de-DE',
   'es-ES',
   'fr-FR',
