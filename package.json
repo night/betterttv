@@ -28,7 +28,7 @@
     "@formatjs/intl": "^2.6.5",
     "@fortawesome/fontawesome-svg-core": "6.3.0",
     "@fortawesome/free-brands-svg-icons": "6.2.1",
-    "@fortawesome/free-solid-svg-icons": "6.2.1",
+    "@fortawesome/free-solid-svg-icons": "6.3.0",
     "@fortawesome/react-fontawesome": "0.2.0",
     "@rsuite/icons": "1.0.2",
     "@sentry/browser": "7.36.0",
