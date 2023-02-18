@@ -40,13 +40,14 @@ class SevenTVGlobalEmotes extends AbstractEmotes {
         for (const {
           id,
           name: code,
+          flags,
           data: {listed, animated, owner},
         } of globalEmotes) {
           if (!listed) {
             continue;
           }
 
-          this.emotes.set(code, createEmote(id, code, animated, owner, category));
+          this.emotes.set(code, createEmote(id, code, animated, owner, category, flags));
         }
       })
       .then(() => watcher.emit('emotes.updated'));

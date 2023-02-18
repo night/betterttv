@@ -5,7 +5,7 @@ function emoteUrl(id, version, static_ = false) {
   return `https://cdn.7tv.app/emote/${encodeURIComponent(id)}/${version}${static_ ? '_static' : ''}.webp`;
 }
 
-export function createEmote(id, code, animated, owner, category) {
+export function createEmote(id, code, animated, owner, category, flags) {
   return new Emote({
     id,
     category,
@@ -23,6 +23,9 @@ export function createEmote(id, code, animated, owner, category) {
       '1x_static': animated ? emoteUrl(id, '1x', true) : undefined,
       '2x_static': animated ? emoteUrl(id, '2x', true) : undefined,
       '4x_static': animated ? emoteUrl(id, '4x', true) : undefined,
+    },
+    metadata: {
+      isOverlay: hasFlag(flags, 1 << 0),
     },
   });
 }

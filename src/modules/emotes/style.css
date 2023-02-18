@@ -98,6 +98,12 @@ img.emoji.yt-live-chat-text-message-renderer + .bttv-global-emo-5e76d399d6581c37
   margin: -0.5rem 0;
 }
 
+div[data-test-selector='emote-button'] + span[data-a-target='chat-message-text'] span .bttv-emote-overlay,
+div.bttv-emote + .bttv-emote-overlay,
+img.emoji.yt-live-chat-text-message-renderer + .bttv-emote-overlay {
+  margin-left: -32px;
+}
+
 .bttv-emote.seventv-channel img {
   max-height: 28px;
   width: auto;

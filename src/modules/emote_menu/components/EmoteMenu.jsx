@@ -35,7 +35,7 @@ export default function EmoteMenu({toggleWhisper, appendToChat, onSetTip}) {
         return;
       }
 
-      if (emote.metadata && emote.metadata.isLocked()) {
+      if (emote?.metadata?.isLocked != null && emote.metadata.isLocked()) {
         return;
       }
 
