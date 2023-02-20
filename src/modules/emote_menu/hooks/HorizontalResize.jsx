@@ -15,7 +15,10 @@ export default function useHorizontalResize(initialWidth, boundingQuerySelector,
         return;
       }
       const {width: textAreaWidth} = textArea.getBoundingClientRect();
-      if (width > textAreaWidth) {
+      if (textAreaWidth < minWidth) {
+        return;
+      }
+      if (width - 1 > textAreaWidth) {
         setWidth(textAreaWidth);
       }
     }
@@ -30,6 +33,8 @@ export default function useHorizontalResize(initialWidth, boundingQuerySelector,
       }
       setIsResizing(false);
     }
+
+    handleWindowResize();
 
     ref.current.addEventListener('mousedown', handleResizeStart);
     document.addEventListener('mouseup', handleResizeEnd);
