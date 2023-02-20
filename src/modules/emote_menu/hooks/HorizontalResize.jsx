@@ -15,10 +15,7 @@ export default function useHorizontalResize(initialWidth, boundingQuerySelector,
         return;
       }
       const {width: textAreaWidth} = textArea.getBoundingClientRect();
-      if (textAreaWidth < minWidth) {
-        return;
-      }
-      if (width - 1 > textAreaWidth) {
+      if (width > window.innerWidth) {
         setWidth(textAreaWidth);
       }
     }
@@ -62,7 +59,7 @@ export default function useHorizontalResize(initialWidth, boundingQuerySelector,
       const {right, width: textAreaWidth} = textArea.getBoundingClientRect();
       const newWidth = right - e.clientX;
       setWidth(() => {
-        if (newWidth > textAreaWidth) {
+        if (newWidth > window.innerWidth) {
           return textAreaWidth;
         }
         if (newWidth < minWidth) {
