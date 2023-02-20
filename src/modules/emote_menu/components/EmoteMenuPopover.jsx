@@ -6,7 +6,7 @@ import EmoteMenu from './EmoteMenu.jsx';
 import styles from './EmoteMenuPopover.module.css';
 import ThemeProvider from '../../../common/components/ThemeProvider.jsx';
 import useAutoPositionPopover from '../hooks/AutoRepositionPopover.jsx';
-import useHorizontalResize from '../hooks/ResizeBorder.jsx';
+import useHorizontalResize from '../hooks/HorizontalResize.jsx';
 import useStorageState from '../../../common/hooks/StorageState.jsx';
 import {SettingIds} from '../../../constants.js';
 
