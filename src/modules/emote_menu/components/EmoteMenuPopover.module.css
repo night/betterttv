@@ -8,6 +8,10 @@
   div[class$='-popover-arrow'] {
     display: none !important;
   }
+
+  div[class$='-popover-content'] {
+    display: flex;
+  }
 }
 
 .withTip {
@@ -18,4 +22,16 @@
   .popover {
     width: 320px;
   }
+}
+
+.resizeHandle {
+  position: absolute;
+  width: 2px;
+  height: 402px;
+  cursor: col-resize;
+  z-index: 2;
+}
+
+.emoteMenu {
+  flex: 1;
 }
