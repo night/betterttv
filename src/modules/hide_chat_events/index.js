@@ -21,7 +21,7 @@ class HideChatEventsModule {
         break;
       case twitch.TMIActionTypes.SUBSCRIPTION:
       case twitch.TMIActionTypes.RESUBSCRIPTION:
-      case twitch.TMIActionTypes.SUBGIFT:
+      case twitch.TMIActionTypes.SUB_GIFT:
         if (!hasFlag(settings.get(SettingIds.CHAT), ChatFlags.SUB_NOTICE)) {
           preventDefault();
         }
