@@ -18,7 +18,7 @@ const PATCHED_SENTINEL = Symbol('patched symbol');
 
 function serializeEmoteId(emote) {
   const data = `${emote.category.provider}-${emote.id}-${emote.code}`;
-  return `${EMOTE_ID_BETTERTTV_PREFIX}${encodeURIComponent(btoa(data))}`;
+  return `${EMOTE_ID_BETTERTTV_PREFIX}${btoa(encodeURIComponent(data))}`;
 }
 
 function deserializeEmoteFromURL(url) {
@@ -27,7 +27,7 @@ function deserializeEmoteFromURL(url) {
     return null;
   }
   try {
-    const [emoteProvider, emoteId, emoteCode] = atob(decodeURIComponent(emoteData)).split('-');
+    const [emoteProvider, emoteId, emoteCode] = decodeURIComponent(atob(emoteData)).split('-');
     return {
       provider: emoteProvider,
       id: emoteId,
