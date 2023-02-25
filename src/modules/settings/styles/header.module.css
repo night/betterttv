@@ -95,3 +95,11 @@
 .panelWithOverflow {
   overflow: visible;
 }
+
+.codeBlock {
+  background-color: var(--bttv-rs-sidenav-default-bg);
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-family: monospace;
+  white-space: nowrap;
+}
