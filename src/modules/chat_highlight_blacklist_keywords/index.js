@@ -15,7 +15,7 @@ const CHAT_LIST_SELECTOR =
   '.chat-list .chat-scrollable-area__message-container,.chat-list--default .chat-scrollable-area__message-container,.chat-list--other .chat-scrollable-area__message-container,.video-chat div[data-test-selector="video-chat-message-list-wrapper"]';
 const CHAT_BADGE_SELECTOR = '.chat-badge';
 const VOD_CHAT_FROM_SELECTOR = '.video-chat__message-author';
-const VOD_CHAT_MESSAGE_SELECTOR = 'div[data-test-selector="comment-message-selector"]';
+const VOD_CHAT_MESSAGE_SELECTOR = '.video-chat__message';
 const VOD_CHAT_MESSAGE_EMOTE_SELECTOR = '.chat-line__message--emote';
 const PINNED_HIGHLIGHT_ID = 'bttv-pinned-highlight';
 const PINNED_CONTAINER_ID = 'bttv-pin-container';
