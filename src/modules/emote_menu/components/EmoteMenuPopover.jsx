@@ -26,10 +26,13 @@ const EmoteMenuPopover = React.forwardRef(
     }
 
     const width = useHorizontalResize(emoteMenuWidth, boundingQuerySelector, 300, handleRef);
-    useAutoPositionPopover(localRef, boundingQuerySelector, style, hasTip, width);
+    const reposition = useAutoPositionPopover(localRef, boundingQuerySelector, style, hasTip);
 
     React.useEffect(() => {
-      setEmoteMenuWidth(width);
+      requestAnimationFrame(() => {
+        setEmoteMenuWidth(width);
+        reposition();
+      });
     }, [width]);
 
     return (

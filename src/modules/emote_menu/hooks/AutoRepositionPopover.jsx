@@ -4,13 +4,16 @@ import repositionPopover from '../../../utils/popover.js';
 
 const TOP_PADDING = 2;
 
-export default function useAutoPositionPopover(localRef, boundingQuerySelector, style, hasTip, width) {
+export default function useAutoPositionPopover(localRef, boundingQuerySelector, style, hasTip) {
   function reposition() {
     repositionPopover(localRef, boundingQuerySelector, TOP_PADDING);
   }
 
   useEffect(() => {
     reposition();
-  }, [localRef, style, hasTip, width]);
+  }, [localRef, style, hasTip]);
+
   useResize(reposition);
+
+  return reposition;
 }
