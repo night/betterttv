@@ -211,8 +211,8 @@ export const SettingDefaultValues = {
   [SettingIds.EMOTES]: [
     EmoteTypeFlags.BTTV_EMOTES |
       EmoteTypeFlags.ANIMATED_EMOTES |
-      EmoteTypeFlags.EMOTE_MODIFIERS |
-      EmoteTypeFlags.FFZ_EMOTES,
+      EmoteTypeFlags.FFZ_EMOTES |
+      EmoteTypeFlags.EMOTE_MODIFIERS,
     0,
   ],
   [SettingIds.CHAT]: [
