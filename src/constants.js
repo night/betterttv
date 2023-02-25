@@ -38,6 +38,7 @@ export const SettingIds = {
   AUTO_PLAY: 'autoPlay',
   USERNAMES: 'usernames',
   AUTO_LIVE_CHAT_VIEW: 'autoLiveChatView',
+  EMOTE_MODIFIERS: 'emoteModifiers',
 };
 
 export const CategoryTypes = {
@@ -229,6 +230,7 @@ export const SettingDefaultValues = {
   [SettingIds.CHANNEL_POINTS]: [ChannelPointsFlags.CHANNEL_POINTS | ChannelPointsFlags.MESSAGE_HIGHLIGHTS, 0],
   [SettingIds.AUTO_CLAIM]: [0, 0],
   [SettingIds.LIVE_CHAT_VIEW]: false,
+  [SettingIds.EMOTE_MODIFIERS]: true,
 };
 
 export const FlagSettings = [
