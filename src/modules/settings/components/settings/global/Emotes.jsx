@@ -79,6 +79,12 @@ function EmotesModule() {
               })}
             </p>
           </Checkbox>
+          <Checkbox key="emoteModifiers" value={EmoteTypeFlags.EMOTE_MODIFIERS}>
+            <p className={styles.heading}>{formatMessage({defaultMessage: 'Emote Modifiers'})}</p>
+            <p className={styles.settingDescription}>
+              {formatMessage({defaultMessage: 'Emote modifiers customize the appearance of emotes in chat.'})}
+            </p>
+          </Checkbox>
           <Checkbox key="bttvEmotes" value={EmoteTypeFlags.BTTV_EMOTES}>
             <p className={styles.heading}>{formatMessage({defaultMessage: 'BetterTTV Emotes'})}</p>
             <p className={styles.settingDescription}>

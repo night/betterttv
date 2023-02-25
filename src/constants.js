@@ -38,7 +38,6 @@ export const SettingIds = {
   AUTO_PLAY: 'autoPlay',
   USERNAMES: 'usernames',
   AUTO_LIVE_CHAT_VIEW: 'autoLiveChatView',
-  EMOTE_MODIFIERS: 'emoteModifiers',
 };
 
 export const CategoryTypes = {
@@ -73,6 +72,7 @@ export const EmoteTypeFlags = {
   FFZ_EMOTES: 1 << 2,
   ANIMATED_PERSONAL_EMOTES: 1 << 3,
   SEVENTV_EMOTES: 1 << 4,
+  EMOTE_MODIFIERS: 1 << 5,
 };
 
 export const ChatFlags = {
@@ -208,7 +208,13 @@ export const SettingDefaultValues = {
   [SettingIds.BLACKLIST_KEYWORDS]: {},
   [SettingIds.HIGHLIGHT_KEYWORDS]: null,
   [SettingIds.SIDEBAR]: [SidebarFlags.OFFLINE_FOLLOWED_CHANNELS | SidebarFlags.FEATURED_CHANNELS, 0],
-  [SettingIds.EMOTES]: [EmoteTypeFlags.BTTV_EMOTES | EmoteTypeFlags.ANIMATED_EMOTES | EmoteTypeFlags.FFZ_EMOTES, 0],
+  [SettingIds.EMOTES]: [
+    EmoteTypeFlags.BTTV_EMOTES |
+      EmoteTypeFlags.ANIMATED_EMOTES |
+      EmoteTypeFlags.EMOTE_MODIFIERS |
+      EmoteTypeFlags.FFZ_EMOTES,
+    0,
+  ],
   [SettingIds.CHAT]: [
     ChatFlags.BITS |
       ChatFlags.CHAT_CLIPS |
@@ -230,7 +236,6 @@ export const SettingDefaultValues = {
   [SettingIds.CHANNEL_POINTS]: [ChannelPointsFlags.CHANNEL_POINTS | ChannelPointsFlags.MESSAGE_HIGHLIGHTS, 0],
   [SettingIds.AUTO_CLAIM]: [0, 0],
   [SettingIds.LIVE_CHAT_VIEW]: false,
-  [SettingIds.EMOTE_MODIFIERS]: true,
 };
 
 export const FlagSettings = [

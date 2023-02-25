@@ -1,4 +1,5 @@
 export function hasFlag(flags, flag) {
+  console.log(flags, flag);
   if (!Number.isSafeInteger(flags)) {
     throw new Error('invalid flags');
   }
