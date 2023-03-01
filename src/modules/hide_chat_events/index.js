@@ -14,14 +14,14 @@ class HideChatEventsModule {
 
   handleMessage({message, preventDefault}) {
     switch (message.type) {
-      case twitch.TMIActionTypes.RITUAL:
+      case twitch.getTMIActionTypes()?.FIRST_MESSAGE_HIGHLIGHT:
         if (!hasFlag(settings.get(SettingIds.CHAT), ChatFlags.VIEWER_GREETING)) {
           preventDefault();
         }
         break;
-      case twitch.TMIActionTypes.SUBSCRIPTION:
-      case twitch.TMIActionTypes.RESUBSCRIPTION:
-      case twitch.TMIActionTypes.SUBGIFT:
+      case twitch.getTMIActionTypes()?.SUBSCRIPTION:
+      case twitch.getTMIActionTypes()?.RESUBSCRIPTION:
+      case twitch.getTMIActionTypes()?.SUBGIFT:
         if (!hasFlag(settings.get(SettingIds.CHAT), ChatFlags.SUB_NOTICE)) {
           preventDefault();
         }

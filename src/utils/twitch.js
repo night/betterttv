@@ -25,53 +25,8 @@ const USER_PROFILE_IMAGE_GQL_QUERY = gql`
   }
 `;
 
-const TMIActionTypes = {
-  MESSAGE: 0,
-  EXTENSION_MESSAGE: 1,
-  MODERATION: 2,
-  MODERATION_ACTION: 3,
-  TARGETED_MODERATION_ACTION: 4,
-  AUTO_MOD: 5,
-  SUBSCRIBER_ONLY_MODE: 6,
-  FOLLOWERS_ONLY_MODE: 7,
-  SLOW_MODE: 8,
-  EMOTE_ONLY_MODE: 9,
-  R9K_MODE: 10,
-  CONNECTED: 11,
-  DISCONNECTED: 12,
-  RECONNECT: 13,
-  HOSTING: 14,
-  UNHOST: 15,
-  HOSTED: 16,
-  SUBSCRIPTION: 17,
-  RESUBSCRIPTION: 18,
-  GIFT_PAID_UPGRADE: 19,
-  ANON_GIFT_PAID_UPGRADE: 20,
-  PRIME_PAID_UPGRADE: 21,
-  PRIME_COMMUNITY_GIFT_RECEIVED_EVENT: 22,
-  EXTEND_SUBSCRIPTION: 23,
-  SUB_GIFT: 24,
-  ANON_SUB_GIFT: 25,
-  CLEAR_CHAT: 26,
-  ROOM_MODS: 27,
-  ROOM_STATE: 28,
-  RAID: 29,
-  UNRAID: 30,
-  RITUAL: 31,
-  NOTICE: 32,
-  INFO: 33,
-  BADGES_UPDATED: 34,
-  PURCHASE: 35,
-  BITS_CHARITY: 36,
-  CRATE_GIFT: 37,
-  REWARD_GIFT: 38,
-  SUB_MYSTERY_GIFT: 39,
-  ANON_SUB_MYSTERY_GIFT: 40,
-  FIRST_CHEER_MESSAGE: 41,
-  BITS_BADGE_TIER_MESSAGE: 42,
-  INLINE_PRIVATE_CALLOUT: 43,
-  CHANNEL_POINTS_AWARD: 44,
-};
+let TMIActionTypes;
+let twitchWebpackRequire;
 
 export function getReactInstance(element) {
   for (const key in element) {
@@ -231,7 +186,77 @@ export default {
     return rv;
   },
 
-  TMIActionTypes,
+  getTMIActionTypes() {
+    if (TMIActionTypes !== undefined) {
+      return TMIActionTypes;
+    }
+
+    if (twitchWebpackRequire == null) {
+      window.webpackChunktwitch_twilight?.push([
+        ['betterttv'],
+        {
+          betterttv: (_, __, require) => {
+            twitchWebpackRequire = require;
+          },
+        },
+        // eslint-disable-next-line import/no-unresolved
+        (require) => require('betterttv'),
+      ]);
+    }
+
+    if (twitchWebpackRequire == null) {
+      TMIActionTypes = null;
+      return null;
+    }
+
+    let selectedModuleId;
+    for (const chunk of window.webpackChunktwitch_twilight) {
+      if (!Array.isArray(chunk)) {
+        continue;
+      }
+
+      const chunkModules = chunk[1];
+      for (const moduleId of Object.keys(chunkModules)) {
+        const module = chunkModules[moduleId];
+        const moduleDeclaration = module.toString();
+        if (!moduleDeclaration.includes(']="Message",') || !moduleDeclaration.includes(']="RoomMods",')) {
+          continue;
+        }
+        selectedModuleId = moduleId;
+        break;
+      }
+
+      if (selectedModuleId != null) {
+        break;
+      }
+    }
+
+    if (selectedModuleId == null) {
+      TMIActionTypes = null;
+      return null;
+    }
+
+    const twitchTMIActionTypes = Object.values(twitchWebpackRequire(selectedModuleId)).find(
+      (item) => item.Message != null && item.RoomMods != null
+    );
+
+    if (twitchTMIActionTypes == null) {
+      TMIActionTypes = null;
+      return null;
+    }
+
+    TMIActionTypes = {
+      CLEAR_CHAT: twitchTMIActionTypes.Clear,
+      MODERATION: twitchTMIActionTypes.Moderation,
+      FIRST_MESSAGE_HIGHLIGHT: twitchTMIActionTypes.FirstMessageHighlight,
+      NOTICE: twitchTMIActionTypes.Notice,
+      SUBSCRIPTION: twitchTMIActionTypes.Subscription,
+      RESUBSCRIPTION: twitchTMIActionTypes.Resubscription,
+      SUBGIFT: twitchTMIActionTypes.SubGift,
+    };
+
+    return TMIActionTypes;
+  },
 
   getReactInstance,
 
@@ -427,10 +452,13 @@ export default {
     const chatController = this.getChatController();
     if (!chatController) return;
 
+    const noticeType = this.getTMIActionTypes()?.NOTICE;
+    if (noticeType == null) return;
+
     const id = Date.now();
 
     chatController.pushMessage({
-      type: TMIActionTypes.NOTICE,
+      type: noticeType,
       id,
       msgid: id,
       message: body,
