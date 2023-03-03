@@ -10,9 +10,9 @@ export function createEmote(id, code, animated, owner, category) {
     id,
     category,
     channel: {
-      id: owner.id,
-      name: owner.username ?? owner.login,
-      displayName: owner.display_name,
+      id: owner?.id ?? '0',
+      name: owner?.username ?? owner?.login ?? 'deleted_user',
+      displayName: owner?.display_name ?? 'Deleted User',
     },
     code,
     animated,
