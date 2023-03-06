@@ -69,7 +69,7 @@
     "lodash.sortby": "4.7.0",
     "lodash.throttle": "4.1.1",
     "lodash.uniqby": "4.7.0",
-    "luxon": "^3.2.1",
+    "luxon": "^3.3.0",
     "mini-css-extract-plugin": "2.7.2",
     "postcss": "8.4.21",
     "postcss-hexrgba": "2.1.0",
