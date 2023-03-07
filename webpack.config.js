@@ -105,7 +105,9 @@ export default async (env, argv) => {
     },
     entry: {
       betterttv: [
-        ...globSync('./src/modules/**/*.@(css|less)', {}).filter((filename) => !filename.endsWith('.module.css')),
+        ...globSync('./src/modules/**/*.@(css|less)', {dotRelative: true}).filter(
+          (filename) => !filename.endsWith('.module.css')
+        ),
         './src/index.js',
       ],
     },

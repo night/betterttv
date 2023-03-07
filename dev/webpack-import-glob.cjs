@@ -6,11 +6,12 @@ function replacer(match, quote, filename) {
   const resourceDir = path.dirname(this.resourcePath);
   return globSync(filename, {
     cwd: resourceDir,
+    dotRelative: true,
   })
     .map(
       (file) => `
         try {
-          await import(${quote + file + quote});
+          await import(${quote}${file}${quote});
         } catch (e) {
           debug.error('Failed to import ${file}', e.stack);
         }
