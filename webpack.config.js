@@ -7,7 +7,7 @@ import RemovePlugin from 'remove-files-webpack-plugin';
 import fs from 'fs/promises';
 import path from 'path';
 import {createRequire} from 'module';
-import globPkg from 'glob';
+import {globSync} from 'glob';
 import TerserPlugin from 'terser-webpack-plugin';
 import postcssUrl from 'postcss-url';
 // eslint-disable-next-line import/no-unresolved
@@ -18,7 +18,6 @@ import FileManagerPlugin from 'filemanager-webpack-plugin';
 
 const git = createRequire(import.meta.url)('git-rev-sync');
 const {EnvironmentPlugin, optimize} = webpack;
-const {glob} = globPkg;
 
 function convertEmojiToolkitCodePointToChar(codePoint) {
   if (codePoint.includes('-')) {
@@ -106,7 +105,9 @@ export default async (env, argv) => {
     },
     entry: {
       betterttv: [
-        ...glob.sync('./src/modules/**/*.@(css|less)').filter((filename) => !filename.endsWith('.module.css')),
+        ...globSync('./src/modules/**/*.@(css|less)', {dotRelative: true}).filter(
+          (filename) => !filename.endsWith('.module.css')
+        ),
         './src/index.js',
       ],
     },

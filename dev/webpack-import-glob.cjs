@@ -1,17 +1,17 @@
 const path = require('path');
-const {glob} = require('glob');
+const {hasMagic, globSync} = require('glob');
 
 function replacer(match, quote, filename) {
-  if (!glob.hasMagic(filename)) return match;
+  if (!hasMagic(filename)) return match;
   const resourceDir = path.dirname(this.resourcePath);
-  return glob
-    .sync(filename, {
-      cwd: resourceDir,
-    })
+  return globSync(filename, {
+    cwd: resourceDir,
+    dotRelative: true,
+  })
     .map(
       (file) => `
         try {
-          await import(${quote + file + quote});
+          await import(${quote}${file}${quote});
         } catch (e) {
           debug.error('Failed to import ${file}', e.stack);
         }
