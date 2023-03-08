@@ -89,7 +89,11 @@ function EmotesModule() {
                 },
                 {
                   // eslint-disable-next-line react/no-unstable-nested-components
-                  code: (string) => <span className={styles.codeBlock}>{string}</span>,
+                  code: (string) => (
+                    <span key={string} className={styles.codeBlock}>
+                      {string}
+                    </span>
+                  ),
                 }
               )}
             </p>
