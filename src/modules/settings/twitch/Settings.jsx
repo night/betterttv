@@ -43,7 +43,9 @@ export default class SettingsModule {
     if (document.querySelector('.bttvSettingsIconDropDown') != null) return;
 
     const settingsDropDown = document
-      .querySelector('a[data-a-target="settings-dropdown-link"],a[href="https://www.twitch.tv/settings/profile"]')
+      .querySelector(
+        'a[data-a-target="settings-dropdown-link"],a[href="https://www.twitch.tv/settings/profile"],button[data-a-target="language-dropdown-link"]'
+      )
       ?.closest('div');
     if (settingsDropDown == null) return;
 
