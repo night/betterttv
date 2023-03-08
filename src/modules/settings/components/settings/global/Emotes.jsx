@@ -79,6 +79,25 @@ function EmotesModule() {
               })}
             </p>
           </Checkbox>
+          <Checkbox key="emoteModifiers" value={EmoteTypeFlags.EMOTE_MODIFIERS}>
+            <p className={styles.heading}>{formatMessage({defaultMessage: 'Emote Modifiers'})}</p>
+            <p className={styles.settingDescription}>
+              {formatMessage(
+                {
+                  defaultMessage:
+                    'Emote modifiers allow you to transform emotes in realtime. Wide: <code>w! emoteName</code>, Horizontal Flip: <code>h! emoteName</code>, Vertical Flip: <code>v! emoteName</code>, Zero-Width: <code>z! emoteName</code>',
+                },
+                {
+                  // eslint-disable-next-line react/no-unstable-nested-components
+                  code: (string) => (
+                    <span key={string} className={styles.codeBlock}>
+                      {string}
+                    </span>
+                  ),
+                }
+              )}
+            </p>
+          </Checkbox>
           <Checkbox key="bttvEmotes" value={EmoteTypeFlags.BTTV_EMOTES}>
             <p className={styles.heading}>{formatMessage({defaultMessage: 'BetterTTV Emotes'})}</p>
             <p className={styles.settingDescription}>

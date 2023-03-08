@@ -263,6 +263,8 @@ class ChatModule {
       tokens = node.childNodes ?? [];
     }
 
+    const emoteModifiersEnabled = hasFlag(settings.get(SettingIds.EMOTES), EmoteTypeFlags.EMOTE_MODIFIERS);
+
     let cappedEmoteCount = 0;
     for (let i = 0; i < tokens.length; i++) {
       const node = tokens[i];
@@ -297,7 +299,7 @@ class ChatModule {
         if (emote) {
           let modifier;
           const previousPart = parts[j - 1] ?? '';
-          if (EMOTE_MODIFIERS_LIST.includes(previousPart)) {
+          if (emoteModifiersEnabled && EMOTE_MODIFIERS_LIST.includes(previousPart)) {
             parts[j - 1] = null;
             modifier = previousPart;
           }
