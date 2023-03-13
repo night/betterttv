@@ -91,7 +91,7 @@
     "twemoji": "14.0.2",
     "uuid": "^9.0.0",
     "virtual-module-webpack-plugin": "0.4.1",
-    "webpack": "5.75.0",
+    "webpack": "5.76.1",
     "webpack-cli": "5.0.1",
     "webpack-dev-server": "4.11.1",
     "webpack-virtual-modules": "0.5.0"
