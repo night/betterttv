@@ -1,5 +1,6 @@
 const path = require('path');
 const {hasMagic, globSync} = require('glob');
+const normalizePath = require('normalize-path');
 
 function replacer(match, quote, filename) {
   if (!hasMagic(filename)) return match;
@@ -11,7 +12,7 @@ function replacer(match, quote, filename) {
     .map(
       (file) => `
         try {
-          await import(${quote}${file}${quote});
+          await import(${quote}${normalizePath(file)}${quote});
         } catch (e) {
           debug.error('Failed to import ${file}', e.stack);
         }

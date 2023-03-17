@@ -15,6 +15,7 @@ import got from 'got';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 import SentryWebpackPlugin from '@sentry/webpack-plugin';
 import FileManagerPlugin from 'filemanager-webpack-plugin';
+import normalizePath from 'normalize-path';
 
 const git = createRequire(import.meta.url)('git-rev-sync');
 const {EnvironmentPlugin, optimize} = webpack;
@@ -105,9 +106,9 @@ export default async (env, argv) => {
     },
     entry: {
       betterttv: [
-        ...globSync('./src/modules/**/*.@(css|less)', {dotRelative: true}).filter(
-          (filename) => !filename.endsWith('.module.css')
-        ),
+        ...globSync('./src/modules/**/*.@(css|less)', {dotRelative: true})
+          .filter((filename) => !filename.endsWith('.module.css'))
+          .map((filename) => normalizePath(filename)),
         './src/index.js',
       ],
     },
