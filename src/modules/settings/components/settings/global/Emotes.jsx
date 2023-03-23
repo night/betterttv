@@ -119,6 +119,12 @@ function EmotesModule() {
               {formatMessage({defaultMessage: 'Enables emotes from the third party 7TV extension'})}
             </p>
           </Checkbox>
+          <Checkbox key="seventvUnlistedEmotes" value={EmoteTypeFlags.SEVENTV_HIDE_UNLISTED}>
+            <p className={styles.heading}>{formatMessage({defaultMessage: 'Hide unlisted 7TV Emotes'})}</p>
+            <p className={styles.settingDescription}>
+              {formatMessage({defaultMessage: 'Hides unlisted emotes from the third party 7TV extension'})}
+            </p>
+          </Checkbox>
         </CheckboxGroup>
       </div>
       <SafetyWarningModal open={safetyModalFlagValue > 0} onClose={(allow) => handleSafetyWarningClose(allow)} />
