@@ -48,7 +48,7 @@ export default class Emote {
     if (shouldRenderStatic) {
       container.classList.add('bttv-animated-static-emote');
     }
-    if (this?.metadata?.isOverlay === true) {
+    if (this.metadata?.isOverlay === true) {
       container.classList.add('bttv-emote-overlay');
     }
 

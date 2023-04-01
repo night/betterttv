@@ -55,8 +55,7 @@ class SevenTVChannelEmotes extends AbstractEmotes {
         for (const {
           id,
           name: code,
-          flags,
-          data: {listed, animated, owner},
+          data: {listed, animated, owner, flags},
         } of emotes) {
           if (!listed) {
             continue;

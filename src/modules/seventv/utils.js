@@ -25,7 +25,7 @@ export function createEmote(id, code, animated, owner, category, flags) {
       '4x_static': animated ? emoteUrl(id, '4x', true) : undefined,
     },
     metadata: {
-      isOverlay: hasFlag(flags, 1 << 0),
+      isOverlay: hasFlag(flags, 1 << 8),
     },
   });
 }
