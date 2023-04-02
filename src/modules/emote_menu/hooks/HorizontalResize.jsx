@@ -72,11 +72,11 @@ export default function useHorizontalResize({boundingQuerySelector, handleRef, r
       if (!isResizing) {
         return;
       }
-      const textArea = document.querySelector(boundingQuerySelector);
-      if (textArea == null) {
+      const boundingNode = document.querySelector(boundingQuerySelector);
+      if (boundingNode == null) {
         return;
       }
-      const {right} = textArea.getBoundingClientRect();
+      const {right} = boundingNode.getBoundingClientRect();
       const newWidth = right - e.clientX;
       setWidth(newWidth);
     }
