@@ -1,77 +1,89 @@
 import React from 'react';
+import useStorageState from '../../../common/hooks/StorageState.jsx';
+import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js';
+import {SettingIds} from '../../../constants.js';
 
-export default function useHorizontalResize(initialWidth, boundingQuerySelector, minWidth, ref) {
+const MIN_WIDTH = 316;
+
+export default function useHorizontalResize({boundingQuerySelector, handleRef, reposition}) {
+  const [emoteMenuWidth, setEmoteMenuWidth] = useStorageState(SettingIds.EMOTE_MENU_WIDTH); // desired width
+  const [displayWidth, setDisplayWidth] = React.useState(emoteMenuWidth); // actual width
   const [isResizing, setIsResizing] = React.useState(false);
-  const [width, setWidth] = React.useState(initialWidth);
 
   React.useEffect(() => {
-    if (ref.current == null) {
+    emoteMenuViewStore.updateTotalColumns(displayWidth);
+  }, []);
+
+  const setWidth = React.useCallback(
+    (width, windowResize = false) => {
+      let newWidth = width;
+      if (newWidth < MIN_WIDTH) {
+        newWidth = MIN_WIDTH;
+      }
+      const maxWidth = window.innerWidth - 20;
+      if (newWidth > maxWidth) {
+        newWidth = maxWidth;
+      }
+      if (!windowResize) {
+        setEmoteMenuWidth(newWidth);
+      }
+      setDisplayWidth(newWidth);
+      emoteMenuViewStore.updateTotalColumns(newWidth);
+      reposition();
+    },
+    [reposition]
+  );
+
+  React.useEffect(() => {
+    if (handleRef.current == null) {
       return undefined;
     }
 
     function handleWindowResize() {
-      const textArea = document.querySelector(boundingQuerySelector);
-      if (textArea == null) {
-        return;
-      }
-      const {width: textAreaWidth} = textArea.getBoundingClientRect();
-      if (width > window.innerWidth) {
-        setWidth(textAreaWidth);
-      }
+      setWidth(emoteMenuWidth, true);
     }
 
-    function handleResizeStart() {
+    function handleResizeStart(event) {
       setIsResizing(true);
+      event.preventDefault();
     }
 
     function handleResizeEnd() {
-      if (!isResizing) {
-        return;
-      }
       setIsResizing(false);
     }
 
     handleWindowResize();
 
-    ref.current.addEventListener('mousedown', handleResizeStart);
+    handleRef.current.addEventListener('mousedown', handleResizeStart);
     document.addEventListener('mouseup', handleResizeEnd);
     window.addEventListener('resize', handleWindowResize);
 
     return () => {
-      if (ref.current != null) {
-        ref.current.removeEventListener('mousedown', handleResizeStart);
+      if (handleRef.current != null) {
+        handleRef.current.removeEventListener('mousedown', handleResizeStart);
       }
       document.addEventListener('mouseup', handleResizeEnd);
       window.removeEventListener('resize', handleWindowResize);
     };
-  }, [ref, isResizing]);
+  }, [handleRef, emoteMenuWidth]);
 
   React.useEffect(() => {
-    if (!isResizing) {
-      return undefined;
-    }
-
     function handleResizeMove(e) {
+      if (!isResizing) {
+        return;
+      }
       const textArea = document.querySelector(boundingQuerySelector);
       if (textArea == null) {
         return;
       }
-      const {right, width: textAreaWidth} = textArea.getBoundingClientRect();
+      const {right} = textArea.getBoundingClientRect();
       const newWidth = right - e.clientX;
-      setWidth(() => {
-        if (newWidth > window.innerWidth) {
-          return textAreaWidth;
-        }
-        if (newWidth < minWidth) {
-          return minWidth;
-        }
-        return newWidth;
-      });
+      setWidth(newWidth);
     }
 
     document.addEventListener('mousemove', handleResizeMove);
     return () => document.removeEventListener('mousemove', handleResizeMove);
   }, [isResizing, boundingQuerySelector]);
 
-  return width;
+  return displayWidth;
 }

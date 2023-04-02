@@ -96,24 +96,20 @@ class EmoteMenuViewStore extends SafeEventEmitter {
     this.dirty = true;
     this.categories = {};
 
-    this.computeTotalColumns();
+    this.updateTotalColumns();
 
     watcher.on('channel.updated', () => this.updatePlatformProviders());
     settings.on(`changed.${SettingIds.DARKENED_MODE}`, () => this.updatePlatformProviders());
 
     watcher.on('emotes.updated', () => this.updateProviders());
     settings.on(`changed.${SettingIds.EMOTES}`, () => this.updateProviders());
-
-    window.addEventListener('resize', () => this.computeTotalColumns());
-    settings.on(`changed.${SettingIds.EMOTE_MENU_WIDTH}`, () => this.computeTotalColumns());
   }
 
-  async computeTotalColumns() {
-    const emoteMenuWidth = settings.get(SettingIds.EMOTE_MENU_WIDTH);
-    if (emoteMenuWidth == null) {
-      this.totalCols = window.innerWidth > 400 ? 9 : 7;
+  updateTotalColumns(width = 300) {
+    if (window.innerWidth < width) {
+      this.totalCols = Math.floor((window.innerWidth - 64) / 36);
     } else {
-      this.totalCols = Math.floor((emoteMenuWidth - 64) / 36);
+      this.totalCols = Math.floor((width - 64) / 36);
     }
     this.markDirty(false);
   }

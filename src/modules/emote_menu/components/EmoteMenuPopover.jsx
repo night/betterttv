@@ -7,12 +7,9 @@ import styles from './EmoteMenuPopover.module.css';
 import ThemeProvider from '../../../common/components/ThemeProvider.jsx';
 import useAutoPositionPopover from '../hooks/AutoRepositionPopover.jsx';
 import useHorizontalResize from '../hooks/HorizontalResize.jsx';
-import useStorageState from '../../../common/hooks/StorageState.jsx';
-import {SettingIds} from '../../../constants.js';
 
 const EmoteMenuPopover = React.forwardRef(
   ({toggleWhisper, appendToChat, className, style, boundingQuerySelector, whisperOpen, ...props}, ref) => {
-    const [emoteMenuWidth, setEmoteMenuWidth] = useStorageState(SettingIds.EMOTE_MENU_WIDTH);
     const handleRef = useRef(null);
     const [hasTip, setTip] = useState(false);
     const localRef = useRef(null);
@@ -25,15 +22,12 @@ const EmoteMenuPopover = React.forwardRef(
       setTip(show);
     }
 
-    const width = useHorizontalResize(emoteMenuWidth, boundingQuerySelector, 300, handleRef);
     const reposition = useAutoPositionPopover(localRef, boundingQuerySelector, style, hasTip);
-
-    React.useEffect(() => {
-      requestAnimationFrame(() => {
-        setEmoteMenuWidth(width);
-        reposition();
-      });
-    }, [width]);
+    const width = useHorizontalResize({
+      boundingQuerySelector,
+      handleRef,
+      reposition: () => window.requestAnimationFrame(() => reposition()),
+    });
 
     return (
       <ThemeProvider>
