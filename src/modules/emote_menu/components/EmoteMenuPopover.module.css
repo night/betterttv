@@ -27,7 +27,9 @@
 .resizeHandle {
   position: absolute;
   width: 2px;
-  height: 402px;
+  bottom: 0;
+  top: 0;
+  left: 0;
   cursor: col-resize;
   z-index: 2;
 }
