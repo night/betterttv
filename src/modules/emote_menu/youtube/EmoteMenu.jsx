@@ -1,7 +1,7 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
 import settings from '../../../settings.js';
-import {EmoteProviders, SettingIds} from '../../../constants.js';
+import {EmoteMenuTypes, EmoteProviders, SettingIds} from '../../../constants.js';
 import EmoteMenuButton from '../components/LegacyButton.jsx';
 import domObserver from '../../../observers/dom.js';
 import styles from './EmoteMenu.module.css';
@@ -59,7 +59,8 @@ export default class EmoteMenuModule {
     }
 
     const legacyContainer = document.querySelector(LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
-    const emoteMenuEnabled = settings.get(SettingIds.EMOTE_MENU);
+    const emoteMenuValue = settings.get(SettingIds.EMOTE_MENU);
+    const emoteMenuEnabled = emoteMenuValue !== EmoteMenuTypes.NONE;
 
     // TODO: take into account emote menu setting in the future
     if (legacyContainer == null && emoteMenuEnabled) {

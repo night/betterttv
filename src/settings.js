@@ -22,6 +22,12 @@ class Settings extends SafeEventEmitter {
     const oldSettings = storage.get(SETTINGS_STORAGE_KEY);
     settings = {...defaultSettings, ...oldSettings};
 
+    for (const [key, value] of Object.entries(settings)) {
+      if (typeof value === 'function') {
+        settings[key] = value(settings);
+      }
+    }
+
     if (oldSettings == null || (oldSettings != null && oldSettings.version == null)) {
       settings = {...settings, version: process.env.EXT_VER};
       storage.set(SETTINGS_STORAGE_KEY, settings);

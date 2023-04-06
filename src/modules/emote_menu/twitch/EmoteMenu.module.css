@@ -13,6 +13,11 @@
   display: none;
 }
 
+.chatInputIcon {
+  display: inline-flex;
+  vertical-align: top;
+}
+
 .button {
   border-radius: var(--border-radius-medium);
 

@@ -19,7 +19,8 @@ export const SettingIds = {
   WHISPERS: 'whispers',
   SHOW_DIRECTORY_LIVE_TAB: 'showDirectoryLiveTab',
   CHANNEL_POINTS_MESSAGE_HIGHLIGHTS: 'channelPointsMessageHighlights',
-  EMOTE_MENU: 'clickTwitchEmotes',
+  LEGACY_EMOTE_MENU: 'clickTwitchEmotes', // legacy
+  EMOTE_MENU: 'emoteMenu',
   AUTO_THEME_MODE: 'autoThemeMode',
   DARKENED_MODE: 'darkenedMode',
   PRIME_PROMOTIONS: 'primePromotions',
@@ -56,6 +57,12 @@ export const DeletedMessageTypes = {
   SHOW: 1,
   HIDE: 2,
   HIGHLIGHT: 3,
+};
+
+export const EmoteMenuTypes = {
+  NONE: 0,
+  DEFAULT: 1,
+  REPLACE_NATIVE: 2,
 };
 
 export const SidebarFlags = {
@@ -196,7 +203,16 @@ export const SettingDefaultValues = {
   [SettingIds.WHISPERS]: true,
   [SettingIds.SHOW_DIRECTORY_LIVE_TAB]: false,
   [SettingIds.CHANNEL_POINTS_MESSAGE_HIGHLIGHTS]: true,
-  [SettingIds.EMOTE_MENU]: false,
+  [SettingIds.EMOTE_MENU]: (settings) => {
+    if (settings == null) {
+      return EmoteMenuTypes.DEFAULT;
+    }
+    const emoteMenu = settings[SettingIds.LEGACY_EMOTE_MENU];
+    if (emoteMenu != null && emoteMenu === false) {
+      return EmoteMenuTypes.NONE;
+    }
+    return EmoteMenuTypes.DEFAULT;
+  },
   [SettingIds.AUTO_THEME_MODE]: false,
   [SettingIds.DARKENED_MODE]: false,
   [SettingIds.PRIME_PROMOTIONS]: true,
