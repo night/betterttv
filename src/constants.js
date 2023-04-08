@@ -182,6 +182,7 @@ export const EmoteMenuTips = {
   EMOTE_MENU_FAVORITE_EMOTE: 'emoteMenuTipClosedFavoriteEmote',
   EMOTE_MENU_PREVENT_CLOSE: 'emoteMenuTipClosedPreventClose',
   EMOTE_MENU_HOTKEY: 'emoteMenuTipClosedHotkey',
+  EMOTE_MENU_REPLACE_DEFAULT: 'emoteMenuTipClosedReplaceDefault',
 };
 
 export const SettingDefaultValues = {
