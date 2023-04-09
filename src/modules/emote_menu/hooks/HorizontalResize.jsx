@@ -14,25 +14,22 @@ export default function useHorizontalResize({boundingQuerySelector, handleRef, r
     emoteMenuViewStore.updateTotalColumns(displayWidth);
   }, []);
 
-  const setWidth = React.useCallback(
-    (width, windowResize = false) => {
-      let newWidth = width;
-      if (newWidth < MIN_WIDTH) {
-        newWidth = MIN_WIDTH;
-      }
-      const maxWidth = window.innerWidth - 20;
-      if (newWidth > maxWidth) {
-        newWidth = maxWidth;
-      }
-      if (!windowResize) {
-        setEmoteMenuWidth(newWidth);
-      }
-      setDisplayWidth(newWidth);
-      emoteMenuViewStore.updateTotalColumns(newWidth);
-      reposition();
-    },
-    [reposition]
-  );
+  function setWidth(width, windowResize = false) {
+    let newWidth = width;
+    if (newWidth < MIN_WIDTH) {
+      newWidth = MIN_WIDTH;
+    }
+    const maxWidth = window.innerWidth - 20;
+    if (newWidth > maxWidth) {
+      newWidth = maxWidth;
+    }
+    if (!windowResize) {
+      setEmoteMenuWidth(newWidth);
+    }
+    setDisplayWidth(newWidth);
+    emoteMenuViewStore.updateTotalColumns(newWidth);
+    reposition();
+  }
 
   React.useEffect(() => {
     if (handleRef.current == null) {
