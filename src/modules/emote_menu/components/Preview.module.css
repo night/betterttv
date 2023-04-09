@@ -14,6 +14,10 @@
   height: 100%;
 }
 
+.emoteText {
+  white-space: nowrap;
+}
+
 .emoteImage {
   width: 36px;
   height: 36px;

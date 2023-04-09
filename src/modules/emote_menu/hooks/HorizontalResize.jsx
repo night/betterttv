@@ -3,7 +3,8 @@ import useStorageState from '../../../common/hooks/StorageState.jsx';
 import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js';
 import {SettingIds} from '../../../constants.js';
 
-const MIN_WIDTH = 316;
+const MIN_WIDTH = 300;
+const WINDOW_HORIZONTAL_MARGIN = 20;
 
 export default function useHorizontalResize({boundingQuerySelector, handleRef, reposition}) {
   const [emoteMenuWidth, setEmoteMenuWidth] = useStorageState(SettingIds.EMOTE_MENU_WIDTH); // desired width
@@ -19,7 +20,7 @@ export default function useHorizontalResize({boundingQuerySelector, handleRef, r
     if (newWidth < MIN_WIDTH) {
       newWidth = MIN_WIDTH;
     }
-    const maxWidth = window.innerWidth - 20;
+    const maxWidth = window.innerWidth - WINDOW_HORIZONTAL_MARGIN;
     if (newWidth > maxWidth) {
       newWidth = maxWidth;
     }
