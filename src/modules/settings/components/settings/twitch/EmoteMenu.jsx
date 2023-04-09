@@ -22,19 +22,19 @@ function EmoteMenu() {
         </p>
         <FormGroup controlId="radioList">
           <RadioGroup name="radioList" value={value} onChange={(state) => setValue(state)}>
-            <Radio key="default" value={EmoteMenuTypes.DEFAULT}>
+            <Radio key="default" value={EmoteMenuTypes.ENABLED}>
               <div>
                 <p className={styles.heading}>{formatMessage({defaultMessage: 'Enabled'})}</p>
                 <p className={styles.settingDescription}>
-                  {formatMessage({defaultMessage: 'Emote picker button appears below chat input box'})}
+                  {formatMessage({defaultMessage: 'Replace the default emote picker button'})}
                 </p>
               </div>
             </Radio>
-            <Radio key="replace-native" value={EmoteMenuTypes.REPLACE_NATIVE}>
+            <Radio key="replace-native" value={EmoteMenuTypes.LEGACY}>
               <div>
-                <p className={styles.heading}>{formatMessage({defaultMessage: 'Replace'})}</p>
+                <p className={styles.heading}>{formatMessage({defaultMessage: 'Legacy'})}</p>
                 <p className={styles.settingDescription}>
-                  {formatMessage({defaultMessage: 'Replace the default emote picker button'})}
+                  {formatMessage({defaultMessage: 'Emote picker button appears below chat input box'})}
                 </p>
               </div>
             </Radio>

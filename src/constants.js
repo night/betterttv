@@ -61,8 +61,8 @@ export const DeletedMessageTypes = {
 
 export const EmoteMenuTypes = {
   NONE: 0,
-  DEFAULT: 1,
-  REPLACE_NATIVE: 2,
+  LEGACY: 1,
+  ENABLED: 2,
 };
 
 export const SidebarFlags = {
@@ -206,13 +206,13 @@ export const SettingDefaultValues = {
   [SettingIds.CHANNEL_POINTS_MESSAGE_HIGHLIGHTS]: true,
   [SettingIds.EMOTE_MENU]: (settings) => {
     if (settings == null) {
-      return EmoteMenuTypes.DEFAULT;
-    }
-    const emoteMenu = settings[SettingIds.LEGACY_EMOTE_MENU];
-    if (emoteMenu != null && emoteMenu === false) {
       return EmoteMenuTypes.NONE;
     }
-    return EmoteMenuTypes.DEFAULT;
+    const emoteMenu = settings[SettingIds.LEGACY_EMOTE_MENU];
+    if (emoteMenu != null && emoteMenu === true) {
+      return EmoteMenuTypes.LEGACY;
+    }
+    return EmoteMenuTypes.NONE;
   },
   [SettingIds.AUTO_THEME_MODE]: false,
   [SettingIds.DARKENED_MODE]: false,

@@ -21,7 +21,7 @@ function EmoteMenu() {
         </p>
         <Toggle
           checked={isEnabled}
-          onChange={(state) => setValue(state ? EmoteMenuTypes.DEFAULT : EmoteMenuTypes.NONE)}
+          onChange={(state) => setValue(state ? EmoteMenuTypes.ENABLED : EmoteMenuTypes.NONE)}
         />
       </div>
     </Panel>

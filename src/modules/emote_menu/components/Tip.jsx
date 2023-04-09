@@ -51,7 +51,7 @@ function getTipToDisplay() {
     ];
   }
 
-  if (!tips[EmoteMenuTips.EMOTE_MENU_REPLACE_DEFAULT] && emoteMenuValue !== EmoteMenuTypes.REPLACE_NATIVE) {
+  if (!tips[EmoteMenuTips.EMOTE_MENU_REPLACE_DEFAULT] && emoteMenuValue !== EmoteMenuTypes.ENABLED) {
     return [
       EmoteMenuTips.EMOTE_MENU_REPLACE_DEFAULT,
       formatMessage(
@@ -60,7 +60,7 @@ function getTipToDisplay() {
           button: ([text]) => (
             <TextButton
               key="emote-menu-replace-default-tip-button"
-              onClick={() => setEmoteMenuValue(EmoteMenuTypes.REPLACE_NATIVE)}>
+              onClick={() => setEmoteMenuValue(EmoteMenuTypes.ENABLED)}>
               {text}
             </TextButton>
           ),

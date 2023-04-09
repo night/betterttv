@@ -66,7 +66,7 @@ export default class EmoteMenuModule {
       const buttonContainer = document.createElement('div');
       buttonContainer.setAttribute('data-a-target', 'legacy-bttv-emote-picker-button-container');
 
-      if (emoteMenuValue === EmoteMenuTypes.REPLACE_NATIVE) {
+      if (emoteMenuValue === EmoteMenuTypes.ENABLED) {
         const container = document.querySelector(CHAT_INPUT_ICONS_SELECTOR);
         if (container == null) {
           return;
@@ -123,7 +123,7 @@ export default class EmoteMenuModule {
     }
     emotePickerButtonContainer.classList.toggle(
       styles.hideDefaultEmoteMenuButton,
-      emoteMenuValue === EmoteMenuTypes.REPLACE_NATIVE
+      emoteMenuValue === EmoteMenuTypes.ENABLED
     );
   }
 
