@@ -69,10 +69,12 @@ export const EmoteMenuTypes = {
 
 export const SidebarFlags = {
   // 1 << 0: FRIENDS,
-  FEATURED_CHANNELS: 1 << 1,
+  RECOMMENDED_CHANNELS: 1 << 1,
   // 1 << 2: RECOMMENDED_FRIENDS,
   OFFLINE_FOLLOWED_CHANNELS: 1 << 3,
   AUTO_EXPAND_CHANNELS: 1 << 4,
+  RECENTLY_WATCHED_CHANNELS: 1 << 5,
+  SIMILAR_CHANNELS: 1 << 6,
 };
 
 export const EmoteTypeFlags = {
@@ -219,7 +221,13 @@ export const SettingDefaultValues = {
   [SettingIds.EMOTE_AUTOCOMPLETE]: true,
   [SettingIds.BLACKLIST_KEYWORDS]: {},
   [SettingIds.HIGHLIGHT_KEYWORDS]: null,
-  [SettingIds.SIDEBAR]: [SidebarFlags.OFFLINE_FOLLOWED_CHANNELS | SidebarFlags.FEATURED_CHANNELS, 0],
+  [SettingIds.SIDEBAR]: [
+    SidebarFlags.OFFLINE_FOLLOWED_CHANNELS |
+      SidebarFlags.RECOMMENDED_CHANNELS |
+      SidebarFlags.RECENTLY_WATCHED_CHANNELS |
+      SidebarFlags.SIMILAR_CHANNELS,
+    0,
+  ],
   [SettingIds.EMOTES]: [
     EmoteTypeFlags.BTTV_EMOTES |
       EmoteTypeFlags.ANIMATED_EMOTES |
