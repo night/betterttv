@@ -72,7 +72,7 @@
     "luxon": "^3.3.0",
     "mini-css-extract-plugin": "2.7.5",
     "normalize-path": "^3.0.0",
-    "postcss": "8.4.21",
+    "postcss": "8.4.22",
     "postcss-hexrgba": "2.1.0",
     "postcss-loader": "7.2.4",
     "postcss-url": "10.1.3",
