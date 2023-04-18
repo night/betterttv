@@ -1,7 +1,7 @@
 import watcher from '../../watcher.js';
 import settings from '../../settings.js';
 import AbstractEmotes from '../emotes/abstract-emotes.js';
-import {createEmote} from './utils.js';
+import {createEmote, isOverlay} from './utils.js';
 import {EmoteCategories, EmoteProviders, EmoteTypeFlags, SettingIds} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
 import formatMessage from '../../i18n/index.js';
@@ -40,13 +40,14 @@ class SevenTVGlobalEmotes extends AbstractEmotes {
         for (const {
           id,
           name: code,
+          flags,
           data: {listed, animated, owner},
         } of globalEmotes) {
           if (!listed) {
             continue;
           }
 
-          this.emotes.set(code, createEmote(id, code, animated, owner, category));
+          this.emotes.set(code, createEmote(id, code, animated, owner, category, isOverlay(flags)));
         }
       })
       .then(() => watcher.emit('emotes.updated'));

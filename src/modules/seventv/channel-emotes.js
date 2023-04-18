@@ -2,7 +2,7 @@ import ReconnectingEventSource from 'reconnecting-eventsource';
 import watcher from '../../watcher.js';
 import settings from '../../settings.js';
 import AbstractEmotes from '../emotes/abstract-emotes.js';
-import {createEmote, isUnlisted} from './utils.js';
+import {createEmote, isOverlay, isUnlisted} from './utils.js';
 import {EmoteCategories, EmoteProviders, EmoteTypeFlags, SettingIds} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
 import {getCurrentChannel} from '../../utils/channel.js';
@@ -55,13 +55,13 @@ class SevenTVChannelEmotes extends AbstractEmotes {
         for (const {
           id,
           name: code,
-          data: {listed, animated, owner},
+          data: {listed, animated, owner, flags},
         } of emotes) {
           if (!listed) {
             continue;
           }
 
-          this.emotes.set(code, createEmote(id, code, animated, owner, category));
+          this.emotes.set(code, createEmote(id, code, animated, owner, category, isOverlay(flags)));
         }
       })
       .then(() => watcher.emit('emotes.updated'));
@@ -93,7 +93,10 @@ class SevenTVChannelEmotes extends AbstractEmotes {
           return;
         }
 
-        this.emotes.set(code, createEmote(id, code, emote.animated, emote.owner, category));
+        this.emotes.set(
+          code,
+          createEmote(id, code, emote.animated, emote.owner, category, isOverlay(emote.visibility, true))
+        );
 
         message = formatMessage(
           {defaultMessage: '7TV Emotes: {emoteCode} has been added to chat'},
@@ -113,7 +116,10 @@ class SevenTVChannelEmotes extends AbstractEmotes {
           return;
         }
 
-        this.emotes.set(code, createEmote(id, code, emote.animated, emote.owner, category));
+        this.emotes.set(
+          code,
+          createEmote(id, code, emote.animated, emote.owner, category, isOverlay(emote.visibility, true))
+        );
         break;
       }
       case 'REMOVE': {

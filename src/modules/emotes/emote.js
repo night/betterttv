@@ -48,6 +48,9 @@ export default class Emote {
     if (shouldRenderStatic) {
       container.classList.add('bttv-animated-static-emote');
     }
+    if (this.metadata?.isOverlay === true) {
+      container.classList.add('bttv-emote-overlay');
+    }
 
     const image = new Image();
     image.classList.add('chat-line__message--emote', 'bttv-emote-image');
