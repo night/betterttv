@@ -161,8 +161,8 @@ export async function loadTwitchEmotes() {
   }));
 
   for (const {owner, id: setId, emotes, product = false} of [
-    ...channelProducts,
     ...data.channel.self.availableEmoteSets,
+    ...channelProducts,
   ]) {
     const category = getCategoryForSet(setId, owner);
     const locked = product && data.channel.self.availableEmoteSets.find(({id}) => id === setId) == null;
