@@ -22,7 +22,7 @@ function SafetyWarningModal({open, onClose}) {
       <Modal.Body>
         {formatMessage({
           defaultMessage:
-            'This extension has been flagged by the community for its poor moderation standards. Content from this extension is not reviewed by BetterTTV, and you may encounter unsavory content. Are you sure you want to proceed?',
+            'This content has been flagged by the community for its poor moderation standards. Content from this extension is not reviewed by BetterTTV, and you may encounter unsavory content. Are you sure you want to proceed?',
         })}
       </Modal.Body>
       <Modal.Footer>
@@ -110,15 +110,23 @@ function EmotesModule() {
               {formatMessage({defaultMessage: 'Enables emotes from the third party FrankerFaceZ extension'})}
             </p>
           </Checkbox>
-          <Checkbox
-            key="seventvEmotes"
-            value={EmoteTypeFlags.SEVENTV_EMOTES}
-            onClick={(event) => handleSafetyWarning(event, EmoteTypeFlags.SEVENTV_EMOTES)}>
+          <Checkbox key="seventvEmotes" value={EmoteTypeFlags.SEVENTV_EMOTES}>
             <p className={styles.heading}>{formatMessage({defaultMessage: '7TV Emotes'})}</p>
             <p className={styles.settingDescription}>
               {formatMessage({defaultMessage: 'Enables emotes from the third party 7TV extension'})}
             </p>
           </Checkbox>
+          {hasFlag(emotes, EmoteTypeFlags.SEVENTV_EMOTES) ? (
+            <Checkbox
+              key="seventvUnlistedEmotes"
+              value={EmoteTypeFlags.SEVENTV_UNLISTED_EMOTES}
+              onClick={(event) => handleSafetyWarning(event, EmoteTypeFlags.SEVENTV_UNLISTED_EMOTES)}>
+              <p className={styles.heading}>{formatMessage({defaultMessage: 'Unlisted 7TV Emotes'})}</p>
+              <p className={styles.settingDescription}>
+                {formatMessage({defaultMessage: 'Enables unlisted emotes from the third party 7TV extension'})}
+              </p>
+            </Checkbox>
+          ) : null}
         </CheckboxGroup>
       </div>
       <SafetyWarningModal open={safetyModalFlagValue > 0} onClose={(allow) => handleSafetyWarningClose(allow)} />

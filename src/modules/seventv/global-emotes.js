@@ -43,7 +43,7 @@ class SevenTVGlobalEmotes extends AbstractEmotes {
           flags,
           data: {listed, animated, owner},
         } of globalEmotes) {
-          if (!listed) {
+          if (!listed && !hasFlag(settings.get(SettingIds.EMOTES), EmoteTypeFlags.SEVENTV_UNLISTED_EMOTES)) {
             continue;
           }
 
