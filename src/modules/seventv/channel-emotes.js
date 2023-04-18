@@ -57,9 +57,7 @@ class SevenTVChannelEmotes extends AbstractEmotes {
           name: code,
           data: {listed, animated, owner, flags},
         } of emotes) {
-          const hideUnlisted =
-            hasFlag(settings.get(SettingIds.EMOTES), EmoteTypeFlags.SEVENTV_HIDE_UNLISTED) && !listed;
-          if (hideUnlisted) {
+          if (!listed && !hasFlag(settings.get(SettingIds.EMOTES), EmoteTypeFlags.SEVENTV_UNLISTED_EMOTES)) {
             continue;
           }
 
@@ -91,10 +89,12 @@ class SevenTVChannelEmotes extends AbstractEmotes {
     let message;
     switch (action) {
       case 'ADD': {
-        const hideUnlisted =
-          hasFlag(settings.get(SettingIds.EMOTES), EmoteTypeFlags.SEVENTV_HIDE_UNLISTED) &&
-          isUnlisted(emote.visibility);
-        if (hideUnlisted) return;
+        if (
+          isUnlisted(emote.visibility) &&
+          !hasFlag(settings.get(SettingIds.EMOTES), EmoteTypeFlags.SEVENTV_UNLISTED_EMOTES)
+        ) {
+          return;
+        }
 
         this.emotes.set(
           code,
@@ -114,10 +114,12 @@ class SevenTVChannelEmotes extends AbstractEmotes {
         }
 
         this.emotes.delete(existingEmote.code);
-        const hideUnlisted =
-          hasFlag(settings.get(SettingIds.EMOTES), EmoteTypeFlags.SEVENTV_HIDE_UNLISTED) &&
-          isUnlisted(emote.visibility);
-        if (hideUnlisted) return;
+        if (
+          isUnlisted(emote.visibility) &&
+          !hasFlag(settings.get(SettingIds.EMOTES), EmoteTypeFlags.SEVENTV_UNLISTED_EMOTES)
+        ) {
+          return;
+        }
 
         this.emotes.set(
           code,

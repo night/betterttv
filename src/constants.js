@@ -73,7 +73,7 @@ export const EmoteTypeFlags = {
   ANIMATED_PERSONAL_EMOTES: 1 << 3,
   SEVENTV_EMOTES: 1 << 4,
   EMOTE_MODIFIERS: 1 << 5,
-  SEVENTV_HIDE_UNLISTED: 1 << 6,
+  SEVENTV_UNLISTED_EMOTES: 1 << 6,
 };
 
 export const ChatFlags = {

@@ -43,9 +43,7 @@ class SevenTVGlobalEmotes extends AbstractEmotes {
           flags,
           data: {listed, animated, owner},
         } of globalEmotes) {
-          const hideUnlisted =
-            hasFlag(settings.get(SettingIds.EMOTES), EmoteTypeFlags.SEVENTV_HIDE_UNLISTED) && !listed;
-          if (hideUnlisted) {
+          if (!listed && !hasFlag(settings.get(SettingIds.EMOTES), EmoteTypeFlags.SEVENTV_UNLISTED_EMOTES)) {
             continue;
           }
 
