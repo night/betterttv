@@ -37,7 +37,3 @@ export function isOverlay(flags, isLegacy = false) {
 
   return hasFlag(flags, isLegacy ? 1 << 7 : 1 << 8);
 }
-
-export function isUnlisted(visibility) {
-  return hasFlag(visibility, 1 << 2) || hasFlag(visibility, 1 << 8);
-}

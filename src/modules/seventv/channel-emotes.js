@@ -2,7 +2,7 @@ import ReconnectingEventSource from 'reconnecting-eventsource';
 import watcher from '../../watcher.js';
 import settings from '../../settings.js';
 import AbstractEmotes from '../emotes/abstract-emotes.js';
-import {createEmote, isOverlay, isUnlisted} from './utils.js';
+import {createEmote, isOverlay} from './utils.js';
 import {EmoteCategories, EmoteProviders, EmoteTypeFlags, SettingIds} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
 import {getCurrentChannel} from '../../utils/channel.js';
