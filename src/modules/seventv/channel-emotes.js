@@ -63,92 +63,102 @@ class SevenTVChannelEmotes extends AbstractEmotes {
 
           this.emotes.set(code, createEmote(id, code, animated, owner, category, isOverlay(flags)));
         }
+
+        eventSource = new ReconnectingEventSource(
+          `https://events.7tv.io/v3@emote_set.update<object_id=${encodeURIComponent(emoteSet.id)}>`
+        );
+        eventSource.addEventListener('dispatch', (event) => this.handleEventSourceUpdate(event));
       })
       .then(() => watcher.emit('emotes.updated'));
-
-    eventSource = new ReconnectingEventSource(
-      `https://events.7tv.app/v1/channel-emotes?channel=${encodeURIComponent(currentChannel.name)}`
-    );
-    eventSource.addEventListener('update', (event) => this.handleEventSourceUpdate(event));
-
-    window.testUpdate = (event) => this.handleEventSourceUpdate(event);
   }
 
   handleEventSourceUpdate(event) {
-    const {channel: channelName, emote_id: id, name: code, action, emote} = JSON.parse(event.data);
+    const {type: eventType, body: eventBody} = JSON.parse(event.data);
 
-    const currentChannel = getCurrentChannel();
-    if (!currentChannel) {
+    if (eventType !== 'emote_set.update') {
       return;
     }
 
-    if (channelName !== currentChannel.name) {
-      return;
-    }
+    const {pushed, updated, pulled} = eventBody;
+    const pushedItems = pushed ?? [];
+    const updatedItems = updated ?? [];
+    const pulledItems = pulled ?? [];
 
-    let message;
-    switch (action) {
-      case 'ADD': {
-        if (
-          isUnlisted(emote.visibility) &&
-          !hasFlag(settings.get(SettingIds.EMOTES), EmoteTypeFlags.SEVENTV_UNLISTED_EMOTES)
-        ) {
-          return;
-        }
+    for (const {key, value} of pushedItems) {
+      if (key !== 'emotes') {
+        continue;
+      }
 
-        this.emotes.set(
-          code,
-          createEmote(id, code, emote.animated, emote.owner, category, isOverlay(emote.visibility, true))
-        );
+      const {
+        id,
+        name: code,
+        data: {listed, animated, owner, flags},
+      } = value;
 
-        message = formatMessage(
+      if (!listed && !hasFlag(settings.get(SettingIds.EMOTES), EmoteTypeFlags.SEVENTV_UNLISTED_EMOTES)) {
+        continue;
+      }
+
+      this.emotes.set(code, createEmote(id, code, animated, owner, category, isOverlay(flags)));
+
+      watcher.emit(
+        'chat.send_admin_message',
+        formatMessage(
           {defaultMessage: '7TV Emotes: {emoteCode} has been added to chat'},
           {emoteCode: `${code} \u200B \u200B${code}\u200B`}
-        );
-        break;
+        )
+      );
+    }
+
+    for (const {key, value} of updatedItems) {
+      if (key !== 'emotes') {
+        continue;
       }
-      case 'UPDATE': {
-        const existingEmote = this.getEligibleEmoteById(id);
-        if (existingEmote == null) {
-          return;
-        }
 
-        this.emotes.delete(existingEmote.code);
-        if (
-          isUnlisted(emote.visibility) &&
-          !hasFlag(settings.get(SettingIds.EMOTES), EmoteTypeFlags.SEVENTV_UNLISTED_EMOTES)
-        ) {
-          return;
-        }
+      const {
+        id,
+        name: code,
+        data: {listed, animated, owner, flags},
+      } = value;
 
-        this.emotes.set(
-          code,
-          createEmote(id, code, emote.animated, emote.owner, category, isOverlay(emote.visibility, true))
-        );
-        break;
+      const existingEmote = this.getEligibleEmoteById(id);
+      if (existingEmote == null) {
+        return;
       }
-      case 'REMOVE': {
-        const existingEmote = this.getEligibleEmoteById(id);
-        if (existingEmote == null) {
-          return;
-        }
 
-        this.emotes.delete(existingEmote.code);
+      this.emotes.delete(existingEmote.code);
 
-        message = formatMessage(
+      if (!listed && !hasFlag(settings.get(SettingIds.EMOTES), EmoteTypeFlags.SEVENTV_UNLISTED_EMOTES)) {
+        continue;
+      }
+
+      this.emotes.set(code, createEmote(id, code, animated, owner, category, isOverlay(flags)));
+    }
+
+    for (const {key, old_value: oldValue} of pulledItems) {
+      if (key !== 'emotes') {
+        continue;
+      }
+
+      const {id} = oldValue;
+
+      const existingEmote = this.getEligibleEmoteById(id);
+      if (existingEmote == null) {
+        return;
+      }
+
+      this.emotes.delete(existingEmote.code);
+
+      watcher.emit(
+        'chat.send_admin_message',
+        formatMessage(
           {defaultMessage: '7TV Emotes: {emoteCode} has been removed from chat'},
           {emoteCode: `\u200B${existingEmote.code}\u200B`}
-        );
-        break;
-      }
-      default:
-        return;
+        )
+      );
     }
 
     watcher.emit('emotes.updated');
-    if (message != null) {
-      watcher.emit('chat.send_admin_message', message);
-    }
   }
 }
 
