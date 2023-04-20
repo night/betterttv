@@ -5,7 +5,17 @@ import {EmoteCategories, EmoteTypeFlags, SettingIds} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
 
 export default class Emote {
-  constructor({id, category, channel, code, images, animated = null, restrictionCallback = null, metadata = null}) {
+  constructor({
+    id,
+    category,
+    channel,
+    code,
+    images,
+    animated = null,
+    restrictionCallback = null,
+    metadata = null,
+    modifier,
+  }) {
     this.id = id;
     this.category = category;
     this.channel = channel;
@@ -14,6 +24,7 @@ export default class Emote {
     this.images = images;
     this.animated = animated;
     this.metadata = metadata;
+    this.modifier = modifier ?? false;
   }
 
   isUsable(channel, user) {
@@ -28,7 +39,7 @@ export default class Emote {
     return `${provider}-${this.id}`;
   }
 
-  render(modifier, className) {
+  render(prefixModifiers, suffixModifiers, classNames) {
     const categoryClass = this.category.id;
     const idClass = `${this.category.id}-emo-${this.id}`;
     const channelName = this.channel && (this.channel.displayName || this.channel.name);
@@ -42,8 +53,8 @@ export default class Emote {
 
     const container = document.createElement('div');
     container.classList.add('bttv-tooltip-wrapper', 'bttv-emote', categoryClass, idClass);
-    if (className != null) {
-      container.classList.add(className);
+    if (classNames != null && classNames.length > 0) {
+      container.classList.add(...classNames);
     }
     if (shouldRenderStatic) {
       container.classList.add('bttv-animated-static-emote');
@@ -56,7 +67,9 @@ export default class Emote {
     image.classList.add('chat-line__message--emote', 'bttv-emote-image');
     image.src = createSrc(this.images, shouldRenderStatic);
     image.srcset = createSrcSet(this.images, shouldRenderStatic);
-    image.alt = `${modifier ? `${modifier} ` : ''}${this.code}`;
+    image.alt = `${prefixModifiers != null && prefixModifiers.length > 0 ? `${prefixModifiers.join(' ')} ` : ''}${
+      this.code
+    }${suffixModifiers != null && suffixModifiers.length > 0 ? ` ${suffixModifiers.join(' ')}` : ''}`;
     if (shouldRenderStatic) {
       image.__bttvStaticSrc = image.src;
       image.__bttvStaticSrcSet = image.srcset;

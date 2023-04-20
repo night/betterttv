@@ -36,3 +36,7 @@
 .bttv-emote-modifier-zero-space {
   margin-left: -4px;
 }
+
+.bttv-emote-modifier-cursed {
+  filter: grayscale(1) brightness(0.7) contrast(2.5);
+}

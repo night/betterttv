@@ -28,8 +28,14 @@ const EMOTE_MODIFIERS = {
   'h!': 'bttv-emote-modifier-flip-horizontal',
   'v!': 'bttv-emote-modifier-flip-vertical',
   'z!': 'bttv-emote-modifier-zero-space',
+  'c!': 'bttv-emote-modifier-cursed',
+  ffzW: 'bttv-emote-modifier-wide',
+  ffzX: 'bttv-emote-modifier-flip-horizontal',
+  ffzY: 'bttv-emote-modifier-flip-vertical',
+  ffzCursed: 'bttv-emote-modifier-cursed',
 };
-const EMOTE_MODIFIERS_LIST = Object.keys(EMOTE_MODIFIERS);
+const PREFIX_EMOTE_MODIFIERS_LIST = Object.keys(EMOTE_MODIFIERS).filter((key) => key.endsWith('!'));
+const SUFFIX_EMOTE_MODIFIERS_LIST = Object.keys(EMOTE_MODIFIERS).filter((key) => !key.endsWith('!'));
 
 const badgeTemplate = (url, description) => {
   const badgeContainer = document.createElement('div');
@@ -279,6 +285,8 @@ class ChatModule {
       }
 
       const parts = data.split(' ');
+      const partMetadata = [];
+      let hasModifiers = false;
       let modified = false;
       for (let j = 0; j < parts.length; j++) {
         const part = parts[j];
@@ -293,22 +301,73 @@ class ChatModule {
           continue;
         }
 
-        const emote =
+        if (emoteModifiersEnabled && PREFIX_EMOTE_MODIFIERS_LIST.includes(part)) {
+          partMetadata[j] = {modifier: part, type: 'prefix'};
+          hasModifiers = true;
+        }
+
+        let emoteIndex = j;
+        let isEmoteOrSuffixModifier = false;
+        let emote =
           emotes.getEligibleEmote(part, user) ||
           (!exact ? emotes.getEligibleEmote(part.replace(EMOTE_STRIP_SYMBOLS_REGEX, ''), user) : null);
-        if (emote) {
-          let modifier;
-          const previousPart = parts[j - 1] ?? '';
-          if (emoteModifiersEnabled && EMOTE_MODIFIERS_LIST.includes(previousPart)) {
-            parts[j - 1] = null;
-            modifier = previousPart;
+        if (emote != null && !emote.modifier) {
+          partMetadata[j] = {emote};
+          isEmoteOrSuffixModifier = true;
+        }
+
+        if (emoteModifiersEnabled && SUFFIX_EMOTE_MODIFIERS_LIST.includes(part)) {
+          partMetadata[j] = {modifier: part, type: 'suffix'};
+          isEmoteOrSuffixModifier = true;
+          hasModifiers = true;
+        }
+
+        let modifiers = [];
+        if (hasModifiers && isEmoteOrSuffixModifier) {
+          let detectedEmote = false;
+          // we search backwards to find the emote and any modifiers
+          for (let k = j; k >= 0; k--) {
+            const partMetadataItem = partMetadata[k];
+            // if we discover an emote, use that emote as the base for the modifiers
+            if (!detectedEmote && partMetadataItem?.emote != null) {
+              emote = partMetadataItem.emote;
+              emoteIndex = k;
+              detectedEmote = true;
+              continue;
+            }
+            // if we've reached a non-modifier or an invalid modifier, stop
+            if (
+              partMetadataItem?.modifier == null ||
+              (!detectedEmote && partMetadataItem.type === 'prefix') ||
+              (detectedEmote && partMetadataItem.type === 'suffix')
+            ) {
+              break;
+            }
+            modifiers.push(partMetadataItem);
+            parts[k] = null;
           }
-          parts[j] =
+          // if the emote is only a suffix modifier, render it without its effect
+          if (modifiers.length === 1 && modifiers[0].type === 'suffix' && emoteIndex === j) {
+            modifiers = [];
+          }
+        }
+
+        if (emote != null) {
+          const emoteHasModifiers = modifiers.length > 0;
+          parts[emoteIndex] =
             EMOTES_TO_CAP.includes(emote.id) && ++cappedEmoteCount > MAX_EMOTES_WHEN_CAPPED
               ? null
-              : emote.render(modifier, modifier != null ? EMOTE_MODIFIERS[modifier] : null);
+              : emote.render(
+                  emoteHasModifiers
+                    ? modifiers.filter(({type}) => type === 'prefix').map(({modifier}) => modifier)
+                    : null,
+                  emoteHasModifiers
+                    ? modifiers.filter(({type}) => type === 'suffix').map(({modifier}) => modifier)
+                    : null,
+                  emoteHasModifiers ? modifiers.map(({modifier}) => EMOTE_MODIFIERS[modifier]) : null
+                );
+
           modified = true;
-          continue;
         }
       }
 
