@@ -94,7 +94,9 @@ function createModeratorActionButton(command, duration, tooltipText, buttonText)
   const action = document.createElement('div');
   action.classList.add('bttv-moderator-card-action');
   action.setAttribute('data-command', command);
-  action.setAttribute('data-duration', duration);
+  if (duration != null) {
+    action.setAttribute('data-duration', duration);
+  }
   container.appendChild(action);
 
   const actionButton = document.createElement('button');
