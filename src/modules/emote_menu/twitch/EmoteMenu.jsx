@@ -15,7 +15,6 @@ const CHAT_TEXT_AREA = 'textarea[data-a-target="chat-input"], div[data-a-target=
 const LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR =
   'div[data-a-target="legacy-bttv-emote-picker-button-container"]';
 const CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR = '.chat-input div[data-test-selector="chat-input-buttons-container"]';
-const CHAT_INPUT_ICONS_SELECTOR = '.chat-input__input-icons';
 const EMOTE_PICKER_BUTTON_SELECTOR = 'button[data-a-target="emote-picker-button"]';
 
 class SafeEmoteMenuButton extends React.Component {
@@ -67,12 +66,16 @@ export default class EmoteMenuModule {
       buttonContainer.setAttribute('data-a-target', 'legacy-bttv-emote-picker-button-container');
 
       if (emoteMenuValue === EmoteMenuTypes.ENABLED) {
-        const container = document.querySelector(CHAT_INPUT_ICONS_SELECTOR);
-        if (container == null) {
+        const nativeEmotePickerButtonContainer = document.querySelector(EMOTE_PICKER_BUTTON_SELECTOR)?.parentElement;
+        if (nativeEmotePickerButtonContainer == null) {
           return;
         }
-        container.classList.add(styles.chatInputIcon);
-        container.appendChild(buttonContainer);
+        const chatInputIcons = nativeEmotePickerButtonContainer.parentElement;
+        if (chatInputIcons == null) {
+          return;
+        }
+        chatInputIcons.classList.add(styles.chatInputIcon);
+        chatInputIcons.appendChild(buttonContainer);
       } else {
         const container = document.querySelector(CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR);
         if (container == null) {
