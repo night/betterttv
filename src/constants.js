@@ -204,16 +204,7 @@ export const SettingDefaultValues = {
   [SettingIds.WHISPERS]: true,
   [SettingIds.SHOW_DIRECTORY_LIVE_TAB]: false,
   [SettingIds.CHANNEL_POINTS_MESSAGE_HIGHLIGHTS]: true,
-  [SettingIds.EMOTE_MENU]: (settings) => {
-    if (settings == null) {
-      return EmoteMenuTypes.NONE;
-    }
-    const emoteMenu = settings[SettingIds.LEGACY_EMOTE_MENU];
-    if (emoteMenu != null && emoteMenu === true) {
-      return EmoteMenuTypes.LEGACY;
-    }
-    return EmoteMenuTypes.NONE;
-  },
+  [SettingIds.EMOTE_MENU]: EmoteMenuTypes.NONE,
   [SettingIds.AUTO_THEME_MODE]: false,
   [SettingIds.DARKENED_MODE]: false,
   [SettingIds.PRIME_PROMOTIONS]: true,

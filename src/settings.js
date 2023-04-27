@@ -1,6 +1,6 @@
 import SafeEventEmitter from './utils/safe-event-emitter.js';
 import storage from './storage.js';
-import {SettingIds, FlagSettings, SettingDefaultValues, ChatFlags} from './constants.js';
+import {SettingIds, FlagSettings, SettingDefaultValues, ChatFlags, EmoteMenuTypes} from './constants.js';
 import {getChangedFlags, setFlag} from './utils/flags.js';
 
 export const SETTINGS_STORAGE_KEY = 'settings';
@@ -22,10 +22,11 @@ class Settings extends SafeEventEmitter {
     const oldSettings = storage.get(SETTINGS_STORAGE_KEY);
     settings = {...defaultSettings, ...oldSettings};
 
-    for (const [key, value] of Object.entries(settings)) {
-      if (typeof value === 'function') {
-        settings[key] = value(settings);
-      }
+    if (oldSettings != null && oldSettings.version !== process.env.EXT_VER) {
+      const oldEmoteMenuValue = oldSettings[SettingIds.LEGACY_EMOTE_MENU];
+      const emoteMenuValue = oldEmoteMenuValue ? EmoteMenuTypes.LEGACY : EmoteMenuTypes.NONE;
+      settings = {...settings, [SettingIds.EMOTE_MENU]: emoteMenuValue};
+      delete settings[SettingIds.LEGACY_EMOTE_MENU];
     }
 
     if (oldSettings == null || (oldSettings != null && oldSettings.version == null)) {
