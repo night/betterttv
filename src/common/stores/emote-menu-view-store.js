@@ -86,6 +86,9 @@ let topCategories = [];
 let middleCategories = [];
 let bottomCategories = [];
 
+const EMOTE_MENU_WINDOW_MARGIN = 64;
+const EMOTE_MENU_COLUMN_WIDTH = 36;
+
 class EmoteMenuViewStore extends SafeEventEmitter {
   constructor() {
     super();
@@ -107,9 +110,9 @@ class EmoteMenuViewStore extends SafeEventEmitter {
 
   updateTotalColumns(width = 300) {
     if (window.innerWidth < width) {
-      this.totalCols = Math.floor((window.innerWidth - 64) / 36);
+      this.totalCols = Math.floor((window.innerWidth - EMOTE_MENU_WINDOW_MARGIN) / EMOTE_MENU_COLUMN_WIDTH);
     } else {
-      this.totalCols = Math.floor((width - 64) / 36);
+      this.totalCols = Math.floor((width - EMOTE_MENU_WINDOW_MARGIN) / EMOTE_MENU_COLUMN_WIDTH);
     }
     this.markDirty(false);
   }
