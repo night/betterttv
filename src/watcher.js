@@ -17,6 +17,8 @@ class Watcher extends SafeEventEmitter {
       (await import('./watchers/chat.js')).default(this);
       (await import('./watchers/conversations.js')).default(this);
       (await import('./watchers/routes.js')).default(this);
+    } else if (platform === PlatformTypes.KICK) {
+      (await import('./watchers/kick.js')).default(this);
     }
 
     debug.log('Watcher started');

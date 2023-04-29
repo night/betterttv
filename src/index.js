@@ -11,6 +11,8 @@
       'embed.twitch.tv',
       'www.youtube.com',
       'studio.youtube.com',
+      'www.kick.com',
+      'kick.com',
     ].includes(window.location.hostname) &&
     !window.location.hostname.endsWith('.release.twitch.tv')
   )

@@ -16,6 +16,8 @@ export function getPlatform() {
     platform = PlatformTypes.TWITCH_CLIPS;
   } else if (hostname.endsWith('.twitch.tv')) {
     platform = PlatformTypes.TWITCH;
+  } else if (hostname.endsWith('kick.com')) {
+    platform = PlatformTypes.KICK;
   } else {
     throw new Error('unsupported platform');
   }
@@ -57,6 +59,10 @@ export function isStandaloneWindow() {
 
   if (currentPlatform === PlatformTypes.YOUTUBE) {
     return window.location.pathname.endsWith('/live_chat');
+  }
+
+  if (currentPlatform === PlatformTypes.KICK) {
+    return window.location.pathname.endsWith('/chatroom');
   }
 
   return false;

@@ -253,6 +253,7 @@ export const PlatformTypes = {
   TWITCH: 1,
   TWITCH_CLIPS: 2,
   YOUTUBE: 3,
+  KICK: 4,
 };
 
 export const EMOTE_MENU_SIDEBAR_ROW_HEIGHT = 36;

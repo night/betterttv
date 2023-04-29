@@ -1,0 +1,5 @@
+.chat-entry .bttv-tooltip {
+	background-color: var(--toastify-toast-background);
+	color: var(--toastify-color-dark);
+	font-size: 0.7rem;
+}
