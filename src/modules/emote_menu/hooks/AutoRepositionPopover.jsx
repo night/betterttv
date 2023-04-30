@@ -12,5 +12,8 @@ export default function useAutoPositionPopover(localRef, boundingQuerySelector, 
   useEffect(() => {
     reposition();
   }, [localRef, style, hasTip]);
+
   useResize(reposition);
+
+  return reposition;
 }

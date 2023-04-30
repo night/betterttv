@@ -28,8 +28,6 @@ import formatMessage from '../../i18n/index.js';
 
 const MAX_FRECENTS = 36;
 
-const computeTotalColumns = () => (window.innerWidth <= 400 ? 7 : 9);
-
 function chunkArray(array, size) {
   if (array.length <= size) {
     return [array];
@@ -88,6 +86,9 @@ let topCategories = [];
 let middleCategories = [];
 let bottomCategories = [];
 
+const EMOTE_MENU_WINDOW_MARGIN = 64;
+const EMOTE_MENU_COLUMN_WIDTH = 36;
+
 class EmoteMenuViewStore extends SafeEventEmitter {
   constructor() {
     super();
@@ -98,18 +99,22 @@ class EmoteMenuViewStore extends SafeEventEmitter {
     this.dirty = true;
     this.categories = {};
 
-    this.totalCols = computeTotalColumns();
+    this.updateTotalColumns();
 
     watcher.on('channel.updated', () => this.updatePlatformProviders());
     settings.on(`changed.${SettingIds.DARKENED_MODE}`, () => this.updatePlatformProviders());
 
     watcher.on('emotes.updated', () => this.updateProviders());
     settings.on(`changed.${SettingIds.EMOTES}`, () => this.updateProviders());
+  }
 
-    window.addEventListener('resize', () => {
-      this.totalCols = computeTotalColumns();
-      this.markDirty(false);
-    });
+  updateTotalColumns(width = 300) {
+    if (window.innerWidth < width) {
+      this.totalCols = Math.floor((window.innerWidth - EMOTE_MENU_WINDOW_MARGIN) / EMOTE_MENU_COLUMN_WIDTH);
+    } else {
+      this.totalCols = Math.floor((width - EMOTE_MENU_WINDOW_MARGIN) / EMOTE_MENU_COLUMN_WIDTH);
+    }
+    this.markDirty(false);
   }
 
   async updatePlatformProviders() {
