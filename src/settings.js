@@ -22,19 +22,12 @@ class Settings extends SafeEventEmitter {
     const oldSettings = storage.get(SETTINGS_STORAGE_KEY);
     settings = {...defaultSettings, ...oldSettings};
 
-    if (oldSettings != null && oldSettings.version !== process.env.EXT_VER) {
-      const oldEmoteMenuValue = oldSettings[SettingIds.LEGACY_EMOTE_MENU];
-      const emoteMenuValue = oldEmoteMenuValue ? EmoteMenuTypes.LEGACY : EmoteMenuTypes.NONE;
-      settings = {...settings, [SettingIds.EMOTE_MENU]: emoteMenuValue};
-      delete settings[SettingIds.LEGACY_EMOTE_MENU];
-    }
-
     if (oldSettings == null || (oldSettings != null && oldSettings.version == null)) {
       settings = {...settings, version: process.env.EXT_VER};
       storage.set(SETTINGS_STORAGE_KEY, settings);
     }
 
-    this.upgradeFlags(settings.version);
+    this.upgrade(settings.version);
   }
 
   get(id) {
@@ -84,7 +77,17 @@ class Settings extends SafeEventEmitter {
     return value;
   }
 
-  upgradeFlags(version) {
+  upgrade(version) {
+    if (version !== process.env.EXT_VER) {
+      const oldEmoteMenuValue = this.get(SettingIds.LEGACY_EMOTE_MENU);
+      if (oldEmoteMenuValue != null) {
+        const emoteMenuValue = oldEmoteMenuValue ? EmoteMenuTypes.LEGACY : EmoteMenuTypes.NONE;
+        // now storing emote menu as an enum rather than a boolean
+        this.set(SettingIds.EMOTE_MENU, emoteMenuValue);
+        this.set(SettingIds.LEGACY_EMOTE_MENU, undefined);
+      }
+    }
+
     for (const flagSettingId of FlagSettings) {
       const defaultValue = SettingDefaultValues[flagSettingId];
       const defaultFlags = defaultValue[0];
