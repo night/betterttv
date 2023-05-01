@@ -81,7 +81,7 @@ class Settings extends SafeEventEmitter {
     if (version !== process.env.EXT_VER) {
       const oldEmoteMenuValue = this.get(SettingIds.LEGACY_EMOTE_MENU);
       if (oldEmoteMenuValue != null) {
-        const emoteMenuValue = oldEmoteMenuValue ? EmoteMenuTypes.LEGACY : EmoteMenuTypes.NONE;
+        const emoteMenuValue = oldEmoteMenuValue ? EmoteMenuTypes.LEGACY_ENABLED : EmoteMenuTypes.NONE;
         // now storing emote menu as an enum rather than a boolean
         this.set(SettingIds.EMOTE_MENU, emoteMenuValue);
         this.set(SettingIds.LEGACY_EMOTE_MENU, undefined);

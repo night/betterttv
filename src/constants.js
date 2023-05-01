@@ -61,7 +61,7 @@ export const DeletedMessageTypes = {
 
 export const EmoteMenuTypes = {
   NONE: 0,
-  LEGACY: 1,
+  LEGACY_ENABLED: 1,
   ENABLED: 2,
 };
 

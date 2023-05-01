@@ -18,7 +18,10 @@ function EmoteMenu() {
         <p className={styles.settingDescription}>
           {formatMessage({defaultMessage: 'Enables a more advanced emote menu for chat'})}
         </p>
-        <Toggle checked={toggled} onChange={(state) => setValue(state ? EmoteMenuTypes.LEGACY : EmoteMenuTypes.NONE)} />
+        <Toggle
+          checked={toggled}
+          onChange={(state) => setValue(state ? EmoteMenuTypes.ENABLED : EmoteMenuTypes.NONE)}
+        />
       </div>
       {toggled ? (
         <div className={styles.settingRow}>
@@ -27,7 +30,7 @@ function EmoteMenu() {
           </p>
           <Toggle
             checked={value === EmoteMenuTypes.ENABLED}
-            onChange={(state) => setValue(state ? EmoteMenuTypes.ENABLED : EmoteMenuTypes.LEGACY)}
+            onChange={(state) => setValue(state ? EmoteMenuTypes.ENABLED : EmoteMenuTypes.LEGACY_ENABLED)}
           />
         </div>
       ) : null}
