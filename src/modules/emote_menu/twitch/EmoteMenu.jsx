@@ -115,9 +115,6 @@ export default class EmoteMenuModule {
 
   show(emoteMenuValue) {
     const legacyContainer = document.querySelector(LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
-    if (legacyContainer == null) {
-      return;
-    }
     legacyContainer.classList.toggle(styles.hideEmoteMenuButton, emoteMenuValue === EmoteMenuTypes.NONE);
 
     const emotePickerButtonContainer = document.querySelector(EMOTE_PICKER_BUTTON_SELECTOR)?.parentElement;
