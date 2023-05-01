@@ -37,10 +37,14 @@ function isWindowSmallStandaloneChat() {
 function Window({setHandleOpen}) {
   const [page, setPage] = useState(PageTypes.CHAT_SETTINGS);
   const [open, setOpen] = useState(false);
+  const [defaultSearchInput, setDefaultSearchInput] = useState('');
   const [isSmallStandaloneChat, setStandaloneChat] = useState(isWindowSmallStandaloneChat());
 
   useEffect(() => {
-    setHandleOpen(setOpen);
+    setHandleOpen((isOpen, searchInput) => {
+      setOpen(isOpen);
+      setDefaultSearchInput(searchInput);
+    });
 
     function checkStandaloneChat() {
       setStandaloneChat(isWindowSmallStandaloneChat());
@@ -73,7 +77,7 @@ function Window({setHandleOpen}) {
             setPage(value);
           }}
         />
-        <Page page={page} onClose={() => setOpen(false)} />
+        <Page page={page} defaultSearchInput={defaultSearchInput} onClose={() => setOpen(false)} />
       </Modal>
     </ThemeProvider>
   );

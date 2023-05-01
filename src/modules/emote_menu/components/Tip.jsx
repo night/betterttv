@@ -24,8 +24,7 @@ function TextButton({children, ...props}) {
 }
 
 function getTipToDisplay() {
-  const [emoteMenuValue, setEmoteMenuValue] = useStorageState(SettingIds.EMOTE_MENU);
-
+  const [emoteMenuValue] = useStorageState(SettingIds.EMOTE_MENU);
   if (!tips[EmoteMenuTips.EMOTE_MENU_PREVENT_CLOSE]) {
     return [
       EmoteMenuTips.EMOTE_MENU_PREVENT_CLOSE,
@@ -60,7 +59,10 @@ function getTipToDisplay() {
           button: ([text]) => (
             <TextButton
               key="emote-menu-replace-default-tip-button"
-              onClick={() => setEmoteMenuValue(EmoteMenuTypes.ENABLED)}>
+              onClick={async () => {
+                const {default: settings} = await import('../../settings/index.js');
+                settings.openSettings(null, 'Emote Menu');
+              }}>
               {text}
             </TextButton>
           ),

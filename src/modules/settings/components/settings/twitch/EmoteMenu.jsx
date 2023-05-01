@@ -23,7 +23,7 @@ function EmoteMenu() {
       {toggled ? (
         <div className={styles.settingRow}>
           <p className={styles.settingDescription}>
-            {formatMessage({defaultMessage: "Replace twitch's native emote menu."})}
+            {formatMessage({defaultMessage: "Replace Twitch's native emote menu."})}
           </p>
           <Toggle
             checked={value === EmoteMenuTypes.ENABLED}
