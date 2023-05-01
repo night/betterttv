@@ -58,7 +58,7 @@
     "framer-motion": "^10.12.4",
     "fuse.js": "6.6.2",
     "git-rev-sync": "3.0.2",
-    "glob": "10.1.0",
+    "glob": "10.2.2",
     "got": "12.6.0",
     "graphql-tag": "2.12.6",
     "json-loader": "0.5.7",
