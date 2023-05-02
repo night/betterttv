@@ -31,9 +31,18 @@ section[data-test-selector="chat-room-component-layout"] .chat-scrollable-area__
 }
 `;
 
+let fontUpdateCallback = null;
+export function setFontUpdateCallback(callback) {
+  fontUpdateCallback = callback;
+}
+
 let fontSettings;
 
 function updateFontSettings() {
+  if (fontUpdateCallback != null) {
+    fontUpdateCallback();
+  }
+
   if (fontSettings == null) {
     fontSettings = document.createElement('style');
     fontSettings.id = STYLE_ID;
