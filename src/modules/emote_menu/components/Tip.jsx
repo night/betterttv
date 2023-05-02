@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import Divider from 'rsuite/Divider';
 import Button from 'rsuite/Button';
-import {EmoteMenuTips, EmoteMenuTypes, SettingIds} from '../../../constants.js';
+import {EmoteMenuTips, EmoteMenuTypes, PlatformTypes, SettingIds} from '../../../constants.js';
 import storage from '../../../storage.js';
-import {isMac} from '../../../utils/window.js';
+import {getPlatform, isMac} from '../../../utils/window.js';
 import emoteMenuStore from '../stores/emote-menu-store.js';
 import Icons from './Icons.jsx';
 import styles from './Tip.module.css';
@@ -50,7 +50,11 @@ function getTipToDisplay() {
     ];
   }
 
-  if (!tips[EmoteMenuTips.EMOTE_MENU_REPLACE_DEFAULT] && emoteMenuValue !== EmoteMenuTypes.ENABLED) {
+  if (
+    !tips[EmoteMenuTips.EMOTE_MENU_REPLACE_DEFAULT] &&
+    emoteMenuValue !== EmoteMenuTypes.ENABLED &&
+    PlatformTypes.TWITCH === getPlatform()
+  ) {
     return [
       EmoteMenuTips.EMOTE_MENU_REPLACE_DEFAULT,
       formatMessage(
