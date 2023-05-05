@@ -45,6 +45,25 @@
   margin-right: 8px;
 }
 
+.settingStack {
+  display: flex;
+  flex-direction: column;
+  row-gap: 4px;
+  align-items: flex-end;
+}
+
+.settingLinkButton {
+  padding: 0px;
+}
+
+.settingRowRightAlign {
+  display: flex;
+  margin-top: 4px;
+  column-gap: 4px;
+  align-items: baseline;
+  justify-content: flex-end;
+}
+
 .content {
   composes: scroll from '../../emote_menu/styles/Scrollbar.module.css';
   overflow-y: scroll;

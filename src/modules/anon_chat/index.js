@@ -1,7 +1,7 @@
 import settings from '../../settings.js';
 import watcher from '../../watcher.js';
 import twitch from '../../utils/twitch.js';
-import {PlatformTypes, SettingIds} from '../../constants.js';
+import {AnonChatFilterTypes, PlatformTypes, SettingIds} from '../../constants.js';
 import {getCurrentUser} from '../../utils/user.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
 import formatMessage from '../../i18n/index.js';
@@ -50,13 +50,22 @@ class AnonChatModule {
 
   load() {
     this.enabled = false;
-    const whitelistedChannels = settings.get(SettingIds.ANON_CHAT_WHITELISTED_CHANNELS);
+    const channels = settings.get(SettingIds.ANON_CHAT_CHANNELS);
+    const filterType = settings.get(SettingIds.ANON_CHAT_FILTER_TYPE);
     const currentChannelName = twitch.getCurrentChat()?.props?.channelLogin;
-    if (
-      forcedURL ||
-      (settings.get(SettingIds.ANON_CHAT) &&
-        !whitelistedChannels.map((user) => user.toLowerCase()).includes(currentChannelName))
-    ) {
+
+    console.log('anon chat load', channels, filterType, currentChannelName);
+
+    let shouldPart = false;
+    if (filterType === AnonChatFilterTypes.WHITELIST) {
+      shouldPart = !channels.map((user) => user.toLowerCase()).includes(currentChannelName);
+    } else {
+      shouldPart = channels.map((user) => user.toLowerCase()).includes(currentChannelName);
+    }
+
+    console.log(shouldPart);
+
+    if (forcedURL || (settings.get(SettingIds.ANON_CHAT) && shouldPart)) {
       this.part();
     } else {
       this.join();
