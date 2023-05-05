@@ -54,16 +54,12 @@ class AnonChatModule {
     const filterType = settings.get(SettingIds.ANON_CHAT_FILTER_TYPE);
     const currentChannelName = twitch.getCurrentChat()?.props?.channelLogin;
 
-    console.log('anon chat load', channels, filterType, currentChannelName);
-
     let shouldPart = false;
     if (filterType === AnonChatFilterTypes.WHITELIST) {
       shouldPart = !channels.map((user) => user.toLowerCase()).includes(currentChannelName);
     } else {
       shouldPart = channels.map((user) => user.toLowerCase()).includes(currentChannelName);
     }
-
-    console.log(shouldPart);
 
     if (forcedURL || (settings.get(SettingIds.ANON_CHAT) && shouldPart)) {
       this.part();
