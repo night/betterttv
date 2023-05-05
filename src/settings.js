@@ -61,6 +61,10 @@ class Settings extends SafeEventEmitter {
     }
 
     const updatedSettings = {...settings, [id]: storageValue, version: process.env.EXT_VER};
+    if (storageValue == null) {
+      delete updatedSettings[id];
+    }
+
     settings = updatedSettings;
 
     const storageSettings = {...updatedSettings};
