@@ -45,11 +45,11 @@ class ChatDeletedMessagesModule {
         return;
       }
 
-      messageRenderer.props.isDeleted = false;
-      messageRenderer.forceUpdate(() => {
-        const {message} = messageRenderer.props;
-        this.handleDelete(message.user.userLogin, message.id);
-      });
+      const {message} = messageRenderer.props;
+      if (this.handleDelete(message.user.userLogin, message.id)) {
+        messageRenderer.props.isDeleted = false;
+        messageRenderer.forceUpdate();
+      }
     });
   }
 
