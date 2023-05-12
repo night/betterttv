@@ -45,11 +45,18 @@ class ChatDeletedMessagesModule {
         return;
       }
 
-      const {message} = messageRenderer.props;
-      if (this.handleDelete(message.user.userLogin, message.id)) {
-        messageRenderer.props.isDeleted = false;
-        messageRenderer.forceUpdate();
+      const deletedMessages = settings.get(SettingIds.DELETED_MESSAGES);
+      if (
+        ![DeletedMessageTypes.HIDE, DeletedMessageTypes.SHOW, DeletedMessageTypes.HIGHLIGHT].includes(deletedMessages)
+      ) {
+        return;
       }
+
+      messageRenderer.props.isDeleted = false;
+      messageRenderer.forceUpdate(() => {
+        const {message} = messageRenderer.props;
+        this.handleDelete(message.user.userLogin, message.id);
+      });
     });
   }
 
