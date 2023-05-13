@@ -34,7 +34,7 @@
 }
 
 .bttv-emote-modifier-rotate-left img {
-  transform: rotate(-0.25turn);
+  transform: rotate(-90deg);
 }
 
 .bttv-emote-modifier-rotate-right img {

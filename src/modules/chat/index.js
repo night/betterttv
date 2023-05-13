@@ -35,8 +35,6 @@ const EMOTE_MODIFIERS = {
   ffzX: 'bttv-emote-modifier-flip-horizontal',
   ffzY: 'bttv-emote-modifier-flip-vertical',
   ffzCursed: 'bttv-emote-modifier-cursed',
-  ffzL: 'bttv-emote-modifier-rotate-left',
-  ffzR: 'bttv-emote-modifier-rotate-right'
 };
 const PREFIX_EMOTE_MODIFIERS_LIST = Object.keys(EMOTE_MODIFIERS).filter((key) => key.endsWith('!'));
 const SUFFIX_EMOTE_MODIFIERS_LIST = Object.keys(EMOTE_MODIFIERS).filter((key) => !key.endsWith('!'));
