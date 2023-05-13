@@ -32,5 +32,5 @@ registerComponent(EmoteMenu, {
   settingId: SettingIds.EMOTE_MENU,
   name: SETTING_NAME,
   category: CategoryTypes.CHAT,
-  keywords: ['youtube', 'emotes', 'popup'],
+  keywords: ['emotes', 'popup'],
 });

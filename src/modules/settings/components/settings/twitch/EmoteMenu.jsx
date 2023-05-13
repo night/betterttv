@@ -42,5 +42,5 @@ registerComponent(EmoteMenu, {
   settingId: SettingIds.EMOTE_MENU,
   name: SETTING_NAME,
   category: CategoryTypes.CHAT,
-  keywords: ['twitch', 'emotes', 'popup'],
+  keywords: ['emotes', 'popup'],
 });
