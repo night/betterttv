@@ -33,6 +33,16 @@
   transform: scaleY(-1);
 }
 
+.bttv-emote-modifier-rotate-left img {
+  transform: rotate(-90deg);
+  max-width: 28px;
+}
+
+.bttv-emote-modifier-rotate-right img {
+  transform: rotate(90deg);
+  max-width: 28px;
+}
+
 .bttv-emote-modifier-zero-space {
   margin-left: -4px;
 }

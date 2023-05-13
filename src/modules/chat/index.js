@@ -29,6 +29,8 @@ const EMOTE_MODIFIERS = {
   'v!': 'bttv-emote-modifier-flip-vertical',
   'z!': 'bttv-emote-modifier-zero-space',
   'c!': 'bttv-emote-modifier-cursed',
+  'l!': 'bttv-emote-modifier-rotate-left',
+  'r!': 'bttv-emote-modifier-rotate-right',
   ffzW: 'bttv-emote-modifier-wide',
   ffzX: 'bttv-emote-modifier-flip-horizontal',
   ffzY: 'bttv-emote-modifier-flip-vertical',

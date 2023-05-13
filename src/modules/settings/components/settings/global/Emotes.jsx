@@ -85,7 +85,7 @@ function EmotesModule() {
               {formatMessage(
                 {
                   defaultMessage:
-                    'Emote modifiers allow you to transform emotes in realtime. Wide: <code>w! emoteName</code>, Horizontal Flip: <code>h! emoteName</code>, Vertical Flip: <code>v! emoteName</code>, Zero-Width: <code>z! emoteName</code>',
+                    'Emote modifiers allow you to transform emotes in realtime. Wide: <code>w! emoteName</code>, Horizontal Flip: <code>h! emoteName</code>, Vertical Flip: <code>v! emoteName</code>, Zero-Width: <code>z! emoteName</code>, Rotate Left: <code>l! emoteName</code>, Rotate Right: <code>r! emoteName</code>',
                 },
                 {
                   // eslint-disable-next-line react/no-unstable-nested-components
