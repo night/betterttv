@@ -15,6 +15,7 @@ const CHAT_MESSAGE_SELECTOR = '.chat-line__message';
 const CHAT_INPUT = 'textarea[data-a-target="chat-input"], div[data-a-target="chat-input"]';
 const CHAT_WYSIWYG_INPUT_EDITOR = '.chat-wysiwyg-input__editor';
 const COMMUNITY_HIGHLIGHT = '.community-highlight';
+const STREAM_CHAT = '.stream-chat';
 
 const USER_PROFILE_IMAGE_GQL_QUERY = gql`
   query BTTVGetUserProfilePicture($userId: ID!) {
@@ -787,5 +788,18 @@ export default {
       return Promise.reject(new Error('unable to locate Twitch Apollo client'));
     }
     return client.query({query, variables});
+  },
+
+  getChatCommandStore() {
+    let context;
+    try {
+      const node = searchReactParents(
+        getReactInstance(document.querySelector(STREAM_CHAT)),
+        (n) => n.pendingProps?.value?.getCommands != null,
+        20
+      );
+      context = node.pendingProps.value;
+    } catch (_) {}
+    return context;
   },
 };
