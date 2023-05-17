@@ -13,7 +13,7 @@ commandStore.registerCommand({
     chat.modsOnly(true);
     twitch.sendChatAdminMessage(`Local mods-only mode enabled.`);
   },
-  permissionLevel: PermissionLevels.MODERATOR,
+  permissionLevel: PermissionLevels.VIEWER,
 });
 
 commandStore.registerCommand({
@@ -24,5 +24,5 @@ commandStore.registerCommand({
     chat.modsOnly(false);
     twitch.sendChatAdminMessage(`Local mods-only mode disabled.`);
   },
-  permissionLevel: PermissionLevels.MODERATOR,
+  permissionLevel: PermissionLevels.VIEWER,
 });

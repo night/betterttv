@@ -19,47 +19,49 @@ function secondsToLength(s) {
   );
 }
 
+function handleUptime() {
+  const channel = getCurrentChannel();
+  const query = gql`
+    query BTTVGetChannelStreamCreatedAt($userId: ID!) {
+      user(id: $userId) {
+        id
+        stream {
+          id
+          createdAt
+        }
+      }
+    }
+  `;
+
+  twitch
+    .graphqlQuery(query, {userId: channel.id})
+    .then(
+      ({
+        data: {
+          user: {stream},
+        },
+      }) => {
+        const startedTime = stream != null ? new Date(stream.createdAt) : null;
+        if (!startedTime) {
+          twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Stream is not live'}));
+          return;
+        }
+
+        const secondsSince = Math.round((Date.now() - startedTime.getTime()) / 1000);
+        twitch.sendChatAdminMessage(
+          formatMessage({defaultMessage: 'Current Uptime: {duration}'}, {duration: secondsToLength(secondsSince)})
+        );
+      }
+    )
+    .catch(() => twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Could not fetch stream.'})));
+}
+
 commandStore.registerCommand({
   name: 'uptime',
   commandArgs: [],
   description: formatMessage({
     defaultMessage: 'Usage: "/uptime" - Retrieves the amount of time the channel has been live',
   }),
-  handler: () => {
-    const channel = getCurrentChannel();
-    const query = gql`
-      query BTTVGetChannelStreamCreatedAt($userId: ID!) {
-        user(id: $userId) {
-          id
-          stream {
-            id
-            createdAt
-          }
-        }
-      }
-    `;
-
-    twitch
-      .graphqlQuery(query, {userId: channel.id})
-      .then(
-        ({
-          data: {
-            user: {stream},
-          },
-        }) => {
-          const startedTime = stream != null ? new Date(stream.createdAt) : null;
-          if (!startedTime) {
-            twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Stream is not live'}));
-            return;
-          }
-
-          const secondsSince = Math.round((Date.now() - startedTime.getTime()) / 1000);
-          twitch.sendChatAdminMessage(
-            formatMessage({defaultMessage: 'Current Uptime: {duration}'}, {duration: secondsToLength(secondsSince)})
-          );
-        }
-      )
-      .catch(() => twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Could not fetch stream.'})));
-  },
+  handler: handleUptime,
   permissionLevel: PermissionLevels.VIEWER,
 });

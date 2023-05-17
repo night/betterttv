@@ -13,7 +13,7 @@ commandStore.registerCommand({
     chat.subsOnly(true);
     twitch.sendChatAdminMessage(`Local sub-only mode enabled.`);
   },
-  permissionLevel: PermissionLevels.MODERATOR,
+  permissionLevel: PermissionLevels.VIEWER,
 });
 
 commandStore.registerCommand({
@@ -24,5 +24,5 @@ commandStore.registerCommand({
     chat.subsOnly(false);
     twitch.sendChatAdminMessage(`Local sub-only mode disabled.`);
   },
-  permissionLevel: PermissionLevels.MODERATOR,
+  permissionLevel: PermissionLevels.VIEWER,
 });

@@ -48,9 +48,9 @@ commandStore.registerCommand({
   name: 'bttv',
   commandArgs: [],
   description: formatMessage({
-    defaultMessage: 'Usage: "/bttv" - Yeah... but BTTV is like a 3rd-party thing, and I don\'t know...',
+    defaultMessage: 'Usage: "/bttv" - Yeah... but BTTV is like a third-party thing, and I don\'t know...',
   }),
   hidden: true,
-  handler: () => twitch.sendChatMessage("Yeah... but BTTV is like a 3rd-party thing, and I don't know... bttvNice"),
+  handler: () => twitch.sendChatMessage("Yeah... but BTTV is like a third-party thing, and I don't know... bttvNice"),
   permissionLevel: PermissionLevels.VIEWER,
 });

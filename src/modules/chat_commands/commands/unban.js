@@ -110,7 +110,7 @@ const unbanCommand = {
   commandArgs: [{name: 'username', isRequired: true}],
   description: formatMessage({defaultMessage: `Usage: "/u '<'login'>'" - Shortcut for /unban`}),
   handler: (username) => (username === 'all' ? massUnban() : twitch.sendChatMessage(`/unban ${username}`)),
-  permissionLevel: 2,
+  permissionLevel: PermissionLevels.MODERATOR,
 };
 
 commandStore.registerCommand({name: 'unban', ...unbanCommand});

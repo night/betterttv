@@ -11,7 +11,7 @@ commandStore.registerCommand({
     chat.asciiOnly(true);
     twitch.sendChatAdminMessage(`Local ascii-only mode enabled.`);
   },
-  permissionLevel: PermissionLevels.MODERATOR,
+  permissionLevel: PermissionLevels.VIEWER,
 });
 
 commandStore.registerCommand({
@@ -24,5 +24,5 @@ commandStore.registerCommand({
     chat.asciiOnly(false);
     twitch.sendChatAdminMessage(`Local ascii-only mode disabled.`);
   },
-  permissionLevel: PermissionLevels.MODERATOR,
+  permissionLevel: PermissionLevels.VIEWER,
 });

@@ -19,17 +19,17 @@ class CommandStore {
     if (twitchCommandStore == null || this.commands.length === 0) {
       return;
     }
-    this.commands.forEach((command) => {
+    for (const command of this.commands) {
       twitchCommandStore.addCommand(command);
-    });
+    }
   }
 
   registerCommand(command) {
+    this.commands.push(command);
     const twitchCommandStore = twitch.getChatCommandStore();
     if (twitchCommandStore == null) {
       return;
     }
-    this.commands.push(command);
     twitchCommandStore.addCommand(command);
   }
 }
