@@ -11,14 +11,8 @@ import twitch from '../../../utils/twitch.js';
 
 const CHAT_TEXT_AREA = 'textarea[data-a-target="chat-input"], div[data-a-target="chat-input"]';
 
-const BTTV_EMOTE_PICKER_BUTTON_CONTAINER_DATA_A_TARGET = 'bttv-emote-picker-button-container';
-const BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR = `div[data-a-target="${BTTV_EMOTE_PICKER_BUTTON_CONTAINER_DATA_A_TARGET}"]`;
-const LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_DATA_A_TARGET = 'legacy-bttv-emote-picker-button-container';
-const LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR = `div[data-a-target="${LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_DATA_A_TARGET}"]`;
-
 const CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR = '.chat-input div[data-test-selector="chat-input-buttons-container"]';
 const EMOTE_PICKER_BUTTON_SELECTOR = 'button[data-a-target="emote-picker-button"]';
-
 const BTTV_BUTTON_CONTAINER_ID = 'bttv-emote-menu-button-container';
 const BTTV_BUTTON_CONTAINER_SELECTOR = `#${BTTV_BUTTON_CONTAINER_ID}`;
 
@@ -65,12 +59,19 @@ export default class EmoteMenuModule {
 
     const emoteMenuValue = settings.get(SettingIds.EMOTE_MENU);
     if (emoteMenuValue !== EmoteMenuTypes.NONE) {
-      let container = null;
+      if (isMounted && mountedRoot != null) {
+        mountedRoot.unmount();
+        isMounted = false;
+        const currentContainer = document.querySelector(BTTV_BUTTON_CONTAINER_SELECTOR);
+        if (currentContainer != null) {
+          currentContainer.remove();
+        }
+      }
 
-      const buttonContainer = document.querySelector(BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
-      if (emoteMenuValue === EmoteMenuTypes.ENABLED && buttonContainer == null) {
-        container = document.createElement('div');
-        container.setAttribute('data-a-target', BTTV_EMOTE_PICKER_BUTTON_CONTAINER_DATA_A_TARGET);
+      const container = document.createElement('div');
+      container.setAttribute('id', BTTV_BUTTON_CONTAINER_ID);
+
+      if (emoteMenuValue === EmoteMenuTypes.ENABLED) {
         const nativeEmotePickerButtonContainer = document.querySelector(EMOTE_PICKER_BUTTON_SELECTOR)?.parentElement;
         if (nativeEmotePickerButtonContainer == null) {
           return;
@@ -81,12 +82,7 @@ export default class EmoteMenuModule {
         }
         chatInputIcons.classList.add(styles.chatInputIcon);
         chatInputIcons.appendChild(container);
-      }
-
-      const legacyContainer = document.querySelector(LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
-      if (emoteMenuValue === EmoteMenuTypes.LEGACY_ENABLED && legacyContainer == null) {
-        container = document.createElement('div');
-        container.setAttribute('data-a-target', LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_DATA_A_TARGET);
+      } else {
         const chatSettingsButtonContainer = document.querySelector(CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR);
         if (chatSettingsButtonContainer == null) {
           return;
@@ -95,21 +91,6 @@ export default class EmoteMenuModule {
         rightContainer.insertBefore(container, rightContainer.lastChild);
       }
 
-      if (container == null) {
-        this.show(emoteMenuValue);
-        return;
-      }
-
-      const currentContainer = document.querySelector(BTTV_BUTTON_CONTAINER_SELECTOR);
-      if (currentContainer != null) {
-        currentContainer.remove();
-        if (mountedRoot != null) {
-          mountedRoot.unmount();
-          isMounted = false;
-        }
-      }
-
-      container.setAttribute('id', BTTV_BUTTON_CONTAINER_ID);
       mountedRoot = createRoot(container);
       mountedRoot.render(
         <SafeEmoteMenuButton
