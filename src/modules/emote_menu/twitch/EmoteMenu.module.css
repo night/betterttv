@@ -3,12 +3,6 @@
   position: relative !important;
 }
 
-.hideDefaultEmoteMenuButton {
-  button[data-a-target='emote-picker-button'] {
-    display: none !important;
-  }
-}
-
 .hideEmoteMenuButton {
   display: none;
 }
@@ -16,6 +10,9 @@
 .chatInputIcon {
   display: inline-flex;
   vertical-align: top;
+  button[data-a-target='emote-picker-button'] {
+    display: none;
+  }
 }
 
 .button {
