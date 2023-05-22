@@ -114,6 +114,7 @@ function loadButton() {
   if (container != null) {
     return;
   }
+
   const chatInputIcons = document.querySelector(EMOTE_PICKER_BUTTON_SELECTOR)?.parentElement?.parentElement;
   if (chatInputIcons == null) {
     return;
