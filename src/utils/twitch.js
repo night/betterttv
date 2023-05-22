@@ -802,14 +802,4 @@ export default {
     } catch (_) {}
     return context;
   },
-
-  getUserIdFromPreviewCardImageLink(link) {
-    let userId;
-    try {
-      const node = searchReactChildren(getReactInstance(link), (n) => n.pendingProps?.channelID != null, 100);
-      console.log(node);
-      userId = node.pendingProps.channelID;
-    } catch (_) {}
-    return userId;
-  },
 };
