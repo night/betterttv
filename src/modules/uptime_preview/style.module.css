@@ -1,0 +1,11 @@
+.streamUptimePreview {
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin: 1rem;
+  background: var(--color-background-overlay-alt);
+  color: var(--color-text-overlay);
+  font-size: var(--font-size-6);
+  border-radius: var(--border-radius-small);
+  padding: 0px 0.4rem;
+}
