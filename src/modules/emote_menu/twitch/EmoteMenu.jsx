@@ -72,7 +72,7 @@ function loadLegacyButton() {
 
   const rightContainer = container.lastChild;
   const buttonContainer = document.createElement('div');
-  buttonContainer.setAttribute('data-a-target', LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID);
+  buttonContainer.setAttribute('id', LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID);
   rightContainer.insertBefore(buttonContainer, rightContainer.lastChild);
 
   if (legacyMountedRoot != null) {
@@ -121,7 +121,7 @@ function loadButton() {
   }
 
   const buttonContainer = document.createElement('div');
-  buttonContainer.setAttribute('data-a-target', BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID);
+  buttonContainer.setAttribute('id', BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID);
   chatInputIcons.classList.add(styles.chatInputIcon);
   chatInputIcons.appendChild(buttonContainer);
 
