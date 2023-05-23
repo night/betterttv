@@ -2,7 +2,7 @@ import React from 'react';
 import {createRoot} from 'react-dom/client';
 import settings from '../../../settings.js';
 import {EmoteMenuTypes, SettingIds} from '../../../constants.js';
-import EmoteMenuButton from '../components/LegacyButton.jsx';
+import EmoteMenuButton from '../components/Button.jsx';
 import domObserver from '../../../observers/dom.js';
 import styles from './EmoteMenu.module.css';
 import {getCurrentUser} from '../../../utils/user.js';
@@ -82,6 +82,7 @@ function loadLegacyButton() {
   legacyMountedRoot = createRoot(buttonContainer);
   legacyMountedRoot.render(
     <SafeEmoteMenuButton
+      isLegacy
       onError={() => unloadLegacyButton(legacyContainer)}
       appendToChat={appendToChat}
       className={styles.button}

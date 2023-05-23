@@ -2,7 +2,7 @@ import React from 'react';
 import {createRoot} from 'react-dom/client';
 import settings from '../../../settings.js';
 import {EmoteMenuTypes, EmoteProviders, SettingIds} from '../../../constants.js';
-import EmoteMenuButton from '../components/LegacyButton.jsx';
+import EmoteMenuButton from '../components/Button.jsx';
 import domObserver from '../../../observers/dom.js';
 import styles from './EmoteMenu.module.css';
 import {getCurrentUser} from '../../../utils/user.js';
@@ -80,6 +80,7 @@ export default class EmoteMenuModule {
       mountedRoot = createRoot(buttonContainer);
       mountedRoot.render(
         <SafeEmoteMenuButton
+          isLegacy
           onError={() => this.show(false)}
           onMount={() => {
             this.show(true);

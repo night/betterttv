@@ -8,9 +8,10 @@ import {EmoteMenuTips} from '../../../constants.js';
 import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js';
 import keyCodes from '../../../utils/keycodes.js';
 import {isMac} from '../../../utils/window.js';
-import styles from './LegacyButton.module.css';
+import styles from './Button.module.css';
+import LogoIcon from '../../../common/components/LogoIcon.jsx';
 
-export default function LegacyButton({appendToChat, className, boundingQuerySelector}) {
+export default function Button({isLegacy = false, appendToChat, className, boundingQuerySelector}) {
   const [loaded, setLoaded] = useState(false);
   const [whisperOpen, setWhisperOpen] = useState(false);
   const whisperRef = useRef(null);
@@ -67,7 +68,13 @@ export default function LegacyButton({appendToChat, className, boundingQuerySele
           boundingQuerySelector={boundingQuerySelector}
         />
       }>
-      <button type="button" className={classNames(styles.button, className)} />
+      {isLegacy ? (
+        <button type="button" className={classNames(styles.legacyButton, className)} />
+      ) : (
+        <button type="button" className={classNames(styles.button, className)}>
+          <LogoIcon />
+        </button>
+      )}
     </Whisper>
   );
 }

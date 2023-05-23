@@ -1,4 +1,4 @@
-.button {
+.legacyButton {
   background-size: 18px;
   background-position: center;
   background-repeat: no-repeat;
@@ -10,4 +10,16 @@
   float: left;
   padding: 15px;
   background-image: url(assets/icons/legacy_smile.svg) !important;
+}
+
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  padding: 7px;
+  svg {
+    height: 16px;
+    width: 16px;
+  }
 }
