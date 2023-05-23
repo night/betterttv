@@ -91,15 +91,15 @@ function loadLegacyButton() {
   );
 }
 
-function unloadButton(container, chatInputIcons) {
+function unloadButton(container, nativeEmotePickerButton) {
   if (container === undefined) {
     container = document.getElementById(BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID);
   }
-  if (chatInputIcons === undefined) {
-    chatInputIcons = document.querySelector(EMOTE_PICKER_BUTTON_SELECTOR)?.parentElement?.parentElement;
+  if (nativeEmotePickerButton === undefined) {
+    nativeEmotePickerButton = document.querySelector(EMOTE_PICKER_BUTTON_SELECTOR);
   }
-  if (chatInputIcons != null) {
-    chatInputIcons.classList.remove(styles.chatInputIcon);
+  if (nativeEmotePickerButton != null) {
+    nativeEmotePickerButton.classList.remove(styles.hideEmoteMenuButton);
   }
   if (container != null) {
     container.remove();
@@ -115,14 +115,20 @@ function loadButton() {
     return;
   }
 
-  const chatInputIcons = document.querySelector(EMOTE_PICKER_BUTTON_SELECTOR)?.parentElement?.parentElement;
+  const nativeEmotePickerButton = document.querySelector(EMOTE_PICKER_BUTTON_SELECTOR);
+  if (nativeEmotePickerButton == null) {
+    return;
+  }
+
+  const chatInputIcons = nativeEmotePickerButton?.parentElement?.parentElement?.parentElement;
   if (chatInputIcons == null) {
     return;
   }
 
+  nativeEmotePickerButton.classList.add(styles.hideEmoteMenuButton);
   const buttonContainer = document.createElement('div');
   buttonContainer.setAttribute('id', BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID);
-  chatInputIcons.classList.add(styles.chatInputIcon);
+  buttonContainer.classList.add(styles.container);
   chatInputIcons.appendChild(buttonContainer);
 
   if (mountedRoot != null) {
@@ -132,7 +138,7 @@ function loadButton() {
   mountedRoot = createRoot(buttonContainer);
   mountedRoot.render(
     <SafeEmoteMenuButton
-      onError={() => unloadButton(buttonContainer, chatInputIcons)}
+      onError={() => unloadButton(buttonContainer, nativeEmotePickerButton)}
       appendToChat={appendToChat}
       className={styles.button}
       boundingQuerySelector={CHAT_TEXT_AREA}

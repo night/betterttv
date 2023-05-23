@@ -1,18 +1,10 @@
 .container {
-  display: inline-flex !important;
-  position: relative !important;
+  display: inline-block !important;
+  vertical-align: bottom !important;
 }
 
 .hideEmoteMenuButton {
   display: none;
-}
-
-.chatInputIcon {
-  display: inline-flex;
-  vertical-align: top;
-  button[data-a-target='emote-picker-button'] {
-    display: none;
-  }
 }
 
 .button {
