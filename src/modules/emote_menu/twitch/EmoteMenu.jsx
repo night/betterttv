@@ -12,11 +12,10 @@ import twitch from '../../../utils/twitch.js';
 const CHAT_TEXT_AREA = 'textarea[data-a-target="chat-input"], div[data-a-target="chat-input"]';
 
 // For legacy button
-const LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR =
-  'div[data-a-target="legacy-bttv-emote-picker-button-container"]';
+const LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID = 'legacy-bttv-emote-picker-button-container';
 const CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR = '.chat-input div[data-test-selector="chat-input-buttons-container"]';
 
-const BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR = 'div[data-a-target="bttv-emote-picker-button-container"]';
+const BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID = 'bttv-emote-picker-button-container';
 const EMOTE_PICKER_BUTTON_SELECTOR = 'button[data-a-target="emote-picker-button"]';
 
 class SafeEmoteMenuButton extends React.Component {
@@ -50,7 +49,7 @@ function appendToChat({code: text}, shouldFocus = true) {
 
 function unloadLegacyButton(legacyContainer) {
   if (legacyContainer === undefined) {
-    legacyContainer = document.querySelector(LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
+    legacyContainer = document.getElementById(LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID);
   }
   if (legacyContainer != null) {
     legacyContainer.remove();
@@ -61,7 +60,7 @@ function unloadLegacyButton(legacyContainer) {
 }
 
 function loadLegacyButton() {
-  const legacyContainer = document.querySelector(LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
+  const legacyContainer = document.getElementById(LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID);
   if (legacyContainer != null) {
     return;
   }
@@ -73,7 +72,7 @@ function loadLegacyButton() {
 
   const rightContainer = container.lastChild;
   const buttonContainer = document.createElement('div');
-  buttonContainer.setAttribute('data-a-target', 'legacy-bttv-emote-picker-button-container');
+  buttonContainer.setAttribute('data-a-target', LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID);
   rightContainer.insertBefore(buttonContainer, rightContainer.lastChild);
 
   if (legacyMountedRoot != null) {
@@ -93,7 +92,7 @@ function loadLegacyButton() {
 
 function unloadButton(container, chatInputIcons) {
   if (container === undefined) {
-    container = document.querySelector(BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
+    container = document.getElementById(BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID);
   }
   if (chatInputIcons === undefined) {
     chatInputIcons = document.querySelector(EMOTE_PICKER_BUTTON_SELECTOR)?.parentElement?.parentElement;
@@ -110,7 +109,7 @@ function unloadButton(container, chatInputIcons) {
 }
 
 function loadButton() {
-  const container = document.querySelector(BTTV_EMOTE_PICKER_BUTTON_CONTAINER_SELECTOR);
+  const container = document.getElementById(BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID);
   if (container != null) {
     return;
   }
@@ -121,7 +120,7 @@ function loadButton() {
   }
 
   const buttonContainer = document.createElement('div');
-  buttonContainer.setAttribute('data-a-target', 'bttv-emote-picker-button-container');
+  buttonContainer.setAttribute('data-a-target', BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID);
   chatInputIcons.classList.add(styles.chatInputIcon);
   chatInputIcons.appendChild(buttonContainer);
 
