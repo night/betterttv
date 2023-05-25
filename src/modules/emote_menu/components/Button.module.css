@@ -18,6 +18,8 @@
   align-items: center;
   height: var(--button-size-default, 30px);
   width: var(--button-size-default, 30px);
+  color: var(--bttv-rs-text-primary);
+  cursor: pointer;
   svg {
     height: 16px;
     width: 16px;
