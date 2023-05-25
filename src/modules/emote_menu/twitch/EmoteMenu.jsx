@@ -12,7 +12,7 @@ import twitch from '../../../utils/twitch.js';
 const CHAT_TEXT_AREA = 'textarea[data-a-target="chat-input"], div[data-a-target="chat-input"]';
 
 // For legacy button
-const LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID = 'legacy-bttv-emote-picker-button-container';
+const LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID = 'bttv-legacy-emote-picker-button-container';
 const CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR = '.chat-input div[data-test-selector="chat-input-buttons-container"]';
 
 const BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID = 'bttv-emote-picker-button-container';
