@@ -121,7 +121,8 @@ function loadButton() {
   }
 
   const chatInputIcons = nativeEmotePickerButton?.parentElement?.parentElement?.parentElement;
-  if (chatInputIcons == null) {
+  const chatInputIconsStyle = chatInputIcons != null ? window.getComputedStyle(chatInputIcons) : null;
+  if (chatInputIcons == null && (chatInputIconsStyle?.display !== 'absolute' || chatInputIconsStyle.right !== '0px')) {
     return;
   }
 
