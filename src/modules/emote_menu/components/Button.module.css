@@ -16,8 +16,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  cursor: pointer;
-  padding: 7px;
+  height: var(--button-size-default, 30px);
+  width: var(--button-size-default, 30px);
   svg {
     height: 16px;
     width: 16px;
