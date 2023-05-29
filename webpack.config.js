@@ -13,7 +13,7 @@ import postcssUrl from 'postcss-url';
 // eslint-disable-next-line import/no-unresolved
 import got from 'got';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
-import SentryWebpackPlugin from '@sentry/webpack-plugin';
+import {sentryWebpackPlugin as SentryWebpackPlugin} from '@sentry/webpack-plugin';
 import FileManagerPlugin from 'filemanager-webpack-plugin';
 import normalizePath from 'normalize-path';
 
