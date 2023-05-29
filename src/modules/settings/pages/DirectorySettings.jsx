@@ -7,8 +7,8 @@ import styles from '../styles/header.module.css';
 import CloseButton from '../components/CloseButton.jsx';
 import formatMessage from '../../../i18n/index.js';
 
-function DirectorySettings({onClose}) {
-  const [search, setSearch] = useState('');
+function DirectorySettings({onClose, defaultSearchInput}) {
+  const [search, setSearch] = useState(defaultSearchInput ?? '');
 
   return (
     <>

@@ -1,20 +1,30 @@
 import React, {useState, useEffect} from 'react';
 import Divider from 'rsuite/Divider';
 import Button from 'rsuite/Button';
-import {EmoteMenuTips} from '../../../constants.js';
+import {EmoteMenuTips, EmoteMenuTypes, PlatformTypes, SettingIds} from '../../../constants.js';
 import storage from '../../../storage.js';
-import {isMac} from '../../../utils/window.js';
+import {getPlatform, isMac} from '../../../utils/window.js';
 import emoteMenuStore from '../stores/emote-menu-store.js';
 import Icons from './Icons.jsx';
 import styles from './Tip.module.css';
 import formatMessage from '../../../i18n/index.js';
+import useStorageState from '../../../common/hooks/StorageState.jsx';
 
 const tips = {};
 for (const tipStorageKey of Object.values(EmoteMenuTips)) {
   tips[tipStorageKey] = storage.get(tipStorageKey) || false;
 }
 
+function TextButton({children, ...props}) {
+  return (
+    <Button className={styles.textButton} appearance="link" size="xs" {...props}>
+      {children}
+    </Button>
+  );
+}
+
 function getTipToDisplay() {
+  const [emoteMenuValue] = useStorageState(SettingIds.EMOTE_MENU);
   if (!tips[EmoteMenuTips.EMOTE_MENU_PREVENT_CLOSE]) {
     return [
       EmoteMenuTips.EMOTE_MENU_PREVENT_CLOSE,
@@ -37,6 +47,31 @@ function getTipToDisplay() {
       isMac()
         ? formatMessage({defaultMessage: 'Control + E to Toggle Emote Menu'})
         : formatMessage({defaultMessage: 'Alt + E to Toggle Emote Menu'}),
+    ];
+  }
+
+  if (
+    !tips[EmoteMenuTips.EMOTE_MENU_REPLACE_DEFAULT] &&
+    emoteMenuValue !== EmoteMenuTypes.ENABLED &&
+    PlatformTypes.TWITCH === getPlatform()
+  ) {
+    return [
+      EmoteMenuTips.EMOTE_MENU_REPLACE_DEFAULT,
+      formatMessage(
+        {defaultMessage: '<button>Replace</button> the default emote picker button'},
+        {
+          button: ([text]) => (
+            <TextButton
+              key="emote-menu-replace-default-tip-button"
+              onClick={async () => {
+                const {default: settings} = await import('../../settings/index.js');
+                settings.openSettings(null, 'Emote Menu');
+              }}>
+              {text}
+            </TextButton>
+          ),
+        }
+      ),
     ];
   }
 
@@ -74,16 +109,13 @@ export default function Tip({onSetTip}) {
             {strong: Strong, tipDisplayText}
           )}
         </div>
-        <Button
-          className={styles.closeButton}
-          appearance="link"
-          size="xs"
+        <TextButton
           onClick={() => {
             markTipAsSeen(tipStorageKey);
             setTipToDisplay([]);
           }}>
           {formatMessage({defaultMessage: 'Hide'})}
-        </Button>
+        </TextButton>
       </div>
     </>
   );

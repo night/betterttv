@@ -1,0 +1,27 @@
+.legacyButton {
+  background-size: 18px;
+  background-position: center;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  height: 18px;
+  width: 18px;
+  filter: grayscale(100%);
+  opacity: 0.9;
+  float: left;
+  padding: 15px;
+  background-image: url(assets/icons/legacy_smile.svg) !important;
+}
+
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: var(--button-size-default, 30px);
+  width: var(--button-size-default, 30px);
+  color: var(--bttv-rs-text-primary);
+  cursor: pointer;
+  svg {
+    height: 16px;
+    width: 16px;
+  }
+}

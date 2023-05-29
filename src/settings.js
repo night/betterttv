@@ -1,6 +1,6 @@
 import SafeEventEmitter from './utils/safe-event-emitter.js';
 import storage from './storage.js';
-import {SettingIds, FlagSettings, SettingDefaultValues, ChatFlags} from './constants.js';
+import {SettingIds, FlagSettings, SettingDefaultValues, ChatFlags, EmoteMenuTypes} from './constants.js';
 import {getChangedFlags, setFlag} from './utils/flags.js';
 
 export const SETTINGS_STORAGE_KEY = 'settings';
@@ -27,7 +27,7 @@ class Settings extends SafeEventEmitter {
       storage.set(SETTINGS_STORAGE_KEY, settings);
     }
 
-    this.upgradeFlags(settings.version);
+    this.upgrade(settings.version);
   }
 
   get(id) {
@@ -61,6 +61,10 @@ class Settings extends SafeEventEmitter {
     }
 
     const updatedSettings = {...settings, [id]: storageValue, version: process.env.EXT_VER};
+    if (storageValue == null) {
+      delete updatedSettings[id];
+    }
+
     settings = updatedSettings;
 
     const storageSettings = {...updatedSettings};
@@ -77,7 +81,17 @@ class Settings extends SafeEventEmitter {
     return value;
   }
 
-  upgradeFlags(version) {
+  upgrade(version) {
+    if (version !== process.env.EXT_VER) {
+      const oldEmoteMenuValue = this.get(SettingIds.LEGACY_EMOTE_MENU);
+      if (oldEmoteMenuValue != null) {
+        const emoteMenuValue = oldEmoteMenuValue ? EmoteMenuTypes.LEGACY_ENABLED : EmoteMenuTypes.NONE;
+        // now storing emote menu as an enum rather than a boolean
+        this.set(SettingIds.EMOTE_MENU, emoteMenuValue);
+        this.set(SettingIds.LEGACY_EMOTE_MENU, null);
+      }
+    }
+
     for (const flagSettingId of FlagSettings) {
       const defaultValue = SettingDefaultValues[flagSettingId];
       const defaultFlags = defaultValue[0];

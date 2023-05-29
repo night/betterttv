@@ -92,8 +92,8 @@ export default class SettingsModule {
     dropdownIconAspect.appendChild(bttvSettingsIconDropDown);
   }
 
-  openSettings(e) {
-    e.preventDefault();
-    handleOpen?.(true);
+  openSettings(e, defaultSearchInput = '') {
+    e?.preventDefault?.();
+    handleOpen?.(true, defaultSearchInput);
   }
 }
