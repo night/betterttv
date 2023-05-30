@@ -1,9 +1,16 @@
 import React from 'react';
 import {Whisper} from 'rsuite';
-import ThemeProvider from '../../../common/components/ThemeProvider.jsx';
+import ThemeProvider from '../ThemeProvider.jsx';
 import AutocompletePopover from './AutocompletePopover.jsx';
 
-export default function EmoteWhisper({boundingQuerySelector, chatInputElement, onComplete, getChatInputPartialEmote}) {
+export default function AutocompleteWhisper({
+  boundingQuerySelector,
+  chatInputElement,
+  onComplete,
+  getChatInputPartialInput,
+  renderRow,
+  computeMatches,
+}) {
   return (
     <ThemeProvider>
       <Whisper
@@ -13,8 +20,10 @@ export default function EmoteWhisper({boundingQuerySelector, chatInputElement, o
           <AutocompletePopover
             chatInputElement={chatInputElement}
             boundingQuerySelector={boundingQuerySelector}
-            getChatInputPartialEmote={getChatInputPartialEmote}
+            getChatInputPartialInput={getChatInputPartialInput}
             onComplete={onComplete}
+            renderRow={renderRow}
+            computeMatches={computeMatches}
           />
         }>
         <span />

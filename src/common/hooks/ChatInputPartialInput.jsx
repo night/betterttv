@@ -1,11 +1,11 @@
 import {useEffect, useState} from 'react';
 
-export default function useChatInputPartialEmote(chatInputElement, getChatInputPartialEmote) {
+export default function useChatInputPartialInput(chatInputElement, getChatInputPartialInput) {
   const [partialInput, setPartialInput] = useState('');
 
   useEffect(() => {
     function handleInput(event) {
-      const value = getChatInputPartialEmote();
+      const value = getChatInputPartialInput();
 
       if (value == null) {
         setPartialInput('');
@@ -21,7 +21,7 @@ export default function useChatInputPartialEmote(chatInputElement, getChatInputP
     return () => {
       chatInputElement?.removeEventListener('input', handleInput);
     };
-  }, [getChatInputPartialEmote, chatInputElement]);
+  }, [getChatInputPartialInput, chatInputElement]);
 
   return partialInput;
 }

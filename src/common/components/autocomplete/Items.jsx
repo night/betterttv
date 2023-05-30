@@ -1,11 +1,10 @@
-import React, {useEffect, useRef, useState, useMemo, useCallback} from 'react';
+import React, {useEffect, useRef, useState, useMemo} from 'react';
 import keyCodes from '../../../utils/keycodes.js';
-import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js';
-import useChatInputPartialEmote from '../hooks/ChatInputPartialEmote.jsx';
-import EmoteRow from './EmoteRow.jsx';
-import EmotesHeader from './EmotesHeader.jsx';
-import styles from './Emotes.module.css';
-import useEmoteMenuViewStoreUpdated from '../../../common/hooks/EmoteMenuViewStore.jsx';
+import emoteMenuViewStore from '../../stores/emote-menu-view-store.js';
+import useChatInputPartialEmote from '../../hooks/ChatInputPartialInput.jsx';
+import useEmoteMenuViewStoreUpdated from '../../hooks/EmoteMenuViewStore.jsx';
+import ItemsHeader from './ItemsHeader.jsx';
+import styles from './Items.module.css';
 
 const MAX_EMOTES_SHOWN = 8;
 
@@ -29,18 +28,20 @@ function travelDown(currentSelection, rowCount) {
   return newSelection;
 }
 
-export default function Emotes({chatInputElement, repositionPopover, onComplete, getChatInputPartialEmote}) {
-  const chatInputPartialEmote = useChatInputPartialEmote(chatInputElement, getChatInputPartialEmote);
+export default function Items({
+  chatInputElement,
+  repositionPopover,
+  onComplete,
+  getChatInputPartialInput,
+  renderRow,
+  computeMatches,
+}) {
+  const chatInputPartialEmote = useChatInputPartialEmote(chatInputElement, getChatInputPartialInput);
   const [matches, setMatches] = useState([]);
   const shortMatches = useMemo(() => matches.slice(0, MAX_EMOTES_SHOWN), [matches]);
 
-  const computeMatches = useCallback(() => {
-    const searchedEmotes = emoteMenuViewStore.search(chatInputPartialEmote);
-    setMatches(searchedEmotes.map(({item}) => item));
-  }, [chatInputPartialEmote]);
-
   useEffect(() => {
-    computeMatches();
+    setMatches(computeMatches(chatInputPartialEmote));
   }, [chatInputPartialEmote]);
 
   const [selected, setSelected] = useState(0);
@@ -80,7 +81,7 @@ export default function Emotes({chatInputElement, repositionPopover, onComplete,
 
   useEffect(() => {
     function keydownCallback(event) {
-      if (getChatInputPartialEmote() == null) {
+      if (getChatInputPartialInput() == null) {
         setMatches([]);
         return;
       }
@@ -127,17 +128,17 @@ export default function Emotes({chatInputElement, repositionPopover, onComplete,
 
   return (
     <div className={styles.emotes} ref={localRef}>
-      <EmotesHeader chatInputPartialEmote={chatInputPartialEmote} />
-      {shortMatches.map((emote, index) => (
-        <EmoteRow
-          key={emote.id}
-          index={index}
-          emote={emote}
-          handleAutocomplete={(newEmote) => handleAutocomplete(newEmote)}
-          active={selected === index}
-          setSelected={(newEmote) => setSelected(newEmote)}
-        />
-      ))}
+      <ItemsHeader chatInputPartialEmote={chatInputPartialEmote} />
+      {shortMatches.map((emote, index) =>
+        renderRow({
+          key: emote.id,
+          index,
+          item: emote,
+          handleAutocomplete,
+          active: selected === index,
+          setSelected,
+        })
+      )}
     </div>
   );
 }

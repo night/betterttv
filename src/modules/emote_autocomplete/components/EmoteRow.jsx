@@ -4,10 +4,10 @@ import {Button} from 'rsuite';
 import Emote from '../../../common/components/Emote.jsx';
 import styles from './EmoteRow.module.css';
 
-export default function EmoteRow({index, emote, active, setSelected, handleAutocomplete}) {
+export default function EmoteRow({key, index, emote, active, setSelected, handleAutocomplete}) {
   return (
     <Button
-      key={emote.id}
+      key={key}
       onMouseOver={() => setSelected(index)}
       onClick={() => handleAutocomplete(emote)}
       appearance="subtle"
