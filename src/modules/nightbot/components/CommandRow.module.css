@@ -1,4 +1,4 @@
-.emoteRow {
+.commandRow {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -8,13 +8,13 @@
   padding: 8px;
 }
 
-.emoteInfoContainer {
+.commandInfoContainer {
   display: flex;
   align-items: center;
   color: var(--bttv-rs-btn-default-active-text);
 }
 
-.emote {
+.command {
   margin-right: 8px;
   width: 24px;
   height: 24px;

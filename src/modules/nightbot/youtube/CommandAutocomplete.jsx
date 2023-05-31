@@ -1,39 +1,26 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
-import {EmoteProviders, SettingIds} from '../../../constants.js';
+import {SettingIds} from '../../../constants.js';
 import settings from '../../../settings.js';
-import {createYoutubeEmojiNode} from '../../../utils/youtube.js';
 import domObserver from '../../../observers/dom.js';
-import EmoteRow from '../components/EmoteRow.jsx';
+import CommandRow from '../components/CommandRow.jsx';
 import AutocompleteWhisper from '../../../common/components/autocomplete/AutocompleteWhisper.jsx';
 import styles from './CommandAutocomplete.module.css';
-import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js';
+import commandStore from '../../../common/stores/command-store.js';
 
 let mountedRoot;
 
 const CHAT_TEXT_AREA = '.yt-live-chat-text-input-field-renderer[contenteditable]';
-const EMOTE_AUTOCOMPLETE_CONTAINER_SELECTOR = 'div[data-a-target="bttv-autocomplete-matches-container"]';
+const AUTOCOMPLETE_CONTAINER_SELECTOR = 'div[data-a-target="bttv-autocomplete-matches-container"]';
 
-function findFocusedWord(value, selectionStart = 0) {
-  const subString = value.substring(0, selectionStart);
-  const focusedWords = subString.split(/\s+/);
-  const focusedWord = focusedWords[focusedWords.length - 1];
-
-  return {
-    value: focusedWord,
-    start: subString.length - focusedWord.length,
-    end: selectionStart,
-  };
-}
-
-function getChatInputPartialEmote() {
-  const {anchorNode, anchorOffset} = document.getSelection();
+function getChatInputPartialCommand() {
+  const {anchorNode} = document.getSelection();
   if (anchorNode?.nodeType !== Node.TEXT_NODE) {
     return null;
   }
 
-  const {value} = findFocusedWord(anchorNode.data, anchorOffset);
-  if (value == null || !/^(:(.*[a-zA-Z0-9]){2,})/.test(value) || value.endsWith(':')) {
+  const value = anchorNode.data.split(/\s+/)[0];
+  if (value == null || !/^!(.*[a-zA-Z0-9]){2,}[^ ]$/.test(value) || value.endsWith(' ')) {
     return null;
   }
 
@@ -57,7 +44,7 @@ export default class CommandAutocomplete {
   }
 
   load() {
-    let commandAutocompleteMatchesContainer = document.querySelector(EMOTE_AUTOCOMPLETE_CONTAINER_SELECTOR);
+    let commandAutocompleteMatchesContainer = document.querySelector(AUTOCOMPLETE_CONTAINER_SELECTOR);
     const commandAutocomplete = settings.get(SettingIds.EMOTE_AUTOCOMPLETE);
     const element = document.querySelector(CHAT_TEXT_AREA);
 
@@ -81,17 +68,17 @@ export default class CommandAutocomplete {
         <AutocompleteWhisper
           boundingQuerySelector={CHAT_TEXT_AREA}
           chatInputElement={element}
-          onComplete={this.replaceChatInputPartialEmote}
-          getChatInputPartialInput={this.getChatInputPartialEmote}
+          onComplete={this.replaceChatInputPartialCommand}
+          getChatInputPartialInput={this.getChatInputPartialCommand}
           computeMatches={(partialInput) => {
-            const searchedEmotes = emoteMenuViewStore.search(partialInput);
-            return searchedEmotes.map(({item}) => item);
+            const searchedCommands = commandStore.search(partialInput);
+            return searchedCommands.map(({item}) => item);
           }}
           renderRow={({key, index, item, handleAutocomplete, active, setSelected}) => (
-            <EmoteRow
+            <CommandRow
               key={key}
               index={index}
-              emote={item}
+              command={item}
               handleAutocomplete={handleAutocomplete}
               active={active}
               setSelected={setSelected}
@@ -106,55 +93,12 @@ export default class CommandAutocomplete {
     }
   }
 
-  replaceChatInputPartialEmote(emote) {
-    const {anchorNode, anchorOffset} = document.getSelection();
-
-    if (anchorNode?.nodeType !== Node.TEXT_NODE) {
-      return;
-    }
-
-    const {data} = anchorNode;
-    const {start, end} = findFocusedWord(data, anchorOffset);
-
-    const prefix = data.substring(0, start);
-    const suffix = data.substring(end, data.length);
-
-    const range = document.createRange();
-    if (emote.category.provider === EmoteProviders.YOUTUBE) {
-      const node = createYoutubeEmojiNode(emote);
-      anchorNode.replaceWith(node);
-
-      if (prefix.length > 0) {
-        const textNode = document.createTextNode(prefix);
-        node.parentElement.insertBefore(textNode, node);
-      }
-
-      if (suffix.length > 0) {
-        const textNode = document.createTextNode(suffix);
-        node.parentElement.insertBefore(textNode, node.nextSibling);
-      }
-
-      range.setStartAfter(node);
-      range.setEndAfter(node);
-    } else {
-      anchorNode.textContent = `${prefix}${emote.code}${suffix}`;
-      const endSelection = prefix.length + emote.code.length;
-
-      range.setEnd(anchorNode, endSelection);
-      range.setStart(anchorNode, endSelection);
-    }
-
-    const element = document.querySelector(CHAT_TEXT_AREA);
-    element.dispatchEvent(new Event('input', {bubbles: true}));
-    element.focus();
-
-    const selection = document.getSelection();
-    selection.removeAllRanges();
-    selection.addRange(range);
+  replaceChatInputPartialCommand(command) {
+    console.log(command);
   }
 
-  getChatInputPartialEmote() {
-    const partialInput = getChatInputPartialEmote();
+  getChatInputPartialCommand() {
+    const partialInput = getChatInputPartialCommand();
     toggleNativeAutocomplete(partialInput);
     return partialInput;
   }
