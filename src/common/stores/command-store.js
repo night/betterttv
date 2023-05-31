@@ -3,6 +3,8 @@ import nightbot from '../../utils/nightbot.js';
 import watcher from '../../watcher.js';
 import twitch from '../../utils/twitch.js';
 import {getCurrentChannel} from '../../utils/channel.js';
+import {getPlatform} from '../../utils/window.js';
+import {PlatformTypes} from '../../constants.js';
 
 const UserLevels = {
   EVERYONE: 'everyone',
@@ -44,7 +46,8 @@ class CommandStore {
   constructor() {
     this.defaultCommands = [];
     this.commands = new Fuse([], {keys: ['name', 'description']});
-    watcher.on('load.chat', () => this.loadChannel());
+    this.load();
+    watcher.on('channel.updated', () => this.loadChannel());
   }
 
   async load() {
@@ -54,11 +57,22 @@ class CommandStore {
   }
 
   async loadChannel() {
+    let nightbotChannelId = null;
     const channel = getCurrentChannel();
-    console.log(channel);
 
-    const data = await nightbot.get(`channels/t/vasp`);
-    const {commands} = await nightbot.get('commands', {headers: {'Nightbot-Channel': data.channel._id}});
+    if (getPlatform() === PlatformTypes.TWITCH) {
+      const data = await nightbot.get(`channels/t/${channel.id}`);
+      nightbotChannelId = data.channel._id;
+    } else {
+      const data = await nightbot.get(`channels/y/@dclstn`);
+      nightbotChannelId = data.channel._id;
+    }
+
+    if (nightbotChannelId == null) {
+      return;
+    }
+
+    const {commands} = await nightbot.get('commands', {headers: {'Nightbot-Channel': nightbotChannelId}});
     const userLevel = getCurrentUserLevel();
 
     const filteredCommands = commands.filter((command) => {
