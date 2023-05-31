@@ -234,6 +234,7 @@ export default async (env, argv) => {
       }),
       new MiniCssExtractPlugin({
         filename: '[name].css',
+        ignoreOrder: true,
       }),
       new VirtualModulesPlugin({
         'src/modules/emotes/emojis-by-slug.json': JSON.stringify(jsonTransform(emotes)),
