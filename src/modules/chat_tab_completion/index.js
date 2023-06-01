@@ -164,12 +164,12 @@ class ChatTabcompletionModule {
         emoteSet.add(code);
       });
       emoteList = Array.from(emoteSet);
-      emoteList.sort();
+      emoteList.sort((a, b) => a.localeCompare(b));
     }
 
     if (includeUsers) {
       userList = Array.from(this.userList).filter((word) => normalizedStartsWith(word, prefix));
-      userList.sort();
+      userList.sort((a, b) => a.localeCompare(b));
     }
 
     if (settings.get(SettingIds.TAB_COMPLETION_EMOTE_PRIORITY) === true) {
