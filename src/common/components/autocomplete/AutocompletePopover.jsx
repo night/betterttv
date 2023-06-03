@@ -2,10 +2,10 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import classNames from 'classnames';
 import Popover from 'rsuite/Popover';
 import {mergeRefs} from 'react-merge-refs';
-import styles from './AutocompletePopover.module.css';
-import Emotes from './Emotes.jsx';
+import Items from './Items.jsx';
 import repositionPopover from '../../../utils/popover.js';
-import useResize from '../../../common/hooks/Resize.jsx';
+import useResize from '../../hooks/Resize.jsx';
+import styles from './AutocompletePopover.module.css';
 
 const TOP_PADDING = 2;
 
@@ -19,7 +19,9 @@ const AutocompletePopover = React.forwardRef(
       boundingQuerySelector,
       chatInputElement,
       onComplete,
-      getChatInputPartialEmote,
+      getChatInputPartialInput,
+      renderRow,
+      computeMatches,
       ...props
     },
     ref
@@ -48,11 +50,13 @@ const AutocompletePopover = React.forwardRef(
         style={{width: popoverWidth}}
         ref={mergeRefs([localRef, ref])}
         {...props}>
-        <Emotes
+        <Items
           chatInputElement={chatInputElement}
           repositionPopover={() => reposition()}
           onComplete={onComplete}
-          getChatInputPartialEmote={getChatInputPartialEmote}
+          getChatInputPartialInput={getChatInputPartialInput}
+          renderRow={renderRow}
+          computeMatches={computeMatches}
         />
       </Popover>
     );
