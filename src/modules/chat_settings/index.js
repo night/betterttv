@@ -1,6 +1,6 @@
 import watcher from '../../watcher.js';
 import settings from '../settings/index.js';
-import chatFontSettings, {setFontUpdateCallback} from '../chat_font_settings/index.js';
+import chatFontSettings from '../chat_font_settings/index.js';
 import domObserver from '../../observers/dom.js';
 import {PlatformTypes} from '../../constants.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
@@ -121,7 +121,6 @@ class ChatSettingsModule {
     domObserver.on(CHAT_SETTINGS_MOD_TOOLS_SELECTOR, () => {
       this.renderSettings();
     });
-    setFontUpdateCallback(this.renderSettings);
   }
 
   renderSettings() {
@@ -140,8 +139,14 @@ class ChatSettingsModule {
 
     getChatSettings()?.appendChild(
       createSettings(
-        chatFontSettings.setFontFamily,
-        chatFontSettings.setFontSize,
+        () => {
+          chatFontSettings.setFontFamily();
+          this.renderSettings();
+        },
+        () => {
+          chatFontSettings.setFontSize();
+          this.renderSettings();
+        },
         (e) => {
           e.preventDefault();
           const messages = document.querySelectorAll(
