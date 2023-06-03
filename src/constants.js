@@ -1,6 +1,7 @@
 export const SettingIds = {
   ANON_CHAT: 'anonChat',
-  ANON_CHAT_CHANNELS: 'anonChatWhitelistedChannels',
+  ANON_CHAT_WHITE_LIST_CHANNELS: 'anonChatWhitelistedChannels',
+  ANON_CHAT_BLACK_LIST_CHANNELS: 'anonChatBlacklistedChannels',
   ANON_CHAT_FILTER_TYPE: 'anonChatFilterType',
   AUTO_THEATRE_MODE: 'autoTheatreMode',
   AUTO_JOIN_RAIDS: 'autoJoinRaids',
@@ -65,11 +66,6 @@ export const EmoteMenuTypes = {
   NONE: 0,
   LEGACY_ENABLED: 1,
   ENABLED: 2,
-};
-
-export const AnonChatFilterTypes = {
-  WHITELIST: 1,
-  BLACKLIST: 2,
 };
 
 export const SidebarFlags = {
@@ -195,8 +191,8 @@ export const EmoteMenuTips = {
 
 export const SettingDefaultValues = {
   [SettingIds.ANON_CHAT]: false,
-  [SettingIds.ANON_CHAT_CHANNELS]: [],
-  [SettingIds.ANON_CHAT_FILTER_TYPE]: AnonChatFilterTypes.WHITELIST,
+  [SettingIds.ANON_CHAT_WHITE_LIST_CHANNELS]: [],
+  [SettingIds.ANON_CHAT_BLACK_LIST_CHANNELS]: [],
   [SettingIds.AUTO_THEATRE_MODE]: false,
   [SettingIds.AUTO_JOIN_RAIDS]: true,
   [SettingIds.AUTO_MOD_VIEW]: false,
