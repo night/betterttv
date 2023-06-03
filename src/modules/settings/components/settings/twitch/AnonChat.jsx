@@ -13,7 +13,7 @@ const SETTING_NAME = formatMessage({defaultMessage: 'Anon Chat'});
 function AnonChat() {
   const [value, setValue] = useStorageState(SettingIds.ANON_CHAT);
   const [channels, setChannels] = useStorageState(
-    value ? SettingIds.ANON_CHAT_WHITE_LIST_CHANNELS : SettingIds.ANON_CHAT_BLACK_LIST_CHANNELS
+    value ? SettingIds.ANON_CHAT_WHITELISTED_CHANNELS : SettingIds.ANON_CHAT_BLACKLISTED_CHANNELS
   );
 
   return (

@@ -13,8 +13,8 @@ class AnonChatModule {
     this.enabled = false;
     watcher.on('load.chat', () => this.load());
     settings.on(`changed.${SettingIds.ANON_CHAT}`, () => this.load());
-    settings.on(`changed.${SettingIds.ANON_CHAT_WHITE_LIST_CHANNELS}`, () => this.load());
-    settings.on(`changed.${SettingIds.ANON_CHAT_BLACK_LIST_CHANNELS}`, () => this.load());
+    settings.on(`changed.${SettingIds.ANON_CHAT_WHITELISTED_CHANNELS}`, () => this.load());
+    settings.on(`changed.${SettingIds.ANON_CHAT_BLACKLISTED_CHANNELS}`, () => this.load());
   }
 
   changeUser(username, logout) {
@@ -54,8 +54,8 @@ class AnonChatModule {
     this.enabled = false;
     const settingEnabled = settings.get(SettingIds.ANON_CHAT);
     const channels = settingEnabled
-      ? settings.get(SettingIds.ANON_CHAT_WHITE_LIST_CHANNELS)
-      : settings.get(SettingIds.ANON_CHAT_BLACK_LIST_CHANNELS);
+      ? settings.get(SettingIds.ANON_CHAT_WHITELISTED_CHANNELS)
+      : settings.get(SettingIds.ANON_CHAT_BLACKLISTED_CHANNELS);
     const currentChannelName = twitch.getCurrentChat()?.props?.channelLogin;
 
     let shouldPart = channels.map((user) => user.toLowerCase()).includes(currentChannelName);
