@@ -9,9 +9,11 @@ export default function useStorageState(settingId) {
       setValue(newValue);
     }
 
+    setValue(settings.get(settingId));
+
     const cleanup = settings.on(`changed.${settingId}`, callback);
     return () => cleanup();
-  }, []);
+  }, [settingId]);
 
   function setSetting(newValue) {
     if (newValue === value) return;

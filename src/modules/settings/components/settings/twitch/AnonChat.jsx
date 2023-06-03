@@ -12,7 +12,9 @@ const SETTING_NAME = formatMessage({defaultMessage: 'Anon Chat'});
 
 function AnonChat() {
   const [value, setValue] = useStorageState(SettingIds.ANON_CHAT);
-  const [channels, setChannels] = useStorageState(SettingIds.ANON_CHAT_WHITELISTED_CHANNELS);
+  const [channels, setChannels] = useStorageState(
+    value ? SettingIds.ANON_CHAT_WHITELISTED_CHANNELS : SettingIds.ANON_CHAT_BLACKLISTED_CHANNELS
+  );
 
   return (
     <Panel header={SETTING_NAME}>
@@ -24,7 +26,9 @@ function AnonChat() {
       </div>
       <div className={styles.settingRow}>
         <p className={styles.settingDescription}>
-          {formatMessage({defaultMessage: 'Whitelist channels that bypass Anon Chat'})}
+          {value
+            ? formatMessage({defaultMessage: 'Whitelist channels that bypass Anon Chat'})
+            : formatMessage({defaultMessage: 'Blacklist channels that enable Anon Chat'})}
         </p>
         <TagInput
           value={channels}
