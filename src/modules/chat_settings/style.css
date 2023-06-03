@@ -44,4 +44,9 @@
       background-color: var(--color-background-interactable-hover);
     }
   }
+
+  .settingButtonMultipleLabels {
+    display: flex !important;
+    justify-content: space-between;
+  }
 }

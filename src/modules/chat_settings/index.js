@@ -5,6 +5,7 @@ import domObserver from '../../observers/dom.js';
 import {PlatformTypes} from '../../constants.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
 import formatMessage from '../../i18n/index.js';
+import storage from '../../storage.js';
 
 const CHAT_SETTINGS_SELECTOR = '.chat-settings__content';
 const MOD_VIEW_CHAT_SETTINGS_SELECTOR =
@@ -14,14 +15,25 @@ const CHAT_SETTINGS_BACK_BUTTON_SELECTOR =
 const CHAT_SETTINGS_MOD_TOOLS_SELECTOR = 'div[data-test-selector="mod-tools"]';
 const BTTV_CHAT_SETTINGS_CLASS = 'bttv-chat-settings';
 
-function createRow(className, label, onClick) {
+function createRow(className, leftLabel, onClick, rightLabel = null) {
   const container = document.createElement('div');
   container.classList.add('settingRow');
 
   const button = document.createElement('button');
   button.classList.add('settingButton', className);
   button.setAttribute('borderradius', 'border-radius-medium');
-  button.innerText = label;
+
+  const leftLabelContainer = document.createElement('div');
+  leftLabelContainer.innerText = leftLabel;
+  button.appendChild(leftLabelContainer);
+
+  if (rightLabel != null) {
+    button.classList.add('settingButtonMultipleLabels');
+    const rightLabelContainer = document.createElement('div');
+    rightLabelContainer.innerText = rightLabel;
+    button.appendChild(rightLabelContainer);
+  }
+
   button.addEventListener('click', onClick);
   container.appendChild(button);
 
@@ -40,8 +52,23 @@ function createSettings(onFontFamilyClick, onFontSizeClick, onClearChatClick, on
   header.innerText = formatMessage({defaultMessage: 'BetterTTV'});
   headerContainer.appendChild(header);
 
-  container.appendChild(createRow('setFontFamily', formatMessage({defaultMessage: 'Set Font'}), onFontFamilyClick));
-  container.appendChild(createRow('setFontSize', formatMessage({defaultMessage: 'Set Font Size'}), onFontSizeClick));
+  container.appendChild(
+    createRow(
+      'setFontFamily',
+      formatMessage({defaultMessage: 'Set Font'}),
+      onFontFamilyClick,
+      storage.get('chatFontFamily')
+    )
+  );
+  const chatFontSize = storage.get('chatFontSize');
+  container.appendChild(
+    createRow(
+      'setFontSize',
+      formatMessage({defaultMessage: 'Set Font Size'}),
+      onFontSizeClick,
+      chatFontSize != null && chatFontSize !== '' ? `${chatFontSize}px` : null
+    )
+  );
   container.appendChild(createRow('clearChat', formatMessage({defaultMessage: 'Clear My Chat'}), onClearChatClick));
   container.appendChild(
     createRow('openSettings', formatMessage({defaultMessage: 'BetterTTV Settings'}), onSettingsClick)
@@ -112,8 +139,14 @@ class ChatSettingsModule {
 
     getChatSettings()?.appendChild(
       createSettings(
-        chatFontSettings.setFontFamily,
-        chatFontSettings.setFontSize,
+        () => {
+          chatFontSettings.setFontFamily();
+          this.renderSettings();
+        },
+        () => {
+          chatFontSettings.setFontSize();
+          this.renderSettings();
+        },
         (e) => {
           e.preventDefault();
           const messages = document.querySelectorAll(
