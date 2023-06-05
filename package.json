@@ -59,7 +59,7 @@
     "fuse.js": "6.6.2",
     "git-rev-sync": "3.0.2",
     "glob": "10.2.6",
-    "got": "12.6.0",
+    "got": "13.0.0",
     "graphql-tag": "2.12.6",
     "json-loader": "0.5.7",
     "less": "4.1.3",
