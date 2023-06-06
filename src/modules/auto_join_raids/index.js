@@ -1,8 +1,8 @@
-import watcher from '../../watcher.js';
-import settings from '../../settings.js';
-import domObserver from '../../observers/dom.js';
 import {PlatformTypes, SettingIds} from '../../constants.js';
+import domObserver from '../../observers/dom.js';
+import settings from '../../settings.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
+import watcher from '../../watcher.js';
 
 const RAID_BANNER_SELECTOR = '[data-test-selector="raid-banner"]';
 const RAID_LEAVE_BUTTON_SELECTOR = `${RAID_BANNER_SELECTOR} button[class*="ScCoreButtonSecondary"]`;

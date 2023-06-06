@@ -1,8 +1,8 @@
-import watcher from '../../watcher.js';
-import settings from '../../settings.js';
-import domObserver from '../../observers/dom.js';
 import {PlatformTypes, SettingIds} from '../../constants.js';
+import domObserver from '../../observers/dom.js';
+import settings from '../../settings.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
+import watcher from '../../watcher.js';
 
 const MOD_VIEW_BUTTON_SELECTOR = '[data-test-selector="mod-view-link"]';
 const noReload = window.location.search.includes('no-reload');

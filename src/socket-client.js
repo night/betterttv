@@ -1,7 +1,7 @@
-import throttle from 'lodash.throttle';
-import SafeEventEmitter from './utils/safe-event-emitter.js';
 import debug from './utils/debug.js';
+import SafeEventEmitter from './utils/safe-event-emitter.js';
 import {getCurrentUser} from './utils/user.js';
+import throttle from 'lodash.throttle';
 
 const CONNECTION_STATES = {
   DISCONNECTED: 0,

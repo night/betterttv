@@ -1,12 +1,12 @@
-import watcher from '../../watcher.js';
-import cdn from '../../utils/cdn.js';
-import {getCurrentChannel, setCurrentChannel} from '../../utils/channel.js';
-
-import AbstractEmotes from './abstract-emotes.js';
-import Emote from './emote.js';
 import {EmoteCategories, EmoteProviders} from '../../constants.js';
 import formatMessage from '../../i18n/index.js';
 import socketClient, {deserializeSocketChannel, EventNames} from '../../socket-client.js';
+import cdn from '../../utils/cdn.js';
+import {getCurrentChannel, setCurrentChannel} from '../../utils/channel.js';
+import watcher from '../../watcher.js';
+
+import AbstractEmotes from './abstract-emotes.js';
+import Emote from './emote.js';
 
 const category = {
   id: EmoteCategories.BETTERTTV_CHANNEL,

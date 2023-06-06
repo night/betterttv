@@ -1,12 +1,12 @@
-import api from '../../utils/api.js';
-import watcher from '../../watcher.js';
+import {EmoteCategories, EmoteProviders, EmoteTypeFlags, SettingIds} from '../../constants.js';
+import formatMessage from '../../i18n/index.js';
 import settings from '../../settings.js';
+import api from '../../utils/api.js';
+import {hasFlag} from '../../utils/flags.js';
+import watcher from '../../watcher.js';
 
 import AbstractEmotes from '../emotes/abstract-emotes.js';
 import Emote from '../emotes/emote.js';
-import {EmoteCategories, EmoteProviders, EmoteTypeFlags, SettingIds} from '../../constants.js';
-import {hasFlag} from '../../utils/flags.js';
-import formatMessage from '../../i18n/index.js';
 
 const category = {
   id: EmoteCategories.FRANKERFACEZ_GLOBAL,

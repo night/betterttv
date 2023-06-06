@@ -1,6 +1,6 @@
-import settings from '../../settings.js';
-import domObserver from '../../observers/dom.js';
 import {SettingIds, ChannelPointsFlags, PlatformTypes} from '../../constants.js';
+import domObserver from '../../observers/dom.js';
+import settings from '../../settings.js';
 import {hasFlag} from '../../utils/flags.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
 

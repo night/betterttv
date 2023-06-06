@@ -1,5 +1,5 @@
-import twitch from '../utils/twitch.js';
 import domObserver from '../observers/dom.js';
+import twitch from '../utils/twitch.js';
 
 export default function conversationsWatcher(watcher) {
   domObserver.on('.whispers-thread', (node, isConnected) => {

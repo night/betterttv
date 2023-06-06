@@ -1,5 +1,5 @@
-import cookies from 'cookies-js';
 import {createIntl, createIntlCache} from '@formatjs/intl';
+import cookies from 'cookies-js';
 import {Settings} from 'luxon';
 
 const DEFAULT_LOCALE = 'en';

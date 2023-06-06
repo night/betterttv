@@ -1,5 +1,5 @@
-import storage from '../../storage.js';
 import formatMessage from '../../i18n/index.js';
+import storage from '../../storage.js';
 
 let nicknames;
 

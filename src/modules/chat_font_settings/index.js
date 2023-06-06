@@ -1,8 +1,8 @@
-import watcher from '../../watcher.js';
-import storage from '../../storage.js';
 import {PlatformTypes} from '../../constants.js';
-import {loadModuleForPlatforms} from '../../utils/modules.js';
 import formatMessage from '../../i18n/index.js';
+import storage from '../../storage.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
+import watcher from '../../watcher.js';
 
 const FONT_FAMILY_PROMPT = formatMessage({
   defaultMessage: `Enter a font family for chat.

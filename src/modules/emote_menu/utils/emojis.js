@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
-import Icons from '../components/Icons.jsx';
-import emoji from '../../emotes/emojis.js';
 import {EmoteCategories, EmoteProviders} from '../../../constants.js';
+import emoji from '../../emotes/emojis.js';
+import Icons from '../components/Icons.jsx';
 
 const emojiByCategory = emoji.getEmotesByCategory();
 const emojiCategories = [

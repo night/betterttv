@@ -1,11 +1,11 @@
-import watcher from '../../watcher.js';
-import settings from '../settings/index.js';
-import chatFontSettings from '../chat_font_settings/index.js';
-import domObserver from '../../observers/dom.js';
 import {PlatformTypes} from '../../constants.js';
-import {loadModuleForPlatforms} from '../../utils/modules.js';
 import formatMessage from '../../i18n/index.js';
+import domObserver from '../../observers/dom.js';
 import storage from '../../storage.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
+import watcher from '../../watcher.js';
+import chatFontSettings from '../chat_font_settings/index.js';
+import settings from '../settings/index.js';
 
 const CHAT_SETTINGS_SELECTOR = '.chat-settings__content';
 const MOD_VIEW_CHAT_SETTINGS_SELECTOR =

@@ -1,7 +1,7 @@
 import formatMessage from '../../../i18n/index.js';
-import commandStore, {PermissionLevels} from '../store.js';
 import twitch from '../../../utils/twitch.js';
 import chat from '../../chat/index.js';
+import commandStore, {PermissionLevels} from '../store.js';
 
 commandStore.registerCommand({
   name: 'localsub',

@@ -1,5 +1,5 @@
-import twitch from '../utils/twitch.js';
 import domObserver from '../observers/dom.js';
+import twitch from '../utils/twitch.js';
 
 export default function clipsWatcher(watcher) {
   domObserver.on('.tw-animation', (node, isConnected) => {

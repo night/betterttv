@@ -1,6 +1,6 @@
 import formatMessage from '../../../i18n/index.js';
-import commandStore, {PermissionLevels} from '../store.js';
 import twitch from '../../../utils/twitch.js';
+import commandStore, {PermissionLevels} from '../store.js';
 import styles from './fun.module.css';
 
 commandStore.registerCommand({

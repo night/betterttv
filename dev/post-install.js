@@ -1,6 +1,6 @@
 import {statSync, writeFileSync, readFileSync} from 'fs';
-import {globSync} from 'glob';
 import {escapeRegExp} from '../src/utils/regex.js';
+import {globSync} from 'glob';
 
 // RSuite sets global styles which can affect native page styles, so remove them
 const NORMALIZE_PATH = './node_modules/rsuite/styles/normalize.less';
