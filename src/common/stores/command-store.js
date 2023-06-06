@@ -73,14 +73,15 @@ class CommandStore {
     }
 
     const {commands} = await nightbot.get('commands', {headers: {'Nightbot-Channel': nightbotChannelId}});
-    const userLevel = getCurrentUserLevel();
+    const currentUserLevel = getCurrentUserLevel();
+    const currentUserLevelHierarchy = UserLevelHierarchy[currentUserLevel];
 
     const filteredCommands = commands.filter((command) => {
       if (!command.name.startsWith('!')) {
         return false;
       }
       const commandUserLevel = UserLevelHierarchy[command.userLevel.toLowerCase()];
-      if (commandUserLevel > UserLevelHierarchy[userLevel]) {
+      if (commandUserLevel > currentUserLevelHierarchy) {
         return false;
       }
       return true;
