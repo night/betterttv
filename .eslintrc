@@ -32,7 +32,7 @@
     "import/order": [
       "error",
       {
-        "groups": ["builtin", "internal", "parent", "sibling", "index"],
+        "groups": ["builtin", "external", "parent", "sibling", "index"],
         "alphabetize": {
           "order": "asc",
           "caseInsensitive": true

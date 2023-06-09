@@ -1,3 +1,4 @@
+import ReconnectingEventSource from 'reconnecting-eventsource';
 import {EmoteCategories, EmoteProviders, EmoteTypeFlags, SettingIds} from '../../constants.js';
 import formatMessage from '../../i18n/index.js';
 import settings from '../../settings.js';
@@ -6,7 +7,6 @@ import {hasFlag} from '../../utils/flags.js';
 import watcher from '../../watcher.js';
 import AbstractEmotes from '../emotes/abstract-emotes.js';
 import {createEmote, isOverlay} from './utils.js';
-import ReconnectingEventSource from 'reconnecting-eventsource';
 
 const category = {
   id: EmoteCategories.SEVENTV_CHANNEL,

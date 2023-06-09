@@ -1,7 +1,7 @@
-import watcher from '../watcher.js';
-import {createSrc, createSrcSet} from './image.js';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import watcher from '../watcher.js';
+import {createSrc, createSrcSet} from './image.js';
 
 const CHAT_ITEMS_SELECTOR = '.yt-live-chat-item-list-renderer > #items';
 

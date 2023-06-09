@@ -1,3 +1,7 @@
+import Fuse from 'fuse.js';
+import sortBy from 'lodash.sortby';
+import uniqBy from 'lodash.uniqby';
+import {v4 as uuidv4} from 'uuid';
 import {
   SettingIds,
   EmoteProviders,
@@ -21,10 +25,6 @@ import twitch from '../../utils/twitch.js';
 import {getCurrentUser} from '../../utils/user.js';
 import {getPlatform} from '../../utils/window.js';
 import watcher from '../../watcher.js';
-import Fuse from 'fuse.js';
-import sortBy from 'lodash.sortby';
-import uniqBy from 'lodash.uniqby';
-import {v4 as uuidv4} from 'uuid';
 
 const MAX_FRECENTS = 36;
 

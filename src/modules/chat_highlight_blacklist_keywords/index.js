@@ -1,3 +1,5 @@
+import {DateTime} from 'luxon';
+import isSafeRegex from 'safe-regex2';
 import {PlatformTypes, SettingIds} from '../../constants.js';
 import settings from '../../settings.js';
 import cdn from '../../utils/cdn.js';
@@ -8,8 +10,6 @@ import {loadModuleForPlatforms} from '../../utils/modules.js';
 import {escapeRegExp} from '../../utils/regex.js';
 import {getCurrentUser} from '../../utils/user.js';
 import watcher from '../../watcher.js';
-import {DateTime} from 'luxon';
-import isSafeRegex from 'safe-regex2';
 
 const CHAT_LIST_SELECTOR =
   '.chat-list .chat-scrollable-area__message-container,.chat-list--default .chat-scrollable-area__message-container,.chat-list--other .chat-scrollable-area__message-container,.video-chat div[data-test-selector="video-chat-message-list-wrapper"]';

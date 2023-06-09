@@ -1,3 +1,4 @@
+import twemoji from 'twemoji';
 import {EmoteCategories, EmoteProviders} from '../../constants.js';
 import formatMessage from '../../i18n/index.js';
 import blacklistedEmoji from '../../utils/emoji-blacklist.js';
@@ -7,8 +8,6 @@ import AbstractEmotes from './abstract-emotes.js';
 // eslint-disable-next-line import/no-unresolved
 import emojiBySlug from './emojis-by-slug.json';
 import Emote from './emote.js';
-
-import twemoji from 'twemoji';
 
 const category = {
   id: EmoteCategories.BETTERTTV_EMOJI,
