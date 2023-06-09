@@ -1,18 +1,7 @@
 import Fuse from 'fuse.js';
-import uniqBy from 'lodash.uniqby';
 import sortBy from 'lodash.sortby';
+import uniqBy from 'lodash.uniqby';
 import {v4 as uuidv4} from 'uuid';
-import SafeEventEmitter from '../../utils/safe-event-emitter.js';
-import watcher from '../../watcher.js';
-import {getEmojiCategories} from '../../modules/emote_menu/utils/emojis.js';
-import emotes from '../../modules/emotes/index.js';
-import Icons from '../../modules/emote_menu/components/Icons.jsx';
-import emoteStorage from '../../modules/emote_menu/stores/emote-menu-store.js';
-import {loadTwitchEmotes} from '../../modules/emote_menu/utils/twitch-emotes.js';
-import {loadYouTubeEmotes} from '../../modules/emote_menu/utils/youtube-emotes.js';
-import cdn from '../../utils/cdn.js';
-import {getCurrentChannel} from '../../utils/channel.js';
-import settings from '../../settings.js';
 import {
   SettingIds,
   EmoteProviders,
@@ -20,11 +9,22 @@ import {
   PlatformTypes,
   EMOTE_CATEGORIES_ORDER_STORAGE_KEY,
 } from '../../constants.js';
-import twitch from '../../utils/twitch.js';
-import {getPlatform} from '../../utils/window.js';
-import {getCurrentUser} from '../../utils/user.js';
-import storage from '../../storage.js';
 import formatMessage from '../../i18n/index.js';
+import Icons from '../../modules/emote_menu/components/Icons.jsx';
+import emoteStorage from '../../modules/emote_menu/stores/emote-menu-store.js';
+import {getEmojiCategories} from '../../modules/emote_menu/utils/emojis.js';
+import {loadTwitchEmotes} from '../../modules/emote_menu/utils/twitch-emotes.js';
+import {loadYouTubeEmotes} from '../../modules/emote_menu/utils/youtube-emotes.js';
+import emotes from '../../modules/emotes/index.js';
+import settings from '../../settings.js';
+import storage from '../../storage.js';
+import cdn from '../../utils/cdn.js';
+import {getCurrentChannel} from '../../utils/channel.js';
+import SafeEventEmitter from '../../utils/safe-event-emitter.js';
+import twitch from '../../utils/twitch.js';
+import {getCurrentUser} from '../../utils/user.js';
+import {getPlatform} from '../../utils/window.js';
+import watcher from '../../watcher.js';
 
 const MAX_FRECENTS = 36;
 

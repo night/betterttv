@@ -1,15 +1,15 @@
 /* eslint-disable import/prefer-default-export */
-import uniqBy from 'lodash.uniqby';
-import sortBy from 'lodash.sortby';
 import gql from 'graphql-tag';
+import sortBy from 'lodash.sortby';
+import uniqBy from 'lodash.uniqby';
+import {SettingIds, EmoteCategories, EmoteProviders} from '../../../constants.js';
+import settings from '../../../settings.js';
+import {getCurrentChannel} from '../../../utils/channel.js';
+import debug from '../../../utils/debug.js';
+import {getEmoteFromRegEx} from '../../../utils/regex.js';
 import twitch from '../../../utils/twitch.js';
 import Emote from '../../emotes/emote.js';
 import Icons from '../components/Icons.jsx';
-import debug from '../../../utils/debug.js';
-import {getEmoteFromRegEx} from '../../../utils/regex.js';
-import settings from '../../../settings.js';
-import {SettingIds, EmoteCategories, EmoteProviders} from '../../../constants.js';
-import {getCurrentChannel} from '../../../utils/channel.js';
 
 const AVAILABLE_EMOTES_FOR_CHANNEL_QUERY = gql`
   query BTTVAvailableEmotesForChannel($channelID: ID!) {

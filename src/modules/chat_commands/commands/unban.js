@@ -1,9 +1,9 @@
 import gql from 'graphql-tag';
 import formatMessage from '../../../i18n/index.js';
-import commandStore, {PermissionLevels} from '../store.js';
+import {getCurrentChannel} from '../../../utils/channel.js';
 import twitch from '../../../utils/twitch.js';
 import {getCurrentUser} from '../../../utils/user.js';
-import {getCurrentChannel} from '../../../utils/channel.js';
+import commandStore, {PermissionLevels} from '../store.js';
 
 function massUnban() {
   const currentUser = getCurrentUser();

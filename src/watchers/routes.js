@@ -1,7 +1,7 @@
-import twitch from '../utils/twitch.js';
-import debug from '../utils/debug.js';
 import domObserver from '../observers/dom.js';
 import historyObserver from '../observers/history.js';
+import debug from '../utils/debug.js';
+import twitch from '../utils/twitch.js';
 
 let watcher;
 let currentPath = '';

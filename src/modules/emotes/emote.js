@@ -1,8 +1,8 @@
-import {createSrc, createSrcSet} from '../../utils/image.js';
+import {EmoteCategories, EmoteTypeFlags, SettingIds} from '../../constants.js';
 import formatMessage from '../../i18n/index.js';
 import settings from '../../settings.js';
-import {EmoteCategories, EmoteTypeFlags, SettingIds} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
+import {createSrc, createSrcSet} from '../../utils/image.js';
 
 export default class Emote {
   constructor({

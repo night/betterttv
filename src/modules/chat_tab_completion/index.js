@@ -1,11 +1,11 @@
-import settings from '../../settings.js';
-import watcher from '../../watcher.js';
-import twitch, {SelectionTypes} from '../../utils/twitch.js';
-import keyCodes from '../../utils/keycodes.js';
-import emotes from '../emotes/index.js';
 import {ChatFlags, PlatformTypes, SettingIds} from '../../constants.js';
-import {loadModuleForPlatforms} from '../../utils/modules.js';
+import settings from '../../settings.js';
 import {hasFlag} from '../../utils/flags.js';
+import keyCodes from '../../utils/keycodes.js';
+import {loadModuleForPlatforms} from '../../utils/modules.js';
+import twitch, {SelectionTypes} from '../../utils/twitch.js';
+import watcher from '../../watcher.js';
+import emotes from '../emotes/index.js';
 
 const CHAT_INPUT_SELECTOR = 'textarea[data-a-target="chat-input"], div[data-a-target="chat-input"]';
 const AUTOCOMPLETE_SUGGESTIONS_SELECTOR = 'div[data-a-target="autocomplete-balloon"]';

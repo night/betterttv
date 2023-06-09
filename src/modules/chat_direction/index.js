@@ -1,8 +1,8 @@
-import settings from '../../settings.js';
-import watcher from '../../watcher.js';
-import twitch from '../../utils/twitch.js';
 import {PlatformTypes, SettingIds} from '../../constants.js';
+import settings from '../../settings.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
+import twitch from '../../utils/twitch.js';
+import watcher from '../../watcher.js';
 
 const CHAT_LIST_SCROLL_CONTENT =
   '.chat-list .simplebar-scroll-content,.chat-list--default .simplebar-scroll-content,.chat-list--other .simplebar-scroll-content';

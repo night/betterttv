@@ -1,8 +1,8 @@
-import settings from '../../settings.js';
-import watcher from '../../watcher.js';
-import twitch from '../../utils/twitch.js';
 import {PlatformTypes, SettingIds} from '../../constants.js';
+import settings from '../../settings.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
+import twitch from '../../utils/twitch.js';
+import watcher from '../../watcher.js';
 
 const TWITCH_THEATER_MODE_CHANGED_DISPATCH_TYPE = 'core.ui.THEATRE_ENABLED';
 

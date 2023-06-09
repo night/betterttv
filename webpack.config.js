@@ -1,21 +1,21 @@
-import webpack from 'webpack';
-import {CleanWebpackPlugin} from 'clean-webpack-plugin';
-import VirtualModulesPlugin from 'webpack-virtual-modules';
-import CopyPlugin from 'copy-webpack-plugin';
-import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import RemovePlugin from 'remove-files-webpack-plugin';
 import fs from 'fs/promises';
-import path from 'path';
 import {createRequire} from 'module';
+import path from 'path';
+import {sentryWebpackPlugin as SentryWebpackPlugin} from '@sentry/webpack-plugin';
+import {CleanWebpackPlugin} from 'clean-webpack-plugin';
+import CopyPlugin from 'copy-webpack-plugin';
+import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
+import FileManagerPlugin from 'filemanager-webpack-plugin';
 import {globSync} from 'glob';
-import TerserPlugin from 'terser-webpack-plugin';
-import postcssUrl from 'postcss-url';
 // eslint-disable-next-line import/no-unresolved
 import got from 'got';
-import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
-import {sentryWebpackPlugin as SentryWebpackPlugin} from '@sentry/webpack-plugin';
-import FileManagerPlugin from 'filemanager-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import normalizePath from 'normalize-path';
+import postcssUrl from 'postcss-url';
+import RemovePlugin from 'remove-files-webpack-plugin';
+import TerserPlugin from 'terser-webpack-plugin';
+import webpack from 'webpack';
+import VirtualModulesPlugin from 'webpack-virtual-modules';
 
 const git = createRequire(import.meta.url)('git-rev-sync');
 const {EnvironmentPlugin, optimize} = webpack;

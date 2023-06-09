@@ -1,9 +1,9 @@
-import settings from '../../settings.js';
-import watcher from '../../watcher.js';
-import twitch from '../../utils/twitch.js';
 import {AutoPlayFlags, PlatformTypes, SettingIds} from '../../constants.js';
+import settings from '../../settings.js';
 import {hasFlag} from '../../utils/flags.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
+import twitch from '../../utils/twitch.js';
+import watcher from '../../watcher.js';
 
 class DisableOfflineChannelAutoplayModule {
   constructor() {

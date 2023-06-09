@@ -1,6 +1,6 @@
 import domObserver from '../observers/dom.js';
-import {setCurrentUser} from '../utils/user.js';
 import {setCurrentChannel} from '../utils/channel.js';
+import {setCurrentUser} from '../utils/user.js';
 
 export default function youtubeWatcher(watcher) {
   function updateUser() {

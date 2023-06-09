@@ -1,6 +1,6 @@
 import throttle from 'lodash.throttle';
-import SafeEventEmitter from './utils/safe-event-emitter.js';
 import debug from './utils/debug.js';
+import SafeEventEmitter from './utils/safe-event-emitter.js';
 import {getCurrentUser} from './utils/user.js';
 
 const CONNECTION_STATES = {

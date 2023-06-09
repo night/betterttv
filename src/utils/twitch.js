@@ -1,8 +1,8 @@
 import cookies from 'cookies-js';
 import gql from 'graphql-tag';
+import {getCurrentChannel, setCurrentChannel} from './channel.js';
 import debug from './debug.js';
 import {getCurrentUser, setCurrentUser} from './user.js';
-import {getCurrentChannel, setCurrentChannel} from './channel.js';
 
 const REACT_ROOT = '#root';
 const CHAT_CONTAINER = 'section[data-test-selector="chat-room-component-layout"]';

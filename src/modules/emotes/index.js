@@ -1,16 +1,16 @@
-import globalEmotes from './global-emotes.js';
-import channelEmotes from './channel-emotes.js';
-import personalEmotes from './personal-emotes.js';
-import emojis from './emojis.js';
-import frankerfacezGlobalEmotes from '../frankerfacez/global-emotes.js';
-import frankerfacezChannelEmotes from '../frankerfacez/channel-emotes.js';
-import seventvGlobalEmotes from '../seventv/global-emotes.js';
-import seventvChannelEmotes from '../seventv/channel-emotes.js';
-import settings from '../../settings.js';
 import {EmoteProviders, EmoteTypeFlags, SettingIds} from '../../constants.js';
+import settings from '../../settings.js';
+import {getCurrentChannel} from '../../utils/channel.js';
 import {hasFlag} from '../../utils/flags.js';
 import {getCurrentUser} from '../../utils/user.js';
-import {getCurrentChannel} from '../../utils/channel.js';
+import frankerfacezChannelEmotes from '../frankerfacez/channel-emotes.js';
+import frankerfacezGlobalEmotes from '../frankerfacez/global-emotes.js';
+import seventvChannelEmotes from '../seventv/channel-emotes.js';
+import seventvGlobalEmotes from '../seventv/global-emotes.js';
+import channelEmotes from './channel-emotes.js';
+import emojis from './emojis.js';
+import globalEmotes from './global-emotes.js';
+import personalEmotes from './personal-emotes.js';
 
 class EmotesModule {
   constructor() {

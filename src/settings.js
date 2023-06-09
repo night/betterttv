@@ -1,7 +1,7 @@
-import SafeEventEmitter from './utils/safe-event-emitter.js';
-import storage from './storage.js';
 import {SettingIds, FlagSettings, SettingDefaultValues, ChatFlags, EmoteMenuTypes} from './constants.js';
+import storage from './storage.js';
 import {getChangedFlags, setFlag} from './utils/flags.js';
+import SafeEventEmitter from './utils/safe-event-emitter.js';
 
 export const SETTINGS_STORAGE_KEY = 'settings';
 let settings = {};

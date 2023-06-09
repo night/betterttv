@@ -1,13 +1,13 @@
-import debounce from 'lodash.debounce';
 import {off, on} from 'delegated-events';
-import watcher from '../../watcher.js';
-import settings from '../../settings.js';
-import domWatcher from '../../observers/dom.js';
-import twitch from '../../utils/twitch.js';
+import debounce from 'lodash.debounce';
 import {AutoPlayFlags, PlatformTypes, SettingIds} from '../../constants.js';
+import formatMessage from '../../i18n/index.js';
+import domWatcher from '../../observers/dom.js';
+import settings from '../../settings.js';
 import {hasFlag} from '../../utils/flags.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
-import formatMessage from '../../i18n/index.js';
+import twitch from '../../utils/twitch.js';
+import watcher from '../../watcher.js';
 
 const VIDEO_PLAYER_SELECTOR = '.video-player__container';
 const CANCEL_VOD_RECOMMENDATION_SELECTOR =

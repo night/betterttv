@@ -1,6 +1,6 @@
 import api from '../utils/api.js';
-import debug from '../utils/debug.js';
 import {getCurrentChannel} from '../utils/channel.js';
+import debug from '../utils/debug.js';
 
 let channel;
 let watcher;

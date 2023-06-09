@@ -1,10 +1,10 @@
-import watcher from '../../watcher.js';
-import settings from '../../settings.js';
-import domObserver from '../../observers/dom.js';
 import {PlatformTypes, SettingIds, SidebarFlags} from '../../constants.js';
+import domObserver from '../../observers/dom.js';
+import settings from '../../settings.js';
 import {hasFlag} from '../../utils/flags.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
 import twitch from '../../utils/twitch.js';
+import watcher from '../../watcher.js';
 
 let removeFeaturedChannelsListener;
 let removeOfflineFollowedChannelsListener;

@@ -28,6 +28,16 @@
     "no-plusplus": "off",
     "no-empty": "off",
     "max-classes-per-file": "off",
-    "no-bitwise": "off"
+    "no-bitwise": "off",
+    "import/order": [
+      "error",
+      {
+        "groups": ["builtin", "external", "parent", "sibling", "index"],
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        }
+      }
+    ]
   }
 }

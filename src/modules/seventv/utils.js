@@ -1,5 +1,5 @@
-import Emote from '../emotes/emote.js';
 import {hasFlag} from '../../utils/flags.js';
+import Emote from '../emotes/emote.js';
 
 function emoteUrl(id, version, static_ = false) {
   return `https://cdn.7tv.app/emote/${encodeURIComponent(id)}/${version}${static_ ? '_static' : ''}.webp`;

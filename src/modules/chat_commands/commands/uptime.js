@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 import formatMessage from '../../../i18n/index.js';
-import commandStore, {PermissionLevels} from '../store.js';
-import twitch from '../../../utils/twitch.js';
 import {getCurrentChannel} from '../../../utils/channel.js';
+import twitch from '../../../utils/twitch.js';
+import commandStore, {PermissionLevels} from '../store.js';
 
 function secondsToLength(s) {
   const days = Math.floor(s / 86400);
