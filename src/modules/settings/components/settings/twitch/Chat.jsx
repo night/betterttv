@@ -65,6 +65,12 @@ function ChatModule() {
               })}
             </p>
           </Checkbox>
+          <Checkbox key="hypeChat" value={ChatFlags.HYPECHAT}>
+            <p className={styles.heading}>{formatMessage({defaultMessage: 'HypeChat'})}</p>
+            <p className={styles.settingDescription}>
+              {formatMessage({defaultMessage: 'Show hype chat in the chat window'})}
+            </p>
+          </Checkbox>
         </CheckboxGroup>
       </div>
     </Panel>

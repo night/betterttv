@@ -61,6 +61,7 @@ const LegacySettingIds = {
   DELETED_MESSAGES: 'deletedMessages',
   BLACKLIST_KEYWORDS: 'blacklistKeywords',
   HIGHLIGHT_KEYWORDS: 'highlightKeywords',
+  HIDE_HYPECHAT: 'hideHypeChat',
 };
 
 function deserializeSettingForLegacy(data, settingId) {
@@ -111,6 +112,8 @@ function deserializeSettingForLegacy(data, settingId) {
       return !data[LegacySettingIds.DISABLE_USERNAME_COLORS];
     case SettingIds.BITS:
       return !data[LegacySettingIds.HIDE_BITS];
+    case SettingIds.HYPECHAT:
+        return !data[LegacySettingIds.HIDE_HYPECHAT];
     case SettingIds.CHAT_CLIPS:
       return !data[LegacySettingIds.HIDE_CHAT_CLIPS];
     case SettingIds.NEW_VIEWER_GREETING:
@@ -155,6 +158,7 @@ function deserializeSettingForLegacy(data, settingId) {
       const hideNewViewerGreeting = data[LegacySettingIds.HIDE_NEW_VIEWER_GREETING] || false;
       const hideSubscriptionNotices = data[LegacySettingIds.HIDE_SUBSCRIPTION_NOTICES] || false;
       const hideCommunityHighlights = data[LegacySettingIds.HIDE_COMMUNITY_HIGHLIGHTS] || false;
+      const hideHypeChat = data[LegacySettingIds.HIDE_HYPECHAT] || false;
 
       let flags = setFlag(0, ChatFlags.CHAT_REPLIES, !hideChatReplies);
       flags = setFlag(flags, ChatFlags.BITS, !hideBits);
@@ -162,6 +166,7 @@ function deserializeSettingForLegacy(data, settingId) {
       flags = setFlag(flags, ChatFlags.VIEWER_GREETING, !hideNewViewerGreeting);
       flags = setFlag(flags, ChatFlags.SUB_NOTICE, !hideSubscriptionNotices);
       flags = setFlag(flags, ChatFlags.COMMUNITY_HIGHLIGHTS, !hideCommunityHighlights);
+      flags = setFlag(flags, ChatFlags.HYPECHAT, !hideHypeChat);
       return [
         flags,
         ChatFlags.CHAT_REPLIES |

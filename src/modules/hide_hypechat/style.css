@@ -1,0 +1,7 @@
+.bttv-hide-hypechat {
+    .paid-pinned-chat-message-list,
+    button[aria-label="Hype-Chat"]  {
+      display: none !important;
+    }
+  }
+  
