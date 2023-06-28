@@ -802,4 +802,15 @@ export default {
     } catch (_) {}
     return context;
   },
+
+  getUserFromPinnedChat(node) {
+    let user;
+
+    try {
+      const reactNode = searchReactParents(getReactInstance(node), (n) => n?.pendingProps?.message?.pinnedBy != null);
+      user = reactNode.pendingProps.message.pinnedBy;
+    } catch (_) {}
+
+    return user;
+  },
 };
