@@ -14,6 +14,10 @@ class Storage {
     }
   }
 
+  get localStorageSupport() {
+    return this._localStorageSupport;
+  }
+
   getStorage() {
     const storage = {};
 

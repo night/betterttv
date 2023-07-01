@@ -37,7 +37,7 @@ function computeScore({totalUses, recentUses}) {
 const TWITCH_EMOTE_USAGE_HISTORY_KEY = 'twilight.emote_picker_history';
 
 function loadDefaultFrequentEmotes() {
-  if (getPlatform() !== PlatformTypes.TWITCH || !storage._localStorageSupport) {
+  if (getPlatform() !== PlatformTypes.TWITCH || !storage.localStorageSupport) {
     return DEFAULT_FREQUENT_EMOTES;
   }
 
@@ -46,17 +46,24 @@ function loadDefaultFrequentEmotes() {
     return DEFAULT_FREQUENT_EMOTES;
   }
 
-  const emoteHistory = {};
-  for (const [emoteId, {uses, lastUpdatedAt}] of Object.entries(history)) {
-    const serializedEmoteId = `${EmoteProviders.TWITCH}-${emoteId}`;
-    emoteHistory[serializedEmoteId] = {
-      recentUses: [lastUpdatedAt],
-      totalUses: uses,
-      score: computeScore({totalUses: uses, recentUses: [lastUpdatedAt]}),
-    };
+  try {
+    const historyEntries = Object.entries(history);
+    if (historyEntries.length === 0) {
+      return DEFAULT_FREQUENT_EMOTES;
+    }
+    const emoteHistory = {};
+    for (const [emoteId, {uses, lastUpdatedAt}] of historyEntries) {
+      const serializedEmoteId = `${EmoteProviders.TWITCH}-${emoteId}`;
+      emoteHistory[serializedEmoteId] = {
+        recentUses: [lastUpdatedAt],
+        totalUses: uses,
+        score: computeScore({totalUses: uses, recentUses: [lastUpdatedAt]}),
+      };
+    }
+    return emoteHistory;
+  } catch (_) {
+    return DEFAULT_FREQUENT_EMOTES;
   }
-
-  return emoteHistory;
 }
 
 class EmoteMenuStore {
