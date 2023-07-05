@@ -9,19 +9,29 @@ import styles from './styles.module.css';
 const HYPE_CHAT_WRAPPER_SELECTOR = '.paid-pinned-chat-message-content-wrapper';
 const HYPE_CHAT_MESSAGE_SELECTOR = 'span[data-a-target="chat-message-text"]';
 
+const CHAT_TEXT_AREA_SELECTOR = '.chat-input__textarea';
+const STREAM_CHAT_SELECTOR = '.stream-chat';
+
 let removeHypeChatListener = null;
 class HypeChatModule {
   constructor() {
-    this.loadHideHypeChat();
-    this.loadHypeChatMessageReplacer();
-    settings.on(`changed.${SettingIds.HYPE_CHAT}`, () => {
+    this.load();
+    settings.on(`changed.${SettingIds.HYPE_CHAT}`, () => this.load());
+    dom.on(CHAT_TEXT_AREA_SELECTOR, (_, isConnected) => {
+      if (!isConnected) {
+        return;
+      }
       this.loadHideHypeChat();
-      this.loadHypeChatMessageReplacer();
     });
   }
 
-  loadHypeChatMessageReplacer() {
+  load() {
     const settingEnabled = settings.get(SettingIds.HYPE_CHAT);
+    this.loadHideHypeChat(settingEnabled);
+    this.loadHypeChatMessageReplacer(settingEnabled);
+  }
+
+  loadHypeChatMessageReplacer(settingEnabled = settings.get(SettingIds.HYPE_CHAT)) {
     if (!settingEnabled && removeHypeChatListener != null) {
       removeHypeChatListener();
       removeHypeChatListener = null;
@@ -40,9 +50,15 @@ class HypeChatModule {
     });
   }
 
-  loadHideHypeChat() {
-    const settingEnabled = settings.get(SettingIds.HYPE_CHAT);
-    document.body.classList.toggle(styles.hideHypeChatMessages, !settingEnabled);
+  loadHideHypeChat(settingEnabled = settings.get(SettingIds.HYPE_CHAT)) {
+    const streamChat = document.querySelector(STREAM_CHAT_SELECTOR);
+    if (streamChat != null) {
+      streamChat.classList.toggle(styles.hideHypeChatMessages, !settingEnabled);
+    }
+    const chatTextArea = document.querySelector(CHAT_TEXT_AREA_SELECTOR);
+    if (chatTextArea != null) {
+      chatTextArea.classList.toggle(styles.hideHypeChatButton, !settingEnabled);
+    }
   }
 }
 
