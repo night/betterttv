@@ -1,6 +1,7 @@
 import {EmoteCategories, EmoteTypeFlags, SettingIds} from '../../constants.js';
 import formatMessage from '../../i18n/index.js';
 import settings from '../../settings.js';
+import {getCanonicalEmoteId} from '../../utils/emote.js';
 import {hasFlag} from '../../utils/flags.js';
 import {createSrc, createSrcSet} from '../../utils/image.js';
 
@@ -36,7 +37,7 @@ export default class Emote {
     if (provider == null) {
       throw new Error('cannot create canonical id from null provider');
     }
-    return `${provider}-${this.id}`;
+    return getCanonicalEmoteId(this.id, provider);
   }
 
   render(prefixModifiers, suffixModifiers, classNames) {

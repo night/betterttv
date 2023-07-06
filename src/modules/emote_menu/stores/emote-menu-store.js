@@ -1,5 +1,6 @@
 import {DEFAULT_FREQUENT_EMOTES, EmoteProviders, PlatformTypes} from '../../../constants.js';
 import storage from '../../../storage.js';
+import {getCanonicalEmoteId} from '../../../utils/emote.js';
 import {getPlatform} from '../../../utils/window.js';
 
 const HOUR = 60 * 60 * 1000;
@@ -53,7 +54,7 @@ function loadDefaultFrequentEmotes() {
     }
     const emoteHistory = {};
     for (const [emoteId, {uses, lastUpdatedAt}] of historyEntries) {
-      const serializedEmoteId = `${EmoteProviders.TWITCH}-${emoteId}`;
+      const serializedEmoteId = getCanonicalEmoteId(emoteId, EmoteProviders.TWITCH);
       emoteHistory[serializedEmoteId] = {
         recentUses: [lastUpdatedAt],
         totalUses: uses,
