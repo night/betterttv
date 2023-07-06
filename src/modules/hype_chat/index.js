@@ -31,7 +31,8 @@ class HypeChatModule {
     this.loadHypeChatMessageReplacer(settingEnabled);
   }
 
-  loadHypeChatMessageReplacer(settingEnabled = settings.get(SettingIds.HYPE_CHAT)) {
+  loadHypeChatMessageReplacer(_settingEnabled = null) {
+    const settingEnabled = _settingEnabled ?? settings.get(SettingIds.HYPE_CHAT);
     if (!settingEnabled && removeHypeChatListener != null) {
       removeHypeChatListener();
       removeHypeChatListener = null;
@@ -41,16 +42,17 @@ class HypeChatModule {
       if (!isConnected) {
         return;
       }
-      const user = twitch.getUserFromPinnedChat(node);
       const messageNode = node.querySelector(HYPE_CHAT_MESSAGE_SELECTOR);
       if (messageNode == null) {
         return;
       }
+      const user = twitch.getUserFromPinnedChat(node);
       chat.messageReplacer(messageNode, user);
     });
   }
 
-  loadHideHypeChat(settingEnabled = settings.get(SettingIds.HYPE_CHAT)) {
+  loadHideHypeChat(_settingEnabled = null) {
+    const settingEnabled = _settingEnabled ?? settings.get(SettingIds.HYPE_CHAT);
     const streamChat = document.querySelector(STREAM_CHAT_SELECTOR);
     if (streamChat != null) {
       streamChat.classList.toggle(styles.hideHypeChatMessages, !settingEnabled);
