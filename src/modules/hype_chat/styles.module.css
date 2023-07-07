@@ -2,6 +2,10 @@
   div[class$='paid-pinned-chat-message-content-wrapper'] {
     display: none !important;
   }
+
+  div[class$='paid-pinned-chat-message-list'] {
+    display: none !important;
+  }
 }
 
 .hideHypeChatButton {
