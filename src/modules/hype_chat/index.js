@@ -12,54 +12,65 @@ const HYPE_CHAT_MESSAGE_SELECTOR = 'span[data-a-target="chat-message-text"]';
 const CHAT_TEXT_AREA_SELECTOR = '.chat-input__textarea';
 const STREAM_CHAT_SELECTOR = '.stream-chat';
 
+let removeTextAreaListener = null;
 let removeHypeChatListener = null;
+
+function hideHypeChat() {
+  const settingEnabled = _settingEnabled ?? settings.get(SettingIds.HYPE_CHAT);
+  const streamChat = document.querySelector(STREAM_CHAT_SELECTOR);
+  if (streamChat != null) {
+    streamChat.classList.toggle(styles.hideHypeChatMessages, !settingEnabled);
+  }
+  const chatTextArea = document.querySelector(CHAT_TEXT_AREA_SELECTOR);
+  if (chatTextArea != null) {
+    chatTextArea.classList.toggle(styles.hideHypeChatButton, !settingEnabled);
+  }
+}
+
 class HypeChatModule {
   constructor() {
     this.load();
     settings.on(`changed.${SettingIds.HYPE_CHAT}`, () => this.load());
-    dom.on(CHAT_TEXT_AREA_SELECTOR, (_, isConnected) => {
-      if (!isConnected) {
-        return;
-      }
-      this.loadHideHypeChat();
-    });
   }
 
   load() {
     const settingEnabled = settings.get(SettingIds.HYPE_CHAT);
-    this.loadHideHypeChat(settingEnabled);
-    this.loadHypeChatMessageReplacer(settingEnabled);
-  }
 
-  loadHypeChatMessageReplacer(_settingEnabled = null) {
-    const settingEnabled = _settingEnabled ?? settings.get(SettingIds.HYPE_CHAT);
-    if (!settingEnabled && removeHypeChatListener != null) {
-      removeHypeChatListener();
-      removeHypeChatListener = null;
+    if (!settingEnabled) {
+      if (removeTextAreaListener == null) {
+        removeTextAreaListener = dom.on(CHAT_TEXT_AREA_SELECTOR, (_, isConnected) => {
+          if (!isConnected) {
+            return;
+          }
+          hideHypeChat();
+        });
+      }
+
+      if (removeHypeChatListener != null) {
+        removeHypeChatListener();
+        removeHypeChatListener = null;
+      }
+
       return;
     }
-    removeHypeChatListener = dom.on(HYPE_CHAT_WRAPPER_SELECTOR, (node, isConnected) => {
-      if (!isConnected) {
-        return;
-      }
-      const messageNode = node.querySelector(HYPE_CHAT_MESSAGE_SELECTOR);
-      if (messageNode == null) {
-        return;
-      }
-      const user = twitch.getUserFromPinnedChat(node);
-      chat.messageReplacer(messageNode, user);
-    });
-  }
 
-  loadHideHypeChat(_settingEnabled = null) {
-    const settingEnabled = _settingEnabled ?? settings.get(SettingIds.HYPE_CHAT);
-    const streamChat = document.querySelector(STREAM_CHAT_SELECTOR);
-    if (streamChat != null) {
-      streamChat.classList.toggle(styles.hideHypeChatMessages, !settingEnabled);
+    if (removeTextAreaListener != null) {
+      removeTextAreaListener();
+      removeTextAreaListener = null;
     }
-    const chatTextArea = document.querySelector(CHAT_TEXT_AREA_SELECTOR);
-    if (chatTextArea != null) {
-      chatTextArea.classList.toggle(styles.hideHypeChatButton, !settingEnabled);
+
+    if (removeHypeChatListener == null) {
+      removeHypeChatListener = dom.on(HYPE_CHAT_WRAPPER_SELECTOR, (node, isConnected) => {
+        if (!isConnected) {
+          return;
+        }
+        const messageNode = node.querySelector(HYPE_CHAT_MESSAGE_SELECTOR);
+        if (messageNode == null) {
+          return;
+        }
+        const user = twitch.getUserFromPinnedChat(node);
+        chat.messageReplacer(messageNode, user);
+      });
     }
   }
 }

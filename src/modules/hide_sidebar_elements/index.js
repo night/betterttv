@@ -35,12 +35,12 @@ class HideSidebarElementsModule {
             if (!isConnected) {
               return;
             }
-  
+
             const sidebarSection = twitch.getSidebarSection(node);
             if (section && section !== sidebarSection?.type) {
               return;
             }
-    
+
             node.classList.add(hideClass);
           },
           {useParentNode: true}
