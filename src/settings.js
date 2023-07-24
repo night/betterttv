@@ -123,19 +123,6 @@ class Settings extends SafeEventEmitter {
 
       let [oldFlags, oldChangedBits] = settings[flagSettingId];
 
-      // fix flags which were improperly defaulted in 7.4.11
-      if (
-        version === '7.4.11' &&
-        ((oldFlags === 0 && oldChangedBits === defaultFlags) ||
-          (flagSettingId === SettingIds.CHAT &&
-            oldFlags === ChatFlags.CHAT_MESSAGE_HISTORY &&
-            (oldChangedBits === defaultFlags || oldChangedBits === inferredDefaultFlags)))
-      ) {
-        oldFlags = defaultFlags;
-        oldChangedBits = 0;
-        this.set(flagSettingId, defaultValue);
-      }
-
       // upgrade flags where default bits changed
       const flagsToAdd = setFlag(defaultFlags, oldChangedBits, false);
       if (flagsToAdd > 0) {
