@@ -53,7 +53,7 @@ class HypeChatModule {
 
       return;
     }
-    
+
     toggleHypeChat();
 
     if (removeTextAreaListener != null) {
