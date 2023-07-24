@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import {createRequire} from 'module';
 import path from 'path';
-import {sentryWebpackPlugin as SentryWebpackPlugin} from '@sentry/webpack-plugin';
+import {sentryWebpackPlugin} from '@sentry/webpack-plugin';
 import {CleanWebpackPlugin} from 'clean-webpack-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
@@ -244,7 +244,7 @@ export default async (env, argv) => {
       }),
       ...(process.env.GITHUB_TAG || process.env.GIT_REV
         ? [
-            new SentryWebpackPlugin({
+            sentryWebpackPlugin({
               authToken: process.env.SENTRY_AUTH_TOKEN,
               release: process.env.GIT_REV || git.long(),
               org: 'nightdev',
