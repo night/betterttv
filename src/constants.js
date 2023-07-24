@@ -41,6 +41,7 @@ export const SettingIds = {
   USERNAMES: 'usernames',
   AUTO_LIVE_CHAT_VIEW: 'autoLiveChatView',
   EMOTE_MENU_WIDTH: 'emoteMenuWidth',
+  HYPE_CHAT: 'hypeChat',
 };
 
 export const CategoryTypes = {
@@ -257,6 +258,7 @@ export const SettingDefaultValues = {
   [SettingIds.AUTO_CLAIM]: [0, 0],
   [SettingIds.LIVE_CHAT_VIEW]: false,
   [SettingIds.EMOTE_MENU_WIDTH]: 380,
+  [SettingIds.HYPE_CHAT]: true,
 };
 
 export const FlagSettings = [

@@ -1,0 +1,17 @@
+.hideHypeChatMessages {
+  div[class$='paid-pinned-chat-message-content-wrapper'] {
+    display: none !important;
+  }
+
+  div[class$='paid-pinned-chat-message-list'] {
+    display: none !important;
+  }
+}
+
+.hideHypeChatButton {
+  button:has(
+      path[d='M14.91 2.073 13 9l1.88 1.071a1 1 0 0 1 .036 1.717l-9.825 6.14L7 11 5.12 9.929a1 1 0 0 1-.035-1.717l9.824-6.14zm-6.784 11.6L9 10 7 9l4.874-2.672L11 10l2 1-4.874 2.673z']
+    ) {
+    display: none !important;
+  }
+}
