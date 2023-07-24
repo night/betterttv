@@ -6,7 +6,7 @@ import {loadModuleForPlatforms} from '../../utils/modules.js';
 import twitch from '../../utils/twitch.js';
 import watcher from '../../watcher.js';
 
-const listeners = {};
+const sectionObserverRemovers = {};
 
 class HideSidebarElementsModule {
   constructor() {
@@ -28,30 +28,36 @@ class HideSidebarElementsModule {
 
   toggleChannels(flag, hideClass, selector, section) {
     if (!hasFlag(settings.get(SettingIds.SIDEBAR), flag)) {
-      if (listeners[flag]) return;
+      if (sectionObserverRemovers[flag] == null) {
+        sectionObserverRemovers[flag] = domObserver.on(
+          selector,
+          (node, isConnected) => {
+            if (!isConnected) {
+              return;
+            }
+  
+            const sidebarSection = twitch.getSidebarSection(node);
+            if (section && section !== sidebarSection?.type) {
+              return;
+            }
+    
+            node.classList.add(hideClass);
+          },
+          {useParentNode: true}
+        );
+      }
 
-      listeners[flag] = domObserver.on(
-        selector,
-        (node, isConnected) => {
-          if (!isConnected) return;
-
-          const sidebarSection = twitch.getSidebarSection(node);
-          if (section && section !== sidebarSection?.type) {
-            return;
-          }
-          node.classList.add(hideClass);
-        },
-        {useParentNode: true}
-      );
       return;
     }
 
-    if (!listeners[flag]) return;
+    if (sectionObserverRemovers[flag] == null) {
+      return;
+    }
 
     Array.from(document.getElementsByClassName(hideClass)).forEach((el) => el.classList.remove(hideClass));
-    listeners[flag]();
-    listeners[flag] = undefined;
-    document.querySelectorAll('.side-nav-section')?.classList.remove(hideClass);
+
+    sectionObserverRemovers[flag]();
+    delete sectionObserverRemovers[flag];
   }
 
   toggleRecentlyWatchedChannels() {
