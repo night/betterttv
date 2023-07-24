@@ -7,7 +7,6 @@ import twitch from '../../utils/twitch.js';
 import {getCurrentUser} from '../../utils/user.js';
 import watcher from '../../watcher.js';
 import anonChat from '../anon_chat/index.js';
-import chatCommands from '../chat_commands/index.js';
 import chatTabCompletion from '../chat_tab_completion/index.js';
 import emojis from '../emotes/emojis.js';
 
@@ -32,7 +31,6 @@ class SendState {
 let twitchSendMessage;
 const methodList = [
   (msgObj) => chatTabCompletion.onSendMessage(msgObj),
-  (msgObj) => chatCommands.onSendMessage(msgObj),
   (msgObj) => anonChat.onSendMessage(msgObj),
   (msgObj) => emojis.onSendMessage(msgObj),
 ];
