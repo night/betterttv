@@ -130,12 +130,20 @@ function deserializeSettingForLegacy(data, settingId) {
       const hideOfflineFollowedChannels = data[LegacySettingIds.HIDE_OFFLINE_FOLLOWED_CHANNELS] || false;
       const autoExpand = data[LegacySettingIds.AUTO_EXPAND_CHANNELS] || false;
 
-      let flags = setFlag(0, SidebarFlags.FEATURED_CHANNELS, !hideFeaturedChannels);
+      let flags = setFlag(
+        0,
+        SidebarFlags.RECOMMENDED_CHANNELS | SidebarFlags.RECENTLY_WATCHED_CHANNELS | SidebarFlags.SIMILAR_CHANNELS,
+        !hideFeaturedChannels
+      );
       flags = setFlag(flags, SidebarFlags.OFFLINE_FOLLOWED_CHANNELS, !hideOfflineFollowedChannels);
       flags = setFlag(flags, SidebarFlags.AUTO_EXPAND_CHANNELS, autoExpand);
       return [
         flags,
-        SidebarFlags.FEATURED_CHANNELS | SidebarFlags.OFFLINE_FOLLOWED_CHANNELS | SidebarFlags.AUTO_EXPAND_CHANNELS,
+        SidebarFlags.RECOMMENDED_CHANNELS |
+          SidebarFlags.OFFLINE_FOLLOWED_CHANNELS |
+          SidebarFlags.AUTO_EXPAND_CHANNELS |
+          SidebarFlags.RECENTLY_WATCHED_CHANNELS |
+          SidebarFlags.SIMILAR_CHANNELS,
       ];
     }
     case SettingIds.EMOTES: {

@@ -1,6 +1,7 @@
-import {SettingIds, FlagSettings, SettingDefaultValues, ChatFlags, EmoteMenuTypes} from './constants.js';
+import semver from 'semver';
+import {SettingIds, FlagSettings, SettingDefaultValues, ChatFlags, EmoteMenuTypes, SidebarFlags} from './constants.js';
 import storage from './storage.js';
-import {getChangedFlags, setFlag} from './utils/flags.js';
+import {getChangedFlags, hasFlag, setFlag} from './utils/flags.js';
 import SafeEventEmitter from './utils/safe-event-emitter.js';
 
 export const SETTINGS_STORAGE_KEY = 'settings';
@@ -82,13 +83,20 @@ class Settings extends SafeEventEmitter {
   }
 
   upgrade(version) {
-    if (version !== process.env.EXT_VER) {
+    if (semver.lt(version, '7.5.5')) {
+      // now storing emote menu as an enum rather than a boolean
       const oldEmoteMenuValue = this.get(SettingIds.LEGACY_EMOTE_MENU);
       if (oldEmoteMenuValue != null) {
         const emoteMenuValue = oldEmoteMenuValue ? EmoteMenuTypes.LEGACY_ENABLED : EmoteMenuTypes.NONE;
-        // now storing emote menu as an enum rather than a boolean
         this.set(SettingIds.EMOTE_MENU, emoteMenuValue);
         this.set(SettingIds.LEGACY_EMOTE_MENU, null);
+      }
+
+      // upgrade sidebar flags: split featured channels into one option per section
+      const oldSidebarValue = this.get(SettingIds.SIDEBAR);
+      if (oldSidebarValue != null && !hasFlag(oldSidebarValue, SidebarFlags.RECOMMENDED_CHANNELS)) {
+        const value = setFlag(oldSidebarValue, SidebarFlags.SIMILAR_CHANNELS, false);
+        this.set(SettingIds.SIDEBAR, value);
       }
     }
 

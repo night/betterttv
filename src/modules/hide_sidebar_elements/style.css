@@ -1,4 +1,12 @@
-.bttv-hide-featured-channels {
+.bttv-hide-recently-watched-channels {
+  display: none !important;
+}
+
+.bttv-hide-recommended-channels {
+  display: none !important;
+}
+
+.bttv-hide-similar-channels {
   display: none !important;
 }
 
