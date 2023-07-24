@@ -245,13 +245,17 @@ export default async (env, argv) => {
       ...(process.env.GITHUB_TAG || process.env.GIT_REV
         ? [
             sentryWebpackPlugin({
-              authToken: process.env.SENTRY_AUTH_TOKEN,
-              release: process.env.GIT_REV || git.long(),
+              authToken: process.env.GITHUB_TAG != null ? process.env.SENTRY_AUTH_TOKEN : undefined,
+              release: {
+                name: process.env.GIT_REV || git.long(),
+              },
               org: 'nightdev',
               project: 'betterttv-extension',
-              include: './build',
-              ignore: ['dev', 'node_modules', 'webpack.config.js'],
-              dryRun: process.env.GITHUB_TAG == null,
+              sourcemaps: {
+                include: ['./build'],
+                ignore: ['dev', 'node_modules', 'webpack.config.js'],
+              },
+              telemetry: false,
             }),
           ]
         : []),
