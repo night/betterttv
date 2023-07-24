@@ -15,8 +15,8 @@ const STREAM_CHAT_SELECTOR = '.stream-chat';
 let removeTextAreaListener = null;
 let removeHypeChatListener = null;
 
-function hideHypeChat() {
-  const settingEnabled = _settingEnabled ?? settings.get(SettingIds.HYPE_CHAT);
+function toggleHypeChat() {
+  const settingEnabled = settings.get(SettingIds.HYPE_CHAT);
   const streamChat = document.querySelector(STREAM_CHAT_SELECTOR);
   if (streamChat != null) {
     streamChat.classList.toggle(styles.hideHypeChatMessages, !settingEnabled);
@@ -42,7 +42,7 @@ class HypeChatModule {
           if (!isConnected) {
             return;
           }
-          hideHypeChat();
+          toggleHypeChat();
         });
       }
 
@@ -53,6 +53,8 @@ class HypeChatModule {
 
       return;
     }
+    
+    toggleHypeChat();
 
     if (removeTextAreaListener != null) {
       removeTextAreaListener();
