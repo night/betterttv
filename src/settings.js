@@ -121,9 +121,8 @@ class Settings extends SafeEventEmitter {
         this.set(flagSettingId, [oldValue, getChangedFlags(inferredDefaultFlags, oldValue)]);
       }
 
-      let [oldFlags, oldChangedBits] = settings[flagSettingId];
-
       // upgrade flags where default bits changed
+      const [oldFlags, oldChangedBits] = settings[flagSettingId];
       const flagsToAdd = setFlag(defaultFlags, oldChangedBits, false);
       if (flagsToAdd > 0) {
         this.set(flagSettingId, setFlag(oldFlags, flagsToAdd, true));
