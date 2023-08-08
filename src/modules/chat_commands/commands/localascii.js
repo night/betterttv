@@ -6,7 +6,9 @@ import commandStore, {PermissionLevels} from '../store.js';
 commandStore.registerCommand({
   name: 'localascii',
   commandArgs: [],
-  description: formatMessage({defaultMessage: 'Usage: "/localascii" - Turns on local ascii-only mode (only your chat is ascii-only mode)'}),
+  description: formatMessage({
+    defaultMessage: 'Usage: "/localascii" - Turns on local ascii-only mode (only your chat is ascii-only mode)',
+  }),
   handler: () => {
     chat.asciiOnly(true);
     twitch.sendChatAdminMessage(`Local ascii-only mode enabled.`);
