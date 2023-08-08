@@ -15,6 +15,7 @@ export const SettingIds = {
   TIMEOUT_HIGHLIGHTS: 'timeoutHighlights',
   HIGHLIGHT_FEEDBACK: 'highlightFeedback',
   CHAT_LAYOUT: 'chatLayout',
+  CHAT_FULLSCREEN_POPUP: 'chatFullscreenPopup',
   TAB_COMPLETION_TOOLTIP: 'tabCompletionTooltip',
   TAB_COMPLETION_EMOTE_PRIORITY: 'tabCompletionEmotePriority',
   WHISPERS: 'whispers',
@@ -53,6 +54,11 @@ export const CategoryTypes = {
 export const ChatLayoutTypes = {
   LEFT: 1,
   RIGHT: 2,
+};
+
+export const ChatFullscreenPopupTypes = {
+  DISABLED: 0,
+  ENABLED: 1,
 };
 
 export const DeletedMessageTypes = {
