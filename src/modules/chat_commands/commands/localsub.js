@@ -17,7 +17,7 @@ commandStore.registerCommand({
 });
 
 commandStore.registerCommand({
-  name: 'localmodoff',
+  name: 'localsuboff',
   commandArgs: [],
   description: formatMessage({defaultMessage: 'Usage: "/localsuboff" - Turns off local sub-only mode'}),
   handler: () => {
