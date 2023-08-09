@@ -56,11 +56,6 @@ export const ChatLayoutTypes = {
   RIGHT: 2,
 };
 
-export const ChatFullscreenPopupTypes = {
-  DISABLED: 0,
-  ENABLED: 1,
-};
-
 export const DeletedMessageTypes = {
   DEFAULT: 0,
   SHOW: 1,
@@ -212,6 +207,7 @@ export const SettingDefaultValues = {
   [SettingIds.TIMEOUT_HIGHLIGHTS]: true,
   [SettingIds.HIGHLIGHT_FEEDBACK]: false,
   [SettingIds.CHAT_LAYOUT]: ChatLayoutTypes.RIGHT,
+  [SettingIds.CHAT_FULLSCREEN_POPUP]: true,
   [SettingIds.TAB_COMPLETION_TOOLTIP]: false,
   [SettingIds.TAB_COMPLETION_EMOTE_PRIORITY]: false,
   [SettingIds.WHISPERS]: true,

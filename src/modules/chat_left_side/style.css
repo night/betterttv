@@ -93,3 +93,10 @@
     margin-right: -25.3rem !important;
   }
 }
+
+/* Work with the chat_fullscreen_popup module */
+.bttv-swap-chat {
+  .bttv-fullscreen-chat {
+    left: 0;
+  }
+}

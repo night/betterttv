@@ -4,10 +4,3 @@
   top: 0;
   right: 0;
 }
-
-/* Respect chat_left_side */
-.bttv-swap-chat {
-  .bttv-fullscreen-chat {
-    left: 0;
-  }
-}
