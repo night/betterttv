@@ -47,6 +47,6 @@
   margin-left: -4px;
 }
 
-.bttv-emote-modifier-cursed {
+.bttv-emote-modifier-cursed img {
   filter: grayscale(1) brightness(0.7) contrast(2.5);
 }
