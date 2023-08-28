@@ -45,7 +45,7 @@
     "css-loader": "6.8.1",
     "css-minimizer-webpack-plugin": "5.0.1",
     "delegated-events": "^1.1.2",
-    "emoji-toolkit": "7.0.1",
+    "emoji-toolkit": "8.0.0",
     "eslint": "8.47.0",
     "eslint-config-airbnb": "19.0.4",
     "eslint-config-prettier": "9.0.0",
