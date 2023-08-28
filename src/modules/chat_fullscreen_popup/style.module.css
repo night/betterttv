@@ -1,0 +1,12 @@
+.bttvFullscreenChat {
+  position: absolute !important;
+  width: 400px !important;
+  top: 0;
+  right: 0;
+  z-index: 9999;
+}
+
+/* Work with the chat_fullscreen_popup module */
+body:global(.bttv-swap-chat) :local(.bttvFullscreenChat) {
+  left: 0;
+}
