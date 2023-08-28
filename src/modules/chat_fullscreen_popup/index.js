@@ -2,6 +2,9 @@ import {PlatformTypes, SettingIds} from '../../constants.js';
 import settings from '../../settings.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
 import twitch from '../../utils/twitch.js';
+import styles from './style.module.css';
+
+const TRIGGER_KEY = 'c';
 
 class ChatFullscreenPopup {
   constructor() {
@@ -46,20 +49,20 @@ class ChatFullscreenPopup {
   }
 
   disableKeyListeners() {
+    this.keyupPressed = true;
     window.removeEventListener('keydown', this.fullscreenKeydownListener);
     window.removeEventListener('keyup', this.fullscreenKeyupListener);
-    this.keyupPressed = true;
   }
 
   fullscreenKeydown(event) {
-    if (event.key === 'c' && this.keyupPressed) {
+    if (event.key === TRIGGER_KEY && this.keyupPressed) {
       this.toggleFullscreenChatPopup();
       this.keyupPressed = false;
     }
   }
 
   fullscreenKeyup(event) {
-    if (event.key === 'c') {
+    if (event.key === TRIGGER_KEY) {
       this.keyupPressed = true;
     }
   }
@@ -79,25 +82,23 @@ class ChatFullscreenPopup {
 
   showChatPopup() {
     if (this.chatElement == null || this.originalChatParentElement == null) {
-      // Something has gone wrong in initialization or the page doesn't have chat
       return;
     }
 
     if (this.chatElement.parentNode === this.originalChatParentElement) {
       document.fullscreenElement.appendChild(this.chatElement);
     }
-    this.chatElement.classList.add('bttv-fullscreen-chat');
+    this.chatElement.classList.add(styles.bttvFullscreenChat);
     this.fullscreenChatPopupShown = true;
     twitch.getChatScroller().resume();
   }
 
   hideChatPopup() {
     if (this.chatElement == null || this.originalChatParentElement == null) {
-      // Something has gone wrong in initialization or the page doesn't have chat
       return;
     }
 
-    this.chatElement.classList.remove('bttv-fullscreen-chat');
+    this.chatElement.classList.remove(styles.bttvFullscreenChat);
     if (this.chatElement.parentNode !== this.originalChatParentElement) {
       this.originalChatParentElement.appendChild(this.chatElement);
     }
