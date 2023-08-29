@@ -113,6 +113,30 @@ function patchEmoteImage(image, isConnected) {
       span = document.createElement('span');
       imageButton.replaceWith(span);
     }
+
+    // It is uncertain if the emote we are patching is preceded by a modifier, therefore we need to
+    // deserialize previously patched emotes until we reach a non-emote/text node.
+
+    let prefixText = '';
+    for (const child of Array.from(span.childNodes).reverse()) {
+      if (child.nodeType === 3) {
+        prefixText = `${child.textContent}${prefixText}`;
+        child.remove();
+        continue;
+      }
+      const {firstChild} = child;
+      if (firstChild != null && firstChild.tagName === 'IMG' && firstChild.classList.contains('bttv-emote-image')) {
+        prefixText = `${firstChild.alt}${prefixText}`;
+        child.remove();
+        continue;
+      }
+      break;
+    }
+
+    if (prefixText.length > 0) {
+      span.appendChild(document.createTextNode(prefixText));
+    }
+
     const {lastChild} = span;
     if (lastChild != null && lastChild.nodeType === 3) {
       lastChild.textContent += image.alt;
