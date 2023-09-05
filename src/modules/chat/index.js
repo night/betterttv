@@ -123,6 +123,7 @@ class ChatModule {
     watcher.on('load', () => this.loadEmoteMouseHandler());
     settings.on(`changed.${SettingIds.EMOTES}`, () => this.loadEmoteMouseHandler());
     watcher.on('chat.message', (element, message) => this.messageParser(element, message));
+    watcher.on('chat.seventv_message', (element, userId) => this.seventvMessageParser(element, userId));
     watcher.on('chat.notice_message', (element) => this.noticeMessageParser(element));
     watcher.on('chat.pinned_message', (element) => this.pinnedMessageParser(element));
     watcher.on('chat.status', (element, message) => {
@@ -455,6 +456,29 @@ class ChatModule {
     }
 
     this.messageReplacer(getMessagePartsFromMessageElement(element), user);
+
+    element.__bttvParsed = true;
+  }
+
+  seventvMessageParser(element, messageObj) {
+    if (element.__bttvParsed) return;
+    const user = formatChatUser(messageObj);
+
+    const from = element.querySelector('.seventv-chat-user-username');
+    if (subscribers.hasGlow(user.id) && settings.get(SettingIds.DARKENED_MODE) === true) {
+      const rgbColor = colors.getRgb(user.color);
+      from.style.textShadow = `0 0 20px rgba(${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b}, 0.8)`;
+    }
+
+    const customBadges = this.customBadges(user);
+    const badgesContainer = element.querySelector('.seventv-chat-user-badge-list');
+    if (badgesContainer != null && customBadges.length > 0) {
+      for (const badge of customBadges) {
+        badgesContainer.appendChild(badge);
+      }
+    }
+
+    this.messageReplacer(element.querySelectorAll('.seventv-chat-message-body > span'), user);
 
     element.__bttvParsed = true;
   }
