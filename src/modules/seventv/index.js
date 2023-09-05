@@ -37,15 +37,23 @@ class SevenTV {
     vueApp.mixin({
       __name: BTTV_GLOBAL_MIXIN,
       mounted() {
-        this.$el.__vue__ = this;
+        this.$el.__bttv_seventv_instance = this;
       },
       beforeUnmount() {
-        if (this.$el.__vue__ !== this) {
+        if (this.$el.__bttv_seventv_instance !== this) {
           return;
         }
-        delete this.$el.__vue__;
+        delete this.$el.__bttv_seventv_instance;
       },
     });
+  }
+
+  getElementInstance(element) {
+    const instance = element?.__bttv_seventv_instance?.$;
+    if (instance == null) {
+      return null;
+    }
+    return instance;
   }
 }
 
