@@ -9,7 +9,7 @@ import settings from '../settings/index.js';
 
 const CHAT_SETTINGS_SELECTOR = '.chat-settings__content';
 const MOD_VIEW_CHAT_SETTINGS_SELECTOR =
-  'button[data-test-selector="deleted-message-display-setting-item-click-target"], button[data-test-selector="chat-filter-item-click-target"]';
+  '#chat-settings-show-mod-actions, [data-test-selector="chat-filter-item-click-target"]';
 const CHAT_SETTINGS_BACK_BUTTON_SELECTOR =
   'button[data-test-selector="chat-settings-back-button"], button[data-test-selector="chat-widget-settings-back-button"]';
 const CHAT_SETTINGS_MOD_TOOLS_SELECTOR = 'div[data-test-selector="mod-tools"]';
@@ -88,7 +88,7 @@ function inIFrame() {
 function getChatSettings() {
   const modViewChatSettings = document.querySelector(MOD_VIEW_CHAT_SETTINGS_SELECTOR);
   if (modViewChatSettings != null) {
-    return modViewChatSettings.parentElement.parentElement;
+    return modViewChatSettings.closest('.tw-balloon').querySelector('button').parentElement.parentElement;
   }
 
   return document.querySelector(CHAT_SETTINGS_SELECTOR);
