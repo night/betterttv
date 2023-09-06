@@ -1,3 +1,4 @@
+import seventv from '../modules/seventv/index.js';
 import domObserver from '../observers/dom.js';
 import twitch from '../utils/twitch.js';
 
@@ -68,6 +69,15 @@ export default function chatWatcher(watcher_) {
     if (!msgObject) return;
 
     watcher.emit('chat.message', node, msgObject);
+  });
+
+  domObserver.on('.seventv-chat-message-container', (node, isConnected) => {
+    if (!isConnected) return;
+
+    const msgObject = seventv.getElementInstance(node)?.props?.msgData;
+    if (!msgObject) return;
+
+    watcher.emit('chat.seventv_message', node, msgObject);
   });
 
   domObserver.on('[data-test-selector="user-notice-line"]', (node, isConnected) => {

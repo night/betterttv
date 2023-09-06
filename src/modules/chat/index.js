@@ -123,6 +123,7 @@ class ChatModule {
     watcher.on('load', () => this.loadEmoteMouseHandler());
     settings.on(`changed.${SettingIds.EMOTES}`, () => this.loadEmoteMouseHandler());
     watcher.on('chat.message', (element, message) => this.messageParser(element, message));
+    watcher.on('chat.seventv_message', (element, userId) => this.seventvMessageParser(element, userId));
     watcher.on('chat.notice_message', (element) => this.noticeMessageParser(element));
     watcher.on('chat.pinned_message', (element) => this.pinnedMessageParser(element));
     watcher.on('chat.status', (element, message) => {
@@ -394,36 +395,8 @@ class ChatModule {
   }
 
   messageParser(element, messageObj) {
-    if (element.__bttvParsed) return;
-
-    splitChat.render(element);
-
-    const user = formatChatUser(messageObj);
-    if (!user) return;
-
-    const from = element.querySelector('.chat-author__display-name,.chat-author__intl-login');
-    let color;
-    if (hasFlag(settings.get(SettingIds.USERNAMES), UsernameFlags.READABLE)) {
-      color = this.calculateColor(user.color);
-
-      from.style.color = color;
-      if (element.style.color) {
-        element.style.color = color;
-      }
-    } else {
-      color = from.style.color;
-    }
-
-    if (subscribers.hasGlow(user.id) && settings.get(SettingIds.DARKENED_MODE) === true) {
-      const rgbColor = colors.getRgb(color);
-      from.style.textShadow = `0 0 20px rgba(${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b}, 0.8)`;
-    }
-
-    if ((globalBots.includes(user.name) || channelBots.includes(user.name)) && user.mod) {
-      element
-        .querySelector('img.chat-badge[alt="Moderator"]')
-        ?.replaceWith(badgeTemplate(cdn.url('tags/bot.png'), formatMessage({defaultMessage: 'Bot'})));
-    }
+    const fromNode = element.querySelector('.chat-author__display-name,.chat-author__intl-login');
+    const messageParts = getMessagePartsFromMessageElement(element);
 
     let badgesContainer = element.querySelector('.chat-badge')?.closest('span');
     if (badgesContainer == null) {
@@ -431,6 +404,47 @@ class ChatModule {
       if (badgesContainer.nodeName !== 'SPAN') {
         badgesContainer = null;
       }
+    }
+
+    this._messageParser(element, messageObj, fromNode, badgesContainer, messageParts);
+  }
+
+  seventvMessageParser(element, messageObj) {
+    const fromNode = element.querySelector('.seventv-chat-user-username');
+    const badgesContainer = element.querySelector('.seventv-chat-user-badge-list');
+    const messageParts = element.querySelectorAll('.seventv-chat-message-body > span');
+    this._messageParser(element, messageObj, fromNode, badgesContainer, messageParts);
+  }
+
+  _messageParser(element, messageObj, fromNode, badgesContainer, messageParts = []) {
+    if (element.__bttvParsed) return;
+
+    splitChat.render(element);
+
+    const user = formatChatUser(messageObj);
+    if (!user) return;
+
+    let color;
+    if (hasFlag(settings.get(SettingIds.USERNAMES), UsernameFlags.READABLE)) {
+      color = this.calculateColor(user.color);
+
+      fromNode.style.color = color;
+      if (element.style.color) {
+        element.style.color = color;
+      }
+    } else {
+      color = fromNode.style.color;
+    }
+
+    if (subscribers.hasGlow(user.id) && settings.get(SettingIds.DARKENED_MODE) === true) {
+      const rgbColor = colors.getRgb(color);
+      fromNode.style.textShadow = `0 0 20px rgba(${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b}, 0.8)`;
+    }
+
+    if ((globalBots.includes(user.name) || channelBots.includes(user.name)) && user.mod) {
+      element
+        .querySelector('img.chat-badge[alt="Moderator"]')
+        ?.replaceWith(badgeTemplate(cdn.url('tags/bot.png'), formatMessage({defaultMessage: 'Bot'})));
     }
 
     const customBadges = this.customBadges(user);
@@ -442,7 +456,7 @@ class ChatModule {
 
     const nickname = nicknames.get(user.name);
     if (nickname) {
-      from.innerText = nickname;
+      fromNode.innerText = nickname;
     }
 
     if (
@@ -454,7 +468,7 @@ class ChatModule {
       element.style.display = 'none';
     }
 
-    this.messageReplacer(getMessagePartsFromMessageElement(element), user);
+    this.messageReplacer(messageParts, user);
 
     element.__bttvParsed = true;
   }
