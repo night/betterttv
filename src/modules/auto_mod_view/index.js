@@ -27,7 +27,7 @@ class AutoModViewModule {
         if (
           !isConnected ||
           noReload ||
-          referringPath.startsWith('/moderator/') ||
+          referringPath?.startsWith('/moderator/') ||
           window.location.pathname.startsWith('/moderator/')
         ) {
           return;
