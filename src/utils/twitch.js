@@ -6,7 +6,7 @@ import {getCurrentUser, setCurrentUser} from './user.js';
 
 const REACT_ROOT = '#root';
 const CHAT_CONTAINER = 'section[data-test-selector="chat-room-component-layout"]';
-const VOD_CHAT_CONTAINER = '.qa-vod-chat,.va-vod-chat';
+const VOD_CHAT_CONTAINER = '.qa-vod-chat,.va-vod-chat,.video-chat';
 const CHAT_LIST = '.chat-list,.chat-list--default,.chat-list--other';
 const VOD_CHAT_LIST = '.chat-shell';
 const PLAYER = 'div[data-a-target="player-overlay-click-handler"],.video-player';

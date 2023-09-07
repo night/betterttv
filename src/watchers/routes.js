@@ -13,9 +13,9 @@ const loadPredicates = {
   following: () => document.querySelector('ul[role="tablist"] div[data-test-selector="ACTIVE_TAB_INDICATOR"]') != null,
   channel: () => {
     const href =
-      document.querySelector('.channel-header__user-avatar img')?.getAttribute('src') ||
+      document.querySelector('#live-channel-stream-information .tw-image-avatar')?.getAttribute('src') ||
       document.querySelector('h3[data-test-selector="side-nav-channel-info__name_link"] a')?.getAttribute('href') ||
-      document.querySelector('.channel-info-content a figure img')?.getAttribute('src');
+      document.querySelector('#offline-channel-main-content .tw-image-avatar')?.getAttribute('src');
     return !!href && !!twitch.updateCurrentChannel();
   },
   chat: (context) => {
