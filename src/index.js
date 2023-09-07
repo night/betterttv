@@ -42,6 +42,7 @@
 
   const {default: debug} = await import('./utils/debug.js');
   const {default: watcher} = await import('./watcher.js');
+  const {EXT_VER, NODE_ENV, GIT_REV} = await import('./constants.js');
 
   // wait until styles load to prevent flashing
   await globalCSSLoadPromise;
@@ -51,10 +52,10 @@
 
   watcher.setup();
 
-  debug.log(`BetterTTV v${debug.version} loaded. ${process.env.NODE_ENV} @ ${process.env.GIT_REV}`);
+  debug.log(`BetterTTV v${EXT_VER} loaded. ${NODE_ENV} @ ${GIT_REV}`);
 
   window.BetterTTV = {
-    version: debug.version,
+    version: EXT_VER,
     settings: (await import('./settings.js')).default,
     emoteMenu: (await import('./common/api/emote-menu.js')).default,
     watcher: {

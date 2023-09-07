@@ -1,5 +1,6 @@
 import * as Sentry from '@sentry/browser';
 import {Dedupe} from '@sentry/integrations';
+import {GIT_REV, NODE_ENV, SENTRY_URL} from '../constants.js';
 
 const ignoreErrors = [
   'InvalidAccessError',
@@ -32,9 +33,9 @@ const ignoreErrors = [
 ];
 
 Sentry.init({
-  release: process.env.GIT_REV,
-  environment: process.env.NODE_ENV,
-  dsn: process.env.SENTRY_URL,
+  release: GIT_REV,
+  environment: NODE_ENV,
+  dsn: SENTRY_URL,
   ignoreErrors,
   allowUrls: [/betterttv\.js/, /\.betterttv\.net/, /\/betterttv\//i],
   denyUrls: [
@@ -55,7 +56,7 @@ Sentry.init({
   ],
   beforeSend: (event) => {
     // only collect errors on production releases
-    if (process.env.NODE_ENV !== 'production') {
+    if (NODE_ENV !== 'production') {
       return null;
     }
 

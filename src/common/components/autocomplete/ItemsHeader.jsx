@@ -1,6 +1,6 @@
 import React, {useMemo} from 'react';
-import styles from './ItemsHeader.module.css';
 import formatMessage from '../../../i18n/index.js';
+import styles from './ItemsHeader.module.css';
 
 function MatchesHeader(children) {
   return <span className={styles.matches}>{children}</span>;

@@ -1,22 +1,19 @@
-import React, {useRef, useEffect, useState} from 'react';
-import classNames from 'classnames';
-
-import Table from 'rsuite/Table';
-import Button from 'rsuite/Button';
-import IconButton from 'rsuite/IconButton';
-import {Icon} from '@rsuite/icons';
-import Dropdown from 'rsuite/Dropdown';
-import Popover from 'rsuite/Popover';
-import Whisper from 'rsuite/Whisper';
-
-import * as faTimes from '@fortawesome/free-solid-svg-icons/faTimes';
-import * as faPlus from '@fortawesome/free-solid-svg-icons/faPlus';
 import * as faGear from '@fortawesome/free-solid-svg-icons/faGear';
-
-import CloseButton from './CloseButton.jsx';
-import styles from '../styles/table.module.css';
+import * as faPlus from '@fortawesome/free-solid-svg-icons/faPlus';
+import * as faTimes from '@fortawesome/free-solid-svg-icons/faTimes';
+import {Icon} from '@rsuite/icons';
+import classNames from 'classnames';
+import React, {useRef, useEffect, useState} from 'react';
+import Button from 'rsuite/Button';
+import Dropdown from 'rsuite/Dropdown';
+import IconButton from 'rsuite/IconButton';
+import Popover from 'rsuite/Popover';
+import Table from 'rsuite/Table';
+import Whisper from 'rsuite/Whisper';
 import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.jsx';
 import formatMessage from '../../../i18n/index.js';
+import styles from '../styles/table.module.css';
+import CloseButton from './CloseButton.jsx';
 
 const {Column, HeaderCell, Cell} = Table;
 

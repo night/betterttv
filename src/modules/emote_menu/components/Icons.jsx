@@ -1,25 +1,24 @@
-import React from 'react';
-
-import {Icon} from '@rsuite/icons';
-import * as faStar from '@fortawesome/free-solid-svg-icons/faStar';
-import * as faSmileWink from '@fortawesome/free-solid-svg-icons/faSmileWink';
-import * as faLeaf from '@fortawesome/free-solid-svg-icons/faLeaf';
-import * as faIceCream from '@fortawesome/free-solid-svg-icons/faIceCream';
-import * as faBasketballBall from '@fortawesome/free-solid-svg-icons/faBasketballBall';
-import * as faPlane from '@fortawesome/free-solid-svg-icons/faPlane';
-import * as faBox from '@fortawesome/free-solid-svg-icons/faBox';
-import * as faHeart from '@fortawesome/free-solid-svg-icons/faHeart';
-import * as faHeartBroken from '@fortawesome/free-solid-svg-icons/faHeartBroken';
-import * as faFlag from '@fortawesome/free-solid-svg-icons/faFlag';
-import * as faClock from '@fortawesome/free-solid-svg-icons/faClock';
-import * as faUnlock from '@fortawesome/free-solid-svg-icons/faUnlock';
-import * as faLock from '@fortawesome/free-solid-svg-icons/faLock';
-import * as faLightbulb from '@fortawesome/free-solid-svg-icons/faLightbulb';
 import * as faTwitch from '@fortawesome/free-brands-svg-icons/faTwitch';
 import * as faYoutube from '@fortawesome/free-brands-svg-icons/faYoutube';
+import * as faBasketballBall from '@fortawesome/free-solid-svg-icons/faBasketballBall';
+import * as faBox from '@fortawesome/free-solid-svg-icons/faBox';
+import * as faClock from '@fortawesome/free-solid-svg-icons/faClock';
+import * as faFlag from '@fortawesome/free-solid-svg-icons/faFlag';
+import * as faHeart from '@fortawesome/free-solid-svg-icons/faHeart';
+import * as faHeartBroken from '@fortawesome/free-solid-svg-icons/faHeartBroken';
+import * as faIceCream from '@fortawesome/free-solid-svg-icons/faIceCream';
+import * as faLeaf from '@fortawesome/free-solid-svg-icons/faLeaf';
+import * as faLightbulb from '@fortawesome/free-solid-svg-icons/faLightbulb';
+import * as faLock from '@fortawesome/free-solid-svg-icons/faLock';
+import * as faPlane from '@fortawesome/free-solid-svg-icons/faPlane';
+import * as faSmileWink from '@fortawesome/free-solid-svg-icons/faSmileWink';
+import * as faStar from '@fortawesome/free-solid-svg-icons/faStar';
+import * as faUnlock from '@fortawesome/free-solid-svg-icons/faUnlock';
+import {Icon} from '@rsuite/icons';
 import classNames from 'classnames';
-import styles from './Icons.module.css';
+import React from 'react';
 import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.jsx';
+import styles from './Icons.module.css';
 
 const twitchGamingLogo = {
   prefix: 'custom',

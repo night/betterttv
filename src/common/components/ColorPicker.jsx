@@ -1,6 +1,6 @@
+import classNames from 'classnames';
 import React from 'react';
 import {HexColorPicker, HexColorInput} from 'react-colorful';
-import classNames from 'classnames';
 import styles from './ColorPicker.module.css';
 
 export default function ColorPicker({className, color, onChange}) {

@@ -1,20 +1,17 @@
-import React from 'react';
-
-import {Icon} from '@rsuite/icons';
-import Sidenav from 'rsuite/Sidenav';
-import Nav from 'rsuite/Nav';
-
 import * as faBox from '@fortawesome/free-solid-svg-icons/faBox';
-import * as faHouseUser from '@fortawesome/free-solid-svg-icons/faHouseUser';
-import * as faCompass from '@fortawesome/free-solid-svg-icons/faCompass';
 import * as faColumns from '@fortawesome/free-solid-svg-icons/faColumns';
-import * as faInfoCircle from '@fortawesome/free-solid-svg-icons/faInfoCircle';
 import * as faCommentAlt from '@fortawesome/free-solid-svg-icons/faCommentAlt';
-
-import styles from '../styles/sidenav.module.css';
-import {PageTypes} from '../../../constants.js';
+import * as faCompass from '@fortawesome/free-solid-svg-icons/faCompass';
+import * as faHouseUser from '@fortawesome/free-solid-svg-icons/faHouseUser';
+import * as faInfoCircle from '@fortawesome/free-solid-svg-icons/faInfoCircle';
+import {Icon} from '@rsuite/icons';
+import React from 'react';
+import Nav from 'rsuite/Nav';
+import Sidenav from 'rsuite/Sidenav';
 import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.jsx';
+import {PageTypes} from '../../../constants.js';
 import formatMessage from '../../../i18n/index.js';
+import styles from '../styles/sidenav.module.css';
 import AnimatedLogo from './AnimatedLogo.jsx';
 
 function BTTVSidenav({value, onChange}) {

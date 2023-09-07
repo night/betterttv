@@ -1,9 +1,9 @@
 import React from 'react';
-import styles from './Preview.module.css';
-import Icons from './Icons.jsx';
-import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js';
 import Emote from '../../../common/components/Emote.jsx';
+import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js';
 import formatMessage from '../../../i18n/index.js';
+import Icons from './Icons.jsx';
+import styles from './Preview.module.css';
 
 export default function Preview({emote}) {
   if (emote == null) return null;

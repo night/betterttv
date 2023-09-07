@@ -400,8 +400,8 @@ class ChatModule {
 
     let badgesContainer = element.querySelector('.chat-badge')?.closest('span');
     if (badgesContainer == null) {
-      badgesContainer = element.querySelector('span.chat-line__username').previousSibling;
-      if (badgesContainer.nodeName !== 'SPAN') {
+      badgesContainer = element.querySelector('span.chat-line__username')?.previousSibling;
+      if (badgesContainer?.nodeName !== 'SPAN') {
         badgesContainer = null;
       }
     }

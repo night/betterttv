@@ -1,10 +1,10 @@
-import React, {useEffect, useRef} from 'react';
-import {Icon} from '@rsuite/icons';
-import InputGroup from 'rsuite/InputGroup';
-import Input from 'rsuite/Input';
-import IconButton from 'rsuite/IconButton';
 import * as faSearch from '@fortawesome/free-solid-svg-icons/faSearch';
 import * as faTimes from '@fortawesome/free-solid-svg-icons/faTimes';
+import {Icon} from '@rsuite/icons';
+import React, {useEffect, useRef} from 'react';
+import IconButton from 'rsuite/IconButton';
+import Input from 'rsuite/Input';
+import InputGroup from 'rsuite/InputGroup';
 import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.jsx';
 import formatMessage from '../../../i18n/index.js';
 

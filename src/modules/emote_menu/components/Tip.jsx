@@ -1,14 +1,14 @@
 import React, {useState, useEffect} from 'react';
-import Divider from 'rsuite/Divider';
 import Button from 'rsuite/Button';
+import Divider from 'rsuite/Divider';
+import useStorageState from '../../../common/hooks/StorageState.jsx';
 import {EmoteMenuTips, EmoteMenuTypes, PlatformTypes, SettingIds} from '../../../constants.js';
+import formatMessage from '../../../i18n/index.js';
 import storage from '../../../storage.js';
 import {getPlatform, isMac} from '../../../utils/window.js';
 import emoteMenuStore from '../stores/emote-menu-store.js';
 import Icons from './Icons.jsx';
 import styles from './Tip.module.css';
-import formatMessage from '../../../i18n/index.js';
-import useStorageState from '../../../common/hooks/StorageState.jsx';
 
 const tips = {};
 for (const tipStorageKey of Object.values(EmoteMenuTips)) {

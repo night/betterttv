@@ -1,13 +1,13 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import classNames from 'classnames';
 import chunk from 'lodash.chunk';
-import VirtualizedList from './VirtualizedList.jsx';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js';
-import styles from './Emotes.module.css';
-import EmoteButton from './EmoteButton.jsx';
-import Icons from './Icons.jsx';
 import {NavigationModeTypes, EMOTE_MENU_GRID_ROW_HEIGHT, EMOTE_MENU_GRID_HEIGHT} from '../../../constants.js';
 import useGridKeyboardNavigation from '../hooks/GridKeyboardNavigation.jsx';
+import EmoteButton from './EmoteButton.jsx';
+import styles from './Emotes.module.css';
+import Icons from './Icons.jsx';
+import VirtualizedList from './VirtualizedList.jsx';
 
 const BrowseEmotes = React.forwardRef(
   ({onClick, section, onSection, setCoords, coords, setRowColumnCounts, rows, setSelected, navigationMode}, ref) => {

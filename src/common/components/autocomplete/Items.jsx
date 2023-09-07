@@ -1,10 +1,10 @@
 import React, {useEffect, useRef, useState, useMemo} from 'react';
 import keyCodes from '../../../utils/keycodes.js';
-import emoteMenuViewStore from '../../stores/emote-menu-view-store.js';
 import useChatInputPartialEmote from '../../hooks/ChatInputPartialInput.jsx';
 import useEmoteMenuViewStoreUpdated from '../../hooks/EmoteMenuViewStore.jsx';
-import ItemsHeader from './ItemsHeader.jsx';
+import emoteMenuViewStore from '../../stores/emote-menu-view-store.js';
 import styles from './Items.module.css';
+import ItemsHeader from './ItemsHeader.jsx';
 
 const MAX_EMOTES_SHOWN = 8;
 

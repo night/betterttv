@@ -1,23 +1,22 @@
-import React, {useRef, useState} from 'react';
-import {saveAs} from 'file-saver';
-import classNames from 'classnames';
-
-import IconButton from 'rsuite/IconButton';
-import PanelGroup from 'rsuite/PanelGroup';
-import Panel from 'rsuite/Panel';
-import {Icon} from '@rsuite/icons';
-import * as faUpload from '@fortawesome/free-solid-svg-icons/faUpload';
-import * as faRedo from '@fortawesome/free-solid-svg-icons/faRedo';
 import * as faDownload from '@fortawesome/free-solid-svg-icons/faDownload';
+import * as faRedo from '@fortawesome/free-solid-svg-icons/faRedo';
+import * as faUpload from '@fortawesome/free-solid-svg-icons/faUpload';
+import {Icon} from '@rsuite/icons';
+import classNames from 'classnames';
+import {saveAs} from 'file-saver';
+import React, {useRef, useState} from 'react';
+import IconButton from 'rsuite/IconButton';
+import Panel from 'rsuite/Panel';
+import PanelGroup from 'rsuite/PanelGroup';
+import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.jsx';
+import {EXT_VER} from '../../../constants.js';
+import formatMessage from '../../../i18n/index.js';
 import {SETTINGS_STORAGE_KEY} from '../../../settings.js';
 import storage from '../../../storage.js';
-import debug from '../../../utils/debug.js';
 import {loadLegacySettings} from '../../../utils/legacy-settings.js';
-import header from '../styles/header.module.css';
-import styles from '../styles/about.module.css';
 import CloseButton from '../components/CloseButton.jsx';
-import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.jsx';
-import formatMessage from '../../../i18n/index.js';
+import styles from '../styles/about.module.css';
+import header from '../styles/header.module.css';
 
 function loadJSON(string) {
   let json = null;
@@ -229,7 +228,7 @@ function About({onClose}) {
           </Panel>
           <Panel>
             <p className={header.description}>
-              {formatMessage({defaultMessage: 'Version {version}'}, {version: debug.version})}
+              {formatMessage({defaultMessage: 'Version {version}'}, {version: EXT_VER})}
             </p>
           </Panel>
         </PanelGroup>

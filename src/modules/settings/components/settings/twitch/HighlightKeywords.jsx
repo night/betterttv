@@ -1,14 +1,14 @@
 import React from 'react';
 import Panel from 'rsuite/Panel';
 import TagInput from 'rsuite/TagInput';
-import Table, {Types} from '../../Table.jsx';
-import {KeywordTypes} from '../../../../../utils/keywords.js';
-import {registerComponent} from '../../Store.jsx';
-import {CategoryTypes, SettingIds} from '../../../../../constants.js';
 import ColorPicker from '../../../../../common/components/ColorPicker.jsx';
-import styles from '../../../styles/header.module.css';
 import useStorageState from '../../../../../common/hooks/StorageState.jsx';
+import {CategoryTypes, SettingIds} from '../../../../../constants.js';
 import formatMessage from '../../../../../i18n/index.js';
+import {KeywordTypes} from '../../../../../utils/keywords.js';
+import styles from '../../../styles/header.module.css';
+import {registerComponent} from '../../Store.jsx';
+import Table, {Types} from '../../Table.jsx';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Highlight Keywords'});
 

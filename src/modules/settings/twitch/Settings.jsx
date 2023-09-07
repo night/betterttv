@@ -1,8 +1,8 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
-import Modal from '../components/Window.jsx';
-import domObserver from '../../../observers/dom.js';
 import formatMessage from '../../../i18n/index.js';
+import domObserver from '../../../observers/dom.js';
+import Modal from '../components/Window.jsx';
 
 let handleOpen;
 function setHandleOpen(newHandleOpen) {

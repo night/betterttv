@@ -1,12 +1,12 @@
-import React, {useRef, useState} from 'react';
 import classNames from 'classnames';
+import React, {useRef, useState} from 'react';
 import {mergeRefs} from 'react-merge-refs';
 import {Popover} from 'rsuite';
-import EmoteMenu from './EmoteMenu.jsx';
-import styles from './EmoteMenuPopover.module.css';
 import ThemeProvider from '../../../common/components/ThemeProvider.jsx';
 import useAutoPositionPopover from '../hooks/AutoRepositionPopover.jsx';
 import useHorizontalResize from '../hooks/HorizontalResize.jsx';
+import EmoteMenu from './EmoteMenu.jsx';
+import styles from './EmoteMenuPopover.module.css';
 
 const EmoteMenuPopover = React.forwardRef(
   ({toggleWhisper, appendToChat, className, style, boundingQuerySelector, whisperOpen, ...props}, ref) => {

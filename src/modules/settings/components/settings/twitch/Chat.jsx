@@ -1,13 +1,13 @@
 import React from 'react';
-import Panel from 'rsuite/Panel';
 import Checkbox from 'rsuite/Checkbox';
 import CheckboxGroup from 'rsuite/CheckboxGroup';
-import {registerComponent} from '../../Store.jsx';
-import {CategoryTypes, SettingIds, ChatFlags} from '../../../../../constants.js';
-import styles from '../../../styles/header.module.css';
-import {hasFlag} from '../../../../../utils/flags.js';
+import Panel from 'rsuite/Panel';
 import useStorageState from '../../../../../common/hooks/StorageState.jsx';
+import {CategoryTypes, SettingIds, ChatFlags} from '../../../../../constants.js';
 import formatMessage from '../../../../../i18n/index.js';
+import {hasFlag} from '../../../../../utils/flags.js';
+import styles from '../../../styles/header.module.css';
+import {registerComponent} from '../../Store.jsx';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Chat'});
 

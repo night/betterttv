@@ -1,15 +1,14 @@
 import React, {useEffect, useState} from 'react';
-import PanelGroup from 'rsuite/PanelGroup';
-import Panel from 'rsuite/Panel';
-import Loader from 'rsuite/Loader';
 import reactStringReplace from 'react-string-replace';
+import Loader from 'rsuite/Loader';
+import Panel from 'rsuite/Panel';
+import PanelGroup from 'rsuite/PanelGroup';
+import {EXT_VER} from '../../../constants.js';
+import formatMessage from '../../../i18n/index.js';
 import api from '../../../utils/api.js';
 import debug from '../../../utils/debug.js';
-import styles from '../styles/header.module.css';
 import CloseButton from '../components/CloseButton.jsx';
-import formatMessage from '../../../i18n/index.js';
-
-const EXTENSION_VERSION = process.env.EXT_VER;
+import styles from '../styles/header.module.css';
 
 function Changelog({onClose}) {
   const [{loading, changelogEntries}, setRequestState] = useState({
@@ -46,7 +45,7 @@ function Changelog({onClose}) {
   } else if (changelogEntries == null) {
     renderedChangelogEntries = <div className={styles.center}>Failed to load Changelog.</div>;
   } else {
-    const versionIndex = changelogEntries.findIndex(({version}) => version === EXTENSION_VERSION) || 0;
+    const versionIndex = changelogEntries.findIndex(({version}) => version === EXT_VER) || 0;
 
     renderedChangelogEntries = changelogEntries
       .filter((_, index) => index >= versionIndex)

@@ -1,7 +1,7 @@
-import React from 'react';
 import {motion} from 'framer-motion';
-import styles from '../styles/sidenav.module.css';
+import React from 'react';
 import LogoIcon from '../../../common/components/LogoIcon.jsx';
+import styles from '../styles/sidenav.module.css';
 
 export default function AnimatedLogo() {
   return (

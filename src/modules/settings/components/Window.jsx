@@ -1,15 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import Modal from 'rsuite/Modal';
-import Sidenav from './Sidenav.jsx';
+import ThemeProvider from '../../../common/components/ThemeProvider.jsx';
+import {PageTypes} from '../../../constants.js';
+import {isStandaloneWindow} from '../../../utils/window.js';
 import About from '../pages/About.jsx';
+import Changelog from '../pages/Changelog.jsx';
+import ChannelSettings from '../pages/ChannelSettings.jsx';
 import ChatSettings from '../pages/ChatSettings.jsx';
 import DirectorySettings from '../pages/DirectorySettings.jsx';
-import ChannelSettings from '../pages/ChannelSettings.jsx';
-import Changelog from '../pages/Changelog.jsx';
 import ChatWindow from './ChatWindow.jsx';
-import {PageTypes} from '../../../constants.js';
-import ThemeProvider from '../../../common/components/ThemeProvider.jsx';
-import {isStandaloneWindow} from '../../../utils/window.js';
+import Sidenav from './Sidenav.jsx';
 import styles from './Window.module.css';
 
 function Page(props) {

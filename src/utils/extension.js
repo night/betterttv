@@ -1,4 +1,4 @@
-import debug from './debug.js';
+import {EXT_VER} from '../constants.js';
 
 let currentScript;
 
@@ -8,6 +8,6 @@ export default {
   },
   url(path, breakCache = false) {
     const url = new URL(path, currentScript.src);
-    return `${url.toString()}${breakCache ? `?v=${debug.version}` : ''}`;
+    return `${url.toString()}${breakCache ? `?v=${EXT_VER}` : ''}`;
   },
 };

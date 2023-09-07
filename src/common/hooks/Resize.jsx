@@ -1,5 +1,5 @@
-import {useEffect} from 'react';
 import debounce from 'lodash.debounce';
+import {useEffect} from 'react';
 
 export default function useResize(callback) {
   useEffect(() => {

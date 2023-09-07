@@ -1,7 +1,7 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
-import Modal from '../components/Window.jsx';
 import domObserver from '../../../observers/dom.js';
+import Modal from '../components/Window.jsx';
 import DropdownButton from './DropdownButton.jsx';
 import './Settings.module.css';
 

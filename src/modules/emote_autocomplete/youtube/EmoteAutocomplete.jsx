@@ -1,13 +1,13 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
+import AutocompleteWhisper from '../../../common/components/autocomplete/AutocompleteWhisper.jsx';
+import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js';
 import {EmoteProviders, SettingIds} from '../../../constants.js';
+import domObserver from '../../../observers/dom.js';
 import settings from '../../../settings.js';
 import {createYoutubeEmojiNode} from '../../../utils/youtube.js';
-import domObserver from '../../../observers/dom.js';
 import EmoteRow from '../components/EmoteRow.jsx';
-import AutocompleteWhisper from '../../../common/components/autocomplete/AutocompleteWhisper.jsx';
 import styles from './EmoteAutocomplete.module.css';
-import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js';
 
 let mountedRoot;
 

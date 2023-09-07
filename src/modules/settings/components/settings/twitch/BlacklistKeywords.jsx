@@ -1,13 +1,13 @@
 import React from 'react';
 import Panel from 'rsuite/Panel';
 import TagInput from 'rsuite/TagInput';
-import Table, {Types} from '../../Table.jsx';
-import {registerComponent} from '../../Store.jsx';
-import {SettingIds, CategoryTypes} from '../../../../../constants.js';
-import styles from '../../../styles/header.module.css';
-import {KeywordTypes} from '../../../../../utils/keywords.js';
 import useStorageState from '../../../../../common/hooks/StorageState.jsx';
+import {SettingIds, CategoryTypes} from '../../../../../constants.js';
 import formatMessage from '../../../../../i18n/index.js';
+import {KeywordTypes} from '../../../../../utils/keywords.js';
+import styles from '../../../styles/header.module.css';
+import {registerComponent} from '../../Store.jsx';
+import Table, {Types} from '../../Table.jsx';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Blacklist Keywords'});
 

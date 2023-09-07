@@ -1,6 +1,5 @@
 import storage from '../storage.js';
 
-const VERSION = process.env.EXT_VER;
 const {console} = window;
 
 function log(type, ...args) {
@@ -13,5 +12,4 @@ export default {
   error: log.bind(this, 'error'),
   warn: log.bind(this, 'warn'),
   info: log.bind(this, 'info'),
-  version: VERSION,
 };

@@ -1,14 +1,14 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/interactive-supports-focus */
-import React, {useCallback, useEffect, useRef, useState, useMemo} from 'react';
 import classNames from 'classnames';
+import React, {useCallback, useEffect, useRef, useState, useMemo} from 'react';
 import {DragDropContext, Draggable, Droppable} from 'react-beautiful-dnd';
 import {createPortal} from 'react-dom';
-import styles from './Sidebar.module.css';
-import useAutoScroll from '../hooks/AutoScroll.jsx';
+import Emote from '../../../common/components/Emote.jsx';
 import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js';
 import {EMOTE_MENU_SIDEBAR_ROW_HEIGHT, EMOTE_MENU_GRID_HEIGHT} from '../../../constants.js';
 import emojis from '../../emotes/emojis.js';
-import Emote from '../../../common/components/Emote.jsx';
+import useAutoScroll from '../hooks/AutoScroll.jsx';
+import styles from './Sidebar.module.css';
 
 // https://github.com/atlassian/react-beautiful-dnd/issues/128#issuecomment-669083882
 function useDraggableInPortal() {

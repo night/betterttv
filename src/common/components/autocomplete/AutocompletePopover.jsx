@@ -1,11 +1,11 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
 import classNames from 'classnames';
-import Popover from 'rsuite/Popover';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {mergeRefs} from 'react-merge-refs';
-import Items from './Items.jsx';
+import Popover from 'rsuite/Popover';
 import repositionPopover from '../../../utils/popover.js';
 import useResize from '../../hooks/Resize.jsx';
 import styles from './AutocompletePopover.module.css';
+import Items from './Items.jsx';
 
 const TOP_PADDING = 2;
 

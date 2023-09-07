@@ -1,15 +1,15 @@
 import React, {useState} from 'react';
-import Panel from 'rsuite/Panel';
+import Button from 'rsuite/Button';
 import Checkbox from 'rsuite/Checkbox';
 import CheckboxGroup from 'rsuite/CheckboxGroup';
 import Modal from 'rsuite/Modal';
-import Button from 'rsuite/Button';
-import {registerComponent} from '../../Store.jsx';
-import {CategoryTypes, SettingIds, EmoteTypeFlags} from '../../../../../constants.js';
-import styles from '../../../styles/header.module.css';
-import {hasFlag, setFlag} from '../../../../../utils/flags.js';
+import Panel from 'rsuite/Panel';
 import useStorageState from '../../../../../common/hooks/StorageState.jsx';
+import {CategoryTypes, SettingIds, EmoteTypeFlags} from '../../../../../constants.js';
 import formatMessage from '../../../../../i18n/index.js';
+import {hasFlag, setFlag} from '../../../../../utils/flags.js';
+import styles from '../../../styles/header.module.css';
+import {registerComponent} from '../../Store.jsx';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Emotes'});
 

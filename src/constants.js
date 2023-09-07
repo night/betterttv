@@ -1,3 +1,11 @@
+/* eslint-disable prefer-destructuring */
+
+export const NODE_ENV = process.env.NODE_ENV;
+export const EXT_VER = process.env.EXT_VER;
+export const GIT_REV = process.env.GIT_REV;
+export const CDN_ENDPOINT = process.env.CDN_ENDPOINT;
+export const SENTRY_URL = process.env.SENTRY_URL;
+
 export const SettingIds = {
   ANON_CHAT: 'anonChat',
   ANON_CHAT_WHITELISTED_CHANNELS: 'anonChatWhitelistedChannels',

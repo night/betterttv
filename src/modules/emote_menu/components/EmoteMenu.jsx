@@ -1,15 +1,15 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import Divider from 'rsuite/Divider';
-import keycodes from '../../../utils/keycodes.js';
-import {EmoteMenuTips} from '../../../constants.js';
+import useEmoteMenuViewStoreUpdated from '../../../common/hooks/EmoteMenuViewStore.jsx';
 import emoteMenuViewStore, {CategoryPositions} from '../../../common/stores/emote-menu-view-store.js';
+import {EmoteMenuTips} from '../../../constants.js';
+import keycodes from '../../../utils/keycodes.js';
 import styles from './EmoteMenu.module.css';
 import Emotes from './Emotes.jsx';
 import Header from './Header.jsx';
 import Preview from './Preview.jsx';
 import Sidebar from './Sidebar.jsx';
 import Tip, {markTipAsSeen} from './Tip.jsx';
-import useEmoteMenuViewStoreUpdated from '../../../common/hooks/EmoteMenuViewStore.jsx';
 
 let keyPressCallback;
 function setKeyPressCallback(newKeyPressCallback) {

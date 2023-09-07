@@ -1,15 +1,15 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import React, {useState, useEffect, useRef, useCallback} from 'react';
 import classNames from 'classnames';
+import React, {useState, useEffect, useRef, useCallback} from 'react';
 import Whisper from 'rsuite/Whisper';
-import EmoteMenuPopover from './EmoteMenuPopover.jsx';
-import {markTipAsSeen} from './Tip.jsx';
-import {EmoteMenuTips} from '../../../constants.js';
+import LogoIcon from '../../../common/components/LogoIcon.jsx';
 import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js';
+import {EmoteMenuTips} from '../../../constants.js';
 import keyCodes from '../../../utils/keycodes.js';
 import {isMac} from '../../../utils/window.js';
 import styles from './Button.module.css';
-import LogoIcon from '../../../common/components/LogoIcon.jsx';
+import EmoteMenuPopover from './EmoteMenuPopover.jsx';
+import {markTipAsSeen} from './Tip.jsx';
 
 export default function Button({isLegacy = false, appendToChat, className, boundingQuerySelector}) {
   const [loaded, setLoaded] = useState(false);

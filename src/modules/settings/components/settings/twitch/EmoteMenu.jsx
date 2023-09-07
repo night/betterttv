@@ -1,11 +1,11 @@
 import React from 'react';
-import Panel from 'rsuite/Panel';
 import {Toggle} from 'rsuite';
-import {registerComponent} from '../../Store.jsx';
-import {CategoryTypes, SettingIds, EmoteMenuTypes} from '../../../../../constants.js';
-import styles from '../../../styles/header.module.css';
+import Panel from 'rsuite/Panel';
 import useStorageState from '../../../../../common/hooks/StorageState.jsx';
+import {CategoryTypes, SettingIds, EmoteMenuTypes} from '../../../../../constants.js';
 import formatMessage from '../../../../../i18n/index.js';
+import styles from '../../../styles/header.module.css';
+import {registerComponent} from '../../Store.jsx';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Emote Menu'});
 

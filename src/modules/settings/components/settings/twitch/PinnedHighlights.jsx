@@ -1,12 +1,12 @@
 import React from 'react';
+import Input from 'rsuite/Input';
 import Panel from 'rsuite/Panel';
 import Toggle from 'rsuite/Toggle';
-import Input from 'rsuite/Input';
-import {registerComponent} from '../../Store.jsx';
-import {CategoryTypes, SettingIds} from '../../../../../constants.js';
-import styles from '../../../styles/header.module.css';
 import useStorageState from '../../../../../common/hooks/StorageState.jsx';
+import {CategoryTypes, SettingIds} from '../../../../../constants.js';
 import formatMessage from '../../../../../i18n/index.js';
+import styles from '../../../styles/header.module.css';
+import {registerComponent} from '../../Store.jsx';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Pinned Highlights'});
 

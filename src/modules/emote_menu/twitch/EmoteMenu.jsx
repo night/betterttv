@@ -1,13 +1,13 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
-import settings from '../../../settings.js';
 import {EmoteMenuTypes, SettingIds} from '../../../constants.js';
-import EmoteMenuButton from '../components/Button.jsx';
 import domObserver from '../../../observers/dom.js';
-import styles from './EmoteMenu.module.css';
+import settings from '../../../settings.js';
+import twitch from '../../../utils/twitch.js';
 import {getCurrentUser} from '../../../utils/user.js';
 import watcher from '../../../watcher.js';
-import twitch from '../../../utils/twitch.js';
+import EmoteMenuButton from '../components/Button.jsx';
+import styles from './EmoteMenu.module.css';
 
 const CHAT_TEXT_AREA = 'textarea[data-a-target="chat-input"], div[data-a-target="chat-input"]';
 

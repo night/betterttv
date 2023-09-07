@@ -1,5 +1,13 @@
 import semver from 'semver';
-import {SettingIds, FlagSettings, SettingDefaultValues, ChatFlags, EmoteMenuTypes, SidebarFlags} from './constants.js';
+import {
+  EXT_VER,
+  SettingIds,
+  FlagSettings,
+  SettingDefaultValues,
+  ChatFlags,
+  EmoteMenuTypes,
+  SidebarFlags,
+} from './constants.js';
 import storage from './storage.js';
 import {getChangedFlags, hasFlag, setFlag} from './utils/flags.js';
 import SafeEventEmitter from './utils/safe-event-emitter.js';
@@ -24,7 +32,7 @@ class Settings extends SafeEventEmitter {
     settings = {...defaultSettings, ...oldSettings};
 
     if (oldSettings == null || (oldSettings != null && oldSettings.version == null)) {
-      settings = {...settings, version: process.env.EXT_VER};
+      settings = {...settings, version: EXT_VER};
       storage.set(SETTINGS_STORAGE_KEY, settings);
     }
 
@@ -61,7 +69,7 @@ class Settings extends SafeEventEmitter {
       storageValue = new TempValue(storageValue, settings[id]);
     }
 
-    const updatedSettings = {...settings, [id]: storageValue, version: process.env.EXT_VER};
+    const updatedSettings = {...settings, [id]: storageValue, version: EXT_VER};
     if (storageValue == null) {
       delete updatedSettings[id];
     }

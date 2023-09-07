@@ -1,5 +1,5 @@
 import twemoji from 'twemoji';
-import {EmoteCategories, EmoteProviders} from '../../constants.js';
+import {CDN_ENDPOINT, EmoteCategories, EmoteProviders} from '../../constants.js';
 import formatMessage from '../../i18n/index.js';
 import blacklistedEmoji from '../../utils/emoji-blacklist.js';
 
@@ -46,7 +46,7 @@ class Emojis extends AbstractEmotes {
         let url;
 
         twemoji.parse(emoji.char, {
-          base: process.env.CDN_ENDPOINT,
+          base: CDN_ENDPOINT,
           folder: 'assets/emoji',
           ext: '.svg',
           callback: (icon, options) => {

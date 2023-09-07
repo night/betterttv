@@ -1,9 +1,9 @@
-import React, {useState, useEffect} from 'react';
-import Panel from 'rsuite/Panel';
-import {Icon} from '@rsuite/icons';
-import InputGroup from 'rsuite/InputGroup';
-import AutoComplete from 'rsuite/AutoComplete';
 import * as faSearch from '@fortawesome/free-solid-svg-icons/faSearch';
+import {Icon} from '@rsuite/icons';
+import React, {useState, useEffect} from 'react';
+import AutoComplete from 'rsuite/AutoComplete';
+import InputGroup from 'rsuite/InputGroup';
+import Panel from 'rsuite/Panel';
 import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.jsx';
 import formatMessage from '../../../i18n/index.js';
 

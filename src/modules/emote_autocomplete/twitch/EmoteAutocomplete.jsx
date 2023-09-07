@@ -1,14 +1,14 @@
+import {EmoteCategories, EmoteTypeFlags, SettingIds} from '../../../constants.js';
+import dom from '../../../observers/dom.js';
+import settings from '../../../settings.js';
+import {hasFlag} from '../../../utils/flags.js';
+import {createSrcSet, createSrc} from '../../../utils/image.js';
 import twitch from '../../../utils/twitch.js';
 import {getCurrentUser} from '../../../utils/user.js';
 import watcher from '../../../watcher.js';
-import dom from '../../../observers/dom.js';
-import emotes from '../../emotes/index.js';
-import {createSrcSet, createSrc} from '../../../utils/image.js';
-import {EmoteCategories, EmoteTypeFlags, SettingIds} from '../../../constants.js';
-import './EmoteAutocomplete.module.css';
-import settings from '../../../settings.js';
-import {hasFlag} from '../../../utils/flags.js';
 import chat from '../../chat/index.js';
+import emotes from '../../emotes/index.js';
+import './EmoteAutocomplete.module.css';
 
 const EMOTE_ID_BETTERTTV_PREFIX = '__BTTV__';
 const CUSTOM_SET_ID = 'BETTERTTV_EMOTES';

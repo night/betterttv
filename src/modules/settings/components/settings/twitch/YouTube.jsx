@@ -1,11 +1,11 @@
 import React, {useEffect} from 'react';
 import Panel from 'rsuite/Panel';
 import Toggle from 'rsuite/Toggle';
-import {registerComponent} from '../../Store.jsx';
 import {CategoryTypes} from '../../../../../constants.js';
-import styles from '../../../styles/header.module.css';
-import extension from '../../../../../utils/extension.js';
 import formatMessage from '../../../../../i18n/index.js';
+import extension from '../../../../../utils/extension.js';
+import styles from '../../../styles/header.module.css';
+import {registerComponent} from '../../Store.jsx';
 
 const EXTENSION_URL = new URL(extension.url(''));
 const HAS_LOCAL_EXTENSION_DATA = EXTENSION_URL.protocol.includes('extension');

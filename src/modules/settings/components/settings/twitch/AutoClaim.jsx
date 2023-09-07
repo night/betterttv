@@ -2,12 +2,12 @@ import React from 'react';
 import Checkbox from 'rsuite/Checkbox';
 import CheckboxGroup from 'rsuite/CheckboxGroup';
 import Panel from 'rsuite/Panel';
-import {registerComponent} from '../../Store.jsx';
-import {SettingIds, CategoryTypes, AutoClaimFlags, ChannelPointsFlags} from '../../../../../constants.js';
-import styles from '../../../styles/header.module.css';
-import {hasFlag, setFlag} from '../../../../../utils/flags.js';
 import useStorageState from '../../../../../common/hooks/StorageState.jsx';
+import {SettingIds, CategoryTypes, AutoClaimFlags, ChannelPointsFlags} from '../../../../../constants.js';
 import formatMessage from '../../../../../i18n/index.js';
+import {hasFlag, setFlag} from '../../../../../utils/flags.js';
+import styles from '../../../styles/header.module.css';
+import {registerComponent} from '../../Store.jsx';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Auto Claim'});
 const CHANNEL_POINTS_BONUSES = 'bonusChannelPoints';

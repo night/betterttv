@@ -1,13 +1,13 @@
 import React from 'react';
+import FormGroup from 'rsuite/FormGroup';
 import Panel from 'rsuite/Panel';
 import Radio from 'rsuite/Radio';
 import RadioGroup from 'rsuite/RadioGroup';
-import FormGroup from 'rsuite/FormGroup';
-import {registerComponent} from '../../Store.jsx';
-import {CategoryTypes, SettingIds, ChatLayoutTypes} from '../../../../../constants.js';
-import styles from '../../../styles/header.module.css';
 import useStorageState from '../../../../../common/hooks/StorageState.jsx';
+import {CategoryTypes, SettingIds, ChatLayoutTypes} from '../../../../../constants.js';
 import formatMessage from '../../../../../i18n/index.js';
+import styles from '../../../styles/header.module.css';
+import {registerComponent} from '../../Store.jsx';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Chat Layout'});
 

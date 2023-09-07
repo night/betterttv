@@ -1,12 +1,12 @@
+import {faLock} from '@fortawesome/free-solid-svg-icons/faLock';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
 import React, {useState} from 'react';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faLock} from '@fortawesome/free-solid-svg-icons/faLock';
-import {createSrcSet, createSrc, DEFAULT_SIZES} from '../../utils/image.js';
-import styles from './Emote.module.css';
-import {hasFlag} from '../../utils/flags.js';
 import {EmoteTypeFlags, SettingIds} from '../../constants.js';
+import {hasFlag} from '../../utils/flags.js';
+import {createSrcSet, createSrc, DEFAULT_SIZES} from '../../utils/image.js';
 import useStorageState from '../hooks/StorageState.jsx';
+import styles from './Emote.module.css';
 
 export default function Emote({emote, className, locked, sizes = DEFAULT_SIZES, animating = false}) {
   const imageRef = React.useRef(null);

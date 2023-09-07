@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
 import PanelGroup from 'rsuite/PanelGroup';
-import styles from '../styles/popout.module.css';
-import {Settings, Search} from './Settings.jsx';
 import {CategoryTypes} from '../../../constants.js';
-import CloseButton from './CloseButton.jsx';
 import formatMessage from '../../../i18n/index.js';
+import styles from '../styles/popout.module.css';
 import AnimatedLogo from './AnimatedLogo.jsx';
+import CloseButton from './CloseButton.jsx';
+import {Settings, Search} from './Settings.jsx';
 
 export default function ChatWindow({open, onClose}) {
   const [search, setSearch] = useState('');
