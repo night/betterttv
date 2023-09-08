@@ -1,3 +1,4 @@
+import debounce from 'lodash.debounce';
 import {EmoteCategories, EmoteTypeFlags, SettingIds} from '../../../constants.js';
 import dom from '../../../observers/dom.js';
 import settings from '../../../settings.js';
@@ -15,6 +16,11 @@ const CUSTOM_SET_ID = 'BETTERTTV_EMOTES';
 const AUTOCOMPLETE_MATCH_IMAGE_QUERY = '.emote-autocomplete-provider__image, .chat-line__message--emote';
 
 const PATCHED_SENTINEL = Symbol('patched symbol');
+
+const handleReparseMessageEmotes = debounce((node, msgObject) => chat.messageParser(node, msgObject, true), 250, {
+  leading: false,
+  trailing: true,
+});
 
 function serializeEmoteId(emote) {
   const data = `${emote.category.provider}-${emote.id}-${emote.code}`;
@@ -114,44 +120,14 @@ function patchEmoteImage(image, isConnected) {
       imageButton.replaceWith(span);
     }
 
-    // It is uncertain if the emote we are patching is preceded by a modifier, therefore we need to
-    // deserialize previously patched emotes until we reach a non-emote/text node.
-
-    let prefixText = '';
-    for (const child of Array.from(span.childNodes).reverse()) {
-      if (child.nodeType === 3) {
-        prefixText = `${child.textContent}${prefixText}`;
-        child.remove();
-        continue;
-      }
-      const {firstChild} = child;
-      if (firstChild != null && firstChild.tagName === 'IMG' && firstChild.classList.contains('bttv-emote-image')) {
-        prefixText = `${firstChild.alt}${prefixText}`;
-        child.remove();
-        continue;
-      }
-      break;
-    }
-
-    if (prefixText.length > 0) {
-      span.appendChild(document.createTextNode(prefixText));
-    }
-
     const {lastChild} = span;
     if (lastChild != null && lastChild.nodeType === 3) {
       lastChild.textContent += image.alt;
     } else {
       span.appendChild(document.createTextNode(image.alt));
     }
-    chat.messageReplacer(
-      span,
-      {
-        id: imageButtonMessageObject.user.userID,
-        name: imageButtonMessageObject.user.userLogin,
-        displayName: imageButtonMessageObject.user.userDisplayName,
-      },
-      true
-    );
+
+    handleReparseMessageEmotes(imageButtonMessage, imageButtonMessageObject);
     return;
   }
 

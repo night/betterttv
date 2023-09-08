@@ -394,7 +394,7 @@ class ChatModule {
     }
   }
 
-  messageParser(element, messageObj) {
+  messageParser(element, messageObj, force = false) {
     const fromNode = element.querySelector('.chat-author__display-name,.chat-author__intl-login');
     const messageParts = getMessagePartsFromMessageElement(element);
 
@@ -406,7 +406,7 @@ class ChatModule {
       }
     }
 
-    this._messageParser(element, messageObj, fromNode, badgesContainer, messageParts);
+    this._messageParser(element, messageObj, fromNode, badgesContainer, messageParts, force);
   }
 
   seventvMessageParser(element, messageObj) {
@@ -416,8 +416,8 @@ class ChatModule {
     this._messageParser(element, messageObj, fromNode, badgesContainer, messageParts);
   }
 
-  _messageParser(element, messageObj, fromNode, badgesContainer, messageParts = []) {
-    if (element.__bttvParsed) return;
+  _messageParser(element, messageObj, fromNode, badgesContainer, messageParts = [], force = false) {
+    if (element.__bttvParsed && !force) return;
 
     splitChat.render(element);
 
