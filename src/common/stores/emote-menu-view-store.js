@@ -240,6 +240,10 @@ class EmoteMenuViewStore extends SafeEventEmitter {
   }
 
   search(search) {
+    if (search == null || search.length === 0) {
+      return [];
+    }
+
     return fuse.search(search);
   }
 
