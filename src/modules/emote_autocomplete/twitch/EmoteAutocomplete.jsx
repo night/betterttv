@@ -1,4 +1,3 @@
-import debounce from 'lodash.debounce';
 import {EmoteCategories, EmoteTypeFlags, SettingIds} from '../../../constants.js';
 import dom from '../../../observers/dom.js';
 import settings from '../../../settings.js';
@@ -7,7 +6,7 @@ import {createSrcSet, createSrc} from '../../../utils/image.js';
 import twitch from '../../../utils/twitch.js';
 import {getCurrentUser} from '../../../utils/user.js';
 import watcher from '../../../watcher.js';
-import chat from '../../chat/index.js';
+import chat, {getMessagePartsFromMessageElement, formatChatUser} from '../../chat/index.js';
 import emotes from '../../emotes/index.js';
 import './EmoteAutocomplete.module.css';
 
@@ -17,17 +16,20 @@ const AUTOCOMPLETE_MATCH_IMAGE_QUERY = '.emote-autocomplete-provider__image, .ch
 
 const PATCHED_SENTINEL = Symbol('patched symbol');
 
-const handleReparseMessageEmotes = debounce((node, msgObject) => chat.messageParser(node, msgObject, true), 250, {
-  leading: false,
-  trailing: true,
-});
-
 function serializeEmoteId(emote) {
   const data = `${emote.category.provider}-${emote.id}-${emote.code}`;
   return `${EMOTE_ID_BETTERTTV_PREFIX}${btoa(encodeURIComponent(data))}`;
 }
 
 function deserializeEmoteFromURL(url) {
+  if (url.startsWith('https://static-cdn.jtvnw.net/emoticons/v2/25/default/dark/1.0')) {
+    return {
+      provider: 'betterttv',
+      id: '56fa09f18eff3b595e93ac26',
+      code: 'ariW',
+    };
+  }
+
   const emoteData = url.split(EMOTE_ID_BETTERTTV_PREFIX)[1]?.split('/')[0];
   if (emoteData == null) {
     return null;
@@ -117,17 +119,28 @@ function patchEmoteImage(image, isConnected) {
       imageButton.remove();
     } else {
       span = document.createElement('span');
+      span.setAttribute('data-a-target', 'chat-message-text');
       imageButton.replaceWith(span);
     }
 
     const {lastChild} = span;
     if (lastChild != null && lastChild.nodeType === 3) {
-      lastChild.textContent += image.alt;
+      lastChild.textContent += deseralizedEmote.code;
     } else {
-      span.appendChild(document.createTextNode(image.alt));
+      span.appendChild(document.createTextNode(deseralizedEmote.code));
     }
 
-    handleReparseMessageEmotes(imageButtonMessage, imageButtonMessageObject);
+    // some emotes do not get handled by Twitch's native parsing, so we need to undo our parsing and re-parse
+    imageButtonMessage.querySelectorAll('.bttv-emote').forEach((emote) => {
+      emote.replaceWith(document.createTextNode(emote.querySelector('img').alt));
+    });
+
+    span.normalize();
+
+    chat.messageReplacer(
+      getMessagePartsFromMessageElement(imageButtonMessage),
+      formatChatUser(imageButtonMessageObject)
+    );
     return;
   }
 

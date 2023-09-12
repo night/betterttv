@@ -65,7 +65,7 @@ const steamLobbyJoinTemplate = (joinLink) => {
   return anchor;
 };
 
-function formatChatUser(message) {
+export function formatChatUser(message) {
   if (message == null) {
     return null;
   }
@@ -114,7 +114,7 @@ function hasNonASCII(message) {
   return false;
 }
 
-function getMessagePartsFromMessageElement(message) {
+export function getMessagePartsFromMessageElement(message) {
   return message.querySelectorAll('span[data-a-target="chat-message-text"]');
 }
 
@@ -394,7 +394,7 @@ class ChatModule {
     }
   }
 
-  messageParser(element, messageObj, force = false) {
+  messageParser(element, messageObj) {
     const fromNode = element.querySelector('.chat-author__display-name,.chat-author__intl-login');
     const messageParts = getMessagePartsFromMessageElement(element);
 
@@ -406,7 +406,7 @@ class ChatModule {
       }
     }
 
-    this._messageParser(element, messageObj, fromNode, badgesContainer, messageParts, force);
+    this._messageParser(element, messageObj, fromNode, badgesContainer, messageParts);
   }
 
   seventvMessageParser(element, messageObj) {
@@ -416,8 +416,8 @@ class ChatModule {
     this._messageParser(element, messageObj, fromNode, badgesContainer, messageParts);
   }
 
-  _messageParser(element, messageObj, fromNode, badgesContainer, messageParts = [], force = false) {
-    if (element.__bttvParsed && !force) return;
+  _messageParser(element, messageObj, fromNode, badgesContainer, messageParts = []) {
+    if (element.__bttvParsed) return;
 
     splitChat.render(element);
 
