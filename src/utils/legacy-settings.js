@@ -196,13 +196,11 @@ function deserializeSettingForLegacy(data, settingId) {
     }
     case SettingIds.AUTO_PLAY: {
       const disableFrontPageVideo = data[LegacySettingIds.DISABLE_FP_VIDEO] || false;
-      const disableHostMode = data[LegacySettingIds.DISABLE_HOST_MODE] || false;
       const disableVodRecommendationAutoplay = data[LegacySettingIds.DISABLE_VOD_RECOMMENDATION_AUTOPLAY] || false;
 
       let flags = setFlag(0, AutoPlayFlags.FP_VIDEO, !disableFrontPageVideo);
-      flags = setFlag(flags, AutoPlayFlags.HOST_MODE, !disableHostMode);
       flags = setFlag(flags, AutoPlayFlags.VOD_RECOMMENDATION_AUTOPLAY, !disableVodRecommendationAutoplay);
-      return [flags, AutoPlayFlags.FP_VIDEO | AutoPlayFlags.HOST_MODE | AutoPlayFlags.VOD_RECOMMENDATION_AUTOPLAY];
+      return [flags, AutoPlayFlags.FP_VIDEO | AutoPlayFlags.VOD_RECOMMENDATION_AUTOPLAY];
     }
     case SettingIds.USERNAMES: {
       const disableUsernameColors = data[LegacySettingIds.DISABLE_USERNAME_COLORS] || false;
