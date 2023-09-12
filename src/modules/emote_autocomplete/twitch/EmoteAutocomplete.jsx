@@ -22,14 +22,6 @@ function serializeEmoteId(emote) {
 }
 
 function deserializeEmoteFromURL(url) {
-  if (url.startsWith('https://static-cdn.jtvnw.net/emoticons/v2/25/default/dark/1.0')) {
-    return {
-      provider: 'betterttv',
-      id: '56fa09f18eff3b595e93ac26',
-      code: 'ariW',
-    };
-  }
-
   const emoteData = url.split(EMOTE_ID_BETTERTTV_PREFIX)[1]?.split('/')[0];
   if (emoteData == null) {
     return null;
