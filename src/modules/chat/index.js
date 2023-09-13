@@ -65,7 +65,7 @@ const steamLobbyJoinTemplate = (joinLink) => {
   return anchor;
 };
 
-function formatChatUser(message) {
+export function formatChatUser(message) {
   if (message == null) {
     return null;
   }
@@ -114,7 +114,7 @@ function hasNonASCII(message) {
   return false;
 }
 
-function getMessagePartsFromMessageElement(message) {
+export function getMessagePartsFromMessageElement(message) {
   return message.querySelectorAll('span[data-a-target="chat-message-text"]');
 }
 
