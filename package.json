@@ -91,7 +91,7 @@
     "string-replace-loader": "3.1.0",
     "terser-webpack-plugin": "5.3.9",
     "twemoji": "14.0.2",
-    "uuid": "^9.0.0",
+    "uuid": "^9.0.1",
     "virtual-module-webpack-plugin": "0.4.1",
     "webpack": "5.88.2",
     "webpack-cli": "5.1.4",
