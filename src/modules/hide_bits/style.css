@@ -2,7 +2,7 @@
   .pinned-cheer,
   .pinned-cheer-v2,
   button[data-a-target="bits-button"],
-  div[data-test-selector="channel-leaderboard-container"],
+  div:has(> div > button.tw-interactable > div.channel-leaderboard-header-rotating__users),
   div[data-test-selector="last-x-events"],
   img.chat-line__message--emote[src^="https://d3aqoihi2n8ty8.cloudfront.net/actions/"],
   img.chat-line__message--emote[src^="https://d3aqoihi2n8ty8.cloudfront.net/partner-actions/"],
