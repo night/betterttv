@@ -8,6 +8,7 @@ import chatFontSettings from '../chat_font_settings/index.js';
 import settings from '../settings/index.js';
 
 const CHAT_SETTINGS_SELECTOR = '.chat-settings__content';
+const MOD_VIEW_PAGE_SELECTOR = '.moderation-view-page';
 const MOD_VIEW_CHAT_SETTINGS_SELECTOR =
   '#chat-settings-show-mod-actions, [data-test-selector="chat-filter-item-click-target"]';
 const CHAT_SETTINGS_BACK_BUTTON_SELECTOR =
@@ -87,7 +88,7 @@ function inIFrame() {
 
 function getChatSettings() {
   const modViewChatSettings = document.querySelector(MOD_VIEW_CHAT_SETTINGS_SELECTOR);
-  if (modViewChatSettings != null) {
+  if (document.querySelector(MOD_VIEW_PAGE_SELECTOR) != null && modViewChatSettings != null) {
     return modViewChatSettings.closest('.tw-balloon').querySelector('button').parentElement.parentElement;
   }
 
