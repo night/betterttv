@@ -419,7 +419,7 @@ class ChatModule {
   _messageParser(element, messageObj, fromNode, badgesContainer, messageParts = []) {
     if (element.__bttvParsed) return;
 
-    splitChat.render(element);
+    splitChat.render(element, messageObj);
 
     const user = formatChatUser(messageObj);
     if (!user) return;
