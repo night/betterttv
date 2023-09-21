@@ -1,8 +1,6 @@
 name: Bug report
-about: Create a report to help us resolve an issue
-title: ''
+description: Create a report to help us resolve an issue
 labels: bug
-assignees: ''
 body:
 - type: input
   id: description
