@@ -4,37 +4,44 @@ about: Create a report to help us resolve an issue
 title: ''
 labels: bug
 assignees: ''
----
-
-**Describe the bug**
-A clear and concise description of what the bug is.
-
-**To Reproduce**
-Steps to reproduce the behavior:
-
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
-
-**Expected behavior**
-A clear and concise description of what you expected to happen.
-
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
-
-**Desktop (please complete the following information):**
-
-- OS: [e.g. iOS]
-- Browser [e.g. chrome, safari]
-- Version [e.g. 22]
-
-**Smartphone (please complete the following information):**
-
-- Device: [e.g. iPhone6]
-- OS: [e.g. iOS8.1]
-- Browser [e.g. stock browser, safari]
-- Version [e.g. 22]
-
-**Additional context**
-Add any other context about the problem here.
+body:
+- type: input
+  id: description
+  attributes:
+    label: Describe the bug
+    placeholder: "A clear and concise description of what the bug is."
+  validations:
+    required: true
+- type: input
+  id: reproduction_steps
+  attributes:
+    label: Steps to reproduce
+    placeholder: "Steps to reproduce the behavior:\n\n1. Go to '...'\n2. Click on '....'\n3. Scroll down to '....'\n4. See error"
+  validations:
+    required: true
+- type: input
+  id: expected_behavior
+  attributes:
+    label: Expected behavior
+    placeholder: "A clear and concise description of what you expected to happen."
+  validations:
+    required: true
+- type: input
+  id: screenshots
+  attributes:
+    label: Screenshots
+    placeholder: "Add screenshots to help explain your problem."
+  validations:
+    required: true
+- type: input
+  id: device_information
+  attributes:
+    label: Device information
+    placeholder: "- Device: [e.g. iPhone6]\n- OS: [e.g. iOS8.1]\n- Browser [e.g. stock browser, safari]\n- Version [e.g. 22]"
+  validations:
+    required: true
+- type: input
+  id: additional_information
+  attributes:
+    label: Additional information
+    placeholder: "Add any other context about the problem here."
