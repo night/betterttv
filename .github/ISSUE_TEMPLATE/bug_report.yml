@@ -1,4 +1,3 @@
----
 name: Bug report
 about: Create a report to help us resolve an issue
 title: ''
@@ -45,4 +44,3 @@ body:
   attributes:
     label: Additional information
     placeholder: "Add any other context about the problem here."
----
