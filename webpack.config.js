@@ -6,6 +6,7 @@ import {CleanWebpackPlugin} from 'clean-webpack-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 import FileManagerPlugin from 'filemanager-webpack-plugin';
+// eslint-disable-next-line import/no-unresolved
 import {globSync} from 'glob';
 // eslint-disable-next-line import/no-unresolved
 import got from 'got';

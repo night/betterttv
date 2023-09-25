@@ -1,4 +1,5 @@
 import {statSync, writeFileSync, readFileSync} from 'fs';
+// eslint-disable-next-line import/no-unresolved
 import {globSync} from 'glob';
 import {escapeRegExp} from '../src/utils/regex.js';
 
