@@ -56,7 +56,7 @@
     "file-saver": "2.0.5",
     "filemanager-webpack-plugin": "8.0.0",
     "framer-motion": "^10.16.4",
-    "fuse.js": "6.6.2",
+    "fuse.js": "7.0.0",
     "git-rev-sync": "3.0.2",
     "glob": "10.3.10",
     "got": "13.0.0",
