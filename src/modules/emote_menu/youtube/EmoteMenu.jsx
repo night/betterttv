@@ -62,7 +62,9 @@ export default class EmoteMenuModule {
 
     // TODO: take into account emote menu setting in the future
     if (container == null && emoteMenuEnabled) {
-      const nativeButtonContainer = document.querySelector(CHAT_BUTTON_CONTAINER_SELECTOR);
+      const nativeButtonContainer = Array.from(document.querySelectorAll(CHAT_BUTTON_CONTAINER_SELECTOR)).find(
+        (node) => !node.parentElement.hasAttribute('hidden')
+      );
       if (nativeButtonContainer == null) {
         return;
       }
