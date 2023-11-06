@@ -128,7 +128,7 @@ export const UsernameFlags = {
 
 export const AutoClaimFlags = {
   DROPS: 1 << 0,
-  MOMENTS: 1 << 1,
+  // MOMENTS: 1 << 1,
 };
 
 export const PageTypes = {

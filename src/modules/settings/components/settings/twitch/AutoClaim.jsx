@@ -46,12 +46,6 @@ function AutoClaim() {
               {formatMessage({defaultMessage: 'Automatically claim drops once you earn them'})}
             </p>
           </Checkbox>
-          <Checkbox key="moments" value={AutoClaimFlags.MOMENTS}>
-            <p className={styles.heading}>{formatMessage({defaultMessage: 'Moments'})}</p>
-            <p className={styles.settingDescription}>
-              {formatMessage({defaultMessage: 'Automatically claim moments once you earn them'})}
-            </p>
-          </Checkbox>
         </CheckboxGroup>
       </div>
     </Panel>

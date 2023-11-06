@@ -19,9 +19,6 @@ function handleClaim(node) {
   if (hasFlag(autoClaim, AutoClaimFlags.DROPS)) {
     eligibleEventTypes.push('drop');
   }
-  if (hasFlag(autoClaim, AutoClaimFlags.MOMENTS)) {
-    eligibleEventTypes.push('community-moment');
-  }
 
   const event = twitch.getPrivateCalloutEvent(node);
   if (event == null || !eligibleEventTypes.includes(event.type)) {
@@ -47,8 +44,7 @@ class AutoClaimModule {
   load() {
     const autoClaim = settings.get(SettingIds.AUTO_CLAIM);
     const autoClaimDrops = hasFlag(autoClaim, AutoClaimFlags.DROPS);
-    const autoClaimMoments = hasFlag(autoClaim, AutoClaimFlags.MOMENTS);
-    const shouldAutoClaim = autoClaimDrops | autoClaimMoments;
+    const shouldAutoClaim = autoClaimDrops;
 
     if (!shouldAutoClaim && autoClaimListener != null) {
       autoClaimListener();
