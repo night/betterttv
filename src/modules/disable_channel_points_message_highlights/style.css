@@ -1,5 +1,8 @@
 .bttv-disable-channel-points-message-highlights
-  div[data-test-selector='user-notice-line']:has(> div > .channel-points-reward-line__icon) {
+  div[data-test-selector='user-notice-line']:has(> div > .channel-points-reward-line__icon),
+.bttv-disable-channel-points-message-highlights
+  div[data-test-selector='user-notice-line']
+  .chat-line__message-body--highlighted {
   background: initial !important;
   border: initial !important;
 }
