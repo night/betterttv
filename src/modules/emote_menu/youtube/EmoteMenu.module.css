@@ -40,8 +40,7 @@
     }
 
     .bttv-rs-input-group:not(.bttv-rs-input-group-disabled).bttv-rs-input-group-focus,
-    .bttv-rs-input-group:focus-within,
-    .bttv-rs-input:focus {
+    .bttv-rs-input-group:focus-within {
       box-shadow: 0 0 3px var(--yt-spec-call-to-action);
     }
 
@@ -84,8 +83,7 @@
     }
 
     .bttv-rs-input-group:not(.bttv-rs-input-group-disabled).bttv-rs-input-group-focus,
-    .bttv-rs-input-group:focus-within,
-    .bttv-rs-input:focus {
+    .bttv-rs-input-group:focus-within {
       box-shadow: 0 0 3px rgba(255, 255, 255, 0.5);
     }
 

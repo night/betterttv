@@ -7,6 +7,7 @@ import Input from 'rsuite/Input';
 import InputGroup from 'rsuite/InputGroup';
 import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.jsx';
 import formatMessage from '../../../i18n/index.js';
+import styles from './Header.module.css';
 
 function Header({value, onChange, toggleWhisper, selected, ...props}) {
   const searchInputRef = useRef(null);
@@ -21,8 +22,8 @@ function Header({value, onChange, toggleWhisper, selected, ...props}) {
 
   return (
     <div {...props}>
-      <InputGroup inside>
-        <InputGroup.Addon>
+      <InputGroup>
+        <InputGroup.Addon className={styles.searchPrefix}>
           <Icon as={FontAwesomeSvgIcon} fontAwesomeIcon={faSearch} />
         </InputGroup.Addon>
         <Input

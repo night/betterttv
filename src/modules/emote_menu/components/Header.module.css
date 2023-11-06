@@ -1,0 +1,4 @@
+.searchPrefix {
+  background-color: var(--bttv-rs-input-bg) !important;
+  margin-right: -12px;
+}
