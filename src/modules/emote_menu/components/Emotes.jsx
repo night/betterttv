@@ -152,7 +152,7 @@ const SearchEmotes = React.forwardRef(
           </div>
         );
       },
-      [emotes, coords, onClick]
+      [emotes, coords, onClick, handleMouseOver]
     );
 
     if (emotes.length === 0) {
