@@ -24,7 +24,7 @@
     "@babel/preset-env": "7.23.2",
     "@babel/preset-react": "7.22.15",
     "@babel/runtime": "7.23.2",
-    "@formatjs/cli": "^6.2.1",
+    "@formatjs/cli": "^6.2.3",
     "@formatjs/intl": "^2.9.5",
     "@fortawesome/fontawesome-svg-core": "6.4.2",
     "@fortawesome/free-brands-svg-icons": "6.4.2",
