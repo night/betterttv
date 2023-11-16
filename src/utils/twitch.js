@@ -790,6 +790,14 @@ export default {
     return client.query({query, variables});
   },
 
+  graphqlMutation(mutation, variables) {
+    const client = this.getApolloClient();
+    if (client == null) {
+      return Promise.reject(new Error('unable to locate Twitch Apollo client'));
+    }
+    return client.mutate({mutation, variables});
+  },
+
   getChatCommandStore() {
     let context;
     try {

@@ -1,6 +1,8 @@
 import {off, on} from 'delegated-events';
+import gql from 'graphql-tag';
 import {PlatformTypes} from '../../constants.js';
 import formatMessage from '../../i18n/index.js';
+import {getCurrentChannel} from '../../utils/channel.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
 import mouseButtons from '../../utils/mousebuttons.js';
 import twitch from '../../utils/twitch.js';
@@ -87,7 +89,30 @@ function handleTimeoutClick(e, messageId) {
       command = '/timeout';
       duration = action.length;
     } else if (action.type === ActionTypes.DELETE) {
-      twitch.sendChatMessage(`/delete ${messageId}`);
+      const currentChannel = getCurrentChannel();
+      twitch
+        .graphqlMutation(
+          gql`
+            mutation BTTVDeleteChatMessage($input: DeleteChatMessageInput!) {
+              deleteChatMessage(input: $input) {
+                responseCode
+                message {
+                  id
+                  sender {
+                    id
+                  }
+                }
+              }
+            }
+          `,
+          {
+            input: {
+              channelID: currentChannel.id,
+              messageID: messageId,
+            },
+          }
+        )
+        .catch(() => {});
     }
     if (command && user) {
       const reason = e.shiftKey ? setReason(action.type) : '';
