@@ -10,7 +10,7 @@ let currentChatReference;
 let currentChatChannelId;
 
 const loadPredicates = {
-  following: () => document.querySelector('ul[role="tablist"] div[data-test-selector="ACTIVE_TAB_INDICATOR"]') != null,
+  following: () => document.querySelector('ul[role="tablist"] a[aria-selected="true"]') != null,
   channel: () => {
     const href =
       document.querySelector('#live-channel-stream-information .tw-image-avatar')?.getAttribute('src') ||
