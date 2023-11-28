@@ -15,7 +15,7 @@
 }
 
 .withTip {
-  height: 430px;
+  height: fit-content;
 }
 
 @media only screen and (max-width: 400px) {

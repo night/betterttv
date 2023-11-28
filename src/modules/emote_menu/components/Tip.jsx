@@ -109,13 +109,15 @@ export default function Tip({onSetTip}) {
             {strong: Strong, tipDisplayText}
           )}
         </div>
-        <TextButton
-          onClick={() => {
-            markTipAsSeen(tipStorageKey);
-            setTipToDisplay([]);
-          }}>
-          {formatMessage({defaultMessage: 'Hide'})}
-        </TextButton>
+        <div>
+          <TextButton
+            onClick={() => {
+              markTipAsSeen(tipStorageKey);
+              setTipToDisplay([]);
+            }}>
+            {formatMessage({defaultMessage: 'Hide'})}
+          </TextButton>
+        </div>
       </div>
     </>
   );

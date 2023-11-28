@@ -14,7 +14,6 @@
 .tipDisplayText {
   padding: 0 8px;
   flex-grow: 1;
-  white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
 }
