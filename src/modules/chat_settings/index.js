@@ -157,7 +157,10 @@ class ChatSettingsModule {
             message.style.display = 'none';
           }
         },
-        settings.openSettings
+        () => {
+          settings.openSettings();
+          document.querySelector('button[data-test-selector="chat-settings-close-button-selector"]')?.click?.();
+        }
       )
     );
   }
