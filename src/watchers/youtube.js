@@ -26,9 +26,8 @@ export default function youtubeWatcher(watcher) {
   }
 
   let channelId;
-  function updateChannel({data}) {
+  function updateChannel(data) {
     let newChannelId = channelId;
-
     const liveChatItemContextMenuEndpointParams = data?.contextMenuEndpoint?.liveChatItemContextMenuEndpoint?.params;
     const sendLiveChatMessageEndpointParams =
       data?.actionPanel?.liveChatMessageInputRenderer?.sendButton?.buttonRenderer?.serviceEndpoint
@@ -71,8 +70,9 @@ export default function youtubeWatcher(watcher) {
     if (node == null) {
       return;
     }
-    updateChannel(node.__data);
-    watcher.emit('youtube.message', node, node.__data);
+
+    updateChannel(node.data);
+    watcher.emit('youtube.message', node, node.data);
   }
 
   domObserver.on(
