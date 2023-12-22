@@ -1,6 +1,7 @@
 import domObserver from '../observers/dom.js';
 import {setCurrentChannel} from '../utils/channel.js';
 import {setCurrentUser} from '../utils/user.js';
+import {getElementData} from '../utils/youtube.js';
 
 export default function youtubeWatcher(watcher) {
   function updateUser() {
@@ -11,7 +12,7 @@ export default function youtubeWatcher(watcher) {
 
     try {
       const user =
-        inputRenderer.__data.data.sendButton.buttonRenderer.serviceEndpoint.sendLiveChatMessageEndpoint.actions[0]
+        getElementData(inputRenderer).sendButton.buttonRenderer.serviceEndpoint.sendLiveChatMessageEndpoint.actions[0]
           .addLiveChatTextMessageFromTemplateAction.template.liveChatTextMessageRenderer;
       const userThumbnails = user.authorPhoto.thumbnails;
       setCurrentUser({
@@ -26,7 +27,7 @@ export default function youtubeWatcher(watcher) {
   }
 
   let channelId;
-  function updateChannel({data}) {
+  function updateChannel(data) {
     let newChannelId = channelId;
 
     const liveChatItemContextMenuEndpointParams = data?.contextMenuEndpoint?.liveChatItemContextMenuEndpoint?.params;
@@ -71,8 +72,9 @@ export default function youtubeWatcher(watcher) {
     if (node == null) {
       return;
     }
-    updateChannel(node.__data);
-    watcher.emit('youtube.message', node, node.__data);
+    const messageObj = getElementData(node);
+    updateChannel(messageObj);
+    watcher.emit('youtube.message', node, messageObj);
   }
 
   domObserver.on(
@@ -91,7 +93,7 @@ export default function youtubeWatcher(watcher) {
 
   domObserver.on('#live-chat-message-input', () => {
     updateUser();
-    updateChannel(document.getElementsByTagName('yt-live-chat-renderer')[0]?.__data);
+    updateChannel(getElementData(document.getElementsByTagName('yt-live-chat-renderer')[0]));
   });
 
   watcher.on('emotes.updated', () => {

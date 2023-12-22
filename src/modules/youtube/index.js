@@ -22,8 +22,7 @@ class YouTubeModule {
     }
   }
 
-  parseMessage(element) {
-    const message = element.__data?.data;
+  parseMessage(element, message) {
     const mockUser = {
       id: message?.authorExternalChannelId,
       name: message?.authorExternalChannelId,

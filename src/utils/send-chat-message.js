@@ -21,7 +21,7 @@ export default loadModuleForPlatforms(
       let sendEphemeralMessage;
       return async (message) => {
         if (sendEphemeralMessage == null) {
-          const module = await import('./youtube.js');
+          const module = await import('./youtube-ephemeral-messages.js');
           sendEphemeralMessage = module.sendEphemeralMessage;
         }
         return sendEphemeralMessage(message);

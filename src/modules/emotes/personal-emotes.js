@@ -25,9 +25,11 @@ class PersonalEmotes extends AbstractEmotes {
     watcher.on('load.youtube', () => this.joinChannel());
     watcher.on('load.user', () => this.broadcastMe());
     watcher.on('conversation.new', (threadId) => this.joinConversation(threadId));
-    watcher.on('conversation.message', (threadId, el, msgObject) => this.broadcastMeConversation(threadId, msgObject));
-    watcher.on('youtube.message', (element, {data}) => {
-      if (data.authorExternalChannelId !== getCurrentUser()?.id) {
+    watcher.on('conversation.message', (threadId, element, messageObj) =>
+      this.broadcastMeConversation(threadId, messageObj)
+    );
+    watcher.on('youtube.message', (element, messageObj) => {
+      if (messageObj.authorExternalChannelId !== getCurrentUser()?.id) {
         return;
       }
       this.broadcastMe();

@@ -1,6 +1,7 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
 import domObserver from '../../../observers/dom.js';
+import {getElementData} from '../../../utils/youtube.js';
 import Modal from '../components/Window.jsx';
 import DropdownButton from './DropdownButton.jsx';
 import './Settings.module.css';
@@ -31,7 +32,8 @@ export default class SettingsModule {
       const closestDropdownContainer = node.closest(CHAT_SETTINGS_DROPDOWN_CONTAINER_SELECTOR);
       if (
         closestDropdownContainer == null ||
-        closestDropdownContainer.__data.positionTarget !== document.querySelector(CHAT_SETTINGS_MENU_BUTTON_SELECTOR)
+        getElementData(closestDropdownContainer)?.positionTarget !==
+          document.querySelector(CHAT_SETTINGS_MENU_BUTTON_SELECTOR)
       ) {
         return;
       }
