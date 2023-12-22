@@ -74,7 +74,10 @@ class ChannelEmotes extends AbstractEmotes {
       this.emotes.delete(emote.code);
 
       const newEmote = {...emote, ...payload.emote};
-      this.emotes.set(newEmote.code, createEmote(newEmote.id, newEmote.code, newEmote.animated, newEmote.user));
+      this.emotes.set(
+        newEmote.code,
+        createEmote(newEmote.id, newEmote.code, newEmote.animated, newEmote.user ?? emote.channel)
+      );
 
       watcher.emit('emotes.updated');
     });
