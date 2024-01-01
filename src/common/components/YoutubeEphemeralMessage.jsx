@@ -10,7 +10,7 @@ export default function YoutubeEphemeralMessage({message}) {
     if (messageRef?.current == null) {
       return;
     }
-    chat.messageReplacer(messageRef.current, null, true);
+    chat.messageReplacer(messageRef.current, null);
   }, [messageRef]);
 
   return (

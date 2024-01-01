@@ -14,7 +14,6 @@ import emotes from '../emotes/index.js';
 import splitChat from '../split_chat/index.js';
 import subscribers from '../subscribers/index.js';
 
-const EMOTE_STRIP_SYMBOLS_REGEX = /(^[~!@#$%^&*()]+|[~!@#$%^&*()]+$)/g;
 const STEAM_LOBBY_JOIN_REGEX = /^steam:\/\/joinlobby\/\d+\/\d+\/\d+$/;
 const EMOTES_TO_CAP = ['567b5b520e984428652809b6'];
 const MAX_EMOTES_WHEN_CAPPED = 10;
@@ -130,7 +129,7 @@ class ChatModule {
       if (message?.renderBetterTTVEmotes !== true) {
         return;
       }
-      this.messageReplacer(element, null, true);
+      this.messageReplacer(element, null);
     });
     watcher.on('channel.updated', ({bots}) => {
       channelBots = bots;
@@ -258,7 +257,7 @@ class ChatModule {
     modsOnly = enabled;
   }
 
-  messageReplacer(nodes, user, exact = false) {
+  messageReplacer(nodes, user) {
     let tokens = [];
     if (
       NodeList.prototype.isPrototypeOf.call(NodeList.prototype, nodes) ||
@@ -311,9 +310,7 @@ class ChatModule {
 
         let emoteIndex = j;
         let isEmoteOrSuffixModifier = false;
-        let emote =
-          emotes.getEligibleEmote(part, user) ||
-          (!exact ? emotes.getEligibleEmote(part.replace(EMOTE_STRIP_SYMBOLS_REGEX, ''), user) : null);
+        let emote = emotes.getEligibleEmote(part, user);
         if (emote != null && !emote.modifier) {
           partMetadata[j] = {emote};
           isEmoteOrSuffixModifier = true;
