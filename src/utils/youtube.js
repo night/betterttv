@@ -16,7 +16,7 @@ export function getElementData(element) {
     return null;
   }
 
-  return element.__data?.data ?? element.data;
+  return element.__data?.data ?? element.data ?? element.__data;
 }
 
 export function getLiveChat() {
