@@ -11,7 +11,13 @@ import styles from './Button.module.css';
 import EmoteMenuPopover from './EmoteMenuPopover.jsx';
 import {markTipAsSeen} from './Tip.jsx';
 
-export default function Button({isLegacy = false, appendToChat, className, boundingQuerySelector}) {
+export default function Button({
+  isLegacy = false,
+  appendToChat,
+  className,
+  boundingQuerySelector,
+  containerQuerySelector,
+}) {
   const [loaded, setLoaded] = useState(false);
   const [whisperOpen, setWhisperOpen] = useState(false);
   const whisperRef = useRef(null);
@@ -59,6 +65,9 @@ export default function Button({isLegacy = false, appendToChat, className, bound
       ref={whisperRef}
       onOpen={() => setWhisperOpen(true)}
       onClose={() => setWhisperOpen(false)}
+      container={
+        containerQuerySelector != null ? () => document.querySelector(containerQuerySelector) ?? undefined : undefined
+      }
       trigger="click"
       placement={null} // this throws a warning but is necessary to stop rsuite from auto-respositioning
       speaker={

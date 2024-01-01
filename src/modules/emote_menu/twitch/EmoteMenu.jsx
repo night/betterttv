@@ -9,6 +9,7 @@ import watcher from '../../../watcher.js';
 import EmoteMenuButton from '../components/Button.jsx';
 import styles from './EmoteMenu.module.css';
 
+const CONTAINER_QUERY_SELECTOR = '#root';
 const CHAT_TEXT_AREA = 'textarea[data-a-target="chat-input"], div[data-a-target="chat-input"]';
 
 // For legacy button
@@ -142,6 +143,7 @@ function loadButton() {
       onError={() => unloadButton(buttonContainer, nativeEmotePickerButton)}
       appendToChat={appendToChat}
       className={styles.button}
+      containerQuerySelector={CONTAINER_QUERY_SELECTOR}
       boundingQuerySelector={CHAT_TEXT_AREA}
     />
   );
