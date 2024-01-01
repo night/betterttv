@@ -89,7 +89,7 @@
     "safe-regex2": "^3.1.0",
     "semver": "^7.5.3",
     "string-replace-loader": "3.1.0",
-    "terser-webpack-plugin": "5.3.9",
+    "terser-webpack-plugin": "5.3.10",
     "twemoji": "14.0.2",
     "uuid": "^9.0.1",
     "virtual-module-webpack-plugin": "0.4.1",
