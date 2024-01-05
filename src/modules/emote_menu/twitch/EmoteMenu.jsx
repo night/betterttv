@@ -121,9 +121,21 @@ function loadButton() {
     return;
   }
 
-  const chatInputIcons = nativeEmotePickerButton?.parentElement?.parentElement?.parentElement;
+  const chatInputIcons = nativeEmotePickerButton?.parentElement?.parentElement;
   const chatInputIconsStyle = chatInputIcons != null ? window.getComputedStyle(chatInputIcons) : null;
-  if (chatInputIcons == null && (chatInputIconsStyle?.display !== 'absolute' || chatInputIconsStyle.right !== '0px')) {
+  const chatInputIconsParent = chatInputIcons?.parentElement;
+  const chatInputIconsParentStyle = chatInputIconsParent != null ? window.getComputedStyle(chatInputIconsParent) : null;
+
+  if (
+    chatInputIcons == null ||
+    !(parseInt(chatInputIconsStyle.paddingRight, 10) > 0 && parseInt(chatInputIconsStyle.paddingBottom, 10) > 0) ||
+    chatInputIconsParent == null ||
+    !(
+      chatInputIconsParentStyle.position === 'absolute' &&
+      parseInt(chatInputIconsParentStyle.right, 10) === 0 &&
+      parseInt(chatInputIconsParentStyle.bottom, 10) === 0
+    )
+  ) {
     return;
   }
 
