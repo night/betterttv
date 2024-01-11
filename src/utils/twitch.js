@@ -16,7 +16,6 @@ const CHAT_INPUT = 'textarea[data-a-target="chat-input"], div[data-a-target="cha
 const CHAT_WYSIWYG_INPUT_EDITOR = '.chat-wysiwyg-input__editor';
 const COMMUNITY_HIGHLIGHT = '.community-highlight';
 const STREAM_CHAT = '.stream-chat';
-const ON_SITE_NOTIFICATION_SELECTOR = '.onsite-notifications';
 
 const USER_PROFILE_IMAGE_GQL_QUERY = gql`
   query BTTVGetUserProfilePicture($userId: ID!) {
@@ -821,19 +820,5 @@ export default {
     } catch (_) {}
 
     return user;
-  },
-
-  getOnsiteNotificationStore() {
-    let store;
-
-    try {
-      const node = searchReactParents(
-        getReactInstance(document.querySelector(ON_SITE_NOTIFICATION_SELECTOR)),
-        (n) => n.pendingProps?.viewNotifications != null
-      );
-      store = node;
-    } catch (_) {}
-
-    return store;
   },
 };

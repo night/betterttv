@@ -43,7 +43,7 @@ function AutoClaim() {
           <Checkbox key="drops" value={AutoClaimFlags.DROPS}>
             <p className={styles.heading}>{formatMessage({defaultMessage: 'Drops'})}</p>
             <p className={styles.settingDescription}>
-              {formatMessage({defaultMessage: 'Automatically claim drops once you earn them'})}
+              {formatMessage({defaultMessage: 'Automatically claim all drops once you earn them'})}
             </p>
           </Checkbox>
         </CheckboxGroup>
