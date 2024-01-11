@@ -42,7 +42,7 @@ async function handleMessage(message) {
 
   if (
     messageData.type !== 'create-notification' ||
-    message.data?.notification?.type !== 'user_drop_reward_reminder_notification'
+    messageData.data?.notification?.type !== 'user_drop_reward_reminder_notification'
   ) {
     return;
   }
