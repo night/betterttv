@@ -21,6 +21,7 @@ const inventoryQuery = gql`
               isClaimed
               currentMinutesWatched
               dropInstanceID
+              hasPreconditionsMet
             }
           }
         }
@@ -52,7 +53,11 @@ async function handleMessage(message) {
 
   for await (const {timeBasedDrops, id: campaignId} of dropCampaignsInProgress) {
     for await (const drop of timeBasedDrops) {
-      if (drop.self.isClaimed || drop.self.currentMinutesWatched < drop.requiredMinutesWatched) {
+      if (
+        drop.self.isClaimed ||
+        drop.self.currentMinutesWatched < drop.requiredMinutesWatched ||
+        !drop.self.hasPreconditionsMet
+      ) {
         continue;
       }
       let {dropInstanceID} = drop.self;
