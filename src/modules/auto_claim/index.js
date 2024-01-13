@@ -1,59 +1,99 @@
-import debounce from 'lodash.debounce';
+import gql from 'graphql-tag';
 import {AutoClaimFlags, PlatformTypes, SettingIds} from '../../constants.js';
-import domObserver from '../../observers/dom.js';
 import settings from '../../settings.js';
 import {hasFlag} from '../../utils/flags.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
 import twitch from '../../utils/twitch.js';
+import {getCurrentUser} from '../../utils/user.js';
 import watcher from '../../watcher.js';
 
-const AUTO_CLAIM_SELECTOR = '.chat-private-callout__header-segment';
-const AUTO_CLAIM_BUTTON_SELECTOR = `${AUTO_CLAIM_SELECTOR} button[class*="ScCoreButtonPrimary"]`;
-
-let autoClaimListener;
-
-function handleClaim(node) {
-  const autoClaim = settings.get(SettingIds.AUTO_CLAIM);
-
-  const eligibleEventTypes = [];
-  if (hasFlag(autoClaim, AutoClaimFlags.DROPS)) {
-    eligibleEventTypes.push('drop');
+const inventoryQuery = gql`
+  query BTTVInventory {
+    currentUser {
+      id
+      inventory {
+        dropCampaignsInProgress {
+          id
+          timeBasedDrops {
+            id
+            requiredMinutesWatched
+            self {
+              isClaimed
+              currentMinutesWatched
+              dropInstanceID
+              hasPreconditionsMet
+            }
+          }
+        }
+      }
+    }
   }
+`;
 
-  const event = twitch.getPrivateCalloutEvent(node);
-  if (event == null || !eligibleEventTypes.includes(event.type)) {
+const claimDropMutation = gql`
+  mutation BTTVClaimDrop($input: ClaimDropRewardsInput!) {
+    claimDropRewards(input: $input) {
+      status
+    }
+  }
+`;
+
+async function handleMessage(message) {
+  const messageData = JSON.parse(message);
+
+  if (
+    messageData.type !== 'create-notification' ||
+    messageData.data?.notification?.type !== 'user_drop_reward_reminder_notification'
+  ) {
     return;
   }
 
-  const claimButton = document.querySelector(AUTO_CLAIM_BUTTON_SELECTOR);
-  if (claimButton == null) {
-    return;
-  }
+  const {data} = await twitch.graphqlQuery(inventoryQuery);
+  const {dropCampaignsInProgress} = data?.currentUser?.inventory ?? {};
 
-  claimButton.click();
+  for await (const {timeBasedDrops, id: campaignId} of dropCampaignsInProgress) {
+    for await (const drop of timeBasedDrops) {
+      if (
+        drop.self.isClaimed ||
+        drop.self.currentMinutesWatched < drop.requiredMinutesWatched ||
+        !drop.self.hasPreconditionsMet
+      ) {
+        continue;
+      }
+      let {dropInstanceID} = drop.self;
+      if (dropInstanceID == null) {
+        dropInstanceID = `${data.currentUser.id}#${campaignId}#${drop.id}`;
+      }
+      try {
+        await twitch.graphqlMutation(claimDropMutation, {input: {dropInstanceID}});
+      } catch (_) {}
+    }
+  }
 }
 
-const handleClaimDebounced = debounce(handleClaim, 1000);
-
+let listenerAttached = false;
 class AutoClaimModule {
   constructor() {
     watcher.on('load.chat', () => this.load());
     settings.on(`changed.${SettingIds.AUTO_CLAIM}`, () => this.load());
   }
 
-  load() {
+  async load() {
     const autoClaim = settings.get(SettingIds.AUTO_CLAIM);
-    const autoClaimDrops = hasFlag(autoClaim, AutoClaimFlags.DROPS);
-    const shouldAutoClaim = autoClaimDrops;
-
-    if (!shouldAutoClaim && autoClaimListener != null) {
-      autoClaimListener();
-      autoClaimListener = undefined;
-    } else if (shouldAutoClaim && autoClaimListener == null) {
-      autoClaimListener = domObserver.on(AUTO_CLAIM_SELECTOR, (node, isConnected) => {
-        if (!isConnected) return;
-        handleClaimDebounced(node);
-      });
+    const shouldAutoClaim = hasFlag(autoClaim, AutoClaimFlags.DROPS);
+    const client = window.__twitch_pubsub_client;
+    const currentUser = getCurrentUser();
+    if (client == null || currentUser == null) {
+      return;
+    }
+    const topicId = `onsite-notifications.${currentUser.id}`;
+    if (!shouldAutoClaim && listenerAttached) {
+      listenerAttached = false;
+      client.topicListeners.removeListener(topicId, handleMessage);
+    }
+    if (shouldAutoClaim && !listenerAttached) {
+      listenerAttached = true;
+      client.topicListeners.addListener(topicId, handleMessage);
     }
   }
 }
