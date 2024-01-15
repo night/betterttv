@@ -42,7 +42,7 @@
     "clean-webpack-plugin": "4.0.0",
     "cookies-js": "1.2.3",
     "copy-webpack-plugin": "11.0.0",
-    "css-loader": "6.8.1",
+    "css-loader": "6.9.0",
     "css-minimizer-webpack-plugin": "5.0.1",
     "delegated-events": "^1.1.2",
     "emoji-toolkit": "8.0.0",
