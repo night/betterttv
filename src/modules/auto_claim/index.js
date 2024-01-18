@@ -48,7 +48,7 @@ async function handleMessage(message) {
     return;
   }
 
-  const {data} = await twitch.graphqlQuery(inventoryQuery);
+  const {data} = await twitch.graphqlQuery(inventoryQuery, {}, {fetchPolicy: 'no-cache'});
   const {dropCampaignsInProgress} = data?.currentUser?.inventory ?? {};
 
   for await (const {timeBasedDrops, id: campaignId} of dropCampaignsInProgress) {

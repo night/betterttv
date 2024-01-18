@@ -782,12 +782,12 @@ export default {
     return privateCalloutEvent;
   },
 
-  graphqlQuery(query, variables) {
+  graphqlQuery(query, variables, options = {}) {
     const client = this.getApolloClient();
     if (client == null) {
       return Promise.reject(new Error('unable to locate Twitch Apollo client'));
     }
-    return client.query({query, variables});
+    return client.query({query, variables, ...options});
   },
 
   graphqlMutation(mutation, variables) {
