@@ -50,3 +50,7 @@
 .bttv-emote-modifier-cursed img {
   filter: grayscale(1) brightness(0.7) contrast(2.5);
 }
+
+.bttv-emote-modifier-overlay {
+  margin-left: -32px;
+}
