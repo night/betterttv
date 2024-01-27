@@ -47,7 +47,7 @@ commandStore.registerCommand({
 commandStore.registerCommand({
   name: 'party',
   commandArgs: [],
-  description: formatMessage({defaultMessage: 'Usage: "/barrelroll" - Rotates the entire page 360 degrees'}),
+  description: formatMessage({defaultMessage: 'Usage: "/party" - Makes the entire page flash colors'}),
   hidden: true,
   handler: () => {
     const body = document.querySelector('body');
