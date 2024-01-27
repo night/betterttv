@@ -45,6 +45,19 @@ commandStore.registerCommand({
 });
 
 commandStore.registerCommand({
+  name: 'party',
+  commandArgs: [],
+  description: formatMessage({defaultMessage: 'Usage: "/barrelroll" - Rotates the entire page 360 degrees'}),
+  hidden: true,
+  handler: () => {
+    const body = document.querySelector('body');
+    body.classList.add(styles.party);
+    setTimeout(() => body.classList.remove(styles.party), 5000);
+  },
+  permissionLevel: PermissionLevels.VIEWER,
+});
+
+commandStore.registerCommand({
   name: 'bttv',
   commandArgs: [],
   description: formatMessage({
