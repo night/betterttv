@@ -50,7 +50,7 @@ commandStore.registerCommand({
         },
       });
 
-      if (title != null) {
+      if (title != null && title.length > 0) {
         await twitch.graphqlMutation(renameClipMutation, {input: {slug: data.createClip.clip.slug, title}});
       }
 
