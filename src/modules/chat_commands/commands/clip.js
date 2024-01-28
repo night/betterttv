@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 import formatMessage from '../../../i18n/index.js';
-import commandStore, {PermissionLevels} from '../store.js';
 import {getCurrentChannel} from '../../../utils/channel.js';
 import twitch from '../../../utils/twitch.js';
+import commandStore, {PermissionLevels} from '../store.js';
 
 const createClipMutation = gql`
   mutation BTTVCreateClip($input: CreateClipInput!) {
@@ -56,7 +56,6 @@ commandStore.registerCommand({
 
       twitch.sendChatMessage(data.createClip.clip.url);
     } catch (error) {
-      console.error(error);
       twitch.sendChatAdminMessage('Error: Unable to create clip, please try again later.');
     }
   },
