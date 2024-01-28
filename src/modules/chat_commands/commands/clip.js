@@ -1,8 +1,8 @@
+import gql from 'graphql-tag';
 import formatMessage from '../../../i18n/index.js';
 import commandStore, {PermissionLevels} from '../store.js';
 import {getCurrentChannel} from '../../../utils/channel.js';
 import twitch from '../../../utils/twitch.js';
-import gql from 'graphql-tag';
 
 const createClipMutation = gql`
   mutation BTTVCreateClip($input: CreateClipInput!) {
