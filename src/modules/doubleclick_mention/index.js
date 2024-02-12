@@ -26,7 +26,7 @@ function handleDoubleClick(e) {
   let user = e.target.innerText ? e.target.innerText.replace('@', '') : '';
   const messageObj = twitch.getChatMessageObject(e.target.closest(CHAT_LINE_SELECTOR));
   if (messageObj != null && e.target.getAttribute('data-a-target') !== 'chat-message-mention') {
-    if (messageObj.user.userDisplayName.toLowerCase() === messageObj.user.userLogin) {
+    if (messageObj.user.userDisplayName?.toLowerCase() === messageObj.user.userLogin) {
       user = messageObj.user.userDisplayName;
     } else {
       user = messageObj.user.userLogin;
