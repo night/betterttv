@@ -32,7 +32,7 @@ const ignoreErrors = [
   'mergeOptions is not a function',
 ];
 
-Sentry.init({
+const client = Sentry.BrowserClient({
   release: GIT_REV,
   environment: NODE_ENV,
   dsn: SENTRY_URL,
@@ -103,3 +103,6 @@ Sentry.init({
     return event;
   },
 });
+
+const hub = new Sentry.Hub(client);
+export default hub;
