@@ -37,9 +37,11 @@ commandStore.registerCommand({
     const broadcastId = currentPlayer?.state?.sessionData?.['BROADCAST-ID'];
 
     if (channel == null || broadcastId == null || startOffset == null) {
-      twitch.sendChatAdminMessage('Error: Unable to create clip, is the stream live?');
+      twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Error: Unable to create clip, try again later.'}));
       return;
     }
+
+    twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Creating clip, please wait...'}));
 
     try {
       const {data} = await twitch.graphqlMutation(createClipMutation, {
@@ -56,7 +58,7 @@ commandStore.registerCommand({
 
       twitch.sendChatMessage(data.createClip.clip.url);
     } catch (error) {
-      twitch.sendChatAdminMessage('Error: Unable to create clip, please try again later.');
+      twitch.sendChatAdminMessage('Error: Unable to create clip, try again later.');
     }
   },
   permissionLevel: PermissionLevels.VIEWER,
