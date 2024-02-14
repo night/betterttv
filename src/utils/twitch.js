@@ -31,7 +31,7 @@ let twitchWebpackRequire;
 
 export function getReactInstance(element) {
   for (const key in element) {
-    if (key.startsWith('__reactInternalInstance$')) {
+    if (key.startsWith('__reactInternalInstance$') || key.startsWith('__reactFiber$')) {
       return element[key];
     }
   }
@@ -41,7 +41,7 @@ export function getReactInstance(element) {
 
 function getReactRoot(element) {
   for (const key in element) {
-    if (key.startsWith('_reactRootContainer')) {
+    if (key.startsWith('_reactRootContainer') || key.startsWith('__reactContainer$')) {
       return element[key];
     }
   }
@@ -264,8 +264,9 @@ export default {
   getConnectStore() {
     let store;
     try {
+      const reactRoot = getReactRoot(document.querySelector(REACT_ROOT));
       const node = searchReactChildren(
-        getReactRoot(document.querySelector(REACT_ROOT))._internalRoot.current,
+        reactRoot?._internalRoot?.current ?? reactRoot,
         (n) => n.pendingProps && n.pendingProps.value && n.pendingProps.value.store
       );
       store = node.pendingProps.value.store;
@@ -277,8 +278,9 @@ export default {
   getApolloClient() {
     let client;
     try {
+      const reactRoot = getReactRoot(document.querySelector(REACT_ROOT));
       const node = searchReactChildren(
-        getReactRoot(document.querySelector(REACT_ROOT))._internalRoot.current,
+        reactRoot?._internalRoot?.current ?? reactRoot,
         (n) => n.pendingProps?.value?.client
       );
       client = node.pendingProps.value.client;
