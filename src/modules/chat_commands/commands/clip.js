@@ -37,7 +37,7 @@ commandStore.registerCommand({
     const broadcastId = currentPlayer?.state?.sessionData?.['BROADCAST-ID'];
 
     if (channel == null || broadcastId == null || startOffset == null) {
-      twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Error: Unable to create clip, try again later.'}));
+      twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Error: Unable to create clip, is the stream live?'}));
       return;
     }
 
