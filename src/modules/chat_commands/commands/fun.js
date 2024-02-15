@@ -27,7 +27,7 @@ commandStore.registerCommand({
   name: 'lurk',
   commandArgs: [],
   description: formatMessage({defaultMessage: 'Usage: "/lurk" - Tells the chat you are lurking'}),
-  handler: () => twitch.sendChatMessage('/me is now lurking'),
+  handler: () => twitch.sendChatMessage(`/me ${formatMessage({defaultMessage: 'is now lurking'})}`),
   permissionLevel: PermissionLevels.VIEWER,
 });
 

@@ -58,7 +58,7 @@ commandStore.registerCommand({
 
       twitch.sendChatMessage(data.createClip.clip.url);
     } catch (error) {
-      twitch.sendChatAdminMessage('Error: Unable to create clip, try again later.');
+      twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Error: Unable to create clip.'}));
     }
   },
   permissionLevel: PermissionLevels.VIEWER,

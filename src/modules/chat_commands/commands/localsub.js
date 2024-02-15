@@ -11,7 +11,7 @@ commandStore.registerCommand({
   }),
   handler: () => {
     chat.subsOnly(true);
-    twitch.sendChatAdminMessage(`Local sub-only mode enabled.`);
+    twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Local sub-only mode enabled.'}));
   },
   permissionLevel: PermissionLevels.VIEWER,
 });
@@ -22,7 +22,7 @@ commandStore.registerCommand({
   description: formatMessage({defaultMessage: 'Usage: "/localsuboff" - Turns off local sub-only mode'}),
   handler: () => {
     chat.subsOnly(false);
-    twitch.sendChatAdminMessage(`Local sub-only mode disabled.`);
+    twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Local sub-only mode disabled.'}));
   },
   permissionLevel: PermissionLevels.VIEWER,
 });
