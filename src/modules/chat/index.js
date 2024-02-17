@@ -368,16 +368,13 @@ class ChatModule {
             // Strip the overlay modifier from the part.
             modifiers = modifiers.filter(negate(overlayModifierPredicate));
 
-            // Construct the replacement part.
-            const replacementEmote = emotes.getEligibleEmote('o!', user);
-            const replacementPart = replacementEmote == null ? 'o!' : replacementEmote.render(null, null, null);
-
             // Find the locations to restore the modifier part.
             const start = predecessor != null ? predecessor + 1 : 0;
-            for (let location = start; location < j; location++) {
+            const replacementEmote = emotes.getEligibleEmote('o!', user);
+            for (let location = start; location < j; ++location) {
               if (overlayModifierPredicate(partMetadata[location])) {
                 // Restore the string or modifier emote in the parts array.
-                parts[location] = replacementPart;
+                parts[location] = replacementEmote == null ? 'o!' : replacementEmote.render(null, null, null);
               }
             }
           }
