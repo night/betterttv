@@ -29,7 +29,7 @@
   if (window.BetterTTV || window.__betterttv) return;
   window.__betterttv = true;
 
-  const Sentry = await import('./utils/sentry.js');
+  const {default: Sentry} = await import('./utils/sentry.js');
 
   try {
     const {load: loadI18n} = await import('./i18n/index.js');
