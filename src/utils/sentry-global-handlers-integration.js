@@ -99,8 +99,6 @@ export function BetterTTVGlobalHandlers(hubRef) {
 
         event.level = 'error';
 
-        console.log(event); // eslint-disable-line no-console
-
         hubRef.hub?.captureEvent(event, {
           originalException: error,
           mechanism: {
