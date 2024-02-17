@@ -11,7 +11,7 @@ commandStore.registerCommand({
   }),
   handler: () => {
     chat.modsOnly(true);
-    twitch.sendChatAdminMessage(`Local mods-only mode enabled.`);
+    twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Local mods-only mode enabled.'}));
   },
   permissionLevel: PermissionLevels.VIEWER,
 });
@@ -22,7 +22,7 @@ commandStore.registerCommand({
   description: formatMessage({defaultMessage: 'Usage: "/localmodoff" - Turns off local mod-only mode'}),
   handler: () => {
     chat.modsOnly(false);
-    twitch.sendChatAdminMessage(`Local mods-only mode disabled.`);
+    twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Local mods-only mode disabled.'}));
   },
   permissionLevel: PermissionLevels.VIEWER,
 });

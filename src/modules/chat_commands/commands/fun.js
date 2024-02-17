@@ -27,7 +27,7 @@ commandStore.registerCommand({
   name: 'lurk',
   commandArgs: [],
   description: formatMessage({defaultMessage: 'Usage: "/lurk" - Tells the chat you are lurking'}),
-  handler: () => twitch.sendChatMessage('/me is now lurking'),
+  handler: () => twitch.sendChatMessage(`/me ${formatMessage({defaultMessage: 'is now lurking'})}`),
   permissionLevel: PermissionLevels.VIEWER,
 });
 
@@ -40,6 +40,19 @@ commandStore.registerCommand({
     const body = document.querySelector('body');
     body.classList.add(styles.barrelRoll);
     setTimeout(() => body.classList.remove(styles.barrelRoll), 2000);
+  },
+  permissionLevel: PermissionLevels.VIEWER,
+});
+
+commandStore.registerCommand({
+  name: 'party',
+  commandArgs: [],
+  description: formatMessage({defaultMessage: 'Usage: "/party" - Makes the entire page flash colors'}),
+  hidden: true,
+  handler: () => {
+    const body = document.querySelector('body');
+    body.classList.add(styles.party);
+    setTimeout(() => body.classList.remove(styles.party), 5000);
   },
   permissionLevel: PermissionLevels.VIEWER,
 });

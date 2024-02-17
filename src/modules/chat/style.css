@@ -54,3 +54,16 @@
 .bttv-emote-modifier-overlay {
   margin-left: -32px;
 }
+
+.bttv-emote-modifier-party img {
+  animation: bttv-emote-modifier-party 1.5s linear infinite;
+}
+
+@keyframes bttv-emote-modifier-party {
+  0% {
+    filter: sepia(0.5) hue-rotate(0deg) saturate(2.5);
+  }
+  100% {
+    filter: sepia(0.5) hue-rotate(360deg) saturate(2.5);
+  }
+}

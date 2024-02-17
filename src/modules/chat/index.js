@@ -31,6 +31,7 @@ const EMOTE_MODIFIERS = {
   'l!': 'bttv-emote-modifier-rotate-left',
   'r!': 'bttv-emote-modifier-rotate-right',
   'o!': 'bttv-emote-modifier-overlay',
+  'p!': 'bttv-emote-modifier-party',
   ffzW: 'bttv-emote-modifier-wide',
   ffzX: 'bttv-emote-modifier-flip-horizontal',
   ffzY: 'bttv-emote-modifier-flip-vertical',
