@@ -347,8 +347,9 @@ export default {
     if (chatClient) return chatClient;
 
     try {
+      const reactRoot = getReactRoot(document.querySelector(REACT_ROOT));
       const node = searchReactChildren(
-        getReactRoot(document.querySelector(REACT_ROOT))._internalRoot.current,
+        reactRoot?._internalRoot?.current ?? reactRoot,
         (n) => n.stateNode && n.stateNode.join && n.stateNode.client,
         1000
       );
