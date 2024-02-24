@@ -627,11 +627,11 @@ export default {
     try {
       chatInputEditor = searchReactParents(
         getReactInstance(element || document.querySelector(CHAT_INPUT)),
-        (n) => n.stateNode?.state?.slateEditor != null
+        (n) => n.memoizedProps?.value?.editor != null
       );
     } catch (_) {}
 
-    return chatInputEditor?.stateNode;
+    return chatInputEditor?.memoizedProps?.value?.editor;
   },
 
   getChatInputValue() {
@@ -687,10 +687,10 @@ export default {
     chatInput.memoizedProps.onValueUpdate(text);
 
     if (shouldFocus) {
+      element.focus();
       const chatInputEditor = this.getChatInputEditor(element);
       if (chatInputEditor != null) {
-        chatInputEditor.focus();
-        chatInputEditor.setSelectionRange(text.length);
+        chatInputEditor.setSelection(text.length);
       }
     }
   },
@@ -710,7 +710,7 @@ export default {
       return SelectionTypes.END;
     }
 
-    const chatInputEditor = this.getChatInputEditor(element)?.state?.slateEditor;
+    const chatInputEditor = this.getChatInputEditor(element);
     if (chatInputEditor == null || chatInputEditor.selection == null) {
       return SelectionTypes.MIDDLE;
     }
