@@ -692,14 +692,15 @@ export default {
       const chatInputEditor = this.getChatInputEditor(element);
 
       // TODO: remove after legacy slate is gone
-      if (chatInputEditor != null && 'focus' in chatInputEditor) {
+      if (chatInputEditor != null && 'setSelectionRange' in chatInputEditor) {
         chatInputEditor.focus();
         chatInputEditor.setSelectionRange(text.length);
+        // setSelection seems missing now, so we can't set selection
+      } else if (chatInputEditor != null && 'setSelection' in chatInputEditor) {
+        element.focus();
+        chatInputEditor.setSelection(text.length);
       } else {
         element.focus();
-        if (chatInputEditor != null) {
-          chatInputEditor.setSelection(text.length);
-        }
       }
     }
   },
