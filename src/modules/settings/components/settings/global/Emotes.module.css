@@ -28,3 +28,8 @@
 .modifiersModalDescription {
   margin-bottom: 12px;
 }
+
+.modifierCode {
+  min-width: 32px;
+  text-align: center;
+}

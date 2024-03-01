@@ -59,7 +59,7 @@ function EmoteModifiersModal({open, onClose}) {
         <p className={emotesStyles.modifiersModalDescription}>
           {formatMessage({
             defaultMessage:
-              'Emote modifiers allow you to transform emotes in realtime. To use them, simply add the modifier to the start of the emote code. For example, w! Kappa will display the emote in a wide format.',
+              'Emote modifiers allow you to transform emotes in realtime. To use them, simply add the modifier to the start of the emote code. For example, w! FeelsGoodMan will display the emote in a wide format.',
           })}
         </p>
         <div className={emotesStyles.modifiersModalBody}>
@@ -68,7 +68,9 @@ function EmoteModifiersModal({open, onClose}) {
             return (
               <p key={modifier} className={emotesStyles.modifier}>
                 <img className={emotesStyles.modifierImage} src={emote.images['4x']} alt={emote.code} />
-                <Tag size="sm">{modifier}</Tag>
+                <Tag size="sm" className={emotesStyles.modifierCode}>
+                  {modifier}
+                </Tag>
                 <p className={emotesStyles.modifierDescription}>{description}</p>
               </p>
             );
