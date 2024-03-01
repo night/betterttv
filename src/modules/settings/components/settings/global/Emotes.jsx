@@ -42,7 +42,7 @@ const EMOTE_MODIFIERS_DESCRIPTION = {
   'w!': formatMessage({defaultMessage: 'Will display the emote in a wide format'}),
   'h!': formatMessage({defaultMessage: 'Will flip the emote horizontally'}),
   'v!': formatMessage({defaultMessage: 'Will flip the emote vertically'}),
-  'z!': formatMessage({defaultMessage: 'Will display zero-width between prior emote'}),
+  'z!': formatMessage({defaultMessage: 'Will remove the gap after the prior emote'}),
   'l!': formatMessage({defaultMessage: 'Will rotate the emote left'}),
   'r!': formatMessage({defaultMessage: 'Will rotate the emote right'}),
   'c!': formatMessage({defaultMessage: 'Will display the emote in a cursed format'}),
