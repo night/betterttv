@@ -33,7 +33,7 @@ function handleSidebarSection(node) {
       break;
     }
     default: {
-      return;
+      break;
     }
   }
 }
