@@ -63,3 +63,49 @@
     filter: sepia(0.5) hue-rotate(360deg) saturate(2.5);
   }
 }
+
+.bttv-emote-modifier-shake img {
+  animation: bttv-emote-modifier-shake 500ms step-start infinite;
+}
+
+@keyframes bttv-emote-modifier-shake {
+  0% {
+    translate: 0px 1px;
+  }
+  10% {
+    translate: 2px 0px;
+  }
+  20% {
+    translate: 1px -2px;
+  }
+  30% {
+    translate: -2px 1px;
+  }
+  40% {
+    translate: 0px -1px;
+  }
+  50% {
+    translate: 2px 2px;
+  }
+  60% {
+    translate: -1px -1px;
+  }
+  70% {
+    translate: -2px 2px;
+  }
+  80% {
+    translate: 2px 1px;
+  }
+  90% {
+    translate: -1px -2px;
+  }
+  100% {
+    translate: 1px 0px;
+  }
+}
+
+.bttv-emote-modifier-party.bttv-emote-modifier-shake img {
+  animation:
+    bttv-emote-modifier-party 1.5s linear infinite,
+    bttv-emote-modifier-shake 500ms step-start infinite;
+}
