@@ -4,12 +4,15 @@ import Checkbox from 'rsuite/Checkbox';
 import CheckboxGroup from 'rsuite/CheckboxGroup';
 import Modal from 'rsuite/Modal';
 import Panel from 'rsuite/Panel';
+import Tag from 'rsuite/Tag';
 import useStorageState from '../../../../../common/hooks/StorageState.jsx';
 import {CategoryTypes, SettingIds, EmoteTypeFlags} from '../../../../../constants.js';
 import formatMessage from '../../../../../i18n/index.js';
 import {hasFlag, setFlag} from '../../../../../utils/flags.js';
 import styles from '../../../styles/header.module.css';
 import {registerComponent} from '../../Store.jsx';
+import emotesStyles from './Emotes.module.css';
+import emotes from '../../../../emotes/index.js';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Emotes'});
 
@@ -35,9 +38,56 @@ function SafetyWarningModal({open, onClose}) {
   );
 }
 
+const EMOTE_MODIFIERS_DESCRIPTION = {
+  'w!': formatMessage({defaultMessage: 'Will display the emote in a wide format'}),
+  'h!': formatMessage({defaultMessage: 'Will flip the emote horizontally'}),
+  'v!': formatMessage({defaultMessage: 'Will flip the emote vertically'}),
+  'z!': formatMessage({defaultMessage: 'Will remove the gap after the prior emote'}),
+  'l!': formatMessage({defaultMessage: 'Will rotate the emote left'}),
+  'r!': formatMessage({defaultMessage: 'Will rotate the emote right'}),
+  'c!': formatMessage({defaultMessage: 'Will display the emote in a cursed format'}),
+  'p!': formatMessage({defaultMessage: 'Will display the emote in a party format'}),
+};
+
+function EmoteModifiersModal({open, onClose}) {
+  return (
+    <Modal backdrop="static" open={open} onClose={() => onClose()} size="xs">
+      <Modal.Header>
+        <strong>{formatMessage({defaultMessage: 'Emote Modifiers'})}</strong>
+      </Modal.Header>
+      <Modal.Body>
+        <p className={emotesStyles.modifiersModalDescription}>
+          {formatMessage({
+            defaultMessage:
+              'Emote modifiers allow you to transform emotes in realtime. To use them, simply add the modifier to the start of the emote code. For example, w! FeelsGoodMan will display the emote in a wide format.',
+          })}
+        </p>
+        <div className={emotesStyles.modifiersModalBody}>
+          {Object.entries(EMOTE_MODIFIERS_DESCRIPTION).map(([modifier, description]) => {
+            const emote = emotes.getEligibleEmote(modifier);
+            return (
+              <p key={modifier} className={emotesStyles.modifier}>
+                <img className={emotesStyles.modifierImage} src={emote.images['4x']} alt={emote.code} />
+                <Tag size="sm" className={emotesStyles.modifierCode}>
+                  {modifier}
+                </Tag>
+                <p className={emotesStyles.modifierDescription}>{description}</p>
+              </p>
+            );
+          })}
+        </div>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button onClick={() => onClose(false)}>{formatMessage({defaultMessage: 'Close'})}</Button>
+      </Modal.Footer>
+    </Modal>
+  );
+}
+
 function EmotesModule() {
   const [emotes, setEmotes] = useStorageState(SettingIds.EMOTES);
   const [safetyModalFlagValue, setSafetyModalFlagValue] = useState(0);
+  const [modifiersModalOpen, setModifiersModalOpen] = useState(false);
 
   function handleSafetyWarning(event, flagValue) {
     if (hasFlag(emotes, flagValue)) {
@@ -84,15 +134,21 @@ function EmotesModule() {
             <p className={styles.settingDescription}>
               {formatMessage(
                 {
-                  defaultMessage:
-                    'Emote modifiers allow you to transform emotes in realtime. Wide: <code>w! emoteName</code>, Horizontal Flip: <code>h! emoteName</code>, Vertical Flip: <code>v! emoteName</code>, Zero-Width: <code>z! emoteName</code>, Rotate Left: <code>l! emoteName</code>, Rotate Right: <code>r! emoteName</code>, Cursed: <code>c! emoteName</code>, Party: <code>p! emoteName</code>',
+                  defaultMessage: '<link>Emote modifiers</link> allow you to transform emotes in realtime.',
                 },
                 {
                   // eslint-disable-next-line react/no-unstable-nested-components
-                  code: (string) => (
-                    <span key={string} className={styles.codeBlock}>
+                  link: (string) => (
+                    <a
+                      appearance="link"
+                      onClick={(event) => {
+                        // prevent checkbox from being toggled
+                        event.preventDefault();
+                        setModifiersModalOpen(true);
+                      }}
+                      className={emotesStyles.linkButton}>
                       {string}
-                    </span>
+                    </a>
                   ),
                 }
               )}
@@ -130,6 +186,7 @@ function EmotesModule() {
         </CheckboxGroup>
       </div>
       <SafetyWarningModal open={safetyModalFlagValue > 0} onClose={(allow) => handleSafetyWarningClose(allow)} />
+      <EmoteModifiersModal open={modifiersModalOpen} onClose={setModifiersModalOpen} />
     </Panel>
   );
 }
