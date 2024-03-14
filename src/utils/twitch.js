@@ -627,11 +627,13 @@ export default {
     try {
       chatInputEditor = searchReactParents(
         getReactInstance(element || document.querySelector(CHAT_INPUT)),
-        (n) => n.memoizedProps?.value?.editor != null
+        // TODO: remove slateEditor check after legacy slate is gone
+        (n) => n.memoizedProps?.value?.editor != null || n.stateNode?.state?.slateEditor != null
       );
     } catch (_) {}
 
-    return chatInputEditor?.memoizedProps?.value?.editor;
+    // TODO: remove slateEditor after legacy slate is gone
+    return chatInputEditor?.memoizedProps?.value?.editor ?? chatInputEditor?.stateNode?.state?.slateEditor;
   },
 
   getChatInputValue() {
@@ -687,10 +689,18 @@ export default {
     chatInput.memoizedProps.onValueUpdate(text);
 
     if (shouldFocus) {
-      element.focus();
       const chatInputEditor = this.getChatInputEditor(element);
-      if (chatInputEditor != null) {
+
+      // TODO: remove after legacy slate is gone
+      if (chatInputEditor != null && 'setSelectionRange' in chatInputEditor) {
+        chatInputEditor.focus();
+        chatInputEditor.setSelectionRange(text.length);
+        // setSelection seems missing now, so we can't set selection
+      } else if (chatInputEditor != null && 'setSelection' in chatInputEditor) {
+        element.focus();
         chatInputEditor.setSelection(text.length);
+      } else {
+        element.focus();
       }
     }
   },
