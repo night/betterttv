@@ -347,8 +347,9 @@ export default {
     if (chatClient) return chatClient;
 
     try {
+      const reactRoot = getReactRoot(document.querySelector(REACT_ROOT));
       const node = searchReactChildren(
-        getReactRoot(document.querySelector(REACT_ROOT))._internalRoot.current,
+        reactRoot?._internalRoot?.current ?? reactRoot,
         (n) => n.stateNode && n.stateNode.join && n.stateNode.client,
         1000
       );
@@ -626,11 +627,13 @@ export default {
     try {
       chatInputEditor = searchReactParents(
         getReactInstance(element || document.querySelector(CHAT_INPUT)),
-        (n) => n.stateNode?.state?.slateEditor != null
+        // TODO: remove slateEditor check after legacy slate is gone
+        (n) => n.memoizedProps?.value?.editor != null || n.stateNode?.state?.slateEditor != null
       );
     } catch (_) {}
 
-    return chatInputEditor?.stateNode;
+    // TODO: remove slateEditor after legacy slate is gone
+    return chatInputEditor?.memoizedProps?.value?.editor ?? chatInputEditor?.stateNode?.state?.slateEditor;
   },
 
   getChatInputValue() {
@@ -687,9 +690,17 @@ export default {
 
     if (shouldFocus) {
       const chatInputEditor = this.getChatInputEditor(element);
-      if (chatInputEditor != null) {
+
+      // TODO: remove after legacy slate is gone
+      if (chatInputEditor != null && 'setSelectionRange' in chatInputEditor) {
         chatInputEditor.focus();
         chatInputEditor.setSelectionRange(text.length);
+        // setSelection seems missing now, so we can't set selection
+      } else if (chatInputEditor != null && 'setSelection' in chatInputEditor) {
+        element.focus();
+        chatInputEditor.setSelection(text.length);
+      } else {
+        element.focus();
       }
     }
   },
@@ -709,7 +720,7 @@ export default {
       return SelectionTypes.END;
     }
 
-    const chatInputEditor = this.getChatInputEditor(element)?.state?.slateEditor;
+    const chatInputEditor = this.getChatInputEditor(element);
     if (chatInputEditor == null || chatInputEditor.selection == null) {
       return SelectionTypes.MIDDLE;
     }

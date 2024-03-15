@@ -160,6 +160,7 @@ class ChatSettingsModule {
         () => {
           settings.openSettings();
           document.querySelector('button[data-test-selector="chat-settings-close-button-selector"]')?.click?.();
+          document.querySelector('button[aria-expanded="true"]')?.click?.();
         }
       )
     );
