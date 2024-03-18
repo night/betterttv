@@ -13,13 +13,13 @@ const offlineChannelSelector = '.side-nav-card > .side-nav-card__link--offline';
 let offlineChannelObserverRemover = null;
 let sidebarSectionObserverRemover = null;
 
-function handleSidebarSection(node) {
+function toggleSidebarSectionClass(node, flags) {
   const sidebarSection = twitch.getSidebarSection(node);
   if (sidebarSection == null) {
     return;
   }
 
-  const setting = settings.get(SettingIds.SIDEBAR);
+  const setting = flags ?? settings.get(SettingIds.SIDEBAR);
   switch (sidebarSection.type) {
     case 'RECENTLY_VISITED_SECTION': {
       node.classList.toggle(styles.hide, !hasFlag(setting, SidebarFlags.RECENTLY_WATCHED_CHANNELS));
@@ -42,12 +42,12 @@ function handleSidebarSection(node) {
 class HideSidebarElementsModule {
   constructor() {
     settings.on(`changed.${SettingIds.SIDEBAR}`, () => {
-      this.loadOfflineChannelObserver();
+      this.loadHideOfflineChannels();
       this.loadHideSidebarElements();
       this.toggleAutoExpandChannels();
     });
     watcher.on('load', () => {
-      this.loadOfflineChannelObserver();
+      this.loadHideOfflineChannels();
       this.loadHideSidebarElements();
       this.toggleAutoExpandChannels();
     });
@@ -65,21 +65,22 @@ class HideSidebarElementsModule {
         if (!isConnected) {
           return;
         }
-        handleSidebarSection(node);
+        toggleSidebarSectionClass(node, setting);
       });
     }
 
     if (!enabled && sidebarSectionObserverRemover != null) {
       sidebarSectionObserverRemover();
       sidebarSectionObserverRemover = null;
-      const sidebarSections = document.querySelectorAll(sidebarSectionSelector);
-      for (const section of sidebarSections) {
-        handleSidebarSection(section);
-      }
+    }
+
+    const sidebarSections = document.querySelectorAll(sidebarSectionSelector);
+    for (const section of sidebarSections) {
+      toggleSidebarSectionClass(section, setting);
     }
   }
 
-  loadOfflineChannelObserver() {
+  loadHideOfflineChannels() {
     const setting = settings.get(SettingIds.SIDEBAR);
     const shouldHideOfflineChannels = !hasFlag(setting, SidebarFlags.OFFLINE_FOLLOWED_CHANNELS);
 
