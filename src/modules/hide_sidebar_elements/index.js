@@ -11,6 +11,7 @@ const sidebarSectionSelector = '.side-nav-section';
 const offlineChannelSelector = '.side-nav-card > .side-nav-card__link--offline';
 
 let offlineChannelObserverRemover = null;
+let sidebarSectionObserverRemover = null;
 
 function handleSidebarSection(node) {
   const sidebarSection = twitch.getSidebarSection(node);
@@ -41,19 +42,41 @@ function handleSidebarSection(node) {
 class HideSidebarElementsModule {
   constructor() {
     settings.on(`changed.${SettingIds.SIDEBAR}`, () => {
-      this.updateAllSidebarSections();
       this.loadOfflineChannelObserver();
+      this.loadHideSidebarElements();
       this.toggleAutoExpandChannels();
     });
     watcher.on('load', () => {
-      this.updateAllSidebarSections();
       this.loadOfflineChannelObserver();
+      this.loadHideSidebarElements();
       this.toggleAutoExpandChannels();
     });
-    domObserver.on(sidebarSectionSelector, (node, isConnected) => {
-      if (!isConnected) return;
-      handleSidebarSection(node);
-    });
+  }
+
+  loadHideSidebarElements() {
+    const setting = settings.get(SettingIds.SIDEBAR);
+    const hideRecentlyWatched = !hasFlag(setting, SidebarFlags.RECENTLY_WATCHED_CHANNELS);
+    const hideRecommended = !hasFlag(setting, SidebarFlags.RECOMMENDED_CHANNELS);
+    const hideSimilar = !hasFlag(setting, SidebarFlags.SIMILAR_CHANNELS);
+    const enabled = hideRecentlyWatched || hideRecommended || hideSimilar;
+
+    if (enabled && sidebarSectionObserverRemover == null) {
+      sidebarSectionObserverRemover = domObserver.on(sidebarSectionSelector, (node, isConnected) => {
+        if (!isConnected) {
+          return;
+        }
+        handleSidebarSection(node);
+      });
+    }
+
+    if (!enabled && sidebarSectionObserverRemover != null) {
+      sidebarSectionObserverRemover();
+      sidebarSectionObserverRemover = null;
+      const sidebarSections = document.querySelectorAll(sidebarSectionSelector);
+      for (const section of sidebarSections) {
+        handleSidebarSection(section);
+      }
+    }
   }
 
   loadOfflineChannelObserver() {
@@ -76,13 +99,6 @@ class HideSidebarElementsModule {
       for (const node of nodes) {
         node.classList.remove(styles.hideOfflineChannel);
       }
-    }
-  }
-
-  updateAllSidebarSections() {
-    const sidebarSections = document.querySelectorAll(sidebarSectionSelector);
-    for (const section of sidebarSections) {
-      handleSidebarSection(section);
     }
   }
 
