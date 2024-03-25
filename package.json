@@ -95,7 +95,7 @@
     "virtual-module-webpack-plugin": "0.4.1",
     "webpack": "5.90.3",
     "webpack-cli": "5.1.4",
-    "webpack-dev-server": "5.0.3",
+    "webpack-dev-server": "5.0.4",
     "webpack-virtual-modules": "0.6.1"
   },
   "browserslist": [
