@@ -51,6 +51,10 @@
   filter: grayscale(1) brightness(0.7) contrast(2.5);
 }
 
+.bttv-emote-modifier-overlay {
+  margin-left: -32px;
+}
+
 .bttv-emote-modifier-party img {
   animation: bttv-emote-modifier-party 1.5s linear infinite;
 }
