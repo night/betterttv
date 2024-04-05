@@ -17,7 +17,8 @@ function Header({value, onChange, toggleWhisper, selected, ...props}) {
     if (currentSearchInputRef == null) {
       return;
     }
-    currentSearchInputRef.focus();
+    document.activeElement.blur();
+    setTimeout(() => currentSearchInputRef.focus(), 1);
   }, []);
 
   return (
