@@ -139,7 +139,7 @@ function loadButton() {
     return;
   }
 
-  nativeEmotePickerButton.classList.add(styles.hideEmoteMenuButton);
+  nativeEmotePickerButton.parentElement.classList.add(styles.hideEmoteMenuButtonContainer);
   const buttonContainer = document.createElement('div');
   buttonContainer.setAttribute('id', BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID);
   buttonContainer.classList.add(styles.container);

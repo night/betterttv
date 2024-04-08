@@ -3,7 +3,7 @@
   vertical-align: bottom !important;
 }
 
-.hideEmoteMenuButton {
+.hideEmoteMenuButtonContainer > button[data-a-target='emote-picker-button'] {
   display: none;
 }
 
