@@ -26,7 +26,7 @@
     "@babel/runtime": "7.24.1",
     "@formatjs/cli": "^6.2.9",
     "@formatjs/intl": "^2.10.1",
-    "@fortawesome/fontawesome-svg-core": "6.5.1",
+    "@fortawesome/fontawesome-svg-core": "6.5.2",
     "@fortawesome/free-brands-svg-icons": "6.5.1",
     "@fortawesome/free-solid-svg-icons": "6.5.1",
     "@fortawesome/react-fontawesome": "0.2.0",
