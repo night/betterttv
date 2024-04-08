@@ -100,7 +100,7 @@ function unloadButton(container, nativeEmotePickerButton) {
     nativeEmotePickerButton = document.querySelector(EMOTE_PICKER_BUTTON_SELECTOR);
   }
   if (nativeEmotePickerButton != null) {
-    nativeEmotePickerButton.classList.remove(styles.hideEmoteMenuButton);
+    nativeEmotePickerButton.parentElement.classList.remove(styles.hideEmoteMenuButtonContainer);
   }
   if (container != null) {
     container.remove();
