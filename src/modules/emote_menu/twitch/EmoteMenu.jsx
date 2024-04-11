@@ -11,6 +11,7 @@ import styles from './EmoteMenu.module.css';
 
 const CONTAINER_QUERY_SELECTOR = '#root';
 const CHAT_TEXT_AREA = 'textarea[data-a-target="chat-input"], div[data-a-target="chat-input"]';
+const CHAT_TEXT_AREA_CONTAINER = '.chat-input__textarea';
 
 // For legacy button
 const LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID = 'bttv-legacy-emote-picker-button-container';
@@ -92,15 +93,15 @@ function loadLegacyButton() {
   );
 }
 
-function unloadButton(container, nativeEmotePickerButton) {
+function unloadButton(container, chatTextAreaContainer) {
   if (container === undefined) {
     container = document.getElementById(BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID);
   }
-  if (nativeEmotePickerButton === undefined) {
-    nativeEmotePickerButton = document.querySelector(EMOTE_PICKER_BUTTON_SELECTOR);
+  if (chatTextAreaContainer === undefined) {
+    chatTextAreaContainer = document.querySelector(CHAT_TEXT_AREA_CONTAINER);
   }
-  if (nativeEmotePickerButton != null) {
-    nativeEmotePickerButton.parentElement.classList.remove(styles.hideEmoteMenuButtonContainer);
+  if (chatTextAreaContainer != null) {
+    chatTextAreaContainer.classList.remove(styles.hideEmoteMenuButtonContainer);
   }
   if (container != null) {
     container.remove();
@@ -116,8 +117,9 @@ function loadButton() {
     return;
   }
 
+  const chatTextAreaContainer = document.querySelector(CHAT_TEXT_AREA_CONTAINER);
   const nativeEmotePickerButton = document.querySelector(EMOTE_PICKER_BUTTON_SELECTOR);
-  if (nativeEmotePickerButton == null) {
+  if (nativeEmotePickerButton == null || chatTextAreaContainer == null) {
     return;
   }
 
@@ -139,7 +141,7 @@ function loadButton() {
     return;
   }
 
-  nativeEmotePickerButton.parentElement.classList.add(styles.hideEmoteMenuButtonContainer);
+  chatTextAreaContainer.classList.add(styles.hideEmoteMenuButtonContainer);
   const buttonContainer = document.createElement('div');
   buttonContainer.setAttribute('id', BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID);
   buttonContainer.classList.add(styles.container);
@@ -152,7 +154,7 @@ function loadButton() {
   mountedRoot = createRoot(buttonContainer);
   mountedRoot.render(
     <SafeEmoteMenuButton
-      onError={() => unloadButton(buttonContainer, nativeEmotePickerButton)}
+      onError={() => unloadButton(buttonContainer, chatTextAreaContainer)}
       appendToChat={appendToChat}
       className={styles.button}
       containerQuerySelector={CONTAINER_QUERY_SELECTOR}
