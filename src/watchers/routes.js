@@ -48,7 +48,7 @@ const loadPredicates = {
   },
   player: () => !!twitch.getCurrentPlayer(),
   vod: () => !!twitch.updateCurrentChannel(),
-  homepage: () => document.querySelector('.front-page-carousel .video-player__container') != null,
+  homepage: () => document.querySelector('.front-page-carousel .video-player__container .player-controls') != null,
 };
 
 const routes = {
