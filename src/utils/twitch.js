@@ -817,7 +817,7 @@ export default {
       const node = searchReactParents(
         getReactInstance(document.querySelector(STREAM_CHAT)),
         (n) => n.pendingProps?.value?.getCommands != null,
-        20
+        25
       );
       context = node.pendingProps.value;
     } catch (_) {}

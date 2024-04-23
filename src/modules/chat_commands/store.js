@@ -16,6 +16,7 @@ class CommandStore {
 
   loadCommands() {
     const twitchCommandStore = twitch.getChatCommandStore();
+    console.log('twitchCommandStore', twitchCommandStore);
     if (twitchCommandStore == null || this.commands.length === 0) {
       return;
     }
