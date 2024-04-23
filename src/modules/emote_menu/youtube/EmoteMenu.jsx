@@ -11,9 +11,9 @@ import styles from './EmoteMenu.module.css';
 
 const CHAT_TEXT_AREA = 'div#input[contenteditable]';
 
-const BTTV_EMOTE_PICKER_BUTTON_CONTAINER_CLASS = 'bttv-emote-picker-button-container';
+const BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID = 'bttv-emote-picker-button-container';
 const CHAT_BUTTON_CONTAINER_SELECTOR = '#picker-buttons';
-const NATIVE_EMOTE_MENU_BUTTON_CONTAINER_SELECTOR = '.yt-live-chat-icon-toggle-button-renderer';
+const NATIVE_EMOTE_MENU_BUTTON_CONTAINER_SELECTOR = '#emoji-picker-button';
 
 class SafeEmoteMenuButton extends React.Component {
   componentDidMount() {
@@ -56,21 +56,18 @@ export default class EmoteMenuModule {
       return;
     }
 
-    const container = document.querySelector(`.${BTTV_EMOTE_PICKER_BUTTON_CONTAINER_CLASS}`);
+    const container = document.getElementById(BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID);
     const emoteMenuValue = settings.get(SettingIds.EMOTE_MENU);
     const emoteMenuEnabled = emoteMenuValue !== EmoteMenuTypes.NONE;
 
-    // TODO: take into account emote menu setting in the future
     if (container == null && emoteMenuEnabled) {
-      const nativeButtonContainer = Array.from(document.querySelectorAll(CHAT_BUTTON_CONTAINER_SELECTOR)).find(
-        (node) => !node.parentElement.hasAttribute('hidden')
-      );
-      if (nativeButtonContainer == null) {
+      const nativeButton = document.querySelector(NATIVE_EMOTE_MENU_BUTTON_CONTAINER_SELECTOR);
+      if (nativeButton == null) {
         return;
       }
       const buttonContainer = document.createElement('div');
-      buttonContainer.classList.add(BTTV_EMOTE_PICKER_BUTTON_CONTAINER_CLASS);
-      nativeButtonContainer.insertBefore(buttonContainer, nativeButtonContainer.firstChild);
+      buttonContainer.setAttribute('id', BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID);
+      nativeButton.parentElement.insertBefore(buttonContainer, nativeButton);
 
       if (mountedRoot != null) {
         mountedRoot.unmount();
@@ -103,7 +100,7 @@ export default class EmoteMenuModule {
       nativeContainer.classList.toggle(styles.hideEmoteMenuButton, visible);
     }
 
-    const container = document.querySelector(`.${BTTV_EMOTE_PICKER_BUTTON_CONTAINER_CLASS}`);
+    const container = document.getElementById(BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID);
     if (container != null) {
       container.classList.toggle(styles.hideEmoteMenuButton, !visible);
     }
