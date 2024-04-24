@@ -9,10 +9,10 @@ import useStorageState from '../../../../../common/hooks/StorageState.jsx';
 import {CategoryTypes, SettingIds, EmoteTypeFlags} from '../../../../../constants.js';
 import formatMessage from '../../../../../i18n/index.js';
 import {hasFlag, setFlag} from '../../../../../utils/flags.js';
+import globalEmotes from '../../../../emotes/global-emotes.js';
 import styles from '../../../styles/header.module.css';
 import {registerComponent} from '../../Store.jsx';
 import emotesStyles from './Emotes.module.css';
-import emotes from '../../../../emotes/index.js';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Emotes'});
 
@@ -47,6 +47,7 @@ const EMOTE_MODIFIERS_DESCRIPTION = {
   'r!': formatMessage({defaultMessage: 'Will rotate the emote right'}),
   'c!': formatMessage({defaultMessage: 'Will display the emote in a cursed format'}),
   'p!': formatMessage({defaultMessage: 'Will display the emote in a party format'}),
+  's!': formatMessage({defaultMessage: 'Will display the emote in a shaking motion'}),
 };
 
 function EmoteModifiersModal({open, onClose}) {
@@ -64,15 +65,18 @@ function EmoteModifiersModal({open, onClose}) {
         </p>
         <div className={emotesStyles.modifiersModalBody}>
           {Object.entries(EMOTE_MODIFIERS_DESCRIPTION).map(([modifier, description]) => {
-            const emote = emotes.getEligibleEmote(modifier);
+            const emote = globalEmotes.getEligibleEmote(modifier);
+            if (emote == null) {
+              return null;
+            }
             return (
-              <p key={modifier} className={emotesStyles.modifier}>
+              <div key={modifier} className={emotesStyles.modifier}>
                 <img className={emotesStyles.modifierImage} src={emote.images['4x']} alt={emote.code} />
                 <Tag size="sm" className={emotesStyles.modifierCode}>
                   {modifier}
                 </Tag>
                 <p className={emotesStyles.modifierDescription}>{description}</p>
-              </p>
+              </div>
             );
           })}
         </div>
@@ -139,8 +143,9 @@ function EmotesModule() {
                 {
                   // eslint-disable-next-line react/no-unstable-nested-components
                   link: (string) => (
-                    <a
-                      appearance="link"
+                    <button
+                      type="button"
+                      key="emoteModifiersLink"
                       onClick={(event) => {
                         // prevent checkbox from being toggled
                         event.preventDefault();
@@ -148,7 +153,7 @@ function EmotesModule() {
                       }}
                       className={emotesStyles.linkButton}>
                       {string}
-                    </a>
+                    </button>
                   ),
                 }
               )}
