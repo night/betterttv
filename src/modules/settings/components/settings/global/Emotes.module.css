@@ -1,5 +1,6 @@
 .linkButton {
   padding: 0px;
+  color: var(--rs-text-link);
 }
 
 .modifierImage {
