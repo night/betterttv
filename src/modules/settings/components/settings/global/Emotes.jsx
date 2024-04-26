@@ -143,17 +143,10 @@ function EmotesModule() {
                 {
                   // eslint-disable-next-line react/no-unstable-nested-components
                   link: (string) => (
-                    <button
-                      type="button"
-                      key="emoteModifiersLink"
-                      onClick={(event) => {
-                        // prevent checkbox from being toggled
-                        event.preventDefault();
-                        setModifiersModalOpen(true);
-                      }}
-                      className={emotesStyles.linkButton}>
+                    // eslint-disable-next-line jsx-a11y/anchor-is-valid
+                    <a key="emoteModifiersLink" href="#" onClick={() => setModifiersModalOpen(true)}>
                       {string}
-                    </button>
+                    </a>
                   ),
                 }
               )}
