@@ -20,7 +20,11 @@
   // prevent loads in source-less iframes
   try {
     const {frameElement} = window;
-    if (frameElement != null && (frameElement.src == null || frameElement.src === '')) {
+    if (
+      frameElement != null &&
+      (frameElement.src == null || frameElement.src === '') &&
+      frameElement.id !== 'chatframe'
+    ) {
       return;
     }
   } catch (e) {}
