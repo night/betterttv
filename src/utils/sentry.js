@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/browser';
+import {BrowserClient, defaultStackParser, dedupeIntegration, makeFetchTransport, Scope} from '@sentry/browser';
 import {GIT_REV, NODE_ENV, SENTRY_URL} from '../constants.js';
 import {BetterTTVGlobalHandlers} from './sentry-global-handlers-integration.js';
 
@@ -32,14 +32,14 @@ const ignoreErrors = [
   'mergeOptions is not a function',
 ];
 
-const hubRef = {};
+const scopeRef = {};
 
-const client = new Sentry.BrowserClient({
+const client = new BrowserClient({
   release: GIT_REV,
   environment: NODE_ENV,
   dsn: SENTRY_URL,
-  transport: Sentry.makeFetchTransport,
-  stackParser: Sentry.defaultStackParser,
+  transport: makeFetchTransport,
+  stackParser: defaultStackParser,
   ignoreErrors,
   allowUrls: [/betterttv\.js/, /\.betterttv\.net/, /\/betterttv\//i],
   denyUrls: [
@@ -51,9 +51,9 @@ const client = new Sentry.BrowserClient({
   ],
   integrations: [
     // we attach our own window error listener to capture errors outside of sentry's control
-    BetterTTVGlobalHandlers(hubRef),
+    BetterTTVGlobalHandlers(scopeRef),
     // this integration does not appear to affect global state
-    Sentry.dedupeIntegration(),
+    dedupeIntegration(),
   ],
   beforeSend: (event) => {
     // only collect errors on production releases
@@ -105,5 +105,7 @@ const client = new Sentry.BrowserClient({
   },
 });
 
-hubRef.hub = new Sentry.Hub(client);
-export default hubRef.hub;
+const scope = new Scope();
+scope.setClient(client);
+scopeRef.scope = scope;
+export default scopeRef.scope;

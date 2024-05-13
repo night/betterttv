@@ -2,9 +2,10 @@
 /* eslint-disable no-restricted-globals */
 /* eslint-disable no-multi-assign */
 /* eslint-disable prefer-destructuring */
-import {eventFromUnknownInput} from '@sentry/browser/esm/eventbuilder.js';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {UNKNOWN_FUNCTION, isString, getLocationHref} from '@sentry/utils';
+// eslint-disable-next-line import/no-relative-packages
+import {eventFromUnknownInput} from '../../node_modules/@sentry/browser/esm/eventbuilder.js';
 
 function _enhanceEventWithInitialFrame(event, url, line, column) {
   // event.exception
@@ -36,8 +37,8 @@ function _enhanceEventWithInitialFrame(event, url, line, column) {
   return event;
 }
 
-function getOptions(hub) {
-  const client = hub?.getClient();
+function getOptions(scope) {
+  const client = scope?.getClient();
   const options = (client && client.getOptions()) || {
     stackParser: () => [],
     attachStacktrace: false,
@@ -45,7 +46,7 @@ function getOptions(hub) {
   return options;
 }
 
-export function BetterTTVGlobalHandlers(hubRef) {
+export function BetterTTVGlobalHandlers(scopeRef) {
   return {
     name: 'BetterTTVGlobalHandlers',
     setupOnce() {
@@ -54,7 +55,7 @@ export function BetterTTVGlobalHandlers(hubRef) {
       const _oldOnErrorHandler = window.onerror;
 
       window.onerror = function BetterTTVGlobalOnError(msg, url, line, column, error) {
-        const {stackParser, attachStacktrace} = getOptions(hubRef.hub);
+        const {stackParser, attachStacktrace} = getOptions(scopeRef.scope);
 
         const event = _enhanceEventWithInitialFrame(
           eventFromUnknownInput(stackParser, error || msg, undefined, attachStacktrace, false),
@@ -65,7 +66,7 @@ export function BetterTTVGlobalHandlers(hubRef) {
 
         event.level = 'error';
 
-        hubRef.hub?.captureEvent(event, {
+        scopeRef.scope?.captureEvent(event, {
           originalException: error,
           mechanism: {
             handled: false,
