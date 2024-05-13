@@ -1,13 +1,6 @@
-import {
-  BrowserClient,
-  getDefaultIntegrations,
-  defaultStackParser,
-  dedupeIntegration,
-  makeFetchTransport,
-  Scope,
-} from '@sentry/browser';
+import {BrowserClient, getDefaultIntegrations, defaultStackParser, makeFetchTransport, Scope} from '@sentry/browser';
 import {GIT_REV, NODE_ENV, SENTRY_URL} from '../constants.js';
-import {BetterTTVGlobalHandlers, registerBetterTTVGlobalHandlers} from './sentry-global-handlers-integration.js';
+import {registerBetterTTVGlobalHandlers} from './sentry-global-handlers-integration.js';
 
 const ignoreErrors = [
   'InvalidAccessError',
