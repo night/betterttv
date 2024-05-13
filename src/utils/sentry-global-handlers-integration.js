@@ -2,9 +2,10 @@
 /* eslint-disable no-restricted-globals */
 /* eslint-disable no-multi-assign */
 /* eslint-disable prefer-destructuring */
-import {eventFromUnknownInput} from '@sentry/browser/esm/eventbuilder.js';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import {isErrorEvent, isString, getLocationHref} from '@sentry/utils';
+import {UNKNOWN_FUNCTION, isString, getLocationHref} from '@sentry/utils';
+// eslint-disable-next-line import/no-relative-packages
+import {eventFromUnknownInput} from '../../node_modules/@sentry/browser/esm/eventbuilder.js';
 
 function _enhanceEventWithInitialFrame(event, url, line, column) {
   // event.exception
@@ -27,7 +28,7 @@ function _enhanceEventWithInitialFrame(event, url, line, column) {
     ev0sf.push({
       colno,
       filename,
-      function: '?',
+      function: UNKNOWN_FUNCTION,
       in_app: true,
       lineno,
     });
@@ -36,39 +37,8 @@ function _enhanceEventWithInitialFrame(event, url, line, column) {
   return event;
 }
 
-/**
- * This function creates a stack from an old, error-less onerror handler.
- */
-function _eventFromIncompleteOnError(msg, url, line, column) {
-  const ERROR_TYPES_RE =
-    /^(?:[Uu]ncaught (?:exception: )?)?(?:((?:Eval|Internal|Range|Reference|Syntax|Type|URI|)Error): )?(.*)$/i;
-
-  // If 'message' is ErrorEvent, get real message from inside
-  let message = isErrorEvent(msg) ? msg.message : msg;
-  let name = 'Error';
-
-  const groups = message.match(ERROR_TYPES_RE);
-  if (groups) {
-    name = groups[1];
-    message = groups[2];
-  }
-
-  const event = {
-    exception: {
-      values: [
-        {
-          type: name,
-          value: message,
-        },
-      ],
-    },
-  };
-
-  return _enhanceEventWithInitialFrame(event, url, line, column);
-}
-
-function getOptions(hub) {
-  const client = hub?.getClient();
+function getOptions(scope) {
+  const client = scope?.getClient();
   const options = (client && client.getOptions()) || {
     stackParser: () => [],
     attachStacktrace: false,
@@ -76,44 +46,36 @@ function getOptions(hub) {
   return options;
 }
 
-export function BetterTTVGlobalHandlers(hubRef) {
-  return {
-    name: 'BetterTTVGlobalHandlers',
-    setupOnce() {
-      Error.stackTraceLimit = 50;
+export function registerBetterTTVGlobalHandlers(scope) {
+  Error.stackTraceLimit = 50;
 
-      const _oldOnErrorHandler = window.onerror;
+  const _oldOnErrorHandler = window.onerror;
 
-      window.onerror = function BetterTTVGlobalOnError(msg, url, line, column, error) {
-        const {stackParser, attachStacktrace} = getOptions(hubRef.hub);
+  window.onerror = function BetterTTVGlobalOnError(msg, url, line, column, error) {
+    const {stackParser, attachStacktrace} = getOptions(scope);
 
-        const event =
-          error === undefined && isString(msg)
-            ? _eventFromIncompleteOnError(msg, url, line, column)
-            : _enhanceEventWithInitialFrame(
-                eventFromUnknownInput(stackParser, error || msg, undefined, attachStacktrace, false),
-                url,
-                line,
-                column
-              );
+    const event = _enhanceEventWithInitialFrame(
+      eventFromUnknownInput(stackParser, error || msg, undefined, attachStacktrace, false),
+      url,
+      line,
+      column
+    );
 
-        event.level = 'error';
+    event.level = 'error';
 
-        hubRef.hub?.captureEvent(event, {
-          originalException: error,
-          mechanism: {
-            handled: false,
-            type: 'onerror',
-          },
-        });
+    scope.captureEvent(event, {
+      originalException: error,
+      mechanism: {
+        handled: false,
+        type: 'onerror',
+      },
+    });
 
-        if (_oldOnErrorHandler) {
-          // eslint-disable-next-line prefer-rest-params
-          return _oldOnErrorHandler.apply(this, arguments);
-        }
+    if (_oldOnErrorHandler) {
+      // eslint-disable-next-line prefer-rest-params
+      return _oldOnErrorHandler.apply(this, arguments);
+    }
 
-        return false;
-      };
-    },
+    return false;
   };
 }
