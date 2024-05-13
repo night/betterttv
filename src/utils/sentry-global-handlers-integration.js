@@ -46,41 +46,36 @@ function getOptions(scope) {
   return options;
 }
 
-export function BetterTTVGlobalHandlers(scopeRef) {
-  return {
-    name: 'BetterTTVGlobalHandlers',
-    setupOnce() {
-      Error.stackTraceLimit = 50;
+export function registerBetterTTVGlobalHandlers(scope) {
+  Error.stackTraceLimit = 50;
 
-      const _oldOnErrorHandler = window.onerror;
+  const _oldOnErrorHandler = window.onerror;
 
-      window.onerror = function BetterTTVGlobalOnError(msg, url, line, column, error) {
-        const {stackParser, attachStacktrace} = getOptions(scopeRef.scope);
+  window.onerror = function BetterTTVGlobalOnError(msg, url, line, column, error) {
+    const {stackParser, attachStacktrace} = getOptions(scope);
 
-        const event = _enhanceEventWithInitialFrame(
-          eventFromUnknownInput(stackParser, error || msg, undefined, attachStacktrace, false),
-          url,
-          line,
-          column
-        );
+    const event = _enhanceEventWithInitialFrame(
+      eventFromUnknownInput(stackParser, error || msg, undefined, attachStacktrace, false),
+      url,
+      line,
+      column
+    );
 
-        event.level = 'error';
+    event.level = 'error';
 
-        scopeRef.scope?.captureEvent(event, {
-          originalException: error,
-          mechanism: {
-            handled: false,
-            type: 'onerror',
-          },
-        });
+    scope.captureEvent(event, {
+      originalException: error,
+      mechanism: {
+        handled: false,
+        type: 'onerror',
+      },
+    });
 
-        if (_oldOnErrorHandler) {
-          // eslint-disable-next-line prefer-rest-params
-          return _oldOnErrorHandler.apply(this, arguments);
-        }
+    if (_oldOnErrorHandler) {
+      // eslint-disable-next-line prefer-rest-params
+      return _oldOnErrorHandler.apply(this, arguments);
+    }
 
-        return false;
-      };
-    },
+    return false;
   };
 }

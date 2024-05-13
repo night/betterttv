@@ -1,6 +1,13 @@
-import {BrowserClient, defaultStackParser, dedupeIntegration, makeFetchTransport, Scope} from '@sentry/browser';
+import {
+  BrowserClient,
+  getDefaultIntegrations,
+  defaultStackParser,
+  dedupeIntegration,
+  makeFetchTransport,
+  Scope,
+} from '@sentry/browser';
 import {GIT_REV, NODE_ENV, SENTRY_URL} from '../constants.js';
-import {BetterTTVGlobalHandlers} from './sentry-global-handlers-integration.js';
+import {BetterTTVGlobalHandlers, registerBetterTTVGlobalHandlers} from './sentry-global-handlers-integration.js';
 
 const ignoreErrors = [
   'InvalidAccessError',
@@ -32,8 +39,6 @@ const ignoreErrors = [
   'mergeOptions is not a function',
 ];
 
-const scopeRef = {};
-
 const client = new BrowserClient({
   release: GIT_REV,
   environment: NODE_ENV,
@@ -49,12 +54,10 @@ const client = new BrowserClient({
     /script\.js/,
     /www.youtube.com\/s\/desktop\//,
   ],
-  integrations: [
-    // we attach our own window error listener to capture errors outside of sentry's control
-    BetterTTVGlobalHandlers(scopeRef),
-    // this integration does not appear to affect global state
-    dedupeIntegration(),
-  ],
+  integrations: getDefaultIntegrations({}).filter(
+    (defaultIntegration) =>
+      !['BrowserApiErrors', 'TryCatch', 'Breadcrumbs', 'GlobalHandlers'].includes(defaultIntegration.name)
+  ),
   beforeSend: (event) => {
     // only collect errors on production releases
     if (NODE_ENV !== 'production') {
@@ -107,5 +110,5 @@ const client = new BrowserClient({
 
 const scope = new Scope();
 scope.setClient(client);
-scopeRef.scope = scope;
-export default scopeRef.scope;
+registerBetterTTVGlobalHandlers(scope);
+export default scope;
