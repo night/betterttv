@@ -1,5 +1,4 @@
 import * as Sentry from '@sentry/browser';
-import {dedupeIntegration} from '@sentry/integrations';
 import {GIT_REV, NODE_ENV, SENTRY_URL} from '../constants.js';
 import {BetterTTVGlobalHandlers} from './sentry-global-handlers-integration.js';
 
@@ -54,7 +53,7 @@ const client = new Sentry.BrowserClient({
     // we attach our own window error listener to capture errors outside of sentry's control
     BetterTTVGlobalHandlers(hubRef),
     // this integration does not appear to affect global state
-    dedupeIntegration(),
+    Sentry.dedupeIntegration(),
   ],
   beforeSend: (event) => {
     // only collect errors on production releases

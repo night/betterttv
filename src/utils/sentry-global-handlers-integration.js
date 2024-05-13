@@ -4,7 +4,7 @@
 /* eslint-disable prefer-destructuring */
 import {eventFromUnknownInput} from '@sentry/browser/esm/eventbuilder.js';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import {isErrorEvent, isString, getLocationHref} from '@sentry/utils';
+import {UNKNOWN_FUNCTION, isString, getLocationHref} from '@sentry/utils';
 
 function _enhanceEventWithInitialFrame(event, url, line, column) {
   // event.exception
@@ -27,44 +27,13 @@ function _enhanceEventWithInitialFrame(event, url, line, column) {
     ev0sf.push({
       colno,
       filename,
-      function: '?',
+      function: UNKNOWN_FUNCTION,
       in_app: true,
       lineno,
     });
   }
 
   return event;
-}
-
-/**
- * This function creates a stack from an old, error-less onerror handler.
- */
-function _eventFromIncompleteOnError(msg, url, line, column) {
-  const ERROR_TYPES_RE =
-    /^(?:[Uu]ncaught (?:exception: )?)?(?:((?:Eval|Internal|Range|Reference|Syntax|Type|URI|)Error): )?(.*)$/i;
-
-  // If 'message' is ErrorEvent, get real message from inside
-  let message = isErrorEvent(msg) ? msg.message : msg;
-  let name = 'Error';
-
-  const groups = message.match(ERROR_TYPES_RE);
-  if (groups) {
-    name = groups[1];
-    message = groups[2];
-  }
-
-  const event = {
-    exception: {
-      values: [
-        {
-          type: name,
-          value: message,
-        },
-      ],
-    },
-  };
-
-  return _enhanceEventWithInitialFrame(event, url, line, column);
 }
 
 function getOptions(hub) {
@@ -87,15 +56,12 @@ export function BetterTTVGlobalHandlers(hubRef) {
       window.onerror = function BetterTTVGlobalOnError(msg, url, line, column, error) {
         const {stackParser, attachStacktrace} = getOptions(hubRef.hub);
 
-        const event =
-          error === undefined && isString(msg)
-            ? _eventFromIncompleteOnError(msg, url, line, column)
-            : _enhanceEventWithInitialFrame(
-                eventFromUnknownInput(stackParser, error || msg, undefined, attachStacktrace, false),
-                url,
-                line,
-                column
-              );
+        const event = _enhanceEventWithInitialFrame(
+          eventFromUnknownInput(stackParser, error || msg, undefined, attachStacktrace, false),
+          url,
+          line,
+          column
+        );
 
         event.level = 'error';
 
