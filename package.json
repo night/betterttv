@@ -29,7 +29,7 @@
     "@fortawesome/fontawesome-svg-core": "6.5.2",
     "@fortawesome/free-brands-svg-icons": "6.5.2",
     "@fortawesome/free-solid-svg-icons": "6.5.2",
-    "@fortawesome/react-fontawesome": "0.2.1",
+    "@fortawesome/react-fontawesome": "0.2.2",
     "@rsuite/icons": "1.0.3",
     "@sentry/browser": "^8.2.1",
     "@sentry/webpack-plugin": "^2.16.1",
