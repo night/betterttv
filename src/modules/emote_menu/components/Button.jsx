@@ -28,16 +28,19 @@ export default function Button({
   ]);
 
   useEffect(() => {
-    const callback = () => {
+    function callback() {
       setLoaded(true);
-    };
+    }
 
     if (loaded || emoteMenuViewStore.isLoaded()) {
       callback();
-      return;
+      return null;
     }
 
-    emoteMenuViewStore.once('updated', callback);
+    const removeListener = emoteMenuViewStore.once('updated', callback);
+    return () => {
+      removeListener();
+    };
   }, []);
 
   useEffect(() => {

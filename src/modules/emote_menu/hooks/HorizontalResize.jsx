@@ -33,8 +33,9 @@ export default function useHorizontalResize({boundingQuerySelector, handleRef, r
   }
 
   React.useEffect(() => {
-    if (handleRef.current == null) {
-      return undefined;
+    const currentRef = handleRef.current;
+    if (currentRef == null) {
+      return null;
     }
 
     function handleWindowResize() {
@@ -52,14 +53,12 @@ export default function useHorizontalResize({boundingQuerySelector, handleRef, r
 
     handleWindowResize();
 
-    handleRef.current.addEventListener('mousedown', handleResizeStart);
+    currentRef.addEventListener('mousedown', handleResizeStart);
     document.addEventListener('mouseup', handleResizeEnd);
     window.addEventListener('resize', handleWindowResize);
 
     return () => {
-      if (handleRef.current != null) {
-        handleRef.current.removeEventListener('mousedown', handleResizeStart);
-      }
+      currentRef.removeEventListener('mousedown', handleResizeStart);
       document.addEventListener('mouseup', handleResizeEnd);
       window.removeEventListener('resize', handleWindowResize);
     };
