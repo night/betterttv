@@ -18,9 +18,14 @@ class GlobalCSSModule {
       document.body.classList.toggle('bttv-youtube', true);
     }
 
+    const extensionCSSUrl = extension.url('betterttv.css', true);
+    if (!extensionCSSUrl) {
+      return Promise.resolve();
+    }
+
     return new Promise((resolve) => {
       const css = document.createElement('link');
-      css.setAttribute('href', extension.url('betterttv.css', true));
+      css.setAttribute('href', extensionCSSUrl);
       css.setAttribute('type', 'text/css');
       css.setAttribute('rel', 'stylesheet');
       css.addEventListener('load', () => resolve());

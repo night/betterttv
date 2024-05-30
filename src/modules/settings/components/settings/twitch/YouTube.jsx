@@ -7,14 +7,22 @@ import extension from '../../../../../utils/extension.js';
 import styles from '../../../styles/header.module.css';
 import {registerComponent} from '../../Store.jsx';
 
-const EXTENSION_URL = new URL(extension.url(''));
-const HAS_LOCAL_EXTENSION_DATA = EXTENSION_URL.protocol.includes('extension');
-const EXTENSION_ID = EXTENSION_URL.host;
+const HAS_LOCAL_EXTENSION_DATA = extension.url('') == null;
 const SETTING_NAME = formatMessage({defaultMessage: 'YouTube (beta)'});
+const browser = window.chrome || window.browser;
+
+let EXTENSION_ID;
+if (window.navigator.userAgent.includes('Firefox/')) {
+  EXTENSION_ID = 'firefox@betterttv.net';
+} else if (window.navigator.userAgent.includes('Edge/') || window.navigator.userAgent.includes('Edg/')) {
+  EXTENSION_ID = 'icllegkipkooaicfmdfaloehobmglglb';
+} else if (window.navigator.userAgent.includes('Chrome/')) {
+  EXTENSION_ID = 'ajopnjidmegmdimjlfnijceegpefgped';
+}
 
 function sendExtensionCommand(commandData, callback = undefined) {
-  if (window.chrome?.runtime != null) {
-    window.chrome.runtime.sendMessage(EXTENSION_ID, commandData, callback);
+  if (browser?.runtime?.sendMessage != null) {
+    browser.runtime.sendMessage(EXTENSION_ID, commandData, callback);
     return;
   }
 
