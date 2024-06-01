@@ -35,7 +35,7 @@ export default function useHorizontalResize({boundingQuerySelector, handleRef, r
   React.useEffect(() => {
     const currentRef = handleRef.current;
     if (currentRef == null) {
-      return null;
+      return;
     }
 
     function handleWindowResize() {
@@ -57,6 +57,7 @@ export default function useHorizontalResize({boundingQuerySelector, handleRef, r
     document.addEventListener('mouseup', handleResizeEnd);
     window.addEventListener('resize', handleWindowResize);
 
+    // eslint-disable-next-line consistent-return
     return () => {
       currentRef.removeEventListener('mousedown', handleResizeStart);
       document.addEventListener('mouseup', handleResizeEnd);

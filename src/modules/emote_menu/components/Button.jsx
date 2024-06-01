@@ -34,10 +34,11 @@ export default function Button({
 
     if (loaded || emoteMenuViewStore.isLoaded()) {
       callback();
-      return null;
+      return;
     }
 
     const removeListener = emoteMenuViewStore.once('updated', callback);
+    // eslint-disable-next-line consistent-return
     return () => {
       removeListener();
     };
