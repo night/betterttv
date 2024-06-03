@@ -23,7 +23,7 @@ let currentScriptSrc;
 
 export default {
   getExtensionId() {
-    if (currentScriptSrc) {
+    if (currentScriptSrc && !currentScriptSrc.startsWith('moz-extension://')) {
       return null;
     }
 
