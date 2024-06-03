@@ -7,18 +7,9 @@ import extension from '../../../../../utils/extension.js';
 import styles from '../../../styles/header.module.css';
 import {registerComponent} from '../../Store.jsx';
 
-const HAS_LOCAL_EXTENSION_DATA = extension.url('') == null;
+const EXTENSION_ID = extension.getExtensionId();
 const SETTING_NAME = formatMessage({defaultMessage: 'YouTube (beta)'});
 const browser = window.chrome || window.browser;
-
-let EXTENSION_ID;
-if (window.navigator.userAgent.includes('Firefox/')) {
-  EXTENSION_ID = 'firefox@betterttv.net';
-} else if (window.navigator.userAgent.includes('Edge/') || window.navigator.userAgent.includes('Edg/')) {
-  EXTENSION_ID = 'icllegkipkooaicfmdfaloehobmglglb';
-} else if (window.navigator.userAgent.includes('Chrome/')) {
-  EXTENSION_ID = 'ajopnjidmegmdimjlfnijceegpefgped';
-}
 
 function sendExtensionCommand(commandData, callback = undefined) {
   if (browser?.runtime?.sendMessage != null) {
@@ -113,7 +104,7 @@ function YouTube() {
 }
 
 function maybeRegisterComponent() {
-  if (!HAS_LOCAL_EXTENSION_DATA) {
+  if (!EXTENSION_ID) {
     return null;
   }
 
