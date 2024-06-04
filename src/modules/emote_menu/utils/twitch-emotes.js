@@ -151,8 +151,9 @@ export async function loadTwitchEmotes() {
   const isDark = settings.get(SettingIds.DARKENED_MODE);
   const tempCategories = {};
 
-  const subscriptionProducts = data.user.subscriptionProducts ?? [];
-  const localEmoteSets = data.channel.localEmoteSets ?? [];
+  const subscriptionProducts = data.user?.subscriptionProducts ?? [];
+  const localEmoteSets = data.channel?.localEmoteSets ?? [];
+  const channelSelfAvailableEmoteSets = data.channel?.self?.availableEmoteSets ?? [];
 
   const channelProducts = [...subscriptionProducts, ...localEmoteSets].map(({id, emoteSetID, ...rest}) => ({
     id: emoteSetID == null ? id : emoteSetID,
@@ -160,12 +161,9 @@ export async function loadTwitchEmotes() {
     product: true,
   }));
 
-  for (const {owner, id: setId, emotes, product = false} of [
-    ...data.channel.self.availableEmoteSets,
-    ...channelProducts,
-  ]) {
+  for (const {owner, id: setId, emotes, product = false} of [...channelSelfAvailableEmoteSets, ...channelProducts]) {
     const category = getCategoryForSet(setId, owner);
-    const locked = product && data.channel.self.availableEmoteSets.find(({id}) => id === setId) == null;
+    const locked = product && channelSelfAvailableEmoteSets.find(({id}) => id === setId) == null;
 
     const categoryEmotes = emotes.map((emote) => {
       const {id: emoteId, token: emoteToken, type, assetType} = emote;
