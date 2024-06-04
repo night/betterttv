@@ -37,8 +37,21 @@ body:
       placeholder: "- Device: [e.g. iPhone6]\n- OS: [e.g. iOS8.1]\n- Browser [e.g. stock browser, safari]\n- Version [e.g. 22]"
     validations:
       required: true
+  - type: input
+    id: version
+    attributes:
+      label: BetterTTV Version
+      placeholder: "7.x.x"
+    validations:
+      required: true
   - type: textarea
     id: additional_information
     attributes:
       label: Additional information
       placeholder: 'Add any other context about the problem here.'
+  - type: checkbox
+    id: upgrade_check
+    attributes:
+      options:
+        - label: I have checked that I'm using the newest version of BetterTTV available.
+          required: true
