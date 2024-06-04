@@ -41,7 +41,7 @@ body:
     id: version
     attributes:
       label: BetterTTV Version
-      placeholder: "7.x.x"
+      placeholder: '7.x.x'
     validations:
       required: true
   - type: textarea
