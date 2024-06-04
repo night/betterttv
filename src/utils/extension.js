@@ -1,43 +1,80 @@
 import {EXT_VER} from '../constants.js';
+import debug from './debug.js';
 
 const browser = window.chrome || window.browser;
 
-let EXTENSION_SCHEME;
-let EXTENSION_ID;
-let EXTENSION_RESOURCES_ID;
-if (window.navigator.userAgent.includes('Firefox/')) {
-  EXTENSION_SCHEME = 'moz-extension://';
-  EXTENSION_ID = 'firefox@betterttv.net';
-  EXTENSION_RESOURCES_ID = browser?.runtime?.id || undefined;
-} else if (window.navigator.userAgent.includes('Edge/') || window.navigator.userAgent.includes('Edg/')) {
-  EXTENSION_SCHEME = 'chrome-extension://';
-  EXTENSION_ID = 'icllegkipkooaicfmdfaloehobmglglb';
-  EXTENSION_RESOURCES_ID = EXTENSION_ID;
-} else if (window.navigator.userAgent.includes('Chrome/')) {
-  EXTENSION_SCHEME = 'chrome-extension://';
-  EXTENSION_ID = 'ajopnjidmegmdimjlfnijceegpefgped';
-  EXTENSION_RESOURCES_ID = EXTENSION_ID;
+const Extensions = {
+  CHROME: {
+    scheme: 'chrome-extension://',
+    id: 'ajopnjidmegmdimjlfnijceegpefgped',
+    resourcesId: 'ajopnjidmegmdimjlfnijceegpefgped',
+  },
+  EDGE: {
+    scheme: 'chrome-extension://',
+    id: 'icllegkipkooaicfmdfaloehobmglglb',
+    resourcesId: 'icllegkipkooaicfmdfaloehobmglglb',
+  },
+  FIREFOX: {
+    scheme: 'moz-extension://',
+    id: 'firefox@betterttv.net',
+    resourcesId: browser?.runtime?.id || undefined,
+  },
+};
+
+async function getResourceScriptUrl(scheme, id) {
+  if (!id) {
+    return null;
+  }
+
+  try {
+    const resourceScriptUrl = `${scheme}${id}/betterttv.js`;
+    await fetch(resourceScriptUrl);
+    return resourceScriptUrl;
+  } catch (_) {
+    return null;
+  }
 }
 
 let currentScriptSrc;
+let currentExtension;
 
 export default {
-  getExtensionId() {
-    if (currentScriptSrc && !currentScriptSrc.startsWith('moz-extension://')) {
-      return null;
+  async setCurrentScript(newCurrentScript) {
+    if (newCurrentScript?.src != null) {
+      currentScriptSrc = newCurrentScript?.src;
+
+      if (currentScriptSrc.startsWith(Extensions.FIREFOX.scheme)) {
+        currentExtension = Extensions.FIREFOX;
+      }
+
+      debug.log('Found script source', currentScriptSrc, currentExtension);
+      return;
     }
 
-    return EXTENSION_ID;
+    // script was injected directly, which means an extension loaded it
+    // due to MV3 changes, we can't get the script src
+    // so i guess let's just try them all
+    for await (const extension of Object.values(Extensions)) {
+      const resourceScriptUrl = await getResourceScriptUrl(extension.scheme, extension.resourcesId);
+      if (resourceScriptUrl) {
+        currentScriptSrc = resourceScriptUrl;
+        currentExtension = extension;
+        debug.log('Found native extension', currentScriptSrc, currentExtension);
+        return;
+      }
+    }
+
+    debug.error('Failed to find native extension or script source');
   },
-  setCurrentScript(newCurrentScript) {
-    currentScriptSrc = newCurrentScript?.src;
+  getExtension() {
+    return currentExtension;
   },
   url(path, breakCache = false) {
-    if ((EXTENSION_SCHEME == null || EXTENSION_RESOURCES_ID == null) && !currentScriptSrc) {
+    if (!currentScriptSrc) {
       return null;
     }
 
-    const url = new URL(path, currentScriptSrc || `${EXTENSION_SCHEME}${EXTENSION_RESOURCES_ID}/betterttv.js`);
+    const url = new URL(path, currentScriptSrc);
     return `${url.toString()}${breakCache ? `?v=${EXT_VER}` : ''}`;
   },
 };

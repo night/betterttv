@@ -23,12 +23,13 @@ class GlobalCSSModule {
       return Promise.resolve();
     }
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       const css = document.createElement('link');
       css.setAttribute('href', extensionCSSUrl);
       css.setAttribute('type', 'text/css');
       css.setAttribute('rel', 'stylesheet');
       css.addEventListener('load', () => resolve());
+      css.addEventListener('error', (err) => reject(err));
       document.body.appendChild(css);
     });
   }

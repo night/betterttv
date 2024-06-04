@@ -7,13 +7,17 @@ import extension from '../../../../../utils/extension.js';
 import styles from '../../../styles/header.module.css';
 import {registerComponent} from '../../Store.jsx';
 
-const EXTENSION_ID = extension.getExtensionId();
 const SETTING_NAME = formatMessage({defaultMessage: 'YouTube (beta)'});
 const browser = window.chrome || window.browser;
 
 function sendExtensionCommand(commandData, callback = undefined) {
+  const extensionId = extension.getExtension()?.id;
+  if (!extensionId) {
+    return;
+  }
+
   if (browser?.runtime?.sendMessage != null) {
-    browser.runtime.sendMessage(EXTENSION_ID, commandData, callback);
+    browser.runtime.sendMessage(extensionId, commandData, callback);
     return;
   }
 
@@ -25,7 +29,7 @@ function sendExtensionCommand(commandData, callback = undefined) {
 
       try {
         const parsedData = JSON.parse(event.data);
-        if (parsedData.extensionId !== EXTENSION_ID || parsedData.type !== 'BETTERTTV_EXTENSION_COMMAND_RESPONSE') {
+        if (parsedData.extensionId !== extensionId || parsedData.type !== 'BETTERTTV_EXTENSION_COMMAND_RESPONSE') {
           return;
         }
 
@@ -39,7 +43,7 @@ function sendExtensionCommand(commandData, callback = undefined) {
 
   window.postMessage(
     JSON.stringify({
-      extensionId: EXTENSION_ID,
+      extensionId,
       type: 'BETTERTTV_EXTENSION_COMMAND',
       data: commandData,
     }),
@@ -104,7 +108,7 @@ function YouTube() {
 }
 
 function maybeRegisterComponent() {
-  if (!EXTENSION_ID) {
+  if (extension.getExtension() == null) {
     return null;
   }
 

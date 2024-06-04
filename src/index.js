@@ -40,7 +40,7 @@
     await loadI18n();
 
     const {default: extension} = await import('./utils/extension.js');
-    extension.setCurrentScript(currentScript);
+    await extension.setCurrentScript(currentScript);
 
     const {default: globalCSS} = await import('./modules/global_css/index.js');
     const globalCSSLoadPromise = globalCSS.loadGlobalCSS();
