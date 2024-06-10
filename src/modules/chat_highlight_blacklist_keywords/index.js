@@ -90,6 +90,8 @@ function computeHighlightKeywords() {
   highlightBadges = computedBadges;
 }
 
+let recentPinnedHighlights = [];
+
 function readRepairKeywords() {
   const highlightKeywordsValue = settings.get(SettingIds.HIGHLIGHT_KEYWORDS);
   const blacklistKeywordsValue = settings.get(SettingIds.BLACKLIST_KEYWORDS);
@@ -408,11 +410,20 @@ class ChatHighlightBlacklistKeywordsModule {
       pinnedHighlightsContainer.style.top = 0;
     }
 
-    if (pinnedHighlightsContainer.childNodes.length + 1 > settings.get(SettingIds.MAX_PINNED_HIGHLIGHTS)) {
+    if (pinnedHighlightsContainer.childNodes.length >= settings.get(SettingIds.MAX_PINNED_HIGHLIGHTS)) {
       pinnedHighlightsContainer.firstChild.remove();
     }
 
     const timestamp = DateTime.fromJSDate(new Date(date)).toFormat('hh:mm');
+
+    const recentPinnedHighlightKey = `${timestamp},${from},${message}`;
+    if (recentPinnedHighlights.includes(recentPinnedHighlightKey)) {
+      return;
+    }
+    recentPinnedHighlights.push(recentPinnedHighlightKey);
+    if (recentPinnedHighlights.length >= settings.get(SettingIds.MAX_PINNED_HIGHLIGHTS)) {
+      recentPinnedHighlights.shift();
+    }
 
     const newHighlight = createPinnedHighlight({timestamp, from, message});
     pinnedHighlightsContainer.appendChild(newHighlight);
