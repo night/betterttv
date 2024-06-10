@@ -115,4 +115,5 @@ img.emoji.yt-live-chat-text-message-renderer + .bttv-emote-overlay {
   max-width: 336px;
   border-radius: 0.2rem;
   overflow: hidden;
+  margin-bottom: 8px;
 }
