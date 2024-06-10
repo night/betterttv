@@ -90,7 +90,7 @@ function computeHighlightKeywords() {
   highlightBadges = computedBadges;
 }
 
-let recentPinnedHighlights = [];
+const recentPinnedHighlights = [];
 
 function readRepairKeywords() {
   const highlightKeywordsValue = settings.get(SettingIds.HIGHLIGHT_KEYWORDS);
