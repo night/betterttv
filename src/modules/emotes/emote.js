@@ -79,11 +79,20 @@ export default class Emote {
     }
     container.appendChild(image);
 
-    const tooltip = document.createElement('div');
-    tooltip.classList.add('bttv-tooltip', 'bttv-tooltip--up', 'bttv-tooltip--align-center');
-    tooltip.textContent = `${this.code}\n${
+    const tooltipImage = new Image();
+    tooltipImage.classList.add('bttv-tooltip-emote-image');
+    tooltipImage.src = createSrc(this.images, shouldRenderStatic, '4x');
+
+    const tooltipText = document.createElement('div');
+    tooltipText.textContent = `${this.code}\n${
       channelName ? `${formatMessage({defaultMessage: 'Channel: {channelName}'}, {channelName})}\n` : ''
     }${this.category.displayName}`;
+
+    const tooltip = document.createElement('div');
+    tooltip.classList.add('bttv-tooltip', 'bttv-tooltip--up', 'bttv-tooltip--align-center');
+    tooltip.appendChild(tooltipImage);
+    tooltip.appendChild(tooltipText);
+
     container.appendChild(tooltip);
 
     return container;
