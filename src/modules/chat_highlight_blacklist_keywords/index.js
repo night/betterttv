@@ -90,7 +90,22 @@ function computeHighlightKeywords() {
   highlightBadges = computedBadges;
 }
 
-const recentPinnedHighlights = [];
+const recentHighlights = [];
+function isDuplicateHighlight({date, from, message}) {
+  const timestamp = DateTime.fromJSDate(new Date(date)).toFormat('hh:mm');
+
+  const recentHighlightKey = `${timestamp},${from},${message}`;
+  if (recentHighlights.includes(recentHighlightKey)) {
+    return true;
+  }
+
+  recentHighlights.push(recentHighlightKey);
+  if (recentHighlights.length >= 30) {
+    recentHighlights.shift();
+  }
+
+  return false;
+}
 
 function readRepairKeywords() {
   const highlightKeywordsValue = settings.get(SettingIds.HIGHLIGHT_KEYWORDS);
@@ -315,7 +330,9 @@ class ChatHighlightBlacklistKeywordsModule {
     ) {
       this.markHighlighted(message, color);
 
-      if (isReply(message)) return;
+      if (isReply(message) || isDuplicateHighlight({date, from, message: messageText})) {
+        return;
+      }
 
       if (settings.get(SettingIds.HIGHLIGHT_FEEDBACK)) {
         this.handleHighlightSound();
@@ -358,11 +375,13 @@ class ChatHighlightBlacklistKeywordsModule {
     ) {
       this.markHighlighted(message, color);
 
-      if (settings.get(SettingIds.HIGHLIGHT_FEEDBACK)) {
-        this.handleHighlightSound();
-      }
+      if (!isDuplicateHighlight({from, message: messageContent, date: new Date()})) {
+        if (settings.get(SettingIds.HIGHLIGHT_FEEDBACK)) {
+          this.handleHighlightSound();
+        }
 
-      this.pinHighlight({from, message: messageContent, date: new Date()});
+        this.pinHighlight({from, message: messageContent, date: new Date()});
+      }
     }
   }
 
@@ -415,15 +434,6 @@ class ChatHighlightBlacklistKeywordsModule {
     }
 
     const timestamp = DateTime.fromJSDate(new Date(date)).toFormat('hh:mm');
-
-    const recentPinnedHighlightKey = `${timestamp},${from},${message}`;
-    if (recentPinnedHighlights.includes(recentPinnedHighlightKey)) {
-      return;
-    }
-    recentPinnedHighlights.push(recentPinnedHighlightKey);
-    if (recentPinnedHighlights.length >= settings.get(SettingIds.MAX_PINNED_HIGHLIGHTS)) {
-      recentPinnedHighlights.shift();
-    }
 
     const newHighlight = createPinnedHighlight({timestamp, from, message});
     pinnedHighlightsContainer.appendChild(newHighlight);
