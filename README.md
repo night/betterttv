@@ -29,6 +29,7 @@ A webserver will start and you are able to use the development version of Better
 // @icon         https://cdn.betterttv.net/assets/logos/bttv_logo.png
 // @version      0.0.1
 // @match        https://*.twitch.tv/*
+// @match        https://*.youtube.com/*
 // @grant        none
 // ==/UserScript==
 
