@@ -7,10 +7,12 @@ import InputGroup from 'rsuite/InputGroup';
 import Panel from 'rsuite/Panel';
 import FontAwesomeSvgIcon from '../../../common/components/FontAwesomeSvgIcon.jsx';
 import formatMessage from '../../../i18n/index.js';
+import extension from '../../../utils/extension.js';
 import styles from './Settings.module.css';
 
 const CHROME_VERSION = navigator.userAgentData?.brands?.find(({brand}) => brand === 'Chromium')?.version;
-const IS_UNSUPPORTED_CHROME_INSTALL = CHROME_VERSION != null ? parseInt(CHROME_VERSION, 10) < 111 : false;
+const IS_UNSUPPORTED_CHROME_INSTALL =
+  CHROME_VERSION != null ? parseInt(CHROME_VERSION, 10) < 111 && extension.getExtension() != null : false;
 const UNSUPPORTED_LEARN_MORE_URL = 'https://github.com/night/betterttv/issues/6860';
 
 if (IS_UNSUPPORTED_CHROME_INSTALL) {
