@@ -8,7 +8,7 @@ import watcher from '../../watcher.js';
 import styles from './styles.module.css';
 
 const sidebarSectionSelector = '.side-nav-section';
-const offlineChannelSelector = '.side-nav-card > .side-nav-card__link--offline';
+const offlineChannelSelector = '.side-nav-card';
 
 let offlineChannelObserverRemover = null;
 let sidebarSectionObserverRemover = null;
@@ -89,7 +89,10 @@ class HideSidebarElementsModule {
         if (!isConnected) {
           return;
         }
-        node.classList.add(styles.hideOfflineChannel);
+        const offlineAvatars = node.querySelectorAll('.side-nav-card__avatar--offline');
+        for (const offlineAvatar of offlineAvatars) {
+          offlineAvatar.closest('.side-nav-card')?.classList.add(styles.hideOfflineChannel);
+        }
       });
     }
 
