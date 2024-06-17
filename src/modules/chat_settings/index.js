@@ -1,3 +1,4 @@
+import debounce from 'lodash.debounce';
 import {PlatformTypes} from '../../constants.js';
 import formatMessage from '../../i18n/index.js';
 import domObserver from '../../observers/dom.js';
@@ -12,9 +13,10 @@ const MOD_VIEW_PAGE_SELECTOR = '.moderation-view-page';
 const MOD_VIEW_CHAT_SETTINGS_SELECTOR =
   '#chat-settings-show-mod-actions, [data-test-selector="chat-filter-item-click-target"]';
 const CHAT_SETTINGS_BACK_BUTTON_SELECTOR =
-  'button[data-test-selector="chat-settings-back-button"], button[data-test-selector="chat-widget-settings-back-button"]';
+  'button[data-test-selector="chat-settings-back-button"], button[data-test-selector="chat-widget-settings-back-button"], .chat-widget-settings__header-button-container';
 const CHAT_SETTINGS_MOD_TOOLS_SELECTOR = 'div[data-test-selector="mod-tools"]';
 const BTTV_CHAT_SETTINGS_CLASS = 'bttv-chat-settings';
+let oldChatSettings;
 
 function createRow(className, leftLabel, onClick, rightLabel = null) {
   const container = document.createElement('div');
@@ -86,7 +88,7 @@ function inIFrame() {
   }
 }
 
-function getChatSettings() {
+function getNativeChatSettings() {
   const modViewChatSettings = document.querySelector(MOD_VIEW_CHAT_SETTINGS_SELECTOR);
   if (document.querySelector(MOD_VIEW_PAGE_SELECTOR) != null && modViewChatSettings != null) {
     return modViewChatSettings.closest('.tw-balloon').querySelector('button').parentElement.parentElement;
@@ -95,50 +97,30 @@ function getChatSettings() {
   return document.querySelector(CHAT_SETTINGS_SELECTOR);
 }
 
-function getBetterTTVChatSettings() {
-  return getChatSettings()?.querySelector(`.${BTTV_CHAT_SETTINGS_CLASS}`);
-}
-
-class ChatSettingsModule {
-  constructor() {
-    watcher.on('load.chat', () => this.load());
-  }
-
-  load() {
-    domObserver.on(CHAT_SETTINGS_SELECTOR, (node, isConnected) => {
-      if (!isConnected) return;
-      this.renderSettings();
-    });
-    domObserver.on(MOD_VIEW_CHAT_SETTINGS_SELECTOR, () => {
-      this.renderSettings();
-    });
-    domObserver.on(CHAT_SETTINGS_BACK_BUTTON_SELECTOR, (node, isConnected) => {
-      if (!isConnected) {
-        this.renderSettings();
-        return;
-      }
-      getBetterTTVChatSettings()?.remove();
-    });
-    domObserver.on(CHAT_SETTINGS_MOD_TOOLS_SELECTOR, () => {
-      this.renderSettings();
-    });
-  }
-
-  renderSettings() {
-    if (inIFrame()) return;
-
-    const betterttvChatSettings = getBetterTTVChatSettings();
+const renderChatSettings = debounce(
+  () => {
     // Hide the settings when in an iframe for now
-    if (betterttvChatSettings != null) {
-      betterttvChatSettings.remove();
+    if (inIFrame()) {
+      return;
     }
 
-    // if within a nested menu, do not show bttv settings
+    // The Twitch settings render views in the same container, so we need to remove the old settings
+    // and re-append the new settings when there's re-rendering
+    if (oldChatSettings != null) {
+      oldChatSettings.remove();
+    }
+
+    // If the main chat settings are not visible, don't render the BetterTTV settings
     if (document.querySelector(CHAT_SETTINGS_BACK_BUTTON_SELECTOR) != null) {
       return;
     }
 
-    getChatSettings()?.appendChild(
+    const nativeChatSettings = getNativeChatSettings();
+    if (nativeChatSettings == null) {
+      return;
+    }
+
+    oldChatSettings = nativeChatSettings.appendChild(
       createSettings(
         () => {
           chatFontSettings.setFontFamily();
@@ -164,6 +146,21 @@ class ChatSettingsModule {
         }
       )
     );
+  },
+  250,
+  {leading: true, trailing: true}
+);
+
+class ChatSettingsModule {
+  constructor() {
+    watcher.on('load.chat', () => this.load());
+  }
+
+  load() {
+    domObserver.on(CHAT_SETTINGS_SELECTOR, () => renderChatSettings());
+    domObserver.on(MOD_VIEW_CHAT_SETTINGS_SELECTOR, () => renderChatSettings());
+    domObserver.on(CHAT_SETTINGS_BACK_BUTTON_SELECTOR, () => renderChatSettings());
+    domObserver.on(CHAT_SETTINGS_MOD_TOOLS_SELECTOR, () => renderChatSettings());
   }
 }
 
