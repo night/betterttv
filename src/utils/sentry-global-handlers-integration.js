@@ -5,7 +5,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {UNKNOWN_FUNCTION, isString, getLocationHref} from '@sentry/utils';
 // eslint-disable-next-line import/no-relative-packages
-import {eventFromUnknownInput} from '../../node_modules/@sentry/browser/esm/eventbuilder.js';
+import {eventFromUnknownInput} from '../../node_modules/@sentry/browser/build/npm/esm/eventbuilder.js';
 
 function _enhanceEventWithInitialFrame(event, url, line, column) {
   // event.exception
