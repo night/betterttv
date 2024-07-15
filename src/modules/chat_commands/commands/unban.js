@@ -113,7 +113,6 @@ const unbanCommand = {
   permissionLevel: PermissionLevels.MODERATOR,
 };
 
-commandStore.registerCommand({name: 'unban', ...unbanCommand});
 commandStore.registerCommand({name: 'u', ...unbanCommand});
 
 const massUnbanCommand = {
