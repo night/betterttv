@@ -55,13 +55,13 @@ class SevenTVChannelEmotes extends AbstractEmotes {
         for (const {
           id,
           name: code,
-          data: {listed, animated, owner, flags},
+          data: {listed, animated, owner, flags, host: {url}},
         } of emotes) {
           if (!listed && !hasFlag(settings.get(SettingIds.EMOTES), EmoteTypeFlags.SEVENTV_UNLISTED_EMOTES)) {
             continue;
           }
 
-          this.emotes.set(code, createEmote(id, code, animated, owner, category, isOverlay(flags)));
+          this.emotes.set(code, createEmote(id, code, url, animated, owner, category, isOverlay(flags)));
         }
 
         eventSource = new ReconnectingEventSource(

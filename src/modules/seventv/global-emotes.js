@@ -40,13 +40,13 @@ class SevenTVGlobalEmotes extends AbstractEmotes {
         for (const {
           id,
           name: code,
-          data: {listed, animated, owner, flags},
+          data: {listed, animated, owner, flags, host: {url}},
         } of globalEmotes) {
           if (!listed && !hasFlag(settings.get(SettingIds.EMOTES), EmoteTypeFlags.SEVENTV_UNLISTED_EMOTES)) {
             continue;
           }
 
-          this.emotes.set(code, createEmote(id, code, animated, owner, category, isOverlay(flags)));
+          this.emotes.set(code, createEmote(id, code, url, animated, owner, category, isOverlay(flags)));
         }
       })
       .then(() => watcher.emit('emotes.updated'));
