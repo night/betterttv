@@ -27,7 +27,7 @@
     "@formatjs/cli": "^6.2.12",
     "@formatjs/intl": "^2.10.4",
     "@fortawesome/fontawesome-svg-core": "6.6.0",
-    "@fortawesome/free-brands-svg-icons": "6.5.2",
+    "@fortawesome/free-brands-svg-icons": "6.6.0",
     "@fortawesome/free-solid-svg-icons": "6.6.0",
     "@fortawesome/react-fontawesome": "0.2.2",
     "@rsuite/icons": "1.0.3",
