@@ -92,14 +92,14 @@ class SevenTVChannelEmotes extends AbstractEmotes {
       const {
         id,
         name: code,
-        data: {listed, animated, owner, flags},
+        data: {listed, animated, owner, flags, host: {url}},
       } = value;
 
       if (!listed && !hasFlag(settings.get(SettingIds.EMOTES), EmoteTypeFlags.SEVENTV_UNLISTED_EMOTES)) {
         continue;
       }
 
-      this.emotes.set(code, createEmote(id, code, animated, owner, category, isOverlay(flags)));
+      this.emotes.set(code, createEmote(id, code, animated, owner, category, isOverlay(flags), url));
 
       watcher.emit(
         'chat.send_admin_message',
@@ -132,7 +132,7 @@ class SevenTVChannelEmotes extends AbstractEmotes {
         continue;
       }
 
-      this.emotes.set(code, createEmote(id, code, animated, owner, category, isOverlay(flags)));
+      this.emotes.set(code, createEmote(id, code, animated, owner, category, isOverlay(flags), url));
     }
 
     for (const {key, old_value: oldValue} of pulledItems) {
