@@ -2,7 +2,7 @@ import {hasFlag} from '../../utils/flags.js';
 import Emote from '../emotes/emote.js';
 
 function emoteUrl(url, version, static_ = false) {
-  return `https:${url}/${version}${static_ ? '_static' : ''}.webp`;
+  return `${url}/${version}${static_ ? '_static' : ''}.webp`;
 }
 
 export function createEmote(id, code, animated, owner, category, overlay, url) {
