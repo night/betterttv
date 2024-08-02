@@ -61,7 +61,7 @@ class SevenTVChannelEmotes extends AbstractEmotes {
             continue;
           }
 
-          this.emotes.set(code, createEmote(id, code, url, animated, owner, category, isOverlay(flags)));
+          this.emotes.set(code, createEmote(id, code, animated, owner, category, isOverlay(flags), url));
         }
 
         eventSource = new ReconnectingEventSource(

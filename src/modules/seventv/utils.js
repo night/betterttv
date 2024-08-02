@@ -5,7 +5,7 @@ function emoteUrl(url, version, static_ = false) {
   return `https:${url}/${version}${static_ ? '_static' : ''}.webp`;
 }
 
-export function createEmote(id, code, url, animated, owner, category, overlay) {
+export function createEmote(id, code, animated, owner, category, overlay, url) {
   return new Emote({
     id,
     category,
