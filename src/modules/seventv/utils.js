@@ -1,11 +1,11 @@
 import {hasFlag} from '../../utils/flags.js';
 import Emote from '../emotes/emote.js';
 
-function emoteUrl(id, version, static_ = false) {
-  return `https://cdn.7tv.app/emote/${encodeURIComponent(id)}/${version}${static_ ? '_static' : ''}.webp`;
+function emoteUrl(url, version, static_ = false) {
+  return `${url}/${version}${static_ ? '_static' : ''}.webp`;
 }
 
-export function createEmote(id, code, animated, owner, category, overlay) {
+export function createEmote(id, code, animated, owner, category, overlay, url) {
   return new Emote({
     id,
     category,
@@ -17,12 +17,12 @@ export function createEmote(id, code, animated, owner, category, overlay) {
     code,
     animated,
     images: {
-      '1x': emoteUrl(id, '1x'),
-      '2x': emoteUrl(id, '2x'),
-      '4x': emoteUrl(id, '4x'),
-      '1x_static': animated ? emoteUrl(id, '1x', true) : undefined,
-      '2x_static': animated ? emoteUrl(id, '2x', true) : undefined,
-      '4x_static': animated ? emoteUrl(id, '4x', true) : undefined,
+      '1x': emoteUrl(url, '1x'),
+      '2x': emoteUrl(url, '2x'),
+      '4x': emoteUrl(url, '4x'),
+      '1x_static': animated ? emoteUrl(url, '1x', true) : undefined,
+      '2x_static': animated ? emoteUrl(url, '2x', true) : undefined,
+      '4x_static': animated ? emoteUrl(url, '4x', true) : undefined,
     },
     metadata: {
       isOverlay: overlay,
