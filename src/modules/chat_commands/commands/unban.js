@@ -119,7 +119,7 @@ const massUnbanCommand = {
   commandArgs: [],
   description: formatMessage({defaultMessage: `Usage: "/massunban" - Unbans all users in the channel`}),
   handler: () => massUnban(),
-  permissionLevel: PermissionLevels.MODERATOR,
+  permissionLevel: PermissionLevels.BROADCASTER,
 };
 
 commandStore.registerCommand({name: 'massunban', ...massUnbanCommand});
