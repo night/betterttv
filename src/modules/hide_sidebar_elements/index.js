@@ -45,13 +45,13 @@ class HideSidebarElementsModule {
       this.loadHideOfflineChannels();
       this.loadHideSidebarElements();
       this.toggleAutoExpandChannels();
-      this.loadHideOpenStoriesButton();
+      this.loadHideOpenStories();
     });
     watcher.on('load', () => {
       this.loadHideOfflineChannels();
       this.loadHideSidebarElements();
       this.toggleAutoExpandChannels();
-      this.loadHideOpenStoriesButton();
+      this.loadHideOpenStories();
     });
   }
 
@@ -82,22 +82,22 @@ class HideSidebarElementsModule {
     }
   }
 
-  loadHideOpenStoriesButton() {
+  loadHideOpenStories() {
     const setting = settings.get(SettingIds.SIDEBAR);
     const enabled = hasFlag(setting, SidebarFlags.OPEN_STORIES);
-    const [element] = document.getElementsByClassName(styles.hideOpenStoriesButton);
+    const [element] = document.getElementsByClassName(styles.hideOpenStories);
 
     if (enabled && element == null) {
       const sidenav = document.querySelector('.side-bar-contents');
-      const button = twitch.getOpenStoriesDOMNode(sidenav);
-      if (button == null) {
+      const node = twitch.getOpenStoriesDOMNode(sidenav);
+      if (node == null) {
         return;
       }
-      button.classList.add(styles.hideOpenStoriesButton);
+      node.classList.add(styles.hideOpenStories);
     }
 
     if (!enabled && element != null) {
-      element.classList.remove(styles.hideOpenStoriesButton);
+      element.classList.remove(styles.hideOpenStories);
     }
   }
 
