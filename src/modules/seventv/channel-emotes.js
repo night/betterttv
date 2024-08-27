@@ -55,7 +55,13 @@ class SevenTVChannelEmotes extends AbstractEmotes {
         for (const {
           id,
           name: code,
-          data: {listed, animated, owner, flags, host: {url}},
+          data: {
+            listed,
+            animated,
+            owner,
+            flags,
+            host: {url},
+          },
         } of emotes) {
           if (!listed && !hasFlag(settings.get(SettingIds.EMOTES), EmoteTypeFlags.SEVENTV_UNLISTED_EMOTES)) {
             continue;
@@ -92,7 +98,13 @@ class SevenTVChannelEmotes extends AbstractEmotes {
       const {
         id,
         name: code,
-        data: {listed, animated, owner, flags, host: {url}},
+        data: {
+          listed,
+          animated,
+          owner,
+          flags,
+          host: {url},
+        },
       } = value;
 
       if (!listed && !hasFlag(settings.get(SettingIds.EMOTES), EmoteTypeFlags.SEVENTV_UNLISTED_EMOTES)) {
@@ -118,7 +130,13 @@ class SevenTVChannelEmotes extends AbstractEmotes {
       const {
         id,
         name: code,
-        data: {listed, animated, owner, flags},
+        data: {
+          listed,
+          animated,
+          owner,
+          flags,
+          host: {url},
+        },
       } = value;
 
       const existingEmote = this.getEligibleEmoteById(id);
