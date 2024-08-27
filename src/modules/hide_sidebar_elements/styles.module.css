@@ -5,3 +5,7 @@
 .hideOfflineChannel {
   display: none !important;
 }
+
+.hideOpenStoriesButton {
+  display: none !important;
+}

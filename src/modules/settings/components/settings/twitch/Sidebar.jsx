@@ -53,6 +53,12 @@ function SidebarComponent() {
               {formatMessage({defaultMessage: 'Clicks the Load More followed channels button in the sidebar for you'})}
             </p>
           </Checkbox>
+          <Checkbox key="openStories" value={SidebarFlags.OPEN_STORIES}>
+            <p className={styles.heading}>{formatMessage({defaultMessage: 'Open Stories'})}</p>
+            <p className={styles.settingDescription}>
+              {formatMessage({defaultMessage: 'Show open stories in the sidebar'})}
+            </p>
+          </Checkbox>
         </CheckboxGroup>
       </div>
     </Panel>

@@ -1,5 +1,6 @@
 import cookies from 'cookies-js';
 import gql from 'graphql-tag';
+import ReactDOM from 'react-dom';
 import {getCurrentChannel, setCurrentChannel} from './channel.js';
 import debug from './debug.js';
 import {getCurrentUser, setCurrentUser} from './user.js';
@@ -833,5 +834,17 @@ export default {
     } catch (_) {}
 
     return user;
+  },
+
+  getOpenStoriesDOMNode(elemet) {
+    let openStoriesButton;
+
+    try {
+      const node = searchReactChildren(getReactInstance(elemet), (n) => n.pendingProps?.name === 'stories_web', 10);
+      // eslint-disable-next-line react/no-find-dom-node
+      openStoriesButton = ReactDOM.findDOMNode(node.stateNode);
+    } catch (_) {}
+
+    return openStoriesButton;
   },
 };

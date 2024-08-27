@@ -84,6 +84,7 @@ export const SidebarFlags = {
   AUTO_EXPAND_CHANNELS: 1 << 4,
   RECENTLY_WATCHED_CHANNELS: 1 << 5,
   SIMILAR_CHANNELS: 1 << 6,
+  OPEN_STORIES: 1 << 7,
 };
 
 export const EmoteTypeFlags = {
