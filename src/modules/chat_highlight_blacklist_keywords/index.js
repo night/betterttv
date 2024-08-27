@@ -397,7 +397,12 @@ class ChatHighlightBlacklistKeywordsModule {
   }
 
   markBlacklisted(message) {
-    message.style.setProperty('display', 'none', 'important');
+    const announcement = message.closest('.announcement-line');
+    if (announcement == null) {
+      message.style.setProperty('display', 'none', 'important');
+    } else {
+      announcement.style.setProperty('display', 'none', 'important');
+    }
   }
 
   loadPinnedHighlights() {
