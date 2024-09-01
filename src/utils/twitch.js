@@ -835,16 +835,4 @@ export default {
 
     return user;
   },
-
-  getOpenStoriesDOMNode(elemet) {
-    let openStoriesButton;
-
-    try {
-      const node = searchReactChildren(getReactInstance(elemet), (n) => n.pendingProps?.name === 'stories_web', 10);
-      // eslint-disable-next-line react/no-find-dom-node
-      openStoriesButton = ReactDOM.findDOMNode(node.stateNode);
-    } catch (_) {}
-
-    return openStoriesButton;
-  },
 };

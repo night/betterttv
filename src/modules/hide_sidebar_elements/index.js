@@ -45,13 +45,13 @@ class HideSidebarElementsModule {
       this.loadHideOfflineChannels();
       this.loadHideSidebarElements();
       this.toggleAutoExpandChannels();
-      this.loadHideOpenStories();
+      this.loadHideStories();
     });
     watcher.on('load', () => {
       this.loadHideOfflineChannels();
       this.loadHideSidebarElements();
       this.toggleAutoExpandChannels();
-      this.loadHideOpenStories();
+      this.loadHideStories();
     });
   }
 
@@ -82,23 +82,10 @@ class HideSidebarElementsModule {
     }
   }
 
-  loadHideOpenStories() {
+  loadHideStories() {
     const setting = settings.get(SettingIds.SIDEBAR);
-    const enabled = hasFlag(setting, SidebarFlags.OPEN_STORIES);
-    const [element] = document.getElementsByClassName(styles.hideOpenStories);
-
-    if (enabled && element == null) {
-      const sidenav = document.querySelector('.side-bar-contents');
-      const node = twitch.getOpenStoriesDOMNode(sidenav);
-      if (node == null) {
-        return;
-      }
-      node.classList.add(styles.hideOpenStories);
-    }
-
-    if (!enabled && element != null) {
-      element.classList.remove(styles.hideOpenStories);
-    }
+    const enabled = hasFlag(setting, SidebarFlags.STORIES);
+    document.body.classList.toggle(styles.hideStories, enabled);
   }
 
   loadHideOfflineChannels() {
