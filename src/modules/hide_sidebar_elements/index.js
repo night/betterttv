@@ -85,7 +85,7 @@ class HideSidebarElementsModule {
   loadHideStories() {
     const setting = settings.get(SettingIds.SIDEBAR);
     const enabled = hasFlag(setting, SidebarFlags.STORIES);
-    document.body.classList.toggle(styles.hideStories, enabled);
+    document.body.classList.toggle(styles.hideStories, !enabled);
   }
 
   loadHideOfflineChannels() {
