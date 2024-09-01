@@ -35,9 +35,7 @@ function getCategoryForChannelId(channelId, categoryName) {
 }
 
 function isLocked(emoteId) {
-  const liveChat = getLiveChat();
-  const youtubeCustomEmojis = liveChat?.emojis;
-  return youtubeCustomEmojis.find(({emojiId}) => emojiId === emoteId).isLocked;
+  return getLiveChat()?.emojis?.find(({emojiId}) => emojiId === emoteId)?.isLocked ?? true;
 }
 
 export async function loadYouTubeEmotes() {
