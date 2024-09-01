@@ -397,7 +397,8 @@ class ChatHighlightBlacklistKeywordsModule {
   }
 
   markBlacklisted(message) {
-    message.style.setProperty('display', 'none', 'important');
+    const messageContainer = message.closest('.announcement-line') ?? message;
+    messageContainer.style.setProperty('display', 'none', 'important');
   }
 
   loadPinnedHighlights() {
