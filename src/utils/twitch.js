@@ -1,6 +1,5 @@
 import cookies from 'cookies-js';
 import gql from 'graphql-tag';
-import ReactDOM from 'react-dom';
 import {getCurrentChannel, setCurrentChannel} from './channel.js';
 import debug from './debug.js';
 import {getCurrentUser, setCurrentUser} from './user.js';
