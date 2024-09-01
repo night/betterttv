@@ -53,6 +53,12 @@ function SidebarComponent() {
               {formatMessage({defaultMessage: 'Clicks the Load More followed channels button in the sidebar for you'})}
             </p>
           </Checkbox>
+          <Checkbox key="stories" value={SidebarFlags.STORIES}>
+            <p className={styles.heading}>{formatMessage({defaultMessage: 'Stories'})}</p>
+            <p className={styles.settingDescription}>
+              {formatMessage({defaultMessage: 'Show stories in the sidebar'})}
+            </p>
+          </Checkbox>
         </CheckboxGroup>
       </div>
     </Panel>
@@ -63,5 +69,5 @@ registerComponent(SidebarComponent, {
   settingId: SettingIds.SIDEBAR,
   name: SETTING_NAME,
   category: CategoryTypes.DIRECTORY,
-  keywords: ['sidebar', 'recently', 'watched', 'recommended', 'similar', 'offline', 'channels', 'expand'],
+  keywords: ['sidebar', 'recently', 'watched', 'recommended', 'similar', 'offline', 'channels', 'expand', 'stories'],
 });

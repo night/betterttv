@@ -84,6 +84,7 @@ export const SidebarFlags = {
   AUTO_EXPAND_CHANNELS: 1 << 4,
   RECENTLY_WATCHED_CHANNELS: 1 << 5,
   SIMILAR_CHANNELS: 1 << 6,
+  STORIES: 1 << 7,
 };
 
 export const EmoteTypeFlags = {
@@ -234,7 +235,8 @@ export const SettingDefaultValues = {
     SidebarFlags.OFFLINE_FOLLOWED_CHANNELS |
       SidebarFlags.RECOMMENDED_CHANNELS |
       SidebarFlags.RECENTLY_WATCHED_CHANNELS |
-      SidebarFlags.SIMILAR_CHANNELS,
+      SidebarFlags.SIMILAR_CHANNELS |
+      SidebarFlags.STORIES,
     0,
   ],
   [SettingIds.EMOTES]: [
