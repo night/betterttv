@@ -335,7 +335,7 @@ export default {
       const node = searchReactParents(
         getReactInstance(document.querySelector(CHAT_CONTAINER)),
         (n) => n.stateNode?.props?.chatConnectionAPI,
-        25
+        30
       );
       chatContentComponent = node.stateNode;
     } catch (_) {}
