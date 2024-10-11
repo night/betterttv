@@ -8,7 +8,8 @@
   }
 
   .side-nav,
-  div:has(> .side-nav) {
+  div:has(> .side-nav),
+  div:has(>seventv-container >.side-nav) {
     order: 3;
 
     .collapse-toggle {
