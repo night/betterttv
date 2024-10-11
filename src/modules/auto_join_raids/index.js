@@ -27,10 +27,7 @@ class AutoJoinRaidsModule {
 
   leaveRaid() {
     const leaveButton = document.querySelector(RAID_LEAVE_BUTTON_SELECTOR);
-    if (
-      leaveButton == null ||
-      ['raid-cancel-button', 'raid-now-button'].includes(leaveButton.getAttribute('data-test-selector'))
-    ) {
+    if ( leaveButton == null ) {
       return;
     }
 
