@@ -1,4 +1,4 @@
-import {statSync, writeFileSync, readFileSync} from 'fs';
+import {statSync, writeFileSync, readFileSync, lstatSync} from 'fs';
 // eslint-disable-next-line import/no-unresolved
 import {globSync} from 'glob';
 import {escapeRegExp} from '../src/utils/regex.js';
@@ -15,6 +15,12 @@ const files = globSync('node_modules/*rsuite*/**/*.+(js|ts|tsx|less|css)', {}).f
   (pathname) => !pathname.endsWith('.d.ts')
 );
 for (const pathname of files) {
+  if (lstatSync(pathname).isDirectory()) {
+    // eslint-disable-next-line no-console
+    console.warn(`[POST INSTALL] Processing file ${pathname}, but it is a directory. skipping...`);
+    continue;
+  }
+
   const data = readFileSync(pathname).toString();
 
   let classnameRegex;
