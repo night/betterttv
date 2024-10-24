@@ -30,7 +30,7 @@ class SevenTVGlobalEmotes extends AbstractEmotes {
 
     if (!hasFlag(settings.get(SettingIds.EMOTES), EmoteTypeFlags.SEVENTV_EMOTES)) return;
 
-    fetch(`https://7tv.io/v3/emote-sets/62cdd34e72a832540de95857`)
+    fetch(`https://7tv.io/v3/emote-sets/global`)
       .then((response) => response.json())
       .then(({emotes: globalEmotes}) => {
         if (globalEmotes == null) {
