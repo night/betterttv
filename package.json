@@ -30,7 +30,7 @@
     "@fortawesome/free-brands-svg-icons": "6.6.0",
     "@fortawesome/free-solid-svg-icons": "6.6.0",
     "@rsuite/icons": "1.0.3",
-    "@sentry/browser": "^8.34.0",
+    "@sentry/browser": "^8.35.0",
     "@sentry/webpack-plugin": "^2.22.5",
     "autoprefixer": "10.4.20",
     "babel-loader": "9.2.1",
