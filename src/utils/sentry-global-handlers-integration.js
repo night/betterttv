@@ -3,7 +3,7 @@
 /* eslint-disable no-multi-assign */
 /* eslint-disable prefer-destructuring */
 // eslint-disable-next-line import/no-extraneous-dependencies
-import {UNKNOWN_FUNCTION, isString, getLocationHref} from '@sentry/utils';
+import {UNKNOWN_FUNCTION, isString, getLocationHref} from '@sentry/core';
 // eslint-disable-next-line import/no-relative-packages
 import {eventFromUnknownInput} from '../../node_modules/@sentry/browser/build/npm/esm/eventbuilder.js';
 
