@@ -180,6 +180,7 @@ export default class EmoteAutocomplete {
   constructor() {
     this.load();
     watcher.on('channel.updated', () => this.load());
+    watcher.on('load.chat', () => this.load());
     watcher.on('emotes.updated', () => injectEmoteSets());
     dom.on(AUTOCOMPLETE_MATCH_IMAGE_QUERY, patchEmoteImage, {
       attributes: true,
