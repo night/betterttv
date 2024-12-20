@@ -27,6 +27,10 @@
     display: none !important;
   }
 
+  .channel-root__upper-watch--with-chat {
+    width: 100% !important;
+  }
+
   .channel-root__player--with-chat {
     width: 100% !important;
   }
