@@ -1,6 +1,5 @@
 import {createSrc, createSrcSet} from './image.js';
 
-/* eslint-disable import/prefer-default-export */
 export function createYoutubeEmojiNode(emote) {
   const newNode = document.createElement('img');
   newNode.className = 'emoji yt-formatted-string style-scope yt-live-chat-text-input-field-renderer';

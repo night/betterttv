@@ -82,7 +82,6 @@ class Emojis extends AbstractEmotes {
         });
 
         if (!emoji.isAlternative) {
-          // eslint-disable-next-line no-prototype-builtins
           let categoryEmotes = this.emotesByCategory[emoji.category];
 
           if (categoryEmotes == null) {

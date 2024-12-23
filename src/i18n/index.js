@@ -28,7 +28,6 @@ let browserLocale = Array.isArray(navigator.languages) ? navigator.languages[0] 
 browserLocale = browserLocale || navigator.language || navigator.browserLanguage || navigator.userLanguage;
 browserLocale = browserLocale.replace('_', '-');
 if (!SUPPORTED_LOCALES.includes(browserLocale)) {
-  // eslint-disable-next-line prefer-destructuring
   browserLocale = browserLocale.split('-')[0];
 }
 if (!SUPPORTED_LOCALES.includes(browserLocale)) {
@@ -46,7 +45,6 @@ function getSiteLocale() {
   }
   locale = locale.replace('_', '-');
   if (!SUPPORTED_LOCALES.includes(locale)) {
-    // eslint-disable-next-line prefer-destructuring
     locale = locale.split('-')[0];
   }
   if (!SUPPORTED_LOCALES.includes(locale)) {
@@ -71,7 +69,6 @@ export async function load() {
   Settings.defaultLocale = locale;
 }
 
-// eslint-disable-next-line import/prefer-default-export
 export default function formatMessage(descriptor, values = undefined) {
   if (intl == null) {
     throw new Error('i18n not yet loaded');

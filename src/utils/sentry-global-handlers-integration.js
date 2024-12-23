@@ -1,10 +1,5 @@
-/* eslint-disable import/prefer-default-export */
-/* eslint-disable no-restricted-globals */
-/* eslint-disable no-multi-assign */
-/* eslint-disable prefer-destructuring */
-// eslint-disable-next-line import/no-extraneous-dependencies
 import {UNKNOWN_FUNCTION, isString, getLocationHref} from '@sentry/core';
-// eslint-disable-next-line import/no-relative-packages
+
 import {eventFromUnknownInput} from '../../node_modules/@sentry/browser/build/npm/esm/eventbuilder.js';
 
 function _enhanceEventWithInitialFrame(event, url, line, column) {
@@ -72,7 +67,6 @@ export function registerBetterTTVGlobalHandlers(scope) {
     });
 
     if (_oldOnErrorHandler) {
-      // eslint-disable-next-line prefer-rest-params
       return _oldOnErrorHandler.apply(this, arguments);
     }
 

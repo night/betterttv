@@ -71,7 +71,6 @@ function createCustomTimeout() {
 }
 
 function setReason(type) {
-  /* eslint-disable-next-line no-alert */
   const reason = prompt(formatMessage({defaultMessage: 'Enter {type} reason: (leave blank for none)'}, {type}));
   return reason || '';
 }

@@ -1,5 +1,3 @@
-/* eslint-disable import/prefer-default-export */
-
 import {getPlatform} from './window.js';
 
 const currentPlatform = getPlatform();

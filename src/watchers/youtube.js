@@ -39,7 +39,7 @@ export default function youtubeWatcher(watcher) {
       const decodedParams = atob(decodeURIComponent(atob(endpointParams)));
       // this is proto but we don't know the schema and we don't wanna import a proto lib to decode this
       // this is "probably" going to work ok.
-      // eslint-disable-next-line prefer-destructuring
+
       newChannelId = decodedParams.split("*'\n\u0018")[1].split('\u0012\u000b')[0];
     }
 

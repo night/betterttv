@@ -98,7 +98,6 @@ class ChatDeletedMessagesModule {
     }
     const messages = findAllUserMessages(name, targetMessageId);
     messages.forEach((message) => {
-      // eslint-disable-next-line default-case
       switch (deletedMessages) {
         case DeletedMessageTypes.HIDE:
           message.style.display = 'none';
@@ -109,7 +108,7 @@ class ChatDeletedMessagesModule {
             ChatHighlightBlacklistKeywords.markHighlighted(message);
           }
           message.classList.toggle(CHAT_LINE_DELETED_CLASS, true);
-          /* eslint-disable-next-line func-names */
+
           message.querySelectorAll(CHAT_LINE_LINK_SELECTOR).forEach((node) => {
             node.removeAttribute('href');
           });

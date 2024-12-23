@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import gql from 'graphql-tag';
 import sortBy from 'lodash.sortby';
 import uniqBy from 'lodash.uniqby';
