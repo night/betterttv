@@ -9,7 +9,6 @@ class ChatNicknamesModule {
   }
 
   set(name) {
-    /* eslint-disable-next-line no-alert */
     let nickname = prompt(
       formatMessage({defaultMessage: 'Enter the updated nickname for {name} (Leave blank to reset)'}, {name}),
       nicknames[name] || name

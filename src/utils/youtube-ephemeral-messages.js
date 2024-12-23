@@ -33,7 +33,7 @@ function unmountExpiredEphemeralMessage() {
 }
 
 let YoutubeEphemeralMessage = null;
-// eslint-disable-next-line import/prefer-default-export
+
 export async function sendEphemeralMessage(message) {
   const items = document.querySelector(CHAT_ITEMS_SELECTOR);
   if (items == null) {
@@ -49,7 +49,7 @@ export async function sendEphemeralMessage(message) {
   const bttvMessageContainer = document.createElement('div');
   bttvMessageContainer.id = 'bttv-chat-admin-message';
   const root = ReactDOM.createRoot(bttvMessageContainer);
-  /* eslint-disable-next-line react/jsx-filename-extension, react/react-in-jsx-scope */
+
   root.render(<YoutubeEphemeralMessage message={message} />);
   // Forces youtube to append following messages after the ephemeral message
   visibleItems.push({bttvMessageRenderer: {}});

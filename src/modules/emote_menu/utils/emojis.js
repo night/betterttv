@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import {EmoteCategories, EmoteProviders} from '../../../constants.js';
 import emoji from '../../emotes/emojis.js';
 import Icons from '../components/Icons.jsx';

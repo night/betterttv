@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import sortBy from 'lodash.sortby';
 import uniqBy from 'lodash.uniqby';
 import {EmoteCategories, EmoteProviders} from '../../../constants.js';

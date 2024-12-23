@@ -200,7 +200,7 @@ export default {
             twitchWebpackRequire = require;
           },
         },
-        // eslint-disable-next-line import/no-unresolved
+
         (require) => require('betterttv'),
       ]);
     }

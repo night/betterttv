@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 export const DEFAULT_SIZES = ['1x', '2x', '4x'];
 const STATIC_SIZES = {
   '1x': '1x_static',
