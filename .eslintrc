@@ -13,8 +13,12 @@
       "presets": ["@babel/preset-react"]
     }
   },
-  "extends": ["airbnb", "prettier"],
-  "plugins": ["prettier"],
+  "extends": [
+    "plugin:import/recommended",
+    "plugin:react/recommended",
+    "plugin:eslint-plugin/recommended",
+    "plugin:prettier/recommended"
+  ],
   "rules": {
     "prettier/prettier": ["error"],
     "import/extensions": ["error", "ignorePackages"],
@@ -29,6 +33,7 @@
     "no-empty": "off",
     "max-classes-per-file": "off",
     "no-bitwise": "off",
+    "import/no-named-as-default": "off",
     "import/order": [
       "error",
       {
@@ -39,5 +44,10 @@
         }
       }
     ]
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
   }
 }
