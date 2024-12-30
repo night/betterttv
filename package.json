@@ -49,7 +49,7 @@
     "eslint-plugin-eslint-plugin": "6.4.0",
     "eslint-plugin-import": "2.31.0",
     "eslint-plugin-prettier": "5.2.1",
-    "eslint-plugin-react": "7.37.2",
+    "eslint-plugin-react": "7.37.3",
     "file-saver": "2.0.5",
     "filemanager-webpack-plugin": "8.0.0",
     "framer-motion": "11.15.0",
