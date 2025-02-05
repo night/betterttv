@@ -44,7 +44,12 @@ class Storage {
     }
 
     try {
-      return JSON.parse(this._localStorageSupport ? window.localStorage.getItem(id) : cookies.get(id));
+      const storageValue = this._localStorageSupport ? window.localStorage.getItem(id) : cookies.get(id);
+      if (storageValue == null) {
+        return null;
+      }
+
+      return JSON.parse(storageValue);
     } catch (e) {
       return null;
     }
