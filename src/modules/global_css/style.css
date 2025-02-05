@@ -44,6 +44,16 @@
       }
     }
 
+    &.bttv-tooltip--align-right {
+      left: 100%;
+      transform: translateX(-100%);
+
+      &:after {
+        left: 100%;
+        margin-left: -16px;
+      }
+    }
+
     &:after {
       border-radius: 0 0 2px;
       top: 100%;

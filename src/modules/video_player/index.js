@@ -48,7 +48,7 @@ function createPictureInPictureButton(toggled) {
   }
 
   const tooltip = document.createElement('div');
-  tooltip.classList.add('bttv-tooltip', 'bttv-tooltip--align-center', 'bttv-tooltip--up');
+  tooltip.classList.add('bttv-tooltip', 'bttv-tooltip--align-right', 'bttv-tooltip--up');
   tooltip.setAttribute('role', 'tooltip');
   tooltip.innerText = label;
   container.appendChild(tooltip);
@@ -226,14 +226,14 @@ class VideoPlayerModule {
       button.addEventListener('click', togglePictureInPicture);
     });
 
-    const anchor = document.querySelector('.player-controls__right-control-group .resize-detector');
+    const anchor = document.querySelector('.player-controls__right-control-group > div:last-child');
     if (anchor == null) {
       return;
     }
 
     const button = createPictureInPictureButton(false);
     button.addEventListener('click', togglePictureInPicture);
-    anchor.after(button);
+    anchor.before(button);
   }
 }
 
