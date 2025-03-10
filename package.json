@@ -82,7 +82,7 @@
     "reconnecting-eventsource": "1.6.4",
     "remove-files-webpack-plugin": "1.5.0",
     "rsuite": "5.78.0",
-    "safe-regex2": "4.0.1",
+    "safe-regex2": "5.0.0",
     "semver": "7.7.1",
     "string-replace-loader": "3.1.0",
     "terser-webpack-plugin": "5.3.12",
