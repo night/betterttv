@@ -23,7 +23,7 @@
     "@babel/plugin-transform-runtime": "7.26.9",
     "@babel/preset-env": "7.26.9",
     "@babel/preset-react": "7.26.3",
-    "@babel/runtime": "7.26.9",
+    "@babel/runtime": "7.26.10",
     "@formatjs/cli": "6.6.1",
     "@formatjs/intl": "3.1.4",
     "@fortawesome/fontawesome-svg-core": "6.7.2",
