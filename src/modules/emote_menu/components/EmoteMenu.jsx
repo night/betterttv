@@ -70,12 +70,12 @@ export default function EmoteMenu({toggleWhisper, appendToChat, onSetTip}) {
       keyPressCallback(event, shiftPressed);
     }
 
-    window.addEventListener('keydown', callback, false);
-    window.addEventListener('keyup', buttonPressCallback, false);
+    document.addEventListener('keydown', callback, false);
+    document.addEventListener('keyup', buttonPressCallback, false);
 
     return () => {
-      window.removeEventListener('keydown', callback, false);
-      window.removeEventListener('keyup', buttonPressCallback, false);
+      document.removeEventListener('keydown', callback, false);
+      document.removeEventListener('keyup', buttonPressCallback, false);
     };
   }, [selected, shiftPressed]);
 
