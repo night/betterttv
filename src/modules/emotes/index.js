@@ -20,8 +20,8 @@ class EmotesModule {
       globalEmotes,
       frankerfacezGlobalEmotes,
       frankerfacezChannelEmotes,
-      seventvGlobalEmotes,
       seventvChannelEmotes,
+      seventvGlobalEmotes,
       emojis,
     ];
   }
