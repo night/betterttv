@@ -20,16 +20,16 @@ function toggleSidebarSectionClass(node, flags) {
   }
 
   const setting = flags ?? settings.get(SettingIds.SIDEBAR);
-  switch (sidebarSection.type) {
+  switch (sidebarSection.title.key) {
     case 'RECENTLY_VISITED_SECTION': {
       node.classList.toggle(styles.hide, !hasFlag(setting, SidebarFlags.RECENTLY_WATCHED_CHANNELS));
       break;
     }
-    case 'RECOMMENDED_SECTION': {
+    case 'LiveSectionTitle': {
       node.classList.toggle(styles.hide, !hasFlag(setting, SidebarFlags.RECOMMENDED_CHANNELS));
       break;
     }
-    case 'SIMILAR_SECTION': {
+    case 'SimilarSectionTitle': {
       node.classList.toggle(styles.hide, !hasFlag(setting, SidebarFlags.SIMILAR_CHANNELS));
       break;
     }
