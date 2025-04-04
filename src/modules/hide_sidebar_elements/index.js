@@ -20,16 +20,12 @@ function toggleSidebarSectionClass(node, flags) {
   }
 
   const setting = flags ?? settings.get(SettingIds.SIDEBAR);
-  switch (sidebarSection.type) {
-    case 'RECENTLY_VISITED_SECTION': {
-      node.classList.toggle(styles.hide, !hasFlag(setting, SidebarFlags.RECENTLY_WATCHED_CHANNELS));
-      break;
-    }
-    case 'RECOMMENDED_SECTION': {
+  switch (sidebarSection.title.key) {
+    case 'LiveSectionTitle': {
       node.classList.toggle(styles.hide, !hasFlag(setting, SidebarFlags.RECOMMENDED_CHANNELS));
       break;
     }
-    case 'SIMILAR_SECTION': {
+    case 'SimilarSectionTitle': {
       node.classList.toggle(styles.hide, !hasFlag(setting, SidebarFlags.SIMILAR_CHANNELS));
       break;
     }
@@ -57,10 +53,9 @@ class HideSidebarElementsModule {
 
   loadHideSidebarElements() {
     const setting = settings.get(SettingIds.SIDEBAR);
-    const hideRecentlyWatched = !hasFlag(setting, SidebarFlags.RECENTLY_WATCHED_CHANNELS);
     const hideRecommended = !hasFlag(setting, SidebarFlags.RECOMMENDED_CHANNELS);
     const hideSimilar = !hasFlag(setting, SidebarFlags.SIMILAR_CHANNELS);
-    const enabled = hideRecentlyWatched || hideRecommended || hideSimilar;
+    const enabled = hideRecommended || hideSimilar;
 
     if (enabled && sidebarSectionObserverRemover == null) {
       sidebarSectionObserverRemover = domObserver.on(sidebarSectionSelector, (node, isConnected) => {

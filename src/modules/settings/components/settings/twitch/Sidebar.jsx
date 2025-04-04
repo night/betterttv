@@ -23,12 +23,6 @@ function SidebarComponent() {
         <CheckboxGroup
           value={Object.values(SidebarFlags).filter((value) => hasFlag(sidebar, value))}
           onChange={(value) => setSidebar(value.reduce((a, b) => a | b, 0))}>
-          <Checkbox key="recentlyWatchedChannels" value={SidebarFlags.RECENTLY_WATCHED_CHANNELS}>
-            <p className={styles.heading}>{formatMessage({defaultMessage: 'Recently Watched Channels'})}</p>
-            <p className={styles.settingDescription}>
-              {formatMessage({defaultMessage: 'Show recently watched channels in the sidebar'})}
-            </p>
-          </Checkbox>
           <Checkbox key="recommendedChannels" value={SidebarFlags.RECOMMENDED_CHANNELS}>
             <p className={styles.heading}>{formatMessage({defaultMessage: 'Recommended Channels'})}</p>
             <p className={styles.settingDescription}>
@@ -69,5 +63,5 @@ registerComponent(SidebarComponent, {
   settingId: SettingIds.SIDEBAR,
   name: SETTING_NAME,
   category: CategoryTypes.DIRECTORY,
-  keywords: ['sidebar', 'recently', 'watched', 'recommended', 'similar', 'offline', 'channels', 'expand', 'stories'],
+  keywords: ['sidebar', 'recommended', 'similar', 'offline', 'channels', 'expand', 'stories'],
 });
