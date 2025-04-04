@@ -80,7 +80,7 @@ export const SidebarFlags = {
   // 1 << 2: RECOMMENDED_FRIENDS,
   OFFLINE_FOLLOWED_CHANNELS: 1 << 3,
   AUTO_EXPAND_CHANNELS: 1 << 4,
-  RECENTLY_WATCHED_CHANNELS: 1 << 5,
+  // RECENTLY_WATCHED_CHANNELS: 1 << 5,
   SIMILAR_CHANNELS: 1 << 6,
   STORIES: 1 << 7,
 };
@@ -232,7 +232,6 @@ export const SettingDefaultValues = {
   [SettingIds.SIDEBAR]: [
     SidebarFlags.OFFLINE_FOLLOWED_CHANNELS |
       SidebarFlags.RECOMMENDED_CHANNELS |
-      SidebarFlags.RECENTLY_WATCHED_CHANNELS |
       SidebarFlags.SIMILAR_CHANNELS |
       SidebarFlags.STORIES,
     0,
