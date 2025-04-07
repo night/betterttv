@@ -103,7 +103,7 @@ export default async (env, argv) => {
             .pipe(res)
         );
 
-        return middlewares;
+        return middlewares.filter((middleware) => middleware.name !== 'cross-origin-header-check');
       },
     },
     entry: {
