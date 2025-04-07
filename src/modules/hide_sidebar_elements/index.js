@@ -20,16 +20,21 @@ function toggleSidebarSectionClass(node, flags) {
   }
 
   const setting = flags ?? settings.get(SettingIds.SIDEBAR);
-  switch (sidebarSection.type) {
+  switch (sidebarSection.sectionId ?? /* deprecated */ sidebarSection.type) {
+    /* deprecated */
     case 'RECENTLY_VISITED_SECTION': {
       node.classList.toggle(styles.hide, !hasFlag(setting, SidebarFlags.RECENTLY_WATCHED_CHANNELS));
       break;
     }
-    case 'RECOMMENDED_SECTION': {
+    /* deprecated */
+    case 'RECOMMENDED_SECTION':
+    case 'provider-side-nav-recommended-streams-1': {
       node.classList.toggle(styles.hide, !hasFlag(setting, SidebarFlags.RECOMMENDED_CHANNELS));
       break;
     }
-    case 'SIMILAR_SECTION': {
+    /* deprecated */
+    case 'SIMILAR_SECTION':
+    case 'provider-side-nav-similar-streamer-currently-watching-1': {
       node.classList.toggle(styles.hide, !hasFlag(setting, SidebarFlags.SIMILAR_CHANNELS));
       break;
     }
