@@ -226,14 +226,16 @@ class VideoPlayerModule {
       button.addEventListener('click', togglePictureInPicture);
     });
 
-    const anchor = document.querySelector('.player-controls__right-control-group > div:last-child');
+    const anchor = document.querySelector(
+      '.player-controls__right-control-group > div:has(button[data-a-target="player-settings-button"])'
+    );
     if (anchor == null) {
       return;
     }
 
     const button = createPictureInPictureButton(false);
     button.addEventListener('click', togglePictureInPicture);
-    anchor.before(button);
+    anchor.after(button);
   }
 }
 
