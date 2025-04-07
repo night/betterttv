@@ -59,7 +59,7 @@
     "got": "14.4.6",
     "graphql-tag": "2.12.6",
     "json-loader": "0.5.7",
-    "less": "4.2.2",
+    "less": "4.3.0",
     "less-loader": "12.2.0",
     "lodash.chunk": "4.2.0",
     "lodash.debounce": "4.0.8",
