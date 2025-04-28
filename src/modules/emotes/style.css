@@ -105,12 +105,12 @@ img.emoji.yt-live-chat-text-message-renderer + .bttv-emote-overlay {
 }
 
 .bttv-emote.seventv-channel img {
-  max-height: 112px;
+  max-height: 28px;
   width: auto;
 }
 
 .bttv-tooltip-emote-image {
-  max-height: 112px;
+  max-height: 112px !important;
   width: auto;
   max-width: 336px;
   border-radius: 0.2rem;
