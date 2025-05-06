@@ -30,6 +30,7 @@ const EMOTE_MODIFIERS = {
   'c!': 'bttv-emote-modifier-cursed',
   'l!': 'bttv-emote-modifier-rotate-left',
   'r!': 'bttv-emote-modifier-rotate-right',
+  'o!': 'bttv-emote-modifier-overlay',
   'p!': 'bttv-emote-modifier-party',
   's!': 'bttv-emote-modifier-shake',
   ffzW: 'bttv-emote-modifier-wide',
@@ -39,6 +40,9 @@ const EMOTE_MODIFIERS = {
 };
 const PREFIX_EMOTE_MODIFIERS_LIST = Object.keys(EMOTE_MODIFIERS).filter((key) => key.endsWith('!'));
 const SUFFIX_EMOTE_MODIFIERS_LIST = Object.keys(EMOTE_MODIFIERS).filter((key) => !key.endsWith('!'));
+
+const overlayModifierPredicate = ({modifier}) => modifier === 'o!';
+const negate = (pred) => (x) => !pred(x);
 
 const badgeTemplate = (url, description) => {
   const badgeContainer = document.createElement('div');
@@ -290,6 +294,7 @@ class ChatModule {
 
       const parts = data.split(' ');
       const partMetadata = [];
+      const isOverlay = [];
       let hasModifiers = false;
       let modified = false;
       for (let j = 0; j < parts.length; j++) {
@@ -327,6 +332,7 @@ class ChatModule {
         let modifiers = [];
         if (hasModifiers && isEmoteOrSuffixModifier) {
           let detectedEmote = false;
+          let predecessor = null;
           // we search backwards to find the emote and any modifiers
           for (let k = j; k >= 0; k--) {
             const partMetadataItem = partMetadata[k];
@@ -343,11 +349,37 @@ class ChatModule {
               (!detectedEmote && partMetadataItem.type === 'prefix') ||
               (detectedEmote && partMetadataItem.type === 'suffix')
             ) {
+              predecessor = k;
               break;
             }
             modifiers.push(partMetadataItem);
             parts[k] = null;
           }
+
+          // An emote may be an overlay if it satisfies the following conditions:
+          // 1. It has a "predecessor" part.
+          // 2. That predecessor part is an emote.
+          // 3. That predecessor emote is not an overlay.
+          // 4. The user has applied the overlay modifier.
+          // This ensures that overlays do not stack and they only stack on another emote.
+          const hasOverlayModifier = modifiers.some(overlayModifierPredicate);
+          isOverlay[j] =
+            predecessor != null && partMetadata[predecessor]?.emote && !isOverlay[predecessor] && hasOverlayModifier;
+          if (!isOverlay[j] && hasOverlayModifier) {
+            // Strip the overlay modifier from the part.
+            modifiers = modifiers.filter(negate(overlayModifierPredicate));
+
+            // Find the locations to restore the modifier part.
+            const start = predecessor != null ? predecessor + 1 : 0;
+            const replacementEmote = emotes.getEligibleEmote('o!', user);
+            for (let location = start; location < j; ++location) {
+              if (overlayModifierPredicate(partMetadata[location])) {
+                // Restore the string or modifier emote in the parts array.
+                parts[location] = replacementEmote == null ? 'o!' : replacementEmote.render(null, null, null);
+              }
+            }
+          }
+
           // if the emote is only a suffix modifier, render it without its effect
           if (modifiers.length === 1 && modifiers[0].type === 'suffix' && emoteIndex === j) {
             modifiers = [];
