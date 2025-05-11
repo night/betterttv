@@ -16,6 +16,18 @@ function setKeyPressCallback(newKeyPressCallback) {
   keyPressCallback = newKeyPressCallback;
 }
 
+const cachedEmoteClicks = new Map();
+
+function cacheOrProcessEmoteClicks(emote, shiftPressed) {
+  if (emote && !cachedEmoteClicks.has(emote.canonicalId)) {
+    cachedEmoteClicks.set(emote.canonicalId, emote);
+  }
+  if (!shiftPressed && cachedEmoteClicks.size > 0) {
+    cachedEmoteClicks.forEach((cachedEmote) => emoteMenuViewStore.trackHistory(cachedEmote));
+    cachedEmoteClicks.clear();
+  }
+}
+
 export default function EmoteMenu({toggleWhisper, appendToChat, onSetTip}) {
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState(null);
@@ -40,7 +52,7 @@ export default function EmoteMenu({toggleWhisper, appendToChat, onSetTip}) {
       }
 
       appendToChat(emote, !shiftPressed);
-      emoteMenuViewStore.trackHistory(emote);
+      cacheOrProcessEmoteClicks(emote, shiftPressed);
 
       if (shiftPressed) {
         markTipAsSeen(EmoteMenuTips.EMOTE_MENU_PREVENT_CLOSE);
@@ -56,6 +68,9 @@ export default function EmoteMenu({toggleWhisper, appendToChat, onSetTip}) {
     function buttonPressCallback(event) {
       setAltPressed(event.altKey);
       setShiftPressed(event.shiftKey);
+      if (!event.shiftKey) {
+        cacheOrProcessEmoteClicks(null, false);
+      }
     }
 
     function callback(event) {
