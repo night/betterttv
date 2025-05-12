@@ -9,3 +9,7 @@
     background-color: #1f1925;
   }
 }
+
+section[data-test-selector="chat-room-component-layout"] .simplebar-track.vertical {
+  z-index: 2;
+}
