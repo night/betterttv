@@ -10,6 +10,6 @@
   }
 }
 
-section[data-test-selector="chat-room-component-layout"] .simplebar-track.vertical {
+section[data-test-selector='chat-room-component-layout'] .simplebar-track.vertical {
   z-index: 2;
 }
