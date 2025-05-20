@@ -27,7 +27,7 @@
     display: none !important;
   }
 
-  .persistent-player:has(+.channel-root) {
+  div:has(> .channel-root) > .persistent-player {
     width: 100%;
   }
 
