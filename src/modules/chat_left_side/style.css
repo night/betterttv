@@ -31,10 +31,6 @@
     width: 100%;
   }
 
-  .channel-root__upper-watch--with-chat {
-    width: 100% !important;
-  }
-
   .channel-root__player--with-chat {
     width: 100% !important;
   }
@@ -72,10 +68,6 @@
   .channel-page__video-player--theatre-mode {
     left: auto !important;
     right: 0;
-  }
-
-  .channel-root--watch-chat + .persistent-player {
-    width: 100%;
   }
 
   .right-column__toggle-visibility {
