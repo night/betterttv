@@ -27,8 +27,8 @@
     display: none !important;
   }
 
-  .channel-root__upper-watch--with-chat {
-    width: 100% !important;
+  div:has(> .channel-root) > .persistent-player {
+    width: 100%;
   }
 
   .channel-root__player--with-chat {
@@ -68,10 +68,6 @@
   .channel-page__video-player--theatre-mode {
     left: auto !important;
     right: 0;
-  }
-
-  .channel-root--watch-chat + .persistent-player {
-    width: 100%;
   }
 
   .right-column__toggle-visibility {
