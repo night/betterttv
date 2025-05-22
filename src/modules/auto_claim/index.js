@@ -38,7 +38,7 @@ const claimDropMutation = gql`
   }
 `;
 
-async function handleMessage(message) {
+async function handleOnsiteNotificationMessage(message) {
   const messageData = JSON.parse(message);
 
   if (
@@ -71,7 +71,7 @@ async function handleMessage(message) {
   }
 }
 
-let listenerAttached = false;
+let unlisten = null;
 class AutoClaimModule {
   constructor() {
     watcher.on('load.chat', () => this.load());
@@ -81,19 +81,30 @@ class AutoClaimModule {
   async load() {
     const autoClaim = settings.get(SettingIds.AUTO_CLAIM);
     const shouldAutoClaim = hasFlag(autoClaim, AutoClaimFlags.DROPS);
-    const client = window.__twitch_pubsub_client;
-    const currentUser = getCurrentUser();
-    if (client == null || currentUser == null) {
-      return;
+
+    if (!shouldAutoClaim && unlisten != null) {
+      unlisten?.();
+      unlisten = null;
     }
-    const topicId = `onsite-notifications.${currentUser.id}`;
-    if (!shouldAutoClaim && listenerAttached) {
-      listenerAttached = false;
-      client.topicListeners.removeListener(topicId, handleMessage);
-    }
-    if (shouldAutoClaim && !listenerAttached) {
-      listenerAttached = true;
-      client.topicListeners.addListener(topicId, handleMessage);
+
+    if (shouldAutoClaim && unlisten == null) {
+      const connectStore = twitch.getConnectStore();
+      const currentUser = getCurrentUser();
+      const client = window.__twitch_pubsub_client;
+
+      if (connectStore == null || currentUser == null || client == null) {
+        return;
+      }
+
+      const sessionUserAuthToken = connectStore.getState()?.session?.user?.authToken;
+      if (sessionUserAuthToken == null) {
+        return;
+      }
+
+      unlisten = client.listen(
+        {topic: `onsite-notifications.${currentUser.id}`, auth: sessionUserAuthToken},
+        handleOnsiteNotificationMessage
+      );
     }
   }
 }
