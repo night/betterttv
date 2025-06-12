@@ -84,7 +84,7 @@
     "rsuite": "5.82.0",
     "safe-regex2": "5.0.0",
     "semver": "7.7.2",
-    "string-replace-loader": "3.1.0",
+    "string-replace-loader": "3.2.0",
     "terser-webpack-plugin": "5.3.14",
     "twemoji": "14.0.2",
     "uuid": "11.1.0",
