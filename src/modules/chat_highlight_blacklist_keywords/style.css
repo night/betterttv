@@ -1,5 +1,5 @@
 #bttv-pin-container {
-  position: absolute;
+  position: sticky;
   top: 0px;
   right: 0px;
   width: 100%;
