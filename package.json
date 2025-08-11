@@ -49,7 +49,7 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-eslint-plugin": "6.5.0",
     "eslint-plugin-import": "2.32.0",
-    "eslint-plugin-prettier": "5.5.3",
+    "eslint-plugin-prettier": "5.5.4",
     "eslint-plugin-react": "7.37.5",
     "file-saver": "2.0.5",
     "filemanager-webpack-plugin": "9.0.1",
