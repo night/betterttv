@@ -35,6 +35,12 @@ function SidebarComponent() {
               {formatMessage({defaultMessage: 'Show recommended channels in the sidebar'})}
             </p>
           </Checkbox>
+          <Checkbox key="recommendedCategories" value={SidebarFlags.RECOMMENDED_CATEGORIES}>
+            <p className={styles.heading}>{formatMessage({defaultMessage: 'Recommended Categories'})}</p>
+            <p className={styles.settingDescription}>
+              {formatMessage({defaultMessage: 'Show recommended categories in the sidebar'})}
+            </p>
+          </Checkbox>
           <Checkbox key="similarChannels" value={SidebarFlags.SIMILAR_CHANNELS}>
             <p className={styles.heading}>{formatMessage({defaultMessage: 'Similar Channels'})}</p>
             <p className={styles.settingDescription}>
@@ -69,5 +75,16 @@ registerComponent(SidebarComponent, {
   settingId: SettingIds.SIDEBAR,
   name: SETTING_NAME,
   category: CategoryTypes.DIRECTORY,
-  keywords: ['sidebar', 'recently', 'watched', 'recommended', 'similar', 'offline', 'channels', 'expand', 'stories'],
+  keywords: [
+    'sidebar',
+    'recently',
+    'watched',
+    'recommended',
+    'similar',
+    'offline',
+    'categories',
+    'channels',
+    'expand',
+    'stories',
+  ],
 });

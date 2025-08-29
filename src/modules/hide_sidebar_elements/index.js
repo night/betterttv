@@ -38,6 +38,10 @@ function toggleSidebarSectionClass(node, flags) {
       node.classList.toggle(styles.hide, !hasFlag(setting, SidebarFlags.SIMILAR_CHANNELS));
       break;
     }
+    case 'provider-sidenav-recommended-categories-default-1': {
+      node.classList.toggle(styles.hide, !hasFlag(setting, SidebarFlags.RECOMMENDED_CATEGORIES));
+      break;
+    }
     default: {
       break;
     }
