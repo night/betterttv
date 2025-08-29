@@ -57,7 +57,8 @@ settings.on(`changed.${SettingIds.AUTO_THEME_MODE}`, (value, temporary) => {
   matchSystemTheme();
 
   connectStore.subscribe(() => {
-    const isDarkMode = connectStore.getState().ui.theme === TwitchThemes.DARK;
+    const uiState = connectStore.getState().ui;
+    const isDarkMode = uiState.theme === TwitchThemes.DARK || uiState.theatreModeEnabled === true;
     if (settings.get(SettingIds.DARKENED_MODE) === isDarkMode) {
       return;
     }
