@@ -4,6 +4,7 @@ import babelParser from '@babel/eslint-parser';
 import {fixupConfigRules} from '@eslint/compat';
 import {FlatCompat} from '@eslint/eslintrc';
 import js from '@eslint/js';
+import eslintPlugin from 'eslint-plugin-eslint-plugin';
 import globals from 'globals';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -17,14 +18,10 @@ const compat = new FlatCompat({
 export default [
   {
     ignores: ['**/build', '**/node_modules'],
+    ...eslintPlugin.configs['rules-recommended'],
   },
   ...fixupConfigRules(
-    compat.extends(
-      'plugin:import/recommended',
-      'plugin:react/recommended',
-      'plugin:eslint-plugin/recommended',
-      'plugin:prettier/recommended'
-    )
+    compat.extends('plugin:import/recommended', 'plugin:react/recommended', 'plugin:prettier/recommended')
   ),
   {
     languageOptions: {
