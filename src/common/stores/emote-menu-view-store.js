@@ -1,7 +1,6 @@
 import Fuse from 'fuse.js';
 import sortBy from 'lodash.sortby';
 import uniqBy from 'lodash.uniqby';
-import {v4 as uuidv4} from 'uuid';
 import {
   SettingIds,
   EmoteProviders,
@@ -123,7 +122,10 @@ class EmoteMenuViewStore extends SafeEventEmitter {
   }
 
   registerProvider(provider) {
-    const registeredProviderId = uuidv4();
+    const registeredProviderId =
+      window.crypto != null && window.crypto.randomUUID != null
+        ? window.crypto.randomUUID()
+        : provider.displayName.toLowerCase().replace(/\s+/g, '-');
     registeredProviders[registeredProviderId] = provider;
     return registeredProviderId;
   }
