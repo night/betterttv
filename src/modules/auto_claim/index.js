@@ -90,21 +90,18 @@ class AutoClaimModule {
     if (shouldAutoClaim && unlisten == null) {
       const connectStore = twitch.getConnectStore();
       const currentUser = getCurrentUser();
-      const client = window.__twitch_pubsub_client;
-
-      if (connectStore == null || currentUser == null || client == null) {
+      const twitchPubSubEvents = window.__twitch_pubsub_events;
+      if (connectStore == null || currentUser == null || twitchPubSubEvents == null) {
         return;
       }
 
-      const sessionUserAuthToken = connectStore.getState()?.session?.user?.authToken;
-      if (sessionUserAuthToken == null) {
-        return;
-      }
-
-      unlisten = client.listen(
-        {topic: `onsite-notifications.${currentUser.id}`, auth: sessionUserAuthToken},
-        handleOnsiteNotificationMessage
-      );
+      const callback = (event) => {
+        handleOnsiteNotificationMessage(event.detail);
+      };
+      twitchPubSubEvents.addEventListener('notification', callback);
+      unlisten = () => {
+        twitchPubSubEvents.removeEventListener?.('notification', callback);
+      };
     }
   }
 }
