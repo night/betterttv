@@ -157,17 +157,7 @@ function About({onClose}) {
                   </a>
                 </li>
                 <li>
-                  <a target="_blank" rel="noreferrer" href="https://twitter.com/betterttv">
-                    {formatMessage({defaultMessage: 'Twitter'})}
-                  </a>
-                </li>
-                <li>
-                  <a target="_blank" rel="noreferrer" href="https://community.nightdev.com/c/betterttv">
-                    {formatMessage({defaultMessage: 'Forums'})}
-                  </a>
-                </li>
-                <li>
-                  <a target="_blank" rel="noreferrer" href="https://www.nightdev.com/contact">
+                  <a target="_blank" rel="noreferrer" href="https://nightdev.com/contact">
                     {formatMessage({defaultMessage: 'Email Us'})}
                   </a>
                 </li>
