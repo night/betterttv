@@ -32,7 +32,7 @@
     "@hello-pangea/dnd": "18.0.1",
     "@rsuite/icons": "1.4.0",
     "@sentry/browser": "10.19.0",
-    "@sentry/webpack-plugin": "4.3.0",
+    "@sentry/webpack-plugin": "4.4.0",
     "autoprefixer": "10.4.21",
     "babel-loader": "10.0.0",
     "babel-plugin-formatjs": "10.5.41",
