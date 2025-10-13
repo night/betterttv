@@ -101,7 +101,7 @@
   "devDependencies": {
     "@eslint/compat": "1.4.0",
     "@eslint/eslintrc": "3.3.1",
-    "@eslint/js": "9.35.0",
+    "@eslint/js": "9.37.0",
     "globals": "16.4.0"
   }
 }
