@@ -11,7 +11,6 @@ import {getPlatform} from '../../utils/window.js';
 import watcher from '../../watcher.js';
 import nicknames from '../chat_nicknames/index.js';
 import emotes from '../emotes/index.js';
-import splitChat from '../split_chat/index.js';
 import subscribers from '../subscribers/index.js';
 
 const STEAM_LOBBY_JOIN_REGEX = /^steam:\/\/joinlobby\/\d+\/\d+\/\d+$/;
@@ -417,8 +416,6 @@ class ChatModule {
 
   _messageParser(element, messageObj, fromNode, badgesContainer, messageParts = []) {
     if (element.__bttvParsed) return;
-
-    splitChat.render(element, messageObj);
 
     const user = formatChatUser(messageObj);
     if (!user) return;

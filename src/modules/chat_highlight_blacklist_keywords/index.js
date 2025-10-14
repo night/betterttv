@@ -10,6 +10,7 @@ import {loadModuleForPlatforms} from '../../utils/modules.js';
 import {escapeRegExp} from '../../utils/regex.js';
 import {getCurrentUser} from '../../utils/user.js';
 import watcher from '../../watcher.js';
+import splitChat from '../split_chat/index.js';
 
 const CHAT_LIST_SELECTOR =
   '.chat-list .chat-scrollable-area__message-container,.chat-list--default .chat-scrollable-area__message-container,.chat-list--other .chat-scrollable-area__message-container,.video-chat div[data-test-selector="video-chat-message-list-wrapper"]';
@@ -320,6 +321,8 @@ class ChatHighlightBlacklistKeywordsModule {
       this.markBlacklisted(message);
       return;
     }
+
+    splitChat.render(message, messageObj);
 
     if (
       badges.some((value) => fieldContainsKeyword(highlightBadges, from, value, handleColorChange)) ||
