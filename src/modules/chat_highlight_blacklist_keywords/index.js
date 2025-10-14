@@ -314,7 +314,8 @@ class ChatHighlightBlacklistKeywordsModule {
       fieldContainsKeyword(blacklistKeywords, from, messageText) ||
       (reply != null &&
         (fieldContainsKeyword(blacklistUsers, from, reply.parentUserLogin) ||
-          fieldContainsKeyword(blacklistKeywords, from, reply.parentMessageBody)))
+          fieldContainsKeyword(blacklistKeywords, from, reply.parentMessageBody) ||
+          fieldContainsKeyword(blacklistKeywords, from, `@${reply.threadParentDisplayName}`)))
     ) {
       this.markBlacklisted(message);
       return;
@@ -326,7 +327,8 @@ class ChatHighlightBlacklistKeywordsModule {
       fieldContainsKeyword(highlightKeywords, from, messageText, handleColorChange) ||
       (reply != null &&
         (fieldContainsKeyword(highlightUsers, from, reply.parentUserLogin, handleColorChange) ||
-          fieldContainsKeyword(highlightKeywords, from, reply.parentMessageBody, handleColorChange)))
+          fieldContainsKeyword(highlightKeywords, from, reply.parentMessageBody, handleColorChange) ||
+          fieldContainsKeyword(highlightKeywords, from, `@${reply.threadParentDisplayName}`)))
     ) {
       this.markHighlighted(message, color);
 
