@@ -295,7 +295,7 @@ export default {
       node = searchReactParents(
         getReactInstance(document.querySelector(CHAT_WYSIWYG_INPUT_EDITOR)),
         (n) => n?.stateNode?.providers != null,
-        30
+        50
       );
     } catch (_) {}
 
