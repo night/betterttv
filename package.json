@@ -42,7 +42,7 @@
     "cookies-js": "1.2.3",
     "copy-webpack-plugin": "13.0.1",
     "css-loader": "7.1.2",
-    "css-minimizer-webpack-plugin": "7.0.2",
+    "css-minimizer-webpack-plugin": "7.0.4",
     "delegated-events": "1.1.2",
     "emoji-toolkit": "9.0.1",
     "eslint": "9.39.2",
