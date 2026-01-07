@@ -45,7 +45,7 @@
     "css-minimizer-webpack-plugin": "7.0.2",
     "delegated-events": "1.1.2",
     "emoji-toolkit": "9.0.1",
-    "eslint": "9.38.0",
+    "eslint": "9.39.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-eslint-plugin": "7.2.0",
     "eslint-plugin-import": "2.32.0",
