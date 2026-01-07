@@ -86,7 +86,7 @@
     "safe-regex2": "5.0.0",
     "semver": "7.7.3",
     "string-replace-loader": "3.3.0",
-    "terser-webpack-plugin": "5.3.14",
+    "terser-webpack-plugin": "5.3.16",
     "twemoji": "14.0.2",
     "virtual-module-webpack-plugin": "0.4.1",
     "webpack": "5.104.1",
