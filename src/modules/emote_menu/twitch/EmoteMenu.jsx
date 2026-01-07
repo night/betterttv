@@ -10,7 +10,7 @@ import EmoteMenuButton from '../components/Button.jsx';
 import styles from './EmoteMenu.module.css';
 
 const CONTAINER_QUERY_SELECTOR = '#root';
-const CHAT_TEXT_AREA = 'textarea[data-a-target="chat-input"], div[data-a-target="chat-input"]';
+const CHAT_TEXT_AREA = '.chat-input__textarea, textarea[data-a-target="chat-input"], div[data-a-target="chat-input"]';
 const CHAT_INPUT = '.chat-input';
 
 // For legacy button
