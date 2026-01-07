@@ -85,7 +85,7 @@ const Icons = {
 const MODERATOR_CARD_DISPLAY_NAME_SELECTOR = '.viewer-card-header__display-name h4';
 const MODERATOR_CARD_OVERLAY_SELECTOR = '.viewer-card-header__overlay';
 const MODERATOR_CARD_ACTIONS_SELECTOR =
-  'button svg path[d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0zm-2 0a6 6 0 1 1-12 0 6 6 0 0 1 12 0z"]';
+  'button svg path[d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12Zm11 9A9 9 0 0 1 4.968 6.382l12.65 12.65A8.962 8.962 0 0 1 12 21Zm7.032-3.382a9 9 0 0 0-12.65-12.65l12.65 12.65Z"]';
 
 function createModeratorActionButton(command, duration, tooltipText, buttonText) {
   const container = document.createElement('div');
