@@ -181,7 +181,7 @@ export default function routesWatcher(watcher_) {
   });
 
   // force reload player when the player gets recreated
-  domObserver.on('.persistent-player', (node, isConnected) => {
+  domObserver.on('.persistent-player,.player-controls', (node, isConnected) => {
     if (!isConnected) return;
     waitForLoad('player').then(() => watcher.emit('load.player'));
   });
