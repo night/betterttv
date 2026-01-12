@@ -79,7 +79,7 @@
     "react-colorful": "5.6.1",
     "react-dom": "18.3.1",
     "react-merge-refs": "3.0.2",
-    "react-string-replace": "1.1.1",
+    "react-string-replace": "2.0.1",
     "reconnecting-eventsource": "1.6.4",
     "remove-files-webpack-plugin": "1.5.0",
     "rsuite": "5.83.3",
