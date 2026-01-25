@@ -68,7 +68,7 @@
     "lodash.throttle": "4.1.1",
     "lodash.uniqby": "4.7.0",
     "luxon": "3.7.2",
-    "mini-css-extract-plugin": "2.9.4",
+    "mini-css-extract-plugin": "2.10.0",
     "normalize-path": "3.0.0",
     "postcss": "8.5.6",
     "postcss-hexrgba": "2.1.0",
