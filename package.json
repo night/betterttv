@@ -82,7 +82,7 @@
     "react-string-replace": "2.0.1",
     "reconnecting-eventsource": "1.6.4",
     "remove-files-webpack-plugin": "1.5.0",
-    "rsuite": "5.83.3",
+    "rsuite": "6.1.1",
     "safe-regex2": "5.0.0",
     "semver": "7.7.3",
     "string-replace-loader": "3.3.0",
