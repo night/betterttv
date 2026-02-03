@@ -102,6 +102,6 @@
     "@eslint/compat": "2.0.1",
     "@eslint/eslintrc": "3.3.3",
     "@eslint/js": "9.39.2",
-    "globals": "17.1.0"
+    "globals": "17.3.0"
   }
 }
