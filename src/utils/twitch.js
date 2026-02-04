@@ -320,10 +320,10 @@ export default {
     try {
       const node = searchReactParents(
         getReactInstance(document.querySelector(PLAYER)),
-        (n) => n.memoizedProps?.mediaPlayerInstance?.core != null,
+        (n) => n.dependencies?.firstContext?.memoizedValue?.mediaPlayerInstance?.playerInstance?.core != null,
         30
       );
-      player = node.memoizedProps.mediaPlayerInstance.core;
+      player = node.dependencies.firstContext.memoizedValue.mediaPlayerInstance.playerInstance.core;
     } catch (e) {}
 
     return player;
