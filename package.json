@@ -31,7 +31,7 @@
     "@fortawesome/free-solid-svg-icons": "7.1.0",
     "@hello-pangea/dnd": "18.0.1",
     "@rsuite/icons": "1.4.0",
-    "@sentry/browser": "10.36.0",
+    "@sentry/browser": "10.38.0",
     "@sentry/webpack-plugin": "4.9.0",
     "autoprefixer": "10.4.24",
     "babel-loader": "10.0.0",
