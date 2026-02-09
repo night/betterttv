@@ -84,7 +84,7 @@
     "remove-files-webpack-plugin": "1.5.0",
     "rsuite": "5.83.3",
     "safe-regex2": "5.0.0",
-    "semver": "7.7.3",
+    "semver": "7.7.4",
     "string-replace-loader": "3.3.0",
     "terser-webpack-plugin": "5.3.16",
     "twemoji": "14.0.2",
