@@ -52,7 +52,7 @@
     "eslint-plugin-prettier": "5.5.5",
     "eslint-plugin-react": "7.37.5",
     "file-saver": "2.0.5",
-    "filemanager-webpack-plugin": "9.0.1",
+    "filemanager-webpack-plugin": "10.0.0",
     "framer-motion": "12.36.0",
     "fuse.js": "7.1.0",
     "git-rev-sync": "3.0.2",
