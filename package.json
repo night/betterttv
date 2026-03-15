@@ -33,7 +33,7 @@
     "@rsuite/icons": "1.4.0",
     "@sentry/browser": "10.43.0",
     "@sentry/webpack-plugin": "4.9.1",
-    "autoprefixer": "10.4.24",
+    "autoprefixer": "10.4.27",
     "babel-loader": "10.0.0",
     "babel-plugin-formatjs": "11.2.3",
     "babel-plugin-wildcard": "7.0.0",
