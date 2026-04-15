@@ -1,15 +1,14 @@
 import React from 'react';
-import {createRoot} from 'react-dom/client';
 import formatMessage from '../../../i18n/index.js';
 import domObserver from '../../../observers/dom.js';
-import Modal from '../components/Window.jsx';
+import Modal from '../components/SettingsModal.jsx';
+import shadowDOM from '../../shadow_dom';
+import {ShadowDOMComponentIds} from '../../../constants.js';
 
 let handleOpen;
 function setHandleOpen(newHandleOpen) {
   handleOpen = newHandleOpen;
 }
-
-let mountedRoot;
 
 export default class SettingsModule {
   constructor() {
@@ -21,22 +20,14 @@ export default class SettingsModule {
 
   async load() {
     // eslint-disable-next-line import/no-unresolved
-    await import('../components/settings/global/*.jsx');
+    await import('../settings/global/*.jsx');
     // eslint-disable-next-line import/no-unresolved
-    await import('../components/settings/twitch/*.jsx');
+    await import('../settings/twitch/*.jsx');
     this.renderSettings();
   }
 
   renderSettings() {
-    if (document.querySelector('#bttvSettings') != null) return;
-    const panel = document.createElement('div');
-    panel.setAttribute('id', 'bttvSettingsPanel');
-    document.body.appendChild(panel);
-    if (mountedRoot != null) {
-      mountedRoot.unmount();
-    }
-    mountedRoot = createRoot(panel);
-    mountedRoot.render(<Modal setHandleOpen={setHandleOpen} />);
+    shadowDOM.mount(ShadowDOMComponentIds.SETTINGS_MENU, <Modal setHandleOpen={setHandleOpen} />);
   }
 
   renderSettingsMenuOption() {
@@ -59,7 +50,12 @@ export default class SettingsModule {
     anchor.setAttribute('data-a-target', 'betterttv-settings-dropdown-link');
     anchor.setAttribute('data-test-selector', 'user-menu-dropdown__betterttv-settings-link');
     anchor.setAttribute('href', '#');
-    anchor.addEventListener('click', this.openSettings);
+
+    anchor.addEventListener('click', (e) => {
+      e.preventDefault();
+      handleOpen?.(true);
+    });
+
     container.appendChild(anchor);
 
     const dropdownContainer = document.createElement('div');
@@ -92,8 +88,7 @@ export default class SettingsModule {
     dropdownIconAspect.appendChild(bttvSettingsIconDropDown);
   }
 
-  openSettings(e, defaultSearchInput = '') {
-    e?.preventDefault?.();
-    handleOpen?.(true, defaultSearchInput);
+  openSettings({scrollToSettingPanelId} = {scrollToSettingPanelId: null}) {
+    handleOpen?.(true, {scrollToSettingPanelId});
   }
 }

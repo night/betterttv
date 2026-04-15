@@ -1,0 +1,31 @@
+.modalGroup {
+  justify-content: space-between;
+  border-top: 1px solid var(--mantine-color-default-border);
+  padding: 16px;
+}
+
+.modalHeader {
+  border-bottom: 1px solid var(--mantine-color-default-border);
+}
+
+.modalHeader,
+.modalDescription {
+  padding: 16px;
+}
+
+.modalBody > div {
+  margin-bottom: 0 !important;
+}
+
+.modalBody {
+  padding: 0px;
+}
+
+.modalContent {
+  border: 1px solid var(--mantine-color-default-border);
+}
+
+.modalTitle {
+  font-size: var(--mantine-font-size-lg);
+  font-weight: 500;
+}

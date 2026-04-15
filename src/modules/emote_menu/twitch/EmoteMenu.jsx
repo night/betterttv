@@ -1,17 +1,17 @@
 import React from 'react';
-import {createRoot} from 'react-dom/client';
 import {EmoteMenuTypes, SettingIds} from '../../../constants.js';
 import domObserver from '../../../observers/dom.js';
 import settings from '../../../settings.js';
 import twitch from '../../../utils/twitch.js';
 import {getCurrentUser} from '../../../utils/user.js';
 import watcher from '../../../watcher.js';
-import EmoteMenuButton from '../components/Button.jsx';
 import styles from './EmoteMenu.module.css';
+import EmoteMenu from '../components/EmoteMenu.jsx';
+import shadowDOM from '../../shadow_dom/index.js';
 
-const CONTAINER_QUERY_SELECTOR = '#root';
 const CHAT_TEXT_AREA = '.chat-input__textarea, textarea[data-a-target="chat-input"], div[data-a-target="chat-input"]';
 const CHAT_INPUT = '.chat-input';
+const EMOTE_MENU_COMPONENT_ID = 'emote-menu-component';
 
 // For legacy button
 const LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID = 'bttv-legacy-emote-picker-button-container';
@@ -20,7 +20,17 @@ const CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR = '.chat-input div[data-test-selec
 const BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID = 'bttv-emote-picker-button-container';
 const EMOTE_PICKER_BUTTON_SELECTOR = 'button[data-a-target="emote-picker-button"]';
 
-class SafeEmoteMenuButton extends React.Component {
+let handleOpen;
+function setHandleOpen(newHandleOpen) {
+  handleOpen = newHandleOpen;
+}
+
+class SafeEmoteMenu extends React.Component {
+  componentDidMount() {
+    const {onMount} = this.props;
+    onMount();
+  }
+
   componentDidCatch(error, info) {
     const {onError} = this.props;
     onError(error, info);
@@ -31,12 +41,9 @@ class SafeEmoteMenuButton extends React.Component {
   }
 
   render() {
-    return <EmoteMenuButton {...this.props} />;
+    return <EmoteMenu {...this.props} />;
   }
 }
-
-let mountedRoot;
-let legacyMountedRoot;
 
 function appendToChat({code: text}, shouldFocus = true) {
   let prefixText = twitch.getChatInputValue();
@@ -56,9 +63,6 @@ function unloadLegacyButton(legacyContainer) {
   if (legacyContainer != null) {
     legacyContainer.remove();
   }
-  if (legacyMountedRoot != null) {
-    legacyMountedRoot.unmount();
-  }
 }
 
 function loadLegacyButton() {
@@ -77,20 +81,10 @@ function loadLegacyButton() {
   buttonContainer.setAttribute('id', LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID);
   rightContainer.insertBefore(buttonContainer, rightContainer.lastChild);
 
-  if (legacyMountedRoot != null) {
-    legacyMountedRoot.unmount();
-  }
-
-  legacyMountedRoot = createRoot(buttonContainer);
-  legacyMountedRoot.render(
-    <SafeEmoteMenuButton
-      isLegacy
-      onError={() => unloadLegacyButton(legacyContainer)}
-      appendToChat={appendToChat}
-      className={styles.button}
-      boundingQuerySelector={CHAT_TEXT_AREA}
-    />
-  );
+  const button = document.createElement('button');
+  button.classList.add(styles.legacyButton);
+  buttonContainer.appendChild(button);
+  button.addEventListener('click', () => handleOpen?.());
 }
 
 function unloadButton(container, chatInput) {
@@ -105,9 +99,6 @@ function unloadButton(container, chatInput) {
   }
   if (container != null) {
     container.remove();
-  }
-  if (mountedRoot != null) {
-    mountedRoot.unmount();
   }
 }
 
@@ -147,23 +138,35 @@ function loadButton() {
   buttonContainer.classList.add(styles.container);
   chatInputIcons.appendChild(buttonContainer);
 
-  if (mountedRoot != null) {
-    mountedRoot.unmount();
+  const button = document.createElement('button');
+  button.classList.add(styles.button);
+  buttonContainer.appendChild(button);
+  button.addEventListener('click', () => handleOpen?.());
+}
+
+function unloadEmoteMenu() {
+  shadowDOM.unmount(EMOTE_MENU_COMPONENT_ID);
+}
+
+function loadEmoteMenu(onMount, onError) {
+  if (shadowDOM.isMounted(EMOTE_MENU_COMPONENT_ID)) {
+    onMount();
   }
 
-  mountedRoot = createRoot(buttonContainer);
-  mountedRoot.render(
-    <SafeEmoteMenuButton
-      onError={() => unloadButton(buttonContainer, chatInput)}
+  shadowDOM.mount(
+    EMOTE_MENU_COMPONENT_ID,
+    <SafeEmoteMenu
+      onError={onError}
+      onMount={onMount}
+      setHandleOpen={setHandleOpen}
       appendToChat={appendToChat}
-      className={styles.button}
-      containerQuerySelector={CONTAINER_QUERY_SELECTOR}
       boundingQuerySelector={CHAT_TEXT_AREA}
+      offsetOptions={{mainAxis: 8}}
     />
   );
 }
 
-export default class EmoteMenuModule {
+class EmoteMenuModule {
   constructor() {
     domObserver.on(CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR, (node, isConnected) => {
       if (!isConnected) {
@@ -184,16 +187,20 @@ export default class EmoteMenuModule {
     switch (settings.get(SettingIds.EMOTE_MENU)) {
       case EmoteMenuTypes.ENABLED:
         unloadLegacyButton();
-        loadButton();
+        loadEmoteMenu(loadButton, unloadButton);
         break;
       case EmoteMenuTypes.LEGACY_ENABLED:
-        loadLegacyButton();
         unloadButton();
+        loadEmoteMenu(loadLegacyButton, unloadLegacyButton);
         break;
       default:
-        unloadLegacyButton();
+      case EmoteMenuTypes.NONE:
         unloadButton();
+        unloadLegacyButton();
+        unloadEmoteMenu();
         break;
     }
   }
 }
+
+export default EmoteMenuModule;

@@ -1,8 +1,26 @@
 import React from 'react';
+import {SettingDefaultValues, SettingIds} from '../../constants';
+import useStorageState from '../hooks/StorageState.jsx';
+import {getThemeColor} from '@mantine/core';
+import useProRequiredState from '../hooks/ProRequiredState.jsx';
+import {theme} from '../../modules/shadow_dom/ThemeProvider.jsx';
 
 export default function LogoIcon(props) {
+  const [color] = useStorageState(SettingIds.PRIMARY_COLOR);
+
+  const [normalizedColor] = useProRequiredState({
+    value: color ? getThemeColor(color, theme) : null,
+    defaultValue: SettingDefaultValues[SettingIds.PRIMARY_COLOR],
+  });
+
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 300 300" {...props}>
+    <svg
+      color={normalizedColor}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 300 300"
+      {...props}>
       <path
         fill="transparent"
         d="M249.771 150A99.771 99.922 0 0 1 150 249.922 99.771 99.922 0 0 1 50.229 150 99.771 99.922 0 0 1 150 50.078 99.771 99.922 0 0 1 249.771 150Z"

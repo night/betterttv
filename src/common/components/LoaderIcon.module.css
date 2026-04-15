@@ -1,0 +1,169 @@
+.indicator {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 20px;
+  min-height: 20px;
+}
+
+.animatedIcon {
+  position: relative;
+  transform: scale(0.6);
+  opacity: 0.4;
+  min-width: 20px;
+  animation: iconEnter 0.3s 0.12s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes iconEnter {
+  from {
+    transform: scale(0.6);
+    opacity: 0.4;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.indicator {
+  width: 8px;
+  height: 8px;
+  box-sizing: border-box;
+  border: 2px solid;
+  border-radius: 100%;
+  border-color: var(--button-color, currentColor);
+  border-right-color: transparent;
+  animation: loaderRotate 1s linear infinite;
+}
+
+@keyframes loaderRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.checkmark {
+  width: 20px;
+  height: 20px;
+  opacity: 0;
+  border-radius: 10px;
+  background: light-dark(var(--mantine-color-green-5), var(--mantine-color-green-6));
+  position: relative;
+  transform: rotate(45deg);
+  animation: checkmarkCircle 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  animation-delay: 100ms;
+}
+
+.checkmark::after {
+  content: '';
+  box-sizing: border-box;
+  animation: checkmarkStem 0.2s ease-out forwards;
+  opacity: 0;
+  animation-delay: 200ms;
+  position: absolute;
+  border-right: 2px solid;
+  border-bottom: 2px solid;
+  border-color: white;
+  bottom: 6px;
+  left: 6px;
+  height: 10px;
+  width: 6px;
+}
+
+@keyframes checkmarkCircle {
+  from {
+    transform: scale(0) rotate(45deg);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) rotate(45deg);
+    opacity: 1;
+  }
+}
+
+@keyframes checkmarkStem {
+  0% {
+    height: 0;
+    width: 0;
+    opacity: 0;
+  }
+  40% {
+    height: 0;
+    width: 6px;
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    height: 10px;
+  }
+}
+
+.error {
+  width: 20px;
+  height: 20px;
+  opacity: 0;
+  border-radius: 10px;
+  background: light-dark(var(--mantine-color-red-5), var(--mantine-color-red-7));
+  position: relative;
+  transform: rotate(45deg);
+  animation: errorCircle 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  animation-delay: 100ms;
+}
+
+.error::after,
+.error::before {
+  content: '';
+  animation: errorLine1 0.15s ease-out forwards;
+  animation-delay: 150ms;
+  position: absolute;
+  border-radius: 3px;
+  opacity: 0;
+  background: white;
+  bottom: 9px;
+  left: 4px;
+  height: 2px;
+  width: 12px;
+}
+
+.error::before {
+  animation: errorLine2 0.15s ease-out forwards;
+  animation-delay: 180ms;
+  transform: rotate(90deg);
+}
+
+@keyframes errorCircle {
+  from {
+    transform: scale(0) rotate(45deg);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) rotate(45deg);
+    opacity: 1;
+  }
+}
+
+@keyframes errorLine1 {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes errorLine2 {
+  from {
+    transform: scale(0) rotate(90deg);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) rotate(90deg);
+    opacity: 1;
+  }
+}

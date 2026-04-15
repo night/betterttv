@@ -1,8 +1,15 @@
+import {wasSeventvInstalled} from './utils/seventv.js';
+
 export const NODE_ENV = process.env.NODE_ENV;
 export const EXT_VER = process.env.EXT_VER;
 export const GIT_REV = process.env.GIT_REV;
 export const CDN_ENDPOINT = process.env.CDN_ENDPOINT;
 export const SENTRY_URL = process.env.SENTRY_URL;
+export const OAUTH2_CLIENT_ID = process.env.OAUTH2_CLIENT_ID;
+export const OAUTH2_REDIRECT_URI = process.env.OAUTH2_REDIRECT_URI;
+export const API_ENDPOINT = process.env.API_ENDPOINT;
+export const API_VERSION = process.env.API_VERSION;
+export const SOCKET_ENDPOINT = process.env.SOCKET_ENDPOINT;
 
 export const SettingIds = {
   ANON_CHAT: 'anonChat',
@@ -48,6 +55,7 @@ export const SettingIds = {
   AUTO_LIVE_CHAT_VIEW: 'autoLiveChatView',
   EMOTE_MENU_WIDTH: 'emoteMenuWidth',
   HYPE_CHAT: 'hypeChat',
+  PRIMARY_COLOR: 'primaryColor',
 };
 
 export const CategoryTypes = {
@@ -132,11 +140,11 @@ export const AutoClaimFlags = {
 };
 
 export const PageTypes = {
-  CHAT_SETTINGS: 1,
-  DIRECTORY_SETTINGS: 2,
-  CHANNEL_SETTINGS: 3,
-  CHANGELOG: 4,
-  ABOUT: 5,
+  SETTINGS: 1,
+  CHANGELOG: 2,
+  USER_SETTINGS: 3,
+  HIGHLIGHT_KEYWORDS: 4,
+  BLACKLIST_KEYWORDS: 5,
 };
 
 export const NavigationModeTypes = {
@@ -197,7 +205,15 @@ export const EmoteMenuTips = {
   EMOTE_MENU_PREVENT_CLOSE: 'emoteMenuTipClosedPreventClose',
   EMOTE_MENU_HOTKEY: 'emoteMenuTipClosedHotkey',
   EMOTE_MENU_REPLACE_DEFAULT: 'emoteMenuTipClosedReplaceDefault',
+  EMOTE_MENU_CUSTOMIZE_ACCENT_COLOR: 'emoteMenuTipClosedCustomizeAccentColor',
 };
+
+export const SettingsPromotions = {
+  THEME_CUSTOMIZE: 'settingsPromotionDismissedThemeCustomize',
+};
+
+/** Default Mantine `theme.primaryColor` key when unset or invalid. */
+export const DEFAULT_PRIMARY_COLOR = 'red';
 
 export const SettingDefaultValues = {
   [SettingIds.ANON_CHAT]: false,
@@ -219,7 +235,7 @@ export const SettingDefaultValues = {
   [SettingIds.WHISPERS]: true,
   [SettingIds.SHOW_DIRECTORY_LIVE_TAB]: false,
   [SettingIds.CHANNEL_POINTS_MESSAGE_HIGHLIGHTS]: true,
-  [SettingIds.EMOTE_MENU]: EmoteMenuTypes.NONE,
+  [SettingIds.EMOTE_MENU]: EmoteMenuTypes.ENABLED,
   [SettingIds.AUTO_THEME_MODE]: false,
   [SettingIds.DARKENED_MODE]: false,
   [SettingIds.PRIME_PROMOTIONS]: true,
@@ -243,7 +259,8 @@ export const SettingDefaultValues = {
     EmoteTypeFlags.BTTV_EMOTES |
       EmoteTypeFlags.ANIMATED_EMOTES |
       EmoteTypeFlags.FFZ_EMOTES |
-      EmoteTypeFlags.EMOTE_MODIFIERS,
+      EmoteTypeFlags.EMOTE_MODIFIERS |
+      (wasSeventvInstalled() ? EmoteTypeFlags.SEVENTV_EMOTES : 0),
     0,
   ],
   [SettingIds.CHAT]: [
@@ -267,8 +284,9 @@ export const SettingDefaultValues = {
   [SettingIds.CHANNEL_POINTS]: [ChannelPointsFlags.CHANNEL_POINTS | ChannelPointsFlags.MESSAGE_HIGHLIGHTS, 0],
   [SettingIds.AUTO_CLAIM]: [0, 0],
   [SettingIds.LIVE_CHAT_VIEW]: false,
-  [SettingIds.EMOTE_MENU_WIDTH]: 380,
+  [SettingIds.EMOTE_MENU_WIDTH]: 496,
   [SettingIds.HYPE_CHAT]: true,
+  [SettingIds.PRIMARY_COLOR]: null,
 };
 
 export const FlagSettings = [
@@ -287,6 +305,11 @@ export const PlatformTypes = {
   YOUTUBE: 3,
 };
 
+export const ProviderTypes = {
+  TWITCH: 'twitch',
+  YOUTUBE: 'youtube',
+};
+
 export const EMOTE_MENU_SIDEBAR_ROW_HEIGHT = 36;
 export const EMOTE_MENU_GRID_ROW_HEIGHT = 36;
 export const EMOTE_MENU_GRID_HEIGHT = 300;
@@ -298,4 +321,26 @@ export const BadgeTypes = {
   SUPPORT_VOLUNTEER: 2,
   EMOTE_APPROVER: 3,
   TRANSLATOR: 4,
+};
+
+export const ShadowDOMComponentIds = {
+  SETTINGS_MENU: 'settings-menu',
+  EMOTE_AUTOCOMPLETE: 'emote-autocomplete',
+};
+
+export const DEFAULT_HIGHLIGHT_COLOR = '#ff0000';
+
+export const ExternalLinks = {
+  WEBSITE: 'https://betterttv.com/',
+  TWITTER: 'https://x.com/BetterTTV',
+  GITHUB: 'https://github.com/night/betterttv',
+  GITHUB_ISSUES: 'https://github.com/night/betterttv/issues',
+  GITHUB_DISCUSSIONS: 'https://github.com/night/betterttv/discussions',
+  CROWDIN: 'https://crowdin.com/project/betterttv',
+  DISCORD: 'https://discord.gg/nightdev',
+  EMAIL: 'https://nightdev.com/contact',
+  TERMS: 'https://betterttv.com/terms',
+  PRIVACY: 'https://betterttv.com/privacy',
+  DEVELOPER_API: 'https://betterttv.com/developers/api',
+  PRO: 'https://betterttv.com/dashboard/pro',
 };

@@ -6,7 +6,8 @@
 }
 
 .placeholder {
-  background-color: var(--bttv-rs-bg-card);
+  border-radius: var(--mantine-radius-md);
+  background-color: light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-6));
 }
 
 .emoteImageLocked {
@@ -19,11 +20,19 @@
   height: 28px;
 }
 
-.lock {
+.lockIcon {
   position: absolute;
-  bottom: 1px;
-  right: 1px;
-  width: 10px;
-  height: 10px;
-  color: var(--bttv-rs-text-heading);
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  padding: 2px;
+  object-fit: contain;
+  color: var(--mantine-color-text);
+}
+
+.lock {
+  position: relative;
+  width: 100%;
+  height: 100%;
 }

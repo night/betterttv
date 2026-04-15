@@ -1,0 +1,59 @@
+.autocomplete {
+  container-type: inline-size;
+  overflow: hidden;
+  width: 100%;
+  background-color: var(--mantine-color-body-secondary);
+  border-radius: var(--mantine-radius-lg);
+  border: 1px solid var(--mantine-color-default-border);
+  box-shadow: var(--mantine-shadow-md);
+}
+
+.autocompleteBody {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  max-height: 300px;
+  overflow-y: scroll;
+}
+
+.autocompleteHeader {
+  border-bottom: 1px solid var(--mantine-color-default-border);
+}
+
+.autocompleteFooter {
+  border-top: 1px solid var(--mantine-color-default-border);
+}
+
+.kbd {
+  display: flex;
+  align-items: center;
+  aspect-ratio: 1;
+}
+
+.kbdIcon {
+  width: 8px;
+  height: 8px;
+}
+
+.kbdIconTurn {
+  rotate: 90deg;
+}
+
+.floatRight {
+  margin-left: auto;
+}
+
+.autocompleteFooter,
+.autocompleteHeader {
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--mantine-color-body);
+}
+
+.autocompleteHidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}

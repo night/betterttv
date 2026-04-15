@@ -1,0 +1,20 @@
+.pill > button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pill {
+  --pill-height: var(--pill-height-xl) !important;
+  --pill-fz: var(--pill-fz-xl) !important;
+}
+
+.tagsInput {
+  max-width: 100%;
+}
+
+.channelOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

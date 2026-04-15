@@ -16,8 +16,16 @@ export default function useStorageState(settingId) {
   }, [settingId]);
 
   function setSetting(newValue) {
-    if (newValue === value) return;
+    if (newValue === value) {
+      return;
+    }
+
     setValue(newValue);
+
+    if (typeof newValue === 'function') {
+      newValue = newValue(value);
+    }
+
     settings.set(settingId, newValue);
   }
 

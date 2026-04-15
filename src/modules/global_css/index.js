@@ -12,8 +12,6 @@ class GlobalCSSModule {
   }
 
   loadGlobalCSS() {
-    // TODO: this is a crazy hack to enable youtube-specific rsuite overrides
-    // we should find a better way
     if (getPlatform() === PlatformTypes.YOUTUBE) {
       document.body.classList.toggle('bttv-youtube', true);
     }

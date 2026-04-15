@@ -1,12 +1,29 @@
 import classNames from 'classnames';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import styles from './VirtualizedList.module.css';
+import debounce from 'lodash.debounce';
+import throttle from 'lodash.throttle';
 
 function VirtualizedList(
-  {className, totalRows, rowHeight, renderRow, windowHeight, stickyRows = [], onHeaderChange = () => {}},
+  {
+    className,
+    totalRows,
+    rowHeight,
+    renderRow,
+    windowHeight,
+    stickyRows,
+    onHeaderChange = () => {},
+    stickyBottomComponent,
+    bottomGuardHeight = 0,
+    topGuardHeight = 0,
+    ...props
+  },
   ref
 ) {
-  const listHeight = useMemo(() => rowHeight * totalRows, [totalRows, rowHeight]);
+  const listHeight = useMemo(
+    () => Math.max(rowHeight * totalRows + topGuardHeight + bottomGuardHeight, windowHeight),
+    [totalRows, rowHeight, windowHeight, topGuardHeight, bottomGuardHeight]
+  );
 
   const [data, setData] = useState({
     top: 0,
@@ -18,10 +35,8 @@ function VirtualizedList(
     onHeaderChange(data.headerIndex);
   }, [data.headerIndex]);
 
-  const wrapperRef = ref || useRef(null);
-
   const isInViewport = useCallback(() => {
-    const currentWrapperRef = wrapperRef.current;
+    const currentWrapperRef = ref.current;
     if (currentWrapperRef == null) {
       return;
     }
@@ -32,7 +47,7 @@ function VirtualizedList(
     const endIndex = Math.min(totalRows - 1, Math.floor(scrollBottom / rowHeight));
 
     let stickyRowIndex;
-    for (const rowIndex of stickyRows) {
+    for (const rowIndex of stickyRows ?? []) {
       if (rowIndex > startIndex) {
         break;
       }
@@ -50,22 +65,21 @@ function VirtualizedList(
     }
 
     const indexOffset = hasAdditionalStickyRow ? startIndex - 1 : startIndex;
-    setData({
-      rows: rowsVisible,
-      top: indexOffset * rowHeight,
-      headerIndex: stickyRowIndex,
-    });
+    setData({rows: rowsVisible, top: indexOffset * rowHeight, headerIndex: stickyRowIndex});
   }, [totalRows, rowHeight, windowHeight, stickyRows]);
 
   useEffect(() => {
-    const currentWrapperRef = wrapperRef.current;
+    const currentWrapperRef = ref.current;
     if (currentWrapperRef == null) {
       return null;
     }
-    currentWrapperRef.addEventListener('scroll', isInViewport);
+
     isInViewport();
+    const throttledCallback = throttle(isInViewport, 50);
+
+    currentWrapperRef.addEventListener('scroll', throttledCallback);
     return () => {
-      currentWrapperRef.removeEventListener('scroll', isInViewport);
+      currentWrapperRef.removeEventListener('scroll', throttledCallback);
     };
   }, [isInViewport]);
 
@@ -75,20 +89,21 @@ function VirtualizedList(
         renderRow({
           key: `row-${value}`,
           index: value,
-          style: {
-            height: `${rowHeight}px`,
-          },
+          style: {height: `${rowHeight}px`},
         })
       ),
     [data.rows, renderRow]
   );
 
   return (
-    <div className={classNames(styles.list, className)} style={{height: windowHeight}} ref={wrapperRef}>
+    <div className={classNames(styles.list, className)} style={{height: windowHeight}} ref={ref} {...props}>
       <div className={styles.rows} style={{top: data.top}}>
+        <div className={styles.guard} style={{height: topGuardHeight}} />
         {rows}
+        <div className={styles.guard} style={{height: bottomGuardHeight}} />
       </div>
       <div className={styles.ghostRows} style={{height: listHeight}} />
+      <div className={styles.stickyBottomComponent}>{stickyBottomComponent}</div>
     </div>
   );
 }

@@ -1,0 +1,12 @@
+.root {
+  &[data-variant='elevated'] {
+    background-color: var(--mantine-color-body);
+    border: 1px solid var(--mantine-color-default-border);
+  }
+}
+
+.label {
+  line-height: 1;
+  display: flex;
+  align-items: center;
+}

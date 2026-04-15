@@ -1,4 +1,4 @@
-import api from '../utils/api.js';
+import {getCachedUser} from '../actions/users.js';
 import {getCurrentChannel} from '../utils/channel.js';
 import debug from '../utils/debug.js';
 
@@ -12,8 +12,7 @@ function updateChannel() {
 
   channel = currentChannel;
 
-  api
-    .get(`cached/users/${channel.provider}/${channel.id}`)
+  getCachedUser(channel.provider, channel.id)
     .catch((error) => ({
       bots: [],
       channelEmotes: [],

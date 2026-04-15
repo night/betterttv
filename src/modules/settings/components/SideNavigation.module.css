@@ -1,0 +1,147 @@
+.sidenavContainer {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--mantine-color-default-border);
+  background-color: var(--mantine-color-body);
+  overflow: hidden;
+}
+
+.navigationIconButton,
+.logo {
+  width: 76px;
+  height: 76px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.navigationIconButton {
+  height: 56px;
+}
+
+.userSettingsButton {
+  height: 76px;
+  border: 1px solid var(--button-hover);
+}
+
+.navigationIcon {
+  width: 20px;
+  height: 20px;
+}
+
+.navigationIconButton,
+.navigationButton {
+  transition-property: color, background-color;
+  transition-duration: 100ms;
+  transition-timing-function: ease-in-out;
+}
+
+.navigationIconButton[data-active='false']:not(:hover),
+.topNavigationButton[data-active='false']:not(:hover) {
+  background: transparent;
+}
+
+.navigationButton {
+  font-weight: 500;
+  height: 56px;
+  padding-left: 16px;
+  padding-right: 16px;
+  --button-justify: left;
+
+  .navigationIcon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .navigationSection {
+    margin-right: var(--mantine-spacing-lg);
+  }
+}
+
+.avatarFallbackIcon {
+  width: 16px;
+  height: 16px;
+}
+
+.userSettingsButton {
+  margin-top: auto;
+}
+
+.tooltip {
+  font-size: var(--mantine-font-size-md);
+}
+
+.overlay {
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+@media (max-width: 800px) {
+  .sidenavContainer {
+    z-index: 1000;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    max-width: min(300px, 100%);
+    width: 100%;
+    padding: 16px;
+    transform: translateX(-100%);
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .overlayOpen {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .navigationIconButton {
+    display: none;
+  }
+
+  .open {
+    transform: translateX(0);
+  }
+
+  .logoContainer {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    height: auto;
+  }
+
+  .closeButton,
+  .logo {
+    width: 40px;
+    height: 40px;
+  }
+
+  .closeButton {
+    padding: 8px;
+  }
+
+  .logo {
+    padding: 4px !important;
+  }
+
+  .userSettingsButton {
+    height: 56px;
+  }
+
+  .topNavigationButton {
+    height: 48px;
+  }
+}
+
+@media (min-width: 800px) {
+  .closeButton {
+    display: none;
+  }
+
+  .navigationButton {
+    display: none;
+  }
+}

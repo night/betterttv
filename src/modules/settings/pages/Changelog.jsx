@@ -1,14 +1,78 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import reactStringReplace from 'react-string-replace';
-import Loader from 'rsuite/Loader';
-import Panel from 'rsuite/Panel';
-import PanelGroup from 'rsuite/PanelGroup';
 import {EXT_VER} from '../../../constants.js';
 import formatMessage from '../../../i18n/index.js';
 import api from '../../../utils/api.js';
 import debug from '../../../utils/debug.js';
-import CloseButton from '../components/CloseButton.jsx';
-import styles from '../styles/header.module.css';
+import PageHeader from '../components/PageHeader.jsx';
+import Panel from '../components/Panel.jsx';
+import semver from 'semver';
+import PageLoader from '../components/PageLoader.jsx';
+import {Anchor, Text, Title} from '@mantine/core';
+import styles from './Changelog.module.css';
+
+function IssueLink({issueNumber}) {
+  return (
+    <React.Fragment>
+      {' '}
+      <Anchor
+        className={styles.changelogText}
+        href={`https://github.com/night/BetterTTV/issues/${issueNumber}`}
+        target="_blank"
+        rel="noreferrer">
+        #{issueNumber}
+      </Anchor>
+    </React.Fragment>
+  );
+}
+
+function ChangelogEntry({body, version, publishedAt}) {
+  const formattedBody = useMemo(() => {
+    let issueLinkIndex = 0;
+    let lineBreakIndex = 0;
+
+    let result = reactStringReplace(body, / #([0-9]+)/g, (match) => (
+      <IssueLink key={`${version}-issue-${match}-${issueLinkIndex++}`} issueNumber={match} />
+    ));
+
+    result = reactStringReplace(result, /(\r\n)/g, () => <br key={`${version}-line-${lineBreakIndex++}`} />);
+
+    return result;
+  }, [body, version]);
+
+  return (
+    <Panel
+      key={`${version}-${publishedAt}`}
+      title={
+        <div className={styles.changelogTitle}>
+          <Title order={2}>{formatMessage({defaultMessage: 'Version {version}'}, {version})}</Title>
+        </div>
+      }
+      rightContent={
+        <Text c="dimmed" size="lg">
+          {formatMessage({defaultMessage: '{publishedAt, date, medium}'}, {publishedAt: new Date(publishedAt)})}
+        </Text>
+      }>
+      <Text className={styles.changelogText}>{formattedBody}</Text>
+    </Panel>
+  );
+}
+
+function ChangelogEntryList({changelogEntries: rawChangelogEntries}) {
+  const changelogEntries = rawChangelogEntries
+    .filter((entry) => entry.version != null && semver.valid(entry.version))
+    .filter(({version}) => semver.lt(version, EXT_VER));
+
+  return changelogEntries.map(({body, version, publishedAt}, index) => (
+    <ChangelogEntry
+      key={`${version}-${publishedAt}`}
+      index={index}
+      body={body}
+      version={version}
+      publishedAt={publishedAt}
+    />
+  ));
+}
 
 function Changelog({onClose}) {
   const [{loading, changelogEntries}, setRequestState] = useState({
@@ -19,79 +83,29 @@ function Changelog({onClose}) {
   useEffect(() => {
     api
       .get('cached/changelog')
-      .then((body) => {
-        setRequestState({
-          loading: false,
-          changelogEntries: body,
-        });
-      })
+      .then((body) => setRequestState({loading: false, changelogEntries: body}))
       .catch((err) => {
         debug.log(`Failed to load changelog: ${err}`);
-        setRequestState({
-          loading: false,
-          changelogEntries: null,
-        });
+        setRequestState({loading: false, changelogEntries: []});
       });
   }, []);
 
-  let renderedChangelogEntries = null;
-
-  if (loading) {
-    renderedChangelogEntries = (
-      <div className={styles.center}>
-        <Loader content={formatMessage({defaultMessage: 'Loading Changelog...'})} />
-      </div>
-    );
-  } else if (changelogEntries == null) {
-    renderedChangelogEntries = <div className={styles.center}>Failed to load Changelog.</div>;
-  } else {
-    const versionIndex = changelogEntries.findIndex(({version}) => version === EXT_VER) || 0;
-
-    renderedChangelogEntries = changelogEntries
-      .filter((_, index) => index >= versionIndex)
-      .map(({body, version, publishedAt}) => {
-        let keyCount = 0;
-        let formattedBody = reactStringReplace(body, / #([0-9]+)/g, (match) => (
-          <React.Fragment key={`${version}-issue-${match}-${keyCount++}`}>
-            {' '}
-            <a href={`https://github.com/night/BetterTTV/issues/${match}`} target="_blank" rel="noreferrer">
-              #{match}
-            </a>
-          </React.Fragment>
-        ));
-        formattedBody = reactStringReplace(formattedBody, /(\r\n)/g, (match) => (
-          <br key={`${version}-line-${match}-${keyCount++}`} />
-        ));
-
-        return (
-          <Panel
-            header={formatMessage(
-              {defaultMessage: 'Version {version} • {publishedAt, date, medium}'},
-              {version, publishedAt: new Date(publishedAt)}
-            )}
-            key={version}>
-            <p className={styles.settingDescription}>{formattedBody}</p>
-          </Panel>
-        );
-      });
-  }
-
   return (
-    <>
-      <div className={styles.content}>
-        <PanelGroup>
-          <Panel header={<h3>{formatMessage({defaultMessage: 'Changelog'})}</h3>}>
-            <p className={styles.settingDescription}>
-              {formatMessage({defaultMessage: 'A list of recent updates and patches to BetterTTV.'})}
-            </p>
-          </Panel>
-          {renderedChangelogEntries}
-        </PanelGroup>
-      </div>
-      <div className={styles.header}>
-        <CloseButton onClose={onClose} className={styles.closeButton} />
-      </div>
-    </>
+    <React.Fragment>
+      <PageHeader leftContent={formatMessage({defaultMessage: 'Changelog'})} onClose={onClose} />
+      {loading ? <PageLoader /> : null}
+      {!loading && changelogEntries == null ? (
+        <Text>{formatMessage({defaultMessage: 'Failed to load Changelog.'})}</Text>
+      ) : null}
+      {!loading && changelogEntries != null ? <ChangelogEntryList changelogEntries={changelogEntries} /> : null}
+      {!loading && changelogEntries.length === 0 ? (
+        <Panel>
+          <Text size="lg" className={styles.noChangelogText} c="dimmed">
+            {formatMessage({defaultMessage: 'No changelog entries found.'})}
+          </Text>
+        </Panel>
+      ) : null}
+    </React.Fragment>
   );
 }
 

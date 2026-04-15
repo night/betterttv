@@ -1,0 +1,15 @@
+.unsupportedPanelButton {
+  margin-top: 24px;
+}
+
+.searchInputRoot {
+  width: 100%;
+}
+
+.searchInput {
+  height: 36px;
+}
+
+.noResultsText {
+  text-align: center;
+}

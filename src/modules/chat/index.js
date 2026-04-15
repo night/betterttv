@@ -1,7 +1,7 @@
+import {getCachedBadges} from '../../actions/badges.js';
 import {EmoteTypeFlags, SettingIds, UsernameFlags, PlatformTypes, BadgeTypes} from '../../constants.js';
 import formatMessage from '../../i18n/index.js';
 import settings from '../../settings.js';
-import api from '../../utils/api.js';
 import cdn from '../../utils/cdn.js';
 import {getCurrentChannel} from '../../utils/channel.js';
 import colors from '../../utils/colors.js';
@@ -148,7 +148,7 @@ class ChatModule {
       }
     });
 
-    api.get(`cached/badges/${getPlatform() === PlatformTypes.YOUTUBE ? 'youtube' : 'twitch'}`).then((badges) => {
+    getCachedBadges(getPlatform() === PlatformTypes.YOUTUBE ? 'youtube' : 'twitch').then((badges) => {
       badges.forEach(({providerId, badge}) => badgeUsers.set(providerId, badge));
     });
   }

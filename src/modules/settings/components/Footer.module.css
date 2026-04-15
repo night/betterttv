@@ -1,0 +1,35 @@
+.root {
+  margin-top: auto;
+}
+
+.columns {
+  display: flex;
+  width: 100%;
+  padding: 24px;
+  border-top: 1px solid var(--mantine-color-default-border);
+  background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8));
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  flex: 1;
+}
+
+.heading {
+  text-transform: uppercase;
+}
+
+.link {
+  cursor: pointer;
+}
+
+.copyright {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px;
+  border-top: 1px solid var(--mantine-color-default-border);
+  background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8));
+}

@@ -4,8 +4,10 @@ import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js'
 import formatMessage from '../../../i18n/index.js';
 import Icons from './Icons.jsx';
 import styles from './Preview.module.css';
+import classNames from 'classnames';
+import {Text, Title} from '@mantine/core';
 
-export default function Preview({emote}) {
+const Preview = React.forwardRef(({className, emote}, ref) => {
   if (emote == null) return null;
 
   let icon = null;
@@ -16,15 +18,19 @@ export default function Preview({emote}) {
   }
 
   return (
-    <div className={styles.preview} key={emote.code}>
-      <div className={styles.content}>
-        <Emote className={styles.emoteImage} emote={emote} sizes={['2x', '4x']} animating />
-        <div className={styles.emoteText}>
-          <div className={styles.emoteCode}>{emote.code}</div>
-          <div>{formatMessage({defaultMessage: 'from {name}'}, {name: emote.category.displayName})}</div>
-        </div>
+    <div ref={ref} className={classNames(styles.preview, className)} key={emote.code}>
+      <Emote className={styles.emoteImage} emote={emote} sizes={['2x', '4x']} animating />
+      <div className={styles.emoteText}>
+        <Title order={4} className={styles.emoteCode}>
+          {emote.code}
+        </Title>
+        <Text c="dimmed" className={styles.emoteCategory}>
+          {formatMessage({defaultMessage: 'from {name}'}, {name: emote.category.displayName})}
+        </Text>
       </div>
       <div className={styles.emoteStatusIcon}>{icon}</div>
     </div>
   );
-}
+});
+
+export default Preview;

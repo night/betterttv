@@ -1,6 +1,7 @@
-import {PlatformTypes} from '../constants.js';
+import {PlatformTypes, ProviderTypes} from '../constants.js';
 
 let platform;
+let provider;
 let navigatorPlatform;
 
 export function getPlatform() {
@@ -21,6 +22,24 @@ export function getPlatform() {
   }
 
   return platform;
+}
+
+export function getProvider() {
+  if (provider != null) {
+    return provider;
+  }
+
+  const {hostname} = window.location;
+
+  if (hostname.endsWith('.youtube.com')) {
+    provider = ProviderTypes.YOUTUBE;
+  } else if (hostname.endsWith('.twitch.tv')) {
+    provider = ProviderTypes.TWITCH;
+  } else {
+    throw new Error('unsupported provider');
+  }
+
+  return provider;
 }
 
 export function isMac() {

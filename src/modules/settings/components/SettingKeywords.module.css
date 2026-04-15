@@ -1,0 +1,144 @@
+.settingGroupContent {
+  padding: 0;
+  overflow: hidden;
+}
+
+.table {
+  font-size: var(--mantine-font-size-md);
+
+  th {
+    font-weight: 500;
+  }
+
+  th,
+  td {
+    padding: 8px 12px;
+    height: 36px;
+  }
+
+  --table-border-color: var(--mantine-color-default-border);
+
+  td:hover {
+    background-color: var(--table-hover-color);
+  }
+}
+
+.colorColumn,
+.actionsColumn {
+  width: 0;
+}
+
+.targetDataCell,
+.keywordDataCell,
+.colorDataCell,
+.actionsDataCell {
+  padding: 0 !important;
+}
+
+.targetColumn {
+  width: 128px;
+}
+
+.targetSelectInput,
+.keywordInput {
+  font-size: var(--mantine-font-size-md);
+  padding-left: 12px;
+}
+
+.keywordInput:focus {
+  box-shadow: unset;
+}
+
+.keywordRoot {
+  min-width: 192px;
+}
+
+.keywordRoot,
+.keywordInput,
+.keywordWrapper {
+  height: 100%;
+}
+
+.keywordColumn {
+  width: 1px;
+}
+
+.colorPicker,
+.actionIcon {
+  width: 36px;
+  height: 36px;
+  padding: 8px;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.actionIconIcon {
+  width: 12px;
+  height: 12px;
+}
+
+.channelsContainer {
+  all: unset;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  overflow: hidden;
+  width: 100%;
+  height: 36px;
+  padding: 0 12px;
+}
+
+.channelsDataCell {
+  position: relative;
+  overflow-x: hidden;
+  max-width: 0;
+  padding: 0 !important;
+  border: 0 !important;
+  vertical-align: middle;
+}
+
+.settingGroupHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.channelsInputHidden {
+  display: none;
+}
+
+.channelsInputContainer {
+  min-height: 36px;
+  background-color: var(--mantine-color-body);
+}
+
+.channelsContainerHidden {
+  display: none;
+}
+
+.channelsInput {
+  font-size: var(--mantine-font-size-md);
+  padding: 8px 12px;
+  min-height: 36px;
+  border-radius: 0;
+  border: 0 !important;
+}
+
+.channelsPill {
+  flex-shrink: 0;
+}
+
+.noKeywordsText {
+  padding: 20px;
+  text-align: center;
+}
+
+.channelOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

@@ -2,9 +2,11 @@ import React from 'react';
 import {createRoot} from 'react-dom/client';
 import domObserver from '../../../observers/dom.js';
 import {getElementData} from '../../../utils/youtube.js';
-import Modal from '../components/Window.jsx';
+import SettingsModal from '../components/SettingsModal.jsx';
 import DropdownButton from './DropdownButton.jsx';
 import './Settings.module.css';
+import {ShadowDOMComponentIds} from '../../../constants.js';
+import shadowDOM from '../../shadow_dom';
 
 const CHAT_SETTINGS_DROPDOWN_CONTAINER_SELECTOR = 'tp-yt-iron-dropdown';
 const CHAT_SETTINGS_DROPDOWN_ITEMS_SELECTOR = 'tp-yt-paper-listbox';
@@ -44,27 +46,14 @@ export default class SettingsModule {
 
   async load() {
     // eslint-disable-next-line import/no-unresolved
-    await import('../components/settings/global/*.jsx');
+    await import('../settings/global/*.jsx');
     // eslint-disable-next-line import/no-unresolved
-    await import('../components/settings/youtube/*.jsx');
+    await import('../settings/youtube/*.jsx');
     this.renderSettings();
   }
 
   renderSettings() {
-    const bttvPanel = document.getElementById('bttvSettingsPanel');
-
-    if (bttvPanel == null) {
-      const panel = document.createElement('div');
-      panel.setAttribute('id', 'bttvSettingsPanel');
-      document.querySelector('body').append(panel);
-
-      if (mountedPanelRoot != null) {
-        mountedPanelRoot.unmount();
-      }
-
-      mountedPanelRoot = createRoot(panel);
-      mountedPanelRoot.render(<Modal setHandleOpen={setHandleOpen} />);
-    }
+    shadowDOM.mount(ShadowDOMComponentIds.SETTINGS_MENU, <SettingsModal setHandleOpen={setHandleOpen} />);
   }
 
   loadChatAppMenuButton(node) {

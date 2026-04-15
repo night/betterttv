@@ -1,99 +1,18 @@
 .button {
+  margin-right: 8px;
   background-color: initial;
-  background-size: 20px;
   border: none;
-  margin-right: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: var(--button-size-default, 24px);
+  width: var(--button-size-default, 24px);
+  cursor: pointer;
+  border-radius: 100%;
+  background-image: url(assets/logos/logo.svg);
+  background-size: var(--button-size-default, 24px);
 }
 
 .hideEmoteMenuButton {
   display: none;
-}
-
-/* TODO: find a way to use CSS variables instead (maybe in v5?) */
-:global {
-  .bttv-youtube {
-    .bttv-rs-popover {
-      font-family: 'Helvetica Neue', Helvetica, Arial;
-    }
-
-    .bttv-rs-nav-subtle .bttv-rs-nav-item.bttv-rs-nav-item-active::before {
-      background-color: var(--yt-spec-call-to-action);
-    }
-
-    .bttv-rs-nav-subtle .bttv-rs-nav-item {
-      color: var(--bttv-rs-text-heading);
-
-      &:hover,
-      &:active,
-      &:focus {
-        color: var(--yt-spec-call-to-action);
-      }
-    }
-
-    .bttv-rs-nav-item.bttv-rs-nav-item-active {
-      color: var(--yt-spec-call-to-action);
-    }
-
-    .bttv-rs-input-group:not(.bttv-rs-input-group-disabled):hover,
-    .bttv-rs-input-group:not(.bttv-rs-input-group-disabled).bttv-rs-input-group-focus,
-    .bttv-rs-input-group:focus-within {
-      border-color: var(--yt-spec-call-to-action);
-    }
-
-    .bttv-rs-input-group:not(.bttv-rs-input-group-disabled).bttv-rs-input-group-focus,
-    .bttv-rs-input-group:focus-within {
-      box-shadow: 0 0 3px var(--yt-spec-call-to-action);
-    }
-
-    .bttv-rs-btn-link {
-      color: var(--yt-spec-call-to-action);
-
-      &:hover {
-        color: var(--yt-spec-call-to-action);
-      }
-    }
-
-    .bttv-rs-nav-item > .bttv-rs-nav-item-content {
-      text-overflow: unset;
-    }
-  }
-
-  html[dark] .bttv-youtube {
-    .bttv-rs-nav-subtle .bttv-rs-nav-item {
-      color: rgba(255, 255, 255, 0.5);
-
-      &:hover,
-      &:active,
-      &:focus {
-        color: rgb(255, 255, 255);
-      }
-    }
-
-    .bttv-rs-nav-item.bttv-rs-nav-item-active {
-      color: rgb(255, 255, 255);
-    }
-
-    .bttv-rs-nav-subtle .bttv-rs-nav-item.bttv-rs-nav-item-active::before {
-      background-color: rgb(255, 255, 255);
-    }
-
-    .bttv-rs-input-group:not(.bttv-rs-input-group-disabled):hover,
-    .bttv-rs-input-group:not(.bttv-rs-input-group-disabled).bttv-rs-input-group-focus,
-    .bttv-rs-input-group:focus-within {
-      border-color: rgba(255, 255, 255, 0.5);
-    }
-
-    .bttv-rs-input-group:not(.bttv-rs-input-group-disabled).bttv-rs-input-group-focus,
-    .bttv-rs-input-group:focus-within {
-      box-shadow: 0 0 3px rgba(255, 255, 255, 0.5);
-    }
-
-    .bttv-rs-btn-link {
-      color: rgba(255, 255, 255, 0.8);
-
-      &:hover {
-        color: rgb(255, 255, 255);
-      }
-    }
-  }
 }

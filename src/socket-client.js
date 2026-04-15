@@ -1,4 +1,7 @@
 import throttle from 'lodash.throttle';
+import {SOCKET_ENDPOINT} from './constants.js';
+import useAuthStore, {getCredentials, setCredentials} from './stores/auth.js';
+import {refreshAndSetCredentials} from './utils/auth.js';
 import debug from './utils/debug.js';
 import SafeEventEmitter from './utils/safe-event-emitter.js';
 import {getCurrentUser} from './utils/user.js';
@@ -15,13 +18,18 @@ export const EventNames = {
   EMOTE_CREATE: 'emote_create',
   EMOTE_DELETE: 'emote_delete',
   EMOTE_UPDATE: 'emote_update',
+  SETTINGS_UPDATE: 'settings_update',
+  AUTHENTICATION_UPDATE: 'authentication_update',
+  USER_UPDATE: 'user_update',
 };
 
-const WEBSOCKET_ENDPOINT = 'wss://sockets.betterttv.net/ws';
+const WEBSOCKET_ENDPOINT = SOCKET_ENDPOINT ?? 'wss://sockets.betterttv.net/ws';
 
 let socket;
 let state = CONNECTION_STATES.DISCONNECTED;
 let attempts = 1;
+let authenticated = false;
+let retryAuthenticationRequest = true;
 
 const joinedChannels = [];
 
@@ -33,13 +41,61 @@ export function deserializeSocketChannel(channel) {
   return channel.split(':');
 }
 
+function handleUserUpdateEvent(newUser) {
+  const {user} = useAuthStore.getState();
+
+  if (user.id !== newUser.id) {
+    return;
+  }
+
+  useAuthStore.setState({user: newUser});
+}
+
 class SocketClient extends SafeEventEmitter {
   constructor() {
     super();
 
     this.connect();
 
+    useAuthStore.subscribe(
+      (state) => state.credentials,
+      () => this.handleAuthenticationRequest()
+    );
+
     this.broadcastMe = throttle(this.broadcastMe.bind(this), 1000, {leading: false});
+  }
+
+  handleAuthenticationRequest() {
+    if (state !== CONNECTION_STATES.CONNECTED) {
+      return;
+    }
+
+    const {accessToken} = getCredentials();
+
+    if (accessToken == null) {
+      this.send('authentication_logout');
+    } else {
+      this.send('authentication_request', {token: accessToken});
+    }
+  }
+
+  async handleAuthenticationUpdate(data) {
+    authenticated = data.authenticated === true;
+
+    if (authenticated) {
+      retryAuthenticationRequest = true;
+      return;
+    }
+
+    if (data.reason === 'invalid_token') {
+      if (!retryAuthenticationRequest) {
+        setCredentials(null);
+        return;
+      }
+
+      retryAuthenticationRequest = false;
+      await refreshAndSetCredentials();
+    }
   }
 
   connect() {
@@ -62,6 +118,8 @@ class SocketClient extends SafeEventEmitter {
           this.joinChannel(provider, providerId);
         });
       }
+
+      this.handleAuthenticationRequest();
     };
 
     socket.onclose = () => {
@@ -86,6 +144,14 @@ class SocketClient extends SafeEventEmitter {
       }
 
       debug.log('SocketClient: Received event', evt);
+
+      if (evt.name === EventNames.AUTHENTICATION_UPDATE) {
+        this.handleAuthenticationUpdate(evt.data);
+      }
+
+      if (evt.name === EventNames.USER_UPDATE) {
+        handleUserUpdateEvent(evt.data);
+      }
 
       this.emit(evt.name, evt.data);
     };

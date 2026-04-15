@@ -1,0 +1,27 @@
+.root {
+  .loader,
+  .inner {
+    /* important as transition styling is applied inline */
+    transition: none !important;
+  }
+
+  &[data-variant='elevated'] {
+    border-radius: var(--mantine-radius-lg);
+    box-shadow: var(--mantine-shadow-xs);
+
+    border: 1px solid var(--button-bd);
+    border-bottom-width: 2px;
+
+    &:active {
+      border-bottom-width: 1px;
+    }
+
+    transition-property: background-color, border-color, border-bottom-width;
+    transition-duration: 0.1s;
+    transition-timing-function: ease-in-out;
+  }
+
+  &[data-size='lg'] {
+    min-height: 36px;
+  }
+}

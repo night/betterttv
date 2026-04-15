@@ -1,84 +1,74 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/interactive-supports-focus */
 import classNames from 'classnames';
-import React, {useCallback, useEffect, useRef, useState, useMemo} from 'react';
-import {DragDropContext, Draggable, Droppable} from '@hello-pangea/dnd';
-import {createPortal} from 'react-dom';
+import React, {useEffect, useRef, useState, useCallback, useMemo} from 'react';
+import {DndContext, PointerSensor, closestCenter, useSensor, useSensors} from '@dnd-kit/core';
+import {restrictToVerticalAxis} from '@dnd-kit/modifiers';
+import {SortableContext, arrayMove, verticalListSortingStrategy, useSortable} from '@dnd-kit/sortable';
+import {CSS} from '@dnd-kit/utilities';
 import Emote from '../../../common/components/Emote.jsx';
 import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js';
-import {EMOTE_MENU_SIDEBAR_ROW_HEIGHT, EMOTE_MENU_GRID_HEIGHT} from '../../../constants.js';
+import {EMOTE_MENU_SIDEBAR_ROW_HEIGHT} from '../../../constants.js';
 import emojis from '../../emotes/emojis.js';
-import useAutoScroll from '../hooks/AutoScroll.jsx';
+import useAutoSidebarScroll from '../hooks/AutoSidebarScroll.jsx';
 import styles from './Sidebar.module.css';
+import {useElementSize} from '@mantine/hooks';
 
-// https://github.com/atlassian/react-beautiful-dnd/issues/128#issuecomment-669083882
-function useDraggableInPortal() {
-  const self = useRef({}).current;
+const DEFAULT_EMOJI = '\ud83d\ude03'; // Smiley face
 
-  useEffect(() => {
-    const div = document.createElement('div');
-    div.classList.add(styles.portal);
-    self.divElement = div;
-    document.body.appendChild(div);
-    return () => {
-      document.body.removeChild(div);
-    };
-  }, [self]);
+const HOVER_EMOJI = [
+  '\uD83E\uDD8B', // 🦋 (B)utterfly
+  '\uD83C\uDF34', // 🌴 (T)ree
+  '\uD83C\uDF2E', // 🌮 (T)aco
+  '\uD83C\uDFBB', // 🎻 (V)iolin
+  '\uD83D\uDE80', // 🚀 Rocket
+];
 
-  return (render) =>
-    (provided, ...args) => {
-      const element = render(provided, ...args);
-      if (provided.draggableProps.style.position === 'fixed') {
-        return createPortal(element, self.divElement);
-      }
-      return element;
-    };
-}
-
-export default function Sidebar({section, onClick, categories}) {
+function Sidebar({section, onClick, categories, className}) {
+  const {height, ref} = useElementSize();
+  const {height: emojiButtonHeight, ref: emojiButtonRef} = useElementSize();
   const containerRef = useRef(null);
-  const [middleCategories, setMiddleCategories] = useState(categories.middle);
   const [hovering, setHovering] = useState(false);
   const [emojiButtonHidden, setEmojiButtonHidden] = useState(false);
+  const hoverEmojiCount = useRef(0);
+  const middleCategories = categories.middle;
 
   const bottomDepth = useMemo(
     () => (categories.top.length + middleCategories.length) * EMOTE_MENU_SIDEBAR_ROW_HEIGHT,
     [categories.top, middleCategories]
   );
 
-  const renderDraggable = useDraggableInPortal();
-  useEffect(() => {
-    setMiddleCategories(categories.middle);
-  }, [categories.middle]);
+  const sensors = useSensors(useSensor(PointerSensor, {activationConstraint: {distance: 8}}));
 
-  useAutoScroll(
-    section,
-    containerRef,
-    [...categories.top, ...middleCategories, ...categories.bottom],
-    emojiButtonHidden ? EMOTE_MENU_GRID_HEIGHT + 49 : EMOTE_MENU_GRID_HEIGHT // 1px (divider) + 48px (emojiButton) = 49px
-  );
-
-  const handleEmojiClick = useCallback(() => {
-    containerRef.current.scrollTo({
-      top: bottomDepth,
-      left: 0,
-    });
-  }, [containerRef, bottomDepth]);
-
-  const handleReorder = useCallback(
-    (oldDest, newDest) => {
-      if (oldDest === newDest) {
+  const handleDragEnd = useCallback(
+    (event) => {
+      const {active, over} = event;
+      if (over == null || active.id === over.id) {
         return;
       }
 
-      const result = [...middleCategories];
-      const [removed] = result.splice(oldDest, 1);
-      result.splice(newDest, 0, removed);
+      const oldIndex = middleCategories.findIndex((c) => c.id === active.id);
+      const newIndex = middleCategories.findIndex((c) => c.id === over.id);
+      if (oldIndex === -1 || newIndex === -1) {
+        return;
+      }
 
-      setMiddleCategories(result);
-      emoteMenuViewStore.setCategoryOrder(result);
+      const reordered = arrayMove(middleCategories, oldIndex, newIndex);
+
+      emoteMenuViewStore.setCategoryOrder(reordered);
     },
-    [categories]
+    [middleCategories]
   );
+
+  useAutoSidebarScroll(
+    section,
+    containerRef,
+    Object.values(categories).flat(),
+    emojiButtonHidden ? height : height - emojiButtonHeight
+  );
+
+  const handleEmojiClick = useCallback(() => {
+    containerRef.current.scrollTo({top: bottomDepth, left: 0});
+  }, [containerRef, bottomDepth]);
 
   function handleScroll() {
     if (containerRef.current == null) {
@@ -87,7 +77,7 @@ export default function Sidebar({section, onClick, categories}) {
 
     const top = containerRef.current.scrollTop;
 
-    const isHidden = top + EMOTE_MENU_GRID_HEIGHT > bottomDepth;
+    const isHidden = top + height > bottomDepth;
     if (isHidden === emojiButtonHidden) {
       return;
     }
@@ -107,55 +97,46 @@ export default function Sidebar({section, onClick, categories}) {
         onClick={() => onClick(category.id)}
         onKeyDown={() => onClick(category.id)}
         className={classNames(styles.navItem, {
-          [styles.active]: category.id === section.eventKey,
+          [styles.active]: category.id === section,
         })}>
         {category.icon}
       </div>
     ));
   }
 
+  const emoji = useMemo(() => {
+    let code = DEFAULT_EMOJI;
+
+    if (hovering) {
+      const count = hoverEmojiCount.current;
+      code = HOVER_EMOJI[count % HOVER_EMOJI.length];
+      hoverEmojiCount.current = count + 1;
+    }
+
+    return emojis.getEligibleEmote(code);
+  }, [hovering]);
+
+  const sortableIds = useMemo(() => middleCategories.map((c) => c.id), [middleCategories]);
+
   return (
-    <div className={styles.sidebar}>
+    <div ref={ref} className={classNames(styles.sidebar, className)}>
       <div className={styles.content} ref={containerRef} onScroll={handleScroll}>
         {createCategories(categories.top)}
-        <DragDropContext
-          onDragEnd={({source, destination}) => {
-            if (source == null || destination == null) {
-              return;
-            }
-            handleReorder(source.index, destination.index);
-          }}>
-          <Droppable droppableId="droppable" type="list" direction="vertical">
-            {(provided) => (
-              <div {...provided.droppableProps} ref={provided.innerRef}>
-                {middleCategories.map((category, index) => (
-                  <Draggable key={category.id} draggableId={category.id} index={index}>
-                    {renderDraggable((providedItem, snapshotItem) => (
-                      <div
-                        role="button"
-                        ref={providedItem.innerRef}
-                        {...providedItem.draggableProps}
-                        {...providedItem.dragHandleProps}
-                        style={providedItem.draggableProps.style}
-                        onClick={() => onClick(category.id)}
-                        onKeyDown={() => onClick(category.id)}
-                        className={classNames(styles.navItem, {
-                          [styles.dragging]: snapshotItem.isDragging,
-                          [styles.active]: category.id === section.eventKey,
-                        })}>
-                        {category.icon}
-                      </div>
-                    ))}
-                  </Draggable>
-                ))}
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
-        </DragDropContext>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          modifiers={[restrictToVerticalAxis]}
+          onDragEnd={handleDragEnd}>
+          <SortableContext items={sortableIds} strategy={verticalListSortingStrategy}>
+            {middleCategories.map((category) => (
+              <SortableSidebarItem key={category.id} category={category} section={section} onClick={onClick} />
+            ))}
+          </SortableContext>
+        </DndContext>
         {createCategories(categories.bottom)}
       </div>
       <div
+        ref={emojiButtonRef}
         role="button"
         onMouseOver={() => setHovering(true)}
         onFocus={() => setHovering(true)}
@@ -165,8 +146,44 @@ export default function Sidebar({section, onClick, categories}) {
           [styles.emojiButtonHidden]: emojiButtonHidden,
           [styles.emojiButtonVisible]: !emojiButtonHidden,
         })}>
-        <Emote emote={hovering ? emojis.getEligibleEmote('\ud83d\udca9') : emojis.getEligibleEmote('\ud83d\ude03')} />
+        <Emote className={styles.emojiButtonEmote} emote={emoji} />
       </div>
     </div>
   );
 }
+
+function SortableSidebarItem({category, section, onClick}) {
+  const {attributes, listeners, setNodeRef, transform, transition, isDragging} = useSortable({id: category.id});
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      role="button"
+      data-draggable
+      onClick={() => onClick(category.id)}
+      onKeyDown={() => onClick(category.id)}
+      className={classNames(styles.navItem, {
+        [styles.active]: category.id === section,
+        [styles.dragging]: isDragging,
+      })}
+      {...attributes}
+      {...listeners}>
+      {category.icon}
+    </div>
+  );
+}
+
+export default React.memo(
+  Sidebar,
+  (prevProps, nextProps) =>
+    prevProps.categories === nextProps.categories &&
+    prevProps.section === nextProps.section &&
+    prevProps.className === nextProps.className &&
+    prevProps.onClick === nextProps.onClick
+);

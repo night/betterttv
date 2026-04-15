@@ -1,7 +1,7 @@
+import {getFrankerFaceZGlobalEmotes} from '../../actions/emotes.js';
 import {EmoteCategories, EmoteProviders, EmoteTypeFlags, SettingIds} from '../../constants.js';
 import formatMessage from '../../i18n/index.js';
 import settings from '../../settings.js';
-import api from '../../utils/api.js';
 import {hasFlag} from '../../utils/flags.js';
 import watcher from '../../watcher.js';
 
@@ -32,8 +32,7 @@ class GlobalEmotes extends AbstractEmotes {
 
     if (!hasFlag(settings.get(SettingIds.EMOTES), EmoteTypeFlags.FFZ_EMOTES)) return;
 
-    api
-      .get('cached/frankerfacez/emotes/global')
+    getFrankerFaceZGlobalEmotes()
       .then((emotes) =>
         emotes.forEach(({id, user, code, images, animated, modifier}) => {
           this.emotes.set(

@@ -1,0 +1,48 @@
+.modifierImage {
+  width: 20px;
+  height: 20px;
+}
+
+.modifiersList {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  row-gap: 8px;
+}
+
+.modifierDescription {
+  color: var(--mantine-color-dimmed);
+}
+
+.modifier {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  column-gap: 12px;
+}
+
+.modifierCode {
+  min-width: 32px;
+  text-align: center;
+}
+
+.warningActions {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.modifiersActions {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.modifiersModalBody {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  padding: 16px;
+  row-gap: 16px;
+}

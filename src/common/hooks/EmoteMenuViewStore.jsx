@@ -1,7 +1,13 @@
-import {useEffect} from 'react';
+import {useEffect, useRef} from 'react';
 import emoteMenuViewStore from '../stores/emote-menu-view-store.js';
 
 export default function useEmoteMenuViewStoreUpdated(shouldUpdate, handleUpdate) {
+  const handleUpdateRef = useRef(handleUpdate);
+
+  useEffect(() => {
+    handleUpdateRef.current = handleUpdate;
+  }, [handleUpdate]);
+
   useEffect(() => {
     function handleDirty() {
       if (!shouldUpdate) {
@@ -10,13 +16,15 @@ export default function useEmoteMenuViewStoreUpdated(shouldUpdate, handleUpdate)
       emoteMenuViewStore.updateEmotes();
     }
 
+    const removeUpdatedListener = emoteMenuViewStore.on('updated', () => handleUpdateRef.current());
+    const removeDirtyListener = emoteMenuViewStore.on('dirty', handleDirty);
+
+    handleUpdateRef.current();
     handleDirty();
 
-    const removeUpdatedListener = emoteMenuViewStore.on('updated', handleUpdate);
-    const removeDirtyListener = emoteMenuViewStore.on('dirty', handleDirty);
     return () => {
       removeUpdatedListener();
       removeDirtyListener();
     };
-  }, [shouldUpdate, handleUpdate]);
+  }, [shouldUpdate]);
 }

@@ -1,0 +1,41 @@
+.canvas {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.promotion {
+  padding: 12px 24px;
+  overflow: hidden;
+  position: relative;
+  border: 0px;
+  background-color: transparent;
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  gap: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title,
+.logo {
+  color: var(--mantine-color-white);
+}
+
+.logo {
+  width: 20px;
+  height: 20px;
+}
+
+.button {
+  margin-left: auto;
+}

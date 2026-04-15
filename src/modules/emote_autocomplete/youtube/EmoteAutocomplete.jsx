@@ -1,18 +1,17 @@
 import React from 'react';
-import {createRoot} from 'react-dom/client';
-import AutocompleteWhisper from '../../../common/components/autocomplete/AutocompleteWhisper.jsx';
+import Autocomplete from '../../../common/components/Autocomplete.jsx';
 import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js';
-import {EmoteProviders, SettingIds} from '../../../constants.js';
+import {EmoteProviders, SettingIds, ShadowDOMComponentIds} from '../../../constants.js';
 import domObserver from '../../../observers/dom.js';
 import settings from '../../../settings.js';
 import {createYoutubeEmojiNode} from '../../../utils/youtube.js';
+import shadowDom from '../../shadow_dom/index.js';
 import EmoteRow from '../components/EmoteRow.jsx';
 import styles from './EmoteAutocomplete.module.css';
 
-let mountedRoot;
+const CHAT_TEXT_AREA = '#input-container';
 
-const CHAT_TEXT_AREA = '.yt-live-chat-text-input-field-renderer[contenteditable]';
-const EMOTE_AUTOCOMPLETE_CONTAINER_SELECTOR = 'div[data-a-target="bttv-autocomplete-matches-container"]';
+let removeDirtyListener = null;
 
 function findFocusedWord(value, selectionStart = 0) {
   const subString = value.substring(0, selectionStart);
@@ -50,60 +49,56 @@ function toggleNativeAutocomplete(partialInput) {
   nativeAutocomplete.classList.toggle(styles.hideNativeAutocomplete, partialInput != null);
 }
 
+function computeItems(partialInput) {
+  return emoteMenuViewStore.search(partialInput, false);
+}
+
+function getItemKey(item) {
+  return item.id;
+}
+
+function handleDirty() {
+  emoteMenuViewStore.updateEmotes();
+}
+
 export default class EmoteAutocomplete {
   constructor() {
-    domObserver.on('.yt-live-chat-text-input-field-renderer', () => this.load());
+    this.load();
+    domObserver.on(CHAT_TEXT_AREA, () => this.load());
     settings.on(`changed.${SettingIds.EMOTE_AUTOCOMPLETE}`, () => this.load());
   }
 
   load() {
-    let emoteAutocompleteMatchesContainer = document.querySelector(EMOTE_AUTOCOMPLETE_CONTAINER_SELECTOR);
-    const emoteAutocomplete = settings.get(SettingIds.EMOTE_AUTOCOMPLETE);
-    const element = document.querySelector(CHAT_TEXT_AREA);
+    const emoteAutocompleteEnabled = settings.get(SettingIds.EMOTE_AUTOCOMPLETE);
 
-    if (emoteAutocomplete && element != null) {
-      if (emoteAutocompleteMatchesContainer == null) {
-        emoteAutocompleteMatchesContainer = document.createElement('div');
-        emoteAutocompleteMatchesContainer.setAttribute('data-a-target', 'bttv-autocomplete-matches-container');
+    if (!emoteAutocompleteEnabled) {
+      shadowDom.unmount(ShadowDOMComponentIds.EMOTE_AUTOCOMPLETE);
+      removeDirtyListener?.();
+      removeDirtyListener = null;
 
-        const chatElement = document.querySelector('#chat');
-        if (chatElement != null) {
-          chatElement.appendChild(emoteAutocompleteMatchesContainer);
-        }
-      }
-
-      if (mountedRoot != null) {
-        mountedRoot.unmount();
-      }
-
-      mountedRoot = createRoot(emoteAutocompleteMatchesContainer);
-      mountedRoot.render(
-        <AutocompleteWhisper
-          boundingQuerySelector={CHAT_TEXT_AREA}
-          chatInputElement={element}
-          onComplete={this.replaceChatInputPartialEmote}
-          getChatInputPartialInput={this.getChatInputPartialEmote}
-          computeMatches={(partialInput) => {
-            const searchedEmotes = emoteMenuViewStore.search(partialInput);
-            return searchedEmotes.map(({item}) => item);
-          }}
-          renderRow={({key, index, item, handleAutocomplete, active, setSelected}) => (
-            <EmoteRow
-              key={key}
-              index={index}
-              emote={item}
-              handleAutocomplete={handleAutocomplete}
-              active={active}
-              setSelected={setSelected}
-            />
-          )}
-        />
-      );
+      return;
     }
 
-    if (!emoteAutocomplete && emoteAutocompleteMatchesContainer != null) {
-      mountedRoot?.unmount();
+    if (removeDirtyListener == null) {
+      handleDirty();
+      removeDirtyListener = emoteMenuViewStore.on('dirty', handleDirty);
     }
+
+    if (shadowDom.isMounted(ShadowDOMComponentIds.EMOTE_AUTOCOMPLETE)) {
+      return;
+    }
+
+    shadowDom.mount(
+      ShadowDOMComponentIds.EMOTE_AUTOCOMPLETE,
+      <Autocomplete
+        chatInputQuerySelector={CHAT_TEXT_AREA}
+        getChatInputPartialInput={this.getChatInputPartialEmote}
+        computeItems={computeItems}
+        getItemKey={getItemKey}
+        onComplete={this.replaceChatInputPartialEmote}
+        renderRow={(props) => <EmoteRow {...props} />}
+      />
+    );
   }
 
   replaceChatInputPartialEmote(emote) {

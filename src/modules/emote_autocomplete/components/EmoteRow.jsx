@@ -1,22 +1,30 @@
 import classNames from 'classnames';
 import React from 'react';
-import {Button} from 'rsuite';
 import Emote from '../../../common/components/Emote.jsx';
 import styles from './EmoteRow.module.css';
+import {Text, Title} from '@mantine/core';
 
-export default function EmoteRow({key, index, emote, active, setSelected, handleAutocomplete}) {
+function EmoteRow({key, item: emote, active, selected, onMouseOver, onClick}) {
   return (
-    <Button
+    <button
       key={key}
-      onMouseOver={() => setSelected(index)}
-      onClick={() => handleAutocomplete(emote)}
-      appearance="subtle"
-      className={classNames(styles.emoteRow, {[styles.active]: active})}>
-      <div className={styles.emoteInfoContainer}>
-        <Emote className={styles.emote} emote={emote} />
-        <div>{emote.code}</div>
+      onMouseOver={onMouseOver}
+      onClick={onClick}
+      className={classNames(styles.emoteRow, {
+        [styles.active]: active,
+        [styles.selected]: selected,
+      })}>
+      <Emote className={styles.emote} emote={emote} />
+      <div className={styles.emoteContainer}>
+        <Title className={styles.emoteCode} order={4}>
+          {emote.code}
+        </Title>
+        <Text c="dimmed" className={styles.categoryName}>
+          {emote.category.displayName}
+        </Text>
       </div>
-      <div className={styles.categoryName}>{emote.category.displayName}</div>
-    </Button>
+    </button>
   );
 }
+
+export default EmoteRow;

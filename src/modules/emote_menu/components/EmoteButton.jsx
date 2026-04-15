@@ -12,6 +12,7 @@ export default function EmoteButton({emote, onClick, onMouseOver, active}) {
       onMouseOver={() => onMouseOver(emote)}
       onFocus={() => onMouseOver(emote)}
       type="button"
+      disabled={locked}
       className={classNames(styles.emote, active ? styles.active : null)}>
       <Emote emote={emote} locked={locked} />
     </button>

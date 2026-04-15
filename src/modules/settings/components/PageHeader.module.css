@@ -1,0 +1,28 @@
+.header {
+  --vertical-padding: 20px;
+  --horizontal-padding: 24px;
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--vertical-padding) var(--horizontal-padding);
+  background: linear-gradient(to top, transparent, var(--mantine-color-body-secondary) var(--vertical-padding));
+  z-index: 10;
+  gap: var(--horizontal-padding);
+}
+
+.closeButton,
+.sidenavToggleButton {
+  min-width: 36px;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 800px) {
+  .sidenavToggleButton {
+    display: none;
+  }
+}

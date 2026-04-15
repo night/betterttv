@@ -1,3 +1,44 @@
+.legacyButton {
+  background-size: 18px;
+  background-position: center;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  height: 18px;
+  width: 18px;
+  filter: grayscale(100%);
+  opacity: 0.9;
+  float: left;
+  padding: 15px;
+  background-image: url(assets/icons/legacy_smile.svg) !important;
+}
+
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: var(--button-size-default, 30px);
+  width: var(--button-size-default, 30px);
+  cursor: pointer;
+  border-radius: 100%;
+  background-image: url(assets/logos/logo.svg);
+  background-size: 18px 18px;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: var(--border-radius-rounded);
+  border-bottom-right-radius: var(--border-radius-large);
+
+  &:hover {
+    background-color: var(--color-background-button-text-hover);
+    color: var(--color-fill-button-icon-hover);
+  }
+
+  &:active {
+    background-color: var(--color-background-button-text-active);
+  }
+
+  transition: 100ms ease-in-out;
+}
+
 .container {
   display: inline-block !important;
   vertical-align: bottom !important;
@@ -5,13 +46,4 @@
 
 .hideEmoteMenuButtonContainer button[data-a-target='emote-picker-button'] {
   display: none;
-}
-
-.button {
-  border-radius: var(--border-radius-medium);
-
-  &:hover {
-    background-color: var(--color-background-button-text-hover);
-    color: var(--color-fill-button-icon-hover);
-  }
 }

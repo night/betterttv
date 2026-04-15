@@ -8,7 +8,10 @@
   border: none;
 
   &:focus {
-    background-color: #464647;
+    background-color: var(--mantine-primary-color-light-active);
+    transition-property: background-color;
+    transition-duration: 0.1s;
+    transition-timing-function: ease-in-out;
   }
 
   &:focus-visible {
@@ -17,9 +20,9 @@
 }
 
 .active {
-  background-color: var(--bttv-rs-state-hover-bg);
+  background-color: var(--mantine-primary-color-light-hover);
 }
 
 .placeholder {
-  background-color: var(--bttv-rs-bg-card);
+  background-color: var(--mantine-color-body-secondary);
 }

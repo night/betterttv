@@ -1,0 +1,12 @@
+.changelogText {
+  font-size: var(--mantine-font-size-lg);
+}
+
+.changelogTitle {
+  display: flex;
+  justify-content: space-between;
+}
+
+.noChangelogText {
+  text-align: center;
+}

@@ -1,10 +1,13 @@
 .preview {
   box-sizing: border-box;
   display: flex;
-  justify-content: space-between;
-  padding: 4px 8px;
+  padding: 8px;
   align-items: center;
-  color: var(--bttv-rs-text-heading);
+  color: var(--mantine-color-text);
+  background-color: var(--mantine-color-body-secondary);
+  height: 48px;
+  gap: 8px;
+  border-top: 1px solid var(--mantine-color-default-border);
 }
 
 .content {
@@ -15,12 +18,12 @@
 }
 
 .emoteText {
-  white-space: nowrap;
+  overflow: hidden;
 }
 
 .emoteImage {
-  width: 36px;
-  height: 36px;
+  min-width: 32px;
+  height: 32px;
   object-fit: contain;
 }
 
@@ -34,6 +37,23 @@
   font-weight: 800;
 }
 
+.emoteCategory,
+.emoteCode {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
 .emoteStatusIcon {
-  padding: 10px;
+  margin-left: auto;
+  min-width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
 }

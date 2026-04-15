@@ -1,4 +1,22 @@
-.searchPrefix {
-  background-color: var(--bttv-rs-input-bg) !important;
-  margin-right: -12px;
+.input {
+  font-size: var(--mantine-font-size-lg);
+  height: 36px;
+}
+
+.root {
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px;
+  background-color: var(--mantine-color-body);
+}
+
+.closeButton {
+  min-width: 36px;
+  min-height: 36px;
 }

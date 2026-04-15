@@ -5,6 +5,7 @@ import {sentryWebpackPlugin} from '@sentry/webpack-plugin';
 import {CleanWebpackPlugin} from 'clean-webpack-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
+import dotenv from 'dotenv';
 import FileManagerPlugin from 'filemanager-webpack-plugin';
 
 import {globSync} from 'glob';
@@ -17,6 +18,8 @@ import RemovePlugin from 'remove-files-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
 import webpack from 'webpack';
 import VirtualModulesPlugin from 'webpack-virtual-modules';
+
+dotenv.config();
 
 const git = createRequire(import.meta.url)('git-rev-sync');
 const {EnvironmentPlugin, optimize} = webpack;
@@ -74,6 +77,12 @@ export default async (env, argv) => {
   const PROD_ENDPOINT = 'https://cdn.betterttv.net/';
   const DEV_ENDPOINT = `http://127.0.0.1:${PORT}/`;
   const CDN_ENDPOINT = PROD ? PROD_ENDPOINT : DEV_ENDPOINT;
+  const API_ENDPOINT = process.env.API_ENDPOINT ?? `https://api.betterttv.net`;
+  const API_VERSION = process.env.API_VERSION ?? '3';
+  // TODO: update fallback id to official client id
+  const OAUTH2_CLIENT_ID = process.env.OAUTH2_CLIENT_ID ?? '69df8fd87facce5d303ec889';
+  const OAUTH2_REDIRECT_URI = process.env.OAUTH2_REDIRECT_URI ?? 'https://betterttv.com/extension/callback';
+  const SOCKET_ENDPOINT = process.env.SOCKET_ENDPOINT ?? 'wss://sockets.betterttv.net/ws';
 
   const {version} = JSON.parse(await fs.readFile('./package.json'));
   const emotes = JSON.parse(await fs.readFile('./node_modules/emoji-toolkit/emoji.json'));
@@ -87,6 +96,9 @@ export default async (env, argv) => {
       },
       static: {
         directory: path.resolve('./build'),
+      },
+      headers: {
+        'Access-Control-Allow-Origin': '*',
       },
       client: {
         webSocketURL: {
@@ -107,11 +119,12 @@ export default async (env, argv) => {
     },
     entry: {
       betterttv: [
-        ...globSync('./src/modules/**/*.@(css|less)', {dotRelative: true})
+        ...globSync('./src/modules/**/*.css', {dotRelative: true})
           .filter((filename) => !filename.endsWith('.module.css'))
           .map((filename) => normalizePath(filename)),
         './src/index.js',
       ],
+      mantine: ['@mantine/core/styles.css'],
     },
     output: {
       filename: '[name].js',
@@ -136,7 +149,7 @@ export default async (env, argv) => {
           ],
         },
         {
-          test: /(\.less|\.css)$/,
+          test: /\.css$/,
           use: [
             MiniCssExtractPlugin.loader,
             {
@@ -160,15 +173,6 @@ export default async (env, argv) => {
                     'postcss-hexrgba',
                     'autoprefixer',
                   ],
-                },
-              },
-            },
-            {
-              loader: 'less-loader',
-              options: {
-                lessOptions: {
-                  javascriptEnabled: true,
-                  modifyVars: {'@reset-import': false},
                 },
               },
             },
@@ -216,11 +220,16 @@ export default async (env, argv) => {
         DEV_CDN_PORT: PORT,
         DEV_CDN_ENDPOINT: DEV_ENDPOINT,
         PROD_CDN_ENDPOINT: PROD_ENDPOINT,
+        API_ENDPOINT,
+        API_VERSION,
         EXT_VER: version,
         GIT_REV: process.env.GIT_REV || git.long(),
         SENTRY_URL:
           process.env.SENTRY_URL || 'https://718271c7e5456d1b5e40dabeb9b257ab@o23210.ingest.us.sentry.io/5730387',
         CDN_ENDPOINT,
+        OAUTH2_CLIENT_ID,
+        OAUTH2_REDIRECT_URI,
+        SOCKET_ENDPOINT,
       }),
       new optimize.LimitChunkCountPlugin({
         maxChunks: 1,

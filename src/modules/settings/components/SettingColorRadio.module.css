@@ -1,0 +1,112 @@
+.radioGroup {
+  min-width: 100%;
+}
+
+.radioCard {
+  position: relative;
+  width: 100%;
+  border: 0;
+  padding: 0 !important;
+}
+
+.cardStack {
+  align-items: center;
+}
+
+.swatch {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 16px;
+  border-radius: var(--mantine-radius-lg);
+  transition:
+    outline 100ms ease-in-out,
+    background 120ms ease,
+    border-color 120ms ease;
+  border: 1px solid var(--mantine-color-default-border);
+}
+
+.swatch[data-checked='true'] {
+  color: var(--mantine-primary-color-2);
+  border: 1px solid var(--mantine-color-body-secondary);
+  outline: 3px solid var(--mantine-primary-color-3);
+}
+
+.swatch[data-bttv-color='default'] {
+  color: var(--mantine-color-dark-2);
+  background: var(--mantine-color-dark-0);
+  outline-color: var(--mantine-color-dark-2);
+}
+
+.swatch[data-bttv-color='default']:active {
+  background: var(--mantine-color-dark-1);
+}
+
+.swatch[data-bttv-color='red'] {
+  background: var(--mantine-color-red-6);
+}
+
+.swatch[data-bttv-color='red']:active {
+  background: var(--mantine-color-red-7);
+}
+
+.swatch[data-bttv-color='pink'] {
+  background: var(--mantine-color-pink-6);
+}
+
+.swatch[data-bttv-color='pink']:active {
+  background: var(--mantine-color-pink-7);
+}
+
+.swatch[data-bttv-color='indigo'] {
+  background: var(--mantine-color-indigo-6);
+}
+
+.swatch[data-bttv-color='indigo']:active {
+  background: var(--mantine-color-indigo-7);
+}
+
+.swatch[data-bttv-color='green'] {
+  background: var(--mantine-color-green-6);
+}
+
+.swatch[data-bttv-color='green']:active {
+  background: var(--mantine-color-green-7);
+}
+
+.swatch[data-bttv-color='orange'] {
+  background: var(--mantine-color-orange-6);
+}
+
+.swatch[data-bttv-color='orange']:active {
+  background: var(--mantine-color-orange-7);
+}
+
+.label {
+  text-transform: capitalize;
+}
+
+.radioCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 10px;
+}
+
+.tooltip {
+  font-size: var(--mantine-font-size-md);
+}
+
+.checkIcon {
+  opacity: 0;
+  color: currentColor;
+  scale: 0;
+  width: 24px;
+  height: 24px;
+  transition: all 100ms ease-in-out;
+}
+
+.swatch[data-checked='true'] .checkIcon {
+  opacity: 1;
+  scale: 1;
+}

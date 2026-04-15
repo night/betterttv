@@ -1,6 +1,6 @@
+import {getGlobalEmotes} from '../../actions/emotes.js';
 import {EmoteCategories, EmoteProviders} from '../../constants.js';
 import formatMessage from '../../i18n/index.js';
-import api from '../../utils/api.js';
 import cdn from '../../utils/cdn.js';
 import watcher from '../../watcher.js';
 import subscribers from '../subscribers/index.js';
@@ -25,8 +25,7 @@ class GlobalEmotes extends AbstractEmotes {
   }
 
   updateGlobalEmotes() {
-    api
-      .get('cached/emotes/global')
+    getGlobalEmotes()
       .then((emotes) =>
         emotes.forEach(({id, code, animated, restrictions, modifier}) => {
           let restrictionCallback;

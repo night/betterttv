@@ -1,0 +1,45 @@
+.swatchButton {
+  align-self: center;
+}
+
+.swatch {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 1px solid var(--mantine-color-default-border);
+}
+
+.swatchLeftSection {
+  width: 20px;
+  height: 20px;
+}
+
+.popoverDropdown {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background-color: var(--mantine-color-body-secondary);
+  border: 1px solid var(--mantine-color-default-border);
+}
+
+.popoverRoot {
+  width: 300px;
+}
+
+.colorInput {
+  font-size: var(--mantine-font-size-lg);
+}
+
+.colorPickerBody {
+  padding-top: 16px;
+}
+
+.saturation {
+  aspect-ratio: 4 / 3;
+  height: 100%;
+  border-radius: var(--mantine-radius-md);
+  margin: 0;
+  overflow: hidden;
+}

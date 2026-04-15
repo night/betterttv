@@ -1,7 +1,7 @@
+import {getFrankerFaceZChannelEmotes} from '../../actions/emotes.js';
 import {EmoteCategories, EmoteProviders, EmoteTypeFlags, SettingIds} from '../../constants.js';
 import formatMessage from '../../i18n/index.js';
 import settings from '../../settings.js';
-import api from '../../utils/api.js';
 import {getCurrentChannel} from '../../utils/channel.js';
 import {hasFlag} from '../../utils/flags.js';
 import watcher from '../../watcher.js';
@@ -34,8 +34,7 @@ class FrankerFaceZChannelEmotes extends AbstractEmotes {
     const currentChannel = getCurrentChannel();
     if (!currentChannel) return;
 
-    api
-      .get(`cached/frankerfacez/users/${currentChannel.provider}/${currentChannel.id}`)
+    getFrankerFaceZChannelEmotes(currentChannel.provider, currentChannel.id)
       .then((emotes) =>
         emotes.forEach(({id, user, code, images, animated, modifier}) => {
           this.emotes.set(

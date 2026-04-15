@@ -267,7 +267,8 @@ export default {
       const reactRoot = getReactRoot(document.querySelector(REACT_ROOT));
       const node = searchReactChildren(
         reactRoot?._internalRoot?.current ?? reactRoot,
-        (n) => n.pendingProps && n.pendingProps.value && n.pendingProps.value.store
+        (n) => n.pendingProps && n.pendingProps.value && n.pendingProps.value.store,
+        40
       );
       store = node.pendingProps.value.store;
     } catch (_) {}

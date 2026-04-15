@@ -1,0 +1,6 @@
+.settingGroup {
+  --setting-panel-padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}

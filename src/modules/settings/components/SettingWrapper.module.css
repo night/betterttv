@@ -1,0 +1,45 @@
+.root {
+  padding: var(--setting-panel-padding, 20px) !important;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.shouldWrap {
+  flex-wrap: wrap;
+}
+
+.vertical {
+  flex-direction: column-reverse;
+  align-items: flex-start;
+}
+
+.reverse {
+  flex-direction: row-reverse;
+  flex-wrap: wrap;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: fit-content;
+  margin-right: auto;
+}
+
+.title {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.description {
+  margin: 0;
+}
+
+@media (max-width: 800px) {
+  .shouldWrap .control {
+    width: 100%;
+  }
+}

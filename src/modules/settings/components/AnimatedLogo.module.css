@@ -1,0 +1,10 @@
+.logoContainer {
+  color: var(--bttv-brand-color);
+  padding: 16px;
+}
+
+.logo {
+  width: 32px;
+  height: 32px;
+  overflow: hidden;
+}

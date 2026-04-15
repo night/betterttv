@@ -39,6 +39,10 @@ class Settings extends SafeEventEmitter {
     this.upgrade(settings.version);
   }
 
+  getSettings() {
+    return settings;
+  }
+
   get(id) {
     const value = settings[id];
 
@@ -85,6 +89,7 @@ class Settings extends SafeEventEmitter {
     }
     storage.set(SETTINGS_STORAGE_KEY, storageSettings);
 
+    this.emit('changed', updatedSettings);
     this.emit(`changed.${id}`, value, temporary);
 
     return value;

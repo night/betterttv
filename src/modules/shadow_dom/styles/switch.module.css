@@ -1,0 +1,12 @@
+.body {
+  align-items: center;
+  gap: 16px;
+}
+
+.root {
+  &[data-size='xl'] {
+    --switch-width: 48px !important;
+    --switch-height: 30px !important;
+    --switch-thumb-size: 24px !important;
+  }
+}
