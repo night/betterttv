@@ -29,15 +29,16 @@ class ShadowDOM {
 
     this.shadowRoot = host.attachShadow({mode: 'closed', delegatesFocus: true});
     this.mountNode = document.createElement('main');
+    this.mountNode.className = 'bttv-mantine-scope';
+    this.mantineRoot = document.createElement('div');
+    this.mountNode.appendChild(this.mantineRoot);
     this.shadowRoot.appendChild(this.mountNode);
-    this.root = createRoot(this.mountNode);
+    this.root = createRoot(this.mantineRoot);
 
     document.documentElement.appendChild(host);
 
-    this.addStyleSheet(extension.url('mantine.css', true));
-    this.addStyleSheet(extension.url('betterttv.css', true));
-
     this.injectMantineVariables();
+    this.addStyleSheet(extension.url('betterttv.css', true));
 
     useAuthStore.subscribe(
       (state) => state.user?.pro ?? false,
@@ -57,9 +58,9 @@ class ShadowDOM {
 
     const {variables, dark, light} = mantineVariablesResolver(theme, primaryColor);
 
-    const baseCssVariables = variablesToCSS(':host', variables);
-    const darkCssVariables = variablesToCSS(':host:has(main[data-mantine-color-scheme="dark"])', dark);
-    const lightCssVariables = variablesToCSS(':host:has(main[data-mantine-color-scheme="light"])', light);
+    const baseCssVariables = variablesToCSS('.bttv-mantine-scope', variables);
+    const darkCssVariables = variablesToCSS('.bttv-mantine-scope:has([data-mantine-color-scheme="dark"])', dark);
+    const lightCssVariables = variablesToCSS('.bttv-mantine-scope:has([data-mantine-color-scheme="light"])', light);
 
     this.setAdoptedStyleSheet([baseCssVariables, darkCssVariables, lightCssVariables]);
   }
@@ -97,7 +98,7 @@ class ShadowDOM {
     const portalRef = createRef(null);
 
     this.root.render(
-      <ThemeProvider getRootElement={() => this.mountNode} withGlobalClasses={false} withCssVariables={false}>
+      <ThemeProvider getRootElement={() => this.mantineRoot} withGlobalClasses={false} withCssVariables={false}>
         <div ref={portalRef} id="bttv-shadow-dom-portal" />
         <PortalContext.Provider value={portalRef}>
           {components.map(([id, component]) => (

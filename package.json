@@ -103,6 +103,7 @@
     "@eslint/compat": "2.0.3",
     "@eslint/eslintrc": "3.3.5",
     "@eslint/js": "9.39.2",
-    "globals": "17.4.0"
+    "globals": "17.4.0",
+    "postcss-prefixwrap": "^1.57.2"
   }
 }

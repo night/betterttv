@@ -13,6 +13,7 @@ import {globSync} from 'glob';
 import got from 'got';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import normalizePath from 'normalize-path';
+import postcssPrefixwrap from 'postcss-prefixwrap';
 import postcssUrl from 'postcss-url';
 import RemovePlugin from 'remove-files-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
@@ -122,9 +123,9 @@ export default async (env, argv) => {
         ...globSync('./src/modules/**/*.css', {dotRelative: true})
           .filter((filename) => !filename.endsWith('.module.css'))
           .map((filename) => normalizePath(filename)),
+        './node_modules/@mantine/core/styles.css',
         './src/index.js',
       ],
-      mantine: ['@mantine/core/styles.css'],
     },
     output: {
       filename: '[name].js',
@@ -169,6 +170,15 @@ export default async (env, argv) => {
                   plugins: [
                     postcssUrl({
                       url: (asset) => (asset.url.startsWith(CDN_ENDPOINT) ? asset.url : `${CDN_ENDPOINT}${asset.url}`),
+                    }),
+                    postcssPrefixwrap(':where(.bttv-mantine-scope)', {
+                      // Must be false: true turns :root into `. :root` (invalid) instead of replacing :root.
+                      prefixRootTags: false,
+                      // Match resolved paths on Windows and POSIX (whitelist is regex-matched).
+                      whitelist: [/[/\\]@mantine[/\\]core[/\\]styles\.css$/],
+                      // Do not prefix :host — descendant form `:where(.scope) :host` is invalid; :host
+                      // must be root of the selector so default CSS variables apply in shadow DOM.
+                      ignoredSelectors: [/^:host/],
                     }),
                     'postcss-hexrgba',
                     'autoprefixer',
