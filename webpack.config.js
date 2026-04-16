@@ -172,12 +172,8 @@ export default async (env, argv) => {
                       url: (asset) => (asset.url.startsWith(CDN_ENDPOINT) ? asset.url : `${CDN_ENDPOINT}${asset.url}`),
                     }),
                     postcssPrefixwrap(':where(.bttv-mantine-scope)', {
-                      // Must be false: true turns :root into `. :root` (invalid) instead of replacing :root.
                       prefixRootTags: false,
-                      // Match resolved paths on Windows and POSIX (whitelist is regex-matched).
                       whitelist: [/[/\\]@mantine[/\\]core[/\\]styles\.css$/],
-                      // Do not prefix :host — descendant form `:where(.scope) :host` is invalid; :host
-                      // must be root of the selector so default CSS variables apply in shadow DOM.
                       ignoredSelectors: [/^:host/],
                     }),
                     'postcss-hexrgba',
