@@ -23,6 +23,20 @@ class TempValue {
   }
 }
 
+function parsePersistedSettings(currentSettings) {
+  const result = {};
+
+  for (const [key, value] of Object.entries(currentSettings)) {
+    if (value instanceof TempValue) {
+      result[key] = value.storedValue;
+    } else {
+      result[key] = value;
+    }
+  }
+
+  return {...result, version: currentSettings.version};
+}
+
 class Settings extends SafeEventEmitter {
   constructor() {
     super();
@@ -39,10 +53,6 @@ class Settings extends SafeEventEmitter {
     this.upgrade(settings.version);
   }
 
-  getSettings() {
-    return settings;
-  }
-
   get(id) {
     const value = settings[id];
 
@@ -57,6 +67,10 @@ class Settings extends SafeEventEmitter {
     }
 
     return value;
+  }
+
+  getSettings() {
+    return parsePersistedSettings(settings);
   }
 
   set(id, value, temporary = false) {
@@ -89,7 +103,7 @@ class Settings extends SafeEventEmitter {
     }
     storage.set(SETTINGS_STORAGE_KEY, storageSettings);
 
-    this.emit('changed', updatedSettings);
+    this.emit('changed', updatedSettings, temporary);
     this.emit(`changed.${id}`, value, temporary);
 
     return value;

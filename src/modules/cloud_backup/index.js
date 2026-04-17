@@ -159,7 +159,11 @@ class CloudBackup extends SafeEventEmitter {
     }
   }
 
-  handleInternalSettingsChange() {
+  handleInternalSettingsChange(_updatedSettings, temporary) {
+    if (temporary) {
+      return;
+    }
+
     if (!ignoringInternalSettingChanges) {
       this._handleInternalSettingsChangeDebounced();
     }
