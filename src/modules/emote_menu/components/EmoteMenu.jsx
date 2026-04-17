@@ -27,7 +27,13 @@ function getCategories() {
   };
 }
 
-function EmoteMenu({setHandleOpen, appendToChat, boundingQuerySelector, offsetOptions = {}}) {
+function EmoteMenu({
+  setHandleOpen,
+  appendToChat,
+  boundingQuerySelector,
+  offsetOptions = {},
+  emoteMenuToggleButtonSelector,
+}) {
   const handleRef = useRef(null);
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState(null);
@@ -96,7 +102,21 @@ function EmoteMenu({setHandleOpen, appendToChat, boundingQuerySelector, offsetOp
     whileElementsMounted: autoUpdate,
   });
 
-  const dismiss = useDismiss(context);
+  const dismiss = useDismiss(context, {
+    outsidePress(event) {
+      if (emoteMenuToggleButtonSelector == null || emoteMenuToggleButtonSelector === '') {
+        return true;
+      }
+
+      const target = event.target;
+      if (!(target instanceof Element)) {
+        return true;
+      }
+
+      return target.closest(emoteMenuToggleButtonSelector) == null;
+    },
+  });
+
   const {getFloatingProps} = useInteractions([dismiss]);
 
   useEffect(() => {
