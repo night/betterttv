@@ -53,6 +53,10 @@ class Settings extends SafeEventEmitter {
     this.upgrade(settings.version);
   }
 
+  getSettings() {
+    return parsePersistedSettings(settings);
+  }
+
   get(id) {
     const value = settings[id];
 
@@ -67,10 +71,6 @@ class Settings extends SafeEventEmitter {
     }
 
     return value;
-  }
-
-  getSettings() {
-    return parsePersistedSettings(settings);
   }
 
   set(id, value, temporary = false) {
