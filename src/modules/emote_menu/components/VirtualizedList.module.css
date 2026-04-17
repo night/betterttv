@@ -12,12 +12,6 @@
   visibility: hidden;
 }
 
-.stickyBottomComponent {
-  position: sticky;
-  bottom: 0;
-  z-index: 2;
-}
-
 .guard {
   width: 100%;
 }

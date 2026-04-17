@@ -3,6 +3,7 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import styles from './VirtualizedList.module.css';
 import debounce from 'lodash.debounce';
 import throttle from 'lodash.throttle';
+import {useMergedRef} from '@mantine/hooks';
 
 function VirtualizedList(
   {
@@ -13,13 +14,15 @@ function VirtualizedList(
     windowHeight,
     stickyRows,
     onHeaderChange = () => {},
-    stickyBottomComponent,
     bottomGuardHeight = 0,
     topGuardHeight = 0,
     ...props
   },
-  ref
+  forwardedRef
 ) {
+  const ref = useRef(null);
+  const mergedRef = useMergedRef(forwardedRef, ref);
+
   const listHeight = useMemo(
     () => Math.max(rowHeight * totalRows + topGuardHeight + bottomGuardHeight, windowHeight),
     [totalRows, rowHeight, windowHeight, topGuardHeight, bottomGuardHeight]
@@ -71,7 +74,7 @@ function VirtualizedList(
   useEffect(() => {
     const currentWrapperRef = ref.current;
     if (currentWrapperRef == null) {
-      return null;
+      return;
     }
 
     isInViewport();
@@ -96,14 +99,13 @@ function VirtualizedList(
   );
 
   return (
-    <div className={classNames(styles.list, className)} style={{height: windowHeight}} ref={ref} {...props}>
+    <div className={classNames(styles.list, className)} style={{height: windowHeight}} ref={mergedRef} {...props}>
       <div className={styles.rows} style={{top: data.top}}>
         <div className={styles.guard} style={{height: topGuardHeight}} />
         {rows}
         <div className={styles.guard} style={{height: bottomGuardHeight}} />
       </div>
       <div className={styles.ghostRows} style={{height: listHeight}} />
-      <div className={styles.stickyBottomComponent}>{stickyBottomComponent}</div>
     </div>
   );
 }

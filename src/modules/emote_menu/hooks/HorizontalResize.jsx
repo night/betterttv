@@ -1,6 +1,6 @@
 import React from 'react';
 import useStorageState from '../../../common/hooks/StorageState.jsx';
-import emoteMenuViewStore, {EMOTE_MENU_MIN_WIDTH} from '../../../common/stores/emote-menu-view-store.js';
+import {EMOTE_MENU_MIN_WIDTH} from '../../../common/stores/emote-menu-view-store.js';
 import {SettingIds} from '../../../constants.js';
 
 const WINDOW_HORIZONTAL_MARGIN = 20;
@@ -9,10 +9,6 @@ export default function useHorizontalResize({boundingQuerySelector, handleRef, m
   const [emoteMenuWidth, setEmoteMenuWidth] = useStorageState(SettingIds.EMOTE_MENU_WIDTH); // desired width
   const [displayWidth, setDisplayWidth] = React.useState(emoteMenuWidth); // actual width
   const [isResizing, setIsResizing] = React.useState(false);
-
-  React.useEffect(() => {
-    emoteMenuViewStore.updateTotalColumns(displayWidth);
-  }, []);
 
   function setWidth(width, windowResize = false) {
     let newWidth = width;
@@ -27,7 +23,6 @@ export default function useHorizontalResize({boundingQuerySelector, handleRef, m
       setEmoteMenuWidth(newWidth);
     }
     setDisplayWidth(newWidth);
-    emoteMenuViewStore.updateTotalColumns(newWidth);
   }
 
   React.useEffect(() => {
