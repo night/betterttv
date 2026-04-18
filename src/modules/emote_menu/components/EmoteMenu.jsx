@@ -104,7 +104,7 @@ function EmoteMenu({
 
   const dismiss = useDismiss(context, {
     outsidePress(event) {
-      if (emoteMenuToggleButtonSelector == null || emoteMenuToggleButtonSelector === '') {
+      if (emoteMenuToggleButtonSelector == null || emoteMenuToggleButtonSelector.length === 0) {
         return true;
       }
 
