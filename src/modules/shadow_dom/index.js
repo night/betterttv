@@ -45,7 +45,15 @@ class ShadowDOM {
       () => this.injectMantineVariables()
     );
 
+    this.toggleDarkModeClass();
     settings.on(`changed.${SettingIds.PRIMARY_COLOR}`, this.injectMantineVariables.bind(this));
+    settings.on(`changed.${SettingIds.DARKENED_MODE}`, this.toggleDarkModeClass.bind(this));
+  }
+
+  toggleDarkModeClass() {
+    const dark = settings.get(SettingIds.DARKENED_MODE) === true;
+    this.mountNode.classList.toggle('bttv-mantine-theme-dark', dark);
+    this.mountNode.classList.toggle('bttv-mantine-theme-light', !dark);
   }
 
   injectMantineVariables() {
@@ -59,8 +67,8 @@ class ShadowDOM {
     const {variables, dark, light} = mantineVariablesResolver(theme, primaryColor);
 
     const baseCssVariables = variablesToCSS('.bttv-mantine-scope', variables);
-    const darkCssVariables = variablesToCSS('.bttv-mantine-scope:has([data-mantine-color-scheme="dark"])', dark);
-    const lightCssVariables = variablesToCSS('.bttv-mantine-scope:has([data-mantine-color-scheme="light"])', light);
+    const darkCssVariables = variablesToCSS('.bttv-mantine-theme-dark', dark);
+    const lightCssVariables = variablesToCSS('.bttv-mantine-theme-light', light);
 
     this.setAdoptedStyleSheet([baseCssVariables, darkCssVariables, lightCssVariables]);
   }
