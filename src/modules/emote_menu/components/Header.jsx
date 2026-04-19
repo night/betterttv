@@ -18,7 +18,7 @@ function Header({value, opened, onChange, toggleWhisper, selected, className, ..
         radius="md"
         classNames={{input: styles.input, root: styles.root}}
       />
-      <CloseButton className={styles.closeButton} size="lg" onClick={toggleWhisper} />
+      <CloseButton variant="subtle" className={styles.closeButton} size="lg" onClick={toggleWhisper} />
     </div>
   );
 }

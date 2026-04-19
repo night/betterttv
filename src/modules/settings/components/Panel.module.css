@@ -1,5 +1,5 @@
 .panel {
-  padding: 24px;
+  padding: 20px;
   border: 1px solid var(--mantine-color-default-border);
   box-shadow: var(--mantine-shadow-xs);
   border-radius: var(--mantine-radius-lg);
@@ -9,8 +9,8 @@
 .panelContainer {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  margin: 24px;
+  gap: 20px;
+  margin: 20px 24px;
 }
 
 .panelContainer:not(:has(.panelHeader)) {
