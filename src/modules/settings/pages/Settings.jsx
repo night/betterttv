@@ -1,4 +1,4 @@
-import React, {useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import formatMessage from '../../../i18n/index.js';
 import extension from '../../../utils/extension.js';
 import PageHeader from '../components/PageHeader.jsx';
@@ -72,11 +72,19 @@ function SettingsList({search, settings, handleSettingRefCallback, pageHeaderHei
   return searchedSettings;
 }
 
-function Settings({onClose, isInteractive, handleSettingRefCallback}) {
+function Settings({onClose, isInteractive, handleSettingRefCallback, pageData, setPageData}) {
   const {ref, height: pageHeaderHeight} = useElementSize();
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(pageData?.search ?? '');
   const inputRef = useFocusTrap(isInteractive);
   const settings = useMemo(() => SettingStore.getSupportedSettings().sort((a, b) => a.name.localeCompare(b.name)), []);
+
+  const handleSearchChange = useCallback(
+    ({target: {value}}) => {
+      setSearch(value);
+      setPageData({search: value});
+    },
+    [setPageData]
+  );
 
   return (
     <React.Fragment>
@@ -88,7 +96,7 @@ function Settings({onClose, isInteractive, handleSettingRefCallback}) {
             ref={inputRef}
             value={search}
             placeholder={formatMessage({defaultMessage: 'Search Settings...'})}
-            onChange={({target: {value}}) => setSearch(value)}
+            onChange={handleSearchChange}
             classNames={{input: styles.searchInput, root: styles.searchInputRoot}}
             radius="lg"
           />

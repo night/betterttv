@@ -1,11 +1,11 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {PageDecendants, PageTypes} from '../../../constants.js';
 import UserSettings from '../pages/UserSettings.jsx';
 import Changelog from '../pages/Changelog.jsx';
 import Settings from '../pages/Settings.jsx';
 import styles from './SettingsModal.module.css';
 import {Modal} from '@mantine/core';
-import {useDisclosure} from '@mantine/hooks';
+import {useDisclosure, useMergedRef} from '@mantine/hooks';
 import HighlightKeywords from '../pages/HighlightKeywords.jsx';
 import SideNavigation from './SideNavigation.jsx';
 import {PageContext} from '../contexts/PageContext.jsx';
@@ -56,12 +56,22 @@ const pageMotionVariants = {
   },
 };
 
-function PageTransition({children, className}) {
+const PageTransition = React.forwardRef(({children, className, defaultScrollTop = 0}, ref) => {
+  const currentRef = useRef(null);
+  const mergedRef = useMergedRef(ref, currentRef);
   const direction = usePresenceData();
   const {initial, exit} = pageMotionVariants[direction];
 
+  useEffect(() => {
+    if (currentRef.current == null) {
+      return;
+    }
+    currentRef.current.scrollTop = defaultScrollTop;
+  }, []);
+
   return (
     <motion.div
+      ref={mergedRef}
       variants={pageMotionVariants}
       initial={initial}
       exit={exit}
@@ -70,7 +80,7 @@ function PageTransition({children, className}) {
       {children}
     </motion.div>
   );
-}
+});
 
 function SettingsModal({setHandleOpen}) {
   const [page, setPage] = useState(PageTypes.SETTINGS);
@@ -80,6 +90,17 @@ function SettingsModal({setHandleOpen}) {
   const settingRefs = useRef({});
   const pendingScrollToSettingPanelId = useRef(null);
   const [pageTransitionDirection, setPageTransitionDirection] = useState(PageTransitionDirection.RIGHT);
+  const pageData = useRef({});
+  const pageContentRef = useRef(null);
+
+  const parentLastScrollTopPosition = useRef(0);
+  const parentLastPageType = useRef(null);
+
+  function createUpdatePageDataCallback(pageType) {
+    return function updatePageData(value) {
+      pageData.current[pageType] = {...(pageData.current[pageType] ?? {}), ...value};
+    };
+  }
 
   function handlePageChange(newPage) {
     let newDirection = PageTransitionDirection.UP;
@@ -93,6 +114,8 @@ function SettingsModal({setHandleOpen}) {
 
     if (currentPageDecendants != null && currentPageDecendants.includes(newPage)) {
       newDirection = PageTransitionDirection.LEFT;
+      parentLastScrollTopPosition.current = pageContentRef.current.scrollTop;
+      parentLastPageType.current = page;
     }
 
     if (newPageDecendants != null && newPageDecendants.includes(page)) {
@@ -148,6 +171,10 @@ function SettingsModal({setHandleOpen}) {
     setIsInteractive(false);
   }, [setIsInteractive]);
 
+  const defaultScrollTop = useMemo(() => {
+    return parentLastPageType.current === page ? parentLastScrollTopPosition.current : 0;
+  }, [parentLastPageType.current, page]);
+
   return (
     <Modal
       keepMounted
@@ -174,12 +201,18 @@ function SettingsModal({setHandleOpen}) {
         value={{page, setPage: handlePageChange, sidenavOpen, setSidenavOpen, handleGotoSettingPanel}}>
         <SideNavigation open={sidenavOpen} setOpen={setSidenavOpen} />
         <AnimatePresence custom={pageTransitionDirection} mode="wait">
-          <PageTransition key={page} className={classNames(styles.pageContent, scrollbarStyles.scroll)}>
+          <PageTransition
+            ref={pageContentRef}
+            key={page}
+            className={classNames(styles.pageContent, scrollbarStyles.scroll)}
+            defaultScrollTop={defaultScrollTop}>
             <Page
               page={page}
               onClose={modalHandlers.close}
               isInteractive={isInteractive}
               handleSettingRefCallback={handleSettingRefCallback}
+              pageData={pageData.current[page]}
+              setPageData={createUpdatePageDataCallback(page)}
             />
           </PageTransition>
         </AnimatePresence>
