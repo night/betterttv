@@ -223,6 +223,7 @@ function EmoteMenu({setHandleOpen, appendToChat, boundingQuerySelector, offsetOp
           section={section}
           onClick={handleSection}
           categories={emoteListData.categories}
+          onClose={close}
         />
         <EmoteList
           data={emoteListData}

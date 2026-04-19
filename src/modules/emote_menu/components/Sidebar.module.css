@@ -9,10 +9,24 @@
 }
 
 .content {
+  flex: 1;
+  min-height: 0;
   overflow-y: scroll;
   background-color: var(--mantine-color-body);
   scrollbar-width: none;
   width: 48px;
+}
+
+.contentInner {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.categoryList {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .content::-webkit-scrollbar {
@@ -90,21 +104,27 @@
   transform: none !important;
 }
 
-.emojiButton {
-  position: relative;
+.settingsButton {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  flex-shrink: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: var(--mantine-color-body);
+  box-sizing: border-box;
   width: 48px;
   height: 48px;
-  position: absolute;
-  cursor: pointer;
-  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: none;
   border-top: 1px solid var(--mantine-color-default-border);
+  background-color: var(--mantine-color-body);
+  color: var(--mantine-color-text);
+  cursor: pointer;
 }
 
-.emojiButton:hover::after {
+.settingsButton:hover::after {
   content: '';
   position: absolute;
   top: 0;
@@ -114,7 +134,7 @@
   background-color: var(--mantine-primary-color-light-hover);
 }
 
-.emojiButton:active::after {
+.settingsButton:active::after {
   content: '';
   position: absolute;
   top: 0;
@@ -124,30 +144,10 @@
   background-color: var(--mantine-primary-color-light-active);
 }
 
-.emojiButtonEmote {
-  width: 24px;
-  height: 24px;
+.settingsIcon {
+  position: relative;
   z-index: 1;
-  transition-property: scale;
-  transition: 0.2s ease-in-out;
-}
-
-.emojiButton:hover .emojiButtonEmote {
-  scale: 1.1;
-}
-
-.emojiButton:active .emojiButtonEmote {
-  scale: 0.9;
-}
-
-.emojiButtonHidden {
-  bottom: -48px;
-  transition: 0.2s ease-in-out;
-}
-
-.emojiButtonVisible {
-  bottom: 0;
-  transition: 0.2s ease-in-out;
+  transition: transform 0.2s ease-in-out;
 }
 
 .hidden {
