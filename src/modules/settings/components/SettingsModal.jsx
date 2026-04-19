@@ -103,6 +103,11 @@ function SettingsModal({setHandleOpen}) {
   }
 
   function handlePageChange(newPage) {
+    if (parentLastPageType.current !== newPage) {
+      parentLastScrollTopPosition.current = 0;
+      parentLastPageType.current = null;
+    }
+
     let newDirection = PageTransitionDirection.UP;
 
     if (page < newPage) {
