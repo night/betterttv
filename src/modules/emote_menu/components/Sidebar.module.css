@@ -10,6 +10,7 @@
 
 .content {
   overflow-y: scroll;
+  overscroll-behavior: none;
   background-color: var(--mantine-color-body);
   scrollbar-width: none;
   width: 48px;
