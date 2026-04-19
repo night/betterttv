@@ -1,6 +1,6 @@
 .header {
   --vertical-padding: 20px;
-  --horizontal-padding: 24px;
+  --horizontal-padding: 20px;
   position: sticky;
   top: 0;
   display: flex;
