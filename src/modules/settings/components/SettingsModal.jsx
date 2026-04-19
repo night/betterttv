@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {PageTypes} from '../../../constants.js';
+import {PageDecendants, PageTypes} from '../../../constants.js';
 import UserSettings from '../pages/UserSettings.jsx';
 import Changelog from '../pages/Changelog.jsx';
 import Settings from '../pages/Settings.jsx';
@@ -10,9 +10,9 @@ import HighlightKeywords from '../pages/HighlightKeywords.jsx';
 import SideNavigation from './SideNavigation.jsx';
 import {PageContext} from '../contexts/PageContext.jsx';
 import BlacklistKeywords from '../pages/BlacklistKeywords.jsx';
-import {AnimatePresence, motion} from 'framer-motion';
 import classNames from 'classnames';
 import scrollbarStyles from '../../../common/styles/Scrollbar.module.css';
+import {AnimatePresence, motion, usePresenceData} from 'framer-motion';
 
 function Page({page, ...restProps}) {
   switch (page) {
@@ -30,6 +30,48 @@ function Page({page, ...restProps}) {
   }
 }
 
+const PageTransitionDirection = {
+  UP: 'up',
+  DOWN: 'down',
+  LEFT: 'left',
+  RIGHT: 'right',
+};
+
+const pageMotionVariants = {
+  [PageTransitionDirection.UP]: {
+    initial: {opacity: 0, y: -8, filter: 'blur(2px)', transition: {duration: 0.15, ease: [0.75, 0, 1, 1]}},
+    exit: {opacity: 0, y: 8, filter: 'blur(2px)', transition: {duration: 0.15, ease: [0, 0, 0.25, 1]}},
+  },
+  [PageTransitionDirection.DOWN]: {
+    initial: {opacity: 0, y: 8, filter: 'blur(2px)', transition: {duration: 0.15, ease: [0.75, 0, 1, 1]}},
+    exit: {opacity: 0, y: -8, filter: 'blur(2px)', transition: {duration: 0.15, ease: [0, 0, 0.25, 1]}},
+  },
+  [PageTransitionDirection.LEFT]: {
+    initial: {opacity: 0, x: 8, filter: 'blur(2px)', transition: {duration: 0.15, ease: [0.75, 0, 1, 1]}},
+    exit: {opacity: 0, x: -8, filter: 'blur(2px)', transition: {duration: 0.15, ease: [0, 0, 0.25, 1]}},
+  },
+  [PageTransitionDirection.RIGHT]: {
+    initial: {opacity: 0, x: -8, filter: 'blur(2px)', transition: {duration: 0.15, ease: [0.75, 0, 1, 1]}},
+    exit: {opacity: 0, x: 8, filter: 'blur(2px)', transition: {duration: 0.15, ease: [0, 0, 0.25, 1]}},
+  },
+};
+
+function PageTransition({children, className}) {
+  const direction = usePresenceData();
+  const {initial, exit} = pageMotionVariants[direction];
+
+  return (
+    <motion.div
+      variants={pageMotionVariants}
+      initial={initial}
+      exit={exit}
+      animate={{opacity: 1, filter: 'blur(0px)', x: 0, y: 0}}
+      className={className}>
+      {children}
+    </motion.div>
+  );
+}
+
 function SettingsModal({setHandleOpen}) {
   const [page, setPage] = useState(PageTypes.SETTINGS);
   const [isInteractive, setIsInteractive] = useState(false);
@@ -37,6 +79,29 @@ function SettingsModal({setHandleOpen}) {
   const [sidenavOpen, setSidenavOpen] = useState(false);
   const settingRefs = useRef({});
   const pendingScrollToSettingPanelId = useRef(null);
+  const [pageTransitionDirection, setPageTransitionDirection] = useState(PageTransitionDirection.RIGHT);
+
+  function handlePageChange(newPage) {
+    let newDirection = PageTransitionDirection.UP;
+
+    if (page < newPage) {
+      newDirection = PageTransitionDirection.DOWN;
+    }
+
+    const currentPageDecendants = PageDecendants[page];
+    const newPageDecendants = PageDecendants[newPage];
+
+    if (currentPageDecendants != null && currentPageDecendants.includes(newPage)) {
+      newDirection = PageTransitionDirection.LEFT;
+    }
+
+    if (newPageDecendants != null && newPageDecendants.includes(page)) {
+      newDirection = PageTransitionDirection.RIGHT;
+    }
+
+    setPageTransitionDirection(newDirection);
+    setPage(newPage);
+  }
 
   function scrollToPendingSettingPanel() {
     if (page !== PageTypes.SETTINGS) {
@@ -58,7 +123,7 @@ function SettingsModal({setHandleOpen}) {
   }
 
   function handleGotoSettingPanel(settingPanelId) {
-    setPage(PageTypes.SETTINGS);
+    handlePageChange(PageTypes.SETTINGS);
     pendingScrollToSettingPanelId.current = settingPanelId;
     scrollToPendingSettingPanel();
   }
@@ -105,33 +170,18 @@ function SettingsModal({setHandleOpen}) {
       classNames={{content: styles.modal, body: styles.modalBody}}
       transitionProps={{transition: 'pop', duration: 100}}
       onClose={modalHandlers.close}>
-      <PageContext.Provider value={{page, setPage, sidenavOpen, setSidenavOpen, handleGotoSettingPanel}}>
+      <PageContext.Provider
+        value={{page, setPage: handlePageChange, sidenavOpen, setSidenavOpen, handleGotoSettingPanel}}>
         <SideNavigation open={sidenavOpen} setOpen={setSidenavOpen} />
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={page}
-            className={classNames(styles.pageContent, scrollbarStyles.scroll)}
-            onAnimationComplete={scrollToPendingSettingPanel}
-            initial={{
-              opacity: 0,
-              translateY: '4px',
-              filter: 'blur(2px)',
-              transition: {duration: 0.15, ease: [0.75, 0, 1, 1]},
-            }}
-            exit={{
-              opacity: 0,
-              translateY: '-4px',
-              filter: 'blur(2px)',
-              transition: {duration: 0.15, ease: [0, 0, 0.25, 1]},
-            }}
-            animate={{opacity: 1, filter: 'blur(0px)', translateY: '0px'}}>
+        <AnimatePresence custom={pageTransitionDirection} mode="wait">
+          <PageTransition key={page} className={classNames(styles.pageContent, scrollbarStyles.scroll)}>
             <Page
               page={page}
               onClose={modalHandlers.close}
               isInteractive={isInteractive}
               handleSettingRefCallback={handleSettingRefCallback}
             />
-          </motion.div>
+          </PageTransition>
         </AnimatePresence>
       </PageContext.Provider>
     </Modal>

@@ -147,6 +147,10 @@ export const PageTypes = {
   BLACKLIST_KEYWORDS: 5,
 };
 
+export const PageDecendants = {
+  [PageTypes.SETTINGS]: [PageTypes.HIGHLIGHT_KEYWORDS, PageTypes.BLACKLIST_KEYWORDS],
+};
+
 export const NavigationModeTypes = {
   MOUSE: 0,
   ARROW_KEYS: 1,
