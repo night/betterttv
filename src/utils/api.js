@@ -25,7 +25,7 @@ async function request(method, path, options = {}) {
     restOptions.body = JSON.stringify(restOptions.body);
   }
 
-  const includeAuth = path.startsWith('cached/');
+  const includeAuth = !path.startsWith('cached/');
   const {accessToken, refreshToken} = getCredentials();
   if (includeAuth && accessToken != null) {
     headers.Authorization = `Bearer ${accessToken}`;
