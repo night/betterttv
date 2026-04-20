@@ -56,7 +56,7 @@ const pageMotionVariants = {
   },
 };
 
-function PageTransition({children, className, computeDefaultScrollTop, containerRef, settingRefs}) {
+function PageTransition({children, className, computeDefaultScrollTop, containerRef}) {
   const currentRef = useRef(null);
   const mergedRef = useMergedRef(containerRef, currentRef);
   const direction = usePresenceData();
@@ -215,7 +215,6 @@ function SettingsModal({setHandleOpen}) {
           <PageTransition
             containerRef={pageContentRef}
             key={page}
-            settingRefs={settingRefs}
             className={classNames(styles.pageContent, scrollbarStyles.scroll)}
             computeDefaultScrollTop={computeDefaultScrollTop}>
             <Page
