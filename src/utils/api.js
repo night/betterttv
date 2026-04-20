@@ -25,8 +25,9 @@ async function request(method, path, options = {}) {
     restOptions.body = JSON.stringify(restOptions.body);
   }
 
+  const includeAuth = !path.startsWith('cached/');
   const {accessToken, refreshToken} = getCredentials();
-  if (accessToken != null) {
+  if (includeAuth && accessToken != null) {
     headers.Authorization = `Bearer ${accessToken}`;
   }
 
@@ -48,7 +49,7 @@ async function request(method, path, options = {}) {
       throw error;
     }
 
-    if (autoRefreshToken && refreshToken != null && error.status === 401) {
+    if (autoRefreshToken && includeAuth && refreshToken != null && error.status === 401) {
       await refreshAndSetCredentials();
       return request(method, path, {...options, autoRefreshToken: false});
     }
