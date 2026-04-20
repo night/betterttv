@@ -11,6 +11,8 @@ import SideNavigation from './SideNavigation.jsx';
 import {PageContext} from '../contexts/PageContext.jsx';
 import BlacklistKeywords from '../pages/BlacklistKeywords.jsx';
 import {AnimatePresence, motion} from 'framer-motion';
+import classNames from 'classnames';
+import scrollbarStyles from '../../../common/styles/Scrollbar.module.css';
 
 function Page({page, ...restProps}) {
   switch (page) {
@@ -108,7 +110,7 @@ function SettingsModal({setHandleOpen}) {
         <AnimatePresence mode="wait">
           <motion.div
             key={page}
-            className={styles.pageContent}
+            className={classNames(styles.pageContent, scrollbarStyles.scroll)}
             onAnimationComplete={scrollToPendingSettingPanel}
             initial={{
               opacity: 0,

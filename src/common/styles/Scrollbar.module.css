@@ -1,0 +1,19 @@
+.scroll {
+  scrollbar-gutter: stable;
+  overscroll-behavior: none;
+  scrollbar-color: var(--mantine-color-dimmed) transparent;
+}
+
+.scroll::-webkit-scrollbar {
+  border-radius: var(--mantine-radius-md);
+  width: 8px;
+}
+
+.scroll::-webkit-scrollbar-thumb {
+  background: var(--mantine-color-dimmed);
+  border-radius: var(--mantine-radius-md);
+}
+
+.scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--mantine-color-dimmed);
+}

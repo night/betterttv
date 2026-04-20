@@ -9,8 +9,8 @@ import styles from './EmoteMenu.module.css';
 import classNames from 'classnames';
 import EmoteList from './EmoteList.jsx';
 import keyCodes from '../../../utils/keycodes.js';
-import {useDisclosure} from '@mantine/hooks';
-import {autoUpdate, offset, useDismiss, useFloating, useInteractions, useMergeRefs} from '@floating-ui/react';
+import {useDisclosure, useResizeObserver} from '@mantine/hooks';
+import {autoUpdate, offset, useDismiss, useFloating, useInteractions} from '@floating-ui/react';
 import {isMac} from '../../../utils/window.js';
 import useEmoteMenuViewStoreUpdated from '../../../common/hooks/EmoteMenuViewStore.jsx';
 
@@ -42,7 +42,16 @@ function EmoteMenu({
   const [section, setSection] = useState(null);
   const [opened, {close, open, toggle}] = useDisclosure(false);
   const width = useHorizontalResize({boundingQuerySelector, handleRef});
-  const emoteListRef = useRef(null);
+  const [emoteListRef, emoteListRect] = useResizeObserver();
+
+  useLayoutEffect(() => {
+    if (emoteListRef.current == null) {
+      return;
+    }
+
+    const clientWidth = emoteListRef.current.clientWidth;
+    emoteMenuViewStore.updateTotalColumns(clientWidth);
+  }, [emoteListRect.width]);
 
   const [emoteListData, setEmoteListData] = useState({
     rows: [],

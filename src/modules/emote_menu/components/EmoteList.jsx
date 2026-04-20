@@ -1,14 +1,15 @@
 import classNames from 'classnames';
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {NavigationModeTypes, EMOTE_MENU_GRID_ROW_HEIGHT} from '../../../constants.js';
 import useGridKeyboardNavigation from '../hooks/GridKeyboardNavigation.jsx';
 import EmoteButton from './EmoteButton.jsx';
 import Icons from './Icons.jsx';
 import VirtualizedList from './VirtualizedList.jsx';
 import Preview from './Preview.jsx';
-import {useElementSize} from '@mantine/hooks';
+import {mergeRefs, useElementSize, useMergedRef} from '@mantine/hooks';
 import {Text} from '@mantine/core';
 import styles from './EmoteList.module.css';
+import scrollbarStyles from '../../../common/styles/Scrollbar.module.css';
 
 const GUARD_HEIGHT = 8;
 
@@ -101,18 +102,7 @@ function EmptySearchState() {
 
 const BrowseEmotes = React.forwardRef(
   (
-    {
-      emoteListRows,
-      onClick,
-      onSection,
-      setCoords,
-      coords,
-      navigationMode,
-      className,
-      windowHeight,
-      stickyBottomComponent,
-      headerRows,
-    },
+    {emoteListRows, onClick, onSection, setCoords, coords, navigationMode, className, windowHeight, headerRows},
     ref
   ) => {
     const handleMouseOver = useCallback(
@@ -176,9 +166,8 @@ const BrowseEmotes = React.forwardRef(
         windowHeight={windowHeight}
         totalRows={emoteListRows.length}
         renderRow={renderRow}
-        className={classNames(styles.emotesContainer, className)}
+        className={classNames(styles.emotesContainer, className, scrollbarStyles.scroll)}
         onHeaderChange={handleHeaderChange}
-        stickyBottomComponent={stickyBottomComponent}
       />
     );
   }
@@ -187,8 +176,8 @@ const BrowseEmotes = React.forwardRef(
 const EmoteList = React.forwardRef(
   ({data, onClick, selected, setSelected, section, onSection, setKeyPressCallback, className}, ref) => {
     const {rows, totalCols} = data;
-    const {ref: wrapperRef, height} = useElementSize();
-    const previewRef = useRef(null);
+    const {ref: listViewportRef, height} = useElementSize();
+    const mergedRef = useMergedRef(ref, listViewportRef);
     const [coords, setCoords] = useState({x: 0, y: 0});
     const rowColumnCounts = useMemo(() => getRowColumnCounts(rows), [rows]);
     const [navigationMode, setNavigationMode] = useState(NavigationModeTypes.MOUSE);
@@ -242,7 +231,6 @@ const EmoteList = React.forwardRef(
         return;
       }
 
-      const previewHeight = previewRef.current?.getBoundingClientRect()?.height ?? 0;
       const depth = coords.y * EMOTE_MENU_GRID_ROW_HEIGHT;
       const {scrollTop} = currentRef;
 
@@ -257,15 +245,15 @@ const EmoteList = React.forwardRef(
         currentRef.scrollTo(0, isPreceededByHeader ? depth - EMOTE_MENU_GRID_ROW_HEIGHT : depth);
       }
 
-      if (depth + EMOTE_MENU_GRID_ROW_HEIGHT + previewHeight >= scrollTop + height) {
-        currentRef.scrollTo(0, depth + EMOTE_MENU_GRID_ROW_HEIGHT - height + previewHeight);
+      if (depth + EMOTE_MENU_GRID_ROW_HEIGHT >= scrollTop + height) {
+        currentRef.scrollTo(0, depth + EMOTE_MENU_GRID_ROW_HEIGHT - height);
       }
     }, [coords, navigationMode, height, headerRows]);
 
     return (
-      <div ref={wrapperRef} className={className} onMouseMove={handleMouseMove}>
+      <div className={classNames(styles.emoteListRoot, className)} onMouseMove={handleMouseMove}>
         <BrowseEmotes
-          ref={ref}
+          ref={mergedRef}
           section={section}
           onSection={onSection}
           onClick={onClick}
@@ -275,8 +263,8 @@ const EmoteList = React.forwardRef(
           setCoords={handleCoordsChange}
           windowHeight={height}
           headerRows={headerRows}
-          stickyBottomComponent={<Preview ref={previewRef} className={styles.preview} emote={selected} />}
         />
+        <Preview emote={selected} />
       </div>
     );
   }
