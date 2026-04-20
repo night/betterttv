@@ -13,6 +13,7 @@ const CHAT_TEXT_AREA = 'div#input[contenteditable]';
 const BOUNDING_QUERY_SELECTOR = '#live-chat-message-input';
 
 const BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID = 'bttv-emote-picker-button-container';
+const EMOTE_MENU_TOGGLE_BUTTON_SELECTOR = `#${BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID}`;
 const CHAT_BUTTON_CONTAINER_SELECTOR = '#picker-buttons';
 const NATIVE_EMOTE_MENU_BUTTON_CONTAINER_SELECTOR = '#emoji-picker-button';
 const EMOTE_MENU_COMPONENT_ID = 'emote-menu-component-youtube';
@@ -96,6 +97,7 @@ function loadEmoteMenu(onMount, onError) {
       setHandleOpen={setHandleOpen}
       appendToChat={appendToChat}
       boundingQuerySelector={BOUNDING_QUERY_SELECTOR}
+      emoteMenuToggleButtonSelector={EMOTE_MENU_TOGGLE_BUTTON_SELECTOR}
       offsetOptions={{mainAxis: 8, crossAxis: -8}}
     />
   );

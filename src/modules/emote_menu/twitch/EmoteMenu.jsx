@@ -19,6 +19,7 @@ const CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR = '.chat-input div[data-test-selec
 
 const BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID = 'bttv-emote-picker-button-container';
 const EMOTE_PICKER_BUTTON_SELECTOR = 'button[data-a-target="emote-picker-button"]';
+const EMOTE_MENU_TOGGLE_BUTTON_SELECTOR = `#${BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID}, #${LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID}`;
 
 let handleOpen;
 function setHandleOpen(newHandleOpen) {
@@ -161,6 +162,7 @@ function loadEmoteMenu(onMount, onError) {
       setHandleOpen={setHandleOpen}
       appendToChat={appendToChat}
       boundingQuerySelector={CHAT_TEXT_AREA}
+      emoteMenuToggleButtonSelector={EMOTE_MENU_TOGGLE_BUTTON_SELECTOR}
       offsetOptions={{mainAxis: 8}}
     />
   );
