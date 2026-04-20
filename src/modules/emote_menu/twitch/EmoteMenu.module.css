@@ -13,6 +13,7 @@
 }
 
 .button {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -20,10 +21,6 @@
   width: var(--button-size-default, 30px);
   cursor: pointer;
   border-radius: 100%;
-  background-image: url(assets/logos/logo.svg);
-  background-size: 18px 18px;
-  background-position: center;
-  background-repeat: no-repeat;
   border-radius: var(--border-radius-rounded);
   border-bottom-right-radius: var(--border-radius-large);
 
@@ -37,6 +34,20 @@
   }
 
   transition: 100ms ease-in-out;
+}
+
+.button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-fill-button-icon);
+  mask-image: url(assets/logos/logo.svg);
+  mask-size: 20px 20px;
+  mask-position: center;
+  mask-repeat: no-repeat;
 }
 
 .container {
