@@ -40,7 +40,7 @@ function UnsupportedChromiumVersion() {
   );
 }
 
-// This is hardcoded we set scroll top on mount sometimes
+// This is hardcoded, as we set scroll top on mount
 export const PAGE_HEADER_HEIGHT = 76;
 
 function SettingsList({search, settings, handleSettingRefCallback}) {
