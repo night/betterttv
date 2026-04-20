@@ -44,9 +44,9 @@ const mantineTheme = createTheme({
     lg: '1.5rem',
     xl: '1.75rem',
   },
-  fontFamily: 'Inter, sans-serif',
+  fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
   headings: {
-    fontFamily: 'Inter, sans-serif',
+    fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
     sizes: {
       h1: {fontSize: '2rem', fontWeight: 500},
       h2: {fontSize: '1.75rem', fontWeight: 500},
