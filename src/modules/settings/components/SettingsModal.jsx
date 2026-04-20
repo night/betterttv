@@ -56,7 +56,6 @@ const pageMotionVariants = {
   },
 };
 
-// Avoid `ref` on AnimatePresence children: framer-motion reads props.ref and React 18 warns.
 function PageTransition({children, className, defaultScrollTop = 0, containerRef}) {
   const currentRef = useRef(null);
   const mergedRef = useMergedRef(containerRef, currentRef);
