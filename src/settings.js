@@ -34,7 +34,7 @@ function parsePersistedSettings(currentSettings) {
     }
   }
 
-  return {...result, version: currentSettings.version};
+  return result;
 }
 
 class Settings extends SafeEventEmitter {
