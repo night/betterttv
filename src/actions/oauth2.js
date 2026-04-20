@@ -2,7 +2,7 @@ import {API_ENDPOINT} from '../constants.js';
 import api from '../utils/api.js';
 
 export async function getMe() {
-  return api.get('oauth2/me', {version: null});
+  return api.get('oauth2/me', {version: null, withAuth: true});
 }
 
 export function getAuthorizeUrl() {

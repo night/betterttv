@@ -7,7 +7,14 @@ const API_ENDPOINT = API_ENDPOINT_CONSTANT ?? 'https://api.betterttv.net/';
 const API_VERSION = API_VERSION_CONSTANT ?? '3';
 
 async function request(method, path, options = {}) {
-  const {searchParams, version = API_VERSION, autoRefreshToken = true, headers = {}, ...restOptions} = options;
+  const {
+    searchParams,
+    version = API_VERSION,
+    autoRefreshToken = true,
+    withAuth = false,
+    headers = {},
+    ...restOptions
+  } = options;
 
   let url = null;
   if (version != null) {
@@ -26,7 +33,7 @@ async function request(method, path, options = {}) {
   }
 
   const {accessToken, refreshToken} = getCredentials();
-  if (accessToken != null) {
+  if (withAuth && accessToken != null) {
     headers.Authorization = `Bearer ${accessToken}`;
   }
 
@@ -48,7 +55,7 @@ async function request(method, path, options = {}) {
       throw error;
     }
 
-    if (autoRefreshToken && refreshToken != null && error.status === 401) {
+    if (autoRefreshToken && withAuth && refreshToken != null && error.status === 401) {
       await refreshAndSetCredentials();
       return request(method, path, {...options, autoRefreshToken: false});
     }
