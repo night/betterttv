@@ -92,9 +92,7 @@ function SettingsModal({setHandleOpen}) {
   const [pageTransitionDirection, setPageTransitionDirection] = useState(PageTransitionDirection.RIGHT);
   const pageData = useRef({});
   const pageContentRef = useRef(null);
-
-  const parentLastScrollTopPosition = useRef(0);
-  const parentLastPageType = useRef(null);
+  const lastParentData = useRef({scrollTop: 0, page: null});
 
   function createUpdatePageDataCallback(pageType) {
     return function updatePageData(value) {
@@ -103,9 +101,9 @@ function SettingsModal({setHandleOpen}) {
   }
 
   function handlePageChange(newPage) {
-    if (parentLastPageType.current !== newPage) {
-      parentLastScrollTopPosition.current = 0;
-      parentLastPageType.current = null;
+    if (lastParentData.current.page !== newPage) {
+      lastParentData.current.scrollTop = 0;
+      lastParentData.current.page = null;
     }
 
     let newDirection = PageTransitionDirection.UP;
@@ -119,8 +117,9 @@ function SettingsModal({setHandleOpen}) {
 
     if (currentPageDecendants != null && currentPageDecendants.includes(newPage)) {
       newDirection = PageTransitionDirection.LEFT;
-      parentLastScrollTopPosition.current = pageContentRef.current.scrollTop;
-      parentLastPageType.current = page;
+
+      lastParentData.current.page = page;
+      lastParentData.current.scrollTop = pageContentRef.current.scrollTop;
     }
 
     if (newPageDecendants != null && newPageDecendants.includes(page)) {
@@ -177,7 +176,11 @@ function SettingsModal({setHandleOpen}) {
   }, [setIsInteractive]);
 
   const defaultScrollTop = useMemo(() => {
-    return parentLastPageType.current === page ? parentLastScrollTopPosition.current : 0;
+    if (lastParentData.current.page !== page) {
+      return 0;
+    }
+
+    return lastParentData.current.scrollTop;
   }, [parentLastPageType.current, page]);
 
   return (
