@@ -56,9 +56,10 @@ const pageMotionVariants = {
   },
 };
 
-const PageTransition = React.forwardRef(({children, className, defaultScrollTop = 0}, ref) => {
+// Avoid `ref` on AnimatePresence children: framer-motion reads props.ref and React 18 warns.
+function PageTransition({children, className, defaultScrollTop = 0, containerRef}) {
   const currentRef = useRef(null);
-  const mergedRef = useMergedRef(ref, currentRef);
+  const mergedRef = useMergedRef(containerRef, currentRef);
   const direction = usePresenceData();
   const {initial, exit} = pageMotionVariants[direction];
 
@@ -80,7 +81,7 @@ const PageTransition = React.forwardRef(({children, className, defaultScrollTop 
       {children}
     </motion.div>
   );
-});
+}
 
 function SettingsModal({setHandleOpen}) {
   const [page, setPage] = useState(PageTypes.SETTINGS);
@@ -181,7 +182,7 @@ function SettingsModal({setHandleOpen}) {
     }
 
     return lastParentData.current.scrollTop;
-  }, [parentLastPageType.current, page]);
+  }, [page]);
 
   return (
     <Modal
@@ -210,7 +211,7 @@ function SettingsModal({setHandleOpen}) {
         <SideNavigation open={sidenavOpen} setOpen={setSidenavOpen} />
         <AnimatePresence custom={pageTransitionDirection} mode="wait">
           <PageTransition
-            ref={pageContentRef}
+            containerRef={pageContentRef}
             key={page}
             className={classNames(styles.pageContent, scrollbarStyles.scroll)}
             defaultScrollTop={defaultScrollTop}>
