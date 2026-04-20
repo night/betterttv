@@ -43,7 +43,6 @@ function EmoteMenu({
   const [opened, {close, open, toggle}] = useDisclosure(false);
   const width = useHorizontalResize({boundingQuerySelector, handleRef});
   const emoteListRef = useRef(null);
-  const [pendingScrollRowIndex, setPendingScrollRowIndex] = useState(null);
 
   const [emoteListData, setEmoteListData] = useState({
     rows: [],
@@ -51,11 +50,28 @@ function EmoteMenu({
     categories: getCategories(),
   });
 
+  const handleScrollToPendingRow = useCallback(
+    (pendingScrollRowIndex) => {
+      const listEl = emoteListRef.current;
+      if (listEl == null) {
+        return;
+      }
+
+      if (emoteListData.rows.length === 0) {
+        return;
+      }
+
+      const scrollTop = pendingScrollRowIndex * EMOTE_MENU_GRID_ROW_HEIGHT + 1;
+      listEl.scrollTo(0, scrollTop);
+    },
+    [emoteListData.rows]
+  );
+
   const updateEmoteListData = useCallback((currentSearch = '') => {
     let rows = emoteMenuViewStore.rows;
 
     if (currentSearch.length > 0) {
-      setPendingScrollRowIndex(0);
+      handleScrollToPendingRow(0);
       rows = emoteMenuViewStore.search(currentSearch);
     }
 
@@ -69,29 +85,6 @@ function EmoteMenu({
   }, []);
 
   useEmoteMenuViewStoreUpdated(opened, updateEmoteListData);
-
-  useLayoutEffect(() => {
-    if (pendingScrollRowIndex == null) {
-      return;
-    }
-
-    const listEl = emoteListRef.current;
-
-    if (listEl == null) {
-      setPendingScrollRowIndex(null);
-      return;
-    }
-
-    if (emoteListData.rows.length === 0) {
-      setPendingScrollRowIndex(null);
-      return;
-    }
-
-    const scrollTop = pendingScrollRowIndex * EMOTE_MENU_GRID_ROW_HEIGHT + 1;
-    listEl.scrollTo(0, scrollTop);
-
-    setPendingScrollRowIndex(null);
-  }, [pendingScrollRowIndex, emoteListData.rows]);
 
   const {refs, floatingStyles, context} = useFloating({
     strategy: 'fixed',
@@ -119,14 +112,16 @@ function EmoteMenu({
 
   const {getFloatingProps} = useInteractions([dismiss]);
 
-  useEffect(() => {
-    setHandleOpen(toggle);
-  }, [toggle]);
+  useLayoutEffect(() => {
+    const listEl = emoteListRef.current;
 
-  useEffect(() => {
+    if (listEl != null && opened) {
+      listEl.scrollTo(0, 0);
+    }
+
     const chatTextArea = document.querySelector(boundingQuerySelector);
     refs.setPositionReference(chatTextArea);
-  }, [boundingQuerySelector, refs, opened]);
+  }, [opened]);
 
   useEffect(() => {
     function handleKeyDown(event) {
@@ -140,6 +135,8 @@ function EmoteMenu({
       toggle();
       markTipAsSeen(EmoteMenuTips.EMOTE_MENU_HOTKEY);
     }
+
+    setHandleOpen(toggle);
 
     document.addEventListener('keydown', handleKeyDown);
 
@@ -206,15 +203,13 @@ function EmoteMenu({
       setSection(eventKey);
 
       const index = emoteMenuViewStore.getCategoryIndexById(eventKey);
-
       if (index == null || !shouldScroll) {
-        setPendingScrollRowIndex(null);
         return;
       }
 
-      setPendingScrollRowIndex(index);
+      handleScrollToPendingRow(index);
     },
-    [updateEmoteListData]
+    [updateEmoteListData, handleScrollToPendingRow]
   );
 
   const onSection = useCallback((eventKey) => handleSection(eventKey, false), [handleSection]);
