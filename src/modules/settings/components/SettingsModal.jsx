@@ -211,7 +211,7 @@ function SettingsModal({setHandleOpen}) {
       <PageContext.Provider
         value={{page, setPage: handlePageChange, sidenavOpen, setSidenavOpen, handleGotoSettingPanel}}>
         <SideNavigation open={sidenavOpen} setOpen={setSidenavOpen} />
-        <AnimatePresence custom={pageTransitionDirection} mode="wait">
+        <AnimatePresence initial={false} custom={pageTransitionDirection} mode="wait">
           <PageTransition
             containerRef={pageContentRef}
             key={page}
