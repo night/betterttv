@@ -1,8 +1,8 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {PageDecendants, PageTypes} from '../../../constants.js';
 import UserSettings from '../pages/UserSettings.jsx';
 import Changelog from '../pages/Changelog.jsx';
-import Settings from '../pages/Settings.jsx';
+import Settings, {PAGE_HEADER_HEIGHT} from '../pages/Settings.jsx';
 import styles from './SettingsModal.module.css';
 import {Modal} from '@mantine/core';
 import {useDisclosure, useMergedRef} from '@mantine/hooks';
@@ -56,7 +56,7 @@ const pageMotionVariants = {
   },
 };
 
-function PageTransition({children, className, defaultScrollTop = 0, containerRef}) {
+function PageTransition({children, className, computeDefaultScrollTop, containerRef, settingRefs}) {
   const currentRef = useRef(null);
   const mergedRef = useMergedRef(containerRef, currentRef);
   const direction = usePresenceData();
@@ -66,7 +66,8 @@ function PageTransition({children, className, defaultScrollTop = 0, containerRef
     if (currentRef.current == null) {
       return;
     }
-    currentRef.current.scrollTop = defaultScrollTop;
+
+    currentRef.current.scrollTop = computeDefaultScrollTop();
   }, []);
 
   return (
@@ -130,37 +131,31 @@ function SettingsModal({setHandleOpen}) {
     setPage(newPage);
   }
 
-  function scrollToPendingSettingPanel() {
-    if (page !== PageTypes.SETTINGS) {
-      return;
-    }
-
-    const setting = settingRefs.current[pendingScrollToSettingPanelId.current];
-
-    if (setting == null) {
-      return;
-    }
-
-    setting.scrollIntoView();
-    pendingScrollToSettingPanelId.current = null;
-  }
-
   function handleSettingRefCallback(settingPanelId, ref) {
     settingRefs.current[settingPanelId] = ref;
   }
 
   function handleGotoSettingPanel(settingPanelId) {
+    if (settingPanelId == null) {
+      return;
+    }
+
+    if (settingPanelId != null && settingRefs.current[settingPanelId] != null) {
+      const setting = settingRefs.current[settingPanelId];
+      setting.scrollIntoView();
+      return;
+    }
+
     handlePageChange(PageTypes.SETTINGS);
     pendingScrollToSettingPanelId.current = settingPanelId;
-    scrollToPendingSettingPanel();
   }
 
   useEffect(() => {
     setHandleOpen((isOpen, {scrollToSettingPanelId} = {scrollToSettingPanelId: null}) => {
-      pendingScrollToSettingPanelId.current = scrollToSettingPanelId;
       isOpen ? modalHandlers.open() : modalHandlers.close();
+      handleGotoSettingPanel(scrollToSettingPanelId);
     });
-  }, [modalHandlers.open, modalHandlers.close]);
+  }, [modalHandlers.open, modalHandlers.close, handleGotoSettingPanel]);
 
   const stopPropagation = useCallback((event) => {
     event.stopPropagation();
@@ -168,14 +163,23 @@ function SettingsModal({setHandleOpen}) {
 
   const handleInteractive = useCallback(() => {
     setIsInteractive(true);
-    scrollToPendingSettingPanel();
   }, [setIsInteractive]);
 
   const handleNonInteractive = useCallback(() => {
     setIsInteractive(false);
   }, [setIsInteractive]);
 
-  const defaultScrollTop = useMemo(() => {
+  const computeDefaultScrollTop = useCallback(() => {
+    if (
+      page === PageTypes.SETTINGS &&
+      pendingScrollToSettingPanelId.current != null &&
+      settingRefs.current[pendingScrollToSettingPanelId.current] != null
+    ) {
+      const setting = settingRefs.current[pendingScrollToSettingPanelId.current];
+      pendingScrollToSettingPanelId.current = null;
+      return setting.offsetTop - PAGE_HEADER_HEIGHT;
+    }
+
     if (lastParentData.current.page !== page) {
       return 0;
     }
@@ -185,7 +189,6 @@ function SettingsModal({setHandleOpen}) {
 
   return (
     <Modal
-      keepMounted
       size="xl"
       radius="lg"
       centered
@@ -212,8 +215,9 @@ function SettingsModal({setHandleOpen}) {
           <PageTransition
             containerRef={pageContentRef}
             key={page}
+            settingRefs={settingRefs}
             className={classNames(styles.pageContent, scrollbarStyles.scroll)}
-            defaultScrollTop={defaultScrollTop}>
+            computeDefaultScrollTop={computeDefaultScrollTop}>
             <Page
               page={page}
               onClose={modalHandlers.close}

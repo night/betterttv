@@ -1,12 +1,12 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import formatMessage from '../../../i18n/index.js';
 import extension from '../../../utils/extension.js';
 import PageHeader from '../components/PageHeader.jsx';
-import {TextInput, Text, Button, Kbd, CloseButton} from '@mantine/core';
+import {TextInput, Text, Button} from '@mantine/core';
 import SettingStore from '../stores/SettingStore.jsx';
 import styles from './Settings.module.css';
 import Panel from '../components/Panel.jsx';
-import {useElementSize, useFocusTrap} from '@mantine/hooks';
+import {useFocusTrap} from '@mantine/hooks';
 import Promotion from '../components/Promotion.jsx';
 
 const CHROME_VERSION = navigator.userAgentData?.brands?.find(({brand}) => brand === 'Chromium')?.version;
@@ -40,7 +40,10 @@ function UnsupportedChromiumVersion() {
   );
 }
 
-function SettingsList({search, settings, handleSettingRefCallback, pageHeaderHeight}) {
+// This is hardcoded we set scroll top on mount sometimes
+export const PAGE_HEADER_HEIGHT = 76;
+
+function SettingsList({search, settings, handleSettingRefCallback}) {
   if (IS_UNSUPPORTED_CHROME_INSTALL) {
     return <UnsupportedChromiumVersion />;
   }
@@ -55,7 +58,7 @@ function SettingsList({search, settings, handleSettingRefCallback, pageHeaderHei
     .map((setting) =>
       setting.render({
         ref: (ref) => handleSettingRefCallback(setting.settingPanelId, ref),
-        style: {scrollMarginTop: pageHeaderHeight},
+        style: {scrollMarginTop: PAGE_HEADER_HEIGHT},
       })
     );
 
@@ -73,7 +76,6 @@ function SettingsList({search, settings, handleSettingRefCallback, pageHeaderHei
 }
 
 function Settings({onClose, isInteractive, handleSettingRefCallback, pageData, setPageData}) {
-  const {ref, height: pageHeaderHeight} = useElementSize();
   const [search, setSearch] = useState(pageData?.search ?? '');
   const inputRef = useFocusTrap(isInteractive);
   const settings = useMemo(() => SettingStore.getSupportedSettings().sort((a, b) => a.name.localeCompare(b.name)), []);
@@ -89,7 +91,8 @@ function Settings({onClose, isInteractive, handleSettingRefCallback, pageData, s
   return (
     <React.Fragment>
       <PageHeader
-        ref={ref}
+        className={styles.pageHeader}
+        style={{height: PAGE_HEADER_HEIGHT}}
         leftContent={
           <TextInput
             size="lg"
@@ -104,12 +107,7 @@ function Settings({onClose, isInteractive, handleSettingRefCallback, pageData, s
         onClose={onClose}
       />
       {search.length === 0 ? <Promotion /> : null}
-      <SettingsList
-        search={search}
-        settings={settings}
-        handleSettingRefCallback={handleSettingRefCallback}
-        pageHeaderHeight={pageHeaderHeight}
-      />
+      <SettingsList search={search} settings={settings} handleSettingRefCallback={handleSettingRefCallback} />
     </React.Fragment>
   );
 }

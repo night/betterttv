@@ -2,11 +2,12 @@ import React, {useContext} from 'react';
 import styles from './PageHeader.module.css';
 import {Burger, CloseButton, Title} from '@mantine/core';
 import {PageContext} from '../contexts/PageContext.jsx';
+import classNames from 'classnames';
 
-const PageHeader = React.forwardRef(({leftContent, onClose}, ref) => {
+const PageHeader = React.forwardRef(({className, leftContent, onClose}, ref) => {
   const {setSidenavOpen} = useContext(PageContext);
   return (
-    <div ref={ref} className={styles.header}>
+    <div ref={ref} className={classNames(styles.header, className)}>
       <Burger
         className={styles.sidenavToggleButton}
         radius="lg"
