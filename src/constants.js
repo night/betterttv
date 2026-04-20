@@ -139,12 +139,17 @@ export const AutoClaimFlags = {
   // MOMENTS: 1 << 1,
 };
 
+// Ensure this is in order of appearance in sidebar
 export const PageTypes = {
   SETTINGS: 1,
   CHANGELOG: 2,
   USER_SETTINGS: 3,
   HIGHLIGHT_KEYWORDS: 4,
   BLACKLIST_KEYWORDS: 5,
+};
+
+export const PageDecendants = {
+  [PageTypes.SETTINGS]: [PageTypes.HIGHLIGHT_KEYWORDS, PageTypes.BLACKLIST_KEYWORDS],
 };
 
 export const NavigationModeTypes = {
