@@ -43,7 +43,6 @@ function EmoteMenu({
   const [opened, {close, open, toggle}] = useDisclosure(false);
   const width = useHorizontalResize({boundingQuerySelector, handleRef});
   const [emoteListRef, emoteListRect] = useResizeObserver();
-  const [pendingScrollRowIndex, setPendingScrollRowIndex] = useState(null);
 
   useLayoutEffect(() => {
     if (emoteListRef.current == null) {
