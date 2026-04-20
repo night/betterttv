@@ -19,4 +19,9 @@
 .closeButton {
   min-width: 36px;
   min-height: 36px;
+
+  svg {
+    max-width: 24px;
+    max-height: 24px;
+  }
 }
