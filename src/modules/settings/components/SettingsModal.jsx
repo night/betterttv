@@ -194,7 +194,6 @@ function SettingsModal({setHandleOpen}) {
       radius="lg"
       centered
       withinPortal={false}
-      zIndex={9999}
       fullScreen={width < 800}
       opened={open}
       /* Events like keydown are sometimes prevented by twitch,

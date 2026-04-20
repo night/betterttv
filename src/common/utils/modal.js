@@ -28,6 +28,7 @@ function updateModalConfirmStatus(modalId, {status, confirmProps}) {
 export function openConfirmModal({title, description, onConfirm, ...props}) {
   const confirmProps = props.confirmProps ?? DEFAULT_CONFIRM_PROPS;
   const modalId = modals.openConfirmModal({
+    zIndex: 10300,
     title,
     centered: true,
     closeButtonProps: {size: 'xl', radius: 'md'},
@@ -81,6 +82,7 @@ export function openConfirmModal({title, description, onConfirm, ...props}) {
 
 export function openModal({title, description, ...props}) {
   return modals.open({
+    zIndex: 10300,
     title,
     centered: true,
     closeButtonProps: {size: 'xl', radius: 'md'},
