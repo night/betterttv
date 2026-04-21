@@ -61,7 +61,7 @@ function ChangelogEntry({body, version, publishedAt}) {
 function ChangelogEntryList({changelogEntries: rawChangelogEntries}) {
   const changelogEntries = rawChangelogEntries
     .filter((entry) => entry.version != null && semver.valid(entry.version))
-    .filter(({version}) => semver.lt(version, EXT_VER));
+    .filter(({version}) => semver.lte(version, EXT_VER));
 
   return changelogEntries.map(({body, version, publishedAt}, index) => (
     <ChangelogEntry
