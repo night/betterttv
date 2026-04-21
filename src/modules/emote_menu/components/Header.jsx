@@ -1,6 +1,6 @@
 import React, {useCallback} from 'react';
 import formatMessage from '../../../i18n/index.js';
-import {ActionIcon, CloseButton, TextInput} from '@mantine/core';
+import {CloseButton, TextInput} from '@mantine/core';
 import styles from './Header.module.css';
 import classNames from 'classnames';
 import {useFocusTrap} from '@mantine/hooks';
