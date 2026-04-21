@@ -5,7 +5,7 @@ import Changelog from '../pages/Changelog.jsx';
 import Settings, {PAGE_HEADER_HEIGHT} from '../pages/Settings.jsx';
 import styles from './SettingsModal.module.css';
 import {Modal} from '@mantine/core';
-import {useDisclosure, useMergedRef} from '@mantine/hooks';
+import {useDisclosure, useMergedRef, useViewportSize} from '@mantine/hooks';
 import HighlightKeywords from '../pages/HighlightKeywords.jsx';
 import SideNavigation from './SideNavigation.jsx';
 import {PageContext} from '../contexts/PageContext.jsx';
@@ -84,6 +84,7 @@ function PageTransition({children, className, computeDefaultScrollTop, container
 }
 
 function SettingsModal({setHandleOpen}) {
+  const {width} = useViewportSize();
   const [page, setPage] = useState(PageTypes.SETTINGS);
   const [isInteractive, setIsInteractive] = useState(false);
   const [open, modalHandlers] = useDisclosure(false);
@@ -193,6 +194,7 @@ function SettingsModal({setHandleOpen}) {
       radius="lg"
       centered
       withinPortal={false}
+      fullScreen={width < 800}
       opened={open}
       /* Events like keydown are sometimes prevented by twitch,
       likely because it can't locate the focused element inside the shadow dom.
