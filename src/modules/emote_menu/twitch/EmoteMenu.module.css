@@ -45,7 +45,7 @@
   height: 100%;
   background-color: var(--color-fill-button-icon);
   mask-image: url(assets/logos/logo.svg);
-  mask-size: 20px 20px;
+  mask-size: 18px 18px;
   mask-position: center;
   mask-repeat: no-repeat;
 }
