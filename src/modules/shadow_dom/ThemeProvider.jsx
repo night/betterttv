@@ -20,10 +20,6 @@ import {
   getThemeColor,
   alpha,
   Loader,
-  Modal,
-  Overlay,
-  Popover,
-  Tooltip,
 } from '@mantine/core';
 import buttonStyles from './styles/button.module.css';
 import pillStyles from './styles/pill.module.css';
@@ -132,10 +128,6 @@ const mantineTheme = createTheme({
       classNames: pillStyles,
       defaultProps: {variant: 'elevated', color: 'dark'},
     }),
-    Modal: Modal.extend({defaultProps: {zIndex: 10200}}),
-    Overlay: Overlay.extend({defaultProps: {zIndex: 10100}}),
-    Popover: Popover.extend({defaultProps: {zIndex: 10400}}),
-    Tooltip: Tooltip.extend({defaultProps: {zIndex: 10600}}),
     Avatar: Avatar.extend({defaultProps: {color: 'dark'}}),
     Kbd: Kbd.extend({defaultProps: {size: 'lg'}, classNames: kbdStyles}),
     Loader: Loader.extend({
