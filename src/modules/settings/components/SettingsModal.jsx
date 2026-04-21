@@ -56,7 +56,7 @@ const pageMotionVariants = {
   },
 };
 
-function PageTransition({children, className, computeDefaultScrollTop, containerRef}) {
+function PageTransition({children, className, computeDefaultScrollTop, containerRef, pendingScrollToSettingPanelId}) {
   const currentRef = useRef(null);
   const mergedRef = useMergedRef(containerRef, currentRef);
   const direction = usePresenceData();
@@ -68,6 +68,7 @@ function PageTransition({children, className, computeDefaultScrollTop, container
     }
 
     currentRef.current.scrollTop = computeDefaultScrollTop();
+    pendingScrollToSettingPanelId.current = null;
   }, []);
 
   return (
@@ -177,7 +178,6 @@ function SettingsModal({setHandleOpen}) {
       settingRefs.current[pendingScrollToSettingPanelId.current] != null
     ) {
       const setting = settingRefs.current[pendingScrollToSettingPanelId.current];
-      pendingScrollToSettingPanelId.current = null;
       return setting.offsetTop - PAGE_HEADER_HEIGHT;
     }
 
@@ -217,6 +217,7 @@ function SettingsModal({setHandleOpen}) {
           <PageTransition
             containerRef={pageContentRef}
             key={page}
+            pendingScrollToSettingPanelId={pendingScrollToSettingPanelId}
             className={classNames(styles.pageContent, scrollbarStyles.scroll)}
             computeDefaultScrollTop={computeDefaultScrollTop}>
             <Page
