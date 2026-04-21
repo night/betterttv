@@ -289,7 +289,7 @@ export const SettingDefaultValues = {
   [SettingIds.CHANNEL_POINTS]: [ChannelPointsFlags.CHANNEL_POINTS | ChannelPointsFlags.MESSAGE_HIGHLIGHTS, 0],
   [SettingIds.AUTO_CLAIM]: [0, 0],
   [SettingIds.LIVE_CHAT_VIEW]: false,
-  [SettingIds.EMOTE_MENU_WIDTH]: 496,
+  [SettingIds.EMOTE_MENU_WIDTH]: 498,
   [SettingIds.HYPE_CHAT]: true,
   [SettingIds.PRIMARY_COLOR]: null,
 };
