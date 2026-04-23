@@ -24,6 +24,7 @@
   justify-content: left;
   position: sticky;
   top: 0;
+  outline: 1px solid var(--mantine-color-body-secondary);
 }
 
 .headerIcon {
