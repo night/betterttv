@@ -140,12 +140,20 @@ export default async (env, argv) => {
         },
         {
           test: /\.svg$/,
-          use: [
+          oneOf: [
             {
-              loader: 'svg-sprite-loader',
-              options: {
-                symbolId: 'icon-[name]',
-              },
+              resourceQuery: /raw/,
+              type: 'asset/source',
+            },
+            {
+              use: [
+                {
+                  loader: 'svg-sprite-loader',
+                  options: {
+                    symbolId: 'icon-[name]',
+                  },
+                },
+              ],
             },
           ],
         },

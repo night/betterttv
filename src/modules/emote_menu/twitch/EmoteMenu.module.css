@@ -23,6 +23,7 @@
   border-radius: 100%;
   border-radius: var(--border-radius-rounded);
   border-bottom-right-radius: var(--border-radius-large);
+  color: var(--color-fill-button-icon);
 
   &:hover {
     background-color: var(--color-background-button-text-hover);
@@ -36,18 +37,19 @@
   transition: 100ms ease-in-out;
 }
 
-.button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: var(--color-fill-button-icon);
-  mask-image: url(assets/logos/logo.svg);
-  mask-size: 18px 18px;
-  mask-position: center;
-  mask-repeat: no-repeat;
+.logoIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+
+.logoIcon svg {
+  display: block;
+}
+
+.logoIcon path {
+  fill: currentColor;
 }
 
 .container {
