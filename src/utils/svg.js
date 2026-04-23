@@ -1,4 +1,4 @@
-export function appendInlineSvg(parent, svgRaw, options = {}) {
+export function createInlineSvg(svgRaw, options = {}) {
   const {className, size, decorative = true} = options;
 
   const wrap = document.createElement('span');
@@ -18,6 +18,5 @@ export function appendInlineSvg(parent, svgRaw, options = {}) {
     svg.setAttribute('focusable', 'false');
   }
 
-  parent.appendChild(wrap);
   return wrap;
 }

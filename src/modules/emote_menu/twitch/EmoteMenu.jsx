@@ -2,7 +2,7 @@ import React from 'react';
 import {EmoteMenuTypes, SettingIds} from '../../../constants.js';
 import domObserver from '../../../observers/dom.js';
 import settings from '../../../settings.js';
-import {appendInlineSvg} from '../../../utils/svg.js';
+import {createInlineSvg} from '../../../utils/svg.js';
 import twitch from '../../../utils/twitch.js';
 import {getCurrentUser} from '../../../utils/user.js';
 import watcher from '../../../watcher.js';
@@ -144,7 +144,7 @@ function loadButton() {
   const button = document.createElement('button');
   button.classList.add(styles.button);
   buttonContainer.appendChild(button);
-  appendInlineSvg(button, logoSvgRaw, {className: styles.logoIcon, size: 18});
+  button.appendChild(createInlineSvg(logoSvgRaw, {className: styles.logoIcon, size: 18}));
   button.addEventListener('click', () => handleOpen?.());
 }
 
