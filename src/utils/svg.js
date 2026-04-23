@@ -1,13 +1,13 @@
 export function createInlineSvg(svgRaw, options = {}) {
   const {className, size, decorative = true} = options;
 
-  const wrap = document.createElement('span');
+  const container = document.createElement('span');
   if (className) {
-    wrap.className = className;
+    container.className = className;
   }
-  wrap.innerHTML = svgRaw;
+  container.innerHTML = svgRaw;
 
-  const svg = wrap.querySelector('svg');
+  const svg = container.querySelector('svg');
   if (svg != null && size != null) {
     svg.setAttribute('width', String(size));
     svg.setAttribute('height', String(size));
@@ -18,5 +18,5 @@ export function createInlineSvg(svgRaw, options = {}) {
     svg.setAttribute('focusable', 'false');
   }
 
-  return wrap;
+  return container;
 }
