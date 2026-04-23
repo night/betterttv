@@ -3,13 +3,10 @@ import formatMessage from '../../../i18n/index.js';
 import {CloseButton, TextInput} from '@mantine/core';
 import styles from './Header.module.css';
 import classNames from 'classnames';
-import {useFocusTrap} from '@mantine/hooks';
 import LogoIcon from '../../../common/components/LogoIcon.jsx';
 import settings from '../../settings/index.js';
 
-function Header({value, opened, onChange, toggleWhisper, selected, className, ...props}) {
-  const focusRef = useFocusTrap(opened);
-
+function Header({value, opened, onChange, toggleWhisper, selected, className, focusRef, ...props}) {
   const handleLogoClick = useCallback(() => {
     settings.openSettings();
     toggleWhisper();

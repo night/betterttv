@@ -33,10 +33,6 @@
   overflow: hidden;
 }
 
-.emoteMenuHidden {
-  display: none;
-}
-
 .emotes {
   flex: 1;
   overflow: hidden;
@@ -67,4 +63,10 @@
   left: 0;
   cursor: col-resize;
   z-index: 2;
+}
+
+.hidden {
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
 }
