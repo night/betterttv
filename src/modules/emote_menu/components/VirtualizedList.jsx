@@ -34,10 +34,6 @@ function VirtualizedList(
     headerIndex: null,
   });
 
-  useEffect(() => {
-    onHeaderChange(data.headerIndex);
-  }, [data.headerIndex]);
-
   const isInViewport = useCallback(() => {
     const currentWrapperRef = ref.current;
     if (currentWrapperRef == null) {
@@ -88,7 +84,13 @@ function VirtualizedList(
       top = (startIndex - 1) * rowHeight;
     }
 
-    setData({rows: rowsVisible, top, headerIndex: stickyRowIndex});
+    setData((prevData) => {
+      if (prevData.headerIndex !== stickyRowIndex) {
+        onHeaderChange(stickyRowIndex);
+      }
+
+      return {...prevData, rows: rowsVisible, top, headerIndex: stickyRowIndex};
+    });
   }, [totalRows, rowHeight, windowHeight, stickyRows, overscanCount]);
 
   useEffect(() => {
