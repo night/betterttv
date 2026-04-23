@@ -1,7 +1,6 @@
 import classNames from 'classnames';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import styles from './VirtualizedList.module.css';
-import debounce from 'lodash.debounce';
 import throttle from 'lodash.throttle';
 import {useMergedRef} from '@mantine/hooks';
 
@@ -16,12 +15,14 @@ function VirtualizedList(
     onHeaderChange = () => {},
     bottomGuardHeight = 0,
     topGuardHeight = 0,
+    overscanCount = 10,
     ...props
   },
   forwardedRef
 ) {
   const ref = useRef(null);
   const mergedRef = useMergedRef(forwardedRef, ref);
+  const headerIndex = useRef(null);
 
   const listHeight = useMemo(
     () => Math.max(rowHeight * totalRows + topGuardHeight + bottomGuardHeight, windowHeight),
@@ -34,11 +35,7 @@ function VirtualizedList(
     headerIndex: null,
   });
 
-  useEffect(() => {
-    onHeaderChange(data.headerIndex);
-  }, [data.headerIndex]);
-
-  const isInViewport = useCallback(() => {
+  const handleViewportUpdate = useCallback(() => {
     const currentWrapperRef = ref.current;
     if (currentWrapperRef == null) {
       return;
@@ -57,19 +54,44 @@ function VirtualizedList(
       stickyRowIndex = rowIndex;
     }
 
+    const hasAdditionalStickyRow = stickyRowIndex != null && stickyRowIndex < startIndex;
+    const hasCollapsedGap = hasAdditionalStickyRow && startIndex > stickyRowIndex + 1;
+
+    const renderEnd = Math.min(totalRows - 1, endIndex + overscanCount);
+
+    let renderStart = Math.max(0, startIndex - overscanCount);
+    if (hasAdditionalStickyRow) {
+      renderStart = Math.max(stickyRowIndex + 1, renderStart);
+    }
+
+    if (hasCollapsedGap && startIndex - overscanCount > stickyRowIndex + 1) {
+      renderStart = startIndex;
+    }
+
     const rowsVisible = [];
-    const hasAdditionalStickyRow = stickyRowIndex < startIndex;
     if (hasAdditionalStickyRow) {
       rowsVisible.push(stickyRowIndex);
     }
 
-    for (let i = startIndex; i <= endIndex; i++) {
+    for (let i = renderStart; i <= renderEnd; i++) {
       rowsVisible.push(i);
     }
 
-    const indexOffset = hasAdditionalStickyRow ? startIndex - 1 : startIndex;
-    setData({rows: rowsVisible, top: indexOffset * rowHeight, headerIndex: stickyRowIndex});
-  }, [totalRows, rowHeight, windowHeight, stickyRows]);
+    let top = renderStart * rowHeight;
+
+    if (hasAdditionalStickyRow && hasCollapsedGap && renderStart < startIndex) {
+      top = stickyRowIndex * rowHeight;
+    } else if (hasAdditionalStickyRow) {
+      top = (startIndex - 1) * rowHeight;
+    }
+
+    if (headerIndex.current !== stickyRowIndex) {
+      onHeaderChange(stickyRowIndex);
+      headerIndex.current = stickyRowIndex;
+    }
+
+    setData({rows: rowsVisible, top, headerIndex: stickyRowIndex});
+  }, [totalRows, rowHeight, windowHeight, stickyRows, overscanCount]);
 
   useEffect(() => {
     const currentWrapperRef = ref.current;
@@ -77,14 +99,14 @@ function VirtualizedList(
       return;
     }
 
-    isInViewport();
-    const throttledCallback = throttle(isInViewport, 50);
+    handleViewportUpdate();
+    const throttledCallback = throttle(handleViewportUpdate, 50);
 
     currentWrapperRef.addEventListener('scroll', throttledCallback);
     return () => {
       currentWrapperRef.removeEventListener('scroll', throttledCallback);
     };
-  }, [isInViewport]);
+  }, [handleViewportUpdate]);
 
   const rows = useMemo(
     () =>
