@@ -22,6 +22,7 @@ function VirtualizedList(
 ) {
   const ref = useRef(null);
   const mergedRef = useMergedRef(forwardedRef, ref);
+  const headerIndex = useRef(null);
 
   const listHeight = useMemo(
     () => Math.max(rowHeight * totalRows + topGuardHeight + bottomGuardHeight, windowHeight),
@@ -34,7 +35,7 @@ function VirtualizedList(
     headerIndex: null,
   });
 
-  const isInViewport = useCallback(() => {
+  const handleViewportUpdate = useCallback(() => {
     const currentWrapperRef = ref.current;
     if (currentWrapperRef == null) {
       return;
@@ -84,13 +85,12 @@ function VirtualizedList(
       top = (startIndex - 1) * rowHeight;
     }
 
-    setData((prevData) => {
-      if (prevData.headerIndex !== stickyRowIndex) {
-        onHeaderChange(stickyRowIndex);
-      }
+    if (headerIndex.current !== stickyRowIndex) {
+      onHeaderChange(stickyRowIndex);
+      headerIndex.current = stickyRowIndex;
+    }
 
-      return {...prevData, rows: rowsVisible, top, headerIndex: stickyRowIndex};
-    });
+    setData({rows: rowsVisible, top, headerIndex: stickyRowIndex});
   }, [totalRows, rowHeight, windowHeight, stickyRows, overscanCount]);
 
   useEffect(() => {
@@ -99,14 +99,14 @@ function VirtualizedList(
       return;
     }
 
-    isInViewport();
-    const throttledCallback = throttle(isInViewport, 50);
+    handleViewportUpdate();
+    const throttledCallback = throttle(handleViewportUpdate, 50);
 
     currentWrapperRef.addEventListener('scroll', throttledCallback);
     return () => {
       currentWrapperRef.removeEventListener('scroll', throttledCallback);
     };
-  }, [isInViewport]);
+  }, [handleViewportUpdate]);
 
   const rows = useMemo(
     () =>
