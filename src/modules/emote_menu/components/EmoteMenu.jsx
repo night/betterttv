@@ -83,6 +83,32 @@ function EmoteMenu({
     [setSelected, setEmoteListCoords, section]
   );
 
+  const {refs, floatingStyles, context} = useFloating({
+    strategy: 'fixed',
+    open: opened,
+    onOpenChange: (isOpen) => (isOpen ? handleOpen() : close()),
+    placement: 'top-end',
+    middleware: [offset(offsetOptions)],
+    whileElementsMounted: autoUpdate,
+  });
+
+  const dismiss = useDismiss(context, {
+    outsidePress(event) {
+      if (emoteMenuToggleButtonSelector == null || emoteMenuToggleButtonSelector.length === 0) {
+        return true;
+      }
+
+      const target = event.target;
+      if (!(target instanceof Element)) {
+        return true;
+      }
+
+      return target.closest(emoteMenuToggleButtonSelector) == null;
+    },
+  });
+
+  const {getFloatingProps} = useInteractions([dismiss]);
+
   const handleOpen = useCallback(() => {
     open();
 
@@ -155,32 +181,6 @@ function EmoteMenu({
   );
 
   useEmoteMenuViewStoreUpdated(opened, handleEmoteMenuViewStoreUpdate);
-
-  const {refs, floatingStyles, context} = useFloating({
-    strategy: 'fixed',
-    open: opened,
-    onOpenChange: (isOpen) => (isOpen ? handleOpen() : close()),
-    placement: 'top-end',
-    middleware: [offset(offsetOptions)],
-    whileElementsMounted: autoUpdate,
-  });
-
-  const dismiss = useDismiss(context, {
-    outsidePress(event) {
-      if (emoteMenuToggleButtonSelector == null || emoteMenuToggleButtonSelector.length === 0) {
-        return true;
-      }
-
-      const target = event.target;
-      if (!(target instanceof Element)) {
-        return true;
-      }
-
-      return target.closest(emoteMenuToggleButtonSelector) == null;
-    },
-  });
-
-  const {getFloatingProps} = useInteractions([dismiss]);
 
   useEffect(() => {
     function handleKeyDown(event) {
