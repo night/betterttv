@@ -22,7 +22,11 @@
 }
 
 .closeButton {
-  background-color: var(--mantine-color-dark-light);
+  background-color: var(--mantine-color-gray-light);
+}
+
+.closeButton:hover {
+  background-color: var(--mantine-color-gray-light-hover);
 }
 
 @media (min-width: 800px) {
