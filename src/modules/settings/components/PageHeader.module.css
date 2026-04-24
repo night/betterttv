@@ -21,6 +21,10 @@
   justify-content: center;
 }
 
+.closeButton {
+  background-color: var(--mantine-color-dark-light);
+}
+
 @media (min-width: 800px) {
   .sidenavToggleButton {
     display: none;
