@@ -10,6 +10,7 @@ import HighlightKeywords from '../pages/HighlightKeywords.jsx';
 import SideNavigation from './SideNavigation.jsx';
 import {PageContext} from '../contexts/PageContext.jsx';
 import BlacklistKeywords from '../pages/BlacklistKeywords.jsx';
+import EmoteAliases from '../pages/EmoteAliases.jsx';
 import classNames from 'classnames';
 import scrollbarStyles from '../../../common/styles/Scrollbar.module.css';
 import {AnimatePresence, motion, usePresenceData} from 'framer-motion';
@@ -22,6 +23,8 @@ function Page({page, ...restProps}) {
       return <HighlightKeywords {...restProps} />;
     case PageTypes.BLACKLIST_KEYWORDS:
       return <BlacklistKeywords {...restProps} />;
+    case PageTypes.EMOTE_ALIASES:
+      return <EmoteAliases {...restProps} />;
     case PageTypes.SETTINGS:
       return <Settings {...restProps} />;
     case PageTypes.USER_SETTINGS:

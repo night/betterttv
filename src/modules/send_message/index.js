@@ -1,14 +1,32 @@
-import {PlatformTypes} from '../../constants.js';
+import {PlatformTypes, SettingIds} from '../../constants.js';
 import socketClient from '../../socket-client.js';
 import {getCurrentChannel} from '../../utils/channel.js';
 import debug from '../../utils/debug.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
+import settings from '../../settings.js';
 import twitch from '../../utils/twitch.js';
 import {getCurrentUser} from '../../utils/user.js';
 import watcher from '../../watcher.js';
 import anonChat from '../anon_chat/index.js';
 import chatTabCompletion from '../chat_tab_completion/index.js';
 import emojis from '../emotes/emojis.js';
+
+function replaceEmoteAliases(sendState) {
+  const aliases = settings.get(SettingIds.EMOTE_ALIASES);
+  if (aliases == null) return;
+
+  const aliasMap = {};
+  for (const {alias, targetCode} of Object.values(aliases)) {
+    if (alias && targetCode) aliasMap[alias.toLowerCase()] = targetCode;
+  }
+
+  if (Object.keys(aliasMap).length === 0) return;
+
+  sendState.message = sendState.message
+    .split(' ')
+    .map((word) => aliasMap[word.toLowerCase()] ?? word)
+    .join(' ');
+}
 
 const PATCHED_SENTINEL = Symbol('patched symbol');
 
@@ -30,6 +48,7 @@ class SendState {
 
 let twitchSendMessage;
 const methodList = [
+  (msgObj) => replaceEmoteAliases(msgObj),
   (msgObj) => chatTabCompletion.onSendMessage(msgObj),
   (msgObj) => anonChat.onSendMessage(msgObj),
   (msgObj) => emojis.onSendMessage(msgObj),
