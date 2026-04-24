@@ -152,12 +152,16 @@ function EmoteMenu({
   }, []);
 
   const handleClose = useCallback(() => {
+    const listEl = emoteListRef.current;
+    if (listEl != null) {
+      listEl.scrollTo(0, 0);
+    }
+
     close();
     setNavigationMode(NavigationModeTypes.ARROW_KEYS);
     updateEmoteListData('');
     setSection(null);
     handleCoordsChange(null);
-    handleScrollToPendingRow(0);
   }, [updateEmoteListData, handleCoordsChange, handleScrollToPendingRow, setSection, close, setNavigationMode]);
 
   const toggle = useCallback(() => (opened ? handleClose() : handleOpen()), [opened, handleClose, handleOpen]);
