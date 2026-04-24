@@ -162,7 +162,7 @@ function EmoteMenu({
     updateEmoteListData('');
     setSection(null);
     handleCoordsChange(null);
-  }, [updateEmoteListData, handleCoordsChange, handleScrollToPendingRow, setSection, close, setNavigationMode]);
+  }, [updateEmoteListData, handleCoordsChange, setSection, close, setNavigationMode]);
 
   const toggle = useCallback(() => (opened ? handleClose() : handleOpen()), [opened, handleClose, handleOpen]);
 
