@@ -86,7 +86,7 @@ function EmoteMenu({
   const {refs, floatingStyles, context} = useFloating({
     strategy: 'fixed',
     open: opened,
-    onOpenChange: (isOpen) => (isOpen ? handleOpen() : close()),
+    onOpenChange: (isOpen) => (isOpen ? handleOpen() : handleClose()),
     placement: 'top-end',
     middleware: [offset(offsetOptions)],
     whileElementsMounted: autoUpdate,
@@ -114,22 +114,7 @@ function EmoteMenu({
 
     const chatTextArea = document.querySelector(boundingQuerySelector);
     refs.setPositionReference(chatTextArea);
-
-    const currentEmoteListData = emoteListDataRef.current;
-    if (currentEmoteListData.rows.length === 0) {
-      return;
-    }
-
-    const firstCoords = getFirstCoords(currentEmoteListData.rows);
-    if (firstCoords != null) {
-      handleCoordsChange(firstCoords);
-    }
-
-    handleScrollToPendingRow(0);
-    setNavigationMode(NavigationModeTypes.ARROW_KEYS);
-  }, [open, handleCoordsChange, boundingQuerySelector, refs]);
-
-  const toggle = useCallback(() => (opened ? close() : handleOpen()), [opened, close, open]);
+  }, [open, boundingQuerySelector, refs]);
 
   const handleScrollToPendingRow = useCallback((pendingScrollRowIndex) => {
     const listEl = emoteListRef.current;
@@ -145,6 +130,25 @@ function EmoteMenu({
     const scrollTop = pendingScrollRowIndex * EMOTE_MENU_GRID_ROW_HEIGHT + 1;
     listEl.scrollTo(0, scrollTop);
   }, []);
+
+  const handleClose = useCallback(() => {
+    close();
+
+    const currentEmoteListData = emoteListDataRef.current;
+    if (currentEmoteListData.rows.length === 0) {
+      return;
+    }
+
+    const firstCoords = getFirstCoords(currentEmoteListData.rows);
+    if (firstCoords != null) {
+      handleCoordsChange(firstCoords);
+    }
+
+    handleScrollToPendingRow(0);
+    setNavigationMode(NavigationModeTypes.ARROW_KEYS);
+  }, [close, handleCoordsChange, handleScrollToPendingRow]);
+
+  const toggle = useCallback(() => (opened ? handleClose() : handleOpen()), [opened, handleClose, handleOpen]);
 
   const updateEmoteListData = useCallback((currentSearch = '') => {
     let rows = emoteMenuViewStore.rows;
@@ -224,9 +228,9 @@ function EmoteMenu({
         return;
       }
 
-      close();
+      handleClose();
     },
-    [close]
+    [handleClose]
   );
 
   const handleKeyEvent = useCallback((event) => {
@@ -329,7 +333,7 @@ function EmoteMenu({
           setCoords={handleCoordsChange}
         />
       </div>
-      {opened ? <Tip className={styles.tip} onClose={close} /> : null}
+      {opened ? <Tip className={styles.tip} onClose={handleClose} /> : null}
     </div>
   );
 }
