@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import emoteMenuViewStore, {CategoryPositions} from '../../../common/stores/emote-menu-view-store.js';
 import {EMOTE_MENU_GRID_ROW_HEIGHT, EmoteMenuTips, NavigationModeTypes} from '../../../constants.js';
 import useHorizontalResize from '../hooks/HorizontalResize.jsx';
@@ -86,6 +86,9 @@ function EmoteMenu({
   const handleOpen = useCallback(() => {
     open();
 
+    const chatTextArea = document.querySelector(boundingQuerySelector);
+    refs.setPositionReference(chatTextArea);
+
     const currentEmoteListData = emoteListDataRef.current;
     if (currentEmoteListData.rows.length === 0) {
       return;
@@ -98,7 +101,7 @@ function EmoteMenu({
 
     handleScrollToPendingRow(0);
     setNavigationMode(NavigationModeTypes.ARROW_KEYS);
-  }, [open, handleCoordsChange]);
+  }, [open, handleCoordsChange, boundingQuerySelector, refs]);
 
   const toggle = useCallback(() => (opened ? close() : handleOpen()), [opened, close, open]);
 
@@ -137,7 +140,7 @@ function EmoteMenu({
     return newData;
   }, []);
 
-  const handleEmoteListDataUpdate = useCallback(
+  const handleEmoteMenuViewStoreUpdate = useCallback(
     (newData) => {
       const parsedData = updateEmoteListData(newData);
 
@@ -151,7 +154,7 @@ function EmoteMenu({
     [selected, handleCoordsChange, updateEmoteListData]
   );
 
-  useEmoteMenuViewStoreUpdated(opened, handleEmoteListDataUpdate);
+  useEmoteMenuViewStoreUpdated(opened, handleEmoteMenuViewStoreUpdate);
 
   const {refs, floatingStyles, context} = useFloating({
     strategy: 'fixed',
@@ -178,11 +181,6 @@ function EmoteMenu({
   });
 
   const {getFloatingProps} = useInteractions([dismiss]);
-
-  useLayoutEffect(() => {
-    const chatTextArea = document.querySelector(boundingQuerySelector);
-    refs.setPositionReference(chatTextArea);
-  }, [opened]);
 
   useEffect(() => {
     function handleKeyDown(event) {

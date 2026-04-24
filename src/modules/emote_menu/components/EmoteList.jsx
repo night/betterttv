@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo} from 'react';
 import {NavigationModeTypes, EMOTE_MENU_GRID_ROW_HEIGHT} from '../../../constants.js';
 import useGridKeyboardNavigation from '../hooks/GridKeyboardNavigation.jsx';
 import EmoteButton from './EmoteButton.jsx';
