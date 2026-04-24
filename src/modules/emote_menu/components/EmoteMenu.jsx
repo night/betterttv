@@ -131,25 +131,6 @@ function EmoteMenu({
     listEl.scrollTo(0, scrollTop);
   }, []);
 
-  const handleClose = useCallback(() => {
-    close();
-
-    const currentEmoteListData = emoteListDataRef.current;
-    if (currentEmoteListData.rows.length === 0) {
-      return;
-    }
-
-    const firstCoords = getFirstCoords(currentEmoteListData.rows);
-    if (firstCoords != null) {
-      handleCoordsChange(firstCoords);
-    }
-
-    handleScrollToPendingRow(0);
-    setNavigationMode(NavigationModeTypes.ARROW_KEYS);
-  }, [close, handleCoordsChange, handleScrollToPendingRow]);
-
-  const toggle = useCallback(() => (opened ? handleClose() : handleOpen()), [opened, handleClose, handleOpen]);
-
   const updateEmoteListData = useCallback((currentSearch = '') => {
     let rows = emoteMenuViewStore.rows;
 
@@ -169,6 +150,17 @@ function EmoteMenu({
 
     return newData;
   }, []);
+
+  const handleClose = useCallback(() => {
+    close();
+    setNavigationMode(NavigationModeTypes.ARROW_KEYS);
+    updateEmoteListData('');
+    setSection(null);
+    handleCoordsChange(null);
+    handleScrollToPendingRow(0);
+  }, [updateEmoteListData, handleCoordsChange, handleScrollToPendingRow, setSection, close, setNavigationMode]);
+
+  const toggle = useCallback(() => (opened ? handleClose() : handleOpen()), [opened, handleClose, handleOpen]);
 
   const handleEmoteMenuViewStoreUpdate = useCallback(
     (newData) => {

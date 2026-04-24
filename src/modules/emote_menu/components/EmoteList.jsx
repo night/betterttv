@@ -216,6 +216,7 @@ const EmoteList = React.forwardRef(
     return (
       <div className={classNames(styles.emoteListRoot, className)} onMouseMove={handleMouseMove}>
         <BrowseEmotes
+          key={data.search}
           ref={mergedRef}
           section={section}
           onSection={onSection}
