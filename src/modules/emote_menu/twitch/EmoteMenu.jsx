@@ -2,14 +2,14 @@ import React from 'react';
 import {EmoteMenuTypes, SettingIds} from '../../../constants.js';
 import domObserver from '../../../observers/dom.js';
 import settings from '../../../settings.js';
-import {createInlineSvg} from '../../../utils/svg.js';
 import twitch from '../../../utils/twitch.js';
 import {getCurrentUser} from '../../../utils/user.js';
 import watcher from '../../../watcher.js';
 import styles from './EmoteMenu.module.css';
 import EmoteMenu from '../components/EmoteMenu.jsx';
-import logoSvgRaw from '../../../assets/logos/logo.svg?raw';
 import shadowDOM from '../../shadow_dom/index.js';
+import {renderToString} from 'react-dom/server';
+import {LogoIconView} from '../../../common/components/LogoIcon.jsx';
 
 const CHAT_TEXT_AREA = '.chat-input__textarea, textarea[data-a-target="chat-input"], div[data-a-target="chat-input"]';
 const CHAT_INPUT = '.chat-input';
@@ -144,7 +144,8 @@ function loadButton() {
   const button = document.createElement('button');
   button.classList.add(styles.button);
   buttonContainer.appendChild(button);
-  button.appendChild(createInlineSvg(logoSvgRaw, {className: styles.logoIcon, size: 18}));
+  const inlineSvg = renderToString(<LogoIconView className={styles.logoIcon} width={18} height={18} />);
+  button.innerHTML = inlineSvg;
   button.addEventListener('click', () => handleOpen?.());
 }
 

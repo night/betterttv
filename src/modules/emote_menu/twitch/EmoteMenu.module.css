@@ -42,13 +42,6 @@
   align-items: center;
   justify-content: center;
   line-height: 0;
-}
-
-.logoIcon svg {
-  display: block;
-}
-
-.logoIcon path {
   fill: currentColor;
 }
 
