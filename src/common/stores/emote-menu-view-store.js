@@ -118,6 +118,10 @@ class EmoteMenuViewStore extends SafeEventEmitter {
       cols = Math.floor((width - EMOTE_MENU_WINDOW_MARGIN) / EMOTE_MENU_COLUMN_WIDTH);
     }
 
+    if (this.totalCols === cols) {
+      return;
+    }
+
     this.totalCols = Math.max(1, cols);
     this.markDirty(false);
   }
