@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, {useCallback, useEffect, useMemo} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef} from 'react';
 import {NavigationModeTypes, EMOTE_MENU_GRID_ROW_HEIGHT} from '../../../constants.js';
 import useGridKeyboardNavigation from '../hooks/GridKeyboardNavigation.jsx';
 import EmoteButton from './EmoteButton.jsx';
@@ -26,27 +26,41 @@ function HeaderRow({style, className, row}) {
   );
 }
 
-function EmoteRow({style, className, row, rowIndex: y, coords, onClick, onMouseOver}) {
-  return (
-    <div style={style} className={classNames(className, styles.row)}>
-      {row.map((emote, x) => {
-        return (
+const EmoteRow = React.memo(
+  ({style, className, row, rowIndex: y, coords, onClick, onMouseOver}) => {
+    const handleMouseOver = useCallback((x) => onMouseOver({x, y}), [onMouseOver, y]);
+
+    return (
+      <div key={y} style={style} className={classNames(className, styles.row)}>
+        {row.map((emote, x) => (
           <EmoteButton
             key={getEmoteKey(emote)}
             emote={emote}
             onClick={onClick}
-            onMouseOver={() => onMouseOver({x, y})}
+            onMouseOver={() => handleMouseOver(x)}
             active={x === coords.x && y === coords.y}
           />
-        );
-      })}
-    </div>
-  );
-}
+        ))}
+      </div>
+    );
+  },
+  (prevProps, nextProps) => {
+    const rowIndex = nextProps.rowIndex;
+
+    const wasActive = prevProps.coords.y === rowIndex;
+    const isActive = nextProps.coords.y === rowIndex;
+
+    const xChanged = prevProps.coords.x !== nextProps.coords.x && isActive;
+    const rowChanged = prevProps.row !== nextProps.row;
+    const shouldRerender = wasActive || isActive || xChanged || rowChanged;
+
+    return !shouldRerender;
+  }
+);
 
 const EmptySearchState = React.forwardRef((props, ref) => {
   return (
-    <div className={styles.empty} ref={ref}>
+    <div className={styles.empty} {...props} ref={ref}>
       <div className={styles.emptyIcon}>{Icons.HEART_BROKEN}</div>
       <Text c="dimmed">No results...</Text>
     </div>
@@ -54,23 +68,18 @@ const EmptySearchState = React.forwardRef((props, ref) => {
 });
 
 const BrowseEmotes = React.forwardRef(
-  (
-    {emoteListRows, onClick, onSection, setCoords, coords, navigationMode, className, windowHeight, headerRows},
-    ref
-  ) => {
-    const handleMouseOver = useCallback(
-      (newCoords) => {
-        if (navigationMode === NavigationModeTypes.MOUSE) {
-          setCoords(newCoords);
-        }
-      },
-      [navigationMode, setCoords]
-    );
+  ({emoteListRows, onClick, onSection, setCoords, coords, className, headerRows}, ref) => {
+    const handleClickRef = useRef(onClick);
+    const handleMouseOverRef = useRef(setCoords);
+
+    useEffect(() => {
+      handleClickRef.current = onClick;
+      handleMouseOverRef.current = setCoords;
+    }, [onClick, setCoords]);
 
     const renderRow = useCallback(
       ({key, style, index: y, className}) => {
         const row = emoteListRows[y];
-
         if (row == null) {
           return null;
         }
@@ -87,12 +96,12 @@ const BrowseEmotes = React.forwardRef(
             row={row}
             rowIndex={y}
             coords={coords}
-            onClick={onClick}
-            onMouseOver={handleMouseOver}
+            onClick={handleClickRef.current}
+            onMouseOver={handleMouseOverRef.current}
           />
         );
       },
-      [coords, onClick, handleMouseOver, emoteListRows]
+      [coords, emoteListRows]
     );
 
     const handleHeaderChange = useCallback(
@@ -193,20 +202,31 @@ const EmoteList = React.forwardRef(
       [navigationMode, height, headerRows]
     );
 
-    const handleCoordsChange = useCallback(
+    const handleCoordsChangeByKeyboard = useCallback(
       (newCoords) => {
+        setNavigationMode(NavigationModeTypes.ARROW_KEYS);
         setCoords(newCoords);
         updateScrollPositionByCoords(newCoords);
       },
-      [updateScrollPositionByCoords]
+      [updateScrollPositionByCoords, setNavigationMode]
+    );
+
+    const handleCoordsChangeByMouse = useCallback(
+      (newCoords) => {
+        console.log('navigationMode', navigationMode);
+        if (navigationMode !== NavigationModeTypes.MOUSE) {
+          return;
+        }
+        setCoords(newCoords);
+      },
+      [navigationMode, setCoords]
     );
 
     const {handleKeyPress} = useGridKeyboardNavigation({
       coords,
-      setCoords: handleCoordsChange,
+      setCoords: handleCoordsChangeByKeyboard,
       rowColumnCounts,
       maxColumnCount: totalCols,
-      setNavigationMode,
     });
 
     useEffect(() => {
@@ -222,10 +242,8 @@ const EmoteList = React.forwardRef(
           onSection={onSection}
           onClick={onClick}
           emoteListRows={rows}
-          navigationMode={navigationMode}
           coords={coords}
-          setCoords={setCoords}
-          windowHeight={height}
+          setCoords={handleCoordsChangeByMouse}
           headerRows={headerRows}
         />
         <Preview emote={selected} />

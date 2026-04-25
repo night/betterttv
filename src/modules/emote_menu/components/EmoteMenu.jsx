@@ -204,30 +204,32 @@ function EmoteMenu({
     };
   }, [toggle]);
 
-  const handleClick = useCallback(
-    (emote) => {
-      if (altPressed.current) {
-        emoteMenuViewStore.toggleFavorite(emote);
-        markTipAsSeen(EmoteMenuTips.EMOTE_MENU_FAVORITE_EMOTE);
-        return;
-      }
+  const handleCloseRef = useRef(handleClose);
+  useEffect(() => {
+    handleCloseRef.current = handleClose;
+  }, [handleClose]);
 
-      if (emote.metadata?.isLocked?.() ?? false) {
-        return;
-      }
+  const handleClick = useCallback((emote) => {
+    if (altPressed.current) {
+      emoteMenuViewStore.toggleFavorite(emote);
+      markTipAsSeen(EmoteMenuTips.EMOTE_MENU_FAVORITE_EMOTE);
+      return;
+    }
 
-      appendToChat(emote, !shiftPressed.current);
-      emoteMenuViewStore.trackHistory(emote);
+    if (emote.metadata?.isLocked?.() ?? false) {
+      return;
+    }
 
-      if (shiftPressed.current) {
-        markTipAsSeen(EmoteMenuTips.EMOTE_MENU_PREVENT_CLOSE);
-        return;
-      }
+    appendToChat(emote, !shiftPressed.current);
+    emoteMenuViewStore.trackHistory(emote);
 
-      handleClose();
-    },
-    [handleClose]
-  );
+    if (shiftPressed.current) {
+      markTipAsSeen(EmoteMenuTips.EMOTE_MENU_PREVENT_CLOSE);
+      return;
+    }
+
+    handleCloseRef.current();
+  }, []);
 
   const handleKeyEvent = useCallback((event) => {
     altPressed.current = event.altKey;
