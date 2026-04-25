@@ -49,10 +49,15 @@ const EmoteRow = React.memo(
 
     const wasActive = prevProps.coords.y === rowIndex;
     const isActive = nextProps.coords.y === rowIndex;
+    const activeChanged = wasActive !== isActive;
 
     const xChanged = prevProps.coords.x !== nextProps.coords.x && isActive;
     const rowChanged = prevProps.row !== nextProps.row;
-    const shouldRerender = wasActive || isActive || xChanged || rowChanged;
+
+    const onClickChanged = prevProps.onClick !== nextProps.onClick;
+    const onMouseOverChanged = prevProps.onMouseOver !== nextProps.onMouseOver;
+
+    const shouldRerender = activeChanged || xChanged || rowChanged || onClickChanged || onMouseOverChanged;
 
     return !shouldRerender;
   }
@@ -69,14 +74,6 @@ const EmptySearchState = React.forwardRef((props, ref) => {
 
 const BrowseEmotes = React.forwardRef(
   ({emoteListRows, onClick, onSection, setCoords, coords, className, headerRows}, ref) => {
-    const handleClickRef = useRef(onClick);
-    const handleMouseOverRef = useRef(setCoords);
-
-    useEffect(() => {
-      handleClickRef.current = onClick;
-      handleMouseOverRef.current = setCoords;
-    }, [onClick, setCoords]);
-
     const renderRow = useCallback(
       ({key, style, index: y, className}) => {
         const row = emoteListRows[y];
@@ -96,8 +93,8 @@ const BrowseEmotes = React.forwardRef(
             row={row}
             rowIndex={y}
             coords={coords}
-            onClick={handleClickRef.current}
-            onMouseOver={handleMouseOverRef.current}
+            onClick={onClick}
+            onMouseOver={setCoords}
           />
         );
       },
@@ -156,6 +153,11 @@ const EmoteList = React.forwardRef(
     const mergedRef = useMergedRef(ref, listViewportRef);
     const rowColumnCounts = useMemo(() => getRowColumnCounts(rows), [rows]);
     const handleMouseMove = useCallback(() => setNavigationMode(NavigationModeTypes.MOUSE), [setNavigationMode]);
+    const navigationModeRef = useRef(navigationMode);
+
+    useEffect(() => {
+      navigationModeRef.current = navigationMode;
+    }, [navigationMode]);
 
     const headerRows = useMemo(() => {
       return rows
@@ -177,7 +179,7 @@ const EmoteList = React.forwardRef(
     const updateScrollPositionByCoords = useCallback(
       (newCoords) => {
         const currentRef = ref.current;
-        if (navigationMode !== NavigationModeTypes.ARROW_KEYS || currentRef == null) {
+        if (navigationModeRef.current !== NavigationModeTypes.ARROW_KEYS || currentRef == null) {
           return;
         }
 
@@ -199,7 +201,7 @@ const EmoteList = React.forwardRef(
           currentRef.scrollTo(0, depth + EMOTE_MENU_GRID_ROW_HEIGHT - height);
         }
       },
-      [navigationMode, height, headerRows]
+      [height, headerRows]
     );
 
     const handleCoordsChangeByKeyboard = useCallback(
@@ -213,13 +215,13 @@ const EmoteList = React.forwardRef(
 
     const handleCoordsChangeByMouse = useCallback(
       (newCoords) => {
-        console.log('navigationMode', navigationMode);
-        if (navigationMode !== NavigationModeTypes.MOUSE) {
+        if (navigationModeRef.current !== NavigationModeTypes.MOUSE) {
           return;
         }
+
         setCoords(newCoords);
       },
-      [navigationMode, setCoords]
+      [setCoords]
     );
 
     const {handleKeyPress} = useGridKeyboardNavigation({
