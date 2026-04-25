@@ -25,7 +25,7 @@ export default function useHorizontalResize({
       newWidth = maxWidth;
     }
     if (!windowResize) {
-      setEmoteMenuWidth(newWidth);
+      setEmoteMenuWidth(Math.floor(newWidth));
     }
     setDisplayWidth(newWidth);
   }
