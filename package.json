@@ -74,7 +74,7 @@
     "mini-css-extract-plugin": "2.10.1",
     "normalize-path": "3.0.0",
     "pkce-challenge": "^5.0.1",
-    "postcss": "8.5.8",
+    "postcss": "8.5.10",
     "postcss-hexrgba": "2.1.0",
     "postcss-loader": "8.2.1",
     "postcss-url": "10.1.3",
