@@ -15,16 +15,17 @@ import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js'
 
 const GUARD_HEIGHT = 8;
 
-function HeaderRow({style, className, row}) {
-  return (
+const HeaderRow = React.memo(
+  ({style, className, row}) => (
     <div style={style} className={classNames(className, styles.header)}>
-      <div className={styles.headerIcon}>{row.icon}</div>
+      <span className={styles.headerIcon}>{row.icon}</span>
       <Text c="dimmed" size="sm" className={styles.headerText}>
         {row.displayName}
       </Text>
     </div>
-  );
-}
+  ),
+  (prevProps, nextProps) => prevProps.row === nextProps.row
+);
 
 const EmoteRow = React.memo(
   ({style, className, row, rowIndex: y, coords, onClick, onMouseOver}) => {
