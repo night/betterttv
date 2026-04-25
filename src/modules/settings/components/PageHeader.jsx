@@ -26,7 +26,7 @@ const PageHeader = React.forwardRef(({className, leftContent, onClose}, ref) => 
         )}
       </ActionIcon>
       {typeof leftContent === 'string' ? <Title order={1}>{leftContent}</Title> : leftContent}
-      <CloseButton className={styles.closeButton} radius="lg" variant="subtle" size="lg" onClick={onClose} />
+      <CloseButton className={styles.closeButton} radius="lg" variant="subtle" size="md" onClick={onClose} />
     </div>
   );
 });
