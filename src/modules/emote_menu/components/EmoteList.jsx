@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import React, {useCallback, useEffect, useMemo, useRef} from 'react';
 import {NavigationModeTypes, EMOTE_MENU_GRID_ROW_HEIGHT} from '../../../constants.js';
 import useGridKeyboardNavigation from '../hooks/GridKeyboardNavigation.jsx';
-import EmoteButton from './EmoteButton.jsx';
+import {EmoteRow, HeaderRow} from './EmoteListRow.jsx';
 import Icons from './Icons.jsx';
 import VirtualizedList from './VirtualizedList.jsx';
 import Preview from './Preview.jsx';
@@ -10,59 +10,10 @@ import {useElementSize, useMergedRef} from '@mantine/hooks';
 import {Text} from '@mantine/core';
 import styles from './EmoteList.module.css';
 import scrollbarStyles from '../../../common/styles/Scrollbar.module.css';
-import {getEmoteKey, getRowColumnCounts} from '../utils/emote-list-grid.js';
+import {getRowColumnCounts} from '../utils/emote-list-grid.js';
 import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js';
 
 const GUARD_HEIGHT = 8;
-
-const HeaderRow = React.memo(
-  ({style, className, row}) => (
-    <div style={style} className={classNames(className, styles.header)}>
-      <span className={styles.headerIcon}>{row.icon}</span>
-      <Text c="dimmed" size="sm" className={styles.headerText}>
-        {row.displayName}
-      </Text>
-    </div>
-  ),
-  (prevProps, nextProps) => prevProps.row === nextProps.row
-);
-
-const EmoteRow = React.memo(
-  ({style, className, row, rowIndex: y, coords, onClick, onMouseOver}) => {
-    const handleMouseOver = useCallback((x) => onMouseOver({x, y}), [onMouseOver, y]);
-
-    return (
-      <div key={y} style={style} className={classNames(className, styles.row)}>
-        {row.map((emote, x) => (
-          <EmoteButton
-            key={getEmoteKey(emote)}
-            emote={emote}
-            onClick={onClick}
-            onMouseOver={() => handleMouseOver(x)}
-            active={x === coords.x && y === coords.y}
-          />
-        ))}
-      </div>
-    );
-  },
-  (prevProps, nextProps) => {
-    const rowIndex = nextProps.rowIndex;
-
-    const wasActive = prevProps.coords.y === rowIndex;
-    const isActive = nextProps.coords.y === rowIndex;
-    const activeChanged = wasActive !== isActive;
-
-    const xChanged = prevProps.coords.x !== nextProps.coords.x && isActive;
-    const rowChanged = prevProps.row !== nextProps.row;
-
-    const onClickChanged = prevProps.onClick !== nextProps.onClick;
-    const onMouseOverChanged = prevProps.onMouseOver !== nextProps.onMouseOver;
-
-    const shouldRerender = activeChanged || xChanged || rowChanged || onClickChanged || onMouseOverChanged;
-
-    return !shouldRerender;
-  }
-);
 
 const EmptySearchState = React.forwardRef((props, ref) => {
   return (
@@ -76,28 +27,18 @@ const EmptySearchState = React.forwardRef((props, ref) => {
 const BrowseEmotes = React.forwardRef(
   ({emoteListRows, onClick, onSection, setCoords, coords, className, headerRows}, ref) => {
     const renderRow = useCallback(
-      ({key, style, index: y, className}) => {
+      ({index: y, ...props}) => {
         const row = emoteListRows[y];
+
         if (row == null) {
           return null;
         }
 
         if (!Array.isArray(row)) {
-          return <HeaderRow key={key} style={style} className={className} row={row} />;
+          return <HeaderRow row={row} {...props} />;
         }
 
-        return (
-          <EmoteRow
-            key={key}
-            style={style}
-            className={className}
-            row={row}
-            rowIndex={y}
-            coords={coords}
-            onClick={onClick}
-            onMouseOver={setCoords}
-          />
-        );
+        return <EmoteRow row={row} rowIndex={y} coords={coords} onClick={onClick} onMouseOver={setCoords} {...props} />;
       },
       [coords, emoteListRows]
     );

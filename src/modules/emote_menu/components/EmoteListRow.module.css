@@ -1,0 +1,42 @@
+.header {
+  background-color: var(--mantine-color-body-secondary);
+  color: var(--mantine-color-text);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  position: sticky;
+  top: 0;
+  outline: 1px solid var(--mantine-color-body-secondary);
+}
+
+.headerIcon {
+  display: flex;
+  width: 24px;
+  height: 24px;
+  margin-right: 4px;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  box-sizing: border-box;
+
+  svg {
+    width: 100% !important;
+  }
+}
+
+.headerText {
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.row {
+  display: flex;
+  justify-content: left;
+  width: 100%;
+}
+
+.row,
+.header {
+  padding: 0 8px;
+}
