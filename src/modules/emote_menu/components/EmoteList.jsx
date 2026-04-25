@@ -1,8 +1,8 @@
 import classNames from 'classnames';
-import React, {useCallback, useEffect, useMemo} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef} from 'react';
 import {NavigationModeTypes, EMOTE_MENU_GRID_ROW_HEIGHT} from '../../../constants.js';
 import useGridKeyboardNavigation from '../hooks/GridKeyboardNavigation.jsx';
-import EmoteButton from './EmoteButton.jsx';
+import {EmoteRow, HeaderRow} from './EmoteListRow.jsx';
 import Icons from './Icons.jsx';
 import VirtualizedList from './VirtualizedList.jsx';
 import Preview from './Preview.jsx';
@@ -10,43 +10,14 @@ import {useElementSize, useMergedRef} from '@mantine/hooks';
 import {Text} from '@mantine/core';
 import styles from './EmoteList.module.css';
 import scrollbarStyles from '../../../common/styles/Scrollbar.module.css';
-import {getEmoteKey, getRowColumnCounts} from '../utils/emote-list-grid.js';
+import {getRowColumnCounts} from '../utils/emote-list-grid.js';
 import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js';
 
 const GUARD_HEIGHT = 8;
 
-function HeaderRow({style, className, row}) {
-  return (
-    <div style={style} className={classNames(className, styles.header)}>
-      <div className={styles.headerIcon}>{row.icon}</div>
-      <Text c="dimmed" size="sm" className={styles.headerText}>
-        {row.displayName}
-      </Text>
-    </div>
-  );
-}
-
-function EmoteRow({style, className, row, rowIndex: y, coords, onClick, onMouseOver}) {
-  return (
-    <div style={style} className={classNames(className, styles.row)}>
-      {row.map((emote, x) => {
-        return (
-          <EmoteButton
-            key={getEmoteKey(emote)}
-            emote={emote}
-            onClick={onClick}
-            onMouseOver={() => onMouseOver({x, y})}
-            active={x === coords.x && y === coords.y}
-          />
-        );
-      })}
-    </div>
-  );
-}
-
 const EmptySearchState = React.forwardRef((props, ref) => {
   return (
-    <div className={styles.empty} ref={ref}>
+    <div className={styles.empty} {...props} ref={ref}>
       <div className={styles.emptyIcon}>{Icons.HEART_BROKEN}</div>
       <Text c="dimmed">No results...</Text>
     </div>
@@ -54,21 +25,9 @@ const EmptySearchState = React.forwardRef((props, ref) => {
 });
 
 const BrowseEmotes = React.forwardRef(
-  (
-    {emoteListRows, onClick, onSection, setCoords, coords, navigationMode, className, windowHeight, headerRows},
-    ref
-  ) => {
-    const handleMouseOver = useCallback(
-      (newCoords) => {
-        if (navigationMode === NavigationModeTypes.MOUSE) {
-          setCoords(newCoords);
-        }
-      },
-      [navigationMode, setCoords]
-    );
-
+  ({emoteListRows, onClick, onSection, setCoords, coords, className, headerRows}, ref) => {
     const renderRow = useCallback(
-      ({key, style, index: y, className}) => {
+      ({index: y, ...props}) => {
         const row = emoteListRows[y];
 
         if (row == null) {
@@ -76,23 +35,12 @@ const BrowseEmotes = React.forwardRef(
         }
 
         if (!Array.isArray(row)) {
-          return <HeaderRow key={key} style={style} className={className} row={row} />;
+          return <HeaderRow row={row} {...props} />;
         }
 
-        return (
-          <EmoteRow
-            key={key}
-            style={style}
-            className={className}
-            row={row}
-            rowIndex={y}
-            coords={coords}
-            onClick={onClick}
-            onMouseOver={handleMouseOver}
-          />
-        );
+        return <EmoteRow row={row} rowIndex={y} coords={coords} onClick={onClick} onMouseOver={setCoords} {...props} />;
       },
-      [coords, onClick, handleMouseOver, emoteListRows]
+      [coords, emoteListRows]
     );
 
     const handleHeaderChange = useCallback(
@@ -147,6 +95,11 @@ const EmoteList = React.forwardRef(
     const mergedRef = useMergedRef(ref, listViewportRef);
     const rowColumnCounts = useMemo(() => getRowColumnCounts(rows), [rows]);
     const handleMouseMove = useCallback(() => setNavigationMode(NavigationModeTypes.MOUSE), [setNavigationMode]);
+    const navigationModeRef = useRef(navigationMode);
+
+    useEffect(() => {
+      navigationModeRef.current = navigationMode;
+    }, [navigationMode]);
 
     const headerRows = useMemo(() => {
       return rows
@@ -168,7 +121,7 @@ const EmoteList = React.forwardRef(
     const updateScrollPositionByCoords = useCallback(
       (newCoords) => {
         const currentRef = ref.current;
-        if (navigationMode !== NavigationModeTypes.ARROW_KEYS || currentRef == null) {
+        if (navigationModeRef.current !== NavigationModeTypes.ARROW_KEYS || currentRef == null) {
           return;
         }
 
@@ -190,23 +143,34 @@ const EmoteList = React.forwardRef(
           currentRef.scrollTo(0, depth + EMOTE_MENU_GRID_ROW_HEIGHT - height);
         }
       },
-      [navigationMode, height, headerRows]
+      [height, headerRows]
     );
 
-    const handleCoordsChange = useCallback(
+    const handleCoordsChangeByKeyboard = useCallback(
       (newCoords) => {
+        setNavigationMode(NavigationModeTypes.ARROW_KEYS);
         setCoords(newCoords);
         updateScrollPositionByCoords(newCoords);
       },
-      [updateScrollPositionByCoords]
+      [updateScrollPositionByCoords, setNavigationMode]
+    );
+
+    const handleCoordsChangeByMouse = useCallback(
+      (newCoords) => {
+        if (navigationModeRef.current !== NavigationModeTypes.MOUSE) {
+          return;
+        }
+
+        setCoords(newCoords);
+      },
+      [setCoords]
     );
 
     const {handleKeyPress} = useGridKeyboardNavigation({
       coords,
-      setCoords: handleCoordsChange,
+      setCoords: handleCoordsChangeByKeyboard,
       rowColumnCounts,
       maxColumnCount: totalCols,
-      setNavigationMode,
     });
 
     useEffect(() => {
@@ -222,10 +186,8 @@ const EmoteList = React.forwardRef(
           onSection={onSection}
           onClick={onClick}
           emoteListRows={rows}
-          navigationMode={navigationMode}
           coords={coords}
-          setCoords={setCoords}
-          windowHeight={height}
+          setCoords={handleCoordsChangeByMouse}
           headerRows={headerRows}
         />
         <Preview emote={selected} />

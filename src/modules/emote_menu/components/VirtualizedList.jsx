@@ -81,7 +81,6 @@ function VirtualizedList(
   const [data, setData] = useState(handleViewportUpdate(0));
 
   const handleScroll = useCallback(() => {
-    console.log('handleScroll');
     const currentWrapperRef = ref.current;
     const scrollTop = currentWrapperRef?.scrollTop ?? 0;
 
