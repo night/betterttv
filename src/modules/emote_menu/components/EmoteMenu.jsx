@@ -1,18 +1,24 @@
-import React, {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import emoteMenuViewStore, {CategoryPositions} from '../../../common/stores/emote-menu-view-store.js';
-import {EMOTE_MENU_GRID_ROW_HEIGHT, EmoteMenuTips} from '../../../constants.js';
+import {EMOTE_MENU_GRID_ROW_HEIGHT, EmoteMenuTips, NavigationModeTypes} from '../../../constants.js';
 import useHorizontalResize from '../hooks/HorizontalResize.jsx';
 import Header from './Header.jsx';
 import Sidebar from './Sidebar.jsx';
 import Tip, {markTipAsSeen} from './Tip.jsx';
 import styles from './EmoteMenu.module.css';
-import classNames from 'classnames';
 import EmoteList from './EmoteList.jsx';
 import keyCodes from '../../../utils/keycodes.js';
-import {useDisclosure, useResizeObserver} from '@mantine/hooks';
+import {useDisclosure, useFocusTrap} from '@mantine/hooks';
 import {autoUpdate, offset, useDismiss, useFloating, useInteractions} from '@floating-ui/react';
 import {isMac} from '../../../utils/window.js';
 import useEmoteMenuViewStoreUpdated from '../../../common/hooks/EmoteMenuViewStore.jsx';
+import {
+  getCoordsOfSelected,
+  getFirstCoords,
+  getFirstCoordsInCategory,
+  getSelectedAtCoords,
+} from '../utils/emote-list-grid.js';
+import classNames from 'classnames';
 
 let keyPressCallback;
 function setKeyPressCallback(newKeyPressCallback) {
@@ -35,70 +41,52 @@ function EmoteMenu({
   emoteMenuToggleButtonSelector,
 }) {
   const handleRef = useRef(null);
-  const [search, setSearch] = useState('');
   const [selected, setSelected] = useState(null);
   const altPressed = useRef(false);
   const shiftPressed = useRef(false);
   const [section, setSection] = useState(null);
-  const [opened, {close, open, toggle}] = useDisclosure(false);
-  const width = useHorizontalResize({boundingQuerySelector, handleRef});
-  const [emoteListRef, emoteListRect] = useResizeObserver();
-
-  useLayoutEffect(() => {
-    if (emoteListRef.current == null) {
-      return;
-    }
-
-    const clientWidth = emoteListRef.current.clientWidth;
-    emoteMenuViewStore.updateTotalColumns(clientWidth);
-  }, [emoteListRect.width]);
+  const [opened, {close, open}] = useDisclosure(false);
+  const width = useHorizontalResize({boundingQuerySelector, handleRef, open: opened});
+  const emoteListRef = useRef(null);
+  const [emoteListCoords, setEmoteListCoords] = useState({x: 0, y: 0});
+  const [navigationMode, setNavigationMode] = useState(NavigationModeTypes.ARROW_KEYS);
+  const focusRef = useFocusTrap(opened && navigationMode === NavigationModeTypes.ARROW_KEYS);
 
   const [emoteListData, setEmoteListData] = useState({
+    search: '',
     rows: [],
-    totalCols: 0,
+    totalCols: emoteMenuViewStore.totalCols,
     categories: getCategories(),
   });
 
-  const handleScrollToPendingRow = useCallback(
-    (pendingScrollRowIndex) => {
-      const listEl = emoteListRef.current;
-      if (listEl == null) {
+  const emoteListDataRef = useRef(emoteListData);
+
+  const handleCoordsChange = useCallback(
+    (newCoords) => {
+      const currentEmoteListData = emoteListDataRef.current;
+      if (currentEmoteListData.rows.length === 0) {
         return;
       }
 
-      if (emoteListData.rows.length === 0) {
-        return;
+      if (newCoords == null) {
+        newCoords = getFirstCoords(currentEmoteListData.rows);
       }
 
-      const scrollTop = pendingScrollRowIndex * EMOTE_MENU_GRID_ROW_HEIGHT + 1;
-      listEl.scrollTo(0, scrollTop);
+      const selected = getSelectedAtCoords(currentEmoteListData.rows, newCoords);
+      if (section == null && selected != null) {
+        setSection(selected.category.id);
+      }
+
+      setSelected(selected);
+      setEmoteListCoords(newCoords);
     },
-    [emoteListData.rows]
+    [setSelected, setEmoteListCoords, section]
   );
-
-  const updateEmoteListData = useCallback((currentSearch = '') => {
-    let rows = emoteMenuViewStore.rows;
-
-    if (currentSearch.length > 0) {
-      handleScrollToPendingRow(0);
-      rows = emoteMenuViewStore.search(currentSearch);
-    }
-
-    setEmoteListData({
-      rows,
-      totalCols: emoteMenuViewStore.totalCols,
-      categories: getCategories(),
-    });
-
-    setSearch(currentSearch);
-  }, []);
-
-  useEmoteMenuViewStoreUpdated(opened, updateEmoteListData);
 
   const {refs, floatingStyles, context} = useFloating({
     strategy: 'fixed',
     open: opened,
-    onOpenChange: (isOpen) => (isOpen ? open() : close()),
+    onOpenChange: (isOpen) => (isOpen ? handleOpen() : handleClose()),
     placement: 'top-end',
     middleware: [offset(offsetOptions)],
     whileElementsMounted: autoUpdate,
@@ -121,16 +109,78 @@ function EmoteMenu({
 
   const {getFloatingProps} = useInteractions([dismiss]);
 
-  useLayoutEffect(() => {
-    const listEl = emoteListRef.current;
-
-    if (listEl != null && opened) {
-      listEl.scrollTo(0, 0);
-    }
+  const handleOpen = useCallback(() => {
+    open();
 
     const chatTextArea = document.querySelector(boundingQuerySelector);
     refs.setPositionReference(chatTextArea);
-  }, [opened]);
+  }, [open, boundingQuerySelector, refs]);
+
+  const handleScrollToPendingRow = useCallback((pendingScrollRowIndex) => {
+    const listEl = emoteListRef.current;
+    if (listEl == null) {
+      return;
+    }
+
+    const currentEmoteListData = emoteListDataRef.current;
+    if (currentEmoteListData.rows.length === 0) {
+      return;
+    }
+
+    const scrollTop = pendingScrollRowIndex * EMOTE_MENU_GRID_ROW_HEIGHT + 1;
+    listEl.scrollTo(0, scrollTop);
+  }, []);
+
+  const updateEmoteListData = useCallback((currentSearch = '') => {
+    let rows = emoteMenuViewStore.rows;
+
+    if (currentSearch.length > 0) {
+      rows = emoteMenuViewStore.search(currentSearch);
+    }
+
+    const newData = {
+      rows,
+      search: currentSearch,
+      totalCols: emoteMenuViewStore.totalCols,
+      categories: getCategories(),
+    };
+
+    setEmoteListData(newData);
+    emoteListDataRef.current = newData;
+
+    return newData;
+  }, []);
+
+  const handleClose = useCallback(() => {
+    const listEl = emoteListRef.current;
+    if (listEl != null) {
+      listEl.scrollTo(0, 0);
+    }
+
+    close();
+    setNavigationMode(NavigationModeTypes.ARROW_KEYS);
+    updateEmoteListData('');
+    setSection(null);
+    handleCoordsChange(null);
+  }, [updateEmoteListData, handleCoordsChange, setSection, close, setNavigationMode]);
+
+  const toggle = useCallback(() => (opened ? handleClose() : handleOpen()), [opened, handleClose, handleOpen]);
+
+  const handleEmoteMenuViewStoreUpdate = useCallback(
+    (newData) => {
+      const parsedData = updateEmoteListData(newData);
+
+      let newCoords = getCoordsOfSelected(parsedData.rows, selected);
+      if (newCoords == null) {
+        newCoords = getFirstCoords(parsedData.rows);
+      }
+
+      handleCoordsChange(newCoords);
+    },
+    [selected, handleCoordsChange, updateEmoteListData]
+  );
+
+  useEmoteMenuViewStoreUpdated(opened, handleEmoteMenuViewStoreUpdate);
 
   useEffect(() => {
     function handleKeyDown(event) {
@@ -154,30 +204,32 @@ function EmoteMenu({
     };
   }, [toggle]);
 
-  const handleClick = useCallback(
-    (emote) => {
-      if (altPressed.current) {
-        emoteMenuViewStore.toggleFavorite(emote);
-        markTipAsSeen(EmoteMenuTips.EMOTE_MENU_FAVORITE_EMOTE);
-        return;
-      }
+  const handleCloseRef = useRef(handleClose);
+  useEffect(() => {
+    handleCloseRef.current = handleClose;
+  }, [handleClose]);
 
-      if (emote.metadata?.isLocked?.() ?? false) {
-        return;
-      }
+  const handleClick = useCallback((emote) => {
+    if (altPressed.current) {
+      emoteMenuViewStore.toggleFavorite(emote);
+      markTipAsSeen(EmoteMenuTips.EMOTE_MENU_FAVORITE_EMOTE);
+      return;
+    }
 
-      appendToChat(emote, !shiftPressed.current);
-      emoteMenuViewStore.trackHistory(emote);
+    if (emote.metadata?.isLocked?.() ?? false) {
+      return;
+    }
 
-      if (shiftPressed.current) {
-        markTipAsSeen(EmoteMenuTips.EMOTE_MENU_PREVENT_CLOSE);
-        return;
-      }
+    appendToChat(emote, !shiftPressed.current);
+    emoteMenuViewStore.trackHistory(emote);
 
-      close();
-    },
-    [close]
-  );
+    if (shiftPressed.current) {
+      markTipAsSeen(EmoteMenuTips.EMOTE_MENU_PREVENT_CLOSE);
+      return;
+    }
+
+    handleCloseRef.current();
+  }, []);
 
   const handleKeyEvent = useCallback((event) => {
     altPressed.current = event.altKey;
@@ -208,7 +260,7 @@ function EmoteMenu({
 
   const handleSection = useCallback(
     (eventKey, shouldScroll = true) => {
-      updateEmoteListData('');
+      const parsedData = updateEmoteListData('');
       setSection(eventKey);
 
       const index = emoteMenuViewStore.getCategoryIndexById(eventKey);
@@ -216,18 +268,33 @@ function EmoteMenu({
         return;
       }
 
+      const firstInCategory = getFirstCoordsInCategory(parsedData.rows, eventKey);
+      if (firstInCategory != null) {
+        handleCoordsChange(firstInCategory);
+      }
+
       handleScrollToPendingRow(index);
     },
-    [updateEmoteListData, handleScrollToPendingRow]
+    [updateEmoteListData, handleScrollToPendingRow, handleCoordsChange]
   );
 
   const onSection = useCallback((eventKey) => handleSection(eventKey, false), [handleSection]);
   const style = useMemo(() => ({...floatingStyles, width}), [floatingStyles, width]);
 
+  const handleSearchChange = useCallback(
+    (search) => {
+      handleScrollToPendingRow(0);
+      setNavigationMode(NavigationModeTypes.ARROW_KEYS);
+      const parsedData = updateEmoteListData(search);
+      handleCoordsChange(getFirstCoords(parsedData.rows));
+    },
+    [updateEmoteListData, handleCoordsChange, handleScrollToPendingRow]
+  );
+
   return (
     <div
       ref={refs.setFloating}
-      className={classNames(styles.emoteMenu, {[styles.emoteMenuHidden]: !opened})}
+      className={classNames(styles.emoteMenu, {[styles.hidden]: !opened})}
       style={style}
       onKeyDown={handleKeyDown}
       onKeyUp={handleKeyEvent}
@@ -235,11 +302,12 @@ function EmoteMenu({
       <div className={styles.emoteMenuContent}>
         <div ref={handleRef} className={styles.resizeHandle} />
         <Header
+          focusRef={focusRef}
           opened={opened}
           className={styles.header}
-          value={search}
-          onChange={updateEmoteListData}
-          toggleWhisper={close}
+          value={emoteListData.search}
+          onChange={handleSearchChange}
+          toggleWhisper={toggle}
           selected={selected}
         />
         <Sidebar
@@ -252,15 +320,18 @@ function EmoteMenu({
           data={emoteListData}
           ref={emoteListRef}
           selected={selected}
-          setSelected={setSelected}
           className={styles.emotes}
           section={section}
           onClick={handleClick}
           setKeyPressCallback={setKeyPressCallback}
           onSection={onSection}
+          navigationMode={navigationMode}
+          setNavigationMode={setNavigationMode}
+          coords={emoteListCoords}
+          setCoords={handleCoordsChange}
         />
       </div>
-      {opened ? <Tip className={styles.tip} onClose={close} /> : null}
+      {opened ? <Tip className={styles.tip} onClose={handleClose} /> : null}
     </div>
   );
 }

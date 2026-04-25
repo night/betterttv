@@ -12,18 +12,26 @@
   align-items: center;
   justify-content: space-between;
   gap: 6px; /* 8px - 2px border */
-  background-color: var(--mantine-color-body);
+  padding-right: 6px;
+  background-color: var(--mantine-color-body-secondary);
 }
 
 .closeButton {
-  margin-right: 6px;
+  background-color: var(--mantine-color-gray-light);
+  border-radius: var(--mantine-radius-lg);
+
   min-width: 32px;
   min-height: 32px;
+  margin: 2px;
 
   svg {
     max-width: 24px;
     max-height: 24px;
   }
+}
+
+.closeButton:hover {
+  background-color: var(--mantine-color-gray-light-hover);
 }
 
 .logoButton {
@@ -36,6 +44,7 @@
   height: 48px;
   max-width: 47px; /* 48px - 1px border */
   border-radius: 0;
+  background-color: var(--mantine-color-body);
   border-right: 1px solid var(--mantine-color-default-border);
   color: var(--mantine-primary-color-filled) !important;
 }

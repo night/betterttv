@@ -5,7 +5,12 @@ import {SettingIds} from '../../../constants.js';
 
 const WINDOW_HORIZONTAL_MARGIN = 20;
 
-export default function useHorizontalResize({boundingQuerySelector, handleRef, minWidth = EMOTE_MENU_MIN_WIDTH}) {
+export default function useHorizontalResize({
+  boundingQuerySelector,
+  handleRef,
+  minWidth = EMOTE_MENU_MIN_WIDTH,
+  open = true,
+}) {
   const [emoteMenuWidth, setEmoteMenuWidth] = useStorageState(SettingIds.EMOTE_MENU_WIDTH); // desired width
   const [displayWidth, setDisplayWidth] = React.useState(emoteMenuWidth); // actual width
   const [isResizing, setIsResizing] = React.useState(false);
@@ -20,12 +25,16 @@ export default function useHorizontalResize({boundingQuerySelector, handleRef, m
       newWidth = maxWidth;
     }
     if (!windowResize) {
-      setEmoteMenuWidth(newWidth);
+      setEmoteMenuWidth(Math.floor(newWidth));
     }
     setDisplayWidth(newWidth);
   }
 
   React.useEffect(() => {
+    if (!open) {
+      setIsResizing(false);
+    }
+
     const currentRef = handleRef.current;
     if (currentRef == null) {
       return;
@@ -53,10 +62,10 @@ export default function useHorizontalResize({boundingQuerySelector, handleRef, m
     // eslint-disable-next-line consistent-return
     return () => {
       currentRef.removeEventListener('mousedown', handleResizeStart);
-      document.addEventListener('mouseup', handleResizeEnd);
+      document.removeEventListener('mouseup', handleResizeEnd);
       window.removeEventListener('resize', handleWindowResize);
     };
-  }, [handleRef, emoteMenuWidth]);
+  }, [handleRef, emoteMenuWidth, open]);
 
   React.useEffect(() => {
     function handleResizeMove(e) {

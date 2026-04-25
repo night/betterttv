@@ -4,6 +4,7 @@
   border-right: 1px solid var(--mantine-color-default-border);
   background-color: var(--mantine-color-body);
   overflow: hidden;
+  z-index: 1;
 }
 
 .navigationIconButton,

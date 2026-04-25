@@ -1,16 +1,19 @@
 import classNames from 'classnames';
-import React from 'react';
+import React, {useCallback} from 'react';
 import Emote from '../../../common/components/Emote.jsx';
 import styles from './EmoteButton.module.css';
 
-export default function EmoteButton({emote, onClick, onMouseOver, active}) {
+function EmoteButton({emote, onClick, onMouseOver, active}) {
   const locked = emote.metadata?.isLocked?.() ?? false;
+  const handleMouseOver = useCallback(() => onMouseOver(emote), [onMouseOver, emote]);
+  const handleFocus = useCallback(() => onMouseOver(emote), [onMouseOver, emote]);
+  const handleClick = useCallback(() => onClick(emote), [onClick, emote]);
 
   return (
     <button
-      onClick={() => onClick(emote)}
-      onMouseOver={() => onMouseOver(emote)}
-      onFocus={() => onMouseOver(emote)}
+      onClick={handleClick}
+      onMouseOver={handleMouseOver}
+      onFocus={handleFocus}
       type="button"
       disabled={locked}
       className={classNames(styles.emote, active ? styles.active : null)}>
@@ -18,3 +21,5 @@ export default function EmoteButton({emote, onClick, onMouseOver, active}) {
     </button>
   );
 }
+
+export default EmoteButton;

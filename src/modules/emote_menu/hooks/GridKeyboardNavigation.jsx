@@ -1,5 +1,4 @@
 import {useCallback} from 'react';
-import {NavigationModeTypes} from '../../../constants.js';
 import keyCodes from '../../../utils/keycodes.js';
 
 function travelUp(rowColumnCounts, {x, y}, maxColumnCount, numBlocks = 1) {
@@ -121,13 +120,7 @@ function travelHome(rowColumnCounts, {x, y}, maxColumnCount) {
   };
 }
 
-export default function useGridKeyboardNavigation({
-  coords,
-  setCoords,
-  rowColumnCounts,
-  setNavigationMode,
-  maxColumnCount,
-}) {
+export default function useGridKeyboardNavigation({coords, setCoords, rowColumnCounts, maxColumnCount}) {
   const handleKeyPress = useCallback(
     (event, shift) => {
       let newCoords = null;
@@ -166,8 +159,6 @@ export default function useGridKeyboardNavigation({
         default:
           return;
       }
-
-      setNavigationMode(NavigationModeTypes.ARROW_KEYS);
 
       setCoords(newCoords);
     },
