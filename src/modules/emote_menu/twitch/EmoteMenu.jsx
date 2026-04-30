@@ -1,5 +1,5 @@
 import React from 'react';
-import {EmoteMenuTypes, SettingIds} from '../../../constants.js';
+import {EmoteMenuTypes, SettingIds, ShadowDOMComponentIds} from '../../../constants.js';
 import domObserver from '../../../observers/dom.js';
 import settings from '../../../settings.js';
 import twitch from '../../../utils/twitch.js';
@@ -11,7 +11,6 @@ import shadowDOM from '../../shadow_dom/index.js';
 
 const CHAT_TEXT_AREA = '.chat-input__textarea, textarea[data-a-target="chat-input"], div[data-a-target="chat-input"]';
 const CHAT_INPUT = '.chat-input';
-const EMOTE_MENU_COMPONENT_ID = 'emote-menu-component';
 
 // For legacy button
 const LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID = 'bttv-legacy-emote-picker-button-container';
@@ -146,16 +145,16 @@ function loadButton() {
 }
 
 function unloadEmoteMenu() {
-  shadowDOM.unmount(EMOTE_MENU_COMPONENT_ID);
+  shadowDOM.unmount(ShadowDOMComponentIds.EMOTE_MENU);
 }
 
 function loadEmoteMenu(onMount, onError) {
-  if (shadowDOM.isMounted(EMOTE_MENU_COMPONENT_ID)) {
+  if (shadowDOM.isMounted(ShadowDOMComponentIds.EMOTE_MENU)) {
     onMount();
   }
 
   shadowDOM.mount(
-    EMOTE_MENU_COMPONENT_ID,
+    ShadowDOMComponentIds.EMOTE_MENU,
     <SafeEmoteMenu
       onError={onError}
       onMount={onMount}

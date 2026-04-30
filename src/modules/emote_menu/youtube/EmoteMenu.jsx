@@ -1,5 +1,5 @@
 import React from 'react';
-import {EmoteMenuTypes, EmoteProviders, SettingIds} from '../../../constants.js';
+import {EmoteMenuTypes, EmoteProviders, SettingIds, ShadowDOMComponentIds} from '../../../constants.js';
 import domObserver from '../../../observers/dom.js';
 import settings from '../../../settings.js';
 import {getCurrentUser} from '../../../utils/user.js';
@@ -16,7 +16,6 @@ const BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID = 'bttv-emote-picker-button-containe
 const EMOTE_MENU_TOGGLE_BUTTON_SELECTOR = `#${BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID}`;
 const CHAT_BUTTON_CONTAINER_SELECTOR = '#picker-buttons';
 const NATIVE_EMOTE_MENU_BUTTON_CONTAINER_SELECTOR = '#emoji-picker-button';
-const EMOTE_MENU_COMPONENT_ID = 'emote-menu-component-youtube';
 
 let handleOpen;
 function setHandleOpen(newHandleOpen) {
@@ -81,16 +80,16 @@ function appendToChat(emote, shouldFocus = true) {
 }
 
 function unloadEmoteMenu() {
-  shadowDOM.unmount(EMOTE_MENU_COMPONENT_ID);
+  shadowDOM.unmount(ShadowDOMComponentIds.EMOTE_MENU);
 }
 
 function loadEmoteMenu(onMount, onError) {
-  if (shadowDOM.isMounted(EMOTE_MENU_COMPONENT_ID)) {
+  if (shadowDOM.isMounted(ShadowDOMComponentIds.EMOTE_MENU)) {
     onMount();
   }
 
   shadowDOM.mount(
-    EMOTE_MENU_COMPONENT_ID,
+    ShadowDOMComponentIds.EMOTE_MENU,
     <SafeEmoteMenu
       onError={onError}
       onMount={onMount}
