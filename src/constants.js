@@ -333,6 +333,7 @@ export const BadgeTypes = {
 export const ShadowDOMComponentIds = {
   SETTINGS_MENU: 'settings-menu',
   EMOTE_AUTOCOMPLETE: 'emote-autocomplete',
+  EMOTE_MENU: 'emote-menu',
 };
 
 export const DEFAULT_HIGHLIGHT_COLOR = '#ff0000';
