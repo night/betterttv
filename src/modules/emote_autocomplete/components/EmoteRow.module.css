@@ -1,49 +1,4 @@
-.emoteRow {
-  all: unset;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  transition: none;
-  gap: 12px;
-  padding: 8px 12px;
-  border-radius: var(--mantine-radius-md);
-}
-
-.emoteContainer {
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.selected {
-  color: var(--mantine-primary-color-filled);
-  background-color: var(--mantine-primary-color-light-hover);
-}
-
-.selected .categoryName {
-  color: var(--mantine-primary-color-filled) !important;
-}
-
-.active,
-.emoteRow:active {
-  background-color: var(--mantine-primary-color-light-active);
-  transition-property: background-color, color;
-  transition-duration: 0.1s;
-  transition-timing-function: ease-in-out;
-}
-
 .emote {
   width: 24px;
   height: 24px;
-}
-
-.emoteCode {
-  font-weight: 600;
-  flex: 1;
-}
-
-@media (max-width: 400px) {
-  .categoryName {
-    display: none;
-  }
 }

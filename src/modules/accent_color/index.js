@@ -1,5 +1,5 @@
 import {darken, lighten, parseThemeColor} from '@mantine/core';
-import {PlatformTypes, SettingIds} from '../../constants.js';
+import {DEFAULT_PRIMARY_COLOR, PlatformTypes, SettingIds} from '../../constants.js';
 import settings from '../../settings.js';
 import useAuthStore from '../../stores/auth.js';
 import {variablesToCSS} from '../../utils/css.js';
@@ -22,9 +22,7 @@ class AccentColor {
   }
 
   load() {
-    const {user: currentUser} = useAuthStore.getState();
-    const value = getProSettingValue(currentUser, SettingIds.PRIMARY_COLOR);
-
+    const value = getProSettingValue(SettingIds.PRIMARY_COLOR, DEFAULT_PRIMARY_COLOR);
     const cssVariablesStyle = document.getElementById(CSS_VARIABLES_STYLE_ID);
 
     if (value == null) {

@@ -1,4 +1,4 @@
-import React, {useEffect, useLayoutEffect, useState, useCallback, useRef} from 'react';
+import React, {useEffect, useState, useCallback, useRef} from 'react';
 import keyCodes from '../../utils/keycodes.js';
 import styles from './Autocomplete.module.css';
 import {useDisclosure} from '@mantine/hooks';
@@ -12,7 +12,7 @@ import {faArrowDown, faArrowTurnDown, faArrowUp} from '@fortawesome/free-solid-s
 import {Kbd, Text} from '@mantine/core';
 import scrollbarStyles from '../styles/Scrollbar.module.css';
 
-const MAX_ITEMS_SHOWN = 50;
+const MAX_ITEMS_SHOWN = 12;
 const MAX_WIDTH = 540;
 
 const NavigationModeTypes = {
@@ -49,8 +49,9 @@ function Autocomplete({
   getItemKey,
   fullWidthOnSmallScreens = true,
   offset = 24,
+  showKeyboardNavigationTips = true,
 }) {
-  const navigationMode = useRef(NavigationModeTypes.MOUSE);
+  const navigationMode = useRef(NavigationModeTypes.ARROW_KEYS);
   const [partialInput, setPartialInput] = useState('');
   const [items, setItems] = useState([]);
   const [selected, setSelected] = useState(0);
@@ -60,33 +61,62 @@ function Autocomplete({
   const chatInputElement = useDomObserver(chatInputQuerySelector);
   const itemsBodyRef = useRef(null);
   const pendingComplete = useRef(null);
+  const lastValueRef = useRef(null);
   const [pendingCompleteIndex, setPendingCompleteIndex] = useState(null);
 
-  const handleOpenChange = useCallback(() => {
-    itemsRef.current.length > 0 ? open() : close();
-  }, [open, close]);
-
-  const handleSelectedChange = useCallback((newSelected) => {
-    setSelected(newSelected);
-    selectedRef.current = newSelected;
+  const handleMouseMove = useCallback(() => {
+    navigationMode.current = NavigationModeTypes.MOUSE;
   }, []);
 
-  const updateItems = useCallback(() => {
-    const value = getChatInputPartialInput();
+  const handleSelectedChange = useCallback((newSelected, forceScroll = false) => {
+    setSelected(newSelected);
 
-    if (value == null) {
-      setItems([]);
-      itemsRef.current = [];
-    } else {
-      const items = computeItems(value).slice(0, MAX_ITEMS_SHOWN);
-      setItems(items);
-      itemsRef.current = items;
+    selectedRef.current = newSelected;
+
+    if (navigationMode.current === NavigationModeTypes.MOUSE && !forceScroll) {
+      return;
     }
 
+    if (itemsBodyRef.current == null || itemsRef.current.length === 0) {
+      return;
+    }
+
+    const row = itemsBodyRef.current.children[newSelected];
+    if (row == null) {
+      return;
+    }
+
+    if (row instanceof HTMLElement) {
+      row.scrollIntoView({block: 'nearest', inline: 'nearest'});
+    }
+  }, []);
+
+  const handleOpen = useCallback(() => {
+    open();
+    navigationMode.current = NavigationModeTypes.ARROW_KEYS;
+  }, [open]);
+
+  const updateAutocompleteSuggestions = useCallback(() => {
+    const value = getChatInputPartialInput();
+
+    if (value === lastValueRef.current) {
+      return;
+    }
+
+    lastValueRef.current = value;
+
+    if (value == null) {
+      itemsRef.current = [];
+    } else {
+      itemsRef.current = computeItems(value).slice(0, MAX_ITEMS_SHOWN);
+    }
+
+    setItems(itemsRef.current);
     setPartialInput(value ?? '');
-    handleOpenChange();
-    handleSelectedChange(0);
-  }, [getChatInputPartialInput, computeItems]);
+    handleSelectedChange(0, true);
+
+    itemsRef.current.length > 0 ? handleOpen() : close();
+  }, [getChatInputPartialInput, computeItems, handleOpen]);
 
   const {refs, floatingStyles, context} = useFloating({
     strategy: 'fixed',
@@ -116,19 +146,6 @@ function Autocomplete({
   const dismiss = useDismiss(context);
   const {getFloatingProps} = useInteractions([dismiss]);
 
-  useEffect(() => {
-    if (!opened) {
-      return;
-    }
-
-    function handleMouseMove() {
-      navigationMode.current = NavigationModeTypes.MOUSE;
-    }
-
-    document.addEventListener('mousemove', handleMouseMove);
-    return () => document.removeEventListener('mousemove', handleMouseMove);
-  }, [chatInputElement, opened]);
-
   const handleComplete = useCallback(
     (item) => {
       onComplete(item);
@@ -143,6 +160,8 @@ function Autocomplete({
     }
 
     function keyupCallback() {
+      updateAutocompleteSuggestions();
+
       if (!pendingComplete.current) {
         return;
       }
@@ -177,10 +196,12 @@ function Autocomplete({
           break;
         case keyCodes.ArrowUp:
           event.preventDefault();
+          event.stopPropagation();
           handleSelectedChange(travelUp(selectedRef.current, itemsRef.current.length));
           break;
         case keyCodes.ArrowDown:
           event.preventDefault();
+          event.stopPropagation();
           handleSelectedChange(travelDown(selectedRef.current, itemsRef.current.length));
           break;
         default:
@@ -192,39 +213,19 @@ function Autocomplete({
 
     chatInputElement.addEventListener('keyup', keyupCallback, true);
     chatInputElement.addEventListener('keydown', keydownCallback, true);
-    chatInputElement.addEventListener('input', updateItems, true);
 
     return () => {
       chatInputElement.removeEventListener('keydown', keydownCallback, true);
       chatInputElement.removeEventListener('keyup', keyupCallback, true);
-      chatInputElement.removeEventListener('input', updateItems, true);
     };
-  }, [chatInputElement, updateItems, opened, refs]);
-
-  useLayoutEffect(() => {
-    if (navigationMode.current === NavigationModeTypes.MOUSE) {
-      return;
-    }
-
-    if (itemsBodyRef.current == null || itemsRef.current.length === 0) {
-      return;
-    }
-
-    const row = itemsBodyRef.current.children[selected];
-    if (row == null) {
-      return;
-    }
-
-    if (row instanceof HTMLElement) {
-      row.scrollIntoView({block: 'nearest', inline: 'nearest'});
-    }
-  }, [selected]);
+  }, [chatInputElement, updateAutocompleteSuggestions, opened, refs]);
 
   return (
     <div
       ref={refs.setFloating}
       style={floatingStyles}
       className={classNames(styles.autocomplete, {[styles.autocompleteHidden]: !opened})}
+      onMouseMove={handleMouseMove}
       {...getFloatingProps()}>
       <div className={styles.autocompleteHeader}>
         <Text truncate>
@@ -257,19 +258,21 @@ function Autocomplete({
           </React.Fragment>
         ))}
       </div>
-      <div className={styles.autocompleteFooter}>
-        <Kbd className={styles.kbd}>
-          <Icon icon={faArrowUp} className={styles.kbdIcon} />
-        </Kbd>
-        <Kbd className={styles.kbd}>
-          <Icon icon={faArrowDown} className={styles.kbdIcon} />
-        </Kbd>
-        <Text>{formatMessage({defaultMessage: 'Navigate'})}</Text>
-        <Kbd className={classNames(styles.kbd, styles.floatRight)}>
-          <Icon icon={faArrowTurnDown} className={classNames(styles.kbdIcon, styles.kbdIconTurn)} />
-        </Kbd>
-        <Text>{formatMessage({defaultMessage: 'Select'})}</Text>
-      </div>
+      {showKeyboardNavigationTips ? (
+        <div className={styles.autocompleteFooter}>
+          <Kbd className={styles.kbd}>
+            <Icon icon={faArrowUp} className={styles.kbdIcon} />
+          </Kbd>
+          <Kbd className={styles.kbd}>
+            <Icon icon={faArrowDown} className={styles.kbdIcon} />
+          </Kbd>
+          <Text>{formatMessage({defaultMessage: 'Navigate'})}</Text>
+          <Kbd className={classNames(styles.kbd, styles.floatRight)}>
+            <Icon icon={faArrowTurnDown} className={classNames(styles.kbdIcon, styles.kbdIconTurn)} />
+          </Kbd>
+          <Text>{formatMessage({defaultMessage: 'Select'})}</Text>
+        </div>
+      ) : null}
     </div>
   );
 }

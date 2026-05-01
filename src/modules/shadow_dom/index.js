@@ -59,13 +59,7 @@ class ShadowDOM {
   }
 
   injectMantineVariables() {
-    const {user: currentUser} = useAuthStore.getState();
-    let primaryColor = getProSettingValue(currentUser, SettingIds.PRIMARY_COLOR);
-
-    if (primaryColor == null) {
-      primaryColor = DEFAULT_PRIMARY_COLOR;
-    }
-
+    const primaryColor = getProSettingValue(SettingIds.PRIMARY_COLOR, DEFAULT_PRIMARY_COLOR) ?? DEFAULT_PRIMARY_COLOR;
     const {variables, dark, light} = mantineVariablesResolver(theme, primaryColor);
 
     const baseCssVariables = variablesToCSS(`.${SCOPE_CLASS}`, {...variables, ...light});

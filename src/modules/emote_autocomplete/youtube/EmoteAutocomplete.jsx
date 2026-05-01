@@ -4,7 +4,7 @@ import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js'
 import {EmoteProviders, SettingIds, ShadowDOMComponentIds} from '../../../constants.js';
 import domObserver from '../../../observers/dom.js';
 import settings from '../../../settings.js';
-import {createYoutubeEmojiNode} from '../../../utils/youtube.js';
+import {createYoutubeEmojiNode, findFocusedWord} from '../../../utils/youtube.js';
 import shadowDom from '../../shadow_dom/index.js';
 import EmoteRow from '../components/EmoteRow.jsx';
 import styles from './EmoteAutocomplete.module.css';
@@ -13,18 +13,6 @@ const CHAT_TEXT_AREA = '#input-container';
 
 let removeDirtyListener = null;
 
-function findFocusedWord(value, selectionStart = 0) {
-  const subString = value.substring(0, selectionStart);
-  const focusedWords = subString.split(/\s+/);
-  const focusedWord = focusedWords[focusedWords.length - 1];
-
-  return {
-    value: focusedWord,
-    start: subString.length - focusedWord.length,
-    end: selectionStart,
-  };
-}
-
 function getChatInputPartialEmote() {
   const {anchorNode, anchorOffset} = document.getSelection();
   if (anchorNode?.nodeType !== Node.TEXT_NODE) {
@@ -32,7 +20,7 @@ function getChatInputPartialEmote() {
   }
 
   const {value} = findFocusedWord(anchorNode.data, anchorOffset);
-  if (value == null || !/^(:(.*[a-zA-Z0-9]){2,})/.test(value) || value.endsWith(':')) {
+  if (value == null || !/^(:(.*[a-zA-Z0-9]){1,})/.test(value) || value.endsWith(':')) {
     return null;
   }
 
