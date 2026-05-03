@@ -3,8 +3,7 @@ import {persist, subscribeWithSelector} from 'zustand/middleware';
 import {getCurrentUser} from '../utils/user.js';
 import {getProvider} from '../utils/window.js';
 
-const STORAGE_ID = 'credentials';
-const PREFIX = 'bttvPrivate_';
+const STORAGE_ID = 'bttvPrivate_credentials';
 
 function credentialsEqual(a, b) {
   return JSON.stringify(a) === JSON.stringify(b);
@@ -94,7 +93,7 @@ window.addEventListener('storage', (event) => {
     return;
   }
 
-  if (event.key !== `${PREFIX}${STORAGE_ID}`) {
+  if (event.key !== STORAGE_ID) {
     return;
   }
 

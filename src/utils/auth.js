@@ -31,6 +31,18 @@ export async function refreshAndSetCredentials() {
     return newCredentials;
   })();
 
+  inFlightRefresh = inFlightRefresh.catch((error) => {
+    if (!(error instanceof HTTPError)) {
+      throw error;
+    }
+
+    if (error.status === 400 || error.status === 401) {
+      setCredentials(null);
+    }
+
+    throw error;
+  });
+
   return inFlightRefresh.finally(() => (inFlightRefresh = null));
 }
 

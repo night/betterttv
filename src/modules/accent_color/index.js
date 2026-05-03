@@ -22,7 +22,7 @@ class AccentColor {
   }
 
   load() {
-    const value = getProSettingValue(SettingIds.PRIMARY_COLOR, DEFAULT_PRIMARY_COLOR);
+    const value = getProSettingValue(SettingIds.PRIMARY_COLOR, null);
     const cssVariablesStyle = document.getElementById(CSS_VARIABLES_STYLE_ID);
 
     if (value == null) {

@@ -1,5 +1,5 @@
 import {API_ENDPOINT as API_ENDPOINT_CONSTANT, API_VERSION as API_VERSION_CONSTANT} from '../constants.js';
-import {getCredentials} from '../stores/auth.js';
+import {getCredentials, setCredentials} from '../stores/auth.js';
 import {refreshAndSetCredentials} from './auth.js';
 import HTTPError from './http-error.js';
 
