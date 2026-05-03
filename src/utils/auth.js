@@ -1,4 +1,5 @@
 import {getCredentials, setCredentials} from '../stores/auth.js';
+import HTTPError from './http-error.js';
 import {exchangeCodeForCredentials, executeOAuth2AuthorizationFlow, refreshAccessToken} from './oauth.js';
 
 let inFlightRefresh = null;
