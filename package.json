@@ -61,7 +61,7 @@
     "fuse.js": "7.3.0",
     "git-rev-sync": "3.0.2",
     "glob": "13.0.6",
-    "got": "14.6.6",
+    "got": "15.0.4",
     "graphql-tag": "2.12.6",
     "json-loader": "0.5.7",
     "lodash.chunk": "4.2.0",
