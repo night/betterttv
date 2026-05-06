@@ -27,11 +27,11 @@ function deserializeEmoteFromURL(url) {
     return null;
   }
   try {
-    const [emoteProvider, emoteId, emoteCode] = decodeURIComponent(atob(emoteData)).split('-');
+    const parts = decodeURIComponent(atob(emoteData)).split('-');
     return {
-      provider: emoteProvider,
-      id: emoteId,
-      code: emoteCode,
+      provider: parts[0],
+      id: parts[1],
+      code: parts.slice(2).join('-'),
     };
   } catch (_) {
     return null;
