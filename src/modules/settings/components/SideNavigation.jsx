@@ -106,7 +106,8 @@ function SideNavigation({open, setOpen}) {
           active={
             page === PageTypes.SETTINGS ||
             page === PageTypes.HIGHLIGHT_KEYWORDS ||
-            page === PageTypes.BLACKLIST_KEYWORDS
+            page === PageTypes.BLACKLIST_KEYWORDS ||
+            page === PageTypes.EMOTE_ALIASES
           }
           value={PageTypes.SETTINGS}
           setPage={setPage}

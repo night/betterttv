@@ -147,11 +147,28 @@ class ChatTabcompletionModule {
     }
   };
 
+  getAliasMatches(prefix) {
+    const aliases = settings.get(SettingIds.EMOTE_ALIASES);
+    if (aliases == null) return [];
+
+    const seen = new Set();
+    const matches = [];
+    for (const {alias, targetCode} of Object.values(aliases)) {
+      if (alias && targetCode && normalizedStartsWith(alias, prefix) && !seen.has(targetCode)) {
+        seen.add(targetCode);
+        matches.push(targetCode);
+      }
+    }
+    return matches;
+  }
+
   getSuggestions(prefix, includeUsers = true, includeEmotes = true) {
     let userList = [];
     let emoteList = [];
 
     prefix = prefix.toLowerCase();
+
+    const aliasList = includeEmotes ? this.getAliasMatches(prefix) : [];
 
     if (includeEmotes) {
       const emoteSet = new Set();
@@ -173,9 +190,9 @@ class ChatTabcompletionModule {
     }
 
     if (settings.get(SettingIds.TAB_COMPLETION_EMOTE_PRIORITY) === true) {
-      return [...emoteList, ...userList];
+      return [...aliasList, ...emoteList, ...userList];
     }
-    return [...userList, ...emoteList];
+    return [...aliasList, ...userList, ...emoteList];
   }
 
   getTwitchEmotes() {
