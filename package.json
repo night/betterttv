@@ -37,7 +37,7 @@
     "@mantine/modals": "^8.3.16",
     "@sentry/browser": "10.51.0",
     "@sentry/webpack-plugin": "5.2.1",
-    "autoprefixer": "10.4.27",
+    "autoprefixer": "10.5.0",
     "babel-loader": "10.1.1",
     "babel-plugin-formatjs": "11.3.6",
     "babel-plugin-wildcard": "7.0.0",
