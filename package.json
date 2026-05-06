@@ -93,7 +93,7 @@
     "webpack-cli": "7.0.2",
     "webpack-dev-server": "5.2.3",
     "webpack-virtual-modules": "0.6.2",
-    "zustand": "^5.0.12"
+    "zustand": "^5.0.13"
   },
   "browserslist": [
     "last 1 version",
