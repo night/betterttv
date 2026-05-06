@@ -106,5 +106,10 @@
     "@eslint/js": "9.39.2",
     "globals": "17.6.0",
     "postcss-prefixwrap": "^1.58.0"
+  },
+  "overrides": {
+    "postcss-url": {
+      "minimatch": "^3.1.5"
+    }
   }
 }
