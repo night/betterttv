@@ -71,7 +71,7 @@
     "lodash.throttle": "4.1.1",
     "lodash.uniqby": "4.7.0",
     "luxon": "3.7.2",
-    "mini-css-extract-plugin": "2.10.1",
+    "mini-css-extract-plugin": "2.10.2",
     "normalize-path": "3.0.0",
     "pkce-challenge": "^5.0.1",
     "postcss": "8.5.10",
