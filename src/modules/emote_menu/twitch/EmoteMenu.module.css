@@ -58,3 +58,7 @@
 .hideEmoteMenuButtonContainer button[data-a-target='emote-picker-button'] {
   display: none;
 }
+
+.hideShieldModeButton button:has(svg path[d^='M19.004 4.867']) {
+  display: none;
+}

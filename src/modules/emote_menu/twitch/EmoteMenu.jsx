@@ -60,6 +60,10 @@ function unloadLegacyButton(legacyContainer) {
   if (legacyContainer === undefined) {
     legacyContainer = document.getElementById(LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID);
   }
+  const chatInput = document.querySelector(CHAT_INPUT);
+  if (chatInput != null) {
+    chatInput.classList.remove(styles.hideShieldModeButton);
+  }
   if (legacyContainer != null) {
     legacyContainer.remove();
   }
@@ -74,6 +78,11 @@ function loadLegacyButton() {
   const container = document.querySelector(CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR);
   if (container == null) {
     return;
+  }
+
+  const chatInput = document.querySelector(CHAT_INPUT);
+  if (chatInput != null) {
+    chatInput.classList.add(styles.hideShieldModeButton);
   }
 
   const rightContainer = container.lastChild;
