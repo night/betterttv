@@ -73,7 +73,7 @@
     "luxon": "3.7.2",
     "mini-css-extract-plugin": "2.10.2",
     "normalize-path": "3.0.0",
-    "pkce-challenge": "^5.0.1",
+    "pkce-challenge": "^6.0.0",
     "postcss": "8.5.14",
     "postcss-hexrgba": "2.1.0",
     "postcss-loader": "8.2.1",
