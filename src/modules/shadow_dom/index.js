@@ -75,6 +75,10 @@ class ShadowDOM {
   }
 
   addStyleSheet(url) {
+    if (url == null) {
+      return;
+    }
+
     const css = document.createElement('link');
     css.setAttribute('href', url);
     css.setAttribute('type', 'text/css');
