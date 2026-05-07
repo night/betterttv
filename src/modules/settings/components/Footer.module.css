@@ -1,11 +1,11 @@
 .root {
-  margin-top: auto;
+  margin: 0 -20px -20px -20px;
 }
 
 .columns {
   display: flex;
   width: 100%;
-  padding: 24px 16px 24px 24px;
+  padding: 24px;
   border-top: 1px solid var(--mantine-color-default-border);
   background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8));
 }
@@ -29,7 +29,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24px 16px 24px 24px;
+  padding: 24px;
   border-top: 1px solid var(--mantine-color-default-border);
   background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8));
 }

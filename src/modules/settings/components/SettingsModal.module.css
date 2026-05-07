@@ -36,8 +36,11 @@
   position: relative;
   flex: 1;
   overflow-y: scroll;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
+  padding: 20px;
+  gap: 20px;
 }
 
 .headerLeftContent {

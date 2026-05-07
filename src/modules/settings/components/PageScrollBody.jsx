@@ -1,16 +1,16 @@
 import React, {useContext} from 'react';
 import classNames from 'classnames';
 import styles from './SettingsModal.module.css';
-import scrollbarStyles from '../../../common/styles/Scrollbar.module.css';
+import Scrollbar from '../../../common/components/Scrollbar.jsx';
 
 export const PageScrollContext = React.createContext(null);
 
 export function PageScrollBody({children, className, ...props}) {
   const ref = useContext(PageScrollContext);
   return (
-    <div ref={ref} className={classNames(styles.pageScrollBody, scrollbarStyles.scroll, className)} {...props}>
+    <Scrollbar ref={ref} mirrorPadding className={classNames(styles.pageScrollBody, className)} {...props}>
       {children}
-    </div>
+    </Scrollbar>
   );
 }
 

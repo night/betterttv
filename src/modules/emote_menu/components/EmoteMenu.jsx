@@ -12,6 +12,7 @@ import {useDisclosure, useFocusTrap} from '@mantine/hooks';
 import {autoUpdate, offset, useDismiss, useFloating, useInteractions} from '@floating-ui/react';
 import {isMac} from '../../../utils/window.js';
 import useEmoteMenuViewStoreUpdated from '../../../common/hooks/EmoteMenuViewStore.jsx';
+import {ScrollbarSizeTargetContext} from '../../../common/components/Scrollbar.jsx';
 import {
   getCoordsOfSelected,
   getFirstCoords,
@@ -41,6 +42,7 @@ function EmoteMenu({
   emoteMenuToggleButtonSelector,
 }) {
   const handleRef = useRef(null);
+  const emoteMenuContentRef = useRef(null);
   const [selected, setSelected] = useState(null);
   const altPressed = useRef(false);
   const shiftPressed = useRef(false);
@@ -299,38 +301,40 @@ function EmoteMenu({
       onKeyDown={handleKeyDown}
       onKeyUp={handleKeyEvent}
       {...restProps}>
-      <div className={styles.emoteMenuContent}>
-        <div ref={handleRef} className={styles.resizeHandle} />
-        <Header
-          focusRef={focusRef}
-          opened={opened}
-          className={styles.header}
-          value={emoteListData.search}
-          onChange={handleSearchChange}
-          toggleWhisper={toggle}
-          selected={selected}
-        />
-        <Sidebar
-          className={styles.sidebar}
-          section={section}
-          onClick={handleSection}
-          categories={emoteListData.categories}
-        />
-        <EmoteList
-          data={emoteListData}
-          ref={emoteListRef}
-          selected={selected}
-          className={styles.emotes}
-          section={section}
-          onClick={handleClick}
-          setKeyPressCallback={setKeyPressCallback}
-          onSection={onSection}
-          navigationMode={navigationMode}
-          setNavigationMode={setNavigationMode}
-          coords={emoteListCoords}
-          setCoords={handleCoordsChange}
-        />
-      </div>
+      <ScrollbarSizeTargetContext.Provider value={emoteMenuContentRef}>
+        <div ref={emoteMenuContentRef} className={styles.emoteMenuContent}>
+          <div ref={handleRef} className={styles.resizeHandle} />
+          <Header
+            focusRef={focusRef}
+            opened={opened}
+            className={styles.header}
+            value={emoteListData.search}
+            onChange={handleSearchChange}
+            toggleWhisper={toggle}
+            selected={selected}
+          />
+          <Sidebar
+            className={styles.sidebar}
+            section={section}
+            onClick={handleSection}
+            categories={emoteListData.categories}
+          />
+          <EmoteList
+            data={emoteListData}
+            ref={emoteListRef}
+            selected={selected}
+            className={styles.emotes}
+            section={section}
+            onClick={handleClick}
+            setKeyPressCallback={setKeyPressCallback}
+            onSection={onSection}
+            navigationMode={navigationMode}
+            setNavigationMode={setNavigationMode}
+            coords={emoteListCoords}
+            setCoords={handleCoordsChange}
+          />
+        </div>
+      </ScrollbarSizeTargetContext.Provider>
       {opened ? <Tip className={styles.tip} onClose={handleClose} /> : null}
     </div>
   );

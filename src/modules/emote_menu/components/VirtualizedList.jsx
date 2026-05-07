@@ -3,6 +3,7 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import styles from './VirtualizedList.module.css';
 import throttle from 'lodash.throttle';
 import {useElementSize, useMergedRef} from '@mantine/hooks';
+import {useScrollbarSize} from '../../../common/components/Scrollbar.jsx';
 
 function VirtualizedList(
   {
@@ -23,6 +24,7 @@ function VirtualizedList(
   const {ref: sizeRef, height: windowHeight} = useElementSize(null);
   const mergedRef = useMergedRef(forwardedRef, sizeRef, wrapperRef);
   const headerIndex = useRef(null);
+  useScrollbarSize(wrapperRef);
 
   const listHeight = useMemo(
     () => Math.max(rowHeight * totalRows + topGuardHeight + bottomGuardHeight, windowHeight),

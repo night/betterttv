@@ -1,11 +1,10 @@
 .header {
   --vertical-padding: 10px;
-  --horizontal-padding: 20px;
+  --horizontal-padding: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--vertical-padding) calc(var(--horizontal-padding) - 10px) var(--vertical-padding)
-    var(--horizontal-padding);
+  padding: var(--vertical-padding) 12px var(--vertical-padding) 20px;
   background-color: var(--mantine-color-body-secondary);
   border-bottom: 1px solid var(--mantine-color-default-border);
   z-index: 10;

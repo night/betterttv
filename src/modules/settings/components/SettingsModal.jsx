@@ -8,6 +8,7 @@ import styles from './SettingsModal.module.css';
 import {ActionIcon, Modal, TextInput, Title} from '@mantine/core';
 import {useDisclosure, useFocusTrap, useViewportSize} from '@mantine/hooks';
 import {PageScrollContext} from './PageScrollBody.jsx';
+import {ScrollbarSizeTargetContext} from '../../../common/components/Scrollbar.jsx';
 import HighlightKeywords from '../pages/HighlightKeywords.jsx';
 import SideNavigation from './SideNavigation.jsx';
 import PageHeader from './PageHeader.jsx';
@@ -114,6 +115,7 @@ function SettingsModal({setHandleOpen}) {
   const pendingScrollToSettingPanelId = useRef(null);
   const [pageTransitionDirection, setPageTransitionDirection] = useState(PageTransitionDirection.RIGHT);
   const pageContentRef = useRef(null);
+  const pageColumnRef = useRef(null);
   const lastParentData = useRef({scrollTop: 0, page: null});
   const inputRef = useFocusTrap(isInteractive && page === PageTypes.SETTINGS);
 
@@ -279,28 +281,30 @@ function SettingsModal({setHandleOpen}) {
       <PageContext.Provider
         value={{page, setPage: handlePageChange, sidenavOpen, setSidenavOpen, handleGotoSettingPanel}}>
         <SideNavigation open={sidenavOpen} setOpen={setSidenavOpen} />
-        <div className={styles.pageColumn}>
-          <PageHeader
-            leftContent={
-              <AnimatePresence initial={false} custom={pageTransitionDirection} mode="wait">
-                <HeaderTransition key={page} className={styles.headerLeftContent}>
-                  {leftContent}
-                </HeaderTransition>
-              </AnimatePresence>
-            }
-            onClose={modalHandlers.close}
-          />
-          <AnimatePresence initial={false} custom={pageTransitionDirection} mode="wait">
-            <PageTransition
-              scrollRef={pageContentRef}
-              key={page}
-              pendingScrollToSettingPanelId={pendingScrollToSettingPanelId}
-              className={styles.pageContent}
-              computeDefaultScrollTop={computeDefaultScrollTop}>
-              <Page page={page} search={search} handleSettingRefCallback={handleSettingRefCallback} />
-            </PageTransition>
-          </AnimatePresence>
-        </div>
+        <ScrollbarSizeTargetContext.Provider value={pageColumnRef}>
+          <div className={styles.pageColumn} ref={pageColumnRef}>
+            <PageHeader
+              leftContent={
+                <AnimatePresence initial={false} custom={pageTransitionDirection} mode="wait">
+                  <HeaderTransition key={page} className={styles.headerLeftContent}>
+                    {leftContent}
+                  </HeaderTransition>
+                </AnimatePresence>
+              }
+              onClose={modalHandlers.close}
+            />
+            <AnimatePresence initial={false} custom={pageTransitionDirection} mode="wait">
+              <PageTransition
+                scrollRef={pageContentRef}
+                key={page}
+                pendingScrollToSettingPanelId={pendingScrollToSettingPanelId}
+                className={styles.pageContent}
+                computeDefaultScrollTop={computeDefaultScrollTop}>
+                <Page page={page} search={search} handleSettingRefCallback={handleSettingRefCallback} />
+              </PageTransition>
+            </AnimatePresence>
+          </div>
+        </ScrollbarSizeTargetContext.Provider>
       </PageContext.Provider>
     </Modal>
   );
