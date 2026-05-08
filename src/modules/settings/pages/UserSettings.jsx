@@ -86,7 +86,7 @@ function ImportSetting({description, disabled, importing, setImporting}) {
   return (
     <SettingWrapper reverse name={formatMessage({defaultMessage: 'Import Settings'})} description={description}>
       <input type="file" hidden ref={fileImportRef} onChange={({target}) => importFile(target)} />
-      <Button onClick={fileImportRef.current?.click} disabled={disabled} loading={importing} size="lg">
+      <Button onClick={() => fileImportRef.current?.click()} disabled={disabled} loading={importing} size="lg">
         {formatMessage({defaultMessage: 'Import'})}
       </Button>
     </SettingWrapper>
