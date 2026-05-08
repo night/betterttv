@@ -3,7 +3,7 @@ import {useShallow} from 'zustand/react/shallow';
 import styles from './SideNavigation.module.css';
 import AnimatedLogo from './AnimatedLogo.jsx';
 import {ActionIcon, Avatar, Button, Overlay, Tooltip, useMantineTheme} from '@mantine/core';
-import {faArrowLeft, faCog, faScroll, faUser} from '@fortawesome/free-solid-svg-icons';
+import {faArrowLeft, faCog, faScroll, faUser, faUserGear} from '@fortawesome/free-solid-svg-icons';
 import {PageTypes} from '../../../constants.js';
 import classNames from 'classnames';
 import formatMessage from '../../../i18n/index.js';
@@ -83,9 +83,17 @@ function UserSettingsNavigationButton({active, ...props}) {
       className={classNames(styles.userSettingsButton)}
       label={currentUser?.displayName ?? formatMessage({defaultMessage: 'User Settings'})}
       {...props}>
-      <Avatar color={activeColor} src={currentUser?.avatar} size="lg" className={styles.avatar}>
-        <Icon icon={faUser} className={styles.avatarFallbackIcon} />
-      </Avatar>
+      {currentUser != null ? (
+        <Avatar
+          color={activeColor}
+          src={currentUser?.avatar}
+          size="lg"
+          className={styles.avatar}
+          classNames={{image: styles.avatarImage}}
+        />
+      ) : (
+        <Icon icon={faUserGear} className={styles.navigationIcon} />
+      )}
     </NavigationButton>
   );
 }

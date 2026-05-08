@@ -19,6 +19,20 @@
 .userSettingsButton {
   height: 56px;
   border: 1px solid var(--button-hover);
+  display: grid;
+  place-items: center;
+}
+
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+}
+
+.avatarImage {
+  width: 32px;
+  height: 32px;
 }
 
 .navigationIcon {
@@ -74,6 +88,10 @@
   transition: opacity 0.2s ease-in-out;
 }
 
+.logoContainer {
+  border-bottom: 1px solid var(--mantine-color-default-border);
+}
+
 @media (max-width: 800px) {
   .sidenavContainer {
     z-index: 1000;
@@ -108,6 +126,7 @@
     align-items: center;
     margin-bottom: 16px;
     height: auto;
+    border-bottom: none;
   }
 
   .closeButton,
@@ -126,6 +145,7 @@
 
   .userSettingsButton {
     height: 56px;
+    place-items: flex-start;
   }
 
   .topNavigationButton {
