@@ -87,7 +87,7 @@ function UserSettingsNavigationButton({active, ...props}) {
         <Avatar
           color={activeColor}
           src={currentUser?.avatar}
-          size="lg"
+          size="md"
           className={styles.avatar}
           classNames={{image: styles.avatarImage}}
         />
