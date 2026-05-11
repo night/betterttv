@@ -35,7 +35,7 @@
     "@fortawesome/free-solid-svg-icons": "7.2.0",
     "@mantine/core": "^9.1.1",
     "@mantine/hooks": "^9.1.1",
-    "@mantine/modals": "^9.1.1",
+    "@mantine/modals": "^9.2.0",
     "@sentry/browser": "10.51.0",
     "@sentry/webpack-plugin": "5.2.1",
     "autoprefixer": "10.5.0",
