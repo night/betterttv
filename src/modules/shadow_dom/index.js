@@ -1,6 +1,5 @@
-import React, {createRef} from 'react';
+import React from 'react';
 import {createRoot} from 'react-dom/client';
-import {PortalContext} from '../../common/contexts/PortalContext.jsx';
 import {DEFAULT_PRIMARY_COLOR, SettingIds} from '../../constants.js';
 import settings from '../../settings.js';
 import useAuthStore from '../../stores/auth.js';
@@ -102,16 +101,12 @@ class ShadowDOM {
 
   update() {
     const components = Object.entries(this.components);
-    const portalRef = createRef(null);
 
     this.root.render(
       <ThemeProvider getRootElement={() => this.mantineRoot} withGlobalClasses={false} withCssVariables={false}>
-        <div ref={portalRef} id="bttv-shadow-dom-portal" />
-        <PortalContext.Provider value={portalRef}>
-          {components.map(([id, component]) => (
-            <React.Fragment key={id}>{component}</React.Fragment>
-          ))}
-        </PortalContext.Provider>
+        {components.map(([id, component]) => (
+          <React.Fragment key={id}>{component}</React.Fragment>
+        ))}
       </ThemeProvider>
     );
   }

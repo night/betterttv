@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, {useMemo, useRef} from 'react';
 import {DEFAULT_PRIMARY_COLOR, SettingIds} from '../../constants.js';
 import {
   ActionIcon,
@@ -32,6 +32,8 @@ import useStorageState from '../../common/hooks/StorageState.jsx';
 import {ModalsProvider} from '@mantine/modals';
 import useProRequiredState from '../../common/hooks/ProRequiredState.jsx';
 import {LoaderIconError, LoaderIconIndicator, LoaderIconSuccess} from '../../common/components/LoaderIcon.jsx';
+import {PortalContext} from '../../common/contexts/PortalContext.jsx';
+import {useMounted} from '@mantine/hooks';
 
 const mantineTheme = createTheme({
   primaryColor: DEFAULT_PRIMARY_COLOR,
@@ -184,6 +186,8 @@ export const theme = mergeMantineTheme(DEFAULT_THEME, mantineTheme);
 function ThemeProvider({children, ...props}) {
   const [dark] = useStorageState(SettingIds.DARKENED_MODE);
   const [primaryColor] = useStorageState(SettingIds.PRIMARY_COLOR);
+  const portalRef = useRef();
+  const isMounted = useMounted();
 
   const [normalizedPrimaryColor] = useProRequiredState({
     value: primaryColor,
@@ -199,15 +203,21 @@ function ThemeProvider({children, ...props}) {
   }, [normalizedPrimaryColor]);
 
   return (
-    <MantineProvider
-      forceColorScheme={dark ? 'dark' : 'light'}
-      classNamesPrefix="bttv-mantine-"
-      theme={modifiedTheme}
-      withCssVariables={false}
-      withGlobalClasses={false}
-      {...props}>
-      <ModalsProvider>{children}</ModalsProvider>
-    </MantineProvider>
+    <PortalContext.Provider value={portalRef}>
+      <MantineProvider
+        forceColorScheme={dark ? 'dark' : 'light'}
+        classNamesPrefix="bttv-mantine-"
+        theme={modifiedTheme}
+        withCssVariables={false}
+        withGlobalClasses={false}
+        {...props}>
+        <div ref={portalRef} id="bttv-shadow-dom-portal" />
+        {/* portalRef.current is not available during the initial render */}
+        {isMounted ? (
+          <ModalsProvider modalProps={{portalProps: {target: portalRef.current}}}>{children}</ModalsProvider>
+        ) : null}
+      </MantineProvider>
+    </PortalContext.Provider>
   );
 }
 
