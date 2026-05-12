@@ -63,7 +63,7 @@ function KeywordRow({id, data, updateHandler, deleteHandler, colorColumn, keywor
             {label: formatMessage({defaultMessage: 'Badge'}), value: KeywordTypes.BADGE},
           ]}
           size="lg"
-          onChange={({target: {value}}) => onUpdate({type: value})}
+          onChange={({target: {value}}) => onUpdate({type: parseInt(value, 10)})}
         />
       </TableTd>
       <TableTd className={styles.keywordDataCell}>
