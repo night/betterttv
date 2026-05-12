@@ -101,7 +101,7 @@
     "> 0.25%, not dead"
   ],
   "devDependencies": {
-    "@eslint/compat": "2.0.5",
+    "@eslint/compat": "2.1.0",
     "@eslint/eslintrc": "3.3.5",
     "@eslint/js": "9.39.2",
     "globals": "17.6.0",
