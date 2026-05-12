@@ -6,11 +6,7 @@
   display: none !important;
 }
 
-.hideStories {
-  :global {
-    div.side-nav div[class*='storiesLeftNavSection'],
-    div.side-nav div:has(> div > button > div[class*='storiesLeftNavSectionCollapsedButton']) {
-      display: none !important;
-    }
-  }
+.hideStories div[class*='storiesLeftNavSection'],
+.hideStories div:has(> div > button > div[class*='storiesLeftNavSectionCollapsedButton']) {
+  display: none !important;
 }
