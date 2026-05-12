@@ -18,6 +18,7 @@ import useCloudBackupSettings from '../../../common/hooks/CloudBackup.jsx';
 import SettingSwitch from '../components/SettingSwitch.jsx';
 import useProRequiredState from '../../../common/hooks/ProRequiredState.jsx';
 import Promotion from '../components/Promotion.jsx';
+import {EXT_VER} from '../../../constants.js';
 
 function loadJSON(string) {
   let json = null;
@@ -45,7 +46,20 @@ function getDataURLFromUpload(input) {
 function BackupSetting({description, disabled}) {
   function backupFile() {
     const rv = storage.getStorage();
-    saveAs(new Blob([JSON.stringify(rv)], {type: 'application/json;charset=utf-8'}), 'bttv_settings.backup');
+    const version = `v${EXT_VER}`;
+    const now = new Date();
+
+    const date = [
+      now.toLocaleDateString('en-US', {month: 'long'}),
+      now.toLocaleDateString('en-US', {day: 'numeric'}),
+      now.toLocaleDateString('en-US', {year: 'numeric'}),
+    ].join(' ');
+
+    const filename = formatMessage({defaultMessage: 'BetterTTV Settings Backup ({version}) {date}'}, {version, date});
+    const filenameWithExtension = `${filename}.json`;
+    const blob = new Blob([JSON.stringify(rv)], {type: 'application/json;charset=utf-8'});
+
+    saveAs(blob, filenameWithExtension);
   }
 
   return (
@@ -59,33 +73,58 @@ function BackupSetting({description, disabled}) {
 
 function ImportSetting({description, disabled, importing, setImporting}) {
   const fileImportRef = useRef(null);
+  const [cloudBackupSettings, setCloudBackupSettings] = useCloudBackupSettings();
 
   async function importFile(target) {
     setImporting(true);
-    const data = loadJSON(await getDataURLFromUpload(target));
-    if (data == null) {
-      setImporting(false);
-      return;
-    }
-    let importLegacy = true;
-    const sanitizedData = {};
-    for (const key of Object.keys(data)) {
-      const nonPrefixedKey = key.split('bttv_')[1];
-      storage.set(nonPrefixedKey, data[key]);
-      sanitizedData[nonPrefixedKey] = data[key];
-      if (nonPrefixedKey === SETTINGS_STORAGE_KEY) {
-        importLegacy = false;
+
+    try {
+      const dataUrl = await getDataURLFromUpload(target);
+      let data = loadJSON(dataUrl);
+
+      if (data == null) {
+        return;
       }
+
+      let importLegacy = true;
+      const sanitizedData = {};
+
+      for (const key of Object.keys(data)) {
+        const nonPrefixedKey = key.split('bttv_')[1];
+        const value = data[key];
+
+        if (nonPrefixedKey === SETTINGS_STORAGE_KEY) {
+          importLegacy = false;
+        }
+
+        storage.set(nonPrefixedKey, value);
+        sanitizedData[nonPrefixedKey] = value;
+      }
+
+      if (importLegacy) {
+        const migratedSettings = loadLegacySettings(sanitizedData);
+        storage.set(SETTINGS_STORAGE_KEY, migratedSettings);
+      }
+
+      if (cloudBackupSettings.enabled) {
+        setCloudBackupSettings({enabled: false});
+      }
+
+      window.location.reload();
+    } finally {
+      setImporting(false);
     }
-    if (importLegacy) {
-      storage.set(SETTINGS_STORAGE_KEY, loadLegacySettings(sanitizedData));
-    }
-    setTimeout(() => window.location.reload(), 1000);
   }
 
   return (
     <SettingWrapper reverse name={formatMessage({defaultMessage: 'Import Settings'})} description={description}>
-      <input type="file" hidden ref={fileImportRef} onChange={({target}) => importFile(target)} />
+      <input
+        type="file"
+        hidden
+        ref={fileImportRef}
+        accept=".backup,.json"
+        onChange={({target}) => importFile(target)}
+      />
       <Button onClick={() => fileImportRef.current?.click()} disabled={disabled} loading={importing} size="lg">
         {formatMessage({defaultMessage: 'Import'})}
       </Button>
@@ -94,13 +133,16 @@ function ImportSetting({description, disabled, importing, setImporting}) {
 }
 
 function ResetSetting({description, disabled, setResetting}) {
-  const [_, setCloudBackupSettings] = useCloudBackupSettings();
+  const [cloudBackupSettings, setCloudBackupSettings] = useCloudBackupSettings();
 
-  async function resetDefault() {
+  function resetDefault() {
     setResetting(true);
-    setCloudBackupSettings({enabled: false});
+
+    if (cloudBackupSettings.enabled) {
+      setCloudBackupSettings({enabled: false});
+    }
+
     storage.set(SETTINGS_STORAGE_KEY, null);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
     window.location.reload();
   }
 
