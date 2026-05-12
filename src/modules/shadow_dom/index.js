@@ -28,9 +28,9 @@ class ShadowDOM {
   constructor() {
     this.components = {};
 
-    const host = document.createElement(APP_CONTAINER_ID);
+    this.host = document.createElement(APP_CONTAINER_ID);
 
-    this.shadowRoot = host.attachShadow({mode: 'closed', delegatesFocus: true});
+    this.shadowRoot = this.host.attachShadow({mode: 'closed', delegatesFocus: true});
     this.mountNode = document.createElement('main');
     this.mountNode.className = SCOPE_CLASS;
     this.mantineRoot = document.createElement('div');
@@ -38,7 +38,11 @@ class ShadowDOM {
     this.shadowRoot.appendChild(this.mountNode);
     this.root = createRoot(this.mantineRoot);
 
-    document.documentElement.appendChild(host);
+    document.documentElement.appendChild(this.host);
+
+    document.addEventListener('fullscreenchange', this.syncHostToFullscreen.bind(this));
+    document.addEventListener('webkitfullscreenchange', this.syncHostToFullscreen.bind(this));
+    document.addEventListener('MSFullscreenChange', this.syncHostToFullscreen.bind(this));
 
     this.injectMantineVariables();
     this.addStyleSheet(extension.url('betterttv.css', true));
@@ -51,6 +55,21 @@ class ShadowDOM {
     this.toggleDarkModeClass();
     settings.on(`changed.${SettingIds.PRIMARY_COLOR}`, this.injectMantineVariables.bind(this));
     settings.on(`changed.${SettingIds.DARKENED_MODE}`, this.toggleDarkModeClass.bind(this));
+  }
+
+  syncHostToFullscreen() {
+    const fullscreenElement = document.fullscreenElement ?? document.webkitFullscreenElement ?? null;
+
+    if (fullscreenElement == null) {
+      document.documentElement.appendChild(this.host);
+      return;
+    }
+
+    if (fullscreenElement.contains(this.host)) {
+      return;
+    }
+
+    fullscreenElement.appendChild(this.host);
   }
 
   toggleDarkModeClass() {
