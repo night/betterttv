@@ -18,7 +18,7 @@ import useCloudBackupSettings from '../../../common/hooks/CloudBackup.jsx';
 import SettingSwitch from '../components/SettingSwitch.jsx';
 import useProRequiredState from '../../../common/hooks/ProRequiredState.jsx';
 import Promotion from '../components/Promotion.jsx';
-import {EXT_VER} from '../../../constants.js';
+import {CLOUD_BACKUP_SETTINGS_STORAGE_KEY, EXT_VER} from '../../../constants.js';
 
 function loadJSON(string) {
   let json = null;
@@ -73,7 +73,6 @@ function BackupSetting({description, disabled}) {
 
 function ImportSetting({description, disabled, importing, setImporting}) {
   const fileImportRef = useRef(null);
-  const [cloudBackupSettings, setCloudBackupSettings] = useCloudBackupSettings();
 
   async function importFile(target) {
     setImporting(true);
@@ -91,10 +90,14 @@ function ImportSetting({description, disabled, importing, setImporting}) {
 
       for (const key of Object.keys(data)) {
         const nonPrefixedKey = key.split('bttv_')[1];
-        const value = data[key];
+        let value = data[key];
 
         if (nonPrefixedKey === SETTINGS_STORAGE_KEY) {
           importLegacy = false;
+        }
+
+        if (nonPrefixedKey === CLOUD_BACKUP_SETTINGS_STORAGE_KEY) {
+          value = {enabled: false};
         }
 
         storage.set(nonPrefixedKey, value);
@@ -104,10 +107,6 @@ function ImportSetting({description, disabled, importing, setImporting}) {
       if (importLegacy) {
         const migratedSettings = loadLegacySettings(sanitizedData);
         storage.set(SETTINGS_STORAGE_KEY, migratedSettings);
-      }
-
-      if (cloudBackupSettings.enabled) {
-        setCloudBackupSettings({enabled: false});
       }
 
       window.location.reload();
