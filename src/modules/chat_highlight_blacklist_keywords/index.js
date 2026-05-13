@@ -125,6 +125,17 @@ function readRepairKeywords() {
         keysToPrune.push(value.id);
         continue;
       }
+
+      if (typeof value.type === 'string') {
+        const trimmed = value.type.trim();
+
+        if (!/^\d+$/.test(trimmed)) {
+          continue;
+        }
+
+        value.type = Number.parseInt(trimmed, 10);
+      }
+
       if (![KeywordTypes.EXACT, KeywordTypes.WILDCARD].includes(value.type)) {
         continue;
       }
