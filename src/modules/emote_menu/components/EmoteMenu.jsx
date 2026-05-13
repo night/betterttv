@@ -49,7 +49,7 @@ function EmoteMenu({
   const shiftPressed = useRef(false);
   const [section, setSection] = useState(null);
   const [opened, {close, open}] = useDisclosure(false);
-  const width = useHorizontalResize({boundingQuerySelector, handleRef, open: opened});
+  const width = useHorizontalResize({boundingQuerySelector, handleRef, open: opened, placement});
   const emoteListRef = useRef(null);
   const [emoteListCoords, setEmoteListCoords] = useState({x: 0, y: 0});
   const [navigationMode, setNavigationMode] = useState(NavigationModeTypes.ARROW_KEYS);
@@ -304,7 +304,13 @@ function EmoteMenu({
       {...restProps}>
       <ScrollbarSizeTargetContext.Provider value={emoteMenuContentRef}>
         <div ref={emoteMenuContentRef} className={styles.emoteMenuContent}>
-          <div ref={handleRef} className={styles.resizeHandle} />
+          <div
+            ref={handleRef}
+            className={classNames(styles.resizeHandle, {
+              [styles.resizeHandleTopEnd]: placement === 'top-end',
+              [styles.resizeHandleTopStart]: placement === 'top-start',
+            })}
+          />
           <Header
             focusRef={focusRef}
             opened={opened}

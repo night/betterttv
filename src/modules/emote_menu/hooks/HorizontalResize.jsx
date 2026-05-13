@@ -5,11 +5,20 @@ import {SettingIds} from '../../../constants.js';
 
 const WINDOW_HORIZONTAL_MARGIN = 20;
 
+function getWidthFromPointer(placement, rect, clientX) {
+  if (placement === 'top-start') {
+    return clientX - rect.left;
+  }
+
+  return rect.right - clientX;
+}
+
 export default function useHorizontalResize({
   boundingQuerySelector,
   handleRef,
   minWidth = EMOTE_MENU_MIN_WIDTH,
   open = true,
+  placement = 'top-end',
 }) {
   const [emoteMenuWidth, setEmoteMenuWidth] = useStorageState(SettingIds.EMOTE_MENU_WIDTH); // desired width
   const [displayWidth, setDisplayWidth] = React.useState(emoteMenuWidth); // actual width
@@ -76,14 +85,14 @@ export default function useHorizontalResize({
       if (boundingNode == null) {
         return;
       }
-      const {right} = boundingNode.getBoundingClientRect();
-      const newWidth = right - e.clientX;
+      const rect = boundingNode.getBoundingClientRect();
+      const newWidth = getWidthFromPointer(placement, rect, e.clientX);
       setWidth(newWidth);
     }
 
     document.addEventListener('mousemove', handleResizeMove);
     return () => document.removeEventListener('mousemove', handleResizeMove);
-  }, [isResizing, boundingQuerySelector]);
+  }, [isResizing, boundingQuerySelector, placement]);
 
   return displayWidth;
 }

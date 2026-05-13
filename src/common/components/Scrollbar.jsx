@@ -40,9 +40,21 @@ export function useScrollbarSize(scrollRef, {mirrorPadding = false, className} =
     };
 
     update();
-    const observer = new ResizeObserver(update);
+    let frame = null;
+    const observer = new ResizeObserver(() => {
+      if (frame != null) {
+        return;
+      }
+      frame = requestAnimationFrame(() => {
+        frame = null;
+        update();
+      });
+    });
     observer.observe(el);
     return () => {
+      if (frame != null) {
+        cancelAnimationFrame(frame);
+      }
       observer.disconnect();
       if (mirrorPadding) {
         el.style.paddingRight = '';
